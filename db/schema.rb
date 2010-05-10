@@ -12,6 +12,7 @@
 ActiveRecord::Schema.define(:version => 20100510151422) do
 
   create_table "sites", :force => true do |t|
+    t.integer  "user_id"
     t.string   "hostname"
     t.string   "dev_hostnames"
     t.string   "token"
