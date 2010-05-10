@@ -7,6 +7,7 @@ gem 'haml'
 gem 'devise', '>= 1.1.rc1'
 gem 'state_machine'
 gem 'responders'
+# gem 'carrierwave'
 
 group :development do
   # bundler requires these gems in development
