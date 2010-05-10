@@ -12,6 +12,7 @@ gem 'jammit',       :git => 'git://github.com/railsjedi/jammit.git'
 group :development do
   # bundler requires these gems in development
   gem 'sqlite3-ruby', :require => 'sqlite3'
+  gem 'annotate'
   
   # Ruby console
   gem 'looksee'
