@@ -1,5 +1,8 @@
 # Install postgresql with homebrew
 brew install postgresql
 
-# run bundle install
+# Install Bundler
+gem install bundler
+
+# Run bundle install
 bi (jime alias for bundle install)
