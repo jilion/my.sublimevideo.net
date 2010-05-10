@@ -32,9 +32,10 @@ module MySublimeVideo
     
     # Configure generators values. Many other options are available, be sure to check the documentation.
     config.generators do |g|
-      g.orm             :active_record
-      g.template_engine :haml
-      g.test_framework  :rspec, :fixture => false, :view => false
+      g.orm                 :active_record
+      g.template_engine     :haml
+      g.test_framework      :rspec, :fixture => true, :views => false
+      g.fixture_replacement :factory_girl, :dir => "spec/factories"
     end
     
     # Configure the default encoding used in templates for Ruby 1.9.
