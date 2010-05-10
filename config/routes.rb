@@ -1,8 +1,9 @@
 MySublimeVideo::Application.routes.draw do |map|
-  resources :sites
-
+  
   devise_for :users, :path_names => { :sign_up => 'register', :sign_in => 'login', :sign_out => 'logout' }
-
+  
+  resources :sites
+  
   # The priority is based upon order of creation:
   # first created -> highest priority.
   
@@ -52,8 +53,7 @@ MySublimeVideo::Application.routes.draw do |map|
   
   # You can have the root of your site routed with "root"
   # just remember to delete public/index.html.
-  # root :to => "welcome#index"
-  root :to => "home#index"
+  root :to => "sites#index"
   
   # See how all your routes lay out with "rake routes"
   
