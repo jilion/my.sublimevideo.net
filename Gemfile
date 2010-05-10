@@ -7,12 +7,11 @@ gem 'i18n'
 gem 'haml'
 gem 'devise',       '>= 1.1.rc1'
 gem 'state_machine'
-# gem 'jammit',       :git => 'git://github.com/railsjedi/jammit.git'
-gem 'jammit_lite'
 
 group :development do
   # bundler requires these gems in development
   gem 'sqlite3-ruby', :require => 'sqlite3'
+  gem 'jammit',       :git => 'git://github.com/railsjedi/jammit.git'
   
   # Ruby console
   gem 'looksee'
@@ -30,4 +29,5 @@ end
 
 group :production do
   gem 'pg'
+  gem 'jammit_lite'
 end
