@@ -31,16 +31,23 @@ describe User do
   # should_allow_mass_assignment_of     :full_name, :email, :password, :password_confirmation
   # should_not_allow_mass_assignment_of :id, :created_at, :updated_at
   
-  describe "with valid attributes" do
-    before :each do
-      @subject = Factory(:user)
-    end
+  # describe "with valid attributes" do
+  #   before :each do
+  #     @subject = Factory(:user)
+  #   end
+  #   
+  #   it "should be a valid factory" do
+  #     @subject.full_name.should == "Joe Blow"
+  #     @subject.email.should match /email\d+@user.com/
+  #     @subject.should be_valid
+  #   end
+  # end
+  context "with valid attributes" do
+    subject { Factory(:user) }
     
-    it "should be a valid factory" do
-      @subject.full_name.should == "Joe Blow"
-      @subject.email.should match /email\d+@user.com/
-      @subject.should be_valid
-    end
+    it { subject.full_name.should == "Joe Blow" }
+    it { subject.email.should match /email\d+@user.com/ }
+    it { subject.should be_valid }
   end
   
   describe "scopes" do

@@ -29,7 +29,7 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable, :lockable
   
   # Setup accessible (or protected) attributes for your model
-  attr_accessible :full_name, :email, :password, :password_confirmation
+  attr_accessible :full_name, :email, :password
   
   # ================
   # = Associations =

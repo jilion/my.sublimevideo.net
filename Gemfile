@@ -4,8 +4,9 @@ gem 'rails', '3.0.0.beta3'
 gem 'heroku'
 gem 'i18n'
 gem 'haml'
-gem 'devise',       '>= 1.1.rc1'
+gem 'devise', '>= 1.1.rc1'
 gem 'state_machine'
+gem 'responders'
 
 group :development do
   # bundler requires these gems in development
@@ -21,6 +22,9 @@ end
 group :test do
   gem 'sqlite3-ruby', :require => 'sqlite3'
   
+  gem 'rev'
+  gem 'watchr'
+  
   gem 'rspec',        '>= 2.0.0.beta.8'
   gem 'rspec-rails',  '>= 2.0.0.beta.8'
   
@@ -28,7 +32,9 @@ group :test do
   
   gem 'steak', '0.4.0.a4'
   gem "capybara"
-  gem "capybara-envjs"
+  # gem "capybara-envjs"
+  
+  gem 'email_spec'
   gem "launchy"
   gem "ruby-debug"
 end

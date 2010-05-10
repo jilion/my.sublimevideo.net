@@ -1,5 +1,7 @@
 MySublimeVideo::Application.routes.draw do |map|
-  devise_for :users
+  resources :sites
+
+  devise_for :users, :path_names => { :sign_up => 'register', :sign_in => 'login', :sign_out => 'logout' }
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

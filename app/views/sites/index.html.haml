@@ -1,0 +1,25 @@
+%h1 Listing sites
+
+%table
+  %tr
+    %th Hostname
+    %th Dev hostnames
+    %th Token
+    %th State
+    %th
+    %th
+    %th
+
+  - @sites.each do |site|
+    %tr
+      %td= site.hostname
+      %td= site.dev_hostnames
+      %td= site.token
+      %td= site.state
+      %td= link_to 'Show', site
+      %td= link_to 'Edit', edit_site_path(site)
+      %td= link_to 'Destroy', site, :confirm => 'Are you sure?', :method => :delete
+
+%br
+
+= link_to 'New site', new_site_path

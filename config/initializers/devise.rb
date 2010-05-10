@@ -24,7 +24,7 @@ Devise.setup do |config|
   # ==> Configuration for :database_authenticatable
   # Invoke `rake secret` and use the printed value to setup a pepper to generate
   # the encrypted password. By default no pepper is used.
-  # config.pepper = "rake secret output"
+  config.pepper = "2f46c3f9675d213710beb6d72733a3838700b4df1f379fd5502501555a8b58024a21a71b6bc6f1db2e34bf28e33978437b100d82362669305d00c02fb260ca50"
   
   # Configure how many times you want the password is reencrypted. Default is 10.
   # config.stretches = 10
@@ -43,14 +43,14 @@ Devise.setup do |config|
   
   # ==> Configuration for :rememberable
   # The time the user will be remembered without asking for credentials again.
-  # config.remember_for = 2.weeks
+  config.remember_for = 2.weeks
   
   # ==> Configuration for :validatable
   # Range for password length
-  # config.password_length = 6..20
+  config.password_length = 6..20
   
   # Regex to use to validate the email address
-  # config.email_regexp = /^([\w\.%\+\-]+)@([\w\-]+\.)+([\w]{2,})$/i
+  config.email_regexp = /^([\w\.%\+\-]+)@([\w\-]+\.)+([\w]{2,})$/i
   
   # ==> Configuration for :timeoutable
   # The time you want to timeout the user session without activity. After this
@@ -61,7 +61,7 @@ Devise.setup do |config|
   # Defines which strategy will be used to lock an account.
   # :failed_attempts = Locks an account after a number of failed attempts to sign in.
   # :none            = No lock strategy. You should handle locking by yourself.
-  # config.lock_strategy = :failed_attempts
+  config.lock_strategy = :failed_attempts
   
   # Defines which strategy will be used to unlock an account.
   # :email = Sends an unlock link to the user email
