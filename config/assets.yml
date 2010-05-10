@@ -1,0 +1,3 @@
+package_assets: on
+compress_assets: on
+javascript_compressor: yui
