@@ -1,4 +1,19 @@
+## MAC OS
+.DS_Store
+.Trashes
+.com.apple.timemachine.supported
+.fseventsd
+Desktop DB
+Desktop DF
+
+## PROJECT::GENERAL
+coverage
+rdoc
 .bundle
 db/*.sqlite3
 log/*.log
 tmp/**/*
+public/javascripts/all.js
+public/stylesheets/all.css
+public/rcov
+config/database.yml

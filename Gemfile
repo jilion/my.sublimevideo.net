@@ -2,7 +2,6 @@ source 'http://rubygems.org'
 
 gem 'rails', '3.0.0.beta3'
 gem 'heroku'
-
 gem 'i18n'
 gem 'haml'
 gem 'devise',       '>= 1.1.rc1'
@@ -11,6 +10,7 @@ gem 'state_machine'
 group :development do
   # bundler requires these gems in development
   gem 'sqlite3-ruby', :require => 'sqlite3'
+  gem 'annotate'
   gem 'jammit',       :git => 'git://github.com/railsjedi/jammit.git'
   
   # Ruby console
