@@ -17,6 +17,9 @@
     #global
       = render :partial => "layouts/header"
       #main
-        = yield
+        #rounded_corners_fix
+          #white_halo
+            #content
+              = yield
       #footer
         %p= "Copyright © 2010 SublimeVideo®"
