@@ -1,18 +1,27 @@
 %h2= "Edit #{resource_name.to_s.humanize}"
 
+- @user ||= current_user
+= form_for @user do |f|
+  -if @user.errors.any?
+    #errorExplanation
+      %h2= "#{pluralize(@user.errors.count, "error")} prohibited this site from being saved:"
+      %ul
+        - @user.errors.full_messages.each do |msg|
+          %li= msg
+  %p= f.label :full_name
+  %p= f.text_field :full_name
+  %p= f.submit 'Update', :id => 'user_email_submit'
+
 = form_for(resource, :as => resource_name, :url => registration_path(resource_name), :html => { :method => :put }) do |f|
   = devise_error_messages!
   
   %p= f.label :email
-  %p= f.text_field :email
+  %p= f.text_field :email, :type => :email
   
   %p
     = f.label :password
     %i (leave blank if you don't want to change it)
   %p= f.password_field :password
-  
-  %p= f.label :password_confirmation
-  %p= f.password_field :password_confirmation
   
   %p
     = f.label :current_password
@@ -21,9 +30,9 @@
   
   %p= f.submit "Update"
   
-%h3 Cancel my account
-
-%p
-  = "Unhappy? #{link_to "Cancel my account", registration_path(resource_name), :confirm => "Are you sure?", :method => :delete}."
+-# %h3 Cancel my account
+-# 
+-# %p
+-#   = "Unhappy? #{link_to "Cancel my account", registration_path(resource_name), :confirm => "Are you sure?", :method => :delete}."
 
 %p= link_to "Back", :back

@@ -23,12 +23,15 @@ end
 
 group :test do
   gem 'sqlite3-ruby', :require => 'sqlite3'
+  gem 'jammit_lite'
   
   gem 'rev'
   gem 'watchr'
+  gem 'growl'
   
   gem 'rspec',        '>= 2.0.0.beta.8'
-  gem 'rspec-rails',  '>= 2.0.0.beta.8'
+  # gem 'rspec-rails',  '>= 2.0.0.beta.8'
+  gem 'rspec-rails', :git => 'http://github.com/rspec/rspec-rails.git'
   
   gem 'factory_girl', :git => 'git://github.com/danielb2/factory_girl'
   

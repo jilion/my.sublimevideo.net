@@ -5,11 +5,10 @@ require File.dirname(__FILE__) + "/../config/environment" unless defined?(Rails)
 require 'rspec/rails'
 
 # Require factories file
-Dir["#{File.dirname(__FILE__)}/factories/**/*.rb"].each {|f| require f}
+require 'factories'
 
-# Requires supporting files with custom matchers and macros, etc,
-# in ./support/ and its subdirectories.
-Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each {|f| require f}
+# Requires supporting files with custom matchers and macros, etc, in ./support/ and its subdirectories.
+Dir[Rails.root.join('/spec/support/**/*.rb')].each { |f| require f }
 
 Rspec.configure do |config|
   # == Mock Framework
@@ -20,7 +19,7 @@ Rspec.configure do |config|
   # config.mock_with :flexmock
   # config.mock_with :rr
   config.mock_with :rspec
-
+  
   # If you'd prefer not to run each of your examples within a transaction,
   # uncomment the following line.
   # config.use_transactional_examples = false

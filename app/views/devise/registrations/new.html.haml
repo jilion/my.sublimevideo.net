@@ -1,9 +1,9 @@
-- content_for :title do
+= content_for :title do
   = "Sign up"
   
 %h2 Sign up
 
-- form_for(:user, resource, :url => registration_path(resource_name)) do |f|
+= form_for(@resource, :as => :user, :url => registration_path(resource_name)) do |f|
   = f.error_messages
   
   %p= f.label :full_name
@@ -17,4 +17,5 @@
   
   %p= f.submit "Sign up"
   
-= render :partial => "devise/shared/links"
+%ul
+  %li= link_to "Login", new_session_path(:user)

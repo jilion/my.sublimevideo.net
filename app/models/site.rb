@@ -16,8 +16,6 @@ class Site < ActiveRecord::Base
   
   attr_accessible :hostname, :dev_hostnames
   
-  STATES = %w[pending active]
-  
   # ================
   # = Associations =
   # ================
@@ -28,14 +26,13 @@ class Site < ActiveRecord::Base
   # = Scopes =
   # ==========
   
-  named_scope :order_by,                lambda { |order| { :order => order } }
   
   # ===============
   # = Validations =
   # ===============
   
-  validates_presence_of :user, :hostname
-  validates_uniqueness_of :hostname, :scope => :user_id
+  validates :user, :presence => true
+  validates :hostname, :presence => true, :uniqueness => { :scope => :user_id }
   
   # =============
   # = Callbacks =

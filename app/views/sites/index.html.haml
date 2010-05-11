@@ -1,25 +1,31 @@
 %h1 Listing sites
 
+- @site ||= current_user.sites.build
+= form_for @site do |f|
+  -if @site.errors.any?
+    #errorExplanation
+      %h2= "#{pluralize(@site.errors.count, "error")} prohibited this site from being saved:"
+      %ul
+        - @site.errors.full_messages.each do |msg|
+          %li= msg
+  .field
+    = f.label :hostname
+    = f.text_field :hostname
+  .actions
+    = f.submit 'Save'
+
 %table
   %tr
     %th Hostname
     %th Dev hostnames
-    %th Token
     %th State
     %th
     %th
-    %th
-
+  
   - @sites.each do |site|
     %tr
       %td= site.hostname
       %td= site.dev_hostnames
-      %td= site.token
       %td= site.state
-      %td= link_to 'Show', site
       %td= link_to 'Edit', edit_site_path(site)
       %td= link_to 'Destroy', site, :confirm => 'Are you sure?', :method => :delete
-
-%br
-
-= link_to 'New site', new_site_path

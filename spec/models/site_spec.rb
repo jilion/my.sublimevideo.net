@@ -15,16 +15,25 @@
 require 'spec_helper'
 
 describe Site do
-  before(:each) do
-    @valid_attributes = {
-      :hostname => "MyString",
-      :dev_hostnames => "MyString",
-      :token => "MyString",
-      :state => "MyString"
-    }
+  
+  context "with valid attributes" do
+    subject { Factory(:site) }
+    
+    it { subject.hostname.should == "youtube.com" }
+    it { subject.dev_hostnames.should == "localost, 127.0.0.1"}
+    it { subject.user.should be_present }
+    it { subject.should be_pending }
+    it { subject.should be_valid }
   end
-
-  it "should create a new instance given valid attributes" do
-    Site.create!(@valid_attributes)
+  
+  context "with already a site in db" do
+    before(:each) { @site = Factory(:site) }
+    
+    it "should validate uniqueness of hostname by user" do
+      site = @site.user.sites.create(:hostname => @site.hostname)
+      site.errors[:hostname].should be_present
+    end
+    
   end
+  
 end

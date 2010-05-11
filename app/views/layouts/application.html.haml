@@ -5,10 +5,21 @@
     %meta{ "http-equiv" => "X-UA-Compatible", :content => "chrome=1" }
     %meta{ "http-equiv" => "Content-Type", :content => "text/html;charset=UTF-8" }
     = stylesheet_link_tag :all
-    = include_javascripts :default, :register
-    = csrf_meta_tag
     %link{ :rel => "shortcut icon", :href => "/favicon.ico", :type => "image/x-icon" }
+    
+    =raw include_javascripts :default, :register
+    = csrf_meta_tag
+    == <script type="text/javascript" src="http://use.typekit.com/zwt2duv.js"></script>
+    == <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
   %body
     %p.notice= flash[:notice]
     %p.alert= flash[:alert]
-    = yield
+    #global
+      = render :partial => "layouts/header"
+      #main
+        #rounded_corners_fix
+          #white_halo
+            #content
+              = yield
+      #footer
+        %p= "Copyright © 2010 SublimeVideo®"
