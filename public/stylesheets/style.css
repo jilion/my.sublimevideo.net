@@ -23,6 +23,7 @@ body {
 #header_wrap {
   width:1000px;
   margin:0 auto;
+  position:relative;
 }
 
 #header h1 a {
@@ -35,6 +36,17 @@ body {
 }
 
 #header h1 a span {display:none;}
+
+#main_menu {
+  list-style-type:none;
+  display:none;
+}
+
+#header .right {
+  position:absolute;
+  right:0;
+  top:0;
+}
 
 #main {
   width:1000px;
