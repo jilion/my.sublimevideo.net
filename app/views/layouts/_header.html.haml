@@ -1,0 +1,27 @@
+#header
+  #header_wrap
+    %h1
+      - link_to "/" do
+        %span= "SublimeVideo"
+    - if user_signed_in?
+      %ul#main_menu
+        %li.sites
+          - link_to sites_path do
+            %span= "Sites"
+        %li.videos
+          - link_to "videos_path" do
+            %span= "Videos"
+    
+    .right
+      %ul.extra_links
+        %li= link_to "Documentation", "/docs"
+        %li= link_to "Support", "/support"
+      - if user_signed_in?
+        - link_to edit_user_registration_path, :class => "user" do
+          %span= current_user.full_name
+      - else
+        - link_to new_user_session_path, :class => "user" do
+          %span= "LOGIN"
+    
+    
+      
