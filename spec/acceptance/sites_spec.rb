@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/acceptance_helper'
 
-feature "Sites actions: " do
+feature "Sites actions:" do
   
   background do
     sign_in_as_user
