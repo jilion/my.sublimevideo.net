@@ -3,7 +3,6 @@ class ApplicationController < ActionController::Base
   responders Responders::FlashResponder, Responders::HttpCacheResponder
   
   layout 'application'
-  
   before_filter :http_authenticate
   
 protected
