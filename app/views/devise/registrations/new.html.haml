@@ -17,4 +17,5 @@
   
   %p= f.submit "Sign up"
   
-= render :partial => "devise/shared/links"
+%ul
+  %li= link_to "Login", new_session_path(:user)
