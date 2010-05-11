@@ -1,5 +1,4 @@
 module HelperMethods
-  # Put here any helper method you need to be available in all your acceptance tests
   
   def warden
     request.env['warden']
@@ -17,9 +16,9 @@ module HelperMethods
   def sign_in_as_user(options={}, &block)
     user = create_user(options)
     visit "/" unless options[:visit] == false
-    fill_in 'Email', :with => user.email
+    fill_in 'Email',    :with => user.email
     fill_in 'Password', :with => '123456'
-    check 'Remember me' if options[:remember_me] == true
+    check   'Remember me' if options[:remember_me] == true
     yield if block_given?
     click_button 'Login'
     user

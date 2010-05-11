@@ -31,7 +31,7 @@ class Site < ActiveRecord::Base
   # = Validations =
   # ===============
   
-  validates :user, :presence => true
+  validates :user,     :presence => true
   validates :hostname, :presence => true, :uniqueness => { :scope => :user_id }
   
   # =============

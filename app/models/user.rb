@@ -46,8 +46,8 @@ class User < ActiveRecord::Base
   # = Validations =
   # ===============
   
-  validates_presence_of   :full_name
-  validates_uniqueness_of :email
+  validates :full_name, :presence => true
+  validates :email,     :presence => true, :uniqueness => true
   
   # ====================
   # = Instance Methods =

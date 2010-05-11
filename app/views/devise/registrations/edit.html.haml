@@ -1,4 +1,7 @@
-%h2= "Edit #{resource_name.to_s.humanize}"
+= content_for :title do
+  Edit my account
+
+%h2 Edit my account
 
 - @user ||= current_user
 = form_for @user do |f|
@@ -19,14 +22,14 @@
   %p= f.text_field :email, :type => :email
   
   %p
-    = f.label :password
-    %i (leave blank if you don't want to change it)
-  %p= f.password_field :password
-  
-  %p
     = f.label :current_password
     %i (we need your current password to confirm your changes)
   %p= f.password_field :current_password
+  
+  %p
+    = f.label :password
+    %i (leave blank if you don't want to change it)
+  %p= f.password_field :password
   
   %p= f.submit "Update"
   

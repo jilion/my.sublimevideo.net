@@ -1,4 +1,7 @@
-%h1 Listing sites
+= content_for :title do
+  My sites
+
+%h1 My sites
 
 - @site ||= current_user.sites.build
 = form_for @site do |f|

@@ -31,9 +31,29 @@ describe User do
   context "with valid attributes" do
     subject { Factory(:user) }
     
-    it { subject.full_name.should == "Joe Blow" }
+    it { subject.full_name.should == "Joe Blow"         }
     it { subject.email.should match /email\d+@user.com/ }
-    it { subject.should be_valid }
+    it { subject.should be_valid                        }
+  end
+  
+  describe "validates" do
+    it "should validate presence of full_name" do
+      user = User.create(:full_name => nil)
+      user.errors[:full_name].should be_present
+    end
+    it "should validate presence of email" do
+      user = User.create(:email => nil)
+      user.errors[:email].should be_present
+    end
+    
+    context "with already a site in db" do
+      before(:each) { @user = Factory(:user) }
+      
+      it "should validate uniqueness of email" do
+        user = User.create(:email => @user.email)
+        user.errors[:email].should be_present
+      end
+    end
   end
   
   describe "scopes" do

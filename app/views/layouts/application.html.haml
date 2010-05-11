@@ -7,7 +7,7 @@
     = stylesheet_link_tag :all
     %link{ :rel => "shortcut icon", :href => "/favicon.ico", :type => "image/x-icon" }
     
-    =raw include_javascripts :default, :register
+    = include_javascripts(:default, :register).html_safe
     = csrf_meta_tag
     == <script type="text/javascript" src="http://use.typekit.com/zwt2duv.js"></script>
     == <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
@@ -15,11 +15,11 @@
     %p.notice= flash[:notice]
     %p.alert= flash[:alert]
     #global
-      = render :partial => "layouts/header"
+      = render "layouts/header"
       #main
         #rounded_corners_fix
           #white_halo
             #content
               = yield
       #footer
-        %p= "Copyright © 2010 SublimeVideo®"
+        %p Copyright &copy; 2010 SublimeVideo&reg;

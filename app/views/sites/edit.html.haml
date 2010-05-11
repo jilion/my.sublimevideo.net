@@ -1,3 +1,6 @@
+= content_for :title do
+  Editing site
+
 %h1 Editing site
 
 = form_for @site do |f|
@@ -12,7 +15,7 @@
     = f.text_field :dev_hostnames
   .actions
     = f.submit 'Save'
-
-= link_to 'Show', @site
-\|
-= link_to 'Back', sites_path
+    or 
+    -#= link_to 'Show', @site
+    -#\|
+    = link_to 'cancel', sites_path

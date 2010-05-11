@@ -7,9 +7,9 @@ MySublimeVideo::Application.routes.draw do |map|
   
   root :to => redirect('/sites')
   
-  %w[register sign_up signup].each { |action| match action => redirect('/users/register') }
-  %w[login sign_in signin].each    { |action| match action => redirect('/users/login') }
-  %w[logout exit].each             { |action| match action => redirect('/users/logout') }
+  %w[register sign_up signup].each     { |action| match action => redirect('/users/register') }
+  %w[login log_in sign_in signin].each { |action| match action => redirect('/users/login')    }
+  %w[logout log_out exit].each         { |action| match action => redirect('/users/logout')   }
   
   # The priority is based upon order of creation:
   # first created -> highest priority.
