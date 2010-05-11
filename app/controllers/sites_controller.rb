@@ -1,11 +1,10 @@
 class SitesController < ApplicationController
-  
   respond_to :html
   before_filter :authenticate_user!
   
   # GET /sites
   def index
-    @sites = current_user.sites.all
+    @sites = current_user.sites.scoped
     respond_with(@sites)
   end
   
@@ -15,11 +14,6 @@ class SitesController < ApplicationController
     respond_with(@site)
   end
   
-  # GET /sites/new
-  def new
-    @site = current_user.sites.build
-  end
-  
   # GET /sites/1/edit
   def edit
     @site = current_user.sites.find(params[:id])
@@ -27,15 +21,31 @@ class SitesController < ApplicationController
   
   # POST /sites
   def create
-    @site = current_user.sites.create(params[:site])
-    respond_with(@site)
+    @site = current_user.sites.build(params[:site])
+    respond_with(@site) do |format|
+      if @site.save
+        format.html { redirect_to sites_path }
+      else
+        format.html do
+          @sites = current_user.sites.scoped
+          render :action => :index
+        end
+      end
+    end
   end
   
   # PUT /sites/1
   def update
     @site = current_user.sites.find(params[:id])
-    @site.update_attributes(params[:site])
-    respond_with(@site)
+    respond_with(@site) do |format|
+      if @site.update_attributes(params[:site])
+        format.html { redirect_to sites_path }
+      else
+        format.html do
+          render :action => :edit
+        end
+      end
+    end
   end
   
   # DELETE /sites/1

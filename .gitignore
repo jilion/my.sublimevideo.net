@@ -18,3 +18,5 @@ public/stylesheets/all.css
 public/rcov
 config/database.yml
 tmp/restart.txt
+
+capybara-*.html

@@ -8,7 +8,10 @@ feature "Users" do
     fill_in "Email",     :with => "john@doe.com"
     fill_in "Password",  :with => "123456"
     click_button "Sign up"
-    save_and_open_page
+    
+    current_url.should =~ %r(http://[^/]+/sites)
   end
+  
+  
   
 end
