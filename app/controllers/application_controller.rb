@@ -1,8 +1,8 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery
   responders Responders::FlashResponder, Responders::HttpCacheResponder
-  layout 'application'
   
+  layout 'application'
   before_filter :http_authenticate
   
 protected
