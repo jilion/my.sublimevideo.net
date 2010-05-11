@@ -7,6 +7,10 @@ require 'capybara/rails'
 
 Rspec.configure do |config|
   config.include Capybara
+  
+  config.after(:each) do
+    Capybara.reset_sessions!
+  end
 end
 
 # Put your acceptance spec helpers inside /spec/acceptance/support
