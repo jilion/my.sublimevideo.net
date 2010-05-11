@@ -1,3 +1,11 @@
 package_assets: on
 compress_assets: on
-javascript_compressor: yui
+javascript_compressor: closure
+
+javascripts:
+  default:
+    - public/javascripts/prototype.js
+    - public/javascripts/rails.js
+    - public/javascripts/application.js
+  register:
+    - public/javascripts/register.js

@@ -13,6 +13,7 @@ group :development do
   gem 'sqlite3-ruby', :require => 'sqlite3'
   gem 'annotate'
   gem 'jammit',       :git => 'git://github.com/railsjedi/jammit.git'
+  gem 'ffaker'
   
   # Ruby console
   gem 'looksee'

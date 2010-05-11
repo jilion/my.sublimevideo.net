@@ -35,7 +35,7 @@ class User < ActiveRecord::Base
   # = Associations =
   # ================
   
-  # has_many :sites
+  has_many :sites
   # has_many :videos
   
   # ==========
@@ -46,7 +46,8 @@ class User < ActiveRecord::Base
   # = Validations =
   # ===============
   
-  validates_presence_of :full_name
+  validates_presence_of   :full_name
+  validates_uniqueness_of :email
   
   # ====================
   # = Instance Methods =
