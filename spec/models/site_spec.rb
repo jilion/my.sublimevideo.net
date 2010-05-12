@@ -21,6 +21,7 @@ describe Site do
     
     it { subject.hostname.should      == "youtube.com"          }
     it { subject.dev_hostnames.should == "localhost, 127.0.0.1" }
+    it { subject.token.should         =~ /^[a-zA-Z0-9]{8}$/     }
     it { subject.user.should be_present                         }
     it { subject.should be_pending                              }
     it { subject.should be_valid                                }
@@ -28,22 +29,76 @@ describe Site do
   
   describe "validates" do
     it "should validate presence of user" do
-      site = Site.create(:user => nil)
+      site = Factory.build(:site, :user => nil)
+      site.should_not be_valid
       site.errors[:user].should be_present
     end
     it "should validate presence of hostname" do
-      site = Site.create(:hostname => nil)
+      site = Factory.build(:site, :hostname => nil)
+      site.should_not be_valid
       site.errors[:hostname].should be_present
+    end
+    
+    %w[http://asdasd slurp .com 901.12312.123 école école.fr üpper.de].each do |host|
+      it "should validate validity of hostname: #{host}" do
+        site = Factory.build(:site, :hostname => host)
+        site.should_not be_valid
+        site.errors[:hostname].should be_present
+      end
+    end
+    %w[ftp://asdasd.com asdasd.com 124.123.151.123 htp://aasds.com].each do |host|
+      it "should validate validity of hostname: #{host}" do
+        site = Factory.build(:site, :hostname => host)
+        site.should be_valid
+        site.errors[:hostname].should_not be_present
+      end
+    end
+    ['123.123.123,localhost', ', ,123.123.123,'].each do |hosts|
+      it "should validate validity of hostname: #{hosts}" do
+        site = Factory.build(:site, :dev_hostnames => hosts)
+        site.should_not be_valid
+        site.errors[:dev_hostnames].should be_present
+      end
+    end
+    ['localhost', ', ,', 'localhost,, ,'].each do |hosts|
+      it "should validate validity of hostname: #{hosts}" do
+        site = Factory.build(:site, :dev_hostnames => hosts)
+        site.should be_valid
+        site.errors[:dev_hostnames].should_not be_present
+      end
+    end
+    
+    it "should validate hostname even without http://" do
+      site = Factory(:site, :hostname => 'www.youtube.com?video=31231')
+      site.hostname.should == 'www.youtube.com'
+    end
+    it "should validate & clean hostname" do
+      site = Factory(:site, :hostname => 'http://www.youtube.com?video=31231')
+      site.hostname.should == 'www.youtube.com'
+    end
+    it "should validate & clean dev_hostnames" do
+      site = Factory(:site, :dev_hostnames => 'http://localhost:3000, 127.0.0.1:3000')
+      site.dev_hostnames.should == 'localhost, 127.0.0.1'
     end
     
     context "with already a site in db" do
       before(:each) { @site = Factory(:site) }
       
       it "should validate uniqueness of hostname by user" do
-        site = @site.user.sites.create(:hostname => @site.hostname)
+        site = Factory.build(:site, :user => @site.user, :hostname => @site.hostname)
+        site.should_not be_valid
         site.errors[:hostname].should be_present
       end
     end
+  end
+  
+  describe "callbacks" do
+    
+    it "should set default dev_hostnames before create" do
+      site = Factory(:site, :dev_hostnames => nil)
+      site.dev_hostnames.should == 'localhost, 127.0.0.1'
+    end
+    
   end
   
 end

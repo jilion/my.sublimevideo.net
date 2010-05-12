@@ -15,6 +15,7 @@
 class Site < ActiveRecord::Base
   
   attr_accessible :hostname, :dev_hostnames
+  uniquify :token
   
   # ================
   # = Associations =
@@ -32,11 +33,14 @@ class Site < ActiveRecord::Base
   # ===============
   
   validates :user,     :presence => true
-  validates :hostname, :presence => true, :uniqueness => { :scope => :user_id }
+  validates :hostname, :presence => true, :uniqueness => { :scope => :user_id }, :production_hostname => true
+  validates :dev_hostnames, :hostnames => true
   
   # =============
   # = Callbacks =
-  # ==============
+  # =============
+  
+  before_create :set_default_dev_hostnames
   
   # =================
   # = State Machine =
@@ -57,5 +61,34 @@ class Site < ActiveRecord::Base
   # ====================
   # = Instance Methods =
   # ====================
+  
+  # add scheme & parse
+  def hostname=(attribute)
+    attribute = "http://#{attribute}" unless attribute =~ %r(\w+://.*$)
+    write_attribute :hostname, URI.parse(attribute).host
+  rescue
+    write_attribute :hostname, attribute
+  end
+  
+  # add scheme & parse
+  def dev_hostnames=(attribute)
+    if attribute.present?
+      attribute = attribute.split(',').select { |h| h.present? }.map do |host|
+        host.strip!
+        host = "http://#{host}" unless host =~ %r(\w+://.*$)
+        URI.parse(host).host
+      end.join(', ')
+    end
+    write_attribute :dev_hostnames, attribute
+  rescue
+    write_attribute :dev_hostnames, attribute
+  end
+  
+private
+  
+  # before_create
+  def set_default_dev_hostnames
+    write_attribute(:dev_hostnames, "localhost, 127.0.0.1") unless dev_hostnames.present?
+  end
   
 end

@@ -7,6 +7,7 @@ gem 'haml', '>= 3.0.0'
 gem 'devise', '>= 1.1.rc1'
 gem 'state_machine'
 gem 'responders'
+gem 'uniquify'
 # gem 'carrierwave'
 
 group :development do
