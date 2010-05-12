@@ -1,21 +1,26 @@
 = content_for :title do
-  Sign up
+  Sign Up
   
-%h2 Sign up
+%h2= "Sign Up"
 
-= form_for(@resource, :as => :user, :url => registration_path(resource_name)) do |f|
+= form_for @resource, :as => :user, :url => registration_path(resource_name), :html => { :class => "register" } do |f|
   = f.error_messages
   
-  %p= f.label :full_name
-  %p= f.text_field :full_name
+  .entry.full_name
+    = f.label :full_name, "", :class => "icon"
+    = f.text_field :full_name, :class => "text", :placeholder => "Full name"
   
-  %p= f.label :email
-  %p= f.text_field :email
+  .entry.email
+    = f.label :email, "", :class => "icon"
+    = f.text_field :email, :class => "text", :placeholder => "Email"
   
-  %p= f.label :password
-  %p= f.password_field :password
+  .entry.password
+    = f.label :password, "", :class => "icon"
+    = f.password_field :password, :class => "text", :placeholder => "Password"
   
-  %p= f.submit "Sign up"
-  
-%ul
-  %li= link_to "Login", new_session_path(:user)
+  .entry.submit
+    = f.submit "Register"
+    %p.note= "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam."
+  .clear
+-#%ul
+-#  %li= link_to "Login", new_session_path(:user)

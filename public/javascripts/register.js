@@ -7,12 +7,14 @@ document.observe("dom:loaded", function() {
 function buildShowPassword() {
   
   $$('input[type=password]').each(function(el, index){
-    var showPasswordEl = new Element("input", { type:"checkbox", id:"show_password_"+index });
+    var showPasswordWrap = new Element("div", { className:'show_password' });
+    var showPasswordInput = new Element("input", { type:"checkbox", id:"show_password_"+index });
     var showPasswordLabel = new Element("label", { 'for':"show_password_"+index }).update("Show password");
-    el.insert({ after: showPasswordLabel }).insert({ after: showPasswordEl });
+    showPasswordWrap.insert(showPasswordInput).insert(showPasswordLabel);
+    el.insert({ after: showPasswordWrap });
     
-    showPasswordEl.observe("click", toggleShowPassword);
-    showPasswordEl.checked = false; //Firefox reload ;-)
+    showPasswordInput.observe("click", toggleShowPassword);
+    showPasswordInput.checked = false; //Firefox reload ;-)
   });
   
 }
@@ -20,12 +22,13 @@ function buildShowPassword() {
 function toggleShowPassword(event) {
   // I can't simply modify the type attribute of the field (from "password" to "text"), because IE doesn't support this
   // cf: http://www.alistapart.com/articles/the-problem-with-passwords
-  var passwordField = event.element().up().select("input[type!=checkbox]").first();
+  var passwordField = event.element().up(1).select("input[type!=checkbox]").first();
   var newPasswordField = new Element("input", {
     id: passwordField.id,
     name: passwordField.name,
     value: passwordField.value,
     size: passwordField.size,
+    placeholder: passwordField.placeholder,
     className: passwordField.className,
     type: this.checked ? 'text' : 'password'
   }); 

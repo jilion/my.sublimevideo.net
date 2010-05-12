@@ -16,10 +16,11 @@
     %p.alert= flash[:alert]
     #global
       = render "layouts/header"
-      #main
-        #rounded_corners_fix
-          #white_halo
-            #content
-              = yield
+      #main_wrap
+        #main
+          #rounded_corners_fix
+            #white_halo
+              #content
+                = yield
       #footer
         %p Copyright &copy; 2010 SublimeVideo&reg;

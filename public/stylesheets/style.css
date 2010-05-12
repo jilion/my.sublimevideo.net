@@ -23,6 +23,7 @@ body {
 #header_wrap {
   width:960px;
   margin:0 auto;
+  padding:0 20px;
   position:relative;
 }
 
@@ -44,7 +45,7 @@ body {
 
 #header .right {
   position:absolute;
-  right:0;
+  right:20px;
   top:16px;
 }
 
@@ -66,7 +67,7 @@ body {
 }
 
 #header .right ul.extra_links li a {
-  color:#988e9d;
+  color:#bfabc9;
   border-bottom:1px solid #45384b;
   -webkit-transition:0.6s color;
   -moz-transition:0.6s color;
@@ -112,20 +113,24 @@ body {
 
 #header .right a.user:active strong, #header .right a.user:active span.corner {
   background-position:0 -29px;
-} 
+}
 
-#main {
+#main_wrap {
   width:960px;
   margin:20px auto;
+  padding:0 20px;
+}
+
+#main {
   background:url(/images/embed/textured_background.jpg);
-  border:1px solid rgba(0,0,0,0.7);
+  border:1px solid #313741;
   -webkit-border-radius:10px;
   -moz-border-radius:10px;
   border-radius:10px;
-  -webkit-box-shadow:rgba(0,0,0,0.5) 0 3px 12px;
-  -webkit-box-shadow:rgba(0,0,0,0.5) 0 3px 12px, inset 0 2px 2px rgba(255,255,255,0.8);
-  -moz-box-shadow:rgba(0,0,0,0.5) 0 3px 12px, inset 0 1px 2px rgba(255,255,255,0.8);
-  box-shadow:rgba(0,0,0,0.5) 0 3px 12px, inset 0 1px 2px rgba(255,255,255,0.8);
+  -webkit-box-shadow:rgba(0,0,0,0.45) 0 3px 12px;
+  -webkit-box-shadow:rgba(0,0,0,0.45) 0 3px 12px, inset 0 2px 1px rgba(255,255,255,0.8);
+  -moz-box-shadow:rgba(0,0,0,0.45) 0 3px 12px, inset 0 1px 2px rgba(255,255,255,0.8);
+  box-shadow:rgba(0,0,0,0.45) 0 3px 12px, inset 0 1px 2px rgba(255,255,255,0.8);
 }
 
 @media screen and (-webkit-min-device-pixel-ratio:0){
@@ -135,7 +140,7 @@ body {
   }
   
   #rounded_corners_fix {
-    border:1px solid rgba(0,0,0,0.7);
+    border:1px solid #313741;
     -webkit-border-radius:9px;
     padding:1px;
     margin:-1px;
@@ -149,6 +154,142 @@ body {
 
 #content {
   padding:50px;
+  text-shadow:rgba(255,255,255,0.75) 0 1px 0;
+}
+
+#content h2 {
+  font-weight:100;
+  font-size:46px;
+  letter-spacing:-1px;
+  line-height:35px;
+  padding-bottom:15px;
+}
+
+#content form.register {
+  padding:15px 0 10px;
+  width:440px;
+}
+
+#content form .entry {
+  position:relative;
+  margin:12px 0;
+}
+
+#content form label.icon {
+  text-indent:-9999px;
+  display:block;
+  position:absolute;
+}
+
+#content form .full_name label.icon {
+  width:17px;
+  height:17px;
+  background:url(/images/embed/fullname_field_icon.png) no-repeat;
+  top:10px;
+  left:10px;
+}
+
+#content form .email label.icon {
+  width:17px;
+  height:18px;
+  background:url(/images/embed/email_field_icon.png) no-repeat;
+  top:10px;
+  left:10px;
+}
+
+#content form .password label.icon {
+  width:13px;
+  height:17px;
+  background:url(/images/embed/password_field_icon.png) no-repeat;
+  top:10px;
+  left:12px;
+}
+
+#content form input.text {
+  width:400px;
+  height:34px;
+  line-height:36px;
+  padding:0 0 0 38px;
+  background:#e6eaf1;
+  border:1px solid #8a92a0;
+  font-family:"proxima-nova-1","proxima-nova-2", Helvetica, Arial, sans-serif;
+  font-size:18px;
+  color:#4d5157;
+  border-radius:4px;
+  -webkit-border-radius:4px;
+  -moz-border-radius:4px;
+  -webkit-box-shadow:rgba(255,255,255,0.6) 0 1px 0;
+  -webkit-box-shadow:rgba(255,255,255,0.6) 0 1px 0, inset 0 1px 2px rgba(0,0,0,0.3);
+  -moz-box-shadow:rgba(255,255,255,0.6) 0 1px 0, inset 0 1px 2px rgba(0,0,0,0.3);
+  box-shadow:rgba(255,255,255,0.6) 0 1px 0, inset 0 1px 2px rgba(0,0,0,0.3);
+  -webkit-transition:0.5s background;
+  -moz-transition:0.5s background;
+}
+
+#content form input.text:focus {
+  background:#fff;
+  outline-color:#0085c8;
+}
+
+#content form input.text::-webkit-input-placeholder, #content form input.text.placeholder {
+  color:#8896ae;
+}
+
+#content form .entry .show_password {
+  margin:13px 0 0;
+  position:relative;
+}
+
+#content form .entry .show_password input {
+  float:left;
+  position:absolute;
+  top:0;
+  left:0;
+  opacity:0;
+}
+
+#content form .entry .show_password label {
+  height:15px;
+  padding:0 0 0 20px;
+  background:url(/images/embed/custom_checkbox.png) no-repeat;
+}
+
+/* Original concept by http://www.thecssninja.com/css/custom-inputs-using-css */
+#content form .entry .show_password input:checked + label {
+  background-position:0 -17px;
+}
+
+#content .entry.submit {
+  background:url(/images/embed/breakline.png) no-repeat -228px 0;
+  padding:25px 0 0;
+  margin-bottom:0;
+}
+
+#content .entry.submit input {
+  width:134px;
+  height:66px;
+  background:url(/images/embed/signup_btn.png) no-repeat;
+  border:none;
+  font-family:"proxima-nova-1","proxima-nova-2", Helvetica, Arial, sans-serif;
+  font-size:22px;
+  text-align:center;
+  color:#fff;
+  text-shadow:rgba(0,0,0,0.45) 0 -1px 0;
+  position:relative;
+  left:-5px;
+  float:left;
+  margin-right:10px;
+}
+
+#content .entry.submit input:active {
+  background-position:0 -66px;
+}
+
+#content .entry.submit p.note {
+  font-size:12px;
+  line-height:20px;
+  padding:3px 0 0;
+  color:#737b8a;
 }
 
 #footer {
@@ -161,7 +302,10 @@ body {
   text-shadow:rgba(255,255,255,0.3) 0 1px 0;
 }
 
+.spacer {clear:both;}
+
 a {
   text-decoration:none;
+  outline:none;
   color:#4d5563;
 }
