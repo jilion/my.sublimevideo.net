@@ -5,12 +5,6 @@
 
 - @site ||= current_user.sites.build
 = form_for @site do |f|
-  -if @site.errors.any?
-    #errorExplanation
-      %h2= "#{pluralize(@site.errors.count, "error")} prohibited this site from being saved:"
-      %ul
-        - @site.errors.full_messages.each do |msg|
-          %li= msg
   .field
     = f.label :hostname
     = f.text_field :hostname

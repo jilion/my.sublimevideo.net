@@ -155,6 +155,7 @@ body {
 #content {
   padding:50px;
   text-shadow:rgba(255,255,255,0.75) 0 1px 0;
+  position:relative;
 }
 
 #content h2 {
@@ -172,7 +173,7 @@ body {
 
 #content form .entry {
   position:relative;
-  margin:12px 0;
+  padding:6px 0;
 }
 
 #content form label.icon {
@@ -185,7 +186,7 @@ body {
   width:17px;
   height:17px;
   background:url(/images/embed/fullname_field_icon.png) no-repeat;
-  top:10px;
+  top:16px;
   left:10px;
 }
 
@@ -193,7 +194,7 @@ body {
   width:17px;
   height:18px;
   background:url(/images/embed/email_field_icon.png) no-repeat;
-  top:10px;
+  top:16px;
   left:10px;
 }
 
@@ -201,7 +202,7 @@ body {
   width:13px;
   height:17px;
   background:url(/images/embed/password_field_icon.png) no-repeat;
-  top:10px;
+  top:16px;
   left:12px;
 }
 
@@ -233,6 +234,20 @@ body {
 
 #content form input.text::-webkit-input-placeholder, #content form input.text.placeholder {
   color:#8896ae;
+}
+
+#content form input.text.errors {
+  background:#fadddd;
+}
+
+#content form input.text.errors::-webkit-input-placeholder, #content form input.text.errors.placeholder {
+  color:#901515;
+}
+
+#content form .inline_errors {
+  padding:2px 0 0;
+  font-size:12px;
+  color:#901515;
 }
 
 #content form .entry .show_password {
@@ -289,6 +304,52 @@ body {
   font-size:12px;
   line-height:20px;
   padding:3px 0 0;
+  color:#737b8a;
+}
+
+#signup_quotes {
+  width:390px;
+  position:absolute;
+  right:20px;
+  top:50px;
+  font-family:Georgia, Times, serif;
+}
+
+#signup_quotes blockquote {
+  font-size:22px;
+  font-style:italic;
+  line-height:30px;
+  padding:30px 70px 0 30px;
+  text-indent:25px;
+}
+
+#signup_quotes blockquote:before, #signup_quotes blockquote:after {
+  color:#929aa7;
+  display:block;
+  font-size:78px;
+  width:50px;
+}
+
+#signup_quotes blockquote:before {
+  content:"“";
+  height:0;
+  margin-left:-40px;
+  position:relative;
+  top:5px;
+}
+
+#signup_quotes blockquote:after {
+  content:"”";
+  height:0;
+  margin-left:230px;
+}
+
+#signup_quotes blockquote.oreilly:after {
+  margin-left:135px;
+}
+
+#signup_quotes p.author {
+  padding:10px 0 30px 100px;
   color:#737b8a;
 }
 

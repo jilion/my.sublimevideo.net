@@ -4,23 +4,30 @@
 %h2= "Sign Up"
 
 = form_for @resource, :as => :user, :url => registration_path(resource_name), :html => { :class => "register" } do |f|
-  = f.error_messages
   
   .entry.full_name
     = f.label :full_name, "", :class => "icon"
-    = f.text_field :full_name, :class => "text", :placeholder => "Full name"
+    = f.text_field :full_name, :class => "text", :placeholder => "Full name", :required => true
   
   .entry.email
     = f.label :email, "", :class => "icon"
-    = f.text_field :email, :class => "text", :placeholder => "Email"
+    = f.email_field :email, :class => "text", :placeholder => "Email", :required => true
   
   .entry.password
     = f.label :password, "", :class => "icon"
-    = f.password_field :password, :class => "text", :placeholder => "Password"
+    = f.password_field :password, :class => "text", :placeholder => "Password", :required => true
   
   .entry.submit
     = f.submit "Register"
     %p.note= "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam."
   .clear
+  
+#signup_quotes
+  %blockquote.wired
+    = "A uniform, cross-browser, multiple-codec compatible, HTML5 video-embedding".html_safe
+  %p.author= "Webmonkey, Wired, 2010."
+  %blockquote.oreilly
+    = "Wow. Sublime Video HTML5 video player.<br /> Looks awesome.".html_safe
+  %p.author= "Tim O'Reilly, 2010."
 -#%ul
 -#  %li= link_to "Login", new_session_path(:user)
