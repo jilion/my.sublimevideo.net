@@ -8,6 +8,5 @@ end
 
 Factory.define :site do |f|
   f.hostname        "youtube.com"
-  f.dev_hostnames   "localhost, 127.0.0.1"
   f.association :user, :factory => :user
 end

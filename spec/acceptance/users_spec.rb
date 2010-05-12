@@ -14,7 +14,7 @@ feature "Users actions:" do
   end
   
   scenario "update email" do
-    sign_in_as_user :email => "old@jilion.com", :full_name => "John Doe"
+    sign_in_as_user :user => { :email => "old@jilion.com", :full_name => "John Doe" }
     click_link('John Doe')
     fill_in "Email",            :with => "new@jilion.com"
     fill_in "Current password", :with => "123456"
@@ -24,7 +24,7 @@ feature "Users actions:" do
   end
   
   scenario "update full name" do
-    sign_in_as_user :full_name => "John Doe"
+    sign_in_as_user :user => { :full_name => "John Doe" }
     click_link('John Doe')
     fill_in "Full name",  :with => "Bob Doe"
     click_button "user_email_submit"
@@ -38,7 +38,7 @@ end
 feature "User session:" do
   
   scenario "login" do
-    create_user :full_name => "John Doe", :email => "john@doe.com", :password => "123456"
+    create_user  :user => { :full_name => "John Doe", :email => "john@doe.com", :password => "123456" }
     
     visit "/users/login"
     page.should_not have_content('John Doe')
@@ -51,7 +51,7 @@ feature "User session:" do
   end
   
   scenario "logout" do
-    sign_in_as_user :full_name => "John Doe"
+    sign_in_as_user :user => { :full_name => "John Doe" }
     page.should have_content('John Doe')
     click_link "Logout"
     

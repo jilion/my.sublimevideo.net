@@ -1,0 +1,22 @@
+class HostnamesValidator < ActiveModel::EachValidator
+  
+  def validate_each(record, attribute, value)
+    if value.present? && !hostnames_parseable?(value)
+      record.errors.add(attribute, :invalid, :default => options[:message], :value => value)
+    end
+  end
+  
+private
+  
+  def hostnames_parseable?(hostnames)
+    hostnames.split(',').select { |h| h.present? }.each do |host|
+      host.strip!
+      host = "http://#{host}" unless host =~ %r(\w+://.*$)
+      URI.parse(host)
+    end
+    true
+  rescue
+    false
+  end
+  
+end

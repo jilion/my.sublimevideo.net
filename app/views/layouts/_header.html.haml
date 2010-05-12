@@ -16,7 +16,8 @@
       %ul.extra_links
         %li= link_to "Documentation", "/docs"
         %li= link_to "Support", "/support"
-        %li= link_to "Logout", destroy_user_session_path
+        - if user_signed_in?
+          %li= link_to "Logout", destroy_user_session_path
       - if user_signed_in?
         = link_to edit_user_registration_path, :class => "user" do
           %strong
