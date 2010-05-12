@@ -21,6 +21,7 @@ describe Site do
     
     it { subject.hostname.should      == "youtube.com"          }
     it { subject.dev_hostnames.should == "localhost, 127.0.0.1" }
+    it { subject.token.should         =~ /^[a-zA-Z0-9]{8}$/     }
     it { subject.user.should be_present                         }
     it { subject.should be_pending                              }
     it { subject.should be_valid                                }

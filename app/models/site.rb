@@ -15,6 +15,7 @@
 class Site < ActiveRecord::Base
   
   attr_accessible :hostname, :dev_hostnames
+  uniquify :token
   
   # ================
   # = Associations =
