@@ -29,6 +29,7 @@ function toggleShowPassword(event) {
     value: passwordField.value,
     size: passwordField.size,
     placeholder: passwordField.placeholder,
+    required: passwordField.required,
     className: passwordField.className,
     type: this.checked ? 'text' : 'password'
   }); 

@@ -320,7 +320,7 @@ body {
   font-style:italic;
   line-height:30px;
   padding:30px 70px 0 30px;
-  text-indent:25px;
+/*  text-indent:25px;*/
 }
 
 #signup_quotes blockquote:before, #signup_quotes blockquote:after {
@@ -328,6 +328,7 @@ body {
   display:block;
   font-size:78px;
   width:50px;
+  text-indent:0;
 }
 
 #signup_quotes blockquote:before {
@@ -341,11 +342,11 @@ body {
 #signup_quotes blockquote:after {
   content:"”";
   height:0;
-  margin-left:230px;
+  margin-left:255px;
 }
 
 #signup_quotes blockquote.oreilly:after {
-  margin-left:135px;
+  margin-left:100px;
 }
 
 #signup_quotes p.author {
