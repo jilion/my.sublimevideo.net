@@ -29,7 +29,14 @@ var PasswordFieldManager = Class.create({
     var showPasswordLabel = new Element("label", { 'for':"show_password_"+index }).update("Show password");
     this.showPasswordCheckbox = new Element("input", { type:"checkbox", id:"show_password_"+index });
     showPasswordWrap.insert(this.showPasswordCheckbox).insert(showPasswordLabel);
-    this.field.insert({ after: showPasswordWrap });
+    
+    var errorMessage = this.field.up().select(".inline_errors").first();
+    if (errorMessage) {
+      errorMessage.insert({ after: showPasswordWrap });
+    }
+    else {
+      this.field.insert({ after: showPasswordWrap });
+    }
     
     this.showPasswordCheckbox.on("click", this.toggleShowPassword.bind(this));
     this.showPasswordCheckbox.checked = false; //Firefox reload ;-)
