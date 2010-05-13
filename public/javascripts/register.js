@@ -11,11 +11,28 @@ document.observe("dom:loaded", function() {
   }
   
   $$("form").each(function(form){
+    
     form.on("submit", function(event){
-      form.select("input.placeholder").each(function(input){
-        input.value = "";
+      // Reset pseudo-placeholders values (for browsers who don't support HTML5 placeholders)
+      if (!supportsHtml5InputAttribute("placeholder")) {
+        form.select("input.placeholder").each(function(input){
+          input.value = "";
+        });
+      }
+    });
+    
+    form.select("input[type=submit]").each(function(submitButton){
+      submitButton.on("click", function() { //when HTML5 form validitation doesn't pass, the submit event is not fired 
+        // HTML5 Input validity
+        form.select("input").each(function(input){
+          if (input.validity) {
+            if (input.validity.valid) input.removeClassName("errors");
+            else input.addClassName("errors");
+          }
+        });
       });
     });
+    
   });
 });
 
