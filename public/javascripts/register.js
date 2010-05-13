@@ -9,6 +9,14 @@ document.observe("dom:loaded", function() {
       new PlaceholderManager(input);
     });
   }
+  
+  $$("form").each(function(form){
+    form.on("submit", function(event){
+      form.select("input.placeholder").each(function(input){
+        input.value = "";
+      });
+    });
+  });
 });
 
 
