@@ -1,7 +1,7 @@
 #header
   #header_wrap
     %h1
-      = link_to "/" do
+      = link_to user_signed_in? ? sites_path : new_user_session_path do
         %span= "SublimeVideo"
     - if user_signed_in?
       %ul#main_menu

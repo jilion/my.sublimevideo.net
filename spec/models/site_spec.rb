@@ -7,6 +7,7 @@
 #  hostname      :string(255)
 #  dev_hostnames :string(255)
 #  token         :string(255)
+#  licence       :string(255)
 #  state         :string(255)
 #  created_at    :datetime
 #  updated_at    :datetime
@@ -70,14 +71,14 @@ describe Site do
     
     it "should validate hostname even without http://" do
       site = Factory(:site, :hostname => 'www.youtube.com?video=31231')
-      site.hostname.should == 'www.youtube.com'
+      site.hostname.should == 'youtube.com'
     end
     it "should validate & clean hostname" do
       site = Factory(:site, :hostname => 'http://www.youtube.com?video=31231')
-      site.hostname.should == 'www.youtube.com'
+      site.hostname.should == 'youtube.com'
     end
     it "should validate & clean dev_hostnames" do
-      site = Factory(:site, :dev_hostnames => 'http://localhost:3000, 127.0.0.1:3000')
+      site = Factory(:site, :dev_hostnames => 'http://www.localhost:3000, 127.0.0.1:3000')
       site.dev_hostnames.should == 'localhost, 127.0.0.1'
     end
     

@@ -16,6 +16,7 @@ ActiveRecord::Schema.define(:version => 20100510151422) do
     t.string   "hostname"
     t.string   "dev_hostnames"
     t.string   "token"
+    t.string   "licence"
     t.string   "state"
     t.datetime "created_at"
     t.datetime "updated_at"

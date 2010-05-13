@@ -8,7 +8,7 @@ gem 'devise', '>= 1.1.rc1'
 gem 'state_machine'
 gem 'responders'
 gem 'uniquify'
-# gem 'carrierwave'
+gem 'carrierwave', :git => 'http://github.com/jnicklas/carrierwave.git'
 
 group :development do
   # bundler requires these gems in development

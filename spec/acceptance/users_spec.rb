@@ -7,7 +7,7 @@ feature "Users actions:" do
     fill_in "Full name", :with => "John Doe"
     fill_in "Email",     :with => "john@doe.com"
     fill_in "Password",  :with => "123456"
-    click_button "Sign up"
+    click_button "Register"
     
     current_url.should =~ %r(http://[^/]+/sites)
     page.should have_content('John Doe')

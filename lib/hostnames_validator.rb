@@ -11,7 +11,7 @@ private
   def hostnames_parseable?(hostnames)
     hostnames.split(',').select { |h| h.present? }.each do |host|
       host.strip!
-      host = "http://#{host}" unless host =~ %r(\w+://.*$)
+      host = "http://#{host}" unless host =~ %r(^\w+://.*$)
       URI.parse(host)
     end
     true
