@@ -239,8 +239,8 @@ body {
   background:#fadddd;
 }
 
-#content form input.text.errors::-webkit-input-placeholder {color:#901515;}
-#content form input.text.errors.placeholder {color:#901515;}
+#content form input.text.errors::-webkit-input-placeholder {color:#d88282;}
+#content form input.text.errors.placeholder {color:#d88282;}
 
 #content form .inline_errors {
   padding:2px 0 0;
