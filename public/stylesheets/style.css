@@ -232,17 +232,15 @@ body {
   outline-color:#0085c8;
 }
 
-#content form input.text::-webkit-input-placeholder, #content form input.text.placeholder {
-  color:#8896ae;
-}
+#content form input.text::-webkit-input-placeholder {color:#8896ae;}
+#content form input.text.placeholder {color:#8896ae;}
 
 #content form input.text.errors {
   background:#fadddd;
 }
 
-#content form input.text.errors::-webkit-input-placeholder, #content form input.text.errors.placeholder {
-  color:#901515;
-}
+#content form input.text.errors::-webkit-input-placeholder {color:#901515;}
+#content form input.text.errors.placeholder {color:#901515;}
 
 #content form .inline_errors {
   padding:2px 0 0;
