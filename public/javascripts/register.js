@@ -1,6 +1,8 @@
 document.observe("dom:loaded", function() {
   
-  buildShowPassword();
+  $$('input[type=password]').each(function(input, index){
+    new PasswordFieldManager(input, index);
+  });
   
   if (!supportsHtml5InputAttribute("placeholder")) {
     $$("input[placeholder]").each(function(input){
@@ -10,10 +12,58 @@ document.observe("dom:loaded", function() {
 });
 
 
+var PasswordFieldManager = Class.create({
+  initialize: function(field, index) {
+    this.field = field;
+    this.field.store("passwordFieldManager", this); // so that the placeholderManager can eventually pick this up
+    
+    var showPasswordWrap = new Element("div", { className:'show_password' });
+    var showPasswordLabel = new Element("label", { 'for':"show_password_"+index }).update("Show password");
+    this.showPasswordCheckbox = new Element("input", { type:"checkbox", id:"show_password_"+index });
+    showPasswordWrap.insert(this.showPasswordCheckbox).insert(showPasswordLabel);
+    this.field.insert({ after: showPasswordWrap });
+    
+    this.showPasswordCheckbox.on("click", this.toggleShowPassword.bind(this));
+    this.showPasswordCheckbox.checked = false; //Firefox reload ;-)
+  },
+  toggleShowPassword: function(event) {
+    var placeholderManager = this.field.retrieve("placeholderManager"); //exists only for browsers that do not support HTML5 placeholders
+    if (placeholderManager) {
+      if (this.field.value != this.field.readAttribute("placeholder")) {
+        this.replacePasswordField(this.field, this.showPasswordCheckbox.checked);
+        placeholderManager.passwordFieldDidUpdate(this.field);
+      }
+    }
+    else {
+      this.replacePasswordField(this.field, this.showPasswordCheckbox.checked);
+    }
+  },
+  replacePasswordField: function(passwordField, textOrPassword) {
+    // I can't simply modify the type attribute of the field (from "password" to "text"), because IE doesn't support this
+    // cf: http://www.alistapart.com/articles/the-problem-with-passwords
+    // ddd("Replacing password field")
+    var newPasswordField = new Element("input", {
+      id: passwordField.id,
+      name: passwordField.name,
+      value: passwordField.value,
+      size: passwordField.size,
+      placeholder: passwordField.readAttribute("placeholder"),
+      required: passwordField.readAttribute("required"),
+      className: passwordField.className,
+      type: textOrPassword ? 'text' : 'password'
+    }); 
+    passwordField.purge(); //removes eventual observers and storage keys
+    passwordField.replace(newPasswordField);
+    this.field = newPasswordField;
+    return newPasswordField;
+  }
+});
+
+
 var PlaceholderManager = Class.create({
   initialize: function(field) {
     this.field = field;
-    this.isPasswordField = field.type == "password";
+    this.passwordFieldManager = this.field.retrieve("passwordFieldManager"); //it means field.type == "password"
     
     // Just for Firefox, if I reload the page twice...
     if (this.field.value == this.field.readAttribute("placeholder")) {
@@ -21,82 +71,42 @@ var PlaceholderManager = Class.create({
       this.field.removeClassName("placeholder");
     }
     
-    // Need to replace password fields with regular text fields until they receive focus
-    if (this.isPasswordField) {
-      this.field = replacePasswordField(field, true);
-    }
-    
     this.setupObservers();
-    this.resetField();
+    this.resetField(); //if it's a password field this will also take care to initially replace it with regular text fields (until it receives focus)
   },
   setupObservers: function() {
-    this.field.observe("focus", this.clearField.bind(this));
-    this.field.observe("blur", this.resetField.bind(this));
+    this.field.store("placeholderManager", this);
+    this.field.on("focus", this.clearField.bind(this));
+    this.field.on("blur", this.resetField.bind(this));
   },
-  clearField: function() {
+  clearField: function(event) {
     if (this.field.value == this.field.readAttribute("placeholder")) {
       this.field.value = "";
       this.field.removeClassName("placeholder");
       
-      if (this.isPasswordField) {
-        this.field = replacePasswordField(this.field, false);
+      if (this.passwordFieldManager) {
+        this.field = this.passwordFieldManager.replacePasswordField(this.field, this.passwordFieldManager.showPasswordCheckbox.checked);
         this.field.focus(); // refocus (the newly create field)
         this.setupObservers(); //since we have a new field
       }
     }
   },
-  resetField: function() { // Copy placeholder to value (if field is empty)
+  resetField: function(event) { // Copy placeholder to value (if field is empty)
     if (this.field.value == "") {
-      console.log(this.field)
       this.field.addClassName("placeholder");
       this.field.value = this.field.readAttribute("placeholder");
       
-      if (this.isPasswordField) {
-        this.field = replacePasswordField(this.field, true);
+      if (this.passwordFieldManager) {
+        this.field = this.passwordFieldManager.replacePasswordField(this.field, true);
         this.setupObservers(); //since we have a new field
       }
     }
+  },
+  passwordFieldDidUpdate: function(field) {
+    this.field = field;
+    this.setupObservers();
   }
-  
 });
-
-
-function buildShowPassword() {
-  
-  $$('input[type=password]').each(function(el, index){
-    var showPasswordWrap = new Element("div", { className:'show_password' });
-    var showPasswordInput = new Element("input", { type:"checkbox", id:"show_password_"+index });
-    var showPasswordLabel = new Element("label", { 'for':"show_password_"+index }).update("Show password");
-    showPasswordWrap.insert(showPasswordInput).insert(showPasswordLabel);
-    el.insert({ after: showPasswordWrap });
-    
-    showPasswordInput.observe("click", toggleShowPassword);
-    showPasswordInput.checked = false; //Firefox reload ;-)
-  });
-  
-}
-
-function toggleShowPassword(event) {
-  // I can't simply modify the type attribute of the field (from "password" to "text"), because IE doesn't support this
-  // cf: http://www.alistapart.com/articles/the-problem-with-passwords
-  var passwordField = event.element().up(1).select("input[type!=checkbox]").first();
-  replacePasswordField(passwordField, this.checked);
-}
-
-function replacePasswordField(passwordField, textOrPassword) {
-  var newPasswordField = new Element("input", {
-    id: passwordField.id,
-    name: passwordField.name,
-    value: passwordField.value,
-    size: passwordField.size,
-    placeholder: passwordField.readAttribute("placeholder"),
-    required: passwordField.readAttribute("required"),
-    className: passwordField.className,
-    type: textOrPassword ? 'text' : 'password'
-  }); 
-  passwordField.up().replaceChild(newPasswordField,passwordField);
-  return newPasswordField;
-}
 
 
 function supportsHtml5InputOfType(inputType) { // e.g. "email"
@@ -111,3 +121,4 @@ function supportsHtml5InputAttribute(attribute) { // e.g "placeholder"
 }
 
 
+function ddd(){console.log.apply(console, arguments);}
