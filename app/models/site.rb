@@ -7,7 +7,7 @@
 #  hostname      :string(255)
 #  dev_hostnames :string(255)
 #  token         :string(255)
-#  licence       :string(255)
+#  license       :string(255)
 #  state         :string(255)
 #  created_at    :datetime
 #  updated_at    :datetime
@@ -17,7 +17,7 @@ class Site < ActiveRecord::Base
   
   attr_accessible :hostname, :dev_hostnames
   uniquify :token
-  mount_uploader :licence, LicenceUploader
+  mount_uploader :license, LicenseUploader
   
   # ================
   # = Associations =
@@ -49,7 +49,7 @@ class Site < ActiveRecord::Base
   # =================
   
   state_machine :initial => :pending do
-    before_transition :pending => :active, :do => :set_licence_file
+    before_transition :pending => :active, :do => :set_license_file
     
     event(:activate)   { transition :pending => :active }
     event(:deactivate) { transition :active => :pending }
@@ -84,21 +84,21 @@ class Site < ActiveRecord::Base
     write_attribute :dev_hostnames, attribute
   end
   
-  def licences_hashes
-    licences  = [hostname]
-    licences += dev_hostnames.split(', ')
-    licences.map! { |l| "'" + Digest::SHA1.hexdigest("@#{l}") + "'" }
-    licences.join(',')
+  def licenses_hashes
+    licenses  = [hostname]
+    licenses += dev_hostnames.split(', ')
+    licenses.map! { |l| "'" + Digest::SHA1.hexdigest("@#{l}") + "'" }
+    licenses.join(',')
   end
   
-  def set_licence_file
-    template = ERB.new(File.new(Rails.root.join('app/templates/sites/licence.js.erb')).read)
+  def set_license_file
+    template = ERB.new(File.new(Rails.root.join('app/templates/sites/license.js.erb')).read)
     
-    tempfile = Tempfile.new('licence', "#{Rails.root}/tmp")
+    tempfile = Tempfile.new('license', "#{Rails.root}/tmp")
     tempfile.print template.result(binding)
     tempfile.flush
     
-    self.licence = tempfile
+    self.license = tempfile
   end
   
 private

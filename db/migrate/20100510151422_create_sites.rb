@@ -5,7 +5,7 @@ class CreateSites < ActiveRecord::Migration
       t.string  :hostname
       t.string  :dev_hostnames
       t.string  :token
-      t.string  :licence
+      t.string  :license
       t.string  :state
       t.timestamps
     end

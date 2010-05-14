@@ -1,5 +1,6 @@
 class SitesController < ApplicationController
   respond_to :html
+  respond_to :js, :only => :show
   before_filter :authenticate_user!
   
   # GET /sites
@@ -41,7 +42,7 @@ class SitesController < ApplicationController
     respond_with(@site) do |format|
       if @site.update_attributes(params[:site])
         @site.deactivate # re-go to :pending state
-        @site.activate # re-generate licence file
+        @site.activate # re-generate license file
         format.html { redirect_to sites_path }
       else
         format.html do

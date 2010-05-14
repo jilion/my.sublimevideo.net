@@ -16,6 +16,7 @@ tmp/**/*
 public/javascripts/all.js
 public/stylesheets/all.css
 public/rcov
+public/assets
 config/database.yml
 tmp/restart.txt
 
