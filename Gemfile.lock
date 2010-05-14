@@ -1,0 +1,301 @@
+--- 
+dependencies: 
+  ruby-debug: 
+    group: 
+    - :test
+    version: ">= 0"
+  rails: 
+    group: 
+    - :default
+    version: = 3.0.0.beta3
+  annotate: 
+    group: 
+    - :development
+    version: ">= 0"
+  pg: 
+    group: 
+    - :production
+    version: ">= 0"
+  sqlite3-ruby: 
+    group: 
+    - :test
+    version: ">= 0"
+    require: 
+    - sqlite3
+  haml: 
+    group: 
+    - :default
+    version: ">= 3.0.0"
+  rev: 
+    group: 
+    - :test
+    version: ">= 0"
+  ffaker: 
+    group: 
+    - :development
+    version: ">= 0"
+  jammit_lite: 
+    group: 
+    - :production
+    version: ">= 0"
+  rspec: 
+    group: 
+    - :test
+    version: ">= 2.0.0.beta.8"
+  rspec-rails: 
+    group: 
+    - :test
+    version: ">= 0"
+  growl: 
+    group: 
+    - :test
+    version: ">= 0"
+  wirble: 
+    group: 
+    - :development
+    version: ">= 0"
+  watchr: 
+    group: 
+    - :test
+    version: ">= 0"
+  jammit: 
+    group: 
+    - :development
+    version: ">= 0"
+  devise: 
+    group: 
+    - :default
+    version: ">= 1.1.rc1"
+  heroku: 
+    group: 
+    - :default
+    version: ">= 0"
+  carrierwave: 
+    group: 
+    - :default
+    version: ">= 0"
+  factory_girl: 
+    group: 
+    - :test
+    version: ">= 0"
+  steak: 
+    group: 
+    - :test
+    version: = 0.4.0.a4
+  aws: 
+    group: 
+    - :default
+    version: ">= 0"
+  state_machine: 
+    group: 
+    - :default
+    version: ">= 0"
+  email_spec: 
+    group: 
+    - :test
+    version: ">= 0"
+  responders: 
+    group: 
+    - :default
+    version: ">= 0"
+  i18n: 
+    group: 
+    - :default
+    version: ">= 0"
+  uniquify: 
+    group: 
+    - :default
+    version: ">= 0"
+  looksee: 
+    group: 
+    - :development
+    version: ">= 0"
+  capybara: 
+    group: 
+    - :test
+    version: ">= 0"
+  launchy: 
+    group: 
+    - :test
+    version: ">= 0"
+specs: 
+- rake: 
+    version: 0.8.7
+- Platform: 
+    version: 0.4.0
+- open4: 
+    version: 1.0.1
+- POpen4: 
+    version: 0.1.4
+- abstract: 
+    version: 1.0.0
+- builder: 
+    version: 2.1.2
+- i18n: 
+    version: 0.3.7
+- memcache-client: 
+    version: 1.8.3
+- tzinfo: 
+    version: 0.3.20
+- activesupport: 
+    version: 3.0.0.beta3
+- activemodel: 
+    version: 3.0.0.beta3
+- erubis: 
+    version: 2.6.5
+- rack: 
+    version: 1.1.0
+- rack-mount: 
+    version: 0.6.3
+- rack-test: 
+    version: 0.5.3
+- actionpack: 
+    version: 3.0.0.beta3
+- mime-types: 
+    version: "1.16"
+- polyglot: 
+    version: 0.3.1
+- treetop: 
+    version: 1.4.5
+- mail: 
+    version: 2.2.1
+- text-hyphen: 
+    version: 1.0.0
+- text-format: 
+    version: 1.0.0
+- actionmailer: 
+    version: 3.0.0.beta3
+- arel: 
+    version: 0.3.3
+- activerecord: 
+    version: 3.0.0.beta3
+- activeresource: 
+    version: 3.0.0.beta3
+- annotate: 
+    version: 2.4.0
+- http_connection: 
+    version: 1.3.0
+- uuidtools: 
+    version: 2.1.1
+- xml-simple: 
+    version: 1.0.12
+- aws: 
+    version: 2.3.8
+- bundler: 
+    version: 0.9.25
+- culerity: 
+    version: 0.2.10
+- nokogiri: 
+    version: 1.4.1
+- ffi: 
+    version: 0.6.3
+- json_pure: 
+    version: 1.4.3
+- selenium-webdriver: 
+    version: 0.0.18
+- capybara: 
+    version: 0.3.8
+- carrierwave: 
+    version: 0.4.4
+    source: 3
+- closure-compiler: 
+    version: 0.2.2
+- columnize: 
+    version: 0.3.1
+- configuration: 
+    version: 1.1.0
+- warden: 
+    version: 0.10.4
+- devise: 
+    version: 1.1.rc1
+- email_spec: 
+    version: 0.6.2
+- factory_girl: 
+    version: 1.2.3
+    source: 0
+- ffaker: 
+    version: 0.4.0
+- growl: 
+    version: 1.0.3
+- haml: 
+    version: 3.0.3
+- launchy: 
+    version: 0.3.5
+- rest-client: 
+    version: 1.4.2
+- heroku: 
+    version: 1.9.9
+- iobuffer: 
+    version: 0.1.3
+- thor: 
+    version: 0.13.6
+- railties: 
+    version: 3.0.0.beta3
+- rails: 
+    version: 3.0.0.beta3
+- yui-compressor: 
+    version: 0.9.1
+- jammit: 
+    version: 0.5.0
+    source: 2
+- jammit_lite: 
+    version: 0.1.2
+- linecache: 
+    version: "0.43"
+- looksee: 
+    version: 0.2.1
+- pg: 
+    version: 0.9.0
+- responders: 
+    version: 0.6.0
+- rev: 
+    version: 0.3.2
+- rspec-core: 
+    version: 2.0.0.beta.8
+- rspec-expectations: 
+    version: 2.0.0.beta.8
+- rspec-mocks: 
+    version: 2.0.0.beta.8
+- rspec: 
+    version: 2.0.0.beta.8
+- webrat: 
+    version: 0.7.1
+- rspec-rails: 
+    version: 2.0.0.beta.8
+    source: 1
+- ruby-debug-base: 
+    version: 0.10.3
+- ruby-debug: 
+    version: 0.10.3
+- sqlite3-ruby: 
+    version: 1.2.5
+- state_machine: 
+    version: 0.9.1
+- steak: 
+    version: 0.4.0.a4
+- uniquify: 
+    version: 0.1.0
+- watchr: 
+    version: "0.6"
+- wirble: 
+    version: 0.1.3
+hash: c759a1e76e9f79d9c9907917d78e4032a374237a
+sources: 
+- Git: 
+    uri: git://github.com/danielb2/factory_girl
+    git: git://github.com/danielb2/factory_girl
+    ref: 50945fb5dac434a7e52ec324e943c988c965ee5b
+- Git: 
+    uri: http://github.com/rspec/rspec-rails.git
+    git: http://github.com/rspec/rspec-rails.git
+    ref: d2fb9f35c7867225cd68758152f51dd3d1152a09
+- Git: 
+    uri: git://github.com/railsjedi/jammit.git
+    git: git://github.com/railsjedi/jammit.git
+    ref: f64de631b4776bbc82f1c6b4c0217784d8c1deff
+- Git: 
+    uri: http://github.com/jnicklas/carrierwave.git
+    git: http://github.com/jnicklas/carrierwave.git
+    ref: 9349c1d8e520f165420d8eeed1fa5df5c036f724
+- Rubygems: 
+    uri: http://rubygems.org

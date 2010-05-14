@@ -20,12 +20,14 @@ describe Site do
   context "with valid attributes" do
     subject { Factory(:site) }
     
-    it { subject.hostname.should      == "youtube.com"          }
-    it { subject.dev_hostnames.should == "localhost, 127.0.0.1" }
-    it { subject.token.should         =~ /^[a-zA-Z0-9]{8}$/     }
-    it { subject.user.should be_present                         }
-    it { subject.should be_pending                              }
-    it { subject.should be_valid                                }
+    it { subject.hostname.should        == "youtube.com"          }
+    it { subject.dev_hostnames.should   == "localhost, 127.0.0.1" }
+    it { subject.token.should           =~ /^[a-zA-Z0-9]{8}$/     }
+    it { subject.licences_hashes.should == "'3fdf11619e7e6146833fdb6c3b0b2c147cf704c4','b9271d7e78549de385697cbb549069c86093ff4c','adbd136715d0a7480af82cc4c8e9cc80690aa420'" }
+    it { subject.licence.url.should be_nil }
+    it { subject.user.should be_present }
+    it { subject.should be_pending }
+    it { subject.should be_valid }
   end
   
   describe "validates" do
@@ -93,11 +95,31 @@ describe Site do
     end
   end
   
-  describe "callbacks" do
+  describe "State Machine" do
+    
+    it "activate should set licence file" do
+      site = Factory(:site)
+      site.activate
+      site.licence.url.should be_present
+    end
+    
+  end
+  
+  describe "Callbacks" do
     
     it "should set default dev_hostnames before create" do
       site = Factory(:site, :dev_hostnames => nil)
       site.dev_hostnames.should == 'localhost, 127.0.0.1'
+    end
+    
+  end
+  
+  describe "Instance Methods" do
+    
+    it "should set licence file with licences_hashes" do
+      site = Factory(:site)
+      site.set_licence_file
+      site.licence.read.should include(site.licences_hashes)
     end
     
   end

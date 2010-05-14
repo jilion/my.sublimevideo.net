@@ -24,6 +24,7 @@ class SitesController < ApplicationController
     @site = current_user.sites.build(params[:site])
     respond_with(@site) do |format|
       if @site.save
+        @site.activate
         format.html { redirect_to sites_path }
       else
         format.html do
@@ -39,6 +40,8 @@ class SitesController < ApplicationController
     @site = current_user.sites.find(params[:id])
     respond_with(@site) do |format|
       if @site.update_attributes(params[:site])
+        @site.deactivate # re-go to :pending state
+        @site.activate # re-generate licence file
         format.html { redirect_to sites_path }
       else
         format.html do

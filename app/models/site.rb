@@ -49,15 +49,11 @@ class Site < ActiveRecord::Base
   # =================
   
   state_machine :initial => :pending do
+    before_transition :pending => :active, :do => :set_licence_file
     
-    event :activate do
-      transition :pending => :active
-    end
-    
-    event :deactivate do
-      transition :active => :pending
-    end
-    
+    event(:activate)   { transition :pending => :active }
+    event(:deactivate) { transition :active => :pending }
+    event(:archive)    { transition all => :archived }
   end
   
   # ====================
@@ -88,8 +84,21 @@ class Site < ActiveRecord::Base
     write_attribute :dev_hostnames, attribute
   end
   
-  def generate_licence_file
+  def licences_hashes
+    licences  = [hostname]
+    licences += dev_hostnames.split(', ')
+    licences.map! { |l| "'" + Digest::SHA1.hexdigest("@#{l}") + "'" }
+    licences.join(',')
+  end
+  
+  def set_licence_file
+    template = ERB.new(File.new(Rails.root.join('app/templates/sites/licence.js.erb')).read)
     
+    tempfile = Tempfile.new('licence', "#{Rails.root}/tmp")
+    tempfile.print template.result(binding)
+    tempfile.flush
+    
+    self.licence = tempfile
   end
   
 private

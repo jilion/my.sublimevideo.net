@@ -28,12 +28,15 @@ describe SitesController do
     it "should respond with success to POST :create" do
       @mock_user.stub_chain(:sites, :build).with({}).and_return(mock_site)
       mock_site.stub(:save).and_return(true)
+      mock_site.stub(:activate)
       post :create, :site => {}
       response.should redirect_to(sites_url)
     end
     it "should respond with success to PUT :update" do
       @mock_user.stub_chain(:sites, :find).with("1").and_return(mock_site)
       mock_site.stub(:update_attributes).with({}).and_return(true)
+      mock_site.stub(:deactivate)
+      mock_site.stub(:activate)
       put :update, :id => '1', :site => {}
       response.should redirect_to(sites_url)
     end

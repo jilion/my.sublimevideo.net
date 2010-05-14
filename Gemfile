@@ -8,6 +8,8 @@ gem 'devise', '>= 1.1.rc1'
 gem 'state_machine'
 gem 'responders'
 gem 'uniquify'
+
+gem 'aws'
 gem 'carrierwave', :git => 'http://github.com/jnicklas/carrierwave.git'
 
 group :development do
@@ -31,7 +33,6 @@ group :test do
   gem 'growl'
   
   gem 'rspec',        '>= 2.0.0.beta.8'
-  # gem 'rspec-rails',  '>= 2.0.0.beta.8'
   gem 'rspec-rails', :git => 'http://github.com/rspec/rspec-rails.git'
   
   gem 'factory_girl', :git => 'git://github.com/danielb2/factory_girl'

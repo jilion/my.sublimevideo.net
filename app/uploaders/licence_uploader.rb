@@ -7,8 +7,8 @@ class LicenceUploader < CarrierWave::Uploader::Base
   #     include CarrierWave::ImageScience
 
   # Choose what kind of storage to use for this uploader
-  storage :file
-  #     storage :s3
+  # storage :file
+  # storage :s3
 
   # Override the directory where uploaded files will be stored
   # This is a sensible default for uploaders that are meant to be mounted:
@@ -40,8 +40,8 @@ class LicenceUploader < CarrierWave::Uploader::Base
   #     end
 
   # Override the filename of the uploaded files
-  #     def filename
-  #       "something.jpg" if original_filename
-  #     end
+  def filename
+    "#{model.token}.js" if original_filename
+  end
 
 end
