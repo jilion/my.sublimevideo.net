@@ -84,7 +84,7 @@ class Site < ActiveRecord::Base
     write_attribute :dev_hostnames, attribute
   end
   
-  def licences_hashes
+  def licenses_hashes
     licences  = [hostname]
     licences += dev_hostnames.split(', ')
     licences.map! { |l| "'" + Digest::SHA1.hexdigest("@#{l}") + "'" }

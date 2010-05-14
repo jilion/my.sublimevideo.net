@@ -16,7 +16,7 @@ feature "Sites actions:" do
     
     site = @current_user.sites.last
     site.hostname.should == "google.com"
-    site.licence.read.should include(site.licences_hashes)
+    site.licence.read.should include(site.licenses_hashes)
   end
   
 end
