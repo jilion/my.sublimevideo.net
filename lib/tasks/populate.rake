@@ -86,7 +86,8 @@ def create_sites(count = 5)
     count.times do |i|
       site               = user.sites.build
       site.hostname      = "#{rand > 0.5 ? '' : %w[www. blog. my. git. sv. ji. geek.].rand}#{Faker::Internet.domain_name}"
-      site.state         = Site::STATES.rand
+      # site.state         = Site.state_machine.states.map(&:name).rand.to_s
+      site.state         = %w(pending active).rand
       site.created_at    = rand(1500).days.ago
       site.save!
     end

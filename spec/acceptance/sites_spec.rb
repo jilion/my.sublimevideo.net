@@ -13,7 +13,10 @@ feature "Sites actions:" do
     
     current_url.should =~ %r(http://[^/]+/sites)
     page.should have_content('google.com')
-    @current_user.sites.last.hostname.should == "google.com"
+    
+    site = @current_user.sites.last
+    site.hostname.should == "google.com"
+    site.licence.read.should include(site.licences_hashes)
   end
   
 end

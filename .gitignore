@@ -20,3 +20,4 @@ config/database.yml
 tmp/restart.txt
 
 capybara-*.html
+public/uploads
