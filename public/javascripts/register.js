@@ -42,32 +42,39 @@ var PasswordFieldManager = Class.create({
     this.field = field;
     this.field.store("passwordFieldManager", this); // so that the placeholderManager can eventually pick this up
     
-    var showPasswordWrap = new Element("div", { className:'show_password' });
-    var showPasswordLabel = new Element("label", { 'for':"show_password_"+index }).update("Show password");
-    this.showPasswordCheckbox = new Element("input", { type:"checkbox", id:"show_password_"+index });
-    showPasswordWrap.insert(this.showPasswordCheckbox).insert(showPasswordLabel);
+    // Only add the Show password checkbox if the input field has the "show_password" class
+    if (this.field.hasClassName("show_password")) { 
+      var showPasswordWrap = new Element("div", { className:'show_password_box' });
+      var showPasswordLabel = new Element("label", { 'for':"show_password_"+index }).update("Show password");
+      this.showPasswordCheckbox = new Element("input", { type:"checkbox", id:"show_password_"+index });
+      showPasswordWrap.insert(this.showPasswordCheckbox).insert(showPasswordLabel);
     
-    var errorMessage = this.field.up().select(".inline_errors").first();
-    if (errorMessage) {
-      errorMessage.insert({ after: showPasswordWrap });
+      var errorMessage = this.field.up().select(".inline_errors").first();
+      if (errorMessage) {
+        errorMessage.insert({ after: showPasswordWrap });
+      }
+      else {
+        this.field.insert({ after: showPasswordWrap });
+      }
+      
+      this.showPasswordCheckbox.on("click", this.toggleShowPassword.bind(this));
+      this.showPasswordCheckbox.checked = false; //Firefox reload ;-)
     }
-    else {
-      this.field.insert({ after: showPasswordWrap });
-    }
-    
-    this.showPasswordCheckbox.on("click", this.toggleShowPassword.bind(this));
-    this.showPasswordCheckbox.checked = false; //Firefox reload ;-)
+  },
+  isShowingPassword: function() {
+    if (this.showPasswordCheckbox) return this.showPasswordCheckbox.checked;
+    else return false; //for exemple for Login form where we don't want to show the checkbox
   },
   toggleShowPassword: function(event) {
     var placeholderManager = this.field.retrieve("placeholderManager"); //exists only for browsers that do not support HTML5 placeholders
     if (placeholderManager) {
       if (this.field.value != this.field.readAttribute("placeholder")) {
-        this.replacePasswordField(this.field, this.showPasswordCheckbox.checked);
+        this.replacePasswordField(this.field, this.isShowingPassword());
         placeholderManager.passwordFieldDidUpdate(this.field);
       }
     }
     else {
-      this.replacePasswordField(this.field, this.showPasswordCheckbox.checked);
+      this.replacePasswordField(this.field, this.isShowingPassword());
     }
   },
   replacePasswordField: function(passwordField, textOrPassword) {
@@ -117,7 +124,7 @@ var PlaceholderManager = Class.create({
       this.field.removeClassName("placeholder");
       
       if (this.passwordFieldManager) {
-        this.field = this.passwordFieldManager.replacePasswordField(this.field, this.passwordFieldManager.showPasswordCheckbox.checked);
+        this.field = this.passwordFieldManager.replacePasswordField(this.field, this.passwordFieldManager.isShowingPassword());
         this.field.focus(); // refocus (the newly create field)
         this.setupObservers(); //since we have a new field
       }

@@ -280,12 +280,12 @@ body {
   color:#901515;
 }
 
-#content form .entry .show_password {
+#content form .entry .show_password_box {
   margin:13px 0 6px;
   position:relative;
 }
 
-#content form .entry .show_password input {
+#content form .entry .show_password_box input {
   float:left;
   position:absolute;
   top:0;
@@ -293,14 +293,14 @@ body {
   opacity:0;
 }
 
-#content form .entry .show_password label {
+#content form .entry .show_password_box label {
   height:15px;
   padding:0 0 0 20px;
   background:url(/images/embed/custom_checkbox.png) no-repeat;
 }
 
 /* Original concept by http://www.thecssninja.com/css/custom-inputs-using-css */
-#content form .entry .show_password input:checked + label {
+#content form .entry .show_password_box input:checked + label {
   background-position:0 -17px;
 }
 

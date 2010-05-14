@@ -1,14 +1,16 @@
 = content_for :title do
   Login
 
-%h2 Login
+%h2= "Login"
 
-= form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f|
-  %p= f.label :email
-  %p= f.text_field :email
-  
-  %p= f.label :password
-  %p= f.password_field :password
+= form_for resource, :as => resource_name, :url => session_path(resource_name), :html => { :class => "register" } do |f|
+  .entry.email
+    = f.label :email, "", :class => "icon"
+    = f.email_field :email, :class => "text", :placeholder => "Email", :required => true
+
+  .entry.password
+    = f.label :password, "", :class => "icon"
+    = f.password_field :password, :class => "text", :placeholder => "Password", :required => true
   
   - if devise_mapping.rememberable?
     %p

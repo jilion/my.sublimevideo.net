@@ -18,12 +18,12 @@
   %p
     = f.label :current_password
     %i (we need your current password to confirm your changes)
-  %p= f.password_field :current_password
+  %p= f.password_field :current_password, :class => "show_password"
   
   %p
     = f.label :password
     %i (leave blank if you don't want to change it)
-  %p= f.password_field :password
+  %p= f.password_field :password, :class => "show_password"
   
   %p= f.submit "Update"
   
