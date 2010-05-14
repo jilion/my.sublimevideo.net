@@ -29,6 +29,7 @@ body {
 
 #header h1 a {
   display:block;
+  float:left;
   width:202px;
   height:32px;
   background:url(/images/embed/sublimevideo.png) no-repeat;
@@ -40,8 +41,30 @@ body {
 
 #main_menu {
   list-style-type:none;
-  display:none;
+  float:left;
+  padding:16px 0 0 30px;
 }
+
+#main_menu li {
+  float:left;
+  padding-right:14px;
+}
+
+#main_menu li a {
+  display:block;
+  width:85px;
+  height:24px;
+  padding-top:5px;
+  background:url(/images/embed/main_menu_background.png) no-repeat;
+  color:#e9ddef;
+  font-size:15px;
+  letter-spacing:1px;
+  font-weight:bold;
+  text-align:center;
+  text-shadow:#000 0 1px 0;
+}
+
+#main_menu li.active a, #main_menu li a:active {background-position:0 -29px;}
 
 #header .right {
   position:absolute;
@@ -83,6 +106,7 @@ body {
   height:29px;
   padding-right:6px;
   font-weight:600;
+  font-size:13px;
   letter-spacing:1px;
   color:#e9ddef;
   text-shadow:#000 0 1px 0;
@@ -91,8 +115,8 @@ body {
 
 #header .right a.user strong {
   background:url(/images/embed/header_btn_back_left.png) no-repeat;
-  height:23px;
-  padding:6px 4px 0 6px;
+  height:22px;
+  padding:7px 4px 0 6px;
   display:block;
 }
 
@@ -206,6 +230,14 @@ body {
   left:12px;
 }
 
+#content form .site label.icon {
+  width:16px;
+  height:17px;
+  background:url(/images/embed/site_field_icon.png) no-repeat;
+  top:17px;
+  left:10px;
+}
+
 #content form input.text {
   width:400px;
   height:34px;
@@ -249,7 +281,7 @@ body {
 }
 
 #content form .entry .show_password {
-  margin:13px 0 0;
+  margin:13px 0 6px;
   position:relative;
 }
 
@@ -359,7 +391,7 @@ body {
 
 #footer {
   width:1000px;
-  margin:10px auto;
+  margin:30px auto;
   text-align:center;
   font-size:13px;
   font-weight:600;

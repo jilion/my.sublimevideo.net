@@ -5,10 +5,10 @@
         %span= "SublimeVideo"
     - if user_signed_in?
       %ul#main_menu
-        %li.sites
+        %li.sites{ :class => ('active' if controller_name == 'sites') }
           = link_to sites_path do
             %span= "Sites"
-        %li.videos
+        %li.videos{ :class => ('active' if controller_name == 'videos') }
           = link_to "videos_path" do
             %span= "Videos"
     

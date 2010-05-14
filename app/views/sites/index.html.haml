@@ -1,15 +1,16 @@
 = content_for :title do
   My sites
 
-%h1 My sites
+%h2= "My sites"
+%p.title_desc= "Start to add your sites here by adding each of your domains and subdomains you want to use with SublimeVideo."
 
 - @site ||= current_user.sites.build
-= form_for @site do |f|
-  .field
-    = f.label :hostname
-    = f.text_field :hostname
+= form_for @site, :html => { :class => "sites" } do |f|
+  .entry.site
+    = f.label :hostname, "", :class => "icon"
+    = f.text_field :hostname, :class => "text", :placeholder => "your-domain.com", :required => true
   .actions
-    = f.submit 'Save'
+    = f.submit 'Add'
 
 %table
   %tr
