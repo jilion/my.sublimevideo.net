@@ -79,6 +79,9 @@ var AddSiteHandler = Class.create({
       // Reload this handler:
       this.setup();
       
+      if (!supportsHtml5InputAttribute("placeholder")) {
+        new PlaceholderManager(this.element.down("input[placeholder]"));
+      }
     }.bind(this));
   }
 });
