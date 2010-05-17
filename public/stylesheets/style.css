@@ -675,6 +675,21 @@ body {
 
 #content table.main td.code a.embed_code:active {background-position:0 -39px;}
 
+#content table.main td.code .in_progress {
+  font-size:17px;
+}
+
+#content table.main td.code .in_progress em {
+  padding-right:15px;
+  background:url(/images/embed/dot_loading.gif) no-repeat 100% 13px;
+}
+
+#content table.main td.code .in_progress img {
+  position:relative;
+  top:2px;
+  left:-1px;
+}
+
 #content table.main td.hits {
   font-size:24px;
   font-weight:600;
