@@ -25,7 +25,7 @@ class SitesController < ApplicationController
     @site = current_user.sites.build(params[:site])
     respond_with(@site) do |format|
       if @site.save
-        @site.activate
+        @site.delay.activate
         format.html { redirect_to sites_path }
       else
         format.html do
@@ -42,7 +42,7 @@ class SitesController < ApplicationController
     respond_with(@site) do |format|
       if @site.update_attributes(params[:site])
         @site.deactivate # re-go to :pending state
-        @site.activate # re-generate license file
+        @site.delay.activate # re-generate license file
         format.html { redirect_to sites_path }
       else
         format.html do
