@@ -12,11 +12,12 @@ gem 'uniquify'
 gem 'aws'
 gem 'carrierwave', :git => 'http://github.com/jnicklas/carrierwave.git'
 
+gem 'jammit',       :git => 'git://github.com/railsjedi/jammit.git'
+
 group :development do
   # bundler requires these gems in development
   gem 'sqlite3-ruby', :require => 'sqlite3'
   gem 'annotate'
-  gem 'jammit',       :git => 'git://github.com/railsjedi/jammit.git'
   gem 'ffaker'
   
   # Ruby console
@@ -26,14 +27,13 @@ end
 
 group :test do
   gem 'sqlite3-ruby', :require => 'sqlite3'
-  gem 'jammit_lite'
   
   gem 'rev'
   gem 'watchr'
   gem 'growl'
   
   gem 'rspec',        '>= 2.0.0.beta.8'
-  gem 'rspec-rails', :git => 'http://github.com/rspec/rspec-rails.git'
+  gem 'rspec-rails', :git => 'http://github.com/rspec/rspec-rails.git', :ref => "d2fb9f35c7867225cd68758152f51dd3d1152a09"
   
   gem 'factory_girl', :git => 'git://github.com/danielb2/factory_girl'
   
@@ -47,6 +47,5 @@ group :test do
 end
 
 group :production do
-  gem 'pg'
-  gem 'jammit_lite'
+  gem 'pg'  
 end
