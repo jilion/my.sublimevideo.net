@@ -53,7 +53,7 @@ class Site < ActiveRecord::Base
     
     event(:activate)   { transition :pending => :active }
     event(:deactivate) { transition :active => :pending }
-    event(:archive)    { transition all => :archived }
+    event(:archive)    { transition all => :archived    }
   end
   
   # ====================
