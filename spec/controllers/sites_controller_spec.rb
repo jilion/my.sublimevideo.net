@@ -4,14 +4,18 @@ describe SitesController do
   include Devise::TestHelpers
   
   context "with logged in user" do
-    before(:each) do
+    before :each do
       @mock_user = mock_model(User, :active? => true, :confirmed? => true)
       User.stub(:find).and_return(@mock_user)
       sign_in :user, @mock_user
     end
     
     it "should respond with success to GET :index" do
-      @mock_user.stub_chain(:sites, :scoped)
+      pending "Two consecutive stub_chain should work as expected as stated here ??:"
+      # https://rspec.lighthouseapp.com/projects/5645/tickets/846-stub_chain-does-not-work-for-chains-that-only-differ-at-the-end
+      # http://github.com/dchelimsky/rspec/commit/b691d54982e159426c9c7bb6a4f6fcdfe3f97183
+      @mock_user.stub_chain(:sites, :scoped).and_return([])
+      @mock_user.stub_chain(:sites, :build).and_return(mock_site)
       get :index
       response.should be_success
     end
