@@ -1,10 +1,11 @@
 CarrierWave.configure do |config|
   case Rails.env
   when 'production'
+    config.cache_dir            = Rails.root.join('/tmp/uploads')
     config.storage              = :s3
-    config.s3_access_key_id     = 'xxxxxx'
-    config.s3_secret_access_key = 'xxxxxx'
-    config.s3_bucket            = 'name_of_bucket'
+    config.s3_access_key_id     = 'AKIAJ5AJKU32OXUZAC7A'
+    config.s3_secret_access_key = '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'
+    config.s3_bucket            = 'sublimevideo'
   when 'development'
     config.storage              = :file
   when 'test'

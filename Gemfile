@@ -4,14 +4,17 @@ gem 'rails', '3.0.0.beta3'
 gem 'heroku'
 gem 'i18n'
 gem 'haml', '>= 3.0.0'
+gem 'warden', '0.10.3'
 gem 'devise', '>= 1.1.rc1'
 gem 'state_machine'
 gem 'responders'
 gem 'uniquify'
 gem 'aws'
 gem 'carrierwave', :git => 'git://github.com/jnicklas/carrierwave.git'
-gem 'jammit',      :git => 'git://github.com/railsjedi/jammit.git'
 gem 'delayed_job', :git => 'git://github.com/collectiveidea/delayed_job.git'
+
+gem 'jammit',      :git => 'git://github.com/thibaudgg/jammit.git'
+
 
 group :development do
   # bundler requires these gems in development
@@ -26,6 +29,7 @@ end
 
 group :test do
   gem 'sqlite3-ruby', :require => 'sqlite3'
+  # gem 'jammit_lite'
   
   gem 'rev'
   gem 'watchr'
@@ -42,5 +46,6 @@ group :test do
 end
 
 group :production do
-  gem 'pg'  
+  gem 'pg'
+  # gem 'jammit_lite'
 end

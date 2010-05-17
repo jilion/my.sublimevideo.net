@@ -11,6 +11,9 @@ MySublimeVideo::Application.routes.draw do |map|
   %w[login log_in sign_in signin].each { |action| match action => redirect('/users/login')    }
   %w[logout log_out exit].each         { |action| match action => redirect('/users/logout')   }
   
+  
+  resource :beta, :only => [:show, :create]
+  
   # The priority is based upon order of creation:
   # first created -> highest priority.
   

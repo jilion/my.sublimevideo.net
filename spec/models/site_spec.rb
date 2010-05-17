@@ -22,7 +22,7 @@ describe Site do
     
     it { subject.hostname.should        == "youtube.com"          }
     it { subject.dev_hostnames.should   == "localhost, 127.0.0.1" }
-    it { subject.token.should           =~ /^[a-zA-Z0-9]{8}$/     }
+    it { subject.token.should           =~ /^[a-z0-9]{8}$/     }
     it { subject.licenses_hashes.should == "'3fdf11619e7e6146833fdb6c3b0b2c147cf704c4','b9271d7e78549de385697cbb549069c86093ff4c','adbd136715d0a7480af82cc4c8e9cc80690aa420'" }
     it { subject.license.url.should be_nil }
     it { subject.user.should be_present }
