@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-class LicenseUploader < CarrierWave::Uploader::Base
+class VideoUploader < CarrierWave::Uploader::Base
 
   # Include RMagick or ImageScience support
   #     include CarrierWave::RMagick
@@ -40,8 +40,8 @@ class LicenseUploader < CarrierWave::Uploader::Base
   #     end
 
   # Override the filename of the uploaded files
-  def filename
-    "#{model.token}.js" if original_filename
-  end
+  # def filename
+  #   "#{model.token}.js" if original_filename
+  # end
 
 end

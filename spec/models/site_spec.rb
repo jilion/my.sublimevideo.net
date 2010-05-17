@@ -106,12 +106,12 @@ describe Site do
   end
   
   describe "Callbacks" do
-    
-    it "should set default dev_hostnames before create" do
-      site = Factory(:site, :dev_hostnames => nil)
-      site.dev_hostnames.should == 'localhost, 127.0.0.1'
+    describe "before_create" do
+      it "should set default dev_hostnames before create" do
+        site = Factory(:site, :dev_hostnames => nil)
+        site.dev_hostnames.should == 'localhost, 127.0.0.1'
+      end
     end
-    
   end
   
   describe "Instance Methods" do

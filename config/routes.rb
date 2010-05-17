@@ -3,6 +3,7 @@ MySublimeVideo::Application.routes.draw do |map|
   devise_for :users, :path_names => { :sign_up => 'register', :sign_in => 'login', :sign_out => 'logout' }
   
   resources :sites, :except => :new
+  resources :videos, :except => :new
   resources :users, :only => :update
   
   root :to => redirect('/sites')
@@ -10,9 +11,6 @@ MySublimeVideo::Application.routes.draw do |map|
   %w[register sign_up signup].each     { |action| match action => redirect('/users/register') }
   %w[login log_in sign_in signin].each { |action| match action => redirect('/users/login')    }
   %w[logout log_out exit].each         { |action| match action => redirect('/users/logout')   }
-  
-  # The priority is based upon order of creation:
-  # first created -> highest priority.
   
   # Sample of regular route:
   #   match 'products/:id' => 'catalog#view'

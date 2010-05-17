@@ -1,6 +1,6 @@
 = content_for :title do
-  My sites
-
+  = "My sites"
+  
 %h2= "My sites"
 %p.title_desc= "Start to add your sites here by adding each of your domains or subdomains you want to use with SublimeVideo."
 
@@ -10,7 +10,7 @@
     %p.price
       %strong= "$14.67"
   = link_to "Billing reports", "/billings_path", :class => "billing_reports"
-
+  
 - @site ||= current_user.sites.build
 = form_for @site, :html => { :class => "site" } do |f|
   .entry.site
@@ -18,8 +18,8 @@
     = f.text_field :hostname, :class => "text", :placeholder => "your-domain.com", :required => true
   .actions
     = f.submit 'Add', :class => "add"
-
-- if !@sites.empty?
+    
+- if @sites.present?
   .main_table_wrap
     .dark_rounded_corners
       %table.main
@@ -29,7 +29,7 @@
           %th.code= "Player Code"
           %th.hits= "Player Hits"
           %th.delete
-  
+          
         - @sites.each do |site|
           %tr{ :class => cycle("", "alt") }
             %td.site

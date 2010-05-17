@@ -28,7 +28,6 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable, :confirmable,
          :recoverable, :rememberable, :trackable, :validatable, :lockable
   
-  # Setup accessible (or protected) attributes for your model
   attr_accessible :full_name, :email, :password
   
   # ================
@@ -36,7 +35,7 @@ class User < ActiveRecord::Base
   # ================
   
   has_many :sites
-  # has_many :videos
+  has_many :videos, :class_name => 'VideoOriginal'
   
   # ==========
   # = Scopes =
