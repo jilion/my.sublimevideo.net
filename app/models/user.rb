@@ -53,4 +53,9 @@ class User < ActiveRecord::Base
   # = Instance Methods =
   # ====================
   
+  def welcome?
+    sites.empty?
+  end
+  
+  
 end

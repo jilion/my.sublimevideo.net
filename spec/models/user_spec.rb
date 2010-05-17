@@ -60,6 +60,10 @@ describe User do
   end
   
   describe "instance methods" do
+    it "should be welcome if sites is empty" do
+      user = Factory(:user)
+      user.should be_welcome
+    end
   end
   
 end
