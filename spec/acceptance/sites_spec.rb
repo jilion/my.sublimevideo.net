@@ -14,6 +14,9 @@ feature "Sites actions:" do
     current_url.should =~ %r(http://[^/]+/sites)
     page.should have_content('google.com')
     
+    Delayed::Job.last.name.should == 'Site#activate'
+    Delayed::Worker.new.work_off
+    
     site = @current_user.sites.last
     site.hostname.should == "google.com"
     site.license.read.should include(site.licenses_hashes)
