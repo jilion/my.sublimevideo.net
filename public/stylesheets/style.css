@@ -505,6 +505,7 @@ body {
   position:absolute;
   top:23px;
   left:455px;
+  width:130px;
 }
 
 #content form.site input.add {
@@ -521,6 +522,12 @@ body {
 }
 
 #content form.site input.add:active {background-position:0 -40px;}
+
+#content form.site .actions .spinner {
+  position:absolute;
+  right:0;
+  top:4px;
+}
 
 #content .main_table_wrap {
   border:1px solid #666;

@@ -55,6 +55,7 @@ class User < ActiveRecord::Base
   
   def welcome?
     sites.empty?
+    # TODO And if user has a credit card
   end
   
   

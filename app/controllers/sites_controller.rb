@@ -1,6 +1,6 @@
 class SitesController < ApplicationController
   respond_to :html
-  respond_to :js, :only => :show
+  respond_to :js, :except => :destroy
   before_filter :authenticate_user!
   
   # GET /sites
@@ -27,10 +27,14 @@ class SitesController < ApplicationController
       if @site.save
         @site.delay.activate
         format.html { redirect_to sites_path }
+        format.js { @sites = current_user.sites.scoped }
       else
         format.html do
           @sites = current_user.sites.scoped
-          render :action => :index
+          render :index
+        end
+        format.js do
+          render :new
         end
       end
     end

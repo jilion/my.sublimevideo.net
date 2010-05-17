@@ -39,6 +39,15 @@ document.observe("dom:loaded", function() {
       },6000);
     });
     
+    $$('#new_site').each(function(element){
+      element.on('ajax:before', function(){
+       element.down('.spinner').show();
+      });
+      element.on('ajax:complete', function(){
+       element.down('.spinner').hide();
+      });
+    });
+    
   });
 });
 
