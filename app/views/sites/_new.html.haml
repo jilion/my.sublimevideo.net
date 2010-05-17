@@ -1,4 +1,4 @@
-- @site ||= current_user.sites.build
+-# @site ||= current_user.sites.build
 = form_for @site, :remote => true, :html => { :class => "site" } do |f|
   .entry.site
     = f.label :hostname, "", :class => "icon"

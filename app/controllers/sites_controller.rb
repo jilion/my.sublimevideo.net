@@ -6,7 +6,11 @@ class SitesController < ApplicationController
   # GET /sites
   def index
     @sites = current_user.sites.scoped
-    respond_with(@sites)
+    
+    respond_with(@sites) do |format|
+      format.html { @site = current_user.sites.build }
+      format.js
+    end
   end
   
   # GET /sites/1
@@ -23,19 +27,21 @@ class SitesController < ApplicationController
   # POST /sites
   def create
     @site = current_user.sites.build(params[:site])
+    
     respond_with(@site) do |format|
       if @site.save
         @site.delay.activate
         format.html { redirect_to sites_path }
-        format.js { @sites = current_user.sites.scoped }
+        format.js do
+          @site  = current_user.sites.build
+          @sites = current_user.sites.scoped
+        end
       else
         format.html do
           @sites = current_user.sites.scoped
           render :index
         end
-        format.js do
-          render :new
-        end
+        format.js { render :new }
       end
     end
   end
