@@ -6,6 +6,5 @@ javascripts:
   default:
     - public/javascripts/prototype.js
     - public/javascripts/rails.js
+    - public/javascripts/s2.js
     - public/javascripts/application.js
-  register:
-    - public/javascripts/register.js
