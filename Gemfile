@@ -10,11 +10,11 @@ gem 'responders'
 gem 'uniquify'
 gem 'aws'
 gem 'carrierwave', :git => 'git://github.com/jnicklas/carrierwave.git'
-gem 'jammit',      :git => 'git://github.com/railsjedi/jammit.git'
 gem 'delayed_job', :git => 'git://github.com/collectiveidea/delayed_job.git'
 
 group :development do
   # bundler requires these gems in development
+  gem 'jammit',      :git => 'git://github.com/railsjedi/jammit.git'
   gem 'sqlite3-ruby', :require => 'sqlite3'
   gem 'annotate'
   gem 'ffaker'
@@ -26,6 +26,7 @@ end
 
 group :test do
   gem 'sqlite3-ruby', :require => 'sqlite3'
+  gem 'jammit_lite'
   
   gem 'rev'
   gem 'watchr'
@@ -42,5 +43,6 @@ group :test do
 end
 
 group :production do
-  gem 'pg'  
+  gem 'pg'
+  gem 'jammit_lite'
 end
