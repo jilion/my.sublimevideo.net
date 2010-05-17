@@ -1,4 +1,10 @@
+var MySublimeVideo = MySublimeVideo || {};
+
 document.observe("dom:loaded", function() {
+
+  // =============================================
+  // = Password fields and placeholders managers =
+  // =============================================
   
   $$('input[type=password]').each(function(input, index){
     new PasswordFieldManager(input, index);
@@ -32,25 +38,50 @@ document.observe("dom:loaded", function() {
         });
       });
     });
-    
-    $$('#flash .notice').each(function(element){
-      setTimeout(function(){
-        element.morph('top:-35px', { duration: 0.7 });
-      },6000);
-    });
-    
-    $$('#new_site').each(function(element){
-      element.on('ajax:before', function(){
-       element.down('.spinner').show();
-      });
-      element.on('ajax:complete', function(){
-       element.down('.spinner').hide();
-      });
-    });
-    
   });
+
+  // =================
+  // = Flash notices =
+  // =================
+  
+  $$('#flash .notice').each(function(element){
+    setTimeout(function(){
+      element.morph('top:-35px', { duration: 0.7 });
+    },6000);
+  });
+  
+  // ============
+  // = Add site =
+  // ============
+  if ($("new_site")) {
+    MySublimeVideo.addSiteHandler = new AddSiteHandler();
+  }
+
 });
 
+var AddSiteHandler = Class.create({
+  initialize: function() {
+    this.setup();
+  },
+  setup: function() { //call this after ajax call to re-setup this handler
+    this.element = $("new_site");
+    
+    this.beforeAjaxHandler = this.element.on('ajax:before', function(){
+      this.element.down('.spinner').show();
+      //only listen to this once (we can stop the listener now) because this.element will soon be replaced
+      this.beforeAjaxHandler.stop();
+    }.bind(this));
+    
+    this.completeAjaxHandler = this.element.on('ajax:complete', function(){
+      // Note1: at this point, this.element has already been replaced
+      // Note2: there's no need to hide the spinner, 'cause the whole form has been reset/replaced
+      
+      // Reload this handler:
+      this.setup();
+      
+    }.bind(this));
+  }
+});
 
 var PasswordFieldManager = Class.create({
   initialize: function(field, index) {
