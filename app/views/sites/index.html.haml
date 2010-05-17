@@ -34,7 +34,7 @@
           %tr{ :class => cycle("", "alt") }
             %td.site
               .wrap
-                = link_to site.hostname, "http://#{site.hostname}", :class => "external_link", :onclick => "window.open(this); return false"
+                = link_to truncate_middle(site.hostname), "http://#{site.hostname}", :class => "external_link", :onclick => "window.open(this); return false", :title => site.hostname
                 = link_to edit_site_path(site), :class => "settings", :title => "Settings" do
                   %span= "settings"
                 -#= link_to site.dev_hostnames, edit_site_path(site) 
