@@ -13,8 +13,7 @@ gem 'aws'
 gem 'carrierwave', :git => 'git://github.com/jnicklas/carrierwave.git'
 gem 'delayed_job', :git => 'git://github.com/collectiveidea/delayed_job.git'
 
-gem 'jammit',      :git => 'git://github.com/railsjedi/jammit.git'
-
+gem 'jammit',      :git => 'git://github.com/thibaudgg/jammit.git'
 
 
 group :development do
