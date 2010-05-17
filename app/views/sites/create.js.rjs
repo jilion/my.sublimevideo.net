@@ -1,0 +1,1 @@
+page.replace_html 'sites_table_wrap', :partial => "sites"

@@ -1,0 +1,10 @@
+#welcome
+  .distance
+  .box
+    .content
+      %h3= "Welcome!"
+      %p.desc
+        = "If you choose to use the trial version of SublimeVideo (2000 player hits limit), we will notify you by email when you are approaching the trial limit. <br />".html_safe
+        = "To prevent any cut in the player delivery, we invite you to add your credit card, and we will automatically bill you if you exceed the 2’000 pageviews limit.".html_safe
+      = link_to "Add a Credit Card", "/edit_credit_card_path", :class => "add_credit_card"
+      = link_to "Free Trial", "?trial=true", :class => "free_trial", :onclick => "$('welcome').fade(); return false"

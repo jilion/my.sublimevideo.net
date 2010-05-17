@@ -27,7 +27,6 @@
         %tr
           %th.video= "Video"
           %th.code= "Video Code"
-          %th.gb= "GB"
           %th.delete
           
         - @videos.each do |video|
@@ -49,14 +48,15 @@
                   = "Duration: "
                   = "#{video.duration}s"
                 .views
-                  = "Storage: "
+                  = "Views: "
                   = rand(10000)
                 -#= link_to edit_video_path(video), :class => "settings", :title => "Settings" do
                 -#  %span= "settings"
             %td.code
-              - if video.active?
+              - if video.formats.all? { |f| f.active? }
                 = link_to "Embed code", "", :class => "embed_code"
               - else
-                = video.state
-            %td.hits= rand(10000)
+                .in_progress
+                  %em= "In progress"
+                  
             %td.delete= link_to 'Delete', video_path(video), :confirm => 'Are you sure?', :method => :delete

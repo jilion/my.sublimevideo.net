@@ -1,0 +1,8 @@
+- @site ||= current_user.sites.build
+= form_for @site, :remote => true, :html => { :class => "site" } do |f|
+  .entry.site
+    = f.label :hostname, "", :class => "icon"
+    = f.text_field :hostname, :class => "text", :placeholder => "your-domain.com", :required => true
+  .actions
+    = f.submit 'Add', :class => "add"
+    = image_tag "/images/embed/spinner.gif", :class => "spinner", :style => "display:none"

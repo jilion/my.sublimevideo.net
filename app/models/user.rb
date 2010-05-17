@@ -52,4 +52,10 @@ class User < ActiveRecord::Base
   # = Instance Methods =
   # ====================
   
+  def welcome?
+    sites.empty?
+    # TODO And if user has a credit card
+  end
+  
+  
 end

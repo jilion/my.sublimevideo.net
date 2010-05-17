@@ -1,6 +1,10 @@
 = content_for :title do
   = "My sites"
   
+= content_for :bottom do
+  - if current_user.welcome? && !params[:trial]
+    = render "layouts/welcome"
+    
 %h2= "My sites"
 %p.title_desc= "Start to add your sites here by adding each of your domains or subdomains you want to use with SublimeVideo."
 
@@ -11,39 +15,7 @@
       %strong= "$14.67"
   = link_to "Billing reports", "/billings_path", :class => "billing_reports"
   
-- @site ||= current_user.sites.build
-= form_for @site, :html => { :class => "site" } do |f|
-  .entry.site
-    = f.label :hostname, "", :class => "icon"
-    = f.text_field :hostname, :class => "text", :placeholder => "your-domain.com", :required => true
-  .actions
-    = f.submit 'Add', :class => "add"
-    
-- if @sites.present?
-  .main_table_wrap
-    .dark_rounded_corners
-      %table.main
-        %tr
-          %th.site= "Site"
-          -#%th Dev hostnames
-          %th.code= "Player Code"
-          %th.hits= "Player Hits"
-          %th.delete
-          
-        - @sites.each do |site|
-          %tr{ :class => cycle("", "alt") }
-            %td.site
-              .wrap
-                = link_to truncate_middle(site.hostname), "http://#{site.hostname}", :class => "external_link", :onclick => "window.open(this); return false", :title => site.hostname
-                = link_to edit_site_path(site), :class => "settings", :title => "Settings" do
-                  %span= "settings"
-                -#= link_to site.dev_hostnames, edit_site_path(site) 
-            %td.code
-              - if site.active?
-                = link_to "Embed code", "", :class => "embed_code"
-              - else
-                .in_progress
-                  %em= "In progress"
-                    
-            %td.hits= rand(10000)
-            %td.delete= link_to 'Delete', site, :confirm => 'Are you sure?', :method => :delete
+= render "new"
+
+#sites_table_wrap
+  = render "sites"
