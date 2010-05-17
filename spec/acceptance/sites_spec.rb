@@ -9,7 +9,7 @@ feature "Sites actions:" do
   scenario "add a new site" do
     visit "/sites"
     fill_in "Hostname", :with => "google.com"
-    click_button "Save"
+    click_button "Add"
     
     current_url.should =~ %r(http://[^/]+/sites)
     page.should have_content('google.com')
