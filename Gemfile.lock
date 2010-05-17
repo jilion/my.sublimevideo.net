@@ -178,7 +178,7 @@ specs:
 - aws: 
     version: 2.3.8
 - bundler: 
-    version: 0.9.24
+    version: 0.9.25
 - culerity: 
     version: 0.2.10
 - nokogiri: 
