@@ -59,6 +59,21 @@ document.observe("dom:loaded", function() {
 
 });
 
+MySublimeVideo.flashNotice = function(message) {
+  var flashDiv = $("flash");
+  if (flashDiv) flashDiv.remove(); 
+  
+  var noticeDiv = new Element("div", { className:"notice" }).update(message);
+  flashDiv = new Element("div", { id:"flash" }).insert(noticeDiv);    
+  $("content").insert({ top: flashDiv });
+};
+
+MySublimeVideo.closePopup = function() {
+  $$('.popup').each(function(el) {
+    el.fade({ after :function(){ el.remove(); }});
+  });
+};
+
 var AddSiteHandler = Class.create({
   initialize: function() {
     this.setup();
