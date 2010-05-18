@@ -12,7 +12,7 @@ ActionView::Base.field_error_proc = Proc.new do |html_tag, instance|
   end
   
   if html_tag =~ /<(input|textarea|select)/
-    html_tag += "<div class='inline_errors'>#{instance.method_name.humanize} #{inline_errors}</div>".html_safe
+    html_tag += "<div class='inline_errors'><span>#{instance.method_name.humanize} #{inline_errors}</span></div>".html_safe
   end
   
   error_class = "errors"
