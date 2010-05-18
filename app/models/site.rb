@@ -62,7 +62,7 @@ class Site < ActiveRecord::Base
   
   # add scheme & parse
   def hostname=(attribute)
-    attribute = "http://#{attribute}" unless attribute =~ %r(^\w+://.*$)
+    attribute = "http://#{attribute}" unless attribute.blank? || attribute =~ %r(^\w+://.*$)
     attribute.gsub! %r(://www\.), '://'
     write_attribute :hostname, URI.parse(attribute).host
   rescue

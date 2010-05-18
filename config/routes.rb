@@ -2,7 +2,7 @@ MySublimeVideo::Application.routes.draw do |map|
   
   devise_for :users, :path_names => { :sign_up => 'register', :sign_in => 'login', :sign_out => 'logout' }
   
-  resources :sites, :except => :new
+  resources :sites
   resources :videos, :except => :new
   resources :users, :only => :update
   
