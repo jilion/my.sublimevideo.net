@@ -1,0 +1,12 @@
+#embed_code.popup
+  .wrap
+    .content
+      %h3
+        = "Embed code for"
+        %strong= "octavez.com"
+      %p.desc= "Copy the code below, and paste it into the pages on octavez.com where the SublimeVideo player will be displayed. Make sure it goes into the <code>&lt;head&gt;</code> tag.".html_safe
+      %form
+        .embed_code
+          %textarea{ :readonly => true, :onclick => "this.focus();this.select();" }= "<script type=\"text/javascript\" src=\"http://cdn.sublimevideo.net/js/tidk4mg8.js\"></script>"
+  = link_to "", :class => "close", :onclick => "this.up().fade(); return false" do
+    %span= "Close"

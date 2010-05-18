@@ -19,7 +19,7 @@
                 -#= link_to site.dev_hostnames, edit_site_path(site) 
             %td.code
               - if site.active?
-                = link_to "Embed code", "", :class => "embed_code"
+                = link_to "Embed code", site_path(site), :class => "embed_code", :onclick => ""
               - else
                 .in_progress
                   %em= "In progress"

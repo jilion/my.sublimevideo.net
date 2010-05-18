@@ -1,16 +1,1 @@
-%p
-  %b Hostname:
-  = @site.hostname
-%p
-  %b Dev hostnames:
-  = @site.dev_hostnames
-%p
-  %b Token:
-  = @site.token
-%p
-  %b State:
-  = @site.state
-
-= link_to 'Edit', edit_site_path(@site)
-\|
-= link_to 'Back', sites_path
+= render "show"
