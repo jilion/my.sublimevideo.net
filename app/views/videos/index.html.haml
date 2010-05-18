@@ -1,62 +1,12 @@
 = content_for :title do
   = "My videos"
 
-%h2= "My videos"
-%p.title_desc= "Start to add your videos here by adding each of your domains or subdomains you want to use with SublimeVideo."
-
-#account_activity_box
-  .current_balance
-    %h4= "Your current balance"
-    %p.price
-      %strong= "$14.67"
-  = link_to "Billing reports", "/billings_path", :class => "billing_reports"
+= content_for :introduction do
+  %h2= "My videos"
+  %p.title_desc= "Here are you SublimeVideo-optimized videos. Add as many as you want."
   
 - @video ||= current_user.videos.build
-= form_for @video, :as => :video, :url => videos_path, :html => { :multipart => true, :class => "video" } do |f|
-  .entry.video
-    = f.label :file, "", :class => "icon"
-    = f.file_field :file, :required => true
-    = f.hidden_field :file_cache
-  .actions
-    = f.submit 'Upload'
-    
-- if @videos.present?
-  .main_table_wrap
-    .dark_rounded_corners
-      %table.main
-        %tr
-          %th.video= "Video"
-          %th.code= "Video Code"
-          %th.delete
-          
-        - @videos.each do |video|
-          %tr{ :class => cycle("", "alt") }
-            %td.video
-              .thumbnail
-                = image_tag(video.thumbnail.url) if video.thumbnail.url.present?
-              .wrap
-                = link_to video.name, "#"
-              .infos
-                .storage
-                  = "Storage: #{number_to_human_size(video.total_size)}"
-                  .infos
-                    %ul
-                      %li= "Original: #{number_to_human_size(video.size)}"
-                      - video.formats.each do |format|
-                        %li= "#{format.name}: #{number_to_human_size(format.size)}"
-                .duration
-                  = "Duration: "
-                  = "#{video.duration}s"
-                .views
-                  = "Views: "
-                  = rand(10000)
-                -#= link_to edit_video_path(video), :class => "settings", :title => "Settings" do
-                -#  %span= "settings"
-            %td.code
-              - if video.formats.all? { |f| f.active? }
-                = link_to "Embed code", "", :class => "embed_code"
-              - else
-                .in_progress
-                  %em= "In progress"
-                  
-            %td.delete= button_to 'Delete', video_path(video), :confirm => 'Are you sure?', :method => :delete
+= render "new"
+
+#videos_table_wrap
+  = render "videos"

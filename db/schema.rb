@@ -67,6 +67,7 @@ ActiveRecord::Schema.define(:version => 20100517085007) do
     t.integer  "user_id"
     t.integer  "original_id"
     t.string   "name"
+    t.string   "token"
     t.string   "file"
     t.string   "thumbnail"
     t.integer  "size"

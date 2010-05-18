@@ -6,6 +6,7 @@
 #  user_id     :integer
 #  original_id :integer
 #  name        :string(255)
+#  token       :string(255)
 #  file        :string(255)
 #  thumbnail   :string(255)
 #  size        :integer

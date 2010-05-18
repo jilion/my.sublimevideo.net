@@ -4,6 +4,7 @@ class CreateVideos < ActiveRecord::Migration
       t.integer :user_id
       t.integer :original_id, :null => true, :default => nil
       t.string :name
+      t.string :token
       t.string :file
       t.string :thumbnail
       t.integer :size

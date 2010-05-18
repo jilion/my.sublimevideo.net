@@ -6,6 +6,7 @@
 #  user_id     :integer
 #  original_id :integer
 #  name        :string(255)
+#  token       :string(255)
 #  file        :string(255)
 #  thumbnail   :string(255)
 #  size        :integer
@@ -19,6 +20,7 @@
 class Video < ActiveRecord::Base
   
   attr_accessible :file, :file_cache, :thumbnail
+  uniquify :token, :chars => ('a'..'z').to_a + ('0'..'9').to_a
   mount_uploader :file, VideoUploader
   mount_uploader :thumbnail, ThumbnailUploader
   
@@ -34,7 +36,6 @@ class Video < ActiveRecord::Base
   # = Validations =
   # ===============
   
-  # validates :file, :presence => true, :on => :create
   validates :type, :presence => true, :inclusion => { :in => %w[VideoOriginal VideoFormat] }
   
   # =============
