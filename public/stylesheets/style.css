@@ -313,6 +313,12 @@ body {
 #content form input.text.errors::-webkit-input-placeholder {color:#d88282;}
 #content form input.text.errors.placeholder {color:#d88282;}
 
+#content form.edit input.text  {
+  width:400px;
+  padding:0 0 0 6px;
+  border-color:#6f7681;
+}
+
 #content form .inline_errors {
   padding:2px 0 0;
   font-size:12px;
@@ -508,7 +514,7 @@ body {
   width:130px;
 }
 
-#content form.site input.add {
+#content form.site input.add, #content form.edit input.update {
   width:89px;
   height:40px;
   background:url(/images/embed/add_btn.png) no-repeat;
@@ -521,7 +527,7 @@ body {
   text-shadow:rgba(255,255,255,0.45) 0 1px 0;
 }
 
-#content form.site input.add:active {background-position:0 -40px;}
+#content form.site input.add:active, #content form.edit input.update:active {background-position:0 -40px;}
 
 #content form.site .actions .spinner {
   position:absolute;
@@ -702,13 +708,14 @@ body {
   font-weight:600;
 }
 
-#content table.main td.delete a {
+#content table.main td.delete a, #content table.main td.delete input {
   text-indent:-9999px;
   display:block;
   width:20px;
   height:22px;
   background:url(/images/embed/trash_btn.png) no-repeat;
   margin:0 10px;
+  border:none;
 }
 
 #welcome {
@@ -899,6 +906,25 @@ body {
   color:#787d8a;
   border:1px solid #70747a;
   resize:none;
+}
+
+#content .popup .content form.edit .entry {
+  padding:35px 0;
+}
+
+#content .popup .content form.edit .entry label {
+  font-size:18px;
+  font-weight:bold;
+}
+
+#content .popup .content form.edit .entry p.desc {
+  padding:2px 0;
+}
+
+#content .popup .content form.edit input.update {
+  position:absolute;
+  bottom:30px;
+  left:30px;
 }
 
 .popup a.close {

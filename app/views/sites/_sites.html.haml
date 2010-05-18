@@ -14,12 +14,12 @@
             %td.site
               .wrap
                 = link_to truncate_middle(site.hostname), "http://#{site.hostname}", :class => "external_link", :onclick => "window.open(this); return false", :title => site.hostname
-                = link_to edit_site_path(site), :class => "settings", :title => "Settings" do
+                = link_to edit_site_path(site), :class => "settings", :title => "Settings", :onclick => "new Ajax.Request('#{edit_site_path(site, :format => :js)}', { method: 'get' });return false" do
                   %span= "settings"
                 -#= link_to site.dev_hostnames, edit_site_path(site) 
             %td.code
               - if site.active?
-                = link_to "Embed code", site_path(site), :class => "embed_code", :onclick => ""
+                = link_to "Embed code", site_path(site), :class => "embed_code", :onclick => "new Ajax.Request('#{site_path(site, :format => :js)}', { method: 'get' });return false"
               - else
                 .in_progress
                   %em= "In progress"

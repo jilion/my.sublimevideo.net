@@ -49,8 +49,10 @@ class SitesController < ApplicationController
         @site.deactivate # re-go to :pending state
         @site.delay.activate # re-generate license file
         format.html { redirect_to sites_path }
+        format.js
       else
         format.html { render :edit }
+        format.js { render :edit }
       end
     end
   end
