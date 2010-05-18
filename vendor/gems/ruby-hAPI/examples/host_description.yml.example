@@ -1,0 +1,13 @@
+---
+:hostname: one.test.voxel.net
+:location: LDJ1
+:os: VSE-x86_64
+:processing_cores: 1
+:disk_size: 5
+:public_ip: 1.2.3.4
+:ssh_username: jwb
+:ssh_password: changeme!
+:admin_password: n0ts3cur3
+:console_password: c0ns0l3
+:postinstall_script: "#!/bin/bash\nping -q -c 1 www.yahoo.com"
+:billing_type: monthly

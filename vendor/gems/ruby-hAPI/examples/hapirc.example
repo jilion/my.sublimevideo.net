@@ -1,0 +1,7 @@
+---
+:hapi_username: 1234
+:hapi_password: passw0rd
+:hapi_hostname: api.voxel.net
+:hapi_version: 1.0
+:debug: false
+

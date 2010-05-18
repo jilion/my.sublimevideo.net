@@ -15,6 +15,7 @@ gem 'delayed_job', :git => 'git://github.com/collectiveidea/delayed_job.git'
 
 gem 'jammit',      :git => 'git://github.com/thibaudgg/jammit.git'
 
+gem 'hapi',        :path => 'vendor/gems/ruby-hAPI'
 
 group :development do
   # bundler requires these gems in development

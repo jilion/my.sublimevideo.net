@@ -62,7 +62,11 @@ dependencies:
     group: 
     - :test
     version: ">= 0"
-  jammit: 
+  devise: 
+    group: 
+    - :default
+    version: ">= 1.1.rc1"
+  heroku: 
     group: 
     - :default
     version: ">= 0"
@@ -70,15 +74,11 @@ dependencies:
     group: 
     - :default
     version: ">= 0"
-  heroku: 
+  jammit: 
     group: 
     - :default
     version: ">= 0"
-  devise: 
-    group: 
-    - :default
-    version: ">= 1.1.rc1"
-  state_machine: 
+  hapi: 
     group: 
     - :default
     version: ">= 0"
@@ -86,11 +86,15 @@ dependencies:
     group: 
     - :default
     version: ">= 0"
+  state_machine: 
+    group: 
+    - :default
+    version: ">= 0"
   steak: 
     group: 
     - :test
     version: = 0.4.0.a4
-  uniquify: 
+  responders: 
     group: 
     - :default
     version: ">= 0"
@@ -98,7 +102,7 @@ dependencies:
     group: 
     - :default
     version: ">= 0"
-  responders: 
+  uniquify: 
     group: 
     - :default
     version: ">= 0"
@@ -131,6 +135,8 @@ specs:
     version: 1.0.1
 - POpen4: 
     version: 0.1.4
+- ParaOpts: 
+    version: 1.0.0
 - abstract: 
     version: 1.0.0
 - builder: 
@@ -201,7 +207,7 @@ specs:
     version: 0.3.8
 - carrierwave: 
     version: 0.4.4
-    source: 4
+    source: 5
 - closure-compiler: 
     version: 0.2.2
 - columnize: 
@@ -212,7 +218,7 @@ specs:
     version: 1.0.10
 - delayed_job: 
     version: 2.0.3
-    source: 3
+    source: 4
 - warden: 
     version: 0.10.3
 - devise: 
@@ -228,6 +234,11 @@ specs:
     version: 1.0.3
 - haml: 
     version: 3.0.4
+- libxml-ruby: 
+    version: 1.1.4
+- hapi: 
+    version: 1.0.5
+    source: 2
 - launchy: 
     version: 0.3.5
 - rest-client: 
@@ -246,7 +257,7 @@ specs:
     version: 0.9.1
 - jammit: 
     version: 0.5.0
-    source: 2
+    source: 3
 - linecache: 
     version: "0.43"
 - looksee: 
@@ -286,7 +297,7 @@ specs:
     version: "0.6"
 - wirble: 
     version: 0.1.3
-hash: eb5de5280126d3041de729a2bb93e1409005aea5
+hash: 4c8a0bf549ccc1eee5c81ba70916a8888fdcfaf2
 sources: 
 - Git: 
     uri: git://github.com/danielb2/factory_girl
@@ -296,6 +307,9 @@ sources:
     uri: git://github.com/rspec/rspec-rails.git
     git: git://github.com/rspec/rspec-rails.git
     ref: d2fb9f35c7867225cd68758152f51dd3d1152a09
+- Path: 
+    path: !ruby/object:Pathname 
+      path: vendor/gems/ruby-hAPI
 - Git: 
     uri: git://github.com/thibaudgg/jammit.git
     git: git://github.com/thibaudgg/jammit.git
