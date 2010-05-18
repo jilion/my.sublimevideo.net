@@ -1,4 +1,2 @@
-$('sites_table_wrap').update("<%= escape_javascript(render 'sites') %>");
-
-// Also reload the Add site form (in case it had errors that now need to be cleared)
-$('new_site').replace("<%= escape_javascript(render 'new') %>");
+new Ajax.Request('/sites/new.js', { method: 'get' });
+new Ajax.Request('/sites.js', { method: 'get' });

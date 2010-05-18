@@ -39,6 +39,7 @@ describe Site do
     it "should validate presence of hostname" do
       site = Factory.build(:site, :hostname => nil)
       site.should_not be_valid
+      site.hostname.should be_nil
       site.errors[:hostname].should be_present
     end
     

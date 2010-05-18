@@ -1,4 +1,4 @@
-- if !@sites.empty?
+- if @sites.present?
   .main_table_wrap
     .dark_rounded_corners
       %table.main
@@ -8,7 +8,7 @@
           %th.code= "Player Code"
           %th.hits= "Player Hits"
           %th.delete
-
+          
         - @sites.each do |site|
           %tr{ :class => cycle("", "alt") }
             %td.site
@@ -25,4 +25,5 @@
                   %em= "In progress"
                   
             %td.hits= rand(10000)
-            %td.delete= link_to 'Delete', site, :confirm => 'Are you sure?', :method => :delete
+            %td.delete= button_to 'Delete', site, :confirm => 'Are you sure?', :method => :delete, :remote => true
+            

@@ -2,7 +2,7 @@ class HostnamesValidator < ActiveModel::EachValidator
   
   def validate_each(record, attribute, value)
     if value.present? && !hostnames_parseable?(value)
-      record.errors.add(attribute, :invalid, :default => options[:message], :value => value)
+      record.errors.add(attribute, :invalid, :default => options[:message])
     end
   end
   

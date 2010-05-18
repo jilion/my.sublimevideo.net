@@ -14,7 +14,8 @@
     %p.price
       %strong= "$14.67"
   = link_to "Billing reports", "/billings_path", :class => "billing_reports"
-  
+
+- @site = current_user.sites.build
 = render "new"
 
 #sites_table_wrap

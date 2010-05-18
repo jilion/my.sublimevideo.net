@@ -1,21 +1,22 @@
 class SitesController < ApplicationController
-  respond_to :html
-  respond_to :js, :except => :destroy
+  respond_to :html, :js
   before_filter :authenticate_user!
   
   # GET /sites
   def index
     @sites = current_user.sites.scoped
-    
-    respond_with(@sites) do |format|
-      format.html { @site = current_user.sites.build }
-      format.js
-    end
+    respond_with(@sites)
   end
   
   # GET /sites/1
   def show
     @site = current_user.sites.find(params[:id])
+    respond_with(@site)
+  end
+  
+  # GET /sites/new
+  def new
+    @site = current_user.sites.build
     respond_with(@site)
   end
   
@@ -32,15 +33,9 @@ class SitesController < ApplicationController
       if @site.save
         @site.delay.activate
         format.html { redirect_to sites_path }
-        format.js do
-          @site  = current_user.sites.build
-          @sites = current_user.sites.scoped
-        end
+        format.js
       else
-        format.html do
-          @sites = current_user.sites.scoped
-          render :index
-        end
+        format.html { render :new }
         format.js { render :new }
       end
     end
@@ -55,9 +50,7 @@ class SitesController < ApplicationController
         @site.delay.activate # re-generate license file
         format.html { redirect_to sites_path }
       else
-        format.html do
-          render :action => :edit
-        end
+        format.html { render :edit }
       end
     end
   end

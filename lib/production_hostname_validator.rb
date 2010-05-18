@@ -3,7 +3,7 @@ class ProductionHostnameValidator < ActiveModel::EachValidator
   def validate_each(record, attribute, value)
     value = "http://#{value}" # hostname already cleaned in site.rb
     unless hostname_parseable?(value) && production_hostname?(value)
-      record.errors.add(attribute, :invalid, :default => options[:message], :value => value)
+      record.errors.add(attribute, :invalid, :default => options[:message])
     end
   end
   
