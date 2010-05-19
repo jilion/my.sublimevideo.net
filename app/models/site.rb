@@ -63,6 +63,7 @@ class Site < ActiveRecord::Base
   
   # add scheme & parse
   def hostname=(attribute)
+    attribute.downcase! if attribute.present?
     attribute = "http://#{attribute}" unless attribute.blank? || attribute =~ %r(^\w+://.*$)
     attribute.gsub! %r(://www\.), '://'
     write_attribute :hostname, URI.parse(attribute).host
@@ -73,6 +74,7 @@ class Site < ActiveRecord::Base
   # add scheme & parse
   def dev_hostnames=(attribute)
     if attribute.present?
+      attribute.downcase!
       attribute = attribute.split(',').select { |h| h.present? }.map do |host|
         host.strip!
         host = "http://#{host}" unless host =~ %r(^\w+://.*$)
