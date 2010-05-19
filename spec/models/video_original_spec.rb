@@ -43,7 +43,7 @@ describe VideoOriginal do
     describe "before_create" do
       describe "#set_name" do
         it "should set video name after save if file is present and file has changed or video is a new record" do
-          Factory(:video_original).name.should == "Null Video"
+          Factory(:video_original).name.should == "Railscast Intro"
         end
       end
       
@@ -60,7 +60,7 @@ describe VideoOriginal do
       it "should set video name from filename" do
         video = Factory(:video_original)
         video.set_name
-        video.name.should == "Null Video"
+        video.name.should == "Railscast Intro"
       end
       
       it "should set video name to Untitled - %m/%d/%Y %I:%M%p if name is blank" do

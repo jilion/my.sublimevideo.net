@@ -12,7 +12,7 @@ Factory.define :site do |f|
 end
 
 Factory.define :video do |f|
-  f.file File.open("#{Rails.root}/spec/fixtures/null_video.mov")
+  f.file File.open("#{Rails.root}/spec/fixtures/railscast_intro.mov")
 end
 
 # FYI, can't use type (the Ruby's one is used instead of the factory_girl's method_missing's one)

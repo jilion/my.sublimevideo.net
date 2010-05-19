@@ -107,9 +107,9 @@ def create_videos(count = 8)
   
   User.all.each do |user|
     count.times do |i|
-      video = user.videos.create(:file => File.open("#{Rails.public_path}/images/null_video.mov"))
+      video = user.videos.create(:file => File.open("#{Rails.root}/spec/fixtures/railscast_intro.mov"))
       FORMATS.each do |format_name|
-        video.formats.create(:file => File.open("#{Rails.public_path}/images/null_video.mov"), :name => format_name)
+        video.formats.create(:file => File.open("#{Rails.root}/spec/fixtures/railscast_intro.mov"), :name => format_name)
       end
     end
   end

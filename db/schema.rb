@@ -51,6 +51,8 @@ ActiveRecord::Schema.define(:version => 20100519125619) do
     t.datetime "updated_at"
   end
 
+  add_index "sites", ["user_id"], :name => "index_sites_on_user_id"
+
   create_table "users", :force => true do |t|
     t.string   "email",                               :default => "", :null => false
     t.string   "encrypted_password",   :limit => 128, :default => "", :null => false
@@ -91,5 +93,8 @@ ActiveRecord::Schema.define(:version => 20100519125619) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "videos", ["original_id"], :name => "index_videos_on_original_id"
+  add_index "videos", ["user_id"], :name => "index_videos_on_user_id"
 
 end
