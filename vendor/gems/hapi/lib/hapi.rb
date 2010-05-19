@@ -9,8 +9,6 @@ require 'hapi/exceptions'
 require 'hapi/connection'
 require 'hapi/request'
 require 'hapi/response'
-require 'hapi/reverse_merge'
-require 'hapi/string_mods'
 
 class HAPI
   exceptions :argument, :backend

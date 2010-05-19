@@ -135,8 +135,6 @@ specs:
     version: 1.0.1
 - POpen4: 
     version: 0.1.4
-- ParaOpts: 
-    version: 1.0.0
 - abstract: 
     version: 1.0.0
 - builder: 
@@ -297,7 +295,7 @@ specs:
     version: "0.6"
 - wirble: 
     version: 0.1.3
-hash: 4c8a0bf549ccc1eee5c81ba70916a8888fdcfaf2
+hash: c9b4fc99928deed7abef09e3bc7fe8829ae78897
 sources: 
 - Git: 
     uri: git://github.com/danielb2/factory_girl
@@ -309,7 +307,7 @@ sources:
     ref: d2fb9f35c7867225cd68758152f51dd3d1152a09
 - Path: 
     path: !ruby/object:Pathname 
-      path: vendor/gems/ruby-hAPI
+      path: vendor/gems/hapi
 - Git: 
     uri: git://github.com/thibaudgg/jammit.git
     git: git://github.com/thibaudgg/jammit.git

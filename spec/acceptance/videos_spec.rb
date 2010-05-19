@@ -10,7 +10,7 @@ feature "Videos actions:" do
     visit "/videos"
     attach_file('video_file', "#{Rails.root}/spec/watchr/images/failed.png")
     click_button "Upload"
-    # 
+    
     current_url.should =~ %r(http://[^/]+/videos)
     page.should have_content('Failed')
     

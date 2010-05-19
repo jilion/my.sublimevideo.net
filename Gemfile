@@ -11,11 +11,11 @@ gem 'responders'
 gem 'uniquify'
 gem 'aws'
 gem 'carrierwave', :git => 'git://github.com/jnicklas/carrierwave.git'
-gem 'delayed_job', :git => 'git://github.com/collectiveidea/delayed_job.git'
+gem 'delayed_job', :git => 'git://github.com/collectiveidea/delayed_job.git', :ref => "d58dcf404a71a276742050408af2a9ee94356f36"
 
 gem 'jammit',      :git => 'git://github.com/thibaudgg/jammit.git'
 
-gem 'hapi',        :path => 'vendor/gems/ruby-hAPI'
+gem 'hapi',        :path => 'vendor/gems/hapi'
 
 group :development do
   # bundler requires these gems in development
@@ -30,7 +30,6 @@ end
 
 group :test do
   gem 'sqlite3-ruby', :require => 'sqlite3'
-  # gem 'jammit_lite'
   
   gem 'rev'
   gem 'watchr'
@@ -48,5 +47,4 @@ end
 
 group :production do
   gem 'pg'
-  # gem 'jammit_lite'
 end

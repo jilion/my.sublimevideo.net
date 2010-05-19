@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/acceptance_helper'
 feature "Users actions:" do
   
   scenario "register" do
-    visit "/users/register"
+    visit "/register"
     fill_in "Full name", :with => "John Doe"
     fill_in "Email",     :with => "john@doe.com"
     fill_in "Password",  :with => "123456"
@@ -40,7 +40,7 @@ feature "User session:" do
   scenario "login" do
     create_user  :user => { :full_name => "John Doe", :email => "john@doe.com", :password => "123456" }
     
-    visit "/users/login"
+    visit "/login"
     page.should_not have_content('John Doe')
     fill_in "Email",     :with => "john@doe.com"
     fill_in "Password",  :with => "123456"
@@ -55,7 +55,7 @@ feature "User session:" do
     page.should have_content('John Doe')
     click_link "Logout"
     
-    current_url.should =~ %r(http://[^/]+/users/login)
+    current_url.should =~ %r(http://[^/]+/login)
     page.should_not have_content('John Doe')
   end
   

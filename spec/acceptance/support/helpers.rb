@@ -15,7 +15,7 @@ module HelperMethods
   
   def sign_in_as_user(options={}, &block)
     user = create_user(options)
-    visit "/users/login"
+    visit "/login"
     fill_in 'Email',    :with => user.email
     fill_in 'Password', :with => '123456'
     check   'Remember me' if options[:remember_me] == true
