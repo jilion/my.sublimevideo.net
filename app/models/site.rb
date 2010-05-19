@@ -19,6 +19,9 @@ class Site < ActiveRecord::Base
   uniquify :token, :chars => ('a'..'z').to_a + ('0'..'9').to_a
   mount_uploader :license, LicenseUploader
   
+  cattr_accessor :per_page
+  self.per_page = 6
+  
   # ================
   # = Associations =
   # ================

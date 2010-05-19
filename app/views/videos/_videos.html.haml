@@ -36,3 +36,6 @@
                   %em= "In progress"
                   
             %td.delete= button_to 'Delete', video_path(video), :confirm => 'Are you sure?', :method => :delete
+            
+  = will_paginate @videos
+  = page_entries_info @videos

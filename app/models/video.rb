@@ -24,6 +24,9 @@ class Video < ActiveRecord::Base
   mount_uploader :file, VideoUploader
   mount_uploader :thumbnail, ThumbnailUploader
   
+  cattr_accessor :per_page
+  self.per_page = 6
+  
   # ================
   # = Associations =
   # ================
