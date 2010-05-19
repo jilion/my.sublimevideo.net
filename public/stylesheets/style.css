@@ -234,18 +234,18 @@ body {
   width:440px;
 }
 
-#content form .entry {
+form .entry {
   position:relative;
   padding:6px 0;
 }
 
-#content form label.icon {
+form label.icon {
   text-indent:-9999px;
   display:block;
   position:absolute;
 }
 
-#content form .full_name label.icon {
+form .full_name label.icon {
   width:17px;
   height:17px;
   background:url(/images/embed/fullname_field_icon.png) no-repeat;
@@ -253,7 +253,7 @@ body {
   left:10px;
 }
 
-#content form .email label.icon {
+form .email label.icon {
   width:17px;
   height:18px;
   background:url(/images/embed/email_field_icon.png) no-repeat;
@@ -261,7 +261,7 @@ body {
   left:10px;
 }
 
-#content form .password label.icon {
+form .password label.icon {
   width:13px;
   height:17px;
   background:url(/images/embed/password_field_icon.png) no-repeat;
@@ -269,7 +269,7 @@ body {
   left:12px;
 }
 
-#content form .site label.icon {
+form .site label.icon {
   width:16px;
   height:17px;
   background:url(/images/embed/site_field_icon.png) no-repeat;
@@ -277,7 +277,7 @@ body {
   left:10px;
 }
 
-#content form input.text {
+form input.text {
   width:400px;
   height:34px;
   line-height:36px;
@@ -298,28 +298,28 @@ body {
   -moz-transition:0.5s background;
 }
 
-#content form input.text:focus {
+form input.text:focus {
   background:#fff;
   outline-color:#0085c8;
 }
 
-#content form input.text::-webkit-input-placeholder {color:#8896ae;}
-#content form input.text.placeholder {color:#8896ae;}
+form input.text::-webkit-input-placeholder {color:#8896ae;}
+form input.text.placeholder {color:#8896ae;}
 
-#content form input.text.errors {
+form input.text.errors {
   background:#fadddd;
 }
 
-#content form input.text.errors::-webkit-input-placeholder {color:#d88282;}
-#content form input.text.errors.placeholder {color:#d88282;}
+form input.text.errors::-webkit-input-placeholder {color:#d88282;}
+form input.text.errors.placeholder {color:#d88282;}
 
-#content form.edit input.text  {
+form.edit input.text  {
   width:400px;
   padding:0 0 0 6px;
   border-color:#6f7681;
 }
 
-#content form .inline_errors span {
+form .inline_errors span {
   padding:2px 4px 2px;
   font-size:12px;
   color:#fff;
@@ -534,7 +534,7 @@ body {
   width:130px;
 }
 
-#content form.site input.add, #content form.edit input.update {
+#content form.site input.add, form.edit input.update {
   width:89px;
   height:40px;
   background:url(/images/embed/add_btn.png) no-repeat;
@@ -547,7 +547,7 @@ body {
   text-shadow:rgba(255,255,255,0.45) 0 1px 0;
 }
 
-#content form.site input.add:active, #content form.edit input.update:active {background-position:0 -40px;}
+#content form.site input.add:active, form.edit input.update:active {background-position:0 -40px;}
 
 #content form.site .actions .spinner {
   position:absolute;
@@ -863,7 +863,7 @@ body {
 .popup {
   width:450px;
   height:300px;
-  position:absolute;
+  position:fixed;
   margin:auto;
   top:0;
   bottom:0;
@@ -872,6 +872,7 @@ body {
   z-index:999;
   border:1px solid #000;
   padding:9px;
+  text-shadow:rgba(255,255,255,0.75) 0 1px 0;
   background:#393939;
   background:-webkit-gradient(linear,left top,left bottom,from(#505050),to(#222222));
   background:-moz-linear-gradient(top, #505050, #222222);
@@ -933,20 +934,20 @@ body {
   resize:none;
 }
 
-#content .popup .content form.edit .entry {
+.popup .content form.edit .entry {
   padding:35px 0;
 }
 
-#content .popup .content form.edit .entry label {
+.popup .content form.edit .entry label {
   font-size:18px;
   font-weight:bold;
 }
 
-#content .popup .content form.edit .entry p.desc {
+.popup .content form.edit .entry p.desc {
   padding:2px 0;
 }
 
-#content .popup .content form.edit input.update {
+.popup .content form.edit input.update {
   position:absolute;
   bottom:30px;
   left:30px;
@@ -963,7 +964,6 @@ body {
 }
 
 .popup a.close span {display:none;}
-
 
 #content form.video {
   width:668px;
