@@ -57,18 +57,33 @@ describe Site do
         site.errors[:hostname].should_not be_present
       end
     end
-    ['123.123.123,localhost', ', ,123.123.123,'].each do |hosts|
-      it "should validate validity of hostname: #{hosts}" do
-        site = Factory.build(:site, :dev_hostnames => hosts)
+    %w[ASDASD.COM 124.123.151.123 mIx3Dd0M4iN.CoM].each do |host|
+      it "should downcase hostname: #{host}" do
+        site = Factory.build(:site, :hostname => host)
+        site.should be_valid
+        site.hostname.should == host.downcase
+      end
+    end
+    
+    ['123.123.123,localhost', ', ,123.123.123,'].each do |dev_hosts|
+      it "should validate validity of dev hostnames: #{dev_hosts}" do
+        site = Factory.build(:site, :dev_hostnames => dev_hosts)
         site.should_not be_valid
         site.errors[:dev_hostnames].should be_present
       end
     end
-    ['localhost', ', ,', 'localhost,, ,'].each do |hosts|
-      it "should validate validity of hostname: #{hosts}" do
-        site = Factory.build(:site, :dev_hostnames => hosts)
+    ['localhost', ', ,', 'localhost,, ,'].each do |dev_hosts|
+      it "should validate validity of dev hostnames: #{dev_hosts}" do
+        site = Factory.build(:site, :dev_hostnames => dev_hosts)
         site.should be_valid
         site.errors[:dev_hostnames].should_not be_present
+      end
+    end
+    ['127.0.0.1', 'LOCALHOST', 'T3St.CoM'].each do |dev_hosts|
+      it "should downcase dev hostnames: #{dev_hosts}" do
+        site = Factory.build(:site, :dev_hostnames => dev_hosts)
+        site.should be_valid
+        site.dev_hostnames.should == dev_hosts.downcase
       end
     end
     
@@ -90,6 +105,12 @@ describe Site do
       
       it "should validate uniqueness of hostname by user" do
         site = Factory.build(:site, :user => @site.user, :hostname => @site.hostname)
+        site.should_not be_valid
+        site.errors[:hostname].should be_present
+      end
+      
+      it "should validate uniqueness of hostname by user case-unsensitive" do
+        site = Factory.build(:site, :user => @site.user, :hostname => @site.hostname.upcase)
         site.should_not be_valid
         site.errors[:hostname].should be_present
       end

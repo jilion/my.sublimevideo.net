@@ -32,26 +32,16 @@ describe VideoFormat do
   end
   
   describe "Validates" do
-    it "should set video name from filename" do
-      video = Factory(:video_format)
-      video.set_name
-      video.name.should == "iPhone (mp4)"
-    end
-    
-    it "should validate presence of [:original] on build" do
+    it "should validate presence of [:original]" do
       video = Factory.build(:video_format, :original => nil)
       video.should_not be_valid
       video.errors[:original].should be_present
     end
-  end
-  
-  describe "Callbacks" do
-    describe "before_create" do
-      describe "#set_name" do
-        it "should set video name after save if file is present and file has changed or video is a new record" do
-          Factory(:video_format).name.should == "iPhone (mp4)"
-        end
-      end
+    
+    it "should validate presence of [:name]" do
+      video = Factory.build(:video_format, :name => nil)
+      video.should_not be_valid
+      video.errors[:name].should be_present
     end
   end
   

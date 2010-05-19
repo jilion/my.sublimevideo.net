@@ -47,26 +47,15 @@ describe Video do
   end
   
   describe "State Machine" do
-    
-    it "activate should set video name" do
-    end
-    
   end
   
+  # pending examples because size and duration will be setted from the real file, so can't test now
   describe "Callbacks" do
     describe "before_create" do
       describe "#set_size" do
-        it "should set video size after save if file is present and file has changed or video is a new record" do
+        pending "should set video size after save if file is present and file has changed or video is a new record" do
           FACTORIES.each do |factory|
-            Factory(factory).size.should == 100_000_000
-          end
-        end
-      end
-      
-      describe "#set_duration" do
-        it "should set video duration after save if file is present and file has changed or video is a new record" do
-          FACTORIES.each do |factory|
-            Factory(factory).duration.should == 300
+            Factory(factory).size.should == 5
           end
         end
       end
@@ -74,23 +63,13 @@ describe Video do
   end
     
   describe "Instance Methods" do
-    
-    it "should set video size" do
+    pending "should set video size" do
       FACTORIES.each do |factory|
         video = Factory(factory)
         video.set_size
-        video.size.should == 100_000_000
+        video.size.should == 5
       end
     end
-    
-    it "should set video duration" do
-      FACTORIES.each do |factory|
-        video = Factory(factory)
-        video.set_duration
-        video.duration.should == 300
-      end
-    end
-    
   end
   
 end

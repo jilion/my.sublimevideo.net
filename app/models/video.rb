@@ -19,10 +19,13 @@
 
 class Video < ActiveRecord::Base
   
-  attr_accessible :file, :file_cache, :thumbnail
+  attr_accessible :name, :file, :file_cache, :thumbnail
   uniquify :token, :chars => ('a'..'z').to_a + ('0'..'9').to_a
   mount_uploader :file, VideoUploader
   mount_uploader :thumbnail, ThumbnailUploader
+  
+  cattr_accessor :per_page
+  self.per_page = 6
   
   # ================
   # = Associations =
@@ -42,7 +45,7 @@ class Video < ActiveRecord::Base
   # = Callbacks =
   # =============
   
-  before_create :set_name, :set_size, :set_duration, :if => Proc.new { |v| v.file && (v.file_changed? || v.new_record?) }
+  before_create :set_size
   
   # =================
   # = State Machine =
@@ -63,14 +66,10 @@ class Video < ActiveRecord::Base
   # = Instance Methods =
   # ====================
   
+  # before_create
   def set_size
     # TODO: Replace with real implementation
-    write_attribute(:size, 100_000_000)
-  end
-  
-  def set_duration
-    # TODO: Replace with real implementation
-    write_attribute(:duration, 300)
+    write_attribute(:size, rand(100_000_000))
   end
   
 end
