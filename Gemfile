@@ -35,6 +35,7 @@ group :test do
   gem 'rev'
   gem 'watchr'
   gem 'growl'
+  
   gem 'rspec',        '>= 2.0.0.beta.8'
   gem 'rspec-rails',  :git => 'git://github.com/rspec/rspec-rails.git', :ref => "d2fb9f35c7867225cd68758152f51dd3d1152a09"
   gem 'factory_girl', :git => 'git://github.com/danielb2/factory_girl'
@@ -43,6 +44,10 @@ group :test do
   # gem "capybara-envjs"
   gem 'email_spec'
   gem "launchy"
+  
+  gem 'webmock'
+  gem 'vcr'
+  
   gem "ruby-debug"
 end
 

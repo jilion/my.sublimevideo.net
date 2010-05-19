@@ -9,6 +9,8 @@ class CreateSites < ActiveRecord::Migration
       t.string  :state
       t.timestamps
     end
+    
+    add_index :sites, :user_id
   end
   
   def self.down
