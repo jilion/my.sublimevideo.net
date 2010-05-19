@@ -1,4 +1,4 @@
-module ApplicationHelper
+module TextHelper
   
   # If text is longer than +options[:length]+ (defaults to 30), text will be middle-truncated
   # and the last characters will be replaced with the +options[:omission]+ (defaults to "...").
