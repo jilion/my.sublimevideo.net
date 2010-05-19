@@ -12,7 +12,7 @@ Factory.define :site do |f|
 end
 
 Factory.define :video do |f|
-  f.file File.open("#{Rails.root}/spec/watchr/images/failed.png")
+  f.file File.open("#{Rails.root}/spec/fixtures/image.png")
 end
 
 # FYI, can't use type (the Ruby's one is used instead of the factory_girl's method_missing's one)
@@ -23,4 +23,11 @@ end
 
 Factory.define :video_format, :class => VideoFormat, :parent => :video do |f|
   f.association :original, :factory => :video_original
+end
+
+Factory.define :log do |f|
+  f.name        "cdn.sublimevideo.net.log.1274269140-1274269200"
+  f.started_at  Time.zone.now
+  f.ended_at    Time.zone.now + 1.minute
+  f.size        654
 end

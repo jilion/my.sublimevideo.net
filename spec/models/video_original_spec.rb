@@ -43,7 +43,7 @@ describe VideoOriginal do
     describe "before_create" do
       describe "#set_name" do
         it "should set video name after save if file is present and file has changed or video is a new record" do
-          Factory(:video_original).name.should == "Failed"
+          Factory(:video_original).name.should == "Image"
         end
       end
     end
@@ -54,7 +54,7 @@ describe VideoOriginal do
       it "should set video name from filename" do
         video = Factory(:video_original)
         video.set_name
-        video.name.should == "Failed"
+        video.name.should == "Image"
       end
     end
     

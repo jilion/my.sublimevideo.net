@@ -42,6 +42,10 @@ dependencies:
     group: 
     - :default
     version: ">= 0"
+  vcr: 
+    group: 
+    - :test
+    version: ">= 0"
   watchr: 
     group: 
     - :test
@@ -126,6 +130,10 @@ dependencies:
     group: 
     - :test
     version: ">= 0"
+  webmock: 
+    group: 
+    - :test
+    version: ">= 0"
 specs: 
 - rake: 
     version: 0.8.7
@@ -179,6 +187,8 @@ specs:
     version: 3.0.0.beta3
 - activeresource: 
     version: 3.0.0.beta3
+- addressable: 
+    version: 2.1.2
 - annotate: 
     version: 2.4.0
 - http_connection: 
@@ -291,11 +301,15 @@ specs:
     version: 0.4.0.a4
 - uniquify: 
     version: 0.1.0
+- vcr: 
+    version: 0.4.1
 - watchr: 
     version: "0.6"
+- webmock: 
+    version: 1.2.0
 - wirble: 
     version: 0.1.3
-hash: c9b4fc99928deed7abef09e3bc7fe8829ae78897
+hash: 8a83c6856887e809599bc0a6f177101afd1ae5ec
 sources: 
 - Git: 
     uri: git://github.com/danielb2/factory_girl
