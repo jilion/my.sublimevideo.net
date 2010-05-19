@@ -515,6 +515,10 @@ form .inline_errors span {
 
 #account_activity_box a.billing_reports:active {background-position:0 -28px;}
 
+/* ============ */
+/* = My Sites = */
+/* ============ */
+
 #content form.site {
   width:668px;
   background:url(/images/embed/breakline.png) no-repeat;
@@ -892,6 +896,8 @@ form .inline_errors span {
   background:-webkit-gradient(linear,left top,left bottom,from(#c6cad4),to(#a7abb5));
   background:-moz-linear-gradient(top, #c6cad4, #a7abb5);
   -webkit-box-shadow:inset rgba(0,0,0,1) 0 1px 6px;
+  -moz-box-shadow:inset rgba(0,0,0,1) 0 1px 6px;
+  box-shadow:inset rgba(0,0,0,1) 0 1px 6px;
   -webkit-border-radius:4px;
   -moz-border-radius:4px;
   border-radius:4px;
@@ -965,6 +971,10 @@ form .inline_errors span {
 
 .popup a.close span {display:none;}
 
+/* ============= */
+/* = My Videos = */
+/* ============= */
+
 #content form.video {
   width:668px;
   background:url(/images/embed/breakline.png) no-repeat;
@@ -993,6 +1003,234 @@ form .inline_errors span {
 }
 
 #content form.video span.upload_btn:active {background-position:0 -40px;}
+
+#upload_indicator {
+  height:54px;
+  border:1px solid #7c818b;
+  position:relative;
+  overflow:hidden;
+  background:#b0b2b9;
+  background:-webkit-gradient(linear,left top,left bottom,from(#c6c9cf),to(#999ba1));
+  background:-moz-linear-gradient(top, #c6c9cf, #999ba1);
+  -webkit-border-radius:4px;
+  -moz-border-radius:4px;
+  border-radius:4px;
+  webkit-box-shadow:rgba(255,255,255,0.4) 0 1px;
+  -webkit-box-shadow:rgba(255,255,255,0.4) 0 1px 0, inset rgba(0,0,0,0.25) 0 1px 2px;
+  -moz-box-shadow:rgba(255,255,255,0.4) 0 1px 0, inset rgba(0,0,0,0.25) 0 1px 2px;
+  box-shadow:rgba(255,255,255,0.4) 0 1px 0, inset rgba(0,0,0,0.25) 0 1px 2px;
+}
+
+#upload_indicator .progress {
+  height:54px;
+  background:#e9e9e9;
+  background:-webkit-gradient(linear,left top,left bottom,from(#fff),to(#d9d9d9));
+  background:-moz-linear-gradient(top, #fff, #d9d9d9);
+  -webkit-border-radius:4px;
+  -moz-border-radius:4px;
+  border-radius:4px;
+  -webkit-box-shadow:rgba(0,0,0,0.25) 1px 0 2px;
+  -moz-box-shadow:rgba(0,0,0,0.25) 1px 0 2px;
+  box-shadow:rgba(0,0,0,0.25) 1px 0 2px;
+  -webkit-transition:0.2s width;
+  -moz-transition:0.2s width;
+}
+
+#upload_indicator .info {
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:54px;
+  color:#606366;
+  font-size:12px;
+  text-shadow:rgba(255,255,255,0.4) 0 1px 0;
+}
+
+#upload_indicator .info .filename {
+  position:absolute;
+  top:2px;
+  left:5px;
+}
+
+#upload_indicator .info .time_estimation {
+  position:absolute;
+  bottom:2px;
+  left:5px;
+}
+
+#upload_indicator .info .percent_completed {
+  position:absolute;
+  top:13px;
+  right:15px;
+  font-size:24px;
+  font-weight:600;
+}
+
+#content table.main th.video {
+  text-align:left;
+  width:590px;
+}
+
+#content table.main .video .wrap {
+  width:100%;
+  height:100%;
+  position:relative;
+}
+
+#content table.main th.video .sorting {
+  position:absolute;
+  right:-5px;
+  top:-3px;
+}
+
+#content table.main th.video a.sort {
+  float:left;
+  display:block;
+  height:24px;
+  padding-right:12px;
+  margin-left:8px;
+  font-weight:300;
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:1px;
+  color:#e1d8e4;
+  text-shadow:#000 0 -1px 0;
+  position:relative;
+}
+
+#content table.main th.video a.sort strong {
+  background:url(/images/embed/sort_btn_background.png) no-repeat;
+  height:18px;
+  padding:6px 4px 0 3px;
+  display:block;
+}
+
+#content table.main th.video a.sort span.arrow {
+  background:url(/images/embed/sort_btn_arrow_down.png) no-repeat 100% 3px;
+  padding:0 15px 0 0;
+  position:relative;
+  right:-8px;
+  z-index:2;
+}
+
+#content table.main th.video a.sort.up span.arrow {background-image:url(/images/embed/sort_btn_arrow_up.png);}
+
+#content table.main th.video a.sort span.corner {
+  display:block;
+  width:12px;
+  height:24px;
+  background:url(/images/embed/sort_btn_background_corner.png) no-repeat;
+  position:absolute;
+  top:0;
+  right:0;
+}
+
+#content table.main th.video a.sort:active strong, #content table.main th.video a.sort:active span.corner, #content table.main th.video a.sort.active strong, #content table.main th.video a.sort.active span.corner {
+  background-position:0 -24px;
+}
+
+#content table.main td.video {
+  height:118px;
+  text-align:left;
+  padding:0;
+}
+
+#content table.main td.video .thumbnail {
+  width:166px;
+  height:96px;
+  background:url(/images/embed/videos/default_thumbnail.png) no-repeat;
+  position:relative;
+  float:left;
+  margin:13px 0 0 13px;
+  overflow:hidden;
+}
+
+#content table.main td.video .thumbnail .crop {
+  overflow:hidden;
+  width:160px;
+  height:90px;
+  margin:2px 0 0 3px;
+  text-align:center;
+  -webkit-border-radius:4px;
+  -moz-border-radius:4px;
+  border-radius:4px;
+}
+
+#content table.main td.video .thumbnail img {
+  max-width:160px;
+  -webkit-border-radius:3px;
+  -moz-border-radius:3px;
+  border-radius:3px;
+  -webkit-box-shadow:#000 0 0 2px;
+}
+
+#content table.main td.video .thumbnail .duration {
+  position:absolute;
+  bottom:8px;
+  left:8px;
+  font-size:12px;
+  font-weight:600;
+  color:#fff;
+  text-shadow:#000 0 1px 3px;
+}
+
+#content table.main td.video .info {
+  float:left;
+  padding:13px;
+}
+
+#content table.main td.video .info h3.title {
+  font-size:24px;
+  font-weight:600;
+  padding:4px 0 8px;
+}
+
+#content table.main td.video .info .storage {
+  position:relative;
+  float:left;
+  padding:2px 18px 12px 24px;
+  background:url(/images/embed/videos/storage_icon.png) no-repeat 0 0;
+}
+
+#content table.main td.video .info .storage strong {
+  font-size:16px;
+  font-weight:normal;
+}
+
+#content table.main td.video .info a.toggle_desc_box {
+  display:block;
+  width:12px;
+  height:13px;
+  background:url(/images/embed/videos/info_icon.png) no-repeat;
+  position:absolute;
+  top:5px;
+  right:0;
+}
+
+#content table.main td.video .info a.toggle_desc_box span {display:none;}
+
+#content table.main td.video .info .views {
+  float:left;
+  margin:0 0 0 20px;
+  padding:2px 18px 12px 20px;
+  background:url(/images/embed/videos/views_icon.png) no-repeat 0 0;
+}
+
+#content table.main td.video .info .views strong {
+  font-size:16px;
+  font-weight:normal;
+}
+
+#content table.main td.video .info .views em {
+  font-size:12px;
+  font-style:normal;
+}
+
+#content table.main td.video .info .upload_date {
+  font-size:13px;
+  color:#767b83;
+}
 
 #footer {
   width:1000px;

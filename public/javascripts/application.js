@@ -74,6 +74,13 @@ MySublimeVideo.closePopup = function() {
   });
 };
 
+MySublimeVideo.makeSticky = function(element) {
+  $$('#header .active').each(function(el){
+    el.removeClassName('active');
+  });
+  element.addClassName("active");
+};
+
 var AddSiteHandler = Class.create({
   initialize: function() {
     this.setup();
