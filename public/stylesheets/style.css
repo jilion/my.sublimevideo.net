@@ -692,6 +692,11 @@ body {
 
 #content table.main td.site .settings span {display:none;}
 
+#content table.main td.site .settings.disabled {
+  opacity:0.4;
+  cursor:default;
+}
+
 #content table.main td.code a.embed_code {
   display:block;
   width:186px;
@@ -958,6 +963,36 @@ body {
 }
 
 .popup a.close span {display:none;}
+
+
+#content form.video {
+  width:668px;
+  background:url(/images/embed/breakline.png) no-repeat;
+  padding:18px 0;
+  position:relative;
+}
+
+#content form.video .entry.video {
+  background:url(/images/embed/breakline.png) no-repeat 0 100%;
+  padding-bottom:24px;
+}
+
+#content form.video .entry.video label, #content form.video .entry.video input {display:none;}
+
+#content form.video span.upload_btn {
+  display:block;
+  width:197px;
+  height:31px;
+  padding:9px 0 0 39px;
+  background:url(/images/embed/videos/upload_btn.png) no-repeat;
+  font-size:18px;
+  font-weight:400;
+  color:#fff;
+  text-shadow:rgba(0,0,0,0.9) 0 -1px 0;
+  cursor:pointer;
+}
+
+#content form.video span.upload_btn:active {background-position:0 -40px;}
 
 #footer {
   width:1000px;

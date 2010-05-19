@@ -1,7 +1,8 @@
 = form_for @video, :as => :video, :url => videos_path, :html => { :multipart => true, :class => "video" } do |f|
   .entry.video
-    = f.label :file, "", :class => "icon"
+    = f.label :file, "Choose a file to upload"
     = f.file_field :file, :required => true
     = f.hidden_field :file_cache
-  .actions
-    = f.submit 'Upload'
+    %span.upload_btn= "Choose a file to upload"
+  -#.actions
+  -#  = f.submit 'Upload'
