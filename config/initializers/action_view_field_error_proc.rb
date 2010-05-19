@@ -1,7 +1,7 @@
 ActionView::Base.field_error_proc = Proc.new do |html_tag, instance|
   
   if instance.object.present?
-    errors = instance.object.errors[instance.method_name.to_sym]
+    errors  = instance.object.errors[instance.method_name.to_sym]
     if errors.length > 1
       last_error = " and #{errors.pop}"
       first_errors = errors.join(", ")
@@ -12,7 +12,8 @@ ActionView::Base.field_error_proc = Proc.new do |html_tag, instance|
   end
   
   if html_tag =~ /<(input|textarea|select)/
-    html_tag += "<div class='inline_errors'><span>#{instance.method_name.humanize} #{inline_errors}</span></div>".html_safe
+    attribute_name = instance.object.class.human_attribute_name(instance.method_name.to_sym)
+    html_tag += "<div class='inline_errors'><span>#{attribute_name} #{inline_errors}</span></div>".html_safe
   end
   
   error_class = "errors"

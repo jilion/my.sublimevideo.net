@@ -37,6 +37,7 @@ class Site < ActiveRecord::Base
   validates :user,     :presence => true
   validates :hostname, :presence => true, :uniqueness => { :scope => :user_id }, :production_hostname => true
   validates :dev_hostnames, :hostnames => true
+  validate :must_be_active_to_update_hostnames
   
   # =============
   # = Callbacks =
@@ -102,6 +103,14 @@ class Site < ActiveRecord::Base
   end
   
 private
+  
+  # validate
+  def must_be_active_to_update_hostnames
+    if !new_record? && pending?
+      errors[:hostname] << "can not be updated when site in progress, please wait before update again" if hostname_changed?
+      errors[:dev_hostnames] << "can not be updated when site in progress, please wait before update again" if dev_hostnames_changed?
+    end
+  end
   
   # before_create
   def set_default_dev_hostnames
