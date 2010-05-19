@@ -7,7 +7,7 @@ module ApplicationHelper
     options.reverse_merge!(:length => 30, :omission => "...")
     
     if text
-      if(text.mb_chars.length <= options[:length])
+      if text.mb_chars.length <= options[:length]
         text
       else
         side_length = (options[:length]-options[:omission].mb_chars.length)/2
