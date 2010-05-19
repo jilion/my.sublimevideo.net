@@ -4,5 +4,4 @@
     = f.file_field :file, :required => true
     = f.hidden_field :file_cache
     %span.upload_btn= "Choose a file to upload"
-  -#.actions
-  -#  = f.submit 'Upload'
+    = f.submit 'Upload', :style => "display:none"
