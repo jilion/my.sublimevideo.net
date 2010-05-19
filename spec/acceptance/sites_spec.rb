@@ -8,7 +8,7 @@ feature "Sites actions:" do
   
   scenario "add a new site" do
     visit "/sites"
-    fill_in "Hostname", :with => "google.com"
+    fill_in "Domain", :with => "google.com"
     click_button "Add"
     
     current_url.should =~ %r(http://[^/]+/sites)
