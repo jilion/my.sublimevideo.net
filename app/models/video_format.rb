@@ -34,6 +34,7 @@ class VideoFormat < Video
   # ===============
   
   validates :original, :presence => true
+  validates :name, :presence => true
   
   # =============
   # = Callbacks =
@@ -50,10 +51,5 @@ class VideoFormat < Video
   # ====================
   # = Instance Methods =
   # ====================
-  
-  def set_name
-    # TODO: Replace with real implementation
-    write_attribute(:name, 'iPhone (mp4)')
-  end
   
 end

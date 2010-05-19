@@ -2,6 +2,7 @@ require 'state_machine'
 require 'ffaker'
 
 BASE_USERS = [["Mehdi Aminian", "mehdi@jilion.com"], ["Zeno Crivelli", "zeno@jilion.com"], ["Thibaud Guillaume-Gentil", "thibaud@jilion.com"], ["Octave Zangs", "octave@jilion.com"], ["Rémy Coutable", "remy@jilion.com"]]
+FORMATS    = %w[Desktop 3G WiFi Ogg]
 
 namespace :db do
   
@@ -12,25 +13,32 @@ namespace :db do
     
     desc "Empty all the tables"
     task :empty_all_tables => :environment do
-      empty_tables(Site, User)
+      timed { empty_tables(Video, Site, User) }
     end
     
     desc "Load all development fixtures."
     task :all => :environment do
-      create_users
-      create_sites
+      timed { create_users  }
+      timed { create_sites  }
+      timed { create_videos }
     end
     
     desc "Load User development fixtures."
     task :users => :environment do
-      empty_tables(Site, User)
-      create_users((ARGV.size > 1 ? ARGV[1].sub(/COUNT=/, '').to_i : 5))
+      timed { empty_tables(Site, User)                                           }
+      timed { create_users((ARGV.size > 1 ? ARGV[1].sub(/COUNT=/, '').to_i : 5)) }
     end
     
     desc "Load Site development fixtures."
     task :sites => :environment do
-      empty_tables(Site)
-      create_sites((ARGV.size > 1 ? ARGV[1].sub(/COUNT=/, '').to_i : 5))
+      timed { empty_tables(Site)                                                 }
+      timed { create_sites((ARGV.size > 1 ? ARGV[1].sub(/COUNT=/, '').to_i : 5)) }
+    end
+    
+    desc "Load Video development fixtures."
+    task :videos => :environment do
+      timed { empty_tables(Video)                                                  }
+      timed { create_videos((ARGV.size > 1 ? ARGV[1].sub(/COUNT=/, '').to_i : 8)) }
     end
     
   end
@@ -42,7 +50,7 @@ private
 def empty_tables(*tables)
   print "Deleting the content of #{tables.join(', ')}.. => "
   tables.map(&:delete_all)
-  print "#{tables.join(', ')} empty!\n\n"
+  print "#{tables.join(', ')} empty!\n"
 end
 
 def create_admins
@@ -52,7 +60,7 @@ def create_admins
       admin = Admin.create(:full_name => admin_infos[0], :email => admin_infos[1], :password => "123456")
       admin.confirmed_at = Time.now
       admin.save!
-      print "#{admin_infos[1]}/123456 created!\n\n"
+      print "Admin #{admin_infos[1]}:123456 created!\n"
     end
   end
 end
@@ -64,18 +72,18 @@ def create_users(count = 5)
       user = User.create(:full_name => user_infos[0], :email => user_infos[1], :password => "123456")
       user.confirmed_at = Time.now
       user.save!
-      print "#{user_infos[1]}/123456 created!\n\n"
+      print "User #{user_infos[1]}:123456 created!\n"
     end
     
     count.times do |i|
-      user                       = User.new
-      user.full_name             = Faker::Name.name
-      user.email                 = Faker::Internet.email
-      user.password              = '123456'
-      user.confirmed_at          = rand(10).days.ago
+      user              = User.new
+      user.full_name    = Faker::Name.name
+      user.email        = Faker::Internet.email
+      user.password     = '123456'
+      user.confirmed_at = rand(10).days.ago
       user.save!
     end
-    print "#{count} random users created!\n\n"
+    print "#{count} random users created!\n"
   end
 end
 
@@ -84,15 +92,38 @@ def create_sites(count = 5)
   
   User.all.each do |user|
     count.times do |i|
-      site               = user.sites.build
-      site.hostname      = "#{rand > 0.5 ? '' : %w[www. blog. my. git. sv. ji. geek.].rand}#{Faker::Internet.domain_name}"
-      # site.state         = Site.state_machine.states.map(&:name).rand.to_s
-      site.state         = 'active'
-      site.created_at    = rand(1500).days.ago
+      site            = user.sites.build
+      site.hostname   = "#{rand > 0.5 ? '' : %w[www. blog. my. git. sv. ji. geek.].rand}#{Faker::Internet.domain_name}"
+      site.state      = 'active'
+      site.created_at = rand(1500).days.ago
       site.save!
     end
   end
-  print "#{count} random sites created for each user!\n\n"
+  print "#{count} random sites created for each user!\n"
+end
+
+def create_videos(count = 8)
+  create_users if User.all.empty?
+  
+  User.all.each do |user|
+    count.times do |i|
+      video = user.videos.create(:file => File.open("#{Rails.public_path}/images/null_video.mov"))
+      FORMATS.each do |format_name|
+        video.formats.create(:file => File.open("#{Rails.public_path}/images/null_video.mov"), :name => format_name)
+      end
+    end
+  end
+  print "#{count} videos (with formats #{FORMATS.join(', ')}) created for each user!\n"
+end
+
+def timed(&block)
+  if block_given?
+    start_time = Time.now
+    yield
+    print "\tDone in #{Time.now - start_time}s!\n\n"
+  else
+    print "\n\nYou should pass a block to this method!\n\n"
+  end
 end
 
 def disable_perform_deliveries(&block)
@@ -106,6 +137,6 @@ def disable_perform_deliveries(&block)
     # Switch back to the original perform_deliveries
     ActionMailer::Base.perform_deliveries = original_perform_deliveries
   else
-    put "\n\nYou should pass a block to this method!\n\n"
+    print "\n\nYou should pass a block to this method!\n\n"
   end
 end

@@ -59,14 +59,6 @@ describe Video do
           end
         end
       end
-      
-      describe "#set_duration" do
-        pending "should set video duration after save if file is present and file has changed or video is a new record" do
-          FACTORIES.each do |factory|
-            Factory(factory).duration.should == 3
-          end
-        end
-      end
     end
   end
     
@@ -78,15 +70,6 @@ describe Video do
         video.size.should == 5
       end
     end
-    
-    pending "should set video duration" do
-      FACTORIES.each do |factory|
-        video = Factory(factory)
-        video.set_duration
-        video.duration.should == 3
-      end
-    end
-    
   end
   
 end
