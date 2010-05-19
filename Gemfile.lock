@@ -315,7 +315,6 @@ specs:
     version: 0.4.1
 - watchr: 
     version: "0.6"
-<<<<<<< HEAD
 - webmock: 
     version: 1.2.0
 - wirble: 
