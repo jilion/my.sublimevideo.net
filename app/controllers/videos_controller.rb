@@ -1,9 +1,10 @@
 class VideosController < ApplicationController
   respond_to :html
-  respond_to :js, :only => :show
-  before_filter :authenticate_user!
+  respond_to :js
+  before_filter :authenticate_user!, :set_default_sort
   
   has_scope :by_date
+  has_scope :by_name
   
   # GET /videos
   def index
@@ -56,6 +57,12 @@ class VideosController < ApplicationController
     @video = current_user.videos.find(params[:id])
     @video.destroy
     respond_with(@video)
+  end
+  
+protected
+  
+  def set_default_sort
+    params[:by_date] = 'desc' unless params[:by_date] || params[:by_name]
   end
   
 end

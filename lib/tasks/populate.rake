@@ -107,9 +107,15 @@ def create_videos(count = 8)
   
   User.all.each do |user|
     count.times do |i|
-      video = user.videos.create(:file => File.open("#{Rails.root}/spec/fixtures/railscast_intro.mov"))
+      original = user.videos.build(:file => File.open("#{Rails.root}/spec/fixtures/railscast_intro.mov"))
+      original.created_at = rand(1500).days.ago
+      original.save!
+      original.update_attribute(:name, Faker::Name.name)
       FORMATS.each do |format_name|
-        video.formats.create(:file => File.open("#{Rails.root}/spec/fixtures/railscast_intro.mov"), :name => format_name)
+        format = original.formats.build(:name => format_name)
+        format.created_at = original.created_at + rand(2).days
+        format.file = File.open("#{Rails.root}/spec/fixtures/railscast_intro.mov")
+        format.save!
       end
     end
   end
