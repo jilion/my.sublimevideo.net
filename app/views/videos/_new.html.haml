@@ -3,5 +3,11 @@
     = f.label :file, "Choose a file to upload"
     = f.file_field :file, :required => true
     = f.hidden_field :file_cache
-    %span.upload_btn= "Choose a file to upload"
     = f.submit 'Upload', :style => "display:none"
+    %span.upload_btn= "Choose a file to upload"
+    -##upload_indicator
+    -#  .progress{ :style => "width:40%" }
+    -#  .info
+    -#    %em.filename= "video.mp4"
+    -#    %span.time_estimation= "23.7MB of 54.6MB - 15:26 remaining"
+    -#    %stron.percent_completed= "40%"
