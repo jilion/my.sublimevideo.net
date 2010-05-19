@@ -1,19 +1,18 @@
 MySublimeVideo::Application.routes.draw do |map|
   
   devise_for :users, :path_names => { :sign_up => 'register', :sign_in => 'login', :sign_out => 'logout' }
-  match 'login', :to => 'devise/sessions#new', :as => "new_user_session"
-  match 'logout', :to  => 'devise/sessions#destroy', :as => "destroy_user_session"
+  match 'login',    :to => 'devise/sessions#new',      :as => "new_user_session"
+  match 'logout',   :to => 'devise/sessions#destroy',  :as => "destroy_user_session"
   match 'register', :to => 'devise/registrations#new', :as => "new_user_registration"
-  %w[sign_up signup].each     { |action| match action => redirect('/register') }
-  %w[log_in sign_in signin].each { |action| match action => redirect('/login')    }
-  %w[log_out exit].each         { |action| match action => redirect('/logout')   }
+  %w[sign_up signup].each                { |action| match action => redirect('/register') }
+  %w[log_in sign_in signin].each         { |action| match action => redirect('/login')    }
+  %w[log_out sign_out signout exit].each { |action| match action => redirect('/logout')   }
   
   resources :sites
   resources :videos, :except => :new
   resources :users, :only => :update
   
   root :to => redirect('/sites')
-  
   
   resource :beta, :only => [:show, :create]
   
