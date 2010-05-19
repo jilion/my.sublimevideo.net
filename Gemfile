@@ -13,6 +13,7 @@ gem 'aws'
 gem 'carrierwave',   :git => 'git://github.com/jnicklas/carrierwave.git'
 gem 'delayed_job',   :git => 'git://github.com/collectiveidea/delayed_job.git', :ref => "d58dcf404a71a276742050408af2a9ee94356f36"
 gem 'will_paginate', '3.0.pre'
+gem 'has_scope'
 
 gem 'jammit',        :git => 'git://github.com/thibaudgg/jammit.git'
 
