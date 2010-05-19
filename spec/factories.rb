@@ -12,7 +12,7 @@ Factory.define :site do |f|
 end
 
 Factory.define :video do |f|
-  f.file File.open("#{Rails.root}/spec/watchr/images/failed.png")
+  f.file File.open("#{Rails.public_path}/images/null_video.mov")
 end
 
 # FYI, can't use type (the Ruby's one is used instead of the factory_girl's method_missing's one)
@@ -23,4 +23,5 @@ end
 
 Factory.define :video_format, :class => VideoFormat, :parent => :video do |f|
   f.association :original, :factory => :video_original
+  f.name        'iPhone'
 end

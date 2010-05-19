@@ -43,7 +43,13 @@ describe VideoOriginal do
     describe "before_create" do
       describe "#set_name" do
         it "should set video name after save if file is present and file has changed or video is a new record" do
-          Factory(:video_original).name.should == "Failed"
+          Factory(:video_original).name.should == "Null Video"
+        end
+      end
+      
+      describe "#set_duration" do
+        pending "should set video duration after save if file is present and file has changed or video is a new record" do
+          Factory(:video_original).duration.should == 3
         end
       end
     end
@@ -54,15 +60,30 @@ describe VideoOriginal do
       it "should set video name from filename" do
         video = Factory(:video_original)
         video.set_name
-        video.name.should == "Failed"
+        video.name.should == "Null Video"
+      end
+      
+      it "should set video name to Untitled - %m/%d/%Y %I:%M%p if name is blank" do
+        video = Factory(:video_original)
+        video.stub_chain(:file, :url).and_return(' _ ')
+        video.set_name
+        video.name.should =~ %r(^Untitled - \d{2}/\d{2}/\d{4} \d{2}:\d{2}[AP]M$)
+      end
+    end
+    
+    pending "should set video duration" do
+      FACTORIES.each do |factory|
+        video = Factory(factory)
+        video.set_duration
+        video.duration.should == 3
       end
     end
     
     describe "#total_size" do
       it "should return total storage (original size + formats sizes)" do
         original = Factory(:video_original)
-        format = Factory(:video_format, :original => original)
-        format2 = Factory(:video_format, :original => original)
+        format   = Factory(:video_format, :original => original)
+        format2  = Factory(:video_format, :original => original)
         original.total_size.should == original.size + format.size + format2.size
       end
     end

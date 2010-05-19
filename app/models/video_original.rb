@@ -40,6 +40,8 @@ class VideoOriginal < Video
   # = Callbacks =
   # =============
   
+  before_create :set_name, :set_duration
+  
   # =================
   # = State Machine =
   # =================
@@ -52,8 +54,16 @@ class VideoOriginal < Video
   # = Instance Methods =
   # ====================
   
+  # before_create
   def set_name
-    write_attribute(:name, File.basename(file.url, File.extname(file.url)).titleize)
+    name = File.basename(file.url, File.extname(file.url)).titleize.strip
+    write_attribute(:name, name.blank? ? "Untitled - #{Time.now.strftime("%m/%d/%Y %I:%M%p")}" : name)
+  end
+  
+  # before_create
+  def set_duration
+    # TODO: Replace with real implementation
+    write_attribute(:duration, rand(7200))
   end
   
   def total_size
