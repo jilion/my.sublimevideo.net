@@ -7,11 +7,11 @@
             .wrap
               = "Video"
               .sorting
-                = link_to videos_path(sort_hash(:by_date, :reverse => true)), :class => "#{sort_classes(:by_date, :default => true, :reverse => true)}", :remote => true do
+                = link_to videos_path(sort_hash(:date, :reverse => true)), :class => "#{sort_classes(:date, :default => true, :reverse => true)}", :remote => true do
                   %strong
                     %span.arrow= "Date"
                   %span.corner
-                = link_to videos_path(sort_hash(:by_name)), :class => "#{sort_classes(:by_name)}", :remote => true do
+                = link_to videos_path(sort_hash(:name)), :class => "#{sort_classes(:name)}", :remote => true do
                   %strong
                     %span.arrow= "Name"
                   %span.corner
