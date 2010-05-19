@@ -65,12 +65,12 @@ class Video < ActiveRecord::Base
   
   def set_size
     # TODO: Replace with real implementation
-    write_attribute(:size, 100_000_000)
+    write_attribute(:size, rand(100_000_000))
   end
   
   def set_duration
     # TODO: Replace with real implementation
-    write_attribute(:duration, 300)
+    write_attribute(:duration, rand(7200))
   end
   
 end

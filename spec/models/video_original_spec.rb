@@ -62,7 +62,8 @@ describe VideoOriginal do
       it "should return total storage (original size + formats sizes)" do
         original = Factory(:video_original)
         format = Factory(:video_format, :original => original)
-        original.total_size.should == 200_000_000
+        format2 = Factory(:video_format, :original => original)
+        original.total_size.should == original.size + format.size + format2.size
       end
     end
   end
