@@ -1,0 +1,7 @@
+- if user_signed_in?
+  #account_activity_box
+    .current_balance
+      %h4= "Your current balance"
+      %p.price
+        %strong= "$14.67"
+    = link_to "Billing reports", "/billings_path", :class => "billing_reports"

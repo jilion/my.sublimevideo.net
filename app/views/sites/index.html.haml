@@ -5,7 +5,7 @@
   - if current_user.welcome? && !params[:trial]
     = render "layouts/welcome"
     
-= content_for :introduction do
+= content_for :content_header do
   %h2= "My sites"
   -#%p.title_desc= "Start to add your sites here by adding each of the domains or subdomains you want to use with SublimeVideo."
   %p.title_desc= "Here are your SublimeVideo-enabled domains and subdomains. Add as many as you want. "

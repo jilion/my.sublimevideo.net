@@ -26,14 +26,9 @@
                     - if flash[:alert]
                       .alert= flash[:alert]
                       
-                = yield :introduction
+                = yield :content_header
                 
-                #account_activity_box
-                  .current_balance
-                    %h4= "Your current balance"
-                    %p.price
-                      %strong= "$14.67"
-                  = link_to "Billing reports", "/billings_path", :class => "billing_reports"
+                
                   
                 = yield
       #footer
