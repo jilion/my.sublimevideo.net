@@ -4,12 +4,8 @@ module SortHelper
     options = args.extract_options!
     options.reverse_merge!(:reverse => false)
     
-    way = if params[sort_by].nil?
-            options[:reverse] ? 'desc' : 'asc'
-          else
-            params[sort_by] == 'asc' ? 'desc' : 'asc'
-          end
-          
+    way = ((params[sort_by].nil? && options[:reverse]) || (params[sort_by].present? && params[sort_by] == 'asc')) ? 'desc' : 'asc'
+    
     { sort_by.to_sym => way, :page => params[:page] }
   end
   
