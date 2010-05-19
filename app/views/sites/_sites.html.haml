@@ -30,5 +30,5 @@
             %td.hits= rand(10000)
             %td.delete= button_to 'Delete', site, :confirm => 'Are you sure?', :method => :delete, :remote => true
             
-  = will_paginate @sites
+  = will_paginate @sites, :params => { :format => nil }
   = page_entries_info @sites

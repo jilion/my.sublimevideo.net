@@ -66,12 +66,16 @@ class Site < ActiveRecord::Base
   
   # add scheme & parse
   def hostname=(attribute)
-    attribute.downcase! if attribute.present?
-    attribute = "http://#{attribute}" unless attribute.blank? || attribute =~ %r(^\w+://.*$)
-    attribute.gsub! %r(://www\.), '://'
-    write_attribute :hostname, URI.parse(attribute).host
-  rescue
-    write_attribute :hostname, attribute
+    if attribute.present?
+      attribute.downcase!
+      attribute = "http://#{attribute}" unless attribute =~ %r(^\w+://.*$)
+      attribute.gsub! %r(://www\.), '://'
+      begin
+        write_attribute :hostname, URI.parse(attribute).host
+      rescue
+        write_attribute :hostname, attribute.gsub(%r(.+://(www\.)?), '')
+      end
+    end
   end
   
   # add scheme & parse
@@ -82,12 +86,14 @@ class Site < ActiveRecord::Base
         host.strip!
         host = "http://#{host}" unless host =~ %r(^\w+://.*$)
         host.gsub! %r(://www\.), '://'
-        URI.parse(host).host
+        begin
+          URI.parse(host).host
+        rescue
+          host.gsub(%r(.+://(www\.)?), '')
+        end
       end.join(', ')
+      write_attribute :dev_hostnames, attribute
     end
-    write_attribute :dev_hostnames, attribute
-  rescue
-    write_attribute :dev_hostnames, attribute
   end
   
   def licenses_hashes

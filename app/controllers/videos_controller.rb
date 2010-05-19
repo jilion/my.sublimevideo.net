@@ -3,9 +3,11 @@ class VideosController < ApplicationController
   respond_to :js, :only => :show
   before_filter :authenticate_user!
   
+  has_scope :by_date
+  
   # GET /videos
   def index
-    @videos = current_user.videos.scoped
+    @videos = apply_scopes(current_user.videos.scoped)
     respond_with(@videos)
   end
   

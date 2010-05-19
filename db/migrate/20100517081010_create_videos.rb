@@ -13,8 +13,11 @@ class CreateVideos < ActiveRecord::Migration
       t.string :type
       t.timestamps
     end
+    
+    add_index :videos, :user_id
+    add_index :videos, :original_id
   end
-
+  
   def self.down
     drop_table :videos
   end

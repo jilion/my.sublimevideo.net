@@ -6,7 +6,6 @@ class ApplicationController < ActionController::Base
   before_filter :beta_protection
   
   def paginated_scope(relation)
-    Rails.logger.info controller_name
     instance_variable_set "@#{controller_name}", relation.paginate(:page => params[:page], :per_page => controller_name.classify.constantize.per_page)
   end
   hide_action :paginated_scope

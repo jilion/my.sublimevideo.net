@@ -20,6 +20,17 @@ module CDN
       client.voxel_voxcast_ondemand_testing_get_url_per_pop(:device_id => yml[:device_id], :path => path)
     end
     
+    def logs_list(hostname = 'cdn.sublimevideo.net')
+      client.voxel_voxcast_ondemand_logs_list(:device_id => yml[:device_id], :hostname => hostname)
+    end
+    
+    def logs_download(filename)
+      xml = client.voxel_voxcast_ondemand_logs_download(:filename => filename)
+      tempfile = Tempfile.new('log', "#{Rails.root}/tmp")
+      tempfile.write(Base64.decode64(xml['data']['content'])) 
+      tempfile.flush
+    end
+    
   private
     
     def client

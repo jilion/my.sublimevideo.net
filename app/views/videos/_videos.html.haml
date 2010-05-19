@@ -37,5 +37,5 @@
                   
             %td.delete= button_to 'Delete', video_path(video), :confirm => 'Are you sure?', :method => :delete
             
-  = will_paginate @videos
+  = will_paginate @videos, :params => { :format => nil }
   = page_entries_info @videos

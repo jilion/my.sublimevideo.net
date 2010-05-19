@@ -12,7 +12,7 @@ private
     hostnames.split(',').select { |h| h.present? }.each do |host|
       host.strip!
       host = "http://#{host}" unless host =~ %r(^\w+://.*$)
-      URI.parse(host)
+      URI.parse(host).host
     end
     true
   rescue

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100517085007) do
+ActiveRecord::Schema.define(:version => 20100519125619) do
 
   create_table "delayed_jobs", :force => true do |t|
     t.integer  "priority",   :default => 0
@@ -25,6 +25,20 @@ ActiveRecord::Schema.define(:version => 20100517085007) do
   end
 
   add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
+
+  create_table "logs", :force => true do |t|
+    t.string   "name"
+    t.string   "state"
+    t.string   "file"
+    t.datetime "started_at"
+    t.datetime "ended_at"
+    t.integer  "size"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "logs", ["ended_at"], :name => "index_logs_on_ended_at"
+  add_index "logs", ["started_at"], :name => "index_logs_on_started_at"
 
   create_table "sites", :force => true do |t|
     t.integer  "user_id"

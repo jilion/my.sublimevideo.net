@@ -30,12 +30,13 @@ describe Site do
     it { subject.should be_valid }
   end
   
-  describe "validates" do
+  describe "Validations" do
     it "should validate presence of user" do
       site = Factory.build(:site, :user => nil)
       site.should_not be_valid
       site.errors[:user].should be_present
     end
+    
     it "should validate presence of hostname" do
       site = Factory.build(:site, :hostname => nil)
       site.should_not be_valid
@@ -43,61 +44,40 @@ describe Site do
       site.errors[:hostname].should be_present
     end
     
-    %w[http://asdasd slurp .com 901.12312.123 école école.fr üpper.de].each do |host|
-      it "should validate validity of hostname: #{host}" do
-        site = Factory.build(:site, :hostname => host)
-        site.should_not be_valid
-        site.errors[:hostname].should be_present
+    describe "validate hostname" do
+      %w[http://asdasd slurp .com 901.12312.123 école école.fr üpper.de].each do |host|
+        it "should validate validity of hostname: #{host}" do
+          site = Factory.build(:site, :hostname => host)
+          site.should_not be_valid
+          site.errors[:hostname].should be_present
+        end
       end
-    end
-    %w[ftp://asdasd.com asdasd.com 124.123.151.123 htp://aasds.com].each do |host|
-      it "should validate validity of hostname: #{host}" do
-        site = Factory.build(:site, :hostname => host)
-        site.should be_valid
-        site.errors[:hostname].should_not be_present
-      end
-    end
-    %w[ASDASD.COM 124.123.151.123 mIx3Dd0M4iN.CoM].each do |host|
-      it "should downcase hostname: #{host}" do
-        site = Factory.build(:site, :hostname => host)
-        site.should be_valid
-        site.hostname.should == host.downcase
+      
+      %w[ftp://asdasd.com asdasd.com 124.123.151.123 htp://aasds.com www.youtube.com?video=31231].each do |host|
+        it "should validate non-validity of hostname: #{host}" do
+          site = Factory.build(:site, :hostname => host)
+          site.should be_valid
+          site.errors[:hostname].should be_empty
+        end
       end
     end
     
-    ['123.123.123,localhost', ', ,123.123.123,'].each do |dev_hosts|
-      it "should validate validity of dev hostnames: #{dev_hosts}" do
-        site = Factory.build(:site, :dev_hostnames => dev_hosts)
-        site.should_not be_valid
-        site.errors[:dev_hostnames].should be_present
+    describe "validate dev_hostnames" do
+      ['123.123.123,localhost', ', ,123.123.123,'].each do |dev_hosts|
+        it "should validate validity of dev_hostnames: #{dev_hosts}" do
+          site = Factory.build(:site, :dev_hostnames => dev_hosts)
+          site.should_not be_valid
+          site.errors[:dev_hostnames].should be_present
+        end
       end
-    end
-    ['localhost', ', ,', 'localhost,, ,'].each do |dev_hosts|
-      it "should validate validity of dev hostnames: #{dev_hosts}" do
-        site = Factory.build(:site, :dev_hostnames => dev_hosts)
-        site.should be_valid
-        site.errors[:dev_hostnames].should_not be_present
+      
+      ['localhost', ', ,', 'localhost,, , 127.0.0.1'].each do |dev_hosts|
+        it "should validate non-validity of dev_hostnames: #{dev_hosts}" do
+          site = Factory.build(:site, :dev_hostnames => dev_hosts)
+          site.should be_valid
+          site.errors[:dev_hostnames].should be_empty
+        end
       end
-    end
-    ['127.0.0.1', 'LOCALHOST', 'T3St.CoM'].each do |dev_hosts|
-      it "should downcase dev hostnames: #{dev_hosts}" do
-        site = Factory.build(:site, :dev_hostnames => dev_hosts)
-        site.should be_valid
-        site.dev_hostnames.should == dev_hosts.downcase
-      end
-    end
-    
-    it "should validate hostname even without http://" do
-      site = Factory(:site, :hostname => 'www.youtube.com?video=31231')
-      site.hostname.should == 'youtube.com'
-    end
-    it "should validate & clean hostname" do
-      site = Factory(:site, :hostname => 'http://www.youtube.com?video=31231')
-      site.hostname.should == 'youtube.com'
-    end
-    it "should validate & clean dev_hostnames" do
-      site = Factory(:site, :dev_hostnames => 'http://www.localhost:3000, 127.0.0.1:3000')
-      site.dev_hostnames.should == 'localhost, 127.0.0.1'
     end
     
     context "with already a site in db" do
@@ -128,14 +108,60 @@ describe Site do
     end
   end
   
-  describe "State Machine" do
+  describe "Attributes Accessors" do
+    describe "hostname=" do
+      %w[ÉCOLE ÉCOLE.fr ÜPPER.de ASDASD.COM 124.123.151.123 mIx3Dd0M4iN.CoM].each do |host|
+        it "should downcase hostname: #{host}" do
+          site = Factory.build(:site, :hostname => host)
+          site.hostname.should == host.downcase
+        end
+      end
+      
+      it "should clean valid hostname (hostname should never contain /.+://(www.)?/)" do
+        site = Factory(:site, :hostname => 'http://www.youtube.com?video=31231')
+        site.hostname.should == 'youtube.com'
+      end
+      
+      %w[http://www.youtube.com?video=31231 www.youtube.com?video=31231 youtube.com?video=31231].each do |host|
+        it "should clean invalid hostname #{host} (hostname should never contain /.+://(www.)?/)" do
+          site = Factory.build(:site, :hostname => host)
+          site.hostname.should == "youtube.com"
+        end
+      end
+      
+      %w[http://www.test,joke;foo test,joke;foo].each do |host|
+        it "should clean invalid hostname #{host} (hostname should never contain /.+://(www.)?/)" do
+          site = Factory.build(:site, :hostname => host)
+          site.hostname.should_not =~ %r(.+://(www.)?)
+        end
+      end
+    end
     
+    describe "dev_hostnames=" do
+      it "should downcase dev_hostnames" do
+        dev_host = "LOCALHOST, test;ERR, 127.]BOO[:3000, JOKE;foo"
+        site = Factory.build(:site, :dev_hostnames => dev_host)
+        site.dev_hostnames.should == dev_host.downcase
+      end
+      
+      it "should clean valid dev_hostnames (dev_hostnames should never contain /.+://(www.)?/)" do
+        site = Factory(:site, :dev_hostnames => 'http://www.localhost:3000, 127.0.0.1:3000')
+        site.dev_hostnames.should == 'localhost, 127.0.0.1'
+      end
+      
+      it "should clean invalid dev_hostnames (dev_hostnames should never contain /.+://(www.)?/)" do
+        site = Factory.build(:site, :dev_hostnames => 'http://www.test;err, ftp://127.]boo[:3000, www.joke;foo')
+        site.dev_hostnames.should == 'test;err, 127.]boo[:3000, joke;foo'
+      end
+    end
+  end
+  
+  describe "State Machine" do
     it "activate should set license file" do
       site = Factory(:site)
       site.activate
       site.license.url.should be_present
     end
-    
   end
   
   describe "Callbacks" do
