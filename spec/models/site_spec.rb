@@ -94,6 +94,17 @@ describe Site do
         site.errors[:hostname].should be_present
       end
     end
+    
+    it "should prevent update of hostname if pending" do
+      site = Factory(:site)
+      site.update_attributes(:hostname => 'site.com').should be_false
+      site.errors[:hostname].should be_present
+    end
+    it "should prevent update of dev_hostnames if pending" do
+      site = Factory(:site)
+      site.update_attributes(:dev_hostnames => 'site.local').should be_false
+      site.errors[:dev_hostnames].should be_present
+    end
   end
   
   describe "State Machine" do
