@@ -3,13 +3,10 @@
   padding:0;
 }
 
-html {height:100%}
-
 body {
   font-family:"proxima-nova-1","proxima-nova-2", Helvetica, Arial, sans-serif;
   font-size:14px;
   color:#4d5563;
-  height:100%;
   background:#5d6778;
   background:-webkit-gradient(linear,left top,left bottom,from(#778091),to(#5d6778));
   background:-moz-linear-gradient(top, #778091, #5d6778);

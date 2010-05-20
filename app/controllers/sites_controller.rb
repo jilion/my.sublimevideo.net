@@ -4,7 +4,7 @@ class SitesController < ApplicationController
   
   # GET /sites
   def index
-    @sites = current_user.sites.scoped
+    @sites = current_user.sites.by_date
     respond_with(@sites)
   end
   
