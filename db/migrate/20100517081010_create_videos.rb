@@ -1,6 +1,7 @@
 class CreateVideos < ActiveRecord::Migration
   def self.up
     create_table :videos do |t|
+      t.string :panda_video_id
       t.integer :user_id
       t.integer :original_id, :null => true, :default => nil
       t.string :name

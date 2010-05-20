@@ -1,0 +1,18 @@
+# production:
+#   api_host: Hostname of your Panda cloud (different for US and EU clouds)
+#   access_key: Your Panda access key
+#   secret_key: Your Panda secret key
+#   cloud_id: Your Panda cloud id
+#   api_host: "api.eu.pandastream.com" # for EU accounts
+# development:
+#   api_host: Hostname of your Panda cloud (different for US and EU clouds)
+#   access_key: Your Panda access key
+#   secret_key: Your Panda secret key
+#   cloud_id: Your Panda cloud id
+#   api_host: "api.eu.pandastream.com" # for EU accounts
+# test:
+#   api_host:
+#   access_key: 
+#   secret_key: 
+#   cloud_id:
+#   api_host: "api.eu.pandastream.com" # for EU accounts

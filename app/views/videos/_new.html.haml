@@ -3,6 +3,7 @@
     = f.label :file, "Choose a file to upload"
     = f.file_field :file, :required => true
     = f.hidden_field :file_cache
+    = f.hidden_field :panda_video_id
     = f.submit 'Upload', :style => "display:none"
     %span.upload_btn= "Choose a file to upload"
     -##upload_indicator
@@ -10,4 +11,6 @@
     -#  .info
     -#    %em.filename= "video.mp4"
     -#    %span.time_estimation= "23.7MB of 54.6MB - 15:26 remaining"
-    -#    %stron.percent_completed= "40%"
+    -#    %strong.percent_completed= "40%"
+    
+  -#%script= "$('#video_panda_video_id').pandaUploader(#{Panda.signed_params('post', '/videos.json').to_json}, { upload_button_id: 'upload_button', upload_progress_id: 'upload_progress', upload_filename_id: 'upload_filename', api_url: '#{Panda.api_url}' })"

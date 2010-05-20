@@ -81,6 +81,7 @@ ActiveRecord::Schema.define(:version => 20100519125619) do
   add_index "users", ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true
 
   create_table "videos", :force => true do |t|
+    t.string   "panda_video_id"
     t.integer  "user_id"
     t.integer  "original_id"
     t.string   "name"
