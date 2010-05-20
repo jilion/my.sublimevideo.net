@@ -70,7 +70,7 @@ class SitesController < ApplicationController
   protected
   
   def set_default_sort
-    params[:by_date] = 'desc' unless params[:by_date] || params[:by_name]
+    params[:by_date] = 'desc' unless params[:by_date] || params[:by_hostname]
   end
   
 end
