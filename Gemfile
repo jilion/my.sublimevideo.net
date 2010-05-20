@@ -17,7 +17,7 @@ gem 'responders'
 gem 'uniquify'
 gem 'delayed_job',   :git => 'git://github.com/collectiveidea/delayed_job.git', :ref => "d58dcf404a71a276742050408af2a9ee94356f36"
 gem 'will_paginate', :git => 'git://github.com/mislav/will_paginate.git', :branch => 'rails3'
-gem 'has_scope'
+gem 'has_scope',     :git => 'git://github.com/rymai/has_scope.git'
 gem 'jammit',        :git => 'git://github.com/thibaudgg/jammit.git'
 
 # Storage

@@ -1,8 +1,8 @@
 class SitesController < ApplicationController
   respond_to :html, :js
-  before_filter :authenticate_user!, :set_default_sort
+  before_filter :authenticate_user!
   
-  has_scope :by_date
+  has_scope :by_date, :default => 'desc'
   has_scope :by_hostname
   
   # GET /sites
@@ -64,12 +64,6 @@ class SitesController < ApplicationController
     @site = current_user.sites.find(params[:id])
     @site.destroy
     respond_with(@site)
-  end
-  
-  protected
-  
-  def set_default_sort
-    params[:by_date] = 'desc' unless params[:by_date] || params[:by_hostname]
   end
   
 end

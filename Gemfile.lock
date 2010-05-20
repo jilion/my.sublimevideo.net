@@ -238,7 +238,7 @@ specs:
     version: 1.0.10
 - delayed_job: 
     version: 2.0.3
-    source: 6
+    source: 7
 - warden: 
     version: 0.10.5
 - devise: 
@@ -261,6 +261,7 @@ specs:
     source: 2
 - has_scope: 
     version: 0.5.0
+    source: 5
 - json: 
     version: 1.2.4
 - launchy: 
@@ -329,10 +330,10 @@ specs:
     version: 1.2.0
 - will_paginate: 
     version: 3.0.pre
-    source: 5
+    source: 6
 - wirble: 
     version: 0.1.3
-hash: ea8447c0070ea1c92d75dd6f4122e5d0a1873440
+hash: 135f18f4bb1741728197274a9f1041c8f67be01d
 sources: 
 - Git: 
     uri: git://github.com/danielb2/factory_girl
@@ -353,6 +354,10 @@ sources:
     uri: git://github.com/thibaudgg/jammit.git
     git: git://github.com/thibaudgg/jammit.git
     ref: c66b8ff299b19dd909f2bb7abca005098e5dc9b3
+- Git: 
+    uri: git://github.com/rymai/has_scope.git
+    git: git://github.com/rymai/has_scope.git
+    ref: f4d8d9f5329a7c6f39403dc3f40799f8b380312c
 - Git: 
     uri: git://github.com/mislav/will_paginate.git
     branch: rails3
