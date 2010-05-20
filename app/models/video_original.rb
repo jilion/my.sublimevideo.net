@@ -25,7 +25,7 @@ class VideoOriginal < Video
   # ================
   
   belongs_to :user
-  has_many :formats, :class_name => 'VideoFormat', :foreign_key => 'original_id'
+  has_many   :formats, :class_name => 'VideoFormat', :foreign_key => 'original_id'
   
   # ==========
   # = Scopes =

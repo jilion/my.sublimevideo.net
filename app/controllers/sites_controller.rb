@@ -38,7 +38,7 @@ class SitesController < ApplicationController
         format.js
       else
         format.html { render :new }
-        format.js { render :new }
+        format.js   { render :new }
       end
     end
   end
@@ -54,7 +54,7 @@ class SitesController < ApplicationController
         format.js
       else
         format.html { render :edit }
-        format.js { render :edit }
+        format.js   { render :edit }
       end
     end
   end

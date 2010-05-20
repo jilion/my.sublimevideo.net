@@ -34,12 +34,13 @@ class VideosController < ApplicationController
     @video = current_user.videos.build(params[:video])
     respond_with(@video) do |format|
       if @video.save
+        # @video has been uploaded to Panda, now let's encode!
         # @video.delay.encode
         format.html { redirect_to videos_path }
         format.js
       else
         format.html { render :new }
-        format.js { render :new }
+        format.js   { render :new }
       end
     end
   end
@@ -53,7 +54,7 @@ class VideosController < ApplicationController
         format.js
       else
         format.html { render :edit }
-        format.js { render :edit }
+        format.js   { render :edit }
       end
     end
   end
