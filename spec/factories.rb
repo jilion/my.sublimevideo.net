@@ -27,8 +27,5 @@ Factory.define :video_format, :class => VideoFormat, :parent => :video do |f|
 end
 
 Factory.define :log do |f|
-  f.name        "cdn.sublimevideo.net.log.1274269140-1274269200"
-  f.started_at  Time.zone.now
-  f.ended_at    Time.zone.now + 1.minute
-  f.size        654
+  f.name        "cdn.sublimevideo.net.log.1274269140-1274269200.gz"
 end

@@ -34,6 +34,7 @@ module MySublimeVideo
     config.generators do |g|
       g.orm                 :active_record
       g.template_engine     :haml
+      g.integration_tool    :rspec
       g.test_framework      :rspec, :fixture => true, :views => false
       g.fixture_replacement :factory_girl, :dir => "spec/factories"
     end

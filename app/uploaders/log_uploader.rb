@@ -3,7 +3,7 @@
 class LogUploader < CarrierWave::Uploader::Base
   
   def s3_bucket
-    "sublimevideo-logs"
+    "sublimevideo.logs"
   end
   
   # Override the directory where uploaded files will be stored
