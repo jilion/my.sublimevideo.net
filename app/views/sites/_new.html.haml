@@ -1,5 +1,4 @@
 = form_for @site, :remote => true, :html => { :class => "site" } do |f|
-  = hidden_field_tag :page, params[:page]
   .entry.site
     = f.label :hostname, "", :class => "icon"
     = f.text_field :hostname, :class => "text", :placeholder => "your-domain.com", :required => true, :autocomplete => :off

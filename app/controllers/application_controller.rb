@@ -5,11 +5,6 @@ class ApplicationController < ActionController::Base
   layout 'application'
   before_filter :beta_protection
   
-  def paginated_scope(relation)
-    instance_variable_set "@#{controller_name}", relation.paginate(:page => params[:page], :per_page => controller_name.classify.constantize.per_page)
-  end
-  hide_action :paginated_scope
-  
 protected
   
   def beta_protection
