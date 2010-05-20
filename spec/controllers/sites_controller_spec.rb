@@ -11,7 +11,7 @@ describe SitesController do
     end
     
     it "should respond with success to GET :index" do
-      @mock_user.stub_chain(:sites, :scoped).and_return([])
+      @mock_user.stub_chain(:sites, :by_date).and_return([])
       get :index
       response.should be_success
     end
