@@ -81,6 +81,14 @@ MySublimeVideo.makeSticky = function(element) {
   element.addClassName("active");
 };
 
+MySublimeVideo.makeRemoteLinkSticky = function(element) {
+  var container = element.up();
+  container.select("a.active[data-remote]").each(function(el){
+    el.removeClassName('active');
+  });
+  element.addClassName("active");
+}
+
 var AddSiteHandler = Class.create({
   initialize: function() {
     this.setup();

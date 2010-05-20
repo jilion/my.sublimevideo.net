@@ -1,10 +1,13 @@
 class SitesController < ApplicationController
   respond_to :html, :js
-  before_filter :authenticate_user!
+  before_filter :authenticate_user!, :set_default_sort
+  
+  has_scope :by_date
+  has_scope :by_hostname
   
   # GET /sites
   def index
-    @sites = current_user.sites.scoped
+    @sites = apply_scopes(current_user.sites)
     respond_with(@sites)
   end
   
@@ -28,7 +31,6 @@ class SitesController < ApplicationController
   # POST /sites
   def create
     @site = current_user.sites.build(params[:site])
-    
     respond_with(@site) do |format|
       if @site.save
         @site.delay.activate
@@ -62,6 +64,12 @@ class SitesController < ApplicationController
     @site = current_user.sites.find(params[:id])
     @site.destroy
     respond_with(@site)
+  end
+  
+  protected
+  
+  def set_default_sort
+    params[:by_date] = 'desc' unless params[:by_date] || params[:by_hostname]
   end
   
 end

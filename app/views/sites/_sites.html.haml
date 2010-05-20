@@ -3,7 +3,12 @@
     .dark_rounded_corners
       %table.main
         %tr
-          %th.site= "Site"
+          %th.site
+            .wrap
+              = "Site"
+              .sorting
+                = link_to_sort(:date, sites_path, :reverse => true, :default => true)
+                = link_to_sort(:hostname, sites_path)
           -#%th Dev hostnames
           %th.code= "Player Code"
           %th.hits= "Player Hits"
@@ -30,5 +35,5 @@
             %td.hits= rand(10000)
             %td.delete= button_to 'Delete', site, :confirm => 'Are you sure?', :method => :delete, :remote => true
             
-  = will_paginate @sites, :params => { :format => nil }
+  = will_paginate(:params => { :format => nil }, :renderer => 'WillPaginate::ViewHelpers::LinkRendererRemote')
   = page_entries_info @sites

@@ -32,6 +32,8 @@ class Site < ActiveRecord::Base
   # = Scopes =
   # ==========
   
+  scope :by_date, lambda { |way| order("created_at #{way || 'desc'}") }
+  scope :by_hostname, lambda { |way| order("hostname #{way || 'asc'}") }
   
   # ===============
   # = Validations =
@@ -40,7 +42,7 @@ class Site < ActiveRecord::Base
   validates :user,     :presence => true
   validates :hostname, :presence => true, :uniqueness => { :scope => :user_id }, :production_hostname => true
   validates :dev_hostnames, :hostnames => true
-  validate :must_be_active_to_update_hostnames
+  validate  :must_be_active_to_update_hostnames
   
   # =============
   # = Callbacks =
