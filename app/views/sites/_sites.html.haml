@@ -7,14 +7,8 @@
             .wrap
               = "Site"
               .sorting
-                = link_to sites_path(sort_hash(:date, :reverse => true)), :class => "#{sort_classes(:date, :default => true, :reverse => true)}", :remote => true do
-                  %strong
-                    %span.arrow= "Date"
-                  %span.corner
-                = link_to sites_path(sort_hash(:hostname)), :class => "#{sort_classes(:hostname)}", :remote => true do
-                  %strong
-                    %span.arrow= "Hostname"
-                  %span.corner
+                = link_to_sort(:date, sites_path, :reverse => true, :default => true)
+                = link_to_sort(:hostname, sites_path)
           -#%th Dev hostnames
           %th.code= "Player Code"
           %th.hits= "Player Hits"

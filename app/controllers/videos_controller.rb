@@ -1,6 +1,5 @@
 class VideosController < ApplicationController
-  respond_to :html
-  respond_to :js
+  respond_to :html, :js
   before_filter :authenticate_user!, :set_default_sort
   
   has_scope :by_date
