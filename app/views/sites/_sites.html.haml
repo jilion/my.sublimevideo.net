@@ -7,11 +7,11 @@
             .wrap
               = "Site"
               .sorting
-                = link_to sites_path(sort_hash(:date, :reverse => true)), :class => "#{sort_classes(:date, :default => true, :reverse => true)}", :remote => true do
+                = link_to sites_path(sort_hash(:date, :reverse => true)), :class => "#{sort_classes(:date, :default => true, :reverse => true)}", :remote => true, :onclick => "MySublimeVideo.makeRemoteLinkSticky(this)" do
                   %strong
                     %span.arrow= "Date"
                   %span.corner
-                = link_to sites_path(sort_hash(:hostname)), :class => "#{sort_classes(:hostname)}", :remote => true do
+                = link_to sites_path(sort_hash(:hostname)), :class => "#{sort_classes(:hostname)}", :remote => true, :onclick => "MySublimeVideo.makeRemoteLinkSticky(this)" do
                   %strong
                     %span.arrow= "Hostname"
                   %span.corner
