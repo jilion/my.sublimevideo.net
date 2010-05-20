@@ -3,7 +3,7 @@
     .content
       %h3
         = "Embed code for"
-        %strong= truncate_middle(@site.hostname, :length => 20)
+        %strong= truncate_middle(@site.hostname, :length => 18)
       %p.desc= "Copy the code below, and paste it into the pages on #{truncate_middle(@site.hostname)} where the SublimeVideo player will be displayed. Make sure it goes into the <code>&lt;head&gt;</code> tag.".html_safe
       %form
         .embed_code

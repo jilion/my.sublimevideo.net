@@ -7,7 +7,7 @@ class SitesController < ApplicationController
   
   # GET /sites
   def index
-    @sites = apply_scopes(current_user.sites.scoped)
+    @sites = apply_scopes(current_user.sites)
     respond_with(@sites)
   end
   
@@ -31,7 +31,6 @@ class SitesController < ApplicationController
   # POST /sites
   def create
     @site = current_user.sites.build(params[:site])
-    
     respond_with(@site) do |format|
       if @site.save
         @site.delay.activate

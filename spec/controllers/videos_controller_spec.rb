@@ -10,8 +10,8 @@ describe VideosController do
       sign_in :user, @mock_user
     end
     
-    pending "should respond with success to GET :index" do
-      @mock_user.stub_chain(:videos, :scoped)
+    it "should respond with success to GET :index" do
+      @mock_user.stub_chain(:videos, :scoped, :by_date).and_return([])
       get :index
       response.should be_success
     end
@@ -28,19 +28,16 @@ describe VideosController do
     it "should respond with success to POST :create" do
       @mock_user.stub_chain(:videos, :build).with({}).and_return(mock_video)
       mock_video.stub(:save).and_return(true)
-      mock_video.stub(:activate)
       post :create, :video => {}
       response.should redirect_to(videos_url)
     end
     it "should respond with success to PUT :update" do
       @mock_user.stub_chain(:videos, :find).with("1").and_return(mock_video)
       mock_video.stub(:update_attributes).with({}).and_return(true)
-      mock_video.stub(:deactivate)
-      mock_video.stub(:activate)
       put :update, :id => '1', :video => {}
       response.should redirect_to(videos_url)
     end
-    it "should respond with success to DELETE :destoy" do
+    it "should respond with success to DELETE :destroy" do
       @mock_user.stub_chain(:videos, :find).with("1").and_return(mock_video)
       mock_video.stub(:destroy)
       delete :destroy, :id => '1'

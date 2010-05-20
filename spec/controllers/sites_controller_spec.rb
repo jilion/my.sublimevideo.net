@@ -10,7 +10,7 @@ describe SitesController do
       sign_in :user, @mock_user
     end
     
-    pending "should respond with success to GET :index" do
+    it "should respond with success to GET :index" do
       @mock_user.stub_chain(:sites, :by_date).and_return([])
       get :index
       response.should be_success
@@ -45,7 +45,7 @@ describe SitesController do
       put :update, :id => '1', :site => {}
       response.should redirect_to(sites_url)
     end
-    it "should respond with success to DELETE :destoy" do
+    it "should respond with success to DELETE :destroy" do
       @mock_user.stub_chain(:sites, :find).with("1").and_return(mock_site)
       mock_site.stub(:destroy)
       delete :destroy, :id => '1'

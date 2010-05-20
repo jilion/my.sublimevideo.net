@@ -1,6 +1,7 @@
 module VideosHelper
   
   def seconds_to_duration(seconds)
+    return "No duration" if seconds.blank?
     hours                  = seconds / 1.hour
     minutes_in_last_hour   = (seconds - hours.hours) / 1.minute
     seconds_in_last_minute = seconds - hours.hours - minutes_in_last_hour.minutes

@@ -17,6 +17,12 @@ class VideosController < ApplicationController
     respond_with(@video)
   end
   
+  # GET /videos/new
+  def new
+    @video = current_user.videos.build
+    respond_with(@video)
+  end
+  
   # GET /videos/1/edit
   def edit
     @video = current_user.videos.find(params[:id])
@@ -27,12 +33,12 @@ class VideosController < ApplicationController
     @video = current_user.videos.build(params[:video])
     respond_with(@video) do |format|
       if @video.save
+        # @video.delay.encode
         format.html { redirect_to videos_path }
+        format.js
       else
-        format.html do
-          @videos = current_user.videos.scoped
-          render :action => :index
-        end
+        format.html { render :new }
+        format.js { render :new }
       end
     end
   end
@@ -43,10 +49,10 @@ class VideosController < ApplicationController
     respond_with(@video) do |format|
       if @video.update_attributes(params[:video])
         format.html { redirect_to videos_path }
+        format.js
       else
-        format.html do
-          render :action => :edit
-        end
+        format.html { render :edit }
+        format.js { render :edit }
       end
     end
   end
