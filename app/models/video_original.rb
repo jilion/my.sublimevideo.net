@@ -68,7 +68,7 @@ class VideoOriginal < Video
   end
   
   def total_size
-    size + formats.sum(:size)
+    size + formats.map(&:size).sum
   end
   
 end

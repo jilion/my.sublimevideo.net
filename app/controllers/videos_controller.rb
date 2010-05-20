@@ -7,7 +7,7 @@ class VideosController < ApplicationController
   
   # GET /videos
   def index
-    @videos = apply_scopes(current_user.videos.scoped)
+    @videos = apply_scopes(current_user.videos.includes(:formats))
     respond_with(@videos)
   end
   
