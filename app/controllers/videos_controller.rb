@@ -1,5 +1,5 @@
 class VideosController < ApplicationController
-  before_filter :authenticate_user!
+  before_filter :authenticate_user!, :except => :transcoded
   respond_to :html, :js
   
   has_scope :by_date
@@ -66,8 +66,14 @@ class VideosController < ApplicationController
   
   # GET /videos/d891d9a45c698d587831466f236c6c6c/transcoded - Notification url called by Panda
   def transcoded
-    @video = current_user.videos.find_by_panda_id(params[:id])
-    @video.activate
+    @video = VideoOriginal.find_by_panda_id!(params[:id])
+    unless @video.active?
+      # Check if all the formats of the given video are ready before actually activate the video
+      video_formats_data = {} # JSON.parse(Panda.get("/videos/#{params[:id]}/encodings.json"))
+      if video_formats_data.all? { |f| f.status == 'success' && f.encoding_progress == '100' }
+        @video.activate
+      end
+    end
     head :ok
   end
   

@@ -19,3 +19,17 @@ feature "Videos actions:" do
   end
   
 end
+
+feature "Video transcoded notification from panda as a guest" do
+  
+  background do
+    video = Factory(:video_original, :panda_id => 'd891d9a45c698d587831466f236c6c6c')
+  end
+  
+  scenario "receive notification from panda with a video panda_id" do
+    visit "/videos/d891d9a45c698d587831466f236c6c6c/transcoded"
+    
+    current_url.should =~ %r(http://[^/]+/videos/d891d9a45c698d587831466f236c6c6c/transcoded)
+  end
+  
+end

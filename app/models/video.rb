@@ -20,7 +20,7 @@
 
 class Video < ActiveRecord::Base
   
-  attr_accessible :name, :file, :file_cache, :thumbnail
+  attr_accessible :panda_id, :name, :file, :file_cache, :thumbnail
   uniquify :token, :chars => ('a'..'z').to_a + ('0'..'9').to_a
   mount_uploader :file, VideoUploader
   mount_uploader :thumbnail, ThumbnailUploader
@@ -65,7 +65,7 @@ class Video < ActiveRecord::Base
   # =================
   
   def self.panda_profiles_ids
-    '123456, 654321' # TODO To be changed
+    '123456, 654321' # TODO To be changed, and maybe move to config/panda.yml
   end
   
   # ====================
