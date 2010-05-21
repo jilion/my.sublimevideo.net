@@ -28,6 +28,13 @@ describe Log do
     it { subject.started_at.should == Time.zone.at(1274269140) }
     it { subject.ended_at.should == Time.zone.at(1274269200) }
     
+    it "should have good log content" do
+      subject.save
+      Zlib::GzipReader.open(subject.file.path) do |gz|
+        gz.read.should include("#Fields: c-host c-identd")
+      end
+    end
+    
     after(:each) { VCR.eject_cassette }
   end
   
