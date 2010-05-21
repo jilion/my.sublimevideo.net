@@ -1,6 +1,6 @@
 module CDN
   class << self
-    def devises_list
+    def devices_list
       client.voxel_devices_list
     end
     
