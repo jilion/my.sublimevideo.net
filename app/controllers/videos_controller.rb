@@ -66,6 +66,7 @@ class VideosController < ApplicationController
   
   # GET /videos/d891d9a45c698d587831466f236c6c6c/transcoded - Notification url called by Panda
   def transcoded
+    # We could check from where the notification comes from, maybe with something like request.remote_ip
     @video = VideoOriginal.find_by_panda_id!(params[:id])
     unless @video.active?
       # Check if all the formats of the given video are ready before actually activate the video

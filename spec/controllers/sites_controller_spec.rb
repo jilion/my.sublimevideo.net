@@ -78,7 +78,7 @@ describe SitesController do
       put :update, :id => '1', :site => {}
       response.should redirect_to(new_user_session_path)
     end
-    it "should respond with redirect to DELETE :destoy" do
+    it "should respond with redirect to DELETE :destroy" do
       delete :destroy, :id => '1'
       response.should redirect_to(new_user_session_path)
     end
