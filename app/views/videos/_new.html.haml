@@ -4,13 +4,14 @@
     = f.file_field :file, :required => true
     = f.hidden_field :file_cache
     = f.hidden_field :panda_id
+    
     = f.submit 'Upload', :style => "display:none"
-    %span.upload_btn= "Choose a file to upload"
+    %span#upload_button.upload_btn= "Choose a file to upload"
     -##upload_indicator
-    -#  .progress{ :style => "width:40%" }
+    -#  #upload_progress.progress{ :style => "width:40%" }
     -#  .info
-    -#    %em.filename= "video.mp4"
+    -#    %em#upload_filename.filename= "video.mp4"
     -#    %span.time_estimation= "23.7MB of 54.6MB - 15:26 remaining"
     -#    %strong.percent_completed= "40%"
-    
+        
   -#%script= panda_uploader_js('video_panda_id')
