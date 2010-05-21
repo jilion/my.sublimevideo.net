@@ -40,7 +40,7 @@ module CDN
   private
     
     def client
-      @client ||= HAPI.new(:hapi_authkey => { :key => yml[:key], :secret => yml[:secret] })
+      @client ||= VoxelHAPI.new(:hapi_authkey => { :key => yml[:key], :secret => yml[:secret] })
     end
     
     def yml
