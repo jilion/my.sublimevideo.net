@@ -2,9 +2,9 @@ var MySublimeVideo = MySublimeVideo || {};
 
 document.observe("dom:loaded", function() {
 
-  // =============================================
-  // = Password fields and placeholders managers =
-  // =============================================
+  // =======================================================
+  // = Password fields and placeholders and forms managers =
+  // =======================================================
   
   $$('input[type=password]').each(function(input, index){
     new PasswordFieldManager(input, index);
@@ -17,27 +17,7 @@ document.observe("dom:loaded", function() {
   }
   
   $$("form").each(function(form){
-    
-    form.on("submit", function(event){
-      // Reset pseudo-placeholders values (for browsers who don't support HTML5 placeholders)
-      if (!supportsHtml5InputAttribute("placeholder")) {
-        form.select("input.placeholder").each(function(input){
-          input.value = "";
-        });
-      }
-    });
-    
-    form.select("input[type=submit]").each(function(submitButton){
-      submitButton.on("click", function() { //when HTML5 form validitation doesn't pass, the submit event is not fired 
-        // HTML5 Input validity
-        form.select("input").each(function(input){
-          if (input.validity) {
-            if (input.validity.valid) input.removeClassName("errors");
-            else input.addClassName("errors");
-          }
-        });
-      });
-    });
+    new FormManager(form);
   });
 
   // =================
@@ -58,6 +38,10 @@ document.observe("dom:loaded", function() {
   }
 
 });
+
+// ====================
+// = Global functions =
+// ====================
 
 MySublimeVideo.flashNotice = function(message) {
   var flashDiv = $("flash");
@@ -89,32 +73,77 @@ MySublimeVideo.makeRemoteLinkSticky = function(element) {
   element.addClassName("active");
 }
 
+// ===========
+// = Classes =
+// ===========
+
 var AddSiteHandler = Class.create({
   initialize: function() {
     this.setup();
   },
   setup: function() { //call this after ajax call to re-setup this handler
-    this.element = $("new_site");
+    this.element = $("new_site"); // this is a <form>
     
     this.beforeAjaxHandler = this.element.on('ajax:before', function(){
-      this.element.down('.spinner').show();
+      this.numberOfRequestsUntilSpinnerHides = 1;
+      this.element.next(".spinner").show();
       //only listen to this once (we can stop the listener now) because this.element will soon be replaced
       this.beforeAjaxHandler.stop();
     }.bind(this));
     
-    this.completeAjaxHandler = this.element.on('ajax:complete', function(){
-      // Note1: at this point, this.element has already been replaced
-      // Note2: there's no need to hide the spinner, 'cause the whole form has been reset/replaced
-      
-      // Reload this handler:
-      this.setup();
-      
-      if (!supportsHtml5InputAttribute("placeholder")) {
-        new PlaceholderManager(this.element.down("input[placeholder]"));
-      }
-    }.bind(this));
+    // Unfourtunately we can't use: this.completeAjaxHandler = this.element.on('ajax:complete', function(event){....
+    // ...because on successful creation, create.js.erb will execute two new Ajax requests one of which will
+    // reload this form, hence it would be too early to reload/resetup the placeholder here...
+  },
+  reloadAfterAjax: function() {
+    // Note: at this point, this.element has already been replaced
+    
+    this.hideSpinner();
+    
+    this.setup();
+    
+    // Re-apply other handlers (form and placeholder managers)
+    if (!supportsHtml5InputAttribute("placeholder")) {
+      new PlaceholderManager(this.element.down("input[placeholder]"));
+    }
+    new FormManager(this.element);
+  },
+  hideSpinner: function() { //tries to hide spinners (unless another ajax request must still complete)
+    this.numberOfRequestsUntilSpinnerHides -= 1;
+    
+    if (this.numberOfRequestsUntilSpinnerHides == 0) {
+      $('new_site_wrap').down(".spinner").hide();
+    }
   }
 });
+
+var FormManager = Class.create({
+  initialize: function(form) {
+    
+    form.on("submit", function(event){
+      // Reset pseudo-placeholders values (for browsers who don't support HTML5 placeholders)
+      if (!supportsHtml5InputAttribute("placeholder")) {
+        form.select("input.placeholder").each(function(input){
+          input.value = "";
+        });
+      }
+    });
+    
+    form.select("input[type=submit]").each(function(submitButton){
+      submitButton.on("click", function() { //when HTML5 form validitation doesn't pass, the submit event is not fired 
+        // HTML5 Input validity
+        form.select("input").each(function(input){
+          if (input.validity) {
+            if (input.validity.valid) input.removeClassName("errors");
+            else input.addClassName("errors");
+          }
+        });
+      });
+    });
+    
+  }
+});
+
 
 var PasswordFieldManager = Class.create({
   initialize: function(field, index) {
@@ -127,7 +156,7 @@ var PasswordFieldManager = Class.create({
       var showPasswordLabel = new Element("label", { 'for':"show_password_"+index }).update("Show password");
       this.showPasswordCheckbox = new Element("input", { type:"checkbox", id:"show_password_"+index });
       showPasswordWrap.insert(this.showPasswordCheckbox).insert(showPasswordLabel);
-    
+      
       var errorMessage = this.field.up().select(".inline_errors").first();
       if (errorMessage) {
         errorMessage.insert({ after: showPasswordWrap });
@@ -179,7 +208,7 @@ var PasswordFieldManager = Class.create({
 
 
 var PlaceholderManager = Class.create({
-  initialize: function(field) {
+  initialize: function(field, check) {
     this.field = field;
     this.passwordFieldManager = this.field.retrieve("passwordFieldManager"); //it means field.type == "password"
     

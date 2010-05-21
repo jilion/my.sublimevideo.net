@@ -1,2 +1,13 @@
+// Executed only on successful creation
+
+MySublimeVideo.addSiteHandler.numberOfRequestsUntilSpinnerHides = 2;
+
 new Ajax.Request('/sites/new.js', { method: 'get' });
-new Ajax.Request('/sites.js', { method: 'get' });
+
+new Ajax.Request('/sites.js', {
+  method: 'get',
+  onComplete: function() {
+    MySublimeVideo.addSiteHandler.hideSpinner();
+  }
+});
+

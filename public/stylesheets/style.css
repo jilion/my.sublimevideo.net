@@ -519,6 +519,17 @@ form .inline_errors span {
 /* = My Sites = */
 /* ============ */
 
+#new_site_wrap {
+  width:668px;
+  position:relative;
+}
+
+#new_site_wrap .spinner {
+  position:absolute;
+  right:80px;
+  top:26px;
+}
+
 #content form.site {
   width:668px;
   background:url(/images/embed/breakline.png) no-repeat;
@@ -552,12 +563,6 @@ form .inline_errors span {
 }
 
 #content form.site input.add:active, form.edit input.update:active {background-position:0 -40px;}
-
-#content form.site .actions .spinner {
-  position:absolute;
-  right:0;
-  top:4px;
-}
 
 #content .main_table_wrap {
   border:1px solid #666;

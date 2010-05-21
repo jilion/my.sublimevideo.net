@@ -11,7 +11,9 @@
   -#%p.title_desc= "Here are your SublimeVideo-enabled domains and subdomains. Add as many as you want. "
   
 - @site = current_user.sites.build
-= render "new"
+#new_site_wrap
+  = render "new"
+  = image_tag "/images/embed/spinner.gif", :class => "spinner", :style => "display:none"
 
 #sites_table_wrap
   = render "sites"
