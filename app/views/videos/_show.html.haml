@@ -1,12 +1,17 @@
-.popup{ :id => "embed_code_#{@video.id}" }
+.popup{ :id => "embed_code_video_#{@video.id}" }
   .wrap
-    .content
+    .content.video
       %h3
         = "Embed code for"
         %strong= truncate(@video.name, :length => 18)
-      %p.desc= "Copy the code below, and paste it into the pages you want display the video. Make sure that you have previously added the SublimeVideo JavaScript code in your page (you can find it in Sites page).".html_safe
+      %p.desc= "Copy the code below, and paste it into the pages you want display the video. Make sure that you have previously added the SublimeVideo JavaScript code in your page (you can find it in #{link_to 'Sites', sites_path} page).".html_safe
       %form
+        .size
+          %label= "Size:"
+          %input.text.small{ :type => "text", :name => "width", :value => 600 }
+          = "x"
+          %input.text.small{ :type => "text", :name => "height", :value => 255 }
         .embed_code
-          %textarea{ :readonly => true, :onclick => "this.focus();this.select();" }= "<script type=\"text/javascript\" src=\"http://cdn.sublimevideo.net/v/#{@video.token}.js\"></script>"
+          %textarea{ :readonly => true, :onclick => "this.focus();this.select();" }= "<video class='sublime' height='255' poster='http://cdn.sublimevideo.net/v/87sdfuy/poster.jpg' width='600'> <source src='http://cdn.sublimevideo.net/v/87sdfuy/dartmoor.mov' type='video/mp4' /> <source src='http://cdn.sublimevideo.net/videos/87sdfuy/dartmoor.mp4' type='video/mp4' /> <source src='http://cdn.sublimevideo.net/v/87sdfuy/dartmoor.ogv' type='video/ogg' /></video>"
   = link_to "", :class => "close", :onclick => "MySublimeVideo.closePopup(); return false;" do
     %span= "Close"

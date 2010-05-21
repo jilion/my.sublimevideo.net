@@ -1,6 +1,6 @@
-.popup{ :id => "embed_code_#{@site.id}" }
+.popup{ :id => "embed_code_site_#{@site.id}" }
   .wrap
-    .content
+    .content.site
       %h3
         = "Embed code for"
         %strong= truncate_middle(@site.hostname, :length => 18)
