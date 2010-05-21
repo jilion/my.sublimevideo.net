@@ -1,19 +1,20 @@
 class VideosController < ApplicationController
+  before_filter :authenticate_user!
   respond_to :html, :js
-  before_filter :authenticate_user!, :set_default_sort
   
-  has_scope :by_date
+  has_scope :by_date, :default => 'desc'
   has_scope :by_name
   
   # GET /videos
   def index
-    @videos = apply_scopes(current_user.videos.scoped)
+    @videos = apply_scopes(current_user.videos.includes(:formats))
     respond_with(@videos)
   end
   
   # GET /videos/1
   def show
     @video = current_user.videos.find(params[:id])
+    # @video_data = JSON.parse(Panda.get("/videos/#{@video.panda_video_id}.json"))
     respond_with(@video)
   end
   
@@ -33,12 +34,13 @@ class VideosController < ApplicationController
     @video = current_user.videos.build(params[:video])
     respond_with(@video) do |format|
       if @video.save
+        # @video has been uploaded to Panda, now let's encode!
         # @video.delay.encode
         format.html { redirect_to videos_path }
         format.js
       else
         format.html { render :new }
-        format.js { render :new }
+        format.js   { render :new }
       end
     end
   end
@@ -52,7 +54,7 @@ class VideosController < ApplicationController
         format.js
       else
         format.html { render :edit }
-        format.js { render :edit }
+        format.js   { render :edit }
       end
     end
   end
@@ -62,12 +64,6 @@ class VideosController < ApplicationController
     @video = current_user.videos.find(params[:id])
     @video.destroy
     respond_with(@video)
-  end
-  
-protected
-  
-  def set_default_sort
-    params[:by_date] = 'desc' unless params[:by_date] || params[:by_name]
   end
   
 end

@@ -11,7 +11,7 @@ describe VideosController do
     end
     
     it "should respond with success to GET :index" do
-      @mock_user.stub_chain(:videos, :scoped, :by_date).and_return([])
+      @mock_user.stub_chain(:videos, :includes, :by_date).and_return([])
       get :index
       response.should be_success
     end

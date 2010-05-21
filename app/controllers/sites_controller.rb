@@ -1,8 +1,8 @@
 class SitesController < ApplicationController
+  before_filter :authenticate_user!
   respond_to :html, :js
-  before_filter :authenticate_user!, :set_default_sort
   
-  has_scope :by_date
+  has_scope :by_date, :default => 'desc'
   has_scope :by_hostname
   
   # GET /sites
@@ -38,7 +38,7 @@ class SitesController < ApplicationController
         format.js
       else
         format.html { render :new }
-        format.js { render :new }
+        format.js   { render :new }
       end
     end
   end
@@ -54,7 +54,7 @@ class SitesController < ApplicationController
         format.js
       else
         format.html { render :edit }
-        format.js { render :edit }
+        format.js   { render :edit }
       end
     end
   end
@@ -64,12 +64,6 @@ class SitesController < ApplicationController
     @site = current_user.sites.find(params[:id])
     @site.destroy
     respond_with(@site)
-  end
-  
-  protected
-  
-  def set_default_sort
-    params[:by_date] = 'desc' unless params[:by_date] || params[:by_hostname]
   end
   
 end

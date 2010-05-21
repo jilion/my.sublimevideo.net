@@ -8,14 +8,14 @@ feature "Videos actions:" do
   
   scenario "add a new video" do
     visit "/videos"
-    attach_file('video_file', "#{Rails.root}/spec/watchr/images/failed.png")
+    attach_file('video_file', "#{Rails.root}/spec/fixtures/railscast_intro.mov")
     click_button "Upload"
     
     current_url.should =~ %r(http://[^/]+/videos)
-    page.should have_content('Failed')
+    page.should have_content('Railscast Intro')
     
     video = @current_user.videos.last
-    video.name.should == "Failed"
+    video.name.should == "Railscast Intro"
   end
   
 end

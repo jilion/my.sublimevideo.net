@@ -4,9 +4,9 @@ module CDN
       client.voxel_devices_list
     end
     
-    def populate(paths)
-      client.voxel_voxcast_ondemand_content_populate(:device_id => yml[:device_id], :paths => parse_paths(paths))
-    end
+    # def populate(paths)
+    #   client.voxel_voxcast_ondemand_content_populate(:device_id => yml[:device_id], :paths => parse_paths(paths))
+    # end
     
     def purge(paths)
       client.voxel_voxcast_ondemand_content_purge_file(:device_id => yml[:device_id], :paths => parse_paths(paths))
@@ -40,7 +40,7 @@ module CDN
   private
     
     def client
-      @client ||= HAPI.new(:hapi_authkey => { :key => yml[:key], :secret => yml[:secret] })
+      @client ||= VoxelHAPI.new(:hapi_authkey => { :key => yml[:key], :secret => yml[:secret] })
     end
     
     def yml
