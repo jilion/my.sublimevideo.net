@@ -3,7 +3,7 @@
     .content
       %h3
         = "Settings for"
-        %strong= truncate_middle(@site.hostname)
+        %strong= truncate_middle(@site.hostname, :length => 18)
 
       = form_for @site, :remote => true, :html => { :class => "edit" } do |f|
         .entry

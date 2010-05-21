@@ -35,5 +35,6 @@
             %td.hits= rand(10000)
             %td.delete= button_to 'Delete', site, :confirm => 'Are you sure?', :method => :delete, :remote => true
             
-  = will_paginate(:params => { :format => nil }, :renderer => 'WillPaginate::ViewHelpers::LinkRendererRemote')
-  = page_entries_info @sites
+  .pagination_wrap
+    = will_paginate(:params => { :format => nil }, :renderer => 'WillPaginate::ViewHelpers::LinkRendererRemote')
+    = page_entries_info @sites

@@ -1,0 +1,12 @@
+.popup{ :id => "embed_code_#{@video.id}" }
+  .wrap
+    .content
+      %h3
+        = "Embed code for"
+        %strong= truncate(@video.name, :length => 18)
+      %p.desc= "Copy the code below, and paste it into the pages you want display the video. Make sure that you have previously added the SublimeVideo JavaScript code in your page (you can find it in Sites page).".html_safe
+      %form
+        .embed_code
+          %textarea{ :readonly => true, :onclick => "this.focus();this.select();" }= "<script type=\"text/javascript\" src=\"http://cdn.sublimevideo.net/v/#{@video.token}.js\"></script>"
+  = link_to "", :class => "close", :onclick => "MySublimeVideo.closePopup(); return false;" do
+    %span= "Close"
