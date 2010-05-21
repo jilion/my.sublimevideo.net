@@ -2,20 +2,20 @@
 #
 # Table name: videos
 #
-#  id             :integer         not null, primary key
-#  panda_video_id :string(255)
-#  user_id        :integer
-#  original_id    :integer
-#  name           :string(255)
-#  token          :string(255)
-#  file           :string(255)
-#  thumbnail      :string(255)
-#  size           :integer
-#  duration       :integer
-#  state          :string(255)
-#  type           :string(255)
-#  created_at     :datetime
-#  updated_at     :datetime
+#  id          :integer         not null, primary key
+#  panda_id    :string(255)
+#  user_id     :integer
+#  original_id :integer
+#  name        :string(255)
+#  token       :string(255)
+#  file        :string(255)
+#  thumbnail   :string(255)
+#  size        :integer
+#  duration    :integer
+#  state       :string(255)
+#  type        :string(255)
+#  created_at  :datetime
+#  updated_at  :datetime
 #
 
 require 'spec_helper'
@@ -62,7 +62,13 @@ describe Video do
       end
     end
   end
-    
+  
+  describe "Class Methods" do
+    it "should return panda profiles ids as 'id1, id2'" do
+      Video.panda_profiles_ids.should =~ /(\w,)*\w+/
+    end
+  end
+  
   describe "Instance Methods" do
     pending "should set video size" do
       FACTORIES.each do |factory|

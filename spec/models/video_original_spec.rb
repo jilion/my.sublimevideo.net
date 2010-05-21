@@ -2,20 +2,20 @@
 #
 # Table name: videos
 #
-#  id             :integer         not null, primary key
-#  panda_video_id :string(255)
-#  user_id        :integer
-#  original_id    :integer
-#  name           :string(255)
-#  token          :string(255)
-#  file           :string(255)
-#  thumbnail      :string(255)
-#  size           :integer
-#  duration       :integer
-#  state          :string(255)
-#  type           :string(255)
-#  created_at     :datetime
-#  updated_at     :datetime
+#  id          :integer         not null, primary key
+#  panda_id    :string(255)
+#  user_id     :integer
+#  original_id :integer
+#  name        :string(255)
+#  token       :string(255)
+#  file        :string(255)
+#  thumbnail   :string(255)
+#  size        :integer
+#  duration    :integer
+#  state       :string(255)
+#  type        :string(255)
+#  created_at  :datetime
+#  updated_at  :datetime
 #
 
 require 'spec_helper'
@@ -37,6 +37,26 @@ describe VideoOriginal do
       video = Factory.build(:video_original, :user => nil)
       video.should_not be_valid
       video.errors[:user].should be_present
+    end
+  end
+  
+  describe "State Machine" do
+    it "activate should also activate each formats" do
+      original = Factory(:video_original)
+      format   = Factory(:video_format, :original => original)
+      format2  = Factory(:video_format, :original => original)
+      original.activate
+      original.should be_active
+      original.formats.each { |f| f.should be_active }
+    end
+    it "deactivate should also deactivate each formats" do
+      original = Factory(:video_original)
+      format   = Factory(:video_format, :original => original)
+      format2  = Factory(:video_format, :original => original)
+      original.activate
+      original.deactivate
+      original.should be_pending
+      original.formats.each { |f| f.should be_pending }
     end
   end
   

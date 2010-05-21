@@ -43,6 +43,12 @@ describe VideosController do
       delete :destroy, :id => '1'
       response.should be_success
     end
+    it "should respond with success to GET :transcoded" do
+      @mock_user.stub_chain(:videos, :find_by_panda_id).with("1").and_return(mock_video)
+      mock_video.stub(:activate)
+      get :transcoded, :id => '1'
+      response.should be_success
+    end
   end
   
   context "as guest" do
