@@ -1276,7 +1276,7 @@ form .inline_errors span {
   margin:0 auto;
   display:table;
   position:relative;
-  padding:15px 25px;
+  padding:15px 25px 0;
 }
 
 .pagination .previous_page {
