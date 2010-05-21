@@ -28,17 +28,16 @@ ActiveRecord::Schema.define(:version => 20100519125619) do
 
   create_table "logs", :force => true do |t|
     t.string   "name"
-    t.string   "hostname"
     t.string   "state"
     t.string   "file"
     t.datetime "started_at"
     t.datetime "ended_at"
+    t.integer  "size"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   add_index "logs", ["ended_at"], :name => "index_logs_on_ended_at"
-  add_index "logs", ["name"], :name => "index_logs_on_name"
   add_index "logs", ["started_at"], :name => "index_logs_on_started_at"
 
   create_table "sites", :force => true do |t|
@@ -81,7 +80,6 @@ ActiveRecord::Schema.define(:version => 20100519125619) do
   add_index "users", ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true
 
   create_table "videos", :force => true do |t|
-    t.string   "panda_video_id"
     t.integer  "user_id"
     t.integer  "original_id"
     t.string   "name"

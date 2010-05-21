@@ -20,17 +20,18 @@ gem 'will_paginate', :git => 'git://github.com/mislav/will_paginate.git', :branc
 gem 'has_scope',     :git => 'git://github.com/rymai/has_scope.git'
 gem 'jammit',        :git => 'git://github.com/thibaudgg/jammit.git'
 
-# Storage
-gem 'aws'
-
 # File management
+gem 'aws' # S3 support for carrierwave
 gem 'carrierwave',   :git => 'git://github.com/jnicklas/carrierwave.git'
 
 # Encoding
 gem 'panda',         '>= 0.5.0'
 
 # CDN
-gem 'hapi',          :path => 'vendor/gems/hapi'
+gem 'voxel_hapi',    :git => 'git://github.com/thibaudgg/voxel_hapi.git'
+
+# Log analyzer
+gem 'request-log-analyzer', :require => 'request_log_analyzer'
 
 group :development do
   # bundler requires these gems in development
