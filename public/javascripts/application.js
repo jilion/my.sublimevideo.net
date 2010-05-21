@@ -2,6 +2,8 @@ var MySublimeVideo = MySublimeVideo || {};
 
 document.observe("dom:loaded", function() {
 
+  S2.Extensions.webkitCSSTransitions = true
+
   // =======================================================
   // = Password fields and placeholders and forms managers =
   // =======================================================
@@ -25,9 +27,7 @@ document.observe("dom:loaded", function() {
   // =================
   
   $$('#flash .notice').each(function(element){
-    setTimeout(function(){
-      element.morph('top:-35px', { duration: 0.7 });
-    },6000);
+    MySublimeVideo.hideFlashNoticeDelayed(element);
   });
   
   // ============
@@ -50,6 +50,15 @@ MySublimeVideo.flashNotice = function(message) {
   var noticeDiv = new Element("div", { className:"notice" }).update(message);
   flashDiv = new Element("div", { id:"flash" }).insert(noticeDiv);    
   $("content").insert({ top: flashDiv });
+
+  MySublimeVideo.hideFlashNoticeDelayed(noticeDiv);
+
+};
+
+MySublimeVideo.hideFlashNoticeDelayed = function(flashEl) {
+  setTimeout(function(){
+    flashEl.morph('top:-35px', { duration: 0.7 });
+  }, 4000);
 };
 
 MySublimeVideo.closePopup = function() {
