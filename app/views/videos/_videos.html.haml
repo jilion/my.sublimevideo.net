@@ -39,12 +39,13 @@
                   .upload_date= "Uploaded on #{video.created_at.strftime('%d/%m/%Y')}"
             %td.code
               - if video.formats.all? { |f| f.active? }
-                = link_to "Embed code", "", :class => "embed_code"
+                = link_to "Embed code", "", :class => "embed_code", :onclick => "new Ajax.Request('#{video_path(video, :format => :js)}', { method: 'get' });return false"
               - else
                 .in_progress
                   %em= "In progress"
                   
             %td.delete= button_to 'Delete', video_path(video), :confirm => 'Are you sure?', :method => :delete
             
-  = will_paginate(:params => { :format => nil }, :renderer => 'WillPaginate::ViewHelpers::LinkRendererRemote')
-  = page_entries_info @videos
+  .pagination_wrap
+    = will_paginate(:params => { :format => nil }, :renderer => 'WillPaginate::ViewHelpers::LinkRendererRemote')
+    = page_entries_info @videos

@@ -298,6 +298,14 @@ form input.text {
   -moz-transition:0.5s background;
 }
 
+form input.text.small {
+  width:58px;
+  height:26px;
+  padding:0;
+  line-height:30px;
+  text-align:center;
+}
+
 form input.text:focus {
   background:#fff;
   outline-color:#0085c8;
@@ -313,10 +321,13 @@ form input.text.errors {
 form input.text.errors::-webkit-input-placeholder {color:#d88282;}
 form input.text.errors.placeholder {color:#d88282;}
 
+.popup form input.text {
+  border-color:#6f7681;
+}
+
 form.edit input.text  {
   width:400px;
   padding:0 0 0 6px;
-  border-color:#6f7681;
 }
 
 form .inline_errors span {
@@ -342,8 +353,6 @@ form .inline_errors span {
   -moz-box-shadow:rgba(0,0,0,0.7) 0 1px 2px, inset rgba(0,0,0,0.35) 0 1px 4px;
   box-shadow:rgba(0,0,0,0.7) 0 1px 2px, inset rgba(0,0,0,0.35) 0 1px 4px;
 }
-
-
 
 #content form .entry .checkbox_wrap {
   margin:13px 0 6px;
@@ -929,11 +938,10 @@ form .inline_errors span {
 
 .popup {
   width:450px;
-  height:300px;
+/*  height:300px;*/
   position:fixed;
   margin:auto;
-  top:0;
-  bottom:0;
+  top:30%;
   left:0;
   right:0;
   z-index:999;
@@ -953,7 +961,7 @@ form .inline_errors span {
 }
 
 .popup .wrap {
-  height:100%;
+/*  height:100%;*/
   border:1px solid #000;
   background:#b9bdc7;
   background:-webkit-gradient(linear,left top,left bottom,from(#c6cad4),to(#a7abb5));
@@ -985,6 +993,11 @@ form .inline_errors span {
   line-height:24px;
 }
 
+.popup .content p.desc a {
+  font-weight:600;
+  border-bottom:1px solid #7f858f;
+}
+
 .popup .content code {
   font-family:Monaco, monospace;
   color:#5f759d;
@@ -1003,8 +1016,20 @@ form .inline_errors span {
   resize:none;
 }
 
+.popup .content.video textarea {
+  font-size:12px;
+  line-height:15px;
+  height:140px;
+}
+
+.popup .content.video .size {
+  padding:10px 0 5px;
+  font-size:16px;
+  font-weight:600;
+}
+
 .popup .content form.edit .entry {
-  padding:35px 0;
+  padding:35px 0 70px;
 }
 
 .popup .content form.edit .entry label {
@@ -1243,11 +1268,15 @@ form .inline_errors span {
   color:#6a6e75;
 }
 
+.pagination_wrap {
+  position:relative;
+}
+
 .pagination {
   margin:0 auto;
   display:table;
   position:relative;
-  padding:15px 25px;
+  padding:15px 25px 0;
 }
 
 .pagination .previous_page {
@@ -1298,6 +1327,13 @@ form .inline_errors span {
 
 .pagination span.gap {
   float:left;
+}
+
+.page_info {
+  position:absolute;
+  top:15px;
+  left:0;
+  font-size:13px;
 }
 
 #footer {
