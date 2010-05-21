@@ -7,7 +7,7 @@
             .wrap
               = "Site"
               .sorting
-                = link_to_sort(:date, sites_path, :default => true)
+                = link_to_sort(:date, sites_path, :reverse => true, :default => true)
                 = link_to_sort(:hostname, sites_path)
           -#%th Dev hostnames
           %th.code= "Player Code"

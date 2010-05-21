@@ -1,6 +1,6 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery
-  responders Responders::FlashResponder, Responders::HttpCacheResponder, Responders::PaginatedResponder
+  responders Responders::FlashResponder, Responders::PaginatedResponder, Responders::HttpCacheResponder
   
   layout 'application'
   before_filter :beta_protection
