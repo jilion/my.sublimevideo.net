@@ -2,19 +2,19 @@ class VideosController < ApplicationController
   before_filter :authenticate_user!
   respond_to :html, :js
   
-  has_scope :by_date, :default => 'desc'
+  has_scope :by_date
   has_scope :by_name
   
   # GET /videos
   def index
-    @videos = apply_scopes(current_user.videos.includes(:formats))
+    @videos = apply_scopes(current_user.videos.includes(:formats), params, :default => { :by_date => 'desc' })
     respond_with(@videos)
   end
   
   # GET /videos/1
   def show
     @video = current_user.videos.find(params[:id])
-    # @video_data = JSON.parse(Panda.get("/videos/#{@video.panda_video_id}.json"))
+    # @video_data = JSON.parse(Panda.get("/videos/#{@video.panda_id}.json"))
     respond_with(@video)
   end
   
@@ -34,8 +34,6 @@ class VideosController < ApplicationController
     @video = current_user.videos.build(params[:video])
     respond_with(@video) do |format|
       if @video.save
-        # @video has been uploaded to Panda, now let's encode!
-        # @video.delay.encode
         format.html { redirect_to videos_path }
         format.js
       else
@@ -64,6 +62,13 @@ class VideosController < ApplicationController
     @video = current_user.videos.find(params[:id])
     @video.destroy
     respond_with(@video)
+  end
+  
+  # GET /videos/d891d9a45c698d587831466f236c6c6c/transcoded - Notification url called by Panda
+  def transcoded
+    @video = current_user.videos.find_by_panda_id(params[:id])
+    @video.activate
+    head :ok
   end
   
 end

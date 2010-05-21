@@ -2,12 +2,12 @@ class SitesController < ApplicationController
   before_filter :authenticate_user!
   respond_to :html, :js
   
-  has_scope :by_date, :default => 'desc'
+  has_scope :by_date
   has_scope :by_hostname
   
   # GET /sites
   def index
-    @sites = apply_scopes(current_user.sites)
+    @sites = apply_scopes(current_user.sites, params, :default => { :by_date => 'desc' })
     respond_with(@sites)
   end
   
