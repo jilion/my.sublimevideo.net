@@ -1,6 +1,6 @@
 class VideosController < ApplicationController
-  respond_to :html, :js
   before_filter :authenticate_user!
+  respond_to :html, :js
   
   has_scope :by_date, :default => 'desc'
   has_scope :by_name
