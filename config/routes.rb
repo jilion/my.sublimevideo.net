@@ -9,7 +9,11 @@ MySublimeVideo::Application.routes.draw do |map|
   %w[log_out sign_out signout exit].each { |action| match action => redirect('/logout')   }
   
   resources :sites
-  resources :videos, :except => :new
+  resources :videos, :except => :new do
+    member do
+      get :transcoded
+    end
+  end
   resources :users, :only => :update
   
   root :to => redirect('/sites')

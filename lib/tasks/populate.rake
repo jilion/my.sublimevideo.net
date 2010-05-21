@@ -88,6 +88,7 @@ def create_users(count = 5)
 end
 
 def create_sites(count = 5)
+  delete_all_files_in_public('js')
   create_users if User.all.empty?
   
   User.all.each do |user|
@@ -103,6 +104,7 @@ def create_sites(count = 5)
 end
 
 def create_videos(count = 8)
+  delete_all_files_in_public('v')
   create_users if User.all.empty?
   
   User.all.each do |user|
@@ -114,12 +116,15 @@ def create_videos(count = 8)
       FORMATS.each do |format_name|
         format = original.formats.build(:name => format_name)
         format.created_at = original.created_at + rand(2).days
-        format.file = File.open("#{Rails.root}/spec/fixtures/railscast_intro.mov")
+        f = CarrierWave::SanitizedFile.new("#{Rails.root}/spec/fixtures/railscast_intro.mov")
+        copied_file = f.copy_to("#{Rails.root}/spec/fixtures/railscast_intro_#{format_name.parameterize}.mov")
+        format.file = copied_file
         format.save!
+        copied_file.delete
       end
     end
   end
-  print "#{count} videos (with formats #{FORMATS.join(', ')}) created for each user!\n"
+  print "#{User.all.size * count * (FORMATS.size + 1)} videos (1 original and #{FORMATS.size} formats per user) created!\n"
 end
 
 def timed(&block)
@@ -129,6 +134,20 @@ def timed(&block)
     print "\tDone in #{Time.now - start_time}s!\n\n"
   else
     print "\n\nYou should pass a block to this method!\n\n"
+  end
+end
+
+def delete_all_files_in_public(path)
+  if path.gsub('.', '') =~ /\w+/ # don't remove all files and directories in /public ! ;)
+    print "Deleting all files and directories in /public/#{path}\n"
+    timed do
+      Dir["#{Rails.public_path}/#{path}/**/*"].each do |filename|
+        File.delete(filename) if File.file? filename
+      end
+      Dir["#{Rails.public_path}/#{path}/**/*"].each do |filename|
+        Dir.delete(filename) if File.directory? filename
+      end
+    end
   end
 end
 
