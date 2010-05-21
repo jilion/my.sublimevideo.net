@@ -30,7 +30,7 @@ gem 'carrierwave',   :git => 'git://github.com/jnicklas/carrierwave.git'
 gem 'panda',         '>= 0.5.0'
 
 # CDN
-gem 'hapi',          :path => 'vendor/gems/hapi'
+gem 'voxel_hapi',    :git => 'git://github.com/thibaudgg/voxel_hapi.git'
 
 group :development do
   # bundler requires these gems in development
