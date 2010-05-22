@@ -10,6 +10,8 @@
 #  token       :string(255)
 #  file        :string(255)
 #  thumbnail   :string(255)
+#  codec       :string(255)
+#  container   :string(255)
 #  size        :integer
 #  duration    :integer
 #  state       :string(255)
@@ -23,7 +25,6 @@ class Video < ActiveRecord::Base
   attr_accessible :panda_id, :name, :file, :file_cache, :thumbnail
   uniquify :token, :chars => ('a'..'z').to_a + ('0'..'9').to_a
   mount_uploader :file, VideoUploader
-  mount_uploader :thumbnail, ThumbnailUploader
   
   cattr_accessor :per_page
   self.per_page = 6

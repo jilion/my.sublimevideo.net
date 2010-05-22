@@ -88,6 +88,8 @@ ActiveRecord::Schema.define(:version => 20100519125619) do
     t.string   "token"
     t.string   "file"
     t.string   "thumbnail"
+    t.string   "codec"
+    t.string   "container"
     t.integer  "size"
     t.integer  "duration"
     t.string   "state"

@@ -10,6 +10,8 @@
 #  token       :string(255)
 #  file        :string(255)
 #  thumbnail   :string(255)
+#  codec       :string(255)
+#  container   :string(255)
 #  size        :integer
 #  duration    :integer
 #  state       :string(255)
@@ -19,6 +21,8 @@
 #
 
 class VideoOriginal < Video
+  
+  mount_uploader :thumbnail, ThumbnailUploader
   
   # ================
   # = Associations =

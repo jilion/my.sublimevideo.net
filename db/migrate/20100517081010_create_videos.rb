@@ -8,6 +8,8 @@ class CreateVideos < ActiveRecord::Migration
       t.string  :token
       t.string  :file
       t.string  :thumbnail
+      t.string  :codec
+      t.string  :container
       t.integer :size
       t.integer :duration
       t.string  :state
