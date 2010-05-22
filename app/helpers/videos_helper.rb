@@ -25,4 +25,15 @@ module VideosHelper
     EOS
   end
   
+  def video_tags_for(video, *args)
+    options = args.extract_options!
+    "<video class='sublime' poster='http://cdn.sublimevideo.net#{video.thumbnail.url}' width='#{options[:width]}' height='#{options[:height]}'>\n#{video.formats.inject([]) { |html,f| html << source_tag_for(f) }.join(" ")}\n</video>"
+  end
+  
+private
+
+  def source_tag_for(video)
+    "<source src='http://cdn.sublimevideo.net#{video.file.url}' type='video/#{video.container || 'unknow'}' />"
+  end
+  
 end

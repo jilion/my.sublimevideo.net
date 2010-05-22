@@ -2,7 +2,7 @@ var MySublimeVideo = MySublimeVideo || {};
 
 document.observe("dom:loaded", function() {
 
-  S2.Extensions.webkitCSSTransitions = true
+  S2.Extensions.webkitCSSTransitions = true;
 
   // =======================================================
   // = Password fields and placeholders and forms managers =
@@ -45,10 +45,10 @@ document.observe("dom:loaded", function() {
 
 MySublimeVideo.flashNotice = function(message) {
   var flashDiv = $("flash");
-  if (flashDiv) flashDiv.remove(); 
+  if (flashDiv) flashDiv.remove();
   
   var noticeDiv = new Element("div", { className:"notice" }).update(message);
-  flashDiv = new Element("div", { id:"flash" }).insert(noticeDiv);    
+  flashDiv = new Element("div", { id:"flash" }).insert(noticeDiv);
   $("content").insert({ top: flashDiv });
 
   MySublimeVideo.hideFlashNoticeDelayed(noticeDiv);
@@ -80,7 +80,7 @@ MySublimeVideo.makeRemoteLinkSticky = function(element) {
     el.removeClassName('active');
   });
   element.addClassName("active");
-}
+};
 
 // ===========
 // = Classes =
@@ -139,7 +139,7 @@ var FormManager = Class.create({
     });
     
     form.select("input[type=submit]").each(function(submitButton){
-      submitButton.on("click", function() { //when HTML5 form validitation doesn't pass, the submit event is not fired 
+      submitButton.on("click", function() { //when HTML5 form validitation doesn't pass, the submit event is not fired
         // HTML5 Input validity
         form.select("input").each(function(input){
           if (input.validity) {
@@ -261,6 +261,28 @@ var PlaceholderManager = Class.create({
   passwordFieldDidUpdate: function(field) {
     this.field = field;
     this.setupObservers();
+  }
+});
+
+
+var VideoTagEmbedCodeUpdater = Class.create({
+  initialize: function() {
+    this.textareaEmbedVideoTag = $('video_embed_code');
+    this.sizes = {};
+    
+    this.setupObservers();
+  },
+  setupObservers: function() {
+    ['width', 'height'].each(function(size, index){
+      this.sizes[size] = $('video_'+size);
+      this.sizes[size].on("keyup", this.updateSize.bind(this));
+    }.bind(this));
+  },
+  updateSize: function(event) {
+    size = event.element().readAttribute('name');
+    if (this.sizes[size].value.match(/^\d*$/)) {
+      this.textareaEmbedVideoTag.value = this.textareaEmbedVideoTag.value.replace(new RegExp(size+"='\\d*'"), size+"='"+this.sizes[size].value+"'");
+    }
   }
 });
 

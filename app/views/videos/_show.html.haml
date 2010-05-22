@@ -8,10 +8,10 @@
       %form
         .size
           %label= "Size:"
-          %input.text.small{ :type => "text", :name => "width", :value => 600 }
+          %input#video_width.text.small{ :type => "text", :name => "width", :value => 600 }
           = "x"
-          %input.text.small{ :type => "text", :name => "height", :value => 255 }
+          %input#video_height.text.small{ :type => "text", :name => "height", :value => 255 }
         .embed_code
-          %textarea{ :readonly => true, :onclick => "this.focus();this.select();" }= "<video class='sublime' height='255' poster='http://cdn.sublimevideo.net/v/87sdfuy/poster.jpg' width='600'> <source src='http://cdn.sublimevideo.net/v/87sdfuy/dartmoor.mov' type='video/mp4' /> <source src='http://cdn.sublimevideo.net/videos/87sdfuy/dartmoor.mp4' type='video/mp4' /> <source src='http://cdn.sublimevideo.net/v/87sdfuy/dartmoor.ogv' type='video/ogg' /></video>"
+          %textarea{ :id => 'video_embed_code', :readonly => true, :onclick => "this.focus();this.select();" }= video_tags_for(@video, :width => 600, :height => 255)
   = link_to "", :class => "close", :onclick => "MySublimeVideo.closePopup(); return false;" do
     %span= "Close"
