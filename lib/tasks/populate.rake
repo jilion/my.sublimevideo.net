@@ -109,12 +109,13 @@ def create_videos(count = 8)
   
   User.all.each do |user|
     count.times do |i|
-      original = user.videos.build(:file => File.open("#{Rails.root}/spec/fixtures/railscast_intro.mov"))
+      original = user.videos.build(:file => File.open("#{Rails.root}/spec/fixtures/railscast_intro.mov"), :width => 600, :height => 255)
       original.created_at = rand(1500).days.ago
       original.save!
-      original.update_attribute(:name, Faker::Name.name)
+      original.panda_id = original.id
+      original.name = Faker::Name.name
       FORMATS.each do |format_name|
-        format = original.formats.build(:name => format_name)
+        format = original.formats.build(:name => format_name, :width => 600, :height => 255)
         format.created_at = original.created_at + rand(2).days
         f = CarrierWave::SanitizedFile.new("#{Rails.root}/spec/fixtures/railscast_intro.mov")
         copied_file = f.copy_to("#{Rails.root}/spec/fixtures/railscast_intro_#{format_name.parameterize}.mov")
@@ -122,6 +123,7 @@ def create_videos(count = 8)
         format.save!
         copied_file.delete
       end
+      original.activate
     end
   end
   print "#{User.all.size * count * (FORMATS.size + 1)} videos (1 original and #{FORMATS.size} formats per user) created!\n"

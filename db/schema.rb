@@ -92,6 +92,8 @@ ActiveRecord::Schema.define(:version => 20100519125619) do
     t.string   "container"
     t.integer  "size"
     t.integer  "duration"
+    t.integer  "width"
+    t.integer  "height"
     t.string   "state"
     t.string   "type"
     t.datetime "created_at"

@@ -12,6 +12,8 @@ class CreateVideos < ActiveRecord::Migration
       t.string  :container
       t.integer :size
       t.integer :duration
+      t.integer :width
+      t.integer :height
       t.string  :state
       t.string  :type
       t.timestamps

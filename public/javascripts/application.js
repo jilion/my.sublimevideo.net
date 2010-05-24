@@ -265,24 +265,68 @@ var PlaceholderManager = Class.create({
 });
 
 
-var VideoTagEmbedCodeUpdater = Class.create({
-  initialize: function() {
-    this.textareaEmbedVideoTag = $('video_embed_code');
-    this.sizes = {};
+var VideoEmbedCodeUpdater = Class.create({
+  initialize: function(textarea, originalWidth, originalHeight) {
+    this.embedVideoTextarea = textarea; // the textarea containing the video embed code
+    this.originalWidth      = originalWidth; // used when the user clear a field
+    this.originalHeight     = originalHeight; // used when the user clear a field
+    this.ratio              = this.originalWidth / this.originalHeight; // used to automatically keep the aspect ratio
     
     this.setupObservers();
   },
   setupObservers: function() {
+    var el = null;
     ['width', 'height'].each(function(size, index){
-      this.sizes[size] = $('video_'+size);
-      this.sizes[size].on("keyup", this.updateSize.bind(this));
+      el = $('video_'+size);
+      el.on("keyup", this.updateSizeHandler.bind(this));
+      el.on("blur", this.cleanupSizeFieldsHandler.bind(this));
     }.bind(this));
   },
-  updateSize: function(event) {
-    size = event.element().readAttribute('name');
-    if (this.sizes[size].value.match(/^\d*$/)) {
-      this.textareaEmbedVideoTag.value = this.textareaEmbedVideoTag.value.replace(new RegExp(size+"='\\d*'"), size+"='"+this.sizes[size].value+"'");
+  updateSizeHandler: function(event) {
+    this.updateSizesFromInput(event.element());
+  },
+  cleanupSizeFieldsHandler: function(event) {
+    var el = event.element();
+    if (el.value == '') this.resetSizeFields();
+    else this.cleanupUnallowedChars(el);
+  },
+  updateSizesFromInput: function(input) {
+    var newValue = input.value.match(/^\d*$/);
+    if (newValue) { // sizes must be integers to be able to update the enbed code
+      var modifiedSizeElement = input;
+      var oppositeSizeElement = this.oppositeSizeElement(modifiedSizeElement);
+      
+      // Update the opposite size input value of the updated one
+      this.updateInputValue(oppositeSizeElement.readAttribute('name'), modifiedSizeElement.value);
+      
+      // Update both sizes in the embed code
+      this.updateSizeInEmbed(modifiedSizeElement);
+      this.updateSizeInEmbed(oppositeSizeElement);
     }
+  },
+  resetSizeFields: function() {
+    $('video_width').value  = this.originalWidth;
+    $('video_height').value = this.originalHeight;
+  },
+  cleanupUnallowedChars: function(sizeInputField) {
+    var newValue = sizeInputField.value.gsub(/[^\d]/, '');
+    if (newValue != sizeInputField.value) {
+      sizeInputField.value = newValue;
+      this.updateSizesFromInput(sizeInputField);
+    }
+  },
+  oppositeSizeElement: function(sizeElement) {
+    var size = 'width';
+    if(sizeElement.readAttribute('name') == 'width') size = 'height';
+    return $('video_'+size);
+  },
+  updateInputValue: function(sizeName, oppositeValue) {
+    oppositeValue = parseInt(oppositeValue, 10);
+    $('video_'+sizeName).value = isNaN(oppositeValue) ? '' : (sizeName == 'height' ? oppositeValue/this.ratio : oppositeValue*this.ratio).round();
+  },
+  updateSizeInEmbed: function(input) {
+    var sizeName = input.readAttribute('name');
+    this.embedVideoTextarea.value = this.embedVideoTextarea.value.replace(new RegExp(sizeName+"='\\d*'"), sizeName+"='"+input.value+"'");
   }
 });
 

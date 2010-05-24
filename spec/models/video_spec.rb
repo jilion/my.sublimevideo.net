@@ -14,6 +14,8 @@
 #  container   :string(255)
 #  size        :integer
 #  duration    :integer
+#  width       :integer
+#  height      :integer
 #  state       :string(255)
 #  type        :string(255)
 #  created_at  :datetime
