@@ -1,9 +1,9 @@
 = content_for :title do
-  Login
+  = "Login"
 
 %h2= "Login"
 
-= form_for resource, :as => resource_name, :url => session_path(resource_name), :html => { :class => "register" } do |f|
+= form_for resource, :as => resource_name, :url => session_path(resource_name), :html => { :class => "main_form" } do |f|
   .entry.email
     = f.label :email, "", :class => "icon"
     = f.email_field :email, :class => "text", :placeholder => "Email", :required => true
@@ -19,5 +19,5 @@
     
   .entry.submit
     = f.submit "Login"
+    = render :partial => "devise/shared/links"
 .spacer
--#= render :partial => "devise/shared/links"

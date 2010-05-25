@@ -1,11 +1,14 @@
-%h2 Resend confirmation instructions
+= content_for :title do
+  = "Confirmation Instructions"
 
-= form_for(resource, :as => resource_name, :url => confirmation_path(resource_name)) do |f|
-  = devise_error_messages!
-  
-  %p= f.label :email
-  %p= f.text_field :email
-  
-  %p= f.submit "Resend confirmation instructions"
+%h2= "Confirmation instructions"
 
-= render :partial => "devise/shared/links"
+= form_for resource, :as => resource_name, :url => confirmation_path(resource_name), :html => { :class => "main_form p_bottom" } do |f|
+  
+  .entry.email
+    = f.label :email, "", :class => "icon"
+    = f.email_field :email, :class => "text", :placeholder => "Email", :required => true
+  
+  .entry.submit
+    = f.submit "Resend"
+    %p.note.big= "You will receive an email with the confirmation instructions."
