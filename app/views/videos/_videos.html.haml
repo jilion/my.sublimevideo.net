@@ -25,13 +25,17 @@
                   %h3.title{ :title => video.name }= truncate(video.name, :length => 28)
                   .storage
                     %strong= number_to_human_size(video.total_size)
-                    = link_to "", :class => "toggle_desc_box" do
+                    = link_to "", :class => "toggle_desc_box", :onclick => "next().toggle(); return false;" do
                       %span= "Toggle description box"
                     .desc_box{ :style => "display:none" }
                       %ul
-                        %li= "Original: #{number_to_human_size(video.size)}"
+                        %li
+                          = "Original"
+                          %span= number_to_human_size(video.size)
                         - video.formats.each do |format|
-                          %li= "#{format.name}: #{number_to_human_size(format.size)}"
+                          %li
+                            = format.name 
+                            %span= number_to_human_size(format.size)
                   .views
                     %strong= rand(10000)
                     %em= "views"
