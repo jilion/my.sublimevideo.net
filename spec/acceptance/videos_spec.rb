@@ -20,16 +20,22 @@ feature "Videos actions:" do
   
 end
 
-feature "Video transcoded notification from panda as a guest" do
+feature "Video transcoded notification from panda" do
   
   background do
-    video = Factory(:video_original, :panda_id => 'd891d9a45c698d587831466f236c6c6c')
+    sign_in_as_user
+    @video = Factory(:video_original, :panda_id => 'd891d9a45c698d587831466f236c6c6c', :user => @current_user)
   end
   
   scenario "receive notification from panda with a video panda_id" do
-    visit "/videos/d891d9a45c698d587831466f236c6c6c/transcoded"
+    visit "/videos"
+    page.should have_content('In progress')
     
-    current_url.should =~ %r(http://[^/]+/videos/d891d9a45c698d587831466f236c6c6c/transcoded)
+    visit "/videos/d891d9a45c698d587831466f236c6c6c/transcoded"
+    visit "/videos"
+    page.should have_content('Embed code')
+    
+    @video.reload.should be_active
   end
   
 end

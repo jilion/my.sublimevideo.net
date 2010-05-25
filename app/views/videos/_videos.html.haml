@@ -38,7 +38,7 @@
                   .spacer
                   .upload_date= "Uploaded on #{video.created_at.strftime('%d/%m/%Y')}"
             %td.code
-              - if video.formats.all? { |f| f.active? }
+              - if video.active?
                 = link_to "Embed code", "", :class => "embed_code", :onclick => "new Ajax.Request('#{video_path(video, :format => :js)}', { method: 'get' });return false"
               - else
                 .in_progress
