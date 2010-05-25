@@ -15,7 +15,7 @@ module WillPaginate
     private
     
       def link(text, target, attributes = {})
-        super(text, target, attributes.merge({ :'data-remote' => true }))
+        super(text, target, attributes.merge({ :'data-remote' => true, :onclick => "MySublimeVideo.showTableSpinner()" }))
       end
       
     end

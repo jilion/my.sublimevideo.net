@@ -648,6 +648,17 @@ form .inline_errors span {
   height:100%;
 }
 
+#content table.main th strong {
+  padding-right:24px;
+  position:relative;
+}
+
+#content table.main th .spinner {
+  position:absolute;
+  top:1px;
+  right:0;
+}
+
 #content table.main th .sorting {
   position:absolute;
   right:-5px;

@@ -5,7 +5,9 @@
         %tr
           %th.video
             .wrap
-              = "Video"
+              %strong
+                = image_tag "/images/embed/small_spinner.gif", :class => "spinner", :id => "table_spinner", :style => "display:none"
+                = "Video"
               .sorting
                 = link_to_sort(:date, videos_path, :reverse => true, :default => true)
                 = link_to_sort(:name, videos_path)

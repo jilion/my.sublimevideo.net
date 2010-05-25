@@ -82,6 +82,10 @@ MySublimeVideo.makeRemoteLinkSticky = function(element) {
   element.addClassName("active");
 };
 
+MySublimeVideo.showTableSpinner = function() {
+  $('table_spinner').show();
+}
+
 // ===========
 // = Classes =
 // ===========
