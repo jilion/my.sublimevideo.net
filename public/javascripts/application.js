@@ -37,6 +37,13 @@ document.observe("dom:loaded", function() {
     MySublimeVideo.addSiteHandler = new AddSiteHandler();
   }
 
+  // ================
+  // = Sites poller =
+  // ================
+  if ($("sites")) {
+    MySublimeVideo.sitesPoller = new SitesPoller();
+  }
+
 });
 
 // ====================
@@ -61,6 +68,10 @@ MySublimeVideo.hideFlashNoticeDelayed = function(flashEl) {
   }, 4000);
 };
 
+// ====================
+// = Onclick handlers =
+// ====================
+
 MySublimeVideo.closePopup = function() {
   $$('.popup').each(function(el) {
     el.fade({ after :function(){ el.remove(); }});
@@ -81,6 +92,17 @@ MySublimeVideo.makeRemoteLinkSticky = function(element) {
   });
   element.addClassName("active");
 };
+
+MySublimeVideo.showSiteEmbedCode = function(siteId) {
+  new Ajax.Request('/sites/'+siteId, { method: 'get' });
+  return false;
+};
+
+MySublimeVideo.showSiteSettings = function(siteId) {
+  new Ajax.Request('/sites/'+siteId+'/edit', { method: 'get' });
+  return false;
+};
+
 
 // ===========
 // = Classes =
@@ -352,6 +374,61 @@ var VideoEmbedCodeUpdater = Class.create({
     ['width', 'height'].each(function(sizeName, index) {
       block.call(sizeName, index);
     });
+  }
+});
+
+
+var SitesPoller = Class.create({
+  initialize: function() {
+    this.pollingDelay = 3000;
+    this.checkForSiteInProgress();
+  },
+  checkForSiteInProgress: function() {
+    // ddd('checking for site InProgress...')
+    var siteInProgress = $$('#sites .in_progress').first();
+    if (siteInProgress) {
+      // ddd('...found one!')
+      this.currentSiteId = parseInt(siteInProgress.up('tr').id.replace("site_",''), 10);
+      this.startPolling();
+    }
+  },
+  startPolling: function() {
+    if (this.poll) this.stopPolling();
+    this.poll = setInterval(this.remoteCheckForStatusUpdate.bind(this), this.pollingDelay);
+  },
+  stopPolling: function() {
+    clearInterval(this.poll);
+    this.poll = null;
+  },
+  remoteCheckForStatusUpdate: function() {
+    new Ajax.Request('/sites/'+this.currentSiteId+'/status', { method: 'get' });
+    // this will simply reply with a HEAD OK if the status is still pending, or it'll will call the updateSite() method below if the status changed to active
+  },
+  updateSite: function(siteId) {
+    // Stop polling
+    this.stopPolling();
+    
+    // Building the Embed Code button
+    var codeWrap = $$("#site_"+siteId+" .code").first();
+    if (codeWrap) {
+      //<a onclick="return MySublimeVideo.showSiteEmbedCode(9)" class="embed_code" href="/sites/9">Embed code</a>
+      var embedCodeButton = new Element("a", {
+        href:"/sites/"+siteId,
+        className:"embed_code",
+        onclick:"return MySublimeVideo.showSiteEmbedCode("+siteId+")"
+      }).update("Embed code");
+      codeWrap.update(embedCodeButton);
+    }
+    
+    // Updating the open settings button
+    var settingsButton = $$("#site_"+siteId+" .settings").first();
+    if (settingsButton) {
+      settingsButton.removeClassName("disabled");
+      settingsButton.writeAttribute("onclick", "return MySublimeVideo.showSiteSettings("+siteId+")");
+    }
+    
+    // Check if a restart polling is needed
+    this.checkForSiteInProgress();
   }
 });
 

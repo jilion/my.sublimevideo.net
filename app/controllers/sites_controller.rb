@@ -66,4 +66,10 @@ class SitesController < ApplicationController
     respond_with(@site)
   end
   
+  # GET /sites/1/status
+  def status
+    @site = current_user.sites.find(params[:id])
+    head :ok unless @site.active?
+  end
+  
 end
