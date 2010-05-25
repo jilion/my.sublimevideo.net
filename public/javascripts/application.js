@@ -397,15 +397,15 @@ var SitesPoller = Class.create({
   },
   startPolling: function() {
     if (this.poll) this.stopPolling();
-    this.poll = setInterval(this.remoteCheckForStatusUpdate.bind(this), this.pollingDelay);
+    this.poll = setInterval(this.remoteCheckForStateUpdate.bind(this), this.pollingDelay);
   },
   stopPolling: function() {
     clearInterval(this.poll);
     this.poll = null;
   },
-  remoteCheckForStatusUpdate: function() {
-    new Ajax.Request('/sites/'+this.currentSiteId+'/status', { method: 'get' });
-    // this will simply reply with a HEAD OK if the status is still pending, or it'll will call the updateSite() method below if the status changed to active
+  remoteCheckForStateUpdate: function() {
+    new Ajax.Request('/sites/'+this.currentSiteId+'/state', { method: 'get' });
+    // this will simply reply with a HEAD OK if the state is still pending, or it'll will call the updateSite() method below if the state changed to active
   },
   updateSite: function(siteId) {
     // Stop polling

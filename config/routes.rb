@@ -10,7 +10,7 @@ MySublimeVideo::Application.routes.draw do |map|
   
   resources :sites do
     member do
-      get :status
+      get :state
     end
   end
   resources :videos, :except => :new do
