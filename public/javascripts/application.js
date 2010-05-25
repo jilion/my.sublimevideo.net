@@ -267,32 +267,40 @@ var PlaceholderManager = Class.create({
 
 var VideoEmbedCodeUpdater = Class.create({
   initialize: function(textarea, originalWidth, originalHeight) {
-    this.embedVideoTextarea = textarea; // the textarea containing the video embed code
-    this.originalWidth      = originalWidth; // used when the user clear a field
-    this.originalHeight     = originalHeight; // used when the user clear a field
-    this.ratio              = this.originalWidth / this.originalHeight; // used to automatically keep the aspect ratio
+    this.embedVideoTextarea      = textarea; // the textarea containing the video embed code
+    this.originalSizes           = []; // used when the user clear a field
+    this.originalSizes['width']  = originalWidth; // used when the user clear a field
+    this.originalSizes['height'] = originalHeight; // used when the user clear a field
+    this.ratio                   = originalWidth / originalHeight; // used to automatically keep the aspect ratio
+    this.currentSizes            = [];
+    this.currentSizes['width']   = this.originalSizes['width'];
+    this.currentSizes['height']  = this.originalSizes['height'];
     
     this.setupObservers();
   },
   setupObservers: function() {
     var el = null;
-    ['width', 'height'].each(function(size, index){
-      el = $('video_'+size);
+    ['width', 'height'].each(function(sizeName, index) {
+      el = $('video_'+sizeName);
       el.on("keyup", this.updateSizeHandler.bind(this));
-      el.on("blur", this.cleanupSizeFieldsHandler.bind(this));
+      el.on("blur", this.cleanupSizeHandler.bind(this));
     }.bind(this));
   },
   updateSizeHandler: function(event) {
     this.updateSizesFromInput(event.element());
   },
-  cleanupSizeFieldsHandler: function(event) {
+  cleanupSizeHandler: function(event) {
     var el = event.element();
     if (el.value == '') this.resetSizeFields();
     else this.cleanupUnallowedChars(el);
   },
   updateSizesFromInput: function(input) {
-    var newValue = input.value.match(/^\d*$/);
-    if (newValue) { // sizes must be integers to be able to update the enbed code
+    // sizes must be integers and limited to 5 digits, preventing big number like 15.2+42, that would not be updated in the embed code after being set
+    var newValue = input.value.match(/^\d{0,5}$/);
+    
+    // we must check if the value of the input has actually changed to handle the tab-pressed case that fire a keyup event
+    // on the new focused field and could update the bluried field (not the right behavior), that's why the currentSizes array exists
+    if (newValue && this.currentSizes[input.readAttribute('name')] != input.value) {
       var modifiedSizeElement = input;
       var oppositeSizeElement = this.oppositeSizeElement(modifiedSizeElement);
       
@@ -302,15 +310,25 @@ var VideoEmbedCodeUpdater = Class.create({
       // Update both sizes in the embed code
       this.updateSizeInEmbed(modifiedSizeElement);
       this.updateSizeInEmbed(oppositeSizeElement);
+      
+      // Update the current sizes array with the new current sizes
+      this.currentSizes[modifiedSizeElement.readAttribute('name')] = modifiedSizeElement.value;
+      this.currentSizes[oppositeSizeElement.readAttribute('name')] = oppositeSizeElement.value;
     }
   },
   resetSizeFields: function() {
-    $('video_width').value  = this.originalWidth;
-    $('video_height').value = this.originalHeight;
+    var el = null;
+    ['width', 'height'].each(function(sizeName, index) {
+      el = $('video_'+sizeName);
+      $('video_'+sizeName).value = this.originalSizes[sizeName];
+      this.updateSizeInEmbed($('video_'+sizeName));
+    }.bind(this));
+    this.updateSizesFromInput($('video_width'));
   },
   cleanupUnallowedChars: function(sizeInputField) {
-    var newValue = sizeInputField.value.gsub(/[^\d]/, '');
-    if (newValue != sizeInputField.value) {
+    var newValue = sizeInputField.value.gsub(/[^\d]/, '').substring(0,5); // removing non-digits chars and then cut to 5 digits
+    if (newValue == '') this.resetSizeFields();
+    else if (newValue != sizeInputField.value) {
       sizeInputField.value = newValue;
       this.updateSizesFromInput(sizeInputField);
     }
@@ -322,11 +340,18 @@ var VideoEmbedCodeUpdater = Class.create({
   },
   updateInputValue: function(sizeName, oppositeValue) {
     oppositeValue = parseInt(oppositeValue, 10);
-    $('video_'+sizeName).value = isNaN(oppositeValue) ? '' : (sizeName == 'height' ? oppositeValue/this.ratio : oppositeValue*this.ratio).round();
+    var newValue = isNaN(oppositeValue) ? '' : (sizeName == 'height' ? oppositeValue/this.ratio : oppositeValue*this.ratio).round();
+    $('video_'+sizeName).value  = newValue;
+    this.currentSizes[sizeName] = newValue;
   },
   updateSizeInEmbed: function(input) {
     var sizeName = input.readAttribute('name');
     this.embedVideoTextarea.value = this.embedVideoTextarea.value.replace(new RegExp(sizeName+"='\\d*'"), sizeName+"='"+input.value+"'");
+  },
+  sizes: function(block) {
+    ['width', 'height'].each(function(sizeName, index) {
+      block.call(sizeName, index);
+    });
   }
 });
 

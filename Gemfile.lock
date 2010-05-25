@@ -222,7 +222,7 @@ specs:
 - culerity: 
     version: 0.2.10
 - nokogiri: 
-    version: 1.4.1
+    version: 1.4.2
 - ffi: 
     version: 0.6.3
 - json_pure: 
@@ -259,7 +259,7 @@ specs:
 - growl: 
     version: 1.0.3
 - haml: 
-    version: 3.0.4
+    version: 3.0.6
 - has_scope: 
     version: 0.5.0
     source: 5
@@ -299,7 +299,7 @@ specs:
 - request-log-analyzer: 
     version: 1.7.0
 - responders: 
-    version: 0.6.0
+    version: 0.6.1
 - rev: 
     version: 0.3.2
 - rspec-core: 
@@ -335,7 +335,7 @@ specs:
 - watchr: 
     version: "0.6"
 - webmock: 
-    version: 1.2.0
+    version: 1.2.1
 - will_paginate: 
     version: 3.0.pre
     source: 6
@@ -366,7 +366,7 @@ sources:
 - Git: 
     uri: git://github.com/rymai/has_scope.git
     git: git://github.com/rymai/has_scope.git
-    ref: f4d8d9f5329a7c6f39403dc3f40799f8b380312c
+    ref: 22165fec8eb7e517dc5eb8e43ea91055ce5d829d
 - Git: 
     uri: git://github.com/mislav/will_paginate.git
     branch: rails3

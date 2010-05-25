@@ -41,7 +41,7 @@ describe VideosController do
       @mock_user.stub_chain(:videos, :find).with("1").and_return(mock_video)
       mock_video.stub(:destroy)
       delete :destroy, :id => '1'
-      response.should be_success
+      response.should redirect_to(videos_path)
     end
   end
   

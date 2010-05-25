@@ -7,7 +7,7 @@ class VideosController < ApplicationController
   
   # GET /videos
   def index
-    @videos = apply_scopes(current_user.videos.includes(:formats), params, :default => { :by_date => 'desc' })
+    @videos = apply_scopes(current_user.videos.includes(:formats), :default => { :by_date => 'desc' })
     respond_with(@videos)
   end
   
@@ -61,7 +61,10 @@ class VideosController < ApplicationController
   def destroy
     @video = current_user.videos.find(params[:id])
     @video.destroy
-    respond_with(@video)
+    respond_with(@video) do |format|
+      format.html { redirect_to videos_path }
+      format.js
+    end
   end
   
   # GET /videos/d891d9a45c698d587831466f236c6c6c/transcoded - Notification url called by Panda

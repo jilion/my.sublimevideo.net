@@ -7,7 +7,7 @@ class SitesController < ApplicationController
   
   # GET /sites
   def index
-    @sites = apply_scopes(current_user.sites, params, :default => { :by_date => 'desc' })
+    @sites = apply_scopes(current_user.sites, :default => { :by_date => 'desc' })
     respond_with(@sites)
   end
   
