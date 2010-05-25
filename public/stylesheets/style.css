@@ -229,7 +229,7 @@ body {
   padding-bottom:15px;
 }
 
-#content form.register {
+#content form.main_form {
   padding:15px 0 10px;
   width:440px;
 }
@@ -237,6 +237,10 @@ body {
 form .entry {
   position:relative;
   padding:6px 0;
+}
+
+form.p_bottom .entry.email, form.p_bottom .entry.password {
+  padding-bottom:25px;
 }
 
 form label.icon {
@@ -415,8 +419,25 @@ form .inline_errors span {
 #content .entry.submit p.note {
   font-size:12px;
   line-height:20px;
-  padding:3px 0 0;
+  padding-top:3px;
   color:#737b8a;
+}
+
+#content .entry.submit p.note.big {
+  font-size:14px;
+  padding-top:13px;
+}
+
+#content ul.session_links {
+  list-style-type:none;
+  padding:4px 0 4px 10px;
+  line-height:20px;
+  font-size:12px;
+}
+
+#content ul.session_links li.signup {
+  font-weight:bold;
+  font-size:16px;
 }
 
 #signup_quotes {
@@ -646,6 +667,17 @@ form .inline_errors span {
   position:relative;
   width:100%;
   height:100%;
+}
+
+#content table.main th strong {
+  padding-right:24px;
+  position:relative;
+}
+
+#content table.main th .spinner {
+  position:absolute;
+  top:1px;
+  right:0;
 }
 
 #content table.main th .sorting {
@@ -1245,6 +1277,30 @@ form .inline_errors span {
 }
 
 #content table.main td.video .info a.toggle_desc_box span {display:none;}
+
+#content table.main td.video .info .desc_box {
+  width:190px;
+  height:93px;
+  background:url(/images/embed/videos/formats_box.png) no-repeat;
+  position:absolute;
+  top:-34px;
+  right:-190px;
+}
+
+#content table.main td.video .info .desc_box ul {
+  list-style-type:none;
+  padding:7px 3px 7px 18px;
+  font-size:12px;
+  color:#d4dae5;
+  text-shadow:#000 0 -1px 0;
+  line-height:15px;
+}
+
+#content table.main td.video .info .desc_box li span {
+  text-align:right;
+  float:right;
+  padding-right:8px;
+}
 
 #content table.main td.video .info .views {
   float:left;

@@ -3,7 +3,7 @@
   
 %h2= "Sign Up"
 
-= form_for @resource, :as => :user, :url => registration_path(resource_name), :html => { :class => "register" } do |f|
+= form_for @resource, :as => :user, :url => registration_path(resource_name), :html => { :class => "main_form" } do |f|
   
   .entry.full_name
     = f.label :full_name, "", :class => "icon"

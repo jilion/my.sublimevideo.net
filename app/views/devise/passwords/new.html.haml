@@ -1,11 +1,15 @@
-%h2 Forgot your password?
+= content_for :title do
+  = "Forgot Password"
 
-= form_for(resource, :as => resource_name, :url => password_path(resource_name)) do |f|
-  = devise_error_messages!
+%h2= "Forgot your password?"
+
+= form_for resource, :as => resource_name, :url => password_path(resource_name), :html => { :class => "main_form p_bottom" } do |f|
   
-  = f.label :email
-  = f.text_field :email
+  .entry.email
+    = f.label :email, "", :class => "icon"
+    = f.email_field :email, :class => "text", :placeholder => "Email", :required => true
   
-  = f.submit "Send me reset password instructions"
+  .entry.submit
+    = f.submit "Send"
+    %p.note.big= "You will receive an email with instructions to reset you password."
   
-= render :partial => "devise/shared/links"
