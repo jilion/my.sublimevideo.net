@@ -93,6 +93,10 @@ MySublimeVideo.makeRemoteLinkSticky = function(element) {
   element.addClassName("active");
 };
 
+MySublimeVideo.showTableSpinner = function() {
+  $('table_spinner').show();
+};
+
 MySublimeVideo.showSiteEmbedCode = function(siteId) {
   new Ajax.Request('/sites/'+siteId, { method: 'get' });
   return false;
@@ -102,7 +106,6 @@ MySublimeVideo.showSiteSettings = function(siteId) {
   new Ajax.Request('/sites/'+siteId+'/edit', { method: 'get' });
   return false;
 };
-
 
 // ===========
 // = Classes =

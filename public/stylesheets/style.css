@@ -648,6 +648,17 @@ form .inline_errors span {
   height:100%;
 }
 
+#content table.main th strong {
+  padding-right:24px;
+  position:relative;
+}
+
+#content table.main th .spinner {
+  position:absolute;
+  top:1px;
+  right:0;
+}
+
 #content table.main th .sorting {
   position:absolute;
   right:-5px;
@@ -1245,6 +1256,30 @@ form .inline_errors span {
 }
 
 #content table.main td.video .info a.toggle_desc_box span {display:none;}
+
+#content table.main td.video .info .desc_box {
+  width:190px;
+  height:93px;
+  background:url(/images/embed/videos/formats_box.png) no-repeat;
+  position:absolute;
+  top:-34px;
+  right:-190px;
+}
+
+#content table.main td.video .info .desc_box ul {
+  list-style-type:none;
+  padding:7px 3px 7px 18px;
+  font-size:12px;
+  color:#d4dae5;
+  text-shadow:#000 0 -1px 0;
+  line-height:15px;
+}
+
+#content table.main td.video .info .desc_box li span {
+  text-align:right;
+  float:right;
+  padding-right:8px;
+}
 
 #content table.main td.video .info .views {
   float:left;

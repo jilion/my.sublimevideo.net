@@ -5,7 +5,9 @@
         %tr
           %th.video
             .wrap
-              = "Video"
+              %strong
+                = image_tag "/images/embed/small_spinner.gif", :class => "spinner", :id => "table_spinner", :style => "display:none"
+                = "Video"
               .sorting
                 = link_to_sort(:date, videos_path, :reverse => true, :default => true)
                 = link_to_sort(:name, videos_path)
@@ -25,20 +27,24 @@
                   %h3.title{ :title => video.name }= truncate(video.name, :length => 28)
                   .storage
                     %strong= number_to_human_size(video.total_size)
-                    = link_to "", :class => "toggle_desc_box" do
+                    = link_to "", :class => "toggle_desc_box", :onclick => "next().toggle(); return false;" do
                       %span= "Toggle description box"
                     .desc_box{ :style => "display:none" }
                       %ul
-                        %li= "Original: #{number_to_human_size(video.size)}"
+                        %li
+                          = "Original"
+                          %span= number_to_human_size(video.size)
                         - video.formats.each do |format|
-                          %li= "#{format.name}: #{number_to_human_size(format.size)}"
+                          %li
+                            = format.name 
+                            %span= number_to_human_size(format.size)
                   .views
                     %strong= rand(10000)
                     %em= "views"
                   .spacer
                   .upload_date= "Uploaded on #{video.created_at.strftime('%d/%m/%Y')}"
             %td.code
-              - if video.formats.all? { |f| f.active? }
+              - if video.active?
                 = link_to "Embed code", "", :class => "embed_code", :onclick => "new Ajax.Request('#{video_path(video, :format => :js)}', { method: 'get' });return false"
               - else
                 .in_progress

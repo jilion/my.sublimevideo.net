@@ -5,7 +5,9 @@
         %tr
           %th.site
             .wrap
-              = "Site"
+              %strong
+                = image_tag "/images/embed/small_spinner.gif", :class => "spinner", :id => "table_spinner", :style => "display:none"
+                = "Site"
               .sorting
                 = link_to_sort(:date, sites_path, :reverse => true, :default => true)
                 = link_to_sort(:hostname, sites_path)

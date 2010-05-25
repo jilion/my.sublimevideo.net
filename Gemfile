@@ -11,11 +11,11 @@ gem 'devise',        '>= 1.1.rc1'
 
 # Internals
 gem 'i18n'
-gem 'haml',          '>= 3.0.0'
+gem 'haml'
 gem 'state_machine'
 gem 'responders'
 gem 'uniquify'
-gem 'delayed_job',   :git => 'git://github.com/collectiveidea/delayed_job.git', :ref => "d58dcf404a71a276742050408af2a9ee94356f36"
+gem 'delayed_job',   :git => 'git://github.com/thibaudgg/delayed_job'
 gem 'will_paginate', :git => 'git://github.com/mislav/will_paginate.git', :branch => 'rails3'
 gem 'has_scope',     :git => 'git://github.com/rymai/has_scope.git'
 gem 'jammit',        :git => 'git://github.com/thibaudgg/jammit.git'

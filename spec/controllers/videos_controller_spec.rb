@@ -79,7 +79,7 @@ describe VideosController do
     end
     it "should not activate an active video and respond with success to GET :transcoded" do
       VideoOriginal.stub(:find_by_panda_id!).with("1").and_return(mock_video)
-      mock_video.stub(:active?).and_return(true)
+      mock_video.stub(:activate).and_return(true)
       get :transcoded, :id => '1'
       response.should be_success
     end
