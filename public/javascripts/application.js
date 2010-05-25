@@ -68,14 +68,46 @@ MySublimeVideo.hideFlashNoticeDelayed = function(flashEl) {
   }, 4000);
 };
 
+MySublimeVideo.openPopup = function(itemId, idPrefix, url) { //item can be site or video
+  // Creates the base skeleton for the popup, and will render it's content via an ajax request:
+  //
+  // <div class='popup loading'>
+  //   <div class='wrap'>
+  //     <div class='content'></div>
+  //   </div>
+  //   <a class='close'><span>Close</span></a>
+  // </div>
+  
+  MySublimeVideo.closePopup();
+  
+  var popupId = idPrefix + "_" + itemId;
+  var popupLoading = new Element("div", {
+    id:popupId,
+    className:"popup loading"
+  }).update("<div class='wrap'><div class='content'></div></div>");
+  var closeButton = new Element("a", {
+    href:"",
+    className:"close",
+    onclick:"return MySublimeVideo.closePopup()"
+  }).update("<span>Close</span>");
+  popupLoading.insert({ bottom:closeButton });
+  
+  $('global').insert({ after:popupLoading });
+  
+  new Ajax.Request(url, { method: 'get' }); //js.erb of the called method will take care of replacing the wrap div with the response content 
+};
+
+
 // ====================
 // = Onclick handlers =
 // ====================
 
 MySublimeVideo.closePopup = function() {
   $$('.popup').each(function(el) {
-    el.fade({ after :function(){ el.remove(); }});
+    el.remove();
+    // el.fade({ after :function(){ el.remove(); }});
   });
+  return false;
 };
 
 MySublimeVideo.makeSticky = function(element) {
@@ -97,13 +129,19 @@ MySublimeVideo.showTableSpinner = function() {
   $('table_spinner').show();
 };
 
+
+MySublimeVideo.showVideoEmbedCode = function(videoId) {
+  MySublimeVideo.openPopup(videoId, "embed_code_video", '/videos/'+videoId);
+  return false;
+};
+
 MySublimeVideo.showSiteEmbedCode = function(siteId) {
-  new Ajax.Request('/sites/'+siteId, { method: 'get' });
+  MySublimeVideo.openPopup(siteId, "embed_code_site", '/sites/'+siteId);
   return false;
 };
 
 MySublimeVideo.showSiteSettings = function(siteId) {
-  new Ajax.Request('/sites/'+siteId+'/edit', { method: 'get' });
+  MySublimeVideo.openPopup(siteId, "settings", '/sites/'+siteId+'/edit');
   return false;
 };
 

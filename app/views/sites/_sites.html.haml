@@ -22,14 +22,14 @@
               .wrap
                 = link_to truncate_middle(site.hostname), "http://#{site.hostname}", :class => "external_link", :onclick => "window.open(this); return false", :title => site.hostname
                 - if site.active?
-                  = link_to edit_site_path(site), :class => "settings", :title => "Settings", :onclick => "return MySublimeVideo.showSiteSettings(#{site.id})" do
+                  = link_to "", :class => "settings", :title => "Settings", :onclick => "return MySublimeVideo.showSiteSettings(#{site.id})" do
                     %span= "settings"
                 - else
-                  = link_to edit_site_path(site), :class => "settings disabled", :title => "Settings", :onclick => "return false" do
+                  = link_to "", :class => "settings disabled", :title => "Settings", :onclick => "return false" do
                     %span= "settings"
             %td.code
               - if site.active?
-                = link_to "Embed code", site_path(site), :class => "embed_code", :onclick => "return MySublimeVideo.showSiteEmbedCode(#{site.id})"
+                = link_to "Embed code", "", :class => "embed_code", :onclick => "return MySublimeVideo.showSiteEmbedCode(#{site.id})"
               - else
                 .in_progress
                   %em= "In progress"
