@@ -3,7 +3,7 @@
   request: !ruby/struct:VCR::Request 
     method: :post
     uri: https://api.voxel.net:443/version/1.0/
-    body: timestamp=2010-05-20T11%3a46%3a15%2b02%3a00&method=voxel.voxcast.ondemand.logs.download&api_sig=3f6b91023135b1e6e8b300aecbc957f5&key=f0bdf4e54d590835e7100c926c2d1a47&filename=cdn.sublimevideo.net.log.1274269140-1274269200.gz
+    body: timestamp=2010-05-20T11%3a46%3a15%2b02%3a00&method=voxel.voxcast.ondemand.logs.download&api_sig=3f6b91023135b1e6e8b300aecbc957f5&key=f0bdf4e54d590835e7100c926c2d1a47&filename=cdn.sublimevideo.net.log.1274773200-1274773260.gz
     headers: 
       accept: 
       - "*/*"
