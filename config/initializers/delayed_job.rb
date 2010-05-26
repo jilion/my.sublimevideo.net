@@ -5,4 +5,4 @@ Delayed::Worker.destroy_failed_jobs = false
 
 # Worker can't load model instances (http://github.com/collectiveidea/delayed_job/issues/labels/blocker#issue/65)
 # => As a short term workaround, require your models in an initializer.
-require 'site'
+# require 'site'

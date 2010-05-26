@@ -27,6 +27,7 @@ class Site < ActiveRecord::Base
   # ================
   
   belongs_to :user
+  has_many :site_usages
   
   # ==========
   # = Scopes =
@@ -101,7 +102,7 @@ class Site < ActiveRecord::Base
   def licenses_hashes
     licenses  = [hostname]
     licenses += dev_hostnames.split(', ')
-    licenses.map! { |l| "'" + Digest::SHA1.hexdigest("@#{l}") + "'" }
+    licenses.map! { |l| "'" + Digest::SHA1.hexdigest("#{token}#{l}") + "'" }
     licenses.join(',')
   end
   
