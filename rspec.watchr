@@ -59,12 +59,13 @@ end
 # Watchr Rules
 # --------------------------------------------------
 
-watch('^app/controllers/(.*)\.rb') { |m| run_spec_matching("controllers/#{m[1]}") }
-watch('^app/models/(.*)\.rb')      { |m| run_spec_matching("models/#{m[1]}") }
-watch('^spec/(.*)_spec\.rb')       { |m| run_spec_matching(m[1]) }
-watch('^lib/(.*)\.rb')             { |m| run_spec_matching(m[1]) }
-watch('^spec/spec_helper\.rb')     { run_all_specs }
-watch('^spec/support/.*\.rb')      { run_all_specs }
+watch('^app/controllers/(.*)\.rb')      { |m| run_spec_matching("controllers/#{m[1]}") }
+watch('^app/models/(.*)\.rb')           { |m| run_spec_matching("models/#{m[1]}") }
+watch('^lib/(.*)\.rb')                  { |m| run_spec_matching("lib/#{m[1]}") }
+watch('^lib/logs_file_format/(.*)\.rb') { |m| run_spec_matching("lib/log_analyzer_spec.rb") }
+watch('^spec/(.*)_spec\.rb')            { |m| run_spec_matching(m[1]) }
+watch('^spec/spec_helper\.rb')          { run_all_specs }
+watch('^spec/support/.*\.rb')           { run_all_specs }
 
 # --------------------------------------------------
 # Signal Handling

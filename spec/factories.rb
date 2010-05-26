@@ -27,5 +27,5 @@ Factory.define :video_format, :class => VideoFormat, :parent => :video do |f|
 end
 
 Factory.define :log do |f|
-  f.name        "cdn.sublimevideo.net.log.1274269140-1274269200.gz"
+  f.name        "cdn.sublimevideo.net.log.1274773200-1274773260.gz"
 end

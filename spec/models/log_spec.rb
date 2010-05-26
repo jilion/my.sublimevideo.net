@@ -20,13 +20,13 @@ describe Log do
   context "with valid attributes" do
     before(:each) { VCR.insert_cassette('one_logs') }
     
-    subject { Factory.build(:log, :name => 'cdn.sublimevideo.net.log.1274269140-1274269200.gz') }
+    subject { Factory.build(:log, :name => 'cdn.sublimevideo.net.log.1274773200-1274773260.gz') }
     
     it { subject.should be_unprocessed                         }
     it { subject.should be_valid                               }
     it { subject.hostname.should   == 'cdn.sublimevideo.net'   }
-    it { subject.started_at.should == Time.zone.at(1274269140) }
-    it { subject.ended_at.should   == Time.zone.at(1274269200) }
+    it { subject.started_at.should == Time.zone.at(1274773200) }
+    it { subject.ended_at.should   == Time.zone.at(1274773260) }
     
     it "should have good log content" do
       subject.save
