@@ -75,7 +75,7 @@ class VideosController < ApplicationController
     # unless @video.active?
     #   # Check if all the formats of the given video are ready before actually activate the video
     #   video_formats_data = {} # JSON.parse(Panda.get("/videos/#{params[:id]}/encodings.json"))
-    #   if video_formats_data.all? { |f| f.state == 'success' && f.encoding_progress == '100' }
+    #   if video_formats_data.all? { |f| f.status == 'success' && f.encoding_progress == '100' }
     #     @video.activate
     #   end
     # end

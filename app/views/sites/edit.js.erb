@@ -1,2 +1,5 @@
-MySublimeVideo.closePopup();
-$('global').insert({after:"<%= escape_javascript(render 'edit') %>"});
+var popup = $("settings_<%= @site.id %>");
+if (popup) {
+  popup.removeClassName("loading");
+  popup.down(".content").update("<%= escape_javascript(render 'edit') %>")
+}

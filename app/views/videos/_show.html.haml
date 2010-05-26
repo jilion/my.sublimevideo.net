@@ -13,5 +13,5 @@
           %input#video_height.text.small{ :type => "text", :name => "height", :value => 255 }
         .embed_code
           %textarea{ :id => 'video_embed_code', :readonly => true, :onclick => "this.focus();this.select();" }= video_tags_for(@video, :width => 600, :height => 255)
-  = link_to "", :class => "close", :onclick => "MySublimeVideo.closePopup(); return false;" do
+  = link_to "", :class => "close", :onclick => "return MySublimeVideo.closePopup();" do
     %span= "Close"
