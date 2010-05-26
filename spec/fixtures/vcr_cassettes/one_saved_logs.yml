@@ -1,0 +1,52 @@
+--- 
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :post
+    uri: https://api.voxel.net:443/version/1.0/
+    body: timestamp=2010-05-26T10%3a43%3a23%2b02%3a00&api_sig=2bf3daebebe5c8233dd252a37d881547&method=voxel.voxcast.ondemand.logs.download&key=f0bdf4e54d590835e7100c926c2d1a47&filename=cdn.sublimevideo.net.log.1274798340-1274798400.gz
+    headers: 
+      accept: 
+      - "*/*"
+      content-type: 
+      - application/x-www-form-urlencoded
+      user-agent: 
+      - Voxel hAPI ruby Client; 1.0
+      connection: 
+      - close
+      content-length: 
+      - "224"
+      host: 
+      - api.voxel.net
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      x-powered-by: 
+      - PHP/5.2.11
+      access-control-allow-origin: 
+      - "*"
+      connection: 
+      - close
+      content-type: 
+      - text/html; charset=UTF-8
+      date: 
+      - Wed, 26 May 2010 08:43:24 GMT
+      server: 
+      - Apache
+      content-length: 
+      - "947"
+    body: |-
+      <rsp stat="ok"><data encoding="base64" type="gz">
+      H4sIAAAAAAAAA+2YXU/bMBSG7/kVR9kNSLNjO85Xe7WLAdOGNomy7Q6F5JQa0qSz3ars18/pWhoYSIMx
+      KUW5OXlzenxiP3obW3lzqLAszACWJM/yCU6VMRttbGbnBnIyqY2Fsr4sMouwCksyVtrYTYUhU7STumiU
+      xh9zN9SVbH/VOEaNupFzrdYX4ur0zebGWJy6R6kCK1s0g1EvUFfZFFtNycWNRQMmdwkzqyuD64ybnFWu
+      dBWWpLkQm11jtWrvepHs0jXe3KkC9hgQ4CKhPE5pFNNUgmCcERYSEd6VDI7ej8Brgn9lfC4CGUZxQq8M
+      HI9GX3xOubcq84gH3r0Sl3koSSAvKmrmF6Wb6sKtuqYVWpAsBu6eLV0cBOlAsrUIUhBxwGIJ3kn9U5Vl
+      5oeUwf5JlqvK1mYyhLMhfKgsluBy8PkUvruh59F5MASs3KoP4N1sVuI3vPiorB8GnApBY9j/eDw6+fQW
+      SnWNcIT5dX0AX1EbVVe+pIyGcJqNM61uRzRz3yN/CU+6lWzhjbOFyuuKutAi19R4E2tnA99/CMqfQNuN
+      1nzvZB6BG8QMZMLvo22ESLvClXfWlPwWmGyJJOkKud13ZJuriLvCdRccGW2FiHpHvpgjW1x50L8jn+lI
+      HnaF3OtypGBd4bpjjuRpZ3aX1+VIybvCtXdk78hGhFFXuO6YIwXvz5Ev5si4vWt35p++C45MWiLtz5Ev
+      5sg217DftR93ZOBc1zhSrIGF0VYI/sQTOI1W3M5Oh6AXA05TKmhw8JuQ36yQScbhUGkc10s/oBEN/o/j
+      yD8YKRUtI4VJS8gnfp59Lo5f8OBZcLYXAAAfiwgAAAAAAAADAwAAAAAAAAAAAA==</data></rsp>
+    http_version: "1.1"

@@ -18,6 +18,12 @@ class Log < ActiveRecord::Base
   attr_accessible :name
   mount_uploader :file, LogUploader
   
+  # ================
+  # = Associations =
+  # ================
+  
+  has_many :site_usages
+  
   # ===============
   # = Validations =
   # ===============
@@ -32,12 +38,15 @@ class Log < ActiveRecord::Base
   # =============
   
   before_validation :download_and_set_log_file, :on => :create
+  after_create :delay_process
   
   # =================
   # = State Machine =
   # =================
   
   state_machine :initial => :unprocessed do
+    before_transition :unprocessed => :processed, :do => :parse_and_create_usages!
+    
     event(:process) { transition :unprocessed => :processed }
   end
   
@@ -50,13 +59,22 @@ class Log < ActiveRecord::Base
     set_dates_and_hostname_from_name
   end
   
-  def parse
-    
+  def parse_and_create_usages!
+    logs_file = copy_logs_file_to_tmp
+    trackers = LogAnalyzer.parse(logs_file)
+    SiteUsage.create_usages_from_trackers!(self, trackers)
+    File.delete(logs_file.path)
   end
   
   # =================
   # = Class Methods =
   # =================
+  
+  def self.delay_new_logs_download
+    unless Delayed::Job.where("handler LIKE '%download_and_save_new_logs%'").where(['run_at > ?', Time.now.utc]).present?
+      delay(:priority => 10, :run_at => 1.minute.from_now).download_and_save_new_logs
+    end
+  end
   
   def self.download_and_save_new_logs
     new_logs_names = CDN.logs_names
@@ -66,13 +84,19 @@ class Log < ActiveRecord::Base
     end
     new_logs = new_logs.select { |l| existings_logs_names.exclude? l.name }
     new_logs.each { |l| l.save }
+    delay_new_logs_download # relaunch the process in 1 min
   end
   
 private
   
-  # before_validation 
+  # before_validation
   def download_and_set_log_file
     self.file = CDN.logs_download(name)
+  end
+  
+  # after_create
+  def delay_process
+    delay(:priority => 20).process
   end
   
   def set_dates_and_hostname_from_name
@@ -81,6 +105,13 @@ private
       self.started_at = Time.at(matches[2].to_i)
       self.ended_at   = Time.at(matches[3].to_i)
     end
+  end
+  
+  # Don't forget to delete this logs_file after using it, thx!
+  def copy_logs_file_to_tmp
+    logs_file = File.new(Rails.root.join("tmp/#{name}"), 'w')
+    logs_file.write(file.read)
+    logs_file.flush
   end
   
 end
