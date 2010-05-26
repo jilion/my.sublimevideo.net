@@ -1,3 +1,14 @@
+= content_for :header do
+  = javascript_include_tag 'http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js'
+  -#= javascript_include_tag '/panda_uploader/jquery.panda-uploader-0.6.min.js'
+  = javascript_include_tag '/panda_uploader/swfobject.js'
+  = javascript_include_tag '/panda_uploader/swfupload.js'
+  = javascript_include_tag '/panda_uploader/jquery.swfupload.js'
+  = javascript_include_tag '/panda_uploader/jquery.panda-uploader.js'
+  == <script language="javascript" type="text/javascript">
+  ==     $j = jQuery.noConflict();
+  == </script>
+  
 = form_for @video, :as => :video, :url => videos_path, :html => { :multipart => true, :class => "video" } do |f|
   .entry.video
     = f.label :file, "Choose a file to upload"
@@ -6,12 +17,12 @@
     = f.hidden_field :panda_id
     
     = f.submit 'Upload', :style => "display:none"
-    %span#upload_button.upload_btn= "Choose a file to upload"
-    -##upload_indicator
-    -#  #upload_progress.progress{ :style => "width:40%" }
-    -#  .info
-    -#    %em#upload_filename.filename= "video.mp4"
-    -#    %span.time_estimation= "23.7MB of 54.6MB - 15:26 remaining"
-    -#    %strong.percent_completed= "40%"
+    %span#upload_button
+    #upload_indicator
+      #upload_progress.progress
+      .info
+        %em#upload_filename.filename
+        %span#time_estimation= "23.7MB of 54.6MB - 15:26 remaining"
+        %strong#percent_completed= "40%"
     
-  -#%script= panda_uploader_js('video_panda_id')
+  %script= panda_uploader_js('video_panda_id').html_safe

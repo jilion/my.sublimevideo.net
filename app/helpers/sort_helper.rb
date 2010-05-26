@@ -21,7 +21,7 @@ module SortHelper
     class_up     = " up"     if current_way_for(field) == (options[:reverse] ? 'asc' : 'desc')
     
     link_to url + "?by_#{field}=#{way}&page=#{params[:page]||1}", :class => "sort #{field}#{class_active}#{class_up}", :remote => true, :onclick => "MySublimeVideo.makeRemoteLinkSticky(this); MySublimeVideo.showTableSpinner()" do
-      "<strong><span class='arrow'>#{options[:label] || field.to_s.humanize}</span></strong><span class='corner' />"
+      "<strong><span class='arrow'>#{options[:label] || field.to_s.humanize}</span></strong><span class='corner'></span>"
     end
   end
   

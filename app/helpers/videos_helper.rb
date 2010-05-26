@@ -15,12 +15,11 @@ module VideosHelper
   
   def panda_uploader_js(field_id)
     <<-EOS
-    $('##{field_id}').pandaUploader(#{Panda.signed_params('post', '/videos.json',
+    jQuery('##{field_id}').pandaUploader(#{Panda.signed_params('post', '/videos.json',
       { :profiles => Video.panda_profiles_ids, :state_update_url => "#{HOST}/videos/$id/transcoded" }).to_json },
       { upload_button_id:'upload_button',
-        upload_progress_id:'upload_progress',
-        upload_filename_id:'upload_filename',
-        api_url:'#{Panda.api_url}'
+        upload_progress_id:'upload_indicator',
+        upload_filename_id:'upload_filename'
     })
     EOS
   end

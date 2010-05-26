@@ -1097,19 +1097,27 @@ form .inline_errors span {
 
 #content form.video {
   width:668px;
-  background:url(/images/embed/breakline.png) no-repeat;
-  padding:18px 0;
-  position:relative;
+  background:url(/images/embed/breakline.png) no-repeat 0 100%;
+  height:104px;
+  margin-bottom:30px;
 }
 
 #content form.video .entry.video {
-  background:url(/images/embed/breakline.png) no-repeat 0 100%;
-  padding-bottom:24px;
+  background:url(/images/embed/breakline.png) no-repeat ;
+  padding:24px 0;
+  height:54px;
+  position:relative;
 }
 
 #content form.video .entry.video label, #content form.video .entry.video input {display:none;}
 
-#content form.video span.upload_btn {
+#content form.video .entry.video .swfupload {
+  position:absolute;
+  top:31px;
+  left:0;
+}
+
+/*#content form.video span.upload_btn {
   display:block;
   width:197px;
   height:31px;
@@ -1123,6 +1131,7 @@ form .inline_errors span {
 }
 
 #content form.video span.upload_btn:active {background-position:0 -40px;}
+*/
 
 #upload_indicator {
   height:54px;
@@ -1173,13 +1182,13 @@ form .inline_errors span {
   left:5px;
 }
 
-#upload_indicator .info .time_estimation {
+#upload_indicator .info #time_estimation {
   position:absolute;
   bottom:2px;
   left:5px;
 }
 
-#upload_indicator .info .percent_completed {
+#upload_indicator .info #percent_completed {
   position:absolute;
   top:13px;
   right:15px;
