@@ -1,3 +1,6 @@
-MySublimeVideo.closePopup();
-$('global').insert({after:"<%= escape_javascript(render 'show') %>"});
+var popup = $("embed_code_video_<%= @video.id %>");
+if (popup) {
+  popup.removeClassName("loading");
+  popup.down(".content").update("<%= escape_javascript(render 'show') %>")
+}
 new VideoEmbedCodeUpdater($('video_embed_code'), <%= @video.width %>, <%= @video.height %>);

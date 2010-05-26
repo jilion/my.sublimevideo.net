@@ -1010,6 +1010,10 @@ form .inline_errors span {
   padding:20px;
 }
 
+.popup.loading .content {
+  height:60px;
+}
+
 .popup .content h3 {
   font-size:24px;
   font-weight:normal;
