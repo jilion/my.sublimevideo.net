@@ -4,7 +4,7 @@ class UsersController < ApplicationController
   
   # PUT /users/1
   def update
-    @user = current_user
+    @user = User.find(current_user.id)
     respond_with(@user) do |format|
       if @user.update_attributes(params[:user])
         format.html { redirect_to sites_path }

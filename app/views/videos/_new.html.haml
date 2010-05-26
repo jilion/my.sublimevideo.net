@@ -22,7 +22,8 @@
       #upload_progress.progress
       .info
         %em#upload_filename.filename
-        %span#time_estimation= "23.7MB of 54.6MB - 15:26 remaining"
-        %strong#percent_completed= "40%"
+        %span#time_estimation
+        %strong#percent_completed
+        %a#cancel_upload{ :href => "" }
     
   %script= panda_uploader_js('video_panda_id').html_safe

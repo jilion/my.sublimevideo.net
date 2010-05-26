@@ -91,6 +91,9 @@ jQuery.fn.pandaUploader = function(signed_params, options, swfupload_options) {
       if (value == true) {
         $video_field.siblings('object').width(0);
         $video_field.siblings('object').height(0);
+      } else {
+        $video_field.siblings('object').width(236);
+        $video_field.siblings('object').height(40);
       }
       var form = $video_field.parents("form").eq(0);
       form.find("input[type=submit]").each(function() {
@@ -130,6 +133,10 @@ jQuery.fn.pandaUploader = function(signed_params, options, swfupload_options) {
       status = UPLOADING;
       uploader.swfupload('setButtonDisabled', true);
       options.progress_handler.reset();
+      $j('#cancel_upload').click(function(event){
+        onCancel(event);
+        return false;
+      });
       
       disableSubmitButton(true);
       if (options.progress_handler) {
@@ -146,7 +153,7 @@ jQuery.fn.pandaUploader = function(signed_params, options, swfupload_options) {
       num_files = 0;
       num_pending = 0;
       num_errors = 0;
-      disableSubmitButton(true);
+      disableSubmitButton(false);
       
       var cancel_handler = options["cancel"];
       if(status == UPLOADING && cancel_handler) {
@@ -184,7 +191,7 @@ jQuery.fn.pandaUploader = function(signed_params, options, swfupload_options) {
         if (error_handler) {
           error_handler(event, file, message);
         } else {
-          alert("There was an error uploading the file.\n\nHTTP error code " + message);
+          alert("There was an error uploading the file.\n\nHTTP error code " + message + file + code + more );
         }
     }
 
@@ -239,12 +246,18 @@ ProgressUpload.prototype = {
     },
     
     setProgress: function(file, bytesLoaded, bytesTotal) {
-        if ( ! this.progress) {
-            return;
+        if (!this.progress) {
+          return;
         }
+        
         var percent = Math.ceil((bytesLoaded / bytesTotal) * 100);
         $j(this.progress).css('width', percent + '%');
         $j('#percent_completed').html(percent + '%');
+        if (percent == 100) {
+          $j('#time_estimation').html('<em>Verifying file...</em>');
+        } else {
+          $j('#time_estimation').html(prettyBytes(bytesLoaded) + ' of ' + prettyBytes(bytesTotal));
+        }
     },
     
     // animateBarBg: function() {
@@ -258,11 +271,66 @@ ProgressUpload.prototype = {
     //     this.$p.css("background-position", (currentOffset - 1) + "px 0px");
     // },
     
+    prettyTime: function(milliseconds) {
+      if (t<0) return "...";
+      var t = milliseconds;
+      var h = parseInt(t/3600000,10); t = t%3600000;
+      var m = parseInt(t/60000,10); t = t%60000;
+      var s = parseInt(t/1000,10);
+
+      var output = '';
+      if (h>=10) output += h+':';
+      else if (h>0) output += '0'+h+':';
+      if (m>=10) output += m+':';
+      else output += '0'+m+':';
+      if (s>=10) output += s;
+      else output += '0'+s;
+      return output;
+    },
+    
     reset: function(){
-      clearInterval(this.timer);
+      // clearInterval(this.timer);
       $j(this.progress).css('width', '0%');
       this.$p.css('display', 'none');
     }
+};
+
+// Convert byte size value to a more readable value (bytes, KB, MB, GB or TB)
+function prettyBytes(bytes) {
+  var size;
+  var unit;
+  if ( bytes >= 1099511627776 ) {
+    size = Math.roundWithPrecision(bytes / 1099511627776, 2);
+    unit = ' TB';
+  } 
+  else if ( bytes >= 1073741824 ) {
+    size = Math.roundWithPrecision(bytes / 1073741824, 2);
+    unit = ' GB';
+  } 
+  else if ( bytes >= 1048576 ) {
+    size = Math.roundWithPrecision(bytes / 1048576, 1);
+    unit = ' MB';
+  } 
+  else if ( bytes >= 1024 ) {
+    size = Math.roundWithPrecision(bytes / 1024, 1);
+    unit = ' KB';
+  } 
+  else {
+    size = bytes;
+    unit = ' B';
+  }
+
+  // Add the decimal if this is an integer
+  if ((size % 1) == 0 && unit != ' B') {
+    size = size +'.0';
+  }
+
+  return size + unit;
+};
+
+// Round a float to a specified number of decimal places, stripping trailing zeroes
+Math.roundWithPrecision = function(floatValue, precision) {
+  return Math.round ( floatValue * Math.pow ( 10, precision ) ) / Math.pow ( 10, precision );
 };
 
 })();

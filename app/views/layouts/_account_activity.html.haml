@@ -1,7 +1,12 @@
-- if user_signed_in?
+- if user_signed_in? # and have a credit card
   #account_activity_box
     .current_balance
       %h4= "Your current usage"
       %p.price
         %strong= "$14.67"
     = link_to "Billing reports", "/billings_path", :class => "billing_reports"
+- elsif user_signed_in?
+  #trial_box
+    %p.note= "You are currently using the trial mode of SublimeVideo. We invite you to add your credit card to prevent any cut in the player delivery."
+    = link_to "Add a Credit Card", "/credit_card_path", :class => "add_a_credit_card"
+    
