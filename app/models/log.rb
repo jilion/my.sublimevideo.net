@@ -25,12 +25,13 @@ class Log < ActiveRecord::Base
   validates :name,       :presence => true
   validates :started_at, :presence => true
   validates :ended_at,   :presence => true
+  validates :file,       :presence => true
   
   # =============
   # = Callbacks =
   # =============
   
-  before_create :download_and_set_log_file
+  before_validation :download_and_set_log_file, :on => :create
   
   # =================
   # = State Machine =
@@ -49,6 +50,10 @@ class Log < ActiveRecord::Base
     set_dates_and_hostname_from_name
   end
   
+  def parse
+    
+  end
+  
   # =================
   # = Class Methods =
   # =================
@@ -65,7 +70,7 @@ class Log < ActiveRecord::Base
   
 private
   
-  # before_create
+  # before_validation 
   def download_and_set_log_file
     self.file = CDN.logs_download(name)
   end

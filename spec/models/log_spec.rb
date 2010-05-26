@@ -30,7 +30,8 @@ describe Log do
     
     it "should have good log content" do
       subject.save
-      Zlib::GzipReader.open(subject.file.path) do |gz|
+      log = Log.find(subject.id) # to be sure that log is saved
+      Zlib::GzipReader.open(log.file.path) do |gz|
         gz.read.should include("#Fields: c-host c-identd")
       end
     end
