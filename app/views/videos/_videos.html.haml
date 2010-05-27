@@ -26,6 +26,9 @@
                   %span.duration= seconds_to_duration(video.duration)
                 .info
                   %h3.title{ :title => video.name }= truncate(video.name, :length => 28)
+                  .views
+                    %strong= rand(10000)
+                    %em= "views"
                   .storage
                     %strong= number_to_human_size(video.total_size)
                     = link_to "", :class => "toggle_desc_box", :onclick => "next().toggle(); return false;" do
@@ -39,9 +42,6 @@
                           %li
                             = format.name 
                             %span= number_to_human_size(format.size)
-                  .views
-                    %strong= rand(10000)
-                    %em= "views"
                   .spacer
                   .upload_date= "Uploaded on #{video.created_at.strftime('%d/%m/%Y')}"
             %td.code

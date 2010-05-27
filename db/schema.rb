@@ -46,12 +46,16 @@ ActiveRecord::Schema.define(:version => 20100526094453) do
     t.integer  "log_id"
     t.datetime "started_at"
     t.datetime "ended_at"
-    t.integer  "license_hits"
-    t.integer  "js_hits"
-    t.integer  "flash_hits"
+    t.integer  "license_hits", :default => 0
+    t.integer  "js_hits",      :default => 0
+    t.integer  "flash_hits",   :default => 0
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "site_usages", ["ended_at"], :name => "index_site_usages_on_ended_at"
+  add_index "site_usages", ["site_id"], :name => "index_site_usages_on_site_id"
+  add_index "site_usages", ["started_at"], :name => "index_site_usages_on_started_at"
 
   create_table "sites", :force => true do |t|
     t.integer  "user_id"
@@ -60,10 +64,16 @@ ActiveRecord::Schema.define(:version => 20100526094453) do
     t.string   "token"
     t.string   "license"
     t.string   "state"
+    t.integer  "license_hits_cache", :default => 0
+    t.integer  "js_hits_cache",      :default => 0
+    t.integer  "flash_hits_cache",   :default => 0
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
+  add_index "sites", ["created_at"], :name => "index_sites_on_created_at"
+  add_index "sites", ["hostname"], :name => "index_sites_on_hostname"
+  add_index "sites", ["js_hits_cache", "user_id"], :name => "index_sites_on_js_hits_cache_and_user_id"
   add_index "sites", ["user_id"], :name => "index_sites_on_user_id"
 
   create_table "users", :force => true do |t|
@@ -112,6 +122,8 @@ ActiveRecord::Schema.define(:version => 20100526094453) do
     t.datetime "updated_at"
   end
 
+  add_index "videos", ["created_at"], :name => "index_videos_on_created_at"
+  add_index "videos", ["name"], :name => "index_videos_on_name"
   add_index "videos", ["original_id"], :name => "index_videos_on_original_id"
   add_index "videos", ["user_id"], :name => "index_videos_on_user_id"
 
