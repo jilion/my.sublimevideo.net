@@ -1,6 +1,12 @@
 package_assets: on
-compress_assets: off
+embed_assets: on
 javascript_compressor: closure
+compressor_options:
+  compilation_level: "SIMPLE_OPTIMIZATIONS"
+  
+stylesheets:
+  style:
+    - public/stylesheets/style.css
 
 javascripts:
   default:
