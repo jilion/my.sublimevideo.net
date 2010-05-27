@@ -44,7 +44,7 @@ module CDN
     end
     
     def yml
-      config_path = File.join(Rails.root, 'config', 'cdn.yml')
+      config_path = Rails.root.join('config', 'cdn.yml')
       @default_storage ||= YAML::load_file(config_path)
       @default_storage.to_options
     rescue
