@@ -30,17 +30,11 @@ document.observe("dom:loaded", function() {
     MySublimeVideo.hideFlashNoticeDelayed(element);
   });
   
-  // ============
-  // = Add site =
-  // ============
+  // =====================================
+  // = Add site hanlder and Sites poller =
+  // =====================================
   if ($("new_site")) {
     MySublimeVideo.addSiteHandler = new AddSiteHandler();
-  }
-
-  // ================
-  // = Sites poller =
-  // ================
-  if ($("sites")) {
     MySublimeVideo.sitesPoller = new SitesPoller();
   }
 
@@ -69,32 +63,8 @@ MySublimeVideo.hideFlashNoticeDelayed = function(flashEl) {
 };
 
 MySublimeVideo.openPopup = function(itemId, idPrefix, url) { //item can be site or video
-  // Creates the base skeleton for the popup, and will render it's content via an ajax request:
-  //
-  // <div class='popup loading'>
-  //   <div class='wrap'>
-  //     <div class='content'></div>
-  //   </div>
-  //   <a class='close'><span>Close</span></a>
-  // </div>
-  
-  MySublimeVideo.closePopup();
-  
-  var popupId = idPrefix + "_" + itemId;
-  var popupLoading = new Element("div", {
-    id:popupId,
-    className:"popup loading"
-  }).update("<div class='wrap'><div class='content'></div></div>");
-  var closeButton = new Element("a", {
-    href:"",
-    className:"close",
-    onclick:"return MySublimeVideo.closePopup()"
-  }).update("<span>Close</span>");
-  popupLoading.insert({ bottom:closeButton });
-  
-  $('global').insert({ after:popupLoading });
-  
-  new Ajax.Request(url, { method: 'get' }); //js.erb of the called method will take care of replacing the wrap div with the response content 
+  if (!MySublimeVideo.popupHandler) MySublimeVideo.popupHandler = new PopupHandler();
+  MySublimeVideo.popupHandler.open(itemId, idPrefix, url);
 };
 
 
@@ -103,10 +73,8 @@ MySublimeVideo.openPopup = function(itemId, idPrefix, url) { //item can be site 
 // ====================
 
 MySublimeVideo.closePopup = function() {
-  $$('.popup').each(function(el) {
-    el.remove();
-    // el.fade({ after :function(){ el.remove(); }});
-  });
+  if (!MySublimeVideo.popupHandler) MySublimeVideo.popupHandler = new PopupHandler();
+  MySublimeVideo.popupHandler.close();
   return false;
 };
 
@@ -324,6 +292,63 @@ var PlaceholderManager = Class.create({
   passwordFieldDidUpdate: function(field) {
     this.field = field;
     this.setupObservers();
+  }
+});
+
+
+var PopupHandler = Class.create({
+  initialize: function(popup) {
+    this.keyDownHandler = document.on("keydown", this.keyDown.bind(this));
+  },
+  startKeyboardObservers: function() {
+    this.keyDownHandler.start();
+  },
+  stopKeyboardObservers: function() {
+    this.keyDownHandler.stop();
+  },
+  open: function(itemId, idPrefix, url) {
+    // Creates the base skeleton for the popup, and will render it's content via an ajax request:
+    //
+    // <div class='popup loading'>
+    //   <div class='wrap'>
+    //     <div class='content'></div>
+    //   </div>
+    //   <a class='close'><span>Close</span></a>
+    // </div>
+    
+    this.close();
+    
+    var popupId = idPrefix + "_" + itemId;
+    var popupLoading = new Element("div", {
+      id:popupId,
+      className:"popup loading"
+    }).update("<div class='wrap'><div class='content'></div></div>");
+    var closeButton = new Element("a", {
+      href:"",
+      className:"close",
+      onclick:"return MySublimeVideo.closePopup()"
+    }).update("<span>Close</span>");
+    popupLoading.insert({ bottom:closeButton });
+    
+    $('global').insert({ after:popupLoading });
+    
+    this.startKeyboardObservers();
+    
+    new Ajax.Request(url, { method: 'get' }); //js.erb of the called method will take care of replacing the wrap div with the response content
+  },
+  close: function() {
+    this.stopKeyboardObservers();
+    $$('.popup').each(function(el) {
+      el.remove();
+      // el.fade({ after :function(){ el.remove(); }});
+    });
+  },
+  keyDown: function(event) {
+    switch(event.keyCode) {
+      case Event.KEY_ESC: //27
+        this.close();
+        break;
+    }
   }
 });
 
