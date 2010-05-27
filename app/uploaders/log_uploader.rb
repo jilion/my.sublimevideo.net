@@ -1,5 +1,3 @@
-# encoding: utf-8
-
 class LogUploader < CarrierWave::Uploader::Base
   
   def s3_bucket
@@ -9,7 +7,11 @@ class LogUploader < CarrierWave::Uploader::Base
   # Override the directory where uploaded files will be stored
   # This is a sensible default for uploaders that are meant to be mounted:
   def store_dir
-    "logs"
+    if Rails.env.production?
+      ""
+    else
+      "uploads/logs"
+    end
   end
   
   # Override the filename of the uploaded files
