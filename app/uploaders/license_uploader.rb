@@ -1,16 +1,16 @@
 class LicenseUploader < CarrierWave::Uploader::Base
   
   def s3_bucket
-    "sublimevideo.license"
+    "sublimevideo.licenses"
   end
   
   # Override the directory where uploaded files will be stored
   # This is a sensible default for uploaders that are meant to be mounted:
   def store_dir
     if Rails.env.production?
-      ""
+      "licences"
     else
-      "uploads/js"
+      "uploads/licences"
     end
   end
   

@@ -34,7 +34,7 @@
                 .in_progress
                   %em= "In progress"
                   
-            %td.hits= rand(10000)
+            %td.hits= site.player_hits
             %td.delete= button_to 'Delete', site, :confirm => 'Are you sure?', :method => :delete, :remote => true
             
   .pagination_wrap

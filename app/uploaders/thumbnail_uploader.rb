@@ -8,9 +8,9 @@ class ThumbnailUploader < CarrierWave::Uploader::Base
   # This is a sensible default for uploaders that are meant to be mounted:
   def store_dir
     if Rails.env.production?
-      model.token
+      "videos/#{model.token}"
     else
-      "uploads/v/#{model.token}"
+      "uploads/videos/#{model.token}"
     end
   end
   
