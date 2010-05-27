@@ -9,7 +9,7 @@ class VideoUploader < CarrierWave::Uploader::Base
   def store_dir
     token = (model.class == VideoFormat) ? model.original.token : model.token
     if Rails.env.production?
-      token
+      "/#{token}"
     else
       "uploads/v/#{token}"
     end

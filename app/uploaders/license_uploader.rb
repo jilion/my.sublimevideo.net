@@ -8,7 +8,7 @@ class LicenseUploader < CarrierWave::Uploader::Base
   # This is a sensible default for uploaders that are meant to be mounted:
   def store_dir
     if Rails.env.production?
-      ""
+      "/"
     else
       "uploads/js"
     end
