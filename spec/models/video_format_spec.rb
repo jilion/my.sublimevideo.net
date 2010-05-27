@@ -36,7 +36,7 @@ describe VideoFormat do
     it { subject.should          be_valid           }
   end
   
-  describe "Validates" do
+  describe "Validations" do
     it "should validate presence of [:original]" do
       video = Factory.build(:video_format, :original => nil)
       video.should_not be_valid
