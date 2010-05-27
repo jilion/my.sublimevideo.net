@@ -27,8 +27,10 @@ module LogAnalyzer
     end
     
     def notify_skipped_lines
-      if @controller.source.skipped_lines > 0
-        # TODO Notify via Exceptional
+      Exceptional.rescue do
+        if @controller.source.skipped_lines > 0
+          raise "LogAnalyzer skipped #{@controller.source.skipped_lines} line(s) for #{@controller.source.source_files}"
+        end
       end
     end
     
