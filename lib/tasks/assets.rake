@@ -10,6 +10,5 @@ namespace :assets do
       buffer = File.new(file,'r').read.gsub(/@media screen and\(/,"@media screen and (")
       File.open(file,'w') {|fw| fw.write(buffer)}
     end
-        
   end
 end
