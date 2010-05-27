@@ -33,8 +33,4 @@ end
 Factory.define :site_usage do |f|
   f.association   :site
   f.association   :log
-  
-  f.license_hits  1
-  f.js_hits       1
-  f.flash_hits    1
 end

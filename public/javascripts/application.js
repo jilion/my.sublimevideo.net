@@ -161,6 +161,17 @@ var FormManager = Class.create({
   initialize: function(form) {
     
     form.on("submit", function(event){
+      
+      // Disable submit button for ajax forms to prevent double submissions (quickly click muliple times the form submit button)
+      //
+      // (PAY ATTENTION: this considers that the ajax call will re-render the entire form hence re-enabling the submit button. 
+      //  If we'll have some ajax forms that won't reload themselves, the code below must be updated)
+      if (event.findElement("form[data-remote]")) {
+        form.select("input[type=submit]","button").each(function(button){
+          button.disable();
+        });
+      }
+      
       // Reset pseudo-placeholders values (for browsers who don't support HTML5 placeholders)
       if (!supportsHtml5InputAttribute("placeholder")) {
         form.select("input.placeholder").each(function(input){

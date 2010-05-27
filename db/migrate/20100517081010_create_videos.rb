@@ -20,6 +20,8 @@ class CreateVideos < ActiveRecord::Migration
     end
     
     add_index :videos, :user_id
+    add_index :videos, :name
+    add_index :videos, :created_at
     add_index :videos, :original_id
   end
   

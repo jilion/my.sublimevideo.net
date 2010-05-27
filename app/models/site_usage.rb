@@ -7,9 +7,9 @@
 #  log_id       :integer
 #  started_at   :datetime
 #  ended_at     :datetime
-#  license_hits :integer
-#  js_hits      :integer
-#  flash_hits   :integer
+#  license_hits :integer         default(0)
+#  js_hits      :integer         default(0)
+#  flash_hits   :integer         default(0)
 #  created_at   :datetime
 #  updated_at   :datetime
 #
@@ -42,6 +42,7 @@ class SiteUsage < ActiveRecord::Base
   # =============
   
   before_validation :set_dates_from_log
+  after_save        :update_site_hits_cache
   
   # =================
   # = Class Methods =
@@ -65,9 +66,20 @@ class SiteUsage < ActiveRecord::Base
   
 private
   
+  # before_validation
   def set_dates_from_log
     self.started_at = log.started_at
     self.ended_at   = log.ended_at
+  end
+  
+  # after_save
+  def update_site_hits_cache
+    Site.update_counters(
+      site_id,
+      :license_hits_cache => license_hits,
+      :js_hits_cache      => js_hits,
+      :flash_hits_cache   => flash_hits
+    )
   end
   
   # Compact trackers from RequestLogAnalyzer

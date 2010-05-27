@@ -2,15 +2,18 @@
 #
 # Table name: sites
 #
-#  id            :integer         not null, primary key
-#  user_id       :integer
-#  hostname      :string(255)
-#  dev_hostnames :string(255)
-#  token         :string(255)
-#  license       :string(255)
-#  state         :string(255)
-#  created_at    :datetime
-#  updated_at    :datetime
+#  id                 :integer         not null, primary key
+#  user_id            :integer
+#  hostname           :string(255)
+#  dev_hostnames      :string(255)
+#  token              :string(255)
+#  license            :string(255)
+#  state              :string(255)
+#  license_hits_cache :integer         default(0)
+#  js_hits_cache      :integer         default(0)
+#  flash_hits_cache   :integer         default(0)
+#  created_at         :datetime
+#  updated_at         :datetime
 #
 
 class Site < ActiveRecord::Base
@@ -56,10 +59,11 @@ class Site < ActiveRecord::Base
   # =================
   
   state_machine :initial => :pending do
-    before_transition :pending => :active, :do => :set_license_file
+    before_transition :on => :activate,     :do => :set_license_file
+    after_transition  :inactive => :active, :do => :purge_license_file
     
-    event(:activate)   { transition :pending => :active }
-    event(:deactivate) { transition :active => :pending }
+    event(:activate)   { transition [:pending, :inactive] => :active }
+    event(:deactivate) { transition :active => :inactive }
     event(:archive)    { transition all => :archived    }
   end
   
@@ -116,8 +120,13 @@ class Site < ActiveRecord::Base
     self.license = tempfile
   end
   
+  def purge_license_file
+    CDN.purge("/js/#{token}.js")
+  end
+  
   def player_hits
-    usages.sum :license_hits
+    # TODO change to js_hits_cache
+    license_hits_cache
   end
   
 private

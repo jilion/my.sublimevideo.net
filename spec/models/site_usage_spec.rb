@@ -7,9 +7,9 @@
 #  log_id       :integer
 #  started_at   :datetime
 #  ended_at     :datetime
-#  license_hits :integer
-#  js_hits      :integer
-#  flash_hits   :integer
+#  license_hits :integer         default(0)
+#  js_hits      :integer         default(0)
+#  flash_hits   :integer         default(0)
 #  created_at   :datetime
 #  updated_at   :datetime
 #
@@ -23,9 +23,9 @@ describe SiteUsage do
     subject { Factory.build(:site_usage) }
     
     it { subject.should be_valid          }
-    it { subject.license_hits.should == 1 }
-    it { subject.js_hits.should      == 1 }
-    it { subject.flash_hits.should   == 1 }
+    it { subject.license_hits.should == 0 }
+    it { subject.js_hits.should      == 0 }
+    it { subject.flash_hits.should   == 0 }
     
   end
   
@@ -66,6 +66,20 @@ describe SiteUsage do
       usage.log.should          == @log
       usage.site.should         == @site
       usage.license_hits.should == 9
+    end
+  end
+  
+  describe "Callbacks" do
+    before(:each) { @site = Factory(:site) }
+    
+    it "should update site.license_hits_cache" do
+      lambda { Factory(:site_usage, :site => @site, :license_hits => 2) }.should change { @site.reload.license_hits_cache }.by(2)
+    end
+    it "should update site.js_hits_cache" do
+      lambda { Factory(:site_usage, :site => @site, :js_hits => 2) }.should change { @site.reload.js_hits_cache }.by(2)
+    end
+    it "should update site.flash_hits_cache" do
+      lambda { Factory(:site_usage, :site => @site, :flash_hits => 2) }.should change { @site.reload.flash_hits_cache }.by(2)
     end
     
   end
