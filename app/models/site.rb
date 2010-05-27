@@ -27,7 +27,7 @@ class Site < ActiveRecord::Base
   # ================
   
   belongs_to :user
-  has_many :site_usages
+  has_many :usages, :class_name => "SiteUsage"
   
   # ==========
   # = Scopes =
@@ -114,6 +114,10 @@ class Site < ActiveRecord::Base
     tempfile.flush
     
     self.license = tempfile
+  end
+  
+  def player_hits
+    usages.sum :license_hits
   end
   
 private
