@@ -5,7 +5,7 @@
         %h4= "Your current usage"
         %p.price
           %strong= "$14.67"
-      = link_to "Billing reports", "/billings_path", :class => "billing_reports"
+      = link_to "Billing reports", invoices_path, :class => "billing_reports"
     
   - else
     #trial_box

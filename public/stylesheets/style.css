@@ -439,6 +439,8 @@ form p.note {
   line-height:20px;
   padding-top:3px;
   color:#737b8a;
+  font-weight:normal;
+  font-style:normal;
 }
 
 #content .entry.submit p.note.big {
@@ -1330,9 +1332,26 @@ form .entry.update {
   padding:4px 0 8px;
 }
 
+#content table.main td.video .info .views {
+  float:left;
+  padding:2px 0 12px 20px;
+  background:url(/images/embed/videos/views_icon.png) no-repeat 0 0;
+}
+
+#content table.main td.video .info .views strong {
+  font-size:16px;
+  font-weight:normal;
+}
+
+#content table.main td.video .info .views em {
+  font-size:12px;
+  font-style:normal;
+}
+
 #content table.main td.video .info .storage {
   position:relative;
   float:left;
+  margin:0 0 0 20px;
   padding:2px 18px 12px 24px;
   background:url(/images/embed/videos/storage_icon.png) no-repeat 0 0;
 }
@@ -1376,23 +1395,6 @@ form .entry.update {
   text-align:right;
   float:right;
   padding-right:8px;
-}
-
-#content table.main td.video .info .views {
-  float:left;
-  margin:0 0 0 20px;
-  padding:2px 18px 12px 20px;
-  background:url(/images/embed/videos/views_icon.png) no-repeat 0 0;
-}
-
-#content table.main td.video .info .views strong {
-  font-size:16px;
-  font-weight:normal;
-}
-
-#content table.main td.video .info .views em {
-  font-size:12px;
-  font-style:normal;
 }
 
 #content table.main td.video .info .upload_date {
@@ -1498,7 +1500,7 @@ form .entry.update {
   margin:30px auto;
   text-align:center;
   font-size:13px;
-  font-weight:600;
+/*  font-weight:600;*/
   color:#1b263a;
   text-shadow:rgba(255,255,255,0.2) 0 1px 0;
 }
