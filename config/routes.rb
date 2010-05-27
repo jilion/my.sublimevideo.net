@@ -20,6 +20,8 @@ MySublimeVideo::Application.routes.draw do |map|
   end
   resources :users, :only => :update
   
+  resources :invoices
+  
   root :to => redirect('/sites')
   
   resource :beta, :only => [:show, :create]

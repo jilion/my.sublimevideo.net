@@ -7,10 +7,18 @@ class CreateSites < ActiveRecord::Migration
       t.string  :token
       t.string  :license
       t.string  :state
+      
+      t.integer   :license_hits_cache, :default => 0
+      t.integer   :js_hits_cache,      :default => 0
+      t.integer   :flash_hits_cache,   :default => 0
+      
       t.timestamps
     end
     
     add_index :sites, :user_id
+    add_index :sites, :hostname
+    add_index :sites, :created_at
+    add_index :sites, [:js_hits_cache, :user_id]
   end
   
   def self.down

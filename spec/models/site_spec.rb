@@ -2,15 +2,18 @@
 #
 # Table name: sites
 #
-#  id            :integer         not null, primary key
-#  user_id       :integer
-#  hostname      :string(255)
-#  dev_hostnames :string(255)
-#  token         :string(255)
-#  license       :string(255)
-#  state         :string(255)
-#  created_at    :datetime
-#  updated_at    :datetime
+#  id                 :integer         not null, primary key
+#  user_id            :integer
+#  hostname           :string(255)
+#  dev_hostnames      :string(255)
+#  token              :string(255)
+#  license            :string(255)
+#  state              :string(255)
+#  license_hits_cache :integer         default(0)
+#  js_hits_cache      :integer         default(0)
+#  flash_hits_cache   :integer         default(0)
+#  created_at         :datetime
+#  updated_at         :datetime
 #
 
 require 'spec_helper'
