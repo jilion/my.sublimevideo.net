@@ -19,6 +19,7 @@ gem 'delayed_job',   :git => 'git://github.com/thibaudgg/delayed_job'
 gem 'will_paginate', :git => 'git://github.com/mislav/will_paginate.git', :branch => 'rails3'
 gem 'has_scope',     :git => 'git://github.com/rymai/has_scope.git'
 gem 'jammit',        :git => 'git://github.com/thibaudgg/jammit.git'
+gem 'meta_where'
 
 # File management
 gem 'aws' # S3 support for carrierwave

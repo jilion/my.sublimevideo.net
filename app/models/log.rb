@@ -73,7 +73,7 @@ class Log < ActiveRecord::Base
   # =================
   
   def self.delay_new_logs_download
-    unless Delayed::Job.where("handler LIKE '%download_and_save_new_logs%'").where(['run_at > ?', Time.now.utc]).present?
+    unless Delayed::Job.where(:handler =~ '%download_and_save_new_logs%').present?
       delay(:priority => 10, :run_at => 1.minute.from_now).download_and_save_new_logs
     end
   end
