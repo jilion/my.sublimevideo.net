@@ -161,6 +161,20 @@ describe Site do
       site.activate
       site.license.url.should be_present
     end
+    
+    it "first activate should not purge license file" do
+      site = Factory(:site)
+      CDN.should_not_receive(:purge)
+      site.activate
+    end
+    
+    it "activate after deactivate should purge license file" do
+      site = Factory(:site)
+      site.activate
+      site.deactivate
+      CDN.should_receive(:purge).with("/js/#{site.token}.js")
+      site.activate
+    end
   end
   
   describe "Callbacks" do

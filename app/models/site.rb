@@ -56,10 +56,11 @@ class Site < ActiveRecord::Base
   # =================
   
   state_machine :initial => :pending do
-    before_transition :pending => :active, :do => :set_license_file
+    before_transition :on => :activate,     :do => :set_license_file
+    after_transition  :inactive => :active, :do => :purge_license_file
     
-    event(:activate)   { transition :pending => :active }
-    event(:deactivate) { transition :active => :pending }
+    event(:activate)   { transition [:pending, :inactive] => :active }
+    event(:deactivate) { transition :active => :inactive }
     event(:archive)    { transition all => :archived    }
   end
   
@@ -114,6 +115,10 @@ class Site < ActiveRecord::Base
     tempfile.flush
     
     self.license = tempfile
+  end
+  
+  def purge_license_file
+    CDN.purge("/js/#{token}.js")
   end
   
   def player_hits
