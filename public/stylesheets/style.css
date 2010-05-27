@@ -234,10 +234,15 @@ body {
   width:440px;
 }
 
-#content form.border_bottom {
+#content form.section {
   background:url(/images/embed/breakline.png) no-repeat -228px 100%;
   padding-bottom:20px;
-  margin-bottom:10px;
+}
+
+h3.section_title {
+  padding:10px 0 5px;
+  font-size:20px;
+  font-weight:600;
 }
 
 form .entry {
@@ -1465,13 +1470,14 @@ form .entry.update {
 
 #credit_card_summary {
   background:url(/images/embed/breakline.png) no-repeat -228px 100%;
-  padding:30px 0 20px;
+  padding:10px 0 20px;
 }
 
 #credit_card_summary p {
   padding:7px 0 10px 55px;
   width:385px;
   font-size:15px;
+  margin-top:10px;
 }
 
 #credit_card_summary p.mastercard {background:url(/images/embed/credit_cards/mastercard.png) no-repeat;}
