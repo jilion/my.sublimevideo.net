@@ -5,12 +5,17 @@ class CreateSiteUsages < ActiveRecord::Migration
       t.integer   :log_id
       t.datetime  :started_at
       t.datetime  :ended_at
-      t.integer   :license_hits
-      t.integer   :js_hits
-      t.integer   :flash_hits
+      
+      t.integer   :license_hits, :default => 0
+      t.integer   :js_hits,      :default => 0
+      t.integer   :flash_hits,   :default => 0
       
       t.timestamps
     end
+    
+    add_index :site_usages, :site_id
+    add_index :site_usages, :started_at
+    add_index :site_usages, :ended_at
   end
   
   def self.down
