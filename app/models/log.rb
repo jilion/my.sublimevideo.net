@@ -121,10 +121,7 @@ private
   def self.logs_download_already_delayed?
     Delayed::Job.where(
       :handler =~ '%download_and_save_new_logs%',
-      :run_at > 5.seconds.from_now,
-      :attempts => 0,
-      :locked_at => nil,
-      :locked_by => nil
+      :run_at > 7.seconds.from_now
     ).present?
   end
   
