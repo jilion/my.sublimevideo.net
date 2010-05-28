@@ -699,6 +699,7 @@ form .entry.update {
 }
 
 #content table.main th.delete {
+  width:18px;
   -webkit-border-top-right-radius:10px;
   -moz-border-radius-topright:10px;
   border-top-right-radius:10px;
@@ -709,11 +710,11 @@ form .entry.update {
 
 #content table.main th.site {
   text-align:left;
-  width:440px;
+  width:436px;
 }
 
-#content table.main th.code, #content table.main td.code {width:210px;}
-#content table.main th.hits, #content table.main td.hits {width:155px;}
+#content table.main th.code, #content table.main td.code {width:180px;}
+#content table.main th.hits, #content table.main td.hits {width:152px !important;padding:0;}
 
 #content table.main th .wrap {
   position:relative;
@@ -910,17 +911,16 @@ form .entry.update {
   -webkit-box-shadow:none;
   -moz-box-shadow:none;
   box-shadow:none;
-  
 }
 
 #content table.main td.hits table {
   display:none;
   border-collapse:collapse;
-  width:100%;
+  width:152px !important;
   height:64px;
 }
 
-#content table.main td.hits:hover table {display:block;}
+#content table.main td.hits:hover table {display:table;}
 
 #content table.main td.hits table th, #content table.main td.hits table td {
   height:32px;
@@ -934,7 +934,7 @@ form .entry.update {
 }
 
 #content table.main td.hits table th {
-  width:100px;
+  width:80px !important;
   text-align:left;
 }
 
@@ -947,7 +947,7 @@ form .entry.update {
 }
 
 #content table.main td.hits table td {
-  width:58px;
+  width:72px !important;
 }
 
 #content table.main td.delete a, #content table.main td.delete input {
