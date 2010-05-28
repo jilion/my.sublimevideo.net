@@ -45,7 +45,7 @@
                 %tr
                   %th.player_hits
                     %h5= "Player hits"
-                  %td.player_hits= site.player_hits
+                  %td.player_hits= site.js_hits_cache
             %td.delete= button_to 'Delete', site, :confirm => 'Are you sure?', :method => :delete, :remote => true
             
   .pagination_wrap

@@ -124,11 +124,6 @@ class Site < ActiveRecord::Base
     CDN.purge("/js/#{token}.js")
   end
   
-  def player_hits
-    # TODO change to js_hits_cache
-    license_hits_cache
-  end
-  
 private
   
   # validate

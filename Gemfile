@@ -34,9 +34,6 @@ gem 'voxel_hapi',    :git => 'git://github.com/thibaudgg/voxel_hapi.git'
 # Log analyzer
 gem 'request-log-analyzer', :require => 'request_log_analyzer'
 
-# Error Notification
-gem 'exceptional'
-
 group :development do
   # bundler requires these gems in development
   gem 'sqlite3-ruby', :require => 'sqlite3'

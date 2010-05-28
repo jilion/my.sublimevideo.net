@@ -15,8 +15,8 @@ namespace :logs do
       :js_hits_cache      => 0,
       :flash_hits_cache   => 0
     )
-    puts "Relaunch logs download & parsing"
-    Log.download_and_save_new_logs
+    puts "Relaunch logs download & parsing delayed_job"
+    Log.delay_new_logs_download
   end
 
 end

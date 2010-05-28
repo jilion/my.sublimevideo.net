@@ -87,8 +87,8 @@ class Log < ActiveRecord::Base
       end
       new_logs = new_logs.select { |l| existings_logs_names.exclude? l.name }
       new_logs.each { |l| l.save }
-      delay_new_logs_download # relaunch the process in 1 min
     end
+    delay_new_logs_download # relaunch the process in 1 min
   end
   
 private
@@ -121,10 +121,7 @@ private
   def self.logs_download_already_delayed?
     Delayed::Job.where(
       :handler =~ '%download_and_save_new_logs%',
-      :run_at > 5.seconds.from_now,
-      :attempts => 0,
-      :locked_at => nil,
-      :locked_by => nil
+      :run_at > 7.seconds.from_now
     ).present?
   end
   
