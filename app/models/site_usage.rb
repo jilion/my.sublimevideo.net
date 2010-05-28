@@ -88,18 +88,24 @@ private
       case tracker.options[:title]
       when :license
         trackers[:license] = tracker.categories.inject({}) do |tokens, (k,v)|
-          token = k.match(%r(/js/([a-z0-9]{8})\.js.*))[1]
-          tokens.merge token => v
+          if token = k.match(%r(/js/([a-z0-9]{8})\.js.*))[1]
+            tokens.merge! token => v
+          end
+          tokens
         end
       when :js
         trackers[:js] = tracker.categories.inject({}) do |tokens, (k,v)|
-          token = k.match(%r(/p/sublime\.js\?t=[a-z0-9]{8}.*))[1]
-          tokens.merge token => v
+          if token = k.match(%r(/p/sublime\.js\?t=([a-z0-9]{8}).*))[1]
+            tokens.merge! token => v
+          end
+          tokens
         end
       when :flash
         trackers[:flash] = tracker.categories.inject({}) do |tokens, (k,v)|
-          token = k.match(%r(/p/sublime\.swf\?t=[a-z0-9]{8}.*))[1]
-          tokens.merge token => v
+          if token = k.match(%r(/p/sublime\.swf\?t=([a-z0-9]{8}).*))[1]
+            tokens.merge! token => v
+          end
+          tokens
         end
       end
       trackers
@@ -109,7 +115,7 @@ private
   def self.tokens_from(hits)
     hits.inject([]) do |tokens, (k, v)|
       tokens += v.collect { |k, v| k }
-    end.uniq
+    end.compact.uniq
   end
   
 end
