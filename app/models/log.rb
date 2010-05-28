@@ -73,7 +73,7 @@ class Log < ActiveRecord::Base
   # =================
   
   def self.delay_new_logs_download
-    unless Delayed::Job.where(:handler =~ '%download_and_save_new_logs%', :run_at > Time.now.utc).present?
+    unless logs_download_already_delayed?
       delay(:priority => 10, :run_at => 1.minute.from_now).download_and_save_new_logs
     end
   end
@@ -116,6 +116,16 @@ private
     logs_file = File.new(Rails.root.join("tmp/#{name}"), 'w')
     logs_file.write(file.read)
     logs_file.flush
+  end
+  
+  def self.logs_download_already_delayed?
+    Delayed::Job.where(
+      :handler =~ '%download_and_save_new_logs%',
+      :run_at > 5.seconds.from_now,
+      :attempts => 0,
+      :locked_at => nil,
+      :locked_by => nil
+    ).present?
   end
   
 end
