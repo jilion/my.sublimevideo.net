@@ -888,9 +888,66 @@ form .entry.update {
   left:-1px;
 }
 
-#content table.main td.hits {
-  font-size:24px;
+#content table.main td.hits:hover {
+  padding:0;
+}
+
+#content table.main td.hits strong {
   font-weight:600;
+  font-size:24px;
+}
+
+#content table.main td.hits:hover strong {display:none;}
+
+#content table.main td.hits table, #content table.main td.hits table tr, #content table.main td.hits table th, #content table.main td.hits table td {
+  background:none !important;
+  padding:0;
+  margin:0;
+  border:0;
+  -webkit-border-radius:none;
+  -moz-border-radius:none;
+  border-radius:none;
+  -webkit-box-shadow:none;
+  -moz-box-shadow:none;
+  box-shadow:none;
+  
+}
+
+#content table.main td.hits table {
+  display:none;
+  border-collapse:collapse;
+  width:100%;
+  height:64px;
+}
+
+#content table.main td.hits:hover table {display:block;}
+
+#content table.main td.hits table th, #content table.main td.hits table td {
+  height:32px;
+}
+
+#content table.main td.hits table th.requests, #content table.main td.hits table td.requests {
+  border-bottom: 1px solid #999;
+  -webkit-box-shadow:rgba(255,255,255,0.5) 0 2px 0;
+  -moz-box-shadow:rgba(255,255,255,0.5) 0 1px 0;
+  box-shadow:rgba(255,255,255,0.5) 0 1px 0;
+}
+
+#content table.main td.hits table th {
+  width:100px;
+  text-align:left;
+}
+
+#content table.main td.hits table th h5 {
+  padding-left:10px;
+  font-size:13px;
+  font-weight:600;
+  color:#4d5563;
+  text-shadow:rgba(255,255,255,0.4) 0 1px 0;
+}
+
+#content table.main td.hits table td {
+  width:58px;
 }
 
 #content table.main td.delete a, #content table.main td.delete input {

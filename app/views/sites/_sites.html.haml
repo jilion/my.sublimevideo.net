@@ -35,7 +35,17 @@
                 .in_progress
                   %em= "In progress"
                   
-            %td.hits= site.player_hits
+            %td.hits
+              %strong= site.player_hits
+              %table
+                %tr
+                  %th.requests
+                    %h5= "Requests"
+                  %td.requests= site.license_hits_cache
+                %tr
+                  %th.player_hits
+                    %h5= "Player hits"
+                  %td.player_hits= site.player_hits
             %td.delete= button_to 'Delete', site, :confirm => 'Are you sure?', :method => :delete, :remote => true
             
   .pagination_wrap
