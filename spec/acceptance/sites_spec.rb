@@ -22,4 +22,23 @@ feature "Sites actions:" do
     site.license.read.should include(site.licenses_hashes)
   end
   
+  scenario "sort buttons displayed only if count of sites > 1" do
+    visit "/sites"
+    fill_in "Domain", :with => "google.com"
+    click_button "Add"
+    
+    page.should have_content('google.com')
+    page.should have_no_css('div.sorting')
+    page.should have_no_css('a.sort')
+    
+    fill_in "Domain", :with => "remy.me" # one day it'll be mine!
+    click_button "Add"
+    
+    page.should have_content('google.com')
+    page.should have_content('remy.me')
+    page.should have_css('div.sorting')
+    page.should have_css('a.sort.date')
+    page.should have_css('a.sort.hostname')
+  end
+  
 end

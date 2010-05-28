@@ -8,9 +8,10 @@
               %strong
                 = image_tag "/images/embed/small_spinner.gif", :class => "spinner", :id => "table_spinner", :style => "display:none"
                 = "Site"
-              .sorting
-                = link_to_sort(:date, sites_path, :reverse => true, :default => true)
-                = link_to_sort(:hostname, sites_path)
+              - unless @sites.one?
+                .sorting
+                  = link_to_sort(:date, sites_path, :reverse => true, :default => true)
+                  = link_to_sort(:hostname, sites_path)
           -#%th Dev hostnames
           %th.code= "Player Code"
           %th.hits= "Player Hits"
