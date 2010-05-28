@@ -32,16 +32,19 @@ describe SiteUsage do
   context "saved with valid attributes" do
     subject { Factory(:site_usage) }
     
-    it { subject.started_at.should == Time.zone.at(1274798340) }
-    it { subject.ended_at.should   == Time.zone.at(1274798400) }
+    it { subject.started_at.should == Time.zone.at(1275002700) }
+    it { subject.ended_at.should   == Time.zone.at(1275002760) }
     
   end
   
   describe "Trackers parsing" do
     before(:each) do
-      @site = Factory(:site)
-      @site.token = '12345678'
-      @site.save
+      @site1 = Factory(:site)
+      @site1.token = 'g3325oz4'
+      @site1.save
+      @site2 = Factory(:site)
+      @site2.token = 'g8thugh6'
+      @site2.save
       
       @log = Factory(:log)
       @trackers = LogAnalyzer.parse(@log.file)
@@ -49,23 +52,25 @@ describe SiteUsage do
     
     it "should clean trackers" do
       SiteUsage.hits_from(@trackers).should == {
-        :license => { "12345678" => 9 },
-        :js      => {},
+        :license => { "g3325oz4" => 3, "g8thugh6" => 1},
+        :js      => { "g3325oz4" => 3, "g8thugh6" => 7},
         :flash   => {}
       }
     end
     
     it "should get tokens from trackers" do
       hits = SiteUsage.hits_from(@trackers)
-      SiteUsage.tokens_from(hits).should == ['12345678']
+      SiteUsage.tokens_from(hits).should == ["g3325oz4", "g8thugh6"]
     end
     
     it "should create usages from trackers" do
       SiteUsage.create_usages_from_trackers!(@log, @trackers)
-      usage = SiteUsage.last
+      usage = SiteUsage.first
       usage.log.should          == @log
-      usage.site.should         == @site
-      usage.license_hits.should == 9
+      usage.site.should         == @site1
+      usage.license_hits.should == 3
+      usage.js_hits.should      == 3
+      usage.flash_hits.should   == 0
     end
   end
   
