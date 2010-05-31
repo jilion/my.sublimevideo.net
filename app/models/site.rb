@@ -61,9 +61,9 @@ class Site < ActiveRecord::Base
   # =================
   
   state_machine :initial => :pending do
-    before_transition :on => :activate,     :do => :set_license_file
-    before_transition :on => :activate,     :do => :set_loader_file
-    after_transition  :inactive => :active, :do => :purge_license_file
+    before_transition :pending => :activate, :do => :set_loader_file
+    before_transition :on => :activate,      :do => :set_license_file
+    after_transition  :inactive => :active,  :do => :purge_license_file
     
     event(:activate)   { transition [:pending, :inactive] => :active }
     event(:deactivate) { transition :active => :inactive }
