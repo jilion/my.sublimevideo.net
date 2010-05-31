@@ -6,9 +6,10 @@ class CreateSites < ActiveRecord::Migration
       t.string  :dev_hostnames
       t.string  :token
       t.string  :license
+      t.string  :loader
       t.string  :state
       
-      t.integer   :license_hits_cache, :default => 0
+      t.integer   :loader_hits_cache,  :default => 0
       t.integer   :js_hits_cache,      :default => 0
       t.integer   :flash_hits_cache,   :default => 0
       

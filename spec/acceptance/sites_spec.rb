@@ -19,7 +19,8 @@ feature "Sites actions:" do
     
     site = @current_user.sites.last
     site.hostname.should == "google.com"
-    site.license.read.should include(site.licenses_hashes)
+    site.loader.read.should include(site.token)
+    site.license.read.should include(site.template_hostnames)
   end
   
   scenario "sort buttons displayed only if count of sites > 1" do

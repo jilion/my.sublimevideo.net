@@ -2,18 +2,19 @@
 #
 # Table name: sites
 #
-#  id                 :integer         not null, primary key
-#  user_id            :integer
-#  hostname           :string(255)
-#  dev_hostnames      :string(255)
-#  token              :string(255)
-#  license            :string(255)
-#  state              :string(255)
-#  license_hits_cache :integer         default(0)
-#  js_hits_cache      :integer         default(0)
-#  flash_hits_cache   :integer         default(0)
-#  created_at         :datetime
-#  updated_at         :datetime
+#  id                :integer         not null, primary key
+#  user_id           :integer
+#  hostname          :string(255)
+#  dev_hostnames     :string(255)
+#  token             :string(255)
+#  license           :string(255)
+#  loader            :string(255)
+#  state             :string(255)
+#  loader_hits_cache :integer         default(0)
+#  js_hits_cache     :integer         default(0)
+#  flash_hits_cache  :integer         default(0)
+#  created_at        :datetime
+#  updated_at        :datetime
 #
 
 require 'spec_helper'
@@ -175,7 +176,7 @@ describe Site do
       site = Factory(:site)
       site.activate
       site.deactivate
-      CDN.should_receive(:purge).with("/js/#{site.token}.js")
+      CDN.should_receive(:purge).with("/l/#{site.token}.js")
       site.activate
     end
   end
@@ -191,17 +192,21 @@ describe Site do
   
   describe "Instance Methods" do
     
-    it "should set license file with licenses_hashes" do
+    it "should return good template_hostnames" do
       site = Factory(:site)
-      site.set_license_file
-      site.license.read.should include(site.licenses_hashes)
+      site.template_hostnames.should == "'youtube.com','localhost','127.0.0.1'"
     end
     
-    it "should return good licenses_hashes" do
+    it "should set license file with template_hostnames" do
       site = Factory(:site)
-      site.token = '1234abcd'
-      site.save
-      site.licenses_hashes.should == "'6267b576e53f2358da65fce7624d4c06d4a6f641','94a87b37f009c83ea4b20f94ca91f5e30954fbcf','88627731ad7c34cb34f21a6d9857f597ee316cae'"
+      site.set_license_file
+      site.license.read.should include(site.template_hostnames)
+    end
+    
+    it "should set loader file with token" do
+      site = Factory(:site)
+      site.set_loader_file
+      site.loader.read.should include(site.token)
     end
     
   end

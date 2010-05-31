@@ -4,4 +4,40 @@
 = content_for :content_header do
   %h2= "Billing reports"
   %p.title_desc= "This page currently shows your service usage charges report. The first row indicate your current usage."
+  .spacer_border
   
+%table.billing#invoices
+  %colgroup
+    - 2.times do
+      %col.odd
+      %col.even
+  %tr
+    %th.id= "#"
+    %th.date= "Date"
+    %th.usage= "Usage"
+    %th.total= "Total"
+  - 6.times do |i|
+    %tr.break
+      %td{ :colspan => 4 }
+    %tr{ :class => cycle("", "alt") }
+      %td.id= i+524+(i*130)+rand(2).to_i
+      %td.date
+        %em= "Charged on"
+        %strong= (Time.now-i.month).strftime('%B %d, %Y')
+      %td.usage
+        .row.player
+          %h4= "Player hits"
+          .right
+            %strong.price= "$7.20"
+            = link_to "/show_player_hits_details", :class => "view_details" do
+              %span= "View player hits details"
+        .row.videos
+          %h4= "Videos"
+          .right
+            %strong.price= "$16.28"
+            = link_to "/show_video_details", :class => "view_details" do
+              %span= "View video details"
+      %td.total
+        %strong= "$23.48"
+  %tr.break
+    %td{ :colspan => 4 }
