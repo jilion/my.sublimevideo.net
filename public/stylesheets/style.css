@@ -1162,13 +1162,13 @@ form .entry.update {
   resize:none;
 }
 
-.popup .content.video textarea {
+.popup .content.embed_code_video textarea {
   font-size:12px;
   line-height:15px;
   height:140px;
 }
 
-.popup .content.video .size {
+.popup .content.embed_code_video .size {
   padding:10px 0 5px;
   font-size:16px;
   font-weight:600;
