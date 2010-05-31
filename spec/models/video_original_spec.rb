@@ -25,18 +25,45 @@
 require 'spec_helper'
 
 describe VideoOriginal do
-  context "with valid attributes" do
-    subject { Factory(:video_original) }
-    
-    it { subject.type               == 'VideoOriginal' }
-    it { subject.token.should       =~ /^[a-z0-9]{8}$/ }
-    it { subject.file.should        be_present         }
-    it { subject.user.should        be_present         }
-    it { subject.original_id.should be_nil             }
-    it { subject.should             be_valid           }
+  
+  before(:all) do
+    VCR.use_cassette('videos/video_upload') do
+      # fake video upload, just to get the panda_id
+      @panda_id = JSON[Panda.post("/videos.json", :file => File.open("#{Rails.root}/spec/fixtures/railscast_intro.mov"))]['id']
+    end
   end
   
-  describe "Validates" do
+  pending "built with valid attributes" do
+    subject { Factory.build(:video_original, :panda_id => @panda_id) }
+    
+    it { subject.panda_id.should    be_present         }
+    it { subject.user.should        be_present         }
+    it { subject.original_id.should be_nil             }
+    it { subject.name.should        be_nil             }
+    it { subject.token.should       be_nil             }
+    it { subject.file.should        be_present         }
+    it { subject.type               == 'VideoOriginal' }
+    it { subject.should             be_active          }
+  end
+  
+  pending "created with valid attributes" do
+    before(:each) { VCR.insert_cassette('videos/one_saved_video') }
+    
+    subject { Factory(:video_original, :panda_id => @panda_id) }
+    
+    it { subject.name.should  == "Railscast Intro" }
+    it { subject.token.should =~ /^[a-z0-9]{8}$/   }
+    
+    it "should encode after create" do
+      subject # trigger video creation
+      subject.formats.size.should == VideoOriginal.profiles.size
+      # JSON[Panda.get("/encodings/#{subject.panda_id}.json")].size.should == VideoOriginal.profiles.size
+    end
+    
+    after(:each) { VCR.eject_cassette }
+  end
+  
+  describe "Validations" do
     it "should validate presence of [:user] on build" do
       video = Factory.build(:video_original, :user => nil)
       video.should_not be_valid
@@ -44,73 +71,73 @@ describe VideoOriginal do
     end
   end
   
-  describe "State Machine" do
-    it "activate should also activate each formats" do
-      original = Factory(:video_original)
-      format   = Factory(:video_format, :original => original)
-      format2  = Factory(:video_format, :original => original)
-      original.activate
+  pending "State Machine" do
+    before(:each) { VCR.insert_cassette('videos/state_machine') }
+    
+    it "deactivate should deactivate each formats as well" do
+      original = Factory(:video_original, :panda_id => @panda_id)
+      original.should be_pending
+      
+      original.formats.each { |f| f.activate; f.reload; f.should be_active }
+      
       original.should be_active
-      original.formats.each { |f| f.should be_active }
-    end
-    it "deactivate should also deactivate each formats" do
-      original = Factory(:video_original)
-      format   = Factory(:video_format, :original => original)
-      format2  = Factory(:video_format, :original => original)
-      original.activate
+      
       original.deactivate
       original.should be_pending
+      
       original.formats.each { |f| f.should be_pending }
     end
+    
+    after(:each) { VCR.eject_cassette }
   end
   
   describe "Callbacks" do
-    describe "before_create" do
-      describe "#set_name" do
-        it "should set video name after save if file is present and file has changed or video is a new record" do
-          Factory(:video_original).name.should == "Railscast Intro"
-        end
-      end
-      
-      describe "#set_duration" do
-        pending "should set video duration after save if file is present and file has changed or video is a new record" do
-          Factory(:video_original).duration.should == 3
+  end
+  
+  describe "Class Methods" do
+    describe ".profiles" do
+      it "should return the current profiles we have in Panda" do
+        VCR.use_cassette('videos/profiles') do
+          # VideoOriginal.profiles.should == 2
         end
       end
     end
   end
   
   describe "Instance Methods" do
-    describe "#set_name" do
-      it "should set video name from filename" do
-        video = Factory(:video_original)
-        video.set_name
-        video.name.should == "Railscast Intro"
+    pending "#total_size" do
+      before(:each) { VCR.insert_cassette('videos/total_size') }
+      
+      it "should return total storage (original size + formats sizes)" do
+        original = Factory(:video_original, :panda_id => @panda_id)
+        VideoOriginal.stub(:size).and_return(3)
+        VideoFormat.stub(:size).and_return(2)
+        
+        original.total_size.should == 3 + original.formats.count * 2
       end
       
-      it "should set video name to Untitled - %m/%d/%Y %I:%M%p if name is blank" do
-        video = Factory(:video_original)
-        video.stub_chain(:file, :url).and_return(' _ ')
-        video.set_name
-        video.name.should =~ %r(^Untitled - \d{2}/\d{2}/\d{4} \d{2}:\d{2}[AP]M$)
-      end
+      after(:each) { VCR.eject_cassette }
     end
     
-    pending "should set video duration" do
-      FACTORIES.each do |factory|
-        video = Factory(factory)
-        video.set_duration
-        video.duration.should == 3
-      end
-    end
-    
-    describe "#total_size" do
-      it "should return total storage (original size + formats sizes)" do
+    pending "#all_formats_active" do
+      it "should return true if all the formats of a original video are active" do
         original = Factory(:video_original)
-        format   = Factory(:video_format, :original => original)
+        format1  = Factory(:video_format, :original => original)
         format2  = Factory(:video_format, :original => original)
-        original.total_size.should == original.size + format.size + format2.size
+        original.formats.should == [format1, format2]
+        original.all_formats_active?.should be_false
+        
+        format1.activate
+        format1.should be_active
+        original.all_formats_active?.should be_false
+        
+        format2.activate
+        format2.should be_active
+        original.reload
+        
+        original.all_formats_active?.should be_true
       end
     end
   end
+  
 end
