@@ -13,7 +13,7 @@ describe UsersController do
     it "should respond with success to PUT :update" do
       @mock_user.stub(:update_attributes).with({}).and_return(true)
       put :update, :id => '1', :user => {}
-      response.should redirect_to(sites_url)
+      response.should redirect_to(edit_user_registration_path)
     end
   end
   
