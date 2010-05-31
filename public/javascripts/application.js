@@ -333,7 +333,7 @@ var PopupHandler = Class.create({
     var popupLoading = new Element("div", {
       id:popupId,
       className:"popup loading"
-    }).update("<div class='wrap'><div class='content'></div></div>");
+    }).update("<div class='wrap'><div class='content "+idPrefix+"'></div></div>");
     var closeButton = new Element("a", {
       href:"",
       className:"close",
