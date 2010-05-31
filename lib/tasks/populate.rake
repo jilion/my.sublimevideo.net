@@ -88,7 +88,8 @@ def create_users(count = 5)
 end
 
 def create_sites(count = 5)
-  delete_all_files_in_public('js')
+  delete_all_files_in_public('uploads/licenses')
+  delete_all_files_in_public('uploads/loaders')
   create_users if User.all.empty?
   
   User.all.each do |user|
@@ -104,7 +105,7 @@ def create_sites(count = 5)
 end
 
 def create_videos(count = 8)
-  delete_all_files_in_public('v')
+  delete_all_files_in_public('uploads/videos')
   create_users if User.all.empty?
   
   User.all.each do |user|

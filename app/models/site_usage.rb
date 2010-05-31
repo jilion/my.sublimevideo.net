@@ -2,21 +2,21 @@
 #
 # Table name: site_usages
 #
-#  id           :integer         not null, primary key
-#  site_id      :integer
-#  log_id       :integer
-#  started_at   :datetime
-#  ended_at     :datetime
-#  license_hits :integer         default(0)
-#  js_hits      :integer         default(0)
-#  flash_hits   :integer         default(0)
-#  created_at   :datetime
-#  updated_at   :datetime
+#  id          :integer         not null, primary key
+#  site_id     :integer
+#  log_id      :integer
+#  started_at  :datetime
+#  ended_at    :datetime
+#  loader_hits :integer         default(0)
+#  js_hits     :integer         default(0)
+#  flash_hits  :integer         default(0)
+#  created_at  :datetime
+#  updated_at  :datetime
 #
 
 class SiteUsage < ActiveRecord::Base
   
-  attr_accessible :site, :log, :license_hits, :js_hits, :flash_hits
+  attr_accessible :site, :log, :loader_hits, :js_hits, :flash_hits
   
   # ================
   # = Associations =
@@ -33,7 +33,7 @@ class SiteUsage < ActiveRecord::Base
   validates :log_id,       :presence => true
   validates :started_at,   :presence => true
   validates :ended_at,     :presence => true
-  validates :license_hits, :presence => true
+  validates :loader_hits,  :presence => true
   validates :js_hits,      :presence => true
   validates :flash_hits,   :presence => true
   
@@ -56,7 +56,7 @@ class SiteUsage < ActiveRecord::Base
         create!(
           :site         => site,
           :log          => log,
-          :license_hits => hits[:license][site.token].to_i,
+          :loader_hits => hits[:loader][site.token].to_i,
           :js_hits      => hits[:js][site.token].to_i,
           :flash_hits   => hits[:flash][site.token].to_i
         )
@@ -76,7 +76,7 @@ private
   def update_site_hits_cache
     Site.update_counters(
       site_id,
-      :license_hits_cache => license_hits,
+      :loader_hits_cache  => loader_hits,
       :js_hits_cache      => js_hits,
       :flash_hits_cache   => flash_hits
     )
@@ -86,8 +86,8 @@ private
   def self.hits_from(trackers)
     trackers.inject({}) do |trackers, tracker|
       case tracker.options[:title]
-      when :license
-        trackers[:license] = tracker.categories.inject({}) do |tokens, (k,v)|
+      when :loader
+        trackers[:loader] = tracker.categories.inject({}) do |tokens, (k,v)|
           if token = k.match(%r(/js/([a-z0-9]{8})\.js.*))[1]
             tokens.merge! token => v
           end

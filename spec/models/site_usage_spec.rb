@@ -2,16 +2,16 @@
 #
 # Table name: site_usages
 #
-#  id           :integer         not null, primary key
-#  site_id      :integer
-#  log_id       :integer
-#  started_at   :datetime
-#  ended_at     :datetime
-#  license_hits :integer         default(0)
-#  js_hits      :integer         default(0)
-#  flash_hits   :integer         default(0)
-#  created_at   :datetime
-#  updated_at   :datetime
+#  id          :integer         not null, primary key
+#  site_id     :integer
+#  log_id      :integer
+#  started_at  :datetime
+#  ended_at    :datetime
+#  loader_hits :integer         default(0)
+#  js_hits     :integer         default(0)
+#  flash_hits  :integer         default(0)
+#  created_at  :datetime
+#  updated_at  :datetime
 #
 
 require 'spec_helper'
@@ -23,7 +23,7 @@ describe SiteUsage do
     subject { Factory.build(:site_usage) }
     
     it { subject.should be_valid          }
-    it { subject.license_hits.should == 0 }
+    it { subject.loader_hits.should == 0 }
     it { subject.js_hits.should      == 0 }
     it { subject.flash_hits.should   == 0 }
     
@@ -52,9 +52,9 @@ describe SiteUsage do
     
     it "should clean trackers" do
       SiteUsage.hits_from(@trackers).should == {
-        :license => { "g3325oz4" => 3, "g8thugh6" => 1},
-        :js      => { "g3325oz4" => 3, "g8thugh6" => 7},
-        :flash   => {}
+        :loader => { "g3325oz4" => 3, "g8thugh6" => 1},
+        :js     => { "g3325oz4" => 3, "g8thugh6" => 7},
+        :flash  => {}
       }
     end
     
@@ -68,7 +68,7 @@ describe SiteUsage do
       usage = SiteUsage.first
       usage.log.should          == @log
       usage.site.should         == @site1
-      usage.license_hits.should == 3
+      usage.loader_hits.should == 3
       usage.js_hits.should      == 3
       usage.flash_hits.should   == 0
     end
@@ -77,8 +77,8 @@ describe SiteUsage do
   describe "Callbacks" do
     before(:each) { @site = Factory(:site) }
     
-    it "should update site.license_hits_cache" do
-      lambda { Factory(:site_usage, :site => @site, :license_hits => 2) }.should change { @site.reload.license_hits_cache }.by(2)
+    it "should update site.loader_hits_cache" do
+      lambda { Factory(:site_usage, :site => @site, :loader_hits => 2) }.should change { @site.reload.loader_hits_cache }.by(2)
     end
     it "should update site.js_hits_cache" do
       lambda { Factory(:site_usage, :site => @site, :js_hits => 2) }.should change { @site.reload.js_hits_cache }.by(2)

@@ -6,9 +6,9 @@ class CreateSiteUsages < ActiveRecord::Migration
       t.datetime  :started_at
       t.datetime  :ended_at
       
-      t.integer   :license_hits, :default => 0
-      t.integer   :js_hits,      :default => 0
-      t.integer   :flash_hits,   :default => 0
+      t.integer   :loader_hits, :default => 0
+      t.integer   :js_hits,     :default => 0
+      t.integer   :flash_hits,  :default => 0
       
       t.timestamps
     end

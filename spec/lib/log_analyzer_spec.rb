@@ -9,7 +9,7 @@ describe LogAnalyzer do
     end
     
     it "should parse and return license tracker" do
-      tracker = @trackers.select { |tracker| tracker.options[:title] == :license }.first
+      tracker = @trackers.select { |tracker| tracker.options[:title] == :loader }.first
       tracker.categories.should == { "/js/12345678.js" => 9 }
     end
   end
@@ -21,7 +21,7 @@ describe LogAnalyzer do
     end
     
     it "should parse and return license tracker" do
-      tracker = @trackers.select { |tracker| tracker.options[:title] == :license }.first
+      tracker = @trackers.select { |tracker| tracker.options[:title] == :loader }.first
       tracker.categories.should == { "/js/g3325oz4.js" => 3, "/js/g8thugh6.js" => 1 }
     end
     

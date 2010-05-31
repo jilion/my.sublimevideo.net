@@ -11,7 +11,7 @@ namespace :logs do
     SiteUsage.destroy_all
     puts "Clean all site hits caches"
     Site.update_all(
-      :license_hits_cache => 0,
+      :loader_hits_cache => 0,
       :js_hits_cache      => 0,
       :flash_hits_cache   => 0
     )

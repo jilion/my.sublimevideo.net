@@ -53,9 +53,9 @@ module LogsFileFormat
     
     def self.report_trackers
       analyze = RequestLogAnalyzer::Aggregator::Summarizer::Definer.new
-      analyze.frequency :path, :title => :license, :if => lambda { |r| r[:path] =~ /\/js\/[a-z0-9]{8}\.js.*/ }
-      analyze.frequency :path, :title => :js,      :if => lambda { |r| r[:path] =~ /\/p\/sublime\.js\?t=[a-z0-9]{8}.*/ }
-      analyze.frequency :path, :title => :flash,   :if => lambda { |r| r[:path] =~ /\/p\/sublime\.swf\?t=[a-z0-9]{8}.*/ }
+      analyze.frequency :path, :title => :loader, :if => lambda { |r| r[:path] =~ /\/js\/[a-z0-9]{8}\.js.*/ }
+      analyze.frequency :path, :title => :js,     :if => lambda { |r| r[:path] =~ /\/p\/sublime\.js\?t=[a-z0-9]{8}.*/ }
+      analyze.frequency :path, :title => :flash,  :if => lambda { |r| r[:path] =~ /\/p\/sublime\.swf\?t=[a-z0-9]{8}.*/ }
       # analyze.frequency :referer
       # analyze.frequency :referer,  :title => 'js referer', :if => lambda { |r| r[:path] == "/js/test.txt" }
       # analyze.traffic :response_bytes,  :category => lambda { |r| r[:path] }

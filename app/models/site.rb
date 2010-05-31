@@ -2,18 +2,19 @@
 #
 # Table name: sites
 #
-#  id                 :integer         not null, primary key
-#  user_id            :integer
-#  hostname           :string(255)
-#  dev_hostnames      :string(255)
-#  token              :string(255)
-#  license            :string(255)
-#  state              :string(255)
-#  license_hits_cache :integer         default(0)
-#  js_hits_cache      :integer         default(0)
-#  flash_hits_cache   :integer         default(0)
-#  created_at         :datetime
-#  updated_at         :datetime
+#  id                :integer         not null, primary key
+#  user_id           :integer
+#  hostname          :string(255)
+#  dev_hostnames     :string(255)
+#  token             :string(255)
+#  license           :string(255)
+#  loader            :string(255)
+#  state             :string(255)
+#  loader_hits_cache :integer         default(0)
+#  js_hits_cache     :integer         default(0)
+#  flash_hits_cache  :integer         default(0)
+#  created_at        :datetime
+#  updated_at        :datetime
 #
 
 class Site < ActiveRecord::Base
@@ -21,6 +22,7 @@ class Site < ActiveRecord::Base
   attr_accessible :hostname, :dev_hostnames
   uniquify :token, :chars => ('a'..'z').to_a + ('0'..'9').to_a
   mount_uploader :license, LicenseUploader
+  mount_uploader :loader, LoaderUploader
   
   cattr_accessor :per_page
   self.per_page = 6
@@ -60,6 +62,7 @@ class Site < ActiveRecord::Base
   
   state_machine :initial => :pending do
     before_transition :on => :activate,     :do => :set_license_file
+    before_transition :on => :activate,     :do => :set_loader_file
     after_transition  :inactive => :active, :do => :purge_license_file
     
     event(:activate)   { transition [:pending, :inactive] => :active }
@@ -103,25 +106,27 @@ class Site < ActiveRecord::Base
     end
   end
   
-  def licenses_hashes
-    licenses  = [hostname]
-    licenses += dev_hostnames.split(', ')
-    licenses.map! { |l| "'" + Digest::SHA1.hexdigest("#{token}#{l}") + "'" }
-    licenses.join(',')
+  def template_hostnames
+    hostnames  = [hostname]
+    hostnames += dev_hostnames.split(', ')
+    hostnames.map! { |hostname| "'" + hostname + "'" }
+    hostnames.join(',')
+  end
+  
+  def set_loader_file
+    set_template("loader")
   end
   
   def set_license_file
-    template = ERB.new(File.new(Rails.root.join('app/templates/sites/license.js.erb')).read)
-    
-    tempfile = Tempfile.new('license', "#{Rails.root}/tmp")
-    tempfile.print template.result(binding)
-    tempfile.flush
-    
-    self.license = tempfile
+    set_template("license")
+  end
+  
+  def purge_loader_file
+    CDN.purge("/js/#{token}.js")
   end
   
   def purge_license_file
-    CDN.purge("/js/#{token}.js")
+    CDN.purge("/l/#{token}.js")
   end
   
 private
@@ -137,6 +142,16 @@ private
   # before_create
   def set_default_dev_hostnames
     write_attribute(:dev_hostnames, "localhost, 127.0.0.1") unless dev_hostnames.present?
+  end
+  
+  def set_template(name)
+    template = ERB.new(File.new(Rails.root.join("app/templates/sites/#{name}.js.erb")).read)
+    
+    tempfile = Tempfile.new(name, "#{Rails.root}/tmp")
+    tempfile.print template.result(binding)
+    tempfile.flush
+    
+    self.send("#{name}=", tempfile)
   end
   
 end

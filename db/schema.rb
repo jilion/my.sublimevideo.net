@@ -46,9 +46,9 @@ ActiveRecord::Schema.define(:version => 20100526094453) do
     t.integer  "log_id"
     t.datetime "started_at"
     t.datetime "ended_at"
-    t.integer  "license_hits", :default => 0
-    t.integer  "js_hits",      :default => 0
-    t.integer  "flash_hits",   :default => 0
+    t.integer  "loader_hits", :default => 0
+    t.integer  "js_hits",     :default => 0
+    t.integer  "flash_hits",  :default => 0
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -63,10 +63,11 @@ ActiveRecord::Schema.define(:version => 20100526094453) do
     t.string   "dev_hostnames"
     t.string   "token"
     t.string   "license"
+    t.string   "loader"
     t.string   "state"
-    t.integer  "license_hits_cache", :default => 0
-    t.integer  "js_hits_cache",      :default => 0
-    t.integer  "flash_hits_cache",   :default => 0
+    t.integer  "loader_hits_cache", :default => 0
+    t.integer  "js_hits_cache",     :default => 0
+    t.integer  "flash_hits_cache",  :default => 0
     t.datetime "created_at"
     t.datetime "updated_at"
   end
