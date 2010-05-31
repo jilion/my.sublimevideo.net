@@ -41,11 +41,11 @@
                 %tr
                   %th.requests
                     %h5= "Requests"
-                  %td.requests= site.loader_hits_cache
+                  %td.requests= number_with_delimiter(site.loader_hits_cache)
                 %tr
                   %th.player_hits
                     %h5= "Player hits"
-                  %td.player_hits= site.js_hits_cache
+                  %td.player_hits= number_with_delimiter(site.js_hits_cache)
             %td.delete= button_to 'Delete', site, :confirm => 'Are you sure?', :method => :delete, :remote => true
             
   .pagination_wrap
