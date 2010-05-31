@@ -12,14 +12,14 @@
     .row.player
       %h4= "Player hits"
       .right
-        %strong.price= "$7.20"
+        %strong.price= "$#{rand(200000).to_f/100}"
         = link_to "/show_player_hits_details", :class => "view_details" do
           %span= "View player hits details"
     .row.videos
       %h4= "Videos"
       .right
-        %strong.price= "$16.28"
+        %strong.price= "$#{rand(200000).to_f/100}"
         = link_to "/show_video_details", :class => "view_details" do
           %span= "View video details"
   %td.total
-    %strong= "$23.48"
+    %strong= "$#{rand(200000).to_f/100}"
