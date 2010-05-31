@@ -7,7 +7,7 @@ class UsersController < ApplicationController
     @user = User.find(current_user.id)
     respond_with(@user) do |format|
       if @user.update_attributes(params[:user])
-        format.html { redirect_to sites_path }
+        format.html { redirect_to edit_user_registration_path }
       else
         format.html { render 'devise/registrations/edit' }
       end
