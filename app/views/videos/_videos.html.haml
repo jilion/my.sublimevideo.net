@@ -10,8 +10,8 @@
                 = "Video"
               - unless @videos.one?
                 .sorting
-                  = link_to_sort(:date, videos_path, :reverse => true, :default => true)
-                  = link_to_sort(:name, videos_path)
+                  = link_to_sort(:date, videos_path, :up => 'asc', :reverse => true, :default => true)
+                  = link_to_sort(:name, videos_path, :up => 'asc')
           %th.code= "Code"
           %th.delete
           
