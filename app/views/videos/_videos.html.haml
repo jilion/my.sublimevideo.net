@@ -27,7 +27,7 @@
                 .info
                   %h3.title{ :title => video.name }= truncate(video.name, :length => 28)
                   .views
-                    %strong= rand(10000)
+                    %strong= number_with_delimiter(rand(10000))
                     %em= "views"
                   .storage
                     %strong= number_to_human_size(video.total_size)
