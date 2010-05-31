@@ -24,19 +24,35 @@
 
 require 'spec_helper'
 
+# TODO VCRize all this
 describe VideoFormat do
-  context "with valid attributes" do
-    subject { Factory(:video_format) }
-    
-    it { subject.type            == 'VideoFormat'   }
-    it { subject.token.should    =~ /^[a-z0-9]{8}$/ }
-    it { subject.file.should     be_present         }
-    it { subject.user_id.should  be_nil             }
-    it { subject.original.should be_present         }
-    it { subject.should          be_valid           }
+  
+  before(:all) do
+    # fake video upload, just to get the panda_id
+    @panda_id = 'f72e511820c12dabc1d15817745225bd'
   end
   
-  describe "Validations" do
+  pending "built with valid attributes" do
+    before(:each) { VCR.insert_cassette('videos/one_saved_video') }
+    
+    subject { Factory.build(:video_format, :panda_id => @panda_id) }
+    
+    it { subject.panda_id.should    be_present         }
+    it { subject.user.should        be_nil             }
+    it { subject.original_id.should be_present         }
+    it { subject.name.should        be_nil             }
+    it { subject.token.should       be_nil             }
+    it { subject.file.should        be_present         }
+    it { subject.type               == 'VideoFormat'   }
+    it { subject.should             be_pending         }
+    it { subject.should             be_valid           }
+    
+    after(:each) { VCR.eject_cassette }
+  end
+  
+  pending "Validations" do
+    before(:each) { VCR.insert_cassette('videos/one_saved_video') }
+    
     it "should validate presence of [:original]" do
       video = Factory.build(:video_format, :original => nil)
       video.should_not be_valid
@@ -48,6 +64,8 @@ describe VideoFormat do
       video.should_not be_valid
       video.errors[:name].should be_present
     end
+    
+    after(:each) { VCR.eject_cassette }
   end
   
 end

@@ -49,6 +49,13 @@ class VideoFormat < Video
   # = State Machine =
   # =================
   
+  state_machine do
+    event(:activate) { transition any => :active }
+    after_transition :on => :activate do |video_format, transition|
+      video_format.original.activate
+    end
+  end
+  
   # =================
   # = Class Methods =
   # =================

@@ -47,44 +47,50 @@ class VideoOriginal < Video
   # = Callbacks =
   # =============
   
-  before_create :set_name, :set_duration
+  after_create :encode
   
   # =================
   # = State Machine =
   # =================
   
+  state_machine do
+    event(:activate) { transition any => :active, :if => :all_formats_active? }
+  end
+  
   # =================
   # = Class Methods =
   # =================
+  
+  def self.profiles
+    # Change this to something smater...
+    Rails.env.production? ? JSON[Panda.get("/profiles.json")] : []
+  end
   
   # ====================
   # = Instance Methods =
   # ====================
   
-  # before_create
-  def set_name
-    name = File.basename(file.url, File.extname(file.url)).titleize.strip
-    write_attribute(:name, name.blank? ? "Untitled - #{Time.now.strftime("%m/%d/%Y %I:%M%p")}" : name)
-  end
-  
-  # before_create
-  def set_duration
-    # TODO: Replace with real implementation
-    write_attribute(:duration, rand(7200))
-  end
-  
-  def activate
-    super
-    formats.each { |f| f.activate }
+  def all_formats_active?
+    formats.all? { |f| f.active? }
   end
   
   def deactivate
     super
-    formats.each { |f| f.deactivate }
+    formats.map(&:deactivate)
   end
   
   def total_size
     size + formats.map(&:size).sum
+  end
+  
+protected
+  
+  # after_create
+  def encode
+    self.class.profiles.each do |profile|
+      encoding_response = JSON[Panda.post("/encodings.json", { :video_id => panda_id, :profile_id => profile['id'] })]
+      formats.create(:panda_id => encoding_response['id'], :name => encoding_response['extname'][1..-1])
+    end
   end
   
 end
