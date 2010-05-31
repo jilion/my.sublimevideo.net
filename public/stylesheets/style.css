@@ -1552,6 +1552,126 @@ form .entry.update {
 
 #credit_card_summary p strong {font-weight:600;}
 
+#content table.billing {
+  width:100%;
+  border-collapse:collapse;
+  margin-top:30px;
+  background:#eee;
+/*  background:-webkit-gradient(linear,left top,left bottom,from(#fff),to(#dedede));
+  background:-moz-linear-gradient(top, #fff, #dedede);*/
+  -webkit-box-shadow:rgba(0,0,0,0.4) 0 2px 5px;
+  -moz-box-shadow:rgba(0,0,0,0.4) 0 2px 5px;
+  box-shadow:rgba(0,0,0,0.4) 0 2px 5px;
+}
+
+#content table.billing col.even {
+  background:rgba(0,0,0,0.07);
+}
+
+#content table.billing th {
+  font-size:18px;
+  font-weight:600;
+  padding:8px 10px 7px;
+  background:#c1cbda;
+  background:-webkit-gradient(linear,left top,left bottom,from(#d5dfee),to(#b5becd));
+  background:-moz-linear-gradient(top, #d5dfee, #b5becd);
+}
+
+#content table.billing .id, #content table.billing .total {text-align:center;}
+#content table.billing .date, #content table.billing .usage {text-align:left;}
+
+#content table.billing tr.break td {
+  width:100%;
+  height:8px;
+  background:url(/images/embed/invoices/break_row_back.gif) repeat-x;
+}
+
+#content table.billing tr.alt {background:rgba(0,0,0,0.1);}
+
+#content table.billing td.id {
+  width:50px;
+  font-size:15px;
+}
+
+#content table.billing td.date {
+  width:170px;
+  text-align:center;
+}
+
+#content table.billing td.date em {
+  display:block;
+  color:#878f9c;
+  font-size:12px;
+  font-style:normal;
+  text-transform:uppercase;
+}
+
+#content table.billing td.date strong {
+  display:block;
+  font-weight:normal;
+  font-size:16px;
+  padding-top:5px;
+}
+
+#content table.billing td.usage {
+  width:470px;
+}
+
+#content table.billing td.usage .row {
+  width:470px;
+  height:32px;
+  position:relative;
+  background:#ccc;
+  background:-webkit-gradient(linear,left top,left bottom,from(rgba(0,0,0,0.13)),to(rgba(0,0,0,0.23)));
+  background:-moz-linear-gradient(top, rgba(0,0,0,0.13), rgba(0,0,0,0.23));
+}
+
+#content table.billing td.usage .row.player {
+  border-bottom:1px solid #888;
+}
+
+#content table.billing td.usage .row.videos {
+  border-top:1px solid rgba(255,255,255,0.6);
+}
+
+#content table.billing td.usage h4 {
+  padding:8px 0 0 8px;
+  font-size:15px;
+  font-weight:normal;
+}
+
+#content table.billing td.usage .row .right {
+  position:absolute;
+  top:8px;
+  right:8px;
+}
+
+#content table.billing td.usage .row .price {
+  float:left;
+  padding-top:1px;
+  font-weight:600;
+}
+
+#content table.billing td.usage .row .view_details {
+  display:block;
+  width:17px;
+  height:18px;
+  background:url(/images/embed/invoices/view_more.png) no-repeat;
+  float:left;
+  margin-left:10px;
+}
+
+#content table.billing td.usage .row .view_details:active {background-position:0 -18px;}
+
+#content table.billing td.usage .row .view_details span {display:none;}
+
+#content table.billing td.total {
+  width:170px;
+  font-size:20px;
+}
+
+#content table.billing td.total strong {font-weight:600;}
+
 #footer {
   width:1000px;
   margin:30px auto;
@@ -1563,6 +1683,10 @@ form .entry.update {
 }
 
 .spacer {clear:both;}
+.spacer_border {
+  height:2px;
+  background:url(/images/embed/breakline.png) no-repeat 0 100%;
+}
 
 a {
   text-decoration:none;
