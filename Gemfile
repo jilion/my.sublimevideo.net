@@ -52,25 +52,19 @@ group :test do
   gem 'watchr'
   gem 'growl'
   
-  # gem "rspec",              :git => "git://github.com/rspec/rspec.git"
-  # gem "rspec-core",         :git => "git://github.com/rspec/rspec-core.git"
-  # gem "rspec-expectations", :git => "git://github.com/rspec/rspec-expectations.git"
-  # gem "rspec-mocks",        :git => "git://github.com/rspec/rspec-mocks.git"
-  # gem "rspec-rails",        :git => "git://github.com/rspec/rspec-rails.git"
+  gem 'rspec',        '>= 2.0.0.beta.9'
+  gem 'rspec-rails',  '>= 2.0.0.beta.9.1'
   
-  gem 'rspec',        '>= 2.0.0.beta.8'
-  gem 'rspec-rails',  :git => 'git://github.com/rspec/rspec-rails.git', :ref => "d2fb9f35c7867225cd68758152f51dd3d1152a09"
-  gem 'factory_girl', :git => 'git://github.com/danielb2/factory_girl'
-  gem 'steak',        '0.4.0.a4'
+  gem 'steak',        '>= 0.4.0.beta.1'
   gem 'capybara'
-  # gem 'capybara-envjs'
-  gem 'email_spec'
+  gem 'capybara-envjs'
   gem 'launchy'
+  
+  gem 'email_spec'
+  gem 'factory_girl', :git => 'git://github.com/thoughtbot/factory_girl.git', :branch => 'fixes_for_rails3'
   
   gem 'webmock'
   gem 'vcr'
-  
-  gem 'ruby-debug'
 end
 
 group :production do
