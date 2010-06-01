@@ -1,0 +1,25 @@
+%tr.break
+  %td{ :colspan => 4 }
+%tr{ :class => cycle("", "alt") + (is_current ? "current" : "") }
+  %td.id= is_current ? "— —" : "A0OIL173H7"
+  %td.date
+    - if is_current
+      %strong= "Current usage"
+    - else
+      %em= "Charged on"
+      %strong= (Time.now-index.to_i.month).strftime('%B %d, %Y')
+  %td.usage
+    .row.player
+      %h4= "Player hits"
+      .right
+        %strong.price= "$7.20"
+        = link_to "/show_player_hits_details", :class => "view_details" do
+          %span= "View player hits details"
+    .row.videos
+      %h4= "Videos"
+      .right
+        %strong.price= "$16.28"
+        = link_to "/show_video_details", :class => "view_details" do
+          %span= "View video details"
+  %td.total
+    %strong= "$23.48"

@@ -13,6 +13,7 @@ end
 
 Factory.define :video do |f|
   f.file File.open("#{Rails.root}/spec/fixtures/railscast_intro.mov")
+  f.panda_id    '1'
 end
 
 # FYI, can't use type (the Ruby's one is used instead of the factory_girl's method_missing's one)
@@ -27,10 +28,10 @@ Factory.define :video_format, :class => VideoFormat, :parent => :video do |f|
 end
 
 Factory.define :log do |f|
-  f.name        "cdn.sublimevideo.net.log.1275002700-1275002760.gz"
+  f.name "cdn.sublimevideo.net.log.1275002700-1275002760.gz"
 end
 
 Factory.define :site_usage do |f|
-  f.association   :site
-  f.association   :log
+  f.association :site
+  f.association :log
 end

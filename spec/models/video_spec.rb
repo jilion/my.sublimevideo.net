@@ -25,60 +25,129 @@
 require 'spec_helper'
 require 'carrierwave/test/matchers'
 
+# TODO VCRize all this
 describe Video do
-  
   FACTORIES = %w[video_original video_format]
   
-  describe "Validates" do
-    it "should validate presence of [:type] on build" do
-      FACTORIES.each do |factory|
-        video = Factory.build(factory, :type => nil)
-        video.should_not be_valid
-        video.errors[:type].should be_present
+  pending "base instance behaviour" do
+    before(:all) do
+      VCR.use_cassette('videos/video_upload') do
+        # fake video upload, just to get the panda_id
+        @panda_id = JSON[Panda.post("/videos.json", :file => File.open("#{Rails.root}/spec/fixtures/railscast_intro.mov"))]['id']
       end
     end
     
-    it "should validate inclusion of type in %w[VideoOriginal VideoFormat]" do
+    before(:each) { VCR.insert_cassette('videos/one_saved_video') }
+    
+    describe "Validations" do
       FACTORIES.each do |factory|
-        video = Factory.build(factory)
-        video.should be_valid
-        video.errors[:type].should be_empty
+        it "should validate presence of [:type] on build of #{factory}" do
+          video = Factory.build(factory, :type => nil)
+          video.should_not be_valid
+          video.errors[:type].should be_present
+        end
+      end
+      
+      FACTORIES.each do |factory|
+        it "should validate inclusion of type in %w[VideoOriginal VideoFormat] on build of #{factory}" do
+          video = Factory.build(factory)
+          video.type.should be_present
+          video.should be_valid
+          video.errors[:type].should be_empty
         
-        video = Factory.build(factory, :type => 'foo')
-        video.should_not be_valid
-        video.errors[:type].should be_present
+          video = Factory.build(factory, :type => 'foo')
+          video.should_not be_valid
+          video.errors[:type].should be_present
+        end
+      end
+      
+      FACTORIES.each do |factory|
+        it "should validate presence of [:panda_id] on build of #{factory}" do
+          video = Factory.build(factory, :panda_id => nil)
+          video.should_not be_valid
+          video.errors[:panda_id].should be_present
+        end
       end
     end
-  end
-  
-  describe "State Machine" do
+    
+    describe "State Machine" do
+      FACTORIES.each do |factory|
+        it "#{factory} should be initially pending" do
+          video = Factory.build(factory)
+          video.should be_pending
+        end
+      end
+    end
+    
+    after(:each) { VCR.eject_cassette }
   end
   
   # pending examples because size and duration will be setted from the real file, so can't test now
-  describe "Callbacks" do
+  pending "Callbacks" do
     describe "before_create" do
-      describe "#set_size" do
-        pending "should set video size after save if file is present and file has changed or video is a new record" do
-          FACTORIES.each do |factory|
-            Factory(factory).size.should == 5
-          end
+      describe "#set_infos" do
+        let(:video) { Factory(:video_original) }
+        
+        it "should set video name" do
+          video.name.should be_present
         end
+        
+        it "should set video name to Untitled - %m/%d/%Y %I:%M%p if name is blank" do
+          video = Factory(:video_original)
+          video.stub_chain(:file, :url).and_return(' _ ')
+          video.set_name
+          video.name.should =~ %r(^Untitled - \d{2}/\d{2}/\d{4} \d{2}:\d{2}[AP]M$)
+        end
+        
+        it "should set video codec" do
+          video.codec.should be_present
+        end
+        
+        it "should set video container" do
+          video.container.should be_present
+        end
+        
+        it "should set video size" do
+          video.size.should be_present
+        end
+        
+        it "should set video duration" do
+          video.duration.should be_present
+        end
+        
+        it "should set video width" do
+          video.width.should be_present
+        end
+        
+        it "should set video height" do
+          video.height.should be_present
+        end
+        
+        # @state     = video_infos[:status] == 'success' ? 'active' : video_infos[:status]
+        it "should set video state" do
+          video.state.should be_present
+        end
+        
       end
     end
   end
   
   describe "Class Methods" do
-    it "should return panda profiles ids as 'id1, id2'" do
-      Video.panda_profiles_ids.should =~ /(\w,)*\w+/
-    end
   end
   
-  describe "Instance Methods" do
-    pending "should set video size" do
-      FACTORIES.each do |factory|
-        video = Factory(factory)
-        video.set_size
-        video.size.should == 5
+  pending "Instance Methods" do
+    describe "#set_name" do
+      it "should set video name from filename" do
+        video = Factory(:video_original)
+        video.set_name
+        video.name.should == "Railscast Intro"
+      end
+      
+      it "should set video name to Untitled - %m/%d/%Y %I:%M%p if name is blank" do
+        video = Factory(:video_original)
+        video.stub_chain(:file, :url).and_return(' _ ')
+        video.set_name
+        video.name.should =~ %r(^Untitled - \d{2}/\d{2}/\d{4} \d{2}:\d{2}[AP]M$)
       end
     end
   end

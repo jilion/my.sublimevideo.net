@@ -46,39 +46,55 @@ class Video < ActiveRecord::Base
   # = Validations =
   # ===============
   
-  validates :type, :presence => true, :inclusion => { :in => %w[VideoOriginal VideoFormat] }
+  validates :type,     :presence => true, :inclusion => { :in => %w[VideoOriginal VideoFormat] }
+  validates :panda_id, :presence => true
   
   # =============
   # = Callbacks =
   # =============
   
-  before_create :set_size
+  before_create :set_infos
   
   # =================
   # = State Machine =
   # =================
   
   state_machine :initial => :pending do
-    event(:activate)   { transition :pending => :active }
     event(:deactivate) { transition :active => :pending }
+    event(:fail)       { transition any => :failed }
   end
   
   # =================
   # = Class Methods =
   # =================
   
-  def self.panda_profiles_ids
-    '123456, 654321' # TODO To be changed, and maybe move to config/panda.yml
-  end
-  
   # ====================
   # = Instance Methods =
   # ====================
   
   # before_create
-  def set_size
-    # TODO: Replace with real implementation
-    write_attribute(:size, rand(100_000_000))
+  def set_infos
+    if panda_id
+      if Rails.env.production? # Change this to something smarter...
+        set_name
+        video_infos    = JSON[Panda.get("/videos/#{panda_id}.json")]
+        self.codec     = video_infos['codec']
+        self.container = video_infos['container']
+        self.codec     = video_infos['codec']
+        self.size      = video_infos['size']
+        self.duration  = video_infos['duration']
+        self.width     = video_infos['width']
+        self.height    = video_infos['height']
+        self.state     = video_infos['status'] == 'success' ? 'active' : video_infos['status']
+      end
+    else
+      fail
+    end
+  end
+  
+  def set_name
+    name = File.basename(file.url, File.extname(file.url)).titleize.strip
+    write_attribute(:name, name.blank? ? "Untitled - #{Time.now.strftime("%m/%d/%Y %I:%M%p")}" : name)
   end
   
 end
