@@ -20,6 +20,8 @@
 #  last_sign_in_ip      :string(255)
 #  failed_attempts      :integer         default(0)
 #  locked_at            :datetime
+#  last_invoiced_at     :datetime
+#  next_invoiced_at     :datetime
 #  created_at           :datetime
 #  updated_at           :datetime
 #
@@ -31,9 +33,9 @@ describe User do
   context "with valid attributes" do
     subject { Factory(:user) }
     
-    it { subject.full_name.should == "Joe Blow"         }
-    it { subject.email.should match /email\d+@user.com/ }
-    it { subject.should be_valid                        }
+    its(:full_name) { should == "Joe Blow" }
+    its(:email) { should match /email\d+@user.com/ }
+    it { should be_valid }
   end
   
   describe "validates" do

@@ -22,18 +22,17 @@ describe SiteUsage do
   context "build with valid attributes" do
     subject { Factory.build(:site_usage) }
     
-    it { subject.should be_valid          }
-    it { subject.loader_hits.should == 0 }
-    it { subject.js_hits.should      == 0 }
-    it { subject.flash_hits.should   == 0 }
-    
+    its(:loader_hits) { should == 0 }
+    its(:js_hits)     { should == 0 }
+    its(:flash_hits)  { should == 0 }
+    it { should be_valid }
   end
   
   context "saved with valid attributes" do
     subject { Factory(:site_usage) }
     
-    it { subject.started_at.should == Time.zone.at(1275002700) }
-    it { subject.ended_at.should   == Time.zone.at(1275002760) }
+    its(:started_at) { should == Time.zone.at(1275002700) }
+    its(:ended_at)   { should == Time.zone.at(1275002760) }
     
   end
   

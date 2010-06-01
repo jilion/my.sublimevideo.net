@@ -21,6 +21,9 @@ gem 'has_scope',     :git => 'git://github.com/rymai/has_scope.git'
 gem 'jammit',        :git => 'git://github.com/thibaudgg/jammit.git'
 gem 'meta_where'
 
+gem 'system_timer'
+gem 'memcached'
+
 # File management
 gem 'aws' # S3 support for carrierwave
 gem 'carrierwave',   :git => 'git://github.com/jnicklas/carrierwave.git'
