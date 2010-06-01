@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100526094453) do
+ActiveRecord::Schema.define(:version => 20100601074800) do
 
   create_table "delayed_jobs", :force => true do |t|
     t.integer  "priority",   :default => 0
@@ -25,6 +25,24 @@ ActiveRecord::Schema.define(:version => 20100526094453) do
   end
 
   add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
+
+  create_table "invoices", :force => true do |t|
+    t.integer  "user_id"
+    t.string   "reference"
+    t.string   "state"
+    t.datetime "charged_at"
+    t.datetime "started_at"
+    t.datetime "ended_at"
+    t.integer  "amount",        :default => 0
+    t.integer  "sites_amount",  :default => 0
+    t.integer  "videos_amount", :default => 0
+    t.text     "sites"
+    t.text     "videos"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "invoices", ["user_id"], :name => "index_invoices_on_user_id"
 
   create_table "logs", :force => true do |t|
     t.string   "name"
@@ -95,6 +113,8 @@ ActiveRecord::Schema.define(:version => 20100526094453) do
     t.string   "last_sign_in_ip"
     t.integer  "failed_attempts",                     :default => 0
     t.datetime "locked_at"
+    t.datetime "last_invoiced_at"
+    t.datetime "next_invoiced_at"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

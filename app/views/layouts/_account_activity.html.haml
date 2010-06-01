@@ -1,10 +1,11 @@
 - if user_signed_in? 
   - if true # if have a credit card
+    - current_invoice = Invoice.current(current_user)
     #account_activity_box
       .current_balance
         %h4= "Your current usage"
         %p.price
-          %strong= "$14.67"
+          %strong= cents_to_dollars(current_invoice.amount)
       = link_to "Billing reports", invoices_path, :class => "billing_reports"
     
   - else

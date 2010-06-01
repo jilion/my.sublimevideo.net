@@ -20,6 +20,8 @@
 #  last_sign_in_ip      :string(255)
 #  failed_attempts      :integer         default(0)
 #  locked_at            :datetime
+#  last_invoiced_at     :datetime
+#  next_invoiced_at     :datetime
 #  created_at           :datetime
 #  updated_at           :datetime
 #
@@ -36,6 +38,7 @@ class User < ActiveRecord::Base
   
   has_many :sites
   has_many :videos, :class_name => 'VideoOriginal'
+  has_many :invoices
   
   # ==========
   # = Scopes =

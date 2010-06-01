@@ -8,19 +8,14 @@ MySublimeVideo::Application.routes.draw do |map|
   %w[log_in sign_in signin].each         { |action| match action => redirect('/login')    }
   %w[log_out sign_out signout exit].each { |action| match action => redirect('/logout')   }
   
+  resources :users, :only => :update
   resources :sites do
-    member do
-      get :state
-    end
+    get :state, :on => :member
   end
   resources :videos, :except => :new do
-    member do
-      get :transcoded
-    end
+    get :transcoded, :on => :member
   end
-  resources :users, :only => :update
-  
-  resources :invoices
+  resources :invoices, :only => [:index, :show]
   
   root :to => redirect('/sites')
   

@@ -20,7 +20,7 @@
 class Site < ActiveRecord::Base
   
   attr_accessible :hostname, :dev_hostnames
-  uniquify :token, :chars => ('a'..'z').to_a + ('0'..'9').to_a
+  uniquify :token, :chars => Array('a'..'z') + Array('0'..'9')
   mount_uploader :license, LicenseUploader
   mount_uploader :loader, LoaderUploader
   
