@@ -400,6 +400,21 @@ form p.note {
   background-position:0 -17px;
 }
 
+#content .entry.terms {
+  background:url(/images/embed/breakline.png) no-repeat -228px 0;
+  padding:15px 0 10px;
+  margin-top:10px;
+}
+
+#content .entry.terms p {
+  font-size:14px;
+  line-height:20px;
+}
+
+#content .entry.terms a {
+  border-bottom:1px solid #8f99ab;
+}
+
 #content .entry.submit {
   background:url(/images/embed/breakline.png) no-repeat -228px 0;
   padding:25px 0 0;
@@ -1692,6 +1707,11 @@ form .entry.update {
 /*  font-weight:600;*/
   color:#1b263a;
   text-shadow:rgba(255,255,255,0.2) 0 1px 0;
+}
+
+#footer a {
+  color:#1b263a;
+  border-bottom:1px solid #4d5973;
 }
 
 .spacer {clear:both;}

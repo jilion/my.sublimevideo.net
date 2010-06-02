@@ -18,6 +18,6 @@ MySublimeVideo::Application.configure do
   config.action_mailer.raise_delivery_errors = false
   config.action_mailer.default_url_options = { :host => 'localhost:3000' }
   
-  # Use a different cache store in developement
+  # Use a different cache store in development
   config.cache_store = :mem_cache_store
 end
