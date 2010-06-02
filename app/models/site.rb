@@ -11,7 +11,7 @@
 #  loader            :string(255)
 #  state             :string(255)
 #  loader_hits_cache :integer         default(0)
-#  js_hits_cache     :integer         default(0)
+#  player_hits_cache :integer         default(0)
 #  flash_hits_cache  :integer         default(0)
 #  created_at        :datetime
 #  updated_at        :datetime

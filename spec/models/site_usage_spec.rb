@@ -8,7 +8,7 @@
 #  started_at  :datetime
 #  ended_at    :datetime
 #  loader_hits :integer         default(0)
-#  js_hits     :integer         default(0)
+#  player_hits :integer         default(0)
 #  flash_hits  :integer         default(0)
 #  created_at  :datetime
 #  updated_at  :datetime
@@ -23,7 +23,7 @@ describe SiteUsage do
     subject { Factory.build(:site_usage) }
     
     its(:loader_hits) { should == 0 }
-    its(:js_hits)     { should == 0 }
+    its(:player_hits)     { should == 0 }
     its(:flash_hits)  { should == 0 }
     it { should be_valid }
   end
@@ -68,7 +68,7 @@ describe SiteUsage do
       usage.log.should          == @log
       usage.site.should         == @site1
       usage.loader_hits.should == 3
-      usage.js_hits.should      == 3
+      usage.player_hits.should      == 3
       usage.flash_hits.should   == 0
     end
   end
@@ -79,8 +79,8 @@ describe SiteUsage do
     it "should update site.loader_hits_cache" do
       lambda { Factory(:site_usage, :site => @site, :loader_hits => 2) }.should change { @site.reload.loader_hits_cache }.by(2)
     end
-    it "should update site.js_hits_cache" do
-      lambda { Factory(:site_usage, :site => @site, :js_hits => 2) }.should change { @site.reload.js_hits_cache }.by(2)
+    it "should update site.player_hits_cache" do
+      lambda { Factory(:site_usage, :site => @site, :player_hits => 2) }.should change { @site.reload.player_hits_cache }.by(2)
     end
     it "should update site.flash_hits_cache" do
       lambda { Factory(:site_usage, :site => @site, :flash_hits => 2) }.should change { @site.reload.flash_hits_cache }.by(2)

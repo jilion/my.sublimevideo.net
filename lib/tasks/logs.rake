@@ -12,7 +12,7 @@ namespace :logs do
     puts "Clean all site hits caches"
     Site.update_all(
       :loader_hits_cache => 0,
-      :js_hits_cache      => 0,
+      :player_hits_cache      => 0,
       :flash_hits_cache   => 0
     )
     puts "Relaunch logs download & parsing delayed_job"

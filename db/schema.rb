@@ -31,8 +31,8 @@ ActiveRecord::Schema.define(:version => 20100601074800) do
     t.string   "reference"
     t.string   "state"
     t.datetime "charged_at"
-    t.datetime "started_at"
-    t.datetime "ended_at"
+    t.date     "started_on"
+    t.date     "ended_on"
     t.integer  "amount",        :default => 0
     t.integer  "sites_amount",  :default => 0
     t.integer  "videos_amount", :default => 0
@@ -65,7 +65,7 @@ ActiveRecord::Schema.define(:version => 20100601074800) do
     t.datetime "started_at"
     t.datetime "ended_at"
     t.integer  "loader_hits", :default => 0
-    t.integer  "js_hits",     :default => 0
+    t.integer  "player_hits", :default => 0
     t.integer  "flash_hits",  :default => 0
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -84,7 +84,7 @@ ActiveRecord::Schema.define(:version => 20100601074800) do
     t.string   "loader"
     t.string   "state"
     t.integer  "loader_hits_cache", :default => 0
-    t.integer  "js_hits_cache",     :default => 0
+    t.integer  "player_hits_cache", :default => 0
     t.integer  "flash_hits_cache",  :default => 0
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -92,7 +92,7 @@ ActiveRecord::Schema.define(:version => 20100601074800) do
 
   add_index "sites", ["created_at"], :name => "index_sites_on_created_at"
   add_index "sites", ["hostname"], :name => "index_sites_on_hostname"
-  add_index "sites", ["js_hits_cache", "user_id"], :name => "index_sites_on_js_hits_cache_and_user_id"
+  add_index "sites", ["player_hits_cache", "user_id"], :name => "index_sites_on_player_hits_cache_and_user_id"
   add_index "sites", ["user_id"], :name => "index_sites_on_user_id"
 
   create_table "users", :force => true do |t|
@@ -113,8 +113,9 @@ ActiveRecord::Schema.define(:version => 20100601074800) do
     t.string   "last_sign_in_ip"
     t.integer  "failed_attempts",                     :default => 0
     t.datetime "locked_at"
-    t.datetime "last_invoiced_at"
-    t.datetime "next_invoiced_at"
+    t.integer  "invoices_count",                      :default => 0
+    t.date     "last_invoiced_on"
+    t.date     "next_invoiced_on"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -124,9 +125,9 @@ ActiveRecord::Schema.define(:version => 20100601074800) do
   add_index "users", ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true
 
   create_table "videos", :force => true do |t|
-    t.string   "panda_id"
     t.integer  "user_id"
     t.integer  "original_id"
+    t.string   "panda_id"
     t.string   "name"
     t.string   "token"
     t.string   "file"

@@ -98,8 +98,8 @@ def create_sites(count = 5)
       site.hostname   = "#{rand > 0.5 ? '' : %w[www. blog. my. git. sv. ji. geek.].rand}#{Faker::Internet.domain_name}"
       site.created_at = rand(1500).days.ago
       site.flash_hits_cache  = rand(10000)
-      site.js_hits_cache     = rand(500) + site.flash_hits_cache
-      site.loader_hits_cache = rand(100000) + site.js_hits_cache
+      site.player_hits_cache     = rand(500) + site.flash_hits_cache
+      site.loader_hits_cache = rand(100000) + site.player_hits_cache
       site.save!
       site.activate
     end

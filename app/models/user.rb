@@ -20,8 +20,9 @@
 #  last_sign_in_ip      :string(255)
 #  failed_attempts      :integer         default(0)
 #  locked_at            :datetime
-#  last_invoiced_at     :datetime
-#  next_invoiced_at     :datetime
+#  invoices_count       :integer         default(0)
+#  last_invoiced_on     :date
+#  next_invoiced_on     :date
 #  created_at           :datetime
 #  updated_at           :datetime
 #
@@ -51,6 +52,12 @@ class User < ActiveRecord::Base
   validates :full_name, :presence => true
   validates :email,     :presence => true, :uniqueness => true
   
+  # =============
+  # = Callbacks =
+  # =============
+  
+  before_create :set_next_invoiced_on
+  
   # ====================
   # = Instance Methods =
   # ====================
@@ -60,5 +67,26 @@ class User < ActiveRecord::Base
     # TODO And if user has a credit card
   end
   
+  def credit_card?
+    false
+  end
+  
+  def trial?
+    invoices_count == 0 && Invoice.current(self).amount == 0
+  end
+  
+  def trial_usage_percentage
+    sites = Invoice.current(self).sites
+    loader_hits_percentage = ((sites.loader_hits / Trial.free_loader_hits.to_f) * 100).to_i
+    player_hits_percentage = ((sites.player_hits / Trial.free_player_hits.to_f) * 100).to_i
+    loader_hits_percentage > player_hits_percentage ? loader_hits_percentage : player_hits_percentage
+  end
+  
+private
+  
+  # before_create
+  def set_next_invoiced_on
+    self.next_invoiced_on ||= Time.now.utc.to_date + 1.month
+  end
   
 end

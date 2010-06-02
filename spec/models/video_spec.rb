@@ -3,9 +3,9 @@
 # Table name: videos
 #
 #  id          :integer         not null, primary key
-#  panda_id    :string(255)
 #  user_id     :integer
 #  original_id :integer
+#  panda_id    :string(255)
 #  name        :string(255)
 #  token       :string(255)
 #  file        :string(255)

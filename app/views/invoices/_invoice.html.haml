@@ -6,8 +6,14 @@
     - case invoice.state
     - when 'current'
       %strong= "Current usage"
+      %em= "will 'end' on" # TODO finetune
+      %strong=l invoice.ended_on
     - when 'pending'
-    
+      %strong= "On preparation"
+      %em= "Amount is an estimation" # TODO finetune
+    - when 'ready'
+      %strong= "Ready"
+      %em= "Will be soon charged"
     - when 'charged'
       %em= "Charged on"
       %strong=l invoice.charged_at, :format => :date

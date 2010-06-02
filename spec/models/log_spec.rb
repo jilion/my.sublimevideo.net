@@ -24,9 +24,9 @@ describe Log do
     
     it { should be_unprocessed }
     it { should be_valid }
-    its(:hostname) { should == 'cdn.sublimevideo.net' }
+    its(:hostname)   { should == 'cdn.sublimevideo.net' }
     its(:started_at) { should == Time.zone.at(1274773200) }
-    its(:ended_at) { should == Time.zone.at(1274773260) }
+    its(:ended_at)   { should == Time.zone.at(1274773260) }
     
     after(:each) { VCR.eject_cassette }
   end

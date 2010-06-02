@@ -11,7 +11,7 @@
 #  loader            :string(255)
 #  state             :string(255)
 #  loader_hits_cache :integer         default(0)
-#  js_hits_cache     :integer         default(0)
+#  player_hits_cache :integer         default(0)
 #  flash_hits_cache  :integer         default(0)
 #  created_at        :datetime
 #  updated_at        :datetime
@@ -27,13 +27,13 @@ describe Site do
     its(:hostname)      { should == "youtube.com" }
     its(:dev_hostnames) { should == "localhost, 127.0.0.1" }
     its(:token)         { should =~ /^[a-z0-9]{8}$/ }
-    its(:user) { should be_present }
+    its(:user)          { should be_present }
     it { subject.license.url.should be_nil }
     it { be_pending }
     it { be_valid }
   end
   
-  describe "Validations" do
+  describe "validations" do
     it "should validate presence of user" do
       site = Factory.build(:site, :user => nil)
       site.should_not be_valid
