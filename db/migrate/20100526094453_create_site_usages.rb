@@ -1,13 +1,15 @@
 class CreateSiteUsages < ActiveRecord::Migration
   def self.up
     create_table :site_usages do |t|
-      t.integer   :site_id
+      t.references :site
+      t.references :log
+      
       t.integer   :log_id
       t.datetime  :started_at
       t.datetime  :ended_at
       
       t.integer   :loader_hits, :default => 0
-      t.integer   :js_hits,     :default => 0
+      t.integer   :player_hits,     :default => 0
       t.integer   :flash_hits,  :default => 0
       
       t.timestamps

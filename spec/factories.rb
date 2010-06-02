@@ -35,3 +35,7 @@ Factory.define :site_usage do |f|
   f.association :site
   f.association :log
 end
+
+Factory.define :invoice do |f|
+  f.association :user
+end

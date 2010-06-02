@@ -22,11 +22,11 @@ describe Log do
     
     subject { Factory.build(:log, :name => 'cdn.sublimevideo.net.log.1274773200-1274773260.gz') }
     
-    it { subject.should be_unprocessed                         }
-    it { subject.should be_valid                               }
-    it { subject.hostname.should   == 'cdn.sublimevideo.net'   }
-    it { subject.started_at.should == Time.zone.at(1274773200) }
-    it { subject.ended_at.should   == Time.zone.at(1274773260) }
+    it { should be_unprocessed }
+    it { should be_valid }
+    its(:hostname)   { should == 'cdn.sublimevideo.net' }
+    its(:started_at) { should == Time.zone.at(1274773200) }
+    its(:ended_at)   { should == Time.zone.at(1274773260) }
     
     after(:each) { VCR.eject_cassette }
   end

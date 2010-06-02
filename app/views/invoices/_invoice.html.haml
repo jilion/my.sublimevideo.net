@@ -1,25 +1,34 @@
 %tr.break
   %td{ :colspan => 4 }
-%tr{ :class => cycle("", "alt") + (is_current ? "current" : "") }
-  %td.id= is_current ? "— —" : "A0OIL173H7"
+%tr{ :class => cycle("", "alt") + (invoice.current? ? "current" : "") }
+  %td.id= invoice.current? ? "— —" : "A0OIL173H7"
   %td.date
-    - if is_current
+    - case invoice.state
+    - when 'current'
       %strong= "Current usage"
-    - else
+      %em= "will 'end' on" # TODO finetune
+      %strong=l invoice.ended_on
+    - when 'pending'
+      %strong= "On preparation"
+      %em= "Amount is an estimation" # TODO finetune
+    - when 'ready'
+      %strong= "Ready"
+      %em= "Will be soon charged"
+    - when 'charged'
       %em= "Charged on"
-      %strong= (Time.now-index.to_i.month).strftime('%B %d, %Y')
+      %strong=l invoice.charged_at, :format => :date
   %td.usage
     .row.player
-      %h4= "Player hits"
+      %h4= "Player"
       .right
-        %strong.price= "$7.20"
+        %strong.price= cents_to_dollars(invoice.sites_amount)
         = link_to "/show_player_hits_details", :class => "view_details" do
-          %span= "View player hits details"
+          %span= "View player details"
     .row.videos
       %h4= "Videos"
       .right
-        %strong.price= "$16.28"
+        %strong.price= cents_to_dollars(invoice.videos_amount)
         = link_to "/show_video_details", :class => "view_details" do
           %span= "View video details"
   %td.total
-    %strong= "$23.48"
+    %strong= cents_to_dollars(invoice.amount)

@@ -10,3 +10,10 @@ en:
   attributes:
     dev_hostnames: "Development domains"
     hostname: "Domain"
+    
+  time:
+    formats:
+      date: "%B %d, %Y"
+  date:
+    formats:
+      default: "%B %d, %Y"

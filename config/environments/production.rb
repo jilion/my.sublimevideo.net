@@ -25,7 +25,7 @@ MySublimeVideo::Application.configure do
   # config.logger = SyslogLogger.new
 
   # Use a different cache store in production
-  # config.cache_store = :mem_cache_store
+  config.cache_store = :mem_cache_store
 
   # Disable Rails's static asset server
   # In production, Apache or nginx will already do this
@@ -36,7 +36,7 @@ MySublimeVideo::Application.configure do
   
   # Disable delivery errors, bad email addresses will be ignored
   # config.action_mailer.raise_delivery_errors = false
-  config.action_mailer.default_url_options = { :host => 'sublimevideo.net' }
+  config.action_mailer.default_url_options = { :host => 'my.sublimevideo.net' }
   
   # Enable threaded mode
   # config.threadsafe!

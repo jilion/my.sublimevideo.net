@@ -8,7 +8,7 @@
 #  started_at  :datetime
 #  ended_at    :datetime
 #  loader_hits :integer         default(0)
-#  js_hits     :integer         default(0)
+#  player_hits :integer         default(0)
 #  flash_hits  :integer         default(0)
 #  created_at  :datetime
 #  updated_at  :datetime
@@ -16,7 +16,7 @@
 
 class SiteUsage < ActiveRecord::Base
   
-  attr_accessible :site, :log, :loader_hits, :js_hits, :flash_hits
+  attr_accessible :site, :log, :loader_hits, :player_hits, :flash_hits
   
   # ================
   # = Associations =
@@ -34,14 +34,14 @@ class SiteUsage < ActiveRecord::Base
   validates :started_at,   :presence => true
   validates :ended_at,     :presence => true
   validates :loader_hits,  :presence => true
-  validates :js_hits,      :presence => true
+  validates :player_hits,      :presence => true
   validates :flash_hits,   :presence => true
   
   # =============
   # = Callbacks =
   # =============
   
-  before_validation :set_dates_from_log
+  before_validation :set_dates_from_log, :on => :create
   after_save        :update_site_hits_cache
   
   # =================
@@ -57,7 +57,7 @@ class SiteUsage < ActiveRecord::Base
           :site         => site,
           :log          => log,
           :loader_hits => hits[:loader][site.token].to_i,
-          :js_hits      => hits[:js][site.token].to_i,
+          :player_hits      => hits[:js][site.token].to_i,
           :flash_hits   => hits[:flash][site.token].to_i
         )
       end
@@ -77,7 +77,7 @@ private
     Site.update_counters(
       site_id,
       :loader_hits_cache  => loader_hits,
-      :js_hits_cache      => js_hits,
+      :player_hits_cache      => player_hits,
       :flash_hits_cache   => flash_hits
     )
   end

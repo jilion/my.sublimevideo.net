@@ -11,6 +11,10 @@ class DeviseCreateUsers < ActiveRecord::Migration
       t.lockable :lock_strategy => :failed_attempts, :unlock_strategy => :time
       # t.token_authenticatable
       
+      t.integer :invoices_count, :default => 0
+      t.date :last_invoiced_on,  :default => nil
+      t.date :next_invoiced_on,  :default => nil
+      
       t.timestamps
     end
     

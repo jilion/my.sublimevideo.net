@@ -1,9 +1,10 @@
 class CreateVideos < ActiveRecord::Migration
   def self.up
     create_table :videos do |t|
-      t.string  :panda_id
-      t.integer :user_id
+      t.references :user
       t.integer :original_id, :null => true, :default => nil
+      t.string  :panda_id
+      
       t.string  :name
       t.string  :token
       t.string  :file

@@ -11,7 +11,7 @@
 #  loader            :string(255)
 #  state             :string(255)
 #  loader_hits_cache :integer         default(0)
-#  js_hits_cache     :integer         default(0)
+#  player_hits_cache :integer         default(0)
 #  flash_hits_cache  :integer         default(0)
 #  created_at        :datetime
 #  updated_at        :datetime
@@ -24,16 +24,16 @@ describe Site do
   context "with valid attributes" do
     subject { Factory(:site) }
     
-    it { subject.hostname.should        == "youtube.com"          }
-    it { subject.dev_hostnames.should   == "localhost, 127.0.0.1" }
-    it { subject.token.should           =~ /^[a-z0-9]{8}$/     }
+    its(:hostname)      { should == "youtube.com" }
+    its(:dev_hostnames) { should == "localhost, 127.0.0.1" }
+    its(:token)         { should =~ /^[a-z0-9]{8}$/ }
+    its(:user)          { should be_present }
     it { subject.license.url.should be_nil }
-    it { subject.user.should be_present }
-    it { subject.should be_pending }
-    it { subject.should be_valid }
+    it { be_pending }
+    it { be_valid }
   end
   
-  describe "Validations" do
+  describe "validations" do
     it "should validate presence of user" do
       site = Factory.build(:site, :user => nil)
       site.should_not be_valid

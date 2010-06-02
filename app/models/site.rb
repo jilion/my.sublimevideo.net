@@ -11,7 +11,7 @@
 #  loader            :string(255)
 #  state             :string(255)
 #  loader_hits_cache :integer         default(0)
-#  js_hits_cache     :integer         default(0)
+#  player_hits_cache :integer         default(0)
 #  flash_hits_cache  :integer         default(0)
 #  created_at        :datetime
 #  updated_at        :datetime
@@ -20,7 +20,7 @@
 class Site < ActiveRecord::Base
   
   attr_accessible :hostname, :dev_hostnames
-  uniquify :token, :chars => ('a'..'z').to_a + ('0'..'9').to_a
+  uniquify :token, :chars => Array('a'..'z') + Array('0'..'9')
   mount_uploader :license, LicenseUploader
   mount_uploader :loader, LoaderUploader
   

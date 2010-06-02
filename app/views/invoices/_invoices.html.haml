@@ -8,8 +8,6 @@
     %th.date= "Date"
     %th.usage= "Usage"
     %th.total= "Total"
-  = render :partial => "invoice", :locals => { :index => 1, :is_current => true }
-  - 4.times do |i|
-    = render :partial => "invoice", :locals => { :index => i+2, :is_current => false }
+  = render @invoices
   %tr.break
     %td{ :colspan => 4 }
