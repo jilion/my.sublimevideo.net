@@ -23,6 +23,7 @@
 #  invoices_count       :integer         default(0)
 #  last_invoiced_on     :date
 #  next_invoiced_on     :date
+#  trial_finished_at    :datetime
 #  created_at           :datetime
 #  updated_at           :datetime
 #
@@ -39,6 +40,7 @@ describe User do
     its(:invoices_count)   { should == 0 }
     it { subject.last_invoiced_on. should be_nil } # Wait RSpec fix
     its(:next_invoiced_on) { should == Time.now.utc.to_date + 1.month }
+    it { should be_trial }
     it { should be_valid }
     it { should be_trial }
   end
@@ -72,15 +74,8 @@ describe User do
       user.should be_welcome
     end
     
-    it "should be in trial mode" do
-      user = Factory(:user)
-      Factory(:site, :user => user, :loader_hits_cache => Trial.free_loader_hits)
-      user.should be_trial
-    end
-    
-    it "should not be in trial mode" do
-      user = Factory(:user)
-      Factory(:site, :user => user, :loader_hits_cache => Trial.free_loader_hits + 1)
+    it "should not be in trial mode if trial_finished_at exist" do
+      user = Factory(:user, :trial_finished_at => Time.now)
       user.should_not be_trial
     end
     

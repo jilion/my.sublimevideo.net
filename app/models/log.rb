@@ -105,9 +105,9 @@ private
   
   def set_dates_and_hostname_from_name
     if matches = name.match(/^(.+)\.log\.(\d+)-(\d+)\.\w+$/)
-      self.hostname   = matches[1]
-      self.started_at = Time.at(matches[2].to_i)
-      self.ended_at   = Time.at(matches[3].to_i)
+      self.hostname   ||= matches[1]
+      self.started_at ||= Time.at(matches[2].to_i)
+      self.ended_at   ||= Time.at(matches[3].to_i)
     end
   end
   

@@ -18,8 +18,12 @@
     = f.password_field :password, :class => "text show_password", :placeholder => "Password", :required => true
     
   .entry.terms
-    %p= "Please review our #{link_to "Terms &amp; Conditions".html_safe, "/terms"}. If you have questions, please contact #{ mail_to "sublime@jilion.com", nil, :encode => "hex" }".html_safe
-    
+    %p
+      = "Please review our "
+      = link_to "Terms &amp; Conditions".html_safe, page_path("terms")
+      = ". If you have questions, please contact "
+      = mail_to "sublime@jilion.com", nil, :encode => "hex"
+      = "."
     .checkbox_wrap
       %input{ :type => "checkbox" }
       %label= "I agree to the Terms &amp; Conditions.".html_safe

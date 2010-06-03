@@ -38,13 +38,12 @@ describe Invoice do
   
   context "current, without free trial" do
     before(:each) do
-      @user  = Factory(:user, :invoices_count => 1)
+      @user  = Factory(:user, :trial_finished_at => 3.month.ago)
       @site1 = Factory(:site, :user => @user, :loader_hits_cache => 100, :player_hits_cache => 11)
       @site2 = Factory(:site, :user => @user, :loader_hits_cache => 50, :player_hits_cache => 5, :hostname => "google.com")
-      @invoice = Invoice.current(@user)
     end
     
-    subject { @invoice }
+    subject { Invoice.current(@user) }
     
     it { subject.reference.should be_nil } # not working with its...
     its(:started_on)    { should == Time.now.utc.to_date }
@@ -79,17 +78,66 @@ describe Invoice do
     it "should set started_on from user.last_invoiced_on" do
       user    = Factory(:user, :last_invoiced_on => 2.month.ago, :next_invoiced_on => 1.day.ago)
       invoice = Factory(:invoice, :user => user)
-      invoice.started_on.should == user.last_invoiced_on
+      invoice.reload
+      invoice.started_on.should == 2.month.ago.to_date
     end
     it "should set started_on from user.created_at if user.last_invoiced_on is nil" do
       user    = Factory(:user, :last_invoiced_on => nil, :created_at => 2.month.ago, :next_invoiced_on => 1.day.ago)
       invoice = Factory(:invoice, :user => user)
+      invoice.reload
       invoice.started_on.should == user.created_at.to_date
     end
     it "should set ended_on from user.next_invoiced_on" do
       user    = Factory(:user, :last_invoiced_on => 2.month.ago, :next_invoiced_on => 1.day.ago)
       invoice = Factory(:invoice, :user => user)
-      invoice.ended_on.should == user.next_invoiced_on
+      invoice.reload
+      invoice.ended_on.should == 1.day.ago.to_date
+    end
+    
+    it "should update user invoiced dates after create" do
+      user    = Factory(:user, :last_invoiced_on => 2.month.ago, :next_invoiced_on => 1.day.ago)
+      invoice = Factory(:invoice, :user => user)
+      user.reload
+      user = User.find(user)
+      invoice.reload
+      user.last_invoiced_on.should == invoice.ended_on
+      user.next_invoiced_on.should == invoice.ended_on + 1.month
+    end
+    
+    context "second invoice" do
+      before(:each) do
+        @user  = Factory(:user, :invoices_count => 1, :last_invoiced_on => 2.month.ago, :next_invoiced_on => 1.day.ago)
+        @site1 = Factory(:site, :user => @user, :loader_hits_cache => 100, :player_hits_cache => 11)
+        @site2 = Factory(:site, :user => @user, :loader_hits_cache => 50, :player_hits_cache => 5, :hostname => "google.com")
+        @current_invoice = Invoice.current(@user)
+      end
+      
+      describe "should clone sites/videos & amount from current_invoice as estimation" do
+        subject { Factory(:invoice, :user => @user) }
+        
+        its(:sites)         { should == @current_invoice.sites }
+        its(:amount)        { should == @current_invoice.amount }
+        its(:sites_amount)  { should == @current_invoice.sites_amount }
+        its(:videos_amount) { should == @current_invoice.videos_amount }
+        it { should be_pending }
+      end
+      
+      it "should reset sites hits cache so current invoice too" do
+        VCR.use_cassette('one_saved_logs') do
+          log = Factory(:log, :started_at => 2.minutes.ago, :ended_at => 1.minutes.ago)
+          Factory(:site_usage, :site => @site1, :log => log, :loader_hits => 12, :player_hits => 21)
+          Factory(:site_usage, :site => @site2, :log => log, :loader_hits => 23)
+          Factory(:invoice, :user => @user)
+          Invoice.current(@user).sites.loader_hits.should == 35
+          Invoice.current(@user).sites.player_hits.should == 21
+        end
+      end
+      
+      it "should delete user current_invoice cache" do
+        Rails.cache.should_receive(:delete).with("user_#{@user.id}.current_invoice")
+        Factory(:invoice, :user => @user)
+      end
+      
     end
     
   end

@@ -15,6 +15,8 @@ class DeviseCreateUsers < ActiveRecord::Migration
       t.date :last_invoiced_on,  :default => nil
       t.date :next_invoiced_on,  :default => nil
       
+      t.datetime :trial_finished_at, :default => nil
+      
       t.timestamps
     end
     

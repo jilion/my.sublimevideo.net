@@ -129,6 +129,13 @@ class Site < ActiveRecord::Base
     CDN.purge("/l/#{token}.js")
   end
   
+  def reset_hits_cache!(time)
+    self.loader_hits_cache = usages.older_than(time).sum(:loader_hits)
+    self.player_hits_cache = usages.older_than(time).sum(:player_hits)
+    self.flash_hits_cache  = usages.older_than(time).sum(:flash_hits)
+    save!
+  end
+  
 private
   
   # validate

@@ -13,6 +13,7 @@ rdoc
 db/*.sqlite3
 log/*.log
 tmp/**/*
+tmp/*
 public/javascripts/all.js
 public/stylesheets/all.css
 public/rcov

@@ -209,6 +209,18 @@ describe Site do
       site.loader.read.should include(site.token)
     end
     
+    it "should reset hits cache" do
+      VCR.use_cassette('one_saved_logs') do
+        user = Factory(:user)
+        site = Factory(:site, :user => user, :loader_hits_cache => 33, :player_hits_cache => 11)
+        log = Factory(:log)
+        Factory(:site_usage, :site => site, :log => log, :loader_hits => 16, :player_hits => 5, :started_at => 1.minute.from_now, :ended_at => 2.minute.from_now)
+        site.reset_hits_cache!(Date.today)
+        site.loader_hits_cache.should == 16
+        site.player_hits_cache.should == 5
+      end
+    end
+    
   end
   
 end

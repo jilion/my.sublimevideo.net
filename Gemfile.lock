@@ -1,24 +1,24 @@
 --- 
 dependencies: 
+  spork: 
+    group: 
+    - :test
+    version: ">= 0"
   pg: 
     group: 
     - :production
-    version: ">= 0"
-  annotate: 
-    group: 
-    - :development
-    version: ">= 0"
-  system_timer: 
-    group: 
-    - :default
     version: ">= 0"
   rails: 
     group: 
     - :default
     version: = 3.0.0.beta3
-  haml: 
+  system_timer: 
     group: 
     - :default
+    version: ">= 0"
+  annotate: 
+    group: 
+    - :development
     version: ">= 0"
   sqlite3-ruby: 
     group: 
@@ -26,19 +26,23 @@ dependencies:
     version: ">= 0"
     require: 
     - sqlite3
-  ffaker: 
+  haml: 
     group: 
-    - :development
+    - :default
     version: ">= 0"
   rev: 
     group: 
     - :test
     version: ">= 0"
+  ffaker: 
+    group: 
+    - :development
+    version: ">= 0"
   rspec: 
     group: 
     - :test
-    version: ">= 2.0.0.beta.9"
-  delayed_job: 
+    version: ">= 2.0.0.beta.10"
+  voxel_hapi: 
     group: 
     - :default
     version: ">= 0"
@@ -46,7 +50,19 @@ dependencies:
     group: 
     - :default
     version: ">= 0"
-  voxel_hapi: 
+  delayed_job: 
+    group: 
+    - :default
+    version: ">= 0"
+  growl: 
+    group: 
+    - :test
+    version: ">= 0"
+  wirble: 
+    group: 
+    - :development
+    version: ">= 0"
+  memcached: 
     group: 
     - :default
     version: ">= 0"
@@ -54,45 +70,19 @@ dependencies:
     group: 
     - :test
     version: ">= 0"
-  memcached: 
-    group: 
-    - :default
-    version: ">= 0"
-  wirble: 
-    group: 
-    - :development
-    version: ">= 0"
-  growl: 
-    group: 
-    - :test
-    version: ">= 0"
   rspec-rails: 
     group: 
     - :test
-    version: ">= 2.0.0.beta.9.1"
+    version: ">= 2.0.0.beta.10"
   vcr: 
     group: 
     - :test
     version: ">= 0"
-  request-log-analyzer: 
+  carrierwave: 
     group: 
     - :default
     version: ">= 0"
-    require: 
-    - request_log_analyzer
-  panda: 
-    group: 
-    - :default
-    version: ">= 0.5.0"
-  jammit: 
-    group: 
-    - :default
-    version: ">= 0"
-  will_paginate: 
-    group: 
-    - :default
-    version: ">= 0"
-  heroku: 
+  has_scope: 
     group: 
     - :default
     version: ">= 0"
@@ -100,14 +90,28 @@ dependencies:
     group: 
     - :default
     version: ">= 1.1.rc1"
-  has_scope: 
+  heroku: 
     group: 
     - :default
     version: ">= 0"
-  carrierwave: 
+  will_paginate: 
     group: 
     - :default
     version: ">= 0"
+  jammit: 
+    group: 
+    - :default
+    version: ">= 0"
+  panda: 
+    group: 
+    - :default
+    version: ">= 0.5.0"
+  request-log-analyzer: 
+    group: 
+    - :default
+    version: ">= 0"
+    require: 
+    - request_log_analyzer
   factory_girl: 
     group: 
     - :test
@@ -116,11 +120,11 @@ dependencies:
     group: 
     - :test
     version: ">= 0.4.0.beta.1"
-  aws: 
+  state_machine: 
     group: 
     - :default
     version: ">= 0"
-  state_machine: 
+  aws: 
     group: 
     - :default
     version: ">= 0"
@@ -128,7 +132,7 @@ dependencies:
     group: 
     - :test
     version: ">= 0"
-  uniquify: 
+  responders: 
     group: 
     - :default
     version: ">= 0"
@@ -136,17 +140,17 @@ dependencies:
     group: 
     - :default
     version: ">= 0"
-  responders: 
+  uniquify: 
+    group: 
+    - :default
+    version: ">= 0"
+  warden: 
     group: 
     - :default
     version: ">= 0"
   looksee: 
     group: 
     - :development
-    version: ">= 0"
-  warden: 
-    group: 
-    - :default
     version: ">= 0"
   webmock: 
     group: 
@@ -240,7 +244,7 @@ specs:
 - json_pure: 
     version: 1.4.3
 - selenium-webdriver: 
-    version: 0.0.19
+    version: 0.0.20
 - capybara: 
     version: 0.3.8
 - stackdeck: 
@@ -250,7 +254,7 @@ specs:
 - envjs: 
     version: 0.3.6
 - capybara-envjs: 
-    version: 0.1.4
+    version: 0.1.5
 - carrierwave: 
     version: 0.4.4
     source: 2
@@ -279,7 +283,7 @@ specs:
 - growl: 
     version: 1.0.3
 - haml: 
-    version: 3.0.7
+    version: 3.0.9
 - has_scope: 
     version: 0.5.0
     source: 4
@@ -325,17 +329,19 @@ specs:
 - rev: 
     version: 0.3.2
 - rspec-core: 
-    version: 2.0.0.beta.9
+    version: 2.0.0.beta.10
 - rspec-expectations: 
-    version: 2.0.0.beta.9
+    version: 2.0.0.beta.10
 - rspec-mocks: 
-    version: 2.0.0.beta.9
+    version: 2.0.0.beta.10
 - rspec: 
-    version: 2.0.0.beta.9
+    version: 2.0.0.beta.10
 - webrat: 
     version: 0.7.1
 - rspec-rails: 
-    version: 2.0.0.beta.9.1
+    version: 2.0.0.beta.10
+- spork: 
+    version: 0.8.3
 - sqlite3-ruby: 
     version: 1.2.5
 - state_machine: 
@@ -360,7 +366,7 @@ specs:
     source: 5
 - wirble: 
     version: 0.1.3
-hash: db9a7be0ddc40f21956b0fbdbdb01a8923722f02
+hash: dd4899686563558480cb5fbf71e2853b08c4811f
 sources: 
 - Git: 
     uri: git://github.com/thoughtbot/factory_girl.git

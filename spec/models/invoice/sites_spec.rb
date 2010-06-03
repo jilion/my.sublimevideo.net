@@ -6,12 +6,11 @@ describe Invoice::Sites do
     
     before(:each) do
       @user    = Factory(:user)
-      @invoice = Factory.build(:invoice, :user => @user, :state => 'current')
       @site1   = Factory(:site, :user => @user, :loader_hits_cache => Trial.free_loader_hits + 100, :player_hits_cache => Trial.free_player_hits + 11)
       @site2   = Factory(:site, :user => @user, :loader_hits_cache => 50, :player_hits_cache => 5, :hostname => "google.com")
     end
     
-    subject { Invoice::Sites.new(@invoice, :from_cache => true) }
+    subject { Invoice.current(@user).sites }
     
     its(:amount)        { should == 166 }
     its(:loader_amount) { should == 150 }
@@ -29,13 +28,12 @@ describe Invoice::Sites do
   context "from cache" do
     
     before(:each) do
-      @user    = Factory(:user, :invoices_count => 1)
-      @invoice = Factory.build(:invoice, :user => @user, :state => 'current')
+      @user    = Factory(:user, :trial_finished_at => 3.month.ago)
       @site1   = Factory(:site, :user => @user, :loader_hits_cache => 100, :player_hits_cache => 11)
       @site2   = Factory(:site, :user => @user, :loader_hits_cache => 50, :player_hits_cache => 5, :hostname => "google.com")
     end
     
-    subject { Invoice::Sites.new(@invoice, :from_cache => true) }
+    subject { Invoice.current(@user).sites }
     
     its(:amount)        { should == 166 }
     its(:loader_amount) { should == 150 }
