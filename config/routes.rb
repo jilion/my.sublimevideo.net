@@ -17,6 +17,7 @@ MySublimeVideo::Application.routes.draw do |map|
   end
   resources :invoices, :only => [:index, :show]
   
+  match ':page', :to => 'pages#show', :via => :get, :as => :page, :constraints => {:page => /terms|docs|support/}
   root :to => redirect('/sites')
   
   resource :beta, :only => [:show, :create]
