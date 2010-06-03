@@ -41,10 +41,9 @@ describe Invoice do
       @user  = Factory(:user, :invoices_count => 1)
       @site1 = Factory(:site, :user => @user, :loader_hits_cache => 100, :player_hits_cache => 11)
       @site2 = Factory(:site, :user => @user, :loader_hits_cache => 50, :player_hits_cache => 5, :hostname => "google.com")
-      @invoice = Invoice.current(@user)
     end
     
-    subject { @invoice }
+    subject { Invoice.current(@user) }
     
     it { subject.reference.should be_nil } # not working with its...
     its(:started_on)    { should == Time.now.utc.to_date }
@@ -94,6 +93,7 @@ describe Invoice do
       invoice.reload
       invoice.ended_on.should == 1.day.ago.to_date
     end
+    
     it "should update user invoiced dates after create" do
       user    = Factory(:user, :last_invoiced_on => 2.month.ago, :next_invoiced_on => 1.day.ago)
       invoice = Factory(:invoice, :user => user)
@@ -101,6 +101,27 @@ describe Invoice do
       invoice.reload
       user.last_invoiced_on.should == invoice.ended_on
       user.next_invoiced_on.should == invoice.ended_on + 1.month
+    end
+    
+    context "second invoice" do
+      before(:each) do
+        @user   = Factory(:user, :invoices_count => 1, :last_invoiced_on => 2.month.ago, :next_invoiced_on => 1.day.ago)
+        @site1 = Factory(:site, :user => @user, :loader_hits_cache => 100, :player_hits_cache => 11)
+        @site2 = Factory(:site, :user => @user, :loader_hits_cache => 50, :player_hits_cache => 5, :hostname => "google.com")
+        @current_invoice = Invoice.current(@user)
+      end
+      
+      describe "should clone sites/videos & amount from current_invoice as estimation" do
+        
+        subject { Factory(:invoice, :user => @user) }
+        
+        its(:sites)         { should == @current_invoice.sites }
+        its(:amount)        { should == @current_invoice.amount }
+        its(:sites_amount)  { should == @current_invoice.sites_amount }
+        its(:videos_amount) { should == @current_invoice.videos_amount }
+        it { should be_pending }
+      end
+      
     end
     
   end

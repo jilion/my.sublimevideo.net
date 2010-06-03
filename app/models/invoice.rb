@@ -47,10 +47,10 @@ class Invoice < ActiveRecord::Base
   # =============
   
   before_validation :set_interval_dates, :on => :create
+  before_create :clone_current_data_as_estimation
   after_create :update_user_invoiced_dates
   
   # TODO on create
-  # clone current invoice sites, videos & amount (as estimation)
   # reset sites/videos caches
   # reset current_invoice cache
   
@@ -94,6 +94,16 @@ private
   def set_interval_dates
     self.started_on = user.last_invoiced_on || user.created_at.to_date
     self.ended_on   = user.next_invoiced_on
+  end
+  
+  # before_create
+  def clone_current_data_as_estimation
+    current = Invoice.current(user)
+    self.sites         = current.sites
+    self.videos        = current.videos
+    self.sites_amount  = current.sites_amount
+    self.videos_amount = current.videos_amount
+    self.amount        = current.amount
   end
   
   # after_create
