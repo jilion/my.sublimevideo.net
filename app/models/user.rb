@@ -23,6 +23,7 @@
 #  invoices_count       :integer         default(0)
 #  last_invoiced_on     :date
 #  next_invoiced_on     :date
+#  trial_finished_at    :datetime
 #  created_at           :datetime
 #  updated_at           :datetime
 #
@@ -72,13 +73,22 @@ class User < ActiveRecord::Base
   end
   
   def trial?
-    invoices_count == 0 && Invoice.current(self).amount == 0
+    # TODO Rewrite, don't suppose that only first invoice is trial
+    trial_finished_at.nil? # && trial_loader_hits < Trial.free_loader_hits && trial_player_hits < Trial.free_player_hits
+  end
+  
+  def trial_loader_hits
+    # TODO Rewrite, calculate sum of invoices.sites.loader_hits
+    Invoice.current(self).sites.loader_hits
+  end
+  def trial_player_hits
+    # TODO Rewrite, calculate sum of invoices.sites.player_hits
+    Invoice.current(self).sites.player_hits
   end
   
   def trial_usage_percentage
-    sites = Invoice.current(self).sites
-    loader_hits_percentage = ((sites.loader_hits / Trial.free_loader_hits.to_f) * 100).to_i
-    player_hits_percentage = ((sites.player_hits / Trial.free_player_hits.to_f) * 100).to_i
+    loader_hits_percentage = ((trial_loader_hits / Trial.free_loader_hits.to_f) * 100).to_i
+    player_hits_percentage = ((trial_player_hits / Trial.free_player_hits.to_f) * 100).to_i
     loader_hits_percentage > player_hits_percentage ? loader_hits_percentage : player_hits_percentage
   end
   

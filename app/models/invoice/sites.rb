@@ -4,7 +4,7 @@ class Invoice::Sites < Array
   def initialize(invoice, options = {})
     @sites = collect_sites_hits(invoice, options)
     calculate_and_set_hits
-    calculate_and_set_amounts(invoice.user)
+    calculate_and_set_amounts(invoice)
     super(@sites)
   end
   
@@ -27,8 +27,9 @@ private
     @player_hits = @sites.sum { |site| site[:player_hits] }
   end
   
-  def calculate_and_set_amounts(user)
-    if user.invoices_count.zero?
+  def calculate_and_set_amounts(invoice)
+    if invoice.user.trial_finished_at.nil? || (invoice.user.trial_finished_at > invoice.started_on && invoice.user.trial_finished_at < invoice.ended_on)
+      # TODO Rewrite, test if trial_finished_at is inside the invoice interval & calculate how much free hits remaining 
       loader_hits = @loader_hits > Trial.free_loader_hits ? @loader_hits - Trial.free_loader_hits : 0
       player_hits = @player_hits > Trial.free_player_hits ? @player_hits - Trial.free_player_hits : 0
     else

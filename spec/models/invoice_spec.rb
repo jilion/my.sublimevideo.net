@@ -38,7 +38,7 @@ describe Invoice do
   
   context "current, without free trial" do
     before(:each) do
-      @user  = Factory(:user, :invoices_count => 1)
+      @user  = Factory(:user, :trial_finished_at => 3.month.ago)
       @site1 = Factory(:site, :user => @user, :loader_hits_cache => 100, :player_hits_cache => 11)
       @site2 = Factory(:site, :user => @user, :loader_hits_cache => 50, :player_hits_cache => 5, :hostname => "google.com")
     end
@@ -112,7 +112,6 @@ describe Invoice do
       end
       
       describe "should clone sites/videos & amount from current_invoice as estimation" do
-        
         subject { Factory(:invoice, :user => @user) }
         
         its(:sites)         { should == @current_invoice.sites }

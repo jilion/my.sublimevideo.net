@@ -116,6 +116,7 @@ ActiveRecord::Schema.define(:version => 20100601074800) do
     t.integer  "invoices_count",                      :default => 0
     t.date     "last_invoiced_on"
     t.date     "next_invoiced_on"
+    t.datetime "trial_finished_at"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
