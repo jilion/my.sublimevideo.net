@@ -49,9 +49,9 @@ class Invoice < ActiveRecord::Base
   before_validation :set_interval_dates, :on => :create
   before_create :clone_current_data_as_estimation
   after_create :update_user_invoiced_dates
-  
+  after_create :reset_user_sites_hits_cache
+  after_create :delete_user_current_invoice_cache
   # TODO on create
-  # reset sites/videos caches
   # reset current_invoice cache
   
   # =================
@@ -81,7 +81,7 @@ class Invoice < ActiveRecord::Base
   # =================
   
   def self.current(user)
-    Rails.cache.fetch("current_invoice_for_user_#{user.id}", :expires_in => 1.minute) do
+    Rails.cache.fetch("user_#{user.id}.current_invoice", :expires_in => 1.minute) do
       invoice = user.invoices.build(:state => 'current')
       invoice.calculate_from_cache
       invoice
@@ -111,6 +111,16 @@ private
     user.last_invoiced_on = ended_on
     user.next_invoiced_on = ended_on + 1.month
     user.save
+  end
+  
+  # after_create
+  def reset_user_sites_hits_cache
+    user.sites.each { |site| site.reset_hits_cache!(ended_on) }
+  end
+  
+  # after_create
+  def delete_user_current_invoice_cache
+    Rails.cache.delete("user_#{user.id}.current_invoice")
   end
   
   def set_amounts

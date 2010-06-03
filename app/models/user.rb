@@ -40,7 +40,7 @@ class User < ActiveRecord::Base
   
   has_many :sites
   has_many :videos, :class_name => 'VideoOriginal'
-  has_many :invoices
+  has_many :invoices, :autosave => false
   
   # ==========
   # = Scopes =

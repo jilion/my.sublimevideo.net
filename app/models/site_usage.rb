@@ -25,6 +25,12 @@ class SiteUsage < ActiveRecord::Base
   belongs_to :site
   belongs_to :log
   
+  # ==========
+  # = Scopes =
+  # ==========
+  
+  scope :older_than, lambda { |date| where(:started_at >= date) }
+  
   # ===============
   # = Validations =
   # ===============
@@ -34,7 +40,7 @@ class SiteUsage < ActiveRecord::Base
   validates :started_at,   :presence => true
   validates :ended_at,     :presence => true
   validates :loader_hits,  :presence => true
-  validates :player_hits,      :presence => true
+  validates :player_hits,  :presence => true
   validates :flash_hits,   :presence => true
   
   # =============
@@ -68,8 +74,8 @@ private
   
   # before_validation
   def set_dates_from_log
-    self.started_at = log.started_at
-    self.ended_at   = log.ended_at
+    self.started_at ||= log.started_at
+    self.ended_at   ||= log.ended_at
   end
   
   # after_save
