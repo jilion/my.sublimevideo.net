@@ -1,3 +1,4 @@
+require 'rubygems'
 require 'spork'
 
 Spork.prefork do
@@ -10,6 +11,16 @@ Spork.prefork do
   ENV["RAILS_ENV"] ||= 'test'
   require File.dirname(__FILE__) + "/../config/environment" unless defined?(Rails)
   require 'rspec/rails'
+end
+
+Spork.each_run do
+  # This code will be run each time you run your specs.
+  
+  # Require factories file
+  require 'factories'
+  
+  # Requires supporting files with custom matchers and macros, etc, in ./support/ and its subdirectories.
+  Dir[Rails.root.join('/spec/support/**/*.rb')].each { |f| require f }
   
   Rspec.configure do |config|
     # == Mock Framework
@@ -31,14 +42,5 @@ Spork.prefork do
     c.http_stubbing_library    = :webmock # or :fakeweb
     c.default_cassette_options = { :record => :new_episodes }
   end
-end
-
-Spork.each_run do
-  # This code will be run each time you run your specs.
   
-  # Require factories file
-  require 'factories'
-  
-  # Requires supporting files with custom matchers and macros, etc, in ./support/ and its subdirectories.
-  Dir[Rails.root.join('/spec/support/**/*.rb')].each { |f| require f }
 end
