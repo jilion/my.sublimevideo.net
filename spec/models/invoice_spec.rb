@@ -79,17 +79,28 @@ describe Invoice do
     it "should set started_on from user.last_invoiced_on" do
       user    = Factory(:user, :last_invoiced_on => 2.month.ago, :next_invoiced_on => 1.day.ago)
       invoice = Factory(:invoice, :user => user)
-      invoice.started_on.should == user.last_invoiced_on
+      invoice.reload
+      invoice.started_on.should == 2.month.ago.to_date
     end
     it "should set started_on from user.created_at if user.last_invoiced_on is nil" do
       user    = Factory(:user, :last_invoiced_on => nil, :created_at => 2.month.ago, :next_invoiced_on => 1.day.ago)
       invoice = Factory(:invoice, :user => user)
+      invoice.reload
       invoice.started_on.should == user.created_at.to_date
     end
     it "should set ended_on from user.next_invoiced_on" do
       user    = Factory(:user, :last_invoiced_on => 2.month.ago, :next_invoiced_on => 1.day.ago)
       invoice = Factory(:invoice, :user => user)
-      invoice.ended_on.should == user.next_invoiced_on
+      invoice.reload
+      invoice.ended_on.should == 1.day.ago.to_date
+    end
+    it "should update user invoiced dates after create" do
+      user    = Factory(:user, :last_invoiced_on => 2.month.ago, :next_invoiced_on => 1.day.ago)
+      invoice = Factory(:invoice, :user => user)
+      user.reload
+      invoice.reload
+      user.last_invoiced_on.should == invoice.ended_on
+      user.next_invoiced_on.should == invoice.ended_on + 1.month
     end
     
   end
