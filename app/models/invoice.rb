@@ -52,6 +52,7 @@ class Invoice < ActiveRecord::Base
   # set new user invoiced dates
   # clone current invoice sites, videos & amount (as estimation)
   # reset sites/videos caches
+  # reset current_invoice cache
   
   # =================
   # = State Machine =
