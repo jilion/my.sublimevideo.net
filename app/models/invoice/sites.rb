@@ -19,6 +19,15 @@ private
           :player_hits => site.player_hits_cache
         }
       end
+    else
+      invoice.user.sites.collect do |site|
+        { :id => site.id,
+          :hostname => site.hostname,
+          # Warning big request here if site_usages not compacted
+          :loader_hits => site.usages.started_after(invoice.started_on).ended_before(invoice.ended_on).sum(:loader_hits),
+          :player_hits => site.usages.started_after(invoice.started_on).ended_before(invoice.ended_on).sum(:player_hits)
+        }
+      end
     end
   end
   

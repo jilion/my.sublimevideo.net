@@ -59,6 +59,7 @@ class Invoice < ActiveRecord::Base
   
   state_machine :initial => :pending do
     state :current
+    before_transition :on => :calculate, :do => :calculate_from_logs
     
     event(:calculate) { transition :pending => :ready }
     event(:charge)    { transition :ready => :charged, :ready => :failed, :failed => :charged }
@@ -68,11 +69,10 @@ class Invoice < ActiveRecord::Base
   # = Instance Methods =
   # ====================
   
-  def calculate_from_cache
+  def set_current_data
+    self.state = 'current'
     set_interval_dates
-    self.sites = Invoice::Sites.new(self, :from_cache => true)
-    # self.videos = Invoice::Videos.new(self, :from_cache => true)
-    set_amounts
+    calculate_from_cache
   end
   
   # =================
@@ -81,8 +81,8 @@ class Invoice < ActiveRecord::Base
   
   def self.current(user)
     Rails.cache.fetch("user_#{user.id}.current_invoice", :expires_in => 1.minute) do
-      invoice = user.invoices.build(:state => 'current')
-      invoice.calculate_from_cache
+      invoice = user.invoices.build
+      invoice.set_current_data
       invoice
     end
   end
@@ -122,12 +122,6 @@ private
     Rails.cache.delete("user_#{user.id}.current_invoice")
   end
   
-  def set_amounts
-    self.sites_amount  = sites.amount
-    # self.videos_amount = videos.amount
-    self.amount        = sites_amount + videos_amount
-  end
-  
   # validate
   def validates_started_on
     self.errors.add(:started_on, :invalid) if started_on >= 1.month.ago.utc.to_date
@@ -148,6 +142,24 @@ private
   
   def report_user_invoice_to_next_month
     user.update_attribute(:next_invoiced_on, user.next_invoiced_on + 1.month)
+  end
+  
+  def calculate_from_cache
+    self.sites = Invoice::Sites.new(self, :from_cache => true)
+    # self.videos = Invoice::Videos.new(self, :from_cache => true)
+    set_amounts
+  end
+  
+  def calculate_from_logs
+    self.sites = Invoice::Sites.new(self)
+    # self.videos = Invoice::Videos.new(self, :from_cache => true)
+    set_amounts
+  end
+  
+  def set_amounts
+    self.sites_amount  = sites.amount
+    # self.videos_amount = videos.amount
+    self.amount        = sites_amount + videos_amount
   end
   
   def self.yml
