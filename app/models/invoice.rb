@@ -41,6 +41,7 @@ class Invoice < ActiveRecord::Base
   
   validates :user,     :presence => true
   validate :validates_started_on, :validates_ended_on, :on => :create
+  validate :requires_minimun_amount, :on => :create
   
   # =============
   # = Callbacks =
@@ -51,8 +52,6 @@ class Invoice < ActiveRecord::Base
   after_create :update_user_invoiced_dates
   after_create :reset_user_sites_hits_cache
   after_create :delete_user_current_invoice_cache
-  # TODO on create
-  # reset current_invoice cache
   
   # =================
   # = State Machine =
@@ -137,6 +136,25 @@ private
   # validate
   def validates_ended_on
     self.errors.add(:ended_on, :invalid) if ended_on >= Date.today
+  end
+  
+  # validate
+  def requires_minimun_amount
+    if Invoice.current(user).amount < Invoice.yml[:minimum_amount]
+      self.errors.add(:amount, "is too low, invoice reported to next month")
+      report_user_invoice_to_next_month
+    end
+  end
+  
+  def report_user_invoice_to_next_month
+    user.update_attribute(:next_invoiced_on, user.next_invoiced_on + 1.month)
+  end
+  
+  def self.yml
+    config_path = Rails.root.join('config', 'invoice.yml')
+    @yml ||= YAML::load_file(config_path).to_options
+  rescue
+    raise StandardError, "Invoice config file '#{config_path}' doesn't exist."
   end
   
 end
