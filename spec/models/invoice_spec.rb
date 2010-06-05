@@ -25,6 +25,7 @@ describe Invoice do
   context "with valid attributes" do
     before(:each) do
       @user = Factory(:user, :last_invoiced_on => (1.month + 1.day).ago, :next_invoiced_on => 1.day.ago)
+      Factory(:site, :user => @user, :loader_hits_cache => 100000)
     end
     
     subject { Factory(:invoice, :user => @user).reload } # reload needed to have Time as Date
@@ -39,7 +40,7 @@ describe Invoice do
   context "current, without free trial" do
     before(:each) do
       @user  = Factory(:user, :trial_finished_at => 3.month.ago)
-      @site1 = Factory(:site, :user => @user, :loader_hits_cache => 100, :player_hits_cache => 11)
+      @site1 = Factory(:site, :user => @user, :loader_hits_cache => 1000, :player_hits_cache => 11)
       @site2 = Factory(:site, :user => @user, :loader_hits_cache => 50, :player_hits_cache => 5, :hostname => "google.com")
     end
     
@@ -50,25 +51,43 @@ describe Invoice do
     its(:ended_on)      { should == Time.now.utc.to_date + 1.month }
     its(:sites)         { should be_kind_of(Invoice::Sites) }
     its(:user)          { should be_present }
-    its(:amount)        { should == 166 }
-    its(:sites_amount)  { should == 166 }
+    its(:amount)        { should == 1066 }
+    its(:sites_amount)  { should == 1066 }
     its(:videos_amount) { should == 0 }
     it { should be_current }
   end
   
   describe "validations" do
     
-    it "should validate started_on < 1.month.ago" do
+    it "should validates started_on < 1.month.ago" do
       user    = Factory(:user, :last_invoiced_on => 1.day.ago)
       invoice = Factory.build(:invoice, :user => user)
       invoice.should_not be_valid
       invoice.errors[:started_on].should be_present
     end
-    it "should validate ended_on < Date.today" do
+    it "should validates ended_on < Date.today" do
       user    = Factory(:user, :next_invoiced_on => 1.day.from_now)
       invoice = Factory.build(:invoice, :user => user)
       invoice.should_not be_valid
       invoice.errors[:ended_on].should be_present
+    end
+    
+    describe "amount < minimum.amount" do
+      before(:each) do
+        @user = Factory(:user, :last_invoiced_on => 2.month.ago, :next_invoiced_on => 1.day.ago)
+        @site = Factory(:site, :user => @user, :loader_hits_cache => Trial.free_loader_hits + 100, :player_hits_cache => 11)
+        @invoice = Factory.build(:invoice, :user => @user)
+      end
+      
+      it "should not validates amount" do
+        @invoice.should_not be_valid
+        @invoice.errors[:amount].should be_present
+      end
+      
+      it "should update user.next_invoiced_on to next month" do
+        @invoice.should_not be_valid
+        @user.reload.next_invoiced_on.should == (1.day.ago + 1.month).to_date
+      end
     end
     
   end
@@ -76,39 +95,45 @@ describe Invoice do
   describe "callbacks" do
     
     it "should set started_on from user.last_invoiced_on" do
-      user    = Factory(:user, :last_invoiced_on => 2.month.ago, :next_invoiced_on => 1.day.ago)
+      user = Factory(:user, :last_invoiced_on => 2.month.ago, :next_invoiced_on => 1.day.ago).reload
+      Factory(:site, :user => user, :loader_hits_cache => 100000)
       invoice = Factory(:invoice, :user => user)
-      invoice.reload
       invoice.started_on.should == 2.month.ago.to_date
     end
     it "should set started_on from user.created_at if user.last_invoiced_on is nil" do
-      user    = Factory(:user, :last_invoiced_on => nil, :created_at => 2.month.ago, :next_invoiced_on => 1.day.ago)
+      user = Factory(:user, :last_invoiced_on => nil, :created_at => 2.month.ago, :next_invoiced_on => 1.day.ago).reload
+      Factory(:site, :user => user, :loader_hits_cache => 100000)
       invoice = Factory(:invoice, :user => user)
-      invoice.reload
       invoice.started_on.should == user.created_at.to_date
     end
     it "should set ended_on from user.next_invoiced_on" do
-      user    = Factory(:user, :last_invoiced_on => 2.month.ago, :next_invoiced_on => 1.day.ago)
+      user = Factory(:user, :last_invoiced_on => 2.month.ago, :next_invoiced_on => 1.day.ago).reload
+      Factory(:site, :user => user, :loader_hits_cache => 100000)
       invoice = Factory(:invoice, :user => user)
-      invoice.reload
       invoice.ended_on.should == 1.day.ago.to_date
     end
     
     it "should update user invoiced dates after create" do
-      user    = Factory(:user, :last_invoiced_on => 2.month.ago, :next_invoiced_on => 1.day.ago)
+      user = Factory(:user, :last_invoiced_on => 2.month.ago, :next_invoiced_on => 1.day.ago).reload
+      Factory(:site, :user => user, :loader_hits_cache => 100000)
       invoice = Factory(:invoice, :user => user)
       user.reload
-      user = User.find(user)
-      invoice.reload
       user.last_invoiced_on.should == invoice.ended_on
       user.next_invoiced_on.should == invoice.ended_on + 1.month
     end
     
     context "second invoice" do
       before(:each) do
-        @user  = Factory(:user, :invoices_count => 1, :last_invoiced_on => 2.month.ago, :next_invoiced_on => 1.day.ago)
-        @site1 = Factory(:site, :user => @user, :loader_hits_cache => 100, :player_hits_cache => 11)
-        @site2 = Factory(:site, :user => @user, :loader_hits_cache => 50, :player_hits_cache => 5, :hostname => "google.com")
+        @user  = Factory(:user, :trial_finished_at => 3.month.ago, :invoices_count => 1, :last_invoiced_on => 2.month.ago, :next_invoiced_on => 1.day.ago).reload
+        @site1 = Factory(:site, :user => @user)
+        @site2 = Factory(:site, :user => @user, :hostname => "google.com")
+        VCR.use_cassette('one_saved_logs') do
+          @log = Factory(:log, :started_at => 1.month.ago, :ended_at => 1.month.ago + 3.days)
+        end
+        Factory(:site_usage, :site => @site1, :log => @log, :loader_hits => 1000100, :player_hits => 15)
+        Factory(:site_usage, :site => @site2, :log => @log, :loader_hits => 53, :player_hits => 7)
+        Site.update_counters(@site1, :loader_hits_cache => -100, :player_hits_cache => -4) # set a diff between log & cache
+        Site.update_counters(@site2, :loader_hits_cache => -3, :player_hits_cache => -2) # set a diff between log & cache
         @current_invoice = Invoice.current(@user)
       end
       
@@ -122,20 +147,34 @@ describe Invoice do
         it { should be_pending }
       end
       
-      it "should reset sites hits cache so current invoice too" do
+      it "should reset sites hits caches" do
         VCR.use_cassette('one_saved_logs') do
-          log = Factory(:log, :started_at => 2.minutes.ago, :ended_at => 1.minutes.ago)
-          Factory(:site_usage, :site => @site1, :log => log, :loader_hits => 12, :player_hits => 21)
-          Factory(:site_usage, :site => @site2, :log => log, :loader_hits => 23)
-          Factory(:invoice, :user => @user)
-          Invoice.current(@user).sites.loader_hits.should == 35
-          Invoice.current(@user).sites.player_hits.should == 21
+          @log = Factory(:log, :started_at => 2.minutes.ago, :ended_at => 1.minutes.ago)
         end
+        Factory(:site_usage, :site => @site1, :log => @log, :loader_hits => 12, :player_hits => 21)
+        Factory(:site_usage, :site => @site2, :log => @log, :loader_hits => 23)
+        Factory(:invoice, :user => @user)
+        Invoice.current(@user).sites.loader_hits.should == 35
+        Invoice.current(@user).sites.player_hits.should == 21
       end
       
       it "should delete user current_invoice cache" do
         Rails.cache.should_receive(:delete).with("user_#{@user.id}.current_invoice")
         Factory(:invoice, :user => @user)
+      end
+      
+      describe "when calculate" do
+        before(:each) do
+          @invoice = Factory(:invoice, :user => @user).reload # problem if not reloaded, but don't fucking know why!
+          @invoice.calculate
+        end
+        
+        subject { @invoice }
+        
+        it { should be_ready }
+        its(:amount)        { should == 1000175 }
+        its(:sites_amount)  { should == 1000175 }
+        its(:videos_amount) { should == 0 }
       end
       
     end

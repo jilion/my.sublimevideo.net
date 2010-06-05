@@ -130,9 +130,10 @@ class Site < ActiveRecord::Base
   end
   
   def reset_hits_cache!(time)
-    self.loader_hits_cache = usages.older_than(time).sum(:loader_hits)
-    self.player_hits_cache = usages.older_than(time).sum(:player_hits)
-    self.flash_hits_cache  = usages.older_than(time).sum(:flash_hits)
+    # Warning Lot of request here
+    self.loader_hits_cache = usages.started_after(time).sum(:loader_hits)
+    self.player_hits_cache = usages.started_after(time).sum(:player_hits)
+    self.flash_hits_cache  = usages.started_after(time).sum(:flash_hits)
     save!
   end
   

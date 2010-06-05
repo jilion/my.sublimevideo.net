@@ -41,6 +41,7 @@ class Invoice < ActiveRecord::Base
   
   validates :user,     :presence => true
   validate :validates_started_on, :validates_ended_on, :on => :create
+  validate :requires_minimun_amount, :on => :create
   
   # =============
   # = Callbacks =
@@ -51,8 +52,6 @@ class Invoice < ActiveRecord::Base
   after_create :update_user_invoiced_dates
   after_create :reset_user_sites_hits_cache
   after_create :delete_user_current_invoice_cache
-  # TODO on create
-  # reset current_invoice cache
   
   # =================
   # = State Machine =
@@ -60,6 +59,7 @@ class Invoice < ActiveRecord::Base
   
   state_machine :initial => :pending do
     state :current
+    before_transition :on => :calculate, :do => :calculate_from_logs
     
     event(:calculate) { transition :pending => :ready }
     event(:charge)    { transition :ready => :charged, :ready => :failed, :failed => :charged }
@@ -69,11 +69,10 @@ class Invoice < ActiveRecord::Base
   # = Instance Methods =
   # ====================
   
-  def calculate_from_cache
+  def set_current_data
+    self.state = 'current'
     set_interval_dates
-    self.sites = Invoice::Sites.new(self, :from_cache => true)
-    # self.videos = Invoice::Videos.new(self, :from_cache => true)
-    set_amounts
+    calculate_from_cache
   end
   
   # =================
@@ -82,8 +81,8 @@ class Invoice < ActiveRecord::Base
   
   def self.current(user)
     Rails.cache.fetch("user_#{user.id}.current_invoice", :expires_in => 1.minute) do
-      invoice = user.invoices.build(:state => 'current')
-      invoice.calculate_from_cache
+      invoice = user.invoices.build
+      invoice.set_current_data
       invoice
     end
   end
@@ -123,12 +122,6 @@ private
     Rails.cache.delete("user_#{user.id}.current_invoice")
   end
   
-  def set_amounts
-    self.sites_amount  = sites.amount
-    # self.videos_amount = videos.amount
-    self.amount        = sites_amount + videos_amount
-  end
-  
   # validate
   def validates_started_on
     self.errors.add(:started_on, :invalid) if started_on >= 1.month.ago.utc.to_date
@@ -137,6 +130,43 @@ private
   # validate
   def validates_ended_on
     self.errors.add(:ended_on, :invalid) if ended_on >= Date.today
+  end
+  
+  # validate
+  def requires_minimun_amount
+    if Invoice.current(user).amount < Invoice.yml[:minimum_amount]
+      self.errors.add(:amount, "is too low, invoice reported to next month")
+      report_user_invoice_to_next_month
+    end
+  end
+  
+  def report_user_invoice_to_next_month
+    user.update_attribute(:next_invoiced_on, user.next_invoiced_on + 1.month)
+  end
+  
+  def calculate_from_cache
+    self.sites = Invoice::Sites.new(self, :from_cache => true)
+    # self.videos = Invoice::Videos.new(self, :from_cache => true)
+    set_amounts
+  end
+  
+  def calculate_from_logs
+    self.sites = Invoice::Sites.new(self)
+    # self.videos = Invoice::Videos.new(self, :from_cache => true)
+    set_amounts
+  end
+  
+  def set_amounts
+    self.sites_amount  = sites.amount
+    # self.videos_amount = videos.amount
+    self.amount        = sites_amount + videos_amount
+  end
+  
+  def self.yml
+    config_path = Rails.root.join('config', 'invoice.yml')
+    @yml ||= YAML::load_file(config_path).to_options
+  rescue
+    raise StandardError, "Invoice config file '#{config_path}' doesn't exist."
   end
   
 end
