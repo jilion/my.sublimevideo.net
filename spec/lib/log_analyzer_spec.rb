@@ -26,7 +26,7 @@ describe LogAnalyzer do
     end
     
     it "should parse and return js tracker" do
-      tracker = @trackers.select { |tracker| tracker.options[:title] == :js }.first
+      tracker = @trackers.select { |tracker| tracker.options[:title] == :player }.first
       tracker.categories.should == { "/p/sublime.js?t=g8thugh6" => 7, "/p/sublime.js?t=g3325oz4" => 3 }
     end
   end

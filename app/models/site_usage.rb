@@ -63,8 +63,8 @@ class SiteUsage < ActiveRecord::Base
         create!(
           :site         => site,
           :log          => log,
-          :loader_hits => hits[:loader][site.token].to_i,
-          :player_hits      => hits[:js][site.token].to_i,
+          :loader_hits  => hits[:loader][site.token].to_i,
+          :player_hits  => hits[:player][site.token].to_i,
           :flash_hits   => hits[:flash][site.token].to_i
         )
       end
@@ -84,7 +84,7 @@ private
     Site.update_counters(
       site_id,
       :loader_hits_cache  => loader_hits,
-      :player_hits_cache      => player_hits,
+      :player_hits_cache  => player_hits,
       :flash_hits_cache   => flash_hits
     )
   end
@@ -100,8 +100,8 @@ private
           end
           tokens
         end
-      when :js
-        trackers[:js] = tracker.categories.inject({}) do |tokens, (k,v)|
+      when :player
+        trackers[:player] = tracker.categories.inject({}) do |tokens, (k,v)|
           if token = k.match(%r(/p/sublime\.js\?t=([a-z0-9]{8}).*))[1]
             tokens.merge! token => v
           end

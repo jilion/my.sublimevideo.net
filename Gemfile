@@ -65,7 +65,7 @@ group :test do
   gem 'capybara-envjs'
   gem 'launchy'
   
-  gem 'email_spec'
+  gem 'email_spec',   :git => 'git://github.com/bmabey/email-spec', :branch => 'rails3'
   gem 'factory_girl', :git => 'git://github.com/thoughtbot/factory_girl.git', :branch => 'fixes_for_rails3'
   
   gem 'webmock'

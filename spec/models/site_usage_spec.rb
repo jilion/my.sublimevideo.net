@@ -52,7 +52,7 @@ describe SiteUsage do
     it "should clean trackers" do
       SiteUsage.hits_from(@trackers).should == {
         :loader => { "g3325oz4" => 3, "g8thugh6" => 1},
-        :js     => { "g3325oz4" => 3, "g8thugh6" => 7},
+        :player => { "g3325oz4" => 3, "g8thugh6" => 7},
         :flash  => {}
       }
     end
