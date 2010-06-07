@@ -56,8 +56,8 @@ group :test do
   gem 'growl'
   gem 'spork'
   
-  gem 'rspec',        '>= 2.0.0.beta.10'
-  gem 'rspec-rails',  '>= 2.0.0.beta.10'
+  gem 'rspec',        '>= 2.0.0.beta.11'
+  gem 'rspec-rails',  '>= 2.0.0.beta.11'
   
   gem 'steak',        '>= 0.4.0.beta.1'
   gem 'capybara'
