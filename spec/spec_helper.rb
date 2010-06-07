@@ -32,9 +32,12 @@ Spork.each_run do
     # config.mock_with :rr
     config.mock_with :rspec
     
-    # If you'd prefer not to run each of your examples within a transaction,
-    # uncomment the following line.
-    # config.use_transactional_examples = false
+    config.fixture_path = "#{::Rails.root}/spec/fixtures"
+    
+    # If you're not using ActiveRecord, or you'd prefer not to run each of your
+    # examples within a transaction, comment the following line or assign false
+    # instead of true.
+    config.use_transactional_fixtures = true
   end
   
   VCR.config do |c|
