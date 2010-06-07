@@ -165,6 +165,7 @@ describe Invoice do
       
       describe "when calculate" do
         before(:each) do
+          ActionMailer::Base.deliveries.clear
           @invoice = Factory(:invoice, :user => @user).reload # problem if not reloaded, but don't fucking know why!
           @invoice.calculate
         end
@@ -175,6 +176,13 @@ describe Invoice do
         its(:amount)        { should == 1000175 }
         its(:sites_amount)  { should == 1000175 }
         its(:videos_amount) { should == 0 }
+        
+        it "should sent a email" do
+          last_delivery = ActionMailer::Base.deliveries.last
+          last_delivery.to.should include subject.user.email
+          last_delivery.subject.should include "Invoice ready to be charged"
+          last_delivery.body.should include "$10001.75"
+        end
       end
       
     end

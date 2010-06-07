@@ -60,6 +60,7 @@ class Invoice < ActiveRecord::Base
   state_machine :initial => :pending do
     state :current
     before_transition :on => :calculate, :do => :calculate_from_logs
+    after_transition :on => :calculate, :do => :deliver_invoice_calculated_email
     
     event(:calculate) { transition :pending => :ready }
     event(:charge)    { transition :ready => :charged, :ready => :failed, :failed => :charged }
@@ -150,6 +151,7 @@ private
     set_amounts
   end
   
+  # before_transition (calculate)
   def calculate_from_logs
     self.sites = Invoice::Sites.new(self)
     # self.videos = Invoice::Videos.new(self, :from_cache => true)
@@ -160,6 +162,11 @@ private
     self.sites_amount  = sites.amount
     # self.videos_amount = videos.amount
     self.amount        = sites_amount + videos_amount
+  end
+  
+  # after_transition (calculate)
+  def deliver_invoice_calculated_email
+    InvoiceMailer.invoice_calculated(self).deliver
   end
   
   def self.yml
