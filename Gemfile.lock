@@ -212,7 +212,7 @@ specs:
 - treetop: 
     version: 1.4.8
 - mail: 
-    version: 2.2.1
+    version: 2.2.3
 - text-hyphen: 
     version: 1.0.0
 - text-format: 
@@ -325,7 +325,7 @@ specs:
 - ruby-hmac: 
     version: 0.4.0
 - panda: 
-    version: 0.5.0
+    version: 0.6.1
 - pg: 
     version: 0.9.0
 - request-log-analyzer: 
@@ -395,7 +395,7 @@ sources:
 - Git: 
     uri: git://github.com/thibaudgg/http_connection.git
     git: git://github.com/thibaudgg/http_connection.git
-    ref: 35ffec155739d58980cde0d4007dd1f826faa065
+    ref: 584cea976ef85f0a5fb1c6b78408e396e12b36ac
 - Git: 
     uri: git://github.com/thibaudgg/jammit.git
     git: git://github.com/thibaudgg/jammit.git
