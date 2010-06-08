@@ -11,7 +11,7 @@ describe SitesController do
     end
     
     it "should respond with success to GET :index" do
-      @mock_user.stub_chain(:sites, :by_date).and_return([])
+      @mock_user.stub_chain(:sites, :not_archived, :by_date).and_return([])
       get :index
       response.should be_success
     end
@@ -47,9 +47,9 @@ describe SitesController do
     end
     it "should respond with success to DELETE :destroy" do
       @mock_user.stub_chain(:sites, :find).with("1").and_return(mock_site)
-      mock_site.stub(:destroy)
+      mock_site.stub(:archive)
       delete :destroy, :id => '1'
-      response.should be_success
+      response.should redirect_to(sites_url)
     end
   end
   

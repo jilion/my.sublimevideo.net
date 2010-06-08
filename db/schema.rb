@@ -86,6 +86,7 @@ ActiveRecord::Schema.define(:version => 20100601074800) do
     t.integer  "loader_hits_cache", :default => 0
     t.integer  "player_hits_cache", :default => 0
     t.integer  "flash_hits_cache",  :default => 0
+    t.datetime "archived_at"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
