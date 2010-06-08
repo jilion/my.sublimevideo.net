@@ -54,8 +54,8 @@ class User < ActiveRecord::Base
   # = Scopes =
   # ==========
   
-  scope :in_trial, where(:trial_ended_at => nil)
-  scope :without_cc, where(:cc_type => nil, :cc_last_digits => nil)
+  scope :in_trial, lambda { where(:trial_ended_at => nil) }
+  scope :without_cc, lambda { where(:cc_type => nil, :cc_last_digits => nil) }
   
   # ===============
   # = Validations =
