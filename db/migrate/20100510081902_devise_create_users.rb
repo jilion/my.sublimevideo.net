@@ -1,6 +1,7 @@
 class DeviseCreateUsers < ActiveRecord::Migration
   def self.up
     create_table(:users) do |t|
+      t.string :state
       t.database_authenticatable :null => false
       t.string :full_name
       t.confirmable
@@ -15,7 +16,13 @@ class DeviseCreateUsers < ActiveRecord::Migration
       t.date :last_invoiced_on,  :default => nil
       t.date :next_invoiced_on,  :default => nil
       
-      t.datetime :trial_finished_at, :default => nil
+      t.datetime :trial_ended_at, :default => nil
+      t.datetime :trial_usage_information_email_sent_at, :default => nil
+      t.datetime :trial_usage_warning_email_sent_at, :default => nil
+      
+      t.string :cc_type
+      t.integer :cc_last_digits
+      t.datetime :cc_updated_at
       
       t.timestamps
     end

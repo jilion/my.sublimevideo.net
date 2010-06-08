@@ -5,7 +5,8 @@ MySublimeVideo::Application.configure do
   # test suite.  You never need to work with it otherwise.  Remember that
   # your test database is "scratch space" for the test suite and is wiped
   # and recreated between test runs.  Don't rely on the data there!
-  config.cache_classes = true
+  config.cache_classes = true 
+  # config.cache_classes = false # for Spork
   
   # Log error messages when you accidentally call methods on nil.
   config.whiny_nils = true
@@ -13,6 +14,7 @@ MySublimeVideo::Application.configure do
   # Show full error reports and disable caching
   config.consider_all_requests_local       = true
   config.action_controller.perform_caching = true
+  # config.action_controller.perform_caching = false # for Spork
   
   # Raise exceptions instead of rendering exception templates
   config.action_dispatch.show_exceptions = false

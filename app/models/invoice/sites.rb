@@ -37,8 +37,8 @@ private
   end
   
   def calculate_and_set_amounts(invoice)
-    if invoice.user.trial_finished_at.nil? || (invoice.user.trial_finished_at > invoice.started_on && invoice.user.trial_finished_at < invoice.ended_on)
-      # TODO Rewrite, test if trial_finished_at is inside the invoice interval & calculate how much free hits remaining 
+    if invoice.user.trial_ended_at.nil? || (invoice.user.trial_ended_at > invoice.started_on && invoice.user.trial_ended_at < invoice.ended_on)
+      # TODO Rewrite, test if trial_ended_at is inside the invoice interval & calculate how much free hits remaining 
       loader_hits = @loader_hits > Trial.free_loader_hits ? @loader_hits - Trial.free_loader_hits : 0
       player_hits = @player_hits > Trial.free_player_hits ? @player_hits - Trial.free_player_hits : 0
     else

@@ -39,7 +39,7 @@ describe Invoice do
   
   context "current, without free trial" do
     before(:each) do
-      @user  = Factory(:user, :trial_finished_at => 3.month.ago)
+      @user  = Factory(:user, :trial_ended_at => 3.month.ago)
       @site1 = Factory(:site, :user => @user, :loader_hits_cache => 1000, :player_hits_cache => 11)
       @site2 = Factory(:site, :user => @user, :loader_hits_cache => 50, :player_hits_cache => 5, :hostname => "google.com")
     end
@@ -124,7 +124,7 @@ describe Invoice do
     
     context "second invoice" do
       before(:each) do
-        @user  = Factory(:user, :trial_finished_at => 3.month.ago, :invoices_count => 1, :last_invoiced_on => 2.month.ago, :next_invoiced_on => 1.day.ago).reload
+        @user  = Factory(:user, :trial_ended_at => 3.month.ago, :invoices_count => 1, :last_invoiced_on => 2.month.ago, :next_invoiced_on => 1.day.ago).reload
         @site1 = Factory(:site, :user => @user)
         @site2 = Factory(:site, :user => @user, :hostname => "google.com")
         VCR.use_cassette('one_saved_logs') do
@@ -165,6 +165,7 @@ describe Invoice do
       
       describe "when calculate" do
         before(:each) do
+          ActionMailer::Base.deliveries.clear
           @invoice = Factory(:invoice, :user => @user).reload # problem if not reloaded, but don't fucking know why!
           @invoice.calculate
         end
@@ -175,6 +176,13 @@ describe Invoice do
         its(:amount)        { should == 1000175 }
         its(:sites_amount)  { should == 1000175 }
         its(:videos_amount) { should == 0 }
+        
+        it "should sent a email" do
+          last_delivery = ActionMailer::Base.deliveries.last
+          last_delivery.to.should include subject.user.email
+          last_delivery.subject.should include "Invoice ready to be charged"
+          last_delivery.body.should include "$10001.75"
+        end
       end
       
     end

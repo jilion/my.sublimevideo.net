@@ -2,30 +2,36 @@
 #
 # Table name: users
 #
-#  id                   :integer         not null, primary key
-#  email                :string(255)     default(""), not null
-#  encrypted_password   :string(128)     default(""), not null
-#  password_salt        :string(255)     default(""), not null
-#  full_name            :string(255)
-#  confirmation_token   :string(255)
-#  confirmed_at         :datetime
-#  confirmation_sent_at :datetime
-#  reset_password_token :string(255)
-#  remember_token       :string(255)
-#  remember_created_at  :datetime
-#  sign_in_count        :integer         default(0)
-#  current_sign_in_at   :datetime
-#  last_sign_in_at      :datetime
-#  current_sign_in_ip   :string(255)
-#  last_sign_in_ip      :string(255)
-#  failed_attempts      :integer         default(0)
-#  locked_at            :datetime
-#  invoices_count       :integer         default(0)
-#  last_invoiced_on     :date
-#  next_invoiced_on     :date
-#  trial_finished_at    :datetime
-#  created_at           :datetime
-#  updated_at           :datetime
+#  id                                    :integer         not null, primary key
+#  state                                 :string(255)
+#  email                                 :string(255)     default(""), not null
+#  encrypted_password                    :string(128)     default(""), not null
+#  password_salt                         :string(255)     default(""), not null
+#  full_name                             :string(255)
+#  confirmation_token                    :string(255)
+#  confirmed_at                          :datetime
+#  confirmation_sent_at                  :datetime
+#  reset_password_token                  :string(255)
+#  remember_token                        :string(255)
+#  remember_created_at                   :datetime
+#  sign_in_count                         :integer         default(0)
+#  current_sign_in_at                    :datetime
+#  last_sign_in_at                       :datetime
+#  current_sign_in_ip                    :string(255)
+#  last_sign_in_ip                       :string(255)
+#  failed_attempts                       :integer         default(0)
+#  locked_at                             :datetime
+#  invoices_count                        :integer         default(0)
+#  last_invoiced_on                      :date
+#  next_invoiced_on                      :date
+#  trial_ended_at                        :datetime
+#  trial_usage_information_email_sent_at :datetime
+#  trial_usage_warning_email_sent_at     :datetime
+#  cc_type                               :string(255)
+#  cc_last_digits                        :integer
+#  cc_updated_at                         :datetime
+#  created_at                            :datetime
+#  updated_at                            :datetime
 #
 
 require 'spec_helper'
@@ -38,11 +44,9 @@ describe User do
     its(:full_name)        { should == "Joe Blow" }
     its(:email)            { should match /email\d+@user.com/ }
     its(:invoices_count)   { should == 0 }
-    it { subject.last_invoiced_on. should be_nil } # Wait RSpec fix
+    its(:last_invoiced_on) { should be_nil }
     its(:next_invoiced_on) { should == Time.now.utc.to_date + 1.month }
-    it { should be_trial }
     it { should be_valid }
-    it { should be_trial }
   end
   
   describe "validates" do
@@ -72,23 +76,6 @@ describe User do
     it "should be welcome if sites is empty" do
       user = Factory(:user)
       user.should be_welcome
-    end
-    
-    it "should not be in trial mode if trial_finished_at exist" do
-      user = Factory(:user, :trial_finished_at => Time.now)
-      user.should_not be_trial
-    end
-    
-    it "should have trial mode usage at 33%" do
-      user = Factory(:user)
-      Factory(:site, :user => user, :loader_hits_cache => Trial.free_loader_hits / 3)
-      user.trial_usage_percentage.should == 33
-    end
-    
-    it "should have trial mode usage 25%" do
-      user = Factory(:user)
-      Factory(:site, :user => user, :loader_hits_cache => Trial.free_loader_hits / 5, :player_hits_cache => Trial.free_player_hits / 4)
-      user.trial_usage_percentage.should == 25
     end
   end
   
