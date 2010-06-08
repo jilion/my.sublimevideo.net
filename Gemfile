@@ -39,7 +39,7 @@ gem 'voxel_hapi',       :git => 'git://github.com/thibaudgg/voxel_hapi.git'
 gem 'request-log-analyzer', :require => 'request_log_analyzer'
 
 group :development do
-  # bundler requires these gems in development
+  gem 'exceptional'
   gem 'sqlite3-ruby', :require => 'sqlite3'
   gem 'annotate'
   gem 'ffaker'
@@ -47,9 +47,11 @@ group :development do
   # Ruby console
   gem 'looksee'
   gem 'wirble'
+  
 end
 
 group :test do
+  gem 'exceptional'
   gem 'sqlite3-ruby', :require => 'sqlite3'
   
   gem 'rev'

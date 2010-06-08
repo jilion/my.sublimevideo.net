@@ -86,6 +86,7 @@ ActiveRecord::Schema.define(:version => 20100601074800) do
     t.integer  "loader_hits_cache", :default => 0
     t.integer  "player_hits_cache", :default => 0
     t.integer  "flash_hits_cache",  :default => 0
+    t.datetime "archived_at"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -120,6 +121,8 @@ ActiveRecord::Schema.define(:version => 20100601074800) do
     t.datetime "trial_ended_at"
     t.datetime "trial_usage_information_email_sent_at"
     t.datetime "trial_usage_warning_email_sent_at"
+    t.integer  "limit_alert_amount",                                   :default => 0
+    t.datetime "limit_alert_email_sent_at"
     t.string   "cc_type"
     t.integer  "cc_last_digits"
     t.datetime "cc_updated_at"

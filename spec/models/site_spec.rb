@@ -13,6 +13,7 @@
 #  loader_hits_cache :integer         default(0)
 #  player_hits_cache :integer         default(0)
 #  flash_hits_cache  :integer         default(0)
+#  archived_at       :datetime
 #  created_at        :datetime
 #  updated_at        :datetime
 #
@@ -28,7 +29,8 @@ describe Site do
     its(:dev_hostnames) { should == "localhost, 127.0.0.1" }
     its(:token)         { should =~ /^[a-z0-9]{8}$/ }
     its(:user)          { should be_present }
-    it { subject.license.url.should be_nil }
+    its(:license)       { should_not be_present }
+    its(:loader)        { should_not be_present }
     it { be_pending }
     it { be_valid }
   end
@@ -97,6 +99,14 @@ describe Site do
         site.should_not be_valid
         site.errors[:hostname].should be_present
       end
+      
+      it "should validate uniqueness, but ignore archived sites" do
+        CDN.stub(:purge)
+        @site.archive
+        site = Factory.build(:site, :user => @site.user, :hostname => @site.hostname)
+        site.should be_valid
+        site.errors[:hostname].should_not be_present
+      end
     end
     
     it "should prevent update of hostname if pending" do
@@ -163,7 +173,7 @@ describe Site do
     it "activate should set license file" do
       site = Factory(:site)
       site.activate
-      site.license.url.should be_present
+      site.license.should be_present
     end
     
     it "first activate should not purge license file" do
@@ -179,6 +189,43 @@ describe Site do
       CDN.should_receive(:purge).with("/l/#{site.token}.js")
       site.activate
     end
+    
+    context "with a site activated" do
+      before(:each) do
+        @site = Factory(:site)
+        @site.activate
+      end
+      
+      it "should clear & purge license & loader when suspend" do
+        CDN.should_receive(:purge).with("/js/#{@site.token}.js")
+        CDN.should_receive(:purge).with("/l/#{@site.token}.js")
+        @site.suspend
+        @site = Site.find(@site)
+        @site.loader.should_not be_present
+        @site.license.should_not be_present
+      end
+      
+      it "should reset license & loader when unsuspend" do
+        CDN.stub(:purge)
+        @site.suspend
+        @site.unsuspend
+        @site.reload
+        @site.loader.should be_present
+        @site.license.should be_present
+      end
+      
+      it "should clear & purge license & loader and set archived_at when archive" do
+        CDN.should_receive(:purge).with("/js/#{@site.token}.js")
+        CDN.should_receive(:purge).with("/l/#{@site.token}.js")
+        @site.archive
+        @site.reload
+        @site.loader.should_not be_present
+        @site.license.should_not be_present
+        @site.archived_at.should be_present
+      end
+      
+    end
+    
   end
   
   describe "Callbacks" do

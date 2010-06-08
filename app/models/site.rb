@@ -13,12 +13,12 @@
 #  loader_hits_cache :integer         default(0)
 #  player_hits_cache :integer         default(0)
 #  flash_hits_cache  :integer         default(0)
+#  archived_at       :datetime
 #  created_at        :datetime
 #  updated_at        :datetime
 #
 
 class Site < ActiveRecord::Base
-  
   attr_accessible :hostname, :dev_hostnames
   uniquify :token, :chars => Array('a'..'z') + Array('0'..'9')
   mount_uploader :license, LicenseUploader
@@ -38,6 +38,7 @@ class Site < ActiveRecord::Base
   # = Scopes =
   # ==========
   
+  scope :not_archived, lambda { where(:state ^ 'archived') }
   scope :by_date, lambda { |way| order("created_at #{way || 'desc'}") }
   scope :by_hostname, lambda { |way| order("hostname #{way || 'asc'}") }
   
@@ -46,7 +47,7 @@ class Site < ActiveRecord::Base
   # ===============
   
   validates :user,     :presence => true
-  validates :hostname, :presence => true, :uniqueness => { :scope => :user_id }, :production_hostname => true
+  validates :hostname, :presence => true, :hostname_uniqueness => true, :production_hostname => true
   validates :dev_hostnames, :hostnames => true
   validate  :must_be_active_to_update_hostnames
   
@@ -65,9 +66,19 @@ class Site < ActiveRecord::Base
     before_transition :on => :activate,     :do => :set_license_file
     after_transition  :inactive => :active, :do => :purge_license_file
     
+    before_transition :on => :archive,             :do => :set_archived_at
+    before_transition :on => [:archive, :suspend], :do => :remove_loader_and_license_file!
+    after_transition  :on => [:archive, :suspend], :do => :purge_license_file
+    after_transition  :on => [:archive, :suspend], :do => :purge_loader_file
+    
+    before_transition :on => :unsuspend, :do => :set_loader_file
+    before_transition :on => :unsuspend, :do => :set_license_file
+    
     event(:activate)   { transition [:pending, :inactive] => :active }
     event(:deactivate) { transition :active => :inactive }
-    event(:archive)    { transition all => :archived    }
+    event(:archive)    { transition [:pending, :active, :inactive] => :archived }
+    event(:suspend)    { transition [:pending, :active, :inactive] => :suspended }
+    event(:unsuspend)  { transition :suspended => :active }
   end
   
   # ====================
@@ -121,6 +132,11 @@ class Site < ActiveRecord::Base
     set_template("license")
   end
   
+  def remove_loader_and_license_file!
+    remove_loader!
+    remove_license!
+  end
+  
   def purge_loader_file
     CDN.purge("/js/#{token}.js")
   end
@@ -135,6 +151,10 @@ class Site < ActiveRecord::Base
     self.player_hits_cache = usages.started_after(time).sum(:player_hits)
     self.flash_hits_cache  = usages.started_after(time).sum(:flash_hits)
     save!
+  end
+  
+  def in_progress?
+    pending? || inactive?
   end
   
 private
@@ -162,4 +182,8 @@ private
     self.send("#{name}=", tempfile)
   end
   
+  def set_archived_at
+    self.archived_at = Time.now.utc
+  end
+
 end

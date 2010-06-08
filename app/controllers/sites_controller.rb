@@ -7,7 +7,7 @@ class SitesController < ApplicationController
   
   # GET /sites
   def index
-    @sites = apply_scopes(current_user.sites, :default => { :by_date => 'desc' })
+    @sites = apply_scopes(current_user.sites.not_archived, :default => { :by_date => 'desc' })
     respond_with(@sites)
   end
   
@@ -26,6 +26,12 @@ class SitesController < ApplicationController
   # GET /sites/1/edit
   def edit
     @site = current_user.sites.find(params[:id])
+  end
+  
+  # GET /sites/1/state
+  def state
+    @site = current_user.sites.find(params[:id])
+    head :ok unless @site.active?
   end
   
   # POST /sites
@@ -62,14 +68,10 @@ class SitesController < ApplicationController
   # DELETE /sites/1
   def destroy
     @site = current_user.sites.find(params[:id])
-    @site.destroy
-    respond_with(@site)
-  end
-  
-  # GET /sites/1/state
-  def state
-    @site = current_user.sites.find(params[:id])
-    head :ok unless @site.active?
+    @site.archive
+    respond_with(@site) do |format|
+      format.html { redirect_to sites_path }
+    end
   end
   
 end
