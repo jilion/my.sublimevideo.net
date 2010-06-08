@@ -16,13 +16,21 @@ class DeviseCreateUsers < ActiveRecord::Migration
       t.date :last_invoiced_on,  :default => nil
       t.date :next_invoiced_on,  :default => nil
       
-      t.datetime :trial_ended_at, :default => nil
+      # Trial
+      t.datetime :trial_ended_at,                        :default => nil
       t.datetime :trial_usage_information_email_sent_at, :default => nil
-      t.datetime :trial_usage_warning_email_sent_at, :default => nil
+      t.datetime :trial_usage_warning_email_sent_at,     :default => nil
       
+      # $ limit alert
+      t.integer  :limit_alert_amount,        :default => 0
+      t.datetime :limit_alert_email_sent_at, :default => nil
+      
+      # Credit Card
       t.string :cc_type
       t.integer :cc_last_digits
       t.datetime :cc_updated_at
+      
+      
       
       t.timestamps
     end

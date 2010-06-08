@@ -75,7 +75,7 @@ describe Invoice do
     describe "amount < minimum.amount" do
       before(:each) do
         @user = Factory(:user, :last_invoiced_on => 2.month.ago, :next_invoiced_on => 1.day.ago)
-        @site = Factory(:site, :user => @user, :loader_hits_cache => Trial.free_loader_hits + 100, :player_hits_cache => 11)
+        @site = Factory(:site, :user => @user, :loader_hits_cache => User::Trial.free_loader_hits + 100, :player_hits_cache => 11)
         @invoice = Factory.build(:invoice, :user => @user)
       end
       
@@ -120,6 +120,14 @@ describe Invoice do
       user.reload
       user.last_invoiced_on.should == invoice.ended_on
       user.next_invoiced_on.should == invoice.ended_on + 1.month
+    end
+    
+    it "should clear user limit_alert_email_sent_at date" do
+      user = Factory(:user, :last_invoiced_on => 2.month.ago, :next_invoiced_on => 1.day.ago, :limit_alert_email_sent_at => 3.day.ago)
+      Factory(:site, :user => user, :loader_hits_cache => 100000)
+      Factory(:invoice, :user => user)
+      
+      user.reload.limit_alert_email_sent_at.should be_nil
     end
     
     context "second invoice" do

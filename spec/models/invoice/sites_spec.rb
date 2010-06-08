@@ -6,7 +6,7 @@ describe Invoice::Sites do
     
     before(:each) do
       @user    = Factory(:user)
-      @site1   = Factory(:site, :user => @user, :loader_hits_cache => Trial.free_loader_hits + 100, :player_hits_cache => Trial.free_player_hits + 11)
+      @site1   = Factory(:site, :user => @user, :loader_hits_cache => User::Trial.free_loader_hits + 100, :player_hits_cache => User::Trial.free_player_hits + 11)
       @site2   = Factory(:site, :user => @user, :loader_hits_cache => 50, :player_hits_cache => 5, :hostname => "google.com")
     end
     

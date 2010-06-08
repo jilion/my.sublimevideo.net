@@ -1,4 +1,4 @@
-module Trial
+module User::Trial
   
   def self.delay_supervise_users(minutes = 15.minutes)
     unless supervise_users_already_delayed?(minutes)
@@ -48,8 +48,8 @@ module Trial
   end
   
   def trial_usage_percentage
-    loader_hits_percentage = ((trial_loader_hits / Trial.free_loader_hits.to_f) * 100).to_i
-    player_hits_percentage = ((trial_player_hits / Trial.free_player_hits.to_f) * 100).to_i
+    loader_hits_percentage = ((trial_loader_hits / User::Trial.free_loader_hits.to_f) * 100).to_i
+    player_hits_percentage = ((trial_player_hits / User::Trial.free_player_hits.to_f) * 100).to_i
     loader_hits_percentage > player_hits_percentage ? loader_hits_percentage : player_hits_percentage
   end
   

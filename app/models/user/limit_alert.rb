@@ -1,0 +1,56 @@
+module User::LimitAlert
+  
+  def self.amounts_options
+    [2000, 5000, 10000, 20000, 50000] # in cents
+  end
+  
+  def self.delay_send_limit_alerts(minutes = 10.minutes)
+    unless send_limit_alerts_already_delayed?(minutes)
+      delay(:priority => 30, :run_at => minutes.from_now).send_limit_alerts
+    end
+  end
+  
+  def self.send_limit_alerts
+    User.limit_alertable.includes(:invoices, :sites, :videos).each do |user|
+      if user.limit_alert_amount_exceeded?
+        user.deliver_alert_limit_email
+      end
+    end
+    delay_send_limit_alerts
+  end
+  
+  # ===================================
+  # = User instance methods extension =
+  # ===================================
+  
+  def limit_alert_sent?
+    limit_alert_email_sent_at.present?
+  end
+  
+  def limit_alert_amount_exceeded?
+    Invoice.current(self).amount > limit_alert_amount
+  end
+  
+  def deliver_alert_limit_email
+    transaction do
+      touch(:limit_alert_email_sent_at)
+      LimitAlertMailer.limit_exceeded(self).deliver!
+    end
+  end
+  
+  def clear_limit_alert_email_sent_at_when_limit_alert_amount_is_augmented
+    if limit_alert_amount_changed? && limit_alert_amount_was < limit_alert_amount
+      self.limit_alert_email_sent_at = nil
+    end
+  end
+  
+private
+  
+  def self.send_limit_alerts_already_delayed?(minutes)
+    Delayed::Job.where(
+      :handler =~ '%send_limit_alerts%',
+      :run_at > (minutes - 7.seconds).from_now
+    ).present?
+  end
+  
+end

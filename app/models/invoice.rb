@@ -49,7 +49,7 @@ class Invoice < ActiveRecord::Base
   
   before_validation :set_interval_dates, :on => :create
   before_create :clone_current_data_as_estimation
-  after_create :update_user_invoiced_dates
+  after_create :update_user_invoiced_and_limit_alert_dates
   after_create :reset_user_sites_hits_cache
   after_create :delete_user_current_invoice_cache
   
@@ -107,9 +107,10 @@ private
   end
   
   # after_create
-  def update_user_invoiced_dates
-    user.last_invoiced_on = ended_on
-    user.next_invoiced_on = ended_on + 1.month
+  def update_user_invoiced_and_limit_alert_dates
+    user.last_invoiced_on          = ended_on
+    user.next_invoiced_on          = ended_on + 1.month
+    user.limit_alert_email_sent_at = nil
     user.save
   end
   

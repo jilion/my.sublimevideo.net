@@ -27,6 +27,8 @@
 #  trial_ended_at                        :datetime
 #  trial_usage_information_email_sent_at :datetime
 #  trial_usage_warning_email_sent_at     :datetime
+#  limit_alert_amount                    :integer         default(0)
+#  limit_alert_email_sent_at             :datetime
 #  cc_type                               :string(255)
 #  cc_last_digits                        :integer
 #  cc_updated_at                         :datetime

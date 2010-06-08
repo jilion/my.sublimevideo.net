@@ -27,6 +27,8 @@
 #  trial_ended_at                        :datetime
 #  trial_usage_information_email_sent_at :datetime
 #  trial_usage_warning_email_sent_at     :datetime
+#  limit_alert_amount                    :integer         default(0)
+#  limit_alert_email_sent_at             :datetime
 #  cc_type                               :string(255)
 #  cc_last_digits                        :integer
 #  cc_updated_at                         :datetime
@@ -36,11 +38,12 @@
 
 class User < ActiveRecord::Base
   include Trial
+  include LimitAlert
   
   devise :database_authenticatable, :registerable, :confirmable,
          :recoverable, :rememberable, :trackable, :validatable, :lockable
   
-  attr_accessible :full_name, :email, :password
+  attr_accessible :full_name, :email, :password, :limit_alert_amount
   
   # ================
   # = Associations =
@@ -55,6 +58,7 @@ class User < ActiveRecord::Base
   # ==========
   
   scope :in_trial, lambda { where(:trial_ended_at => nil) }
+  scope :limit_alertable, lambda { where(:limit_alert_amount > 0, :limit_alert_email_sent_at => nil) }
   scope :without_cc, lambda { where(:cc_type => nil, :cc_last_digits => nil) }
   
   # ===============
@@ -69,6 +73,7 @@ class User < ActiveRecord::Base
   # =============
   
   before_create :set_next_invoiced_on
+  before_save :clear_limit_alert_email_sent_at_when_limit_alert_amount_is_augmented # in user/limit_alert
   
   # =================
   # = State Machine =

@@ -27,10 +27,19 @@ feature "Users actions:" do
     sign_in_as_user :user => { :full_name => "John Doe" }
     click_link('John Doe')
     fill_in "Full name",  :with => "Bob Doe"
-    click_button "user_email_submit"
+    click_button "user_full_name_submit"
     
     page.should have_content('Bob Doe')
     User.last.full_name.should == "Bob Doe"
+  end
+  
+  scenario "update limit alert amount" do
+    sign_in_as_user :user => { :full_name => "John Doe" }
+    click_link('John Doe')
+    select "$100", :from => "user_limit_alert_amount"
+    click_button "user_email_notifications_submit"
+    
+    User.last.limit_alert_amount.should == 10000
   end
   
 end
