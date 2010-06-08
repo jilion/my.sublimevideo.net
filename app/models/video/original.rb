@@ -22,7 +22,7 @@
 #  updated_at  :datetime
 #
 
-class VideoOriginal < Video
+class Video::Original < Video
   
   mount_uploader :thumbnail, ThumbnailUploader
   
@@ -31,7 +31,7 @@ class VideoOriginal < Video
   # ================
   
   belongs_to :user
-  has_many   :formats, :class_name => 'VideoFormat', :foreign_key => 'original_id'
+  has_many   :formats, :class_name => 'Video::Format', :foreign_key => 'original_id', :dependent => :destroy
   
   # ==========
   # = Scopes =
@@ -47,7 +47,8 @@ class VideoOriginal < Video
   # = Callbacks =
   # =============
   
-  after_create :encode
+  before_create :set_infos
+  after_create  :encode
   
   # =================
   # = State Machine =
@@ -55,16 +56,14 @@ class VideoOriginal < Video
   
   state_machine do
     event(:activate) { transition any => :active, :if => :all_formats_active? }
+    after_transition :on => :activate do |video, transition|
+      video.populate_formats_information
+    end
   end
   
   # =================
   # = Class Methods =
   # =================
-  
-  def self.profiles
-    # Change this to something smater...
-    Rails.env.production? ? JSON[Panda.get("/profiles.json")] : []
-  end
   
   # ====================
   # = Instance Methods =
@@ -83,13 +82,39 @@ class VideoOriginal < Video
     size + formats.map(&:size).sum
   end
   
+  # after_transition :on => :activate
+  def populate_formats_information
+    JSON[Panda.get("/videos/#{panda_id}/encodings.json")].each do |format_info|
+      next unless f = formats.find_by_panda_id(format_info['id'])
+      # f.codec    = format_info['video_codec'] # not returned by the API...
+      Rails.logger.debug "format_info: #{format_info.inspect}"
+      f.size = format_info['file_size'].to_i
+      f.save
+    end
+  end
+  
 protected
+  
+  # before_create
+  def set_infos
+    raise "Can't create a video without an id from Panda" unless panda_id.present?
+    
+    video_info     = JSON[Panda.get("/videos/#{panda_id}.json")]
+    self.name      = video_info['original_filename'].sub(File.extname(video_info['original_filename']), '').titleize.strip
+    self.codec     = video_info['video_codec']
+    self.container = video_info['extname'].gsub('.','')
+    self.size      = video_info['file_size'].to_i
+    self.duration  = video_info['duration'].to_i
+    self.width     = video_info['width'].to_i
+    self.height    = video_info['height'].to_i
+  end
   
   # after_create
   def encode
-    self.class.profiles.each do |profile|
+    Video.profiles.each do |profile|
       encoding_response = JSON[Panda.post("/encodings.json", { :video_id => panda_id, :profile_id => profile['id'] })]
-      formats.create(:panda_id => encoding_response['id'], :name => encoding_response['extname'][1..-1])
+      encoding_response['title'] = profile['title']
+      Video::Format.create_with_encoding_response(self, encoding_response)
     end
   end
   

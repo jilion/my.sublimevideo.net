@@ -1,0 +1,236 @@
+--- 
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: !ruby/regexp /api\.pandastream\.com:80\/v2\/videos\/f72e511820c12dabc1d15817745225bd\.json\?.+/ 
+    body: 
+    headers: 
+      accept: 
+      - "*/*; q=0.5, application/xml"
+      accept-encoding: 
+      - gzip, deflate
+      host: 
+      - api.pandastream.com
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      x-powered-by: 
+      - Phusion Passenger (mod_rails/mod_rack) 2.2.9
+      connection: 
+      - keep-alive
+      content-type: 
+      - application/json
+      server: 
+      - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
+      content-length: 
+      - "327"
+      status: 
+      - "200"
+    body: "{\"duration\":1160,\"created_at\":\"2010/05/27 19:22:15 +0000\",\"original_filename\":\"railscast_intro.mov\",\"updated_at\":\"2010/05/27 19:22:17 +0000\",\"source_url\":null,\"extname\":\".mov\",\"id\":\"f72e511820c12dabc1d15817745225bd\",\"audio_codec\":\"aac\",\"file_size\":17236,\"height\":360,\"fps\":2,\"status\":\"success\",\"video_codec\":\"h264\",\"width\":480}"
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: !ruby/regexp /api\.pandastream\.com:80\/v2\/profiles\.json\?.+/ 
+    body: 
+    headers: 
+      accept: 
+      - "*/*; q=0.5, application/xml"
+      accept-encoding: 
+      - gzip, deflate
+      host: 
+      - api.pandastream.com
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      x-powered-by: 
+      - Phusion Passenger (mod_rails/mod_rack) 2.2.9
+      connection: 
+      - keep-alive
+      content-type: 
+      - application/json
+      server: 
+      - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
+      content-length: 
+      - "1029"
+      status: 
+      - "200"
+    body: "[{\"created_at\":\"2010/05/21 14:29:47 +0000\",\"command\":\"HandBrakeCLI -i $input_file$ -o $output_file$  -e x264 -q 0.589999973773956 -a 1 -E faac -B 128 -R 48 -6 dpl2 -f mp4 -X 480 -m -x level=30:cabac=0:ref=2:mixed-refs:analyse=all:me=umh:no-fast-pskip=1\",\"title\":\"iphone-handbrake\",\"updated_at\":\"2010/05/21 14:29:47 +0000\",\"extname\":\".mp4\",\"id\":\"7bb7560ba8f7657dc0d6d71fc98693c4\",\"height\":320,\"width\":480},{\"created_at\":\"2010/05/21 13:44:30 +0000\",\"command\":\"ffmpeg -i $input_file$ -vcodec libx264 -acodec libfaac -ab 128k -ar 22050 -ac 2 -b 256k -flags +loop -cmp +chroma -partitions 0 -subq 1 -trellis 0 -refs 1 -coder 0 -me_range 16 -g 300 -keyint_min 25 -sc_threshold 40 -i_qfactor 0.71 -maxrate 10M -bufsize 10M -rc_eq 'blurCplx^(1-qComp)' -qcomp 0.6 -qmin 10 -qmax 51 -qdiff 4 -level 30 $resolution_and_padding$ -y $record_id$_noqt.mp4\\nqt-faststart $record_id$_noqt.mp4 $output_file$\",\"title\":\"mp4\",\"updated_at\":\"2010/05/21 13:44:30 +0000\",\"extname\":\".mp4\",\"id\":\"73f93e74e866d86624a8718d21d06e4e\",\"height\":320,\"width\":480}]"
+    http_version: "1.1"
+    
+    
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :post
+    uri: http://api.pandastream.com:80/v2/encodings.json
+    body: profile_id=7bb7560ba8f7657dc0d6d71fc98693c4&timestamp=2010-06-08T15%3A00%3A08.870909%2B02%3A00&signature=zV4u9b8kzY7NXNG%2BrjPxVltCce%2BAa%2FHfdf4UxYV2Mdc%3D&access_key=7cc07330-5147-11df-b458-12313d01b992&cloud_id=96e7d5067cc367c32bfadbe885976883&video_id=f72e511820c12dabc1d15817745225bd
+    headers: 
+      accept: 
+      - "*/*; q=0.5, application/xml"
+      content-type: 
+      - application/x-www-form-urlencoded
+      accept-encoding: 
+      - gzip, deflate
+      content-length: 
+      - "289"
+      host: 
+      - api.pandastream.com
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      x-powered-by: 
+      - Phusion Passenger (mod_rails/mod_rack) 2.2.9
+      connection: 
+      - keep-alive
+      content-type: 
+      - application/json
+      server: 
+      - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
+      content-length: 
+      - "371"
+      status: 
+      - "200"
+    body: &id001 !str 
+      str: "{\"created_at\":\"2010/06/08 13:00:09 +0000\",\"video_id\":\"f72e511820c12dabc1d15817745225bd\",\"started_encoding_at\":null,\"updated_at\":\"2010/06/08 13:00:09 +0000\",\"encoding_progress\":null,\"encoding_time\":null,\"extname\":\".mp4\",\"id\":\"7ae0e0f5830e4d4859b4912936b0df5a\",\"file_size\":null,\"height\":320,\"status\":\"processing\",\"profile_id\":\"7bb7560ba8f7657dc0d6d71fc98693c4\",\"width\":480}"
+      "@args": 
+        :payload: 
+          :profile_id: 7bb7560ba8f7657dc0d6d71fc98693c4
+          timestamp: "2010-06-08T15:00:24.301665+02:00"
+          signature: B7a8z/wPpeylYX1tVrUt9Wmg57mSkqrslMXCKM3DZUM=
+          access_key: 7cc07330-5147-11df-b458-12313d01b992
+          cloud_id: 96e7d5067cc367c32bfadbe885976883
+          :video_id: f72e511820c12dabc1d15817745225bd
+        :headers: {}
+
+        :method: :post
+        :url: http://api.pandastream.com:80/v2/encodings.json
+      "@code": 200
+      "@net_http_res": !ruby/object:Net::HTTPOK 
+        body: *id001
+        code: "200"
+        header: 
+          x-powered-by: 
+          - Phusion Passenger (mod_rails/mod_rack) 2.2.9
+          connection: 
+          - keep-alive
+          content-type: 
+          - application/json
+          server: 
+          - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
+          content-length: 
+          - "371"
+          status: 
+          - "200"
+        http_version: "1.0"
+        message: OK
+        read: true
+    http_version: "1.1"
+    
+    
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :post
+    uri: http://api.pandastream.com:80/v2/encodings.json
+    body: profile_id=73f93e74e866d86624a8718d21d06e4e&timestamp=2010-06-08T15%3A00%3A09.298046%2B02%3A00&signature=UhUOvytHyQic%2BCL99jd0US1Duh6RCEHTlBR8ltC3DBU%3D&access_key=7cc07330-5147-11df-b458-12313d01b992&cloud_id=96e7d5067cc367c32bfadbe885976883&video_id=f72e511820c12dabc1d15817745225bd
+    headers: 
+      accept: 
+      - "*/*; q=0.5, application/xml"
+      content-type: 
+      - application/x-www-form-urlencoded
+      accept-encoding: 
+      - gzip, deflate
+      content-length: 
+      - "285"
+      host: 
+      - api.pandastream.com
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      x-powered-by: 
+      - Phusion Passenger (mod_rails/mod_rack) 2.2.9
+      connection: 
+      - keep-alive
+      content-type: 
+      - application/json
+      server: 
+      - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
+      content-length: 
+      - "371"
+      status: 
+      - "200"
+    body: &id002 !str 
+      str: "{\"created_at\":\"2010/06/08 13:00:09 +0000\",\"video_id\":\"f72e511820c12dabc1d15817745225bd\",\"started_encoding_at\":null,\"updated_at\":\"2010/06/08 13:00:09 +0000\",\"encoding_progress\":null,\"encoding_time\":null,\"extname\":\".mp4\",\"id\":\"d51c76dc5fe97d9d2f1bbd6f4e7fa1a3\",\"file_size\":null,\"height\":320,\"status\":\"processing\",\"profile_id\":\"73f93e74e866d86624a8718d21d06e4e\",\"width\":480}"
+      "@args": 
+        :payload: 
+          :profile_id: 73f93e74e866d86624a8718d21d06e4e
+          timestamp: "2010-06-08T15:00:24.426200+02:00"
+          signature: PUsgmVPJtBPn7FogBtX1uniSS3GlAE1COZ16QCQYeSY=
+          access_key: 7cc07330-5147-11df-b458-12313d01b992
+          cloud_id: 96e7d5067cc367c32bfadbe885976883
+          :video_id: f72e511820c12dabc1d15817745225bd
+        :headers: {}
+
+        :method: :post
+        :url: http://api.pandastream.com:80/v2/encodings.json
+      "@code": 200
+      "@net_http_res": !ruby/object:Net::HTTPOK 
+        body: *id002
+        code: "200"
+        header: 
+          x-powered-by: 
+          - Phusion Passenger (mod_rails/mod_rack) 2.2.9
+          connection: 
+          - keep-alive
+          content-type: 
+          - application/json
+          server: 
+          - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
+          content-length: 
+          - "371"
+          status: 
+          - "200"
+        http_version: "1.0"
+        message: OK
+        read: true
+    http_version: "1.1"
+    
+    
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri:  !ruby/regexp /api\.pandastream\.com:80\/v2\/videos\/f72e511820c12dabc1d15817745225bd\/encodings\.json\?.+/ 
+    body: 
+    headers: 
+      accept: 
+      - "*/*; q=0.5, application/xml"
+      accept-encoding: 
+      - gzip, deflate
+      host: 
+      - api.pandastream.com
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      x-powered-by: 
+      - Phusion Passenger (mod_rails/mod_rack) 2.2.9
+      connection: 
+      - keep-alive
+      content-type: 
+      - application/json
+      server: 
+      - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
+      content-length: 
+      - "53382"
+      status: 
+      - "200"
+    body: "[{\"created_at\":\"2010/06/08 14:54:33 +0000\",\"video_id\":\"f72e511820c12dabc1d15817745225bd\",\"started_encoding_at\":\"2010/06/08 14:54:33 +0000\",\"updated_at\":\"2010/06/08 14:54:35 +0000\",\"encoding_progress\":100,\"encoding_time\":1,\"extname\":\".mp4\",\"id\":\"0c1de9aa8b339a54df153abe954105ea\",\"file_size\":15262,\"height\":null,\"status\":\"processing\",\"profile_id\":\"7bb7560ba8f7657dc0d6d71fc98693c4\",\"width\":null},{\"created_at\":\"2010/06/08 14:54:33 +0000\",\"video_id\":\"f72e511820c12dabc1d15817745225bd\",\"started_encoding_at\":null,\"updated_at\":\"2010/06/08 14:54:33 +0000\",\"encoding_progress\":null,\"encoding_time\":null,\"extname\":\".mp4\",\"id\":\"2c93a9e03770a59ddeec971e0a315a65\",\"file_size\":null,\"height\":320,\"status\":\"processing\",\"profile_id\":\"73f93e74e866d86624a8718d21d06e4e\",\"width\":480}]"
+    http_version: "1.1"

@@ -4,17 +4,19 @@ feature "Videos actions:" do
   
   background do
     sign_in_as_user
+    VCR.insert_cassette('video_original')
   end
   
   # don't push broken specs
   pending "add a new video" do
     visit "/videos"
     attach_file('video_file', "#{Rails.root}/spec/fixtures/railscast_intro.mov")
-    fill_in "video_panda_id", :with => "e831274cc0fef78cc5930f6f74a23e6a"
+    # fill_in "video_panda_id", :with => "f72e511820c12dabc1d15817745225bd"
     click_button "Upload"
     
     current_url.should =~ %r(http://[^/]+/videos)
     page.should have_content('Railscast Intro')
+    page.should have_content('In progress')
     
     video = @current_user.videos.last
     video.name.should == "Railscast Intro"
@@ -40,13 +42,17 @@ feature "Videos actions:" do
     page.should have_css('a.sort.name')
   end
   
+  after { VCR.eject_cassette }
+  
 end
 
 feature "Video transcoded notification from panda" do
   
   background do
     sign_in_as_user
-    @video = Factory(:video_original, :panda_id => 'd891d9a45c698d587831466f236c6c6c', :user => @current_user)
+    VCR.insert_cassette('video_original')
+    @video = Factory(:video_original)
+    @current_user = @video.user
   end
   
   # don't push broken specs
@@ -65,4 +71,5 @@ feature "Video transcoded notification from panda" do
     Video.last.reload.should be_active
   end
   
+  after { VCR.eject_cassette }
 end

@@ -22,17 +22,21 @@
 #  updated_at  :datetime
 #
 
-class VideoFormat < Video
+class Video::Format < Video
+  
+  # attr_accessible :original_id
   
   # ================
   # = Associations =
   # ================
   
-  belongs_to :original, :class_name => 'VideoOriginal'
+  belongs_to :original, :class_name => 'Video::Original'
   
   # ==========
   # = Scopes =
   # ==========
+  
+  scope :pending, where(:state => 'pending')
   
   # ===============
   # = Validations =
@@ -59,6 +63,20 @@ class VideoFormat < Video
   # =================
   # = Class Methods =
   # =================
+  
+  def self.create_with_encoding_response(original, encoding_response)
+    raise "Can't create a format without an id from Panda" unless encoding_response['id'].present?
+    new_format           = original.formats.build
+    new_format.panda_id  = encoding_response['id']
+    new_format.name      = encoding_response['title']
+    new_format.container = encoding_response['extname'].gsub('.','')
+    new_format.width     = encoding_response['width'].to_i
+    new_format.height    = encoding_response['height'].to_i
+    new_format.size      = 0
+    new_format.save!
+    new_format.fail if encoding_response['status'] == 'fail'
+    new_format
+  end
   
   # ====================
   # = Instance Methods =

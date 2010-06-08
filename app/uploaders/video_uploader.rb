@@ -7,7 +7,7 @@ class VideoUploader < CarrierWave::Uploader::Base
   # Override the directory where uploaded files will be stored
   # This is a sensible default for uploaders that are meant to be mounted:
   def store_dir
-    token = (model.class == VideoFormat) ? model.original.token : model.token
+    token = (model.class == Video::Format) ? model.original.token : model.token
     if Rails.env.production?
       "videos/#{token}"
     else

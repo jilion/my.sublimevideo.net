@@ -23,6 +23,7 @@
 #
 
 class Video < ActiveRecord::Base
+  # include Video::Information
   
   attr_accessible :panda_id, :name, :file, :file_cache, :thumbnail, :codec, :container, :size, :duration, :width, :height
   uniquify :token, :chars => ('a'..'z').to_a + ('0'..'9').to_a
@@ -46,14 +47,12 @@ class Video < ActiveRecord::Base
   # = Validations =
   # ===============
   
-  validates :type,     :presence => true, :inclusion => { :in => %w[VideoOriginal VideoFormat] }
+  validates :type,     :presence => true, :inclusion => { :in => %w[Video::Original Video::Format] }
   validates :panda_id, :presence => true
   
   # =============
   # = Callbacks =
   # =============
-  
-  before_create :set_infos
   
   # =================
   # = State Machine =
@@ -68,33 +67,12 @@ class Video < ActiveRecord::Base
   # = Class Methods =
   # =================
   
+  def self.profiles
+    JSON[Panda.get("/profiles.json")]
+  end
+  
   # ====================
   # = Instance Methods =
   # ====================
-  
-  # before_create
-  def set_infos
-    if panda_id
-      if Rails.env.production? # Change this to something smarter...
-        set_name
-        video_infos    = JSON[Panda.get("/videos/#{panda_id}.json")]
-        self.codec     = video_infos['codec']
-        self.container = video_infos['container']
-        self.codec     = video_infos['codec']
-        self.size      = video_infos['size']
-        self.duration  = video_infos['duration']
-        self.width     = video_infos['width']
-        self.height    = video_infos['height']
-        self.state     = video_infos['status'] == 'success' ? 'active' : video_infos['status']
-      end
-    else
-      fail
-    end
-  end
-  
-  def set_name
-    name = File.basename(file.url, File.extname(file.url)).titleize.strip
-    write_attribute(:name, name.blank? ? "Untitled - #{Time.now.strftime("%m/%d/%Y %I:%M%p")}" : name)
-  end
   
 end

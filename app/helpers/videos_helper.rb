@@ -2,6 +2,7 @@ module VideosHelper
   
   def seconds_to_duration(seconds)
     return "No duration" if seconds.blank?
+    seconds = seconds / 1000
     hours                  = seconds / 1.hour
     minutes_in_last_hour   = (seconds - hours.hours) / 1.minute
     seconds_in_last_minute = seconds - hours.hours - minutes_in_last_hour.minutes
@@ -16,7 +17,7 @@ module VideosHelper
   def panda_uploader_js(field_id)
     <<-EOS
     jQuery('##{field_id}').pandaUploader(#{Panda.signed_params('post', '/videos.json',
-      { :state_update_url => "#{HOST}/videos/$id/transcoded" }).to_json },
+      { :state_update_url => "#{HOST}/videos/$id/transcoded", :profiles => '5e08a5612e8982ef2f7482e0782bbe02' }).to_json },
       { upload_button_id:'upload_button',
         upload_progress_id:'upload_indicator',
         upload_filename_id:'upload_filename'

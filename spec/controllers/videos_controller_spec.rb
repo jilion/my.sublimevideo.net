@@ -71,20 +71,20 @@ describe VideosController do
       response.should redirect_to(new_user_session_path)
     end
     it "should activate an non active video and respond with success to GET :transcoded" do
-      VideoFormat.stub(:find_by_panda_id!).with("1").and_return(mock_video)
+      Video::Format.stub(:find_by_panda_id!).with("1").and_return(mock_video)
       mock_video.stub(:active?).and_return(false)
       mock_video.stub(:activate)
       get :transcoded, :id => '1'
       response.should be_success
     end
     it "should not activate an active video and respond with success to GET :transcoded" do
-      VideoFormat.stub(:find_by_panda_id!).with("1").and_return(mock_video)
+      Video::Format.stub(:find_by_panda_id!).with("1").and_return(mock_video)
       mock_video.stub(:activate).and_return(true)
       get :transcoded, :id => '1'
       response.should be_success
     end
     # it "should not activate a not-ready-yet video and respond with success to GET :transcoded" do
-    #   VideoOriginal.stub(:find_by_panda_id!).with("1").and_return(mock_video)
+    #   Video::Original.stub(:find_by_panda_id!).with("1").and_return(mock_video)
     #   mock_video.stub(:active?).and_return(true)
     #   get :transcoded, :id => '1'
     #   response.should be_success

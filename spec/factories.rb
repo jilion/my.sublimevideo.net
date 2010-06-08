@@ -11,20 +11,17 @@ Factory.define :site do |f|
   f.association :user
 end
 
-Factory.define :video do |f|
-  f.file File.open("#{Rails.root}/spec/fixtures/railscast_intro.mov")
-  f.panda_id    '1'
-end
-
 # FYI, can't use type (the Ruby's one is used instead of the factory_girl's method_missing's one)
 # See: http://github.com/thoughtbot/factory_girl/issues#issue/4
-Factory.define :video_original, :class => VideoOriginal, :parent => :video do |f|
+Factory.define :video_original, :class => Video::Original do |f|
   f.association :user
+  f.file        File.open("#{Rails.root}/spec/fixtures/railscast_intro.mov")
+  f.panda_id    'f72e511820c12dabc1d15817745225bd'
 end
 
-Factory.define :video_format, :class => VideoFormat, :parent => :video do |f|
+Factory.define :video_format, :class => Video::Format do |f|
   f.association :original, :factory => :video_original
-  f.name        'iPhone'
+  f.panda_id    'd05be7d3f3fa16ff83a584e02ddb1aaf'
 end
 
 Factory.define :log do |f|
