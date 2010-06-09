@@ -68,7 +68,7 @@ class Video < ActiveRecord::Base
   # =================
   
   def self.profiles
-    JSON[Panda.get("/profiles.json")]
+    Panda.get("/profiles.json")
   end
   
   # ====================

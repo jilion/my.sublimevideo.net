@@ -84,7 +84,7 @@ class Video::Original < Video
   
   # after_transition :on => :activate
   def populate_formats_information
-    JSON[Panda.get("/videos/#{panda_id}/encodings.json")].each do |format_info|
+    Panda.get("/videos/#{panda_id}/encodings.json").each do |format_info|
       next unless f = formats.find_by_panda_id(format_info['id'])
       # f.codec    = format_info['video_codec'] # not returned by the API...
       Rails.logger.debug "format_info: #{format_info.inspect}"
@@ -99,7 +99,7 @@ protected
   def set_infos
     raise "Can't create a video without an id from Panda" unless panda_id.present?
     
-    video_info     = JSON[Panda.get("/videos/#{panda_id}.json")]
+    video_info     = Panda.get("/videos/#{panda_id}.json")
     self.name      = video_info['original_filename'].sub(File.extname(video_info['original_filename']), '').titleize.strip
     self.codec     = video_info['video_codec']
     self.container = video_info['extname'].gsub('.','')
@@ -112,7 +112,7 @@ protected
   # after_create
   def encode
     Video.profiles.each do |profile|
-      encoding_response = JSON[Panda.post("/encodings.json", { :video_id => panda_id, :profile_id => profile['id'] })]
+      encoding_response = Panda.post("/encodings.json", { :video_id => panda_id, :profile_id => profile['id'] })
       encoding_response['title'] = profile['title']
       Video::Format.create_with_encoding_response(self, encoding_response)
     end

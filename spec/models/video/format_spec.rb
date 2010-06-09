@@ -68,7 +68,7 @@ describe Video::Format do
       it "should create a format from an original and a hash of information (returned by a post request to panda)" do
         VCR.use_cassette('video_format') do
           original = Factory(:video_original)
-          encoding_response = JSON[Panda.post("/encodings.json", { :video_id => original.panda_id, :profile_id => '7bb7560ba8f7657dc0d6d71fc98693c4' })]
+          encoding_response = Panda.post("/encodings.json", { :video_id => original.panda_id, :profile_id => '7bb7560ba8f7657dc0d6d71fc98693c4' })
           encoding_response['title'] = 'iPhone'
           format = Video::Format.create_with_encoding_response(original, encoding_response)
           

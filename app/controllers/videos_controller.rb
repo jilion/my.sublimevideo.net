@@ -14,7 +14,6 @@ class VideosController < ApplicationController
   # GET /videos/1
   def show
     @video = current_user.videos.find(params[:id])
-    # @video_data = JSON.parse(Panda.get("/videos/#{@video.panda_id}.json"))
     respond_with(@video)
   end
   
