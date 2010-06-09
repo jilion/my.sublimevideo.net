@@ -22,7 +22,9 @@ gem 'jammit',           :git => 'git://github.com/thibaudgg/jammit.git'
 gem 'meta_where'
 
 gem 'system_timer'
+
 gem 'memcached'
+# gem 'memcache'
 
 # File management
 gem 'http_connection',  :git => 'git://github.com/thibaudgg/http_connection.git'
