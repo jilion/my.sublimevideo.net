@@ -1,9 +1,10 @@
-- 50% trial usage
-- 90% trial usage
+✓ 50% trial usage
+✓ 90% trial usage
 
-- suspend user (with reason)
+✓ suspend user (with reason)
 
-- after invoice calculation
+✓ after invoice calculation
+
 - invoice payment failure (every day)
 
 - $ limit alert
