@@ -63,8 +63,8 @@ describe Video do
   describe "Class Methods" do
     describe ".profiles" do
       it "should return the current profiles we have in Panda" do
-        VCR.use_cassette('multi_video_profiles') do
-          Video.profiles.should == JSON[Panda.get("/profiles.json")]
+        VCR.use_cassette('video') do
+          Video.profiles.should == Panda.get("/profiles.json")
         end
       end
     end
