@@ -1,0 +1,53 @@
+--- 
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :post
+    uri: https://secure.ogone.com:443/ncol/test/orderdirect.asp
+    body: Operation=SAL&ECI=9&orderID=6e44c230cb11daf05460c0cfa2e6f3&amount=2000&ALIAS=sublime_33&USERID=sublime&PSWD=WWQMNC89&currency=EUR&PSPID=jilion
+    headers: 
+      accept: 
+      - "*/*"
+      content-type: 
+      - application/x-www-form-urlencoded
+      connection: 
+      - close
+      content-length: 
+      - "142"
+      host: 
+      - secure.ogone.com
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      x-powered-by: 
+      - ASP.NET
+      connection: 
+      - close
+      content-type: 
+      - text/html
+      date: 
+      - Thu, 10 Jun 2010 13:53:37 GMT
+      server: 
+      - Microsoft-IIS/6.0
+      content-length: 
+      - "309"
+      cache-control: 
+      - private
+    body: |
+      <?xml version="1.0"?>
+      <ncresponse
+      orderID="6e44c230cb11daf05460c0cfa2e6f3"
+      PAYID="0"
+      NCSTATUS="5"
+      NCERROR="50001122"
+      NCERRORPLUS="The currency is not accepted by the merchant:EUR"
+      ACCEPTANCE=""
+      STATUS="0"
+      amount="20"
+      currency="EUR"
+      PM="CreditCard"
+      BRAND="VISA" ALIAS="sublime_33">
+      </ncresponse>
+
+    http_version: "1.1"
