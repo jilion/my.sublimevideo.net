@@ -1,6 +1,7 @@
 class SitesController < ApplicationController
   before_filter :authenticate_user!
-  respond_to :html, :js
+  respond_to :html, :except => [:show, :edit, :state]
+  respond_to :js
   
   has_scope :by_date
   has_scope :by_hostname
@@ -26,12 +27,15 @@ class SitesController < ApplicationController
   # GET /sites/1/edit
   def edit
     @site = current_user.sites.find(params[:id])
+    respond_with(@site)
   end
   
   # GET /sites/1/state
   def state
     @site = current_user.sites.find(params[:id])
-    head :ok unless @site.active?
+    respond_with(@site) do |format|
+      format.js { head :ok unless @site.active? }
+    end
   end
   
   # POST /sites

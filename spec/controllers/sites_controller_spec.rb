@@ -17,7 +17,13 @@ describe SitesController do
     end
     it "should respond with success to GET :show" do
       @mock_user.stub_chain(:sites, :find).with("1").and_return(mock_site)
-      get :show, :id => '1'
+      get :show, :id => '1', :format => :js
+      response.should be_success
+    end
+    it "should respond with success to GET :state" do
+      mock_site.stub(:active?).and_return(true)
+      @mock_user.stub_chain(:sites, :find).with("1").and_return(mock_site)
+      get :state, :id => '1', :format => :js
       response.should be_success
     end
     it "should respond with success to GET :new" do
@@ -27,7 +33,7 @@ describe SitesController do
     end
     it "should respond with success to GET :edit" do
       @mock_user.stub_chain(:sites, :find).with("1").and_return(mock_site)
-      get :edit, :id => '1'
+      get :edit, :id => '1', :format => :js
       response.should be_success
     end
     it "should respond with success to POST :create" do

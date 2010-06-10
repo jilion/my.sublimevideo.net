@@ -43,7 +43,7 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable, :confirmable,
          :recoverable, :rememberable, :trackable, :validatable, :lockable
   
-  attr_accessible :full_name, :email, :password, :limit_alert_amount
+  attr_accessible :full_name, :email, :remember_me, :password, :limit_alert_amount
   
   # ================
   # = Associations =

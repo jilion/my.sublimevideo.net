@@ -8,8 +8,13 @@ require 'capybara/rails'
 Rspec.configure do |config|
   config.include Capybara
   
+  config.before(:each) do
+    # VCR.insert_cassette('typekit')
+  end
+  
   config.after(:each) do
     Capybara.reset_sessions!
+    # VCR.eject_cassette
   end
 end
 

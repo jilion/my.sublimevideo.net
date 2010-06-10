@@ -23,26 +23,26 @@ feature "Sites actions:" do
     site.license.read.should include(site.template_hostnames)
   end
   
-  scenario "edit a site" do
-    visit "/sites"
-    fill_in "Domain", :with => "google.com"
-    click_button "Add"
-    
-    page.should have_content('google.com')
-    
-    Delayed::Job.last.name.should == 'Site#activate'
-    Delayed::Worker.new.work_off
-    
-    click_link "Setting"
-    fill_in "Development domains", :with => "google.local"
-    click_button "Update"
-    
-    current_url.should =~ %r(http://[^/]+/sites)
-    page.should have_content('google.com')
-    
-    site = @current_user.sites.last
-    site.dev_hostnames.should == "google.local"
-  end
+  # scenario "edit a site" do
+  #   visit "/sites"
+  #   fill_in "Domain", :with => "google.com"
+  #   click_button "Add"
+  #   
+  #   page.should have_content('google.com')
+  #   
+  #   Delayed::Job.last.name.should == 'Site#activate'
+  #   Delayed::Worker.new.work_off
+  #   
+  #   click_link "Setting"
+  #   fill_in "Development domains", :with => "google.local"
+  #   click_button "Update"
+  #   
+  #   current_url.should =~ %r(http://[^/]+/sites)
+  #   page.should have_content('google.com')
+  #   
+  #   site = @current_user.sites.last
+  #   site.dev_hostnames.should == "google.local"
+  # end
   
   scenario "archive a pending site" do
     visit "/sites"
