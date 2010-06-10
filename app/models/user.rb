@@ -50,7 +50,7 @@ class User < ActiveRecord::Base
   # ================
   
   has_many :sites
-  has_many :videos, :class_name => 'Video::Original'
+  has_many :videos
   has_many :invoices, :autosave => false, :validate => false
   
   # ==========

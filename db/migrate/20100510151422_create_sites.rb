@@ -11,7 +11,7 @@ class CreateSites < ActiveRecord::Migration
       t.string  :state
       
       t.integer :loader_hits_cache,  :default => 0
-      t.integer :player_hits_cache,      :default => 0
+      t.integer :player_hits_cache,  :default => 0
       t.integer :flash_hits_cache,   :default => 0
       
       t.datetime :archived_at

@@ -52,7 +52,6 @@ group :development do
   # Ruby console
   gem 'looksee'
   gem 'wirble'
-  
 end
 
 group :test do

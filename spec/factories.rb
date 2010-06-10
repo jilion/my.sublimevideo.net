@@ -11,17 +11,25 @@ Factory.define :site do |f|
   f.association :user
 end
 
-# FYI, can't use type (the Ruby's one is used instead of the factory_girl's method_missing's one)
-# See: http://github.com/thoughtbot/factory_girl/issues#issue/4
-Factory.define :video_original, :class => Video::Original do |f|
+Factory.define :video_profile do |f|
+  f.title   'iPhone 720p'
+  f.name    'iphone_720p'
+  f.extname '.mp4'
+end
+
+Factory.define :video_profile_version do |f|
+  f.association      :profile, :factory => :video_profile
+  f.panda_profile_id '5e08a5612e8982ef2f7482e0782bbe02'
+end
+
+Factory.define :video do |f|
   f.association :user
   f.file        File.open("#{Rails.root}/spec/fixtures/railscast_intro.mov")
   f.panda_id    'f72e511820c12dabc1d15817745225bd'
 end
 
-Factory.define :video_format, :class => Video::Format do |f|
-  f.association :original, :factory => :video_original
-  f.panda_id    'd05be7d3f3fa16ff83a584e02ddb1aaf'
+Factory.define :video_encoding do |f|
+#   f.panda_encoding_id    'd05be7d3f3fa16ff83a584e02ddb1aaf'
 end
 
 Factory.define :log do |f|
@@ -36,3 +44,4 @@ end
 Factory.define :invoice do |f|
   f.association :user
 end
+
