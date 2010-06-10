@@ -21,13 +21,15 @@
 
 class VideoEncoding < ActiveRecord::Base
   
+  mount_uploader :file, VideoUploader
+  
   # ================
   # = Associations =
   # ================
   
   belongs_to :video
-  belongs_to :video_profile
-  belongs_to :video_profile_version
+  belongs_to :profile, :class_name => "VideoProfile", :foreign_key => "video_profile_id"
+  belongs_to :profile_version, :class_name => "VideoProfileVersion", :foreign_key => "video_profile_version_id"
   
   # ==========
   # = Scopes =
@@ -39,8 +41,9 @@ class VideoEncoding < ActiveRecord::Base
   # = Validations =
   # ===============
   
-  validates :original, :presence => true
-  validates :name,     :presence => true
+  validates :video,           :presence => true
+  validates :profile,         :presence => true
+  validates :profile_version, :presence => true
   
   # =============
   # = Callbacks =
@@ -53,16 +56,16 @@ class VideoEncoding < ActiveRecord::Base
   # =================
   
   state_machine :initial => :pending do
-    event(:pandize)    { transition [:pending, :failed, :active] => :encoding }
-    event(:activate)   { transition :encoding => :active }
-    event(:fail)       { transition :encoding => :failed }
+    event(:pandize)   { transition [:pending, :failed, :active] => :encoding }
+    event(:activate)  { transition :encoding => :active }
+    event(:fail)      { transition :encoding => :failed }
     
-    event(:suspend)    { transition [:pending, :encoding, :failed, :active] => :suspended }
-    event(:unsuspend)  do
+    event(:suspend)   { transition [:pending, :encoding, :failed, :active] => :suspended }
+    event(:unsuspend) do
       transition :suspended => :active, :if => :file_present?
       transition :suspended => :encoding
     end
-    event(:archive)    { transition [:pending, :encoding, :failed, :active] => :archived }
+    event(:archive)   { transition [:pending, :encoding, :failed, :active] => :archived }
   end
   
   # =================
@@ -86,6 +89,17 @@ class VideoEncoding < ActiveRecord::Base
   # ====================
   # = Instance Methods =
   # ====================
+  
+  # after_transition :on => :activate
+  # def populate_formats_information
+  #   Panda.get("/videos/#{panda_id}/encodings.json").each do |format_info|
+  #     next unless f = formats.find_by_panda_id(format_info['id'])
+  #     # f.codec    = format_info['video_codec'] # not returned by the API...
+  #     Rails.logger.debug "format_info: #{format_info.inspect}"
+  #     f.size = format_info['file_size'].to_i
+  #     f.save
+  #   end
+  # end
   
 private
   

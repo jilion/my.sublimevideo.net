@@ -30,7 +30,6 @@ class Video < ActiveRecord::Base
   attr_accessible :panda_video_id, :title, :file, :thumbnail
   uniquify :token, :chars => ('a'..'z').to_a + ('0'..'9').to_a
   
-  mount_uploader :file,      VideoUploader
   mount_uploader :thumbnail, ThumbnailUploader
   
   cattr_accessor :per_page
@@ -66,83 +65,105 @@ class Video < ActiveRecord::Base
   # =================
   
   state_machine :initial => :pending do
-    event(:pandize)    { transition :pending => :encodings }
+    before_transition :on => :pandize, :do => :set_video_information
+    after_transition  :on => :pandize, :do => :create_encodings
     
-    event(:suspend)    { transition [:pending, :encodings] => :encodings }
-    event(:unsuspend)  { transition :encodings => :encodings }
-    event(:archive)    { transition [:pending, :encodings] => :archived }
+    before_transition :on => :suspend, :do => :block_video
+    
+    before_transition :on => :unsuspend, :do => :unblock_video
+    
+    before_transition :on => :archive, :do => [:set_archived_at, :archive_encodings]
+    after_transition  :on => :archive, :do => :remove_video_and_thumbnail_file!
+    
+    after_transition  :on => [:archive, :suspend], :do => :purge_video_and_thumbnail_file
+    
+    event(:pandize)   { transition :pending => :encodings }
+    event(:suspend)   { transition [:pending, :encodings] => :encodings }
+    event(:unsuspend) { transition :encodings => :encodings }
+    event(:archive)   { transition [:pending, :encodings] => :archived }
   end
   
   # =================
   # = Class Methods =
   # =================
   
-  def self.profiles
-    # VideoProfile.
-    Panda.get("/profiles.json")
-  end
-  
   # ====================
   # = Instance Methods =
   # ====================
   
-  def all_encodings_active?
+  def in_progress?
+    encodings.any? { |e| e.encoding? }
+  end
+  
+  def active?
     encodings.all? { |e| e.active? }
   end
   
+  def name
+    original_filename.sub(extname, '')
+  end
+  
   def total_size
-    size + encodings.sum(:size)
-  end
-  
-  # after_transition :on => :activate
-  def populate_formats_information
-    Panda.get("/videos/#{panda_id}/encodings.json").each do |format_info|
-      next unless f = formats.find_by_panda_id(format_info['id'])
-      # f.codec    = format_info['video_codec'] # not returned by the API...
-      Rails.logger.debug "format_info: #{format_info.inspect}"
-      f.size = format_info['file_size'].to_i
-      f.save
-    end
-  end
-  
-  def purge_video_files
-    CDN.purge("/v/#{token}/#{panda_id}#{extname}")
-    formats.each { |f| CDN.purge("/v/#{f.token}/#{f.panda_id}.#{f.extname}") }
-  end
-  
-  def in_progress?
-    pending? || inactive?
-  end
-  
-  def container
-    extname.gsub('.', '')
+    file_size + encodings.sum(:file_size)
   end
   
 protected
   
-  # before_create
-  def set_infos
-    video_info    = Panda.get("/videos/#{video_panda_id}.json")
-    self.name     = video_info['original_filename'].sub(File.extname(video_info['original_filename']), '').titleize.strip
-    self.codec    = video_info['video_codec']
-    self.extname  = video_info['extname']
-    self.size     = video_info['file_size'].to_i
-    self.duration = video_info['duration'].to_i
-    self.width    = video_info['width'].to_i
-    self.height   = video_info['height'].to_i
+  # before_transition :on => :pandize
+  def set_video_information
+    video_info             = Transcoder.get(:video, panda_video_id)
+    self.original_filename = video_info[:original_filename].strip
+    self.video_codec       = video_info[:video_codec]
+    self.audio_codec       = video_info[:audio_codec]
+    self.extname           = video_info[:extname]
+    self.file_size         = video_info[:file_size].to_i
+    self.duration          = video_info[:duration].to_i
+    self.width             = video_info[:width].to_i
+    self.height            = video_info[:height].to_i
+    self.fps               = video_info[:fps].to_i
+    self.title             = original_filename.sub(extname, '').titleize
   end
   
-  # after_create => after :pandaize
-  def encode # create/add_formats
-    Video.profiles.each do |profile|
-      encoding_response = Panda.post("/encodings.json", { :video_id => panda_id, :profile_id => profile['id'] })
-      encoding_response['title'] = profile['title']
-      Video::Format.create_with_encoding_response(self, encoding_response)
+  # after_transition :on => :pandize
+  def create_encodings
+    VideoProfile.active_profiles.each do |profile|
+      encoding = encodings.create(:profile => profile, :profile_version => profile.active_version)
+      encoding.pandize
     end
   end
   
+  # before_transition :on => :suspend
+  def block_video
+    # should set the READ right to NOBODY (or OWNER if it's enough)
+  end
+  
+  # before_transition :on => :unsuspend
+  def unblock_video
+    # should set the READ right to WORLD
+  end
+  
+  # before_transition :on => :archive
   def set_archived_at
     self.archived_at = Time.now.utc
+  end
+  
+  # before_transition :on => :archive
+  def archive_encodings
+    encodings.map(&:archive)
+  end
+  
+  # after_transition :on => :archive
+  def remove_video_and_thumbnail_file!
+    # Transcoder.delete(:video, panda_video_id)
+    remove_thumbnail!
+  end
+  
+  # after_transition :on => [:archive, :suspend]
+  def purge_video_and_thumbnail_file
+    encodings.each do |e|
+      CDN.purge("/v/#{token}/#{name}#{e.profile.name}#{e.extname}")
+    end
+    CDN.purge("/v/#{token}/#{name}.jpg") unless encodings.empty?
   end
   
 end

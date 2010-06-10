@@ -58,25 +58,16 @@ describe VideoProfile do
     end
   end
   
-  # describe "Class Methods" do
-  #   describe ".active_panda_profiles_ids" do
-  #     it "should return all the active profiles" do
-  #       vp1   = Factory(:video_profile)
-  #       vpv11 = Factory(:video_profile_version, :profile => vp1, :panda_profile_id => '11')
-  #       vp1.versions << Factory(:video_profile_version, :panda_profile_id => '12')
-  #       vp1.active_version = vpv11
-  #       vp1.save
-  #       
-  #       vp2   = Factory(:video_profile)
-  #       vp2.versions << Factory(:video_profile_version, :panda_profile_id => '21')
-  #       vpv22 = Factory(:video_profile_version, :profile => vp2, :panda_profile_id => '22')
-  #       vp2.active_version = vpv22
-  #       vp2.save
-  #       
-  #       VideoProfile.active_panda_profiles_ids.should == ['11', '22']
-  #     end
-  #   end
-  # end
+  describe "Class Methods" do
+    describe ".active_profiles" do
+      it "should return all the active profiles" do
+        @active_video_profile1 = Factory(:video_profile, :active_version => Factory(:video_profile_version))
+        Factory(:video_profile, :active_version => nil) # not active
+        
+        VideoProfile.active_profiles.should == [@active_video_profile1]
+      end
+    end
+  end
   
   describe "Instance Methods" do
   end

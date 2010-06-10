@@ -80,7 +80,6 @@ class User < ActiveRecord::Base
   # =================
   
   state_machine :initial => :active do
-    
     event(:suspend)    { transition :active => :suspended }
   end
   

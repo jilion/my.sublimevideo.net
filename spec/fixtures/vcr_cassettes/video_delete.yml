@@ -1,0 +1,148 @@
+--- 
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :delete
+    uri: !ruby/regexp /api\.pandastream\.com:80\/v2\/(profiles|videos|encodings)\/[a-z0-9]{32}\.json\?.+/
+    body: 
+    headers: 
+      accept: 
+      - "*/*; q=0.5, application/xml"
+      accept-encoding: 
+      - gzip, deflate
+      host: 
+      - api.pandastream.com
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      x-powered-by: &id001 
+        - Phusion Passenger (mod_rails/mod_rack) 2.2.9
+      content-type: &id003 
+        - text/html
+      connection: &id002 
+        - keep-alive
+      server: &id004 
+        - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
+      content-length: &id005 
+        - "0"
+      status: &id006 
+        - "200"
+    body: &id007 !str 
+      str: ""
+      "@args": 
+        :headers: {}
+
+        :method: :delete
+        :url: 
+      "@code": 200
+      "@net_http_res": !ruby/object:Net::HTTPOK 
+        __orig_body__: 
+        body: *id007
+        body_exist: true
+        code: "200"
+        header: 
+          x-powered-by: *id001
+          connection: *id002
+          content-type: *id003
+          server: *id004
+          content-length: *id005
+          status: *id006
+        http_version: "1.1"
+        message: OK
+        read: true
+        socket: 
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :delete
+    uri: !ruby/regexp /api\.pandastream\.com:80\/v2\/videos\/00000000000000000000000000000000\.json\?.+/
+    body: 
+    headers: 
+      accept: 
+      - "*/*; q=0.5, application/xml"
+      accept-encoding: 
+      - gzip, deflate
+      host: 
+      - api.pandastream.com
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 404
+      message: Not Found
+    headers: 
+      x-powered-by: 
+      - Phusion Passenger (mod_rails/mod_rack) 2.2.9
+      content-type: 
+      - application/json
+      connection: 
+      - keep-alive
+      server: 
+      - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
+      content-length: 
+      - "99"
+      status: 
+      - "404"
+    body: "{\"message\":\"Couldn't find Video with ID=00000000000000000000000000000000\",\"error\":\"RecordNotFound\"}"
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :delete
+    uri: !ruby/regexp /api\.pandastream\.com:80\/v2\/encodings\/00000000000000000000000000000000\.json\?.+/
+    body: 
+    headers: 
+      accept: 
+      - "*/*; q=0.5, application/xml"
+      accept-encoding: 
+      - gzip, deflate
+      host: 
+      - api.pandastream.com
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 404
+      message: Not Found
+    headers: 
+      x-powered-by: 
+      - Phusion Passenger (mod_rails/mod_rack) 2.2.9
+      connection: 
+      - keep-alive
+      content-type: 
+      - application/json
+      server: 
+      - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
+      content-length: 
+      - "102"
+      status: 
+      - "404"
+    body: "{\"message\":\"Couldn't find Encoding with ID=00000000000000000000000000000000\",\"error\":\"RecordNotFound\"}"
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :delete
+    uri: !ruby/regexp /api\.pandastream\.com:80\/v2\/profiles\/00000000000000000000000000000000\.json\?.+/
+    body: 
+    headers: 
+      accept: 
+      - "*/*; q=0.5, application/xml"
+      accept-encoding: 
+      - gzip, deflate
+      host: 
+      - api.pandastream.com
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      x-powered-by: &id001 
+        - Phusion Passenger (mod_rails/mod_rack) 2.2.9
+      content-type: &id003 
+        - text/html
+      connection: &id002 
+        - keep-alive
+      server: &id004 
+        - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
+      content-length: &id005 
+        - "0"
+      status: &id006 
+        - "200"
+    body: "{\"message\":\"Couldn't find Profile with ID=00000000000000000000000000000000\",\"error\":\"RecordNotFound\"}"
+    http_version: "1.1"

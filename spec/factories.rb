@@ -23,13 +23,13 @@ Factory.define :video_profile_version do |f|
 end
 
 Factory.define :video do |f|
-  f.association :user
-  f.file        File.open("#{Rails.root}/spec/fixtures/railscast_intro.mov")
-  f.panda_id    'f72e511820c12dabc1d15817745225bd'
+  f.association    :user
+  f.panda_video_id 'f72e511820c12dabc1d15817745225bd'
 end
 
 Factory.define :video_encoding do |f|
-#   f.panda_encoding_id    'd05be7d3f3fa16ff83a584e02ddb1aaf'
+  f.file              File.open("#{Rails.root}/spec/fixtures/railscast_intro.mov")
+  f.panda_encoding_id 'd05be7d3f3fa16ff83a584e02ddb1aaf'
 end
 
 Factory.define :log do |f|
