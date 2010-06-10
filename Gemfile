@@ -11,7 +11,7 @@ gem 'devise', '>= 1.1.rc1'
 
 # Internals
 gem 'i18n'
-gem 'haml'
+gem 'haml', '3.0.10'
 gem 'state_machine'
 gem 'responders'
 gem 'uniquify'
@@ -39,6 +39,9 @@ gem 'voxel_hapi',       :git => 'git://github.com/thibaudgg/voxel_hapi.git'
 
 # Log analyzer
 gem 'request-log-analyzer', :require => 'request_log_analyzer'
+
+# Payment
+gem 'activemerchant'
 
 group :development do
   gem 'exceptional'
