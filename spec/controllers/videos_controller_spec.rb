@@ -70,31 +70,22 @@ describe VideosController do
       delete :destroy, :id => '1'
       response.should redirect_to(new_user_session_path)
     end
-    it "should activate an non active video and respond with success to GET :transcoded" do
-      Video::Format.stub(:find_by_panda_id!).with("1").and_return(mock_video)
-      mock_video.stub(:active?).and_return(false)
-      mock_video.stub(:activate)
+    it "should activate a video and respond with success to GET :transcoded" do
+      VideoEncoding.stub(:find_by_panda_encoding_id!).with("1").and_return(mock_video_encoding)
+      mock_video_encoding.stub(:activate)
       get :transcoded, :id => '1'
       response.should be_success
     end
-    it "should not activate an active video and respond with success to GET :transcoded" do
-      Video::Format.stub(:find_by_panda_id!).with("1").and_return(mock_video)
-      mock_video.stub(:activate).and_return(true)
-      get :transcoded, :id => '1'
-      response.should be_success
-    end
-    # it "should not activate a not-ready-yet video and respond with success to GET :transcoded" do
-    #   Video::Original.stub(:find_by_panda_id!).with("1").and_return(mock_video)
-    #   mock_video.stub(:active?).and_return(true)
-    #   get :transcoded, :id => '1'
-    #   response.should be_success
-    # end
   end
   
 private
   
   def mock_video(stubs={})
     @mock_video ||= mock_model(Video, stubs)
+  end
+  
+  def mock_video_encoding(stubs={})
+    @mock_video_encoding ||= mock_model(VideoEncoding, stubs)
   end
   
 end

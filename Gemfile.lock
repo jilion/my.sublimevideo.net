@@ -378,7 +378,7 @@ specs:
     source: 7
 - wirble: 
     version: 0.1.3
-hash: e407a5f3aebb56df5a85b41c3bdd9fe73d30170c
+hash: 950fe9af06a5fb5ff30ba1aa045b12e5968b9c4e
 sources: 
 - Git: 
     uri: git://github.com/thoughtbot/factory_girl.git

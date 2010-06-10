@@ -30,8 +30,6 @@ class DeviseCreateUsers < ActiveRecord::Migration
       t.integer :cc_last_digits
       t.datetime :cc_updated_at
       
-      
-      
       t.timestamps
     end
     

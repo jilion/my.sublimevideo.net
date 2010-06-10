@@ -20,7 +20,7 @@ namespace :db do
     task :all => :environment do
       timed { create_users  }
       timed { create_sites  }
-      timed { create_videos }
+      # timed { create_videos }
     end
     
     desc "Load User development fixtures."
@@ -113,13 +113,13 @@ def create_videos(count = 8)
   
   User.all.each do |user|
     count.times do |i|
-      original = user.videos.build(:file => File.open("#{Rails.root}/spec/fixtures/railscast_intro.mov"), :width => 600, :height => 255, :size => rand(15000), :codec => 'h264', :container => 'mp4', :duration => rand(7200), :state => 'active')
+      original = user.videos.build(:file => File.open("#{Rails.root}/spec/fixtures/railscast_intro.mov"), :width => 600, :height => 255, :size => rand(15000), :codec => 'h264', :extname => '.mp4', :duration => rand(7200), :state => 'active')
       original.created_at = rand(1500).days.ago
       original.panda_id   = "#{user.id*(i+1)}"
       original.name       = Faker::Name.name
       original.save!
       FORMATS.each_with_index do |format_name, index|
-        format            = original.formats.build(:name => format_name, :width => 600, :height => 255, :size => rand(15000), :codec => 'h264', :container => 'mp4', :duration => rand(7200))
+        format            = original.formats.build(:name => format_name, :width => 600, :height => 255, :size => rand(15000), :codec => 'h264', :extname => '.mp4', :duration => rand(7200))
         format.created_at = original.created_at + rand(2).days
         f                 = CarrierWave::SanitizedFile.new("#{Rails.root}/spec/fixtures/railscast_intro.mov")
         copied_file       = f.copy_to("#{Rails.root}/spec/fixtures/#{format_name.parameterize}.mov")

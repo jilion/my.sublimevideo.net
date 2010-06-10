@@ -76,9 +76,9 @@ class Site < ActiveRecord::Base
     
     event(:activate)   { transition [:pending, :inactive] => :active }
     event(:deactivate) { transition :active => :inactive }
-    event(:archive)    { transition [:pending, :active, :inactive] => :archived }
     event(:suspend)    { transition [:pending, :active, :inactive] => :suspended }
     event(:unsuspend)  { transition :suspended => :active }
+    event(:archive)    { transition [:pending, :active, :inactive] => :archived }
   end
   
   # ====================
