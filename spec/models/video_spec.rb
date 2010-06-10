@@ -2,48 +2,32 @@
 #
 # Table name: videos
 #
-#  id          :integer         not null, primary key
-#  user_id     :integer
-#  original_id :integer
-#  panda_id    :string(255)
-#  name        :string(255)
-#  token       :string(255)
-#  file        :string(255)
-#  thumbnail   :string(255)
-#  codec       :string(255)
-#  container   :string(255)
-#  size        :integer
-#  duration    :integer
-#  width       :integer
-#  height      :integer
-#  state       :string(255)
-#  type        :string(255)
-#  created_at  :datetime
-#  updated_at  :datetime
+#  id                :integer         not null, primary key
+#  user_id           :integer
+#  title             :string(255)
+#  token             :string(255)
+#  state             :string(255)
+#  thumbnail         :string(255)
+#  hits_cache        :integer         default(0)
+#  bandwidth_cache   :integer         default(0)
+#  panda_video_id    :string(255)
+#  original_filename :string(255)
+#  video_codec       :string(255)
+#  audio_codec       :string(255)
+#  extname           :string(255)
+#  file_size         :integer
+#  duration          :integer
+#  width             :integer
+#  height            :integer
+#  fps               :integer
+#  archived_at       :datetime
+#  created_at        :datetime
+#  updated_at        :datetime
 #
 
 require 'spec_helper'
 
 describe Video do
-  
-  describe "base instance behaviour" do
-    describe "Validations" do
-      it "should validate presence of :user" do
-        video = Factory.build(:video, :user => nil)
-        video.should_not be_valid
-        video.errors[:user].should be_present
-      end
-      
-      it "should validate presence of :panda_video_id" do
-        video = Factory.build(:video, :panda_video_id => nil)
-        video.should_not be_valid
-        video.errors[:panda_video_id].should be_present
-      end
-    end
-  end
-  
-  describe "Class Methods" do
-  end
   
   context "with valid attributes" do
     subject { Factory(:video) }

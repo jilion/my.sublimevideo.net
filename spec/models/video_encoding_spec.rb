@@ -1,25 +1,22 @@
 # == Schema Information
 #
-# Table name: videos
+# Table name: video_encodings
 #
-#  id          :integer         not null, primary key
-#  user_id     :integer
-#  original_id :integer
-#  panda_id    :string(255)
-#  name        :string(255)
-#  token       :string(255)
-#  file        :string(255)
-#  thumbnail   :string(255)
-#  codec       :string(255)
-#  container   :string(255)
-#  size        :integer
-#  duration    :integer
-#  width       :integer
-#  height      :integer
-#  state       :string(255)
-#  type        :string(255)
-#  created_at  :datetime
-#  updated_at  :datetime
+#  id                       :integer         not null, primary key
+#  video_id                 :integer
+#  video_profile_id         :integer
+#  video_profile_version_id :integer
+#  state                    :string(255)
+#  file                     :string(255)
+#  panda_encoding_id        :integer
+#  started_encoding_at      :datetime
+#  encoding_time            :integer
+#  extname                  :string(255)
+#  file_size                :integer
+#  width                    :integer
+#  height                   :integer
+#  created_at               :datetime
+#  updated_at               :datetime
 #
 
 require 'spec_helper'

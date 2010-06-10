@@ -540,16 +540,76 @@ form .entry.update {
 }
 
 #trial_box {
-  width:210px;
+  width:170px;
   position:absolute;
   top:50px;
   right:50px;
 }
 
+#trial_box h4 {
+  font-size:16px;
+  font-weight:600;
+}
+
+#trial_box .progress_bar {
+  width:100%;
+  height:20px;
+  margin:5px 0 8px;
+  position:relative;
+  background:rgba(0,0,0,0.15);
+  border:1px solid #5a616d;
+  -webkit-border-radius:5px;
+  -moz-border-radius:5px;
+  border-radius:5px;
+  -webkit-box-shadow:rgba(255,255,255,0.6) 0 1px 0, inset rgba(0,0,0,0.5) 0 1px 5px;
+  -moz-box-shadow:rgba(255,255,255,0.6) 0 1px 0, inset rgba(0,0,0,0.5) 0 1px 5px;
+  box-shadow:rgba(255,255,255,0.6) 0 1px 0, inset rgba(0,0,0,0.5) 0 1px 5px;
+}
+
+#trial_box .progress_bar .elapsed_time {
+  width:50%;
+  height:20px;
+  position:absolute;
+  top:-1px;
+  left:-1px;
+  max-width:100%;
+  border:1px solid #000;
+  -webkit-border-radius:5px;
+  -moz-border-radius:5px;
+  border-radius:5px;
+  background:#5c2770;
+  background:-webkit-gradient(linear,left top,left bottom,from(#6f00a4),to(#430066));
+  background:-moz-linear-gradient(top, #6f00a4, #430066);
+  -webkit-box-shadow:inset rgba(255,255,255,0.2) 0 1px 0;
+  -moz-box-shadow:inset rgba(255,255,255,0.2) 0 1px 0;
+  box-shadow:inset rgba(255,255,255,0.2) 0 1px 0;
+}
+
+#trial_box .progress_bar .info_box {
+  display:none;
+  position:absolute;
+  top:23px;
+  left:-7px;
+  width:183px;
+  height:96px;
+  background:url(/images/embed/progress_bar_info.png) no-repeat;
+}
+
+#trial_box .progress_bar:hover .info_box {
+  display:block;
+}
+
+#trial_box .progress_bar .info_box p {
+  padding:14px 10px 10px 10px;
+  font-size:12px;
+  color:#d4dae5;
+  text-shadow:#000 0 -1px 0;
+  line-height:14px;
+}
+
 #trial_box p.note {
   font-size:13px;
   line-height:18px;
-  text-align:right;
 }
 
 #trial_box a.add_a_credit_card {
@@ -561,7 +621,7 @@ form .entry.update {
   font-size:13px;
   font-weight:600;
   text-shadow:rgba(255,255,255,0.4) 0 1px 0;
-  float:right;
+/*  float:right;*/
   margin-top:10px;
 }
 
