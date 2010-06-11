@@ -11,7 +11,7 @@ gem 'devise', '>= 1.1.rc1'
 
 # Internals
 gem 'i18n'
-gem 'haml', '3.0.10'
+gem 'haml'
 gem 'state_machine'
 gem 'responders'
 gem 'uniquify'
@@ -32,7 +32,7 @@ gem 'aws' # S3 support for carrierwave
 gem 'carrierwave',      :git => 'git://github.com/jnicklas/carrierwave.git'
 
 # Encoding
-gem 'panda', '>= 0.5.0'
+gem 'panda'
 
 # CDN
 gem 'voxel_hapi',       :git => 'git://github.com/thibaudgg/voxel_hapi.git'
