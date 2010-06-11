@@ -11,8 +11,7 @@ describe InvoicesController do
     end
     
     it "should respond with success to GET :index" do
-      Invoice.stub(:current).with(@mock_user)
-      @mock_user.stub_chain(:invoices).and_return([])
+      @mock_user.stub_chain(:invoices, :by_charged_at).and_return([])
       get :index
       response.should be_success
     end

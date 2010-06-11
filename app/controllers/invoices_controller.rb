@@ -3,8 +3,7 @@ class InvoicesController < ApplicationController
   
   # GET /invoices
   def index
-    Invoice.current(current_user)
-    @invoices = current_user.invoices
+    @invoices = current_user.invoices.by_charged_at
     respond_with(@invoices)
   end
   
