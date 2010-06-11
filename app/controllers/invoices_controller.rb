@@ -1,5 +1,7 @@
 class InvoicesController < ApplicationController
   before_filter :authenticate_user!
+  respond_to :html, :except => :show
+  respond_to :js
   
   # GET /invoices
   def index

@@ -113,6 +113,11 @@ MySublimeVideo.showSiteSettings = function(siteId) {
   return false;
 };
 
+MySublimeVideo.showInvoiceSites = function(invoiceId) {
+  MySublimeVideo.openPopup(invoiceId, "invoices_sites", '/invoices/'+invoiceId);
+  return false;
+};
+
 // ===========
 // = Classes =
 // ===========
