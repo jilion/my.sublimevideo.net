@@ -22,13 +22,13 @@
       %h4= "Player"
       .right
         %strong.price= cents_to_dollars(invoice.sites_amount)
-        = link_to "/show_player_hits_details", :class => "view_details" do
+        = link_to invoice_path(invoice.to_param), :class => "view_details" do
           %span= "View player details"
     .row.videos
       %h4= "Videos"
       .right
         %strong.price= cents_to_dollars(invoice.videos_amount)
-        = link_to "/show_video_details", :class => "view_details" do
+        = link_to invoice_path(invoice.to_param), :class => "view_details" do
           %span= "View video details"
   %td.total
     %strong= cents_to_dollars(invoice.amount)
