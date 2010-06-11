@@ -125,6 +125,7 @@ ActiveRecord::Schema.define(:version => 20100609123904) do
     t.datetime "limit_alert_email_sent_at"
     t.string   "cc_type"
     t.integer  "cc_last_digits"
+    t.date     "cc_expired_on"
     t.datetime "cc_updated_at"
     t.datetime "created_at"
     t.datetime "updated_at"
