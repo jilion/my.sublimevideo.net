@@ -26,8 +26,9 @@ class DeviseCreateUsers < ActiveRecord::Migration
       t.datetime :limit_alert_email_sent_at, :default => nil
       
       # Credit Card
-      t.string :cc_type
-      t.integer :cc_last_digits
+      t.string   :cc_type
+      t.integer  :cc_last_digits
+      t.date     :cc_expired_on
       t.datetime :cc_updated_at
       
       t.timestamps

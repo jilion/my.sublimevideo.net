@@ -31,6 +31,7 @@
 #  limit_alert_email_sent_at             :datetime
 #  cc_type                               :string(255)
 #  cc_last_digits                        :integer
+#  cc_expired_on                         :date
 #  cc_updated_at                         :datetime
 #  created_at                            :datetime
 #  updated_at                            :datetime
@@ -44,7 +45,11 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable, :confirmable,
          :recoverable, :rememberable, :trackable, :validatable, :lockable
   
-  attr_accessible :full_name, :email, :remember_me, :password, :limit_alert_amount
+  attr_accessible :full_name, :email, :remember_me, :password
+  # Trial
+  attr_accessible :limit_alert_amount
+  # Credit Card
+  attr_accessible :cc_type, :cc_number, :cc_expired_on, :cc_first_name, :cc_last_name, :cc_verification_value
   
   # ================
   # = Associations =
@@ -68,6 +73,7 @@ class User < ActiveRecord::Base
   
   validates :full_name, :presence => true
   validates :email,     :presence => true, :uniqueness => true
+  validate :validates_credit_card # in user/credit_card
   
   # =============
   # = Callbacks =
@@ -75,6 +81,7 @@ class User < ActiveRecord::Base
   
   before_create :set_next_invoiced_on
   before_save :clear_limit_alert_email_sent_at_when_limit_alert_amount_is_augmented # in user/limit_alert
+  before_save :store_credit_card # in user/credit_card
   
   # =================
   # = State Machine =
