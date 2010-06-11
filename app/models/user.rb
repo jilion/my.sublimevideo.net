@@ -39,6 +39,7 @@
 class User < ActiveRecord::Base
   include Trial
   include LimitAlert
+  include CreditCard
   
   devise :database_authenticatable, :registerable, :confirmable,
          :recoverable, :rememberable, :trackable, :validatable, :lockable
@@ -91,11 +92,6 @@ class User < ActiveRecord::Base
     sites.empty?
     # TODO And if user has a credit card
   end
-  
-  def credit_card?
-    cc_type.present? && cc_last_digits.present?
-  end
-  alias :cc? :credit_card?
   
 private
   

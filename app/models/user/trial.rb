@@ -1,3 +1,12 @@
+# == Schema Information
+#
+# Table name: users
+#
+#  trial_ended_at                        :datetime
+#  trial_usage_information_email_sent_at :datetime
+#  trial_usage_warning_email_sent_at     :datetime
+#
+
 module User::Trial
   
   def self.delay_supervise_users(minutes = 15.minutes)
@@ -47,10 +56,15 @@ module User::Trial
     hits
   end
   
+  def trial_loader_hits_percentage
+    ((trial_loader_hits / User::Trial.free_loader_hits.to_f) * 100).to_i
+  end
+  def trial_player_hits_percentage
+    ((trial_player_hits / User::Trial.free_player_hits.to_f) * 100).to_i
+  end
+  
   def trial_usage_percentage
-    loader_hits_percentage = ((trial_loader_hits / User::Trial.free_loader_hits.to_f) * 100).to_i
-    player_hits_percentage = ((trial_player_hits / User::Trial.free_player_hits.to_f) * 100).to_i
-    loader_hits_percentage > player_hits_percentage ? loader_hits_percentage : player_hits_percentage
+    trial_loader_hits_percentage > trial_player_hits_percentage ? trial_loader_hits_percentage : trial_player_hits_percentage
   end
   
   def deliver_usage_information_email
