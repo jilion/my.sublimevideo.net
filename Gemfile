@@ -20,7 +20,7 @@ gem 'will_paginate',    :git => 'git://github.com/mislav/will_paginate.git', :br
 gem 'has_scope',        :git => 'git://github.com/rymai/has_scope.git'
 gem 'jammit',           :git => 'git://github.com/thibaudgg/jammit.git'
 gem 'meta_where'
-
+gem 'hoptoad_notifier'
 gem 'system_timer' # only on Ruby 1.8
 gem 'memcache-client'
 
@@ -42,7 +42,6 @@ gem 'request-log-analyzer', :require => 'request_log_analyzer'
 gem 'activemerchant'
 
 group :development do
-  gem 'exceptional'
   gem 'sqlite3-ruby', :require => 'sqlite3'
   gem 'annotate'
   gem 'ffaker'
@@ -53,7 +52,6 @@ group :development do
 end
 
 group :test do
-  gem 'exceptional'
   gem 'sqlite3-ruby', :require => 'sqlite3'
   
   gem 'rev'

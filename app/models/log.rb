@@ -60,12 +60,12 @@ class Log < ActiveRecord::Base
   end
   
   def parse_and_create_usages!
-    Exceptional.rescue do
-      logs_file = copy_logs_file_to_tmp
-      trackers = LogAnalyzer.parse(logs_file)
-      SiteUsage.create_usages_from_trackers!(self, trackers)
-      File.delete(logs_file.path)
-    end
+    logs_file = copy_logs_file_to_tmp
+    trackers = LogAnalyzer.parse(logs_file)
+    SiteUsage.create_usages_from_trackers!(self, trackers)
+    File.delete(logs_file.path)
+  rescue => ex
+    notify_hoptoad(ex)
   end
   
   # =================
@@ -79,15 +79,15 @@ class Log < ActiveRecord::Base
   end
   
   def self.download_and_save_new_logs
-    Exceptional.rescue do
-      new_logs_names = CDN.logs_names
-      existings_logs_names = Log.select(:name).where(:name => new_logs_names).map(&:name)
-      new_logs = new_logs_names.inject([]) do |new_logs, logs_name|
-        new_logs << new(:name => logs_name)
-      end
-      new_logs = new_logs.select { |l| existings_logs_names.exclude? l.name }
-      new_logs.each { |l| l.save }
+    new_logs_names = CDN.logs_names
+    existings_logs_names = Log.select(:name).where(:name => new_logs_names).map(&:name)
+    new_logs = new_logs_names.inject([]) do |new_logs, logs_name|
+      new_logs << new(:name => logs_name)
     end
+    new_logs = new_logs.select { |l| existings_logs_names.exclude? l.name }
+    new_logs.each { |l| l.save }
+  rescue => ex
+    notify_hoptoad(ex)
     delay_new_logs_download # relaunch the process in 1 min
   end
   
