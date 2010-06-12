@@ -52,9 +52,9 @@ class VideoProfile < ActiveRecord::Base
   
   def self.active_profiles
     # connection.select_values(joins(:active_version).select(:panda_profile_id).to_sql)
-    # 'where(:active_version_id ^ nil)' doesn't seem to work, it generates 'active_version_id != NULL'
+    # 'where(:active_version_id.not_eq => nil)' doesn't seem to work, it generates 'active_version_id != NULL'
     # but doesn't return any video_profile
-    where(:active_version_id > 0)
+    where(:active_version_id.gt => 0)
   end
   
   # ====================

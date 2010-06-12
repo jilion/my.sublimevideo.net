@@ -64,7 +64,7 @@ class User < ActiveRecord::Base
   # ==========
   
   scope :in_trial, lambda { where(:trial_ended_at => nil) }
-  scope :limit_alertable, lambda { where(:limit_alert_amount > 0, :limit_alert_email_sent_at => nil) }
+  scope :limit_alertable, lambda { where(:limit_alert_amount.gt => 0, :limit_alert_email_sent_at => nil) }
   scope :without_cc, lambda { where(:cc_type => nil, :cc_last_digits => nil) }
   
   # ===============

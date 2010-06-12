@@ -56,8 +56,8 @@ private
   
   def self.send_limit_alerts_already_delayed?(minutes)
     Delayed::Job.where(
-      :handler =~ '%send_limit_alerts%',
-      :run_at > (minutes - 7.seconds).from_now
+      :handler.matches => '%send_limit_alerts%',
+      :run_at.gt => (minutes - 7.seconds).from_now
     ).present?
   end
   

@@ -86,9 +86,9 @@ class Log < ActiveRecord::Base
     end
     new_logs = new_logs.select { |l| existings_logs_names.exclude? l.name }
     new_logs.each { |l| l.save }
+    delay_new_logs_download # relaunch the process in 1 min
   rescue => ex
     notify_hoptoad(ex)
-    delay_new_logs_download # relaunch the process in 1 min
   end
   
 private
@@ -120,8 +120,8 @@ private
   
   def self.logs_download_already_delayed?(minutes)
     Delayed::Job.where(
-      :handler =~ '%download_and_save_new_logs%',
-      :run_at > (minutes - 7.seconds).from_now
+      :handler.matches => '%download_and_save_new_logs%',
+      :run_at.gt => (minutes - 7.seconds).from_now
     ).present?
   end
   
