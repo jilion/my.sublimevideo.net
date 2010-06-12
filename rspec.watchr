@@ -25,7 +25,7 @@ end
 def run(files_to_run, options = {})
   system("clear")
   puts(options[:message] || "Running: #{files_to_run}")
-  system "bundle exec rspec -c -f progress #{files_to_run}"
+  system "bundle exec rspec --drb -c -f progress #{files_to_run}"
   # output = %x(bundle exec rspec --drb -c -f progress #{files_to_run})
   # puts output
   # growl_notify(output)
@@ -44,7 +44,7 @@ watch('^app/models/(.*)\.rb')           { |m| run_spec_matching("models/#{m[1]}"
 watch('^lib/(.*)\.rb')                  { |m| run_spec_matching("lib/#{m[1]}") }
 watch('^lib/logs_file_format/(.*)\.rb') { |m| run_spec_matching("lib/log_analyzer_spec.rb") }
 watch('^spec/(.*)_spec\.rb')            { |m| run_spec_matching(m[1]) }
-watch('^spec/spec_helper\.rb')          { run_all_specs }
+watch('^spec/spec_helper\.rb')          { run_all_specs && reload_spork }
 watch('^spec/support/.*\.rb')           { run_all_specs }
 
 # --------------------------------------------------

@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.0.0.beta3'
+gem 'rails', '3.0.0.beta4'
 
 # Hosting
 gem 'heroku'
@@ -11,7 +11,7 @@ gem 'devise', '>= 1.1.rc1'
 
 # Internals
 gem 'i18n'
-gem 'haml', '3.0.10'
+gem 'haml'
 gem 'state_machine'
 gem 'responders'
 gem 'uniquify'
@@ -21,10 +21,8 @@ gem 'has_scope',        :git => 'git://github.com/rymai/has_scope.git'
 gem 'jammit',           :git => 'git://github.com/thibaudgg/jammit.git'
 gem 'meta_where'
 
-gem 'system_timer'
-
-gem 'memcached'
-# gem 'memcache'
+gem 'system_timer' # only on Ruby 1.8
+gem 'memcache-client'
 
 # File management
 gem 'http_connection',  :git => 'git://github.com/thibaudgg/http_connection.git'
@@ -68,11 +66,10 @@ group :test do
   
   gem 'steak',        '>= 0.4.0.beta.1'
   gem 'capybara'
-  gem 'capybara-envjs'
+  # gem 'capybara-envjs'
   gem 'launchy'
   
-  gem 'email_spec',   :git => 'git://github.com/bmabey/email-spec', :branch => 'rails3'
-  gem 'factory_girl', :git => 'git://github.com/thoughtbot/factory_girl.git', :branch => 'fixes_for_rails3'
+  gem 'factory_girl_rails'
   
   gem 'webmock'
   gem 'vcr'

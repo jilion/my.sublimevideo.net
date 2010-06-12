@@ -17,12 +17,12 @@ describe InvoicesController do
     end
     it "should respond with success to GET :show" do
       @mock_user.stub_chain(:invoices, :find).with("1").and_return(mock_invoice)
-      get :show, :id => '1'
+      get :show, :id => '1', :format => :js
       response.should be_success
     end
     it "should respond with success to GET :show and id == 'current'" do
       Invoice.stub(:current).with(@mock_user).and_return(mock_invoice)
-      get :show, :id => 'current'
+      get :show, :id => 'current', :format => :js
       response.should be_success
     end
   end
