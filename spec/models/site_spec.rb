@@ -262,7 +262,7 @@ describe Site do
         site = Factory(:site, :user => user, :loader_hits_cache => 33, :player_hits_cache => 11)
         log = Factory(:log)
         Factory(:site_usage, :site => site, :log => log, :loader_hits => 16, :player_hits => 5, :started_at => 1.minute.from_now, :ended_at => 2.minute.from_now)
-        site.reset_hits_cache!(Date.today)
+        site.reset_hits_cache!(Time.now)
         site.loader_hits_cache.should == 16
         site.player_hits_cache.should == 5
       end
