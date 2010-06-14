@@ -200,7 +200,7 @@ specs:
 - treetop: 
     version: 1.4.8
 - mail: 
-    version: 2.2.3
+    version: 2.2.4
 - actionmailer: 
     version: 3.0.0.beta4
 - activemerchant: 
@@ -348,7 +348,7 @@ specs:
     source: 5
 - wirble: 
     version: 0.1.3
-hash: 7ebda4bb8ce3c855553323f914dab2b2d188a255
+hash: 2b11201fad4ffc7f1355503f469c3390cf9f33a9
 sources: 
 - Git: 
     uri: git://github.com/jnicklas/carrierwave.git

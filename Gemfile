@@ -29,7 +29,6 @@ gem 'http_connection',  :git => 'git://github.com/thibaudgg/http_connection.git'
 gem 'aws' # S3 support for carrierwave
 gem 'carrierwave',      :git => 'git://github.com/jnicklas/carrierwave.git'
 
-
 group :development do
   gem 'sqlite3-ruby', :require => 'sqlite3'
   gem 'annotate'
