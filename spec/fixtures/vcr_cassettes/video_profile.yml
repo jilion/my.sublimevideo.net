@@ -1,0 +1,69 @@
+--- 
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :post
+    uri: http://api.pandastream.com:80/v2/profiles.json
+    body: timestamp=2010-06-11T16%3A57%3A34.941672%2B02%3A00&title=iPhone%20720p%20(1)&command=Handbrake%20CLI%20blabla...&signature=zq7FccOCBB7okBjH2RWFYJZ67VsoGCCjf1w5U4TFqvg%3D&extname=.mp4&access_key=7cc07330-5147-11df-b458-12313d01b992&cloud_id=f2f24a820b4e4e71536fcd567a384848&height=640&width=480
+    headers: 
+      accept: 
+      - "*/*; q=0.5, application/xml"
+      content-type: 
+      - application/x-www-form-urlencoded
+      accept-encoding: 
+      - gzip, deflate
+      content-length: 
+      - "293"
+      host: 
+      - api.pandastream.com
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      x-powered-by: &id001 
+        - Phusion Passenger (mod_rails/mod_rack) 2.2.9
+      content-type: &id003 
+        - application/json
+      connection: &id002 
+        - keep-alive
+      server: &id004 
+        - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
+      content-length: &id005 
+        - "227"
+      status: &id006 
+        - "200"
+    body: &id007 !str 
+      str: "{\"created_at\":\"2010/06/11 14:57:35 +0000\",\"command\":\"Handbrake CLI blabla...\",\"title\":\"iPhone 720p (1)\",\"updated_at\":\"2010/06/11 14:57:35 +0000\",\"extname\":\".mp4\",\"id\":\"f703bb7c207c472ceefd9c0d3986bf54\",\"height\":640,\"width\":480}"
+      "@args": 
+        :url: http://api.pandastream.com:80/v2/profiles.json
+        :payload: 
+          timestamp: "2010-06-11T16:57:34.941672+02:00"
+          title: iPhone 720p (1)
+          command: Handbrake CLI blabla...
+          signature: zq7FccOCBB7okBjH2RWFYJZ67VsoGCCjf1w5U4TFqvg=
+          extname: .mp4
+          access_key: 7cc07330-5147-11df-b458-12313d01b992
+          cloud_id: f2f24a820b4e4e71536fcd567a384848
+          height: 640
+          width: 480
+        :method: :post
+        :headers: {}
+
+      "@code": 200
+      "@net_http_res": !ruby/object:Net::HTTPOK 
+        __orig_body__: 
+        body: *id007
+        body_exist: true
+        code: "200"
+        header: 
+          x-powered-by: *id001
+          connection: *id002
+          content-type: *id003
+          server: *id004
+          content-length: *id005
+          status: *id006
+        http_version: "1.1"
+        message: OK
+        read: true
+        socket: 
+    http_version: "1.1"

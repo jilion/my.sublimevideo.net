@@ -136,7 +136,6 @@ ActiveRecord::Schema.define(:version => 20100609123904) do
 
   create_table "video_encodings", :force => true do |t|
     t.integer  "video_id"
-    t.integer  "video_profile_id"
     t.integer  "video_profile_version_id"
     t.string   "state"
     t.string   "file"
@@ -154,8 +153,9 @@ ActiveRecord::Schema.define(:version => 20100609123904) do
   create_table "video_profile_versions", :force => true do |t|
     t.integer  "video_profile_id"
     t.string   "panda_profile_id"
-    t.text     "note"
+    t.string   "state"
     t.integer  "num"
+    t.text     "note"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -168,8 +168,7 @@ ActiveRecord::Schema.define(:version => 20100609123904) do
     t.string   "name"
     t.string   "extname"
     t.boolean  "thumbnailable"
-    t.integer  "active_version_id"
-    t.integer  "versions_count",    :default => 0
+    t.integer  "versions_count", :default => 0
     t.datetime "created_at"
     t.datetime "updated_at"
   end

@@ -5,7 +5,7 @@ ID = 'f72e511820c12dabc1d15817745225bd'
 describe Transcoder::PandaStream do
   
   describe ".get(item)" do
-    before(:each) { VCR.insert_cassette('video_get') }
+    before(:each) { VCR.insert_cassette('panda/get') }
     
     it "should return the equivalent of Panda.get('/videos.json') response" do
       response = Transcoder::PandaStream.get(:video)
@@ -30,7 +30,7 @@ describe Transcoder::PandaStream do
   end
   
   describe ".get(item, id)" do
-    before(:each) { VCR.insert_cassette('video_get') }
+    before(:each) { VCR.insert_cassette('panda/get') }
     
     it "should return the equivalent of Panda.get('/videos/ID.json') response" do
       response = Transcoder::PandaStream.get(:video, ID)
@@ -55,7 +55,7 @@ describe Transcoder::PandaStream do
   end
   
   describe ".get([item, children], id)" do
-    before(:each) { VCR.insert_cassette('video_get') }
+    before(:each) { VCR.insert_cassette('panda/get') }
     
     it "should return the equivalent of Panda.get('/videos/ID/encodings.json') response" do
       response = Transcoder::PandaStream.get([:video, :encoding], ID)
@@ -70,7 +70,7 @@ describe Transcoder::PandaStream do
   end
   
   describe ".post(item, options)" do
-    before(:each) { VCR.insert_cassette('video_post') }
+    before(:each) { VCR.insert_cassette('panda/post') }
     
     it "should return the equivalent of Panda.post('/videos.json', params) response" do
       params = { :file => "#{Rails.root}/spec/fixtures/railscast_intro.mov" }
@@ -99,7 +99,7 @@ describe Transcoder::PandaStream do
   end
   
   describe ".put(item, id, hash)" do
-    before(:each) { VCR.insert_cassette('video_put') }
+    before(:each) { VCR.insert_cassette('panda/put') }
     
     it "should return the equivalent of Panda.put('/profiles/ID.json', params) response" do
       params = { :title => "My own custom profile", :extname => ".mp4", :width => 320, :height => 240, 
@@ -117,7 +117,7 @@ describe Transcoder::PandaStream do
   
   # pending until the API error is fixed
   pending ".delete(item, id)" do
-    before(:each) { VCR.insert_cassette('video_delete') }
+    before(:each) { VCR.insert_cassette('panda/delete') }
     
     it "should return the equivalent of Panda.delete('/videos/ID.json') response" do
       response = Transcoder::PandaStream.delete(:video, ID)

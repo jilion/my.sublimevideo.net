@@ -73,14 +73,14 @@ class Video < ActiveRecord::Base
     before_transition :on => :unsuspend, :do => :unblock_video
     
     before_transition :on => :archive, :do => [:set_archived_at, :archive_encodings]
-    after_transition  :on => :archive, :do => :remove_video_and_thumbnail_file!
+    after_transition  :on => :archive, :do => :remove_video!
     
     after_transition  :on => [:archive, :suspend], :do => :purge_video_and_thumbnail_file
     
-    event(:pandize)   { transition :pending => :encodings }
+    event(:pandize)   { transition :pending => :encodings               }
     event(:suspend)   { transition [:pending, :encodings] => :encodings }
-    event(:unsuspend) { transition :encodings => :encodings }
-    event(:archive)   { transition [:pending, :encodings] => :archived }
+    event(:unsuspend) { transition :encodings => :encodings             }
+    event(:archive)   { transition [:pending, :encodings] => :archived  }
   end
   
   # =================
@@ -92,11 +92,19 @@ class Video < ActiveRecord::Base
   # ====================
   
   def in_progress?
-    encodings.any? { |e| e.encoding? }
+    self.encodings.any? { |e| e.encoding? }
   end
   
   def active?
-    encodings.all? { |e| e.active? }
+    self.encodings.all? { |e| e.active? }
+  end
+  
+  def failed?
+    self.encodings.any? { |e| e.failed? }
+  end
+  
+  def hd?
+    width >= 720 || height >= 1280
   end
   
   def name
@@ -104,7 +112,7 @@ class Video < ActiveRecord::Base
   end
   
   def total_size
-    file_size + encodings.sum(:file_size)
+    file_size + self.encodings.sum(:file_size)
   end
   
 protected
@@ -126,15 +134,17 @@ protected
   
   # after_transition :on => :pandize
   def create_encodings
-    VideoProfile.active_profiles.each do |profile|
-      encoding = encodings.create(:profile => profile, :profile_version => profile.active_version)
-      encoding.pandize
+    VideoProfile.active.each do |profile|
+      encoding = self.encodings.build(:profile_version => profile.active_version)
+      encoding.save!
+      encoding.pandize # delay
     end
   end
   
   # before_transition :on => :suspend
   def block_video
-    # should set the READ right to NOBODY (or OWNER if it's enough)
+    # should set the READ right to NOBODY (or OWNER if it's enough)on the file
+    # but maybe it'll be on the entire user's subdomain?
   end
   
   # before_transition :on => :unsuspend
@@ -149,18 +159,17 @@ protected
   
   # before_transition :on => :archive
   def archive_encodings
-    encodings.map(&:archive)
+    self.encodings.map(&:archive)
   end
   
   # after_transition :on => :archive
-  def remove_video_and_thumbnail_file!
-    # Transcoder.delete(:video, panda_video_id)
-    remove_thumbnail!
+  def remove_video!
+    # Transcoder.delete(:video, panda_video_id) # until Panda gem fix the error response on delete
   end
   
   # after_transition :on => [:archive, :suspend]
   def purge_video_and_thumbnail_file
-    encodings.each do |e|
+    self.encodings.each do |e|
       CDN.purge("/v/#{token}/#{name}#{e.profile.name}#{e.extname}")
     end
     CDN.purge("/v/#{token}/#{name}.jpg") unless encodings.empty?

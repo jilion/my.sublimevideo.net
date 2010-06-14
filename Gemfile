@@ -28,11 +28,11 @@ gem 'memcached'
 
 # File management
 gem 'http_connection',  :git => 'git://github.com/thibaudgg/http_connection.git'
-gem 'aws' # S3 support for carrierwave
+gem 'aws'
 gem 'carrierwave',      :git => 'git://github.com/jnicklas/carrierwave.git'
 
 # Encoding
-gem 'panda', '>= 0.5.0'
+gem 'panda', '>= 0.6.2'
 
 # CDN
 gem 'voxel_hapi',       :git => 'git://github.com/thibaudgg/voxel_hapi.git'
@@ -52,11 +52,15 @@ group :development do
   # Ruby console
   gem 'looksee'
   gem 'wirble'
+  
+  gem 'ruby-graphviz', :require => 'graphviz'
 end
 
 group :test do
   gem 'exceptional'
   gem 'sqlite3-ruby', :require => 'sqlite3'
+  gem 'parallel'
+  gem 'hydra'
   
   gem 'rev'
   gem 'watchr'

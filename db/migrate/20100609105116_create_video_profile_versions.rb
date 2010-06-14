@@ -2,9 +2,12 @@ class CreateVideoProfileVersions < ActiveRecord::Migration
   def self.up
     create_table :video_profile_versions do |t|
       t.references :video_profile
-      t.string :panda_profile_id
-      t.text :note
-      t.integer :num
+      t.string     :panda_profile_id
+      
+      t.string     :state                   # state machine
+      
+      t.integer    :num
+      t.text       :note
       
       t.timestamps
     end

@@ -4,7 +4,6 @@
 #
 #  id                       :integer         not null, primary key
 #  video_id                 :integer
-#  video_profile_id         :integer
 #  video_profile_version_id :integer
 #  state                    :string(255)
 #  file                     :string(255)
@@ -28,8 +27,8 @@ class VideoEncoding < ActiveRecord::Base
   # ================
   
   belongs_to :video
-  belongs_to :profile, :class_name => "VideoProfile", :foreign_key => "video_profile_id"
   belongs_to :profile_version, :class_name => "VideoProfileVersion", :foreign_key => "video_profile_version_id"
+  delegate   :profile, :to => :profile_version
   
   # ==========
   # = Scopes =
@@ -42,21 +41,23 @@ class VideoEncoding < ActiveRecord::Base
   # ===============
   
   validates :video,           :presence => true
-  validates :profile,         :presence => true
   validates :profile_version, :presence => true
   
   # =============
   # = Callbacks =
   # =============
   
-  # before_save :set_blup
-  
   # =================
   # = State Machine =
   # =================
   
   state_machine :initial => :pending do
-    event(:pandize)   { transition [:pending, :failed, :active] => :encoding }
+    event(:pandize) do
+      transition [:pending, :failed, :active] => :encoding, :if => :create_panda_encoding
+      transition [:pending, :failed, :active] => :failed
+    end
+    
+    # event(:pandize)   { transition [:pending, :failed, :active] => :encoding }
     event(:activate)  { transition :encoding => :active }
     event(:fail)      { transition :encoding => :failed }
     
@@ -89,6 +90,10 @@ class VideoEncoding < ActiveRecord::Base
   # ====================
   # = Instance Methods =
   # ====================
+  
+  def create_panda_encoding
+    true
+  end
   
   # after_transition :on => :activate
   # def populate_formats_information

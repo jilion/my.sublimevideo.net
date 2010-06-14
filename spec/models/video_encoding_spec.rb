@@ -4,7 +4,6 @@
 #
 #  id                       :integer         not null, primary key
 #  video_id                 :integer
-#  video_profile_id         :integer
 #  video_profile_version_id :integer
 #  state                    :string(255)
 #  file                     :string(255)
