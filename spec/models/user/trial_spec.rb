@@ -1,3 +1,12 @@
+# == Schema Information
+#
+# Table name: users
+#
+#  trial_ended_at                        :datetime
+#  trial_usage_information_email_sent_at :datetime
+#  trial_usage_warning_email_sent_at     :datetime
+#
+
 require 'spec_helper'
 
 describe User::Trial do

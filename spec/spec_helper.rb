@@ -16,9 +16,6 @@ end
 Spork.each_run do
   # This code will be run each time you run your specs.
   
-  # Require factories file
-  require 'factories'
-  
   # Requires supporting files with custom matchers and macros, etc, in ./support/ and its subdirectories.
   Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
     
@@ -38,10 +35,6 @@ Spork.each_run do
     # examples within a transaction, comment the following line or assign false
     # instead of true.
     config.use_transactional_fixtures = true
-    
-    # EmailSpec
-    config.include(EmailSpec::Helpers)
-    config.include(EmailSpec::Matchers)
   end
   
   VCR.config do |c|

@@ -540,7 +540,7 @@ form .entry.update {
 }
 
 #trial_box {
-  width:170px;
+  width:148px;
   position:absolute;
   top:50px;
   right:50px;
@@ -589,7 +589,7 @@ form .entry.update {
   display:none;
   position:absolute;
   top:23px;
-  left:-7px;
+  left:-18px;
   width:183px;
   height:96px;
   background:url(/images/embed/progress_bar_info.png) no-repeat;
@@ -1630,7 +1630,7 @@ form .entry.update {
 #content table.billing {
   width:100%;
   border-collapse:collapse;
-  margin-top:30px;
+  margin-top:45px;
   background:#e6e9ee;
 /*  background:-webkit-gradient(linear,left top,left bottom,from(#fff),to(#dedede));
   background:-moz-linear-gradient(top, #fff, #dedede);*/
@@ -1658,7 +1658,7 @@ form .entry.update {
 #content table.billing tr.break td {
   width:100%;
   height:8px;
-  background:url(/images/embed/invoices/break_row_back.gif) repeat-x;
+  background:#a3a6ac url(/images/embed/invoices/break_row_back.gif) repeat-x;
 }
 
 #content table.billing tr.alt {background:rgba(0,0,0,0.1);}
@@ -1680,6 +1680,14 @@ form .entry.update {
   background:rgba(0,0,0,0.1);
 }
 
+#content table.billing tr.current td.date em {
+  color:#8a8274;
+}
+
+#content table.billing tr td.date .date_info {display:none;}
+#content table.billing tr td.date:hover .date_info {display:block;}
+#content table.billing tr td.date:hover .label {display:none;}
+
 #content table.billing td.date {
   width:170px;
   text-align:center;
@@ -1698,6 +1706,10 @@ form .entry.update {
   font-weight:normal;
   font-size:16px;
   padding-top:5px;
+}
+
+#content table.billing td.date strong.small {
+  font-size:12px;
 }
 
 #content table.billing td.usage {

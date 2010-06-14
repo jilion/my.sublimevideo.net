@@ -1,3 +1,11 @@
+# == Schema Information
+#
+# Table name: users
+#
+#  limit_alert_amount                    :integer         default(0)
+#  limit_alert_email_sent_at             :datetime
+#
+
 require 'spec_helper'
 
 describe User::LimitAlert do

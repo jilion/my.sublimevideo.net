@@ -31,6 +31,7 @@
 #  limit_alert_email_sent_at             :datetime
 #  cc_type                               :string(255)
 #  cc_last_digits                        :integer
+#  cc_expired_on                         :date
 #  cc_updated_at                         :datetime
 #  created_at                            :datetime
 #  updated_at                            :datetime

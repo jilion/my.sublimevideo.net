@@ -1,9 +1,5 @@
 --- 
 dependencies: 
-  parallel: 
-    group: 
-    - :test
-    version: ">= 0"
   spork: 
     group: 
     - :test
@@ -12,18 +8,18 @@ dependencies:
     group: 
     - :production
     version: ">= 0"
-  http_connection: 
+  rails: 
     group: 
     - :default
-    version: ">= 0"
+    version: = 3.0.0.beta4
   system_timer: 
     group: 
     - :default
     version: ">= 0"
-  rails: 
+  http_connection: 
     group: 
     - :default
-    version: = 3.0.0.beta3
+    version: ">= 0"
   annotate: 
     group: 
     - :development
@@ -34,10 +30,14 @@ dependencies:
     version: ">= 0"
     require: 
     - sqlite3
+  memcache-client: 
+    group: 
+    - :default
+    version: ">= 0"
   haml: 
     group: 
     - :default
-    version: = 3.0.10
+    version: ">= 0"
   rev: 
     group: 
     - :test
@@ -50,10 +50,6 @@ dependencies:
     group: 
     - :test
     version: ">= 2.0.0.beta.11"
-  voxel_hapi: 
-    group: 
-    - :default
-    version: ">= 0"
   delayed_job: 
     group: 
     - :default
@@ -62,21 +58,21 @@ dependencies:
     group: 
     - :default
     version: ">= 0"
+  voxel_hapi: 
+    group: 
+    - :default
+    version: ">= 0"
   growl: 
     group: 
     - :test
-    version: ">= 0"
-  wirble: 
-    group: 
-    - :development
     version: ">= 0"
   activemerchant: 
     group: 
     - :default
     version: ">= 0"
-  memcached: 
+  wirble: 
     group: 
-    - :default
+    - :development
     version: ">= 0"
   watchr: 
     group: 
@@ -90,7 +86,17 @@ dependencies:
     group: 
     - :test
     version: ">= 0"
-  carrierwave: 
+  devise: 
+    group: 
+    - :default
+    version: ">= 1.1.rc1"
+  request-log-analyzer: 
+    group: 
+    - :default
+    version: ">= 0"
+    require: 
+    - request_log_analyzer
+  panda: 
     group: 
     - :default
     version: ">= 0"
@@ -106,57 +112,35 @@ dependencies:
     group: 
     - :default
     version: ">= 0"
-  devise: 
-    group: 
-    - :default
-    version: ">= 1.1.rc1"
   has_scope: 
     group: 
     - :default
     version: ">= 0"
-  panda: 
+  carrierwave: 
     group: 
     - :default
-    version: ">= 0.6.2"
-  request-log-analyzer: 
-    group: 
-    - :default
-    version: ">= 0"
-    require: 
-    - request_log_analyzer
-  exceptional: 
-    group: 
-    - :test
-    version: ">= 0"
-  hydra: 
-    group: 
-    - :test
-    version: ">= 0"
-  factory_girl: 
-    group: 
-    - :test
     version: ">= 0"
   steak: 
     group: 
     - :test
     version: ">= 0.4.0.beta.1"
-  state_machine: 
-    group: 
-    - :default
-    version: ">= 0"
-  aws: 
-    group: 
-    - :default
-    version: ">= 0"
   ruby-graphviz: 
     group: 
     - :development
     version: ">= 0"
     require: 
     - graphviz
-  email_spec: 
+  aws: 
     group: 
-    - :test
+    - :default
+    version: ">= 0"
+  state_machine: 
+    group: 
+    - :default
+    version: ">= 0"
+  hoptoad_notifier: 
+    group: 
+    - :default
     version: ">= 0"
   uniquify: 
     group: 
@@ -174,15 +158,11 @@ dependencies:
     group: 
     - :default
     version: ">= 0"
-  looksee: 
-    group: 
-    - :development
-    version: ">= 0"
   webmock: 
     group: 
     - :test
     version: ">= 0"
-  capybara-envjs: 
+  launchy: 
     group: 
     - :test
     version: ">= 0"
@@ -190,7 +170,7 @@ dependencies:
     group: 
     - :test
     version: ">= 0"
-  launchy: 
+  factory_girl_rails: 
     group: 
     - :test
     version: ">= 0"
@@ -199,18 +179,14 @@ specs:
     version: 0.8.7
 - abstract: 
     version: 1.0.0
+- activesupport: 
+    version: 3.0.0.beta4
 - builder: 
     version: 2.1.2
 - i18n: 
-    version: 0.3.7
-- memcache-client: 
-    version: 1.8.3
-- tzinfo: 
-    version: 0.3.22
-- activesupport: 
-    version: 3.0.0.beta3
+    version: 0.4.1
 - activemodel: 
-    version: 3.0.0.beta3
+    version: 3.0.0.beta4
 - erubis: 
     version: 2.6.5
 - rack: 
@@ -219,8 +195,10 @@ specs:
     version: 0.6.4
 - rack-test: 
     version: 0.5.4
+- tzinfo: 
+    version: 0.3.22
 - actionpack: 
-    version: 3.0.0.beta3
+    version: 3.0.0.beta4
 - mime-types: 
     version: "1.16"
 - polyglot: 
@@ -229,27 +207,23 @@ specs:
     version: 1.4.8
 - mail: 
     version: 2.2.4
-- text-hyphen: 
-    version: 1.0.0
-- text-format: 
-    version: 1.0.0
 - actionmailer: 
-    version: 3.0.0.beta3
+    version: 3.0.0.beta4
 - activemerchant: 
     version: 1.5.1
 - arel: 
-    version: 0.3.3
+    version: 0.4.0
 - activerecord: 
-    version: 3.0.0.beta3
+    version: 3.0.0.beta4
 - activeresource: 
-    version: 3.0.0.beta3
+    version: 3.0.0.beta4
 - addressable: 
     version: 2.1.2
 - annotate: 
     version: 2.4.0
 - http_connection: 
     version: 1.3.0
-    source: 4
+    source: 1
 - uuidtools: 
     version: 2.1.1
 - xml-simple: 
@@ -270,17 +244,9 @@ specs:
     version: 0.0.22
 - capybara: 
     version: 0.3.8
-- stackdeck: 
-    version: 0.2.0
-- johnson: 
-    version: 2.0.0.pre3
-- envjs: 
-    version: 0.3.6
-- capybara-envjs: 
-    version: 0.1.5
 - carrierwave: 
     version: 0.4.4
-    source: 3
+    source: 0
 - closure-compiler: 
     version: 0.3.1
 - configuration: 
@@ -289,30 +255,32 @@ specs:
     version: 1.0.10
 - delayed_job: 
     version: 2.1.0.pre
-    source: 8
+    source: 6
 - warden: 
     version: 0.10.7
 - devise: 
     version: 1.1.rc1
 - diff-lcs: 
     version: 1.1.2
-- email_spec: 
-    version: 0.6.2
-    source: 1
-- exceptional: 
-    version: 2.0.15
 - factory_girl: 
-    version: 1.2.5.beta1
-    source: 0
+    version: 1.3.0
+- thor: 
+    version: 0.13.6
+- railties: 
+    version: 3.0.0.beta4
+- rails: 
+    version: 3.0.0.beta4
+- factory_girl_rails: 
+    version: "1.0"
 - ffaker: 
     version: 0.4.0
 - growl: 
     version: 1.0.3
 - haml: 
-    version: 3.0.10
+    version: 3.0.12
 - has_scope: 
     version: 0.5.0
-    source: 6
+    source: 4
 - json: 
     version: 1.2.4
 - launchy: 
@@ -321,35 +289,25 @@ specs:
     version: 1.5.1
 - heroku: 
     version: 1.6.5
-- hydra: 
-    version: 0.19.0
+- hoptoad_notifier: 
+    version: 2.2.6
 - iobuffer: 
     version: 0.1.3
-- thor: 
-    version: 0.13.6
-- railties: 
-    version: 3.0.0.beta3
-- rails: 
-    version: 3.0.0.beta3
 - yui-compressor: 
     version: 0.9.1
 - jammit: 
     version: 0.5.0
-    source: 5
+    source: 3
 - libxml-ruby: 
     version: 1.1.4
-- looksee: 
-    version: 0.2.1
-- memcached: 
-    version: 0.19.6
+- memcache-client: 
+    version: 1.8.3
 - meta_where: 
-    version: 0.3.3
+    version: 0.5.0
 - ruby-hmac: 
     version: 0.4.0
 - panda: 
     version: 0.6.2
-- parallel: 
-    version: 0.4.2
 - pg: 
     version: 0.9.0
 - request-log-analyzer: 
@@ -378,6 +336,7 @@ specs:
     version: 1.3.0
 - state_machine: 
     version: 0.9.2
+    source: 7
 - steak: 
     version: 0.4.0.beta.1
 - system_timer: 
@@ -395,25 +354,11 @@ specs:
     version: 1.2.2
 - will_paginate: 
     version: 3.0.pre
-    source: 7
+    source: 5
 - wirble: 
     version: 0.1.3
-hash: ca7ae7fafa69e3aa69ffb42b9e79072ddd87ce80
+hash: b7ac83e3f3db9527ba5d1515c0b191f1c4dd400b
 sources: 
-- Git: 
-    uri: git://github.com/thoughtbot/factory_girl.git
-    branch: fixes_for_rails3
-    git: git://github.com/thoughtbot/factory_girl.git
-    ref: ea502f0c5590a49d7d429d880edfbc487fe99053
-- Git: 
-    uri: git://github.com/bmabey/email-spec
-    branch: rails3
-    git: git://github.com/bmabey/email-spec
-    ref: b05655131aca688bb7361f30cb4edcccd61d55d1
-- Git: 
-    uri: git://github.com/thibaudgg/voxel_hapi.git
-    git: git://github.com/thibaudgg/voxel_hapi.git
-    ref: d913ce045f1d65166416930e40609513072f62ec
 - Git: 
     uri: git://github.com/jnicklas/carrierwave.git
     git: git://github.com/jnicklas/carrierwave.git
@@ -422,6 +367,10 @@ sources:
     uri: git://github.com/thibaudgg/http_connection.git
     git: git://github.com/thibaudgg/http_connection.git
     ref: 584cea976ef85f0a5fb1c6b78408e396e12b36ac
+- Git: 
+    uri: git://github.com/thibaudgg/voxel_hapi.git
+    git: git://github.com/thibaudgg/voxel_hapi.git
+    ref: d913ce045f1d65166416930e40609513072f62ec
 - Git: 
     uri: git://github.com/thibaudgg/jammit.git
     git: git://github.com/thibaudgg/jammit.git
@@ -439,5 +388,9 @@ sources:
     uri: git://github.com/thibaudgg/delayed_job
     git: git://github.com/thibaudgg/delayed_job
     ref: 772ce349fab94ce1e4ba5cd5ee8793096b13af16
+- Git: 
+    uri: git://github.com/pluginaweek/state_machine.git
+    git: git://github.com/pluginaweek/state_machine.git
+    ref: 924312f77954eb672c2b6585c28b1d362c4e078f
 - Rubygems: 
     uri: http://rubygems.org

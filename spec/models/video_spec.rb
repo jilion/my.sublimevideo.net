@@ -139,7 +139,6 @@ describe Video do
         active_video_profile_version.activate
         
         @video = Factory(:video)
-        @video.pandize
       end
       
       context "on a pending video" do

@@ -1,3 +1,11 @@
+# == Schema Information
+#
+# Table name: users
+#
+#  limit_alert_amount                    :integer         default(0)
+#  limit_alert_email_sent_at             :datetime
+#
+
 module User::LimitAlert
   
   def self.amounts_options
@@ -48,8 +56,8 @@ private
   
   def self.send_limit_alerts_already_delayed?(minutes)
     Delayed::Job.where(
-      :handler =~ '%send_limit_alerts%',
-      :run_at > (minutes - 7.seconds).from_now
+      :handler.matches => '%send_limit_alerts%',
+      :run_at.gt => (minutes - 7.seconds).from_now
     ).present?
   end
   

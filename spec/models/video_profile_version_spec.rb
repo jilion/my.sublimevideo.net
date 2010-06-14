@@ -91,7 +91,7 @@ describe VideoProfileVersion do
       
       describe "before_transition => #create_panda_profile" do
         it "should create the profile on Panda" do
-          params = { :title => "#{@active_video_profile.title} ##{@active_video_profile.versions.size + 1}", :extname => @active_video_profile.extname, :width => @active_video_profile_version.width, :height => @active_video_profile_version.height, :command => @active_video_profile_version.command }
+          params = { :title => "#{@active_video_profile.title} #1", :extname => @active_video_profile.extname, :width => @active_video_profile_version.width, :height => @active_video_profile_version.height, :command => @active_video_profile_version.command }
           Transcoder.should_receive(:post).with(:profile, params).and_return({:id => 'a'*32})
           @active_video_profile_version.pandize
           @active_video_profile_version.panda_profile_id.should == 'a'*32
@@ -99,9 +99,10 @@ describe VideoProfileVersion do
         end
         
         it "should add an error to base if the creation of the Panda profile has failed" do
-          params = { :title => "#{@active_video_profile.title} ##{@active_video_profile.versions.size + 1}", :extname => @active_video_profile.extname, :width => @active_video_profile_version.width, :height => @active_video_profile_version.height, :command => @active_video_profile_version.command }
+          params = { :title => "#{@active_video_profile.title} #1", :extname => @active_video_profile.extname, :width => @active_video_profile_version.width, :height => @active_video_profile_version.height, :command => @active_video_profile_version.command }
           Transcoder.should_receive(:post).with(:profile, params).and_return({:error => "failed", :message => "Creation has failed"})
           @active_video_profile_version.pandize
+          @active_video_profile_version.errors[:state].should == ["cannot transition via \"pandize\""]
           @active_video_profile_version.panda_profile_id.should be_nil
           @active_video_profile_version.should be_pending
         end

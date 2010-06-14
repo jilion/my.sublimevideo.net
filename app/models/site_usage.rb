@@ -29,8 +29,8 @@ class SiteUsage < ActiveRecord::Base
   # = Scopes =
   # ==========
   
-  scope :started_after, lambda { |date| where(:started_at >= date) }
-  scope :ended_before, lambda { |date| where(:ended_at < date) }
+  scope :started_after, lambda { |date| where(:started_at.gteq => date) }
+  scope :ended_before, lambda { |date| where(:ended_at.lt => date) }
   
   # ===============
   # = Validations =

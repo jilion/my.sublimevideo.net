@@ -3,14 +3,17 @@
     #trial_box
       %h4= "Free Hits Remaining"
       .progress_bar
-        -# .elapsed_time{ :style => "width:#{current_user.trial_usage_percentage}%" }
-        .elapsed_time
+        .elapsed_time{ :style => "width:#{current_user.trial_usage_percentage}%" }
         .info_box
-          %p= "Your free hits includes 10,000 requests or 2,000 player hits.<br /> Current usage:<br /> Requests: 5,245<br /> Player hits: 1,128".html_safe
+          %p<
+            = "Your free hits includes #{number_with_delimiter(User::Trial.free_loader_hits)} requests or #{number_with_delimiter(User::Trial.free_player_hits)} player hits. <br />".html_safe
+            = "Current usage:<br />".html_safe
+            = "Requests: #{number_with_delimiter(current_user.trial_loader_hits)} (#{current_user.trial_loader_hits_percentage}%)<br />".html_safe
+            = "Player hits: #{number_with_delimiter(current_user.trial_player_hits)} (#{current_user.trial_player_hits_percentage}%)<br />".html_safe
       - unless current_user.credit_card?
         %p.note
           = "We invite you to add your credit card to prevent any cut in the player delivery when your trial will finish."
-        = link_to "Add a Credit Card", "/credit_card_path", :class => "add_a_credit_card"
+        = link_to "Add a Credit Card", edit_credit_card_path, :class => "add_a_credit_card"
   - else
     - if current_user.credit_card?
       - current_invoice = Invoice.current(current_user)
@@ -23,4 +26,4 @@
     - else
       #suspend_box
         %p.note= "Your free trial of SublimeVideo is over. Please add a Credit Card to continue."
-        = link_to "Add a Credit Card", "/credit_card_path", :class => "add_a_credit_card"
+        = link_to "Add a Credit Card", edit_credit_card_path, :class => "add_a_credit_card"

@@ -38,7 +38,7 @@ class Site < ActiveRecord::Base
   # = Scopes =
   # ==========
   
-  scope :not_archived, lambda { where(:state ^ 'archived') }
+  scope :not_archived, lambda { where(:state.not_eq => 'archived') }
   scope :by_date, lambda { |way| order("created_at #{way || 'desc'}") }
   scope :by_hostname, lambda { |way| order("hostname #{way || 'asc'}") }
   

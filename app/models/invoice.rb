@@ -35,6 +35,8 @@ class Invoice < ActiveRecord::Base
   # = Scopes =
   # ==========
   
+  scope :by_charged_at, lambda { |way| order("charged_at #{way || 'desc'}") }
+  
   # ===============
   # = Validations =
   # ===============
@@ -74,6 +76,10 @@ class Invoice < ActiveRecord::Base
     self.state = 'current'
     set_interval_dates
     calculate_from_cache
+  end
+  
+  def to_param
+    current? ? 'current' : id
   end
   
   # =================

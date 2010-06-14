@@ -1,18 +1,11 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.0.0.beta3'
+gem 'rails', '3.0.0.beta4'
 
-# Hosting
-gem 'heroku'
-
-# Auth
-gem 'warden'
-gem 'devise', '>= 1.1.rc1'
-
-# Internals
+gem 'heroku' # Hosting
 gem 'i18n'
-gem 'haml', '3.0.10'
-gem 'state_machine'
+gem 'haml'
+gem 'state_machine',    :git => 'git://github.com/pluginaweek/state_machine.git'
 gem 'responders'
 gem 'uniquify'
 gem 'delayed_job',      :git => 'git://github.com/thibaudgg/delayed_job'
@@ -20,47 +13,34 @@ gem 'will_paginate',    :git => 'git://github.com/mislav/will_paginate.git', :br
 gem 'has_scope',        :git => 'git://github.com/rymai/has_scope.git'
 gem 'jammit',           :git => 'git://github.com/thibaudgg/jammit.git'
 gem 'meta_where'
+gem 'hoptoad_notifier'
+gem 'activemerchant'
+gem 'panda' # Encoding
+gem 'voxel_hapi',       :git => 'git://github.com/thibaudgg/voxel_hapi.git' # CDN
+gem 'request-log-analyzer', :require => 'request_log_analyzer'
 
-gem 'system_timer'
+gem 'warden'
+gem 'devise', '>= 1.1.rc1' # Auth
 
-gem 'memcached'
-# gem 'memcache'
+gem 'system_timer' # only on Ruby 1.8, used by memcache-clien
+gem 'memcache-client'
 
-# File management
 gem 'http_connection',  :git => 'git://github.com/thibaudgg/http_connection.git'
 gem 'aws'
 gem 'carrierwave',      :git => 'git://github.com/jnicklas/carrierwave.git'
 
-# Encoding
-gem 'panda', '>= 0.6.2'
-
-# CDN
-gem 'voxel_hapi',       :git => 'git://github.com/thibaudgg/voxel_hapi.git'
-
-# Log analyzer
-gem 'request-log-analyzer', :require => 'request_log_analyzer'
-
-# Payment
-gem 'activemerchant'
-
 group :development do
-  gem 'exceptional'
   gem 'sqlite3-ruby', :require => 'sqlite3'
   gem 'annotate'
   gem 'ffaker'
-  
-  # Ruby console
-  gem 'looksee'
-  gem 'wirble'
-  
+  gem 'wirble' # irbrc 
   gem 'ruby-graphviz', :require => 'graphviz'
 end
 
 group :test do
-  gem 'exceptional'
   gem 'sqlite3-ruby', :require => 'sqlite3'
-  gem 'parallel'
-  gem 'hydra'
+  # gem 'parallel'
+  # gem 'hydra'
   
   gem 'rev'
   gem 'watchr'
@@ -72,12 +52,10 @@ group :test do
   
   gem 'steak',        '>= 0.4.0.beta.1'
   gem 'capybara'
-  gem 'capybara-envjs'
+  # gem 'capybara-envjs'
   gem 'launchy'
   
-  gem 'email_spec',   :git => 'git://github.com/bmabey/email-spec', :branch => 'rails3'
-  gem 'factory_girl', :git => 'git://github.com/thoughtbot/factory_girl.git', :branch => 'fixes_for_rails3'
-  
+  gem 'factory_girl_rails'
   gem 'webmock'
   gem 'vcr'
 end

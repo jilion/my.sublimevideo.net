@@ -1,3 +1,4 @@
+# coding: utf-8
 require 'state_machine'
 require 'ffaker'
 

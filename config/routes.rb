@@ -23,12 +23,11 @@ MySublimeVideo::Application.routes.draw do |map|
   
   resources :invoices, :only => [:index, :show]
   
-  resource :card, :controller => "credit_cards", :only => [:show, :create]
+  resource :card, :controller => "credit_cards", :as => :credit_card, :only => [:edit, :create]
   
   match ':page', :to => 'pages#show', :via => :get, :as => :page, :constraints => {:page => /terms|docs|support/}
   
   root :to => redirect('/sites')
-  
   
   # Sample of regular route:
   #   match 'products/:id' => 'catalog#view'

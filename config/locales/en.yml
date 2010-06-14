@@ -18,3 +18,4 @@ en:
   date:
     formats:
       default: "%B %d, %Y"
+      small: "%m/%d/%Y"
