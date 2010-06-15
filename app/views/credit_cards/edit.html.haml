@@ -1,0 +1,35 @@
+= content_for :title do
+  = "Edit my credit card"
+
+%h2= "Edit my credit card"
+
+- @user ||= current_user
+- reset_credit_card_attributes
+= form_for @user, :url => credit_card_path, :html => { :class => "main_form" } do |f|
+  - if @user.errors[:base].present?
+    %p.errors= @user.errors[:base]
+    
+  .entry
+    = f.radio_button :cc_type, "visa"
+    = f.label :cc_type, "visa", :class => "visa", :for => "user_cc_type_visa"
+    = f.radio_button :cc_type, "master"
+    = f.label :cc_type, "master", :class => "master", :for => "user_cc_type_master"
+  .entry
+    = f.label :cc_number, "Credit card number"
+    = f.text_field :cc_number, :class => "text", :placeholder => "Credit card number", :required => true, :size => 16+3
+  .entry
+    = f.label :cc_expired_on, "Expired data"
+    -# Wait that my patch will be accepted https://rails.lighthouseapp.com/projects/8994/tickets/4856
+    -# = f.date_select :cc_expired_on, :discard_day => true, :add_month_numbers => true, :date_separator => ' / ', :start_year => Time.now.year, :end_year => Time.now.year + 20, :required => true
+    = f.date_select :cc_expired_on, :discard_day => true, :add_month_numbers => true, :start_year => Time.now.year, :end_year => Time.now.year + 20, :required => true
+  .entry
+    = f.label :cc_first_name, "First name"
+    = f.text_field :cc_first_name, :class => "text", :placeholder => "First name", :required => true
+    = f.label :cc_last_name, "Last name"
+    = f.text_field :cc_last_name, :class => "text", :placeholder => "Last name", :required => true
+  .entry
+    = f.label :cc_verification_value, "Verification value"
+    = f.text_field :cc_verification_value, :class => "text", :placeholder => "Verification value", :required => true
+  
+  .entry.update
+    = f.submit "Update", :id => 'user_full_name_submit', :class => "submit small"

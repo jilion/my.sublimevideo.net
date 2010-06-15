@@ -1,6 +1,6 @@
 class SitesController < ApplicationController
   before_filter :authenticate_user!
-  respond_to :html, :except => [:show, :edit, :state]
+  respond_to :html, :only => :index
   respond_to :js
   
   has_scope :by_date

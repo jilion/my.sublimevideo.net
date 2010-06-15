@@ -78,10 +78,10 @@ describe Ogone do
     
   end
   
-  context "with mastercard credit card" do
+  context "with master credit card" do
     before(:each) do
       @cc = ActiveMerchant::Billing::CreditCard.new(
-        :type               => 'mastercard',
+        :type               => 'master',
         :number             => '5399999999999999',
         :month              => 10,
         :year               => Date.today.year + 1,
@@ -92,7 +92,7 @@ describe Ogone do
     end
     
     describe "payement of $100" do
-      before(:each) { VCR.insert_cassette('ogone_mastercard_100') }
+      before(:each) { VCR.insert_cassette('ogone_master_100') }
       
       subject { Ogone.purchase(10000, @cc, :currency => 'USD') }
       

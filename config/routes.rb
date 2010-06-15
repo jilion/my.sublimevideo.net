@@ -22,8 +22,7 @@ MySublimeVideo::Application.routes.draw do |map|
   end
   
   resources :invoices, :only => [:index, :show]
-  
-  resource :card, :controller => "credit_cards", :as => :credit_card, :only => [:edit, :create]
+  resource :card, :controller => "credit_cards", :as => :credit_card, :only => [:edit, :update]
   
   match ':page', :to => 'pages#show', :via => :get, :as => :page, :constraints => {:page => /terms|docs|support/}
   

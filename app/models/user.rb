@@ -73,7 +73,7 @@ class User < ActiveRecord::Base
   
   validates :full_name, :presence => true
   validates :email,     :presence => true, :uniqueness => true
-  validate :validates_credit_card # in user/credit_card
+  validate :validates_credit_card_attributes # in user/credit_card
   
   # =============
   # = Callbacks =
@@ -81,7 +81,7 @@ class User < ActiveRecord::Base
   
   before_create :set_next_invoiced_on
   before_save :clear_limit_alert_email_sent_at_when_limit_alert_amount_is_augmented # in user/limit_alert
-  before_save :store_credit_card # in user/credit_card
+  before_save :store_credit_card, :keep_some_credit_card_info # in user/credit_card
   
   # =================
   # = State Machine =

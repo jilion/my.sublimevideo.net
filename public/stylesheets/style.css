@@ -1614,7 +1614,7 @@ form .entry.update {
   margin-top:10px;
 }
 
-#credit_card_summary p.mastercard {background:url(/images/embed/credit_cards/mastercard.png) no-repeat;}
+#credit_card_summary p.master {background:url(/images/embed/credit_cards/master.png) no-repeat;}
 
 #credit_card_summary p.visa {background:url(/images/embed/credit_cards/visa.png) no-repeat;}
 

@@ -10,6 +10,12 @@ en:
   attributes:
     dev_hostnames: "Development domains"
     hostname: "Domain"
+    cc_type: "Type"
+    cc_number: "Number"
+    cc_expired_on: "Expired date"
+    cc_first_name: "First name"
+    cc_last_name: "Last name"
+    cc_verification_value: "Verification value"
     
   time:
     formats:

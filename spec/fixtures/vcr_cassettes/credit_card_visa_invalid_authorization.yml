@@ -1,0 +1,108 @@
+--- 
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :post
+    uri: https://secure.ogone.com:443/ncol/test/orderdirect.asp
+    body: Operation=RES&CN=John+Doe&orderID=58372b59dacc20c6895e03122aa575&amount=454&CVC=111&ALIAS=sublime_1&USERID=sublime&CARDNO=4111113333333333&PSWD=WWQMNC89&currency=USD&ED=0611&PSPID=jilion
+    headers: 
+      accept: 
+      - "*/*"
+      connection: 
+      - close
+      content-type: 
+      - application/x-www-form-urlencoded
+      content-length: 
+      - "186"
+      host: 
+      - secure.ogone.com
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      x-powered-by: 
+      - ASP.NET
+      content-type: 
+      - text/html
+      connection: 
+      - close
+      server: 
+      - Microsoft-IIS/6.0
+      date: 
+      - Tue, 15 Jun 2010 07:45:49 GMT
+      content-length: 
+      - "348"
+      cache-control: 
+      - private
+    body: |-
+      <?xml version="1.0"?><ncresponse
+      orderID="58372b59dacc20c6895e03122aa575"
+      PAYID="7501923"
+      NCSTATUS="3"
+      NCERROR="30001001"
+      NCERRORPLUS="CARD REFUSED"
+      ACCEPTANCE=""
+      STATUS="2"
+      IPCTY="99"
+      CCCTY="US"
+      ECI="7"
+      CVCCheck="NO"
+      AAVCheck="NO"
+      VC="NO"
+      amount="4.54"
+      currency="USD"
+      PM="CreditCard"
+      BRAND="VISA" ALIAS="sublime_1">
+      </ncresponse>
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :post
+    uri: https://secure.ogone.com:443/ncol/test/maintenancedirect.asp
+    body: Operation=DES&PAYID=7501923&USERID=sublime&PSWD=WWQMNC89&PSPID=jilion
+    headers: 
+      accept: 
+      - "*/*"
+      content-type: 
+      - application/x-www-form-urlencoded
+      connection: 
+      - close
+      content-length: 
+      - "69"
+      host: 
+      - secure.ogone.com
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      x-powered-by: 
+      - ASP.NET
+      connection: 
+      - close
+      content-type: 
+      - text/html
+      date: 
+      - Tue, 15 Jun 2010 07:55:05 GMT
+      server: 
+      - Microsoft-IIS/6.0
+      content-length: 
+      - "277"
+      cache-control: 
+      - private
+    body: |
+      <?xml version="1.0"?>
+      <ncresponse
+      orderID="58372b59dacc20c6895e03122aa575"
+      PAYID="7501923"
+      PAYIDSUB="1"
+      NCSTATUS="5"
+      NCERROR="50001128"
+      NCERRORPLUS="|missing authorisation code for unauthorized order|"
+      ACCEPTANCE=""
+      STATUS="0"
+      amount=""
+      currency="">
+      </ncresponse>
+
+    http_version: "1.1"

@@ -65,7 +65,7 @@ class Log < ActiveRecord::Base
     SiteUsage.create_usages_from_trackers!(self, trackers)
     File.delete(logs_file.path)
   rescue => ex
-    notify_hoptoad(ex)
+    HoptoadNotifier.notify(ex)
   end
   
   # =================
@@ -88,7 +88,7 @@ class Log < ActiveRecord::Base
     new_logs.each { |l| l.save }
     delay_new_logs_download # relaunch the process in 1 min
   rescue => ex
-    notify_hoptoad(ex)
+    HoptoadNotifier.notify(ex)
   end
   
 private
