@@ -18,10 +18,9 @@ end
 
 Factory.define :video_profile_version do |f|
   f.association :profile, :factory => :video_profile
-  # f.panda_profile_id '5e08a5612e8982ef2f7482e0782bbe02'
-  f.width       480
-  f.height      640
-  f.command     'Handbrake CLI blabla...'
+  f.width   480
+  f.height  640
+  f.command 'Handbrake CLI blabla...'
 end
 
 Factory.define :video do |f|
@@ -30,9 +29,8 @@ Factory.define :video do |f|
 end
 
 Factory.define :video_encoding do |f|
-  f.file              File.open("#{Rails.root}/spec/fixtures/railscast_intro.mov")
+  f.association       :video
   f.association       :profile_version, :factory => :video_profile_version
-  f.panda_encoding_id 'd05be7d3f3fa16ff83a584e02ddb1aaf'
 end
 
 Factory.define :log do |f|

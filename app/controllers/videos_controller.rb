@@ -30,9 +30,12 @@ class VideosController < ApplicationController
   
   # POST /videos
   def create
-    @video = current_user.videos.build(params[:video])
+    @video = current_user.videos.build
+    @video.panda_video_id = params[:video][:panda_video_id]
+    
     respond_with(@video) do |format|
       if @video.save
+        @video.delay.pandize
         format.html { redirect_to videos_path }
         format.js
       else
@@ -69,7 +72,7 @@ class VideosController < ApplicationController
   # GET /videos/d891d9a45c698d587831466f236c6c6c/transcoded - Notification url called by Panda, should be a POST
   def transcoded
     @video_encoding = VideoEncoding.find_by_panda_encoding_id!(params[:id])
-    @video_encoding.activate
+    @video_encoding.delay.activate
     head :ok
   end
   

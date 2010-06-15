@@ -14,9 +14,9 @@ end
 
 def run_spec_matching(thing_to_match)
   puts thing_to_match
-  matches = all_spec_files.grep(/#{thing_to_match}/i)
+  matches = all_spec_files.grep(/#{thing_to_match}_spec/i)
   if matches.empty?
-    puts "Sorry, thanks for playing, but there were no matches for #{thing_to_match}"  
+    puts "Sorry, thanks for playing, but there were no matches for #{thing_to_match}"
   else
     run matches.join(' ')
   end

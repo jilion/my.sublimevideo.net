@@ -16,42 +16,19 @@
       code: 200
       message: OK
     headers: 
-      x-powered-by: &id001 
-        - Phusion Passenger (mod_rails/mod_rack) 2.2.9
-      content-type: &id003 
-        - text/html
-      connection: &id002 
-        - keep-alive
-      server: &id004 
-        - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
-      content-length: &id005 
-        - "0"
-      status: &id006 
-        - "200"
-    body: &id007 !str 
-      str: ""
-      "@args": 
-        :headers: {}
-
-        :method: :delete
-        :url: 
-      "@code": 200
-      "@net_http_res": !ruby/object:Net::HTTPOK 
-        __orig_body__: 
-        body: *id007
-        body_exist: true
-        code: "200"
-        header: 
-          x-powered-by: *id001
-          connection: *id002
-          content-type: *id003
-          server: *id004
-          content-length: *id005
-          status: *id006
-        http_version: "1.1"
-        message: OK
-        read: true
-        socket: 
+      x-powered-by: 
+      - Phusion Passenger (mod_rails/mod_rack) 2.2.9
+      content-type: 
+      - application/json
+      connection: 
+      - keep-alive
+      server: 
+      - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
+      content-length: 
+      - "16"
+      status: 
+      - "200"
+    body: "{\"deleted\":true}"
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
@@ -72,10 +49,10 @@
     headers: 
       x-powered-by: 
       - Phusion Passenger (mod_rails/mod_rack) 2.2.9
-      content-type: 
-      - application/json
       connection: 
       - keep-alive
+      content-type: 
+      - application/json
       server: 
       - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
       content-length: 
@@ -103,10 +80,10 @@
     headers: 
       x-powered-by: 
       - Phusion Passenger (mod_rails/mod_rack) 2.2.9
-      connection: 
-      - keep-alive
       content-type: 
       - application/json
+      connection: 
+      - keep-alive
       server: 
       - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
       content-length: 
@@ -132,17 +109,17 @@
       code: 200
       message: OK
     headers: 
-      x-powered-by: &id001 
-        - Phusion Passenger (mod_rails/mod_rack) 2.2.9
-      content-type: &id003 
-        - text/html
-      connection: &id002 
-        - keep-alive
-      server: &id004 
-        - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
-      content-length: &id005 
-        - "0"
-      status: &id006 
-        - "200"
-    body: "{\"message\":\"Couldn't find Profile with ID=00000000000000000000000000000000\",\"error\":\"RecordNotFound\"}"
+      x-powered-by: 
+      - Phusion Passenger (mod_rails/mod_rack) 2.2.9
+      connection: 
+      - keep-alive
+      content-type: 
+      - text/html
+      server: 
+      - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
+      content-length: 
+      - "0"
+      status: 
+      - "200"
+    body: "{\"deleted\":\"Couldn't find Profile with ID=00000000000000000000000000000000\",\"error\":\"RecordNotFound\"}"
     http_version: "1.1"

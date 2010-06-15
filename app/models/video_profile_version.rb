@@ -59,7 +59,6 @@ class VideoProfileVersion < ActiveRecord::Base
   # = Instance Methods =
   # ====================
   
-  # before_transition :on => :pandize
   def create_panda_profile
     params   = { :title => "#{profile.title} ##{profile.versions.size + 1}", :extname => profile.extname, :width => width, :height => height, :command => command }
     response = Transcoder.post(:profile, params)

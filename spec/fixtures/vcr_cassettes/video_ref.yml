@@ -496,5 +496,310 @@
     body: |
       <?xml version="1.0"?>
       <rsp stat="ok"><transaction><type>remove-url</type><id>6d037109-6370-4105-a2da-370332ee0dae</id><expiration>1276185584</expiration><status>inprogress</status></transaction></rsp>
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :post
+    uri: http://api.pandastream.com:80/v2/encodings.json
+    body: 
+    headers: 
+      accept: 
+      - "*/*; q=0.5, application/xml"
+      content-type: 
+      - application/x-www-form-urlencoded
+      accept-encoding: 
+      - gzip, deflate
+      content-length: 
+      - "285"
+      host: 
+      - api.pandastream.com
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      x-powered-by: 
+      - Phusion Passenger (mod_rails/mod_rack) 2.2.9
+      content-type: 
+      - application/json
+      connection: 
+      - keep-alive
+      server: 
+      - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
+      content-length: 
+      - "371"
+      status: 
+      - "200"
+    body: &id001 !str 
+      str: "{\"created_at\":\"2010/06/08 13:00:09 +0000\", \"video_id\":\"f72e511820c12dabc1d15817745225bd\", \"started_encoding_at\":null, \"updated_at\":\"2010/06/08 13:00:09 +0000\", \"encoding_progress\":null, \"encoding_time\":null, \"extname\":\".mp4\", \"id\":\"ab6be8bb1bcf506842264304bc1bb479\", \"file_size\":null, \"height\":320, \"status\":\"processing\", \"profile_id\":\"73f93e74e866d86624a8718d21d06e4e\", \"width\":480}"
+      "@args": 
+        :payload: 
+          timestamp: "2010-06-14T16:54:55.023478+02:00"
+          video_id: 1
+          signature: 800jDn6xAPbCVxnhy6jl2HAHOuEBC5k9wV75yv460PU=
+          access_key: 7cc07330-5147-11df-b458-12313d01b992
+          cloud_id: f2f24a820b4e4e71536fcd567a384848
+          profile_id: 
+        :headers: {}
 
+        :method: :post
+        :url: http://api.pandastream.com:80/v2/encodings.json
+      "@code": 200
+      "@net_http_res": !ruby/object:Net::HTTPOK 
+        body: *id001
+        code: "200"
+        header: 
+          x-powered-by: 
+          - Phusion Passenger (mod_rails/mod_rack) 2.2.9
+          connection: 
+          - keep-alive
+          content-type: 
+          - application/json
+          server: 
+          - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
+          content-length: 
+          - "371"
+          status: 
+          - "200"
+        http_version: "1.0"
+        message: OK
+        read: true
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: !ruby/regexp /api\.pandastream\.com:80\/v2\/encodings\/[a-z0-9]{32}\.json\?.+/
+    body: 
+    headers: 
+      accept: 
+      - "*/*; q=0.5, application/xml"
+      accept-encoding: 
+      - gzip, deflate
+      host: 
+      - api.pandastream.com
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      x-powered-by: 
+      - Phusion Passenger (mod_rails/mod_rack) 2.2.9
+      content-type: 
+      - application/json
+      connection: 
+      - keep-alive
+      server: 
+      - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
+      content-length: 
+      - "388"
+      status: 
+      - "200"
+    body: &id002 !str 
+      str: "{\"created_at\":\"2010/06/08 17:15:11 +0000\",\"video_id\":\"70919b42ea9ef68bfd5b072d5bd0aefd\",\"started_encoding_at\":\"2010/06/08 17:15:17 +0000\",\"updated_at\":\"2010/06/08 17:15:18 +0000\",\"encoding_progress\":100,\"encoding_time\":12,\"extname\":\".mp4\",\"id\":\"ab6be8bb1bcf506842264304bc1bb479\",\"file_size\":125465,\"height\":320,\"status\":\"success\",\"profile_id\":\"5e08a5612e8982ef2f7482e0782bbe02\",\"width\":480}"
+      "@args": 
+        :headers: {}
+
+        :method: :get
+        :url: http://api.pandastream.com:80/v2/encodings/ab6be8bb1bcf506842264304bc1bb479.json?timestamp=2010-06-14T16%3A54%3A55.142014%2B02%3A00&signature=jaUG2Mt%2B6uVdVuvj8IN69Xhlq7Q%2F5pZ22oSIwhBALVw%3D&access_key=7cc07330-5147-11df-b458-12313d01b992&cloud_id=f2f24a820b4e4e71536fcd567a384848
+      "@code": 200
+      "@net_http_res": !ruby/object:Net::HTTPOK 
+        body: *id002
+        code: "200"
+        header: 
+          x-powered-by: 
+          - Phusion Passenger (mod_rails/mod_rack) 2.2.9
+          connection: 
+          - keep-alive
+          content-type: 
+          - application/json
+          server: 
+          - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
+          content-length: 
+          - "388"
+          status: 
+          - "200"
+        http_version: "1.0"
+        message: OK
+        read: true
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: !ruby/regexp /s3\.amazonaws\.com:80\/sublimevideo\.panda\/[a-z0-9]{32}\.mp4/
+    body: 
+    headers: 
+      accept: 
+      - "*/*"
+      host: 
+      - s3.amazonaws.com
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      etag: 
+      - "\"4cdea6b2ca504873822a73110e7263f9\""
+      x-amz-id-2: 
+      - lxZ1URZVaCpADs2thyGXrt6LJ8haC6B5r8k9hxpcTAJuOLhhtXLjTSxZunJ6bQME
+      last-modified: 
+      - Tue, 08 Jun 2010 16:36:46 GMT
+      content-type: 
+      - video/mp4
+      date: 
+      - Mon, 14 Jun 2010 14:41:16 GMT
+      server: 
+      - AmazonS3
+      x-amz-request-id: 
+      - 360E3CDDFE228A93
+      content-length: 
+      - "556667"
+    body: !binary |
+      AAAAIGZ0eXBpc29tAAACAGlzb21pc28yYXZjMW1wNDEAABrnbW9vdgAAAGxt
+      dmhkAAAAAHwlsIB8JbCAAAAD6AAANr8AAQAAAQAAAAAAAAAAAAAAAAEAAAAA
+      AAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAwAADyN0cmFrAAAAXHRraGQAAAAPfCWwgHwlsIAAAAAB
+      AAAAAAAANr8AAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAABAAAA
+      AAAAAAAAAAAAAABAAAAAAZAAAAFAAAAAAA6/bWRpYQAAACBtZGhkAAAAAHwl
+      sIB8JbCAAAB1EQAGaKBVxAAAAAAALWhkbHIAAAAAAAAAAHZpZGUAAAAAAAAA
+      AAAAAABWaWRlb0hhbmRsZXIAAAAOam1pbmYAAAAUdm1oZAAAAAEAAAAAAAAA
+      AAAAACRkaW5mAAAAHGRyZWYAAAAAAAAAAQAAAAx1cmwgAAAAAQAADipzdGJs
+      AAAAknN0c2QAAAAAAAAAAQAAAIJhdmMxAAAAAAAAAAEAAAAAAAAAAAAAAAAA
+      AAAAAZABQABIAAAASAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAGP//AAAALGF2Y0MBQsAe/+EAFWdCwB6eIQMhTQgAAB9AAAdR
+      EHixdQEABGjOPIAAAAAYc3R0cwAAAAAAAAABAAABpAAAA+gAAAAYc3RzcwAA
+      AAAAAAACAAAAAQAAAS0AAAAcc3RzYwAAAAAAAAABAAAAAQAAAAEAAAABAAAG
+      pHN0c3oAAAAAAAAAAAAAAaQAABW0AAAAmQAAAD0AAAEYAAAAnAAAArcAAAFP
+      AAACNgAAAiIAAAGCAAADfAAAAYgAAAIbAAADHAAAAbsAAAGxAAADZQAAAosA
+      AAJhAAACPwAAAoAAAAHkAAAD1gAAAgkAAAKmAAAB2wAAAf0AAAGGAAAEhgAA
+      AQYAAANvAAACCwAAAhQAAAHTAAACgQAAAfoAAAJCAAAD8QAAArMAAAJZAAAB
+      vAAAAdoAAAKQAAAB9AAAAkcAAAG5AAACUwAAAiwAAAV4AAABWAAAAu8AAAJM
+      AAACFwAAAqoAAAKXAAACbgAAAq0AAAHuAAACDwAAAi0AAAguAAACiAAAAWwA
+      AAFsAAABrQAAAgIAAATvAAAEpAAAAvwAAAKpAAAChQAAAxYAAALZAAAChQAA
+      AjIAAAJaAAACmgAAAkYAAAJnAAACsgAAA0sAAAKTAAACWAAAAmsAAAJtAAAC
+      4QAAAmcAAAKiAAACogAABcMAAAQqAAAB+wAAA44AAAM0AAAC0wAAAmQAAAYr
+      AAACFAAABEAAAAONAAADUwAAA3MAAAO2AAADRgAAAzwAAAMzAAAC8AAAAyMA
+      AAOSAAADhQAAA0MAAAMGAAADHQAAAu8AAALAAAADQQAAAqkAAALuAAAD2AAA
+      A1wAAAxjAAAC7gAAAYUAAAKfAAAE1QAAA9AAAANlAAAEWwAAA7cAAANBAAAD
+      JwAAA2AAAANcAAADEQAAA4YAAAMbAAAC+QAAAv4AAAMHAAADXwAAA5YAAAMR
+      AAADhgAAAr8AAAKyAAADCgAAAzwAAALlAAAD4AAABCsAAAOQAAADjAAABB4A
+      AARNAAAD1gAAA48AAAM3AAADZAAAA5MAAANkAAADCQAAAxsAAALsAAACqAAA
+      A8UAAAPIAAAC0gAAA/4AAAM+AAADPQAAArUAAALdAAADKQAAAosAAAKGAAAF
+      OAAAA9YAAAOiAAADsQAABr0AAA1YAAACpQAAArwAAALCAAADqgAAAzcAAAPK
+      AAAFIgAAA4sAAAS8AAAEGwAAA8cAAAPVAAADkgAAA1UAAAOcAAADbAAABEsA
+      AANOAAAEjAAAA20AAAJoAAACcQAABY8AAAJgAAAEiQAABN4AAANlAAAETQAA
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: !ruby/regexp /s3\.amazonaws\.com:80\/sublimevideo\.panda\/[a-z0-9]{32}_4\.jpg/
+    body: 
+    headers: 
+      accept: 
+      - "*/*"
+      host: 
+      - s3.amazonaws.com
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      etag: 
+      - "\"4009adf91b7dededc9bfa0e6ad92fe87\""
+      x-amz-id-2: 
+      - wmjFdeB+8TkfnGwsJGm3N36dtjFY2MuXnSzXgIr5RloBq6FNgNcc2apmIQoGiAcq
+      last-modified: 
+      - Tue, 08 Jun 2010 16:36:49 GMT
+      content-type: 
+      - image/jpeg
+      date: 
+      - Mon, 14 Jun 2010 14:41:19 GMT
+      server: 
+      - AmazonS3
+      x-amz-request-id: 
+      - 366C8AAFEFB69A95
+      content-length: 
+      - "12909"
+    body: !binary |
+      xIOIdo9M/wD1qz5Wa3NL5QuF6+tNDEDFZ/m3H/PL9amVnP3gBRyhclGOadxS
+      b129OfWmK/PIqeULi8nikK+9KzhjxTc4osw0H4GKYCO3NITxUSEDvmizDmLA
+      yOasqpxv5UetUxMqsO/NaBud7BnT5RztzipcX2HFm9CfMjTK4A/P61C7MSY1
+      UlT1NZ9vqXztiPcf4cdBVoamYwcxYJPOT1/SsXB9jdSSJIoRD8xR3b1rTKSZ
+      3I6pnr6ms+O8dALl4vk6DNPjvHVHl8ndk8c8fyqOR9i+aBfNpFEPM5Jbkse9
+      RmNmysYznk4NMN8xQJKgIP8ACOKY7D5QgaMdyD90VPJLsO8e4BFTaozkdc1p
+      BQG3AdutZ3lsZMjJUDqep96miMnIXnmj2Ug5l3LDww9ZOc+tRRxJbnMeB7Cq
+      8g3OV3liOw7VEolY7UJBHcjP9afsmP2iNHzByx4FKP3Z8wHINZm7A+YE1Yyz
+      AbSR/s4zml7Ni5l3IZJNku9M5bqvrWmFbaJOeR0rN2ySyBhEy44qUy3kLhWB
+      ZD270vZy7Bzx7iurnLZ/CmGP5N+c47VeKykcR4z61VRJTkYA5qvZsV0UCkq/
+      P29KsM7xsG8sspH3vT61beOQodxG3sazmT90A02Mn9KSg+wuePcwL6zhuZCz
+      KdzdK5G50p41P8Rz2r0IW8KPtRw57qDStFCZPLX7zD7ncVrHnj0MZSg+p5oN
+      PlSEPIp2k4B9/eoW0+eKUYGO+e1enNGscRtyrPlstnqlV2gbYXYhoxxlhgit
+      eefYz5I9zzq6tmkZXUfNjDn1rotKsiXXcBgdc10aWW0Z8sFTyD2q3HCQSCgU
+      dmHQ1MpTfQpRiupClp5U2TkK35CulS3cxCPfhgchsZGKoM7FdpUMfr1qzHNL
+      HHynPvWXJLsb3SIzIZA6kDzF46cGuYNqYJBNGdj85HaurCzSAnywc98//WrO
+      urZ5SqKNpXljVKLXQzbRzMzI8v71fKY/xAfKfwqGWEx4yOvQjkGuie1jnjD5
+      BxwXx/OqhgjXjzDsHf8A+tXQk+xkzHXih0Vxz19a0mgtgf8AWde9RsluGGJO
+      O/H/ANeqsTcS1ZIflJIHtzTru1juH3RLt9z3poZEOFOR64qbz2TnGR60cg1J
+      GA0ZQ4Iwa5bVf9av0r0CVBcncF2n+dcNrcLRTID/AHaqKsZz1P/Z
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :delete
+    uri: !ruby/regexp /api\.pandastream\.com:80\/v2\/encodings\/[a-z0-9]{32}\.json\?.+/
+    body: 
+    headers: 
+      accept: 
+      - "*/*; q=0.5, application/xml"
+      accept-encoding: 
+      - gzip, deflate
+      host: 
+      - api.pandastream.com
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      x-powered-by: 
+      - Phusion Passenger (mod_rails/mod_rack) 2.2.9
+      connection: 
+      - keep-alive
+      content-type: 
+      - application/json
+      server: 
+      - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
+      content-length: 
+      - "16"
+      status: 
+      - "200"
+    body: "{\"deleted\":true}"
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: !ruby/regexp /api\.pandastream\.com:80\/v2\/encodings\/[a-z0-9]{32}d\.json\?.+/
+    body: 
+    headers: 
+      accept: 
+      - "*/*; q=0.5, application/xml"
+      accept-encoding: 
+      - gzip, deflate
+      host: 
+      - api.pandastream.com
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      x-powered-by: 
+      - Phusion Passenger (mod_rails/mod_rack) 2.2.9
+      content-type: 
+      - application/json
+      connection: 
+      - keep-alive
+      server: 
+      - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
+      content-length: 
+      - "388"
+      status: 
+      - "200"
+    body: &id002 !str 
+      str: "{\"message\":\"Couldn't find Encoding with ID=ab6be8bb1bcf506842264304bc1bb479d\",\"error\":\"RecordNotFound\"}"
     http_version: "1.1"

@@ -27,7 +27,7 @@
 
 class Video < ActiveRecord::Base
   
-  attr_accessible :panda_video_id, :title, :file, :thumbnail
+  attr_accessible :title
   uniquify :token, :chars => ('a'..'z').to_a + ('0'..'9').to_a
   
   mount_uploader :thumbnail, ThumbnailUploader
@@ -104,11 +104,11 @@ class Video < ActiveRecord::Base
   end
   
   def hd?
-    width >= 720 || height >= 1280
+    (width? && width >= 720) || (height? && height >= 1280)
   end
   
   def name
-    original_filename.sub(extname, '')
+    original_filename ? original_filename.sub(extname, '') : ''
   end
   
   def total_size
@@ -137,7 +137,7 @@ protected
     VideoProfile.active.each do |profile|
       encoding = self.encodings.build(:profile_version => profile.active_version)
       encoding.save!
-      encoding.pandize # delay
+      encoding.delay(:priority => 5).pandize
     end
   end
   
@@ -164,7 +164,7 @@ protected
   
   # after_transition :on => :archive
   def remove_video!
-    # Transcoder.delete(:video, panda_video_id) # until Panda gem fix the error response on delete
+    Transcoder.delete(:video, panda_video_id)
   end
   
   # after_transition :on => [:archive, :suspend]
@@ -172,7 +172,7 @@ protected
     self.encodings.each do |e|
       CDN.purge("/v/#{token}/#{name}#{e.profile.name}#{e.extname}")
     end
-    CDN.purge("/v/#{token}/#{name}.jpg") unless encodings.empty?
+    CDN.purge("/v/#{token}/posterframe.jpg") unless encodings.empty?
   end
   
 end

@@ -66,83 +66,78 @@ describe Video do
   end
   
   describe "State Machine" do
-    # before(:each) do
-    #   VCR.insert_cassette('video')
-    #   @active_video_profile         = Factory(:video_profile)
-    #   @active_video_profile_version = Factory(:video_profile_version, :profile => @active_video_profile)
-    #   @active_video_profile_version.should be_valid
-    #   @active_video_profile_version.pandize
-    #   @active_video_profile_version.activate
-    #   
-    #   @video = Factory(:video)
-    # end
     
     describe "initial state" do
       subject { Factory(:video) }
-      
       it { should be_pending }
     end
     
     describe "event(:pandize)" do
-      before(:each) do
-        VCR.insert_cassette('video')
-        @active_video_profile_version = Factory(:video_profile_version)
-        @active_video_profile_version.pandize
-        @active_video_profile_version.activate
-        
-        @active_video_profile_version2 = Factory(:video_profile_version)
-        @active_video_profile_version2.pandize
-        @active_video_profile_version2.activate
-        
-        @experimental_video_profile_version = Factory(:video_profile_version)
-        @experimental_video_profile_version.pandize
-        
-        @video = Factory(:video)
-        @video.pandize
-      end
+      before(:each) { @video = Factory(:video) }
       
-      it "should set the state as :encodings" do
-        @video.should be_encodings
-      end
-      
-      describe "before_transition => #set_video_information" do
-        it "should set video informations fetched from the transcoder service" do
-          @video.original_filename.should be_present
-          @video.video_codec.should       be_present
-          @video.audio_codec.should       be_present
-          @video.extname.should           be_present
-          @video.file_size.should         be_present
-          @video.duration.should          be_present
-          @video.width.should             be_present
-          @video.height.should            be_present
-          @video.fps.should               be_present
+      context "panda_video_id is not nil" do
+        it "should set the state as :encodings" do
+          VCR.use_cassette('video/pandize') { @video.pandize }
+          @video.should be_encodings
+        end
+        
+        it "should delay pandize for each encodings" do
+          vpv = Factory(:video_profile_version)
+          VCR.use_cassette('video_profile_version/pandize') { vpv.pandize }
+          vpv.activate
+          VCR.use_cassette('video/pandize') do
+            @video.pandize
+            Delayed::Job.last.name.should == 'VideoEncoding#pandize'
+            Delayed::Worker.new.work_off
+          end
+        end
+        
+        describe "before_transition => #set_video_information" do
+          it "should set video informations fetched from the transcoder service" do
+            VCR.use_cassette('video/pandize') { @video.pandize }
+            @video.original_filename.should be_present
+            @video.video_codec.should       be_present
+            @video.audio_codec.should       be_present
+            @video.extname.should           be_present
+            @video.file_size.should         be_present
+            @video.duration.should          be_present
+            @video.width.should             be_present
+            @video.height.should            be_present
+            @video.fps.should               be_present
+          end
+        end
+        
+        describe "after_transition => #create_encodings" do
+          before(:each) do
+          end
+          
+          it "should create as many encodings as the number of current active profiles" do
+            active_video_profile_versions = 2.times.inject([]) do |memo, i|
+              vpv = Factory(:video_profile_version)
+              VCR.use_cassette('video_profile_version/pandize') { vpv.pandize }
+              vpv.activate
+              memo << vpv
+            end
+            VCR.use_cassette('video/pandize') { @video.pandize }
+            
+            @video.encodings.size.should == 2
+            @video.encodings[0].profile.should == active_video_profile_versions[0].profile
+            @video.encodings[1].profile.should == active_video_profile_versions[1].profile
+          end
         end
       end
-        
-      describe "after_transition => #create_encodings" do
-        it "should create as many encodings as the number of current active profiles" do
-          @video.encodings.size.should == 2
-          @video.encodings[0].profile.should == @active_video_profile_version.profile
-          @video.encodings[1].profile.should == @active_video_profile_version2.profile
-        end
-      end
-      
-      after(:each) { VCR.eject_cassette }
     end
     
     describe "event(:suspend)" do
       before(:each) do
-        VCR.insert_cassette('video')
-        active_video_profile_version = Factory(:video_profile_version)
-        active_video_profile_version.should be_valid
-        active_video_profile_version.pandize
-        active_video_profile_version.activate
-        
         @video = Factory(:video)
+        active_video_profile_version = Factory(:video_profile_version)
+        VCR.use_cassette('video_profile_version/pandize') { active_video_profile_version.pandize }
+        active_video_profile_version.activate
       end
       
       context "on a pending video" do
-        before(:each) { @video.suspend }
+        before(:each) { VCR.use_cassette('video/suspend') { @video.suspend } }
         
         it "should set the state as :encodings" do
           @video.should be_encodings
@@ -162,14 +157,14 @@ describe Video do
       end
       
       context "on a encodings video" do
-        before(:each) { @video.pandize }
+        before(:each) { VCR.use_cassette('video/pandize') { @video.pandize } }
         
         it "should set the state as :encodings" do
-          @video.suspend
+          VCR.use_cassette('video/suspend') { @video.suspend }
           @video.should be_encodings
         end
         
-        describe "before_transition => #block_video" do
+        pending "before_transition => #block_video" do
           it "should set the READ right to NOBODY (or OWNER if it's enough)" do
             
           end
@@ -180,20 +175,17 @@ describe Video do
             @video.encodings.each do |e|
               CDN.should_receive(:purge).with("/v/#{@video.token}/#{@video.name}#{e.profile.name}#{e.extname}")
             end
-            CDN.should_receive(:purge).with("/v/#{@video.token}/#{@video.name}.jpg")
-            @video.suspend
+            CDN.should_receive(:purge).with("/v/#{@video.token}/posterframe.jpg")
+            VCR.use_cassette('video/suspend') { @video.suspend }
           end
         end
       end
       
-      after(:each) { VCR.eject_cassette }
     end
     
     describe "event(:unsuspend)" do
       before(:each) do
-        VCR.insert_cassette('video')
-        @video = Factory(:video)
-        @video.pandize
+        @video = Factory(:video, :state => 'encodings')
         @video.unsuspend
       end
       
@@ -201,205 +193,187 @@ describe Video do
         @video.should be_encodings
       end
       
-      describe "before_transition => #unblock_video" do
+      pending "before_transition => #unblock_video" do
         it "should set the READ right to WORLD" do
           
         end
       end
-      
-      after(:each) { VCR.eject_cassette }
     end
     
     describe "event(:archive)" do
       before(:each) do
-        VCR.insert_cassette('video')
         active_video_profile_version = Factory(:video_profile_version)
-        active_video_profile_version.should be_valid
-        active_video_profile_version.pandize
+        VCR.use_cassette('video_profile_version/pandize') { active_video_profile_version.pandize }
         active_video_profile_version.activate
-        
-        @video = Factory(:video)
       end
       
       context "on a pending video" do
-        before(:each) { @video.archive }
-        
-        it "should set the state as :archived" do
-          @video.should be_archived
-        end
+        before(:each) { @video = Factory(:video) }
         
         describe "before_transition => #set_archived_at" do
           it "should set archived_at to now, the video is not accessible anymore, anywhere, anytime, THE END!" do
+            @video.stub!(:archive_encodings => true, :remove_video_and_thumbnail_file => true)
+            VCR.use_cassette('video/archive') { @video.archive }
             @video.archived_at.should be_present
+            @video.should be_archived
           end
         end
         
         describe "before_transition => #archive_encodings" do
           it "should not archive any encodings since the video is pending!" do
+            @video.stub!(:set_archived_at => true, :remove_video_and_thumbnail_file => true)
+            VCR.use_cassette('video/archive') { @video.archive }
             @video.encodings.should be_empty
+            @video.should be_archived
           end
         end
         
         describe "after_transition => #remove_video_and_thumbnail_file!" do
           it "should not remove any file since the video is pending" do
+            @video.stub!(:set_archived_at => true, :archive_encodings => true)
+            VCR.use_cassette('video/archive') { @video.archive }
             @video.thumbnail.should_not be_present
+            @video.should be_archived
           end
         end
       end
       
       context "on a encodings video" do
-        before(:each) do
-          @video.reload
-          @video.pandize
-          @video.reload
-          @video.archive
-        end
-        
-        it "should set the state as :archived" do
-          @video.should be_archived
-        end
+        before(:each) { @video = Factory(:video, :state => 'encodings') }
         
         describe "before_transition => #set_archived_at" do
           it "should set archived_at to now, the video is not accessible anymore, anywhere, anytime, THE END!" do
+            @video.stub!(:archive_encodings => true, :remove_video_and_thumbnail_file => true)
+            VCR.use_cassette('video/archive') { @video.archive }
             @video.archived_at.should be_present
+            @video.should be_archived
           end
         end
         
         describe "before_transition => #archive_encodings" do
           it "should archive every encodings!" do
+            @video.stub!(:set_archived_at => true, :remove_video_and_thumbnail_file => true)
+            VCR.use_cassette('video/archive') { @video.archive }
             @video.encodings.each { |e| e.should be_archived }
+            @video.should be_archived
           end
         end
         
         describe "after_transition => #remove_video!" do
           it "should remove the original video file" do
-            pending "until Panda gem fix the error response on delete"
+            @video.stub!(:set_archived_at => true, :archive_encodings => true)
             Transcoder.should_receive(:delete).with(:video, @video.panda_video_id)
+            VCR.use_cassette('video/archive') { @video.archive }
+            @video.should be_archived
           end
         end
       end
       
-      after(:each) { VCR.eject_cassette }
     end
+    
   end
   
   describe "Instance Methods" do
-    # before(:each) do
-    #   VCR.insert_cassette('video')
-    #   active_video_profile_version = Factory(:video_profile_version)
-    #   active_video_profile_version.pandize
-    #   active_video_profile_version.activate
-    #   
-    #   active_video_profile_version2 = Factory(:video_profile_version)
-    #   active_video_profile_version2.pandize
-    #   active_video_profile_version2.activate
-    #   
-    #   @video = Factory(:video)
-    #   @video.reload
-    #   @video.pandize
-    # end
+    before(:each) { @video = Factory(:video) }
     
     describe "#name" do
-      before(:each) do
-        VCR.insert_cassette('video')
-        @video = Factory(:video)
-        @video.pandize
-      end
-      
       it "should return name used in the filename of the Video file" do
+        VCR.use_cassette('video/pandize') { @video.pandize }
         @video.name.should == @video.original_filename.sub(@video.extname, '')
       end
-      
-      after(:each) { VCR.eject_cassette }
     end
     
     describe "#total_size" do
-      before(:each) do
-        VCR.insert_cassette('video')
-        @vpv1 = Factory(:video_profile_version)
-        @vpv1.pandize
-        @vpv1.activate
-        @vpv2 = Factory(:video_profile_version)
-        @vpv2.pandize
-        @vpv2.activate
-        @video = Factory(:video)
-        @video.pandize
-      end
-      
       it "should return total storage (reference video size + encoding sizes)" do
+        2.times do
+          vpv = Factory(:video_profile_version)
+          VCR.use_cassette('video_profile_version/pandize') { vpv.pandize }
+          vpv.activate
+        end
+        VCR.use_cassette('video/pandize') { @video.pandize }
+        
         @video.encodings[0].update_attribute(:file_size, 10)
         @video.encodings[1].update_attribute(:file_size, 20)
         @video.total_size.should == @video.file_size + 10 + 20
       end
-      
-      after(:each) { VCR.eject_cassette }
     end
-    # 
-    # describe "#in_progress?" do
-    #   it "should return true if any video encoding of a video is currently encoding" do
-    #     @video.should be_in_progress
-    #     @video.encodings.each do |e|
-    #       e.activate
-    #       e.reload
-    #       e.should be_active
-    #     end
-    #     @video.should_not be_in_progress
-    #   end
-    # end
-    # 
-  #   describe "#active?" do
-  #     it "should return true if all the encodings of a video are active" do
-  #       @video.should_not be_active
-  #       @video.encodings.each do |e|
-  #         e.activate
-  #         e.reload
-  #         e.should be_active
-  #       end
-  #       @video.should be_active
-  #     end
-  #   end
-  #   
-  #   describe "#failed?" do
-  #     it "should return true if any video encoding of a video is currently failed" do
-  #       @video.should_not be_failed
-  #       @video.encodings.first.fail
-  #       @video.encodings.first.reload
-  #       @video.encodings.first.should be_failed
-  #       @video.should be_failed
-  #     end
-  #   end
-  #   
-  #   describe "#hd?" do
-  #     it "should return true if width >= 720" do
-  #       @video.update_attribute(:width, 720)
-  #       @video.should be_hd
-  #     end
-  #     
-  #     it "should return true if height >= 1280" do
-  #       @video.update_attribute(:height, 1280)
-  #       @video.should be_hd
-  #     end
-  #     
-  #     it "should return false if width < 720 and height < 1280" do
-  #       @video.update_attributes(:width => 719, :height => 1279)
-  #       @video.should_not be_hd
-  #     end
-  #   end
     
-    # after(:each) { VCR.eject_cassette }
+    describe "#in_progress?" do
+      it "should return true if any video encoding of a video is currently encoding" do
+        2.times do
+          vpv = Factory(:video_profile_version)
+          VCR.use_cassette('video_profile_version/pandize') { vpv.pandize }
+          vpv.activate
+        end
+        VCR.use_cassette('video/pandize') do
+          @video.pandize
+          Delayed::Worker.new.work_off
+        end
+        
+        @video.should be_in_progress
+        @video.encodings.each do |e|
+          VCR.use_cassette('video_encoding/activate') { e.activate }
+          e.should be_active
+        end
+        @video.should_not be_in_progress
+      end
+    end
+    
+    describe "#active?" do
+      it "should return true if all the encodings of a video are active" do
+        2.times do
+          vpv = Factory(:video_profile_version)
+          VCR.use_cassette('video_profile_version/pandize') { vpv.pandize }
+          vpv.activate
+        end
+        VCR.use_cassette('video/pandize') do
+          @video.pandize
+          Delayed::Worker.new.work_off
+        end
+        
+        @video.should_not be_active
+        @video.encodings.each do |e|
+          VCR.use_cassette('video_encoding/activate') { e.activate }
+          e.should be_active
+        end
+        @video.should be_active
+      end
+    end
+    
+    describe "#failed?" do
+      it "should return true if any video encoding of a video is currently failed" do
+        vpv = Factory(:video_profile_version)
+        VCR.use_cassette('video_profile_version/pandize') { vpv.pandize }
+        vpv.activate
+        VCR.use_cassette('video/pandize') do
+          @video.pandize
+          Delayed::Worker.new.work_off
+        end
+        
+        @video.should_not be_failed
+        @video.encodings.first.fail
+        @video.encodings.first.should be_failed
+        @video.should be_failed
+      end
+    end
+    
+    describe "#hd?" do
+      it "should return true if width >= 720" do
+        @video.update_attribute(:width, 720)
+        @video.should be_hd
+      end
+      
+      it "should return true if height >= 1280" do
+        @video.update_attribute(:height, 1280)
+        @video.should be_hd
+      end
+      
+      it "should return false if width < 720 and height < 1280" do
+        @video.update_attributes(:width => 719, :height => 1279)
+        @video.should_not be_hd
+      end
+    end
+    
   end
   
-end
-
-def create_active_profile
-  vpv = Factory(:video_profile_version)
-  vpv.pandize
-  vpv.activate
-  vpv.profile
-end
-
-def create_experimental_profile
-  vpv = Factory(:video_profile_version)
-  vpv.pandize
-  vpv.profile
 end

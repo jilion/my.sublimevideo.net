@@ -7,7 +7,7 @@
 #  video_profile_version_id :integer
 #  state                    :string(255)
 #  file                     :string(255)
-#  panda_encoding_id        :integer
+#  panda_encoding_id        :string(255)
 #  started_encoding_at      :datetime
 #  encoding_time            :integer
 #  extname                  :string(255)
@@ -19,6 +19,8 @@
 #
 
 class VideoEncoding < ActiveRecord::Base
+  
+  attr_accessor :encoding_ok
   
   mount_uploader :file, VideoUploader
   
@@ -52,14 +54,17 @@ class VideoEncoding < ActiveRecord::Base
   # =================
   
   state_machine :initial => :pending do
+    before_transition :on => :activate, :do => [:populate_information, :set_file, :set_video_thumbnail]
+    after_transition  :on => :activate, :do => :delete_panda_encoding
+    
     event(:pandize) do
-      transition [:pending, :failed, :active] => :encoding, :if => :create_panda_encoding
-      transition [:pending, :failed, :active] => :failed
+      transition [:pending, :active] => :encoding, :if => :encoding_ok?
+      transition :failed             => :encoding, :if => :retry_encoding_ok?
+      transition [:pending, :active] => :failed
     end
     
-    # event(:pandize)   { transition [:pending, :failed, :active] => :encoding }
     event(:activate)  { transition :encoding => :active }
-    event(:fail)      { transition :encoding => :failed }
+    event(:fail)      { transition [:pending, :encoding] => :failed }
     
     event(:suspend)   { transition [:pending, :encoding, :failed, :active] => :suspended }
     event(:unsuspend) do
@@ -73,39 +78,67 @@ class VideoEncoding < ActiveRecord::Base
   # = Class Methods =
   # =================
   
-  # def self.create_with_encoding_response(original, encoding_response)
-  #   raise "Can't create a format without an id from Panda" unless encoding_response['id'].present?
-  #   new_format           = original.formats.build
-  #   new_format.panda_id  = encoding_response['id']
-  #   new_format.name      = encoding_response['title']
-  #   new_format.container = encoding_response['extname'].gsub('.','')
-  #   new_format.width     = encoding_response['width'].to_i
-  #   new_format.height    = encoding_response['height'].to_i
-  #   new_format.size      = 0
-  #   new_format.save!
-  #   new_format.fail if encoding_response['status'] == 'fail'
-  #   new_format
-  # end
+  def self.panda_s3_url
+    @@panda_s3_url ||= "http://s3.amazonaws.com/" + Panda.get("/clouds/#{PandaConfig.cloud_id}.json")["s3_videos_bucket"]
+  end
   
   # ====================
   # = Instance Methods =
   # ====================
   
+  def first_encoding?
+    encoding? && !file.present?
+  end
+  
+  def encoding_ok?
+    create_panda_encoding
+  end
+  
+  def retry_encoding_ok?
+    if panda_encoding_id?
+      # response = Transcoder.retry(:encoding, params)
+    else
+      create_panda_encoding
+    end
+  end
+  
   def create_panda_encoding
-    true
+    params   = { :video_id => video.panda_video_id, :profile_id => profile_version.panda_profile_id }
+    response = Transcoder.post(:encoding, params)
+    if response.key?(:id)
+      self.panda_encoding_id = response[:id]
+      self.extname           = response[:extname]
+      self.width             = response[:width]
+      self.height            = response[:height]
+      response[:status] != 'failed'
+    else
+      false
+    end
+  end
+  
+  # before_transition :on => :activate
+  def populate_information
+    encoding_info            = Transcoder.get(:encoding, panda_encoding_id)
+    self.file_size           = encoding_info[:file_size].to_i
+    self.started_encoding_at = encoding_info[:started_encoding_at].to_time
+    self.encoding_time       = encoding_info[:encoding_time].to_i
+  end
+  
+  # before_transition :on => :activate
+  def set_file
+    self.remote_file_url = "#{self.class.panda_s3_url}/#{panda_encoding_id}#{extname}"
+  end
+  
+  # before_transition :on => :activate
+  def set_video_thumbnail
+    self.video.remote_thumbnail_url = "#{self.class.panda_s3_url}/#{panda_encoding_id}_4.jpg" if profile.thumbnailable?
+    self.video.save!
   end
   
   # after_transition :on => :activate
-  # def populate_formats_information
-  #   Panda.get("/videos/#{panda_id}/encodings.json").each do |format_info|
-  #     next unless f = formats.find_by_panda_id(format_info['id'])
-  #     # f.codec    = format_info['video_codec'] # not returned by the API...
-  #     Rails.logger.debug "format_info: #{format_info.inspect}"
-  #     f.size = format_info['file_size'].to_i
-  #     f.save
-  #   end
-  # end
-  
-private
+  def delete_panda_encoding
+    response = Transcoder.delete(:encoding, panda_encoding_id)
+    raise "Couldn't delete encoding ##{panda_encoding_id}" unless response[:deleted]
+  end
   
 end

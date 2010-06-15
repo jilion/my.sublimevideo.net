@@ -112,7 +112,4 @@ describe VideoProfileVersion do
     after(:each) { VCR.eject_cassette }
   end
   
-  describe "Callbacks" do
-  end
-  
 end

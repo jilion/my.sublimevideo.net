@@ -26,9 +26,11 @@ describe VideosController do
       response.should be_success
     end
     it "should respond with success to POST :create" do
-      @mock_user.stub_chain(:videos, :build).with({}).and_return(mock_video)
+      @mock_user.stub_chain(:videos, :build).and_return(mock_video)
+      mock_video.stub(:panda_video_id=).with('abcdef123456')
       mock_video.stub(:save).and_return(true)
-      post :create, :video => {}
+      mock_video.stub_chain(:delay, :pandize).and_return(true)
+      post :create, :video => { :panda_video_id => "abcdef123456" }
       response.should redirect_to(videos_url)
     end
     it "should respond with success to PUT :update" do
@@ -72,7 +74,7 @@ describe VideosController do
     end
     it "should activate a video and respond with success to GET :transcoded" do
       VideoEncoding.stub(:find_by_panda_encoding_id!).with("1").and_return(mock_video_encoding)
-      mock_video_encoding.stub(:activate)
+      mock_video_encoding.stub_chain(:delay, :activate).and_return(true)
       get :transcoded, :id => '1'
       response.should be_success
     end

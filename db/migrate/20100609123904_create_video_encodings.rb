@@ -8,7 +8,7 @@ class CreateVideoEncodings < ActiveRecord::Migration
       t.string     :file                    # carrierwave
       
       # Panda fields
-      t.integer    :panda_encoding_id
+      t.string     :panda_encoding_id
       t.datetime   :started_encoding_at
       t.integer    :encoding_time
       t.string     :extname

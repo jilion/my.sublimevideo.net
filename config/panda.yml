@@ -1,4 +1,15 @@
-access_key: '7cc07330-5147-11df-b458-12313d01b992'
-secret_key: 'Qm5HD/dosWFeL2wleFy9ppn822tpfVQ2l8h5Tlvc'
-cloud_id: 'f2f24a820b4e4e71536fcd567a384848'
-api_host: 'api.pandastream.com'
+development:
+  access_key: '7cc07330-5147-11df-b458-12313d01b992'
+  secret_key: 'Qm5HD/dosWFeL2wleFy9ppn822tpfVQ2l8h5Tlvc'
+  cloud_id: 'f2f24a820b4e4e71536fcd567a384848'
+  api_host: 'api.pandastream.com'
+test:
+  access_key: '7cc07330-5147-11df-b458-12313d01b992'
+  secret_key: 'Qm5HD/dosWFeL2wleFy9ppn822tpfVQ2l8h5Tlvc'
+  cloud_id: 'f2f24a820b4e4e71536fcd567a384848'
+  api_host: 'api.pandastream.com'
+production:
+  access_key: '7cc07330-5147-11df-b458-12313d01b992'
+  secret_key: 'Qm5HD/dosWFeL2wleFy9ppn822tpfVQ2l8h5Tlvc'
+  cloud_id: 'f2f24a820b4e4e71536fcd567a384848'
+  api_host: 'api.pandastream.com'

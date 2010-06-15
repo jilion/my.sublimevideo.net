@@ -61,38 +61,34 @@ describe VideoProfile do
   describe "Class Methods" do
     describe ".active" do
       before(:each) do
-        VCR.insert_cassette('video_profile')
         @active_video_profile_version = Factory(:video_profile_version)
-        @active_video_profile_version.pandize
-        @active_video_profile_version.activate
-        @experimental_video_profile = Factory(:video_profile)
+        VCR.use_cassette('video_profile_version/pandize') { @active_video_profile_version.pandize }
+        VCR.use_cassette('video_profile_version/activate') { @active_video_profile_version.activate }
+        Factory(:video_profile)
       end
       
       it "should return all the active profiles" do
         VideoProfile.active.should == [@active_video_profile_version.profile]
       end
-      
-      after(:each) { VCR.eject_cassette }
     end
   end
   
   describe "Instance Methods" do
     before(:each) do
-      VCR.insert_cassette('video_profile')
       @video_profile                = Factory(:video_profile)
       @active_video_profile_version = Factory(:video_profile_version, :profile => @video_profile)
-      @active_video_profile_version.pandize
-      @active_video_profile_version.activate
+      VCR.use_cassette('video_profile_version/pandize') { @active_video_profile_version.pandize }
+      VCR.use_cassette('video_profile_version/activate') { @active_video_profile_version.activate }
     end
     
     describe "#experimental_version" do
-      it "should return the active version of a profile it's the latest version" do
+      it "should return the active version of a profile if it's the latest version" do
         @video_profile.experimental_version.should == @active_video_profile_version
       end
       
       it "should return the last version of a profile (even if not active)" do
         @experimental_profile_version = Factory(:video_profile_version, :profile => @video_profile)
-        @experimental_profile_version.pandize
+        VCR.use_cassette('video_profile_version/pandize') { @experimental_profile_version.pandize }
         @video_profile.experimental_version.should == @experimental_profile_version
       end
     end
@@ -102,8 +98,6 @@ describe VideoProfile do
         @video_profile.active_version.should == @active_video_profile_version
       end
     end
-    
-    after(:each) { VCR.eject_cassette }
   end
   
 end

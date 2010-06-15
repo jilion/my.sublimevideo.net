@@ -116,7 +116,7 @@ describe Transcoder::PandaStream do
   end
   
   # pending until the API error is fixed
-  pending ".delete(item, id)" do
+  describe ".delete(item, id)" do
     before(:each) { VCR.insert_cassette('panda/delete') }
     
     it "should return the equivalent of Panda.delete('/videos/ID.json') response" do

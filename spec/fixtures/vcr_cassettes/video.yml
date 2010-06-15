@@ -18,10 +18,10 @@
     headers: 
       x-powered-by: 
       - Phusion Passenger (mod_rails/mod_rack) 2.2.9
-      connection: 
-      - keep-alive
       content-type: 
       - application/json
+      connection: 
+      - keep-alive
       server: 
       - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
       content-length: 
@@ -49,10 +49,10 @@
     headers: 
       x-powered-by: 
       - Phusion Passenger (mod_rails/mod_rack) 2.2.9
-      content-type: 
-      - application/json
       connection: 
       - keep-alive
+      content-type: 
+      - application/json
       server: 
       - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
       content-length: 
@@ -80,10 +80,10 @@
     headers: 
       x-powered-by: 
       - Phusion Passenger (mod_rails/mod_rack) 2.2.9
-      connection: 
-      - keep-alive
       content-type: 
       - application/json
+      connection: 
+      - keep-alive
       server: 
       - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
       content-length: 
@@ -111,10 +111,10 @@
     headers: 
       x-powered-by: 
       - Phusion Passenger (mod_rails/mod_rack) 2.2.9
-      content-type: 
-      - application/json
       connection: 
       - keep-alive
+      content-type: 
+      - application/json
       server: 
       - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
       content-length: 
@@ -142,17 +142,43 @@
     headers: 
       x-powered-by: 
       - Phusion Passenger (mod_rails/mod_rack) 2.2.9
-      connection: 
-      - keep-alive
       content-type: 
       - application/json
+      connection: 
+      - keep-alive
       server: 
       - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
       content-length: 
       - "327"
       status: 
       - "200"
-    body: "{\"duration\":1160,\"created_at\":\"2010/05/27 19:22:15 +0000\",\"original_filename\":\"railscast_intro.mov\",\"updated_at\":\"2010/05/27 19:22:17 +0000\",\"source_url\":null,\"extname\":\".mov\",\"id\":\"f72e511820c12dabc1d15817745225bd\",\"audio_codec\":\"aac\",\"file_size\":17236,\"height\":360,\"fps\":2,\"status\":\"success\",\"video_codec\":\"h264\",\"width\":480}"
+    body: &id001 !str 
+      str: "{\"duration\":1160,\"created_at\":\"2010/05/27 19:22:15 +0000\",\"original_filename\":\"railscast_intro.mov\",\"updated_at\":\"2010/05/27 19:22:17 +0000\",\"source_url\":null,\"extname\":\".mov\",\"id\":\"f72e511820c12dabc1d15817745225bd\",\"audio_codec\":\"aac\",\"file_size\":17236,\"height\":360,\"fps\":2,\"status\":\"success\",\"video_codec\":\"h264\",\"width\":480}"
+      "@args": 
+        :headers: {}
+
+        :method: :get
+        :url: http://api.pandastream.com:80/v2/videos/f72e511820c12dabc1d15817745225bd.json?timestamp=2010-06-14T17%3A53%3A40.679791%2B02%3A00&signature=Pi%2FDblx5F129dyrSkRj38FVVM3qmzAHkPR9pUpFIWHQ%3D&access_key=7cc07330-5147-11df-b458-12313d01b992&cloud_id=f2f24a820b4e4e71536fcd567a384848
+      "@code": 200
+      "@net_http_res": !ruby/object:Net::HTTPOK 
+        body: *id001
+        code: "200"
+        header: 
+          x-powered-by: 
+          - Phusion Passenger (mod_rails/mod_rack) 2.2.9
+          connection: 
+          - keep-alive
+          content-type: 
+          - application/json
+          server: 
+          - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
+          content-length: 
+          - "327"
+          status: 
+          - "200"
+        http_version: "1.0"
+        message: OK
+        read: true
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
@@ -173,17 +199,43 @@
     headers: 
       x-powered-by: 
       - Phusion Passenger (mod_rails/mod_rack) 2.2.9
-      connection: 
-      - keep-alive
       content-type: 
       - application/json
+      connection: 
+      - keep-alive
       server: 
       - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
       content-length: 
       - "388"
       status: 
       - "200"
-    body: "{\"created_at\":\"2010/06/08 17:15:11 +0000\",\"video_id\":\"70919b42ea9ef68bfd5b072d5bd0aefd\",\"started_encoding_at\":\"2010/06/08 17:15:17 +0000\",\"updated_at\":\"2010/06/08 17:15:18 +0000\",\"encoding_progress\":null,\"encoding_time\":null,\"extname\":\".mp4\",\"id\":\"9b050f8e762dfec8904e9ab679beb29b\",\"file_size\":null,\"height\":320,\"status\":\"fail\",\"profile_id\":\"5e08a5612e8982ef2f7482e0782bbe02\",\"width\":480}"
+    body: &id002 !str 
+      str: "{\"created_at\":\"2010/06/08 17:15:11 +0000\",\"video_id\":\"70919b42ea9ef68bfd5b072d5bd0aefd\",\"started_encoding_at\":\"2010/06/08 17:15:17 +0000\",\"updated_at\":\"2010/06/08 17:15:18 +0000\",\"encoding_progress\":null,\"encoding_time\":null,\"extname\":\".mp4\",\"id\":\"9b050f8e762dfec8904e9ab679beb29b\",\"file_size\":null,\"height\":320,\"status\":\"fail\",\"profile_id\":\"5e08a5612e8982ef2f7482e0782bbe02\",\"width\":480}"
+      "@args": 
+        :headers: {}
+
+        :method: :get
+        :url: http://api.pandastream.com:80/v2/encodings/d51c76dc5fe97d9d2f1bbd6f4e7fa1a3.json?timestamp=2010-06-14T17%3A53%3A43.332634%2B02%3A00&signature=A%2BnlM2Dz49IiS9wHQEqpTwdY%2Btx%2FkAOEJahDLyLT%2FhE%3D&access_key=7cc07330-5147-11df-b458-12313d01b992&cloud_id=f2f24a820b4e4e71536fcd567a384848
+      "@code": 200
+      "@net_http_res": !ruby/object:Net::HTTPOK 
+        body: *id002
+        code: "200"
+        header: 
+          x-powered-by: 
+          - Phusion Passenger (mod_rails/mod_rack) 2.2.9
+          connection: 
+          - keep-alive
+          content-type: 
+          - application/json
+          server: 
+          - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
+          content-length: 
+          - "388"
+          status: 
+          - "200"
+        http_version: "1.0"
+        message: OK
+        read: true
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
@@ -204,10 +256,10 @@
     headers: 
       x-powered-by: 
       - Phusion Passenger (mod_rails/mod_rack) 2.2.9
-      connection: 
-      - keep-alive
       content-type: 
       - application/json
+      connection: 
+      - keep-alive
       server: 
       - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
       content-length: 
@@ -239,10 +291,10 @@
     headers: 
       x-powered-by: 
       - Phusion Passenger (mod_rails/mod_rack) 2.2.9
-      connection: 
-      - keep-alive
       content-type: 
       - application/json
+      connection: 
+      - keep-alive
       server: 
       - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
       content-length: 
@@ -274,17 +326,50 @@
     headers: 
       x-powered-by: 
       - Phusion Passenger (mod_rails/mod_rack) 2.2.9
-      connection: 
-      - keep-alive
       content-type: 
       - application/json
+      connection: 
+      - keep-alive
       server: 
       - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
       content-length: 
       - "371"
       status: 
       - "200"
-    body: "{\"created_at\":\"2010/06/08 13:00:09 +0000\", \"video_id\":\"f72e511820c12dabc1d15817745225bd\", \"started_encoding_at\":null, \"updated_at\":\"2010/06/08 13:00:09 +0000\", \"encoding_progress\":null, \"encoding_time\":null, \"extname\":\".mp4\", \"id\":\"d51c76dc5fe97d9d2f1bbd6f4e7fa1a3\", \"file_size\":null, \"height\":320, \"status\":\"processing\", \"profile_id\":\"73f93e74e866d86624a8718d21d06e4e\", \"width\":480}"
+    body: &id003 !str 
+      str: "{\"created_at\":\"2010/06/08 13:00:09 +0000\", \"video_id\":\"f72e511820c12dabc1d15817745225bd\", \"started_encoding_at\":null, \"updated_at\":\"2010/06/08 13:00:09 +0000\", \"encoding_progress\":null, \"encoding_time\":null, \"extname\":\".mp4\", \"id\":\"d51c76dc5fe97d9d2f1bbd6f4e7fa1a3\", \"file_size\":null, \"height\":320, \"status\":\"processing\", \"profile_id\":\"73f93e74e866d86624a8718d21d06e4e\", \"width\":480}"
+      "@args": 
+        :payload: 
+          timestamp: "2010-06-14T17:53:43.189556+02:00"
+          video_id: 1
+          signature: AP9RcgGFOStipaeWgMS0QCR55+VhuARp4cNZzbS0BCc=
+          access_key: 7cc07330-5147-11df-b458-12313d01b992
+          cloud_id: f2f24a820b4e4e71536fcd567a384848
+          profile_id: f703bb7c207c472ceefd9c0d3986bf54
+        :headers: {}
+
+        :method: :post
+        :url: http://api.pandastream.com:80/v2/encodings.json
+      "@code": 200
+      "@net_http_res": !ruby/object:Net::HTTPOK 
+        body: *id003
+        code: "200"
+        header: 
+          x-powered-by: 
+          - Phusion Passenger (mod_rails/mod_rack) 2.2.9
+          connection: 
+          - keep-alive
+          content-type: 
+          - application/json
+          server: 
+          - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
+          content-length: 
+          - "371"
+          status: 
+          - "200"
+        http_version: "1.0"
+        message: OK
+        read: true
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
@@ -309,10 +394,10 @@
     headers: 
       x-powered-by: 
       - Phusion Passenger (mod_rails/mod_rack) 2.2.9
-      connection: 
-      - keep-alive
       content-type: 
       - application/json
+      connection: 
+      - keep-alive
       server: 
       - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
       content-length: 
@@ -340,17 +425,17 @@
     headers: 
       x-powered-by: 
       - Phusion Passenger (mod_rails/mod_rack) 2.2.9
+      content-type: 
+      - application/json
       connection: 
       - keep-alive
-      content-type: 
-      - text/html
       server: 
       - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
       content-length: 
-      - "0"
+      - "16"
       status: 
       - "200"
-    body: ""
+    body: "{\"deleted\":true}"
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
@@ -360,12 +445,12 @@
     headers: 
       accept: 
       - "*/*"
-      connection: 
-      - close
-      user-agent: 
-      - Voxel hAPI ruby Client; 1.0
       content-type: 
       - application/x-www-form-urlencoded
+      user-agent: 
+      - Voxel hAPI ruby Client; 1.0
+      connection: 
+      - close
       content-length: 
       - "233"
       host: 
@@ -377,16 +462,16 @@
     headers: 
       x-powered-by: 
       - PHP/5.2.11
-      content-type: 
-      - application/xml; charset=utf-8
-      connection: 
-      - close
       access-control-allow-origin: 
       - "*"
-      server: 
-      - Apache
+      connection: 
+      - close
+      content-type: 
+      - application/xml; charset=utf-8
       date: 
       - Thu, 10 Jun 2010 15:44:44 GMT
+      server: 
+      - Apache
       content-length: 
       - "201"
     body: |
@@ -415,28 +500,26 @@
       code: 200
       message: OK
     headers: 
-      x-powered-by: &id001 
-        - Phusion Passenger (mod_rails/mod_rack) 2.2.9
-      content-type: &id003 
-        - application/json
-      connection: &id002 
-        - keep-alive
-      server: &id004 
-        - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
-      content-length: &id005 
-        - "226"
-      status: &id006 
-        - "200"
-    body: &id007 !str 
-      str: "{\"created_at\":\"2010/06/11 16:44:30 +0000\",\"command\":\"Handbrake CLI blabla...\",\"title\":\"iPhone 720p #1\",\"updated_at\":\"2010/06/11 16:44:30 +0000\",\"extname\":\".mp4\",\"id\":\"2d7b73dcd7a1785ecb6af79ef9d4986a\",\"height\":640,\"width\":480}"
+      x-powered-by: 
+      - Phusion Passenger (mod_rails/mod_rack) 2.2.9
+      connection: 
+      - keep-alive
+      content-type: 
+      - application/json
+      server: 
+      - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
+      content-length: 
+      - "226"
+      status: 
+      - "200"
+    body: &id005 !str 
+      str: "{\"created_at\":\"2010/06/11 14:57:35 +0000\",\"command\":\"Handbrake CLI blabla...\",\"title\":\"iPhone 720p (1)\",\"updated_at\":\"2010/06/11 14:57:35 +0000\",\"extname\":\".mp4\",\"id\":\"f703bb7c207c472ceefd9c0d3986bf54\",\"height\":640,\"width\":480}"
       "@args": 
-        :url: http://api.pandastream.com:80/v2/profiles.json
-        :method: :post
         :payload: 
-          timestamp: "2010-06-11T18:44:30.110740+02:00"
+          timestamp: "2010-06-14T17:53:40.657037+02:00"
           command: Handbrake CLI blabla...
           title: "iPhone 720p #1"
-          signature: qKfEaZMOmef913Tso7Iuoq/j8dXyxAyj6g4KSYIlE8c=
+          signature: iH/RLKPZPglxFbbRXgZikb9gtpmeqArbdsI/FimjQfM=
           extname: .mp4
           access_key: 7cc07330-5147-11df-b458-12313d01b992
           cloud_id: f2f24a820b4e4e71536fcd567a384848
@@ -444,89 +527,88 @@
           width: 480
         :headers: {}
 
+        :method: :post
+        :url: http://api.pandastream.com:80/v2/profiles.json
       "@code": 200
       "@net_http_res": !ruby/object:Net::HTTPOK 
-        __orig_body__: 
-        body: *id007
-        body_exist: true
+        body: *id005
         code: "200"
         header: 
-          x-powered-by: *id001
-          connection: *id002
-          content-type: *id003
-          server: *id004
-          content-length: *id005
-          status: *id006
-        http_version: "1.1"
+          x-powered-by: 
+          - Phusion Passenger (mod_rails/mod_rack) 2.2.9
+          connection: 
+          - keep-alive
+          content-type: 
+          - application/json
+          server: 
+          - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
+          content-length: 
+          - "227"
+          status: 
+          - "200"
+        http_version: "1.0"
         message: OK
         read: true
-        socket: 
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
-    method: :post
-    uri: http://api.pandastream.com:80/v2/profiles.json
-    body: timestamp=2010-06-11T16%3A57%3A34.941672%2B02%3A00&title=iPhone%20720p%20(1)&command=Handbrake%20CLI%20blabla...&signature=zq7FccOCBB7okBjH2RWFYJZ67VsoGCCjf1w5U4TFqvg%3D&extname=.mp4&access_key=7cc07330-5147-11df-b458-12313d01b992&cloud_id=f2f24a820b4e4e71536fcd567a384848&height=640&width=480
+    method: :get
+    uri: http://s3.amazonaws.com:80/sublimevideo.panda/d51c76dc5fe97d9d2f1bbd6f4e7fa1a3.mp4
+    body: 
     headers: 
       accept: 
-      - "*/*; q=0.5, application/xml"
-      content-type: 
-      - application/x-www-form-urlencoded
-      accept-encoding: 
-      - gzip, deflate
-      content-length: 
-      - "293"
+      - "*/*"
       host: 
-      - api.pandastream.com
+      - s3.amazonaws.com
   response: !ruby/struct:VCR::Response 
     status: !ruby/struct:VCR::ResponseStatus 
-      code: 200
-      message: OK
+      code: 404
+      message: Not Found
     headers: 
-      x-powered-by: &id001 
-        - Phusion Passenger (mod_rails/mod_rack) 2.2.9
-      content-type: &id003 
-        - application/json
-      connection: &id002 
-        - keep-alive
-      server: &id004 
-        - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
-      content-length: &id005 
-        - "227"
-      status: &id006 
-        - "200"
-    body: &id007 !str 
-      str: "{\"created_at\":\"2010/06/11 14:57:35 +0000\",\"command\":\"Handbrake CLI blabla...\",\"title\":\"iPhone 720p (1)\",\"updated_at\":\"2010/06/11 14:57:35 +0000\",\"extname\":\".mp4\",\"id\":\"f703bb7c207c472ceefd9c0d3986bf54\",\"height\":640,\"width\":480}"
-      "@args": 
-        :url: http://api.pandastream.com:80/v2/profiles.json
-        :payload: 
-          timestamp: "2010-06-11T16:57:34.941672+02:00"
-          title: iPhone 720p (1)
-          command: Handbrake CLI blabla...
-          signature: zq7FccOCBB7okBjH2RWFYJZ67VsoGCCjf1w5U4TFqvg=
-          extname: .mp4
-          access_key: 7cc07330-5147-11df-b458-12313d01b992
-          cloud_id: f2f24a820b4e4e71536fcd567a384848
-          height: 640
-          width: 480
-        :method: :post
-        :headers: {}
-
-      "@code": 200
-      "@net_http_res": !ruby/object:Net::HTTPOK 
-        __orig_body__: 
-        body: *id007
-        body_exist: true
-        code: "200"
-        header: 
-          x-powered-by: *id001
-          connection: *id002
-          content-type: *id003
-          server: *id004
-          content-length: *id005
-          status: *id006
-        http_version: "1.1"
-        message: OK
-        read: true
-        socket: 
+      x-amz-id-2: 
+      - kaPabHf4Pos/vcpQGAnLvcniIHJI6LCYgdYBBMTr56EnCcu8ghHWTea6Dgm6IeG6
+      content-type: 
+      - application/xml
+      date: 
+      - Mon, 14 Jun 2010 15:53:45 GMT
+      server: 
+      - AmazonS3
+      x-amz-request-id: 
+      - 758B5635C672BC2F
+      transfer-encoding: 
+      - chunked
+    body: |-
+      <?xml version="1.0" encoding="UTF-8"?>
+      <Error><Code>NoSuchKey</Code><Message>The specified key does not exist.</Message><Key>d51c76dc5fe97d9d2f1bbd6f4e7fa1a3.mp4</Key><RequestId>758B5635C672BC2F</RequestId><HostId>kaPabHf4Pos/vcpQGAnLvcniIHJI6LCYgdYBBMTr56EnCcu8ghHWTea6Dgm6IeG6</HostId></Error>
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: http://s3.amazonaws.com:80/sublimevideo.panda/d51c76dc5fe97d9d2f1bbd6f4e7fa1a3_4.jpg
+    body: 
+    headers: 
+      accept: 
+      - "*/*"
+      host: 
+      - s3.amazonaws.com
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 404
+      message: Not Found
+    headers: 
+      x-amz-id-2: 
+      - 08lc5vZDgDuNPW3V8qNP3gSbmeQxIl99EyOUocuLcNCGBDBHadgFUFbIRyPr/tQf
+      content-type: 
+      - application/xml
+      date: 
+      - Mon, 14 Jun 2010 15:53:45 GMT
+      server: 
+      - AmazonS3
+      x-amz-request-id: 
+      - 835927394932E07D
+      transfer-encoding: 
+      - chunked
+    body: |-
+      <?xml version="1.0" encoding="UTF-8"?>
+      <Error><Code>NoSuchKey</Code><Message>The specified key does not exist.</Message><Key>d51c76dc5fe97d9d2f1bbd6f4e7fa1a3_4.jpg</Key><RequestId>835927394932E07D</RequestId><HostId>08lc5vZDgDuNPW3V8qNP3gSbmeQxIl99EyOUocuLcNCGBDBHadgFUFbIRyPr/tQf</HostId></Error>
     http_version: "1.1"

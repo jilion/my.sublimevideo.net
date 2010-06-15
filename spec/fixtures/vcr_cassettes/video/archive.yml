@@ -1,0 +1,74 @@
+---
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :delete
+    uri: !ruby/regexp /api\.pandastream\.com:80\/v2\/(profiles|videos|encodings)\/[a-z0-9]{32}\.json\?.+/
+    body: 
+    headers: 
+      accept: 
+      - "*/*; q=0.5, application/xml"
+      accept-encoding: 
+      - gzip, deflate
+      host: 
+      - api.pandastream.com
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      x-powered-by: 
+      - Phusion Passenger (mod_rails/mod_rack) 2.2.9
+      content-type: 
+      - application/json
+      connection: 
+      - keep-alive
+      server: 
+      - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
+      content-length: 
+      - "16"
+      status: 
+      - "200"
+    body: "{\"deleted\":true}"
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :post
+    uri: https://api.voxel.net:443/version/1.0/
+    body: key=f0bdf4e54d590835e7100c926c2d1a47&method=voxel.voxcast.ondemand.content.purge_file&verbosity=compact&timestamp=2010-06-10T17%3a44%3a43%2b02%3a00&paths=%2fv%2f30rmi8cg%2f.jpg&device_id=48182&api_sig=619a231da9c3f7edfbf8725f1f181173
+    headers: 
+      accept: 
+      - "*/*"
+      content-type: 
+      - application/x-www-form-urlencoded
+      user-agent: 
+      - Voxel hAPI ruby Client; 1.0
+      connection: 
+      - close
+      content-length: 
+      - "233"
+      host: 
+      - api.voxel.net
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      x-powered-by: 
+      - PHP/5.2.11
+      access-control-allow-origin: 
+      - "*"
+      connection: 
+      - close
+      content-type: 
+      - application/xml; charset=utf-8
+      date: 
+      - Thu, 10 Jun 2010 15:44:44 GMT
+      server: 
+      - Apache
+      content-length: 
+      - "201"
+    body: |
+      <?xml version="1.0"?>
+      <rsp stat="ok"><transaction><type>remove-url</type><id>6d037109-6370-4105-a2da-370332ee0dae</id><expiration>1276185584</expiration><status>inprogress</status></transaction></rsp>
+
+    http_version: "1.1"

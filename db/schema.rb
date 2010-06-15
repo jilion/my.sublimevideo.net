@@ -140,7 +140,7 @@ ActiveRecord::Schema.define(:version => 20100609123904) do
     t.integer  "video_profile_version_id"
     t.string   "state"
     t.string   "file"
-    t.integer  "panda_encoding_id"
+    t.string   "panda_encoding_id"
     t.datetime "started_encoding_at"
     t.integer  "encoding_time"
     t.string   "extname"
