@@ -8,7 +8,7 @@ class VideoUploader < CarrierWave::Uploader::Base
   # This is a sensible default for uploaders that are meant to be mounted:
   def store_dir
     if Rails.env.production?
-      "videos/#{model.video.token}"
+      "#{model.video.token}"
     else
       "uploads/videos/#{model.video.token}"
     end
