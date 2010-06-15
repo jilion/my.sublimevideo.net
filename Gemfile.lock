@@ -245,7 +245,7 @@ specs:
 - json_pure: 
     version: 1.4.3
 - selenium-webdriver: 
-    version: 0.0.22
+    version: 0.0.23
 - capybara: 
     version: 0.3.8
 - carrierwave: 
@@ -362,7 +362,7 @@ specs:
     source: 6
 - wirble: 
     version: 0.1.3
-hash: 5b7739d884dee5e26159fd29982e323a3042f0a7
+hash: fa7fd872cefd7c30e6ce79d6686c8ec1ae103fb2
 sources: 
 - Git: 
     uri: git://github.com/rspec/rspec-core.git

@@ -96,7 +96,7 @@ class Video < ActiveRecord::Base
   end
   
   def active?
-    self.encodings.all? { |e| e.active? }
+    self.encodings.present? && self.encodings.all? { |e| e.active? }
   end
   
   def failed?

@@ -2,7 +2,7 @@
 = form_for @user, :html => { :class => "main_form section", :id => "edit_user_#{@user.id}_email_notifications" } do |f|
   %h3.section_title= "Email notifications"
   .entry
-    = f.label :limit_alert_amount, "Notify me when my Current usage reaches the following amount:"
+    = f.label :limit_alert_amount, "Notify me when my current usage reaches the following amount:"
     = f.select :limit_alert_amount, limit_amounts_select_options, :class => "select"
   
   .entry.update

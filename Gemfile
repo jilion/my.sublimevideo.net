@@ -22,7 +22,7 @@ gem 'request-log-analyzer', :require => 'request_log_analyzer'
 gem 'warden'
 gem 'devise', '>= 1.1.rc1' # Auth
 
-gem 'system_timer' # only on Ruby 1.8, used by memcache-clien
+gem 'system_timer' # only on Ruby 1.8, used by memcache-client
 gem 'memcache-client'
 
 gem 'http_connection',  :git => 'git://github.com/thibaudgg/http_connection.git'

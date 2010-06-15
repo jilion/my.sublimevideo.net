@@ -21,11 +21,11 @@
               .wrap
                 .thumbnail
                   .crop
-                    = image_tag("http://s3.amazonaws.com/sublimevideo.panda/" + video.formats.first.panda_id + "_4.jpg") if video.formats.first# if video.thumbnail.url.present?
+                    = image_tag(video.thumbnail.url) if video.thumbnail.present?
                     -#= image_tag "http://ats.vimeo.com/414/438/41443806_200.jpg"
                   %span.duration= seconds_to_duration(video.duration)
                 .info
-                  %h3.title{ :title => video.name }= truncate(video.name, :length => 28)
+                  %h3.title{ :title => video.title }= truncate(video.title, :length => 28)
                   
                   .views
                     %strong= number_with_delimiter(rand(10000))
@@ -41,10 +41,10 @@
                           %li
                             = "Original"
                             %span= number_to_human_size(video.size)
-                          - video.formats.each do |format|
+                          - video.encodings.each do |encoding|
                             %li
-                              = format.name 
-                              %span= number_to_human_size(format.size)
+                              = encoding.profile.title
+                              %span= number_to_human_size(encoding.size)
                   .spacer
                   .upload_date= "Uploaded on #{video.created_at.strftime('%d/%m/%Y')}"
             %td.code
@@ -54,9 +54,9 @@
                 .in_progress
                   %em= "In progress"
                   %ul
-                    - video.formats.pending.each do |format|
-                      %li= link_to "Transcode #{format.name}", transcoded_video_url(format.panda_id)
-                  
+                    - video.encodings.pending.each do |encoding|
+                      %li= link_to "Transcode #{encoding.name}", transcoded_video_url(encoding.panda_encoding_id)
+                      
             %td.delete= button_to 'Delete', video_path(video), :confirm => 'Are you sure?', :method => :delete
             
   .pagination_wrap
