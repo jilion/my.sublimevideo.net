@@ -46,6 +46,16 @@ namespace :db do
   
 end
 
+namespace :sm do
+  
+  desc "Draw the States Diagrams for every model having State Machine"
+  task :draw => :environment do
+    # t = Rake::Task["state_machine:draw"]
+    # t.invoke("CLASS=Invoice,Log,Site,User,Video,VideoEncoding,VideoProfileVersion TARGET=doc/state_diagrams FORMAT=jpg ORIENTATION=landscape")
+  end
+  
+end
+
 private
 
 def empty_tables(*tables)

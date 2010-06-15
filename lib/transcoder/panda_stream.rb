@@ -1,6 +1,6 @@
 module Transcoder
   module PandaStream
-    VALID_ITEMS = %w[video videos encoding encodings profile profiles]
+    VALID_ITEMS = %w[videos encodings profiles]
     
     class << self
       
@@ -25,7 +25,7 @@ module Transcoder
       end
       
       def put(item, id, params={})
-        assert_valid_items(item, %w[profile profiles])
+        assert_valid_items(item, %w[profiles])
         
         Panda.put("/#{item.to_s.pluralize}/#{id}.json", params).symbolize_keys!
       end
@@ -41,9 +41,9 @@ module Transcoder
       def assert_valid_items(item, valid_items=VALID_ITEMS)
         valid = case item
         when Array
-          item.all? { |n| valid_items.include? n.to_s }
+          item.all? { |n| valid_items.include? n.to_s.pluralize }
         when String, Symbol
-          valid_items.include? item.to_s
+          valid_items.include? item.to_s.pluralize
         else
           false
         end

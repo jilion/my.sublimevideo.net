@@ -1,8 +1,9 @@
+--- 
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
     method: :post
     uri: http://api.pandastream.com:80/v2/profiles.json
-    body: 
+    body: timestamp=2010-06-11T16%3A41%3A48.862049%2B02%3A00&command=Handbrake%20CLI%20blabla...&title=iPhone%20720p%20(1)&signature=7l0sCnBI%2BdvbSDH2RgIko8nTHldDW8ygONK%2F5tCUpFQ%3D&extname=.mp4&access_key=7cc07330-5147-11df-b458-12313d01b992&cloud_id=f2f24a820b4e4e71536fcd567a384848&height=640&width=480
     headers: 
       accept: 
       - "*/*; q=0.5, application/xml"
@@ -11,7 +12,7 @@
       accept-encoding: 
       - gzip, deflate
       content-length: 
-      - "285"
+      - "297"
       host: 
       - api.pandastream.com
   response: !ruby/struct:VCR::Response 
@@ -19,21 +20,53 @@
       code: 200
       message: OK
     headers: 
-      x-powered-by: 
-      - Phusion Passenger (mod_rails/mod_rack) 2.2.9
-      content-type: 
-      - application/json
-      connection: 
-      - keep-alive
-      server: 
-      - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
-      content-length: 
-      - "371"
-      status: 
-      - "200"
-    body: "{\"id\":\"d51c76dc5fe97d9d2f1bbd6f4e7fa1a3\", \"title\":\"iPhone 720p\", \"extname\":\".mp4\", \"width\":480, \"height\":320, \"command\":\"ffmpeg -i $input_file$ -f mp4 -b 128k $resolution_and_padding$ -y $output_file$\", \"created_at\":\"2010/06/08 13:00:09 +0000\", \"updated_at\":\"2010/06/08 13:00:09 +0000\"}"
+      x-powered-by: &id001 
+        - Phusion Passenger (mod_rails/mod_rack) 2.2.9
+      content-type: &id003 
+        - application/json
+      connection: &id002 
+        - keep-alive
+      server: &id004 
+        - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
+      content-length: &id005 
+        - "227"
+      status: &id006 
+        - "200"
+    body: &id007 !str 
+      str: "{\"created_at\":\"2010/06/11 14:41:49 +0000\",\"command\":\"Handbrake CLI blabla...\",\"title\":\"iPhone 720p (1)\",\"updated_at\":\"2010/06/11 14:41:49 +0000\",\"extname\":\".mp4\",\"id\":\"b85c104139e9a7e74ab969804b93d573\",\"height\":640,\"width\":480}"
+      "@args": 
+        :url: http://api.pandastream.com:80/v2/profiles.json
+        :method: :post
+        :payload: 
+          timestamp: "2010-06-11T16:41:48.862049+02:00"
+          command: Handbrake CLI blabla...
+          title: iPhone 720p (1)
+          signature: 7l0sCnBI+dvbSDH2RgIko8nTHldDW8ygONK/5tCUpFQ=
+          extname: .mp4
+          access_key: 7cc07330-5147-11df-b458-12313d01b992
+          cloud_id: f2f24a820b4e4e71536fcd567a384848
+          height: 640
+          width: 480
+        :headers: {}
+
+      "@code": 200
+      "@net_http_res": !ruby/object:Net::HTTPOK 
+        __orig_body__: 
+        body: *id007
+        body_exist: true
+        code: "200"
+        header: 
+          x-powered-by: *id001
+          connection: *id002
+          content-type: *id003
+          server: *id004
+          content-length: *id005
+          status: *id006
+        http_version: "1.1"
+        message: OK
+        read: true
+        socket: 
     http_version: "1.1"
-    
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
     method: :post
@@ -57,10 +90,10 @@
     headers: 
       x-powered-by: 
       - Phusion Passenger (mod_rails/mod_rack) 2.2.9
-      content-type: 
-      - application/json
       connection: 
       - keep-alive
+      content-type: 
+      - application/json
       server: 
       - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
       content-length: 
@@ -69,8 +102,6 @@
       - "200"
     body: "{\"id\":\"f72e511820c12dabc1d15817745225bd\", \"status\":\"success\", \"original_filename\":\"railscast_intro.mov\", \"extname\":\".mov\", \"video_codec\":\"h264\", \"audio_codec\":\"aac\", \"file_size\":17236, \"duration\":1160, \"width\":480, \"height\":360, \"fps\":2, \"thumbnail_position\":50, \"created_at\":\"2010/05/27 19:22:15 +0000\", \"updated_at\":\"2010/05/27 19:22:17 +0000\"}"
     http_version: "1.1"
-    
-    
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
     method: :post
@@ -94,10 +125,10 @@
     headers: 
       x-powered-by: 
       - Phusion Passenger (mod_rails/mod_rack) 2.2.9
-      content-type: 
-      - application/json
       connection: 
       - keep-alive
+      content-type: 
+      - application/json
       server: 
       - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
       content-length: 

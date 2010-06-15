@@ -2,7 +2,6 @@ class CreateVideoEncodings < ActiveRecord::Migration
   def self.up
     create_table :video_encodings do |t|
       t.references :video
-      t.references :video_profile
       t.references :video_profile_version
       
       t.string     :state                   # state machine

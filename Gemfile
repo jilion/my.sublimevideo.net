@@ -5,7 +5,7 @@ gem 'rails', '3.0.0.beta4'
 gem 'heroku' # Hosting
 gem 'i18n'
 gem 'haml'
-gem 'state_machine'
+gem 'state_machine',    :git => 'git://github.com/pluginaweek/state_machine.git'
 gem 'responders'
 gem 'uniquify'
 gem 'delayed_job',      :git => 'git://github.com/thibaudgg/delayed_job'
@@ -26,19 +26,21 @@ gem 'system_timer' # only on Ruby 1.8, used by memcache-clien
 gem 'memcache-client'
 
 gem 'http_connection',  :git => 'git://github.com/thibaudgg/http_connection.git'
-gem 'aws' # S3 support for carrierwave
+gem 'aws'
 gem 'carrierwave',      :git => 'git://github.com/jnicklas/carrierwave.git'
 
 group :development do
   gem 'sqlite3-ruby', :require => 'sqlite3'
   gem 'annotate'
   gem 'ffaker'
-  
   gem 'wirble' # irbrc 
+  gem 'ruby-graphviz', :require => 'graphviz'
 end
 
 group :test do
   gem 'sqlite3-ruby', :require => 'sqlite3'
+  # gem 'parallel'
+  # gem 'hydra'
   
   gem 'rev'
   gem 'watchr'

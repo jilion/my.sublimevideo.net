@@ -1,9 +1,13 @@
 MySublimeVideo::Application.routes.draw do |map|
   
+  resource :beta, :only => [:show, :create]
+  
   devise_for :users, :path_names => { :sign_up => 'register', :sign_in => 'login', :sign_out => 'logout' }
+  
   match 'login',    :to => 'devise/sessions#new',      :as => "new_user_session"
   match 'logout',   :to => 'devise/sessions#destroy',  :as => "destroy_user_session"
   match 'register', :to => 'devise/registrations#new', :as => "new_user_registration"
+  
   %w[sign_up signup].each                { |action| match action => redirect('/register') }
   %w[log_in sign_in signin].each         { |action| match action => redirect('/login')    }
   %w[log_out sign_out signout exit].each { |action| match action => redirect('/logout')   }
@@ -12,16 +16,17 @@ MySublimeVideo::Application.routes.draw do |map|
   resources :sites do
     get :state, :on => :member
   end
+  
   resources :videos, :except => :new do
     get :transcoded, :on => :member
   end
+  
   resources :invoices, :only => [:index, :show]
   resource :card, :controller => "credit_cards", :as => :credit_card, :only => [:edit, :update]
   
   match ':page', :to => 'pages#show', :via => :get, :as => :page, :constraints => {:page => /terms|docs|support/}
-  root :to => redirect('/sites')
   
-  resource :beta, :only => [:edit, :create]
+  root :to => redirect('/sites')
   
   # Sample of regular route:
   #   match 'products/:id' => 'catalog#view'

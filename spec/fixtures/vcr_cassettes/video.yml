@@ -18,10 +18,10 @@
     headers: 
       x-powered-by: 
       - Phusion Passenger (mod_rails/mod_rack) 2.2.9
-      content-type: 
-      - application/json
       connection: 
       - keep-alive
+      content-type: 
+      - application/json
       server: 
       - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
       content-length: 
@@ -49,10 +49,10 @@
     headers: 
       x-powered-by: 
       - Phusion Passenger (mod_rails/mod_rack) 2.2.9
-      connection: 
-      - keep-alive
       content-type: 
       - application/json
+      connection: 
+      - keep-alive
       server: 
       - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
       content-length: 
@@ -80,10 +80,10 @@
     headers: 
       x-powered-by: 
       - Phusion Passenger (mod_rails/mod_rack) 2.2.9
-      content-type: 
-      - application/json
       connection: 
       - keep-alive
+      content-type: 
+      - application/json
       server: 
       - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
       content-length: 
@@ -92,8 +92,6 @@
       - "200"
     body: "[{\"created_at\":\"2010/06/10 14:42:43 +0000\",\"command\":\"ffmpeg -i $input_file$ -f mp4 -b 128k $resolution_and_padding$ -y $output_file$\",\"title\":\"My own custom profile\",\"updated_at\":\"2010/06/10 14:51:01 +0000\",\"extname\":\".mp4\",\"id\":\"257d45cb30f8fc3aad577ae865b2f3d2\",\"height\":240,\"width\":320},{\"created_at\":\"2010/06/10 14:42:43 +0000\",\"command\":\"ffmpeg -i $input_file$ -f mp4 -b 128k $resolution_and_padding$ -y $output_file$\",\"title\":\"My custom profile\",\"updated_at\":\"2010/06/10 14:42:43 +0000\",\"extname\":\".mp4\",\"id\":\"47859a335e87d2fd3aac20d83a96a0a5\",\"height\":240,\"width\":320},{\"created_at\":\"2010/06/08 16:45:22 +0000\",\"command\":\"HandBrakeCLI -i $input_file$ -o $output_file$  -e x264 -q 0.589999973773956 -a 1 -E faac -B 128 -R 48 -6 dpl2 -f mp4 -X 480 -m -x level=30:cabac=0:ref=2:mixed-refs:analyse=all:me=umh:no-fast-pskip=1\",\"title\":\"iphone-handbrake\",\"updated_at\":\"2010/06/08 16:45:22 +0000\",\"extname\":\".mp4\",\"id\":\"5e08a5612e8982ef2f7482e0782bbe02\",\"height\":320,\"width\":480}]"
     http_version: "1.1"
-    
-    
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
     method: :get
@@ -113,10 +111,10 @@
     headers: 
       x-powered-by: 
       - Phusion Passenger (mod_rails/mod_rack) 2.2.9
-      connection: 
-      - keep-alive
       content-type: 
       - application/json
+      connection: 
+      - keep-alive
       server: 
       - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
       content-length: 
@@ -125,7 +123,6 @@
       - "200"
     body: "{\"created_at\":\"2010/06/08 16:45:22 +0000\",\"command\":\"HandBrakeCLI -i $input_file$ -o $output_file$  -e x264 -q 0.589999973773956 -a 1 -E faac -B 128 -R 48 -6 dpl2 -f mp4 -X 480 -m -x level=30:cabac=0:ref=2:mixed-refs:analyse=all:me=umh:no-fast-pskip=1\",\"title\":\"iphone-handbrake\",\"updated_at\":\"2010/06/08 16:45:22 +0000\",\"extname\":\".mp4\",\"id\":\"5e08a5612e8982ef2f7482e0782bbe02\",\"height\":320,\"width\":480}"
     http_version: "1.1"
-
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
     method: :get
@@ -145,10 +142,10 @@
     headers: 
       x-powered-by: 
       - Phusion Passenger (mod_rails/mod_rack) 2.2.9
-      content-type: 
-      - application/json
       connection: 
       - keep-alive
+      content-type: 
+      - application/json
       server: 
       - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
       content-length: 
@@ -157,7 +154,6 @@
       - "200"
     body: "{\"duration\":1160,\"created_at\":\"2010/05/27 19:22:15 +0000\",\"original_filename\":\"railscast_intro.mov\",\"updated_at\":\"2010/05/27 19:22:17 +0000\",\"source_url\":null,\"extname\":\".mov\",\"id\":\"f72e511820c12dabc1d15817745225bd\",\"audio_codec\":\"aac\",\"file_size\":17236,\"height\":360,\"fps\":2,\"status\":\"success\",\"video_codec\":\"h264\",\"width\":480}"
     http_version: "1.1"
-
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
     method: :get
@@ -177,10 +173,10 @@
     headers: 
       x-powered-by: 
       - Phusion Passenger (mod_rails/mod_rack) 2.2.9
-      content-type: 
-      - application/json
       connection: 
       - keep-alive
+      content-type: 
+      - application/json
       server: 
       - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
       content-length: 
@@ -189,8 +185,6 @@
       - "200"
     body: "{\"created_at\":\"2010/06/08 17:15:11 +0000\",\"video_id\":\"70919b42ea9ef68bfd5b072d5bd0aefd\",\"started_encoding_at\":\"2010/06/08 17:15:17 +0000\",\"updated_at\":\"2010/06/08 17:15:18 +0000\",\"encoding_progress\":null,\"encoding_time\":null,\"extname\":\".mp4\",\"id\":\"9b050f8e762dfec8904e9ab679beb29b\",\"file_size\":null,\"height\":320,\"status\":\"fail\",\"profile_id\":\"5e08a5612e8982ef2f7482e0782bbe02\",\"width\":480}"
     http_version: "1.1"
-
-
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
     method: :get
@@ -210,10 +204,10 @@
     headers: 
       x-powered-by: 
       - Phusion Passenger (mod_rails/mod_rack) 2.2.9
-      content-type: 
-      - application/json
       connection: 
       - keep-alive
+      content-type: 
+      - application/json
       server: 
       - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
       content-length: 
@@ -222,43 +216,6 @@
       - "200"
     body: "[{\"created_at\":\"2010/06/08 14:54:33 +0000\",\"video_id\":\"f72e511820c12dabc1d15817745225bd\",\"started_encoding_at\":\"2010/06/08 14:54:33 +0000\",\"updated_at\":\"2010/06/08 14:54:35 +0000\",\"encoding_progress\":100,\"encoding_time\":10,\"extname\":\".mp4\",\"id\":\"0c1de9aa8b339a54df153abe954105ea\",\"file_size\":15262,\"height\":320,\"status\":\"success\",\"profile_id\":\"7bb7560ba8f7657dc0d6d71fc98693c4\",\"width\":480},{\"created_at\":\"2010/06/08 14:54:33 +0000\",\"video_id\":\"f72e511820c12dabc1d15817745225bd\",\"started_encoding_at\":\"2010/06/08 14:55:33 +0000\",\"updated_at\":\"2010/06/08 14:56:33 +0000\",\"encoding_progress\":null,\"encoding_time\":5,\"extname\":\".mp4\",\"id\":\"2c93a9e03770a59ddeec971e0a315a65\",\"file_size\":null,\"height\":320,\"status\":\"success\",\"profile_id\":\"73f93e74e866d86624a8718d21d06e4e\",\"width\":480}]"
     http_version: "1.1"
-    
-- !ruby/struct:VCR::HTTPInteraction 
-  request: !ruby/struct:VCR::Request 
-    method: :post
-    uri: http://api.pandastream.com:80/v2/profiles.json
-    body: 
-    headers: 
-      accept: 
-      - "*/*; q=0.5, application/xml"
-      content-type: 
-      - application/x-www-form-urlencoded
-      accept-encoding: 
-      - gzip, deflate
-      content-length: 
-      - "285"
-      host: 
-      - api.pandastream.com
-  response: !ruby/struct:VCR::Response 
-    status: !ruby/struct:VCR::ResponseStatus 
-      code: 200
-      message: OK
-    headers: 
-      x-powered-by: 
-      - Phusion Passenger (mod_rails/mod_rack) 2.2.9
-      content-type: 
-      - application/json
-      connection: 
-      - keep-alive
-      server: 
-      - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
-      content-length: 
-      - "371"
-      status: 
-      - "200"
-    body: "{\"id\":\"d51c76dc5fe97d9d2f1bbd6f4e7fa1a3\", \"title\":\"iPhone 720p\", \"extname\":\".mp4\", \"width\":480, \"height\":320, \"command\":\"ffmpeg -i $input_file$ -f mp4 -b 128k $resolution_and_padding$ -y $output_file$\", \"created_at\":\"2010/06/08 13:00:09 +0000\", \"updated_at\":\"2010/06/08 13:00:09 +0000\"}"
-    http_version: "1.1"
-
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
     method: :post
@@ -282,10 +239,10 @@
     headers: 
       x-powered-by: 
       - Phusion Passenger (mod_rails/mod_rack) 2.2.9
-      content-type: 
-      - application/json
       connection: 
       - keep-alive
+      content-type: 
+      - application/json
       server: 
       - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
       content-length: 
@@ -294,8 +251,6 @@
       - "200"
     body: "{\"id\":\"f72e511820c12dabc1d15817745225bd\", \"status\":\"success\", \"original_filename\":\"railscast_intro.mov\", \"extname\":\".mov\", \"video_codec\":\"h264\", \"audio_codec\":\"aac\", \"file_size\":17236, \"duration\":1160, \"width\":480, \"height\":360, \"fps\":2, \"thumbnail_position\":50, \"created_at\":\"2010/05/27 19:22:15 +0000\", \"updated_at\":\"2010/05/27 19:22:17 +0000\"}"
     http_version: "1.1"
-
-
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
     method: :post
@@ -319,10 +274,10 @@
     headers: 
       x-powered-by: 
       - Phusion Passenger (mod_rails/mod_rack) 2.2.9
-      content-type: 
-      - application/json
       connection: 
       - keep-alive
+      content-type: 
+      - application/json
       server: 
       - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
       content-length: 
@@ -331,7 +286,6 @@
       - "200"
     body: "{\"created_at\":\"2010/06/08 13:00:09 +0000\", \"video_id\":\"f72e511820c12dabc1d15817745225bd\", \"started_encoding_at\":null, \"updated_at\":\"2010/06/08 13:00:09 +0000\", \"encoding_progress\":null, \"encoding_time\":null, \"extname\":\".mp4\", \"id\":\"d51c76dc5fe97d9d2f1bbd6f4e7fa1a3\", \"file_size\":null, \"height\":320, \"status\":\"processing\", \"profile_id\":\"73f93e74e866d86624a8718d21d06e4e\", \"width\":480}"
     http_version: "1.1"
-    
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
     method: :put
@@ -353,54 +307,20 @@
       code: 200
       message: OK
     headers: 
-      x-powered-by: &id001 
-        - Phusion Passenger (mod_rails/mod_rack) 2.2.9
-      content-type: &id003 
-        - application/json
-      connection: &id002 
-        - keep-alive
-      server: &id004 
-        - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
-      content-length: &id005 
-        - "289"
-      status: &id006 
-        - "200"
-    body: &id007 !str 
-      str: "{\"created_at\":\"2010/06/10 14:42:43 +0000\",\"command\":\"ffmpeg -i $input_file$ -f mp4 -b 128k $resolution_and_padding$ -y $output_file$\",\"title\":\"My own custom profile\",\"updated_at\":\"2010/06/10 14:51:01 +0000\",\"extname\":\".mp4\",\"id\":\"257d45cb30f8fc3aad577ae865b2f3d2\",\"height\":240,\"width\":320}"
-      "@args": 
-        :headers: {}
-
-        :payload: 
-          timestamp: "2010-06-10T16:51:01.369361+02:00"
-          command: ffmpeg -i $input_file$ -f mp4 -b 128k $resolution_and_padding$ -y $output_file$
-          title: My own custom profile
-          signature: d5QcLbvHUfcQWITmVeJGOk7n7j/04wvo6meIg1lR7tA=
-          extname: .mp4
-          access_key: 7cc07330-5147-11df-b458-12313d01b992
-          cloud_id: f2f24a820b4e4e71536fcd567a384848
-          height: 240
-          width: 320
-        :method: :put
-        :url: http://api.pandastream.com:80/v2/profiles/257d45cb30f8fc3aad577ae865b2f3d2.json
-      "@code": 200
-      "@net_http_res": !ruby/object:Net::HTTPOK 
-        __orig_body__: 
-        body: *id007
-        body_exist: true
-        code: "200"
-        header: 
-          x-powered-by: *id001
-          connection: *id002
-          content-type: *id003
-          server: *id004
-          content-length: *id005
-          status: *id006
-        http_version: "1.1"
-        message: OK
-        read: true
-        socket: 
+      x-powered-by: 
+      - Phusion Passenger (mod_rails/mod_rack) 2.2.9
+      connection: 
+      - keep-alive
+      content-type: 
+      - application/json
+      server: 
+      - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
+      content-length: 
+      - "289"
+      status: 
+      - "200"
+    body: ""
     http_version: "1.1"
-    
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
     method: :delete
@@ -418,25 +338,112 @@
       code: 200
       message: OK
     headers: 
+      x-powered-by: 
+      - Phusion Passenger (mod_rails/mod_rack) 2.2.9
+      connection: 
+      - keep-alive
+      content-type: 
+      - text/html
+      server: 
+      - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
+      content-length: 
+      - "0"
+      status: 
+      - "200"
+    body: ""
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :post
+    uri: https://api.voxel.net:443/version/1.0/
+    body: key=f0bdf4e54d590835e7100c926c2d1a47&method=voxel.voxcast.ondemand.content.purge_file&verbosity=compact&timestamp=2010-06-10T17%3a44%3a43%2b02%3a00&paths=%2fv%2f30rmi8cg%2f.jpg&device_id=48182&api_sig=619a231da9c3f7edfbf8725f1f181173
+    headers: 
+      accept: 
+      - "*/*"
+      connection: 
+      - close
+      user-agent: 
+      - Voxel hAPI ruby Client; 1.0
+      content-type: 
+      - application/x-www-form-urlencoded
+      content-length: 
+      - "233"
+      host: 
+      - api.voxel.net
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      x-powered-by: 
+      - PHP/5.2.11
+      content-type: 
+      - application/xml; charset=utf-8
+      connection: 
+      - close
+      access-control-allow-origin: 
+      - "*"
+      server: 
+      - Apache
+      date: 
+      - Thu, 10 Jun 2010 15:44:44 GMT
+      content-length: 
+      - "201"
+    body: |
+      <?xml version="1.0"?>
+      <rsp stat="ok"><transaction><type>remove-url</type><id>6d037109-6370-4105-a2da-370332ee0dae</id><expiration>1276185584</expiration><status>inprogress</status></transaction></rsp>
+
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :post
+    uri: http://api.pandastream.com:80/v2/profiles.json
+    body: timestamp=2010-06-11T18%3A44%3A30.110740%2B02%3A00&command=Handbrake%20CLI%20blabla...&title=iPhone%20720p%20%231&signature=qKfEaZMOmef913Tso7Iuoq%2Fj8dXyxAyj6g4KSYIlE8c%3D&extname=.mp4&access_key=7cc07330-5147-11df-b458-12313d01b992&cloud_id=f2f24a820b4e4e71536fcd567a384848&height=640&width=480
+    headers: 
+      accept: 
+      - "*/*; q=0.5, application/xml"
+      content-type: 
+      - application/x-www-form-urlencoded
+      accept-encoding: 
+      - gzip, deflate
+      content-length: 
+      - "296"
+      host: 
+      - api.pandastream.com
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
       x-powered-by: &id001 
         - Phusion Passenger (mod_rails/mod_rack) 2.2.9
       content-type: &id003 
-        - text/html
+        - application/json
       connection: &id002 
         - keep-alive
       server: &id004 
         - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
       content-length: &id005 
-        - "0"
+        - "226"
       status: &id006 
         - "200"
     body: &id007 !str 
-      str: ""
+      str: "{\"created_at\":\"2010/06/11 16:44:30 +0000\",\"command\":\"Handbrake CLI blabla...\",\"title\":\"iPhone 720p #1\",\"updated_at\":\"2010/06/11 16:44:30 +0000\",\"extname\":\".mp4\",\"id\":\"2d7b73dcd7a1785ecb6af79ef9d4986a\",\"height\":640,\"width\":480}"
       "@args": 
+        :url: http://api.pandastream.com:80/v2/profiles.json
+        :method: :post
+        :payload: 
+          timestamp: "2010-06-11T18:44:30.110740+02:00"
+          command: Handbrake CLI blabla...
+          title: "iPhone 720p #1"
+          signature: qKfEaZMOmef913Tso7Iuoq/j8dXyxAyj6g4KSYIlE8c=
+          extname: .mp4
+          access_key: 7cc07330-5147-11df-b458-12313d01b992
+          cloud_id: f2f24a820b4e4e71536fcd567a384848
+          height: 640
+          width: 480
         :headers: {}
 
-        :method: :delete
-        :url: 
       "@code": 200
       "@net_http_res": !ruby/object:Net::HTTPOK 
         __orig_body__: 
@@ -455,46 +462,71 @@
         read: true
         socket: 
     http_version: "1.1"
-    
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
     method: :post
-    uri: https://api.voxel.net:443/version/1.0/
-    body: key=f0bdf4e54d590835e7100c926c2d1a47&method=voxel.voxcast.ondemand.content.purge_file&verbosity=compact&timestamp=2010-06-10T17%3a44%3a43%2b02%3a00&paths=%2fv%2f30rmi8cg%2f.jpg&device_id=48182&api_sig=619a231da9c3f7edfbf8725f1f181173
+    uri: http://api.pandastream.com:80/v2/profiles.json
+    body: timestamp=2010-06-11T16%3A57%3A34.941672%2B02%3A00&title=iPhone%20720p%20(1)&command=Handbrake%20CLI%20blabla...&signature=zq7FccOCBB7okBjH2RWFYJZ67VsoGCCjf1w5U4TFqvg%3D&extname=.mp4&access_key=7cc07330-5147-11df-b458-12313d01b992&cloud_id=f2f24a820b4e4e71536fcd567a384848&height=640&width=480
     headers: 
       accept: 
-      - "*/*"
+      - "*/*; q=0.5, application/xml"
       content-type: 
       - application/x-www-form-urlencoded
-      user-agent: 
-      - Voxel hAPI ruby Client; 1.0
-      connection: 
-      - close
+      accept-encoding: 
+      - gzip, deflate
       content-length: 
-      - "233"
+      - "293"
       host: 
-      - api.voxel.net
+      - api.pandastream.com
   response: !ruby/struct:VCR::Response 
     status: !ruby/struct:VCR::ResponseStatus 
       code: 200
       message: OK
     headers: 
-      x-powered-by: 
-      - PHP/5.2.11
-      access-control-allow-origin: 
-      - "*"
-      connection: 
-      - close
-      content-type: 
-      - application/xml; charset=utf-8
-      date: 
-      - Thu, 10 Jun 2010 15:44:44 GMT
-      server: 
-      - Apache
-      content-length: 
-      - "201"
-    body: |
-      <?xml version="1.0"?>
-      <rsp stat="ok"><transaction><type>remove-url</type><id>6d037109-6370-4105-a2da-370332ee0dae</id><expiration>1276185584</expiration><status>inprogress</status></transaction></rsp>
+      x-powered-by: &id001 
+        - Phusion Passenger (mod_rails/mod_rack) 2.2.9
+      content-type: &id003 
+        - application/json
+      connection: &id002 
+        - keep-alive
+      server: &id004 
+        - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
+      content-length: &id005 
+        - "227"
+      status: &id006 
+        - "200"
+    body: &id007 !str 
+      str: "{\"created_at\":\"2010/06/11 14:57:35 +0000\",\"command\":\"Handbrake CLI blabla...\",\"title\":\"iPhone 720p (1)\",\"updated_at\":\"2010/06/11 14:57:35 +0000\",\"extname\":\".mp4\",\"id\":\"f703bb7c207c472ceefd9c0d3986bf54\",\"height\":640,\"width\":480}"
+      "@args": 
+        :url: http://api.pandastream.com:80/v2/profiles.json
+        :payload: 
+          timestamp: "2010-06-11T16:57:34.941672+02:00"
+          title: iPhone 720p (1)
+          command: Handbrake CLI blabla...
+          signature: zq7FccOCBB7okBjH2RWFYJZ67VsoGCCjf1w5U4TFqvg=
+          extname: .mp4
+          access_key: 7cc07330-5147-11df-b458-12313d01b992
+          cloud_id: f2f24a820b4e4e71536fcd567a384848
+          height: 640
+          width: 480
+        :method: :post
+        :headers: {}
 
+      "@code": 200
+      "@net_http_res": !ruby/object:Net::HTTPOK 
+        __orig_body__: 
+        body: *id007
+        body_exist: true
+        code: "200"
+        header: 
+          x-powered-by: *id001
+          connection: *id002
+          content-type: *id003
+          server: *id004
+          content-length: *id005
+          status: *id006
+        http_version: "1.1"
+        message: OK
+        read: true
+        socket: 
     http_version: "1.1"
