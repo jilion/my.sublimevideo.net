@@ -21,17 +21,56 @@ module User::CreditCard
   end
   alias :cc? :credit_card?
   
+  def credit_card_attributes_present?
+    [cc_number, cc_first_name, cc_last_name, cc_verification_value].any?(&:present?)
+  end
+  
+  def credit_card_name
+    case cc_type
+    when 'visa'
+      'Visa'
+    when 'master'
+      'MasterCard'
+    end
+  end
+  
   # validates
-  def validates_credit_card
+  def validates_credit_card_attributes
     if credit_card_attributes_present?
-      # TODO
-      # p credit_card.valid?
+      unless credit_card.valid?
+        # I18n Warning: credit_card errors are not localized
+        credit_card.errors.each do |attribute,errors|
+          attribute = case attribute
+          when 'month', 'year'
+            'cc_expired_on'
+          else
+            "cc_#{attribute}"
+          end
+          errors.each do |error|
+            self.errors.add(attribute.to_sym, error)
+          end
+        end
+      end
     end
   end
   
   # before_save
   def store_credit_card
+    if credit_card_attributes_present? && errors.empty?
+      authorize = Ogone.authorize(100 + rand(500), credit_card, :currency => 'USD', :store => "sublime_#{id}")
+      if authorize.success?
+        void_authorization(authorize)
+      else
+        self.errors.add(:base, "Credit card authorization failed")
+        false
+      end
+    end
+  end
+  
+  # before_save
+  def keep_some_credit_card_info
     if credit_card_attributes_present?
+      self.cc_type        = credit_card.type
       self.cc_last_digits = credit_card.last_digits
       self.cc_updated_at  = Time.now.utc
     end
@@ -39,8 +78,9 @@ module User::CreditCard
   
 private
   
-  def credit_card_attributes_present?
-    [cc_number, cc_first_name, cc_last_name, cc_verification_value].any?(&:present?)
+  def void_authorization(authorize)
+    void = Ogone.void(authorize.authorization)
+    HoptoadNotifier.notify("Credit card void for user #{id} failed: #{void.message}") unless void.success?
   end
   
   def credit_card

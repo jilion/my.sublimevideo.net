@@ -4,11 +4,11 @@
 
 %h2= "Edit my account"
 
-- if !current_user.credit_card?
+- if current_user.credit_card?
   #credit_card_summary
     %h3.section_title= "Billing Info"
-    %p.mastercard<
-      = "Mastercard ending in <strong>3746</strong>".html_safe
+    %p{ :class => current_user.cc_type }<
+      = "#{current_user.credit_card_name} ending in <strong>#{current_user.cc_last_digits}</strong>".html_safe
       = link_to 'Update credit card', edit_credit_card_path
 
 = render 'users/full_name_form'
@@ -31,7 +31,7 @@
   %p.note= "Leave blank if you don't want to change it"
   .entry.password
     = f.label :password, "", :class => "icon"
-    = f.password_field :password, :class => "text show_password", :placeholder => "New password", :required => true
+    = f.password_field :password, :class => "text show_password", :placeholder => "New password"
   
   .entry.update
     = f.submit "Update", :class => "submit small"

@@ -3,7 +3,8 @@
     #trial_box
       %h4= "Free Hits Remaining"
       .progress_bar
-        .elapsed_time{ :style => "width:#{current_user.trial_usage_percentage}%" }
+        - if current_user.trial_usage_percentage > 0
+          .elapsed_time{ :style => "width:#{current_user.trial_usage_percentage}%" }
         .info_box
           %p<
             = "Your free hits includes #{number_with_delimiter(User::Trial.free_loader_hits)} requests or #{number_with_delimiter(User::Trial.free_player_hits)} player hits. <br />".html_safe

@@ -28,7 +28,7 @@ module LogAnalyzer
     
     def notify_skipped_lines
       if @controller.source.skipped_lines > 0
-        notify_hoptoad "LogAnalyzer skipped #{@controller.source.skipped_lines} line(s) for #{@controller.source.source_files}"
+        HoptoadNotifier.notify "LogAnalyzer skipped #{@controller.source.skipped_lines} line(s) for #{@controller.source.source_files}"
       end
     end
     
