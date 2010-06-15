@@ -3,12 +3,12 @@
 
 %h2= "Edit my credit card"
 
-- if @user.errors[:base].present?
-  %p.errors= @user.errors[:base]
-
 - @user ||= current_user
 - reset_credit_card_attributes
 = form_for @user, :url => credit_card_path, :html => { :class => "main_form" } do |f|
+  - if @user.errors[:base].present?
+    %p.errors= @user.errors[:base]
+    
   .entry
     = f.radio_button :cc_type, "visa"
     = f.label :cc_type, "visa", :class => "visa", :for => "user_cc_type_visa"
