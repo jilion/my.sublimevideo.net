@@ -55,7 +55,7 @@ describe Invoice::Sites do
       @site1 = Factory(:site, :user => @user)
       @site2 = Factory(:site, :user => @user, :hostname => "google.com")
       VCR.use_cassette('one_saved_logs') do
-        @log = Factory(:log, :started_at => 1.month.ago, :ended_at => 1.month.ago + 3.days)
+        @log = Factory(:log_voxcast, :started_at => 1.month.ago, :ended_at => 1.month.ago + 3.days)
       end
       Factory(:site_usage, :site => @site1, :log => @log, :loader_hits => 1000100, :player_hits => 15)
       Factory(:site_usage, :site => @site2, :log => @log, :loader_hits => 53, :player_hits => 7)

@@ -33,13 +33,13 @@ Factory.define :video_encoding do |f|
   f.association       :profile_version, :factory => :video_profile_version
 end
 
-Factory.define :log do |f|
+Factory.define :log_voxcast, :class => Log::Voxcast do |f|
   f.name "cdn.sublimevideo.net.log.1275002700-1275002760.gz"
 end
 
 Factory.define :site_usage do |f|
   f.association :site
-  f.association :log
+  f.association :log, :factory => :log_voxcast
 end
 
 Factory.define :invoice do |f|

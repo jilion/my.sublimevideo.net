@@ -170,9 +170,9 @@ protected
   # after_transition :on => [:archive, :suspend]
   def purge_video_and_thumbnail_file
     self.encodings.each do |e|
-      CDN.purge("/v/#{token}/#{name}#{e.profile.name}#{e.extname}")
+      VoxcastCDN.purge("/v/#{token}/#{name}#{e.profile.name}#{e.extname}")
     end
-    CDN.purge("/v/#{token}/posterframe.jpg") unless encodings.empty?
+    VoxcastCDN.purge("/v/#{token}/posterframe.jpg") unless encodings.empty?
   end
   
 end

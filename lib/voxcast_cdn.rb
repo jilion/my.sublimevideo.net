@@ -1,4 +1,4 @@
-module CDN
+module VoxcastCDN
   class << self
     def devices_list
       client.voxel_devices_list
@@ -44,11 +44,11 @@ module CDN
     end
     
     def yml
-      config_path = Rails.root.join('config', 'cdn.yml')
+      config_path = Rails.root.join('config', 'voxcast_cdn.yml')
       @default_storage ||= YAML::load_file(config_path)
       @default_storage.to_options
     rescue
-      raise StandardError, "CDN config file '#{config_path}' doesn't exist."
+      raise StandardError, "VoxcastCDN config file '#{config_path}' doesn't exist."
     end
     
     def parse_paths(paths)

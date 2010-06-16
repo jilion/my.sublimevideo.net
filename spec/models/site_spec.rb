@@ -103,7 +103,7 @@ describe Site do
       end
       
       it "should validate uniqueness, but ignore archived sites" do
-        CDN.stub(:purge)
+        VoxcastCDN.stub(:purge)
         @site.archive
         site = Factory.build(:site, :user => @site.user, :hostname => @site.hostname)
         site.should be_valid
@@ -180,7 +180,7 @@ describe Site do
     
     it "first activate should not purge license file" do
       site = Factory(:site)
-      CDN.should_not_receive(:purge)
+      VoxcastCDN.should_not_receive(:purge)
       site.activate
     end
     
@@ -188,7 +188,7 @@ describe Site do
       site = Factory(:site)
       site.activate
       site.deactivate
-      CDN.should_receive(:purge).with("/l/#{site.token}.js")
+      VoxcastCDN.should_receive(:purge).with("/l/#{site.token}.js")
       site.activate
     end
     
@@ -199,8 +199,8 @@ describe Site do
       end
       
       it "should clear & purge license & loader when suspend" do
-        CDN.should_receive(:purge).with("/js/#{@site.token}.js")
-        CDN.should_receive(:purge).with("/l/#{@site.token}.js")
+        VoxcastCDN.should_receive(:purge).with("/js/#{@site.token}.js")
+        VoxcastCDN.should_receive(:purge).with("/l/#{@site.token}.js")
         @site.suspend
         @site = Site.find(@site)
         @site.loader.should_not be_present
@@ -208,7 +208,7 @@ describe Site do
       end
       
       it "should reset license & loader when unsuspend" do
-        CDN.stub(:purge)
+        VoxcastCDN.stub(:purge)
         @site.suspend
         @site.unsuspend
         @site.reload
@@ -217,8 +217,8 @@ describe Site do
       end
       
       it "should clear & purge license & loader and set archived_at when archive" do
-        CDN.should_receive(:purge).with("/js/#{@site.token}.js")
-        CDN.should_receive(:purge).with("/l/#{@site.token}.js")
+        VoxcastCDN.should_receive(:purge).with("/js/#{@site.token}.js")
+        VoxcastCDN.should_receive(:purge).with("/l/#{@site.token}.js")
         @site.archive
         @site.reload
         @site.loader.should_not be_present
@@ -262,7 +262,7 @@ describe Site do
       VCR.use_cassette('one_saved_logs') do
         user = Factory(:user)
         site = Factory(:site, :user => user, :loader_hits_cache => 33, :player_hits_cache => 11)
-        log = Factory(:log)
+        log = Factory(:log_voxcast)
         Factory(:site_usage, :site => site, :log => log, :loader_hits => 16, :player_hits => 5, :started_at => 1.minute.from_now, :ended_at => 2.minute.from_now)
         site.reset_hits_cache!(Time.now)
         site.loader_hits_cache.should == 16

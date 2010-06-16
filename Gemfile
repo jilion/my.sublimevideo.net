@@ -16,7 +16,7 @@ gem 'meta_where'
 gem 'hoptoad_notifier'
 gem 'activemerchant'
 gem 'panda' # Encoding
-gem 'voxel_hapi',       :git => 'git://github.com/thibaudgg/voxel_hapi.git' # CDN
+gem 'voxel_hapi',       :git => 'git://github.com/thibaudgg/voxel_hapi.git' # VoxCast CDN
 gem 'request-log-analyzer', :require => 'request_log_analyzer'
 
 gem 'warden'
@@ -42,7 +42,7 @@ group :test do
   # gem 'parallel'
   # gem 'hydra'
   
-  gem 'rev'
+  gem 'rev'g
   gem 'watchr'
   gem 'growl'
   gem 'spork'

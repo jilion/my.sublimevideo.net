@@ -88,7 +88,7 @@ describe Video do
           VCR.use_cassette('video/pandize') do
             @video.pandize
             Delayed::Job.last.name.should == 'VideoEncoding#pandize'
-            Delayed::Worker.new.work_off
+            Delayed::Worker.new(:quiet => true).work_off
           end
         end
         
@@ -151,7 +151,7 @@ describe Video do
         
         describe "after_transition => #purge_video_and_thumbnail_file" do
           it "should not call purge since it has no encodings" do
-            CDN.should_not_receive(:purge)
+            VoxcastCDN.should_not_receive(:purge)
           end
         end
       end
@@ -173,9 +173,9 @@ describe Video do
         describe "after_transition => #purge_video_and_thumbnail_file" do
           it "should purge every encodings file from the cdn and the thumbnail" do
             @video.encodings.each do |e|
-              CDN.should_receive(:purge).with("/v/#{@video.token}/#{@video.name}#{e.profile.name}#{e.extname}")
+              VoxcastCDN.should_receive(:purge).with("/v/#{@video.token}/#{@video.name}#{e.profile.name}#{e.extname}")
             end
-            CDN.should_receive(:purge).with("/v/#{@video.token}/posterframe.jpg")
+            VoxcastCDN.should_receive(:purge).with("/v/#{@video.token}/posterframe.jpg")
             VCR.use_cassette('video/suspend') { @video.suspend }
           end
         end
@@ -307,7 +307,7 @@ describe Video do
         end
         VCR.use_cassette('video/pandize') do
           @video.pandize
-          Delayed::Worker.new.work_off
+          Delayed::Worker.new(:quiet => true).work_off
         end
         
         @video.should be_in_progress
@@ -328,7 +328,7 @@ describe Video do
         end
         VCR.use_cassette('video/pandize') do
           @video.pandize
-          Delayed::Worker.new.work_off
+          Delayed::Worker.new(:quiet => true).work_off
         end
         
         @video.should_not be_active
@@ -347,7 +347,7 @@ describe Video do
         vpv.activate
         VCR.use_cassette('video/pandize') do
           @video.pandize
-          Delayed::Worker.new.work_off
+          Delayed::Worker.new(:quiet => true).work_off
         end
         
         @video.should_not be_failed

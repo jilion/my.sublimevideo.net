@@ -1,6 +1,6 @@
 namespace :logs do
   
-  desc "Clear all CDN logs & SiteUsage"
+  desc "Clear all VoxcastCDN logs & SiteUsage"
   task :reset => :environment do
     puts "Stop all logs delayed_job"
     Delayed::Job.where(:handler.matches => '%download_and_save_new_logs%').delete_all
