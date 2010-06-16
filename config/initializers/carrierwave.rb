@@ -1,4 +1,5 @@
-s3_config = YAML::load_file(Rails.root.join('config', 's3.yml'))
+s3_config = YAML::load_file(Rails.root.join('config', 's3.yml')).to_options
+
 CarrierWave.configure do |config|
   case Rails.env
   when 'production'
