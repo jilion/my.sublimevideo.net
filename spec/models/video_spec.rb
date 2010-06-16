@@ -320,6 +320,13 @@ describe Video do
     end
     
     describe "#active?" do
+      it "should return false if video has no encodings" do
+        VCR.use_cassette('video/pandize') { @video.pandize }
+        
+        @video.encodings.should be_empty
+        @video.should_not be_active
+      end
+      
       it "should return true if all the encodings of a video are active" do
         2.times do
           vpv = Factory(:video_profile_version)
