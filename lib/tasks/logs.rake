@@ -1,9 +1,9 @@
 namespace :logs do
   
-  desc "Clear all CDN logs & SiteUsage"
+  desc "Clear all VoxcastCDN logs & SiteUsage"
   task :reset => :environment do
     puts "Stop all logs delayed_job"
-    Delayed::Job.where(:handler.matches => '%download_and_save_new_logs%').delete_all
+    Delayed::Job.where(:handler.matches => '%fetch_download_and_create_new_logs%').delete_all
     Delayed::Job.where(:handler.matches => '%process%').delete_all
     puts "Destroy all Logs"
     Log.destroy_all
@@ -16,7 +16,7 @@ namespace :logs do
       :flash_hits_cache   => 0
     )
     puts "Relaunch logs download & parsing delayed_job"
-    Log.delay_new_logs_download
+    Log.delay_fetch_and_create_new_logs
   end
 
 end

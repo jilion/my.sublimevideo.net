@@ -15,7 +15,7 @@ feature "Sites actions:" do
     page.should have_content('google.com')
     
     Delayed::Job.last.name.should == 'Site#activate'
-    Delayed::Worker.new.work_off
+    Delayed::Worker.new(:quiet => true).work_off
     
     site = @current_user.sites.last
     site.hostname.should == "google.com"
@@ -31,7 +31,7 @@ feature "Sites actions:" do
   #   page.should have_content('google.com')
   #   
   #   Delayed::Job.last.name.should == 'Site#activate'
-  #   Delayed::Worker.new.work_off
+  #   Delayed::Worker.new(:quiet => true).work_off
   #   
   #   click_link "Setting"
   #   fill_in "Development domains", :with => "google.local"
@@ -51,7 +51,7 @@ feature "Sites actions:" do
     
     page.should have_content('google.com')
     @current_user.sites.last.hostname.should == "google.com"
-    CDN.should_receive(:purge).twice
+    VoxcastCDN.should_receive(:purge).twice
     
     click_button "Delete"
     

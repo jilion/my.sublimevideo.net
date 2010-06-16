@@ -138,11 +138,11 @@ class Site < ActiveRecord::Base
   end
   
   def purge_loader_file
-    CDN.purge("/js/#{token}.js")
+    VoxcastCDN.purge("/js/#{token}.js")
   end
   
   def purge_license_file
-    CDN.purge("/l/#{token}.js")
+    VoxcastCDN.purge("/l/#{token}.js")
   end
   
   def reset_hits_cache!(time)

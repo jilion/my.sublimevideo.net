@@ -107,7 +107,7 @@ private
   def self.supervise_users_already_delayed?(minutes)
     Delayed::Job.where(
       :handler.matches => '%supervise_users%',
-      :run_at.gt => (minutes - 7.seconds).from_now
+      :run_at.gt => (minutes - 10.seconds).from_now
     ).present?
   end
   

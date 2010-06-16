@@ -45,8 +45,8 @@ describe SiteUsage do
       @site2.token = 'g8thugh6'
       @site2.save
       
-      @log = Factory(:log)
-      @trackers = LogAnalyzer.parse(@log.file)
+      @log = Factory(:log_voxcast)
+      @trackers = LogAnalyzer.parse(@log.file, 'LogsFileFormat::Voxcast')
     end
     
     it "should clean trackers" do

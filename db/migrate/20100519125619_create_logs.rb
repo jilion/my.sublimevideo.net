@@ -1,6 +1,7 @@
 class CreateLogs < ActiveRecord::Migration
   def self.up
     create_table :logs do |t|
+      t.string :type
       t.string :name
       t.string :hostname
       t.string :state
@@ -11,9 +12,9 @@ class CreateLogs < ActiveRecord::Migration
       t.timestamps
     end
     
-    add_index :logs, :name
-    add_index :logs, :started_at
-    add_index :logs, :ended_at
+    add_index :logs, [:type, :name]
+    add_index :logs, [:type, :started_at]
+    add_index :logs, [:type, :ended_at]
   end
   
   def self.down

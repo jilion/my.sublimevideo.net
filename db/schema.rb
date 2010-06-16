@@ -45,6 +45,7 @@ ActiveRecord::Schema.define(:version => 20100609123904) do
   add_index "invoices", ["user_id"], :name => "index_invoices_on_user_id"
 
   create_table "logs", :force => true do |t|
+    t.string   "type"
     t.string   "name"
     t.string   "hostname"
     t.string   "state"
@@ -55,9 +56,9 @@ ActiveRecord::Schema.define(:version => 20100609123904) do
     t.datetime "updated_at"
   end
 
-  add_index "logs", ["ended_at"], :name => "index_logs_on_ended_at"
-  add_index "logs", ["name"], :name => "index_logs_on_name"
-  add_index "logs", ["started_at"], :name => "index_logs_on_started_at"
+  add_index "logs", ["type", "ended_at"], :name => "index_logs_on_type_and_ended_at"
+  add_index "logs", ["type", "name"], :name => "index_logs_on_type_and_name"
+  add_index "logs", ["type", "started_at"], :name => "index_logs_on_type_and_started_at"
 
   create_table "site_usages", :force => true do |t|
     t.integer  "site_id"

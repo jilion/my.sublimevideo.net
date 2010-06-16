@@ -16,7 +16,7 @@ gem 'meta_where'
 gem 'hoptoad_notifier'
 gem 'activemerchant'
 gem 'panda' # Encoding
-gem 'voxel_hapi',       :git => 'git://github.com/thibaudgg/voxel_hapi.git' # CDN
+gem 'voxel_hapi',       :git => 'git://github.com/thibaudgg/voxel_hapi.git' # VoxCast CDN
 gem 'request-log-analyzer', :require => 'request_log_analyzer'
 
 gem 'warden'
@@ -26,7 +26,7 @@ gem 'system_timer' # only on Ruby 1.8, used by memcache-client
 gem 'memcache-client'
 
 gem 'http_connection',  :git => 'git://github.com/thibaudgg/http_connection.git'
-gem 'aws'
+gem 'aws',              :git => 'git://github.com/thibaudgg/aws.git'
 gem 'carrierwave',      :git => 'git://github.com/jnicklas/carrierwave.git'
 
 group :development do
