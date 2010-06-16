@@ -46,7 +46,7 @@ describe SiteUsage do
       @site2.save
       
       @log = Factory(:log_voxcast)
-      @trackers = LogAnalyzer.parse(@log.file)
+      @trackers = LogAnalyzer.parse(@log.file, 'LogsFileFormat::Voxcast')
     end
     
     it "should clean trackers" do

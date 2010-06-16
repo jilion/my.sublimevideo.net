@@ -42,7 +42,7 @@ group :test do
   # gem 'parallel'
   # gem 'hydra'
   
-  gem 'rev'g
+  gem 'rev'
   gem 'watchr'
   gem 'growl'
   gem 'spork'

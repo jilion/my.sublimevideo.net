@@ -5,7 +5,7 @@ describe LogAnalyzer do
   describe "with cdn.sublimevideo.net.log.1274798340-1274798400.gz logs file" do
     before(:each) do
       logs_file = File.new(Rails.root.join('spec/fixtures/cdn.sublimevideo.net.log.1274798340-1274798400.gz'))
-      @trackers = LogAnalyzer.parse(logs_file)
+      @trackers = LogAnalyzer.parse(logs_file, 'LogsFileFormat::Voxcast')
     end
     
     it "should parse and return license tracker" do
@@ -17,7 +17,7 @@ describe LogAnalyzer do
   describe "with cdn.sublimevideo.net.log.1275002700-1275002760.gz logs file" do
     before(:each) do
       logs_file = File.new(Rails.root.join('spec/fixtures/cdn.sublimevideo.net.log.1275002700-1275002760.gz'))
-      @trackers = LogAnalyzer.parse(logs_file)
+      @trackers = LogAnalyzer.parse(logs_file, 'LogsFileFormat::Voxcast')
     end
     
     it "should parse and return license tracker" do

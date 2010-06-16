@@ -2,9 +2,9 @@ module LogAnalyzer
   class << self
     
     # Return just RequestLogAnalyzer trackers
-    def parse(logs_file)
+    def parse(logs_file, file_format_class_name)
       @controller = RequestLogAnalyzer::Controller.build(
-        :format => LogsFileFormat::Voxcast,
+        :format => file_format_class_name.constantize,
         :boring => true,
         :silent => true,
         :source_files => logs_file.path

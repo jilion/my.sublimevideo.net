@@ -20,7 +20,7 @@ module VoxcastCDN
       client.voxel_voxcast_ondemand_testing_get_url_per_pop(:device_id => yml[:device_id], :path => path)
     end
     
-    def logs_names(hostnames = yml[:hostnames].split(', '))
+    def fetch_logs_names(hostnames = yml[:hostnames].split(', '))
       logs_hash = client.voxel_voxcast_ondemand_logs_list(:device_id => yml[:device_id])
       logs_hash['log_files']['sites']['hostname'].inject([]) do |logs_names, hostname_logs_hash|
         if hostnames.include?(hostname_logs_hash['name']) && hostname_logs_hash['log_file'].present?

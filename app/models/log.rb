@@ -26,7 +26,6 @@ class Log < ActiveRecord::Base
   validates :name,       :presence => true
   validates :started_at, :presence => true
   validates :ended_at,   :presence => true
-  validates :file,       :presence => true
   
   # =============
   # = Callbacks =
@@ -53,21 +52,17 @@ class Log < ActiveRecord::Base
     set_dates_and_hostname_from_name
   end
   
-  def parse_and_create_usages!
-    logs_file = copy_logs_file_to_tmp
-    trackers = LogAnalyzer.parse(logs_file)
-    SiteUsage.create_usages_from_trackers!(self, trackers)
-    File.delete(logs_file.path)
-  rescue => ex
-    HoptoadNotifier.notify(ex)
-  end
-  
   # =================
   # = Class Methods =
   # =================
   
-  def self.delay_new_logs_download
-    Log::Voxcast.delay_new_logs_download
+  def self.delay_fetch_and_create_new_logs
+    Log::Voxcast.delay_fetch_download_and_create_new_logs
+    Log::CloudfrontDownload.delay_fetch_and_create_new_logs
+  end
+  
+  def self.config
+    yml[self.to_s.gsub("Log::", '').to_sym].to_options
   end
   
 private
@@ -82,6 +77,14 @@ private
     logs_file = File.new(Rails.root.join("tmp/#{name}"), 'w')
     logs_file.write(file.read)
     logs_file.flush
+  end
+  
+  def self.yml
+    config_path = Rails.root.join('config', 'logs.yml')
+    @default_storage ||= YAML::load_file(config_path)
+    @default_storage.to_options
+  rescue
+    raise StandardError, "Logs config file '#{config_path}' doesn't exist."
   end
   
 end

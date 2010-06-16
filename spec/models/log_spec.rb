@@ -20,11 +20,16 @@ describe Log do
   
   describe "Class methods" do
     
-    describe "delay_new_logs_download" do
+    describe "delay_fetch_and_create_new_logs" do
       
-      it "should call Log::Voxcast delay_new_logs_download" do
-        Log::Voxcast.should_receive(:delay_new_logs_download)
-        Log.delay_new_logs_download
+      it "should call Log::Voxcast delay_fetch_download_and_create_new_logs" do
+        Log::Voxcast.should_receive(:delay_fetch_download_and_create_new_logs)
+        Log.delay_fetch_and_create_new_logs
+      end
+      
+      it "should call Log::CloudfrontDownload delay_fetch_and_create_new_logs" do
+        Log::CloudfrontDownload.should_receive(:delay_fetch_and_create_new_logs)
+        Log.delay_fetch_and_create_new_logs
       end
       
     end
