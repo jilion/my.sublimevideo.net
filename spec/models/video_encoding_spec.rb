@@ -158,4 +158,34 @@ describe VideoEncoding do
     
   end
   
+  describe "Instance Methods" do
+    
+    describe "#type" do
+      it "should return 'ext' if profile.extname == '.ext'" do
+        video_encoding = Factory(:video_encoding, :panda_encoding_id => 'ab6be8bb1bcf506842264304bc1bb479', :extname => '.mp4', :state => 'encoding')
+        video_encoding.type.should == 'mp4'
+      end
+    end
+    
+    describe "#first_encoding?" do
+      before(:each) do
+        @video_encoding = Factory(:video_encoding, :profile_version => Factory(:video_profile_version, :panda_profile_id => '73f93e74e866d86624a8718d21d06e4e'))
+      end
+      
+      it "should be true if file is not present and state is encoding" do
+        VCR.use_cassette('video_encoding/pandize') { @video_encoding.pandize }
+        @video_encoding.should be_first_encoding
+      end
+      
+      it "should be false if file is already present and state is encoding" do
+        VCR.use_cassette('video_encoding/pandize') { @video_encoding.pandize }
+        VCR.use_cassette('video_encoding/activate') { @video_encoding.activate }
+        VCR.use_cassette('video_encoding/pandize') { @video_encoding.pandize }
+        @video_encoding.should_not be_first_encoding
+      end
+      
+    end
+    
+  end
+  
 end

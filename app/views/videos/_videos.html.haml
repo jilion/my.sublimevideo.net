@@ -23,7 +23,7 @@
                   .crop
                     = image_tag(video.thumbnail.url) if video.thumbnail.present?
                     -#= image_tag "http://ats.vimeo.com/414/438/41443806_200.jpg"
-                  %span.duration= seconds_to_duration(video.duration)
+                  %span.duration= milliseconds_to_duration(video.duration)
                 .info
                   %h3.title{ :title => video.title }= truncate(video.title, :length => 28)
                   
@@ -40,11 +40,11 @@
                         %ul
                           %li
                             = "Original"
-                            %span= number_to_human_size(video.size)
+                            %span= number_to_human_size(video.file_size)
                           - video.encodings.each do |encoding|
                             %li
                               = encoding.profile.title
-                              %span= number_to_human_size(encoding.size)
+                              %span= number_to_human_size(encoding.file_size)
                   .spacer
                   .upload_date= "Uploaded on #{video.created_at.strftime('%d/%m/%Y')}"
             %td.code
@@ -55,7 +55,7 @@
                   %em= "In progress"
                   %ul
                     - video.encodings.pending.each do |encoding|
-                      %li= link_to "Transcode #{encoding.name}", transcoded_video_url(encoding.panda_encoding_id)
+                      %li= link_to "Transcode #{encoding.profile.name}", transcoded_video_url(encoding.panda_encoding_id)
                       
             %td.delete= button_to 'Delete', video_path(video), :confirm => 'Are you sure?', :method => :delete
             

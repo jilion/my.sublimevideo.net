@@ -243,7 +243,7 @@ describe Video do
         
         describe "before_transition => #set_archived_at" do
           it "should set archived_at to now, the video is not accessible anymore, anywhere, anytime, THE END!" do
-            @video.stub!(:archive_encodings => true, :remove_video_and_thumbnail_file => true)
+            @video.stub!(:archive_encodings => true, :remove_video! => true)
             VCR.use_cassette('video/archive') { @video.archive }
             @video.archived_at.should be_present
             @video.should be_archived
@@ -252,7 +252,7 @@ describe Video do
         
         describe "before_transition => #archive_encodings" do
           it "should archive every encodings!" do
-            @video.stub!(:set_archived_at => true, :remove_video_and_thumbnail_file => true)
+            @video.stub!(:set_archived_at => true, :remove_video! => true)
             VCR.use_cassette('video/archive') { @video.archive }
             @video.encodings.each { |e| e.should be_archived }
             @video.should be_archived
@@ -264,6 +264,8 @@ describe Video do
             @video.stub!(:set_archived_at => true, :archive_encodings => true)
             Transcoder.should_receive(:delete).with(:video, @video.panda_video_id)
             VCR.use_cassette('video/archive') { @video.archive }
+            Delayed::Job.last.name.should == 'Module#delete'
+            Delayed::Worker.new(:quiet => true).work_off
             @video.should be_archived
           end
         end

@@ -1,9 +1,17 @@
 # coding: utf-8
 require 'state_machine'
 require 'ffaker'
+require 'vcr'
+
+VCR.config do |c|
+  c.cassette_library_dir     = 'spec/fixtures/vcr_cassettes'
+  c.http_stubbing_library    = :webmock # or :fakeweb
+  c.default_cassette_options = { :record => :new_episodes }
+end
+
 
 BASE_USERS = [["Mehdi Aminian", "mehdi@jilion.com"], ["Zeno Crivelli", "zeno@jilion.com"], ["Thibaud Guillaume-Gentil", "thibaud@jilion.com"], ["Octave Zangs", "octave@jilion.com"], ["Rémy Coutable", "remy@jilion.com"]]
-FORMATS    = %w[Desktop 3G WiFi Ogg]
+PROFILES    = %w[Desktop 3G WiFi Ogg]
 
 namespace :db do
   
@@ -38,8 +46,8 @@ namespace :db do
     
     desc "Load Video development fixtures."
     task :videos => :environment do
-      timed { empty_tables(Video)                                                  }
-      timed { create_videos((ARGV.size > 1 ? ARGV[1].sub(/COUNT=/, '').to_i : 8)) }
+      timed { empty_tables(Video, VideoProfileVersion, VideoProfile)              }
+      timed { create_videos((ARGV.size > 1 ? ARGV[1].sub(/COUNT=/, '').to_i : 1)) }
     end
     
   end
@@ -76,7 +84,7 @@ def create_admins
   end
 end
 
-def create_users(count = 5)
+def create_users(count)
   disable_perform_deliveries do
     
     BASE_USERS.each do |user_infos|
@@ -98,7 +106,7 @@ def create_users(count = 5)
   end
 end
 
-def create_sites(count = 5)
+def create_sites(count)
   delete_all_files_in_public('uploads/licenses')
   delete_all_files_in_public('uploads/loaders')
   create_users if User.all.empty?
@@ -106,10 +114,10 @@ def create_sites(count = 5)
   User.all.each do |user|
     count.times do |i|
       site            = user.sites.build
-      site.hostname   = "#{rand > 0.5 ? '' : %w[www. blog. my. git. sv. ji. geek.].rand}#{Faker::Internet.domain_name}"
+      site.hostname   = "#{rand > 0.5 ? '' : %w[www. blog. my. git. sv. ji. geek.].sample}#{Faker::Internet.domain_name}"
       site.created_at = rand(1500).days.ago
       site.flash_hits_cache  = rand(10000)
-      site.player_hits_cache     = rand(500) + site.flash_hits_cache
+      site.player_hits_cache = rand(500) + site.flash_hits_cache
       site.loader_hits_cache = rand(100000) + site.player_hits_cache
       site.save!
       site.activate
@@ -118,31 +126,55 @@ def create_sites(count = 5)
   print "#{count} random sites created for each user!\n"
 end
 
-def create_videos(count = 8)
+def create_videos(count)
   delete_all_files_in_public('uploads/videos')
   create_users if User.all.empty?
   
+  active_video_profile         = VideoProfile.create(:title => "iPhone 720p", :name => "_iphone_720p", :extname => ".mp4", :thumbnailable => true)
+  active_video_profile_version = active_video_profile.versions.build(:width => 640, :height => 480, :command => "Handbrake CLI")
+  VCR.use_cassette('video_profile_version/pandize') { active_video_profile_version.pandize }
+  active_video_profile_version.activate
+  
+  VCR.use_cassette('panda/post') do
+    @panda_video_id = Transcoder.post(:video, { :file => File.open("#{Rails.root}/spec/fixtures/railscast_intro.mov"), :profiles => 'none' })[:id]
+  end
+  
   User.all.each do |user|
     count.times do |i|
-      original = user.videos.build(:file => File.open("#{Rails.root}/spec/fixtures/railscast_intro.mov"), :width => 600, :height => 255, :size => rand(15000), :codec => 'h264', :extname => '.mp4', :duration => rand(7200), :state => 'active')
-      original.created_at = rand(1500).days.ago
-      original.panda_id   = "#{user.id*(i+1)}"
-      original.name       = Faker::Name.name
-      original.save!
-      FORMATS.each_with_index do |format_name, index|
-        format            = original.formats.build(:name => format_name, :width => 600, :height => 255, :size => rand(15000), :codec => 'h264', :extname => '.mp4', :duration => rand(7200))
-        format.created_at = original.created_at + rand(2).days
-        f                 = CarrierWave::SanitizedFile.new("#{Rails.root}/spec/fixtures/railscast_intro.mov")
-        copied_file       = f.copy_to("#{Rails.root}/spec/fixtures/#{format_name.parameterize}.mov")
-        format.file       = copied_file
-        format.panda_id   = "#{rand(10000)*(index+1)}"
-        format.save!
-        format.activate
-        copied_file.delete
+      # video = user.videos.build(:file => File.open("#{Rails.root}/spec/fixtures/railscast_intro.mov"), :width => 600, :height => 255, :size => rand(15000), :codec => 'h264', :extname => '.mp4', :duration => rand(7200), :state => 'active')
+      video = user.videos.build
+      video.panda_video_id = @panda_video_id
+      video.created_at     = rand(1500).days.ago
+      video.save!
+      VCR.use_cassette('video/pandize') do
+        video.pandize
+        Delayed::Worker.new(:quiet => true).work_off
       end
+      
+      VCR.use_cassette('video_encoding/activate') do
+        video.encodings.each do |video_encoding|
+          video_encoding.created_at = video.created_at + rand(2).days
+          video_encoding.activate
+        end
+        Delayed::Worker.new(:quiet => true).work_off
+      end
+      
+      # VideoProfile.active.each do |video_profile|
+      #   encoding = Factory(:video_encoding, :profile_version => Factory(:video_profile_version, :panda_profile_id => '73f93e74e866d86624a8718d21d06e4e'))
+      #   
+      #   encoding            = video.encodings.build(:width => 600, :height => 255, :size => rand(15000), :codec => 'h264', :extname => '.mp4', :duration => rand(7200))
+      #   encoding.created_at = video.created_at + rand(2).days
+      #   f                 = CarrierWave::SanitizedFile.new("#{Rails.root}/spec/fixtures/railscast_intro.mov")
+      #   copied_file       = f.copy_to("#{Rails.root}/spec/fixtures/#{profile_name.parameterize}.mov")
+      #   encoding.file       = copied_file
+      #   encoding.panda_id   = "#{rand(10000)*(index+1)}"
+      #   encoding.save!
+      #   encoding.activate
+      #   copied_file.delete
+      # end
     end
   end
-  print "#{User.all.size * count * (FORMATS.size + 1)} videos (1 original and #{FORMATS.size} formats per user) created!\n"
+  print "#{User.all.size * count * (VideoProfile.active.size + 1)} videos (1 video and #{VideoProfile.active.size} encodings per user) created!\n"
 end
 
 def timed(&block)
