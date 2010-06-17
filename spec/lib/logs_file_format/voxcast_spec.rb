@@ -1,10 +1,10 @@
 require 'spec_helper'
 
-describe LogAnalyzer do
+describe LogsFileFormat::Voxcast do
   
   describe "with cdn.sublimevideo.net.log.1274798340-1274798400.gz logs file" do
     before(:each) do
-      logs_file = File.new(Rails.root.join('spec/fixtures/cdn.sublimevideo.net.log.1274798340-1274798400.gz'))
+      logs_file = File.new(Rails.root.join('spec/fixtures/logs/voxcast/cdn.sublimevideo.net.log.1274798340-1274798400.gz'))
       @trackers = LogAnalyzer.parse(logs_file, 'LogsFileFormat::Voxcast')
     end
     
@@ -16,7 +16,7 @@ describe LogAnalyzer do
   
   describe "with cdn.sublimevideo.net.log.1275002700-1275002760.gz logs file" do
     before(:each) do
-      logs_file = File.new(Rails.root.join('spec/fixtures/cdn.sublimevideo.net.log.1275002700-1275002760.gz'))
+      logs_file = File.new(Rails.root.join('spec/fixtures/logs/voxcast/cdn.sublimevideo.net.log.1275002700-1275002760.gz'))
       @trackers = LogAnalyzer.parse(logs_file, 'LogsFileFormat::Voxcast')
     end
     

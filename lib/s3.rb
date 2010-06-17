@@ -5,9 +5,16 @@ module S3
       yml[name.to_sym]
     end
     
-    def logs_list(options = {})
+    def logs_name_list(options = {})
       options['max-keys'] ||= 100
-      logs_bucket.keys(options)
+      remove_prefix = options.delete(:remove_prefix)
+      keys  = logs_bucket.keys(options)
+      names = keys.map! { |key| key.name }
+      if remove_prefix && options['prefix']
+        names.map! { |name| name.gsub(options['prefix'], '') }
+        names.delete_if { |name| name.blank? }
+      end
+      names
     end
     
   private
