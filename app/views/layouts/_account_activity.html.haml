@@ -5,12 +5,14 @@
       .progress_bar
         - if current_user.trial_usage_percentage > 0
           .elapsed_time{ :style => "width:#{current_user.trial_usage_percentage}%" }
+        %a.show_details{ :href => "", :onclick => "return false" }
+          %span="Show details"
         .info_box
           %p<
             = "Your free hits includes #{number_with_delimiter(User::Trial.free_loader_hits)} requests or #{number_with_delimiter(User::Trial.free_player_hits)} player hits. <br />".html_safe
             = "Current usage:<br />".html_safe
-            = "Requests: #{number_with_delimiter(current_user.trial_loader_hits)} (#{current_user.trial_loader_hits_percentage}%)<br />".html_safe
-            = "Player hits: #{number_with_delimiter(current_user.trial_player_hits)} (#{current_user.trial_player_hits_percentage}%)<br />".html_safe
+            %em.bullet{ :class => current_user.trial_loader_hits_percentage >= current_user.trial_player_hits_percentage ? "active" : "" }= "Requests: #{number_with_delimiter(current_user.trial_loader_hits)} (#{current_user.trial_loader_hits_percentage}%)<br />".html_safe
+            %em.bullet{ :class => current_user.trial_player_hits_percentage >= current_user.trial_loader_hits_percentage ? "active" : "" }= "Player hits: #{number_with_delimiter(current_user.trial_player_hits)} (#{current_user.trial_player_hits_percentage}%)<br />".html_safe
       - unless current_user.credit_card?
         %p.note
           = "We invite you to add your credit card to prevent any cut in the player delivery when your trial will finish."
