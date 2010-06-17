@@ -28,7 +28,7 @@ class DeviseCreateUsers < ActiveRecord::Migration
       # Credit Card
       t.string   :cc_type
       t.integer  :cc_last_digits
-      t.date     :cc_expired_on
+      t.date     :cc_expire_on
       t.datetime :cc_updated_at
       
       t.timestamps

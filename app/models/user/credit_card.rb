@@ -4,7 +4,7 @@
 #
 #  cc_type                               :string(255)
 #  cc_last_digits                        :integer
-#  cc_expired_on                         :date
+#  cc_expire_on                          :date
 #  cc_updated_at                         :datetime
 #
 
@@ -42,7 +42,7 @@ module User::CreditCard
         credit_card.errors.each do |attribute,errors|
           attribute = case attribute
           when 'month', 'year'
-            'cc_expired_on'
+            'cc_expire_on'
           else
             "cc_#{attribute}"
           end
@@ -87,8 +87,8 @@ private
     @credit_card ||= ActiveMerchant::Billing::CreditCard.new(
       :type               => cc_type,
       :number             => cc_number,
-      :month              => cc_expired_on.month,
-      :year               => cc_expired_on.year,
+      :month              => cc_expire_on.month,
+      :year               => cc_expire_on.year,
       :first_name         => cc_first_name,
       :last_name          => cc_last_name,
       :verification_value => cc_verification_value
