@@ -36,7 +36,11 @@ class VideoEncoding < ActiveRecord::Base
   # = Scopes =
   # ==========
   
-  scope :pending, where(:state => 'pending')
+  scope :pending,      where(:state => 'pending')
+  scope :encoding,     where(:state => 'encoding')
+  scope :active,       where(:state => 'active')
+  scope :suspended,    where(:state => 'suspended')
+  scope :with_profile, lambda { |profile| joins(:profile_version).where(["video_profile_versions.video_profile_id = ?", profile.id]) }
   
   # ===============
   # = Validations =
@@ -54,24 +58,51 @@ class VideoEncoding < ActiveRecord::Base
   # =================
   
   state_machine :initial => :pending do
-    before_transition :on => :activate, :do => [:populate_information, :set_file, :set_video_thumbnail]
-    after_transition  :on => :activate, :do => :delete_panda_encoding
+    before_transition :on => :activate, :do => [:set_file, :set_video_thumbnail, :deprecate_active_encodings]
+    after_transition  :on => :activate, :do => [:delete_panda_encoding, :reflect_video_state]
+    
+    before_transition :on => :suspend, :do => :block_video
+    
+    before_transition :on => :unsuspend, :do => :unblock_video
+    
+    before_transition :on => :archive, :do => :remove_file!
+    
+    after_transition :on => [:suspend, :archive], :do => :purge_video
     
     event(:pandize) do
-      transition [:pending, :active] => :encoding, :if => :encoding_ok?
-      transition :failed             => :encoding, :if => :retry_encoding_ok?
+      transition [:pending, :active] => :encoding, :if => :panda_encoding_created?
       transition [:pending, :active] => :failed
+      
+      transition :failed => :encoding, :if => :retry_encoding_succeeded?
     end
-    
-    event(:activate)  { transition :encoding => :active }
+    event(:activate)  { transition :encoding => :active, :if => :panda_encoding_complete? }
     event(:fail)      { transition [:pending, :encoding] => :failed }
-    
-    event(:suspend)   { transition [:pending, :encoding, :failed, :active] => :suspended }
-    event(:unsuspend) do
-      transition :suspended => :active, :if => :file_present?
-      transition :suspended => :encoding
-    end
+    event(:deprecate) { transition [:active, :failed] => :deprecated }
+    event(:suspend)   { transition :active => :suspended }
+    event(:unsuspend) { transition :suspended => :active }
     event(:archive)   { transition [:pending, :encoding, :failed, :active] => :archived }
+  end
+  
+  # ============================
+  # = State Machine Conditions =
+  # ============================
+  def panda_encoding_created?
+    create_panda_encoding
+  end
+  
+  def panda_encoding_complete?
+    populate_information
+  end
+  
+  def retry_encoding_succeeded?
+    unless video.suspended?
+      if panda_encoding_id?
+        encoding_info = Transcoder.retry(:encoding, panda_encoding_id)
+        encoding_info[:status] != 'failed'
+      else
+        create_panda_encoding
+      end
+    end
   end
   
   # =================
@@ -79,7 +110,7 @@ class VideoEncoding < ActiveRecord::Base
   # =================
   
   def self.panda_s3_url
-    @@panda_s3_url ||= "http://s3.amazonaws.com/" + Panda.get("/clouds/#{PandaConfig.cloud_id}.json")["s3_videos_bucket"]
+    @@panda_s3_url ||= "http://s3.amazonaws.com/" + Transcoder.get(:cloud, PandaConfig.cloud_id)[:s3_videos_bucket]
   end
   
   # ====================
@@ -94,55 +125,68 @@ class VideoEncoding < ActiveRecord::Base
     encoding? && !file.present?
   end
   
-  def encoding_ok?
-    create_panda_encoding
-  end
-  
-  def retry_encoding_ok?
-    if panda_encoding_id?
-      # response = Transcoder.retry(:encoding, params)
-    else
-      create_panda_encoding
-    end
-  end
   
   def create_panda_encoding
-    params   = { :video_id => video.panda_video_id, :profile_id => profile_version.panda_profile_id }
-    response = Transcoder.post(:encoding, params)
-    if response.key?(:id)
-      self.panda_encoding_id = response[:id]
-      self.extname           = response[:extname]
-      self.width             = response[:width]
-      self.height            = response[:height]
-      response[:status] != 'failed'
-    else
-      false
-    end
+    params        = { :video_id => video.panda_video_id, :profile_id => profile_version.panda_profile_id }
+    encoding_info = Transcoder.post(:encoding, params)
+    self.panda_encoding_id = encoding_info[:id]
+    self.extname           = encoding_info[:extname]
+    self.width             = encoding_info[:width]
+    self.height            = encoding_info[:height]
+    encoding_info[:status] != 'failed'
   end
   
-  # before_transition :on => :activate
+  # ======================================
+  # = before_transition :on => :activate =
+  # ======================================
   def populate_information
-    encoding_info            = Transcoder.get(:encoding, panda_encoding_id)
+    encoding_info = Transcoder.get(:encoding, panda_encoding_id)
     self.file_size           = encoding_info[:file_size].to_i
     self.started_encoding_at = encoding_info[:started_encoding_at].to_time
     self.encoding_time       = encoding_info[:encoding_time].to_i
+    encoding_info[:status] == 'success' # should not activate if the encoding is not finished on Panda
   end
-  
-  # before_transition :on => :activate
   def set_file
     self.remote_file_url = "#{self.class.panda_s3_url}/#{panda_encoding_id}#{extname}"
   end
-  
-  # before_transition :on => :activate
   def set_video_thumbnail
     self.video.remote_thumbnail_url = "#{self.class.panda_s3_url}/#{panda_encoding_id}_4.jpg" if profile.thumbnailable?
     self.video.save!
   end
+  def deprecate_active_encodings
+    video.encodings.with_profile(profile).where(:state => %w[active failed]).map(&:deprecate)
+  end
+  def reflect_video_state
+    suspend if video.suspended?
+  end
   
-  # after_transition :on => :activate
+  # =====================================
+  # = after_transition :on => :activate =
+  # =====================================
   def delete_panda_encoding
-    response = Transcoder.delete(:encoding, panda_encoding_id)
-    raise "Couldn't delete encoding ##{panda_encoding_id}" unless response[:deleted]
+    Transcoder.delete(:encoding, panda_encoding_id)
+  end
+  
+  # =====================================
+  # = before_transition :on => :suspend =
+  # =====================================
+  def block_video
+    # should set the READ right to NOBODY (or OWNER if it's enough)on the file
+    # but maybe it'll be on the entire user's subdomain?
+  end
+  
+  # =======================================
+  # = before_transition :on => :unsuspend =
+  # =======================================
+  def unblock_video
+    # should set the READ right to WORLD
+  end
+  
+  # =================================================
+  # = before_transition :on => [:suspend, :archive] =
+  # =================================================
+  def purge_video
+    VoxcastCDN.purge("/v/#{video.token}/#{video.name}#{profile.name}#{extname}")
   end
   
 end

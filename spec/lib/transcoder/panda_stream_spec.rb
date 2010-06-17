@@ -47,6 +47,11 @@ describe Transcoder::PandaStream do
       response.should == Panda.get("/profiles/#{ID}.json").symbolize_keys!
     end
     
+    it "should return the equivalent of Panda.get('/clouds/ID.json') response" do
+      response = Transcoder::PandaStream.get(:cloud, ID)
+      response.should == Panda.get("/clouds/#{ID}.json").symbolize_keys!
+    end
+    
     it "should raise an exception if the item given is not allowed" do
       lambda { Transcoder::PandaStream.get(:foo, ID) }.should raise_error(RuntimeError, ":foo is not valid!")
     end
@@ -69,7 +74,7 @@ describe Transcoder::PandaStream do
     after(:each) { VCR.eject_cassette }
   end
   
-  describe ".post(item, options)" do
+  describe ".post(item, hash)" do
     before(:each) { VCR.insert_cassette('panda/post') }
     
     it "should return the equivalent of Panda.post('/videos.json', params) response" do
@@ -93,6 +98,21 @@ describe Transcoder::PandaStream do
     
     it "should raise an exception if the item given is not allowed" do
       lambda { Transcoder::PandaStream.post(:foo) }.should raise_error(RuntimeError, ":foo is not valid!")
+    end
+    
+    after(:each) { VCR.eject_cassette }
+  end
+  
+  describe ".post(item, id, :action => 'retry')" do
+    before(:each) { VCR.insert_cassette('panda/retry') }
+    
+    it "should return the equivalent of Panda.retry('/encodings/ID/retry.json') response" do
+      response = Transcoder::PandaStream.retry(:encoding, ID)
+      response.should == Panda.post("/encodings/#{ID}/retry.json").symbolize_keys!
+    end
+    
+    it "should raise an exception if the item given is not allowed" do
+      lambda { Transcoder::PandaStream.retry(:foo, ID) }.should raise_error(RuntimeError, ":foo is not valid!")
     end
     
     after(:each) { VCR.eject_cassette }

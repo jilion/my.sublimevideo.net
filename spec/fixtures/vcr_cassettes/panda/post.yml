@@ -3,7 +3,7 @@
   request: !ruby/struct:VCR::Request 
     method: :post
     uri: http://api.pandastream.com:80/v2/profiles.json
-    body: timestamp=2010-06-11T16%3A41%3A48.862049%2B02%3A00&command=Handbrake%20CLI%20blabla...&title=iPhone%20720p%20(1)&signature=7l0sCnBI%2BdvbSDH2RgIko8nTHldDW8ygONK%2F5tCUpFQ%3D&extname=.mp4&access_key=7cc07330-5147-11df-b458-12313d01b992&cloud_id=f2f24a820b4e4e71536fcd567a384848&height=640&width=480
+    body: 
     headers: 
       accept: 
       - "*/*; q=0.5, application/xml"

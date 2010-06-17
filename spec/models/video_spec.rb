@@ -56,12 +56,12 @@ describe Video do
     it "should validate presence of :user" do
       video = Factory.build(:video, :user => nil)
       video.should_not be_valid
-      video.should have(1).errors_on(:user)
+      video.should have(1).error_on(:user)
     end
     it "should validate presence of :panda_video_id" do
       video = Factory.build(:video, :panda_video_id => nil)
       video.should_not be_valid
-      video.should have(1).errors_on(:panda_video_id)
+      video.should have(1).error_on(:panda_video_id)
     end
   end
   
@@ -72,202 +72,149 @@ describe Video do
       it { should be_pending }
     end
     
-    describe "event(:pandize)" do
+    describe "event(:pandize) { transition :pending => :encodings }" do
       before(:each) { @video = Factory(:video) }
       
-      context "panda_video_id is not nil" do
-        it "should set the state as :encodings" do
-          VCR.use_cassette('video/pandize') { @video.pandize }
-          @video.should be_encodings
-        end
-        
-        it "should delay pandize for each encodings" do
-          vpv = Factory(:video_profile_version)
-          VCR.use_cassette('video_profile_version/pandize') { vpv.pandize }
-          vpv.activate
-          VCR.use_cassette('video/pandize') do
-            @video.pandize
-            Delayed::Job.last.name.should == 'VideoEncoding#pandize'
-            Delayed::Worker.new(:quiet => true).work_off
-          end
-        end
-        
-        describe "before_transition => #set_video_information" do
-          it "should set video informations fetched from the transcoder service" do
-            VCR.use_cassette('video/pandize') { @video.pandize }
-            @video.original_filename.should be_present
-            @video.video_codec.should       be_present
-            @video.audio_codec.should       be_present
-            @video.extname.should           be_present
-            @video.file_size.should         be_present
-            @video.duration.should          be_present
-            @video.width.should             be_present
-            @video.height.should            be_present
-            @video.fps.should               be_present
-          end
-        end
-        
-        describe "after_transition => #create_encodings" do
-          before(:each) do
-          end
-          
-          it "should create as many encodings as the number of current active profiles" do
-            active_video_profile_versions = 2.times.inject([]) do |memo, i|
-              vpv = Factory(:video_profile_version)
-              VCR.use_cassette('video_profile_version/pandize') { vpv.pandize }
-              vpv.activate
-              memo << vpv
-            end
-            VCR.use_cassette('video/pandize') { @video.pandize }
-            
-            @video.encodings.size.should == 2
-            @video.encodings[0].profile.should == active_video_profile_versions[0].profile
-            @video.encodings[1].profile.should == active_video_profile_versions[1].profile
-          end
-        end
-      end
-    end
-    
-    describe "event(:suspend)" do
-      before(:each) do
-        @video = Factory(:video)
-        active_video_profile_version = Factory(:video_profile_version)
-        VCR.use_cassette('video_profile_version/pandize') { active_video_profile_version.pandize }
-        active_video_profile_version.activate
-      end
-      
-      context "on a pending video" do
-        before(:each) { VCR.use_cassette('video/suspend') { @video.suspend } }
-        
-        it "should set the state as :encodings" do
-          @video.should be_encodings
-        end
-        
-        describe "before_transition => #block_video" do
-          it "should not try to change the rights since it has no encodings" do
-            
-          end
-        end
-        
-        describe "after_transition => #purge_video_and_thumbnail_file" do
-          it "should not call purge since it has no encodings" do
-            VoxcastCDN.should_not_receive(:purge)
-          end
-        end
-      end
-      
-      context "on a encodings video" do
-        before(:each) { VCR.use_cassette('video/pandize') { @video.pandize } }
-        
-        it "should set the state as :encodings" do
-          VCR.use_cassette('video/suspend') { @video.suspend }
-          @video.should be_encodings
-        end
-        
-        pending "before_transition => #block_video" do
-          it "should set the READ right to NOBODY (or OWNER if it's enough)" do
-            
-          end
-        end
-        
-        describe "after_transition => #purge_video_and_thumbnail_file" do
-          it "should purge every encodings file from the cdn and the thumbnail" do
-            @video.encodings.each do |e|
-              VoxcastCDN.should_receive(:purge).with("/v/#{@video.token}/#{@video.name}#{e.profile.name}#{e.extname}")
-            end
-            VoxcastCDN.should_receive(:purge).with("/v/#{@video.token}/posterframe.jpg")
-            VCR.use_cassette('video/suspend') { @video.suspend }
-          end
-        end
-      end
-      
-    end
-    
-    describe "event(:unsuspend)" do
-      before(:each) do
-        @video = Factory(:video, :state => 'encodings')
-        @video.unsuspend
-      end
-      
-      it "should set the state as :encodings" do
+      it "should set the state as :encodings from :pending" do
+        @video.should be_pending
+        VCR.use_cassette('video/pandize') { @video.pandize }
         @video.should be_encodings
       end
       
-      pending "before_transition => #unblock_video" do
-        it "should set the READ right to WORLD" do
-          
+      describe "callbacks" do
+        it "before_transition => #set_video_information should set video information fetched from Panda" do
+          @video.stub!(:create_encodings => true)
+          VCR.use_cassette('video/pandize') { @video.pandize }
+          @video.original_filename.should be_present
+          @video.video_codec.should       be_present
+          @video.audio_codec.should       be_present
+          @video.extname.should           be_present
+          @video.file_size.should         be_present
+          @video.duration.should          be_present
+          @video.width.should             be_present
+          @video.height.should            be_present
+          @video.fps.should               be_present
+        end
+        
+        it "after_transition => #create_encodings should create as many encodings as the number of current active profiles and delay pandize for each encoding" do
+          @video.stub!(:set_video_information => true)
+          2.times { Factory(:video_profile_version, :state => 'active') }
+          VCR.use_cassette('video/pandize') { @video.pandize }
+          @video.encodings.size.should == 2
+          Delayed::Job.first.name.should == 'VideoEncoding#pandize'
+          Delayed::Job.last.name.should == 'VideoEncoding#pandize'
         end
       end
     end
     
-    describe "event(:archive)" do
+    describe "event(:suspend) { transition [:pending, :encodings] => :suspended }" do
+      it "should set the state as :suspended from :pending" do
+        video = Factory(:video, :state => 'pending')
+        video.should be_pending
+        VCR.use_cassette('video/suspend') { video.suspend }
+        video.should be_suspended
+      end
+      
+      it "should set the state as :suspended from :encodings" do
+        video = Factory(:video, :state => 'encodings')
+        video.should be_encodings
+        VCR.use_cassette('video/suspend') { video.suspend }
+        video.should be_suspended
+      end
+      
+      describe "callbacks" do
+        before(:each) do
+          @video = Factory(:video, :state => 'encodings')
+          Factory(:video_encoding, :video => @video, :state => 'encoding')
+          Factory(:video_encoding, :video => @video, :state => 'active')
+        end
+        
+        it "before_transition => #suspend_encodings should suspend all the active encodings" do
+          @video.encodings[0].should be_encoding
+          @video.encodings[1].should be_active
+          VCR.use_cassette('video/suspend') { @video.suspend }
+          @video.encodings[0].reload.should be_encoding
+          @video.encodings[1].reload.should be_suspended
+        end
+      end
+    end
+    
+    describe "event(:unsuspend) { transition :suspended => :encodings }" do
       before(:each) do
-        active_video_profile_version = Factory(:video_profile_version)
-        VCR.use_cassette('video_profile_version/pandize') { active_video_profile_version.pandize }
-        active_video_profile_version.activate
+        @video = Factory(:video, :state => 'suspended')
+        Factory(:video_encoding, :video => @video, :state => 'encoding')
+        Factory(:video_encoding, :video => @video, :state => 'suspended')
       end
       
-      context "on a pending video" do
-        before(:each) { @video = Factory(:video) }
-        
-        describe "before_transition => #set_archived_at" do
-          it "should set archived_at to now, the video is not accessible anymore, anywhere, anytime, THE END!" do
-            @video.stub!(:archive_encodings => true, :remove_video_and_thumbnail_file => true)
-            VCR.use_cassette('video/archive') { @video.archive }
-            @video.archived_at.should be_present
-            @video.should be_archived
-          end
-        end
-        
-        describe "before_transition => #archive_encodings" do
-          it "should not archive any encodings since the video is pending!" do
-            @video.stub!(:set_archived_at => true, :remove_video_and_thumbnail_file => true)
-            VCR.use_cassette('video/archive') { @video.archive }
-            @video.encodings.should be_empty
-            @video.should be_archived
-          end
-        end
-        
-        describe "after_transition => #remove_video_and_thumbnail_file!" do
-          it "should not remove any file since the video is pending" do
-            @video.stub!(:set_archived_at => true, :archive_encodings => true)
-            VCR.use_cassette('video/archive') { @video.archive }
-            @video.thumbnail.should_not be_present
-            @video.should be_archived
-          end
-        end
+      it "should set the state as :encodings from :suspended" do
+        @video.should be_suspended
+        @video.unsuspend
+        @video.should be_encodings
       end
       
-      context "on a encodings video" do
-        before(:each) { @video = Factory(:video, :state => 'encodings') }
+      describe "callbacks" do
+        it "before_transition => #unsuspend_encodings should unsuspend all the suspended encodings" do
+          @video.encodings[0].should be_encoding
+          @video.encodings[1].should be_suspended
+          @video.unsuspend
+          @video.encodings[0].reload.should be_encoding
+          @video.encodings[1].reload.should be_active
+        end
+      end
+    end
+    
+    describe "event(:archive) { transition [:pending, :encodings, :suspended] => :archived }" do
+      it "should set the state as :archived from :pending" do
+        video = Factory(:video, :state => 'pending')
+        video.stub!(:set_archived_at => true, :archive_encodings => true, :remove_video_and_thumbnail! => true)
+        video.should be_pending
+        VCR.use_cassette('video/archive') { video.archive }
+        video.should be_archived
+      end
+      
+      it "should set the state as :archived from :encodings" do
+        video = Factory(:video, :state => 'encodings')
+        video.stub!(:set_archived_at => true, :archive_encodings => true, :remove_video_and_thumbnail! => true)
+        video.should be_encodings
+        VCR.use_cassette('video/archive') { video.archive }
+        video.should be_archived
+      end
+      
+      it "should set the state as :archived from :suspended" do
+        video = Factory(:video, :state => 'suspended')
+        video.stub!(:set_archived_at => true, :archive_encodings => true, :remove_video_and_thumbnail! => true)
+        video.should be_suspended
+        VCR.use_cassette('video/archive') { video.archive }
+        video.should be_archived
+      end
+      
+      describe "callbacks" do
+        let(:video) { Factory(:video, :state => 'encodings') }
         
-        describe "before_transition => #set_archived_at" do
-          it "should set archived_at to now, the video is not accessible anymore, anywhere, anytime, THE END!" do
-            @video.stub!(:archive_encodings => true, :remove_video! => true)
-            VCR.use_cassette('video/archive') { @video.archive }
-            @video.archived_at.should be_present
-            @video.should be_archived
-          end
+        it "before_transition => #set_archived_at should set archived_at to now" do
+          video.stub!(:archive_encodings => true, :remove_video_and_thumbnail! => true)
+          video.archive
+          video.archived_at.should be_present
         end
         
-        describe "before_transition => #archive_encodings" do
-          it "should archive every encodings!" do
-            @video.stub!(:set_archived_at => true, :remove_video! => true)
-            VCR.use_cassette('video/archive') { @video.archive }
-            @video.encodings.each { |e| e.should be_archived }
-            @video.should be_archived
-          end
+        it "before_transition => #archive_encodings should delay the archive of every active encoding" do
+          Factory(:video_encoding, :video => video, :state => 'encoding')
+          Factory(:video_encoding, :video => video, :state => 'active')
+          video.stub!(:set_archived_at => true, :remove_video_and_thumbnail! => true)
+          video.archive
+          Delayed::Job.first.name.should == 'VideoEncoding#archive'
+          Delayed::Job.last.name.should == 'VideoEncoding#archive'
         end
         
-        describe "after_transition => #remove_video!" do
-          it "should remove the original video file" do
-            @video.stub!(:set_archived_at => true, :archive_encodings => true)
-            Transcoder.should_receive(:delete).with(:video, @video.panda_video_id)
-            VCR.use_cassette('video/archive') { @video.archive }
-            Delayed::Job.last.name.should == 'Module#delete'
-            Delayed::Worker.new(:quiet => true).work_off
-            @video.should be_archived
-          end
+        it "after_transition => #remove_video_and_thumbnail! should delay the DELETE request to Panda remove the original video file" do
+          video.stub!(:set_archived_at => true, :archive_encodings => true)
+          video_encoding = Factory(:video_encoding, :video => video, :state => 'encoding', :panda_encoding_id => 'a'*32)
+          video_encoding.profile.stub!(:thumbnailable? => true)
+          VCR.use_cassette('video_encoding/activate') { video_encoding.activate }
+          video.thumbnail.should be_present
+          VCR.use_cassette('video/archive') { video.archive }
+          Delayed::Job.last.name.should == 'Module#delete'
+          video.thumbnail.should_not be_present
         end
       end
       
@@ -300,7 +247,7 @@ describe Video do
       end
     end
     
-    describe "#in_progress?" do
+    describe "#encoding?" do
       it "should return true if any video encoding of a video is currently encoding" do
         2.times do
           vpv = Factory(:video_profile_version)
@@ -312,12 +259,12 @@ describe Video do
           Delayed::Worker.new(:quiet => true).work_off
         end
         
-        @video.should be_in_progress
+        @video.should be_encoding
         @video.encodings.each do |e|
           VCR.use_cassette('video_encoding/activate') { e.activate }
           e.should be_active
         end
-        @video.should_not be_in_progress
+        @video.should_not be_encoding
       end
     end
     

@@ -21,7 +21,7 @@ def run_spec_matching(thing_to_match)
 end
 
 def run(files_to_run, options = {})
-  system("clear")
+  # system("clear")
   puts(options[:message] || "Running: #{files_to_run}")
   system "rspec -c -r spec/watchr/growl_formatter.rb -f GrowlFormatter #{files_to_run}"
 end

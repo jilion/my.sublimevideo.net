@@ -18,10 +18,10 @@
     headers: 
       x-powered-by: 
       - Phusion Passenger (mod_rails/mod_rack) 2.2.9
-      content-type: 
-      - application/json
       connection: 
       - keep-alive
+      content-type: 
+      - application/json
       server: 
       - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
       content-length: 
@@ -49,10 +49,10 @@
     headers: 
       x-powered-by: 
       - Phusion Passenger (mod_rails/mod_rack) 2.2.9
-      connection: 
-      - keep-alive
       content-type: 
       - application/json
+      connection: 
+      - keep-alive
       server: 
       - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
       content-length: 
@@ -80,10 +80,10 @@
     headers: 
       x-powered-by: 
       - Phusion Passenger (mod_rails/mod_rack) 2.2.9
-      content-type: 
-      - application/json
       connection: 
       - keep-alive
+      content-type: 
+      - application/json
       server: 
       - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
       content-length: 
@@ -92,8 +92,6 @@
       - "200"
     body: "[{\"created_at\":\"2010/06/10 14:42:43 +0000\",\"command\":\"ffmpeg -i $input_file$ -f mp4 -b 128k $resolution_and_padding$ -y $output_file$\",\"title\":\"My own custom profile\",\"updated_at\":\"2010/06/10 14:51:01 +0000\",\"extname\":\".mp4\",\"id\":\"257d45cb30f8fc3aad577ae865b2f3d2\",\"height\":240,\"width\":320},{\"created_at\":\"2010/06/10 14:42:43 +0000\",\"command\":\"ffmpeg -i $input_file$ -f mp4 -b 128k $resolution_and_padding$ -y $output_file$\",\"title\":\"My custom profile\",\"updated_at\":\"2010/06/10 14:42:43 +0000\",\"extname\":\".mp4\",\"id\":\"47859a335e87d2fd3aac20d83a96a0a5\",\"height\":240,\"width\":320},{\"created_at\":\"2010/06/08 16:45:22 +0000\",\"command\":\"HandBrakeCLI -i $input_file$ -o $output_file$  -e x264 -q 0.589999973773956 -a 1 -E faac -B 128 -R 48 -6 dpl2 -f mp4 -X 480 -m -x level=30:cabac=0:ref=2:mixed-refs:analyse=all:me=umh:no-fast-pskip=1\",\"title\":\"iphone-handbrake\",\"updated_at\":\"2010/06/08 16:45:22 +0000\",\"extname\":\".mp4\",\"id\":\"5e08a5612e8982ef2f7482e0782bbe02\",\"height\":320,\"width\":480}]"
     http_version: "1.1"
-    
-    
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
     method: :get
@@ -113,10 +111,10 @@
     headers: 
       x-powered-by: 
       - Phusion Passenger (mod_rails/mod_rack) 2.2.9
-      connection: 
-      - keep-alive
       content-type: 
       - application/json
+      connection: 
+      - keep-alive
       server: 
       - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
       content-length: 
@@ -125,7 +123,6 @@
       - "200"
     body: "{\"created_at\":\"2010/06/08 16:45:22 +0000\",\"command\":\"HandBrakeCLI -i $input_file$ -o $output_file$  -e x264 -q 0.589999973773956 -a 1 -E faac -B 128 -R 48 -6 dpl2 -f mp4 -X 480 -m -x level=30:cabac=0:ref=2:mixed-refs:analyse=all:me=umh:no-fast-pskip=1\",\"title\":\"iphone-handbrake\",\"updated_at\":\"2010/06/08 16:45:22 +0000\",\"extname\":\".mp4\",\"id\":\"5e08a5612e8982ef2f7482e0782bbe02\",\"height\":320,\"width\":480}"
     http_version: "1.1"
-
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
     method: :get
@@ -145,10 +142,10 @@
     headers: 
       x-powered-by: 
       - Phusion Passenger (mod_rails/mod_rack) 2.2.9
-      content-type: 
-      - application/json
       connection: 
       - keep-alive
+      content-type: 
+      - application/json
       server: 
       - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
       content-length: 
@@ -157,7 +154,6 @@
       - "200"
     body: "{\"duration\":1160,\"created_at\":\"2010/05/27 19:22:15 +0000\",\"original_filename\":\"railscast_intro.mov\",\"updated_at\":\"2010/05/27 19:22:17 +0000\",\"source_url\":null,\"extname\":\".mov\",\"id\":\"f72e511820c12dabc1d15817745225bd\",\"audio_codec\":\"aac\",\"file_size\":17236,\"height\":360,\"fps\":2,\"status\":\"success\",\"video_codec\":\"h264\",\"width\":480}"
     http_version: "1.1"
-
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
     method: :get
@@ -177,10 +173,10 @@
     headers: 
       x-powered-by: 
       - Phusion Passenger (mod_rails/mod_rack) 2.2.9
-      content-type: 
-      - application/json
       connection: 
       - keep-alive
+      content-type: 
+      - application/json
       server: 
       - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
       content-length: 
@@ -189,8 +185,6 @@
       - "200"
     body: "{\"created_at\":\"2010/06/08 17:15:11 +0000\",\"video_id\":\"70919b42ea9ef68bfd5b072d5bd0aefd\",\"started_encoding_at\":\"2010/06/08 17:15:17 +0000\",\"updated_at\":\"2010/06/08 17:15:18 +0000\",\"encoding_progress\":null,\"encoding_time\":null,\"extname\":\".mp4\",\"id\":\"9b050f8e762dfec8904e9ab679beb29b\",\"file_size\":null,\"height\":320,\"status\":\"fail\",\"profile_id\":\"5e08a5612e8982ef2f7482e0782bbe02\",\"width\":480}"
     http_version: "1.1"
-
-
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
     method: :get
@@ -210,10 +204,10 @@
     headers: 
       x-powered-by: 
       - Phusion Passenger (mod_rails/mod_rack) 2.2.9
-      content-type: 
-      - application/json
       connection: 
       - keep-alive
+      content-type: 
+      - application/json
       server: 
       - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
       content-length: 
@@ -221,4 +215,58 @@
       status: 
       - "200"
     body: "[{\"created_at\":\"2010/06/08 14:54:33 +0000\",\"video_id\":\"f72e511820c12dabc1d15817745225bd\",\"started_encoding_at\":\"2010/06/08 14:54:33 +0000\",\"updated_at\":\"2010/06/08 14:54:35 +0000\",\"encoding_progress\":100,\"encoding_time\":10,\"extname\":\".mp4\",\"id\":\"0c1de9aa8b339a54df153abe954105ea\",\"file_size\":15262,\"height\":320,\"status\":\"success\",\"profile_id\":\"7bb7560ba8f7657dc0d6d71fc98693c4\",\"width\":480},{\"created_at\":\"2010/06/08 14:54:33 +0000\",\"video_id\":\"f72e511820c12dabc1d15817745225bd\",\"started_encoding_at\":\"2010/06/08 14:55:33 +0000\",\"updated_at\":\"2010/06/08 14:56:33 +0000\",\"encoding_progress\":null,\"encoding_time\":5,\"extname\":\".mp4\",\"id\":\"2c93a9e03770a59ddeec971e0a315a65\",\"file_size\":null,\"height\":320,\"status\":\"success\",\"profile_id\":\"73f93e74e866d86624a8718d21d06e4e\",\"width\":480}]"
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: !ruby/regexp /api\.pandastream\.com:80\/v2\/clouds\/[a-z0-9]{32}\.json\?.+/
+    body: 
+    headers: 
+      accept: 
+      - "*/*; q=0.5, application/xml"
+      accept-encoding: 
+      - gzip, deflate
+      host: 
+      - api.pandastream.com
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      x-powered-by: &id001 
+        - Phusion Passenger (mod_rails/mod_rack) 2.2.9
+      content-type: &id003 
+        - application/json
+      connection: &id002 
+        - keep-alive
+      server: &id004 
+        - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
+      content-length: &id005 
+        - "211"
+      status: &id006 
+        - "200"
+    body: &id007 !str 
+      str: "{\"name\":\"SublimeVideo\",\"s3_videos_bucket\":\"sublimevideo.panda\",\"created_at\":\"2010/06/08 16:25:38 +0000\",\"updated_at\":\"2010/06/08 16:25:38 +0000\",\"id\":\"f2f24a820b4e4e71536fcd567a384848\",\"s3_private_access\":false}"
+      "@args": 
+        :headers: {}
+
+        :method: :get
+        :url: http://api.pandastream.com:80/v2/clouds/f2f24a820b4e4e71536fcd567a384848.json?timestamp=2010-06-17T13%3A08%3A09.921436%2B02%3A00&signature=zm05epcMCUbf6XaaCKyEqzh0Dai0WxaubT7%2B6UO5q4s%3D&access_key=7cc07330-5147-11df-b458-12313d01b992&cloud_id=f2f24a820b4e4e71536fcd567a384848
+      "@code": 200
+      "@net_http_res": !ruby/object:Net::HTTPOK 
+        __orig_body__: 
+        body: *id007
+        body_exist: true
+        code: "200"
+        header: 
+          x-powered-by: *id001
+          connection: *id002
+          content-type: *id003
+          server: *id004
+          content-length: *id005
+          status: *id006
+        http_version: "1.1"
+        message: OK
+        read: true
+        socket: 
     http_version: "1.1"

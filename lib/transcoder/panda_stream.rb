@@ -1,6 +1,6 @@
 module Transcoder
   module PandaStream
-    VALID_ITEMS = %w[videos encodings profiles]
+    VALID_ITEMS = %w[videos encodings profiles clouds]
     
     class << self
       
@@ -23,6 +23,14 @@ module Transcoder
         
         Panda.post("/#{item.to_s.pluralize}.json", params).symbolize_keys!
       end
+      
+      def retry(item, id)
+        raise "id can't be nil!" if id.nil?
+        assert_valid_items(item, %w[encodings])
+        
+        Panda.post("/#{item.to_s.pluralize}/#{id}/retry.json").symbolize_keys!
+      end
+      
       
       def put(item, id, params={})
         assert_valid_items(item, %w[profiles])

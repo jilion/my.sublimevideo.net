@@ -68,19 +68,19 @@ class Video < ActiveRecord::Base
     before_transition :on => :pandize, :do => :set_video_information
     after_transition  :on => :pandize, :do => :create_encodings
     
-    before_transition :on => :suspend, :do => :block_video
+    before_transition :on => :suspend, :do => :suspend_encodings
     
-    before_transition :on => :unsuspend, :do => :unblock_video
+    before_transition :on => :unsuspend, :do => :unsuspend_encodings
     
     before_transition :on => :archive, :do => [:set_archived_at, :archive_encodings]
-    after_transition  :on => :archive, :do => :remove_video!
+    after_transition  :on => :archive, :do => :remove_video_and_thumbnail!
     
-    after_transition  :on => [:archive, :suspend], :do => :purge_video_and_thumbnail_file
+    after_transition :on => [:suspend, :archive], :do => :purge_thumbnail
     
-    event(:pandize)   { transition :pending => :encodings               }
-    event(:suspend)   { transition [:pending, :encodings] => :encodings }
-    event(:unsuspend) { transition :encodings => :encodings             }
-    event(:archive)   { transition [:pending, :encodings] => :archived  }
+    event(:pandize)   { transition :pending => :encodings }
+    event(:suspend)   { transition [:pending, :encodings] => :suspended }
+    event(:unsuspend) { transition :suspended => :encodings }
+    event(:archive)   { transition [:pending, :encodings, :suspended] => :archived }
   end
   
   # =================
@@ -91,7 +91,7 @@ class Video < ActiveRecord::Base
   # = Instance Methods =
   # ====================
   
-  def in_progress?
+  def encoding?
     self.encodings.any? { |e| e.encoding? }
   end
   
@@ -117,7 +117,9 @@ class Video < ActiveRecord::Base
   
 protected
   
-  # before_transition :on => :pandize
+  # =====================================
+  # = before_transition :on => :pandize =
+  # =====================================
   def set_video_information
     video_info             = Transcoder.get(:video, panda_video_id)
     self.original_filename = video_info[:original_filename].strip
@@ -132,7 +134,9 @@ protected
     self.title             = original_filename.sub(extname, '').titleize
   end
   
-  # after_transition :on => :pandize
+  # ====================================
+  # = after_transition :on => :pandize =
+  # ====================================
   def create_encodings
     VideoProfile.active.each do |profile|
       encoding = self.encodings.build(:profile_version => profile.active_version)
@@ -141,38 +145,39 @@ protected
     end
   end
   
-  # before_transition :on => :suspend
-  def block_video
-    # should set the READ right to NOBODY (or OWNER if it's enough)on the file
-    # but maybe it'll be on the entire user's subdomain?
+  # =====================================
+  # = before_transition :on => :suspend =
+  # =====================================
+  def suspend_encodings
+    encodings.active.map(&:suspend)
   end
   
-  # before_transition :on => :unsuspend
-  def unblock_video
-    # should set the READ right to WORLD
+  # =======================================
+  # = before_transition :on => :unsuspend =
+  # =======================================
+  def unsuspend_encodings
+    encodings.suspended.map(&:unsuspend)
   end
   
-  # before_transition :on => :archive
+  # =====================================
+  # = before_transition :on => :archive =
+  # =====================================
   def set_archived_at
     self.archived_at = Time.now.utc
   end
-  
-  # before_transition :on => :archive
   def archive_encodings
-    self.encodings.map(&:archive)
+    self.encodings.active.each { |e| e.delay(:priority => 10).archive }
   end
-  
-  # after_transition :on => :archive
-  def remove_video!
+  def remove_video_and_thumbnail!
     Transcoder.delay(:priority => 6).delete(:video, panda_video_id)
+    remove_thumbnail!
   end
   
-  # after_transition :on => [:archive, :suspend]
-  def purge_video_and_thumbnail_file
-    self.encodings.each do |e|
-      VoxcastCDN.purge("/v/#{token}/#{name}#{e.profile.name}#{e.extname}")
-    end
-    VoxcastCDN.purge("/v/#{token}/posterframe.jpg") unless encodings.empty?
+  # ================================================
+  # = after_transition :on => [:archive, :suspend] =
+  # ================================================
+  def purge_thumbnail
+    VoxcastCDN.purge("/v/#{token}/posterframe.jpg") if thumbnail.present?
   end
   
 end
