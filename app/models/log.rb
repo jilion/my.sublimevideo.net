@@ -65,6 +65,17 @@ class Log < ActiveRecord::Base
     yml[self.to_s.gsub("Log::", '').to_sym].to_options
   end
   
+  def self.create_new_logs(new_logs_names)
+    existings_logs_names = select(:name).where(:name => new_logs_names).map(&:name)
+    new_logs = new_logs_names.inject([]) do |new_logs, logs_name|
+      new_logs << new(:name => logs_name)
+    end
+    new_logs = new_logs.select { |l| existings_logs_names.exclude? l.name }
+    new_logs.each { |l| l.save }
+  rescue => ex
+    HoptoadNotifier.notify(ex)
+  end
+  
 private
   
   # after_create

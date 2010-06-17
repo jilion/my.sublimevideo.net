@@ -60,16 +60,9 @@ class Log::CloudfrontDownload < Log
   end
   
   def self.fetch_and_create_new_logs
-  #   new_logs_names = VoxcastCDN.logs_names
-  #   existings_logs_names = select(:name).where(:name => new_logs_names).map(&:name)
-  #   new_logs = new_logs_names.inject([]) do |new_logs, logs_name|
-  #     new_logs << new(:name => logs_name)
-  #   end
-  #   new_logs = new_logs.select { |l| existings_logs_names.exclude? l.name }
-  #   new_logs.each { |l| l.save }
-  #   delay_fetch_and_create_new_logs # relaunch the process in 1 min
-  # rescue => ex
-  #   HoptoadNotifier.notify(ex)
+    new_logs_names = fetch_new_logs_names
+    create_new_logs(new_logs_names)
+    delay_fetch_and_create_new_logs # relaunch the process in 60 min
   end
   
 private
@@ -97,6 +90,20 @@ private
       :handler.matches => '%Log::CloudfrontDownload%fetch_and_create_new_logs%',
       :run_at.gt => (minutes - 10.seconds).from_now
     ).present?
+  end
+  
+  def self.fetch_new_logs_names
+    options = {
+      'prefix' => 'cloudfront/sublimevideo.videos/download/',
+      :remove_prefix => true
+    }
+    if old_log = self.limit(1).offset(300).order(:created_at.desc).first
+      options['marker'] = old_log.read_attribute(:file)
+    end
+    S3.logs_name_list(options)
+  rescue => ex
+    HoptoadNotifier.notify(ex)
+    []
   end
   
 end

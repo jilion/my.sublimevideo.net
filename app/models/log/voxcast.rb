@@ -60,12 +60,7 @@ class Log::Voxcast < Log
   
   def self.fetch_download_and_create_new_logs
     new_logs_names = VoxcastCDN.fetch_logs_names
-    existings_logs_names = select(:name).where(:name => new_logs_names).map(&:name)
-    new_logs = new_logs_names.inject([]) do |new_logs, logs_name|
-      new_logs << new(:name => logs_name)
-    end
-    new_logs = new_logs.select { |l| existings_logs_names.exclude? l.name }
-    new_logs.each { |l| l.save }
+    create_new_logs(new_logs_names)
     delay_fetch_download_and_create_new_logs # relaunch the process in 1 min
   rescue => ex
     HoptoadNotifier.notify(ex)

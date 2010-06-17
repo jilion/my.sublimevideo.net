@@ -1,5 +1,5 @@
 module LogsFileFormat
-
+  
   class Voxcast < RequestLogAnalyzer::FileFormat::Base
     
     extend RequestLogAnalyzer::FileFormat::CommonRegularExpressions
@@ -30,7 +30,6 @@ module LogsFileFormat
     ]
     
     def self.create(*args)
-      # line_definitions = line_definer.line_definitions.merge(:default => line_definition)
       self.new({:default => line_definition}, report_trackers)
     end
     
