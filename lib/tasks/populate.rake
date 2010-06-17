@@ -1,14 +1,6 @@
 # coding: utf-8
 require 'state_machine'
 require 'ffaker'
-require 'vcr'
-
-VCR.config do |c|
-  c.cassette_library_dir     = 'spec/fixtures/vcr_cassettes'
-  c.http_stubbing_library    = :webmock # or :fakeweb
-  c.default_cassette_options = { :record => :new_episodes }
-end
-
 
 BASE_USERS = [["Mehdi Aminian", "mehdi@jilion.com"], ["Zeno Crivelli", "zeno@jilion.com"], ["Thibaud Guillaume-Gentil", "thibaud@jilion.com"], ["Octave Zangs", "octave@jilion.com"], ["Rémy Coutable", "remy@jilion.com"]]
 PROFILES    = %w[Desktop 3G WiFi Ogg]
@@ -132,12 +124,10 @@ def create_videos(count)
   
   active_video_profile         = VideoProfile.create(:title => "iPhone 720p", :name => "_iphone_720p", :extname => ".mp4", :thumbnailable => true)
   active_video_profile_version = active_video_profile.versions.build(:width => 640, :height => 480, :command => "Handbrake CLI")
-  VCR.use_cassette('video_profile_version/pandize') { active_video_profile_version.pandize }
+  active_video_profile_version.pandize
   active_video_profile_version.activate
   
-  VCR.use_cassette('panda/post') do
-    @panda_video_id = Transcoder.post(:video, { :file => File.open("#{Rails.root}/spec/fixtures/railscast_intro.mov"), :profiles => 'none' })[:id]
-  end
+  @panda_video_id = Transcoder.post(:video, { :file => File.open("#{Rails.root}/spec/fixtures/railscast_intro.mov"), :profiles => 'none' })[:id]
   
   User.all.each do |user|
     count.times do |i|
@@ -146,18 +136,14 @@ def create_videos(count)
       video.panda_video_id = @panda_video_id
       video.created_at     = rand(1500).days.ago
       video.save!
-      VCR.use_cassette('video/pandize') do
-        video.pandize
-        Delayed::Worker.new(:quiet => true).work_off
-      end
+      video.pandize
+      Delayed::Worker.new(:quiet => true).work_off
       
-      VCR.use_cassette('video_encoding/activate') do
-        video.encodings.each do |video_encoding|
-          video_encoding.created_at = video.created_at + rand(2).days
-          video_encoding.activate
-        end
-        Delayed::Worker.new(:quiet => true).work_off
+      video.encodings.each do |video_encoding|
+        video_encoding.created_at = video.created_at + rand(2).days
+        video_encoding.activate
       end
+      Delayed::Worker.new(:quiet => true).work_off
       
       # VideoProfile.active.each do |video_profile|
       #   encoding = Factory(:video_encoding, :profile_version => Factory(:video_profile_version, :panda_profile_id => '73f93e74e866d86624a8718d21d06e4e'))
