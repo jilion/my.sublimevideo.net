@@ -86,6 +86,10 @@ class VideoEncoding < ActiveRecord::Base
   # = Instance Methods =
   # ====================
   
+  def type
+    profile.extname[1..-1]
+  end
+  
   def first_encoding?
     encoding? && !file.present?
   end

@@ -14,7 +14,7 @@
 
 class VideoProfileVersion < ActiveRecord::Base
   
-  attr_accessible :num, :note
+  attr_accessible :profile, :width, :height, :command, :num, :note
   
   attr_accessor :width, :height, :command
   
@@ -47,8 +47,8 @@ class VideoProfileVersion < ActiveRecord::Base
   # =================
   
   state_machine :initial => :pending do
-    event(:pandize)  { transition :pending => :experimental, :if => :create_panda_profile }
-    event(:activate) { transition :experimental => :active                                }
+    event(:pandize)  { transition :pending      => :experimental, :if => :panda_profile_created? }
+    event(:activate) { transition :experimental => :active }
   end
   
   # =================
@@ -58,6 +58,10 @@ class VideoProfileVersion < ActiveRecord::Base
   # ====================
   # = Instance Methods =
   # ====================
+  
+  def panda_profile_created?
+    create_panda_profile
+  end
   
   def create_panda_profile
     params   = { :title => "#{profile.title} ##{profile.versions.size + 1}", :extname => profile.extname, :width => width, :height => height, :command => command }

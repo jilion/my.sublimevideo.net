@@ -2,7 +2,7 @@ module VideosHelper
   
   def seconds_to_duration(seconds)
     return "No duration" if seconds.blank?
-    seconds = seconds / 1000
+    seconds = seconds
     hours                  = seconds / 1.hour
     minutes_in_last_hour   = (seconds - hours.hours) / 1.minute
     seconds_in_last_minute = seconds - hours.hours - minutes_in_last_hour.minutes
@@ -12,6 +12,11 @@ module VideosHelper
     else
       "#{"#{hours.to_s.rjust(2, '0')}:" if seconds > 1.hour}#{minutes_in_last_hour.to_s.rjust(2, '0')}:#{seconds_in_last_minute.to_s.rjust(2, '0')}"
     end
+  end
+  
+  def milliseconds_to_duration(milliseconds)
+    return "No duration" if milliseconds.blank?
+    seconds_to_duration(milliseconds / 1000)
   end
   
   def panda_uploader_js(field_id)
@@ -28,13 +33,13 @@ module VideosHelper
   
   def video_tags_for(video, *args)
     options = args.extract_options!
-    "<video class='sublime' poster='http://cdn.sublimevideo.net#{video.thumbnail.url}' width='#{options[:width]}' height='#{options[:height]}'>\n#{video.formats.inject([]) { |html,f| html << source_tag_for(f) }.join(" ")}\n</video>"
+    "<video class='sublime' poster='http://cdn.sublimevideo.net#{video.thumbnail.url}' width='#{options[:width]}' height='#{options[:height]}'>\n#{video.encodings.inject([]) { |html,f| html << source_tag_for(f) }.join(" ")}\n</video>"
   end
   
 private
 
-  def source_tag_for(video)
-    "<source src='http://cdn.sublimevideo.net#{video.file.url}' type='video/#{video.container || 'unknow'}' />"
+  def source_tag_for(video_encoding)
+    "<source src='http://cdn.sublimevideo.net#{video_encoding.file.url}' type='video/#{video_encoding.type || 'unknow'}' />"
   end
   
 end

@@ -17,8 +17,6 @@ require 'spec_helper'
 describe VideoProfileVersion do
   
   context "with valid attributes" do
-    before(:each) { VCR.insert_cassette('video_profile') }
-    
     subject { Factory(:video_profile_version) }
     
     its(:profile)          { should be_present                   }
@@ -28,26 +26,32 @@ describe VideoProfileVersion do
     its(:command)          { should == 'Handbrake CLI blabla...' }
     
     it { should be_valid }
+  end
+  
+  describe "accessible attributes" do
+    subject { VideoProfileVersion.new(:width => 640, :height => 480, :command => "Handbrake CLI", :profile => Factory(:video_profile)) }
     
-    after(:each) { VCR.eject_cassette }
+    its(:profile)          { should be_present }
+    its(:width)            { should be_present }
+    its(:height)           { should be_present }
+    its(:command)          { should be_present }
+    
+    it { should be_valid }
   end
   
   describe "Scopes" do
     describe "active" do
       before(:each) do
-        VCR.insert_cassette('video_profile')
         @active_video_profile = Factory(:video_profile)
         Factory(:video_profile_version, :profile => @active_video_profile)
         @active_video_profile_version = Factory(:video_profile_version, :profile => @active_video_profile)
-        @active_video_profile_version.pandize
+        VCR.use_cassette('video_profile_version/pandize') { @active_video_profile_version.pandize }
         @active_video_profile_version.activate
       end
       
       it "should return video profile version that have the :active state" do
         VideoProfileVersion.active.should == [@active_video_profile_version]
       end
-      
-      after(:each) { VCR.eject_cassette }
     end
   end
   
@@ -70,46 +74,41 @@ describe VideoProfileVersion do
   end
   
   describe "State Machine" do
-    before(:each) { VCR.insert_cassette('video_profile') }
-    
     describe "initial state" do
       subject { Factory(:video_profile_version) }
-      
       it { should be_pending }
     end
     
     describe "event(:pandize)" do
       before(:each) do
-        @active_video_profile         = Factory(:video_profile)
-        @active_video_profile_version = Factory(:video_profile_version, :profile => @active_video_profile)
+        @video_profile         = Factory(:video_profile)
+        @video_profile_version = Factory(:video_profile_version, :profile => @video_profile)
       end
       
       it "should set the state as :experimental" do
-        @active_video_profile_version.pandize
-        @active_video_profile_version.should be_experimental
+        VCR.use_cassette('video_profile_version/pandize') { @video_profile_version.pandize }
+        @video_profile_version.should be_experimental
       end
       
       describe "before_transition => #create_panda_profile" do
         it "should create the profile on Panda" do
-          params = { :title => "#{@active_video_profile.title} #1", :extname => @active_video_profile.extname, :width => @active_video_profile_version.width, :height => @active_video_profile_version.height, :command => @active_video_profile_version.command }
+          params = { :title => "#{@video_profile.title} #1", :extname => @video_profile.extname, :width => @video_profile_version.width, :height => @video_profile_version.height, :command => @video_profile_version.command }
           Transcoder.should_receive(:post).with(:profile, params).and_return({:id => 'a'*32})
-          @active_video_profile_version.pandize
-          @active_video_profile_version.panda_profile_id.should == 'a'*32
-          @active_video_profile_version.should be_experimental
+          VCR.use_cassette('video_profile_version/pandize') { @video_profile_version.pandize }
+          @video_profile_version.panda_profile_id.should == 'a'*32
+          @video_profile_version.should be_experimental
         end
         
         it "should add an error to base if the creation of the Panda profile has failed" do
-          params = { :title => "#{@active_video_profile.title} #1", :extname => @active_video_profile.extname, :width => @active_video_profile_version.width, :height => @active_video_profile_version.height, :command => @active_video_profile_version.command }
+          params = { :title => "#{@video_profile.title} #1", :extname => @video_profile.extname, :width => @video_profile_version.width, :height => @video_profile_version.height, :command => @video_profile_version.command }
           Transcoder.should_receive(:post).with(:profile, params).and_return({:error => "failed", :message => "Creation has failed"})
-          @active_video_profile_version.pandize
-          @active_video_profile_version.errors[:state].should == ["cannot transition via \"pandize\""]
-          @active_video_profile_version.panda_profile_id.should be_nil
-          @active_video_profile_version.should be_pending
+          VCR.use_cassette('video_profile_version/pandize') { @video_profile_version.pandize }
+          @video_profile_version.errors[:state].should == ["cannot transition via \"pandize\""]
+          @video_profile_version.panda_profile_id.should be_nil
+          @video_profile_version.should be_pending
         end
       end
     end
-    
-    after(:each) { VCR.eject_cassette }
   end
   
 end

@@ -1,7 +1,7 @@
 %h3
   = "Embed code for"
-  %strong= truncate(@video.name, :length => 18)
-%p.desc= "Copy the code below, and paste it into the pages you want to display the video. Make sure you have previously added the SublimeVideo JavaScript code in your page (you can find it in the #{link_to 'Sites', sites_path} page).".html_safe
+  %strong= truncate(@video.title, :length => 18)
+%p.desc= raw "Copy the code below, and paste it into the pages you want to display the video. Make sure you have previously added the SublimeVideo JavaScript code in your page (you can find it in the #{link_to 'Sites', sites_path} page)."
 %form
   .size
     %label= "Size:"

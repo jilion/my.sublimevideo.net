@@ -164,7 +164,7 @@ protected
   
   # after_transition :on => :archive
   def remove_video!
-    Transcoder.delete(:video, panda_video_id)
+    Transcoder.delay(:priority => 6).delete(:video, panda_video_id)
   end
   
   # after_transition :on => [:archive, :suspend]

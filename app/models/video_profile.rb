@@ -57,11 +57,11 @@ class VideoProfile < ActiveRecord::Base
   # ====================
   
   def description
-    @description || ""
+    read_attribute(:description) || ""
   end
   
   def name
-    @name || ""
+    read_attribute(:name) || ""
   end
   
   def experimental_version
