@@ -585,14 +585,26 @@ form .entry.update {
   box-shadow:inset rgba(255,255,255,0.2) 0 1px 0;
 }
 
+#trial_box .progress_bar a.show_details {
+  display:block;
+  width:12px;
+  height:13px;
+  background:url(/images/embed/trial_info_icon.png) no-repeat;
+  position:absolute;
+  top:4px;
+  right:4px;
+}
+
+#trial_box .progress_bar a.show_details span {display:none;}
+
 #trial_box .progress_bar .info_box {
   display:none;
   position:absolute;
   top:23px;
-  left:-18px;
-  width:183px;
-  height:96px;
-  background:url(/images/embed/progress_bar_info.png) no-repeat;
+  left:-30px;
+  width:192px;
+  height:116px;
+  background:url(/images/embed/trial_info_box.png) no-repeat;
 }
 
 #trial_box .progress_bar:hover .info_box {
@@ -600,12 +612,21 @@ form .entry.update {
 }
 
 #trial_box .progress_bar .info_box p {
-  padding:14px 10px 10px 10px;
+  padding:17px 14px 14px 15px;
   font-size:12px;
   color:#d4dae5;
   text-shadow:#000 0 -1px 0;
-  line-height:14px;
+  line-height:17px;
 }
+
+#trial_box .progress_bar .info_box p em.bullet {
+  font-style:normal;
+  display:block;
+  padding:0 0 0 18px;
+  background:url(/images/embed/trial_inactive_bullet.png) no-repeat 0 3px;
+}
+
+#trial_box .progress_bar .info_box p em.bullet.active {background-image:url(/images/embed/trial_active_bullet.png);}
 
 #trial_box p.note {
   font-size:13px;
