@@ -1,7 +1,7 @@
 %tr.break
   %td{ :colspan => 4 }
 %tr{ :class => cycle("", "alt") + (invoice.current? ? "current" : "") }
-  %td.id= invoice.current? ? "— —" : invoice.reference
+  %td.id= reference(invoice)
   %td.date
     - case invoice.state
     - when 'current'
@@ -18,26 +18,26 @@
     - when 'charged'
       .label
         %em= "Charged on"
-        %strong=l invoice.charged_at, :format => :date
+        %strong= l invoice.charged_at, :format => :date
       .date_info
         %em= "Period from"
         %strong.small
-          =l invoice.started_on, :format => :small
+          = l invoice.started_on, :format => :small
           = "to"
-          =l invoice.ended_on, :format => :small
-      
+          = l invoice.ended_on, :format => :small
+          
   %td.usage
     .row.player
       %h4= "Player"
       .right
         %strong.price= cents_to_dollars(invoice.sites_amount)
-        = link_to invoice_path(invoice.to_param), :class => "view_details", :onclick => "return MySublimeVideo.showInvoiceSites('#{invoice.to_param}')" do
+        = link_to invoice_path(invoice.to_param), :class => "view_details", :onclick => "return MySublimeVideo.showInvoice('#{invoice.to_param}', 'sites')" do
           %span= "View player details"
     .row.videos
       %h4= "Videos"
       .right
         %strong.price= cents_to_dollars(invoice.videos_amount)
-        = link_to invoice_path(invoice.to_param), :class => "view_details", :onclick => "return MySublimeVideo.showInvoiceVideos('#{invoice.to_param}')" do
+        = link_to invoice_path(invoice.to_param), :class => "view_details", :onclick => "return MySublimeVideo.showInvoice('#{invoice.to_param}', 'videos')" do
           %span= "View video details"
   %td.total
     %strong= cents_to_dollars(invoice.amount)

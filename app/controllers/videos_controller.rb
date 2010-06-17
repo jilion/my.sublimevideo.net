@@ -3,11 +3,11 @@ class VideosController < ApplicationController
   respond_to :html, :js
   
   has_scope :by_date
-  has_scope :by_name
+  has_scope :by_title
   
   # GET /videos
   def index
-    @videos = apply_scopes(current_user.videos.includes(:encodings), :default => { :by_date => 'desc' })
+    @videos = apply_scopes(current_user.videos.includes(:encodings).where("videos.state = 'encodings'"), :default => { :by_date => 'desc' })
     respond_with(@videos)
   end
   
@@ -62,7 +62,7 @@ class VideosController < ApplicationController
   # DELETE /videos/1
   def destroy
     @video = current_user.videos.find(params[:id])
-    @video.destroy
+    @video.archive
     respond_with(@video) do |format|
       format.html { redirect_to videos_path }
       format.js

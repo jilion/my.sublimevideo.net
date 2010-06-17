@@ -11,7 +11,7 @@ describe VideosController do
     end
     
     it "should respond with success to GET :index" do
-      @mock_user.stub_chain(:videos, :includes, :by_date).and_return([])
+      @mock_user.stub_chain(:videos, :includes, :where, :by_date).and_return([])
       get :index
       response.should be_success
     end
@@ -41,7 +41,7 @@ describe VideosController do
     end
     it "should respond with success to DELETE :destroy" do
       @mock_user.stub_chain(:videos, :find).with("1").and_return(mock_video)
-      mock_video.stub(:destroy)
+      mock_video.stub(:archive)
       delete :destroy, :id => '1'
       response.should redirect_to(videos_path)
     end

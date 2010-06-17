@@ -47,7 +47,7 @@ class Video < ActiveRecord::Base
   # ==========
   
   scope :by_date, lambda { |way| order("created_at #{way || 'desc'}") }
-  scope :by_name, lambda { |way| order("name #{way || 'asc'}")        }
+  scope :by_title, lambda { |way| order("title #{way || 'asc'}")        }
   
   # ===============
   # = Validations =

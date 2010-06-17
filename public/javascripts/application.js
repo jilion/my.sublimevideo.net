@@ -113,13 +113,8 @@ MySublimeVideo.showSiteSettings = function(siteId) {
   return false;
 };
 
-MySublimeVideo.showInvoiceSites = function(invoiceId) {
-  MySublimeVideo.openPopup(invoiceId, "invoices_sites", '/invoices/'+invoiceId+'?sites=true');
-  return false;
-};
-
-MySublimeVideo.showInvoiceVideos = function(invoiceId) {
-  MySublimeVideo.openPopup(invoiceId, "invoices_videos", '/invoices/'+invoiceId+'?videos=true');
+MySublimeVideo.showInvoice = function(invoiceId, type) {
+  MySublimeVideo.openPopup(invoiceId, "invoices_"+type, '/invoices/'+invoiceId+'?type='+type);
   return false;
 };
 
