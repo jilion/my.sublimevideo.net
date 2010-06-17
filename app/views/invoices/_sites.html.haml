@@ -1,0 +1,29 @@
+%h3
+  = "Player usage"
+  %em
+    = "from"
+    =l @invoice.started_on, :format => :small
+    = "to"
+    =l @invoice.ended_on, :format => :small
+%table.stats
+  %tr
+    %th.site= "Site"
+    %th.player_hits= "Player Hits"
+    %th.requests= "Requests"
+    %th.total= "Total"
+  - @invoice.sites.each do |site|
+    %tr
+      %td.site{ :title => site[:hostname] }= truncate_middle(site[:hostname])
+      %td.player_hits
+        %strong= site[:player_hits]
+        %em= cents_to_dollars(site[:player_amount])
+      %td.requests
+        %strong= site[:loader_hits]
+        %em= cents_to_dollars(site[:loader_amount])
+      %td.total
+        %strong= cents_to_dollars(site[:player_amount] + site[:loader_amount])
+  %tr
+    %td{ :colspan => 2 }
+    %td.big_total_label= "Total"
+    %td.big_total
+      %strong= cents_to_dollars(@invoice.sites_amount)

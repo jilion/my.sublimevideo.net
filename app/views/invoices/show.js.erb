@@ -1,5 +1,13 @@
-var popup = $("invoices_sites_<%= @invoice.to_param %>");
-if (popup) {
-  popup.removeClassName("loading");
-  popup.down(".content").update("<%= escape_javascript(render 'show') %>")
-}
+<%- if params[:sites] %>
+  var popup = $("invoices_sites_<%= @invoice.to_param %>");
+  if (popup) {
+    popup.removeClassName("loading");
+    popup.down(".content").update("<%= escape_javascript(render 'sites') %>")
+  }
+<%- elsif params[:videos] %>
+  var popup = $("invoices_videos_<%= @invoice.to_param %>");
+  if (popup) {
+    popup.removeClassName("loading");
+    popup.down(".content").update("<%= escape_javascript(render 'videos') %>")
+  }
+<%- end %>

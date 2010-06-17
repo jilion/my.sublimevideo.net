@@ -114,7 +114,12 @@ MySublimeVideo.showSiteSettings = function(siteId) {
 };
 
 MySublimeVideo.showInvoiceSites = function(invoiceId) {
-  MySublimeVideo.openPopup(invoiceId, "invoices_sites", '/invoices/'+invoiceId);
+  MySublimeVideo.openPopup(invoiceId, "invoices_sites", '/invoices/'+invoiceId+'?sites=true');
+  return false;
+};
+
+MySublimeVideo.showInvoiceVideos = function(invoiceId) {
+  MySublimeVideo.openPopup(invoiceId, "invoices_videos", '/invoices/'+invoiceId+'?videos=true');
   return false;
 };
 

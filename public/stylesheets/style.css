@@ -1230,6 +1230,13 @@ form .entry.update {
   font-weight:600;
 }
 
+.popup .content h3 em {
+  font-style:normal;
+  font-weight:normal;
+  font-size:14px;
+  color:#737B8A;
+}
+
 .popup .content p.desc {
   padding:5px 0;
   line-height:24px;
@@ -1791,6 +1798,45 @@ form .entry.update {
 }
 
 #content table.billing td.total strong {font-weight:600;}
+
+.popup table.stats {
+  border-collapse:collapse;
+  width:100%;
+  margin-top:10px;
+}
+
+.popup table.stats th {
+  padding:4px 0;
+}
+
+.popup table.stats td {
+  text-align:center;
+  padding:6px 0;
+  border-top:1px solid rgba(0,0,0,0.15);
+  -webkit-box-shadow:inset rgba(255,255,255,0.3) 0 1px 0;
+  -moz-box-shadow:inset rgba(255,255,255,0.3) 0 1px 0;
+  box-shadow:inset rgba(255,255,255,0.3) 0 1px 0;
+}
+
+.popup table.stats th.site, .popup table.stats td.site {
+  text-align:left;
+}
+
+.popup table.stats td.player_hits strong, .popup table.stats td.requests strong {
+  font-weight:normal;
+}
+
+.popup table.stats td.player_hits em, .popup table.stats td.requests em {
+  display:none;
+  font-style:normal;
+}
+
+.popup table.stats td.player_hits:hover strong, .popup table.stats td.requests:hover strong {display:none;}
+.popup table.stats td.player_hits:hover em, .popup table.stats td.requests:hover em {display:block;}
+
+.popup table.stats td.big_total {
+  font-size:16px;
+}
 
 #footer {
   width:1000px;

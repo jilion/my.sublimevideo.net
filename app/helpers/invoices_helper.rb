@@ -1,7 +1,7 @@
 module InvoicesHelper
   
   def cents_to_dollars(number, options = {})
-    number = number/100
+    number = number/100.0
     number_to_currency(number, :precision => 2)
   end
   
