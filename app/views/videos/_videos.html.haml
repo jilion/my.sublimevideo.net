@@ -14,51 +14,7 @@
                   = link_to_sort(:title, videos_path, :up => 'asc')
           %th.code= "Code"
           %th.delete
-          
-        - @videos.each do |video|
-          %tr{ :class => cycle("", "alt") }
-            %td.video
-              .wrap
-                .thumbnail
-                  .crop
-                    = image_tag(video.thumbnail.url) if video.thumbnail.present?
-                    -#= image_tag "http://ats.vimeo.com/414/438/41443806_200.jpg"
-                  %span.duration= milliseconds_to_duration(video.duration)
-                .info
-                  %h3.title{ :title => video.title }= truncate(video.title, :length => 28)
-                  
-                  .views
-                    %strong= number_with_delimiter(rand(10000))
-                    %em= "views"
-                    
-                  - if video.active?
-                    .storage
-                      %strong= number_to_human_size(video.total_size)
-                      = link_to "", :class => "toggle_desc_box", :onclick => "next().toggle(); return false;" do
-                        %span= "Toggle description box"
-                      .desc_box{ :style => "display:none" }
-                        %ul
-                          %li
-                            = "Original"
-                            %span= number_to_human_size(video.file_size)
-                          - video.encodings.each do |encoding|
-                            %li
-                              = encoding.profile.title
-                              %span= number_to_human_size(encoding.file_size)
-                  .spacer
-                  .upload_date= "Uploaded on #{video.created_at.strftime('%d/%m/%Y')}"
-            %td.code
-              - if video.active?
-                = link_to "Embed code", "", :class => "embed_code", :onclick => "return MySublimeVideo.showVideoEmbedCode(#{video.id})"
-              - else
-                .in_progress
-                  %em= "In progress"
-                  %ul
-                    - video.encodings.pending.each do |encoding|
-                      %li= link_to "Transcode #{encoding.profile.name}", transcoded_video_url(encoding.panda_encoding_id)
-                      
-            %td.delete= button_to 'Delete', video_path(video), :confirm => 'Are you sure?', :method => :delete
-            
+        = render @videos
   .pagination_wrap
     = will_paginate(:params => { :format => nil }, :renderer => 'WillPaginate::ViewHelpers::LinkRendererRemote')
     = page_entries_info @videos

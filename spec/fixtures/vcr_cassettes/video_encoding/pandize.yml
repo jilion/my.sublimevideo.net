@@ -22,10 +22,10 @@
     headers: 
       x-powered-by: 
       - Phusion Passenger (mod_rails/mod_rack) 2.2.9
-      content-type: 
-      - application/json
       connection: 
       - keep-alive
+      content-type: 
+      - application/json
       server: 
       - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
       content-length: 
@@ -53,10 +53,10 @@
     headers: 
       x-powered-by: 
       - Phusion Passenger (mod_rails/mod_rack) 2.2.9
-      content-type: 
-      - application/json
       connection: 
       - keep-alive
+      content-type: 
+      - application/json
       server: 
       - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
       content-length: 
@@ -64,4 +64,67 @@
       status: 
       - "200"
     body: "{\"created_at\":\"2010/06/08 13:00:09 +0000\", \"video_id\":\"f72e511820c12dabc1d15817745225bd\", \"started_encoding_at\":null, \"updated_at\":\"2010/06/08 13:00:09 +0000\", \"encoding_progress\":null, \"encoding_time\":null, \"extname\":\".mp4\", \"id\":\"ab6be8bb1bcf506842264304bc1bb479\", \"file_size\":null, \"height\":320, \"status\":\"processing\", \"profile_id\":\"73f93e74e866d86624a8718d21d06e4e\", \"width\":480}"
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :post
+    uri: http://api.pandastream.com:80/v2/encodings/ab6be8bb1bcf506842264304bc1bb479/retry.json
+    body: timestamp=2010-06-18T16%3A57%3A25.566322%2B02%3A00&signature=QdGoEV%2BtEhJsIS6vnK2aOpYIxWh3KtB2eNC3HdmD%2BN4%3D&access_key=7cc07330-5147-11df-b458-12313d01b992&cloud_id=f2f24a820b4e4e71536fcd567a384848
+    headers: 
+      accept: 
+      - "*/*; q=0.5, application/xml"
+      content-type: 
+      - application/x-www-form-urlencoded
+      accept-encoding: 
+      - gzip, deflate
+      content-length: 
+      - "201"
+      host: 
+      - api.pandastream.com
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 404
+      message: Not Found
+    headers: 
+      x-powered-by: &id001 
+        - Phusion Passenger (mod_rails/mod_rack) 2.2.9
+      content-type: &id003 
+        - application/json
+      connection: &id002 
+        - keep-alive
+      server: &id004 
+        - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
+      content-length: &id005 
+        - "102"
+      status: &id006 
+        - "404"
+    body: &id007 !str 
+      str: "{\"message\":\"Couldn't find Encoding with ID=ab6be8bb1bcf506842264304bc1bb479\",\"error\":\"RecordNotFound\"}"
+      "@args": 
+        :headers: {}
+
+        :url: http://api.pandastream.com:80/v2/encodings/ab6be8bb1bcf506842264304bc1bb479/retry.json
+        :method: :post
+        :payload: 
+          timestamp: "2010-06-18T16:57:25.566322+02:00"
+          signature: QdGoEV+tEhJsIS6vnK2aOpYIxWh3KtB2eNC3HdmD+N4=
+          access_key: 7cc07330-5147-11df-b458-12313d01b992
+          cloud_id: f2f24a820b4e4e71536fcd567a384848
+      "@code": 404
+      "@net_http_res": !ruby/object:Net::HTTPNotFound 
+        __orig_body__: 
+        body: *id007
+        body_exist: true
+        code: "404"
+        header: 
+          x-powered-by: *id001
+          connection: *id002
+          content-type: *id003
+          server: *id004
+          content-length: *id005
+          status: *id006
+        http_version: "1.1"
+        message: Not Found
+        read: true
+        socket: 
     http_version: "1.1"

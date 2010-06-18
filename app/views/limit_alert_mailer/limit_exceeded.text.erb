@@ -1,3 +1,3 @@
-Hi,
+Hi <%= @user.full_name %>,
 
-You have exceed $<%= @user.limit_alert_amount / 100.0 %>, JFYI
+For your information, you have exceeded $<%= @user.limit_alert_amount / 100.0 %>

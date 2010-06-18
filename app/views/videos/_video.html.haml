@@ -1,0 +1,47 @@
+%tr{ :class => cycle("", "alt") }
+  %td.video
+    .wrap
+      .thumbnail
+        .crop
+          = thumbnail_tag(video)
+        %span.duration= duration(video)
+      .info
+        %h3.title{ :title => video.title }= truncate(video.title, :length => 28)
+        
+        .views
+          %strong= number_with_delimiter(video.hits_cache)
+          %em= video.hits_cache == 1 ? 'view' : 'views'
+          
+        - unless video.encoding?
+          .storage
+            %strong= number_to_human_size(video.total_size, :delimiter => ',')
+            = link_to "", :class => "toggle_desc_box", :onclick => "next().toggle(); return false;" do
+              %span= "Toggle description box"
+            .desc_box{ :style => "display:none" }
+              %ul
+                %li
+                  = "Original"
+                  %span= number_to_human_size(video.file_size)
+                - video.encodings.active.each do |encoding|
+                  %li
+                    = encoding.profile.title
+                    %span= number_to_human_size(encoding.file_size)
+        .spacer
+        .upload_date= uploaded_on(video)
+  %td.code
+    - if video.encoding?
+      .in_progress
+        %em= "In progress"
+        %ul
+          - video.encodings.pending.each do |encoding|
+            %li= link_to "Transcode #{encoding.profile.name}", transcoded_video_url(encoding.panda_encoding_id)
+    - elsif video.active?
+      = link_to "Embed code", "", :class => "embed_code", :onclick => "return MySublimeVideo.showVideoEmbedCode(#{video.id})"
+    - elsif video.suspended?
+      .suspended
+        %em= "Suspended"
+    - elsif video.error?
+      .failed
+        %em= "Encoding error"
+        
+  %td.delete= button_to 'Delete', video_path(video), :confirm => 'Are you sure?', :method => :delete

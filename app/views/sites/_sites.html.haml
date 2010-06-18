@@ -12,42 +12,12 @@
                 .sorting
                   = link_to_sort(:date, sites_path, :reverse => true, :default => true)
                   = link_to_sort(:hostname, sites_path)
-          -#%th Dev hostnames
           %th.code= "Player Code"
           %th.hits= "Player Hits"
           %th.delete
           
-        - @sites.each do |site|
-          %tr{ :id => dom_id(site), :class => cycle("", "alt") }
-            %td.site
-              .wrap
-                = link_to truncate_middle(site.hostname), "http://#{site.hostname}", :class => "external_link", :onclick => "window.open(this); return false", :title => site.hostname
-                - if site.in_progress?
-                  = link_to "", :class => "settings disabled", :title => "Settings", :onclick => "return false" do
-                    %span= "settings"
-                - else
-                  = link_to "", :class => "settings", :title => "Settings", :onclick => "return MySublimeVideo.showSiteSettings(#{site.id})" do
-                    %span= "settings"
-            %td.code
-              - if site.in_progress?
-                .in_progress
-                  %em= "In progress"
-              - else
-                = link_to "Embed code", "", :class => "embed_code", :onclick => "return MySublimeVideo.showSiteEmbedCode(#{site.id})"
-                
-            %td.hits
-              %strong= site.player_hits_cache
-              %table
-                %tr
-                  %th.requests
-                    %h5= "Requests"
-                  %td.requests= number_with_delimiter(site.loader_hits_cache)
-                %tr
-                  %th.player_hits
-                    %h5= "Player hits"
-                  %td.player_hits= number_with_delimiter(site.player_hits_cache)
-            %td.delete= button_to 'Delete', site, :confirm => 'Are you sure?', :method => :delete, :remote => true
-            
+        = render @sites
+        
   .pagination_wrap
     = will_paginate(:params => { :format => nil }, :renderer => 'WillPaginate::ViewHelpers::LinkRendererRemote')
     = page_entries_info @sites

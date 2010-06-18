@@ -48,6 +48,7 @@ class Video < ActiveRecord::Base
   
   scope :by_date, lambda { |way| order("created_at #{way || 'desc'}") }
   scope :by_title, lambda { |way| order("title #{way || 'asc'}")        }
+  scope :displayable, where("videos.state NOT IN ('pending', 'archived')")
   
   # ===============
   # = Validations =
@@ -65,7 +66,7 @@ class Video < ActiveRecord::Base
   # =================
   
   state_machine :initial => :pending do
-    before_transition :on => :pandize, :do => :set_video_information
+    before_transition :on => :pandize, :do => :populate_information
     after_transition  :on => :pandize, :do => :create_encodings
     
     before_transition :on => :suspend, :do => :suspend_encodings
@@ -92,15 +93,15 @@ class Video < ActiveRecord::Base
   # ====================
   
   def encoding?
-    self.encodings.any? { |e| e.encoding? }
+    encodings? && self.encodings.any? { |e| e.encoding? }
   end
   
   def active?
-    self.encodings.present? && self.encodings.all? { |e| e.active? }
+    encodings? && self.encodings.all? { |e| e.active? }
   end
   
-  def failed?
-    self.encodings.any? { |e| e.failed? }
+  def error?
+    encodings? && self.encodings.any? { |e| e.failed? }
   end
   
   def hd?
@@ -112,7 +113,7 @@ class Video < ActiveRecord::Base
   end
   
   def total_size
-    file_size + self.encodings.sum(:file_size)
+    file_size + self.encodings.active.sum(:file_size)
   end
   
 protected
@@ -120,7 +121,7 @@ protected
   # =====================================
   # = before_transition :on => :pandize =
   # =====================================
-  def set_video_information
+  def populate_information
     video_info             = Transcoder.get(:video, panda_video_id)
     self.original_filename = video_info[:original_filename].strip
     self.video_codec       = video_info[:video_codec]
@@ -166,7 +167,7 @@ protected
     self.archived_at = Time.now.utc
   end
   def archive_encodings
-    self.encodings.active.each { |e| e.delay(:priority => 10).archive }
+    self.encodings.each { |e| e.delay(:priority => 10).archive }
   end
   def remove_video_and_thumbnail!
     Transcoder.delay(:priority => 6).delete(:video, panda_video_id)

@@ -28,17 +28,17 @@ describe User::Trial do
     
     describe "supervise_users" do
       
-      it "should send info email when user reach 50%" do
+      it "should send info email when user reaches 50%" do
         Factory(:site, :user => user, :loader_hits_cache => User::Trial.free_loader_hits / 2)
         
         lambda { User::Trial.supervise_users }.should change(ActionMailer::Base.deliveries, :size).by(1)
         last_delivery = ActionMailer::Base.deliveries.last
         last_delivery.to.should include user.email
-        last_delivery.subject.should include "Trial Usage as reach 50%"
+        last_delivery.subject.should include "Trial usage has reached 50%"
         user.reload.trial_usage_information_email_sent_at.should be_present
       end
       
-      it "should not send info email when user reach 50% if info email already sent" do
+      it "should not send info email when user reaches 50% if info email already sent" do
         Factory(:site, :user => user, :loader_hits_cache => User::Trial.free_loader_hits / 2)
         User::Trial.supervise_users
         
@@ -65,7 +65,7 @@ describe User::Trial do
         lambda { User::Trial.supervise_users }.should change(ActionMailer::Base.deliveries, :size).by(1)
         last_delivery = ActionMailer::Base.deliveries.last
         last_delivery.to.should include user.email
-        last_delivery.subject.should include "Warning! Trial Usage as reach 90%"
+        last_delivery.subject.should include "Warning! Trial usage has reached 90%"
         
         user.reload.trial_usage_warning_email_sent_at.should be_present
       end

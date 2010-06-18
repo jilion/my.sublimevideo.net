@@ -25,12 +25,11 @@ require File.dirname(__FILE__) + '/acceptance_helper'
 #   
 # end
 
-feature "Video transcoded notification from panda" do
+feature "Video transcoded notification from Panda" do
   
   background do
     sign_in_as_user
-    active_video_profile = Factory(:video_profile)
-    active_video_profile_version = Factory(:video_profile_version, :profile => active_video_profile)
+    active_video_profile_version = Factory(:video_profile_version)
     VCR.use_cassette('video_profile_version/pandize') { active_video_profile_version.pandize }
     active_video_profile_version.activate
     
@@ -66,27 +65,62 @@ feature "Videos page:" do
   
   background do
     sign_in_as_user
-    active_video_profile = Factory(:video_profile)
-    active_video_profile_version = Factory(:video_profile_version, :profile => active_video_profile)
+    active_video_profile_version = Factory(:video_profile_version)
     VCR.use_cassette('video_profile_version/pandize') { active_video_profile_version.pandize }
     active_video_profile_version.activate
     
-    
     VCR.use_cassette('video/pandize') do
-       2.times do
-         video = Factory(:video, :user => @current_user)
-         video.pandize
-       end
+      @videos = 2.times.inject([]) do |memo, n|
+       video = Factory(:video, :user => @current_user)
+       video.pandize
+       video.update_attribute(:title, "Video #{n+1}")
+       memo << video
+      end
       Delayed::Worker.new(:quiet => true).work_off
     end
   end
   
-  pending "sort buttons displayed only if count of videos > 1" do
+  scenario "sort buttons displayed only if count of videos > 1" do
     visit "/videos"
     
     page.should have_css('tr td.video', :count => 2)
     page.should have_css('a.sort.date')
-    page.should have_css('a.sort.name')
+    page.should have_css('a.sort.title')
+    page.should have_content('Video 1')
+    page.should have_content('Video 2')
+  end
+  
+  scenario "video should not appear as active if it's failed" do
+    @videos.first.encodings.first.fail
+    VCR.use_cassette('video_encoding/activate') { @videos.last.encodings.first.activate }
+    visit "/videos"
+    
+    page.should have_content('Video 1')
+    page.should have_content('Video 2')
+    page.should have_content('Encoding error')
+    page.should have_content('Embed code')
+  end
+  
+  scenario "video should not appear as active if it's suspended" do
+    @videos.first.suspend
+    VCR.use_cassette('video_encoding/activate') { @videos.last.encodings.first.activate }
+    visit "/videos"
+    
+    page.should have_content('Video 1')
+    page.should have_content('Video 2')
+    page.should have_content('Suspended')
+    page.should have_content('Embed code')
+  end
+  
+  scenario "should not show archived videos" do
+    @videos.first.archive
+    VCR.use_cassette('video_encoding/activate') { @videos.last.encodings.first.activate }
+    visit "/videos"
+    
+    page.should_not have_content('Video 1')
+    page.should have_content('Video 2')
+    page.should_not have_content('In progress')
+    page.should have_content('Embed code')
   end
   
 end
