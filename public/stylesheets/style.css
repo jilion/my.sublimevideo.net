@@ -292,6 +292,14 @@ form .site label.icon {
   left:10px;
 }
 
+form .card_number label.icon {
+  width:20px;
+  height:16px;
+  background:url(/images/embed/card_field_icon.png) no-repeat;
+  top:17px;
+  left:10px;
+}
+
 form input.text {
   width:400px;
   height:34px;
@@ -390,14 +398,109 @@ form p.note {
 }
 
 #content form .entry .checkbox_wrap label {
-  height:15px;
-  padding:0 0 0 20px;
+  position:relative;
+  left:-5px;
+  display:block;
+  height:20px;
+  padding:6px 0 0 27px;
   background:url(/images/embed/custom_checkbox.png) no-repeat;
 }
 
 /* Original concept by http://www.thecssninja.com/css/custom-inputs-using-css */
-#content form .entry .checkbox_wrap input:checked + label {
-  background-position:0 -17px;
+#content form .entry .checkbox_wrap input:checked + label {background-position:0 -26px;}
+#content form .entry .checkbox_wrap input:focus + label {background-position:0 -52px;}
+#content form .entry .checkbox_wrap input:focus:checked + label {background-position:0 -78px;}
+
+
+#content form .entry .radio_wrap {
+  margin:0 15px 6px 0;
+  position:relative;
+  float:left;
+}
+
+#content form .entry .radio_wrap input {
+  float:left;
+  position:absolute;
+  top:0;
+  left:0;
+  opacity:0;
+}
+
+#content form .entry .radio_wrap label {
+  position:relative;
+  left:-5px;
+  display:block;
+  height:20px;
+  padding:6px 0 0 27px;
+  background:url(/images/embed/custom_radio.png) no-repeat;
+}
+
+/* Original concept by http://www.thecssninja.com/css/custom-inputs-using-css */
+#content form .entry .radio_wrap input:checked + label {background-position:0 -26px;}
+#content form .entry .radio_wrap input:focus + label {background-position:0 -52px;}
+#content form .entry .radio_wrap input:focus:checked + label {background-position:0 -78px;}
+
+#content form .entry.card label span {
+  display:block;
+  text-indent:-9999px;
+  width:43px;
+  height:29px;
+  position:relative;
+  top:-6px;
+}
+
+#content form .entry.card label.visa span {background:url(/images/embed/credit_cards/visa.png) no-repeat;}
+#content form .entry.card label.master span {background:url(/images/embed/credit_cards/mastercard.png) no-repeat;}
+
+#content form .entry.select .custom_select_wrap {
+  margin:0 10px 6px 0;
+  position:relative;
+  float:left;
+}
+
+#content form .entry.select .custom_select_wrap select {
+  float:left;
+  position:absolute;
+  top:0;
+  left:0;
+  opacity:0;
+  font-size:20px;
+}
+
+#content form .entry.select .fake_select {
+  height:18px;
+  padding:4px 0 0 6px;
+  border:1px solid #8a92a0;
+  border-radius:4px;
+  -webkit-border-radius:4px;
+  -moz-border-radius:4px;
+  background:#fefefe;
+  background:-webkit-gradient(linear,left top,left bottom,from(#fefefe),to(#d3d3d3));
+  background:-moz-linear-gradient(top, #fefefe, #d3d3d3);
+  -webkit-box-shadow:rgba(255,255,255,0.3) 0 1px 0;
+  -moz-box-shadow:rgba(255,255,255,0.3) 0 1px 0;
+  box-shadow:rgba(255,255,255,0.3) 0 1px 0;
+}
+
+#content form .entry.select .fake_select.focus {
+  outline: auto 5px -webkit-focus-ring-color;
+  outline-offset: -2px;
+  outline-color:#0085c8;
+  -moz-outline:-moz-mac-focusring solid 2px; 
+  -moz-outline-radius: 0 7px 7px;
+  -moz-outline-offset:0;
+  -moz-outline-color:#0085c8;
+}
+
+#content form .entry.select .fake_select span {
+  display:block;
+  margin-right:5px;
+  background:url(/images/embed/custom_select_arrow.png) no-repeat 100% 50%;
+}
+
+#content form .entry.select label {
+  position:relative;
+  top:5px;
 }
 
 #content .entry.terms {
