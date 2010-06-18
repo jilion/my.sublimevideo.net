@@ -10,7 +10,7 @@
 
 module User::CreditCard
   
-  attr_accessor :cc_number, :cc_first_name, :cc_last_name, :cc_verification_value
+  attr_accessor :cc_number,:cc_full_name, :cc_first_name, :cc_last_name, :cc_verification_value
   
   # ===================================
   # = User instance methods extension =
