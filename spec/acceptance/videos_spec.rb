@@ -81,7 +81,7 @@ feature "Videos page:" do
     end
   end
   
-  scenario "sort buttons displayed only if count of videos > 1" do
+  pending "sort buttons displayed only if count of videos > 1" do
     visit "/videos"
     
     page.should have_css('tr td.video', :count => 2)

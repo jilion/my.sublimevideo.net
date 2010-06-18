@@ -10,7 +10,7 @@ describe LogsFileFormat::CloudfrontDownload do
     
     it "should parse and return license tracker" do
       tracker = @trackers.select { |tracker| tracker.options[:title] == :bandwidth }.first
-      p tracker.categories
+      # p tracker.categories
       # tracker.categories.should == { "/js/12345678.js" => 9 }
     end
   end

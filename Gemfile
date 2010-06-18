@@ -42,14 +42,16 @@ group :test do
   # gem 'parallel'
   # gem 'hydra'
   
-  gem 'rev'
-  gem 'watchr'
-  gem 'growl'
+  # gem 'rev'
+  # gem 'watchr'
+  # gem 'growl'
   gem 'spork'
+  # gem 'rspactor',     :path => '/Users/Thibaud/Development/Code/rspactor2'
   
   gem 'rspec-core',   :git => 'git://github.com/rspec/rspec-core.git'
   gem 'rspec',        '>= 2.0.0.beta.12'
-  gem 'rspec-rails',  '>= 2.0.0.beta.12'
+  # gem 'rspec-rails',  '>= 2.0.0.beta.12'
+  gem 'rspec-rails',  :git => 'git://github.com/thibaudgg/rspec-rails.git'
   
   gem 'steak',        '>= 0.4.0.beta.1'
   gem 'capybara'

@@ -12,29 +12,21 @@ dependencies:
     group: 
     - :production
     version: ">= 0"
-  annotate: 
+  rails: 
     group: 
-    - :development
+    - :default
+    version: = 3.0.0.beta4
+  system_timer: 
+    group: 
+    - :default
     version: ">= 0"
   http_connection: 
     group: 
     - :default
     version: ">= 0"
-  system_timer: 
+  annotate: 
     group: 
-    - :default
-    version: ">= 0"
-  rails: 
-    group: 
-    - :default
-    version: = 3.0.0.beta4
-  haml: 
-    group: 
-    - :default
-    version: ">= 0"
-  memcache-client: 
-    group: 
-    - :default
+    - :development
     version: ">= 0"
   sqlite3-ruby: 
     group: 
@@ -42,19 +34,23 @@ dependencies:
     version: ">= 0"
     require: 
     - sqlite3
+  memcache-client: 
+    group: 
+    - :default
+    version: ">= 0"
+  haml: 
+    group: 
+    - :default
+    version: ">= 0"
   ffaker: 
     group: 
     - :development
-    version: ">= 0"
-  rev: 
-    group: 
-    - :test
     version: ">= 0"
   rspec: 
     group: 
     - :test
     version: ">= 2.0.0.beta.12"
-  voxel_hapi: 
+  delayed_job: 
     group: 
     - :default
     version: ">= 0"
@@ -62,47 +58,37 @@ dependencies:
     group: 
     - :default
     version: ">= 0"
-  delayed_job: 
+  voxel_hapi: 
     group: 
     - :default
-    version: ">= 0"
-  watchr: 
-    group: 
-    - :test
-    version: ">= 0"
-  wirble: 
-    group: 
-    - :development
     version: ">= 0"
   activemerchant: 
     group: 
     - :default
     version: ">= 0"
-  growl: 
+  wirble: 
     group: 
-    - :test
+    - :development
     version: ">= 0"
   rspec-rails: 
     group: 
     - :test
-    version: ">= 2.0.0.beta.12"
+    version: ">= 0"
   vcr: 
     group: 
     - :test
     version: ">= 0"
-  carrierwave: 
+  devise: 
+    group: 
+    - :default
+    version: ">= 1.1.rc1"
+  request-log-analyzer: 
     group: 
     - :default
     version: ">= 0"
-  has_scope: 
-    group: 
-    - :default
-    version: ">= 0"
-  heroku: 
-    group: 
-    - :default
-    version: ">= 0"
-  will_paginate: 
+    require: 
+    - request_log_analyzer
+  panda: 
     group: 
     - :default
     version: ">= 0"
@@ -110,43 +96,41 @@ dependencies:
     group: 
     - :default
     version: ">= 0"
-  panda: 
+  will_paginate: 
     group: 
     - :default
     version: ">= 0"
-  request-log-analyzer: 
+  heroku: 
     group: 
     - :default
     version: ">= 0"
-    require: 
-    - request_log_analyzer
-  devise: 
+  has_scope: 
     group: 
     - :default
-    version: ">= 1.1.rc1"
+    version: ">= 0"
+  carrierwave: 
+    group: 
+    - :default
+    version: ">= 0"
   steak: 
     group: 
     - :test
     version: ">= 0.4.0.beta.1"
-  state_machine: 
-    group: 
-    - :default
-    version: ">= 0"
-  aws: 
-    group: 
-    - :default
-    version: ">= 0"
   ruby-graphviz: 
     group: 
     - :development
     version: ">= 0"
     require: 
     - graphviz
-  responders: 
+  aws: 
     group: 
     - :default
     version: ">= 0"
-  i18n: 
+  state_machine: 
+    group: 
+    - :default
+    version: ">= 0"
+  hoptoad_notifier: 
     group: 
     - :default
     version: ">= 0"
@@ -154,7 +138,11 @@ dependencies:
     group: 
     - :default
     version: ">= 0"
-  hoptoad_notifier: 
+  i18n: 
+    group: 
+    - :default
+    version: ">= 0"
+  responders: 
     group: 
     - :default
     version: ">= 0"
@@ -210,7 +198,7 @@ specs:
 - treetop: 
     version: 1.4.8
 - mail: 
-    version: 2.2.4
+    version: 2.2.5
 - actionmailer: 
     version: 3.0.0.beta4
 - activemerchant: 
@@ -227,14 +215,14 @@ specs:
     version: 2.4.0
 - http_connection: 
     version: 1.3.0
-    source: 3
+    source: 4
 - uuidtools: 
     version: 2.1.1
 - xml-simple: 
     version: 1.0.12
 - aws: 
     version: 2.3.8
-    source: 2
+    source: 3
 - bundler: 
     version: 0.9.26
 - culerity: 
@@ -246,12 +234,12 @@ specs:
 - json_pure: 
     version: 1.4.3
 - selenium-webdriver: 
-    version: 0.0.23
+    version: 0.0.24
 - capybara: 
     version: 0.3.8
 - carrierwave: 
     version: 0.4.4
-    source: 1
+    source: 2
 - closure-compiler: 
     version: 0.3.2
 - configuration: 
@@ -260,7 +248,7 @@ specs:
     version: 1.0.10
 - delayed_job: 
     version: 2.1.0.pre
-    source: 8
+    source: 9
 - warden: 
     version: 0.10.7
 - devise: 
@@ -279,13 +267,11 @@ specs:
     version: "1.0"
 - ffaker: 
     version: 0.4.0
-- growl: 
-    version: 1.0.3
 - haml: 
     version: 3.0.12
 - has_scope: 
     version: 0.5.0
-    source: 6
+    source: 7
 - json: 
     version: 1.2.4
 - launchy: 
@@ -296,13 +282,11 @@ specs:
     version: 1.6.5
 - hoptoad_notifier: 
     version: 2.2.6
-- iobuffer: 
-    version: 0.1.3
 - yui-compressor: 
     version: 0.9.1
 - jammit: 
     version: 0.5.0
-    source: 5
+    source: 6
 - libxml-ruby: 
     version: 1.1.4
 - memcache-client: 
@@ -319,11 +303,9 @@ specs:
     version: 1.7.0
 - responders: 
     version: 0.6.1
-- rev: 
-    version: 0.3.2
 - rspec-core: 
     version: 2.0.0.beta.12
-    source: 0
+    source: 1
 - rspec-expectations: 
     version: 2.0.0.beta.12
 - rspec-mocks: 
@@ -334,6 +316,7 @@ specs:
     version: 0.7.1
 - rspec-rails: 
     version: 2.0.0.beta.12
+    source: 0
 - ruby-graphviz: 
     version: 0.9.11
 - spork: 
@@ -342,7 +325,7 @@ specs:
     version: 1.3.0
 - state_machine: 
     version: 0.9.2
-    source: 9
+    source: 10
 - steak: 
     version: 0.4.0.beta.1
 - system_timer: 
@@ -353,22 +336,24 @@ specs:
     version: 0.4.1
 - voxel_hapi: 
     version: 1.1.0
-    source: 4
-- watchr: 
-    version: "0.6"
+    source: 5
 - webmock: 
     version: 1.2.2
 - will_paginate: 
     version: 3.0.pre
-    source: 7
+    source: 8
 - wirble: 
     version: 0.1.3
-hash: 42edd1f63f7aa6368b0b45e86e4b8de8f1fcc0a7
+hash: a569656d6483f3d45bc7d598eceab39133aa15e3
 sources: 
+- Git: 
+    uri: git://github.com/thibaudgg/rspec-rails.git
+    git: git://github.com/thibaudgg/rspec-rails.git
+    ref: 50f72b56cebfb0b3a64ce2cf467ef0f70e3ce04f
 - Git: 
     uri: git://github.com/rspec/rspec-core.git
     git: git://github.com/rspec/rspec-core.git
-    ref: 7910d7f5ac64a1d0202208f344560ffbb6ec260d
+    ref: 48f1d5d034b27fdd9aca514fab9f9ecec5847895
 - Git: 
     uri: git://github.com/jnicklas/carrierwave.git
     git: git://github.com/jnicklas/carrierwave.git
@@ -405,6 +390,6 @@ sources:
 - Git: 
     uri: git://github.com/pluginaweek/state_machine.git
     git: git://github.com/pluginaweek/state_machine.git
-    ref: da0171cac6831eb0986447cc339d349ce68afcb4
+    ref: afe2b2304f9bcfb9fb3069ec287f17796fe93ff7
 - Rubygems: 
     uri: http://rubygems.org
