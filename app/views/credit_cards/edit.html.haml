@@ -20,13 +20,17 @@
   .entry
     = f.label :cc_expire_on, "Expiration date"
     -# Wait that my patch will be accepted https://rails.lighthouseapp.com/projects/8994/tickets/4856
-    -# = f.date_select :cc_expire_on, :discard_day => true, :add_month_numbers => true, :date_separator => ' / ', :start_year => Time.now.year, :end_year => Time.now.year + 20, :required => true
-    = f.date_select :cc_expire_on, :discard_day => true, :add_month_numbers => true, :start_year => Time.now.year, :end_year => Time.now.year + 20, :required => true
-  .entry
-    = f.label :cc_first_name, "First name"
-    = f.text_field :cc_first_name, :class => "text", :placeholder => "First name", :required => true
-    = f.label :cc_last_name, "Last name"
-    = f.text_field :cc_last_name, :class => "text", :placeholder => "Last name", :required => true
+    = f.date_select :cc_expire_on, :discard_day => true, :use_month_numbers => true, :start_year => Time.now.year, :end_year => Time.now.year + 20, :order => [ :month, :year ], :required => true
+
+  .entry.full_name
+    = f.label :cc_full_name, "", :class => "icon"
+    = f.text_field :cc_full_name, :class => "text", :placeholder => "Full name", :required => true
+  
+  -#.entry
+  -#  = f.label :cc_first_name, "First name"
+  -#  = f.text_field :cc_first_name, :class => "text", :placeholder => "First name", :required => true
+  -#  = f.label :cc_last_name, "Last name"
+  -#  = f.text_field :cc_last_name, :class => "text", :placeholder => "Last name", :required => true
   .entry
     = f.label :cc_verification_value, "Verification value"
     = f.text_field :cc_verification_value, :class => "text", :placeholder => "Verification value", :required => true

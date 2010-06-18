@@ -124,6 +124,11 @@ describe User::Trial do
         user.trial_usage_percentage.should == 25
       end
       
+      it "should take the less used between loader_hits & player_hits if false is given (return the non active percentage)" do
+        Factory(:site, :user => user, :loader_hits_cache => User::Trial.free_loader_hits / 5, :player_hits_cache => User::Trial.free_player_hits / 4)
+        user.trial_usage_percentage(false).should == 20
+      end
+      
       it "should be greather than 100 when over" do
         Factory(:site, :user => user, :player_hits_cache => User::Trial.free_player_hits * 2)
         user.trial_usage_percentage.should > 100

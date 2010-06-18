@@ -566,12 +566,13 @@ form .entry.update {
   box-shadow:rgba(255,255,255,0.6) 0 1px 0, inset rgba(0,0,0,0.5) 0 1px 5px;
 }
 
-#trial_box .progress_bar .elapsed_time {
+#trial_box .progress_bar .active_usage, #trial_box .progress_bar .inactive_usage {
   width:50%;
   height:20px;
   position:absolute;
   top:-1px;
   left:-1px;
+  z-index:2;
   max-width:100%;
   border:1px solid #000;
   -webkit-border-radius:5px;
@@ -585,33 +586,37 @@ form .entry.update {
   box-shadow:inset rgba(255,255,255,0.2) 0 1px 0;
 }
 
-#trial_box .progress_bar a.show_details {
+#trial_box .progress_bar .inactive_usage {
+  z-index:1;
+  background:#222;
+  background:-webkit-gradient(linear,left top,left bottom,from(#2a2b2d),to(#1a1a1a));
+  background:-moz-linear-gradient(top, #2a2b2d, #1a1a1a);
+}
+
+#trial_box .progress_bar:hover .active_usage {display:none;}
+
+#trial_box a.show_details {
   display:block;
   width:12px;
   height:13px;
   background:url(/images/embed/trial_info_icon.png) no-repeat;
   position:absolute;
-  top:4px;
-  right:4px;
+  top:28px;
+  right:-21px;
 }
 
-#trial_box .progress_bar a.show_details span {display:none;}
+#trial_box a.show_details span {display:none;}
 
-#trial_box .progress_bar .info_box {
-  display:none;
+#trial_box .info_box {
   position:absolute;
-  top:23px;
-  left:-30px;
+  top:40px;
+  left:-5px;
   width:192px;
   height:116px;
   background:url(/images/embed/trial_info_box.png) no-repeat;
 }
 
-#trial_box .progress_bar:hover .info_box {
-  display:block;
-}
-
-#trial_box .progress_bar .info_box p {
+#trial_box .info_box p {
   padding:17px 14px 14px 15px;
   font-size:12px;
   color:#d4dae5;
@@ -619,14 +624,14 @@ form .entry.update {
   line-height:17px;
 }
 
-#trial_box .progress_bar .info_box p em.bullet {
+#trial_box .info_box p em.bullet {
   font-style:normal;
   display:block;
   padding:0 0 0 18px;
   background:url(/images/embed/trial_inactive_bullet.png) no-repeat 0 3px;
 }
 
-#trial_box .progress_bar .info_box p em.bullet.active {background-image:url(/images/embed/trial_active_bullet.png);}
+#trial_box .info_box p em.bullet.active {background-image:url(/images/embed/trial_active_bullet.png);}
 
 #trial_box p.note {
   font-size:13px;
