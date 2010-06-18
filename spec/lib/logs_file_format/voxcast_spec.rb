@@ -10,7 +10,7 @@ describe LogsFileFormat::Voxcast do
     
     it "should parse and return license tracker" do
       tracker = @trackers.select { |tracker| tracker.options[:title] == :loader }.first
-      tracker.categories.should == { "/js/12345678.js" => 9 }
+      tracker.categories.should == { "12345678" => 9 }
     end
   end
   
@@ -22,12 +22,12 @@ describe LogsFileFormat::Voxcast do
     
     it "should parse and return license tracker" do
       tracker = @trackers.select { |tracker| tracker.options[:title] == :loader }.first
-      tracker.categories.should == { "/js/g3325oz4.js" => 3, "/js/g8thugh6.js" => 1 }
+      tracker.categories.should == { "g3325oz4" => 3, "g8thugh6" => 1 }
     end
     
     it "should parse and return js tracker" do
       tracker = @trackers.select { |tracker| tracker.options[:title] == :player }.first
-      tracker.categories.should == { "/p/sublime.js?t=g8thugh6" => 7, "/p/sublime.js?t=g3325oz4" => 3 }
+      tracker.categories.should == { "g8thugh6" => 7, "g3325oz4" => 3 }
     end
   end
   

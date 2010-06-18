@@ -50,7 +50,11 @@ Factory.define :site_usage do |f|
   f.association :log, :factory => :log_voxcast
 end
 
+Factory.define :video_usage do |f|
+  f.association :video
+  f.association :log, :factory => :log_cloudfront_download
+end
+
 Factory.define :invoice do |f|
   f.association :user
 end
-

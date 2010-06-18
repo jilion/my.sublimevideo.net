@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100609123904) do
+ActiveRecord::Schema.define(:version => 20100618083918) do
 
   create_table "delayed_jobs", :force => true do |t|
     t.integer  "priority",   :default => 0
@@ -171,6 +171,16 @@ ActiveRecord::Schema.define(:version => 20100609123904) do
     t.string   "extname"
     t.boolean  "thumbnailable"
     t.integer  "versions_count", :default => 0
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "video_usages", :force => true do |t|
+    t.integer  "video_id"
+    t.integer  "log_id"
+    t.datetime "started_at"
+    t.datetime "ended_at"
+    t.integer  "bandwidth"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

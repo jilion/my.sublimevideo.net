@@ -92,29 +92,7 @@ private
   # Compact trackers from RequestLogAnalyzer
   def self.hits_from(trackers)
     trackers.inject({}) do |trackers, tracker|
-      case tracker.options[:title]
-      when :loader
-        trackers[:loader] = tracker.categories.inject({}) do |tokens, (k,v)|
-          if token = k.match(%r(/js/([a-z0-9]{8})\.js.*))[1]
-            tokens.merge! token => v
-          end
-          tokens
-        end
-      when :player
-        trackers[:player] = tracker.categories.inject({}) do |tokens, (k,v)|
-          if token = k.match(%r(/p/sublime\.js\?t=([a-z0-9]{8}).*))[1]
-            tokens.merge! token => v
-          end
-          tokens
-        end
-      when :flash
-        trackers[:flash] = tracker.categories.inject({}) do |tokens, (k,v)|
-          if token = k.match(%r(/p/sublime\.swf\?t=([a-z0-9]{8}).*))[1]
-            tokens.merge! token => v
-          end
-          tokens
-        end
-      end
+      trackers[tracker.options[:title]] = tracker.categories
       trackers
     end
   end

@@ -42,9 +42,9 @@ group :test do
   # gem 'parallel'
   # gem 'hydra'
   
-  # gem 'rev'
-  # gem 'watchr'
-  # gem 'growl'
+  gem 'rev'
+  gem 'watchr'
+  gem 'growl'
   gem 'spork'
   # gem 'rspactor',     :path => '/Users/Thibaud/Development/Code/rspactor2'
   

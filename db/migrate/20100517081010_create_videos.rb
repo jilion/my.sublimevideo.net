@@ -29,6 +29,7 @@ class CreateVideos < ActiveRecord::Migration
     
     add_index :videos, :user_id
     add_index :videos, :title
+    add_index :videos, :token
     add_index :videos, :hits_cache
     add_index :videos, :created_at
   end
