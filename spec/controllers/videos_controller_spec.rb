@@ -29,7 +29,7 @@ describe VideosController do
       @mock_user.stub_chain(:videos, :build).and_return(mock_video)
       mock_video.stub(:panda_video_id=).with('abcdef123456')
       mock_video.stub(:save).and_return(true)
-      mock_video.stub_chain(:delay, :pandize).and_return(true)
+      mock_video.stub_chain(:delay, :pandize!).and_return(true)
       post :create, :video => { :panda_video_id => "abcdef123456" }
       response.should redirect_to(videos_url)
     end

@@ -33,7 +33,7 @@
       .in_progress
         %em= "In progress"
         %ul
-          - video.encodings.pending.each do |encoding|
+          - video.encodings.encoding.each do |encoding|
             %li= link_to "Transcode #{encoding.profile.name}", transcoded_video_url(encoding.panda_encoding_id)
     - elsif video.active?
       = link_to "Embed code", "", :class => "embed_code", :onclick => "return MySublimeVideo.showVideoEmbedCode(#{video.id})"
