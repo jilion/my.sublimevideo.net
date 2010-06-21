@@ -1,5 +1,5 @@
 - @user ||= current_user
-= form_for @user, :html => { :class => "main_form", :id => "edit_user_#{@user.id}_full_name" } do |f|
+= form_for @user, :html => { :class => "main_form section", :id => "edit_user_#{@user.id}_full_name" } do |f|
   %h3.section_title= "Full name"
   .entry.full_name
     = f.label :full_name, "Full name", :class => "icon"

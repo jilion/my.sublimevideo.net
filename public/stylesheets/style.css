@@ -387,6 +387,8 @@ form .inline_errors span {
   -moz-border-radius:4px;
   border-radius:4px;
   -webkit-box-shadow:rgba(255,255,255,0.7) 0 1px 0, inset rgba(0,0,0,0.5) 0 1px 3px;
+  -moz-box-shadow:rgba(255,255,255,0.7) 0 1px 0, inset rgba(0,0,0,0.5) 0 1px 3px;
+  box-shadow:rgba(255,255,255,0.7) 0 1px 0, inset rgba(0,0,0,0.5) 0 1px 3px;
 }
 
 .global_errors p {
@@ -397,17 +399,25 @@ form .inline_errors span {
   text-shadow:rgba(0,0,0,0.3) 0 -1px 0;
 }
 
-form p.note {
-  padding:10px 0 0;
+form p.note, #content form label.note {
+  display:block;
+  padding:2px 0 2px 22px;
+  margin-top:15px;
   font-size:13px;
   font-weight:600;
-  font-style:italic;
+  background:url(/images/embed/note_icon.png) no-repeat;
+}
+
+#content form label.note {
+  margin:0 0 5px;
 }
 
 #content form .entry .checkbox_wrap {
   margin:13px 0 6px;
   position:relative;
 }
+
+#content form.section .entry .checkbox_wrap {margin-top:5px;}
 
 #content form .entry .checkbox_wrap input {
   float:left;
@@ -498,13 +508,13 @@ form p.note {
   left:4px;
 }
 
-#content form .entry.select, #content form .entry.small_field {
+#content form .entry.select.float, #content form .entry.small_field {
   float:left;
   width:39%;
   margin-bottom:15px;
 }
 
-#content form .entry.select label, #content form .entry.small_field label {
+#content form .entry.select.float label, #content form .entry.small_field label {
   display:block;
   padding:0 0 5px;
   color:#6b7688;
@@ -515,7 +525,7 @@ form p.note {
   margin-right:6px;
   font-size:13px;
   background:#fefefe;
-  background:-moz-linear-gradient(top, #fefefe, #d3d3d3);
+  background:-moz-linear-gradient(top, #fff, #ced3da);
   border:1px solid #8a92a0;
   font-family:"proxima-nova-1","proxima-nova-2", Helvetica, Arial, sans-serif;
   font-size:18px;
@@ -536,8 +546,8 @@ form p.note {
   #content form .entry.select select {
     margin-right:6px;
     height:36px;
-    padding:0 22px 0 10px;
-    background:#fefefe url(/images/embed/custom_select.png) no-repeat right center;
+    padding:2px 22px 0 10px;
+    background:url(/images/embed/custom_select.png) no-repeat right center;
     border:1px solid #8a92a0;
     font-family:"proxima-nova-1","proxima-nova-2", Helvetica, Arial, sans-serif;
     font-size:18px;
@@ -723,7 +733,7 @@ form .entry.update {
   box-shadow:rgba(255,255,255,0.6) 0 1px 0, inset rgba(0,0,0,0.5) 0 1px 5px;
 }
 
-#trial_box .progress_bar .active_usage, #trial_box .progress_bar .inactive_usage {
+#trial_box .progress_bar .active_usage {
   width:50%;
   height:20px;
   position:absolute;
@@ -742,15 +752,6 @@ form .entry.update {
   -moz-box-shadow:inset rgba(255,255,255,0.2) 0 1px 0;
   box-shadow:inset rgba(255,255,255,0.2) 0 1px 0;
 }
-
-#trial_box .progress_bar .inactive_usage {
-  z-index:1;
-  background:#222;
-  background:-webkit-gradient(linear,left top,left bottom,from(#2a2b2d),to(#1a1a1a));
-  background:-moz-linear-gradient(top, #2a2b2d, #1a1a1a);
-}
-
-#trial_box .progress_bar:hover .active_usage {display:none;}
 
 #trial_box a.show_details {
   display:block;

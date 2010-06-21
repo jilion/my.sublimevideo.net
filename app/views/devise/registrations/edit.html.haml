@@ -9,7 +9,7 @@
     %h3.section_title= "Billing Info"
     %p{ :class => current_user.cc_type }<
       = "#{current_user.credit_card_name} ending in <strong>#{current_user.cc_last_digits}</strong>".html_safe
-      = link_to 'Update credit card', edit_credit_card_path
+      = link_to 'Change credit card', edit_credit_card_path
 
 = render 'users/full_name_form'
 .spacer

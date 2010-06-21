@@ -1,10 +1,9 @@
 - if user_signed_in? 
   - if current_user.trial?
     #trial_box
-      %h4= "Free Hits Used"
+      %h4= "Trial Usage"
       .progress_bar
         - if current_user.trial_usage_percentage > 0
-          .inactive_usage{ :style => "width:#{current_user.trial_usage_percentage(false)}%" }
           .active_usage{ :style => "width:#{current_user.trial_usage_percentage}%" }
       %a.show_details{ :href => "", :onclick => "this.next().toggle(); return false" }
         %span="Show details"
