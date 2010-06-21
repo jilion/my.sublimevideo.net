@@ -35,7 +35,7 @@ class VideosController < ApplicationController
     
     respond_with(@video) do |format|
       if @video.save
-        @video.delay.pandize
+        @video.delay.pandize!
         format.html { redirect_to videos_path }
         format.js
       else

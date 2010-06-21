@@ -46,8 +46,8 @@ class Video < ActiveRecord::Base
   # = Scopes =
   # ==========
   
-  scope :by_date, lambda { |way| order("created_at #{way || 'desc'}") }
-  scope :by_title, lambda { |way| order("title #{way || 'asc'}")        }
+  scope :by_date,     lambda { |way| order("created_at #{way || 'desc'}") }
+  scope :by_title,    lambda { |way| order("title #{way || 'asc'}") }
   scope :displayable, where("videos.state NOT IN ('pending', 'archived')")
   
   # ===============
@@ -66,7 +66,7 @@ class Video < ActiveRecord::Base
   # =================
   
   state_machine :initial => :pending do
-    before_transition :on => :pandize, :do => :populate_information
+    before_transition :on => :pandize, :do => :set_encoding_info
     after_transition  :on => :pandize, :do => :create_encodings
     
     before_transition :on => :suspend, :do => :suspend_encodings
@@ -74,9 +74,7 @@ class Video < ActiveRecord::Base
     before_transition :on => :unsuspend, :do => :unsuspend_encodings
     
     before_transition :on => :archive, :do => [:set_archived_at, :archive_encodings]
-    after_transition  :on => :archive, :do => :remove_video_and_thumbnail!
-    
-    after_transition :on => [:suspend, :archive], :do => :purge_thumbnail
+    after_transition  :on => :archive, :do => [:remove_video, :remove_thumbnail!]
     
     event(:pandize)   { transition :pending => :encodings }
     event(:suspend)   { transition [:pending, :encodings] => :suspended }
@@ -93,15 +91,15 @@ class Video < ActiveRecord::Base
   # ====================
   
   def encoding?
-    encodings? && self.encodings.any? { |e| e.encoding? }
+    encodings? && encodings.any? { |e| e.first_encoding? }
   end
   
   def active?
-    encodings? && self.encodings.all? { |e| e.active? }
+    encodings? && encodings.all? { |e| e.active? }
   end
   
   def error?
-    encodings? && self.encodings.any? { |e| e.failed? }
+    encodings? && encodings.any? { |e| e.failed? }
   end
   
   def hd?
@@ -113,7 +111,7 @@ class Video < ActiveRecord::Base
   end
   
   def total_size
-    file_size + self.encodings.active.sum(:file_size)
+    file_size + encodings.active.map(&:file_size).sum
   end
   
 protected
@@ -121,17 +119,17 @@ protected
   # =====================================
   # = before_transition :on => :pandize =
   # =====================================
-  def populate_information
+  def set_encoding_info
     video_info             = Transcoder.get(:video, panda_video_id)
     self.original_filename = video_info[:original_filename].strip
     self.video_codec       = video_info[:video_codec]
     self.audio_codec       = video_info[:audio_codec]
     self.extname           = video_info[:extname]
-    self.file_size         = video_info[:file_size].to_i
-    self.duration          = video_info[:duration].to_i
-    self.width             = video_info[:width].to_i
-    self.height            = video_info[:height].to_i
-    self.fps               = video_info[:fps].to_i
+    self.file_size         = video_info[:file_size]
+    self.duration          = video_info[:duration]
+    self.width             = video_info[:width]
+    self.height            = video_info[:height]
+    self.fps               = video_info[:fps]
     self.title             = original_filename.sub(extname, '').titleize
   end
   
@@ -139,10 +137,10 @@ protected
   # = after_transition :on => :pandize =
   # ====================================
   def create_encodings
-    VideoProfile.active.each do |profile|
-      encoding = self.encodings.build(:profile_version => profile.active_version)
+    VideoProfileVersion.active.each do |profile_version|
+      encoding = encodings.build(:profile_version => profile_version)
       encoding.save!
-      encoding.delay(:priority => 5).pandize
+      encoding.delay(:priority => 5).pandize!
     end
   end
   
@@ -169,16 +167,8 @@ protected
   def archive_encodings
     self.encodings.each { |e| e.delay(:priority => 10).archive }
   end
-  def remove_video_and_thumbnail!
+  def remove_video
     Transcoder.delay(:priority => 6).delete(:video, panda_video_id)
-    remove_thumbnail!
-  end
-  
-  # ================================================
-  # = after_transition :on => [:archive, :suspend] =
-  # ================================================
-  def purge_thumbnail
-    VoxcastCDN.purge("/v/#{token}/posterframe.jpg") if thumbnail.present?
   end
   
 end

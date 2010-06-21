@@ -29,12 +29,15 @@ Factory.define :video do |f|
 end
 
 Factory.define :video_encoding do |f|
-  f.association :video
-  f.association :profile_version, :factory => :video_profile_version
-  f.extname     '.mp4'
-  f.file_size   123456
-  f.width       640
-  f.height      480
+  f.association         :video
+  f.association         :profile_version, :factory => :video_profile_version
+  f.extname             '.mp4'
+  f.file_size           123456
+  f.width               640
+  f.height              480
+  f.encoding_time       1
+  f.started_encoding_at Time.now
+  f.encoding_status     'success'
 end
 
 Factory.define :log_voxcast, :class => Log::Voxcast do |f|
