@@ -15,7 +15,7 @@ en:
     cc_expire_on: "Expired date"
     cc_first_name: "First name"
     cc_last_name: "Last name"
-    cc_verification_value: "Verification value"
+    cc_verification_value: "CSC"
     
   time:
     formats:

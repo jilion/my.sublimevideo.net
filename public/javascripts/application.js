@@ -18,9 +18,9 @@ document.observe("dom:loaded", function() {
     });
   }
     
-  $$('.entry.select select').each(function(select){
-    new CustomSelectManager(select);
-  });
+  // $$('.entry.select select').each(function(select){
+  //   new CustomSelectManager(select);
+  // });
   
   $$("form").each(function(form){
     new FormManager(form);
