@@ -23,7 +23,7 @@ describe SiteUsage do
     subject { Factory.build(:site_usage) }
     
     its(:loader_hits) { should == 0 }
-    its(:player_hits)     { should == 0 }
+    its(:player_hits) { should == 0 }
     its(:flash_hits)  { should == 0 }
     it { should be_valid }
   end
@@ -41,7 +41,7 @@ describe SiteUsage do
       @site1 = Factory(:site)
       @site1.token = 'g3325oz4'
       @site1.save
-      @site2 = Factory(:site)
+      @site2 = Factory(:site, :user => @site1.user, :hostname => 'google.com')
       @site2.token = 'g8thugh6'
       @site2.save
       
@@ -51,8 +51,8 @@ describe SiteUsage do
     
     it "should clean trackers" do
       SiteUsage.hits_from(@trackers).should == {
-        :loader => { "g3325oz4" => 3, "g8thugh6" => 1},
-        :player => { "g3325oz4" => 3, "g8thugh6" => 7},
+        :loader => { "g3325oz4" => 1, "g8thugh6" => 1},
+        :player => { "g3325oz4" => 1, "g8thugh6" => 6},
         :flash  => {}
       }
     end
@@ -67,8 +67,8 @@ describe SiteUsage do
       usage = SiteUsage.first
       usage.log.should          == @log
       usage.site.should         == @site1
-      usage.loader_hits.should == 3
-      usage.player_hits.should      == 3
+      usage.loader_hits.should  == 1
+      usage.player_hits.should  == 1
       usage.flash_hits.should   == 0
     end
   end

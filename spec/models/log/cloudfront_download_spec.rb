@@ -18,25 +18,12 @@ require 'spec_helper'
 
 describe Log::CloudfrontDownload do
   
-  before(:all) do
-    unless File.exist?('public/uploads/cloudfront/')
-      Dir.mkdir('public/uploads/cloudfront/')
-      Dir.mkdir('public/uploads/cloudfront/sublimevideo.videos/')
-      Dir.mkdir('public/uploads/cloudfront/sublimevideo.videos/download/')
-    end
-    unless File.exist?('public/uploads/cloudfront/sublimevideo.videos/download/E3KTK13341WJO.2010-06-16-08.2Knk9kOC.gz')
-      FileUtils.cp(
-        Rails.root.join('spec/fixtures/logs/cloudfront_download/E3KTK13341WJO.2010-06-16-08.2Knk9kOC.gz'),
-        Rails.root.join('public/uploads/cloudfront/sublimevideo.videos/download/')
-      )
-    end
-  end
-  
   context "built with valid attributes" do
     subject { Factory.build(:log_cloudfront_download, :name => 'E3KTK13341WJO.2010-06-16-08.2Knk9kOC.gz') }
     
     it { should be_unprocessed }
     it { should be_valid }
+    its(:started_at) { should == Time.zone.parse('2010-06-16') + 8.hours }
     its(:ended_at)   { should == Time.zone.parse('2010-06-16') + 9.hours }
     
     it "should set hostname from logs.yml before_validation" do
@@ -63,9 +50,9 @@ describe Log::CloudfrontDownload do
       end
     end
      
-    pending "should parse and create usages!" do
-      # SiteUsage.should_receive(:create_usages_from_trackers!)
-      # subject.parse_and_create_usages!
+    it "should parse and create usages from trackers on process" do
+      VideoUsage.should_receive(:create_usages_from_trackers!)
+      subject.process
     end
     
     it "should delay process after create" do
@@ -79,14 +66,15 @@ describe Log::CloudfrontDownload do
   describe "Class Methods" do
     it "should download and save new logs & launch delayed job" do
       VCR.use_cassette('s3/logs_bucket_with_prefix') do
-        lambda { Log::CloudfrontDownload.fetch_and_create_new_logs }.should change(Log::CloudfrontDownload, :count).by(4)
+        lambda { Log::CloudfrontDownload.fetch_and_create_new_logs }.should change(Log::CloudfrontDownload, :count).by(6)
         Delayed::Job.last.name.should == 'Class#fetch_and_create_new_logs'
       end
     end
     
     it "should download and only save news logs" do
-      VCR.use_cassette('s3/logs_bucket_with_prefix') do
-        Factory(:log_cloudfront_download, :name => 'E3KTK13341WJO.2010-06-15-14.O5iQjgcX.gz')
+      VCR.use_cassette('s3/logs_bucket_with_prefix_and_marker') do
+        Factory(:log_cloudfront_download, :name => 'E3KTK13341WJO.2010-06-17-11.O5iQjgcX.gz')
+        Factory(:log_cloudfront_download, :name => 'E3KTK13341WJO.2009-06-17-11.O5iQjgcX.gz')
         lambda { Log::CloudfrontDownload.fetch_and_create_new_logs }.should change(Log::CloudfrontDownload, :count).by(3)
       end
     end
@@ -104,7 +92,7 @@ describe Log::CloudfrontDownload do
       Log::CloudfrontDownload.config.should == {
         :hostname => "v.sublimevideo.net",
         :file_format_class_name => "LogsFileFormat::CloudfrontDownload",
-        :store_dir => "cloudfront/sublimevideo.videos/download"
+        :store_dir => "cloudfront/sublimevideo.videos/download/"
       }
     end
     

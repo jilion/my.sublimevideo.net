@@ -8,12 +8,18 @@ describe LogsFileFormat::CloudfrontDownload do
       @trackers = LogAnalyzer.parse(logs_file, 'LogsFileFormat::CloudfrontDownload')
     end
     
-    it "should parse and return license tracker" do
+    it "should parse and return bandwith tracker" do
       tracker = @trackers.select { |tracker| tracker.options[:title] == :bandwidth }.first
       tracker.categories.should have(3).tokens
       tracker.categories["e14ab4de"][:sum].should == 134284
       tracker.categories["g46g16dz"][:sum].should == 3509835
       tracker.categories["313asa32"][:sum].should == 3696141
+    end
+    
+    it "should parse and return hits tracker" do
+      tracker = @trackers.select { |tracker| tracker.options[:title] == :hits }.first
+      tracker.categories.should have(1).tokens
+      tracker.categories["e14ab4de"].should == 1
     end
   end
   

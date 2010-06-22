@@ -487,6 +487,7 @@ describe VideoEncoding do
     end
     
     describe "#first_encoding?" do
+      # SOMETIMES PROBLEM HERE WHEN RUNNING ALL SPECS
       let(:video_encoding) { Factory(:video_encoding) }
       
       it "should be true if file is not present and state is encoding" do

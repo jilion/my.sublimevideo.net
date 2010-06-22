@@ -399,6 +399,68 @@
       code: 404
       message: Not Found
     headers: 
+      x-powered-by: 
+      - Phusion Passenger (mod_rails/mod_rack) 2.2.9
+      content-type: 
+      - application/json
+      connection: 
+      - keep-alive
+      server: 
+      - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
+      content-length: 
+      - "99"
+      status: 
+      - "404"
+    body: "{\"message\":\"Couldn't find Video with ID=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"error\":\"RecordNotFound\"}"
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :delete
+    uri: http://api.pandastream.com:80/v2/videos/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.json?timestamp=2010-06-22T08%3A41%3A44.383672%2B02%3A00&signature=kPstJjqEMTPtFPRbzfl4YBMDWkAXKkCbLYkQXXGcLHg%3D&access_key=7cc07330-5147-11df-b458-12313d01b992&cloud_id=f2f24a820b4e4e71536fcd567a384848
+    body: 
+    headers: 
+      accept: 
+      - "*/*; q=0.5, application/xml"
+      accept-encoding: 
+      - gzip, deflate
+      host: 
+      - api.pandastream.com
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 404
+      message: Not Found
+    headers: 
+      x-powered-by: 
+      - Phusion Passenger (mod_rails/mod_rack) 2.2.9
+      connection: 
+      - keep-alive
+      content-type: 
+      - application/json
+      server: 
+      - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
+      content-length: 
+      - "99"
+      status: 
+      - "404"
+    body: "{\"message\":\"Couldn't find Video with ID=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"error\":\"RecordNotFound\"}"
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :delete
+    uri: http://api.pandastream.com:80/v2/videos/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.json?timestamp=2010-06-22T08%3A50%3A24.722536%2B02%3A00&signature=gk92Qfah6GCflsCW1%2FeIC3R3JR808NmZGt2JPHAPvdc%3D&access_key=7cc07330-5147-11df-b458-12313d01b992&cloud_id=f2f24a820b4e4e71536fcd567a384848
+    body: 
+    headers: 
+      accept: 
+      - "*/*; q=0.5, application/xml"
+      accept-encoding: 
+      - gzip, deflate
+      host: 
+      - api.pandastream.com
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 404
+      message: Not Found
+    headers: 
       x-powered-by: &id001 
         - Phusion Passenger (mod_rails/mod_rack) 2.2.9
       content-type: &id003 
@@ -414,10 +476,10 @@
     body: &id007 !str 
       str: "{\"message\":\"Couldn't find Video with ID=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"error\":\"RecordNotFound\"}"
       "@args": 
-        :method: :delete
+        :url: http://api.pandastream.com:80/v2/videos/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.json?timestamp=2010-06-22T08%3A50%3A24.722536%2B02%3A00&signature=gk92Qfah6GCflsCW1%2FeIC3R3JR808NmZGt2JPHAPvdc%3D&access_key=7cc07330-5147-11df-b458-12313d01b992&cloud_id=f2f24a820b4e4e71536fcd567a384848
         :headers: {}
 
-        :url: http://api.pandastream.com:80/v2/videos/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.json?timestamp=2010-06-18T19%3A48%3A09.890564%2B02%3A00&signature=i7HP6STzhMaZdh1pIlSBUS558ot%2BWypirrXtpDFZDxs%3D&access_key=7cc07330-5147-11df-b458-12313d01b992&cloud_id=f2f24a820b4e4e71536fcd567a384848
+        :method: :delete
       "@code": 404
       "@net_http_res": !ruby/object:Net::HTTPNotFound 
         __orig_body__: 

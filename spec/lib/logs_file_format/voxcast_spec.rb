@@ -22,12 +22,12 @@ describe LogsFileFormat::Voxcast do
     
     it "should parse and return license tracker" do
       tracker = @trackers.select { |tracker| tracker.options[:title] == :loader }.first
-      tracker.categories.should == { "g3325oz4" => 3, "g8thugh6" => 1 }
+      tracker.categories.should == { "g3325oz4" => 1, "g8thugh6" => 1 }
     end
     
     it "should parse and return js tracker" do
       tracker = @trackers.select { |tracker| tracker.options[:title] == :player }.first
-      tracker.categories.should == { "g8thugh6" => 7, "g3325oz4" => 3 }
+      tracker.categories.should == { "g8thugh6" => 6, "g3325oz4" => 1 }
     end
   end
   

@@ -41,12 +41,12 @@ class Log::CloudfrontDownload < Log
   
   # before_transition on process
   def parse_and_create_usages!
-  #   logs_file = copy_logs_file_to_tmp
-  #   trackers = LogAnalyzer.parse(logs_file, self.class.config[:file_format_class_name])
-  #   SiteUsage.create_usages_from_trackers!(self, trackers)
-  #   File.delete(logs_file.path)
-  # rescue => ex
-  #   HoptoadNotifier.notify(ex)
+    logs_file = copy_logs_file_to_tmp
+    trackers = LogAnalyzer.parse(logs_file, self.class.config[:file_format_class_name])
+    VideoUsage.create_usages_from_trackers!(self, trackers)
+    File.delete(logs_file.path)
+  rescue => ex
+    HoptoadNotifier.notify(ex)
   end
   
   # =================
@@ -94,11 +94,12 @@ private
   
   def self.fetch_new_logs_names
     options = {
-      'prefix' => 'cloudfront/sublimevideo.videos/download/',
+      'prefix' => config[:store_dir],
       :remove_prefix => true
     }
-    if old_log = self.limit(1).offset(300).order(:created_at.desc).first
-      options['marker'] = old_log.read_attribute(:file)
+    if last_log = self.order(:started_at.desc).first
+      hours_ago = (last_log.started_at - 30.hours).strftime("%Y-%m-%d-%H")
+      options['marker'] = config[:store_dir] + last_log.read_attribute(:file).gsub(/\..*/, ".#{hours_ago}")
     end
     S3.logs_name_list(options)
   rescue => ex

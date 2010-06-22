@@ -23,13 +23,15 @@ describe S3 do
         names = S3.logs_name_list(
           'prefix' => 'cloudfront/sublimevideo.videos/download/'
         )
-        names.should have(5).names
+        names.should have(7).names
         names.should == [
           "cloudfront/sublimevideo.videos/download/",
           "cloudfront/sublimevideo.videos/download/E3KTK13341WJO.2010-06-15-14.JWGUoNHt.gz",
           "cloudfront/sublimevideo.videos/download/E3KTK13341WJO.2010-06-15-14.O5iQjgcX.gz",
           "cloudfront/sublimevideo.videos/download/E3KTK13341WJO.2010-06-15-14.fqabil9m.gz",
-          "cloudfront/sublimevideo.videos/download/E3KTK13341WJO.2010-06-16-07.nWuabAEC.gz"
+          "cloudfront/sublimevideo.videos/download/E3KTK13341WJO.2010-06-16-07.dZMKHXp8.gz",
+          "cloudfront/sublimevideo.videos/download/E3KTK13341WJO.2010-06-16-07.nWuabAEC.gz",
+          "cloudfront/sublimevideo.videos/download/E3KTK13341WJO.2010-06-16-08.2Knk9kOC.gz"
         ]
       end
     end
@@ -40,27 +42,30 @@ describe S3 do
           'prefix' => 'cloudfront/sublimevideo.videos/download/',
           :remove_prefix => true
         )
-        names.should have(4).names
+        names.should have(6).names
         names.should == [
           "E3KTK13341WJO.2010-06-15-14.JWGUoNHt.gz",
           "E3KTK13341WJO.2010-06-15-14.O5iQjgcX.gz",
           "E3KTK13341WJO.2010-06-15-14.fqabil9m.gz",
-          "E3KTK13341WJO.2010-06-16-07.nWuabAEC.gz"
+          "E3KTK13341WJO.2010-06-16-07.dZMKHXp8.gz",
+          "E3KTK13341WJO.2010-06-16-07.nWuabAEC.gz",
+          "E3KTK13341WJO.2010-06-16-08.2Knk9kOC.gz"
         ]
       end
     end
     
-    it "should filter with prefix and marker" do
+    it "should filter with prefix and marker and remove_prefix option" do
       VCR.use_cassette('s3/logs_bucket_with_prefix_and_marker') do
         names = S3.logs_name_list(
           'prefix' => 'cloudfront/sublimevideo.videos/download/',
-          'marker' => "cloudfront/sublimevideo.videos/download/E3KTK13341WJO.2010-06-15-14.JWGUoNHt.gz"
+          'marker' => "cloudfront/sublimevideo.videos/download/E3KTK13341WJO.2010-06-16-05",
+          :remove_prefix => true
         )
         names.should have(3).names
         names.should == [
-          "cloudfront/sublimevideo.videos/download/E3KTK13341WJO.2010-06-15-14.O5iQjgcX.gz",
-          "cloudfront/sublimevideo.videos/download/E3KTK13341WJO.2010-06-15-14.fqabil9m.gz",
-          "cloudfront/sublimevideo.videos/download/E3KTK13341WJO.2010-06-16-07.nWuabAEC.gz"
+          "E3KTK13341WJO.2010-06-16-07.dZMKHXp8.gz",
+          "E3KTK13341WJO.2010-06-16-07.nWuabAEC.gz",
+          "E3KTK13341WJO.2010-06-16-08.2Knk9kOC.gz"
         ]
       end
     end

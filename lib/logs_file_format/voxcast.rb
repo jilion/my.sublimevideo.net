@@ -54,15 +54,15 @@ module LogsFileFormat
       analyze = RequestLogAnalyzer::Aggregator::Summarizer::Definer.new
       analyze.frequency(:path, :title => :loader,
         :category => lambda { |r| r[:path].match(/^\/js\/([a-z0-9]{8})\.js.*/) && $1 },
-        :if => lambda { |r| r[:path] =~ /^\/js\/[a-z0-9]{8}\.js.*/ }
+        :if       => lambda { |r| r[:path] =~ /^\/js\/[a-z0-9]{8}\.js.*/ && r[:http_status] != 304 }
       )
       analyze.frequency(:path, :title => :player,
         :category => lambda { |r| r[:path].match(/^\/p\/sublime\.js\?t=([a-z0-9]{8}).*/) && $1 },
-        :if => lambda { |r| r[:path] =~ /^\/p\/sublime\.js\?t=[a-z0-9]{8}.*/ }
+        :if       => lambda { |r| r[:path] =~ /^\/p\/sublime\.js\?t=[a-z0-9]{8}.*/ && r[:http_status] != 304 }
       )
       analyze.frequency(:path, :title => :flash,
         :category => lambda { |r| r[:path].match(/^\/p\/sublime\.swf\?t=([a-z0-9]{8}).*/) && $1 },
-        :if => lambda { |r| r[:path] =~ /^\/p\/sublime\.swf\?t=[a-z0-9]{8}.*/ }
+        :if       => lambda { |r| r[:path] =~ /^\/p\/sublime\.swf\?t=[a-z0-9]{8}.*/ && r[:http_status] != 304 }
       )
       analyze.trackers
     end
