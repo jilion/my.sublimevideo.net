@@ -26,7 +26,7 @@ gem 'system_timer' # only on Ruby 1.8, used by memcache-client
 gem 'memcache-client'
 
 gem 'http_connection',  :git => 'git://github.com/thibaudgg/http_connection.git'
-gem 'aws',              :git => 'git://github.com/thibaudgg/aws.git'
+gem 'aws',              '>= 2.3.12'
 gem 'carrierwave',      :git => 'git://github.com/jnicklas/carrierwave.git'
 
 group :development do
@@ -59,8 +59,8 @@ group :test do
   gem 'launchy'
   
   gem 'factory_girl_rails'
-  # gem 'webmock', '1.2.2'
-  gem 'fakeweb'
+  gem 'webmock', '1.2.2'
+  # gem 'fakeweb'
   gem 'vcr'
 end
 

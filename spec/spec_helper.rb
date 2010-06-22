@@ -53,7 +53,7 @@ Spork.each_run do
   
   VCR.config do |c|
     c.cassette_library_dir     = 'spec/fixtures/vcr_cassettes'
-    c.http_stubbing_library    = :fakeweb # or :webmock
+    c.http_stubbing_library    = :webmock # or :fakeweb
     c.default_cassette_options = { :record => :new_episodes }
   end
   
