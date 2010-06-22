@@ -4,12 +4,11 @@ class CreateSiteUsages < ActiveRecord::Migration
       t.references :site
       t.references :log
       
-      t.integer   :log_id
       t.datetime  :started_at
       t.datetime  :ended_at
       
       t.integer   :loader_hits, :default => 0
-      t.integer   :player_hits,     :default => 0
+      t.integer   :player_hits, :default => 0
       t.integer   :flash_hits,  :default => 0
       
       t.timestamps

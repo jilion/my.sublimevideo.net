@@ -2,15 +2,15 @@
 #
 # Table name: users
 #
-#  cc_type                               :string(255)
-#  cc_last_digits                        :integer
-#  cc_expire_on                          :date
-#  cc_updated_at                         :datetime
+#  cc_type              :string(255)
+#  cc_last_digits       :integer
+#  cc_expire_on         :date
+#  cc_updated_at        :datetime
 #
 
 module User::CreditCard
   
-  attr_accessor :cc_update, :cc_number, :cc_full_name, :cc_first_name, :cc_last_name, :cc_verification_value
+  attr_accessor :cc_update, :cc_full_name, :cc_first_name, :cc_last_name, :cc_number, :cc_verification_value
   
   # ===================================
   # = User instance methods extension =
@@ -20,6 +20,15 @@ module User::CreditCard
     cc_type.present? && cc_last_digits.present?
   end
   alias :cc? :credit_card?
+  
+  def cc_full_name=(attribute)
+    @cc_full_name = attribute
+    if attribute.present?
+      names = attribute.split(" ")
+      @cc_first_name = names.first
+      @cc_last_name  = names.size > 1 ? names.drop(1).join(" ") : "-"
+    end
+  end
   
   def credit_card_attributes_present?
     [cc_update, cc_number, cc_first_name, cc_last_name, cc_verification_value].any?(&:present?)
@@ -38,16 +47,22 @@ module User::CreditCard
   def validates_credit_card_attributes
     if credit_card_attributes_present?
       unless credit_card.valid?
+        if cc_first_name.blank? || cc_last_name.blank?
+          self.errors.add(:cc_full_name, :empty)
+        end
         # I18n Warning: credit_card errors are not localized
         credit_card.errors.each do |attribute,errors|
           attribute = case attribute
           when 'month', 'year'
-            'cc_expire_on'
+            errors.each do |error|
+              self.errors.add(:cc_expire_on, error)
+            end
+          when 'first_name', 'last_name'
+            # do nothing
           else
-            "cc_#{attribute}"
-          end
-          errors.each do |error|
-            self.errors.add(attribute.to_sym, error)
+            errors.each do |error|
+              self.errors.add("cc_#{attribute}".to_sym, error)
+            end
           end
         end
       end

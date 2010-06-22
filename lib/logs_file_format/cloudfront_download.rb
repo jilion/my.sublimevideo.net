@@ -41,7 +41,14 @@ module LogsFileFormat
     
     def self.report_trackers
       analyze = RequestLogAnalyzer::Aggregator::Summarizer::Definer.new
-      analyze.traffic :sc_bytes, :title => :bandwidth, :category => lambda { |r| r[:path].match(/^\/([a-z0-9]{8})\/.*/) && $1 }, :if => lambda { |r| r[:path] =~ /^\/[a-z0-9]{8}\/.*/ }
+      analyze.frequency(:path, :title => :hits,
+        :category => lambda { |r| r[:path].match(/^\/([a-z0-9]{8})\/.*/) && $1 },
+        :if       => lambda { |r| r[:http_status] == 200 && r[:path] =~ /^\/[a-z0-9]{8}\/.*/ }
+      )
+      analyze.traffic(:sc_bytes, :title => :bandwidth,
+        :category => lambda { |r| r[:path].match(/^\/([a-z0-9]{8})\/.*/) && $1 },
+        :if       => lambda { |r| r[:path] =~ /^\/[a-z0-9]{8}\/.*/ }
+      )
       analyze.trackers
     end
     

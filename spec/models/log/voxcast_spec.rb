@@ -48,9 +48,9 @@ describe Log::Voxcast do
       end
     end
     
-    it "should parse and create usages!" do
+    it "should parse and create usages from trackers on process" do
       SiteUsage.should_receive(:create_usages_from_trackers!)
-      subject.parse_and_create_usages!
+      subject.process
     end
     
     it "should delay process after create" do

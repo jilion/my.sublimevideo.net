@@ -75,7 +75,7 @@ def create_admins
   end
 end
 
-def create_users(count)
+def create_users(count = 1)
   disable_perform_deliveries do
     
     BASE_USERS.each do |user_infos|
@@ -97,7 +97,7 @@ def create_users(count)
   end
 end
 
-def create_sites(count)
+def create_sites(count = 1)
   delete_all_files_in_public('uploads/licenses')
   delete_all_files_in_public('uploads/loaders')
   create_users if User.all.empty?
@@ -117,7 +117,7 @@ def create_sites(count)
   print "#{count} random sites created for each user!\n"
 end
 
-def create_videos(count)
+def create_videos(count = 1)
   delete_all_files_in_public('uploads/videos')
   create_users if User.all.empty?
   

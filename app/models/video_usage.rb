@@ -7,14 +7,15 @@
 #  log_id     :integer
 #  started_at :datetime
 #  ended_at   :datetime
-#  bandwidth  :integer
+#  hits       :integer         default(0)
+#  bandwidth  :integer         default(0)
 #  created_at :datetime
 #  updated_at :datetime
 #
 
 class VideoUsage < ActiveRecord::Base
   
-  attr_accessible :video, :log, :bandwidth
+  attr_accessible :video, :log, :hits, :bandwidth
   
   # ================
   # = Associations =
@@ -45,21 +46,22 @@ class VideoUsage < ActiveRecord::Base
   # =============
   
   before_validation :set_dates_from_log, :on => :create
-  after_save        :update_video_bandwidth_cache
+  after_save        :update_video_hits_and_bandwidth_cache
   
   # =================
   # = Class Methods =
   # =================
   
   def self.create_usages_from_trackers!(log, trackers)
-    bandwidths = bandwidths_from(trackers)
-    tokens     = tokens_from(bandwidths)
+    hits_and_bandwidths = hits_and_bandwidths_from(trackers)
+    tokens              = tokens_from(hits_and_bandwidths)
     while tokens.present?
       Video.where(:token => tokens.pop(100)).each do |video|
         create!(
           :video     => video,
           :log       => log,
-          :bandwidth => bandwidths[video.token].to_i
+          :hits      => hits_and_bandwidths[:hits][video.token].to_i,
+          :bandwidth => hits_and_bandwidths[:bandwidth][video.token].to_i
         )
       end
     end
@@ -74,42 +76,34 @@ private
   end
   
   # after_save
-  def update_video_bandwidth_cache
-    video.increment(:bandwidth_cache, bandwidth)
+  def update_video_hits_and_bandwidth_cache
+    Video.update_counters(
+      video_id,
+      :hits_cache      => hits,
+      :bandwidth_cache => bandwidth
+    )
   end
   
   # Compact trackers from RequestLogAnalyzer
-  def self.bandwidths_from(trackers)
+  def self.hits_and_bandwidths_from(trackers)
     trackers.inject({}) do |trackers, tracker|
-      # case tracker.options[:title]
-      # when :loader
-      #   trackers[:loader] = tracker.categories.inject({}) do |tokens, (k,v)|
-      #     if token = k.match(%r(/js/([a-z0-9]{8})\.js.*))[1]
-      #       tokens.merge! token => v
-      #     end
-      #     tokens
-      #   end
-      # when :player
-      #   trackers[:player] = tracker.categories.inject({}) do |tokens, (k,v)|
-      #     if token = k.match(%r(/p/sublime\.js\?t=([a-z0-9]{8}).*))[1]
-      #       tokens.merge! token => v
-      #     end
-      #     tokens
-      #   end
-      # when :flash
-      #   trackers[:flash] = tracker.categories.inject({}) do |tokens, (k,v)|
-      #     if token = k.match(%r(/p/sublime\.swf\?t=([a-z0-9]{8}).*))[1]
-      #       tokens.merge! token => v
-      #     end
-      #     tokens
-      #   end
-      # end
-      # trackers
+      trackers[tracker.options[:title]] = tracker.categories
+      trackers
+      case tracker.options[:title]
+      when :hits
+        trackers[:hits] = tracker.categories
+      when :bandwidth
+        trackers[:bandwidth] = tracker.categories.inject({}) do |tokens, (k,v)|
+          tokens[k] = v[:sum]
+          tokens
+        end
+      end
+      trackers
     end
   end
   
-  def self.tokens_from(bandwidths)
-    bandwidths.inject([]) do |tokens, (k, v)|
+  def self.tokens_from(hits_and_bandwidths)
+    hits_and_bandwidths.inject([]) do |tokens, (k, v)|
       tokens += v.collect { |k, v| k }
     end.compact.uniq
   end

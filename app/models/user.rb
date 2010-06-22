@@ -45,11 +45,12 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable, :confirmable,
          :recoverable, :rememberable, :trackable, :validatable, :lockable
   
-  attr_accessible :full_name, :email, :remember_me, :password
+  attr_accessor :terms_and_conditions
+  attr_accessible :full_name, :email, :remember_me, :password, :terms_and_conditions
   # Trial
   attr_accessible :limit_alert_amount
   # Credit Card
-  attr_accessible :cc_update, :cc_type, :cc_number, :cc_expire_on, :cc_first_name, :cc_last_name, :cc_verification_value
+  attr_accessible :cc_update, :cc_type, :cc_full_name, :cc_number, :cc_expire_on, :cc_verification_value
   
   # ================
   # = Associations =
@@ -71,8 +72,9 @@ class User < ActiveRecord::Base
   # = Validations =
   # ===============
   
-  validates :full_name, :presence => true
-  validates :email,     :presence => true, :uniqueness => true
+  validates :full_name,        :presence => true
+  validates :email,            :presence => true, :uniqueness => true
+  validates :terms_and_conditions, :acceptance => { :accept => "1" }, :on => :create
   validate :validates_credit_card_attributes # in user/credit_card
   
   # =============

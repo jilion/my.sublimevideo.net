@@ -26,7 +26,7 @@ gem 'system_timer' # only on Ruby 1.8, used by memcache-client
 gem 'memcache-client'
 
 gem 'http_connection',  :git => 'git://github.com/thibaudgg/http_connection.git'
-gem 'aws',              :git => 'git://github.com/thibaudgg/aws.git'
+gem 'aws',              '>= 2.3.12'
 gem 'carrierwave',      :git => 'git://github.com/jnicklas/carrierwave.git'
 
 group :development do
@@ -46,9 +46,9 @@ group :test do
   gem 'watchr'
   gem 'growl'
   gem 'spork'
-  # gem 'rspactor',     :path => '/Users/Thibaud/Development/Code/rspactor2'
+  # gem 'rspactor',     :path => '/Users/Thibaud/Vault/Dropbox/Development/Code/rspactor2'
   
-  gem 'rspec-core',   :git => 'git://github.com/rspec/rspec-core.git'
+  gem 'rspec-core',   :git => 'git://github.com/rspec/rspec-core.git', :ref => '48f1d5d034b27fdd9aca514fab9f9ecec5847895'
   gem 'rspec',        '>= 2.0.0.beta.12'
   # gem 'rspec-rails',  '>= 2.0.0.beta.12'
   gem 'rspec-rails',  :git => 'git://github.com/thibaudgg/rspec-rails.git'
@@ -59,7 +59,8 @@ group :test do
   gem 'launchy'
   
   gem 'factory_girl_rails'
-  gem 'webmock'
+  gem 'webmock', '1.2.2'
+  # gem 'fakeweb'
   gem 'vcr'
 end
 

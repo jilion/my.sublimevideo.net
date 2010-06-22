@@ -35,6 +35,20 @@ Spork.each_run do
     # examples within a transaction, comment the following line or assign false
     # instead of true.
     config.use_transactional_fixtures = true
+    
+    config.before(:all) do
+      unless File.exist?('public/uploads/cloudfront/')
+        Dir.mkdir('public/uploads/cloudfront/')
+        Dir.mkdir('public/uploads/cloudfront/sublimevideo.videos/')
+        Dir.mkdir('public/uploads/cloudfront/sublimevideo.videos/download/')
+      end
+      unless File.exist?('public/uploads/cloudfront/sublimevideo.videos/download/E3KTK13341WJO.2010-06-16-08.2Knk9kOC.gz')
+        FileUtils.cp(
+          Rails.root.join('spec/fixtures/logs/cloudfront_download/E3KTK13341WJO.2010-06-16-08.2Knk9kOC.gz'),
+          Rails.root.join('public/uploads/cloudfront/sublimevideo.videos/download/')
+        )
+      end
+    end
   end
   
   VCR.config do |c|

@@ -59,7 +59,8 @@ describe Invoice::Sites do
       end
       Factory(:site_usage, :site => @site1, :log => @log, :loader_hits => 1000100, :player_hits => 15)
       Factory(:site_usage, :site => @site2, :log => @log, :loader_hits => 53, :player_hits => 7)
-      @invoice = Factory(:invoice, :user => @user).reload # problem if not reloaded, but don't fucking know why!
+      invoice = Factory(:invoice, :user => @user)
+      @invoice = Invoice.find(invoice)# problem if not reloaded, but don't fucking know why!
     end
     
     subject { Invoice::Sites.new(@invoice) }
