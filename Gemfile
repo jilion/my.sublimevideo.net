@@ -46,7 +46,7 @@ group :test do
   gem 'watchr'
   gem 'growl'
   gem 'spork'
-  # gem 'rspactor',     :path => '/Users/Thibaud/Vault/Dropbox/Development/Code/rspactor2'
+  gem 'rspactor',     :path => '/Users/Thibaud/Vault/Dropbox/Development/Code/rspactor2'
   
   gem 'rspec-core',   :git => 'git://github.com/rspec/rspec-core.git', :ref => '48f1d5d034b27fdd9aca514fab9f9ecec5847895'
   gem 'rspec',        '>= 2.0.0.beta.12'

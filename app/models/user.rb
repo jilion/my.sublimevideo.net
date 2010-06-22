@@ -49,7 +49,7 @@ class User < ActiveRecord::Base
   # Trial
   attr_accessible :limit_alert_amount
   # Credit Card
-  attr_accessible :cc_update, :cc_type, :cc_number, :cc_expire_on, :cc_first_name, :cc_last_name, :cc_verification_value
+  attr_accessible :cc_update, :cc_type, :cc_full_name, :cc_number, :cc_expire_on, :cc_verification_value
   
   # ================
   # = Associations =

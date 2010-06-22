@@ -10,11 +10,10 @@ en:
   attributes:
     dev_hostnames: "Development domains"
     hostname: "Domain"
-    cc_type: "Type"
-    cc_number: "Number"
-    cc_expire_on: "Expired date"
-    cc_first_name: "First name"
-    cc_last_name: "Last name"
+    cc_type: "Card type"
+    cc_number: "Card number"
+    cc_expire_on: "Expiration date"
+    cc_full_name: "Name on Card"
     cc_verification_value: "CSC"
     
   time:
@@ -25,3 +24,4 @@ en:
     formats:
       default: "%B %d, %Y"
       small: "%m/%d/%Y"
+  
