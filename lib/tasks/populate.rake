@@ -14,7 +14,7 @@ namespace :db do
     
     desc "Empty all the tables"
     task :empty_all_tables => :environment do
-      timed { empty_tables(Video, Site, User) }
+      timed { empty_tables(Video, Site, User, Admin) }
     end
     
     desc "Load all development fixtures."
@@ -113,9 +113,9 @@ def create_sites(count = 1)
       site            = user.sites.build
       site.hostname   = "#{rand > 0.5 ? '' : %w[www. blog. my. git. sv. ji. geek.].sample}#{Faker::Internet.domain_name}"
       site.created_at = rand(1500).days.ago
-      site.flash_hits_cache  = rand(10000)
+      site.flash_hits_cache  = rand(1000)
       site.player_hits_cache = rand(500) + site.flash_hits_cache
-      site.loader_hits_cache = rand(100000) + site.player_hits_cache
+      site.loader_hits_cache = rand(10000) + site.player_hits_cache
       site.save!
       site.activate
     end
