@@ -54,7 +54,7 @@ class Log::CloudfrontDownload < Log
   # =================
   
   def self.delay_fetch_and_create_new_logs(minutes = 60.minute)
-    unless fetch_and_create_new_logs_already_delayed?(minutes)
+    unless Delayed::Job.already_delayed?('%Log::CloudfrontDownload%fetch_and_create_new_logs%')
       delay(:priority => 10, :run_at => minutes.from_now).fetch_and_create_new_logs
     end
   end
@@ -83,13 +83,6 @@ private
       self.started_at ||= Time.zone.parse(matches[1]) + matches[2].to_i.hours
       self.ended_at   ||= started_at + 1.hour
     end
-  end
-  
-  def self.fetch_and_create_new_logs_already_delayed?(minutes)
-    Delayed::Job.where(
-      :handler.matches => '%Log::CloudfrontDownload%fetch_and_create_new_logs%',
-      :run_at.gt => (minutes - 10.seconds).from_now
-    ).present?
   end
   
   def self.fetch_new_logs_names

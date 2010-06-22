@@ -6,3 +6,14 @@ Delayed::Worker.destroy_failed_jobs = false
 # Worker can't load model instances (http://github.com/collectiveidea/delayed_job/issues/labels/blocker#issue/65)
 # => As a short term workaround, require your models in an initializer.
 # require 'site'
+
+module JobExtension
+  def already_delayed?(name)
+    Delayed::Job.where(
+    :handler.matches => name,
+    :run_at.gt => 10.seconds.from_now
+    ).present?
+  end
+end
+
+Delayed::Job.extend JobExtension

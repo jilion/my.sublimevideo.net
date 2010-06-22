@@ -10,7 +10,7 @@
 module User::Trial
   
   def self.delay_supervise_users(minutes = 15.minutes)
-    unless supervise_users_already_delayed?(minutes)
+    unless Delayed::Job.already_delayed?('%supervise_users%')
       delay(:priority => 5, :run_at => minutes.from_now).supervise_users
     end
   end
@@ -18,11 +18,11 @@ module User::Trial
   def self.supervise_users
     User.in_trial.includes(:invoices, :sites, :videos).each do |user|
       case user.trial_usage_percentage
-      when 0..49
+      when 0..(usage_information_percentage-1)
         # do nothing
-      when 50..89
+      when usage_information_percentage..(usage_warning_percentage-1)
         user.deliver_usage_information_email unless user.credit_card?
-      when 90..99
+      when usage_warning_percentage..99
         user.deliver_usage_warning_email unless user.credit_card?
       else
         user.end_trial
@@ -41,6 +41,10 @@ module User::Trial
   
   def trial?
     trial_ended_at.nil?
+  end
+  
+  def trial_warning?
+    trial_loader_hits_percentage > trial_player_hits_percentage && trial_loader_hits_percentage > usage_warning_percentage
   end
   
   def trial_loader_hits
@@ -102,13 +106,6 @@ private
     @yml ||= YAML::load_file(config_path).to_options
   rescue
     raise StandardError, "Trial config file '#{config_path}' doesn't exist."
-  end
-  
-  def self.supervise_users_already_delayed?(minutes)
-    Delayed::Job.where(
-      :handler.matches => '%supervise_users%',
-      :run_at.gt => (minutes - 10.seconds).from_now
-    ).present?
   end
   
 end

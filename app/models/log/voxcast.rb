@@ -53,7 +53,7 @@ class Log::Voxcast < Log
   # =================
   
   def self.delay_fetch_download_and_create_new_logs(minutes = 1.minute)
-    unless logs_download_already_delayed?(minutes)
+    unless Delayed::Job.already_delayed?('%Log::Voxcast%fetch_download_and_create_new_logs%')
       delay(:priority => 10, :run_at => minutes.from_now).fetch_download_and_create_new_logs
     end
   end
@@ -80,13 +80,6 @@ private
       self.started_at ||= Time.at(matches[2].to_i)
       self.ended_at   ||= Time.at(matches[3].to_i)
     end
-  end
-  
-  def self.logs_download_already_delayed?(minutes)
-    Delayed::Job.where(
-      :handler.matches => '%Log::Voxcast%fetch_download_and_create_new_logs%',
-      :run_at.gt => (minutes - 10.seconds).from_now
-    ).present?
   end
   
 end

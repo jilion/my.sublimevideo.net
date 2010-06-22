@@ -5,18 +5,31 @@
       .progress_bar
         - if current_user.trial_usage_percentage > 0
           .active_usage{ :style => "width:#{current_user.trial_usage_percentage}%" }
-      %a.show_details{ :href => "", :onclick => "this.next().toggle(); return false" }
-        %span="Show details"
-      .info_box{ :style => "display:none" }
-        %p<
-          = "Your free hits includes #{number_with_delimiter(User::Trial.free_loader_hits)} requests or #{number_with_delimiter(User::Trial.free_player_hits)} player hits. <br />".html_safe
-          = "Current usage:<br />".html_safe
-          %em.bullet{ :class => current_user.trial_loader_hits_percentage > current_user.trial_player_hits_percentage ? "active" : "" }= "Requests: #{number_with_delimiter(current_user.trial_loader_hits)} (#{current_user.trial_loader_hits_percentage}%)<br />".html_safe
-          %em.bullet{ :class => current_user.trial_player_hits_percentage >= current_user.trial_loader_hits_percentage ? "active" : "" }= "Player hits: #{number_with_delimiter(current_user.trial_player_hits)} (#{current_user.trial_player_hits_percentage}%)<br />".html_safe
+      %ul#trial_legend
+        %li.used
+          = "Player Hits"
+          %em= number_with_delimiter(current_user.trial_player_hits)
+        %li.free
+          = "Free Hits Left"
+          %em= number_with_delimiter(User::Trial.free_player_hits - current_user.trial_player_hits)
+      - if current_user.trial_warning?
+        = link_to "", :class => "warning", :onclick => "return false" do
+          %span
+            %em= "The Trial is also limited by a total amount of #{number_with_delimiter(User::Trial.free_loader_hits)} \"requests\", you've currently used #{number_with_delimiter(current_user.trial_loader_hits)} of them while only having accounted #{number_with_delimiter(current_user.trial_player_hits)} player hits: it probably means you're using the embed code in a page without any videos on it.".html_safe
+      -#%a.show_details{ :href => "", :onclick => "this.next().toggle(); return false" }
+      -#  %span="Show details"
+      -#.info_box{ :style => "display:none" }
+      -#  %p<
+      -#    = "Your free hits includes #{number_with_delimiter(User::Trial.free_loader_hits)} requests or #{number_with_delimiter(User::Trial.free_player_hits)} player hits. <br />".html_safe
+      -#    = "Current usage:<br />".html_safe
+      -#    %em.bullet{ :class => current_user.trial_loader_hits_percentage > current_user.trial_player_hits_percentage ? "active" : "" }= "Requests: #{number_with_delimiter(current_user.trial_loader_hits)} (#{current_user.trial_loader_hits_percentage}%)<br />".html_safe
+      -#    %em.bullet{ :class => current_user.trial_player_hits_percentage >= current_user.trial_loader_hits_percentage ? "active" : "" }= "Player hits: #{number_with_delimiter(current_user.trial_player_hits)} (#{current_user.trial_player_hits_percentage}%)<br />".html_safe
       - unless current_user.credit_card?
-        %p.note
-          = "We invite you to add your credit card to prevent any cut in the player delivery when your trial will finish."
-        = link_to "Add a Credit Card", edit_credit_card_path, :class => "add_a_credit_card"
+        .credit_card
+          = link_to "", :class => "credit_card_info" do
+            %span
+              %em= "We invite you to add your credit card to prevent any cut in the player delivery when your trial will end."
+          = link_to "Add a Credit Card", edit_credit_card_path, :class => "add_a_credit_card"
   - else
     - if current_user.credit_card?
       - current_invoice = Invoice.current(current_user)

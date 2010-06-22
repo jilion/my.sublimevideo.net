@@ -152,6 +152,7 @@ describe VideoEncoding do
     describe "event(:activate) { transition :encoding => :active }" do
       before(:each) { VCR.insert_cassette('video_encoding/activate') }
       
+      # SOMETIMES PROBLEM HERE WHEN RUNNING ALL SPECS
       let(:video_encoding) { Factory(:video_encoding, :panda_encoding_id => id, :state => 'encoding') }
       
       describe "callbacks" do
