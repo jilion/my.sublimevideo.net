@@ -24,8 +24,8 @@
       = mail_to "sublime@jilion.com", nil, :encode => "hex"
       = "."
     .checkbox_wrap
-      %input{ :type => "checkbox" }
-      %label= "I agree to the Terms &amp; Conditions.".html_safe
+      = f.check_box :terms_and_conditions, :required => true
+      = f.label :terms_and_conditions, "I agree to the Terms &amp; Conditions.".html_safe
       
   .entry.submit.signup
     = f.submit "Register"

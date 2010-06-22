@@ -9,6 +9,7 @@ en:
   #       hostname: "Domain"
   attributes:
     dev_hostnames: "Development domains"
+    terms_and_conditions: "Terms & Conditions"
     hostname: "Domain"
     cc_type: "Card type"
     cc_number: "Card number"
