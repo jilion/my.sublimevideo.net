@@ -44,6 +44,7 @@ describe User do
   context "with valid attributes" do
     subject { Factory(:user) }
     
+    its(:terms_and_conditions) { should be_true }
     its(:full_name)        { should == "Joe Blow" }
     its(:email)            { should match /email\d+@user.com/ }
     its(:invoices_count)   { should == 0 }
@@ -60,6 +61,10 @@ describe User do
     it "should validate presence of email" do
       user = User.create(:email => nil)
       user.errors[:email].should be_present
+    end
+    it "should validate acceptance of terms_and_conditions" do
+      user = User.create(:terms_and_conditions => false)
+      user.errors[:terms_and_conditions].should be_present
     end
     
     context "with already a site in db" do
