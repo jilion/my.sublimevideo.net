@@ -1,16 +1,17 @@
 %tr{ :id => dom_id(profile), :class => cycle("", "alt") }
   %td.title
-    .wrap
-      = link_to profile.title, admin_profile_versions_path(profile)
+    = link_to profile.title, admin_profile_path(profile)
   %td.description
-    .wrap
-      = link_to truncate(profile.description), admin_profile_versions_path(profile)
+    = link_to truncate(profile.description, :length => 15), admin_profile_path(profile)
   %td.name
-    .wrap
-      = link_to profile.name, admin_profile_versions_path(profile)
+    = link_to profile.name, admin_profile_path(profile)
   %td.extname
-    .wrap
-      = link_to profile.extname, admin_profile_versions_path(profile)
+    = link_to profile.extname, admin_profile_path(profile)
   %td.thumbnailable
-    .wrap
-      = link_to profile.thumbnailable?, admin_profile_versions_path(profile)
+    = link_to profile.thumbnailable.to_s, admin_profile_path(profile)
+  %td.versions_count
+    = link_to profile.versions.size, admin_profile_path(profile)
+  %td.encodings_count
+    = VideoEncoding.with_profile(profile).size
+  %td.edit
+    = link_to "Edit", edit_admin_profile_path(profile)

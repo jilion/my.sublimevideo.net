@@ -179,7 +179,6 @@ ActiveRecord::Schema.define(:version => 20100622080554) do
     t.integer  "video_profile_id"
     t.string   "panda_profile_id"
     t.string   "state"
-    t.integer  "num"
     t.text     "note"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -203,10 +202,15 @@ ActiveRecord::Schema.define(:version => 20100622080554) do
     t.integer  "log_id"
     t.datetime "started_at"
     t.datetime "ended_at"
-    t.integer  "bandwidth"
+    t.integer  "hits",       :default => 0
+    t.integer  "bandwidth",  :default => 0
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "video_usages", ["ended_at"], :name => "index_video_usages_on_ended_at"
+  add_index "video_usages", ["started_at"], :name => "index_video_usages_on_started_at"
+  add_index "video_usages", ["video_id"], :name => "index_video_usages_on_video_id"
 
   create_table "videos", :force => true do |t|
     t.integer  "user_id"
@@ -234,6 +238,7 @@ ActiveRecord::Schema.define(:version => 20100622080554) do
   add_index "videos", ["created_at"], :name => "index_videos_on_created_at"
   add_index "videos", ["hits_cache"], :name => "index_videos_on_hits_cache"
   add_index "videos", ["title"], :name => "index_videos_on_title"
+  add_index "videos", ["token"], :name => "index_videos_on_token"
   add_index "videos", ["user_id"], :name => "index_videos_on_user_id"
 
 end

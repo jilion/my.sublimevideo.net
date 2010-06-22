@@ -28,7 +28,7 @@ MySublimeVideo::Application.routes.draw do |map|
   
   namespace "admin" do
     resources :video_profiles, :except => [:destroy], :as => :profiles, :path => "profiles" do
-      resources :video_profile_versions, :except => [:edit, :destroy], :as => :versions, :path => "versions"
+      resources :video_profile_versions, :except => [:index, :edit, :destroy], :as => :versions, :path => "versions"
     end
   end
   

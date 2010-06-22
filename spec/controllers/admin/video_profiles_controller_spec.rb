@@ -11,12 +11,13 @@ describe Admin::VideoProfilesController do
     end
     
     it "should respond with success to GET :index" do
-      VideoProfile.stub(:all).and_return([])
+      VideoProfile.stub(:includes).and_return([])
       get :index
       response.should be_success
     end
     it "should respond with success to GET :show" do
       VideoProfile.stub(:find).with("1").and_return(mock_profile)
+      mock_profile.stub_chain(:versions, :order).and_return([])
       get :show, :id => '1'
       response.should be_success
     end

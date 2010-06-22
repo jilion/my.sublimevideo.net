@@ -39,18 +39,6 @@ class VideoProfile < ActiveRecord::Base
   
   before_create :set_default_thumbnailable
   
-  # =================
-  # = State Machine =
-  # =================
-  
-  # =================
-  # = Class Methods =
-  # =================
-  
-  def self.active
-    VideoProfileVersion.active.map(&:profile)
-  end
-  
   # ====================
   # = Instance Methods =
   # ====================

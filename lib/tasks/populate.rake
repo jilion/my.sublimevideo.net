@@ -31,6 +31,12 @@ namespace :db do
       timed { create_users((ARGV.size > 1 ? ARGV[1].sub(/COUNT=/, '').to_i : 5)) }
     end
     
+    desc "Load Admin development fixtures."
+    task :admins => :environment do
+      timed { empty_tables(Admin) }
+      timed { create_admins       }
+    end
+    
     desc "Load Site development fixtures."
     task :sites => :environment do
       timed { empty_tables(Site)                                                 }
@@ -158,7 +164,7 @@ def create_videos(count = 1)
       # end
     end
   end
-  print "#{User.all.size * count * (VideoProfile.active.size + 1)} videos (1 video and #{VideoProfile.active.size} encodings per user) created!\n"
+  print "#{User.all.size * count * (VideoProfileVersion.active.size + 1)} videos (1 video and #{VideoProfile.active.size} encodings per user) created!\n"
 end
 
 def timed(&block)

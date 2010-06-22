@@ -58,21 +58,6 @@ describe VideoProfile do
     end
   end
   
-  describe "Class Methods" do
-    describe ".active" do
-      before(:each) do
-        @active_video_profile_version = Factory(:video_profile_version)
-        VCR.use_cassette('video_profile_version/pandize') { @active_video_profile_version.pandize }
-        VCR.use_cassette('video_profile_version/activate') { @active_video_profile_version.activate }
-        Factory(:video_profile)
-      end
-      
-      it "should return all the active profiles" do
-        VideoProfile.active.should == [@active_video_profile_version.profile]
-      end
-    end
-  end
-  
   describe "Instance Methods" do
     before(:each) do
       @video_profile                = Factory(:video_profile)

@@ -6,7 +6,6 @@
 #  video_profile_id :integer
 #  panda_profile_id :string(255)
 #  state            :string(255)
-#  num              :integer
 #  note             :text
 #  created_at       :datetime
 #  updated_at       :datetime
@@ -61,13 +60,13 @@ class VideoProfileVersion < ActiveRecord::Base
     end
   end
   
-  # =================
-  # = Class Methods =
-  # =================
-  
   # ====================
   # = Instance Methods =
   # ====================
+  
+  def rank
+    profile.versions.index(self) + 1
+  end
   
 protected
   

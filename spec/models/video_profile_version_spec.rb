@@ -6,7 +6,6 @@
 #  video_profile_id :integer
 #  panda_profile_id :string(255)
 #  state            :string(255)
-#  num              :integer
 #  note             :text
 #  created_at       :datetime
 #  updated_at       :datetime
@@ -42,14 +41,6 @@ describe VideoProfileVersion do
   
   describe "Scopes" do
     describe "active" do
-      # before(:each) do
-      #   @active_video_profile = Factory(:video_profile)
-      #   Factory(:video_profile_version, :profile => @active_video_profile)
-      #   @active_video_profile_version = Factory(:video_profile_version, :profile => @active_video_profile)
-      #   VCR.use_cassette('video_profile_version/pandize') { @active_video_profile_version.pandize }
-      #   @active_video_profile_version.activate
-      # end
-      
       let(:active_video_profile) { Factory(:video_profile) }
       let(:active_video_profile_version) { Factory(:video_profile_version, :state => 'active', :profile => active_video_profile) }
       
@@ -155,6 +146,25 @@ describe VideoProfileVersion do
       end
       
       after(:each) { VCR.eject_cassette }
+    end
+    
+  end
+  
+  describe "Instance Methods" do
+    
+    describe "#rank" do
+      let(:video_profile) { Factory(:video_profile) }
+      let(:video_profile_version1) { Factory(:video_profile_version, :state => 'experimental', :profile => video_profile, :panda_profile_id => id) }
+      let(:video_profile_version2) { Factory(:video_profile_version, :state => 'experimental', :profile => video_profile, :panda_profile_id => id) }
+      
+      it "should return the rank of this version among all its versions" do
+        video_profile_version1.should be_experimental
+        video_profile_version2.should be_experimental
+        video_profile.versions.reload.size.should == 2
+        video_profile_version1.rank.should == 1
+        video_profile_version2.rank.should == 2
+      end
+      
     end
     
   end

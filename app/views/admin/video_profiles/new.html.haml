@@ -1,10 +1,12 @@
+= title_and_content_header("New video profile")
+
 = form_for [:admin, @profile], :url => admin_profiles_path, :html => { :class => "profile" } do |f|
   .entry.title
     = f.label :title
     = f.text_field :title, :class => "text", :placeholder => "iPhone 720p", :required => true, :autocomplete => :off
   .entry.description
     = f.label :description
-    = f.text_area :description, :class => "text", :autocomplete => :off
+    = f.text_area :description, :class => "text", :autocomplete => :off, :rows => 10, :cols => 50
   .entry.name
     = f.label :name
     = f.text_field :name, :class => "text", :placeholder => "_iphone_720p", :autocomplete => :off
@@ -15,4 +17,6 @@
     = f.label :thumbnailable
     = f.check_box :thumbnailable
   .actions
-    = f.submit 'Create', :class => "add"
+    = f.submit 'Create', :class => "submit small"
+    = "or"
+    = link_to "cancel", admin_profiles_path

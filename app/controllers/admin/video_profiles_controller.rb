@@ -1,16 +1,18 @@
 class Admin::VideoProfilesController < ApplicationController
   before_filter :authenticate_admin!
   respond_to :html
+  layout 'admin'
   
   # GET /profiles
   def index
-    @profiles = VideoProfile.all
+    @profiles = VideoProfile.includes(:versions)
     respond_with(@profiles)
   end
   
   # GET /profiles/1
   def show
     @profile = VideoProfile.find(params[:id])
+    @versions = @profile.versions.order(:created_at.desc)
     respond_with(@profile)
   end
   
