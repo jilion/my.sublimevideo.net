@@ -13,7 +13,7 @@ module User::LimitAlert
   end
   
   def self.delay_send_limit_alerts(minutes = 10.minutes)
-    unless send_limit_alerts_already_delayed?(minutes)
+    unless Delayed::Job.already_delayed?('%send_limit_alerts%')
       delay(:priority => 30, :run_at => minutes.from_now).send_limit_alerts
     end
   end
@@ -50,15 +50,6 @@ module User::LimitAlert
     if limit_alert_amount_changed? && limit_alert_amount_was < limit_alert_amount
       self.limit_alert_email_sent_at = nil
     end
-  end
-  
-private
-  
-  def self.send_limit_alerts_already_delayed?(minutes)
-    Delayed::Job.where(
-      :handler.matches => '%send_limit_alerts%',
-      :run_at.gt => (minutes - 10.seconds).from_now
-    ).present?
   end
   
 end

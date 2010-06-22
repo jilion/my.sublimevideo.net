@@ -10,7 +10,7 @@
 module User::Trial
   
   def self.delay_supervise_users(minutes = 15.minutes)
-    unless supervise_users_already_delayed?(minutes)
+    unless Delayed::Job.already_delayed?('%supervise_users%')
       delay(:priority => 5, :run_at => minutes.from_now).supervise_users
     end
   end
@@ -106,13 +106,6 @@ private
     @yml ||= YAML::load_file(config_path).to_options
   rescue
     raise StandardError, "Trial config file '#{config_path}' doesn't exist."
-  end
-  
-  def self.supervise_users_already_delayed?(minutes)
-    Delayed::Job.where(
-      :handler.matches => '%supervise_users%',
-      :run_at.gt => (minutes - 10.seconds).from_now
-    ).present?
   end
   
 end
