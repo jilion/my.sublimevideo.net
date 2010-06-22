@@ -70,3 +70,15 @@ feature "User session:" do
   end
   
 end
+
+feature "User confirmation:" do
+  
+  scenario "confirmation" do
+    create_user  :user => { :full_name => "John Doe", :email => "john@doe.com", :password => "123456" }, :confirm => false
+    
+    visit "/users/confirmation?confirmation_token=#{@current_user.confirmation_token}"
+    
+    page.should have_content(I18n.translate('devise.confirmations.confirmed'))
+  end
+  
+end
