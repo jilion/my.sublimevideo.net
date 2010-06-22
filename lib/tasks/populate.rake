@@ -19,6 +19,7 @@ namespace :db do
     
     desc "Load all development fixtures."
     task :all => :environment do
+      timed { create_admins }
       timed { create_users  }
       timed { create_sites  }
       # timed { create_videos }
@@ -75,9 +76,8 @@ def create_admins
   end
 end
 
-def create_users(count)
+def create_users(count = 0)
   disable_perform_deliveries do
-    
     BASE_USERS.each do |user_infos|
       user = User.create(:full_name => user_infos[0], :email => user_infos[1], :password => "123456")
       user.confirmed_at = Time.now
@@ -97,7 +97,7 @@ def create_users(count)
   end
 end
 
-def create_sites(count)
+def create_sites(count = 1)
   delete_all_files_in_public('uploads/licenses')
   delete_all_files_in_public('uploads/loaders')
   create_users if User.all.empty?
@@ -117,7 +117,7 @@ def create_sites(count)
   print "#{count} random sites created for each user!\n"
 end
 
-def create_videos(count)
+def create_videos(count = 1)
   delete_all_files_in_public('uploads/videos')
   create_users if User.all.empty?
   
@@ -130,7 +130,6 @@ def create_videos(count)
   
   User.all.each do |user|
     count.times do |i|
-      # video = user.videos.build(:file => File.open("#{Rails.root}/spec/fixtures/railscast_intro.mov"), :width => 600, :height => 255, :size => rand(15000), :codec => 'h264', :extname => '.mp4', :duration => rand(7200), :state => 'active')
       video = user.videos.build
       video.panda_video_id = @panda_video_id
       video.created_at     = rand(1500).days.ago

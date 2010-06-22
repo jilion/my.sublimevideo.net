@@ -1,0 +1,12 @@
+= form_for [:admin, @profile, @version], :url => admin_profile_versions_path(@profile), :html => { :class => "version" } do |f|
+  .entry.width
+    = f.label :width
+    = f.text_field :width, :class => "text", :placeholder => "640", :required => true, :autocomplete => :off
+  .entry.height
+    = f.label :height
+    = f.text_field :height, :class => "text", :placeholder => "380", :required => true, :autocomplete => :off
+  .entry.command
+    = f.label :command
+    = f.text_area :command, :class => "text", :required => true, :autocomplete => :off
+  .actions
+    = f.submit 'Create', :class => "add"

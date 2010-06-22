@@ -24,6 +24,14 @@ MySublimeVideo::Application.routes.draw do |map|
   resources :invoices, :only => [:index, :show]
   resource :card, :controller => "credit_cards", :as => :credit_card, :only => [:edit, :update]
   
+  devise_for :admins
+  
+  namespace "admin" do
+    resources :video_profiles, :except => [:destroy], :as => :profiles, :path => "profiles" do
+      resources :video_profile_versions, :except => [:edit, :destroy], :as => :versions, :path => "versions"
+    end
+  end
+  
   match ':page', :to => 'pages#show', :via => :get, :as => :page, :page => /terms|docs|support/
   
   root :to => redirect('/sites')

@@ -6,6 +6,11 @@ Factory.define :user do |f|
   f.password         "123456"
 end
 
+Factory.define :admin do |f|
+  f.sequence(:email) { |n| "email#{n}@admin.com" }
+  f.password         "123456"
+end
+
 Factory.define :site do |f|
   f.hostname    "youtube.com"
   f.association :user
@@ -18,9 +23,9 @@ end
 
 Factory.define :video_profile_version do |f|
   f.association :profile, :factory => :video_profile
-  f.width   480
-  f.height  640
-  f.command 'Handbrake CLI blabla...'
+  f.width       480
+  f.height      640
+  f.command     'Handbrake CLI blabla...'
 end
 
 Factory.define :video do |f|

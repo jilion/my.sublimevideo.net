@@ -1,0 +1,18 @@
+%td.created_at
+  .wrap
+    = l(@version.created_at, :format => :full)
+%td.id
+  .wrap
+    = @version.id
+%td.panda_profile_id
+  .wrap
+    = @version.panda_profile_id
+%td.state
+  .wrap
+    = @version.state
+    
+%ul
+  - @panda_profile_info.each do |k,v|
+    %li= raw "#{k.to_s.humanize}: #{v}"
+    
+= button_to "Activate", admin_profile_version_path(@profile, @version), :confirm => "Are you sure?", :method => :put

@@ -31,8 +31,7 @@ class VideoProfile < ActiveRecord::Base
   # = Validations =
   # ===============
   
-  validates :title,   :presence => true
-  validates :extname, :presence => true
+  validates :title, :extname, :presence => true
   
   # =============
   # = Callbacks =

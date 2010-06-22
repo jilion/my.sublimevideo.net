@@ -1,0 +1,21 @@
+= content_for :title do
+  = raw "#{@profile.title} profile's versions"
+  
+= content_for :content_header do
+  %h2= raw "#{content_tag(:em, @profile.title)} profile's versions"
+  %p.title_desc= "Manage video profile versions."
+  
+- @version = @profile.versions.build
+#new_profile_version_wrap
+  = render :template => "/admin/video_profile_versions/new"
+  
+#profile_versions_table_wrap
+  .main_table_wrap
+    .dark_rounded_corners
+      %table.main#profile_versions
+        %tr
+          %th= "Creation date"
+          %th= "ID"
+          %th= "Panda profile ID"
+          %th.delete= "State"
+        = render :partial => "version", :collection => @versions

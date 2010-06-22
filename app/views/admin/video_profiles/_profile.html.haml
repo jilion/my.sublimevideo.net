@@ -1,0 +1,16 @@
+%tr{ :id => dom_id(profile), :class => cycle("", "alt") }
+  %td.title
+    .wrap
+      = link_to profile.title, admin_profile_versions_path(profile)
+  %td.description
+    .wrap
+      = link_to truncate(profile.description), admin_profile_versions_path(profile)
+  %td.name
+    .wrap
+      = link_to profile.name, admin_profile_versions_path(profile)
+  %td.extname
+    .wrap
+      = link_to profile.extname, admin_profile_versions_path(profile)
+  %td.thumbnailable
+    .wrap
+      = link_to profile.thumbnailable?, admin_profile_versions_path(profile)

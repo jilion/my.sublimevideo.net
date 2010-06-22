@@ -1,0 +1,18 @@
+= form_for [:admin, @profile], :url => admin_profiles_path, :html => { :class => "profile" } do |f|
+  .entry.title
+    = f.label :title
+    = f.text_field :title, :class => "text", :placeholder => "iPhone 720p", :required => true, :autocomplete => :off
+  .entry.description
+    = f.label :description
+    = f.text_area :description, :class => "text", :autocomplete => :off
+  .entry.name
+    = f.label :name
+    = f.text_field :name, :class => "text", :placeholder => "_iphone_720p", :autocomplete => :off
+  .entry.extname
+    = f.label :extname
+    = f.text_field :extname, :class => "text", :placeholder => ".mp4", :required => true, :autocomplete => :off
+  .entry.thumbnailable
+    = f.label :thumbnailable
+    = f.check_box :thumbnailable
+  .actions
+    = f.submit 'Create', :class => "add"

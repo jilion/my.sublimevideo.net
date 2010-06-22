@@ -14,7 +14,7 @@
 
 class VideoProfileVersion < ActiveRecord::Base
   
-  attr_accessible :profile, :width, :height, :command, :num, :note
+  attr_accessible :profile, :width, :height, :command, :note
   
   attr_accessor :width, :height, :command
   

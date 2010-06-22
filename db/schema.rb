@@ -9,7 +9,30 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100618083918) do
+ActiveRecord::Schema.define(:version => 20100622080554) do
+
+  create_table "admins", :force => true do |t|
+    t.string   "email",                               :default => "", :null => false
+    t.string   "encrypted_password",   :limit => 128, :default => "", :null => false
+    t.string   "password_salt",                       :default => "", :null => false
+    t.string   "confirmation_token"
+    t.datetime "confirmed_at"
+    t.datetime "confirmation_sent_at"
+    t.string   "reset_password_token"
+    t.string   "remember_token"
+    t.datetime "remember_created_at"
+    t.integer  "sign_in_count",                       :default => 0
+    t.datetime "current_sign_in_at"
+    t.datetime "last_sign_in_at"
+    t.string   "current_sign_in_ip"
+    t.string   "last_sign_in_ip"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "admins", ["confirmation_token"], :name => "index_admins_on_confirmation_token", :unique => true
+  add_index "admins", ["email"], :name => "index_admins_on_email", :unique => true
+  add_index "admins", ["reset_password_token"], :name => "index_admins_on_reset_password_token", :unique => true
 
   create_table "delayed_jobs", :force => true do |t|
     t.integer  "priority",   :default => 0
@@ -180,15 +203,10 @@ ActiveRecord::Schema.define(:version => 20100618083918) do
     t.integer  "log_id"
     t.datetime "started_at"
     t.datetime "ended_at"
-    t.integer  "hits",       :default => 0
-    t.integer  "bandwidth",  :default => 0
+    t.integer  "bandwidth"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
-
-  add_index "video_usages", ["ended_at"], :name => "index_video_usages_on_ended_at"
-  add_index "video_usages", ["started_at"], :name => "index_video_usages_on_started_at"
-  add_index "video_usages", ["video_id"], :name => "index_video_usages_on_video_id"
 
   create_table "videos", :force => true do |t|
     t.integer  "user_id"
@@ -216,7 +234,6 @@ ActiveRecord::Schema.define(:version => 20100618083918) do
   add_index "videos", ["created_at"], :name => "index_videos_on_created_at"
   add_index "videos", ["hits_cache"], :name => "index_videos_on_hits_cache"
   add_index "videos", ["title"], :name => "index_videos_on_title"
-  add_index "videos", ["token"], :name => "index_videos_on_token"
   add_index "videos", ["user_id"], :name => "index_videos_on_user_id"
 
 end

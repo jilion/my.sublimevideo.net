@@ -1,0 +1,396 @@
+--- 
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: http://api.pandastream.com:80/v2/profiles/3.json?timestamp=2010-06-22T12:20:40.013113%2002:00&signature=4nd%20egk8gAyOZjBILtuV5R1a4W6l8JVSshT3woumxSM=&access_key=7cc07330-5147-11df-b458-12313d01b992&cloud_id=f2f24a820b4e4e71536fcd567a384848
+    body: 
+    headers: 
+      accept: 
+      - "*/*; q=0.5, application/xml"
+      accept-encoding: 
+      - gzip, deflate
+      host: 
+      - api.pandastream.com
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 404
+      message: Not Found
+    headers: 
+      x-powered-by: 
+      - Phusion Passenger (mod_rails/mod_rack) 2.2.9
+      connection: 
+      - keep-alive
+      content-type: 
+      - application/json
+      server: 
+      - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
+      content-length: 
+      - "70"
+      status: 
+      - "404"
+    body: "{\"message\":\"Couldn't find Profile with ID=3\",\"error\":\"RecordNotFound\"}"
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: http://api.pandastream.com:80/v2/profiles/3.json?timestamp=2010-06-22T12:21:40.458452%2002:00&signature=zxK7ayqMNK2Rk9nxfu%20JXABs7mG/4gEIHu5ZbsORh0s=&access_key=7cc07330-5147-11df-b458-12313d01b992&cloud_id=f2f24a820b4e4e71536fcd567a384848
+    body: 
+    headers: 
+      accept: 
+      - "*/*; q=0.5, application/xml"
+      accept-encoding: 
+      - gzip, deflate
+      host: 
+      - api.pandastream.com
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 404
+      message: Not Found
+    headers: 
+      x-powered-by: 
+      - Phusion Passenger (mod_rails/mod_rack) 2.2.9
+      content-type: 
+      - application/json
+      connection: 
+      - keep-alive
+      server: 
+      - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
+      content-length: 
+      - "70"
+      status: 
+      - "404"
+    body: "{\"message\":\"Couldn't find Profile with ID=3\",\"error\":\"RecordNotFound\"}"
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: http://api.pandastream.com:80/v2/profiles/3.json?timestamp=2010-06-22T12:21:51.722094%2002:00&signature=G0mS6j50SS49YME8S5wX00UTEHZkmrX7pERKh5o4Zis=&access_key=7cc07330-5147-11df-b458-12313d01b992&cloud_id=f2f24a820b4e4e71536fcd567a384848
+    body: 
+    headers: 
+      accept: 
+      - "*/*; q=0.5, application/xml"
+      accept-encoding: 
+      - gzip, deflate
+      host: 
+      - api.pandastream.com
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 404
+      message: Not Found
+    headers: 
+      x-powered-by: 
+      - Phusion Passenger (mod_rails/mod_rack) 2.2.9
+      connection: 
+      - keep-alive
+      content-type: 
+      - application/json
+      server: 
+      - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
+      content-length: 
+      - "70"
+      status: 
+      - "404"
+    body: "{\"message\":\"Couldn't find Profile with ID=3\",\"error\":\"RecordNotFound\"}"
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: http://api.pandastream.com:80/v2/profiles/3.json?timestamp=2010-06-22T12:23:10.916222%2002:00&signature=xAdommV6TbcoA5xK5Slf61sB9FxFMexFiv8H94KFxSU=&access_key=7cc07330-5147-11df-b458-12313d01b992&cloud_id=f2f24a820b4e4e71536fcd567a384848
+    body: 
+    headers: 
+      accept: 
+      - "*/*; q=0.5, application/xml"
+      accept-encoding: 
+      - gzip, deflate
+      host: 
+      - api.pandastream.com
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 404
+      message: Not Found
+    headers: 
+      x-powered-by: 
+      - Phusion Passenger (mod_rails/mod_rack) 2.2.9
+      content-type: 
+      - application/json
+      connection: 
+      - keep-alive
+      server: 
+      - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
+      content-length: 
+      - "70"
+      status: 
+      - "404"
+    body: "{\"message\":\"Couldn't find Profile with ID=3\",\"error\":\"RecordNotFound\"}"
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: http://api.pandastream.com:80/v2/profiles/3.json?timestamp=2010-06-22T12:23:39.910079%2002:00&signature=VNAL7oJ7vkeUcojTldFz9g8tnbcMy719wYpEyC58hW0=&access_key=7cc07330-5147-11df-b458-12313d01b992&cloud_id=f2f24a820b4e4e71536fcd567a384848
+    body: 
+    headers: 
+      accept: 
+      - "*/*; q=0.5, application/xml"
+      accept-encoding: 
+      - gzip, deflate
+      host: 
+      - api.pandastream.com
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 404
+      message: Not Found
+    headers: 
+      x-powered-by: 
+      - Phusion Passenger (mod_rails/mod_rack) 2.2.9
+      connection: 
+      - keep-alive
+      content-type: 
+      - application/json
+      server: 
+      - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
+      content-length: 
+      - "70"
+      status: 
+      - "404"
+    body: "{\"message\":\"Couldn't find Profile with ID=3\",\"error\":\"RecordNotFound\"}"
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: http://api.pandastream.com:80/v2/profiles/3.json?timestamp=2010-06-22T12:25:36.246215%2002:00&signature=KWjNo2mnm9VCf6kBMY/xrQaJhiaRhQm%20cx3G%20g%20RNs4=&access_key=7cc07330-5147-11df-b458-12313d01b992&cloud_id=f2f24a820b4e4e71536fcd567a384848
+    body: 
+    headers: 
+      accept: 
+      - "*/*; q=0.5, application/xml"
+      accept-encoding: 
+      - gzip, deflate
+      host: 
+      - api.pandastream.com
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 404
+      message: Not Found
+    headers: 
+      x-powered-by: 
+      - Phusion Passenger (mod_rails/mod_rack) 2.2.9
+      content-type: 
+      - application/json
+      connection: 
+      - keep-alive
+      server: 
+      - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
+      content-length: 
+      - "70"
+      status: 
+      - "404"
+    body: "{\"message\":\"Couldn't find Profile with ID=3\",\"error\":\"RecordNotFound\"}"
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: http://api.pandastream.com:80/v2/profiles/3.json?timestamp=2010-06-22T12:26:06.407158%2002:00&signature=l8/c6dAY2mng0PwEfYB4V7gHnt2Ro/hXxe6EQNfYPtI=&access_key=7cc07330-5147-11df-b458-12313d01b992&cloud_id=f2f24a820b4e4e71536fcd567a384848
+    body: 
+    headers: 
+      accept: 
+      - "*/*; q=0.5, application/xml"
+      accept-encoding: 
+      - gzip, deflate
+      host: 
+      - api.pandastream.com
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 404
+      message: Not Found
+    headers: 
+      x-powered-by: 
+      - Phusion Passenger (mod_rails/mod_rack) 2.2.9
+      connection: 
+      - keep-alive
+      content-type: 
+      - application/json
+      server: 
+      - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
+      content-length: 
+      - "70"
+      status: 
+      - "404"
+    body: "{\"message\":\"Couldn't find Profile with ID=3\",\"error\":\"RecordNotFound\"}"
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: http://api.pandastream.com:80/v2/profiles/3.json?timestamp=2010-06-22T12:26:28.487895%2002:00&signature=knydbbzDaNwYFPpPVQG0dHL/h1IzhDBwUb4lUtHuIsk=&access_key=7cc07330-5147-11df-b458-12313d01b992&cloud_id=f2f24a820b4e4e71536fcd567a384848
+    body: 
+    headers: 
+      accept: 
+      - "*/*; q=0.5, application/xml"
+      accept-encoding: 
+      - gzip, deflate
+      host: 
+      - api.pandastream.com
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 404
+      message: Not Found
+    headers: 
+      x-powered-by: 
+      - Phusion Passenger (mod_rails/mod_rack) 2.2.9
+      content-type: 
+      - application/json
+      connection: 
+      - keep-alive
+      server: 
+      - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
+      content-length: 
+      - "70"
+      status: 
+      - "404"
+    body: "{\"message\":\"Couldn't find Profile with ID=3\",\"error\":\"RecordNotFound\"}"
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: http://api.pandastream.com:80/v2/profiles/3.json?timestamp=2010-06-22T12:28:33.403286%2002:00&signature=mL8iVwrDBxOtsBPUDtF8HOAFbEXg%20M3q7Us5yf3fewQ=&access_key=7cc07330-5147-11df-b458-12313d01b992&cloud_id=f2f24a820b4e4e71536fcd567a384848
+    body: 
+    headers: 
+      accept: 
+      - "*/*; q=0.5, application/xml"
+      accept-encoding: 
+      - gzip, deflate
+      host: 
+      - api.pandastream.com
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 404
+      message: Not Found
+    headers: 
+      x-powered-by: 
+      - Phusion Passenger (mod_rails/mod_rack) 2.2.9
+      connection: 
+      - keep-alive
+      content-type: 
+      - application/json
+      server: 
+      - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
+      content-length: 
+      - "70"
+      status: 
+      - "404"
+    body: "{\"message\":\"Couldn't find Profile with ID=3\",\"error\":\"RecordNotFound\"}"
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: http://api.pandastream.com:80/v2/profiles/3.json?timestamp=2010-06-22T12:30:13.827197%2002:00&signature=IA4z6%20VTwFcP4TJiMRxrZ9rrAE/uMoUA%20kTuui9rlro=&access_key=7cc07330-5147-11df-b458-12313d01b992&cloud_id=f2f24a820b4e4e71536fcd567a384848
+    body: 
+    headers: 
+      accept: 
+      - "*/*; q=0.5, application/xml"
+      accept-encoding: 
+      - gzip, deflate
+      host: 
+      - api.pandastream.com
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 404
+      message: Not Found
+    headers: 
+      x-powered-by: 
+      - Phusion Passenger (mod_rails/mod_rack) 2.2.9
+      content-type: 
+      - application/json
+      connection: 
+      - keep-alive
+      server: 
+      - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
+      content-length: 
+      - "70"
+      status: 
+      - "404"
+    body: "{\"message\":\"Couldn't find Profile with ID=3\",\"error\":\"RecordNotFound\"}"
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: http://api.pandastream.com:80/v2/profiles/3.json?timestamp=2010-06-22T12:31:50.975442%2002:00&signature=xCH9p/TqLWTZ/qWOG0MsZUV9PqhSWrnLL67OBaxy6xI=&access_key=7cc07330-5147-11df-b458-12313d01b992&cloud_id=f2f24a820b4e4e71536fcd567a384848
+    body: 
+    headers: 
+      accept: 
+      - "*/*; q=0.5, application/xml"
+      accept-encoding: 
+      - gzip, deflate
+      host: 
+      - api.pandastream.com
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 404
+      message: Not Found
+    headers: 
+      x-powered-by: 
+      - Phusion Passenger (mod_rails/mod_rack) 2.2.9
+      connection: 
+      - keep-alive
+      content-type: 
+      - application/json
+      server: 
+      - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
+      content-length: 
+      - "70"
+      status: 
+      - "404"
+    body: "{\"message\":\"Couldn't find Profile with ID=3\",\"error\":\"RecordNotFound\"}"
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: http://api.pandastream.com:80/v2/profiles/3.json?timestamp=2010-06-22T13:29:03.476242%2002:00&signature=UmLRJAlxlF7jyObKHH/ez2PUeX6g0gCxoCOFZJQ3JC0=&access_key=7cc07330-5147-11df-b458-12313d01b992&cloud_id=f2f24a820b4e4e71536fcd567a384848
+    body: 
+    headers: 
+      accept: 
+      - "*/*; q=0.5, application/xml"
+      accept-encoding: 
+      - gzip, deflate
+      host: 
+      - api.pandastream.com
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 404
+      message: Not Found
+    headers: 
+      x-powered-by: &id001 
+        - Phusion Passenger (mod_rails/mod_rack) 2.2.9
+      content-type: &id003 
+        - application/json
+      connection: &id002 
+        - keep-alive
+      server: &id004 
+        - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
+      content-length: &id005 
+        - "70"
+      status: &id006 
+        - "404"
+    body: &id007 !str 
+      str: "{\"message\":\"Couldn't find Profile with ID=3\",\"error\":\"RecordNotFound\"}"
+      "@args": 
+        :url: http://api.pandastream.com:80/v2/profiles/3.json?timestamp=2010-06-22T13%3A29%3A03.476242%2B02%3A00&signature=UmLRJAlxlF7jyObKHH%2Fez2PUeX6g0gCxoCOFZJQ3JC0%3D&access_key=7cc07330-5147-11df-b458-12313d01b992&cloud_id=f2f24a820b4e4e71536fcd567a384848
+        :headers: {}
+
+        :method: :get
+      "@code": 404
+      "@net_http_res": !ruby/object:Net::HTTPNotFound 
+        __orig_body__: 
+        body: *id007
+        body_exist: true
+        code: "404"
+        header: 
+          x-powered-by: *id001
+          connection: *id002
+          content-type: *id003
+          server: *id004
+          content-length: *id005
+          status: *id006
+        http_version: "1.1"
+        message: Not Found
+        read: true
+        socket: 
+    http_version: "1.1"

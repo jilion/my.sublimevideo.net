@@ -1,0 +1,25 @@
+= content_for :title do
+  = "Video profiles"
+  
+= content_for :content_header do
+  %h2= "Video profiles"
+  %p.title_desc= "Manage video profiles."
+  
+- @profile = VideoProfile.new
+#new_profile_wrap
+  = render :template => "/admin/video_profiles/new"
+  
+#profiles_table_wrap
+  .main_table_wrap
+    .dark_rounded_corners
+      %table.main#profiles
+        %tr
+          %th.title
+            .wrap
+              %strong
+                = "Title"
+          %th.code= "Description"
+          %th.hits= "Name"
+          %th.hits= "Extname"
+          %th.hits.delete= "Thumbnail?"
+        = render :partial => "profile", :collection => @profiles

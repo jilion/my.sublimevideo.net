@@ -1,0 +1,11 @@
+%h3
+  = "Settings for"
+  %strong= truncate_middle(@site.hostname, :length => 18)
+
+= form_for @site, :remote => true, :html => { :class => "edit" } do |f|
+  .entry
+    = f.label :dev_hostnames, "Development domains"
+    %p.desc= "Add domains to use in development separated by a comma:"
+    = f.text_field :dev_hostnames, :class => "text", :autocomplete => :off
+  .actions
+    = f.submit 'Update', :class => "submit small"

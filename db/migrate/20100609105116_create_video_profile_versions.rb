@@ -6,7 +6,6 @@ class CreateVideoProfileVersions < ActiveRecord::Migration
       
       t.string     :state                   # state machine
       
-      t.integer    :num
       t.text       :note
       
       t.timestamps

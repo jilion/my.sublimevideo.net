@@ -256,7 +256,7 @@ specs:
 - configuration: 
     version: 1.1.0
 - daemons: 
-    version: 1.0.10
+    version: 1.1.0
 - delayed_job: 
     version: 2.1.0.pre
     source: 8
@@ -363,7 +363,7 @@ specs:
     source: 7
 - wirble: 
     version: 0.1.3
-hash: ffadebf1f1132d8e6c3968a52a8a1c7d086a91de
+hash: 54fffddc668dbc5592e9feb59d1fd59ec4802e46
 sources: 
 - Git: 
     uri: git://github.com/thibaudgg/rspec-rails.git
