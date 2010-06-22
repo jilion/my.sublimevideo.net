@@ -17,10 +17,6 @@ document.observe("dom:loaded", function() {
       new PlaceholderManager(input);
     });
   }
-    
-  $$('.entry.select select').each(function(select){
-    new CustomSelectManager(select);
-  });
   
   $$("form").each(function(form){
     new FormManager(form);
@@ -312,37 +308,6 @@ var PlaceholderManager = Class.create({
   passwordFieldDidUpdate: function(field) {
     this.field = field;
     this.setupObservers();
-  }
-});
-
-var CustomSelectManager = Class.create({
-  initialize: function(select) {
-    this.select = select;
-    this.createFakeSelect();
-    this.setupObservers();
-  },
-  createFakeSelect: function() {
-    var customSelectWrap = new Element("div", { className:'custom_select_wrap' });
-    this.select.insert({ before:customSelectWrap });
-    customSelectWrap.insert(this.select);
-    
-    this.fakeSelectWrap = new Element("div", { className:'fake_select' }).setStyle({ width:this.select.getWidth()-6+'px' });
-    this.fakeSelect = new Element("span");
-    this.fakeSelectWrap.insert(this.fakeSelect);
-    
-    this.fakeSelect.update(this.select.value);
-    this.select.insert({ before:this.fakeSelectWrap });
-  },
-  setupObservers: function() {
-    this.select.on("change", function(event){
-      this.fakeSelect.update(this.select.value);
-    }.bind(this));
-    this.select.on("focus", function(event){
-      this.fakeSelectWrap.addClassName("focus");
-    }.bind(this));
-    this.select.on("blur", function(event){
-      this.fakeSelectWrap.removeClassName("focus");
-    }.bind(this));
   }
 });
 

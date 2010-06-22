@@ -6,8 +6,10 @@
 - @user ||= current_user
 - reset_credit_card_attributes
 = form_for @user, :url => credit_card_path, :html => { :class => "main_form" } do |f|
+  = f.hidden_field :cc_update, :value => true
   - if @user.errors[:base].present?
-    %p.errors= @user.errors[:base]
+    .global_errors
+      %p= @user.errors[:base]
   
   .entry.card
     .radio_wrap
@@ -17,25 +19,25 @@
       = f.radio_button :cc_type, "master"
       = f.label :cc_type, "<span>MasterCard</span>".html_safe, :class => "master", :title => "MasterCard", :for => "user_cc_type_master"
     .spacer
+  .entry.full_name
+    = f.label :cc_full_name, "", :class => "icon"
+    = f.text_field :cc_full_name, :class => "text", :placeholder => "Name on Card", :required => true
   .entry.card_number
     = f.label :cc_number, "", :class => "icon"
     = f.text_field :cc_number, :class => "text", :placeholder => "Card number", :required => true, :size => 16+3
-  .entry.select
-    = f.date_select :cc_expire_on, :discard_day => true, :use_month_numbers => true, :start_year => Time.now.year, :end_year => Time.now.year + 20, :order => [ :month, :year ], :required => true
-    = f.label :cc_expire_on, "Expiration date"
-    .spacer
-  .entry.full_name
-    = f.label :cc_full_name, "", :class => "icon"
-    = f.text_field :cc_full_name, :class => "text", :placeholder => "Full name", :required => true
-  
-  -#.entry
-  -#  = f.label :cc_first_name, "First name"
-  -#  = f.text_field :cc_first_name, :class => "text", :placeholder => "First name", :required => true
-  -#  = f.label :cc_last_name, "Last name"
-  -#  = f.text_field :cc_last_name, :class => "text", :placeholder => "Last name", :required => true
   .entry
-    = f.label :cc_verification_value, "Verification value"
-    = f.text_field :cc_verification_value, :class => "text", :placeholder => "Verification value", :required => true
+    = f.label :cc_first_name, "First name"
+    = f.text_field :cc_first_name, :class => "text", :placeholder => "First name", :required => true
+    = f.label :cc_last_name, "Last name"
+    = f.text_field :cc_last_name, :class => "text", :placeholder => "Last name", :required => true
+  .entry.select.float
+    = f.label :cc_expire_on, "Expiration date"
+    = f.date_select :cc_expire_on, :discard_day => true, :use_month_numbers => true, :start_year => Time.now.year, :end_year => Time.now.year + 20, :order => [ :month, :year ], :required => true
+  
+  .entry.small_field
+    = f.label :cc_verification_value, "Security Code"
+    = f.text_field :cc_verification_value, :class => "text", :placeholder => "CSC", :required => true
+  .spacer
   
   .entry.update
     = f.submit "Update", :id => 'user_full_name_submit', :class => "submit small"

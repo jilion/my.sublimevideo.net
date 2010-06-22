@@ -377,17 +377,47 @@ form .inline_errors span {
   box-shadow:rgba(0,0,0,0.7) 0 1px 2px, inset rgba(0,0,0,0.35) 0 1px 4px;
 }
 
-form p.note {
-  padding:10px 0 0;
+.global_errors {
+  padding:10px;
+  margin:0 0 10px;
+  background:#a70000;
+  background:-webkit-gradient(linear,left top,left bottom,from(#bf0000),to(#960101));
+  background:-moz-linear-gradient(top, #bf0000, #960101);
+  -webkit-border-radius:4px;
+  -moz-border-radius:4px;
+  border-radius:4px;
+  -webkit-box-shadow:rgba(255,255,255,0.7) 0 1px 0, inset rgba(0,0,0,0.5) 0 1px 3px;
+  -moz-box-shadow:rgba(255,255,255,0.7) 0 1px 0, inset rgba(0,0,0,0.5) 0 1px 3px;
+  box-shadow:rgba(255,255,255,0.7) 0 1px 0, inset rgba(0,0,0,0.5) 0 1px 3px;
+}
+
+.global_errors p {
+  background:url(/images/embed/warning_icon.png) no-repeat 0 0;
+  padding:2px 0 2px 35px;
+  color:#fff;
+  font-size:18px;
+  text-shadow:rgba(0,0,0,0.3) 0 -1px 0;
+}
+
+form p.note, #content form label.note {
+  display:block;
+  padding:2px 0 2px 22px;
+  margin-top:15px;
   font-size:13px;
   font-weight:600;
-  font-style:italic;
+  background:url(/images/embed/note_icon.png) no-repeat;
+}
+
+#content form label.note {
+  margin:0 0 5px;
 }
 
 #content form .entry .checkbox_wrap {
   margin:13px 0 6px;
   position:relative;
 }
+
+#content form.section .entry .checkbox_wrap {margin-top:5px;}
 
 #content form .entry .checkbox_wrap input {
   float:left;
@@ -440,6 +470,23 @@ form p.note {
 #content form .entry .radio_wrap input:focus + label {background-position:0 -52px;}
 #content form .entry .radio_wrap input:focus:checked + label {background-position:0 -78px;}
 
+#content form .entry .radio_wrap .inline_errors {
+  position:absolute;
+  left:160px;
+  top:3px;
+  white-space:nowrap;
+}
+
+#content form .entry .radio_wrap .inline_errors span {
+  border:none;
+  -webkit-border-radius:4px;
+  -moz-border-radius:4px;
+  border-radius:4px;
+  -webkit-box-shadow:rgba(0,0,0,0.7) 0 1px 2px;
+  -moz-box-shadow:rgba(0,0,0,0.7) 0 1px 2px;
+  box-shadow:rgba(0,0,0,0.7) 0 1px 2px;
+}
+
 #content form .entry.card label span {
   display:block;
   text-indent:-9999px;
@@ -452,55 +499,72 @@ form p.note {
 #content form .entry.card label.visa span {background:url(/images/embed/credit_cards/visa.png) no-repeat;}
 #content form .entry.card label.master span {background:url(/images/embed/credit_cards/mastercard.png) no-repeat;}
 
-#content form .entry.select .custom_select_wrap {
-  margin:0 10px 6px 0;
-  position:relative;
+#content form .entry.small_field input.text {
+  width:90px;
+  padding-left:6px;
+}
+
+#content form .entry.small_field .inline_errors span {
+  left:4px;
+}
+
+#content form .entry.select.float, #content form .entry.small_field {
   float:left;
+  width:39%;
+  margin-bottom:15px;
 }
 
-#content form .entry.select .custom_select_wrap select {
-  float:left;
-  position:absolute;
-  top:0;
-  left:0;
-  opacity:0;
-  font-size:20px;
-}
-
-#content form .entry.select .fake_select {
-  height:18px;
-  padding:4px 0 0 6px;
-  border:1px solid #8a92a0;
-  border-radius:4px;
-  -webkit-border-radius:4px;
-  -moz-border-radius:4px;
-  background:#fefefe;
-  background:-webkit-gradient(linear,left top,left bottom,from(#fefefe),to(#d3d3d3));
-  background:-moz-linear-gradient(top, #fefefe, #d3d3d3);
-  -webkit-box-shadow:rgba(255,255,255,0.3) 0 1px 0;
-  -moz-box-shadow:rgba(255,255,255,0.3) 0 1px 0;
-  box-shadow:rgba(255,255,255,0.3) 0 1px 0;
-}
-
-#content form .entry.select .fake_select.focus {
-  outline: auto 5px -webkit-focus-ring-color;
-  outline-offset: -2px;
-  outline-color:#0085c8;
-  -moz-outline:-moz-mac-focusring solid 2px; 
-  -moz-outline-radius: 0 7px 7px;
-  -moz-outline-offset:0;
-  -moz-outline-color:#0085c8;
-}
-
-#content form .entry.select .fake_select span {
+#content form .entry.select.float label, #content form .entry.small_field label {
   display:block;
-  margin-right:5px;
-  background:url(/images/embed/custom_select_arrow.png) no-repeat 100% 50%;
+  padding:0 0 5px;
+  color:#6b7688;
+  font-weight:600;
 }
 
-#content form .entry.select label {
-  position:relative;
-  top:5px;
+#content form .entry.select select {
+  margin-right:6px;
+  font-size:13px;
+  background:#fefefe;
+  background:-moz-linear-gradient(top, #fff, #ced3da);
+  border:1px solid #8a92a0;
+  font-family:"proxima-nova-1","proxima-nova-2", Helvetica, Arial, sans-serif;
+  font-size:18px;
+  color:#4d5563;
+  text-shadow:#fff 0 1px 0;
+  padding:5px;
+  border-radius:4px;
+  -moz-border-radius:4px;
+  -moz-box-shadow:rgba(255,255,255,0.4) 0 1px 0;
+  box-shadow:rgba(255,255,255,0.4) 0 1px 0;
+}
+
+#content form .entry.select select option {
+  padding-right:10px;
+}
+
+@media screen and (-webkit-min-device-pixel-ratio:0){
+  #content form .entry.select select {
+    margin-right:6px;
+    height:36px;
+    padding:2px 22px 0 10px;
+    background:url(/images/embed/custom_select.png) no-repeat right center;
+    border:1px solid #8a92a0;
+    font-family:"proxima-nova-1","proxima-nova-2", Helvetica, Arial, sans-serif;
+    font-size:18px;
+    color:#4d5563;
+    text-shadow:#fff 0 1px 0;
+    border-radius:4px;
+    -webkit-border-radius:4px;
+    -webkit-box-shadow:rgba(255,255,255,0.4) 0 1px 0;
+    box-shadow:rgba(255,255,255,0.4) 0 1px 0;
+    -webkit-appearance:none;
+  }
+
+  #content form .entry.select select:focus {
+    outline: auto 5px -webkit-focus-ring-color;
+    outline-offset: -2px;
+    outline-color:#0085c8;
+  }
 }
 
 #content .entry.terms {
@@ -669,7 +733,7 @@ form .entry.update {
   box-shadow:rgba(255,255,255,0.6) 0 1px 0, inset rgba(0,0,0,0.5) 0 1px 5px;
 }
 
-#trial_box .progress_bar .active_usage, #trial_box .progress_bar .inactive_usage {
+#trial_box .progress_bar .active_usage {
   width:50%;
   height:20px;
   position:absolute;
@@ -688,15 +752,6 @@ form .entry.update {
   -moz-box-shadow:inset rgba(255,255,255,0.2) 0 1px 0;
   box-shadow:inset rgba(255,255,255,0.2) 0 1px 0;
 }
-
-#trial_box .progress_bar .inactive_usage {
-  z-index:1;
-  background:#222;
-  background:-webkit-gradient(linear,left top,left bottom,from(#2a2b2d),to(#1a1a1a));
-  background:-moz-linear-gradient(top, #2a2b2d, #1a1a1a);
-}
-
-#trial_box .progress_bar:hover .active_usage {display:none;}
 
 #trial_box a.show_details {
   display:block;

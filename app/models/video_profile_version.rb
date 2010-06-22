@@ -28,15 +28,16 @@ class VideoProfileVersion < ActiveRecord::Base
   # = Scopes =
   # ==========
   
-  scope :active,       where(:state => 'active')
+  scope :active,       where(:state => 'active').group(:video_profile_id).order(:created_at.desc)
   scope :experimental, where(:state => 'experimental')
+  scope :with_profile, lambda { |profile| where(:video_profile_id => profile.id) }
   
   # ===============
   # = Validations =
   # ===============
   
   validates :profile,                  :presence => true
-  validates :width, :height, :command, :presence => true
+  validates :width, :height, :command, :presence => true, :on => :create
   
   # =============
   # = Callbacks =
@@ -47,8 +48,17 @@ class VideoProfileVersion < ActiveRecord::Base
   # =================
   
   state_machine :initial => :pending do
-    event(:pandize)  { transition :pending      => :experimental, :if => :panda_profile_created? }
-    event(:activate) { transition :experimental => :active }
+    before_transition :on => :pandize, :do => :create_panda_profile_and_set_info
+    
+    after_transition  :on => :activate, :do => :deprecate_profile_versions
+    
+    event(:pandize)   { transition :pending      => :experimental }
+    event(:activate)  { transition :experimental => :active }
+    event(:deprecate) { transition [:active, :experimental] => :deprecated }
+    
+    state(:experimental) do
+      validates :panda_profile_id, :presence => true
+    end
   end
   
   # =================
@@ -59,19 +69,22 @@ class VideoProfileVersion < ActiveRecord::Base
   # = Instance Methods =
   # ====================
   
-  def panda_profile_created?
-    create_panda_profile
+protected
+  
+  # before_transition (pandize)
+  def create_panda_profile_and_set_info
+    profile_info = Transcoder.post(:profile, { :title => "#{profile.title} ##{profile.versions.size + 1}", :extname => profile.extname, :width => width, :height => height, :command => command })
+    
+    if profile_info.key? :error
+      HoptoadNotifier.notify("VideoProfileVersion (#{id}) panda profile creation error: #{profile_info[:message]}")
+    else
+      self.panda_profile_id = profile_info[:id]
+    end
   end
   
-  def create_panda_profile
-    params   = { :title => "#{profile.title} ##{profile.versions.size + 1}", :extname => profile.extname, :width => width, :height => height, :command => command }
-    response = Transcoder.post(:profile, params)
-    if response.key? :id
-      self.panda_profile_id = response[:id]
-      true
-    else
-      false
-    end
+  # after_transition (activate)
+  def deprecate_profile_versions
+    profile.versions.with_profile(profile).where(:state => %w[active experimental], :id.ne => id).map(&:deprecate)
   end
   
 end

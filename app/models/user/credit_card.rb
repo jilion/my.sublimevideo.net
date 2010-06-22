@@ -10,7 +10,7 @@
 
 module User::CreditCard
   
-  attr_accessor :cc_number, :cc_full_name, :cc_first_name, :cc_last_name, :cc_verification_value
+  attr_accessor :cc_update, :cc_number, :cc_full_name, :cc_first_name, :cc_last_name, :cc_verification_value
   
   # ===================================
   # = User instance methods extension =
@@ -22,7 +22,7 @@ module User::CreditCard
   alias :cc? :credit_card?
   
   def credit_card_attributes_present?
-    [cc_number, cc_first_name, cc_last_name, cc_verification_value].any?(&:present?)
+    [cc_update, cc_number, cc_first_name, cc_last_name, cc_verification_value].any?(&:present?)
   end
   
   def credit_card_name
