@@ -151,8 +151,7 @@ def create_videos(count = 1)
   create_video_profiles if VideoProfile.all.empty?
   VideoProfileVersion.last.activate unless VideoProfileVersion.last.active?
   
-  # panda_video_id = Transcoder.post(:video, { :file => File.open("#{Rails.root}/spec/fixtures/railscast_intro.mov"), :profiles => 'none' })[:id]
-  panda_video_id = '7e7a17f8fab56e510fe03ee9801f25f0'
+  panda_video_id = '7e7a17f8fab56e510fe03ee9801f25f0' # Transcoder.post(:video, { :file => File.open("#{Rails.root}/spec/fixtures/railscast_intro.mov"), :profiles => 'none' })[:id]
   
   User.all.each do |user|
     count.times do |i|
@@ -161,27 +160,6 @@ def create_videos(count = 1)
       video.created_at     = rand(1500).days.ago
       video.save!
       video.pandize
-      # Delayed::Worker.new(:quiet => true).work_off
-      
-      # video.encodings.each do |video_encoding|
-      #   video_encoding.created_at = video.created_at + rand(2).days
-      #   video_encoding.activate
-      # end
-      # Delayed::Worker.new(:quiet => true).work_off
-      
-      # VideoProfile.active.each do |video_profile|
-      #   encoding = Factory(:video_encoding, :profile_version => Factory(:video_profile_version, :panda_profile_id => '73f93e74e866d86624a8718d21d06e4e'))
-      #   
-      #   encoding            = video.encodings.build(:width => 600, :height => 255, :size => rand(15000), :codec => 'h264', :extname => '.mp4', :duration => rand(7200))
-      #   encoding.created_at = video.created_at + rand(2).days
-      #   f                 = CarrierWave::SanitizedFile.new("#{Rails.root}/spec/fixtures/railscast_intro.mov")
-      #   copied_file       = f.copy_to("#{Rails.root}/spec/fixtures/#{profile_name.parameterize}.mov")
-      #   encoding.file       = copied_file
-      #   encoding.panda_id   = "#{rand(10000)*(index+1)}"
-      #   encoding.save!
-      #   encoding.activate
-      #   copied_file.delete
-      # end
     end
   end
   print "#{User.all.size * count * (VideoProfileVersion.active.all.size + 1)} videos (1 video and #{VideoProfileVersion.active.all.size} encodings per user) created!\n"
