@@ -19,8 +19,8 @@ gem 'panda' # Encoding
 gem 'voxel_hapi',       :git => 'git://github.com/thibaudgg/voxel_hapi.git' # VoxCast CDN
 gem 'request-log-analyzer', :require => 'request_log_analyzer'
 
-gem 'warden'
-gem 'devise', '>= 1.1.rc1' # Auth
+gem 'devise', '1.1.rc2' # Auth
+gem 'devise_invitable', :git => 'git://github.com/mhodgson/devise_invitable.git'
 
 gem 'system_timer' # only on Ruby 1.8, used by memcache-client
 gem 'memcache-client'
@@ -46,7 +46,6 @@ group :test do
   gem 'watchr'
   gem 'growl'
   gem 'spork'
-  # gem 'rspactor',     :path => '/Users/Thibaud/Vault/Dropbox/Development/Code/rspactor2'
   
   gem 'rspec-core',   :git => 'git://github.com/rspec/rspec-core.git', :ref => '48f1d5d034b27fdd9aca514fab9f9ecec5847895'
   gem 'rspec',        '>= 2.0.0.beta.12'
@@ -59,7 +58,7 @@ group :test do
   gem 'launchy'
   
   gem 'factory_girl_rails'
-  gem 'webmock', '1.2.2'
+  gem 'webmock'
   # gem 'fakeweb'
   gem 'vcr'
 end

@@ -3,7 +3,7 @@
     %h1
       = link_to user_signed_in? ? sites_path : new_user_session_path do
         %span= "SublimeVideo"
-    - if user_signed_in?
+    - if user_signed_in? && controller_name != 'sessions'
       %ul#main_menu
         %li.sites{ :class => ('active' if controller_name == 'sites'), :onclick => "MySublimeVideo.makeSticky(this)" }
           = link_to sites_path do
@@ -16,15 +16,16 @@
       %ul.extra_links
         %li= link_to "Documentation", page_path("docs")
         %li= link_to "Support", page_path("support")
-        - if user_signed_in?
+        - if user_signed_in? && controller_name != 'sessions'
           %li= link_to "Logout", destroy_user_session_path
-      - if user_signed_in?
-        = link_to edit_user_registration_path, :class => "user #{controller_name == 'registrations' ? 'active':''}", :onclick => "MySublimeVideo.makeSticky(this)" do
+      - if user_signed_in? && controller_name != 'sessions'
+        = link_to edit_user_registration_path, :class => "user #{'active' if controller_name == 'registrations'}", :onclick => "MySublimeVideo.makeSticky(this)" do
           %strong
             %span.icon= current_user.full_name
           %span.corner
       - else
-        = link_to new_user_session_path, :class => "user" do
-          %strong
-            %span.icon= "Login"
-          %span.corner
+        - if controller_name != 'sessions'
+          = link_to new_user_session_path, :class => "user" do
+            %strong
+              %span.icon= "Login"
+            %span.corner

@@ -2,7 +2,7 @@
   #header_wrap
     %h1
       = link_to admin_signed_in? ? sites_path : new_admin_session_path do
-        %span= "SublimeVideo"
+        %span= "SublimeVideo Admin"
     - if admin_signed_in?
       %ul#main_menu
         %li.users{ :class => ('active' if controller_name == 'admin/users'), :onclick => "MySublimeVideo.makeSticky(this)" }
@@ -14,13 +14,16 @@
         %li.video_profiles{ :class => ('active' if %w[video_profiles video_profile_versions].include? controller_name), :onclick => "MySublimeVideo.makeSticky(this)" }
           = link_to admin_profiles_path do
             %span= "Profiles"
+        %li.admins{ :class => ('active' if controller_name == 'admin/admins'), :onclick => "MySublimeVideo.makeSticky(this)" }
+          = link_to admin_admins_path do
+            %span= "Admins"
             
     .right
       %ul.extra_links
         - if admin_signed_in?
           %li= link_to "Logout", destroy_admin_session_path
       - if admin_signed_in?
-        = link_to edit_admin_registration_path, :class => "user #{controller_name == 'registrations' ? 'active':''}", :onclick => "MySublimeVideo.makeSticky(this)" do
+        = link_to edit_admin_registration_path, :class => "user #{'active' if controller_name == 'registrations'}", :onclick => "MySublimeVideo.makeSticky(this)" do
           %strong
             %span.icon= current_admin.email
           %span.corner

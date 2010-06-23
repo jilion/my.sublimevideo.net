@@ -75,7 +75,7 @@ def create_admins
     print "Creating admins => "
     BASE_USERS.each do |admin_infos|
       admin = Admin.create(:full_name => admin_infos[0], :email => admin_infos[1], :password => "123456")
-      admin.confirmed_at = Time.now
+      admin.invitation_sent_at = Time.now
       admin.save!
       print "Admin #{admin_infos[1]}:123456 created!\n"
     end

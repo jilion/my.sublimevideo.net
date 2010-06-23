@@ -8,9 +8,15 @@ MySublimeVideo::Application.routes.draw do |map|
   match 'logout',   :to => 'devise/sessions#destroy',  :as => "destroy_user_session"
   match 'register', :to => 'devise/registrations#new', :as => "new_user_registration"
   
-  %w[sign_up signup].each                { |action| match action => redirect('/register') }
-  %w[log_in sign_in signin].each         { |action| match action => redirect('/login')    }
-  %w[log_out sign_out signout exit].each { |action| match action => redirect('/logout')   }
+  %w[sign_up signup].each        { |action| match action => redirect('/register') }
+  %w[log_in sign_in signin].each do |action|
+    match action => redirect('/login')
+    match "admin/#{action}" => redirect('/admins/login')
+  end
+  %w[log_out sign_out signout exit].each do |action|
+    match action => redirect('/logout')
+    match "admin/#{action}" => redirect('/admins/logout')
+  end
   
   resources :users, :only => :update
   resources :sites do
@@ -24,12 +30,23 @@ MySublimeVideo::Application.routes.draw do |map|
   resources :invoices, :only => [:index, :show]
   resource :card, :controller => "credit_cards", :as => :credit_card, :only => [:edit, :update]
   
-  devise_for :admins
+  devise_for :admins,
+  :controllers => { :registrations => "admin/registrations", :invitations => "admin/invitations" },
+  :path_names => { :sign_in => 'login', :sign_out => 'logout' }
   
+  match 'admin', :to => redirect('/admin/profiles'), :as => "admin"
   namespace "admin" do
+    resources :users
+    
+    resources :sites
+    
+    resources :videos
+    
     resources :video_profiles, :except => [:destroy], :as => :profiles, :path => "profiles" do
-      resources :video_profile_versions, :except => [:index, :edit, :destroy], :as => :versions, :path => "versions"
+      resources :video_profile_versions, :only => [:show, :new, :create, :update], :as => :versions, :path => "versions"
     end
+    
+    resources :admins, :only => [:index, :destroy]
   end
   
   match ':page', :to => 'pages#show', :via => :get, :as => :page, :page => /terms|docs|support/
