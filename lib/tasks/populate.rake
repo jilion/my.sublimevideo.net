@@ -152,7 +152,7 @@ def create_videos(count = 1)
   VideoProfileVersion.last.activate unless VideoProfileVersion.last.active?
   
   # panda_video_id = Transcoder.post(:video, { :file => File.open("#{Rails.root}/spec/fixtures/railscast_intro.mov"), :profiles => 'none' })[:id]
-  panda_video_id = '87bfc44d625a19bb91d5797bad9c15d0'
+  panda_video_id = '7e7a17f8fab56e510fe03ee9801f25f0'
   
   User.all.each do |user|
     count.times do |i|
