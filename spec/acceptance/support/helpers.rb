@@ -39,7 +39,7 @@ module HelperMethods
   
   def sign_in_as_admin(options={}, &block)
     admin = create_admin(options)
-    visit "/admins/login"
+    visit "/admin/login"
     fill_in 'Email',    :with => admin.email
     fill_in 'Password', :with => '123456'
     check   'Remember me' if options[:remember_me] == true

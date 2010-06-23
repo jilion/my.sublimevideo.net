@@ -14,7 +14,7 @@
         %li.video_profiles{ :class => ('active' if %w[video_profiles video_profile_versions].include? controller_name), :onclick => "MySublimeVideo.makeSticky(this)" }
           = link_to admin_profiles_path do
             %span= "Profiles"
-        %li.admins{ :class => ('active' if controller_name == 'admin/admins'), :onclick => "MySublimeVideo.makeSticky(this)" }
+        %li.admins{ :class => ('active' if controller_name == 'admins'), :onclick => "MySublimeVideo.makeSticky(this)" }
           = link_to admin_admins_path do
             %span= "Admins"
             

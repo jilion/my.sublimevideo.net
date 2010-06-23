@@ -5,7 +5,8 @@ feature "Admin session:" do
   scenario "login" do
     create_admin :admin => { :email => "john@doe.com", :password => "123456" }
     
-    visit "/admins/login"
+    visit "/admin/login"
+    current_url.should =~ %r(http://[^/]+/admin/admins/login)
     page.should_not have_content 'john@doe.com'
     fill_in "Email",     :with => "john@doe.com"
     fill_in "Password",  :with => "123456"
@@ -20,7 +21,7 @@ feature "Admin session:" do
     page.should have_content 'john@doe.com'
     click_link "Logout"
     
-    current_url.should =~ %r(http://[^/]+/admins/login)
+    current_url.should =~ %r(http://[^/]+/admin/admins/login)
     page.should_not have_content 'john@doe.com'
   end
   
@@ -33,7 +34,7 @@ feature "Admins actions:" do
     
   scenario "update email" do
     click_link 'old@jilion.com'
-    current_url.should =~ %r(http://[^/]+/admins/edit)
+    current_url.should =~ %r(http://[^/]+/admin/admins/edit)
     
     fill_in "Email",            :with => "new@jilion.com"
     fill_in "Current password", :with => "123456"
@@ -53,11 +54,12 @@ feature "Admins invitations:" do
     current_url.should =~ %r(http://[^/]+/admin/admins)
     
     click_link 'Invite an admin'
-    current_url.should =~ %r(http://[^/]+/admins/invitation/new)
+    current_url.should =~ %r(http://[^/]+/admin/admins/invitation/new)
     
     fill_in "Email", :with => "invited@admin.com"
     click_button "Send"
     
+    current_url.should =~ %r(http://[^/]+/admin/admins)
     page.should have_content(I18n.translate('devise.invitations.admin.send_instructions'))
     
     Admin.last.email.should == "invited@admin.com"
@@ -70,7 +72,7 @@ feature "Admins invitations:" do
   
   scenario "accept invitation" do
     sign_in_as :admin, { :email => "john@doe.com" }
-    visit '/admins/invitation/new'
+    visit '/admin/admins/invitation/new'
     fill_in "Email", :with => "invited@admin.com"
     click_button "Send"
     
@@ -80,11 +82,12 @@ feature "Admins invitations:" do
     
     sign_out
     
-    visit "/admins/invitation/edit?invitation_token=#{Admin.last.invitation_token}"
-    current_url.should =~ %r(http://[^/]+/admins/invitation/edit\?invitation_token=#{Admin.last.invitation_token})
+    visit "/admin/admins/invitation/edit?invitation_token=#{Admin.last.invitation_token}"
+    current_url.should =~ %r(http://[^/]+/admin/admins/invitation/edit\?invitation_token=#{Admin.last.invitation_token})
     fill_in "Password", :with => "123456"
     click_button "Go!"
     
+    current_url.should =~ %r(http://[^/]+/admin/admins)
     page.should have_content(I18n.translate('devise.invitations.admin.updated'))
     
     Admin.last.email.should == "invited@admin.com"

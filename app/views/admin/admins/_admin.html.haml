@@ -3,4 +3,4 @@
     = mail_to admin.email
   %td.confirmed
     = admin.invitation_token.nil?
-  %td.delete= button_to 'Delete', admin, :confirm => 'Are you sure?', :method => :delete, :remote => true
+  %td.delete= button_to 'Delete', admin_admin_path(admin), :confirm => 'Are you sure?', :method => :delete
