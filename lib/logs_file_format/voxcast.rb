@@ -1,7 +1,5 @@
 module LogsFileFormat
-  
   class Voxcast < RequestLogAnalyzer::FileFormat::Base
-    
     extend RequestLogAnalyzer::FileFormat::CommonRegularExpressions
     
     LINE_DEFINITIONS = [
@@ -68,5 +66,4 @@ module LogsFileFormat
     end
     
   end
-  
 end

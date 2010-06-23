@@ -27,8 +27,13 @@ describe Log do
         Log.delay_fetch_and_create_new_logs
       end
       
-      it "should call Log::CloudfrontDownload delay_fetch_and_create_new_logs" do
-        Log::CloudfrontDownload.should_receive(:delay_fetch_and_create_new_logs)
+      it "should call Log::Cloudfront::Download delay_fetch_and_create_new_logs" do
+        Log::Cloudfront::Download.should_receive(:delay_fetch_and_create_new_logs)
+        Log.delay_fetch_and_create_new_logs
+      end
+      
+      it "should call Log::Cloudfront::Streaming delay_fetch_and_create_new_logs" do
+        Log::Cloudfront::Streaming.should_receive(:delay_fetch_and_create_new_logs)
         Log.delay_fetch_and_create_new_logs
       end
       

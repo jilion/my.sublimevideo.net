@@ -6,7 +6,6 @@ module S3
     end
     
     def logs_name_list(options = {})
-      options['max-keys'] ||= 100
       remove_prefix = options.delete(:remove_prefix)
       keys  = logs_bucket.keys(options)
       names = keys.map! { |key| key.name }

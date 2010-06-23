@@ -59,7 +59,7 @@ describe VideoUsage do
     end
     
     it "should create only 2 video_usages from trackers" do
-      Log::CloudfrontDownload.fetch_and_create_new_logs
+      Log::Cloudfront::Download.fetch_and_create_new_logs
       lambda { VideoUsage.create_usages_from_trackers!(@log, @trackers) }.should change(VideoUsage, :count).by(2)
     end
     

@@ -24,6 +24,7 @@ gem 'devise', '>= 1.1.rc1' # Auth
 
 gem 'system_timer' # only on Ruby 1.8, used by memcache-client
 gem 'memcache-client'
+gem 'memcached'
 
 gem 'http_connection',  :git => 'git://github.com/thibaudgg/http_connection.git'
 gem 'aws',              '>= 2.3.12'
@@ -59,8 +60,7 @@ group :test do
   gem 'launchy'
   
   gem 'factory_girl_rails'
-  gem 'webmock', '1.2.2'
-  # gem 'fakeweb'
+  gem 'webmock'
   gem 'vcr'
 end
 

@@ -1,21 +1,19 @@
 module LogsFileFormat
-  
   class CloudfrontDownload < RequestLogAnalyzer::FileFormat::Base
-    
     extend RequestLogAnalyzer::FileFormat::CommonRegularExpressions
     
     LINE_DEFINITIONS = [
-      { :regexp => "(#{timestamp('%Y-%m-%d')})", :captures => [{:name => :date,              :type => :timestamp}] },
-      { :regexp => "(#{timestamp('%H:%M:%S')})", :captures => [{:name => :time,              :type => :timestamp}] },
-      { :regexp => '(.*)',                       :captures => [{:name => :x_edge_location,   :type => :string}] },
-      { :regexp => '(\d+|-)',                    :captures => [{:name => :sc_bytes,          :type => :traffic}] },
-      { :regexp => "(#{ip_address})",            :captures => [{:name => :client_ip,         :type => :string}] },
-      { :regexp => '(\S+)',                      :captures => [{:name => :http_method,       :type => :string}] },
-      { :regexp => '(.*)',                       :captures => [{:name => :host,              :type => :string}] },
-      { :regexp => '(.*)',                       :captures => [{:name => :path,              :type => :string}] },
-      { :regexp => '(\d{3})',                    :captures => [{:name => :http_status,       :type => :integer}] },
-      { :regexp => '(.*)',                       :captures => [{:name => :referer,           :type => :string}] },
-      { :regexp => '(.*)',                       :captures => [{:name => :user_agent,        :type => :string}] },
+      { :regexp => "(#{timestamp('%Y-%m-%d')})", :captures => [{:name => :date,          :type => :timestamp}] },
+      { :regexp => "(#{timestamp('%H:%M:%S')})", :captures => [{:name => :time,          :type => :timestamp}] },
+      { :regexp => '(.*)',                       :captures => [{:name => :edge_location, :type => :string}] },
+      { :regexp => '(\d+|-)',                    :captures => [{:name => :sc_bytes,      :type => :traffic}] },
+      { :regexp => "(#{ip_address})",            :captures => [{:name => :client_ip,     :type => :string}] },
+      { :regexp => '(\S+)',                      :captures => [{:name => :http_method,   :type => :string}] },
+      { :regexp => '(.*)',                       :captures => [{:name => :host,          :type => :string}] },
+      { :regexp => '(.*)',                       :captures => [{:name => :path,          :type => :string}] },
+      { :regexp => '(\d{3})',                    :captures => [{:name => :http_status,   :type => :integer}] },
+      { :regexp => '(.*)',                       :captures => [{:name => :referer,       :type => :string}] },
+      { :regexp => '(.*)',                       :captures => [{:name => :user_agent,    :type => :string}] },
     ]
     
     def self.create(*args)
@@ -32,7 +30,7 @@ module LogsFileFormat
       
       RequestLogAnalyzer::LineDefinition.new(
         :default,
-        :regexp => Regexp.new(regexps.join('\s')),
+        :regexp => Regexp.new(regexps.join('\t')),
         :captures => captures,
         :header => true,
         :footer => true
@@ -53,5 +51,4 @@ module LogsFileFormat
     end
     
   end
-  
 end

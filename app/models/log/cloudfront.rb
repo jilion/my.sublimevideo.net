@@ -14,13 +14,13 @@
 #  updated_at :datetime
 #
 
-class Log::CloudfrontDownload < Log
+class Log::Cloudfront < Log
   
   # ================
   # = Associations =
   # ================
   
-  # has_many :site_usages
+  has_many :video_usages
   
   # ===============
   # = Validations =
@@ -54,7 +54,7 @@ class Log::CloudfrontDownload < Log
   # =================
   
   def self.delay_fetch_and_create_new_logs(minutes = 60.minute)
-    unless Delayed::Job.already_delayed?('%Log::CloudfrontDownload%fetch_and_create_new_logs%')
+    unless Delayed::Job.already_delayed?("%#{self.to_s}%fetch_and_create_new_logs%")
       delay(:priority => 10, :run_at => minutes.from_now).fetch_and_create_new_logs
     end
   end
