@@ -13,7 +13,7 @@ describe Admin::VideoProfileVersionsController do
     it "should respond with success to GET :show" do
       VideoProfile.stub(:find).with("1").and_return(mock_profile)
       mock_profile.stub_chain(:versions, :find).with('2').and_return(mock_version)
-      mock_version.stub(:panda_profile_id).and_return('3')
+      mock_version.stub(:panda_profile_id).and_return('1' * 32)
       Transcoder.stub(:get).with('3').and_return({})
       VCR.use_cassette('video_profile_version/show') { get :show, :profile_id => '1', :id => '2' }
       response.should be_success
