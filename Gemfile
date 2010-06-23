@@ -19,11 +19,12 @@ gem 'panda' # Encoding
 gem 'voxel_hapi',       :git => 'git://github.com/thibaudgg/voxel_hapi.git' # VoxCast CDN
 gem 'request-log-analyzer', :require => 'request_log_analyzer'
 
-gem 'devise', '1.1.rc2' # Auth
-gem 'devise_invitable', :git => 'git://github.com/mhodgson/devise_invitable.git'
+gem 'devise', '>= 1.1.rc2' # Auth
+gem 'devise_invitable', :git => 'git://github.com/rymai/devise_invitable.git'
 
 gem 'system_timer' # only on Ruby 1.8, used by memcache-client
 gem 'memcache-client'
+gem 'memcached'
 
 gem 'http_connection',  :git => 'git://github.com/thibaudgg/http_connection.git'
 gem 'aws',              '>= 2.3.12'
@@ -46,20 +47,21 @@ group :test do
   gem 'watchr'
   gem 'growl'
   gem 'spork'
+  gem 'rspactor',           :path => '/Users/remy/Gems/rspactor2'
+  gem "shoulda"
+  gem "rspec-rails",        :git => "git://github.com/rspec/rspec-rails.git"
+  gem "rspec",              :git => "git://github.com/rspec/rspec.git"
+  gem "rspec-core",         :git => "git://github.com/rspec/rspec-core.git"
+  gem "rspec-expectations", :git => "git://github.com/rspec/rspec-expectations.git"
+  gem "rspec-mocks",        :git => "git://github.com/rspec/rspec-mocks.git"
   
-  gem 'rspec-core',   :git => 'git://github.com/rspec/rspec-core.git', :ref => '48f1d5d034b27fdd9aca514fab9f9ecec5847895'
-  gem 'rspec',        '>= 2.0.0.beta.12'
-  # gem 'rspec-rails',  '>= 2.0.0.beta.12'
-  gem 'rspec-rails',  :git => 'git://github.com/thibaudgg/rspec-rails.git'
-  
-  gem 'steak',        '>= 0.4.0.beta.1'
+  gem 'steak', '>= 0.4.0.beta.1'
   gem 'capybara'
   # gem 'capybara-envjs'
   gem 'launchy'
   
   gem 'factory_girl_rails'
   gem 'webmock'
-  # gem 'fakeweb'
   gem 'vcr'
 end
 

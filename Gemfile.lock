@@ -20,19 +20,19 @@ dependencies:
     group: 
     - :default
     version: ">= 0"
-  system_timer: 
-    group: 
-    - :default
-    version: ">= 0"
   rails: 
     group: 
     - :default
     version: = 3.0.0.beta4
-  haml: 
+  system_timer: 
     group: 
     - :default
     version: ">= 0"
   memcache-client: 
+    group: 
+    - :default
+    version: ">= 0"
+  haml: 
     group: 
     - :default
     version: ">= 0"
@@ -42,6 +42,10 @@ dependencies:
     version: ">= 0"
     require: 
     - sqlite3
+  shoulda: 
+    group: 
+    - :test
+    version: ">= 0"
   ffaker: 
     group: 
     - :development
@@ -53,8 +57,8 @@ dependencies:
   rspec: 
     group: 
     - :test
-    version: ">= 2.0.0.beta.12"
-  voxel_hapi: 
+    version: ">= 0"
+  delayed_job: 
     group: 
     - :default
     version: ">= 0"
@@ -62,9 +66,13 @@ dependencies:
     group: 
     - :default
     version: ">= 0"
-  delayed_job: 
+  voxel_hapi: 
     group: 
     - :default
+    version: ">= 0"
+  rspec-expectations: 
+    group: 
+    - :test
     version: ">= 0"
   watchr: 
     group: 
@@ -75,6 +83,10 @@ dependencies:
     - :development
     version: ">= 0"
   activemerchant: 
+    group: 
+    - :default
+    version: ">= 0"
+  memcached: 
     group: 
     - :default
     version: ">= 0"
@@ -94,19 +106,13 @@ dependencies:
     group: 
     - :default
     version: ">= 0"
-  devise: 
-    group: 
-    - :default
-    version: = 1.1.rc2
-  has_scope: 
+  request-log-analyzer: 
     group: 
     - :default
     version: ">= 0"
-  heroku: 
-    group: 
-    - :default
-    version: ">= 0"
-  will_paginate: 
+    require: 
+    - request_log_analyzer
+  panda: 
     group: 
     - :default
     version: ">= 0"
@@ -114,25 +120,31 @@ dependencies:
     group: 
     - :default
     version: ">= 0"
-  panda: 
+  will_paginate: 
     group: 
     - :default
     version: ">= 0"
-  request-log-analyzer: 
+  heroku: 
     group: 
     - :default
     version: ">= 0"
-    require: 
-    - request_log_analyzer
+  has_scope: 
+    group: 
+    - :default
+    version: ">= 0"
+  devise: 
+    group: 
+    - :default
+    version: ">= 1.1.rc2"
   steak: 
     group: 
     - :test
     version: ">= 0.4.0.beta.1"
-  state_machine: 
+  devise_invitable: 
     group: 
     - :default
     version: ">= 0"
-  devise_invitable: 
+  state_machine: 
     group: 
     - :default
     version: ">= 0"
@@ -146,11 +158,7 @@ dependencies:
     version: ">= 0"
     require: 
     - graphviz
-  responders: 
-    group: 
-    - :default
-    version: ">= 0"
-  i18n: 
+  hoptoad_notifier: 
     group: 
     - :default
     version: ">= 0"
@@ -158,9 +166,21 @@ dependencies:
     group: 
     - :default
     version: ">= 0"
-  hoptoad_notifier: 
+  i18n: 
     group: 
     - :default
+    version: ">= 0"
+  responders: 
+    group: 
+    - :default
+    version: ">= 0"
+  rspactor: 
+    group: 
+    - :test
+    version: ">= 0"
+  rspec-mocks: 
+    group: 
+    - :test
     version: ">= 0"
   webmock: 
     group: 
@@ -227,7 +247,7 @@ specs:
     version: 2.4.0
 - http_connection: 
     version: 1.3.0
-    source: 3
+    source: 7
 - uuidtools: 
     version: 2.1.1
 - xml-simple: 
@@ -252,7 +272,7 @@ specs:
     version: 0.3.8
 - carrierwave: 
     version: 0.4.4
-    source: 2
+    source: 6
 - closure-compiler: 
     version: 0.3.2
 - configuration: 
@@ -263,18 +283,18 @@ specs:
     version: 1.1.0
 - delayed_job: 
     version: 2.1.0.pre
-    source: 9
+    source: 13
 - warden: 
     version: 0.10.7
 - devise: 
     version: 1.1.rc2
 - devise_invitable: 
     version: 0.3.0
-    source: 4
+    source: 8
 - diff-lcs: 
     version: 1.1.2
 - factory_girl: 
-    version: 1.3.0
+    version: 1.3.1
 - thor: 
     version: 0.13.6
 - railties: 
@@ -291,7 +311,7 @@ specs:
     version: 3.0.12
 - has_scope: 
     version: 0.5.0
-    source: 7
+    source: 11
 - json: 
     version: 1.2.4
 - launchy: 
@@ -308,11 +328,13 @@ specs:
     version: 0.9.1
 - jammit: 
     version: 0.5.0
-    source: 6
+    source: 10
 - libxml-ruby: 
     version: 1.1.4
 - memcache-client: 
     version: 1.8.3
+- memcached: 
+    version: 0.19.7
 - meta_where: 
     version: 0.5.1
 - ruby-hmac: 
@@ -329,27 +351,35 @@ specs:
     version: 0.3.2
 - rspec-core: 
     version: 2.0.0.beta.12
-    source: 1
+    source: 2
+- rspactor: 
+    version: 0.7.0.beta.1
+    source: 5
 - rspec-expectations: 
     version: 2.0.0.beta.12
+    source: 1
 - rspec-mocks: 
     version: 2.0.0.beta.12
+    source: 0
 - rspec: 
     version: 2.0.0.beta.12
+    source: 3
 - webrat: 
     version: 0.7.1
 - rspec-rails: 
     version: 2.0.0.beta.12
-    source: 0
+    source: 4
 - ruby-graphviz: 
     version: 0.9.11
+- shoulda: 
+    version: 2.11.0
 - spork: 
     version: 0.8.4
 - sqlite3-ruby: 
     version: 1.3.0
 - state_machine: 
     version: 0.9.2
-    source: 10
+    source: 14
 - steak: 
     version: 0.4.0.beta.1
 - system_timer: 
@@ -360,26 +390,41 @@ specs:
     version: 1.0.0
 - voxel_hapi: 
     version: 1.1.0
-    source: 5
+    source: 9
 - watchr: 
     version: "0.6"
 - webmock: 
     version: 1.3.0
 - will_paginate: 
     version: 3.0.pre
-    source: 8
+    source: 12
 - wirble: 
     version: 0.1.3
-hash: 01688b2a5083ff13e67ae159d7a0da061806a712
+hash: 427e886b7057155e2b528b223b3fde353e12ed43
 sources: 
 - Git: 
-    uri: git://github.com/thibaudgg/rspec-rails.git
-    git: git://github.com/thibaudgg/rspec-rails.git
-    ref: 50f72b56cebfb0b3a64ce2cf467ef0f70e3ce04f
+    uri: git://github.com/rspec/rspec-mocks.git
+    git: git://github.com/rspec/rspec-mocks.git
+    ref: 045bc7de24a8a61691af560fb296bd92a307dd24
+- Git: 
+    uri: git://github.com/rspec/rspec-expectations.git
+    git: git://github.com/rspec/rspec-expectations.git
+    ref: 81d1751e889a65a4e80eb208a25e2d742272d70f
 - Git: 
     uri: git://github.com/rspec/rspec-core.git
     git: git://github.com/rspec/rspec-core.git
-    ref: 48f1d5d034b27fdd9aca514fab9f9ecec5847895
+    ref: 16d0e4a0111f4d313555292fe3fc079900b00f9c
+- Git: 
+    uri: git://github.com/rspec/rspec.git
+    git: git://github.com/rspec/rspec.git
+    ref: 647fcdcd95002b3c14a15ed4c33ffe74a137093e
+- Git: 
+    uri: git://github.com/rspec/rspec-rails.git
+    git: git://github.com/rspec/rspec-rails.git
+    ref: 3d1df2fa0e979762ca02c441137d4137ba89f649
+- Path: 
+    path: !ruby/object:Pathname 
+      path: /Users/remy/Gems/rspactor2
 - Git: 
     uri: git://github.com/jnicklas/carrierwave.git
     git: git://github.com/jnicklas/carrierwave.git
@@ -389,9 +434,9 @@ sources:
     git: git://github.com/thibaudgg/http_connection.git
     ref: 584cea976ef85f0a5fb1c6b78408e396e12b36ac
 - Git: 
-    uri: git://github.com/mhodgson/devise_invitable.git
-    git: git://github.com/mhodgson/devise_invitable.git
-    ref: 9e9f45dfa28776b6c52180cf3d7aa9d669e8f6e3
+    uri: git://github.com/rymai/devise_invitable.git
+    git: git://github.com/rymai/devise_invitable.git
+    ref: c8be27165c18c1ef046da329d1e567eec741b0b8
 - Git: 
     uri: git://github.com/thibaudgg/voxel_hapi.git
     git: git://github.com/thibaudgg/voxel_hapi.git

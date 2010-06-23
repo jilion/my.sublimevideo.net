@@ -1,8 +1,12 @@
 Voxcast:
   store_dir: voxcast
   file_format_class_name: LogsFileFormat::Voxcast
-CloudfrontDownload:
+Cloudfront::Download:
   store_dir: cloudfront/sublimevideo.videos/download/
   hostname: v.sublimevideo.net
   file_format_class_name: LogsFileFormat::CloudfrontDownload
+Cloudfront::Streaming:
+  store_dir: cloudfront/sublimevideo.videos/streaming/
+  hostname: s.sublimevideo.net
+  file_format_class_name: LogsFileFormat::CloudfrontStreaming
   

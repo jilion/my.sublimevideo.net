@@ -7,9 +7,7 @@ module VideosHelper
   end
   
   def uploaded_on(video)
-    return "" if video.blank?
-    
-    "Uploaded on #{video.created_at.strftime('%d/%m/%Y')}"
+    video.blank? ? "" : "Uploaded on #{video.created_at.strftime('%d/%m/%Y')}"
   end
   
   def thumbnail_tag(video)

@@ -14,7 +14,7 @@ describe S3 do
     
     it "should return max 100 keys" do
       VCR.use_cassette('s3/logs_bucket_all_keys') do
-        S3.logs_name_list.should have(100).names
+        S3.logs_name_list.should have(1260).names
       end
     end
     
