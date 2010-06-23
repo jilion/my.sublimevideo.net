@@ -11,6 +11,7 @@ Spork.prefork do
   ENV["RAILS_ENV"] ||= 'test'
   require File.dirname(__FILE__) + "/../config/environment" unless defined?(Rails)
   require 'rspec/rails'
+  require 'shoulda'
 end
 
 Spork.each_run do
@@ -20,6 +21,8 @@ Spork.each_run do
   Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
     
   Rspec.configure do |config|
+    config.include Shoulda::ActionController::Matchers
+    
     # == Mock Framework
     #
     # If you prefer to use mocha, flexmock or RR, uncomment the appropriate line:
