@@ -33,7 +33,7 @@ describe VideoUsage do
     its(:ended_at)   { should == Time.zone.parse('2010-06-16') + 9.hours }
   end
   
-  describe "Trackers parsing" do
+  describe "Trackers parsing with cloudfront download" do
     before(:each) do
       @video1 = Factory(:video)
       @video1.token = 'e14ab4de'
