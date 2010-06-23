@@ -14,11 +14,12 @@ namespace :db do
     
     desc "Empty all the tables"
     task :empty_all_tables => :environment do
-      timed { empty_tables(Video, VideoProfile, Site, User, Admin) }
+      timed { empty_tables("delayed_jobs", Invoice, Log, VideoUsage, VideoEncoding, Video, VideoProfileVersion, VideoProfile, SiteUsage, Site, User, Admin) }
     end
     
     desc "Load all development fixtures."
     task :all => :environment do
+      delete_all_files_in_public('uploads/tmp')
       timed { create_admins }
       timed { create_users  }
       timed { create_sites  }
@@ -46,7 +47,7 @@ namespace :db do
     
     desc "Load Video Profile development fixtures."
     task :video_profiles => :environment do
-      timed { empty_tables(VideoProfileVersion, VideoProfile)              }
+      timed { empty_tables(VideoProfileVersion, VideoProfile) }
       timed { create_video_profiles }
     end
     
@@ -73,7 +74,13 @@ private
 
 def empty_tables(*tables)
   print "Deleting the content of #{tables.join(', ')}.. => "
-  tables.map(&:delete_all)
+  tables.each do |table|
+    if table.is_a?(Class)
+      table.delete_all
+    else
+      Video.connection.delete("DELETE FROM '#{table}' WHERE 1=1")
+    end
+  end
   print "#{tables.join(', ')} empty!\n"
 end
 
@@ -132,7 +139,7 @@ end
 
 def create_video_profiles
   active_video_profile         = VideoProfile.create(:title => "iPhone 720p", :name => "_iphone_720p", :extname => ".mp4", :thumbnailable => true)
-  active_video_profile_version = active_video_profile.versions.build(:width => 640, :height => 480, :command => "Handbrake CLI")
+  active_video_profile_version = active_video_profile.versions.build(:width => 640, :height => 480, :command => "HandBrakeCLI -i $input_file$ -o $output_file$  -e x264 -q 0.589999973773956 -a 1 -E faac -B 128 -R 48 -6 dpl2 -f mp4 -X 480 -m -x level=30:cabac=0:ref=2:mixed-refs:analyse=all:me=umh:no-fast-pskip=1")
   active_video_profile_version.pandize
   print "One video profile with one version created!\n"
 end
@@ -141,10 +148,11 @@ def create_videos(count = 1)
   delete_all_files_in_public('uploads/videos')
   create_users if User.all.empty?
   
-  create_video_profiles if VideoProfile.empty?
+  create_video_profiles if VideoProfile.all.empty?
   VideoProfileVersion.last.activate unless VideoProfileVersion.last.active?
   
-  panda_video_id = Transcoder.post(:video, { :file => File.open("#{Rails.root}/spec/fixtures/railscast_intro.mov"), :profiles => 'none' })[:id]
+  # panda_video_id = Transcoder.post(:video, { :file => File.open("#{Rails.root}/spec/fixtures/railscast_intro.mov"), :profiles => 'none' })[:id]
+  panda_video_id = '87bfc44d625a19bb91d5797bad9c15d0'
   
   User.all.each do |user|
     count.times do |i|
@@ -155,10 +163,10 @@ def create_videos(count = 1)
       video.pandize
       # Delayed::Worker.new(:quiet => true).work_off
       
-      video.encodings.each do |video_encoding|
-        video_encoding.created_at = video.created_at + rand(2).days
-        video_encoding.activate
-      end
+      # video.encodings.each do |video_encoding|
+      #   video_encoding.created_at = video.created_at + rand(2).days
+      #   video_encoding.activate
+      # end
       # Delayed::Worker.new(:quiet => true).work_off
       
       # VideoProfile.active.each do |video_profile|
@@ -176,7 +184,7 @@ def create_videos(count = 1)
       # end
     end
   end
-  print "#{User.all.size * count * (VideoProfileVersion.active.size + 1)} videos (1 video and #{VideoProfile.active.size} encodings per user) created!\n"
+  print "#{User.all.size * count * (VideoProfileVersion.active.all.size + 1)} videos (1 video and #{VideoProfileVersion.active.all.size} encodings per user) created!\n"
 end
 
 def timed(&block)
@@ -193,11 +201,11 @@ def delete_all_files_in_public(path)
   if path.gsub('.', '') =~ /\w+/ # don't remove all files and directories in /public ! ;)
     print "Deleting all files and directories in /public/#{path}\n"
     timed do
-      Dir["#{Rails.public_path}/#{path}/**/*", File::FNM_DOTMATCH].each do |filename|
-        File.delete(filename) if File.file? filename && ['.', '..'].exclude? filename
+      Dir.glob("#{Rails.public_path}/#{path}/**/*", File::FNM_DOTMATCH).each do |filename|
+        File.delete(filename) if File.file?(filename) && ['.', '..'].exclude?(File.basename(filename))
       end
-      Dir["#{Rails.public_path}/#{path}/**/*", File::FNM_DOTMATCH].each do |filename|
-        Dir.delete(filename) if File.directory? filename && ['.', '..'].exclude? filename
+      Dir.glob("#{Rails.public_path}/#{path}/**/*", File::FNM_DOTMATCH).each do |filename|
+        Dir.delete(filename) if File.directory?(filename) && ['.', '..'].exclude?(File.basename(filename))
       end
     end
   end
