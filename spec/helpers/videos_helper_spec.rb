@@ -28,7 +28,7 @@ describe VideosHelper do
     end
     
     it "should format the creation date otherwise" do
-      helper.uploaded_on(Factory(:video, :created_at => Time.now)).should == "Uploaded on #{Time.now.strftime('%d/%m/%Y')}"
+      helper.uploaded_on(Factory(:video, :created_at => Time.now.utc)).should == "Uploaded on #{Time.now.utc.strftime('%d/%m/%Y')}"
     end
   end
   
