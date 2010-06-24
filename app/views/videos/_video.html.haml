@@ -29,12 +29,15 @@
         .spacer
         .upload_date= uploaded_on(video)
   %td.code
-    - if video.encoding?
+    - if video.pending?
+      .pending
+        %em= "Pending"
+    - elsif video.encoding?
       .in_progress
         %em= "In progress"
-        %ul
-          - video.encodings.encoding.each do |encoding|
-            %li= link_to "Transcode #{encoding.profile.name}", transcoded_video_url(encoding.panda_encoding_id)
+        -#%ul
+        -#  - video.encodings.encoding.each do |encoding|
+        -#    %li= link_to "Transcode #{encoding.profile.name}", transcoded_video_url(encoding.panda_encoding_id)
     - elsif video.active?
       = link_to "Embed code", "", :class => "embed_code", :onclick => "return MySublimeVideo.showVideoEmbedCode(#{video.id})"
     - elsif video.suspended?
@@ -43,5 +46,4 @@
     - elsif video.error?
       .failed
         %em= "Encoding error"
-        
   %td.delete= button_to 'Delete', video_path(video), :confirm => 'Are you sure?', :method => :delete

@@ -33,6 +33,8 @@ describe Admin::VideoProfilesController do
     end
     it "should respond with success to POST :create" do
       VideoProfile.stub(:new).with({}).and_return(mock_profile)
+      mock_profile.stub(:name=).and_return(mock_profile)
+      mock_profile.stub(:extname=).and_return(mock_profile)
       mock_profile.stub(:save).and_return(true)
       post :create, :video_profile => {}
       response.should redirect_to(admin_profiles_url)

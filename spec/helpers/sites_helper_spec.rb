@@ -4,7 +4,7 @@ describe SitesHelper do
   
   it "is should generate sublimevideo script_tag" do
     site =  Factory(:site)
-    sublime_video_script_tag_for(site).should == "<script type=\"text/javascript\" src=\"http://cdn.sublimevideo.net/js/#{site.token}.js\"></script>"
+    helper.sublime_video_script_tag_for(site).should == "<script type=\"text/javascript\" src=\"http://cdn.sublimevideo.net/js/#{site.token}.js\"></script>"
   end
   
 end
