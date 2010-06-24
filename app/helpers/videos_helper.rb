@@ -26,7 +26,7 @@ EOS
   def panda_uploader_js(field_id)
     (<<-EOS
     jQuery('##{field_id}').pandaUploader(#{Panda.signed_params('post', '/videos.json',
-      { :state_update_url => "http://#{request.host_with_port}/videos/$id/transcoded", :profiles => '5e08a5612e8982ef2f7482e0782bbe02' }).to_json },
+      { :state_update_url => "http://#{request.host_with_port}/videos/$id/transcoded", :profiles => 'none' }).to_json },
       { upload_button_id:'upload_button',
         upload_progress_id:'upload_indicator',
         upload_filename_id:'upload_filename'
