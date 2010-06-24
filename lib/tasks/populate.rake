@@ -78,7 +78,7 @@ def empty_tables(*tables)
     if table.is_a?(Class)
       table.delete_all
     else
-      Video.connection.delete("DELETE FROM '#{table}' WHERE 1=1")
+      Video.connection.delete("DELETE FROM #{table} WHERE 1=1")
     end
   end
   print "#{tables.join(', ')} empty!\n"

@@ -56,7 +56,7 @@ class VideoProfile < ActiveRecord::Base
   end
   
   def active_version
-    versions.active.order(:created_at.desc).last
+    versions.active.first
   end
   
 private

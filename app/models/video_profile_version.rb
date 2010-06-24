@@ -65,7 +65,7 @@ class VideoProfileVersion < ActiveRecord::Base
   # ====================
   
   def rank
-    profile.versions.index(self) + 1
+    profile.versions.order(:id.asc).index(self) + 1
   end
   
 protected

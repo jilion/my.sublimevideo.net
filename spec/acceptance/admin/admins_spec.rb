@@ -46,6 +46,9 @@ feature "Admins actions:" do
 end
 
 feature "Admins invitations:" do
+  background do
+    ActionMailer::Base.deliveries = []
+  end
   
   scenario "new invitation" do
     sign_in_as :admin, { :email => "john@doe.com" }

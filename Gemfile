@@ -40,7 +40,7 @@ end
 
 group :test do
   gem 'pg'
-  # gem 'parallel'
+  gem 'parallel'
   # gem 'hydra'
   
   gem 'rev'
