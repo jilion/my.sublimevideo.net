@@ -2,6 +2,8 @@ source 'http://rubygems.org'
 
 gem 'rails', '3.0.0.beta4'
 
+gem 'libxml-ruby', :require => 'libxml'
+
 gem 'heroku' # Hosting
 gem 'i18n'
 gem 'haml'
