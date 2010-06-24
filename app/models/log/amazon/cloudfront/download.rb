@@ -14,6 +14,6 @@
 #  updated_at :datetime
 #
 
-class Log::Cloudfront::Streaming < Log::Cloudfront
+class Log::Amazon::Cloudfront::Download < Log::Amazon::Cloudfront
   
 end

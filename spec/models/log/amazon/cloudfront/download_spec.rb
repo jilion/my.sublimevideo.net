@@ -16,17 +16,17 @@
 
 require 'spec_helper'
 
-describe Log::Cloudfront::Streaming do
+describe Log::Amazon::Cloudfront::Download do
   
   context "created with valid attributes" do
-    subject { Factory(:log_cloudfront_streaming) }
+    subject { Factory(:log_cloudfront_download) }
     
     it "should have good log url" do
-      subject.file.url.should == "/uploads/cloudfront/sublimevideo.videos/streaming/EK1147O537VJ1.2010-06-23-07.9D0khw8j.gz"
+      subject.file.url.should == "/uploads/cloudfront/sublimevideo.videos/download/E3KTK13341WJO.2010-06-16-08.2Knk9kOC.gz"
     end
     
     it "should have good log content" do
-      log = Log::Cloudfront::Streaming.find(subject.id) # to be sure that log is well saved with CarrierWave
+      log = Log::Amazon::Cloudfront::Download.find(subject.id) # to be sure that log is well saved with CarrierWave
       Zlib::GzipReader.open(log.file.path) do |gz|
         gz.read.should include("#Fields: date time x-edge-location")
       end
@@ -40,26 +40,26 @@ describe Log::Cloudfront::Streaming do
     it "should delay process after create" do
       subject # trigger log creation
       job = Delayed::Job.last
-      job.name.should == 'Log::Cloudfront::Streaming#process'
+      job.name.should == 'Log::Amazon::Cloudfront::Download#process'
       job.priority.should == 20
     end
   end
   
   describe "Class Methods" do
     it "should launch delayed fetch_and_create_new_logs" do
-      lambda { Log::Cloudfront::Streaming.fetch_and_create_new_logs }.should change(Delayed::Job, :count).by(1)
+      lambda { Log::Amazon::Cloudfront::Download.fetch_and_create_new_logs }.should change(Delayed::Job, :count).by(1)
     end
     
     it "should not launch delayed fetch_and_create_new_logs if one pending already present" do
-      Log::Cloudfront::Streaming.fetch_and_create_new_logs
-      lambda { Log::Cloudfront::Streaming.fetch_and_create_new_logs }.should change(Delayed::Job, :count).by(0)
+      Log::Amazon::Cloudfront::Download.fetch_and_create_new_logs
+      lambda { Log::Amazon::Cloudfront::Download.fetch_and_create_new_logs }.should change(Delayed::Job, :count).by(0)
     end
     
     it "should have config values" do
-      Log::Cloudfront::Streaming.config.should == {
-        :hostname => "s.sublimevideo.net",
-        :file_format_class_name => "LogsFileFormat::CloudfrontStreaming",
-        :store_dir => "cloudfront/sublimevideo.videos/streaming/"
+      Log::Amazon::Cloudfront::Download.config.should == {
+        :hostname => "v.sublimevideo.net",
+        :file_format_class_name => "LogsFileFormat::CloudfrontDownload",
+        :store_dir => "cloudfront/sublimevideo.videos/download/"
       }
     end
   end

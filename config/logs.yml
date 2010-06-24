@@ -1,12 +1,16 @@
 Voxcast:
   store_dir: voxcast
   file_format_class_name: LogsFileFormat::Voxcast
-Cloudfront::Download:
+Amazon::Cloudfront::Download:
   store_dir: cloudfront/sublimevideo.videos/download/
   hostname: v.sublimevideo.net
   file_format_class_name: LogsFileFormat::CloudfrontDownload
-Cloudfront::Streaming:
+Amazon::Cloudfront::Streaming:
   store_dir: cloudfront/sublimevideo.videos/streaming/
   hostname: s.sublimevideo.net
   file_format_class_name: LogsFileFormat::CloudfrontStreaming
+Amazon::S3::Videos:
+  store_dir: s3/sublimevideo.videos/
+  hostname: sublimevideo.videos
+  file_format_class_name: LogsFileFormat::S3Videos
   

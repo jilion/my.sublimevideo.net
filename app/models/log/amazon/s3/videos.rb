@@ -14,6 +14,12 @@
 #  updated_at :datetime
 #
 
-class Log::Cloudfront::Download < Log::Cloudfront
+class Log::Amazon::S3::Videos < Log::Amazon::S3
+  
+  # ================
+  # = Associations =
+  # ================
+  
+  has_many :video_usages
   
 end

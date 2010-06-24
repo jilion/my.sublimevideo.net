@@ -60,7 +60,7 @@ class VideoUsage < ActiveRecord::Base
         create!(
           :video     => video,
           :log       => log,
-          :hits      => hits_and_bandwidths[:hits][video.token].to_i,
+          :hits      => (hits = hits_and_bandwidths[:hits]) ? hits[video.token].to_i : 0,
           :bandwidth => hits_and_bandwidths[:bandwidth][video.token].to_i
         )
       end

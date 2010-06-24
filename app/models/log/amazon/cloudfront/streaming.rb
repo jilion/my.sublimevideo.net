@@ -14,6 +14,6 @@
 #  updated_at :datetime
 #
 
-class Log::S3::Videos < Log::AmazonS3
+class Log::Amazon::Cloudfront::Streaming < Log::Amazon::Cloudfront
   
 end

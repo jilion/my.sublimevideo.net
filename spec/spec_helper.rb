@@ -20,7 +20,13 @@ Spork.each_run do
   # Requires supporting files with custom matchers and macros, etc, in ./support/ and its subdirectories.
   Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
   
-  Rspec.configure do |config|
+  VCR.config do |c|
+    c.cassette_library_dir     = 'spec/fixtures/vcr_cassettes'
+    c.http_stubbing_library    = :webmock # or :fakeweb
+    c.default_cassette_options = { :record => :new_episodes }
+  end
+  
+  RSpec.configure do |config|
     config.include Shoulda::ActionController::Matchers
     
     # == Mock Framework
@@ -38,32 +44,6 @@ Spork.each_run do
     # examples within a transaction, comment the following line or assign false
     # instead of true.
     config.use_transactional_fixtures = true
-    
-    config.before(:all) do
-      Dir.mkdir('public/uploads/cloudfront/') unless File.exist?('public/uploads/cloudfront/')
-      Dir.mkdir('public/uploads/cloudfront/sublimevideo.videos/') unless File.exist?('public/uploads/cloudfront/sublimevideo.videos/')
-      Dir.mkdir('public/uploads/cloudfront/sublimevideo.videos/download/') unless File.exist?('public/uploads/cloudfront/sublimevideo.videos/download/')
-      Dir.mkdir('public/uploads/cloudfront/sublimevideo.videos/streaming/') unless File.exist?('public/uploads/cloudfront/sublimevideo.videos/streaming/')
-      unless File.exist?('public/uploads/cloudfront/sublimevideo.videos/download/E3KTK13341WJO.2010-06-16-08.2Knk9kOC.gz')
-        FileUtils.cp(
-          Rails.root.join('spec/fixtures/logs/cloudfront_download/E3KTK13341WJO.2010-06-16-08.2Knk9kOC.gz'),
-          Rails.root.join('public/uploads/cloudfront/sublimevideo.videos/download/')
-        )
-      end
-      unless File.exist?('public/uploads/cloudfront/sublimevideo.videos/streaming/EK1147O537VJ1.2010-06-23-07.9D0khw8j.gz')
-        FileUtils.cp(
-          Rails.root.join('spec/fixtures/logs/cloudfront_streaming/EK1147O537VJ1.2010-06-23-07.9D0khw8j.gz'),
-          Rails.root.join('public/uploads/cloudfront/sublimevideo.videos/streaming/')
-        )
-      end
-    end
-    
-  end
-  
-  VCR.config do |c|
-    c.cassette_library_dir     = 'spec/fixtures/vcr_cassettes'
-    c.http_stubbing_library    = :webmock # or :fakeweb
-    c.default_cassette_options = { :record => :new_episodes }
   end
   
 end
