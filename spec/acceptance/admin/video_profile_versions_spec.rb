@@ -86,7 +86,7 @@ feature "Video profile versions index" do
     VCR.use_cassette('video_profile_version/show') { visit "/admin/profiles/#{@video_profile.id}/versions/#{@video_profile_version1.id}" }
     
     page.should have_content(@video_profile_version1.panda_profile_id)
-    page.should have_content(@video_profile_version1.id.to_s)
+    page.should have_content(@video_profile_version1.state.to_s)
     page.should have_content('Command 1')
     page.should have_content('experimental')
     page.should_not have_content('active')

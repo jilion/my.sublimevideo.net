@@ -27,7 +27,7 @@ class VideoProfileVersion < ActiveRecord::Base
   # = Scopes =
   # ==========
   
-  scope :active,       where(:state => 'active').group(:video_profile_id).order(:created_at.desc)
+  scope :active,       where(:state => 'active')
   scope :experimental, where(:state => 'experimental')
   scope :with_profile, lambda { |profile| where(:video_profile_id => profile.id) }
   
