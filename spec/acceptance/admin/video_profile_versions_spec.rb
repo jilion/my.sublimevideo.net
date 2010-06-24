@@ -45,8 +45,6 @@ feature "New video profile version" do
     
     click "New version"
     
-    fill_in "Width",      :with => "123"
-    fill_in "Height",     :with => "321"
     fill_in "Command",    :with => "Handbrake CLI"
     VCR.use_cassette('video_profile_version/pandize') { click_button "Create" }
     
