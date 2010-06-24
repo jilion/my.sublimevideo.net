@@ -8,9 +8,4 @@ require 'rake/testtask'
 require 'rake/rdoctask'
 require 'delayed/tasks'
 
-# require the hydra codebase
-# require 'hydra'
-# require the hydra rake task helpers
-# require 'hydra/tasks'
-
 Rails::Application.load_tasks
