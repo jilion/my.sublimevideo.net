@@ -18,10 +18,8 @@ describe Invoice::Sites do
     its(:loader_hits)   { should == 10150 }
     its(:player_hits)   { should == 2016 }
     it "should return site array" do
-      subject.should == [
-        { :id => @site2.id, :hostname => @site2.hostname, :archived_at => nil, :loader_amount => 50, :player_amount => 5, :loader_hits => 50, :player_hits => 5},
-        { :id => @site1.id, :hostname => @site1.hostname, :archived_at => nil, :loader_amount => 10100, :player_amount => 2011, :loader_hits => 10100, :player_hits => 2011}
-      ]
+      subject.should include(:id => @site2.id, :hostname => @site2.hostname, :archived_at => nil, :loader_amount => 50, :player_amount => 5, :loader_hits => 50, :player_hits => 5)
+      subject.should include(:id => @site1.id, :hostname => @site1.hostname, :archived_at => nil, :loader_amount => 10100, :player_amount => 2011, :loader_hits => 10100, :player_hits => 2011)
     end
   end
   
@@ -40,11 +38,10 @@ describe Invoice::Sites do
     its(:player_amount) { should == 16 }
     its(:loader_hits)   { should == 150 }
     its(:player_hits)   { should == 16 }
+    
     it "should return site array" do
-      subject.should == [
-        { :id => @site2.id, :hostname => @site2.hostname, :archived_at => nil, :loader_amount => 50, :player_amount => 5, :loader_hits => 50, :player_hits => 5},
-        { :id => @site1.id, :hostname => @site1.hostname, :archived_at => nil, :loader_amount => 100, :player_amount => 11, :loader_hits => 100, :player_hits => 11}
-      ]
+      subject.should include(:id => @site2.id, :hostname => @site2.hostname, :archived_at => nil, :loader_amount => 50, :player_amount => 5, :loader_hits => 50, :player_hits => 5)
+      subject.should include(:id => @site1.id, :hostname => @site1.hostname, :archived_at => nil, :loader_amount => 100, :player_amount => 11, :loader_hits => 100, :player_hits => 11)
     end
   end
   
@@ -71,10 +68,8 @@ describe Invoice::Sites do
     its(:loader_hits)   { should == 1000153 }
     its(:player_hits)   { should == 22 }
     it "should return site array" do
-      subject.should == [
-        { :id => @site1.id, :hostname => @site1.hostname, :archived_at => nil, :loader_amount => 1000100, :player_amount => 15, :loader_hits => 1000100, :player_hits => 15},
-        { :id => @site2.id, :hostname => @site2.hostname, :archived_at => nil, :loader_amount => 53, :player_amount => 7, :loader_hits => 53, :player_hits => 7}
-      ]
+      subject.should include(:id => @site1.id, :hostname => @site1.hostname, :archived_at => nil, :loader_amount => 1000100, :player_amount => 15, :loader_hits => 1000100, :player_hits => 15)
+      subject.should include(:id => @site2.id, :hostname => @site2.hostname, :archived_at => nil, :loader_amount => 53, :player_amount => 7, :loader_hits => 53, :player_hits => 7)
     end
   end
   
