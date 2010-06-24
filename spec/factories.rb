@@ -30,8 +30,18 @@ Factory.define :video_profile_version do |f|
 end
 
 Factory.define :video do |f|
-  f.association    :user
-  f.panda_video_id 'f72e511820c12dabc1d15817745225bd'
+  f.association       :user
+  f.panda_video_id    'f72e511820c12dabc1d15817745225bd'
+  f.original_filename 'railscast_intro.mov'
+  f.video_codec       'h264'
+  f.audio_codec       'aac'
+  f.extname           '.mov'
+  f.file_size         '123456'
+  f.duration          '12345'
+  f.width             '640'
+  f.height            '480'
+  f.fps               '30'
+  f.title             'Railscast Intro'
 end
 
 Factory.define :video_encoding do |f|

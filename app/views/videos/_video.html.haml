@@ -6,7 +6,7 @@
           = thumbnail_tag(video)
         %span.duration= duration(video)
       .info
-        %h3.title{ :title => video.title }= truncate(video.title, :length => 28)
+        %h3.title{ :title => video.title }= truncate(video.title || "Untitled", :length => 28)
         
         .views
           %strong= number_with_delimiter(video.hits_cache)
