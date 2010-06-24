@@ -378,7 +378,7 @@ specs:
     source: 6
 - wirble: 
     version: 0.1.3
-hash: 7514f475cd44370a9428f0401988bfcd3f02ad62
+hash: 06341156ac8acfd60434f3ffa0669bf0ec66f888
 sources: 
 - Git: 
     uri: git://github.com/jnicklas/carrierwave.git
@@ -391,7 +391,7 @@ sources:
 - Git: 
     uri: git://github.com/rymai/devise_invitable.git
     git: git://github.com/rymai/devise_invitable.git
-    ref: c8be27165c18c1ef046da329d1e567eec741b0b8
+    ref: 0de9f8caa9f86215e4b793bebe98f621a67c719f
 - Git: 
     uri: git://github.com/thibaudgg/voxel_hapi.git
     git: git://github.com/thibaudgg/voxel_hapi.git

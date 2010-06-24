@@ -41,7 +41,6 @@ end
 group :test do
   gem 'pg'
   gem 'parallel'
-  # gem 'hydra'
   
   gem 'rev'
   gem 'watchr'
