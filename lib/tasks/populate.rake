@@ -138,9 +138,15 @@ def create_sites(count = 1)
 end
 
 def create_video_profiles
-  active_video_profile         = VideoProfile.create(:title => "iPhone 720p", :name => "_iphone_720p", :extname => "mp4", :thumbnailable => true)
+  active_video_profile         = VideoProfile.new(:title => "iPhone 720p", :thumbnailable => true)
+  active_video_profile.name = "_iphone_720p"
+  active_video_profile.extname = "mp4"
+  active_video_profile.save(:validate => false)
+  
   active_video_profile_version = active_video_profile.versions.build(:width => 640, :height => 480, :command => "HandBrakeCLI -i $input_file$ -o $output_file$  -e x264 -q 0.589999973773956 -a 1 -E faac -B 128 -R 48 -6 dpl2 -f mp4 -X 480 -m -x level=30:cabac=0:ref=2:mixed-refs:analyse=all:me=umh:no-fast-pskip=1")
-  active_video_profile_version.pandize
+  active_video_profile_version.panda_profile_id = 'ef5c5e7d10b7216c703f87ab34eafa98'
+  active_video_profile_version.state = 'active'
+  active_video_profile_version.save(:validate => false)
   print "One video profile with one version created!\n"
 end
 
@@ -151,7 +157,7 @@ def create_videos(count = 1)
   create_video_profiles if VideoProfile.all.empty?
   VideoProfileVersion.last.activate unless VideoProfileVersion.last.active?
   
-  panda_video_id = '7e7a17f8fab56e510fe03ee9801f25f0' # Transcoder.post(:video, { :file => File.open("#{Rails.root}/spec/fixtures/railscast_intro.mov"), :profiles => 'none' })[:id]
+  panda_video_id = 'df69f0331c4e4b619efadb95dea9f6a2' # Transcoder.post(:video, { :file => File.open("#{Rails.root}/spec/fixtures/railscast_intro.mov"), :profiles => 'none' })[:id]
   
   User.all.each do |user|
     count.times do |i|

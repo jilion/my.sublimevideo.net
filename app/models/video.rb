@@ -132,7 +132,7 @@ protected
     self.width             = video_info[:width]
     self.height            = video_info[:height]
     self.fps               = video_info[:fps]
-    self.title             = original_filename.sub(extname, '').titleize
+    self.title             = original_filename.sub(".#{extname}", '').titleize
   end
   
   # after_transition (pandize)
