@@ -11,6 +11,7 @@ Spork.prefork do
   ENV["RAILS_ENV"] ||= 'test'
   require File.dirname(__FILE__) + "/../config/environment" unless defined?(Rails)
   require 'rspec/rails'
+  require 'shoulda'
 end
 
 Spork.each_run do
@@ -18,8 +19,16 @@ Spork.each_run do
   
   # Requires supporting files with custom matchers and macros, etc, in ./support/ and its subdirectories.
   Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
+  
+  VCR.config do |c|
+    c.cassette_library_dir     = 'spec/fixtures/vcr_cassettes'
+    c.http_stubbing_library    = :webmock # or :fakeweb
+    c.default_cassette_options = { :record => :new_episodes }
+  end
+  
+  RSpec.configure do |config|
+    config.include Shoulda::ActionController::Matchers
     
-  Rspec.configure do |config|
     # == Mock Framework
     #
     # If you prefer to use mocha, flexmock or RR, uncomment the appropriate line:
@@ -35,26 +44,6 @@ Spork.each_run do
     # examples within a transaction, comment the following line or assign false
     # instead of true.
     config.use_transactional_fixtures = true
-    
-    config.before(:all) do
-      unless File.exist?('public/uploads/cloudfront/')
-        Dir.mkdir('public/uploads/cloudfront/')
-        Dir.mkdir('public/uploads/cloudfront/sublimevideo.videos/')
-        Dir.mkdir('public/uploads/cloudfront/sublimevideo.videos/download/')
-      end
-      unless File.exist?('public/uploads/cloudfront/sublimevideo.videos/download/E3KTK13341WJO.2010-06-16-08.2Knk9kOC.gz')
-        FileUtils.cp(
-          Rails.root.join('spec/fixtures/logs/cloudfront_download/E3KTK13341WJO.2010-06-16-08.2Knk9kOC.gz'),
-          Rails.root.join('public/uploads/cloudfront/sublimevideo.videos/download/')
-        )
-      end
-    end
-  end
-  
-  VCR.config do |c|
-    c.cassette_library_dir     = 'spec/fixtures/vcr_cassettes'
-    c.http_stubbing_library    = :webmock # or :fakeweb
-    c.default_cassette_options = { :record => :new_episodes }
   end
   
 end

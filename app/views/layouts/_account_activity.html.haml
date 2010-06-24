@@ -1,10 +1,10 @@
-- if user_signed_in? 
+- if user_signed_in?
   - if current_user.trial?
     #trial_box
       %h4= "Trial Usage"
       .progress_bar
         - if current_user.trial_usage_percentage > 0
-          .active_usage{ :style => "width:#{current_user.trial_usage_percentage}%" }
+          .active_usage{ :style => "width:#{current_user.trial_player_hits_percentage}%" }
       %ul#trial_legend
         %li.used
           = "Player Hits"
@@ -15,7 +15,7 @@
       - if current_user.trial_warning?
         = link_to "", :class => "warning", :onclick => "return false" do
           %span
-            %em= "The Trial is also limited by a total amount of #{number_with_delimiter(User::Trial.free_loader_hits)} \"requests\", you've currently used #{number_with_delimiter(current_user.trial_loader_hits)} of them while only having accounted #{number_with_delimiter(current_user.trial_player_hits)} player hits: it probably means you're using the embed code in a page without any videos on it.".html_safe
+            %em= "The trial is also limited by a total amount of #{number_with_delimiter(User::Trial.free_loader_hits)} \"requests\", you've currently used #{number_with_delimiter(current_user.trial_loader_hits)} of them while only having accounted #{number_with_delimiter(current_user.trial_player_hits)} player hits: it probably means you're using the embed code in a page without any videos on it.".html_safe
       -#%a.show_details{ :href => "", :onclick => "this.next().toggle(); return false" }
       -#  %span="Show details"
       -#.info_box{ :style => "display:none" }

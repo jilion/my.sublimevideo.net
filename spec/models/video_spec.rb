@@ -33,22 +33,22 @@ describe Video do
   context "with valid attributes" do
     subject { Factory(:video) }
     
-    its(:user)              { should be_present       }
-    its(:panda_video_id)    { should be_present       }
-    its(:title)             { should be_nil           }
-    its(:token)             { should =~ /[a-z0-9]{8}/ }
-    its(:hits_cache)        { should == 0             }
-    its(:bandwidth_cache)   { should == 0             }
-    its(:original_filename) { should be_nil           }
-    its(:video_codec)       { should be_nil           }
-    its(:audio_codec)       { should be_nil           }
-    its(:extname)           { should be_nil           }
-    its(:file_size)         { should be_nil           }
-    its(:duration)          { should be_nil           }
-    its(:width)             { should be_nil           }
-    its(:height)            { should be_nil           }
-    its(:fps)               { should be_nil           }
-    its(:archived_at)       { should be_nil           }
+    its(:user)              { should be_present               }
+    its(:panda_video_id)    { should be_present               }
+    its(:title)             { should == "Railscast Intro"     }
+    its(:token)             { should =~ /[a-z0-9]{8}/         }
+    its(:hits_cache)        { should == 0                     }
+    its(:bandwidth_cache)   { should == 0                     }
+    its(:original_filename) { should == 'railscast_intro.mov' }
+    its(:video_codec)       { should == 'h264'                }
+    its(:audio_codec)       { should == 'aac'                 }
+    its(:extname)           { should == '.mov'                }
+    its(:file_size)         { should == 123456                }
+    its(:duration)          { should == 12345                 }
+    its(:width)             { should == 640                   }
+    its(:height)            { should == 480                   }
+    its(:fps)               { should == 30                    }
+    its(:archived_at)       { should be_nil                   }
     
     it { should be_valid   }
   end
@@ -407,17 +407,50 @@ describe Video do
         video.extname.should == '.mp4'
         video.name.should == 'hey_ho'
       end
+      
+      it "should return '' if no original_filename" do
+        video.update_attribute(:original_filename, nil)
+        video.original_filename.should be_nil
+        video.extname.should == '.mp4'
+        video.name.should == ''
+      end
+      
+      it "should return '' if no original_filename" do
+        video.update_attribute(:extname, nil)
+        video.original_filename.should == 'hey_ho.mp4'
+        video.extname.should be_nil
+        video.name.should == ''
+      end
     end
     
     describe "#total_size" do
       let(:video_encoding1) { Factory(:video_encoding, :video => video, :state => 'encoding', :file_size => 42, :panda_encoding_id => encoding_id) }
       let(:video_encoding2) { Factory(:video_encoding, :video => video, :state => 'active', :file_size => 38, :panda_encoding_id => encoding_id) }
+      let(:video_encoding3) { Factory(:video_encoding, :video => video, :state => 'active', :file_size => 10, :panda_encoding_id => encoding_id) }
       
       it "should return total storage (reference video size + encoding sizes) only for active encodings" do
         video.file_size.should == 1000
         video_encoding1.file_size.should == 42
         video_encoding2.file_size.should == 38
-        video.total_size.should == 1038
+        video_encoding3.file_size.should == 10
+        video.total_size.should == 1048
+      end
+      
+      it "should return total storage (reference video size + encoding sizes) even if video.file_size is nil" do
+        video.update_attribute(:file_size, nil)
+        video_encoding1.file_size.should == 42
+        video_encoding2.file_size.should == 38
+        video_encoding3.file_size.should == 10
+        video.total_size.should == 48
+      end
+      
+      it "should return total storage (reference video size + encoding sizes) even if video_encoding.file_size is nil" do
+        video_encoding2.update_attribute(:file_size, nil)
+        video.file_size.should == 1000
+        video_encoding1.file_size.should == 42
+        video_encoding2.file_size.should be_nil
+        video_encoding3.file_size.should == 10
+        video.total_size.should == 1010
       end
     end
     

@@ -1,5 +1,4 @@
-class LimitAlertMailer < ActionMailer::Base
-  default :from => "no-response@sublimevideo.net"
+class LimitAlertMailer < SublimeVideoMailer
   
   def limit_exceeded(user)
     @user = user

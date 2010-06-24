@@ -59,7 +59,7 @@ MySublimeVideo.flashNotice = function(message) {
 MySublimeVideo.hideFlashNoticeDelayed = function(flashEl) {
   setTimeout(function(){
     flashEl.morph('top:-35px', { duration: 0.7 });
-  }, 4000);
+  }, 15000);
 };
 
 MySublimeVideo.openPopup = function(itemId, idPrefix, url) { //item can be site or video

@@ -1,5 +1,4 @@
-class UserMailer < ActionMailer::Base
-  default :from => "no-response@sublimevideo.net"
+class UserMailer < SublimeVideoMailer
   
   def account_suspended(user, reason)
     @user = user

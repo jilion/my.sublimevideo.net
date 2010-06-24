@@ -31,7 +31,7 @@
                       
                 = yield :content_header
                 
-                = render "layouts/account_activity"
+                = render "layouts/account_activity" if controller_name != 'sessions'
                 
                 = yield
       #footer

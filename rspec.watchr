@@ -23,7 +23,7 @@ end
 def run(files_to_run, options = {})
   # system("clear")
   puts(options[:message] || "Running: #{files_to_run}")
-  system "rspec -c -r spec/watchr/growl_formatter.rb -f GrowlFormatter #{files_to_run}"
+  system "bundle exec rspec -c -r spec/watchr/growl_formatter.rb -f GrowlFormatter #{files_to_run}"
 end
 
 def run_all_specs

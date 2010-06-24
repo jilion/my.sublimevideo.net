@@ -1,5 +1,4 @@
-class InvoiceMailer < ActionMailer::Base
-  default :from => "no-response@sublimevideo.net"
+class InvoiceMailer < SublimeVideoMailer
   
   def invoice_calculated(invoice)
     @invoice = invoice

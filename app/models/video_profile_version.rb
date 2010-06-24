@@ -13,9 +13,8 @@
 
 class VideoProfileVersion < ActiveRecord::Base
   
-  attr_accessible :profile, :width, :height, :command, :note
-  
   attr_accessor :width, :height, :command
+  attr_accessible :profile, :width, :height, :command, :note
   
   # ================
   # = Associations =
@@ -27,7 +26,7 @@ class VideoProfileVersion < ActiveRecord::Base
   # = Scopes =
   # ==========
   
-  scope :active,       where(:state => 'active').group(:video_profile_id).order(:created_at.desc)
+  scope :active,       where(:state => 'active')
   scope :experimental, where(:state => 'experimental')
   scope :with_profile, lambda { |profile| where(:video_profile_id => profile.id) }
   
@@ -65,7 +64,7 @@ class VideoProfileVersion < ActiveRecord::Base
   # ====================
   
   def rank
-    profile.versions.index(self) + 1
+    profile.versions.order(:created_at.asc).index(self) + 1
   end
   
 protected

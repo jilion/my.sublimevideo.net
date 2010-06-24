@@ -1,5 +1,4 @@
-class TrialMailer < ActionMailer::Base
-  default :from => "no-response@sublimevideo.net"
+class TrialMailer < SublimeVideoMailer
   
   def usage_information(user)
     @user = user

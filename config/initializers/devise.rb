@@ -34,7 +34,7 @@ Devise.setup do |config|
   # authentication tools as :clearance_sha1, :authlogic_sha512 (then you should set
   # stretches above to 20 for default behavior) and :restful_authentication_sha1
   # (then you should set stretches to 10, and copy REST_AUTH_SITE_KEY to pepper)
-  # config.encryptor = :sha1
+  config.encryptor = :bcrypt
   
   # ==> Configuration for :confirmable
   # The time you want give to your user to confirm his account. During this time
@@ -47,7 +47,7 @@ Devise.setup do |config|
   
   # ==> Configuration for :validatable
   # Range for password length
-  config.password_length = 6..20
+  config.password_length = 6..50
   
   # Regex to use to validate the email address
   config.email_regexp = /^([\w\.%\+\-]+)@([\w\-]+\.)+([\w]{2,})$/i
@@ -89,7 +89,7 @@ Devise.setup do |config|
   # Turn scoped views on. Before rendering "sessions/new", it will first check for
   # "sessions/users/new". It's turned off by default because it's slower if you
   # are using only default views.
-  # config.scoped_views = true
+  config.scoped_views = true
   
   # By default, devise detects the role accessed based on the url. So whenever
   # accessing "/users/sign_in", it knows you are accessing an User. This makes

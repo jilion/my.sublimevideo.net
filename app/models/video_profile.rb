@@ -15,7 +15,7 @@
 
 class VideoProfile < ActiveRecord::Base
   
-  attr_accessible :title, :description, :name, :extname, :thumbnailable
+  attr_accessible :title, :description, :thumbnailable
   
   # ================
   # = Associations =
@@ -32,6 +32,7 @@ class VideoProfile < ActiveRecord::Base
   # ===============
   
   validates :title, :extname, :presence => true
+  validates_uniqueness_of :name, :scope => :extname
   
   # =============
   # = Callbacks =
@@ -56,7 +57,7 @@ class VideoProfile < ActiveRecord::Base
   end
   
   def active_version
-    versions.active.last
+    versions.active.first
   end
   
 private

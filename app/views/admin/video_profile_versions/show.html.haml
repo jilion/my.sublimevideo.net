@@ -20,6 +20,8 @@
     = raw v
     
 - if @version.experimental?
-  = button_to "Activate", admin_profile_version_path(@profile, @version), :confirm => "Are you sure?", :method => :put
-  
-= link_to "Back to #{content_tag(:em, @profile.title)}".html_safe, admin_profile_path(@profile)
+  = form_for [:admin, @profile, @version], :url => admin_profile_version_path(@profile, @version), :html => { :method => :put } do |f|
+    .entry.submit.signup
+      = f.submit "Activate", :confirm => "Are you sure?", :class => "submit small"
+      = "or"
+      = link_to "Back to #{content_tag(:em, @profile.title)}".html_safe, admin_profile_path(@profile)

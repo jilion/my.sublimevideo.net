@@ -44,7 +44,7 @@ module User::Trial
   end
   
   def trial_warning?
-    trial_loader_hits_percentage > trial_player_hits_percentage && trial_loader_hits_percentage > usage_warning_percentage
+    trial_loader_hits_percentage > trial_player_hits_percentage && trial_loader_hits_percentage >= User::Trial.usage_warning_percentage
   end
   
   def trial_loader_hits

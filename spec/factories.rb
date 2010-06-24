@@ -30,8 +30,18 @@ Factory.define :video_profile_version do |f|
 end
 
 Factory.define :video do |f|
-  f.association    :user
-  f.panda_video_id 'f72e511820c12dabc1d15817745225bd'
+  f.association       :user
+  f.panda_video_id    'f72e511820c12dabc1d15817745225bd'
+  f.original_filename 'railscast_intro.mov'
+  f.video_codec       'h264'
+  f.audio_codec       'aac'
+  f.extname           '.mov'
+  f.file_size         '123456'
+  f.duration          '12345'
+  f.width             '640'
+  f.height            '480'
+  f.fps               '30'
+  f.title             'Railscast Intro'
 end
 
 Factory.define :video_encoding do |f|
@@ -50,8 +60,16 @@ Factory.define :log_voxcast, :class => Log::Voxcast do |f|
   f.name "cdn.sublimevideo.net.log.1275002700-1275002760.gz"
 end
 
-Factory.define :log_cloudfront_download, :class => Log::CloudfrontDownload do |f|
+Factory.define :log_cloudfront_download, :class => Log::Amazon::Cloudfront::Download do |f|
   f.name "E3KTK13341WJO.2010-06-16-08.2Knk9kOC.gz"
+end
+
+Factory.define :log_cloudfront_streaming, :class => Log::Amazon::Cloudfront::Streaming do |f|
+  f.name "EK1147O537VJ1.2010-06-23-07.9D0khw8j.gz"
+end
+
+Factory.define :log_s3_videos, :class => Log::Amazon::S3::Videos do |f|
+  f.name "2010-06-23-08-20-45-DE5461BCB46DA093"
 end
 
 Factory.define :site_usage do |f|

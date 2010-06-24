@@ -46,9 +46,9 @@ class Video < ActiveRecord::Base
   # = Scopes =
   # ==========
   
-  scope :by_date,     lambda { |way| order("created_at #{way || 'desc'}") }
-  scope :by_title,    lambda { |way| order("title #{way || 'asc'}") }
-  scope :displayable, where("videos.state NOT IN ('pending', 'archived')")
+  scope :by_date,     lambda { |way| order("videos.created_at #{way || 'desc'}") }
+  scope :by_title,    lambda { |way| order("videos.title #{way || 'asc'}") }
+  scope :displayable, where("videos.state NOT IN ('archived')")
   
   # ===============
   # = Validations =
@@ -107,11 +107,11 @@ class Video < ActiveRecord::Base
   end
   
   def name
-    original_filename ? original_filename.sub(extname, '') : ''
+    original_filename && extname ? original_filename.sub(extname, '') : ''
   end
   
   def total_size
-    file_size + encodings.active.map(&:file_size).sum
+    encodings.active.inject([file_size]){ |memo,e| memo << e.file_size }.compact.sum
   end
   
 protected

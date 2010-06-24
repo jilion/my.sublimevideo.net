@@ -14,13 +14,7 @@
 #  updated_at :datetime
 #
 
-class Log::CloudfrontDownload < Log
-  
-  # ================
-  # = Associations =
-  # ================
-  
-  # has_many :site_usages
+class Log::Amazon < Log
   
   # ===============
   # = Validations =
@@ -54,7 +48,7 @@ class Log::CloudfrontDownload < Log
   # =================
   
   def self.delay_fetch_and_create_new_logs(minutes = 60.minute)
-    unless Delayed::Job.already_delayed?('%Log::CloudfrontDownload%fetch_and_create_new_logs%')
+    unless Delayed::Job.already_delayed?("%#{self.to_s}%fetch_and_create_new_logs%")
       delay(:priority => 10, :run_at => minutes.from_now).fetch_and_create_new_logs
     end
   end
@@ -77,24 +71,15 @@ private
     self.hostname = self.class.config[:hostname]
   end
   
-  # call from name= in Log
-  def set_dates_and_hostname_from_name
-    if matches = name.match(/^[A-Z0-9]+\.([0-9]{4}-[0-9]{2}-[0-9]{2})-([0-9]{2})\.[a-zA-Z0-9]+\.gz$/)
-      self.started_at ||= Time.zone.parse(matches[1]) + matches[2].to_i.hours
-      self.ended_at   ||= started_at + 1.hour
-    end
-  end
-  
   def self.fetch_new_logs_names
     options = {
       'prefix' => config[:store_dir],
       :remove_prefix => true
     }
-    if last_log = self.order(:started_at.desc).first
-      hours_ago = (last_log.started_at - 30.hours).strftime("%Y-%m-%d-%H")
-      options['marker'] = config[:store_dir] + last_log.read_attribute(:file).gsub(/\..*/, ".#{hours_ago}")
+    if last_log = self.order(:name.desc).first
+      options['marker'] = config[:store_dir] + marker(last_log)
     end
-    S3.logs_name_list(options)
+    ::S3.logs_name_list(options)
   rescue => ex
     HoptoadNotifier.notify(ex)
     []

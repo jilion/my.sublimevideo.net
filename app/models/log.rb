@@ -58,7 +58,9 @@ class Log < ActiveRecord::Base
   
   def self.delay_fetch_and_create_new_logs
     Log::Voxcast.delay_fetch_download_and_create_new_logs
-    Log::CloudfrontDownload.delay_fetch_and_create_new_logs
+    Log::Amazon::Cloudfront::Download.delay_fetch_and_create_new_logs
+    Log::Amazon::Cloudfront::Streaming.delay_fetch_and_create_new_logs
+    Log::Amazon::S3::Videos.delay_fetch_and_create_new_logs
   end
   
   def self.config

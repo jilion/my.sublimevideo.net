@@ -1,13 +1,6 @@
 require 'spec_helper'
 
-include VideosHelper
-
 describe VideosHelper do
-  
-  it "is included in the helper object" do
-    included_modules = (class << helper; self; end).send :included_modules
-    included_modules.should include(VideosHelper)
-  end
   
   describe "#duration" do
     it "should be 'No duration' if seconds is blank" do
