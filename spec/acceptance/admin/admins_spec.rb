@@ -17,7 +17,7 @@ feature "Admin session:" do
   end
   
   scenario "logout" do
-    sign_in_as_admin :admin => { :email => "john@doe.com" }
+    sign_in_as :admin, { :email => "john@doe.com" }
     page.should have_content 'john@doe.com'
     click_link "Logout"
     
@@ -29,7 +29,7 @@ end
 
 feature "Admins actions:" do
   background do
-    sign_in_as_admin :admin => { :email => "old@jilion.com" }
+    sign_in_as :admin, { :email => "old@jilion.com" }
   end
     
   scenario "update email" do

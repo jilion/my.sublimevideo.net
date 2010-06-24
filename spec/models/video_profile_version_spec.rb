@@ -161,8 +161,8 @@ describe VideoProfileVersion do
         video_profile_version1.should be_experimental
         video_profile_version2.should be_experimental
         video_profile.versions.reload.size.should == 2
-        video_profile.versions.order(:id.asc).first.should == video_profile_version1
-        video_profile.versions.order(:id.asc).last.should == video_profile_version2
+        video_profile.versions.order(:created_at.asc).first.should == video_profile_version1
+        video_profile.versions.order(:created_at.asc).last.should == video_profile_version2
         video_profile_version1.rank.should == 1
         video_profile_version2.rank.should == 2
       end
