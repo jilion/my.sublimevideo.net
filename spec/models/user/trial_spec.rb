@@ -33,6 +33,7 @@ describe User::Trial do
         
         lambda { User::Trial.supervise_users }.should change(ActionMailer::Base.deliveries, :size).by(1)
         last_delivery = ActionMailer::Base.deliveries.last
+        last_delivery.from.should == ["no-response@sublimevideo.net"]
         last_delivery.to.should include user.email
         last_delivery.subject.should include "Trial usage has reached 50%"
         user.reload.trial_usage_information_email_sent_at.should be_present
