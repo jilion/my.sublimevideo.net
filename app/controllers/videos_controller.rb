@@ -1,4 +1,5 @@
 class VideosController < ApplicationController
+  skip_before_filter :beta_protection, :only => :transcoded
   before_filter :authenticate_user!, :except => :transcoded
   respond_to :html, :js
   
