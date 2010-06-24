@@ -28,6 +28,8 @@ class Admin::VideoProfilesController < Admin::AdminController
   # POST /admin/profiles
   def create
     @profile = VideoProfile.new(params[:video_profile])
+    @profile.name = params[:video_profile][:name]
+    @profile.extname = params[:video_profile][:extname]
     respond_with(@profile) do |format|
       if @profile.save
         format.html { redirect_to admin_profiles_path }
