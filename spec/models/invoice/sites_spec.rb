@@ -19,8 +19,8 @@ describe Invoice::Sites do
     its(:player_hits)   { should == 2016 }
     it "should return site array" do
       subject.should == [
-        { :id => @site1.id, :hostname => @site1.hostname, :archived_at => nil, :loader_amount => 10100, :player_amount => 2011, :loader_hits => 10100, :player_hits => 2011},
-        { :id => @site2.id, :hostname => @site2.hostname, :archived_at => nil, :loader_amount => 50, :player_amount => 5, :loader_hits => 50, :player_hits => 5}
+        { :id => @site2.id, :hostname => @site2.hostname, :archived_at => nil, :loader_amount => 50, :player_amount => 5, :loader_hits => 50, :player_hits => 5},
+        { :id => @site1.id, :hostname => @site1.hostname, :archived_at => nil, :loader_amount => 10100, :player_amount => 2011, :loader_hits => 10100, :player_hits => 2011}
       ]
     end
   end
@@ -42,8 +42,8 @@ describe Invoice::Sites do
     its(:player_hits)   { should == 16 }
     it "should return site array" do
       subject.should == [
-        { :id => @site1.id, :hostname => @site1.hostname, :archived_at => nil, :loader_amount => 100, :player_amount => 11, :loader_hits => 100, :player_hits => 11},
-        { :id => @site2.id, :hostname => @site2.hostname, :archived_at => nil, :loader_amount => 50, :player_amount => 5, :loader_hits => 50, :player_hits => 5}
+        { :id => @site2.id, :hostname => @site2.hostname, :archived_at => nil, :loader_amount => 50, :player_amount => 5, :loader_hits => 50, :player_hits => 5},
+        { :id => @site1.id, :hostname => @site1.hostname, :archived_at => nil, :loader_amount => 100, :player_amount => 11, :loader_hits => 100, :player_hits => 11}
       ]
     end
   end

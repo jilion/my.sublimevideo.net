@@ -65,7 +65,7 @@ describe VideoUsage do
     
     it "should create usages from trackers" do
       VideoUsage.create_usages_from_trackers!(@log, @trackers)
-      usage = VideoUsage.last
+      usage = VideoUsage.first
       usage.log.should       == @log
       usage.video.should     == @video1
       usage.hits.should      == 1

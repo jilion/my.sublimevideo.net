@@ -4,10 +4,6 @@ dependencies:
     group: 
     - :test
     version: ">= 0"
-  pg: 
-    group: 
-    - :production
-    version: ">= 0"
   system_timer: 
     group: 
     - :default
@@ -24,9 +20,13 @@ dependencies:
     group: 
     - :development
     version: ">= 0"
+  pg: 
+    group: 
+    - :production
+    version: ">= 0"
   sqlite3-ruby: 
     group: 
-    - :test
+    - :development
     version: ">= 0"
     require: 
     - sqlite3
@@ -372,7 +372,7 @@ specs:
     source: 6
 - wirble: 
     version: 0.1.3
-hash: 8defcb037ed4c11a6dcf3916835b30a192d02acc
+hash: 3894cb9eea66b332365e8924d25e0bf18b9cbaa0
 sources: 
 - Git: 
     uri: git://github.com/jnicklas/carrierwave.git
