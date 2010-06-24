@@ -262,6 +262,40 @@ describe VideoEncoding do
           end
         end
         
+        describe "after_transition :on => :activate, :do => :to_be_defined" do
+          it "should send an email to the user when all the first encodings are complete" do
+            video_encoding2 = Factory(:video_encoding, :video => video_encoding.video, :panda_encoding_id => id, :state => 'encoding')
+            ActionMailer::Base.deliveries = []
+            
+            video_encoding.should be_first_encoding
+            video_encoding.activate
+            video_encoding.file.url.should =~ %r(videos/#{video_encoding.video.token}/#{video_encoding.video.name}#{video_encoding.profile.name}#{video_encoding.extname})
+            ActionMailer::Base.deliveries.size.should == 0
+            
+            video_encoding2.should be_first_encoding
+            video_encoding2.activate
+            ActionMailer::Base.deliveries.size.should == 1
+            puts ActionMailer::Base.deliveries.inspect
+          end
+          
+          it "should not send an email to the user when a re-encoding is complete" do
+            video_encoding2 = Factory(:video_encoding, :video => video_encoding.video, :panda_encoding_id => id, :state => 'encoding')
+            ActionMailer::Base.deliveries = []
+            
+            video_encoding.activate
+            video_encoding2.activate
+            ActionMailer::Base.deliveries.size.should == 1
+            
+            # re-encode this video
+            video_encoding.pandize
+            video_encoding.should_not be_first_encoding
+            ActionMailer::Base.deliveries.size.should == 1
+            video_encoding.activate
+            ActionMailer::Base.deliveries.size.should == 1
+            puts ActionMailer::Base.deliveries.inspect
+          end
+        end
+        
       end
       
       after(:each) { VCR.eject_cassette }
