@@ -47,13 +47,14 @@ group :test do
   gem 'watchr'
   gem 'growl'
   gem 'spork'
-  gem 'rspactor',           :path => '/Users/remy/Gems/rspactor2'
-  gem "shoulda"
-  gem "rspec-rails",        :git => "git://github.com/rspec/rspec-rails.git"
-  gem "rspec",              :git => "git://github.com/rspec/rspec.git"
-  gem "rspec-core",         :git => "git://github.com/rspec/rspec-core.git"
-  gem "rspec-expectations", :git => "git://github.com/rspec/rspec-expectations.git"
-  gem "rspec-mocks",        :git => "git://github.com/rspec/rspec-mocks.git"
+  
+  gem 'shoulda'
+  gem 'rspec-rails', '>= 2.0.0.beta.13'
+  # gem "rspec-rails",        :git => "git://github.com/rspec/rspec-rails.git"
+  # gem "rspec",              :git => "git://github.com/rspec/rspec.git"
+  # gem "rspec-core",         :git => "git://github.com/rspec/rspec-core.git"
+  # gem "rspec-expectations", :git => "git://github.com/rspec/rspec-expectations.git"
+  # gem "rspec-mocks",        :git => "git://github.com/rspec/rspec-mocks.git"
   
   gem 'steak', '>= 0.4.0.beta.1'
   gem 'capybara'

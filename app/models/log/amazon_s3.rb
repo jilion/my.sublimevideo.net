@@ -14,7 +14,7 @@
 #  updated_at :datetime
 #
 
-class Log::S3 < Log
+class Log::AmazonS3 < Log
   
 #   # ================
 #   # = Associations =

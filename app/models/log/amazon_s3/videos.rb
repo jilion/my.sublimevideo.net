@@ -14,6 +14,6 @@
 #  updated_at :datetime
 #
 
-class Log::S3::Videos < Log::S3
+class Log::S3::Videos < Log::AmazonS3
   
 end
