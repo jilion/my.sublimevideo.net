@@ -73,8 +73,8 @@ describe VideosController do
       response.should redirect_to(new_user_session_path)
     end
     it "should activate a video and respond with success to GET :transcoded" do
-      VideoEncoding.stub(:find_by_panda_encoding_id!).with("a"*32).and_return(mock_video_encoding)
-      mock_video_encoding.stub_chain(:delay, :activate).and_return(true)
+      Video.stub(:find_by_panda_video_id!).with("a"*32).and_return(mock_video)
+      mock_video.stub_chain(:delay, :activate).and_return(true)
       get :transcoded, :id => "a"*32
       response.should be_success
     end
@@ -84,10 +84,6 @@ private
   
   def mock_video(stubs={})
     @mock_video ||= mock_model(Video, stubs)
-  end
-  
-  def mock_video_encoding(stubs={})
-    @mock_video_encoding ||= mock_model(VideoEncoding, stubs)
   end
   
 end

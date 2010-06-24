@@ -125,6 +125,74 @@ describe Video do
       after(:each) { VCR.eject_cassette }
     end
     
+    # ============
+    # = activate =
+    # ============
+    describe "event(:activate) { transition :encodings => :encodings }" do
+      before(:each) { VCR.insert_cassette('video_encoding/activate') }
+      
+      let(:video)           { Factory(:video, :state => 'encodings') }
+      let(:video_encoding1) { Factory(:video_encoding, :video => video, :panda_encoding_id => encoding_id, :state => 'encoding') }
+      let(:video_encoding2) { Factory(:video_encoding, :video => video, :panda_encoding_id => encoding_id, :state => 'encoding') }
+      
+      it "should set the state as :encodings from :encodings" do
+        video.should be_encodings
+        video.activate
+        video.should be_encodings
+      end
+      
+      describe "callbacks" do
+        describe "before_transition :on => :activate, :do => :activate_encodings" do
+          it "should activate the encodings" do
+            video_encoding1.should be_encoding
+            video_encoding2.should be_encoding
+            video.activate
+            video_encoding1.reload.should be_active
+            video_encoding2.reload.should be_active
+            video_encoding1.file.should be_present
+            video_encoding2.file.should be_present
+          end
+        end
+        
+        describe "after_transition :on => :activate, :do => :deliver_video_active, :if => :active?" do
+          it "should send a 'video is ready' email to the user when all encodings are active" do
+            video_encoding1.should be_encoding
+            video_encoding2.should be_encoding
+            ActionMailer::Base.deliveries.clear
+            
+            lambda { video.activate }.should change(ActionMailer::Base.deliveries, :size).by(1)
+            
+            video_encoding1.reload.should be_active
+            video_encoding2.reload.should be_active
+            video_encoding1.file.should be_present
+            video_encoding2.file.should be_present
+            
+            last_delivery = ActionMailer::Base.deliveries.last
+            last_delivery.from.should == ["no-response@sublimevideo.net"]
+            last_delivery.to.should include video.user.email
+            last_delivery.subject.should include "Your video “#{video.title}” is now ready!"
+            last_delivery.body.should include "http://#{ActionMailer::Base.default_url_options[:host]}/videos"
+          end
+          
+          it "should not send a 'video is ready' email to the user when the video is not ready" do
+            video.stub(:active? => false)
+            video_encoding1.should be_encoding
+            video_encoding2.fail
+            video_encoding2.should be_failed
+            ActionMailer::Base.deliveries.clear
+            
+            lambda { video.activate }.should_not change(ActionMailer::Base.deliveries, :size)
+            
+            video_encoding1.reload.should be_active
+            video_encoding2.should be_failed
+            video.should be_error
+          end
+        end
+      end
+      
+      after(:each) { VCR.eject_cassette }
+    end
+    
     # ===========
     # = suspend =
     # ===========
@@ -147,7 +215,7 @@ describe Video do
       
       describe "callbacks" do
         let(:video) { Factory(:video, :state => 'encodings') }
-        let(:video_encoding1) { Factory(:video_encoding, :panda_encoding_id => encoding_id, :state => 'encoding') }
+        let(:video_encoding1) { Factory(:video_encoding, :video => video, :panda_encoding_id => encoding_id, :state => 'encoding') }
         let(:video_encoding2) { Factory(:video_encoding, :video => video, :state => 'active') }
         
         describe "before_transition :on => :suspend, :do => :suspend_encodings" do
@@ -305,19 +373,22 @@ describe Video do
   
   describe "life cycle" do
     before(:each) do
-      vpv1 = Factory(:video_profile_version)
-      vpv2 = Factory(:video_profile_version)
+      @vpv1 = Factory(:video_profile_version)
+      @vpv1.profile.update_attribute(:thumbnailable, true)
+      @vpv2 = Factory(:video_profile_version)
       VCR.use_cassette('video_profile_version/pandize') do
-        vpv1.pandize
-        vpv2.pandize
+        @vpv1.pandize
+        @vpv2.pandize
       end
-      vpv1.activate
-      vpv2.activate
+      @vpv1.activate
+      @vpv2.activate
     end
     
     let(:video) { Factory(:video, :panda_video_id => 'a'*32) }
     
     it "should be consistent" do
+      @vpv1.should be_active
+      @vpv2.should be_active
       video.should be_pending
       VCR.use_cassette('video/pandize') { video.pandize }
       video.should be_encodings
@@ -333,56 +404,33 @@ describe Video do
       
       VCR.use_cassette('video_encoding/pandize') do
         Delayed::Worker.new(:quiet => true).work_off
-        video.encodings[0].should be_encoding
-        video.encodings[1].should be_encoding
-        
-        video.encodings[0].fail
-        video.encodings[0].should be_failed
-        video.should be_encodings
-        video.should be_encoding
-        video.should be_error
-        video.should_not be_active
-        
-        video.encodings[0].pandize
-        video.encodings[0].should be_failed
-        video.should be_encodings
-        video.should be_encoding
-        video.should be_error
-        video.should_not be_active
+        video.encodings[0].reload.should be_encoding
+        video.encodings[1].reload.should be_encoding
       end
       
       VCR.use_cassette('video_encoding/activate') do
-        video.encodings[0].activate
-        video.encodings[0].should be_failed
-        video.should be_encodings
-        video.should be_encoding
-        video.should be_error
-        video.should_not be_active
-        
-        video.encodings[1].profile.update_attribute(:thumbnailable, true)
-        video.encodings[0].profile.should_not be_thumbnailable
-        video.encodings[1].profile.should be_thumbnailable
-        video.encodings[1].activate
-        video.encodings[1].should be_active
-        video.should be_encodings
+        video.encodings[0].profile.should be_thumbnailable
+        video.activate
+        video.encodings[0].reload.should be_active
+        video.encodings[1].reload.should be_active
         video.should_not be_encoding
-        video.should be_error
-        video.should_not be_active
+        video.should_not be_error
+        video.should be_active
         video.reload.thumbnail.should be_present
       end
       
       VCR.use_cassette('video/suspend') { video.suspend }
       video.should be_suspended
-      video.encodings[0].should_not be_suspended
+      video.encodings[0].should be_suspended
       video.encodings[1].should be_suspended
       
       video.unsuspend
+      video.encodings[0].reload.should be_active
+      video.encodings[1].reload.should be_active
       video.should be_encodings
       video.should_not be_encoding
-      video.should be_error
-      video.should_not be_active
-      video.encodings[0].should_not be_active
-      video.encodings[1].reload.should be_active
+      video.should_not be_error
+      video.should be_active
       
       VCR.use_cassette('video/archive') do
         video.archive
@@ -536,7 +584,6 @@ describe Video do
         video.should_not be_hd
       end
     end
-    
   end
   
 end

@@ -46,8 +46,8 @@ feature "Video transcoded notification from Panda" do
     
     page.should have_content('In progress')
     
-    @video.encodings.each { |e| visit "/videos/#{e.panda_encoding_id}/transcoded" }
-    Delayed::Job.last.name.should == 'VideoEncoding#activate'
+    @video.encodings.each { |e| visit "/videos/#{e.video.panda_video_id}/transcoded" }
+    Delayed::Job.last.name.should == 'Video#activate'
     VCR.use_cassette('video_encoding/activate') { Delayed::Worker.new(:quiet => true).work_off }
     visit "/videos"
     

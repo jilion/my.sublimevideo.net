@@ -69,6 +69,9 @@ class Video < ActiveRecord::Base
     before_transition :on => :pandize, :do => :set_encoding_info
     after_transition  :on => :pandize, :do => :create_encodings
     
+    before_transition :on => :activate, :do => :activate_encodings
+    after_transition  :on => :activate, :do => :deliver_video_active, :if => :active?
+    
     before_transition :on => :suspend, :do => :suspend_encodings
     
     before_transition :on => :unsuspend, :do => :unsuspend_encodings
@@ -77,6 +80,7 @@ class Video < ActiveRecord::Base
     after_transition  :on => :archive, :do => [:remove_video, :remove_thumbnail!]
     
     event(:pandize)   { transition :pending => :encodings }
+    event(:activate)  { transition :encodings => :encodings }
     event(:suspend)   { transition [:pending, :encodings] => :suspended }
     event(:unsuspend) { transition :suspended => :encodings }
     event(:archive)   { transition [:pending, :encodings, :suspended] => :archived }
@@ -116,9 +120,7 @@ class Video < ActiveRecord::Base
   
 protected
   
-  # =====================================
-  # = before_transition :on => :pandize =
-  # =====================================
+  # before_transition (pandize)
   def set_encoding_info
     video_info             = Transcoder.get(:video, panda_video_id)
     self.original_filename = video_info[:original_filename].strip
@@ -133,9 +135,7 @@ protected
     self.title             = original_filename.sub(extname, '').titleize
   end
   
-  # ====================================
-  # = after_transition :on => :pandize =
-  # ====================================
+  # after_transition (pandize)
   def create_encodings
     VideoProfileVersion.active.each do |profile_version|
       encoding = encodings.build(:profile_version => profile_version)
@@ -144,31 +144,35 @@ protected
     end
   end
   
-  # =====================================
-  # = before_transition :on => :suspend =
-  # =====================================
+  # before_transition (activate)
+  def activate_encodings
+    encodings.encoding.map(&:activate)
+  end
+  
+  # after_transition (activate)
+  def deliver_video_active
+    VideoMailer.video_active(self).deliver
+  end
+  
+  # before_transition (suspend)
   def suspend_encodings
     encodings.active.map(&:suspend)
   end
   
-  # =======================================
-  # = before_transition :on => :unsuspend =
-  # =======================================
+  # before_transition (unsuspend)
   def unsuspend_encodings
     encodings.suspended.map(&:unsuspend)
   end
   
-  # =====================================
-  # = before_transition :on => :archive =
-  # =====================================
+  # before_transition (archive)
   def set_archived_at
     self.archived_at = Time.now.utc
   end
   def archive_encodings
-    self.encodings.each { |e| e.delay(:priority => 10).archive }
+    encodings.each { |e| e.delay(:priority => 10).archive }
   end
   def remove_video
-    Transcoder.delay(:priority => 6).delete(:video, panda_video_id)
+    Transcoder.delay(:priority => 7).delete(:video, panda_video_id)
   end
   
 end

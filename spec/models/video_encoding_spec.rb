@@ -262,44 +262,6 @@ describe VideoEncoding do
           end
         end
         
-        describe "after_transition :on => :activate, :do => :to_be_defined" do
-          it "should send a 'video is ready' email to the user when all the first encodings are complete" do
-            video_encoding2 = Factory(:video_encoding, :video => video_encoding.video, :panda_encoding_id => id, :state => 'encoding')
-            ActionMailer::Base.deliveries.clear
-            
-            video_encoding.should be_first_encoding
-            video_encoding.activate
-            video_encoding.file.url.should =~ %r(videos/#{video_encoding.video.token}/#{video_encoding.video.name}#{video_encoding.profile.name}.#{video_encoding.extname})
-            ActionMailer::Base.deliveries.size.should == 0
-            
-            video_encoding2.should be_first_encoding
-            # mail sent for the first "all encodes are complete"
-            lambda { video_encoding2.activate }.should change(ActionMailer::Base.deliveries, :size).by(1)
-            
-            last_delivery = ActionMailer::Base.deliveries.last
-            last_delivery.from.should == ["no-response@sublimevideo.net"]
-            last_delivery.to.should include video_encoding.video.user.email
-            last_delivery.subject.should include "Your video &ldquo;#{video_encoding.video.title}&rdquo; is now ready!"
-            last_delivery.body.should include "http://#{ActionMailer::Base.default_url_options}/videos"
-          end
-          
-          it "should not send a 'video is ready' email to the user when a re-encoding is complete" do
-            video_encoding2 = Factory(:video_encoding, :video => video_encoding.video, :panda_encoding_id => id, :state => 'encoding')
-            ActionMailer::Base.deliveries.clear
-            
-            # mail sent for the first "all encodes are complete"
-            lambda do
-              video_encoding.activate
-              video_encoding2.activate
-            end.should change(ActionMailer::Base.deliveries, :size).by(1)
-            
-            # re-encode this video
-            video_encoding.pandize
-            video_encoding.should_not be_first_encoding
-            lambda { video_encoding.activate }.should_not change(ActionMailer::Base.deliveries, :size)
-          end
-        end
-        
       end
       
       after(:each) { VCR.eject_cassette }

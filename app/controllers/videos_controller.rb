@@ -72,8 +72,8 @@ class VideosController < ApplicationController
   
   # GET /videos/d891d9a45c698d587831466f236c6c6c/transcoded - Notification url called by Panda, should be a POST
   def transcoded
-    @video_encoding = VideoEncoding.find_by_panda_encoding_id!(params[:id])
-    @video_encoding.delay.activate
+    @video = Video.find_by_panda_video_id!(params[:id])
+    @video.delay.activate
     head :ok
   end
   
