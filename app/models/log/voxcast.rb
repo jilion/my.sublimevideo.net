@@ -64,6 +64,7 @@ class Log::Voxcast < Log
     delay_fetch_download_and_create_new_logs # relaunch the process in 1 min
   rescue => ex
     HoptoadNotifier.notify(ex)
+    delay_fetch_download_and_create_new_logs # relaunch the process in 1 min
   end
   
 private

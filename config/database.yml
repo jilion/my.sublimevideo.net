@@ -14,8 +14,12 @@ test:
   # database: msv_test<%= ENV['TEST_ENV_NUMBER'] %>
   # user: root
   # password: root
-  adapter: sqlite3
-  database: db/test<%= ENV['TEST_ENV_NUMBER'] %>.sqlite3
+  # adapter: sqlite3
+  # database: db/test<%= ENV['TEST_ENV_NUMBER'] %>.sqlite3
+  # pool: 5
+  # timeout: 5000
+  adapter: postgresql
+  database: test
   pool: 5
   timeout: 5000
   

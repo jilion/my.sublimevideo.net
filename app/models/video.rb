@@ -46,8 +46,8 @@ class Video < ActiveRecord::Base
   # = Scopes =
   # ==========
   
-  scope :by_date,     lambda { |way| order("created_at #{way || 'desc'}") }
-  scope :by_title,    lambda { |way| order("title #{way || 'asc'}") }
+  scope :by_date,     lambda { |way| order("videos.created_at #{way || 'desc'}") }
+  scope :by_title,    lambda { |way| order("videos.title #{way || 'asc'}") }
   scope :displayable, where("videos.state NOT IN ('pending', 'archived')")
   
   # ===============
