@@ -20,6 +20,12 @@ dependencies:
     group: 
     - :default
     version: ">= 0"
+  libxml-ruby: 
+    group: 
+    - :default
+    version: ">= 0"
+    require: 
+    - libxml
   rails: 
     group: 
     - :default
@@ -378,7 +384,7 @@ specs:
     source: 6
 - wirble: 
     version: 0.1.3
-hash: 06341156ac8acfd60434f3ffa0669bf0ec66f888
+hash: 5c119d569a5851816aec6a4d35754865da13585d
 sources: 
 - Git: 
     uri: git://github.com/jnicklas/carrierwave.git

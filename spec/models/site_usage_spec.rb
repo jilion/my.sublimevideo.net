@@ -64,7 +64,10 @@ describe SiteUsage do
     
     it "should create usages from trackers" do
       SiteUsage.create_usages_from_trackers!(@log, @trackers)
-      usage = SiteUsage.first
+      usages = SiteUsage.all
+      usages.map(&:site).should include(@site1)
+      usages.map(&:site).should include(@site2)
+      usage = usages.select { |u| u.site == @site1 }.first
       usage.log.should          == @log
       usage.site.should         == @site1
       usage.loader_hits.should  == 1
