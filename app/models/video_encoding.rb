@@ -61,6 +61,7 @@ class VideoEncoding < ActiveRecord::Base
     before_transition :on => :pandize, :do => :create_panda_encoding_and_set_info
     after_transition  :on => :pandize, :do => :delay_check_panda_encoding_status
     
+    before_transition :on => :activate, :do => :notify_user
     before_transition :on => :activate, :do => [:set_file, :set_encoding_info, :set_video_thumbnail]
     after_transition  :on => :activate, :do => [:deprecate_encodings, :delete_panda_encoding, :conform_to_video_state]
     
@@ -148,6 +149,18 @@ protected
     end
   end
   
+  # before_transition (activate)
+  def notify_user
+    unless file.present?
+      video.encodings.with_profile(profile).where(:state => %w[active failed], :id.ne => id).map(&:deprecate)
+    end
+  end
+  
+  # before_transition (activate)
+  def set_file
+    self.remote_file_url = "#{self.class.panda_s3_url}/#{panda_encoding_id}#{extname}"
+  end
+  
   # before_transition (activate) / before_transition (encoding => archived)
   def set_encoding_info
     encoding_info = Transcoder.get(:encoding, panda_encoding_id)
@@ -155,11 +168,6 @@ protected
     self.started_encoding_at = encoding_info[:started_encoding_at].try(:to_time)
     self.encoding_time       = encoding_info[:encoding_time]
     self.encoding_status     = encoding_info[:status]
-  end
-  
-  # before_transition (activate)
-  def set_file
-    self.remote_file_url = "#{self.class.panda_s3_url}/#{panda_encoding_id}#{extname}"
   end
   
   # before_transition (activate)
