@@ -49,10 +49,6 @@ class VideoEncoding < ActiveRecord::Base
   validates :video,           :presence => true
   validates :profile_version, :presence => true
   
-  # =============
-  # = Callbacks =
-  # =============
-  
   # =================
   # = State Machine =
   # =================
