@@ -47,7 +47,7 @@ end
 
 feature "Admins invitations:" do
   background do
-    ActionMailer::Base.deliveries = []
+    ActionMailer::Base.deliveries.clear
   end
   
   scenario "new invitation" do
