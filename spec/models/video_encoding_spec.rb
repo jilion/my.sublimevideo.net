@@ -263,9 +263,9 @@ describe VideoEncoding do
         end
         
         describe "after_transition :on => :activate, :do => :to_be_defined" do
-          it "should send an email to the user when all the first encodings are complete" do
+          it "should send a 'video is ready' email to the user when all the first encodings are complete" do
             video_encoding2 = Factory(:video_encoding, :video => video_encoding.video, :panda_encoding_id => id, :state => 'encoding')
-            ActionMailer::Base.deliveries = []
+            ActionMailer::Base.deliveries.clear
             
             video_encoding.should be_first_encoding
             video_encoding.activate
@@ -273,26 +273,30 @@ describe VideoEncoding do
             ActionMailer::Base.deliveries.size.should == 0
             
             video_encoding2.should be_first_encoding
-            video_encoding2.activate
-            ActionMailer::Base.deliveries.size.should == 1
-            puts ActionMailer::Base.deliveries.inspect
+            # mail sent for the first "all encodes are complete"
+            lambda { video_encoding2.activate }.should change(ActionMailer::Base.deliveries, :size).by(1)
+            
+            last_delivery = ActionMailer::Base.deliveries.last
+            last_delivery.from.should == ["no-response@sublimevideo.net"]
+            last_delivery.to.should include video_encoding.video.user.email
+            last_delivery.subject.should include "Your video &ldquo;#{video_encoding.video.title}&rdquo; is now ready!"
+            last_delivery.body.should include "http://#{ActionMailer::Base.default_url_options}/videos"
           end
           
-          it "should not send an email to the user when a re-encoding is complete" do
+          it "should not send a 'video is ready' email to the user when a re-encoding is complete" do
             video_encoding2 = Factory(:video_encoding, :video => video_encoding.video, :panda_encoding_id => id, :state => 'encoding')
-            ActionMailer::Base.deliveries = []
+            ActionMailer::Base.deliveries.clear
             
-            video_encoding.activate
-            video_encoding2.activate
-            ActionMailer::Base.deliveries.size.should == 1
+            # mail sent for the first "all encodes are complete"
+            lambda do
+              video_encoding.activate
+              video_encoding2.activate
+            end.should change(ActionMailer::Base.deliveries, :size).by(1)
             
             # re-encode this video
             video_encoding.pandize
             video_encoding.should_not be_first_encoding
-            ActionMailer::Base.deliveries.size.should == 1
-            video_encoding.activate
-            ActionMailer::Base.deliveries.size.should == 1
-            puts ActionMailer::Base.deliveries.inspect
+            lambda { video_encoding.activate }.should_not change(ActionMailer::Base.deliveries, :size)
           end
         end
         

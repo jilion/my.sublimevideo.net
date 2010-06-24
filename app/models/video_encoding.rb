@@ -36,7 +36,6 @@ class VideoEncoding < ActiveRecord::Base
   # = Scopes =
   # ==========
   
-  # scope :pending,      where(:state => 'pending')
   scope :encoding,     where(:state => 'encoding')
   scope :active,       where(:state => 'active')
   scope :suspended,    where(:state => 'suspended')
@@ -57,7 +56,7 @@ class VideoEncoding < ActiveRecord::Base
     before_transition :on => :pandize, :do => :create_panda_encoding_and_set_info
     after_transition  :on => :pandize, :do => :delay_check_panda_encoding_status
     
-    before_transition :on => :activate, :do => :notify_user
+    before_transition :on => :activate, :do => :deliver_video_active, :if => :all_first_encodings_complete?
     before_transition :on => :activate, :do => [:set_file, :set_encoding_info, :set_video_thumbnail]
     after_transition  :on => :activate, :do => [:deprecate_encodings, :delete_panda_encoding, :conform_to_video_state]
     
@@ -113,6 +112,10 @@ class VideoEncoding < ActiveRecord::Base
     encoding? && !file.present?
   end
   
+  def all_first_encodings_complete?
+    !file.present? && video.encodings.where(:id.ne => id).all? { |e| e.active? }
+  end
+  
 protected
   
   # before_transition (pandize)
@@ -121,6 +124,7 @@ protected
     
     if encoding_info.key? :error
       HoptoadNotifier.notify("VideoEncoding (#{id}) panda encoding creation error: #{encoding_info[:message]}")
+      fail
     else
       self.panda_encoding_id = encoding_info[:id]
       self.extname           = encoding_info[:extname]
@@ -141,15 +145,14 @@ protected
         delay_check_panda_encoding_status
       else
         HoptoadNotifier.notify("VideoEncoding (#{id}) panda encoding is failed.")
+        fail
       end
     end
   end
   
   # before_transition (activate)
-  def notify_user
-    unless file.present?
-      video.encodings.with_profile(profile).where(:state => %w[active failed], :id.ne => id).map(&:deprecate)
-    end
+  def deliver_video_active
+    VideoMailer.video_active(self.video).deliver
   end
   
   # before_transition (activate)
