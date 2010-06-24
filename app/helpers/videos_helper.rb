@@ -17,7 +17,7 @@ module VideosHelper
   def video_tags_for(video, *args)
     options = args.extract_options!
 <<-EOS
-<video class='sublime' poster='http://#{Log::Cloudfront::Download.config[:hostname]}/#{video.thumbnail.path}' width='#{options[:width]}' height='#{options[:height]}'>
+<video class='sublime' poster='http://#{Log::Amazon::Cloudfront::Download.config[:hostname]}/#{video.thumbnail.path}' width='#{options[:width]}' height='#{options[:height]}'>
   #{video.encodings.inject([]) { |html,f| html << source_tag_for(f) }.join(" ")}
 </video>
 EOS
@@ -38,7 +38,7 @@ EOS
 private
   
   def source_tag_for(video_encoding)
-    "<source src='http://#{Log::Cloudfront::Download.config[:hostname]}/#{video_encoding.file.path}' type='video/#{video_encoding.extname}' />"
+    "<source src='http://#{Log::Amazon::Cloudfront::Download.config[:hostname]}/#{video_encoding.file.path}' type='video/#{video_encoding.extname}' />"
   end
   
   def milliseconds_to_duration(milliseconds)
