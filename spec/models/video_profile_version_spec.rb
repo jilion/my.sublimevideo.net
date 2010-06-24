@@ -88,7 +88,7 @@ describe VideoProfileVersion do
       
       describe "callbacks" do
         let(:video_profile_version) { Factory(:video_profile_version, :profile => video_profile) }
-        let(:params) { { :title => "#{video_profile.title} #1", :extname => video_profile.extname, :width => video_profile_version.width, :height => video_profile_version.height, :command => video_profile_version.command } }
+        let(:params) { { :title => "#{video_profile.title} #1", :extname => ".#{video_profile.extname}", :width => video_profile_version.width, :height => video_profile_version.height, :command => video_profile_version.command } }
         
         describe "before_transition :on => :pandize, :do => :create_panda_profile_and_set_info" do
           it "should send a post request to Panda" do

@@ -31,7 +31,7 @@ describe VideoEncoding do
     its(:panda_encoding_id)   { should be_nil     }
     its(:started_encoding_at) { should be_present }
     its(:encoding_time)       { should == 1       }
-    its(:extname)             { should == '.mp4'  }
+    its(:extname)             { should == 'mp4'  }
     its(:file_size)           { should == 123456  }
     its(:width)               { should == 640     }
     its(:height)              { should == 480     }
@@ -75,7 +75,7 @@ describe VideoEncoding do
       end
       
       describe "callbacks" do
-        let(:video_encoding) { Factory(:video_encoding) }
+        let(:video_encoding) { Factory(:video_encoding, :extname => nil, :width => nil, :height => nil) }
         let(:params) { { :video_id => video_encoding.video.panda_video_id, :profile_id => video_encoding.profile_version.panda_profile_id } }
         
         describe "before_transition :on => :pandize, :do => :create_panda_encoding_and_set_info" do
@@ -87,7 +87,7 @@ describe VideoEncoding do
           it "should set encoding info" do
             video_encoding.pandize
             video_encoding.panda_encoding_id.should == id
-            video_encoding.extname.should           == '.mp4'
+            video_encoding.extname.should           == 'mp4'
             video_encoding.width.should             == 480
             video_encoding.height.should            == 320
             video_encoding.should be_encoding
@@ -165,7 +165,7 @@ describe VideoEncoding do
         describe "before_transition :on => :activate, :do => :set_file" do
           it "should set file to the encoding's file" do
             video_encoding.activate
-            video_encoding.file.url.should =~ %r(videos/#{video_encoding.video.token}/#{video_encoding.video.name}#{video_encoding.profile.name}#{video_encoding.extname})
+            video_encoding.file.url.should =~ %r(videos/#{video_encoding.video.token}/#{video_encoding.video.name}#{video_encoding.profile.name}.#{video_encoding.extname})
           end
         end
         
@@ -269,7 +269,7 @@ describe VideoEncoding do
             
             video_encoding.should be_first_encoding
             video_encoding.activate
-            video_encoding.file.url.should =~ %r(videos/#{video_encoding.video.token}/#{video_encoding.video.name}#{video_encoding.profile.name}#{video_encoding.extname})
+            video_encoding.file.url.should =~ %r(videos/#{video_encoding.video.token}/#{video_encoding.video.name}#{video_encoding.profile.name}.#{video_encoding.extname})
             ActionMailer::Base.deliveries.size.should == 0
             
             video_encoding2.should be_first_encoding
@@ -317,7 +317,7 @@ describe VideoEncoding do
       end
       
       it "should set the state as :failed from :encoding" do
-        video_encoding = Factory(:video_encoding, :panda_encoding_id => id, :state => 'encoding', :extname => '.mp4', :encoding_time => 1, :started_encoding_at => Time.now)
+        video_encoding = Factory(:video_encoding, :panda_encoding_id => id, :state => 'encoding', :extname => 'mp4', :encoding_time => 1, :started_encoding_at => Time.now)
         video_encoding.should be_encoding
         video_encoding.fail
         video_encoding.should be_failed
@@ -560,12 +560,6 @@ describe VideoEncoding do
   
   describe "Instance Methods" do
     let(:video_encoding) { Factory(:video_encoding, :panda_encoding_id => id, :state => 'encoding') }
-    
-    describe "#type" do
-      it "should return 'ext' if profile.extname == '.ext'" do
-        video_encoding.type.should == 'mp4'
-      end
-    end
     
     describe "#first_encoding?" do
       it "should be true if file is not present and state is encoding" do

@@ -40,9 +40,9 @@ describe VideoProfile do
       video_profile.errors[:extname].should be_present
     end
     it "should validate uniqueness of [:name, :extname]" do
-      video_profile = Factory.create(:video_profile, :name => '720p', :extname => '.mp4')
-      video_profile2 = Factory.create(:video_profile, :name => '720i', :extname => '.mp4')
-      video_profile3 = Factory.build(:video_profile, :name => '720p', :extname => '.mp4')
+      video_profile = Factory.create(:video_profile, :name => '720p', :extname => 'mp4')
+      video_profile2 = Factory.create(:video_profile, :name => '720i', :extname => 'mp4')
+      video_profile3 = Factory.build(:video_profile, :name => '720p', :extname => 'mp4')
       video_profile3.should_not be_valid
       video_profile3.errors[:name].should be_present
     end

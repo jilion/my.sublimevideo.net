@@ -101,7 +101,7 @@ describe Video do
             video.original_filename.should == "railscast_intro.mov"
             video.video_codec.should       == "h264"
             video.audio_codec.should       == "aac"
-            video.extname.should           == ".mov"
+            video.extname.should           == "mov"
             video.file_size.should         == 17236
             video.duration.should          == 1160
             video.width.should             == 480
@@ -399,19 +399,19 @@ describe Video do
   
   describe "Instance Methods" do
     # SOMETIMES PROBLEM HERE WHEN RUNNING ALL SPECS
-    let(:video) { Factory(:video, :original_filename => 'hey_ho.mp4', :extname => '.mp4', :file_size => 1000) }
+    let(:video) { Factory(:video, :original_filename => 'hey_ho.mp4', :extname => 'mp4', :file_size => 1000) }
     
     describe "#name" do
       it "should return name used in the filename of the Video file" do
         video.original_filename.should == 'hey_ho.mp4'
-        video.extname.should == '.mp4'
+        video.extname.should == 'mp4'
         video.name.should == 'hey_ho'
       end
       
       it "should return '' if no original_filename" do
         video.update_attribute(:original_filename, nil)
         video.original_filename.should be_nil
-        video.extname.should == '.mp4'
+        video.extname.should == 'mp4'
         video.name.should == ''
       end
       

@@ -48,7 +48,7 @@ feature "New video profile" do
     fill_in "Title",       :with => "iPhone 720p"
     fill_in "Description", :with => "A Sublime profile"
     fill_in "Name",        :with => "_iphone_720p"
-    fill_in "Extname",     :with => ".mp4"
+    fill_in "Extname",     :with => "mp4"
     check "Thumbnailable"
     click_button "Create"
     
@@ -56,13 +56,13 @@ feature "New video profile" do
     
     page.should have_content('iPhone 720p')
     page.should have_content('_iphone_720p')
-    page.should have_content('.mp4')
+    page.should have_content('mp4')
     
     profile = VideoProfile.last
     profile.title.should == "iPhone 720p"
     profile.description.should == "A Sublime profile"
     profile.name.should == "_iphone_720p"
-    profile.extname.should == ".mp4"
+    profile.extname.should == "mp4"
     profile.thumbnailable.should be_true
   end
 end
@@ -102,7 +102,7 @@ end
 feature "Video profiles edit" do
   background do
     sign_in_as_admin
-    @video_profile = Factory(:video_profile, :title => "Profile 1", :name => "_iphone_720p", :extname => ".mp4")
+    @video_profile = Factory(:video_profile, :title => "Profile 1", :name => "_iphone_720p", :extname => "mp4")
   end
   
   scenario "list video profiles" do
@@ -118,6 +118,6 @@ feature "Video profiles edit" do
     
     page.should have_content('iPhone 1080p')
     page.should have_content('_iphone_720p')
-    page.should have_content('.mp4')
+    page.should have_content('mp4')
   end
 end

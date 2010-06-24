@@ -16,7 +16,7 @@ class VideoUploader < CarrierWave::Uploader::Base
   
   # Override the filename of the uploaded files
   def filename
-    "#{model.video.name}#{model.profile.name}#{model.extname}" if original_filename
+    "#{model.video.name}#{model.profile.name}.#{model.extname}" if original_filename
   end
   
 end

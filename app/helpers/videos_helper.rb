@@ -38,7 +38,7 @@ EOS
 private
   
   def source_tag_for(video_encoding)
-    "<source src='http://#{Log::Cloudfront::Download.config[:hostname]}/#{video_encoding.file.path}' type='video/#{video_encoding.type || 'unknow'}' />"
+    "<source src='http://#{Log::Cloudfront::Download.config[:hostname]}/#{video_encoding.file.path}' type='video/#{video_encoding.extname}' />"
   end
   
   def milliseconds_to_duration(milliseconds)

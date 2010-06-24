@@ -104,10 +104,6 @@ class VideoEncoding < ActiveRecord::Base
   # = Instance Methods =
   # ====================
   
-  def type
-    profile.extname[1..-1] # '.mp4' => 'mp4'
-  end
-  
   def first_encoding?
     encoding? && !file.present?
   end
@@ -127,7 +123,7 @@ protected
       fail
     else
       self.panda_encoding_id = encoding_info[:id]
-      self.extname           = encoding_info[:extname]
+      self.extname           = encoding_info[:extname].gsub('.','') if encoding_info[:extname]
       self.width             = encoding_info[:width]
       self.height            = encoding_info[:height]
     end
@@ -157,7 +153,7 @@ protected
   
   # before_transition (activate)
   def set_file
-    self.remote_file_url = "#{self.class.panda_s3_url}/#{panda_encoding_id}#{extname}"
+    self.remote_file_url = "#{self.class.panda_s3_url}/#{panda_encoding_id}.#{extname}"
   end
   
   # before_transition (activate) / before_transition (encoding => archived)

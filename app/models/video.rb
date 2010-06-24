@@ -107,7 +107,7 @@ class Video < ActiveRecord::Base
   end
   
   def name
-    original_filename && extname ? original_filename.sub(extname, '') : ''
+    original_filename && extname ? original_filename.sub(".#{extname}", '') : ''
   end
   
   def total_size
@@ -124,7 +124,7 @@ protected
     self.original_filename = video_info[:original_filename].strip
     self.video_codec       = video_info[:video_codec]
     self.audio_codec       = video_info[:audio_codec]
-    self.extname           = video_info[:extname]
+    self.extname           = video_info[:extname].gsub('.','') if video_info[:extname]
     self.file_size         = video_info[:file_size]
     self.duration          = video_info[:duration]
     self.width             = video_info[:width]

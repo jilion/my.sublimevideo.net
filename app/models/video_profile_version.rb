@@ -71,7 +71,7 @@ protected
   
   # before_transition (pandize)
   def create_panda_profile_and_set_info
-    profile_info = Transcoder.post(:profile, { :title => "#{profile.title} ##{profile.versions.size + 1}", :extname => profile.extname, :width => width, :height => height, :command => command })
+    profile_info = Transcoder.post(:profile, { :title => "#{profile.title} ##{profile.versions.size + 1}", :extname => ".#{profile.extname}", :width => width, :height => height, :command => command })
     
     if profile_info.key? :error
       HoptoadNotifier.notify("VideoProfileVersion (#{id}) panda profile creation error: #{profile_info[:message]}")
