@@ -391,7 +391,7 @@ sources:
 - Git: 
     uri: git://github.com/rymai/devise_invitable.git
     git: git://github.com/rymai/devise_invitable.git
-    ref: 0de9f8caa9f86215e4b793bebe98f621a67c719f
+    ref: 69a23267b4db688fc9b161b53dde3de1355b597f
 - Git: 
     uri: git://github.com/thibaudgg/voxel_hapi.git
     git: git://github.com/thibaudgg/voxel_hapi.git

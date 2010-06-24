@@ -16,7 +16,11 @@ module VideosHelper
   
   def video_tags_for(video, *args)
     options = args.extract_options!
-    "<video class='sublime' poster='http://cdn.sublimevideo.net#{video.thumbnail.url}' width='#{options[:width]}' height='#{options[:height]}'>\n#{video.encodings.inject([]) { |html,f| html << source_tag_for(f) }.join(" ")}\n</video>"
+<<-EOS
+<video class='sublime' poster='http://cdn.sublimevideo.net#{video.thumbnail.url}' width='#{options[:width]}' height='#{options[:height]}'>
+  #{video.encodings.inject([]) { |html,f| html << source_tag_for(f) }.join(" ")}
+</video>
+EOS
   end
   
   def panda_uploader_js(field_id)
