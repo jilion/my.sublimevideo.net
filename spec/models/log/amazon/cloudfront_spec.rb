@@ -16,7 +16,7 @@
 
 require 'spec_helper'
 
-describe Log::Cloudfront do
+describe Log::Amazon::Cloudfront do
   
   context "built with valid attributes" do
     subject { Factory.build(:log_cloudfront_download, :name => 'E3KTK13341WJO.2010-06-16-08.2Knk9kOC.gz') }
@@ -28,7 +28,7 @@ describe Log::Cloudfront do
     
     it "should set hostname from logs.yml before_validation" do
       should be_valid
-      subject.hostname == Log::Cloudfront::Download.config[:hostname]
+      subject.hostname == Log::Amazon::Cloudfront::Download.config[:hostname]
     end
     it "should set file from name and bypass CarrierWave" do
       should be_valid
@@ -39,7 +39,7 @@ describe Log::Cloudfront do
   describe "Class Methods" do
     it "should download and save new logs & launch delayed job" do
       VCR.use_cassette('s3/logs_bucket_with_prefix') do
-        lambda { Log::Cloudfront::Download.fetch_and_create_new_logs }.should change(Log::Cloudfront::Download, :count).by(6)
+        lambda { Log::Amazon::Cloudfront::Download.fetch_and_create_new_logs }.should change(Log::Amazon::Cloudfront::Download, :count).by(6)
         Delayed::Job.last.name.should == 'Class#fetch_and_create_new_logs'
       end
     end
@@ -48,7 +48,7 @@ describe Log::Cloudfront do
       VCR.use_cassette('s3/logs_bucket_with_prefix_and_marker') do
         Factory(:log_cloudfront_download, :name => 'E3KTK13341WJO.2010-06-17-11.O5iQjgcX.gz')
         Factory(:log_cloudfront_download, :name => 'E3KTK13341WJO.2009-06-17-11.O5iQjgcX.gz')
-        lambda { Log::Cloudfront::Download.fetch_and_create_new_logs }.should change(Log::Cloudfront::Download, :count).by(3)
+        lambda { Log::Amazon::Cloudfront::Download.fetch_and_create_new_logs }.should change(Log::Amazon::Cloudfront::Download, :count).by(3)
       end
     end
   end

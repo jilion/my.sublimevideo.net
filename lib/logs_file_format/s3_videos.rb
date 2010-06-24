@@ -1,5 +1,5 @@
 module LogsFileFormat
-  class S3Video < RequestLogAnalyzer::FileFormat::Base
+  class S3Videos < RequestLogAnalyzer::FileFormat::Base
     extend RequestLogAnalyzer::FileFormat::CommonRegularExpressions
     
     line_definition :access do |line|
