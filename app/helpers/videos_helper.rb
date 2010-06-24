@@ -17,7 +17,7 @@ module VideosHelper
   def video_tags_for(video, *args)
     options = args.extract_options!
 <<-EOS
-<video class='sublime' poster='http://cdn.sublimevideo.net#{video.thumbnail.url}' width='#{options[:width]}' height='#{options[:height]}'>
+<video class='sublime' poster='http://#{Log::Cloudfront::Download.config[:hostname]}/#{video.thumbnail.path}' width='#{options[:width]}' height='#{options[:height]}'>
   #{video.encodings.inject([]) { |html,f| html << source_tag_for(f) }.join(" ")}
 </video>
 EOS
@@ -26,7 +26,7 @@ EOS
   def panda_uploader_js(field_id)
     (<<-EOS
     jQuery('##{field_id}').pandaUploader(#{Panda.signed_params('post', '/videos.json',
-      { :state_update_url => "#{HOST}/videos/$id/transcoded", :profiles => '5e08a5612e8982ef2f7482e0782bbe02' }).to_json },
+      { :state_update_url => "http://#{request.host_with_port}/videos/$id/transcoded", :profiles => '5e08a5612e8982ef2f7482e0782bbe02' }).to_json },
       { upload_button_id:'upload_button',
         upload_progress_id:'upload_indicator',
         upload_filename_id:'upload_filename'
@@ -38,7 +38,7 @@ EOS
 private
   
   def source_tag_for(video_encoding)
-    "<source src='http://cdn.sublimevideo.net#{video_encoding.file.url}' type='video/#{video_encoding.type || 'unknow'}' />"
+    "<source src='http://#{Log::Cloudfront::Download.config[:hostname]}/#{video_encoding.file.path}' type='video/#{video_encoding.type || 'unknow'}' />"
   end
   
   def milliseconds_to_duration(milliseconds)

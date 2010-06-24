@@ -1,12 +1,9 @@
 = title_and_content_header("New version for video profile #{content_tag(:em, @profile.title)}")
 
 = form_for [:admin, @profile, @version], :url => admin_profile_versions_path(@profile), :html => { :class => "version" } do |f|
-  .entry.width
-    = f.label :width
-    = f.text_field :width, :class => "text", :placeholder => "640", :required => true, :autocomplete => :off
-  .entry.height
-    = f.label :height
-    = f.text_field :height, :class => "text", :placeholder => "380", :required => true, :autocomplete => :off
+  = f.hidden_field :width, :value => '0'
+  = f.hidden_field :height, :value => '0'
+  
   .entry.command
     = f.label :command
     = f.text_area :command, :class => "text", :required => true, :autocomplete => :off, :rows => 10, :cols => 50

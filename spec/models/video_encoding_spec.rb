@@ -155,6 +155,12 @@ describe VideoEncoding do
       # SOMETIMES PROBLEM HERE WHEN RUNNING ALL SPECS
       let(:video_encoding) { Factory(:video_encoding, :panda_encoding_id => id, :state => 'encoding') }
       
+      it "should set the state as :active from :encoding" do
+        video_encoding.should be_encoding
+        video_encoding.activate
+        video_encoding.should be_active
+      end
+      
       describe "callbacks" do
         describe "before_transition :on => :activate, :do => :set_file" do
           it "should set file to the encoding's file" do
