@@ -776,12 +776,12 @@ ul#trial_legend li em {
 
 #trial_box a.warning {
   display:block;
-  width:24px;
-  height:23px;
-  background:url(/images/embed/warning_icon.png) no-repeat;
+  width:18px;
+  height:17px;
+  background:url(/images/embed/warning_small_icon.png) no-repeat;
   position:absolute;
-  top:23px;
-  left:-32px;
+  top:27px;
+  left:-25px;
   cursor:default;
 }
 
@@ -791,8 +791,8 @@ ul#trial_legend li em {
   width:219px;
   height:151px;
   background:url(/images/embed/trial_warning_box.png) no-repeat;
-  top:-15px;
-  left:-222px;
+  top:-16px;
+  left:-220px;
 }
 
 #trial_box a.warning:hover span {display:block;}
