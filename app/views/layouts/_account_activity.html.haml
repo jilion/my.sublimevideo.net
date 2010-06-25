@@ -26,10 +26,11 @@
       -#    %em.bullet{ :class => current_user.trial_player_hits_percentage >= current_user.trial_loader_hits_percentage ? "active" : "" }= "Player hits: #{number_with_delimiter(current_user.trial_player_hits)} (#{current_user.trial_player_hits_percentage}%)<br />".html_safe
       - unless current_user.credit_card?
         .credit_card
-          = link_to "", :class => "credit_card_info" do
+          = link_to edit_credit_card_path, :class => "add_a_credit_card" do
+            %strong= "Add a Credit Card"
             %span
               %em= "We invite you to add your credit card to prevent any cut in the player delivery when your trial will end."
-          = link_to "Add a Credit Card", edit_credit_card_path, :class => "add_a_credit_card"
+            
   - else
     - if current_user.credit_card?
       - current_invoice = Invoice.current(current_user)
