@@ -36,7 +36,7 @@ class VideosController < ApplicationController
     
     respond_with(@video) do |format|
       if @video.save
-        @video.delay.pandize!
+        @video.delay(:priority => 4).pandize!
         format.html { redirect_to videos_path }
         format.js
       else
@@ -73,7 +73,7 @@ class VideosController < ApplicationController
   # GET /videos/d891d9a45c698d587831466f236c6c6c/transcoded - Notification url called by Panda, should be a POST
   def transcoded
     @video = Video.find_by_panda_video_id!(params[:id])
-    @video.delay.activate
+    @video.delay(:priority => 6).activate
     head :ok
   end
   
