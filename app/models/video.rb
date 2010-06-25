@@ -115,7 +115,25 @@ class Video < ActiveRecord::Base
   end
   
   def total_size
-    encodings.active.inject([file_size]){ |memo,e| memo << e.file_size }.compact.sum
+    encodings.not_deprecated.inject([file_size]){ |memo,e| memo << e.file_size }.compact.sum
+  end
+  
+  def check_panda_encodings_status
+    if encoding?
+      encodings_info = Transcoder.get([:video, :encodings], panda_video_id)
+      if encodings_info.all? { |encoding_info| encoding_info[:status] == 'success' }
+        delay(:priority => 6).activate
+      else
+        encodings_info.each do |encoding_info|
+          if encoding_info[:status] == 'failed'
+            encoding = encodings.where(:panda_encoding_id => encoding_info[:id]).first
+            HoptoadNotifier.notify("VideoEncoding (#{encoding.id}) panda encoding is failed.")
+            encoding.fail
+          end
+        end
+        delay_check_panda_encodings_status
+      end
+    end
   end
   
 protected
@@ -123,16 +141,16 @@ protected
   # before_transition (pandize)
   def set_encoding_info
     video_info             = Transcoder.get(:video, panda_video_id)
-    self.original_filename = video_info[:original_filename].strip
+    self.extname           = video_info[:extname].gsub('.','') # if video_info[:extname]
+    self.original_filename = sanitize_filename(video_info[:original_filename]) # sanitize this !!
     self.video_codec       = video_info[:video_codec]
     self.audio_codec       = video_info[:audio_codec]
-    self.extname           = video_info[:extname].gsub('.','') if video_info[:extname]
     self.file_size         = video_info[:file_size]
     self.duration          = video_info[:duration]
     self.width             = video_info[:width]
     self.height            = video_info[:height]
     self.fps               = video_info[:fps]
-    self.title             = original_filename.sub(".#{extname}", '').titleize
+    self.title             = titleize_filename(video_info[:original_filename])
   end
   
   # after_transition (pandize)
@@ -142,6 +160,11 @@ protected
       encoding.save!
       encoding.delay(:priority => 5).pandize!
     end
+  end
+  
+  # after_transition (pandize)
+  def delay_check_panda_encodings_status
+    delay(:priority => 9, :run_at => 5.minutes.from_now).check_panda_encodings_status
   end
   
   # before_transition (activate)
@@ -169,7 +192,7 @@ protected
     self.archived_at = Time.now.utc
   end
   def archive_encodings
-    encodings.each { |e| e.delay(:priority => 10).archive }
+    encodings.not_deprecated.each { |e| e.delay(:priority => 8).archive }
   end
   def remove_video
     Transcoder.delay(:priority => 7).delete(:video, panda_video_id)

@@ -36,9 +36,10 @@ class VideoEncoding < ActiveRecord::Base
   # = Scopes =
   # ==========
   
-  scope :encoding,     where(:state => 'encoding')
-  scope :active,       where(:state => 'active')
-  scope :suspended,    where(:state => 'suspended')
+  scope :encoding,       where(:state => 'encoding')
+  scope :active,         where(:state => 'active')
+  scope :suspended,      where(:state => 'suspended')
+  scope :not_deprecated, where(:state.ne => 'deprecated')
   scope :with_profile, lambda { |profile| joins(:profile_version).where(["video_profile_versions.video_profile_id = ?", profile.id]) }
   
   # ===============
@@ -120,23 +121,6 @@ protected
       self.extname           = encoding_info[:extname].gsub('.','') if encoding_info[:extname]
       self.width             = encoding_info[:width]
       self.height            = encoding_info[:height]
-    end
-  end
-  
-  # after_transition (pandize)
-  def delay_check_panda_encoding_status
-    delay(:priority => 10, :run_at => 15.minutes.from_now).check_panda_encoding_status
-  end
-  
-  def check_panda_encoding_status
-    unless active?
-      encoding_info = Transcoder.get(:encoding, panda_encoding_id)
-      if encoding_info[:status] != 'failed'
-        delay_check_panda_encoding_status
-      else
-        HoptoadNotifier.notify("VideoEncoding (#{id}) panda encoding is failed.")
-        fail
-      end
     end
   end
   

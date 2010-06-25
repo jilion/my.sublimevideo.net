@@ -131,16 +131,6 @@ describe VideoEncoding do
           end
         end
         
-        describe "after_transition :on => :pandize, :do => :delay_check_panda_encoding_status" do
-          it "should delay the checking of the encoding status" do
-            video_encoding.pandize
-            Delayed::Job.last.name.should == 'VideoEncoding#check_panda_encoding_status'
-            Delayed::Job.last.run_at.hour.should == 15.minutes.from_now.hour
-            minutes = 15.minutes.from_now.min
-            (minutes-1..minutes+1).should include Delayed::Job.last.run_at.min
-          end
-        end
-        
       end
       
       after(:each) { VCR.eject_cassette }
