@@ -1,4 +1,12 @@
-class ThumbnailUploader < CarrierWave::Uploader::Base
+class PosterframeUploader < CarrierWave::Uploader::Base
+  include CarrierWave::RMagick
+  
+  process :convert => 'png'
+  
+  version :thumb do
+    process :resize_to_fill => [160,90]
+    process :convert => 'png'
+  end
   
   def s3_bucket
     "sublimevideo.videos"
@@ -16,7 +24,11 @@ class ThumbnailUploader < CarrierWave::Uploader::Base
   
   # Override the filename of the uploaded files
   def filename
-    "posterframe.jpg" if original_filename
+    "posterframe.png" if original_filename
+  end
+  
+  def default_url
+    [version_name, "default_posterframe.png"].compact.join('_')
   end
   
 end

@@ -54,9 +54,8 @@ class VideoEncoding < ActiveRecord::Base
   
   state_machine :initial => :pending do
     before_transition :on => :pandize, :do => :create_panda_encoding_and_set_info
-    after_transition  :on => :pandize, :do => :delay_check_panda_encoding_status
     
-    before_transition :on => :activate, :do => [:set_file, :set_encoding_info, :set_video_thumbnail]
+    before_transition :on => :activate, :do => [:set_file, :set_encoding_info, :set_video_posterframe]
     after_transition  :on => :activate, :do => [:deprecate_encodings, :delete_panda_encoding, :conform_to_video_state]
     
     before_transition :failed => :deprecated, :do => :delete_panda_encoding
@@ -156,9 +155,9 @@ protected
   end
   
   # before_transition (activate)
-  def set_video_thumbnail
+  def set_video_posterframe
     if profile.thumbnailable?
-      self.video.remote_thumbnail_url = "#{self.class.panda_s3_url}/#{panda_encoding_id}_4.jpg"
+      self.video.remote_posterframe_url = "#{self.class.panda_s3_url}/#{panda_encoding_id}_4.jpg"
       self.video.save!
     end
   end

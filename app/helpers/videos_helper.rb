@@ -10,14 +10,14 @@ module VideosHelper
     video.blank? ? "" : "Uploaded on #{video.created_at.strftime('%d/%m/%Y')}"
   end
   
-  def thumbnail_tag(video)
-    image_tag(video.thumbnail.url) if video.thumbnail.present?
+  def posterframe_thumb_tag(video)
+    image_tag(video.posterframe.thumb.url) if video.posterframe.present?
   end
   
   def video_tags_for(video, *args)
     options = args.extract_options!
 <<-EOS
-<video class='sublime' poster='http://#{Log::Amazon::Cloudfront::Download.config[:hostname]}/#{video.thumbnail.path}' width='#{options[:width]}' height='#{options[:height]}'>
+<video class='sublime' poster='http://#{Log::Amazon::Cloudfront::Download.config[:hostname]}/#{video.posterframe.path}' width='#{options[:width]}' height='#{options[:height]}'>
   #{video.encodings.inject([]) { |html,f| html << source_tag_for(f) }.join(" ")}
 </video>
 EOS

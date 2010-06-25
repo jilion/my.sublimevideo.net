@@ -3,7 +3,7 @@
     .wrap
       .thumbnail
         .crop
-          = thumbnail_tag(video)
+          = posterframe_thumb_tag(video)
         %span.duration= duration(video)
       .info
         %h3.title{ :title => video.title }= truncate(video.title || "Untitled", :length => 28)

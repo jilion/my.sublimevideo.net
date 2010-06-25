@@ -7,7 +7,7 @@
 #  title             :string(255)
 #  token             :string(255)
 #  state             :string(255)
-#  thumbnail         :string(255)
+#  posterframe       :string(255)
 #  hits_cache        :integer         default(0)
 #  bandwidth_cache   :integer         default(0)
 #  panda_video_id    :string(255)
@@ -30,7 +30,7 @@ class Video < ActiveRecord::Base
   attr_accessible :title
   uniquify :token, :chars => ('a'..'z').to_a + ('0'..'9').to_a
   
-  mount_uploader :thumbnail, ThumbnailUploader
+  mount_uploader :posterframe, PosterframeUploader
   
   cattr_accessor :per_page
   self.per_page = 6
@@ -57,17 +57,13 @@ class Video < ActiveRecord::Base
   validates :user,           :presence => true
   validates :panda_video_id, :presence => true
   
-  # =============
-  # = Callbacks =
-  # =============
-  
   # =================
   # = State Machine =
   # =================
   
   state_machine :initial => :pending do
     before_transition :on => :pandize, :do => :set_encoding_info
-    after_transition  :on => :pandize, :do => :create_encodings
+    after_transition  :on => :pandize, :do => [:create_encodings, :delay_check_panda_encodings_status]
     
     before_transition :on => :activate, :do => :activate_encodings
     after_transition  :on => :activate, :do => :deliver_video_active, :if => :active?
@@ -77,7 +73,7 @@ class Video < ActiveRecord::Base
     before_transition :on => :unsuspend, :do => :unsuspend_encodings
     
     before_transition :on => :archive, :do => [:set_archived_at, :archive_encodings]
-    after_transition  :on => :archive, :do => [:remove_video, :remove_thumbnail!]
+    after_transition  :on => :archive, :do => [:remove_video, :remove_posterframe!]
     
     event(:pandize)   { transition :pending => :encodings }
     event(:activate)  { transition :encodings => :encodings }
@@ -86,13 +82,17 @@ class Video < ActiveRecord::Base
     event(:archive)   { transition [:pending, :encodings, :suspended] => :archived }
   end
   
-  # =================
-  # = Class Methods =
-  # =================
-  
   # ====================
   # = Instance Methods =
   # ====================
+  
+  def sanitize_filename(filename, ext=extname)
+    filename[0...-ext.size].strip.downcase.gsub(/[^a-z\d]/, '_').squeeze('_').chomp('_').reverse.chomp('_').reverse + ".#{ext}"
+  end
+  
+  def titleize_filename(filename, ext=extname)
+    filename.sub(".#{ext}", '').titleize
+  end
   
   def encoding?
     encodings? && encodings.any? { |e| e.first_encoding? }
