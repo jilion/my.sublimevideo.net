@@ -24,8 +24,8 @@ class PosterframeUploader < CarrierWave::Uploader::Base
     "posterframe.jpg" if original_filename
   end
   
-  def default_url
-    [version_name, "default_posterframe.jpg"].compact.join('_')
-  end
+  # def default_url
+  #   [version_name, "default_posterframe.jpg"].compact.join('_')
+  # end
   
 end
