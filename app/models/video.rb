@@ -114,8 +114,12 @@ class Video < ActiveRecord::Base
     original_filename && extname ? original_filename.sub(".#{extname}", '') : ''
   end
   
+  def encodings_size
+    encodings.active.all.sum { |e| e.file_size.to_i }
+  end
+  
   def total_size
-    encodings.active.inject([file_size]){ |memo,e| memo << e.file_size }.compact.sum
+    file_size.to_i + encodings_size
   end
   
 protected

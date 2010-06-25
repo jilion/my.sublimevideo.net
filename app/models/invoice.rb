@@ -154,20 +154,20 @@ private
   
   def calculate_from_cache
     self.sites = Invoice::Sites.new(self, :from_cache => true)
-    # self.videos = Invoice::Videos.new(self, :from_cache => true)
+    self.videos = Invoice::Videos.new(self, :from_cache => true)
     set_amounts
   end
   
   # before_transition (calculate)
   def calculate_from_logs
     self.sites = Invoice::Sites.new(self)
-    # self.videos = Invoice::Videos.new(self, :from_cache => true)
+    self.videos = Invoice::Videos.new(self, :from_cache => true)
     set_amounts
   end
   
   def set_amounts
     self.sites_amount  = sites.amount
-    # self.videos_amount = videos.amount
+    self.videos_amount = videos.amount
     self.amount        = sites_amount + videos_amount
   end
   
