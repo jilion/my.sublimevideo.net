@@ -52,7 +52,7 @@ group :test do
   gem 'spork'
   
   gem 'shoulda'
-  gem 'rspec-rails', '2.0.0.beta.13'
+  gem 'rspec-rails', '>= 2.0.0.beta.14.2'
   # gem "rspec-rails",        :git => "git://github.com/rspec/rspec-rails.git"
   # gem "rspec",              :git => "git://github.com/rspec/rspec.git"
   # gem "rspec-core",         :git => "git://github.com/rspec/rspec-core.git"
