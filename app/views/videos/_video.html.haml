@@ -12,7 +12,7 @@
           %strong= number_with_delimiter(video.hits_cache)
           %em= video.hits_cache == 1 ? 'view' : 'views'
           
-        - unless video.encoding?
+        - if video.active? || video.suspended?
           .storage
             %strong= number_to_human_size(video.total_size, :delimiter => ',')
             = link_to "", :class => "toggle_desc_box", :onclick => "next().toggle(); return false;" do
