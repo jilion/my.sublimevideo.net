@@ -114,11 +114,11 @@ protected
     encoding_info = Transcoder.post(:encoding, { :video_id => video.panda_video_id, :profile_id => profile_version.panda_profile_id })
     
     if encoding_info.key? :error
-      HoptoadNotifier.notify("VideoEncoding (#{id}) panda encoding creation error: #{encoding_info[:message]}")
+      HoptoadNotifier.notify("VideoEncoding (#{id}) panda encoding (panda_encoding_id: #{panda_encoding_id}) creation error: #{encoding_info[:message]}")
       fail
     else
       self.panda_encoding_id = encoding_info[:id]
-      self.extname           = encoding_info[:extname].gsub('.','') if encoding_info[:extname]
+      self.extname           = encoding_info[:extname].try(:gsub, '.', '')
       self.width             = encoding_info[:width]
       self.height            = encoding_info[:height]
     end

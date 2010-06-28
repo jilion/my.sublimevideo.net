@@ -619,10 +619,11 @@ describe Video do
       
       let(:video) { Factory(:video, :state => 'encodings') }
       let(:video_encoding1) { Factory(:video_encoding, :video => video, :panda_encoding_id => '1'*32, :state => 'encoding') }
-      let(:video_encoding2) { Factory(:video_encoding, :video => video, :panda_encoding_id => encoding_id, :state => 'active') }
+      let(:video_encoding2) { Factory(:video_encoding, :video => video, :panda_encoding_id => encoding_id, :state => 'encoding') }
       
       it "should not even check Panda if the video is not currently in the encoding state" do
         video_encoding1.update_attribute(:state, 'active')
+        video_encoding2.update_attribute(:state, 'active')
         video_encoding1.should be_active
         video_encoding2.should be_active
         video.reload.should_not be_encoding
@@ -632,37 +633,50 @@ describe Video do
       end
       
       it "should activate the video if all the encodings are complete on Panda" do
-        video.update_attribute(:panda_video_id, 'all_encodings_complete')
+        video_encoding1.stub!(:activate).and_return(true)
+        video_encoding2.stub!(:activate).and_return(true)
         video_encoding1.should be_encoding
-        video_encoding2.should be_active
+        video_encoding2.should be_encoding
         video.should be_encoding
-        Transcoder.should_receive(:get).with([:video, :encodings], video.panda_video_id).and_return([{ :status => 'success' }, { :status => 'success' }])
-        lambda { video.check_panda_encodings_status }.should change(Delayed::Job, :count).by(1)
-        Delayed::Job.last.name.should == 'Video#activate'
+        Transcoder.should_receive(:get).with([:video, :encodings], video.panda_video_id).and_return([{ :id => '1'*32, :status => 'success' }, { :id => encoding_id, :status => 'success' }])
+        video.should_receive(:activate).and_return(true)
+        lambda { video.check_panda_encodings_status }.should_not change(Delayed::Job, :count)
       end
       
-      it "should not activate the video if not all the encodings are complete on Panda" do
-        video.update_attribute(:panda_video_id, 'not_all_encodings_complete')
-        video.panda_video_id.should == 'not_all_encodings_complete'
+      it "should not activate the video and delay check_panda_encodings_status if any of the encodings are still processing on Panda" do
         video_encoding1.should be_encoding
-        video_encoding2.should be_active
+        video_encoding2.should be_encoding
         video.should be_encoding
-        Transcoder.should_receive(:get).with([:video, :encodings], video.panda_video_id).and_return([{ :status => 'encoding' }, { :status => 'success' }])
+        Transcoder.should_receive(:get).with([:video, :encodings], video.panda_video_id).and_return([{ :id => '1'*32, :status => 'processing' }, { :id => encoding_id, :status => 'success' }])
+        video.should_not_receive(:activate)
         lambda { video.check_panda_encodings_status }.should change(Delayed::Job, :count).by(1)
         Delayed::Job.last.name.should == 'Video#check_panda_encodings_status'
-        video.should be_encoding
       end
       
-      it "should not activate the video if not all the encodings are complete on Panda and fail each failed panda encoding" do
-        video.update_attribute(:panda_video_id, 'one_encoding_failed')
+      it "should activate each video with the 'success' panda status and not re-call delay_check_panda_encodings_status" do
         video_encoding1.should be_encoding
-        video_encoding2.should be_active
+        video_encoding2.should be_encoding
         video.should be_encoding
-        Transcoder.should_receive(:get).with([:video, :encodings], video.panda_video_id).and_return([{ :status => 'failed', :id => video_encoding1.panda_encoding_id }, { :status => 'success' }])
+        Transcoder.should_receive(:get).with([:video, :encodings], video.panda_video_id).and_return([{ :id => '1'*32, :status => 'success' }, { :id => encoding_id, :status => 'failed' }])
+        # Transcoder.should_receive(:get).with(:cloud, PandaConfig.cloud_id).and_return({ :s3_videos_bucket => '' })
+        Transcoder.should_receive(:get).with(:encoding, video_encoding1.panda_encoding_id).and_return({ :status => 'success', :file_size => 1234, :started_encoding_at => Time.now.to_s, :encoding_time => 1 })
         HoptoadNotifier.should_receive(:notify, "VideoEncoding (#{video_encoding1.id}) panda encoding is failed.")
-        lambda { video.check_panda_encodings_status }.should change(Delayed::Job, :count).by(1)
-        Delayed::Job.last.name.should == 'Video#check_panda_encodings_status'
+        lambda { video.check_panda_encodings_status }.should_not change(Delayed::Job, :count)
+        video_encoding1.reload.should be_active
+        video_encoding2.reload.should be_failed
+        video.reload.should be_error
+      end
+      
+      it "should fail each video with the 'failed' panda status, send an Hoptoad notification and not re-call delay_check_panda_encodings_status" do
+        video_encoding1.should be_encoding
+        video_encoding2.should be_encoding
+        video.should be_encoding
+        Transcoder.should_receive(:get).with([:video, :encodings], video.panda_video_id).and_return([{ :id => '1'*32, :status => 'failed' }, { :id => encoding_id, :status => 'encoding' }])
+        HoptoadNotifier.should_receive(:notify, "VideoEncoding (#{video_encoding1.id}) panda encoding is failed.")
+        lambda { video.check_panda_encodings_status }.should_not change(Delayed::Job, :count)
         video_encoding1.reload.should be_failed
+        video_encoding2.should be_encoding
+        video.should be_encoding
       end
       
       after(:each) { VCR.eject_cassette }

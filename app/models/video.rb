@@ -122,16 +122,22 @@ class Video < ActiveRecord::Base
     if encoding?
       encodings_info = Transcoder.get([:video, :encodings], panda_video_id)
       if encodings_info.all? { |encoding_info| encoding_info[:status] == 'success' }
-        delay(:priority => 6).activate
+        self.activate
+      elsif encodings_info.any? { |encoding_info| encoding_info[:status] == 'processing' }
+        delay_check_panda_encodings_status
       else
         encodings_info.each do |encoding_info|
-          if encoding_info[:status] == 'failed'
-            encoding = encodings.where(:panda_encoding_id => encoding_info[:id]).first
-            HoptoadNotifier.notify("VideoEncoding (#{encoding.id}) panda encoding is failed.")
-            encoding.fail
+          encoding = encodings.find_by_panda_encoding_id(encoding_info[:id])
+          if encoding.encoding?
+            case encoding_info[:status]
+            when 'success'
+              encoding.activate
+            when 'failed'
+              HoptoadNotifier.notify("VideoEncoding (#{encoding.id}) panda encoding (panda_encoding_id: #{encoding.panda_encoding_id}) is failed.")
+              encoding.fail
+            end
           end
         end
-        delay_check_panda_encodings_status
       end
     end
   end
@@ -141,8 +147,8 @@ protected
   # before_transition (pandize)
   def set_encoding_info
     video_info             = Transcoder.get(:video, panda_video_id)
-    self.extname           = video_info[:extname].gsub('.','') # if video_info[:extname]
-    self.original_filename = sanitize_filename(video_info[:original_filename]) # sanitize this !!
+    self.extname           = video_info[:extname].try(:gsub, '.', '')
+    self.original_filename = sanitize_filename(video_info[:original_filename])
     self.video_codec       = video_info[:video_codec]
     self.audio_codec       = video_info[:audio_codec]
     self.file_size         = video_info[:file_size]
