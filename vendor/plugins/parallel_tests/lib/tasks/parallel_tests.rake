@@ -28,7 +28,7 @@ namespace :parallel do
       $LOAD_PATH << File.expand_path(File.join(File.dirname(__FILE__), '..'))
       require "parallel_tests"
       count, prefix, options = ParallelTests.parse_rake_args(args)
-      exec "#{File.join(File.dirname(__FILE__), '..', '..', 'bin', 'parallel_test')} --type #{type} -n #{count} -p '#{prefix}' -r '#{Rails.root}' -o '#{options}'"
+      exec "#{File.join(File.dirname(__FILE__), '..', '..', 'bin', 'parallel_test')} --type #{type} -n #{count} -p '#{prefix}' -r '#{RAILS_ROOT}' -o '#{options}'"
     end
   end
 end

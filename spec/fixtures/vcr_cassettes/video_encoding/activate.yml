@@ -322,34 +322,3 @@
         message: OK
         read: true
     http_version: "1.1"
-- !ruby/struct:VCR::HTTPInteraction 
-  request: !ruby/struct:VCR::Request 
-    method: :get
-    uri: http://s3.amazonaws.com:80/sublimevideo.panda/ab6be8bb1bcf506842264304bc1bb479mp4
-    body: 
-    headers: 
-      accept: 
-      - "*/*"
-      host: 
-      - s3.amazonaws.com
-  response: !ruby/struct:VCR::Response 
-    status: !ruby/struct:VCR::ResponseStatus 
-      code: 404
-      message: Not Found
-    headers: 
-      x-amz-id-2: 
-      - yV52PiK38r9ZhCWqD0FjxlwOKNRUrbfCI5nP/ffDhmBdByTj1PypVoLQDr8FwYEd
-      content-type: 
-      - application/xml
-      date: 
-      - Thu, 24 Jun 2010 18:44:18 GMT
-      server: 
-      - AmazonS3
-      x-amz-request-id: 
-      - 6AF530B3CDF67A35
-      transfer-encoding: 
-      - chunked
-    body: |-
-      <?xml version="1.0" encoding="UTF-8"?>
-      <Error><Code>NoSuchKey</Code><Message>The specified key does not exist.</Message><Key>ab6be8bb1bcf506842264304bc1bb479mp4</Key><RequestId>6AF530B3CDF67A35</RequestId><HostId>yV52PiK38r9ZhCWqD0FjxlwOKNRUrbfCI5nP/ffDhmBdByTj1PypVoLQDr8FwYEd</HostId></Error>
-    http_version: "1.1"

@@ -36,9 +36,10 @@ class VideoEncoding < ActiveRecord::Base
   # = Scopes =
   # ==========
   
-  scope :encoding,     where(:state => 'encoding')
-  scope :active,       where(:state => 'active')
-  scope :suspended,    where(:state => 'suspended')
+  scope :encoding,       where(:state => 'encoding')
+  scope :active,         where(:state => 'active')
+  scope :suspended,      where(:state => 'suspended')
+  scope :not_deprecated, where(:state.ne => 'deprecated')
   scope :with_profile, lambda { |profile| joins(:profile_version).where(["video_profile_versions.video_profile_id = ?", profile.id]) }
   
   # ===============
@@ -54,9 +55,8 @@ class VideoEncoding < ActiveRecord::Base
   
   state_machine :initial => :pending do
     before_transition :on => :pandize, :do => :create_panda_encoding_and_set_info
-    after_transition  :on => :pandize, :do => :delay_check_panda_encoding_status
     
-    before_transition :on => :activate, :do => [:set_file, :set_encoding_info, :set_video_thumbnail]
+    before_transition :on => :activate, :do => [:set_file, :set_encoding_info, :set_video_posterframe]
     after_transition  :on => :activate, :do => [:deprecate_encodings, :delete_panda_encoding, :conform_to_video_state]
     
     before_transition :failed => :deprecated, :do => :delete_panda_encoding
@@ -124,23 +124,6 @@ protected
     end
   end
   
-  # after_transition (pandize)
-  def delay_check_panda_encoding_status
-    delay(:priority => 10, :run_at => 15.minutes.from_now).check_panda_encoding_status
-  end
-  
-  def check_panda_encoding_status
-    unless active?
-      encoding_info = Transcoder.get(:encoding, panda_encoding_id)
-      if encoding_info[:status] != 'failed'
-        delay_check_panda_encoding_status
-      else
-        HoptoadNotifier.notify("VideoEncoding (#{id}) panda encoding is failed.")
-        fail
-      end
-    end
-  end
-  
   # before_transition (activate)
   def set_file
     self.remote_file_url = "#{self.class.panda_s3_url}/#{panda_encoding_id}.#{extname}"
@@ -156,9 +139,9 @@ protected
   end
   
   # before_transition (activate)
-  def set_video_thumbnail
+  def set_video_posterframe
     if profile.thumbnailable?
-      self.video.remote_thumbnail_url = "#{self.class.panda_s3_url}/#{panda_encoding_id}_4.jpg"
+      self.video.remote_posterframe_url = "#{self.class.panda_s3_url}/#{panda_encoding_id}_4.jpg"
       self.video.save!
     end
   end

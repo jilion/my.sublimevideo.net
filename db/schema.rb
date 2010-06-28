@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100622080554) do
+ActiveRecord::Schema.define(:version => 20100625150205) do
 
   create_table "admins", :force => true do |t|
     t.string   "email",                               :default => "", :null => false
@@ -218,7 +218,7 @@ ActiveRecord::Schema.define(:version => 20100622080554) do
     t.string   "title"
     t.string   "token"
     t.string   "state"
-    t.string   "thumbnail"
+    t.string   "posterframe"
     t.integer  "hits_cache",        :default => 0
     t.integer  "bandwidth_cache",   :default => 0
     t.string   "panda_video_id"

@@ -28,7 +28,7 @@ module Transcoder
     # +id+ can't be nil
     def put(item, id, hash={})
       raise "id can't be nil!" if id.nil?
-      transcoding_service.puts(item, id, hash)
+      transcoding_service.put(item, id, hash)
     end
     
     # Delete a single item: give an item name (:video for example) and an +id+

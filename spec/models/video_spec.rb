@@ -7,7 +7,7 @@
 #  title             :string(255)
 #  token             :string(255)
 #  state             :string(255)
-#  thumbnail         :string(255)
+#  posterframe       :string(255)
 #  hits_cache        :integer         default(0)
 #  bandwidth_cache   :integer         default(0)
 #  panda_video_id    :string(255)
@@ -90,34 +90,50 @@ describe Video do
       describe "callbacks" do
         describe "before_transition :on => :pandize, :do => :set_encoding_info" do
           it "should send a get request to Panda" do
-            video.stub!(:create_encodings => true)
+            video.stub!(:create_encodings => true, :delay_check_panda_encodings_status => true)
             Transcoder.should_receive(:get).with(:video, video.panda_video_id).and_return({ :extname => '.mp4', :original_filename => 'blabla.mp4' })
             video.pandize
           end
           
           it "should set video information fetched from Panda" do
-            video.stub!(:create_encodings => true)
+            video.stub!(:create_encodings => true, :delay_check_panda_encodings_status => true)
+            Transcoder.should_receive(:get).with(:video, video.panda_video_id).and_return({
+              :original_filename => 'élevé de soleil à mañaguä.mp4', :video_codec => 'h264', :audio_codec => 'aac',
+              :extname => '.mp4', :file_size => 17236, :duration => 1160, :width => 640, :height => 320, :fps => 24
+            })
             video.pandize
-            video.original_filename.should == "railscast_intro.mov"
+            video.original_filename.should == "lev_de_soleil_ma_agu.mp4"
             video.video_codec.should       == "h264"
             video.audio_codec.should       == "aac"
-            video.extname.should           == "mov"
+            video.extname.should           == "mp4"
             video.file_size.should         == 17236
             video.duration.should          == 1160
-            video.width.should             == 480
-            video.height.should            == 360
-            video.fps.should               == 2
+            video.width.should             == 640
+            video.height.should            == 320
+            video.fps.should               == 24
+            video.title.should             == "élevé De Soleil à Mañaguä"
           end
         end
         
         describe "after_transition :on => :pandize, :do => :create_encodings" do
           it "should create as many encodings as the number of current active profiles and delay pandize for each encoding" do
-            video.stub!(:set_encoding_info => true)
+            video.stub!(:set_encoding_info => true, :delay_check_panda_encodings_status => true)
             2.times { Factory(:video_profile_version, :state => 'active') }
-            video.pandize
+            lambda { video.pandize }.should change(Delayed::Job, :count).by(2)
             video.encodings.size.should == 2
             Delayed::Job.first.name.should == 'VideoEncoding#pandize!'
             Delayed::Job.last.name.should == 'VideoEncoding#pandize!'
+          end
+        end
+        
+        describe "after_transition :on => :pandize, :do => :delay_check_panda_encodings_status" do
+          it "should delay the checking of the encoding status" do
+            video.stub!(:create_encodings => true, :set_encoding_info => true)
+            lambda { video.pandize }.should change(Delayed::Job, :count).by(1)
+            Delayed::Job.last.name.should == 'Video#check_panda_encodings_status'
+            Delayed::Job.last.run_at.hour.should == 5.minutes.from_now.hour
+            minutes = 5.minutes.from_now.min
+            (minutes-1..minutes+1).should include Delayed::Job.last.run_at.min
           end
         end
       end
@@ -271,7 +287,7 @@ describe Video do
       
       it "should set the state as :archived from :pending" do
         video = Factory(:video, :state => 'pending')
-        video.stub!(:set_archived_at => true, :archive_encodings => true, :remove_video => true, :remove_thumbnail! => true)
+        video.stub!(:set_archived_at => true, :archive_encodings => true, :remove_video => true, :remove_posterframe! => true)
         video.should be_pending
         video.archive
         video.should be_archived
@@ -279,7 +295,7 @@ describe Video do
       
       it "should set the state as :archived from :encodings" do
         video = Factory(:video, :state => 'encodings')
-        video.stub!(:set_archived_at => true, :archive_encodings => true, :remove_video => true, :remove_thumbnail! => true)
+        video.stub!(:set_archived_at => true, :archive_encodings => true, :remove_video => true, :remove_posterframe! => true)
         video.should be_encodings
         video.archive
         video.should be_archived
@@ -287,7 +303,7 @@ describe Video do
       
       it "should set the state as :archived from :suspended" do
         video = Factory(:video, :state => 'suspended')
-        video.stub!(:set_archived_at => true, :archive_encodings => true, :remove_video => true, :remove_thumbnail! => true)
+        video.stub!(:set_archived_at => true, :archive_encodings => true, :remove_video => true, :remove_posterframe! => true)
         video.should be_suspended
         video.archive
         video.should be_archived
@@ -298,7 +314,7 @@ describe Video do
         
         describe "before_transition :on => :archive, :do => [:set_archived_at, :archive_encodings]" do
           it "should set archived_at to now" do
-            video.stub!(:archive_encodings => true, :remove_video => true, :remove_thumbnail! => true)
+            video.stub!(:archive_encodings => true, :remove_video => true, :remove_posterframe! => true)
             video.archive
             video.archived_at.should be_present
           end
@@ -306,7 +322,7 @@ describe Video do
         
         describe "before_transition :on => :archive, :do => :archive_encodings" do
           it "should delay the archive of every video encoding" do
-            video.stub!(:set_archived_at => true, :remove_video => true, :remove_thumbnail! => true)
+            video.stub!(:set_archived_at => true, :remove_video => true, :remove_posterframe! => true)
             pending_video_encoding = Factory(:video_encoding, :video => video, :panda_encoding_id => encoding_id, :state => 'pending')
             pending_video_encoding.should be_pending
             
@@ -317,6 +333,9 @@ describe Video do
             active_video_encoding = Factory(:video_encoding, :video => video, :panda_encoding_id => encoding_id, :state => 'encoding')
             VCR.use_cassette('video_encoding/activate') { active_video_encoding.activate }
             active_video_encoding.should be_active
+            
+            deprecated_video_encoding = Factory(:video_encoding, :video => video, :panda_encoding_id => encoding_id, :state => 'deprecated')
+            deprecated_video_encoding.should be_deprecated
             
             suspended_video_encoding = Factory(:video_encoding, :video => video, :panda_encoding_id => encoding_id, :state => 'encoding')
             VCR.use_cassette('video_encoding/activate') { suspended_video_encoding.activate }
@@ -337,6 +356,8 @@ describe Video do
             active_video_encoding.reload.should be_archived
             active_video_encoding.file.should_not be_present
             
+            deprecated_video_encoding.reload.should_not be_archived
+            
             suspended_video_encoding.reload.should be_archived
             suspended_video_encoding.file.should_not be_present
             
@@ -345,7 +366,7 @@ describe Video do
         
         describe "after_transition :on => :archive, :do => :remove_video" do
           it "should delay the DELETE request to Panda remove the original video file" do
-            video.stub!(:set_archived_at => true, :archive_encodings => true, :remove_thumbnail! => true)
+            video.stub!(:set_archived_at => true, :archive_encodings => true, :remove_posterframe! => true)
             video_encoding = Factory(:video_encoding, :video => video, :panda_encoding_id => encoding_id, :state => 'encoding')
             VCR.use_cassette('video_encoding/activate') { video_encoding.activate }
             video.archive
@@ -353,15 +374,17 @@ describe Video do
           end
         end
         
-        describe "after_transition  :on => :archive, :do => :remove_thumbnail!" do
-          it "should remove the thumbnail" do
+        describe "after_transition  :on => :archive, :do => :remove_posterframe!" do
+          it "should remove the posterframe" do
             video.stub!(:set_archived_at => true, :archive_encodings => true, :remove_video => true)
             video_encoding = Factory(:video_encoding, :video => video, :panda_encoding_id => encoding_id, :state => 'encoding')
             video_encoding.profile.stub!(:thumbnailable? => true)
             VCR.use_cassette('video_encoding/activate') { video_encoding.activate }
-            video.thumbnail.should be_present
+            video.posterframe.should be_present
+            video.posterframe.thumb.should be_present
             video.archive
-            video.thumbnail.should_not be_present
+            video.posterframe.should_not be_present
+            video.posterframe.thumb.should_not be_present
           end
         end
       end
@@ -416,7 +439,8 @@ describe Video do
         video.should_not be_encoding
         video.should_not be_error
         video.should be_active
-        video.reload.thumbnail.should be_present
+        video.reload.posterframe.should be_present
+        video.posterframe.thumb.should be_present
       end
       
       VCR.use_cassette('video/suspend') { video.suspend }
@@ -441,7 +465,8 @@ describe Video do
       video.encodings[1].reload.should be_archived
       video.encodings[0].file.should_not be_present
       video.encodings[1].file.should_not be_present
-      video.thumbnail.should_not be_present
+      video.posterframe.should_not be_present
+      video.posterframe.thumb.should_not be_present
     end
   end
   
@@ -475,13 +500,15 @@ describe Video do
       let(:video_encoding1) { Factory(:video_encoding, :video => video, :state => 'encoding', :file_size => 42, :panda_encoding_id => encoding_id) }
       let(:video_encoding2) { Factory(:video_encoding, :video => video, :state => 'active', :file_size => 38, :panda_encoding_id => encoding_id) }
       let(:video_encoding3) { Factory(:video_encoding, :video => video, :state => 'active', :file_size => 10, :panda_encoding_id => encoding_id) }
+      let(:video_encoding4) { Factory(:video_encoding, :video => video, :state => 'deprecated', :file_size => 20, :panda_encoding_id => encoding_id) }
       
       it "should return total storage (reference video size + encoding sizes) only for active encodings" do
         video.file_size.should == 1000
         video_encoding1.file_size.should == 42
         video_encoding2.file_size.should == 38
         video_encoding3.file_size.should == 10
-        video.total_size.should == 1048
+        video_encoding4.file_size.should == 20
+        video.total_size.should == 1090
       end
       
       it "should return total storage (reference video size + encoding sizes) even if video.file_size is nil" do
@@ -489,7 +516,8 @@ describe Video do
         video_encoding1.file_size.should == 42
         video_encoding2.file_size.should == 38
         video_encoding3.file_size.should == 10
-        video.total_size.should == 48
+        video_encoding4.file_size.should == 20
+        video.total_size.should == 90
       end
       
       it "should return total storage (reference video size + encoding sizes) even if video_encoding.file_size is nil" do
@@ -498,7 +526,8 @@ describe Video do
         video_encoding1.file_size.should == 42
         video_encoding2.file_size.should be_nil
         video_encoding3.file_size.should == 10
-        video.total_size.should == 1010
+        video_encoding4.file_size.should == 20
+        video.total_size.should == 1052
       end
     end
     
@@ -583,6 +612,60 @@ describe Video do
         video.update_attributes(:width => 719, :height => 1279)
         video.should_not be_hd
       end
+    end
+    
+    describe "check_panda_encodings_status" do
+      before(:each) { VCR.insert_cassette('video/pandize') }
+      
+      let(:video) { Factory(:video, :state => 'encodings') }
+      let(:video_encoding1) { Factory(:video_encoding, :video => video, :panda_encoding_id => '1'*32, :state => 'encoding') }
+      let(:video_encoding2) { Factory(:video_encoding, :video => video, :panda_encoding_id => encoding_id, :state => 'active') }
+      
+      it "should not even check Panda if the video is not currently in the encoding state" do
+        video_encoding1.update_attribute(:state, 'active')
+        video_encoding1.should be_active
+        video_encoding2.should be_active
+        video.reload.should_not be_encoding
+        Transcoder.should_not_receive(:get)
+        lambda { video.check_panda_encodings_status }.should_not change(Delayed::Job, :count)
+        video.should be_active
+      end
+      
+      it "should activate the video if all the encodings are complete on Panda" do
+        video.update_attribute(:panda_video_id, 'all_encodings_complete')
+        video_encoding1.should be_encoding
+        video_encoding2.should be_active
+        video.should be_encoding
+        Transcoder.should_receive(:get).with([:video, :encodings], video.panda_video_id).and_return([{ :status => 'success' }, { :status => 'success' }])
+        lambda { video.check_panda_encodings_status }.should change(Delayed::Job, :count).by(1)
+        Delayed::Job.last.name.should == 'Video#activate'
+      end
+      
+      it "should not activate the video if not all the encodings are complete on Panda" do
+        video.update_attribute(:panda_video_id, 'not_all_encodings_complete')
+        video.panda_video_id.should == 'not_all_encodings_complete'
+        video_encoding1.should be_encoding
+        video_encoding2.should be_active
+        video.should be_encoding
+        Transcoder.should_receive(:get).with([:video, :encodings], video.panda_video_id).and_return([{ :status => 'encoding' }, { :status => 'success' }])
+        lambda { video.check_panda_encodings_status }.should change(Delayed::Job, :count).by(1)
+        Delayed::Job.last.name.should == 'Video#check_panda_encodings_status'
+        video.should be_encoding
+      end
+      
+      it "should not activate the video if not all the encodings are complete on Panda and fail each failed panda encoding" do
+        video.update_attribute(:panda_video_id, 'one_encoding_failed')
+        video_encoding1.should be_encoding
+        video_encoding2.should be_active
+        video.should be_encoding
+        Transcoder.should_receive(:get).with([:video, :encodings], video.panda_video_id).and_return([{ :status => 'failed', :id => video_encoding1.panda_encoding_id }, { :status => 'success' }])
+        HoptoadNotifier.should_receive(:notify, "VideoEncoding (#{video_encoding1.id}) panda encoding is failed.")
+        lambda { video.check_panda_encodings_status }.should change(Delayed::Job, :count).by(1)
+        Delayed::Job.last.name.should == 'Video#check_panda_encodings_status'
+        video_encoding1.reload.should be_failed
+      end
+      
+      after(:each) { VCR.eject_cassette }
     end
   end
   

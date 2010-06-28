@@ -4,6 +4,7 @@ class Invoice::Videos < Array
   # bandwidth
     # added location information in video_usage from cloudront and s3 (if possible) logs
   # storage
+    # 
     # update video.archive_encodings to archive only non-deprecated
     # update total_size (use non-deprecated encoding size)
     # calculate price from “TimedStorage-ByteHrs”  (using video.archived_at when video is archived)

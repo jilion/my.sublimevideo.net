@@ -131,16 +131,6 @@ describe VideoEncoding do
           end
         end
         
-        describe "after_transition :on => :pandize, :do => :delay_check_panda_encoding_status" do
-          it "should delay the checking of the encoding status" do
-            video_encoding.pandize
-            Delayed::Job.last.name.should == 'VideoEncoding#check_panda_encoding_status'
-            Delayed::Job.last.run_at.hour.should == 15.minutes.from_now.hour
-            minutes = 15.minutes.from_now.min
-            (minutes-1..minutes+1).should include Delayed::Job.last.run_at.min
-          end
-        end
-        
       end
       
       after(:each) { VCR.eject_cassette }
@@ -171,13 +161,13 @@ describe VideoEncoding do
         
         describe "before_transition :on => :activate, :do => :set_encoding_info" do
           it "should send a get request to Panda" do
-            video_encoding.stub!(:set_file => true, :set_video_thumbnail => true, :deprecate_encodings => true, :delete_panda_encoding => true, :conform_to_video_state => true)
+            video_encoding.stub!(:set_file => true, :set_video_posterframe => true, :deprecate_encodings => true, :delete_panda_encoding => true, :conform_to_video_state => true)
             Transcoder.should_receive(:get).with(:encoding, id).and_return({})
             video_encoding.activate
           end
           
           it "should set encoding info" do
-            video_encoding.stub!(:set_file => true, :set_video_thumbnail => true, :deprecate_encodings => true, :delete_panda_encoding => true, :conform_to_video_state => true)
+            video_encoding.stub!(:set_file => true, :set_video_posterframe => true, :deprecate_encodings => true, :delete_panda_encoding => true, :conform_to_video_state => true)
             video_encoding.activate
             video_encoding.file_size.should           == 125465
             video_encoding.started_encoding_at.should == Time.parse("2010/06/08 17:15:17 +0000")
@@ -187,18 +177,20 @@ describe VideoEncoding do
           end
         end
         
-        describe "before_transition :on => :activate, :do => :set_video_thumbnail" do
-          it "should set video thumbnail if profile is thumbnailable" do
+        describe "before_transition :on => :activate, :do => :set_video_posterframe" do
+          it "should set video posterframe if profile is thumbnailable" do
             video_encoding.stub!(:set_encoding_info => true, :set_file => true, :deprecate_active_encodings => true, :delete_panda_encoding => true)
             video_encoding.profile.stub!(:thumbnailable? => true)
             video_encoding.activate
-            video_encoding.video.thumbnail.url.should =~ %r(videos/#{video_encoding.video.token}/posterframe.jpg)
+            video_encoding.video.posterframe.url.should =~ %r(videos/#{video_encoding.video.token}/posterframe.jpg)
+            video_encoding.video.posterframe.thumb.url.should =~ %r(videos/#{video_encoding.video.token}/thumb_posterframe.jpg)
           end
           
-          it "should not set video thumbnail if profile is not thumbnailable" do
+          it "should not set video posterframe if profile is not thumbnailable" do
             video_encoding.stub!(:set_encoding_info => true, :set_file => true, :deprecate_active_encodings => true, :delete_panda_encoding => true)
             video_encoding.activate
-            video_encoding.video.thumbnail.should_not be_present
+            video_encoding.video.posterframe.should_not be_present
+            video_encoding.video.posterframe.thumb.should_not be_present
           end
         end
         

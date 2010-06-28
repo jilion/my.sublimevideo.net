@@ -29,15 +29,10 @@ Spork.each_run do
   RSpec.configure do |config|
     config.include Shoulda::ActionController::Matchers
     
-    # == Mock Framework
-    #
-    # If you prefer to use mocha, flexmock or RR, uncomment the appropriate line:
-    #
-    # config.mock_with :mocha
-    # config.mock_with :flexmock
-    # config.mock_with :rr
-    config.mock_with :rspec
+    config.filter_run :focus => true
+    config.run_all_when_everything_filtered = true
     
+    config.mock_with :rspec
     config.fixture_path = "#{::Rails.root}/spec/fixtures"
     
     # If you're not using ActiveRecord, or you'd prefer not to run each of your

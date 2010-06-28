@@ -776,12 +776,12 @@ ul#trial_legend li em {
 
 #trial_box a.warning {
   display:block;
-  width:24px;
-  height:23px;
-  background:url(/images/embed/warning_icon.png) no-repeat;
+  width:18px;
+  height:17px;
+  background:url(/images/embed/warning_small_icon.png) no-repeat;
   position:absolute;
-  top:23px;
-  left:-32px;
+  top:27px;
+  left:-25px;
   cursor:default;
 }
 
@@ -791,13 +791,13 @@ ul#trial_legend li em {
   width:219px;
   height:151px;
   background:url(/images/embed/trial_warning_box.png) no-repeat;
-  top:-15px;
-  left:-222px;
+  top:-16px;
+  left:-220px;
 }
 
 #trial_box a.warning:hover span {display:block;}
 
-#trial_box a.warning span em, #trial_box a.credit_card_info span em {
+#trial_box a.warning span em, #trial_box a.add_a_credit_card span em {
   font-style:normal;
   display:block;
   text-align:left;
@@ -808,79 +808,18 @@ ul#trial_legend li em {
   line-height:17px;
 }
 
-#trial_box a.credit_card_info span em {
-  padding:10px 17px 10px 15px;
+#trial_box a.add_a_credit_card span em {
+  padding:12px 17px 0 16px;
 }
 
 #trial_box .credit_card {
   position:relative;
 }
 
-#trial_box a.credit_card_info {
-  display:block;
-  width:12px;
-  height:13px;
-  background:url(/images/embed/trial_info_icon.png) no-repeat;
-  position:absolute;
-  top:9px;
-  left:-20px;
-  cursor:default;
-}
-
-#trial_box a.credit_card_info span {
-  display:none;
-  position:absolute;
-  width:189px;
-  height:89px;
-  background:url(/images/embed/trial_credit_card_box.png) no-repeat;
-  top:-19px;
-  left:-192px;
-}
-
-#trial_box a.credit_card_info:hover span {display:block;}
-
-/*#trial_box a.show_details {
-  display:block;
-  width:12px;
-  height:13px;
-  background:url(/images/embed/trial_info_icon.png) no-repeat;
-  position:absolute;
-  top:28px;
-  right:-21px;
-}
-
-#trial_box a.show_details span {display:none;}
-
-#trial_box .info_box {
-  position:absolute;
-  top:40px;
-  left:-5px;
-  width:192px;
-  height:116px;
-  background:url(/images/embed/trial_info_box.png) no-repeat;
-}
-
-#trial_box .info_box p {
-  padding:17px 14px 14px 15px;
-  font-size:12px;
-  color:#d4dae5;
-  text-shadow:#000 0 -1px 0;
-  line-height:17px;
-}
-
-#trial_box .info_box p em.bullet {
-  font-style:normal;
-  display:block;
-  padding:0 0 0 18px;
-  background:url(/images/embed/trial_inactive_bullet.png) no-repeat 0 3px;
-}
-
-#trial_box .info_box p em.bullet.active {background-image:url(/images/embed/trial_active_bullet.png);}*/
-
-#trial_box p.note {
+/*#trial_box p.note {
   font-size:13px;
   line-height:18px;
-}
+}*/
 
 #trial_box a.add_a_credit_card {
   display:block;
@@ -896,6 +835,19 @@ ul#trial_legend li em {
 }
 
 #trial_box a.add_a_credit_card:active {background-position:0 -29px;}
+#trial_box a.add_a_credit_card strong {font-weight:600;}
+
+#trial_box a.add_a_credit_card span {
+  display:none;
+  position:absolute;
+  width:181px;
+  height:94px;
+  background:url(/images/embed/trial_credit_card_box.png) no-repeat;
+  top:-13px;
+  left:-185px;
+}
+
+#trial_box a.add_a_credit_card:hover span {display:block;}
 
 #account_activity_box {
   width:165px;
