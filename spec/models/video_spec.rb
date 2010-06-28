@@ -657,7 +657,7 @@ describe Video do
         video_encoding1.should be_encoding
         video_encoding2.should be_encoding
         video.should be_encoding
-        Transcoder.should_receive(:get).with([:video, :encodings], video.panda_video_id).and_return([{ :id => '1'*32, :status => 'success' }, { :id => encoding_id, :status => 'failed' }])
+        Transcoder.should_receive(:get).with([:video, :encodings], video.panda_video_id).and_return([{ :id => '1'*32, :status => 'success' }, { :id => encoding_id, :status => 'fail' }])
         # Transcoder.should_receive(:get).with(:cloud, PandaConfig.cloud_id).and_return({ :s3_videos_bucket => '' })
         Transcoder.should_receive(:get).with(:encoding, video_encoding1.panda_encoding_id).and_return({ :status => 'success', :file_size => 1234, :started_encoding_at => Time.now.to_s, :encoding_time => 1 })
         HoptoadNotifier.should_receive(:notify, "VideoEncoding (#{video_encoding1.id}) panda encoding is failed.")
@@ -671,7 +671,7 @@ describe Video do
         video_encoding1.should be_encoding
         video_encoding2.should be_encoding
         video.should be_encoding
-        Transcoder.should_receive(:get).with([:video, :encodings], video.panda_video_id).and_return([{ :id => '1'*32, :status => 'failed' }, { :id => encoding_id, :status => 'encoding' }])
+        Transcoder.should_receive(:get).with([:video, :encodings], video.panda_video_id).and_return([{ :id => '1'*32, :status => 'fail' }, { :id => encoding_id, :status => 'encoding' }])
         HoptoadNotifier.should_receive(:notify, "VideoEncoding (#{video_encoding1.id}) panda encoding is failed.")
         lambda { video.check_panda_encodings_status }.should_not change(Delayed::Job, :count)
         video_encoding1.reload.should be_failed
