@@ -2039,6 +2039,46 @@ ul#trial_legend li em {
   font-size:16px;
 }
 
+div.text {
+  width:640px;
+  line-height:18px;
+  padding:20px 0 0;
+}
+
+div.text .uppercase {
+  text-transform:uppercase;
+}
+
+div.text p {
+  padding:5px 0;
+}
+
+div.text h3 {
+  padding:25px 0 14px;
+  font-size:22px;
+}
+
+div.text > ol {
+  padding:5px 0;
+  list-style-type:none;
+}
+
+div.text ol ol {
+  padding-left:18px;
+}
+
+div.text ol li {
+  padding:5px 0;
+}
+
+div.text ol ol ol {list-style-type:lower-latin}
+div.text ol ol ol ol {list-style-type:lower-roman}
+
+div.text a {
+  color:#323b4e;
+  border-bottom:1px solid #9da5b9;
+}
+
 #footer {
   width:1000px;
   margin:30px auto;
