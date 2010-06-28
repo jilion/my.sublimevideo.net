@@ -133,8 +133,8 @@ class Video < ActiveRecord::Base
             when 'success'
               encoding.activate
             when 'fail'
-              HoptoadNotifier.notify("VideoEncoding (#{encoding.id}) panda encoding (panda_encoding_id: #{encoding.panda_encoding_id}) is failed.")
               encoding.fail
+              HoptoadNotifier.notify("VideoEncoding (#{encoding.id}) panda encoding (panda_encoding_id: #{encoding.panda_encoding_id}) is failed.")
             end
           end
         end
