@@ -16,29 +16,29 @@ dependencies:
     group: 
     - :development
     version: ">= 0"
-  system_timer: 
+  http_connection: 
     group: 
     - :default
     version: ">= 0"
-  rails: 
-    group: 
-    - :default
-    version: = 3.0.0.beta4
   libxml-ruby: 
     group: 
     - :default
     version: ">= 0"
     require: 
     - libxml
-  http_connection: 
+  rails: 
     group: 
     - :default
-    version: ">= 0"
-  haml: 
+    version: = 3.0.0.beta4
+  system_timer: 
     group: 
     - :default
     version: ">= 0"
   memcache-client: 
+    group: 
+    - :default
+    version: ">= 0"
+  haml: 
     group: 
     - :default
     version: ">= 0"
@@ -60,7 +60,7 @@ dependencies:
     group: 
     - :development
     version: ">= 0"
-  voxel_hapi: 
+  delayed_job: 
     group: 
     - :default
     version: ">= 0"
@@ -68,7 +68,7 @@ dependencies:
     group: 
     - :default
     version: ">= 0"
-  delayed_job: 
+  voxel_hapi: 
     group: 
     - :default
     version: ">= 0"
@@ -80,11 +80,11 @@ dependencies:
     group: 
     - :development
     version: ">= 0"
-  memcached: 
+  activemerchant: 
     group: 
     - :default
     version: ">= 0"
-  activemerchant: 
+  memcached: 
     group: 
     - :default
     version: ">= 0"
@@ -100,27 +100,7 @@ dependencies:
     group: 
     - :test
     version: ">= 0"
-  devise: 
-    group: 
-    - :default
-    version: ">= 1.1.rc2"
-  has_scope: 
-    group: 
-    - :default
-    version: ">= 0"
-  heroku: 
-    group: 
-    - :default
-    version: ">= 0"
-  will_paginate: 
-    group: 
-    - :default
-    version: ">= 0"
-  jammit: 
-    group: 
-    - :default
-    version: ">= 0"
-  panda: 
+  carrierwave: 
     group: 
     - :default
     version: ">= 0"
@@ -130,43 +110,59 @@ dependencies:
     version: ">= 0"
     require: 
     - request_log_analyzer
-  carrierwave: 
+  panda: 
     group: 
     - :default
     version: ">= 0"
+  jammit: 
+    group: 
+    - :default
+    version: ">= 0"
+  will_paginate: 
+    group: 
+    - :default
+    version: ">= 0"
+  heroku: 
+    group: 
+    - :default
+    version: ">= 0"
+  has_scope: 
+    group: 
+    - :default
+    version: ">= 0"
+  devise: 
+    group: 
+    - :default
+    version: ">= 1.1.rc2"
   steak: 
     group: 
     - :test
     version: ">= 0.4.0.beta.1"
+  devise_invitable: 
+    group: 
+    - :default
+    version: ">= 0"
+  state_machine: 
+    group: 
+    - :default
+    version: ">= 0"
+  aws: 
+    group: 
+    - :default
+    version: ">= 2.3.12"
   rmagick: 
     group: 
     - :default
     version: ">= 0"
     require: 
     - RMagick
-  aws: 
-    group: 
-    - :default
-    version: ">= 2.3.12"
-  state_machine: 
-    group: 
-    - :default
-    version: ">= 0"
-  devise_invitable: 
-    group: 
-    - :default
-    version: ">= 0"
   ruby-graphviz: 
     group: 
     - :development
     version: ">= 0"
     require: 
     - graphviz
-  responders: 
-    group: 
-    - :default
-    version: ">= 0"
-  i18n: 
+  hoptoad_notifier: 
     group: 
     - :default
     version: ">= 0"
@@ -174,7 +170,15 @@ dependencies:
     group: 
     - :default
     version: ">= 0"
-  hoptoad_notifier: 
+  i18n: 
+    group: 
+    - :default
+    version: ">= 0"
+  responders: 
+    group: 
+    - :default
+    version: ">= 0"
+  RedCloth: 
     group: 
     - :default
     version: ">= 0"
@@ -197,6 +201,8 @@ dependencies:
 specs: 
 - rake: 
     version: 0.8.7
+- RedCloth: 
+    version: 4.2.3
 - abstract: 
     version: 1.0.0
 - activesupport: 
@@ -208,7 +214,7 @@ specs:
 - activemodel: 
     version: 3.0.0.beta4
 - erubis: 
-    version: 2.6.5
+    version: 2.6.6
 - rack: 
     version: 1.1.0
 - rack-mount: 
@@ -249,7 +255,7 @@ specs:
 - xml-simple: 
     version: 1.0.12
 - aws: 
-    version: 2.3.12
+    version: 2.3.13
 - bcrypt-ruby: 
     version: 2.1.2
 - bundler: 
@@ -292,7 +298,7 @@ specs:
 - factory_girl: 
     version: 1.3.1
 - thor: 
-    version: 0.13.6
+    version: 0.13.7
 - railties: 
     version: 3.0.0.beta4
 - rails: 
@@ -350,17 +356,17 @@ specs:
 - rmagick: 
     version: 2.13.1
 - rspec-core: 
-    version: 2.0.0.beta.13
+    version: 2.0.0.beta.14
 - rspec-expectations: 
-    version: 2.0.0.beta.13
+    version: 2.0.0.beta.14
 - rspec-mocks: 
-    version: 2.0.0.beta.13
+    version: 2.0.0.beta.14
 - rspec: 
-    version: 2.0.0.beta.13
+    version: 2.0.0.beta.14
 - webrat: 
     version: 0.7.1
 - rspec-rails: 
-    version: 2.0.0.beta.13
+    version: 2.0.0.beta.14.1
 - ruby-graphviz: 
     version: 0.9.11
 - shoulda: 
@@ -370,7 +376,7 @@ specs:
 - sqlite3-ruby: 
     version: 1.3.0
 - state_machine: 
-    version: 0.9.2
+    version: 0.9.3
     source: 8
 - steak: 
     version: 0.4.0.beta.1
@@ -392,7 +398,7 @@ specs:
     source: 6
 - wirble: 
     version: 0.1.3
-hash: af2d9b3f48f4483254c8b1acb4fc30a69bd11b48
+hash: 5e2ec2e3e0741d74a96ce0942787c524fbf70659
 sources: 
 - Git: 
     uri: git://github.com/jnicklas/carrierwave.git
@@ -430,6 +436,6 @@ sources:
 - Git: 
     uri: git://github.com/pluginaweek/state_machine.git
     git: git://github.com/pluginaweek/state_machine.git
-    ref: afe2b2304f9bcfb9fb3069ec287f17796fe93ff7
+    ref: 8f413e7285ce0b1082472059d0d41041e7a98fad
 - Rubygems: 
     uri: http://rubygems.org

@@ -32,6 +32,7 @@ gem 'http_connection',  :git => 'git://github.com/thibaudgg/http_connection.git'
 gem 'aws',              '>= 2.3.12'
 gem 'carrierwave',      :git => 'git://github.com/jnicklas/carrierwave.git'
 gem 'rmagick',          :require => 'RMagick'
+gem 'RedCloth'
 
 group :development do
   gem 'sqlite3-ruby', :require => 'sqlite3'
