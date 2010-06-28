@@ -52,10 +52,6 @@ dependencies:
     group: 
     - :test
     version: ">= 0"
-  rev: 
-    group: 
-    - :test
-    version: ">= 0"
   ffaker: 
     group: 
     - :development
@@ -88,14 +84,10 @@ dependencies:
     group: 
     - :default
     version: ">= 0"
-  watchr: 
-    group: 
-    - :test
-    version: ">= 0"
   rspec-rails: 
     group: 
     - :test
-    version: ">= 2.0.0.beta.13"
+    version: = 2.0.0.beta.13
   vcr: 
     group: 
     - :test
@@ -324,8 +316,6 @@ specs:
     version: 1.6.5
 - hoptoad_notifier: 
     version: 2.3.0
-- iobuffer: 
-    version: 0.1.3
 - yui-compressor: 
     version: 0.9.1
 - jammit: 
@@ -351,22 +341,20 @@ specs:
     version: 1.7.0
 - responders: 
     version: 0.6.1
-- rev: 
-    version: 0.3.2
 - rmagick: 
     version: 2.13.1
 - rspec-core: 
-    version: 2.0.0.beta.14
+    version: 2.0.0.beta.13
 - rspec-expectations: 
-    version: 2.0.0.beta.14
+    version: 2.0.0.beta.13
 - rspec-mocks: 
-    version: 2.0.0.beta.14
+    version: 2.0.0.beta.13
 - rspec: 
-    version: 2.0.0.beta.14
+    version: 2.0.0.beta.13
 - webrat: 
     version: 0.7.1
 - rspec-rails: 
-    version: 2.0.0.beta.14.1
+    version: 2.0.0.beta.13
 - ruby-graphviz: 
     version: 0.9.11
 - shoulda: 
@@ -376,8 +364,7 @@ specs:
 - sqlite3-ruby: 
     version: 1.3.0
 - state_machine: 
-    version: 0.9.3
-    source: 8
+    version: 0.9.2
 - steak: 
     version: 0.4.0.beta.1
 - system_timer: 
@@ -389,8 +376,6 @@ specs:
 - voxel_hapi: 
     version: 1.1.0
     source: 3
-- watchr: 
-    version: "0.6"
 - webmock: 
     version: 1.3.0
 - will_paginate: 
@@ -398,7 +383,7 @@ specs:
     source: 6
 - wirble: 
     version: 0.1.3
-hash: 5e2ec2e3e0741d74a96ce0942787c524fbf70659
+hash: 4857a57436c507b171c711e4cac4c55ce8aee469
 sources: 
 - Git: 
     uri: git://github.com/jnicklas/carrierwave.git
@@ -433,9 +418,5 @@ sources:
     uri: git://github.com/thibaudgg/delayed_job
     git: git://github.com/thibaudgg/delayed_job
     ref: 772ce349fab94ce1e4ba5cd5ee8793096b13af16
-- Git: 
-    uri: git://github.com/pluginaweek/state_machine.git
-    git: git://github.com/pluginaweek/state_machine.git
-    ref: 8f413e7285ce0b1082472059d0d41041e7a98fad
 - Rubygems: 
     uri: http://rubygems.org

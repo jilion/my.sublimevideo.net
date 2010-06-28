@@ -7,7 +7,7 @@ gem 'libxml-ruby', :require => 'libxml'
 gem 'heroku' # Hosting
 gem 'i18n'
 gem 'haml'
-gem 'state_machine',    :git => 'git://github.com/pluginaweek/state_machine.git'
+gem 'state_machine'#,    :git => 'git://github.com/pluginaweek/state_machine.git'
 gem 'responders'
 gem 'uniquify'
 gem 'delayed_job',      :git => 'git://github.com/thibaudgg/delayed_job'
@@ -46,13 +46,13 @@ group :test do
   gem 'pg'
   gem 'parallel'
   
-  gem 'rev'
-  gem 'watchr'
-  gem 'growl'
+  # gem 'rev'
+  # gem 'watchr'
+  gem 'growl' # needed by RSpactor
   gem 'spork'
   
   gem 'shoulda'
-  gem 'rspec-rails', '>= 2.0.0.beta.13'
+  gem 'rspec-rails', '2.0.0.beta.13'
   # gem "rspec-rails",        :git => "git://github.com/rspec/rspec-rails.git"
   # gem "rspec",              :git => "git://github.com/rspec/rspec.git"
   # gem "rspec-core",         :git => "git://github.com/rspec/rspec-core.git"
