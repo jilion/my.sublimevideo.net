@@ -33,6 +33,7 @@
 #  cc_last_digits                        :integer
 #  cc_expire_on                          :date
 #  cc_updated_at                         :datetime
+#  video_settings                        :text
 #  created_at                            :datetime
 #  updated_at                            :datetime
 #

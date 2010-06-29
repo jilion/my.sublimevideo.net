@@ -31,6 +31,9 @@ class DeviseCreateUsers < ActiveRecord::Migration
       t.date     :cc_expire_on
       t.datetime :cc_updated_at
       
+      # Video settings
+      t.text     :video_settings
+      
       t.timestamps
     end
     

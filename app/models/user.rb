@@ -33,6 +33,7 @@
 #  cc_last_digits                        :integer
 #  cc_expire_on                          :date
 #  cc_updated_at                         :datetime
+#  video_settings                        :text
 #  created_at                            :datetime
 #  updated_at                            :datetime
 #
@@ -41,6 +42,7 @@ class User < ActiveRecord::Base
   include Trial
   include LimitAlert
   include CreditCard
+  include VideoSettings
   
   devise :database_authenticatable, :registerable, :confirmable,
          :recoverable, :rememberable, :trackable, :validatable, :lockable
@@ -51,6 +53,9 @@ class User < ActiveRecord::Base
   attr_accessible :limit_alert_amount
   # Credit Card
   attr_accessible :cc_update, :cc_type, :cc_full_name, :cc_number, :cc_expire_on, :cc_verification_value
+  # Video Settings
+  attr_accessible :video_settings
+  serialize :video_settings
   
   # ================
   # = Associations =
@@ -82,6 +87,7 @@ class User < ActiveRecord::Base
   # =============
   
   before_create :set_next_invoiced_on
+  before_save :set_default_video_settings # in user/video_settings
   before_save :clear_limit_alert_email_sent_at_when_limit_alert_amount_is_augmented # in user/limit_alert
   before_save :store_credit_card, :keep_some_credit_card_info # in user/credit_card
   

@@ -142,6 +142,10 @@ class Video < ActiveRecord::Base
     end
   end
   
+  def height_from_width(width)
+    (width.to_i*self.height)/self.width
+  end
+  
 protected
   
   # before_transition (pandize)
