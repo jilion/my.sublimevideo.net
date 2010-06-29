@@ -91,7 +91,10 @@ class Video < ActiveRecord::Base
   end
   
   def titleize_filename(filename, ext=extname)
-    filename.sub(".#{ext}", '').titleize
+    title = filename.sub(".#{ext}", '').gsub(/[-_.]/, ' ')
+    title.split(' ').map do |word|
+      word.titleize unless word[0] =~ /[a-z]/ && word[1] =~ /[A-Z]/
+    end.join(' ')
   end
   
   def encoding?
