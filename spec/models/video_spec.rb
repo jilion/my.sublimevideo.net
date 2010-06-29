@@ -240,7 +240,7 @@ describe Video do
           end
         end
         
-        describe "after_transition :on => :activate, :do => :deliver_video_active, :if => :active?", :focus => true do
+        describe "after_transition :on => :activate, :do => :deliver_video_active, :if => :active?" do
           it "should send a 'video is ready' email to the user when all encodings are active" do
             video_encoding1.should be_encoding
             video_encoding2.should be_encoding
