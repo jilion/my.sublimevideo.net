@@ -3,4 +3,4 @@ if (popup) {
   popup.removeClassName("loading");
   popup.down(".content").update("<%= escape_javascript(render 'show') %>")
 }
-new VideoEmbedCodeUpdater($('video_embed_code'), <%= @video.width %>, <%= @video.height %>);
+new VideoEmbedCodeUpdater($('video_embed_code'), $('video_width'), $('video_height'));

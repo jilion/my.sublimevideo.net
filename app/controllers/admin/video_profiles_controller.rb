@@ -8,7 +8,7 @@ class Admin::VideoProfilesController < Admin::AdminController
   
   # GET /admin/profiles/1
   def show
-    @profile = VideoProfile.find(params[:id])
+    @profile  = VideoProfile.find(params[:id])
     @versions = @profile.versions.order(:created_at.desc)
     respond_with(@profile)
   end
@@ -27,8 +27,8 @@ class Admin::VideoProfilesController < Admin::AdminController
   
   # POST /admin/profiles
   def create
-    @profile = VideoProfile.new(params[:video_profile])
-    @profile.name = params[:video_profile][:name]
+    @profile         = VideoProfile.new(params[:video_profile])
+    @profile.name    = params[:video_profile][:name]
     @profile.extname = params[:video_profile][:extname]
     respond_with(@profile) do |format|
       if @profile.save
