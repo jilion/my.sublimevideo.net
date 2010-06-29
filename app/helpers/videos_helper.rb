@@ -18,7 +18,7 @@ module VideosHelper
     options = args.extract_options!
 <<-EOS
 <video class="sublime" poster="http://#{Log::Amazon::Cloudfront::Download.config[:hostname]}/#{video.posterframe.path}" width="#{options[:width]}" height="#{options[:height]}" controls preload="none">
-  #{video.encodings.inject([]) { |html,f| html << source_tag_for(f) }.join("\n\t")}
+  #{video.encodings.inject([]) { |html,f| html << source_tag_for(f) }.join("\n  ")}
 </video>
 EOS
   end
