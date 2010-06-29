@@ -16,29 +16,25 @@ dependencies:
     group: 
     - :development
     version: ">= 0"
-  system_timer: 
-    group: 
-    - :default
-    version: ">= 0"
-  rails: 
-    group: 
-    - :default
-    version: = 3.0.0.beta4
   libxml-ruby: 
     group: 
     - :default
     version: ">= 0"
     require: 
     - libxml
-  http_connection: 
+  rails: 
     group: 
     - :default
-    version: ">= 0"
-  haml: 
+    version: = 3.0.0.beta4
+  system_timer: 
     group: 
     - :default
     version: ">= 0"
   memcache-client: 
+    group: 
+    - :default
+    version: ">= 0"
+  haml: 
     group: 
     - :default
     version: ">= 0"
@@ -56,7 +52,7 @@ dependencies:
     group: 
     - :development
     version: ">= 0"
-  voxel_hapi: 
+  delayed_job: 
     group: 
     - :default
     version: ">= 0"
@@ -64,7 +60,7 @@ dependencies:
     group: 
     - :default
     version: ">= 0"
-  delayed_job: 
+  voxel_hapi: 
     group: 
     - :default
     version: ">= 0"
@@ -76,45 +72,21 @@ dependencies:
     group: 
     - :development
     version: ">= 0"
-  memcached: 
+  activemerchant: 
     group: 
     - :default
     version: ">= 0"
-  activemerchant: 
+  memcached: 
     group: 
     - :default
     version: ">= 0"
   rspec-rails: 
     group: 
     - :test
-    version: = 2.0.0.beta.13
+    version: ">= 2.0.0.beta.14.2"
   vcr: 
     group: 
     - :test
-    version: ">= 0"
-  devise: 
-    group: 
-    - :default
-    version: ">= 1.1.rc2"
-  has_scope: 
-    group: 
-    - :default
-    version: ">= 0"
-  heroku: 
-    group: 
-    - :default
-    version: ">= 0"
-  will_paginate: 
-    group: 
-    - :default
-    version: ">= 0"
-  jammit: 
-    group: 
-    - :default
-    version: ">= 0"
-  panda: 
-    group: 
-    - :default
     version: ">= 0"
   request-log-analyzer: 
     group: 
@@ -122,6 +94,30 @@ dependencies:
     version: ">= 0"
     require: 
     - request_log_analyzer
+  panda: 
+    group: 
+    - :default
+    version: ">= 0"
+  jammit: 
+    group: 
+    - :default
+    version: ">= 0"
+  will_paginate: 
+    group: 
+    - :default
+    version: ">= 0"
+  heroku: 
+    group: 
+    - :default
+    version: ">= 0"
+  has_scope: 
+    group: 
+    - :default
+    version: ">= 0"
+  devise: 
+    group: 
+    - :default
+    version: ">= 1.1.rc2"
   carrierwave: 
     group: 
     - :default
@@ -140,11 +136,11 @@ dependencies:
     group: 
     - :default
     version: ">= 2.3.12"
-  state_machine: 
+  devise_invitable: 
     group: 
     - :default
     version: ">= 0"
-  devise_invitable: 
+  state_machine: 
     group: 
     - :default
     version: ">= 0"
@@ -154,11 +150,7 @@ dependencies:
     version: ">= 0"
     require: 
     - graphviz
-  responders: 
-    group: 
-    - :default
-    version: ">= 0"
-  i18n: 
+  hoptoad_notifier: 
     group: 
     - :default
     version: ">= 0"
@@ -166,7 +158,11 @@ dependencies:
     group: 
     - :default
     version: ">= 0"
-  hoptoad_notifier: 
+  i18n: 
+    group: 
+    - :default
+    version: ">= 0"
+  responders: 
     group: 
     - :default
     version: ">= 0"
@@ -235,7 +231,6 @@ specs:
     version: 2.4.0
 - http_connection: 
     version: 1.3.0
-    source: 1
 - uuidtools: 
     version: 2.1.1
 - xml-simple: 
@@ -271,14 +266,14 @@ specs:
     version: 1.1.0
 - delayed_job: 
     version: 2.1.0.pre
-    source: 7
+    source: 6
 - warden: 
     version: 0.10.7
 - devise: 
     version: 1.1.rc2
 - devise_invitable: 
     version: 0.3.0
-    source: 2
+    source: 1
 - diff-lcs: 
     version: 1.1.2
 - factory_girl: 
@@ -299,7 +294,7 @@ specs:
     version: 3.0.13
 - has_scope: 
     version: 0.5.0
-    source: 5
+    source: 4
 - json: 
     version: 1.2.4
 - launchy: 
@@ -314,7 +309,7 @@ specs:
     version: 0.9.1
 - jammit: 
     version: 0.5.0
-    source: 4
+    source: 3
 - libxml-ruby: 
     version: 1.1.4
 - memcache-client: 
@@ -338,19 +333,19 @@ specs:
 - rmagick: 
     version: 2.13.1
 - rspec-core: 
-    version: 2.0.0.beta.13
+    version: 2.0.0.beta.14
 - rspec-expectations: 
-    version: 2.0.0.beta.13
+    version: 2.0.0.beta.14
 - rspec-mocks: 
-    version: 2.0.0.beta.13
+    version: 2.0.0.beta.14
 - rspec: 
-    version: 2.0.0.beta.13
+    version: 2.0.0.beta.14
 - webrat: 
     version: 0.7.1
 - rspec-rails: 
-    version: 2.0.0.beta.13
+    version: 2.0.0.beta.14.2
 - ruby-graphviz: 
-    version: 0.9.11
+    version: 0.9.12
 - shoulda: 
     version: 2.11.1
 - spork: 
@@ -369,24 +364,20 @@ specs:
     version: 1.0.0
 - voxel_hapi: 
     version: 1.1.0
-    source: 3
+    source: 2
 - webmock: 
     version: 1.3.0
 - will_paginate: 
     version: 3.0.pre
-    source: 6
+    source: 5
 - wirble: 
     version: 0.1.3
-hash: be79f65951fc9fbcbcb60d79f8c6518c07d5059b
+hash: c5ee76fa8d8db47301e2542479fa23565ad76757
 sources: 
 - Git: 
     uri: git://github.com/jnicklas/carrierwave.git
     git: git://github.com/jnicklas/carrierwave.git
     ref: ef2133d38dce5558ab8eb90b09f19de6e3d3ffc0
-- Git: 
-    uri: git://github.com/thibaudgg/http_connection.git
-    git: git://github.com/thibaudgg/http_connection.git
-    ref: 584cea976ef85f0a5fb1c6b78408e396e12b36ac
 - Git: 
     uri: git://github.com/rymai/devise_invitable.git
     git: git://github.com/rymai/devise_invitable.git

@@ -28,7 +28,7 @@ gem 'system_timer' # only on Ruby 1.8, used by memcache-client
 gem 'memcache-client'
 gem 'memcached'
 
-gem 'http_connection',  :git => 'git://github.com/thibaudgg/http_connection.git'
+# gem 'http_connection',  :git => 'git://github.com/thibaudgg/http_connection.git'
 gem 'aws',              '>= 2.3.12'
 gem 'carrierwave',      :git => 'git://github.com/jnicklas/carrierwave.git'
 gem 'rmagick',          :require => 'RMagick'
@@ -51,7 +51,7 @@ group :test do
   gem 'spork'
   
   gem 'shoulda'
-  gem 'rspec-rails', '2.0.0.beta.13'
+  gem 'rspec-rails', '>= 2.0.0.beta.14.2'
   # gem "rspec-rails",        :git => "git://github.com/rspec/rspec-rails.git"
   # gem "rspec",              :git => "git://github.com/rspec/rspec.git"
   # gem "rspec-core",         :git => "git://github.com/rspec/rspec-core.git"

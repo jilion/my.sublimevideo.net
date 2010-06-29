@@ -3,15 +3,15 @@ class Invoice::Videos < Array
   
   # bandwidth
     # added location information in video_usage from cloudront and s3 (if possible) logs
+    # upload original to panda
   # storage
-    # 
-    # update video.archive_encodings to archive only non-deprecated
-    # update total_size (use non-deprecated encoding size)
+    # thumbnail storage
+    # DONE - update video.archive_encodings to archive only non-deprecated
+    # DONE - update total_size (use non-deprecated encoding size)
     # calculate price from “TimedStorage-ByteHrs”  (using video.archived_at when video is archived)
       # http://aws.amazon.com/s3/faqs/#How_will_I_be_charged_and_billed_for_my_use_of_Amazon_S3
   # encoding time
     # calulate total for encodings.started_encoding_at within invoice date
-  
   
   def initialize(invoice, options = {})
     @videos = [] #collect_sites_hits(invoice, options)

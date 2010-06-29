@@ -1,6 +1,7 @@
 module LogsFileFormat
   class S3Videos < RequestLogAnalyzer::FileFormat::Base
     extend RequestLogAnalyzer::FileFormat::CommonRegularExpressions
+    extend LogsFileFormat::Amazon
     
     line_definition :access do |line|
       line.header = true
@@ -12,10 +13,10 @@ module LogsFileFormat
       line.capture(:timestamp).as(:timestamp)
       line.capture(:remote_ip)
       line.capture(:requester)
-      line.capture(:request_id)
+      line.capture(:requests_id)
       line.capture(:operation)
       line.capture(:key).as(:nillable_string)
-      line.capture(:request_uri)
+      line.capture(:requests_uri)
       line.capture(:http_status).as(:integer)
       line.capture(:error_code).as(:nillable_string)
       line.capture(:bytes_sent).as(:traffic, :unit => :byte)
@@ -27,9 +28,13 @@ module LogsFileFormat
     end
     
     report do |analyze|
-      analyze.traffic(:bytes_sent, :title => :bandwidth,
-        :category => lambda { |r| r[:key].match(/^([a-z0-9]{8})\/.*/) && $1 },
-        :if       => lambda { |r| r[:key] =~ /^[a-z0-9]{8}\/.*/ }
+      analyze.traffic(:bytes_sent, :title => :bandwidth_s3,
+        :category => lambda { |r| token_from(r[:key]) },
+        :if       => lambda { |r| token_path?(r[:key]) }
+      )
+      analyze.frequency(:key, :title => :requests_s3,
+        :category => lambda { |r| token_from(r[:key]) },
+        :if       => lambda { |r| token_path?(r[:key]) }
       )
     end
     
