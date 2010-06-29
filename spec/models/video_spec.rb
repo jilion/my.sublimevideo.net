@@ -79,7 +79,7 @@ describe Video do
     describe "event(:pandize) { transition :pending => :encodings }" do
       before(:each) { VCR.insert_cassette('video/pandize') }
       
-      let(:video) { Factory(:video) }
+      let(:video) { Factory(:video, :user => Factory(:user, :video_settings => { :webm => "1" })) }
       
       it "should set the state as :encodings from :pending" do
         video.should be_pending
@@ -116,9 +116,79 @@ describe Video do
         end
         
         describe "after_transition :on => :pandize, :do => :create_encodings" do
-          it "should create as many encodings as the number of current active profiles and delay pandize for each encoding" do
+          before(:each) do
+            mp4_sd_profile = Factory(:video_profile, :min_width => 0, :min_height => 0, :extname => 'mp4', :name => '_sd') # SD
+            mp4_hq_profile = Factory(:video_profile, :min_width => 854, :min_height => 480, :extname => 'mp4', :name => '_hq') # HQ
+            mp4_hd_profile = Factory(:video_profile, :min_width => 1280, :min_height => 720, :extname => 'mp4', :name => '_hd') # HD
+            @mp4_sd_profile_version = Factory(:video_profile_version, :state => 'active', :profile => mp4_sd_profile)
+            @mp4_hq_profile_version = Factory(:video_profile_version, :state => 'active', :profile => mp4_hq_profile)
+            @mp4_hd_profile_version = Factory(:video_profile_version, :state => 'active', :profile => mp4_hd_profile)
+            webm_sd_profile = Factory(:video_profile, :min_width => 0, :min_height => 0, :extname => 'webm', :name => '_sd') # SD
+            webm_hq_profile = Factory(:video_profile, :min_width => 854, :min_height => 480, :extname => 'webm', :name => '_hq') # HQ
+            webm_hd_profile = Factory(:video_profile, :min_width => 1280, :min_height => 720, :extname => 'webm', :name => '_hd') # HD
+            @webm_sd_profile_version = Factory(:video_profile_version, :state => 'active', :profile => webm_sd_profile)
+            @webm_hq_profile_version = Factory(:video_profile_version, :state => 'active', :profile => webm_hq_profile)
+            @webm_hd_profile_version = Factory(:video_profile_version, :state => 'active', :profile => webm_hd_profile)
+          end
+          
+          # MP4 Input file example  SD minW:0 minH:0  HQ minW:640 minH:360  HD minW:854 minH:480
+          # 1)  320x240             320x240           -                     -
+          # 2)  480x270             480x270           -                     -
+          # 3)  640x360             640x360           -                     -
+          # 4)  640x480             480x360           640x480               -
+          # 5)  848x480             636x360           848x480               -
+          # 6)  864x540             576x360           768x480               -
+          # 7)  1280x544            640x272           854x363               1280x544
+          # 8)  1280x720            640x360           854x480               1280x720
+          # 9)  720x1280 (iPhone4)  202x360           270x480               405x720
+          # 10) 1920x1080           640x360           854x480               1280x720
+          
+          #WebM Input file example  SD minW:0 minH:0  HQ minW:854 minH:480  HD minW:1280 minH:720
+          # 1)  320x240             320x240           -                     -
+          # 2)  480x270             480x270           -                     -
+          # 3)  640x360             640x360           -                     -
+          # 4)  640x480             -                 640x480               -
+          # 5)  848x480             -                 848x480               -
+          # 6)  864x540             -                 768x480               -
+          # 7)  1280x544            -                 854x363               1280x544
+          # 8)  1280x720            -                 854x480               1280x720
+          # 9)  720x1280 (iPhone4)  -                 270x480               405x720
+          # 10) 1920x1080           -                 854x480               1280x720
+          
+          it "should create encodings for each profile that is active and video width >= min_width OR video height >= min_height: 1 mp4 (SD) profile + 1 webm (SD) profile" do
+            [[320,240], [480,270], [640,360]].each do |size|
+              video.stub!(:set_encoding_info => true, :delay_check_panda_encodings_status => true)
+              video.update_attribute(:width, size[0])
+              video.update_attribute(:height, size[1])
+              video.pandize
+              video.encodings.size.should == 2
+            end
+          end
+          
+          it "should create encodings for each profile that is active and video width >= min_width OR video height >= min_height: 2 mp4 (SD/HQ) profile + 1 webm (HQ) profile" do
+            [[640,480], [848,480], [768,480]].each do |size|
+              video.stub!(:set_encoding_info => true, :delay_check_panda_encodings_status => true)
+              video.update_attribute(:width, size[0])
+              video.update_attribute(:height, size[1])
+              video.pandize
+              video.encodings.size.should == 3
+            end
+          end
+          
+          it "should create encodings for each profile that is active and video width >= min_width OR video height >= min_height: 3 mp4 (SD/HQ/HD) profile + 2 webm (HQ/HD) profile" do
+            [[1280,544], [1280,720], [720,1280], [1920,1080]].each do |size|
+              video.stub!(:set_encoding_info => true, :delay_check_panda_encodings_status => true)
+              video.update_attribute(:width, size[0])
+              video.update_attribute(:height, size[1])
+              video.pandize
+              video.encodings.size.should == 5
+            end
+          end
+          
+          it "should delay pandize for each encoding" do
             video.stub!(:set_encoding_info => true, :delay_check_panda_encodings_status => true)
-            2.times { Factory(:video_profile_version, :state => 'active') }
+            video.update_attribute(:width, 320)
+            video.update_attribute(:height, 240)
             lambda { video.pandize }.should change(Delayed::Job, :count).by(2)
             video.encodings.size.should == 2
             Delayed::Job.first.name.should == 'VideoEncoding#pandize!'
@@ -170,7 +240,7 @@ describe Video do
           end
         end
         
-        describe "after_transition :on => :activate, :do => :deliver_video_active, :if => :active?" do
+        describe "after_transition :on => :activate, :do => :deliver_video_active, :if => :active?", :focus => true do
           it "should send a 'video is ready' email to the user when all encodings are active" do
             video_encoding1.should be_encoding
             video_encoding2.should be_encoding
@@ -680,6 +750,18 @@ describe Video do
       end
       
       after(:each) { VCR.eject_cassette }
+    end
+    
+    describe "#height_from_width(width)" do
+      let(:video) { Factory(:video, :width => 600, :height => 200) }
+      
+      it "should keep the ratio of the video" do
+        video.height_from_width(300).should == 100
+      end
+      
+      it "should keep the ratio of the video" do
+        video.height_from_width("300").should == 100
+      end
     end
   end
   

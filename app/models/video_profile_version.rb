@@ -29,6 +29,8 @@ class VideoProfileVersion < ActiveRecord::Base
   scope :active,       where(:state => 'active')
   scope :experimental, where(:state => 'experimental')
   scope :with_profile, lambda { |profile| where(:video_profile_id => profile.id) }
+  scope :use_webm,     lambda { |use_webm_bool| joins(:profile).where("video_profiles.extname NOT IN('#{"webm" unless use_webm_bool}')") }
+  scope :dimensions_less_than, lambda { |width, height| joins(:profile).where(["? >= video_profiles.min_width OR ? >= video_profiles.min_height", width, height]) }
   
   # ===============
   # = Validations =

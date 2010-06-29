@@ -28,7 +28,7 @@
 class Video < ActiveRecord::Base
   
   attr_accessible :title
-  uniquify :token, :chars => ('a'..'z').to_a + ('0'..'9').to_a
+  uniquify :token, :chars => Array('a'..'z') + Array('0'..'9')
   
   mount_uploader :posterframe, PosterframeUploader
   
@@ -165,9 +165,16 @@ protected
   
   # after_transition (pandize)
   def create_encodings
-    VideoProfileVersion.active.each do |profile_version|
-      encoding = encodings.build(:profile_version => profile_version)
-      encoding.save!
+    profile_versions = VideoProfileVersion.active.dimensions_less_than(width, height).use_webm(user.use_webm?).all
+    if user.use_webm?
+      webm_profile_versions = profile_versions.select{ |pv| pv.profile.extname == 'webm' }
+      if webm_profile_versions.size > 1 # delete the SD version only if it's not the only webm possible
+        webm_sd_profiles = webm_profile_versions.select{ |pv| pv.profile.name == '_sd' }
+        profile_versions.delete(webm_sd_profiles[0]) if webm_sd_profiles.present?
+      end
+    end
+    profile_versions.each do |profile_version|
+      encoding = encodings.create(:profile_version => profile_version)
       encoding.delay(:priority => 5).pandize!
     end
   end

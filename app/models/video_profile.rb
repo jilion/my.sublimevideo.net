@@ -8,6 +8,8 @@
 #  name           :string(255)
 #  extname        :string(255)
 #  thumbnailable  :boolean
+#  min_width      :integer
+#  min_height     :integer
 #  versions_count :integer         default(0)
 #  created_at     :datetime
 #  updated_at     :datetime
@@ -15,7 +17,7 @@
 
 class VideoProfile < ActiveRecord::Base
   
-  attr_accessible :title, :description, :thumbnailable
+  attr_accessible :title, :description, :thumbnailable, :min_width, :min_height
   
   # ================
   # = Associations =
@@ -38,7 +40,7 @@ class VideoProfile < ActiveRecord::Base
   # = Callbacks =
   # =============
   
-  before_create :set_default_thumbnailable
+  before_create :set_defaults
   
   # ====================
   # = Instance Methods =
@@ -63,8 +65,10 @@ class VideoProfile < ActiveRecord::Base
 private
   
   # before_create
-  def set_default_thumbnailable
+  def set_defaults
     write_attribute(:thumbnailable, 0) unless thumbnailable.present?
+    write_attribute(:min_width, 0) unless min_width.present?
+    write_attribute(:min_height, 0) unless min_height.present?
   end
   
 end

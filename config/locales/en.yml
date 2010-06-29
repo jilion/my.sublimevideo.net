@@ -17,6 +17,9 @@ en:
     cc_full_name: "Name on Card"
     cc_verification_value: "CSC"
     
+    min_width: "Minimum width"
+    min_height: "Minimum height"
+      
   time:
     formats:
       date: "%B %d, %Y"
