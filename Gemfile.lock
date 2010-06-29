@@ -142,12 +142,6 @@ dependencies:
     group: 
     - :default
     version: ">= 2.3.12"
-  rmagick: 
-    group: 
-    - :default
-    version: ">= 0"
-    require: 
-    - RMagick
   ruby-graphviz: 
     group: 
     - :development
@@ -167,6 +161,10 @@ dependencies:
     - :default
     version: ">= 0"
   responders: 
+    group: 
+    - :default
+    version: ">= 0"
+  mini_magick: 
     group: 
     - :default
     version: ">= 0"
@@ -329,6 +327,8 @@ specs:
     version: 0.19.7
 - meta_where: 
     version: 0.5.1
+- mini_magick: 
+    version: 1.2.5
 - ruby-hmac: 
     version: 0.4.0
 - panda: 
@@ -341,8 +341,6 @@ specs:
     version: 1.7.0
 - responders: 
     version: 0.6.1
-- rmagick: 
-    version: 2.13.1
 - rspec-core: 
     version: 2.0.0.beta.14
 - rspec-expectations: 
@@ -383,7 +381,7 @@ specs:
     source: 6
 - wirble: 
     version: 0.1.3
-hash: 08edd65a67a0ac956237c93dfba6baab07acfcc7
+hash: db69e40e146e3a30d43939d1d1e588f35f5037dc
 sources: 
 - Git: 
     uri: git://github.com/jnicklas/carrierwave.git
