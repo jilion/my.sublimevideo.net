@@ -93,7 +93,7 @@ class Video < ActiveRecord::Base
   def titleize_filename(filename, ext=extname)
     title = filename.sub(".#{ext}", '').gsub(/[-_.]/, ' ')
     title.split(' ').map do |word|
-      word.titleize unless word[0] =~ /[a-z]/ && word[1] =~ /[A-Z]/
+      word =~ /^([a-z][A-Z]\w*|[0-9A-Z]+)$/ ? word : word.titleize
     end.join(' ')
   end
   

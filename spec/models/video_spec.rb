@@ -113,6 +113,16 @@ describe Video do
             video.fps.should               == 24
             video.title.should             == "élevé De Soleil à Mañaguä"
           end
+          
+          it "should set beautiful title", :focus => true do
+            video.stub!(:create_encodings => true, :delay_check_panda_encodings_status => true)
+            Transcoder.should_receive(:get).with(:video, video.panda_video_id).and_return({
+              :original_filename => 'iPhone_3GS_voiceover.mp4', :video_codec => 'h264', :audio_codec => 'aac',
+              :extname => '.mp4', :file_size => 17236, :duration => 1160, :width => 640, :height => 320, :fps => 24
+            })
+            video.pandize
+            video.title.should == "iPhone 3GS Voiceover"
+          end
         end
         
         describe "after_transition :on => :pandize, :do => :create_encodings" do
