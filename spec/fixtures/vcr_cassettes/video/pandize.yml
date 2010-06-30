@@ -156,7 +156,33 @@
       - "16"
       status: 
       - "200"
-    body: "{\"deleted\":true}"
+    body: &id001 !str 
+      str: "{\"deleted\":true}"
+      "@args": 
+        :headers: {}
+
+        :method: :delete
+        :url: http://api.pandastream.com:80/v2/encodings/ab6be8bb1bcf506842264304bc1bb479.json?timestamp=2010-06-30T20%3A40%3A46.552685%2B02%3A00&signature=lFa59x08wN82CP9CqHNrO8LI4EMD%2BiG94ADQh57NbPY%3D&access_key=7cc07330-5147-11df-b458-12313d01b992&cloud_id=f931f457dc4c500234fad57c37b591b2
+      "@code": 200
+      "@net_http_res": !ruby/object:Net::HTTPOK 
+        body: *id001
+        code: "200"
+        header: 
+          x-powered-by: 
+          - Phusion Passenger (mod_rails/mod_rack) 2.2.9
+          connection: 
+          - keep-alive
+          content-type: 
+          - application/json
+          server: 
+          - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
+          content-length: 
+          - "16"
+          status: 
+          - "200"
+        http_version: "1.0"
+        message: OK
+        read: true
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
@@ -188,4 +214,66 @@
     body: |-
       <?xml version="1.0" encoding="UTF-8"?>
       <Error><Code>NoSuchKey</Code><Message>The specified key does not exist.</Message><Key>11111111111111111111111111111111.mp4</Key><RequestId>8917F6E9B8AE7126</RequestId><HostId>72Eh6P4j/sktix7RT/fi5ZQ2GX+0pkES07EB9AcyaoN1nKGRI6hMZpqNIVoJ6PbW</HostId></Error>
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: http://s3.amazonaws.com:80/sublimevideo.panda/ab6be8bb1bcf506842264304bc1bb479.mp4
+    body: 
+    headers: 
+      accept: 
+      - "*/*"
+      host: 
+      - s3.amazonaws.com
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 404
+      message: Not Found
+    headers: 
+      x-amz-id-2: 
+      - IWNMYhSgySIWfQcLIgNIpc+oq1Ko41WGOJxgDprQd/62QQ68s8ugS+lEp7QBr8Du
+      content-type: 
+      - application/xml
+      server: 
+      - AmazonS3
+      date: 
+      - Wed, 30 Jun 2010 18:39:33 GMT
+      x-amz-request-id: 
+      - 4FE8DF904A092021
+      transfer-encoding: 
+      - chunked
+    body: |-
+      <?xml version="1.0" encoding="UTF-8"?>
+      <Error><Code>NoSuchKey</Code><Message>The specified key does not exist.</Message><Key>ab6be8bb1bcf506842264304bc1bb479.mp4</Key><RequestId>4FE8DF904A092021</RequestId><HostId>IWNMYhSgySIWfQcLIgNIpc+oq1Ko41WGOJxgDprQd/62QQ68s8ugS+lEp7QBr8Du</HostId></Error>
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: http://s3.amazonaws.com:80//ab6be8bb1bcf506842264304bc1bb479.mp4
+    body: 
+    headers: 
+      accept: 
+      - "*/*"
+      host: 
+      - s3.amazonaws.com
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 404
+      message: Not Found
+    headers: 
+      x-amz-id-2: 
+      - mQN7srJrZdw0KA6TXtTW3oGTeJTLj0LLon0sgxK7aW8exACORFRLCyQgEAVw61KS
+      content-type: 
+      - application/xml
+      date: 
+      - Wed, 30 Jun 2010 18:40:46 GMT
+      server: 
+      - AmazonS3
+      x-amz-request-id: 
+      - 98506B8EA76E13B1
+      transfer-encoding: 
+      - chunked
+    body: |-
+      <?xml version="1.0" encoding="UTF-8"?>
+      <Error><Code>NoSuchBucket</Code><Message>The specified bucket does not exist</Message><BucketName>ab6be8bb1bcf506842264304bc1bb479.mp4</BucketName><RequestId>98506B8EA76E13B1</RequestId><HostId>mQN7srJrZdw0KA6TXtTW3oGTeJTLj0LLon0sgxK7aW8exACORFRLCyQgEAVw61KS</HostId></Error>
     http_version: "1.1"

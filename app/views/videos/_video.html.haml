@@ -32,7 +32,7 @@
     - if video.pending?
       .pending
         %em= "Pending"
-    - elsif video.encoding?
+    - elsif video.first_processing?
       .in_progress
         %em= "In progress"
         -#%ul
@@ -40,6 +40,7 @@
         -#    %li= link_to "Transcode #{encoding.profile.name}", transcoded_video_url(encoding.panda_encoding_id)
     - elsif video.active?
       = link_to "Embed code", "", :class => "embed_code", :onclick => "return MySublimeVideo.showVideoEmbedCode(#{video.id})"
+      = "An encoding is currently being processed" if video.reprocessing?
     - elsif video.suspended?
       .suspended
         %em= "Suspended"

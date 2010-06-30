@@ -64,14 +64,14 @@ describe VideoEncoding do
     # ===========
     # = pandize =
     # ===========
-    describe "event(:pandize) { transition :pending => :encoding }" do
+    describe "event(:pandize) { transition :pending => :processing }" do
       before(:each) { VCR.insert_cassette('video_encoding/pandize') }
       
-      it "should set the state as :encoding from :pending" do
+      it "should set the state as :processing from :pending" do
         video_encoding = Factory(:video_encoding, :state => 'pending')
         video_encoding.should be_pending
         video_encoding.pandize
-        video_encoding.should be_encoding
+        video_encoding.should be_processing
       end
       
       describe "callbacks" do
@@ -90,7 +90,7 @@ describe VideoEncoding do
             video_encoding.extname.should           == 'mp4'
             video_encoding.width.should             == 480
             video_encoding.height.should            == 320
-            video_encoding.should be_encoding
+            video_encoding.should be_processing
           end
           
           it "should send us a notification via Hoptoad if creation has failed on Panda" do
@@ -101,7 +101,7 @@ describe VideoEncoding do
           end
         end
         
-        describe ":encoding state validations" do
+        describe ":processing state validations" do
           it "should stay pending if panda_encoding_id is missing" do
             Transcoder.should_receive(:post).with(:encoding, params).and_return({ :extname => '.mp4', :width => 480, :height => 320 })
             video_encoding.pandize
@@ -139,16 +139,16 @@ describe VideoEncoding do
     # ============
     # = activate =
     # ============
-    describe "event(:activate) { transition :encoding => :active }" do
+    describe "event(:activate) { transition :processing => :active }" do
       before(:each) { VCR.insert_cassette('video_encoding/activate') }
       
       # SOMETIMES PROBLEM HERE WHEN RUNNING ALL SPECS
       let(:video)           { Factory(:video) }
-      let(:video_encoding1) { Factory(:video_encoding, :video => video, :panda_encoding_id => id, :state => 'encoding', :profile_version => Factory(:video_profile_version, :profile => Factory(:video_profile, :min_width => 200, :thumbnailable => true))) }
-      let(:video_encoding2) { Factory(:video_encoding, :video => video, :panda_encoding_id => id, :state => 'encoding', :profile_version => Factory(:video_profile_version, :profile => Factory(:video_profile, :min_width => 500, :thumbnailable => true))) }
+      let(:video_encoding1) { Factory(:video_encoding, :video => video, :panda_encoding_id => id, :state => 'processing', :profile_version => Factory(:video_profile_version, :profile => Factory(:video_profile, :min_width => 200, :thumbnailable => true))) }
+      let(:video_encoding2) { Factory(:video_encoding, :video => video, :panda_encoding_id => id, :state => 'processing', :profile_version => Factory(:video_profile_version, :profile => Factory(:video_profile, :min_width => 500, :thumbnailable => true))) }
       
-      it "should set the state as :active from :encoding" do
-        video_encoding1.should be_encoding
+      it "should set the state as :active from :processing" do
+        video_encoding1.should be_processing
         video_encoding1.activate
         video_encoding1.should be_active
       end
@@ -203,31 +203,31 @@ describe VideoEncoding do
         end
         
         describe ":active state validations" do
-          it "should stay encoding if the panda encoding status is not 'success'" do
+          it "should stay processing if the panda encoding status is not 'success'" do
             Transcoder.should_receive(:get).with(:encoding, id).and_return({ :file_size => 125465, :started_encoding_at => "2010/06/08 17:15:17 +0000", :encoding_time => 12, :status => 'processing' })
             video_encoding1.activate
-            video_encoding1.should be_encoding
+            video_encoding1.should be_processing
           end
           
           it "should stay pending if file_size is missing" do
             Transcoder.should_receive(:get).with(:encoding, id).and_return({ :started_encoding_at => "2010/06/08 17:15:17 +0000", :encoding_time => 12, :status => 'success' })
             video_encoding1.activate
             video_encoding1.file_size.should be_nil
-            video_encoding1.should be_encoding
+            video_encoding1.should be_processing
           end
           
           it "should stay pending if started_encoding_at is missing" do
             Transcoder.should_receive(:get).with(:encoding, id).and_return({ :file_size => 125465, :encoding_time => 12, :status => 'success' })
             video_encoding1.activate
             video_encoding1.started_encoding_at.should be_nil
-            video_encoding1.should be_encoding
+            video_encoding1.should be_processing
           end
           
           it "should stay pending if encoding_time is missing" do
             Transcoder.should_receive(:get).with(:encoding, id).and_return({ :file_size => 125465, :started_encoding_at => "2010/06/08 17:15:17 +0000", :status => 'success' })
             video_encoding1.activate
             video_encoding1.encoding_time.should be_nil
-            video_encoding1.should be_encoding
+            video_encoding1.should be_processing
           end
         end
         
@@ -270,7 +270,7 @@ describe VideoEncoding do
     # ========
     # = fail =
     # ========
-    describe "event(:fail) { transition [:pending, :encoding] => :failed }" do
+    describe "event(:fail) { transition [:pending, :processing] => :failed }" do
       it "should set the state as :failed from :pending" do
         video_encoding = Factory(:video_encoding, :state => 'pending')
         video_encoding.should be_pending
@@ -278,9 +278,9 @@ describe VideoEncoding do
         video_encoding.should be_failed
       end
       
-      it "should set the state as :failed from :encoding" do
-        video_encoding = Factory(:video_encoding, :panda_encoding_id => id, :state => 'encoding', :extname => 'mp4', :encoding_time => 1, :started_encoding_at => Time.now)
-        video_encoding.should be_encoding
+      it "should set the state as :failed from :processing" do
+        video_encoding = Factory(:video_encoding, :panda_encoding_id => id, :state => 'processing', :extname => 'mp4', :encoding_time => 1, :started_encoding_at => Time.now)
+        video_encoding.should be_processing
         video_encoding.fail
         video_encoding.should be_failed
       end
@@ -325,7 +325,7 @@ describe VideoEncoding do
     # ===========
     describe "event(:suspend) { transition :active => :suspended }" do
       before(:each) do
-        @video_encoding = Factory(:video_encoding, :panda_encoding_id => id, :state => 'encoding')
+        @video_encoding = Factory(:video_encoding, :panda_encoding_id => id, :state => 'processing')
         VCR.use_cassette('video_encoding/activate') { @video_encoding.activate }
         VCR.insert_cassette('video_encoding/suspend')
       end
@@ -354,7 +354,7 @@ describe VideoEncoding do
     # =============
     describe "event(:unsuspend) { transition :suspended => :active }" do
       before(:each) do
-        @video_encoding = Factory(:video_encoding, :panda_encoding_id => id, :state => 'encoding')
+        @video_encoding = Factory(:video_encoding, :panda_encoding_id => id, :state => 'processing')
         VCR.use_cassette('video_encoding/activate') { @video_encoding.activate }
         VCR.use_cassette('video_encoding/activate') { @video_encoding.suspend }
         VCR.insert_cassette('video_encoding/unsuspend')
@@ -382,7 +382,7 @@ describe VideoEncoding do
     # ===========
     # = archive =
     # ===========
-    describe "event(:archive) { transition [:pending, :encoding, :failed, :active, :deprecated, :suspended] => :archived }" do
+    describe "event(:archive) { transition [:pending, :processing, :failed, :active, :deprecated, :suspended] => :archived }" do
       before(:each) { VCR.insert_cassette('video_encoding/archive') }
       
       it "should set the state as :deprecated from :pending" do
@@ -392,9 +392,9 @@ describe VideoEncoding do
         video_encoding.should be_archived
       end
       
-      it "should set the state as :deprecated from :encoding" do
-        video_encoding = Factory(:video_encoding, :panda_encoding_id => id, :state => 'encoding')
-        video_encoding.should be_encoding
+      it "should set the state as :deprecated from :processing" do
+        video_encoding = Factory(:video_encoding, :panda_encoding_id => id, :state => 'processing')
+        video_encoding.should be_processing
         video_encoding.archive
         video_encoding.should be_valid
         video_encoding.reload.should be_archived
@@ -429,7 +429,7 @@ describe VideoEncoding do
       end
       
       describe "callbacks" do
-        let(:video_encoding) { Factory(:video_encoding, :panda_encoding_id => id, :state => 'encoding') }
+        let(:video_encoding) { Factory(:video_encoding, :panda_encoding_id => id, :state => 'processing') }
         
         describe "before_transition :on => :archive, :do => :remove_file!" do
           it "should delete the video file from S3" do
@@ -441,7 +441,7 @@ describe VideoEncoding do
           end
         end
         
-        describe "before_transition :encoding => :archived, :do => :set_encoding_info" do
+        describe "before_transition :processing => :archived, :do => :set_encoding_info" do
           it "should send a get request to Panda" do
             video_encoding.stub!(:delete_panda_encoding => true, :remove_file! => true)
             Transcoder.should_receive(:get).with(:encoding, id).and_return({})
@@ -459,10 +459,10 @@ describe VideoEncoding do
           end
         end
         
-        describe "before_transition :encoding => :archived, :do => :delete_panda_encoding" do
+        describe "before_transition :processing => :archived, :do => :delete_panda_encoding" do
           it "should send a delete request to Panda with the panda_encoding_id" do
             video_encoding.stub!(:set_encoding_info => true, :remove_video_file! => true)
-            video_encoding.should be_encoding
+            video_encoding.should be_processing
             Transcoder.should_receive(:delete).with(:encoding, id).and_return(true)
             video_encoding.archive
           end
@@ -481,7 +481,7 @@ describe VideoEncoding do
     it "should be consistent" do
       video_encoding.should be_pending
       VCR.use_cassette('video_encoding/pandize') { video_encoding.pandize }
-      video_encoding.should be_encoding
+      video_encoding.should be_processing
       VCR.use_cassette('video_encoding/activate') { video_encoding.activate }
       video_encoding.should be_active
       video_encoding.file_size.should be_present
@@ -496,7 +496,7 @@ describe VideoEncoding do
       new_video_encoding = Factory(:video_encoding, :video => video_encoding.video, :profile_version => video_encoding.profile_version)
       new_video_encoding.should be_pending
       VCR.use_cassette('video_encoding/pandize') { new_video_encoding.pandize }
-      new_video_encoding.should be_encoding
+      new_video_encoding.should be_processing
       VCR.use_cassette('video_encoding/activate') { new_video_encoding.activate }
       new_video_encoding.should be_active
       new_video_encoding.file_size.should be_present
@@ -509,7 +509,7 @@ describe VideoEncoding do
       last_video_encoding = Factory(:video_encoding, :video => video_encoding.video, :profile_version => video_encoding.profile_version)
       last_video_encoding.should be_pending
       VCR.use_cassette('video_encoding/pandize') { last_video_encoding.pandize }
-      last_video_encoding.should be_encoding
+      last_video_encoding.should be_processing
       
       VCR.use_cassette('video_encoding/archive') { new_video_encoding.archive }
       new_video_encoding.should be_archived
@@ -536,17 +536,29 @@ describe VideoEncoding do
   end
   
   describe "Instance Methods" do
-    let(:video_encoding) { Factory(:video_encoding, :panda_encoding_id => id, :state => 'encoding') }
+    let(:video_encoding) { Factory(:video_encoding, :panda_encoding_id => id, :state => 'processing') }
     
-    describe "#first_encoding?" do
-      it "should be true if file is not present and state is encoding" do
-        video_encoding.should be_first_encoding
+    describe "#first_processing?" do
+      it "should be true if file is not present and state is processing" do
+        video_encoding.should be_first_processing
       end
       
-      it "should be false if file is already present and state is encoding" do
+      it "should be false if file is already present and state is processing" do
         video_encoding.file = File.open("#{Rails.root}/spec/fixtures/railscast_intro.mov")
         video_encoding.save
-        video_encoding.should_not be_first_encoding
+        video_encoding.should_not be_first_processing
+      end
+    end
+    
+    describe "#reprocessing?" do
+      it "should be false if file is not present and state is processing" do
+        video_encoding.should_not be_reprocessing
+      end
+      
+      it "should be true if file is already present and state is processing" do
+        video_encoding.file = File.open("#{Rails.root}/spec/fixtures/railscast_intro.mov")
+        video_encoding.save
+        video_encoding.should be_reprocessing
       end
     end
   end

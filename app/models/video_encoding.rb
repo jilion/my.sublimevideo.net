@@ -36,7 +36,7 @@ class VideoEncoding < ActiveRecord::Base
   # = Scopes =
   # ==========
   
-  scope :encoding,       where(:state => 'encoding')
+  scope :processing,     where(:state => 'processing')
   scope :active,         where(:state => 'active')
   scope :suspended,      where(:state => 'suspended')
   scope :not_deprecated, where(:state.ne => 'deprecated')
@@ -66,18 +66,18 @@ class VideoEncoding < ActiveRecord::Base
     before_transition :on => :unsuspend, :do => :unblock_video
     
     before_transition :on => :archive, :do => :remove_file!
-    before_transition :encoding => :archived, :do => :set_encoding_info
-    after_transition  :encoding => :archived, :do => :delete_panda_encoding
+    before_transition :processing => :archived, :do => :set_encoding_info
+    after_transition  :processing => :archived, :do => :delete_panda_encoding
     
-    event(:pandize)   { transition :pending => :encoding }
-    event(:fail)      { transition [:pending, :encoding] => :failed }
-    event(:activate)  { transition :encoding => :active }
+    event(:pandize)   { transition :pending => :processing }
+    event(:fail)      { transition [:pending, :processing] => :failed }
+    event(:activate)  { transition :processing => :active }
     event(:deprecate) { transition [:active, :failed] => :deprecated }
     event(:suspend)   { transition :active => :suspended }
     event(:unsuspend) { transition :suspended => :active }
-    event(:archive)   { transition [:pending, :encoding, :failed, :active, :deprecated, :suspended] => :archived }
+    event(:archive)   { transition [:pending, :processing, :failed, :active, :deprecated, :suspended] => :archived }
     
-    state(:encoding) do
+    state(:processing) do
       validates :panda_encoding_id, :presence => true
       validates :extname, :presence => true
       validates :width, :presence => true
@@ -85,7 +85,7 @@ class VideoEncoding < ActiveRecord::Base
     end
     
     state(:active) do
-      validates :encoding_status, :inclusion => { :in => %w[success] }, :if => proc { |e| e.state_was == 'encoding' }
+      validates :encoding_status, :inclusion => { :in => %w[success] }, :if => proc { |e| e.state_was == 'processing' }
       validates :file_size, :presence => true
       validates :started_encoding_at, :presence => true
       validates :encoding_time, :presence => true
@@ -104,8 +104,12 @@ class VideoEncoding < ActiveRecord::Base
   # = Instance Methods =
   # ====================
   
-  def first_encoding?
-    encoding? && !file.present?
+  def first_processing?
+    processing? && !file.present?
+  end
+  
+  def reprocessing?
+    processing? && file.present?
   end
   
 protected
@@ -130,7 +134,7 @@ protected
     self.remote_file_url = "#{self.class.panda_s3_url}/#{panda_encoding_id}.#{extname}"
   end
   
-  # before_transition (activate) / before_transition (encoding => archived)
+  # before_transition (activate) / before_transition (processing => archived)
   def set_encoding_info
     encoding_info = Transcoder.get(:encoding, panda_encoding_id)
     self.file_size           = encoding_info[:file_size]
@@ -155,7 +159,7 @@ protected
     suspend if video.suspended?
   end
   
-  # after_transition (activate) / after_transition (encoding => archived)
+  # after_transition (activate) / after_transition (processing => archived)
   def delete_panda_encoding
     Transcoder.delete(:encoding, panda_encoding_id)
   end

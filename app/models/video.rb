@@ -108,8 +108,16 @@ class Video < ActiveRecord::Base
     end.join(' ')
   end
   
-  def encoding?(reload = false)
-    encodings? && encodings(reload).any? { |e| e.first_encoding? }
+  def first_processing?(reload = false)
+    encodings? && encodings(reload).any? { |e| e.first_processing? }
+  end
+  
+  def reprocessing?(reload = false)
+    encodings? && encodings(reload).any? { |e| e.reprocessing? }
+  end
+  
+  def processing?(reload = false)
+    encodings? && encodings(reload).any? { |e| e.processing? }
   end
   
   def active?(reload = false)
@@ -137,7 +145,7 @@ class Video < ActiveRecord::Base
   end
   
   def check_panda_encodings_status
-    if encoding?
+    if processing?
       encodings_info = Transcoder.get([:video, :encodings], panda_video_id)
       if encodings_info.all? { |encoding_info| encoding_info[:status] == 'success' }
         self.activate
@@ -146,7 +154,7 @@ class Video < ActiveRecord::Base
       else
         encodings_info.each do |encoding_info|
           encoding = encodings.find_by_panda_encoding_id(encoding_info[:id])
-          if encoding.encoding?
+          if encoding.processing?
             case encoding_info[:status]
             when 'success'
               encoding.activate
@@ -202,7 +210,7 @@ protected
   
   # before_transition (activate)
   def activate_encodings
-    encodings.encoding.map(&:activate)
+    encodings.processing.map(&:activate)
   end
   
   # after_transition (activate)
