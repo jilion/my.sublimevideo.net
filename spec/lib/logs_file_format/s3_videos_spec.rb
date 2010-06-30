@@ -8,10 +8,16 @@ describe LogsFileFormat::S3Videos do
       @trackers = LogAnalyzer.parse(logs_file, 'LogsFileFormat::S3Videos')
     end
     
-    it "should parse and return bandwith tracker" do
-      tracker = @trackers.select { |tracker| tracker.options[:title] == :bandwidth }.first
+    it "should parse and return bandwith_s3 tracker" do
+      tracker = @trackers.select { |tracker| tracker.options[:title] == :bandwidth_s3 }.first
       tracker.categories.should have(1).tokens
       tracker.categories["4e1az9e5"][:sum].should == 33001318
+    end
+    
+    it "should parse and return requests_s3 tracker" do
+      tracker = @trackers.select { |tracker| tracker.options[:title] == :requests_s3 }.first
+      tracker.categories.should have(1).tokens
+      tracker.categories["4e1az9e5"].should == 25
     end
   end
   

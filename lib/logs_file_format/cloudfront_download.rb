@@ -1,6 +1,7 @@
 module LogsFileFormat
   class CloudfrontDownload < RequestLogAnalyzer::FileFormat::Base
     extend RequestLogAnalyzer::FileFormat::CommonRegularExpressions
+    extend LogsFileFormat::Amazon
     
     LINE_DEFINITIONS = [
       { :regexp => "(#{timestamp('%Y-%m-%d')})", :captures => [{:name => :date,          :type => :timestamp}] },
@@ -40,12 +41,48 @@ module LogsFileFormat
     def self.report_trackers
       analyze = RequestLogAnalyzer::Aggregator::Summarizer::Definer.new
       analyze.frequency(:path, :title => :hits,
-        :category => lambda { |r| r[:path].match(/^\/([a-z0-9]{8})\/.*/) && $1 },
-        :if       => lambda { |r| r[:http_status] == 200 && r[:path] =~ /^\/[a-z0-9]{8}\/.*/ }
+        :category => lambda { |r| token_from(r[:path]) },
+        :if       => lambda { |r| r[:http_status] == 200 && token_path?(r[:path]) && video_path?(r[:path]) }
       )
-      analyze.traffic(:sc_bytes, :title => :bandwidth,
-        :category => lambda { |r| r[:path].match(/^\/([a-z0-9]{8})\/.*/) && $1 },
-        :if       => lambda { |r| r[:path] =~ /^\/[a-z0-9]{8}\/.*/ }
+      analyze.traffic(:sc_bytes, :title => :bandwidth_us,
+        :category => lambda { |r| token_from(r[:path]) },
+        :if       => lambda { |r| token_path?(r[:path]) && us_location?(r[:edge_location]) }
+      )
+      analyze.traffic(:sc_bytes, :title => :bandwidth_eu,
+        :category => lambda { |r| token_from(r[:path]) },
+        :if       => lambda { |r| token_path?(r[:path]) && eu_location?(r[:edge_location]) }
+      )
+      analyze.traffic(:sc_bytes, :title => :bandwidth_as,
+        :category => lambda { |r| token_from(r[:path]) },
+        :if       => lambda { |r| token_path?(r[:path]) && as_location?(r[:edge_location]) }
+      )
+      analyze.traffic(:sc_bytes, :title => :bandwidth_jp,
+        :category => lambda { |r| token_from(r[:path]) },
+        :if       => lambda { |r| token_path?(r[:path]) && jp_location?(r[:edge_location]) }
+      )
+      analyze.traffic(:sc_bytes, :title => :bandwidth_unknown,
+        :category => lambda { |r| token_from(r[:path]) },
+        :if       => lambda { |r| token_path?(r[:path]) && unknown_location?(r[:edge_location]) }
+      )
+      analyze.frequency(:path, :title => :requests_us,
+        :category => lambda { |r| token_from(r[:path]) },
+        :if       => lambda { |r| token_path?(r[:path]) && us_location?(r[:edge_location]) }
+      )
+      analyze.frequency(:path, :title => :requests_eu,
+        :category => lambda { |r| token_from(r[:path]) },
+        :if       => lambda { |r| token_path?(r[:path]) && eu_location?(r[:edge_location]) }
+      )
+      analyze.frequency(:path, :title => :requests_as,
+        :category => lambda { |r| token_from(r[:path]) },
+        :if       => lambda { |r| token_path?(r[:path]) && as_location?(r[:edge_location]) }
+      )
+      analyze.frequency(:path, :title => :requests_jp,
+        :category => lambda { |r| token_from(r[:path]) },
+        :if       => lambda { |r| token_path?(r[:path]) && jp_location?(r[:edge_location]) }
+      )
+      analyze.frequency(:path, :title => :requests_unknown,
+        :category => lambda { |r| token_from(r[:path]) },
+        :if       => lambda { |r| token_path?(r[:path]) && unknown_location?(r[:edge_location]) }
       )
       analyze.trackers
     end

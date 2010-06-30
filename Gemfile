@@ -7,7 +7,7 @@ gem 'libxml-ruby', :require => 'libxml'
 gem 'heroku' # Hosting
 gem 'i18n'
 gem 'haml'
-gem 'state_machine'#,    :git => 'git://github.com/pluginaweek/state_machine.git'
+gem 'state_machine'
 gem 'responders'
 gem 'uniquify'
 gem 'delayed_job',      :git => 'git://github.com/thibaudgg/delayed_job'
@@ -28,7 +28,6 @@ gem 'system_timer' # only on Ruby 1.8, used by memcache-client
 gem 'memcache-client'
 gem 'memcached'
 
-gem 'http_connection',  :git => 'git://github.com/thibaudgg/http_connection.git'
 gem 'aws',              '>= 2.3.12'
 gem 'carrierwave',      :git => 'git://github.com/jnicklas/carrierwave.git'
 gem 'mini_magick'
@@ -46,8 +45,6 @@ group :test do
   gem 'pg'
   gem 'parallel'
   
-  # gem 'rev'
-  # gem 'watchr'
   gem 'growl' # needed by RSpactor
   gem 'spork'
   
