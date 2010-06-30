@@ -141,7 +141,7 @@ protected
   
   # before_transition (activate)
   def set_video_posterframe
-    if profile.thumbnailable?
+    if profile.thumbnailable? && video.encodings.map(&:profile).select{ |p| p.thumbnailable? && p.min_width > profile.min_width }.empty?
       self.video.remote_posterframe_url = "#{self.class.panda_s3_url}/#{panda_encoding_id}_4.jpg"
       self.video.save!
     end

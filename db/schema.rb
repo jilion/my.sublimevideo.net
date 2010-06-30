@@ -207,8 +207,19 @@ ActiveRecord::Schema.define(:version => 20100630153415) do
     t.integer  "log_id"
     t.datetime "started_at"
     t.datetime "ended_at"
-    t.integer  "hits",       :default => 0
-    t.integer  "bandwidth",  :default => 0
+    t.integer  "hits",              :default => 0
+    t.integer  "bandwidth_s3",      :default => 0
+    t.integer  "bandwidth_us",      :default => 0
+    t.integer  "bandwidth_eu",      :default => 0
+    t.integer  "bandwidth_as",      :default => 0
+    t.integer  "bandwidth_jp",      :default => 0
+    t.integer  "bandwidth_unknown", :default => 0
+    t.integer  "requests_s3",       :default => 0
+    t.integer  "requests_us",       :default => 0
+    t.integer  "requests_eu",       :default => 0
+    t.integer  "requests_as",       :default => 0
+    t.integer  "requests_jp",       :default => 0
+    t.integer  "requests_unknown",  :default => 0
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -223,8 +234,19 @@ ActiveRecord::Schema.define(:version => 20100630153415) do
     t.string   "token"
     t.string   "state"
     t.string   "posterframe"
-    t.integer  "hits_cache",        :default => 0
-    t.integer  "bandwidth_cache",   :default => 0
+    t.integer  "hits_cache",              :default => 0
+    t.integer  "bandwidth_s3_cache",      :default => 0
+    t.integer  "bandwidth_us_cache",      :default => 0
+    t.integer  "bandwidth_eu_cache",      :default => 0
+    t.integer  "bandwidth_as_cache",      :default => 0
+    t.integer  "bandwidth_jp_cache",      :default => 0
+    t.integer  "bandwidth_unknown_cache", :default => 0
+    t.integer  "requests_s3_cache",       :default => 0
+    t.integer  "requests_us_cache",       :default => 0
+    t.integer  "requests_eu_cache",       :default => 0
+    t.integer  "requests_as_cache",       :default => 0
+    t.integer  "requests_jp_cache",       :default => 0
+    t.integer  "requests_unknown_cache",  :default => 0
     t.string   "panda_video_id"
     t.string   "original_filename"
     t.string   "video_codec"
