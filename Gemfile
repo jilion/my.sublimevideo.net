@@ -4,13 +4,12 @@ gem 'rails', '3.0.0.beta4'
 
 gem 'libxml-ruby', :require => 'libxml'
 
-gem 'heroku' # Hosting
 gem 'i18n'
 gem 'haml'
-gem 'state_machine'#,    :git => 'git://github.com/pluginaweek/state_machine.git'
-gem 'responders'
+gem 'state_machine'
+gem 'responders',       :git => 'git://github.com/plataformatec/responders.git'
 gem 'uniquify'
-gem 'delayed_job',      :git => 'git://github.com/thibaudgg/delayed_job'
+gem 'delayed_job',      :git => 'git://github.com/thibaudgg/delayed_job.git'
 gem 'will_paginate',    :git => 'git://github.com/mislav/will_paginate.git', :branch => 'rails3'
 gem 'has_scope',        :git => 'git://github.com/rymai/has_scope.git'
 gem 'jammit',           :git => 'git://github.com/thibaudgg/jammit.git'
@@ -24,11 +23,10 @@ gem 'request-log-analyzer', :require => 'request_log_analyzer'
 gem 'devise', '>= 1.1.rc2' # Auth
 gem 'devise_invitable', :git => 'git://github.com/rymai/devise_invitable.git'
 
-gem 'system_timer' # only on Ruby 1.8, used by memcache-client
+gem 'system_timer' # Only on Ruby 1.8, used by memcache-client
 gem 'memcache-client'
 gem 'memcached'
 
-gem 'http_connection',  :git => 'git://github.com/thibaudgg/http_connection.git'
 gem 'aws',              '>= 2.3.12'
 gem 'carrierwave',      :git => 'git://github.com/jnicklas/carrierwave.git'
 gem 'mini_magick'
@@ -46,8 +44,6 @@ group :test do
   gem 'pg'
   gem 'parallel'
   
-  # gem 'rev'
-  # gem 'watchr'
   gem 'growl' # needed by RSpactor
   gem 'spork'
   

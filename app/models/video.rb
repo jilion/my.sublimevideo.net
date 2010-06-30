@@ -2,27 +2,38 @@
 #
 # Table name: videos
 #
-#  id                :integer         not null, primary key
-#  user_id           :integer
-#  title             :string(255)
-#  token             :string(255)
-#  state             :string(255)
-#  posterframe       :string(255)
-#  hits_cache        :integer         default(0)
-#  bandwidth_cache   :integer         default(0)
-#  panda_video_id    :string(255)
-#  original_filename :string(255)
-#  video_codec       :string(255)
-#  audio_codec       :string(255)
-#  extname           :string(255)
-#  file_size         :integer
-#  duration          :integer
-#  width             :integer
-#  height            :integer
-#  fps               :integer
-#  archived_at       :datetime
-#  created_at        :datetime
-#  updated_at        :datetime
+#  id                      :integer         not null, primary key
+#  user_id                 :integer
+#  title                   :string(255)
+#  token                   :string(255)
+#  state                   :string(255)
+#  posterframe             :string(255)
+#  hits_cache              :integer         default(0)
+#  bandwidth_s3_cache      :integer         default(0)
+#  bandwidth_us_cache      :integer         default(0)
+#  bandwidth_eu_cache      :integer         default(0)
+#  bandwidth_as_cache      :integer         default(0)
+#  bandwidth_jp_cache      :integer         default(0)
+#  bandwidth_unknown_cache :integer         default(0)
+#  requests_s3_cache       :integer         default(0)
+#  requests_us_cache       :integer         default(0)
+#  requests_eu_cache       :integer         default(0)
+#  requests_as_cache       :integer         default(0)
+#  requests_jp_cache       :integer         default(0)
+#  requests_unknown_cache  :integer         default(0)
+#  panda_video_id          :string(255)
+#  original_filename       :string(255)
+#  video_codec             :string(255)
+#  audio_codec             :string(255)
+#  extname                 :string(255)
+#  file_size               :integer
+#  duration                :integer
+#  width                   :integer
+#  height                  :integer
+#  fps                     :integer
+#  archived_at             :datetime
+#  created_at              :datetime
+#  updated_at              :datetime
 #
 
 class Video < ActiveRecord::Base
@@ -117,8 +128,12 @@ class Video < ActiveRecord::Base
     original_filename && extname ? original_filename.sub(".#{extname}", '') : ''
   end
   
+  def encodings_size
+    encodings.not_deprecated.all.sum { |e| e.file_size.to_i }
+  end
+  
   def total_size
-    encodings.not_deprecated.inject([file_size]){ |memo,e| memo << e.file_size }.compact.sum
+    file_size.to_i + encodings_size
   end
   
   def check_panda_encodings_status
