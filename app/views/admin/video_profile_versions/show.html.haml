@@ -24,4 +24,4 @@
     .entry.submit.signup
       = f.submit "Activate", :confirm => "Are you sure?", :class => "submit small"
       = "or"
-      = link_to "Back to #{content_tag(:em, @profile.title)}".html_safe, admin_profile_path(@profile)
+= link_to "Back to #{content_tag(:em, @profile.title)}".html_safe, admin_profile_path(@profile)
