@@ -87,6 +87,24 @@ describe Site do
       end
     end
     
+    describe "validate player_mode" do
+      %w[fake test foo bar].each do |player_mode|
+        it "should validate inclusion of player_mode #{player_mode} in %w[dev beta stable]" do
+          site = Factory.build(:site, :player_mode => player_mode)
+          site.should_not be_valid
+          site.errors[:player_mode].should be_present
+        end
+      end
+      
+      %w[dev beta stable].each do |player_mode|
+        it "should validate inclusion of player_mode #{player_mode} in %w[dev beta stable]" do
+          site = Factory.build(:site, :player_mode => player_mode)
+          site.should be_valid
+          site.errors[:player_mode].should be_empty
+        end
+      end
+    end
+    
     context "with already a site in db" do
       before(:each) { @site = Factory(:site) }
       
@@ -232,6 +250,14 @@ describe Site do
   end
   
   describe "Callbacks" do
+    describe "before_validation" do
+      it "should set player_mode to 'stable' before validation" do
+        site = Factory.build(:site, :player_mode => nil)
+        site.should be_valid
+        site.player_mode.should == "stable"
+      end
+    end
+    
     describe "before_create" do
       it "should set default dev_hostnames before create" do
         site = Factory(:site, :dev_hostnames => nil)

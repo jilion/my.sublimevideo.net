@@ -1,10 +1,10 @@
 --- 
 dependencies: 
-  parallel: 
+  spork: 
     group: 
     - :test
     version: ">= 0"
-  spork: 
+  parallel: 
     group: 
     - :test
     version: ">= 0"
@@ -63,10 +63,6 @@ dependencies:
   delayed_job: 
     group: 
     - :default
-    version: ">= 0"
-  growl: 
-    group: 
-    - :test
     version: ">= 0"
   wirble: 
     group: 
@@ -160,6 +156,10 @@ dependencies:
     group: 
     - :default
     version: ">= 0"
+  rspactor: 
+    group: 
+    - :test
+    version: ">= 0.7.beta.1"
   RedCloth: 
     group: 
     - :default
@@ -330,17 +330,21 @@ specs:
     version: 0.6.1
     source: 7
 - rspec-core: 
-    version: 2.0.0.beta.14
+    version: 2.0.0.beta.15
 - rspec-expectations: 
-    version: 2.0.0.beta.14
+    version: 2.0.0.beta.15
 - rspec-mocks: 
-    version: 2.0.0.beta.14
+    version: 2.0.0.beta.15
 - rspec: 
-    version: 2.0.0.beta.14
+    version: 2.0.0.beta.15
+- trollop: 
+    version: 1.16.2
+- rspactor: 
+    version: 0.7.0.beta.1
 - webrat: 
     version: 0.7.1
 - rspec-rails: 
-    version: 2.0.0.beta.14.2
+    version: 2.0.0.beta.15
 - ruby-graphviz: 
     version: 0.9.12
 - shoulda: 
@@ -369,7 +373,7 @@ specs:
     source: 5
 - wirble: 
     version: 0.1.3
-hash: 402148c9b12ab80286cd623c589724675d96611b
+hash: b1abff67f946e1ead72eeac71c53fea0df5815ea
 sources: 
 - Git: 
     uri: git://github.com/jnicklas/carrierwave.git
