@@ -16,7 +16,7 @@ gem 'jammit',           :git => 'git://github.com/thibaudgg/jammit.git'
 gem 'meta_where'
 gem 'hoptoad_notifier'
 gem 'activemerchant'
-gem 'panda' # Encoding
+gem 'panda', '>= 0.6.2' # Encoding
 gem 'voxel_hapi',       :git => 'git://github.com/thibaudgg/voxel_hapi.git' # VoxCast CDN
 gem 'request-log-analyzer', :require => 'request_log_analyzer'
 
