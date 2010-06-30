@@ -152,6 +152,7 @@ ActiveRecord::Schema.define(:version => 20100625150205) do
     t.integer  "cc_last_digits"
     t.date     "cc_expire_on"
     t.datetime "cc_updated_at"
+    t.text     "video_settings"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -193,6 +194,8 @@ ActiveRecord::Schema.define(:version => 20100625150205) do
     t.string   "name"
     t.string   "extname"
     t.boolean  "thumbnailable"
+    t.integer  "min_width"
+    t.integer  "min_height"
     t.integer  "versions_count", :default => 0
     t.datetime "created_at"
     t.datetime "updated_at"

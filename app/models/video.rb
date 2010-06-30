@@ -39,7 +39,7 @@
 class Video < ActiveRecord::Base
   
   attr_accessible :title
-  uniquify :token, :chars => ('a'..'z').to_a + ('0'..'9').to_a
+  uniquify :token, :chars => Array('a'..'z') + Array('0'..'9')
   
   mount_uploader :posterframe, PosterframeUploader
   
@@ -102,7 +102,10 @@ class Video < ActiveRecord::Base
   end
   
   def titleize_filename(filename, ext=extname)
-    filename.sub(".#{ext}", '').titleize
+    title = filename.sub(".#{ext}", '').gsub(/[-_.]/, ' ')
+    title.split(' ').map do |word|
+      word.titleize unless word[0] =~ /[a-z]/ && word[1] =~ /[A-Z]/
+    end.join(' ')
   end
   
   def encoding?
@@ -137,18 +140,28 @@ class Video < ActiveRecord::Base
     if encoding?
       encodings_info = Transcoder.get([:video, :encodings], panda_video_id)
       if encodings_info.all? { |encoding_info| encoding_info[:status] == 'success' }
-        delay(:priority => 6).activate
+        self.activate
+      elsif encodings_info.any? { |encoding_info| encoding_info[:status] == 'processing' }
+        delay_check_panda_encodings_status
       else
         encodings_info.each do |encoding_info|
-          if encoding_info[:status] == 'failed'
-            encoding = encodings.where(:panda_encoding_id => encoding_info[:id]).first
-            HoptoadNotifier.notify("VideoEncoding (#{encoding.id}) panda encoding is failed.")
-            encoding.fail
+          encoding = encodings.find_by_panda_encoding_id(encoding_info[:id])
+          if encoding.encoding?
+            case encoding_info[:status]
+            when 'success'
+              encoding.activate
+            when 'fail'
+              encoding.fail
+              HoptoadNotifier.notify("VideoEncoding (#{encoding.id}) panda encoding (panda_encoding_id: #{encoding.panda_encoding_id}) is failed.")
+            end
           end
         end
-        delay_check_panda_encodings_status
       end
     end
+  end
+  
+  def height_from_width(width)
+    (width.to_i*self.height)/self.width
   end
   
 protected
@@ -156,8 +169,8 @@ protected
   # before_transition (pandize)
   def set_encoding_info
     video_info             = Transcoder.get(:video, panda_video_id)
-    self.extname           = video_info[:extname].gsub('.','') # if video_info[:extname]
-    self.original_filename = sanitize_filename(video_info[:original_filename]) # sanitize this !!
+    self.extname           = video_info[:extname].try(:gsub, '.', '')
+    self.original_filename = sanitize_filename(video_info[:original_filename])
     self.video_codec       = video_info[:video_codec]
     self.audio_codec       = video_info[:audio_codec]
     self.file_size         = video_info[:file_size]
@@ -170,9 +183,16 @@ protected
   
   # after_transition (pandize)
   def create_encodings
-    VideoProfileVersion.active.each do |profile_version|
-      encoding = encodings.build(:profile_version => profile_version)
-      encoding.save!
+    profile_versions = VideoProfileVersion.active.dimensions_less_than(width, height).use_webm(user.use_webm?).all
+    if user.use_webm?
+      webm_profile_versions = profile_versions.select{ |pv| pv.profile.extname == 'webm' }
+      if webm_profile_versions.size > 1 # delete the SD version only if it's not the only webm possible
+        webm_sd_profiles = webm_profile_versions.select{ |pv| pv.profile.name == '_sd' }
+        profile_versions.delete(webm_sd_profiles[0]) if webm_sd_profiles.present?
+      end
+    end
+    profile_versions.each do |profile_version|
+      encoding = encodings.create(:profile_version => profile_version)
       encoding.delay(:priority => 5).pandize!
     end
   end

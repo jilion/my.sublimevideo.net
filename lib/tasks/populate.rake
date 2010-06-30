@@ -138,15 +138,15 @@ def create_sites(count = 1)
 end
 
 def create_video_profiles
-  active_video_profile         = VideoProfile.new(:title => "iPhone 720p", :thumbnailable => true)
-  active_video_profile.name = "_iphone_720p"
-  active_video_profile.extname = "mp4"
-  active_video_profile.save(:validate => false)
+  mp4_sd_profile         = VideoProfile.new(:title => "MP4 SD", :min_width => 0, :min_height => 0)
+  mp4_sd_profile.name    = "_sd"
+  mp4_sd_profile.extname = "mp4"
+  mp4_sd_profile.save(:validate => false)
   
-  active_video_profile_version = active_video_profile.versions.build(:width => 640, :height => 480, :command => "HandBrakeCLI -i $input_file$ -o $output_file$  -e x264 -q 0.589999973773956 -a 1 -E faac -B 128 -R 48 -6 dpl2 -f mp4 -X 480 -m -x level=30:cabac=0:ref=2:mixed-refs:analyse=all:me=umh:no-fast-pskip=1")
-  active_video_profile_version.panda_profile_id = 'ef5c5e7d10b7216c703f87ab34eafa98'
-  active_video_profile_version.state = 'active'
-  active_video_profile_version.save(:validate => false)
+  mp4_sd_profile_version = VideoProfileVersion.new(:width => 0, :height => 0, :command => "aa", :profile => mp4_sd_profile)
+  mp4_sd_profile_version.panda_profile_id = '684c77a886717e7400f9b7cb87a75304'
+  mp4_sd_profile_version.state = 'active'
+  mp4_sd_profile_version.save(:validate => false)
   print "One video profile with one version created!\n"
 end
 

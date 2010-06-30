@@ -7,6 +7,10 @@
     = link_to profile.name, admin_profile_path(profile)
   %td.extname
     = link_to profile.extname, admin_profile_path(profile)
+  %td.min_width
+    = link_to profile.min_width, admin_profile_path(profile)
+  %td.min_height
+    = link_to profile.min_height, admin_profile_path(profile)
   %td.thumbnailable
     = link_to profile.thumbnailable.to_s, admin_profile_path(profile)
   %td.versions_count

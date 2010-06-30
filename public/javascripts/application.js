@@ -369,12 +369,12 @@ var PopupHandler = Class.create({
 
 
 var VideoEmbedCodeUpdater = Class.create({
-  initialize: function(textarea, originalWidth, originalHeight) {
+  initialize: function(textarea, originalWidthInput, originalHeightInput) {
     this.embedVideoTextarea      = textarea; // the textarea containing the video embed code
     this.originalSizes           = []; // used when the user clear a field
-    this.originalSizes['width']  = originalWidth; // used when the user clear a field
-    this.originalSizes['height'] = originalHeight; // used when the user clear a field
-    this.ratio                   = originalWidth / originalHeight; // used to automatically keep the aspect ratio
+    this.originalSizes['width']  = originalWidthInput.value; // used when the user clear a field
+    this.originalSizes['height'] = originalHeightInput.value; // used when the user clear a field
+    this.ratio                   = this.originalSizes['width'] / this.originalSizes['height']; // used to automatically keep the aspect ratio
     this.currentSizes            = [];
     this.currentSizes['width']   = this.originalSizes['width'];
     this.currentSizes['height']  = this.originalSizes['height'];
@@ -449,7 +449,7 @@ var VideoEmbedCodeUpdater = Class.create({
   },
   updateSizeInEmbed: function(input) {
     var sizeName = input.readAttribute('name');
-    this.embedVideoTextarea.value = this.embedVideoTextarea.value.replace(new RegExp(sizeName+"='\\d*'"), sizeName+"='"+input.value+"'");
+    this.embedVideoTextarea.value = this.embedVideoTextarea.value.replace(new RegExp(sizeName+"=\"\\d*\""), sizeName+"=\""+input.value+"\"");
   },
   sizes: function(block) {
     ['width', 'height'].each(function(sizeName, index) {

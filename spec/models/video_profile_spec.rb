@@ -8,6 +8,8 @@
 #  name           :string(255)
 #  extname        :string(255)
 #  thumbnailable  :boolean
+#  min_width      :integer
+#  min_height     :integer
 #  versions_count :integer         default(0)
 #  created_at     :datetime
 #  updated_at     :datetime
@@ -24,6 +26,8 @@ describe VideoProfile do
     its(:description) { should == ""      }
     its(:name)        { should == ""      }
     its(:extname)     { should be_present }
+    its(:min_width)   { should == 0       }
+    its(:min_height)  { should == 0       }
     
     it { should be_valid }
   end
@@ -58,6 +62,24 @@ describe VideoProfile do
       it "should not set thumbnailable to false if specified" do
         vp = Factory(:video_profile, :thumbnailable => true)
         vp.thumbnailable.should be_true
+      end
+      it "should set min_width to 0 if not specified" do
+        vp = Factory(:video_profile)
+        vp.should be_valid
+        vp.min_width.should == 0
+      end
+      it "should not set min_width to 0 if specified" do
+        vp = Factory(:video_profile, :min_width => 600)
+        vp.min_width.should == 600
+      end
+      it "should set min_height to 0 if not specified" do
+        vp = Factory(:video_profile)
+        vp.should be_valid
+        vp.min_height.should == 0
+      end
+      it "should not set min_height to 0 if specified" do
+        vp = Factory(:video_profile, :min_height => 300)
+        vp.min_height.should == 300
       end
     end
   end

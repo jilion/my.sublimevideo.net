@@ -30,7 +30,8 @@ gem 'memcached'
 
 gem 'aws',              '>= 2.3.12'
 gem 'carrierwave',      :git => 'git://github.com/jnicklas/carrierwave.git'
-gem 'rmagick',          :require => 'RMagick'
+gem 'mini_magick'
+gem 'RedCloth'
 
 group :development do
   gem 'sqlite3-ruby', :require => 'sqlite3'

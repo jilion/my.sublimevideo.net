@@ -48,6 +48,65 @@ describe VideoProfileVersion do
         VideoProfileVersion.active.should == [active_video_profile_version]
       end
     end
+    
+    describe "dimensions_less_than" do
+      before(:each) do
+        sd_profile = Factory(:video_profile, :min_width => 0, :min_height => 0) # SD
+        hq_profile = Factory(:video_profile, :min_width => 854, :min_height => 480) # HQ
+        hd_profile = Factory(:video_profile, :min_width => 1280, :min_height => 720) # HD
+        @sd_profile_version = Factory(:video_profile_version, :state => 'active', :profile => sd_profile)
+        @hq_profile_version = Factory(:video_profile_version, :state => 'active', :profile => hq_profile)
+        @hd_profile_version = Factory(:video_profile_version, :state => 'active', :profile => hd_profile)
+      end
+      
+      # MP4 Input file example  SD minW:0 minH:0  HQ minW:854 minH:480  HD minW:1280 minH:720
+      # 1)  320x240             320x240           -                     -
+      # 2)  480x270             480x270           -                     -
+      # 3)  640x360             640x360           -                     -
+      # 4)  640x480             480x360           640x480               -
+      # 5)  848x480             636x360           848x480               -
+      # 6)  864x540             576x360           768x480               -
+      # 7)  1280x544            640x272           854x363               1280x544
+      # 8)  1280x720            640x360           854x480               1280x720
+      # 9)  720x1280 (iPhone4)  202x360           270x480               405x720
+      # 10) 1920x1080           640x360           854x480               1280x720
+      
+      [[320,240], [480,270], [640,360]].each do |size|
+        it "should return video profiles version that have their profile with #{size[0]} >= min_width and #{size[1]} >= min_height: SD" do
+          VideoProfileVersion.dimensions_less_than(size[0], size[1]).should == [@sd_profile_version]
+        end
+      end
+      
+      [[640,480], [848,480], [768,480]].each do |size|
+        it "should return video profiles version that have their profile with #{size[0]} >= min_width and #{size[1]} >= min_height: HQ" do
+          VideoProfileVersion.dimensions_less_than(size[0], size[1]).should == [@sd_profile_version, @hq_profile_version]
+        end
+      end
+      
+      [[1280,544], [1280,720], [720,1280], [1920,1080]].each do |size|
+        it "should return video profiles version that have their profile with #{size[0]} >= min_width and #{size[1]} >= min_height: HD" do
+          VideoProfileVersion.dimensions_less_than(size[0], size[1]).should == [@sd_profile_version, @hq_profile_version, @hd_profile_version]
+        end
+      end
+    end
+    
+    describe "use_webm" do
+      before(:each) do
+        mp4_profile = Factory(:video_profile, :extname => 'mp4') # SD
+        webm_profile = Factory(:video_profile, :extname => 'webm') # SD
+        @mp4_profile_version = Factory(:video_profile_version, :state => 'active', :profile => mp4_profile)
+        @webm_profile_version = Factory(:video_profile_version, :state => 'active', :profile => webm_profile)
+      end
+      
+      it "should return only video profile versions that are not webm if false is given" do
+        VideoProfileVersion.use_webm(false).should == [@mp4_profile_version]
+      end
+      
+      it "should return video profile versions including webm ones if true is given" do
+        VideoProfileVersion.use_webm(true).should == [@mp4_profile_version, @webm_profile_version]
+      end
+    end
+    
   end
   
   describe "Validations" do

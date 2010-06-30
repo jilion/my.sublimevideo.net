@@ -5,8 +5,8 @@
 %form
   .size
     %label= "Size:"
-    %input#video_width.text.small{ :type => "text", :name => "width", :value => 600 }
+    %input#video_width.text.small{ :type => "text", :name => "width", :value => current_user.default_video_embed_width }
     = "x"
-    %input#video_height.text.small{ :type => "text", :name => "height", :value => 255 }
+    %input#video_height.text.small{ :type => "text", :name => "height", :value => @video.height_from_width(current_user.default_video_embed_width) }
   .embed_code
-    %textarea{ :id => 'video_embed_code', :readonly => true, :onclick => "this.focus();this.select();" }= video_tags_for(@video, :width => 600, :height => 255)
+    %textarea{ :id => 'video_embed_code', :readonly => true, :onclick => "this.focus();this.select();" }= video_tags_for(@video, :width => current_user.default_video_embed_width, :height => @video.height_from_width(current_user.default_video_embed_width))
