@@ -163,13 +163,12 @@ protected
   
   # before_transition (suspend)
   def block_video
-    # should set the READ right to NOBODY (or OWNER if it's enough)on the file
-    # but maybe it'll be on the entire user's subdomain?
+    S3.videos_bucket.key(file.path).put(nil, 'private') if Rails.env.production? && S3.videos_bucket.key(file.path).exists?
   end
   
   # before_transition (unsuspend)
   def unblock_video
-    # should set the READ right to WORLD
+    S3.videos_bucket.key(file.path).put(nil, 'public-read') if Rails.env.production? && S3.videos_bucket.key(file.path).exists?
   end
   
 end

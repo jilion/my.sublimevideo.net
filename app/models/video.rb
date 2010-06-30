@@ -77,7 +77,7 @@ class Video < ActiveRecord::Base
     after_transition  :on => :pandize, :do => [:create_encodings, :delay_check_panda_encodings_status]
     
     before_transition :on => :activate, :do => :activate_encodings
-    after_transition  :on => :activate, :do => :deliver_video_active, :if => :active?
+    after_transition  :on => :activate, :do => :deliver_video_active
     
     before_transition :on => :suspend, :do => :suspend_encodings
     
@@ -209,7 +209,7 @@ protected
   
   # after_transition (activate)
   def deliver_video_active
-    VideoMailer.video_active(self).deliver
+    VideoMailer.video_active(self).deliver if active?
   end
   
   # before_transition (suspend)
