@@ -4,7 +4,6 @@ gem 'rails', '3.0.0.beta4'
 
 gem 'libxml-ruby', :require => 'libxml'
 
-gem 'heroku' # Hosting
 gem 'i18n'
 gem 'haml'
 gem 'state_machine'
@@ -13,7 +12,7 @@ gem 'uniquify'
 gem 'delayed_job',      :git => 'git://github.com/thibaudgg/delayed_job.git'
 gem 'will_paginate',    :git => 'git://github.com/mislav/will_paginate.git', :branch => 'rails3'
 gem 'has_scope',        :git => 'git://github.com/rymai/has_scope.git'
-gem 'jammit',           :git => 'git://github.com/thibaudgg/jammit.git'
+gem 'jammit',           :git => 'http://github.com/thibaudgg/jammit.git'
 gem 'meta_where'
 gem 'hoptoad_notifier'
 gem 'activemerchant'
