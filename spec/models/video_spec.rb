@@ -114,7 +114,7 @@ describe Video do
             video.title.should             == "élevé De Soleil à Mañaguä"
           end
           
-          it "should set beautiful title", :focus => true do
+          it "should set beautiful title" do
             video.stub!(:create_encodings => true, :delay_check_panda_encodings_status => true)
             Transcoder.should_receive(:get).with(:video, video.panda_video_id).and_return({
               :original_filename => 'iPhone_3GS_voiceover.mp4', :video_codec => 'h264', :audio_codec => 'aac',

@@ -16,6 +16,10 @@ module S3
       names
     end
     
+    def videos_bucket
+      @videos_bucket ||= client.bucket('sublimevideo.videos')
+    end
+    
   private
     
     def logs_bucket
