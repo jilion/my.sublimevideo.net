@@ -44,8 +44,8 @@ group :test do
   gem 'pg'
   gem 'parallel'
   
-  gem 'growl' # needed by RSpactor
   gem 'spork'
+  gem 'rspactor', '>= 0.7.beta.1'
   
   gem 'shoulda'
   gem 'rspec-rails', '>= 2.0.0.beta.14.2'
