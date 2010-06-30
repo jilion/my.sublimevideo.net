@@ -376,7 +376,7 @@ specs:
     source: 5
 - wirble: 
     version: 0.1.3
-hash: 76a94bffc37b76e0c6a4a9e0e3364d4743940404
+hash: 489d35c09167eda83ec767b6a0ed368429e539c4
 sources: 
 - Git: 
     uri: git://github.com/jnicklas/carrierwave.git

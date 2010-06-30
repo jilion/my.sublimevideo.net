@@ -24,7 +24,7 @@ gem 'request-log-analyzer', :require => 'request_log_analyzer'
 gem 'devise', '>= 1.1.rc2' # Auth
 gem 'devise_invitable', :git => 'git://github.com/rymai/devise_invitable.git'
 
-gem 'system_timer' # only on Ruby 1.8, used by memcache-client
+gem 'system_timer' # Only on Ruby 1.8, used by memcache-client
 gem 'memcache-client'
 gem 'memcached'
 
