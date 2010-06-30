@@ -79,9 +79,9 @@ class Video < ActiveRecord::Base
     before_transition :on => :activate, :do => :activate_encodings
     after_transition  :on => :activate, :do => :deliver_video_active
     
-    before_transition :on => :suspend, :do => :suspend_encodings
+    before_transition :on => :suspend, :do => [:suspend_encodings, :suspend_posterframe]
     
-    before_transition :on => :unsuspend, :do => :unsuspend_encodings
+    before_transition :on => :unsuspend, :do => [:unsuspend_encodings, :unsuspend_posterframe]
     
     before_transition :on => :archive, :do => [:set_archived_at, :archive_encodings]
     after_transition  :on => :archive, :do => [:remove_video, :remove_posterframe!]
@@ -108,21 +108,21 @@ class Video < ActiveRecord::Base
     end.join(' ')
   end
   
-  def encoding?
-    encodings? && encodings.any? { |e| e.first_encoding? }
+  def encoding?(reload = false)
+    encodings? && encodings(reload).any? { |e| e.first_encoding? }
   end
   
-  def active?
-    encodings? && encodings.all? { |e| e.active? }
+  def active?(reload = false)
+    encodings? && encodings(reload).all? { |e| e.active? }
   end
   
-  def error?
-    encodings? && encodings.any? { |e| e.failed? }
+  def error?(reload = false)
+    encodings? && encodings(reload).any? { |e| e.failed? }
   end
   
-  def hd?
-    (width? && width >= 720) || (height? && height >= 1280)
-  end
+  # def hd?
+  #   (width? && width >= 720) || (height? && height >= 1280)
+  # end
   
   def name
     original_filename && extname ? original_filename.sub(".#{extname}", '') : ''
@@ -196,8 +196,6 @@ protected
       encoding.delay(:priority => 5).pandize!
     end
   end
-  
-  # after_transition (pandize)
   def delay_check_panda_encodings_status
     delay(:priority => 9, :run_at => 5.minutes.from_now).check_panda_encodings_status
   end
@@ -209,17 +207,23 @@ protected
   
   # after_transition (activate)
   def deliver_video_active
-    VideoMailer.video_active(self).deliver if active?
+    VideoMailer.video_active(self).deliver if active?(true)
   end
   
   # before_transition (suspend)
   def suspend_encodings
     encodings.active.map(&:suspend)
   end
+  def suspend_posterframe
+    S3.videos_bucket.key(posterfame.path).put(nil, 'private') if Rails.env.production? && S3.videos_bucket.key(posterfame.path).exists?
+  end
   
   # before_transition (unsuspend)
   def unsuspend_encodings
     encodings.suspended.map(&:unsuspend)
+  end
+  def unsuspend_posterframe
+    S3.videos_bucket.key(posterfame.path).put(nil, 'public-read') if Rails.env.production? && S3.videos_bucket.key(posterfame.path).exists?
   end
   
   # before_transition (archive)

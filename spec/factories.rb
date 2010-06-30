@@ -18,8 +18,10 @@ Factory.define :site do |f|
 end
 
 Factory.define :video_profile do |f|
-  f.title   'iPhone 720p'
-  f.extname 'mp4'
+  f.title      'SD'
+  f.extname    'mp4'
+  f.min_width  0
+  f.min_height 0
 end
 
 Factory.define :video_profile_version do |f|
