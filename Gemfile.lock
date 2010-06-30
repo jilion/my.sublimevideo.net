@@ -376,36 +376,36 @@ specs:
     source: 5
 - wirble: 
     version: 0.1.3
-hash: 97c69854ab86d9d695560e71cb647f5979d006f3
+hash: 72993808c0893759eaf14f5e5e8a1105c00e4652
 sources: 
 - Git: 
-    uri: http://github.com/jnicklas/carrierwave.git
-    git: http://github.com/jnicklas/carrierwave.git
+    uri: git://github.com/jnicklas/carrierwave.git
+    git: git://github.com/jnicklas/carrierwave.git
     ref: d5a4088ea7e4de8892e91bb405488108df2dc052
 - Git: 
-    uri: http://github.com/rymai/devise_invitable.git
-    git: http://github.com/rymai/devise_invitable.git
+    uri: git://github.com/rymai/devise_invitable.git
+    git: git://github.com/rymai/devise_invitable.git
     ref: 69a23267b4db688fc9b161b53dde3de1355b597f
 - Git: 
-    uri: http://github.com/thibaudgg/voxel_hapi.git
-    git: http://github.com/thibaudgg/voxel_hapi.git
+    uri: git://github.com/thibaudgg/voxel_hapi.git
+    git: git://github.com/thibaudgg/voxel_hapi.git
     ref: d913ce045f1d65166416930e40609513072f62ec
 - Git: 
-    uri: http://github.com/thibaudgg/jammit.git
-    git: http://github.com/thibaudgg/jammit.git
+    uri: git://github.com/thibaudgg/jammit.git
+    git: git://github.com/thibaudgg/jammit.git
     ref: c66b8ff299b19dd909f2bb7abca005098e5dc9b3
 - Git: 
-    uri: http://github.com/rymai/has_scope.git
-    git: http://github.com/rymai/has_scope.git
+    uri: git://github.com/rymai/has_scope.git
+    git: git://github.com/rymai/has_scope.git
     ref: 22165fec8eb7e517dc5eb8e43ea91055ce5d829d
 - Git: 
-    uri: http://github.com/mislav/will_paginate.git
+    uri: git://github.com/mislav/will_paginate.git
     branch: rails3
-    git: http://github.com/mislav/will_paginate.git
+    git: git://github.com/mislav/will_paginate.git
     ref: 60aa1c7b2ef03ee7c7a5ed657efb479a69f7d128
 - Git: 
-    uri: http://github.com/thibaudgg/delayed_job.git
-    git: http://github.com/thibaudgg/delayed_job.git
+    uri: git://github.com/thibaudgg/delayed_job.git
+    git: git://github.com/thibaudgg/delayed_job.git
     ref: 772ce349fab94ce1e4ba5cd5ee8793096b13af16
 - Rubygems: 
     uri: http://rubygems.org
