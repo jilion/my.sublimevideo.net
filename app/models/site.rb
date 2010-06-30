@@ -56,7 +56,7 @@ class Site < ActiveRecord::Base
   # =============
   # = Callbacks =
   # =============
-  before_validation :set_default_player_mode
+  
   before_create :set_default_dev_hostnames
   
   # =================
@@ -172,11 +172,6 @@ private
   # before_create
   def set_default_dev_hostnames
     write_attribute(:dev_hostnames, "localhost, 127.0.0.1") unless dev_hostnames.present?
-  end
-  
-  # before_validation
-  def set_default_player_mode
-    write_attribute(:player_mode, "stable") unless player_mode.present?
   end
   
   def set_template(name)
