@@ -73,19 +73,19 @@ describe VideoProfileVersion do
       
       [[320,240], [480,270], [640,360]].each do |size|
         it "should return video profiles version that have their profile with #{size[0]} >= min_width and #{size[1]} >= min_height: SD" do
-          VideoProfileVersion.dimensions_less_than(size[0], size[1]).should == [@sd_profile_version]
+          VideoProfileVersion.dimensions_less_than(size[0], size[1]).order(:created_at).should == [@sd_profile_version]
         end
       end
       
       [[640,480], [848,480], [768,480]].each do |size|
         it "should return video profiles version that have their profile with #{size[0]} >= min_width and #{size[1]} >= min_height: HQ" do
-          VideoProfileVersion.dimensions_less_than(size[0], size[1]).should == [@sd_profile_version, @hq_profile_version]
+          VideoProfileVersion.dimensions_less_than(size[0], size[1]).order(:created_at).should == [@sd_profile_version, @hq_profile_version]
         end
       end
       
       [[1280,544], [1280,720], [720,1280], [1920,1080]].each do |size|
         it "should return video profiles version that have their profile with #{size[0]} >= min_width and #{size[1]} >= min_height: HD" do
-          VideoProfileVersion.dimensions_less_than(size[0], size[1]).should == [@sd_profile_version, @hq_profile_version, @hd_profile_version]
+          VideoProfileVersion.dimensions_less_than(size[0], size[1]).order(:created_at).should == [@sd_profile_version, @hq_profile_version, @hd_profile_version]
         end
       end
     end
