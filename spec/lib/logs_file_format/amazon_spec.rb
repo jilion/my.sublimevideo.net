@@ -11,6 +11,18 @@ describe LogsFileFormat::Amazon do
     subject.token_from("g46g16dz/dartmoor.mp4").should == "g46g16dz"
   end
   
+  ['REST.GET.OBJECT', 'REST.GET.BUCKET', 'REST.HEAD.OBJECT'].each do |operation|
+    it "#{operation} should be a S3 GET request" do
+      subject.s3_get_request?(operation).should be_true
+    end
+  end
+  
+  ['REST.POST.OBJECT', 'REST.PUT.OBJECT', 'REST.DELETE.OBJECT'].each do |operation|
+    it "#{operation} should not be a S3 GET request" do
+      subject.s3_get_request?(operation).should be_false
+    end
+  end
+  
   %w[SFO4 MIA3 JFK1 SEA4 DFW3 LAX1 IAD2 STL2 EWR2].each do |location|
     it "#{location} should be US location" do
       subject.us_location?(location).should be_true

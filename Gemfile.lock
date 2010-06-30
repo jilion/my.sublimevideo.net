@@ -372,12 +372,12 @@ specs:
     source: 5
 - wirble: 
     version: 0.1.3
-hash: c5ee76fa8d8db47301e2542479fa23565ad76757
+hash: 759ead5f92ecf956678a50b3f48bc042173c1403
 sources: 
 - Git: 
     uri: git://github.com/jnicklas/carrierwave.git
     git: git://github.com/jnicklas/carrierwave.git
-    ref: ef2133d38dce5558ab8eb90b09f19de6e3d3ffc0
+    ref: d5a4088ea7e4de8892e91bb405488108df2dc052
 - Git: 
     uri: git://github.com/rymai/devise_invitable.git
     git: git://github.com/rymai/devise_invitable.git

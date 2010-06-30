@@ -30,11 +30,11 @@ module LogsFileFormat
     report do |analyze|
       analyze.traffic(:bytes_sent, :title => :bandwidth_s3,
         :category => lambda { |r| token_from(r[:key]) },
-        :if       => lambda { |r| token_path?(r[:key]) }
+        :if       => lambda { |r| token_path?(r[:key]) && s3_get_request?(r[:operation]) }
       )
       analyze.frequency(:key, :title => :requests_s3,
         :category => lambda { |r| token_from(r[:key]) },
-        :if       => lambda { |r| token_path?(r[:key]) }
+        :if       => lambda { |r| token_path?(r[:key]) && s3_get_request?(r[:operation]) }
       )
     end
     

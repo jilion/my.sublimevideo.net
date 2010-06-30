@@ -9,6 +9,10 @@ module LogsFileFormat
       path =~ /^\/?[a-z0-9]{8}\/.*/
     end
     
+    def s3_get_request?(operation)
+      operation.include?("GET") || operation.include?("HEAD")
+    end
+    
     def us_location?(location)
       [
         "IAD", # Ashburn, VA 
