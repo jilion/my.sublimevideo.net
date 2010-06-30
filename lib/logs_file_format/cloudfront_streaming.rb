@@ -50,7 +50,7 @@ module LogsFileFormat
       analyze = RequestLogAnalyzer::Aggregator::Summarizer::Definer.new
       analyze.frequency(:sname, :title => :hits,
         :category => lambda { |r| token_from(r[:sname]) },
-        :if       => lambda { |r| r[:event] == "stop" && token_path?(r[:sname]) }
+        :if       => lambda { |r| r[:event] == "stop" && token_path?(r[:sname]) && video_path?(r[:sname]) }
       )
       analyze.traffic(:sc_bytes, :title => :bandwidth_us,
         :category => lambda { |r| token_from(r[:sname]) },

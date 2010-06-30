@@ -23,6 +23,18 @@ describe LogsFileFormat::Amazon do
     end
   end
   
+  ['/k3zph1mc/best_snowboard_video_ever_720p.mp4', 'k3zph1mc/best_snowboard_video_ever_720p.webm'].each do |path|
+    it "#{path} should be a video path" do
+      subject.video_path?(path).should be_true
+    end
+  end
+  
+  ['/k3zph1mc/posterframe.jpg', 'posterframe.png'].each do |path|
+    it "#{path} should not be a video path" do
+      subject.video_path?(path).should be_false
+    end
+  end
+  
   %w[SFO4 MIA3 JFK1 SEA4 DFW3 LAX1 IAD2 STL2 EWR2].each do |location|
     it "#{location} should be US location" do
       subject.us_location?(location).should be_true

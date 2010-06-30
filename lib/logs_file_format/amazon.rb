@@ -13,6 +13,10 @@ module LogsFileFormat
       operation.include?("GET") || operation.include?("HEAD")
     end
     
+    def video_path?(path)
+      path =~ /.*\.(mp4|webm)$/
+    end
+    
     def us_location?(location)
       [
         "IAD", # Ashburn, VA 

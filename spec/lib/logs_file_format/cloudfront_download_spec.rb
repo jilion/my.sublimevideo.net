@@ -31,4 +31,28 @@ describe LogsFileFormat::CloudfrontDownload do
     end
   end
   
+  describe "with E3KTK13341WJO.2010-06-24-23.t9E5stck.gz logs file" do
+    before(:each) do
+      logs_file = File.new(Rails.root.join('spec/fixtures/logs/cloudfront_download/E3KTK13341WJO.2010-06-24-23.t9E5stck.gz'))
+      @trackers = LogAnalyzer.parse(logs_file, 'LogsFileFormat::CloudfrontDownload')
+    end
+    
+    it "should parse and return bandwidth_eu tracker" do
+      tracker = @trackers.select { |tracker| tracker.options[:title] == :bandwidth_eu }.first
+      tracker.categories.should have(1).tokens
+      tracker.categories["k3zph1mc"][:sum].should == 56752792
+    end
+    
+    it "should parse and return requests_eu tracker" do
+      tracker = @trackers.select { |tracker| tracker.options[:title] == :requests_eu }.first
+      tracker.categories.should have(1).tokens
+      tracker.categories["k3zph1mc"].should == 120
+    end
+    
+    it "should parse and return hits tracker" do
+      tracker = @trackers.select { |tracker| tracker.options[:title] == :hits }.first
+      tracker.categories.should have(0).tokens
+    end
+  end
+  
 end
