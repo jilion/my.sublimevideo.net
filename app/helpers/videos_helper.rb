@@ -16,11 +16,10 @@ module VideosHelper
   
   def video_tags_for(video, *args)
     options = args.extract_options!
-<<-EOS
+    <<-EOS
 <video class="sublime" poster="http://#{Log::Amazon::Cloudfront::Download.config[:hostname]}/#{video.posterframe.path}" width="#{options[:width]}" height="#{options[:height]}" controls preload="none">
-  #{video.encodings.inject([]) { |html,f| html << source_tag_for(f) }.join("\n  ")}
-</video>
-EOS
+#{video.encodings.inject([]) { |html,f| html << source_tag_for(f) }}</video>
+    EOS
   end
   
   def panda_uploader_js(field_id)
@@ -39,7 +38,7 @@ private
   
   def source_tag_for(video_encoding)
     <<-EOS
-      <source src="http://#{Log::Amazon::Cloudfront::Download.config[:hostname]}/#{video_encoding.file.path}" type="video/#{video_encoding.extname}" />
+  <source src="http://#{Log::Amazon::Cloudfront::Download.config[:hostname]}/#{video_encoding.file.path}" type="video/#{video_encoding.extname}" />
     EOS
   end
   
