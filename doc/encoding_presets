@@ -1,8 +1,18 @@
-# MP4 HD
-Command: HandBrakeCLI -i $input_file$ -o $output_file$ -e x264 -q 0.589999973773956 -a 1,1 -E faac,ac3 -B 160,auto -R 48,Auto -6 dpl2,auto -f mp4 -X 1280 -Y 720 -O -x level=30:cabac=0:ref=3:mixed-refs=1:analyse=all:me=umh:no-fast-pskip=1
+# MP4 SD
+Command: HandBrakeCLI -i $input_file$ -o $output_file$ -e x264 -q 0.589999973773956 -a 1,1 -E faac,ac3 -B 160,auto -R 48,Auto -6 dpl2,auto -f mp4 -X 640 -Y 360 -O -x level=30:cabac=0:ref=3:mixed-refs=1:analyse=all:me=umh:no-fast-pskip=1
 
 # MP4 HQ
 Command: HandBrakeCLI -i $input_file$ -o $output_file$ -e x264 -q 0.589999973773956 -a 1,1 -E faac,ac3 -B 160,auto -R 48,Auto -6 dpl2,auto -f mp4 -X 854 -Y 480 -O -x level=30:cabac=0:ref=3:mixed-refs=1:analyse=all:me=umh:no-fast-pskip=1
 
-# MP4 SD
-Command: HandBrakeCLI -i $input_file$ -o $output_file$ -e x264 -q 0.589999973773956 -a 1,1 -E faac,ac3 -B 160,auto -R 48,Auto -6 dpl2,auto -f mp4 -X 640 -Y 360 -O -x level=30:cabac=0:ref=3:mixed-refs=1:analyse=all:me=umh:no-fast-pskip=1
+# MP4 HD
+Command: HandBrakeCLI -i $input_file$ -o $output_file$ -e x264 -q 0.589999973773956 -a 1,1 -E faac,ac3 -B 160,auto -R 48,Auto -6 dpl2,auto -f mp4 -X 1280 -Y 720 -O -x level=30:cabac=0:ref=3:mixed-refs=1:analyse=all:me=umh:no-fast-pskip=1
+
+
+# WEBM SD
+Command: ffmpeg -i $input_file$ $resolution_and_padding$ -y $output_file$
+
+# WEBM HQ
+Command: ffmpeg -i $input_file$ $resolution_and_padding$ -y $output_file$
+
+# WEBM HD
+Command: ffmpeg -i $input_file$ $resolution_and_padding$ -y $output_file$
