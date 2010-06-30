@@ -32,6 +32,8 @@ gem 'carrierwave',      :git => 'git://github.com/jnicklas/carrierwave.git'
 gem 'mini_magick'
 gem 'RedCloth'
 
+gem 'ffaker'
+
 group :production do
   gem 'pg'
 end
@@ -41,7 +43,6 @@ if RUBY_PLATFORM =~ /darwin/
   group :development do
     gem 'sqlite3-ruby', :require => 'sqlite3'
     gem 'annotate'
-    gem 'ffaker'
     gem 'wirble' # irbrc 
     gem 'ruby-graphviz', :require => 'graphviz'
   end
