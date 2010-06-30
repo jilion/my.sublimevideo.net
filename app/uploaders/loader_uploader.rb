@@ -1,7 +1,7 @@
 class LoaderUploader < CarrierWave::Uploader::Base
   
   def s3_bucket
-    "sublimevideo.loaders"
+    Rails.env.production? ? "sublimevideo.loaders" : "sublimevideo.loaders" # TODO Change for dev
   end
   
   # Override the directory where uploaded files will be stored

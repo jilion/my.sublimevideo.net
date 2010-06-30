@@ -6,7 +6,7 @@ class PosterframeUploader < CarrierWave::Uploader::Base
   end
   
   def s3_bucket
-    "sublimevideo.videos"
+    Rails.env.production? ? "sublimevideo.videos" : "sublimevideo.videos" # TODO Change for dev
   end
   
   # Override the directory where uploaded files will be stored
