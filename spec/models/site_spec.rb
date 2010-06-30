@@ -1,5 +1,3 @@
-# coding: utf-8
-
 # == Schema Information
 #
 # Table name: sites
@@ -18,7 +16,10 @@
 #  archived_at       :datetime
 #  created_at        :datetime
 #  updated_at        :datetime
+#  player_mode       :string(255)
 #
+
+# coding: utf-8
 
 require 'spec_helper'
 
