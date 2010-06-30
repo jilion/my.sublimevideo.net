@@ -13,6 +13,7 @@ body {
   background:#5d6778;
   background:-webkit-gradient(linear,left top,left bottom,from(#778091),to(#5d6778));
   background:-moz-linear-gradient(top, #778091, #5d6778);
+  text-rendering:optimizeLegibility; /*HUGELY IMPORTANT*/
 }
 
 #header {
@@ -789,7 +790,7 @@ ul#trial_legend li em {
   display:none;
   position:absolute;
   width:219px;
-  height:151px;
+  height:161px;
   background:url(/images/embed/trial_warning_box.png) no-repeat;
   top:-16px;
   left:-220px;
@@ -1624,6 +1625,20 @@ ul#trial_legend li em {
   position:absolute;
   top:15px;
   right:15px;
+}
+
+#videos_table_wrap {
+  position:relative;
+}
+
+a#video_settings {
+  position:absolute;
+  right:0;
+  top:-32px;
+  display:block;
+  background:url(/images/embed/settings_small_btn.png) no-repeat;
+  padding:1px 0 3px 23px;
+  font-weight:600;
 }
 
 #content table.main th.video {
