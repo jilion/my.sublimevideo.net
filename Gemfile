@@ -39,7 +39,7 @@ group :production do
   gem 'pg'
 end
 
-unless ENV['IS_HEROKU']
+if RUBY_PLATFORM =~ /darwin/
   
   group :development do
     gem 'sqlite3-ruby', :require => 'sqlite3'
@@ -56,7 +56,7 @@ unless ENV['IS_HEROKU']
     gem 'rspactor', '>= 0.7.beta.1'
     
     gem 'shoulda'
-    gem 'rspec-rails', '>= 2.0.0.beta.14.2'
+    gem 'rspec-rails', '>= 2.0.0.beta.15'
     # gem "rspec-rails",        :git => "git://github.com/rspec/rspec-rails.git"
     # gem "rspec",              :git => "git://github.com/rspec/rspec.git"
     # gem "rspec-core",         :git => "git://github.com/rspec/rspec-core.git"
