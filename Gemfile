@@ -39,7 +39,7 @@ group :production do
   gem 'pg'
 end
 
-if RUBY_PLATFORM =~ /darwin/
+unless ENV['IS_HEROKU']
   
   group :development do
     gem 'sqlite3-ruby', :require => 'sqlite3'
