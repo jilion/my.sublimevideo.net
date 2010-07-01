@@ -1,3 +1,12 @@
-access_key_id:     AKIAJ5AJKU32OXUZAC7A
-secret_access_key: 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
-cnamed:            false
+development:
+  access_key_id:     AKIAJ2FJVCFJW3RZRUUQ
+  secret_access_key: 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
+  cnamed:            false
+test:
+  access_key_id:     AKIAJ2FJVCFJW3RZRUUQ
+  secret_access_key: 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
+  cnamed:            false
+production:
+  access_key_id:     heroku_env
+  secret_access_key: heroku_env
+  cnamed:            false

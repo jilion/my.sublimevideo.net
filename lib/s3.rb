@@ -1,6 +1,14 @@
 module S3
   class << self
     
+    def access_key_id
+      yml[:access_key_id] == 'heroku_env' ? ENV['S3_ACCESS_KEY_ID'] : yml[:access_key_id]
+    end
+    
+    def secret_access_key
+      yml[:secret_access_key] == 'heroku_env' ? ENV['S3_SECRET_ACCESS_KEY'] : yml[:secret_access_key]
+    end
+    
     def method_missing(name)
       yml[name.to_sym]
     end
@@ -16,14 +24,22 @@ module S3
       names
     end
     
+    def panda_bucket
+      @panda_bucket ||= client.bucket(S3Bucket.panda)
+    end
+    
     def videos_bucket
-      @videos_bucket ||= client.bucket('sublimevideo.videos')
+      @videos_bucket ||= client.bucket(S3Bucket.videos)
+    end
+    
+    def reset_yml_options
+      @yml_options = nil
     end
     
   private
     
     def logs_bucket
-      @logs_bucket ||= client.bucket('sublimevideo.logs')
+      @logs_bucket ||= client.bucket(S3Bucket.logs)
     end
     
     def client
@@ -32,8 +48,8 @@ module S3
     
     def yml
       config_path = Rails.root.join('config', 's3.yml')
-      @default_storage ||= YAML::load_file(config_path)
-      @default_storage.to_options
+      @yml_options ||= YAML::load_file(config_path)[Rails.env]
+      @yml_options.to_options
     rescue
       raise StandardError, "S3 config file '#{config_path}' doesn't exist."
     end

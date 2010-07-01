@@ -48,7 +48,7 @@ describe Log::Amazon::S3 do
       VCR.use_cassette('s3/logs_s3_videos_with_prefix_and_marker') do
         Factory(:log_s3_videos, :name => '2010-06-23-08-20-45-DE5461BCB46DA093')
         Factory(:log_s3_videos, :name => '2010-06-23-15-26-27-DE1501337B998C43')
-        lambda { Log::Amazon::S3::Videos.fetch_and_create_new_logs }.should change(Log::Amazon::S3::Videos, :count).by(26)
+        lambda { Log::Amazon::S3::Videos.fetch_and_create_new_logs }.should change(Log::Amazon::S3::Videos, :count).by(25)
       end
     end
   end

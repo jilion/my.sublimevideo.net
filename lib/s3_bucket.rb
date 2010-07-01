@@ -1,4 +1,4 @@
-module PandaConfig
+module S3Bucket
   class << self
     
     def method_missing(name)
@@ -6,11 +6,11 @@ module PandaConfig
     end
     
     def yml
-      config_path = Rails.root.join('config', 'panda.yml')
+      config_path = Rails.root.join('config', 's3_bucket.yml')
       @yml_options ||= YAML::load_file(config_path)[Rails.env]
       @yml_options.to_options
     rescue
-      raise StandardError, "Panda config file '#{config_path}' doesn't exist."
+      raise StandardError, "S3 buckets config file '#{config_path}' doesn't exist."
     end
     
   end

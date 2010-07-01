@@ -16,6 +16,8 @@
 #  height                   :integer
 #  created_at               :datetime
 #  updated_at               :datetime
+#  file_added_at            :datetime
+#  file_removed_at          :datetime
 #
 
 class VideoEncoding < ActiveRecord::Base
@@ -36,7 +38,7 @@ class VideoEncoding < ActiveRecord::Base
   # = Scopes =
   # ==========
   
-  scope :encoding,       where(:state => 'encoding')
+  scope :processing,     where(:state => 'processing')
   scope :active,         where(:state => 'active')
   scope :suspended,      where(:state => 'suspended')
   scope :not_deprecated, where(:state.ne => 'deprecated')
@@ -56,9 +58,10 @@ class VideoEncoding < ActiveRecord::Base
   state_machine :initial => :pending do
     before_transition :on => :pandize, :do => :create_panda_encoding_and_set_info
     
-    before_transition :on => :activate, :do => [:set_file, :set_encoding_info, :set_video_posterframe]
+    before_transition :on => :activate, :do => [:set_file, :set_file_added_at, :set_encoding_info, :set_video_posterframe]
     after_transition  :on => :activate, :do => [:deprecate_encodings, :delete_panda_encoding, :conform_to_video_state]
     
+    before_transition :on => [:deprecate, :archive], :do => :set_file_removed_at
     before_transition :failed => :deprecated, :do => :delete_panda_encoding
     
     before_transition :on => :suspend, :do => :block_video
@@ -66,29 +69,29 @@ class VideoEncoding < ActiveRecord::Base
     before_transition :on => :unsuspend, :do => :unblock_video
     
     before_transition :on => :archive, :do => :remove_file!
-    before_transition :encoding => :archived, :do => :set_encoding_info
-    after_transition  :encoding => :archived, :do => :delete_panda_encoding
+    before_transition :processing => :archived, :do => :set_encoding_info
+    after_transition  :processing => :archived, :do => :delete_panda_encoding
     
-    event(:pandize)   { transition :pending => :encoding }
-    event(:fail)      { transition [:pending, :encoding] => :failed }
-    event(:activate)  { transition :encoding => :active }
+    event(:pandize)   { transition :pending => :processing }
+    event(:fail)      { transition [:pending, :processing] => :failed }
+    event(:activate)  { transition :processing => :active }
     event(:deprecate) { transition [:active, :failed] => :deprecated }
     event(:suspend)   { transition :active => :suspended }
     event(:unsuspend) { transition :suspended => :active }
-    event(:archive)   { transition [:pending, :encoding, :failed, :active, :deprecated, :suspended] => :archived }
+    event(:archive)   { transition any - :archived => :archived }
     
-    state(:encoding) do
+    state(:processing) do
       validates :panda_encoding_id, :presence => true
       validates :extname, :presence => true
-      validates :width, :presence => true
-      validates :height, :presence => true
     end
     
     state(:active) do
-      validates :encoding_status, :inclusion => { :in => %w[success] }, :if => proc { |e| e.state_was == 'encoding' }
+      validates :encoding_status, :inclusion => { :in => %w[success] }, :if => proc { |e| e.state_was == 'processing' }
       validates :file_size, :presence => true
       validates :started_encoding_at, :presence => true
       validates :encoding_time, :presence => true
+      validates :width, :presence => true
+      validates :height, :presence => true
     end
   end
   
@@ -96,16 +99,16 @@ class VideoEncoding < ActiveRecord::Base
   # = Class Methods =
   # =================
   
-  def self.panda_s3_url
-    @@panda_s3_url ||= "http://s3.amazonaws.com/" + Transcoder.get(:cloud, PandaConfig.cloud_id)[:s3_videos_bucket]
-  end
-  
   # ====================
   # = Instance Methods =
   # ====================
   
-  def first_encoding?
-    encoding? && !file.present?
+  def first_processing?
+    processing? && !file.present?
+  end
+  
+  def reprocessing?
+    processing? && file.present?
   end
   
 protected
@@ -120,42 +123,48 @@ protected
     else
       self.panda_encoding_id = encoding_info[:id]
       self.extname           = encoding_info[:extname].try(:gsub, '.', '')
-      self.width             = encoding_info[:width]
-      self.height            = encoding_info[:height]
     end
   end
   
   # before_transition (activate)
   def set_file
-    self.remote_file_url = "#{self.class.panda_s3_url}/#{panda_encoding_id}.#{extname}"
+    file_on_panda_bucket = S3.panda_bucket.key("#{panda_encoding_id}.#{extname}")
+    file_on_video_bucket = S3.videos_bucket.key("#{video.token}/#{video.name}#{profile.name}.#{extname}")
+    file_on_panda_bucket.copy(file_on_video_bucket)
+    write_attribute(:file, "#{video.name}#{profile.name}.#{extname}")
+  end
+  def set_file_added_at
+    self.file_added_at = Time.now.utc
   end
   
-  # before_transition (activate) / before_transition (encoding => archived)
+  # before_transition (activate) / before_transition (processing => archived)
   def set_encoding_info
     encoding_info = Transcoder.get(:encoding, panda_encoding_id)
     self.file_size           = encoding_info[:file_size]
     self.started_encoding_at = encoding_info[:started_encoding_at].try(:to_time)
     self.encoding_time       = encoding_info[:encoding_time]
     self.encoding_status     = encoding_info[:status]
+    self.width               = encoding_info[:width]
+    self.height              = encoding_info[:height]
   end
   
   # before_transition (activate)
   def set_video_posterframe
-    if profile.thumbnailable? && video.encodings.map(&:profile).select{ |p| p.thumbnailable? && p.min_width > profile.min_width }.empty?
-      self.video.remote_posterframe_url = "#{self.class.panda_s3_url}/#{panda_encoding_id}_4.jpg"
-      self.video.save!
+    if !video.posterframe.present? && profile.posterframeable? && video.encodings.map(&:profile).select{ |p| p.posterframeable? && p.min_width > profile.min_width }.empty?
+      video.set_posterframe_from_encoding(self)
+      # self.video.remote_posterframe_url = "#{self.class.panda_s3_url}/#{panda_encoding_id}_4.jpg"
     end
   end
   
   # after_transition (activate)
   def deprecate_encodings
-    video.encodings.with_profile(profile).where(:state => %w[active failed], :id.ne => id).map(&:deprecate)
+    video.encodings.with_profile(profile).where(:state => %w[active failed], :id.ne => id).map(&:deprecate!)
   end
   def conform_to_video_state
     suspend if video.suspended?
   end
   
-  # after_transition (activate) / after_transition (encoding => archived)
+  # after_transition (activate) / after_transition (processing => archived)
   def delete_panda_encoding
     Transcoder.delete(:encoding, panda_encoding_id)
   end
@@ -168,6 +177,11 @@ protected
   # before_transition (unsuspend)
   def unblock_video
     S3.videos_bucket.key(file.path).put(nil, 'public-read') if Rails.env.production? && S3.videos_bucket.key(file.path).exists?
+  end
+  
+  # before_transition (deprecate) / (archive)
+  def set_file_removed_at
+    self.file_removed_at = Time.now.utc
   end
   
 end
