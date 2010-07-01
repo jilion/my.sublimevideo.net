@@ -16,7 +16,7 @@
 #  archived_at       :datetime
 #  created_at        :datetime
 #  updated_at        :datetime
-#  player_mode       :string(255)
+#  player_mode       :string(255)     default("stable")
 #
 
 # coding: utf-8
@@ -34,6 +34,7 @@ describe Site do
     its(:user)          { should be_present }
     its(:license)       { should_not be_present }
     its(:loader)        { should_not be_present }
+    its(:player_mode)   { should == 'stable' }
     it { be_pending }
     it { be_valid }
   end
@@ -251,13 +252,6 @@ describe Site do
   end
   
   describe "Callbacks" do
-    describe "before_validation" do
-      it "should set player_mode to 'stable' before validation" do
-        site = Factory.build(:site, :player_mode => nil)
-        site.should be_valid
-        site.player_mode.should == "stable"
-      end
-    end
     
     describe "before_create" do
       it "should set default dev_hostnames before create" do

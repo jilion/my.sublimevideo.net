@@ -114,7 +114,7 @@ ActiveRecord::Schema.define(:version => 20100630153415) do
     t.datetime "archived_at"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "player_mode"
+    t.string   "player_mode",       :default => "stable"
   end
 
   add_index "sites", ["created_at"], :name => "index_sites_on_created_at"

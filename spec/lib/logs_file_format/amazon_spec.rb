@@ -23,7 +23,7 @@ describe LogsFileFormat::Amazon do
     end
   end
   
-  ['/k3zph1mc/best_snowboard_video_ever_720p.mp4', 'k3zph1mc/best_snowboard_video_ever_720p.webm'].each do |path|
+  ['/k3zph1mc/best_snowboard_video_ever_720p.mp4', 'k3zph1mc/best_snowboard_video_ever_720p.webm', 'k3zph1mc/best_snowboard_video_ever_720p.ogv'].each do |path|
     it "#{path} should be a video path" do
       subject.video_path?(path).should be_true
     end

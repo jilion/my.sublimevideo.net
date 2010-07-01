@@ -16,7 +16,7 @@
 #  archived_at       :datetime
 #  created_at        :datetime
 #  updated_at        :datetime
-#  player_mode       :string(255)
+#  player_mode       :string(255)     default("stable")
 #
 
 class Site < ActiveRecord::Base
