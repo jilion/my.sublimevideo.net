@@ -7,7 +7,7 @@
 #  description    :text
 #  name           :string(255)
 #  extname        :string(255)
-#  thumbnailable  :boolean
+#  posterframeable  :boolean
 #  min_width      :integer
 #  min_height     :integer
 #  versions_count :integer         default(0)
@@ -17,7 +17,7 @@
 
 class VideoProfile < ActiveRecord::Base
   
-  attr_accessible :title, :description, :thumbnailable, :min_width, :min_height
+  attr_accessible :title, :description, :posterframeable, :min_width, :min_height
   
   # ================
   # = Associations =
@@ -66,7 +66,7 @@ private
   
   # before_create
   def set_defaults
-    write_attribute(:thumbnailable, 0) unless thumbnailable.present?
+    write_attribute(:posterframeable, 0) unless posterframeable.present?
     write_attribute(:min_width, 0) unless min_width.present?
     write_attribute(:min_height, 0) unless min_height.present?
   end

@@ -148,7 +148,7 @@ class Video < ActiveRecord::Base
     if processing?
       encodings_info = Transcoder.get([:video, :encodings], panda_video_id)
       if encodings_info.all? { |encoding_info| encoding_info[:status] == 'success' }
-        self.activate
+        self.activate!
       elsif encodings_info.any? { |encoding_info| encoding_info[:status] == 'processing' }
         delay_check_panda_encodings_status
       else
@@ -157,7 +157,8 @@ class Video < ActiveRecord::Base
           if encoding.processing?
             case encoding_info[:status]
             when 'success'
-              encoding.activate
+              encoding.activate!
+              # self.reload
             when 'fail'
               encoding.fail
               HoptoadNotifier.notify("VideoEncoding (#{encoding.id}) panda encoding (panda_encoding_id: #{encoding.panda_encoding_id}) is failed.")
@@ -210,7 +211,7 @@ protected
   
   # before_transition (activate)
   def activate_encodings
-    encodings.processing.map(&:activate)
+    encodings.processing.map(&:activate!)
   end
   
   # after_transition (activate)
@@ -220,7 +221,7 @@ protected
   
   # before_transition (suspend)
   def suspend_encodings
-    encodings.active.map(&:suspend)
+    encodings.active.map(&:suspend!)
   end
   def suspend_posterframe
     S3.videos_bucket.key(posterfame.path).put(nil, 'private') if Rails.env.production? && S3.videos_bucket.key(posterfame.path).exists?
@@ -228,7 +229,7 @@ protected
   
   # before_transition (unsuspend)
   def unsuspend_encodings
-    encodings.suspended.map(&:unsuspend)
+    encodings.suspended.map(&:unsuspend!)
   end
   def unsuspend_posterframe
     S3.videos_bucket.key(posterfame.path).put(nil, 'public-read') if Rails.env.production? && S3.videos_bucket.key(posterfame.path).exists?

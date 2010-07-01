@@ -15,9 +15,9 @@
 .extname
   %strong= "Extname: "
   = @profile.extname
-.thumbnailable
+.posterframeable
   %strong= "Thumbnailable: "
-  = @profile.thumbnailable
+  = @profile.posterframeable
 .encodings_count
   %strong= "# of encodings: "
   = VideoEncoding.with_profile(@profile).size

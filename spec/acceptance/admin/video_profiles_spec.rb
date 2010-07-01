@@ -69,7 +69,7 @@ feature "New video profile" do
     profile.extname.should == "mp4"
     profile.min_width.should == 854
     profile.min_height.should == 480
-    profile.thumbnailable.should be_true
+    profile.posterframeable.should be_true
   end
 end
 

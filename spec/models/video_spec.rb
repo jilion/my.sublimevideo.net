@@ -511,7 +511,7 @@ describe Video do
           it "should remove the posterframe" do
             video.stub!(:set_archived_at => true, :archive_encodings => true, :remove_video => true)
             video_encoding = Factory(:video_encoding, :video => video, :panda_encoding_id => encoding_id, :state => 'processing')
-            video_encoding.profile.stub!(:thumbnailable? => true)
+            video_encoding.profile.stub!(:posterframeable? => true)
             VCR.use_cassette('video_encoding/activate') { video_encoding.activate }
             video.posterframe.should be_present
             video.posterframe.thumb.should be_present
@@ -530,7 +530,7 @@ describe Video do
   describe "life cycle" do
     before(:each) do
       @vpv1 = Factory(:video_profile_version)
-      @vpv1.profile.update_attribute(:thumbnailable, true)
+      @vpv1.profile.update_attribute(:posterframeable, true)
       @vpv2 = Factory(:video_profile_version)
       VCR.use_cassette('video_profile_version/pandize') do
         @vpv1.pandize
@@ -565,7 +565,8 @@ describe Video do
       end
       
       VCR.use_cassette('video_encoding/activate') do
-        video.encodings[0].profile.should be_thumbnailable
+        video.encodings[0].profile.should be_posterframeable
+        video.posterframe.should_not be_present
         video.activate
         video.encodings[0].reload.should be_active
         video.encodings[1].reload.should be_active

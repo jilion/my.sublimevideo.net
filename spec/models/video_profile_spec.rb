@@ -7,7 +7,7 @@
 #  description    :text
 #  name           :string(255)
 #  extname        :string(255)
-#  thumbnailable  :boolean
+#  posterframeable  :boolean
 #  min_width      :integer
 #  min_height     :integer
 #  versions_count :integer         default(0)
@@ -54,14 +54,14 @@ describe VideoProfile do
   
   describe "Callbacks" do
     describe "before_create" do
-      it "should set thumbnailable to false if not specified" do
+      it "should set posterframeable to false if not specified" do
         vp = Factory(:video_profile)
         vp.should be_valid
-        vp.thumbnailable.should be_false
+        vp.posterframeable.should be_false
       end
-      it "should not set thumbnailable to false if specified" do
-        vp = Factory(:video_profile, :thumbnailable => true)
-        vp.thumbnailable.should be_true
+      it "should not set posterframeable to false if specified" do
+        vp = Factory(:video_profile, :posterframeable => true)
+        vp.posterframeable.should be_true
       end
       it "should set min_width to 0 if not specified" do
         vp = Factory(:video_profile)

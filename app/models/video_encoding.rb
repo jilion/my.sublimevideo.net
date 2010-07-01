@@ -141,19 +141,24 @@ protected
     self.started_encoding_at = encoding_info[:started_encoding_at].try(:to_time)
     self.encoding_time       = encoding_info[:encoding_time]
     self.encoding_status     = encoding_info[:status]
+    self.width               = encoding_info[:width]
+    self.height              = encoding_info[:height]
   end
   
   # before_transition (activate)
   def set_video_posterframe
-    if profile.thumbnailable? && video.encodings.map(&:profile).select{ |p| p.thumbnailable? && p.min_width > profile.min_width }.empty?
+    if profile.posterframeable? && !video.posterframe.present? && video.encodings.map(&:profile).select{ |p| p.posterframeable? && p.min_width > profile.min_width }.empty?
       self.video.remote_posterframe_url = "#{self.class.panda_s3_url}/#{panda_encoding_id}_4.jpg"
-      self.video.save!
+      video.save!
+      unless video.posterframe.present?
+        HoptoadNotifier.notify("Poster-frame for the video #{video.id}) has not been saved (from activation of encoding #{encoding.id})!")
+      end
     end
   end
   
   # after_transition (activate)
   def deprecate_encodings
-    video.encodings.with_profile(profile).where(:state => %w[active failed], :id.ne => id).map(&:deprecate)
+    video.encodings.with_profile(profile).where(:state => %w[active failed], :id.ne => id).map(&:deprecate!)
   end
   def conform_to_video_state
     suspend if video.suspended?
