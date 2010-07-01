@@ -1,3 +1,5 @@
+require 'digest/sha1'
+
 class ApplicationController < ActionController::Base
   include CustomDevisePaths
   
@@ -13,7 +15,8 @@ protected
   
   def beta_protection
     if Rails.env.production? || Rails.env.staging?
-      redirect_to beta_path unless session[:beta_key] == 'sublime33'
+      beta_key = 'video66'
+      redirect_to beta_path unless session[:beta_key] == Digest::SHA1.hexdigest("sublime-#{beta_key}")
     end
   end
   
