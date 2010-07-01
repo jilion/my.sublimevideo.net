@@ -529,7 +529,7 @@ describe VideoEncoding do
     describe ".panda_s3_url" do
       it "should be get from Panda" do
         VCR.use_cassette('video_encoding/class_methods') do
-          VideoEncoding.panda_s3_url.should == "http://s3.amazonaws.com/sublimevideo.panda"
+          VideoEncoding.panda_s3_url.should == "http://dev.sublimevideo.panda.s3.amazonaws.com"
         end
       end
     end

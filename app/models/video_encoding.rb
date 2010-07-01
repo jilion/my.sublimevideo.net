@@ -97,7 +97,7 @@ class VideoEncoding < ActiveRecord::Base
   # =================
   
   def self.panda_s3_url
-    @@panda_s3_url ||= "http://s3.amazonaws.com/" + Transcoder.get(:cloud, PandaConfig.cloud_id)[:s3_videos_bucket]
+    @@panda_s3_url ||= "http://#{Transcoder.get(:cloud, PandaConfig.cloud_id)[:s3_videos_bucket]}.s3.amazonaws.com"
   end
   
   # ====================
