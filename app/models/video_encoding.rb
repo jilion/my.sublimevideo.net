@@ -81,8 +81,6 @@ class VideoEncoding < ActiveRecord::Base
     state(:processing) do
       validates :panda_encoding_id, :presence => true
       validates :extname, :presence => true
-      validates :width, :presence => true
-      validates :height, :presence => true
     end
     
     state(:active) do
@@ -90,6 +88,8 @@ class VideoEncoding < ActiveRecord::Base
       validates :file_size, :presence => true
       validates :started_encoding_at, :presence => true
       validates :encoding_time, :presence => true
+      validates :width, :presence => true
+      validates :height, :presence => true
     end
   end
   

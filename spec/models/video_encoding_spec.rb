@@ -88,8 +88,8 @@ describe VideoEncoding do
             video_encoding.pandize
             video_encoding.panda_encoding_id.should == id
             video_encoding.extname.should           == 'mp4'
-            video_encoding.width.should             == 480
-            video_encoding.height.should            == 320
+            video_encoding.width.should             be_nil
+            video_encoding.height.should            be_nil
             video_encoding.should be_processing
           end
           
@@ -115,20 +115,6 @@ describe VideoEncoding do
             video_encoding.extname.should be_nil
             video_encoding.should be_pending
           end
-          
-          it "should stay pending if width is missing" do
-            Transcoder.should_receive(:post).with(:encoding, params).and_return({ :id => id, :extname => '.mp4', :height => 320 })
-            video_encoding.pandize
-            video_encoding.width.should be_nil
-            video_encoding.should be_pending
-          end
-          
-          it "should stay pending if height is missing" do
-            Transcoder.should_receive(:post).with(:encoding, params).and_return({ :id => id, :extname => '.mp4', :width => 480 })
-            video_encoding.pandize
-            video_encoding.height.should be_nil
-            video_encoding.should be_pending
-          end
         end
         
       end
@@ -144,8 +130,8 @@ describe VideoEncoding do
       
       # SOMETIMES PROBLEM HERE WHEN RUNNING ALL SPECS
       let(:video)           { Factory(:video) }
-      let(:video_encoding1) { Factory(:video_encoding, :video => video, :panda_encoding_id => id, :state => 'processing', :profile_version => Factory(:video_profile_version, :profile => Factory(:video_profile, :min_width => 200, :thumbnailable => true))) }
-      let(:video_encoding2) { Factory(:video_encoding, :video => video, :panda_encoding_id => id, :state => 'processing', :profile_version => Factory(:video_profile_version, :profile => Factory(:video_profile, :min_width => 500, :thumbnailable => true))) }
+      let(:video_encoding1) { Factory(:video_encoding, :video => video, :panda_encoding_id => id, :state => 'processing', :profile_version => Factory(:video_profile_version, :profile => Factory(:video_profile, :min_width => 200, :posterframeable => true))) }
+      let(:video_encoding2) { Factory(:video_encoding, :video => video, :panda_encoding_id => id, :state => 'processing', :profile_version => Factory(:video_profile_version, :profile => Factory(:video_profile, :min_width => 500, :posterframeable => true))) }
       
       it "should set the state as :active from :processing" do
         video_encoding1.should be_processing
@@ -183,28 +169,33 @@ describe VideoEncoding do
             video_encoding1.started_encoding_at.should == Time.parse("2010/06/08 17:15:17 +0000")
             video_encoding1.encoding_time.should       == 12
             video_encoding1.encoding_status.should     == 'success'
+            video_encoding1.width.should               == 480
+            video_encoding1.height.should              == 320
             video_encoding1.should be_active
           end
         end
         
         describe "before_transition :on => :activate, :do => :set_video_posterframe" do
-          it "should set video posterframe if profile is thumbnailable" do
+          it "should set video posterframe if profile is posterframeable" do
             video_encoding1.stub!(:set_encoding_info => true, :set_file => true, :deprecate_active_encodings => true, :delete_panda_encoding => true)
             video_encoding2.stub!(:set_encoding_info => true, :set_file => true, :deprecate_active_encodings => true, :delete_panda_encoding => true)
             
             video_encoding1.activate
-            video_encoding1.video.posterframe.url.should_not be_present
-            video_encoding1.video.posterframe.thumb.url.should_not be_present
+            video_encoding1.video.posterframe.should_not be_present
+            video_encoding1.video.posterframe.thumb.should_not be_present
             
             video_encoding2.activate
+            video_encoding2.video.posterframe.should be_present
+            video_encoding2.video.save
             video_encoding2.video.posterframe.url.should =~ %r(videos/#{video_encoding2.video.token}/posterframe.jpg)
             video_encoding2.video.posterframe.thumb.url.should =~ %r(videos/#{video_encoding2.video.token}/thumb_posterframe.jpg)
           end
           
-          it "should not set video posterframe if profile is not thumbnailable" do
+          it "should not set video posterframe if profile is not posterframeable" do
             video_encoding1.stub!(:set_encoding_info => true, :set_file => true, :deprecate_active_encodings => true, :delete_panda_encoding => true)
-            video_encoding1.profile.stub!(:thumbnailable? => false)
+            video_encoding1.profile.stub!(:posterframeable? => false)
             video_encoding1.activate
+            video_encoding1.should be_active
             video_encoding1.video.posterframe.should_not be_present
             video_encoding1.video.posterframe.thumb.should_not be_present
           end
@@ -212,29 +203,51 @@ describe VideoEncoding do
         
         describe ":active state validations" do
           it "should stay processing if the panda encoding status is not 'success'" do
-            Transcoder.should_receive(:get).with(:encoding, id).and_return({ :file_size => 125465, :started_encoding_at => "2010/06/08 17:15:17 +0000", :encoding_time => 12, :status => 'processing' })
+            video_encoding1.video.posterframe.should_not be_present
+            video_encoding1.video.posterframe.thumb.should_not be_present
+            Transcoder.should_receive(:get).with(:encoding, id).and_return({ :file_size => 125465, :started_encoding_at => "2010/06/08 17:15:17 +0000", :encoding_time => 12, :status => 'processing', :width => 1, :height => 1 })
+            Transcoder.should_not_receive(:delete)
             video_encoding1.activate
             video_encoding1.should be_processing
           end
           
-          it "should stay pending if file_size is missing" do
-            Transcoder.should_receive(:get).with(:encoding, id).and_return({ :started_encoding_at => "2010/06/08 17:15:17 +0000", :encoding_time => 12, :status => 'success' })
+          it "should stay processing if file_size is missing" do
+            Transcoder.should_receive(:get).with(:encoding, id).and_return({ :started_encoding_at => "2010/06/08 17:15:17 +0000", :encoding_time => 12, :status => 'success', :width => 1, :height => 1 })
+            Transcoder.should_not_receive(:delete)
             video_encoding1.activate
             video_encoding1.file_size.should be_nil
             video_encoding1.should be_processing
           end
           
-          it "should stay pending if started_encoding_at is missing" do
-            Transcoder.should_receive(:get).with(:encoding, id).and_return({ :file_size => 125465, :encoding_time => 12, :status => 'success' })
+          it "should stay processing if started_encoding_at is missing" do
+            Transcoder.should_receive(:get).with(:encoding, id).and_return({ :file_size => 125465, :encoding_time => 12, :status => 'success', :width => 1, :height => 1 })
+            Transcoder.should_not_receive(:delete)
             video_encoding1.activate
             video_encoding1.started_encoding_at.should be_nil
             video_encoding1.should be_processing
           end
           
-          it "should stay pending if encoding_time is missing" do
-            Transcoder.should_receive(:get).with(:encoding, id).and_return({ :file_size => 125465, :started_encoding_at => "2010/06/08 17:15:17 +0000", :status => 'success' })
+          it "should stay processing if encoding_time is missing" do
+            Transcoder.should_receive(:get).with(:encoding, id).and_return({ :file_size => 125465, :started_encoding_at => "2010/06/08 17:15:17 +0000", :status => 'success', :width => 1, :height => 1 })
+            Transcoder.should_not_receive(:delete)
             video_encoding1.activate
             video_encoding1.encoding_time.should be_nil
+            video_encoding1.should be_processing
+          end
+          
+          it "should stay processing if width is missing" do
+            Transcoder.should_receive(:get).with(:encoding, id).and_return({ :file_size => 125465, :encoding_time => 12, :status => 'success', :height => 1 })
+            Transcoder.should_not_receive(:delete)
+            video_encoding1.activate
+            video_encoding1.width.should be_nil
+            video_encoding1.should be_processing
+          end
+          
+          it "should stay processing if height is missing" do
+            Transcoder.should_receive(:get).with(:encoding, id).and_return({ :file_size => 125465, :encoding_time => 12, :status => 'success', :width => 1 })
+            Transcoder.should_not_receive(:delete)
+            video_encoding1.activate
+            video_encoding1.height.should be_nil
             video_encoding1.should be_processing
           end
         end

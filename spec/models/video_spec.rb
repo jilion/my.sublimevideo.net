@@ -792,8 +792,8 @@ describe Video do
       before(:each) { VCR.insert_cassette('video/pandize') }
       
       let(:video) { Factory(:video, :state => 'encodings') }
-      let(:video_encoding1) { Factory(:video_encoding, :video => video, :panda_encoding_id => '1'*32, :state => 'processing') }
-      let(:video_encoding2) { Factory(:video_encoding, :video => video, :panda_encoding_id => encoding_id, :state => 'processing') }
+      let(:video_encoding1) { Factory(:video_encoding, :video => video, :panda_encoding_id => '1'*32, :state => 'processing', :profile_version => Factory(:video_profile_version, :profile => Factory(:video_profile, :min_width => 500, :posterframeable => true))) }
+      let(:video_encoding2) { Factory(:video_encoding, :video => video, :panda_encoding_id => encoding_id, :state => 'processing', :profile_version => Factory(:video_profile_version, :profile => Factory(:video_profile, :min_width => 200, :posterframeable => true))) }
       
       it "should not even check Panda if the video is not currently in the processing state" do
         video_encoding1.update_attribute(:state, 'active')
@@ -827,27 +827,29 @@ describe Video do
         Delayed::Job.last.name.should == 'Video#check_panda_encodings_status'
       end
       
-      it "should activate each video with the 'success' panda status and not re-call delay_check_panda_encodings_status" do
+      it "should activate each video encoding with the 'success' panda status and not re-call delay_check_panda_encodings_status" do
         video_encoding1.should be_processing
         video_encoding2.should be_processing
+        video.posterframe.should_not be_present
         video.should be_first_processing
         Transcoder.should_receive(:get).with([:video, :encodings], video.panda_video_id).and_return([{ :id => '1'*32, :status => 'success' }, { :id => encoding_id, :status => 'fail' }])
-        # Transcoder.should_receive(:get).with(:cloud, PandaConfig.cloud_id).and_return({ :s3_videos_bucket => '' })
-        Transcoder.should_receive(:get).with(:encoding, video_encoding1.panda_encoding_id).and_return({ :status => 'success', :file_size => 1234, :started_encoding_at => Time.now.to_s, :encoding_time => 1 })
+        # Transcoder.should_receive(:get).with(:cloud, PandaConfig.cloud_id).and_return({ :s3_videos_bucket => 'dev.sublimevideo.panda' })
+        Transcoder.should_receive(:get).with(:encoding, video_encoding1.panda_encoding_id).and_return({ :status => 'success', :file_size => 1234, :started_encoding_at => Time.now.to_s, :encoding_time => 1, :width => 640, :height => 480 })
         HoptoadNotifier.should_receive(:notify, "VideoEncoding (#{video_encoding1.id}) panda encoding is failed.")
         lambda { video.check_panda_encodings_status }.should_not change(Delayed::Job, :count)
         video_encoding1.reload.should be_active
         video_encoding2.reload.should be_failed
-        video.reload.should be_error
+        video.posterframe.should be_present
+        video.should be_error
       end
       
-      it "should not re-call delay_check_panda_encodings_status if all encodings are not complete and if no encding is processing anymore, should also fail each video with the 'failed' panda status, send an Hoptoad notification and activate individually videos with the 'sucess' panda status" do
+      it "should not re-call delay_check_panda_encodings_status if all encodings are not complete and if no encoding is processing anymore, should also fail each video with the 'failed' panda status, send an Hoptoad notification and activate individually videos with the 'sucess' panda status" do
         video_encoding1.should be_processing
         video_encoding2.should be_processing
         video.should be_first_processing
         Transcoder.should_receive(:get).with([:video, :encodings], video.panda_video_id).and_return([{ :id => '1'*32, :status => 'fail' }, { :id => encoding_id, :status => 'success' }])
-        Transcoder.should_receive(:get).with(:encoding, video_encoding2.panda_encoding_id).and_return({ :status => 'success', :file_size => 1234, :started_encoding_at => Time.now.to_s, :encoding_time => 1 })
-        # Transcoder.should_receive(:get).with(:cloud, PandaConfig.cloud_id).and_return({ :s3_videos_bucket => '' })
+        # Transcoder.should_receive(:get).with(:cloud, PandaConfig.cloud_id).and_return({ :s3_videos_bucket => 'dev.sublimevideo.panda' })
+        Transcoder.should_receive(:get).with(:encoding, video_encoding2.panda_encoding_id).and_return({ :status => 'success', :file_size => 1234, :started_encoding_at => Time.now.to_s, :encoding_time => 1, :width => 1, :height => 1 })
         HoptoadNotifier.should_receive(:notify, "VideoEncoding (#{video_encoding1.id}) panda encoding is failed.")
         lambda { video.check_panda_encodings_status }.should_not change(Delayed::Job, :count)
         video_encoding1.reload.should be_failed
