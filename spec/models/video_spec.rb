@@ -64,7 +64,7 @@ describe Video do
     its(:original_filename)       { should == 'railscast_intro.mov' }
     its(:video_codec)             { should == 'h264'                }
     its(:audio_codec)             { should == 'aac'                 }
-    its(:extname)                 { should == '.mov'                }
+    its(:extname)                 { should == 'mov'                }
     its(:file_size)               { should == 123456                }
     its(:duration)                { should == 12345                 }
     its(:width)                   { should == 640                   }
@@ -267,8 +267,6 @@ describe Video do
             video.activate
             video_encoding1.reload.should be_active
             video_encoding2.reload.should be_active
-            video_encoding1.file.should be_present
-            video_encoding2.file.should be_present
           end
         end
         
@@ -282,8 +280,6 @@ describe Video do
             
             video_encoding1.reload.should be_active
             video_encoding2.reload.should be_active
-            video_encoding1.file.should be_present
-            video_encoding2.file.should be_present
             
             last_delivery = ActionMailer::Base.deliveries.last
             last_delivery.from.should == ["no-response@sublimevideo.net"]
@@ -474,26 +470,16 @@ describe Video do
             VCR.use_cassette('video_encoding/activate') { suspended_video_encoding.activate }
             VCR.use_cassette('video_encoding/suspend') { suspended_video_encoding.suspend }
             suspended_video_encoding.should be_suspended
-            suspended_video_encoding.file.should be_present
             
             lambda { video.archive }.should change(Delayed::Job, :count).by(4)
             Delayed::Job.last.name.should == 'VideoEncoding#archive'
             VCR.use_cassette('video_encoding/archive') { Delayed::Worker.new(:quiet => true).work_off }
             
             pending_video_encoding.reload.should be_archived
-            pending_video_encoding.file.should_not be_present
-            
             encoding_video_encoding.reload.should be_archived
-            encoding_video_encoding.file.should_not be_present
-            
             active_video_encoding.reload.should be_archived
-            active_video_encoding.file.should_not be_present
-            
             deprecated_video_encoding.reload.should_not be_archived
-            
             suspended_video_encoding.reload.should be_archived
-            suspended_video_encoding.file.should_not be_present
-            
           end
         end
         
@@ -843,14 +829,12 @@ describe Video do
         video.posterframe.should_not be_present
         video.should be_first_processing
         Transcoder.should_receive(:get).with([:video, :encodings], video.panda_video_id).and_return([{ :id => '1'*32, :status => 'success' }, { :id => encoding_id, :status => 'fail' }])
-        # Transcoder.should_receive(:get).with(:cloud, PandaConfig.cloud_id).and_return({ :s3_videos_bucket => 'dev.sublimevideo.panda' })
         Transcoder.should_receive(:get).with(:encoding, video_encoding1.panda_encoding_id).and_return({ :status => 'success', :file_size => 1234, :started_encoding_at => Time.now.to_s, :encoding_time => 1, :width => 640, :height => 480 })
         HoptoadNotifier.should_receive(:notify, "VideoEncoding (#{video_encoding1.id}) panda encoding is failed.")
         lambda { video.check_panda_encodings_status }.should_not change(Delayed::Job, :count)
         video_encoding1.reload.should be_active
         video_encoding2.reload.should be_failed
-        video.posterframe.should be_present
-        video.should be_error
+        video.reload.should be_error
       end
       
       it "should not re-call delay_check_panda_encodings_status if all encodings are not complete and if no encoding is processing anymore, should also fail each video with the 'failed' panda status, send an Hoptoad notification and activate individually videos with the 'sucess' panda status" do
@@ -858,7 +842,6 @@ describe Video do
         video_encoding2.should be_processing
         video.should be_first_processing
         Transcoder.should_receive(:get).with([:video, :encodings], video.panda_video_id).and_return([{ :id => '1'*32, :status => 'fail' }, { :id => encoding_id, :status => 'success' }])
-        # Transcoder.should_receive(:get).with(:cloud, PandaConfig.cloud_id).and_return({ :s3_videos_bucket => 'dev.sublimevideo.panda' })
         Transcoder.should_receive(:get).with(:encoding, video_encoding2.panda_encoding_id).and_return({ :status => 'success', :file_size => 1234, :started_encoding_at => Time.now.to_s, :encoding_time => 1, :width => 1, :height => 1 })
         HoptoadNotifier.should_receive(:notify, "VideoEncoding (#{video_encoding1.id}) panda encoding is failed.")
         lambda { video.check_panda_encodings_status }.should_not change(Delayed::Job, :count)

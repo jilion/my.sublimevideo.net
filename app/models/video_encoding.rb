@@ -16,6 +16,8 @@
 #  height                   :integer
 #  created_at               :datetime
 #  updated_at               :datetime
+#  file_added_at            :datetime
+#  file_removed_at          :datetime
 #
 
 class VideoEncoding < ActiveRecord::Base
@@ -76,7 +78,7 @@ class VideoEncoding < ActiveRecord::Base
     event(:deprecate) { transition [:active, :failed] => :deprecated }
     event(:suspend)   { transition :active => :suspended }
     event(:unsuspend) { transition :suspended => :active }
-    event(:archive)   { transition [:pending, :processing, :failed, :active, :deprecated, :suspended] => :archived }
+    event(:archive)   { transition any - :archived => :archived }
     
     state(:processing) do
       validates :panda_encoding_id, :presence => true
@@ -126,13 +128,10 @@ protected
   
   # before_transition (activate)
   def set_file
-    
-    # file_on_panda_bucket = Aws::S3::Key.create(S3.panda_bucket, "#{panda_encoding_id}.#{extname}")
-    # file_on_video_bucket = Aws::S3::Key.create(S3.videos_bucket, "#{video.token}/#{video.name}#{profile.name}.#{extname}")
-    # file_on_panda_bucket.copy(file_on_video_bucket)
-    
-    # self.write_attribute(:file, "#{video.token}/#{video.name}#{profile.name}.#{extname}")
-    self.remote_file_url = "#{self.class.panda_s3_url}/#{panda_encoding_id}.#{extname}"
+    file_on_panda_bucket = S3.panda_bucket.key("#{panda_encoding_id}.#{extname}")
+    file_on_video_bucket = S3.videos_bucket.key("#{video.token}/#{video.name}#{profile.name}.#{extname}")
+    file_on_panda_bucket.copy(file_on_video_bucket)
+    write_attribute(:file, "#{video.name}#{profile.name}.#{extname}")
   end
   def set_file_added_at
     self.file_added_at = Time.now.utc

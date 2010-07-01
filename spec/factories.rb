@@ -37,7 +37,7 @@ Factory.define :video do |f|
   f.original_filename 'railscast_intro.mov'
   f.video_codec       'h264'
   f.audio_codec       'aac'
-  f.extname           '.mov'
+  f.extname           'mov'
   f.file_size         123456
   f.duration          12345
   f.width             640

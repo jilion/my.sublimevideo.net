@@ -18,10 +18,10 @@
     headers: 
       x-powered-by: 
       - Phusion Passenger (mod_rails/mod_rack) 2.2.9
-      content-type: 
-      - application/json
       connection: 
       - keep-alive
+      content-type: 
+      - application/json
       server: 
       - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
       content-length: 
@@ -53,10 +53,10 @@
     headers: 
       x-powered-by: 
       - Phusion Passenger (mod_rails/mod_rack) 2.2.9
-      connection: 
-      - keep-alive
       content-type: 
       - application/json
+      connection: 
+      - keep-alive
       server: 
       - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
       content-length: 
@@ -84,10 +84,10 @@
     headers: 
       x-powered-by: 
       - Phusion Passenger (mod_rails/mod_rack) 2.2.9
-      content-type: 
-      - application/json
       connection: 
       - keep-alive
+      content-type: 
+      - application/json
       server: 
       - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
       content-length: 
@@ -95,37 +95,6 @@
       status: 
       - "200"
     body: "{\"created_at\":\"2010/06/08 13:00:09 +0000\", \"video_id\":\"f72e511820c12dabc1d15817745225bd\", \"started_encoding_at\":null, \"updated_at\":\"2010/06/08 13:00:09 +0000\", \"encoding_progress\":null, \"encoding_time\":null, \"extname\":\".mp4\", \"id\":\"ab6be8bb1bcf506842264304bc1bb479\", \"file_size\":null, \"height\":320, \"status\":\"processing\", \"profile_id\":\"73f93e74e866d86624a8718d21d06e4e\", \"width\":480}"
-    http_version: "1.1"
-- !ruby/struct:VCR::HTTPInteraction 
-  request: !ruby/struct:VCR::Request 
-    method: :get
-    uri: !ruby/regexp /api\.pandastream\.com:80\/v2\/clouds\/[a-z0-9]{32}\.json\?.+/
-    body: 
-    headers: 
-      accept: 
-      - "*/*; q=0.5, application/xml"
-      accept-encoding: 
-      - gzip, deflate
-      host: 
-      - api.pandastream.com
-  response: !ruby/struct:VCR::Response 
-    status: !ruby/struct:VCR::ResponseStatus 
-      code: 200
-      message: OK
-    headers: 
-      x-powered-by: 
-      - Phusion Passenger (mod_rails/mod_rack) 2.2.9
-      content-type: 
-      - application/json
-      connection: 
-      - keep-alive
-      server: 
-      - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
-      content-length: 
-      - "211"
-      status: 
-      - "200"
-    body: "{\"name\":\"SublimeVideo\",\"s3_videos_bucket\":\"dev.sublimevideo.panda\",\"created_at\":\"2010/06/08 16:25:38 +0000\",\"updated_at\":\"2010/06/08 16:25:38 +0000\",\"id\":\"f2f24a820b4e4e71536fcd567a384848\",\"s3_private_access\":false}"
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
@@ -146,10 +115,10 @@
     headers: 
       x-powered-by: 
       - Phusion Passenger (mod_rails/mod_rack) 2.2.9
-      content-type: 
-      - application/json
       connection: 
       - keep-alive
+      content-type: 
+      - application/json
       server: 
       - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
       content-length: 
@@ -162,7 +131,7 @@
         :headers: {}
 
         :method: :delete
-        :url: http://api.pandastream.com:80/v2/encodings/11111111111111111111111111111111.json?timestamp=2010-07-01T13%3A09%3A37.120852%2B02%3A00&signature=82MPE3qtZ%2FmhoMAwl575bVir5sU%2FE7xvpPC7MS2OMTk%3D&access_key=7cc07330-5147-11df-b458-12313d01b992&cloud_id=db622ee400037141c53d224778ebc231
+        :url: http://api.pandastream.com:80/v2/encodings/11111111111111111111111111111111.json?timestamp=2010-07-01T23%3A59%3A27.701057%2B02%3A00&signature=1IVbNnkH6qLIHF70jRQ%2BdVGc7mfcgEmn8evitV5RYZ4%3D&access_key=7cc07330-5147-11df-b458-12313d01b992&cloud_id=db622ee400037141c53d224778ebc231
       "@code": 200
       "@net_http_res": !ruby/object:Net::HTTPOK 
         body: *id001
@@ -187,95 +156,195 @@
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
     method: :get
-    uri: http://dev.sublimevideo.panda.s3.amazonaws.com:80/11111111111111111111111111111111.mp4
+    uri: !ruby/regexp /dev\.sublimevideo\.panda\.s3\.amazonaws\.com:80\/[a-z0-9]{32}\.mp4/
     body: 
     headers: 
       accept: 
       - "*/*"
       host: 
-      - s3.amazonaws.com
+      - dev.sublimevideo.panda.s3.amazonaws.com
   response: !ruby/struct:VCR::Response 
     status: !ruby/struct:VCR::ResponseStatus 
-      code: 404
-      message: Not Found
+      code: 200
+      message: OK
     headers: 
+      etag: 
+      - "\"1f1133ee77f0b3c66c948ae376d55715\""
+      last-modified: 
+      - Thu, 01 Jul 2010 10:28:54 GMT
       x-amz-id-2: 
-      - 72Eh6P4j/sktix7RT/fi5ZQ2GX+0pkES07EB9AcyaoN1nKGRI6hMZpqNIVoJ6PbW
+      - iQ8w05mqfGugu+ysdWWRBwxN/xcvU1Xv7H5E3LBDgpWttOxh/VWUkhrtAK6NFo26
       content-type: 
-      - application/xml
+      - text/plain
       server: 
       - AmazonS3
       date: 
-      - Mon, 28 Jun 2010 13:03:02 GMT
+      - Thu, 01 Jul 2010 10:32:11 GMT
+      content-length: 
+      - "893"
       x-amz-request-id: 
-      - 8917F6E9B8AE7126
-      transfer-encoding: 
-      - chunked
-    body: |-
-      <?xml version="1.0" encoding="UTF-8"?>
-      <Error><Code>NoSuchKey</Code><Message>The specified key does not exist.</Message><Key>11111111111111111111111111111111.mp4</Key><RequestId>8917F6E9B8AE7126</RequestId><HostId>72Eh6P4j/sktix7RT/fi5ZQ2GX+0pkES07EB9AcyaoN1nKGRI6hMZpqNIVoJ6PbW</HostId></Error>
+      - 9153CDD3574E4FA3
+    body: Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
     method: :get
-    uri: http://dev.sublimevideo.panda.s3.amazonaws.com:80/ab6be8bb1bcf506842264304bc1bb479.mp4
+    uri: !ruby/regexp /dev\.sublimevideo\.panda\.s3\.amazonaws\.com:443\/\?prefix=[a-z0-9]{32}.+/
     body: 
     headers: 
       accept: 
       - "*/*"
+      content-type: 
+      - ""
+      user-agent: 
+      - ""
+      date: 
+      - Thu, 01 Jul 2010 13:50:14 GMT
+      authorization: 
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:nvZ8MU2CCnFzpREJ6ftc7sCwH2E=
       host: 
-      - s3.amazonaws.com
+      - dev.sublimevideo.panda.s3.amazonaws.com
   response: !ruby/struct:VCR::Response 
     status: !ruby/struct:VCR::ResponseStatus 
-      code: 404
-      message: Not Found
+      code: 200
+      message: OK
     headers: 
       x-amz-id-2: 
-      - IWNMYhSgySIWfQcLIgNIpc+oq1Ko41WGOJxgDprQd/62QQ68s8ugS+lEp7QBr8Du
+      - hFnBOAeF5CCgYLhhZNXMP1fMn5QydUK5Sz0yTUSy7ilF0hVlTJDDjFPLHqu5dO36
       content-type: 
       - application/xml
       date: 
-      - Wed, 30 Jun 2010 18:39:33 GMT
+      - Thu, 01 Jul 2010 13:50:15 GMT
       server: 
       - AmazonS3
       x-amz-request-id: 
-      - 4FE8DF904A092021
+      - EFA4EA814159D6C4
       transfer-encoding: 
       - chunked
     body: |-
       <?xml version="1.0" encoding="UTF-8"?>
-      <Error><Code>NoSuchKey</Code><Message>The specified key does not exist.</Message><Key>ab6be8bb1bcf506842264304bc1bb479.mp4</Key><RequestId>4FE8DF904A092021</RequestId><HostId>IWNMYhSgySIWfQcLIgNIpc+oq1Ko41WGOJxgDprQd/62QQ68s8ugS+lEp7QBr8Du</HostId></Error>
+      <ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>dev.sublimevideo.panda</Name><Prefix>ab6be8bb1bcf506842264304bc1bb479.mp4</Prefix><Marker></Marker><MaxKeys>1000</MaxKeys><IsTruncated>false</IsTruncated><Contents><Key>ab6be8bb1bcf506842264304bc1bb479.mp4</Key><LastModified>2010-07-01T10:28:54.000Z</LastModified><ETag>&quot;1f1133ee77f0b3c66c948ae376d55715&quot;</ETag><Size>893</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents></ListBucketResult>
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
     method: :get
-    uri: http://s3.amazonaws.com:80//ab6be8bb1bcf506842264304bc1bb479.mp4
+    uri: !ruby/regexp /dev\.sublimevideo\.videos\.s3\.amazonaws\.com:443\/\?prefix=[a-z0-9]{8}\/.+/
     body: 
     headers: 
       accept: 
       - "*/*"
+      user-agent: 
+      - ""
+      content-type: 
+      - ""
+      authorization: 
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:eh+HomqJvtpyJXdnBvPyK9YuaSU=
+      date: 
+      - Thu, 01 Jul 2010 13:54:00 GMT
       host: 
-      - s3.amazonaws.com
+      - dev.sublimevideo.videos.s3.amazonaws.com
   response: !ruby/struct:VCR::Response 
     status: !ruby/struct:VCR::ResponseStatus 
-      code: 404
-      message: Not Found
+      code: 200
+      message: OK
     headers: 
       x-amz-id-2: 
-      - mQN7srJrZdw0KA6TXtTW3oGTeJTLj0LLon0sgxK7aW8exACORFRLCyQgEAVw61KS
+      - +spPQBgjDLDIxLVW+RlmlgvXm60KMDNvPOqiWHeZKxvkMqzsgZd1XeqkIFEj/RDs
       content-type: 
       - application/xml
       server: 
       - AmazonS3
       date: 
-      - Wed, 30 Jun 2010 18:40:46 GMT
+      - Thu, 01 Jul 2010 13:54:02 GMT
       x-amz-request-id: 
-      - 98506B8EA76E13B1
+      - EC8D2ED9D5BA6221
       transfer-encoding: 
       - chunked
     body: |-
       <?xml version="1.0" encoding="UTF-8"?>
-      <Error><Code>NoSuchBucket</Code><Message>The specified bucket does not exist</Message><BucketName>ab6be8bb1bcf506842264304bc1bb479.mp4</BucketName><RequestId>98506B8EA76E13B1</RequestId><HostId>mQN7srJrZdw0KA6TXtTW3oGTeJTLj0LLon0sgxK7aW8exACORFRLCyQgEAVw61KS</HostId></Error>
+      <ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>dev.sublimevideo.videos</Name><Prefix>wosl5nrr/railscast_intro.mov.mp4</Prefix><Marker></Marker><MaxKeys>1000</MaxKeys><IsTruncated>false</IsTruncated></ListBucketResult>
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: !ruby/regexp /dev\.sublimevideo\.videos\.s3\.amazonaws\.com:443\/\?prefix=[a-z0-9]{32}.+/
+    body: 
+    headers: 
+      accept: 
+      - "*/*"
+      content-type: 
+      - ""
+      user-agent: 
+      - ""
+      date: 
+      - Thu, 01 Jul 2010 15:25:39 GMT
+      authorization: 
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:sNh9eOzowqPvpzG7MtEhwpT15ME=
+      host: 
+      - dev.sublimevideo.panda.s3.amazonaws.com
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      x-amz-id-2: 
+      - c/KcK/WoQ3V5K6nKjT+K5DwR0gyHLEf9cbP1AZ0+vpdltUaCrNf8PqMfiXga1/X1
+      content-type: 
+      - application/xml
+      date: 
+      - Thu, 01 Jul 2010 15:25:41 GMT
+      server: 
+      - AmazonS3
+      x-amz-request-id: 
+      - 3CE2EBF6AF05E36F
+      transfer-encoding: 
+      - chunked
+    body: |-
+      <?xml version="1.0" encoding="UTF-8"?>
+      <ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>dev.sublimevideo.panda</Name><Prefix>ab6be8bb1bcf506842264304bc1bb479.mp4</Prefix><Marker></Marker><MaxKeys>1000</MaxKeys><IsTruncated>false</IsTruncated><Contents><Key>ab6be8bb1bcf506842264304bc1bb479.mp4</Key><LastModified>2010-07-01T10:28:54.000Z</LastModified><ETag>&quot;1f1133ee77f0b3c66c948ae376d55715&quot;</ETag><Size>893</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents></ListBucketResult>
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :put
+    uri: !ruby/regexp /dev\.sublimevideo\.videos\.s3\.amazonaws\.com:443\/[a-z0-9]{8}%2.+/
+    body: 
+    headers: 
+      x-amz-copy-source: 
+      - dev.sublimevideo.panda/ab6be8bb1bcf506842264304bc1bb479.mp4
+      accept: 
+      - "*/*"
+      content-type: 
+      - ""
+      user-agent: 
+      - ""
+      date: 
+      - Thu, 01 Jul 2010 15:25:40 GMT
+      authorization: 
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:7Bzk6awW9a+Umw0GlitSyZmhQ1A=
+      x-amz-metadata-directive: 
+      - COPY
+      host: 
+      - dev.sublimevideo.videos.s3.amazonaws.com
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      x-amz-id-2: 
+      - G16x1c0BcmthSIzcMQ5684SpzrkvpeAC9kdxVozbZorffqBLfqgK5j4J9GgfhCv5
+      content-type: 
+      - application/xml
+      date: 
+      - Thu, 01 Jul 2010 15:25:42 GMT
+      server: 
+      - AmazonS3
+      x-amz-request-id: 
+      - 4A0DED74A2C19CE2
+      content-length: 
+      - "234"
+    body: |-
+      <?xml version="1.0" encoding="UTF-8"?>
+      <CopyObjectResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><LastModified>2010-07-01T15:25:42.000Z</LastModified><ETag>&quot;1f1133ee77f0b3c66c948ae376d55715&quot;</ETag></CopyObjectResult>
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
@@ -293,18 +362,18 @@
       message: Forbidden
     headers: 
       x-amz-id-2: 
-      - RkceH/RQTtuxaahZJS075Xk8VtdDxERxilhxIPXmyGiY3xEQ7faNFSlp9SWErN8M
+      - JkRelxo1XczxuZWuQIS9gtpHVYXNjSXsJw1BVrrwGoE+qf3gUB7V7T2NPFrldE75
       content-type: 
       - application/xml
       date: 
-      - Thu, 01 Jul 2010 11:09:36 GMT
+      - Thu, 01 Jul 2010 21:59:27 GMT
       server: 
       - AmazonS3
       x-amz-request-id: 
-      - BBF86173E41D07C2
+      - 97BBF9F5729E6FC9
       transfer-encoding: 
       - chunked
     body: |-
       <?xml version="1.0" encoding="UTF-8"?>
-      <Error><Code>AccessDenied</Code><Message>Access Denied</Message><RequestId>BBF86173E41D07C2</RequestId><HostId>RkceH/RQTtuxaahZJS075Xk8VtdDxERxilhxIPXmyGiY3xEQ7faNFSlp9SWErN8M</HostId></Error>
+      <Error><Code>AccessDenied</Code><Message>Access Denied</Message><RequestId>97BBF9F5729E6FC9</RequestId><HostId>JkRelxo1XczxuZWuQIS9gtpHVYXNjSXsJw1BVrrwGoE+qf3gUB7V7T2NPFrldE75</HostId></Error>
     http_version: "1.1"
