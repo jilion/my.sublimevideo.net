@@ -1,19 +1,19 @@
 development:
-  licenses: dev.sublimevideo.licences
+  licenses: dev.sublimevideo.licenses
   loaders:  dev.sublimevideo.loaders
   player:   dev.sublimevideo.player
   videos:   dev.sublimevideo.videos
   panda:    dev.sublimevideo.panda
   logs:     dev.sublimevideo.logs
 test:
-  licenses: dev.sublimevideo.licence
+  licenses: dev.sublimevideo.licenses
   loaders:  dev.sublimevideo.loaders
   player:   dev.sublimevideo.player
   videos:   dev.sublimevideo.videos
   panda:    dev.sublimevideo.panda
   logs:     dev.sublimevideo.logs
 production:
-  licenses: sublimevideo.licences
+  licenses: sublimevideo.licenses
   loaders:  sublimevideo.loaders
   player:   sublimevideo.player
   videos:   sublimevideo.videos

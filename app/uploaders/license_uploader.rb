@@ -1,7 +1,7 @@
 class LicenseUploader < CarrierWave::Uploader::Base
   
   def s3_bucket
-    S3Bucket.licences
+    S3Bucket.licenses
   end
   
   # Override the directory where uploaded files will be stored
