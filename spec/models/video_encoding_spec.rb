@@ -154,6 +154,14 @@ describe VideoEncoding do
       end
       
       describe "callbacks" do
+        describe "before_transition :on => :activate, :do => :set_file_added_at" do
+          it "should set file_added_at" do
+            video_encoding1.file_added_at.should_not be_present
+            video_encoding1.activate
+            video_encoding1.file_added_at.should be_present
+          end
+        end
+        
         describe "before_transition :on => :activate, :do => :set_file" do
           it "should set file to the encoding's file" do
             video_encoding1.activate
@@ -309,6 +317,14 @@ describe VideoEncoding do
       describe "callbacks" do
         let(:video_encoding) { Factory(:video_encoding, :panda_encoding_id => id, :state => 'failed') }
         
+        describe "before_transition :on => :deprecate, :do => :set_file_removed_at" do
+          it "should set file_removed_at" do
+            video_encoding.file_removed_at.should_not be_present
+            video_encoding.deprecate
+            video_encoding.file_removed_at.should be_present
+          end
+        end
+        
         describe "before_transition :failed => :deprecated, :do => :delete_panda_encoding" do
           it "should remove the encoding reference (and file) on Panda" do
             Transcoder.should_receive(:delete).with(:encoding, id).and_return(true)
@@ -337,6 +353,7 @@ describe VideoEncoding do
       end
       
       describe "callbacks" do
+        
         it "before_transition => #block_video should set the READ right to NOBODY (or OWNER if it's enough)" do
           @video_encoding.file.path.should be_present
           s3_int = Aws::S3Interface.new(S3.access_key_id, S3.secret_access_key)
@@ -430,6 +447,14 @@ describe VideoEncoding do
       
       describe "callbacks" do
         let(:video_encoding) { Factory(:video_encoding, :panda_encoding_id => id, :state => 'processing') }
+        
+        describe "before_transition :on => :archive, :do => :set_file_removed_at" do
+          it "should set file_removed_at" do
+            video_encoding.file_removed_at.should_not be_present
+            video_encoding.archive
+            video_encoding.file_removed_at.should be_present
+          end
+        end
         
         describe "before_transition :on => :archive, :do => :remove_file!" do
           it "should delete the video file from S3" do

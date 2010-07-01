@@ -56,9 +56,10 @@ class VideoEncoding < ActiveRecord::Base
   state_machine :initial => :pending do
     before_transition :on => :pandize, :do => :create_panda_encoding_and_set_info
     
-    before_transition :on => :activate, :do => [:set_file, :set_encoding_info, :set_video_posterframe]
+    before_transition :on => :activate, :do => [:set_file, :set_file_added_at, :set_encoding_info, :set_video_posterframe]
     after_transition  :on => :activate, :do => [:deprecate_encodings, :delete_panda_encoding, :conform_to_video_state]
     
+    before_transition :on => [:deprecate, :archive], :do => :set_file_removed_at
     before_transition :failed => :deprecated, :do => :delete_panda_encoding
     
     before_transition :on => :suspend, :do => :block_video
@@ -124,14 +125,21 @@ protected
     else
       self.panda_encoding_id = encoding_info[:id]
       self.extname           = encoding_info[:extname].try(:gsub, '.', '')
-      self.width             = encoding_info[:width]
-      self.height            = encoding_info[:height]
     end
   end
   
   # before_transition (activate)
   def set_file
+    
+    # file_on_panda_bucket = Aws::S3::Key.create(S3.panda_bucket, "#{panda_encoding_id}.#{extname}")
+    # file_on_video_bucket = Aws::S3::Key.create(S3.videos_bucket, "#{video.token}/#{video.name}#{profile.name}.#{extname}")
+    # file_on_panda_bucket.copy(file_on_video_bucket)
+    
+    # self.write_attribute(:file, "#{video.token}/#{video.name}#{profile.name}.#{extname}")
     self.remote_file_url = "#{self.class.panda_s3_url}/#{panda_encoding_id}.#{extname}"
+  end
+  def set_file_added_at
+    self.file_added_at = Time.now.utc
   end
   
   # before_transition (activate) / before_transition (processing => archived)
@@ -177,6 +185,11 @@ protected
   # before_transition (unsuspend)
   def unblock_video
     S3.videos_bucket.key(file.path).put(nil, 'public-read') if Rails.env.production? && S3.videos_bucket.key(file.path).exists?
+  end
+  
+  # before_transition (deprecate) / (archive)
+  def set_file_removed_at
+    self.file_removed_at = Time.now.utc
   end
   
 end
