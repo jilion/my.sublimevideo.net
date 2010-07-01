@@ -51,7 +51,7 @@ feature "New video profile" do
     fill_in "Extname",        :with => "mp4"
     fill_in "Minimum width",  :with => "854"
     fill_in "Minimum height", :with => "480"
-    check "Thumbnailable"
+    check "Posterframeable"
     click_button "Create"
     
     current_url.should =~ %r(http://[^/]+/admin/profiles)
