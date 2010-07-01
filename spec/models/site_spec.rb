@@ -199,16 +199,29 @@ describe Site do
       site.license.should be_present
     end
     
+    it "activate should set loader file" do
+      site = Factory(:site)
+      site.activate
+      site.loader.should be_present
+    end
+    
     it "first activate should not purge license file" do
       site = Factory(:site)
-      VoxcastCDN.should_not_receive(:purge)
+      VoxcastCDN.should_not_receive(:purge).with("/l/#{site.token}.js")
       site.activate
     end
     
-    it "activate after deactivate should purge license file" do
+    it "first activate should not purge loader file" do
+      site = Factory(:site)
+      VoxcastCDN.should_not_receive(:purge).with("/js/#{site.token}.js")
+      site.activate
+    end
+    
+    it "activate after deactivate should purge loader & license file" do
       site = Factory(:site)
       site.activate
       site.deactivate
+      VoxcastCDN.should_receive(:purge).with("/js/#{site.token}.js")
       VoxcastCDN.should_receive(:purge).with("/l/#{site.token}.js")
       site.activate
     end
@@ -278,6 +291,12 @@ describe Site do
       site = Factory(:site)
       site.set_loader_file
       site.loader.read.should include(site.token)
+    end
+    
+    it "should set loader file with stable player_mode" do
+      site = Factory(:site)
+      site.set_loader_file
+      site.loader.read.should include("http://cdn.sublimevideo.net/p/sublime.js?t=#{site.token}")
     end
     
     it "should reset hits cache" do
