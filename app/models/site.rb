@@ -16,7 +16,7 @@
 #  archived_at       :datetime
 #  created_at        :datetime
 #  updated_at        :datetime
-#  player_mode       :string(255)
+#  player_mode       :string(255)     default("stable")
 #
 
 class Site < ActiveRecord::Base
@@ -64,9 +64,8 @@ class Site < ActiveRecord::Base
   # =================
   
   state_machine :initial => :pending do
-    before_transition :pending => :active,  :do => :set_loader_file
-    before_transition :on => :activate,     :do => :set_license_file
-    after_transition  :inactive => :active, :do => :purge_license_file
+    before_transition :on => :activate,     :do => [:set_loader_file, :set_license_file]
+    after_transition  :inactive => :active, :do => [:purge_loader_file, :purge_license_file]
     
     before_transition :on => :archive,             :do => :set_archived_at
     before_transition :on => [:archive, :suspend], :do => :remove_loader_and_license_file!

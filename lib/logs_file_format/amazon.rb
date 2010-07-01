@@ -14,7 +14,7 @@ module LogsFileFormat
     end
     
     def video_path?(path)
-      path =~ /.*\.(mp4|webm)$/
+      path =~ /.*\.(mp4|webm|ogv)$/
     end
     
     def us_location?(location)
