@@ -1,6 +1,6 @@
 class Invoice::Videos < Array
   attr_reader :amount, :bandwidth_amount, :requests_amount, :storage_amount, :encoding_amount,
-              :bandwidth_s3, :bandwidth_us, :bandwidth_eu, :bandwidth_as, :bandwidth_jp, :bandwidth_unknown,
+              :bandwidth_upload, :bandwidth_s3, :bandwidth_us, :bandwidth_eu, :bandwidth_as, :bandwidth_jp, :bandwidth_unknown,
               :requests_s3, :requests_us, :requests_eu, :requests_as, :requests_jp, :requests_unknown,
               :storage_bytehrs, :encoding_time,
               :hits # not billed, just for info.
@@ -37,6 +37,7 @@ private
           :id                => video.id,
           :video_title       => video.title,
           :archived_at       => video.archived_at,
+          :bandwidth_upload  => calculate_upload_bandwidth(video, invoice)
           :bandwidth_s3      => video.bandwidth_s3_cache,
           :bandwidth_us      => video.bandwidth_us_cache,
           :bandwidth_eu      => video.bandwidth_eu_cache,
@@ -90,6 +91,10 @@ private
     @loader_amount = loader_hits
     @player_amount = player_hits
     @amount = @loader_amount + @player_amount
+  end
+  
+  def calculate_upload_bandwidth(video, invoice)
+    0
   end
   
   def calculate_storage_bytehrs(video, invoice)
