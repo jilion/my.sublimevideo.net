@@ -24,6 +24,10 @@ module S3
       names
     end
     
+    def panda_bucket
+      @panda_bucket ||= client.bucket(S3Bucket.panda)
+    end
+    
     def videos_bucket
       @videos_bucket ||= client.bucket(S3Bucket.videos)
     end
