@@ -315,8 +315,6 @@ describe Video do
     # = suspend =
     # ===========
     describe "event(:suspend) { transition [:pending, :encodings] => :suspended }" do
-      before(:each) { VCR.insert_cassette('video/suspend') }
-      
       it "should set the state as :suspended from :pending" do
         video = Factory(:video, :state => 'pending')
         video.should be_pending
@@ -332,7 +330,7 @@ describe Video do
       end
       
       describe "callbacks" do
-        let(:video) { Factory(:video, :state => 'encodings') }
+        let(:video)           { Factory(:video, :state => 'encodings') }
         let(:video_encoding1) { Factory(:video_encoding, :video => video, :panda_encoding_id => encoding_id, :state => 'encoding') }
         let(:video_encoding2) { Factory(:video_encoding, :video => video, :state => 'active') }
         
@@ -343,6 +341,22 @@ describe Video do
             video.suspend
             video_encoding1.reload.should be_encoding
             video_encoding2.reload.should be_suspended
+          end
+        end
+        
+        describe "before_transition :on => :suspend, :do => :suspend_posterframe" do
+          before(:each) do
+            @video = Factory(:video, :state => 'encodings')
+            VCR.use_cassette('video_encoding/activate') { @video.activate }
+            VCR.insert_cassette('video/suspend')
+          end
+          
+          it "should suspend the posterframe" do
+            @video.posterframe.stub!(:path).and_return("posterframe.jpg")
+            s3_int = Aws::S3Interface.new(S3.access_key_id, S3.secret_access_key)
+            s3_int.get_acl(@video.posterframe.s3_bucket, "active#{@video.posterframe.path}")[:object].should include '<Grant><Grantee xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="Group"><URI>http://acs.amazonaws.com/groups/global/AllUsers</URI></Grantee><Permission>READ</Permission></Grant>'
+            @video.suspend
+            s3_int.get_acl(@video.posterframe.s3_bucket, "suspended#{@video.posterframe.path}")[:object].should_not include '<Grant><Grantee xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="Group"><URI>http://acs.amazonaws.com/groups/global/AllUsers</URI></Grantee><Permission>READ</Permission></Grant>'
           end
         end
         
@@ -374,6 +388,23 @@ describe Video do
             video.unsuspend
             video_encoding1.reload.should be_encoding
             video_encoding2.reload.should be_active
+          end
+        end
+        
+        describe "before_transition :on => :suspend, :do => :unsuspend_posterframe" do
+          before(:each) do
+            @video = Factory(:video, :state => 'encodings')
+            VCR.use_cassette('video_encoding/activate') { @video.activate }
+            VCR.use_cassette('video/suspend') { @video.suspend }
+            VCR.insert_cassette('video/suspend')
+          end
+          
+          it "should suspend the posterframe" do
+            @video.posterframe.stub!(:path).and_return("posterframe.jpg")
+            s3_int = Aws::S3Interface.new(S3.access_key_id, S3.secret_access_key)
+            s3_int.get_acl(@video.posterframe.s3_bucket, "suspended#{@video.posterframe.path}")[:object].should_not include '<Grant><Grantee xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="Group"><URI>http://acs.amazonaws.com/groups/global/AllUsers</URI></Grantee><Permission>READ</Permission></Grant>'
+            @video.unsuspend
+            s3_int.get_acl(@video.posterframe.s3_bucket, "active#{@video.posterframe.path}")[:object].should include '<Grant><Grantee xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="Group"><URI>http://acs.amazonaws.com/groups/global/AllUsers</URI></Grantee><Permission>READ</Permission></Grant>'
           end
         end
         
@@ -699,22 +730,22 @@ describe Video do
       end
     end
     
-    describe "#hd?" do
-      it "should return true if width >= 720" do
-        video.update_attribute(:width, 720)
-        video.should be_hd
-      end
-      
-      it "should return true if height >= 1280" do
-        video.update_attribute(:height, 1280)
-        video.should be_hd
-      end
-      
-      it "should return false if width < 720 and height < 1280" do
-        video.update_attributes(:width => 719, :height => 1279)
-        video.should_not be_hd
-      end
-    end
+    # describe "#hd?" do
+    #   it "should return true if width >= 720" do
+    #     video.update_attribute(:width, 720)
+    #     video.should be_hd
+    #   end
+    #   
+    #   it "should return true if height >= 1280" do
+    #     video.update_attribute(:height, 1280)
+    #     video.should be_hd
+    #   end
+    #   
+    #   it "should return false if width < 720 and height < 1280" do
+    #     video.update_attributes(:width => 719, :height => 1279)
+    #     video.should_not be_hd
+    #   end
+    # end
     
     describe "check_panda_encodings_status" do
       before(:each) { VCR.insert_cassette('video/pandize') }

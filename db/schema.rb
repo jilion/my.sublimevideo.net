@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100625150205) do
+ActiveRecord::Schema.define(:version => 20100630153415) do
 
   create_table "admins", :force => true do |t|
     t.string   "email",                               :default => "", :null => false
@@ -114,6 +114,7 @@ ActiveRecord::Schema.define(:version => 20100625150205) do
     t.datetime "archived_at"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "player_mode"
   end
 
   add_index "sites", ["created_at"], :name => "index_sites_on_created_at"

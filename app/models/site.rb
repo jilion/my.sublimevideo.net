@@ -16,6 +16,7 @@
 #  archived_at       :datetime
 #  created_at        :datetime
 #  updated_at        :datetime
+#  player_mode       :string(255)
 #
 
 class Site < ActiveRecord::Base
@@ -49,6 +50,7 @@ class Site < ActiveRecord::Base
   validates :user,     :presence => true
   validates :hostname, :presence => true, :hostname_uniqueness => true, :production_hostname => true
   validates :dev_hostnames, :hostnames => true
+  validates :player_mode, :inclusion => { :in => %w[dev beta stable] }
   validate  :must_be_active_to_update_hostnames
   
   # =============

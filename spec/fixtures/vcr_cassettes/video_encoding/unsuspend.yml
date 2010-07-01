@@ -2,7 +2,7 @@
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
     method: :get
-    uri: !ruby/regexp /sublimevideo\.videos\.s3\.amazonaws\.com:443\/active.+\?acl/
+    uri: !ruby/regexp /dev\.sublimevideo\.videos\.s3\.amazonaws\.com:443\/active.+\?acl/
     body: 
     headers: 
       accept: 
@@ -41,7 +41,7 @@
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
     method: :get
-    uri: !ruby/regexp /sublimevideo\.videos\.s3\.amazonaws\.com:443\/suspended.+\?acl/
+    uri: !ruby/regexp /dev\.sublimevideo\.videos\.s3\.amazonaws\.com:443\/suspended.+\?acl/
     body: 
     headers: 
       accept: 
@@ -80,7 +80,7 @@
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
     method: :get
-    uri: !ruby/regexp /sublimevideo\.videos\.s3\.amazonaws\.com:443\/\?prefix=.+/
+    uri: !ruby/regexp /dev\.sublimevideo\.videos\.s3\.amazonaws\.com:443\/\?prefix=.+/
     body: 
     headers: 
       accept: 
@@ -119,7 +119,7 @@
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
     method: :put
-    uri: !ruby/regexp /sublimevideo\.videos\.s3\.amazonaws\.com:443\/.+/
+    uri: !ruby/regexp /dev\.sublimevideo\.videos\.s3\.amazonaws\.com:443\/.+/
     body: 
     headers: 
       accept: 

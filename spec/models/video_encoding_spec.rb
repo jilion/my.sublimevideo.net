@@ -143,97 +143,105 @@ describe VideoEncoding do
       before(:each) { VCR.insert_cassette('video_encoding/activate') }
       
       # SOMETIMES PROBLEM HERE WHEN RUNNING ALL SPECS
-      let(:video_encoding) { Factory(:video_encoding, :panda_encoding_id => id, :state => 'encoding') }
+      let(:video)           { Factory(:video) }
+      let(:video_encoding1) { Factory(:video_encoding, :video => video, :panda_encoding_id => id, :state => 'encoding', :profile_version => Factory(:video_profile_version, :profile => Factory(:video_profile, :min_width => 200, :thumbnailable => true))) }
+      let(:video_encoding2) { Factory(:video_encoding, :video => video, :panda_encoding_id => id, :state => 'encoding', :profile_version => Factory(:video_profile_version, :profile => Factory(:video_profile, :min_width => 500, :thumbnailable => true))) }
       
       it "should set the state as :active from :encoding" do
-        video_encoding.should be_encoding
-        video_encoding.activate
-        video_encoding.should be_active
+        video_encoding1.should be_encoding
+        video_encoding1.activate
+        video_encoding1.should be_active
       end
       
       describe "callbacks" do
         describe "before_transition :on => :activate, :do => :set_file" do
           it "should set file to the encoding's file" do
-            video_encoding.activate
-            video_encoding.file.url.should =~ %r(videos/#{video_encoding.video.token}/#{video_encoding.video.name}#{video_encoding.profile.name}.#{video_encoding.extname})
+            video_encoding1.activate
+            video_encoding1.file.url.should =~ %r(videos/#{video_encoding1.video.token}/#{video_encoding1.video.name}#{video_encoding1.profile.name}.#{video_encoding1.extname})
           end
         end
         
         describe "before_transition :on => :activate, :do => :set_encoding_info" do
           it "should send a get request to Panda" do
-            video_encoding.stub!(:set_file => true, :set_video_posterframe => true, :deprecate_encodings => true, :delete_panda_encoding => true, :conform_to_video_state => true)
+            video_encoding1.stub!(:set_file => true, :set_video_posterframe => true, :deprecate_encodings => true, :delete_panda_encoding => true, :conform_to_video_state => true)
             Transcoder.should_receive(:get).with(:encoding, id).and_return({})
-            video_encoding.activate
+            video_encoding1.activate
           end
           
           it "should set encoding info" do
-            video_encoding.stub!(:set_file => true, :set_video_posterframe => true, :deprecate_encodings => true, :delete_panda_encoding => true, :conform_to_video_state => true)
-            video_encoding.activate
-            video_encoding.file_size.should           == 125465
-            video_encoding.started_encoding_at.should == Time.parse("2010/06/08 17:15:17 +0000")
-            video_encoding.encoding_time.should       == 12
-            video_encoding.encoding_status.should     == 'success'
-            video_encoding.should be_active
+            video_encoding1.stub!(:set_file => true, :set_video_posterframe => true, :deprecate_encodings => true, :delete_panda_encoding => true, :conform_to_video_state => true)
+            video_encoding1.activate
+            video_encoding1.file_size.should           == 125465
+            video_encoding1.started_encoding_at.should == Time.parse("2010/06/08 17:15:17 +0000")
+            video_encoding1.encoding_time.should       == 12
+            video_encoding1.encoding_status.should     == 'success'
+            video_encoding1.should be_active
           end
         end
         
         describe "before_transition :on => :activate, :do => :set_video_posterframe" do
           it "should set video posterframe if profile is thumbnailable" do
-            video_encoding.stub!(:set_encoding_info => true, :set_file => true, :deprecate_active_encodings => true, :delete_panda_encoding => true)
-            video_encoding.profile.stub!(:thumbnailable? => true)
-            video_encoding.activate
-            video_encoding.video.posterframe.url.should =~ %r(videos/#{video_encoding.video.token}/posterframe.jpg)
-            video_encoding.video.posterframe.thumb.url.should =~ %r(videos/#{video_encoding.video.token}/thumb_posterframe.jpg)
+            video_encoding1.stub!(:set_encoding_info => true, :set_file => true, :deprecate_active_encodings => true, :delete_panda_encoding => true)
+            video_encoding2.stub!(:set_encoding_info => true, :set_file => true, :deprecate_active_encodings => true, :delete_panda_encoding => true)
+            
+            video_encoding1.activate
+            video_encoding1.video.posterframe.url.should_not be_present
+            video_encoding1.video.posterframe.thumb.url.should_not be_present
+            
+            video_encoding2.activate
+            video_encoding2.video.posterframe.url.should =~ %r(videos/#{video_encoding2.video.token}/posterframe.jpg)
+            video_encoding2.video.posterframe.thumb.url.should =~ %r(videos/#{video_encoding2.video.token}/thumb_posterframe.jpg)
           end
           
           it "should not set video posterframe if profile is not thumbnailable" do
-            video_encoding.stub!(:set_encoding_info => true, :set_file => true, :deprecate_active_encodings => true, :delete_panda_encoding => true)
-            video_encoding.activate
-            video_encoding.video.posterframe.should_not be_present
-            video_encoding.video.posterframe.thumb.should_not be_present
+            video_encoding1.stub!(:set_encoding_info => true, :set_file => true, :deprecate_active_encodings => true, :delete_panda_encoding => true)
+            video_encoding1.profile.stub!(:thumbnailable? => false)
+            video_encoding1.activate
+            video_encoding1.video.posterframe.should_not be_present
+            video_encoding1.video.posterframe.thumb.should_not be_present
           end
         end
         
         describe ":active state validations" do
           it "should stay encoding if the panda encoding status is not 'success'" do
             Transcoder.should_receive(:get).with(:encoding, id).and_return({ :file_size => 125465, :started_encoding_at => "2010/06/08 17:15:17 +0000", :encoding_time => 12, :status => 'processing' })
-            video_encoding.activate
-            video_encoding.should be_encoding
+            video_encoding1.activate
+            video_encoding1.should be_encoding
           end
           
           it "should stay pending if file_size is missing" do
             Transcoder.should_receive(:get).with(:encoding, id).and_return({ :started_encoding_at => "2010/06/08 17:15:17 +0000", :encoding_time => 12, :status => 'success' })
-            video_encoding.activate
-            video_encoding.file_size.should be_nil
-            video_encoding.should be_encoding
+            video_encoding1.activate
+            video_encoding1.file_size.should be_nil
+            video_encoding1.should be_encoding
           end
           
           it "should stay pending if started_encoding_at is missing" do
             Transcoder.should_receive(:get).with(:encoding, id).and_return({ :file_size => 125465, :encoding_time => 12, :status => 'success' })
-            video_encoding.activate
-            video_encoding.started_encoding_at.should be_nil
-            video_encoding.should be_encoding
+            video_encoding1.activate
+            video_encoding1.started_encoding_at.should be_nil
+            video_encoding1.should be_encoding
           end
           
           it "should stay pending if encoding_time is missing" do
             Transcoder.should_receive(:get).with(:encoding, id).and_return({ :file_size => 125465, :started_encoding_at => "2010/06/08 17:15:17 +0000", :status => 'success' })
-            video_encoding.activate
-            video_encoding.encoding_time.should be_nil
-            video_encoding.should be_encoding
+            video_encoding1.activate
+            video_encoding1.encoding_time.should be_nil
+            video_encoding1.should be_encoding
           end
         end
         
         describe "after_transition :on => :activate, :do => :deprecate_encodings" do
           it "should deprecate all the active encodings for the same video and profile" do
-            active_video_encoding = Factory(:video_encoding, :state => 'active', :video => video_encoding.video, :profile_version => video_encoding.profile_version)
-            video_encoding.activate
-            video_encoding.reload.should be_active
+            active_video_encoding = Factory(:video_encoding, :state => 'active', :video => video_encoding1.video, :profile_version => video_encoding1.profile_version)
+            video_encoding1.activate
+            video_encoding1.reload.should be_active
             active_video_encoding.reload.should be_deprecated
           end
           
           it "should deprecate all the failed encodings for the same video and profile" do
-            failed_video_encoding = Factory(:video_encoding, :state => 'failed', :video => video_encoding.video, :profile_version => video_encoding.profile_version, :panda_encoding_id => id)
-            video_encoding.activate
+            failed_video_encoding = Factory(:video_encoding, :state => 'failed', :video => video_encoding1.video, :profile_version => video_encoding1.profile_version, :panda_encoding_id => id)
+            video_encoding1.activate
             failed_video_encoding.reload.should be_deprecated
           end
         end
@@ -241,16 +249,16 @@ describe VideoEncoding do
         describe "after_transition :on => :activate, :do => :delete_panda_encoding" do
           it "should remove the encoding reference (and file) on Panda" do
             Transcoder.should_receive(:delete).with(:encoding, id).and_return(true)
-            video_encoding.activate
+            video_encoding1.activate
           end
         end
         
         describe "after_transition :on => :activate, :do => :conform_to_video_state" do
           it "should suspend the encoding if video is suspended" do
-            VCR.use_cassette('video/suspend') { video_encoding.video.suspend }
-            video_encoding.video.should be_suspended
-            video_encoding.activate
-            video_encoding.should be_suspended
+            VCR.use_cassette('video/suspend') { video_encoding1.video.suspend }
+            video_encoding1.video.should be_suspended
+            video_encoding1.activate
+            video_encoding1.should be_suspended
           end
         end
         

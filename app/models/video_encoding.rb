@@ -66,7 +66,8 @@ class VideoEncoding < ActiveRecord::Base
     before_transition :on => :unsuspend, :do => :unblock_video
     
     before_transition :on => :archive, :do => :remove_file!
-    before_transition :encoding => :archived, :do => [:set_encoding_info, :delete_panda_encoding]
+    before_transition :encoding => :archived, :do => :set_encoding_info
+    after_transition  :encoding => :archived, :do => :delete_panda_encoding
     
     event(:pandize)   { transition :pending => :encoding }
     event(:fail)      { transition [:pending, :encoding] => :failed }
@@ -140,7 +141,7 @@ protected
   
   # before_transition (activate)
   def set_video_posterframe
-    if profile.thumbnailable?
+    if profile.thumbnailable? && video.encodings.map(&:profile).select{ |p| p.thumbnailable? && p.min_width > profile.min_width }.empty?
       self.video.remote_posterframe_url = "#{self.class.panda_s3_url}/#{panda_encoding_id}_4.jpg"
       self.video.save!
     end
@@ -150,13 +151,11 @@ protected
   def deprecate_encodings
     video.encodings.with_profile(profile).where(:state => %w[active failed], :id.ne => id).map(&:deprecate)
   end
-  
-  # after_transition (activate)
   def conform_to_video_state
     suspend if video.suspended?
   end
   
-  # after_transition (activate) / before_transition (encoding => archived)
+  # after_transition (activate) / after_transition (encoding => archived)
   def delete_panda_encoding
     Transcoder.delete(:encoding, panda_encoding_id)
   end

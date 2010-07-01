@@ -1,7 +1,7 @@
 class LicenseUploader < CarrierWave::Uploader::Base
   
   def s3_bucket
-    Rails.env.production? ? "sublimevideo.licenses" : "sublimevideo.licenses" # TODO Change for dev
+    Rails.env.production? ? "sublimevideo.licenses" : "dev.sublimevideo.licenses"
   end
   
   # Override the directory where uploaded files will be stored
