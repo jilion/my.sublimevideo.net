@@ -604,6 +604,16 @@ describe Video do
     end
   end
   
+  describe "Class Methods" do
+    describe ".panda_s3_url" do
+      it "should be get from Panda" do
+        VCR.use_cassette('video/class_methods') do
+          Video.panda_s3_url.should == "http://dev.sublimevideo.panda.s3.amazonaws.com"
+        end
+      end
+    end
+  end
+  
   describe "Instance Methods" do
     # SOMETIMES PROBLEM HERE WHEN RUNNING ALL SPECS
     let(:video) { Factory(:video, :original_filename => 'hey_ho.mp4', :extname => 'mp4', :file_size => 1000) }

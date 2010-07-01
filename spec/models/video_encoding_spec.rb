@@ -563,16 +563,6 @@ describe VideoEncoding do
     end
   end
   
-  describe "Class Methods" do
-    describe ".panda_s3_url" do
-      it "should be get from Panda" do
-        VCR.use_cassette('video_encoding/class_methods') do
-          VideoEncoding.panda_s3_url.should == "http://dev.sublimevideo.panda.s3.amazonaws.com"
-        end
-      end
-    end
-  end
-  
   describe "Instance Methods" do
     let(:video_encoding) { Factory(:video_encoding, :panda_encoding_id => id, :state => 'processing') }
     

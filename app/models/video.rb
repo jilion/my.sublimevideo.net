@@ -93,6 +93,14 @@ class Video < ActiveRecord::Base
     event(:archive)   { transition [:pending, :encodings, :suspended] => :archived }
   end
   
+  # =================
+  # = Class Methods =
+  # =================
+  
+  def self.panda_s3_url
+    "http://#{S3.panda_bucket.name}.s3.amazonaws.com"
+  end
+  
   # ====================
   # = Instance Methods =
   # ====================
@@ -171,6 +179,20 @@ class Video < ActiveRecord::Base
   
   def height_from_width(width)
     (width.to_i*self.height)/self.width
+  end
+  
+  def set_posterframe_from_encoding(encoding)
+    # file_on_panda_bucket = S3.panda_bucket.key("#{encoding.panda_encoding_id}_4.jpg")
+    # file_on_video_bucket = S3.videos_bucket.key("#{token}/posterframe.jpg")
+    # file_on_panda_bucket.copy(file_on_video_bucket)
+    # write_attribute(:posterframe, "posterframe.jpg")
+    # posterframe.store!
+    # posterframe.process!
+    self.remote_posterframe_url = "#{self.class.panda_s3_url}/#{encoding.panda_encoding_id}_4.jpg"
+    save!
+    if posterframe.blank?
+      HoptoadNotifier.notify("Poster-frame for the video #{id} has not been saved (from activation of encoding #{encoding.id})!")
+    end
   end
   
 protected
