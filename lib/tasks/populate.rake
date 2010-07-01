@@ -138,16 +138,37 @@ def create_sites(count = 1)
 end
 
 def create_video_profiles
-  mp4_sd_profile         = VideoProfile.new(:title => "MP4 SD", :min_width => 0, :min_height => 0)
+  mp4_sd_profile         = VideoProfile.new(:title => "MP4 SD", :min_width => 0, :min_height => 0, :posterframeable => true)
   mp4_sd_profile.name    = "_sd"
   mp4_sd_profile.extname = "mp4"
   mp4_sd_profile.save(:validate => false)
   
   mp4_sd_profile_version = VideoProfileVersion.new(:width => 0, :height => 0, :command => "aa", :profile => mp4_sd_profile)
-  mp4_sd_profile_version.panda_profile_id = '684c77a886717e7400f9b7cb87a75304'
+  mp4_sd_profile_version.panda_profile_id = '2c7ec02413b40df7f0b70966e530e90a'
   mp4_sd_profile_version.state = 'active'
   mp4_sd_profile_version.save(:validate => false)
-  print "One video profile with one version created!\n"
+  
+  mp4_hq_profile         = VideoProfile.new(:title => "MP4 HQ", :min_width => 854, :min_height => 480, :posterframeable => true)
+  mp4_hq_profile.name    = "_hq"
+  mp4_hq_profile.extname = "mp4"
+  mp4_hq_profile.save(:validate => false)
+  
+  mp4_hq_profile_version = VideoProfileVersion.new(:width => 0, :height => 0, :command => "aa", :profile => mp4_hq_profile)
+  mp4_hq_profile_version.panda_profile_id = '36eaadd6c3c4be0aa042ec4f2ef52db6'
+  mp4_hq_profile_version.state = 'active'
+  mp4_hq_profile_version.save(:validate => false)
+  
+  mp4_hd_profile         = VideoProfile.new(:title => "MP4 HD", :min_width => 1280, :min_height => 720, :posterframeable => true)
+  mp4_hd_profile.name    = "_hd"
+  mp4_hd_profile.extname = "mp4"
+  mp4_hd_profile.save(:validate => false)
+  
+  mp4_hd_profile_version = VideoProfileVersion.new(:width => 0, :height => 0, :command => "aa", :profile => mp4_hd_profile)
+  mp4_hd_profile_version.panda_profile_id = '22bf76ac4cfe2fb266e08d33453a6893'
+  mp4_hd_profile_version.state = 'active'
+  mp4_hd_profile_version.save(:validate => false)
+  
+  print "Three video profiles with one version created!\n"
 end
 
 def create_videos(count = 1)
@@ -157,7 +178,7 @@ def create_videos(count = 1)
   create_video_profiles if VideoProfile.all.empty?
   VideoProfileVersion.last.activate unless VideoProfileVersion.last.active?
   
-  panda_video_id = 'df69f0331c4e4b619efadb95dea9f6a2' # Transcoder.post(:video, { :file => File.open("#{Rails.root}/spec/fixtures/railscast_intro.mov"), :profiles => 'none' })[:id]
+  panda_video_id = Transcoder.post(:video, { :file => File.open("#{Rails.root}/spec/fixtures/railscast_intro.mov"), :profiles => 'none' })[:id]
   
   User.all.each do |user|
     count.times do |i|
