@@ -56,7 +56,7 @@ if RUBY_PLATFORM =~ /darwin/
     gem 'rspactor', '>= 0.7.beta.1'
     
     gem 'shoulda'
-    gem 'rspec-rails', '>= 2.0.0.beta.14.2'
+    gem 'rspec-rails', '>= 2.0.0.beta.15'
     # gem "rspec-rails",        :git => "git://github.com/rspec/rspec-rails.git"
     # gem "rspec",              :git => "git://github.com/rspec/rspec.git"
     # gem "rspec-core",         :git => "git://github.com/rspec/rspec-core.git"
