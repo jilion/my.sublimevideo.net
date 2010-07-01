@@ -97,10 +97,6 @@ class VideoEncoding < ActiveRecord::Base
   # = Class Methods =
   # =================
   
-  def self.panda_s3_url
-    @@panda_s3_url ||= "http://#{Transcoder.get(:cloud, PandaConfig.cloud_id)[:s3_videos_bucket]}.s3.amazonaws.com"
-  end
-  
   # ====================
   # = Instance Methods =
   # ====================
@@ -155,12 +151,9 @@ protected
   
   # before_transition (activate)
   def set_video_posterframe
-    if profile.posterframeable? && !video.posterframe.present? && video.encodings.map(&:profile).select{ |p| p.posterframeable? && p.min_width > profile.min_width }.empty?
-      self.video.remote_posterframe_url = "#{self.class.panda_s3_url}/#{panda_encoding_id}_4.jpg"
-      video.save!
-      unless video.posterframe.present?
-        HoptoadNotifier.notify("Poster-frame for the video #{video.id}) has not been saved (from activation of encoding #{encoding.id})!")
-      end
+    if !video.posterframe.present? && profile.posterframeable? && video.encodings.map(&:profile).select{ |p| p.posterframeable? && p.min_width > profile.min_width }.empty?
+      video.set_posterframe_from_encoding(self)
+      # self.video.remote_posterframe_url = "#{self.class.panda_s3_url}/#{panda_encoding_id}_4.jpg"
     end
   end
   
