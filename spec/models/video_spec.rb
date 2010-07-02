@@ -853,18 +853,6 @@ describe Video do
       
       after(:each) { VCR.eject_cassette }
     end
-    
-    describe "#height_from_width(width)" do
-      let(:video) { Factory(:video, :width => 600, :height => 200) }
-      
-      it "should keep the ratio of the video" do
-        video.height_from_width(300).should == 100
-      end
-      
-      it "should keep the ratio of the video" do
-        video.height_from_width("300").should == 100
-      end
-    end
   end
   
 end

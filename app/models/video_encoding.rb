@@ -131,6 +131,7 @@ protected
     file_on_panda_bucket = S3.panda_bucket.key("#{panda_encoding_id}.#{extname}")
     file_on_video_bucket = S3.videos_bucket.key("#{video.token}/#{video.name}#{profile.name}.#{extname}")
     file_on_panda_bucket.copy(file_on_video_bucket)
+    file_on_video_bucket.put(nil, 'public-read')
     write_attribute(:file, "#{video.name}#{profile.name}.#{extname}")
   end
   def set_file_added_at
@@ -152,7 +153,6 @@ protected
   def set_video_posterframe
     if !video.posterframe.present? && profile.posterframeable? && video.encodings.map(&:profile).select{ |p| p.posterframeable? && p.min_width > profile.min_width }.empty?
       video.set_posterframe_from_encoding(self)
-      # self.video.remote_posterframe_url = "#{self.class.panda_s3_url}/#{panda_encoding_id}_4.jpg"
     end
   end
   

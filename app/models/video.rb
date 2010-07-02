@@ -177,10 +177,6 @@ class Video < ActiveRecord::Base
     end
   end
   
-  def height_from_width(width)
-    (width.to_i*self.height)/self.width
-  end
-  
   def set_posterframe_from_encoding(encoding)
     # file_on_panda_bucket = S3.panda_bucket.key("#{encoding.panda_encoding_id}_4.jpg")
     # file_on_video_bucket = S3.videos_bucket.key("#{token}/posterframe.jpg")
