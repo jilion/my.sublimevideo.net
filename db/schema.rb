@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100630153415) do
+ActiveRecord::Schema.define(:version => 20100701091254) do
 
   create_table "admins", :force => true do |t|
     t.string   "email",                               :default => "", :null => false
@@ -176,6 +176,8 @@ ActiveRecord::Schema.define(:version => 20100630153415) do
     t.integer  "height"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.datetime "file_added_at"
+    t.datetime "file_removed_at"
   end
 
   create_table "video_profile_versions", :force => true do |t|
@@ -194,10 +196,10 @@ ActiveRecord::Schema.define(:version => 20100630153415) do
     t.text     "description"
     t.string   "name"
     t.string   "extname"
-    t.boolean  "thumbnailable"
+    t.boolean  "posterframeable"
     t.integer  "min_width"
     t.integer  "min_height"
-    t.integer  "versions_count", :default => 0
+    t.integer  "versions_count",  :default => 0
     t.datetime "created_at"
     t.datetime "updated_at"
   end

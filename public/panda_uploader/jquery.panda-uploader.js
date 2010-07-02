@@ -9,7 +9,11 @@ var num_errors = 0;
 
 var status = STOP;
 
+var titleContent;
+
 jQuery.fn.pandaUploader = function(signed_params, options, swfupload_options) {
+  titleContent = $j('title').html();
+  
   var $video_field = this;
   
   if (signed_params === undefined) {
@@ -287,9 +291,11 @@ ProgressUpload.prototype = {
       
       var percent = Math.ceil((bytesLoaded / bytesTotal) * 100);
       $j(this.progress).css('width', percent + '%');
+      $j('title').html('('+percent + '%) - ' + titleContent);
       $j('#percent_completed').html(percent + '%');
       if (percent == 100) {
         $j('#time_estimation').html('<em>Verifying file...</em>');
+        $j('title').html('(Verifying file...) - ' + titleContent);
       } else {
         $j('#time_estimation').html(prettyBytes(bytesLoaded) + ' of ' + prettyBytes(bytesTotal));
       }
@@ -327,6 +333,7 @@ ProgressUpload.prototype = {
     // clearInterval(this.timer);
     $j(this.progress).css('width', '0%');
     this.$p.css('display', 'none');
+    $j('title').html(titleContent);
   }
 };
 
