@@ -1,3 +1,3 @@
 class SublimeVideoMailer < ActionMailer::Base
-  default :from => "no-response@sublimevideo.net"
+  default :from => "SublimeVideo <noreply@sublimevideo.net>"
 end

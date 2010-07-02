@@ -188,7 +188,7 @@ describe Invoice do
         
         it "should sent a email" do
           last_delivery = ActionMailer::Base.deliveries.last
-          last_delivery.from.should == ["no-response@sublimevideo.net"]
+          last_delivery.from.should == ["SublimeVideo <noreply@sublimevideo.net>"]
           last_delivery.to.should include subject.user.email
           last_delivery.subject.should include "Invoice ready to be charged"
           last_delivery.body.should include "$10001.75"
