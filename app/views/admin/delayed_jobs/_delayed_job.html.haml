@@ -8,7 +8,7 @@
   %td.attempts
     = link_to delayed_job.attempts, admin_delayed_job_path(delayed_job)
   %td.last_error
-    = link_to delayed_job.last_error.blank? ? "Nop" : delayed_job.last_error, admin_delayed_job_path(delayed_job)
+    = link_to delayed_job.last_error.blank? ? "Nop" : truncate(delayed_job.last_error, :length => 20), admin_delayed_job_path(delayed_job)
   %td.locked_at
     = link_to delayed_job.locked_at.blank? ? "Not yet" : delayed_job.locked_at, admin_delayed_job_path(delayed_job)
   %td.locked_by
