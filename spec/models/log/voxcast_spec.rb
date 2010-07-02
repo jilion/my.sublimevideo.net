@@ -67,7 +67,7 @@ describe Log::Voxcast do
     it "should download and save new logs & launch delayed job" do
       VCR.use_cassette('multi_logs') do
         lambda { Log::Voxcast.fetch_download_and_create_new_logs }.should change(Log::Voxcast, :count).by(4)
-        Delayed::Job.last.name.should == 'Class#fetch_download_and_create_new_logs'
+        Delayed::Job.first.name.should == 'Class#fetch_download_and_create_new_logs'
       end
     end
     

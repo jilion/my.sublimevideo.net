@@ -54,9 +54,9 @@ class Log::Amazon < Log
   end
   
   def self.fetch_and_create_new_logs
+    delay_fetch_and_create_new_logs # relaunch the process in 60 min
     new_logs_names = fetch_new_logs_names
     create_new_logs(new_logs_names)
-    delay_fetch_and_create_new_logs # relaunch the process in 60 min
   end
   
 private

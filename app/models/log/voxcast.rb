@@ -60,9 +60,9 @@ class Log::Voxcast < Log
   end
   
   def self.fetch_download_and_create_new_logs
+    delay_fetch_download_and_create_new_logs # relaunch the process in 1 min
     new_logs_names = VoxcastCDN.fetch_logs_names
     create_new_logs(new_logs_names)
-    delay_fetch_download_and_create_new_logs # relaunch the process in 1 min
   rescue => ex
     HoptoadNotifier.notify(ex)
     delay_fetch_download_and_create_new_logs # relaunch the process in 1 min
