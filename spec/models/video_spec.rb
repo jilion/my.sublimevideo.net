@@ -767,23 +767,6 @@ describe Video do
       end
     end
     
-    # describe "#hd?" do
-    #   it "should return true if width >= 720" do
-    #     video.update_attribute(:width, 720)
-    #     video.should be_hd
-    #   end
-    #   
-    #   it "should return true if height >= 1280" do
-    #     video.update_attribute(:height, 1280)
-    #     video.should be_hd
-    #   end
-    #   
-    #   it "should return false if width < 720 and height < 1280" do
-    #     video.update_attributes(:width => 719, :height => 1279)
-    #     video.should_not be_hd
-    #   end
-    # end
-    
     describe "check_panda_encodings_status" do
       before(:each) { VCR.insert_cassette('video/pandize') }
       

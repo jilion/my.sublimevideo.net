@@ -136,16 +136,12 @@ class Video < ActiveRecord::Base
     encodings? && encodings(reload).any? { |e| e.failed? }
   end
   
-  # def hd?
-  #   (width? && width >= 720) || (height? && height >= 1280)
-  # end
-  
   def name
     original_filename && extname ? original_filename.sub(".#{extname}", '') : ''
   end
   
   def encodings_size
-    encodings.not_deprecated.all.sum { |e| e.file_size.to_i }
+    encodings.not_deprecated.sum(:file_size)
   end
   
   def total_size
