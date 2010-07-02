@@ -19,12 +19,12 @@ module User::LimitAlert
   end
   
   def self.send_limit_alerts
+    delay_send_limit_alerts
     User.limit_alertable.includes(:invoices, :sites, :videos).each do |user|
       if user.limit_alert_amount_exceeded?
         user.deliver_alert_limit_email
       end
     end
-    delay_send_limit_alerts
   end
   
   # ===================================
