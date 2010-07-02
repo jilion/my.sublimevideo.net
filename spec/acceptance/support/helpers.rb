@@ -9,6 +9,10 @@ module HelperMethods
       user = Factory(:user, options[:user] || {})
       user.confirm! unless options[:confirm] == false
       user.lock! if options[:locked] == true
+      unless options[:without_cc] == true
+        user.update_attribute(:cc_type, 'visa')
+        user.update_attribute(:cc_last_digits, 123)
+      end
       user
     end
   end
