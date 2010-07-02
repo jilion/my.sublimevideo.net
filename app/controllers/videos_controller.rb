@@ -1,6 +1,7 @@
 class VideosController < ApplicationController
   skip_before_filter :beta_protection, :only => :transcoded
   before_filter :authenticate_user!, :except => :transcoded
+  before_filter :credit_card_and_not_suspended_required!, :except => [:index, :transcoded]
   respond_to :html, :js
   
   has_scope :by_date
@@ -66,7 +67,6 @@ class VideosController < ApplicationController
     @video.archive
     respond_with(@video) do |format|
       format.html { redirect_to videos_path }
-      format.js
     end
   end
   
@@ -75,6 +75,12 @@ class VideosController < ApplicationController
     @video = Video.find_by_panda_video_id!(params[:id])
     @video.delay(:priority => 6).activate
     head :ok
+  end
+  
+protected
+  
+  def credit_card_and_not_suspended_required!
+    redirect_to videos_path if !current_user.credit_card? || current_user.suspended?
   end
   
 end
