@@ -17,6 +17,9 @@
         %li.admins{ :class => ('active' if controller_name == 'admins'), :onclick => "MySublimeVideo.makeSticky(this)" }
           = link_to admin_admins_path do
             %span= "Admins"
+        %li.delayed_jobs{ :class => ('active' if controller_name == 'delayed_jobs'), :onclick => "MySublimeVideo.makeSticky(this)" }
+          = link_to admin_delayed_jobs_path do
+            %span= "DJs"
             
     .right
       %ul.extra_links
