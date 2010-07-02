@@ -1,0 +1,16 @@
+= title_and_content_header("Edit video profile #{content_tag(:em, @profile.title)}")
+
+= form_for [:admin, @profile], :url => admin_profile_path(@profile), :html => { :class => "edit" } do |f|
+  .entry.title
+    = f.label :title
+    = f.text_field :title, :class => "text", :placeholder => "iPhone 720p", :required => true, :autocomplete => :off
+  .entry.description
+    = f.label :description
+    = f.text_area :description, :class => "text", :autocomplete => :off, :rows => 10, :cols => 50
+  .entry.posterframeable
+    = f.label :posterframeable
+    = f.check_box :posterframeable
+  .actions
+    = f.submit 'Update', :class => "submit small"
+    = "or"
+    = link_to "cancel", admin_profiles_path
