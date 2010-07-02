@@ -78,8 +78,8 @@ describe Log::Voxcast do
       end
     end
     
-    it "should launch delayed fetch_download_and_create_new_logs" do
-      lambda { Log::Voxcast.delay_fetch_download_and_create_new_logs }.should change(Delayed::Job, :count).by(1)
+    it "should launch 2x delayed fetch_download_and_create_new_logs" do
+      lambda { Log::Voxcast.delay_fetch_download_and_create_new_logs }.should change(Delayed::Job, :count).by(2)
     end
     
     it "should not launch delayed fetch_download_and_create_new_logs if one pending already present" do

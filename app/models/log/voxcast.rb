@@ -53,8 +53,9 @@ class Log::Voxcast < Log
   # =================
   
   def self.delay_fetch_download_and_create_new_logs(minutes = 1.minute)
-    unless Delayed::Job.already_delayed?('%Log::Voxcast%fetch_download_and_create_new_logs%')
+    unless Delayed::Job.already_delayed?('%Log::Voxcast%fetch_download_and_create_new_logs%', 2)
       delay(:priority => 10, :run_at => minutes.from_now).fetch_download_and_create_new_logs
+      delay(:priority => 10, :run_at => (minutes + 1.minute).from_now).fetch_download_and_create_new_logs
     end
   end
   
