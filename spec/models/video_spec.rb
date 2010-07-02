@@ -286,7 +286,7 @@ describe Video do
             video_encoding2.file.should be_present
             
             last_delivery = ActionMailer::Base.deliveries.last
-            last_delivery.from.should == ["SublimeVideo <noreply@sublimevideo.net>"]
+            last_delivery.from.should == ["noreply@sublimevideo.net"]
             last_delivery.to.should include video.user.email
             last_delivery.subject.should include "Your video “#{video.title}” is now ready!"
             last_delivery.body.should include "http://#{ActionMailer::Base.default_url_options[:host]}/videos"

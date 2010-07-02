@@ -30,7 +30,7 @@ describe User::LimitAlert do
       it "should send one limit exceeded email" do
         lambda { User::LimitAlert.send_limit_alerts }.should change(ActionMailer::Base.deliveries, :size).by(1)
         last_delivery = ActionMailer::Base.deliveries.last
-        last_delivery.from.should == ["SublimeVideo <noreply@sublimevideo.net>"]
+        last_delivery.from.should == ["noreply@sublimevideo.net"]
         last_delivery.to.should include subject.email
         last_delivery.subject.should include "Limit exceeded"
         subject.reload.limit_alert_email_sent_at.should be_present
