@@ -12,7 +12,7 @@ module JobExtension
     Delayed::Job.where(
     :handler.matches => name,
     :run_at.gt => 10.seconds.from_now
-    ).count == num
+    ).count >= num
   end
 end
 
