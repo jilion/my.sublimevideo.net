@@ -128,10 +128,9 @@ protected
   
   # before_transition (activate)
   def set_file
-    file_on_panda_bucket = S3.panda_bucket.key("#{panda_encoding_id}.#{extname}")
-    file_on_video_bucket = S3.videos_bucket.key("#{video.token}/#{video.name}#{profile.name}.#{extname}")
-    file_on_panda_bucket.copy(file_on_video_bucket)
-    file_on_video_bucket.put(file_on_panda_bucket.data, 'public-read')
+    key_on_panda_bucket  = "#{panda_encoding_id}.#{extname}"
+    key_on_videos_bucket = "#{file.store_dir}/#{video.name}#{profile.name}.#{extname}"
+    S3.client.interface.copy(S3.panda_bucket.name, key_on_panda_bucket, S3.videos_bucket.name, key_on_videos_bucket, :copy, 'x-amz-acl' => 'public-read')
     write_attribute(:file, "#{video.name}#{profile.name}.#{extname}")
   end
   def set_file_added_at
@@ -171,12 +170,12 @@ protected
   
   # before_transition (suspend)
   def block_video
-    S3.videos_bucket.key(file.path).put(S3.videos_bucket.key(file.path).data, 'private') if Rails.env.production? && S3.videos_bucket.key(file.path).exists?
+    # S3.videos_bucket.key(file.path).put(S3.videos_bucket.key(file.path).data, 'private') if Rails.env.production? && S3.videos_bucket.key(file.path).exists?
   end
   
   # before_transition (unsuspend)
   def unblock_video
-    S3.videos_bucket.key(file.path).put(S3.videos_bucket.key(file.path).data, 'public-read') if Rails.env.production? && S3.videos_bucket.key(file.path).exists?
+    # S3.videos_bucket.key(file.path).put(S3.videos_bucket.key(file.path).data, 'public-read') if Rails.env.production? && S3.videos_bucket.key(file.path).exists?
   end
   
   # before_transition (deprecate) / (archive)

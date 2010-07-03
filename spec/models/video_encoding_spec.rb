@@ -369,8 +369,7 @@ describe VideoEncoding do
       end
       
       describe "callbacks" do
-        
-        it "before_transition => #block_video should set the READ right to NOBODY (or OWNER if it's enough)" do
+        pending "before_transition => #block_video should set the READ right to NOBODY (or OWNER if it's enough)" do
           @video_encoding.file.path.should be_present
           s3_int = Aws::S3Interface.new(S3.access_key_id, S3.secret_access_key)
           s3_int.get_acl(@video_encoding.file.s3_bucket, "active#{@video_encoding.file.path}")[:object].should include '<Grant><Grantee xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="Group"><URI>http://acs.amazonaws.com/groups/global/AllUsers</URI></Grantee><Permission>READ</Permission></Grant>'
@@ -400,7 +399,7 @@ describe VideoEncoding do
       end
       
       describe "callbacks" do
-        it "before_transition => #unblock_video should set the READ right to WORLD" do
+        pending "before_transition => #unblock_video should set the READ right to WORLD" do
           @video_encoding.file.path.should be_present
           s3_int = Aws::S3Interface.new(S3.access_key_id, S3.secret_access_key)
           s3_int.get_acl(@video_encoding.file.s3_bucket, "suspended#{@video_encoding.file.path}")[:object].should_not include '<Grant><Grantee xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="Group"><URI>http://acs.amazonaws.com/groups/global/AllUsers</URI></Grantee><Permission>READ</Permission></Grant>'
