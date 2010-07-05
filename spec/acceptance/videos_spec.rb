@@ -78,6 +78,18 @@ feature "Videos page:" do
     end
   end
   
+  scenario "user without cc" do
+    @current_user.cc_type = nil
+    @current_user.cc_last_digits = nil
+    @current_user.save
+    
+    visit "/videos"
+    
+    page.should_not have_content('Video 1')
+    page.should_not have_content('Video 2')
+    page.should have_content('Add a Credit Card')
+  end
+  
   scenario "sort buttons displayed only if count of videos > 1" do
     visit "/videos"
     
