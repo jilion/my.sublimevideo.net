@@ -1,5 +1,5 @@
 - @user ||= current_user
-= form_for @user, :html => { :class => "main_form", :id => "edit_user_#{@user.id}_email_notifications" } do |f|
+= form_for @user, :html => { :class => "main_form section", :id => "edit_user_#{@user.id}_email_notifications" } do |f|
   %h3.section_title= "Email notifications"
   .entry.select
     = f.label :limit_alert_amount, "Notify me when my current usage reaches the following amount".html_safe, :class => "note"

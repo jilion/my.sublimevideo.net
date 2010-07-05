@@ -4,6 +4,7 @@
 = content_for :content_header do
   %h2= "My videos"
   %p.title_desc= "Start to upload your videos here. You will receive an email when your video will be ready to be embedded."
+  = render "layouts/account_activity"
   
 - if current_user.credit_card?
   - @video ||= current_user.videos.build
