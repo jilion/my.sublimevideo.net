@@ -1,4 +1,4 @@
----
+--- 
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
     method: :post
@@ -11,7 +11,7 @@
       accept-encoding: 
       - gzip, deflate
       content-length: 
-      - "296"
+      - "280"
       host: 
       - api.pandastream.com
   response: !ruby/struct:VCR::Response 
@@ -28,9 +28,8 @@
       server: 
       - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
       content-length: 
-      - "226"
+      - "222"
       status: 
       - "200"
-    body: &id005 !str 
-      str: "{\"created_at\":\"2010/06/11 14:57:35 +0000\",\"command\":\"Handbrake CLI blabla...\",\"title\":\"iPhone 720p (1)\",\"updated_at\":\"2010/06/11 14:57:35 +0000\",\"extname\":\".mp4\",\"id\":\"f703bb7c207c472ceefd9c0d3986bf54\",\"height\":640,\"width\":480}"
+    body: "{\"name\":null,\"created_at\":\"2010/07/05 19:16:38 +0000\",\"command\":\"Command 1\",\"title\":\"Profile 1 #1\",\"updated_at\":\"2010/07/05 19:16:38 +0000\",\"extname\":\".mp4\",\"id\":\"f703bb7c207c472ceefd9c0d3986bf54\",\"height\":321,\"width\":123}"
     http_version: "1.1"
