@@ -152,6 +152,7 @@ describe VideoEncoding do
         
         describe "before_transition :on => :activate, :do => :set_file" do
           pending "should set file to the encoding's file" do
+            video_encoding1.file.should_not be_present
             video_encoding1.activate
             video_encoding1.file.should be_present
             video_encoding1.file.url.should =~ %r(videos/#{video_encoding1.video.token}/#{video_encoding1.video.name}#{video_encoding1.profile.name}.#{video_encoding1.extname})
@@ -369,12 +370,11 @@ describe VideoEncoding do
       end
       
       describe "callbacks" do
-        pending "before_transition => #block_video should set the READ right to NOBODY (or OWNER if it's enough)" do
+        it "before_transition => #block_video should set the access to private" do
           @video_encoding.file.path.should be_present
-          s3_int = Aws::S3Interface.new(S3.access_key_id, S3.secret_access_key)
-          s3_int.get_acl(@video_encoding.file.s3_bucket, "active#{@video_encoding.file.path}")[:object].should include '<Grant><Grantee xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="Group"><URI>http://acs.amazonaws.com/groups/global/AllUsers</URI></Grantee><Permission>READ</Permission></Grant>'
+          S3.client.interface.get_acl(S3.videos_bucket, 'active')[:object].should include('<Grant><Grantee xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="Group"><URI>http://acs.amazonaws.com/groups/global/AllUsers</URI></Grantee><Permission>READ</Permission></Grant>')
           @video_encoding.suspend
-          s3_int.get_acl(@video_encoding.file.s3_bucket, "suspended#{@video_encoding.file.path}")[:object].should_not include '<Grant><Grantee xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="Group"><URI>http://acs.amazonaws.com/groups/global/AllUsers</URI></Grantee><Permission>READ</Permission></Grant>'
+          S3.client.interface.get_acl(S3.videos_bucket, 'suspended')[:object].should_not include('<Grant><Grantee xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="Group"><URI>http://acs.amazonaws.com/groups/global/AllUsers</URI></Grantee><Permission>READ</Permission></Grant>')
         end
       end
       
@@ -388,7 +388,7 @@ describe VideoEncoding do
       before(:each) do
         @video_encoding = Factory(:video_encoding, :panda_encoding_id => id, :state => 'processing')
         VCR.use_cassette('video_encoding/activate') { @video_encoding.activate }
-        VCR.use_cassette('video_encoding/activate') { @video_encoding.suspend }
+        VCR.use_cassette('video_encoding/suspend') { @video_encoding.suspend }
         VCR.insert_cassette('video_encoding/unsuspend')
       end
       
@@ -399,12 +399,11 @@ describe VideoEncoding do
       end
       
       describe "callbacks" do
-        pending "before_transition => #unblock_video should set the READ right to WORLD" do
+        it "before_transition => #unblock_video should set the access to public-read" do
           @video_encoding.file.path.should be_present
-          s3_int = Aws::S3Interface.new(S3.access_key_id, S3.secret_access_key)
-          s3_int.get_acl(@video_encoding.file.s3_bucket, "suspended#{@video_encoding.file.path}")[:object].should_not include '<Grant><Grantee xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="Group"><URI>http://acs.amazonaws.com/groups/global/AllUsers</URI></Grantee><Permission>READ</Permission></Grant>'
+          S3.client.interface.get_acl(S3.videos_bucket, 'suspended')[:object].should_not include('<Grant><Grantee xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="Group"><URI>http://acs.amazonaws.com/groups/global/AllUsers</URI></Grantee><Permission>READ</Permission></Grant>')
           @video_encoding.unsuspend
-          s3_int.get_acl(@video_encoding.file.s3_bucket, "active#{@video_encoding.file.path}")[:object].should include '<Grant><Grantee xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="Group"><URI>http://acs.amazonaws.com/groups/global/AllUsers</URI></Grantee><Permission>READ</Permission></Grant>'
+          S3.client.interface.get_acl(S3.videos_bucket, 'active')[:object].should include('<Grant><Grantee xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="Group"><URI>http://acs.amazonaws.com/groups/global/AllUsers</URI></Grantee><Permission>READ</Permission></Grant>')
         end
       end
       
@@ -530,7 +529,7 @@ describe VideoEncoding do
       # video_encoding.file.should be_present
       VCR.use_cassette('video_encoding/suspend') { video_encoding.suspend }
       video_encoding.should be_suspended
-      video_encoding.unsuspend
+      VCR.use_cassette('video_encoding/unsuspend') { video_encoding.unsuspend }
       video_encoding.should be_active
       
       new_video_encoding = Factory(:video_encoding, :video => video_encoding.video, :profile_version => video_encoding.profile_version)

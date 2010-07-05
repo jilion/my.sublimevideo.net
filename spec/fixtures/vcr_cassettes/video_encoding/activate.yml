@@ -34,7 +34,7 @@
         :headers: {}
 
         :method: :get
-        :url: http://api.pandastream.com:80/v2/encodings/ab6be8bb1bcf506842264304bc1bb479.json?timestamp=2010-07-03T11%3A22%3A15.016010%2B02%3A00&signature=7Lwy1ixpX4GoVyoeBHrH%2BxWFCGTkCluPZsKtCu1ctNA%3D&access_key=7cc07330-5147-11df-b458-12313d01b992&cloud_id=db622ee400037141c53d224778ebc231
+        :url: http://api.pandastream.com:80/v2/encodings/ab6be8bb1bcf506842264304bc1bb479.json?timestamp=2010-07-05T12%3A16%3A43.726779%2B02%3A00&signature=AQI6HLgbIGS%2Fd97DRXE4PpPxPgFWBoc2gHxL2HPRA1A%3D&access_key=7cc07330-5147-11df-b458-12313d01b992&cloud_id=db622ee400037141c53d224778ebc231
       "@code": 200
       "@net_http_res": !ruby/object:Net::HTTPOK 
         body: *id001
@@ -212,7 +212,7 @@
         :headers: {}
 
         :method: :delete
-        :url: http://api.pandastream.com:80/v2/encodings/ab6be8bb1bcf506842264304bc1bb479.json?timestamp=2010-07-03T11%3A22%3A15.256824%2B02%3A00&signature=h2JRIJRA2lu8e%2FXKl6k5hynS8a1jwkf19zJrxfbMp5c%3D&access_key=7cc07330-5147-11df-b458-12313d01b992&cloud_id=db622ee400037141c53d224778ebc231
+        :url: http://api.pandastream.com:80/v2/encodings/ab6be8bb1bcf506842264304bc1bb479.json?timestamp=2010-07-05T12%3A16%3A43.803498%2B02%3A00&signature=7BP1D92DqVLad1eYsXr53a4n%2BaFJ67JL5YhohwtIRl0%3D&access_key=7cc07330-5147-11df-b458-12313d01b992&cloud_id=db622ee400037141c53d224778ebc231
       "@code": 200
       "@net_http_res": !ruby/object:Net::HTTPOK 
         body: *id002
@@ -379,7 +379,7 @@
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
     method: :get
-    uri: !ruby/regexp /dev\.sublimevideo\.videos\.s3\.amazonaws\.com:443\/\?prefix=[a-z0-9]{32}.+/
+    uri: !ruby/regexp /dev\.sublimevideo\.videos\.s3\.amazonaws\.com:443\/\?prefix=.+/
     body: 
     headers: 
       accept: 
@@ -422,7 +422,7 @@
     body: 
     headers: 
       x-amz-copy-source: 
-      - dev.sublimevideo.panda/11111111111111111111111111111111.mp4
+      - dev.sublimevideo.panda/ab6be8bb1bcf506842264304bc1bb479.mp4
       accept: 
       - "*/*"
       user-agent: 
@@ -432,9 +432,9 @@
       x-amz-acl: 
       - public-read
       authorization: 
-      - AWS AKIAJ2FJVCFJW3RZRUUQ:676yaKJkm6ZuQ48mfj/UvxsYVBA=
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:jjfO3GmGty0APds7RoH27WroOgA=
       date: 
-      - Sat, 03 Jul 2010 08:46:04 GMT
+      - Mon, 05 Jul 2010 10:16:00 GMT
       x-amz-metadata-directive: 
       - COPY
       host: 
@@ -445,16 +445,18 @@
       message: OK
     headers: 
       x-amz-id-2: 
-      - sNuEVs/5OVzwK/pGjHqswmhhqEB4S+Pc8oYZyR6VCXa0Zs3r3gYlrIjhg0p1bnYP
+      - Ogzi980WRFJIfLDDgkvyWLdZUzfGPpFPFgXATZSm92vQ6Yf7oWpM5z3SmyUop50C
       content-type: 
       - application/xml
       server: 
       - AmazonS3
       date: 
-      - Sat, 03 Jul 2010 08:46:04 GMT
+      - Mon, 05 Jul 2010 10:16:01 GMT
+      content-length: 
+      - "234"
       x-amz-request-id: 
-      - 886D5D0129BCA8E7
-      transfer-encoding: 
-      - chunked
-    body: <Error><Code>NoSuchKey</Code><Message>The specified key does not exist.</Message><Key>11111111111111111111111111111111.mp4</Key><RequestId>886D5D0129BCA8E7</RequestId><HostId>sNuEVs/5OVzwK/pGjHqswmhhqEB4S+Pc8oYZyR6VCXa0Zs3r3gYlrIjhg0p1bnYP</HostId></Error>
+      - 4871D566E23DF3BC
+    body: |-
+      <?xml version="1.0" encoding="UTF-8"?>
+      <CopyObjectResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><LastModified>2010-07-05T10:16:01.000Z</LastModified><ETag>&quot;1f1133ee77f0b3c66c948ae376d55715&quot;</ETag></CopyObjectResult>
     http_version: "1.1"

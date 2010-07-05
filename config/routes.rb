@@ -46,7 +46,7 @@ MySublimeVideo::Application.routes.draw do |map|
     
     resources :admins, :only => [:index, :destroy]
     
-    resources :delayed_jobs, :only => [:index, :show], :path => "djs"
+    resources :delayed_jobs, :only => [:index, :show, :update, :destroy], :path => "djs"
   end
   
   match ':page', :to => 'pages#show', :via => :get, :as => :page, :page => /terms|docs|support/

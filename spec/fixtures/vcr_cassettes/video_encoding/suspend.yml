@@ -2,19 +2,19 @@
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
     method: :get
-    uri: !ruby/regexp /dev\.sublimevideo\.videos\.s3\.amazonaws\.com:443\/active.+\?acl/
+    uri: !ruby/regexp /dev\.sublimevideo\.videos\.s3\.amazonaws\.com:443\/active\?acl/
     body: 
     headers: 
       accept: 
       - "*/*"
-      content-type: 
-      - ""
       user-agent: 
       - ""
-      date: 
-      - Wed, 30 Jun 2010 10:33:34 GMT
+      content-type: 
+      - ""
       authorization: 
       - AWS AKIAJ5AJKU32OXUZAC7A:JE+oY70C4xN9hb6Ejw+VN09UiU0=
+      date: 
+      - Wed, 30 Jun 2010 10:33:34 GMT
       host: 
       - sublimevideo.videos.s3.amazonaws.com
   response: !ruby/struct:VCR::Response 
@@ -26,10 +26,10 @@
       - WH3g1AdMG5lBgwURXH4kW+h4/eMWfdp96SFzGcOkIRKartRpiqWkrqdxM3dJY8Kq
       content-type: 
       - application/xml
-      date: 
-      - Wed, 30 Jun 2010 10:33:36 GMT
       server: 
       - AmazonS3
+      date: 
+      - Wed, 30 Jun 2010 10:33:36 GMT
       x-amz-request-id: 
       - 021C56DA0581660E
       transfer-encoding: 
@@ -41,19 +41,19 @@
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
     method: :get
-    uri: !ruby/regexp /dev\.sublimevideo\.videos\.s3\.amazonaws\.com:443\/suspended.+\?acl/
+    uri: !ruby/regexp /dev\.sublimevideo\.videos\.s3\.amazonaws\.com:443\/suspended\?acl/
     body: 
     headers: 
       accept: 
       - "*/*"
-      user-agent: 
-      - ""
       content-type: 
       - ""
-      authorization: 
-      - AWS AKIAJ5AJKU32OXUZAC7A:VI6I9MStNP/khwJq6/duoDel4ec=
+      user-agent: 
+      - ""
       date: 
       - Wed, 30 Jun 2010 10:34:43 GMT
+      authorization: 
+      - AWS AKIAJ5AJKU32OXUZAC7A:VI6I9MStNP/khwJq6/duoDel4ec=
       host: 
       - sublimevideo.videos.s3.amazonaws.com
   response: !ruby/struct:VCR::Response 
@@ -65,10 +65,10 @@
       - fD4TjDpnoUeYI/u/CRzJwX9w8m2aOHYQ62sOTMHkO40Yfjh6IyyWt5AoEndcCAur
       content-type: 
       - application/xml
-      server: 
-      - AmazonS3
       date: 
       - Wed, 30 Jun 2010 10:34:45 GMT
+      server: 
+      - AmazonS3
       x-amz-request-id: 
       - 3118948813114D50
       transfer-encoding: 
@@ -85,14 +85,14 @@
     headers: 
       accept: 
       - "*/*"
-      content-type: 
-      - ""
       user-agent: 
       - ""
-      date: 
-      - Wed, 30 Jun 2010 10:48:55 GMT
+      content-type: 
+      - ""
       authorization: 
       - AWS AKIAJ5AJKU32OXUZAC7A:bqk8KwO/tvdbW6ZBI/1nrZ4EqEw=
+      date: 
+      - Wed, 30 Jun 2010 10:48:55 GMT
       host: 
       - sublimevideo.videos.s3.amazonaws.com
   response: !ruby/struct:VCR::Response 
@@ -104,10 +104,10 @@
       - T5OGwh7plgo1bLw6g/vtKF8/SgJyaf/yBlWZB0F3xc9TMHBigAn23oC8M7oWspz3
       content-type: 
       - application/xml
-      date: 
-      - Wed, 30 Jun 2010 10:48:57 GMT
       server: 
       - AmazonS3
+      date: 
+      - Wed, 30 Jun 2010 10:48:57 GMT
       x-amz-request-id: 
       - DB647753731151BC
       transfer-encoding: 
@@ -116,10 +116,11 @@
       <?xml version="1.0" encoding="UTF-8"?>
       <ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>sublimevideo.videos</Name><Prefix>test_remy.txt</Prefix><Marker></Marker><MaxKeys>1000</MaxKeys><IsTruncated>false</IsTruncated><Contents><Key>test_remy.txt</Key><LastModified>2010-06-30T10:33:36.000Z</LastModified><ETag>&quot;80ab1b45ca6c93df43f5960e4b384b29&quot;</ETag><Size>6</Size><Owner><ID>acc3dbbd8ce7319332b299a89de5a09b0d538cf8026ee64cd515627939300c38</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents></ListBucketResult>
     http_version: "1.1"
+    http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
-    method: :put
-    uri: !ruby/regexp /dev\.sublimevideo\.videos\.s3\.amazonaws\.com:443\/.+/
+    method: :get
+    uri: !ruby/regexp /dev\.sublimevideo\.videos\.s3\.amazonaws\.com:443\/.+\?acl/
     body: 
     headers: 
       accept: 
@@ -128,31 +129,66 @@
       - ""
       user-agent: 
       - ""
-      x-amz-acl: 
-      - private
       date: 
-      - Wed, 30 Jun 2010 10:48:56 GMT
+      - Mon, 05 Jul 2010 10:11:10 GMT
       authorization: 
-      - AWS AKIAJ5AJKU32OXUZAC7A:WAM6l2SzrgyVGNdgdWR2g1UB1tc=
-      content-length: 
-      - "0"
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:BMVs83skr3Z6PP0vo6+GBoat2PA=
       host: 
-      - sublimevideo.videos.s3.amazonaws.com
+      - dev.sublimevideo.videos.s3.amazonaws.com
   response: !ruby/struct:VCR::Response 
     status: !ruby/struct:VCR::ResponseStatus 
       code: 200
       message: OK
     headers: 
-      etag: 
-      - "\"d41d8cd98f00b204e9800998ecf8427e\""
       x-amz-id-2: 
-      - miQa6zqasrsliePwfm8Okk53NuucksogGOyu6wzY5TWHhOyYxyWJekiseVpe/PGj
+      - V+ONxCSomh6pAsvvxHwX64vbyWQuNwDkflZLOnF+uz/IX0FHgBgT3OvsZppqJcDm
+      content-type: 
+      - application/xml
       date: 
-      - Wed, 30 Jun 2010 10:48:58 GMT
+      - Mon, 05 Jul 2010 10:11:12 GMT
       server: 
       - AmazonS3
       x-amz-request-id: 
-      - 8B52CD67E816C244
+      - 2E2A8B7EE0E78702
+      transfer-encoding: 
+      - chunked
+    body: |-
+      <?xml version="1.0" encoding="UTF-8"?>
+      <AccessControlPolicy xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><AccessControlList><Grant><Grantee xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="Group"><URI>http://acs.amazonaws.com/groups/global/AllUsers</URI></Grantee><Permission>READ</Permission></Grant><Grant><Grantee xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CanonicalUser"><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Grantee><Permission>WRITE</Permission></Grant></AccessControlList></AccessControlPolicy>
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :put
+    uri: !ruby/regexp /dev\.sublimevideo\.videos\.s3\.amazonaws\.com:443\/.+\?acl/
+    body: <AccessControlPolicy><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><AccessControlList><Grant><Grantee xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CanonicalUser"><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID></Grantee><Permission>WRITE</Permission></Grant></AccessControlList></AccessControlPolicy>
+    headers: 
+      accept: 
+      - "*/*"
+      content-type: 
+      - ""
+      user-agent: 
+      - ""
+      date: 
+      - Mon, 05 Jul 2010 10:11:11 GMT
+      authorization: 
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:Rv136Uss+qnIYmduR7kwh2RX8Xg=
+      content-length: 
+      - "417"
+      host: 
+      - dev.sublimevideo.videos.s3.amazonaws.com
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      x-amz-id-2: 
+      - BV+VzusnqeHUhRbma397oG9ZBf8a7O0z2IY8MKJgsVWjFp+rK+nIecfq1t092I+1
+      date: 
+      - Mon, 05 Jul 2010 10:11:13 GMT
+      server: 
+      - AmazonS3
+      x-amz-request-id: 
+      - 4F34BB1CBBBFD4C4
       content-length: 
       - "0"
     body: ""
