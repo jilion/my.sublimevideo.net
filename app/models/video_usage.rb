@@ -72,6 +72,7 @@ class VideoUsage < ActiveRecord::Base
   
   before_validation :set_dates_from_log, :on => :create
   after_save        :update_video_hits_and_bandwidth_cache
+  after_create      :notify_unknown_location
   
   # =================
   # = Class Methods =
@@ -129,6 +130,13 @@ private
       :requests_jp_cache       => requests_jp,
       :requests_unknown_cache  => requests_unknown
     )
+  end
+  
+  # after_create
+  def notify_unknown_location
+    if bandwidth_unknown > 0 || requests_unknown > 0
+       HoptoadNotifier.notify("VideoUsage (id #{id}, log_id #{log_id} contains unknown location")
+    end
   end
   
   # Compact trackers from RequestLogAnalyzer

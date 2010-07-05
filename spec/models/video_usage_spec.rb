@@ -55,6 +55,17 @@ describe VideoUsage do
     its(:ended_at)   { should == Time.zone.parse('2010-06-16') + 9.hours }
   end
   
+  it "should notify if requests_unknown is greather than " do
+    usage = Factory.build(:video_usage, :requests_unknown => 1)
+    HoptoadNotifier.should_receive(:notify)
+    usage.save
+  end
+  it "should notify if bandwidth_unknown is greather than " do
+    usage = Factory.build(:video_usage, :bandwidth_unknown => 1)
+    HoptoadNotifier.should_receive(:notify)
+    usage.save
+  end
+  
   describe "Trackers parsing with cloudfront download" do
     before(:each) do
       @video1 = Factory(:video)
@@ -70,7 +81,7 @@ describe VideoUsage do
     
     it "should clean trackers" do
       VideoUsage.hits_bandwidth_and_requests_from(@trackers).should == {
-        :hits => { "e14ab4de" => 1 },
+        :hits => { "e14ab4de" => 1, "g46g16dz" => 1, "313asa32" => 1 },
         :bandwidth_us => {},
         :bandwidth_eu => { "e14ab4de" => 134284, "g46g16dz" => 3509835, "313asa32" => 3696141 },
         :bandwidth_as => {},
