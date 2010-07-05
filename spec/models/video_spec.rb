@@ -334,7 +334,7 @@ describe Video do
           it "should suspend all the active encodings" do
             video_encoding1.should be_processing
             video_encoding2.should be_active
-            video.suspend
+            VCR.use_cassette('video/suspend') { video.suspend }
             video_encoding1.reload.should be_processing
             video_encoding2.reload.should be_suspended
           end
@@ -343,19 +343,17 @@ describe Video do
         describe "before_transition :on => :suspend, :do => :suspend_posterframe" do
           before(:each) do
             @video = Factory(:video, :state => 'encodings')
+            @video.posterframe.stub!(:path).and_return("posterframe.jpg")
             VCR.use_cassette('video_encoding/activate') { @video.activate }
             VCR.insert_cassette('video/suspend')
           end
           
           it "should suspend the posterframe" do
-            @video.posterframe.stub!(:path).and_return("posterframe.jpg")
-            s3_int = Aws::S3Interface.new(S3.access_key_id, S3.secret_access_key)
-            s3_int.get_acl(@video.posterframe.s3_bucket, "active#{@video.posterframe.path}")[:object].should include '<Grant><Grantee xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="Group"><URI>http://acs.amazonaws.com/groups/global/AllUsers</URI></Grantee><Permission>READ</Permission></Grant>'
+            S3.client.interface.get_acl(@video.posterframe.s3_bucket, "active")[:object].should include '<Grant><Grantee xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="Group"><URI>http://acs.amazonaws.com/groups/global/AllUsers</URI></Grantee><Permission>READ</Permission></Grant>'
             @video.suspend
-            s3_int.get_acl(@video.posterframe.s3_bucket, "suspended#{@video.posterframe.path}")[:object].should_not include '<Grant><Grantee xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="Group"><URI>http://acs.amazonaws.com/groups/global/AllUsers</URI></Grantee><Permission>READ</Permission></Grant>'
+            S3.client.interface.get_acl(@video.posterframe.s3_bucket, "suspended")[:object].should_not include '<Grant><Grantee xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="Group"><URI>http://acs.amazonaws.com/groups/global/AllUsers</URI></Grantee><Permission>READ</Permission></Grant>'
           end
         end
-        
       end
       
       after(:each) { VCR.eject_cassette }
@@ -381,7 +379,7 @@ describe Video do
           it "should unsuspend all the suspended encodings" do
             video_encoding1.should be_processing
             video_encoding2.should be_suspended
-            video.unsuspend
+            VCR.use_cassette('video/unsuspend') { video.unsuspend }
             video_encoding1.reload.should be_processing
             video_encoding2.reload.should be_active
           end
@@ -390,17 +388,16 @@ describe Video do
         describe "before_transition :on => :suspend, :do => :unsuspend_posterframe" do
           before(:each) do
             @video = Factory(:video, :state => 'encodings')
+            @video.posterframe.stub!(:path).and_return("posterframe.jpg")
             VCR.use_cassette('video_encoding/activate') { @video.activate }
             VCR.use_cassette('video/suspend') { @video.suspend }
             VCR.insert_cassette('video/suspend')
           end
           
           it "should suspend the posterframe" do
-            @video.posterframe.stub!(:path).and_return("posterframe.jpg")
-            s3_int = Aws::S3Interface.new(S3.access_key_id, S3.secret_access_key)
-            s3_int.get_acl(@video.posterframe.s3_bucket, "suspended#{@video.posterframe.path}")[:object].should_not include '<Grant><Grantee xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="Group"><URI>http://acs.amazonaws.com/groups/global/AllUsers</URI></Grantee><Permission>READ</Permission></Grant>'
+            S3.client.interface.get_acl(@video.posterframe.s3_bucket, "suspended")[:object].should_not include '<Grant><Grantee xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="Group"><URI>http://acs.amazonaws.com/groups/global/AllUsers</URI></Grantee><Permission>READ</Permission></Grant>'
             @video.unsuspend
-            s3_int.get_acl(@video.posterframe.s3_bucket, "active#{@video.posterframe.path}")[:object].should include '<Grant><Grantee xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="Group"><URI>http://acs.amazonaws.com/groups/global/AllUsers</URI></Grantee><Permission>READ</Permission></Grant>'
+            S3.client.interface.get_acl(@video.posterframe.s3_bucket, "active")[:object].should include '<Grant><Grantee xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="Group"><URI>http://acs.amazonaws.com/groups/global/AllUsers</URI></Grantee><Permission>READ</Permission></Grant>'
           end
         end
         
@@ -568,7 +565,7 @@ describe Video do
       video.encodings[0].should be_suspended
       video.encodings[1].should be_suspended
       
-      video.unsuspend
+      VCR.use_cassette('video/unsuspend') { video.unsuspend }
       video.encodings[0].reload.should be_active
       video.encodings[1].reload.should be_active
       video.should be_encodings

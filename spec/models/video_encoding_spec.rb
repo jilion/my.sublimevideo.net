@@ -370,7 +370,7 @@ describe VideoEncoding do
       end
       
       describe "callbacks" do
-        it "before_transition => #block_video should set the access to private" do
+        it "before_transition => #block_file should set the access to private" do
           @video_encoding.file.path.should be_present
           S3.client.interface.get_acl(S3.videos_bucket, 'active')[:object].should include('<Grant><Grantee xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="Group"><URI>http://acs.amazonaws.com/groups/global/AllUsers</URI></Grantee><Permission>READ</Permission></Grant>')
           @video_encoding.suspend
@@ -399,7 +399,7 @@ describe VideoEncoding do
       end
       
       describe "callbacks" do
-        it "before_transition => #unblock_video should set the access to public-read" do
+        it "before_transition => #unblock_file should set the access to public-read" do
           @video_encoding.file.path.should be_present
           S3.client.interface.get_acl(S3.videos_bucket, 'suspended')[:object].should_not include('<Grant><Grantee xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="Group"><URI>http://acs.amazonaws.com/groups/global/AllUsers</URI></Grantee><Permission>READ</Permission></Grant>')
           @video_encoding.unsuspend

@@ -238,7 +238,7 @@ protected
     encodings.active.map(&:suspend!)
   end
   def suspend_posterframe
-    S3.videos_bucket.key(posterfame.path).put(nil, 'private') if Rails.env.production? && S3.videos_bucket.key(posterfame.path).exists?
+    Aws::S3::Grantee.new(S3.videos_bucket.key(posterframe.path), 'http://acs.amazonaws.com/groups/global/AllUsers').revoke('READ') if posterframe.path && S3.videos_bucket.key(posterframe.path).exists?
   end
   
   # before_transition (unsuspend)
@@ -246,7 +246,7 @@ protected
     encodings.suspended.map(&:unsuspend!)
   end
   def unsuspend_posterframe
-    S3.videos_bucket.key(posterfame.path).put(nil, 'public-read') if Rails.env.production? && S3.videos_bucket.key(posterfame.path).exists?
+    Aws::S3::Grantee.new(S3.videos_bucket.key(posterframe.path), 'http://acs.amazonaws.com/groups/global/AllUsers', 'READ', :apply_and_refresh) if posterframe.path && S3.videos_bucket.key(posterframe.path).exists?
   end
   
   # before_transition (archive)

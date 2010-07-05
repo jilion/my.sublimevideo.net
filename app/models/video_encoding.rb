@@ -64,9 +64,9 @@ class VideoEncoding < ActiveRecord::Base
     before_transition :on => [:deprecate, :archive], :do => :set_file_removed_at
     before_transition :failed => :deprecated, :do => :delete_panda_encoding
     
-    before_transition :on => :suspend, :do => :block_video
+    before_transition :on => :suspend, :do => :block_file
     
-    before_transition :on => :unsuspend, :do => :unblock_video
+    before_transition :on => :unsuspend, :do => :unblock_file
     
     before_transition :on => :archive, :do => :remove_file!
     before_transition :processing => :archived, :do => :set_encoding_info
@@ -172,13 +172,13 @@ protected
   end
   
   # before_transition (suspend)
-  def block_video
-    Aws::S3::Grantee.new(S3.videos_bucket.key(file.path), 'http://acs.amazonaws.com/groups/global/AllUsers').revoke('READ') if S3.videos_bucket.key(file.path).exists?
+  def block_file
+    Aws::S3::Grantee.new(S3.videos_bucket.key(file.path), 'http://acs.amazonaws.com/groups/global/AllUsers').revoke('READ') if file.path && S3.videos_bucket.key(file.path).exists?
   end
   
   # before_transition (unsuspend)
-  def unblock_video
-    Aws::S3::Grantee.new(S3.videos_bucket.key(file.path), 'http://acs.amazonaws.com/groups/global/AllUsers', 'READ', :apply_and_refresh) if S3.videos_bucket.key(file.path).exists?
+  def unblock_file
+    Aws::S3::Grantee.new(S3.videos_bucket.key(file.path), 'http://acs.amazonaws.com/groups/global/AllUsers', 'READ', :apply_and_refresh) if file.path && S3.videos_bucket.key(file.path).exists?
   end
   
   # before_transition (deprecate) / (archive)
