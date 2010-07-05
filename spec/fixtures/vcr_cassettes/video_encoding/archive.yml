@@ -39,7 +39,6 @@
     body: |
       <?xml version="1.0"?>
       <rsp stat="ok"><transaction><type>remove-url</type><id>6d037109-6370-4105-a2da-370332ee0dae</id><expiration>1276185584</expiration><status>inprogress</status></transaction></rsp>
-
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
