@@ -5,7 +5,7 @@
     %meta{ "http-equiv" => "X-UA-Compatible", :content => "chrome=1" }
     %meta{ "http-equiv" => "Content-Type", :content => "text/html;charset=UTF-8" }
     
-    = include_stylesheets :style
+    = stylesheet_link_tag "admin"
     
     %link{ :rel => "shortcut icon", :href => "/favicon.ico", :type => "image/x-icon" }
     
@@ -17,22 +17,19 @@
   %body
     #global
       = render "layouts/admin_header"
-      #main_wrap
-        #main
-          #rounded_corners_fix
-            #white_halo
-              #content
-                - if flash.present?
-                  #flash
-                    - if flash[:notice]
-                      .notice= flash[:notice]
-                    - if flash[:alert]
-                      .alert= flash[:alert]
-                      
-                = yield :content_header
+      #main
+        #content
+          - if flash.present?
+            #flash
+              - if flash[:notice]
+                .notice= flash[:notice]
+              - if flash[:alert]
+                .alert= flash[:alert]
                 
-                = yield
+          = yield :content_header
+          
+          = yield
       #footer
-        %p= raw "Copyright &copy; 2010 SublimeVideo&reg; | Admin"
+        %p= raw "Copyright &copy; 2010 SublimeVideo&reg;"
         
     = yield :bottom

@@ -2,22 +2,19 @@
 
 = link_to "New video profile", new_admin_profile_path
 
-#video_profiles_table_wrap
-  .main_table_wrap
-    .dark_rounded_corners
-      %table.main#profiles
-        %tr
-          %th.title
-            .wrap
-              %strong
-                = "Title"
-          %th.description= "Description"
-          %th.name= "Name"
-          %th.extname= "Extname"
-          %th.min_width= "Min width"
-          %th.min_height= "Min height"
-          %th.posterframeable= "Thumbnail?"
-          %th.versions_count= "# Versions"
-          %th.encodings_count= "# Encodings"
-          %th.edit.delete= "Edit"
-        = render :partial => "profile", :collection => @profiles
+%table.main#profiles
+  %tr
+    %th.title
+      .wrap
+        %strong
+          = "Title"
+    %th.description= "Description"
+    %th.name= "Name"
+    %th.extname= "Extname"
+    %th.min_width= "Min width"
+    %th.min_height= "Min height"
+    %th.posterframeable= "Thumbnail?"
+    %th.versions_count= "# Versions"
+    %th.encodings_count= "# Encodings"
+    %th.edit.delete= "Edit"
+  = render :partial => "profile", :collection => @profiles

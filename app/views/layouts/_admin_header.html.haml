@@ -1,37 +1,36 @@
 #header
-  #header_wrap
-    %h1
-      = link_to admin_signed_in? ? sites_path : new_admin_session_path do
-        %span= "SublimeVideo Admin"
-    - if admin_signed_in?
+  %h1
+    = link_to admin_signed_in? ? sites_path : new_admin_session_path do
+      = "SublimeVideo"
+      %em= "Admin"
+  - if admin_signed_in?
+    .popup_menu
+      %h3= link_to "Menu", "", :onclick => "return false"
       %ul#main_menu
-        %li.users{ :class => ('active' if controller_name == 'admin/users'), :onclick => "MySublimeVideo.makeSticky(this)" }
+        %li.users{ :class => ('active' if controller_name == 'admin/users') }
           = link_to admin_profiles_path do
             %span= "Users"
-        %li.videos{ :class => ('active' if controller_name == 'admin/videos'), :onclick => "MySublimeVideo.makeSticky(this)" }
+        %li.videos{ :class => ('active' if controller_name == 'admin/videos') }
           = link_to admin_profiles_path do
             %span= "Videos"
-        %li.video_profiles{ :class => ('active' if %w[video_profiles video_profile_versions].include? controller_name), :onclick => "MySublimeVideo.makeSticky(this)" }
+        %li.video_profiles{ :class => ('active' if %w[video_profiles video_profile_versions].include? controller_name) }
           = link_to admin_profiles_path do
-            %span= "Profiles"
-        %li.admins{ :class => ('active' if controller_name == 'admins'), :onclick => "MySublimeVideo.makeSticky(this)" }
+            %span= "Videos Profiles"
+        %li.admins{ :class => ('active' if controller_name == 'admins') }
           = link_to admin_admins_path do
             %span= "Admins"
-        %li.delayed_jobs{ :class => ('active' if controller_name == 'delayed_jobs'), :onclick => "MySublimeVideo.makeSticky(this)" }
+        %li.delayed_jobs{ :class => ('active' if controller_name == 'delayed_jobs') }
           = link_to admin_delayed_jobs_path do
-            %span= "DJs"
-            
-    .right
-      %ul.extra_links
-        - if admin_signed_in?
-          %li= link_to "Logout", destroy_admin_session_path
+            %span= "Delayed Jobs"
+          
+  .right
+    %ul.extra_links
       - if admin_signed_in?
-        = link_to edit_admin_registration_path, :class => "user #{'active' if controller_name == 'registrations'}", :onclick => "MySublimeVideo.makeSticky(this)" do
-          %strong
-            %span.icon= current_admin.email
-          %span.corner
-      - else
-        = link_to new_admin_session_path, :class => "user" do
-          %strong
-            %span.icon= "Login"
-          %span.corner
+        %li= link_to "Logout", destroy_admin_session_path
+    - if admin_signed_in?
+      = link_to edit_admin_registration_path, :class => "user #{'active' if controller_name == 'registrations'}" do
+        %span.icon= current_admin.email
+    - else
+      = link_to new_admin_session_path, :class => "user" do
+        %span.icon= "Login"
+  .spacer
