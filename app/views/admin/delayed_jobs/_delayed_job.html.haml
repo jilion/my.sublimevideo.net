@@ -1,0 +1,17 @@
+%tr{ :id => dom_id(delayed_job), :class => cycle("", "alt") }
+  %td.name
+    = link_to delayed_job.name, admin_delayed_job_path(delayed_job)
+  %td.priority
+    = link_to delayed_job.priority, admin_delayed_job_path(delayed_job)
+  %td.run_at
+    = link_to "#{'In ' if delayed_job.run_at > Time.now.utc}#{time_ago_in_words(delayed_job.run_at)}#{' ago' if delayed_job.run_at < Time.now.utc}" , admin_delayed_job_path(delayed_job)
+  %td.attempts
+    = link_to delayed_job.attempts, admin_delayed_job_path(delayed_job)
+  %td.last_error
+    = link_to delayed_job.last_error.blank? ? "Nop" : truncate(delayed_job.last_error, :length => 20), admin_delayed_job_path(delayed_job)
+  %td.locked_at
+    = link_to delayed_job.locked_at.blank? ? "Not yet" : delayed_job.locked_at, admin_delayed_job_path(delayed_job)
+  %td.locked_by
+    = link_to delayed_job.locked_by.blank? ? "No one" : delayed_job.locked_by, admin_delayed_job_path(delayed_job)
+  %td.failed_at
+    = link_to delayed_job.failed_at.blank? ? "No" : delayed_job.failed_at, admin_delayed_job_path(delayed_job)

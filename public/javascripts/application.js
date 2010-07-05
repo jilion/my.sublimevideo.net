@@ -461,14 +461,14 @@ var VideoEmbedCodeUpdater = Class.create({
 
 var SitesPoller = Class.create({
   initialize: function() {
-    this.pollingDelay = 3000;
+    this.pollingDelay   = 3000;
+    this.maxAttempts    = 20; // try for 3000 * 20 ms = 1 minute
+    this.attemptedPolls = 0;
     this.checkForSiteInProgress();
   },
   checkForSiteInProgress: function() {
-    // ddd('checking for site InProgress...')
     var siteInProgress = $$('#sites .in_progress').first();
     if (siteInProgress) {
-      // ddd('...found one!')
       this.currentSiteId = parseInt(siteInProgress.up('tr').id.replace("site_",''), 10);
       this.startPolling();
     }
@@ -482,7 +482,13 @@ var SitesPoller = Class.create({
     this.poll = null;
   },
   remoteCheckForStateUpdate: function() {
-    new Ajax.Request('/sites/'+this.currentSiteId+'/state', { method: 'get' });
+    if (this.attemptedPolls < this.maxAttempts) {
+      this.attemptedPolls++;
+      new Ajax.Request('/sites/'+this.currentSiteId+'/state', { method: 'get' });
+    }
+    else {
+      this.stopPolling();
+    }
     // this will simply reply with a HEAD OK if the state is still pending, or it'll will call the updateSite() method below if the state changed to active
   },
   updateSite: function(siteId) {

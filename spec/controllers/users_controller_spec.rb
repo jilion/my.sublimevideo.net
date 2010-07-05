@@ -4,7 +4,7 @@ describe UsersController do
   include Devise::TestHelpers
   
   context "with logged in user" do
-    before(:each) do
+    before :each do
       @mock_user = mock_model(User, :active? => true, :confirmed? => true)
       User.stub(:find).and_return(@mock_user)
       sign_in :user, @mock_user

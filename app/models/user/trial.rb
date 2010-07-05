@@ -16,6 +16,7 @@ module User::Trial
   end
   
   def self.supervise_users
+    delay_supervise_users
     User.in_trial.includes(:invoices, :sites, :videos).each do |user|
       case user.trial_usage_percentage
       when 0..(usage_information_percentage-1)
@@ -28,7 +29,6 @@ module User::Trial
         user.end_trial
       end
     end
-    delay_supervise_users
   end
     
   def self.method_missing(name)

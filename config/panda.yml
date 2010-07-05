@@ -2,14 +2,14 @@
 development:
   access_key: '7cc07330-5147-11df-b458-12313d01b992'
   secret_key: 'Qm5HD/dosWFeL2wleFy9ppn822tpfVQ2l8h5Tlvc'
-  cloud_id: 'f931f457dc4c500234fad57c37b591b2'
+  cloud_id: 'db622ee400037141c53d224778ebc231'
   api_host: 'api.pandastream.com'
   
 # dev.sublimevideo.panda
 test:
   access_key: '7cc07330-5147-11df-b458-12313d01b992'
   secret_key: 'Qm5HD/dosWFeL2wleFy9ppn822tpfVQ2l8h5Tlvc'
-  cloud_id: 'f931f457dc4c500234fad57c37b591b2'
+  cloud_id: 'db622ee400037141c53d224778ebc231'
   api_host: 'api.pandastream.com'
   
 # sublimevideo.panda

@@ -3,9 +3,9 @@ require 'spec_helper'
 describe VideosController do
   include Devise::TestHelpers
   
-  context "with logged in user" do
-    before(:each) do
-      @mock_user = mock_model(User, :active? => true, :confirmed? => true)
+  context "with logged in user with a credit card" do
+    before :each do
+      @mock_user = mock_model(User, :active? => true, :confirmed? => true, :credit_card? => true, :suspended? => false)
       User.stub(:find).and_return(@mock_user)
       sign_in :user, @mock_user
     end
@@ -42,6 +42,74 @@ describe VideosController do
     it "should respond with success to DELETE :destroy" do
       @mock_user.stub_chain(:videos, :find).with("1").and_return(mock_video)
       mock_video.stub(:archive)
+      delete :destroy, :id => '1'
+      response.should redirect_to(videos_path)
+    end
+  end
+  
+  context "with logged in user without a credit card" do
+    before(:each) do
+      @mock_user = mock_model(User, :active? => true, :confirmed? => true, :credit_card? => false, :suspended => false)
+      User.stub(:find).and_return(@mock_user)
+      sign_in :user, @mock_user
+    end
+    
+    it "should respond with success to GET :index" do
+      @mock_user.stub_chain(:videos, :displayable, :includes, :by_date).and_return([])
+      get :index
+      response.should be_success
+    end
+    it "should respond with success to GET :show" do
+      get :show, :id => '1'
+      response.should redirect_to(videos_path)
+    end
+    it "should respond with success to GET :edit" do
+      get :edit, :id => '1'
+      response.should redirect_to(videos_path)
+    end
+    it "should respond with success to POST :create" do
+      post :create, :video => {}
+      response.should redirect_to(videos_path)
+    end
+    it "should respond with success to PUT :update" do
+      put :update, :id => '1', :video => {}
+      response.should redirect_to(videos_path)
+    end
+    it "should respond with success to DELETE :destroy" do
+      delete :destroy, :id => '1'
+      response.should redirect_to(videos_path)
+    end
+  end
+  
+  context "with suspended logged in user" do
+    before(:each) do
+      @mock_user = mock_model(User, :active? => true, :confirmed? => true, :credit_card? => true, :suspended? => true)
+      User.stub(:find).and_return(@mock_user)
+      sign_in :user, @mock_user
+    end
+    
+    it "should respond with success to GET :index" do
+      @mock_user.stub_chain(:videos, :displayable, :includes, :by_date).and_return([])
+      get :index
+      response.should be_success
+    end
+    it "should respond with success to GET :show" do
+      get :show, :id => '1'
+      response.should redirect_to(videos_path)
+    end
+    it "should respond with success to GET :edit" do
+      get :edit, :id => '1'
+      response.should redirect_to(videos_path)
+    end
+    it "should respond with success to POST :create" do
+      post :create, :video => {}
+      response.should redirect_to(videos_path)
+    end
+    it "should respond with success to PUT :update" do
+      put :update, :id => '1', :video => {}
+      response.should redirect_to(videos_path)
+    end
+    it "should respond with success to DELETE :destroy" do
       delete :destroy, :id => '1'
       response.should redirect_to(videos_path)
     end

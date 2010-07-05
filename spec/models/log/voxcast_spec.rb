@@ -67,7 +67,7 @@ describe Log::Voxcast do
     it "should download and save new logs & launch delayed job" do
       VCR.use_cassette('multi_logs') do
         lambda { Log::Voxcast.fetch_download_and_create_new_logs }.should change(Log::Voxcast, :count).by(4)
-        Delayed::Job.last.name.should == 'Class#fetch_download_and_create_new_logs'
+        Delayed::Job.first.name.should == 'Class#fetch_download_and_create_new_logs'
       end
     end
     
@@ -78,8 +78,8 @@ describe Log::Voxcast do
       end
     end
     
-    it "should launch delayed fetch_download_and_create_new_logs" do
-      lambda { Log::Voxcast.delay_fetch_download_and_create_new_logs }.should change(Delayed::Job, :count).by(1)
+    it "should launch 2x delayed fetch_download_and_create_new_logs" do
+      lambda { Log::Voxcast.delay_fetch_download_and_create_new_logs }.should change(Delayed::Job, :count).by(2)
     end
     
     it "should not launch delayed fetch_download_and_create_new_logs if one pending already present" do

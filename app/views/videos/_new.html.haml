@@ -6,7 +6,7 @@
   = javascript_include_tag '/panda_uploader/jquery.swfupload.js'
   = javascript_include_tag '/panda_uploader/jquery.panda-uploader.js'
   == <script language="javascript" type="text/javascript">
-  ==     $j = jQuery.noConflict();
+  ==   $j = jQuery.noConflict();
   == </script>
   
 = form_for @video, :as => :video, :url => videos_path, :html => { :multipart => true, :class => "video" }, :remote => true do |f|

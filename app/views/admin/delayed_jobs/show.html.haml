@@ -1,0 +1,31 @@
+= title_and_content_header("Delayed job #{content_tag(:em, @delayed_job.id)}")
+
+.created_at
+  %strong= "Creation date: "
+  = l(@delayed_job.created_at, :format => :full)
+.priority
+  %strong= "Priority: "
+  = @delayed_job.priority
+.run_at
+  %strong= "Run at: "
+  = "#{'In ' if @delayed_job.run_at > Time.now.utc}#{time_ago_in_words(@delayed_job.run_at)}#{' ago' if @delayed_job.run_at < Time.now.utc}"
+.attempts
+  %strong= "Attempts: "
+  = @delayed_job.attempts
+.handler
+  %strong= "Handler: "
+  = @delayed_job.handler
+.last_error
+  %strong= "Last error: "
+  = @delayed_job.last_error
+.locked_at
+  %strong= "Locked at: "
+  = @delayed_job.locked_at? ? l(@delayed_job.locked_at, :format => :full) : "Not yet"
+.locked_by
+  %strong= "Locked by: "
+  = @delayed_job.locked_by
+.failed_at
+  %strong= "Failed at: "
+  = @delayed_job.failed_at? ? l(@delayed_job.failed_at, :format => :full) : "Not yet"
+
+= link_to "Back to delayed jobs", admin_delayed_jobs_path

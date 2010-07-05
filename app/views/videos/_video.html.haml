@@ -14,17 +14,14 @@
           
         - if video.active? || video.suspended?
           .storage
-            %strong= number_to_human_size(video.total_size, :delimiter => ',')
+            %strong= number_to_human_size(video.total_size - video.file_size, :delimiter => ',')
             = link_to "", :class => "toggle_desc_box", :onclick => "next().toggle(); return false;" do
               %span= "Toggle description box"
             .desc_box{ :style => "display:none" }
               %ul
-                %li
-                  = "Original"
-                  %span= number_to_human_size(video.file_size)
-                - video.encodings.active.each do |encoding|
+                - video.encodings.select(&:active?).each do |encoding|
                   %li
-                    = encoding.profile.title
+                    = "#{encoding.profile.title} (#{encoding.width}x#{encoding.height})"
                     %span= number_to_human_size(encoding.file_size)
         .spacer
         .upload_date= uploaded_on(video)
@@ -32,18 +29,16 @@
     - if video.pending?
       .pending
         %em= "Pending"
-    - elsif video.encoding?
+    - elsif video.first_processing?
       .in_progress
         %em= "In progress"
-        -#%ul
-        -#  - video.encodings.encoding.each do |encoding|
-        -#    %li= link_to "Transcode #{encoding.profile.name}", transcoded_video_url(encoding.panda_encoding_id)
     - elsif video.active?
       = link_to "Embed code", "", :class => "embed_code", :onclick => "return MySublimeVideo.showVideoEmbedCode(#{video.id})"
+      = "An encoding is currently being processed" if video.reprocessing?
     - elsif video.suspended?
       .suspended
         %em= "Suspended"
     - elsif video.error?
       .failed
         %em= "Encoding error"
-  %td.delete= button_to 'Delete', video_path(video), :confirm => 'Are you sure?', :method => :delete
+  %td.delete= button_to 'Delete', video_path(video), :confirm => 'Are you sure?', :method => :delete, :remote => true

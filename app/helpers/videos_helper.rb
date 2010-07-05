@@ -16,8 +16,9 @@ module VideosHelper
   
   def video_tags_for(video, *args)
     options = args.extract_options!
+    sizes = sizes_in_embed(video)
     <<-EOS
-<video class="sublime" poster="http://#{Log::Amazon::Cloudfront::Download.config[:hostname]}/#{video.posterframe.path}" width="#{options[:width]}" height="#{options[:height]}" controls preload="none">
+<video class="sublime" poster="http://#{Log::Amazon::Cloudfront::Download.config[:hostname]}/#{video.posterframe.path}" width="#{sizes[:width]}" height="#{sizes[:height]}" controls preload="none">
 #{video.encodings.inject([]) { |html,f| html << source_tag_for(f) }}</video>
     EOS
   end
@@ -32,6 +33,14 @@ module VideosHelper
     })
     EOS
     ).html_safe
+  end
+  
+  def sizes_in_embed(video)
+    return { :width => 0, :height => 0 } if video.blank?
+    max_sized_encoding = video.encodings.where(:width => video.encodings.maximum(:width)).first
+    embed_width        = max_sized_encoding.width > video.user.default_video_embed_width ? video.user.default_video_embed_width : max_sized_encoding.width
+    embed_height       = (embed_width*max_sized_encoding.height)/max_sized_encoding.width
+    { :width => embed_width, :height => embed_height }
   end
   
 private

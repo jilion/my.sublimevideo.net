@@ -32,4 +32,26 @@ describe VideosHelper do
     end
   end
   
+  describe "#sizes_in_embed(video)" do
+    it "should be [0,0] if video is nil" do
+      helper.sizes_in_embed(nil).should == { :width => 0, :height => 0 }
+    end
+    
+    it "should be the sizes of the encodings that has the max width if its width is under the preferred user embed width" do
+      user      = Factory(:user, :video_settings => { :default_video_embed_width => 500 })
+      video     = Factory(:video, :user => user, :width => 600, :height => 300)
+      encoding1 = Factory(:video_encoding, :video => video, :width => 200, :height => 120)
+      encoding2 = Factory(:video_encoding, :video => video, :width => 300, :height => 160)
+      helper.sizes_in_embed(video).should == { :width => 300, :height => 160 }
+    end
+    
+    it "should be the preferred user embed width and height proportioned with the sizes of the encodings that has the max width if its width is more than the preferred user embed width" do
+      user      = Factory(:user, :video_settings => { :default_video_embed_width => 500 })
+      video     = Factory(:video, :user => user, :width => 600, :height => 300)
+      encoding1 = Factory(:video_encoding, :video => video, :width => 200, :height => 120)
+      encoding2 = Factory(:video_encoding, :video => video, :width => 1200, :height => 160)
+      helper.sizes_in_embed(video).should == { :width => 500, :height => (500*160)/1200 }
+    end
+  end
+  
 end

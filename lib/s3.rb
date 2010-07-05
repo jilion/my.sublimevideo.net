@@ -24,6 +24,10 @@ module S3
       names
     end
     
+    def panda_bucket
+      @panda_bucket ||= client.bucket(S3Bucket.panda)
+    end
+    
     def videos_bucket
       @videos_bucket ||= client.bucket(S3Bucket.videos)
     end
@@ -32,8 +36,6 @@ module S3
       @yml_options = nil
     end
     
-  private
-    
     def logs_bucket
       @logs_bucket ||= client.bucket(S3Bucket.logs)
     end
@@ -41,6 +43,8 @@ module S3
     def client
       @client ||= Aws::S3.new(access_key_id, secret_access_key)
     end
+    
+  private
     
     def yml
       config_path = Rails.root.join('config', 's3.yml')
