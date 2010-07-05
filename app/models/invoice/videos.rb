@@ -37,7 +37,7 @@ private
           :id                => video.id,
           :video_title       => video.title,
           :archived_at       => video.archived_at,
-          :bandwidth_upload  => calculate_upload_bandwidth(video, invoice)
+          :bandwidth_upload  => calculate_upload_bandwidth(video, invoice),
           :bandwidth_s3      => video.bandwidth_s3_cache,
           :bandwidth_us      => video.bandwidth_us_cache,
           :bandwidth_eu      => video.bandwidth_eu_cache,

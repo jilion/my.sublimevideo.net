@@ -40,7 +40,8 @@ describe Log::Amazon::S3 do
     it "should download and save new logs & launch delayed job" do
       VCR.use_cassette('s3/logs_s3_videos_with_prefix') do
         lambda { Log::Amazon::S3::Videos.fetch_and_create_new_logs }.should change(Log::Amazon::S3::Videos, :count).by(35)
-        Delayed::Job.last.name.should == 'Class#fetch_and_create_new_logs'
+        Delayed::Job.first.name.should == 'Class#fetch_and_create_new_logs'
+        Delayed::Job.last.name.should  == 'Log::Amazon::S3::Videos#process'
       end
     end
     
