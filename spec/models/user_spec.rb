@@ -78,7 +78,7 @@ describe User do
     end
   end
   
-  describe "State Machine", :focus => true do
+  describe "State Machine" do
     
     describe "initial state" do
       subject { Factory(:user) }
