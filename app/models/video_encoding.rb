@@ -128,10 +128,11 @@ protected
   
   # before_transition (activate)
   def set_file
-    key_on_panda_bucket  = "#{panda_encoding_id}.#{extname}"
-    key_on_videos_bucket = "#{file.store_dir}/#{video.name}#{profile.name}.#{extname}"
+    key_on_panda_bucket       = "#{panda_encoding_id}.#{extname}"
+    filename_on_videos_bucket = "#{video.name}#{profile.name}.#{extname}"
+    key_on_videos_bucket      = "#{file.store_dir}/#{filename_on_videos_bucket}"
     S3.client.interface.copy(S3.panda_bucket.name, key_on_panda_bucket, S3.videos_bucket.name, key_on_videos_bucket, :copy, 'x-amz-acl' => 'public-read')
-    write_attribute(:file, "#{video.name}#{profile.name}.#{extname}")
+    write_attribute(:file, filename_on_videos_bucket)
   end
   def set_file_added_at
     self.file_added_at = Time.now.utc
