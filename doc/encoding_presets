@@ -1,11 +1,11 @@
 # MP4 SD
-Command: HandBrakeCLI -i $input_file$ -o $output_file$ -e x264 -q 0.589999973773956 -E faac,ac3 -B 160,auto -R 48,Auto -6 dpl2,auto -f mp4 -X 640 -Y 360 -O --loose-anamorphic -x level=30:cabac=0:ref=3:mixed-refs=1:analyse=all:me=umh:no-fast-pskip=1
-                                                                                    
-# MP4 HQ                                                                            
-Command: HandBrakeCLI -i $input_file$ -o $output_file$ -e x264 -q 0.589999973773956 -E faac,ac3 -B 160,auto -R 48,Auto -6 dpl2,auto -f mp4 -X 854 -Y 480 -O --loose-anamorphic -x level=30:cabac=0:ref=3:mixed-refs=1:analyse=all:me=umh:no-fast-pskip=1
-                                                                                    
-# MP4 HD                                                                            
-Command: HandBrakeCLI -i $input_file$ -o $output_file$ -e x264 -q 0.589999973773956 -E faac,ac3 -B 160,auto -R 48,Auto -6 dpl2,auto -f mp4 -X 1280 -Y 720 -O --loose-anamorphic -x level=30:cabac=0:ref=3:mixed-refs=1:analyse=all:me=umh:no-fast-pskip=1
+Command: HandBrakeCLI -i $input_file$ -o $output_file$ -e x264 -q 20 -E faac -B 160 -R 48 -6 dpl2 -f mp4 -X 640 -Y 360 -O --loose-anamorphic -x level=30:cabac=0:ref=3:mixed-refs=1:analyse=all:me=umh:no-fast-pskip=1
+                                                                                                                
+# MP4 HQ                                                                                                        
+Command: HandBrakeCLI -i $input_file$ -o $output_file$ -e x264 -q 20 -E faac -B 160 -R 48 -6 dpl2 -f mp4 -X 854 -Y 480 -O --loose-anamorphic -x level=30:cabac=0:ref=3:mixed-refs=1:analyse=all:me=umh:no-fast-pskip=1
+                                                                                                                
+# MP4 HD                                                                                                        
+Command: HandBrakeCLI -i $input_file$ -o $output_file$ -e x264 -q 20 -E faac -B 160 -R 48 -6 dpl2 -f mp4 -X 1280 -Y 720 -O --loose-anamorphic -x level=30:cabac=0:ref=3:mixed-refs=1:analyse=all:me=umh:no-fast-pskip=1
 
 
 # WEBM SD

@@ -590,8 +590,8 @@ form p.note, #content form label.note {
 }
 
 #content .entry.submit input {
-  width:134px;
-  height:66px;
+  width:144px;
+  height:76px;
   background:url(/images/embed/submit_btn.png) no-repeat;
   border:none;
   font-family:"proxima-nova-1","proxima-nova-2", Helvetica, Arial, sans-serif;
@@ -601,9 +601,11 @@ form p.note, #content form label.note {
   text-shadow:rgba(255,255,255,0.45) 0 1px 0;
   font-weight:600;
   position:relative;
-  left:-5px;
+  top:-5px;
+  left:-10px;
   float:left;
-  margin-right:10px;
+  margin-right:6px;
+  outline:0;
 }
 
 #content .entry.submit.signup input {
@@ -613,9 +615,9 @@ form p.note, #content form label.note {
   font-weight:400;
 }
 
-#content .entry.submit input:active {
-  background-position:0 -66px;
-}
+#content .entry.submit input:active {background-position:0 -76px;}
+#content .entry.submit input:focus {background-position:0 -152px;}
+#content .entry.submit input:active:focus {background-position:0 -228px;}
 
 #content .entry.submit p.note {
   font-size:12px;
@@ -924,14 +926,14 @@ ul#trial_legend li em {
 
 #content form.site .actions {
   position:absolute;
-  top:23px;
+  top:18px;
   left:455px;
   width:130px;
 }
 
 #content form.site input.add, form input.submit.small {
-  width:89px;
-  height:40px;
+  width:97px;
+  height:48px;
   background:url(/images/embed/add_btn.png) no-repeat;
   border:none;
   font-family:"proxima-nova-1","proxima-nova-2", Helvetica, Arial, sans-serif;
@@ -940,9 +942,12 @@ ul#trial_legend li em {
   text-align:center;
   color:#4d5563;
   text-shadow:rgba(255,255,255,0.45) 0 1px 0;
+  outline:0;
 }
 
-#content form.site input.add:active, form input.submit.small:active {background-position:0 -40px;}
+#content form.site input.add:active, form input.submit.small:active {background-position:0 -48px;}
+#content form.site input.add:focus, form input.submit.small:focus {background-position:0 -96px;}
+#content form.site input.add:active:focus, form input.submit.small:active:focus {background-position:0 -144px;}
 
 #content .main_table_wrap {
   border:1px solid #666;
