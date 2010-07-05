@@ -20,6 +20,20 @@ describe Admin::DelayedJobsController do
       get :show, :id => '1'
       response.should be_success
     end
+    it "should respond with redirect to PUT :update" do
+      Delayed::Job.stub(:find).with("1").and_return(mock_delayed_job)
+      mock_delayed_job.stub(:update_attributes).with({ :locked_at => nil, :locked_by => nil }).and_return(true)
+      put :update, :id => '1'
+      response.should be_redirect
+      response.should redirect_to admin_delayed_jobs_path
+    end
+    it "should respond with redirect to DELETE :destroy" do
+      Delayed::Job.stub(:find).with("1").and_return(mock_delayed_job)
+      mock_delayed_job.stub(:destroy).and_return(true)
+      delete :destroy, :id => '1'
+      response.should be_redirect
+      response.should redirect_to admin_delayed_jobs_path
+    end
   end
   
   context "as guest" do
@@ -31,6 +45,15 @@ describe Admin::DelayedJobsController do
       get :show, :id => '1'
       response.should redirect_to(new_admin_session_path)
     end
+    it "should respond with redirect to PUT :update" do
+      put :update, :id => '1'
+      response.should redirect_to(new_admin_session_path)
+    end
+    it "should respond with redirect to DELETE :destroy" do
+      delete :destroy, :id => '1'
+      response.should redirect_to(new_admin_session_path)
+    end
+    
   end
   
 private

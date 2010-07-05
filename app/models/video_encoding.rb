@@ -64,9 +64,9 @@ class VideoEncoding < ActiveRecord::Base
     before_transition :on => [:deprecate, :archive], :do => :set_file_removed_at
     before_transition :failed => :deprecated, :do => :delete_panda_encoding
     
-    before_transition :on => :suspend, :do => :block_video
+    before_transition :on => :suspend, :do => :block_file
     
-    before_transition :on => :unsuspend, :do => :unblock_video
+    before_transition :on => :unsuspend, :do => :unblock_file
     
     before_transition :on => :archive, :do => :remove_file!
     before_transition :processing => :archived, :do => :set_encoding_info
@@ -111,6 +111,10 @@ class VideoEncoding < ActiveRecord::Base
     processing? && file.present?
   end
   
+  def is_biggest_posterframeable_encoding_profile?
+    profile.posterframeable? && video.encodings.map(&:profile).select{ |p| p.posterframeable? && p.min_width > profile.min_width }.empty?
+  end
+  
 protected
   
   # before_transition (pandize)
@@ -128,10 +132,11 @@ protected
   
   # before_transition (activate)
   def set_file
-    key_on_panda_bucket  = "#{panda_encoding_id}.#{extname}"
-    key_on_videos_bucket = "#{file.store_dir}/#{video.name}#{profile.name}.#{extname}"
+    key_on_panda_bucket       = "#{panda_encoding_id}.#{extname}"
+    filename_on_videos_bucket = "#{video.name}#{profile.name}.#{extname}"
+    key_on_videos_bucket      = "#{file.store_dir}/#{filename_on_videos_bucket}"
     S3.client.interface.copy(S3.panda_bucket.name, key_on_panda_bucket, S3.videos_bucket.name, key_on_videos_bucket, :copy, 'x-amz-acl' => 'public-read')
-    write_attribute(:file, "#{video.name}#{profile.name}.#{extname}")
+    write_attribute(:file, filename_on_videos_bucket)
   end
   def set_file_added_at
     self.file_added_at = Time.now.utc
@@ -150,9 +155,7 @@ protected
   
   # before_transition (activate)
   def set_video_posterframe
-    if !video.posterframe.present? && profile.posterframeable? && video.encodings.map(&:profile).select{ |p| p.posterframeable? && p.min_width > profile.min_width }.empty?
-      video.set_posterframe_from_encoding(self)
-    end
+    video.set_posterframe_from_encoding(self) if !video.posterframe.present? && is_biggest_posterframeable_encoding_profile?
   end
   
   # after_transition (activate)
@@ -169,13 +172,13 @@ protected
   end
   
   # before_transition (suspend)
-  def block_video
-    # S3.videos_bucket.key(file.path).put(S3.videos_bucket.key(file.path).data, 'private') if Rails.env.production? && S3.videos_bucket.key(file.path).exists?
+  def block_file
+    Aws::S3::Grantee.new(S3.videos_bucket.key(file.path), 'http://acs.amazonaws.com/groups/global/AllUsers').revoke('READ') if file.path && S3.videos_bucket.key(file.path).exists?
   end
   
   # before_transition (unsuspend)
-  def unblock_video
-    # S3.videos_bucket.key(file.path).put(S3.videos_bucket.key(file.path).data, 'public-read') if Rails.env.production? && S3.videos_bucket.key(file.path).exists?
+  def unblock_file
+    Aws::S3::Grantee.new(S3.videos_bucket.key(file.path), 'http://acs.amazonaws.com/groups/global/AllUsers', 'READ', :apply_and_refresh) if file.path && S3.videos_bucket.key(file.path).exists?
   end
   
   # before_transition (deprecate) / (archive)

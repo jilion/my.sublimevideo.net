@@ -1,5 +1,7 @@
 = title_and_content_header("Delayed jobs")
 
+= "Current server time: #{l(Time.now.utc, :format => :short)}"
+
 #delayed_jobs_table_wrap
   .main_table_wrap
     .dark_rounded_corners
@@ -12,5 +14,7 @@
           %th.last_error= "Last error"
           %th.locked_at= link_to_sort(:locked_at, admin_delayed_jobs_path, :up => 'asc', :reverse => true, :remote => false)
           %th.locked_by= link_to_sort(:locked_by, admin_delayed_jobs_path, :up => 'asc', :remote => false)
-          %th.failed_at.delete= link_to_sort(:failed_at, admin_delayed_jobs_path, :up => 'asc', :reverse => true, :remote => false)
+          %th.failed_at= link_to_sort(:failed_at, admin_delayed_jobs_path, :up => 'asc', :reverse => true, :remote => false)
+          %th.unlock= "Unlock"
+          %th.delete= "Delete"
         = render :partial => 'delayed_job', :collection => @delayed_jobs

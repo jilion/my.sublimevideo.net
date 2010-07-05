@@ -1,49 +1,8 @@
 ---
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
-    method: :post
-    uri: https://api.voxel.net:443/version/1.0/
-    body: key=f0bdf4e54d590835e7100c926c2d1a47&method=voxel.voxcast.ondemand.content.purge_file&verbosity=compact&timestamp=2010-06-10T17%3a44%3a43%2b02%3a00&paths=%2fv%2f30rmi8cg%2f.jpg&device_id=48182&api_sig=619a231da9c3f7edfbf8725f1f181173
-    headers: 
-      accept: 
-      - "*/*"
-      content-type: 
-      - application/x-www-form-urlencoded
-      user-agent: 
-      - Voxel hAPI ruby Client; 1.0
-      connection: 
-      - close
-      content-length: 
-      - "233"
-      host: 
-      - api.voxel.net
-  response: !ruby/struct:VCR::Response 
-    status: !ruby/struct:VCR::ResponseStatus 
-      code: 200
-      message: OK
-    headers: 
-      x-powered-by: 
-      - PHP/5.2.11
-      access-control-allow-origin: 
-      - "*"
-      connection: 
-      - close
-      content-type: 
-      - application/xml; charset=utf-8
-      date: 
-      - Thu, 10 Jun 2010 15:44:44 GMT
-      server: 
-      - Apache
-      content-length: 
-      - "201"
-    body: |
-      <?xml version="1.0"?>
-      <rsp stat="ok"><transaction><type>remove-url</type><id>6d037109-6370-4105-a2da-370332ee0dae</id><expiration>1276185584</expiration><status>inprogress</status></transaction></rsp>
-    http_version: "1.1"
-- !ruby/struct:VCR::HTTPInteraction 
-  request: !ruby/struct:VCR::Request 
     method: :get
-    uri: !ruby/regexp /dev\.sublimevideo\.videos\.s3\.amazonaws\.com:443\/active.+\?acl/
+    uri: !ruby/regexp /dev\.sublimevideo\.videos\.s3\.amazonaws\.com:443\/active\?acl/
     body: 
     headers: 
       accept: 
@@ -82,7 +41,7 @@
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
     method: :get
-    uri: !ruby/regexp /dev\.sublimevideo\.videos\.s3\.amazonaws\.com:443\/suspended.+\?acl/
+    uri: !ruby/regexp /dev\.sublimevideo\.videos\.s3\.amazonaws\.com:443\/suspended\?acl/
     body: 
     headers: 
       accept: 
@@ -194,6 +153,43 @@
       - AmazonS3
       x-amz-request-id: 
       - 8B52CD67E816C244
+      content-length: 
+      - "0"
+    body: ""
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :put
+    uri: !ruby/regexp /dev\.sublimevideo\.videos\.s3\.amazonaws\.com:443\/.+\?acl/
+    body: <AccessControlPolicy><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><AccessControlList><Grant><Grantee xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CanonicalUser"><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID></Grantee><Permission>WRITE</Permission></Grant></AccessControlList></AccessControlPolicy>
+    headers: 
+      accept: 
+      - "*/*"
+      content-type: 
+      - ""
+      user-agent: 
+      - ""
+      date: 
+      - Mon, 05 Jul 2010 10:11:11 GMT
+      authorization: 
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:Rv136Uss+qnIYmduR7kwh2RX8Xg=
+      content-length: 
+      - "417"
+      host: 
+      - dev.sublimevideo.videos.s3.amazonaws.com
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      x-amz-id-2: 
+      - BV+VzusnqeHUhRbma397oG9ZBf8a7O0z2IY8MKJgsVWjFp+rK+nIecfq1t092I+1
+      date: 
+      - Mon, 05 Jul 2010 10:11:13 GMT
+      server: 
+      - AmazonS3
+      x-amz-request-id: 
+      - 4F34BB1CBBBFD4C4
       content-length: 
       - "0"
     body: ""
