@@ -8,6 +8,7 @@
 = content_for :content_header do
   %h2= "My sites"
   %p.title_desc= "Start to add your sites here by adding each of the domains or subdomains you want to use with SublimeVideo."
+  = render "layouts/account_activity"
   
 - @site = current_user.sites.build
 #new_site_wrap

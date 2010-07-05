@@ -39,10 +39,11 @@ module LogsFileFormat
     end
     
     def self.report_trackers
+      @ips = []
       analyze = RequestLogAnalyzer::Aggregator::Summarizer::Definer.new
       analyze.frequency(:path, :title => :hits,
-        :category => lambda { |r| token_from(r[:path]) },
-        :if       => lambda { |r| r[:http_status] == 200 && token_path?(r[:path]) && video_path?(r[:path]) }
+        :category  => lambda { |r| token_from(r[:path]) },
+        :if        => lambda { |r| video_path?(r[:path]) && token_path?(r[:path]) && @ips.exclude?("#{r[:client_ip]}/#{token_from(r[:path])}") && @ips << "#{r[:client_ip]}/#{token_from(r[:path])}" }
       )
       analyze.traffic(:sc_bytes, :title => :bandwidth_us,
         :category => lambda { |r| token_from(r[:path]) },

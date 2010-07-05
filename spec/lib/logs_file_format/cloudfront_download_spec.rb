@@ -26,8 +26,10 @@ describe LogsFileFormat::CloudfrontDownload do
     
     it "should parse and return hits tracker" do
       tracker = @trackers.select { |tracker| tracker.options[:title] == :hits }.first
-      tracker.categories.should have(1).tokens
+      tracker.categories.should have(3).tokens
       tracker.categories["e14ab4de"].should == 1
+      tracker.categories["g46g16dz"].should == 1
+      tracker.categories["313asa32"].should == 1
     end
   end
   
@@ -51,7 +53,8 @@ describe LogsFileFormat::CloudfrontDownload do
     
     it "should parse and return hits tracker" do
       tracker = @trackers.select { |tracker| tracker.options[:title] == :hits }.first
-      tracker.categories.should have(0).tokens
+      tracker.categories.should have(1).tokens
+      tracker.categories["k3zph1mc"].should == 6
     end
   end
   
