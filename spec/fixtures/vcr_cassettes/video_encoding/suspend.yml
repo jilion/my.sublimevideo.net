@@ -119,45 +119,6 @@
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
-    method: :get
-    uri: !ruby/regexp /dev\.sublimevideo\.videos\.s3\.amazonaws\.com:443\/.+\?acl/
-    body: 
-    headers: 
-      accept: 
-      - "*/*"
-      content-type: 
-      - ""
-      user-agent: 
-      - ""
-      date: 
-      - Mon, 05 Jul 2010 10:11:10 GMT
-      authorization: 
-      - AWS AKIAJ2FJVCFJW3RZRUUQ:BMVs83skr3Z6PP0vo6+GBoat2PA=
-      host: 
-      - dev.sublimevideo.videos.s3.amazonaws.com
-  response: !ruby/struct:VCR::Response 
-    status: !ruby/struct:VCR::ResponseStatus 
-      code: 200
-      message: OK
-    headers: 
-      x-amz-id-2: 
-      - V+ONxCSomh6pAsvvxHwX64vbyWQuNwDkflZLOnF+uz/IX0FHgBgT3OvsZppqJcDm
-      content-type: 
-      - application/xml
-      date: 
-      - Mon, 05 Jul 2010 10:11:12 GMT
-      server: 
-      - AmazonS3
-      x-amz-request-id: 
-      - 2E2A8B7EE0E78702
-      transfer-encoding: 
-      - chunked
-    body: |-
-      <?xml version="1.0" encoding="UTF-8"?>
-      <AccessControlPolicy xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><AccessControlList><Grant><Grantee xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="Group"><URI>http://acs.amazonaws.com/groups/global/AllUsers</URI></Grantee><Permission>READ</Permission></Grant><Grant><Grantee xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CanonicalUser"><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Grantee><Permission>WRITE</Permission></Grant></AccessControlList></AccessControlPolicy>
-    http_version: "1.1"
-- !ruby/struct:VCR::HTTPInteraction 
-  request: !ruby/struct:VCR::Request 
     method: :put
     uri: !ruby/regexp /dev\.sublimevideo\.videos\.s3\.amazonaws\.com:443\/.+\?acl/
     body: <AccessControlPolicy><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><AccessControlList><Grant><Grantee xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CanonicalUser"><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID></Grantee><Permission>WRITE</Permission></Grant></AccessControlList></AccessControlPolicy>
