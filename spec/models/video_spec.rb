@@ -590,9 +590,7 @@ describe Video do
   describe "Class Methods" do
     describe ".panda_s3_url" do
       it "should be get from Panda" do
-        VCR.use_cassette('video/class_methods', :record => :all) do
-          Video.panda_s3_url.should == "http://dev.sublimevideo.panda.s3.amazonaws.com"
-        end
+        Video.panda_s3_url.should == "http://dev.sublimevideo.panda.s3.amazonaws.com"
       end
     end
   end
