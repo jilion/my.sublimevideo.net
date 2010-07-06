@@ -1,7 +1,8 @@
 class VideosController < ApplicationController
   skip_before_filter :beta_protection, :only => :transcoded
   before_filter :authenticate_user!, :except => :transcoded
-  before_filter :credit_card_and_not_suspended_required!, :except => [:index, :transcoded]
+  before_filter :redirect_suspended_user, :except => :transcoded
+  before_filter :require_credit_card, :except => [:index, :transcoded]
   respond_to :html, :js
   
   has_scope :by_date
@@ -79,8 +80,12 @@ class VideosController < ApplicationController
   
 protected
   
-  def credit_card_and_not_suspended_required!
-    redirect_to videos_path if !current_user.credit_card? || current_user.suspended?
+  def redirect_suspended_user
+    redirect_to page_path('suspended') if current_user.suspended?
+  end
+  
+  def require_credit_card
+    redirect_to videos_path unless current_user.credit_card?
   end
   
 end

@@ -49,7 +49,7 @@ MySublimeVideo::Application.routes.draw do |map|
     resources :delayed_jobs, :only => [:index, :show, :update, :destroy], :path => "djs"
   end
   
-  match ':page', :to => 'pages#show', :via => :get, :as => :page, :page => /terms|docs|support/
+  match ':page', :to => 'pages#show', :via => :get, :as => :page, :page => /terms|docs|support|suspended/
   
   root :to => redirect('/sites')
   
