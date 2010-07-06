@@ -17,4 +17,11 @@ feature "Pages:" do
     page.should have_content('Support')
   end
   
+  scenario "suspended" do
+    sign_in_as_user
+    @current_user.suspend
+    visit "/suspended"
+    page.should have_content('Your account is suspended')
+  end
+  
 end

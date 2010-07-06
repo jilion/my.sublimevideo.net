@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/acceptance_helper'
 feature "Credit cards update:" do
   
   background do
-    sign_in_as_user
+    sign_in_as_user(:without_cc => true)
   end
   
   it "add a new video" do

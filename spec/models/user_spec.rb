@@ -180,9 +180,20 @@ describe User do
   end
   
   describe "instance methods" do
+    let(:user) { Factory(:user) }
+    
     it "should be welcome if sites is empty" do
-      user = Factory(:user)
       user.should be_welcome
+    end
+    
+    it "shouldn't be welcome if user as a credit_card" do
+      user.stub(:credit_card?).and_return(true)
+      user.should_not be_welcome
+    end
+    
+    it "should be active when suspended to allow login" do
+      user.suspend
+      user.should be_active
     end
   end
   

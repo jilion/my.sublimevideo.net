@@ -90,6 +90,13 @@ feature "Videos page:" do
     page.should have_content('Add a Credit Card')
   end
   
+  scenario "user suspended" do
+    @current_user.suspend
+    visit "/sites"
+    
+    current_url.should =~ %r(http://[^/]+/suspended)
+  end
+  
   scenario "sort buttons displayed only if count of videos > 1" do
     visit "/videos"
     

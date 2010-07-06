@@ -78,4 +78,11 @@ feature "Sites actions:" do
     page.should have_css('a.sort.hostname')
   end
   
+  scenario "user suspended" do
+    @current_user.suspend
+    visit "/sites"
+    
+    current_url.should =~ %r(http://[^/]+/suspended)
+  end
+  
 end
