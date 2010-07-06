@@ -68,7 +68,7 @@ class Site < ActiveRecord::Base
     after_transition  :inactive => :active, :do => [:purge_loader_file, :purge_license_file]
     
     before_transition :on => :archive,             :do => :set_archived_at
-    before_transition :on => [:archive, :suspend], :do => :remove_loader_and_license_file!
+    before_transition :on => [:archive, :suspend], :do => :remove_loader_and_license_file
     after_transition  :on => [:archive, :suspend], :do => :purge_license_file
     after_transition  :on => [:archive, :suspend], :do => :purge_loader_file
     
@@ -133,9 +133,9 @@ class Site < ActiveRecord::Base
     set_template("license")
   end
   
-  def remove_loader_and_license_file!
-    remove_loader!
-    remove_license!
+  def remove_loader_and_license_file
+    self.remove_loader = true
+    self.remove_license = true
   end
   
   def purge_loader_file

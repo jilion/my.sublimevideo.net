@@ -244,8 +244,8 @@ describe Site do
       it "should reset license & loader when unsuspend" do
         VoxcastCDN.stub(:purge)
         @site.suspend
+        @site = Site.find(@site)
         @site.unsuspend
-        @site.reload
         @site.loader.should be_present
         @site.license.should be_present
       end

@@ -2,7 +2,7 @@ source 'http://rubygems.org'
 
 gem 'rails', '3.0.0.beta4'
 
-gem 'libxml-ruby', :require => 'libxml'
+gem 'libxml-ruby', '1.1.3', :require => 'libxml'
 
 gem 'i18n'
 gem 'haml'
