@@ -7,10 +7,12 @@ MySublimeVideo::Application.routes.draw do |map|
   match 'register', :to => 'devise/registrations#new', :as => "new_user_registration"
   
   %w[sign_up signup users/register].each              { |action| match action => redirect('/register'), :via => :get }
-  %w[log_in sign_in signin users/login].each          { |action| match action => redirect('/login'), :via => :get }
-  %w[log_out sign_out signout exit users/logout].each { |action| match action => redirect('/logout'), :via => :get }
+  %w[log_in sign_in signin users/login].each          { |action| match action => redirect('/login'),    :via => :get }
+  %w[log_out sign_out signout exit users/logout].each { |action| match action => redirect('/logout'),   :via => :get }
   
-  devise_for :users, :path_names => { :sign_up => 'register', :sign_in => 'login', :sign_out => 'logout' }
+  devise_for :users,
+  :controllers => { :invitations => "admin/invitations" },
+  :path_names => { :sign_up => 'register', :sign_in => 'login', :sign_out => 'logout' }
   
   resources :users, :only => :update
   resources :sites do
@@ -24,7 +26,7 @@ MySublimeVideo::Application.routes.draw do |map|
   resources :invoices, :only => [:index, :show]
   resource :card, :controller => "credit_cards", :as => :credit_card, :only => [:edit, :update]
   
-  %w[login log_in sign_in signin].each         { |action| match "admin/#{action}" => redirect('/admin/admins/login'), :via => :get }
+  %w[login log_in sign_in signin].each          { |action| match "admin/#{action}" => redirect('/admin/admins/login'), :via => :get  }
   %w[logout log_out sign_out signout exit].each { |action| match "admin/#{action}" => redirect('/admin/admins/logout'), :via => :get }
   
   match 'admin', :to => redirect('/admin/profiles'), :as => "admin"
@@ -34,11 +36,11 @@ MySublimeVideo::Application.routes.draw do |map|
   :path_names => { :sign_in => 'login', :sign_out => 'logout' }
   
   namespace "admin" do
-    resources :users
+    resources :users, :only => [:index]
     
-    resources :sites
+    resources :sites, :only => [:index]
     
-    resources :videos
+    resources :videos, :only => [:index]
     
     resources :video_profiles, :except => [:destroy], :as => :profiles, :path => "profiles" do
       resources :video_profile_versions, :only => [:show, :new, :create, :update], :as => :versions, :path => "versions"

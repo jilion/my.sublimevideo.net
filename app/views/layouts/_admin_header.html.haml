@@ -7,7 +7,7 @@
     .popup_menu
       %h3= link_to "Menu", "", :onclick => "return false"
       %ul
-        %li.users{ :class => ('active' if controller_name == 'admin/users') }= link_to "Users", admin_profiles_path
+        %li.users{ :class => ('active' if controller_name == 'admin/users') }= link_to "Users", admin_users_path
         %li.videos{ :class => ('active' if controller_name == 'admin/videos') }= link_to "Videos", admin_profiles_path
         %li.video_profiles{ :class => ('active' if %w[video_profiles video_profile_versions].include? controller_name) }= link_to "Videos Profiles", admin_profiles_path
         %li.admins{ :class => ('active' if controller_name == 'admins') }= link_to "Admins", admin_admins_path

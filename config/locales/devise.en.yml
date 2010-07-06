@@ -10,17 +10,9 @@ en:
       admin:
         send_instructions: 'An email with instructions about how to set the password has been sent.'
         updated: 'Your password was set successfully. You are now signed in.'
-    failure:
-      admin:
-        unauthenticated: 'You need to sign in or have an invitation before continuing.'
       user:
-        unauthenticated: 'You need to sign in or sign up before continuing.'
-        unconfirmed: 'You have to confirm your account before continuing.'
-        locked: 'Your account is locked.'
-        invalid: 'Invalid email or password.'
-        invalid_token: 'Invalid authentication token.'
-        timeout: 'Your session expired, please sign in again to continue.'
-        inactive: 'Your account was not activated yet.'
+        send_instructions: 'An email with instructions about how to set the password has been sent.'
+        updated: 'Your password was set successfully. You are now signed in.'
     sessions:
       signed_in: 'Signed in successfully.'
       signed_out: 'Signed out successfully.'
@@ -37,6 +29,17 @@ en:
     unlocks:
       send_instructions: 'You will receive an email with instructions about how to unlock your account in a few minutes.'
       unlocked: 'Your account was successfully unlocked. You are now signed in.'
+    failure:
+      admin:
+        unauthenticated: 'You need to sign in or have an invitation before continuing.'
+      user:
+        unauthenticated: 'You need to sign in or sign up before continuing.'
+        unconfirmed: 'You have to confirm your account before continuing.'
+        locked: 'Your account is locked.'
+        invalid: 'Invalid email or password.'
+        invalid_token: 'Invalid authentication token.'
+        timeout: 'Your session expired, please sign in again to continue.'
+        inactive: 'Your account was not activated yet.'
     mailer:
       confirmation_instructions:
         subject: 'Confirmation instructions'

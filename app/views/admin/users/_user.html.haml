@@ -1,0 +1,11 @@
+%tr{ :class => cycle("", "alt") }
+  %td.email
+    = mail_to user.email
+  %td.trial
+    = user.trial?
+  %td.sites
+    = user.sites.size
+  %td.videos
+    = user.cc? ? user.videos.size : "No CC"
+  %td.confirmed
+    = user.encrypted_password.present?

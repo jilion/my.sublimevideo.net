@@ -45,7 +45,7 @@ class User < ActiveRecord::Base
   include VideoSettings
   
   devise :database_authenticatable, :registerable, :confirmable,
-         :recoverable, :rememberable, :trackable, :validatable, :lockable
+         :recoverable, :rememberable, :trackable, :validatable, :lockable, :invitable
   
   attr_accessor :terms_and_conditions
   attr_accessible :full_name, :email, :remember_me, :password, :terms_and_conditions

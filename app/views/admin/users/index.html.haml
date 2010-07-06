@@ -1,0 +1,12 @@
+= title_and_content_header("Users")
+
+= link_to "Invite a user", new_user_invitation_path, :class => "add"
+
+%table.main#users
+  %tr
+    %th= "Email"
+    %th= "Trial?"
+    %th= "# Sites"
+    %th= "# Videos"
+    %th.delete= "Confirmed?"
+  = render @users
