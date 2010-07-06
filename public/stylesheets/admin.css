@@ -49,7 +49,7 @@ body {
 #header .popup_menu h3 {
   padding:4px;
   font-size:18px;
-  font-weight:400;
+  font-weight:600;
   border-radius:13px;
   position:relative;
   z-index:2;
@@ -71,12 +71,12 @@ body {
   color:#fff;
   padding:2px 8px;
   display:block;
+  text-shadow:#000 0 -1px 0;
   border-radius:4px;
 }
 #header .popup_menu:hover h3 a {
   background:#333;
   color:#fff;
-  text-shadow:#000 0 -1px 0;
 }
 
 #header .popup_menu ul {
@@ -126,7 +126,7 @@ body {
 ul#favorite_links {
   list-style-type:none;
   float:left;
-  padding:10px 0 0 15px;
+  padding:8px 0 0 15px;
 }
 
 ul#favorite_links li {
@@ -135,14 +135,27 @@ ul#favorite_links li {
 }
 
 ul#favorite_links li a {
-  padding:6px 10px;
-  background:#000;
-  border-radius:20px;
-  -webkit-transition:0.3s color;
+  font-size:16px;
+  padding:8px 12px 7px;
+  color:#fff;
+  text-shadow:#000 0 -1px 0;
+  background:#444;
+  background:-webkit-gradient(linear,left top,left bottom,from(#555),to(#333));
+  background:-moz-linear-gradient(top, #555, #333);
+  border-radius:13px;
 }
 
 ul#favorite_links li a:hover {
   color:#fff;
+}
+
+ul#favorite_links li.active a {
+  background:#777;
+  background:-webkit-gradient(linear,left top,left bottom,from(#666),to(#777));
+  background:-moz-linear-gradient(top, #666, #777);
+  color:#fff;
+  text-shadow:rgba(0,0,0,0.4) 0 -1px 0;
+  -webkit-box-shadow:inset #000 0 1px 4px, #000 0 0 2px;
 }
 
 #header .right {
@@ -202,7 +215,7 @@ ul#favorite_links li a:hover {
 }
 
 #main table th {
-  padding:5px 0;
+  padding:8px 0;
   background:#ddd;
   background:-webkit-gradient(linear,left top,left bottom,from(#eee),to(#ccc));
   background:-moz-linear-gradient(top, #eee, #ccc);
@@ -221,6 +234,16 @@ ul#favorite_links li a:hover {
 }
 
 #main table td.left {text-align:left}
+
+#main table th a.sort:after {content:" ▾";}
+#main table th a.sort.up:after {content:" ▴";}
+
+#main table th a.active {
+  background:#000;
+  color:#fff;
+  padding:3px 10px;
+  border-radius:20px;
+}
 
 #main form label {
   display:block;
@@ -241,11 +264,9 @@ ul#favorite_links li a:hover {
   font-size:16px;
 }
 
-#main form input[type=submit] {
+#main form .actions input[type=submit] {
   margin:20px 0 0;
 }
-
-#main form input[value=Delete] {margin:0}
 
 #main form p.note {
   margin:15px 0 0;
