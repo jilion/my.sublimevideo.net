@@ -76,6 +76,7 @@ body {
 #header .popup_menu:hover h3 a {
   background:#333;
   color:#fff;
+  text-shadow:#000 0 -1px 0;
 }
 
 #header .popup_menu ul {
@@ -210,7 +211,7 @@ ul#favorite_links li a:hover {
 #main table th.left {text-align:left}
 
 #main table td {
-  padding:5px;
+  padding:15px 5px;
   text-align:center;
 }
 
@@ -243,6 +244,8 @@ ul#favorite_links li a:hover {
 #main form input[type=submit] {
   margin:20px 0 0;
 }
+
+#main form input[value=Delete] {margin:0}
 
 #main form p.note {
   margin:15px 0 0;
