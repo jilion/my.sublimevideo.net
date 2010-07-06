@@ -9,9 +9,9 @@
 
 module User::Trial
   
-  def self.delay_supervise_users(minutes = 15.minutes)
+  def self.delay_supervise_users(interval = 15.minutes)
     unless Delayed::Job.already_delayed?('%supervise_users%')
-      delay(:priority => 5, :run_at => minutes.from_now).supervise_users
+      delay(:priority => 5, :run_at => interval.from_now).supervise_users
     end
   end
   
@@ -30,7 +30,7 @@ module User::Trial
       end
     end
   end
-    
+  
   def self.method_missing(name)
     yml[name.to_sym]
   end

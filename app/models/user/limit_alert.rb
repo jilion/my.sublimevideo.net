@@ -12,9 +12,9 @@ module User::LimitAlert
     [2000, 5000, 10000, 20000, 50000] # in cents
   end
   
-  def self.delay_send_limit_alerts(minutes = 10.minutes)
+  def self.delay_send_limit_alerts(interval = 10.minutes)
     unless Delayed::Job.already_delayed?('%send_limit_alerts%')
-      delay(:priority => 30, :run_at => minutes.from_now).send_limit_alerts
+      delay(:priority => 30, :run_at => interval.from_now).send_limit_alerts
     end
   end
   

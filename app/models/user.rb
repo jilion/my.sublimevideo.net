@@ -96,7 +96,11 @@ class User < ActiveRecord::Base
   # =================
   
   state_machine :initial => :active do
-    event(:suspend)    { transition :active => :suspended }
+    before_transition :on => :suspend, :do => [:suspend_sites, :suspend_videos]
+    before_transition :on => :unsuspend, :do => [:unsuspend_sites, :unsuspend_videos]
+    
+    event(:suspend)   { transition :active => :suspended }
+    event(:unsuspend) { transition :suspended => :active }
   end
   
   # ====================
@@ -113,6 +117,22 @@ private
   # before_create
   def set_next_invoiced_on
     self.next_invoiced_on ||= Time.now.utc.to_date + 1.month
+  end
+  
+  # before_transition (suspend)
+  def suspend_sites
+    sites.map(&:suspend)
+  end
+  def suspend_videos
+    videos.map(&:suspend)
+  end
+  
+  # before_transition (unsuspend)
+  def unsuspend_sites
+    sites.map(&:unsuspend)
+  end
+  def unsuspend_videos
+    videos.map(&:unsuspend)
   end
   
 end

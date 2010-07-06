@@ -2,15 +2,12 @@
 
 = link_to "Invite an admin", new_admin_invitation_path
 
-#admins_table_wrap
-  .main_table_wrap
-    .dark_rounded_corners
-      %table.main#admins
-        %tr
-          %th.title
-            .wrap
-              %strong
-                = "Email"
-          %th= "Confirmed?"
-          %th.delete= "Delete"
-        = render @admins
+%table.main#admins
+  %tr
+    %th.title
+      .wrap
+        %strong
+          = "Email"
+    %th= "Confirmed?"
+    %th.delete= "Delete"
+  = render @admins

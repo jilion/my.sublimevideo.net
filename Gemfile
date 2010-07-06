@@ -69,7 +69,7 @@ if RUBY_PLATFORM =~ /darwin/
     
     gem 'factory_girl_rails'
     gem 'webmock'
-    gem 'vcr'
+    gem 'vcr', :git => 'git://github.com/myronmarston/vcr', :ref => "0ec9ab51cbaf7c4d79862a500304d91e3ff585ce"
   end
   
 end

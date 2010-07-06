@@ -78,7 +78,105 @@ describe User do
     end
   end
   
-  describe "scopes" do
+  describe "State Machine" do
+    
+    describe "initial state" do
+      subject { Factory(:user) }
+      it { should be_active }
+    end
+    
+    # ===========
+    # = suspend =
+    # ===========
+    describe "event(:suspend) { transition :active => :suspended }" do
+      before(:each) { VCR.insert_cassette('user/suspend') }
+      
+      let(:user)   { Factory(:user)                                            }
+      let(:site1)  { Factory(:site, :user => user, :hostname => "rymai.com")   }
+      let(:site2)  { Factory(:site, :user => user, :hostname => "octavez.com") }
+      let(:video1) { Factory(:video, :user => user)                            }
+      let(:video2) { Factory(:video, :user => user)                            }
+      
+      it "should set the state as :suspended from :active" do
+        user.should be_active
+        user.suspend
+        user.should be_suspended
+      end
+      
+      describe "callbacks" do
+        describe "before_transition :on => :suspend, :do => :suspend_sites" do
+          it "should suspend each user' site" do
+            user.stub!(:suspend_videos => true)
+            site1.should_not be_suspended
+            site2.should_not be_suspended
+            user.suspend
+            site1.reload.should be_suspended
+            site2.reload.should be_suspended
+          end
+        end
+        
+        describe "before_transition :on => :suspend, :do => :suspend_videos" do
+          it "should suspend each user' video" do
+            user.stub!(:suspend_sites => true)
+            video1.should_not be_suspended
+            video2.should_not be_suspended
+            user.suspend
+            video1.reload.should be_suspended
+            video2.reload.should be_suspended
+          end
+        end
+      end
+      
+      after(:each) { VCR.eject_cassette }
+    end
+    
+    # =============
+    # = unsuspend =
+    # =============
+    describe "event(:unsuspend) { transition :suspended => :active }" do
+      before(:each) do
+        @user = Factory(:user)
+        @site1  = Factory(:site, :user => @user, :hostname => "rymai.com")
+        @site2  = Factory(:site, :user => @user, :hostname => "octavez.com")
+        @video1 = Factory(:video, :user => @user)
+        @video2 = Factory(:video, :user => @user)
+        VCR.use_cassette('user/suspend') { @user.suspend }
+        VCR.insert_cassette('user/unsuspend')
+      end
+      
+      it "should set the state as :active from :suspended" do
+        @user.should be_suspended
+        @user.unsuspend
+        @user.should be_active
+      end
+      
+      describe "callbacks" do
+        describe "before_transition :on => :unsuspend, :do => :unsuspend_sites" do
+          it "should suspend each user' site" do
+            @user.stub!(:unsuspend_videos => true)
+            @site1.reload.should be_suspended
+            @site2.reload.should be_suspended
+            @user.unsuspend
+            @site1.reload.should_not be_suspended
+            @site2.reload.should_not be_suspended
+          end
+        end
+        
+        describe "before_transition :on => :unsuspend, :do => :unsuspend_videos" do
+          it "should suspend each user' video" do
+            @user.stub!(:unsuspend_sites => true)
+            @video1.reload.should be_suspended
+            @video2.reload.should be_suspended
+            @user.unsuspend
+            @video1.reload.should_not be_suspended
+            @video2.reload.should_not be_suspended
+          end
+        end
+      end
+      
+      after(:each) { VCR.eject_cassette }
+    end
+    
   end
   
   describe "instance methods" do

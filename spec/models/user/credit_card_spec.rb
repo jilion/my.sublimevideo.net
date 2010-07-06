@@ -109,6 +109,47 @@ describe User::CreditCard do
     end
   end
   
+  describe "module method" do
+    
+    describe "send_credit_card_expiration" do
+      
+      it "should send 'cc will expire' email when user's credit card will expire at the end of the current month" do
+        user.update_attribute(:cc_expire_on, Time.now.utc)
+        lambda { User::CreditCard.send_credit_card_expiration }.should change(ActionMailer::Base.deliveries, :size).by(1)
+        last_delivery = ActionMailer::Base.deliveries.last
+        last_delivery.from.should == ["noreply@sublimevideo.net"]
+        last_delivery.to.should include user.email
+        last_delivery.subject.should include "Your credit card will expire at the end of the month"
+      end
+      
+      it "should send 'cc is expired' email when user's credit card is expired 1 month ago" do
+        user.update_attribute(:cc_expire_on, 1.month.ago)
+        lambda { User::CreditCard.send_credit_card_expiration }.should change(ActionMailer::Base.deliveries, :size).by(1)
+        last_delivery = ActionMailer::Base.deliveries.last
+        last_delivery.from.should == ["noreply@sublimevideo.net"]
+        last_delivery.to.should include user.email
+        last_delivery.subject.should include "Your credit card is expired"
+      end
+      
+      it "should send 'cc is expired' email when user's credit card is expired 1 year ago" do
+        user.update_attribute(:cc_expire_on, 1.year.ago)
+        lambda { User::CreditCard.send_credit_card_expiration }.should change(ActionMailer::Base.deliveries, :size).by(1)
+        last_delivery = ActionMailer::Base.deliveries.last
+        last_delivery.from.should == ["noreply@sublimevideo.net"]
+        last_delivery.to.should include user.email
+        last_delivery.subject.should include "Your credit card is expired"
+      end
+      
+      it "should not send expiration email when user's credit card will not expire at the end of the current month" do
+        user.update_attribute(:cc_expire_on, 1.month.from_now)
+        
+        lambda { User::Trial.send_credit_card_expiration }.should change(ActionMailer::Base.deliveries, :size).by(0)
+      end
+      
+    end
+    
+  end
+  
 end
 
 def valid_attributes

@@ -74,7 +74,7 @@ describe User::Trial do
       it "should set trial_end_at, suspend account and sent email if user has no credit car when trial is over" do
         Factory(:site, :user => user, :loader_hits_cache => User::Trial.free_loader_hits)
         
-        lambda { User::Trial.supervise_users }.should change(ActionMailer::Base.deliveries, :size).by(1)
+        lambda { VCR.use_cassette('user/suspend') { User::Trial.supervise_users } }.should change(ActionMailer::Base.deliveries, :size).by(1)
         last_delivery = ActionMailer::Base.deliveries.last
         last_delivery.to.should include user.email
         last_delivery.subject.should include "Your account has been suspended"

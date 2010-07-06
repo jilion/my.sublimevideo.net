@@ -20,52 +20,19 @@
       code: 200
       message: OK
     headers: 
-      x-powered-by: &id001 
+      x-powered-by: 
         - Phusion Passenger (mod_rails/mod_rack) 2.2.9
-      content-type: &id003 
+      content-type: 
         - application/json
-      connection: &id002 
+      connection: 
         - keep-alive
-      server: &id004 
+      server: 
         - nginx/0.7.65 + Phusion Passenger 2.2.9 (mod_rails/mod_rack)
-      content-length: &id005 
+      content-length: 
         - "227"
-      status: &id006 
+      status: 
         - "200"
-    body: &id007 !str 
-      str: "{\"created_at\":\"2010/06/11 14:41:49 +0000\",\"command\":\"Handbrake CLI blabla...\",\"title\":\"iPhone 720p (1)\",\"updated_at\":\"2010/06/11 14:41:49 +0000\",\"extname\":\".mp4\",\"id\":\"b85c104139e9a7e74ab969804b93d573\",\"height\":640,\"width\":480}"
-      "@args": 
-        :url: http://api.pandastream.com:80/v2/profiles.json
-        :method: :post
-        :payload: 
-          timestamp: "2010-06-11T16:41:48.862049+02:00"
-          command: Handbrake CLI blabla...
-          title: iPhone 720p (1)
-          signature: 7l0sCnBI+dvbSDH2RgIko8nTHldDW8ygONK/5tCUpFQ=
-          extname: .mp4
-          access_key: 7cc07330-5147-11df-b458-12313d01b992
-          cloud_id: f2f24a820b4e4e71536fcd567a384848
-          height: 640
-          width: 480
-        :headers: {}
-
-      "@code": 200
-      "@net_http_res": !ruby/object:Net::HTTPOK 
-        __orig_body__: 
-        body: *id007
-        body_exist: true
-        code: "200"
-        header: 
-          x-powered-by: *id001
-          connection: *id002
-          content-type: *id003
-          server: *id004
-          content-length: *id005
-          status: *id006
-        http_version: "1.1"
-        message: OK
-        read: true
-        socket: 
+    body: "{\"created_at\":\"2010/06/11 14:41:49 +0000\",\"command\":\"Handbrake CLI blabla...\",\"title\":\"iPhone 720p (1)\",\"updated_at\":\"2010/06/11 14:41:49 +0000\",\"extname\":\".mp4\",\"id\":\"b85c104139e9a7e74ab969804b93d573\",\"height\":640,\"width\":480}"
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 

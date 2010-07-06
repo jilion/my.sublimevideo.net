@@ -12,6 +12,23 @@ module User::CreditCard
   
   attr_accessor :cc_update, :cc_full_name, :cc_first_name, :cc_last_name, :cc_number, :cc_verification_value
   
+  def self.delay_send_credit_card_expiration(interval = 1.week)
+    unless Delayed::Job.already_delayed?('%send_credit_card_expiration%')
+      delay(:priority => 50, :run_at => interval.from_now).send_credit_card_expiration
+    end
+  end
+  
+  def self.send_credit_card_expiration
+    delay_send_credit_card_expiration
+    User.select{ |user| user.cc_expire_on.year < Time.now.utc.year || (user.cc_expire_on.year == Time.now.utc.year && user.cc_expire_on.month <= Time.now.utc.month) }.each do |user|
+      if user.cc_expire_on.year < Time.now.utc.year || user.cc_expire_on.month < Time.now.utc.month
+        user.deliver_credit_card_is_expired_email
+      else
+        user.deliver_credit_card_will_expire_email
+      end
+    end
+  end
+  
   # ===================================
   # = User instance methods extension =
   # ===================================
@@ -89,6 +106,14 @@ module User::CreditCard
       self.cc_last_digits = credit_card.last_digits
       self.cc_updated_at  = Time.now.utc
     end
+  end
+  
+  def deliver_credit_card_is_expired_email
+    CreditCardMailer.is_expired(self).deliver!
+  end
+  
+  def deliver_credit_card_will_expire_email
+    CreditCardMailer.will_expire(self).deliver!
   end
   
 private
