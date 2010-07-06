@@ -83,8 +83,8 @@ class Video < ActiveRecord::Base
     
     before_transition :on => :unsuspend, :do => [:unsuspend_encodings, :unsuspend_posterframe]
     
-    before_transition :on => :archive, :do => [:set_archived_at, :archive_encodings]
-    after_transition  :on => :archive, :do => [:remove_video, :remove_posterframe!]
+    before_transition :on => :archive, :do => [:set_archived_at, :archive_encodings, :delete_posterframe]
+    after_transition  :on => :archive, :do => [:remove_video]
     
     event(:pandize)   { transition :pending => :encodings }
     event(:activate)  { transition :encodings => :encodings }
@@ -250,6 +250,11 @@ protected
   def archive_encodings
     encodings.not_deprecated.each { |e| e.delay(:priority => 8).archive }
   end
+  def delete_posterframe
+    self.remove_posterframe = true
+  end
+  
+  # after_transition (archive)
   def remove_video
     Transcoder.delay(:priority => 7).delete(:video, panda_video_id)
   end

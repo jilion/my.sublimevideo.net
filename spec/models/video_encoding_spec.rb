@@ -472,7 +472,7 @@ describe VideoEncoding do
           end
         end
         
-        describe "before_transition :on => :archive, :do => :delete_file!" do
+        describe "before_transition :on => :archive, :do => :delete_file" do
           it "should delete the video file from S3" do
             video_encoding.file = File.open("#{Rails.root}/spec/fixtures/railscast_intro.mov")
             video_encoding.save
@@ -484,13 +484,13 @@ describe VideoEncoding do
         
         describe "before_transition :processing => :archived, :do => :set_encoding_info" do
           it "should send a get request to Panda" do
-            video_encoding.stub!(:delete_panda_encoding => true, :delete_file! => true)
+            video_encoding.stub!(:delete_panda_encoding => true, :delete_file => true)
             Transcoder.should_receive(:get).with(:encoding, id).and_return({})
             video_encoding.archive
           end
           
           it "should set encoding info" do
-            video_encoding.stub!(:delete_panda_encoding => true, :delete_file! => true)
+            video_encoding.stub!(:delete_panda_encoding => true, :delete_file => true)
             video_encoding.archive
             video_encoding.file_size.should           == 125465
             video_encoding.started_encoding_at.should == Time.parse("2010/06/08 17:15:17 +0000")
@@ -502,7 +502,7 @@ describe VideoEncoding do
         
         describe "before_transition :processing => :archived, :do => :delete_panda_encoding" do
           it "should send a delete request to Panda with the panda_encoding_id" do
-            video_encoding.stub!(:set_encoding_info => true, :delete_file! => true)
+            video_encoding.stub!(:set_encoding_info => true, :delete_file => true)
             video_encoding.should be_processing
             Transcoder.should_receive(:delete).with(:encoding, id).and_return(true)
             video_encoding.archive

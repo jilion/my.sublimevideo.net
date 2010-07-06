@@ -68,7 +68,7 @@ class VideoEncoding < ActiveRecord::Base
     
     before_transition :on => :unsuspend, :do => :unblock_file
     
-    before_transition :on => :archive, :do => :delete_file!
+    before_transition :on => :archive, :do => :delete_file
     before_transition :processing => :archived, :do => :set_encoding_info
     after_transition  :processing => :archived, :do => :delete_panda_encoding
     
@@ -187,8 +187,7 @@ protected
   end
   
   # before_transition (archive)
-  def delete_file!
-    remove_file!
+  def delete_file
     self.remove_file = true
   end
   
