@@ -6,31 +6,20 @@
   - if admin_signed_in?
     .popup_menu
       %h3= link_to "Menu", "", :onclick => "return false"
-      %ul#main_menu
-        %li.users{ :class => ('active' if controller_name == 'admin/users') }
-          = link_to admin_profiles_path do
-            %span= "Users"
-        %li.videos{ :class => ('active' if controller_name == 'admin/videos') }
-          = link_to admin_profiles_path do
-            %span= "Videos"
-        %li.video_profiles{ :class => ('active' if %w[video_profiles video_profile_versions].include? controller_name) }
-          = link_to admin_profiles_path do
-            %span= "Videos Profiles"
-        %li.admins{ :class => ('active' if controller_name == 'admins') }
-          = link_to admin_admins_path do
-            %span= "Admins"
-        %li.delayed_jobs{ :class => ('active' if controller_name == 'delayed_jobs') }
-          = link_to admin_delayed_jobs_path do
-            %span= "Delayed Jobs"
+      %ul
+        %li.users{ :class => ('active' if controller_name == 'admin/users') }= link_to "Users", admin_profiles_path
+        %li.videos{ :class => ('active' if controller_name == 'admin/videos') }= link_to "Videos", admin_profiles_path
+        %li.video_profiles{ :class => ('active' if %w[video_profiles video_profile_versions].include? controller_name) }= link_to "Videos Profiles", admin_profiles_path
+        %li.admins{ :class => ('active' if controller_name == 'admins') }= link_to "Admins", admin_admins_path
+    %ul#favorite_links
+      %li.delayed_jobs{ :class => ('active' if controller_name == 'delayed_jobs') }= link_to "Delayed Jobs", admin_delayed_jobs_path
+      %li.invoices{ :class => ('active' if controller_name == 'invoices') }= link_to "Invoices", admin_profiles_path
           
   .right
     %ul.extra_links
       - if admin_signed_in?
         %li= link_to "Logout", destroy_admin_session_path
-    - if admin_signed_in?
-      = link_to edit_admin_registration_path, :class => "user #{'active' if controller_name == 'registrations'}" do
-        %span.icon= current_admin.email
-    - else
-      = link_to new_admin_session_path, :class => "user" do
-        %span.icon= "Login"
+        %li= link_to current_admin.email, edit_admin_registration_path, :class => "user #{'active' if controller_name == 'registrations'}"
+      - else
+        = link_to "Login", new_admin_session_path, :class => "user"
   .spacer

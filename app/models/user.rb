@@ -107,9 +107,13 @@ class User < ActiveRecord::Base
   # = Instance Methods =
   # ====================
   
+  # allow suspended user to login (devise)
+  def active?
+    %w[active suspended].include?(state)
+  end
+  
   def welcome?
-    sites.empty?
-    # TODO And if user has a credit card
+    sites.empty? && !credit_card?
   end
   
 private

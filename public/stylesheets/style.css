@@ -17,6 +17,7 @@ body {
 }
 
 #header {
+  min-width:1000px;
   height:61px;
   background:url(/images/embed/header_background.png) repeat-x;
 }
@@ -943,6 +944,8 @@ ul#trial_legend li em {
   color:#4d5563;
   text-shadow:rgba(255,255,255,0.45) 0 1px 0;
   outline:0;
+  position:relative;
+  left:-5px;
 }
 
 #content form.site input.add:active, form input.submit.small:active {background-position:0 -48px;}

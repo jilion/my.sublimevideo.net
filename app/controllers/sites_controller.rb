@@ -1,5 +1,6 @@
 class SitesController < ApplicationController
   before_filter :authenticate_user!
+  before_filter :redirect_suspended_user
   respond_to :html, :only => :index
   respond_to :js
   
@@ -76,6 +77,12 @@ class SitesController < ApplicationController
     respond_with(@site) do |format|
       format.html { redirect_to sites_path }
     end
+  end
+  
+protected
+  
+  def redirect_suspended_user
+    redirect_to page_path('suspended') if current_user.suspended?
   end
   
 end

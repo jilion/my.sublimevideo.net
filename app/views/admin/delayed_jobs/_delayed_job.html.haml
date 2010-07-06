@@ -1,5 +1,5 @@
 %tr{ :id => dom_id(delayed_job), :class => cycle("", "alt ") + (recurring_job?(delayed_job) ? "recurring" : "") }
-  %td.name
+  %td.name.left
     = link_to job_name(delayed_job), admin_delayed_job_path(delayed_job)
   %td.priority
     = link_to delayed_job.priority, admin_delayed_job_path(delayed_job)
