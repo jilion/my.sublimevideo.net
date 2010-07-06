@@ -130,7 +130,6 @@ describe VideoEncoding do
     describe "event(:activate) { transition :processing => :active }" do
       before(:each) { VCR.insert_cassette('video_encoding/activate') }
       
-      # SOMETIMES PROBLEM HERE WHEN RUNNING ALL SPECS
       let(:video)           { Factory(:video) }
       let(:video_encoding1) { Factory(:video_encoding, :video => video, :panda_encoding_id => id, :state => 'processing', :profile_version => Factory(:video_profile_version, :profile => Factory(:video_profile, :min_width => 200, :posterframeable => true))) }
       let(:video_encoding2) { Factory(:video_encoding, :video => video, :panda_encoding_id => id, :state => 'processing', :profile_version => Factory(:video_profile_version, :profile => Factory(:video_profile, :min_width => 500, :posterframeable => true))) }
@@ -144,6 +143,7 @@ describe VideoEncoding do
       describe "callbacks" do
         describe "before_transition :on => :activate, :do => :set_file_added_at" do
           it "should set file_added_at" do
+            video_encoding1.stub!(:set_file => true, :set_encoding_info => true, :set_video_posterframe => true, :deprecate_encodings => true, :delete_panda_encoding => true, :conform_to_video_state => true)
             video_encoding1.file_added_at.should_not be_present
             video_encoding1.activate
             video_encoding1.file_added_at.should be_present
@@ -151,23 +151,24 @@ describe VideoEncoding do
         end
         
         describe "before_transition :on => :activate, :do => :set_file" do
-          pending "should set file to the encoding's file" do
-            video_encoding1.file.should_not be_present
+          it "should set file to the encoding's file" do
+            video_encoding1.stub!(:set_file_added_at => true, :set_encoding_info => true, :set_video_posterframe => true, :deprecate_encodings => true, :delete_panda_encoding => true, :conform_to_video_state => true)
+            video_encoding1.file.url.should_not be_present
             video_encoding1.activate
-            video_encoding1.file.should be_present
+            video_encoding1.file.url.should be_present
             video_encoding1.file.url.should =~ %r(videos/#{video_encoding1.video.token}/#{video_encoding1.video.name}#{video_encoding1.profile.name}.#{video_encoding1.extname})
           end
         end
         
         describe "before_transition :on => :activate, :do => :set_encoding_info" do
           it "should send a get request to Panda" do
-            video_encoding1.stub!(:set_file => true, :set_video_posterframe => true, :deprecate_encodings => true, :delete_panda_encoding => true, :conform_to_video_state => true)
+            video_encoding1.stub!(:set_file_added_at => true, :set_file => true, :set_video_posterframe => true, :deprecate_encodings => true, :delete_panda_encoding => true, :conform_to_video_state => true)
             Transcoder.should_receive(:get).with(:encoding, id).and_return({})
             video_encoding1.activate
           end
           
           it "should set encoding info" do
-            video_encoding1.stub!(:set_file => true, :set_video_posterframe => true, :deprecate_encodings => true, :delete_panda_encoding => true, :conform_to_video_state => true)
+            video_encoding1.stub!(:set_file_added_at => true, :set_file => true, :set_video_posterframe => true, :deprecate_encodings => true, :delete_panda_encoding => true, :conform_to_video_state => true)
             video_encoding1.activate
             video_encoding1.file_size.should           == 125465
             video_encoding1.started_encoding_at.should == Time.parse("2010/06/08 17:15:17 +0000")
@@ -181,8 +182,8 @@ describe VideoEncoding do
         
         describe "before_transition :on => :activate, :do => :set_video_posterframe" do
           it "should set video posterframe if profile is posterframeable" do
-            video_encoding1.stub!(:set_encoding_info => true, :set_file => true, :deprecate_active_encodings => true, :delete_panda_encoding => true)
-            video_encoding2.stub!(:set_encoding_info => true, :set_file => true, :deprecate_active_encodings => true, :delete_panda_encoding => true)
+            video_encoding1.stub!(:set_file_added_at => true, :set_encoding_info => true, :set_file => true, :deprecate_active_encodings => true, :delete_panda_encoding => true)
+            video_encoding2.stub!(:set_file_added_at => true, :set_encoding_info => true, :set_file => true, :deprecate_active_encodings => true, :delete_panda_encoding => true)
             
             video_encoding1.activate
             video_encoding1.video.posterframe.should_not be_present
@@ -190,6 +191,7 @@ describe VideoEncoding do
             
             video_encoding2.activate
             video_encoding2.video.posterframe.should be_present
+            video_encoding2.video.posterframe.thumb.should be_present
             video_encoding2.video.save
             video_encoding2.video.posterframe.url.should =~ %r(videos/#{video_encoding2.video.token}/posterframe.jpg)
             video_encoding2.video.posterframe.thumb.url.should =~ %r(videos/#{video_encoding2.video.token}/thumb_posterframe.jpg)
@@ -470,25 +472,25 @@ describe VideoEncoding do
           end
         end
         
-        describe "before_transition :on => :archive, :do => :remove_file!" do
-          pending "should delete the video file from S3" do
-            VCR.use_cassette('video_encoding/activate') { video_encoding.activate }
-            video_encoding.should be_active
+        describe "before_transition :on => :archive, :do => :delete_file" do
+          it "should delete the video file from S3" do
+            video_encoding.file = File.open("#{Rails.root}/spec/fixtures/railscast_intro.mov")
+            video_encoding.save
             video_encoding.file.should be_present
             video_encoding.archive
-            video_encoding.file.should_not be_present
+            video_encoding.reload.file.should_not be_present
           end
         end
         
         describe "before_transition :processing => :archived, :do => :set_encoding_info" do
           it "should send a get request to Panda" do
-            video_encoding.stub!(:delete_panda_encoding => true, :remove_file! => true)
+            video_encoding.stub!(:delete_panda_encoding => true, :delete_file => true)
             Transcoder.should_receive(:get).with(:encoding, id).and_return({})
             video_encoding.archive
           end
           
           it "should set encoding info" do
-            video_encoding.stub!(:delete_panda_encoding => true, :remove_file! => true)
+            video_encoding.stub!(:delete_panda_encoding => true, :delete_file => true)
             video_encoding.archive
             video_encoding.file_size.should           == 125465
             video_encoding.started_encoding_at.should == Time.parse("2010/06/08 17:15:17 +0000")
@@ -500,7 +502,7 @@ describe VideoEncoding do
         
         describe "before_transition :processing => :archived, :do => :delete_panda_encoding" do
           it "should send a delete request to Panda with the panda_encoding_id" do
-            video_encoding.stub!(:set_encoding_info => true, :remove_video_file! => true)
+            video_encoding.stub!(:set_encoding_info => true, :delete_file => true)
             video_encoding.should be_processing
             Transcoder.should_receive(:delete).with(:encoding, id).and_return(true)
             video_encoding.archive

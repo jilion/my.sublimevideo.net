@@ -14,17 +14,18 @@ module User::CreditCard
   
   def self.delay_send_credit_card_expiration(interval = 1.week)
     unless Delayed::Job.already_delayed?('%send_credit_card_expiration%')
-      delay(:priority => 50, :run_at => interval.from_now).send_credit_card_expiration
+      delay(:run_at => interval.from_now).send_credit_card_expiration
     end
   end
   
   def self.send_credit_card_expiration
     delay_send_credit_card_expiration
-    User.select{ |user| user.cc_expire_on.year < Time.now.utc.year || (user.cc_expire_on.year == Time.now.utc.year && user.cc_expire_on.month <= Time.now.utc.month) }.each do |user|
-      if user.cc_expire_on.year < Time.now.utc.year || user.cc_expire_on.month < Time.now.utc.month
-        user.deliver_credit_card_is_expired_email
+    User.where(:cc_expire_on.lt => 1.month.from_now).each do |user|
+      if user.credit_card_expired? && !user.suspended?
+        user.suspend!
+        CreditCardMailer.is_expired(user).deliver!
       else
-        user.deliver_credit_card_will_expire_email
+        CreditCardMailer.will_expire(user).deliver!
       end
     end
   end
@@ -37,6 +38,10 @@ module User::CreditCard
     cc_type.present? && cc_last_digits.present?
   end
   alias :cc? :credit_card?
+  
+  def credit_card_expired?
+    cc_expire_on.year < Time.now.utc.year || cc_expire_on.month < Time.now.utc.month
+  end
   
   def cc_full_name=(attribute)
     @cc_full_name = attribute
@@ -106,14 +111,6 @@ module User::CreditCard
       self.cc_last_digits = credit_card.last_digits
       self.cc_updated_at  = Time.now.utc
     end
-  end
-  
-  def deliver_credit_card_is_expired_email
-    CreditCardMailer.is_expired(self).deliver!
-  end
-  
-  def deliver_credit_card_will_expire_email
-    CreditCardMailer.will_expire(self).deliver!
   end
   
 private

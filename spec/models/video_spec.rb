@@ -413,7 +413,7 @@ describe Video do
       
       it "should set the state as :archived from :pending" do
         video = Factory(:video, :state => 'pending')
-        video.stub!(:set_archived_at => true, :archive_encodings => true, :remove_video => true, :remove_posterframe! => true)
+        video.stub!(:set_archived_at => true, :archive_encodings => true, :remove_video => true, :delete_posterframe => true)
         video.should be_pending
         video.archive
         video.should be_archived
@@ -421,7 +421,7 @@ describe Video do
       
       it "should set the state as :archived from :encodings" do
         video = Factory(:video, :state => 'encodings')
-        video.stub!(:set_archived_at => true, :archive_encodings => true, :remove_video => true, :remove_posterframe! => true)
+        video.stub!(:set_archived_at => true, :archive_encodings => true, :remove_video => true, :delete_posterframe => true)
         video.should be_encodings
         video.archive
         video.should be_archived
@@ -429,7 +429,7 @@ describe Video do
       
       it "should set the state as :archived from :suspended" do
         video = Factory(:video, :state => 'suspended')
-        video.stub!(:set_archived_at => true, :archive_encodings => true, :remove_video => true, :remove_posterframe! => true)
+        video.stub!(:set_archived_at => true, :archive_encodings => true, :remove_video => true, :delete_posterframe => true)
         video.should be_suspended
         video.archive
         video.should be_archived
@@ -440,7 +440,7 @@ describe Video do
         
         describe "before_transition :on => :archive, :do => [:set_archived_at, :archive_encodings]" do
           it "should set archived_at to now" do
-            video.stub!(:archive_encodings => true, :remove_video => true, :remove_posterframe! => true)
+            video.stub!(:archive_encodings => true, :remove_video => true, :delete_posterframe => true)
             video.archive
             video.archived_at.should be_present
           end
@@ -448,7 +448,7 @@ describe Video do
         
         describe "before_transition :on => :archive, :do => :archive_encodings" do
           it "should delay the archive of every video encoding" do
-            video.stub!(:set_archived_at => true, :remove_video => true, :remove_posterframe! => true)
+            video.stub!(:set_archived_at => true, :remove_video => true, :delete_posterframe => true)
             pending_video_encoding = Factory(:video_encoding, :video => video, :panda_encoding_id => encoding_id, :state => 'pending')
             pending_video_encoding.should be_pending
             
@@ -480,17 +480,7 @@ describe Video do
           end
         end
         
-        describe "after_transition :on => :archive, :do => :remove_video" do
-          it "should delay the DELETE request to Panda remove the original video file" do
-            video.stub!(:set_archived_at => true, :archive_encodings => true, :remove_posterframe! => true)
-            video_encoding = Factory(:video_encoding, :video => video, :panda_encoding_id => encoding_id, :state => 'processing')
-            VCR.use_cassette('video_encoding/activate') { video_encoding.activate }
-            video.archive
-            Delayed::Job.last.name.should == 'Module#delete'
-          end
-        end
-        
-        describe "after_transition  :on => :archive, :do => :remove_posterframe!" do
+        describe "before_transition  :on => :archive, :do => :delete_posterframe" do
           it "should remove the posterframe" do
             video.stub!(:set_archived_at => true, :archive_encodings => true, :remove_video => true)
             video_encoding = Factory(:video_encoding, :video => video, :panda_encoding_id => encoding_id, :state => 'processing')
@@ -501,6 +491,16 @@ describe Video do
             video.archive
             video.posterframe.should_not be_present
             video.posterframe.thumb.should_not be_present
+          end
+        end
+        
+        describe "after_transition :on => :archive, :do => :remove_video" do
+          it "should delay the DELETE request to Panda remove the original video file" do
+            video.stub!(:set_archived_at => true, :archive_encodings => true, :delete_posterframe => true)
+            video_encoding = Factory(:video_encoding, :video => video, :panda_encoding_id => encoding_id, :state => 'processing')
+            VCR.use_cassette('video_encoding/activate') { video_encoding.activate }
+            video.archive
+            Delayed::Job.last.name.should == 'Module#delete'
           end
         end
       end
@@ -596,7 +596,6 @@ describe Video do
   end
   
   describe "Instance Methods" do
-    # SOMETIMES PROBLEM HERE WHEN RUNNING ALL SPECS
     let(:video) { Factory(:video, :original_filename => 'hey_ho.mp4', :extname => 'mp4', :file_size => 1000) }
     
     describe "#name" do

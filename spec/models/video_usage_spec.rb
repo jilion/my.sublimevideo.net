@@ -48,7 +48,6 @@ describe VideoUsage do
   end
   
   context "saved with valid attributes" do
-    # SOMETIMES PROBLEM HERE WHEN RUNNING ALL SPECS
     subject { Factory(:video_usage) }
     
     its(:started_at) { should == Time.zone.parse('2010-06-16') + 8.hours }

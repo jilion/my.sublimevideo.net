@@ -133,7 +133,6 @@ describe Invoice do
     context "second invoice" do
       before(:each) do
         @user  = Factory(:user, :trial_ended_at => 3.month.ago, :invoices_count => 1, :last_invoiced_on => 2.month.ago, :next_invoiced_on => 1.day.ago).reload
-        # SOMETIMES PROBLEM HERE WHEN RUNNING ALL SPECS
         @site1 = Factory(:site, :user => @user)
         @site2 = Factory(:site, :user => @user, :hostname => "google.com")
         VCR.use_cassette('one_saved_logs') do

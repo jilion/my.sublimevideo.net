@@ -2,34 +2,33 @@
 
 RSpec.configure do |config|
   config.before(:all) do
-    Dir.mkdir('public/uploads/') unless File.exist?('public/uploads/')
-    # Cloudfront
-    Dir.mkdir('public/uploads/cloudfront/') unless File.exist?('public/uploads/cloudfront/')
-    Dir.mkdir('public/uploads/cloudfront/sublimevideo.videos/') unless File.exist?('public/uploads/cloudfront/sublimevideo.videos/')
+    %w[cloudfront/sublimevideo.videos/download cloudfront/sublimevideo.videos/streaming s3/sublimevideo.videos].each do |path|
+      FileUtils.mkdir_p("public/uploads/#{path}")
+    end
+    
     # Cloudfront Download
-    Dir.mkdir('public/uploads/cloudfront/sublimevideo.videos/download/') unless File.exist?('public/uploads/cloudfront/sublimevideo.videos/download/')
-    unless File.exist?('public/uploads/cloudfront/sublimevideo.videos/download/E3KTK13341WJO.2010-06-16-08.2Knk9kOC.gz')
+    cloudfront_download_log_file = "cloudfront/sublimevideo.videos/download/E3KTK13341WJO.2010-06-16-08.2Knk9kOC.gz"
+    unless File.exist?("public/uploads/#{cloudfront_download_log_file}")
       FileUtils.cp(
         Rails.root.join('spec/fixtures/logs/cloudfront_download/E3KTK13341WJO.2010-06-16-08.2Knk9kOC.gz'),
-        Rails.root.join('public/uploads/cloudfront/sublimevideo.videos/download/')
+        File.join("#{Rails.public_path}/uploads/#{cloudfront_download_log_file}")
       )
     end
     # Cloudfront Streaming
-    Dir.mkdir('public/uploads/cloudfront/sublimevideo.videos/streaming/') unless File.exist?('public/uploads/cloudfront/sublimevideo.videos/streaming/')
-    unless File.exist?('public/uploads/cloudfront/sublimevideo.videos/streaming/EK1147O537VJ1.2010-06-23-07.9D0khw8j.gz')
+    cloudfront_streaming_log_file = "cloudfront/sublimevideo.videos/streaming/EK1147O537VJ1.2010-06-23-07.9D0khw8j.gz"
+    unless File.exist?("public/uploads/#{cloudfront_streaming_log_file}")
       FileUtils.cp(
         Rails.root.join('spec/fixtures/logs/cloudfront_streaming/EK1147O537VJ1.2010-06-23-07.9D0khw8j.gz'),
-        Rails.root.join('public/uploads/cloudfront/sublimevideo.videos/streaming/')
+        File.join("#{Rails.public_path}/uploads/#{cloudfront_streaming_log_file}")
       )
     end
-    # S3
-    Dir.mkdir('public/uploads/s3/') unless File.exist?('public/uploads/s3/')
+    
     # S3 Videos
-    Dir.mkdir('public/uploads/s3/sublimevideo.videos/') unless File.exist?('public/uploads/s3/sublimevideo.videos/')
-    unless File.exist?('public/uploads/s3/sublimevideo.video/2010-06-23-08-20-45-DE5461BCB46DA093')
+    s3_videos_log_file = "s3/sublimevideo.videos/2010-06-23-08-20-45-DE5461BCB46DA093"
+    unless File.exist?(File.join("#{Rails.public_path}/uploads/#{s3_videos_log_file}"))
       FileUtils.cp(
         Rails.root.join('spec/fixtures/logs/s3_videos/2010-06-23-08-20-45-DE5461BCB46DA093'),
-        Rails.root.join('public/uploads/s3/sublimevideo.videos/')
+        File.join("#{Rails.public_path}/uploads/#{s3_videos_log_file}")
       )
     end
   end
