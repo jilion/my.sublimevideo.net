@@ -42,7 +42,7 @@ class VideoEncoding < ActiveRecord::Base
   scope :active,         where(:state => 'active')
   scope :suspended,      where(:state => 'suspended')
   scope :not_deprecated, where(:state.ne => 'deprecated')
-  scope :with_profile, lambda { |profile| joins(:profile_version).where(["video_profile_versions.video_profile_id = ?", profile.id]) }
+  scope :with_profile,   lambda { |profile| joins(:profile_version).where(["video_profile_versions.video_profile_id = ?", profile.id]) }
   
   # ===============
   # = Validations =
@@ -68,7 +68,7 @@ class VideoEncoding < ActiveRecord::Base
     
     before_transition :on => :unsuspend, :do => :unblock_file
     
-    before_transition :on => :archive, :do => :remove_file!
+    before_transition :on => :archive, :do => :delete_file!
     before_transition :processing => :archived, :do => :set_encoding_info
     after_transition  :processing => :archived, :do => :delete_panda_encoding
     
@@ -184,6 +184,12 @@ protected
   # before_transition (deprecate) / (archive)
   def set_file_removed_at
     self.file_removed_at = Time.now.utc
+  end
+  
+  # before_transition (archive)
+  def delete_file!
+    remove_file!
+    self.remove_file = true
   end
   
 end

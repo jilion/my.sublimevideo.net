@@ -147,7 +147,6 @@ describe Site do
     describe "hostname=" do
       %w[ÉCOLE ÉCOLE.fr ÜPPER.de ASDASD.COM 124.123.151.123 mIx3Dd0M4iN.CoM].each do |host|
         it "should downcase hostname: #{host}" do
-          # SOMETIMES PROBLEM HERE WHEN RUNNING ALL SPECS
           site = Factory.build(:site, :hostname => host)
           site.hostname.should == host.downcase
         end

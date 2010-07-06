@@ -28,8 +28,9 @@ gem 'memcache-client'
 gem 'memcached'
 
 gem 'aws',              '>= 2.3.12'
-gem 'carrierwave',      :git => 'git://github.com/jnicklas/carrierwave.git'
-gem 'mini_magick'
+# While the official repo is not up to date with the new name of MiniMagick::Error
+gem 'carrierwave',      :git => 'git://github.com/samlown/carrierwave.git' #'git://github.com/jnicklas/carrierwave.git'
+gem 'mini_magick',      '1.2.5'
 gem 'RedCloth'
 
 gem 'ffaker'

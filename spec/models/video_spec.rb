@@ -596,7 +596,6 @@ describe Video do
   end
   
   describe "Instance Methods" do
-    # SOMETIMES PROBLEM HERE WHEN RUNNING ALL SPECS
     let(:video) { Factory(:video, :original_filename => 'hey_ho.mp4', :extname => 'mp4', :file_size => 1000) }
     
     describe "#name" do

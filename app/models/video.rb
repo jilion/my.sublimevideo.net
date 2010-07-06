@@ -174,12 +174,6 @@ class Video < ActiveRecord::Base
   end
   
   def set_posterframe_from_encoding(encoding)
-    # file_on_panda_bucket = S3.panda_bucket.key("#{encoding.panda_encoding_id}_4.jpg")
-    # file_on_video_bucket = S3.videos_bucket.key("#{token}/posterframe.jpg")
-    # file_on_panda_bucket.copy(file_on_video_bucket)
-    # write_attribute(:posterframe, "posterframe.jpg")
-    # posterframe.store!
-    # posterframe.process!
     self.remote_posterframe_url = "#{self.class.panda_s3_url}/#{encoding.panda_encoding_id}_4.jpg"
     save!
     if posterframe.blank?
