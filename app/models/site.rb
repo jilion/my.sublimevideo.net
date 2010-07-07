@@ -186,5 +186,5 @@ private
   def set_archived_at
     self.archived_at = Time.now.utc
   end
-
+  
 end

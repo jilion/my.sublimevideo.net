@@ -58,24 +58,28 @@ describe User do
   
   describe "validates" do
     it "should validate presence of full_name" do
-      user = User.create(:full_name => nil)
-      user.errors[:full_name].should be_present
+      user = Factory.build(:user, :full_name => nil)
+      user.should_not be_valid
+      user.should have(1).error_on(:full_name)
     end
     it "should validate presence of email" do
-      user = User.create(:email => nil)
-      user.errors[:email].should be_present
+      user = Factory.build(:user, :email => nil)
+      user.should_not be_valid
+      user.should have(2).error_on(:email)
     end
     it "should validate acceptance of terms_and_conditions" do
-      user = User.create(:terms_and_conditions => false)
-      user.errors[:terms_and_conditions].should be_present
+      user = Factory.build(:user, :terms_and_conditions => false)
+      user.should_not be_valid
+      user.should have(1).error_on(:terms_and_conditions)
     end
     
-    context "with already a site in db" do
+    context "with already the email in db" do
       before(:each) { @user = Factory(:user) }
       
       it "should validate uniqueness of email" do
-        user = User.create(:email => @user.email)
-        user.errors[:email].should be_present
+        user = Factory.build(:user, :email => @user.email)
+        user.should_not be_valid
+        user.should have(2).error_on(:email)
       end
     end
   end

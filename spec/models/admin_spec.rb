@@ -25,4 +25,30 @@
 require 'spec_helper'
 
 describe Admin do
+  
+  context "with valid attributes" do
+    subject { Factory(:admin) }
+    
+    its(:email)            { should match /email\d+@admin.com/ }
+    it { should be_valid }
+  end
+  
+  describe "validates" do
+    it "should validate presence of email" do
+      admin = Factory.build(:admin, :email => nil)
+      admin.should_not be_valid
+      admin.should have(1).error_on(:email)
+    end
+    
+    context "with already a site in db" do
+      before(:each) { @admin = Factory(:admin) }
+      
+      it "should validate uniqueness of email" do
+        admin = Factory.build(:admin, :email => @admin.email)
+        admin.should_not be_valid
+        admin.should have(1).error_on(:email)
+      end
+    end
+  end
+  
 end

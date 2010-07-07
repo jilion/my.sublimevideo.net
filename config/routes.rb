@@ -30,7 +30,13 @@ MySublimeVideo::Application.routes.draw do |map|
   
   match ':page', :to => 'pages#show', :via => :get, :as => :page, :page => /terms|docs|support|suspended/
   
-  root :to => redirect('/sites')
+  # for the pre-beta & beta phases
+  match '/enthusiasts' => redirect('/'), :via => :get
+  match '/' => 'enthusiasts#create', :via => :post
+  root :to => 'enthusiasts#new'
+  
+  # after the pre-beta & beta phases
+  # root :to => redirect('/sites')
   
   # =========
   # = Admin =
