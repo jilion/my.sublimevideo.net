@@ -12,7 +12,7 @@ feature "Users invitations:" do
     current_url.should =~ %r(http://[^/]+/admin/users)
     
     click_link 'Invite a user'
-    current_url.should =~ %r(http://[^/]+/users/invitation/new)
+    current_url.should =~ %r(http://[^/]+/admin/users/invitation/new)
     
     fill_in "Email", :with => "invited@user.com"
     click_button "Send"
