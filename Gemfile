@@ -39,6 +39,7 @@ group :production do
   gem 'pg'
 end
 
+# Heroku hack
 if RUBY_PLATFORM =~ /darwin/
   
   group :development do

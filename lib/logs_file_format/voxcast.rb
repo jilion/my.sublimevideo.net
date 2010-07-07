@@ -24,7 +24,8 @@ module LogsFileFormat
       { :regexp => "(#{timestamp('%H:%M:%S')})", :captures => [{:name => :time,              :type => :timestamp}] },
       { :regexp => '(\d+|-)',                    :captures => [{:name => :duration,          :type => :duration, :unit => :musec}] },
       { :regexp => '\"(.*)\"',                   :captures => [{:name => :user_agent,        :type => :string}] },
-      { :regexp => '(.*)',                       :captures => [{:name => :user_id,           :type => :string}] }
+      { :regexp => '(.*)',                       :captures => [{:name => :user_id,           :type => :string}] },
+      { :regexp => '\"(.*)\"',                   :captures => [{:name => :edge_location,     :type => :string}] }
     ]
     
     def self.create(*args)
