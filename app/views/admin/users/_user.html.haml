@@ -6,6 +6,8 @@
   %td.sites
     = user.sites.size
   %td.videos
-    = user.cc? ? user.videos.size : "No CC"
+    = user.videos.size
+  %td.cc
+    = user.cc? ? user.cc_type : "-"
   %td.confirmed
     = user.encrypted_password.present?
