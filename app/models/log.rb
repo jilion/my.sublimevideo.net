@@ -16,6 +16,9 @@
 
 class Log < ActiveRecord::Base
   
+  # ensure there is no confusion about S3 Class
+  autoload :S3, 'log/amazon/s3'
+  
   attr_accessible :name
   mount_uploader :file, LogUploader
   

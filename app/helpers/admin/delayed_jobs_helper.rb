@@ -6,6 +6,8 @@ module Admin::DelayedJobsHelper
       "Limit alerts"
     when "Module#supervise_users"
       "Trial users Supervision"
+    when "Module#send_credit_card_expiration"
+      "Credit Card expiration"
     when "Class#fetch_download_and_create_new_logs", "Class#fetch_and_create_new_logs"
       case job.handler
       when /Log::Voxcast/
@@ -26,6 +28,7 @@ module Admin::DelayedJobsHelper
     [
       "Module#send_limit_alerts",
       "Module#supervise_users",
+      "Module#send_credit_card_expiration",
       "Class#fetch_download_and_create_new_logs",
       "Class#fetch_and_create_new_logs"
     ].include?(job.name)

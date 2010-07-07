@@ -11,7 +11,7 @@ module JobExtension
   def already_delayed?(name, num = 1)
     Delayed::Job.where(
     :handler.matches => name,
-    :run_at.gt => 10.seconds.from_now
+    :run_at.gt => Time.now.utc
     ).count >= num
   end
 end
