@@ -81,17 +81,6 @@ describe Admin::InvitationsController do
       response.should redirect_to(new_admin_session_path)
     end
     
-    it "should respond with redirect to GET :edit" do
-      controller.stub!(:resource_name => :admin)
-      get :edit, :invitation_token => '1'
-      response.should be_success
-    end
-    it "should respond with redirect to GET :edit" do
-      controller.stub!(:resource_name => :user)
-      get :edit, :invitation_token => '1'
-      response.should be_success
-    end
-    
     it "should respond with redirect to POST :create" do
       controller.stub!(:resource_name => :admin)
       post :create, :admin => { :email => 'remy@jilion.com'}
@@ -103,30 +92,60 @@ describe Admin::InvitationsController do
       response.should redirect_to(new_admin_session_path)
     end
     
-    it "should respond with redirect to PUT :update" do
-      controller.stub!(:resource_name => :admin)
-      controller.stub_chain(:resource, :errors, :empty?).and_return(true)
-      put :update, :admin => { :password => '123456', :invitation_token => '1' }
-      response.should redirect_to(admin_admins_url)
+    describe "accept admin invitation" do
+      before(:each) { controller.stub!(:resource_name => :admin) }
+      
+      it "should respond with redirect to GET :edit" do
+        get :edit, :invitation_token => '1'
+        response.should be_success
+      end
+      
+      it "should respond with redirect to PUT :update" do
+        controller.stub_chain(:resource, :errors, :empty?).and_return(true)
+        controller.stub!(:sign_in => mock_admin)
+        put :update, :admin => { :password => '123456', :invitation_token => '1' }
+        response.should redirect_to(admin_admins_url)
+      end
+      
+      it "should respond with redirect to PUT :update" do
+        controller.stub_chain(:resource, :errors, :empty?).and_return(false)
+        put :update, :admin => { :password => '123456', :invitation_token => '1' }
+        response.should be_success
+      end
     end
-    it "should respond with redirect to PUT :update" do
-      controller.stub!(:resource_name => :admin)
-      controller.stub_chain(:resource, :errors, :empty?).and_return(false)
-      put :update, :admin => { :password => '123456', :invitation_token => '1' }
-      response.should be_success
+    
+    describe "accept user invitation" do
+      before(:each) { controller.stub!(:resource_name => :user) }
+      
+      it "should respond with redirect to GET :edit" do
+        get :edit, :invitation_token => '1'
+        response.should be_success
+      end
+      
+      it "should respond with redirect to PUT :update" do
+        controller.stub_chain(:resource, :errors, :empty?).and_return(true)
+        controller.stub!(:sign_in => mock_user)
+        put :update, :user => { :password => '123456', :full_name => 'John Doe', :invitation_token => '1' }
+        response.should redirect_to(sites_url)
+      end
+      
+      it "should respond with redirect to PUT :update" do
+        controller.stub_chain(:resource, :errors, :empty?).and_return(false)
+        put :update, :user => { :password => '123456', :full_name => 'John Doe', :invitation_token => '1' }
+        response.should be_success
+      end
     end
-    it "should respond with redirect to PUT :update" do
-      controller.stub!(:resource_name => :user)
-      controller.stub_chain(:resource, :errors, :empty?).and_return(true)
-      put :update, :user => { :password => '123456', :full_name => 'John Doe', :invitation_token => '1' }
-      response.should redirect_to(sites_url)
-    end
-    it "should respond with redirect to PUT :update" do
-      controller.stub!(:resource_name => :user)
-      controller.stub_chain(:resource, :errors, :empty?).and_return(false)
-      put :update, :user => { :password => '123456', :full_name => 'John Doe', :invitation_token => '1' }
-      response.should be_success
-    end
+    
+  end
+  
+private
+  
+  def mock_admin(stubs={})
+    @mock_admin ||= mock_model(Admin, stubs)
+  end
+  
+  def mock_user(stubs={})
+    @mock_user ||= mock_model(User, stubs)
   end
   
 end
