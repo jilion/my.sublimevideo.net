@@ -36,6 +36,8 @@
 #  video_settings                        :text
 #  created_at                            :datetime
 #  updated_at                            :datetime
+#  invitation_token                      :string(20)
+#  invitation_sent_at                    :datetime
 #
 
 require 'spec_helper'

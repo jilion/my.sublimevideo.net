@@ -15,7 +15,7 @@ gem 'has_scope',        :git => 'git://github.com/rymai/has_scope.git'
 gem 'jammit',           :git => 'git://github.com/thibaudgg/jammit.git'
 gem 'meta_where'
 gem 'hoptoad_notifier'
-gem 'activemerchant'
+gem 'activemerchant', '1.5.1'
 gem 'panda', '>= 0.6.4' # Encoding
 gem 'voxel_hapi',       :git => 'git://github.com/thibaudgg/voxel_hapi.git' # VoxCast CDN
 gem 'request-log-analyzer', :require => 'request_log_analyzer'
@@ -56,7 +56,7 @@ if RUBY_PLATFORM =~ /darwin/
     gem 'rspactor', '>= 0.7.beta.1'
     
     gem 'shoulda'
-    gem 'rspec-rails', '>= 2.0.0.beta.15'
+    gem 'rspec-rails', '>= 2.0.0.beta.16'
     # gem "rspec-rails",        :git => "git://github.com/rspec/rspec-rails.git"
     # gem "rspec",              :git => "git://github.com/rspec/rspec.git"
     # gem "rspec-core",         :git => "git://github.com/rspec/rspec-core.git"
@@ -70,7 +70,7 @@ if RUBY_PLATFORM =~ /darwin/
     
     gem 'factory_girl_rails'
     gem 'webmock'
-    gem 'vcr', :git => 'git://github.com/myronmarston/vcr', :ref => "0ec9ab51cbaf7c4d79862a500304d91e3ff585ce"
+    gem 'vcr', '>= 1.0.2'
   end
   
 end
