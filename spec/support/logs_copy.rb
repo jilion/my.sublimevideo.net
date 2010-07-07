@@ -7,29 +7,25 @@ RSpec.configure do |config|
     end
     
     # Cloudfront Download
-    cloudfront_download_log_file = "cloudfront/sublimevideo.videos/download/E3KTK13341WJO.2010-06-16-08.2Knk9kOC.gz"
-    unless File.exist?("public/uploads/#{cloudfront_download_log_file}")
-      FileUtils.cp(
-        Rails.root.join('spec/fixtures/logs/cloudfront_download/E3KTK13341WJO.2010-06-16-08.2Knk9kOC.gz'),
-        File.join("#{Rails.public_path}/uploads/#{cloudfront_download_log_file}")
-      )
-    end
+    cloudfront_download_log_file = "#{Rails.public_path}/uploads/cloudfront/sublimevideo.videos/download/E3KTK13341WJO.2010-06-16-08.2Knk9kOC.gz"
+    FileUtils.rm cloudfront_download_log_file, :force => true
+    FileUtils.cp(
+      Rails.root.join('spec/fixtures/logs/cloudfront_download/E3KTK13341WJO.2010-06-16-08.2Knk9kOC.gz'),
+      cloudfront_download_log_file
+    )
     # Cloudfront Streaming
-    cloudfront_streaming_log_file = "cloudfront/sublimevideo.videos/streaming/EK1147O537VJ1.2010-06-23-07.9D0khw8j.gz"
-    unless File.exist?("public/uploads/#{cloudfront_streaming_log_file}")
-      FileUtils.cp(
-        Rails.root.join('spec/fixtures/logs/cloudfront_streaming/EK1147O537VJ1.2010-06-23-07.9D0khw8j.gz'),
-        File.join("#{Rails.public_path}/uploads/#{cloudfront_streaming_log_file}")
-      )
-    end
-    
+    cloudfront_streaming_log_file = "#{Rails.public_path}/uploads/cloudfront/sublimevideo.videos/streaming/EK1147O537VJ1.2010-06-23-07.9D0khw8j.gz"
+    FileUtils.rm cloudfront_streaming_log_file, :force => true
+    FileUtils.cp(
+      Rails.root.join('spec/fixtures/logs/cloudfront_streaming/EK1147O537VJ1.2010-06-23-07.9D0khw8j.gz'),
+      cloudfront_streaming_log_file
+    )
     # S3 Videos
-    s3_videos_log_file = "s3/sublimevideo.videos/2010-06-23-08-20-45-DE5461BCB46DA093"
-    unless File.exist?(File.join("#{Rails.public_path}/uploads/#{s3_videos_log_file}"))
-      FileUtils.cp(
-        Rails.root.join('spec/fixtures/logs/s3_videos/2010-06-23-08-20-45-DE5461BCB46DA093'),
-        File.join("#{Rails.public_path}/uploads/#{s3_videos_log_file}")
-      )
-    end
+    s3_videos_log_file = "#{Rails.public_path}/uploads/s3/sublimevideo.videos/2010-06-23-08-20-45-DE5461BCB46DA093"
+    FileUtils.rm s3_videos_log_file, :force => true
+    FileUtils.cp(
+      Rails.root.join('spec/fixtures/logs/s3_videos/2010-06-23-08-20-45-DE5461BCB46DA093'),
+      s3_videos_log_file
+    )
   end
 end

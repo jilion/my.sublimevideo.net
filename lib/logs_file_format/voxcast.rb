@@ -25,7 +25,8 @@ module LogsFileFormat
       { :regexp => '(\d+|-)',                    :captures => [{:name => :duration,          :type => :duration, :unit => :musec}] },
       { :regexp => '\"(.*)\"',                   :captures => [{:name => :user_agent,        :type => :string}] },
       { :regexp => '(.*)',                       :captures => [{:name => :user_id,           :type => :string}] },
-      { :regexp => '\"(.*)\"',                   :captures => [{:name => :edge_location,     :type => :string}] }
+      # include " " inside () or it'll failed with old log without edge_location
+      { :regexp => '(.*)',                       :captures => [{:name => :edge_location,     :type => :string}] }
     ]
     
     def self.create(*args)
