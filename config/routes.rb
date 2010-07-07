@@ -4,15 +4,19 @@ MySublimeVideo::Application.routes.draw do |map|
   
   match 'login',    :to => 'devise/sessions#new',      :as => "new_user_session"
   match 'logout',   :to => 'devise/sessions#destroy',  :as => "destroy_user_session"
-  match 'register', :to => 'devise/registrations#new', :as => "new_user_registration"
+  match 'register', :to => 'registrations#new', :as => "new_user_registration"
   
   %w[sign_up signup users/register].each              { |action| match action => redirect('/register'), :via => :get }
   %w[log_in sign_in signin users/login].each          { |action| match action => redirect('/login'),    :via => :get }
   %w[log_out sign_out signout exit users/logout].each { |action| match action => redirect('/logout'),   :via => :get }
   
   devise_for :users,
-  :controllers => { :invitations => "admin/invitations" },
+  :controllers => { :registrations => "registrations", :invitations => "admin/invitations" },
   :path_names => { :sign_up => 'register', :sign_in => 'login', :sign_out => 'logout' }
+  
+  match 'admin/users/invitation/new', :to => 'admin/invitations#new', :as => "new_user_invitation"
+  match 'admin/users/invitation', :via => :post, :to => 'admin/invitations#create', :as => "user_invitation"
+  match 'admin/users/invitation', :via => :put, :to => 'admin/invitations#update', :as => "user_invitation"
   
   resources :users, :only => :update
   resources :sites do
@@ -54,17 +58,6 @@ MySublimeVideo::Application.routes.draw do |map|
   match ':page', :to => 'pages#show', :via => :get, :as => :page, :page => /terms|docs|support|suspended/
   
   root :to => redirect('/sites')
-  
-  # Sample of regular route:
-  #   match 'products/:id' => 'catalog#view'
-  # Keep in mind you can assign values other than :controller and :action
-  
-  # Sample of named route:
-  #   match 'products/:id/purchase' => 'catalog#purchase', :as => :purchase
-  # This route can be invoked with purchase_url(:id => product.id)
-  
-  # Sample resource route (maps HTTP verbs to controller actions automatically):
-  #   resources :products
   
   # Sample resource route with options:
   #   resources :products do

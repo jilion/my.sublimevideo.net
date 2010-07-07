@@ -2,16 +2,18 @@ require File.dirname(__FILE__) + '/acceptance_helper'
 
 feature "Users actions:" do
   
-  scenario "register" do
+  scenario "register is not available during the beta!" do
     visit "/register"
-    fill_in "Full name", :with => "John Doe"
-    fill_in "Email",     :with => "john@doe.com"
-    fill_in "Password",  :with => "123456"
-    check "I agree to the Terms & Conditions."
-    click_button "Register"
+    current_url.should =~ %r(http://[^/]+/login)
     
-    current_url.should =~ %r(http://[^/]+/sites)
-    page.should have_content('John Doe')
+    # fill_in "Full name", :with => "John Doe"
+    # fill_in "Email",     :with => "john@doe.com"
+    # fill_in "Password",  :with => "123456"
+    # check "I agree to the Terms & Conditions."
+    # click_button "Register"
+    # 
+    # current_url.should =~ %r(http://[^/]+/sites)
+    # page.should have_content('John Doe')
   end
   
   scenario "update email" do
