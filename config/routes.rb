@@ -2,13 +2,13 @@ MySublimeVideo::Application.routes.draw do |map|
   
   resource :beta, :only => [:show, :create]
   
-  match 'register', :to => 'registrations#new', :as => "new_user_registration"
-  match 'login',    :to => 'devise/sessions#new',      :as => "new_user_session"
-  match 'logout',   :to => 'devise/sessions#destroy',  :as => "destroy_user_session"
-  
   devise_for :users,
   :controllers => { :registrations => "registrations", :invitations => "admin/invitations" },
   :path_names => { :sign_up => 'register', :sign_in => 'login', :sign_out => 'logout' }
+  
+  match 'register', :to => 'registrations#new',       :as => "new_user_registration"
+  match 'login',    :to => 'devise/sessions#new',     :as => "new_user_session"
+  match 'logout',   :to => 'devise/sessions#destroy', :as => "destroy_user_session"
   
   %w[sign_up signup users/register].each              { |action| match action => redirect('/register'), :via => :get }
   %w[log_in sign_in signin users/login].each          { |action| match action => redirect('/login'),    :via => :get }
