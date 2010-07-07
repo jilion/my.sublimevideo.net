@@ -2,9 +2,9 @@ require 'spec_helper'
 
 describe UsersController do
   
-  it { should route(:get,    "login").to(:controller => "devise/sessions", :action => :new) }
-  it { should route(:get,    "register").to(:controller => "registrations", :action => :new) }
-  it { should route(:get,    "logout").to(:controller => "devise/sessions", :action => :destroy) }
+  it { should route(:get,    "users/login").to(:controller => "devise/sessions", :action => :new) }
+  it { should route(:get,    "users/register").to(:controller => "registrations", :action => :new) }
+  it { should route(:get,    "users/logout").to(:controller => "devise/sessions", :action => :destroy) }
   it { should route(:post,   "users/login").to(:controller => "devise/sessions", :action => :create) }
   
   it { should route(:post,   "users/password").to(:controller => "devise/passwords", :action => :create) }

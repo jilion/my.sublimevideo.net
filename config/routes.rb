@@ -52,7 +52,12 @@ MySublimeVideo::Application.routes.draw do |map|
   %w[logout log_out sign_out signout exit].each { |action| match "admin/#{action}" => redirect('/admin/admins/logout'), :via => :get }
   
   devise_for :admins, :path_prefix => "/admin",
-    :controllers => { :registrations => "admin/registrations", :invitations => "admin/invitations" },
+    :controllers => {
+      :registrations => "admin/registrations",
+      :invitations   => "admin/invitations",
+      :sessions      => "admin/sessions",
+      :passwords     => "admin/passwords"
+    },
     :path_names  => { :sign_in => 'login', :sign_out => 'logout' }
   
   namespace "admin" do
