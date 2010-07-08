@@ -10,12 +10,12 @@ MySublimeVideo::Application.routes.draw do |map|
   %w[log_out sign_out signout exit users/logout].each { |action| match action => redirect('/logout'),   :via => :get }
   
   devise_for :users,
-    :controllers => { :registrations => "registrations", :invitations => "admin/invitations" },
+    :controllers => { :registrations => "users/registrations", :invitations => "admin/admins/invitations" },
     :path_names  => { :sign_up => 'register', :sign_in => 'login', :sign_out => 'logout' }
   
   match 'login',    :to => 'devise/sessions#new',      :as => "new_user_session"
   match 'logout',   :to => 'devise/sessions#destroy',  :as => "destroy_user_session"
-  match 'register', :to => 'registrations#new',        :as => "new_user_registration"
+  match 'register', :to => 'users/registrations#new',  :as => "new_user_registration"
   
   resources :users, :only => :update
   
@@ -34,7 +34,7 @@ MySublimeVideo::Application.routes.draw do |map|
   match ':page', :to => 'pages#show', :via => :get, :as => :page, :page => /terms|docs|support|suspended/
   
   # for the pre-beta & beta phases
-  devise_for :enthusiasts, :controllers => { :confirmations => "enthusiast/confirmations" }
+  devise_for :enthusiasts, :controllers => { :confirmations => "enthusiasts/confirmations" }
   match '/enthusiasts' => redirect('/'), :via => :get
   match '/' => 'enthusiasts#create', :via => :post
   root :to => 'enthusiasts#new'
@@ -53,16 +53,17 @@ MySublimeVideo::Application.routes.draw do |map|
   
   devise_for :admins, :path_prefix => "/admin",
     :controllers => {
-      :registrations => "admin/registrations",
-      :invitations   => "admin/invitations",
-      :sessions      => "admin/sessions",
-      :passwords     => "admin/passwords"
+      :registrations => "admin/admins/registrations",
+      :invitations   => "admin/admins/invitations",
+      :sessions      => "admin/admins/sessions",
+      :passwords     => "admin/admins/passwords",
+      :unlocks       => "admin/admins/unlocks",
     },
     :path_names  => { :sign_in => 'login', :sign_out => 'logout' }
   
-  match 'admin/users/invitation/new', :to => 'admin/invitations#new',    :as => "new_user_invitation", :via => :get
-  match 'admin/users/invitation',     :to => 'admin/invitations#create', :as => "user_invitation", :via => :post
-  match 'admin/users/invitation',     :to => 'admin/invitations#update', :as => "user_invitation", :via => :put
+  match 'admin/users/invitation/new', :to => 'admin/admins/invitations#new',    :as => "new_user_invitation", :via => :get
+  match 'admin/users/invitation',     :to => 'admin/admins/invitations#create', :as => "user_invitation", :via => :post
+  match 'admin/users/invitation',     :to => 'admin/admins/invitations#update', :as => "user_invitation", :via => :put
   
   namespace "admin" do
     resources :enthusiasts, :only => [:index]

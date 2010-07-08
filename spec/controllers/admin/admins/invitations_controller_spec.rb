@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Admin::InvitationsController do
+describe Admin::Admins::InvitationsController do
   include Devise::TestHelpers
   
   context "with logged in admin" do

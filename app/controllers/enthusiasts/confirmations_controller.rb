@@ -1,4 +1,4 @@
-class Enthusiast::ConfirmationsController < Devise::ConfirmationsController
+class Enthusiasts::ConfirmationsController < Devise::ConfirmationsController
   
   layout 'enthusiast'
   

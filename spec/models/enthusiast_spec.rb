@@ -2,11 +2,15 @@
 #
 # Table name: enthusiasts
 #
-#  id         :integer         not null, primary key
-#  email      :string(255)
-#  free_text  :text
-#  created_at :datetime
-#  updated_at :datetime
+#  id                   :integer         not null, primary key
+#  user_id              :integer
+#  email                :string(255)
+#  free_text            :text
+#  confirmation_token   :string(255)
+#  confirmed_at         :datetime
+#  confirmation_sent_at :datetime
+#  created_at           :datetime
+#  updated_at           :datetime
 #
 
 require 'spec_helper'

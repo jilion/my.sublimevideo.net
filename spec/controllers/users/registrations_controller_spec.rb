@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe RegistrationsController do
+describe Users::RegistrationsController do
   include Devise::TestHelpers
   
   context "with logged in user" do

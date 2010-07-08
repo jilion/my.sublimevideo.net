@@ -1,4 +1,4 @@
-class Admin::InvitationsController < Devise::InvitationsController
+class Admin::Admins::InvitationsController < Devise::InvitationsController
   layout 'admin'
   
   before_filter :authenticate_resource!, :only => [:new, :create]
@@ -27,7 +27,7 @@ class Admin::InvitationsController < Devise::InvitationsController
   def edit
     self.resource = resource_class.new
     resource.invitation_token = params[:invitation_token]
-    render :template => "admin/invitations/edit", :layout => resource_name == :admin ? 'admin' : 'application'
+    render "admin/admins/invitations/edit", :layout => resource_name == :admin ? 'admin' : 'application'
   end
   
   # PUT /resource/invitation
@@ -39,7 +39,7 @@ class Admin::InvitationsController < Devise::InvitationsController
       sign_in resource_name, resource
       redirect_to resource_name == :admin ? admin_admins_url : sites_url
     else
-      render :template => "admin/invitations/edit", :layout => resource_name == :admin ? 'admin' : 'application'
+      render "admin/admins/invitations/edit", :layout => resource_name == :admin ? 'admin' : 'application'
     end
   end
   
