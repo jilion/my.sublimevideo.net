@@ -48,10 +48,6 @@ MySublimeVideo::Application.routes.draw do |map|
   
   match 'admin', :to => redirect('/admin/djs'), :as => "admin"
   
-  match 'admin/users/invitation/new', :to => 'admin/invitations#new',    :as => "new_user_invitation"
-  match 'admin/users/invitation',     :to => 'admin/invitations#create', :as => "user_invitation", :via => :post
-  match 'admin/users/invitation',     :to => 'admin/invitations#update', :as => "user_invitation", :via => :put
-  
   %w[login log_in sign_in signin].each          { |action| match "admin/#{action}" => redirect('/admin/admins/login'),  :via => :get }
   %w[logout log_out sign_out signout exit].each { |action| match "admin/#{action}" => redirect('/admin/admins/logout'), :via => :get }
   
@@ -63,6 +59,10 @@ MySublimeVideo::Application.routes.draw do |map|
       :passwords     => "admin/passwords"
     },
     :path_names  => { :sign_in => 'login', :sign_out => 'logout' }
+  
+  match 'admin/users/invitation/new', :to => 'admin/invitations#new',    :as => "new_user_invitation", :via => :get
+  match 'admin/users/invitation',     :to => 'admin/invitations#create', :as => "user_invitation", :via => :post
+  match 'admin/users/invitation',     :to => 'admin/invitations#update', :as => "user_invitation", :via => :put
   
   namespace "admin" do
     resources :enthusiasts, :only => [:index]

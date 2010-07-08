@@ -41,6 +41,10 @@ Devise.setup do |config|
   # he will be able to access your application without confirming. Default is nil.
   config.confirm_within = 2.days
   
+  # ==> Configuration for :invitable
+  # Time interval where the invitation token is valid.
+  config.invite_for = 2.weeks
+  
   # ==> Configuration for :rememberable
   # The time the user will be remembered without asking for credentials again.
   config.remember_for = 2.weeks

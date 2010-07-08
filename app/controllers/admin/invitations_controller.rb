@@ -1,5 +1,4 @@
 class Admin::InvitationsController < Devise::InvitationsController
-  respond_to :html
   layout 'admin'
   
   before_filter :authenticate_resource!, :only => [:new, :create]
