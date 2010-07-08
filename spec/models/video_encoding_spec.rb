@@ -97,7 +97,7 @@ describe VideoEncoding do
           
           it "should send us a notification via Hoptoad if creation has failed on Panda" do
             Transcoder.should_receive(:post).with(:encoding, params).and_return({ :error => "RecordNotFound", :message => "Couldn't find Video with ID=#{id}" })
-            HoptoadNotifier.should_receive(:notify).with("VideoEncoding (#{video_encoding.id}) panda encoding (panda_encoding_id: #{video_encoding.panda_encoding_id}) creation error: Couldn't find Video with ID=#{id}")
+            HoptoadNotifier.should_receive(:notify).with(:error_message => "VideoEncoding (#{video_encoding.id}) panda encoding (panda_encoding_id: #{video_encoding.panda_encoding_id}) creation error: Couldn't find Video with ID=#{id}")
             video_encoding.pandize
             video_encoding.should be_pending
           end
