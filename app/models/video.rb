@@ -165,7 +165,7 @@ class Video < ActiveRecord::Base
               # self.reload
             when 'fail'
               encoding.fail
-              HoptoadNotifier.notify("VideoEncoding (#{encoding.id}) panda encoding (panda_encoding_id: #{encoding.panda_encoding_id}) is failed.")
+              HoptoadNotifier.notify(:error_message => "VideoEncoding (#{encoding.id}) panda encoding (panda_encoding_id: #{encoding.panda_encoding_id}) is failed.")
             end
           end
         end
@@ -177,7 +177,7 @@ class Video < ActiveRecord::Base
     self.remote_posterframe_url = "#{self.class.panda_s3_url}/#{encoding.panda_encoding_id}_4.jpg"
     save!
     if posterframe.blank?
-      HoptoadNotifier.notify("Poster-frame for the video #{id} has not been saved (from activation of encoding #{encoding.id})!")
+      HoptoadNotifier.notify(:error_message => "Poster-frame for the video #{id} has not been saved (from activation of encoding #{encoding.id})!")
     end
   end
   

@@ -21,7 +21,7 @@ module RecurringJob
     
     def supervise
       unless all_delayed?
-        HoptoadNotifier.notify("WARNING!!! All recurring jobs are not delayed, please investigate quickly!")
+        HoptoadNotifier.notify(:error_message => "WARNING!!! All recurring jobs are not delayed, please investigate quickly!")
       end
     end
     

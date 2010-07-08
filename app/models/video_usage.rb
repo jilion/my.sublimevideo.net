@@ -135,7 +135,7 @@ private
   # after_create
   def notify_unknown_location
     if bandwidth_unknown > 0 || requests_unknown > 0
-       HoptoadNotifier.notify("VideoUsage (id #{id}, log_id #{log_id} contains unknown location")
+       HoptoadNotifier.notify(:error_message => "VideoUsage (id #{id}, log_id #{log_id} contains unknown location")
     end
   end
   
