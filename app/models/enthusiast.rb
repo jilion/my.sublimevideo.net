@@ -11,6 +11,8 @@
 
 class Enthusiast < ActiveRecord::Base
   
+  devise :validatable, :confirmable
+  
   attr_accessible :email, :free_text, :sites_attributes
   
   # ================
@@ -25,5 +27,11 @@ class Enthusiast < ActiveRecord::Base
   # ===============
   
   validates :email, :presence => true, :uniqueness => true
+  
+protected
+  
+  def password_required?
+    false
+  end
   
 end

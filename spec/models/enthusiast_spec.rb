@@ -24,7 +24,7 @@ describe Enthusiast do
     it "should validate presence of email" do
       enthusiast = Factory.build(:enthusiast, :email => nil)
       enthusiast.should_not be_valid
-      enthusiast.should have(1).error_on(:email)
+      enthusiast.should have(2).error_on(:email)
     end
     
     context "with already the email in db" do
@@ -33,7 +33,7 @@ describe Enthusiast do
       it "should validate uniqueness of email" do
         enthusiast = Factory.build(:enthusiast, :email => @enthusiast.email)
         enthusiast.should_not be_valid
-        enthusiast.should have(1).error_on(:email)
+        enthusiast.should have(2).error_on(:email)
       end
     end
   end

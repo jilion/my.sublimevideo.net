@@ -2,9 +2,10 @@ require File.dirname(__FILE__) + '/acceptance_helper'
 
 feature "Users actions:" do
   
-  scenario "register is not available during the beta!" do
-    visit "/register"
-    current_url.should =~ %r(http://[^/]+/login)
+  # scenario "register is available after the beta!" do
+  scenario "register is not available during the beta!" do # BETA 
+    visit "/register"                                      # BETA 
+    current_url.should =~ %r(http://[^/]+/login)           # BETA 
     
     # fill_in "Full name", :with => "John Doe"
     # fill_in "Email",     :with => "john@doe.com"

@@ -2,6 +2,9 @@ MySublimeVideo::Application.routes.draw do |map|
   
   resource :beta, :only => [:show, :create]
   
+  # NOTIFY ME: redirect all except /enthusiasts routes
+  # match '*path' => redirect('/'), :via => :get, :constraints => { :path => /!(enthusiasts|admin)/ }
+  
   %w[sign_up signup users/register].each              { |action| match action => redirect('/register'), :via => :get }
   %w[log_in sign_in signin users/login].each          { |action| match action => redirect('/login'),    :via => :get }
   %w[log_out sign_out signout exit users/logout].each { |action| match action => redirect('/logout'),   :via => :get }
@@ -31,11 +34,12 @@ MySublimeVideo::Application.routes.draw do |map|
   match ':page', :to => 'pages#show', :via => :get, :as => :page, :page => /terms|docs|support|suspended/
   
   # for the pre-beta & beta phases
+  devise_for :enthusiasts, :controllers => { :confirmations => "enthusiast/confirmations" }
   match '/enthusiasts' => redirect('/'), :via => :get
   match '/' => 'enthusiasts#create', :via => :post
   root :to => 'enthusiasts#new'
   
-  # after the pre-beta & beta phases
+  # PUBLIC RELEASE
   # root :to => redirect('/sites')
   
   # =========

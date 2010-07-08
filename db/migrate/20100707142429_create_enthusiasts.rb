@@ -1,8 +1,9 @@
 class CreateEnthusiasts < ActiveRecord::Migration
   def self.up
     create_table :enthusiasts do |t|
-      t.string :email
-      t.text :free_text
+      t.string      :email
+      t.text        :free_text
+      t.confirmable
       t.timestamps
     end
     

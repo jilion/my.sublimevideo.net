@@ -62,6 +62,9 @@ ActiveRecord::Schema.define(:version => 20100707142455) do
   create_table "enthusiasts", :force => true do |t|
     t.string   "email"
     t.text     "free_text"
+    t.string   "confirmation_token"
+    t.datetime "confirmed_at"
+    t.datetime "confirmation_sent_at"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
