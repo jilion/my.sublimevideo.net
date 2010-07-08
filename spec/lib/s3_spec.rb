@@ -3,7 +3,7 @@ require 'spec_helper'
 describe S3 do
   
   describe "yml key access" do
-    subject { S3 }
+    subject { described_class }
     
     its(:cnamed)            { should be_false }
     its(:access_key_id)     { should be_present }
@@ -18,7 +18,7 @@ describe S3 do
       ENV['S3_SECRET_ACCESS_KEY'] = 'bbb'
     end
     
-    subject { S3 }
+    subject { described_class }
     
     its(:access_key_id)     { should == 'aaa' }
     its(:secret_access_key) { should == 'bbb' }
