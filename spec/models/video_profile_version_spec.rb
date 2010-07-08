@@ -163,7 +163,7 @@ describe VideoProfileVersion do
           
           it "should send us a notification via Hoptoad if creation has failed on Panda" do
             Transcoder.should_receive(:post).with(:profile, params).and_return({ :error => "BadRequest", :message => "Error" })
-            HoptoadNotifier.should_receive(:notify).with("VideoProfileVersion (#{video_profile_version.id}) panda profile creation error: Error")
+            HoptoadNotifier.should_receive(:notify).with({ :error_message => "VideoProfileVersion (#{video_profile_version.id}) panda profile creation error: Error" })
             video_profile_version.pandize
             video_profile_version.should be_pending
           end
