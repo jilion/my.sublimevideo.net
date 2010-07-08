@@ -1,4 +1,6 @@
 %tr{ :class => cycle("", "alt") }
+  %td.full_name
+    = link_to user.full_name, admin_user_path(user)
   %td.email
     = mail_to user.email
   %td.trial

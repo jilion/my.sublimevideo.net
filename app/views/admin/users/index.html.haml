@@ -4,6 +4,7 @@
 
 %table.main#users
   %tr
+    %th= "Full name"
     %th= "Email"
     %th= "Trial?"
     %th= "# Sites"
@@ -11,3 +12,5 @@
     %th= "CC?"
     %th.delete= "Confirmed?"
   = render @users
+  
+= will_paginate @users

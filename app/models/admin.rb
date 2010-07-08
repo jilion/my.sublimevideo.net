@@ -26,4 +26,8 @@ class Admin < ActiveRecord::Base
   devise :database_authenticatable, :invitable, :registerable, :recoverable, :rememberable, :trackable, :validatable, :lockable
   
   attr_accessible :email, :password, :password_confirmation
+  
+  cattr_accessor :per_page
+  self.per_page = 25
+  
 end

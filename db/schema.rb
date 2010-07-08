@@ -60,6 +60,7 @@ ActiveRecord::Schema.define(:version => 20100707142455) do
   add_index "enthusiast_sites", ["enthusiast_id"], :name => "index_enthusiast_sites_on_enthusiast_id"
 
   create_table "enthusiasts", :force => true do |t|
+    t.integer  "user_id"
     t.string   "email"
     t.text     "free_text"
     t.string   "confirmation_token"

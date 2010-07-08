@@ -65,9 +65,11 @@ MySublimeVideo::Application.routes.draw do |map|
     :path_names  => { :sign_in => 'login', :sign_out => 'logout' }
   
   namespace "admin" do
-    resources :admins, :only => [:index, :destroy]
+    resources :enthusiasts, :only => [:index]
     
-    resources :users, :only => [:index]
+    resources :users, :only => [:index, :show]
+    
+    resources :admins, :only => [:index, :destroy]
     
     resources :sites, :only => [:index]
     

@@ -15,10 +15,14 @@ class Enthusiast < ActiveRecord::Base
   
   attr_accessible :email, :free_text, :sites_attributes
   
+  cattr_accessor :per_page
+  self.per_page = 25
+  
   # ================
   # = Associations =
   # ================
   
+  belongs_to :user
   has_many :sites, :class_name => "EnthusiastSite", :dependent => :destroy
   accepts_nested_attributes_for :sites, :reject_if => lambda { |a| a[:hostname].blank? }, :allow_destroy => true
   

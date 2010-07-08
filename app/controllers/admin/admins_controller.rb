@@ -1,7 +1,7 @@
 class Admin::AdminsController < Admin::AdminController
   
   def index
-    @admins = Admin.all
+    @admins = Admin.where(:encrypted_password.ne => nil)
     respond_with(@admins)
   end
   

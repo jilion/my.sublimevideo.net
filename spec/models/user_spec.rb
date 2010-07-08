@@ -84,6 +84,18 @@ describe User do
     end
   end
   
+  describe "callbacks" do
+    describe "after_save #link_with_enthusiast" do
+      let(:enthusiast) { Factory(:enthusiast) }
+      
+      it "should set user_id in the linked identifier" do
+        user = Factory(:user)
+        user.update_attribute(:enthusiast_id, enthusiast.id)
+        enthusiast.reload.user.should == user
+      end
+    end
+  end
+  
   describe "State Machine" do
     
     describe "initial state" do

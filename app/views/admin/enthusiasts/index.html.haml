@@ -1,0 +1,10 @@
+= title_and_content_header("Enthusiasts")
+
+%table.main#enthusiasts
+  %tr
+    %th= "Email"
+    %th= "Sites"
+    %th.delete= "Status"
+  = render @enthusiasts
+  
+= will_paginate @enthusiasts
