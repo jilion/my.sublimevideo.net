@@ -198,4 +198,15 @@ describe Invoice do
     
   end
   
+  describe "instance method" do
+    
+    describe "include_date?" do
+      subject { Factory.build(:invoice, :started_on => 30.days.ago, :ended_on => Date.today) }
+      
+      it { subject.include_date?(20.days.ago).should be_true }
+      it { subject.include_date?(20.days.from_now).should be_false }
+      
+    end
+  end
+  
 end

@@ -11,8 +11,9 @@ class Invoice::Sites < Array
 private
   
   def collect_sites_hits(invoice, options = {})
+    sites = invoice.user.sites
     if options[:from_cache]
-      invoice.user.sites.collect do |site|
+      sites.collect do |site|
         { 
           :id          => site.id,
           :hostname    => site.hostname,
@@ -22,7 +23,7 @@ private
         }
       end
     else
-      invoice.user.sites.collect do |site|
+      sites.collect do |site|
         { 
           :id          => site.id,
           :hostname    => site.hostname,

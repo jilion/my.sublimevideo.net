@@ -82,6 +82,10 @@ class Invoice < ActiveRecord::Base
     current? ? 'current' : id
   end
   
+  def include_date?(date)
+    started_on <= date.to_date && date.to_date <= ended_on
+  end
+  
   # =================
   # = Class Methods =
   # =================
@@ -153,15 +157,15 @@ private
   end
   
   def calculate_from_cache
-    self.sites = Invoice::Sites.new(self, :from_cache => true)
+    self.sites  = Invoice::Sites.new(self, :from_cache => true)
     self.videos = Invoice::Videos.new(self, :from_cache => true)
     set_amounts
   end
   
   # before_transition (calculate)
   def calculate_from_logs
-    self.sites = Invoice::Sites.new(self)
-    self.videos = Invoice::Videos.new(self, :from_cache => true)
+    self.sites  = Invoice::Sites.new(self)
+    self.videos = Invoice::Videos.new(self)
     set_amounts
   end
   

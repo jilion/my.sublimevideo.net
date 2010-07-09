@@ -84,20 +84,20 @@ class VideoUsage < ActiveRecord::Base
     while tokens.present?
       Video.where(:token => tokens.pop(100)).each do |video|
         create!(
-          :video        => video,
-          :log          => log,
-          :hits         => (hits = hbr[:hits]) ? hits[video.token].to_i : 0,
-          :bandwidth_s3 => (bandwidth = hbr[:bandwidth_s3]) ? bandwidth[video.token].to_i : 0,
-          :bandwidth_us => (bandwidth = hbr[:bandwidth_us]) ? bandwidth[video.token].to_i : 0,
-          :bandwidth_eu => (bandwidth = hbr[:bandwidth_eu]) ? bandwidth[video.token].to_i : 0,
-          :bandwidth_as => (bandwidth = hbr[:bandwidth_as]) ? bandwidth[video.token].to_i : 0,
-          :bandwidth_jp => (bandwidth = hbr[:bandwidth_jp]) ? bandwidth[video.token].to_i : 0,
+          :video             => video,
+          :log               => log,
+          :hits              => (hits = hbr[:hits]) ? hits[video.token].to_i : 0,
+          :bandwidth_s3      => (bandwidth = hbr[:bandwidth_s3]) ? bandwidth[video.token].to_i : 0,
+          :bandwidth_us      => (bandwidth = hbr[:bandwidth_us]) ? bandwidth[video.token].to_i : 0,
+          :bandwidth_eu      => (bandwidth = hbr[:bandwidth_eu]) ? bandwidth[video.token].to_i : 0,
+          :bandwidth_as      => (bandwidth = hbr[:bandwidth_as]) ? bandwidth[video.token].to_i : 0,
+          :bandwidth_jp      => (bandwidth = hbr[:bandwidth_jp]) ? bandwidth[video.token].to_i : 0,
           :bandwidth_unknown => (bandwidth = hbr[:bandwidth_unknown]) ? bandwidth[video.token].to_i : 0,
-          :requests_s3  => (requests = hbr[:requests_s3]) ? requests[video.token].to_i : 0,
-          :requests_us  => (requests = hbr[:requests_us]) ? requests[video.token].to_i : 0,
-          :requests_eu  => (requests = hbr[:requests_eu]) ? requests[video.token].to_i : 0,
-          :requests_as  => (requests = hbr[:requests_as]) ? requests[video.token].to_i : 0,
-          :requests_jp  => (requests = hbr[:requests_jp]) ? requests[video.token].to_i : 0,
+          :requests_s3       => (requests = hbr[:requests_s3]) ? requests[video.token].to_i : 0,
+          :requests_us       => (requests = hbr[:requests_us]) ? requests[video.token].to_i : 0,
+          :requests_eu       => (requests = hbr[:requests_eu]) ? requests[video.token].to_i : 0,
+          :requests_as       => (requests = hbr[:requests_as]) ? requests[video.token].to_i : 0,
+          :requests_jp       => (requests = hbr[:requests_jp]) ? requests[video.token].to_i : 0,
           :requests_unknown  => (requests = hbr[:requests_unknown]) ? requests[video.token].to_i : 0
         )
       end

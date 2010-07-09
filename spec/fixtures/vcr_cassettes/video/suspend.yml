@@ -7,14 +7,14 @@
     headers: 
       accept: 
       - "*/*"
-      user-agent: 
-      - ""
       content-type: 
       - ""
-      authorization: 
-      - AWS AKIAJ5AJKU32OXUZAC7A:JE+oY70C4xN9hb6Ejw+VN09UiU0=
+      user-agent: 
+      - ""
       date: 
       - Wed, 30 Jun 2010 10:33:34 GMT
+      authorization: 
+      - AWS AKIAJ5AJKU32OXUZAC7A:JE+oY70C4xN9hb6Ejw+VN09UiU0=
       host: 
       - sublimevideo.videos.s3.amazonaws.com
   response: !ruby/struct:VCR::Response 
@@ -26,10 +26,10 @@
       - WH3g1AdMG5lBgwURXH4kW+h4/eMWfdp96SFzGcOkIRKartRpiqWkrqdxM3dJY8Kq
       content-type: 
       - application/xml
-      server: 
-      - AmazonS3
       date: 
       - Wed, 30 Jun 2010 10:33:36 GMT
+      server: 
+      - AmazonS3
       x-amz-request-id: 
       - 021C56DA0581660E
       transfer-encoding: 
@@ -46,14 +46,14 @@
     headers: 
       accept: 
       - "*/*"
-      content-type: 
-      - ""
       user-agent: 
       - ""
-      date: 
-      - Wed, 30 Jun 2010 10:34:43 GMT
+      content-type: 
+      - ""
       authorization: 
       - AWS AKIAJ5AJKU32OXUZAC7A:VI6I9MStNP/khwJq6/duoDel4ec=
+      date: 
+      - Wed, 30 Jun 2010 10:34:43 GMT
       host: 
       - sublimevideo.videos.s3.amazonaws.com
   response: !ruby/struct:VCR::Response 
@@ -65,10 +65,10 @@
       - fD4TjDpnoUeYI/u/CRzJwX9w8m2aOHYQ62sOTMHkO40Yfjh6IyyWt5AoEndcCAur
       content-type: 
       - application/xml
-      date: 
-      - Wed, 30 Jun 2010 10:34:45 GMT
       server: 
       - AmazonS3
+      date: 
+      - Wed, 30 Jun 2010 10:34:45 GMT
       x-amz-request-id: 
       - 3118948813114D50
       transfer-encoding: 
@@ -85,14 +85,14 @@
     headers: 
       accept: 
       - "*/*"
-      user-agent: 
-      - ""
       content-type: 
       - ""
-      authorization: 
-      - AWS AKIAJ2FJVCFJW3RZRUUQ:Rv136Uss+qnIYmduR7kwh2RX8Xg=
+      user-agent: 
+      - ""
       date: 
       - Mon, 05 Jul 2010 10:11:11 GMT
+      authorization: 
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:Rv136Uss+qnIYmduR7kwh2RX8Xg=
       content-length: 
       - "417"
       host: 
@@ -104,14 +104,14 @@
     headers: 
       x-amz-id-2: 
       - BV+VzusnqeHUhRbma397oG9ZBf8a7O0z2IY8MKJgsVWjFp+rK+nIecfq1t092I+1
-      server: 
-      - AmazonS3
       date: 
       - Mon, 05 Jul 2010 10:11:13 GMT
-      content-length: 
-      - "0"
+      server: 
+      - AmazonS3
       x-amz-request-id: 
       - 4F34BB1CBBBFD4C4
+      content-length: 
+      - "0"
     body: ""
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
@@ -122,14 +122,14 @@
     headers: 
       accept: 
       - "*/*"
-      user-agent: 
-      - ""
       content-type: 
       - ""
-      authorization: 
-      - AWS AKIAJ2FJVCFJW3RZRUUQ:HH2k6gSaIsIED9w19+GPKW5ZrIE=
+      user-agent: 
+      - ""
       date: 
       - Mon, 05 Jul 2010 20:31:11 GMT
+      authorization: 
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:HH2k6gSaIsIED9w19+GPKW5ZrIE=
       host: 
       - dev.sublimevideo.videos.s3.amazonaws.com
   response: !ruby/struct:VCR::Response 
@@ -141,10 +141,10 @@
       - VFmKfWQp5hdaRgcluWQhQhdsiRuvPPZrWAi6epatPCrIgDeK0PS2pcuu3h2+MSqG
       content-type: 
       - application/xml
-      server: 
-      - AmazonS3
       date: 
       - Mon, 05 Jul 2010 20:31:21 GMT
+      server: 
+      - AmazonS3
       x-amz-request-id: 
       - 9850ACFCB2E76E42
       transfer-encoding: 
@@ -152,4 +152,43 @@
     body: |-
       <?xml version="1.0" encoding="UTF-8"?>
       <ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>dev.sublimevideo.videos</Name><Prefix>posterframe.jpg</Prefix><Marker></Marker><MaxKeys>1000</MaxKeys><IsTruncated>false</IsTruncated></ListBucketResult>
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: https://dev.sublimevideo.videos.s3.amazonaws.com:443/activeposterframe.jpg?acl
+    body: 
+    headers: 
+      accept: 
+      - "*/*"
+      user-agent: 
+      - ""
+      content-type: 
+      - ""
+      authorization: 
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:9E23h3mTVl8krb32OqPE2g0/xRA=
+      date: 
+      - Fri, 09 Jul 2010 10:19:04 GMT
+      host: 
+      - dev.sublimevideo.videos.s3.amazonaws.com
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 404
+      message: Not Found
+    headers: 
+      x-amz-id-2: 
+      - TWIB3Zj1IsbWH8MONAyHcsjojbGkf35tdH9cACaOVKIPhge7QNCntbYRCWG8OR4M
+      content-type: 
+      - application/xml
+      server: 
+      - AmazonS3
+      date: 
+      - Fri, 09 Jul 2010 10:19:03 GMT
+      x-amz-request-id: 
+      - 3370B7CEE58FB112
+      transfer-encoding: 
+      - chunked
+    body: |-
+      <?xml version="1.0" encoding="UTF-8"?>
+      <Error><Code>NoSuchKey</Code><Message>The specified key does not exist.</Message><Key>activeposterframe.jpg</Key><RequestId>3370B7CEE58FB112</RequestId><HostId>TWIB3Zj1IsbWH8MONAyHcsjojbGkf35tdH9cACaOVKIPhge7QNCntbYRCWG8OR4M</HostId></Error>
     http_version: "1.1"

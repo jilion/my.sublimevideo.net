@@ -7,7 +7,6 @@ class Invoice::Videos < Array
   
   # bandwidth
     # upload original to panda
-  # request
   # storage
     # thumbnail storage
     # DONE - update video.archive_encodings to archive only non-deprecated
@@ -19,8 +18,8 @@ class Invoice::Videos < Array
     # calulate total for encodings.started_encoding_at within invoice date
   
   def initialize(invoice, options = {})
-    @videos = [] # collect_videos(invoice, options)
-    # calculate_and_set_hits
+    @videos = collect_videos(invoice, options)
+    calculate_and_set_values
     # calculate_and_set_amounts(invoice)
     
     @amount = 0
@@ -31,8 +30,9 @@ class Invoice::Videos < Array
 private
   
   def collect_videos(invoice, options = {})
+    videos = invoice.user.videos.includes(:encodings)
     if options[:from_cache]
-      invoice.user.videos.include(:encodings).collect do |video|
+      videos.collect do |video|
         { 
           :id                => video.id,
           :video_title       => video.title,
@@ -56,21 +56,50 @@ private
         }
       end
     else
-      # invoice.user.sites.collect do |site|
-      #   { :id => site.id,
-      #     :hostname => site.hostname,
-      #     :archived_at => site.archived_at,
-      #     # Warning big request here if site_usages not compacted
-      #     :loader_hits => site.usages.started_after(invoice.started_on).ended_before(invoice.ended_on).sum(:loader_hits),
-      #     :player_hits => site.usages.started_after(invoice.started_on).ended_before(invoice.ended_on).sum(:player_hits)
-      #   }
-      # end
+      # Warning big requests here if video_usages not compacted
+      videos.collect do |video|
+        { 
+          :id                => video.id,
+          :video_title       => video.title,
+          :archived_at       => video.archived_at,
+          :bandwidth_upload  => calculate_upload_bandwidth(video, invoice),
+          :bandwidth_s3      => video.usages.started_after(invoice.started_on).ended_before(invoice.ended_on).sum(:bandwidth_s3),
+          :bandwidth_us      => video.usages.started_after(invoice.started_on).ended_before(invoice.ended_on).sum(:bandwidth_us),
+          :bandwidth_eu      => video.usages.started_after(invoice.started_on).ended_before(invoice.ended_on).sum(:bandwidth_eu),
+          :bandwidth_as      => video.usages.started_after(invoice.started_on).ended_before(invoice.ended_on).sum(:bandwidth_as),
+          :bandwidth_jp      => video.usages.started_after(invoice.started_on).ended_before(invoice.ended_on).sum(:bandwidth_jp),
+          :bandwidth_unknown => video.usages.started_after(invoice.started_on).ended_before(invoice.ended_on).sum(:bandwidth_unknown),
+          :requests_s3       => video.usages.started_after(invoice.started_on).ended_before(invoice.ended_on).sum(:requests_s3),
+          :requests_us       => video.usages.started_after(invoice.started_on).ended_before(invoice.ended_on).sum(:requests_us),
+          :requests_eu       => video.usages.started_after(invoice.started_on).ended_before(invoice.ended_on).sum(:requests_eu),
+          :requests_as       => video.usages.started_after(invoice.started_on).ended_before(invoice.ended_on).sum(:requests_as),
+          :requests_jp       => video.usages.started_after(invoice.started_on).ended_before(invoice.ended_on).sum(:requests_jp),
+          :requests_unknown  => video.usages.started_after(invoice.started_on).ended_before(invoice.ended_on).sum(:requests_unknown),
+          :storage_bytehrs   => calculate_storage_bytehrs(video, invoice),
+          :encoding_time     => calculate_encoding_time(video, invoice),
+          :hits              => video.usages.started_after(invoice.started_on).ended_before(invoice.ended_on).sum(:hits)
+        }
+      end
     end
   end
   
-  def calculate_and_set_hits
-    @loader_hits = @sites.sum { |site| site[:loader_hits] }
-    @player_hits = @sites.sum { |site| site[:player_hits] }
+  def calculate_and_set_values
+    @bandwidth_upload  = @videos.sum { |video| video[:bandwidth_upload] }
+    @bandwidth_s3      = @videos.sum { |video| video[:bandwidth_s3] }
+    @bandwidth_us      = @videos.sum { |video| video[:bandwidth_us] }
+    @bandwidth_eu      = @videos.sum { |video| video[:bandwidth_eu] }
+    @bandwidth_as      = @videos.sum { |video| video[:bandwidth_as] }
+    @bandwidth_jp      = @videos.sum { |video| video[:bandwidth_jp] }
+    @bandwidth_unknown = @videos.sum { |video| video[:bandwidth_unknown] }
+    @requests_s3       = @videos.sum { |video| video[:requests_s3] }
+    @requests_us       = @videos.sum { |video| video[:requests_us] }
+    @requests_eu       = @videos.sum { |video| video[:requests_eu] }
+    @requests_as       = @videos.sum { |video| video[:requests_as] }
+    @requests_jp       = @videos.sum { |video| video[:requests_jp] }
+    @requests_unknown  = @videos.sum { |video| video[:requests_unknown] }
+    @storage_bytehrs   = @videos.sum { |video| video[:storage_bytehrs] }
+    @encoding_time     = @videos.sum { |video| video[:encoding_time] }
+    @hits              = @videos.sum { |video| video[:hits] }
   end
   
   def calculate_and_set_amounts(invoice)
@@ -94,7 +123,7 @@ private
   end
   
   def calculate_upload_bandwidth(video, invoice)
-    0
+    invoice.include_date?(video.created_at) ? video.file_size : 0
   end
   
   def calculate_storage_bytehrs(video, invoice)
@@ -102,7 +131,9 @@ private
   end
   
   def calculate_encoding_time(video, invoice)
-    0
+    video.encodings.all.sum do |encoding|
+      invoice.include_date?(encoding.started_encoding_at) ? encoding.encoding_time : 0
+    end
   end
   
 end
