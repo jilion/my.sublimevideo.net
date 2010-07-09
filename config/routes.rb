@@ -56,8 +56,7 @@ MySublimeVideo::Application.routes.draw do |map|
       :registrations => "admin/admins/registrations",
       :invitations   => "admin/admins/invitations",
       :sessions      => "admin/admins/sessions",
-      :passwords     => "admin/admins/passwords",
-      :unlocks       => "admin/admins/unlocks",
+      :passwords     => "admin/admins/passwords"
     },
     :path_names  => { :sign_in => 'login', :sign_out => 'logout' }
   
