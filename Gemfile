@@ -47,6 +47,7 @@ if RUBY_PLATFORM =~ /darwin/
     gem 'annotate'
     gem 'wirble' # irbrc 
     gem 'ruby-graphviz', :require => 'graphviz'
+    gem 'rspec-rails', '>= 2.0.0.beta.17'
   end
   
   group :test do
@@ -57,12 +58,7 @@ if RUBY_PLATFORM =~ /darwin/
     gem 'rspactor', '>= 0.7.beta.1'
     
     gem 'shoulda'
-    gem 'rspec-rails', '>= 2.0.0.beta.16'
-    # gem "rspec-rails",        :git => "git://github.com/rspec/rspec-rails.git"
-    # gem "rspec",              :git => "git://github.com/rspec/rspec.git"
-    # gem "rspec-core",         :git => "git://github.com/rspec/rspec-core.git"
-    # gem "rspec-expectations", :git => "git://github.com/rspec/rspec-expectations.git"
-    # gem "rspec-mocks",        :git => "git://github.com/rspec/rspec-mocks.git"
+    gem 'rspec-rails', '>= 2.0.0.beta.17'
     
     gem 'steak', '>= 0.4.0.beta.1'
     gem 'capybara'
