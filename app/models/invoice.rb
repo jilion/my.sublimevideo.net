@@ -23,7 +23,7 @@ class Invoice < ActiveRecord::Base
   attr_accessible :state
   serialize :sites
   serialize :videos
-  uniquify :reference, :chars => Array('A'..'Z') - Array('O') + Array('1'..'9')
+  uniquify :reference, :chars => Array('A'..'Z') - ['O'] + Array('1'..'9')
   
   # ================
   # = Associations =
@@ -83,7 +83,7 @@ class Invoice < ActiveRecord::Base
   end
   
   def include_date?(date)
-    started_on <= date.to_date && date.to_date <= ended_on
+    date.present? && started_on.to_date <= date.to_date && date.to_date < ended_on.to_date
   end
   
   # =================

@@ -39,21 +39,24 @@ describe Invoice do
   
   context "current, without free trial" do
     before(:each) do
-      @user  = Factory(:user, :trial_ended_at => 3.month.ago)
-      @site1 = Factory(:site, :user => @user, :loader_hits_cache => 1000, :player_hits_cache => 11)
-      @site2 = Factory(:site, :user => @user, :loader_hits_cache => 50, :player_hits_cache => 5, :hostname => "google.com")
+      @user   = Factory(:user, :trial_ended_at => 3.month.ago)
+      @site1  = Factory(:site, :user => @user, :loader_hits_cache => 1000, :player_hits_cache => 11)
+      @site2  = Factory(:site, :user => @user, :loader_hits_cache => 50, :player_hits_cache => 5, :hostname => "google.com")
+      @video1 = Factory(:video, :user => @user)
+      @video2 = Factory(:video, :user => @user)
     end
     
     subject { Invoice.current(@user) }
     
-    it { subject.reference.should be_nil } # not working with its...
+    its(:reference)     { should be_nil }
     its(:started_on)    { should == Time.now.utc.to_date }
     its(:ended_on)      { should == Time.now.utc.to_date + 1.month }
     its(:sites)         { should be_kind_of(Invoice::Sites) }
+    its(:videos)        { should be_kind_of(Invoice::Videos) }
     its(:user)          { should be_present }
-    its(:amount)        { should == 1066 }
+    its(:amount)        { should == 1247 } # 1248
     its(:sites_amount)  { should == 1066 }
-    its(:videos_amount) { should == 0 }
+    its(:videos_amount) { should == 181 } # 182
     it { should be_current }
   end
   
@@ -204,7 +207,9 @@ describe Invoice do
       subject { Factory.build(:invoice, :started_on => 30.days.ago, :ended_on => Date.today) }
       
       it { subject.include_date?(20.days.ago).should be_true }
+      it { subject.include_date?(30.days.ago).should be_true }
       it { subject.include_date?(20.days.from_now).should be_false }
+      it { subject.include_date?(Date.today).should be_false }
       
     end
   end

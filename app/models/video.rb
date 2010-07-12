@@ -52,6 +52,7 @@ class Video < ActiveRecord::Base
   
   belongs_to :user
   has_many   :encodings, :class_name => 'VideoEncoding'
+  has_many   :usages, :class_name => "VideoUsage"
   
   # ==========
   # = Scopes =

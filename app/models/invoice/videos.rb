@@ -1,8 +1,11 @@
 class Invoice::Videos < Array
-  attr_reader :amount, :bandwidth_amount, :requests_amount, :storage_amount, :encoding_amount,
+  attr_reader :amount, :bandwidth_amount, :requests_amount,
               :bandwidth_upload, :bandwidth_s3, :bandwidth_us, :bandwidth_eu, :bandwidth_as, :bandwidth_jp, :bandwidth_unknown,
+              :bandwidth_upload_amount, :bandwidth_s3_amount, :bandwidth_us_amount, :bandwidth_eu_amount, :bandwidth_as_amount, :bandwidth_jp_amount, :bandwidth_unknown_amount,
               :requests_s3, :requests_us, :requests_eu, :requests_as, :requests_jp, :requests_unknown,
+              :requests_s3_amount, :requests_us_amount, :requests_eu_amount, :requests_as_amount, :requests_jp_amount, :requests_unknown_amount,
               :storage_bytehrs, :encoding_time,
+              :storage_amount, :encoding_amount,
               :hits # not billed, just for info.
   
   # bandwidth
@@ -19,10 +22,9 @@ class Invoice::Videos < Array
   
   def initialize(invoice, options = {})
     @videos = collect_videos(invoice, options)
-    calculate_and_set_values
-    # calculate_and_set_amounts(invoice)
     
-    @amount = 0
+    calculate_and_set_values
+    calculate_and_set_amounts
     
     super(@videos)
   end
@@ -102,24 +104,48 @@ private
     @hits              = @videos.sum { |video| video[:hits] }
   end
   
-  def calculate_and_set_amounts(invoice)
-    if invoice.user.trial_ended_at.nil? || (invoice.user.trial_ended_at > invoice.started_on && invoice.user.trial_ended_at < invoice.ended_on)
-      # TODO Rewrite, test if trial_ended_at is inside the invoice interval & calculate how much free hits remaining 
-      loader_hits = @loader_hits > User::Trial.free_loader_hits ? @loader_hits - User::Trial.free_loader_hits : 0
-      player_hits = @player_hits > User::Trial.free_player_hits ? @player_hits - User::Trial.free_player_hits : 0
-    else
-      loader_hits = @loader_hits
-      player_hits = @player_hits
+  def calculate_and_set_amounts
+    @videos.each do |video|
+      # TODO, now 100'000 bytes = 1 cent
+      video[:bandwidth_upload_amount]  = video[:bandwidth_upload] / 100000.0
+      video[:bandwidth_s3_amount]      = video[:bandwidth_s3] / 100000.0
+      video[:bandwidth_us_amount]      = video[:bandwidth_us] / 100000.0
+      video[:bandwidth_eu_amount]      = video[:bandwidth_eu] / 100000.0
+      video[:bandwidth_as_amount]      = video[:bandwidth_as] / 100000.0
+      video[:bandwidth_jp_amount]      = video[:bandwidth_jp] / 100000.0
+      video[:bandwidth_unknown_amount] = video[:bandwidth_unknown] / 100000.0
+      # TODO, now 10'000 request = 1 cent
+      video[:requests_s3_amount]       = video[:requests_s3] / 10000.0
+      video[:requests_us_amount]       = video[:requests_us] / 10000.0
+      video[:requests_eu_amount]       = video[:requests_eu] / 10000.0
+      video[:requests_as_amount]       = video[:requests_as] / 10000.0
+      video[:requests_jp_amount]       = video[:requests_jp] / 10000.0
+      video[:requests_unknown_amount]  = video[:requests_unknown] / 10000.0
+      # TODO, now 1000'000 bytehrs = 1 cent
+      video[:storage_amount]           = video[:storage_bytehrs] / 1000000.0
+      # TODO, now 1 second = 1 cent
+      video[:encoding_amount]          = video[:encoding_time]
     end
     
-    # TODO, now 1 hit = 1 cent
-    @sites.each do |site|
-      site[:loader_amount] = site[:loader_hits]
-      site[:player_amount] = site[:player_hits]
-    end
-    @loader_amount = loader_hits
-    @player_amount = player_hits
-    @amount = @loader_amount + @player_amount
+    @bandwidth_upload_amount  = @videos.sum { |video| video[:bandwidth_upload_amount] }.round
+    @bandwidth_s3_amount      = @videos.sum { |video| video[:bandwidth_s3_amount] }.round
+    @bandwidth_us_amount      = @videos.sum { |video| video[:bandwidth_us_amount] }.round
+    @bandwidth_eu_amount      = @videos.sum { |video| video[:bandwidth_eu_amount] }.round
+    @bandwidth_as_amount      = @videos.sum { |video| video[:bandwidth_as_amount] }.round
+    @bandwidth_jp_amount      = @videos.sum { |video| video[:bandwidth_jp_amount] }.round
+    @bandwidth_unknown_amount = @videos.sum { |video| video[:bandwidth_unknown_amount] }.round
+    @bandwidth_amount         = @bandwidth_upload_amount + @bandwidth_s3_amount + @bandwidth_us_amount + @bandwidth_eu_amount + @bandwidth_as_amount + @bandwidth_jp_amount + @bandwidth_unknown_amount
+    @requests_s3_amount       = @videos.sum { |video| video[:requests_s3_amount] }.round
+    @requests_us_amount       = @videos.sum { |video| video[:requests_us_amount] }.round
+    @requests_eu_amount       = @videos.sum { |video| video[:requests_eu_amount] }.round
+    @requests_as_amount       = @videos.sum { |video| video[:requests_as_amount] }.round
+    @requests_jp_amount       = @videos.sum { |video| video[:requests_jp_amount] }.round
+    @requests_unknown_amount  = @videos.sum { |video| video[:requests_unknown] }.round
+    @requests_amount          = @requests_s3_amount + @requests_us_amount + @requests_eu_amount + @requests_as_amount + @requests_jp_amount + @requests_unknown_amount
+    @storage_amount           = @videos.sum { |video| video[:storage_amount] }.round
+    @encoding_amount          = @videos.sum { |video| video[:encoding_amount] }.round
+    
+    @amount = @bandwidth_amount + @requests_amount + @storage_amount + @encoding_amount
   end
   
   def calculate_upload_bandwidth(video, invoice)
@@ -127,7 +153,37 @@ private
   end
   
   def calculate_storage_bytehrs(video, invoice)
-    0
+    bytehrs = presence_hours(invoice, video.created_at, video.archived_at) * video.file_size.to_i
+    bytehrs += video.encodings.all.sum do |encoding|
+      presence_hours(invoice, encoding.file_added_at, encoding.file_removed_at) * encoding.file_size.to_i
+    end
+    bytehrs
+  end
+  
+  def presence_hours(invoice, added_at, removed_at)
+    if added_at.present?
+      if added_at <= invoice.started_on
+        if removed_at.nil? || removed_at > invoice.ended_on
+          ((invoice.ended_on.to_time - invoice.started_on.to_time) / 60**2).round
+        elsif removed_at > invoice.started_on
+          ((removed_at - invoice.started_on.to_time) / 60**2).round
+        else
+          0 # removed_at < invoice.started_on
+        end
+      elsif added_at < invoice.ended_on
+        if removed_at.nil? || removed_at > invoice.ended_on
+          ((invoice.ended_on.to_time - added_at) / 60**2).round
+        elsif removed_at > invoice.started_on
+          ((removed_at - added_at) / 60**2).round
+        else
+          0 # removed_at < invoice.started_on
+        end
+      else
+        0
+      end
+    else
+      0
+    end
   end
   
   def calculate_encoding_time(video, invoice)

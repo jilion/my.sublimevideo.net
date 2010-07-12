@@ -48,7 +48,7 @@ describe Invoice::Sites do
   context "from logs" do
     
     before(:each) do
-      @user  = Factory(:user, :trial_ended_at => 3.month.ago, :invoices_count => 1, :last_invoiced_on => 2.month.ago, :next_invoiced_on => 1.day.ago).reload
+      @user  = Factory(:user, :trial_ended_at => 3.month.ago, :invoices_count => 1, :last_invoiced_on => 2.months.ago, :next_invoiced_on => 1.day.ago).reload
       @site1 = Factory(:site, :user => @user)
       @site2 = Factory(:site, :user => @user, :hostname => "google.com")
       VCR.use_cassette('one_saved_logs') do
@@ -57,7 +57,7 @@ describe Invoice::Sites do
       Factory(:site_usage, :site => @site1, :log => @log, :loader_hits => 1000100, :player_hits => 15)
       Factory(:site_usage, :site => @site2, :log => @log, :loader_hits => 53, :player_hits => 7)
       invoice = Factory(:invoice, :user => @user)
-      @invoice = Invoice.find(invoice)# problem if not reloaded, but don't fucking know why!
+      @invoice = Invoice.find(invoice) # must be deep reloaded!
     end
     
     subject { Invoice::Sites.new(@invoice) }
