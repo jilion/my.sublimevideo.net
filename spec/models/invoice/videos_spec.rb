@@ -54,9 +54,9 @@ describe Invoice::Videos do
     its(:requests_jp_amount)       { should == 0 }
     its(:requests_unknown_amount)  { should == 21 }
     its(:requests_amount)          { should == 21 }
-    its(:storage_amount)           { should == 215 }
+    its(:storage_amount)           { should satisfy { |a| [215,216].include?(a) } } # depends on time
     its(:encoding_amount)          { should == 504 }
-    its(:amount)                   { should == 11541 }
+    its(:amount)                   { should satisfy { |a| [11541,11542].include?(a) } } # depends on time
     
     it "should return video array" do
       videos_ids = subject.collect { |video| video[:id] }
@@ -167,9 +167,9 @@ describe Invoice::Videos do
     its(:requests_jp_amount)       { should == 0 }
     its(:requests_unknown_amount)  { should == 22 }
     its(:requests_amount)          { should == 22 }
-    its(:storage_amount)           { should == 185 }
+    its(:storage_amount)           { should satisfy { |a| [185,186].include?(a) } } # depends on time
     its(:encoding_amount)          { should == 805 }
-    its(:amount)                   { should == 12353 }
+    its(:amount)                   { should satisfy { |a| [12353,12354].include?(a) } } # depends on time
     
     it "should return video array" do
       videos_ids = subject.collect { |video| video[:id] }
