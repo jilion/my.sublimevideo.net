@@ -60,6 +60,21 @@ class Log::Voxcast < Log
     end
   end
   
+  # TEMP
+  def self.delay_bench_logs_parsing
+    delay.bench_logs_parsing
+  end
+  
+  # TEMP
+  def self.bench_logs_parsing
+    logs_file = File.new(Rails.root.join('spec/fixtures/logs/voxcast/all.gz'))
+    start = Time.now
+    LogAnalyzer.parse(logs_file, 'LogsFileFormat::Voxcast')
+    time_taken = (Time.now - start).to_s
+    Rails.logger.info "AAAAAAAAAAAAA #{time_taken}"
+    HoptoadNotifier.notify(:error_message => "24'000 lines of Voxcast request parsed in #{time_taken}")
+  end
+  
   def self.fetch_download_and_create_new_logs
     delay_fetch_download_and_create_new_logs # relaunch the process in 1 min
     new_logs_names = VoxcastCDN.fetch_logs_names
