@@ -1,5 +1,5 @@
 module LogsFileFormat
-  class S3Videos < RequestLogAnalyzer::FileFormat::Base
+  class S3Licenses < RequestLogAnalyzer::FileFormat::Base
     extend RequestLogAnalyzer::FileFormat::CommonRegularExpressions
     extend LogsFileFormat::Amazon
     

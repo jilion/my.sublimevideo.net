@@ -14,12 +14,12 @@
 #  updated_at :datetime
 #
 
-class Log::Amazon::S3::Videos < Log::Amazon::S3
+class Log::Amazon::S3::Player < Log::Amazon::S3
   
   # ================
   # = Associations =
   # ================
   
-  has_many :usages, :class_name => "VideoUsage"
+  has_many :usages, :class_name => "SiteUsage"
   
 end

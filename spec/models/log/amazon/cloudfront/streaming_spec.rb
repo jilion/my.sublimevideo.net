@@ -17,13 +17,13 @@
 require 'spec_helper'
 
 describe Log::Amazon::Cloudfront::Streaming do
+  before(:each) { VCR.insert_cassette('cloudfront/streaming/logs_list') }
   
   context "created with valid attributes" do
     subject { Factory(:log_cloudfront_streaming) }
     
-    it "should have good log url" do
-      subject.file.url.should == "/uploads/cloudfront/sublimevideo.videos/streaming/EK1147O537VJ1.2010-06-23-07.9D0khw8j.gz"
-    end
+    it { subject.usages.class_name.constantize.should == VideoUsage }
+    it { subject.file.url.should == "/uploads/cloudfront/sublimevideo.videos/streaming/EK1147O537VJ1.2010-06-23-07.9D0khw8j.gz" }
     
     it "should have good log content" do
       log = Log::Amazon::Cloudfront::Streaming.find(subject.id) # to be sure that log is well saved with CarrierWave
@@ -47,7 +47,7 @@ describe Log::Amazon::Cloudfront::Streaming do
   
   describe "Class Methods" do
     it "should launch delayed fetch_and_create_new_logs" do
-      lambda { Log::Amazon::Cloudfront::Streaming.fetch_and_create_new_logs }.should change(Delayed::Job, :count).by(1)
+      lambda { Log::Amazon::Cloudfront::Streaming.fetch_and_create_new_logs }.should change(Delayed::Job.where(:handler.matches => "%fetch_and_create_new_logs%"), :count).by(1)
     end
     
     it "should not launch delayed fetch_and_create_new_logs if one pending already present" do
@@ -64,4 +64,5 @@ describe Log::Amazon::Cloudfront::Streaming do
     end
   end
   
+  after(:each) { VCR.eject_cassette }
 end

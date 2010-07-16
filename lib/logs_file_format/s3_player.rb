@@ -1,5 +1,5 @@
 module LogsFileFormat
-  class S3Videos < RequestLogAnalyzer::FileFormat::Base
+  class S3Player < RequestLogAnalyzer::FileFormat::Base
     extend RequestLogAnalyzer::FileFormat::CommonRegularExpressions
     extend LogsFileFormat::Amazon
     
@@ -29,12 +29,12 @@ module LogsFileFormat
     
     report do |analyze|
       analyze.traffic(:bytes_sent, :title => :bandwidth_s3,
-        :category => lambda { |r| video_token_from(r[:key]) },
-        :if       => lambda { |r| video_token?(r[:key]) && s3_get_request?(r[:operation]) }
+        :category => lambda { |r| player_token_from(r[:requests_uri]) },
+        :if       => lambda { |r| player_token?(r[:requests_uri]) && s3_get_request?(r[:operation]) }
       )
       analyze.frequency(:key, :title => :requests_s3,
-        :category => lambda { |r| video_token_from(r[:key]) },
-        :if       => lambda { |r| video_token?(r[:key]) && s3_get_request?(r[:operation]) }
+        :category => lambda { |r| player_token_from(r[:requests_uri]) },
+        :if       => lambda { |r| player_token?(r[:requests_uri]) && s3_get_request?(r[:operation]) }
       )
     end
     

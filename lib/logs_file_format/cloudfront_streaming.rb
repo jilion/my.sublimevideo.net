@@ -49,48 +49,48 @@ module LogsFileFormat
     def self.report_trackers
       analyze = RequestLogAnalyzer::Aggregator::Summarizer::Definer.new
       analyze.frequency(:sname, :title => :hits,
-        :category => lambda { |r| token_from(r[:sname]) },
-        :if       => lambda { |r| r[:event] == "stop" && token_path?(r[:sname]) && video_path?(r[:sname]) }
+        :category => lambda { |r| video_token_from(r[:sname]) },
+        :if       => lambda { |r| r[:event] == "stop" && video_token?(r[:sname]) && video_key?(r[:sname]) }
       )
       analyze.traffic(:sc_bytes, :title => :bandwidth_us,
-        :category => lambda { |r| token_from(r[:sname]) },
-        :if       => lambda { |r| r[:event] == "stop" && token_path?(r[:sname]) && us_location?(r[:edge_location]) }
+        :category => lambda { |r| video_token_from(r[:sname]) },
+        :if       => lambda { |r| r[:event] == "stop" && video_token?(r[:sname]) && us_location?(r[:edge_location]) }
       )
       analyze.traffic(:sc_bytes, :title => :bandwidth_eu,
-        :category => lambda { |r| token_from(r[:sname]) },
-        :if       => lambda { |r| r[:event] == "stop" && token_path?(r[:sname]) && eu_location?(r[:edge_location]) }
+        :category => lambda { |r| video_token_from(r[:sname]) },
+        :if       => lambda { |r| r[:event] == "stop" && video_token?(r[:sname]) && eu_location?(r[:edge_location]) }
       )
       analyze.traffic(:sc_bytes, :title => :bandwidth_as,
-        :category => lambda { |r| token_from(r[:sname]) },
-        :if       => lambda { |r| r[:event] == "stop" && token_path?(r[:sname]) && as_location?(r[:edge_location]) }
+        :category => lambda { |r| video_token_from(r[:sname]) },
+        :if       => lambda { |r| r[:event] == "stop" && video_token?(r[:sname]) && as_location?(r[:edge_location]) }
       )
       analyze.traffic(:sc_bytes, :title => :bandwidth_jp,
-        :category => lambda { |r| token_from(r[:sname]) },
-        :if       => lambda { |r| r[:event] == "stop" && token_path?(r[:sname]) && jp_location?(r[:edge_location]) }
+        :category => lambda { |r| video_token_from(r[:sname]) },
+        :if       => lambda { |r| r[:event] == "stop" && video_token?(r[:sname]) && jp_location?(r[:edge_location]) }
       )
       analyze.traffic(:sc_bytes, :title => :bandwidth_unknown,
-        :category => lambda { |r| token_from(r[:sname]) },
-        :if       => lambda { |r| r[:event] == "stop" && token_path?(r[:sname]) && unknown_location?(r[:edge_location]) }
+        :category => lambda { |r| video_token_from(r[:sname]) },
+        :if       => lambda { |r| r[:event] == "stop" && video_token?(r[:sname]) && unknown_location?(r[:edge_location]) }
       )
       # analyze.frequency(:sname, :title => :requests_us,
-      #   :category => lambda { |r| token_from(r[:sname]) },
-      #   :if       => lambda { |r| token_path?(r[:sname]) && us_location?(r[:edge_location]) }
+      #   :category => lambda { |r| video_token_from(r[:sname]) },
+      #   :if       => lambda { |r| video_token?(r[:sname]) && us_location?(r[:edge_location]) }
       # )
       # analyze.frequency(:sname, :title => :requests_eu,
-      #   :category => lambda { |r| token_from(r[:sname]) },
-      #   :if       => lambda { |r| token_path?(r[:sname]) && eu_location?(r[:edge_location]) }
+      #   :category => lambda { |r| video_token_from(r[:sname]) },
+      #   :if       => lambda { |r| video_token?(r[:sname]) && eu_location?(r[:edge_location]) }
       # )
       # analyze.frequency(:sname, :title => :requests_as,
-      #   :category => lambda { |r| token_from(r[:sname]) },
-      #   :if       => lambda { |r| token_path?(r[:sname]) && as_location?(r[:edge_location]) }
+      #   :category => lambda { |r| video_token_from(r[:sname]) },
+      #   :if       => lambda { |r| video_token?(r[:sname]) && as_location?(r[:edge_location]) }
       # )
       # analyze.frequency(:sname, :title => :requests_jp,
-      #   :category => lambda { |r| token_from(r[:sname]) },
-      #   :if       => lambda { |r| token_path?(r[:sname]) && jp_location?(r[:edge_location]) }
+      #   :category => lambda { |r| video_token_from(r[:sname]) },
+      #   :if       => lambda { |r| video_token?(r[:sname]) && jp_location?(r[:edge_location]) }
       # )
       # analyze.frequency(:sname, :title => :requests_unknown,
-      #   :category => lambda { |r| token_from(r[:sname]) },
-      #   :if       => lambda { |r| token_path?(r[:sname]) && unknown_location?(r[:edge_location]) }
+      #   :category => lambda { |r| video_token_from(r[:sname]) },
+      #   :if       => lambda { |r| video_token?(r[:sname]) && unknown_location?(r[:edge_location]) }
       # )
       analyze.trackers
     end

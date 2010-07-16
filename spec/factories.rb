@@ -84,6 +84,18 @@ Factory.define :log_s3_videos, :class => Log::Amazon::S3::Videos do |f|
   f.name "2010-06-23-08-20-45-DE5461BCB46DA093"
 end
 
+Factory.define :log_s3_player, :class => Log::Amazon::S3::Player do |f|
+  f.name "2010-07-16-05-22-13-8C4ECFE09170CCD5"
+end
+
+Factory.define :log_s3_loaders, :class => Log::Amazon::S3::Loaders do |f|
+  f.name "2010-07-14-09-22-26-63B226D3944909C8"
+end
+
+Factory.define :log_s3_licenses, :class => Log::Amazon::S3::Licenses do |f|
+  f.name "2010-07-14-11-29-03-BDECA2599C0ADB7D"
+end
+
 Factory.define :site_usage do |f|
   f.association :site
   f.association :log, :factory => :log_voxcast

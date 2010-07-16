@@ -1,0 +1,79 @@
+--- 
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: https://dev.sublimevideo.logs.s3.amazonaws.com:443/?prefix=cloudfront/sublimevideo.videos/download/
+    body: 
+    headers: 
+      accept: 
+      - "*/*"
+      content-type: 
+      - ""
+      user-agent: 
+      - ""
+      date: 
+      - Fri, 16 Jul 2010 07:57:33 GMT
+      authorization: 
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:iGFUa2YsC0cSh8lWyBmFQY3lNmk=
+      host: 
+      - dev.sublimevideo.logs.s3.amazonaws.com
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      x-amz-id-2: 
+      - dv2VHWblTY77vCDJgiITKqsYBm8HdTv0XgTMsr7AlOEtmomkzqODNVwBL89FR8EL
+      content-type: 
+      - application/xml
+      date: 
+      - Fri, 16 Jul 2010 07:57:35 GMT
+      server: 
+      - AmazonS3
+      x-amz-request-id: 
+      - 7AD0E5DFB6259ED1
+      transfer-encoding: 
+      - chunked
+    body: |-
+      <?xml version="1.0" encoding="UTF-8"?>
+      <ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>dev.sublimevideo.logs</Name><Prefix>cloudfront/sublimevideo.videos/download/</Prefix><Marker></Marker><MaxKeys>1000</MaxKeys><IsTruncated>false</IsTruncated><Contents><Key>cloudfront/sublimevideo.videos/download/</Key><LastModified>2010-07-01T09:24:48.000Z</LastModified><ETag>&quot;d41d8cd98f00b204e9800998ecf8427e&quot;</ETag><Size>0</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>cloudfront/sublimevideo.videos/download/E3KTK13341WJO.2010-06-15-14.JWGUoNHt.gz</Key><LastModified>2010-07-01T09:24:50.000Z</LastModified><ETag>&quot;a4a199ae5a4bff8d57a4ae4cccf591ec&quot;</ETag><Size>357</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>cloudfront/sublimevideo.videos/download/E3KTK13341WJO.2010-06-15-14.O5iQjgcX.gz</Key><LastModified>2010-07-01T09:24:50.000Z</LastModified><ETag>&quot;1c18d9bee2af0990d533b3de07e039fd&quot;</ETag><Size>687</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>cloudfront/sublimevideo.videos/download/E3KTK13341WJO.2010-06-15-14.fqabil9m.gz</Key><LastModified>2010-07-01T09:24:49.000Z</LastModified><ETag>&quot;4f5af0c892c265d9c5c0b5dbafcb832f&quot;</ETag><Size>252</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>cloudfront/sublimevideo.videos/download/E3KTK13341WJO.2010-06-16-07.dZMKHXp8.gz</Key><LastModified>2010-07-01T09:24:50.000Z</LastModified><ETag>&quot;5bd6f5cc67b834159a59786e23519f52&quot;</ETag><Size>596</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>cloudfront/sublimevideo.videos/download/E3KTK13341WJO.2010-06-16-07.nWuabAEC.gz</Key><LastModified>2010-07-01T09:24:50.000Z</LastModified><ETag>&quot;a26f3c5e87d517f3bce064d05beda3c6&quot;</ETag><Size>393</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>cloudfront/sublimevideo.videos/download/E3KTK13341WJO.2010-06-16-08.2Knk9kOC.gz</Key><LastModified>2010-07-01T09:24:51.000Z</LastModified><ETag>&quot;f8dc2d289ff8916fbe6fd89160b659eb&quot;</ETag><Size>441</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents></ListBucketResult>
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: https://dev.sublimevideo.logs.s3.amazonaws.com:443/?prefix=cloudfront/sublimevideo.videos/download/&marker=cloudfront/sublimevideo.videos/download/E3KTK13341WJO.2010-06-15-02
+    body: 
+    headers: 
+      accept: 
+      - "*/*"
+      user-agent: 
+      - ""
+      content-type: 
+      - ""
+      authorization: 
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:F6x2IfCCxw7lHtG1VSo8dmRl7vo=
+      date: 
+      - Fri, 16 Jul 2010 07:57:34 GMT
+      host: 
+      - dev.sublimevideo.logs.s3.amazonaws.com
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      x-amz-id-2: 
+      - rTK3EXYjLNoVPsHe9PB6cH2XqRmXAhNifC1hhuxjmOiiGytLwazJkptYQkppuowv
+      content-type: 
+      - application/xml
+      server: 
+      - AmazonS3
+      date: 
+      - Fri, 16 Jul 2010 07:57:36 GMT
+      x-amz-request-id: 
+      - 08D384404815866E
+      transfer-encoding: 
+      - chunked
+    body: |-
+      <?xml version="1.0" encoding="UTF-8"?>
+      <ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>dev.sublimevideo.logs</Name><Prefix>cloudfront/sublimevideo.videos/download/</Prefix><Marker>cloudfront/sublimevideo.videos/download/E3KTK13341WJO.2010-06-15-02</Marker><MaxKeys>1000</MaxKeys><IsTruncated>false</IsTruncated><Contents><Key>cloudfront/sublimevideo.videos/download/E3KTK13341WJO.2010-06-15-14.JWGUoNHt.gz</Key><LastModified>2010-07-01T09:24:50.000Z</LastModified><ETag>&quot;a4a199ae5a4bff8d57a4ae4cccf591ec&quot;</ETag><Size>357</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>cloudfront/sublimevideo.videos/download/E3KTK13341WJO.2010-06-15-14.O5iQjgcX.gz</Key><LastModified>2010-07-01T09:24:50.000Z</LastModified><ETag>&quot;1c18d9bee2af0990d533b3de07e039fd&quot;</ETag><Size>687</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>cloudfront/sublimevideo.videos/download/E3KTK13341WJO.2010-06-15-14.fqabil9m.gz</Key><LastModified>2010-07-01T09:24:49.000Z</LastModified><ETag>&quot;4f5af0c892c265d9c5c0b5dbafcb832f&quot;</ETag><Size>252</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>cloudfront/sublimevideo.videos/download/E3KTK13341WJO.2010-06-16-07.dZMKHXp8.gz</Key><LastModified>2010-07-01T09:24:50.000Z</LastModified><ETag>&quot;5bd6f5cc67b834159a59786e23519f52&quot;</ETag><Size>596</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>cloudfront/sublimevideo.videos/download/E3KTK13341WJO.2010-06-16-07.nWuabAEC.gz</Key><LastModified>2010-07-01T09:24:50.000Z</LastModified><ETag>&quot;a26f3c5e87d517f3bce064d05beda3c6&quot;</ETag><Size>393</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>cloudfront/sublimevideo.videos/download/E3KTK13341WJO.2010-06-16-08.2Knk9kOC.gz</Key><LastModified>2010-07-01T09:24:51.000Z</LastModified><ETag>&quot;f8dc2d289ff8916fbe6fd89160b659eb&quot;</ETag><Size>441</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents></ListBucketResult>
+    http_version: "1.1"

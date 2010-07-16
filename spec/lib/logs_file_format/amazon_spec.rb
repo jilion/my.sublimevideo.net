@@ -3,13 +3,55 @@ require 'spec_helper'
 describe LogsFileFormat::Amazon do
   subject { class Foo; include LogsFileFormat::Amazon; end; Foo.new }
   
-  it "should return token_from cloudfront download path" do
-    subject.token_from("/g46g16dz/dartmoor.mp4").should == "g46g16dz"
+  # =========
+  # = Video =
+  # =========
+  
+  it "should return video_token_from cloudfront download path" do
+    subject.video_token_from("/g46g16dz/dartmoor.mp4").should == "g46g16dz"
   end
   
-  it "should return token_from cloudfront streaming path" do
-    subject.token_from("g46g16dz/dartmoor.mp4").should == "g46g16dz"
+  it "should return video_token_from cloudfront streaming path" do
+    subject.video_token_from("g46g16dz/dartmoor.mp4").should == "g46g16dz"
   end
+  
+  ['/k3zph1mc/best_snowboard_video_ever_720p.mp4', 'k3zph1mc/best_snowboard_video_ever_720p.webm', 'k3zph1mc/best_snowboard_video_ever_720p.ogv'].each do |key|
+    it "#{key} should be a video key" do
+      subject.video_key?(key).should be_true
+    end
+  end
+  
+  ['/k3zph1mc/posterframe.jpg', 'posterframe.png'].each do |key|
+    it "#{key} should not be a video path" do
+      subject.video_key?(key).should be_false
+    end
+  end
+  
+  # ==========
+  # = Player =
+  # ==========
+  
+  ["GET /sublime.swf?t=6vibplhv HTTP/1.1", "HEAD /sublime.js?t=6vibplhv HTTP/1.0", "GET /sublime_css.js?t=6vibplhv FTP/1.1", "GET /close_button.png?t=6vibplhv HTTP/1.1", "GET /ie/transparent_pixel.gif?t=6vibplhv HTTP/1.1"].each do |requests_uri|
+    it "should return player_token_from #{requests_uri}" do
+      subject.player_token_from(requests_uri).should == "6vibplhv"
+    end
+    it "#{requests_uri} should be a player token" do
+      subject.player_token?(requests_uri).should be_true
+    end
+  end
+  
+  ["GET /ie/transparent_pixel.gif HTTP/1.1", "GET /sublime.js?t=6vibp HTTP/1.1", "/sublime_css.js?t=6vibplhv"].each do |requests_uri|
+    it "should not return player_token_from #{requests_uri}" do
+      subject.player_token_from(requests_uri).should be_nil
+    end
+    it "#{requests_uri} should not be a player token" do
+      subject.player_token?(requests_uri).should be_false
+    end
+  end
+  
+  # ================
+  # = Other stuffs =
+  # ================
   
   ['REST.GET.OBJECT', 'REST.GET.BUCKET', 'REST.HEAD.OBJECT'].each do |operation|
     it "#{operation} should be a S3 GET request" do
@@ -20,18 +62,6 @@ describe LogsFileFormat::Amazon do
   ['REST.POST.OBJECT', 'REST.PUT.OBJECT', 'REST.DELETE.OBJECT'].each do |operation|
     it "#{operation} should not be a S3 GET request" do
       subject.s3_get_request?(operation).should be_false
-    end
-  end
-  
-  ['/k3zph1mc/best_snowboard_video_ever_720p.mp4', 'k3zph1mc/best_snowboard_video_ever_720p.webm', 'k3zph1mc/best_snowboard_video_ever_720p.ogv'].each do |path|
-    it "#{path} should be a video path" do
-      subject.video_path?(path).should be_true
-    end
-  end
-  
-  ['/k3zph1mc/posterframe.jpg', 'posterframe.png'].each do |path|
-    it "#{path} should not be a video path" do
-      subject.video_path?(path).should be_false
     end
   end
   

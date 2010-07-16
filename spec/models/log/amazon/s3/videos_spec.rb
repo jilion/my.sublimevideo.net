@@ -17,13 +17,13 @@
 require 'spec_helper'
 
 describe Log::Amazon::S3::Videos do
+  before(:each) { VCR.insert_cassette('s3/videos/logs_list') }
   
   context "created with valid attributes" do
     subject { Factory(:log_s3_videos) }
     
-    it "should have good log url" do
-      subject.file.url.should == "/uploads/s3/sublimevideo.videos/2010-06-23-08-20-45-DE5461BCB46DA093"
-    end
+    it { subject.usages.class_name.constantize.should == VideoUsage }
+    it { subject.file.url.should == "/uploads/s3/sublimevideo.videos/2010-06-23-08-20-45-DE5461BCB46DA093" }
     
     it "should have good log content" do
       log = Log::Amazon::S3::Videos.find(subject.id) # to be sure that log is well saved with CarrierWave
@@ -45,7 +45,7 @@ describe Log::Amazon::S3::Videos do
   
   describe "Class Methods" do
     it "should launch delayed fetch_and_create_new_logs" do
-      lambda { Log::Amazon::S3::Videos.fetch_and_create_new_logs }.should change(Delayed::Job, :count).by(1)
+      lambda { Log::Amazon::S3::Videos.fetch_and_create_new_logs }.should change(Delayed::Job.where(:handler.matches => "%fetch_and_create_new_logs%"), :count).by(1)
     end
     
     it "should not launch delayed fetch_and_create_new_logs if one pending already present" do
@@ -62,4 +62,5 @@ describe Log::Amazon::S3::Videos do
     end
   end
   
+  after(:each) { VCR.eject_cassette }
 end

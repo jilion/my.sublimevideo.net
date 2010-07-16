@@ -20,7 +20,7 @@ class Log::Amazon::Cloudfront < Log::Amazon
   # = Associations =
   # ================
   
-  has_many :video_usages
+  has_many :usages, :class_name => "VideoUsage"
   
 private
   
