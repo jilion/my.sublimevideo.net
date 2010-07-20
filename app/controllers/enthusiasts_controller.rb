@@ -9,7 +9,7 @@ class EnthusiastsController < ApplicationController
   def create
     @enthusiast = Enthusiast.new(params[:enthusiast])
     if @enthusiast.save
-      flash[:notice] = "Thanks! Please confirm your email, and after that you will be invited for the limited relase."
+      flash[:notice] = "Thanks! Please confirm your email, and after that you will be invited for the limited release."
       redirect_to root_path
     else
       render :new
