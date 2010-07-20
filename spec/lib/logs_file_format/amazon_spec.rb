@@ -49,6 +49,50 @@ describe LogsFileFormat::Amazon do
     end
   end
   
+  # ===========
+  # = Loaders =
+  # ===========
+  
+  ['loaders/6vibplhv.js', '/loaders/6vibplhv.js'].each do |key|
+    it "should return loader_token_from #{key}" do
+      subject.loader_token_from(key).should == "6vibplhv"
+    end
+    it "#{key} should be a loader token" do
+      subject.loader_token?(key).should be_true
+    end
+  end
+  
+  ['/js/6vibplhv.js', 'js/6vibplhv.js', "/ie/transparent_pixel.gif"].each do |key|
+    it "should not return loader_token_from #{key}" do
+      subject.loader_token_from(key).should be_nil
+    end
+    it "#{key} should not be a loader token" do
+      subject.loader_token?(key).should be_false
+    end
+  end
+  
+  # ============
+  # = Licenses =
+  # ============
+  
+  ['licenses/6vibplhv.js', '/licenses/6vibplhv.js'].each do |key|
+    it "should return license_token_from #{key}" do
+      subject.license_token_from(key).should == "6vibplhv"
+    end
+    it "#{key} should be a license token" do
+      subject.license_token?(key).should be_true
+    end
+  end
+  
+  ['/l/6vibplhv.js', 'l/6vibplhv.js', "/ie/transparent_pixel.gif"].each do |key|
+    it "should not return license_token_from #{key}" do
+      subject.license_token_from(key).should be_nil
+    end
+    it "#{key} should not be a license token" do
+      subject.license_token?(key).should be_false
+    end
+  end
+  
   # ================
   # = Other stuffs =
   # ================

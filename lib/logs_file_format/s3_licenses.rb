@@ -6,7 +6,7 @@ module LogsFileFormat
     line_definition :access do |line|
       line.header = true
       line.footer = true
-      line.regexp = /^([^\ ]+) ([^\ ]+) \[(#{timestamp('%d/%b/%Y:%H:%M:%S %z')})?\] (#{ip_address}) ([^\ ]+) ([^\ ]+) (\w+(?:\.\w+)*) ([^\ ]+) "([^"]+)" (\d+) ([^\ ]+) ([^\ ]+) (\d+) (\d+) ([^\ ]+) "([^"]*)" "([^"]*)"/
+      line.regexp = /^([^\ ]+) ([^\ ]+) \[(#{timestamp('%d/%b/%Y:%H:%M:%S %z')})?\] (#{ip_address}) ([^\ ]+) ([^\ ]+) ([^\ ]+) ([^\ ]+) "([^"]+)" (\d+) ([^\ ]+) ([^\ ]+) ([^\ ]+) ([^\ ]+) ([^\ ]+) "([^"]*)" "([^"]*)"/
       
       line.capture(:bucket_owner)
       line.capture(:bucket)
@@ -29,12 +29,12 @@ module LogsFileFormat
     
     report do |analyze|
       analyze.traffic(:bytes_sent, :title => :bandwidth_s3,
-        :category => lambda { |r| video_token_from(r[:key]) },
-        :if       => lambda { |r| video_token?(r[:key]) && s3_get_request?(r[:operation]) }
+        :category => lambda { |r| license_token_from(r[:key]) },
+        :if       => lambda { |r| license_token?(r[:key]) && s3_get_request?(r[:operation]) }
       )
       analyze.frequency(:key, :title => :requests_s3,
-        :category => lambda { |r| video_token_from(r[:key]) },
-        :if       => lambda { |r| video_token?(r[:key]) && s3_get_request?(r[:operation]) }
+        :category => lambda { |r| license_token_from(r[:key]) },
+        :if       => lambda { |r| license_token?(r[:key]) && s3_get_request?(r[:operation]) }
       )
     end
     

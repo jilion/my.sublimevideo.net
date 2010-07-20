@@ -17,6 +17,22 @@ module LogsFileFormat
       path =~ /^.*\s\/.*\?t=[a-z0-9]{8}\s.*$/
     end
     
+    def loader_token_from(path)
+      path.match(/^\/?loaders\/([a-z0-9]{8})\.js.*/) && $1
+    end
+    
+    def loader_token?(path)
+      path =~ /^\/?loaders\/[a-z0-9]{8}\.js.*/
+    end
+    
+    def license_token_from(path)
+      path.match(/^\/?licenses\/([a-z0-9]{8})\.js.*/) && $1
+    end
+    
+    def license_token?(path)
+      path =~ /^\/?licenses\/[a-z0-9]{8}\.js.*/
+    end
+    
     def s3_get_request?(operation)
       operation.include?("GET") || operation.include?("HEAD")
     end

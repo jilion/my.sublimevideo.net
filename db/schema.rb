@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100707142455) do
+ActiveRecord::Schema.define(:version => 20100720101348) do
 
   create_table "admins", :force => true do |t|
     t.string   "email",                               :default => "", :null => false
@@ -111,11 +111,14 @@ ActiveRecord::Schema.define(:version => 20100707142455) do
     t.integer  "log_id"
     t.datetime "started_at"
     t.datetime "ended_at"
-    t.integer  "loader_hits", :default => 0
-    t.integer  "player_hits", :default => 0
-    t.integer  "flash_hits",  :default => 0
+    t.integer  "loader_hits",       :default => 0
+    t.integer  "player_hits",       :default => 0
+    t.integer  "flash_hits",        :default => 0
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "requests_s3",       :default => 0
+    t.integer  "bandwidth_s3",      :default => 0
+    t.integer  "bandwidth_voxcast", :default => 0
   end
 
   add_index "site_usages", ["ended_at"], :name => "index_site_usages_on_ended_at"
@@ -130,13 +133,16 @@ ActiveRecord::Schema.define(:version => 20100707142455) do
     t.string   "license"
     t.string   "loader"
     t.string   "state"
-    t.integer  "loader_hits_cache", :default => 0
-    t.integer  "player_hits_cache", :default => 0
-    t.integer  "flash_hits_cache",  :default => 0
+    t.integer  "loader_hits_cache",       :default => 0
+    t.integer  "player_hits_cache",       :default => 0
+    t.integer  "flash_hits_cache",        :default => 0
     t.datetime "archived_at"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "player_mode",       :default => "stable"
+    t.string   "player_mode",             :default => "stable"
+    t.integer  "requests_s3_cache",       :default => 0
+    t.integer  "bandwidth_s3_cache",      :default => 0
+    t.integer  "bandwidth_voxcast_cache", :default => 0
   end
 
   add_index "sites", ["created_at"], :name => "index_sites_on_created_at"

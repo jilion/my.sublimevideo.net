@@ -2,16 +2,19 @@
 #
 # Table name: site_usages
 #
-#  id          :integer         not null, primary key
-#  site_id     :integer
-#  log_id      :integer
-#  started_at  :datetime
-#  ended_at    :datetime
-#  loader_hits :integer         default(0)
-#  player_hits :integer         default(0)
-#  flash_hits  :integer         default(0)
-#  created_at  :datetime
-#  updated_at  :datetime
+#  id                :integer         not null, primary key
+#  site_id           :integer
+#  log_id            :integer
+#  started_at        :datetime
+#  ended_at          :datetime
+#  loader_hits       :integer         default(0)
+#  player_hits       :integer         default(0)
+#  flash_hits        :integer         default(0)
+#  created_at        :datetime
+#  updated_at        :datetime
+#  requests_s3       :integer         default(0)
+#  bandwidth_s3      :integer         default(0)
+#  bandwidth_voxcast :integer         default(0)
 #
 
 require 'spec_helper'
@@ -36,7 +39,7 @@ describe SiteUsage do
     
   end
   
-  describe "Trackers parsing" do
+  describe "Trackers parsing with voxcast" do
     before(:each) do
       @site1 = Factory(:site)
       @site1.token = 'g3325oz4'
@@ -50,16 +53,17 @@ describe SiteUsage do
     end
     
     it "should clean trackers" do
-      SiteUsage.hits_from(@trackers).should == {
-        :loader => { "g3325oz4" => 1, "g8thugh6" => 1},
-        :player => { "g3325oz4" => 1, "g8thugh6" => 6},
-        :flash  => {}
+      SiteUsage.hits_bandwidth_and_requests_from(@trackers).should == {
+        :loader_hits       => { "g3325oz4" => 3, "g8thugh6" => 1},
+        :player_hits       => { "g3325oz4" => 3, "g8thugh6" => 7},
+        :flash_hits        => {},
+        :bandwidth_voxcast => { "g3325oz4" => 70696, "g8thugh6" => 367093 }
       }
     end
     
     it "should get tokens from trackers" do
-      hits = SiteUsage.hits_from(@trackers)
-      SiteUsage.tokens_from(hits).should == ["g3325oz4", "g8thugh6"]
+      hbr = SiteUsage.hits_bandwidth_and_requests_from(@trackers)
+      SiteUsage.tokens_from(hbr).should == ["g3325oz4", "g8thugh6"]
     end
     
     it "should create usages from trackers" do
@@ -68,11 +72,61 @@ describe SiteUsage do
       usages.map(&:site).should include(@site1)
       usages.map(&:site).should include(@site2)
       usage = usages.select { |u| u.site == @site1 }.first
-      usage.log.should          == @log
-      usage.site.should         == @site1
-      usage.loader_hits.should  == 1
-      usage.player_hits.should  == 1
-      usage.flash_hits.should   == 0
+      usage.log.should               == @log
+      usage.site.should              == @site1
+      usage.loader_hits.should       == 3
+      usage.player_hits.should       == 3
+      usage.flash_hits.should        == 0
+      usage.requests_s3.should       == 0
+      usage.bandwidth_s3.should      == 0
+      usage.bandwidth_voxcast.should == 70696
+    end
+  end
+  
+  describe "Trackers parsing with s3 loaders" do
+    before(:each) do
+      @site1 = Factory(:site)
+      @site1.token = 'gperx9p4'
+      @site1.save
+      @site2 = Factory(:site, :user => @site1.user, :hostname => 'google.com')
+      @site2.token = 'pbgopxwy'
+      @site2.save
+      
+      @log = Factory(:log_s3_loaders)
+      @trackers = LogAnalyzer.parse(@log.file, 'LogsFileFormat::S3Loaders')
+    end
+    
+    it "should clean trackers" do
+      SiteUsage.hits_bandwidth_and_requests_from(@trackers).should == {
+        :requests_s3=>{"fnhbfvkb"=>1, "7jbwuuni"=>1, "gperx9p4"=>1, "pbgopxwy"=>1, "6vibplhv"=>1, "ub4rrhk4"=>1},
+        :bandwidth_s3=>{"fnhbfvkb"=>734, "gperx9p4"=>727, "7jbwuuni"=>734, "pbgopxwy"=>734, "6vibplhv"=>734, "ub4rrhk4"=>734}
+      }
+    end
+    
+    it "should get tokens from trackers" do
+      hbr = SiteUsage.hits_bandwidth_and_requests_from(@trackers)
+      SiteUsage.tokens_from(hbr).should include("fnhbfvkb")
+      SiteUsage.tokens_from(hbr).should include("7jbwuuni")
+      SiteUsage.tokens_from(hbr).should include("gperx9p4")
+      SiteUsage.tokens_from(hbr).should include("pbgopxwy")
+      SiteUsage.tokens_from(hbr).should include("6vibplhv")
+      SiteUsage.tokens_from(hbr).should include("ub4rrhk4")
+    end
+    
+    it "should create usages from trackers" do
+      SiteUsage.create_usages_from_trackers!(@log, @trackers)
+      usages = SiteUsage.all
+      usages.map(&:site).should include(@site1)
+      usages.map(&:site).should include(@site2)
+      usage = usages.select { |u| u.site == @site1 }.first
+      usage.log.should               == @log
+      usage.site.should              == @site1
+      usage.loader_hits.should       == 0
+      usage.player_hits.should       == 0
+      usage.flash_hits.should        == 0
+      usage.requests_s3.should       == 1
+      usage.bandwidth_s3.should      == 727
+      usage.bandwidth_voxcast.should == 0
     end
   end
   

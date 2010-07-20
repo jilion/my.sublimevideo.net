@@ -142,38 +142,11 @@ private
   # Compact trackers from RequestLogAnalyzer
   def self.hits_bandwidth_and_requests_from(trackers)
     trackers.inject({}) do |trackers, tracker|
-      trackers[tracker.options[:title]] = tracker.categories
-      trackers
       case tracker.options[:title]
       when :hits, :requests_s3, :requests_us, :requests_eu, :requests_as, :requests_jp, :requests_unknown
         trackers[tracker.options[:title]] = tracker.categories
-      when :bandwidth_s3
-        trackers[:bandwidth_s3] = tracker.categories.inject({}) do |tokens, (k,v)|
-          tokens[k] = v[:sum]
-          tokens
-        end
-      when :bandwidth_us
-        trackers[:bandwidth_us] = tracker.categories.inject({}) do |tokens, (k,v)|
-          tokens[k] = v[:sum]
-          tokens
-        end
-      when :bandwidth_eu
-        trackers[:bandwidth_eu] = tracker.categories.inject({}) do |tokens, (k,v)|
-          tokens[k] = v[:sum]
-          tokens
-        end
-      when :bandwidth_as
-        trackers[:bandwidth_as] = tracker.categories.inject({}) do |tokens, (k,v)|
-          tokens[k] = v[:sum]
-          tokens
-        end
-      when :bandwidth_jp
-        trackers[:bandwidth_jp] = tracker.categories.inject({}) do |tokens, (k,v)|
-          tokens[k] = v[:sum]
-          tokens
-        end
-      when :bandwidth_unknown
-        trackers[:bandwidth_unknown] = tracker.categories.inject({}) do |tokens, (k,v)|
+      when :bandwidth_s3, :bandwidth_us, :bandwidth_eu, :bandwidth_as, :bandwidth_jp, :bandwidth_unknown
+        trackers[tracker.options[:title]] = tracker.categories.inject({}) do |tokens, (k,v)|
           tokens[k] = v[:sum]
           tokens
         end

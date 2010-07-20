@@ -67,6 +67,7 @@ describe VideoUsage do
   
   describe "Trackers parsing with cloudfront download" do
     before(:each) do
+      VCR.insert_cassette('cloudfront/download/logs_list')
       @video1 = Factory(:video)
       @video1.token = 'e14ab4de'
       @video1.save
@@ -116,10 +117,13 @@ describe VideoUsage do
       usage.bandwidth_eu.should == 134284
       usage.requests_eu.should  == 4
     end
+    
+    after(:each) { VCR.eject_cassette }
   end
   
   describe "Trackers parsing with s3 videos" do
     before(:each) do
+      VCR.insert_cassette('s3/videos/logs_list')
       @video = Factory(:video)
       @video.token = '4e1az9e5'
       @video.save
@@ -154,6 +158,8 @@ describe VideoUsage do
       usage.bandwidth_s3.should == 33001318
       usage.requests_s3.should  == 25
     end
+    
+    after(:each) { VCR.eject_cassette }
   end
   
 end
