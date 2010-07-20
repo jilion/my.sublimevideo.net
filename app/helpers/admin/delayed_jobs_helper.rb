@@ -14,6 +14,12 @@ module Admin::DelayedJobsHelper
         "Voxcast logs"
       when /Log::Amazon::S3::Videos/
         "S3 videos logs"
+      when /Log::Amazon::S3::Player/
+        "S3 player logs"
+      when /Log::Amazon::S3::Loaders/
+        "S3 loaders logs"
+      when /Log::Amazon::S3::Licenses/
+        "S3 licenses logs"
       when /Log::Amazon::Cloudfront::Streaming/
         "Cloudfront streaming logs"
       when /Log::Amazon::Cloudfront::Download/
