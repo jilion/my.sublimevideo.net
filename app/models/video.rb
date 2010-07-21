@@ -62,7 +62,6 @@ class Video < ActiveRecord::Base
   scope :by_title,    lambda { |way| order("videos.title #{way || 'asc'}") }
   scope :not_archived, where(:state.not_eq => 'archived')
   
-  
   # ===============
   # = Validations =
   # ===============

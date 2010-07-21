@@ -72,7 +72,7 @@ module User::Trial
     ((trial_player_hits / User::Trial.free_player_hits.to_f) * 100).to_i
   end
   
-  def trial_usage_percentage(active=true)
+  def trial_usage_percentage(active = true)
     [trial_loader_hits_percentage, trial_player_hits_percentage].send(active ? 'max' : 'min')
   end
   
