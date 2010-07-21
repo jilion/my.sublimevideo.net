@@ -54,9 +54,9 @@ describe Invoice do
     its(:sites)         { should be_kind_of(Invoice::Sites) }
     its(:videos)        { should be_kind_of(Invoice::Videos) }
     its(:user)          { should be_present }
-    its(:amount)        { should satisfy { |a| [1247,1248,1249].include?(a) } } # depends on time
+    its(:amount)        { should satisfy { |a| (1247..1250).include?(a) } } # depends on time
     its(:sites_amount)  { should == 1066 }
-    its(:videos_amount) { should satisfy { |a| [181,182,183].include?(a) } } # depends on time
+    its(:videos_amount) { should satisfy { |a| (181..184).include?(a) } } # depends on time
     it { should be_current }
   end
   
