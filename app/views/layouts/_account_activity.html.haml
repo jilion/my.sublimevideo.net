@@ -11,7 +11,7 @@
           %em= number_with_delimiter(current_user.trial_player_hits)
         %li.free
           = "Free Hits Left"
-          %em= number_with_delimiter(User::Trial.free_player_hits - current_user.trial_player_hits)
+          %em= number_with_delimiter(current_user.free_hits_left)
       - if current_user.trial_warning?
         = link_to "", :class => "warning", :onclick => "return false" do
           %span
@@ -22,15 +22,14 @@
             %strong= "Add a Credit Card"
             %span
               %em= "We invite you to add your credit card to prevent any cut in the player delivery when your trial will end."
-            
+              
   - else
     - if current_user.credit_card?
-      - current_invoice = Invoice.current(current_user)
       #account_activity_box
         .current_balance
           %h4= "Your current usage"
           %p.price
-            %strong= cents_to_dollars(current_invoice.amount)
+            %strong= cents_to_dollars(Invoice.current(current_user).amount)
         = link_to "Billing reports", invoices_path, :class => "billing_reports"
     - else
       #suspend_box

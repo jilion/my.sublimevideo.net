@@ -13,7 +13,7 @@ feature "Enthusiast actions:" do
     click_button "OK!"
     
     current_url.should =~ %r(http://[^/]+/)
-    page.should have_content("Thanks! Please confirm your email, and after that you will be invited for the limited relase.")
+    page.should have_content("Thanks! Please confirm your email, and after that you will be invited for the limited release.")
     
     Enthusiast.last.email.should == "john@doe.com"
     Enthusiast.last.free_text.should == "I love U!"
