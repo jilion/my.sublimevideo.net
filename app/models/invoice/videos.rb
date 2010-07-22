@@ -86,22 +86,22 @@ private
   end
   
   def calculate_and_set_values
-    @bandwidth_upload  = @videos.sum { |video| video[:bandwidth_upload] }
-    @bandwidth_s3      = @videos.sum { |video| video[:bandwidth_s3] }
-    @bandwidth_us      = @videos.sum { |video| video[:bandwidth_us] }
-    @bandwidth_eu      = @videos.sum { |video| video[:bandwidth_eu] }
-    @bandwidth_as      = @videos.sum { |video| video[:bandwidth_as] }
-    @bandwidth_jp      = @videos.sum { |video| video[:bandwidth_jp] }
-    @bandwidth_unknown = @videos.sum { |video| video[:bandwidth_unknown] }
-    @requests_s3       = @videos.sum { |video| video[:requests_s3] }
-    @requests_us       = @videos.sum { |video| video[:requests_us] }
-    @requests_eu       = @videos.sum { |video| video[:requests_eu] }
-    @requests_as       = @videos.sum { |video| video[:requests_as] }
-    @requests_jp       = @videos.sum { |video| video[:requests_jp] }
-    @requests_unknown  = @videos.sum { |video| video[:requests_unknown] }
-    @storage_bytehrs   = @videos.sum { |video| video[:storage_bytehrs] }
-    @encoding_time     = @videos.sum { |video| video[:encoding_time] }
-    @hits              = @videos.sum { |video| video[:hits] }
+    @bandwidth_upload  = @videos.sum { |video| video[:bandwidth_upload].to_i }
+    @bandwidth_s3      = @videos.sum { |video| video[:bandwidth_s3].to_i }
+    @bandwidth_us      = @videos.sum { |video| video[:bandwidth_us].to_i }
+    @bandwidth_eu      = @videos.sum { |video| video[:bandwidth_eu].to_i }
+    @bandwidth_as      = @videos.sum { |video| video[:bandwidth_as].to_i }
+    @bandwidth_jp      = @videos.sum { |video| video[:bandwidth_jp].to_i }
+    @bandwidth_unknown = @videos.sum { |video| video[:bandwidth_unknown].to_i }
+    @requests_s3       = @videos.sum { |video| video[:requests_s3].to_i }
+    @requests_us       = @videos.sum { |video| video[:requests_us].to_i }
+    @requests_eu       = @videos.sum { |video| video[:requests_eu].to_i }
+    @requests_as       = @videos.sum { |video| video[:requests_as].to_i }
+    @requests_jp       = @videos.sum { |video| video[:requests_jp].to_i }
+    @requests_unknown  = @videos.sum { |video| video[:requests_unknown].to_i }
+    @storage_bytehrs   = @videos.sum { |video| video[:storage_bytehrs].to_i }
+    @encoding_time     = @videos.sum { |video| video[:encoding_time].to_i }
+    @hits              = @videos.sum { |video| video[:hits].to_i }
   end
   
   def calculate_and_set_amounts
