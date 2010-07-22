@@ -80,6 +80,8 @@ Factory.define :log_cloudfront_streaming, :class => Log::Amazon::Cloudfront::Str
   f.name "EK1147O537VJ1.2010-06-23-07.9D0khw8j.gz"
 end
 
+require 'log/amazon/s3'
+
 Factory.define :log_s3_videos, :class => Log::Amazon::S3::Videos do |f|
   f.name "2010-06-23-08-20-45-DE5461BCB46DA093"
 end

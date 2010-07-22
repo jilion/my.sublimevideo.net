@@ -8,18 +8,6 @@ class Invoice::Videos < Array
               :storage_amount, :encoding_amount,
               :hits # not billed, just for info.
   
-  # bandwidth
-    # upload original to panda
-  # storage
-    # thumbnail storage
-    # DONE - update video.archive_encodings to archive only non-deprecated
-    # DONE - update total_size (use non-deprecated encoding size)
-    # calculate price from “TimedStorage-ByteHrs”  (using video.archived_at when video is archived)
-      # http://aws.amazon.com/s3/faqs/#How_will_I_be_charged_and_billed_for_my_use_of_Amazon_S3
-      # deals with encoding time
-  # encoding time
-    # calulate total for encodings.started_encoding_at within invoice date
-  
   def initialize(invoice, options = {})
     @videos = collect_videos(invoice, options)
     

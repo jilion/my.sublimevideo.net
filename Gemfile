@@ -53,7 +53,7 @@ if RUBY_PLATFORM =~ /darwin/
     gem 'parallel'
     
     gem 'spork'
-    gem 'rspactor', '>= 0.7.beta.4'
+    gem 'rspactor', '>= 0.7.beta.5'
     
     gem 'shoulda'
     gem 'rspec-rails', '>= 2.0.0.beta.18'

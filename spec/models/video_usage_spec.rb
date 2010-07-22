@@ -134,7 +134,7 @@ describe VideoUsage do
     
     it "should clean trackers" do
       VideoUsage.hits_bandwidth_and_requests_from(@trackers).should == {
-        :bandwidth_s3 => { "4e1az9e5" => 33001318 },
+        :bandwidth_s3 => { "4e1az9e5" => 15392947717 },
         :requests_s3 => { "4e1az9e5" => 25 }
       }
     end
@@ -155,7 +155,7 @@ describe VideoUsage do
       usage.log.should          == @log
       usage.video.should        == @video
       usage.hits.should         == 0
-      usage.bandwidth_s3.should == 33001318
+      usage.bandwidth_s3.should == 15392947717
       usage.requests_s3.should  == 25
     end
     
