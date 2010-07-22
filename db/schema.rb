@@ -57,9 +57,9 @@ ActiveRecord::Schema.define(:version => 20100722155430) do
     t.datetime "charged_at"
     t.date     "started_on"
     t.date     "ended_on"
-    t.integer  "amount",        :limit => 8, :default => 0
-    t.integer  "sites_amount",  :limit => 8, :default => 0
-    t.integer  "videos_amount", :limit => 8, :default => 0
+    t.integer  "amount",        :default => 0
+    t.integer  "sites_amount",  :default => 0
+    t.integer  "videos_amount", :default => 0
     t.text     "sites"
     t.text     "videos"
     t.datetime "created_at"
@@ -89,14 +89,14 @@ ActiveRecord::Schema.define(:version => 20100722155430) do
     t.integer  "log_id"
     t.datetime "started_at"
     t.datetime "ended_at"
-    t.integer  "loader_hits",       :limit => 8, :default => 0
-    t.integer  "player_hits",       :limit => 8, :default => 0
-    t.integer  "flash_hits",        :limit => 8, :default => 0
+    t.integer  "loader_hits",       :default => 0
+    t.integer  "player_hits",       :default => 0
+    t.integer  "flash_hits",        :default => 0
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "requests_s3",       :limit => 8, :default => 0
-    t.integer  "bandwidth_s3",      :limit => 8, :default => 0
-    t.integer  "bandwidth_voxcast", :limit => 8, :default => 0
+    t.integer  "requests_s3",       :default => 0
+    t.integer  "bandwidth_s3",      :default => 0
+    t.integer  "bandwidth_voxcast", :default => 0
   end
 
   add_index "site_usages", ["ended_at"], :name => "index_site_usages_on_ended_at"
@@ -111,16 +111,16 @@ ActiveRecord::Schema.define(:version => 20100722155430) do
     t.string   "license"
     t.string   "loader"
     t.string   "state"
-    t.integer  "loader_hits_cache",       :limit => 8, :default => 0
-    t.integer  "player_hits_cache",       :limit => 8, :default => 0
-    t.integer  "flash_hits_cache",        :limit => 8, :default => 0
+    t.integer  "loader_hits_cache",       :default => 0
+    t.integer  "player_hits_cache",       :default => 0
+    t.integer  "flash_hits_cache",        :default => 0
     t.datetime "archived_at"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "player_mode",                          :default => "stable"
-    t.integer  "requests_s3_cache",       :limit => 8, :default => 0
-    t.integer  "bandwidth_s3_cache",      :limit => 8, :default => 0
-    t.integer  "bandwidth_voxcast_cache", :limit => 8, :default => 0
+    t.string   "player_mode",             :default => "stable"
+    t.integer  "requests_s3_cache",       :default => 0
+    t.integer  "bandwidth_s3_cache",      :default => 0
+    t.integer  "bandwidth_voxcast_cache", :default => 0
   end
 
   add_index "sites", ["created_at"], :name => "index_sites_on_created_at"
@@ -217,19 +217,19 @@ ActiveRecord::Schema.define(:version => 20100722155430) do
     t.integer  "log_id"
     t.datetime "started_at"
     t.datetime "ended_at"
-    t.integer  "hits",              :limit => 8, :default => 0
-    t.integer  "bandwidth_s3",      :limit => 8, :default => 0
-    t.integer  "bandwidth_us",      :limit => 8, :default => 0
-    t.integer  "bandwidth_eu",      :limit => 8, :default => 0
-    t.integer  "bandwidth_as",      :limit => 8, :default => 0
-    t.integer  "bandwidth_jp",      :limit => 8, :default => 0
-    t.integer  "bandwidth_unknown", :limit => 8, :default => 0
-    t.integer  "requests_s3",       :limit => 8, :default => 0
-    t.integer  "requests_us",       :limit => 8, :default => 0
-    t.integer  "requests_eu",       :limit => 8, :default => 0
-    t.integer  "requests_as",       :limit => 8, :default => 0
-    t.integer  "requests_jp",       :limit => 8, :default => 0
-    t.integer  "requests_unknown",  :limit => 8, :default => 0
+    t.integer  "hits",              :default => 0
+    t.integer  "bandwidth_s3",      :default => 0
+    t.integer  "bandwidth_us",      :default => 0
+    t.integer  "bandwidth_eu",      :default => 0
+    t.integer  "bandwidth_as",      :default => 0
+    t.integer  "bandwidth_jp",      :default => 0
+    t.integer  "bandwidth_unknown", :default => 0
+    t.integer  "requests_s3",       :default => 0
+    t.integer  "requests_us",       :default => 0
+    t.integer  "requests_eu",       :default => 0
+    t.integer  "requests_as",       :default => 0
+    t.integer  "requests_jp",       :default => 0
+    t.integer  "requests_unknown",  :default => 0
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -244,19 +244,19 @@ ActiveRecord::Schema.define(:version => 20100722155430) do
     t.string   "token"
     t.string   "state"
     t.string   "posterframe"
-    t.integer  "hits_cache",              :limit => 8, :default => 0
-    t.integer  "bandwidth_s3_cache",      :limit => 8, :default => 0
-    t.integer  "bandwidth_us_cache",      :limit => 8, :default => 0
-    t.integer  "bandwidth_eu_cache",      :limit => 8, :default => 0
-    t.integer  "bandwidth_as_cache",      :limit => 8, :default => 0
-    t.integer  "bandwidth_jp_cache",      :limit => 8, :default => 0
-    t.integer  "bandwidth_unknown_cache", :limit => 8, :default => 0
-    t.integer  "requests_s3_cache",       :limit => 8, :default => 0
-    t.integer  "requests_us_cache",       :limit => 8, :default => 0
-    t.integer  "requests_eu_cache",       :limit => 8, :default => 0
-    t.integer  "requests_as_cache",       :limit => 8, :default => 0
-    t.integer  "requests_jp_cache",       :limit => 8, :default => 0
-    t.integer  "requests_unknown_cache",  :limit => 8, :default => 0
+    t.integer  "hits_cache",              :default => 0
+    t.integer  "bandwidth_s3_cache",      :default => 0
+    t.integer  "bandwidth_us_cache",      :default => 0
+    t.integer  "bandwidth_eu_cache",      :default => 0
+    t.integer  "bandwidth_as_cache",      :default => 0
+    t.integer  "bandwidth_jp_cache",      :default => 0
+    t.integer  "bandwidth_unknown_cache", :default => 0
+    t.integer  "requests_s3_cache",       :default => 0
+    t.integer  "requests_us_cache",       :default => 0
+    t.integer  "requests_eu_cache",       :default => 0
+    t.integer  "requests_as_cache",       :default => 0
+    t.integer  "requests_jp_cache",       :default => 0
+    t.integer  "requests_unknown_cache",  :default => 0
     t.string   "panda_video_id"
     t.string   "original_filename"
     t.string   "video_codec"
