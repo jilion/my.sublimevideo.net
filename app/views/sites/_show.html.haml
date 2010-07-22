@@ -5,3 +5,4 @@
 %form
   .embed_code
     %textarea{ :readonly => true, :onclick => "this.focus();this.select();" }= sublime_video_script_tag_for(@site)
+-#%p= "If you're using a plugin or service that asks for a SublimeVideo Site ID, use this: <code>#{@site.token}</code>".html_safe

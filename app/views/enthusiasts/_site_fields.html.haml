@@ -1,4 +1,3 @@
-.fields
-  = f.label :hostname, nil, :class => "icon"
-  = f.text_field :hostname, :class => "text", :placeholder => "Hostname"
+.field_wrapper
+  = f.text_field :hostname, :class => "text site", :placeholder => "Site"
   = link_to_remove_fields "remove", f

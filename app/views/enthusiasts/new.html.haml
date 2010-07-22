@@ -1,5 +1,3 @@
-%h2= "SublimeVideo: notify me for the limited release"
-
 = form_for @enthusiast, :url => '/', :html => { :method => :post, :class => "main_form" } do |f|
   - if @enthusiast.errors[:base].present?
     .global_errors
@@ -9,21 +7,20 @@
     = f.label :email, "To be among the first to use SublimeVideo HTML5 video solution, enter your email to receive an early invitation when it will be available:"
     = f.text_field :email, :class => "text", :placeholder => "Email", :required => true
   .entry.sites
-    = "Help us optimize SublimeVideo to work in the most diverse contexts by entering the websites on which you plan to use it:"
-    .fields
-      - @enthusiast_site ||= @enthusiast.sites.build if @enthusiast.sites.empty?
-      = f.fields_for :sites do |site_f|
-        = render "site_fields", :f => site_f
+    %label= "Help us optimize SublimeVideo to work in the most diverse contexts by entering the websites on which you plan to use it:"
+    - @enthusiast_site ||= @enthusiast.sites.build if @enthusiast.sites.empty?
+    = f.fields_for :sites do |site_f|
+      = render "site_fields", :f => site_f
     .add_site
       = link_to_add_fields "Add a site", f, :sites
     
-  .entry.free_text
-    = f.label :question, "What is the top 3 key features SublimeVideo should achieve for you?"
-    = select_tag("question", options_for_select(["Better flash player", "Ogg Theora support", "WebM support"]))
+  -#.entry.free_text
+  -#  = f.label :question, "What is the top 3 key features SublimeVideo should achieve for you?"
+  -#  = select_tag("question", options_for_select(["Better flash player", "Ogg Theora support", "WebM support"]))
     
-  .entry.free_text
+  .entry.comment
     = f.label :free_text, "Feel free to tell whatever you want:"
     = f.text_area :free_text, :class => "text", :placeholder => "Comments, additional information...", :rows => 5, :cols => 60
     
-  .entry.submit.signup
-    = f.submit "OK!", :class => "submit small"
+  .entry.submit
+    = f.submit "Notify Me", :class => "submit"

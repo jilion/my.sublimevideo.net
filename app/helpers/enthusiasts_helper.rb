@@ -1,7 +1,7 @@
 module EnthusiastsHelper
   
   def link_to_remove_fields(name, form)
-    form.hidden_field(:_destroy) + link_to_function(name, "remove_fields(this)")
+    form.hidden_field(:_destroy) + link_to_function("<span>#{name}</span>".html_safe, "remove_fields(this)", :class => "remove")
   end
   
   def link_to_add_fields(name, form, association)
@@ -9,7 +9,7 @@ module EnthusiastsHelper
     fields = form.fields_for(association, new_object, :child_index => "new_#{association}") do |builder|
       render(association.to_s.singularize + "_fields", :f => builder)
     end
-    link_to_function(name, "add_fields(this, \"#{association}\", \"#{escape_javascript(fields)}\")")
+    link_to_function("<span>#{name}</span>".html_safe, "add_fields(this, \"#{association}\", \"#{escape_javascript(fields)}\")", :class => "add")
   end
   
 end
