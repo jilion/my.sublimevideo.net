@@ -10,7 +10,7 @@ class VideosController < ApplicationController
   
   # GET /videos
   def index
-    @videos = apply_scopes(current_user.videos.displayable.includes(:encodings), :default => { :by_date => 'desc' })
+    @videos = apply_scopes(current_user.videos.not_archived.includes(:encodings), :default => { :by_date => 'desc' })
     respond_with(@videos)
   end
   

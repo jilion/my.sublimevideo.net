@@ -4,13 +4,11 @@
 
 %table.main#users
   %tr
-    %th= "Full name"
-    %th= "Email"
-    %th= "Trial?"
-    %th= "# Sites"
-    %th= "# Videos"
+    %th= "Full name & email"
+    %th= "Status"
     %th= "CC?"
-    %th.delete= "Confirmed?"
+    %th= "# Sites"
+    %th.delete= "# Videos"
   = render @users
   
 = will_paginate @users

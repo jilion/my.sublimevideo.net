@@ -28,8 +28,6 @@ gem 'memcache-client',  '1.8.5'
 gem 'memcached',        '0.19.10'
 
 gem 'aws',              '>= 2.3.12'
-# While the official repo is not up to date with the new name of MiniMagick::Error
-# gem 'carrierwave',      :git => 'git://github.com/samlown/carrierwave.git' #'git://github.com/jnicklas/carrierwave.git'
 gem 'carrierwave',      '>= 0.5.0.beta2'
 gem 'mini_magick',      '1.2.5'
 gem 'RedCloth'
@@ -46,7 +44,7 @@ if RUBY_PLATFORM =~ /darwin/
   group :development do
     gem 'sqlite3-ruby', :require => 'sqlite3'
     gem 'annotate'
-    gem 'wirble' # irbrc 
+    gem 'wirble' # irbrc
     gem 'ruby-graphviz', :require => 'graphviz'
   end
   

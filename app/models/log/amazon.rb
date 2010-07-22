@@ -21,7 +21,7 @@ class Log::Amazon < Log
   # ===============
   
   validates :file, :presence => true, :on => :update
-
+  
   # =============
   # = Callbacks =
   # =============
@@ -45,9 +45,9 @@ class Log::Amazon < Log
   # = Class Methods =
   # =================
   
-  def self.delay_fetch_and_create_new_logs(minutes = 60.minute)
+  def self.delay_fetch_and_create_new_logs(interval = 1.hour)
     unless Delayed::Job.already_delayed?("%#{self.to_s}%fetch_and_create_new_logs%")
-      delay(:priority => 10, :run_at => minutes.from_now).fetch_and_create_new_logs
+      delay(:priority => 10, :run_at => interval.from_now).fetch_and_create_new_logs
     end
   end
   

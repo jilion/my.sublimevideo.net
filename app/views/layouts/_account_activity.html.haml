@@ -11,26 +11,25 @@
           %em= number_with_delimiter(current_user.trial_player_hits)
         %li.free
           = "Free Hits Left"
-          %em= number_with_delimiter(User::Trial.free_player_hits - current_user.trial_player_hits)
+          %em= number_with_delimiter(current_user.free_hits_left)
       - if current_user.trial_warning?
         = link_to "", :class => "warning", :onclick => "return false" do
           %span
-            %em= "The trial is also limited by a total amount of #{number_with_delimiter(User::Trial.free_loader_hits)} \"requests\", you've currently used #{number_with_delimiter(current_user.trial_loader_hits)} of them while only having accounted #{number_with_delimiter(current_user.trial_player_hits)} player hits: it probably means you're using the embed code in a page without any videos on it.".html_safe
+            %em= raw "The trial is also limited by a total amount of #{number_with_delimiter(User::Trial.free_loader_hits)} \"requests\", you've currently used #{number_with_delimiter(current_user.trial_loader_hits)} of them while only having accounted #{number_with_delimiter(current_user.trial_player_hits)} player hits: it probably means you're using the embed code in a page without any videos on it."
       - unless current_user.credit_card?
         .credit_card
           = link_to edit_credit_card_path, :class => "add_a_credit_card" do
             %strong= "Add a Credit Card"
             %span
               %em= "We invite you to add your credit card to prevent any cut in the player delivery when your trial will end."
-            
+              
   - else
     - if current_user.credit_card?
-      - current_invoice = Invoice.current(current_user)
       #account_activity_box
         .current_balance
           %h4= "Your current usage"
           %p.price
-            %strong= cents_to_dollars(current_invoice.amount)
+            %strong= cents_to_dollars(Invoice.current(current_user).amount)
         = link_to "Billing reports", invoices_path, :class => "billing_reports"
     - else
       #suspend_box

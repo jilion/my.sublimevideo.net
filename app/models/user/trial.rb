@@ -53,11 +53,16 @@ module User::Trial
     hits += self.invoices.sum { |i| i.sites.loader_hits } unless self.invoices_count.zero?
     hits
   end
+  
   def trial_player_hits
     # TODO TEST (wait for Video Invoice)
     hits  = Invoice.current(self).sites.player_hits
     hits += self.invoices.sum { |i| i.sites.player_hits } unless self.invoices_count.zero?
     hits
+  end
+  
+  def free_hits_left
+    User::Trial.free_player_hits - trial_player_hits
   end
   
   def trial_loader_hits_percentage
@@ -67,7 +72,7 @@ module User::Trial
     ((trial_player_hits / User::Trial.free_player_hits.to_f) * 100).to_i
   end
   
-  def trial_usage_percentage(active=true)
+  def trial_usage_percentage(active = true)
     [trial_loader_hits_percentage, trial_player_hits_percentage].send(active ? 'max' : 'min')
   end
   

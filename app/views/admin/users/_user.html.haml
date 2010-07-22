@@ -1,15 +1,22 @@
 %tr{ :class => cycle("", "alt") }
   %td.full_name
     = link_to user.full_name, admin_user_path(user)
-  %td.email
+    = " - "
     = mail_to user.email
-  %td.trial
-    = user.trial?
+  %td.status
+    - if user.encrypted_password.blank?
+      = "Not confirmed"
+    - elsif user.trial?
+      = "#{number_with_delimiter(user.free_hits_left)} free hits left"
+    - else
+      - if user.suspended?
+        = "Suspended"
+      - else
+        = "Active"
+      = ", current usage: #{cents_to_dollars(Invoice.current(user).amount)}"
+  %td.cc
+    = user.cc? ? user.cc_type : "-"
   %td.sites
     = user.sites.size
   %td.videos
-    = user.videos.size
-  %td.cc
-    = user.cc? ? user.cc_type : "-"
-  %td.confirmed
-    = user.encrypted_password.present?
+    = user.videos.not_archived.size
