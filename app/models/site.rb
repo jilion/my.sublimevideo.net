@@ -23,13 +23,17 @@
 #
 
 class Site < ActiveRecord::Base
-  attr_accessible :hostname, :dev_hostnames
-  uniquify :token, :chars => Array('a'..'z') + Array('0'..'9')
-  mount_uploader :license, LicenseUploader
-  mount_uploader :loader, LoaderUploader
   
+  # Pagination
   cattr_accessor :per_page
   self.per_page = 6
+  
+  attr_accessible :hostname, :dev_hostnames
+  
+  uniquify :token, :chars => Array('a'..'z') + Array('0'..'9')
+  
+  mount_uploader :license, LicenseUploader
+  mount_uploader :loader, LoaderUploader
   
   # ================
   # = Associations =
@@ -42,9 +46,9 @@ class Site < ActiveRecord::Base
   # = Scopes =
   # ==========
   
-  scope :not_archived, where(:state.not_eq => 'archived')
   scope :by_date,      lambda { |way| order("created_at #{way || 'desc'}") }
   scope :by_hostname,  lambda { |way| order("hostname #{way || 'asc'}") }
+  scope :not_archived, where(:state.not_eq => 'archived')
   
   # ===============
   # = Validations =

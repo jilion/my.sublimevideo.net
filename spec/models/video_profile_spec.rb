@@ -87,26 +87,38 @@ describe VideoProfile do
   describe "Instance Methods" do
     before(:each) do
       @video_profile                = Factory(:video_profile)
-      @active_video_profile_version = Factory(:video_profile_version, :profile => @video_profile)
-      VCR.use_cassette('video_profile_version/pandize') { @active_video_profile_version.pandize }
-      VCR.use_cassette('video_profile_version/activate') { @active_video_profile_version.activate }
+      @active_video_profile_version1 = Factory(:video_profile_version, :profile => @video_profile)
+      VCR.use_cassette('video_profile_version/pandize') { @active_video_profile_version1.pandize }
+      VCR.use_cassette('video_profile_version/activate') { @active_video_profile_version1.activate }
     end
     
     describe "#experimental_version" do
       it "should return the active version of a profile if it's the latest version" do
-        @video_profile.experimental_version.should == @active_video_profile_version
+        @video_profile.experimental_version.should == @active_video_profile_version1
       end
       
       it "should return the last version of a profile (even if not active)" do
-        @experimental_profile_version = Factory(:video_profile_version, :profile => @video_profile)
-        VCR.use_cassette('video_profile_version/pandize') { @experimental_profile_version.pandize }
-        @video_profile.experimental_version.should == @experimental_profile_version
+        @experimental_profile_version1 = Factory(:video_profile_version, :profile => @video_profile)
+        @experimental_profile_version2 = Factory(:video_profile_version, :profile => @video_profile)
+        VCR.use_cassette('video_profile_version/pandize') do
+          @experimental_profile_version1.pandize
+          @experimental_profile_version2.pandize
+        end
+        @video_profile.experimental_version.should == @experimental_profile_version2
       end
     end
     
     describe "#active_version" do
-      it "should return the last version of a profile (even if not active)" do
-        @video_profile.active_version.should == @active_video_profile_version
+      before(:each) do
+        @active_video_profile_version2 = Factory(:video_profile_version, :profile => @video_profile)
+        VCR.use_cassette('video_profile_version/pandize') { @active_video_profile_version2.pandize }
+        VCR.use_cassette('video_profile_version/activate') { @active_video_profile_version2.activate }
+      end
+      
+      it "should return the last active version of a profile" do
+        @active_video_profile_version1.reload.should be_deprecated
+        @active_video_profile_version2.should be_active
+        @video_profile.active_version.should == @active_video_profile_version2
       end
     end
   end

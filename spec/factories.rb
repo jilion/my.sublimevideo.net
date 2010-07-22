@@ -7,16 +7,6 @@ Factory.define :user do |f|
   f.terms_and_conditions "1"
 end
 
-Factory.define :enthusiast do |f|
-  f.sequence(:email) { |n| "email#{n}@enthusiast.com" }
-  f.free_text        "Love you!"
-end
-
-Factory.define :enthusiast_site do |f|
-  f.association :enthusiast
-  f.hostname    "youtube.com"
-end
-
 Factory.define :admin do |f|
   f.sequence(:email) { |n| "email#{n}@admin.com" }
   f.password         "123456"

@@ -34,7 +34,7 @@ class VideoProfile < ActiveRecord::Base
   # ===============
   
   validates :title, :extname, :presence => true
-  validates_uniqueness_of :name, :scope => :extname
+  validates :name, :uniqueness => { :scope => :extname }
   
   # =============
   # = Callbacks =
@@ -59,7 +59,7 @@ class VideoProfile < ActiveRecord::Base
   end
   
   def active_version
-    versions.active.first
+    versions.active.last
   end
   
 private

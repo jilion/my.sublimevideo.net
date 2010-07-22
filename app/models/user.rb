@@ -49,8 +49,12 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable, :confirmable,
          :recoverable, :rememberable, :trackable, :validatable, :lockable, :invitable
   
-  attr_accessor :terms_and_conditions, :enthusiast_id
-  attr_accessible :full_name, :email, :remember_me, :password, :terms_and_conditions, :enthusiast_id
+  # Pagination
+  cattr_accessor :per_page
+  self.per_page = 25
+  
+  attr_accessor :terms_and_conditions
+  attr_accessible :full_name, :email, :remember_me, :password, :terms_and_conditions
   # Trial
   attr_accessible :limit_alert_amount
   # Credit Card
@@ -58,9 +62,6 @@ class User < ActiveRecord::Base
   # Video Settings
   attr_accessible :video_settings
   serialize :video_settings
-  
-  cattr_accessor :per_page
-  self.per_page = 25
   
   # ================
   # = Associations =
@@ -82,8 +83,8 @@ class User < ActiveRecord::Base
   # = Validations =
   # ===============
   
-  validates :full_name,        :presence => true
-  validates :email,            :presence => true, :uniqueness => true
+  validates :full_name, :presence => true
+  validates :email,     :presence => true, :uniqueness => true
   validates :terms_and_conditions, :acceptance => { :accept => "1" }, :on => :create
   validate :validates_credit_card_attributes # in user/credit_card
   
@@ -92,10 +93,9 @@ class User < ActiveRecord::Base
   # =============
   
   before_create :set_next_invoiced_on
-  before_save :set_default_video_settings # in user/video_settings
-  before_save :clear_limit_alert_email_sent_at_when_limit_alert_amount_is_augmented # in user/limit_alert
   before_save :store_credit_card, :keep_some_credit_card_info # in user/credit_card
-  after_save :link_with_enthusiast, :if => proc { |u| u.enthusiast_id.present? }
+  before_save :clear_limit_alert_email_sent_at_when_limit_alert_amount_is_augmented # in user/limit_alert
+  before_save :set_default_video_settings # in user/video_settings
   
   # =================
   # = State Machine =
@@ -143,11 +143,6 @@ private
   end
   def unsuspend_videos
     videos.map(&:unsuspend)
-  end
-  
-  # after_save
-  def link_with_enthusiast
-    Enthusiast.find(enthusiast_id).update_attribute(:user_id, self.id)
   end
   
 end

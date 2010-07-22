@@ -15,7 +15,6 @@ class Admin::Admins::InvitationsController < Devise::InvitationsController
     self.resource = resource_class.send_invitation(params[resource_name])
     
     if resource.errors.empty?
-      self.resource.update_attribute(:enthusiast_id, params[resource_name][:enthusiast_id]) if params[resource_name].key? :enthusiast_id
       set_flash_message :notice, :send_instructions
       redirect_to send "admin_#{resource_name.to_s.pluralize}_url"
     else

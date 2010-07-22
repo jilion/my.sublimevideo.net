@@ -38,13 +38,15 @@
 
 class Video < ActiveRecord::Base
   
+  # Pagination
+  cattr_accessor :per_page
+  self.per_page = 6
+  
   attr_accessible :title
+  
   uniquify :token, :chars => Array('a'..'z') + Array('0'..'9')
   
   mount_uploader :posterframe, PosterframeUploader
-  
-  cattr_accessor :per_page
-  self.per_page = 6
   
   # ================
   # = Associations =

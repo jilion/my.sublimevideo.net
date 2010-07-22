@@ -9,11 +9,7 @@
     - elsif user.trial?
       = "#{number_with_delimiter(user.free_hits_left)} free hits left"
     - else
-      - if user.suspended?
-        = "Suspended"
-      - else
-        = "Active"
-      = ", current usage: #{cents_to_dollars(Invoice.current(user).amount)}"
+      = "#{user.suspended? ? "Suspended" : "Active"}, current usage: #{cents_to_dollars(Invoice.current(user).amount)}"
   %td.cc
     = user.cc? ? user.cc_type : "-"
   %td.sites
