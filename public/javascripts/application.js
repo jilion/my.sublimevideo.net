@@ -4,8 +4,6 @@ document.observe("dom:loaded", function() {
 
   S2.Extensions.webkitCSSTransitions = true;
 
-  hideLastRemoveButton();
-
   // ================================================================
   // = Password fields, selects and placeholders and forms managers =
   // ================================================================
@@ -521,28 +519,6 @@ var SitesPoller = Class.create({
   }
 });
 
-
-function hideLastRemoveButton() {
-  $$('a.remove').invoke('show');
-  $$('a.remove').last().hide();
-}
-
-function remove_fields(link) {
-  $(link).previous("input[type=hidden]").value = "1";
-  $(link).up(".field_wrapper").hide();
-  
-  hideLastRemoveButton();
-}
-
-function add_fields(link, association, content) {
-  var new_id = new Date().getTime();
-  var regexp = new RegExp("new_" + association, "g")
-  $(link).up().insert({
-    before: content.replace(regexp, new_id)
-  });
-
-  hideLastRemoveButton();
-}
 
 function supportsHtml5InputOfType(inputType) { // e.g. "email"
   var i = document.createElement("input");
