@@ -95,24 +95,24 @@ private
   def calculate_and_set_amounts
     @videos.each do |video|
       # TODO, now 100'000 bytes = 1 cent
-      video[:bandwidth_upload_amount]  = video[:bandwidth_upload] / 100000.0
-      video[:bandwidth_s3_amount]      = video[:bandwidth_s3] / 100000.0
-      video[:bandwidth_us_amount]      = video[:bandwidth_us] / 100000.0
-      video[:bandwidth_eu_amount]      = video[:bandwidth_eu] / 100000.0
-      video[:bandwidth_as_amount]      = video[:bandwidth_as] / 100000.0
-      video[:bandwidth_jp_amount]      = video[:bandwidth_jp] / 100000.0
-      video[:bandwidth_unknown_amount] = video[:bandwidth_unknown] / 100000.0
+      video[:bandwidth_upload_amount]  = video[:bandwidth_upload].to_i / 100000.0
+      video[:bandwidth_s3_amount]      = video[:bandwidth_s3].to_i / 100000.0
+      video[:bandwidth_us_amount]      = video[:bandwidth_us].to_i / 100000.0
+      video[:bandwidth_eu_amount]      = video[:bandwidth_eu].to_i / 100000.0
+      video[:bandwidth_as_amount]      = video[:bandwidth_as].to_i / 100000.0
+      video[:bandwidth_jp_amount]      = video[:bandwidth_jp].to_i / 100000.0
+      video[:bandwidth_unknown_amount] = video[:bandwidth_unknown].to_i / 100000.0
       # TODO, now 10'000 request = 1 cent
-      video[:requests_s3_amount]       = video[:requests_s3] / 10000.0
-      video[:requests_us_amount]       = video[:requests_us] / 10000.0
-      video[:requests_eu_amount]       = video[:requests_eu] / 10000.0
-      video[:requests_as_amount]       = video[:requests_as] / 10000.0
-      video[:requests_jp_amount]       = video[:requests_jp] / 10000.0
-      video[:requests_unknown_amount]  = video[:requests_unknown] / 10000.0
+      video[:requests_s3_amount]       = video[:requests_s3].to_i / 10000.0
+      video[:requests_us_amount]       = video[:requests_us].to_i / 10000.0
+      video[:requests_eu_amount]       = video[:requests_eu].to_i / 10000.0
+      video[:requests_as_amount]       = video[:requests_as].to_i / 10000.0
+      video[:requests_jp_amount]       = video[:requests_jp].to_i / 10000.0
+      video[:requests_unknown_amount]  = video[:requests_unknown].to_i / 10000.0
       # TODO, now 1000'000 bytehrs = 1 cent
-      video[:storage_amount]           = video[:storage_bytehrs] / 1000000.0
+      video[:storage_amount]           = video[:storage_bytehrs].to_i / 1000000.0
       # TODO, now 1 second = 1 cent
-      video[:encoding_amount]          = video[:encoding_time]
+      video[:encoding_amount]          = video[:encoding_time].to_i
     end
     
     @bandwidth_upload_amount  = @videos.sum { |video| video[:bandwidth_upload_amount] }.round

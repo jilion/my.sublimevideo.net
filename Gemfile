@@ -35,7 +35,7 @@ gem 'RedCloth'
 gem 'ffaker',           '0.4.0'
 
 group :production do
-  gem 'pg',             '0.9.0'
+  gem 'pg', '0.9.0'
 end
 
 # Heroku hack
@@ -49,7 +49,7 @@ if RUBY_PLATFORM =~ /darwin/
   end
   
   group :test do
-    gem 'pg'
+    gem 'pg', '0.9.0'
     gem 'parallel'
     
     gem 'spork'
