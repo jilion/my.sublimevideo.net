@@ -7,6 +7,8 @@ compressor_options:
 stylesheets:
   style:
     - public/stylesheets/style.css
+  notify_me:
+    - public/stylesheets/notify_me.css
 
 javascripts:
   default:
