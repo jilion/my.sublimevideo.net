@@ -21,7 +21,7 @@ gem 'voxel_hapi',       :git => 'git://github.com/thibaudgg/voxel_hapi.git' # Vo
 gem 'request-log-analyzer', :require => 'request_log_analyzer'
 
 gem 'devise',           '>= 1.1.rc2' # Auth
-gem 'devise_invitable', :git => 'git://github.com/rymai/devise_invitable.git'
+gem 'devise_invitable', :git => 'git://github.com/rymai/devise_invitable.git', :tag => 'v0.6.1'
 
 gem 'system_timer',     '1.0.0' # Only on Ruby 1.8, used by memcache-client
 gem 'memcache-client',  '1.8.5'
@@ -34,29 +34,29 @@ gem 'RedCloth'
 
 gem 'ffaker',           '0.4.0'
 
+gem 'pg', '0.9.0'
+
 group :production do
-  gem 'pg', '0.9.0'
 end
 
 # Heroku hack
 if RUBY_PLATFORM =~ /darwin/
   
   group :development do
-    gem 'sqlite3-ruby', :require => 'sqlite3'
+    # gem 'sqlite3-ruby', :require => 'sqlite3'
     gem 'annotate'
     gem 'wirble' # irbrc
     gem 'ruby-graphviz', :require => 'graphviz'
   end
   
   group :test do
-    gem 'pg', '0.9.0'
     gem 'parallel'
     
     gem 'spork'
     gem 'rspactor', '>= 0.7.beta.5'
     
     gem 'shoulda'
-    gem 'rspec-rails', '>= 2.0.0.beta.18'
+    gem 'rspec-rails', '>= 2.0.0.beta.19'
     
     gem 'steak', '>= 0.4.0.beta.1'
     gem 'capybara'

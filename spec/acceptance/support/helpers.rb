@@ -20,7 +20,7 @@ module HelperMethods
   def create_admin(options={})
     @current_admin ||= begin
       admin = Factory(:admin, options[:admin] || {})
-      admin.accept_invitation! unless options[:accept_invitation] == false
+      admin.accept_invitation unless options[:accept_invitation] == false
       admin.lock! if options[:locked] == true
       admin
     end

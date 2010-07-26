@@ -1,40 +1,30 @@
 class Admin::Admins::InvitationsController < Devise::InvitationsController
   layout 'admin'
   
-  before_filter :authenticate_resource!, :only => [:new, :create]
-  before_filter :require_no_authentication, :only => [:edit, :update]
-  
-  # GET /resource/invitation/new
-  def new
-    build_resource
-    render_with_scope :new
-  end
-  
-  # POST /resource/invitation
+  # POST /resources/invitation
   def create
-    self.resource = resource_class.send_invitation(params[resource_name])
+    self.resource = resource_class.invite(params[resource_name])
     
-    if resource.errors.empty?
-      set_flash_message :notice, :send_instructions
+    if resource.invited?
+      set_flash_message(:notice, :send_instructions, :email => params[resource_name][:email])
       redirect_to send "admin_#{resource_name.to_s.pluralize}_url"
     else
       render_with_scope :new
     end
   end
   
-  # GET /resource/invitation/edit?invitation_token=abcdef
+  # GET /resources/invitation/edit?invitation_token=abcdef
   def edit
-    self.resource = resource_class.new
-    resource.invitation_token = params[:invitation_token]
+    self.resource = resource_class.find_or_initialize_with_error_by(:invitation_token, params[:invitation_token])
     render "admin/admins/invitations/edit", :layout => resource_name == :admin ? 'admin' : 'application'
   end
   
-  # PUT /resource/invitation
+  # PUT /resources/invitation
   def update
-    self.resource = resource_class.accept_invitation!(params[resource_name])
+    self.resource = resource_class.accept_invitation(params[resource_name])
     
     if resource.errors.empty?
-      set_flash_message :notice, :updated
+      set_flash_message(:notice, :updated)
       sign_in resource_name, resource
       redirect_to resource_name == :admin ? admin_admins_url : sites_url
     else
@@ -42,10 +32,15 @@ class Admin::Admins::InvitationsController < Devise::InvitationsController
     end
   end
   
-protected
-  
-  def authenticate_resource!
-    authenticate_admin!
+end
+
+module DeviseInvitable
+  module Controllers
+    module Helpers
+    protected
+      def authenticate_inviter!
+        authenticate_admin!
+      end
+    end
   end
-  
 end

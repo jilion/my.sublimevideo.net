@@ -44,6 +44,9 @@ en:
     mailer:
       confirmation_instructions:
         subject: 'Confirmation instructions'
+      invitation_instructions:
+        admin_subject: 'Invitation instructions'
+        user_subject: 'Invitation instructions'
       reset_password_instructions:
         subject: 'Reset password instructions'
       unlock_instructions:
