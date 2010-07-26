@@ -45,6 +45,9 @@ Devise.setup do |config|
   # Time interval where the invitation token is valid.
   config.invite_for = 2.weeks
   
+  # Flag that force a record to be valid before being actually invited 
+  config.validate_on_invite = false
+  
   # ==> Configuration for :rememberable
   # The time the user will be remembered without asking for credentials again.
   config.remember_for = 2.weeks
