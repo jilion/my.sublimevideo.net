@@ -69,7 +69,7 @@ private
   end
   
   def sum_for(field)
-    @videos.sum { |video| video.key?(field) ? video[field] : 0 }
+    @videos.sum { |video| video.key?(field) ? video[field].to_i : 0 }
   end
   
   def traffic_sum
