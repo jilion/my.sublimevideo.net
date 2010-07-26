@@ -2,24 +2,24 @@
 #
 # Table name: site_usages
 #
-#  id                :integer         not null, primary key
-#  site_id           :integer
-#  log_id            :integer
-#  started_at        :datetime
-#  ended_at          :datetime
-#  loader_hits       :integer         default(0)
-#  player_hits       :integer         default(0)
-#  flash_hits        :integer         default(0)
-#  created_at        :datetime
-#  updated_at        :datetime
-#  requests_s3       :integer         default(0)
-#  bandwidth_s3      :integer         default(0)
-#  bandwidth_voxcast :integer         default(0)
+#  id              :integer         not null, primary key
+#  site_id         :integer
+#  log_id          :integer
+#  started_at      :datetime
+#  ended_at        :datetime
+#  loader_hits     :integer(8)      default(0)
+#  player_hits     :integer(8)      default(0)
+#  flash_hits      :integer(8)      default(0)
+#  created_at      :datetime
+#  updated_at      :datetime
+#  requests_s3     :integer(8)      default(0)
+#  traffic_s3      :integer(8)      default(0)
+#  traffic_voxcast :integer(8)      default(0)
 #
 
 class SiteUsage < ActiveRecord::Base
   
-  attr_accessible :site, :log, :loader_hits, :player_hits, :flash_hits, :requests_s3, :bandwidth_s3, :bandwidth_voxcast
+  attr_accessible :site, :log, :loader_hits, :player_hits, :flash_hits, :requests_s3, :traffic_s3, :traffic_voxcast
   
   # ================
   # = Associations =
@@ -47,8 +47,8 @@ class SiteUsage < ActiveRecord::Base
   validates :player_hits,       :presence => true
   validates :flash_hits,        :presence => true
   validates :requests_s3,       :presence => true
-  validates :bandwidth_s3,      :presence => true
-  validates :bandwidth_voxcast, :presence => true
+  validates :traffic_s3,      :presence => true
+  validates :traffic_voxcast, :presence => true
   
   # =============
   # = Callbacks =
@@ -62,7 +62,7 @@ class SiteUsage < ActiveRecord::Base
   # =================
   
   def self.create_usages_from_trackers!(log, trackers)
-    hbr    = hits_bandwidth_and_requests_from(trackers)
+    hbr    = hits_traffic_and_requests_from(trackers)
     tokens = tokens_from(hbr)
     while tokens.present?
       Site.where(:token => tokens.pop(100)).each do |site|
@@ -73,8 +73,8 @@ class SiteUsage < ActiveRecord::Base
           :player_hits       => (hits = hbr[:player_hits]) ? hits[site.token].to_i : 0,
           :flash_hits        => (hits = hbr[:flash_hits]) ? hits[site.token].to_i : 0,
           :requests_s3       => (requests = hbr[:requests_s3]) ? requests[site.token].to_i : 0,
-          :bandwidth_s3      => (bandwidth = hbr[:bandwidth_s3]) ? bandwidth[site.token].to_i : 0,
-          :bandwidth_voxcast => (bandwidth = hbr[:bandwidth_voxcast]) ? bandwidth[site.token].to_i : 0
+          :traffic_s3      => (bandwidth = hbr[:traffic_s3]) ? bandwidth[site.token].to_i : 0,
+          :traffic_voxcast => (bandwidth = hbr[:traffic_voxcast]) ? bandwidth[site.token].to_i : 0
         )
       end
     end
@@ -96,18 +96,18 @@ private
       :player_hits_cache       => player_hits,
       :flash_hits_cache        => flash_hits,
       :requests_s3_cache       => requests_s3,
-      :bandwidth_s3_cache      => bandwidth_s3,
-      :bandwidth_voxcast_cache => bandwidth_voxcast
+      :traffic_s3_cache      => traffic_s3,
+      :traffic_voxcast_cache => traffic_voxcast
     )
   end
   
   # Compact trackers from RequestLogAnalyzer
-  def self.hits_bandwidth_and_requests_from(trackers)
+  def self.hits_traffic_and_requests_from(trackers)
     trackers.inject({}) do |trackers, tracker|
       case tracker.options[:title]
       when :loader_hits, :player_hits, :flash_hits, :requests_s3
         trackers[tracker.options[:title]] = tracker.categories
-      when :bandwidth_s3, :bandwidth_voxcast
+      when :traffic_s3, :traffic_voxcast
         trackers[tracker.options[:title]] = tracker.categories.inject({}) do |tokens, (k,v)|
           tokens[k] = v[:sum]
           tokens
@@ -117,8 +117,8 @@ private
     end
   end
   
-  def self.tokens_from(hits_bandwidth_and_requests)
-    hits_bandwidth_and_requests.inject([]) do |tokens, (k, v)|
+  def self.tokens_from(hits_traffic_and_requests)
+    hits_traffic_and_requests.inject([]) do |tokens, (k, v)|
       tokens += v.collect { |k, v| k }
     end.compact.uniq
   end

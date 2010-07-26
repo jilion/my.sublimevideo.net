@@ -8,8 +8,8 @@ describe LogsFileFormat::CloudfrontStreaming do
       @trackers = LogAnalyzer.parse(logs_file, 'LogsFileFormat::CloudfrontStreaming')
     end
     
-    it "should parse and return bandwidth_eu tracker" do
-      tracker = @trackers.select { |tracker| tracker.options[:title] == :bandwidth_eu }.first
+    it "should parse and return traffic_eu tracker" do
+      tracker = @trackers.select { |tracker| tracker.options[:title] == :traffic_eu }.first
       tracker.categories.should have(1).tokens
       tracker.categories["4e1az9e5"][:sum].should == 51858524
     end

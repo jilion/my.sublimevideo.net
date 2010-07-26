@@ -2,26 +2,26 @@
 #
 # Table name: video_usages
 #
-#  id                :integer         not null, primary key
-#  video_id          :integer
-#  log_id            :integer
-#  started_at        :datetime
-#  ended_at          :datetime
-#  hits              :integer         default(0)
-#  bandwidth_s3      :integer         default(0)
-#  bandwidth_us      :integer         default(0)
-#  bandwidth_eu      :integer         default(0)
-#  bandwidth_as      :integer         default(0)
-#  bandwidth_jp      :integer         default(0)
-#  bandwidth_unknown :integer         default(0)
-#  requests_s3       :integer         default(0)
-#  requests_us       :integer         default(0)
-#  requests_eu       :integer         default(0)
-#  requests_as       :integer         default(0)
-#  requests_jp       :integer         default(0)
-#  requests_unknown  :integer         default(0)
-#  created_at        :datetime
-#  updated_at        :datetime
+#  id               :integer         not null, primary key
+#  video_id         :integer
+#  log_id           :integer
+#  started_at       :datetime
+#  ended_at         :datetime
+#  hits             :integer(8)      default(0)
+#  traffic_s3       :integer(8)      default(0)
+#  traffic_us       :integer(8)      default(0)
+#  traffic_eu       :integer(8)      default(0)
+#  traffic_as       :integer(8)      default(0)
+#  traffic_jp       :integer(8)      default(0)
+#  traffic_unknown  :integer(8)      default(0)
+#  requests_s3      :integer(8)      default(0)
+#  requests_us      :integer(8)      default(0)
+#  requests_eu      :integer(8)      default(0)
+#  requests_as      :integer(8)      default(0)
+#  requests_jp      :integer(8)      default(0)
+#  requests_unknown :integer(8)      default(0)
+#  created_at       :datetime
+#  updated_at       :datetime
 #
 
 require 'spec_helper'
@@ -31,19 +31,19 @@ describe VideoUsage do
   context "build with valid attributes" do
     subject { Factory.build(:video_usage) }
     
-    its(:hits)              { should == 0 }
-    its(:bandwidth_s3)      { should == 0 }
-    its(:bandwidth_us)      { should == 0 }
-    its(:bandwidth_eu)      { should == 0 }
-    its(:bandwidth_as)      { should == 0 }
-    its(:bandwidth_jp)      { should == 0 }
-    its(:bandwidth_unknown) { should == 0 }
-    its(:requests_s3)       { should == 0 }
-    its(:requests_us)       { should == 0 }
-    its(:requests_eu)       { should == 0 }
-    its(:requests_as)       { should == 0 }
-    its(:requests_jp)       { should == 0 }
-    its(:requests_unknown)  { should == 0 }
+    its(:hits)             { should == 0 }
+    its(:traffic_s3)       { should == 0 }
+    its(:traffic_us)       { should == 0 }
+    its(:traffic_eu)       { should == 0 }
+    its(:traffic_as)       { should == 0 }
+    its(:traffic_jp)       { should == 0 }
+    its(:traffic_unknown)  { should == 0 }
+    its(:requests_s3)      { should == 0 }
+    its(:requests_us)      { should == 0 }
+    its(:requests_eu)      { should == 0 }
+    its(:requests_as)      { should == 0 }
+    its(:requests_jp)      { should == 0 }
+    its(:requests_unknown) { should == 0 }
     it { should be_valid }
   end
   
@@ -59,8 +59,8 @@ describe VideoUsage do
     HoptoadNotifier.should_receive(:notify)
     usage.save
   end
-  it "should notify if bandwidth_unknown is greather than " do
-    usage = Factory.build(:video_usage, :bandwidth_unknown => 1)
+  it "should notify if traffic_unknown is greather than " do
+    usage = Factory.build(:video_usage, :traffic_unknown => 1)
     HoptoadNotifier.should_receive(:notify)
     usage.save
   end
@@ -80,13 +80,13 @@ describe VideoUsage do
     end
     
     it "should clean trackers" do
-      VideoUsage.hits_bandwidth_and_requests_from(@trackers).should == {
+      VideoUsage.hits_traffic_and_requests_from(@trackers).should == {
         :hits => { "e14ab4de" => 1, "g46g16dz" => 1, "313asa32" => 1 },
-        :bandwidth_us => {},
-        :bandwidth_eu => { "e14ab4de" => 134284, "g46g16dz" => 3509835, "313asa32" => 3696141 },
-        :bandwidth_as => {},
-        :bandwidth_jp => {},
-        :bandwidth_unknown => {},
+        :traffic_us => {},
+        :traffic_eu => { "e14ab4de" => 134284, "g46g16dz" => 3509835, "313asa32" => 3696141 },
+        :traffic_as => {},
+        :traffic_jp => {},
+        :traffic_unknown => {},
         :requests_us => {},
         :requests_eu => { "g46g16dz" => 5, "e14ab4de" => 4, "313asa32" => 2 },
         :requests_as => {},
@@ -96,7 +96,7 @@ describe VideoUsage do
     end
     
     it "should get tokens from trackers" do
-      hbr = VideoUsage.hits_bandwidth_and_requests_from(@trackers)
+      hbr = VideoUsage.hits_traffic_and_requests_from(@trackers)
       VideoUsage.tokens_from(hbr).sort.should == ["g46g16dz", "e14ab4de", "313asa32"].sort
     end
     
@@ -114,7 +114,7 @@ describe VideoUsage do
       usage.log.should          == @log
       usage.video.should        == @video1
       usage.hits.should         == 1
-      usage.bandwidth_eu.should == 134284
+      usage.traffic_eu.should == 134284
       usage.requests_eu.should  == 4
     end
     
@@ -133,14 +133,14 @@ describe VideoUsage do
     end
     
     it "should clean trackers" do
-      VideoUsage.hits_bandwidth_and_requests_from(@trackers).should == {
-        :bandwidth_s3 => { "4e1az9e5" => 15392947717 },
+      VideoUsage.hits_traffic_and_requests_from(@trackers).should == {
+        :traffic_s3 => { "4e1az9e5" => 15392947717 },
         :requests_s3 => { "4e1az9e5" => 25 }
       }
     end
     
     it "should get tokens from trackers" do
-      hbr = VideoUsage.hits_bandwidth_and_requests_from(@trackers)
+      hbr = VideoUsage.hits_traffic_and_requests_from(@trackers)
       VideoUsage.tokens_from(hbr).should == ["4e1az9e5"]
     end
     
@@ -155,7 +155,7 @@ describe VideoUsage do
       usage.log.should          == @log
       usage.video.should        == @video
       usage.hits.should         == 0
-      usage.bandwidth_s3.should == 15392947717
+      usage.traffic_s3.should == 15392947717
       usage.requests_s3.should  == 25
     end
     

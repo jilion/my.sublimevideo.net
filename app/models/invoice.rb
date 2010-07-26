@@ -9,9 +9,9 @@
 #  charged_at    :datetime
 #  started_on    :date
 #  ended_on      :date
-#  amount        :integer         default(0)
-#  sites_amount  :integer         default(0)
-#  videos_amount :integer         default(0)
+#  amount        :integer(8)      default(0)
+#  sites_amount  :integer(8)      default(0)
+#  videos_amount :integer(8)      default(0)
 #  sites         :text
 #  videos        :text
 #  created_at    :datetime

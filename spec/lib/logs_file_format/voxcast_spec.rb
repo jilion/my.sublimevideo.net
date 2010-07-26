@@ -36,7 +36,7 @@ describe LogsFileFormat::Voxcast do
     end
     
     it "should parse and return bandwidth tracker" do
-      tracker = @trackers.select { |tracker| tracker.options[:title] == :bandwidth_voxcast }.first
+      tracker = @trackers.select { |tracker| tracker.options[:title] == :traffic_voxcast }.first
       tracker.categories["12345678"][:sum].should == 90986
     end
   end
@@ -58,7 +58,7 @@ describe LogsFileFormat::Voxcast do
     end
     
     it "should parse and return bandwidth tracker" do
-      tracker = @trackers.select { |tracker| tracker.options[:title] == :bandwidth_voxcast }.first
+      tracker = @trackers.select { |tracker| tracker.options[:title] == :traffic_voxcast }.first
       tracker.categories["g8thugh6"][:sum].should == 367093
       tracker.categories["g3325oz4"][:sum].should == 70696
     end
@@ -81,7 +81,7 @@ describe LogsFileFormat::Voxcast do
     end
     
     it "should parse and return bandwidth tracker" do
-      tracker = @trackers.select { |tracker| tracker.options[:title] == :bandwidth_voxcast }.first
+      tracker = @trackers.select { |tracker| tracker.options[:title] == :traffic_voxcast }.first
       tracker.categories["6vibplhv"][:sum].should == 10460
     end
   end
@@ -103,7 +103,7 @@ describe LogsFileFormat::Voxcast do
     end
     
     it "should parse and return bandwidth tracker" do
-      tracker = @trackers.select { |tracker| tracker.options[:title] == :bandwidth_voxcast }.first
+      tracker = @trackers.select { |tracker| tracker.options[:title] == :traffic_voxcast }.first
       tracker.categories["6vibplhv"][:sum].should == 0
     end
   end

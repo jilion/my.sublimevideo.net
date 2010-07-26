@@ -45,23 +45,23 @@ module LogsFileFormat
         :category  => lambda { |r| video_token_from(r[:path]) },
         :if        => lambda { |r| video_key?(r[:path]) && video_token?(r[:path]) && @ips.exclude?("#{r[:client_ip]}/#{video_token_from(r[:path])}") && @ips << "#{r[:client_ip]}/#{video_token_from(r[:path])}" }
       )
-      analyze.traffic(:sc_bytes, :title => :bandwidth_us,
+      analyze.traffic(:sc_bytes, :title => :traffic_us,
         :category => lambda { |r| video_token_from(r[:path]) },
         :if       => lambda { |r| video_token?(r[:path]) && us_location?(r[:edge_location]) }
       )
-      analyze.traffic(:sc_bytes, :title => :bandwidth_eu,
+      analyze.traffic(:sc_bytes, :title => :traffic_eu,
         :category => lambda { |r| video_token_from(r[:path]) },
         :if       => lambda { |r| video_token?(r[:path]) && eu_location?(r[:edge_location]) }
       )
-      analyze.traffic(:sc_bytes, :title => :bandwidth_as,
+      analyze.traffic(:sc_bytes, :title => :traffic_as,
         :category => lambda { |r| video_token_from(r[:path]) },
         :if       => lambda { |r| video_token?(r[:path]) && as_location?(r[:edge_location]) }
       )
-      analyze.traffic(:sc_bytes, :title => :bandwidth_jp,
+      analyze.traffic(:sc_bytes, :title => :traffic_jp,
         :category => lambda { |r| video_token_from(r[:path]) },
         :if       => lambda { |r| video_token?(r[:path]) && jp_location?(r[:edge_location]) }
       )
-      analyze.traffic(:sc_bytes, :title => :bandwidth_unknown,
+      analyze.traffic(:sc_bytes, :title => :traffic_unknown,
         :category => lambda { |r| video_token_from(r[:path]) },
         :if       => lambda { |r| video_token?(r[:path]) && unknown_location?(r[:edge_location]) }
       )

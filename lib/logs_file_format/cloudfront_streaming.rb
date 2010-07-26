@@ -52,23 +52,23 @@ module LogsFileFormat
         :category => lambda { |r| video_token_from(r[:sname]) },
         :if       => lambda { |r| r[:event] == "stop" && video_token?(r[:sname]) && video_key?(r[:sname]) }
       )
-      analyze.traffic(:sc_bytes, :title => :bandwidth_us,
+      analyze.traffic(:sc_bytes, :title => :traffic_us,
         :category => lambda { |r| video_token_from(r[:sname]) },
         :if       => lambda { |r| r[:event] == "stop" && video_token?(r[:sname]) && us_location?(r[:edge_location]) }
       )
-      analyze.traffic(:sc_bytes, :title => :bandwidth_eu,
+      analyze.traffic(:sc_bytes, :title => :traffic_eu,
         :category => lambda { |r| video_token_from(r[:sname]) },
         :if       => lambda { |r| r[:event] == "stop" && video_token?(r[:sname]) && eu_location?(r[:edge_location]) }
       )
-      analyze.traffic(:sc_bytes, :title => :bandwidth_as,
+      analyze.traffic(:sc_bytes, :title => :traffic_as,
         :category => lambda { |r| video_token_from(r[:sname]) },
         :if       => lambda { |r| r[:event] == "stop" && video_token?(r[:sname]) && as_location?(r[:edge_location]) }
       )
-      analyze.traffic(:sc_bytes, :title => :bandwidth_jp,
+      analyze.traffic(:sc_bytes, :title => :traffic_jp,
         :category => lambda { |r| video_token_from(r[:sname]) },
         :if       => lambda { |r| r[:event] == "stop" && video_token?(r[:sname]) && jp_location?(r[:edge_location]) }
       )
-      analyze.traffic(:sc_bytes, :title => :bandwidth_unknown,
+      analyze.traffic(:sc_bytes, :title => :traffic_unknown,
         :category => lambda { |r| video_token_from(r[:sname]) },
         :if       => lambda { |r| r[:event] == "stop" && video_token?(r[:sname]) && unknown_location?(r[:edge_location]) }
       )

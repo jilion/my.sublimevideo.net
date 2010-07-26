@@ -8,8 +8,8 @@ describe LogsFileFormat::CloudfrontDownload do
       @trackers = LogAnalyzer.parse(logs_file, 'LogsFileFormat::CloudfrontDownload')
     end
     
-    it "should parse and return bandwidth_eu tracker" do
-      tracker = @trackers.select { |tracker| tracker.options[:title] == :bandwidth_eu }.first
+    it "should parse and return traffic_eu tracker" do
+      tracker = @trackers.select { |tracker| tracker.options[:title] == :traffic_eu }.first
       tracker.categories.should have(3).tokens
       tracker.categories["e14ab4de"][:sum].should == 134284
       tracker.categories["g46g16dz"][:sum].should == 3509835
@@ -39,8 +39,8 @@ describe LogsFileFormat::CloudfrontDownload do
       @trackers = LogAnalyzer.parse(logs_file, 'LogsFileFormat::CloudfrontDownload')
     end
     
-    it "should parse and return bandwidth_eu tracker" do
-      tracker = @trackers.select { |tracker| tracker.options[:title] == :bandwidth_eu }.first
+    it "should parse and return traffic_eu tracker" do
+      tracker = @trackers.select { |tracker| tracker.options[:title] == :traffic_eu }.first
       tracker.categories.should have(1).tokens
       tracker.categories["k3zph1mc"][:sum].should == 56752792
     end

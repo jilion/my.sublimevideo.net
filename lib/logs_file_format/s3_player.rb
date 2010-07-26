@@ -28,7 +28,7 @@ module LogsFileFormat
     end
     
     report do |analyze|
-      analyze.traffic(:bytes_sent, :title => :bandwidth_s3,
+      analyze.traffic(:bytes_sent, :title => :traffic_s3,
         :category => lambda { |r| player_token_from(r[:requests_uri]) },
         :if       => lambda { |r| player_token?(r[:requests_uri]) && s3_get_request?(r[:operation]) }
       )

@@ -2,38 +2,38 @@
 #
 # Table name: videos
 #
-#  id                      :integer         not null, primary key
-#  user_id                 :integer
-#  title                   :string(255)
-#  token                   :string(255)
-#  state                   :string(255)
-#  posterframe             :string(255)
-#  hits_cache              :integer         default(0)
-#  bandwidth_s3_cache      :integer         default(0)
-#  bandwidth_us_cache      :integer         default(0)
-#  bandwidth_eu_cache      :integer         default(0)
-#  bandwidth_as_cache      :integer         default(0)
-#  bandwidth_jp_cache      :integer         default(0)
-#  bandwidth_unknown_cache :integer         default(0)
-#  requests_s3_cache       :integer         default(0)
-#  requests_us_cache       :integer         default(0)
-#  requests_eu_cache       :integer         default(0)
-#  requests_as_cache       :integer         default(0)
-#  requests_jp_cache       :integer         default(0)
-#  requests_unknown_cache  :integer         default(0)
-#  panda_video_id          :string(255)
-#  original_filename       :string(255)
-#  video_codec             :string(255)
-#  audio_codec             :string(255)
-#  extname                 :string(255)
-#  file_size               :integer
-#  duration                :integer
-#  width                   :integer
-#  height                  :integer
-#  fps                     :integer
-#  archived_at             :datetime
-#  created_at              :datetime
-#  updated_at              :datetime
+#  id                     :integer         not null, primary key
+#  user_id                :integer
+#  title                  :string(255)
+#  token                  :string(255)
+#  state                  :string(255)
+#  posterframe            :string(255)
+#  hits_cache             :integer(8)      default(0)
+#  traffic_s3_cache       :integer(8)      default(0)
+#  traffic_us_cache       :integer(8)      default(0)
+#  traffic_eu_cache       :integer(8)      default(0)
+#  traffic_as_cache       :integer(8)      default(0)
+#  traffic_jp_cache       :integer(8)      default(0)
+#  traffic_unknown_cache  :integer(8)      default(0)
+#  requests_s3_cache      :integer(8)      default(0)
+#  requests_us_cache      :integer(8)      default(0)
+#  requests_eu_cache      :integer(8)      default(0)
+#  requests_as_cache      :integer(8)      default(0)
+#  requests_jp_cache      :integer(8)      default(0)
+#  requests_unknown_cache :integer(8)      default(0)
+#  panda_video_id         :string(255)
+#  original_filename      :string(255)
+#  video_codec            :string(255)
+#  audio_codec            :string(255)
+#  extname                :string(255)
+#  file_size              :integer
+#  duration               :integer
+#  width                  :integer
+#  height                 :integer
+#  fps                    :integer
+#  archived_at            :datetime
+#  created_at             :datetime
+#  updated_at             :datetime
 #
 
 require 'spec_helper'
@@ -44,33 +44,33 @@ describe Video do
   context "with valid attributes" do
     subject { Factory(:video) }
     
-    its(:user)                    { should be_present               }
-    its(:panda_video_id)          { should be_present               }
-    its(:title)                   { should == "Railscast Intro"     }
-    its(:token)                   { should =~ /[a-z0-9]{8}/         }
-    its(:hits_cache)              { should == 0                     }
-    its(:bandwidth_s3_cache)      { should == 0                     }
-    its(:bandwidth_us_cache)      { should == 0                     }
-    its(:bandwidth_eu_cache)      { should == 0                     }
-    its(:bandwidth_as_cache)      { should == 0                     }
-    its(:bandwidth_jp_cache)      { should == 0                     }
-    its(:bandwidth_unknown_cache) { should == 0                     }
-    its(:requests_s3_cache)       { should == 0                     }
-    its(:requests_us_cache)       { should == 0                     }
-    its(:requests_eu_cache)       { should == 0                     }
-    its(:requests_as_cache)       { should == 0                     }
-    its(:requests_jp_cache)       { should == 0                     }
-    its(:requests_unknown_cache)  { should == 0                     }
-    its(:original_filename)       { should == 'railscast_intro.mov' }
-    its(:video_codec)             { should == 'h264'                }
-    its(:audio_codec)             { should == 'aac'                 }
-    its(:extname)                 { should == 'mov'                }
-    its(:file_size)               { should == 123456                }
-    its(:duration)                { should == 12345                 }
-    its(:width)                   { should == 640                   }
-    its(:height)                  { should == 480                   }
-    its(:fps)                     { should == 30                    }
-    its(:archived_at)             { should be_nil                   }
+    its(:user)                   { should be_present               }
+    its(:panda_video_id)         { should be_present               }
+    its(:title)                  { should == "Railscast Intro"     }
+    its(:token)                  { should =~ /[a-z0-9]{8}/         }
+    its(:hits_cache)             { should == 0                     }
+    its(:traffic_s3_cache)       { should == 0                     }
+    its(:traffic_us_cache)       { should == 0                     }
+    its(:traffic_eu_cache)       { should == 0                     }
+    its(:traffic_as_cache)       { should == 0                     }
+    its(:traffic_jp_cache)       { should == 0                     }
+    its(:traffic_unknown_cache)  { should == 0                     }
+    its(:requests_s3_cache)      { should == 0                     }
+    its(:requests_us_cache)      { should == 0                     }
+    its(:requests_eu_cache)      { should == 0                     }
+    its(:requests_as_cache)      { should == 0                     }
+    its(:requests_jp_cache)      { should == 0                     }
+    its(:requests_unknown_cache) { should == 0                     }
+    its(:original_filename)      { should == 'railscast_intro.mov' }
+    its(:video_codec)            { should == 'h264'                }
+    its(:audio_codec)            { should == 'aac'                 }
+    its(:extname)                { should == 'mov'                }
+    its(:file_size)              { should == 123456                }
+    its(:duration)               { should == 12345                 }
+    its(:width)                  { should == 640                   }
+    its(:height)                 { should == 480                   }
+    its(:fps)                    { should == 30                    }
+    its(:archived_at)            { should be_nil                   }
     
     it { should be_valid   }
   end
