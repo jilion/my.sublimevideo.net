@@ -2,26 +2,64 @@ MySublimeVideo::Application.routes.draw do |map|
   
   resource :beta, :only => [:show, :create]
   
-  %w[sign_up signup users/register].each              { |action| match action => redirect('/register'), :via => :get }
-  %w[log_in sign_in signin users/login].each          { |action| match action => redirect('/login'),    :via => :get }
-  %w[log_out sign_out signout exit users/logout].each { |action| match action => redirect('/logout'),   :via => :get }
+  # %w[sign_up signup users/register].each              { |action| match action => redirect('/register'), :via => :get }
+  # %w[log_in sign_in signin users/login].each          { |action| match action => redirect('/login'),    :via => :get }
+  # %w[log_out sign_out signout exit users/logout].each { |action| match action => redirect('/logout'),   :via => :get }
   
   devise_for :users,
     :controllers => { :registrations => "users/registrations", :invitations => "admin/admins/invitations" },
-    :path_names  => { :sign_up => 'register', :sign_in => 'login', :sign_out => 'logout' }
-  
-  match 'login',    :to => 'devise/sessions#new',      :as => "new_user_session"
-  match 'logout',   :to => 'devise/sessions#destroy',  :as => "destroy_user_session"
-  match 'register', :to => 'users/registrations#new',  :as => "new_user_registration"
+    :path_names  => {
+      :sign_up => 'register',
+      :sign_in => 'login', :sign_out => 'logout',
+      :password => 'password',
+      :confirmation => 'confirmation',
+      :unlock => 'unlock'
+    }
+    
+  devise_scope :user do
+    get "/register", :to => "devise/registrations#new", :as => "new_user_registration"
+    
+    scope :controller => 'devise/sessions', :as => :user_session do
+      get  :new,     :path => 'login'
+      post :create,  :path => 'login', :as => ""
+      get  :destroy, :path => 'logout'
+    end
+    
+    scope :controller => 'devise/confirmations', :as => :user_confirmation do
+      get  :new,     :path => 'confirmation/new'
+      get  :show,    :path => 'confirmation'
+      post :create,  :path => 'confirmation', :as => ""
+    end
+    
+    scope :controller => 'devise/passwords', :as => :user_password do
+      get  :new,     :path => 'password/new'
+      get  :edit,    :path => 'password/edit'
+      post :create,  :path => 'password', :as => ""
+      put  :update,  :path => 'password', :as => ""
+    end
+    
+    %w[sign_up signup users/register].each              { |action| match action => redirect('/register'), :via => :get }
+    %w[log_in sign_in signin users/login].each          { |action| match action => redirect('/login'),    :via => :get }
+    %w[log_out sign_out signout exit users/logout].each { |action| match action => redirect('/logout'),   :via => :get }
+  end
+  # 
+  # 
+  # # match 'login',    :to => 'devise/sessions#new',      :as => "new_user_session"
+  # match 'logout',   :to => 'devise/sessions#destroy',  :as => "destroy_user_session"
+  # match 'register', :to => 'users/registrations#new',  :as => "new_user_registration"
   
   resources :users, :only => :update
   
   resources :sites do
-    get :state, :on => :member
+    member do
+      get :state
+    end
   end
   
   resources :videos, :except => :new do
-    get :transcoded, :on => :member
+    member do
+      get :transcoded
+    end
   end
   
   resources :invoices, :only => [:index, :show]

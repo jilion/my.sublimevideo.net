@@ -1,0 +1,1 @@
+require 'responders/paginated_responder'

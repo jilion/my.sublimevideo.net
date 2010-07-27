@@ -34,4 +34,6 @@ MySublimeVideo::Application.configure do
   
   # Use a different cache store in test
   config.cache_store = :mem_cache_store
+  
+  config.active_support.deprecation = :stderr
 end

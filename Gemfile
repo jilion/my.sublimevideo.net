@@ -1,12 +1,12 @@
 source 'http://rubygems.org'
 
-gem 'rails',            '3.0.0.beta4'
+gem 'rails',            '3.0.0.rc'
 
 gem 'libxml-ruby',      '1.1.3', :require => 'libxml'
 
 gem 'i18n',             '0.4.1'
-gem 'haml',             '3.0.13'
-gem 'state_machine',    '0.9.3'
+gem 'haml',             '3.0.14'
+gem 'state_machine',    :git => 'git://github.com/pluginaweek/state_machine.git'#'0.9.3'
 gem 'responders',       :git => 'git://github.com/plataformatec/responders.git'
 gem 'uniquify',         '0.1.0'
 gem 'delayed_job',      :git => 'git://github.com/thibaudgg/delayed_job.git'
@@ -20,8 +20,8 @@ gem 'panda',            '0.6.4' # Encoding
 gem 'voxel_hapi',       :git => 'git://github.com/thibaudgg/voxel_hapi.git' # VoxCast CDN
 gem 'request-log-analyzer', :require => 'request_log_analyzer'
 
-gem 'devise',           '>= 1.1.rc2' # Auth
-gem 'devise_invitable', :git => 'git://github.com/rymai/devise_invitable.git', :tag => 'v0.6.1'
+gem 'devise',           '1.1.1' # Auth
+gem 'devise_invitable', :git => 'git://github.com/rymai/devise_invitable.git', :branch => 'edge'
 
 gem 'system_timer',     '1.0.0' # Only on Ruby 1.8, used by memcache-client
 gem 'memcache-client',  '1.8.5'

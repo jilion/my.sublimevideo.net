@@ -18,5 +18,6 @@ module Responders
         controller.instance_variable_set "@#{controller.controller_name}", resource.paginate(:page => controller.request.params[:page], :per_page => controller.controller_name.classify.constantize.per_page)
       end
     end
+    
   end
 end
