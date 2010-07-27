@@ -8,4 +8,4 @@ require 'rake/testtask'
 require 'rake/rdoctask'
 require 'delayed/tasks'
 
-Rails::Application.load_tasks
+MySublimeVideo::Application.load_tasks
