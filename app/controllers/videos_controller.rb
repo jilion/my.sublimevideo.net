@@ -1,9 +1,9 @@
 class VideosController < ApplicationController
-  skip_before_filter :beta_protection, :only => :transcoded
-  before_filter :authenticate_user!, :except => :transcoded
+  respond_to :html, :js
+  
+  skip_before_filter :beta_protection, :authenticate_user!, :only => :transcoded
   before_filter :redirect_suspended_user, :except => :transcoded
   before_filter :require_credit_card, :except => [:index, :transcoded]
-  respond_to :html, :js
   
   has_scope :by_date
   has_scope :by_title

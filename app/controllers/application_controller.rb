@@ -3,13 +3,15 @@ require 'digest/sha1'
 class ApplicationController < ActionController::Base
   include CustomDevisePaths
   
-  respond_to :html
-  
   protect_from_forgery
+  
+  respond_to :html
   responders Responders::FlashResponder, Responders::PaginatedResponder #, Responders::HttpCacheResponder
   
   layout 'application'
+  
   before_filter :beta_protection
+  before_filter :authenticate_user!
   
 protected
   
@@ -17,6 +19,17 @@ protected
     if Rails.env.production? || Rails.env.staging?
       beta_key = 'video66'
       redirect_to beta_path unless session[:beta_key] == Digest::SHA1.hexdigest("sublime-#{beta_key}")
+    end
+  end
+  
+  module DeviseInvitable
+    module Controllers
+      module Helpers
+      protected
+        def authenticate_inviter!
+          authenticate_admin!
+        end
+      end
     end
   end
   

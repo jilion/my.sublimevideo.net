@@ -1,6 +1,6 @@
 class Users::RegistrationsController < Devise::RegistrationsController
   
-  before_filter :redirect_register, :only => [:new, :create]
+  before_filter :redirect_register, :only => [:new, :create], :unless => proc { |c| PUBLIC_RELEASED }
   
 protected
   

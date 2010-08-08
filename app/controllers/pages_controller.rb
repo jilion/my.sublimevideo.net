@@ -1,5 +1,6 @@
 class PagesController < ApplicationController
-  before_filter :authenticate_suspended_user!
+  skip_before_filter :authenticate_user!
+  before_filter :authenticate_suspended_user!, :if => proc { |c| params[:page] == 'suspended' }
   
   def show
     render params[:page]
@@ -8,10 +9,8 @@ class PagesController < ApplicationController
 protected
   
   def authenticate_suspended_user!
-    if params[:page] == 'suspended'
-      authenticate_user!
-      redirect_to root_path if user_signed_in? && !current_user.suspended?
-    end
+    authenticate_user!
+    redirect_to root_path if user_signed_in? && !current_user.suspended?
   end
   
 end

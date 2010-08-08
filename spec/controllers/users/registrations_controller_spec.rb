@@ -3,6 +3,10 @@ require 'spec_helper'
 describe Users::RegistrationsController do
   include Devise::TestHelpers
   
+  before :each do
+    controller.request.env['devise.mapping'] = Devise.mappings[:user]
+  end
+  
   context "with logged in user" do
     before :each do
       @mock_user = mock_model(User, :active? => true, :confirmed? => true)
