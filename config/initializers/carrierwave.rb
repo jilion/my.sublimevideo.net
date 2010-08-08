@@ -1,5 +1,3 @@
-require 's3'
-
 CarrierWave.configure do |config|
   case Rails.env
   when 'production', 'development'

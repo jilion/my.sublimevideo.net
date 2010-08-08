@@ -1,5 +1,3 @@
-require 'custom_devise_paths'
-
 # Use this hook to configure devise mailer, warden hooks and so forth. The first
 # four configuration values can also be set straight in your models.
 Devise.setup do |config|
@@ -77,14 +75,14 @@ Devise.setup do |config|
   # :time  = Reanables login after a certain ammount of time (see :unlock_in below)
   # :both  = Enables both strategies
   # :none  = No unlock strategy. You should handle unlocking by yourself.
-  config.unlock_strategy = :time
+  config.unlock_strategy = :both
   
   # Number of authentication tries before locking an account if lock_strategy
   # is failed attempts.
-  config.maximum_attempts = 20
+  config.maximum_attempts = 10
   
   # Time interval to unlock the account if :time is enabled as unlock_strategy.
-  config.unlock_in = 1.hour
+  config.unlock_in = 2.hours
   
   # ==> Configuration for :token_authenticatable
   # Defines name of the authentication token params key
