@@ -2,7 +2,7 @@ Hello <%= @resource.email %>!
 
 Someone has invited you to <%= root_url %>, you can accept it through the link below:
 
-<%= edit_invitation_url(@resource, :invitation_token => @resource.invitation_token) %>
+<%= accept_invitation_url(@resource, :invitation_token => @resource.invitation_token) %>
 
 
 If you don't want to accept the invitation, please ignore this email.

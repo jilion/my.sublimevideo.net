@@ -1,0 +1,17 @@
+development:
+  price_in_cents_for_1GB_traffic:    50 # TODO, now 1GB = 50 cent
+  price_in_cents_for_10000_requests: 10 # TODO, now 10'000 request = 10 cent
+  price_in_cents_for_1GB_per_hour:   30 # TODO, now 1GB / hour = 30 cent
+  price_in_cents_for_1s_of_encoding: 1  # TODO, now 1 second = 1 cent
+
+test:
+  price_in_cents_for_1GB_traffic:    50 # TODO, now 1GB = 50 cent
+  price_in_cents_for_10000_requests: 10 # TODO, now 10'000 request = 10 cent
+  price_in_cents_for_1GB_per_hour:   30 # TODO, now 1GB / hour = 30 cent
+  price_in_cents_for_1s_of_encoding: 1  # TODO, now 1 second = 1 cent
+
+production:
+  price_in_cents_for_1GB_traffic:    50 # TODO, now 1GB = 50 cent
+  price_in_cents_for_10000_requests: 10 # TODO, now 10'000 request = 10 cent
+  price_in_cents_for_1GB_per_hour:   30 # TODO, now 1GB / hour = 30 cent
+  price_in_cents_for_1s_of_encoding: 1  # TODO, now 1 second = 1 cent

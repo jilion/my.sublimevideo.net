@@ -1,6 +1,6 @@
 = title_and_content_header("Login")
 
-= form_for resource, :as => resource_name, :url => session_path(resource_name), :html => { :class => "main_form" } do |f|
+= form_for resource, :as => resource_name, :url => user_session_path, :html => { :method => :post, :class => "main_form" } do |f|
   .entry.email
     = f.label :email, "", :class => "icon"
     = f.email_field :email, :class => "text", :placeholder => "Email", :required => true

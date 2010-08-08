@@ -1,4 +1,4 @@
-module Transcoder
+module Transcoders
   module PandaStream
     VALID_ITEMS = %w[videos encodings profiles clouds]
     
@@ -30,7 +30,6 @@ module Transcoder
         
         Panda.post("/#{item.to_s.pluralize}/#{id}/retry.json").symbolize_keys!
       end
-      
       
       def put(item, id, params={})
         assert_valid_items(item, %w[profiles])
