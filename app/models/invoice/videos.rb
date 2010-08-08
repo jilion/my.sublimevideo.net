@@ -5,8 +5,8 @@ class Invoice::Videos < Array
   
   def initialize(invoice, options = {})
     @videos = collect_videos(invoice, options)
-    
     @hits = sum_for(:hits)
+    
     calculate_and_set_amounts
     
     super(@videos)
@@ -48,21 +48,21 @@ private
           :video_title        => video.title,
           :archived_at        => video.archived_at,
           :traffic_upload     => calculate_upload_traffic(video, invoice),
-          :traffic_s3         => video.usages.started_after(invoice.started_on).ended_before(invoice.ended_on).sum(:traffic_s3),
-          :traffic_us         => video.usages.started_after(invoice.started_on).ended_before(invoice.ended_on).sum(:traffic_us),
-          :traffic_eu         => video.usages.started_after(invoice.started_on).ended_before(invoice.ended_on).sum(:traffic_eu),
-          :traffic_as         => video.usages.started_after(invoice.started_on).ended_before(invoice.ended_on).sum(:traffic_as),
-          :traffic_jp         => video.usages.started_after(invoice.started_on).ended_before(invoice.ended_on).sum(:traffic_jp),
-          :traffic_unknown    => video.usages.started_after(invoice.started_on).ended_before(invoice.ended_on).sum(:traffic_unknown),
-          :requests_s3        => video.usages.started_after(invoice.started_on).ended_before(invoice.ended_on).sum(:requests_s3),
-          :requests_us        => video.usages.started_after(invoice.started_on).ended_before(invoice.ended_on).sum(:requests_us),
-          :requests_eu        => video.usages.started_after(invoice.started_on).ended_before(invoice.ended_on).sum(:requests_eu),
-          :requests_as        => video.usages.started_after(invoice.started_on).ended_before(invoice.ended_on).sum(:requests_as),
-          :requests_jp        => video.usages.started_after(invoice.started_on).ended_before(invoice.ended_on).sum(:requests_jp),
-          :requests_unknown   => video.usages.started_after(invoice.started_on).ended_before(invoice.ended_on).sum(:requests_unknown),
+          :traffic_s3         => video.usages.between(invoice.started_on, invoice.ended_on).sum(:traffic_s3),
+          :traffic_us         => video.usages.between(invoice.started_on, invoice.ended_on).sum(:traffic_us),
+          :traffic_eu         => video.usages.between(invoice.started_on, invoice.ended_on).sum(:traffic_eu),
+          :traffic_as         => video.usages.between(invoice.started_on, invoice.ended_on).sum(:traffic_as),
+          :traffic_jp         => video.usages.between(invoice.started_on, invoice.ended_on).sum(:traffic_jp),
+          :traffic_unknown    => video.usages.between(invoice.started_on, invoice.ended_on).sum(:traffic_unknown),
+          :requests_s3        => video.usages.between(invoice.started_on, invoice.ended_on).sum(:requests_s3),
+          :requests_us        => video.usages.between(invoice.started_on, invoice.ended_on).sum(:requests_us),
+          :requests_eu        => video.usages.between(invoice.started_on, invoice.ended_on).sum(:requests_eu),
+          :requests_as        => video.usages.between(invoice.started_on, invoice.ended_on).sum(:requests_as),
+          :requests_jp        => video.usages.between(invoice.started_on, invoice.ended_on).sum(:requests_jp),
+          :requests_unknown   => video.usages.between(invoice.started_on, invoice.ended_on).sum(:requests_unknown),
           :storage_bytes_hour => calculate_storage_bytes_hour(video, invoice),
           :encoding_time      => calculate_encoding_time(video, invoice),
-          :hits               => video.usages.started_after(invoice.started_on).ended_before(invoice.ended_on).sum(:hits)
+          :hits               => video.usages.between(invoice.started_on, invoice.ended_on).sum(:hits)
         }
       end
     end
@@ -81,19 +81,13 @@ private
   end
   
   def calculate_and_set_amounts
-    # TODO: Move these conf to config/prices.yml or similar
-    price_in_cents_for_1GB_traffic    = 50 # TODO, now 1GB = 50 cent
-    price_in_cents_for_10000_requests = 1  # TODO, now 10'000 request = 1 cent
-    price_in_cents_for_1GB_per_hour   = 30 # TODO, now 1GB / hour = 30 cent
-    price_in_cents_for_1s_of_encoding = 1  # TODO, now 1 second = 1 cent
+    @traffic_amount  = (traffic_sum.to_f / 1.gigabyte) * Prices.price_in_cents_for_1GB_traffic
     
-    @traffic_amount  = (traffic_sum.to_f / 1.gigabyte) * price_in_cents_for_1GB_traffic
+    @requests_amount = (requests_sum / 10000) * Prices.price_in_cents_for_10000_requests
     
-    @requests_amount = (requests_sum.to_f / 10000) * price_in_cents_for_10000_requests
+    @storage_amount  = (sum_for(:storage_bytes_hour).to_f / 1.gigabyte) * Prices.price_in_cents_for_1GB_per_hour
     
-    @storage_amount = (sum_for(:storage_bytes_hour).to_f / 1.gigabyte) * price_in_cents_for_1GB_per_hour
-    
-    @encoding_amount = sum_for(:encoding_time) * price_in_cents_for_1s_of_encoding
+    @encoding_amount = sum_for(:encoding_time) * Prices.price_in_cents_for_1s_of_encoding
     
     @amount = [@traffic_amount, @requests_amount, @storage_amount, @encoding_amount].sum.round
   end

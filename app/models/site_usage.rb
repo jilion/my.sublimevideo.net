@@ -34,19 +34,20 @@ class SiteUsage < ActiveRecord::Base
   
   scope :started_after, lambda { |date| where(:started_at.gteq => date) }
   scope :ended_before,  lambda { |date| where(:ended_at.lt => date) }
+  scope :between,       lambda { |start_date, end_date| where(:started_at.gteq => start_date, :ended_at.lt => end_date) }
   
   # ===============
   # = Validations =
   # ===============
   
-  validates :site_id,           :presence => true
-  validates :log_id,            :presence => true
-  validates :started_at,        :presence => true
-  validates :ended_at,          :presence => true
-  validates :loader_hits,       :presence => true
-  validates :player_hits,       :presence => true
-  validates :flash_hits,        :presence => true
-  validates :requests_s3,       :presence => true
+  validates :site_id,         :presence => true
+  validates :log_id,          :presence => true
+  validates :started_at,      :presence => true
+  validates :ended_at,        :presence => true
+  validates :loader_hits,     :presence => true
+  validates :player_hits,     :presence => true
+  validates :flash_hits,      :presence => true
+  validates :requests_s3,     :presence => true
   validates :traffic_s3,      :presence => true
   validates :traffic_voxcast, :presence => true
   
@@ -67,12 +68,12 @@ class SiteUsage < ActiveRecord::Base
     while tokens.present?
       Site.where(:token => tokens.pop(100)).each do |site|
         create!(
-          :site              => site,
-          :log               => log,
-          :loader_hits       => (hits = hbr[:loader_hits]) ? hits[site.token].to_i : 0,
-          :player_hits       => (hits = hbr[:player_hits]) ? hits[site.token].to_i : 0,
-          :flash_hits        => (hits = hbr[:flash_hits]) ? hits[site.token].to_i : 0,
-          :requests_s3       => (requests = hbr[:requests_s3]) ? requests[site.token].to_i : 0,
+          :site            => site,
+          :log             => log,
+          :loader_hits     => (hits = hbr[:loader_hits]) ? hits[site.token].to_i : 0,
+          :player_hits     => (hits = hbr[:player_hits]) ? hits[site.token].to_i : 0,
+          :flash_hits      => (hits = hbr[:flash_hits]) ? hits[site.token].to_i : 0,
+          :requests_s3     => (requests = hbr[:requests_s3]) ? requests[site.token].to_i : 0,
           :traffic_s3      => (bandwidth = hbr[:traffic_s3]) ? bandwidth[site.token].to_i : 0,
           :traffic_voxcast => (bandwidth = hbr[:traffic_voxcast]) ? bandwidth[site.token].to_i : 0
         )
@@ -92,10 +93,10 @@ private
   def update_site_hits_cache
     Site.update_counters(
       site_id,
-      :loader_hits_cache       => loader_hits,
-      :player_hits_cache       => player_hits,
-      :flash_hits_cache        => flash_hits,
-      :requests_s3_cache       => requests_s3,
+      :loader_hits_cache     => loader_hits,
+      :player_hits_cache     => player_hits,
+      :flash_hits_cache      => flash_hits,
+      :requests_s3_cache     => requests_s3,
       :traffic_s3_cache      => traffic_s3,
       :traffic_voxcast_cache => traffic_voxcast
     )
