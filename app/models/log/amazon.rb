@@ -37,7 +37,7 @@ class Log::Amazon < Log
   def parse_and_create_usages!
     logs_file = copy_logs_file_to_tmp
     trackers = LogAnalyzer.parse(logs_file, self.class.config[:file_format_class_name])
-    usages.class_name.constantize.create_usages_from_trackers!(self, trackers)
+    usages.name.constantize.create_usages_from_trackers!(self, trackers)
     File.delete(logs_file.path)
   end
   

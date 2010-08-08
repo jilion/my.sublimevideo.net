@@ -22,7 +22,7 @@ describe Log::Amazon::Cloudfront::Streaming do
   context "created with valid attributes" do
     subject { Factory(:log_cloudfront_streaming) }
     
-    it { subject.usages.class_name.constantize.should == VideoUsage }
+    it { subject.usages.name.constantize.should == VideoUsage }
     it { subject.file.url.should == "/uploads/cloudfront/sublimevideo.videos/streaming/EK1147O537VJ1.2010-06-23-07.9D0khw8j.gz" }
     
     it "should have good log content" do

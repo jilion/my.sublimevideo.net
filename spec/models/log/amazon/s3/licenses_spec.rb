@@ -22,7 +22,7 @@ describe Log::Amazon::S3::Licenses do
   context "created with valid attributes" do
     subject { Factory(:log_s3_licenses) }
     
-    it { subject.usages.class_name.constantize.should == SiteUsage }
+    it { subject.usages.name.constantize.should == SiteUsage }
     it { subject.file.url.should == "/uploads/s3/sublimevideo.licenses/2010-07-14-11-29-03-BDECA2599C0ADB7D" }
     
     it "should have good log content" do

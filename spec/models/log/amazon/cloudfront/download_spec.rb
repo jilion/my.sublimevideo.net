@@ -22,7 +22,7 @@ describe Log::Amazon::Cloudfront::Download do
   context "created with valid attributes" do
     subject { Factory(:log_cloudfront_download) }
     
-    it { subject.usages.class_name.constantize.should == VideoUsage }
+    it { subject.usages.name.constantize.should == VideoUsage }
     it { subject.file.url.should == "/uploads/cloudfront/sublimevideo.videos/download/E3KTK13341WJO.2010-06-16-08.2Knk9kOC.gz" }
     
     it "should have good log content" do

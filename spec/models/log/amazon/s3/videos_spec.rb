@@ -22,7 +22,7 @@ describe Log::Amazon::S3::Videos do
   context "created with valid attributes" do
     subject { Factory(:log_s3_videos) }
     
-    it { subject.usages.class_name.constantize.should == VideoUsage }
+    it { subject.usages.name.constantize.should == VideoUsage }
     it { subject.file.url.should == "/uploads/s3/sublimevideo.videos/2010-06-23-08-20-45-DE5461BCB46DA093" }
     
     it "should have good log content" do
