@@ -1,54 +1,38 @@
-MySublimeVideo::Application.routes.draw do |map|
+MySublimeVideo::Application.routes.draw do
   
   resource :beta, :only => [:show, :create]
   
-  # %w[sign_up signup users/register].each              { |action| match action => redirect('/register'), :via => :get }
-  # %w[log_in sign_in signin users/login].each          { |action| match action => redirect('/login'),    :via => :get }
-  # %w[log_out sign_out signout exit users/logout].each { |action| match action => redirect('/logout'),   :via => :get }
-  
   devise_for :users,
-    :controllers => { :registrations => "users/registrations", :invitations => "admin/admins/invitations" },
-    :path_names  => {
-      :sign_up => 'register',
-      :sign_in => 'login', :sign_out => 'logout',
-      :password => 'password',
-      :confirmation => 'confirmation',
-      :unlock => 'unlock'
-    }
-    
-  devise_scope :user do
-    get "/register", :to => "devise/registrations#new", :as => "new_user_registration"
-    
-    scope :controller => 'devise/sessions', :as => :user_session do
-      get  :new,     :path => 'login'
-      post :create,  :path => 'login', :as => ""
-      get  :destroy, :path => 'logout'
+  :path => '',
+  :path_names => { :sign_up => 'register', :sign_in => 'login', :sign_out => 'logout' },
+  :skip => [:invitations, :registrations] do
+    scope :controller => 'admin/users/invitations', :as => :user_invitation do # admin routes
+      get  :new,    :path => '/admin/users/invitation/new'
+      post :create, :path => '/admin/users/invitation', :as => ''
     end
     
-    scope :controller => 'devise/confirmations', :as => :user_confirmation do
-      get  :new,     :path => 'confirmation/new'
-      get  :show,    :path => 'confirmation'
-      post :create,  :path => 'confirmation', :as => ""
+    scope :controller => 'devise/invitations', :as => :user_invitation do
+      get :edit,   :path => '/invitation/accept', :as => 'accept'
+      put :update, :path => '/invitation'
     end
     
-    scope :controller => 'devise/passwords', :as => :user_password do
-      get  :new,     :path => 'password/new'
-      get  :edit,    :path => 'password/edit'
-      post :create,  :path => 'password', :as => ""
-      put  :update,  :path => 'password', :as => ""
+    scope :controller => 'users/registrations', :as => :user_registration do
+      get    :edit,    :path => '/account/edit'
+      put    :update,  :path => '/credentials'
+      delete :destroy, :path => '/account', :as => ''
     end
     
-    %w[sign_up signup users/register].each              { |action| match action => redirect('/register'), :via => :get }
-    %w[log_in sign_in signin users/login].each          { |action| match action => redirect('/login'),    :via => :get }
-    %w[log_out sign_out signout exit users/logout].each { |action| match action => redirect('/logout'),   :via => :get }
+    # BEFORE PUBLIC RELEASE
+    %w[sign_up signup register].each       { |action| match action => redirect('/login'),    :via => :get }
+    
+    # AFTER PUBLIC RELEASE
+    # %w[sign_up signup].each                { |action| match action => redirect('/register'), :via => :get }
+    
+    %w[log_in sign_in signin].each         { |action| match action => redirect('/login'),    :via => :get }
+    %w[log_out sign_out signout exit].each { |action| match action => redirect('/logout'),   :via => :get }
   end
-  # 
-  # 
-  # # match 'login',    :to => 'devise/sessions#new',      :as => "new_user_session"
-  # match 'logout',   :to => 'devise/sessions#destroy',  :as => "destroy_user_session"
-  # match 'register', :to => 'users/registrations#new',  :as => "new_user_registration"
   
-  resources :users, :only => :update
+  resource :users, :only => :update, :path => '/info'
   
   resources :sites do
     member do
@@ -68,7 +52,6 @@ MySublimeVideo::Application.routes.draw do |map|
   
   match ':page', :to => 'pages#show', :via => :get, :as => :page, :page => /terms|docs|support|suspended/
   
-  # PUBLIC RELEASE
   root :to => redirect('/sites')
   
   # =========
@@ -77,21 +60,27 @@ MySublimeVideo::Application.routes.draw do |map|
   
   match 'admin', :to => redirect('/admin/djs'), :as => "admin"
   
-  %w[login log_in sign_in signin].each          { |action| match "admin/#{action}" => redirect('/admin/admins/login'),  :via => :get }
-  %w[logout log_out sign_out signout exit].each { |action| match "admin/#{action}" => redirect('/admin/admins/logout'), :via => :get }
-  
-  devise_for :admins, :path_prefix => "/admin",
-    :controllers => {
-      :registrations => "admin/admins/registrations",
-      :invitations   => "admin/admins/invitations",
-      :sessions      => "admin/admins/sessions",
-      :passwords     => "admin/admins/passwords"
-    },
-    :path_names  => { :sign_in => 'login', :sign_out => 'logout' }
-  
-  match 'admin/users/invitation/new', :to => 'admin/admins/invitations#new',    :as => "new_user_invitation", :via => :get
-  match 'admin/users/invitation',     :to => 'admin/admins/invitations#create', :as => "user_invitation", :via => :post
-  match 'admin/users/invitation',     :to => 'admin/admins/invitations#update', :as => "user_invitation", :via => :put
+  devise_for :admins,
+  :path => 'admin',
+  :module => 'admin/admins',
+  :path_names => { :sign_in => 'login', :sign_out => 'logout' },
+  :skip => [:invitations, :registrations] do
+    scope :controller => 'admin/admins/invitations', :as => :admin_invitation do
+      get  :new,    :path => '/admin/admins/invitation/new'
+      post :create, :path => '/admin/admins/invitation', :as => ''
+      get :edit,    :path => '/admin/invitation/accept', :as => 'accept'
+      put :update,  :path => '/admin/invitation'#, :as => ''
+    end
+    
+    scope :controller => 'admin/admins/registrations', :as => :admin_registration do
+      get    :edit,    :path => '/admin/account/edit'
+      put    :update,  :path => '/admin/account', :as => ''
+      delete :destroy, :path => '/admin/account', :as => ''
+    end
+    
+    %w[log_in sign_in signin].each         { |action| match "admin/#{action}" => redirect('/admin/login'),  :via => :get }
+    %w[log_out sign_out signout exit].each { |action| match "admin/#{action}" => redirect('/admin/logout'), :via => :get }
+  end
   
   namespace "admin" do
     resources :users, :only => [:index, :show]
@@ -109,4 +98,5 @@ MySublimeVideo::Application.routes.draw do |map|
     resources :delayed_jobs, :only => [:index, :show, :update, :destroy], :path => "djs"
   end
   
+  # match '*path' => redirect('/')
 end
