@@ -30,7 +30,7 @@ describe Invoice::Videos do
     
     its(:hits)            { should == 2001 }
     its(:traffic_amount)  { should == (total_traffic.to_f / 1.gigabyte) * 50 }
-    its(:requests_amount) { should == (total_requests.to_f / 10000) * 1 }
+    its(:requests_amount) { should == (total_requests / 10000) * 10 }
     its(:storage_amount)  { should == (total_storage.to_f / 1.gigabyte) * 30 }
     its(:encoding_amount) { should == total_encoding_time * 1 }
     its(:amount)          { should == (((total_traffic.to_f / 1.gigabyte) * 50) + ((total_storage.to_f / 1.gigabyte) * 30) + ((total_requests.to_f / 10000) * 1) + (total_encoding_time * 1)).round }
@@ -129,7 +129,7 @@ describe Invoice::Videos do
     
     its(:hits)            { should == 2101 }
     its(:traffic_amount)  { should == (total_traffic.to_f / 1.gigabyte) * 50 }
-    its(:requests_amount) { should == (total_requests.to_f / 10000) * 1 }
+    its(:requests_amount) { should == (total_requests / 10000) * 10 }
     its(:storage_amount)  { should == (total_storage.to_f / 1.gigabyte) * 30 }
     its(:encoding_amount) { should == total_encoding_time.to_f * 1 }
     its(:amount)          { should == (((total_traffic.to_f / 1.gigabyte) * 50) + ((total_requests.to_f / 10000) * 1) + ((total_storage.to_f / 1.gigabyte) * 30) + (total_encoding_time * 1)).round }
