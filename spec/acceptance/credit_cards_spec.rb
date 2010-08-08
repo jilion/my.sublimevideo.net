@@ -21,7 +21,7 @@ feature "Credit cards update:" do
       click_button "Update"
     end
     
-    current_url.should =~ %r(http://[^/]+/users/edit)
+    current_url.should =~ %r(http://[^/]+/account/edit)
     page.should have_content('Visa')
     page.should have_content('1111')
   end
