@@ -6,11 +6,16 @@ GIT
       daemons
 
 GIT
-  remote: git://github.com/rymai/devise_invitable.git
-  revision: 0d7f46b
-  branch: edge
+  remote: git://github.com/plataformatec/responders.git
+  revision: 3684de7
   specs:
-    rymai-devise_invitable (0.6.5)
+    responders (0.6.2)
+
+GIT
+  remote: git://github.com/rymai/devise_invitable.git
+  revision: 9fa8e40
+  specs:
+    devise_invitable (0.6.5)
       devise (>= 1.1.1)
       rails (= 3.0.0.rc)
 
@@ -19,12 +24,6 @@ GIT
   revision: 22165fe
   specs:
     has_scope (0.5.0)
-
-GIT
-  remote: git://github.com/rymai/responders.git
-  revision: 51b1681
-  specs:
-    responders (0.6.2)
 
 GIT
   remote: git://github.com/thibaudgg/jammit.git
@@ -231,6 +230,7 @@ DEPENDENCIES
   carrierwave (>= 0.5.0.beta2)
   delayed_job!
   devise (>= 1.1.1)
+  devise_invitable!
   factory_girl_rails
   ffaker (>= 0.4.0)
   haml (>= 3.0.16)
@@ -251,7 +251,6 @@ DEPENDENCIES
   rspactor (>= 0.7.beta.5)
   rspec-rails (>= 2.0.0.beta.19)
   ruby-graphviz
-  rymai-devise_invitable!
   shoulda
   spork
   sqlite3-ruby
