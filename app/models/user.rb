@@ -44,7 +44,6 @@ class User < ActiveRecord::Base
   include Trial
   include LimitAlert
   include CreditCard
-  include VideoSettings
   
   devise :database_authenticatable, :registerable, :confirmable,
          :recoverable, :rememberable, :trackable, :validatable, :lockable, :invitable
@@ -59,16 +58,12 @@ class User < ActiveRecord::Base
   attr_accessible :limit_alert_amount
   # Credit Card
   attr_accessible :cc_update, :cc_type, :cc_full_name, :cc_number, :cc_expire_on, :cc_verification_value
-  # Video Settings
-  attr_accessible :video_settings
-  serialize :video_settings
   
   # ================
   # = Associations =
   # ================
   
   has_many :sites
-  has_many :videos
   has_many :invoices, :autosave => false, :validate => false
   
   # ==========
@@ -95,15 +90,14 @@ class User < ActiveRecord::Base
   before_create :set_next_invoiced_on
   before_save :store_credit_card, :keep_some_credit_card_info # in user/credit_card
   before_save :clear_limit_alert_email_sent_at_when_limit_alert_amount_is_augmented # in user/limit_alert
-  before_save :set_default_video_settings # in user/video_settings
   
   # =================
   # = State Machine =
   # =================
   
   state_machine :initial => :active do
-    before_transition :on => :suspend, :do => [:suspend_sites, :suspend_videos]
-    before_transition :on => :unsuspend, :do => [:unsuspend_sites, :unsuspend_videos]
+    before_transition :on => :suspend, :do => :suspend_sites
+    before_transition :on => :unsuspend, :do => :unsuspend_sites
     
     event(:suspend)   { transition :active => :suspended }
     event(:unsuspend) { transition :suspended => :active }
@@ -133,16 +127,10 @@ private
   def suspend_sites
     sites.map(&:suspend)
   end
-  def suspend_videos
-    videos.map(&:suspend)
-  end
   
   # before_transition (unsuspend)
   def unsuspend_sites
     sites.map(&:unsuspend)
-  end
-  def unsuspend_videos
-    videos.map(&:unsuspend)
   end
   
 end

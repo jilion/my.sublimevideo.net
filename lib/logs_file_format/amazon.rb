@@ -1,14 +1,6 @@
 module LogsFileFormat
   module Amazon
     
-    def video_token_from(path)
-      path.match(/^\/?([a-z0-9]{8})\/.*/) && $1
-    end
-    
-    def video_token?(path)
-      path =~ /^\/?[a-z0-9]{8}\/.*/
-    end
-    
     def player_token_from(path)
       path.match(/^.*\s\/.*\?t=([a-z0-9]{8})\s.*$/) && $1
     end
@@ -35,10 +27,6 @@ module LogsFileFormat
     
     def s3_get_request?(operation)
       operation.include?("GET") || operation.include?("HEAD")
-    end
-    
-    def video_key?(key)
-      key =~ /.*\.(mp4|webm|ogv)$/
     end
     
     def us_location?(location)

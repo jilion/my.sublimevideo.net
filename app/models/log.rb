@@ -66,10 +66,6 @@ class Log < ActiveRecord::Base
     Log::Amazon::S3::Player.delay_fetch_and_create_new_logs
     Log::Amazon::S3::Loaders.delay_fetch_and_create_new_logs
     Log::Amazon::S3::Licenses.delay_fetch_and_create_new_logs
-    # Videos
-    Log::Amazon::Cloudfront::Download.delay_fetch_and_create_new_logs
-    Log::Amazon::Cloudfront::Streaming.delay_fetch_and_create_new_logs
-    Log::Amazon::S3::Videos.delay_fetch_and_create_new_logs
   end
   
   def self.config

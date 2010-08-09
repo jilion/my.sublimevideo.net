@@ -4,5 +4,5 @@
 %p.desc= "Copy the code below, and paste it into the pages on #{truncate_middle(@site.hostname)} where the SublimeVideo player will be displayed. Make sure it goes into the <code>&lt;head&gt;</code> tag.".html_safe
 %form
   .embed_code
-    %textarea{ :readonly => true, :onclick => "this.focus();this.select();" }= sublime_video_script_tag_for(@site)
+    %textarea{ :readonly => true, :onclick => "this.focus();this.select();" }= sublimevideo_script_tag_for(@site)
 -#%p= raw "If you're using a plugin or service that asks for a SublimeVideo Site ID, use this: <code>#{@site.token}</code>"

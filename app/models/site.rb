@@ -26,7 +26,7 @@ class Site < ActiveRecord::Base
   
   # Pagination
   cattr_accessor :per_page
-  self.per_page = 6
+  self.per_page = 20
   
   attr_accessible :hostname, :dev_hostnames
   

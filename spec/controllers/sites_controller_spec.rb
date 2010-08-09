@@ -87,11 +87,11 @@ describe SitesController do
       response.should redirect_to(page_path("suspended"))
     end
     it "should respond with success to POST :create" do
-      post :create, :video => {}
+      post :create, :site => {}
       response.should redirect_to(page_path("suspended"))
     end
     it "should respond with success to PUT :update" do
-      put :update, :id => '1', :video => {}
+      put :update, :id => '1', :site => {}
       response.should redirect_to(page_path("suspended"))
     end
     it "should respond with success to DELETE :destroy" do

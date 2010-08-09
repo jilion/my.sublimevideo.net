@@ -6,11 +6,6 @@ module Prices
       hash[name.to_sym]
     end
     
-    def video(name)
-      hash = yml[:video].symbolize_keys!
-      hash[name.to_sym]
-    end
-    
     def method_missing(name)
       yml[name.to_sym]
     end

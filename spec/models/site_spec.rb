@@ -65,7 +65,7 @@ describe Site do
         end
       end
       
-      %w[ftp://asdasd.com asdasd.com 124.123.151.123 htp://aasds.com www.youtube.com?video=31231].each do |host|
+      %w[ftp://asdasd.com asdasd.com 124.123.151.123 htp://aasds.com www.youtube.com?v=31231].each do |host|
         it "should validate non-validity of hostname: #{host}" do
           site = Factory.build(:site, :hostname => host)
           site.should be_valid
@@ -156,11 +156,11 @@ describe Site do
       end
       
       it "should clean valid hostname (hostname should never contain /.+://(www.)?/)" do
-        site = Factory(:site, :hostname => 'http://www.youtube.com?video=31231')
+        site = Factory(:site, :hostname => 'http://www.youtube.com?v=31231')
         site.hostname.should == 'youtube.com'
       end
       
-      %w[http://www.youtube.com?video=31231 www.youtube.com?video=31231 youtube.com?video=31231].each do |host|
+      %w[http://www.youtube.com?v=31231 www.youtube.com?v=31231 youtube.com?v=31231].each do |host|
         it "should clean invalid hostname #{host} (hostname should never contain /.+://(www.)?/)" do
           site = Factory.build(:site, :hostname => host)
           site.hostname.should == "youtube.com"

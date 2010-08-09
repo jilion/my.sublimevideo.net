@@ -52,17 +52,6 @@ feature "Users actions:" do
     User.last.limit_alert_amount.should == 10000
   end
   
-  scenario "update video settings" do
-    sign_in_as :user, { :full_name => "John Doe" }
-    click_link('John Doe')
-    # check "user_video_settings_webm"
-    fill_in "user_video_settings_default_video_embed_width", :with => 200
-    click_button "user_video_settings_submit"
-    
-    # User.last.should be_use_webm
-    User.last.default_video_embed_width.should == 200
-  end
-  
   scenario "accept invitation" do
     invited_user = send_invite_to :user, "invited@user.com"
     

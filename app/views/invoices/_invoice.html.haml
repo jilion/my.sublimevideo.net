@@ -33,11 +33,5 @@
         %strong.price= cents_to_dollars(invoice.sites_amount)
         = link_to invoice_path(invoice.to_param), :class => "view_details", :onclick => "return MySublimeVideo.showInvoice('#{invoice.to_param}', 'sites')" do
           %span= "View player details"
-    .row.videos
-      %h4= "Videos"
-      .right
-        %strong.price= cents_to_dollars(invoice.videos_amount)
-        = link_to invoice_path(invoice.to_param), :class => "view_details", :onclick => "return MySublimeVideo.showInvoice('#{invoice.to_param}', 'videos')" do
-          %span= "View video details"
   %td.total
     %strong= cents_to_dollars(invoice.amount)

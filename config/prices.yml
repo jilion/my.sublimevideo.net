@@ -1,20 +1,11 @@
 development:
-  video:
-    one_GB_of_traffic:       50 # TODO, now 1GB = 50 cent
-    ten_thousand_requests:   10 # TODO, now 10'000 request = 10 cent
-    one_GB_per_hour_storage: 30 # TODO, now 1GB / hour = 30 cent
-    one_second_of_encoding:  1  # TODO, now 1 second = 1 cent
+  site:
+    one_hit: 0.1 # TODO, now 1 hit = 0.1 cent
     
 test:
-  video:
-    one_GB_of_traffic:       50 # TODO, now 1GB = 50 cent
-    ten_thousand_requests:   10 # TODO, now 10'000 request = 10 cent
-    one_GB_per_hour_storage: 10 # TODO, now 1GB / hour = 30 cent
-    one_second_of_encoding:  1  # TODO, now 1 second = 1 cent
-
+  site:
+    one_hit: 0.1 # TODO, now 1 hit = 0.1 cent
+    
 production:
-  video:
-    one_GB_of_traffic:       50 # TODO, now 1GB = 50 cent
-    ten_thousand_requests:   10 # TODO, now 10'000 request = 10 cent
-    one_GB_per_hour_storage: 30 # TODO, now 1GB / hour = 30 cent
-    one_second_of_encoding:  1  # TODO, now 1 second = 1 cent
+  site:
+    one_hit: 0.1 # TODO, now 1 hit = 0.1 cent

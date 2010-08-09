@@ -8,10 +8,6 @@
         %li.sites{ :class => ('active' if controller_name == 'sites'), :onclick => "MySublimeVideo.makeSticky(this)" }
           = link_to sites_path do
             %span= "Sites"
-        %li.videos{ :class => ('active' if controller_name == 'videos'), :onclick => "MySublimeVideo.makeSticky(this)" }
-          = link_to videos_path do
-            %span= "Videos"
-            
     .right
       %ul.extra_links
         %li= link_to "Documentation", page_path("docs")

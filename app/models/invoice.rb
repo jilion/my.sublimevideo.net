@@ -22,7 +22,6 @@ class Invoice < ActiveRecord::Base
   
   attr_accessible :state
   serialize :sites
-  serialize :videos
   uniquify :reference, :chars => Array('A'..'Z') - ['O'] + Array('1'..'9')
   
   # ================
@@ -41,7 +40,7 @@ class Invoice < ActiveRecord::Base
   # = Validations =
   # ===============
   
-  validates :user,     :presence => true
+  validates :user,:presence => true
   validate :validates_started_on, :validates_ended_on, :on => :create
   validate :requires_minimun_amount, :on => :create
   
@@ -110,9 +109,7 @@ private
   def clone_current_data_as_estimation
     current = Invoice.current(user)
     self.sites         = current.sites
-    self.videos        = current.videos
     self.sites_amount  = current.sites_amount
-    self.videos_amount = current.videos_amount
     self.amount        = current.amount
   end
   
@@ -158,21 +155,18 @@ private
   
   def calculate_from_cache
     self.sites  = Invoice::Sites.new(self, :from_cache => true)
-    self.videos = Invoice::Videos.new(self, :from_cache => true)
     set_amounts
   end
   
   # before_transition (calculate)
   def calculate_from_logs
     self.sites  = Invoice::Sites.new(self)
-    self.videos = Invoice::Videos.new(self)
     set_amounts
   end
   
   def set_amounts
     self.sites_amount  = sites.amount
-    self.videos_amount = videos.amount
-    self.amount        = sites_amount + videos_amount
+    self.amount        = sites_amount
   end
   
   # after_transition (calculate)
