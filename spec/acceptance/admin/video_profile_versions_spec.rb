@@ -2,7 +2,7 @@ require File.dirname(__FILE__) + '/../acceptance_helper'
 
 feature "Video profile version navigation:" do
   background do
-    sign_in_as_admin
+    sign_in_as :admin
     @video_profile = Factory(:video_profile, :title => "Profile 1")
     @video_profile_version = Factory(:video_profile_version, :profile => @video_profile, :width => '123', :height => '321', :command => "Command 1")
     VCR.use_cassette('video_profile_version/pandize') { @video_profile_version.pandize }
@@ -36,7 +36,7 @@ end
 
 feature "New video profile version" do
   background do
-    sign_in_as_admin
+    sign_in_as :admin
     @video_profile = Factory(:video_profile, :title => "Profile 1")
   end
   
@@ -59,7 +59,7 @@ end
 
 feature "Video profile versions index" do
   background do
-    sign_in_as_admin
+    sign_in_as :admin
     @video_profile = Factory(:video_profile, :title => "Profile 1")
     @video_profile_version1 = Factory(:video_profile_version, :profile => @video_profile, :width => '123', :height => '321', :command => "Command 1")
     @video_profile_version2 = Factory(:video_profile_version, :profile => @video_profile, :command => "Command 2")
@@ -97,7 +97,7 @@ end
 
 feature "Video profile versions show" do
   background do
-    sign_in_as_admin
+    sign_in_as :admin
     @video_profile = Factory(:video_profile, :title => "Profile 1")
     @video_profile_version1 = Factory(:video_profile_version, :profile => @video_profile, :command => "Command 1")
     @video_profile_version2 = Factory(:video_profile_version, :profile => @video_profile, :command => "Command 2")

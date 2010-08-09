@@ -2,7 +2,7 @@ require File.dirname(__FILE__) + '/../acceptance_helper'
 
 feature "Video profile navigation:" do
   background do
-    sign_in_as_admin
+    sign_in_as :admin
     @video_profile = Factory(:video_profile, :title => "Profile 1")
   end
   
@@ -37,7 +37,7 @@ end
 
 feature "New video profile" do
   background do
-    sign_in_as_admin
+    sign_in_as :admin
   end
   
   scenario "add a new profile" do
@@ -75,7 +75,7 @@ end
 
 feature "Video profiles index" do
   background do
-    sign_in_as_admin
+    sign_in_as :admin
     @video_profile1 = Factory(:video_profile, :title => "Profile 1")
     @video_profile2 = Factory(:video_profile, :title => "Profile 2")
   end
@@ -90,7 +90,7 @@ end
 
 feature "Video profiles show" do
   background do
-    sign_in_as_admin
+    sign_in_as :admin
     @video_profile = Factory(:video_profile, :title => "Profile 1")
   end
   
@@ -107,7 +107,7 @@ end
 
 feature "Video profiles edit" do
   background do
-    sign_in_as_admin
+    sign_in_as :admin
     @video_profile = Factory(:video_profile, :title => "Profile 1", :name => "_iphone_720p", :extname => "mp4")
   end
   

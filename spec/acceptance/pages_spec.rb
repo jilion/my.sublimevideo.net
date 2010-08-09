@@ -18,7 +18,7 @@ feature "Pages:" do
   end
   
   scenario "suspended" do
-    sign_in_as_user
+    sign_in_as :user
     @current_user.suspend
     visit "/suspended"
     page.should have_content('Your account is suspended')

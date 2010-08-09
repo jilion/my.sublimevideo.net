@@ -81,13 +81,13 @@ private
   end
   
   def calculate_and_set_amounts
-    @traffic_amount  = (traffic_sum.to_f / 1.gigabyte) * Prices.price_in_cents_for_1GB_traffic
+    @traffic_amount  = (traffic_sum.to_f / 1.gigabyte) * Prices.video(:one_GB_of_traffic)
     
-    @requests_amount = (requests_sum / 10000) * Prices.price_in_cents_for_10000_requests
+    @requests_amount = (requests_sum.to_f / 10000) * Prices.video(:ten_thousand_requests)
     
-    @storage_amount  = (sum_for(:storage_bytes_hour).to_f / 1.gigabyte) * Prices.price_in_cents_for_1GB_per_hour
+    @storage_amount  = (sum_for(:storage_bytes_hour).to_f / 1.gigabyte) * Prices.video(:one_GB_per_hour_storage)
     
-    @encoding_amount = sum_for(:encoding_time) * Prices.price_in_cents_for_1s_of_encoding
+    @encoding_amount = sum_for(:encoding_time) * Prices.video(:one_second_of_encoding)
     
     @amount = [@traffic_amount, @requests_amount, @storage_amount, @encoding_amount].sum.round
   end

@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/acceptance_helper'
 # feature "Videos upload:" do
 #   
 #   background do
-#     sign_in_as_user
+#     sign_in_as :user
 #     active_video_profile = Factory(:video_profile)
 #     active_video_profile_version = Factory(:video_profile_version, :profile => active_video_profile)
 #     VCR.use_cassette('video_profile_version/pandize') { active_video_profile_version.pandize }
@@ -28,7 +28,7 @@ require File.dirname(__FILE__) + '/acceptance_helper'
 feature "Video transcoded notification from Panda" do
   
   background do
-    sign_in_as_user
+    sign_in_as :user
     active_video_profile_version = Factory(:video_profile_version)
     VCR.use_cassette('video_profile_version/pandize') { active_video_profile_version.pandize }
     active_video_profile_version.activate
@@ -62,7 +62,7 @@ end
 feature "Videos page:" do
   
   background do
-    sign_in_as_user
+    sign_in_as :user
     active_video_profile_version = Factory(:video_profile_version)
     VCR.use_cassette('video_profile_version/pandize') { active_video_profile_version.pandize }
     active_video_profile_version.activate

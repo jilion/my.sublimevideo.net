@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/acceptance_helper'
 feature "Sites actions:" do
   
   background do
-    sign_in_as_user
+    sign_in_as :user
   end
   
   scenario "add a new site" do

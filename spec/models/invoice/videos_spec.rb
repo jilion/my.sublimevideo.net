@@ -29,11 +29,14 @@ describe Invoice::Videos do
     subject { invoice.videos }
     
     its(:hits)            { should == 2001 }
-    its(:traffic_amount)  { should == (total_traffic.to_f / 1.gigabyte) * 50 }
-    its(:requests_amount) { should == (total_requests / 10000) * 10 }
-    its(:storage_amount)  { should == (total_storage.to_f / 1.gigabyte) * 30 }
-    its(:encoding_amount) { should == total_encoding_time * 1 }
-    its(:amount)          { should == (((total_traffic.to_f / 1.gigabyte) * 50) + ((total_storage.to_f / 1.gigabyte) * 30) + ((total_requests.to_f / 10000) * 1) + (total_encoding_time * 1)).round }
+    its(:traffic_amount)  { should == (total_traffic.to_f / 1.gigabyte) * Prices.video(:one_GB_of_traffic) }
+    its(:storage_amount)  { should == (total_storage.to_f / 1.gigabyte) * Prices.video(:one_GB_per_hour_storage) }
+    its(:requests_amount) { should == (total_requests.to_f / 10000) * Prices.video(:ten_thousand_requests) }
+    its(:encoding_amount) { should == total_encoding_time * Prices.video(:one_second_of_encoding) }
+    its(:amount)          { should == (((total_traffic.to_f / 1.gigabyte) * Prices.video(:one_GB_of_traffic)) +
+                                      ((total_storage.to_f / 1.gigabyte) * Prices.video(:one_GB_per_hour_storage)) +
+                                      ((total_requests.to_f / 10000) * Prices.video(:ten_thousand_requests)) +
+                                      (total_encoding_time * Prices.video(:one_second_of_encoding))).round }
     
     it "should return video array" do
       videos_ids = subject.collect { |video| video[:id] }
@@ -128,11 +131,14 @@ describe Invoice::Videos do
     subject { Invoice::Videos.new(invoice) }
     
     its(:hits)            { should == 2101 }
-    its(:traffic_amount)  { should == (total_traffic.to_f / 1.gigabyte) * 50 }
-    its(:requests_amount) { should == (total_requests / 10000) * 10 }
-    its(:storage_amount)  { should == (total_storage.to_f / 1.gigabyte) * 30 }
-    its(:encoding_amount) { should == total_encoding_time.to_f * 1 }
-    its(:amount)          { should == (((total_traffic.to_f / 1.gigabyte) * 50) + ((total_requests.to_f / 10000) * 1) + ((total_storage.to_f / 1.gigabyte) * 30) + (total_encoding_time * 1)).round }
+    its(:traffic_amount)  { should == (total_traffic.to_f / 1.gigabyte) * Prices.video(:one_GB_of_traffic) }
+    its(:storage_amount)  { should == (total_storage.to_f / 1.gigabyte) * Prices.video(:one_GB_per_hour_storage) }
+    its(:requests_amount) { should == (total_requests.to_f / 10000) * Prices.video(:ten_thousand_requests) }
+    its(:encoding_amount) { should == total_encoding_time.to_f * Prices.video(:one_second_of_encoding) }
+    its(:amount)          { should == (((total_traffic.to_f / 1.gigabyte) * Prices.video(:one_GB_of_traffic)) +
+                                      ((total_storage.to_f / 1.gigabyte) * Prices.video(:one_GB_per_hour_storage)) +
+                                      ((total_requests.to_f / 10000) * Prices.video(:ten_thousand_requests)) +
+                                      (total_encoding_time * Prices.video(:one_second_of_encoding))).round }
     
     it "should return video array" do
       videos_ids = subject.collect { |video| video[:id] }

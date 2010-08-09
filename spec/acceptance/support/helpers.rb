@@ -5,6 +5,10 @@ module HelperMethods
   end
   
   def create_user(options = {})
+    options[:confirm]    = options[:user].delete(:confirm) || options[:confirm]
+    options[:without_cc] = options[:user].delete(:without_cc) || options[:without_cc]
+    options[:locked]     = options[:user].delete(:locked) || options[:locked]
+    
     @current_user ||= begin
       user = Factory(:user, options[:user] || {})
       user.confirm! unless options[:confirm] == false
@@ -18,6 +22,9 @@ module HelperMethods
   end
   
   def create_admin(options = {})
+    options[:accept_invitation] = options[:admin].delete(:accept_invitation) || options[:accept_invitation]
+    options[:locked]            = options[:admin].delete(:locked) || options[:locked]
+    
     @current_admin ||= begin
       admin = Factory(:admin, options[:admin] || {})
       admin.accept_invitation if options[:accept_invitation] == true
