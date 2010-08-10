@@ -140,7 +140,6 @@ GEM
       arel (>= 0.4.0)
     mime-types (1.16)
     nokogiri (1.4.3.1)
-    parallel (0.4.2)
     pg (0.9.0)
     polyglot (0.3.1)
     rack (1.2.1)
@@ -243,7 +242,6 @@ DEPENDENCIES
   memcache-client (>= 1.8.5)
   memcached (>= 0.20.1)
   meta_where (>= 0.5.2)
-  parallel
   pg (>= 0.9.0)
   rails (= 3.0.0.rc)
   request-log-analyzer (>= 1.8.0)

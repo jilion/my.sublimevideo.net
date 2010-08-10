@@ -7,14 +7,14 @@
 #  log_id          :integer
 #  started_at      :datetime
 #  ended_at        :datetime
-#  loader_hits     :integer(8)      default(0)
-#  player_hits     :integer(8)      default(0)
-#  flash_hits      :integer(8)      default(0)
+#  loader_hits     :integer         default(0)
+#  player_hits     :integer         default(0)
+#  flash_hits      :integer         default(0)
 #  created_at      :datetime
 #  updated_at      :datetime
-#  requests_s3     :integer(8)      default(0)
-#  traffic_s3      :integer(8)      default(0)
-#  traffic_voxcast :integer(8)      default(0)
+#  requests_s3     :integer         default(0)
+#  traffic_s3      :integer         default(0)
+#  traffic_voxcast :integer         default(0)
 #
 
 class SiteUsage < ActiveRecord::Base
