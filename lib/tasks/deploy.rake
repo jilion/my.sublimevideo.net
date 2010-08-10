@@ -15,12 +15,14 @@ namespace :deploy do
   
   desc "Heroku production deploy"
   task :production => [:update_assets, :set_production_app, :push, :restart, :tag]
+  task :production_off => [:set_production_app, :off]
   task :production_migrations => [:set_production_app, :migrations]
   task :production_rollback => [:set_production_app, :rollback]
+  task :production_on => [:set_production_app, :on]
   
   # Don't call directly
-  task :migrations => [:off, :push, :migrate, :restart, :tag, :on]
-  task :rollback => [:off, :push_previous, :restart, :on]
+  task :migrations => [:push, :migrate, :restart, :tag]
+  task :rollback => [:push_previous, :restart]
   
   task :set_staging_app do
     APP    = STAGING_APP
