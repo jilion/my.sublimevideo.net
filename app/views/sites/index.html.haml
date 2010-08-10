@@ -2,7 +2,7 @@
   = "My sites"
   
 = content_for :bottom do
-  - if current_user.welcome? && !params[:trial]
+  - if public? && current_user.welcome? && !params[:trial]
     = render "layouts/welcome"
     
 = content_for :content_header do
