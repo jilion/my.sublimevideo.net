@@ -3,30 +3,6 @@ require 'spec_helper'
 describe LogsFileFormat::Amazon do
   subject { class Foo; include LogsFileFormat::Amazon; end; Foo.new }
   
-  # =========
-  # = Video =
-  # =========
-  
-  it "should return video_token_from cloudfront download path" do
-    subject.video_token_from("/g46g16dz/dartmoor.mp4").should == "g46g16dz"
-  end
-  
-  it "should return video_token_from cloudfront streaming path" do
-    subject.video_token_from("g46g16dz/dartmoor.mp4").should == "g46g16dz"
-  end
-  
-  ['/k3zph1mc/best_snowboard_video_ever_720p.mp4', 'k3zph1mc/best_snowboard_video_ever_720p.webm', 'k3zph1mc/best_snowboard_video_ever_720p.ogv'].each do |key|
-    it "#{key} should be a video key" do
-      subject.video_key?(key).should be_true
-    end
-  end
-  
-  ['/k3zph1mc/posterframe.jpg', 'posterframe.png'].each do |key|
-    it "#{key} should not be a video path" do
-      subject.video_key?(key).should be_false
-    end
-  end
-  
   # ==========
   # = Player =
   # ==========

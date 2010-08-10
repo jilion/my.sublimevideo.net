@@ -28,10 +28,6 @@ module S3
       @panda_bucket ||= client.bucket(S3Bucket.panda)
     end
     
-    def videos_bucket
-      @videos_bucket ||= client.bucket(S3Bucket.videos)
-    end
-    
     def reset_yml_options
       @yml_options = nil
     end

@@ -5,9 +5,6 @@ module RecurringJob
     '%User::CreditCard%send_credit_card_expiration%',
     '%User::Trial%supervise_users%',
     '%Log::Voxcast%fetch_download_and_create_new_logs%',
-    '%Log::Amazon::Cloudfront::Download%fetch_and_create_new_logs%',
-    '%Log::Amazon::Cloudfront::Streaming%fetch_and_create_new_logs%',
-    '%Log::Amazon::S3::Videos%fetch_and_create_new_logs%',
     '%Log::Amazon::S3::Player%fetch_and_create_new_logs%',
     '%Log::Amazon::S3::Loaders%fetch_and_create_new_logs%',
     '%Log::Amazon::S3::Licenses%fetch_and_create_new_logs%'

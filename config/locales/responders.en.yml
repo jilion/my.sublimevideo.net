@@ -9,6 +9,3 @@ en:
         notice: '%{resource_name} was successfully destroyed.'
         alert: '%{resource_name} could not be destroyed.'
         
-    videos:
-      create:
-        notice: "Your video has been uploaded, you will be notified when all the formats will be ready."

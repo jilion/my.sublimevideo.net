@@ -33,21 +33,10 @@ MySublimeVideo::Application.routes.draw do
   end
   
   resource :users, :only => :update, :path => '/account/info'
-  
   resources :sites do
-    member do
-      get :state
-    end
+    get :state, :on => :member
   end
-  
-  resources :videos, :except => :new do
-    member do
-      get :transcoded
-    end
-  end
-  
   resources :invoices, :only => [:index, :show]
-  
   resource :card, :controller => "credit_cards", :as => :credit_card, :only => [:edit, :update]
   
   match ':page', :to => 'pages#show', :via => :get, :as => :page, :page => /terms|docs|support|suspended/
@@ -84,19 +73,9 @@ MySublimeVideo::Application.routes.draw do
   
   namespace "admin" do
     resources :users, :only => [:index, :show]
-    
     resources :admins, :only => [:index, :destroy]
-    
     resources :sites, :only => [:index]
-    
-    resources :videos, :only => [:index]
-    
-    resources :video_profiles, :except => [:destroy], :as => :profiles, :path => "profiles" do
-      resources :video_profile_versions, :only => [:show, :new, :create, :update], :as => :versions, :path => "versions"
-    end
-    
     resources :delayed_jobs, :only => [:index, :show, :update, :destroy], :path => "djs"
   end
   
-  # match '*path' => redirect('/')
 end

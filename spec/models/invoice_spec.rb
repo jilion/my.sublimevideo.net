@@ -42,19 +42,6 @@ describe Invoice do
       @user   = Factory(:user, :trial_ended_at => 3.month.ago)
       @site1  = Factory(:site, :user => @user, :loader_hits_cache => 1000, :player_hits_cache => 11)
       @site2  = Factory(:site, :user => @user, :loader_hits_cache => 50, :player_hits_cache => 5, :hostname => "google.com")
-      @video1 = Factory(:video, :user => @user)
-      @video2 = Factory(:video, :user => @user)
-      
-      # Video
-      @total_video_traffic  = ((37038 + 565 + 565 + 1159943 + 484103 + 2231895 + 2892551 + 30373 + 66308 + 66308 + 66308 + 2536198).to_f / 1.gigabyte) * Prices.video(:one_GB_of_traffic)
-      @total_video_requests = 12
-      @total_video_storage  = ((1.month / 1.hour).round * 123456) * 2
-      @total_video_encoding_time = 0
-      @video_amount = (((@total_video_traffic.to_f / 1.gigabyte) * Prices.video(:one_GB_of_traffic)) +
-        ((@total_video_storage.to_f / 1.gigabyte) * Prices.video(:one_GB_per_hour_storage)) +
-        ((@total_video_requests.to_f / 10000) * Prices.video(:ten_thousand_requests)) +
-        (@total_video_encoding_time * Prices.video(:one_second_of_encoding))).round
-      # Video
     end
     
     subject { Invoice.current(@user) }
@@ -63,11 +50,9 @@ describe Invoice do
     its(:started_on)    { should == Time.now.utc.to_date }
     its(:ended_on)      { should == Time.now.utc.to_date + 1.month }
     its(:sites)         { should be_kind_of(Invoice::Sites) }
-    its(:videos)        { should be_kind_of(Invoice::Videos) }
     its(:user)          { should be_present }
     its(:sites_amount)  { should == 1066 }
-    its(:videos_amount) { should == @video_amount } # depends on time
-    its(:amount)        { should == 1066 + @video_amount } # depends on time
+    its(:amount)        { should == 1066 } # depends on time
     it { should be_current }
   end
   
@@ -159,13 +144,12 @@ describe Invoice do
         @current_invoice = Invoice.current(@user)
       end
       
-      describe "should clone sites/videos & amount from current_invoice as estimation" do
+      describe "should clone sites & amount from current_invoice as estimation" do
         subject { Factory(:invoice, :user => @user) }
         
         its(:sites)         { should == @current_invoice.sites }
         its(:amount)        { should == @current_invoice.amount }
         its(:sites_amount)  { should == @current_invoice.sites_amount }
-        its(:videos_amount) { should == @current_invoice.videos_amount }
         it { should be_pending }
       end
       
@@ -197,7 +181,6 @@ describe Invoice do
         it { should be_ready }
         its(:amount)        { should == 1000175 }
         its(:sites_amount)  { should == 1000175 }
-        its(:videos_amount) { should == 0 }
         
         it "should sent a email" do
           last_delivery = ActionMailer::Base.deliveries.last

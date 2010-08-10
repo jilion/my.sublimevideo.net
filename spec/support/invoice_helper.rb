@@ -1,5 +1,3 @@
-
-# Need video invoice for this helper (used in trial_spec)
 def create_invoice(options = {})
   options[:loader_hits] ||= 12
   options[:player_hits] ||= 21
