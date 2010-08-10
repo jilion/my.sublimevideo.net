@@ -22,6 +22,10 @@ protected
     end
   end
   
+  def public_required
+    redirect_to sites_path unless MySublimeVideo::Release.public?
+  end
+  
   module DeviseInvitable
     module Controllers
       module Helpers

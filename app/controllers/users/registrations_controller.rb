@@ -1,11 +1,5 @@
 class Users::RegistrationsController < Devise::RegistrationsController
   
-  before_filter :redirect_register, :only => [:new, :create], :unless => proc { |c| PUBLIC_RELEASED }
-  
-protected
-  
-  def redirect_register
-    redirect_to user_signed_in? ? sites_path : new_user_session_path
-  end
+  before_filter :public_required, :only => [:new, :create]
   
 end

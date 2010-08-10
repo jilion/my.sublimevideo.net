@@ -1,8 +1,9 @@
 class CreditCardsController < ApplicationController
   
+  before_filter :public_required
+  
   # GET /card/edit
   def edit
-    
   end
   
   # PUT /card

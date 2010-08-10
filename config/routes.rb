@@ -4,7 +4,7 @@ MySublimeVideo::Application.routes.draw do
   
   devise_for :users,
   :path => '',
-  :path_names => { :sign_up => 'register', :sign_in => 'login', :sign_out => 'logout' },
+  :path_names => { :sign_in => 'login', :sign_out => 'logout' },
   :skip => [:invitations, :registrations] do
     scope :controller => 'admin/users/invitations', :as => :user_invitation do # admin routes
       get  :new,    :path => '/admin/users/invitation/new'
@@ -17,17 +17,15 @@ MySublimeVideo::Application.routes.draw do
     end
     
     scope :controller => 'users/registrations', :as => :user_registration do
+      get    :new,     :path => '/register'
+      post   :create,  :path => '/register', :as => ''
+      
       get    :edit,    :path => '/account/edit'
       put    :update,  :path => '/account/credentials'
-      delete :destroy, :path => '/account', :as => ''
+      delete :destroy, :path => '/account'
     end
     
-    # BEFORE PUBLIC RELEASE
-    %w[sign_up signup register].each       { |action| match action => redirect('/login'),    :via => :get }
-    
-    # AFTER PUBLIC RELEASE
-    # %w[sign_up signup].each                { |action| match action => redirect('/register'), :via => :get }
-    
+    %w[sign_up signup].each                { |action| match action => redirect('/register'), :via => :get }
     %w[log_in sign_in signin].each         { |action| match action => redirect('/login'),    :via => :get }
     %w[log_out sign_out signout exit].each { |action| match action => redirect('/logout'),   :via => :get }
   end
@@ -58,13 +56,13 @@ MySublimeVideo::Application.routes.draw do
       get  :new,    :path => '/admin/admins/invitation/new'
       post :create, :path => '/admin/admins/invitation', :as => ''
       get  :edit,   :path => '/admin/invitation/accept', :as => 'accept'
-      put  :update, :path => '/admin/invitation'#, :as => ''
+      put  :update, :path => '/admin/invitation'
     end
     
     scope :controller => 'admin/admins/registrations', :as => :admin_registration do
       get    :edit,    :path => '/admin/account/edit'
       put    :update,  :path => '/admin/account', :as => ''
-      delete :destroy, :path => '/admin/account', :as => ''
+      delete :destroy, :path => '/admin/account'
     end
     
     %w[log_in sign_in signin].each         { |action| match "admin/#{action}" => redirect('/admin/login'),  :via => :get }

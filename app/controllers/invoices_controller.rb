@@ -2,6 +2,8 @@ class InvoicesController < ApplicationController
   respond_to :html, :except => :show
   respond_to :js
   
+  before_filter :public_required
+  
   # GET /invoices
   def index
     @invoices = current_user.invoices.by_charged_at

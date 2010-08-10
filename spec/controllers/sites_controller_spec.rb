@@ -137,7 +137,7 @@ describe SitesController do
   
 private
   
-  def mock_site(stubs={})
+  def mock_site(stubs = {})
     @mock_site ||= mock_model(Site, stubs)
   end
   

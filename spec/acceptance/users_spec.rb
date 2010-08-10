@@ -2,8 +2,8 @@ require File.dirname(__FILE__) + '/acceptance_helper'
 
 feature "Users actions:" do
   
-  if PUBLIC_RELEASED
-    scenario "register is available after the public release!" do
+  if MySublimeVideo::Release.public?
+    scenario "register is available after the public release" do
       visit "/register"
       current_url.should =~ %r(http://[^/]+/register)
       
@@ -43,13 +43,15 @@ feature "Users actions:" do
     User.last.full_name.should == "Bob Doe"
   end
   
-  scenario "update limit alert amount" do
-    sign_in_as :user, { :full_name => "John Doe" }
-    click_link('John Doe')
-    select "$100", :from => "user_limit_alert_amount"
-    click_button "user_email_notifications_submit"
-    
-    User.last.limit_alert_amount.should == 10000
+  if MySublimeVideo::Release.public?
+    scenario "update limit alert amount" do
+      sign_in_as :user, { :full_name => "John Doe" }
+      click_link('John Doe')
+      select "$100", :from => "user_limit_alert_amount"
+      click_button "user_email_notifications_submit"
+      
+      User.last.limit_alert_amount.should == 10000
+    end
   end
   
   scenario "accept invitation" do

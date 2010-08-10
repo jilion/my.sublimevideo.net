@@ -21,9 +21,9 @@ describe Admin::Admins::InvitationsController do
   
   context "with logged in user" do
     before :each do
-      @mock_user = Factory(:user)
-      @mock_user.stub!(:active? => true, :confirmed? => true)
-      sign_in :user, @mock_user
+      mock_user = Factory(:user)
+      mock_user.stub!(:active? => true, :confirmed? => true)
+      sign_in :user, mock_user
     end
     
     describe "invite admin" do
@@ -39,21 +39,10 @@ describe Admin::Admins::InvitationsController do
     describe "invite admin" do
       before(:each) { controller.request.env['devise.mapping'] = Devise.mappings[:admin] }
       it "should respond with redirect to POST :create" do
-        controller.stub!(:resource_name => :admin)
         post :create, :admin => { :email => 'remy@jilion.com' }
         response.should redirect_to(new_admin_session_path)
       end
     end
-  end
-  
-private
-  
-  def mock_admin(stubs={})
-    @mock_admin ||= mock_model(Admin, stubs)
-  end
-  
-  def mock_user(stubs={})
-    @mock_user ||= mock_model(User, stubs)
   end
   
 end
