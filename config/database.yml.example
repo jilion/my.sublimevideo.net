@@ -5,19 +5,9 @@ development:
   timeout: 5000
   
 test:
-  # adapter: sqlite3
-  # database: db/test<%= ENV['TEST_ENV_NUMBER'] %>.sqlite3 # for parallel
-  # pool: 5
-  # timeout: 5000
-  
-  # adapter: mysql
-  # database: msv_test<%= ENV['TEST_ENV_NUMBER'] %> # for parallel
-  # user: root
-  # password: root
-  
   adapter: postgresql
   encoding: utf8
-  database: msv_test<%= ENV['TEST_ENV_NUMBER'] %> # for parallel
+  database: msv_test
   user: 
   password: 
   host: localhost

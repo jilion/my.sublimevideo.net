@@ -47,7 +47,6 @@ if RUBY_PLATFORM =~ /darwin/
   
   group :test do
     gem 'pg',       '>= 0.9.0'
-    gem 'parallel'
     
     gem 'spork'
     gem 'rspactor', '>= 0.7.beta.5'
