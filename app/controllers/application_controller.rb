@@ -6,7 +6,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery
   
   respond_to :html
-  responders Responders::FlashResponder, Responders::PaginatedResponder #, Responders::HttpCacheResponder
+  responders Responders::FlashResponder, Responders::PaginatedResponder, Responders::HttpCacheResponder
   
   layout 'application'
   
