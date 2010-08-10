@@ -43,6 +43,7 @@ if RUBY_PLATFORM =~ /darwin/
     gem 'annotate'
     gem 'wirble' # irbrc
     gem 'ruby-graphviz', :require => 'graphviz'
+    gem 'heroku'
   end
   
   group :test do
