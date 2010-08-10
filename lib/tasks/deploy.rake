@@ -19,7 +19,7 @@ namespace :deploy do
   task :production_rollback => [:set_production_app, :rollback]
   
   # Don't call directly
-  task :migrations => [:push, :off, :migrate, :restart, :on, :tag]
+  task :migrations => [:off, :push, :migrate, :restart, :tag, :on]
   task :rollback => [:off, :push_previous, :restart, :on]
   
   task :set_staging_app do
