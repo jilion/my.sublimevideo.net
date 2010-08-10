@@ -2,20 +2,18 @@
 #
 # Table name: invoices
 #
-#  id            :integer         not null, primary key
-#  user_id       :integer
-#  reference     :string(255)
-#  state         :string(255)
-#  charged_at    :datetime
-#  started_on    :date
-#  ended_on      :date
-#  amount        :integer         default(0)
-#  sites_amount  :integer         default(0)
-#  videos_amount :integer         default(0)
-#  sites         :text
-#  videos        :text
-#  created_at    :datetime
-#  updated_at    :datetime
+#  id           :integer         not null, primary key
+#  user_id      :integer
+#  reference    :string(255)
+#  state        :string(255)
+#  charged_at   :datetime
+#  started_on   :date
+#  ended_on     :date
+#  amount       :integer         default(0)
+#  sites_amount :integer         default(0)
+#  sites        :text
+#  created_at   :datetime
+#  updated_at   :datetime
 #
 
 require 'spec_helper'

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100723135123) do
+ActiveRecord::Schema.define(:version => 20100810064432) do
 
   create_table "admins", :force => true do |t|
     t.string   "email",                               :default => "", :null => false
@@ -58,11 +58,9 @@ ActiveRecord::Schema.define(:version => 20100723135123) do
     t.datetime "charged_at"
     t.date     "started_on"
     t.date     "ended_on"
-    t.integer  "amount",        :default => 0
-    t.integer  "sites_amount",  :default => 0
-    t.integer  "videos_amount", :default => 0
+    t.integer  "amount",       :default => 0
+    t.integer  "sites_amount", :default => 0
     t.text     "sites"
-    t.text     "videos"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -170,113 +168,5 @@ ActiveRecord::Schema.define(:version => 20100723135123) do
   add_index "users", ["confirmation_token"], :name => "index_users_on_confirmation_token", :unique => true
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
   add_index "users", ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true
-
-  create_table "video_encodings", :force => true do |t|
-    t.integer  "video_id"
-    t.integer  "video_profile_version_id"
-    t.string   "state"
-    t.string   "file"
-    t.string   "panda_encoding_id"
-    t.datetime "started_encoding_at"
-    t.integer  "encoding_time"
-    t.string   "extname"
-    t.integer  "file_size"
-    t.integer  "width"
-    t.integer  "height"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.datetime "file_added_at"
-    t.datetime "file_removed_at"
-  end
-
-  create_table "video_profile_versions", :force => true do |t|
-    t.integer  "video_profile_id"
-    t.string   "panda_profile_id"
-    t.string   "state"
-    t.text     "note"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "video_profile_versions", ["video_profile_id"], :name => "index_video_profile_versions_on_video_profile_id"
-
-  create_table "video_profiles", :force => true do |t|
-    t.string   "title"
-    t.text     "description"
-    t.string   "name"
-    t.string   "extname"
-    t.boolean  "posterframeable"
-    t.integer  "min_width"
-    t.integer  "min_height"
-    t.integer  "versions_count",  :default => 0
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "video_usages", :force => true do |t|
-    t.integer  "video_id"
-    t.integer  "log_id"
-    t.datetime "started_at"
-    t.datetime "ended_at"
-    t.integer  "hits",             :default => 0
-    t.integer  "traffic_s3",       :default => 0
-    t.integer  "traffic_us",       :default => 0
-    t.integer  "traffic_eu",       :default => 0
-    t.integer  "traffic_as",       :default => 0
-    t.integer  "traffic_jp",       :default => 0
-    t.integer  "traffic_unknown",  :default => 0
-    t.integer  "requests_s3",      :default => 0
-    t.integer  "requests_us",      :default => 0
-    t.integer  "requests_eu",      :default => 0
-    t.integer  "requests_as",      :default => 0
-    t.integer  "requests_jp",      :default => 0
-    t.integer  "requests_unknown", :default => 0
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "video_usages", ["ended_at"], :name => "index_video_usages_on_ended_at"
-  add_index "video_usages", ["started_at"], :name => "index_video_usages_on_started_at"
-  add_index "video_usages", ["video_id"], :name => "index_video_usages_on_video_id"
-
-  create_table "videos", :force => true do |t|
-    t.integer  "user_id"
-    t.string   "title"
-    t.string   "token"
-    t.string   "state"
-    t.string   "posterframe"
-    t.integer  "hits_cache",             :default => 0
-    t.integer  "traffic_s3_cache",       :default => 0
-    t.integer  "traffic_us_cache",       :default => 0
-    t.integer  "traffic_eu_cache",       :default => 0
-    t.integer  "traffic_as_cache",       :default => 0
-    t.integer  "traffic_jp_cache",       :default => 0
-    t.integer  "traffic_unknown_cache",  :default => 0
-    t.integer  "requests_s3_cache",      :default => 0
-    t.integer  "requests_us_cache",      :default => 0
-    t.integer  "requests_eu_cache",      :default => 0
-    t.integer  "requests_as_cache",      :default => 0
-    t.integer  "requests_jp_cache",      :default => 0
-    t.integer  "requests_unknown_cache", :default => 0
-    t.string   "panda_video_id"
-    t.string   "original_filename"
-    t.string   "video_codec"
-    t.string   "audio_codec"
-    t.string   "extname"
-    t.integer  "file_size"
-    t.integer  "duration"
-    t.integer  "width"
-    t.integer  "height"
-    t.integer  "fps"
-    t.datetime "archived_at"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "videos", ["created_at"], :name => "index_videos_on_created_at"
-  add_index "videos", ["hits_cache"], :name => "index_videos_on_hits_cache"
-  add_index "videos", ["title"], :name => "index_videos_on_title"
-  add_index "videos", ["token"], :name => "index_videos_on_token"
-  add_index "videos", ["user_id"], :name => "index_videos_on_user_id"
 
 end
