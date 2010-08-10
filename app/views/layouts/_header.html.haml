@@ -11,7 +11,7 @@
     .right
       %ul.extra_links
         %li= link_to "Documentation", page_path("docs")
-        %li= link_to "Support", page_path("support")
+        %li= link_to "Support", new_ticket_path
         - if user_signed_in? && controller_name != 'sessions'
           %li= link_to "Logout", destroy_user_session_path
       - if user_signed_in? && controller_name != 'sessions'
