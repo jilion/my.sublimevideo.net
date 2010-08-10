@@ -47,7 +47,7 @@ class Ticket
   
   def save
     Rails.logger.info "Saving the ticket..."
-    true
+    valid?
   end
   
   def to_key

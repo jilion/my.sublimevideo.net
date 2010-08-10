@@ -6,11 +6,8 @@ MySublimeVideo::Application.routes.draw do
   :path => '',
   :path_names => { :sign_in => 'login', :sign_out => 'logout' },
   :skip => [:invitations, :registrations] do
-    scope :controller => 'admin/users/invitations', :as => :user_invitation do # admin routes
-      get  :new,    :path => '/admin/users/invitation/new'
-      post :create, :path => '/admin/users/invitation', :as => ''
-    end
-    
+    # We need to declare these routes manually because we don't want
+    # to generate GET /invitation/new and POST /invitation, so we had to skip :invitations
     scope :controller => 'devise/invitations', :as => :user_invitation do
       get :edit,   :path => '/invitation/accept', :as => 'accept'
       put :update, :path => '/invitation'
@@ -51,6 +48,13 @@ MySublimeVideo::Application.routes.draw do
   # =========
   
   match 'admin', :to => redirect('/admin/djs'), :as => "admin"
+  
+  devise_scope :user do
+    scope :controller => 'admin/users/invitations', :as => :user_invitation do # admin routes
+      get  :new,    :path => '/admin/users/invitation/new'
+      post :create, :path => '/admin/users/invitation', :as => ''
+    end
+  end
   
   devise_for :admins,
   :path => 'admin',

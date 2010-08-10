@@ -11,7 +11,7 @@ describe Admin::Admins::InvitationsController do
     end
     
     describe "invite admin" do
-      before(:each) { controller.request.env['devise.mapping'] = Devise.mappings[:admin] }
+      before(:each) { request.env['devise.mapping'] = Devise.mappings[:admin] }
       it "should respond with success to POST :create" do
         post :create, :admin => { :email => 'remy@jilion.com' }
         response.should redirect_to(admin_admins_url)
@@ -27,7 +27,7 @@ describe Admin::Admins::InvitationsController do
     end
     
     describe "invite admin" do
-      before(:each) { controller.request.env['devise.mapping'] = Devise.mappings[:admin] }
+      before(:each) { request.env['devise.mapping'] = Devise.mappings[:admin] }
       it "should respond with redirect to GET :new" do
         get :new
         response.should redirect_to(new_admin_session_path)
@@ -37,7 +37,7 @@ describe Admin::Admins::InvitationsController do
   
   context "as guest" do
     describe "invite admin" do
-      before(:each) { controller.request.env['devise.mapping'] = Devise.mappings[:admin] }
+      before(:each) { request.env['devise.mapping'] = Devise.mappings[:admin] }
       it "should respond with redirect to POST :create" do
         post :create, :admin => { :email => 'remy@jilion.com' }
         response.should redirect_to(new_admin_session_path)

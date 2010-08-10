@@ -12,11 +12,6 @@ feature "Pages:" do
     page.should have_content('Documentation')
   end
   
-  scenario "support" do
-    visit "/support"
-    page.should have_content('Support')
-  end
-  
   scenario "suspended" do
     sign_in_as :user
     @current_user.suspend
