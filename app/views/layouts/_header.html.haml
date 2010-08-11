@@ -10,7 +10,7 @@
             %span= "Sites"
     .right
       %ul.extra_links
-        %li= link_to "Documentation", page_path("docs")
+        %li= link_to "Documentation", "http://docs.sublimevideo.net"
         %li= link_to "Support", page_path("support")
         - if user_signed_in? && controller_name != 'sessions'
           %li= link_to "Logout", destroy_user_session_path

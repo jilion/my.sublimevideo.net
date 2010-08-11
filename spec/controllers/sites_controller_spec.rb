@@ -59,44 +59,46 @@ describe SitesController do
     end
   end
   
-  context "with suspended logged in user" do
-    before(:each) do
-      @mock_user = mock_model(User, :active? => true, :confirmed? => true, :suspended? => true)
-      User.stub(:find).and_return(@mock_user)
-      sign_in :user, @mock_user
-    end
+  if MySublimeVideo::Release.public?
+    context "with suspended logged in user" do
+      before(:each) do
+        @mock_user = mock_model(User, :active? => true, :confirmed? => true, :suspended? => true)
+        User.stub(:find).and_return(@mock_user)
+        sign_in :user, @mock_user
+      end
     
-    it "should respond with success to GET :index" do
-      get :index
-      response.should redirect_to(page_path("suspended"))
-    end
-    it "should respond with success to GET :show" do
-      get :show, :id => '1'
-      response.should redirect_to(page_path("suspended"))
-    end
-    it "should respond with success to GET :new" do
-      get :new
-      response.should redirect_to(page_path("suspended"))
-    end
-    it "should respond with success to GET :edit" do
-      get :edit, :id => '1'
-      response.should redirect_to(page_path("suspended"))
-    end
-    it "should respond with success to GET :state" do
-      get :state, :id => '1'
-      response.should redirect_to(page_path("suspended"))
-    end
-    it "should respond with success to POST :create" do
-      post :create, :site => {}
-      response.should redirect_to(page_path("suspended"))
-    end
-    it "should respond with success to PUT :update" do
-      put :update, :id => '1', :site => {}
-      response.should redirect_to(page_path("suspended"))
-    end
-    it "should respond with success to DELETE :destroy" do
-      delete :destroy, :id => '1'
-      response.should redirect_to(page_path("suspended"))
+      it "should respond with success to GET :index" do
+        get :index
+        response.should redirect_to(page_path("suspended"))
+      end
+      it "should respond with success to GET :show" do
+        get :show, :id => '1'
+        response.should redirect_to(page_path("suspended"))
+      end
+      it "should respond with success to GET :new" do
+        get :new
+        response.should redirect_to(page_path("suspended"))
+      end
+      it "should respond with success to GET :edit" do
+        get :edit, :id => '1'
+        response.should redirect_to(page_path("suspended"))
+      end
+      it "should respond with success to GET :state" do
+        get :state, :id => '1'
+        response.should redirect_to(page_path("suspended"))
+      end
+      it "should respond with success to POST :create" do
+        post :create, :site => {}
+        response.should redirect_to(page_path("suspended"))
+      end
+      it "should respond with success to PUT :update" do
+        put :update, :id => '1', :site => {}
+        response.should redirect_to(page_path("suspended"))
+      end
+      it "should respond with success to DELETE :destroy" do
+        delete :destroy, :id => '1'
+        response.should redirect_to(page_path("suspended"))
+      end
     end
   end
   

@@ -10,16 +10,18 @@ describe PagesController do
       sign_in :user, @mock_user
     end
     
-    %w[terms docs support].each do |page|
+    %w[terms support].each do |page|
       it "should respond with success to GET :show, on #{page} page" do
         get :show, :page => page
         response.should be_success
       end
     end
     
-    it "should redirect to root path with GET :show, on suspended page" do
-      get :show, :page => 'suspended'
-      response.should redirect_to(root_path)
+    if MySublimeVideo::Release.public?
+      it "should redirect to root path with GET :show, on suspended page" do
+        get :show, :page => 'suspended'
+        response.should redirect_to(root_path)
+      end
     end
   end
   
@@ -30,30 +32,34 @@ describe PagesController do
       sign_in :user, @mock_user
     end
     
-    %w[terms docs support].each do |page|
+    %w[terms support].each do |page|
       it "should respond with success to GET :show, on #{page} page" do
         get :show, :page => page
         response.should be_success
       end
     end
     
-    it "should respond with success to GET :show, on suspended page" do
-      get :show, :page => 'suspended'
-      response.should be_success
+    if MySublimeVideo::Release.public?
+      it "should respond with success to GET :show, on suspended page" do
+        get :show, :page => 'suspended'
+        response.should be_success
+      end
     end
   end
   
   context "as guest" do
-    %w[terms docs support].each do |page|
+    %w[terms support].each do |page|
       it "should respond with success to GET :show, on #{page} page" do
         get :show, :page => page
         response.should be_success
       end
     end
     
-    it "should redirect to /sites with GET :show, on suspended page" do
-      get :show, :page => 'suspended'
-      response.should redirect_to(new_user_session_path)
+    if MySublimeVideo::Release.public?
+      it "should redirect to /sites with GET :show, on suspended page" do
+        get :show, :page => 'suspended'
+        response.should redirect_to(new_user_session_path)
+      end
     end
   end
   

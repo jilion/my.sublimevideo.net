@@ -37,7 +37,8 @@ MySublimeVideo::Application.routes.draw do
   resources :invoices, :only => [:index, :show]
   resource :card, :controller => "credit_cards", :as => :credit_card, :only => [:edit, :update]
   
-  match ':page', :to => 'pages#show', :via => :get, :as => :page, :page => /terms|docs|support|suspended/
+  # match ':page', :to => 'pages#show', :via => :get, :as => :page, :page => /terms|support|suspended/
+  match ':page', :to => 'pages#show', :via => :get, :as => :page, :page => /terms|support/
   
   root :to => redirect('/sites')
   
