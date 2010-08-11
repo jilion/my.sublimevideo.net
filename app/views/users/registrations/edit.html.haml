@@ -1,7 +1,4 @@
-= content_for :title do
-  = "Edit my account"
-
-%h2= "Edit my account"
+= title_and_content_header("Edit my account")
 
 - if public?
   - if current_user.credit_card?
