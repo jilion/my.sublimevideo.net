@@ -14,7 +14,7 @@ gem 'will_paginate',        '>= 3.0.pre2'
 gem 'has_scope',            :git => 'git://github.com/rymai/has_scope.git'
 gem 'jammit',               :git => 'git://github.com/thibaudgg/jammit.git'
 gem 'meta_where',           '>= 0.5.2'
-gem 'hoptoad_notifier',     '>= 2.3.3'
+gem 'hoptoad_notifier',     '>= 2.3.4'
 gem 'activemerchant',       '>= 1.7.1'
 gem 'voxel_hapi',           :git => 'git://github.com/thibaudgg/voxel_hapi.git' # VoxCast CDN
 gem 'request-log-analyzer', '>= 1.8.0', :require => 'request_log_analyzer'
