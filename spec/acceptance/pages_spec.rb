@@ -7,11 +7,6 @@ feature "Pages:" do
     page.should have_content('Terms & Conditions')
   end
   
-  scenario "support" do
-    visit "/support"
-    page.should have_content('Support')
-  end
-  
   if MySublimeVideo::Release.public?
     scenario "suspended" do
       sign_in_as :user

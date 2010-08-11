@@ -11,7 +11,7 @@ describe Admin::Users::InvitationsController do
     end
     
     describe "invite user" do
-      before(:each) { controller.request.env['devise.mapping'] = Devise.mappings[:user] }
+      before(:each) { request.env['devise.mapping'] = Devise.mappings[:user] }
       it "should respond with success to POST :create" do
         post :create, :user => { :email => 'remy@jilion.com' }
         response.should redirect_to(admin_users_url)
@@ -27,7 +27,7 @@ describe Admin::Users::InvitationsController do
     end
     
     describe "invite user" do
-      before(:each) { controller.request.env['devise.mapping'] = Devise.mappings[:user] }
+      before(:each) { request.env['devise.mapping'] = Devise.mappings[:user] }
       it "should respond with redirect to GET :new" do
         get :new
         response.should redirect_to(new_admin_session_path)
@@ -37,7 +37,7 @@ describe Admin::Users::InvitationsController do
   
   context "as guest" do
     describe "invite user" do
-      before(:each) { controller.request.env['devise.mapping'] = Devise.mappings[:user] }
+      before(:each) { request.env['devise.mapping'] = Devise.mappings[:user] }
       it "should respond with redirect to POST :create" do
         controller.stub!(:resource_name => :user)
         post :create, :user => { :email => 'remy@jilion.com' }
@@ -48,11 +48,11 @@ describe Admin::Users::InvitationsController do
   
 private
   
-  def mock_admin(stubs={})
+  def mock_admin(stubs = {})
     @mock_admin ||= mock_model(Admin, stubs)
   end
   
-  def mock_user(stubs={})
+  def mock_user(stubs = {})
     @mock_user ||= mock_model(User, stubs)
   end
   

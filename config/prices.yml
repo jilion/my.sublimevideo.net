@@ -5,7 +5,7 @@ development:
 test:
   site:
     one_hit: 0.1 # TODO, now 1 hit = 0.1 cent
-
+    
 staging:
   site:
     one_hit: 0.1 # TODO, now 1 hit = 0.1 cent
