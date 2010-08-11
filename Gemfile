@@ -30,8 +30,6 @@ gem 'aws',                  '>= 2.3.20'
 gem 'carrierwave',          '>= 0.5.0.beta2'
 gem 'RedCloth'
 
-gem 'curb'
-
 group :production do
   gem 'pg', '>= 0.9.0'
 end
