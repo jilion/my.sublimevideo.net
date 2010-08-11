@@ -1,21 +1,14 @@
-%h1 Support
+= title_and_content_header("Support")
 
-= form_for @ticket do |f|
-  - if @ticket.errors.any?
-    #errorExplanation
-      %h2= "#{pluralize(@ticket.errors.count, "error")} prohibited this ticket from being saved:"
-      %ul
-        - @ticket.errors.full_messages.each do |msg|
-          %li= msg
-          
-  .field
+= form_for @ticket, :url => ticket_path do |f|
+  .entry.type
     = f.label :type
-    = f.text_field :type
-  .field
-    = f.label :subject
-    = f.text_field :subject
-  .field
-    = f.label :description
-    = f.text_area :description
-  .actions
-    = f.submit 'Save'
+    = select_tag "ticket[type]", ticket_type_options
+  .entry.subject
+    = f.label :subject, "", :class => "icon"
+    = f.text_field :subject, :class => "text", :placeholder => "Subject", :required => true
+  .entry.description
+    = f.label :description, "", :class => "icon"
+    = f.text_area :description, :class => "text", :placeholder => "Description", :required => true
+  .entry.update
+    = f.submit 'Send', :class => "submit small"

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100810064432) do
+ActiveRecord::Schema.define(:version => 20100811101434) do
 
   create_table "admins", :force => true do |t|
     t.string   "email",                               :default => "", :null => false
@@ -163,6 +163,7 @@ ActiveRecord::Schema.define(:version => 20100810064432) do
     t.datetime "updated_at"
     t.string   "invitation_token",                      :limit => 20
     t.datetime "invitation_sent_at"
+    t.integer  "zendesk_id"
   end
 
   add_index "users", ["confirmation_token"], :name => "index_users_on_confirmation_token", :unique => true

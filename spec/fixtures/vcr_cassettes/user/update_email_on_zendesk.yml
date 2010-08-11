@@ -1,0 +1,47 @@
+--- 
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :put
+    uri: http://zeno%40jilion.com:wrank8@jilion.zendesk.com:80/users/15483194.xml
+    body: <user><email>new@email.com</email></user>
+    headers: 
+      accept: 
+      - "*/*"
+      content-type: 
+      - application/xml
+      authorization: 
+      - Basic emVub0BqaWxpb24uY29tOndyYW5rOA==
+      content-length: 
+      - "41"
+      host: 
+      - jilion.zendesk.com
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      p3p: 
+      - CP="NOI DSP COR NID ADMa OPTa OUR NOR"
+      connection: 
+      - keep-alive
+      - close
+      content-type: 
+      - application/xml; charset=utf-8
+      x-runtime: 
+      - "84"
+      date: 
+      - Wed, 11 Aug 2010 13:18:42 GMT
+      server: 
+      - nginx/0.6.35
+      content-length: 
+      - "1"
+      set-cookie: 
+      - zendesk_user_version=users%2F15308267-20100805220019; path=/
+      - _zendesk_session=BAh7CyIcd2FyZGVuLnVzZXIuZGVmYXVsdC5rZXlpA%2BuV6ToPc2Vzc2lvbl9pZCIlYTY2MTNhZTUwYmE0ZjNiOTgwYjJhZTYxMTVjOGMwOWEiIHdhcmRlbi51c2VyLmRlZmF1bHQuc2Vzc2lvbnsGOg1hdXRoX3ZpYSISQmFzaWNTdHJhdGVneToMYWNjb3VudGkCN6kiE3dhcmRlbi5tZXNzYWdlewA6B2lkIhNsZGw3OTlsNWg0M3QweA%3D%3D--ff2d1c089b61ffa4ea046bea7bfdc68161f04952; path=/; HttpOnly
+      - zendesk_user_version=users%2F15308267-20100805220019; path=/
+      cache-control: 
+      - private, max-age=0, must-revalidate
+      status: 
+      - 200 OK
+    body: " "
+    http_version: "1.1"

@@ -10,7 +10,7 @@
 class Ticket
   include ActiveModel::Validations
   
-  attr_accessor :type, :subject, :description, :requester_name, :requester_email
+  attr_accessor :user, :type, :subject, :description
   
   TYPES = [
     { :signup => 'signup' },
@@ -26,76 +26,60 @@ class Ticket
   end
   
   def self.unordered_types
-    @@unordered_types = TYPES.inject({}){ |memo,h| memo.merge!(h) }
+    @@unordered_types ||= TYPES.inject({}){ |memo,h| memo.merge!(h) }
   end
   
-  validates :type,            :inclusion => { :in => Ticket.unordered_types.keys }
-  validates :subject,         :presence => true
-  validates :description,     :presence => true
-  validates :requester_name,  :presence => true
-  validates :requester_email, :presence => true
+  validates :user,        :presence => true
+  validates :type,        :inclusion => { :in => Ticket.unordered_types.keys }
+  validates :subject,     :presence => true
+  validates :description, :presence => true
   
-  def initialize(user = nil, params = {})
-    @type        = params.delete(:type)
-    @subject     = params.delete(:subject)
-    @description = params.delete(:description)
-    if user.present?
-      @requester_name  = user.full_name
-      @requester_email = user.email
-    end
+  def initialize(params = {})
+    @user        = params.delete(:user)
+    @type        = params.delete(:type).try(:to_sym)
+    @subject     = params.delete(:subject).try(:to_s)
+    @description = params.delete(:description).try(:to_s)
   end
   
   def save
-    Rails.logger.info "Saving the ticket..."
-    valid?
+    if valid? && delay_post_ticket
+      true
+    else
+      false
+    end
+  end
+  
+  def post_ticket
+    response = Zendesk.post("/tickets.xml",
+    {
+      :ticket => {
+        :subject     => @subject,
+        :description => @description,
+        :set_tags    => self.class.unordered_types[@type]
+      }.merge(user_params)
+    })
+    if @user.zendesk_id.blank?
+      response = Zendesk.get(response['location'].sub(Zendesk.base_url, '').sub('xml', 'json'))
+      @user.update_attribute(:zendesk_id, JSON.parse(response.body)["requester_id"].to_i)
+    end
   end
   
   def to_key
     nil
   end
   
+private
+  
+  def delay_post_ticket
+    delay(:priority => 25).post_ticket
+  end
+  
+  def user_params
+    if @user.zendesk_id.present?
+      { :requester_id => @user.zendesk_id }
+    else
+      { :requester_name => @user.full_name, :requester_email => @user.email }
+    end
+  end
+  
 end
-
-
-# require 'rubygems'
-# require 'curb'
-# require 'json'
-# 
-# USERNAME = "zeno@jilion.com"
-# PASSWORD = "wrank8"
-# 
-# 
-# curl = Curl::Easy.new("http://jilion.zendesk.com/tickets.xml") do |c|
-#   c.userpwd = "#{USERNAME}:#{PASSWORD}"
-#   c.headers = "Content-Type: application/xml"
-# end
-# body = "<ticket><subject>Billing problem</subject><description>I have a problem with the billing, it's too expensive</description><requester-name>Rémy Coutable</requester-name><requester-email>remy@jilion.com</requester-email><set-tags>billing</set-tags></ticket>"
-# curl.http_post(body)
-# 
-# puts curl.response_code
-# puts
-# puts curl.body_str
-# puts
-# puts curl.header_str
-# 
-# headers = {}
-# unless curl.header_str.nil? || curl.header_str == ""
-#   curl.header_str.split("\r\n")[1..-1].each do |h|
-#     m = h.match(/([^:]+):\s?(.*)/)
-#     next if m.nil? or m[2].nil?
-#     headers[m[1]] = m[2]
-#   end
-# end
-# 
-# puts headers["Location"]
-# 
-# curl = Curl::Easy.new(headers["Location"].sub('xml', 'json')) do |c|
-#   c.userpwd = "#{USERNAME}:#{PASSWORD}"
-# end
-# curl.perform
-# 
-# puts
-# puts JSON.parse(curl.body_str)["requester_id"]
-# 
-# # curl -u zeno@jilion.com:wrank8 http://jilion.zendesk.com/tickets.xml
-# # curl -u zeno@jilion.com:wrank8 -H "Content-Type: application/xml" -d "<ticket><subject>Billing problem</subject><description>I have a problem with the billing, it's too expensive</description><requester-name>Rémy Coutable</requester-name><requester-email>remy@jilion.com</requester-email><set-tags>billing</set-tags></ticket>" -X POST http://jilion.zendesk.com/tickets.xml

@@ -1,0 +1,90 @@
+--- 
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :post
+    uri: http://zeno%40jilion.com:wrank8@jilion.zendesk.com:80/tickets.xml
+    body: <ticket><description>Description</description><requester-name>Joe Blow</requester-name><subject>Subject</subject><requester-email>email11@user.com</requester-email><set-tags>signup</set-tags></ticket>
+    headers: 
+      accept: 
+      - "*/*"
+      content-type: 
+      - application/xml
+      authorization: 
+      - Basic emVub0BqaWxpb24uY29tOndyYW5rOA==
+      content-length: 
+      - "200"
+      host: 
+      - jilion.zendesk.com
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 201
+      message: Created
+    headers: 
+      location: 
+      - http://jilion.zendesk.com/tickets/17.xml
+      p3p: 
+      - CP="NOI DSP COR NID ADMa OPTa OUR NOR"
+      content-type: 
+      - application/xml; charset=utf-8
+      connection: 
+      - keep-alive
+      server: 
+      - nginx/0.6.35
+      date: 
+      - Wed, 11 Aug 2010 10:02:40 GMT
+      x-runtime: 
+      - "234"
+      content-length: 
+      - "1"
+      set-cookie: 
+      - _zendesk_session=BAh7DCIcd2FyZGVuLnVzZXIuZGVmYXVsdC5rZXlpA%2BuV6ToPc2Vzc2lvbl9pZCIlZmNkOTk2MTE5ZTJhOWJiMTM3OTk5MzEyMDE4Nzg0MDkiIHdhcmRlbi51c2VyLmRlZmF1bHQuc2Vzc2lvbnsGOg1hdXRoX3ZpYSISQmFzaWNTdHJhdGVneToMYWNjb3VudGkCN6kiE3dhcmRlbi5tZXNzYWdlewA6B2lkIhVvam1sNnkzMGItdjNlMTViIgpmbGFzaElDOidBY3Rpb25Db250cm9sbGVyOjpGbGFzaDo6Rmxhc2hIYXNoewY6C25vdGljZSJHVGlja2V0ICMxNyA8YSBjbGFzcz0ndGl0bGUnIGhyZWY9Jy90aWNrZXRzLzE3Jz5TdWJqZWN0PC9hPiBjcmVhdGVkBjoKQHVzZWR7BjsKRg%3D%3D--8925b184b5a9d78be1bc05943e3e90ea5d543187; path=/; HttpOnly
+      - zendesk_user_version=users%2F15308267-20100805220019; path=/
+      status: 
+      - 201 Created
+      cache-control: 
+      - no-cache
+    body: " "
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: http://zeno%40jilion.com:wrank8@jilion.zendesk.com:80/tickets/17.json
+    body: 
+    headers: 
+      accept: 
+      - "*/*"
+      authorization: 
+      - Basic emVub0BqaWxpb24uY29tOndyYW5rOA==
+      host: 
+      - jilion.zendesk.com
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      etag: 
+      - "\"8b15cff79a7a45f142f60f6bc486c5f0\""
+      p3p: 
+      - CP="NOI DSP COR NID ADMa OPTa OUR NOR"
+      connection: 
+      - keep-alive
+      - close
+      content-type: 
+      - application/json; charset=utf-8
+      x-runtime: 
+      - "152"
+      date: 
+      - Wed, 11 Aug 2010 11:41:36 GMT
+      server: 
+      - nginx/0.6.35
+      content-length: 
+      - "961"
+      set-cookie: 
+      - _zendesk_session=BAh7CyIcd2FyZGVuLnVzZXIuZGVmYXVsdC5rZXlpA%2BuV6ToPc2Vzc2lvbl9pZCIlYjRlMzdkNTA1ZWQ5M2U2ZDVlYjgwNWNmNmQ3MGM0NjUiIHdhcmRlbi51c2VyLmRlZmF1bHQuc2Vzc2lvbnsGOg1hdXRoX3ZpYSISQmFzaWNTdHJhdGVneToMYWNjb3VudGkCN6kiE3dhcmRlbi5tZXNzYWdlewA6B2lkIhRreHlsN2dhbXBpeTZ6cHo%3D--e01947b64367e84307d8b2d07f40da2009397275; path=/; HttpOnly
+      - zendesk_user_version=users%2F15308267-20100805220019; path=/
+      cache-control: 
+      - private, max-age=0, must-revalidate
+      status: 
+      - 200 OK
+    body: "{\"ticket_field_entries\":[],\"nice_id\":17,\"initially_assigned_at\":\"2010/08/11 12:02:40 +0200\",\"entry_id\":null,\"created_at\":\"2010/08/11 12:02:40 +0200\",\"resolution_time\":null,\"priority_id\":0,\"current_tags\":\"signup\",\"assignee_id\":15308267,\"updated_at\":\"2010/08/11 12:02:40 +0200\",\"ticket_type_id\":0,\"status_updated_at\":\"2010/08/11 12:02:40 +0200\",\"solved_at\":null,\"original_recipient_address\":null,\"external_id\":null,\"assigned_at\":\"2010/08/11 12:02:40 +0200\",\"comments\":[{\"created_at\":\"2010/08/11 12:02:40 +0200\",\"attachments\":[],\"via_id\":5,\"value\":\"Description\",\"type\":\"Comment\",\"is_public\":true,\"author_id\":15483194}],\"via_id\":5,\"subject\":\"Subject\",\"recipient\":null,\"group_id\":88332,\"submitter_id\":15308267,\"base_score\":36,\"latest_recipients\":null,\"due_date\":null,\"current_collaborators\":null,\"channel\":null,\"score\":36,\"status_id\":1,\"description\":\"Description\",\"problem_id\":null,\"organization_id\":null,\"linkings\":[],\"updated_by_type_id\":0,\"requester_id\":15483194}"
+    http_version: "1.1"

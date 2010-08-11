@@ -11,43 +11,38 @@
 require 'spec_helper'
 
 describe Ticket do
+  let(:user)   { Factory(:user) }
+  let(:ticket) { Ticket.new({ :user => Factory(:user), :type => "signup", :subject => "Subject", :description => "Description" }) }
   
   context "with valid attributes" do
-    subject { Ticket.new(Factory(:user), { :type => :signup, :subject => "Subject", :description => "Description" }) }
+    subject { ticket }
     
     its(:type)            { should == :signup }
     its(:subject)         { should == "Subject" }
     its(:description)     { should == "Description" }
-    its(:requester_name)  { should be_present }
-    its(:requester_email) { should be_present }
     it { should be_valid }
   end
   
   describe "validates" do
+    it "should validate presence of user" do
+      ticket = Ticket.new({ :user => nil, :type => "signup", :subject => nil, :description => "Description" })
+      ticket.should_not be_valid
+      ticket.errors[:user].should be_present
+    end
     it "should validate inclusion of type in possible types" do
-      ticket = Ticket.new(Factory(:user), { :type => :foo, :subject => "Subject", :description => "Description" })
+      ticket = Ticket.new({ :user => user, :type => "foo", :subject => "Subject", :description => "Description" })
       ticket.should_not be_valid
       ticket.errors[:type].should be_present
     end
     it "should validate presence of subject" do
-      ticket = Ticket.new(Factory(:user), { :type => :signup, :subject => nil, :description => "Description" })
+      ticket = Ticket.new({ :user => user, :type => "signup", :subject => nil, :description => "Description" })
       ticket.should_not be_valid
       ticket.errors[:subject].should be_present
     end
     it "should validate presence of description" do
-      ticket = Ticket.new(Factory(:user), { :type => :signup, :subject => "Subject", :description => nil })
+      ticket = Ticket.new({ :user => user, :type => "signup", :subject => "Subject", :description => nil })
       ticket.should_not be_valid
       ticket.errors[:description].should be_present
-    end
-    it "should validate presence of requester_name" do
-      ticket = Ticket.new(nil, { :type => :signup, :subject => "Subject", :description => "Description" })
-      ticket.should_not be_valid
-      ticket.errors[:requester_name].should be_present
-    end
-    it "should validate presence of requester_email" do
-      ticket = Ticket.new(nil, { :type => :signup, :subject => "Subject", :description => "Description" })
-      ticket.should_not be_valid
-      ticket.errors[:requester_email].should be_present
     end
   end
   
@@ -73,6 +68,67 @@ describe Ticket do
         :other => 'other'
       }
     end
+  end
+  
+  describe "instance methods" do
+    
+    describe "#save" do
+      it "should delay Ticket#post_ticket" do
+        ticket.save
+        Delayed::Job.last.name.should == 'Ticket#post_ticket'
+      end
+      it "should return true if all is good" do
+        ticket.save.should be_true
+      end
+      it "should return false if not all is good" do
+        ticket.user = nil
+        ticket.save.should be_false
+      end
+    end
+    
+    describe "#post_ticket" do
+      before(:each) { VCR.insert_cassette("ticket/post_ticket") }
+      
+      it "should create the ticket on Zendesk" do
+        zendesk_tickets_count_before_post = VCR.use_cassette("ticket/zendesk_tickets_before_post") do
+          JSON.parse(Zendesk.get("/rules/1447233.json").body).size
+        end
+        ticket.post_ticket
+        VCR.use_cassette("ticket/zendesk_tickets_after_post") do
+          JSON.parse(Zendesk.get("/rules/1447233.json").body).size.should  == zendesk_tickets_count_before_post + 1
+        end
+      end
+      
+      it "should set the subject for the ticket based on its subject" do
+        ticket.post_ticket
+        VCR.use_cassette("ticket/zendesk_tickets_after_post") do
+          JSON.parse(Zendesk.get("/rules/1447233.json").body).first["subject"].should == ticket.subject
+        end
+      end
+      
+      it "should set the description for the ticket based on its description" do
+        ticket.post_ticket
+        VCR.use_cassette("ticket/zendesk_tickets_after_post") do
+          JSON.parse(Zendesk.get("/rules/1447233.json").body).first["description"].should == ticket.description
+        end
+      end
+      
+      it "should set the tags for the ticket based on its type" do
+        ticket.post_ticket
+        VCR.use_cassette("ticket/zendesk_tickets_after_post") do
+          JSON.parse(Zendesk.get("/rules/1447233.json").body).first["current_tags"].should =~ %r(#{Ticket.unordered_types[ticket.type]})
+        end
+      end
+      
+      it "should set the zendesk_id of the user if he didn't have one already" do
+        ticket.user.zendesk_id.should be_nil
+        ticket.post_ticket
+        ticket.user.zendesk_id.should be_present
+      end
+      
+      after(:each) { VCR.eject_cassette }
+    end
+    
   end
   
 end

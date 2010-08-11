@@ -1,0 +1,44 @@
+--- 
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: http://zeno%40jilion.com:wrank8@jilion.zendesk.com:80/rules/1447233.json
+    body: 
+    headers: 
+      accept: 
+      - "*/*"
+      authorization: 
+      - Basic emVub0BqaWxpb24uY29tOndyYW5rOA==
+      host: 
+      - jilion.zendesk.com
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      etag: 
+      - "\"10d2e16317fe288ba043a0da08093b42\""
+      p3p: 
+      - CP="NOI DSP COR NID ADMa OPTa OUR NOR"
+      connection: 
+      - keep-alive
+      - close
+      content-type: 
+      - application/json; charset=utf-8
+      x-runtime: 
+      - "353"
+      date: 
+      - Wed, 11 Aug 2010 14:28:30 GMT
+      server: 
+      - nginx/0.6.35
+      content-length: 
+      - "11020"
+      set-cookie: 
+      - _zendesk_session=BAh7CyIcd2FyZGVuLnVzZXIuZGVmYXVsdC5rZXlpA%2BuV6ToPc2Vzc2lvbl9pZCIlZDYyYmExY2U0N2NhNjBhYTBiNDk3N2EzMGMzOWYwNDQiIHdhcmRlbi51c2VyLmRlZmF1bHQuc2Vzc2lvbnsGOg1hdXRoX3ZpYSISQmFzaWNTdHJhdGVneToMYWNjb3VudGkCN6kiE3dhcmRlbi5tZXNzYWdlewA6B2lkIhVqN3JsN2FsOGctazltY2Jw--60c7db400a2e6d51f657516d9cc58dbc497cbb03; path=/; HttpOnly
+      - zendesk_user_version=users%2F15308267-20100805220019; path=/
+      cache-control: 
+      - private, max-age=0, must-revalidate
+      status: 
+      - 200 OK
+    body: "[{\"ticket_field_entries\":[],\"nice_id\":18,\"initially_assigned_at\":\"2010/08/11 12:02:41 +0200\",\"entry_id\":null,\"created_at\":\"2010/08/11 12:02:41 +0200\",\"resolution_time\":null,\"priority_id\":0,\"current_tags\":\"signup\",\"assignee_id\":15308267,\"updated_at\":\"2010/08/11 12:02:41 +0200\",\"req_name\":\"Joe Blow\",\"ticket_type_id\":0,\"status_updated_at\":\"2010/08/11 12:02:41 +0200\",\"solved_at\":null,\"original_recipient_address\":null,\"external_id\":null,\"assigned_at\":\"2010/08/11 12:02:41 +0200\",\"comments\":[{\"created_at\":\"2010/08/11 12:02:41 +0200\",\"attachments\":[],\"via_id\":5,\"value\":\"Description\",\"type\":\"Comment\",\"is_public\":true,\"author_id\":15483194}],\"via_id\":5,\"subject\":\"Subject\",\"recipient\":null,\"group_id\":88332,\"submitter_id\":15308267,\"base_score\":36,\"latest_recipients\":null,\"due_date\":null,\"current_collaborators\":null,\"channel\":null,\"score\":36,\"status_id\":1,\"description\":\"Description\",\"problem_id\":null,\"organization_id\":null,\"linkings\":[],\"updated_by_type_id\":0,\"requester_id\":15483194}]"
+    http_version: "1.1"

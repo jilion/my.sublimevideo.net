@@ -64,7 +64,7 @@ feature "Users actions:" do
     click_button "Go!"
     
     current_url.should =~ %r(http://[^/]+/sites)
-    page.should have_content "Welcome"
+    page.should have_content "Welcome" if MySublimeVideo::Release.public?
     page.should have_content "Rémy Coutable"
     
     invited_user.reload.full_name.should == "Rémy Coutable"

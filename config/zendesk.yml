@@ -1,0 +1,12 @@
+development:
+  base_url: http://jilion.zendesk.com
+  username: zeno@jilion.com
+  password: wrank8
+test:
+  base_url: http://jilion.zendesk.com
+  username: zeno@jilion.com
+  password: wrank8
+production:
+  base_url: http://jilion.zendesk.com
+  username: zeno@jilion.com
+  password: wrank8
