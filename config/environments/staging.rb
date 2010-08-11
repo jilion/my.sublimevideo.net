@@ -38,7 +38,8 @@ MySublimeVideo::Application.configure do
   # Disable delivery errors, bad email addresses will be ignored
   # config.action_mailer.raise_delivery_errors = false
   # config.action_mailer.default_url_options = { :host => 'my.sublimevideo.net' }
-  config.action_mailer.default_url_options = { :host => 'mysublime.heroku.com' }
+  config.action_mailer.delivery_method = :test
+  config.action_mailer.default_url_options = { :host => 'mysublime-staging.heroku.com' }
   
   # Enable threaded mode
   # config.threadsafe!

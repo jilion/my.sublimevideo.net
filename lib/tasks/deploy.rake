@@ -1,8 +1,8 @@
 # Deploy and rollback on Heroku in staging and production
 namespace :deploy do
   GIT_REPOS      = ['git@jime1.epfl.ch:my.sublimevideo.net.git']
-  STAGING_APP    = ''
-  PRODUCTION_APP = 'empty-warrior-43'
+  STAGING_APP    = 'mysublime-staging'
+  PRODUCTION_APP = 'mysublime'
   
   # Default
   APP    = PRODUCTION_APP
@@ -10,11 +10,13 @@ namespace :deploy do
   
   desc "Heroku staging deploy"
   task :staging => [:update_assets, :set_staging_app, :push, :restart, :tag]
+  task :staging_console => [:set_staging_app, :console]
   task :staging_migrations => [:set_staging_app, :migrations]
   task :staging_rollback => [:set_staging_app, :rollback]
   
   desc "Heroku production deploy"
   task :production => [:update_assets, :set_production_app, :push, :restart, :tag]
+  task :production_console => [:set_production_app, :console]
   task :production_off => [:set_production_app, :off]
   task :production_migrations => [:set_production_app, :migrations]
   task :production_rollback => [:set_production_app, :rollback]
@@ -42,10 +44,14 @@ namespace :deploy do
     end
   end
   
+  task :console do
+    puts `heroku console --app #{APP}`
+  end
+  
   task :push do
     timed do
       puts "\nDeploying #{app_and_target} site to #{APP} on heroku/master ..."
-      puts `git push git@heroku.com:#{APP}.git --force`
+      puts `git push git@heroku.com:#{APP}.git #{TARGET}:master`
     end
   end
   

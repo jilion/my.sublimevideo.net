@@ -46,6 +46,6 @@ module MySublimeVideo
     config.encoding = "utf-8"
     
     # Configure sensitive parameters which will be filtered from the log file.
-    config.filter_parameters += [:beta_key, :password, :cc]
+    config.filter_parameters += [:protection_key, :password, :cc]
   end
 end

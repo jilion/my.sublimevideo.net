@@ -1,6 +1,6 @@
 MySublimeVideo::Application.routes.draw do
   
-  resource :beta, :only => [:show, :create]
+  resource :protection, :only => [:show, :create]
   
   devise_for :users,
   :path => '',

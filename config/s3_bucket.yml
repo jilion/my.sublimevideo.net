@@ -8,6 +8,11 @@ test:
   loaders:  dev.sublimevideo.loaders
   player:   dev.sublimevideo.player
   logs:     dev.sublimevideo.logs
+staging:
+  licenses: staging.sublimevideo.licenses
+  loaders:  staging.sublimevideo.loaders
+  player:   staging.sublimevideo.player
+  logs:     staging.sublimevideo.logs
 production:
   licenses: sublimevideo.licenses
   loaders:  sublimevideo.loaders
