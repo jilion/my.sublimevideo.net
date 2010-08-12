@@ -23,7 +23,7 @@ describe TicketsController do
     describe "POST create" do
       describe "with valid params" do
         it "assigns a newly created ticket as @ticket" do
-          post :create, :ticket => { :type => "billing", :subject => "Subject", :description => "Description" }
+          post :create, :ticket => { :type => "request", :subject => "Subject", :description => "Description" }
           response.should redirect_to(new_ticket_url)
         end
       end
@@ -34,11 +34,11 @@ describe TicketsController do
           response.should render_template("new")
         end
         it "assigns a newly created but unsaved ticket as @ticket" do
-          post :create, :ticket => { :type => "billing", :subject => "", :description => "Description" }
+          post :create, :ticket => { :type => "request", :subject => "", :description => "Description" }
           response.should render_template("new")
         end
         it "assigns a newly created but unsaved ticket as @ticket" do
-          post :create, :ticket => { :type => "billing", :subject => "Subject", :description => "" }
+          post :create, :ticket => { :type => "request", :subject => "Subject", :description => "" }
           response.should render_template("new")
         end
       end
@@ -52,7 +52,7 @@ describe TicketsController do
     end
     
     it "should respond with redirect to POST :create" do
-      post :create, :ticket => { :type => "billing", :subject => "Subject", :description => "Description" }
+      post :create, :ticket => { :type => "request", :subject => "Subject", :description => "Description" }
       response.should redirect_to(new_user_session_path)
     end
   end

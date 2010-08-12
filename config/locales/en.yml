@@ -24,7 +24,6 @@ en:
   ticket:
     type:
       choose_type: "Choose a type for your ticket"
-      signup:      "Pre-signup question"
       request:     "I have a request"
       billing:     "Billing question"
       confused:    "I'm confused"

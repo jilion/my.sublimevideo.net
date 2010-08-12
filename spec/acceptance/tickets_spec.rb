@@ -14,9 +14,9 @@ feature "Support actions:" do
   scenario "submit a valid ticket" do
     visit "/support"
     
-    select "Billing question", :from => "ticket_type"
-    fill_in "Subject", :with => "I got a billing problem!"
-    fill_in "Description", :with => "I got a billing problem this is a long text!"
+    select "I have a request", :from => "ticket_type"
+    fill_in "Subject", :with => "I have a request!"
+    fill_in "Description", :with => "I have a request this is a long text!"
     click_button "Send"
     
     page.should have_content "Your message has been submitted."
@@ -31,8 +31,8 @@ feature "Support actions:" do
     visit "/support"
     
     select "Choose a type for your ticket", :from => "ticket_type"
-    fill_in "Subject", :with => "I got a billing problem!"
-    fill_in "Description", :with => "I got a billing problem this is a long text!"
+    fill_in "Subject", :with => "I have a request!"
+    fill_in "Description", :with => "I have a request this is a long text!"
     click_button "Send"
     
     current_url.should =~ %r(http://[^/]+/support)
@@ -42,9 +42,9 @@ feature "Support actions:" do
   scenario "submit an invalid ticket" do
     visit "/support"
     
-    select "Billing question", :from => "ticket_type"
+    select "I have a request", :from => "ticket_type"
     fill_in "Subject", :with => ""
-    fill_in "Description", :with => "I got a billing problem this is a long text!"
+    fill_in "Description", :with => "I have a request this is a long text!"
     click_button "Send"
     
     current_url.should =~ %r(http://[^/]+/support)
@@ -54,8 +54,8 @@ feature "Support actions:" do
   scenario "submit an invalid ticket" do
     visit "/support"
     
-    select "Billing question", :from => "ticket_type"
-    fill_in "Subject", :with => "I got a billing problem!"
+    select "I have a request", :from => "ticket_type"
+    fill_in "Subject", :with => "I have a request!"
     fill_in "Description", :with => ""
     click_button "Send"
     
