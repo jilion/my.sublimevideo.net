@@ -2,8 +2,6 @@ class PagesController < ApplicationController
   skip_before_filter :authenticate_user!
   before_filter :authenticate_suspended_user!, :if => proc { |c| params[:page] == 'suspended' }
   
-  responders Responders::PageCacheResponder
-  
   def show
     render params[:page]
   end
