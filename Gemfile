@@ -1,6 +1,7 @@
 source :rubygems
 
 gem 'rails',                '3.0.0.rc'
+gem 'rack-ssl-enforcer'
 
 gem 'libxml-ruby',          '>= 1.1.3', :require => 'libxml'
 

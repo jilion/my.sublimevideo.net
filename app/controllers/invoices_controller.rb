@@ -2,7 +2,7 @@ class InvoicesController < ApplicationController
   respond_to :html, :except => :show
   respond_to :js
   
-  before_filter :public_required
+  before_filter :public_release_only
   
   # GET /invoices
   def index

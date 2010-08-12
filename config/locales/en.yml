@@ -1,15 +1,15 @@
 en:
   attributes:
-    dev_hostnames: "Development domains"
+    dev_hostnames:        "Development domains"
     terms_and_conditions: "Terms & Conditions"
-    hostname: "Domain"
-    cc_type: "Card type"
-    cc_number: "Card number"
+    hostname:     "Domain"
+    cc_type:      "Card type"
+    cc_number:    "Card number"
     cc_expire_on: "Expiration date"
     cc_full_name: "Name on Card"
     cc_verification_value: "CSC"
     
-    min_width: "Minimum width"
+    min_width:  "Minimum width"
     min_height: "Minimum height"
       
   time:
@@ -19,7 +19,7 @@ en:
   date:
     formats:
       default: "%B %d, %Y"
-      small: "%m/%d/%Y"
+      small:   "%m/%d/%Y"
       
   ticket:
     type:

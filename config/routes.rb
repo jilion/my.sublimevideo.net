@@ -34,8 +34,8 @@ MySublimeVideo::Application.routes.draw do
   resources :invoices, :only => [:index, :show]
   resource :card, :controller => "credit_cards", :as => :credit_card, :only => [:edit, :update]
   
-  # match ':page', :to => 'pages#show', :via => :get, :as => :page, :page => /terms|suspended/
-  match ':page', :to => 'pages#show', :via => :get, :as => :page, :page => /terms/
+  # match ':page', :to => 'pages#show', :via => :get, :as => :page, :page => /terms|privacy|suspended/
+  match ':page', :to => 'pages#show', :via => :get, :as => :page, :page => /terms|privacy/
   
   scope :controller => 'tickets', :as => :ticket do
     get  :new,     :path => '/support'

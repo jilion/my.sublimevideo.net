@@ -10,7 +10,7 @@ describe PagesController do
       sign_in :user, @mock_user
     end
     
-    %w[terms].each do |page|
+    %w[terms privacy].each do |page|
       it "should respond with success to GET :show, on #{page} page" do
         get :show, :page => page
         response.should be_success
@@ -32,7 +32,7 @@ describe PagesController do
       sign_in :user, @mock_user
     end
     
-    %w[terms].each do |page|
+    %w[terms privacy].each do |page|
       it "should respond with success to GET :show, on #{page} page" do
         get :show, :page => page
         response.should be_success
@@ -48,7 +48,7 @@ describe PagesController do
   end
   
   context "as guest" do
-    %w[terms].each do |page|
+    %w[terms privacy].each do |page|
       it "should respond with success to GET :show, on #{page} page" do
         get :show, :page => page
         response.should be_success

@@ -17,4 +17,8 @@ module LayoutHelper
     end
   end
   
+  def footer
+    "Copyright &copy; 2010 SublimeVideo&reg; | #{link_to "Terms & Conditions", page_path(:page => 'terms')} | #{link_to "Privacy Policy", page_path(:page => 'privacy') }".html_safe
+  end
+  
 end

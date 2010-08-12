@@ -9,8 +9,6 @@ module MySublimeVideo
       self.current == :public
     end
     
-  private
-    
     def self.current
       :beta
     end

@@ -7,6 +7,11 @@ feature "Pages:" do
     page.should have_content('Terms & Conditions')
   end
   
+  scenario "privacy" do
+    visit "/privacy"
+    page.should have_content('Privacy Policy')
+  end
+  
   if MySublimeVideo::Release.public?
     scenario "suspended" do
       sign_in_as :user

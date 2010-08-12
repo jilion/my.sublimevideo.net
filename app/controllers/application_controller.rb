@@ -21,7 +21,7 @@ protected
     end
   end
   
-  def public_required
+  def public_release_only
     redirect_to sites_path unless MySublimeVideo::Release.public?
   end
   

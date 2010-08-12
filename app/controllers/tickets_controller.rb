@@ -11,8 +11,7 @@ class TicketsController < ApplicationController
   def create
     @ticket = Ticket.new(params[:ticket].merge({ :user => current_user }))
     if @ticket.save
-      flash[:notice] = "Your message has been submitted."
-      redirect_to new_ticket_url
+      redirect_to new_ticket_url, :notice => t('ticket.submitted')
     else
       render :new
     end

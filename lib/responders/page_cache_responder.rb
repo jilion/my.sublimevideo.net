@@ -2,7 +2,9 @@ module Responders
   module PageCacheResponder
     
     def to_html
-      controller.response.headers['Cache-Control'] = "public, max-age=#{1.month}"
+      if Rails.env.production?
+        controller.expires_in 1.year, :public => true
+      end
       super
     end
     
