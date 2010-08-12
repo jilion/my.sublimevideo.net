@@ -13,7 +13,6 @@ class Ticket
   attr_accessor :user, :type, :subject, :description
   
   TYPES = [
-    { :signup => 'signup' },
     { :request => 'request' },
     { :billing => 'billing' },
     { :confused => 'confused' },
@@ -22,11 +21,15 @@ class Ticket
   ]
   
   def self.ordered_types
-    TYPES
+    @@ordered_types ||= if MySublimeVideo::Release.beta?
+      TYPES.dup.tap { |t| t.delete_at(t.index(t.select{ |x| x.key?(:billing) }[0])) }
+    else
+      TYPES
+    end
   end
   
   def self.unordered_types
-    @@unordered_types ||= TYPES.inject({}){ |memo,h| memo.merge!(h) }
+    @@unordered_types ||= ordered_types.inject({}){ |memo,h| memo.merge!(h) }
   end
   
   validates :user,        :presence => true
