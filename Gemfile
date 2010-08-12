@@ -44,6 +44,8 @@ if RUBY_PLATFORM =~ /darwin/
     gem 'wirble' # irbrc
     gem 'ruby-graphviz', :require => 'graphviz'
     gem 'heroku'
+    
+    gem 'rspec-rails', '>= 2.0.0.beta.19'
   end
   
   group :test do
