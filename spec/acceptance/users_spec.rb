@@ -76,6 +76,16 @@ end
 
 feature "User session:" do
   
+  scenario "before login/register" do
+    visit "/"
+    
+    page.should_not have_content('Support')
+    page.should_not have_content('Logout')
+    
+    page.should have_content('Login')
+    page.should have_content('Documentation')
+  end
+  
   scenario "login" do
     create_user :user => { :full_name => "John Doe", :email => "john@doe.com", :password => "123456" }
     

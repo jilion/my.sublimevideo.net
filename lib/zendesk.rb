@@ -41,7 +41,6 @@ module Zendesk
       Zendesk::Request.new(url, :put, params).execute
     end
     
-    
     def parse_url(url)
       URI.parse("#{base_url}#{url}")
     end

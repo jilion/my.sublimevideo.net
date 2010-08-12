@@ -30,7 +30,7 @@ feature "Support actions:" do
   scenario "submit an invalid ticket" do
     visit "/support"
     
-    select "Choose a type for your ticket", :from => "ticket_type"
+    select "Choose a category", :from => "ticket_type"
     fill_in "Subject", :with => "I have a request!"
     fill_in "Description", :with => "I have a request this is a long text!"
     click_button "Send"
