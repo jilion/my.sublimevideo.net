@@ -38,6 +38,7 @@
 #  updated_at                            :datetime
 #  invitation_token                      :string(20)
 #  invitation_sent_at                    :datetime
+#  zendesk_id                            :integer
 #
 
 require 'spec_helper'
