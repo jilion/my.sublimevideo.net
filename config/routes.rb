@@ -82,7 +82,7 @@ MySublimeVideo::Application.routes.draw do
   namespace "admin" do
     resources :users, :only => [:index, :show]
     resources :admins, :only => [:index, :destroy]
-    resources :sites, :only => [:index]
+    resources :sites, :only => [:index, :show]
     resources :delayed_jobs, :only => [:index, :show, :update, :destroy], :path => "djs"
   end
   

@@ -1,0 +1,9 @@
+= title("Site: #{@site.hostname}")
+
+-#= content_header(raw "#{@user.full_name} <#{mail_to @user.email}>")
+-#
+-#%p= "Has #{pluralize(@user.sites.size, 'site')}!"
+-#
+-#%p= "Has #{@user.cc? ? "a #{@user.cc_type}" : "no"} credit card!"
+-#
+-#%p= "Current usage: #{number_to_currency(Invoice.current(@user).amount)}!"
