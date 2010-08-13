@@ -50,7 +50,7 @@ group :test do
   gem 'pg',       '>= 0.9.0'
   
   gem 'spork'
-  gem 'rspactor', '>= 0.7.beta.5'
+  gem 'rspactor', '>= 0.7.beta.6'
   
   gem 'shoulda'
   gem 'rspec-rails', '>= 2.0.0.beta.19'
