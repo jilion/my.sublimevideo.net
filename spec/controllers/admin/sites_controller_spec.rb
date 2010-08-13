@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Admin::UsersController do
+describe Admin::SitesController do
   include Devise::TestHelpers
   
   context "with logged in admin" do
@@ -11,13 +11,13 @@ describe Admin::UsersController do
     end
     
     it "should respond with success to GET :index" do
-      User.stub(:includes).and_return([])
+      Site.stub(:scoped).and_return([])
       get :index
       response.should be_success
     end
     
     it "should respond with success to GET :show" do
-      User.stub(:find).with('1').and_return(mock_user)
+      Site.stub(:find).with('1').and_return(mock_site)
       get :show, :id => '1'
       response.should be_success
     end
@@ -37,8 +37,8 @@ describe Admin::UsersController do
   
 private
   
-  def mock_user(stubs={})
-    @mock_user ||= mock_model(User, stubs)
+  def mock_site(stubs={})
+    @mock_site ||= mock_model(Site, stubs)
   end
   
 end

@@ -35,36 +35,31 @@ group :production do
   gem 'pg', '>= 0.9.0'
 end
 
-# Heroku hack
-if RUBY_PLATFORM =~ /darwin/
+group :development do
+  gem 'sqlite3-ruby', :require => 'sqlite3'
+  gem 'ffaker',       '>= 0.4.0'
+  gem 'annotate'
+  gem 'wirble' # irbrc
+  gem 'ruby-graphviz', :require => 'graphviz'
+  gem 'heroku'
   
-  group :development do
-    gem 'sqlite3-ruby', :require => 'sqlite3'
-    gem 'ffaker',       '>= 0.4.0'
-    gem 'annotate'
-    gem 'wirble' # irbrc
-    gem 'ruby-graphviz', :require => 'graphviz'
-    gem 'heroku'
-    
-    gem 'rspec-rails', '>= 2.0.0.beta.19'
-  end
+  gem 'rspec-rails', '>= 2.0.0.beta.19'
+end
+
+group :test do
+  gem 'pg',       '>= 0.9.0'
   
-  group :test do
-    gem 'pg',       '>= 0.9.0'
-    
-    gem 'spork'
-    gem 'rspactor', '>= 0.7.beta.5'
-    
-    gem 'shoulda'
-    gem 'rspec-rails', '>= 2.0.0.beta.19'
-    
-    gem 'steak', '>= 0.4.0.beta.1'
-    gem 'capybara'
-    gem 'launchy'
-    
-    gem 'factory_girl_rails'
-    gem 'webmock'
-    gem 'vcr', '>= 1.0.3'
-  end
+  gem 'spork'
+  gem 'rspactor', '>= 0.7.beta.6'
   
+  gem 'shoulda'
+  gem 'rspec-rails', '>= 2.0.0.beta.19'
+  
+  gem 'steak', '>= 0.4.0.beta.1'
+  gem 'capybara'
+  gem 'launchy'
+  
+  gem 'factory_girl_rails'
+  gem 'webmock'
+  gem 'vcr', '>= 1.0.3'
 end
