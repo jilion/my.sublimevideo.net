@@ -1,0 +1,11 @@
+# Add git remote branch localy
+git checkout -t origin/production
+git checkout -t origin/staging
+
+# Add heroku git remote
+git remote rm heroku (if present)
+git remote add production git@heroku.com:mysublime.git
+git remote add staging git@heroku.com:mysublime-staging.git
+
+
+rake deploy:production
