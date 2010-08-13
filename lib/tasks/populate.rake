@@ -3,7 +3,6 @@ require 'state_machine'
 require 'ffaker' if Rails.env.development?
 
 BASE_USERS = [["Mehdi Aminian", "mehdi@jilion.com"], ["Zeno Crivelli", "zeno@jilion.com"], ["Thibaud Guillaume-Gentil", "thibaud@jilion.com"], ["Octave Zangs", "octave@jilion.com"], ["Rémy Coutable", "remy@jilion.com"]]
-PROFILES    = %w[Desktop 3G WiFi Ogg]
 
 namespace :db do
   
@@ -21,26 +20,26 @@ namespace :db do
     task :all => :environment do
       delete_all_files_in_public('uploads/tmp')
       timed { create_admins }
-      timed { create_users  }
-      timed { create_sites  }
+      timed { create_users(argv_count) }
+      timed { create_sites }
     end
     
     desc "Load User development fixtures."
     task :users => :environment do
-      timed { empty_tables(Site, User)                                           }
-      timed { create_users((ARGV.size > 1 ? ARGV[1].sub(/COUNT=/, '').to_i : 5)) }
+      timed { empty_tables(Site, User) }
+      timed { create_users(argv_count) }
     end
     
     desc "Load Admin development fixtures."
     task :admins => :environment do
       timed { empty_tables(Admin) }
-      timed { create_admins       }
+      timed { create_admins }
     end
     
     desc "Load Site development fixtures."
     task :sites => :environment do
-      timed { empty_tables(Site)                                                 }
-      timed { create_sites((ARGV.size > 1 ? ARGV[1].sub(/COUNT=/, '').to_i : 5)) }
+      timed { empty_tables(Site) }
+      timed { create_sites }
     end
     
   end
@@ -97,19 +96,19 @@ def create_users(count = 0)
       user.email        = Faker::Internet.email
       user.password     = '123456'
       user.confirmed_at = rand(10).days.ago
-      user.save!
+      user.save
     end
     print "#{count} random users created!\n"
   end
 end
 
-def create_sites(count = 1)
+def create_sites(max = 5)
   delete_all_files_in_public('uploads/licenses')
   delete_all_files_in_public('uploads/loaders')
   create_users if User.all.empty?
   
   User.all.each do |user|
-    count.times do |i|
+    rand(max).times do |i|
       site            = user.sites.build
       site.hostname   = "#{rand > 0.5 ? '' : %w[www. blog. my. git. sv. ji. geek.].sample}#{Faker::Internet.domain_name}"
       site.created_at = rand(1500).days.ago
@@ -120,5 +119,9 @@ def create_sites(count = 1)
       site.activate
     end
   end
-  print "#{count} random sites created for each user!\n"
+  print "0-#{max} random sites created for each user!\n"
+end
+
+def argv_count
+  ARGV.size > 1 ? ARGV[1].sub(/COUNT=/, '').to_i : 5
 end
