@@ -21,6 +21,8 @@ public/rcov
 config/database.yml
 tmp/restart.txt
 
+backup.db
+
 capybara-*.html
 public/uploads
 public/js

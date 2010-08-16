@@ -9,7 +9,7 @@ namespace :deploy do
   TARGET = 'production'
   
   desc "Heroku staging deploy"
-  task :staging => [:update_assets, :set_staging_app, :push, :copy_production_db, :restart, :tag]
+  task :staging => [:update_assets, :set_staging_app, :push, :restart, :tag]
   task :staging_migrations => [:set_staging_app, :push, :copy_production_db, :migrate, :restart, :tag]
   task :staging_console => [:set_staging_app, :console]
   task :staging_rollback => [:set_staging_app, :rollback]
@@ -74,7 +74,7 @@ namespace :deploy do
   
   task :copy_production_db do
     timed do
-      puts "\Copying production database for #{app_and_target} ..."
+      puts "\nCopying production database for #{app_and_target} ..."
       puts `heroku db:pull sqlite://backup.db --app #{PRODUCTION_APP}`
       puts `heroku db:push sqlite://backup.db --app #{APP}`
     end
