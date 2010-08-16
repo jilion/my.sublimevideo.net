@@ -10,10 +10,12 @@ class TicketsController < ApplicationController
   # POST /support
   def create
     @ticket = Ticket.new(params[:ticket].merge({ :user => current_user }))
-    if @ticket.save
-      redirect_to new_ticket_url, :notice => t('ticket.submitted')
-    else
-      render :new
+    respond_with(@user) do |format|
+      if @ticket.save
+        format.html { redirect_to new_ticket_url }
+      else
+        format.html { render :new }
+      end
     end
   end
   

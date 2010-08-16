@@ -11,7 +11,8 @@ en:
     
     min_width:  "Minimum width"
     min_height: "Minimum height"
-      
+    type:       ""
+    
   time:
     formats:
       date: "%B %d, %Y"
@@ -23,7 +24,7 @@ en:
       
   ticket:
     type:
-      choose_type: "Choose a type for your ticket"
+      choose_type: "Choose a category"
       request:     "I have a request"
       billing:     "Billing question"
       confused:    "I'm confused"

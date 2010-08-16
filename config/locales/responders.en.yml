@@ -1,5 +1,12 @@
 en:
   flash:
+    credit_cards:
+      update:
+        notice: "Your credit card information was successfully (and securely) saved."
+    tickets:
+      create:
+        notice: "Your message has been submitted."
+        
     actions:
       create:
         notice: '%{resource_name} was successfully created.'

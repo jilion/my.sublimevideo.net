@@ -22,18 +22,18 @@ class Ticket
   
   def self.ordered_types
     @@ordered_types ||= if MySublimeVideo::Release.beta?
-      TYPES.dup.tap { |t| t.delete_at(t.index(t.select{ |x| x.key?(:billing) }[0])) }
+      TYPES.dup.tap { |t| t.delete(t.select { |x| x.key?(:billing) }[0]) }
     else
       TYPES
     end
   end
   
   def self.unordered_types
-    @@unordered_types ||= ordered_types.inject({}){ |memo,h| memo.merge!(h) }
+    @@unordered_types ||= ordered_types.inject({}) { |memo,h| memo.merge!(h) }
   end
   
   validates :user,        :presence => true
-  validates :type,        :inclusion => { :in => Ticket.unordered_types.keys }
+  validates :type,        :inclusion => { :in => Ticket.unordered_types.keys, :message => "You must choose a category!" }
   validates :subject,     :presence => true
   validates :description, :presence => true
   
@@ -53,8 +53,7 @@ class Ticket
   end
   
   def post_ticket
-    response = Zendesk.post("/tickets.xml",
-    {
+    response = Zendesk.post("/tickets.xml", {
       :ticket => {
         :subject     => @subject,
         :description => @description,

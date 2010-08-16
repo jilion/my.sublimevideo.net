@@ -23,6 +23,7 @@ feature "Credit cards update:" do
       end
       
       current_url.should =~ %r(http://[^/]+/account/edit)
+      page.should have_content("Your credit card information was successfully (and securely) saved.")
       page.should have_content('Visa')
       page.should have_content('1111')
     end
