@@ -12,11 +12,11 @@ git remote add staging git@heroku.com:mysublime-staging.git
 ==========
 
 # update your last work in master branch
-git co staging
+git checkout staging
 git merge master
 rake deploy:staging or rake deploy:staging_migrations
 # Test/Verify staging env
-git co production
+git checkout production
 git merge staging
 rake deploy:production_off  # maintenance page on
 # wait some time for maintenance page activation
