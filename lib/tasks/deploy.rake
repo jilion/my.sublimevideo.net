@@ -10,20 +10,19 @@ namespace :deploy do
   
   desc "Heroku staging deploy"
   task :staging => [:update_assets, :set_staging_app, :push, :restart, :tag]
+  task :staging_migrations => [:set_staging_app, :push, :copy_production_db, :migrate, :restart, :tag]
   task :staging_console => [:set_staging_app, :console]
-  task :staging_migrations => [:set_staging_app, :migrations]
   task :staging_rollback => [:set_staging_app, :rollback]
   
   desc "Heroku production deploy"
-  task :production => [:update_assets, :set_production_app, :push, :restart, :tag]
-  task :production_console => [:set_production_app, :console]
   task :production_off => [:set_production_app, :off]
-  task :production_migrations => [:set_production_app, :migrations]
-  task :production_rollback => [:set_production_app, :rollback]
   task :production_on => [:set_production_app, :on]
+  task :production => [:set_production_app, :push, :restart, :tag]
+  task :production_migrations => [:set_production_app, :push, :migrate, :restart, :tag]
+  task :production_console => [:set_production_app, :console]
+  task :production_rollback => [:set_production_app, :rollback]
   
   # Don't call directly
-  task :migrations => [:push, :migrate, :restart, :tag]
   task :rollback => [:push_previous, :restart]
   
   task :set_staging_app do
@@ -70,6 +69,14 @@ namespace :deploy do
     timed do
       puts "\nRunning database migrations for #{app_and_target} ..."
       puts `heroku rake db:migrate --app #{APP}`
+    end
+  end
+  
+  task :copy_production_db do
+    timed do
+      puts "\nCopying production database for #{app_and_target} ..."
+      puts `heroku db:pull sqlite://backup.db --app #{PRODUCTION_APP}`
+      puts `heroku db:push sqlite://backup.db --app #{APP}`
     end
   end
   
