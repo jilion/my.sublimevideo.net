@@ -44,7 +44,7 @@ namespace :deploy do
   end
   
   task :console do
-    puts `heroku console --app #{APP}`
+    system "heroku console --app #{APP}"
   end
   
   task :push do
