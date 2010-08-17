@@ -25,3 +25,11 @@ rake deploy:production_on   # maintenance page off
 # back to work
 git checkout master
 git merge production  # in case of assets update
+
+============
+= Rollback =
+============
+
+rake deploy:staging_rollback
+or
+rake deploy:production_rollback
