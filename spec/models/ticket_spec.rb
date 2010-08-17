@@ -133,6 +133,11 @@ describe Ticket do
         ticket.user.zendesk_id.should be_present
       end
       
+      it "should set the user as verified on zendesk" do
+        ticket.post_ticket
+        JSON.parse(Zendesk.get("/users/#{ticket.user.zendesk_id}.json").body)["is_verified"].should be_true
+      end
+      
       after(:each) { VCR.eject_cassette }
     end
     
