@@ -32,7 +32,7 @@ describe Log::Amazon::S3::Player do
      
     it "should parse and create usages from trackers on process" do
       SiteUsage.should_receive(:create_usages_from_trackers!)
-      subject.process
+      subject.parse
     end
     
     it "should delay process after create" do

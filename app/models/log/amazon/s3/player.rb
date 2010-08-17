@@ -20,6 +20,6 @@ class Log::Amazon::S3::Player < Log::Amazon::S3
   # = Associations =
   # ================
   
-  has_many :usages, :class_name => "SiteUsage"
+  # has_many :usages, :class_name => "SiteUsage"
   
 end

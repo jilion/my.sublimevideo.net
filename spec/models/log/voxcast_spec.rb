@@ -18,12 +18,14 @@ require 'spec_helper'
 
 describe Log::Voxcast do
   
+  after(:each) { Log.delete_all }
+  
   context "built with valid attributes" do
     before(:each) { VCR.insert_cassette('one_logs') }
     
     subject { Factory.build(:log_voxcast, :name => 'cdn.sublimevideo.net.log.1274773200-1274773260.gz') }
     
-    it { should be_unprocessed }
+    it { should be_unparsed }
     it { should be_valid }
     its(:hostname)   { should == 'cdn.sublimevideo.net' }
     its(:started_at) { should == Time.zone.at(1274773200) }
@@ -50,13 +52,13 @@ describe Log::Voxcast do
     
     it "should parse and create usages from trackers on process" do
       SiteUsage.should_receive(:create_usages_from_trackers!)
-      subject.process
+      subject.parse
     end
     
     it "should delay process after create" do
       subject # trigger log creation
       job = Delayed::Job.last
-      job.name.should == 'Log::Voxcast#process'
+      job.name.should == 'Log::Voxcast#parse'
       job.priority.should == 20
     end
     

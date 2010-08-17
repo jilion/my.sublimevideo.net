@@ -14,10 +14,22 @@
 #  updated_at :datetime
 #
 
-class Log < ActiveRecord::Base
+require 'carrierwave/orm/mongoid'
+
+class Log
+  include Mongoid::Document
+  include Mongoid::Versioning
+  
+  field :name
+  field :hostname
+  field :state, :default => "unparsed"
+  field :file
+  field :started_at, :type => DateTime
+  field :ended_at,   :type => DateTime
   
   # ensure there is no confusion about S3 Class
-  autoload :S3, 'log/amazon/s3'
+  autoload :Amazon, 'log/amazon'
+  autoload :S3,     'log/amazon/s3'
   
   attr_accessible :name
   
@@ -35,17 +47,17 @@ class Log < ActiveRecord::Base
   # = Callbacks =
   # =============
   
-  after_create :delay_process
+  after_create :delay_parse
   
   # =================
   # = State Machine =
   # =================
   
-  state_machine :initial => :unprocessed do
-    before_transition :unprocessed => :processed, :do => :parse_and_create_usages!
-    
-    event(:process) { transition :unprocessed => :processed }
-  end
+  # state_machine :initial => :unprocessed do
+  #   before_transition :unprocessed => :processed, :do => :parse_and_create_usages!
+  #   
+  #   event(:process) { transition :unprocessed => :processed }
+  # end
   
   # ====================
   # = Instance Methods =
@@ -54,6 +66,19 @@ class Log < ActiveRecord::Base
   def name=(attribute)
     write_attribute :name, attribute
     set_dates_and_hostname_from_name
+  end
+  
+  def unparsed?
+    state == "unparsed"
+  end
+  
+  def parse
+    parse_and_create_usages!
+    update_attributes!(:state => "parsed")
+  end
+  
+  def respond_to?(method, include_private_methods = false)
+    (Mongoid.allow_dynamic_fields && @attributes && @attributes.has_key?(method.to_s)) || super(method)
   end
   
   # =================
@@ -73,7 +98,7 @@ class Log < ActiveRecord::Base
   end
   
   def self.create_new_logs(new_logs_names)
-    existings_logs_names = select(:name).where(:name => new_logs_names).map(&:name)
+    existings_logs_names = only(:name).any_in(:name => new_logs_names).map(&:name)
     new_logs = new_logs_names.inject([]) do |new_logs, logs_name|
       new_logs << new(:name => logs_name)
     end
@@ -86,8 +111,8 @@ class Log < ActiveRecord::Base
 private
   
   # after_create
-  def delay_process
-    delay(:priority => 20).process
+  def delay_parse
+    delay(:priority => 20).parse
   end
   
   # Don't forget to delete this logs_file after using it, thx!

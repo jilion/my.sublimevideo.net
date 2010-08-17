@@ -20,7 +20,7 @@ class Log::Voxcast < Log
   # = Associations =
   # ================
   
-  has_many :site_usages
+  # has_many :site_usages
   
   # ===============
   # = Validations =
