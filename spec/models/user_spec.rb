@@ -67,7 +67,12 @@ describe User do
     it "should validate presence of email" do
       user = Factory.build(:user, :email => nil)
       user.should_not be_valid
-      user.should have(2).error_on(:email)
+      user.should have(1).error_on(:email)
+    end
+    it "should validate email" do
+      user = Factory.build(:user, :email => "beurk")
+      user.should_not be_valid
+      user.should have(1).error_on(:email)
     end
     it "should validate acceptance of terms_and_conditions" do
       user = Factory.build(:user, :terms_and_conditions => false)
@@ -81,7 +86,7 @@ describe User do
       it "should validate uniqueness of email" do
         user = Factory.build(:user, :email => @user.email)
         user.should_not be_valid
-        user.should have(2).error_on(:email)
+        user.should have(1).error_on(:email)
       end
     end
   end
