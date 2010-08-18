@@ -1,19 +1,3 @@
-# == Schema Information
-#
-# Table name: logs
-#
-#  id         :integer         not null, primary key
-#  type       :string(255)
-#  name       :string(255)
-#  hostname   :string(255)
-#  state      :string(255)
-#  file       :string(255)
-#  started_at :datetime
-#  ended_at   :datetime
-#  created_at :datetime
-#  updated_at :datetime
-#
-
 class Log::Amazon < Log
   
   # ===============
@@ -26,14 +10,14 @@ class Log::Amazon < Log
   # = Callbacks =
   # =============
   
-  before_validation :set_log_file, :on => :create
   before_validation :set_hostname, :on => :create
+  before_validation :set_log_file, :on => :create
   
   # ====================
   # = Instance Methods =
   # ====================
   
-  # before_transition on process
+  # Used in Log#parse_log
   def parse_and_create_usages!
     logs_file = copy_logs_file_to_tmp
     trackers = LogAnalyzer.parse(logs_file, self.class.config[:file_format_class_name])
@@ -61,7 +45,7 @@ private
   
   # before_validation
   def set_log_file
-    write_attribute :file, name
+    write_attribute :file_filename, name
   end
   
   # before_validation
@@ -74,7 +58,7 @@ private
       'prefix' => config[:store_dir],
       :remove_prefix => true
     }
-    if last_log = self.order(:name.desc).first
+    if last_log = self.desc(:name).first
       options['marker'] = config[:store_dir] + marker(last_log)
     end
     ::S3.logs_name_list(options)

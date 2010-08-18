@@ -17,7 +17,23 @@
 #  traffic_voxcast :integer         default(0)
 #
 
-class SiteUsage < ActiveRecord::Base
+class SiteUsage
+  include Mongoid::Document
+  include Mongoid::Timestamps
+  
+  field :site_id,         :type => Integer
+  field :started_at,      :type => DateTime
+  field :ended_at,        :type => DateTime
+  field :loader_hits,     :type => Integer, :default => 0
+  field :player_hits,     :type => Integer, :default => 0
+  field :flash_hits,      :type => Integer, :default => 0
+  field :requests_s3,     :type => Integer, :default => 0
+  field :traffic_s3,      :type => Integer, :default => 0
+  field :traffic_voxcast, :type => Integer, :default => 0
+  
+  index :site_id
+  index :started_at
+  index :ended_at
   
   attr_accessible :site, :log, :loader_hits, :player_hits, :flash_hits, :requests_s3, :traffic_s3, :traffic_voxcast
   
@@ -25,23 +41,28 @@ class SiteUsage < ActiveRecord::Base
   # = Associations =
   # ================
   
-  belongs_to :site
-  belongs_to :log
+  def site
+    Site.find_by_id(site_id)
+  end
+  def site=(site)
+    self.site_id = site.id
+  end
+  
+  referenced_in :log, :index => true
   
   # ==========
   # = Scopes =
   # ==========
   
-  scope :started_after, lambda { |date| where(:started_at.gteq => date) }
-  scope :ended_before,  lambda { |date| where(:ended_at.lt => date) }
-  scope :between,       lambda { |start_date, end_date| where(:started_at.gteq => start_date, :ended_at.lt => end_date) }
+  scope :started_after, lambda { |date| where(:started_at => { "$gte" => date }) }
+  scope :ended_before,  lambda { |date| where(:ended_at => { "$lt" => date }) }
+  scope :between,       lambda { |start_date, end_date| where(:started_at => { "$gte" => start_date }, :ended_at => { "$lt" => end_date }) }
   
   # ===============
   # = Validations =
   # ===============
   
   validates :site_id,         :presence => true
-  validates :log_id,          :presence => true
   validates :started_at,      :presence => true
   validates :ended_at,        :presence => true
   validates :loader_hits,     :presence => true
@@ -68,8 +89,8 @@ class SiteUsage < ActiveRecord::Base
     while tokens.present?
       Site.where(:token => tokens.pop(100)).each do |site|
         create!(
-          :site            => site,
           :log             => log,
+          :site            => site,
           :loader_hits     => (hits = hbr[:loader_hits]) ? hits[site.token].to_i : 0,
           :player_hits     => (hits = hbr[:player_hits]) ? hits[site.token].to_i : 0,
           :flash_hits      => (hits = hbr[:flash_hits]) ? hits[site.token].to_i : 0,
@@ -85,8 +106,8 @@ private
   
   # before_validation
   def set_dates_from_log
-    self.started_at ||= log.started_at
-    self.ended_at   ||= log.ended_at
+    self.started_at ||= log.started_at.utc
+    self.ended_at   ||= log.ended_at.utc
   end
   
   # after_save

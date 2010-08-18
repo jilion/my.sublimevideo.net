@@ -40,7 +40,10 @@ class Site < ActiveRecord::Base
   # ================
   
   belongs_to :user
-  has_many :usages, :class_name => "SiteUsage"
+  # Mongoid associtions
+  def usages
+    SiteUsage.where(:site_id => id)
+  end
   
   # ==========
   # = Scopes =

@@ -1,31 +1,18 @@
-# == Schema Information
-#
-# Table name: logs
-#
-#  id         :integer         not null, primary key
-#  type       :string(255)
-#  name       :string(255)
-#  hostname   :string(255)
-#  state      :string(255)
-#  file       :string(255)
-#  started_at :datetime
-#  ended_at   :datetime
-#  created_at :datetime
-#  updated_at :datetime
-#
-
 require 'carrierwave/orm/mongoid'
 
 class Log
   include Mongoid::Document
-  include Mongoid::Versioning
+  include Mongoid::Timestamps
   
   field :name
   field :hostname
-  field :state, :default => "unparsed"
-  field :file
   field :started_at, :type => DateTime
   field :ended_at,   :type => DateTime
+  field :parsed_at,  :type => DateTime
+  
+  index :name, :unique => true
+  index :started_at
+  index :ended_at
   
   # ensure there is no confusion about S3 Class
   autoload :Amazon, 'log/amazon'
@@ -33,7 +20,7 @@ class Log
   
   attr_accessible :name
   
-  mount_uploader :file, LogUploader
+  mount_uploader :file, LogUploader # on file_filename field!
   
   # ===============
   # = Validations =
@@ -49,16 +36,6 @@ class Log
   
   after_create :delay_parse
   
-  # =================
-  # = State Machine =
-  # =================
-  
-  # state_machine :initial => :unprocessed do
-  #   before_transition :unprocessed => :processed, :do => :parse_and_create_usages!
-  #   
-  #   event(:process) { transition :unprocessed => :processed }
-  # end
-  
   # ====================
   # = Instance Methods =
   # ====================
@@ -68,18 +45,13 @@ class Log
     set_dates_and_hostname_from_name
   end
   
-  def unparsed?
-    state == "unparsed"
+  def parsed?
+    parsed_at.present?
   end
   
-  def parse
-    parse_and_create_usages!
-    update_attributes!(:state => "parsed")
-  end
-  
-  def respond_to?(method, include_private_methods = false)
-    (Mongoid.allow_dynamic_fields && @attributes && @attributes.has_key?(method.to_s)) || super(method)
-  end
+  # def respond_to?(method, include_private_methods = false)
+  #   (Mongoid.allow_dynamic_fields && @attributes && @attributes.has_key?(method.to_s)) || super(method)
+  # end
   
   # =================
   # = Class Methods =
@@ -108,11 +80,18 @@ class Log
     HoptoadNotifier.notify(ex)
   end
   
+  def self.parse_log(id)
+    log = find(id)
+    log.parse_and_create_usages!
+    log.parsed_at = Time.now.utc
+    log.save
+  end
+  
 private
   
   # after_create
   def delay_parse
-    delay(:priority => 20).parse
+    self.class.delay(:priority => 20).parse_log(id)
   end
   
   # Don't forget to delete this logs_file after using it, thx!
