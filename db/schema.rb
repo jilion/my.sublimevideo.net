@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100811101434) do
+ActiveRecord::Schema.define(:version => 20100818125357) do
 
   create_table "admins", :force => true do |t|
     t.string   "email",                               :default => "", :null => false
@@ -66,41 +66,6 @@ ActiveRecord::Schema.define(:version => 20100811101434) do
   end
 
   add_index "invoices", ["user_id"], :name => "index_invoices_on_user_id"
-
-  create_table "logs", :force => true do |t|
-    t.string   "type"
-    t.string   "name"
-    t.string   "hostname"
-    t.string   "state"
-    t.string   "file"
-    t.datetime "started_at"
-    t.datetime "ended_at"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "logs", ["type", "ended_at"], :name => "index_logs_on_type_and_ended_at"
-  add_index "logs", ["type", "name"], :name => "index_logs_on_type_and_name"
-  add_index "logs", ["type", "started_at"], :name => "index_logs_on_type_and_started_at"
-
-  create_table "site_usages", :force => true do |t|
-    t.integer  "site_id"
-    t.integer  "log_id"
-    t.datetime "started_at"
-    t.datetime "ended_at"
-    t.integer  "loader_hits",     :default => 0
-    t.integer  "player_hits",     :default => 0
-    t.integer  "flash_hits",      :default => 0
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "requests_s3",     :default => 0
-    t.integer  "traffic_s3",      :default => 0
-    t.integer  "traffic_voxcast", :default => 0
-  end
-
-  add_index "site_usages", ["ended_at"], :name => "index_site_usages_on_ended_at"
-  add_index "site_usages", ["site_id"], :name => "index_site_usages_on_site_id"
-  add_index "site_usages", ["started_at"], :name => "index_site_usages_on_started_at"
 
   create_table "sites", :force => true do |t|
     t.integer  "user_id"

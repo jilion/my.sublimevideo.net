@@ -23,11 +23,11 @@ describe Log::Voxcast do
     
     subject { Factory.build(:log_voxcast, :name => 'cdn.sublimevideo.net.log.1274773200-1274773260.gz') }
     
-    it { should be_unprocessed }
+    it { should_not be_parsed }
     it { should be_valid }
     its(:hostname)   { should == 'cdn.sublimevideo.net' }
-    its(:started_at) { should == Time.zone.at(1274773200) }
-    its(:ended_at)   { should == Time.zone.at(1274773260) }
+    its(:started_at) { should == Time.zone.at(1274773200).utc }
+    its(:ended_at)   { should == Time.zone.at(1274773260).utc }
     
     after(:each) { VCR.eject_cassette }
   end
@@ -37,9 +37,9 @@ describe Log::Voxcast do
     
     subject { Factory(:log_voxcast) }
     
-    it "should have good log url" do
-      subject.file.url.should == "/uploads/voxcast/cdn.sublimevideo.net.log.1275002700-1275002760.gz"
-    end
+    its(:created_at) { should be_present }
+    its("file.url")  { should == "/uploads/voxcast/cdn.sublimevideo.net.log.1275002700-1275002760.gz" }
+    its("file.size") { should == 1149 }
     
     it "should have good log content" do
       log = Log::Voxcast.find(subject.id) # to be sure that log is well saved with CarrierWave
@@ -48,15 +48,21 @@ describe Log::Voxcast do
       end
     end
     
-    it "should parse and create usages from trackers on process" do
+    it "should parse and create usages from trackers on parse" do
       SiteUsage.should_receive(:create_usages_from_trackers!)
-      subject.process
+      Log::Voxcast.parse_log(subject.id)
     end
     
-    it "should delay process after create" do
+    it "should set parsed_at on parse" do
+      SiteUsage.stub(:create_usages_from_trackers!)
+      Log::Voxcast.parse_log(subject.id)
+      subject.reload.parsed_at.should >= subject.created_at
+    end
+    
+    it "should delay parse_log after create" do
       subject # trigger log creation
       job = Delayed::Job.last
-      job.name.should == 'Log::Voxcast#process'
+      job.name.should == 'Class#parse_log'
       job.priority.should == 20
     end
     

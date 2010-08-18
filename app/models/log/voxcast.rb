@@ -20,7 +20,7 @@ class Log::Voxcast < Log
   # = Associations =
   # ================
   
-  has_many :site_usages
+  references_many :usages, :class_name => "SiteUsage", :foreign_key => :log_id
   
   # ===============
   # = Validations =
@@ -38,7 +38,7 @@ class Log::Voxcast < Log
   # = Instance Methods =
   # ====================
   
-  # before_transition on process
+  # Used in Log#parse_log
   def parse_and_create_usages!
     logs_file = copy_logs_file_to_tmp
     trackers = LogAnalyzer.parse(logs_file, self.class.config[:file_format_class_name])
@@ -51,10 +51,8 @@ class Log::Voxcast < Log
   # =================
   
   def self.delay_fetch_download_and_create_new_logs(interval = 1.minute)
-    # unless Delayed::Job.already_delayed?('%Log::Voxcast%fetch_download_and_create_new_logs%', 2)
     unless Delayed::Job.already_delayed?('%Log::Voxcast%fetch_download_and_create_new_logs%')
       delay(:priority => 10, :run_at => interval.from_now).fetch_download_and_create_new_logs
-      # delay(:priority => 10, :run_at => (interval + 1.minute).from_now).fetch_download_and_create_new_logs
     end
   end
   
@@ -75,8 +73,8 @@ private
   def set_dates_and_hostname_from_name
     if matches = name.match(/^(.+)\.log\.(\d+)-(\d+)\.\w+$/)
       self.hostname   ||= matches[1]
-      self.started_at ||= Time.at(matches[2].to_i)
-      self.ended_at   ||= Time.at(matches[3].to_i)
+      self.started_at ||= Time.at(matches[2].to_i).utc
+      self.ended_at   ||= Time.at(matches[3].to_i).utc
     end
   end
   

@@ -39,6 +39,11 @@ Spork.each_run do
     # examples within a transaction, comment the following line or assign false
     # instead of true.
     config.use_transactional_fixtures = true
+    
+    # Clear MongoDB Collection
+    config.before :each do
+      Mongoid.master.collections.select {|c| c.name !~ /system/ }.each(&:drop)
+    end
   end
   
 end

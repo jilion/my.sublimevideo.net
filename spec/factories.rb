@@ -34,7 +34,7 @@ Factory.define :log_s3_licenses, :class => Log::Amazon::S3::Licenses do |f|
 end
 
 Factory.define :site_usage do |f|
-  f.association :site
+  f.site_id     { Factory(:site).id }
   f.association :log, :factory => :log_voxcast
 end
 

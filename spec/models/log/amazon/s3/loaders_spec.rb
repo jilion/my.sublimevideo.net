@@ -30,15 +30,15 @@ describe Log::Amazon::S3::Loaders do
       log.file.read.should include("sublimevideo.loaders")
     end
      
-    it "should parse and create usages from trackers on process" do
+    it "should parse and create usages from trackers on parse_log" do
       SiteUsage.should_receive(:create_usages_from_trackers!)
-      subject.process
+      Log::Amazon::S3::Loaders.parse_log(subject.id)
     end
     
-    it "should delay process after create" do
+    it "should delay parse_log after create" do
       subject # trigger log creation
       job = Delayed::Job.last
-      job.name.should == 'Log::Amazon::S3::Loaders#process'
+      job.name.should == 'Class#parse_log'
       job.priority.should == 20
     end
   end
