@@ -67,4 +67,5 @@ group :test do
   gem 'factory_girl_rails'
   gem 'webmock'
   gem 'vcr', '>= 1.0.3'
+  gem 'database_cleaner'
 end
