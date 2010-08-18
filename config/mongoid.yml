@@ -6,5 +6,8 @@ test:
   host: localhost
   database: msv_test
   
+staging:
+  uri: <%= ENV['MONGOHQ_URL'] %>
+  
 production:
   uri: <%= ENV['MONGOHQ_URL'] %>
