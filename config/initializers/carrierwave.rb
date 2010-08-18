@@ -1,6 +1,6 @@
 CarrierWave.configure do |config|
   case Rails.env
-  when 'production', 'development'
+  when 'production', 'staging', 'development'
     config.cache_dir            = Rails.root.join('tmp/uploads')
     config.storage              = :s3
     config.s3_cnamed            = true if S3.cnamed
