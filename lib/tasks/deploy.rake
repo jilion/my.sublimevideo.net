@@ -9,18 +9,19 @@ namespace :deploy do
   TARGET = 'production'
   
   desc "Heroku staging deploy"
-  task :staging => [:update_assets, :set_staging_app, :push, :restart, :tag]
+  task :staging            => [:update_assets, :set_staging_app, :push, :restart, :tag]
+  task :staging_quick      => [:set_staging_app, :push, :restart, :tag]
   task :staging_migrations => [:set_staging_app, :push, :copy_production_db, :migrate, :restart, :tag]
-  task :staging_console => [:set_staging_app, :console]
-  task :staging_rollback => [:set_staging_app, :rollback]
+  task :staging_console    => [:set_staging_app, :console]
+  task :staging_rollback   => [:set_staging_app, :rollback]
   
   desc "Heroku production deploy"
-  task :production_off => [:set_production_app, :off]
-  task :production_on => [:set_production_app, :on]
-  task :production => [:set_production_app, :push, :restart, :tag]
+  task :production_off        => [:set_production_app, :off]
+  task :production_on         => [:set_production_app, :on]
+  task :production            => [:set_production_app, :push, :restart, :tag]
   task :production_migrations => [:set_production_app, :push, :migrate, :restart, :tag]
-  task :production_console => [:set_production_app, :console]
-  task :production_rollback => [:set_production_app, :rollback]
+  task :production_console    => [:set_production_app, :console]
+  task :production_rollback   => [:set_production_app, :rollback]
   
   # Don't call directly
   task :rollback => [:push_previous, :restart]
