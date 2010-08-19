@@ -26,7 +26,7 @@ class Log
   # = Validations =
   # ===============
   
-  validates :name,       :presence => true
+  validates :name,       :presence => true, :uniqueness => true
   validates :started_at, :presence => true
   validates :ended_at,   :presence => true
   
@@ -48,10 +48,6 @@ class Log
   def parsed?
     parsed_at.present?
   end
-  
-  # def respond_to?(method, include_private_methods = false)
-  #   (Mongoid.allow_dynamic_fields && @attributes && @attributes.has_key?(method.to_s)) || super(method)
-  # end
   
   # =================
   # = Class Methods =
@@ -75,7 +71,7 @@ class Log
       new_logs << new(:name => logs_name)
     end
     new_logs = new_logs.select { |l| existings_logs_names.exclude? l.name }
-    new_logs.each { |l| l.save }
+    new_logs.map(&:save)
   rescue => ex
     HoptoadNotifier.notify(ex)
   end

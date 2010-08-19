@@ -152,8 +152,8 @@ describe Invoice do
       end
       
       it "should reset sites hits caches" do
-        VCR.use_cassette('one_saved_logs') do
-          @log = Factory(:log_voxcast, :started_at => 2.minutes.ago, :ended_at => 1.minutes.ago)
+        VCR.use_cassette('one_logs') do
+          @log = Factory(:log_voxcast, :name => 'cdn.sublimevideo.net.log.1274773200-1274773260.gz', :started_at => 2.minutes.ago, :ended_at => 1.minutes.ago)
         end
         Factory(:site_usage, :site => @site1, :log => @log, :loader_hits => 12, :player_hits => 21)
         Factory(:site_usage, :site => @site2, :log => @log, :loader_hits => 23)

@@ -1,19 +1,3 @@
-# == Schema Information
-#
-# Table name: logs
-#
-#  id         :integer         not null, primary key
-#  type       :string(255)
-#  name       :string(255)
-#  hostname   :string(255)
-#  state      :string(255)
-#  file       :string(255)
-#  started_at :datetime
-#  ended_at   :datetime
-#  created_at :datetime
-#  updated_at :datetime
-#
-
 require 'spec_helper'
 
 describe Log::Voxcast do
@@ -30,6 +14,21 @@ describe Log::Voxcast do
     its(:ended_at)   { should == Time.zone.at(1274773260).utc }
     
     after(:each) { VCR.eject_cassette }
+  end
+  
+  describe "validates" do
+    context "with already the same log in db" do
+      before(:each) { VCR.insert_cassette('one_saved_logs') }
+      
+      it "should validate uniqueness of name" do
+        Factory(:log_voxcast) 
+        log = Factory.build(:log_voxcast)
+        log.should_not be_valid
+        log.errors[:name].should be_present
+      end
+      
+      after(:each) { VCR.eject_cassette }
+    end
   end
   
   context "created with valid attributes" do

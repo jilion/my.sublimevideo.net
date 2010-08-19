@@ -8,6 +8,9 @@ test:
   
 staging:
   uri: <%= ENV['MONGOHQ_URL'] %>
+  persist_in_safe_mode: true
   
 production:
   uri: <%= ENV['MONGOHQ_URL'] %>
+  persist_in_safe_mode: true
+  
