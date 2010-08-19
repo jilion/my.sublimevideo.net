@@ -1,4 +1,7 @@
+require 'rack/ensure_ssl'
+
 MySublimeVideo::Application.configure do
+  config.middleware.insert_before(ActionDispatch::Static, Rack::EnsureSsl)
   # Settings specified here will take precedence over those in config/environment.rb
   
   # In the development environment your application's code is reloaded on
