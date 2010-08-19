@@ -1,8 +1,6 @@
-require 'rack/ensure_ssl'
-
 MySublimeVideo::Application.configure do
-  config.middleware.insert_before(ActionDispatch::Static, Rack::EnsureSsl)
-  
+  config.middleware.use(Rack::SslEnforcer)
+
   # The production environment is meant for finished, "live" apps.
   # Code is not reloaded between requests
   config.cache_classes = true

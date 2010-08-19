@@ -42,7 +42,7 @@ MySublimeVideo::Application.routes.draw do
     post :create,  :path => '/support', :as => ''
   end
   
-  root :to => redirect('/sites')
+  root :to => redirect {|p, req| "https://#{req.host}/sites" }
   
   # =========
   # = Admin =
