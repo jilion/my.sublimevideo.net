@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/acceptance_helper'
 feature "Sites actions:" do
   
   background do
-    sign_in_as_user
+    sign_in_as :user
   end
   
   scenario "add a new site" do
@@ -78,11 +78,13 @@ feature "Sites actions:" do
     page.should have_css('a.sort.hostname')
   end
   
-  scenario "user suspended" do
-    @current_user.suspend
-    visit "/sites"
+  if MySublimeVideo::Release.public?
+    scenario "user suspended" do
+      @current_user.suspend
+      visit "/sites"
     
-    current_url.should =~ %r(http://[^/]+/suspended)
+      current_url.should =~ %r(http://[^/]+/suspended)
+    end
   end
   
 end

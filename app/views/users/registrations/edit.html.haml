@@ -1,28 +1,25 @@
-= content_for :title do
-  = "Edit my account"
+= title_and_content_header("Edit my account")
 
-%h2= "Edit my account"
-
-- if current_user.credit_card?
-  #credit_card_summary
-    %h3.section_title= "Billing Info"
-    %p{ :class => current_user.cc_type }<
-      = "#{current_user.credit_card_name} ending in <strong>#{current_user.cc_last_digits}</strong>".html_safe
-      = link_to 'Change credit card', edit_credit_card_path
-- else
-  #trial_box
-    .credit_card
-      = link_to edit_credit_card_path, :class => "add_a_credit_card" do
-        %strong= "Add a Credit Card"
-        %span
-          %em= "We invite you to add your credit card to prevent any cut in the player delivery when your trial will end."
-
+- if public?
+  - if current_user.credit_card?
+    #credit_card_summary
+      %h3.section_title= "Billing Info"
+      %p{ :class => current_user.cc_type }<
+        = "#{current_user.credit_card_name} ending in <strong>#{current_user.cc_last_digits}</strong>".html_safe
+        = link_to 'Change credit card', edit_credit_card_path
+  - else
+    #trial_box
+      .credit_card
+        = link_to edit_credit_card_path, :class => "add_a_credit_card" do
+          %strong= "Add a Credit Card"
+          %span
+            %em= "We invite you to add your credit card to prevent any cut in the player delivery when your trial will end."
+          
 = render 'users/full_name_form'
 .spacer
 
-- resource ||= current_user
-- resource_name ||= :user
-= form_for resource, :as => resource_name, :url => registration_path(resource_name), :html => { :method => :put, :class => "main_form section" } do |f|
+- @user ||= current_user
+= form_for @user, :url => update_user_registration_path, :html => { :method => :put, :class => "main_form section" } do |f|
   %h3.section_title= "Email & Password"
   .entry.email
     = f.label :email, "", :class => "icon"
@@ -42,9 +39,8 @@
     = f.submit "Update", :class => "submit small"
 .spacer
 
-= render 'users/email_notifications_form'
-
-= render 'users/video_settings_form'
+- if public?
+  = render 'users/email_notifications_form'
 
 -# %h3 Cancel my account
 -# 

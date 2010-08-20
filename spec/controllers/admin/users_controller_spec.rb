@@ -28,6 +28,11 @@ describe Admin::UsersController do
       get :index
       response.should redirect_to(new_admin_session_path)
     end
+    
+    it "should respond with redirect to GET :index" do
+      get :show, :id => '1'
+      response.should redirect_to(new_admin_session_path)
+    end
   end
   
 private

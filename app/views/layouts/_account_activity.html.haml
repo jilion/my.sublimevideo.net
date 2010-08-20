@@ -1,37 +1,38 @@
-- if user_signed_in?
-  - if current_user.trial?
-    #trial_box
-      %h4= "Trial Usage"
-      .progress_bar
-        - if current_user.trial_player_hits > 0
-          .active_usage{ :style => "width:#{ current_user.trial_player_hits_percentage <= 5 ? 5 : current_user.trial_player_hits_percentage }%" }
-      %ul#trial_legend
-        %li.used
-          = "Player Hits"
-          %em= number_with_delimiter(current_user.trial_player_hits)
-        %li.free
-          = "Free Hits Left"
-          %em= number_with_delimiter(current_user.free_hits_left)
-      - if current_user.trial_warning?
-        = link_to "", :class => "warning", :onclick => "return false" do
-          %span
-            %em= raw "The trial is also limited by a total amount of #{number_with_delimiter(User::Trial.free_loader_hits)} \"requests\", you've currently used #{number_with_delimiter(current_user.trial_loader_hits)} of them while only having accounted #{number_with_delimiter(current_user.trial_player_hits)} player hits: it probably means you're using the embed code in a page without any videos on it."
-      - unless current_user.credit_card?
-        .credit_card
-          = link_to edit_credit_card_path, :class => "add_a_credit_card" do
-            %strong= "Add a Credit Card"
+- if public?
+  - if user_signed_in?
+    - if current_user.trial?
+      #trial_box
+        %h4= "Trial Usage"
+        .progress_bar
+          - if current_user.trial_player_hits > 0
+            .active_usage{ :style => "width:#{ current_user.trial_player_hits_percentage <= 5 ? 5 : current_user.trial_player_hits_percentage }%" }
+        %ul#trial_legend
+          %li.used
+            = "Player Hits"
+            %em= number_with_delimiter(current_user.trial_player_hits)
+          %li.free
+            = "Free Hits Left"
+            %em= number_with_delimiter(current_user.free_hits_left)
+        - if current_user.trial_warning?
+          = link_to "", :class => "warning", :onclick => "return false" do
             %span
-              %em= "We invite you to add your credit card to prevent any cut in the player delivery when your trial will end."
+              %em= raw "The trial is also limited by a total amount of #{number_with_delimiter(User::Trial.free_loader_hits)} \"requests\", you've currently used #{number_with_delimiter(current_user.trial_loader_hits)} of them while only having accounted #{number_with_delimiter(current_user.trial_player_hits)} player hits: it probably means you're using the embed code in a page without any videos on it."
+        - unless current_user.credit_card?
+          .credit_card
+            = link_to edit_credit_card_path, :class => "add_a_credit_card" do
+              %strong= "Add a Credit Card"
+              %span
+                %em= "We invite you to add your credit card to prevent any cut in the player delivery when your trial will end."
               
-  - else
-    - if current_user.credit_card?
-      #account_activity_box
-        .current_balance
-          %h4= "Your current usage"
-          %p.price
-            %strong= cents_to_dollars(Invoice.current(current_user).amount)
-        = link_to "Billing reports", invoices_path, :class => "billing_reports"
     - else
-      #suspend_box
-        %p.note= "Your free trial of SublimeVideo is over. Please add a Credit Card to continue."
-        = link_to "Add a Credit Card", edit_credit_card_path, :class => "add_a_credit_card"
+      - if current_user.credit_card?
+        #account_activity_box
+          .current_balance
+            %h4= "Your current usage"
+            %p.price
+              %strong= cents_to_dollars(Invoice.current(current_user).amount)
+          = link_to "Billing reports", invoices_path, :class => "billing_reports"
+      - else
+        #suspend_box
+          %p.note= "Your free trial of SublimeVideo is over. Please add a Credit Card to continue."
+          = link_to "Add a Credit Card", edit_credit_card_path, :class => "add_a_credit_card"

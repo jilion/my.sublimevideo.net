@@ -1,9 +1,8 @@
 # coding: utf-8
 require 'state_machine'
-require 'ffaker'
+require 'ffaker' if Rails.env.development?
 
 BASE_USERS = [["Mehdi Aminian", "mehdi@jilion.com"], ["Zeno Crivelli", "zeno@jilion.com"], ["Thibaud Guillaume-Gentil", "thibaud@jilion.com"], ["Octave Zangs", "octave@jilion.com"], ["Rémy Coutable", "remy@jilion.com"]]
-PROFILES    = %w[Desktop 3G WiFi Ogg]
 
 namespace :db do
   
@@ -14,47 +13,33 @@ namespace :db do
     
     desc "Empty all the tables"
     task :empty_all_tables => :environment do
-      timed { empty_tables("delayed_jobs", Invoice, Log, VideoUsage, VideoEncoding, Video, VideoProfileVersion, VideoProfile, SiteUsage, Site, User, Admin) }
+      timed { empty_tables("delayed_jobs", Invoice, Log, SiteUsage, Site, User, Admin) }
     end
     
     desc "Load all development fixtures."
     task :all => :environment do
       delete_all_files_in_public('uploads/tmp')
       timed { create_admins }
-      timed { create_users  }
-      timed { create_sites  }
-      timed { create_video_profiles }
-      timed { create_videos }
+      timed { create_users(argv_count) }
+      timed { create_sites }
     end
     
     desc "Load User development fixtures."
     task :users => :environment do
-      timed { empty_tables(Site, User)                                           }
-      timed { create_users((ARGV.size > 1 ? ARGV[1].sub(/COUNT=/, '').to_i : 5)) }
+      timed { empty_tables(Site, User) }
+      timed { create_users(argv_count) }
     end
     
     desc "Load Admin development fixtures."
     task :admins => :environment do
       timed { empty_tables(Admin) }
-      timed { create_admins       }
+      timed { create_admins }
     end
     
     desc "Load Site development fixtures."
     task :sites => :environment do
-      timed { empty_tables(Site)                                                 }
-      timed { create_sites((ARGV.size > 1 ? ARGV[1].sub(/COUNT=/, '').to_i : 5)) }
-    end
-    
-    desc "Load Video Profile development fixtures."
-    task :video_profiles => :environment do
-      timed { empty_tables(VideoProfileVersion, VideoProfile) }
-      timed { create_video_profiles }
-    end
-    
-    desc "Load Video development fixtures."
-    task :videos => :environment do
-      timed { empty_tables(VideoEncoding, Video, VideoProfileVersion, VideoProfile) }
-      timed { create_videos((ARGV.size > 1 ? ARGV[1].sub(/COUNT=/, '').to_i : 1))   }
+      timed { empty_tables(Site) }
+      timed { create_sites }
     end
     
   end
@@ -65,7 +50,7 @@ namespace :sm do
   
   desc "Draw the States Diagrams for every model having State Machine"
   task :draw => :environment do
-    %x(rake state_machine:draw CLASS=Invoice,Log,Site,User,Video,VideoEncoding,VideoProfileVersion TARGET=doc/state_diagrams FORMAT=jpg ORIENTATION=landscape)
+    %x(rake state_machine:draw CLASS=Invoice,Log,Site,User TARGET=doc/state_diagrams FORMAT=jpg ORIENTATION=landscape)
   end
   
 end
@@ -78,7 +63,7 @@ def empty_tables(*tables)
     if table.is_a?(Class)
       table.delete_all
     else
-      Video.connection.delete("DELETE FROM #{table} WHERE 1=1")
+      Site.connection.delete("DELETE FROM #{table} WHERE 1=1")
     end
   end
   print "#{tables.join(', ')} empty!\n"
@@ -111,19 +96,19 @@ def create_users(count = 0)
       user.email        = Faker::Internet.email
       user.password     = '123456'
       user.confirmed_at = rand(10).days.ago
-      user.save!
+      user.save
     end
     print "#{count} random users created!\n"
   end
 end
 
-def create_sites(count = 1)
+def create_sites(max = 5)
   delete_all_files_in_public('uploads/licenses')
   delete_all_files_in_public('uploads/loaders')
   create_users if User.all.empty?
   
   User.all.each do |user|
-    count.times do |i|
+    rand(max).times do |i|
       site            = user.sites.build
       site.hostname   = "#{rand > 0.5 ? '' : %w[www. blog. my. git. sv. ji. geek.].sample}#{Faker::Internet.domain_name}"
       site.created_at = rand(1500).days.ago
@@ -134,99 +119,9 @@ def create_sites(count = 1)
       site.activate
     end
   end
-  print "#{count} random sites created for each user!\n"
+  print "0-#{max} random sites created for each user!\n"
 end
 
-def create_video_profiles
-  mp4_sd_profile         = VideoProfile.new(:title => "MP4 SD", :min_width => 0, :min_height => 0, :posterframeable => true)
-  mp4_sd_profile.name    = "_sd"
-  mp4_sd_profile.extname = "mp4"
-  mp4_sd_profile.save(:validate => false)
-  
-  mp4_sd_profile_version = VideoProfileVersion.new(:width => 0, :height => 0, :command => "aa", :profile => mp4_sd_profile)
-  mp4_sd_profile_version.panda_profile_id = '2c7ec02413b40df7f0b70966e530e90a'
-  mp4_sd_profile_version.state = 'active'
-  mp4_sd_profile_version.save(:validate => false)
-  
-  mp4_hq_profile         = VideoProfile.new(:title => "MP4 HQ", :min_width => 854, :min_height => 480, :posterframeable => true)
-  mp4_hq_profile.name    = "_hq"
-  mp4_hq_profile.extname = "mp4"
-  mp4_hq_profile.save(:validate => false)
-  
-  mp4_hq_profile_version = VideoProfileVersion.new(:width => 0, :height => 0, :command => "aa", :profile => mp4_hq_profile)
-  mp4_hq_profile_version.panda_profile_id = '36eaadd6c3c4be0aa042ec4f2ef52db6'
-  mp4_hq_profile_version.state = 'active'
-  mp4_hq_profile_version.save(:validate => false)
-  
-  mp4_hd_profile         = VideoProfile.new(:title => "MP4 HD", :min_width => 1280, :min_height => 720, :posterframeable => true)
-  mp4_hd_profile.name    = "_hd"
-  mp4_hd_profile.extname = "mp4"
-  mp4_hd_profile.save(:validate => false)
-  
-  mp4_hd_profile_version = VideoProfileVersion.new(:width => 0, :height => 0, :command => "aa", :profile => mp4_hd_profile)
-  mp4_hd_profile_version.panda_profile_id = '22bf76ac4cfe2fb266e08d33453a6893'
-  mp4_hd_profile_version.state = 'active'
-  mp4_hd_profile_version.save(:validate => false)
-  
-  print "Three video profiles with one version created!\n"
-end
-
-def create_videos(count = 1)
-  delete_all_files_in_public('uploads/videos')
-  create_users if User.all.empty?
-  
-  create_video_profiles if VideoProfile.all.empty?
-  VideoProfileVersion.last.activate unless VideoProfileVersion.last.active?
-  
-  panda_video_id = Transcoder.post(:video, { :file => File.open("#{Rails.root}/spec/fixtures/railscast_intro.mov"), :profiles => 'none' })[:id]
-  
-  User.all.each do |user|
-    count.times do |i|
-      video = user.videos.build
-      video.panda_video_id = panda_video_id
-      video.created_at     = rand(1500).days.ago
-      video.save!
-      video.pandize
-    end
-  end
-  print "#{User.all.size * count * (VideoProfileVersion.active.all.size + 1)} videos (1 video and #{VideoProfileVersion.active.all.size} encodings per user) created!\n"
-end
-
-def timed(&block)
-  if block_given?
-    start_time = Time.now
-    yield
-    print "\tDone in #{Time.now - start_time}s!\n\n"
-  else
-    print "\n\nYou should pass a block to this method!\n\n"
-  end
-end
-
-def delete_all_files_in_public(path)
-  if path.gsub('.', '') =~ /\w+/ # don't remove all files and directories in /public ! ;)
-    print "Deleting all files and directories in /public/#{path}\n"
-    timed do
-      Dir.glob("#{Rails.public_path}/#{path}/**/*", File::FNM_DOTMATCH).each do |filename|
-        File.delete(filename) if File.file?(filename) && ['.', '..'].exclude?(File.basename(filename))
-      end
-      Dir.glob("#{Rails.public_path}/#{path}/**/*", File::FNM_DOTMATCH).each do |filename|
-        Dir.delete(filename) if File.directory?(filename) && ['.', '..'].exclude?(File.basename(filename))
-      end
-    end
-  end
-end
-
-def disable_perform_deliveries(&block)
-  if block_given?
-    original_perform_deliveries = ActionMailer::Base.perform_deliveries
-    # Disabling perform_deliveries (avoid to spam fakes email adresses)
-    ActionMailer::Base.perform_deliveries = false
-    
-    yield
-    
-    # Switch back to the original perform_deliveries
-    ActionMailer::Base.perform_deliveries = original_perform_deliveries
-  else
-    print "\n\nYou should pass a block to this method!\n\n"
-  end
+def argv_count
+  ARGV.size > 1 ? ARGV[1].sub(/COUNT=/, '').to_i : 5
 end

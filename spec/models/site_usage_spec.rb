@@ -1,22 +1,3 @@
-# == Schema Information
-#
-# Table name: site_usages
-#
-#  id                :integer         not null, primary key
-#  site_id           :integer
-#  log_id            :integer
-#  started_at        :datetime
-#  ended_at          :datetime
-#  loader_hits       :integer         default(0)
-#  player_hits       :integer         default(0)
-#  flash_hits        :integer         default(0)
-#  created_at        :datetime
-#  updated_at        :datetime
-#  requests_s3       :integer         default(0)
-#  bandwidth_s3      :integer         default(0)
-#  bandwidth_voxcast :integer         default(0)
-#
-
 require 'spec_helper'
 
 describe SiteUsage do
@@ -53,16 +34,16 @@ describe SiteUsage do
     end
     
     it "should clean trackers" do
-      SiteUsage.hits_bandwidth_and_requests_from(@trackers).should == {
+      SiteUsage.hits_traffic_and_requests_from(@trackers).should == {
         :loader_hits       => { "g3325oz4" => 3, "g8thugh6" => 1},
         :player_hits       => { "g3325oz4" => 3, "g8thugh6" => 7},
         :flash_hits        => {},
-        :bandwidth_voxcast => { "g3325oz4" => 70696, "g8thugh6" => 367093 }
+        :traffic_voxcast => { "g3325oz4" => 70696, "g8thugh6" => 367093 }
       }
     end
     
     it "should get tokens from trackers" do
-      hbr = SiteUsage.hits_bandwidth_and_requests_from(@trackers)
+      hbr = SiteUsage.hits_traffic_and_requests_from(@trackers)
       SiteUsage.tokens_from(hbr).should == ["g3325oz4", "g8thugh6"]
     end
     
@@ -72,14 +53,14 @@ describe SiteUsage do
       usages.map(&:site).should include(@site1)
       usages.map(&:site).should include(@site2)
       usage = usages.select { |u| u.site == @site1 }.first
-      usage.log.should               == @log
-      usage.site.should              == @site1
-      usage.loader_hits.should       == 3
-      usage.player_hits.should       == 3
-      usage.flash_hits.should        == 0
-      usage.requests_s3.should       == 0
-      usage.bandwidth_s3.should      == 0
-      usage.bandwidth_voxcast.should == 70696
+      usage.log.should             == @log
+      usage.site.should            == @site1
+      usage.loader_hits.should     == 3
+      usage.player_hits.should     == 3
+      usage.flash_hits.should      == 0
+      usage.requests_s3.should     == 0
+      usage.traffic_s3.should      == 0
+      usage.traffic_voxcast.should == 70696
     end
   end
   
@@ -97,14 +78,14 @@ describe SiteUsage do
     end
     
     it "should clean trackers" do
-      SiteUsage.hits_bandwidth_and_requests_from(@trackers).should == {
+      SiteUsage.hits_traffic_and_requests_from(@trackers).should == {
         :requests_s3=>{"fnhbfvkb"=>1, "7jbwuuni"=>1, "gperx9p4"=>1, "pbgopxwy"=>1, "6vibplhv"=>1, "ub4rrhk4"=>1},
-        :bandwidth_s3=>{"fnhbfvkb"=>734, "gperx9p4"=>727, "7jbwuuni"=>734, "pbgopxwy"=>734, "6vibplhv"=>734, "ub4rrhk4"=>734}
+        :traffic_s3=>{"fnhbfvkb"=>734, "gperx9p4"=>727, "7jbwuuni"=>734, "pbgopxwy"=>734, "6vibplhv"=>734, "ub4rrhk4"=>734}
       }
     end
     
     it "should get tokens from trackers" do
-      hbr = SiteUsage.hits_bandwidth_and_requests_from(@trackers)
+      hbr = SiteUsage.hits_traffic_and_requests_from(@trackers)
       SiteUsage.tokens_from(hbr).should include("fnhbfvkb")
       SiteUsage.tokens_from(hbr).should include("7jbwuuni")
       SiteUsage.tokens_from(hbr).should include("gperx9p4")
@@ -125,8 +106,8 @@ describe SiteUsage do
       usage.player_hits.should       == 0
       usage.flash_hits.should        == 0
       usage.requests_s3.should       == 1
-      usage.bandwidth_s3.should      == 727
-      usage.bandwidth_voxcast.should == 0
+      usage.traffic_s3.should      == 727
+      usage.traffic_voxcast.should == 0
     end
   end
   

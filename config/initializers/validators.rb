@@ -1,1 +1,0 @@
-Dir[Rails.root.join('lib', 'validators', '*.rb')].each { |path| require path }

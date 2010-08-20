@@ -2,24 +2,24 @@
 #
 # Table name: sites
 #
-#  id                      :integer         not null, primary key
-#  user_id                 :integer
-#  hostname                :string(255)
-#  dev_hostnames           :string(255)
-#  token                   :string(255)
-#  license                 :string(255)
-#  loader                  :string(255)
-#  state                   :string(255)
-#  loader_hits_cache       :integer         default(0)
-#  player_hits_cache       :integer         default(0)
-#  flash_hits_cache        :integer         default(0)
-#  archived_at             :datetime
-#  created_at              :datetime
-#  updated_at              :datetime
-#  player_mode             :string(255)     default("stable")
-#  requests_s3_cache       :integer         default(0)
-#  bandwidth_s3_cache      :integer         default(0)
-#  bandwidth_voxcast_cache :integer         default(0)
+#  id                    :integer         not null, primary key
+#  user_id               :integer
+#  hostname              :string(255)
+#  dev_hostnames         :string(255)
+#  token                 :string(255)
+#  license               :string(255)
+#  loader                :string(255)
+#  state                 :string(255)
+#  loader_hits_cache     :integer         default(0)
+#  player_hits_cache     :integer         default(0)
+#  flash_hits_cache      :integer         default(0)
+#  archived_at           :datetime
+#  created_at            :datetime
+#  updated_at            :datetime
+#  player_mode           :string(255)     default("stable")
+#  requests_s3_cache     :integer         default(0)
+#  traffic_s3_cache      :integer         default(0)
+#  traffic_voxcast_cache :integer         default(0)
 #
 
 # coding: utf-8
@@ -65,7 +65,7 @@ describe Site do
         end
       end
       
-      %w[ftp://asdasd.com asdasd.com 124.123.151.123 htp://aasds.com www.youtube.com?video=31231].each do |host|
+      %w[ftp://asdasd.com asdasd.com 124.123.151.123 htp://aasds.com www.youtube.com?v=31231].each do |host|
         it "should validate non-validity of hostname: #{host}" do
           site = Factory.build(:site, :hostname => host)
           site.should be_valid
@@ -156,11 +156,11 @@ describe Site do
       end
       
       it "should clean valid hostname (hostname should never contain /.+://(www.)?/)" do
-        site = Factory(:site, :hostname => 'http://www.youtube.com?video=31231')
+        site = Factory(:site, :hostname => 'http://www.youtube.com?v=31231')
         site.hostname.should == 'youtube.com'
       end
       
-      %w[http://www.youtube.com?video=31231 www.youtube.com?video=31231 youtube.com?video=31231].each do |host|
+      %w[http://www.youtube.com?v=31231 www.youtube.com?v=31231 youtube.com?v=31231].each do |host|
         it "should clean invalid hostname #{host} (hostname should never contain /.+://(www.)?/)" do
           site = Factory.build(:site, :hostname => host)
           site.hostname.should == "youtube.com"

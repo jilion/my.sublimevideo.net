@@ -1,5 +1,12 @@
 en:
   flash:
+    credit_cards:
+      update:
+        notice: "Your credit card information was successfully (and securely) saved."
+    tickets:
+      create:
+        notice: "Your message has been submitted."
+        
     actions:
       create:
         notice: '%{resource_name} was successfully created.'
@@ -9,6 +16,3 @@ en:
         notice: '%{resource_name} was successfully destroyed.'
         alert: '%{resource_name} could not be destroyed.'
         
-    videos:
-      create:
-        notice: "Your video has been uploaded, you will be notified when all the formats will be ready."

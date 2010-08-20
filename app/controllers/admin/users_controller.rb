@@ -2,7 +2,7 @@ class Admin::UsersController < Admin::AdminController
   
   # GET /admin/users
   def index
-    @users = User.includes(:sites, :videos)
+    @users = User.scoped.includes(:sites)
     respond_with(@users)
   end
   

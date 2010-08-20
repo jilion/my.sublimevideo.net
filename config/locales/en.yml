@@ -1,25 +1,18 @@
-# Sample localization file for English. Add more files in this directory for other locales.
-# See http://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
-
 en:
-  # activemodel:
-  #   attributes:
-  #     site:
-  #       dev_hostnames: "Development domains"
-  #       hostname: "Domain"
   attributes:
-    dev_hostnames: "Development domains"
+    dev_hostnames:        "Development domains"
     terms_and_conditions: "Terms & Conditions"
-    hostname: "Domain"
-    cc_type: "Card type"
-    cc_number: "Card number"
+    hostname:     "Domain"
+    cc_type:      "Card type"
+    cc_number:    "Card number"
     cc_expire_on: "Expiration date"
     cc_full_name: "Name on Card"
     cc_verification_value: "CSC"
     
-    min_width: "Minimum width"
+    min_width:  "Minimum width"
     min_height: "Minimum height"
-      
+    type:       ""
+    
   time:
     formats:
       date: "%B %d, %Y"
@@ -27,5 +20,13 @@ en:
   date:
     formats:
       default: "%B %d, %Y"
-      small: "%m/%d/%Y"
-  
+      small:   "%m/%d/%Y"
+      
+  ticket:
+    type:
+      choose_type: "Choose a category"
+      request:     "I have a request"
+      billing:     "Billing question"
+      confused:    "I'm confused"
+      broken:      "Something is broken"
+      other:       "Other"

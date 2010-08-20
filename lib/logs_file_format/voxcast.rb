@@ -52,7 +52,7 @@ module LogsFileFormat
     
     def self.report_trackers
       analyze = RequestLogAnalyzer::Aggregator::Summarizer::Definer.new
-      analyze.traffic(:response_bytes, :title => :bandwidth_voxcast,
+      analyze.traffic(:response_bytes, :title => :traffic_voxcast,
         :category => lambda { |r| token_from(r[:path]) },
         :if       => lambda { |r| token?(r[:path]) }
       )

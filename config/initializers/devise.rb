@@ -45,6 +45,9 @@ Devise.setup do |config|
   # Time interval where the invitation token is valid.
   config.invite_for = 2.weeks
   
+  # Flag that force a record to be valid before being actually invited 
+  config.validate_on_invite = false
+  
   # ==> Configuration for :rememberable
   # The time the user will be remembered without asking for credentials again.
   config.remember_for = 2.weeks
@@ -76,7 +79,7 @@ Devise.setup do |config|
   
   # Number of authentication tries before locking an account if lock_strategy
   # is failed attempts.
-  config.maximum_attempts = 20
+  config.maximum_attempts = 10
   
   # Time interval to unlock the account if :time is enabled as unlock_strategy.
   config.unlock_in = 1.hour
@@ -99,11 +102,11 @@ Devise.setup do |config|
   # accessing "/users/sign_in", it knows you are accessing an User. This makes
   # routes as "/sign_in" not possible, unless you tell Devise to use the default
   # scope, setting true below.
-  config.use_default_scope = true
+  # config.use_default_scope = true
   
   # Configure the default scope used by Devise. By default it's the first devise
   # role declared in your routes.
-  config.default_scope = :user
+  # config.default_scope = :user
   
   # If you want to use other strategies, that are not (yet) supported by Devise,
   # you can configure them inside the config.warden block. The example below

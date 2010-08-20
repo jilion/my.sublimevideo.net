@@ -1,18 +1,15 @@
 %tr{ :class => cycle("", "alt") }
   %td.full_name
-    = link_to user.full_name, admin_user_path(user)
-    = " - "
-    = mail_to user.email
-  %td.status
-    - if user.encrypted_password.blank?
-      = "Not confirmed"
-    - elsif user.trial?
-      = "#{number_with_delimiter(user.free_hits_left)} free hits left"
+    - if user.encrypted_password.present?
+      = link_to user.full_name, admin_user_path(user)
     - else
-      = "#{user.suspended? ? "Suspended" : "Active"}, current usage: #{cents_to_dollars(Invoice.current(user).amount)}"
-  %td.cc
-    = user.cc? ? user.cc_type : "-"
+      = link_to user.email, admin_user_path(user)
+  %td.status
+    - if user.encrypted_password.present?
+      = "#{user.suspended? ? "Suspended" : "Active"}"
+    - else
+      = "Invited"
   %td.sites
     = user.sites.size
-  %td.videos
-    = user.videos.not_archived.size
+  %td.player_hits
+    = user.sites.inject(0) { |sum, site| sum += site.player_hits_cache }

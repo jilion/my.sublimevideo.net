@@ -2,23 +2,29 @@ require File.dirname(__FILE__) + '/acceptance_helper'
 
 feature "Users actions:" do
   
-  # scenario "register is available after the beta!" do
-  scenario "register is not available during the beta!" do # BETA 
-    visit "/register"                                      # BETA 
-    current_url.should =~ %r(http://[^/]+/login)           # BETA 
-    
-    # fill_in "Full name", :with => "John Doe"
-    # fill_in "Email",     :with => "john@doe.com"
-    # fill_in "Password",  :with => "123456"
-    # check "I agree to the Terms & Conditions."
-    # click_button "Register"
-    # 
-    # current_url.should =~ %r(http://[^/]+/sites)
-    # page.should have_content('John Doe')
+  if MySublimeVideo::Release.public?
+    scenario "register is available after the public release" do
+      visit "/register"
+      current_url.should =~ %r(http://[^/]+/register)
+      
+      fill_in "Full name", :with => "John Doe"
+      fill_in "Email",     :with => "john@doe.com"
+      fill_in "Password",  :with => "123456"
+      check "I agree to the Terms & Conditions."
+      click_button "Register"
+      
+      current_url.should =~ %r(http://[^/]+/sites)
+      page.should have_content "John Doe"
+    end
+  else
+    scenario "register is not available before the public release" do
+      visit "/register"
+      current_url.should =~ %r(http://[^/]+/login)
+    end
   end
   
   scenario "update email" do
-    sign_in_as_user :user => { :email => "old@jilion.com", :full_name => "John Doe" }
+    sign_in_as :user, { :email => "old@jilion.com", :full_name => "John Doe" }
     click_link('John Doe')
     fill_in "Email",            :with => "new@jilion.com"
     fill_in "Current password", :with => "123456"
@@ -28,7 +34,7 @@ feature "Users actions:" do
   end
   
   scenario "update full name" do
-    sign_in_as_user :user => { :full_name => "John Doe" }
+    sign_in_as :user, { :full_name => "John Doe" }
     click_link('John Doe')
     fill_in "Full name",  :with => "Bob Doe"
     click_button "user_full_name_submit"
@@ -37,59 +43,51 @@ feature "Users actions:" do
     User.last.full_name.should == "Bob Doe"
   end
   
-  scenario "update limit alert amount" do
-    sign_in_as_user :user => { :full_name => "John Doe" }
-    click_link('John Doe')
-    select "$100", :from => "user_limit_alert_amount"
-    click_button "user_email_notifications_submit"
-    
-    User.last.limit_alert_amount.should == 10000
-  end
-  
-  scenario "update video settings" do
-    sign_in_as_user :user => { :full_name => "John Doe" }
-    click_link('John Doe')
-    # check "user_video_settings_webm"
-    fill_in "user_video_settings_default_video_embed_width", :with => 200
-    click_button "user_video_settings_submit"
-    
-    # User.last.should be_use_webm
-    User.last.default_video_embed_width.should == 200
+  if MySublimeVideo::Release.public?
+    scenario "update limit alert amount" do
+      sign_in_as :user, { :full_name => "John Doe" }
+      click_link('John Doe')
+      select "$100", :from => "user_limit_alert_amount"
+      click_button "user_email_notifications_submit"
+      
+      User.last.limit_alert_amount.should == 10000
+    end
   end
   
   scenario "accept invitation" do
-    sign_in_as :admin, { :email => "john@doe.com" }
-    visit '/users/invitation/new'
-    fill_in "Email", :with => "invited@user.com"
-    click_button "Send"
+    invited_user = send_invite_to :user, "invited@user.com"
     
-    page.should have_content(I18n.translate('devise.invitations.user.send_instructions'))
-    User.last.email.should == "invited@user.com"
-    User.last.invitation_token.should be_present
-    
-    sign_out
-    
-    visit "/users/invitation/edit?invitation_token=#{User.last.invitation_token}"
-    current_url.should =~ %r(http://[^/]+/users/invitation/edit\?invitation_token=#{User.last.invitation_token})
+    visit "/invitation/accept?invitation_token=#{invited_user.invitation_token}"
+    current_url.should =~ %r(http://[^/]+/invitation/accept\?invitation_token=#{invited_user.invitation_token})
     fill_in "Full name", :with => "Rémy Coutable"
     fill_in "Password", :with => "123456"
     click_button "Go!"
     
     current_url.should =~ %r(http://[^/]+/sites)
-    page.should have_content("Welcome")
+    page.should have_content "Welcome" if MySublimeVideo::Release.public?
     page.should have_content "Rémy Coutable"
     
-    User.last.full_name.should == "Rémy Coutable"
-    User.last.email.should == "invited@user.com"
-    User.last.invitation_token.should be_nil
+    invited_user.reload.full_name.should == "Rémy Coutable"
+    invited_user.email.should == "invited@user.com"
+    invited_user.invitation_token.should be_nil
   end
   
 end
 
 feature "User session:" do
   
+  scenario "before login/register" do
+    visit "/"
+    
+    page.should_not have_content('Support')
+    page.should_not have_content('Logout')
+    
+    page.should have_content('Login')
+    page.should have_content('Documentation')
+  end
+  
   scenario "login" do
-    create_user  :user => { :full_name => "John Doe", :email => "john@doe.com", :password => "123456" }
+    create_user :user => { :full_name => "John Doe", :email => "john@doe.com", :password => "123456" }
     
     visit "/login"
     page.should_not have_content('John Doe')
@@ -98,16 +96,16 @@ feature "User session:" do
     click_button "Login"
     
     current_url.should =~ %r(http://[^/]+/sites)
-    page.should have_content('John Doe')
+    page.should have_content "John Doe"
   end
   
   scenario "logout" do
-    sign_in_as_user :user => { :full_name => "John Doe" }
-    page.should have_content('John Doe')
+    sign_in_as :user, { :full_name => "John Doe" }
+    page.should have_content "John Doe"
     click_link "Logout"
     
     current_url.should =~ %r(http://[^/]+/login)
-    page.should_not have_content('John Doe')
+    page.should_not have_content "John Doe"
   end
   
 end
@@ -115,9 +113,9 @@ end
 feature "User confirmation:" do
   
   scenario "confirmation" do
-    create_user  :user => { :full_name => "John Doe", :email => "john@doe.com", :password => "123456" }, :confirm => false
+    user = create_user :user => { :full_name => "John Doe", :email => "john@doe.com", :password => "123456" }, :confirm => false
     
-    visit "/users/confirmation?confirmation_token=#{@current_user.confirmation_token}"
+    visit "/confirmation?confirmation_token=#{user.confirmation_token}"
     
     page.should have_content(I18n.translate('devise.confirmations.confirmed'))
   end

@@ -1,33 +1,32 @@
-# == Schema Information
-#
-# Table name: logs
-#
-#  id         :integer         not null, primary key
-#  type       :string(255)
-#  name       :string(255)
-#  hostname   :string(255)
-#  state      :string(255)
-#  file       :string(255)
-#  started_at :datetime
-#  ended_at   :datetime
-#  created_at :datetime
-#  updated_at :datetime
-#
+require 'carrierwave/orm/mongoid'
 
-class Log < ActiveRecord::Base
+class Log
+  include Mongoid::Document
+  include Mongoid::Timestamps
+  
+  field :name
+  field :hostname
+  field :started_at, :type => DateTime
+  field :ended_at,   :type => DateTime
+  field :parsed_at,  :type => DateTime
+  
+  index :name, :unique => true
+  index :started_at
+  index :ended_at
   
   # ensure there is no confusion about S3 Class
-  autoload :S3, 'log/amazon/s3'
+  autoload :Amazon, 'log/amazon'
+  autoload :S3,     'log/amazon/s3'
   
   attr_accessible :name
   
-  mount_uploader :file, LogUploader
+  mount_uploader :file, LogUploader # on file_filename field!
   
   # ===============
   # = Validations =
   # ===============
   
-  validates :name,       :presence => true
+  validates :name,       :presence => true, :uniqueness => true
   validates :started_at, :presence => true
   validates :ended_at,   :presence => true
   
@@ -35,17 +34,7 @@ class Log < ActiveRecord::Base
   # = Callbacks =
   # =============
   
-  after_create :delay_process
-  
-  # =================
-  # = State Machine =
-  # =================
-  
-  state_machine :initial => :unprocessed do
-    before_transition :unprocessed => :processed, :do => :parse_and_create_usages!
-    
-    event(:process) { transition :unprocessed => :processed }
-  end
+  after_create :delay_parse
   
   # ====================
   # = Instance Methods =
@@ -54,6 +43,10 @@ class Log < ActiveRecord::Base
   def name=(attribute)
     write_attribute :name, attribute
     set_dates_and_hostname_from_name
+  end
+  
+  def parsed?
+    parsed_at.present?
   end
   
   # =================
@@ -66,10 +59,6 @@ class Log < ActiveRecord::Base
     Log::Amazon::S3::Player.delay_fetch_and_create_new_logs
     Log::Amazon::S3::Loaders.delay_fetch_and_create_new_logs
     Log::Amazon::S3::Licenses.delay_fetch_and_create_new_logs
-    # Videos
-    Log::Amazon::Cloudfront::Download.delay_fetch_and_create_new_logs
-    Log::Amazon::Cloudfront::Streaming.delay_fetch_and_create_new_logs
-    Log::Amazon::S3::Videos.delay_fetch_and_create_new_logs
   end
   
   def self.config
@@ -77,21 +66,28 @@ class Log < ActiveRecord::Base
   end
   
   def self.create_new_logs(new_logs_names)
-    existings_logs_names = select(:name).where(:name => new_logs_names).map(&:name)
+    existings_logs_names = only(:name).any_in(:name => new_logs_names).map(&:name)
     new_logs = new_logs_names.inject([]) do |new_logs, logs_name|
       new_logs << new(:name => logs_name)
     end
     new_logs = new_logs.select { |l| existings_logs_names.exclude? l.name }
-    new_logs.each { |l| l.save }
+    new_logs.map(&:save)
   rescue => ex
     HoptoadNotifier.notify(ex)
+  end
+  
+  def self.parse_log(id)
+    log = find(id)
+    log.parse_and_create_usages!
+    log.parsed_at = Time.now.utc
+    log.save
   end
   
 private
   
   # after_create
-  def delay_process
-    delay(:priority => 20).process
+  def delay_parse
+    self.class.delay(:priority => 20).parse_log(id)
   end
   
   # Don't forget to delete this logs_file after using it, thx!

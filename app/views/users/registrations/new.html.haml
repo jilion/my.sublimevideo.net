@@ -19,7 +19,7 @@
   .entry.terms
     .checkbox_wrap
       = f.check_box :terms_and_conditions, :required => true
-      = f.label :terms_and_conditions, "I agree to the #{link_to("Terms &amp; Conditions".html_safe, page_path("terms"))}.".html_safe
+      = f.label :terms_and_conditions, "I agree to the #{link_to("Terms & Conditions", page_path("terms"))}.".html_safe
       
   .entry.submit.signup
     = f.submit "Register"

@@ -11,7 +11,7 @@ module CustomDevisePaths
     if resource == :user || resource.is_a?(User)
       sites_path
     elsif resource == :admin || resource.is_a?(Admin)
-      admin_profiles_url
+      admin_delayed_jobs_url
     end
   end
   

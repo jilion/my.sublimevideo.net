@@ -6,6 +6,10 @@ test:
   login:     "jilion"
   user:      "sublime"
   password:  "WWQMNC89"
+staging:
+  login:     "jilion"
+  user:      "sublime"
+  password:  "WWQMNC89"
 production:
   login:     "jilion"
   user:      "sublime"

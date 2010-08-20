@@ -1,0 +1,15 @@
+development:
+  site:
+    one_hit: 0.1 # TODO, now 1 hit = 0.1 cent
+    
+test:
+  site:
+    one_hit: 0.1 # TODO, now 1 hit = 0.1 cent
+    
+staging:
+  site:
+    one_hit: 0.1 # TODO, now 1 hit = 0.1 cent
+    
+production:
+  site:
+    one_hit: 0.1 # TODO, now 1 hit = 0.1 cent

@@ -1,8 +1,8 @@
 class SitesController < ApplicationController
-  before_filter :authenticate_user!
-  before_filter :redirect_suspended_user
   respond_to :html, :only => :index
   respond_to :js
+  
+  before_filter :redirect_suspended_user
   
   has_scope :by_date
   has_scope :by_hostname

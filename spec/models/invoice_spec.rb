@@ -2,20 +2,18 @@
 #
 # Table name: invoices
 #
-#  id            :integer         not null, primary key
-#  user_id       :integer
-#  reference     :string(255)
-#  state         :string(255)
-#  charged_at    :datetime
-#  started_on    :date
-#  ended_on      :date
-#  amount        :integer         default(0)
-#  sites_amount  :integer         default(0)
-#  videos_amount :integer         default(0)
-#  sites         :text
-#  videos        :text
-#  created_at    :datetime
-#  updated_at    :datetime
+#  id           :integer         not null, primary key
+#  user_id      :integer
+#  reference    :string(255)
+#  state        :string(255)
+#  charged_at   :datetime
+#  started_on   :date
+#  ended_on     :date
+#  amount       :integer         default(0)
+#  sites_amount :integer         default(0)
+#  sites        :text
+#  created_at   :datetime
+#  updated_at   :datetime
 #
 
 require 'spec_helper'
@@ -42,8 +40,6 @@ describe Invoice do
       @user   = Factory(:user, :trial_ended_at => 3.month.ago)
       @site1  = Factory(:site, :user => @user, :loader_hits_cache => 1000, :player_hits_cache => 11)
       @site2  = Factory(:site, :user => @user, :loader_hits_cache => 50, :player_hits_cache => 5, :hostname => "google.com")
-      @video1 = Factory(:video, :user => @user)
-      @video2 = Factory(:video, :user => @user)
     end
     
     subject { Invoice.current(@user) }
@@ -52,11 +48,9 @@ describe Invoice do
     its(:started_on)    { should == Time.now.utc.to_date }
     its(:ended_on)      { should == Time.now.utc.to_date + 1.month }
     its(:sites)         { should be_kind_of(Invoice::Sites) }
-    its(:videos)        { should be_kind_of(Invoice::Videos) }
     its(:user)          { should be_present }
-    its(:amount)        { should satisfy { |a| (1247..1250).include?(a) } } # depends on time
     its(:sites_amount)  { should == 1066 }
-    its(:videos_amount) { should satisfy { |a| (181..184).include?(a) } } # depends on time
+    its(:amount)        { should == 1066 } # depends on time
     it { should be_current }
   end
   
@@ -148,19 +142,18 @@ describe Invoice do
         @current_invoice = Invoice.current(@user)
       end
       
-      describe "should clone sites/videos & amount from current_invoice as estimation" do
+      describe "should clone sites & amount from current_invoice as estimation" do
         subject { Factory(:invoice, :user => @user) }
         
         its(:sites)         { should == @current_invoice.sites }
         its(:amount)        { should == @current_invoice.amount }
         its(:sites_amount)  { should == @current_invoice.sites_amount }
-        its(:videos_amount) { should == @current_invoice.videos_amount }
         it { should be_pending }
       end
       
       it "should reset sites hits caches" do
-        VCR.use_cassette('one_saved_logs') do
-          @log = Factory(:log_voxcast, :started_at => 2.minutes.ago, :ended_at => 1.minutes.ago)
+        VCR.use_cassette('one_logs') do
+          @log = Factory(:log_voxcast, :name => 'cdn.sublimevideo.net.log.1274773200-1274773260.gz', :started_at => 2.minutes.ago, :ended_at => 1.minutes.ago)
         end
         Factory(:site_usage, :site => @site1, :log => @log, :loader_hits => 12, :player_hits => 21)
         Factory(:site_usage, :site => @site2, :log => @log, :loader_hits => 23)
@@ -186,7 +179,6 @@ describe Invoice do
         it { should be_ready }
         its(:amount)        { should == 1000175 }
         its(:sites_amount)  { should == 1000175 }
-        its(:videos_amount) { should == 0 }
         
         it "should sent a email" do
           last_delivery = ActionMailer::Base.deliveries.last

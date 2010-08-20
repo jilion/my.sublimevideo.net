@@ -24,12 +24,13 @@
 
 class Admin < ActiveRecord::Base
   
-  devise :database_authenticatable, :invitable, :registerable, :recoverable, :rememberable, :trackable, :validatable, :lockable
+  devise :database_authenticatable, :invitable, :registerable, :recoverable,
+         :rememberable, :trackable, :validatable, :lockable
   
   # Pagination
   cattr_accessor :per_page
   self.per_page = 25
   
-  attr_accessible :email, :password, :password_confirmation
+  attr_accessible :email, :password, :password_confirmation, :remember_me
   
 end

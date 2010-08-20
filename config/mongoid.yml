@@ -1,0 +1,16 @@
+development:
+  host: localhost
+  database: msv_dev
+  
+test:
+  host: localhost
+  database: msv_test
+  
+staging:
+  uri: <%= ENV['MONGOHQ_URL'] %>
+  persist_in_safe_mode: true
+  
+production:
+  uri: <%= ENV['MONGOHQ_URL'] %>
+  persist_in_safe_mode: true
+  

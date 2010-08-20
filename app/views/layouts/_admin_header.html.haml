@@ -1,20 +1,22 @@
 #header
   %h1
     = link_to admin_signed_in? ? sites_path : new_admin_session_path do
-      = "SublimeVideo"
+      = "MySublimeVideo"
       %em= "Admin"
   - if admin_signed_in?
     .popup_menu
       %h3= link_to "Menu", "", :onclick => "return false"
       %ul
         %li.users{ :class => ('active' if controller_name == 'users') }= link_to "Users", admin_users_path
-        %li.videos{ :class => ('active' if controller_name == 'admin/videos') }= link_to "Videos", admin_profiles_path
-        %li.video_profiles{ :class => ('active' if %w[video_profiles video_profile_versions].include? controller_name) }= link_to "Videos Profiles", admin_profiles_path
+        %li.sites{ :class => ('active' if controller_name == 'sites') }= link_to "Sites", admin_sites_path
+        %li.delayed_jobs{ :class => ('active' if controller_name == 'delayed_jobs') }= link_to "Delayed Jobs", admin_delayed_jobs_path
         %li.admins{ :class => ('active' if controller_name == 'admins') }= link_to "Admins", admin_admins_path
     %ul#favorite_links
+      %li.users{ :class => ('active' if controller_name == 'users') }= link_to "Users", admin_users_path
+      %li.sites{ :class => ('active' if controller_name == 'sites') }= link_to "Sites", admin_sites_path
       %li.delayed_jobs{ :class => ('active' if controller_name == 'delayed_jobs') }= link_to "Delayed Jobs", admin_delayed_jobs_path
-      %li.invoices{ :class => ('active' if controller_name == 'invoices') }= link_to "Invoices", admin_profiles_path
-          
+      -#%li.invoices{ :class => ('active' if controller_name == 'invoices') }= link_to "Invoices", ""
+      
   .right
     %ul.extra_links
       - if admin_signed_in?

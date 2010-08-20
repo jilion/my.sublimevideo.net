@@ -1,1 +1,0 @@
-Panda.connect!(PandaConfig.yml)

@@ -1,8 +1,7 @@
-= content_for :title do
-  = "My sites"
+= title("My sites")
   
 = content_for :bottom do
-  - if current_user.welcome? && !params[:trial]
+  - if public? && current_user.welcome? && !params[:trial]
     = render "layouts/welcome"
     
 = content_for :content_header do
@@ -14,7 +13,6 @@
 #new_site_wrap
   = render "new"
   = image_tag "/images/embed/spinner.gif", :class => "spinner", :style => "display:none"
-
+  
 #sites_table_wrap
   = render "sites"
-  

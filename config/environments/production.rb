@@ -1,5 +1,5 @@
 MySublimeVideo::Application.configure do
-  # Settings specified here will take precedence over those in config/environment.rb
+  config.middleware.use(Rack::SslEnforcer)
 
   # The production environment is meant for finished, "live" apps.
   # Code is not reloaded between requests
@@ -37,7 +37,7 @@ MySublimeVideo::Application.configure do
   # Disable delivery errors, bad email addresses will be ignored
   # config.action_mailer.raise_delivery_errors = false
   # config.action_mailer.default_url_options = { :host => 'my.sublimevideo.net' }
-  config.action_mailer.default_url_options = { :host => 'empty-warrior-43.heroku.com' }
+  config.action_mailer.default_url_options = { :host => 'mysublime.heroku.com' }
   
   # Enable threaded mode
   # config.threadsafe!

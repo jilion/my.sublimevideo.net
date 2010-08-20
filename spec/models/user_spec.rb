@@ -38,14 +38,16 @@
 #  updated_at                            :datetime
 #  invitation_token                      :string(20)
 #  invitation_sent_at                    :datetime
+#  zendesk_id                            :integer
 #
 
 require 'spec_helper'
 
 describe User do
+  let(:user) { Factory(:user) }
   
   context "with valid attributes" do
-    subject { Factory(:user) }
+    subject { user }
     
     its(:terms_and_conditions) { should be_true }
     its(:full_name)        { should == "Joe Blow" }
@@ -65,7 +67,12 @@ describe User do
     it "should validate presence of email" do
       user = Factory.build(:user, :email => nil)
       user.should_not be_valid
-      user.should have(2).error_on(:email)
+      user.should have(1).error_on(:email)
+    end
+    it "should validate email" do
+      user = Factory.build(:user, :email => "beurk")
+      user.should_not be_valid
+      user.should have(1).error_on(:email)
     end
     it "should validate acceptance of terms_and_conditions" do
       user = Factory.build(:user, :terms_and_conditions => false)
@@ -74,12 +81,12 @@ describe User do
     end
     
     context "with already the email in db" do
-      before(:each) { @user = Factory(:user) }
+      before(:each) { @user = user }
       
       it "should validate uniqueness of email" do
         user = Factory.build(:user, :email => @user.email)
         user.should_not be_valid
-        user.should have(2).error_on(:email)
+        user.should have(1).error_on(:email)
       end
     end
   end
@@ -90,7 +97,7 @@ describe User do
   describe "State Machine" do
     
     describe "initial state" do
-      subject { Factory(:user) }
+      subject { user }
       it { should be_active }
     end
     
@@ -100,11 +107,8 @@ describe User do
     describe "event(:suspend) { transition :active => :suspended }" do
       before(:each) { VCR.insert_cassette('user/suspend') }
       
-      let(:user)   { Factory(:user)                                            }
       let(:site1)  { Factory(:site, :user => user, :hostname => "rymai.com")   }
       let(:site2)  { Factory(:site, :user => user, :hostname => "octavez.com") }
-      let(:video1) { Factory(:video, :user => user)                            }
-      let(:video2) { Factory(:video, :user => user)                            }
       
       it "should set the state as :suspended from :active" do
         user.should be_active
@@ -115,23 +119,11 @@ describe User do
       describe "callbacks" do
         describe "before_transition :on => :suspend, :do => :suspend_sites" do
           it "should suspend each user' site" do
-            user.stub!(:suspend_videos => true)
             site1.should_not be_suspended
             site2.should_not be_suspended
             user.suspend
             site1.reload.should be_suspended
             site2.reload.should be_suspended
-          end
-        end
-        
-        describe "before_transition :on => :suspend, :do => :suspend_videos" do
-          it "should suspend each user' video" do
-            user.stub!(:suspend_sites => true)
-            video1.should_not be_suspended
-            video2.should_not be_suspended
-            user.suspend
-            video1.reload.should be_suspended
-            video2.reload.should be_suspended
           end
         end
       end
@@ -144,41 +136,26 @@ describe User do
     # =============
     describe "event(:unsuspend) { transition :suspended => :active }" do
       before(:each) do
-        @user = Factory(:user)
-        @site1  = Factory(:site, :user => @user, :hostname => "rymai.com")
-        @site2  = Factory(:site, :user => @user, :hostname => "octavez.com")
-        @video1 = Factory(:video, :user => @user)
-        @video2 = Factory(:video, :user => @user)
-        VCR.use_cassette('user/suspend') { @user.suspend }
+        @site1  = Factory(:site, :user => user, :hostname => "rymai.com")
+        @site2  = Factory(:site, :user => user, :hostname => "octavez.com")
+        VCR.use_cassette('user/suspend') { user.suspend }
         VCR.insert_cassette('user/unsuspend')
       end
       
       it "should set the state as :active from :suspended" do
-        @user.should be_suspended
-        @user.unsuspend
-        @user.should be_active
+        user.should be_suspended
+        user.unsuspend
+        user.should be_active
       end
       
       describe "callbacks" do
         describe "before_transition :on => :unsuspend, :do => :unsuspend_sites" do
           it "should suspend each user' site" do
-            @user.stub!(:unsuspend_videos => true)
             @site1.reload.should be_suspended
             @site2.reload.should be_suspended
-            @user.unsuspend
+            user.unsuspend
             @site1.reload.should_not be_suspended
             @site2.reload.should_not be_suspended
-          end
-        end
-        
-        describe "before_transition :on => :unsuspend, :do => :unsuspend_videos" do
-          it "should suspend each user' video" do
-            @user.stub!(:unsuspend_sites => true)
-            @video1.reload.should be_suspended
-            @video2.reload.should be_suspended
-            @user.unsuspend
-            @video1.reload.should_not be_suspended
-            @video2.reload.should_not be_suspended
           end
         end
       end
@@ -188,9 +165,44 @@ describe User do
     
   end
   
+  describe "callbacks" do
+    describe "after_update :update_email_on_zendesk" do
+      it "should not delay Module#put if email has not changed" do
+        user.zendesk_id = 15483194
+        user.save
+        Delayed::Job.last.should be_nil
+      end
+      
+      it "should not delay Module#put if user has no zendesk_id" do
+        user.email = "new@email.com"
+        user.save
+        user.email.should == "new@email.com"
+        Delayed::Job.last.should be_nil
+      end
+      
+      it "should delay Module#put if the user has a zendesk_id and his email has changed" do
+        user.zendesk_id = 15483194
+        user.email      = "new@email.com"
+        user.save
+        user.email.should == "new@email.com"
+        Delayed::Job.last.name.should == 'Module#put'
+      end
+      
+      it "should update user's email on Zendesk if this user has a zendesk_id and his email has changed" do
+        user.zendesk_id = 15483194
+        user.email      = "new@email.com"
+        user.save
+        user.reload.email.should == "new@email.com"
+        VCR.use_cassette("user/update_email_on_zendesk") { Delayed::Worker.new(:quiet => true).work_off }
+        Delayed::Job.last.should be_nil
+        VCR.use_cassette("user/email_on_zendesk_after_update") do
+          JSON.parse(Zendesk.get("/users/15483194/user_identities.json").body).select{ |h| h["identity_type"] == "email" }.map { |h| h["value"] }.should include "new@email.com"
+        end
+      end
+    end
+  end
+  
   describe "instance methods" do
-    let(:user) { Factory(:user) }
-    
     it "should be welcome if sites is empty" do
       user.should be_welcome
     end

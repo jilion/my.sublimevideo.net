@@ -13,7 +13,11 @@ module MySublimeVideo
     # -- all .rb files in that directory are automatically loaded.
     
     # Add additional load paths for your own custom dirs
-    # config.load_paths += %W( #{config.root}/extras )
+    config.autoload_paths += %W[#{config.root}/lib]
+    Dir["#{config.root}/lib/{logs_file_format,rack,responders,transcoders,validators,will_paginate}/**/*.rb"].each do |f|
+      dir = File.expand_path(File.dirname(f))
+      config.autoload_paths += [dir] if config.autoload_paths.exclude?(dir)
+    end
     
     # Only load the plugins named here, in the order given (default is alphabetical).
     # :all can be used as a placeholder for all plugins not explicitly named
@@ -42,6 +46,6 @@ module MySublimeVideo
     config.encoding = "utf-8"
     
     # Configure sensitive parameters which will be filtered from the log file.
-    config.filter_parameters += [:beta_key, :password, :cc]
+    config.filter_parameters += [:protection_key, :password, :cc]
   end
 end
