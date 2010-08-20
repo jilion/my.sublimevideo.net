@@ -42,7 +42,7 @@ MySublimeVideo::Application.routes.draw do
     post :create,  :path => '/support', :as => ''
   end
   
-  root :to => redirect { |p, req| "#{Rails.env.development? ? "http" : "https" }://#{req.host}/sites" }
+  root :to => redirect("/sites")
   
   # =========
   # = Admin =

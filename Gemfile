@@ -1,6 +1,7 @@
 source :rubygems
 
-gem 'rails',                 '3.0.0.rc'
+# gem 'rails',                 '3.0.0.rc'
+gem 'rails',                 :git => 'git://github.com/thibaudgg/rails.git', :branch => 'routes_patched'
 gem 'rack-ssl-enforcer'
 
 gem 'libxml-ruby',           '>= 1.1.3', :require => 'libxml'
@@ -31,7 +32,8 @@ gem 'aws',                   '>= 2.3.20'
 gem 'carrierwave',           '>= 0.5.0.beta2'
 gem 'RedCloth'
 
-gem 'mongoid',               '>= 2.0.0.beta.16'
+# gem 'mongoid',               '>= 2.0.0.beta.16'
+gem 'mongoid',               :git => 'git://github.com/thibaudgg/mongoid.git'
 
 gem 'bson_ext',              '1.0.4'
 
