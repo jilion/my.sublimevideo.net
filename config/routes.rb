@@ -48,7 +48,7 @@ MySublimeVideo::Application.routes.draw do
   # = Admin =
   # =========
   
-  match 'admin', :to => redirect { |p, req| "#{Rails.env.development? ? "http" : "https" }://#{req.host}/admin/djs" }, :as => "admin"
+  match 'admin', :to => redirect("/admin/djs"), :as => "admin"
   
   devise_scope :user do
     scope :controller => 'admin/users/invitations', :as => :user_invitation do # admin routes
