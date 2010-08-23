@@ -1,8 +1,8 @@
-require 'rack/ensure_ssl'
-
 MySublimeVideo::Application.configure do
-  config.middleware.use(Rack::EnsureSsl)
-
+  # Settings specified here will take precedence over those in config/environment.rb
+  config.middleware.use(Rack::SslEnforcer)
+  config.middleware.use(Rack::Staging, :code => ENV['STAGING_CODE'])
+  
   # The production environment is meant for finished, "live" apps.
   # Code is not reloaded between requests
   config.cache_classes = true
