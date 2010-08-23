@@ -1,4 +1,4 @@
-# Add git remote branch localy
+# Add git remote branch locally
 git checkout -t origin/production
 git checkout -t origin/staging
 
