@@ -80,7 +80,6 @@ class User < ActiveRecord::Base
   # ===============
   
   validates :full_name, :presence => true
-  validates :email,     :presence => true, :uniqueness => true
   validates :terms_and_conditions, :acceptance => { :accept => "1" }, :on => :create
   validate :validates_credit_card_attributes # in user/credit_card
   

@@ -1,19 +1,3 @@
-# == Schema Information
-#
-# Table name: logs
-#
-#  id         :integer         not null, primary key
-#  type       :string(255)
-#  name       :string(255)
-#  hostname   :string(255)
-#  state      :string(255)
-#  file       :string(255)
-#  started_at :datetime
-#  ended_at   :datetime
-#  created_at :datetime
-#  updated_at :datetime
-#
-
 require 'spec_helper'
 
 describe Log::Amazon::S3::Licenses do
@@ -30,15 +14,15 @@ describe Log::Amazon::S3::Licenses do
       log.file.read.should include("sublimevideo.licenses")
     end
      
-    it "should parse and create usages from trackers on process" do
+    it "should parse and create usages from trackers on parse_log" do
       SiteUsage.should_receive(:create_usages_from_trackers!)
-      subject.process
+      Log::Amazon::S3::Licenses.parse_log(subject.id)
     end
     
-    it "should delay process after create" do
+    it "should delay parse_log after create" do
       subject # trigger log creation
       job = Delayed::Job.last
-      job.name.should == 'Log::Amazon::S3::Licenses#process'
+      job.name.should == 'Class#parse_log'
       job.priority.should == 20
     end
   end

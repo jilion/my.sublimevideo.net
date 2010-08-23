@@ -1,22 +1,3 @@
-# == Schema Information
-#
-# Table name: site_usages
-#
-#  id              :integer         not null, primary key
-#  site_id         :integer
-#  log_id          :integer
-#  started_at      :datetime
-#  ended_at        :datetime
-#  loader_hits     :integer         default(0)
-#  player_hits     :integer         default(0)
-#  flash_hits      :integer         default(0)
-#  created_at      :datetime
-#  updated_at      :datetime
-#  requests_s3     :integer         default(0)
-#  traffic_s3      :integer         default(0)
-#  traffic_voxcast :integer         default(0)
-#
-
 require 'spec_helper'
 
 describe SiteUsage do
@@ -72,12 +53,12 @@ describe SiteUsage do
       usages.map(&:site).should include(@site1)
       usages.map(&:site).should include(@site2)
       usage = usages.select { |u| u.site == @site1 }.first
-      usage.log.should               == @log
-      usage.site.should              == @site1
-      usage.loader_hits.should       == 3
-      usage.player_hits.should       == 3
-      usage.flash_hits.should        == 0
-      usage.requests_s3.should       == 0
+      usage.log.should             == @log
+      usage.site.should            == @site1
+      usage.loader_hits.should     == 3
+      usage.player_hits.should     == 3
+      usage.flash_hits.should      == 0
+      usage.requests_s3.should     == 0
       usage.traffic_s3.should      == 0
       usage.traffic_voxcast.should == 70696
     end

@@ -1,19 +1,3 @@
-# == Schema Information
-#
-# Table name: logs
-#
-#  id         :integer         not null, primary key
-#  type       :string(255)
-#  name       :string(255)
-#  hostname   :string(255)
-#  state      :string(255)
-#  file       :string(255)
-#  started_at :datetime
-#  ended_at   :datetime
-#  created_at :datetime
-#  updated_at :datetime
-#
-
 require 'spec_helper'
 
 describe Log::Voxcast do
@@ -23,13 +7,28 @@ describe Log::Voxcast do
     
     subject { Factory.build(:log_voxcast, :name => 'cdn.sublimevideo.net.log.1274773200-1274773260.gz') }
     
-    it { should be_unprocessed }
+    it { should_not be_parsed }
     it { should be_valid }
     its(:hostname)   { should == 'cdn.sublimevideo.net' }
-    its(:started_at) { should == Time.zone.at(1274773200) }
-    its(:ended_at)   { should == Time.zone.at(1274773260) }
+    its(:started_at) { should == Time.zone.at(1274773200).utc }
+    its(:ended_at)   { should == Time.zone.at(1274773260).utc }
     
     after(:each) { VCR.eject_cassette }
+  end
+  
+  describe "validates" do
+    context "with already the same log in db" do
+      before(:each) { VCR.insert_cassette('one_saved_logs') }
+      
+      it "should validate uniqueness of name" do
+        Factory(:log_voxcast) 
+        log = Factory.build(:log_voxcast)
+        log.should_not be_valid
+        log.errors[:name].should be_present
+      end
+      
+      after(:each) { VCR.eject_cassette }
+    end
   end
   
   context "created with valid attributes" do
@@ -37,9 +36,9 @@ describe Log::Voxcast do
     
     subject { Factory(:log_voxcast) }
     
-    it "should have good log url" do
-      subject.file.url.should == "/uploads/voxcast/cdn.sublimevideo.net.log.1275002700-1275002760.gz"
-    end
+    its(:created_at) { should be_present }
+    its("file.url")  { should == "/uploads/voxcast/cdn.sublimevideo.net.log.1275002700-1275002760.gz" }
+    its("file.size") { should == 1149 }
     
     it "should have good log content" do
       log = Log::Voxcast.find(subject.id) # to be sure that log is well saved with CarrierWave
@@ -48,15 +47,21 @@ describe Log::Voxcast do
       end
     end
     
-    it "should parse and create usages from trackers on process" do
+    it "should parse and create usages from trackers on parse" do
       SiteUsage.should_receive(:create_usages_from_trackers!)
-      subject.process
+      Log::Voxcast.parse_log(subject.id)
     end
     
-    it "should delay process after create" do
+    it "should set parsed_at on parse" do
+      SiteUsage.stub(:create_usages_from_trackers!)
+      Log::Voxcast.parse_log(subject.id)
+      subject.reload.parsed_at.should >= subject.created_at
+    end
+    
+    it "should delay parse_log after create" do
       subject # trigger log creation
       job = Delayed::Job.last
-      job.name.should == 'Log::Voxcast#process'
+      job.name.should == 'Class#parse_log'
       job.priority.should == 20
     end
     
