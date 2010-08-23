@@ -15,13 +15,16 @@ git remote add staging git@heroku.com:mysublime-staging.git
 git checkout staging
 git merge master
 rake deploy:staging or rake deploy:staging_migrations
+
 # Test/Verify staging env
 git checkout production
 git merge staging
 rake deploy:production_off  # maintenance page on
+
 # wait some time for maintenance page activation
 rake deploy:production or rake deploy:production_migrations
 rake deploy:production_on   # maintenance page off
+
 # back to work
 git checkout master
 git merge production  # in case of assets update
