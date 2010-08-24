@@ -22,9 +22,9 @@ MySublimeVideo::Application.routes.draw do
       delete :destroy, :path => '/account'
     end
     
-    %w[sign_up signup].each                { |action| match action => redirect('/register'), :via => :get }
-    %w[log_in sign_in signin].each         { |action| match action => redirect('/login'),    :via => :get }
-    %w[log_out sign_out signout exit].each { |action| match action => redirect('/logout'),   :via => :get }
+    %w[sign_up signup].each                { |action| match action => redirect { |p, req| "#{Rails.env.development? ? "http" : "https" }://#{req.host}/register" }, :via => :get }
+    %w[log_in sign_in signin].each         { |action| match action => redirect { |p, req| "#{Rails.env.development? ? "http" : "https" }://#{req.host}/login" },    :via => :get }
+    %w[log_out sign_out signout exit].each { |action| match action => redirect { |p, req| "#{Rails.env.development? ? "http" : "https" }://#{req.host}/logout" },   :via => :get }
   end
   
   resource :users, :only => :update, :path => '/account/info'
@@ -42,13 +42,13 @@ MySublimeVideo::Application.routes.draw do
     post :create,  :path => '/support', :as => ''
   end
   
-  root :to => redirect('/sites')
+  root :to => redirect("/sites")
   
   # =========
   # = Admin =
   # =========
   
-  match 'admin', :to => redirect('/admin/djs'), :as => "admin"
+  match 'admin', :to => redirect("/admin/djs"), :as => "admin"
   
   devise_scope :user do
     scope :controller => 'admin/users/invitations', :as => :user_invitation do # admin routes
@@ -75,8 +75,8 @@ MySublimeVideo::Application.routes.draw do
       delete :destroy, :path => '/admin/account'
     end
     
-    %w[log_in sign_in signin].each         { |action| match "admin/#{action}" => redirect('/admin/login'),  :via => :get }
-    %w[log_out sign_out signout exit].each { |action| match "admin/#{action}" => redirect('/admin/logout'), :via => :get }
+    %w[log_in sign_in signin].each         { |action| match "admin/#{action}" => redirect { |p, req| "#{Rails.env.development? ? "http" : "https" }://#{req.host}/admin/login" },  :via => :get }
+    %w[log_out sign_out signout exit].each { |action| match "admin/#{action}" => redirect { |p, req| "#{Rails.env.development? ? "http" : "https" }://#{req.host}/admin/logout" }, :via => :get }
   end
   
   namespace "admin" do
