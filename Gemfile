@@ -46,6 +46,7 @@ group :development do
   gem 'wirble' # irbrc
   gem 'ruby-graphviz', :require => 'graphviz'
   gem 'heroku'
+  gem 'heroku_tasks', :git => 'git://github.com/thibaudgg/heroku_tasks.git'
   gem 'taps' # heroku db pull/push
   
   gem 'rspec-rails', '~> 2.0.0.beta.20'

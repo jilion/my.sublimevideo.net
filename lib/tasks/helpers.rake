@@ -1,7 +1,3 @@
-def normalized_date
-  Time.now.utc.strftime("%Y%m%d%H%M%S")
-end
-
 def run(*cmd)
   system(*cmd)
   raise "Command #{cmd.inspect} failed!" unless $?.success?

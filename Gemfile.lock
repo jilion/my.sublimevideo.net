@@ -7,12 +7,12 @@ GIT
 
 GIT
   remote: git://github.com/ernie/meta_where.git
-  revision: f4fb0fa
+  revision: 1ecb0b5
   specs:
-    meta_where (0.6.0)
-      activerecord (>= 3.0.0.rc)
-      activesupport (>= 3.0.0.rc)
-      arel (>= 0.4.0)
+    meta_where (0.9.0)
+      activerecord (~> 3.0.0.rc2)
+      activesupport (~> 3.0.0.rc2)
+      arel (~> 1.0.0.rc1)
 
 GIT
   remote: git://github.com/mongoid/mongoid.git
@@ -44,6 +44,12 @@ GIT
     devise_invitable (0.6.5)
       devise (~> 1.1.1)
       rails (~> 3.0.0.rc2)
+
+GIT
+  remote: git://github.com/thibaudgg/heroku_tasks.git
+  revision: c03b6fd
+  specs:
+    heroku_tasks (0.0.1)
 
 GIT
   remote: git://github.com/thibaudgg/jammit.git
@@ -280,6 +286,7 @@ DEPENDENCIES
   haml (~> 3.0.16)
   has_scope!
   heroku
+  heroku_tasks!
   hoptoad_notifier (~> 2.3.4)
   i18n (~> 0.4.1)
   jammit!
