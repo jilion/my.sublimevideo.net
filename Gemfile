@@ -13,7 +13,7 @@ gem 'delayed_job',           :git => 'git://github.com/collectiveidea/delayed_jo
 gem 'will_paginate',         '~> 3.0.pre2'
 gem 'has_scope',             :git => 'git://github.com/rymai/has_scope.git'
 gem 'jammit',                :git => 'git://github.com/thibaudgg/jammit.git'
-gem 'meta_where',            '~> 0.5.2'
+gem 'meta_where',            :git => 'git://github.com/ernie/meta_where.git'
 gem 'hoptoad_notifier',      '~> 2.3.4'
 gem 'activemerchant',        '~> 1.7.1'
 gem 'voxel_hapi',            :git => 'git://github.com/thibaudgg/voxel_hapi.git' # VoxCast CDN
@@ -22,15 +22,15 @@ gem 'request-log-analyzer',  '~> 1.8.0', :require => 'request_log_analyzer'
 gem 'devise',                '~> 1.1.1'
 gem 'devise_invitable',      :git => 'git://github.com/thibaudgg/devise_invitable.git'
 
-gem 'system_timer',          '~>  1.0.0' # Only on Ruby 1.8, used by memcache-client
-gem 'memcache-client',       '~>  1.8.5'
-gem 'memcached',             '~>  0.20.1'
+gem 'system_timer',          '~> 1.0.0' # Only on Ruby 1.8, used by memcache-client
+gem 'memcache-client',       '~> 1.8.5'
+gem 'memcached',             '~> 0.20.1'
 
-gem 'aws',                   '~>  2.3.20'
-gem 'carrierwave',           '~>  0.5.0.beta2'
+gem 'aws',                   '~> 2.3.20'
+gem 'carrierwave',           '~> 0.5.0.beta2'
 gem 'RedCloth',              '~> 4.2.3'
 
-gem 'mongoid',               '~>  2.0.0.beta.16'
+gem 'mongoid',               :git => 'git://github.com/mongoid/mongoid.git'
 gem 'bson_ext',              '~> 1.0.4'
 
 group :production, :staging do
