@@ -24,25 +24,25 @@
       - http://jilion.zendesk.com/tickets/22.xml
       p3p: 
       - CP="NOI DSP COR NID ADMa OPTa OUR NOR"
-      content-type: 
-      - application/xml; charset=utf-8
       connection: 
       - keep-alive
-      server: 
-      - nginx/0.6.35
-      date: 
-      - Wed, 11 Aug 2010 17:15:37 GMT
+      content-type: 
+      - application/xml; charset=utf-8
       x-runtime: 
       - "1252"
+      date: 
+      - Wed, 11 Aug 2010 17:15:37 GMT
+      server: 
+      - nginx/0.6.35
       content-length: 
       - "1"
       set-cookie: 
       - _zendesk_session=BAh7DCIcd2FyZGVuLnVzZXIuZGVmYXVsdC5rZXlpA%2BuV6ToPc2Vzc2lvbl9pZCIlMjg0ZWMxYWUzN2ZhYzFkZDM1Mjg3MjIwMDExOGZiY2EiIHdhcmRlbi51c2VyLmRlZmF1bHQuc2Vzc2lvbnsGOg1hdXRoX3ZpYSISQmFzaWNTdHJhdGVneToMYWNjb3VudGkCN6kiE3dhcmRlbi5tZXNzYWdlewA6B2lkIhRqN2xsNnk5b241ZDdzbHoiCmZsYXNoSUM6J0FjdGlvbkNvbnRyb2xsZXI6OkZsYXNoOjpGbGFzaEhhc2h7BjoLbm90aWNlIkdUaWNrZXQgIzIyIDxhIGNsYXNzPSd0aXRsZScgaHJlZj0nL3RpY2tldHMvMjInPlN1YmplY3Q8L2E%2BIGNyZWF0ZWQGOgpAdXNlZHsGOwpG--e69bc9de5b45aba91a09ff080597e0bc7b3527d8; path=/; HttpOnly
       - zendesk_user_version=users%2F15308267-20100805220019; path=/
-      status: 
-      - 201 Created
       cache-control: 
       - no-cache
+      status: 
+      - 201 Created
     body: " "
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
@@ -66,25 +66,115 @@
       - "\"dec875a2881d4f0d999a8102295ca16b\""
       p3p: 
       - CP="NOI DSP COR NID ADMa OPTa OUR NOR"
+      content-type: 
+      - application/json; charset=utf-8
+      connection: 
+      - keep-alive
+      - close
+      server: 
+      - nginx/0.6.35
+      date: 
+      - Wed, 11 Aug 2010 17:15:38 GMT
+      x-runtime: 
+      - "67"
+      content-length: 
+      - "963"
+      set-cookie: 
+      - _zendesk_session=BAh7CyIcd2FyZGVuLnVzZXIuZGVmYXVsdC5rZXlpA%2BuV6ToPc2Vzc2lvbl9pZCIlNTYzN2E5MzFjOWMzOTdkNTE5OWIyYmZkNWJhYTEyNGIiIHdhcmRlbi51c2VyLmRlZmF1bHQuc2Vzc2lvbnsGOg1hdXRoX3ZpYSISQmFzaWNTdHJhdGVneToMYWNjb3VudGkCN6kiE3dhcmRlbi5tZXNzYWdlewA6B2lkIhNsdGw3NzJuMTVnbzRnNw%3D%3D--22d547f95f33d42052c3e5c8030b2ad4384b80fd; path=/; HttpOnly
+      - zendesk_user_version=users%2F15308267-20100805220019; path=/
+      status: 
+      - 200 OK
+      cache-control: 
+      - private, max-age=0, must-revalidate
+    body: "{\"ticket_field_entries\":[],\"nice_id\":22,\"initially_assigned_at\":\"2010/08/11 19:15:36 +0200\",\"entry_id\":null,\"created_at\":\"2010/08/11 19:15:36 +0200\",\"resolution_time\":null,\"priority_id\":0,\"current_tags\":\"request\",\"assignee_id\":15308267,\"updated_at\":\"2010/08/11 19:15:36 +0200\",\"ticket_type_id\":0,\"status_updated_at\":\"2010/08/11 19:15:36 +0200\",\"solved_at\":null,\"original_recipient_address\":null,\"external_id\":\"2768\",\"assigned_at\":\"2010/08/11 19:15:36 +0200\",\"comments\":[{\"created_at\":\"2010/08/11 19:15:36 +0200\",\"attachments\":[],\"via_id\":5,\"value\":\"Description\",\"type\":\"Comment\",\"is_public\":true,\"author_id\":15483194}],\"via_id\":5,\"subject\":\"Subject\",\"recipient\":null,\"group_id\":88332,\"submitter_id\":15308267,\"base_score\":36,\"latest_recipients\":null,\"due_date\":null,\"current_collaborators\":null,\"channel\":null,\"score\":36,\"status_id\":1,\"description\":\"Description\",\"problem_id\":null,\"organization_id\":null,\"linkings\":[],\"updated_by_type_id\":0,\"requester_id\":15498218}"
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :put
+    uri: http://zeno%40jilion.com:wrank8@jilion.zendesk.com:80/users/15498218.xml
+    body: <user><is-verified>true</is-verified></user>
+    headers: 
+      accept: 
+      - "*/*"
+      content-type: 
+      - application/xml
+      authorization: 
+      - Basic emVub0BqaWxpb24uY29tOndyYW5rOA==
+      content-length: 
+      - "44"
+      host: 
+      - jilion.zendesk.com
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      p3p: 
+      - CP="NOI DSP COR NID ADMa OPTa OUR NOR"
+      content-type: 
+      - application/xml; charset=utf-8
+      connection: 
+      - keep-alive
+      - close
+      server: 
+      - nginx/0.6.35
+      date: 
+      - Tue, 17 Aug 2010 14:23:05 GMT
+      x-runtime: 
+      - "61"
+      content-length: 
+      - "1"
+      set-cookie: 
+      - zendesk_user_version=users%2F15308267-20100805220019; path=/
+      - _zendesk_session=BAh7CyIcd2FyZGVuLnVzZXIuZGVmYXVsdC5rZXlpA%2BuV6ToNYXV0aF92aWEiEkJhc2ljU3RyYXRlZ3k6D3Nlc3Npb25faWQiJTBiNWU5MTIwZjgzZjAyNzg2ZGYyMTBhNTBlMmNjZTViIhN3YXJkZW4ubWVzc2FnZXsAOgdpZCIVNDZ4bDdiczk2LTFqNnVmbDoMYWNjb3VudGkCN6k%3D--e2def1f23bd931ecde1dc43280165b9b94c8d45c; path=/; HttpOnly
+      - zendesk_user_version=users%2F15308267-20100805220019; path=/
+      status: 
+      - 200 OK
+      cache-control: 
+      - private, max-age=0, must-revalidate
+    body: " "
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: http://zeno%40jilion.com:wrank8@jilion.zendesk.com:80/users/15498218.json
+    body: 
+    headers: 
+      accept: 
+      - "*/*"
+      authorization: 
+      - Basic emVub0BqaWxpb24uY29tOndyYW5rOA==
+      host: 
+      - jilion.zendesk.com
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      etag: 
+      - "\"2f6bde2c7ed0865c4e3de119ddb6e140\""
+      p3p: 
+      - CP="NOI DSP COR NID ADMa OPTa OUR NOR"
       connection: 
       - keep-alive
       - close
       content-type: 
       - application/json; charset=utf-8
       x-runtime: 
-      - "67"
+      - "18"
       date: 
-      - Wed, 11 Aug 2010 17:15:38 GMT
+      - Tue, 17 Aug 2010 14:23:06 GMT
       server: 
       - nginx/0.6.35
       content-length: 
-      - "963"
+      - "411"
       set-cookie: 
-      - _zendesk_session=BAh7CyIcd2FyZGVuLnVzZXIuZGVmYXVsdC5rZXlpA%2BuV6ToPc2Vzc2lvbl9pZCIlNTYzN2E5MzFjOWMzOTdkNTE5OWIyYmZkNWJhYTEyNGIiIHdhcmRlbi51c2VyLmRlZmF1bHQuc2Vzc2lvbnsGOg1hdXRoX3ZpYSISQmFzaWNTdHJhdGVneToMYWNjb3VudGkCN6kiE3dhcmRlbi5tZXNzYWdlewA6B2lkIhNsdGw3NzJuMTVnbzRnNw%3D%3D--22d547f95f33d42052c3e5c8030b2ad4384b80fd; path=/; HttpOnly
+      - zendesk_user_version=users%2F15308267-20100805220019; path=/
+      - _zendesk_session=BAh7CyIcd2FyZGVuLnVzZXIuZGVmYXVsdC5rZXlpA%2BuV6ToNYXV0aF92aWEiEkJhc2ljU3RyYXRlZ3k6D3Nlc3Npb25faWQiJTYzMzBhMWY1Yjk2NmJlNzAxOGZjOTY5YjYxZTQ4Zjg1IhN3YXJkZW4ubWVzc2FnZXsAOgdpZCIVN2RsbDZ3bWJtLTFrYzdhajoMYWNjb3VudGkCN6k%3D--3f6902c799d5bee9754a55011fe5d8ad8b15bddc; path=/; HttpOnly
       - zendesk_user_version=users%2F15308267-20100805220019; path=/
       cache-control: 
       - private, max-age=0, must-revalidate
       status: 
       - 200 OK
-    body: "{\"ticket_field_entries\":[],\"nice_id\":22,\"initially_assigned_at\":\"2010/08/11 19:15:36 +0200\",\"entry_id\":null,\"created_at\":\"2010/08/11 19:15:36 +0200\",\"resolution_time\":null,\"priority_id\":0,\"current_tags\":\"request\",\"assignee_id\":15308267,\"updated_at\":\"2010/08/11 19:15:36 +0200\",\"ticket_type_id\":0,\"status_updated_at\":\"2010/08/11 19:15:36 +0200\",\"solved_at\":null,\"original_recipient_address\":null,\"external_id\":\"2768\",\"assigned_at\":\"2010/08/11 19:15:36 +0200\",\"comments\":[{\"created_at\":\"2010/08/11 19:15:36 +0200\",\"attachments\":[],\"via_id\":5,\"value\":\"Description\",\"type\":\"Comment\",\"is_public\":true,\"author_id\":15483194}],\"via_id\":5,\"subject\":\"Subject\",\"recipient\":null,\"group_id\":88332,\"submitter_id\":15308267,\"base_score\":36,\"latest_recipients\":null,\"due_date\":null,\"current_collaborators\":null,\"channel\":null,\"score\":36,\"status_id\":1,\"description\":\"Description\",\"problem_id\":null,\"organization_id\":null,\"linkings\":[],\"updated_by_type_id\":0,\"requester_id\":15483194}"
+    body: "{\"name\":\"R\xC3\xA9my Coutable\",\"locale_id\":null,\"openid_url\":null,\"created_at\":\"2010/08/11 19:20:43 +0200\",\"last_login\":null,\"details\":null,\"updated_at\":\"2010/08/17 16:21:01 +0200\",\"notes\":null,\"external_id\":null,\"restriction_id\":4,\"id\":15498218,\"phone\":null,\"is_active\":true,\"groups\":[],\"time_zone\":\"Amsterdam\",\"is_verified\":true,\"roles\":0,\"organization_id\":null,\"email\":\"remy@jilion.com\",\"uses_12_hour_clock\":false}"
     http_version: "1.1"

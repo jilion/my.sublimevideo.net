@@ -2,9 +2,6 @@ require 'spec_helper'
 require 'steak'
 require 'capybara/rails'
 
-# require 'capybara/envjs'
-# Capybara.default_driver = :envjs
-
 Rspec.configure do |config|
   config.include Capybara
   

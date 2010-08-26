@@ -20,7 +20,7 @@ gem 'voxel_hapi',            :git => 'git://github.com/thibaudgg/voxel_hapi.git'
 gem 'request-log-analyzer',  '~> 1.8.0', :require => 'request_log_analyzer'
 
 gem 'devise',                '~> 1.1.1'
-gem 'devise_invitable',      :git => 'git://github.com/thibaudgg/devise_invitable.git'
+gem 'devise_invitable',      :git => 'git://github.com/rymai/devise_invitable.git'
 
 gem 'system_timer',          '~> 1.0.0' # Only on Ruby 1.8, used by memcache-client
 gem 'memcache-client',       '~> 1.8.5'

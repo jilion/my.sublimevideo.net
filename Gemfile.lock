@@ -32,22 +32,22 @@ GIT
     responders (0.6.2)
 
 GIT
-  remote: git://github.com/rymai/has_scope.git
-  revision: 22165fe
-  specs:
-    has_scope (0.5.0)
-
-GIT
-  remote: git://github.com/thibaudgg/devise_invitable.git
-  revision: d88e27d
+  remote: git://github.com/rymai/devise_invitable.git
+  revision: 962ac3c
   specs:
     devise_invitable (0.6.5)
       devise (~> 1.1.1)
       rails (~> 3.0.0.rc2)
 
 GIT
+  remote: git://github.com/rymai/has_scope.git
+  revision: 22165fe
+  specs:
+    has_scope (0.5.0)
+
+GIT
   remote: git://github.com/thibaudgg/heroku_tasks.git
-  revision: c03b6fd
+  revision: f40f6cb
   specs:
     heroku_tasks (0.0.1)
 
