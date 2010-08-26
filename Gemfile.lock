@@ -7,9 +7,9 @@ GIT
 
 GIT
   remote: git://github.com/ernie/meta_where.git
-  revision: 1ecb0b5
+  revision: f0ac75c
   specs:
-    meta_where (0.9.0)
+    meta_where (0.9.1)
       activerecord (~> 3.0.0.rc2)
       activesupport (~> 3.0.0.rc2)
       arel (~> 1.0.0.rc1)
@@ -47,7 +47,7 @@ GIT
 
 GIT
   remote: git://github.com/thibaudgg/heroku_tasks.git
-  revision: c03b6fd
+  revision: f40f6cb
   specs:
     heroku_tasks (0.0.1)
 
@@ -142,7 +142,7 @@ GEM
     crack (0.1.8)
     culerity (0.2.12)
     daemons (1.1.0)
-    devise (1.1.1)
+    devise (1.1.2)
       bcrypt-ruby (~> 2.1.2)
       warden (~> 0.10.7)
     diff-lcs (1.1.2)
@@ -266,6 +266,7 @@ GEM
     wirble (0.1.3)
     xml-simple (1.0.12)
     yui-compressor (0.9.1)
+    zip (2.0.2)
 
 PLATFORMS
   ruby
@@ -318,3 +319,4 @@ DEPENDENCIES
   webmock
   will_paginate (~> 3.0.pre2)
   wirble
+  zip (~> 2.0.2)

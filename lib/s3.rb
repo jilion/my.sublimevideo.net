@@ -14,8 +14,12 @@ module S3
     end
     
     def logs_name_list(options = {})
+      keys_names(logs_bucket, options)
+    end
+    
+    def keys_names(bucket, options = {})
       remove_prefix = options.delete(:remove_prefix)
-      keys  = logs_bucket.keys(options)
+      keys  = bucket.keys(options)
       names = keys.map! { |key| key.name }
       if remove_prefix && options['prefix']
         names.map! { |name| name.gsub(options['prefix'], '') }
@@ -26,6 +30,10 @@ module S3
     
     def panda_bucket
       @panda_bucket ||= client.bucket(S3Bucket.panda)
+    end
+    
+    def player_bucket
+      @panda_bucket ||= client.bucket(S3Bucket.player)
     end
     
     def reset_yml_options
