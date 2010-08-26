@@ -305,7 +305,7 @@ DEPENDENCIES
   rspactor (~> 0.7.beta.6)
   rspec-rails (~> 2.0.0.beta.20)
   ruby-graphviz
-  shoulda
+  shoulda (~> 2.11.3)
   spork
   sqlite3-ruby
   state_machine (~> 0.9.4)
