@@ -88,6 +88,7 @@ private
       to   = key.name.gsub /^#{state_was}/, state
       puts to
       S3.player_bucket.copy_key(from, to)
+      # S3.client.interface.copy(S3.panda_bucket.name, key_on_panda_bucket, S3.videos_bucket.name, key_on_videos_bucket, :copy, 'x-amz-acl' => 'public-read')
     end
     puts "copy"
   end
