@@ -75,7 +75,7 @@ describe Release do
     
     it { should be_dev }
     it "should be the dev release" do
-      subject.should == Release.dev.first
+      subject.should == Release.dev_release
     end
     
     describe "when flagged" do
@@ -119,10 +119,10 @@ describe Release do
     
     it { should be_beta }
     it "should also be the dev release" do
-      subject.should == Release.dev.first
+      subject.should == Release.dev_release
     end
     it "should be the beta release" do
-      subject.should == Release.beta.first
+      subject.should == Release.beta_release
     end
     
     describe "when flagged" do
@@ -159,13 +159,13 @@ describe Release do
       subject.flag.should be_false
     end
     it "should also be the dev release" do
-      subject.should == Release.dev.first
+      subject.should == Release.dev_release
     end
     it "should also be the beta release" do
-      subject.should == Release.beta.first
+      subject.should == Release.beta_release
     end
     it "should be the stable release" do
-      subject.should == Release.stable.first
+      subject.should == Release.stable_release
     end
     
     describe "when archived" do

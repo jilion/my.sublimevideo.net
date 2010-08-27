@@ -10,11 +10,13 @@
         %li.users{ :class => ('active' if controller_name == 'users') }= link_to "Users", admin_users_path
         %li.sites{ :class => ('active' if controller_name == 'sites') }= link_to "Sites", admin_sites_path
         %li.delayed_jobs{ :class => ('active' if controller_name == 'delayed_jobs') }= link_to "Delayed Jobs", admin_delayed_jobs_path
+        %li.releases{ :class => ('active' if controller_name == 'releases') }= link_to "Player", admin_releases_path
         %li.admins{ :class => ('active' if controller_name == 'admins') }= link_to "Admins", admin_admins_path
     %ul#favorite_links
       %li.users{ :class => ('active' if controller_name == 'users') }= link_to "Users", admin_users_path
       %li.sites{ :class => ('active' if controller_name == 'sites') }= link_to "Sites", admin_sites_path
       %li.delayed_jobs{ :class => ('active' if controller_name == 'delayed_jobs') }= link_to "Delayed Jobs", admin_delayed_jobs_path
+      %li.releases{ :class => ('active' if controller_name == 'releases') }= link_to "Player", admin_releases_path
       -#%li.invoices{ :class => ('active' if controller_name == 'invoices') }= link_to "Invoices", ""
       
   .right

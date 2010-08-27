@@ -17,14 +17,6 @@ class Release < ActiveRecord::Base
   mount_uploader :zip, ReleaseUploader
   uniquify :token, :length => 10, :chars => Array('A'..'Z') + Array('0'..'9')
   
-  # ==========
-  # = Scopes =
-  # ==========
-  
-  scope :dev,    where({ :state => "dev" } | { :state => "beta" } | { :state => "stable" })
-  scope :beta,   where({ :state => "beta" } | { :state => "stable" })
-  scope :stable, where(:state => "stable")
-  
   # ===============
   # = Validations =
   # ===============
@@ -51,6 +43,24 @@ class Release < ActiveRecord::Base
     event(:archive) { transition [:dev, :beta, :stable] => :archived }
   end
   
+  # =================
+  # = Class Methods =
+  # =================
+  
+  def self.stable_release
+    where(:state => "stable").first
+  end
+  
+  def self.beta_release
+     releases = where({ :state => "beta" } | { :state => "stable" }).all
+     releases.detect { |r| r.state == "beta" } || releases.detect { |r| r.state == "stable" }
+  end
+  
+  def self.dev_release
+     releases = where({ :state => "dev" } | { :state => "beta" } | { :state => "stable" })
+     releases.detect { |r| r.state == "dev" } || releases.detect { |r| r.state == "beta" } || releases.detect { |r| r.state == "stable" }
+  end
+  
   # ====================
   # = Instance Methods =
   # ====================
@@ -75,6 +85,7 @@ class Release < ActiveRecord::Base
     @zipfile = nil
     @zip_files = nil
   end
+  
   
 private
   
