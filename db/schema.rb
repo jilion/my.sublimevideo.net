@@ -68,14 +68,14 @@ ActiveRecord::Schema.define(:version => 20100826081322) do
   add_index "invoices", ["user_id"], :name => "index_invoices_on_user_id"
 
   create_table "releases", :force => true do |t|
-    t.string   "name"
+    t.string   "token"
+    t.string   "date"
     t.string   "zip"
     t.string   "state"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "releases", ["name"], :name => "index_releases_on_name", :unique => true
   add_index "releases", ["state"], :name => "index_releases_on_state"
 
   create_table "sites", :force => true do |t|

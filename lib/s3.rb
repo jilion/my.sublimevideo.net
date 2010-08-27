@@ -23,7 +23,7 @@ module S3
       names = keys.map! { |key| key.name }
       if remove_prefix && options['prefix']
         names.map! { |name| name.gsub(options['prefix'], '') }
-        names.delete_if { |name| name.blank? }
+        names.delete_if { |name| name.blank? || name == '/' }
       end
       names
     end

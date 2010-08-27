@@ -3,7 +3,8 @@
 # Table name: releases
 #
 #  id         :integer         not null, primary key
-#  name       :string(255)
+#  token      :string(255)
+#  date       :string(255)
 #  zip        :string(255)
 #  state      :string(255)
 #  created_at :datetime
@@ -13,18 +14,17 @@
 require 'spec_helper'
 
 describe Release do
-  before(:each) { VCR.insert_cassette('release', :record => :all) }
-  # before(:each) { VCR.insert_cassette('release') }
   
   context "with valid attributes" do
+    before(:each) { VCR.insert_cassette('release/valid') }
     subject { Factory(:release) }
     
-    its(:name) { should =~ /^[0-9]{4}-[0-9]{2}-[0-9]{2}-[0-9]{2}-[0-9]{2}-[0-9]{2}$/ }
+    its(:date) { should =~ /^[0-9]{4}-[0-9]{2}-[0-9]{2}-[0-9]{2}-[0-9]{2}-[0-9]{2}$/ }
     its(:zip)  { should be_present }
     it { should be_dev }
     it { should be_valid }
     
-    it { should validate_uniqueness_of :name }
+    after(:each) { VCR.eject_cassette }
   end
   
   it { should validate_presence_of(:zip) }
@@ -34,11 +34,8 @@ describe Release do
   end
   
   context "archived release" do
-    subject do
-      release = Factory(:release)
-      release.archive
-      release
-    end
+    before(:each) { VCR.insert_cassette('release/archived') }
+    subject { archived_release }
     
     it { should be_archived }
     
@@ -53,12 +50,11 @@ describe Release do
       
       it { should be_dev }
       it "should empty dev dir" do
-        keys_name = S3.keys_names(S3.player_bucket, 'prefix' => 'dev')
+        keys_name = S3.keys_names(S3.player_bucket, 'prefix' => 'dev/')
         keys_name.should_not include("dev/foo.txt")
       end
       it "should put zip files inside dev dir" do
-        keys_names = S3.player_bucket.keys('prefix' => 'dev').map(&:to_s)
-        keys_names.map! { |name| name.gsub(/^dev\//, '') }
+        keys_names = S3.keys_names(S3.player_bucket, 'prefix' => 'dev/', :remove_prefix => true)
         keys_names.sort.should == subject.zip_files.map(&:to_s).sort
       end
       it "should put zip files inside dev dir with public-read" do
@@ -69,66 +65,141 @@ describe Release do
       end
       
     end
+    
+    after(:each) { VCR.eject_cassette }
   end
   
   context "dev release" do
+    before(:each) { VCR.insert_cassette('release/dev') }
     subject { Factory(:release) }
     
     it { should be_dev }
+    it "should be the dev release" do
+      subject.should == Release.dev.first
+    end
     
-    describe "when flagged", :focus => true do
-      before(:each) { subject.flag }
+    describe "when flagged" do
+      before(:each) do
+        S3.player_bucket.put("beta/foo.txt", "bar")
+        subject.flag
+      end
       
       it { should be_beta }
+      it "should remove no more used file in beta dir" do
+        VCR.eject_cassette
+        VCR.insert_cassette('release/dev_remove')
+        keys_name = S3.keys_names(S3.player_bucket, 'prefix' => 'beta')
+        keys_name.should_not include("beta/foo.txt")
+      end
+      it "should copy dev files inside beta dir" do
+        keys_names = S3.keys_names(S3.player_bucket, 'prefix' => 'beta/', :remove_prefix => true)
+        keys_names.sort.should == subject.zip_files.map(&:to_s).sort
+      end
+      it "should copy dev files inside beta dir with public-read" do
+        VCR.eject_cassette
+        VCR.insert_cassette('release/dev_read')
+        S3.player_bucket.keys('prefix' => 'beta').each do |key|
+          all_users_grantee = key.grantees.detect { |g| g.name == "AllUsers" }
+          all_users_grantee && all_users_grantee.perms.should == ["READ"]
+        end
+      end
     end
     describe "when archived" do
       before(:each) { subject.archive }
       
       it { should be_archived }
     end
+    
+    after(:each) { VCR.eject_cassette }
   end
   
   context "beta release" do
-    subject do
-      release = Factory(:release)
-      release.flag
-      release
-    end
+    before(:each) { VCR.insert_cassette('release/beta') }
+    subject { beta_release }
     
     it { should be_beta }
+    it "should also be the dev release" do
+      subject.should == Release.dev.first
+    end
+    it "should be the beta release" do
+      subject.should == Release.beta.first
+    end
     
     describe "when flagged" do
-      before(:each) { subject.flag }
+      before(:each) do
+        @stable_release = stable_release
+        subject.flag
+      end
       
       it { should be_stable }
+      it "should copy beta files inside stable dir" do
+        keys_names = S3.keys_names(S3.player_bucket, 'prefix' => 'stable/', :remove_prefix => true)
+        keys_names.sort.should == subject.zip_files.map(&:to_s).sort
+      end
+      it "should archive old stable_release" do
+        @stable_release.reload.should be_archived
+      end
     end
     describe "when archived" do
       before(:each) { subject.archive }
       
       it { should be_archived }
     end
+    
+    after(:each) { VCR.eject_cassette }
   end
   
   context "stable release" do
-    subject do
-      release = Factory(:release)
-      release.flag
-      release.flag
-      release
-    end
+    before(:each) { VCR.insert_cassette('release/stable') }
+    subject { stable_release }
     
     it { should be_stable }
     
     it "should not be flaggable" do
       subject.flag.should be_false
     end
+    it "should also be the dev release" do
+      subject.should == Release.dev.first
+    end
+    it "should also be the beta release" do
+      subject.should == Release.beta.first
+    end
+    it "should be the stable release" do
+      subject.should == Release.stable.first
+    end
     
     describe "when archived" do
       before(:each) { subject.archive }
       
       it { should be_archived }
     end
+    
+    after(:each) { VCR.eject_cassette }
   end
   
-  after(:each) { VCR.eject_cassette }
+private
+  
+  def archived_release
+    release = Factory(:release)
+    release.archive
+    release
+  end
+  
+  def dev_release
+    Factory(:release)
+  end
+  
+  def beta_release
+    release = Factory(:release)
+    release.flag
+    release
+  end
+  
+  def stable_release
+    release = Factory(:release)
+    release.flag
+    release.flag
+    release
+  end
+  
 end

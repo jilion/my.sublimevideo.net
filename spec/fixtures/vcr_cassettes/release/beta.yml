@@ -12,29 +12,29 @@
       content-type: 
       - ""
       authorization: 
-      - AWS AKIAJ2FJVCFJW3RZRUUQ:/EBVoBZz0SLkkd19zA7qpqsz/oI=
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:RwmegD7m3+hHeXY6oyzQmbIoAnQ=
       date: 
-      - Thu, 26 Aug 2010 14:54:55 GMT
+      - Fri, 27 Aug 2010 09:30:13 GMT
   response: !ruby/struct:VCR::Response 
     status: !ruby/struct:VCR::ResponseStatus 
       code: 200
       message: OK
     headers: 
       x-amz-id-2: 
-      - NM++iKh9c09BZ/pTAW9+/wEaIXakjeH2KnfkMTKemi95SsTN4os/zx63CrIt/XXy
+      - Ja5vYkmJ7g9yZSRtgGyhT/wAqaFC5TT/GO5MHi1JrSwqx46dKmLKmCARrLOp31cz
       content-type: 
       - application/xml
       server: 
       - AmazonS3
       date: 
-      - Thu, 26 Aug 2010 14:54:56 GMT
+      - Fri, 27 Aug 2010 09:30:14 GMT
       x-amz-request-id: 
-      - 7B309CC0C96FDA4D
+      - 18D586631F01452C
       transfer-encoding: 
       - chunked
     body: |-
       <?xml version="1.0" encoding="UTF-8"?>
-      <ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>dev.sublimevideo.player</Name><Prefix>dev</Prefix><Marker></Marker><MaxKeys>1000</MaxKeys><IsTruncated>false</IsTruncated><Contents><Key>dev/black_pixel.gif</Key><LastModified>2010-08-26T14:51:18.000Z</LastModified><ETag>&quot;cd1ba716ce25aff3e5b5402f14e4cbf4&quot;</ETag><Size>1095</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>dev/close_button.png</Key><LastModified>2010-08-26T14:51:15.000Z</LastModified><ETag>&quot;a15d76d155b39e707ac262864cd38e0a&quot;</ETag><Size>1561</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>dev/ie/transparent_pixel.gif</Key><LastModified>2010-08-26T14:51:19.000Z</LastModified><ETag>&quot;325472601571f31e1bf00674c368d335&quot;</ETag><Size>43</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>dev/play_button.png</Key><LastModified>2010-08-26T14:51:16.000Z</LastModified><ETag>&quot;1e64c004cc0d079e299b92db3c4ecfc4&quot;</ETag><Size>1801</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>dev/sublime.js</Key><LastModified>2010-08-26T14:51:17.000Z</LastModified><ETag>&quot;55d3f354d20c6b7d18a1f2656a42835a&quot;</ETag><Size>73228</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>dev/sublime.swf</Key><LastModified>2010-08-26T14:51:13.000Z</LastModified><ETag>&quot;ac43a2c85a6f2fa1bf47f06f808a5daf&quot;</ETag><Size>37806</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>dev/sublime_css.js</Key><LastModified>2010-08-26T14:51:20.000Z</LastModified><ETag>&quot;a11800277b7e7b3d285305a62e1f7db3&quot;</ETag><Size>30133</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents></ListBucketResult>
+      <ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>dev.sublimevideo.player</Name><Prefix>dev</Prefix><Marker></Marker><MaxKeys>1000</MaxKeys><IsTruncated>false</IsTruncated><Contents><Key>dev/black_pixel.gif</Key><LastModified>2010-08-27T09:29:54.000Z</LastModified><ETag>&quot;cd1ba716ce25aff3e5b5402f14e4cbf4&quot;</ETag><Size>1095</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>dev/close_button.png</Key><LastModified>2010-08-27T09:29:50.000Z</LastModified><ETag>&quot;a15d76d155b39e707ac262864cd38e0a&quot;</ETag><Size>1561</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>dev/ie/transparent_pixel.gif</Key><LastModified>2010-08-27T09:29:55.000Z</LastModified><ETag>&quot;325472601571f31e1bf00674c368d335&quot;</ETag><Size>43</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>dev/play_button.png</Key><LastModified>2010-08-27T09:29:51.000Z</LastModified><ETag>&quot;1e64c004cc0d079e299b92db3c4ecfc4&quot;</ETag><Size>1801</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>dev/sublime.js</Key><LastModified>2010-08-27T09:29:52.000Z</LastModified><ETag>&quot;55d3f354d20c6b7d18a1f2656a42835a&quot;</ETag><Size>73228</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>dev/sublime.swf</Key><LastModified>2010-08-27T09:29:49.000Z</LastModified><ETag>&quot;ac43a2c85a6f2fa1bf47f06f808a5daf&quot;</ETag><Size>37806</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>dev/sublime_css.js</Key><LastModified>2010-08-27T09:29:55.000Z</LastModified><ETag>&quot;a11800277b7e7b3d285305a62e1f7db3&quot;</ETag><Size>30133</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents></ListBucketResult>
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
@@ -49,22 +49,22 @@
       content-type: 
       - ""
       authorization: 
-      - AWS AKIAJ2FJVCFJW3RZRUUQ:hYMN5KhPYvSV3wWnECN05C3+FCM=
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:8VKmJRiMIcbSNNY4s7L6jiaXUVk=
       date: 
-      - Thu, 26 Aug 2010 14:54:55 GMT
+      - Fri, 27 Aug 2010 09:30:13 GMT
   response: !ruby/struct:VCR::Response 
     status: !ruby/struct:VCR::ResponseStatus 
       code: 204
       message: No Content
     headers: 
       x-amz-id-2: 
-      - eDW2ap7JgwSNKqLaby+nbooqOn/nUPgxbb2oczmIESABgXQT3iq8TgwFzYau4OlX
+      - vY6yyIuRh8qSjzb3qs94F6ZOkRGclVgJC6xH/Ri2oHAYuNNjXRUQsblFZX/MPGPh
       server: 
       - AmazonS3
       date: 
-      - Thu, 26 Aug 2010 14:54:57 GMT
+      - Fri, 27 Aug 2010 09:30:15 GMT
       x-amz-request-id: 
-      - 85807487DFA69E8D
+      - 4BE903D4A84EBF49
     body: 
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
@@ -80,22 +80,22 @@
       content-type: 
       - ""
       authorization: 
-      - AWS AKIAJ2FJVCFJW3RZRUUQ:Qjq6BXCToo1EQ27vwJd3ksQFgs4=
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:dMnAe5vW083g1J9tlzeCWIlHNcM=
       date: 
-      - Thu, 26 Aug 2010 14:54:56 GMT
+      - Fri, 27 Aug 2010 09:30:14 GMT
   response: !ruby/struct:VCR::Response 
     status: !ruby/struct:VCR::ResponseStatus 
       code: 204
       message: No Content
     headers: 
       x-amz-id-2: 
-      - BFIeNXW6hv+ZhNEjjYWyRc6saydpRJEl7X9tuDa4VBNskyeDWR/tvsDdOuw9maoI
+      - UVW7vipsH4+RKOGL7R50+FqdicHfL4hEbEmqNexROG01hP2kMpEpQKBkEI9cqhSJ
       server: 
       - AmazonS3
       date: 
-      - Thu, 26 Aug 2010 14:54:57 GMT
+      - Fri, 27 Aug 2010 09:30:15 GMT
       x-amz-request-id: 
-      - 490B3C51A227BDCE
+      - C409E8492441FAA3
     body: 
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
@@ -111,22 +111,22 @@
       content-type: 
       - ""
       authorization: 
-      - AWS AKIAJ2FJVCFJW3RZRUUQ:8mMxvZT+mPSW5Pqqtoj/5enuWKw=
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:hA2Ox7KBc7WgY8tnIaKMxXs0NV0=
       date: 
-      - Thu, 26 Aug 2010 14:54:56 GMT
+      - Fri, 27 Aug 2010 09:30:15 GMT
   response: !ruby/struct:VCR::Response 
     status: !ruby/struct:VCR::ResponseStatus 
       code: 204
       message: No Content
     headers: 
       x-amz-id-2: 
-      - Hn3NIvCNIEieQuohDHiuUS5X+3JOOMWmH4BoAdxKFBhJGsZrRgzInZ9/pF+vAgxh
+      - ohh640aR4DmcxPDGMz8aGgaOoMuwTXnec9Lc+G0LTTE1ve1yRrHeVEKSDth+bYK+
       server: 
       - AmazonS3
       date: 
-      - Thu, 26 Aug 2010 14:54:58 GMT
+      - Fri, 27 Aug 2010 09:30:16 GMT
       x-amz-request-id: 
-      - 81B26CF9493F68CA
+      - B731FF910ABCD675
     body: 
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
@@ -142,22 +142,22 @@
       content-type: 
       - ""
       authorization: 
-      - AWS AKIAJ2FJVCFJW3RZRUUQ:xPw2NdjUVjFgezXc+CsKKC+FYzA=
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:4H93VZfq6X6dDrnyUZ/pSNjXiVI=
       date: 
-      - Thu, 26 Aug 2010 14:54:57 GMT
+      - Fri, 27 Aug 2010 09:30:15 GMT
   response: !ruby/struct:VCR::Response 
     status: !ruby/struct:VCR::ResponseStatus 
       code: 204
       message: No Content
     headers: 
       x-amz-id-2: 
-      - XsAbpRoupl1lwTIfacRq8NzQPpm1MuWGiBENIGG2r4YNVzNcByZwGrbGywUqnFfr
+      - zJjUi4WyZSyR4Xphl6RkkKkpGZI1tmTKZX9XF203hGNHWSm3HWgqQ3Rcz+watbWm
       server: 
       - AmazonS3
       date: 
-      - Thu, 26 Aug 2010 14:54:59 GMT
+      - Fri, 27 Aug 2010 09:30:17 GMT
       x-amz-request-id: 
-      - B2E0665446F0B8F5
+      - 38DDB8E0B7707805
     body: 
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
@@ -173,22 +173,22 @@
       content-type: 
       - ""
       authorization: 
-      - AWS AKIAJ2FJVCFJW3RZRUUQ:dk2TJMFrd/2pyBkgmYKPrSnxjKg=
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:hKO/VM9CnUsf922ckUSGWrMI9cw=
       date: 
-      - Thu, 26 Aug 2010 14:54:58 GMT
+      - Fri, 27 Aug 2010 09:30:16 GMT
   response: !ruby/struct:VCR::Response 
     status: !ruby/struct:VCR::ResponseStatus 
       code: 204
       message: No Content
     headers: 
       x-amz-id-2: 
-      - 0OXrzPDvlAqaBf8KZQdzxmuj3iMA/eYUysTMzsoQd+Agu0L3DPiNci23FA56F6OD
+      - yf3vPHWWe9ucoMsMjtNQFJPzH+7nH0jKuMBbgQ5lPnKV9YyKUdNCDXtdoAdf692o
       server: 
       - AmazonS3
       date: 
-      - Thu, 26 Aug 2010 14:54:59 GMT
+      - Fri, 27 Aug 2010 09:30:17 GMT
       x-amz-request-id: 
-      - 6E4DFF7351C529B8
+      - FF1A47585C97FB44
     body: 
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
@@ -204,22 +204,22 @@
       content-type: 
       - ""
       authorization: 
-      - AWS AKIAJ2FJVCFJW3RZRUUQ:5wNC6nTRgoP8jgJtYsSEgmPEvyI=
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:6kIXCgrd4KkHNewmC/El3h9fgTU=
       date: 
-      - Thu, 26 Aug 2010 14:54:58 GMT
+      - Fri, 27 Aug 2010 09:30:17 GMT
   response: !ruby/struct:VCR::Response 
     status: !ruby/struct:VCR::ResponseStatus 
       code: 204
       message: No Content
     headers: 
       x-amz-id-2: 
-      - R/t2op+Zx5IeEr90ZPk36S9w5M2cirsxXYMUjcBBQfbwBgN+YhdFLWWeaR7ZDykJ
+      - Vtdj4r9QPB6WAnZvsp6D1vJii/fiA4Sx+npbZiIoW9dPzQhus9gtujtkJ/KGTOUc
       server: 
       - AmazonS3
       date: 
-      - Thu, 26 Aug 2010 14:55:00 GMT
+      - Fri, 27 Aug 2010 09:30:18 GMT
       x-amz-request-id: 
-      - 992BD2EF2EA69B87
+      - 026D72A77118818C
     body: 
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
@@ -235,22 +235,22 @@
       content-type: 
       - ""
       authorization: 
-      - AWS AKIAJ2FJVCFJW3RZRUUQ:HJ8btA6Z7jFty3X2qRoGuxtUA1I=
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:6ezzs5SZu6SM/dAW4WeHGgW/+5k=
       date: 
-      - Thu, 26 Aug 2010 14:54:59 GMT
+      - Fri, 27 Aug 2010 09:30:17 GMT
   response: !ruby/struct:VCR::Response 
     status: !ruby/struct:VCR::ResponseStatus 
       code: 204
       message: No Content
     headers: 
       x-amz-id-2: 
-      - nwz4KMK2hvLia5XV8yiwCgDOTA4lXf7CisafsTAw1IpAdFM4JifdzkKZ2N7poQwD
+      - DLMKt0xad4Huq3b3sta5KEXx5jYjL0xDBIZDMIZHeGwEowiOlPbhtBBT4Vc9KZZJ
       server: 
       - AmazonS3
       date: 
-      - Thu, 26 Aug 2010 14:55:01 GMT
+      - Fri, 27 Aug 2010 09:30:19 GMT
       x-amz-request-id: 
-      - FA0F0D8586EE0A21
+      - 1600B13E8826714A
     body: 
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
@@ -1110,9 +1110,9 @@
       x-amz-acl: 
       - public-read
       authorization: 
-      - AWS AKIAJ2FJVCFJW3RZRUUQ:adDeM15+24jOe9m/mVfnUTZXcbI=
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:hIo8JmdjV06prTFBT74SmJ5XMt4=
       date: 
-      - Thu, 26 Aug 2010 14:55:00 GMT
+      - Fri, 27 Aug 2010 09:30:18 GMT
       content-length: 
       - "37806"
   response: !ruby/struct:VCR::Response 
@@ -1123,15 +1123,15 @@
       etag: 
       - "\"ac43a2c85a6f2fa1bf47f06f808a5daf\""
       x-amz-id-2: 
-      - qCKZxaC5yDiq8bxJqZh+7mKKXZYHMquYV1TW6C4LmxZ/BXkb6EPxA+IuYAk0Siy8
+      - QLM/+sEsWRjHY9F07qLkDTERkELlWw6RK+Dq6sx4LcNwmmR7Ng7VVyrs0Wm93TlJ
       server: 
       - AmazonS3
       date: 
-      - Thu, 26 Aug 2010 14:55:01 GMT
+      - Fri, 27 Aug 2010 09:30:19 GMT
       content-length: 
       - "0"
       x-amz-request-id: 
-      - 87EF9682DDB57C6E
+      - A9277B569A9E3CCD
     body: ""
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
@@ -1185,9 +1185,9 @@
       x-amz-acl: 
       - public-read
       authorization: 
-      - AWS AKIAJ2FJVCFJW3RZRUUQ:72Cl6XU8oyVBK2wzuqeDb8fZIC8=
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:hWG0CKDJsbQ19UfPUJN0SGSLWXo=
       date: 
-      - Thu, 26 Aug 2010 14:55:01 GMT
+      - Fri, 27 Aug 2010 09:30:19 GMT
       content-length: 
       - "1561"
   response: !ruby/struct:VCR::Response 
@@ -1198,15 +1198,15 @@
       etag: 
       - "\"a15d76d155b39e707ac262864cd38e0a\""
       x-amz-id-2: 
-      - w1361l4q8aGEL8BgWG3u5LYjTXcfGPyZE/Nq458SnGkTltCmVhy9jfUWfC+sbIlu
+      - 5/prGnVzlwOFFRxTEB5ZZF3Jlc40y+LNXVVcZwebX2JMO94bQstSccGZPeLF44G6
       server: 
       - AmazonS3
       date: 
-      - Thu, 26 Aug 2010 14:55:03 GMT
+      - Fri, 27 Aug 2010 09:30:23 GMT
       content-length: 
       - "0"
       x-amz-request-id: 
-      - 7653CC8219D29D28
+      - 1A24DBDB51C70E4D
     body: ""
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
@@ -1266,9 +1266,9 @@
       x-amz-acl: 
       - public-read
       authorization: 
-      - AWS AKIAJ2FJVCFJW3RZRUUQ:/240uk1EzffZXYiij1Cgm3pZitQ=
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:svD+ldcDZHoqDkXo5Kj+RO5bQKA=
       date: 
-      - Thu, 26 Aug 2010 14:55:02 GMT
+      - Fri, 27 Aug 2010 09:30:22 GMT
       content-length: 
       - "1801"
   response: !ruby/struct:VCR::Response 
@@ -1279,15 +1279,15 @@
       etag: 
       - "\"1e64c004cc0d079e299b92db3c4ecfc4\""
       x-amz-id-2: 
-      - ZZ3C8WtlLyVxplbuUBz1Z13qzI81uVAZv7s7asKa00V9yvDnY7sijKg8CI3nXGCu
+      - ExzlIA9+Qs82mJcdLt8zCtFrnnmP8GA6UJNrFg1VgaddTB3ZowfI1SivLC/fkQZ4
       server: 
       - AmazonS3
       date: 
-      - Thu, 26 Aug 2010 14:55:04 GMT
+      - Fri, 27 Aug 2010 09:30:24 GMT
       content-length: 
       - "0"
       x-amz-request-id: 
-      - 40134B4D8087D08D
+      - B3AA1EC941DA3766
     body: ""
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
@@ -1457,9 +1457,9 @@
       x-amz-acl: 
       - public-read
       authorization: 
-      - AWS AKIAJ2FJVCFJW3RZRUUQ:FnQZTzaljPquqpa33OAvWeKuP1c=
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:PhqggJ2FBD28aZbfY/84UTlKjQs=
       date: 
-      - Thu, 26 Aug 2010 14:55:03 GMT
+      - Fri, 27 Aug 2010 09:30:23 GMT
       content-length: 
       - "73228"
   response: !ruby/struct:VCR::Response 
@@ -1470,15 +1470,15 @@
       etag: 
       - "\"55d3f354d20c6b7d18a1f2656a42835a\""
       x-amz-id-2: 
-      - kxBNEbkv6qgoCwC64nF94dU/vg/Yof1/4s/z8+II/LaAgVrm0tEnULRempaUJVSb
+      - oVIXfBEUTr37w32Ov0uNSCh0jlzx/auJ+Z9Cmz4LjApTI1dOZtu/S7kNCZDA492i
       server: 
       - AmazonS3
       date: 
-      - Thu, 26 Aug 2010 14:55:05 GMT
+      - Fri, 27 Aug 2010 09:30:25 GMT
       content-length: 
       - "0"
       x-amz-request-id: 
-      - A47E5CF24F0327CB
+      - 0CC8C3C845F92542
     body: ""
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
@@ -1522,9 +1522,9 @@
       x-amz-acl: 
       - public-read
       authorization: 
-      - AWS AKIAJ2FJVCFJW3RZRUUQ:/exT24y/JOdfms9qrQ9O5oaZJ5I=
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:S+50lFmUO0dAgXQiFOR3Y9EfuhQ=
       date: 
-      - Thu, 26 Aug 2010 14:55:05 GMT
+      - Fri, 27 Aug 2010 09:30:25 GMT
       content-length: 
       - "1095"
   response: !ruby/struct:VCR::Response 
@@ -1535,15 +1535,15 @@
       etag: 
       - "\"cd1ba716ce25aff3e5b5402f14e4cbf4\""
       x-amz-id-2: 
-      - 4mcJ1Di/iSFCsyyaz6/+Hp8ZGHPR39hj74W68ly7QZ1IXn42YYCswBKwonmNIBa4
+      - EIFaUvPb6cgpPfO4KiVsInaRpdvombsJVcnZPaCf38zZ6Tpgdmn86G9AKzNFz2Yw
       server: 
       - AmazonS3
       date: 
-      - Thu, 26 Aug 2010 14:55:07 GMT
+      - Fri, 27 Aug 2010 09:30:27 GMT
       content-length: 
       - "0"
       x-amz-request-id: 
-      - B87663882CD2AFC9
+      - DF98F943593D73F8
     body: ""
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
@@ -1563,9 +1563,9 @@
       x-amz-acl: 
       - public-read
       authorization: 
-      - AWS AKIAJ2FJVCFJW3RZRUUQ:csgbixAVVemtvdst92P3+Ivs5Og=
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:NRXu5oPYhpL90SaY8i+T2SXyL+4=
       date: 
-      - Thu, 26 Aug 2010 14:55:06 GMT
+      - Fri, 27 Aug 2010 09:30:26 GMT
       content-length: 
       - "43"
   response: !ruby/struct:VCR::Response 
@@ -1576,15 +1576,15 @@
       etag: 
       - "\"325472601571f31e1bf00674c368d335\""
       x-amz-id-2: 
-      - TsgVa+5MCHHM9Y6FT8zP5wrLqXs+XxFLyzdKO9toOLL56fJq703z9badgm1EISWr
+      - n5bJAfGIxHpK+4V+ACxxSJPlSxZl0ktyFLxRcHVU8SMjHqi23Tsyo0fWWuTubFMq
       server: 
       - AmazonS3
       date: 
-      - Thu, 26 Aug 2010 14:55:07 GMT
+      - Fri, 27 Aug 2010 09:30:28 GMT
       content-length: 
       - "0"
       x-amz-request-id: 
-      - CADDD8A0309E7460
+      - 7D588CB714214071
     body: ""
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
@@ -1602,9 +1602,9 @@
       x-amz-acl: 
       - public-read
       authorization: 
-      - AWS AKIAJ2FJVCFJW3RZRUUQ:AX/GYdNsAn7mH/5EoOyNFAYoaNE=
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:gv00NHvdPcr2FOP51nki1QvEzQ4=
       date: 
-      - Thu, 26 Aug 2010 14:55:06 GMT
+      - Fri, 27 Aug 2010 09:30:27 GMT
       content-length: 
       - "30133"
   response: !ruby/struct:VCR::Response 
@@ -1615,16 +1615,53 @@
       etag: 
       - "\"a11800277b7e7b3d285305a62e1f7db3\""
       x-amz-id-2: 
-      - 5lG7wSt27zZEOP9SuUTS2CnNUKW2yELQVGKBj0wSKlMdBm+emFO3lwKuxGZQ+2RH
+      - q6EmvyzhI617pZ3FhqNkjPSzi4+xKI/AuDrUoax9JWpGabfvtAqW2ug8mgqWpRTF
       server: 
       - AmazonS3
       date: 
-      - Thu, 26 Aug 2010 14:55:08 GMT
+      - Fri, 27 Aug 2010 09:30:28 GMT
       content-length: 
       - "0"
       x-amz-request-id: 
-      - 88E92E2A21641921
+      - 63A7510C20C94021
     body: ""
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: https://dev.sublimevideo.player.s3.amazonaws.com:443/?prefix=beta
+    body: 
+    headers: 
+      accept: 
+      - "*/*"
+      user-agent: 
+      - ""
+      content-type: 
+      - ""
+      authorization: 
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:vmqQ+1dxaOpbGj8bejUFyDMZf8k=
+      date: 
+      - Fri, 27 Aug 2010 09:30:28 GMT
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      x-amz-id-2: 
+      - Bcv6V6oMVYRRKGyIMhuMjJtI4OfE/vDoGnJUDCSTByMv+fp53CnJP3HDG/3X8IGC
+      content-type: 
+      - application/xml
+      server: 
+      - AmazonS3
+      date: 
+      - Fri, 27 Aug 2010 09:30:30 GMT
+      x-amz-request-id: 
+      - FA164E5D65005116
+      transfer-encoding: 
+      - chunked
+    body: |-
+      <?xml version="1.0" encoding="UTF-8"?>
+      <ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>dev.sublimevideo.player</Name><Prefix>beta</Prefix><Marker></Marker><MaxKeys>1000</MaxKeys><IsTruncated>false</IsTruncated><Contents><Key>beta/black_pixel.gif</Key><LastModified>2010-08-27T09:29:58.000Z</LastModified><ETag>&quot;cd1ba716ce25aff3e5b5402f14e4cbf4&quot;</ETag><Size>1095</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>beta/close_button.png</Key><LastModified>2010-08-27T09:29:59.000Z</LastModified><ETag>&quot;a15d76d155b39e707ac262864cd38e0a&quot;</ETag><Size>1561</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>beta/ie/transparent_pixel.gif</Key><LastModified>2010-08-27T09:30:00.000Z</LastModified><ETag>&quot;325472601571f31e1bf00674c368d335&quot;</ETag><Size>43</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>beta/play_button.png</Key><LastModified>2010-08-27T09:30:00.000Z</LastModified><ETag>&quot;1e64c004cc0d079e299b92db3c4ecfc4&quot;</ETag><Size>1801</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>beta/sublime.js</Key><LastModified>2010-08-27T09:30:01.000Z</LastModified><ETag>&quot;55d3f354d20c6b7d18a1f2656a42835a&quot;</ETag><Size>73228</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>beta/sublime.swf</Key><LastModified>2010-08-27T09:30:02.000Z</LastModified><ETag>&quot;ac43a2c85a6f2fa1bf47f06f808a5daf&quot;</ETag><Size>37806</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>beta/sublime_css.js</Key><LastModified>2010-08-27T09:30:02.000Z</LastModified><ETag>&quot;a11800277b7e7b3d285305a62e1f7db3&quot;</ETag><Size>30133</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents></ListBucketResult>
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
@@ -1639,29 +1676,29 @@
       content-type: 
       - ""
       authorization: 
-      - AWS AKIAJ2FJVCFJW3RZRUUQ:KXxhDjslHIIhzGJlWFZ1BAjcfMs=
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:u+GjuDCxx5w0xajTwTAbrse7iBI=
       date: 
-      - Thu, 26 Aug 2010 14:55:08 GMT
+      - Fri, 27 Aug 2010 09:30:29 GMT
   response: !ruby/struct:VCR::Response 
     status: !ruby/struct:VCR::ResponseStatus 
       code: 200
       message: OK
     headers: 
       x-amz-id-2: 
-      - iUvczunYq7hrlm/OB89szdVFJ6ptjHPC/dwfrp3ufguKWw67JJB5/qxUZWmsn0+d
+      - Gs3cKfu8GU4XzvW4rKaRAM2+0bYrOhANmyj528J9zj5u9OY3L1qdHJVfEAkjZyp5
       content-type: 
       - application/xml
       server: 
       - AmazonS3
       date: 
-      - Thu, 26 Aug 2010 14:55:10 GMT
+      - Fri, 27 Aug 2010 09:30:31 GMT
       x-amz-request-id: 
-      - D0481C217641ECC1
+      - 99780F477A8C26C6
       transfer-encoding: 
       - chunked
     body: |-
       <?xml version="1.0" encoding="UTF-8"?>
-      <ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>dev.sublimevideo.player</Name><Prefix>dev</Prefix><Marker></Marker><MaxKeys>1000</MaxKeys><IsTruncated>false</IsTruncated><Contents><Key>dev/black_pixel.gif</Key><LastModified>2010-08-26T14:55:07.000Z</LastModified><ETag>&quot;cd1ba716ce25aff3e5b5402f14e4cbf4&quot;</ETag><Size>1095</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>dev/close_button.png</Key><LastModified>2010-08-26T14:55:03.000Z</LastModified><ETag>&quot;a15d76d155b39e707ac262864cd38e0a&quot;</ETag><Size>1561</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>dev/ie/transparent_pixel.gif</Key><LastModified>2010-08-26T14:55:07.000Z</LastModified><ETag>&quot;325472601571f31e1bf00674c368d335&quot;</ETag><Size>43</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>dev/play_button.png</Key><LastModified>2010-08-26T14:55:04.000Z</LastModified><ETag>&quot;1e64c004cc0d079e299b92db3c4ecfc4&quot;</ETag><Size>1801</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>dev/sublime.js</Key><LastModified>2010-08-26T14:55:05.000Z</LastModified><ETag>&quot;55d3f354d20c6b7d18a1f2656a42835a&quot;</ETag><Size>73228</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>dev/sublime.swf</Key><LastModified>2010-08-26T14:55:01.000Z</LastModified><ETag>&quot;ac43a2c85a6f2fa1bf47f06f808a5daf&quot;</ETag><Size>37806</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>dev/sublime_css.js</Key><LastModified>2010-08-26T14:55:08.000Z</LastModified><ETag>&quot;a11800277b7e7b3d285305a62e1f7db3&quot;</ETag><Size>30133</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents></ListBucketResult>
+      <ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>dev.sublimevideo.player</Name><Prefix>dev</Prefix><Marker></Marker><MaxKeys>1000</MaxKeys><IsTruncated>false</IsTruncated><Contents><Key>dev/black_pixel.gif</Key><LastModified>2010-08-27T09:30:27.000Z</LastModified><ETag>&quot;cd1ba716ce25aff3e5b5402f14e4cbf4&quot;</ETag><Size>1095</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>dev/close_button.png</Key><LastModified>2010-08-27T09:30:23.000Z</LastModified><ETag>&quot;a15d76d155b39e707ac262864cd38e0a&quot;</ETag><Size>1561</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>dev/ie/transparent_pixel.gif</Key><LastModified>2010-08-27T09:30:28.000Z</LastModified><ETag>&quot;325472601571f31e1bf00674c368d335&quot;</ETag><Size>43</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>dev/play_button.png</Key><LastModified>2010-08-27T09:30:24.000Z</LastModified><ETag>&quot;1e64c004cc0d079e299b92db3c4ecfc4&quot;</ETag><Size>1801</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>dev/sublime.js</Key><LastModified>2010-08-27T09:30:25.000Z</LastModified><ETag>&quot;55d3f354d20c6b7d18a1f2656a42835a&quot;</ETag><Size>73228</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>dev/sublime.swf</Key><LastModified>2010-08-27T09:30:19.000Z</LastModified><ETag>&quot;ac43a2c85a6f2fa1bf47f06f808a5daf&quot;</ETag><Size>37806</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>dev/sublime_css.js</Key><LastModified>2010-08-27T09:30:28.000Z</LastModified><ETag>&quot;a11800277b7e7b3d285305a62e1f7db3&quot;</ETag><Size>30133</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents></ListBucketResult>
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
@@ -1677,10 +1714,12 @@
       - ""
       content-type: 
       - ""
+      x-amz-acl: 
+      - public-read
       authorization: 
-      - AWS AKIAJ2FJVCFJW3RZRUUQ:AY1eGTCHJNrLk3G1HlGG6p1kpO0=
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:lj3HXoZGqXZQ1Con9aNXNMapFec=
       date: 
-      - Thu, 26 Aug 2010 14:55:09 GMT
+      - Fri, 27 Aug 2010 09:30:30 GMT
       x-amz-metadata-directive: 
       - COPY
   response: !ruby/struct:VCR::Response 
@@ -1689,20 +1728,20 @@
       message: OK
     headers: 
       x-amz-id-2: 
-      - 6oiTjcFn7Yk5RkvQy5gDYu2Xif9lAqBx7dBsVtWOOe3E54s+00kNPS6aaJHGMxeW
+      - o5wutdOWToXvFh7jyZqiNDE/u5KknZoh6JLDmh+AXfvL73mJPRA1qe6yMWokvACL
       content-type: 
       - application/xml
       server: 
       - AmazonS3
       date: 
-      - Thu, 26 Aug 2010 14:55:10 GMT
+      - Fri, 27 Aug 2010 09:30:31 GMT
       content-length: 
       - "234"
       x-amz-request-id: 
-      - 28D68999FD6A84C5
+      - EEDA810C5F9A7C93
     body: |-
       <?xml version="1.0" encoding="UTF-8"?>
-      <CopyObjectResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><LastModified>2010-08-26T14:55:10.000Z</LastModified><ETag>&quot;cd1ba716ce25aff3e5b5402f14e4cbf4&quot;</ETag></CopyObjectResult>
+      <CopyObjectResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><LastModified>2010-08-27T09:30:31.000Z</LastModified><ETag>&quot;cd1ba716ce25aff3e5b5402f14e4cbf4&quot;</ETag></CopyObjectResult>
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
@@ -1718,10 +1757,12 @@
       - ""
       content-type: 
       - ""
+      x-amz-acl: 
+      - public-read
       authorization: 
-      - AWS AKIAJ2FJVCFJW3RZRUUQ:9N5yLy3W23jD3ChiBYVTMQSiTT4=
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:qCA8R4MHAPez98c3WtUnKfxj4NM=
       date: 
-      - Thu, 26 Aug 2010 14:55:09 GMT
+      - Fri, 27 Aug 2010 09:30:30 GMT
       x-amz-metadata-directive: 
       - COPY
   response: !ruby/struct:VCR::Response 
@@ -1730,20 +1771,20 @@
       message: OK
     headers: 
       x-amz-id-2: 
-      - 9DmBL8uIhE+QbTGa/sCr1pbmzT97JTmP2bZDS57xklt17sr0kfCYKBmqBL1WOGXA
+      - E8oN+ShdjayWYkbI53kDhSlRWVXwFGRyikFSOfl0H+X6eR5XBz7b5L8Sf7l11zx0
       content-type: 
       - application/xml
       server: 
       - AmazonS3
       date: 
-      - Thu, 26 Aug 2010 14:55:11 GMT
+      - Fri, 27 Aug 2010 09:30:32 GMT
       content-length: 
       - "234"
       x-amz-request-id: 
-      - 57BACF8C8D66617C
+      - F5C6899B327F5D51
     body: |-
       <?xml version="1.0" encoding="UTF-8"?>
-      <CopyObjectResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><LastModified>2010-08-26T14:55:11.000Z</LastModified><ETag>&quot;a15d76d155b39e707ac262864cd38e0a&quot;</ETag></CopyObjectResult>
+      <CopyObjectResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><LastModified>2010-08-27T09:30:32.000Z</LastModified><ETag>&quot;a15d76d155b39e707ac262864cd38e0a&quot;</ETag></CopyObjectResult>
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
@@ -1759,10 +1800,12 @@
       - ""
       content-type: 
       - ""
+      x-amz-acl: 
+      - public-read
       authorization: 
-      - AWS AKIAJ2FJVCFJW3RZRUUQ:xspux061raB5iEs8cFeWze8Yrmg=
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:p3HkJaRJOdrUKHCoISxhOFn2T3E=
       date: 
-      - Thu, 26 Aug 2010 14:55:10 GMT
+      - Fri, 27 Aug 2010 09:30:31 GMT
       x-amz-metadata-directive: 
       - COPY
   response: !ruby/struct:VCR::Response 
@@ -1771,20 +1814,20 @@
       message: OK
     headers: 
       x-amz-id-2: 
-      - N+n4NdzcYbh7GY1qD4rF259UWqUabbisMe4KHN1F6aiYNHm9BbG6WPHZvqX4Fwbk
+      - +M2vTy6N/Hf7EcViIazvlxP1/6VNDDq/9HX/GOnFpHhPpLz2O2FO6pj8pegZzqk3
       content-type: 
       - application/xml
       server: 
       - AmazonS3
       date: 
-      - Thu, 26 Aug 2010 14:55:12 GMT
+      - Fri, 27 Aug 2010 09:30:33 GMT
       content-length: 
       - "234"
       x-amz-request-id: 
-      - 0E912677608BD400
+      - E261E7B77CE6A9D0
     body: |-
       <?xml version="1.0" encoding="UTF-8"?>
-      <CopyObjectResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><LastModified>2010-08-26T14:55:12.000Z</LastModified><ETag>&quot;325472601571f31e1bf00674c368d335&quot;</ETag></CopyObjectResult>
+      <CopyObjectResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><LastModified>2010-08-27T09:30:33.000Z</LastModified><ETag>&quot;325472601571f31e1bf00674c368d335&quot;</ETag></CopyObjectResult>
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
@@ -1800,10 +1843,12 @@
       - ""
       content-type: 
       - ""
+      x-amz-acl: 
+      - public-read
       authorization: 
-      - AWS AKIAJ2FJVCFJW3RZRUUQ:tKBsVJe00IjU4k0SeBdK8u3sDwE=
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:ttdyLs9v6XoZIW0snBdW9MThgZY=
       date: 
-      - Thu, 26 Aug 2010 14:55:11 GMT
+      - Fri, 27 Aug 2010 09:30:32 GMT
       x-amz-metadata-directive: 
       - COPY
   response: !ruby/struct:VCR::Response 
@@ -1812,20 +1857,20 @@
       message: OK
     headers: 
       x-amz-id-2: 
-      - r1fjZZy/RXpvsmIzbrmIjIhoSkElbx7SoWIqUq9AYflY9KSJzc8i684jVfwLxAd6
+      - ova89L7ogRVYMVe8S8jXN+vEirggSD0xRb5JoTfhxp76soq38QV+BGxjE9ZN/T5Q
       content-type: 
       - application/xml
       server: 
       - AmazonS3
       date: 
-      - Thu, 26 Aug 2010 14:55:12 GMT
+      - Fri, 27 Aug 2010 09:30:33 GMT
       content-length: 
       - "234"
       x-amz-request-id: 
-      - 25FB5EE516A96BAD
+      - 51EE778241FA6BB0
     body: |-
       <?xml version="1.0" encoding="UTF-8"?>
-      <CopyObjectResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><LastModified>2010-08-26T14:55:12.000Z</LastModified><ETag>&quot;1e64c004cc0d079e299b92db3c4ecfc4&quot;</ETag></CopyObjectResult>
+      <CopyObjectResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><LastModified>2010-08-27T09:30:33.000Z</LastModified><ETag>&quot;1e64c004cc0d079e299b92db3c4ecfc4&quot;</ETag></CopyObjectResult>
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
@@ -1841,10 +1886,12 @@
       - ""
       content-type: 
       - ""
+      x-amz-acl: 
+      - public-read
       authorization: 
-      - AWS AKIAJ2FJVCFJW3RZRUUQ:lx6Vzkd+3LyhtA5Sin6+WeCNNAE=
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:fujgXME9r/uHRW4M1MiECK7frD0=
       date: 
-      - Thu, 26 Aug 2010 14:55:11 GMT
+      - Fri, 27 Aug 2010 09:30:33 GMT
       x-amz-metadata-directive: 
       - COPY
   response: !ruby/struct:VCR::Response 
@@ -1853,20 +1900,20 @@
       message: OK
     headers: 
       x-amz-id-2: 
-      - DD7Nn+RiRi6UsEt9T4YGO8IPmm/9mGNVcxxMcsksSyWKeDUGopgOBx8UKHN0RCAI
+      - OcthxMLyFlgAMf+gL4uzfpznoIpj4IlHfpxYz1O38YBjIkQUiX5y97CtOdqYgtVp
       content-type: 
       - application/xml
       server: 
       - AmazonS3
       date: 
-      - Thu, 26 Aug 2010 14:55:13 GMT
+      - Fri, 27 Aug 2010 09:30:34 GMT
       content-length: 
       - "234"
       x-amz-request-id: 
-      - C957E38038A2D92A
+      - 77E4ECA6FCBA7628
     body: |-
       <?xml version="1.0" encoding="UTF-8"?>
-      <CopyObjectResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><LastModified>2010-08-26T14:55:13.000Z</LastModified><ETag>&quot;55d3f354d20c6b7d18a1f2656a42835a&quot;</ETag></CopyObjectResult>
+      <CopyObjectResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><LastModified>2010-08-27T09:30:34.000Z</LastModified><ETag>&quot;55d3f354d20c6b7d18a1f2656a42835a&quot;</ETag></CopyObjectResult>
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
@@ -1882,10 +1929,12 @@
       - ""
       content-type: 
       - ""
+      x-amz-acl: 
+      - public-read
       authorization: 
-      - AWS AKIAJ2FJVCFJW3RZRUUQ:Cq7z4oQeSzfVj+QqJxA3wewl76U=
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:XbkLUvMKULla4neiVbMQEVZAEaM=
       date: 
-      - Thu, 26 Aug 2010 14:55:12 GMT
+      - Fri, 27 Aug 2010 09:30:33 GMT
       x-amz-metadata-directive: 
       - COPY
   response: !ruby/struct:VCR::Response 
@@ -1894,20 +1943,20 @@
       message: OK
     headers: 
       x-amz-id-2: 
-      - XadEuKYBWXyIBdNjsjhCEI4qe3bhbDwIQeJok46oFeolboZMokGgwN7lwqjk1sSn
+      - EF/cCWp1ek7fqBb3jQw/z4rq49spLZe7mFvFLztg4+OoZ5TRRmKEyCZcRNo/O/2d
       content-type: 
       - application/xml
       server: 
       - AmazonS3
       date: 
-      - Thu, 26 Aug 2010 14:55:14 GMT
+      - Fri, 27 Aug 2010 09:30:35 GMT
       content-length: 
       - "234"
       x-amz-request-id: 
-      - C91A3E2FD8713C5D
+      - 22BD7C548ED9C64F
     body: |-
       <?xml version="1.0" encoding="UTF-8"?>
-      <CopyObjectResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><LastModified>2010-08-26T14:55:14.000Z</LastModified><ETag>&quot;ac43a2c85a6f2fa1bf47f06f808a5daf&quot;</ETag></CopyObjectResult>
+      <CopyObjectResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><LastModified>2010-08-27T09:30:35.000Z</LastModified><ETag>&quot;ac43a2c85a6f2fa1bf47f06f808a5daf&quot;</ETag></CopyObjectResult>
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
@@ -1923,10 +1972,12 @@
       - ""
       content-type: 
       - ""
+      x-amz-acl: 
+      - public-read
       authorization: 
-      - AWS AKIAJ2FJVCFJW3RZRUUQ:GnLthHFHXGkbgRHE4gW5fdbErcA=
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:tCQDKiprM0Gc9/IfrwVi3B68KEg=
       date: 
-      - Thu, 26 Aug 2010 14:55:13 GMT
+      - Fri, 27 Aug 2010 09:30:34 GMT
       x-amz-metadata-directive: 
       - COPY
   response: !ruby/struct:VCR::Response 
@@ -1935,18 +1986,731 @@
       message: OK
     headers: 
       x-amz-id-2: 
-      - MzRBXcak+FQyI3hc+Afa1n/bWdaHxMuTxoT23et7ZMNHi2USlfqV6wjiVKzzTSPY
+      - 8ZwUx2/aEWFragTFvDgLoO9fEH8unePCkRcCbjHKbLJmJ9HL2AVg8n2DzCMkXQZt
       content-type: 
       - application/xml
       server: 
       - AmazonS3
       date: 
-      - Thu, 26 Aug 2010 14:55:14 GMT
+      - Fri, 27 Aug 2010 09:30:36 GMT
       content-length: 
       - "234"
       x-amz-request-id: 
-      - 9640C317001D11F7
+      - CE650A6807DA0A76
     body: |-
       <?xml version="1.0" encoding="UTF-8"?>
-      <CopyObjectResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><LastModified>2010-08-26T14:55:14.000Z</LastModified><ETag>&quot;a11800277b7e7b3d285305a62e1f7db3&quot;</ETag></CopyObjectResult>
+      <CopyObjectResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><LastModified>2010-08-27T09:30:36.000Z</LastModified><ETag>&quot;a11800277b7e7b3d285305a62e1f7db3&quot;</ETag></CopyObjectResult>
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: https://dev.sublimevideo.player.s3.amazonaws.com:443/?prefix=stable
+    body: 
+    headers: 
+      accept: 
+      - "*/*"
+      content-type: 
+      - ""
+      user-agent: 
+      - ""
+      date: 
+      - Fri, 27 Aug 2010 09:30:36 GMT
+      authorization: 
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:xlImJJEdJ7UYJJWHQJL99+CJxCI=
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      x-amz-id-2: 
+      - aD00sPWJ36a3TWYmF+BsjimI0cVere7RHicbmGF+HZrVmli8GNKefSahy+FYlqlH
+      content-type: 
+      - application/xml
+      date: 
+      - Fri, 27 Aug 2010 09:30:37 GMT
+      server: 
+      - AmazonS3
+      x-amz-request-id: 
+      - 8B5E06E35BB87966
+      transfer-encoding: 
+      - chunked
+    body: |-
+      <?xml version="1.0" encoding="UTF-8"?>
+      <ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>dev.sublimevideo.player</Name><Prefix>stable</Prefix><Marker></Marker><MaxKeys>1000</MaxKeys><IsTruncated>false</IsTruncated><Contents><Key>stable/</Key><LastModified>2010-08-26T10:01:05.000Z</LastModified><ETag>&quot;d41d8cd98f00b204e9800998ecf8427e&quot;</ETag><Size>0</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>stable/black_pixel.gif</Key><LastModified>2010-08-27T09:10:16.000Z</LastModified><ETag>&quot;cd1ba716ce25aff3e5b5402f14e4cbf4&quot;</ETag><Size>1095</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>stable/close_button.png</Key><LastModified>2010-08-27T09:10:17.000Z</LastModified><ETag>&quot;a15d76d155b39e707ac262864cd38e0a&quot;</ETag><Size>1561</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>stable/ie/transparent_pixel.gif</Key><LastModified>2010-08-27T09:10:17.000Z</LastModified><ETag>&quot;325472601571f31e1bf00674c368d335&quot;</ETag><Size>43</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>stable/play_button.png</Key><LastModified>2010-08-27T09:10:18.000Z</LastModified><ETag>&quot;1e64c004cc0d079e299b92db3c4ecfc4&quot;</ETag><Size>1801</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>stable/sublime.js</Key><LastModified>2010-08-27T09:10:19.000Z</LastModified><ETag>&quot;55d3f354d20c6b7d18a1f2656a42835a&quot;</ETag><Size>73228</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>stable/sublime.swf</Key><LastModified>2010-08-27T09:10:20.000Z</LastModified><ETag>&quot;ac43a2c85a6f2fa1bf47f06f808a5daf&quot;</ETag><Size>37806</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>stable/sublime_css.js</Key><LastModified>2010-08-27T09:10:20.000Z</LastModified><ETag>&quot;a11800277b7e7b3d285305a62e1f7db3&quot;</ETag><Size>30133</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents></ListBucketResult>
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :put
+    uri: https://dev.sublimevideo.player.s3.amazonaws.com:443/stable%2Fblack_pixel.gif
+    body: 
+    headers: 
+      x-amz-copy-source: 
+      - dev.sublimevideo.player/beta%2Fblack_pixel.gif
+      accept: 
+      - "*/*"
+      content-type: 
+      - ""
+      user-agent: 
+      - ""
+      x-amz-acl: 
+      - public-read
+      date: 
+      - Fri, 27 Aug 2010 09:30:37 GMT
+      authorization: 
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:u1ngF86TZ5tSncy0SePcSfctM8k=
+      x-amz-metadata-directive: 
+      - COPY
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      x-amz-id-2: 
+      - 0ffmqvPucomKDqFpGfZYN+W2WuroETVhgSB6KiG9SveaSTRpLZClhk1ttopl9nN5
+      content-type: 
+      - application/xml
+      date: 
+      - Fri, 27 Aug 2010 09:30:39 GMT
+      server: 
+      - AmazonS3
+      x-amz-request-id: 
+      - 900124EA16C2DD10
+      content-length: 
+      - "234"
+    body: |-
+      <?xml version="1.0" encoding="UTF-8"?>
+      <CopyObjectResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><LastModified>2010-08-27T09:30:39.000Z</LastModified><ETag>&quot;cd1ba716ce25aff3e5b5402f14e4cbf4&quot;</ETag></CopyObjectResult>
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :put
+    uri: https://dev.sublimevideo.player.s3.amazonaws.com:443/stable%2Fclose_button.png
+    body: 
+    headers: 
+      x-amz-copy-source: 
+      - dev.sublimevideo.player/beta%2Fclose_button.png
+      accept: 
+      - "*/*"
+      content-type: 
+      - ""
+      user-agent: 
+      - ""
+      x-amz-acl: 
+      - public-read
+      date: 
+      - Fri, 27 Aug 2010 09:30:38 GMT
+      authorization: 
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:HnzpQNT+2Mj3rCnbXXTNErTCyMA=
+      x-amz-metadata-directive: 
+      - COPY
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      x-amz-id-2: 
+      - WOkVYjXkMJ7V3/ha5zJr2TQPK6EF1xXJusBU3TPnzFaleP5Oez7vj5qSzBhWnTGA
+      content-type: 
+      - application/xml
+      date: 
+      - Fri, 27 Aug 2010 09:30:40 GMT
+      server: 
+      - AmazonS3
+      x-amz-request-id: 
+      - 43E1F9B0581A978A
+      content-length: 
+      - "234"
+    body: |-
+      <?xml version="1.0" encoding="UTF-8"?>
+      <CopyObjectResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><LastModified>2010-08-27T09:30:40.000Z</LastModified><ETag>&quot;a15d76d155b39e707ac262864cd38e0a&quot;</ETag></CopyObjectResult>
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :put
+    uri: https://dev.sublimevideo.player.s3.amazonaws.com:443/stable%2Fie%2Ftransparent_pixel.gif
+    body: 
+    headers: 
+      x-amz-copy-source: 
+      - dev.sublimevideo.player/beta%2Fie%2Ftransparent_pixel.gif
+      accept: 
+      - "*/*"
+      content-type: 
+      - ""
+      user-agent: 
+      - ""
+      x-amz-acl: 
+      - public-read
+      date: 
+      - Fri, 27 Aug 2010 09:30:39 GMT
+      authorization: 
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:dCjXA2TKJX2fExpTrzaitKUJxFQ=
+      x-amz-metadata-directive: 
+      - COPY
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      x-amz-id-2: 
+      - KJDL4T3BwpXhKeL/+L/C1sA8UPelPPE3XreOwjuHWXqxrWFJd9YW+/esJ/yU12uX
+      content-type: 
+      - application/xml
+      date: 
+      - Fri, 27 Aug 2010 09:30:40 GMT
+      server: 
+      - AmazonS3
+      x-amz-request-id: 
+      - 3FF3E9E18C11A750
+      content-length: 
+      - "234"
+    body: |-
+      <?xml version="1.0" encoding="UTF-8"?>
+      <CopyObjectResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><LastModified>2010-08-27T09:30:40.000Z</LastModified><ETag>&quot;325472601571f31e1bf00674c368d335&quot;</ETag></CopyObjectResult>
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :put
+    uri: https://dev.sublimevideo.player.s3.amazonaws.com:443/stable%2Fplay_button.png
+    body: 
+    headers: 
+      x-amz-copy-source: 
+      - dev.sublimevideo.player/beta%2Fplay_button.png
+      accept: 
+      - "*/*"
+      content-type: 
+      - ""
+      user-agent: 
+      - ""
+      x-amz-acl: 
+      - public-read
+      date: 
+      - Fri, 27 Aug 2010 09:30:40 GMT
+      authorization: 
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:ZEM9XiKOqO/4TxLy5NxOzDAE6iQ=
+      x-amz-metadata-directive: 
+      - COPY
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      x-amz-id-2: 
+      - SmqxTFZ0pvxCECiEDaRRV64shAlHyUOOJIzr4IIcg9ZjM6j/jhqIZAY6kz7mAWKc
+      content-type: 
+      - application/xml
+      date: 
+      - Fri, 27 Aug 2010 09:30:41 GMT
+      server: 
+      - AmazonS3
+      x-amz-request-id: 
+      - 8E3CC97D91796145
+      content-length: 
+      - "234"
+    body: |-
+      <?xml version="1.0" encoding="UTF-8"?>
+      <CopyObjectResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><LastModified>2010-08-27T09:30:41.000Z</LastModified><ETag>&quot;1e64c004cc0d079e299b92db3c4ecfc4&quot;</ETag></CopyObjectResult>
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :put
+    uri: https://dev.sublimevideo.player.s3.amazonaws.com:443/stable%2Fsublime.js
+    body: 
+    headers: 
+      x-amz-copy-source: 
+      - dev.sublimevideo.player/beta%2Fsublime.js
+      accept: 
+      - "*/*"
+      content-type: 
+      - ""
+      user-agent: 
+      - ""
+      x-amz-acl: 
+      - public-read
+      date: 
+      - Fri, 27 Aug 2010 09:30:40 GMT
+      authorization: 
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:LaxU/4hsK7cVYucZE5XRtJq2uko=
+      x-amz-metadata-directive: 
+      - COPY
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      x-amz-id-2: 
+      - BaRj4+tlY83qm5LZT2EmpmPUSVyz3z3JCfkRgAH30LGB5F7kve8NrvS/dkIpKj6Y
+      content-type: 
+      - application/xml
+      date: 
+      - Fri, 27 Aug 2010 09:30:42 GMT
+      server: 
+      - AmazonS3
+      x-amz-request-id: 
+      - 30188CC31FFAFA53
+      content-length: 
+      - "234"
+    body: |-
+      <?xml version="1.0" encoding="UTF-8"?>
+      <CopyObjectResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><LastModified>2010-08-27T09:30:42.000Z</LastModified><ETag>&quot;55d3f354d20c6b7d18a1f2656a42835a&quot;</ETag></CopyObjectResult>
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :put
+    uri: https://dev.sublimevideo.player.s3.amazonaws.com:443/stable%2Fsublime.swf
+    body: 
+    headers: 
+      x-amz-copy-source: 
+      - dev.sublimevideo.player/beta%2Fsublime.swf
+      accept: 
+      - "*/*"
+      content-type: 
+      - ""
+      user-agent: 
+      - ""
+      x-amz-acl: 
+      - public-read
+      date: 
+      - Fri, 27 Aug 2010 09:30:41 GMT
+      authorization: 
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:lfZKJHJzjwzWNgd659HUf/TMXlA=
+      x-amz-metadata-directive: 
+      - COPY
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      x-amz-id-2: 
+      - xYpJMaGOEjjzvZMN+069L5O4wJVyrfGkVSbPlUYb56ft24wvU84kvWc5wIyrq61o
+      content-type: 
+      - application/xml
+      date: 
+      - Fri, 27 Aug 2010 09:30:43 GMT
+      server: 
+      - AmazonS3
+      x-amz-request-id: 
+      - 85062D814C781215
+      content-length: 
+      - "234"
+    body: |-
+      <?xml version="1.0" encoding="UTF-8"?>
+      <CopyObjectResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><LastModified>2010-08-27T09:30:43.000Z</LastModified><ETag>&quot;ac43a2c85a6f2fa1bf47f06f808a5daf&quot;</ETag></CopyObjectResult>
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :put
+    uri: https://dev.sublimevideo.player.s3.amazonaws.com:443/stable%2Fsublime_css.js
+    body: 
+    headers: 
+      x-amz-copy-source: 
+      - dev.sublimevideo.player/beta%2Fsublime_css.js
+      accept: 
+      - "*/*"
+      content-type: 
+      - ""
+      user-agent: 
+      - ""
+      x-amz-acl: 
+      - public-read
+      date: 
+      - Fri, 27 Aug 2010 09:30:42 GMT
+      authorization: 
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:TJFNio8OZxQq6/wQ7a4g5y+g5EU=
+      x-amz-metadata-directive: 
+      - COPY
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      x-amz-id-2: 
+      - e6RZmd5mMQQqkiu6PYYyyj4QYX02LmZGjEahDH60QuCJH7vL7IFrrkqOBa0aW6/E
+      content-type: 
+      - application/xml
+      date: 
+      - Fri, 27 Aug 2010 09:30:43 GMT
+      server: 
+      - AmazonS3
+      x-amz-request-id: 
+      - B4FC66C25491FD63
+      content-length: 
+      - "234"
+    body: |-
+      <?xml version="1.0" encoding="UTF-8"?>
+      <CopyObjectResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><LastModified>2010-08-27T09:30:43.000Z</LastModified><ETag>&quot;a11800277b7e7b3d285305a62e1f7db3&quot;</ETag></CopyObjectResult>
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: https://dev.sublimevideo.player.s3.amazonaws.com:443/?prefix=stable
+    body: 
+    headers: 
+      accept: 
+      - "*/*"
+      content-type: 
+      - ""
+      user-agent: 
+      - ""
+      date: 
+      - Fri, 27 Aug 2010 09:30:43 GMT
+      authorization: 
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:GzaAJnntNyCnQAISMk4L/MMOrhs=
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      x-amz-id-2: 
+      - hczqdXpaxZwrBjG82Vs04whI6FHZcaVobtcPyFEVtDc6ic397kzBappsGDtbRO4O
+      content-type: 
+      - application/xml
+      date: 
+      - Fri, 27 Aug 2010 09:30:45 GMT
+      server: 
+      - AmazonS3
+      x-amz-request-id: 
+      - E569F5EEB116938E
+      transfer-encoding: 
+      - chunked
+    body: |-
+      <?xml version="1.0" encoding="UTF-8"?>
+      <ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>dev.sublimevideo.player</Name><Prefix>stable</Prefix><Marker></Marker><MaxKeys>1000</MaxKeys><IsTruncated>false</IsTruncated><Contents><Key>stable/</Key><LastModified>2010-08-26T10:01:05.000Z</LastModified><ETag>&quot;d41d8cd98f00b204e9800998ecf8427e&quot;</ETag><Size>0</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>stable/black_pixel.gif</Key><LastModified>2010-08-27T09:30:39.000Z</LastModified><ETag>&quot;cd1ba716ce25aff3e5b5402f14e4cbf4&quot;</ETag><Size>1095</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>stable/close_button.png</Key><LastModified>2010-08-27T09:30:40.000Z</LastModified><ETag>&quot;a15d76d155b39e707ac262864cd38e0a&quot;</ETag><Size>1561</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>stable/ie/transparent_pixel.gif</Key><LastModified>2010-08-27T09:30:40.000Z</LastModified><ETag>&quot;325472601571f31e1bf00674c368d335&quot;</ETag><Size>43</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>stable/play_button.png</Key><LastModified>2010-08-27T09:30:41.000Z</LastModified><ETag>&quot;1e64c004cc0d079e299b92db3c4ecfc4&quot;</ETag><Size>1801</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>stable/sublime.js</Key><LastModified>2010-08-27T09:30:42.000Z</LastModified><ETag>&quot;55d3f354d20c6b7d18a1f2656a42835a&quot;</ETag><Size>73228</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>stable/sublime.swf</Key><LastModified>2010-08-27T09:30:43.000Z</LastModified><ETag>&quot;ac43a2c85a6f2fa1bf47f06f808a5daf&quot;</ETag><Size>37806</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>stable/sublime_css.js</Key><LastModified>2010-08-27T09:30:43.000Z</LastModified><ETag>&quot;a11800277b7e7b3d285305a62e1f7db3&quot;</ETag><Size>30133</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents></ListBucketResult>
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :put
+    uri: https://dev.sublimevideo.player.s3.amazonaws.com:443/stable%2Fblack_pixel.gif
+    body: 
+    headers: 
+      x-amz-copy-source: 
+      - dev.sublimevideo.player/beta%2Fblack_pixel.gif
+      accept: 
+      - "*/*"
+      content-type: 
+      - ""
+      user-agent: 
+      - ""
+      x-amz-acl: 
+      - public-read
+      date: 
+      - Fri, 27 Aug 2010 09:30:44 GMT
+      authorization: 
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:96rtgVuRlnExwqqSMTvvCaNAiQk=
+      x-amz-metadata-directive: 
+      - COPY
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      x-amz-id-2: 
+      - uiWh9ku0SfvVJ6bqsgFVNJZl9e0yJwie4IwMQQlYMIzuMzAhWsjzxGLcwxzusrUD
+      content-type: 
+      - application/xml
+      date: 
+      - Fri, 27 Aug 2010 09:30:45 GMT
+      server: 
+      - AmazonS3
+      x-amz-request-id: 
+      - 425E010FAE6B337A
+      content-length: 
+      - "234"
+    body: |-
+      <?xml version="1.0" encoding="UTF-8"?>
+      <CopyObjectResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><LastModified>2010-08-27T09:30:45.000Z</LastModified><ETag>&quot;cd1ba716ce25aff3e5b5402f14e4cbf4&quot;</ETag></CopyObjectResult>
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :put
+    uri: https://dev.sublimevideo.player.s3.amazonaws.com:443/stable%2Fclose_button.png
+    body: 
+    headers: 
+      x-amz-copy-source: 
+      - dev.sublimevideo.player/beta%2Fclose_button.png
+      accept: 
+      - "*/*"
+      content-type: 
+      - ""
+      user-agent: 
+      - ""
+      x-amz-acl: 
+      - public-read
+      date: 
+      - Fri, 27 Aug 2010 09:30:45 GMT
+      authorization: 
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:fxkVHNWDDos7XwRZeRSxFLWwoAg=
+      x-amz-metadata-directive: 
+      - COPY
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      x-amz-id-2: 
+      - k3S7suuExvpKTt9xeUgicJR+gyXdn8w+zU9Af4n7m4Ne57K0BBIdjnyz4LPmXT/B
+      content-type: 
+      - application/xml
+      date: 
+      - Fri, 27 Aug 2010 09:30:46 GMT
+      server: 
+      - AmazonS3
+      x-amz-request-id: 
+      - 5E63CD96DBBB922A
+      content-length: 
+      - "234"
+    body: |-
+      <?xml version="1.0" encoding="UTF-8"?>
+      <CopyObjectResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><LastModified>2010-08-27T09:30:46.000Z</LastModified><ETag>&quot;a15d76d155b39e707ac262864cd38e0a&quot;</ETag></CopyObjectResult>
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :put
+    uri: https://dev.sublimevideo.player.s3.amazonaws.com:443/stable%2Fie%2Ftransparent_pixel.gif
+    body: 
+    headers: 
+      x-amz-copy-source: 
+      - dev.sublimevideo.player/beta%2Fie%2Ftransparent_pixel.gif
+      accept: 
+      - "*/*"
+      content-type: 
+      - ""
+      user-agent: 
+      - ""
+      x-amz-acl: 
+      - public-read
+      date: 
+      - Fri, 27 Aug 2010 09:30:45 GMT
+      authorization: 
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:Mf+1XVrdjQbk2QoSkRieOaHzPPs=
+      x-amz-metadata-directive: 
+      - COPY
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      x-amz-id-2: 
+      - HIw15BmkTFrsschZsP5OFV9J6elFF0b0anUGNOW0HOqJDQ9IuXKcQLob42Vnl7kH
+      content-type: 
+      - application/xml
+      date: 
+      - Fri, 27 Aug 2010 09:30:47 GMT
+      server: 
+      - AmazonS3
+      x-amz-request-id: 
+      - EFEA6E1748764AED
+      content-length: 
+      - "234"
+    body: |-
+      <?xml version="1.0" encoding="UTF-8"?>
+      <CopyObjectResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><LastModified>2010-08-27T09:30:47.000Z</LastModified><ETag>&quot;325472601571f31e1bf00674c368d335&quot;</ETag></CopyObjectResult>
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :put
+    uri: https://dev.sublimevideo.player.s3.amazonaws.com:443/stable%2Fplay_button.png
+    body: 
+    headers: 
+      x-amz-copy-source: 
+      - dev.sublimevideo.player/beta%2Fplay_button.png
+      accept: 
+      - "*/*"
+      content-type: 
+      - ""
+      user-agent: 
+      - ""
+      x-amz-acl: 
+      - public-read
+      date: 
+      - Fri, 27 Aug 2010 09:30:46 GMT
+      authorization: 
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:TL9GDqxraCmLWCzKTtkSsxlTIIw=
+      x-amz-metadata-directive: 
+      - COPY
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      x-amz-id-2: 
+      - tZhIIXxRY4hrJownYLIYCKH4HJanGxzxTq9i/huQ3Rqh0R7TpGd8etwooizDfzux
+      content-type: 
+      - application/xml
+      date: 
+      - Fri, 27 Aug 2010 09:30:48 GMT
+      server: 
+      - AmazonS3
+      x-amz-request-id: 
+      - D4CC3B081E429AFA
+      content-length: 
+      - "234"
+    body: |-
+      <?xml version="1.0" encoding="UTF-8"?>
+      <CopyObjectResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><LastModified>2010-08-27T09:30:48.000Z</LastModified><ETag>&quot;1e64c004cc0d079e299b92db3c4ecfc4&quot;</ETag></CopyObjectResult>
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :put
+    uri: https://dev.sublimevideo.player.s3.amazonaws.com:443/stable%2Fsublime.js
+    body: 
+    headers: 
+      x-amz-copy-source: 
+      - dev.sublimevideo.player/beta%2Fsublime.js
+      accept: 
+      - "*/*"
+      content-type: 
+      - ""
+      user-agent: 
+      - ""
+      x-amz-acl: 
+      - public-read
+      date: 
+      - Fri, 27 Aug 2010 09:30:47 GMT
+      authorization: 
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:IQ/4lx/A30V6W7y0P6fuRJX4ZS4=
+      x-amz-metadata-directive: 
+      - COPY
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      x-amz-id-2: 
+      - BX2+jEm5N4Z3TcX+SJ3yN3zIwxpGuMftuUalL0KE2NPWrbQ9IIS2aMZGb1eBCMjk
+      content-type: 
+      - application/xml
+      date: 
+      - Fri, 27 Aug 2010 09:30:49 GMT
+      server: 
+      - AmazonS3
+      x-amz-request-id: 
+      - 27D42ED5154358D7
+      content-length: 
+      - "234"
+    body: |-
+      <?xml version="1.0" encoding="UTF-8"?>
+      <CopyObjectResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><LastModified>2010-08-27T09:30:49.000Z</LastModified><ETag>&quot;55d3f354d20c6b7d18a1f2656a42835a&quot;</ETag></CopyObjectResult>
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :put
+    uri: https://dev.sublimevideo.player.s3.amazonaws.com:443/stable%2Fsublime.swf
+    body: 
+    headers: 
+      x-amz-copy-source: 
+      - dev.sublimevideo.player/beta%2Fsublime.swf
+      accept: 
+      - "*/*"
+      content-type: 
+      - ""
+      user-agent: 
+      - ""
+      x-amz-acl: 
+      - public-read
+      date: 
+      - Fri, 27 Aug 2010 09:30:48 GMT
+      authorization: 
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:qq5ZzYQeDJTnRO2x+ZvG8QWBaaQ=
+      x-amz-metadata-directive: 
+      - COPY
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      x-amz-id-2: 
+      - UQrLrUd2HaWhoEwSU05dUJIUzf6AXvxX0GKdFJhIaVbtZWXVpJARjhOUkCCY+O8C
+      content-type: 
+      - application/xml
+      date: 
+      - Fri, 27 Aug 2010 09:30:49 GMT
+      server: 
+      - AmazonS3
+      x-amz-request-id: 
+      - 09D96F3FF6BD31F2
+      content-length: 
+      - "234"
+    body: |-
+      <?xml version="1.0" encoding="UTF-8"?>
+      <CopyObjectResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><LastModified>2010-08-27T09:30:49.000Z</LastModified><ETag>&quot;ac43a2c85a6f2fa1bf47f06f808a5daf&quot;</ETag></CopyObjectResult>
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :put
+    uri: https://dev.sublimevideo.player.s3.amazonaws.com:443/stable%2Fsublime_css.js
+    body: 
+    headers: 
+      x-amz-copy-source: 
+      - dev.sublimevideo.player/beta%2Fsublime_css.js
+      accept: 
+      - "*/*"
+      content-type: 
+      - ""
+      user-agent: 
+      - ""
+      x-amz-acl: 
+      - public-read
+      date: 
+      - Fri, 27 Aug 2010 09:30:48 GMT
+      authorization: 
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:NnIVztseQPwbhRO1pny0IFaD/zc=
+      x-amz-metadata-directive: 
+      - COPY
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      x-amz-id-2: 
+      - sXyBdtaEU0RuUbsDZCzopJ8bFTE1mrcfYxJoCA+xnxiTQBjqa0THRb9Q7vaEroZ7
+      content-type: 
+      - application/xml
+      date: 
+      - Fri, 27 Aug 2010 09:30:50 GMT
+      server: 
+      - AmazonS3
+      x-amz-request-id: 
+      - A0A84D02638131D8
+      content-length: 
+      - "234"
+    body: |-
+      <?xml version="1.0" encoding="UTF-8"?>
+      <CopyObjectResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><LastModified>2010-08-27T09:30:50.000Z</LastModified><ETag>&quot;a11800277b7e7b3d285305a62e1f7db3&quot;</ETag></CopyObjectResult>
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: https://dev.sublimevideo.player.s3.amazonaws.com:443/?prefix=stable/
+    body: 
+    headers: 
+      accept: 
+      - "*/*"
+      user-agent: 
+      - ""
+      content-type: 
+      - ""
+      authorization: 
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:9+PWULxBQ5vsdAsCh+0udnDw0kE=
+      date: 
+      - Fri, 27 Aug 2010 09:30:52 GMT
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      x-amz-id-2: 
+      - VaiiatS2VOaTZCTrR9t4UTfvUqNCOOGHOZkHfjAtFpv/Du7SlFYB/jyZCol/Zs2d
+      content-type: 
+      - application/xml
+      server: 
+      - AmazonS3
+      date: 
+      - Fri, 27 Aug 2010 09:30:53 GMT
+      x-amz-request-id: 
+      - 3C5EC4FAED0DACFA
+      transfer-encoding: 
+      - chunked
+    body: |-
+      <?xml version="1.0" encoding="UTF-8"?>
+      <ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Name>dev.sublimevideo.player</Name><Prefix>stable/</Prefix><Marker></Marker><MaxKeys>1000</MaxKeys><IsTruncated>false</IsTruncated><Contents><Key>stable/</Key><LastModified>2010-08-26T10:01:05.000Z</LastModified><ETag>&quot;d41d8cd98f00b204e9800998ecf8427e&quot;</ETag><Size>0</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>stable/black_pixel.gif</Key><LastModified>2010-08-27T09:30:45.000Z</LastModified><ETag>&quot;cd1ba716ce25aff3e5b5402f14e4cbf4&quot;</ETag><Size>1095</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>stable/close_button.png</Key><LastModified>2010-08-27T09:30:46.000Z</LastModified><ETag>&quot;a15d76d155b39e707ac262864cd38e0a&quot;</ETag><Size>1561</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>stable/ie/transparent_pixel.gif</Key><LastModified>2010-08-27T09:30:47.000Z</LastModified><ETag>&quot;325472601571f31e1bf00674c368d335&quot;</ETag><Size>43</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>stable/play_button.png</Key><LastModified>2010-08-27T09:30:48.000Z</LastModified><ETag>&quot;1e64c004cc0d079e299b92db3c4ecfc4&quot;</ETag><Size>1801</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>stable/sublime.js</Key><LastModified>2010-08-27T09:30:49.000Z</LastModified><ETag>&quot;55d3f354d20c6b7d18a1f2656a42835a&quot;</ETag><Size>73228</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>stable/sublime.swf</Key><LastModified>2010-08-27T09:30:49.000Z</LastModified><ETag>&quot;ac43a2c85a6f2fa1bf47f06f808a5daf&quot;</ETag><Size>37806</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents><Contents><Key>stable/sublime_css.js</Key><LastModified>2010-08-27T09:30:50.000Z</LastModified><ETag>&quot;a11800277b7e7b3d285305a62e1f7db3&quot;</ETag><Size>30133</Size><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><StorageClass>STANDARD</StorageClass></Contents></ListBucketResult>
     http_version: "1.1"
