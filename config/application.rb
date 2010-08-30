@@ -14,10 +14,10 @@ module MySublimeVideo
     
     # Add additional load paths for your own custom dirs
     config.autoload_paths += %W[#{config.root}/lib]
-    # Dir["#{config.root}/lib/{logs_file_format,responders,transcoders,validators,will_paginate}/**/*.rb"].each do |f|
-    #   dir = File.expand_path(File.dirname(f))
-    #   config.autoload_paths += [dir] if config.autoload_paths.exclude?(dir)
-    # end
+    Dir["#{config.root}/lib/{logs_file_format,responders,transcoders,validators,will_paginate}/**/*.rb"].each do |f|
+      dir = File.expand_path(File.dirname(f))
+      config.autoload_paths += [dir] if config.autoload_paths.exclude?(dir)
+    end
     
     # Only load the plugins named here, in the order given (default is alphabetical).
     # :all can be used as a placeholder for all plugins not explicitly named

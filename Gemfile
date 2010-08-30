@@ -1,11 +1,11 @@
 source :rubygems
 
-gem 'rails',                 '3.0.0.rc2'
+gem 'rails',                 '~> 3.0.0'
 
 gem 'libxml-ruby',           '~> 1.1.3', :require => 'libxml'
 
 gem 'i18n',                  '~> 0.4.1'
-gem 'haml',                  '~> 3.0.16'
+gem 'haml',                  '~> 3.0.18'
 gem 'state_machine',         '~> 0.9.4'
 gem 'responders',            :git => 'git://github.com/plataformatec/responders.git'
 gem 'uniquify',              '~> 0.1.0'
@@ -19,7 +19,7 @@ gem 'activemerchant',        '~> 1.7.1'
 gem 'voxel_hapi',            :git => 'git://github.com/thibaudgg/voxel_hapi.git' # VoxCast CDN
 gem 'request-log-analyzer',  '~> 1.8.0', :require => 'request_log_analyzer'
 
-gem 'devise',                '~> 1.1.1'
+gem 'devise',                '~> 1.1.2'
 gem 'devise_invitable',      :git => 'git://github.com/rymai/devise_invitable.git'
 
 gem 'system_timer',          '~> 1.0.0' # Only on Ruby 1.8, used by memcache-client
@@ -31,7 +31,7 @@ gem 'carrierwave',           '~> 0.5.0.beta2'
 gem 'RedCloth',              '~> 4.2.3'
 
 gem 'mongoid',               :git => 'git://github.com/mongoid/mongoid.git'
-gem 'bson_ext',              '~> 1.0.4'
+gem 'bson_ext',              '~> 1.0.7'
 
 gem 'zip',                   '~> 2.0.2', :require => 'zip/zip'
 gem 'git' # needed by Heroku
@@ -70,5 +70,5 @@ group :test do
   
   gem 'factory_girl_rails'
   gem 'webmock'
-  gem 'vcr', '~> 1.1.0'
+  gem 'vcr', '~> 1.1.1'
 end

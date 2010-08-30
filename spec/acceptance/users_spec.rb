@@ -72,6 +72,18 @@ feature "Users actions:" do
     invited_user.invitation_token.should be_nil
   end
   
+  scenario "accept invitation and change email" do
+    invited_user = send_invite_to :user, "invited@user.com"
+    
+    visit "/invitation/accept?invitation_token=#{invited_user.invitation_token}"
+    fill_in "Email", :with => "new@email.com"
+    fill_in "Full name", :with => "Rémy Coutable"
+    fill_in "Password", :with => "123456"
+    click_button "Go!"
+    
+    invited_user.reload.email.should == "new@email.com"
+  end
+  
 end
 
 feature "User session:" do
