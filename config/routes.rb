@@ -42,13 +42,13 @@ MySublimeVideo::Application.routes.draw do
     post :create,  :path => '/support', :as => ''
   end
   
-  root :to => redirect { |p, req| "#{Rails.env.development? ? "http" : "https" }://#{req.host}/sites" }
+  root :to => redirect("/sites")
   
   # =========
   # = Admin =
   # =========
   
-  match 'admin', :to => redirect { |p, req| "#{Rails.env.development? ? "http" : "https" }://#{req.host}/admin/djs" }, :as => "admin"
+  match 'admin', :to => redirect("/admin/djs"), :as => "admin"
   
   devise_scope :user do
     scope :controller => 'admin/users/invitations', :as => :user_invitation do # admin routes
@@ -84,6 +84,7 @@ MySublimeVideo::Application.routes.draw do
     resources :admins, :only => [:index, :destroy]
     resources :sites, :only => [:index, :show]
     resources :delayed_jobs, :only => [:index, :show, :update, :destroy], :path => "djs"
+    resources :releases, :only => [:index, :create, :update]
   end
   
 end

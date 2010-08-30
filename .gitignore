@@ -10,6 +10,7 @@ Desktop DF
 coverage
 rdoc
 .bundle
+*.dat
 db/*.sqlite3*
 log/*.log
 tmp/**/*
