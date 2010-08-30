@@ -33,6 +33,9 @@ gem 'RedCloth',              '~> 4.2.3'
 gem 'mongoid',               :git => 'git://github.com/mongoid/mongoid.git'
 gem 'bson_ext',              '~> 1.0.4'
 
+gem 'zip',                   '~> 2.0.2', :require => 'zip/zip'
+gem 'git' # needed by Heroku
+
 group :production, :staging do
   gem 'pg',                  '~> 0.9.0'
   gem 'rack-ssl-enforcer',   :git => 'git://github.com/thibaudgg/rack-ssl-enforcer.git'

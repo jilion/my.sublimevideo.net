@@ -1,0 +1,43 @@
+= title_and_content_header("Releases")
+
+.new_form
+  = form_for [:admin, Release.new], :html => { :multipart => true } do |f|
+    = f.label :zip, "Zip file"
+    = f.file_field :zip
+    .actions
+      = f.submit 'Upload new dev release', :class => "add"
+
+%h3= "Current Releases"
+.summary
+  %ul
+    %li
+      = "Stable"
+      - if stable_release = Release.stable_release
+        = stable_release.date
+        = link_to "download zip", stable_release.zip.url
+      - else
+        = "none"
+    %li
+      = "Beta"
+      - if beta_release = Release.beta_release
+        = beta_release.date
+        = button_to "flag as stable", [:admin, beta_release], :confirm => 'Are you REALLY sure?', :method => :put
+        = link_to "download zip", beta_release.zip.url
+      - else
+        = "none"
+    %li
+      = "Dev"
+      - if dev_release = Release.dev_release
+        = dev_release.date
+        = button_to "flag as beta", [:admin, dev_release], :confirm => 'Are you sure?', :method => :put
+        = link_to "download zip", dev_release.zip.url
+      - else
+        = "none"
+
+%h3= "Archived releases"
+%ul#release
+  - Release.order("date desc").limit(20).each do |release|
+    %li
+      = release.date
+      = button_to "flag as dev", [:admin, release], :confirm => 'Are you sure?', :method => :put
+      = link_to "download zip", release.zip.url
