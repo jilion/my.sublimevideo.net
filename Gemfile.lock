@@ -33,7 +33,7 @@ GIT
 
 GIT
   remote: git://github.com/rymai/devise_invitable.git
-  revision: 799f9e7906369ace49eeb0e44a5d0ef1bd81ef63
+  revision: c186969eeb252fc7fac357a1bef9a2242d6108ba
   specs:
     devise_invitable (0.6.5)
       devise (~> 1.1.2)
@@ -41,7 +41,7 @@ GIT
 
 GIT
   remote: git://github.com/rymai/has_scope.git
-  revision: 22165fec8eb7e517dc5eb8e43ea91055ce5d829d
+  revision: 905797803aa5d3da24505d4b9b07c647cbdd8e6d
   specs:
     has_scope (0.5.0)
 
