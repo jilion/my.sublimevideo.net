@@ -16,5 +16,6 @@
         
   .entry.submit
     = f.submit "Login"
+    = raw "Don't have an account yet, #{link_to("ask for an invitation", "http://sublimevideo.net/notify" )}"
     = render :partial => "devise/shared/links"
 .spacer
