@@ -22,37 +22,38 @@ gem 'request-log-analyzer',  '~> 1.8.0', :require => 'request_log_analyzer'
 gem 'devise',                '~> 1.1.2'
 gem 'devise_invitable',      :git => 'git://github.com/rymai/devise_invitable.git'
 
-gem 'system_timer',          '~> 1.0.0' # Only on Ruby 1.8, used by memcache-client
-gem 'memcache-client',       '~> 1.8.5'
 gem 'memcached',             '~> 0.20.1'
+gem 'dalli',                 '~> 0.9.2'
 
 gem 'aws',                   '~> 2.3.20'
 gem 'carrierwave',           '~> 0.5.0.beta2'
 gem 'RedCloth',              '~> 4.2.3'
 
-gem 'mongoid',               :git => 'git://github.com/mongoid/mongoid.git'
-gem 'bson_ext',              '~> 1.0.7'
+gem 'bson_ext',              '1.0.4'
+gem 'mongo',                 '1.0.7'
+gem 'mongoid',               '~> 2.0.0.beta.17'
+# gem 'mongoid',               :git => 'git://github.com/mongoid/mongoid.git'
 
 gem 'zip',                   '~> 2.0.2', :require => 'zip/zip'
 gem 'git' # needed by Heroku
 
 group :production, :staging do
   gem 'pg',                  '~> 0.9.0'
-  gem 'rack-ssl-enforcer',   :git => 'git://github.com/thibaudgg/rack-ssl-enforcer.git'
-  gem 'rack-staging',        :git => 'git://github.com/thibaudgg/rack-staging.git'
+  gem 'rack-ssl-enforcer',   '~> 0.1.5'
+  gem 'rack-staging',        '~> 0.1.0'
 end
 
 group :development do
-  gem 'sqlite3-ruby', :require => 'sqlite3'
-  gem 'ffaker',       '>= 0.4.0'
+  gem 'sqlite3-ruby',  :require => 'sqlite3'
+  gem 'ffaker',        '>= 0.4.0'
   gem 'annotate'
   gem 'wirble' # irbrc
   gem 'ruby-graphviz', :require => 'graphviz'
   gem 'heroku'
-  gem 'heroku_tasks', :git => 'git://github.com/thibaudgg/heroku_tasks.git'
+  gem 'heroku_tasks',  '~> 0.1.0'
   gem 'taps' # heroku db pull/push
   
-  gem 'rspec-rails', '~> 2.0.0.beta.20'
+  gem 'rspec-rails',   '~> 2.0.0.beta.20'
 end
 
 group :test do
