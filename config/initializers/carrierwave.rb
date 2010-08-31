@@ -7,8 +7,6 @@ CarrierWave.configure do |config|
     config.s3_access_key_id     = S3.access_key_id
     config.s3_secret_access_key = S3.secret_access_key
     config.s3_access            = :public_read
-  # when 'development'
-  #   config.storage              = :file
   when 'test'
     config.storage              = :file
     config.enable_processing    = false

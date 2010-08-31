@@ -19,7 +19,7 @@
 .spacer
 
 - @user ||= current_user
-= form_for @user, :url => update_user_registration_path, :html => { :method => :put, :class => "main_form section" } do |f|
+= form_for @user, :url => "/account/credentials", :html => { :method => :put, :class => "main_form section" } do |f|
   %h3.section_title= "Email & Password"
   .entry.email
     = f.label :email, "", :class => "icon"
