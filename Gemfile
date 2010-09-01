@@ -50,7 +50,7 @@ group :development do
   gem 'wirble' # irbrc
   gem 'ruby-graphviz', :require => 'graphviz'
   gem 'heroku'
-  gem 'heroku_tasks',  '~> 0.1.0'
+  gem 'heroku_tasks',  '~> 0.1.2'
   gem 'taps' # heroku db pull/push
   
   gem 'rspec-rails',   '~> 2.0.0.beta.20'

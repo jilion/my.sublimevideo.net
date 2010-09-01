@@ -1,25 +1,23 @@
 development:
-  adapter: sqlite3
-  database: db/development.sqlite3
-  pool: 5
-  timeout: 5000
-
+  adapter: postgresql
+  encoding: utf8
+  database: msv_development
+  host: localhost
+  
 test:
   adapter: postgresql
   encoding: utf8
   database: msv_test
-  user: 
-  password: 
   host: localhost
 
 staging:
-  adapter: sqlite3
-  database: db/staging.sqlite3
-  pool: 5
-  timeout: 5000
+  adapter: postgresql
+  encoding: utf8
+  database: msv_staging
+  host: localhost
 
 production:
-  adapter: sqlite3
-  database: db/production.sqlite3
-  pool: 5
-  timeout: 5000
+  adapter: postgresql
+  encoding: utf8
+  database: msv_production
+  host: localhost
