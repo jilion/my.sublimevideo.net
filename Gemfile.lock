@@ -43,6 +43,18 @@ GIT
       yui-compressor (>= 0.9.1)
 
 GIT
+  remote: git://github.com/thibaudgg/rack-ssl-enforcer.git
+  revision: e10b266ebb4c8a69f908465ad9825742070ea524
+  specs:
+    rack-ssl-enforcer (0.1.4)
+
+GIT
+  remote: git://github.com/thibaudgg/rack-staging.git
+  revision: 10b9783cc1a13098de63a413d9e0dd0032b56937
+  specs:
+    rack-staging (0.1.0)
+
+GIT
   remote: git://github.com/thibaudgg/voxel_hapi.git
   revision: d913ce045f1d65166416930e40609513072f62ec
   specs:
@@ -127,7 +139,6 @@ GEM
     ffaker (0.4.0)
     ffi (0.6.3)
       rake (>= 0.8.7)
-    git (1.2.5)
     growl (1.0.3)
     haml (3.0.18)
     heroku (1.9.13)
@@ -166,8 +177,6 @@ GEM
     rack (1.2.1)
     rack-mount (0.6.12)
       rack (>= 1.0.0)
-    rack-ssl-enforcer (0.1.5)
-    rack-staging (0.1.0)
     rack-test (0.5.4)
       rack (>= 1.0)
     rails (3.0.0)
@@ -265,7 +274,6 @@ DEPENDENCIES
   devise_invitable!
   factory_girl_rails
   ffaker (>= 0.4.0)
-  git
   haml (~> 3.0.18)
   has_scope!
   heroku
@@ -280,8 +288,8 @@ DEPENDENCIES
   mongo (= 1.0.7)
   mongoid (~> 2.0.0.beta.17)
   pg (~> 0.9.0)
-  rack-ssl-enforcer (~> 0.1.5)
-  rack-staging (~> 0.1.0)
+  rack-ssl-enforcer!
+  rack-staging!
   rails (~> 3.0.0)
   request-log-analyzer (~> 1.8.0)
   responders!
