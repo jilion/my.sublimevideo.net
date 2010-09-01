@@ -36,9 +36,13 @@ gem 'mongoid',               '~> 2.0.0.beta.17'
 
 gem 'zip',                   '~> 2.0.2', :require => 'zip/zip'
 
+group :production do
+  gem 'rack-google-analytics', '~> 0.9.2', :require => 'rack/google-analytics'
+end
+
 group :production, :staging do
   gem 'pg',                  '~> 0.9.0'
-  gem 'rack-ssl-enforcer',   '~> 0.1.5'
+  gem 'rack-ssl-enforcer',   '~> 0.1.6'
   gem 'rack-staging',        '~> 0.1.0'
 end
 
