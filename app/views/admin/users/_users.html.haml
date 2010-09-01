@@ -1,0 +1,11 @@
+%table.main#users
+  %tr
+    %th= "Full name & email"
+    %th= "Status"
+    %th= "# Sites"
+    %th= "# Current player hits"
+  = render @users
+  
+.pagination_wrap
+  = will_paginate(:params => { :format => nil }, :renderer => 'WillPaginate::ViewHelpers::LinkRendererRemote')
+  = page_entries_info @users

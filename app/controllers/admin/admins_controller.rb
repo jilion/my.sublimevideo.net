@@ -1,4 +1,5 @@
 class Admin::AdminsController < Admin::AdminController
+  respond_to :js, :html
   
   def index
     @admins = Admin.where(:encrypted_password.ne => nil)

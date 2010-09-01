@@ -6,13 +6,6 @@
   %ul
     %li= "Total #:#{User.count}"
     %li= "Sites/User: #{number_with_precision(Site.count/User.count.to_f)}"
-
-%table.main#users
-  %tr
-    %th= "Full name & email"
-    %th= "Status"
-    %th= "# Sites"
-    %th= "# Current player hits"
-  = render @users
-  
-= will_paginate @users
+    
+#users_table_wrap
+  = render "users"

@@ -33,7 +33,7 @@ module HelperMethods
     end
   end
   
-  def sign_in_as(resource_name, options = {}, &block)
+  def sign_in_as(resource_name, options = {})
     options = { resource_name => options }
     resource = case resource_name
     when :user
@@ -51,7 +51,7 @@ module HelperMethods
     resource
   end
   
-  def send_invite_to(resource_name, email = "invited@invited.com", &block)
+  def send_invite_to(resource_name, email = "invited@invited.com")
     sign_in_as :admin
     visit "/admin/#{resource_name.to_s.pluralize}/invitation/new"
     fill_in 'Email', :with => email

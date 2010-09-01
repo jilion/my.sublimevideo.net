@@ -2,7 +2,7 @@ class Admin::DelayedJobsController < Admin::AdminController
   
   # GET /admin/djs
   def index
-    @delayed_jobs = Delayed::Job.order(sort_from_params).all
+    @delayed_jobs = Delayed::Job.order(sort_from_params)
     respond_with(@delayed_jobs)
   end
   

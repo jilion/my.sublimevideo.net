@@ -1,0 +1,11 @@
+%table.main#sites
+  %tr
+    %th= "Hostnames"
+    %th= ""
+    %th= ""
+    %th= ""
+  = render @sites
+  
+.pagination_wrap
+  = will_paginate(:params => { :format => nil }, :renderer => 'WillPaginate::ViewHelpers::LinkRendererRemote')
+  = page_entries_info @sites
