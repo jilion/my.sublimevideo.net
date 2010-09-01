@@ -294,3 +294,36 @@ a {
   text-decoration:none;
   color:#ca0063;
 }
+/* Dirty style */
+
+#content table.main td.delete a, #content table.main td.delete input {
+  text-indent:-9999px;
+  display:block;
+  width:20px;
+  height:22px;
+  background:url(/images/embed/trash_btn.png) no-repeat;
+  margin:0 10px;
+  border:none;
+}
+
+#content form.site input.add, form input.submit.small {
+  width:97px;
+  height:48px;
+  background:url(/images/embed/add_btn.png) no-repeat;
+  border:none;
+  font-family:"proxima-nova-1","proxima-nova-2", Helvetica, Arial, sans-serif;
+  font-size:18px;
+  font-weight:600;
+  text-align:center;
+  color:#4d5563;
+  text-shadow:rgba(255,255,255,0.45) 0 1px 0;
+  outline:0;
+  position:relative;
+  left:-5px;
+}
+
+form label.icon {
+  text-indent:-9999px;
+  display:block;
+  position:absolute;
+}

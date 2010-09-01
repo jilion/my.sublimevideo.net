@@ -72,8 +72,10 @@ class User < ActiveRecord::Base
   # ==========
   
   scope :in_trial,        where(:trial_ended_at => nil)
+  scope :not_in_trial,    where(:trial_ended_at.ne => nil)
   scope :limit_alertable, where(:limit_alert_amount.gt => 0, :limit_alert_email_sent_at => nil)
   scope :without_cc,      where(:cc_type => nil, :cc_last_digits => nil)
+  scope :with_cc,         where(:cc_type.ne => nil, :cc_last_digits.ne => nil)
   
   # ===============
   # = Validations =
