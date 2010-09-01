@@ -5,7 +5,7 @@ MySublimeVideo::Application.configure do
   # test suite.  You never need to work with it otherwise.  Remember that
   # your test database is "scratch space" for the test suite and is wiped
   # and recreated between test runs.  Don't rely on the data there!
-  config.cache_classes = true 
+  config.cache_classes = true
   # config.cache_classes = false # for Spork
   
   # Log error messages when you accidentally call methods on nil.
@@ -31,9 +31,6 @@ MySublimeVideo::Application.configure do
   # This is necessary if your schema can't be completely dumped by the schema dumper,
   # like if you have constraints or database-specific column types
   # config.active_record.schema_format = :sql
-  
-  # Use a different cache store in test
-  config.cache_store = :mem_cache_store
   
   # Print deprecation notices to the stderr
   config.active_support.deprecation = :stderr

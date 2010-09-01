@@ -2,12 +2,6 @@ require 'rubygems'
 require 'spork'
 
 Spork.prefork do
-  # Loading more in this block will cause your tests to run faster. However, 
-  # if you change any configuration or code from libraries loaded here, you'll
-  # need to restart spork for it take effect.
-  
-  # This file is copied to ~/spec when you run 'ruby script/generate rspec'
-  # from the project root directory.
   ENV["RAILS_ENV"] ||= 'test'
   require File.dirname(__FILE__) + "/../config/environment" unless defined?(Rails)
   require 'rspec/rails'
@@ -15,9 +9,6 @@ Spork.prefork do
 end
 
 Spork.each_run do
-  # This code will be run each time you run your specs.
-  
-  # Requires supporting files with custom matchers and macros, etc, in ./support/ and its subdirectories.
   Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
   
   VCR.config do |c|
@@ -42,7 +33,7 @@ Spork.each_run do
     
     # Clear MongoDB Collection
     config.before :each do
-      Mongoid.master.collections.select {|c| c.name !~ /system/ }.each(&:drop)
+      Mongoid.master.collections.select { |c| c.name !~ /system/ }.each(&:drop)
     end
   end
   

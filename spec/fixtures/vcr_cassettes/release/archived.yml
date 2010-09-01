@@ -7,14 +7,14 @@
     headers: 
       accept: 
       - "*/*"
-      content-type: 
-      - ""
       user-agent: 
       - ""
-      date: 
-      - Fri, 27 Aug 2010 09:26:51 GMT
+      content-type: 
+      - ""
       authorization: 
       - AWS AKIAJ2FJVCFJW3RZRUUQ:piMV4aa+U+vPPwph+ZzFq8omP84=
+      date: 
+      - Fri, 27 Aug 2010 09:26:51 GMT
       content-length: 
       - "3"
   response: !ruby/struct:VCR::Response 
@@ -26,14 +26,14 @@
       - "\"37b51d194a7513e45b56f6524f2d51f2\""
       x-amz-id-2: 
       - Ehuh6EixuaR/Ub3xBDFM5BAHUoc58JPOTR8ymUlRQSDluGVTeiPemlog73MOvPsh
-      date: 
-      - Fri, 27 Aug 2010 09:26:53 GMT
       server: 
       - AmazonS3
-      x-amz-request-id: 
-      - 6B682FC61C4F842F
+      date: 
+      - Fri, 27 Aug 2010 09:26:53 GMT
       content-length: 
       - "0"
+      x-amz-request-id: 
+      - 6B682FC61C4F842F
     body: ""
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
@@ -44,14 +44,14 @@
     headers: 
       accept: 
       - "*/*"
-      user-agent: 
-      - ""
       content-type: 
       - ""
-      authorization: 
-      - AWS AKIAJ2FJVCFJW3RZRUUQ:ZJu40Mf/QbW01m/mPkarYbc/dNM=
+      user-agent: 
+      - ""
       date: 
       - Fri, 27 Aug 2010 09:29:18 GMT
+      authorization: 
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:ZJu40Mf/QbW01m/mPkarYbc/dNM=
   response: !ruby/struct:VCR::Response 
     status: !ruby/struct:VCR::ResponseStatus 
       code: 200
@@ -61,10 +61,10 @@
       - EkQS8n03ECQvmZpTJwoS3tIJJk9Rsstv3g0yETMnoaTeKMpqoec7hbErbsQa6xnX
       content-type: 
       - application/xml
-      server: 
-      - AmazonS3
       date: 
       - Fri, 27 Aug 2010 09:29:20 GMT
+      server: 
+      - AmazonS3
       x-amz-request-id: 
       - 64EF056D52F68C6E
       transfer-encoding: 
@@ -81,14 +81,14 @@
     headers: 
       accept: 
       - "*/*"
-      user-agent: 
-      - ""
       content-type: 
       - ""
-      authorization: 
-      - AWS AKIAJ2FJVCFJW3RZRUUQ:ZtciOUNyaQ9ZnOv24gpXcwDtSrI=
+      user-agent: 
+      - ""
       date: 
       - Fri, 27 Aug 2010 09:29:19 GMT
+      authorization: 
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:ZtciOUNyaQ9ZnOv24gpXcwDtSrI=
   response: !ruby/struct:VCR::Response 
     status: !ruby/struct:VCR::ResponseStatus 
       code: 204
@@ -96,10 +96,10 @@
     headers: 
       x-amz-id-2: 
       - eWz222q1R5cUyrqBdbOWmrdFvG0vk6kcG/mO1//zqyVzO9EWPRl8yTs4S+Ji4oOJ
-      server: 
-      - AmazonS3
       date: 
       - Fri, 27 Aug 2010 09:29:21 GMT
+      server: 
+      - AmazonS3
       x-amz-request-id: 
       - F916DC4224799018
     body: 
@@ -112,14 +112,14 @@
     headers: 
       accept: 
       - "*/*"
-      user-agent: 
-      - ""
       content-type: 
       - ""
-      authorization: 
-      - AWS AKIAJ2FJVCFJW3RZRUUQ:2itvIu+LmuXvFiMShJj3k/u0mD0=
+      user-agent: 
+      - ""
       date: 
       - Fri, 27 Aug 2010 09:29:20 GMT
+      authorization: 
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:2itvIu+LmuXvFiMShJj3k/u0mD0=
   response: !ruby/struct:VCR::Response 
     status: !ruby/struct:VCR::ResponseStatus 
       code: 204
@@ -127,10 +127,10 @@
     headers: 
       x-amz-id-2: 
       - NwxaHMnGw9MeI/kkTtargFVkxFBna75abcyrdwugjDH32e98VaLBTHyyzkUkGJfx
-      server: 
-      - AmazonS3
       date: 
       - Fri, 27 Aug 2010 09:29:21 GMT
+      server: 
+      - AmazonS3
       x-amz-request-id: 
       - 7CDE10DA40B58C71
     body: 
@@ -143,14 +143,14 @@
     headers: 
       accept: 
       - "*/*"
-      user-agent: 
-      - ""
       content-type: 
       - ""
-      authorization: 
-      - AWS AKIAJ2FJVCFJW3RZRUUQ:MEaDoGG+FY5Ux722ASDfJqcjsRA=
+      user-agent: 
+      - ""
       date: 
       - Fri, 27 Aug 2010 09:29:20 GMT
+      authorization: 
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:MEaDoGG+FY5Ux722ASDfJqcjsRA=
   response: !ruby/struct:VCR::Response 
     status: !ruby/struct:VCR::ResponseStatus 
       code: 204
@@ -158,10 +158,10 @@
     headers: 
       x-amz-id-2: 
       - 8OVU8nigSxQo3fAU4gFMvs/m7i7vlsJgiaWIUYUczLnL7CmOJCO1yoNT1et0jtHx
-      server: 
-      - AmazonS3
       date: 
       - Fri, 27 Aug 2010 09:29:22 GMT
+      server: 
+      - AmazonS3
       x-amz-request-id: 
       - 560C5ADFC264B137
     body: 
@@ -174,14 +174,14 @@
     headers: 
       accept: 
       - "*/*"
-      user-agent: 
-      - ""
       content-type: 
       - ""
-      authorization: 
-      - AWS AKIAJ2FJVCFJW3RZRUUQ:jdzv111G4l0u0FYhhWb1NLmyXQo=
+      user-agent: 
+      - ""
       date: 
       - Fri, 27 Aug 2010 09:29:21 GMT
+      authorization: 
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:jdzv111G4l0u0FYhhWb1NLmyXQo=
   response: !ruby/struct:VCR::Response 
     status: !ruby/struct:VCR::ResponseStatus 
       code: 204
@@ -189,10 +189,10 @@
     headers: 
       x-amz-id-2: 
       - fy88UryNDnXBKcbzxjWy59dyCkUZ8XTrdSmaegkYgCspPINBLnpYqAAJWy4z39sm
-      server: 
-      - AmazonS3
       date: 
       - Fri, 27 Aug 2010 09:29:23 GMT
+      server: 
+      - AmazonS3
       x-amz-request-id: 
       - 1F2797C137566A1F
     body: 
@@ -205,14 +205,14 @@
     headers: 
       accept: 
       - "*/*"
-      user-agent: 
-      - ""
       content-type: 
       - ""
-      authorization: 
-      - AWS AKIAJ2FJVCFJW3RZRUUQ:rFr6dvndWTY0QwviPMRttuFlBGI=
+      user-agent: 
+      - ""
       date: 
       - Fri, 27 Aug 2010 09:29:22 GMT
+      authorization: 
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:rFr6dvndWTY0QwviPMRttuFlBGI=
   response: !ruby/struct:VCR::Response 
     status: !ruby/struct:VCR::ResponseStatus 
       code: 204
@@ -220,10 +220,10 @@
     headers: 
       x-amz-id-2: 
       - MAGJBTMxbTQCjGhIzTNRMKldoEURkqEu3KPdY84tMMzwDmRaL3fZZEzKJ3Jm8tGz
-      server: 
-      - AmazonS3
       date: 
       - Fri, 27 Aug 2010 09:29:23 GMT
+      server: 
+      - AmazonS3
       x-amz-request-id: 
       - 1246C9234026D521
     body: 
@@ -236,14 +236,14 @@
     headers: 
       accept: 
       - "*/*"
-      user-agent: 
-      - ""
       content-type: 
       - ""
-      authorization: 
-      - AWS AKIAJ2FJVCFJW3RZRUUQ:6Z9zmTXQpbVTVRtJhLvuxs9qN8U=
+      user-agent: 
+      - ""
       date: 
       - Fri, 27 Aug 2010 09:29:22 GMT
+      authorization: 
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:6Z9zmTXQpbVTVRtJhLvuxs9qN8U=
   response: !ruby/struct:VCR::Response 
     status: !ruby/struct:VCR::ResponseStatus 
       code: 204
@@ -251,10 +251,10 @@
     headers: 
       x-amz-id-2: 
       - J8/8+4910Ut3fKIg8bTvFE2/lBtvYP3TpPeOWjGTPaAe4M+yaEZfU9lcblv0pXI1
-      server: 
-      - AmazonS3
       date: 
       - Fri, 27 Aug 2010 09:29:24 GMT
+      server: 
+      - AmazonS3
       x-amz-request-id: 
       - 13A46C08E4F03E08
     body: 
@@ -267,14 +267,14 @@
     headers: 
       accept: 
       - "*/*"
-      user-agent: 
-      - ""
       content-type: 
       - ""
-      authorization: 
-      - AWS AKIAJ2FJVCFJW3RZRUUQ:xuUe+63axVTac5efIDr4Hq7Q9r0=
+      user-agent: 
+      - ""
       date: 
       - Fri, 27 Aug 2010 09:29:23 GMT
+      authorization: 
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:xuUe+63axVTac5efIDr4Hq7Q9r0=
   response: !ruby/struct:VCR::Response 
     status: !ruby/struct:VCR::ResponseStatus 
       code: 204
@@ -282,10 +282,10 @@
     headers: 
       x-amz-id-2: 
       - mndWFmU/CBtjmJOX4WpiMi71Z4N5gGa41xp405JuKChM3McB82pKsR1gRMChqU8y
-      server: 
-      - AmazonS3
       date: 
       - Fri, 27 Aug 2010 09:29:25 GMT
+      server: 
+      - AmazonS3
       x-amz-request-id: 
       - FD174148B83E0791
     body: 
@@ -1140,16 +1140,16 @@
     headers: 
       accept: 
       - "*/*"
-      user-agent: 
-      - ""
       content-type: 
+      - ""
+      user-agent: 
       - ""
       x-amz-acl: 
       - public-read
-      authorization: 
-      - AWS AKIAJ2FJVCFJW3RZRUUQ:SvKeUS3fDRBwYTd2XJ+hAJvlFNs=
       date: 
       - Fri, 27 Aug 2010 09:29:24 GMT
+      authorization: 
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:SvKeUS3fDRBwYTd2XJ+hAJvlFNs=
       content-length: 
       - "37806"
   response: !ruby/struct:VCR::Response 
@@ -1161,14 +1161,14 @@
       - "\"ac43a2c85a6f2fa1bf47f06f808a5daf\""
       x-amz-id-2: 
       - TUXZ6fE/QAjfErCDxFCYuVO5V+AoX3thwpXiRF8xQs3bn2cJfarKMD1NsbNSCoe/
-      server: 
-      - AmazonS3
       date: 
       - Fri, 27 Aug 2010 09:29:25 GMT
-      content-length: 
-      - "0"
+      server: 
+      - AmazonS3
       x-amz-request-id: 
       - E2A928DD8344B8DC
+      content-length: 
+      - "0"
     body: ""
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
@@ -1215,16 +1215,16 @@
     headers: 
       accept: 
       - "*/*"
-      user-agent: 
-      - ""
       content-type: 
+      - ""
+      user-agent: 
       - ""
       x-amz-acl: 
       - public-read
-      authorization: 
-      - AWS AKIAJ2FJVCFJW3RZRUUQ:TcBtKXo4t9bbctEs2/RLg6USt14=
       date: 
       - Fri, 27 Aug 2010 09:29:25 GMT
+      authorization: 
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:TcBtKXo4t9bbctEs2/RLg6USt14=
       content-length: 
       - "1561"
   response: !ruby/struct:VCR::Response 
@@ -1236,14 +1236,14 @@
       - "\"a15d76d155b39e707ac262864cd38e0a\""
       x-amz-id-2: 
       - 2yzoV9mzu8u4QAQiAKNc3htQ8J+Xexn+X3tfxYDYh6gIamB2B61rLs+XgNyvMtkV
-      server: 
-      - AmazonS3
       date: 
       - Fri, 27 Aug 2010 09:29:27 GMT
-      content-length: 
-      - "0"
+      server: 
+      - AmazonS3
       x-amz-request-id: 
       - 4D7EAF83BAD05B2C
+      content-length: 
+      - "0"
     body: ""
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
@@ -1296,16 +1296,16 @@
     headers: 
       accept: 
       - "*/*"
-      user-agent: 
-      - ""
       content-type: 
+      - ""
+      user-agent: 
       - ""
       x-amz-acl: 
       - public-read
-      authorization: 
-      - AWS AKIAJ2FJVCFJW3RZRUUQ:SJjvrF3R08bMkZVAxjk24PnrsAg=
       date: 
       - Fri, 27 Aug 2010 09:29:26 GMT
+      authorization: 
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:SJjvrF3R08bMkZVAxjk24PnrsAg=
       content-length: 
       - "1801"
   response: !ruby/struct:VCR::Response 
@@ -1317,14 +1317,14 @@
       - "\"1e64c004cc0d079e299b92db3c4ecfc4\""
       x-amz-id-2: 
       - Oz/ZHnoEGU6Q5ailrA00dAfOw1JG4cGNG0hACf8CjNYueAgeppAZ7M/Q/3ERpnEi
-      server: 
-      - AmazonS3
       date: 
       - Fri, 27 Aug 2010 09:29:28 GMT
-      content-length: 
-      - "0"
+      server: 
+      - AmazonS3
       x-amz-request-id: 
       - 762F5EEC4D1ADD99
+      content-length: 
+      - "0"
     body: ""
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
@@ -1487,16 +1487,16 @@
     headers: 
       accept: 
       - "*/*"
-      user-agent: 
-      - ""
       content-type: 
+      - ""
+      user-agent: 
       - ""
       x-amz-acl: 
       - public-read
-      authorization: 
-      - AWS AKIAJ2FJVCFJW3RZRUUQ:4wD+nbWDEgKYpCgvIuWr6LqtQmI=
       date: 
       - Fri, 27 Aug 2010 09:29:27 GMT
+      authorization: 
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:4wD+nbWDEgKYpCgvIuWr6LqtQmI=
       content-length: 
       - "73228"
   response: !ruby/struct:VCR::Response 
@@ -1508,14 +1508,14 @@
       - "\"55d3f354d20c6b7d18a1f2656a42835a\""
       x-amz-id-2: 
       - L5f5idX+x2SCY9t7apyiot897foOZiKVFmppsZA1fvf7V28O/F99qjhK39oOeptL
-      server: 
-      - AmazonS3
       date: 
       - Fri, 27 Aug 2010 09:29:29 GMT
-      content-length: 
-      - "0"
+      server: 
+      - AmazonS3
       x-amz-request-id: 
       - EBF84CE646519D30
+      content-length: 
+      - "0"
     body: ""
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
@@ -1552,16 +1552,16 @@
     headers: 
       accept: 
       - "*/*"
-      user-agent: 
-      - ""
       content-type: 
+      - ""
+      user-agent: 
       - ""
       x-amz-acl: 
       - public-read
-      authorization: 
-      - AWS AKIAJ2FJVCFJW3RZRUUQ:Il96QaeUnIFj6f1B5SBqmuDuhH4=
       date: 
       - Fri, 27 Aug 2010 09:29:29 GMT
+      authorization: 
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:Il96QaeUnIFj6f1B5SBqmuDuhH4=
       content-length: 
       - "1095"
   response: !ruby/struct:VCR::Response 
@@ -1573,14 +1573,14 @@
       - "\"cd1ba716ce25aff3e5b5402f14e4cbf4\""
       x-amz-id-2: 
       - EDY6RMfl8tO7ZwBc4mxFthbqxJ6bMz40xp5Bwb9vr0gJWmIcPrX4RO+TvKGhJAO7
-      server: 
-      - AmazonS3
       date: 
       - Fri, 27 Aug 2010 09:29:31 GMT
-      content-length: 
-      - "0"
+      server: 
+      - AmazonS3
       x-amz-request-id: 
       - 840A502992272B68
+      content-length: 
+      - "0"
     body: ""
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
@@ -1593,16 +1593,16 @@
     headers: 
       accept: 
       - "*/*"
-      user-agent: 
-      - ""
       content-type: 
+      - ""
+      user-agent: 
       - ""
       x-amz-acl: 
       - public-read
-      authorization: 
-      - AWS AKIAJ2FJVCFJW3RZRUUQ:6bwsz5CYDk8Jp6Y3oaNCSl9oTWE=
       date: 
       - Fri, 27 Aug 2010 09:29:30 GMT
+      authorization: 
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:6bwsz5CYDk8Jp6Y3oaNCSl9oTWE=
       content-length: 
       - "43"
   response: !ruby/struct:VCR::Response 
@@ -1614,14 +1614,14 @@
       - "\"325472601571f31e1bf00674c368d335\""
       x-amz-id-2: 
       - +QivtFklBE+XcvWzdJMbi0bQhFmp6S6BuF/4luMEnu/yuz3TCUxfv48BZZuOtUQS
-      server: 
-      - AmazonS3
       date: 
       - Fri, 27 Aug 2010 09:29:31 GMT
-      content-length: 
-      - "0"
+      server: 
+      - AmazonS3
       x-amz-request-id: 
       - 4CD1F57FD001F4DD
+      content-length: 
+      - "0"
     body: ""
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
@@ -1632,16 +1632,16 @@
     headers: 
       accept: 
       - "*/*"
-      user-agent: 
-      - ""
       content-type: 
+      - ""
+      user-agent: 
       - ""
       x-amz-acl: 
       - public-read
-      authorization: 
-      - AWS AKIAJ2FJVCFJW3RZRUUQ:DfJLqSYMcyFut00G9Tupibqc+AY=
       date: 
       - Fri, 27 Aug 2010 09:29:31 GMT
+      authorization: 
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:DfJLqSYMcyFut00G9Tupibqc+AY=
       content-length: 
       - "30133"
   response: !ruby/struct:VCR::Response 
@@ -1653,14 +1653,14 @@
       - "\"a11800277b7e7b3d285305a62e1f7db3\""
       x-amz-id-2: 
       - lfLmSmOySDQ65fhVTn8DntsxtzTUFjXftCq195SxhJkR+ApIJcgdkf5BdPfUMh72
-      server: 
-      - AmazonS3
       date: 
       - Fri, 27 Aug 2010 09:29:32 GMT
-      content-length: 
-      - "0"
+      server: 
+      - AmazonS3
       x-amz-request-id: 
       - 6163444B8BCC4F3B
+      content-length: 
+      - "0"
     body: ""
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
@@ -1671,14 +1671,14 @@
     headers: 
       accept: 
       - "*/*"
-      content-type: 
-      - ""
       user-agent: 
       - ""
-      date: 
-      - Fri, 27 Aug 2010 09:29:34 GMT
+      content-type: 
+      - ""
       authorization: 
       - AWS AKIAJ2FJVCFJW3RZRUUQ:S1HqJ56tiDzN8fZ9il4I5CRP4Ow=
+      date: 
+      - Fri, 27 Aug 2010 09:29:34 GMT
   response: !ruby/struct:VCR::Response 
     status: !ruby/struct:VCR::ResponseStatus 
       code: 200
@@ -1688,10 +1688,10 @@
       - tl0N98CTzeaHGy6V+K835ezeEe6W0eRkP6Ca257TAsapShaLl7FiZGD9kxsTcWb3
       content-type: 
       - application/xml
-      date: 
-      - Fri, 27 Aug 2010 09:29:36 GMT
       server: 
       - AmazonS3
+      date: 
+      - Fri, 27 Aug 2010 09:29:36 GMT
       x-amz-request-id: 
       - C3F293C241F35A44
       transfer-encoding: 
@@ -1708,14 +1708,14 @@
     headers: 
       accept: 
       - "*/*"
-      user-agent: 
-      - ""
       content-type: 
       - ""
-      authorization: 
-      - AWS AKIAJ2FJVCFJW3RZRUUQ:OuadQExXhLr7g0MJY8sztS4keVo=
+      user-agent: 
+      - ""
       date: 
       - Fri, 27 Aug 2010 09:29:37 GMT
+      authorization: 
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:OuadQExXhLr7g0MJY8sztS4keVo=
   response: !ruby/struct:VCR::Response 
     status: !ruby/struct:VCR::ResponseStatus 
       code: 200
@@ -1725,10 +1725,10 @@
       - QpFJwkQDU/YsEsbtIFI+pw7tDGZ7+87XigKFi9g4XC1v1mr/JmC2ms1uMRPDV683
       content-type: 
       - application/xml
-      server: 
-      - AmazonS3
       date: 
       - Fri, 27 Aug 2010 09:29:39 GMT
+      server: 
+      - AmazonS3
       x-amz-request-id: 
       - 5B63D1EFDACF1542
       transfer-encoding: 
@@ -1745,14 +1745,14 @@
     headers: 
       accept: 
       - "*/*"
-      user-agent: 
-      - ""
       content-type: 
       - ""
-      authorization: 
-      - AWS AKIAJ2FJVCFJW3RZRUUQ:FaAOdmJJXejkT0pTpFPWI5yjOoE=
+      user-agent: 
+      - ""
       date: 
       - Fri, 27 Aug 2010 09:29:38 GMT
+      authorization: 
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:FaAOdmJJXejkT0pTpFPWI5yjOoE=
   response: !ruby/struct:VCR::Response 
     status: !ruby/struct:VCR::ResponseStatus 
       code: 200
@@ -1762,10 +1762,10 @@
       - c+LQEGy22Ab7b6nxN/pOd0br+5Qm3F4LFvlXlZUwz33YT6P1uY192N28GXU8U1Q1
       content-type: 
       - application/xml
-      server: 
-      - AmazonS3
       date: 
       - Fri, 27 Aug 2010 09:29:39 GMT
+      server: 
+      - AmazonS3
       x-amz-request-id: 
       - 1A3B110B45CA7447
       transfer-encoding: 
@@ -1782,14 +1782,14 @@
     headers: 
       accept: 
       - "*/*"
-      user-agent: 
-      - ""
       content-type: 
       - ""
-      authorization: 
-      - AWS AKIAJ2FJVCFJW3RZRUUQ:TGfg5JrJyDhK66mseJJmv/2nqks=
+      user-agent: 
+      - ""
       date: 
       - Fri, 27 Aug 2010 09:29:38 GMT
+      authorization: 
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:TGfg5JrJyDhK66mseJJmv/2nqks=
   response: !ruby/struct:VCR::Response 
     status: !ruby/struct:VCR::ResponseStatus 
       code: 200
@@ -1799,10 +1799,10 @@
       - 11Rxam/bDLCmgqGoG2MX8NrFvTdYXiTNtJR8ADsITSpsUWLqTDo9J6I9kSXqxnxb
       content-type: 
       - application/xml
-      server: 
-      - AmazonS3
       date: 
       - Fri, 27 Aug 2010 09:29:40 GMT
+      server: 
+      - AmazonS3
       x-amz-request-id: 
       - 020AC4C19F57320F
       transfer-encoding: 
@@ -1819,14 +1819,14 @@
     headers: 
       accept: 
       - "*/*"
-      user-agent: 
-      - ""
       content-type: 
       - ""
-      authorization: 
-      - AWS AKIAJ2FJVCFJW3RZRUUQ:hDP7gHIj7ubB4RdQZoHXh+Ek/bs=
+      user-agent: 
+      - ""
       date: 
       - Fri, 27 Aug 2010 09:29:39 GMT
+      authorization: 
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:hDP7gHIj7ubB4RdQZoHXh+Ek/bs=
   response: !ruby/struct:VCR::Response 
     status: !ruby/struct:VCR::ResponseStatus 
       code: 200
@@ -1836,10 +1836,10 @@
       - WeC1vIC2JmnXC0xZTucsPMmP+er4I97S+2Wzq9OozmNw1PHu9HOHx0jkBpE4wYLz
       content-type: 
       - application/xml
-      server: 
-      - AmazonS3
       date: 
       - Fri, 27 Aug 2010 09:29:41 GMT
+      server: 
+      - AmazonS3
       x-amz-request-id: 
       - 2C933515F41486A0
       transfer-encoding: 
@@ -1856,14 +1856,14 @@
     headers: 
       accept: 
       - "*/*"
-      user-agent: 
-      - ""
       content-type: 
       - ""
-      authorization: 
-      - AWS AKIAJ2FJVCFJW3RZRUUQ:sz15vbd4HyR7V5TG23fZq0S3Dag=
+      user-agent: 
+      - ""
       date: 
       - Fri, 27 Aug 2010 09:29:40 GMT
+      authorization: 
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:sz15vbd4HyR7V5TG23fZq0S3Dag=
   response: !ruby/struct:VCR::Response 
     status: !ruby/struct:VCR::ResponseStatus 
       code: 200
@@ -1873,10 +1873,10 @@
       - zla0X2rOjG8Y9Xxa7qj8ggSjepJYOw7oNyIBRpBNUiBxiFr0Hknv7IC39gVu5pXG
       content-type: 
       - application/xml
-      server: 
-      - AmazonS3
       date: 
       - Fri, 27 Aug 2010 09:29:41 GMT
+      server: 
+      - AmazonS3
       x-amz-request-id: 
       - 1702BFABE5B78DF1
       transfer-encoding: 
@@ -1893,14 +1893,14 @@
     headers: 
       accept: 
       - "*/*"
-      user-agent: 
-      - ""
       content-type: 
       - ""
-      authorization: 
-      - AWS AKIAJ2FJVCFJW3RZRUUQ:plZsEKfP+WYhONIChlyMQD7/478=
+      user-agent: 
+      - ""
       date: 
       - Fri, 27 Aug 2010 09:29:40 GMT
+      authorization: 
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:plZsEKfP+WYhONIChlyMQD7/478=
   response: !ruby/struct:VCR::Response 
     status: !ruby/struct:VCR::ResponseStatus 
       code: 200
@@ -1910,10 +1910,10 @@
       - JCwPtvYZj1JNNYvgvyMCiV1/QjccORSmCpZUOZQlZQZ9rPfQDknF8RRi+USX4YWp
       content-type: 
       - application/xml
-      server: 
-      - AmazonS3
       date: 
       - Fri, 27 Aug 2010 09:29:42 GMT
+      server: 
+      - AmazonS3
       x-amz-request-id: 
       - D95B334C5F2E5822
       transfer-encoding: 
@@ -1930,14 +1930,14 @@
     headers: 
       accept: 
       - "*/*"
-      user-agent: 
-      - ""
       content-type: 
       - ""
-      authorization: 
-      - AWS AKIAJ2FJVCFJW3RZRUUQ:pF50wO9cLmqI0dGElX6XOgQUqcA=
+      user-agent: 
+      - ""
       date: 
       - Fri, 27 Aug 2010 09:29:41 GMT
+      authorization: 
+      - AWS AKIAJ2FJVCFJW3RZRUUQ:pF50wO9cLmqI0dGElX6XOgQUqcA=
   response: !ruby/struct:VCR::Response 
     status: !ruby/struct:VCR::ResponseStatus 
       code: 200
@@ -1947,10 +1947,10 @@
       - fkXBKs2q/qg+81tcvOaHvrYis1+RH1vTfACnmjp3ueMHCOn2L1SqDM+889NfWvwz
       content-type: 
       - application/xml
-      server: 
-      - AmazonS3
       date: 
       - Fri, 27 Aug 2010 09:29:43 GMT
+      server: 
+      - AmazonS3
       x-amz-request-id: 
       - B26C67416B2D5F29
       transfer-encoding: 
@@ -1958,4 +1958,42 @@
     body: |-
       <?xml version="1.0" encoding="UTF-8"?>
       <AccessControlPolicy xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Owner><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Owner><AccessControlList><Grant><Grantee xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="CanonicalUser"><ID>06a077fd17e50ddfa23e96bc7d995e305ea9fc85098c4f1aff9b29feb4d18a4f</ID><DisplayName>zeno</DisplayName></Grantee><Permission>FULL_CONTROL</Permission></Grant><Grant><Grantee xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="Group"><URI>http://acs.amazonaws.com/groups/global/AllUsers</URI></Grantee><Permission>READ</Permission></Grant></AccessControlList></AccessControlPolicy>
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :post
+    uri: https://api.voxel.net:443/version/1.0/
+    body: verbosity=compact&device_id=48182&paths=%2fp%2fdev&timestamp=2010-09-01T09%3a51%3a50%2b02%3a00&api_sig=06102ca000719d03f6885004f5ee279c&key=f0bdf4e54d590835e7100c926c2d1a47&method=voxel.voxcast.ondemand.content.purge_file
+    headers: 
+      accept: 
+      - "*/*"
+      connection: 
+      - close
+      user-agent: 
+      - Voxel hAPI ruby Client; 1.0
+      content-type: 
+      - application/x-www-form-urlencoded
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      x-powered-by: 
+      - PHP/5.2.11
+      content-type: 
+      - application/xml; charset=utf-8
+      connection: 
+      - close
+      access-control-allow-origin: 
+      - "*"
+      server: 
+      - Apache
+      date: 
+      - Wed, 01 Sep 2010 07:51:51 GMT
+      content-length: 
+      - "201"
+    body: |
+      <?xml version="1.0"?>
+      <rsp stat="ok"><transaction><type>remove-url</type><id>8c161966-536a-4c34-abf1-1076647e912c</id><expiration>1283328411</expiration><status>inprogress</status></transaction></rsp>
+
     http_version: "1.1"

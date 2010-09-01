@@ -133,14 +133,25 @@ describe Ticket do
         ticket.user.zendesk_id.should be_present
       end
       
-      pending "should set the user as verified on zendesk" do
+      it "should delay Ticket#verify_user" do
         ticket.post_ticket
-        JSON.parse(Zendesk.get("/users/#{ticket.user.zendesk_id}.json").body)["is_verified"].should be_true
+        Delayed::Job.last.name.should == 'Ticket#verify_user'
       end
       
       after(:each) { VCR.eject_cassette }
     end
     
+    describe "#verify_user" do
+      before(:each) { VCR.insert_cassette("ticket/verify_user") }
+      
+      it "should set the user as verified on zendesk" do
+        VCR.use_cassette("ticket/post_ticket") { ticket.post_ticket }
+        ticket.verify_user
+        JSON.parse(Zendesk.get("/users/#{ticket.user.zendesk_id}.json").body)["is_verified"].should be_true
+      end
+      
+      after(:each) { VCR.eject_cassette }
+    end
   end
   
 end

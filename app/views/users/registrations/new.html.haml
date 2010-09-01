@@ -1,7 +1,4 @@
-= content_for :title do
-  = "Sign Up"
-  
-%h2= "Sign Up"
+= title_and_content_header("Sign Up")
 
 = form_for @resource, :as => resource_name, :url => registration_path(resource_name), :html => { :class => "main_form" } do |f|
   .entry.full_name

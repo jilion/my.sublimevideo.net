@@ -1,16 +1,16 @@
-require 'digest/sha1'
+require 'digest/sha1' # NOT NEEDED ANYMORE ?
 
 class ApplicationController < ActionController::Base
   include CustomDevisePaths
   
-  protect_from_forgery
-  
   respond_to :html
-  responders Responders::FlashResponder, Responders::PaginatedResponder, Responders::HttpCacheResponder
+  responders Responders::FlashResponder, Responders::PaginatedResponder, Responders::HttpCacheResponder  
   
   layout 'application'
   
   before_filter :authenticate_user!
+  
+  protect_from_forgery
   
 protected
   

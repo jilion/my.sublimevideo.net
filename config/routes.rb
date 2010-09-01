@@ -8,16 +8,14 @@ MySublimeVideo::Application.routes.draw do
   :skip => [:invitations, :registrations] do
     # We need to declare these routes manually because we don't want
     # to generate GET /invitation/new and POST /invitation, so we had to skip :invitations
-    scope :controller => 'devise/invitations', :as => :user_invitation do
-      get :edit,   :path => '/invitation/accept', :as => 'accept'
-      put :update, :path => '/invitation'
+    resource :user_invitation, :only => [:update], :controller => 'devise/invitations', :path => '/invitation/accept', :path_names => { :edit => '' } do
+      get :edit, :as => 'accept'
     end
-    
-    scope :controller => 'users/registrations', :as => :user_registration do
-      get    :new,     :path => '/register'
-      post   :create,  :path => '/register', :as => ''
+    resource :user_registration, :only => [], :controller => 'users/registrations', :path => '' do
+      get    :new,     :path => '/register', :as => 'new'
+      post   :create,  :path => '/register'
       
-      get    :edit,    :path => '/account/edit'
+      get    :edit,    :path => '/account/edit', :as => 'edit'
       put    :update,  :path => '/account/credentials'
       delete :destroy, :path => '/account'
     end
@@ -32,15 +30,12 @@ MySublimeVideo::Application.routes.draw do
     get :state, :on => :member
   end
   resources :invoices, :only => [:index, :show]
-  resource :card, :controller => "credit_cards", :as => :credit_card, :only => [:edit, :update]
+  resource :card, :controller => 'credit_cards', :as => :credit_card, :only => [:edit, :update]
   
   # match ':page', :to => 'pages#show', :via => :get, :as => :page, :page => /terms|privacy|suspended/
   match ':page', :to => 'pages#show', :via => :get, :as => :page, :page => /terms|privacy/
   
-  scope :controller => 'tickets', :as => :ticket do
-    get  :new,     :path => '/support'
-    post :create,  :path => '/support', :as => ''
-  end
+  resource :ticket, :only => [:new, :create], :path => '/support', :path_names => { :new =>  ''}
   
   root :to => redirect("/sites")
   
@@ -48,12 +43,12 @@ MySublimeVideo::Application.routes.draw do
   # = Admin =
   # =========
   
-  match 'admin', :to => redirect("/admin/djs"), :as => "admin"
+  match 'admin', :to => redirect('/admin/djs'), :as => 'admin'
   
   devise_scope :user do
-    scope :controller => 'admin/users/invitations', :as => :user_invitation do # admin routes
-      get  :new,    :path => '/admin/users/invitation/new'
-      post :create, :path => '/admin/users/invitation', :as => ''
+    resource :user_invitation, :only => [], :controller => 'admin/users/invitations', :path => "" do
+      get  :new,    :path => '/admin/users/invitation/new', :as => 'new'
+      post :create, :path => '/admin/users/invitation'
     end
   end
   
@@ -62,16 +57,16 @@ MySublimeVideo::Application.routes.draw do
   :module => 'admin/admins',
   :path_names => { :sign_in => 'login', :sign_out => 'logout' },
   :skip => [:invitations, :registrations] do
-    scope :controller => 'admin/admins/invitations', :as => :admin_invitation do
-      get  :new,    :path => '/admin/admins/invitation/new'
-      post :create, :path => '/admin/admins/invitation', :as => ''
+    resource :admin_invitation, :only => [], :controller => 'admin/admins/invitations', :path => "" do
+      get  :new,    :path => '/admin/admins/invitation/new', :as => 'new'
+      post :create, :path => '/admin/admins/invitation'
       get  :edit,   :path => '/admin/invitation/accept', :as => 'accept'
       put  :update, :path => '/admin/invitation'
     end
     
-    scope :controller => 'admin/admins/registrations', :as => :admin_registration do
-      get    :edit,    :path => '/admin/account/edit'
-      put    :update,  :path => '/admin/account', :as => ''
+    resource :admin_registration, :only => [], :controller => 'admin/admins/registrations', :path => "" do
+      get    :edit,    :path => '/admin/account/edit', :as => 'edit'
+      put    :update,  :path => '/admin/account'
       delete :destroy, :path => '/admin/account'
     end
     
