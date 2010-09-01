@@ -5,7 +5,7 @@
         %span= "SublimeVideo"
     - if user_signed_in? && controller_name != 'sessions'
       %ul#main_menu
-        %li.sites{ :class => ('active' if controller_name == 'sites'), :onclick => "MySublimeVideo.makeSticky(this)" }
+        = activable_content_tag(:li, :sites, :onclick => "MySublimeVideo.makeSticky(this)") do
           = link_to sites_path do
             %span= "Sites"
     .right
