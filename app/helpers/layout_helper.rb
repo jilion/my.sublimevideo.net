@@ -22,10 +22,10 @@ module LayoutHelper
   end
   
   def activable_content_tag(tag, controller, options = {})
-    options.reverse_merge!(:active_class => 'active')
+    options.reverse_merge!(:active_class => 'active', :class => controller.to_s)
     
     classes = options[:class] ? options[:class].split(" ") : []
-    classes << options[:active_class] if controller == controller_name.to_s
+    classes << options[:active_class] if controller.to_s == controller_name.to_s
     
     content_tag(tag, :class => classes.join(" ")) do
       yield
