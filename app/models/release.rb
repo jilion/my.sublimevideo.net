@@ -38,6 +38,7 @@ class Release < ActiveRecord::Base
     after_transition :to => :dev, :do => :overwrite_dev_with_zip_content
     after_transition :to => [:beta, :stable], :do => :copy_content_to_next_state
     after_transition :to => [:dev, :beta, :stable], :do => :archive_old_release
+    after_transition :on => :flag, :do => :purge_old_release_dir
     
     event(:flag)    { transition :archived => :dev, :dev => :beta, :beta => :stable }
     event(:archive) { transition [:dev, :beta, :stable] => :archived }
@@ -124,6 +125,16 @@ private
     old_release = Release.where(:state => state, :id.not_eq => self.id).first
     # old_release can be nil if there was no old release with that state
     old_release.try(:archive)
+  end
+  
+  # after_transition on flag
+  def purge_old_release_dir
+    case state
+    when 'dev', 'beta'
+      VoxcastCDN.purge_dir "/p/#{state}"
+    when 'stable'
+      VoxcastCDN.purge_dir "/p"
+    end
   end
   
 end

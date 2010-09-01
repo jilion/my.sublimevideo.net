@@ -70,7 +70,7 @@ class Log
     new_logs = new_logs_names.inject([]) do |new_logs, logs_name|
       new_logs << new(:name => logs_name)
     end
-    new_logs = new_logs.select { |l| existings_logs_names.exclude? l.name }
+    new_logs = new_logs.select { |l| existings_logs_names.exclude?(l.name) }
     new_logs.map(&:save)
   rescue => ex
     HoptoadNotifier.notify(ex)

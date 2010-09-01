@@ -32,9 +32,6 @@ MySublimeVideo::Application.configure do
   # like if you have constraints or database-specific column types
   # config.active_record.schema_format = :sql
   
-  # Use a different cache store in test
-  config.cache_store = :mem_cache_store
-  
   # Print deprecation notices to the stderr
   config.active_support.deprecation = :stderr
 end
