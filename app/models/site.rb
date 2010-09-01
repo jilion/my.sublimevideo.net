@@ -57,10 +57,10 @@ class Site < ActiveRecord::Base
   # = Validations =
   # ===============
   
-  validates :user,     :presence => true
-  validates :hostname, :presence => true, :hostname_uniqueness => true, :production_hostname => true
+  validates :user,          :presence => true
+  validates :hostname,      :presence => true, :hostname_uniqueness => true, :production_hostname => true
   validates :dev_hostnames, :hostnames => true
-  validates :player_mode, :inclusion => { :in => %w[dev beta stable] }
+  validates :player_mode,   :inclusion => { :in => %w[dev beta stable] }
   validate  :must_be_active_to_update_hostnames
   
   # =============
