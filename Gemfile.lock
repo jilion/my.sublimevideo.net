@@ -1,11 +1,4 @@
 GIT
-  remote: git://github.com/collectiveidea/delayed_job.git
-  revision: b983b7e5b9ca37260b2640f2b0a847f91a9a2d0f
-  specs:
-    delayed_job (2.1.0.pre)
-      daemons
-
-GIT
   remote: git://github.com/ernie/meta_where.git
   revision: 2763666e9b2b1e1d39e6038e2b377d7e214d70a6
   specs:
@@ -33,6 +26,13 @@ GIT
   revision: 905797803aa5d3da24505d4b9b07c647cbdd8e6d
   specs:
     has_scope (0.5.0)
+
+GIT
+  remote: git://github.com/thibaudgg/delayed_job.git
+  revision: 3c26b80e945f242b3befdb3bf2d26cd3bf9daad3
+  specs:
+    delayed_job (2.1.0.pre)
+      daemons
 
 GIT
   remote: git://github.com/thibaudgg/jammit.git
@@ -130,7 +130,7 @@ GEM
     git (1.2.5)
     growl (1.0.3)
     haml (3.0.18)
-    heroku (1.9.13)
+    heroku (1.9.14)
       json_pure (>= 1.2.0, < 1.5.0)
       launchy (~> 0.3.2)
       rest-client (~> 1.4.0)
@@ -164,7 +164,7 @@ GEM
     pg (0.9.0)
     polyglot (0.3.1)
     rack (1.2.1)
-    rack-mount (0.6.12)
+    rack-mount (0.6.13)
       rack (>= 1.0.0)
     rack-ssl-enforcer (0.1.5)
     rack-staging (0.1.0)
@@ -186,7 +186,7 @@ GEM
     rake (0.8.7)
     rb-inotify (0.8.1)
       ffi (>= 0.5.0)
-    request-log-analyzer (1.8.0)
+    request-log-analyzer (1.8.1)
     rest-client (1.4.2)
       mime-types (>= 1.16)
     rspactor (0.7.0.beta.6)
