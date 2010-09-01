@@ -1,5 +1,6 @@
 MySublimeVideo::Application.configure do
   # Settings specified here will take precedence over those in config/environment.rb
+  config.middleware.use(Rack::GoogleAnalytics, :tracker => 'UA-10280941-8')
   config.middleware.use(Rack::SslEnforcer)
   config.middleware.use(Rack::Staging, :code => ENV['STAGING_CODE'])
 
