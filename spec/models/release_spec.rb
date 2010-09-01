@@ -17,7 +17,7 @@ describe Release do
   
   context "with valid attributes" do
     before(:each) { VCR.insert_cassette('release/valid') }
-    subject { Factory(:release) }
+    subject { dev_release }
     
     its(:date) { should =~ /^[0-9]{4}-[0-9]{2}-[0-9]{2}-[0-9]{2}-[0-9]{2}-[0-9]{2}$/ }
     its(:zip)  { should be_present }
@@ -38,10 +38,14 @@ describe Release do
     subject { archived_release }
     
     it { should be_archived }
-    
     it "should not be archivable" do
       subject.archive.should be_false
     end
+    it "should purge /p/dev when flagged" do
+      VoxcastCDN.should_receive(:purge_dir).with('/p/dev')
+      subject.flag
+    end
+    
     describe "when flagged"do
       before(:each) do
         S3.player_bucket.put("dev/foo.txt", "bar")
@@ -71,11 +75,15 @@ describe Release do
   
   context "dev release" do
     before(:each) { VCR.insert_cassette('release/dev') }
-    subject { Factory(:release) }
+    subject { dev_release }
     
     it { should be_dev }
     it "should be the dev release" do
       subject.should == Release.dev_release
+    end
+    it "should purge /p/beta when flagged" do
+      VoxcastCDN.should_receive(:purge_dir).with('/p/beta')
+      subject.flag
     end
     
     describe "when flagged" do
@@ -123,6 +131,10 @@ describe Release do
     end
     it "should be the beta release" do
       subject.should == Release.beta_release
+    end
+    it "should purge /p when flagged" do
+      VoxcastCDN.should_receive(:purge_dir).with('/p')
+      subject.flag
     end
     
     describe "when flagged" do
@@ -180,22 +192,26 @@ describe Release do
 private
   
   def archived_release
+    VoxcastCDN.stub(:purge_dir).once
     release = Factory(:release)
     release.archive
     release
   end
   
   def dev_release
+    VoxcastCDN.stub(:purge_dir).once
     Factory(:release)
   end
   
   def beta_release
+    VoxcastCDN.stub(:purge_dir).twice
     release = Factory(:release)
     release.flag
     release
   end
   
   def stable_release
+    VoxcastCDN.stub(:purge_dir).exactly(3).times
     release = Factory(:release)
     release.flag
     release.flag
