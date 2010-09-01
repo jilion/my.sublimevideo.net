@@ -35,7 +35,6 @@ gem 'mongoid',               '~> 2.0.0.beta.17'
 # gem 'mongoid',               :git => 'git://github.com/mongoid/mongoid.git'
 
 gem 'zip',                   '~> 2.0.2', :require => 'zip/zip'
-gem 'git' # needed by Heroku
 
 group :production, :staging do
   gem 'pg',                  '~> 0.9.0'
@@ -50,7 +49,8 @@ group :development do
   gem 'wirble' # irbrc
   gem 'ruby-graphviz', :require => 'graphviz'
   gem 'heroku'
-  gem 'heroku_tasks',  '~> 0.1.3'
+  gem 'heroku_tasks',  '~> 0.1.4'
+  gem 'git' # needed by Heroku
   gem 'taps' # heroku db pull/push
   
   gem 'rspec-rails',   '~> 2.0.0.beta.20'
