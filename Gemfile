@@ -9,7 +9,7 @@ gem 'haml',                  '~> 3.0.18'
 gem 'state_machine',         '~> 0.9.4'
 gem 'responders',            :git => 'git://github.com/plataformatec/responders.git'
 gem 'uniquify',              '~> 0.1.0'
-gem 'delayed_job',           :git => 'git://github.com/collectiveidea/delayed_job.git'
+gem 'delayed_job',           :git => 'git://github.com/thibaudgg/delayed_job.git'
 gem 'will_paginate',         '~> 3.0.pre2'
 gem 'has_scope',             :git => 'git://github.com/rymai/has_scope.git'
 gem 'jammit',                :git => 'git://github.com/thibaudgg/jammit.git'
@@ -35,7 +35,6 @@ gem 'mongoid',               '~> 2.0.0.beta.17'
 # gem 'mongoid',               :git => 'git://github.com/mongoid/mongoid.git'
 
 gem 'zip',                   '~> 2.0.2', :require => 'zip/zip'
-# gem 'git' # needed by Heroku
 
 group :production, :staging do
   gem 'pg',                '~> 0.9.0'
@@ -43,7 +42,7 @@ group :production, :staging do
 end
 
 group :staging do
-  gem 'rack-staging',    :git => 'git://github.com/thibaudgg/rack-staging.git'
+  gem 'rack-staging', :git => 'git://github.com/thibaudgg/rack-staging.git'
 end
 
 group :development do
@@ -53,7 +52,8 @@ group :development do
   gem 'wirble' # irbrc
   gem 'ruby-graphviz', :require => 'graphviz'
   gem 'heroku'
-  gem 'heroku_tasks',  '~> 0.1.0'
+  gem 'heroku_tasks',  '~> 0.1.4'
+  gem 'git' # needed by Heroku
   gem 'taps' # heroku db pull/push
   
   gem 'rspec-rails',   '~> 2.0.0.beta.20'
