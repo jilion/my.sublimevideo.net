@@ -1,4 +1,8 @@
-= title_and_content_header("Support")
+= title("Suport")
+
+= content_for :content_header do
+  %h2= "Support"
+  %p.title_desc= "Give us your feedback."
 
 = form_for @ticket, :url => ticket_path do |f|
   .entry.select.type

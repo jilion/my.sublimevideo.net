@@ -8,6 +8,7 @@
       - else
         = link_to "", :class => "settings", :title => "Settings", :onclick => "return MySublimeVideo.showSiteSettings(#{site.id})" do
           %span= "settings"
+      %em.date= l site.created_at.to_date, :format => :small
   %td.code
     - if site.in_progress?
       .in_progress

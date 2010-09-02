@@ -118,14 +118,14 @@ body {
 
 #header .right a.user strong {
   background:url(/images/embed/header_btn_back_left.png) no-repeat;
-  height:22px;
-  padding:7px 4px 0 6px;
+  height:20px;
+  padding:9px 4px 0 6px;
   display:block;
 }
 
 #header .right a.user span.icon {
-  background:url(/images/embed/user_btn_icon.png) no-repeat 0 1px;
-  padding:0 0 1px 22px;
+  background:url(/images/embed/user_btn_icon.png) no-repeat 0 0;
+  padding:1px 0 1px 22px;
 }
 
 #header .right a.user span.corner {
@@ -322,6 +322,7 @@ form input.text {
   box-shadow:rgba(255,255,255,0.6) 0 1px 0, inset 0 1px 2px rgba(0,0,0,0.3);
   -webkit-transition:0.5s background;
   -moz-transition:0.5s background;
+  -webkit-background-clip:padding-box;
 }
 
 form input.text.small {
@@ -564,8 +565,8 @@ form p.note, #content form label.note {
   }
 
   #content form .entry.select select:focus {
-    outline: auto 5px -webkit-focus-ring-color;
-    outline-offset: -2px;
+    outline:auto 5px -webkit-focus-ring-color;
+    outline-offset:-2px;
     outline-color:#0085c8;
   }
 }
@@ -646,7 +647,7 @@ form .entry a.cancel {
 
 #content ul.session_links {
   list-style-type:none;
-  padding:4px 0 4px 10px;
+  padding:24px 0 4px 10px;
   line-height:20px;
   font-size:12px;
 }
@@ -655,6 +656,45 @@ form .entry a.cancel {
   font-weight:bold;
   font-size:16px;
 }
+
+#content ul.session_links a {
+  border-bottom:1px solid #999;
+}
+
+#get_an_invitation {
+  width:420px;
+  height:338px;
+  background:url(/images/embed/vertical_breakline.png) no-repeat;
+  position:absolute;
+  top:40px;
+  right:0;
+}
+
+#get_an_invitation .wrap {
+  width:208px;
+  margin:130px auto 0;
+}
+
+#get_an_invitation h3 {
+  font-size:17px;
+  font-weight:600;
+  padding-bottom:10px;
+}
+
+#get_an_invitation a.button {
+  display:block;
+  margin:0 auto;
+  width:192px;
+  height:33px;
+  padding:11px 0 0 14px;
+  background:url(/images/embed/get_an_invitation_button.png) no-repeat;
+  color:#405f92;
+  font-size:20px;
+  font-weight:600;
+  text-shadow:rgba(255,255,255,0.7) 0 1px 0;
+}
+
+#get_an_invitation a.button:active {background-position:0 -44px}
 
 #signup_quotes {
   width:390px;
@@ -1068,13 +1108,13 @@ ul#trial_legend li em {
 
 #content table.main th a.sort strong {
   background:url(/images/embed/sort_btn_background.png) no-repeat;
-  height:18px;
-  padding:6px 4px 0 3px;
+  height:17px;
+  padding:7px 4px 0 3px;
   display:block;
 }
 
 #content table.main th a.sort span.arrow {
-  background:url(/images/embed/sort_btn_arrow_down.png) no-repeat 100% 3px;
+  background:url(/images/embed/sort_btn_arrow_down.png) no-repeat 100% 2px;
   padding:0 15px 0 0;
   position:relative;
   right:-8px;
@@ -1098,7 +1138,7 @@ ul#trial_legend li em {
 }
 
 #content table.main td {
-  border-bottom: 1px solid #777;
+  border-bottom:1px solid #777;
   padding:10px 0;
   text-align:center;
   -webkit-box-shadow:rgba(255,255,255,0.5) 0 2px 0;
@@ -1136,7 +1176,7 @@ ul#trial_legend li em {
   font-size:21px;
   font-weight:600;
   padding:4px 16px;
-  border: 1px solid #76899a;
+  border:1px solid #76899a;
   background:#c2d1de;
   background:-webkit-gradient(linear,left top,left bottom,from(#d1e0ed),to(#b6c4d1));
   background:-moz-linear-gradient(top, #d1e0ed, #b6c4d1);
@@ -1168,6 +1208,19 @@ ul#trial_legend li em {
 #content table.main td.site .settings.disabled {
   opacity:0.4;
   cursor:default;
+}
+
+#content table.main td.site:hover em.date {display:block}
+
+#content table.main td.site em.date {
+  position:absolute;
+  top:-14px;
+  right:-10px;
+  font-size:9px;
+  font-style:normal;
+  text-transform:uppercase;
+  color:#666;
+  display:none;
 }
 
 #content table.main td.code a.embed_code {
@@ -1239,7 +1292,7 @@ ul#trial_legend li em {
 }
 
 #content table.main td.hits table th.requests, #content table.main td.hits table td.requests {
-  border-bottom: 1px solid #999;
+  border-bottom:1px solid #999;
   -webkit-box-shadow:rgba(255,255,255,0.5) 0 2px 0;
   -moz-box-shadow:rgba(255,255,255,0.5) 0 1px 0;
   box-shadow:rgba(255,255,255,0.5) 0 1px 0;
@@ -1425,6 +1478,7 @@ ul#trial_legend li em {
   -webkit-border-radius:4px;
   -moz-border-radius:4px;
   border-radius:4px;
+  -webkit-background-clip:padding-box;
 }
 
 .popup .content {
@@ -1600,7 +1654,7 @@ ul#trial_legend li em {
   float:right;
   font-size:12px;
   font-weight:600;
-  border-bottom: 1px solid #929fb6;
+  border-bottom:1px solid #929fb6;
 }
 
 #credit_card_summary p strong {font-weight:600;}
@@ -1851,4 +1905,4 @@ a {
   color:#4d5563;
 }
 
-input::-moz-focus-inner, button::-moz-focus-inner { border: 0; }
+input::-moz-focus-inner, button::-moz-focus-inner { border:0; }
