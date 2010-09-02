@@ -53,7 +53,7 @@ group :development do
   gem 'ruby-graphviz', :require => 'graphviz'
   gem 'heroku'
   gem 'heroku_tasks',  '~> 0.1.4'
-  gem 'git'            # needed by Heroku
+  # gem 'git'            # needed by Heroku
   gem 'taps'           # heroku db pull/push
   gem 'rspec-rails',   '~> 2.0.0.beta.20'
 end
@@ -62,7 +62,7 @@ group :test do
   gem 'pg', '~> 0.9.0'
   
   gem 'spork'
-  gem 'rspactor',    '~> 0.7.beta.6'
+  gem 'rspactor',    '~> 0.7.beta.7'
   
   gem 'shoulda',     '~> 2.11.3'
   gem 'rspec-rails', '~> 2.0.0.beta.20'
