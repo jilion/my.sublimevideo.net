@@ -43,7 +43,7 @@ end
 
 group :production, :staging do
   gem 'rack-ssl-enforcer', '~> 0.1.6'
-  gem 'rack-staging',      '~> 0.1.0'
+  gem 'rack-private',      '~> 0.1.1'
 end
 
 group :development do
