@@ -127,7 +127,6 @@ GEM
     ffaker (0.4.0)
     ffi (0.6.3)
       rake (>= 0.8.7)
-    git (1.2.5)
     growl (1.0.3)
     haml (3.0.18)
     heroku (1.9.14)
@@ -266,7 +265,6 @@ DEPENDENCIES
   devise_invitable!
   factory_girl_rails
   ffaker (>= 0.4.0)
-  git
   haml (~> 3.0.18)
   has_scope!
   heroku
@@ -287,7 +285,7 @@ DEPENDENCIES
   rails (~> 3.0.0)
   request-log-analyzer (~> 1.8.0)
   responders!
-  rspactor (~> 0.7.beta.6)
+  rspactor (~> 0.7.beta.7)
   rspec-rails (~> 2.0.0.beta.20)
   ruby-graphviz
   shoulda (~> 2.11.3)
