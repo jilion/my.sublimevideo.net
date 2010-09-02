@@ -1,10 +1,8 @@
-require 'digest/sha1' # NOT NEEDED ANYMORE ?
-
 class ApplicationController < ActionController::Base
   include CustomDevisePaths
   
   respond_to :html
-  responders Responders::FlashResponder, Responders::PaginatedResponder, Responders::HttpCacheResponder  
+  responders Responders::FlashResponder, Responders::PaginatedResponder, Responders::HttpCacheResponder
   
   layout 'application'
   

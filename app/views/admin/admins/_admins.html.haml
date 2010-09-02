@@ -1,0 +1,13 @@
+%table.main#admins
+  %tr
+    %th.title
+      .wrap
+        %strong
+          = "Email"
+    %th= "Confirmed?"
+    %th.delete
+  = render @admins
+  
+.pagination_wrap
+  = will_paginate(:params => { :format => nil }, :renderer => 'WillPaginate::ViewHelpers::LinkRendererRemote')
+  = page_entries_info @admins

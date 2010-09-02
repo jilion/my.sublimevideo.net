@@ -1210,7 +1210,7 @@ ul#trial_legend li em {
   font-size:24px;
 }
 
-#content table.main td.hits:hover strong {display:none;}
+/*#content table.main td.hits:hover strong {display:none;}*/
 
 #content table.main td.hits table, #content table.main td.hits table tr, #content table.main td.hits table th, #content table.main td.hits table td {
   background:none !important;
@@ -1232,8 +1232,8 @@ ul#trial_legend li em {
   height:64px;
 }
 
-#content table.main td.hits:hover table {display:table;}
-
+/*#content table.main td.hits:hover table {display:table;}
+*/
 #content table.main td.hits table th, #content table.main td.hits table td {
   height:32px;
 }

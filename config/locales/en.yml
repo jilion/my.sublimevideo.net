@@ -17,6 +17,7 @@ en:
     formats:
       date: "%B %d, %Y"
       full: "%m/%d/%Y %I:%M %p"
+      semi_full: "%d %b, %I:%M%p"
   date:
     formats:
       default: "%B %d, %Y"

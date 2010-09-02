@@ -2,14 +2,5 @@
 
 = link_to "Invite an admin", new_admin_invitation_path, :class => "add"
 
-%table.main#admins
-  %tr
-    %th.title
-      .wrap
-        %strong
-          = "Email"
-    %th= "Confirmed?"
-    %th.delete= "Delete"
-  = render @admins
-  
-= will_paginate @admins
+#admins_table_wrap
+  = render "admins"

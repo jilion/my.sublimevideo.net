@@ -1,5 +1,5 @@
 class Admin::ReleasesController < Admin::AdminController
-
+  
   # GET /admin/releases
   def index
   end

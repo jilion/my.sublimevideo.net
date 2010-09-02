@@ -15,8 +15,16 @@ module Responders
     
     def add_pagination_scope!
       if get? && resource.is_a?(ActiveRecord::Relation) && controller.action_name == 'index'
-        controller.instance_variable_set "@#{controller.controller_name}", resource.paginate(:page => controller.request.params[:page], :per_page => controller.controller_name.classify.constantize.per_page)
+        begin
+          set_instance_variable(controller.controller_name.classify.constantize)
+        rescue
+          set_instance_variable(resource[0].class) if resource.present?
+        end
       end
+    end
+    
+    def set_instance_variable(klass)
+      controller.instance_variable_set "@#{controller.controller_name}", resource.paginate(:page => controller.request.params[:page], :per_page => klass.per_page)
     end
     
   end

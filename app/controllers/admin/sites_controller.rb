@@ -1,5 +1,6 @@
 class Admin::SitesController < Admin::AdminController
-
+  respond_to :js, :html
+  
   # GET /admin/sites
   def index
     @sites = Site.scoped

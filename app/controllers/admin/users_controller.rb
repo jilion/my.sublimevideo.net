@@ -1,4 +1,5 @@
 class Admin::UsersController < Admin::AdminController
+  respond_to :js, :html
   
   # GET /admin/users
   def index

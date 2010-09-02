@@ -3,14 +3,6 @@
 .summary
   %ul
     %li= "Total #:#{Site.count}"
-
-
-%table.main#sites
-  %tr
-    %th= "Hostnames"
-    %th= ""
-    %th= ""
-    %th= ""
-  = render @sites
-  
-= will_paginate @sites
+    
+#sites_table_wrap
+  = render "sites"
