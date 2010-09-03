@@ -1,13 +1,13 @@
 class TicketsController < ApplicationController
   respond_to :html
   
-  # GET /support
+  # GET /feedback
   def new
     @ticket = Ticket.new
     respond_with(@ticket)
   end
   
-  # POST /support
+  # POST /feedback
   def create
     @ticket = Ticket.new(params[:ticket].merge({ :user => current_user }))
     respond_with(@user) do |format|

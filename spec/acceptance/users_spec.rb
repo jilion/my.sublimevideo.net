@@ -91,7 +91,7 @@ feature "User session:" do
   scenario "before login/register" do
     visit "/"
     
-    page.should_not have_content('Support')
+    page.should_not have_content('Feedback')
     page.should_not have_content('Logout')
     
     page.should have_content('Login')
