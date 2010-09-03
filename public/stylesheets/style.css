@@ -303,7 +303,15 @@ form .card_number label.icon {
   left:10px;
 }
 
-form input.text {
+form .feedback_subject label.icon {
+  width:20px;
+  height:16px;
+  background:url(/images/embed/feedback_field_icon.png) no-repeat;
+  top:17px;
+  left:10px;
+}
+
+form input.text, form textarea.text {
   width:400px;
   height:34px;
   line-height:36px;
@@ -325,6 +333,14 @@ form input.text {
   -webkit-background-clip:padding-box;
 }
 
+form textarea.text {
+  width:428px;
+  height:200px;
+  resize:vertical;
+  padding:8px 0 8px 10px;
+  line-height:23px;
+}
+
 form input.text.small {
   width:58px;
   height:26px;
@@ -333,20 +349,20 @@ form input.text.small {
   text-align:center;
 }
 
-form input.text:focus {
+form input.text:focus, form textarea.text:focus {
   background:#fff;
   outline-color:#0085c8;
 }
 
-form input.text::-webkit-input-placeholder {color:#8896ae;}
-form input.text.placeholder {color:#8896ae;}
+form input.text::-webkit-input-placeholder, form textarea.text::-webkit-input-placeholder {color:#8896ae;}
+form input.text.placeholder, form textarea.text.placeholder {color:#8896ae;}
 
-form input.text.errors {
+form input.text.errors, form textarea.text.errors {
   background:#fadddd;
 }
 
-form input.text.errors::-webkit-input-placeholder {color:#d88282;}
-form input.text.errors.placeholder {color:#d88282;}
+form input.text.errors::-webkit-input-placeholder, form textarea.text.errors::-webkit-input-placeholder {color:#d88282;}
+form input.text.errors.placeholder, form textarea.text.errors.placeholder {color:#d88282;}
 
 .popup form input.text {
   border-color:#6f7681;

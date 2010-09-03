@@ -8,11 +8,11 @@
   .entry.select.type
     = f.label :type, "", :class => "icon"
     = f.select :type, ticket_type_options
-  .entry.subject
+  .entry.feedback_subject
     = f.label :subject, "", :class => "icon"
-    = f.text_field :subject, :class => "text", :placeholder => "Give your question a great title", :required => true
+    = f.text_field :subject, :class => "text", :placeholder => "Subject", :required => true
   .entry.description
     = f.label :description, "", :class => "icon"
-    = f.text_area :description, :class => "text", :placeholder => "Explain the problem/question in detail", :required => true
+    = f.text_area :description, :class => "text", :placeholder => "Message", :required => true
   .entry.update
     = f.submit 'Send', :class => "submit small"
