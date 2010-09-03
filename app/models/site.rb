@@ -24,6 +24,8 @@
 
 class Site < ActiveRecord::Base
   
+  PLAYER_MODES = %w[dev beta stable]
+  
   # Pagination
   cattr_accessor :per_page
   self.per_page = 20
@@ -60,7 +62,7 @@ class Site < ActiveRecord::Base
   validates :user,          :presence => true
   validates :hostname,      :presence => true, :hostname_uniqueness => true, :production_hostname => true
   validates :dev_hostnames, :hostnames => true
-  validates :player_mode,   :inclusion => { :in => %w[dev beta stable] }
+  validates :player_mode,   :inclusion => { :in => PLAYER_MODES }
   validate  :must_be_active_to_update_hostnames
   
   # =============
