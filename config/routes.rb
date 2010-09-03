@@ -82,4 +82,12 @@ MySublimeVideo::Application.routes.draw do
     resources :releases, :only => [:index, :create, :update]
   end
   
+  # =======
+  # = API =
+  # =======
+  
+  namespace "api" do
+    resources :invitations, :only => [:create]
+  end
+  
 end
