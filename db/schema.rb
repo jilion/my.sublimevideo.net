@@ -58,8 +58,8 @@ ActiveRecord::Schema.define(:version => 20100826081322) do
     t.datetime "charged_at"
     t.date     "started_on"
     t.date     "ended_on"
-    t.integer  "amount",       :limit => 8, :default => 0
-    t.integer  "sites_amount", :limit => 8, :default => 0
+    t.integer  "amount",       :default => 0
+    t.integer  "sites_amount", :default => 0
     t.text     "sites"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -86,16 +86,16 @@ ActiveRecord::Schema.define(:version => 20100826081322) do
     t.string   "license"
     t.string   "loader"
     t.string   "state"
-    t.integer  "loader_hits_cache",     :limit => 8, :default => 0
-    t.integer  "player_hits_cache",     :limit => 8, :default => 0
-    t.integer  "flash_hits_cache",      :limit => 8, :default => 0
+    t.integer  "loader_hits_cache",     :default => 0
+    t.integer  "player_hits_cache",     :default => 0
+    t.integer  "flash_hits_cache",      :default => 0
     t.datetime "archived_at"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "player_mode",                        :default => "stable"
-    t.integer  "requests_s3_cache",     :limit => 8, :default => 0
-    t.integer  "traffic_s3_cache",      :limit => 8, :default => 0
-    t.integer  "traffic_voxcast_cache", :limit => 8, :default => 0
+    t.string   "player_mode",           :default => "stable"
+    t.integer  "requests_s3_cache",     :default => 0
+    t.integer  "traffic_s3_cache",      :default => 0
+    t.integer  "traffic_voxcast_cache", :default => 0
   end
 
   add_index "sites", ["created_at"], :name => "index_sites_on_created_at"
