@@ -8,7 +8,7 @@ MySublimeVideo::Application.routes.draw do
   :skip => [:invitations, :registrations] do
     # We need to declare these routes manually because we don't want
     # to generate GET /invitation/new and POST /invitation, so we had to skip :invitations
-    resource :user_invitation, :only => [:update], :controller => 'devise/invitations', :path => '/invitation/accept', :path_names => { :edit => '' } do
+    resource :user_invitation, :only => [:update], :controller => 'users/invitations', :path => '/invitation/accept', :path_names => { :edit => '' } do
       get :edit, :as => 'accept'
     end
     resource :user_registration, :only => [], :controller => 'users/registrations', :path => '' do

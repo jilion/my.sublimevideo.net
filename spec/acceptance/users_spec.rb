@@ -65,6 +65,11 @@ feature "Users actions:" do
     end
   end
   
+  scenario "accept invitation without token should redirect to /login" do
+    visit "/invitation/accept"
+    current_url.should =~ %r(^http://[^/]+/login$)
+  end
+  
   scenario "accept invitation" do
     invited_user = send_invite_to :user, "invited@user.com"
     
