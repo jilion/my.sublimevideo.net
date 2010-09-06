@@ -3,11 +3,22 @@
 # Table name: users
 #
 #  id                                    :integer         not null, primary key
+#  first_name                            :string(255)
+#  last_name                             :string(255)
+#  postal_code                           :string(255)
+#  country                               :string(255)
+#  use_personal                          :boolean
+#  use_company                           :boolean
+#  use_clients                           :boolean
+#  company_name                          :string(255)
+#  company_url                           :string(255)
+#  company_job_title                     :string(255)
+#  company_employees                     :string(255)
+#  company_videos_served                 :string(255)
 #  state                                 :string(255)
 #  email                                 :string(255)     default(""), not null
 #  encrypted_password                    :string(128)     default(""), not null
 #  password_salt                         :string(255)     default(""), not null
-#  full_name                             :string(255)
 #  confirmation_token                    :string(255)
 #  confirmed_at                          :datetime
 #  confirmation_sent_at                  :datetime
@@ -39,6 +50,7 @@
 #  invitation_token                      :string(20)
 #  invitation_sent_at                    :datetime
 #  zendesk_id                            :integer
+#  enthusiast_id                         :integer
 #
 
 require 'spec_helper'
@@ -50,30 +62,35 @@ describe User do
     subject { user }
     
     its(:terms_and_conditions) { should be_true }
-    its(:full_name)        { should == "Joe Blow" }
-    its(:email)            { should match /email\d+@user.com/ }
-    its(:invoices_count)   { should == 0 }
-    its(:last_invoiced_on) { should be_nil }
-    its(:next_invoiced_on) { should == Time.now.utc.to_date + 1.month }
+    its(:first_name)           { should == "John" }
+    its(:last_name)            { should == "Doe" }
+    its(:country)              { should == "CH" }
+    its(:postal_code)          { should == "2000" }
+    its(:use_personal)         { should be_true }
+    its(:email)                { should match /email\d+@user.com/ }
+    its(:invoices_count)       { should == 0 }
+    its(:last_invoiced_on)     { should be_nil }
+    its(:next_invoiced_on)     { should == Time.now.utc.to_date + 1.month }
     it { should be_valid }
   end
   
   describe "validates" do
-    it "should validate presence of full_name" do
-      user = Factory.build(:user, :full_name => nil)
-      user.should_not be_valid
-      user.should have(1).error_on(:full_name)
-    end
-    it "should validate presence of email" do
-      user = Factory.build(:user, :email => nil)
-      user.should_not be_valid
-      user.should have(1).error_on(:email)
-    end
+    it { should validate_presence_of(:first_name) }
+    it { should validate_presence_of(:last_name) }
+    it { should validate_presence_of(:postal_code) }
+    it { should validate_presence_of(:email) }
+    
     it "should validate email" do
       user = Factory.build(:user, :email => "beurk")
       user.should_not be_valid
       user.should have(1).error_on(:email)
     end
+    it "should validate password length" do
+      user = Factory.build(:user, :password => "short")
+      user.should_not be_valid
+      user.should have(1).error_on(:password)
+    end
+    
     it "should validate acceptance of terms_and_conditions" do
       user = Factory.build(:user, :terms_and_conditions => false)
       user.should_not be_valid
@@ -88,6 +105,52 @@ describe User do
         user.should_not be_valid
         user.should have(1).error_on(:email)
       end
+    end
+  end
+  
+  context "user invited" do
+    subject { User.invite(:email => "bob@bob.com", :enthusiast_id => 12) }
+    
+    its(:enthusiast_id) { should == 12 }
+    
+    it "should validate password length" do
+      subject.update_attributes(:password => "short")
+      subject.should have(1).error_on(:password)
+    end
+    
+    it "should validate presence of a least once use" do
+      subject.update_attributes(:first_name => "John")
+      subject.should have(1).error_on(:use)
+    end
+    
+    it "should validate company fields if use_company is checked" do
+      subject.update_attributes(:use_company => true)
+      subject.should have(1).error_on(:company_name)
+      subject.should have(1).error_on(:company_url)
+      subject.should have(1).error_on(:company_job_title)
+      subject.should have(1).error_on(:company_employees)
+      subject.should have(1).error_on(:company_videos_served)
+    end
+    
+    it "should validate company url if use_company is checked" do
+      subject.update_attributes(:use_company => true, :company => "bob")
+      subject.should have(1).error_on(:company_name)
+    end
+    
+    it "should be valid" do
+      subject.update_attributes(
+        :first_name => "John",
+        :last_name => "Doe",
+        :country => "CH",
+        :postal_code => "2000",
+        :use_company => true,
+        :company_name => "bob",
+        :company_url => "bob.com",
+        :company_job_title => "Boss",
+        :company_employees => "101-1'000",
+        :company_videos_served => "0-1'000"
+      )
+      user.should be_valid
     end
   end
   
