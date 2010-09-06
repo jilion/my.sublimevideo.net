@@ -25,9 +25,8 @@ en:
       
   ticket:
     type:
-      choose_type: "Choose a category"
-      request:     "I have a request"
-      billing:     "Billing question"
-      confused:    "I'm confused"
-      broken:      "Something is broken"
-      other:       "Other"
+      choose_type:            "Choose a category"
+      bug_report:             "Bug report"
+      improvement_suggestion: "Improvement suggestion"
+      feature_request:        "Feature request"
+      other:                  "Other"
