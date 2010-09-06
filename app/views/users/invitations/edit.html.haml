@@ -1,5 +1,7 @@
 = title_and_content_header("Enter the Beta")
 
+-# f.errors.key?(:use)  => f.errors[:use] => message
+
 = form_for resource, :as => resource_name, :url => "/invitation/accept", :html => { :method => :put } do |f|
   = f.hidden_field :invitation_token
   

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100826081322) do
+ActiveRecord::Schema.define(:version => 20100906131301) do
 
   create_table "admins", :force => true do |t|
     t.string   "email",                               :default => "", :null => false
@@ -108,7 +108,6 @@ ActiveRecord::Schema.define(:version => 20100826081322) do
     t.string   "email",                                                :default => "", :null => false
     t.string   "encrypted_password",                    :limit => 128, :default => "", :null => false
     t.string   "password_salt",                                        :default => "", :null => false
-    t.string   "full_name"
     t.string   "confirmation_token"
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
@@ -140,6 +139,19 @@ ActiveRecord::Schema.define(:version => 20100826081322) do
     t.string   "invitation_token",                      :limit => 20
     t.datetime "invitation_sent_at"
     t.integer  "zendesk_id"
+    t.integer  "enthusiast_id"
+    t.string   "first_name"
+    t.string   "last_name"
+    t.string   "postal_code"
+    t.string   "country"
+    t.boolean  "use_personal"
+    t.boolean  "use_company"
+    t.boolean  "use_clients"
+    t.string   "company_name"
+    t.string   "company_url"
+    t.string   "company_job_title"
+    t.string   "company_employees"
+    t.string   "company_videos_served"
   end
 
   add_index "users", ["confirmation_token"], :name => "index_users_on_confirmation_token", :unique => true

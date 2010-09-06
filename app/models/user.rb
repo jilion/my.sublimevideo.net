@@ -3,11 +3,22 @@
 # Table name: users
 #
 #  id                                    :integer         not null, primary key
+#  first_name                            :string(255)
+#  last_name                             :string(255)
+#  postal_code                           :string(255)
+#  country                               :string(255)
+#  use_personal                          :boolean
+#  use_company                           :boolean
+#  use_clients                           :boolean
+#  company_name                          :string(255)
+#  company_url                           :string(255)
+#  company_job_title                     :string(255)
+#  company_employees                     :string(255)
+#  company_videos_served                 :string(255)
 #  state                                 :string(255)
 #  email                                 :string(255)     default(""), not null
 #  encrypted_password                    :string(128)     default(""), not null
 #  password_salt                         :string(255)     default(""), not null
-#  full_name                             :string(255)
 #  confirmation_token                    :string(255)
 #  confirmed_at                          :datetime
 #  confirmation_sent_at                  :datetime
@@ -39,6 +50,7 @@
 #  invitation_token                      :string(20)
 #  invitation_sent_at                    :datetime
 #  zendesk_id                            :integer
+#  enthusiast_id                         :integer
 #
 
 class User < ActiveRecord::Base
@@ -54,7 +66,10 @@ class User < ActiveRecord::Base
   self.per_page = 25
   
   attr_accessor :terms_and_conditions
-  attr_accessible :full_name, :email, :remember_me, :password, :terms_and_conditions
+  attr_accessible :first_name, :last_name, :email, :remember_me, :password, :postal_code, :country, :enthusiast_id,
+                  :use_personal, :use_company, :use_clients,
+                  :company_name, :company_url, :company_job_title, :company_employees, :company_videos_served,
+                  :terms_and_conditions
   # Trial
   attr_accessible :limit_alert_amount
   # Credit Card
@@ -81,9 +96,15 @@ class User < ActiveRecord::Base
   # = Validations =
   # ===============
   
-  validates :full_name, :presence => true
+  validates :first_name, :presence => true
+  validates :last_name, :presence => true
+  validates :postal_code, :presence => true
+  validates :country, :presence => true
   validates :terms_and_conditions, :acceptance => { :accept => "1" }, :on => :create
+  validates :company_url, :hostname_uniqueness => true, :allow_blank => true
   validate :validates_credit_card_attributes # in user/credit_card
+  validate :validates_use_presence_on_invitation_update
+  validate :validates_company_fields_on_invitaion_update
   
   # =============
   # = Callbacks =
@@ -120,6 +141,24 @@ class User < ActiveRecord::Base
   end
   
 private
+  
+  # validate
+  def validates_use_presence_on_invitation_update
+    if invited? && !use_personal && !use_company && !use_clients
+      self.errors.add(:use, "Please check at least one option.")
+    end
+  end
+  
+  # validate
+  def validates_company_fields_on_invitaion_update
+    if invited? && use_company
+      self.errors.add(:company_name, :blank) unless company_name.present?
+      self.errors.add(:company_url, :blank) unless company_url.present?
+      self.errors.add(:company_job_title, :blank) unless company_job_title.present?
+      self.errors.add(:company_employees, :blank) unless company_employees.present?
+      self.errors.add(:company_videos_served, :blank) unless company_videos_served.present?
+    end
+  end
   
   # before_create
   def set_next_invoiced_on

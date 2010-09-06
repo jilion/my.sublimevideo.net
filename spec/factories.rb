@@ -1,9 +1,13 @@
 # http://github.com/thoughtbot/factory_girl
 
 Factory.define :user do |f|
-  f.full_name        "Joe Blow"
-  f.sequence(:email) { |n| "email#{n}@user.com" }
-  f.password         "123456"
+  f.first_name        "John"
+  f.last_name         "Doe"
+  f.country           "CH"
+  f.postal_code       "2000"
+  f.use_personal      true
+  f.sequence(:email)  { |n| "email#{n}@user.com" }
+  f.password          "123456"
   f.terms_and_conditions "1"
 end
 

@@ -35,6 +35,7 @@ gem 'mongo',                '1.0.7'
 gem 'mongoid',              '2.0.0.beta.17'
 
 gem 'zip',                  '~> 2.0.2', :require => 'zip/zip'
+gem 'countries',            '~> 0.3.0'
 
 group :production do
   gem 'rack-google-analytics', '~> 0.9.2', :require => 'rack/google-analytics'
