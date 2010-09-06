@@ -269,7 +269,7 @@ form label.icon {
   position:absolute;
 }
 
-form .full_name label.icon {
+form .first_name label.icon {
   width:17px;
   height:17px;
   background:url(/images/embed/fullname_field_icon.png) no-repeat;
@@ -345,6 +345,24 @@ form textarea.text {
   resize:vertical;
   padding:8px 0 8px 10px;
   line-height:23px;
+}
+
+form input.text.no_icon {
+  width:428px;
+  padding-left:10px;
+}
+
+form .left_field input {
+  float:left;
+  width:178px;
+  margin-right:10px;
+}
+
+form .left_field input.no_icon {width:206px;}
+
+form .right_field input, form .right_field input.no_icon {
+  float:left;
+  width:200px;
 }
 
 form input.text.small {
@@ -444,6 +462,7 @@ form p.note, #content form label.note {
 }
 
 #content form.section .entry .checkbox_wrap {margin-top:5px;}
+#content form .entry.use .checkbox_wrap {margin:3px 2px;}
 
 #content form .entry .checkbox_wrap input {
   float:left;
@@ -457,8 +476,8 @@ form p.note, #content form label.note {
   position:relative;
   left:-5px;
   display:block;
-  height:20px;
-  padding:6px 0 0 27px;
+  height:19px;
+  padding:7px 0 0 27px;
   background:url(/images/embed/custom_checkbox.png) no-repeat;
 }
 
@@ -564,6 +583,18 @@ form p.note, #content form label.note {
   box-shadow:rgba(255,255,255,0.4) 0 1px 0;
 }
 
+#content form .entry.select .left_field select {
+  width:218px;
+  float:left;
+  margin-right:10px;
+}
+
+#content form .entry.select .right_field select {
+  width:212px;
+  float:left;
+  margin-right:0;
+}
+
 #content form .entry.select select option {
   padding-right:10px;
 }
@@ -593,15 +624,28 @@ form p.note, #content form label.note {
   }
 }
 
+#content .entry.use {
+  padding:20px 0 0;
+}
+
+#content label.main {
+  font-weight:600;
+  font-size:16px;
+}
+
+#company_fields_box {
+  padding:10px 0;
+}
+
 #content .entry.terms {
   background:url(/images/embed/breakline.png) no-repeat -228px 0;
-  padding:10px 0 10px;
+  padding:10px 0 54px;
   margin-top:10px;
 }
 
-#content .entry.terms p {
+#content .entry.terms label {
   font-size:14px;
-  line-height:20px;
+  line-height:18px;
 }
 
 #content .entry.terms a {
