@@ -12,7 +12,9 @@
 - @site = current_user.sites.build
 #new_site_wrap
   = render "new"
-  = image_tag "/images/embed/spinner.gif", :class => "spinner", :style => "display:none"
+  .spinner{ :style => "display:none" }
+    = image_tag "/images/embed/spinner.gif"
+    %span.label= "Building player and uploading to cloud"
   
 #sites_table_wrap
   = render "sites"

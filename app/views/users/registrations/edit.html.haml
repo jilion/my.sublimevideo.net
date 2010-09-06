@@ -18,13 +18,16 @@
 = render 'users/full_name_form'
 .spacer
 
-= form_for @user, :url => "/account/credentials", :html => { :method => :put, :class => "main_form section" } do |f|
+= form_for @user, :url => "/account/credentials", :html => { :method => :put, :class => "main_form" } do |f|
   %h3.section_title= "Email"
   .entry.email
     = f.label :email, "", :class => "icon"
     = f.email_field :email, :class => "text", :placeholder => "Email", :required => true
-    
-  %p.note= "Leave blank if you don't want to change it"
+  .entry.update
+    = f.submit "Update", :class => "submit small", :id => "user_submit_1"
+  .break
+  %h3.section_title= "Password"
+  -#%p.note= "Leave blank if you don't want to change it"
   .entry.password
     = f.label :password, "", :class => "icon"
     = f.password_field :password, :class => "text show_password", :placeholder => "New password"
@@ -35,10 +38,9 @@
     = f.password_field :current_password, :class => "text show_password", :placeholder => "Current password", :required => true
     
   .entry.update
-    = f.submit "Update", :class => "submit small"
+    = f.submit "Update", :class => "submit small", :id => "user_submit_2"
 .spacer
 
-%h3.section_title= "Password"
 
 - if public?
   = render 'users/email_notifications_form'

@@ -25,7 +25,7 @@ en:
         confirmed: 'Your account was successfully confirmed. You are now signed in.'
     registrations:
       signed_up: 'You have signed up successfully, a confirmation was sent to your e-mail.'
-      updated: 'You updated your account successfully.'
+      updated: 'Account was successfully updated.'
       destroyed: 'Bye! Your account was successfully cancelled. We hope to see you again soon.'
     unlocks:
       send_instructions: 'You will receive an email with instructions to unlock your account in a few minutes.'
@@ -46,7 +46,7 @@ en:
         subject: 'Confirmation instructions'
       invitation_instructions:
         admin_subject: 'Invitation instructions'
-        user_subject: 'Invitation instructions'
+        user_subject: 'Your SublimeVideo Beta Invitation'
       reset_password_instructions:
         subject: 'Reset password instructions'
       unlock_instructions:

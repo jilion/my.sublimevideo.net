@@ -14,11 +14,10 @@ class Ticket
   attr_accessor :user, :type, :subject, :description
   
   TYPES = [
-    { :request => 'request' },
-    { :billing => 'billing' },
-    { :confused => 'confused' },
-    { :broken => 'broken' },
-    { :other => 'other' },
+    { :bug_report => 'bug report' },
+    { :improvement_suggestion => 'improvement suggestion' },
+    { :feature_request => 'feature request' },
+    { :other => 'other' }
   ]
   
   def self.ordered_types

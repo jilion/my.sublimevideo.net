@@ -17,10 +17,6 @@ module LayoutHelper
     end
   end
   
-  def footer
-    "Copyright &copy; 2010 SublimeVideo&reg; | #{link_to "Terms & Conditions", page_path(:page => 'terms')} | #{link_to "Privacy Policy", page_path(:page => 'privacy') }".html_safe
-  end
-  
   def activable_content_tag(tag, controller, options = {})
     options.reverse_merge!(:active_class => 'active', :class => controller.to_s)
     
