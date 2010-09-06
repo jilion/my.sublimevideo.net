@@ -13,7 +13,7 @@ feature "Feedback actions:" do
   end
   
   scenario "submit a valid ticket" do
-    select "I have a request", :from => "ticket_type"
+    select "Bug report", :from => "ticket_type"
     fill_in "Subject", :with => "I have a request!"
     fill_in "Description", :with => "I have a request this is a long text!"
     click_button "Send"
@@ -26,7 +26,7 @@ feature "Feedback actions:" do
     @current_user.reload.zendesk_id.should be_present
   end
   
-  scenario "submit an invalid ticket" do
+  scenario "submit an ticket with an invalid type" do
     select "Choose a category", :from => "ticket_type"
     fill_in "Subject", :with => "I have a request!"
     fill_in "Description", :with => "I have a request this is a long text!"
@@ -36,8 +36,8 @@ feature "Feedback actions:" do
     Delayed::Job.last.should be_nil
   end
   
-  scenario "submit an invalid ticket" do
-    select "I have a request", :from => "ticket_type"
+  scenario "submit a ticket with an invalid subject" do
+    select "Improvement suggestion", :from => "ticket_type"
     fill_in "Subject", :with => ""
     fill_in "Description", :with => "I have a request this is a long text!"
     click_button "Send"
@@ -46,8 +46,8 @@ feature "Feedback actions:" do
     Delayed::Job.last.should be_nil
   end
   
-  scenario "submit an invalid ticket" do
-    select "I have a request", :from => "ticket_type"
+  scenario "submit a ticket with an invalid description" do
+    select "Feature request", :from => "ticket_type"
     fill_in "Subject", :with => "I have a request!"
     fill_in "Description", :with => ""
     click_button "Send"

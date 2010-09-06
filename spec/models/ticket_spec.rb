@@ -12,12 +12,12 @@ require 'spec_helper'
 
 describe Ticket do
   let(:user)   { Factory(:user) }
-  let(:ticket) { Ticket.new({ :user => Factory(:user), :type => "request", :subject => "Subject", :description => "Description" }) }
+  let(:ticket) { Ticket.new({ :user => Factory(:user), :type => "bug_report", :subject => "Subject", :description => "Description" }) }
   
   context "with valid attributes" do
     subject { ticket }
     
-    its(:type)            { should == :request }
+    its(:type)            { should == :bug_report }
     its(:subject)         { should == "Subject" }
     its(:description)     { should == "Description" }
     it { should be_valid }
@@ -25,7 +25,7 @@ describe Ticket do
   
   describe "validates" do
     it "should validate presence of user" do
-      ticket = Ticket.new({ :user => nil, :type => "request", :subject => nil, :description => "Description" })
+      ticket = Ticket.new({ :user => nil, :type => "bug_report", :subject => nil, :description => "Description" })
       ticket.should_not be_valid
       ticket.errors[:user].should be_present
     end
@@ -35,12 +35,12 @@ describe Ticket do
       ticket.errors[:type].should be_present
     end
     it "should validate presence of subject" do
-      ticket = Ticket.new({ :user => user, :type => "request", :subject => nil, :description => "Description" })
+      ticket = Ticket.new({ :user => user, :type => "bug_report", :subject => nil, :description => "Description" })
       ticket.should_not be_valid
       ticket.errors[:subject].should be_present
     end
     it "should validate presence of description" do
-      ticket = Ticket.new({ :user => user, :type => "request", :subject => "Subject", :description => nil })
+      ticket = Ticket.new({ :user => user, :type => "bug_report", :subject => "Subject", :description => nil })
       ticket.should_not be_valid
       ticket.errors[:description].should be_present
     end
@@ -50,18 +50,17 @@ describe Ticket do
     it ".ordered types should return ordered types and their associated tags" do
       if MySublimeVideo::Release.beta?
         Ticket.ordered_types.should == [
-          { :request => 'request' },
-          { :confused => 'confused' },
-          { :broken => 'broken' },
-          { :other => 'other' },
+          { :bug_report => 'bug report' },
+          { :improvement_suggestion => 'improvement suggestion' },
+          { :feature_request => 'feature request' },
+          { :other => 'other' }
         ]
       else
         Ticket.ordered_types.should == [
-          { :request => 'request' },
-          { :billing => 'billing' },
-          { :confused => 'confused' },
-          { :broken => 'broken' },
-          { :other => 'other' },
+          { :bug_report => 'bug report' },
+          { :improvement_suggestion => 'improvement suggestion' },
+          { :feature_request => 'feature request' },
+          { :other => 'other' }
         ]
       end
     end
@@ -69,17 +68,16 @@ describe Ticket do
     it ".unordered_types should return a hash of all types and their associated tags" do
       if MySublimeVideo::Release.beta?
         Ticket.unordered_types.should == {
-          :request => 'request',
-          :confused => 'confused',
-          :broken => 'broken',
+          :bug_report => 'bug report',
+          :improvement_suggestion => 'improvement suggestion',
+          :feature_request => 'feature request',
           :other => 'other'
         }
       else
         Ticket.unordered_types.should == {
-          :request => 'request',
-          :billing => 'billing',
-          :confused => 'confused',
-          :broken => 'broken',
+          :bug_report => 'bug report',
+          :improvement_suggestion => 'improvement suggestion',
+          :feature_request => 'feature request',
           :other => 'other'
         }
       end

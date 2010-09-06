@@ -1,0 +1,5 @@
+= title_and_content_header("Edit #{@site.hostname} (#{@site.user.full_name})")
+
+= form_for [:admin, @site] do |f|
+  = f.select :player_mode, Site::PLAYER_MODES
+  = f.submit "Update site"
