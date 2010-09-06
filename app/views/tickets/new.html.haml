@@ -1,14 +1,18 @@
-= title_and_content_header("Support")
+= title("Beta Feedback")
+
+= content_for :content_header do
+  %h2= "Beta Feedback"
+  %p.title_desc= "Thank you to use this form to send us your feedback, including bug reports, feature requests or other comments."
 
 = form_for @ticket, :url => ticket_path do |f|
   .entry.select.type
     = f.label :type, "", :class => "icon"
     = f.select :type, ticket_type_options
-  .entry.subject
+  .entry.feedback_subject
     = f.label :subject, "", :class => "icon"
-    = f.text_field :subject, :class => "text", :placeholder => "Give your question a great title", :required => true
+    = f.text_field :subject, :class => "text", :placeholder => "Subject", :required => true
   .entry.description
     = f.label :description, "", :class => "icon"
-    = f.text_area :description, :class => "text", :placeholder => "Explain the problem/question in detail", :required => true
+    = f.text_area :description, :class => "text", :placeholder => "Message", :required => true
   .entry.update
     = f.submit 'Send', :class => "submit small"

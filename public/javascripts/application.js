@@ -16,6 +16,9 @@ document.observe("dom:loaded", function() {
     $$("input[placeholder]").each(function(input){
       new PlaceholderManager(input);
     });
+    $$("textarea[placeholder]").each(function(textarea){
+      new PlaceholderManager(textarea);
+    });
   }
   
   $$("form").each(function(form){
@@ -258,6 +261,9 @@ var PasswordFieldManager = Class.create({
 
 var PlaceholderManager = Class.create({
   initialize: function(field, check) {
+    //
+    // NOTE: 'field' can be textfield or textarea
+    //
     this.field = field;
     this.passwordFieldManager = this.field.retrieve("passwordFieldManager"); //it means field.type == "password"
     

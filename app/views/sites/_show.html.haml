@@ -1,8 +1,9 @@
 %h3
   = "Embed code for"
   %strong= truncate_middle(@site.hostname, :length => 18)
-%p.desc= "Copy the code below, and paste it into the pages on #{truncate_middle(@site.hostname)} where the SublimeVideo player will be displayed. Make sure it goes into the <code>&lt;head&gt;</code> tag.".html_safe
+%p.desc= "Copy the code below, and paste it into the pages on #{truncate_middle(@site.hostname)} where the SublimeVideo player will be used. We advise to put it into the <code>&lt;head&gt;</code> tag.".html_safe
 %form
   .embed_code
     %textarea{ :readonly => true, :onclick => "this.focus();this.select();" }= sublimevideo_script_tag_for(@site)
--#%p= raw "If you're using a plugin or service that asks for a SublimeVideo Site ID, use this: <code>#{@site.token}</code>"
+%p.desc= raw "Please consult the #{link_to "documentation", "http://docs.sublimevideo.net"} to learn how to add videos to your page."
+-#%p.desc= raw "If you're using a plugin or service that asks for a SublimeVideo Site ID, use this: <code>#{@site.token}</code>"

@@ -35,7 +35,7 @@ MySublimeVideo::Application.routes.draw do
   # match ':page', :to => 'pages#show', :via => :get, :as => :page, :page => /terms|privacy|suspended/
   match ':page', :to => 'pages#show', :via => :get, :as => :page, :page => /terms|privacy/
   
-  resource :ticket, :only => [:new, :create], :path => '/support', :path_names => { :new =>  ''}
+  resource :ticket, :only => [:new, :create], :path => '/feedback', :path_names => { :new =>  ''}
   
   root :to => redirect("/sites")
   
@@ -80,6 +80,14 @@ MySublimeVideo::Application.routes.draw do
     resources :sites, :only => [:index, :show]
     resources :delayed_jobs, :only => [:index, :show, :update, :destroy], :path => "djs"
     resources :releases, :only => [:index, :create, :update]
+  end
+  
+  # =======
+  # = API =
+  # =======
+  
+  namespace "api" do
+    resources :invitations, :only => [:create]
   end
   
 end
