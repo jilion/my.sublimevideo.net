@@ -78,7 +78,7 @@ body {
 #header .right ul.extra_links {
   list-style-type:none;
   float:left;
-  padding:7px 20px 0 0;
+  padding:8px 20px 0 0;
 }
 
 #header .right ul.extra_links li {
@@ -303,7 +303,15 @@ form .card_number label.icon {
   left:10px;
 }
 
-form input.text {
+form .feedback_subject label.icon {
+  width:20px;
+  height:16px;
+  background:url(/images/embed/feedback_field_icon.png) no-repeat;
+  top:17px;
+  left:10px;
+}
+
+form input.text, form textarea.text {
   width:400px;
   height:34px;
   line-height:36px;
@@ -325,6 +333,14 @@ form input.text {
   -webkit-background-clip:padding-box;
 }
 
+form textarea.text {
+  width:428px;
+  height:200px;
+  resize:vertical;
+  padding:8px 0 8px 10px;
+  line-height:23px;
+}
+
 form input.text.small {
   width:58px;
   height:26px;
@@ -333,20 +349,20 @@ form input.text.small {
   text-align:center;
 }
 
-form input.text:focus {
+form input.text:focus, form textarea.text:focus {
   background:#fff;
   outline-color:#0085c8;
 }
 
-form input.text::-webkit-input-placeholder {color:#8896ae;}
-form input.text.placeholder {color:#8896ae;}
+form input.text::-webkit-input-placeholder, form textarea.text::-webkit-input-placeholder {color:#8896ae;}
+form input.text.placeholder, form textarea.text.placeholder {color:#8896ae;}
 
-form input.text.errors {
+form input.text.errors, form textarea.text.errors {
   background:#fadddd;
 }
 
-form input.text.errors::-webkit-input-placeholder {color:#d88282;}
-form input.text.errors.placeholder {color:#d88282;}
+form input.text.errors::-webkit-input-placeholder, form textarea.text.errors::-webkit-input-placeholder {color:#d88282;}
+form input.text.errors.placeholder, form textarea.text.errors.placeholder {color:#d88282;}
 
 .popup form input.text {
   border-color:#6f7681;
@@ -672,13 +688,14 @@ form .entry a.cancel {
 
 #get_an_invitation .wrap {
   width:208px;
-  margin:130px auto 0;
+  margin:125px auto 0;
 }
 
 #get_an_invitation h3 {
-  font-size:17px;
+  font-size:20px;
   font-weight:600;
   padding-bottom:10px;
+  text-align:center;
 }
 
 #get_an_invitation a.button {
@@ -1210,7 +1227,7 @@ ul#trial_legend li em {
   cursor:default;
 }
 
-#content table.main td.site:hover em.date {display:block}
+/*#content table.main td.site:hover em.date {display:block}
 
 #content table.main td.site em.date {
   position:absolute;
@@ -1222,7 +1239,7 @@ ul#trial_legend li em {
   color:#666;
   display:none;
 }
-
+*/
 #content table.main td.code a.embed_code {
   display:block;
   width:186px;

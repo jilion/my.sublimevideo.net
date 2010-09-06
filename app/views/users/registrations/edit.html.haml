@@ -1,4 +1,4 @@
-= title_and_content_header("Edit my account")
+= title_and_content_header("Edit My Account")
 
 - if public?
   - if current_user.credit_card?
@@ -20,7 +20,7 @@
 
 - @user ||= current_user
 = form_for @user, :url => "/account/credentials", :html => { :method => :put, :class => "main_form section" } do |f|
-  %h3.section_title= "Email & Password"
+  %h3.section_title= "Email"
   .entry.email
     = f.label :email, "", :class => "icon"
     = f.email_field :email, :class => "text", :placeholder => "Email", :required => true
@@ -38,6 +38,8 @@
   .entry.update
     = f.submit "Update", :class => "submit small"
 .spacer
+
+%h3.section_title= "Password"
 
 - if public?
   = render 'users/email_notifications_form'
