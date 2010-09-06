@@ -1,6 +1,5 @@
 %tr{ :class => cycle("", "alt") }
-  %td.hostname
-    = link_to site.hostname, admin_site_path(site)
-  %td
-  %td
-  %td
+  %td.hostname= link_to site.hostname, edit_admin_site_path(site)
+  %td.user= link_to site.user.full_name, admin_user_path(site.user)
+  %td.player_hits_cache= site.player_hits_cache
+  %td.player_mode= site.player_mode

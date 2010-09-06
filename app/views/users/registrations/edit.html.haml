@@ -18,7 +18,6 @@
 = render 'users/full_name_form'
 .spacer
 
-- @user ||= current_user
 = form_for @user, :url => "/account/credentials", :html => { :method => :put, :class => "main_form section" } do |f|
   %h3.section_title= "Email"
   .entry.email

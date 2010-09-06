@@ -43,6 +43,17 @@ feature "Users actions:" do
     User.last.full_name.should == "Bob Doe"
   end
   
+  scenario "update full name with errors" do
+    sign_in_as :user, { :full_name => "John Doe" }
+    click_link('John Doe')
+    fill_in "Full name",  :with => ""
+    click_button "user_full_name_submit"
+    
+    page.should have_css('.inline_errors')
+    page.should have_content("Full name can't be blank")
+    User.last.full_name.should == "John Doe"
+  end
+  
   if MySublimeVideo::Release.public?
     scenario "update limit alert amount" do
       sign_in_as :user, { :full_name => "John Doe" }
@@ -61,7 +72,7 @@ feature "Users actions:" do
     current_url.should =~ %r(http://[^/]+/invitation/accept\?invitation_token=#{invited_user.invitation_token})
     fill_in "Full name", :with => "Rémy Coutable"
     fill_in "Password", :with => "123456"
-    click_button "Go!"
+    click_button "Join"
     
     current_url.should =~ %r(http://[^/]+/sites)
     page.should have_content "Welcome" if MySublimeVideo::Release.public?
@@ -79,7 +90,7 @@ feature "Users actions:" do
     fill_in "Email", :with => "new@email.com"
     fill_in "Full name", :with => "Rémy Coutable"
     fill_in "Password", :with => "123456"
-    click_button "Go!"
+    click_button "Join"
     
     invited_user.reload.email.should == "new@email.com"
   end
