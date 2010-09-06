@@ -12,7 +12,7 @@
   %td.code
     - if site.in_progress?
       .in_progress
-        %em= "In progress"
+        %em= "Uploading to cloud"
     - else
       = link_to "Embed code", "", :class => "embed_code", :onclick => "return MySublimeVideo.showSiteEmbedCode(#{site.id})"
       

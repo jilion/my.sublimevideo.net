@@ -1911,6 +1911,7 @@ div.text > ol {
 
 div.text ol ol {
   padding-left:18px;
+  list-style-type:none;
 }
 
 div.text ol li {
@@ -1919,6 +1920,22 @@ div.text ol li {
 
 div.text ol ol ol {list-style-type:lower-latin}
 div.text ol ol ol ol {list-style-type:lower-roman}
+
+div.text ol ol li {
+  position:relative;
+  padding-left:12px;
+}
+
+div.text ol ol li span.number {
+  position:absolute;
+  top:5px;
+  left:-18px;
+}
+
+div.text ol ol ol li, div.text ol ol ol ol li {
+  padding-left:0;
+  position:static;
+}
 
 div.text a {
   color:#323b4e;
