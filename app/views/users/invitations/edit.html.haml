@@ -32,12 +32,11 @@
     .spacer
   
   .entry.use
-    %label.main= "Use of SublimeVideo:"
-    - if resource.errors.key?(:use)
-      .inline_errors
-        %span= resource.errors[:use].first
-      
+    %label.main= "Use of SublimeVideo:"      
     .checkbox_wrap
+      - if resource.errors.key?(:use)
+        .inline_errors
+          %span= resource.errors[:use].first
       = f.check_box :use_personal
       = f.label :use_personal, "Personal use"
     .checkbox_wrap
@@ -70,7 +69,7 @@
   .entry.terms
     .checkbox_wrap
       = f.check_box :terms_and_conditions
-      = f.label :terms_and_conditions, "I accept to be contacted by email during the Beta with a small survey on the Pricing (thank very much, we count on you) and I agree to the #{link_to("Terms & Conditions", page_path("terms"))}.".html_safe
+      = f.label :terms_and_conditions, "I accept to be contacted by email during the Beta with a small survey on the Pricing (thank very much, we count on you) and I agree to the #{link_to("Terms & Conditions", page_path("terms"), :onclick => "window.open(this); return false")}.".html_safe
     
   .entry.submit.signup
     = f.submit "Join"

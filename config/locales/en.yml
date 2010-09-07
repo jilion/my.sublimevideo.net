@@ -8,6 +8,8 @@ en:
     cc_expire_on: "Expiration date"
     cc_full_name: "Name on Card"
     cc_verification_value: "CSC"
+    company_employees: "Company size"
+    company_videos_served: "Nr. of videos served"
     
     min_width:  "Minimum width"
     min_height: "Minimum height"

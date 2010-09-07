@@ -352,8 +352,11 @@ form input.text.no_icon {
   padding-left:10px;
 }
 
-form .left_field input {
+form .left_field, form .right_field {
   float:left;
+}
+
+form .left_field input {
   width:178px;
   margin-right:10px;
 }
@@ -361,7 +364,6 @@ form .left_field input {
 form .left_field input.no_icon {width:206px;}
 
 form .right_field input, form .right_field input.no_icon {
-  float:left;
   width:200px;
 }
 
@@ -522,7 +524,12 @@ form p.note, #content form label.note {
   white-space:nowrap;
 }
 
-#content form .entry .radio_wrap .inline_errors span {
+#content form .checkbox_wrap .inline_errors {
+  position:static;
+  margin:4px 0 6px;
+}
+
+#content form .entry .radio_wrap .inline_errors span, #content form .checkbox_wrap .inline_errors span {
   border:none;
   -webkit-border-radius:4px;
   -moz-border-radius:4px;
@@ -531,6 +538,8 @@ form p.note, #content form label.note {
   -moz-box-shadow:rgba(0,0,0,0.7) 0 1px 2px;
   box-shadow:rgba(0,0,0,0.7) 0 1px 2px;
 }
+
+#content form .checkbox_wrap .inline_errors span {left:0;}
 
 #content form .entry.card label span {
   display:block;
@@ -585,13 +594,11 @@ form p.note, #content form label.note {
 
 #content form .entry.select .left_field select {
   width:218px;
-  float:left;
   margin-right:10px;
 }
 
 #content form .entry.select .right_field select {
   width:212px;
-  float:left;
   margin-right:0;
 }
 
@@ -1028,7 +1035,7 @@ ul#trial_legend li em {
 
 #new_site_wrap .spinner .label {
   position:absolute;
-  right:-255px;
+  left:45px;
   top:10px;
   white-space:nowrap;
   color:#666;
