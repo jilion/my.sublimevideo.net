@@ -123,11 +123,20 @@ describe User do
   end
   
   context "invited" do
-    before(:each) { @user = User.invite(:email => "bob@bob.com", :enthusiast_id => 12) }
+    before(:each) do
+      User.attr_accessible << "enthusiast_id"
+      @user = User.invite(:email => "bob@bob.com", :enthusiast_id => 12)
+      User.attr_accessible.delete "enthusiast_id"
+    end
     subject { @user }
     
     it { should be_invited }
     its(:enthusiast_id) { should == 12 }
+    
+    it "should not be able to update enthusiast_id" do
+      subject.update_attributes(:enthusiast_id => 13)
+      subject.enthusiast_id.should == 12
+    end
     
     it "should validate password length" do
       user = accept_invitation(:password => "short")

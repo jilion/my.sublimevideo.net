@@ -66,7 +66,7 @@ class User < ActiveRecord::Base
   self.per_page = 25
   
   attr_accessor :terms_and_conditions
-  attr_accessible :first_name, :last_name, :email, :remember_me, :password, :postal_code, :country, :enthusiast_id,
+  attr_accessible :first_name, :last_name, :email, :remember_me, :password, :postal_code, :country,
                   :use_personal, :use_company, :use_clients,
                   :company_name, :company_url, :company_job_title, :company_employees, :company_videos_served,
                   :terms_and_conditions
@@ -193,6 +193,13 @@ private
     if zendesk_id.present? && email_changed?
       Zendesk.delay(:priority => 25).put("/users/#{zendesk_id}.xml", :user => { :email => email })
     end
+  end
+  
+protected
+  
+  # Allow User.invite to assign enthusiast_id
+  def mass_assignment_authorizer
+    new_record? ? (self.class.active_authorizer + ["enthusiast_id"]) : super
   end
   
 end
