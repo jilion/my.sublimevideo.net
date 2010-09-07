@@ -3,18 +3,6 @@
 # Table name: users
 #
 #  id                                    :integer         not null, primary key
-#  first_name                            :string(255)
-#  last_name                             :string(255)
-#  postal_code                           :string(255)
-#  country                               :string(255)
-#  use_personal                          :boolean
-#  use_company                           :boolean
-#  use_clients                           :boolean
-#  company_name                          :string(255)
-#  company_url                           :string(255)
-#  company_job_title                     :string(255)
-#  company_employees                     :string(255)
-#  company_videos_served                 :string(255)
 #  state                                 :string(255)
 #  email                                 :string(255)     default(""), not null
 #  encrypted_password                    :string(128)     default(""), not null
@@ -51,6 +39,18 @@
 #  invitation_sent_at                    :datetime
 #  zendesk_id                            :integer
 #  enthusiast_id                         :integer
+#  first_name                            :string(255)
+#  last_name                             :string(255)
+#  postal_code                           :string(255)
+#  country                               :string(255)
+#  use_personal                          :boolean
+#  use_company                           :boolean
+#  use_clients                           :boolean
+#  company_name                          :string(255)
+#  company_url                           :string(255)
+#  company_job_title                     :string(255)
+#  company_employees                     :string(255)
+#  company_videos_served                 :string(255)
 #
 
 class User < ActiveRecord::Base
@@ -138,6 +138,10 @@ class User < ActiveRecord::Base
   
   def welcome?
     sites.empty? && !credit_card?
+  end
+  
+  def full_name
+    first_name + ' ' + last_name
   end
   
 private

@@ -3,18 +3,6 @@
 # Table name: users
 #
 #  id                                    :integer         not null, primary key
-#  first_name                            :string(255)
-#  last_name                             :string(255)
-#  postal_code                           :string(255)
-#  country                               :string(255)
-#  use_personal                          :boolean
-#  use_company                           :boolean
-#  use_clients                           :boolean
-#  company_name                          :string(255)
-#  company_url                           :string(255)
-#  company_job_title                     :string(255)
-#  company_employees                     :string(255)
-#  company_videos_served                 :string(255)
 #  state                                 :string(255)
 #  email                                 :string(255)     default(""), not null
 #  encrypted_password                    :string(128)     default(""), not null
@@ -51,6 +39,18 @@
 #  invitation_sent_at                    :datetime
 #  zendesk_id                            :integer
 #  enthusiast_id                         :integer
+#  first_name                            :string(255)
+#  last_name                             :string(255)
+#  postal_code                           :string(255)
+#  country                               :string(255)
+#  use_personal                          :boolean
+#  use_company                           :boolean
+#  use_clients                           :boolean
+#  company_name                          :string(255)
+#  company_url                           :string(255)
+#  company_job_title                     :string(255)
+#  company_employees                     :string(255)
+#  company_videos_served                 :string(255)
 #
 
 require 'spec_helper'
@@ -64,6 +64,7 @@ describe User do
     its(:terms_and_conditions) { should be_true }
     its(:first_name)           { should == "John" }
     its(:last_name)            { should == "Doe" }
+    its(:full_name)            { should == "John Doe" }
     its(:country)              { should == "CH" }
     its(:postal_code)          { should == "2000" }
     its(:use_personal)         { should be_true }

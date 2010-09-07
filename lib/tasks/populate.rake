@@ -84,7 +84,14 @@ end
 def create_users(count = 0)
   disable_perform_deliveries do
     BASE_USERS.each do |user_infos|
-      user = User.create(:full_name => user_infos[0], :email => user_infos[1], :password => "123456")
+      user = User.create(
+        :first_name => user_infos[0].split(' ').first,
+        :last_name => user_infos[0].split(' ').second,
+        :country => 'CH',
+        :postal_code => '1024',
+        :email => user_infos[1],
+        :password => "123456"
+      )
       user.confirmed_at = Time.now
       user.save!
       print "User #{user_infos[1]}:123456 created!\n"
@@ -92,7 +99,10 @@ def create_users(count = 0)
     
     count.times do |i|
       user              = User.new
-      user.full_name    = Faker::Name.name
+      user.first_name   = Faker::Name.first_name
+      user.last_name    = Faker::Name.last_name
+      user.country      = 'US'
+      user.postal_code  = Faker::Address.zip_code
       user.email        = Faker::Internet.email
       user.password     = '123456'
       user.confirmed_at = rand(10).days.ago

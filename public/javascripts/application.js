@@ -4,6 +4,13 @@ document.observe("dom:loaded", function() {
   
   S2.Extensions.webkitCSSTransitions = true;
   
+  // ================
+  // = Edit account =
+  // ================
+  // Note: leave this before the "new PlaceholderManager()"
+  if ($("edit_credentials")) new CurrentPasswordHandler();
+  
+  
   // ================================================================
   // = Password fields, selects and placeholders and forms managers =
   // ================================================================
@@ -40,6 +47,7 @@ document.observe("dom:loaded", function() {
     MySublimeVideo.addSiteHandler = new AddSiteHandler();
     MySublimeVideo.sitesPoller = new SitesPoller();
   }
+
 
 });
 
@@ -423,6 +431,25 @@ var SitesPoller = Class.create({
     
     // Check if a restart polling is needed
     this.checkForSiteInProgress();
+  }
+});
+
+
+var CurrentPasswordHandler = Class.create({
+  initialize: function() {
+    this.emailField = $("user_email");
+    this.passwordField = $("user_password");
+    this.currentPasswordWrap = $("current_password_wrap");
+    
+    this.emailField.on("focus", function(e){
+      this.showCurrentPassword();
+    }.bind(this));
+    this.passwordField.on("focus", function(e){
+      this.showCurrentPassword();
+    }.bind(this));
+  },
+  showCurrentPassword: function() {
+    this.currentPasswordWrap.show();
   }
 });
 

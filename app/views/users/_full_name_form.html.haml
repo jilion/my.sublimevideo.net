@@ -1,8 +1,0 @@
-= form_for @user, :url => users_path, :html => { :method => :put, :class => "main_form section", :id => "edit_user_#{@user.id}_full_name" } do |f|
-  %h3.section_title= "Full name"
-  .entry.full_name
-    = f.label :full_name, "Full name", :class => "icon"
-    = f.text_field :full_name, :class => "text", :placeholder => "Full name", :required => true
-  
-  .entry.update
-    = f.submit "Update", :id => 'user_full_name_submit', :class => "submit small"

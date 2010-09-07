@@ -23,9 +23,9 @@ GIT
 
 GIT
   remote: git://github.com/rymai/devise_invitable.git
-  revision: 269fb4b7199c32ca7b330c6a42db3d6e2662f84d
+  revision: 47009b2446224f58af3fae799d59d2aa7dd1e09c
   specs:
-    devise_invitable (0.6.5)
+    devise_invitable (0.6.6)
       devise (~> 1.1.2)
       rails (~> 3.0.0)
 
@@ -243,7 +243,7 @@ GEM
     vcr (1.1.1)
     warden (0.10.7)
       rack (>= 1.0.0)
-    webmock (1.3.4)
+    webmock (1.3.5)
       addressable (>= 2.1.1)
       crack (>= 0.1.7)
     will_paginate (3.0.pre2)
@@ -301,7 +301,7 @@ DEPENDENCIES
   uniquify (~> 0.1.0)
   vcr (~> 1.1.1)
   voxel_hapi!
-  webmock
+  webmock (~> 1.3.5)
   will_paginate (~> 3.0.pre2)
   wirble
   zip (~> 2.0.2)

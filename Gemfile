@@ -71,6 +71,6 @@ group :test do
   gem 'launchy'
   
   gem 'factory_girl_rails'
-  gem 'webmock'
+  gem 'webmock', '~> 1.3.5'
   gem 'vcr', '~> 1.1.1'
 end

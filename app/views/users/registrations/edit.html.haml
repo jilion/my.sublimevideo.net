@@ -15,27 +15,24 @@
           %span
             %em= "We invite you to add your credit card to prevent any cut in the player delivery when your trial will end."
             
-= render 'users/full_name_form'
+= render 'users/form'
 .spacer
 
-= form_for @user, :url => "/account/credentials", :html => { :method => :put, :class => "main_form" } do |f|
-  %h3.section_title= "Email"
+= form_for @user, :url => "/account/credentials", :html => { :method => :put, :class => "main_form", :id => "edit_credentials" } do |f|
+  %h3.section_title= "Email & Password"
   .entry.email
     = f.label :email, "", :class => "icon"
     = f.email_field :email, :class => "text", :placeholder => "Email", :required => true
-  .entry.update
-    = f.submit "Update", :class => "submit small", :id => "user_submit_1"
-  .break
-  %h3.section_title= "Password"
-  -#%p.note= "Leave blank if you don't want to change it"
+  %p.note= "Leave blank if you don't want to change it"
   .entry.password
     = f.label :password, "", :class => "icon"
-    = f.password_field :password, :class => "text show_password", :placeholder => "New password"
-    
-  %p.note= "We need your current password to confirm your changes"
-  .entry.password
-    = f.label :current_password, "", :class => "icon"
-    = f.password_field :current_password, :class => "text show_password", :placeholder => "Current password", :required => true
+    = f.password_field :password, :class => "text show_password", :placeholder => "New password", :autocomplete => "off"
+  
+  #current_password_wrap{ :style => (@user.errors[:current_password].empty? ? "display:none;" : "") }
+    %p.note= "We need your current password to confirm your changes"
+    .entry.password
+      = f.label :current_password, "", :class => "icon"
+      = f.password_field :current_password, :class => "text show_password", :placeholder => "Current password", :required => true
     
   .entry.update
     = f.submit "Update", :class => "submit small", :id => "user_submit_2"
