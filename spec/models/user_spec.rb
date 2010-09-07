@@ -109,9 +109,26 @@ describe User do
     end
   end
   
-  context "user invited" do
-    subject { User.invite(:email => "bob@bob.com", :enthusiast_id => 12) }
+  context "user already confirmed" do
+    subject do 
+      user = Factory(:user, :confirmed_at => Time.now)
+      User.find(user.id) # hard reload
+    end
     
+    it { should be_confirmed }
+    
+    it "should be able to update is first_name" do
+      subject.update_attributes(:first_name => 'bob').should be_true
+    end
+  end
+  
+  context "user invited" do
+    subject do
+      user = User.invite(:email => "bob@bob.com", :enthusiast_id => 12)
+      User.find(user.id) # hard reload
+    end
+    
+    it { should be_invited }
     its(:enthusiast_id) { should == 12 }
     
     it "should validate password length" do
