@@ -33,6 +33,10 @@
   
   .entry.use
     %label.main= "Use of SublimeVideo:"
+    - if resource.errors.key?(:use)
+      .inline_errors
+        %span= resource.errors[:use].first
+      
     .checkbox_wrap
       = f.check_box :use_personal
       = f.label :use_personal, "Personal use"
@@ -43,7 +47,7 @@
       = f.check_box :use_clients
       = f.label :use_clients, "Use for my clients"
   
-  #company_fields_box{ :style => "display:none" }
+  #company_fields_box{ :style => (resource.use_company ? "" : "display:none") }
     .entry
       .company_name.left_field
         = f.label :company_name, "Company/org name", :class => "icon"
