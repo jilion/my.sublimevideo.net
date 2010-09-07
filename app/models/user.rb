@@ -104,7 +104,8 @@ class User < ActiveRecord::Base
   validates :company_url, :hostname_uniqueness => true, :allow_blank => true
   validate :validates_credit_card_attributes # in user/credit_card
   validate :validates_use_presence_on_invitation_update
-  validate :validates_company_fields_on_invitaion_update
+  validate :validates_company_fields_on_invitation_update
+  validate :validates_terms_and_conditions_on_invitation_update
   
   # =============
   # = Callbacks =
@@ -154,13 +155,21 @@ private
   end
   
   # validate
-  def validates_company_fields_on_invitaion_update
+  def validates_company_fields_on_invitation_update
     if invited? && use_company
       self.errors.add(:company_name, :blank) unless company_name.present?
       self.errors.add(:company_url, :blank) unless company_url.present?
       self.errors.add(:company_job_title, :blank) unless company_job_title.present?
       self.errors.add(:company_employees, :blank) unless company_employees.present?
       self.errors.add(:company_videos_served, :blank) unless company_videos_served.present?
+    end
+  end
+  
+  # validate
+  def validates_terms_and_conditions_on_invitation_update
+    Rails.logger.debug terms_and_conditions.inspect
+    if invited? && terms_and_conditions != "1"
+      self.errors.add(:terms_and_conditions, :accepted)
     end
   end
   

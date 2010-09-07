@@ -109,7 +109,7 @@ describe User do
     end
   end
   
-  context "user already confirmed" do
+  context "already confirmed" do
     subject do 
       user = Factory(:user, :confirmed_at => Time.now)
       User.find(user.id) # hard reload
@@ -117,57 +117,49 @@ describe User do
     
     it { should be_confirmed }
     
-    it "should be able to update is first_name" do
+    it "should be able to update his first_name" do
       subject.update_attributes(:first_name => 'bob').should be_true
     end
   end
   
-  context "user invited" do
-    subject do
-      user = User.invite(:email => "bob@bob.com", :enthusiast_id => 12)
-      User.find(user.id) # hard reload
-    end
+  context "invited" do
+    before(:each) { @user = User.invite(:email => "bob@bob.com", :enthusiast_id => 12) }
+    subject { @user }
     
     it { should be_invited }
     its(:enthusiast_id) { should == 12 }
     
     it "should validate password length" do
-      subject.update_attributes(:password => "short")
-      subject.should have(1).error_on(:password)
+      user = accept_invitation(:password => "short")
+      user.should have(1).error_on(:password)
     end
     
     it "should validate presence of a least once use" do
-      subject.update_attributes(:first_name => "John")
-      subject.should have(1).error_on(:use)
+      user = accept_invitation(:use_company => nil)
+      user.should have(1).error_on(:use)
     end
     
     it "should validate company fields if use_company is checked" do
-      subject.update_attributes(:use_company => true)
-      subject.should have(1).error_on(:company_name)
-      subject.should have(1).error_on(:company_url)
-      subject.should have(1).error_on(:company_job_title)
-      subject.should have(1).error_on(:company_employees)
-      subject.should have(1).error_on(:company_videos_served)
+      user = accept_invitation(:company_name => nil, :company_url => nil, :company_job_title => nil, :company_employees => nil, :company_videos_served => nil)
+      user.should have(1).error_on(:company_name)
+      user.should have(1).error_on(:company_url)
+      user.should have(1).error_on(:company_job_title)
+      user.should have(1).error_on(:company_employees)
+      user.should have(1).error_on(:company_videos_served)
     end
     
     it "should validate company url if use_company is checked" do
-      subject.update_attributes(:use_company => true, :company => "bob")
-      subject.should have(1).error_on(:company_name)
+      user = accept_invitation(:company_name => nil)
+      user.should have(1).error_on(:company_name)
+    end
+    
+    it "should validate acceptance of terms_and_conditions" do
+      user = accept_invitation(:terms_and_conditions => "0")
+      user.should have(1).error_on(:terms_and_conditions)
     end
     
     it "should be valid" do
-      subject.update_attributes(
-        :first_name => "John",
-        :last_name => "Doe",
-        :country => "CH",
-        :postal_code => "2000",
-        :use_company => true,
-        :company_name => "bob",
-        :company_url => "bob.com",
-        :company_job_title => "Boss",
-        :company_employees => "101-1'000",
-        :company_videos_served => "0-1'000"
-      )
+      user = accept_invitation
       user.should be_valid
     end
   end
@@ -297,6 +289,27 @@ describe User do
       user.suspend
       user.should be_active
     end
+  end
+  
+protected
+  
+  def accept_invitation(attributes = {})
+    default = {
+      :password => "123456",
+      :first_name => "John",
+      :last_name => "Doe",
+      :country => "CH",
+      :postal_code => "2000",
+      :use_company => true,
+      :company_name => "bob",
+      :company_url => "bob.com",
+      :company_job_title => "Boss",
+      :company_employees => "101-1'000",
+      :company_videos_served => "0-1'000",
+      :terms_and_conditions => "1",
+      :invitation_token => @user.invitation_token
+    }
+    User.accept_invitation(default.merge(attributes))
   end
   
 end
