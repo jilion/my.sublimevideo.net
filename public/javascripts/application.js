@@ -8,7 +8,7 @@ document.observe("dom:loaded", function() {
   // = Edit account =
   // ================
   // Note: leave this before the "new PlaceholderManager()"
-  if ($("edit_credentials")) new CurrentPasswordHandler();
+  if ($("edit_credentials")) MySublimeVideo.currentPasswordHandler = new CurrentPasswordHandler();
   
   
   // ================================================================
@@ -47,7 +47,6 @@ document.observe("dom:loaded", function() {
     MySublimeVideo.addSiteHandler = new AddSiteHandler();
     MySublimeVideo.sitesPoller = new SitesPoller();
   }
-
 
 });
 
@@ -262,6 +261,7 @@ var PasswordFieldManager = Class.create({
     passwordField.purge(); //removes eventual observers and storage keys
     passwordField.replace(newPasswordField);
     this.field = newPasswordField;
+    if(this.field.id == "user_password") MySublimeVideo.currentPasswordHandler.setupField(this.field);
     return newPasswordField;
   }
 });
@@ -437,14 +437,16 @@ var SitesPoller = Class.create({
 
 var CurrentPasswordHandler = Class.create({
   initialize: function() {
-    this.emailField = $("user_email");
-    this.passwordField = $("user_password");
+    this.emailField          = $("user_email");
+    this.passwordField       = $("user_password");
     this.currentPasswordWrap = $("current_password_wrap");
     
-    this.emailField.on("focus", function(e){
-      this.showCurrentPassword();
+    [this.emailField, this.passwordField].each(function(field){
+      this.setupField(field);
     }.bind(this));
-    this.passwordField.on("focus", function(e){
+  },
+  setupField: function(field) {
+    field.on("focus", function(e){
       this.showCurrentPassword();
     }.bind(this));
   },
