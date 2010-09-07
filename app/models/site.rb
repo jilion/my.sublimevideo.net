@@ -10,16 +10,16 @@
 #  license               :string(255)
 #  loader                :string(255)
 #  state                 :string(255)
-#  loader_hits_cache     :integer         default(0)
-#  player_hits_cache     :integer         default(0)
-#  flash_hits_cache      :integer         default(0)
+#  loader_hits_cache     :integer(8)      default(0)
+#  player_hits_cache     :integer(8)      default(0)
+#  flash_hits_cache      :integer(8)      default(0)
 #  archived_at           :datetime
 #  created_at            :datetime
 #  updated_at            :datetime
 #  player_mode           :string(255)     default("stable")
-#  requests_s3_cache     :integer         default(0)
-#  traffic_s3_cache      :integer         default(0)
-#  traffic_voxcast_cache :integer         default(0)
+#  requests_s3_cache     :integer(8)      default(0)
+#  traffic_s3_cache      :integer(8)      default(0)
+#  traffic_voxcast_cache :integer(8)      default(0)
 #
 
 class Site < ActiveRecord::Base
