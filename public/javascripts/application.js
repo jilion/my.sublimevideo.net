@@ -261,7 +261,7 @@ var PasswordFieldManager = Class.create({
     passwordField.purge(); //removes eventual observers and storage keys
     passwordField.replace(newPasswordField);
     this.field = newPasswordField;
-    if(this.field.id == "user_password") MySublimeVideo.currentPasswordHandler.setupField(this.field);
+    if(this.field.id == "user_password" && $("current_password_wrap")) MySublimeVideo.currentPasswordHandler.setupField(this.field);
     return newPasswordField;
   }
 });
