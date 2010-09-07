@@ -23,9 +23,9 @@ GIT
 
 GIT
   remote: git://github.com/rymai/devise_invitable.git
-  revision: 47009b2446224f58af3fae799d59d2aa7dd1e09c
+  revision: 2147ec50137d95876008d91a4d7caa1a27cb4b70
   specs:
-    devise_invitable (0.6.6)
+    devise_invitable (0.6.7)
       devise (~> 1.1.2)
       rails (~> 3.0.0)
 
