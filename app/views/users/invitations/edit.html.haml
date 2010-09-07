@@ -34,13 +34,13 @@
   .entry.use
     %label.main= "Use of SublimeVideo:"
     .checkbox_wrap
-      = f.check_box :use_personal, :required => true
+      = f.check_box :use_personal
       = f.label :use_personal, "Personal use"
     .checkbox_wrap
-      = f.check_box :use_company, :onchange => "$('company_fields_box').toggle()", :required => true
+      = f.check_box :use_company, :onchange => "$('company_fields_box').toggle()"
       = f.label :use_company, "Use for my company"
     .checkbox_wrap
-      = f.check_box :use_clients, :required => true
+      = f.check_box :use_clients
       = f.label :use_clients, "Use for my clients"
   
   #company_fields_box{ :style => "display:none" }
@@ -54,7 +54,7 @@
       .spacer
     .entry.company_job_title
       = f.label :company_job_title, "Job title", :class => "icon"
-      = f.text_field :company_job_title, :class => "text no_icon", :placeholder => "Job title", :required => true
+      = f.text_field :company_job_title, :class => "text no_icon", :placeholder => "Job title"
     .entry.select
       .company_job_title.left_field
         = f.label :company_employees, "Company size", :class => "icon"
@@ -65,7 +65,7 @@
       .spacer
   .entry.terms
     .checkbox_wrap
-      = f.check_box :terms_and_conditions, :required => true
+      = f.check_box :terms_and_conditions
       = f.label :terms_and_conditions, "I accept to be contacted by email during the Beta with a small survey on the Pricing (thank very much, we count on you) and I agree to the #{link_to("Terms & Conditions", page_path("terms"))}.".html_safe
     
   .entry.submit.signup
