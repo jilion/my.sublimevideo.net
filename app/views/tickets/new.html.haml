@@ -1,9 +1,12 @@
-= title("Beta Feedback")
+= title_and_content_header("Beta Feedback")
 
 = content_for :content_header do
-  %h2= "Beta Feedback"
-  %p.title_desc= "Thank you to use this form to send us your feedback, including bug reports, feature requests or other comments."
-
+  -#%p.title_desc= "Thank you to use this form to send us your feedback, including bug reports, feature requests or other comments."
+  %p.title_desc
+    = "Use this form to send us bug reports, improvement suggestions, feature requests or any other comments."
+  %p.title_desc
+    = "Thank you for helping us improving SublimeVideo."
+    
 = form_for @ticket, :url => ticket_path do |f|
   .entry.select.type
     = f.label :type, "", :class => "icon"
