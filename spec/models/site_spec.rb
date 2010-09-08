@@ -62,7 +62,7 @@ describe Site do
       10.times { Factory(:site, :user => user) }
       site = Factory.build(:site, :user => user)
       site.should_not be_valid
-      site.errors[:hostname].should be_present
+      site.errors[:base].should be_present
     end
     
     describe "validate hostname" do
