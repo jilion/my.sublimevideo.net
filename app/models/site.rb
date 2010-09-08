@@ -20,6 +20,8 @@
 #  requests_s3_cache     :integer(8)      default(0)
 #  traffic_s3_cache      :integer(8)      default(0)
 #  traffic_voxcast_cache :integer(8)      default(0)
+#  google_rank           :integer
+#  alexa_rank            :integer
 #
 
 class Site < ActiveRecord::Base
@@ -75,6 +77,7 @@ class Site < ActiveRecord::Base
   # =============
   
   before_create :set_default_dev_hostnames
+  after_create :delay_ranks_update
   
   # =================
   # = State Machine =
@@ -174,6 +177,13 @@ class Site < ActiveRecord::Base
     pending? || inactive?
   end
   
+  def update_ranks
+    ranks = PageRankr.ranks(hostname)
+    self.google_rank = ranks[:google]
+    self.alexa_rank  = ranks[:alexa]
+    self.save
+  end
+  
 private
   
   # BETA validate
@@ -194,6 +204,11 @@ private
   # before_create
   def set_default_dev_hostnames
     write_attribute(:dev_hostnames, "localhost, 127.0.0.1") unless dev_hostnames.present?
+  end
+  
+  # after_create
+  def delay_ranks_update
+    delay.update_ranks
   end
   
   def set_template(name)

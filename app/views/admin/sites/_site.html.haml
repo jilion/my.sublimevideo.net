@@ -18,6 +18,8 @@
     - if site.player_hits_cache > 0
       = number_to_percentage(site.flash_hits_cache / site.player_hits_cache.to_f * 100, :precision => 2)
     - else
-      = number_to_percentage(100, :precision => 2)
+      = "-"
   %td.traffic= number_to_human_size(site.traffic_s3_cache + site.traffic_voxcast_cache, :precision => 4)
-  %td.player_mode= site.player_mode
+  %td.rank= site.alexa_rank
+  %td.rank= site.google_rank
+  -#%td.player_mode= site.player_mode

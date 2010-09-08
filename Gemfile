@@ -36,6 +36,7 @@ gem 'mongoid',              '2.0.0.beta.17'
 
 gem 'zip',                  '~> 2.0.2', :require => 'zip/zip'
 gem 'countries',            '~> 0.3.0'
+gem 'PageRankr',            '~> 1.4.3', :require => 'page_rankr'
 
 group :production do
   gem 'rack-google-analytics', '~> 0.9.2', :require => 'rack/google-analytics'
@@ -51,7 +52,7 @@ group :development do
   gem 'annotate'
   gem 'wirble'         # irbrc
   gem 'ruby-graphviz', :require => 'graphviz'
-  gem 'heroku'
+  gem 'heroku',        '~> 1.10.0'
   gem 'heroku_tasks',  '~> 0.1.4'
   gem 'taps'           # heroku db pull/push
   gem 'rspec-rails',   '~> 2.0.0.beta.20'

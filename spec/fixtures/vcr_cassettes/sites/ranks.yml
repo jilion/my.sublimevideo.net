@@ -1,0 +1,73 @@
+--- 
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: http://toolbarqueries.google.com:80/search?ch=61966422966&client=navclient-auto&features=Rank&q=info:jilion.com
+    body: 
+    headers: 
+      accept: 
+      - "*/*"
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      expires: 
+      - Fri, 01 Jan 1990 00:00:00 GMT
+      content-type: 
+      - text/html; charset=ISO-8859-1
+      x-xss-protection: 
+      - 1; mode=block
+      server: 
+      - gws
+      date: 
+      - Wed, 08 Sep 2010 19:23:16 GMT
+      set-cookie: 
+      - PREF=ID=9e209cbe9d6a5483:TM=1283973796:LM=1283973796:S=YzoILPqYOF738Rvv; expires=Fri, 07-Sep-2012 19:23:16 GMT; path=/; domain=.google.com
+      cache-control: 
+      - no-cache, must-revalidate
+      transfer-encoding: 
+      - chunked
+      pragma: 
+      - no-cache
+    body: |
+      Rank_1:1:4
+
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: http://data.alexa.com:80/data?cli=10&dat=snbamz&url=jilion.com
+    body: 
+    headers: 
+      accept: 
+      - "*/*"
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      connection: 
+      - close
+      content-type: 
+      - text/xml
+      content-length: 
+      - "368"
+    body: |-
+      <?xml version="1.0" encoding="UTF-8"?>
+      
+      <ALEXA VER="0.9" URL="jilion.com/" HOME="0" AID="=">
+      <RLS PREFIX="http://" more="0">
+      </RLS>
+      <SD TITLE="A" FLAGS="" HOST="jilion.com">
+      <LANG LEX="en" CODE="us-ascii"/>
+      <LINKSIN NUM="482"/>
+      <CHILD SRATING="0"/>
+      </SD>
+      <SD>
+      <POPULARITY URL="jilion.com/" TEXT="117935"/>
+      <REACH RANK="94430"/>
+      <RANK DELTA="+65488"/>
+      </SD>
+      </ALEXA>
+    http_version: "1.1"

@@ -20,6 +20,8 @@
 #  requests_s3_cache     :integer(8)      default(0)
 #  traffic_s3_cache      :integer(8)      default(0)
 #  traffic_voxcast_cache :integer(8)      default(0)
+#  google_rank           :integer
+#  alexa_rank            :integer
 #
 
 # coding: utf-8
@@ -284,6 +286,12 @@ describe Site do
         site.dev_hostnames.should == 'localhost, 127.0.0.1'
       end
     end
+    
+    describe "after_create" do
+      it "should delay update_ranks" do
+        lambda { Factory(:site) }.should change(Delayed::Job.where(:handler.matches => "%update_ranks%"), :count).by(1)
+      end
+    end
   end
   
   describe "Instance Methods" do
@@ -291,6 +299,15 @@ describe Site do
     it "should return good template_hostnames" do
       site = Factory(:site)
       site.template_hostnames.should == "'#{site.hostname}','localhost','127.0.0.1'"
+    end
+    
+    it "should update ranks" do
+      VCR.use_cassette('sites/ranks') do
+        site = Factory(:site, :hostname => 'jilion.com')
+        site.update_ranks
+        site.google_rank.should == 4
+        site.alexa_rank.should == 94430
+      end
     end
     
     it "should set license file with template_hostnames" do
