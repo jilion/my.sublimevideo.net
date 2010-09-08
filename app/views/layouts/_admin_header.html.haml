@@ -14,7 +14,9 @@
     -#    %li.admins{ :class => ('active' if controller_name == 'admins') }= link_to "Admins", admin_admins_path
     %ul#favorite_links
       - [:sites, :users, [:releases, { :link_text => "Player" }], :delayed_jobs, :admins].each do |r|
-        = activatable_menu_item(:li, r.is_a?(Array) ? r[0] : r, (r.is_a?(Array) ? r[1] : {}).merge(:namespace => 'admin'))
+        - name = r.is_a?(Array) ? r[0] : r
+        - if (current_admin && current_admin.email == "zeno@jilion.com") || name != :releases || Rails.env.development?
+          = activatable_menu_item(:li, name, (r.is_a?(Array) ? r[1] : {}).merge(:namespace => 'admin'))
         
   .right
     %ul.extra_links

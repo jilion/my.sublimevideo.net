@@ -43,7 +43,7 @@ MySublimeVideo::Application.routes.draw do
   # = Admin =
   # =========
   
-  match 'admin', :to => redirect('/admin/djs'), :as => 'admin'
+  match 'admin', :to => redirect('/admin/users'), :as => 'admin'
   
   devise_scope :user do
     resource :user_invitation, :only => [], :controller => 'admin/users/invitations', :path => "" do
