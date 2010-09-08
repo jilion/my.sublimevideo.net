@@ -32,7 +32,6 @@ describe Admin::SitesController do
       Site.stub(:find).with("1").and_return(mock_site)
       mock_site.stub(:player_mode=).and_return(true)
       mock_site.stub(:save).and_return(true)
-      mock_site.stub(:deactivate)
       mock_site.stub_chain(:delay, :activate).and_return(true)
       put :update, :id => '1', :site => {}
       response.should redirect_to(admin_site_url(mock_site))

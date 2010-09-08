@@ -46,7 +46,6 @@ describe SitesController do
     it "should respond with success to PUT :update" do
       @mock_user.stub_chain(:sites, :find).with("1").and_return(mock_site)
       mock_site.stub(:update_attributes).with({}).and_return(true)
-      mock_site.stub(:deactivate)
       mock_site.stub_chain(:delay, :activate).and_return(true)
       put :update, :id => '1', :site => {}
       response.should redirect_to(sites_url)

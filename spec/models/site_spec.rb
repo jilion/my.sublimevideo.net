@@ -230,10 +230,9 @@ describe Site do
       site.activate
     end
     
-    it "activate after deactivate should purge loader & license file" do
+    it "activate on an already active site should purge loader & license file" do
       site = Factory(:site)
       site.activate
-      site.deactivate
       VoxcastCDN.should_receive(:purge).with("/js/#{site.token}.js")
       VoxcastCDN.should_receive(:purge).with("/l/#{site.token}.js")
       site.activate

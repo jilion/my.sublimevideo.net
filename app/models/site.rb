@@ -28,7 +28,7 @@ class Site < ActiveRecord::Base
   
   # Pagination
   cattr_accessor :per_page
-  self.per_page = 10
+  self.per_page = 25
   
   attr_accessible :hostname, :dev_hostnames
   
@@ -55,6 +55,9 @@ class Site < ActiveRecord::Base
   scope :by_hostname,  lambda { |way| order("hostname #{way || 'asc'}") }
   scope :not_archived, where(:state.not_eq => 'archived')
   
+  # admin
+  scope :with_activity, where(:player_hits_cache.gte => 1)
+  
   # ===============
   # = Validations =
   # ===============
@@ -79,7 +82,7 @@ class Site < ActiveRecord::Base
   
   state_machine :initial => :pending do
     before_transition :on => :activate,     :do => [:set_loader_file, :set_license_file]
-    after_transition  :inactive => :active, :do => [:purge_loader_file, :purge_license_file]
+    after_transition  :active => :active,   :do => [:purge_loader_file, :purge_license_file]
     
     before_transition :on => :archive,             :do => :set_archived_at
     before_transition :on => [:archive, :suspend], :do => :remove_loader_and_license_file
@@ -89,8 +92,7 @@ class Site < ActiveRecord::Base
     before_transition :on => :unsuspend, :do => :set_loader_file
     before_transition :on => :unsuspend, :do => :set_license_file
     
-    event(:activate)   { transition [:pending, :inactive] => :active }
-    event(:deactivate) { transition :active => :inactive }
+    event(:activate)   { transition [:pending, :inactive, :active] => :active }
     event(:suspend)    { transition [:pending, :active, :inactive] => :suspended }
     event(:unsuspend)  { transition :suspended => :active }
     event(:archive)    { transition [:pending, :active, :inactive] => :archived }

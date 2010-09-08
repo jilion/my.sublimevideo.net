@@ -1,9 +1,11 @@
 class Admin::SitesController < Admin::AdminController
   respond_to :js, :html
   
+  has_scope :with_activity, :type => :boolean
+  
   # GET /admin/sites
   def index
-    @sites = Site.includes(:user)
+    @sites = apply_scopes(Site.includes(:user))
     respond_with(@sites)
   end
   
@@ -25,7 +27,6 @@ class Admin::SitesController < Admin::AdminController
     @site.player_mode = params[:site][:player_mode]
     respond_with(@site) do |format|
       if @site.save
-        @site.deactivate # re-go to :pending state
         @site.delay.activate # re-generate license file
         format.html { redirect_to admin_site_path(@site) }
       else
