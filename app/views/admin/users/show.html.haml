@@ -19,7 +19,9 @@
   - if @user.use_company
     %ul
       %li= "Company name: " + @user.company_name
-      %li= "Company url: " + link_to(@user.company_url, @user.company_url)
+      %li
+        = "Company url: "
+        = link_to(@user.company_url, @user.company_url)
       %li= "Job title: " + @user.company_job_title
       %li= "Nbr. of employees: " + @user.company_employees
       %li= "Videos served: " + @user.company_videos_served
@@ -56,3 +58,9 @@
   %li= "Last sign in at: " + display_date(@user.last_sign_in_at)
   %li= "Last sign in ip: " + @user.last_sign_in_ip.to_s
   %li= "Failed login attempts: " + @user.failed_attempts.to_s
+
+%br
+%hr
+%br
+
+%p= link_to "Back to users", admin_users_path

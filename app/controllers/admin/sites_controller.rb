@@ -9,12 +9,6 @@ class Admin::SitesController < Admin::AdminController
     respond_with(@sites)
   end
   
-  # GET /admin/sites/1
-  def show
-    @site = Site.includes(:user).find(params[:id])
-    respond_with(@site)
-  end
-  
   # GET /admin/sites/1/edit
   def edit
     @site = Site.includes(:user).find(params[:id])
@@ -28,7 +22,7 @@ class Admin::SitesController < Admin::AdminController
     respond_with(@site) do |format|
       if @site.save
         @site.delay.activate # re-generate license file
-        format.html { redirect_to admin_site_path(@site) }
+        format.html { redirect_to admin_sites_path }
       else
         format.html { render :edit }
       end

@@ -11,14 +11,7 @@ describe Admin::SitesController do
     end
     
     it "should respond with success to GET :index" do
-      Site.stub(:includes).and_return([])
       get :index
-      response.should be_success
-    end
-    
-    it "should respond with success to GET :show" do
-      Site.stub_chain(:includes, :find).with('1').and_return(mock_site)
-      get :show, :id => '1'
       response.should be_success
     end
     
@@ -34,7 +27,7 @@ describe Admin::SitesController do
       mock_site.stub(:save).and_return(true)
       mock_site.stub_chain(:delay, :activate).and_return(true)
       put :update, :id => '1', :site => {}
-      response.should redirect_to(admin_site_url(mock_site))
+      response.should redirect_to(admin_sites_url)
     end
     
     it "should respond with success to failing PUT :update" do
@@ -50,10 +43,6 @@ describe Admin::SitesController do
   context "as guest" do
     it "should respond with redirect to GET :index" do
       get :index
-      response.should redirect_to(new_admin_session_path)
-    end
-    it "should respond with redirect to GET :show" do
-      get :show, :id => '1'
       response.should redirect_to(new_admin_session_path)
     end
     it "should respond with redirect to GET :edit" do

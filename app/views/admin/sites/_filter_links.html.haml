@@ -1,0 +1,5 @@
+%p
+  - sites = Site.scoped
+  = link_to "All (#{sites.count})", admin_sites_path
+  |
+  = link_to "#{sites.with_activity.count} with activity", admin_sites_path(:with_activity => true)

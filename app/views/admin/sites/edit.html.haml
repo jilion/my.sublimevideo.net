@@ -1,5 +1,50 @@
-= title_and_content_header("Edit #{@site.hostname} (#{@site.user.full_name})")
+= title_and_content_header("#{@site.hostname} (#{@site.user.full_name})")
+
+%h3 Infos
+
+%ul
+  %li= "Token: " + @site.token
+  %li= "Player Mode: " + @site.player_mode
+  %li
+    = "Hostname: "
+    = link_to(@site.hostname, "http://#{@site.hostname}")
+  %li= "Dev hostnames: " + @site.dev_hostnames
+  
+%br
+
+%ul
+  %li= "Loader hits: " + number_with_delimiter(@site.loader_hits_cache, :delimiter => "'")
+  %li= "Player hits: " + number_with_delimiter(@site.player_hits_cache, :delimiter => "'")
+  %li= "Flash hits: " + number_with_delimiter(@site.flash_hits_cache, :delimiter => "'")
+  
+  %li= "S3 requests: " + number_with_delimiter(@site.requests_s3_cache, :delimiter => "'")
+  %li= "S3 traffic: " + number_to_human_size(@site.traffic_s3_cache, :precision => 4)
+  %li= "Voxcast traffic: " + number_to_human_size(@site.traffic_voxcast_cache, :precision => 4)
+
+%br
+%hr
+%br
+
+%h3 Details
+
+%ul
+  %li= "State: " + @site.state
+  %li= "Created at: " + display_date(@site.created_at)
+  %li= "Updated at: " + display_date(@site.updated_at)
+  %li= "Archived at: " + display_date(@site.archived_at)
+
+%br
+%hr
+%br
+
+%h3 Mode update
 
 = form_for [:admin, @site] do |f|
   = f.select :player_mode, Site::PLAYER_MODES
   = f.submit "Update site"
+
+%br
+%hr
+%br
+
+%p= link_to "Back to sites", admin_sites_path

@@ -1,16 +1,16 @@
 module Admin::UsersHelper
   
   def admin_users_page_title(users)
-    state = ""
+    state = if params[:enthusiast].present?
+      "enthusiast"
+    elsif params[:beta].present?
+      "in beta"
+    elsif params[:with_activity].present?
+      "with activity"
+    else
+      ""
+    end
     "#{users.total_entries} #{state} users".titleize
   end
-  
-  def display_bool(boolean)
-    boolean ? "✓" : "-"
-  end
-  
-  def display_date(date)
-    date ? l(date, :format => :semi_full) : "-"
-  end
-  
+
 end
