@@ -65,7 +65,7 @@ class Site < ActiveRecord::Base
   validates :player_mode,   :inclusion => { :in => PLAYER_MODES }
   validate  :must_be_active_to_update_hostnames
   # BETA
-  validate  :limit_site_number_per_user
+  validate  :limit_site_number_per_user if MySublimeVideo::Release.beta?
   
   # =============
   # = Callbacks =
