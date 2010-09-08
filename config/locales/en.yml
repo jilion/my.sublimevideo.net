@@ -15,16 +15,20 @@ en:
     min_height: "Minimum height"
     type:       ""
     
+  
   time:
     formats:
       date: "%B %d, %Y"
       full: "%m/%d/%Y %I:%M %p"
       semi_full: "%d %b, %I:%M%p"
+    
+  
   date:
     formats:
       default: "%B %d, %Y"
       small:   "%m/%d/%Y"
-      
+    
+  
   ticket:
     type:
       choose_type:            "Choose a category"
@@ -32,3 +36,4 @@ en:
       improvement_suggestion: "Improvement suggestion"
       feature_request:        "Feature request"
       other:                  "Other"
+    
