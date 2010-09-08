@@ -17,7 +17,7 @@ Factory.define :admin do |f|
 end
 
 Factory.define :site do |f|
-  f.hostname    "youtube.com"
+  f.sequence(:hostname) { |n| "jilion#{n}.com" }
   f.association :user
 end
 

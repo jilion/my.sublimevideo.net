@@ -28,7 +28,7 @@ class Site < ActiveRecord::Base
   
   # Pagination
   cattr_accessor :per_page
-  self.per_page = 20
+  self.per_page = 10
   
   attr_accessible :hostname, :dev_hostnames
   
@@ -64,6 +64,8 @@ class Site < ActiveRecord::Base
   validates :dev_hostnames, :hostnames => true
   validates :player_mode,   :inclusion => { :in => PLAYER_MODES }
   validate  :must_be_active_to_update_hostnames
+  # BETA
+  validate  :limit_site_number_per_user
   
   # =============
   # = Callbacks =
@@ -171,6 +173,13 @@ class Site < ActiveRecord::Base
   end
   
 private
+  
+  # BETA validate
+  def limit_site_number_per_user
+    if new_record? && user && user.sites.count >= 10
+      errors.add(:hostname, "registrations are limited to 10 during the beta.")
+    end
+  end
   
   # validate
   def must_be_active_to_update_hostnames

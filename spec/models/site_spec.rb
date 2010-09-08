@@ -31,7 +31,7 @@ describe Site do
   context "with valid attributes" do
     subject { Factory(:site) }
     
-    its(:hostname)      { should == "youtube.com" }
+    its(:hostname)      { should =~ /jilion[0-9]+\.com/ }
     its(:dev_hostnames) { should == "localhost, 127.0.0.1" }
     its(:token)         { should =~ /^[a-z0-9]{8}$/ }
     its(:user)          { should be_present }
@@ -53,6 +53,15 @@ describe Site do
       site = Factory.build(:site, :hostname => nil)
       site.should_not be_valid
       site.hostname.should be_nil
+      site.errors[:hostname].should be_present
+    end
+    
+    # BETA
+    it "should limit 10 sites per user" do
+      user = Factory(:user)
+      10.times { Factory(:site, :user => user) }
+      site = Factory.build(:site, :user => user)
+      site.should_not be_valid
       site.errors[:hostname].should be_present
     end
     
@@ -280,7 +289,7 @@ describe Site do
     
     it "should return good template_hostnames" do
       site = Factory(:site)
-      site.template_hostnames.should == "'youtube.com','localhost','127.0.0.1'"
+      site.template_hostnames.should == "'#{site.hostname}','localhost','127.0.0.1'"
     end
     
     it "should set license file with template_hostnames" do
