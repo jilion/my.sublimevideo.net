@@ -4,12 +4,31 @@
       = link_to user.full_name, admin_user_path(user)
     - else
       = link_to user.email, admin_user_path(user)
-  %td.status
-    - if user.encrypted_password.present?
-      = "#{user.suspended? ? "Suspended" : "Active"}"
-    - else
-      = "Invited"
+  %td.beta
+    %small= display_bool(user.invitation_token.nil?)
+  %td.beta
+    %small= display_bool(user.use_personal)
+  %td.beta
+    %small= display_bool(user.use_company)
+  %td.beta
+    %small= display_bool(user.use_clients)
   %td.sites
-    = user.sites.size
+    %small
+      %ul
+        - user.sites[0,2].each do |site|
+          = content_tag(:li, link_to(site.hostname, [:admin,site]))
+        - if user.sites.size > 2
+          %li= link_to("#{user.sites.size-2} more", admin_user_path(user), :title => user.sites[2..-1].map(&:hostname).join(', '))
   %td.player_hits
-    = user.sites.inject(0) { |sum, site| sum += site.player_hits_cache }
+    - player_hits = user.sites.inject(0) { |sum, site| sum += site.player_hits_cache }
+    = number_with_delimiter(player_hits, :delimiter => "'")
+  %td.bandwidth
+    - bandwidth = user.sites.inject(0) { |sum, site| sum += (site.requests_s3_cache + site.traffic_s3_cache + site.traffic_voxcast_cache) }
+    = number_to_human_size(bandwidth, :precision => 4)
+  %td.ratio
+    - if player_hits > 0
+      = number_to_human_size(bandwidth / player_hits.to_f, :precision => 4)
+    - else
+      = "-"
+  %td
+    %small= display_date(user.created_at)

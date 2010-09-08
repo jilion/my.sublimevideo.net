@@ -92,6 +92,11 @@ class User < ActiveRecord::Base
   scope :without_cc,      where(:cc_type => nil, :cc_last_digits => nil)
   scope :with_cc,         where(:cc_type.ne => nil, :cc_last_digits.ne => nil)
   
+  # admin
+  scope :enthusiast,      where(:enthusiast_id.ne => nil)
+  scope :beta,            where(:invitation_token => nil)
+  scope :with_activity,   includes(:sites).where(:sites => { :player_hits_cache.gte => 1 })
+  
   # ===============
   # = Validations =
   # ===============
