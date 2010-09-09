@@ -67,6 +67,12 @@ describe Site do
         site.should_not be_valid
         site.errors[:base].should be_present
       end
+      it "should limit 10 active sites per user" do
+        user = Factory(:user)
+        10.times { Factory(:site, :user => user, :state => 'archived') }
+        site = Factory.build(:site, :user => user)
+        site.should be_valid
+      end
     end
     
     describe "validate hostname" do

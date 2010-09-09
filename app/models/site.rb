@@ -188,7 +188,7 @@ private
   
   # BETA validate
   def limit_site_number_per_user
-    if new_record? && errors[:hostname].blank? && user && user.sites.count >= 10
+    if new_record? && errors[:hostname].blank? && user && user.sites.not_archived.count >= 10
       errors.add(:base, "You can only add up to 10 sites during the beta")
     end
   end
