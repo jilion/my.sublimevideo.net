@@ -8,7 +8,7 @@ GIT
 
 GIT
   remote: git://github.com/ernie/meta_where.git
-  revision: 6ebc43b990dde293e903459e79ede1b8c07c14df
+  revision: a6f76b96b4f1243e84aa37bda483aa33df2d2c1f
   specs:
     meta_where (0.9.3)
       activerecord (~> 3.0.0)
@@ -23,7 +23,7 @@ GIT
 
 GIT
   remote: git://github.com/rymai/devise_invitable.git
-  revision: 2147ec50137d95876008d91a4d7caa1a27cb4b70
+  revision: 0d2b90c2c74775ab6b770fc10c1e9fbc204c726a
   specs:
     devise_invitable (0.6.7)
       devise (~> 1.1.2)
@@ -37,9 +37,9 @@ GIT
 
 GIT
   remote: git://github.com/thibaudgg/rack-ssl-enforcer
-  revision: 82a009168fb9ea2e7ebcbd883cbb4926c7ac3b32
+  revision: 6fd501cccd0017846552577f7742c8fa817b7c6a
   specs:
-    rack-ssl-enforcer (0.1.7)
+    rack-ssl-enforcer (0.1.8)
 
 GIT
   remote: git://github.com/thibaudgg/voxel_hapi.git

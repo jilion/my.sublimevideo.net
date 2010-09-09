@@ -80,6 +80,11 @@ feature "Users actions:" do
     current_url.should =~ %r(^http://[^/]+/login$)
   end
   
+  scenario "accept invitation with invalid token should redirect to /login" do
+    visit "/invitation/accept?invitation_token=foo"
+    current_url.should =~ %r(^http://[^/]+/login$)
+  end
+  
   scenario "accept invitation" do
     invited_user = send_invite_to :user, "invited@user.com"
     
@@ -145,6 +150,29 @@ feature "Users actions:" do
     click_button "Join"
     
     invited_user.reload.email.should == "new@email.com"
+  end
+  
+  feature "with an authenticated user" do
+    background do
+      sign_in_as :user
+    end
+    
+    scenario "accept invitation without token should redirect to /sites" do
+      visit "/invitation/accept"
+      current_url.should =~ %r(^http://[^/]+/sites$)
+    end
+    
+    scenario "accept invitation with invalid token should redirect to /sites" do
+      visit "/invitation/accept?invitation_token=foo"
+      current_url.should =~ %r(^http://[^/]+/sites$)
+    end
+    
+    scenario "accept invitation with valid token should redirect to /sites" do
+      invited_user = send_invite_to :user, "invited@user.com"
+      
+      visit "/invitation/accept?invitation_token=#{invited_user.invitation_token}"
+      current_url.should =~ %r(^http://[^/]+/sites$)
+    end
   end
   
 end

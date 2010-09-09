@@ -2,8 +2,8 @@ require 'spec_helper'
 
 describe UsersController do
   
-  it { should route(:get,    "/invitation/accept").to(:controller => "users/invitations", :action => :edit) }
-  it { should route(:put,    "/invitation/accept").to(:controller => "users/invitations", :action => :update) }
+  it { should route(:get,    "/invitation/accept").to(:controller => "devise/invitations", :action => :edit) }
+  it { should route(:put,    "/invitation/accept").to(:controller => "devise/invitations", :action => :update) }
   
   it { should route(:get,    "/register").to(:controller => "users/registrations", :action => :new) }
   it { should route(:post,   "/register").to(:controller => "users/registrations", :action => :create) }
