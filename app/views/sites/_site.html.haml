@@ -27,4 +27,5 @@
     -#    %th.player_hits
     -#      %h5= "Player hits"
     -#    %td.player_hits= number_with_delimiter(site.player_hits_cache)
-  %td.delete= button_to 'Delete', site, :confirm => 'Are you sure?', :method => :delete, :remote => true
+  %td.delete
+    = button_to 'Delete', site, :onclick => "MySublimeVideo.confirmDeleteSite(this)", :method => :delete, :remote => true

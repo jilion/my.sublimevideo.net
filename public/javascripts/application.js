@@ -121,6 +121,15 @@ MySublimeVideo.showInvoice = function(invoiceId, type) {
   return false;
 };
 
+MySublimeVideo.confirmDeleteSite = function(el) {
+  if (confirm('Are you sure?')) {
+    setTimeout(function(){ // setTimeout essential otherwise the form won't be able to be submitted by rails.js
+      el.disable();
+    }, 100)
+    MySublimeVideo.showTableSpinner();
+  }
+};
+
 // ===========
 // = Classes =
 // ===========

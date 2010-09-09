@@ -1114,7 +1114,7 @@ ul#trial_legend li em {
   font-size:15px;
   text-shadow:#000 0 -1px 0;
   font-weight:600;
-  padding:8px 12px;
+  padding:9px 12px 7px;
   border-bottom:1px solid #000;
   background:#2b1c31;
   background:-webkit-gradient(linear,left top,left bottom,from(#3e3045),to(#1a0d1f));
@@ -1164,7 +1164,7 @@ ul#trial_legend li em {
 
 #content table.main th .spinner {
   position:absolute;
-  top:1px;
+  top:0;
   right:0;
 }
 
@@ -1408,6 +1408,10 @@ ul#trial_legend li em {
   border:none;
 }
 
+#content table.main td.delete input:disabled {
+  opacity:0.3;
+}
+
 #welcome {
   background:#000;
   background:rgba(0,0,0,0.3);
@@ -1530,7 +1534,7 @@ ul#trial_legend li em {
 /*  height:300px;*/
   position:fixed;
   margin:auto;
-  top:30%;
+  top:20%;
   left:0;
   right:0;
   z-index:999;
