@@ -18,7 +18,7 @@
         - user.sites.not_archived.limit(2).each do |site|
           = content_tag(:li, link_to(site.hostname, [:edit, :admin, site]))
         - if user.sites.not_archived.size > 2
-          %li= link_to("#{user.sites.size-2} more", admin_user_path(user))
+          %li= link_to("#{user.sites.not_archived.size-2} more", admin_user_path(user))
   %td.player_hits
     - player_hits = user.sites.inject(0) { |sum, site| sum += site.player_hits_cache }
     = number_with_delimiter(player_hits, :delimiter => "'")
