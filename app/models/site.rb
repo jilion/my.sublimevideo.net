@@ -55,6 +55,7 @@ class Site < ActiveRecord::Base
   
   scope :by_date,      lambda { |way| order(:created_at.send(way || 'desc')) }
   scope :by_hostname,  lambda { |way| order(:hostname.send(way || 'asc')) }
+  scope :archived,     where(:state => 'archived')
   scope :not_archived, where(:state.not_eq => 'archived')
   
   # admin

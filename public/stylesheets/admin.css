@@ -160,6 +160,10 @@ ul#favorite_links li.active a {
   -webkit-box-shadow:inset #000 0 1px 4px, #000 0 0 2px;
 }
 
+ul.no_bullet {
+  list-style-type:none;
+}
+
 #header .right {
   width:280px;
   position:absolute;

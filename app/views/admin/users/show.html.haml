@@ -31,10 +31,19 @@
 %hr
 %br
 
-%h3= "Sites (#{@user.sites.count})"
+%h3= "Sites"
 
+%h4= "Active (#{@user.sites.not_archived.count})"
 %ul
-  - @user.sites.each do |site|
+  - @user.sites.not_archived.each do |site|
+    %li
+      = link_to site.hostname, "http://#{site.hostname}"
+      (
+      = link_to "details", [:edit, :admin, site]
+      )
+%h4= "Archived (#{@user.sites.archived.count})"
+%ul
+  - @user.sites.archived.each do |site|
     %li
       = link_to site.hostname, "http://#{site.hostname}"
       (
