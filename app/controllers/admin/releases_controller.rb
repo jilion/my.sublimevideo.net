@@ -1,5 +1,7 @@
 class Admin::ReleasesController < Admin::AdminController
   
+  before_filter :allow_only_zeno
+  
   # GET /admin/releases
   def index
   end
@@ -25,6 +27,14 @@ class Admin::ReleasesController < Admin::AdminController
       else
         format.html { render :index }
       end
+    end
+  end
+  
+private
+  
+  def allow_only_zeno
+    if Rails.env.production?
+      redirect_to '/admin' unless current_admin.email == "zeno@jilion.com"
     end
   end
   

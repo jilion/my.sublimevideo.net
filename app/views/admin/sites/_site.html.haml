@@ -1,5 +1,25 @@
 %tr{ :class => cycle("", "alt") }
-  %td.hostname= link_to site.hostname, edit_admin_site_path(site)
-  %td.user= link_to site.user.full_name, admin_user_path(site.user)
-  %td.player_hits_cache= site.player_hits_cache
-  %td.player_mode= site.player_mode
+  %td.hostname
+    = link_to site.hostname, edit_admin_site_path(site)
+  %td.user
+    %small
+      = link_to site.user.full_name, admin_user_path(site.user)
+  %td.state= site.state
+  %td.loader_hits_cache
+    = number_with_delimiter(site.loader_hits_cache, :delimiter => "'")
+  %td.player_hits_cache
+    = number_with_delimiter(site.player_hits_cache, :delimiter => "'")
+  %td.ratio
+    - if site.player_hits_cache > 0
+      = number_with_delimiter(site.loader_hits_cache / site.player_hits_cache, :delimiter => "'")
+    - else
+      = "-"
+  %td.flash_percent
+    - if site.player_hits_cache > 0
+      = number_to_percentage(site.flash_hits_cache / site.player_hits_cache.to_f * 100, :precision => 2)
+    - else
+      = "-"
+  %td.traffic= number_to_human_size(site.traffic_s3_cache + site.traffic_voxcast_cache, :precision => 4)
+  %td.rank= site.alexa_rank
+  %td.rank= site.google_rank
+  -#%td.player_mode= site.player_mode

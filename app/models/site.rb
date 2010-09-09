@@ -20,6 +20,8 @@
 #  requests_s3_cache     :integer(8)      default(0)
 #  traffic_s3_cache      :integer(8)      default(0)
 #  traffic_voxcast_cache :integer(8)      default(0)
+#  google_rank           :integer
+#  alexa_rank            :integer
 #
 
 class Site < ActiveRecord::Base
@@ -28,7 +30,7 @@ class Site < ActiveRecord::Base
   
   # Pagination
   cattr_accessor :per_page
-  self.per_page = 10
+  self.per_page = 25
   
   attr_accessible :hostname, :dev_hostnames
   
@@ -51,9 +53,12 @@ class Site < ActiveRecord::Base
   # = Scopes =
   # ==========
   
-  scope :by_date,      lambda { |way| order("created_at #{way || 'desc'}") }
-  scope :by_hostname,  lambda { |way| order("hostname #{way || 'asc'}") }
+  scope :by_date,      lambda { |way| order(:created_at.send(way || 'desc')) }
+  scope :by_hostname,  lambda { |way| order(:hostname.send(way || 'asc')) }
   scope :not_archived, where(:state.not_eq => 'archived')
+  
+  # admin
+  scope :with_activity, where(:player_hits_cache.gte => 1)
   
   # ===============
   # = Validations =
@@ -72,6 +77,7 @@ class Site < ActiveRecord::Base
   # =============
   
   before_create :set_default_dev_hostnames
+  after_create :delay_ranks_update
   
   # =================
   # = State Machine =
@@ -79,7 +85,7 @@ class Site < ActiveRecord::Base
   
   state_machine :initial => :pending do
     before_transition :on => :activate,     :do => [:set_loader_file, :set_license_file]
-    after_transition  :inactive => :active, :do => [:purge_loader_file, :purge_license_file]
+    after_transition  :active => :active,   :do => [:purge_loader_file, :purge_license_file]
     
     before_transition :on => :archive,             :do => :set_archived_at
     before_transition :on => [:archive, :suspend], :do => :remove_loader_and_license_file
@@ -89,11 +95,10 @@ class Site < ActiveRecord::Base
     before_transition :on => :unsuspend, :do => :set_loader_file
     before_transition :on => :unsuspend, :do => :set_license_file
     
-    event(:activate)   { transition [:pending, :inactive] => :active }
-    event(:deactivate) { transition :active => :inactive }
-    event(:suspend)    { transition [:pending, :active, :inactive] => :suspended }
+    event(:activate)   { transition [:pending, :active] => :active }
+    event(:suspend)    { transition [:pending, :active] => :suspended }
     event(:unsuspend)  { transition :suspended => :active }
-    event(:archive)    { transition [:pending, :active, :inactive] => :archived }
+    event(:archive)    { transition [:pending, :active] => :archived }
   end
   
   # ====================
@@ -169,7 +174,14 @@ class Site < ActiveRecord::Base
   end
   
   def in_progress?
-    pending? || inactive?
+    pending?
+  end
+  
+  def update_ranks
+    ranks = PageRankr.ranks(hostname)
+    self.google_rank = ranks[:google]
+    self.alexa_rank  = ranks[:alexa]
+    self.save
   end
   
 private
@@ -192,6 +204,11 @@ private
   # before_create
   def set_default_dev_hostnames
     write_attribute(:dev_hostnames, "localhost, 127.0.0.1") unless dev_hostnames.present?
+  end
+  
+  # after_create
+  def delay_ranks_update
+    delay(:priority => 100).update_ranks
   end
   
   def set_template(name)

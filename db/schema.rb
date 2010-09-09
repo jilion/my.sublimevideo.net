@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100906131301) do
+ActiveRecord::Schema.define(:version => 20100908190804) do
 
   create_table "admins", :force => true do |t|
     t.string   "email",                               :default => "", :null => false
@@ -96,6 +96,8 @@ ActiveRecord::Schema.define(:version => 20100906131301) do
     t.integer  "requests_s3_cache",     :limit => 8, :default => 0
     t.integer  "traffic_s3_cache",      :limit => 8, :default => 0
     t.integer  "traffic_voxcast_cache", :limit => 8, :default => 0
+    t.integer  "google_rank"
+    t.integer  "alexa_rank"
   end
 
   add_index "sites", ["created_at"], :name => "index_sites_on_created_at"

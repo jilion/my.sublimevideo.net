@@ -59,7 +59,6 @@ class SitesController < ApplicationController
     @site = current_user.sites.find(params[:id])
     respond_with(@site) do |format|
       if @site.update_attributes(params[:site])
-        @site.deactivate # re-go to :pending state
         @site.delay.activate # re-generate license file
         format.html { redirect_to sites_path }
         format.js

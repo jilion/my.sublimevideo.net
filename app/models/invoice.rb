@@ -32,7 +32,7 @@ class Invoice < ActiveRecord::Base
   # = Scopes =
   # ==========
   
-  scope :by_charged_at, lambda { |way| order("charged_at #{way || 'desc'}") }
+  scope :by_charged_at, lambda { |way| order(:charged_at.send(way || 'desc')) }
   
   # ===============
   # = Validations =

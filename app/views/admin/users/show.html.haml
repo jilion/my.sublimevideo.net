@@ -2,8 +2,65 @@
 
 = content_header(raw "#{@user.full_name} <#{mail_to @user.email}>")
 
-%p= "Has #{pluralize(@user.sites.size, 'site')}!"
+%h3 Infos
 
-%p= "Has #{@user.cc? ? "a #{@user.cc_type}" : "no"} credit card!"
+%ul
+  %li= "Location: #{@user.country} (#{@user.postal_code})"
+  - unless @user.confirmed?
+    %li= "Confirmation sent at: " + display_date(@user.confirmed_sent_at)
+  - if @user.invited?
+    %li= "Invitation sent at: " + display_date(@user.invitation_sent_at)
 
-%p= "Current usage: #{number_to_currency(Invoice.current(@user).amount)}!"
+%br
+
+%ul
+  %li= "Personal use: " + display_bool(@user.use_personal)
+  %li= "Use for my company: " + display_bool(@user.use_company)
+  - if @user.use_company
+    %ul
+      %li= "Company name: " + @user.company_name
+      %li
+        = "Company url: "
+        = link_to(@user.company_url, @user.company_url)
+      %li= "Job title: " + @user.company_job_title
+      %li= "Nbr. of employees: " + @user.company_employees
+      %li= "Videos served: " + @user.company_videos_served
+  %li= "Use for my clients: " + display_bool(@user.use_clients)
+
+%br
+%hr
+%br
+
+%h3= "Sites (#{@user.sites.count})"
+
+%ul
+  - @user.sites.each do |site|
+    %li
+      = link_to site.hostname, "http://#{site.hostname}"
+      (
+      = link_to "details", [:edit, :admin, site]
+      )
+%br
+%hr
+%br
+
+%h3 Details
+
+%ul
+  %li= "Created at: " + display_date(@user.created_at)
+  %li= "Zendesk ID: " + @user.zendesk_id.to_s
+  %li= "Enthusiast ID: " + @user.enthusiast_id.to_s
+  %li= "State: " + @user.state
+  %li= "Confirmed at: " + display_date(@user.confirmed_at)
+  %li= "Sign in count: " + @user.sign_in_count.to_s
+  %li= "Current sign in at: " + display_date(@user.current_sign_in_at)
+  %li= "Current sign in ip: " + @user.current_sign_in_ip.to_s
+  %li= "Last sign in at: " + display_date(@user.last_sign_in_at)
+  %li= "Last sign in ip: " + @user.last_sign_in_ip.to_s
+  %li= "Failed login attempts: " + @user.failed_attempts.to_s
+
+%br
+%hr
+%br
+
+%p= link_to "Back to users", admin_users_path

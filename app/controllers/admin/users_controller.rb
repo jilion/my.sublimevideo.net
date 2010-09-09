@@ -1,9 +1,13 @@
 class Admin::UsersController < Admin::AdminController
   respond_to :js, :html
   
+  has_scope :enthusiast, :type => :boolean
+  has_scope :beta, :type => :boolean
+  has_scope :with_activity, :type => :boolean
+  
   # GET /admin/users
   def index
-    @users = User.scoped.includes(:sites)
+    @users = apply_scopes(User.includes(:sites))
     respond_with(@users)
   end
   

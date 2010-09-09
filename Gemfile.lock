@@ -8,12 +8,12 @@ GIT
 
 GIT
   remote: git://github.com/ernie/meta_where.git
-  revision: 2763666e9b2b1e1d39e6038e2b377d7e214d70a6
+  revision: a6f76b96b4f1243e84aa37bda483aa33df2d2c1f
   specs:
-    meta_where (0.9.2)
-      activerecord (~> 3.0.0.rc2)
-      activesupport (~> 3.0.0.rc2)
-      arel (~> 1.0.0.rc1)
+    meta_where (0.9.3)
+      activerecord (~> 3.0.0)
+      activesupport (~> 3.0.0)
+      arel (~> 1.0.1)
 
 GIT
   remote: git://github.com/plataformatec/responders.git
@@ -37,9 +37,9 @@ GIT
 
 GIT
   remote: git://github.com/thibaudgg/rack-ssl-enforcer
-  revision: 82a009168fb9ea2e7ebcbd883cbb4926c7ac3b32
+  revision: 6fd501cccd0017846552577f7742c8fa817b7c6a
   specs:
-    rack-ssl-enforcer (0.1.7)
+    rack-ssl-enforcer (0.1.8)
 
 GIT
   remote: git://github.com/thibaudgg/voxel_hapi.git
@@ -52,6 +52,8 @@ GIT
 GEM
   remote: http://rubygems.org/
   specs:
+    PageRankr (1.4.3)
+      nokogiri (>= 1.4.1)
     RedCloth (4.2.3)
     abstract (1.0.0)
     actionmailer (3.0.0)
@@ -134,7 +136,7 @@ GEM
       rake (>= 0.8.7)
     growl (1.0.3)
     haml (3.0.18)
-    heroku (1.9.14)
+    heroku (1.10.0)
       json_pure (>= 1.2.0, < 1.5.0)
       launchy (~> 0.3.2)
       rest-client (~> 1.4.0)
@@ -256,6 +258,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  PageRankr (~> 1.4.3)
   RedCloth (~> 4.2.3)
   activemerchant (~> 1.7.1)
   annotate
@@ -272,7 +275,7 @@ DEPENDENCIES
   ffaker (>= 0.4.0)
   haml (~> 3.0.18)
   has_scope!
-  heroku
+  heroku (~> 1.10.0)
   heroku_tasks (~> 0.1.4)
   hoptoad_notifier (~> 2.3.4)
   i18n (~> 0.4.1)

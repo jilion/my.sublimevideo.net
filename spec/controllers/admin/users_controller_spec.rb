@@ -11,7 +11,6 @@ describe Admin::UsersController do
     end
     
     it "should respond with success to GET :index" do
-      User.stub(:includes).and_return([])
       get :index
       response.should be_success
     end

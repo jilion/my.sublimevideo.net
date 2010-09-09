@@ -1,0 +1,9 @@
+%p
+  - users = User.scoped
+  = link_to "All (#{users.count})", admin_users_path
+  |
+  = link_to "#{users.enthusiast.count} From enthusiast", admin_users_path(:enthusiast => true)
+  |
+  = link_to "#{users.beta.count} in beta", admin_users_path(:beta => true)
+  |
+  = link_to "#{users.with_activity.count} with activity", admin_users_path(:with_activity => true)

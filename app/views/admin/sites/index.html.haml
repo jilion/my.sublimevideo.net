@@ -1,8 +1,11 @@
-= title_and_content_header("Sites")
+= title("Sites")
+= content_header(admin_sites_page_title(@sites))
 
-.summary
-  %ul
-    %li= "Total #:#{Site.count}"
+= render "filter_links"
+
+-#.summary
+-#  %ul
+-#    %li= "Total #:#{Site.count}"
     
 #sites_table_wrap
   = render "sites"
