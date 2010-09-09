@@ -36,7 +36,7 @@
         
 %h3= "Archived releases"
 %ul#release
-  - Release.order("date desc").limit(20).each do |release|
+  - Release.order(:date.desc).limit(20).each do |release|
     %li
       = release.date
       = button_to "flag as dev", [:admin, release], :confirm => 'Are you sure?', :method => :put
