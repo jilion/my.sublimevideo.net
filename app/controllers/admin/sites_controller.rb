@@ -5,7 +5,9 @@ class Admin::SitesController < Admin::AdminController
   
   # GET /admin/sites
   def index
-    @sites = apply_scopes(Site.includes(:user).order(:sites => :created_at.desc))
+    @sites = Site.includes(:user).order(:sites => :created_at.desc)
+    @sites = @sites.not_archived unless params[:archived_included]
+    @sites = apply_scopes(@sites)
     respond_with(@sites)
   end
   
