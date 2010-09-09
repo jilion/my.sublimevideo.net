@@ -39,7 +39,7 @@ MySublimeVideo::Application.configure do
   
   # Disable delivery errors, bad email addresses will be ignored
   # config.action_mailer.raise_delivery_errors = false
-  config.action_mailer.default_url_options = { :host => 'https://my.sublimevideo.net' }
+  config.action_mailer.default_url_options = { :host => 'my.sublimevideo.net' }
   
   # Enable threaded mode
   # config.threadsafe!
