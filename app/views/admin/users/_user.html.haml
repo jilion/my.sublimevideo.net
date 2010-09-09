@@ -16,7 +16,7 @@
     %small
       %ul
         - user.sites[0,2].each do |site|
-          = content_tag(:li, link_to(site.hostname, [:admin,site]))
+          = content_tag(:li, link_to(site.hostname, [:edit, :admin, site]))
         - if user.sites.size > 2
           %li= link_to("#{user.sites.size-2} more", admin_user_path(user), :title => user.sites[2..-1].map(&:hostname).join(', '))
   %td.player_hits

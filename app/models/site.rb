@@ -95,10 +95,10 @@ class Site < ActiveRecord::Base
     before_transition :on => :unsuspend, :do => :set_loader_file
     before_transition :on => :unsuspend, :do => :set_license_file
     
-    event(:activate)   { transition [:pending, :inactive, :active] => :active }
-    event(:suspend)    { transition [:pending, :active, :inactive] => :suspended }
+    event(:activate)   { transition [:pending, :active] => :active }
+    event(:suspend)    { transition [:pending, :active] => :suspended }
     event(:unsuspend)  { transition :suspended => :active }
-    event(:archive)    { transition [:pending, :active, :inactive] => :archived }
+    event(:archive)    { transition [:pending, :active] => :archived }
   end
   
   # ====================
@@ -174,7 +174,7 @@ class Site < ActiveRecord::Base
   end
   
   def in_progress?
-    pending? || inactive?
+    pending?
   end
   
   def update_ranks
@@ -208,7 +208,7 @@ private
   
   # after_create
   def delay_ranks_update
-    delay.update_ranks
+    delay(:priority => 100).update_ranks
   end
   
   def set_template(name)
