@@ -9,6 +9,11 @@
     
     %link{ :rel => "shortcut icon", :href => "/favicon.ico", :type => "image/x-icon" }
     
+    /[if lte IE 6]
+      %meta{ "http-equiv" => "Refresh", :content => "0;url=http://jilion.com/ie" }
+      %style{ :type => "text/css", :media => "screen" }
+        == body {background:#fff;display:none;}
+    
     = yield :header
     = include_javascripts(:default)
     = csrf_meta_tag
