@@ -3,9 +3,9 @@
 = content_for :content_header do
   -#%p.title_desc= "Thank you to use this form to send us your feedback, including bug reports, feature requests or other comments."
   %p.title_desc
-    = "Use this form to send us bug reports, improvement suggestions, feature requests or any other comments."
-  %p.title_desc
-    = "Thank you for helping us improving SublimeVideo."
+    = "Use this form to send us bug reports, suggestions for improvement, feature requests or any other comments."
+    %br
+    = "Thank you for helping us improve SublimeVideo."
     
 = form_for @ticket, :url => ticket_path do |f|
   .entry.select.type

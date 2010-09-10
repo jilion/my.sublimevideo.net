@@ -128,6 +128,9 @@ MySublimeVideo.confirmDeleteSite = function(el) {
     }, 100)
     MySublimeVideo.showTableSpinner();
   }
+  else {
+    return false; //important, we need to block the submit event!
+  }
 };
 
 // ===========
