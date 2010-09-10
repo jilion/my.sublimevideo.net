@@ -220,7 +220,7 @@ private
   
   # after_create
   def delay_ranks_update
-    delay(:priority => 100).update_ranks
+    delay(:priority => 100, :run_at => 30.seconds.from_now).update_ranks
   end
   
   def set_template(name)
