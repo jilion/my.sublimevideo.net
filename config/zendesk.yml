@@ -7,10 +7,10 @@ test:
   username: zeno@jilion.com
   password: wrank8
 staging:
-  base_url: https://jilion.zendesk.com
+  base_url: http://jilion.zendesk.com
   username: zeno@jilion.com
   password: wrank8
 production:
-  base_url: https://jilion.zendesk.com
+  base_url: http://jilion.zendesk.com
   username: zeno@jilion.com
   password: wrank8
