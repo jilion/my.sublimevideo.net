@@ -13,9 +13,11 @@
       %meta{ "http-equiv" => "Refresh", :content => "0;url=http://jilion.com/ie" }
       %style{ :type => "text/css", :media => "screen" }
         == body {background:#fff;display:none;}
+    /[if lte IE 8]
+      = include_stylesheets(:style_ie, :embed_assets => false)
     
-    = yield :header
     = include_javascripts(:default)
+    = yield :header
     = csrf_meta_tag
     = javascript_include_tag "#{request.protocol}use.typekit.com/zwt2duv.js"
     == <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
