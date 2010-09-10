@@ -185,6 +185,17 @@ class Site < ActiveRecord::Base
     self.save
   end
   
+  # use it carefully
+  def clear_caches
+    self.loader_hits_cache
+    self.player_hits_cache
+    self.flash_hits_cache
+    self.requests_s3_cache
+    self.traffic_s3_cache
+    self.traffic_voxcast_cache
+    self.save
+  end
+  
 private
   
   # BETA validate
