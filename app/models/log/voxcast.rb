@@ -53,6 +53,11 @@ private
     self.file = VoxcastCDN.logs_download(name)
   end
   
+  # after_create
+  def delay_parse
+    super if hostname == 'cdn.sublimevideo.net'
+  end
+  
   # call from name= in Log
   def set_dates_and_hostname_from_name
     if matches = name.match(/^(.+)\.log\.(\d+)-(\d+)\.\w+$/)

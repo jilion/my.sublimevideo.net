@@ -37,6 +37,7 @@ describe Log::Voxcast do
     subject { Factory(:log_voxcast) }
     
     its(:created_at) { should be_present }
+    its(:hostname)   { should == 'cdn.sublimevideo.net' }
     its("file.url")  { should == "/uploads/voxcast/cdn.sublimevideo.net.log.1275002700-1275002760.gz" }
     its("file.size") { should == 1149 }
     
@@ -66,6 +67,43 @@ describe Log::Voxcast do
     end
     
     after(:each) { VCR.eject_cassette }
+  end
+  
+  context "created with valid attributes from 4076.voxcdn.com" do
+    before(:each) do
+      VoxcastCDN.stub(:logs_download).with('4076.voxcdn.com.log.1279103340-1279103400.gz').and_return(
+        File.new(Rails.root.join('spec/fixtures/logs/voxcast/4076.voxcdn.com.log.1279103340-1279103400.gz'))
+      )
+    end
+    subject { Factory(:log_voxcast, :name => '4076.voxcdn.com.log.1279103340-1279103400.gz') }
+    
+    its(:created_at) { should be_present }
+    its(:hostname)   { should == '4076.voxcdn.com' }
+    its("file.url")  { should == "/uploads/voxcast/4076.voxcdn.com.log.1279103340-1279103400.gz" }
+    its("file.size") { should == 848 }
+    
+    it "should have good log content" do
+      log = Log::Voxcast.find(subject.id) # to be sure that log is well saved with CarrierWave
+      Zlib::GzipReader.open(log.file.path) do |gz|
+        gz.read.should include("#Fields: x-cachemiss x-cachestatus")
+      end
+    end
+    
+    it "should parse and create usages from trackers on parse" do
+      SiteUsage.should_receive(:create_usages_from_trackers!)
+      Log::Voxcast.parse_log(subject.id)
+    end
+    
+    it "should set parsed_at on parse" do
+      SiteUsage.stub(:create_usages_from_trackers!)
+      Log::Voxcast.parse_log(subject.id)
+      subject.reload.parsed_at.should >= subject.created_at
+    end
+    
+    it "should not delay parse_log after create" do
+      subject # trigger log creation
+      Delayed::Job.all.should be_empty
+    end
   end
   
   describe "Class Methods" do
