@@ -185,6 +185,17 @@ class Site < ActiveRecord::Base
     self.save
   end
   
+  # use it carefully
+  def clear_caches
+    self.loader_hits_cache     = 0
+    self.player_hits_cache     = 0
+    self.flash_hits_cache      = 0
+    self.requests_s3_cache     = 0
+    self.traffic_s3_cache      = 0
+    self.traffic_voxcast_cache = 0
+    self.save
+  end
+  
 private
   
   # BETA validate
@@ -209,7 +220,7 @@ private
   
   # after_create
   def delay_ranks_update
-    delay(:priority => 100).update_ranks
+    delay(:priority => 100, :run_at => 30.seconds.from_now).update_ranks
   end
   
   def set_template(name)
