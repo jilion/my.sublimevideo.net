@@ -187,12 +187,12 @@ class Site < ActiveRecord::Base
   
   # use it carefully
   def clear_caches
-    self.loader_hits_cache
-    self.player_hits_cache
-    self.flash_hits_cache
-    self.requests_s3_cache
-    self.traffic_s3_cache
-    self.traffic_voxcast_cache
+    self.loader_hits_cache     = 0
+    self.player_hits_cache     = 0
+    self.flash_hits_cache      = 0
+    self.requests_s3_cache     = 0
+    self.traffic_s3_cache      = 0
+    self.traffic_voxcast_cache = 0
     self.save
   end
   
