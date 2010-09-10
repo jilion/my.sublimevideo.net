@@ -14,8 +14,8 @@
   .entry.feedback_subject
     = f.label :subject, "", :class => "icon"
     = f.text_field :subject, :class => "text", :placeholder => "Subject", :required => true
-  .entry.description
-    = f.label :description, "", :class => "icon"
-    = f.text_area :description, :class => "text", :placeholder => "Message", :required => true
+  .entry.message
+    = f.label :message, "", :class => "icon"
+    = f.text_area :message, :class => "text", :placeholder => "Message", :required => true
   .entry.update
     = f.submit 'Send', :class => "submit small"
