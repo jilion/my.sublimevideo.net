@@ -2,7 +2,7 @@
 #
 #  type            :integer   not null
 #  subject         :string    not null
-#  description     :text      not null
+#  message         :text      not null
 #  requester_name  :string
 #  requester_email :string
 #  
@@ -12,37 +12,37 @@ require 'spec_helper'
 
 describe Ticket do
   let(:user)   { Factory(:user) }
-  let(:ticket) { Ticket.new({ :user => Factory(:user), :type => "bug_report", :subject => "Subject", :description => "Description" }) }
+  let(:ticket) { Ticket.new({ :user => Factory(:user), :type => "bug_report", :subject => "Subject", :message => "Message" }) }
   
   context "with valid attributes" do
     subject { ticket }
     
     its(:type)            { should == :bug_report }
     its(:subject)         { should == "Subject" }
-    its(:description)     { should == "Description" }
+    its(:message)         { should == "Message" }
     it { should be_valid }
   end
   
   describe "validates" do
     it "should validate presence of user" do
-      ticket = Ticket.new({ :user => nil, :type => "bug_report", :subject => nil, :description => "Description" })
+      ticket = Ticket.new({ :user => nil, :type => "bug_report", :subject => nil, :message => "Message" })
       ticket.should_not be_valid
       ticket.errors[:user].should be_present
     end
     it "should validate inclusion of type in possible types" do
-      ticket = Ticket.new({ :user => user, :type => "foo", :subject => "Subject", :description => "Description" })
+      ticket = Ticket.new({ :user => user, :type => "foo", :subject => "Subject", :message => "Message" })
       ticket.should_not be_valid
       ticket.errors[:type].should be_present
     end
     it "should validate presence of subject" do
-      ticket = Ticket.new({ :user => user, :type => "bug_report", :subject => nil, :description => "Description" })
+      ticket = Ticket.new({ :user => user, :type => "bug_report", :subject => nil, :message => "Message" })
       ticket.should_not be_valid
       ticket.errors[:subject].should be_present
     end
-    it "should validate presence of description" do
-      ticket = Ticket.new({ :user => user, :type => "bug_report", :subject => "Subject", :description => nil })
+    it "should validate presence of message" do
+      ticket = Ticket.new({ :user => user, :type => "bug_report", :subject => "Subject", :message => nil })
       ticket.should_not be_valid
-      ticket.errors[:description].should be_present
+      ticket.errors[:message].should be_present
     end
   end
   
@@ -117,8 +117,8 @@ describe Ticket do
         JSON.parse(Zendesk.get("/tickets/#{ticket.post_ticket}.json").body)["subject"].should == ticket.subject
       end
       
-      it "should set the description for the ticket based on its description" do
-        JSON.parse(Zendesk.get("/tickets/#{ticket.post_ticket}.json").body)["description"].should == ticket.description
+      it "should set the message for the ticket based on its message" do
+        JSON.parse(Zendesk.get("/tickets/#{ticket.post_ticket}.json").body)["description"].should == ticket.message
       end
       
       it "should set the tags for the ticket based on its type" do

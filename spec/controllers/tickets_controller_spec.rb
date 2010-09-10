@@ -23,22 +23,22 @@ describe TicketsController do
     describe "POST create" do
       describe "with valid params" do
         it "assigns a newly created ticket as @ticket" do
-          post :create, :ticket => { :type => "bug_report", :subject => "Subject", :description => "Description" }
+          post :create, :ticket => { :type => "bug_report", :subject => "Subject", :message => "Message" }
           response.should redirect_to(new_ticket_url)
         end
       end
       
       describe "with invalid params" do
         it "should render new template" do
-          post :create, :ticket => { :type => "foo", :subject => "Subject", :description => "Description" }
+          post :create, :ticket => { :type => "foo", :subject => "Subject", :message => "Message" }
           response.should render_template("new")
         end
         it "should render new template" do
-          post :create, :ticket => { :type => "bug_report", :subject => "", :description => "Description" }
+          post :create, :ticket => { :type => "bug_report", :subject => "", :message => "Message" }
           response.should render_template("new")
         end
         it "should render new template" do
-          post :create, :ticket => { :type => "bug_report", :subject => "Subject", :description => "" }
+          post :create, :ticket => { :type => "bug_report", :subject => "Subject", :message => "" }
           response.should render_template("new")
         end
       end
@@ -52,7 +52,7 @@ describe TicketsController do
     end
     
     it "should respond with redirect to POST :create" do
-      post :create, :ticket => { :type => "request", :subject => "Subject", :description => "Description" }
+      post :create, :ticket => { :type => "request", :subject => "Subject", :message => "Message" }
       response.should redirect_to(new_user_session_path)
     end
   end
