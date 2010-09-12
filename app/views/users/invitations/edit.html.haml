@@ -1,4 +1,16 @@
 = title_and_content_header("Enter the Beta")
+= content_for :header do
+  :javascript
+    function toggleCheckbox() {
+      $('company_fields_box').toggle();    
+    }
+    document.observe("dom:loaded", function() {
+      var companyCheckbox = $('user_use_company'), companyBox = $('company_fields_box');
+      if (companyCheckbox.checked) {
+        companyBox.show();
+      }
+      $('user_use_company').on('click', toggleCheckbox);
+    });
 
 -# f.errors.key?(:use)  => f.errors[:use] => message
 
@@ -32,7 +44,7 @@
     .spacer
   
   .entry.use
-    %label.main= "Use of SublimeVideo:"      
+    %label.main= "Use of SublimeVideo:"
     .checkbox_wrap
       - if resource.errors.key?(:use)
         .inline_errors
@@ -40,7 +52,7 @@
       = f.check_box :use_personal
       = f.label :use_personal, "Personal use"
     .checkbox_wrap
-      = f.check_box :use_company, :onchange => "$('company_fields_box').toggle()"
+      = f.check_box :use_company
       = f.label :use_company, "Use for my company"
     .checkbox_wrap
       = f.check_box :use_clients
