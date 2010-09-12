@@ -2,7 +2,7 @@
 #
 #  type            :integer   not null
 #  subject         :string    not null
-#  description     :text      not null
+#  message         :text      not null
 #  requester_name  :string
 #  requester_email :string
 #
@@ -11,7 +11,7 @@ require 'md5'
 class Ticket
   include ActiveModel::Validations
   
-  attr_accessor :user, :type, :subject, :description
+  attr_accessor :user, :type, :subject, :message
   
   TYPES = [
     { :bug_report => 'bug report' },
@@ -32,16 +32,16 @@ class Ticket
     @@unordered_types ||= ordered_types.inject({}) { |memo,h| memo.merge!(h) }
   end
   
-  validates :user,        :presence => true
-  validates :type,        :inclusion => { :in => Ticket.unordered_types.keys, :message => "You must choose a category!" }
-  validates :subject,     :presence => true
-  validates :description, :presence => true
+  validates :user,    :presence => true
+  validates :type,    :inclusion => { :in => Ticket.unordered_types.keys, :message => "You must choose a category" }
+  validates :subject, :presence => true
+  validates :message, :presence => true
   
   def initialize(params = {})
-    @user        = params.delete(:user)
-    @type        = params.delete(:type).try(:to_sym)
-    @subject     = h(params.delete(:subject).try(:to_s))
-    @description = h(params.delete(:description).try(:to_s))
+    @user    = params.delete(:user)
+    @type    = params.delete(:type).try(:to_sym)
+    @subject = h(params.delete(:subject).try(:to_s))
+    @message = h(params.delete(:message).try(:to_s))
   end
   
   def save
@@ -56,7 +56,7 @@ class Ticket
     response = Zendesk.post("/tickets.xml", {
       :ticket => {
         :subject     => @subject,
-        :description => @description,
+        :description => @message,
         :set_tags    => Ticket.unordered_types[@type]
       }.merge(user_params)
     })

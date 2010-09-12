@@ -7,6 +7,8 @@ compressor_options:
 stylesheets:
   style:
     - public/stylesheets/style.css
+  style_ie:
+    - public/stylesheets/style_ie.css
 
 javascripts:
   default:
