@@ -15,7 +15,7 @@
           %li= link_to("Feedback", new_ticket_path)
           %li= link_to("Logout", destroy_user_session_path)
       - if user_signed_in? && controller_name != 'sessions'
-        = link_to(edit_user_registration_path, :class => "user #{'active' if controller_name == 'registrations'}", :onclick => "MySublimeVideo.makeSticky(this)") do
+        = link_to(edit_user_registration_path, :class => "user #{'active' if controller_name == 'registrations' || (controller_name == 'users' && action_name == 'update')}", :onclick => "MySublimeVideo.makeSticky(this)") do
           %strong
             %span.icon= current_user.full_name
           %span.corner

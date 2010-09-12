@@ -10,7 +10,6 @@ document.observe("dom:loaded", function() {
   // Note: leave this before the "new PlaceholderManager()"
   if ($("edit_credentials")) MySublimeVideo.currentPasswordHandler = new CurrentPasswordHandler();
   
-  
   // ================================================================
   // = Password fields, selects and placeholders and forms managers =
   // ================================================================
@@ -310,6 +309,22 @@ var PlaceholderManager = Class.create({
         this.field = this.passwordFieldManager.replacePasswordField(this.field, this.passwordFieldManager.isShowingPassword());
         this.field.focus(); // refocus (the newly create field)
         this.setupObservers(); //since we have a new field
+      }
+    }
+    else if (this.field.value == "") { // This is a workaround for Opera...
+      // =====================
+      // = OPERA GRRRRRRRRRR =
+      // =====================
+      //... in fact Opera is currently the only browser supporting HTML5 form validty but NOT HTML5 placeholders!
+      // The bugs happens when a field is not valid (from the HTML5 validity point of view) because of the way we 
+      // reset the fields value in FormManager before submitting the form on browsers who do not support HTML5 placeholders...
+      if (this.field.validity && !this.field.validity.valid) {
+        if (this.passwordFieldManager) {
+          this.resetField();
+        }
+        else {
+          this.field.removeClassName("placeholder");
+        }
       }
     }
   },
