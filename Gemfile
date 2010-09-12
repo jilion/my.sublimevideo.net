@@ -22,8 +22,7 @@ gem 'request-log-analyzer', '~> 1.8.1', :require => 'request_log_analyzer'
 gem 'devise',               '~> 1.1.2'
 gem 'devise_invitable',     :git => 'git://github.com/rymai/devise_invitable.git'
 
-gem 'hoptoad_notifier',     '~> 2.3.4'
-gem 'exceptional',          '~> 2.0.25'
+gem 'hoptoad_notifier',     '~> 2.3.6'
 
 gem 'memcached',            '~> 0.20.1'
 gem 'dalli',                '~> 0.9.4'
