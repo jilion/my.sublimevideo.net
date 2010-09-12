@@ -468,7 +468,7 @@ form p.note, #content form label.note {
 
 #content form .entry .checkbox_wrap input {
   float:left;
-  position:absolute;
+  position:relative;
   top:0;
   left:0;
   opacity:0;
@@ -497,7 +497,7 @@ form p.note, #content form label.note {
 
 #content form .entry .radio_wrap input {
   float:left;
-  position:absolute;
+  position:relative;
   top:0;
   left:0;
   opacity:0;
