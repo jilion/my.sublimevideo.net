@@ -38,6 +38,10 @@ module RecurringJob
       end
     end
     
+    def test_exception
+      raise "THIS A DELAYED JOB EXCEPTION TEST"
+    end
+    
   private
     
     def all_delayed?
