@@ -178,8 +178,8 @@ var AddSiteHandler = Class.create({
 
 var FormManager = Class.create({
   initialize: function(form) {
-    
-    form.on("submit", function(event){
+    var submitEvent = Prototype.Browser.IE ? "emulated:submit" : "submit";
+    form.on(submitEvent, function(event){
       
       // Disable submit button for ajax forms to prevent double submissions (quickly click muliple times the form submit button)
       //
