@@ -474,6 +474,13 @@ form p.note, #content form label.note {
   opacity:0;
 }
 
+@media all and (max-device-width: 1024px) {
+  #content form .entry .checkbox_wrap input {
+    top:5px;
+    z-index:2;
+  }
+}
+
 #content form .entry .checkbox_wrap label {
   position:relative;
   left:-5px;
