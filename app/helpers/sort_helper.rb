@@ -1,6 +1,6 @@
 module SortHelper
   
-  def link_to_sort(field, url, *args)
+  def link_to_sort(field, *args)
     options = args.extract_options!
     options.reverse_merge!(:label => field.to_s.humanize, :remote => true, :default_way => 'asc', :reverse => false, :default => false)
     
@@ -18,7 +18,8 @@ module SortHelper
     # The 'up' class is applied when sort is reversed Z->A, opposite if the sort has the :reverse options
     class_up = 'up' if active ? (way == (options[:reverse] ? 'asc' : 'desc')) : (options[:default_way] == (options[:reverse] ? 'desc' : 'asc'))
     
-    link_to("#{url}?by_#{field}=#{way}&page=#{params[:page]||1}", :class => ['sort', field, class_active, class_up].join(" "), :remote => options[:remote], :onclick => "MySublimeVideo.makeRemoteLinkSticky(this); MySublimeVideo.showTableSpinner()") do
+    url_params = params.reject { |k, v| k =~ /by_.*/ }
+    link_to(url_for(url_params.merge("by_#{field}" => way)), :class => ['sort', field, class_active, class_up].join(" "), :remote => options[:remote], :onclick => "MySublimeVideo.makeRemoteLinkSticky(this); MySublimeVideo.showTableSpinner()") do
       content_tag(:strong, content_tag(:span, options[:label], :class => 'arrow')) \
       + content_tag(:span, '', :class => 'corner')
     end

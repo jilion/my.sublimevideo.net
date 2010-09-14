@@ -2,12 +2,25 @@ class Admin::SitesController < Admin::AdminController
   respond_to :js, :html
   
   has_scope :with_activity, :type => :boolean
+  # sort
+  has_scope :by_hostname
+  has_scope :by_user
+  has_scope :by_state
+  has_scope :by_loader_hits_cache
+  has_scope :by_player_hits_cache
+  has_scope :by_traffic
+  has_scope :by_flash_percentage
+  has_scope :by_loader_player_ratio
+  has_scope :by_traffic_player_ratio
+  has_scope :by_google_rank
+  has_scope :by_alexa_rank
+  has_scope :by_date
   
   # GET /admin/sites
   def index
     @sites = Site.includes(:user).order(:sites => :created_at.desc)
     @sites = @sites.not_archived unless params[:archived_included]
-    @sites = apply_scopes(@sites)
+    @sites = apply_scopes(@sites, :default => { :by_date => 'desc' })
     respond_with(@sites)
   end
   

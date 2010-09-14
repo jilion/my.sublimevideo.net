@@ -143,7 +143,7 @@ describe User::CreditCard do
       it "should not send expiration email when user's credit card will not expire at the end of the current month" do
         user.update_attribute(:cc_expire_on, 1.month.from_now)
         
-        lambda { User::Trial.send_credit_card_expiration }.should change(ActionMailer::Base.deliveries, :size).by(0)
+        lambda { User::Trial.send_credit_card_expiration }.should_not change(ActionMailer::Base.deliveries, :size)
       end
       
     end

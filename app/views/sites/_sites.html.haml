@@ -10,8 +10,8 @@
                 = "Site"
               - unless @sites.one?
                 .sorting
-                  = link_to_sort(:date, sites_path, :default_way => 'desc', :reverse => true, :default => true, :label => "latest")
-                  = link_to_sort(:hostname, sites_path)
+                  = link_to_sort :date, :default_way => 'desc', :reverse => true, :default => true, :label => "latest"
+                  = link_to_sort :hostname
           %th.code= "Player Code"
           %th.hits= "Player Hits"
           %th.delete
