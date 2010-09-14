@@ -38,7 +38,7 @@ describe User::LimitAlert do
       
       it "should not send info email when user reach 50% if info email already sent" do
         User::LimitAlert.send_limit_alerts
-        lambda { User::LimitAlert.send_limit_alerts }.should change(ActionMailer::Base.deliveries, :size).by(0)
+        lambda { User::LimitAlert.send_limit_alerts }.should_not change(ActionMailer::Base.deliveries, :size)
       end
       
       it "should launch delayed send_limit_alerts" do
@@ -47,7 +47,7 @@ describe User::LimitAlert do
       
       it "should not launch delayed send_limit_alerts if one pending already present" do
         User::LimitAlert.send_limit_alerts
-        lambda { User::LimitAlert.send_limit_alerts }.should change(Delayed::Job, :count).by(0)
+        lambda { User::LimitAlert.send_limit_alerts }.should_not change(Delayed::Job, :count)
       end
       
     end

@@ -43,21 +43,21 @@ describe User::Trial do
         Factory(:site, :user => user, :loader_hits_cache => User::Trial.free_loader_hits / 2)
         User::Trial.supervise_users
         
-        lambda { User::Trial.supervise_users }.should change(ActionMailer::Base.deliveries, :size).by(0)
+        lambda { User::Trial.supervise_users }.should_not change(ActionMailer::Base.deliveries, :size)
       end
       
       it "should not send info email when user is not in trial" do
         user = Factory(:user, :trial_ended_at => Time.now.utc)
         Factory(:site, :user => user, :loader_hits_cache => User::Trial.free_loader_hits / 2)
         
-        lambda { User::Trial.supervise_users }.should change(ActionMailer::Base.deliveries, :size).by(0)
+        lambda { User::Trial.supervise_users }.should_not change(ActionMailer::Base.deliveries, :size)
       end
       
       it "should not send info email when user has entered credit card info" do
         user = Factory(:user, :cc_type => "Visa", :cc_last_digits => "1234")
         Factory(:site, :user => user, :loader_hits_cache => User::Trial.free_loader_hits / 2)
         
-        lambda { User::Trial.supervise_users }.should change(ActionMailer::Base.deliveries, :size).by(0)
+        lambda { User::Trial.supervise_users }.should_not change(ActionMailer::Base.deliveries, :size)
       end
       
       it "should send warning email when user reach 90%" do
@@ -87,7 +87,7 @@ describe User::Trial do
       it "should just set trial_end_at when trial is over and user has entered credit car inot" do
         user = Factory(:user, :cc_type => "Visa", :cc_last_digits => "1234")
         Factory(:site, :user => user, :loader_hits_cache => User::Trial.free_loader_hits)
-        lambda { User::Trial.supervise_users }.should change(ActionMailer::Base.deliveries, :size).by(0)
+        lambda { User::Trial.supervise_users }.should_not change(ActionMailer::Base.deliveries, :size)
         
         user.reload.trial_ended_at.should be_present
       end
@@ -98,7 +98,7 @@ describe User::Trial do
       
       it "should not launch delayed supervise_users if one pending already present" do
         User::Trial.supervise_users
-        lambda { User::Trial.supervise_users }.should change(Delayed::Job, :count).by(0)
+        lambda { User::Trial.supervise_users }.should_not change(Delayed::Job, :count)
       end
       
     end

@@ -127,7 +127,7 @@ describe Log::Voxcast do
     
     it "should not launch delayed fetch_download_and_create_new_logs if one pending already present" do
       Log::Voxcast.delay_fetch_download_and_create_new_logs
-      lambda { Log::Voxcast.delay_fetch_download_and_create_new_logs }.should change(Delayed::Job, :count).by(0)
+      lambda { Log::Voxcast.delay_fetch_download_and_create_new_logs }.should_not change(Delayed::Job, :count)
     end
     
     it "should have config values" do

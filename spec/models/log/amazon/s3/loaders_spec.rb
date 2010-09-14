@@ -34,7 +34,7 @@ describe Log::Amazon::S3::Loaders do
     
     it "should not launch delayed fetch_and_create_new_logs if one pending already present" do
       described_class.fetch_and_create_new_logs
-      lambda { described_class.fetch_and_create_new_logs }.should change(Delayed::Job, :count).by(0)
+      lambda { described_class.fetch_and_create_new_logs }.should_not change(Delayed::Job, :count)
     end
     
     it "should have config values" do
