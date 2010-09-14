@@ -2,7 +2,6 @@ MySublimeVideo::Application.configure do
   # Settings specified here will take precedence over those in config/environment.rb
   config.middleware.use(Rack::GoogleAnalytics, :tracker => 'UA-10280941-8')
   config.middleware.use(Rack::SslEnforcer)
-  config.middleware.use(Rack::Private, :code => ENV['STAGING_CODE'])
 
   # The production environment is meant for finished, "live" apps.
   # Code is not reloaded between requests
