@@ -118,14 +118,14 @@ body {
 
 #header .right a.user strong {
   background:url(/images/embed/header_btn_back_left.png) no-repeat;
-  height:20px;
-  padding:9px 4px 0 6px;
+  height:22px;
+  padding:7px 4px 0 6px;
   display:block;
 }
 
 #header .right a.user span.icon {
   background:url(/images/embed/user_btn_icon.png) no-repeat 0 0;
-  padding:1px 0 1px 22px;
+  padding:0 0 1px 22px;
 }
 
 #header .right a.user span.corner {
@@ -1191,8 +1191,8 @@ ul#trial_legend li em {
 
 #content table.main th a.sort strong {
   background:url(/images/embed/sort_btn_background.png) no-repeat;
-  height:17px;
-  padding:7px 4px 0 3px;
+  height:18px;
+  padding:6px 4px 0 3px;
   display:block;
 }
 
@@ -1309,9 +1309,9 @@ ul#trial_legend li em {
 #content table.main td.code a.embed_code {
   display:block;
   width:186px;
-  height:29px;
+  height:30px;
   background:url(/images/embed/embed_btn.png) no-repeat;
-  padding-top:10px;
+  padding-top:9px;
   margin:0 auto;
   font-size:16px;
   text-transform:uppercase;
