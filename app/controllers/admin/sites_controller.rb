@@ -9,6 +9,9 @@ class Admin::SitesController < Admin::AdminController
   has_scope :by_loader_hits_cache
   has_scope :by_player_hits_cache
   has_scope :by_traffic
+  has_scope :by_flash_percentage
+  has_scope :by_loader_player_ratio
+  has_scope :by_traffic_player_ratio
   has_scope :by_google_rank
   has_scope :by_alexa_rank
   has_scope :by_date
