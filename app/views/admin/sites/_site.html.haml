@@ -4,29 +4,33 @@
   %td.user
     %small
       = link_to site.user.full_name, admin_user_path(site.user)
-  %td.state= site.state
+  %td.state
+    %small= site.state
   %td.loader_hits_cache
-    = number_with_delimiter(site.loader_hits_cache, :delimiter => "'")
+    %small= number_with_delimiter(site.loader_hits_cache, :delimiter => "'")
   %td.player_hits_cache
-    = number_with_delimiter(site.player_hits_cache, :delimiter => "'")
+    %small= number_with_delimiter(site.player_hits_cache, :delimiter => "'")
   %td.traffic
     - traffic = site.traffic_s3_cache + site.traffic_voxcast_cache
-    = number_to_human_size(traffic, :precision => 4)
+    %small= number_to_human_size(traffic, :precision => 4)
   %td.flash_percent
     - if site.player_hits_cache > 0
-      = number_to_percentage(site.flash_hits_cache / site.player_hits_cache.to_f * 100, :precision => 2)
+      %small= number_to_percentage(site.flash_hits_cache / site.player_hits_cache.to_f * 100, :precision => 2)
     - else
-      = "-"
+      %small= "-"
   %td.ratio
     - if site.player_hits_cache > 0
-      = number_with_delimiter(site.loader_hits_cache / site.player_hits_cache, :delimiter => "'")
+      %small= number_with_delimiter(site.loader_hits_cache / site.player_hits_cache, :delimiter => "'")
     - else
-      = "-"
+      %small= "-"
   %td.ratio
     - if site.player_hits_cache > 0
-      = number_to_human_size(traffic / site.player_hits_cache.to_f, :precision => 4)
+      %small= number_to_human_size(traffic / site.player_hits_cache.to_f, :precision => 4)
     - else
-      = "-"
-  %td.rank= site.alexa_rank
-  %td.rank= site.google_rank
-  -#%td.player_mode= site.player_mode
+      %small= "-"
+  %td.rank
+    %small= site.alexa_rank
+  %td.rank
+    %small= site.google_rank
+  %td
+    %small= display_date(site.created_at)

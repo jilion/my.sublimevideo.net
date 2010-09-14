@@ -1,14 +1,14 @@
 %table.main#users
   %tr
-    %th= link_to_sort :name_or_email, admin_users_path, :label => "Full name / email"
-    %th= link_to_sort :beta, admin_users_path, :default_way => 'desc', :label => "In beta"
-    %th= link_to_sort :use_peronal, admin_users_path, :default_way => 'desc', :label => "Personal"
-    %th= link_to_sort :use_company, admin_users_path, :default_way => 'desc', :label => "Company"
-    %th= link_to_sort :use_clients, admin_users_path, :default_way => 'desc', :label => "Clients"
+    %th= link_to_sort :name_or_email, :label => "Full name / email"
+    %th= link_to_sort :beta, :default_way => 'desc', :label => "In beta"
+    %th= link_to_sort :use_peronal, :default_way => 'desc', :label => "Personal"
+    %th= link_to_sort :use_company, :default_way => 'desc', :label => "Company"
+    %th= link_to_sort :use_clients, :default_way => 'desc', :label => "Clients"
     %th= "# Sites"
-    %th= link_to_sort :player_hits, admin_users_path, :default_way => 'desc'
-    %th= link_to_sort :traffic, admin_users_path, :default_way => 'desc'
-    %th= link_to_sort :date, admin_users_path, :default => true, :label => "Created at"
+    %th= link_to_sort :player_hits, :default_way => 'desc'
+    %th= link_to_sort :traffic, :default_way => 'desc'
+    %th= link_to_sort :date, :default_way => 'desc', :default => true, :label => "Created at"
   = render @users
   
 .pagination_wrap

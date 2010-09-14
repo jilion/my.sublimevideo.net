@@ -1,16 +1,17 @@
 %table.main#sites
   %tr
-    %th= "Hostnames"
-    %th= "User"
-    %th= "State"
-    %th= "Loader hits"
-    %th= "Player hits"
-    %th= "Traffic"
+    %th= link_to_sort :hostname
+    %th= link_to_sort :user
+    %th= link_to_sort :state
+    %th= link_to_sort :loader_hits_cache, :default_way => 'desc', :label => "Loader hits"
+    %th= link_to_sort :player_hits_cache, :default_way => 'desc', :label => "Player hits"
+    %th= link_to_sort :traffic, :default_way => 'desc', :label => "Traffic"
     %th= "Flash %"
     %th= "Loader/Player"
-    %th= "Traffic/Player hit"
-    %th= "Alexa #"
-    %th= "Google #"
+    %th= "Traffic/Player"
+    %th= link_to_sort :alexa_rank, :default_way => 'desc', :label => "Alexa #"
+    %th= link_to_sort :google_rank, :label => "Google #"
+    %th= link_to_sort :date, :default_way => 'desc', :default => true, :label => "Created at"
   = render @sites
   
 .pagination_wrap

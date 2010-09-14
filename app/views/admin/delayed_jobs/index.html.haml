@@ -5,13 +5,13 @@
 %table.main#delayed_jobs
   %tr
     %th.name= "Name"
-    %th.priority= link_to_sort(:priority, admin_delayed_jobs_path, :up => 'asc', :remote => false)
-    %th.run_at= link_to_sort(:run_at, admin_delayed_jobs_path, :up => 'asc', :reverse => true, :remote => false)
-    %th.attempts= link_to_sort(:attempts, admin_delayed_jobs_path, :up => 'asc', :remote => false)
+    %th.priority= link_to_sort :priority, :remote => false
+    %th.run_at= link_to_sort :run_at, :default_way => 'desc', :default => true, :remote => false
+    %th.attempts= link_to_sort :attempts, :default_way => 'desc', :remote => false
     %th.last_error= "Last error"
-    %th.locked_at= link_to_sort(:locked_at, admin_delayed_jobs_path, :up => 'asc', :reverse => true, :remote => false)
-    %th.locked_by= link_to_sort(:locked_by, admin_delayed_jobs_path, :up => 'asc', :remote => false)
-    %th.failed_at= link_to_sort(:failed_at, admin_delayed_jobs_path, :up => 'asc', :reverse => true, :remote => false)
+    %th.locked_at= link_to_sort :locked_at, :reverse => true, :remote => false
+    %th.locked_by= link_to_sort :locked_by, :remote => false
+    %th.failed_at= link_to_sort :failed_at, :reverse => true, :remote => false
     %th.unlock= "Unlock"
     %th.delete= "Delete"
   = render :partial => 'delayed_job', :collection => @delayed_jobs
