@@ -272,6 +272,7 @@ var PasswordFieldManager = Class.create({
     passwordField.purge(); //removes eventual observers and storage keys
     passwordField.replace(newPasswordField);
     this.field = newPasswordField;
+    
     if(this.field.id == "user_password" && $("current_password_wrap")) MySublimeVideo.currentPasswordHandler.setupField(this.field);
     return newPasswordField;
   }
@@ -307,7 +308,17 @@ var PlaceholderManager = Class.create({
       
       if (this.passwordFieldManager) {
         this.field = this.passwordFieldManager.replacePasswordField(this.field, this.passwordFieldManager.isShowingPassword());
-        this.field.focus(); // refocus (the newly create field)
+        
+        // refocus (the newly create field)
+        if (Prototype.Browser.IE) {
+          setTimeout(function(){
+            this.field.focus();
+          }.bind(this),0)
+        }
+        else {
+          this.field.focus();
+        }
+        
         this.setupObservers(); //since we have a new field
       }
     }
