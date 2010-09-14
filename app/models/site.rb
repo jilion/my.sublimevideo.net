@@ -69,7 +69,7 @@ class Site < ActiveRecord::Base
   scope :by_loader_player_ratio,  lambda { |way| where(:player_hits_cache.gt => 0).select("sites.*, (sites.loader_hits_cache::real/sites.player_hits_cache) ratio").order("ratio #{way || 'desc'}") }
   scope :by_traffic_player_ratio, lambda { |way| where(:player_hits_cache.gt => 0).select("sites.*, ((sites.traffic_s3_cache + sites.traffic_voxcast_cache)::real/sites.player_hits_cache) ratio").order("ratio #{way || 'desc'}") }
   scope :by_google_rank,        lambda { |way| where(:google_rank.gte => 0).order(:google_rank.send(way || 'desc')) }
-  scope :by_alexa_rank,         lambda { |way| where(:alexa_rank.gte => 0).order(:alexa_rank.send(way || 'desc')) }
+  scope :by_alexa_rank,         lambda { |way| where(:alexa_rank.gte => 1).order(:alexa_rank.send(way || 'desc')) }
   scope :by_date,               lambda { |way| order(:created_at.send(way || 'desc')) }
   
   # ===============
