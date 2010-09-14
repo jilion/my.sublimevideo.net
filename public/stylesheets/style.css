@@ -478,8 +478,8 @@ form p.note, #content form label.note {
   position:relative;
   left:-5px;
   display:block;
-  height:19px;
-  padding:7px 0 0 27px;
+  height:20px;
+  padding:6px 0 0 27px;
   background:url(/images/embed/custom_checkbox.png) no-repeat;
 }
 
