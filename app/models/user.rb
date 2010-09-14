@@ -63,7 +63,7 @@ class User < ActiveRecord::Base
   
   # Pagination
   cattr_accessor :per_page
-  self.per_page = 25
+  self.per_page = 100
   
   attr_accessor :terms_and_conditions
   attr_accessible :first_name, :last_name, :email, :remember_me, :password, :postal_code, :country,
