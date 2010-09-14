@@ -96,6 +96,15 @@ class User < ActiveRecord::Base
   scope :enthusiast,      where(:enthusiast_id.ne => nil)
   scope :beta,            where(:invitation_token => nil)
   scope :with_activity,   includes(:sites).where(:sites => { :player_hits_cache.gte => 1 })
+  # sort
+  scope :by_name_or_email, lambda { |way| order(:first_name.send(way || 'desc'), :email.send(way || 'desc')) }
+  scope :by_beta,          lambda { |way| order(:invitation_token.send(way || 'desc')) }
+  scope :by_use_personal,  lambda { |way| order(:use_personal.send(way || 'desc')) }
+  scope :by_use_company,   lambda { |way| order(:use_company.send(way || 'desc')) }
+  scope :by_use_clients,   lambda { |way| order(:use_clients.send(way || 'desc')) }
+  scope :by_player_hits,   lambda { |way| select("users.#{User.first.attributes.keys.join(', users.')}, SUM(sites.player_hits_cache)").joins(:sites).group("users.#{User.first.attributes.keys.join(', users.')}").order("sum #{way}") }
+  scope :by_traffic,       lambda { |way| select("users.#{User.first.attributes.keys.join(', users.')}, SUM(sites.traffic_s3_cache + sites.traffic_s3_cache)").joins(:sites).group("users.#{User.first.attributes.keys.join(', users.')}").order("sum #{way}") }
+  scope :by_date,          lambda { |way| order(:created_at.send(way || 'desc')) }
   
   # ===============
   # = Validations =

@@ -9,17 +9,24 @@
     = number_with_delimiter(site.loader_hits_cache, :delimiter => "'")
   %td.player_hits_cache
     = number_with_delimiter(site.player_hits_cache, :delimiter => "'")
-  %td.ratio
-    - if site.player_hits_cache > 0
-      = number_with_delimiter(site.loader_hits_cache / site.player_hits_cache, :delimiter => "'")
-    - else
-      = "-"
+  %td.traffic
+    - traffic = site.traffic_s3_cache + site.traffic_voxcast_cache
+    = number_to_human_size(traffic, :precision => 4)
   %td.flash_percent
     - if site.player_hits_cache > 0
       = number_to_percentage(site.flash_hits_cache / site.player_hits_cache.to_f * 100, :precision => 2)
     - else
       = "-"
-  %td.traffic= number_to_human_size(site.traffic_s3_cache + site.traffic_voxcast_cache, :precision => 4)
+  %td.ratio
+    - if site.player_hits_cache > 0
+      = number_with_delimiter(site.loader_hits_cache / site.player_hits_cache, :delimiter => "'")
+    - else
+      = "-"
+  %td.ratio
+    - if site.player_hits_cache > 0
+      = number_to_human_size(traffic / site.player_hits_cache.to_f, :precision => 4)
+    - else
+      = "-"
   %td.rank= site.alexa_rank
   %td.rank= site.google_rank
   -#%td.player_mode= site.player_mode

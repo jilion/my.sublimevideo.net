@@ -1,15 +1,14 @@
 %table.main#users
   %tr
-    %th= "Full name / email"
-    %th= "In beta"
-    %th= "Personal"
-    %th= "Company"
-    %th= "Clients"
+    %th= link_to_sort :name_or_email, admin_users_path, :label => "Full name / email"
+    %th= link_to_sort :beta, admin_users_path, :default_way => 'desc', :label => "In beta"
+    %th= link_to_sort :use_peronal, admin_users_path, :default_way => 'desc', :label => "Personal"
+    %th= link_to_sort :use_company, admin_users_path, :default_way => 'desc', :label => "Company"
+    %th= link_to_sort :use_clients, admin_users_path, :default_way => 'desc', :label => "Clients"
     %th= "# Sites"
-    %th= "Player hits"
-    %th= "Traffic"
-    %th= "Traffic/Player hit"
-    %th= "Created at"
+    %th= link_to_sort :player_hits, admin_users_path, :default_way => 'desc'
+    %th= link_to_sort :traffic, admin_users_path, :default_way => 'desc'
+    %th= link_to_sort :date, admin_users_path, :default => true, :label => "Created at"
   = render @users
   
 .pagination_wrap

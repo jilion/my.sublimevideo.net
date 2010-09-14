@@ -59,7 +59,7 @@ group :development do
 end
 
 group :test do
-  gem 'spork',       '~> 0.9.0.rc'
+  gem 'spork',       '~> 0.9.0.rc2'
   gem 'rspactor',    '~> 0.7.beta.7'
   
   gem 'shoulda',     '~> 2.11.3'

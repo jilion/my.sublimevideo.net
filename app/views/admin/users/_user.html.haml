@@ -15,20 +15,16 @@
   %td.sites
     %small
       %ul.no_bullet
-        - user.sites.not_archived.limit(2).each do |site|
+        - sites = user.sites.select { |u| u.state != 'archived' }
+        - sites[0,1].each do |site|
           = content_tag(:li, link_to(site.hostname, [:edit, :admin, site]))
-        - if user.sites.not_archived.size > 2
-          %li= link_to("#{user.sites.not_archived.size-2} more", admin_user_path(user))
+        - if sites.size > 2
+          %li= link_to("#{sites.size-2} more", admin_user_path(user))
   %td.player_hits
     - player_hits = user.sites.inject(0) { |sum, site| sum += site.player_hits_cache }
     = number_with_delimiter(player_hits, :delimiter => "'")
-  %td.bandwidth
-    - bandwidth = user.sites.inject(0) { |sum, site| sum += (site.traffic_s3_cache + site.traffic_voxcast_cache) }
-    = number_to_human_size(bandwidth, :precision => 4)
-  %td.ratio
-    - if player_hits > 0
-      = number_to_human_size(bandwidth / player_hits.to_f, :precision => 4)
-    - else
-      = "-"
+  %td.traffic
+    - traffic = user.sites.inject(0) { |sum, site| sum += (site.traffic_s3_cache + site.traffic_voxcast_cache) }
+    = number_to_human_size(traffic, :precision => 4)
   %td
     %small= display_date(user.created_at)
