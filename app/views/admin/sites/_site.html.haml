@@ -1,6 +1,7 @@
 %tr{ :class => cycle("", "alt") }
   %td.hostname
-    = link_to site.hostname, edit_admin_site_path(site)
+    = link_to site.hostname, "http://#{site.hostname}"
+    = "(#{link_to("details", edit_admin_site_path(site))})".html_safe
   %td.user
     %small
       = link_to site.user.full_name, admin_user_path(site.user)
