@@ -1,6 +1,6 @@
 Voxcast:
   store_dir: voxcast
-  file_format_class_name: LogsFileFormat::Voxcast
+  file_format_class_name: LogsFileFormat::VoxcastSites
 Amazon::S3::Player:
   store_dir: s3/sublimevideo.player/
   hostname: sublimevideo.player

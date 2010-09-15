@@ -59,9 +59,13 @@ describe Log::Voxcast do
       subject.reload.parsed_at.should >= subject.created_at
     end
     
-    it "should delay parse_log after create" do
+    it "should delay parse_log && parse_log_referer after create" do
       subject # trigger log creation
-      job = Delayed::Job.last
+      jobs = Delayed::Job.all
+      job = jobs.pop
+      job.name.should == 'Class#parse_log_for_referers'
+      job.priority.should == 90
+      job = jobs.pop
       job.name.should == 'Class#parse_log'
       job.priority.should == 20
     end
@@ -102,7 +106,7 @@ describe Log::Voxcast do
     
     it "should not delay parse_log after create" do
       subject # trigger log creation
-      Delayed::Job.all.should be_empty
+      Delayed::Job.all.should have(1).job
     end
   end
   
@@ -132,7 +136,7 @@ describe Log::Voxcast do
     
     it "should have config values" do
       Log::Voxcast.config.should == {
-        :file_format_class_name => "LogsFileFormat::Voxcast",
+        :file_format_class_name => "LogsFileFormat::VoxcastSites",
         :store_dir => "voxcast"
       }
     end

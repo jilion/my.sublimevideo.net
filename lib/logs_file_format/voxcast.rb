@@ -1,5 +1,5 @@
 module LogsFileFormat
-  class Voxcast < RequestLogAnalyzer::FileFormat::Base
+  module Voxcast
     extend RequestLogAnalyzer::FileFormat::CommonRegularExpressions
     
     LINE_DEFINITIONS = [
@@ -29,11 +29,11 @@ module LogsFileFormat
       { :regexp => '(.*)',                       :captures => [{:name => :edge_location,     :type => :string}] }
     ]
     
-    def self.create(*args)
+    def create(*args)
       self.new({:default => line_definition}, report_trackers)
     end
     
-    def self.line_definition
+    def line_definition
       regexps, captures = [], []
       
       LINE_DEFINITIONS.each do |definition|
@@ -50,65 +50,40 @@ module LogsFileFormat
       )
     end
     
-    def self.report_trackers
-      analyze = RequestLogAnalyzer::Aggregator::Summarizer::Definer.new
-      analyze.traffic(:response_bytes, :title => :traffic_voxcast,
-        :category => lambda { |r| token_from(r[:path]) },
-        :if       => lambda { |r| token?(r[:path]) }
-      )
-      analyze.frequency(:path, :title => :loader_hits,
-        :category => lambda { |r| loader_token_from(r[:path]) },
-        :if       => lambda { |r| loader_token?(r[:path]) && countable_hit?(r) }
-      )
-      analyze.frequency(:path, :title => :player_hits,
-        :category => lambda { |r| player_token_from(r[:path]) },
-        :if       => lambda { |r| player_token?(r[:path]) && countable_hit?(r) }
-      )
-      analyze.frequency(:path, :title => :flash_hits,
-        :category => lambda { |r| flash_token_from(r[:path]) },
-        :if       => lambda { |r| flash_token?(r[:path]) && countable_hit?(r) }
-      )
-      analyze.trackers
+    def player_token_from(path)
+      path.match(/^\/p(\/.*)?\/sublime\.js\?t=([a-z0-9]{8}).*/) && $2
     end
     
-    class << self
-      
-      def player_token_from(path)
-        path.match(/^\/p(\/.*)?\/sublime\.js\?t=([a-z0-9]{8}).*/) && $2
-      end
-      
-      def player_token?(path)
-        path =~ /^\/p(\/.*)?\/sublime\.js\?t=[a-z0-9]{8}.*/
-      end
-      
-      def loader_token_from(path)
-        path.match(/^\/js\/([a-z0-9]{8})\.js.*/) && $1
-      end
-      
-      def loader_token?(path)
-        path =~ /^\/js\/[a-z0-9]{8}\.js.*/
-      end
-      
-      def flash_token_from(path)
-        path.match(/^\/p(\/.*)?\/sublime\.swf\?t=([a-z0-9]{8}).*/) && $2
-      end
-      
-      def flash_token?(path)
-        path =~ /^\/p(\/.*)?\/sublime\.swf\?t=[a-z0-9]{8}.*/
-      end
-      
-      def token_from(path)
-        path.match(/^.*(\/|t\=)([a-z0-9]{8})($|&|\.|\/)/) && $2
-      end
-      
-      def token?(path)
-        path =~ /^.*(\/|t\=)[a-z0-9]{8}($|&|\.|\/)/
-      end
-      
-      def countable_hit?(request)
-        request[:cache_miss_reason] != 3
-      end
-      
+    def player_token?(path)
+      path =~ /^\/p(\/.*)?\/sublime\.js\?t=[a-z0-9]{8}.*/
+    end
+    
+    def loader_token_from(path)
+      path.match(/^\/js\/([a-z0-9]{8})\.js.*/) && $1
+    end
+    
+    def loader_token?(path)
+      path =~ /^\/js\/[a-z0-9]{8}\.js.*/
+    end
+    
+    def flash_token_from(path)
+      path.match(/^\/p(\/.*)?\/sublime\.swf\?t=([a-z0-9]{8}).*/) && $2
+    end
+    
+    def flash_token?(path)
+      path =~ /^\/p(\/.*)?\/sublime\.swf\?t=[a-z0-9]{8}.*/
+    end
+    
+    def token_from(path)
+      path.match(/^.*(\/|t\=)([a-z0-9]{8})($|&|\.|\/)/) && $2
+    end
+    
+    def token?(path)
+      path =~ /^.*(\/|t\=)[a-z0-9]{8}($|&|\.|\/)/
+    end
+    
+    def countable_hit?(request)
+      request[:cache_miss_reason] != 3
     end
     
   end

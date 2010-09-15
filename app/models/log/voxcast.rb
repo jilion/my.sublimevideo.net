@@ -1,5 +1,7 @@
 class Log::Voxcast < Log
   
+  field :referers_parsed_at,  :type => DateTime
+  
   # ================
   # = Associations =
   # ================
@@ -17,6 +19,7 @@ class Log::Voxcast < Log
   # =============
   
   before_validation :download_and_set_log_file, :on => :create
+  after_create :delay_parse_referers
   
   # ====================
   # = Instance Methods =
@@ -28,6 +31,21 @@ class Log::Voxcast < Log
     trackers = LogAnalyzer.parse(logs_file, self.class.config[:file_format_class_name])
     SiteUsage.create_usages_from_trackers!(self, trackers)
     File.delete(logs_file.path)
+  end
+  
+  def parse_and_create_referers!
+    unless referers_parsed?
+      logs_file = copy_logs_file_to_tmp
+      trackers = LogAnalyzer.parse(logs_file, 'LogsFileFormat::VoxcastReferers')
+      Referer.create_or_update_from_trackers!(trackers)
+      File.delete(logs_file.path)
+      self.referers_parsed_at = Time.now.utc
+      self.save
+    end
+  end
+  
+  def referers_parsed?
+    referers_parsed_at.present?
   end
   
   # =================
@@ -46,6 +64,11 @@ class Log::Voxcast < Log
     create_new_logs(new_logs_names)
   end
   
+  def self.parse_log_for_referers(id)
+    log = find(id)
+    log.parse_and_create_referers!
+  end
+  
 private
   
   # before_validation
@@ -56,6 +79,11 @@ private
   # after_create
   def delay_parse
     super if hostname == 'cdn.sublimevideo.net'
+  end
+  
+  # after_create
+  def delay_parse_referers
+    self.class.delay(:priority => 90).parse_log_for_referers(id)
   end
   
   # call from name= in Log

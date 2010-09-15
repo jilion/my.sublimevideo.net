@@ -56,6 +56,7 @@ group :development do
   gem 'heroku_tasks',  '~> 0.1.4'
   gem 'taps'           # heroku db pull/push
   gem 'rspec-rails',   '~> 2.0.0.beta.22'
+  gem 'timecop'
 end
 
 group :test do
