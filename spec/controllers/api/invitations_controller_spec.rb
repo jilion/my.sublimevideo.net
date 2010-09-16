@@ -17,18 +17,23 @@ describe Api::InvitationsController do
     end
     
     it "should not respond with success to post :create if email not valid" do
-      User.should_receive(:invite).with({}).and_return(mock_user(:invited? => false))
       post :create, :invitation => {}
       response.should_not be_success
       response.status.should == 422
     end
     
     it "should set enthusiast_id" do
-      post :create, :invitation => { :email => 'john@doe.com', :enthusiast_id => "33" }
+      post :create, :invitation => { :email => 'John@doe.com', :enthusiast_id => "33" }
       invited = User.last
       invited.should be_invited
       invited.email.should == 'john@doe.com'
       invited.enthusiast_id.should == 33
+    end
+    
+    it "should not create duplicated user" do
+      user = Factory(:user, :email => 'john@doe.com')
+      post :create, :invitation => { :email => 'John@doe.com' }
+      response.should_not be_success
     end
   end
   

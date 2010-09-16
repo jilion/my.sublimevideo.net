@@ -26,7 +26,7 @@ feature "Users actions:" do
   scenario "update email" do
     sign_in_as :user, { :email => "old@jilion.com" }
     click_link('John Doe')
-    fill_in "Email",            :with => "new@jilion.com"
+    fill_in "Email",            :with => "New@jilion.com"
     fill_in "Current password", :with => "123456"
     click_button "user_credentials_submit"
     
@@ -199,7 +199,7 @@ feature "User session:" do
     
     visit "/login"
     page.should_not have_content('John Doe')
-    fill_in "Email",     :with => "john@doe.com"
+    fill_in "Email",     :with => "John@doe.com"
     fill_in "Password",  :with => "123456"
     click_button "Login"
     

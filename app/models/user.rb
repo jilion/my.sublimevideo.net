@@ -159,6 +159,10 @@ class User < ActiveRecord::Base
     first_name.to_s + ' ' + last_name.to_s
   end
   
+  def email=(email)
+    write_attribute(:email, email.try(:downcase))
+  end
+  
 private
   
   # validate

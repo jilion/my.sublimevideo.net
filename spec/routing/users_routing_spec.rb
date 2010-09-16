@@ -14,9 +14,9 @@ describe UsersController do
   
   it { should route(:put,    "/account/info").to(:controller => "users", :action => :update) }
   
-  it { should route(:get,    "/login").to(:controller => "devise/sessions", :action => :new) }
-  it { should route(:post,   "/login").to(:controller => "devise/sessions", :action => :create) }
-  it { should route(:get,    "/logout").to(:controller => "devise/sessions", :action => :destroy) }
+  it { should route(:get,    "/login").to(:controller => "users/sessions", :action => :new) }
+  it { should route(:post,   "/login").to(:controller => "users/sessions", :action => :create) }
+  it { should route(:get,    "/logout").to(:controller => "users/sessions", :action => :destroy) }
   
   it { should route(:get,    "/password/new").to(:controller => "devise/passwords", :action => :new) }
   it { should route(:post,   "/password").to(:controller => "devise/passwords", :action => :create) }
