@@ -49,3 +49,9 @@ end
 Factory.define :release do |f|
   f.zip  { File.new(Rails.root.join('spec/fixtures/release.zip')) }
 end
+
+Factory.define :referrer do |f|
+  f.url        "http://bob.com"
+  f.token      { Factory(:site).token }
+  f.hits       12
+end

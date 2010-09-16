@@ -44,9 +44,12 @@ class Site < ActiveRecord::Base
   # ================
   
   belongs_to :user
-  # Mongoid associtions
+  # Mongoid associations
   def usages
     SiteUsage.where(:site_id => id)
+  end
+  def referrers
+    Referrer.where(:site_id => id)
   end
   
   # ==========

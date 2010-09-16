@@ -9,6 +9,7 @@
     = "Hostname: "
     = link_to(@site.hostname, "http://#{@site.hostname}")
   %li= "Dev hostnames: " + @site.dev_hostnames
+  %li= ("User: " + link_to(@site.user.full_name, [:admin, @site.user])).html_safe
   
 %br
 
@@ -24,6 +25,19 @@
 %br
 %hr
 %br
+
+%h3= "Active pages"
+
+%ul
+  - @site.referrers.by_updated_at.each do |referrer|
+    %li
+      = link_to truncate(referrer.url, :length => 50), referrer.url
+      = "(hits: #{referrer.hits}, created_at: #{display_date(referrer.created_at)}, updated_at: #{display_date(referrer.updated_at)})"
+  
+%br
+%hr
+%br
+
 
 %h3 Details
 

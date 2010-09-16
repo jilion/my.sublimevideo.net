@@ -43,8 +43,9 @@ class Referrer
   # = Validations =
   # ===============
   
-  validates :token,  :presence => true, :on => :create
-  validates :url,    :presence => true
+  validates :token,   :presence => true
+  validates :site_id, :presence => true
+  validates :url,     :presence => true, :format => { :with => /^http\:\/\/.*/ }
   
   # =================
   # = Class Methods =
