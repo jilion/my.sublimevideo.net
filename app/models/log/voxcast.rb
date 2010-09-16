@@ -18,7 +18,7 @@ class Log::Voxcast < Log
   # = Callbacks =
   # =============
   
-  before_validation :download_and_set_log_file, :on => :create
+  before_validation :download_and_set_log_file
   after_create :delay_parse_referrers
   
   # ====================
@@ -73,7 +73,7 @@ private
   
   # before_validation
   def download_and_set_log_file
-    self.file = VoxcastCDN.logs_download(name)
+    self.file = VoxcastCDN.logs_download(name) unless file.present?
   end
   
   # after_create

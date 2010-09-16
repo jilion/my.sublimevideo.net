@@ -1,6 +1,6 @@
 development:
   host: localhost
-  database: msv_dev
+  database: mysublime
   
 test:
   host: localhost

@@ -154,6 +154,7 @@ describe Log::Voxcast do
       before(:each) do
         LogAnalyzer.should_receive(:parse)
         Referrer.should_receive(:create_or_update_from_trackers!)
+        VoxcastCDN.should_not_receive(:logs_download)
         subject.parse_and_create_referrers!
       end
       subject { @log }
