@@ -96,7 +96,7 @@ feature "Users actions:" do
     fill_in "Last name", :with => "Coutable"
     select "Switzerland", :from => "Country"
     fill_in "Zip or Postal Code", :with => "CH-1024"
-    check "Personal use"
+    check "Personal"
     check "user_terms_and_conditions"
     click_button "Join"
     
@@ -120,9 +120,9 @@ feature "Users actions:" do
     select "Switzerland", :from => "Country"
     fill_in "Zip or Postal Code", :with => "CH-1024"
     
-    check "Use for my company"
-    fill_in "Company/org name", :with => "Jilion"
-    fill_in "Company/org site", :with => "jilion.com"
+    check "For my company"
+    fill_in "Company name", :with => "Jilion"
+    fill_in "Company website", :with => "jilion.com"
     fill_in "Job title", :with => "Dev"
     select "2-5 employees", :from => "Company size"
     select "1'000-10'000 videos/month", :from => "Nr. of videos served"
@@ -145,7 +145,7 @@ feature "Users actions:" do
     fill_in "Last name", :with => "Coutable"
     select "Switzerland", :from => "Country"
     fill_in "Zip or Postal Code", :with => "CH-1024"
-    check "Personal use"
+    check "Personal"
     check "user_terms_and_conditions"
     click_button "Join"
     

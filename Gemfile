@@ -32,7 +32,7 @@ gem 'RedCloth',             '~> 4.2.3'
 
 gem 'bson_ext',             '1.0.4'
 gem 'mongo',                '1.0.7'
-gem 'mongoid',              '2.0.0.beta.17'
+gem 'mongoid',              '2.0.0.beta.18'
 
 gem 'zip',                  '~> 2.0.2', :require => 'zip/zip'
 gem 'countries',            '~> 0.3.0'

@@ -5,6 +5,7 @@ MySublimeVideo::Application.routes.draw do
   devise_for :users,
   :path => '',
   :path_names => { :sign_in => 'login', :sign_out => 'logout' },
+  :controllers => { :sessions => "users/sessions" },
   :skip => [:invitations, :registrations] do
     # We need to declare these routes manually because we don't want
     # to generate GET /invitation/new and POST /invitation, so we had to skip :invitations
