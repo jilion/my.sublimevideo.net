@@ -148,7 +148,7 @@ class User < ActiveRecord::Base
   
   # allow suspended user to login (devise)
   def active?
-    %w[active suspended].include?(state)
+    %w[active suspended].include?(state) && invitation_token.nil?
   end
   
   def welcome?
