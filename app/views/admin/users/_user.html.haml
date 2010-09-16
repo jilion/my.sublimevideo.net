@@ -1,7 +1,7 @@
 %tr{ :class => cycle("", "alt") }
   %td.full_name
     - if user.encrypted_password.present?
-      = link_to user.full_name, admin_user_path(user)
+      = link_to user.full_name, admin_user_path(user), :title => "#{user.full_name} <#{user.email}>"
     - else
       = link_to user.email, admin_user_path(user)
   %td.beta
