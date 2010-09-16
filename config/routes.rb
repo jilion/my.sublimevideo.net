@@ -83,6 +83,7 @@ MySublimeVideo::Application.routes.draw do
     resources :sites, :only => [:index, :edit, :update]
     resources :delayed_jobs, :only => [:index, :show, :update, :destroy], :path => "djs"
     resources :releases, :only => [:index, :create, :update]
+    resources :referrers, :only => :index
   end
   
   # =======

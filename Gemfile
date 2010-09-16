@@ -49,14 +49,14 @@ end
 
 group :development do
   gem 'ffaker',        '>= 0.4.0'
-  gem 'annotate'
+  gem 'annotate',      '~> 2.4.0'
   gem 'wirble'         # irbrc
   gem 'ruby-graphviz', :require => 'graphviz'
   gem 'heroku',        '~> 1.10.3'
   gem 'heroku_tasks',  '~> 0.1.4'
   gem 'taps'           # heroku db pull/push
   gem 'rspec-rails',   '~> 2.0.0.beta.22'
-  gem 'timecop'
+  gem 'timecop',       '~> 0.3.5'
 end
 
 group :test do
@@ -66,11 +66,11 @@ group :test do
   gem 'shoulda',     '~> 2.11.3'
   gem 'rspec-rails', '~> 2.0.0.beta.22'
   
-  gem 'steak', '~> 0.4.0.beta.1'
-  gem 'capybara'
-  gem 'launchy'
+  gem 'steak',       '~> 0.4.0.beta.1'
+  gem 'capybara',    '~> 0.3.9'
+  gem 'launchy',     '~> 0.3.7'
   
   gem 'factory_girl_rails'
-  gem 'webmock', '~> 1.3.5'
-  gem 'vcr', '~> 1.1.1'
+  gem 'webmock',     '~> 1.3.5'
+  gem 'vcr',         '~> 1.1.1'
 end

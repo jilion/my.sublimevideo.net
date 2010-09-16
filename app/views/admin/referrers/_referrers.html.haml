@@ -1,0 +1,11 @@
+%table.main#sites
+  %tr
+    %th= link_to_sort :url
+    %th= link_to_sort :hits, :default_way => 'desc'
+    %th= link_to_sort :created_at, :default_way => 'desc', :default => true
+    %th= link_to_sort :updated_at, :default_way => 'desc'
+  = render @referrers
+  
+.pagination_wrap
+  = will_paginate(:params => { :format => nil }, :renderer => 'WillPaginate::ViewHelpers::LinkRendererRemote')
+  = page_entries_info @referrers

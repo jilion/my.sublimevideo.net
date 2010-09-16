@@ -23,7 +23,7 @@ module LogsFileFormat
       line.capture(:object_size).as(:traffic, :unit => :byte)
       line.capture(:total_time).as(:duration, :unit => :msec)
       line.capture(:turnaround_time).as(:duration, :unit => :msec)
-      line.capture(:referer).as(:referer)
+      line.capture(:referrer).as(:referrer)
       line.capture(:user_agent).as(:user_agent)
     end
     
@@ -55,7 +55,7 @@ module LogsFileFormat
       end
       
       # Can be implemented in subclasses for improved categorizations
-      def convert_referer(value, definition)
+      def convert_referrer(value, definition)
         value == '-' ? nil : value
       end
       

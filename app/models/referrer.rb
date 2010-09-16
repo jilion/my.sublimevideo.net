@@ -1,4 +1,4 @@
-class Referer
+class Referrer
   include Mongoid::Document
   include Mongoid::Timestamps
   
@@ -14,6 +14,10 @@ class Referer
   
   attr_accessible :token, :url, :hits
   
+  # Pagination
+  cattr_accessor :per_page
+  self.per_page = 100
+  
   # ================
   # = Associations =
   # ================
@@ -25,6 +29,15 @@ class Referer
     write_attribute(:token, token)
     write_attribute(:site_id, Site.find_by_token(token).try(:id))
   end
+  
+  # ==========
+  # = Scopes =
+  # ==========
+  
+  scope :by_url,        lambda { |way| order_by([:url, (way || 'desc').to_sym]) }
+  scope :by_hits,       lambda { |way| order_by([:hits, (way || 'desc').to_sym]) }
+  scope :by_updated_at, lambda { |way| order_by([:updated_at, (way || 'desc').to_sym]) }
+  scope :by_created_at, lambda { |way| order_by([:created_at, (way || 'desc').to_sym]) }
   
   # ===============
   # = Validations =
@@ -38,12 +51,12 @@ class Referer
   # =================
   
   def self.create_or_update_from_trackers!(trackers)
-    ref_hash = trackers.detect { |t| t.options[:title] == :referers }.categories
+    ref_hash = trackers.detect { |t| t.options[:title] == :referrers }.categories
     ref_hash.each do |url_and_token, hits|
       url, token = url_and_token[0],  url_and_token[1]
-      if referer = Referer.where(:url => url, :token => token).first
-        referer.hits += hits
-        referer.save
+      if referrer = Referrer.where(:url => url, :token => token).first
+        referrer.hits += hits
+        referrer.save
       else
         create(
           :url   => url,

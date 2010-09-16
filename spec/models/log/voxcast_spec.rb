@@ -8,6 +8,7 @@ describe Log::Voxcast do
     subject { Factory.build(:log_voxcast, :name => 'cdn.sublimevideo.net.log.1274773200-1274773260.gz') }
     
     it { should_not be_parsed }
+    it { should_not be_referrers_parsed }
     it { should be_valid }
     its(:hostname)   { should == 'cdn.sublimevideo.net' }
     its(:started_at) { should == Time.zone.at(1274773200).utc }
@@ -59,11 +60,11 @@ describe Log::Voxcast do
       subject.reload.parsed_at.should >= subject.created_at
     end
     
-    it "should delay parse_log && parse_log_referer after create" do
+    it "should delay parse_log && parse_log_referrer after create" do
       subject # trigger log creation
       jobs = Delayed::Job.all
       job = jobs.pop
-      job.name.should == 'Class#parse_log_for_referers'
+      job.name.should == 'Class#parse_log_for_referrers'
       job.priority.should == 90
       job = jobs.pop
       job.name.should == 'Class#parse_log'
@@ -140,7 +141,31 @@ describe Log::Voxcast do
         :store_dir => "voxcast"
       }
     end
+  end
+  
+  describe "Instance Methods" do
+    before(:each) do
+      log_file = File.new(Rails.root.join('spec/fixtures/logs/voxcast/cdn.sublimevideo.net.log.1284549900-1284549960.gz'))
+      VoxcastCDN.stub(:logs_download).with('cdn.sublimevideo.net.log.1284549900-1284549960.gz').and_return(log_file)
+      @log = Factory(:log_voxcast, :name => 'cdn.sublimevideo.net.log.1284549900-1284549960.gz')
+    end
     
+    describe "parse_and_create_referrers!" do
+      before(:each) do
+        LogAnalyzer.should_receive(:parse)
+        Referrer.should_receive(:create_or_update_from_trackers!)
+        subject.parse_and_create_referrers!
+      end
+      subject { @log }
+      
+      it { should be_referrers_parsed }
+      its(:referrers_parsed_at) { should be_present }
+      
+      it "should not reparse if already done" do
+        Referrer.should_not_receive(:create_or_update_from_trackers!)
+        subject.parse_and_create_referrers!
+      end
+    end
   end
   
 end

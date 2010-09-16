@@ -14,7 +14,7 @@ module Responders
   protected
     
     def add_pagination_scope!
-      if get? && resource.is_a?(ActiveRecord::Relation) && controller.action_name == 'index'
+      if get? && (resource.is_a?(ActiveRecord::Relation) || resource.is_a?(Mongoid::Criteria)) && controller.action_name == 'index'
         begin
           set_instance_variable(controller.controller_name.classify.constantize)
         rescue
