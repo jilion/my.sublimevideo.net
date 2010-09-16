@@ -13,6 +13,8 @@ class Admin::UsersController < Admin::AdminController
   has_scope :by_player_hits
   has_scope :by_traffic
   has_scope :by_date
+  # search
+  has_scope :search
   
   # GET /admin/users
   def index

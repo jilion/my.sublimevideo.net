@@ -16,3 +16,5 @@ javascripts:
     - public/javascripts/rails.js
     - public/javascripts/s2.js
     - public/javascripts/application.js
+  admin:
+    - public/javascripts/admin.js

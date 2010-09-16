@@ -8,13 +8,13 @@ gem 'libxml-ruby',          '~> 1.1.3', :require => 'libxml'
 gem 'i18n',                 '~> 0.4.1'
 gem 'haml',                 '~> 3.0.18'
 gem 'state_machine',        '~> 0.9.4'
-gem 'responders',           :git => 'git://github.com/plataformatec/responders.git'
+gem 'responders',           :git => 'git://github.com/thibaudgg/responders.git'
 gem 'uniquify',             '~> 0.1.0'
 gem 'delayed_job',          '~> 2.1.0.pre2'
 gem 'will_paginate',        '~> 3.0.pre2'
 gem 'has_scope',            :git => 'git://github.com/rymai/has_scope.git'
 gem 'jammit',               '~> 0.5.3'
-gem 'meta_where',           :git => 'git://github.com/ernie/meta_where.git'
+gem 'meta_where',           '~> 0.9.3'
 gem 'hoptoad_notifier',     '~> 2.3.7'
 gem 'activemerchant',       '~> 1.7.1'
 gem 'voxel_hapi',           :git => 'git://github.com/thibaudgg/voxel_hapi.git' # VoxCast CDN
@@ -43,7 +43,7 @@ group :production do
 end
 
 group :production, :staging do
-  gem 'rack-ssl-enforcer', :git => 'git://github.com/thibaudgg/rack-ssl-enforcer'
+  gem 'rack-ssl-enforcer', '~> 0.1.8'
   gem 'rack-private',      '~> 0.1.5'
 end
 
@@ -52,7 +52,7 @@ group :development do
   gem 'annotate',      '~> 2.4.0'
   gem 'wirble'         # irbrc
   gem 'ruby-graphviz', :require => 'graphviz'
-  gem 'heroku',        '~> 1.10.3'
+  gem 'heroku',        '~> 1.10.4'
   gem 'heroku_tasks',  '~> 0.1.4'
   gem 'taps'           # heroku db pull/push
   gem 'rspec-rails',   '~> 2.0.0.beta.22'

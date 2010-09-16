@@ -15,6 +15,8 @@ class Admin::SitesController < Admin::AdminController
   has_scope :by_google_rank
   has_scope :by_alexa_rank
   has_scope :by_date
+  # search
+  has_scope :search
   
   # GET /admin/sites
   def index

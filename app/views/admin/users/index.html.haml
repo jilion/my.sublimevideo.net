@@ -8,14 +8,14 @@
 
 = render "filter_links"
 
--#.summary{ :style => "display:block;"}
--#  .counts
--#    %p= "# In trial with credit card: #{User.in_trial.with_cc.size}"
--#    %p= "# In trial without credit card: #{User.in_trial.without_cc.size}"
--#    %p= "# Not in trial: #{User.not_in_trial.size}"
--#    %p= "# Total: #{User.all.size}"
--#  .sites_ratio= "Sites / User ratio: #{number_with_precision(Site.all.size / User.all.size.to_f)}"
--#  #users_count{ :style => "width:400px; height:120px;" }
+%br
+.search
+  %h3= "Looking for more?"
+  = form_tag(admin_users_path, { :method => :get, :id => 'search_form', :remote => true, :onsubmit => "new SpinnerForElement('search_form');" }) do
+    = text_field_tag :search, '', :class => "text", :placeholder => "Keyword", :required => true
+    = submit_tag "search", :name => '', :id => 'search_button'
+    = image_tag('/images/embed/admin/spinner.gif', :id => 'search_form_spinner', :style => "display:none;")
+%br
   
 #users_table_wrap
   = render "users"

@@ -15,3 +15,7 @@
     %th.unlock= "Unlock"
     %th.delete= "Delete"
   = render :partial => 'delayed_job', :collection => @delayed_jobs
+  
+.pagination_wrap
+  = will_paginate(:params => { :format => nil }, :renderer => 'WillPaginate::ViewHelpers::LinkRendererRemote')
+  = page_entries_info @delayed_jobs

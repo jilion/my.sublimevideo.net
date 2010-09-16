@@ -11,6 +11,7 @@
     
     = yield :header
     = include_javascripts(:default)
+    = include_javascripts(:admin)
     = yield :js
     = csrf_meta_tag
     = javascript_include_tag "#{request.protocol}use.typekit.com/zwt2duv.js"
