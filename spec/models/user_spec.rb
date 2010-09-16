@@ -298,6 +298,11 @@ describe User do
       user.suspend
       user.should be_active
     end
+    
+    it "should downcase email" do
+      user = Factory.build(:user, :email => "BOB@cool.com")
+      user.email.should == "bob@cool.com"
+    end
   end
   
 protected
