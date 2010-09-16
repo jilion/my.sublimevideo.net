@@ -43,7 +43,8 @@ class SitesController < ApplicationController
   def state
     @site = current_user.sites.find(params[:id])
     respond_with(@site) do |format|
-      format.js { head :ok unless @site.active? }
+      format.js   { head :ok unless @site.active? }
+      format.html { redirect_to sites_path }
     end
   end
   
