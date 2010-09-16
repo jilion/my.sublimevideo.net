@@ -1,6 +1,5 @@
 class SitesController < ApplicationController
-  respond_to :html, :only => :index
-  respond_to :js
+  respond_to :html, :js
   
   before_filter :redirect_suspended_user
   
@@ -16,19 +15,28 @@ class SitesController < ApplicationController
   # GET /sites/1
   def show
     @site = current_user.sites.find(params[:id])
-    respond_with(@site)
+    respond_with(@site) do |format|
+      format.html { redirect_to sites_path }
+      format.js
+    end
   end
   
   # GET /sites/new
   def new
     @site = current_user.sites.build
-    respond_with(@site)
+    respond_with(@site) do |format|
+      format.html { redirect_to sites_path }
+      format.js
+    end
   end
   
   # GET /sites/1/edit
   def edit
     @site = current_user.sites.find(params[:id])
-    respond_with(@site)
+    respond_with(@site) do |format|
+      format.html { redirect_to sites_path }
+      format.js
+    end
   end
   
   # GET /sites/1/state
