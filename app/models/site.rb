@@ -75,7 +75,7 @@ class Site < ActiveRecord::Base
   scope :by_alexa_rank,           lambda { |way| where(:alexa_rank.gte => 1).order(:alexa_rank.send(way || 'desc')) }
   scope :by_date,                 lambda { |way| order(:created_at.send(way || 'desc')) }
   # search
-  scope :search, lambda { |q| where(["LOWER(sites.hostname) LIKE LOWER(?) OR LOWER(sites.dev_hostnames) LIKE LOWER(?)", "%#{q}%", "%#{q}%"]) }
+  scope :search, lambda { |q| includes(:user).where(["LOWER(sites.hostname) LIKE LOWER(?) OR LOWER(sites.dev_hostnames) LIKE LOWER(?) OR LOWER(users.email) LIKE LOWER(?) OR LOWER(users.first_name) LIKE LOWER(?) OR LOWER(users.last_name) LIKE LOWER(?)", "%#{q}%", "%#{q}%", "%#{q}%", "%#{q}%", "%#{q}%"]) }
   
   # ===============
   # = Validations =

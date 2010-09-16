@@ -19,7 +19,7 @@
         - sites[0,1].each do |site|
           = content_tag :li do
             = link_to site.hostname, "http://#{site.hostname}"
-            = "(#{link_to("details", edit_admin_site_path(site))})".html_safe
+            = "(#{link_to("details", edit_admin_site_path(site), :title => "DEV: #{site.dev_hostnames}")})".html_safe
         - if sites.size > 2
           %li= link_to("#{sites.size-2} more", admin_user_path(user))
   %td.player_hits

@@ -10,6 +10,7 @@
 = link_to "Active pages", admin_referrers_path, :title => 'aka referrers'
 
 %br
+%br
 .search
   %h3= "Looking for more?"
   = form_tag(admin_sites_path, { :method => :get, :id => 'search_form', :remote => true, :onsubmit => "new SpinnerForElement('search_form');" }) do

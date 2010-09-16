@@ -1,10 +1,10 @@
 %tr{ :class => cycle("", "alt") }
   %td.hostname
     = link_to site.hostname, "http://#{site.hostname}"
-    = "(#{link_to("details", edit_admin_site_path(site))})".html_safe
+    = "(#{link_to("details", edit_admin_site_path(site), :title => "DEV: #{site.dev_hostnames}")})".html_safe
   %td.user
     %small
-      = link_to site.user.full_name, admin_user_path(site.user)
+      = link_to site.user.full_name, admin_user_path(site.user), :title => "#{site.user.full_name} <#{site.user.email}>"
   %td.state
     %small= site.state
   %td.loader_hits_cache

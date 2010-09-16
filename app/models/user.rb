@@ -106,7 +106,7 @@ class User < ActiveRecord::Base
   scope :by_traffic,       lambda { |way| joins(:sites).group("users.#{User.first.attributes.keys.join(', users.')}").order("SUM(sites.traffic_voxcast_cache + sites.traffic_s3_cache) #{way}") }
   scope :by_date,          lambda { |way| order(:created_at.send(way || 'desc')) }
   # search
-  scope :search, lambda { |q| includes(:sites).where(["LOWER(users.email) LIKE LOWER(?) OR LOWER(users.first_name) LIKE LOWER(?) OR LOWER(users.last_name) LIKE LOWER(?) OR LOWER(sites.hostname) LIKE LOWER(?)", "%#{q}%", "%#{q}%", "%#{q}%", "%#{q}%"]) }
+  scope :search, lambda { |q| includes(:sites).where(["LOWER(users.email) LIKE LOWER(?) OR LOWER(users.first_name) LIKE LOWER(?) OR LOWER(users.last_name) LIKE LOWER(?) OR LOWER(sites.hostname) LIKE LOWER(?) OR LOWER(sites.dev_hostnames) LIKE LOWER(?)", "%#{q}%", "%#{q}%", "%#{q}%", "%#{q}%", "%#{q}%"]) }
   
   # ===============
   # = Validations =
