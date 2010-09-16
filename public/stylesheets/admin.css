@@ -331,3 +331,8 @@ form label.icon {
   display:block;
   position:absolute;
 }
+
+#main p.summary {
+  float:right;
+  text-align: right;
+}
