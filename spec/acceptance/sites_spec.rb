@@ -50,7 +50,7 @@ feature "Sites actions:" do
     
     page.should have_content('google.com')
     @current_user.sites.last.hostname.should == "google.com"
-    VoxcastCDN.should_receive(:purge).twice
+    VoxcastCDN.stub_chain(:delay, :purge).twice
     
     click_button "Delete"
     

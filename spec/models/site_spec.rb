@@ -241,8 +241,10 @@ describe Site do
     it "activate on an already active site should purge loader & license file" do
       site = Factory(:site)
       site.activate
-      VoxcastCDN.should_receive(:purge).with("/js/#{site.token}.js")
-      VoxcastCDN.should_receive(:purge).with("/l/#{site.token}.js")
+      delay_mock = mock('Delay')
+      VoxcastCDN.should_receive(:delay).twice.and_return(delay_mock)
+      delay_mock.should_receive(:purge).with("/js/#{site.token}.js")
+      delay_mock.should_receive(:purge).with("/l/#{site.token}.js")
       site.activate
     end
     
@@ -253,8 +255,10 @@ describe Site do
       end
       
       it "should clear & purge license & loader when suspend" do
-        VoxcastCDN.should_receive(:purge).with("/js/#{@site.token}.js")
-        VoxcastCDN.should_receive(:purge).with("/l/#{@site.token}.js")
+        delay_mock = mock('Delay')
+        VoxcastCDN.should_receive(:delay).twice.and_return(delay_mock)
+        delay_mock.should_receive(:purge).with("/js/#{@site.token}.js")
+        delay_mock.should_receive(:purge).with("/l/#{@site.token}.js")
         @site.suspend
         @site = Site.find(@site)
         @site.loader.should_not be_present
@@ -271,8 +275,10 @@ describe Site do
       end
       
       it "should clear & purge license & loader and set archived_at when archive" do
-        VoxcastCDN.should_receive(:purge).with("/js/#{@site.token}.js")
-        VoxcastCDN.should_receive(:purge).with("/l/#{@site.token}.js")
+        delay_mock = mock('Delay')
+        VoxcastCDN.should_receive(:delay).twice.and_return(delay_mock)
+        delay_mock.should_receive(:purge).with("/js/#{@site.token}.js")
+        delay_mock.should_receive(:purge).with("/l/#{@site.token}.js")
         @site.archive
         @site.reload
         @site.loader.should_not be_present
@@ -318,19 +324,19 @@ describe Site do
     
     it "should set license file with template_hostnames" do
       site = Factory(:site)
-      site.set_license_file
+      site.set_loader_and_license_file
       site.license.read.should include(site.template_hostnames)
     end
     
     it "should set loader file with token" do
       site = Factory(:site)
-      site.set_loader_file
+      site.set_loader_and_license_file
       site.loader.read.should include(site.token)
     end
     
     it "should set loader file with stable player_mode" do
       site = Factory(:site)
-      site.set_loader_file
+      site.set_loader_and_license_file
       site.loader.read.should include("http://cdn.sublimevideo.net/p/sublime.js?t=#{site.token}")
     end
     
