@@ -7,10 +7,11 @@
   |
   - traffic = Site.sum(:traffic_s3_cache) + Site.sum(:traffic_voxcast_cache)
   = "Traffic: #{number_to_human_size(traffic, :precision => 4)}"
-  %br/
-  - flash_hits = Site.sum(:flash_hits_cache)
-  = "Flash: #{number_to_percentage(flash_hits / player_hits.to_f * 100, :precision => 2)}"
-  |
-  = "Loader/Player: #{number_with_delimiter(BigDecimal.new((loader_hits / player_hits.to_f).to_s, 2).ceil(2), :delimiter => "'")}"
-  |
-  = "Traffic/Player: #{number_to_human_size(traffic / player_hits.to_f, :precision => 4)}"
+  - if player_hits > 0
+    %br/
+    - flash_hits = Site.sum(:flash_hits_cache)
+    = "Flash: #{number_to_percentage(flash_hits / player_hits.to_f * 100, :precision => 2)}"
+    |
+    = "Loader/Player: #{number_with_delimiter(BigDecimal.new((loader_hits / player_hits.to_f).to_s, 2).ceil(2), :delimiter => "'")}"
+    |
+    = "Traffic/Player: #{number_to_human_size(traffic / player_hits.to_f, :precision => 4)}"
