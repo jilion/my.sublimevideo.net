@@ -16,7 +16,11 @@ module Responders
     def add_pagination_scope!
       if get? && (resource.is_a?(ActiveRecord::Relation) || resource.is_a?(Mongoid::Criteria)) && controller.action_name == 'index'
         begin
-          set_instance_variable(controller.controller_name.classify.constantize)
+          if controller.controller_name == 'delayed_jobs'
+            set_instance_variable(Delayed::Job)
+          else
+            set_instance_variable(controller.controller_name.classify.constantize)
+          end
         rescue
           set_instance_variable(resource[0].class) if resource.present?
         end
