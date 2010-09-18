@@ -24,7 +24,7 @@ gem 'devise',               '~> 1.1.2'
 gem 'devise_invitable',     :git => 'git://github.com/rymai/devise_invitable.git'
 
 gem 'memcached',            '~> 0.20.1'
-gem 'dalli',                '~> 0.9.6'
+gem 'dalli',                '~> 0.9.7'
 
 gem 'aws',                  '~> 2.3.20'
 gem 'carrierwave',          '~> 0.5.0.beta2'
