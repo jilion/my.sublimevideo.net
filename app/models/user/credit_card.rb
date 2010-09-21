@@ -118,7 +118,7 @@ private
   def void_authorization(authorize)
     void = Ogone.void(authorize.authorization)
     unless void.success?
-      HoptoadNotifier.notify(:error_message => "Credit card void for user #{id} failed: #{void.message}")
+      Notify.send("Credit card void for user #{id} failed: #{void.message}")
     end
   end
   
