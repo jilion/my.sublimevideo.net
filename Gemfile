@@ -52,7 +52,7 @@ group :development do
   gem 'annotate',      '~> 2.4.0'
   gem 'wirble'         # irbrc
   gem 'ruby-graphviz', :require => 'graphviz'
-  gem 'heroku',        '~> 1.10.4'
+  gem 'heroku',        '~> 1.10.5'
   gem 'heroku_tasks',  '~> 0.1.4'
   gem 'taps'           # heroku db pull/push
   gem 'rspec-rails',   '~> 2.0.0.beta.22'
@@ -60,17 +60,17 @@ group :development do
 end
 
 group :test do
-  gem 'spork',       '~> 0.9.0.rc2'
-  gem 'rspactor',    '~> 0.7.beta.7'
+  gem 'spork',              '~> 0.9.0.rc2'
+  gem 'rspactor',           '~> 0.7.beta.7'
   
-  gem 'shoulda',     '~> 2.11.3'
-  gem 'rspec-rails', '~> 2.0.0.beta.22'
+  gem 'shoulda',            '~> 2.11.3'
+  gem 'rspec-rails',        '~> 2.0.0.beta.22'
   
-  gem 'steak',       '~> 0.4.0.beta.1'
-  gem 'capybara',    '~> 0.3.9'
-  gem 'launchy',     '~> 0.3.7'
+  gem 'steak',              '~> 1.0.0.beta.1'
+  gem 'capybara',           '~> 0.3.9'
+  gem 'launchy',            '~> 0.3.7'
   
-  gem 'factory_girl_rails'
-  gem 'webmock',     '~> 1.3.5'
-  gem 'vcr',         '~> 1.1.1'
+  gem 'factory_girl_rails', '~> 1.0.0'
+  gem 'webmock',            '~> 1.3.5'
+  gem 'vcr',                '~> 1.1.1'
 end
