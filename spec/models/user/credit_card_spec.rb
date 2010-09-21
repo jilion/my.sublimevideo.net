@@ -37,7 +37,7 @@ describe User::CreditCard do
     it "should notify if void authorization after verification failed" do
       mock_response = mock('response', :success? => false, :message => 'failed')
       Ogone.stub(:void).and_return(mock_response)
-      HoptoadNotifier.should_receive(:notify)
+      Notify.should_receive(:send)
       user.save
     end
     
