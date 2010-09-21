@@ -62,7 +62,7 @@ describe Log::Voxcast do
     
     it "should delay parse_log && parse_log_referrer after create" do
       subject # trigger log creation
-      jobs = Delayed::Job.all
+      jobs = Delayed::Job.all.sort_by { |j| j.name }
       job = jobs.pop
       job.name.should == 'Class#parse_log_for_referrers'
       job.priority.should == 90

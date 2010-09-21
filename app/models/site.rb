@@ -101,16 +101,14 @@ class Site < ActiveRecord::Base
   # =================
   
   state_machine :initial => :pending do
-    before_transition :on => :activate,     :do => [:set_loader_file, :set_license_file]
-    after_transition  :active => :active,   :do => [:purge_loader_file, :purge_license_file]
+    before_transition :on => :activate,     :do => :set_loader_and_license_file
+    after_transition  :active => :active,   :do => :purge_loader_and_license_file
     
     before_transition :on => :archive,             :do => :set_archived_at
     before_transition :on => [:archive, :suspend], :do => :remove_loader_and_license_file
-    after_transition  :on => [:archive, :suspend], :do => :purge_license_file
-    after_transition  :on => [:archive, :suspend], :do => :purge_loader_file
+    after_transition  :on => [:archive, :suspend], :do => :purge_loader_and_license_file
     
-    before_transition :on => :unsuspend, :do => :set_loader_file
-    before_transition :on => :unsuspend, :do => :set_license_file
+    before_transition :on => :unsuspend, :do => :set_loader_and_license_file
     
     event(:activate)   { transition [:pending, :active] => :active }
     event(:suspend)    { transition [:pending, :active] => :suspended }
@@ -161,11 +159,8 @@ class Site < ActiveRecord::Base
     hostnames.join(',')
   end
   
-  def set_loader_file
+  def set_loader_and_license_file
     set_template("loader")
-  end
-  
-  def set_license_file
     set_template("license")
   end
   
@@ -174,12 +169,9 @@ class Site < ActiveRecord::Base
     self.remove_license = true
   end
   
-  def purge_loader_file
-    VoxcastCDN.purge("/js/#{token}.js")
-  end
-  
-  def purge_license_file
-    VoxcastCDN.purge("/l/#{token}.js")
+  def purge_loader_and_license_file
+    VoxcastCDN.delay.purge("/js/#{token}.js")
+    VoxcastCDN.delay.purge("/l/#{token}.js")
   end
   
   def reset_hits_cache!(time)

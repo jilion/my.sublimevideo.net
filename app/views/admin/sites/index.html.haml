@@ -1,7 +1,7 @@
 = title("Sites")
 = content_header(admin_sites_page_title(@sites))
 
-- cache :expires_in => 1.minute do
+- cache 'sites_summary', :expires_in => 1.minute do
   = render "summary"
 
 = render "filter_links"
