@@ -57,7 +57,7 @@ class SitesController < ApplicationController
         format.html { redirect_to sites_path }
         format.js
       else
-        format.html { render :new }
+        format.html { redirect_to sites_path }
         format.js   { render :new }
       end
     end
@@ -72,7 +72,7 @@ class SitesController < ApplicationController
         format.html { redirect_to sites_path }
         format.js
       else
-        format.html { render :edit }
+        format.html { redirect_to sites_path }
         format.js   { render :edit }
       end
     end
