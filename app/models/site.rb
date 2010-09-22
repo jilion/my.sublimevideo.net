@@ -22,6 +22,9 @@
 #  traffic_voxcast_cache :integer(8)      default(0)
 #  google_rank           :integer
 #  alexa_rank            :integer
+#  alias_hostnames       :string(255)
+#  path                  :string(255)
+#  wildcard              :boolean
 #
 
 class Site < ActiveRecord::Base
@@ -75,14 +78,21 @@ class Site < ActiveRecord::Base
   scope :by_alexa_rank,           lambda { |way| where(:alexa_rank.gte => 1).order(:alexa_rank.send(way || 'desc')) }
   scope :by_date,                 lambda { |way| order(:created_at.send(way || 'desc')) }
   # search
-  scope :search, lambda { |q| includes(:user).where(["LOWER(sites.hostname) LIKE LOWER(?) OR LOWER(sites.dev_hostnames) LIKE LOWER(?) OR LOWER(users.email) LIKE LOWER(?) OR LOWER(users.first_name) LIKE LOWER(?) OR LOWER(users.last_name) LIKE LOWER(?)", "%#{q}%", "%#{q}%", "%#{q}%", "%#{q}%", "%#{q}%"]) }
+  scope :search, lambda { |q| includes(:user).where([
+    "LOWER(sites.hostname) LIKE LOWER(?) OR
+     LOWER(sites.dev_hostnames) LIKE LOWER(?) OR
+     LOWER(users.email) LIKE LOWER(?) OR
+     LOWER(users.first_name) LIKE LOWER(?) OR
+     LOWER(users.last_name) LIKE LOWER(?)",
+     "%#{q}%", "%#{q}%", "%#{q}%", "%#{q}%", "%#{q}%"
+  ]) }
   
   # ===============
   # = Validations =
   # ===============
   
   validates :user,          :presence => true
-  validates :hostname,      :presence => true, :hostname_uniqueness => true, :production_hostname => true
+  validates :hostname,      :presence => true, :hostname_uniqueness => true, :hostname => true
   validates :dev_hostnames, :hostnames => true
   validates :player_mode,   :inclusion => { :in => PLAYER_MODES }
   validate  :must_be_active_to_update_hostnames
@@ -120,35 +130,15 @@ class Site < ActiveRecord::Base
   # = Instance Methods =
   # ====================
   
-  # add scheme & parse
   def hostname=(attribute)
-    if attribute.present?
-      attribute.downcase!
-      attribute = "http://#{attribute}" unless attribute =~ %r(^\w+://.*$)
-      attribute.gsub! %r(://www\.), '://'
-      begin
-        write_attribute :hostname, URI.parse(attribute).host
-      rescue
-        write_attribute :hostname, attribute.gsub(%r(.+://(www\.)?), '')
-      end
+    if attribute.present? && hostname.nil?
+      write_attribute :hostname, Hostname.clean(attribute)
     end
   end
   
-  # add scheme & parse
   def dev_hostnames=(attribute)
     if attribute.present?
-      attribute.downcase!
-      attribute = attribute.split(',').select { |h| h.present? }.map do |host|
-        host.strip!
-        host = "http://#{host}" unless host =~ %r(^\w+://.*$)
-        host.gsub! %r(://www\.), '://'
-        begin
-          URI.parse(host).host
-        rescue
-          host.gsub(%r(.+://(www\.)?), '')
-        end
-      end.join(', ')
-      write_attribute :dev_hostnames, attribute
+      write_attribute :dev_hostnames, Hostname.clean(attribute)
     end
   end
   
@@ -182,10 +172,6 @@ class Site < ActiveRecord::Base
     save!
   end
   
-  def in_progress?
-    pending?
-  end
-  
   def update_ranks
     ranks = PageRankr.ranks(hostname)
     self.google_rank = ranks[:google]
@@ -216,8 +202,11 @@ private
   # validate
   def must_be_active_to_update_hostnames
     if !new_record? && pending?
-      errors[:hostname] << "can not be updated when site in progress, please wait before update again" if hostname_changed?
-      errors[:dev_hostnames] << "can not be updated when site in progress, please wait before update again" if dev_hostnames_changed?
+      message = "can not be updated when site in progress, please wait before update again"
+      errors[:dev_hostnames]   << message if dev_hostnames_changed?
+      errors[:alias_hostnames] << message if alias_hostnames_changed?
+      errors[:path]            << message if path_changed?
+      errors[:wildcard]        << message if wildcard_changed?
     end
   end
   

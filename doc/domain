@@ -1,0 +1,51 @@
+===============
+= MAIN DOMAIN =
+===============
+
+??? ip ???
+should be validate by PublicSuffixService (http://publicsuffix.org)
+
+- remove trd == www
+- uniq domain
+- add a note about following options on top of main domain form
+
+=================
+= ALIAS DOMAINS =
+=================
+
+??? ip ???
+should be validate by PublicSuffixService (http://publicsuffix.org)
+
+- should not be publicly accessible or with similar content as main domain
+- will be manually verified (abuse can be sanctioned (domain blacklisted))
+- list of uniqu domain possible
+- != main domain
+
+===============
+= DEV DOMAINS =
+===============
+
+*.local
+should NOT be validate by PublicSuffixService (http://publicsuffix.org)
+
+- list of uniqu domain possible
+- != main domain
+
+========
+= PATH =
+========
+
+<main domain>/<path>
+
+- path can be added to main domain to restrict token scope
+- can be anything
+- have a list of potential service with this need (web.me.com) and notify site owner
+
+============
+= WildCard =
+============
+
+*.<main domain>
+
+- checkbox
+- note with warning about that anyone will be able to use this domain for every subdomain.

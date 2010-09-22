@@ -2,7 +2,7 @@
   %td.site
     .wrap
       = link_to truncate_middle(site.hostname), "http://#{site.hostname}", :class => "external_link", :onclick => "window.open(this); return false", :title => site.hostname
-      - if site.in_progress?
+      - if site.pending?
         = link_to "", :class => "settings disabled", :title => "Settings", :onclick => "return false" do
           %span= "settings"
       - else
@@ -10,7 +10,7 @@
           %span= "settings"
       -#%em.date= l site.created_at.to_date, :format => :small
   %td.code
-    - if site.in_progress?
+    - if site.pending?
       .in_progress
         %em= "Uploading to cloud"
     - else

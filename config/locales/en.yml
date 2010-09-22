@@ -37,3 +37,7 @@ en:
       feature_request:        "Feature request"
       other:                  "Other"
     
+  sites:
+    errors:
+      messages:
+        wildcard: "is invalid, you can set wildcard option in site settings"

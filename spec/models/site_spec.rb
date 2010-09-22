@@ -22,6 +22,9 @@
 #  traffic_voxcast_cache :integer(8)      default(0)
 #  google_rank           :integer
 #  alexa_rank            :integer
+#  alias_hostnames       :string(255)
+#  path                  :string(255)
+#  wildcard              :boolean
 #
 
 # coding: utf-8
@@ -76,7 +79,7 @@ describe Site do
     end
     
     describe "validate hostname" do
-      %w[http://asdasd slurp .com 901.12312.123 école école.fr üpper.de].each do |host|
+      %w[http://asdasd slurp .com 901.12312.123 école 124.123.151.123 *.google.com *.com].each do |host|
         it "should validate validity of hostname: #{host}" do
           site = Factory.build(:site, :hostname => host)
           site.should_not be_valid
@@ -84,7 +87,7 @@ describe Site do
         end
       end
       
-      %w[ftp://asdasd.com asdasd.com 124.123.151.123 htp://aasds.com www.youtube.com?v=31231].each do |host|
+      %w[ftp://asdasd.com asdasd.com école.fr üpper.de htp://aasds.com www.youtube.com?v=31231].each do |host|
         it "should validate non-validity of hostname: #{host}" do
           site = Factory.build(:site, :hostname => host)
           site.should be_valid
@@ -153,11 +156,18 @@ describe Site do
       end
     end
     
-    it "should prevent update of hostname if pending" do
-      site = Factory(:site)
-      site.update_attributes(:hostname => 'site.com').should be_false
-      site.errors[:hostname].should be_present
+    it "should prevent update of hostname" do
+      site = Factory(:site, :hostname => 'jilion.com')
+      site.update_attributes(:hostname => 'site.com')
+      site.reload.hostname.should == 'jilion.com'
     end
+    it "should prevent update of hostname even when active" do
+      site = Factory(:site, :hostname => 'jilion.com')
+      site.activate
+      site.update_attributes(:hostname => 'site.com')
+      site.reload.hostname.should == 'jilion.com'
+    end
+    
     it "should prevent update of dev_hostnames if pending" do
       site = Factory(:site)
       site.update_attributes(:dev_hostnames => 'site.local').should be_false
@@ -203,7 +213,7 @@ describe Site do
       
       it "should clean valid dev_hostnames (dev_hostnames should never contain /.+://(www.)?/)" do
         site = Factory(:site, :dev_hostnames => 'http://www.localhost:3000, 127.0.0.1:3000')
-        site.dev_hostnames.should == 'localhost, 127.0.0.1'
+        site.dev_hostnames.should == 'www.localhost, 127.0.0.1'
       end
       
       it "should clean invalid dev_hostnames (dev_hostnames should never contain /.+://(www.)?/)" do
