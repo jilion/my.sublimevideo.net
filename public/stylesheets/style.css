@@ -1645,7 +1645,8 @@ ul#trial_legend li em {
 }
 
 .popup .content form.edit .entry {
-  padding:35px 0 70px;
+/* Commented by Thibaud */
+/*  padding:35px 0 70px;*/
 }
 
 .popup .content form.edit .entry label {

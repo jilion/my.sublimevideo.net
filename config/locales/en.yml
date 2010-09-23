@@ -1,6 +1,7 @@
 en:
   attributes:
     dev_hostnames:        "Development domains"
+    alias_hostnames:        "Alias domains"
     terms_and_conditions: "Terms & Conditions"
     hostname:     "Domain"
     cc_type:      "Card type"
@@ -41,3 +42,5 @@ en:
     errors:
       messages:
         wildcard: "is invalid, you can set wildcard option in site settings"
+        duplicate: "must be unique"
+        include_hostname: "can not include site domain"

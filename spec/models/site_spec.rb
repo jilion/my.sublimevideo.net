@@ -36,13 +36,16 @@ describe Site do
   context "with valid attributes" do
     subject { Factory(:site) }
     
-    its(:hostname)      { should =~ /jilion[0-9]+\.com/ }
-    its(:dev_hostnames) { should == "localhost, 127.0.0.1" }
-    its(:token)         { should =~ /^[a-z0-9]{8}$/ }
-    its(:user)          { should be_present }
-    its(:license)       { should_not be_present }
-    its(:loader)        { should_not be_present }
-    its(:player_mode)   { should == 'stable' }
+    its(:hostname)        { should =~ /jilion[0-9]+\.com/ }
+    its(:dev_hostnames)   { should == "localhost, 127.0.0.1" }
+    its(:alias_hostnames) { should be_nil }
+    its(:path)            { should be_nil }
+    its(:wildcard)        { should be_false }
+    its(:token)           { should =~ /^[a-z0-9]{8}$/ }
+    its(:user)            { should be_present }
+    its(:license)         { should_not be_present }
+    its(:loader)          { should_not be_present }
+    its(:player_mode)     { should == 'stable' }
     it { be_pending }
     it { be_valid }
   end
@@ -78,17 +81,17 @@ describe Site do
       end
     end
     
-    describe "validate hostname" do
+    describe "hostname" do
       %w[http://asdasd slurp .com 901.12312.123 école 124.123.151.123 *.google.com *.com].each do |host|
-        it "should validate validity of hostname: #{host}" do
+        it "should not validate: #{host}" do
           site = Factory.build(:site, :hostname => host)
           site.should_not be_valid
           site.errors[:hostname].should be_present
         end
       end
       
-      %w[ftp://asdasd.com asdasd.com école.fr üpper.de htp://aasds.com www.youtube.com?v=31231].each do |host|
-        it "should validate non-validity of hostname: #{host}" do
+      %w[ftp://asdasd.com asdasd.com école.fr üpper.de htp://aasds.com www.youtube.com?v=31231 jilion.local].each do |host|
+        it "should validate: #{host}" do
           site = Factory.build(:site, :hostname => host)
           site.should be_valid
           site.errors[:hostname].should be_empty
@@ -96,17 +99,35 @@ describe Site do
       end
     end
     
-    describe "validate dev_hostnames" do
-      ['123.123.123,localhost', ', ,123.123.123,'].each do |dev_hosts|
-        it "should validate validity of dev_hostnames: #{dev_hosts}" do
-          site = Factory.build(:site, :dev_hostnames => dev_hosts)
+    describe "alias_hostnames" do
+      ['*.google.local', 'localhost', 'google.local, localhost', 'jilion.local', ', ,123.123.123,', 'localhost', 'localhost,, , 127.0.0.1', 'staging.google.com, staging.google.com'].each do |alias_hosts|
+        it "should not validate: #{alias_hosts}" do
+          site = Factory.build(:site, :hostname => 'jilion.local', :alias_hostnames => alias_hosts)
+          site.should_not be_valid
+          site.errors[:alias_hostnames].should be_present
+        end
+      end
+      
+      ['staging.google.com, dev.google.com', 'google.com', ', ,', 'jilion.fr'].each do |alias_hosts|
+        it "should validate: #{alias_hosts}" do
+          site = Factory.build(:site, :alias_hostnames => alias_hosts)
+          site.should be_valid
+          site.errors[:alias_hostnames].should be_empty
+        end
+      end
+    end
+    
+    describe "dev_hostnames" do
+      ["*.google.local", 'staging.google.com', 'google.com', 'localhost, localhost', 'jilion.local'].each do |dev_hosts|
+        it "should not validate: #{dev_hosts}" do
+          site = Factory.build(:site, :hostname => 'jilion.local', :dev_hostnames => dev_hosts)
           site.should_not be_valid
           site.errors[:dev_hostnames].should be_present
         end
       end
       
-      ['localhost', ', ,', 'localhost,, , 127.0.0.1'].each do |dev_hosts|
-        it "should validate non-validity of dev_hostnames: #{dev_hosts}" do
+      ['123.123.123,localhost', 'google.local', ', ,123.123.123,', 'localhost', ', ,', 'localhost,, , 127.0.0.1'].each do |dev_hosts|
+        it "should validate: #{dev_hosts}" do
           site = Factory.build(:site, :dev_hostnames => dev_hosts)
           site.should be_valid
           site.errors[:dev_hostnames].should be_empty
@@ -296,6 +317,16 @@ describe Site do
         @site.archived_at.should be_present
       end
       
+      it "should be able to set path" do
+        @site.update_attributes(:path => '/users/thibaud')
+        @site.path.should == 'users/thibaud'
+      end
+      
+      it "should be able to set wildcard" do
+        @site.update_attributes(:wildcard => "1")
+        @site.wildcard.should be_true
+      end
+      
     end
     
   end
@@ -362,6 +393,20 @@ describe Site do
       end
     end
     
+    describe "need_path?" do
+      it "should be true" do
+        site = Factory(:site, :hostname => 'web.me.com')
+        site.need_path?.should be_true
+      end
+      it "should be false when path present" do
+        site = Factory(:site, :hostname => 'web.me.com', :path => 'users/thibaud')
+        site.need_path?.should be_false
+      end
+      it "should be false" do
+        site = Factory(:site, :hostname => 'jilion.com')
+        site.need_path?.should be_false
+      end
+    end
+    
   end
-  
 end

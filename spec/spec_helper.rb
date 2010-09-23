@@ -10,6 +10,11 @@ Spork.prefork do
   require File.dirname(__FILE__) + "/../config/environment" unless defined?(Rails)
   require 'rspec/rails'
   require 'shoulda'
+  
+  # require 'akephalos'
+  # Capybara.javascript_driver = :akephalos
+  # require 'capybara/envjs'
+  # Capybara.javascript_driver = :envjs
 end
 
 Spork.each_run do

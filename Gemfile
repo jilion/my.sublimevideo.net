@@ -70,6 +70,8 @@ group :test do
   
   gem 'steak',              '~> 1.0.0.beta.2'
   gem 'capybara',           '~> 0.3.9'
+  # gem 'capybara-envjs',     '~> 0.1.6'
+  # gem 'akephalos',          '~> 0.2.4'
   gem 'launchy',            '~> 0.3.7'
   
   gem 'factory_girl_rails', '~> 1.0.0'

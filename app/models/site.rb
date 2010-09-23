@@ -35,7 +35,7 @@ class Site < ActiveRecord::Base
   cattr_accessor :per_page
   self.per_page = 100
   
-  attr_accessible :hostname, :dev_hostnames
+  attr_accessible :hostname, :alias_hostnames, :dev_hostnames, :path, :wildcard
   
   uniquify :token, :chars => Array('a'..'z') + Array('0'..'9')
   
@@ -93,7 +93,8 @@ class Site < ActiveRecord::Base
   
   validates :user,          :presence => true
   validates :hostname,      :presence => true, :hostname_uniqueness => true, :hostname => true
-  validates :dev_hostnames, :hostnames => true
+  validates :dev_hostnames, :dev_hostnames => true
+  validates :alias_hostnames, :alias_hostnames => true
   validates :player_mode,   :inclusion => { :in => PLAYER_MODES }
   validate  :must_be_active_to_update_hostnames
   # BETA
@@ -142,6 +143,16 @@ class Site < ActiveRecord::Base
     end
   end
   
+  def alias_hostnames=(attribute)
+    if attribute.present?
+      write_attribute :alias_hostnames, Hostname.clean(attribute)
+    end
+  end
+  
+  def path=(attribute)
+    write_attribute :path, attribute.gsub(/^\//, '')
+  end
+  
   def template_hostnames
     hostnames  = [hostname]
     hostnames += dev_hostnames.split(', ')
@@ -188,6 +199,10 @@ class Site < ActiveRecord::Base
     self.traffic_s3_cache      = 0
     self.traffic_voxcast_cache = 0
     self.save
+  end
+  
+  def need_path?
+    %w[web.me.com homepage.mac.com].include?(hostname) && path.blank?
   end
   
 private

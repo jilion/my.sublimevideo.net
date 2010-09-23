@@ -1,7 +1,15 @@
 %tr{ :id => dom_id(site), :class => cycle("", "alt") }
   %td.site
     .wrap
-      = link_to truncate_middle(site.hostname), "http://#{site.hostname}", :class => "external_link", :onclick => "window.open(this); return false", :title => site.hostname
+      = link_to hostname_with_path_and_wildcard(site, :truncate => 30), "http://#{hostname_with_path(site)}", :class => "external_link", :onclick => "window.open(this); return false", :title => hostname_with_path(site)
+      -#- if site.wildcard?
+      -#  %span
+      -#    %i= "wildcard support"
+      - if site.need_path?
+        %span
+          -# TODO: Update this text
+          %i= "you should add a path"
+      
       - if site.pending?
         = link_to "", :class => "settings disabled", :title => "Settings", :onclick => "return false" do
           %span= "settings"

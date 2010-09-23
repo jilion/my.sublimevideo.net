@@ -17,9 +17,11 @@ describe Hostname do
     it { subject.clean(".").should == "." }
     it { subject.clean("ASDASD.COM").should == "asdasd.com" }
     it { subject.clean("124.123.151.123").should == "124.123.151.123" }
+    it { subject.clean("124.123.151.123?super=cool").should == "124.123.151.123" }
     it { subject.clean("広告掲載.jp").should == "広告掲載.jp" }
     it { subject.clean("http://www.youtube.com?v=31231").should == "youtube.com" }
     it { subject.clean("web.me.com/super.fun").should == "web.me.com" }
+    it { subject.clean("web.me.com/super.html").should == "web.me.com" }
     it { subject.clean("http://www.www.com").should == "www.com" }
     it { subject.clean("www.com").should == "www.com" }
     it { subject.clean("ftp://www.www.com").should == "www.com" }
@@ -35,6 +37,17 @@ describe Hostname do
   end
   
   describe "valid?" do
+    it { subject.valid?("*.google.com").should be_true }
+    it { subject.valid?("éCOLE.fr").should be_true }
+    it { subject.valid?("ASDASD.COM").should be_true }
+    it { subject.valid?("広告掲載.jp").should be_true }
+    it { subject.valid?("http://www.youtube.com?v=31231").should be_true }
+    it { subject.valid?("http://www.www.com").should be_true }
+    it { subject.valid?("www.com").should be_true }
+    it { subject.valid?("ftp://www.www.com").should be_true }
+    it { subject.valid?("https://www.co.uk").should be_true }
+    it { subject.valid?("google.local").should be_true }
+    
     it { subject.valid?(nil).should be_false }
     it { subject.valid?("").should be_false }
     it { subject.valid?(".com").should be_false }
@@ -42,17 +55,8 @@ describe Hostname do
     it { subject.valid?("www").should be_false }
     it { subject.valid?("*").should be_false }
     it { subject.valid?("*.*").should be_false }
-    it { subject.valid?("*.google.com").should be_true }
     it { subject.valid?("éCOLE").should be_false }
-    it { subject.valid?("éCOLE.fr").should be_true }
-    it { subject.valid?("ASDASD.COM").should be_true }
     it { subject.valid?("124.123.151.123").should be_false }
-    it { subject.valid?("広告掲載.jp").should be_true }
-    it { subject.valid?("http://www.youtube.com?v=31231").should be_true }
-    it { subject.valid?("http://www.www.com").should be_true }
-    it { subject.valid?("www.com").should be_true }
-    it { subject.valid?("ftp://www.www.com").should be_true }
-    it { subject.valid?("https://www.co.uk").should be_true }
     it { subject.valid?("localhost").should be_false }
     it { subject.valid?("com").should be_false }
     it { subject.valid?("test;ERR").should be_false }
@@ -63,19 +67,87 @@ describe Hostname do
     it { subject.valid?("http://www.bob.com,,localhost:3000").should be_false }
   end
   
+  describe "dev_valid?" do
+    it { subject.dev_valid?(nil).should be_true }
+    it { subject.dev_valid?("").should be_true }
+    it { subject.dev_valid?("co.uk").should be_true }
+    it { subject.dev_valid?("www").should be_true }
+    it { subject.dev_valid?("éCOLE").should be_true }
+    it { subject.dev_valid?("124.123.151.123").should be_true }
+    it { subject.dev_valid?("localhost").should be_true }
+    it { subject.dev_valid?("localhost:8888").should be_true }
+    it { subject.dev_valid?("com").should be_true }
+    it { subject.dev_valid?("google.local").should be_true }
+    it { subject.dev_valid?("google.dev").should be_true }
+    it { subject.dev_valid?("google.prod").should be_true }
+    it { subject.dev_valid?("google.test").should be_true }
+    it { subject.dev_valid?("test;ERR").should be_true }
+    it { subject.dev_valid?("http://test;ERR").should be_true }
+    it { subject.dev_valid?("http://www.localhost:3000").should be_true }
+    it { subject.dev_valid?("ftp://127.]boo[:3000").should be_true }
+    it { subject.dev_valid?("www.joke;foo").should be_true }
+    it { subject.dev_valid?("*").should be_true }
+    it { subject.dev_valid?("*.*").should be_true }
+    
+    it { subject.dev_valid?(".com").should be_false }
+    it { subject.dev_valid?("http://www.bob.com,,localhost:3000").should be_false }
+    it { subject.dev_valid?("*.google.com").should be_false }
+    it { subject.dev_valid?("staging.google.com").should be_false }
+    it { subject.dev_valid?("test.google.com").should be_false }
+    it { subject.dev_valid?("éCOLE.fr").should be_false }
+    it { subject.dev_valid?("ASDASD.COM").should be_false }
+    it { subject.dev_valid?("広告掲載.jp").should be_false }
+    it { subject.dev_valid?("http://www.youtube.com?v=31231").should be_false }
+    it { subject.dev_valid?("http://www.www.com").should be_false }
+    it { subject.dev_valid?("www.com").should be_false }
+    it { subject.dev_valid?("ftp://www.www.com").should be_false }
+    it { subject.dev_valid?("https://www.co.uk").should be_false }
+  end
+  
   describe "wildcard?" do
-    it { subject.wildcard?(nil).should be_false }
-    it { subject.wildcard?("").should be_false }
-    it { subject.wildcard?("co.uk").should be_false }
     it { subject.wildcard?("*.com").should be_true }
     it { subject.wildcard?("www.*.com").should be_true }
     it { subject.wildcard?("bob.*.com").should be_true }
     it { subject.wildcard?("*").should be_true }
     it { subject.wildcard?("*.*").should be_true }
     it { subject.wildcard?("*.google.com").should be_true }
+    it { subject.wildcard?("google.fr, *.google.com").should be_true }
+    
+    it { subject.wildcard?(nil).should be_false }
+    it { subject.wildcard?("").should be_false }
+    it { subject.wildcard?("co.uk").should be_false }
     it { subject.wildcard?("localhost").should be_false }
     it { subject.wildcard?("google.fr").should be_false }
-    it { subject.wildcard?("google.fr, *.google.com").should be_true }
+  end
+  
+  describe "duplicate?" do
+    it { subject.duplicate?("http://localhost:3000, localhost").should be_true }
+    it { subject.duplicate?("127.0.0.1, bob, 127.0.0.1").should be_true }
+    it { subject.duplicate?("*.*, *.*").should be_true }
+    it { subject.duplicate?("*, *").should be_true }
+    it { subject.duplicate?("google.fr, google.fr").should be_true }
+    
+    it { subject.duplicate?(nil).should be_false }
+    it { subject.duplicate?("").should be_false }
+    it { subject.duplicate?("localhost").should be_false }
+    it { subject.duplicate?("bob.fr, bob.com").should be_false }
+    it { subject.duplicate?("google.fr, staging.google.fr").should be_false }
+    it { subject.duplicate?("http://www.localhost:3000, localhost").should be_false }
+  end
+  
+  describe "include?" do
+    it { subject.include?("http://localhost:3000, localhost", 'localhost').should be_true }
+    it { subject.include?("127.0.0.1, bob, 127.0.0.1", 'bob').should be_true }
+    it { subject.include?("*.*, *.*", '*.*').should be_true }
+    it { subject.include?("google.fr, jilion.com", "google.fr").should be_true }
+    
+    it { subject.include?(nil, 'jilion.com').should be_false }
+    it { subject.include?('jilion.com', nil).should be_false }
+    it { subject.include?('jilion.com', "").should be_false }
+    it { subject.include?(nil, nil).should be_false }
+    it { subject.include?("", "").should be_false }
+    it { subject.include?("", 'jilion.com').should be_false }
+    it { subject.include?("localhost, jilion", 'jilion.com').should be_false }
   end
   
 end

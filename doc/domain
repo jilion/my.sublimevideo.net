@@ -2,7 +2,6 @@
 = MAIN DOMAIN =
 ===============
 
-??? ip ???
 should be validate by PublicSuffixService (http://publicsuffix.org)
 
 - remove trd == www
@@ -13,7 +12,6 @@ should be validate by PublicSuffixService (http://publicsuffix.org)
 = ALIAS DOMAINS =
 =================
 
-??? ip ???
 should be validate by PublicSuffixService (http://publicsuffix.org)
 
 - should not be publicly accessible or with similar content as main domain
