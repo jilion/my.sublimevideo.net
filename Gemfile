@@ -30,6 +30,7 @@ gem 'memcached',             '~> 0.20.1'
 gem 'dalli',                 '~> 0.9.7'
 
 gem 'aws',                   '~> 2.3.20'
+# gem 'fog',                   '~> 0.3.0' # for carrierwave 0.5 final
 gem 'carrierwave',           '~> 0.5.0.beta2'
 
 gem 'bson_ext',              '1.0.4'
@@ -54,7 +55,7 @@ group :development do
   gem 'annotate',      '~> 2.4.0'
   gem 'wirble'         # irbrc
   gem 'ruby-graphviz', :require => 'graphviz'
-  gem 'heroku',        '~> 1.10.5'
+  gem 'heroku',        '~> 1.10.6'
   gem 'heroku_tasks',  '~> 0.1.4'
   gem 'taps'           # heroku db pull/push
   gem 'rspec-rails',   '~> 2.0.0.beta.22'
