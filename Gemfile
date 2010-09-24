@@ -14,7 +14,7 @@ gem 'delayed_job',           '~> 2.1.0.pre2'
 gem 'will_paginate',         '~> 3.0.pre2'
 gem 'has_scope',             :git => 'git://github.com/rymai/has_scope.git'
 gem 'jammit',                '~> 0.5.3'
-gem 'meta_where',            '~> 0.9.3'
+gem 'meta_where',            '~> 0.9.4'
 gem 'hoptoad_notifier',      '~> 2.3.7'
 gem 'prowl',                 '~> 0.1.3'
 gem 'activemerchant',        '~> 1.7.1'
@@ -23,14 +23,14 @@ gem 'request-log-analyzer',  '~> 1.8.1', :require => 'request_log_analyzer'
 gem 'public_suffix_service', '~> 0.6.0'
 gem 'RedCloth',              '~> 4.2.3'
 
-gem 'devise',                '~> 1.1.2'
+gem 'devise',                '~> 1.1.3'
 gem 'devise_invitable',      :git => 'git://github.com/rymai/devise_invitable.git'
 
 gem 'memcached',             '~> 0.20.1'
 gem 'dalli',                 '~> 0.9.7'
 
 gem 'aws',                   '~> 2.3.20'
-gem 'carrierwave',           '~> 0.5.0.beta2'
+gem 'carrierwave',           '~> 0.5.0'
 
 gem 'bson_ext',              '1.0.4'
 gem 'mongo',                 '1.0.7'
@@ -39,6 +39,8 @@ gem 'mongoid',               '2.0.0.beta.18'
 gem 'zip',                   '~> 2.0.2', :require => 'zip/zip'
 gem 'countries',             '~> 0.3.0'
 gem 'PageRankr',             '~> 1.4.3', :require => 'page_rankr'
+
+gem 'rescue_me'
 
 group :production do
   gem 'rack-google-analytics', '~> 0.9.2', :require => 'rack/google-analytics'
@@ -54,7 +56,7 @@ group :development do
   gem 'annotate',      '~> 2.4.0'
   gem 'wirble'         # irbrc
   gem 'ruby-graphviz', :require => 'graphviz'
-  gem 'heroku',        '~> 1.10.5'
+  gem 'heroku',        '~> 1.10.6'
   gem 'heroku_tasks',  '~> 0.1.4'
   gem 'taps'           # heroku db pull/push
   gem 'rspec-rails',   '~> 2.0.0.beta.22'
