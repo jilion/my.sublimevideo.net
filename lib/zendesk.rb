@@ -4,17 +4,17 @@ module Zendesk
   
   class Request
     def initialize(url, verb = :get, params = {})
-      @verb   = verb.to_sym
-      @url    = Zendesk.parse_url(url.to_s)
-      @params = Zendesk.params_to_xml(params)
-      @headers = "Net::HTTP::#{verb.to_s.camelize}".constantize.new(@url.path)
+      @verb    = verb.to_sym
+      @url     = Zendesk.parse_url(url.to_s)
+      @params  = Zendesk.params_to_xml(params)
+      @headers = "Net::HTTP::#{@verb.to_s.camelize}".constantize.new(@url.path)
       @headers.basic_auth(Zendesk.username, Zendesk.password)
-      @headers.content_type = "application/xml" if params_required?
     end
     
     def execute
       res = Net::HTTP.start(@url.host, @url.port) do |http|
         if params_required?
+          @headers.content_type = "application/xml"
           http.request(@headers, @params)
         else
           http.request(@headers)

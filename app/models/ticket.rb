@@ -13,43 +13,22 @@ class Ticket
   
   attr_accessor :user, :type, :subject, :message
   
-  TYPES = [
-    { :bug_report => 'bug report' },
-    { :improvement_suggestion => 'improvement suggestion' },
-    { :feature_request => 'feature request' },
-    { :other => 'other' }
-  ]
-  
-  def self.ordered_types
-    @@ordered_types ||= if MySublimeVideo::Release.beta?
-      TYPES.dup.tap { |t| t.delete(t.select { |x| x.key?(:billing) }[0]) }
-    else
-      TYPES
-    end
-  end
-  
-  def self.unordered_types
-    @@unordered_types ||= ordered_types.inject({}) { |memo,h| memo.merge!(h) }
-  end
+  TYPES = ["bug-report", "improvement-suggestion", "feature-request", "other"]
   
   validates :user,    :presence => true
-  validates :type,    :inclusion => { :in => Ticket.unordered_types.keys, :message => "You must choose a category" }
+  validates :type,    :inclusion => { :in => Ticket::TYPES, :message => "You must choose a category" }
   validates :subject, :presence => true
   validates :message, :presence => true
   
   def initialize(params = {})
     @user    = params.delete(:user)
-    @type    = params.delete(:type).try(:to_sym)
+    @type    = params.delete(:type)
     @subject = h(params.delete(:subject).try(:to_s))
     @message = h(params.delete(:message).try(:to_s))
   end
   
   def save
-    if valid? && delay_post_ticket
-      true
-    else
-      false
-    end
+    valid? && delay(:priority => 25).post_ticket
   end
   
   def post_ticket
@@ -57,19 +36,17 @@ class Ticket
       :ticket => {
         :subject     => @subject,
         :description => @message,
-        :set_tags    => Ticket.unordered_types[@type]
+        :set_tags    => @type
       }.merge(user_params)
     })
     ticket_id = response['location'].match(%r(#{Zendesk.base_url}/tickets/(\d+)\.xml))[1].to_i
     raise "Can't find ticket at: #{response['location']}!" if ticket_id.blank?
     
-    if @user.zendesk_id.blank?
-      zendesk_requester_id = JSON.parse(Zendesk.get("/tickets/#{ticket_id}.json").body)["requester_id"].to_i
-      if zendesk_requester_id
-        @user.update_attribute(:zendesk_id, zendesk_requester_id)
-        delay_verify_user
-      end
+    if @user.zendesk_id.blank? && zendesk_requester_id = JSON.parse(Zendesk.get("/tickets/#{ticket_id}.json").body)["requester_id"].to_i
+      @user.update_attribute(:zendesk_id, zendesk_requester_id)
+      delay(:priority => 25).verify_user
     end
+    
     ticket_id
   end
   
@@ -82,14 +59,6 @@ class Ticket
   end
   
 private
-  
-  def delay_post_ticket
-    delay(:priority => 25).post_ticket
-  end
-  
-  def delay_verify_user
-    delay(:priority => 25).verify_user
-  end
   
   def user_params
     if @user.zendesk_id.present?

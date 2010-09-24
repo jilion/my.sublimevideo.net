@@ -12,20 +12,20 @@ require 'spec_helper'
 
 describe Ticket do
   let(:user)   { Factory(:user) }
-  let(:ticket) { Ticket.new({ :user => Factory(:user), :type => "bug_report", :subject => "Subject", :message => "Message" }) }
+  let(:ticket) { Ticket.new({ :user => Factory(:user), :type => "bug-report", :subject => "Subject", :message => "Message" }) }
   
   context "with valid attributes" do
     subject { ticket }
     
-    its(:type)            { should == :bug_report }
     its(:subject)         { should == "Subject" }
-    its(:message)         { should == "Message" }
+    its(:type)            { should == "bug-report" }
     it { should be_valid }
+    its(:message)         { should == "Message" }
   end
   
   describe "validates" do
     it "should validate presence of user" do
-      ticket = Ticket.new({ :user => nil, :type => "bug_report", :subject => nil, :message => "Message" })
+      ticket = Ticket.new({ :user => nil, :type => "bug-report", :subject => nil, :message => "Message" })
       ticket.should_not be_valid
       ticket.errors[:user].should be_present
     end
@@ -35,57 +35,18 @@ describe Ticket do
       ticket.errors[:type].should be_present
     end
     it "should validate presence of subject" do
-      ticket = Ticket.new({ :user => user, :type => "bug_report", :subject => nil, :message => "Message" })
+      ticket = Ticket.new({ :user => user, :type => "bug-report", :subject => nil, :message => "Message" })
       ticket.should_not be_valid
       ticket.errors[:subject].should be_present
     end
     it "should validate presence of message" do
-      ticket = Ticket.new({ :user => user, :type => "bug_report", :subject => "Subject", :message => nil })
+      ticket = Ticket.new({ :user => user, :type => "bug-report", :subject => "Subject", :message => nil })
       ticket.should_not be_valid
       ticket.errors[:message].should be_present
     end
   end
   
-  describe "class methods" do
-    it ".ordered types should return ordered types and their associated tags" do
-      if MySublimeVideo::Release.beta?
-        Ticket.ordered_types.should == [
-          { :bug_report => 'bug report' },
-          { :improvement_suggestion => 'improvement suggestion' },
-          { :feature_request => 'feature request' },
-          { :other => 'other' }
-        ]
-      else
-        Ticket.ordered_types.should == [
-          { :bug_report => 'bug report' },
-          { :improvement_suggestion => 'improvement suggestion' },
-          { :feature_request => 'feature request' },
-          { :other => 'other' }
-        ]
-      end
-    end
-    
-    it ".unordered_types should return a hash of all types and their associated tags" do
-      if MySublimeVideo::Release.beta?
-        Ticket.unordered_types.should == {
-          :bug_report => 'bug report',
-          :improvement_suggestion => 'improvement suggestion',
-          :feature_request => 'feature request',
-          :other => 'other'
-        }
-      else
-        Ticket.unordered_types.should == {
-          :bug_report => 'bug report',
-          :improvement_suggestion => 'improvement suggestion',
-          :feature_request => 'feature request',
-          :other => 'other'
-        }
-      end
-    end
-  end
-  
   describe "instance methods" do
-    
     describe "#save" do
       it "should delay Ticket#post_ticket" do
         ticket.save
@@ -122,7 +83,7 @@ describe Ticket do
       end
       
       it "should set the tags for the ticket based on its type" do
-        JSON.parse(Zendesk.get("/tickets/#{ticket.post_ticket}.json").body)["current_tags"].should =~ %r(#{Ticket.unordered_types[ticket.type]})
+        JSON.parse(Zendesk.get("/tickets/#{ticket.post_ticket}.json").body)["current_tags"].should =~ %r(#{ticket.type})
       end
       
       it "should set the zendesk_id of the user if he didn't have one already" do
@@ -140,15 +101,13 @@ describe Ticket do
     end
     
     describe "#verify_user" do
-      before(:each) { VCR.insert_cassette("ticket/verify_user") }
-      
       it "should set the user as verified on zendesk" do
         VCR.use_cassette("ticket/post_ticket") { ticket.post_ticket }
-        ticket.verify_user
-        JSON.parse(Zendesk.get("/users/#{ticket.user.zendesk_id}.json").body)["is_verified"].should be_true
+        VCR.use_cassette("ticket/verify_user") do
+          ticket.verify_user
+          JSON.parse(Zendesk.get("/users/#{ticket.user.zendesk_id}.json").body)["is_verified"].should be_true
+        end
       end
-      
-      after(:each) { VCR.eject_cassette }
     end
   end
   
