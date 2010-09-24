@@ -23,24 +23,32 @@ feature "Sites actions:" do
     site.license.read.should include(site.template_hostnames)
   end
   
+  # Capybara JS not compatible with special onclick (I suppose)
   pending "edit a site" do
-    Capybara.default_wait_time = 5
-    site = Factory(:site, :user => @current_user, :hostname => 'google.com', :state => 'active')
-    visit "/sites"
-    
-    page.should have_content('google.com')
-    
-    within(:css, "tr#site_#{site.id}") do
-      click_link "Settings"
+    VCR.use_cassette('acceptance/sites/edit') do
+      Capybara.default_wait_time = 5
+      Capybara.current_driver = :akephalos
+      
+      site = Factory(:site, :user => @current_user, :hostname => 'google.com', :state => 'active')
+      visit "/sites"
+      
+      page.should have_content('google.com')
+      
+      within(:css, "tr#site_#{site.id}") do
+        click_link "Settings"
+      end
+      find_button('Update') # wait for button
+      
+      fill_in "Alias domains", :with => "google.ch, google.fr"
+      fill_in "Development domains", :with => "google.local, localhost"
+      click_button "Update"
+      
+      current_url.should =~ %r(http://[^/]+/sites)
+      page.should have_content('google.com')
+      
+      site = @current_user.sites.last
+      site.dev_hostnames.should == "google.local"
     end
-    fill_in "Development domains", :with => "google.local"
-    click_button "Update"
-    
-    current_url.should =~ %r(http://[^/]+/sites)
-    page.should have_content('google.com')
-    
-    site = @current_user.sites.last
-    site.dev_hostnames.should == "google.local"
   end
   
   scenario "archive a pending site" do

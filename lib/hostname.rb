@@ -21,9 +21,33 @@ module Hostname
     end
     
     # one site or list of sites separated by comma
+    def dev_valid?(hostnames)
+      if hostnames.present?
+        clean(hostnames).split(', ').all? { |h| dev_valid_one?(h) }
+      else
+        true
+      end
+    end
+    
+    # one site or list of sites separated by comma
     def wildcard?(hostnames)
       if hostnames.present?
         clean(hostnames).split(', ').any? { |h| h =~ /\*/ }
+      end
+    end
+    
+    # one site or list of sites separated by comma
+    def duplicate?(hostnames)
+      if hostnames.present?
+        hostnames = clean(hostnames).split(', ')
+        hostnames.count > hostnames.uniq.count
+      end
+    end
+    
+    # one site or list of sites separated by comma
+    def include?(hostnames, hostname)
+      if hostnames.present?
+        clean(hostnames).split(', ').any? { |h| h == hostname }
       end
     end
     
@@ -51,6 +75,13 @@ module Hostname
       ssp.sld.present?
     rescue
       false
+    end
+    
+    def dev_valid_one?(hostname)
+      ssp = PublicSuffixService.parse(hostname)
+      ssp.tld == 'local'
+    rescue
+      true
     end
     
   end

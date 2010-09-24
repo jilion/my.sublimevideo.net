@@ -14,7 +14,7 @@ gem 'delayed_job',           '~> 2.1.0.pre2'
 gem 'will_paginate',         '~> 3.0.pre2'
 gem 'has_scope',             :git => 'git://github.com/rymai/has_scope.git'
 gem 'jammit',                '~> 0.5.3'
-gem 'meta_where',            '~> 0.9.3'
+gem 'meta_where',            '~> 0.9.4'
 gem 'hoptoad_notifier',      '~> 2.3.7'
 gem 'prowl',                 '~> 0.1.3'
 gem 'activemerchant',        '~> 1.7.1'
@@ -71,6 +71,8 @@ group :test do
   
   gem 'steak',              '~> 1.0.0.beta.2'
   gem 'capybara',           '~> 0.3.9'
+  # gem 'capybara-envjs',     '~> 0.1.6'
+  # gem 'akephalos',          '~> 0.2.4'
   gem 'launchy',            '~> 0.3.7'
   
   gem 'factory_girl_rails', '~> 1.0.0'
