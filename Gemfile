@@ -17,21 +17,21 @@ gem 'jammit',                '~> 0.5.3'
 gem 'meta_where',            '~> 0.9.4'
 gem 'hoptoad_notifier',      '~> 2.3.7'
 gem 'prowl',                 '~> 0.1.3'
-gem 'activemerchant',        '~> 1.7.1'
+gem 'activemerchant',        '~> 1.8.0'
 gem 'voxel_hapi',            :git => 'git://github.com/thibaudgg/voxel_hapi.git' # VoxCast CDN
-gem 'request-log-analyzer',  '~> 1.8.1', :require => 'request_log_analyzer'
+gem 'request-log-analyzer',  '~> 1.9.0', :require => 'request_log_analyzer'
 gem 'public_suffix_service', '~> 0.6.0'
 gem 'RedCloth',              '~> 4.2.3'
 
-gem 'devise',                '~> 1.1.2'
+gem 'devise',                '~> 1.1.3'
 gem 'devise_invitable',      :git => 'git://github.com/rymai/devise_invitable.git'
 
 gem 'memcached',             '~> 0.20.1'
 gem 'dalli',                 '~> 0.9.7'
 
 gem 'aws',                   '~> 2.3.20'
-# gem 'fog',                   '~> 0.3.0' # for carrierwave 0.5 final
-gem 'carrierwave',           '~> 0.5.0.beta2'
+gem 'fog',                   '~> 0.3.5' # for carrierwave 0.5 final
+gem 'carrierwave',           '~> 0.5.0'
 
 gem 'bson_ext',              '1.0.4'
 gem 'mongo',                 '1.0.7'
