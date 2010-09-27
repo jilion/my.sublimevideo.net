@@ -20,11 +20,13 @@ GIT
 
 GIT
   remote: git://github.com/thibaudgg/voxel_hapi.git
-  revision: d913ce045f1d65166416930e40609513072f62ec
+  revision: 3f46bed91f6b4d4f044174e18bf39ce2f33e3779
   specs:
-    voxel_hapi (1.1.0)
-      libxml-ruby (>= 1.0.3)
-      xml-simple (>= 1.0.12)
+    voxel_hapi (1.1.1)
+      bundler (~> 1.0.0)
+      libxml-ruby (~> 1.1.3)
+      rescue_me (~> 0.1.0)
+      xml-simple (~> 1.0.12)
 
 GEM
   remote: http://rubygems.org/
@@ -46,7 +48,7 @@ GEM
       rack-mount (~> 0.6.12)
       rack-test (~> 0.5.4)
       tzinfo (~> 0.3.23)
-    activemerchant (1.7.3)
+    activemerchant (1.8.0)
       activesupport (>= 2.3.2)
       braintree (>= 2.0.0)
       builder (>= 2.0.0)
@@ -104,6 +106,7 @@ GEM
     diff-lcs (1.1.2)
     erubis (2.6.6)
       abstract (>= 1.0.0)
+    excon (0.2.2)
     factory_girl (1.3.2)
     factory_girl_rails (1.0)
       factory_girl (~> 1.3)
@@ -111,6 +114,16 @@ GEM
     ffaker (0.4.0)
     ffi (0.6.3)
       rake (>= 0.8.7)
+    fog (0.3.5)
+      builder
+      excon (>= 0.2.1)
+      formatador (>= 0.0.15)
+      json
+      mime-types
+      net-ssh (~> 2.0.23)
+      nokogiri (~> 1.4.3.1)
+      ruby-hmac
+    formatador (0.0.15)
     growl (1.0.3)
     haml (3.0.18)
     heroku (1.10.6)
@@ -125,6 +138,7 @@ GEM
     jammit (0.5.3)
       closure-compiler (>= 0.1.0)
       yui-compressor (>= 0.9.1)
+    json (1.4.6)
     json_pure (1.4.6)
     launchy (0.3.7)
       configuration (>= 0.0.5)
@@ -150,6 +164,7 @@ GEM
       mongo (= 1.0.7)
       tzinfo (~> 0.3.22)
       will_paginate (~> 3.0.pre)
+    net-ssh (2.0.23)
     nokogiri (1.4.3.1)
     pg (0.9.0)
     polyglot (0.3.1)
@@ -161,7 +176,7 @@ GEM
       rack (>= 1.0.0)
     rack-private (0.1.5)
     rack-ssl-enforcer (0.1.8)
-    rack-test (0.5.5)
+    rack-test (0.5.6)
       rack (>= 1.0)
     rails (3.0.0)
       actionmailer (= 3.0.0)
@@ -179,7 +194,7 @@ GEM
     rake (0.8.7)
     rb-inotify (0.8.1)
       ffi (>= 0.5.0)
-    request-log-analyzer (1.8.1)
+    request-log-analyzer (1.9.0)
     rescue_me (0.1.0)
     rest-client (1.4.2)
       mime-types (>= 1.16)
@@ -203,6 +218,7 @@ GEM
     rspec-rails (2.0.0.beta.22)
       rspec (= 2.0.0.beta.22)
     ruby-graphviz (0.9.17)
+    ruby-hmac (0.4.0)
     rubyzip (0.9.4)
     selenium-webdriver (0.0.28)
       ffi (>= 0.6.1)
@@ -251,7 +267,7 @@ PLATFORMS
 DEPENDENCIES
   PageRankr (~> 1.4.3)
   RedCloth (~> 4.2.3)
-  activemerchant (~> 1.7.1)
+  activemerchant (~> 1.8.0)
   annotate (~> 2.4.0)
   aws (~> 2.3.20)
   bson_ext (= 1.0.4)
@@ -264,6 +280,7 @@ DEPENDENCIES
   devise_invitable!
   factory_girl_rails (~> 1.0.0)
   ffaker (>= 0.4.0)
+  fog (~> 0.3.5)
   haml (~> 3.0.18)
   has_scope!
   heroku (~> 1.10.6)
@@ -284,8 +301,8 @@ DEPENDENCIES
   rack-private (~> 0.1.5)
   rack-ssl-enforcer (~> 0.1.8)
   rails (~> 3.0.0)
-  request-log-analyzer (~> 1.8.1)
-  rescue_me
+  request-log-analyzer (~> 1.9.0)
+  rescue_me (~> 0.1.0)
   responders!
   rspactor (~> 0.7.beta.7)
   rspec-rails (~> 2.0.0.beta.22)

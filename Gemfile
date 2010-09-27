@@ -17,9 +17,9 @@ gem 'jammit',                '~> 0.5.3'
 gem 'meta_where',            '~> 0.9.4'
 gem 'hoptoad_notifier',      '~> 2.3.7'
 gem 'prowl',                 '~> 0.1.3'
-gem 'activemerchant',        '~> 1.7.1'
+gem 'activemerchant',        '~> 1.8.0'
 gem 'voxel_hapi',            :git => 'git://github.com/thibaudgg/voxel_hapi.git' # VoxCast CDN
-gem 'request-log-analyzer',  '~> 1.8.1', :require => 'request_log_analyzer'
+gem 'request-log-analyzer',  '~> 1.9.0', :require => 'request_log_analyzer'
 gem 'public_suffix_service', '~> 0.6.0'
 gem 'RedCloth',              '~> 4.2.3'
 
@@ -30,6 +30,7 @@ gem 'memcached',             '~> 0.20.1'
 gem 'dalli',                 '~> 0.9.7'
 
 gem 'aws',                   '~> 2.3.20'
+gem 'fog',                   '~> 0.3.5'
 gem 'carrierwave',           '~> 0.5.0'
 
 gem 'bson_ext',              '1.0.4'
@@ -40,7 +41,7 @@ gem 'zip',                   '~> 2.0.2', :require => 'zip/zip'
 gem 'countries',             '~> 0.3.0'
 gem 'PageRankr',             '~> 1.4.3', :require => 'page_rankr'
 
-gem 'rescue_me'
+gem 'rescue_me',             '~> 0.1.0'
 
 group :production do
   gem 'rack-google-analytics', '~> 0.9.2', :require => 'rack/google-analytics'
@@ -72,6 +73,8 @@ group :test do
   
   gem 'steak',              '~> 1.0.0.beta.2'
   gem 'capybara',           '~> 0.3.9'
+  # gem 'capybara-envjs',     '~> 0.1.6'
+  # gem 'akephalos',          '~> 0.2.4'
   gem 'launchy',            '~> 0.3.7'
   
   gem 'factory_girl_rails', '~> 1.0.0'
