@@ -20,7 +20,7 @@ GIT
 
 GIT
   remote: git://github.com/thibaudgg/voxel_hapi.git
-  revision: 3f46bed91f6b4d4f044174e18bf39ce2f33e3779
+  revision: e18df9d7072f6eb573a8ddd1408080406acad759
   specs:
     voxel_hapi (1.1.1)
       bundler (~> 1.0.0)
