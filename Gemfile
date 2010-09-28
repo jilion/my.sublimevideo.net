@@ -14,7 +14,7 @@ gem 'delayed_job',           '~> 2.1.0.pre2'
 gem 'will_paginate',         '~> 3.0.pre2'
 gem 'has_scope',             :git => 'git://github.com/rymai/has_scope.git'
 gem 'jammit',                '~> 0.5.3'
-gem 'meta_where',            '~> 0.9.4'
+gem 'meta_where',            '~> 0.9.5'
 gem 'hoptoad_notifier',      '~> 2.3.7'
 gem 'prowl',                 '~> 0.1.3'
 gem 'activemerchant',        '~> 1.8.0'
@@ -30,7 +30,7 @@ gem 'memcached',             '~> 0.20.1'
 gem 'dalli',                 '~> 0.9.7'
 
 gem 'aws',                   '~> 2.3.20'
-gem 'fog',                   '~> 0.3.5' # for carrierwave 0.5 final
+gem 'fog',                   '~> 0.3.6' # for carrierwave 0.5 final
 gem 'carrierwave',           '~> 0.5.0'
 
 gem 'bson_ext',              '1.0.4'
@@ -55,7 +55,7 @@ group :development do
   gem 'annotate',      '~> 2.4.0'
   gem 'wirble'         # irbrc
   gem 'ruby-graphviz', :require => 'graphviz'
-  gem 'heroku',        '~> 1.10.6'
+  gem 'heroku',        '~> 1.10.8'
   gem 'heroku_tasks',  '~> 0.1.4'
   gem 'taps'           # heroku db pull/push
   gem 'rspec-rails',   '~> 2.0.0.beta.22'
