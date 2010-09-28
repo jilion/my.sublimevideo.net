@@ -1,6 +1,7 @@
 source :rubygems
 
 gem 'rails',                 '~> 3.0.0'
+gem 'rack',                  :git => 'git://github.com/rack/rack.git'
 gem 'pg',                    '~> 0.9.0'
 
 gem 'libxml-ruby',           '~> 1.1.3', :require => 'libxml'
@@ -18,7 +19,8 @@ gem 'meta_where',            '~> 0.9.5'
 gem 'hoptoad_notifier',      '~> 2.3.7'
 gem 'prowl',                 '~> 0.1.3'
 gem 'activemerchant',        '~> 1.8.0'
-gem 'voxel_hapi',            :git => 'git://github.com/thibaudgg/voxel_hapi.git' # VoxCast CDN
+gem 'voxel_hapi',            :git => 'git://github.com/thibaudgg/voxel_hapi.git', :branch => '1.9.2' # VoxCast CDN
+# gem 'voxel_hapi',            :path => '/Users/Thibaud/Development/Code/voxel_hapi' # VoxCast CDN
 gem 'request-log-analyzer',  '~> 1.9.0', :require => 'request_log_analyzer'
 gem 'public_suffix_service', '~> 0.6.0'
 gem 'RedCloth',              '~> 4.2.3'
