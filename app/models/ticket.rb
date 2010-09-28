@@ -74,7 +74,7 @@ class Ticket
   end
   
   def verify_user
-    Zendesk.put("/users/#{@user.zendesk_id}.xml", :user => { :password => MD5.new(Time.now.to_s).to_s, :is_verified => true })
+    Zendesk.put("/users/#{@user.zendesk_id}.xml", :user => { :password => Digest::MD5.new(Time.now.to_s).to_s, :is_verified => true })
   end
   
   def to_key
