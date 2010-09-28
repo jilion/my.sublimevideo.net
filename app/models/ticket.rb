@@ -6,7 +6,7 @@
 #  requester_name  :string
 #  requester_email :string
 #
-require 'md5'
+require 'digest/md5'
 
 class Ticket
   include ActiveModel::Validations

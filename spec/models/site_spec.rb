@@ -1,3 +1,5 @@
+# coding: utf-8
+
 # == Schema Information
 #
 # Table name: sites
@@ -26,8 +28,6 @@
 #  path                  :string(255)
 #  wildcard              :boolean
 #
-
-# coding: utf-8
 
 require 'spec_helper'
 

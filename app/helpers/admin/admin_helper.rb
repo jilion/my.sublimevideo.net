@@ -1,3 +1,5 @@
+# coding: utf-8
+
 module Admin::AdminHelper
   
   def display_bool(boolean)
