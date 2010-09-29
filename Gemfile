@@ -7,7 +7,7 @@ gem 'pg',                    '~> 0.9.0'
 gem 'libxml-ruby',           '~> 1.1.3', :require => 'libxml'
 
 gem 'i18n',                  '~> 0.4.1'
-gem 'haml',                  '~> 3.0.18'
+gem 'haml',                  '~> 3.0.19'
 gem 'state_machine',         '~> 0.9.4'
 gem 'responders',            :git => 'git://github.com/thibaudgg/responders.git'
 gem 'uniquify',              '~> 0.1.0'
