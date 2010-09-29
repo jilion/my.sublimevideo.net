@@ -1,21 +1,3 @@
-# == Schema Information
-#
-# Table name: invoices
-#
-#  id           :integer         not null, primary key
-#  user_id      :integer
-#  reference    :string(255)
-#  state        :string(255)
-#  charged_at   :datetime
-#  started_on   :date
-#  ended_on     :date
-#  amount       :integer(8)      default(0)
-#  sites_amount :integer(8)      default(0)
-#  sites        :text
-#  created_at   :datetime
-#  updated_at   :datetime
-#
-
 class Invoice < ActiveRecord::Base
   
   attr_accessible :state
@@ -180,3 +162,26 @@ private
   end
   
 end
+
+# == Schema Information
+#
+# Table name: invoices
+#
+#  id           :integer         not null, primary key
+#  user_id      :integer
+#  reference    :string(255)
+#  state        :string(255)
+#  charged_at   :datetime
+#  started_on   :date
+#  ended_on     :date
+#  amount       :integer(8)      default(0)
+#  sites_amount :integer(8)      default(0)
+#  sites        :text
+#  created_at   :datetime
+#  updated_at   :datetime
+#
+# Indexes
+#
+#  index_invoices_on_user_id  (user_id)
+#
+
