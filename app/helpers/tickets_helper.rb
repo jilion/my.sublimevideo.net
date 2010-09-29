@@ -1,7 +1,7 @@
 module TicketsHelper
   
   def ticket_type_options
-    options_for_select([[t("ticket.type.choose_type"), 'choose_type'], ["-"*16, '-']] + Ticket.ordered_types.map(&:first).map(&:first).map { |k| [t("ticket.type.#{k.to_s}"), k.to_s] }, :disabled => ['-'])
+    options_for_select([[t("ticket.type.choose-type"), 'choose-type'], ["-"*16, '-']] + Ticket::TYPES.map { |t| [t("ticket.type.#{t}"), t] }, :selected => params[:ticket] ? params[:ticket][:type] : nil, :disabled => ['-'])
   end
   
 end

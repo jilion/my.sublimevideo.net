@@ -20,7 +20,6 @@ gem 'hoptoad_notifier',      '~> 2.3.7'
 gem 'prowl',                 '~> 0.1.3'
 gem 'activemerchant',        '~> 1.8.0'
 gem 'voxel_hapi',            :git => 'git://github.com/thibaudgg/voxel_hapi.git', :branch => '1.9.2' # VoxCast CDN
-# gem 'voxel_hapi',            :path => '/Users/Thibaud/Development/Code/voxel_hapi' # VoxCast CDN
 gem 'request-log-analyzer',  '~> 1.9.0', :require => 'request_log_analyzer'
 gem 'public_suffix_service', '~> 0.6.0'
 gem 'RedCloth',              '~> 4.2.3'
@@ -42,6 +41,8 @@ gem 'mongoid',               '2.0.0.beta.18'
 gem 'zip',                   '~> 2.0.2', :require => 'zip/zip'
 gem 'countries',             '~> 0.3.0'
 gem 'PageRankr',             '~> 1.4.3', :require => 'page_rankr'
+
+gem 'rescue_me',             '~> 0.1.0'
 
 group :production do
   gem 'rack-google-analytics', '~> 0.9.2', :require => 'rack/google-analytics'
