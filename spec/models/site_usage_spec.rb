@@ -44,7 +44,7 @@ describe SiteUsage do
     
     it "should get tokens from trackers" do
       hbr = SiteUsage.hits_traffic_and_requests_from(@trackers)
-      SiteUsage.tokens_from(hbr).should == ["g3325oz4", "g8thugh6"]
+      SiteUsage.tokens_from(hbr).should == ["g8thugh6", "g3325oz4"]
     end
     
     it "should create usages from trackers" do

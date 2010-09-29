@@ -69,7 +69,7 @@ class Release < ActiveRecord::Base
   def zipfile
     # Download file from S3 to read the zip content
     # please don't forget to call delete_zipfile
-    @zip_file = File.new(Rails.root.join("tmp/#{zip.filename}"), 'w')
+    @zip_file = File.new(Rails.root.join("tmp/#{zip.filename}"), 'w', :encoding => 'ASCII-8BIT')
     @zip_file.write(zip.read)
     @zip_file.flush
     @zipfile ||= Zip::ZipFile.open(@zip_file.path)

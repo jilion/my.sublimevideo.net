@@ -1,9 +1,8 @@
 en:
   attributes:
-    dev_hostnames:        "Development domains"
-    alias_hostnames:        "Alias domains"
-    terms_and_conditions: "Terms & Conditions"
     hostname:     "Domain"
+    dev_hostnames:        "Development domains"
+    terms_and_conditions: "Terms & Conditions"
     cc_type:      "Card type"
     cc_number:    "Card number"
     cc_expire_on: "Expiration date"

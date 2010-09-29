@@ -35,7 +35,7 @@ class Site < ActiveRecord::Base
   cattr_accessor :per_page
   self.per_page = 100
   
-  attr_accessible :hostname, :alias_hostnames, :dev_hostnames, :path, :wildcard
+  attr_accessible :hostname, :dev_hostnames, :path, :wildcard
   
   uniquify :token, :chars => Array('a'..'z') + Array('0'..'9')
   
@@ -94,7 +94,6 @@ class Site < ActiveRecord::Base
   validates :user,          :presence => true
   validates :hostname,      :presence => true, :hostname_uniqueness => true, :hostname => true
   validates :dev_hostnames, :dev_hostnames => true
-  validates :alias_hostnames, :alias_hostnames => true
   validates :player_mode,   :inclusion => { :in => PLAYER_MODES }
   validate  :must_be_active_to_update_hostnames
   # BETA
@@ -132,21 +131,11 @@ class Site < ActiveRecord::Base
   # ====================
   
   def hostname=(attribute)
-    if attribute.present? && hostname.nil?
-      write_attribute :hostname, Hostname.clean(attribute)
-    end
+    write_attribute(:hostname, Hostname.clean(attribute)) if attribute.present?
   end
   
   def dev_hostnames=(attribute)
-    if attribute.present?
-      write_attribute :dev_hostnames, Hostname.clean(attribute)
-    end
-  end
-  
-  def alias_hostnames=(attribute)
-    if attribute.present?
-      write_attribute :alias_hostnames, Hostname.clean(attribute)
-    end
+    write_attribute(:dev_hostnames, Hostname.clean(attribute)) if attribute.present?
   end
   
   def path=(attribute)
@@ -218,8 +207,8 @@ private
   def must_be_active_to_update_hostnames
     if !new_record? && pending?
       message = "can not be updated when site in progress, please wait before update again"
+      errors[:hostname]        << message if hostname_changed?
       errors[:dev_hostnames]   << message if dev_hostnames_changed?
-      errors[:alias_hostnames] << message if alias_hostnames_changed?
       errors[:path]            << message if path_changed?
       errors[:wildcard]        << message if wildcard_changed?
     end

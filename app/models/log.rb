@@ -66,7 +66,7 @@ class Log
   end
   
   def self.create_new_logs(new_logs_names)
-    existings_logs_names = only(:name).any_in(:name => new_logs_names).map(&:name)
+    existings_logs_names = only(:name).any_in(:name => new_logs_names).map { |l| l.name }
     new_logs = new_logs_names.inject([]) do |new_logs, logs_name|
       new_logs << new(:name => logs_name)
     end
@@ -93,7 +93,7 @@ private
   # Don't forget to delete this logs_file after using it, thx!
   def copy_logs_file_to_tmp
     Notify.send("Log File ##{id} not present at copy") unless file.present?
-    logs_file = File.new(Rails.root.join("tmp/#{name}"), 'w')
+    logs_file = File.new(Rails.root.join("tmp/#{name}"), 'w', :encoding => 'ASCII-8BIT')
     logs_file.write(file.read)
     logs_file.flush
   end

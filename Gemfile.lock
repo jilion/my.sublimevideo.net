@@ -24,8 +24,10 @@ GIT
   specs:
     responders (0.6.2)
 
-PATH
-  remote: /Users/Thibaud/Development/Code/voxel_hapi
+GIT
+  remote: git://github.com/thibaudgg/voxel_hapi.git
+  revision: f82d1d11506ca4424b872a27cca22d71479a8633
+  branch: 1.9.2
   specs:
     voxel_hapi (1.1.1)
       bundler (~> 1.0.0)

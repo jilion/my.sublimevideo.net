@@ -24,7 +24,6 @@
 #  traffic_voxcast_cache :integer(8)      default(0)
 #  google_rank           :integer
 #  alexa_rank            :integer
-#  alias_hostnames       :string(255)
 #  path                  :string(255)
 #  wildcard              :boolean
 #
@@ -38,7 +37,6 @@ describe Site do
     
     its(:hostname)        { should =~ /jilion[0-9]+\.com/ }
     its(:dev_hostnames)   { should == "localhost, 127.0.0.1" }
-    its(:alias_hostnames) { should be_nil }
     its(:path)            { should be_nil }
     its(:wildcard)        { should be_false }
     its(:token)           { should =~ /^[a-z0-9]{8}$/ }
@@ -95,24 +93,6 @@ describe Site do
           site = Factory.build(:site, :hostname => host)
           site.should be_valid
           site.errors[:hostname].should be_empty
-        end
-      end
-    end
-    
-    describe "alias_hostnames" do
-      ['*.google.local', 'localhost', 'google.local, localhost', 'jilion.local', ', ,123.123.123,', 'localhost', 'localhost,, , 127.0.0.1', 'staging.google.com, staging.google.com'].each do |alias_hosts|
-        it "should not validate: #{alias_hosts}" do
-          site = Factory.build(:site, :hostname => 'jilion.local', :alias_hostnames => alias_hosts)
-          site.should_not be_valid
-          site.errors[:alias_hostnames].should be_present
-        end
-      end
-      
-      ['staging.google.com, dev.google.com', 'google.com', ', ,', 'jilion.fr'].each do |alias_hosts|
-        it "should validate: #{alias_hosts}" do
-          site = Factory.build(:site, :alias_hostnames => alias_hosts)
-          site.should be_valid
-          site.errors[:alias_hostnames].should be_empty
         end
       end
     end
@@ -177,16 +157,16 @@ describe Site do
       end
     end
     
-    it "should prevent update of hostname" do
+    it "should prevent update of hostname when not active" do
       site = Factory(:site, :hostname => 'jilion.com')
       site.update_attributes(:hostname => 'site.com')
       site.reload.hostname.should == 'jilion.com'
     end
-    it "should prevent update of hostname even when active" do
+    it "should ba able to update hostname even when active" do
       site = Factory(:site, :hostname => 'jilion.com')
       site.activate
       site.update_attributes(:hostname => 'site.com')
-      site.reload.hostname.should == 'jilion.com'
+      site.reload.hostname.should == 'site.com'
     end
     
     it "should prevent update of dev_hostnames if pending" do

@@ -4,12 +4,10 @@
   
 = form_for @site, :remote => true, :html => { :class => "edit" } do |f|
   .entry
-    = f.label :alias_hostnames
+    = f.label :hostname
     %p.desc
-      = "Add alias domains separated by a comma:"
-      %br/
-      = "Alias domain should have same content as main domain (It will be manually verified (abuse can be sanctioned (domain blacklisted))"
-    = f.text_field :alias_hostnames, :class => "text", :autocomplete => :off
+      = "Be careful when editing main domain, player will no more working on old hostname."
+    = f.text_field :hostname, :class => "text", :autocomplete => :off
   .entry
     = f.label :dev_hostnames
     %p.desc= "Add domains to use in development separated by a comma:"

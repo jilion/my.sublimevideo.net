@@ -45,6 +45,7 @@ feature "Feedback actions:" do
     click_button "Send"
     
     current_url.should =~ %r(http://[^/]+/feedback)
+    
     page.should have_content "Subject can't be blank"
     page.should have_no_content "Your message has been submitted."
     Delayed::Job.last.should be_nil
