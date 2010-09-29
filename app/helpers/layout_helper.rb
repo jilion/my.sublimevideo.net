@@ -30,7 +30,7 @@ module LayoutHelper
   
   def activatable_menu_item(tag, resources, options = {})
     options.reverse_merge!(:namespace => [], :controller_name => resources.to_s, :link_text => resources.to_s.titleize, :class => resources.to_s)
-    options[:namespace] = options[:namespace].to_a unless options[:namespace].is_a?(Array)
+    options[:namespace] = Array(options[:namespace]) unless options[:namespace].is_a?(Array)
     link = send("#{options[:namespace].join('_')}#{'_' if options[:namespace].present?}#{resources}_path")
     
     activable_content_tag(tag, options[:controller_name], options) do

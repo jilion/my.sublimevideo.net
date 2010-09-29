@@ -19,7 +19,7 @@ describe Referrer do
       it { Referrer.count.should == 5 }
       
       describe "second referrer" do
-        subject { Referrer.all.second }
+        subject { Referrer.all.first }
         
         its(:url)        { should == 'http://www.killy.net/' }
         its(:token)      { should == @site.token }

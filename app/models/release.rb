@@ -1,16 +1,3 @@
-# == Schema Information
-#
-# Table name: releases
-#
-#  id         :integer         not null, primary key
-#  token      :string(255)
-#  date       :string(255)
-#  zip        :string(255)
-#  state      :string(255)
-#  created_at :datetime
-#  updated_at :datetime
-#
-
 class Release < ActiveRecord::Base
   
   attr_accessible :zip
@@ -69,7 +56,7 @@ class Release < ActiveRecord::Base
   def zipfile
     # Download file from S3 to read the zip content
     # please don't forget to call delete_zipfile
-    @zip_file = File.new(Rails.root.join("tmp/#{zip.filename}"), 'w')
+    @zip_file = File.new(Rails.root.join("tmp/#{zip.filename}"), 'w', :encoding => 'ASCII-8BIT')
     @zip_file.write(zip.read)
     @zip_file.flush
     @zipfile ||= Zip::ZipFile.open(@zip_file.path)
@@ -138,3 +125,22 @@ private
   end
   
 end
+
+
+# == Schema Information
+#
+# Table name: releases
+#
+#  id         :integer         not null, primary key
+#  token      :string(255)
+#  date       :string(255)
+#  zip        :string(255)
+#  state      :string(255)
+#  created_at :datetime
+#  updated_at :datetime
+#
+# Indexes
+#
+#  index_releases_on_state  (state)
+#
+

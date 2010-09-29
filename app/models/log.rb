@@ -93,7 +93,7 @@ private
   # Don't forget to delete this logs_file after using it, thx!
   def copy_logs_file_to_tmp
     Notify.send("Log File ##{id} not present at copy") unless file.present?
-    logs_file = File.new(Rails.root.join("tmp/#{name}"), 'w')
+    logs_file = File.new(Rails.root.join("tmp/#{name}"), 'w', :encoding => 'ASCII-8BIT')
     logs_file.write(file.read)
     logs_file.flush
   end

@@ -32,7 +32,7 @@ module VoxcastCDN
     
     def logs_download(filename)
       xml = client.voxel_voxcast_ondemand_logs_download(:filename => filename)
-      tempfile = Tempfile.new('log', "#{Rails.root}/tmp")
+      tempfile = Tempfile.new('log', "#{Rails.root}/tmp", :encoding => 'ASCII-8BIT')
       tempfile.write(Base64.decode64(xml['data']['content']))
       tempfile.flush
     end

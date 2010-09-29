@@ -1,12 +1,6 @@
-# == Schema Information
-#
-#  type            :integer   not null
-#  subject         :string    not null
-#  message         :text      not null
-#  requester_name  :string
-#  requester_email :string
-#
-require 'md5'
+# coding: utf-8
+
+require 'digest/md5'
 
 class Ticket
   include ActiveModel::Validations
@@ -51,7 +45,7 @@ class Ticket
   end
   
   def verify_user
-    Zendesk.put("/users/#{@user.zendesk_id}.xml", :user => { :password => MD5.new(Time.now.to_s).to_s, :is_verified => true })
+    Zendesk.put("/users/#{@user.zendesk_id}.xml", :user => { :password => Digest::MD5.new(Time.now.to_s).to_s, :is_verified => true })
   end
   
   def to_key
@@ -69,3 +63,12 @@ private
   end
   
 end
+
+# == Schema Information
+#
+#  type            :integer   not null
+#  subject         :string    not null
+#  message         :text      not null
+#  requester_name  :string
+#  requester_email :string
+#
