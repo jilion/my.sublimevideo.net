@@ -72,7 +72,7 @@ module Hostname
     
     def valid_one?(hostname)
       ssp = PublicSuffixService.parse(hostname)
-      ssp.sld.present?
+      ssp.sld.present? && ssp.tld != 'local'
     rescue
       false
     end

@@ -48,8 +48,8 @@ describe Hostname do
     it { subject.valid?("www.com").should be_true }
     it { subject.valid?("ftp://www.www.com").should be_true }
     it { subject.valid?("https://www.co.uk").should be_true }
-    it { subject.valid?("google.local").should be_true }
     
+    it { subject.valid?("google.local").should be_false }
     it { subject.valid?(nil).should be_false }
     it { subject.valid?("").should be_false }
     it { subject.valid?(".com").should be_false }

@@ -9,6 +9,10 @@
         %span
           -# TODO: Update this text
           %i= "you should add a path"
+      - unless site.valid?
+        %span
+          -# TODO: Update this text
+          %i= "invalid, please update it!"
       
       - if site.pending?
         = link_to "", :class => "settings disabled", :title => "Settings", :onclick => "return false" do
@@ -36,4 +40,4 @@
     -#      %h5= "Player hits"
     -#    %td.player_hits= number_with_delimiter(site.player_hits_cache)
   %td.delete
-    = button_to 'Delete', site, :onclick => "return MySublimeVideo.confirmDeleteSite(this)", :method => :delete, :remote => true
+    = button_to 'Delete', site, :onclick => "return MySublimeVideo.confirmDeleteSite(this)", :method => :delete, :remote => true, :disabled => !site.valid?
