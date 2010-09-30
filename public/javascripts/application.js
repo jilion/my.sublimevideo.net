@@ -115,6 +115,11 @@ MySublimeVideo.showSiteSettings = function(siteId) {
   return false;
 };
 
+MySublimeVideo.showSiteAddons = function(siteId) {
+  MySublimeVideo.openPopup(siteId, "settings", '/sites/'+siteId+'/addons/edit');
+  return false;
+};
+
 MySublimeVideo.showInvoice = function(invoiceId, type) {
   MySublimeVideo.openPopup(invoiceId, "invoices_"+type, '/invoices/'+invoiceId+'?type='+type);
   return false;

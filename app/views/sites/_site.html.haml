@@ -17,9 +17,13 @@
       - if site.pending?
         = link_to "", :class => "settings disabled", :title => "Settings", :onclick => "return false" do
           %span= "settings"
+        = link_to "", :class => "addons disabled", :title => "Addons", :onclick => "return false" do
+          %span= "addons"
       - else
         = link_to "", :class => "settings", :title => "Settings", :onclick => "return MySublimeVideo.showSiteSettings(#{site.id})" do
           %span= "settings"
+        = link_to "", :class => "addons disabled", :title => "Addons", :onclick => "return MySublimeVideo.showSiteAddons(#{site.id})"  do
+          %span= "addons"
       -#%em.date= l site.created_at.to_date, :format => :small
   %td.code
     - if site.pending?

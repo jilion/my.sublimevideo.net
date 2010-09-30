@@ -1,0 +1,16 @@
+%h3
+  = "Addons for"
+  %strong= truncate_middle(@site.hostname, :length => 18)
+
+= form_for @site, :remote => true, :html => { :class => "edit" } do |f|
+  .entry
+    = f.label :ssl, "SSL"
+    %p.desc
+      = "Allow SSL usage"
+    = f.check_box :wildcard
+  .entry
+    = f.label :wildcard, "Wildcard (*.#{@site.hostname})"
+    %p.desc= "Wildcard will be also added dev domains (but not to alias domains)"
+    = f.check_box :wildcard
+  .actions
+    = f.submit 'Update', :class => "submit small"

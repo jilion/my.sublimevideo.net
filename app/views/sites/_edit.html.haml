@@ -18,9 +18,9 @@
     %p
       = "#{@site.hostname}/"
       = f.text_field :path, :class => "text", :autocomplete => :off
-  .entry
-    = f.label :wildcard, "Wildcard (*.#{@site.hostname})"
-    %p.desc= "Wildcard will be also added dev domains (but not to alias domains)"
-    = f.check_box :wildcard
+  -#.entry
+  -#  = f.label :wildcard, "Wildcard (*.#{@site.hostname})"
+  -#  %p.desc= "Wildcard will be also added dev domains (but not to alias domains)"
+  -#  = f.check_box :wildcard
   .actions
     = f.submit 'Update', :class => "submit small"
