@@ -39,11 +39,11 @@ Devise.setup do |config|
   # ==> Configuration for :confirmable
   # The time you want give to your user to confirm his account. During this time
   # he will be able to access your application without confirming. Default is nil.
-  config.confirm_within = 2.days
+  config.confirm_within = nil
   
   # ==> Configuration for :invitable
   # Time interval where the invitation token is valid.
-  config.invite_for = 2.weeks
+  config.invite_for = nil
   
   # Flag that force a record to be valid before being actually invited 
   config.validate_on_invite = false
