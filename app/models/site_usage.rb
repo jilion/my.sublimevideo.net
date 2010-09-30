@@ -87,8 +87,8 @@ private
   
   # before_validation
   def set_dates_from_log
-    self.started_at ||= log.started_at.utc
-    self.ended_at   ||= log.ended_at.utc
+    self.started_at ||= log.started_at
+    self.ended_at   ||= log.ended_at
   end
   
   # after_save
