@@ -15,8 +15,8 @@ describe SiteUsage do
   context "saved with valid attributes" do
     subject { Factory(:site_usage) }
     
-    its(:started_at) { should == Time.zone.at(1275002700) }
-    its(:ended_at)   { should == Time.zone.at(1275002760) }
+    its(:started_at) { should == Time.at(1275002700).utc }
+    its(:ended_at)   { should == Time.at(1275002760).utc }
     
   end
   
