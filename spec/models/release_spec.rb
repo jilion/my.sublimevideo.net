@@ -1,16 +1,3 @@
-# == Schema Information
-#
-# Table name: releases
-#
-#  id         :integer         not null, primary key
-#  token      :string(255)
-#  date       :string(255)
-#  zip        :string(255)
-#  state      :string(255)
-#  created_at :datetime
-#  updated_at :datetime
-#
-
 require 'spec_helper'
 
 describe Release do
@@ -219,3 +206,21 @@ private
   end
   
 end
+
+# == Schema Information
+#
+# Table name: releases
+#
+#  id         :integer         not null, primary key
+#  token      :string(255)
+#  date       :string(255)
+#  zip        :string(255)
+#  state      :string(255)
+#  created_at :datetime
+#  updated_at :datetime
+#
+# Indexes
+#
+#  index_releases_on_state  (state)
+#
+

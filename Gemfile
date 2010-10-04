@@ -22,6 +22,7 @@ gem 'voxel_hapi',            :git => 'git://github.com/thibaudgg/voxel_hapi.git'
 gem 'request-log-analyzer',  '~> 1.9.1', :require => 'request_log_analyzer'
 gem 'public_suffix_service', '~> 0.6.0'
 gem 'RedCloth',              '~> 4.2.3'
+gem 'liquid',                '~> 2.2.2'
 
 gem 'devise',                '~> 1.1.3'
 gem 'devise_invitable',      :git => 'git://github.com/rymai/devise_invitable.git'
