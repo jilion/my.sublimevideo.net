@@ -66,7 +66,8 @@ end
 
 group :test do
   gem 'spork',              '~> 0.9.0.rc2'
-  gem 'rspactor',           '~> 0.7.beta.7'
+  gem 'guard'
+  gem 'guard-rspec'
   
   gem 'shoulda',            '~> 2.11.3'
   gem 'rspec-rails',        '~> 2.0.0.beta.22'
