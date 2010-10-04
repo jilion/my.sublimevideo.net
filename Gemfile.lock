@@ -13,12 +13,6 @@ GIT
     has_scope (0.5.0)
 
 GIT
-  remote: git://github.com/thibaudgg/responders.git
-  revision: 3684de7fe572b48fc723d62362f583562ac85a71
-  specs:
-    responders (0.6.2)
-
-GIT
   remote: git://github.com/thibaudgg/voxel_hapi.git
   revision: e18df9d7072f6eb573a8ddd1408080406acad759
   specs:
@@ -76,8 +70,8 @@ GEM
     bcrypt-ruby (2.1.2)
     braintree (2.6.1)
       builder
-    bson (1.0.4)
-    bson_ext (1.0.4)
+    bson (1.0.9)
+    bson_ext (1.0.9)
     builder (2.1.2)
     capybara (0.3.9)
       culerity (>= 0.2.4)
@@ -164,12 +158,11 @@ GEM
       activesupport (~> 3.0.0)
       arel (~> 1.0.1)
     mime-types (1.16)
-    mongo (1.0.7)
-      bson (>= 1.0.4)
-    mongoid (2.0.0.beta.18)
-      activemodel (~> 3.0.0)
-      bson (= 1.0.4)
-      mongo (= 1.0.7)
+    mongo (1.0.9)
+      bson (>= 1.0.5)
+    mongoid (2.0.0.beta.19)
+      activemodel (~> 3.0)
+      mongo (= 1.0.9)
       tzinfo (~> 0.3.22)
       will_paginate (~> 3.0.pre)
     net-ssh (2.0.23)
@@ -204,6 +197,7 @@ GEM
       ffi (>= 0.5.0)
     request-log-analyzer (1.9.2)
     rescue_me (0.1.0)
+    responders (0.6.2)
     rest-client (1.6.1)
       mime-types (>= 1.16)
     rspec (2.0.0.beta.22)
@@ -270,32 +264,32 @@ DEPENDENCIES
   activemerchant (~> 1.8.0)
   annotate (~> 2.4.0)
   aws (~> 2.3.20)
-  bson_ext (= 1.0.4)
+  bson_ext (~> 1.0.9)
   capybara (~> 0.3.9)
   carrierwave (~> 0.5.0)
   countries (~> 0.3.0)
-  dalli (~> 0.9.7)
+  dalli (~> 0.9.8)
   delayed_job (~> 2.1.0.pre2)
   devise (~> 1.1.3)
   devise_invitable!
   factory_girl_rails (~> 1.0.0)
   ffaker (>= 0.4.0)
-  fog (~> 0.3.5)
+  fog (~> 0.3.7)
   guard
   guard-rspec
-  haml (~> 3.0.18)
+  haml (~> 3.0.21)
   has_scope!
   heroku (~> 1.10.6)
   heroku_tasks (~> 0.1.4)
-  hoptoad_notifier (~> 2.3.7)
+  hoptoad_notifier (~> 2.3.8)
   i18n (~> 0.4.1)
   jammit (~> 0.5.3)
   launchy (~> 0.3.7)
   libxml-ruby (~> 1.1.3)
   memcached (~> 0.20.1)
   meta_where (~> 0.9.4)
-  mongo (= 1.0.7)
-  mongoid (= 2.0.0.beta.18)
+  mongo (~> 1.0.9)
+  mongoid (~> 2.0.0.beta.19)
   pg (~> 0.9.0)
   prowl (~> 0.1.3)
   public_suffix_service (~> 0.6.0)
@@ -303,9 +297,9 @@ DEPENDENCIES
   rack-private (~> 0.1.5)
   rack-ssl-enforcer (~> 0.1.8)
   rails (~> 3.0.0)
-  request-log-analyzer (~> 1.9.0)
+  request-log-analyzer (~> 1.9.1)
   rescue_me (~> 0.1.0)
-  responders!
+  responders (~> 0.6.2)
   rspec-rails (~> 2.0.0.beta.22)
   ruby-graphviz
   shoulda (~> 2.11.3)
