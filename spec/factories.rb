@@ -61,3 +61,16 @@ Factory.define :mail_template, :class => Mail::Template do |f|
   f.subject "Help us shaping the right pricing"
   f.body    "Hi {{user.full_name}}, please respond to the survey, by clicking on the following link:\nhttp://survey.com"
 end
+
+Factory.define :mail_log, :class => Mail::Log do |f|
+  f.association :template, :factory => :mail_template
+  f.association :admin
+  f.criteria    ["with_activity"]
+  f.user_ids    [1,2,3,4,5]
+  f.snapshot    Hash.new.tap { |h|
+                  h[:title]   = "Blabla"
+                  h[:subject] = "Blibli"
+                  h[:body]    = "Blublu"
+                }
+end
+

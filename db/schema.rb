@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101004102346) do
+ActiveRecord::Schema.define(:version => 20101004143410) do
 
   create_table "admins", :force => true do |t|
     t.string   "email",                               :default => "", :null => false
@@ -66,6 +66,18 @@ ActiveRecord::Schema.define(:version => 20101004102346) do
   end
 
   add_index "invoices", ["user_id"], :name => "index_invoices_on_user_id"
+
+  create_table "mail_logs", :force => true do |t|
+    t.integer  "template_id"
+    t.integer  "admin_id"
+    t.text     "criteria"
+    t.text     "user_ids"
+    t.text     "snapshot"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "mail_logs", ["template_id"], :name => "index_mail_logs_on_template_id"
 
   create_table "mail_templates", :force => true do |t|
     t.string   "title"

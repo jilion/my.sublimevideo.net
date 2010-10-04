@@ -1,15 +1,13 @@
 class Admin::Mails::TemplatesController < Admin::AdminController
   respond_to :html
   
-  # GET /admin/mail_templates/1/edit
+  # GET /admin/mails/templates/1/edit
   def edit
     @mail_template = Mail::Template.find(params[:id])
-    respond_with(@mail_template) do |format|
-      format.html
-    end
+    respond_with(@mail_template)
   end
   
-  # PUT /admin/mail_templates/1
+  # PUT /admin/mails/templates/1
   def update
     @mail_template = Mail::Template.find(params[:id])
     respond_with(@mail_template) do |format|

@@ -12,25 +12,11 @@ describe Mail::Template do
   end
   
   describe "should be invalid" do
-    it "without title" do
-      mt = Factory.build(:mail_template, :title => nil)
-      mt.should_not be_valid
-      mt.errors[:title].should be_present
-    end
-    
-    it "without subject" do
-      ["", nil].each do |subject|
-        mt = Factory.build(:mail_template, :subject => subject)
+    %w[title subject body].each do |attribute|
+      it "without #{attribute}" do
+        mt = Factory.build(:mail_template, attribute.to_sym => nil)
         mt.should_not be_valid
-        mt.errors[:subject].should be_present
-      end
-    end
-    
-    it "without body" do
-      ["", nil].each do |body|
-        mt = Factory.build(:mail_template, :body => body)
-        mt.should_not be_valid
-        mt.errors[:body].should be_present
+        mt.errors[attribute.to_sym].should be_present
       end
     end
     

@@ -9,6 +9,12 @@ class Admin < ActiveRecord::Base
   
   attr_accessible :email, :password, :password_confirmation, :remember_me
   
+  # ================
+  # = Associations =
+  # ================
+  
+  has_many :mail_logs, :class_name => "Mail::Log"
+  
 end
 
 # == Schema Information

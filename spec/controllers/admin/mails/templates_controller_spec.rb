@@ -56,12 +56,14 @@ describe Admin::Mails::TemplatesController do
   end
   
   context "as guest" do
-    describe "invite admin" do
+    describe "edit template" do
       it "should respond with redirect to GET :edit" do
         get :edit, :id => '1'
         response.should redirect_to(new_admin_session_path)
       end
-      
+    end
+    
+    describe "update template" do
       it "should respond with redirect to PUT :update" do
         put :update, :id => '1', :mail_template => { :title => 'AAA', :subject => 'BBB', :body => 'CCC' }
         response.should redirect_to(new_admin_session_path)

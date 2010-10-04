@@ -6,12 +6,28 @@ class Mail::Template < ActiveRecord::Base
   cattr_accessor :per_page
   self.per_page = 10
   
+  attr_accessible :title, :subject, :body
+  
+  # ================
+  # = Associations =
+  # ================
+  
+  has_many :logs, :class_name => "Mail::Log"
+  
   # ===============
   # = Validations =
   # ===============
   validates :title, :presence => true, :uniqueness => true
   validates :subject, :presence => true
   validates :body, :presence => true
+  
+  # ====================
+  # = Instance Methods =
+  # ====================
+  
+  def snapshotize
+    { :title => title, :subject => subject, :body => body }
+  end
   
 end
 # == Schema Information

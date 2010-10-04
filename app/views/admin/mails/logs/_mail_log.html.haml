@@ -1,0 +1,8 @@
+%tr{ :class => cycle("", "alt") }
+  %td.admin
+    = mail_log.admin.email
+  %td.template
+    %small
+      = link_to mail_log.template.title, edit_admin_mail_template_path(mail_log.template), :title => mail_log.template.title
+  %td
+    %small= display_date(mail_log.created_at)

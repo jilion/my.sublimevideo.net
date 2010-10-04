@@ -1,11 +1,13 @@
 = title_and_content_header("Mails")
 
+= link_to "Send a new mail", new_admin_mail_path
+
 %h3 Logs
 
 #mail_logs_table_wrap
-  -#= render "mail_logs"
+  = @mail_logs.empty? ? "No mail sent yet!" : render("mail_logs")
   
 %h3 Templates
 
 #mail_templates_table_wrap
-  = render "mail_templates"
+  = @mail_templates.empty? ? "No mail templates!" : render("mail_templates")
