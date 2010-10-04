@@ -42,6 +42,12 @@ namespace :db do
       timed { create_sites }
     end
     
+    desc "Load Mail templates development fixtures."
+    task :mail_templates => :environment do
+      timed { empty_tables(Mail::Template) }
+      timed { create_mail_templates }
+    end
+    
   end
   
 end
@@ -130,6 +136,18 @@ def create_sites(max = 5)
     end
   end
   print "0-#{max} random sites created for each user!\n"
+end
+
+def create_mail_templates(count = 5)
+    count.times do |i|
+      mail_template            = Mail::Template.new
+      mail_template.title      = Faker::Lorem.sentence(1)
+      mail_template.subject    = Faker::Lorem.sentence(1)
+      mail_template.body       = Faker::Lorem.paragraphs(3).join("\n\n")
+      mail_template.created_at = rand(50).days.ago
+      mail_template.save!
+    end
+  print "#{count} random mail templates created!\n"
 end
 
 def argv_count

@@ -105,6 +105,7 @@ class User < ActiveRecord::Base
   def full_name
     first_name.to_s + ' ' + last_name.to_s
   end
+  liquid_methods :full_name
   
   def email=(email)
     write_attribute(:email, email.try(:downcase))

@@ -1,0 +1,7 @@
+%table.main#mail_templates
+  %tr
+    %th= link_to_sort :title
+    %th= link_to_sort :subject
+    %th= link_to_sort :body
+    %th= link_to_sort :date, :default_way => 'desc', :default => true, :label => "Created at"
+  = render :partial => 'admin/mails/templates/mail_template', :object => @mail_templates

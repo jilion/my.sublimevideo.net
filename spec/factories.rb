@@ -55,3 +55,9 @@ Factory.define :referrer do |f|
   f.token      { Factory(:site).token }
   f.hits       12
 end
+
+Factory.define :mail_template, :class => Mail::Template do |f|
+  f.title   "Pricing survey"
+  f.subject "Help us shaping the right pricing"
+  f.body    "Hi {{user.full_name}}, please respond to the survey, by clicking on the following link:\nhttp://survey.com"
+end
