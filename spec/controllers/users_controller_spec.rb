@@ -2,16 +2,14 @@ require 'spec_helper'
 
 describe UsersController do
   include Devise::TestHelpers
+  include ControllerSpecHelpers
   
   context "with logged in user" do
-    before :each do
-      @mock_user = mock_model(User, :active? => true, :confirmed? => true)
-      User.stub(:find).and_return(@mock_user)
-      sign_in :user, @mock_user
-    end
+    before(:each) { sign_in :user, logged_in_user }
     
     it "should respond with success to PUT :update" do
-      @mock_user.stub(:update_attributes).with({}).and_return(true)
+      logged_in_user.stub(:update_attributes).with({}).and_return(true)
+      
       put :update, :id => '1', :user => {}
       response.should redirect_to(edit_user_registration_path)
     end

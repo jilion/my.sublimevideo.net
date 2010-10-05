@@ -2,25 +2,26 @@ require 'spec_helper'
 
 describe InvoicesController do
   include Devise::TestHelpers
+  include ControllerSpecHelpers
   
   context "with logged in user" do
-    before :each do
-      @mock_user = mock_model(User, :active? => true, :confirmed? => true)
-      User.stub(:find).and_return(@mock_user)
-      sign_in :user, @mock_user
-    end
+    before(:each) { sign_in :user, logged_in_user }
     
     if MySublimeVideo::Release.public?
       it "should respond with success to GET :index" do
-        @mock_user.stub_chain(:invoices, :by_charged_at).and_return([])
+        logged_in_user.stub_chain(:invoices, :by_charged_at).and_return([])
+        
         get :index
         response.should be_success
       end
+      
       it "should respond with success to GET :show" do
-        @mock_user.stub_chain(:invoices, :find).with("1").and_return(mock_invoice)
+        logged_in_user.stub_chain(:invoices, :find).with("1").and_return(mock_invoice)
+        
         get :show, :id => '1', :format => :js
         response.should be_success
       end
+      
       it "should respond with success to GET :show and id == 'current'" do
         Invoice.stub(:current).with(@mock_user).and_return(mock_invoice)
         get :show, :id => 'current', :format => :js
@@ -49,10 +50,4 @@ describe InvoicesController do
     end
   end
   
-  private
-    
-    def mock_invoice(stubs = {})
-      @mock_invoice ||= mock_model(Invoice, stubs)
-    end
-    
 end
