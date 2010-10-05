@@ -12,7 +12,9 @@ class Admin::UsersController < Admin::AdminController
   has_scope :by_beta
   has_scope :by_player_hits
   has_scope :by_traffic
-  has_scope :by_date, :default => 'desc', :always => true
+  has_scope :by_date, :default => 'desc', :always => true do |controller, scope, value|
+    controller.params.keys.any? { |k| k != "by_date" && k =~ /(by_\w+)/ } ? scope : scope.by_date(value)
+  end
   # search
   has_scope :search
   
