@@ -4,5 +4,8 @@
   %td.template
     %small
       = link_to mail_log.template.title, edit_admin_mail_template_path(mail_log.template), :title => mail_log.template.title
+  %td.users_count
+    %small
+      = mail_log.user_ids.size
   %td
     %small= display_date(mail_log.created_at)

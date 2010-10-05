@@ -16,8 +16,10 @@ protected
     redirect_to sites_path unless MySublimeVideo::Release.public?
   end
   
-  def authenticate_inviter!
-    authenticate_admin!
+  module DeviseInvitable::Controllers::Helpers
+  protected
+    def authenticate_inviter!
+      authenticate_admin!
+    end
   end
-  
 end

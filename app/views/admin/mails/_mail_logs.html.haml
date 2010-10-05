@@ -1,7 +1,17 @@
-%table.main#mail_logs
-  %tr
-    %th= link_to_sort :admin
-    %th= link_to_sort :template
-    %th= link_to_sort :users
-    %th= link_to_sort :date, :default_way => 'desc', :default => true, :label => "Created at"
-  = render :partial => 'admin/mails/logs/mail_log', :object => @mail_logs
+- if @mail_logs.empty?
+  = "No mail sent yet!"
+- else
+  - params[:mail_logs] = true
+  %table.main#mail_logs
+    %tr
+      %th= link_to_sort :admin_email, :label => "Sent by", :reverse => true
+      %th= link_to_sort :template_title, :label => "Template", :reverse => true
+      %th= "# of receivers"
+      %th= link_to_sort :date, :default_way => 'desc', :default => true, :label => "Created at"
+    = render :partial => 'admin/mails/logs/mail_log', :object => @mail_logs
+    
+  .pagination_wrap
+    = remote_will_paginate(@mail_logs, :params => params.merge(:format => nil))
+    = page_entries_info(@mail_logs)
+  - params[:mail_logs] = nil
+    

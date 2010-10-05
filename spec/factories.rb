@@ -57,9 +57,9 @@ Factory.define :referrer do |f|
 end
 
 Factory.define :mail_template, :class => Mail::Template do |f|
-  f.title   "Pricing survey"
-  f.subject "Help us shaping the right pricing"
-  f.body    "Hi {{user.full_name}}, please respond to the survey, by clicking on the following link:\nhttp://survey.com"
+  f.sequence(:title) { |n| "Pricing survey #{n}" }
+  f.subject          "Help us shaping the right pricing"
+  f.body             "Hi {{user.full_name}}, please respond to the survey, by clicking on the following link:\nhttp://survey.com"
 end
 
 Factory.define :mail_log, :class => Mail::Log do |f|
@@ -73,4 +73,3 @@ Factory.define :mail_log, :class => Mail::Log do |f|
                   h[:body]    = "Blublu"
                 }
 end
-

@@ -61,7 +61,7 @@ group :development do
   gem 'heroku',        '~> 1.10.6'
   gem 'heroku_tasks',  '~> 0.1.4'
   gem 'taps'           # heroku db pull/push
-  gem 'rspec-rails',   '~> 2.0.0.beta.22'
+  gem 'rspec-rails',   '~> 2.0.0.rc'
   gem 'timecop',       '~> 0.3.5'
 end
 
@@ -71,7 +71,7 @@ group :test do
   gem 'guard-rspec'
   
   gem 'shoulda',            '~> 2.11.3'
-  gem 'rspec-rails',        '~> 2.0.0.beta.22'
+  gem 'rspec-rails',        '~> 2.0.0.rc'
   
   gem 'steak',              '~> 1.0.0.beta.2'
   gem 'capybara',           '~> 0.3.9'

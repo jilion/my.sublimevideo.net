@@ -11,8 +11,11 @@
 = auto_link(simple_format(Liquid::Template.parse(@mail_template.body).render("user" => User.first)))
 
 %br
-%br
 %hr
+%br
+
+%p= link_to "Send a mail with this template", new_admin_mail_path(:template_id => @mail_template.id)
+
 %br
 
 %h3 Edition

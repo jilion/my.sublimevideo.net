@@ -6,7 +6,7 @@ class Mail::Log < ActiveRecord::Base
   cattr_accessor :per_page
   self.per_page = 10
   
-  attr_accessible :template_id, :admin_id, :criteria, :user_ids, :snapshot
+  attr_accessible :template_id, :admin_id, :criteria, :user_ids
   
   serialize :criteria
   serialize :user_ids
@@ -19,6 +19,14 @@ class Mail::Log < ActiveRecord::Base
   belongs_to :template, :class_name => "Mail::Template"
   belongs_to :admin
   
+  # ==========
+  # = Scopes =
+  # ==========
+  # sort
+  scope :by_template_title, lambda { |way| includes(:template).order("mail_templates.title #{way || 'asc'}") }
+  scope :by_admin_email,    lambda { |way| includes(:admin).order("admins.email #{way || 'asc'}") }
+  scope :by_date,           lambda { |way| order(:created_at.send(way || 'desc')) }
+  
   # ===============
   # = Validations =
   # ===============
@@ -26,32 +34,20 @@ class Mail::Log < ActiveRecord::Base
   validates :admin_id, :presence => true
   validates :criteria, :presence => true
   validates :user_ids, :presence => true
-  validates :snapshot, :presence => true
   
-  # =================
-  # = Class Methods =
-  # =================
+  # =============
+  # = Callbacks =
+  # =============
+  before_create :snapshotize_template
   
-  def self.deliver_and_save_log(params)
-    users = User
-    users = if params[:criteria].is_a?(Array)
-      params[:criteria].each { |c| users = users.send(c) }
-      users
-    else
-      users.send(params[:criteria])
-    end.all
-    
-    template = Mail::Template.find(params[:template_id])
-    
-    users.each { |u| self.delay.deliver(u, template) }
-    
-    self.create(params.merge(:user_ids => users.map(&:id), :snapshot => template.snapshotize))
-  end
+  # ====================
+  # = Instance Methods =
+  # ====================
   
-private
+protected
   
-  def self.deliver(user, template)
-    MailMailer.send_mail_with_template(user, template).deliver
+  def snapshotize_template
+    self.snapshot = Mail::Template.find(template_id).snapshotize
   end
   
 end

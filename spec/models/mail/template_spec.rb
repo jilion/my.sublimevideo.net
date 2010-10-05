@@ -4,7 +4,7 @@ describe Mail::Template do
   subject { Factory(:mail_template) }
   
   context "with valid attributes" do
-    its(:title)   { should == "Pricing survey" }
+    its(:title)   { should =~ /Pricing survey \d+/ }
     its(:subject) { should == "Help us shaping the right pricing" }
     its(:body)    { should == "Hi {{user.full_name}}, please respond to the survey, by clicking on the following link:\nhttp://survey.com" }
     

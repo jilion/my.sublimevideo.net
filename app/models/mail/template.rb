@@ -14,6 +14,13 @@ class Mail::Template < ActiveRecord::Base
   
   has_many :logs, :class_name => "Mail::Log"
   
+  # ==========
+  # = Scopes =
+  # ==========
+  # sort
+  scope :by_title, lambda { |way| order(:title.send(way || 'asc')) }
+  scope :by_date,  lambda { |way| order(:created_at.send(way || 'desc')) }
+  
   # ===============
   # = Validations =
   # ===============
