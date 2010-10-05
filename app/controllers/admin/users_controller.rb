@@ -12,13 +12,13 @@ class Admin::UsersController < Admin::AdminController
   has_scope :by_beta
   has_scope :by_player_hits
   has_scope :by_traffic
-  has_scope :by_date
+  has_scope :by_date, :default => 'desc', :always => true
   # search
   has_scope :search
   
   # GET /admin/users
   def index
-    @users = apply_scopes(User.includes(:sites), :default => { :by_date => 'desc' })
+    @users = apply_scopes(User.includes(:sites))
     respond_with(@users)
   end
   

@@ -15,6 +15,12 @@ class Admin < ActiveRecord::Base
   
   has_many :mail_logs, :class_name => "Mail::Log"
   
+  # ==========
+  # = Scopes =
+  # ==========
+  # sort
+  scope :by_date, lambda { |way| order(:created_at.send(way || 'desc')) }
+  
 end
 
 # == Schema Information

@@ -14,7 +14,7 @@ class Admin::SitesController < Admin::AdminController
   has_scope :by_traffic_player_ratio
   has_scope :by_google_rank
   has_scope :by_alexa_rank
-  has_scope :by_date
+  has_scope :by_date, :default => 'desc', :always => true
   # search
   has_scope :search
   
@@ -22,8 +22,7 @@ class Admin::SitesController < Admin::AdminController
   def index
     @sites = Site.includes(:user)
     @sites = @sites.not_archived unless params[:archived_included]
-    @sites = apply_scopes(@sites, :default => { :by_date => 'desc' })
-    respond_with(@sites)
+    respond_with(apply_scopes(@sites))
   end
   
   # GET /admin/sites/1/edit
