@@ -19,14 +19,14 @@ describe RecurringJob do
     
     it "should do nothing all recurring jobs are delayed" do
       subject.launch_all
-      HoptoadNotifier.should_not_receive(:notify)
+      Notify.should_not_receive(:send)
       subject.supervise
     end
     
     it "should nbotify if all recurring jobs aren't delayed" do
       subject.launch_all
       Delayed::Job.last.delete
-      HoptoadNotifier.should_receive(:notify)
+      Notify.should_receive(:send)
       subject.supervise
     end
     

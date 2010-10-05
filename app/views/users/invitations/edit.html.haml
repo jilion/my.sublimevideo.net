@@ -73,7 +73,7 @@
     .entry.select
       .company_job_title.left_field
         = f.label :company_employees, "Company size", :class => "icon"
-        = f.select :company_employees, options_for_select(["Company size","1 employee", "2-5 employees", "6-20 employees", "21-100 employees", "101-1000 employees", ">1001 employees"], :disabled => "Company size")
+        = f.select :company_employees, options_for_select(["Company size", "1 employee", "2-5 employees", "6-20 employees", "21-100 employees", "101-1000 employees", ">1001 employees"], :disabled => "Company size")
       .company_videos_served.right_field
         = f.label :company_videos_served, "Nr. of videos served", :class => "icon"
         = f.select :company_videos_served, options_for_select(["Nr. of videos served", "0-1'000 videos/month", "1'000-10'000 videos/month", "10'000-100'000 videos/month", "100'000-1mio videos/month", ">1mio videos/month", "Don't know"], :disabled => "Nr. of videos served")

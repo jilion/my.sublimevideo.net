@@ -33,7 +33,7 @@ module RecurringJob
       unless all_delayed?
         sleep 5
         unless all_delayed?
-          HoptoadNotifier.notify(:error_message => "WARNING!!! All recurring jobs are not delayed, please investigate quickly!")
+          Notify.send("WARNING!!! All recurring jobs are not delayed, please investigate quickly!")
         end
       end
     end
