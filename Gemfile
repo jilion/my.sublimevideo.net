@@ -35,7 +35,7 @@ gem 'fog',                   '~> 0.3.7' # for carrierwave 0.5 final
 gem 'carrierwave',           '~> 0.5.0'
 
 gem 'bson_ext',              '~> 1.1.0'
-gem 'mongo',                 '~> 1.1.0'
+gem 'mongo',                 '~> 1.0.9'
 gem 'mongoid',               '~> 2.0.0.beta.19'
 
 gem 'zip',                   '~> 2.0.2', :require => 'zip/zip'
@@ -79,8 +79,8 @@ group :test do
   gem 'webmock',            '~> 1.3.5'
   gem 'vcr',                '~> 1.1.1'
   
-  gem 'guard'
-  gem 'guard-rspec'
+  gem 'guard',              '~> 0.1.0.beta.1'
+  gem 'guard-rspec',        '~> 0.1.0.beta.2'
   gem 'spork',              '~> 0.9.0.rc2'
   # gem 'rspactor',           '~> 0.7.beta.7'
 end
