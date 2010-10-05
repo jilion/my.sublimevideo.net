@@ -8,7 +8,7 @@
   = Liquid::Template.parse(@mail_template.subject).render("user" => User.first)
 %br
 
-= raw auto_link(Liquid::Template.parse(@mail_template.body).render("user" => User.first)).gsub!(/\n/, '<br />')
+= auto_link(simple_format(Liquid::Template.parse(@mail_template.body).render("user" => User.first)))
 
 %br
 %br
