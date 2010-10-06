@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../acceptance_helper'
+require 'spec_helper'
 
 feature "Admin session:" do
   

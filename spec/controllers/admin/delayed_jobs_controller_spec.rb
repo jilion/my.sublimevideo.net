@@ -2,7 +2,6 @@ require 'spec_helper'
 
 describe Admin::DelayedJobsController do
   include Devise::TestHelpers
-  include ControllerSpecHelpers
   
   context "with logged in admin" do
     before(:each) do

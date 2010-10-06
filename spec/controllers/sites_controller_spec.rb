@@ -2,7 +2,6 @@ require 'spec_helper'
 
 describe SitesController do
   include Devise::TestHelpers
-  include ControllerSpecHelpers
   
   context "with logged in user" do
     before(:each) do

@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 describe Api::InvitationsController do
-  include Devise::TestHelpers
-  include ControllerSpecHelpers
   
   context "with good api token in header" do
     before(:each) do

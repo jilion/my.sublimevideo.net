@@ -10,6 +10,8 @@ Spork.prefork do
   require File.dirname(__FILE__) + "/../config/environment" unless defined?(Rails)
   require 'rspec/rails'
   require 'shoulda'
+  require 'steak'
+  require 'capybara/rails'
 end
 
 Spork.each_run do
@@ -24,7 +26,8 @@ Spork.each_run do
   end
   
   RSpec.configure do |config|
-    config.include Shoulda::ActionController::Matchers
+    config.include(Shoulda::ActionController::Matchers)
+    config.include(Capybara)
     
     config.filter_run :focus => true
     config.run_all_when_everything_filtered = true
@@ -40,6 +43,10 @@ Spork.each_run do
     # Clear MongoDB Collection
     config.before :each do
       Mongoid.master.collections.select { |c| c.name !~ /system/ }.each(&:drop)
+    end
+    
+    config.after(:each) do
+      Capybara.reset_sessions!
     end
   end
 end

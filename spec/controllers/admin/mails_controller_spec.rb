@@ -2,7 +2,6 @@ require 'spec_helper'
 
 describe Admin::MailsController do
   include Devise::TestHelpers
-  include ControllerSpecHelpers
   
   context "with logged in admin" do
     before(:each) { sign_in :admin, logged_in_admin }

@@ -2,7 +2,6 @@ require 'spec_helper'
 
 describe CreditCardsController do
   include Devise::TestHelpers
-  include ControllerSpecHelpers
   
   context "with logged in user" do
     before(:each) { sign_in :user, logged_in_user }
