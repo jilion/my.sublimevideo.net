@@ -8,8 +8,8 @@ describe Admin::MailsController do
     
     describe "GET :index" do
       before(:each) do
-        Mail::Log.stub_chain(:by_date, :paginate).and_return([mock_mail_log])
-        Mail::Template.stub_chain(:by_date, :paginate).and_return([mock_mail_template])
+        Mail::Log.stub_chain(:by_date, :paginate) { [mock_mail_log] }
+        Mail::Template.stub_chain(:by_date, :paginate) { [mock_mail_template] }
         get :index
       end
       
@@ -26,7 +26,7 @@ describe Admin::MailsController do
     
     describe "GET :new" do
       before(:each) do
-        Mail::Log.stub(:new).and_return(mock_mail_log)
+        Mail::Log.stub(:new) { mock_mail_log }
         get :new
       end
       
@@ -41,26 +41,12 @@ describe Admin::MailsController do
     describe "POST :create" do
       before(:each) do
         Mail::Letter.stub(:new).with({ "template_id" => '1', "criteria" => "with_activity", "admin_id" => logged_in_admin.id }) { mock_mail_letter }
-        mock_mail_letter.stub(:deliver_and_log).and_return(mock_mail_log)
-        mock_mail_log.stub(:template).and_return(mock_mail_template)
-        mock_mail_log.stub(:user_ids).and_return([])
-        mock_mail_template.stub(:title).and_return(mock_mail_template)
+        mock_mail_letter.stub_chain(:delay, :deliver_and_log) { mock_mail_log }
       end
       
-      it "should assign mail log as @mail_log" do
-        post :create, :mail_log => { :template_id => '1', :criteria => "with_activity" }
-        assigns(:mail_log).should be(mock_mail_log)
-      end
       it "should respond with redirect if create_and_deliver succeed" do
         post :create, :mail_log => { :template_id => '1', :criteria => "with_activity" }
         response.should redirect_to(admin_mails_url)
-      end
-      it "should respond with success if create_and_deliver fail" do
-        Mail::Letter.stub(:new).with({ "admin_id" => logged_in_admin.id }) { mock_mail_letter }
-        mock_mail_letter.stub(:deliver_and_log).and_return(nil)
-        
-        post :create, :mail_log => {}
-        response.should be_success
       end
     end
   end
