@@ -222,6 +222,7 @@ private
 end
 
 
+
 # == Schema Information
 #
 # Table name: sites
@@ -246,9 +247,6 @@ end
 #  traffic_voxcast_cache :integer(8)      default(0)
 #  google_rank           :integer
 #  alexa_rank            :integer
-#  alias_hostnames       :string(255)
-#  path                  :string(255)
-#  wildcard              :boolean
 #
 # Indexes
 #
