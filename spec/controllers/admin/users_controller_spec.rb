@@ -12,7 +12,7 @@ describe Admin::UsersController do
     end
     
     it "should respond with success to GET :show" do
-      User.stub(:find).with('1').and_return(mock_user)
+      User.stub(:find).with('1') { mock_user }
       
       get :show, :id => '1'
       response.should be_success

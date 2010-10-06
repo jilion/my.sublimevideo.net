@@ -6,7 +6,7 @@ describe SitesController do
   context "with logged in user" do
     before(:each) do
       sign_in :user, logged_in_user(:suspended? => false)
-      logged_in_user.stub_chain(:sites, :find).with('1').and_return(mock_site)
+      logged_in_user.stub_chain(:sites, :find).with('1') { mock_site }
       User.stub(:find) { logged_in_user }
     end
     
@@ -34,7 +34,7 @@ describe SitesController do
       response.should be_success
     end
     it "should respond with success to GET :new" do
-      logged_in_user.stub_chain(:sites, :build).and_return(mock_site)
+      logged_in_user.stub_chain(:sites, :build) { mock_site }
       
       get :new, :format => :js
       response.should be_success
@@ -44,7 +44,7 @@ describe SitesController do
       response.should be_success
     end
     it "should respond with success to POST :create" do
-      logged_in_user.stub_chain(:sites, :build).with({}).and_return(mock_site)
+      logged_in_user.stub_chain(:sites, :build).with({}) { mock_site }
       mock_site.stub(:save).and_return(true)
       mock_site.stub_chain(:delay, :activate).and_return(true)
       

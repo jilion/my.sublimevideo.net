@@ -7,7 +7,8 @@ describe UsersController do
     before(:each) { sign_in :user, logged_in_user }
     
     it "should respond with success to PUT :update" do
-      logged_in_user.stub(:update_attributes).with({}).and_return(true)
+      User.stub(:find).and_return(logged_in_user)
+      logged_in_user.should_receive(:update_attributes).with({}).and_return(true)
       
       put :update, :id => '1', :user => {}
       response.should redirect_to(edit_user_registration_path)

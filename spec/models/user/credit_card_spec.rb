@@ -30,13 +30,13 @@ describe User::CreditCard do
     
     it "should void authorization after verification" do
       mock_response = mock('response', :success? => true)
-      Ogone.should_receive(:void).and_return(mock_response)
+      Ogone.should_receive(:void) { mock_response }
       user.save
     end
     
     it "should notify if void authorization after verification failed" do
       mock_response = mock('response', :success? => false, :message => 'failed')
-      Ogone.stub(:void).and_return(mock_response)
+      Ogone.stub(:void) { mock_response }
       Notify.should_receive(:send)
       user.save
     end

@@ -6,11 +6,11 @@ describe Admin::DelayedJobsController do
   context "with logged in admin" do
     before(:each) do
       sign_in :admin, logged_in_admin
-      Delayed::Job.stub(:find).with("1").and_return(mock_delayed_job)
+      Delayed::Job.stub(:find).with("1") { mock_delayed_job }
     end
     
     it "should respond with success to GET :index" do
-      Delayed::Job.stub(:all).and_return([])
+      Delayed::Job.stub(:all) { [] }
       
       get :index
       response.should be_success

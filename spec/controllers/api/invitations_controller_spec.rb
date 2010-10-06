@@ -9,7 +9,7 @@ describe Api::InvitationsController do
     end
     
     it "should respond with success to POST :create" do
-      User.should_receive(:invite).with('email' => 'john@doe.com').and_return(mock_user(:invited? => true))
+      User.should_receive(:invite).with('email' => 'john@doe.com') { mock_user(:invited? => true) }
       post :create, :invitation => { :email => 'john@doe.com' }
       response.should be_success
       response.status.should == 201

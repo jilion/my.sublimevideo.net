@@ -6,7 +6,7 @@ describe Admin::SitesController do
   context "with logged in admin" do
     before(:each) do
       sign_in :admin, logged_in_admin
-      Site.stub(:find).with("1").and_return(mock_site)
+      Site.stub(:find).with("1") { mock_site }
     end
     
     it "should respond with success to GET :index" do
@@ -15,7 +15,7 @@ describe Admin::SitesController do
     end
     
     it "should respond with success to GET :edit" do
-      Site.stub_chain(:includes, :find).with('1').and_return(mock_site)
+      Site.stub_chain(:includes, :find).with('1') { mock_site }
       
       get :edit, :id => '1'
       response.should be_success

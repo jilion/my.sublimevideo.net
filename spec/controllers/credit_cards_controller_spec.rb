@@ -12,8 +12,8 @@ describe CreditCardsController do
         response.should be_success
       end
       it "should respond with success to PUT :update" do
-        Invoice.stub(:current).with(@mock_user).and_return(mock_invoice)
-        @mock_user.stub(:update_attributes).with({}).and_return(true)
+        Invoice.should_receive(:current).with(@mock_user) { mock_invoice }
+        @mock_user.should_receive(:update_attributes).with({}).and_return(true)
         
         put :update, :user => {}
         response.should redirect_to(edit_user_registration_path)

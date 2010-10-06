@@ -6,7 +6,7 @@ describe Admin::Mails::TemplatesController do
   context "with logged in admin" do
     before(:each) do
       sign_in :admin, logged_in_admin
-      Mail::Template.stub(:find).with("1").and_return(mock_mail_template)
+      Mail::Template.stub(:find).with("1") { mock_mail_template }
     end
     
     it "should respond with success to GET :edit" do

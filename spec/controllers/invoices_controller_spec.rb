@@ -8,21 +8,21 @@ describe InvoicesController do
     
     if MySublimeVideo::Release.public?
       it "should respond with success to GET :index" do
-        logged_in_user.stub_chain(:invoices, :by_charged_at).and_return([])
+        logged_in_user.stub_chain(:invoices, :by_charged_at) { [] }
         
         get :index
         response.should be_success
       end
       
       it "should respond with success to GET :show" do
-        logged_in_user.stub_chain(:invoices, :find).with("1").and_return(mock_invoice)
+        logged_in_user.stub_chain(:invoices, :find).with("1") { mock_invoice }
         
         get :show, :id => '1', :format => :js
         response.should be_success
       end
       
       it "should respond with success to GET :show and id == 'current'" do
-        Invoice.stub(:current).with(@mock_user).and_return(mock_invoice)
+        Invoice.stub(:current).with(@mock_user) { mock_invoice }
         get :show, :id => 'current', :format => :js
         response.should be_success
       end

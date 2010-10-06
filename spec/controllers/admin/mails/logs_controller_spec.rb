@@ -7,7 +7,7 @@ describe Admin::Mails::LogsController do
     before(:each) { sign_in :admin, logged_in_admin }
     
     it "should respond with success to GET :show" do
-      Mail::Log.stub(:find).with("1").and_return(mock_mail_log)
+      Mail::Log.stub(:find).with("1") { mock_mail_log }
       
       get :show, :id => '1'
       response.should be_success
