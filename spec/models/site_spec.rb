@@ -215,7 +215,7 @@ describe Site do
       site = Factory(:site)
       site.activate
       delay_mock = mock('Delay')
-      VoxcastCDN.should_receive(:delay).twice.and_return(delay_mock)
+      VoxcastCDN.should_receive(:delay).twice { delay_mock }
       delay_mock.should_receive(:purge).with("/js/#{site.token}.js")
       delay_mock.should_receive(:purge).with("/l/#{site.token}.js")
       site.activate
@@ -229,7 +229,7 @@ describe Site do
       
       it "should clear & purge license & loader when suspend" do
         delay_mock = mock('Delay')
-        VoxcastCDN.should_receive(:delay).twice.and_return(delay_mock)
+        VoxcastCDN.should_receive(:delay).twice { delay_mock }
         delay_mock.should_receive(:purge).with("/js/#{@site.token}.js")
         delay_mock.should_receive(:purge).with("/l/#{@site.token}.js")
         @site.suspend
@@ -249,7 +249,7 @@ describe Site do
       
       it "should clear & purge license & loader and set archived_at when archive" do
         delay_mock = mock('Delay')
-        VoxcastCDN.should_receive(:delay).twice.and_return(delay_mock)
+        VoxcastCDN.should_receive(:delay).twice { delay_mock }
         delay_mock.should_receive(:purge).with("/js/#{@site.token}.js")
         delay_mock.should_receive(:purge).with("/l/#{@site.token}.js")
         @site.archive
@@ -328,9 +328,6 @@ describe Site do
   end
   
 end
-
-
-
 # == Schema Information
 #
 # Table name: sites

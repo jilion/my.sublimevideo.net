@@ -162,12 +162,8 @@ describe Invoice do
         its(:amount)        { should == 1000175 }
         its(:sites_amount)  { should == 1000175 }
         
-        it "should sent a email" do
-          last_delivery = ActionMailer::Base.deliveries.last
-          last_delivery.from.should == ["noreply@sublimevideo.net"]
-          last_delivery.to.should include subject.user.email
-          last_delivery.subject.should include "Invoice ready to be charged"
-          last_delivery.body.should include "$10001.75"
+        it "should send a email" do
+          ActionMailer::Base.deliveries.count.should == 1
         end
       end
       
@@ -189,8 +185,6 @@ describe Invoice do
   end
   
 end
-
-
 # == Schema Information
 #
 # Table name: invoices

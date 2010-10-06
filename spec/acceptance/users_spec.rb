@@ -1,6 +1,5 @@
 # coding: utf-8
-
-require File.dirname(__FILE__) + '/acceptance_helper'
+require 'spec_helper'
 
 feature "Users actions:" do
   

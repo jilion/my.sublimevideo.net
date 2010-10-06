@@ -22,5 +22,4 @@ protected
       authenticate_admin!
     end
   end
-  
 end

@@ -75,8 +75,8 @@ class Site < ActiveRecord::Base
   # =================
   
   state_machine :initial => :pending do
-    before_transition :on => :activate,     :do => :set_loader_and_license_file
-    after_transition  :active => :active,   :do => :purge_loader_and_license_file
+    before_transition :on => :activate,   :do => :set_loader_and_license_file
+    after_transition  :active => :active, :do => :purge_loader_and_license_file
     
     before_transition :on => :archive,             :do => :set_archived_at
     before_transition :on => [:archive, :suspend], :do => :remove_loader_and_license_file
@@ -220,9 +220,6 @@ private
   end
   
 end
-
-
-
 # == Schema Information
 #
 # Table name: sites

@@ -1,5 +1,7 @@
 MySublimeVideo::Application.routes.draw do
   
+  get "logs/show"
+
   resource :protection, :only => [:show, :create]
   
   devise_for :users,
@@ -81,6 +83,11 @@ MySublimeVideo::Application.routes.draw do
     resources :users, :only => [:index, :show]
     resources :admins, :only => [:index, :destroy]
     resources :sites, :only => [:index, :edit, :update]
+    resources :mails, :only => [:index, :new, :create]
+    scope "mails", :module => "mails" do
+      resources :templates, :only => [:edit, :update], :as => 'mail_templates'
+      resources :logs,      :only => [:show],          :as => 'mail_logs'
+    end
     resources :delayed_jobs, :only => [:index, :show, :update, :destroy], :path => "djs"
     resources :releases, :only => [:index, :create, :update]
     resources :referrers, :only => :index
