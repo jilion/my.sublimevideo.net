@@ -10,6 +10,9 @@ class User < ActiveRecord::Base
   cattr_accessor :per_page
   self.per_page = 100
   
+  # Mail template
+  liquid_methods :email, :first_name, :last_name, :full_name
+  
   attr_accessor :terms_and_conditions
   attr_accessible :first_name, :last_name, :email, :remember_me, :password, :postal_code, :country,
                   :use_personal, :use_company, :use_clients,
@@ -50,6 +53,7 @@ class User < ActiveRecord::Base
   scope :by_player_hits,   lambda { |way| joins(:sites).group("users.#{User.first.attributes.keys.join(', users.')}").order("SUM(sites.player_hits_cache) #{way}") }
   scope :by_traffic,       lambda { |way| joins(:sites).group("users.#{User.first.attributes.keys.join(', users.')}").order("SUM(sites.traffic_voxcast_cache + sites.traffic_s3_cache) #{way}") }
   scope :by_date,          lambda { |way| order(:created_at.send(way || 'desc')) }
+  
   # search
   scope :search, lambda { |q| includes(:sites).where(["LOWER(users.email) LIKE LOWER(?) OR LOWER(users.first_name) LIKE LOWER(?) OR LOWER(users.last_name) LIKE LOWER(?) OR LOWER(sites.hostname) LIKE LOWER(?) OR LOWER(sites.dev_hostnames) LIKE LOWER(?)", "%#{q}%", "%#{q}%", "%#{q}%", "%#{q}%", "%#{q}%"]) }
   
@@ -105,7 +109,6 @@ class User < ActiveRecord::Base
   def full_name
     first_name.to_s + ' ' + last_name.to_s
   end
-  liquid_methods :full_name
   
   def email=(email)
     write_attribute(:email, email.try(:downcase))

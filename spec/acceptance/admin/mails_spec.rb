@@ -57,8 +57,7 @@ end
 feature "Mails sending" do
   background do
     @admin = sign_in_as :admin
-    @mail_log      = Factory(:mail_log)
-    @mail_template = @mail_log.template
+    @mail_template = Factory(:mail_template)
     user = Factory(:user)
     User.stub_chain(:with_activity, :all) { [user] }
     ActionMailer::Base.deliveries.clear
@@ -74,16 +73,18 @@ feature "Mails sending" do
     select "with activity", :from => "Criteria"
     click_button "Send mail"
     
-    last_log = Mail::Log.all.last
-    
     current_url.should =~ %r(http://[^/]+/admin/mails)
-    page.should have_content("Mail with template '#{@mail_template.title}' will be sent to 1 user!")
-    last_log.template_id.should == @mail_template.id
-    last_log.admin_id.should == @admin.id
-    last_log.snapshot.should == @mail_template.snapshotize
-    last_log.criteria.should == "with_activity"
-    Delayed::Job.where(:handler.matches => "%deliver%").count.should == 1
+    
+    page.should have_content("Sending in progress...")
+    
+    Delayed::Job.where(:handler.matches => "%deliver_and_log%").count.should == 1
     Delayed::Worker.new(:quiet => true).work_off
     ActionMailer::Base.deliveries.size.should == 1
+    
+    latest_log = Mail::Log.by_date.first
+    latest_log.template_id.should == @mail_template.id
+    latest_log.admin_id.should == @admin.id
+    latest_log.snapshot.should == @mail_template.snapshotize
+    latest_log.criteria.should == "with_activity"
   end
 end

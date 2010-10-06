@@ -58,7 +58,7 @@ end
 
 Factory.define :mail_template, :class => Mail::Template do |f|
   f.sequence(:title) { |n| "Pricing survey #{n}" }
-  f.subject          "Help us shaping the right pricing"
+  f.subject          "{{user.full_name}}, help us shaping the right pricing"
   f.body             "Hi {{user.full_name}}, please respond to the survey, by clicking on the following link:\nhttp://survey.com"
 end
 

@@ -1,11 +1,11 @@
 %tr{ :class => cycle("", "alt") }
   %td.admin
-    = mail_log.admin.email
+    = link_to mail_log.admin.email, admin_mail_log_path(mail_log)
   %td.template
     %small
-      = link_to mail_log.template.title, edit_admin_mail_template_path(mail_log.template), :title => mail_log.template.title
+      = link_to mail_log.template.title, admin_mail_log_path(mail_log), :title => mail_log.template.title
   %td.users_count
     %small
-      = mail_log.user_ids.size
+      = link_to mail_log.user_ids.size, admin_mail_log_path(mail_log)
   %td
-    %small= display_date(mail_log.created_at)
+    %small= link_to display_date(mail_log.created_at), admin_mail_log_path(mail_log)

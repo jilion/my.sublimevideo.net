@@ -10,9 +10,7 @@ describe Mail::Letter do
       let(:mail_template) { Factory(:mail_template) }
       let(:mail_letter)   { Mail::Letter.new(attributes) }
       
-      before(:each) do
-        User.stub_chain(:with_activity, :all).and_return([user])
-      end
+      before(:each) { User.stub_chain(:with_activity, :all).and_return([user]) }
       
       it "should save all the data" do
         ml = mail_letter.deliver_and_log
@@ -45,16 +43,12 @@ describe Mail::Letter do
         
         it "should actually send email when workers do their jobs" do
           mail_letter.deliver_and_log
-          lambda do
-            Delayed::Worker.new(:quiet => true).work_off
-          end.should change(ActionMailer::Base.deliveries, :size).by(3)
+          lambda { Delayed::Worker.new(:quiet => true).work_off }.should change(ActionMailer::Base.deliveries, :size).by(3)
         end
       end
       
       it "should create a new Mail::Log record" do
-        lambda do
-          mail_letter.deliver_and_log
-        end.should change(Mail::Log, :count).by(1)
+        lambda { mail_letter.deliver_and_log }.should change(Mail::Log, :count).by(1)
       end
     end
   end

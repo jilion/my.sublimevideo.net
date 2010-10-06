@@ -13,8 +13,10 @@ feature "Mail templates index:" do
     visit "/admin/mails/templates/#{mail_template.id}/edit"
     
     page.should have_content(mail_template.title)
-    page.should have_content(mail_template.subject)
-    page.should have_content("Hi John Doe,")
+    page.should have_content("John Doe, help us shaping the right pricing")
+    "Hi John Doe, please respond to the survey, by clicking on the following link:\nhttp://survey.com".split("\n").each do |body_parts|
+      page.should have_content(body_parts)
+    end
     
     fill_in "Title",   :with => "This is a title"
     fill_in "Subject", :with => "This is a subject"
