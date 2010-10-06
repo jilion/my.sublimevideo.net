@@ -21,7 +21,7 @@
       %li= "Company name: " + @user.company_name
       %li
         = "Company url: "
-        = link_to(@user.company_url, @user.company_url)
+        = link_to(@user.company_url, "#{'http://' unless @user.company_url =~ %r(https?://)}#{@user.company_url}")
       %li= "Job title: " + @user.company_job_title
       %li= "Nbr. of employees: " + @user.company_employees
       %li= "Videos served: " + @user.company_videos_served

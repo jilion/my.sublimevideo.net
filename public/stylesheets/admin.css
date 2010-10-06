@@ -223,6 +223,7 @@ ul.no_bullet {
 
 #main table th {
   padding:8px 0;
+  white-space:nowrap;
   background:#ddd;
   background:-webkit-gradient(linear,left top,left bottom,from(#eee),to(#ccc));
   background:-moz-linear-gradient(top, #eee, #ccc);

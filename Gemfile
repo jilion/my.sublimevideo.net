@@ -9,7 +9,7 @@ gem 'libxml-ruby',           '~> 1.1.3', :require => 'libxml'
 gem 'i18n',                  '~> 0.4.1'
 gem 'haml',                  '~> 3.0.21'
 gem 'state_machine',         '~> 0.9.4'
-gem 'responders',            :git => 'git://github.com/thibaudgg/responders.git'
+gem 'responders',            '~> 0.6.2'
 gem 'uniquify',              '~> 0.1.0'
 gem 'delayed_job',           '~> 2.1.0.pre2'
 gem 'will_paginate',         '~> 3.0.pre2'
@@ -34,7 +34,7 @@ gem 'aws',                   '~> 2.3.20'
 gem 'fog',                   '~> 0.3.7' # for carrierwave 0.5 final
 gem 'carrierwave',           '~> 0.5.0'
 
-gem 'bson_ext',              '~> 1.0.9'
+gem 'bson_ext',              '~> 1.1.0'
 gem 'mongo',                 '~> 1.0.9'
 gem 'mongoid',               '~> 2.0.0.beta.19'
 
@@ -61,16 +61,17 @@ group :development do
   gem 'heroku',        '~> 1.10.8'
   gem 'heroku_tasks',  '~> 0.1.4'
   gem 'taps'           # heroku db pull/push
-  gem 'rspec-rails',   '~> 2.0.0.beta.22'
+  gem 'rspec-rails',   '~> 2.0.0.rc'
   gem 'timecop',       '~> 0.3.5'
 end
 
 group :test do
   gem 'spork',              '~> 0.9.0.rc2'
-  gem 'rspactor',           '~> 0.7.beta.7'
+  gem 'guard'
+  gem 'guard-rspec'
   
   gem 'shoulda',            '~> 2.11.3'
-  gem 'rspec-rails',        '~> 2.0.0.beta.22'
+  gem 'rspec-rails',        '~> 2.0.0.rc'
   
   gem 'steak',              '~> 1.0.0.beta.2'
   gem 'capybara',           '~> 0.3.9'
