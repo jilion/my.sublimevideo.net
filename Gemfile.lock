@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/rack/rack.git
-  revision: 294c1853ad5c6a0286221f7b2046ec7900f70775
+  revision: 2f68598a90149678fa5bf32f40d32b9abda5b9f5
   specs:
     rack (1.2.1)
 
