@@ -32,10 +32,6 @@ describe User::Trial do
         Factory(:site, :user => user, :loader_hits_cache => User::Trial.free_loader_hits / 2)
         
         lambda { User::Trial.supervise_users }.should change(ActionMailer::Base.deliveries, :size).by(1)
-        last_delivery = ActionMailer::Base.deliveries.last
-        last_delivery.from.should == ["noreply@sublimevideo.net"]
-        last_delivery.to.should include user.email
-        last_delivery.subject.should include "Trial usage has reached 50%"
         user.reload.trial_usage_information_email_sent_at.should be_present
       end
       
@@ -64,10 +60,6 @@ describe User::Trial do
         Factory(:site, :user => user, :loader_hits_cache => User::Trial.free_loader_hits / 1.1)
         
         lambda { User::Trial.supervise_users }.should change(ActionMailer::Base.deliveries, :size).by(1)
-        last_delivery = ActionMailer::Base.deliveries.last
-        last_delivery.to.should include user.email
-        last_delivery.subject.should include "Warning! Trial usage has reached 90%"
-        
         user.reload.trial_usage_warning_email_sent_at.should be_present
       end
       
@@ -75,11 +67,6 @@ describe User::Trial do
         Factory(:site, :user => user, :loader_hits_cache => User::Trial.free_loader_hits)
         
         lambda { VCR.use_cassette('user/suspend') { User::Trial.supervise_users } }.should change(ActionMailer::Base.deliveries, :size).by(1)
-        last_delivery = ActionMailer::Base.deliveries.last
-        last_delivery.to.should include user.email
-        last_delivery.subject.should include "Your account has been suspended"
-        last_delivery.body.to_s.should include "Trial is over!"
-        
         user.reload.trial_ended_at.should be_present
         user.should be_suspended
       end
@@ -139,4 +126,20 @@ describe User::Trial do
     
   end
   
+end
+
+def create_invoice(options = {})
+  options[:loader_hits] ||= 12
+  options[:player_hits] ||= 21
+  
+  user  = Factory(:user, :invoices_count => 0, :created_at => 2.month.ago, :next_invoiced_on => 1.day.ago).reload
+  site = Factory(:site, :user => user, :loader_hits_cache => options[:loader_hits], :player_hits_cache => options[:player_hits])
+  VCR.use_cassette('one_saved_logs') do
+    @log = Factory(:log_voxcast, :started_at => 1.month.ago, :ended_at => 1.month.ago + 3.days)
+  end
+  Factory(:site_usage, :site => site, :log => @log, :loader_hits => options[:loader_hits], :player_hits => options[:player_hits])
+  
+  invoice = Factory(:invoice, :user => user).reload
+  invoice.calculate if options[:calculate]
+  invoice
 end
