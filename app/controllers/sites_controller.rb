@@ -4,13 +4,11 @@ class SitesController < ApplicationController
   before_filter :redirect_suspended_user
   
   has_scope :by_hostname
-  has_scope :by_date, :default => 'desc', :always => true do |controller, scope, value|
-    controller.params.keys.any? { |k| k != "by_date" && k =~ /(by_\w+)/ } ? scope : scope.by_date(value)
-  end
+  has_scope :by_date
   
   # GET /sites
   def index
-    @sites = apply_scopes(current_user.sites.not_archived)
+    @sites = apply_scopes(current_user.sites.not_archived.by_date)
     respond_with(@sites)
   end
   

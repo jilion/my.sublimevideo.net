@@ -14,15 +14,13 @@ class Admin::SitesController < Admin::AdminController
   has_scope :by_traffic_player_ratio
   has_scope :by_google_rank
   has_scope :by_alexa_rank
-  has_scope :by_date, :default => 'desc', :always => true do |controller, scope, value|
-    controller.params.keys.any? { |k| k != "by_date" && k =~ /(by_\w+)/ } ? scope : scope.by_date(value)
-  end
+  has_scope :by_date
   # search
   has_scope :search
   
   # GET /admin/sites
   def index
-    @sites = Site.includes(:user)
+    @sites = Site.includes(:user).by_date
     @sites = @sites.not_archived unless params[:archived_included]
     respond_with(apply_scopes(@sites))
   end

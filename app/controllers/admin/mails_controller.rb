@@ -8,17 +8,15 @@ class Admin::MailsController < Admin::AdminController
   # For Mail::Template
   has_scope :by_title
   # For both
-  has_scope :by_date, :default => 'desc', :always => true do |controller, scope, value|
-    controller.params.keys.any? { |k| k != "by_date" && k =~ /(by_\w+)/ } ? scope : scope.by_date(value)
-  end
+  has_scope :by_date
   
   # GET /admin/mails
   def index
     if params[:mail_logs] || !(params[:mail_logs] || params[:mail_templates])
-      @mail_logs      = apply_scopes(Mail::Log).paginate(:page => params[:page], :per_page => Mail::Log.per_page)
+      @mail_logs = apply_scopes(Mail::Log.by_date).paginate(:page => params[:page], :per_page => Mail::Log.per_page)
     end
     if params[:mail_templates] || !(params[:mail_logs] || params[:mail_templates])
-      @mail_templates = apply_scopes(Mail::Template).paginate(:page => params[:page], :per_page => Mail::Template.per_page)
+      @mail_templates = apply_scopes(Mail::Template.by_date).paginate(:page => params[:page], :per_page => Mail::Template.per_page)
     end
   end
   
