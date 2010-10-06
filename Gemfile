@@ -1,7 +1,9 @@
 source :rubygems
 
+gem 'bundler',               '~> 1.0.2'
+
 gem 'rails',                 '~> 3.0.0'
-gem 'rack',                  :git => 'git://github.com/rack/rack.git'
+gem 'rack' #,                  :git => 'git://github.com/rack/rack.git'
 gem 'pg',                    '~> 0.9.0'
 
 gem 'libxml-ruby',           '~> 1.1.3', :require => 'libxml'
