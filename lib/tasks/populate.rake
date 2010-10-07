@@ -22,18 +22,19 @@ namespace :db do
       timed { create_admins }
       timed { create_users(argv_count) }
       timed { create_sites }
-    end
-    
-    desc "Load User development fixtures."
-    task :users => :environment do
-      timed { empty_tables(Site, User) }
-      timed { create_users(argv_count) }
+      timed { create_mail_templates }
     end
     
     desc "Load Admin development fixtures."
     task :admins => :environment do
       timed { empty_tables(Admin) }
       timed { create_admins }
+    end
+    
+    desc "Load User development fixtures."
+    task :users => :environment do
+      timed { empty_tables(Site, User) }
+      timed { create_users(argv_count) }
     end
     
     desc "Load Site development fixtures."
@@ -110,6 +111,18 @@ def create_users(count = 0)
       user.country      = 'US'
       user.postal_code  = Faker::Address.zip_code
       user.email        = Faker::Internet.email
+      user.use_personal = rand > 0.5
+      user.use_company  = rand > 0.5
+      user.use_clients  = user.use_company && rand > 0.3
+      
+      if user.use_company
+        user.company_name          = Faker::Company.name
+        user.company_url           = "#{rand > 0.5 ? "http://" : "www."}#{Faker::Internet.domain_name}"
+        user.company_job_title     = Faker::Company.bs
+        user.company_employees     = ["Company size", "1 employee", "2-5 employees", "6-20 employees", "21-100 employees", "101-1000 employees", ">1001 employees"].sample
+        user.company_videos_served = ["Nr. of videos served", "0-1'000 videos/month", "1'000-10'000 videos/month", "10'000-100'000 videos/month", "100'000-1mio videos/month", ">1mio videos/month", "Don't know"].sample
+      end
+      
       user.password     = '123456'
       user.confirmed_at = rand(10).days.ago
       user.save
