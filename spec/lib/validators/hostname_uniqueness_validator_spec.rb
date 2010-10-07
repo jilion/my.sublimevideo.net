@@ -35,10 +35,6 @@ describe HostnameUniquenessValidator do
   
 end
 
-def validator(attributes)
-  @validator ||= HostnameUniquenessValidator.new(:attributes => attributes)
-end
-
 def validates(record, attribute, value)
-  validator(attribute).validate_each(record, attribute, value)
+  HostnameUniquenessValidator.new(:attributes => attribute).validate_each(record, attribute, value)
 end
