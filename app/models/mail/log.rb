@@ -23,9 +23,9 @@ class Mail::Log < ActiveRecord::Base
   # = Scopes =
   # ==========
   # sort
-  scope :by_template_title, lambda { |way| includes(:template).order("mail_templates.title #{way || 'asc'}") }
-  scope :by_admin_email,    lambda { |way| includes(:admin).order("admins.email #{way || 'asc'}") }
-  scope :by_date,           lambda { |way| order(:created_at.send(way || 'desc')) }
+  scope :by_template_title, lambda { |way = 'asc'| includes(:template).order("#{Mail::Template.quoted_table_name}.title #{way}") }
+  scope :by_admin_email,    lambda { |way = 'asc'| includes(:admin).order("#{Admin.quoted_table_name}.email #{way}") }
+  scope :by_date,           lambda { |way = 'desc'| order("#{Mail::Log.quoted_table_name}.created_at #{way}") }
   
   # ===============
   # = Validations =

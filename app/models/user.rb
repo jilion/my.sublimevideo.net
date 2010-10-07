@@ -48,14 +48,14 @@ class User < ActiveRecord::Base
   scope :use_company,     where(:use_company => true)
   scope :use_clients,     where(:use_clients => true)
   # sort
-  scope :by_name_or_email, lambda { |way| order(:first_name.send(way || 'desc'), :email.send(way || 'desc')) }
-  scope :by_beta,          lambda { |way| order(:invitation_token.send(way || 'desc')) }
-  scope :by_player_hits,   lambda { |way| joins(:sites).group("users.#{User.first.attributes.keys.join(', users.')}").order("SUM(sites.player_hits_cache) #{way}") }
-  scope :by_traffic,       lambda { |way| joins(:sites).group("users.#{User.first.attributes.keys.join(', users.')}").order("SUM(sites.traffic_voxcast_cache + sites.traffic_s3_cache) #{way}") }
-  scope :by_date,          lambda { |way| order(:created_at.send(way || 'desc')) }
+  scope :by_name_or_email, lambda { |way = 'asc'| order("#{User.quoted_table_name}.first_name #{way}, #{User.quoted_table_name}.email #{way}") }
+  scope :by_beta,          lambda { |way = 'desc'| order("#{User.quoted_table_name}.invitation_token #{way}") }
+  scope :by_player_hits,   lambda { |way = 'asc'| joins(:sites).group("#{User.quoted_table_name}.#{User.first.attributes.keys.join(", #{User.quoted_table_name}.")}").order("SUM(#{Site.quoted_table_name}.player_hits_cache) #{way}") }
+  scope :by_traffic,       lambda { |way = 'asc'| joins(:sites).group("#{User.quoted_table_name}.#{User.first.attributes.keys.join(", #{User.quoted_table_name}.")}").order("SUM(#{Site.quoted_table_name}.traffic_voxcast_cache + #{Site.quoted_table_name}.traffic_s3_cache) #{way}") }
+  scope :by_date,          lambda { |way = 'desc'| order("#{User.quoted_table_name}.created_at #{way}") }
   
   # search
-  scope :search, lambda { |q| includes(:sites).where(["LOWER(users.email) LIKE LOWER(?) OR LOWER(users.first_name) LIKE LOWER(?) OR LOWER(users.last_name) LIKE LOWER(?) OR LOWER(sites.hostname) LIKE LOWER(?) OR LOWER(sites.dev_hostnames) LIKE LOWER(?)", "%#{q}%", "%#{q}%", "%#{q}%", "%#{q}%", "%#{q}%"]) }
+  scope :search, lambda { |q| includes(:sites).where(["LOWER(#{User.quoted_table_name}.email) LIKE LOWER(?) OR LOWER(#{User.quoted_table_name}.first_name) LIKE LOWER(?) OR LOWER(#{User.quoted_table_name}.last_name) LIKE LOWER(?) OR LOWER(#{Site.quoted_table_name}.hostname) LIKE LOWER(?) OR LOWER(#{Site.quoted_table_name}.dev_hostnames) LIKE LOWER(?)", "%#{q}%", "%#{q}%", "%#{q}%", "%#{q}%", "%#{q}%"]) }
   
   # ===============
   # = Validations =
