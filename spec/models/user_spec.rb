@@ -88,23 +88,34 @@ describe User do
       user.should have(1).error_on(:password)
     end
     
-    it "should validate presence of a least once use" do
-      user = accept_invitation(:use_company => nil)
+    it "should validate presence of at least one usage" do
+      user = accept_invitation(:use_personal => nil, :use_company => nil, :use_clients => nil)
       user.should have(1).error_on(:use)
     end
     
-    it "should validate company fields if use_company is checked" do
-      user = accept_invitation(:company_name => nil, :company_url => nil, :company_job_title => nil, :company_employees => nil, :company_videos_served => nil)
-      user.should have(1).error_on(:company_name)
-      user.should have(1).error_on(:company_url)
-      user.should have(1).error_on(:company_job_title)
-      user.should have(1).error_on(:company_employees)
-      user.should have(1).error_on(:company_videos_served)
-    end
-    
-    it "should validate company url if use_company is checked" do
-      user = accept_invitation(:company_name => nil)
-      user.should have(1).error_on(:company_name)
+    context "use_company is checked" do
+      it "should validate company fields if use_company is checked" do
+        user = accept_invitation(:use_company => true, :company_name => nil, :company_url => nil, :company_job_title => nil, :company_employees => nil, :company_videos_served => nil)
+        user.should have(1).error_on(:company_name)
+        user.should have(1).error_on(:company_url)
+        user.should have(1).error_on(:company_job_title)
+        user.should have(1).error_on(:company_employees)
+        user.should have(1).error_on(:company_videos_served)
+        
+        user.errors[:company_name].should == ["can't be blank"]
+        user.errors[:company_url].should == ["can't be blank"]
+        user.errors[:company_job_title].should == ["can't be blank"]
+        user.errors[:company_employees].should == ["can't be blank"]
+        user.errors[:company_videos_served].should == ["can't be blank"]
+      end
+      
+      it "should validate company url" do
+        user = accept_invitation(:use_company => true, :company_url => "http://localhost")
+        puts user.company_url
+        user.should_not be_valid
+        user.should have(1).error_on(:company_url)
+        user.errors[:company_url].should == ["is invalid"]
+      end
     end
     
     it "should validate acceptance of terms_and_conditions" do

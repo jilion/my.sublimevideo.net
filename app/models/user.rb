@@ -66,7 +66,7 @@ class User < ActiveRecord::Base
   validates :postal_code, :presence => true
   validates :country, :presence => true
   validates :terms_and_conditions, :acceptance => { :accept => "1" }, :on => :create
-  validates :company_url, :hostname_uniqueness => true, :allow_blank => true
+  validates :company_url, :production_hostname => true, :allow_blank => true
   validate :validates_credit_card_attributes # in user/credit_card
   validate :validates_use_presence_on_invitation_update
   validate :validates_company_fields_on_invitation_update
