@@ -19,12 +19,6 @@ GIT
     has_scope (0.5.0)
 
 GIT
-  remote: git://github.com/thibaudgg/responders.git
-  revision: 3684de7fe572b48fc723d62362f583562ac85a71
-  specs:
-    responders (0.6.2)
-
-GIT
   remote: git://github.com/thibaudgg/voxel_hapi.git
   revision: f82d1d11506ca4424b872a27cca22d71479a8633
   branch: 1.9.2
@@ -139,14 +133,10 @@ GEM
       rb-inotify
       sys-uname (~> 0.8.4)
       thor (~> 0.14.2)
-    guard-rspec (0.1.0.beta.2)
+    guard-rspec (0.1.0.beta.1)
       guard (~> 0.1.0.beta.1)
-      rspec (~> 2.0.0.rc)
     haml (3.0.21)
     heroku (1.10.13)
-      json_pure (>= 1.2.0, < 1.5.0)
-      launchy (~> 0.3.2)
-      rest-client (>= 1.4.0, < 1.7.0)
     heroku_tasks (0.1.4)
     hoptoad_notifier (2.3.8)
       activesupport
@@ -215,6 +205,7 @@ GEM
       ffi (>= 0.5.0)
     request-log-analyzer (1.9.3)
     rescue_me (0.1.0)
+    responders (0.6.2)
     rest-client (1.6.1)
       mime-types (>= 1.16)
     rspec (2.0.0.rc)
@@ -320,7 +311,7 @@ DEPENDENCIES
   rails-erd
   request-log-analyzer (~> 1.9.3)
   rescue_me (~> 0.1.0)
-  responders!
+  responders (~> 0.6.2)
   rspec-rails (~> 2.0.0.rc)
   ruby-graphviz
   shoulda (~> 2.11.3)

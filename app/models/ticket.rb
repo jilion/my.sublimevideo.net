@@ -1,11 +1,5 @@
-# == Schema Information
-#
-#  type            :integer   not null
-#  subject         :string    not null
-#  message         :text      not null
-#  requester_name  :string
-#  requester_email :string
-#
+# coding: utf-8
+
 require 'digest/md5'
 
 class Ticket
@@ -69,3 +63,12 @@ private
   end
   
 end
+
+# == Schema Information
+#
+#  type            :integer   not null
+#  subject         :string    not null
+#  message         :text      not null
+#  requester_name  :string
+#  requester_email :string
+#

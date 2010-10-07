@@ -1,5 +1,7 @@
 source :rubygems
 
+gem 'bundler',               '~> 1.0.2'
+
 gem 'rails',                 '~> 3.0.0'
 gem 'rack',                  :git => 'git://github.com/rack/rack.git'
 gem 'pg',                    '~> 0.9.0'
@@ -9,7 +11,7 @@ gem 'libxml-ruby',           '~> 1.1.3', :require => 'libxml'
 gem 'i18n',                  '~> 0.4.1'
 gem 'haml',                  '~> 3.0.21'
 gem 'state_machine',         '~> 0.9.4'
-gem 'responders',            :git => 'git://github.com/thibaudgg/responders.git'
+gem 'responders',            '~> 0.6.2'
 gem 'uniquify',              '~> 0.1.0'
 gem 'delayed_job',           '~> 2.1.0.pre2'
 gem 'will_paginate',         '~> 3.0.pre2'
@@ -71,6 +73,7 @@ end
 group :test do
   gem 'rspec-rails',        '~> 2.0.0.rc'
   gem 'shoulda',            '~> 2.11.3'
+  
   gem 'steak',              '~> 1.0.0.beta.2'
   gem 'capybara',           '~> 0.3.9'
   # gem 'capybara-envjs',     '~> 0.1.6'
@@ -84,5 +87,4 @@ group :test do
   gem 'guard',              '~> 0.1.0.beta.1'
   gem 'guard-rspec',        '~> 0.1.0.beta.2'
   gem 'spork',              '~> 0.9.0.rc2'
-  # gem 'rspactor',           '~> 0.7.beta.7'
 end
