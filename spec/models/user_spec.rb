@@ -111,7 +111,6 @@ describe User do
       
       it "should validate company url" do
         user = accept_invitation(:use_company => true, :company_url => "http://localhost")
-        puts user.company_url
         user.should_not be_valid
         user.should have(1).error_on(:company_url)
         user.errors[:company_url].should == ["is invalid"]
