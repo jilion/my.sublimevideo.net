@@ -66,6 +66,7 @@ group :development do
   gem 'taps'           # heroku db pull/push
   gem 'rspec-rails',   '~> 2.0.0.rc'
   gem 'timecop',       '~> 0.3.5'
+  gem 'silent-postgres'
 end
 
 group :test do
@@ -80,9 +81,9 @@ group :test do
   gem 'capybara',           '~> 0.3.9'
   # gem 'capybara-envjs',     '~> 0.1.6'
   # gem 'akephalos',          '~> 0.2.4'
-  gem 'launchy',            '~> 0.3.7'
   
   gem 'factory_girl_rails', '~> 1.0.0'
   gem 'webmock',            '~> 1.3.5'
   gem 'vcr',                '~> 1.1.1'
+  gem 'silent-postgres'
 end
