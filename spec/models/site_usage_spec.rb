@@ -6,9 +6,15 @@ describe SiteUsage do
   context "build with valid attributes" do
     subject { Factory.build(:site_usage) }
     
-    its(:loader_hits) { should == 0 }
-    its(:player_hits) { should == 0 }
-    its(:flash_hits)  { should == 0 }
+    its(:loader_hits)                { should == 0 }
+    its(:player_hits)                { should == 0 }
+    its(:main_player_hits)           { should == 0 }
+    its(:main_player_hits_cached)    { should == 0 }
+    its(:dev_player_hits)            { should == 0 }
+    its(:dev_player_hits_cached)     { should == 0 }
+    its(:invalid_player_hits)        { should == 0 }
+    its(:invalid_player_hits_cached) { should == 0 }
+    its(:flash_hits)                 { should == 0 }
     it { should be_valid }
   end
   
@@ -17,15 +23,14 @@ describe SiteUsage do
     
     its(:started_at) { should == Time.at(1275002700).utc }
     its(:ended_at)   { should == Time.at(1275002760).utc }
-    
   end
   
   describe "Trackers parsing with voxcast" do
     before(:each) do
-      @site1 = Factory(:site)
+      @site1 = Factory(:site, :hostname => 'zeno.name')
       @site1.token = 'g3325oz4'
       @site1.save
-      @site2 = Factory(:site, :user => @site1.user, :hostname => 'google.com')
+      @site2 = Factory(:site, :user => @site1.user, :hostname => 'octavez.com')
       @site2.token = 'g8thugh6'
       @site2.save
       
@@ -34,11 +39,15 @@ describe SiteUsage do
     end
     
     it "should clean trackers" do
-      SiteUsage.hits_traffic_and_requests_from(@trackers).should == {
-        :loader_hits       => { "g3325oz4" => 3, "g8thugh6" => 1},
-        :player_hits       => { "g3325oz4" => 3, "g8thugh6" => 7},
-        :flash_hits        => {},
-        :traffic_voxcast => { "g3325oz4" => 70696, "g8thugh6" => 367093 }
+      SiteUsage.hits_traffic_and_requests_from(@trackers).should == { 
+        :traffic_voxcast => { "g8thugh6" => 367093, "g3325oz4" => 70696 },
+        :loader_hits => { "g8thugh6" => 1, "g3325oz4" => 3 },
+        :main_player_hits => { "g8thugh6" => 1, "g3325oz4" => 1 },
+        :player_hits => { "g8thugh6" => 7, "g3325oz4" => 3 },
+        :main_player_hits_cached => { "g3325oz4" => 2 },
+        :invalid_player_hits_cached => { "g8thugh6" => 1 },
+        :invalid_player_hits => { "g8thugh6" => 5 },
+        :flash_hits => {}
       }
     end
     
@@ -53,14 +62,20 @@ describe SiteUsage do
       usages.map(&:site).should include(@site1)
       usages.map(&:site).should include(@site2)
       usage = usages.select { |u| u.site == @site1 }.first
-      usage.log.should             == @log
-      usage.site.should            == @site1
-      usage.loader_hits.should     == 3
-      usage.player_hits.should     == 3
-      usage.flash_hits.should      == 0
-      usage.requests_s3.should     == 0
-      usage.traffic_s3.should      == 0
-      usage.traffic_voxcast.should == 70696
+      usage.log.should                        == @log
+      usage.site.should                       == @site1
+      usage.loader_hits.should                == 3
+      usage.player_hits.should                == 3
+      usage.main_player_hits.should           == 1
+      usage.main_player_hits_cached.should    == 2
+      usage.dev_player_hits.should            == 0
+      usage.dev_player_hits_cached.should     == 0
+      usage.invalid_player_hits.should        == 0
+      usage.invalid_player_hits_cached.should == 0
+      usage.flash_hits.should                 == 0
+      usage.requests_s3.should                == 0
+      usage.traffic_s3.should                 == 0
+      usage.traffic_voxcast.should            == 70696
     end
   end
   

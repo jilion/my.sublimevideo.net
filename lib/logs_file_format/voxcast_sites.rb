@@ -13,7 +13,8 @@ module LogsFileFormat
         :if       => lambda { |r| loader_token?(r[:path]) && countable_hit?(r) }
       )
       analyze.frequency(:path, :title => :player_hits,
-        :category => lambda { |r| player_token_from(r[:path]) },
+        # :category => lambda { |r| player_token_from(r[:path]) },
+        :category => lambda { |r| [player_token_from(r[:path]), r[:http_status], r[:referrer]] },
         :if       => lambda { |r| player_token?(r[:path]) && countable_hit?(r) }
       )
       analyze.frequency(:path, :title => :flash_hits,

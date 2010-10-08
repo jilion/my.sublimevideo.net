@@ -178,6 +178,27 @@ class Site < ActiveRecord::Base
     self.save
   end
   
+  def referrer_type(referrer)
+    host = URI.parse(referrer).host
+    if main_referrer?(host)
+      "main"
+    elsif dev_referrer?(host)
+      "dev"
+    else
+      "invalid"
+    end
+  rescue
+    "invalid"
+  end
+  
+  def main_referrer?(host)
+    host == hostname || host == "www.#{hostname}"
+  end
+  
+  def dev_referrer?(host)
+    dev_hostnames.split(', ').any? { |h| host == h || host == "www.#{h}" }
+  end
+  
 private
   
   # BETA validate

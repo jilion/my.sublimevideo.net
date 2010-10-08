@@ -32,13 +32,49 @@ describe LogsFileFormat::VoxcastSites do
     
     it "should parse and return player tracker" do
       tracker = @trackers.select { |tracker| tracker.options[:title] == :player_hits }.first
-      tracker.categories.should == { "g8thugh6" => 7, "g3325oz4" => 3 }
+      tracker.categories.should == {
+        ["g8thugh6", 200, "http://octavez.com/tmp/sv.html"] => 1,
+        ["g3325oz4", 304, "http://zeno.name/sv.html"]       => 2,
+        ["g8thugh6", 304, "-"]                              => 1,
+        ["g8thugh6", 200, "-"]                              => 5,
+        ["g3325oz4", 200, "http://zeno.name/sv.html"]       => 1
+      }
     end
     
     it "should parse and return bandwidth tracker" do
       tracker = @trackers.select { |tracker| tracker.options[:title] == :traffic_voxcast }.first
       tracker.categories["g8thugh6"][:sum].should == 367093
       tracker.categories["g3325oz4"][:sum].should == 70696
+    end
+  end
+  
+  describe "with cdn.sublimevideo.net.log.1286528280-1286528340.gz logs file", :focus => true do
+    before(:each) do
+      logs_file = File.new(Rails.root.join('spec/fixtures/logs/voxcast/cdn.sublimevideo.net.log.1286528280-1286528340.gz'))
+      @trackers = LogAnalyzer.parse(logs_file, 'LogsFileFormat::VoxcastSites')
+    end
+    
+    it "should parse and return loader tracker" do
+      tracker = @trackers.select { |tracker| tracker.options[:title] == :loader_hits }.first
+      tracker.categories["ktfcm2l7"].should == 7
+    end
+    
+    it "should parse and return player tracker" do
+      tracker = @trackers.select { |tracker| tracker.options[:title] == :player_hits }.first
+      tracker.categories.should == {
+        ["ot85lofm", 200, "http://kriteachings.org/"]                                 => 1,
+        ["mhud9lff", 200, "http://www.sonymusic.se/hurts"]                            => 2,
+        ["ktfcm2l7", 200, "http://www.artofthetitle.com/"]                            => 5,
+        ["ibvjcopp", 200, "http://sublimevideo.net/demo"]                             =>1,
+        ["invxef8i", 200, "http://xyo.me/1158/tetris-le-film"]                        =>1,
+        ["t5yhm4z1", 200, "http://seegno.com/blog/2010/07/07/building-the-workspace"] =>1,
+        ["gsmhage0", 200, "http://www.auditoire.com/web/"]                            =>1,
+        ["pre0h6qx", 200, "http://avidscreencast.com/"]                               =>1,
+        ["mhud9lff", 304, "http://www.sonymusic.se/hurts"]                            =>1,
+        ["khgm2p4y", 200, "http://www.liquid-concept.ch/"]                            =>2,
+        ["ktfcm2l7", 304, "http://www.artofthetitle.com/"]                            =>1,
+        ["fvkbs2ej", 200, "http://paulrouget.com/"]                                   =>1
+      }
     end
   end
   
