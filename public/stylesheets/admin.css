@@ -337,3 +337,13 @@ form label.icon {
   float:right;
   text-align: right;
 }
+
+/* =================== */
+/* = Player Releases = */
+/* =================== */
+
+#player_releases h3 {
+  padding:25px 0 0;
+  font-size:22px;
+  font-weight:600;
+}
