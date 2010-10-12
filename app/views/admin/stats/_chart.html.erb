@@ -1,35 +1,104 @@
-<script type="text/javascript" charset="utf-8">
+<% stats_from = 6.days.ago %>
+<script type = "text/javascript" charset="utf-8">
   document.observe("dom:loaded", function() {
     new Highcharts.Chart({
       chart: {
-        renderTo: "chart"
+        renderTo: 'chart',
+        defaultSeriesType: 'spline',
+        zoomType: 'x'
       },
       title: {
-        text: "Video pageviews by Day"
+        text: 'Video pageviews per day'
+      },
+      subtitle: {
+        text: 'Blabla'
       },
       xAxis: {
-        type: "datetime"
+        type: 'datetime',
+        maxZoom: 3 * 24 * 3600000,
       },
       yAxis: {
         title: {
-          text: "Video pageviews"
+          text: 'Video pageviews',
+          min: 0,
+          startOnTick: false,
+          showFirstLabel: false
         }
       },
       tooltip: {
         formatter: function() {
-          return Highcharts.dateFormat("%B %e, %Y", this.x) + ': ' + Highcharts.numberFormat(this.y, 0);
+          return Highcharts.dateFormat("%B %e, %Y ~%I %P", this.x) + ': ' + Highcharts.numberFormat(this.y, 0);
         }
       },
       series: [
-      <% { "Player hits" => SiteUsage }.each do |name, sites_usages| %>
+      <% { 'Player hits' => SiteUsage }.each do |name, sites_usages| %>
       {
-        name: "<%= name %>",
-        pointInterval: <%= 1.day * 1000 %>,
-        pointStart: <%= 10.days.ago.to_i * 1000 %>,
-        data: <%= site_usages_chart_series(sites_usages, 10.days.ago) %>
+        name: '<%= name %>',
+        pointInterval: <%= 1.hour * 1000 %>,
+        pointStart: <%= stats_from.to_i * 1000 %>,
+        data: <%= site_usages_chart_series(sites_usages, stats_from) %>
       },
       <% end %>
-      ]
+      ],
+      plotOptions: {
+        // line: {
+        //   dataLabels: {
+        //     enabled: true
+        //   },
+        //   enableMouseTracking: false
+        // },
+        // area: {
+        //   fillColor: {
+        //   linearGradient: [0, 0, 0, 300],
+        //     stops: [
+        //       [0, 'rgba(0,2,0,0)'],
+        //       [1, 'rgba(2,0,0,0)']
+        //     ]
+        //   },
+        //   lineWidth: 1,
+        //   marker: {
+        //     enabled: false,
+        //     states: {
+        //       hover: {
+        //         enabled: true,
+        //         radius: 5
+        //       }
+        //     }
+        //   },
+        //   shadow: false,
+        //   states: {
+        //     hover: {
+        //       lineWidth: 1
+        //     }
+        //   }
+        // }
+        
+        spline: {
+          lineWidth: 1,
+          states: {
+            hover: {
+              lineWidth: 5
+            }
+          },
+          marker: {
+            enabled: false,
+            states: {
+              hover: {
+                enabled: true,
+                symbol: 'circle',
+                radius: 3,
+                lineWidth: 1
+              }
+            }
+          },
+          pointInterval: 24 * 3600000, // one hour
+          pointStart: <%= 5.days.ago.to_i %>
+        }
+      },
+      credits: {
+        enabled: true,
+        text: 'My.SublimeVideo.net'
+      }
     });
   });
 </script>

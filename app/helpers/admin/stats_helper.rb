@@ -5,16 +5,16 @@ module Admin::StatsHelper
                                      where(:player_hits => { "$gt" => 1 }).
                                      only(:created_at, :player_hits).to_a#.
                                      # limit((Time.now.to_i - start_time.to_i)/(3600*24))
-    # puts site_usages_by_day.map(&:created_at).map(&:to_date).inspect
-    (start_time.to_date..Date.today).map do |date|
-      site_usage = site_usages_by_day.detect do |site_usage|
-        # puts "site_usage.created_at.to_date: #{site_usage.created_at.to_date}"
-        # puts "date: #{date}"
-        # puts "#{site_usage.created_at.to_date} == #{date}: #{site_usage.created_at.to_date == date}"
-        site_usage.created_at.to_date == date
+    
+    #puts site_usages_by_day.first.created_at.beginning_of_day
+    (start_time.to_date..Date.today).inject([]) do |hits_count, date|
+      (0..23).each do |hour|
+        site_usages_for_date = site_usages_by_day.select do |site_usage|
+          site_usage.created_at.change(:min => 0, :sec => 0) == date.to_time.change(:hour => hour, :min => 0, :sec => 0)
+        end
+        hits_count << (site_usages_for_date.sum(&:player_hits) || 0)
       end
-      # puts site_usage.inspect
-      site_usage && site_usage.player_hits.to_i || 0
+      hits_count
     end.inspect
   end
   
