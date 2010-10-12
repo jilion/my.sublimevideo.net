@@ -22,7 +22,7 @@ gem 'hoptoad_notifier',      '~> 2.3.8'
 gem 'prowl',                 '~> 0.1.3'
 gem 'activemerchant',        '~> 1.8.0'
 gem 'voxel_hapi',            :git => 'git://github.com/thibaudgg/voxel_hapi.git', :branch => '1.9.2' # VoxCast CDN
-gem 'request-log-analyzer',  '~> 1.9.1', :require => 'request_log_analyzer'
+gem 'request-log-analyzer',  '~> 1.9.3', :require => 'request_log_analyzer'
 gem 'public_suffix_service', '~> 0.6.0'
 gem 'RedCloth',              '~> 4.2.3'
 
@@ -30,7 +30,7 @@ gem 'devise',                '~> 1.1.3'
 gem 'devise_invitable',      :git => 'git://github.com/rymai/devise_invitable.git'
 
 gem 'memcached',             '~> 0.20.1'
-gem 'dalli',                 '~> 0.9.8'
+gem 'dalli',                 '~> 0.9.9'
 
 gem 'aws',                   '~> 2.3.20'
 gem 'fog',                   '~> 0.3.7' # for carrierwave 0.5 final
@@ -55,31 +55,33 @@ group :production, :staging do
   gem 'rack-private',      '~> 0.1.5'
 end
 
+group :development, :test do
+  gem 'rspec-rails',   '~> 2.0.0'
+end
+
 group :development do
   gem 'ffaker',        '>= 0.4.0'
   gem 'annotate',      '~> 2.4.0'
   gem 'wirble'         # irbrc
   gem 'ruby-graphviz', :require => 'graphviz'
-  gem 'heroku',        '~> 1.10.8'
+  gem 'heroku',        '~> 1.10.14'
   gem 'heroku_tasks',  '~> 0.1.4'
   gem 'taps'           # heroku db pull/push
-  gem 'rspec-rails',   '~> 2.0.0.rc'
   gem 'timecop',       '~> 0.3.5'
 end
 
 group :test do
   gem 'spork',              '~> 0.9.0.rc2'
-  gem 'guard'
-  gem 'guard-rspec'
+  gem 'guard',              '~> 0.1.1'
+  gem 'guard-rspec',        '~> 0.1.2'
   
   gem 'shoulda',            '~> 2.11.3'
-  gem 'rspec-rails',        '~> 2.0.0.rc'
   
-  gem 'steak',              '~> 1.0.0.beta.2'
+  gem 'steak',              '~> 1.0.0.rc.1'
   gem 'capybara',           '~> 0.3.9'
   # gem 'capybara-envjs',     '~> 0.1.6'
   # gem 'akephalos',          '~> 0.2.4'
-  gem 'launchy',            '~> 0.3.7'
+  # gem 'launchy',            '~> 0.3.7' # included in capybara Development Dependencies
   
   gem 'factory_girl_rails', '~> 1.0.0'
   gem 'webmock',            '~> 1.3.5'
