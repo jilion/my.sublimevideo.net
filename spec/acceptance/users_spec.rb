@@ -3,7 +3,7 @@ require 'spec_helper'
 
 feature "Users actions:" do
   
-  if MySublimeVideo::Release.public?
+  context "public release only", :release => :public do
     scenario "register is available after the public release" do
       visit "/register"
       current_url.should =~ %r(http://[^/]+/register)
@@ -17,8 +17,10 @@ feature "Users actions:" do
       current_url.should =~ %r(http://[^/]+/sites)
       page.should have_content "John Doe"
     end
-  else
-    scenario "register is not available before the public release" do
+  end
+  
+  context "public release only", :release => :beta do
+    scenario "register is not available during the beta" do
       visit "/register"
       current_url.should =~ %r(http://[^/]+/login)
     end
@@ -65,7 +67,7 @@ feature "Users actions:" do
     User.last.full_name.should == "John Doe"
   end
   
-  if MySublimeVideo::Release.public?
+  context "public release only", :release => :public do
     scenario "update limit alert amount" do
       sign_in_as :user
       click_link('John Doe')

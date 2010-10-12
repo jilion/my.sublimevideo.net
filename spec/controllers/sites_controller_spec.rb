@@ -66,7 +66,7 @@ describe SitesController do
     end
   end
   
-  if MySublimeVideo::Release.public?
+  context "public release only", :release => :public do
     context "with suspended logged in user" do
       before(:each) { sign_in :user, logged_in_user(:suspended? => true) }
       

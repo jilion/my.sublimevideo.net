@@ -12,7 +12,7 @@ feature "Pages:" do
     page.should have_content('Privacy Policy')
   end
   
-  if MySublimeVideo::Release.public?
+  context "public release only", :release => :public do
     scenario "suspended" do
       sign_in_as :user
       @current_user.suspend

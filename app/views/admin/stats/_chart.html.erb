@@ -1,0 +1,35 @@
+<script type="text/javascript" charset="utf-8">
+  document.observe("dom:loaded", function() {
+    new Highcharts.Chart({
+      chart: {
+        renderTo: "chart"
+      },
+      title: {
+        text: "Video pageviews by Day"
+      },
+      xAxis: {
+        type: "datetime"
+      },
+      yAxis: {
+        title: {
+          text: "Video pageviews"
+        }
+      },
+      tooltip: {
+        formatter: function() {
+          return Highcharts.dateFormat("%B %e, %Y", this.x) + ': ' + Highcharts.numberFormat(this.y, 0);
+        }
+      },
+      series: [
+      <% { "Player hits" => SiteUsage }.each do |name, sites_usages| %>
+      {
+        name: "<%= name %>",
+        pointInterval: <%= 1.day * 1000 %>,
+        pointStart: <%= 10.days.ago.to_i * 1000 %>,
+        data: <%= site_usages_chart_series(sites_usages, 10.days.ago) %>
+      },
+      <% end %>
+      ]
+    });
+  });
+</script>

@@ -6,7 +6,7 @@ describe InvoicesController do
   context "with logged in user" do
     before(:each) { sign_in :user, logged_in_user }
     
-    if MySublimeVideo::Release.public?
+    context "public release only", :release => :public do
       it "should respond with success to GET :index" do
         logged_in_user.stub_chain(:invoices, :by_charged_at) { [] }
         
@@ -26,7 +26,9 @@ describe InvoicesController do
         get :show, :id => 'current', :format => :js
         response.should be_success
       end
-    else
+    end
+    
+    context "public release only", :release => :beta do
       it "should respond with redirect to GET :index" do
         get :index
         response.should redirect_to(sites_path)

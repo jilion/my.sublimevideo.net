@@ -1,0 +1,8 @@
+= title_and_content_header("Stats")
+
+= content_for :js do
+  = javascript_include_tag 'highcharts/highcharts-adapter.min', 'highcharts/highcharts'
+
+= render 'chart'
+
+#chart{ :width => '560px', :height => '300px' }

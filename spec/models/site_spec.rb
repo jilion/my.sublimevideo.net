@@ -31,8 +31,7 @@ describe Site do
       site.errors[:hostname].should be_present
     end
     
-    # BETA
-    if MySublimeVideo::Release.beta?
+    context "beta release only", :release => :beta do
       it "should limit 10 sites per user" do
         user = Factory(:user)
         10.times { Factory(:site, :user => user) }

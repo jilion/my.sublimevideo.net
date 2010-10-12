@@ -13,7 +13,7 @@ describe PagesController do
       end
     end
     
-    if MySublimeVideo::Release.public?
+    context "public release only", :release => :public do
       it "should redirect to root path with GET :show, on suspended page" do
         get :show, :page => 'suspended'
         response.should redirect_to(root_path)
@@ -31,7 +31,7 @@ describe PagesController do
       end
     end
     
-    if MySublimeVideo::Release.public?
+    context "public release only", :release => :public do
       it "should respond with success to GET :show, on suspended page" do
         get :show, :page => 'suspended'
         response.should be_success
@@ -47,7 +47,7 @@ describe PagesController do
       end
     end
     
-    if MySublimeVideo::Release.public?
+    context "public release only", :release => :public do
       it "should redirect to /sites with GET :show, on suspended page" do
         get :show, :page => 'suspended'
         response.should redirect_to(new_user_session_path)

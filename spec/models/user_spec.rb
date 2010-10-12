@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe User do
-  let(:user) { Factory(:user) }
+  set(:user) { Factory(:user) }
   
   context "with valid attributes" do
     subject { user }
@@ -17,41 +17,24 @@ describe User do
     its(:invoices_count)       { should == 0 }
     its(:last_invoiced_on)     { should be_nil }
     its(:next_invoiced_on)     { should == Time.now.utc.to_date + 1.month }
+    
     it { should be_valid }
   end
   
   describe "validates" do
+    it { should have_many :sites }
+    it { should have_many :invoices }
+    
+    [:first_name, :last_name, :email, :remember_me, :password, :postal_code, :country, :use_personal, :use_company, :use_clients, :company_name, :company_url, :company_job_title, :company_employees, :company_videos_served, :terms_and_conditions, :limit_alert_amount, :cc_update, :cc_type, :cc_full_name, :cc_number, :cc_expire_on, :cc_verification_value].each do |attr|
+      it { should allow_mass_assignment_of(attr) }
+    end
+    
+    # Devise checks presence/uniqueness/format of email, presence/length of password
     it { should validate_presence_of(:first_name) }
     it { should validate_presence_of(:last_name) }
     it { should validate_presence_of(:postal_code) }
-    it { should validate_presence_of(:email) }
-    
-    it "should validate email" do
-      user = Factory.build(:user, :email => "beurk")
-      user.should_not be_valid
-      user.should have(1).error_on(:email)
-    end
-    it "should validate password length" do
-      user = Factory.build(:user, :password => "short")
-      user.should_not be_valid
-      user.should have(1).error_on(:password)
-    end
-    
-    it "should validate acceptance of terms_and_conditions" do
-      user = Factory.build(:user, :terms_and_conditions => false)
-      user.should_not be_valid
-      user.should have(1).error_on(:terms_and_conditions)
-    end
-    
-    context "with already the email in db" do
-      before(:each) { @user = user }
-      
-      it "should validate uniqueness of email" do
-        user = Factory.build(:user, :email => @user.email)
-        user.should_not be_valid
-        user.should have(1).error_on(:email)
-      end
-    end
+    it { should validate_presence_of(:country) }
+    it { should validate_acceptance_of(:terms_and_conditions) }
   end
   
   context "already confirmed" do
@@ -126,9 +109,6 @@ describe User do
       user = accept_invitation
       user.should be_valid
     end
-  end
-  
-  describe "callbacks" do
   end
   
   describe "State Machine" do

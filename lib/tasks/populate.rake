@@ -21,7 +21,7 @@ namespace :db do
       delete_all_files_in_public('uploads/tmp')
       timed { create_admins }
       timed { create_users(argv_count) }
-      timed { create_sites }
+      timed { create_sites(argv_count) }
       timed { create_mail_templates }
     end
     
@@ -40,7 +40,7 @@ namespace :db do
     desc "Load Site development fixtures."
     task :sites => :environment do
       timed { empty_tables(Site) }
-      timed { create_sites }
+      timed { create_sites(argv_count) }
     end
     
     desc "Load Mail templates development fixtures."
@@ -139,7 +139,7 @@ def create_sites(max = 5)
   User.all.each do |user|
     rand(max).times do |i|
       site            = user.sites.build
-      site.hostname   = "#{rand > 0.5 ? '' : %w[www. blog. my. git. sv. ji. geek.].sample}#{Faker::Internet.domain_name}"
+      site.hostname   = "#{rand > 0.5 ? '' : %w[www. blog. my. git. sv. ji. geek. yin. yang. chi. cho. chu. foo. bar. rem.].sample}#{user.id}#{i}#{Faker::Internet.domain_name}"
       site.created_at = rand(1500).days.ago
       site.flash_hits_cache  = rand(1000)
       site.player_hits_cache = rand(500) + site.flash_hits_cache

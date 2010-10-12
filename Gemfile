@@ -56,26 +56,29 @@ group :production, :staging do
   gem 'rack-private',      '~> 0.1.5'
 end
 
+group :development, :test do
+  gem 'rspec-rails',   '~> 2.0.0'
+end
+
 group :development do
   gem 'ffaker',        '>= 0.4.0'
   gem 'annotate',      '~> 2.4.0'
   gem 'wirble'         # irbrc
   gem 'ruby-graphviz', :require => 'graphviz'
-  gem 'heroku',        '~> 1.10.8'
+  gem 'heroku',        '~> 1.10.14'
   gem 'heroku_tasks',  '~> 0.1.4'
   gem 'taps'           # heroku db pull/push
-  gem 'rspec-rails',   '~> 2.0.0.rc'
   gem 'timecop',       '~> 0.3.5'
   gem 'silent-postgres'
 end
 
 group :test do
+  gem 'database_cleaner',   :git => 'git://github.com/bmabey/database_cleaner.git'
   gem 'spork',              '~> 0.9.0.rc2'
-  gem 'guard'
-  gem 'guard-rspec'
+  gem 'guard',              '~> 0.1.1'
+  gem 'guard-rspec',        '~> 0.1.2'
   
   gem 'shoulda',            '~> 2.11.3'
-  gem 'rspec-rails',        '~> 2.0.0.rc'
   
   gem 'steak',              '~> 1.0.0.beta.2'
   gem 'capybara',           '~> 0.3.9'

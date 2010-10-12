@@ -31,6 +31,7 @@ Spork.each_run do
     
     config.filter_run :focus => true
     config.run_all_when_everything_filtered = true
+    config.exclusion_filter = { :release => lambda { |release| MySublimeVideo::Release.current != release.to_sym } }
     
     config.mock_with :rspec
     config.fixture_path = "#{::Rails.root}/spec/fixtures"
@@ -40,14 +41,26 @@ Spork.each_run do
     # instead of true.
     config.use_transactional_fixtures = true
     
-    # Clear MongoDB Collection
-    config.before :each do
-      Mongoid.master.collections.select { |c| c.name !~ /system/ }.each(&:drop)
+    config.before(:suite) do
+      DatabaseCleaner.clean_with(:truncation)
+    end
+    
+    config.before(:each) do
+      DatabaseCleaner.clean
+    end
+      
+    config.after(:all) do
+      DatabaseCleaner.clean_with(:truncation)
     end
     
     config.after(:each) do
       Capybara.reset_sessions!
     end
+    
+    # Clear MongoDB Collection
+    # config.after(:suite) do
+    #   Mongoid.master.collections.select { |c| c.name !~ /system/ }.each(&:drop)
+    # end
   end
 end
 

@@ -14,19 +14,23 @@ describe User::CreditCard do
   let(:user) { Factory(:user) }
   
   describe "with valid attributes" do
+    set(:user) { Factory(:user) }
+    
     before(:each) do
       VCR.insert_cassette('credit_card_visa_validation')
       user.update_attributes(valid_attributes)
     end
+    
     subject { user }
     
-    it { should be_valid }
-    it { should be_credit_card }
-    it { should be_cc }
     its(:cc_type)         { should == 'visa' }
     its(:cc_last_digits)  { should == 1111 }
     its(:cc_expire_on)    { should == 1.year.from_now.to_date }
     its(:cc_updated_at)   { should be_present }
+    
+    it { should be_valid }
+    it { should be_credit_card }
+    it { should be_cc }
     
     it "should void authorization after verification" do
       mock_response = mock('response', :success? => true)

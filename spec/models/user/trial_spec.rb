@@ -13,21 +13,19 @@ describe User::Trial do
   let(:user) { Factory(:user) }
   
   context "with trial user" do
-    subject { Factory(:user) }
+    subject { user }
     
     it { should be_trial }
   end
   
-  context "with user" do
+  context "with not-trial user" do
     subject { Factory(:user, :trial_ended_at => Time.now.utc) }
     
     it { should_not be_trial }
   end
   
   describe "module method" do
-    
-    describe "supervise_users" do
-      
+    describe ".supervise_users" do
       it "should send info email when user reaches 50%" do
         Factory(:site, :user => user, :loader_hits_cache => User::Trial.free_loader_hits / 2)
         
@@ -87,15 +85,12 @@ describe User::Trial do
         User::Trial.supervise_users
         lambda { User::Trial.supervise_users }.should_not change(Delayed::Job, :count)
       end
-      
     end
     
   end
   
   describe "user instance methods extension" do
-    
     describe "trial_usage_percentage" do
-      
       it "should be calculated only from current_invoice if user has no invoice" do
         Factory(:site, :user => user, :loader_hits_cache => User::Trial.free_loader_hits / 3)
         user.trial_usage_percentage.should == 33
@@ -121,9 +116,7 @@ describe User::Trial do
         Factory(:site, :user => user, :player_hits_cache => User::Trial.free_player_hits * 2)
         user.trial_usage_percentage.should > 100
       end
-      
     end
-    
   end
   
 end
@@ -132,7 +125,7 @@ def create_invoice(options = {})
   options[:loader_hits] ||= 12
   options[:player_hits] ||= 21
   
-  user  = Factory(:user, :invoices_count => 0, :created_at => 2.month.ago, :next_invoiced_on => 1.day.ago).reload
+  user = Factory(:user, :invoices_count => 0, :created_at => 2.month.ago, :next_invoiced_on => 1.day.ago).reload
   site = Factory(:site, :user => user, :loader_hits_cache => options[:loader_hits], :player_hits_cache => options[:player_hits])
   VCR.use_cassette('one_saved_logs') do
     @log = Factory(:log_voxcast, :started_at => 1.month.ago, :ended_at => 1.month.ago + 3.days)
