@@ -3,7 +3,7 @@ source :rubygems
 gem 'bundler',               '~> 1.0.2'
 
 gem 'rails',                 '~> 3.0.0'
-gem 'rack' #,                  :git => 'git://github.com/rack/rack.git'
+gem 'rack',                  '~> 1.2.1'
 gem 'pg',                    '~> 0.9.0'
 
 gem 'libxml-ruby',           '~> 1.1.3', :require => 'libxml'
@@ -62,11 +62,11 @@ end
 group :development do
   gem 'ffaker',        '>= 0.4.0'
   gem 'annotate',      '~> 2.4.0'
-  gem 'wirble'         # irbrc
+  gem 'wirble',        '~> 0.1.3'
   gem 'ruby-graphviz', :require => 'graphviz'
   gem 'heroku',        '~> 1.10.14'
   gem 'heroku_tasks',  '~> 0.1.4'
-  gem 'taps'           # heroku db pull/push
+  gem 'taps',          '~> 0.3.13' # heroku db pull/push
   gem 'timecop',       '~> 0.3.5'
 end
 
@@ -78,10 +78,10 @@ group :test do
   gem 'shoulda',            '~> 2.11.3'
   
   gem 'steak',              '~> 1.0.0.rc.1'
-  gem 'capybara',           '~> 0.3.9'
+  gem 'capybara',           '~> 0.4.0.rc'
   # gem 'capybara-envjs',     '~> 0.1.6'
   # gem 'akephalos',          '~> 0.2.4'
-  # gem 'launchy',            '~> 0.3.7' # included in capybara Development Dependencies
+  # gem 'launchy',            '~> 0.3.7' # should be included in capybara Development Dependencies
   
   gem 'factory_girl_rails', '~> 1.0.0'
   gem 'webmock',            '~> 1.3.5'
