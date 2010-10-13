@@ -75,6 +75,7 @@ group :test do
   gem 'spork',              '~> 0.9.0.rc2'
   gem 'guard'
   gem 'guard-rspec'
+  gem 'guard-livereload'
   
   gem 'shoulda',            '~> 2.11.3'
   gem 'steak',              '~> 1.0.0.beta.2'
