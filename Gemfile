@@ -72,8 +72,9 @@ end
 
 group :test do
   gem 'spork',              '~> 0.9.0.rc2'
-  gem 'guard',              '~> 0.1.1'
-  gem 'guard-rspec',        '~> 0.1.2'
+  gem 'guard'
+  gem 'guard-rspec'
+  gem 'guard-livereload'
   
   gem 'shoulda',            '~> 2.11.3'
   
