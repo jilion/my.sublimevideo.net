@@ -56,6 +56,7 @@ group :production, :staging do
 end
 
 group :development, :test do
+  gem 'silent-postgres'
   gem 'rspec-rails',   '~> 2.0.0'
 end
 
@@ -85,6 +86,6 @@ group :test do
   # gem 'launchy',            '~> 0.3.7' # should be included in capybara Development Dependencies
   
   gem 'factory_girl_rails', '~> 1.0.0'
-  gem 'webmock',            '~> 1.3.5'
-  gem 'vcr',                '~> 1.1.1'
+  gem 'webmock',            '~> 1.4'
+  gem 'vcr',                '~> 1.2'
 end
