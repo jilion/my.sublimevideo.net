@@ -38,7 +38,7 @@ describe User do
   end
   
   context "already confirmed" do
-    subject do 
+    subject do
       user = Factory(:user, :confirmed_at => Time.now)
       User.find(user.id) # hard reload
     end

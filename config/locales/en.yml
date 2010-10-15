@@ -21,6 +21,8 @@ en:
       date: "%B %d, %Y"
       full: "%m/%d/%Y %I:%M %p"
       semi_full: "%d %b, %I:%M%p"
+      fully_full: "%d %b %Y, %H:%M:%S"
+      semi_short: "%d %b %H:%M:%S"
     
   
   date:

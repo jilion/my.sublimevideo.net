@@ -15,6 +15,7 @@ describe Release do
   end
   
   it { should validate_presence_of(:zip) }
+  
   it "should only allow zip file" do
     release = Factory.build(:release, :zip => File.new(Rails.root.join('spec/fixtures/railscast_intro.mov')))
     release.should have(2).error_on(:zip)
