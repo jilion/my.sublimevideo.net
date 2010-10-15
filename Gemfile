@@ -2,7 +2,7 @@ source :rubygems
 
 gem 'bundler',               '~> 1.0.2'
 
-gem 'rails',                 '~> 3.0.0'
+gem 'rails',                 '~> 3.0.1'
 gem 'rack' #,                  :git => 'git://github.com/rack/rack.git'
 gem 'pg',                    '~> 0.9.0'
 
@@ -22,7 +22,7 @@ gem 'hoptoad_notifier',      '~> 2.3.8'
 gem 'prowl',                 '~> 0.1.3'
 gem 'activemerchant',        '~> 1.8.0'
 gem 'voxel_hapi',            :git => 'git://github.com/thibaudgg/voxel_hapi.git', :branch => '1.9.2' # VoxCast CDN
-gem 'request-log-analyzer',  '~> 1.9.1', :require => 'request_log_analyzer'
+gem 'request-log-analyzer',  '~> 1.9.5', :require => 'request_log_analyzer'
 gem 'public_suffix_service', '~> 0.6.0'
 gem 'RedCloth',              '~> 4.2.3'
 gem 'liquid',                '~> 2.2.2'
@@ -57,7 +57,7 @@ group :production, :staging do
 end
 
 group :development, :test do
-  gem 'rspec-rails',   '~> 2.0.0'
+  gem 'rspec-rails',   '~> 2.0.1'
 end
 
 group :development do
