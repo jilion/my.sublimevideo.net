@@ -1,104 +1,82 @@
-<% stats_from = 6.days.ago %>
+<%
+stats_from = 2.months.ago.beginning_of_day
+interval   = 1.day
+max_zoom   = 3.days
+%>
 <script type = "text/javascript" charset="utf-8">
   document.observe("dom:loaded", function() {
-    new Highcharts.Chart({
+    var chart = new Highcharts.Chart({
       chart: {
         renderTo: 'chart',
-        defaultSeriesType: 'spline',
+        defaultSeriesType: 'area',
         zoomType: 'x'
       },
       title: {
         text: 'Video pageviews per day'
       },
       subtitle: {
-        text: 'Blabla'
+        text: ''
       },
       xAxis: {
         type: 'datetime',
-        maxZoom: 3 * 24 * 3600000,
+        maxZoom: <%= max_zoom * 1000 %>,
       },
       yAxis: {
         title: {
           text: 'Video pageviews',
           min: 0,
           startOnTick: false,
-          showFirstLabel: false
+          showFirstLabel: false,
+          margin: 70
+        },
+        labels: {
+          formatter: function() {
+            return Highcharts.numberFormat(this.value, 0, '.', "'");
+          }
         }
       },
       tooltip: {
         formatter: function() {
-          return Highcharts.dateFormat("%B %e, %Y ~%I %P", this.x) + ': ' + Highcharts.numberFormat(this.y, 0);
+          return Highcharts.dateFormat("%e. %b %y", this.x) + ': ' + Highcharts.numberFormat(this.y, 0);
         }
       },
       series: [
-      <% { 'Player hits' => SiteUsage }.each do |name, sites_usages| %>
-      {
-        name: '<%= name %>',
-        pointInterval: <%= 1.hour * 1000 %>,
-        pointStart: <%= stats_from.to_i * 1000 %>,
-        data: <%= site_usages_chart_series(sites_usages, stats_from) %>
-      },
-      <% end %>
+        {
+          name: 'Video pageviews per day',
+          pointInterval: <%= interval * 1000 %>,
+          pointStart: <%= stats_from.to_i * 1000 %>,
+          data: <%= video_pageviews_per_day(stats_from).map { |vpvpd| vpvpd.vpv["new"] } %>
+        }
       ],
       plotOptions: {
-        // line: {
-        //   dataLabels: {
-        //     enabled: true
-        //   },
-        //   enableMouseTracking: false
-        // },
-        // area: {
-        //   fillColor: {
-        //   linearGradient: [0, 0, 0, 300],
-        //     stops: [
-        //       [0, 'rgba(0,2,0,0)'],
-        //       [1, 'rgba(2,0,0,0)']
-        //     ]
-        //   },
-        //   lineWidth: 1,
-        //   marker: {
-        //     enabled: false,
-        //     states: {
-        //       hover: {
-        //         enabled: true,
-        //         radius: 5
-        //       }
-        //     }
-        //   },
-        //   shadow: false,
-        //   states: {
-        //     hover: {
-        //       lineWidth: 1
-        //     }
-        //   }
-        // }
-        
-        spline: {
-          lineWidth: 1,
-          states: {
-            hover: {
-              lineWidth: 2
-            }
-          },
+        area: {
+          // fillColor: {
+          //   linearGradient: [0, 0, 0, 300],
+          //   stops: [[0, 'rgba(0,2,0,0)'], [1, 'rgba(2,0,0,0)']]
+          // },
+          fillColor: "#405f92",
+          lineColor: "#5d6778",
+          lineWidth: 3,
+          // showCheckbox: true,
           marker: {
+            lineWidth: 1,
             enabled: false,
+            symbol: 'circle',
+            radius: 3,
             states: {
               hover: {
-                enabled: true,
-                symbol: 'circle',
-                radius: 3,
-                lineWidth: 1
+                enabled: true
               }
             }
-          }//,
-          // pointInterval: 24 * 3600000, // one hour
-          // pointStart: <%= stats_from.to_i %>
+          }
         }
       },
       credits: {
         enabled: true,
-        text: 'My.SublimeVideo.net'
+        text: "Generation time: <%= Time.now.to_s(:format => :fully_full) %> / Copyright © <%= Date.today.year %> - SublimeVideo®",
+        href: "http://sublimevideo.net"
       }
     });
+    // chart.showLoading();
   });
 </script>

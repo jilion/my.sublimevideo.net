@@ -16,6 +16,8 @@ class SiteUsage
   index :started_at
   index :ended_at
   
+  index([[:started_at, Mongo::ASCENDING], [:player_hits, Mongo::ASCENDING]])
+  
   attr_accessible :site, :log, :loader_hits, :player_hits, :flash_hits, :requests_s3, :traffic_s3, :traffic_voxcast
   
   # ================
@@ -36,8 +38,8 @@ class SiteUsage
   # ==========
   
   scope :started_after, lambda { |date| where(:started_at => { "$gte" => date }) }
-  scope :ended_before,  lambda { |date| where(:ended_at => { "$lt" => date }) }
-  scope :between,       lambda { |start_date, end_date| where(:started_at => { "$gte" => start_date }, :ended_at => { "$lt" => end_date }) }
+  scope :ended_before,  lambda { |date| where(:ended_at => { "$lte" => date }) }
+  scope :between,       lambda { |start_date, end_date| where(:started_at => { "$gte" => start_date }, :ended_at => { "$lte" => end_date }) }
   
   # ===============
   # = Validations =

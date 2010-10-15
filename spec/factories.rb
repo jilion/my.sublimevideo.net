@@ -42,6 +42,10 @@ Factory.define :site_usage do |f|
   f.association :log, :factory => :log_voxcast
 end
 
+Factory.define :stat_global, :class => Stat::Global do |f|
+  f.sequence(:day) { |i| Date.new(2010, (i%12)+1, (i%28)+1) }
+end
+
 Factory.define :invoice do |f|
   f.association :user
 end

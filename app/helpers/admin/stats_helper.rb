@@ -1,21 +1,21 @@
 module Admin::StatsHelper
   
-  def site_usages_chart_series(site_usages, start_time)
-    site_usages_by_day = site_usages.started_after(start_time.beginning_of_day).
-                                     where(:player_hits => { "$gt" => 1 }).
-                                     only(:created_at, :player_hits).to_a#.
-                                     # limit((Time.now.to_i - start_time.to_i)/(3600*24))
+  def video_pageviews_per_day(start_time)
+    Stat::Global.where(:day => { "$gte" => start_time.beginning_of_day.utc, "$ne" => nil }).only("vpv.new").order_by([[:day, :asc]])
     
-    #puts site_usages_by_day.first.created_at.beginning_of_day
-    (start_time.to_date..Date.today).inject([]) do |hits_count, date|
-      (0..23).each do |hour|
-        site_usages_for_date = site_usages_by_day.select do |site_usage|
-          site_usage.created_at.change(:min => 0, :sec => 0) == date.to_time.change(:hour => hour, :min => 0, :sec => 0)
-        end
-        hits_count << (site_usages_for_date.sum(&:player_hits) || 0)
-      end
-      hits_count
-    end.inspect
+    # Rails.cache.fetch("video_pageviews_per_minute", :expires_in => 5.minutes) do
+    #   SiteUsage.collection.group(
+    #     "function(x) {
+    #       return { 'day' : new Date(x.started_at.getFullYear(), x.started_at.getMonth(), x.started_at.getDate()) };
+    #     }", # key used to group
+    #     { 
+    #      :started_at => { "$gte" => start_time.utc }, # conditions
+    #      :player_hits => { "$gt" => 0 }               # conditions
+    #     },
+    #     { :vpv => { "new" => 0 }, # memo variable name and initial value
+    #     "function(doc, prev) { prev.vpv['new'] += doc.player_hits; }" # reduce function
+    #   )
+    # end
   end
   
 end

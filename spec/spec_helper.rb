@@ -42,25 +42,19 @@ Spork.each_run do
     config.use_transactional_fixtures = true
     
     config.before(:suite) do
-      DatabaseCleaner.clean_with(:truncation)
+      DatabaseCleaner.strategy = :truncation
+      DatabaseCleaner.orm = "mongoid"
     end
     
     config.before(:each) do
-      DatabaseCleaner.clean
-    end
-      
-    config.after(:all) do
-      DatabaseCleaner.clean_with(:truncation)
-    end
-    
-    config.after(:each) do
       Capybara.reset_sessions!
+      DatabaseCleaner.clean
     end
     
     # Clear MongoDB Collection
-    # config.after(:suite) do
-    #   Mongoid.master.collections.select { |c| c.name !~ /system/ }.each(&:drop)
-    # end
+    config.after(:each) do
+      Mongoid.master.collections.select { |c| c.name !~ /system/ }.each(&:drop)
+    end
   end
 end
 
