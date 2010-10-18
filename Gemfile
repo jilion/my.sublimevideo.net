@@ -73,7 +73,7 @@ end
 
 group :test do
   gem 'spork',              '~> 0.9.0.rc2'
-  gem 'rb-fsevent',         '~> 0.3.2'
+  
   gem 'guard',              '~> 0.2.0.beta.1'
   gem 'guard-rspec',        '~> 0.1.3'
   gem 'guard-livereload',   '~> 0.1.2'
