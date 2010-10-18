@@ -57,7 +57,7 @@ class Release < ActiveRecord::Base
     # Download file from S3 to read the zip content
     # please don't forget to call delete_zipfile
     unless @zipfile
-      @local_zip_file = File.new(Rails.root.join("tmp/#{zip.filename}"), 'w', :encoding => 'ASCII-8BIT')
+      @local_zip_file = File.new(Rails.root.join("tmp/#{read_attribute(:zip)}"), 'w', :encoding => 'ASCII-8BIT')
       @local_zip_file.write(zip.read)
       @local_zip_file.flush
       @zipfile = Zip::ZipFile.open(@local_zip_file.path)
@@ -149,4 +149,3 @@ end
 #
 #  index_releases_on_state  (state)
 #
-
