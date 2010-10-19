@@ -365,9 +365,10 @@ describe Site do
           subject { Factory(:site, :hostname => "jilion.com", :dev_hostnames => "jilion.local, localhost, 127.0.0.1", :path => "demo") }
           
           it { subject.referrer_type("http://jilion.com/demo/cool").should == "main" }
-          it { subject.referrer_type("http://jilion.local").should == "dev" }
-          it { subject.referrer_type("http://127.0.0.1:3000/super.html").should == "dev" }
-          it { subject.referrer_type("http://localhost:3000?genial=com").should == "dev" }
+          it { subject.referrer_type("http://127.0.0.1:3000/demo/super.html").should == "dev" }
+          it { subject.referrer_type("http://localhost:3000/demo?genial=com").should == "dev" }
+          it { subject.referrer_type("http://localhost:3000?genial=com").should == "invalid" }
+          it { subject.referrer_type("http://jilion.local").should == "invalid" }
           it { subject.referrer_type("http://jilion.com/test/cool").should == "invalid" }
           it { subject.referrer_type("http://jilion.com").should == "invalid" }
           it { subject.referrer_type("https://jilion.com").should == "invalid" }

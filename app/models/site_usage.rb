@@ -139,12 +139,12 @@ private
             referrer_type = site.referrer_type(referrer)
             if status == 200
               player_hits_type = "#{referrer_type}_player_hits".to_sym
-              trackers[player_hits_type] = set_player_hits_tracker(trackers, player_hits_type, token, hits)
+              trackers[player_hits_type] = player_hits_tracker(trackers, player_hits_type, token, hits)
             else # cached
               player_hits_type = "#{referrer_type}_player_hits_cached".to_sym
-              trackers[player_hits_type] = set_player_hits_tracker(trackers, player_hits_type, token, hits)
+              trackers[player_hits_type] = player_hits_tracker(trackers, player_hits_type, token, hits)
             end
-            trackers[:player_hits] = set_player_hits_tracker(trackers, :player_hits, token, hits)
+            trackers[:player_hits] = player_hits_tracker(trackers, :player_hits, token, hits)
           end
         end
       when :traffic_s3, :traffic_voxcast
@@ -157,7 +157,7 @@ private
     end
   end
   
-  def self.set_player_hits_tracker(trackers, type, token, hits)
+  def self.player_hits_tracker(trackers, type, token, hits)
     trackers[type] ||= {}
     if trackers[type][token]
       trackers[type][token] += hits

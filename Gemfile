@@ -1,9 +1,9 @@
 source :rubygems
 
-gem 'bundler',               '~> 1.0.2'
+gem 'bundler',               '~> 1.0.3'
 
-gem 'rails',                 '~> 3.0.0'
-gem 'rack' #,                  :git => 'git://github.com/rack/rack.git'
+gem 'rails',                 '~> 3.0.1'
+gem 'rack',                  '~> 1.2.1'
 gem 'pg',                    '~> 0.9.0'
 
 gem 'libxml-ruby',           '~> 1.1.3', :require => 'libxml'
@@ -18,11 +18,11 @@ gem 'will_paginate',         '~> 3.0.pre2'
 gem 'has_scope',             :git => 'git://github.com/rymai/has_scope.git'
 gem 'jammit',                '~> 0.5.3'
 gem 'meta_where',            '~> 0.9.5'
-gem 'hoptoad_notifier',      '~> 2.3.8'
+gem 'hoptoad_notifier',      '~> 2.3.10'
 gem 'prowl',                 '~> 0.1.3'
-gem 'activemerchant',        '~> 1.8.0'
+gem 'activemerchant',        '~> 1.9.0'
 gem 'voxel_hapi',            :git => 'git://github.com/thibaudgg/voxel_hapi.git', :branch => '1.9.2' # VoxCast CDN
-gem 'request-log-analyzer',  '~> 1.9.1', :require => 'request_log_analyzer'
+gem 'request-log-analyzer',  '~> 1.9.6', :require => 'request_log_analyzer'
 gem 'public_suffix_service', '~> 0.6.0'
 gem 'RedCloth',              '~> 4.2.3'
 
@@ -30,13 +30,13 @@ gem 'devise',                '~> 1.1.3'
 gem 'devise_invitable',      :git => 'git://github.com/rymai/devise_invitable.git'
 
 gem 'memcached',             '~> 0.20.1'
-gem 'dalli',                 '~> 0.9.8'
+gem 'dalli',                 '~> 0.9.10'
 
 gem 'aws',                   '~> 2.3.20'
-gem 'fog',                   '~> 0.3.7' # for carrierwave 0.5 final
+gem 'fog',                   '~> 0.3.9' # for carrierwave 0.5 final
 gem 'carrierwave',           '~> 0.5.0'
 
-gem 'bson_ext',              '~> 1.1.0'
+gem 'bson_ext',              '~> 1.1.1'
 gem 'mongo',                 '~> 1.0.9'
 gem 'mongoid',               '~> 2.0.0.beta.19'
 
@@ -55,36 +55,38 @@ group :production, :staging do
   gem 'rack-private',      '~> 0.1.5'
 end
 
-group :development, :test do 
+group :development, :test do
   gem 'silent-postgres'
-  gem 'rspec-rails',        '~> 2.0.0.rc'
+  gem 'rspec-rails',   '~> 2.0.1'
 end
 
 group :development do
   gem 'ffaker',        '>= 0.4.0'
   gem 'annotate',      '~> 2.4.0'
-  gem 'wirble'         # irbrc
+  gem 'wirble',        '~> 0.1.3'
   gem 'ruby-graphviz', :require => 'graphviz'
-  gem 'heroku',        '~> 1.10.8'
+  gem 'heroku',        '~> 1.10.14'
   gem 'heroku_tasks',  '~> 0.1.4'
-  gem 'taps'           # heroku db pull/push
+  gem 'taps',          '~> 0.3.13' # heroku db pull/push
   gem 'timecop',       '~> 0.3.5'
 end
 
 group :test do
-  gem 'spork',              '~> 0.9.0.rc2'
+  
   gem 'guard'
   gem 'guard-rspec'
   gem 'guard-livereload'
   
   gem 'shoulda',            '~> 2.11.3'
-  gem 'steak',              '~> 1.0.0.beta.2'
-  gem 'capybara',           '~> 0.3.9'
-  # gem 'capybara-envjs',     '~> 0.1.6'
-  # gem 'akephalos',          '~> 0.2.4'
-  gem 'launchy',            '~> 0.3.7'
+  gem 'steak',              '~> 1.0.0.rc.1'
+  gem 'capybara',           '~> 0.4.0.rc'
+  # gem 'capybara-envjs',   '~> 0.1.6'
+  # gem 'akephalos',        '~> 0.2.4'
+  # gem 'launchy',          '~> 0.3.7' # should be included in capybara Development Dependencies
   
+  gem 'webmock',            '~> 1.4.0'
+  gem 'vcr',                '~> 1.2.0'
+  
+  gem 'spork',              '~> 0.9.0.rc2'
   gem 'factory_girl_rails', '~> 1.0.0'
-  gem 'webmock',            '~> 1.3.5'
-  gem 'vcr',                '~> 1.1.1'
 end

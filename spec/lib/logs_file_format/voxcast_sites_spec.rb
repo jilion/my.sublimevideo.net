@@ -48,7 +48,7 @@ describe LogsFileFormat::VoxcastSites do
     end
   end
   
-  describe "with cdn.sublimevideo.net.log.1286528280-1286528340.gz logs file", :focus => true do
+  describe "with cdn.sublimevideo.net.log.1286528280-1286528340.gz logs file" do
     before(:each) do
       logs_file = File.new(Rails.root.join('spec/fixtures/logs/voxcast/cdn.sublimevideo.net.log.1286528280-1286528340.gz'))
       @trackers = LogAnalyzer.parse(logs_file, 'LogsFileFormat::VoxcastSites')
