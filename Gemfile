@@ -1,6 +1,6 @@
 source :rubygems
 
-gem 'bundler',               '~> 1.0.3'
+gem 'bundler',               '~> 1.0'
 
 gem 'rails',                 '~> 3.0.1'
 gem 'rack',                  '~> 1.2.1'
@@ -9,7 +9,7 @@ gem 'pg',                    '~> 0.9.0'
 gem 'libxml-ruby',           '~> 1.1.3', :require => 'libxml'
 
 gem 'i18n',                  '~> 0.4.1'
-gem 'haml',                  '~> 3.0.21'
+gem 'haml',                  '~> 3.0.22'
 gem 'state_machine',         '~> 0.9.4'
 gem 'responders',            '~> 0.6.2'
 gem 'uniquify',              '~> 0.1.0'
@@ -32,7 +32,7 @@ gem 'devise_invitable',      :git => 'git://github.com/rymai/devise_invitable.gi
 gem 'memcached',             '~> 0.20.1'
 gem 'dalli',                 '~> 0.9.10'
 
-gem 'aws',                   '~> 2.3.20'
+gem 'aws',                   '~> 2.3.22'
 gem 'fog',                   '~> 0.3.8' # for carrierwave 0.5 final
 gem 'carrierwave',           '~> 0.5.0'
 
