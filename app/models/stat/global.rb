@@ -24,6 +24,13 @@ class Stat::Global
   # ===============
   validates :day, :presence => true, :uniqueness => true
   
+  # ====================
+  # = Instance Methods =
+  # ====================
+  def self.video_pageviews_per_day(start_time)
+    where(:day => { "$gte" => start_time.beginning_of_day.utc, "$ne" => nil }).only("vpv.new").order_by([[:day, :asc]])
+  end
+  
   def self.delay_calculate_all_new(start_day = Date.today, end_day = Date.today, options = {})
     self.delay(:priority => 100).calculate_all_new(start_day, end_day, options)
   end
