@@ -6,7 +6,6 @@ describe Log::Amazon::S3::Loaders do
   context "created with valid attributes" do
     subject { Factory(:log_s3_loaders) }
     
-    it { subject.usages.name.constantize.should == SiteUsage }
     it { subject.file.url.should == "/uploads/s3/sublimevideo.loaders/2010-07-14-09-22-26-63B226D3944909C8" }
     
     it "should have good log content" do

@@ -1,12 +1,10 @@
 class SiteUsage
   include Mongoid::Document
-  include Mongoid::Timestamps
   
   field :site_id,         :type => Integer
-  field :started_at,      :type => DateTime
-  field :ended_at,        :type => DateTime
-  field :loader_hits,     :type => Integer, :default => 0
+  field :day,             :type => DateTime
   
+  field :loader_hits,                :type => Integer, :default => 0
   field :player_hits,                :type => Integer, :default => 0
   field :main_player_hits,           :type => Integer, :default => 0
   field :main_player_hits_cached,    :type => Integer, :default => 0
@@ -14,19 +12,12 @@ class SiteUsage
   field :dev_player_hits_cached,     :type => Integer, :default => 0
   field :invalid_player_hits,        :type => Integer, :default => 0
   field :invalid_player_hits_cached, :type => Integer, :default => 0
+  field :flash_hits,                 :type => Integer, :default => 0
+  field :requests_s3,                :type => Integer, :default => 0
+  field :traffic_s3,                 :type => Integer, :default => 0
+  field :traffic_voxcast,            :type => Integer, :default => 0
   
-  field :flash_hits,      :type => Integer, :default => 0
-  field :requests_s3,     :type => Integer, :default => 0
-  field :traffic_s3,      :type => Integer, :default => 0
-  field :traffic_voxcast, :type => Integer, :default => 0
-  
-  index :site_id
-  index :started_at
-  index :ended_at
-  
-  attr_accessible :site, :log, :loader_hits, :flash_hits, :requests_s3, :traffic_s3, :traffic_voxcast, :player_hits,
-                  :main_player_hits, :main_player_hits_cached, :dev_player_hits, :dev_player_hits_cached,
-                  :invalid_player_hits, :invalid_player_hits_cached
+  index [[:site_id, Mongo::ASCENDING], [:day, Mongo::ASCENDING]], :unique => true
   
   # ================
   # = Associations =
@@ -35,94 +26,54 @@ class SiteUsage
   def site
     Site.find_by_id(site_id)
   end
-  def site=(site)
-    self.site_id = site.id
-  end
-  
-  referenced_in :log, :index => true
   
   # ==========
   # = Scopes =
   # ==========
   
-  scope :started_after, lambda { |date| where(:started_at => { "$gte" => date }) }
-  scope :ended_before,  lambda { |date| where(:ended_at => { "$lt" => date }) }
-  scope :between,       lambda { |start_date, end_date| where(:started_at => { "$gte" => start_date }, :ended_at => { "$lt" => end_date }) }
-  
-  # ===============
-  # = Validations =
-  # ===============
-  
-  validates :site_id,                    :presence => true
-  validates :started_at,                 :presence => true
-  validates :ended_at,                   :presence => true
-  validates :loader_hits,                :presence => true
-  validates :player_hits,                :presence => true
-  validates :main_player_hits,           :presence => true
-  validates :main_player_hits_cached,    :presence => true
-  validates :dev_player_hits,            :presence => true
-  validates :dev_player_hits_cached,     :presence => true
-  validates :invalid_player_hits,        :presence => true
-  validates :invalid_player_hits_cached, :presence => true
-  validates :flash_hits,                 :presence => true
-  validates :requests_s3,                :presence => true
-  validates :traffic_s3,                 :presence => true
-  validates :traffic_voxcast,            :presence => true
-  
-  # =============
-  # = Callbacks =
-  # =============
-  
-  before_validation :set_dates_from_log, :on => :create
-  after_save        :update_site_hits_cache
+  scope :after,   lambda { |date| where(:day => { "$gte" => date }) }
+  scope :before,  lambda { |date| where(:day => { "$lt" => date }) }
+  scope :between, lambda { |start_date, end_date| where(:day => { "$gte" => start_date }, :day => { "$lt" => end_date }) }
   
   # =================
   # = Class Methods =
   # =================
   
   def self.create_usages_from_trackers!(log, trackers)
-    hbr    = hits_traffic_and_requests_from(trackers)
-    tokens = tokens_from(hbr)
+    hbrs   = hits_traffic_and_requests_from(trackers)
+    tokens = tokens_from(hbrs)
     while tokens.present?
       Site.where(:token => tokens.pop(100)).each do |site|
-        create!(
-          :log                        => log,
-          :site                       => site,
-          :loader_hits                => (hits = hbr[:loader_hits]) ? hits[site.token].to_i : 0,
-          :player_hits                => (hits = hbr[:player_hits]) ? hits[site.token].to_i : 0,
-          :main_player_hits           => (hits = hbr[:main_player_hits]) ? hits[site.token].to_i : 0,
-          :main_player_hits_cached    => (hits = hbr[:main_player_hits_cached]) ? hits[site.token].to_i : 0,
-          :dev_player_hits            => (hits = hbr[:dev_player_hits]) ? hits[site.token].to_i : 0,
-          :dev_player_hits_cached     => (hits = hbr[:dev_player_hits_cached]) ? hits[site.token].to_i : 0,
-          :invalid_player_hits        => (hits = hbr[:invalid_player_hits]) ? hits[site.token].to_i : 0,
-          :invalid_player_hits_cached => (hits = hbr[:invalid_player_hits_cached]) ? hits[site.token].to_i : 0,
-          :flash_hits                 => (hits = hbr[:flash_hits]) ? hits[site.token].to_i : 0,
-          :requests_s3                => (requests = hbr[:requests_s3]) ? requests[site.token].to_i : 0,
-          :traffic_s3                 => (bandwidth = hbr[:traffic_s3]) ? bandwidth[site.token].to_i : 0,
-          :traffic_voxcast            => (bandwidth = hbr[:traffic_voxcast]) ? bandwidth[site.token].to_i : 0
-        )
+        begin
+          hbr_token = hits_traffic_and_requests_for_token(hbrs, site.token)
+          day = log.started_at.utc.to_time.beginning_of_day
+          self.collection.update(
+            { :site_id => site.id, :day => day },
+            { "$inc" => hbr_token },
+            :upsert => true
+          )
+          # TODO Remove this after beta
+          update_site_hits_cache(site, hbr_token)
+        rescue => ex
+          Notify.send("Error on site_usage (#{site.id},#{day}) update (from log #{log.hostname}, #{log.name}. Data: #{hbr_token}", :exception => ex)
+        end
       end
     end
   end
   
 private
   
-  # before_validation
-  def set_dates_from_log
-    self.started_at ||= log.started_at
-    self.ended_at   ||= log.ended_at
-  end
-  
-  # after_save
-  def update_site_hits_cache
+  # TODO Remove this after beta
+  # after_create_or_update "callback"
+  def self.update_site_hits_cache(site, hbr_token)
     Site.update_counters(
-      site_id,
-      :loader_hits_cache     => loader_hits,
-      :player_hits_cache     => player_hits,
-      :flash_hits_cache      => flash_hits,
-      :requests_s3_cache     => requests_s3,
-      :traffic_s3_cache      => traffic_s3,
-      :traffic_voxcast_cache => traffic_voxcast
+      site.id,
+      :loader_hits_cache     => hbr_token[:loader_hits],
+      :player_hits_cache     => hbr_token[:player_hits],
+      :flash_hits_cache      => hbr_token[:flash_hits],
+      :requests_s3_cache     => hbr_token[:requests_s3],
+      :traffic_s3_cache      => hbr_token[:traffic_s3],
+      :traffic_voxcast_cache => hbr_token[:traffic_voxcast]
     )
   end
   
@@ -157,6 +108,19 @@ private
     end
   end
   
+  def self.hits_traffic_and_requests_for_token(hbrs, token)
+    hbr_attributes = [
+     :loader_hits, :player_hits, :main_player_hits, :main_player_hits_cached, :dev_player_hits,
+     :dev_player_hits_cached, :invalid_player_hits, :invalid_player_hits_cached, :flash_hits,
+     :requests_s3, :traffic_s3, :traffic_voxcast
+    ]
+    hbr_attributes.inject({}) do |token_hbr, attribute|
+     value = (hbr = hbrs[attribute]) ? hbr[token].to_i : 0
+     token_hbr[attribute] = value
+     token_hbr
+    end
+  end
+  
   def self.player_hits_tracker(trackers, type, token, hits)
     trackers[type] ||= {}
     if trackers[type][token]
@@ -167,8 +131,8 @@ private
     trackers[type]
   end
   
-  def self.tokens_from(hits_traffic_and_requests)
-    hits_traffic_and_requests.inject([]) do |tokens, (k, v)|
+  def self.tokens_from(hbrs)
+    hbrs.inject([]) do |tokens, (k, v)|
       tokens += v.collect { |k, v| k }
     end.compact.uniq
   end

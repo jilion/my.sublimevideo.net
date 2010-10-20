@@ -27,10 +27,10 @@ private
         { 
           :id          => site.id,
           :hostname    => site.hostname,
-          :archived_at => site.archived_at,
+          :archived_at => site.archived_at
           # Warning big request here if site_usages not compacted
-          :loader_hits => site.usages.between(invoice.started_on, invoice.ended_on).sum(:loader_hits),
-          :player_hits => site.usages.between(invoice.started_on, invoice.ended_on).sum(:player_hits)
+          # :loader_hits => site.usages.between(invoice.started_on, invoice.ended_on).sum(:loader_hits),
+          # :player_hits => site.usages.between(invoice.started_on, invoice.ended_on).sum(:player_hits)
         }
       end
     end

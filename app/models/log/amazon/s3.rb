@@ -1,11 +1,5 @@
 class Log::Amazon::S3 < Log::Amazon
   
-  # ================
-  # = Associations =
-  # ================
-  
-  references_many :usages, :class_name => "SiteUsage", :foreign_key => :log_id
-  
   # ====================
   # = Instance Methods =
   # ====================

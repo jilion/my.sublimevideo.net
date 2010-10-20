@@ -148,11 +148,12 @@ class Site < ActiveRecord::Base
     VoxcastCDN.delay.purge("/l/#{token}.js")
   end
   
+  # TODO Remove after beta
   def reset_hits_cache!(time)
     # Warning Lot of request here
-    self.loader_hits_cache = usages.started_after(time).sum(:loader_hits)
-    self.player_hits_cache = usages.started_after(time).sum(:player_hits)
-    self.flash_hits_cache  = usages.started_after(time).sum(:flash_hits)
+    self.loader_hits_cache = usages.after(time).sum(:loader_hits)
+    self.player_hits_cache = usages.after(time).sum(:player_hits)
+    self.flash_hits_cache  = usages.after(time).sum(:flash_hits)
     save!
   end
   
