@@ -39,7 +39,6 @@ end
 
 Factory.define :site_usage do |f|
   f.site_id     { Factory(:site).id }
-  f.association :log, :factory => :log_voxcast
 end
 
 Factory.define :invoice do |f|

@@ -1,12 +1,20 @@
 module Notify
   class << self
     
-    def send(message)
-      HoptoadNotifier.notify(:error_message => message)
+    def send(message, options = {})
+      hoptoad(message, options)
       prowl(message)
     end
     
   private
+    
+    def hoptoad(message, options)
+      if options[:exception]
+        HoptoadNotifier.notify(options[:exception], :error_message => message)
+      else
+        HoptoadNotifier.notify(:error_message => message)
+      end
+    end
     
     def prowl(message)
       @prowl ||= Prowl.new(

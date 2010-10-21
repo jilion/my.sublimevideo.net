@@ -16,7 +16,6 @@ describe Log::Amazon::S3::Player do
   context "created with valid attributes" do
     subject { Factory(:log_s3_player) }
     
-    its("usages.name.constantize") { should == SiteUsage }
     its("file.url") { should == "/uploads/s3/sublimevideo.player/2010-07-16-05-22-13-8C4ECFE09170CCD5" }
     
     it "should have good log content" do

@@ -12,7 +12,7 @@ module LogsFileFormat
       { :regexp => '(\S+)',                      :captures => [{:name => :http_method,       :type => :string}] },
       { :regexp => '\"(.*)\"',                   :captures => [{:name => :http_request,      :type => :string}] },
       { :regexp => '(\d{3})',                    :captures => [{:name => :http_status,       :type => :integer}] },
-      { :regexp => '\"(.*)\"',                   :captures => [{:name => :referrer,           :type => :string}] },
+      { :regexp => '\"(.*)\"',                   :captures => [{:name => :referrer,          :type => :string}] },
       { :regexp => '\"(.*)\"',                   :captures => [{:name => :path,              :type => :string}] },
       { :regexp => '\"(.*)\"',                   :captures => [{:name => :path_query,        :type => :string}] },
       { :regexp => '\"(.*)\"',                   :captures => [{:name => :path_stem,         :type => :string}] },
