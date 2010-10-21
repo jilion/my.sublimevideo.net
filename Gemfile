@@ -9,7 +9,7 @@ gem 'pg',                    '~> 0.9.0'
 gem 'libxml-ruby',           '~> 1.1.3', :require => 'libxml'
 
 gem 'i18n',                  '~> 0.4.1'
-gem 'haml',                  '~> 3.0.21'
+gem 'haml',                  '~> 3.0.22'
 gem 'state_machine',         '~> 0.9.4'
 gem 'responders',            '~> 0.6.2'
 gem 'uniquify',              '~> 0.1.0'
@@ -32,8 +32,8 @@ gem 'devise_invitable',      :git => 'git://github.com/rymai/devise_invitable.gi
 gem 'memcached',             '~> 0.20.1'
 gem 'dalli',                 '~> 0.9.10'
 
-gem 'aws',                   '~> 2.3.20'
-gem 'fog',                   '~> 0.3.9' # for carrierwave 0.5 final
+gem 'aws',                   '~> 2.3.22'
+gem 'fog',                   '~> 0.3.13' # for carrierwave 0.5 final
 gem 'carrierwave',           '~> 0.5.0'
 
 gem 'bson_ext',              '~> 1.1.1'
@@ -65,14 +65,13 @@ group :development do
   gem 'annotate',      '~> 2.4.0'
   gem 'wirble',        '~> 0.1.3'
   gem 'ruby-graphviz', :require => 'graphviz'
-  gem 'heroku',        '~> 1.10.14'
+  gem 'heroku',        '~> 1.11.0'
   gem 'heroku_tasks',  '~> 0.1.4'
   gem 'taps',          '~> 0.3.13' # heroku db pull/push
   gem 'timecop',       '~> 0.3.5'
 end
 
 group :test do
-  
   gem 'guard'
   gem 'guard-rspec'
   gem 'guard-livereload'
