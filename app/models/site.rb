@@ -157,6 +157,18 @@ class Site < ActiveRecord::Base
     save!
   end
   
+  # TODO Remove after beta
+  def reset_caches!
+    # Warning Lot of request here
+    self.loader_hits_cache     = usages.where(:started_at => nil).sum(:loader_hits) || 0
+    self.player_hits_cache     = usages.where(:started_at => nil).sum(:player_hits) || 0
+    self.flash_hits_cache      = usages.where(:started_at => nil).sum(:flash_hits) || 0
+    self.requests_s3_cache     = usages.where(:started_at => nil).sum(:requests_s3) || 0
+    self.traffic_s3_cache      = usages.where(:started_at => nil).sum(:traffic_s3) || 0
+    self.traffic_voxcast_cache = usages.where(:started_at => nil).sum(:traffic_voxcast) || 0
+    save!
+  end
+  
   def in_progress?
     pending?
   end

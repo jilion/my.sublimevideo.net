@@ -54,7 +54,7 @@ class SiteUsage
             :upsert => true
           )
           # TODO Remove this after beta
-          update_site_hits_cache(site, hbr_token) if day <= Time.new(2010, 10, 21, 8, 9, 0)
+          update_site_hits_cache(site, hbr_token)
         rescue => ex
           Notify.send("Error on site_usage (#{site.id}, #{day}) update (from log #{log.hostname}, #{log.name}. Data: #{hbr_token}", :exception => ex)
         end

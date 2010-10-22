@@ -19,6 +19,11 @@ namespace :one_time do
     end
   end
   
+  desc "Reset sites caches"
+  task :reset_sites_caches => :environment do
+    Site.all.each { |site| site.delay(:priority => 400).reset_caches! }
+  end
+  
 end
 
 class Log
