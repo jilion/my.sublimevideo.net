@@ -17,7 +17,8 @@ class SiteUsage
   field :traffic_s3,                 :type => Integer, :default => 0
   field :traffic_voxcast,            :type => Integer, :default => 0
   
-  index [[:site_id, Mongo::ASCENDING], [:day, Mongo::ASCENDING]], :unique => true
+  index :site_id
+  index [[:site_id, Mongo::ASCENDING], [:day, Mongo::ASCENDING]]#, :unique => true
   
   # ================
   # = Associations =
