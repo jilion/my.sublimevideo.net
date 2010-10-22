@@ -5,7 +5,8 @@ namespace :one_time do
   task :reparse_logs => :environment do
     timed do
       mixed_logs = Log.where(:started_at => { "$gte" => Date.new(2010, 10, 21).beginning_of_day, "$lte" => Time.parse("2010-10-21T08:09:00Z") })
-      Log.delay(:priority => 200).parse_logs(mixed_logs)
+      mixed_log_ids = mixed_logs.map(&:id)
+      Log.delay(:priority => 299).parse_logs(mixed_log_ids)
       puts "Delayed logs parsing for #{Date.new(2010, 10, 21).beginning_of_day} to #{Time.parse("2010-10-21T08:09:00Z")}."
       
       (Date.new(2010, 6, 30)..Date.new(2010, 10, 20)).each do |day|
