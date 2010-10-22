@@ -14,11 +14,14 @@ describe Release do
     after(:each) { VCR.eject_cassette }
   end
   
-  it { should validate_presence_of(:zip) }
-  
-  it "should only allow zip file" do
-    release = Factory.build(:release, :zip => File.new(Rails.root.join('spec/fixtures/railscast_intro.mov')))
-    release.should have(2).error_on(:zip)
+  describe "validations" do
+    it { should validate_presence_of(:zip) }
+    
+    it "should only allow zip file" do
+      release = Factory.build(:release, :zip => File.new(Rails.root.join('spec/fixtures/railscast_intro.mov')))
+      release.should_not be_valid
+      release.errors[:zip].should == ["is not an allowed file type", "can't be blank"]
+    end
   end
   
   context "archived release" do
@@ -29,7 +32,10 @@ describe Release do
     it "should not be archivable" do
       subject.archive.should be_false
     end
-    it "should purge /p/dev when flagged" do
+    it "should not save the zip locally when not flagging to dev (only during the flag after_transition, see #files_in_zip)" do
+      File.file?(Rails.root.join("tmp/#{subject.zip.filename}")).should be_false
+    end
+    it "should purge /p/dev when flagged (becoming the dev release)" do
       VoxcastCDN.should_receive(:purge_dir).with('/p/dev')
       subject.flag
     end
@@ -42,12 +48,12 @@ describe Release do
       
       it { should be_dev }
       it "should empty dev dir" do
-        keys_name = S3.keys_names(S3.player_bucket, 'prefix' => 'dev/')
+        keys_name = S3.keys_names(S3.player_bucket, 'prefix' => 'dev')
         keys_name.should_not include("dev/foo.txt")
       end
       it "should put zip files inside dev dir" do
         keys_names = S3.keys_names(S3.player_bucket, 'prefix' => 'dev/', :remove_prefix => true)
-        keys_names.sort.should == subject.zip_files.map(&:to_s).sort
+        keys_names.sort.should == subject.files_in_zip.map(&:to_s).sort
       end
       it "should put zip files inside dev dir with public-read" do
         S3.player_bucket.keys('prefix' => 'dev').each do |key|
@@ -55,7 +61,6 @@ describe Release do
           all_users_grantee.perms.should == ["READ"]
         end
       end
-      
     end
     
     after(:each) { VCR.eject_cassette }
@@ -69,7 +74,7 @@ describe Release do
     it "should be the dev release" do
       subject.should == Release.dev_release
     end
-    it "should purge /p/beta when flagged" do
+    it "should purge /p/beta when flagged (becoming the stable release)" do
       VoxcastCDN.should_receive(:purge_dir).with('/p/beta')
       subject.flag
     end
@@ -81,22 +86,22 @@ describe Release do
       end
       
       it { should be_beta }
-      it "should remove no more used file in beta dir" do
+      it "should remove no more used files in beta dir" do
         VCR.eject_cassette
         VCR.insert_cassette('release/dev_remove')
-        keys_name = S3.keys_names(S3.player_bucket, 'prefix' => 'beta')
-        keys_name.should_not include("beta/foo.txt")
+        keys_names = S3.keys_names(S3.player_bucket, 'prefix' => 'beta')
+        keys_names.should_not include("beta/foo.txt")
       end
       it "should copy dev files inside beta dir" do
         keys_names = S3.keys_names(S3.player_bucket, 'prefix' => 'beta/', :remove_prefix => true)
-        keys_names.sort.should == subject.zip_files.map(&:to_s).sort
+        keys_names.sort.should == subject.files_in_zip.map(&:to_s).sort
       end
       it "should copy dev files inside beta dir with public-read" do
         VCR.eject_cassette
         VCR.insert_cassette('release/dev_read')
         S3.player_bucket.keys('prefix' => 'beta').each do |key|
           all_users_grantee = key.grantees.detect { |g| g.name == "AllUsers" }
-          all_users_grantee && all_users_grantee.perms.should == ["READ"]
+          all_users_grantee.perms.should == ["READ"]
         end
       end
     end
@@ -114,13 +119,13 @@ describe Release do
     subject { beta_release }
     
     it { should be_beta }
-    it "should also be the dev release" do
+    it "should also be the dev release when no really dev release exists" do
       subject.should == Release.dev_release
     end
     it "should be the beta release" do
       subject.should == Release.beta_release
     end
-    it "should purge /p when flagged" do
+    it "should purge /p when flagged (becoming the stable release)" do
       VoxcastCDN.should_receive(:purge_dir).with('/p')
       subject.flag
     end
@@ -134,7 +139,7 @@ describe Release do
       it { should be_stable }
       it "should copy beta files inside stable dir" do
         keys_names = S3.keys_names(S3.player_bucket, 'prefix' => 'stable/', :remove_prefix => true)
-        keys_names.sort.should == subject.zip_files.map(&:to_s).sort
+        keys_names.sort.should == subject.files_in_zip.map(&:to_s).sort
       end
       it "should archive old stable_release" do
         @stable_release.reload.should be_archived
@@ -158,10 +163,10 @@ describe Release do
     it "should not be flaggable" do
       subject.flag.should be_false
     end
-    it "should also be the dev release" do
+    it "should also be the dev release when no really dev release exists" do
       subject.should == Release.dev_release
     end
-    it "should also be the beta release" do
+    it "should also be the beta releas when no really beta release existse" do
       subject.should == Release.beta_release
     end
     it "should be the stable release" do
@@ -175,6 +180,50 @@ describe Release do
     end
     
     after(:each) { VCR.eject_cassette }
+  end
+  
+  describe "instance methods" do
+    before(:each) { VCR.insert_cassette('release/valid') }
+    subject { dev_release }
+    
+    describe "#zipfile" do
+      it "should save the zip locally" do
+        subject.zipfile
+        File.file?(Rails.root.join("tmp/#{subject.zip.filename}")).should be_true
+        subject.delete_zipfile
+        File.file?(Rails.root.join("tmp/#{subject.zip.filename}")).should be_false
+      end
+      it "should return a Zip::Zipfile object" do
+        subject.zipfile.should be_instance_of(Zip::ZipFile)
+      end
+    end
+    
+    describe "#files_in_zip" do
+      it "should auto-clear the local zip file when called with a block" do
+        subject.files_in_zip do |files_in_zip_array|
+          File.file?(Rails.root.join("tmp/#{subject.zip.filename}")).should be_true
+        end
+        File.file?(Rails.root.join("tmp/#{subject.zip.filename}")).should be_false
+      end
+      it "should not clear the local zip file when called without block" do
+        subject.files_in_zip
+        File.file?(Rails.root.join("tmp/#{subject.zip.filename}")).should be_true
+      end
+    end
+    
+    describe "#delete_zipfile" do
+      it "should clear the local zip file" do
+        subject.zipfile
+        File.file?(Rails.root.join("tmp/#{subject.zip.filename}")).should be_true
+        subject.delete_zipfile
+        File.file?(Rails.root.join("tmp/#{subject.zip.filename}")).should be_false
+      end
+    end
+    
+    after(:each) do
+      VCR.eject_cassette
+      subject.delete_zipfile if File.file?(Rails.root.join("tmp/#{subject.zip.filename}"))
+    end
   end
   
 private

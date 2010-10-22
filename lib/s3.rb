@@ -28,16 +28,8 @@ module S3
       names
     end
     
-    def panda_bucket
-      @panda_bucket ||= client.bucket(S3Bucket.panda)
-    end
-    
     def player_bucket
-      @panda_bucket ||= client.bucket(S3Bucket.player)
-    end
-    
-    def reset_yml_options
-      @yml_options = nil
+      @player_bucket ||= client.bucket(S3Bucket.player)
     end
     
     def logs_bucket
@@ -46,6 +38,10 @@ module S3
     
     def client
       @client ||= Aws::S3.new(access_key_id, secret_access_key)
+    end
+    
+    def reset_yml_options
+      @yml_options = nil
     end
     
   private

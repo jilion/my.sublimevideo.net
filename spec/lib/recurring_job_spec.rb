@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe RecurringJob do
-  subject { described_class }
   
   describe "launch_all method" do
     

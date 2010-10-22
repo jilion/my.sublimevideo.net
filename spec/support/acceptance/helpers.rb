@@ -65,7 +65,7 @@ module Spec
         end
         
         def sign_out
-          click "Logout"
+          click_link_or_button "Logout"
         end
       end
     end
