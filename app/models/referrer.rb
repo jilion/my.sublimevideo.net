@@ -34,10 +34,10 @@ class Referrer
   # = Scopes =
   # ==========
   
-  scope :by_url,        lambda { |way| order_by([:url, (way || 'desc').to_sym]) }
-  scope :by_hits,       lambda { |way| order_by([:hits, (way || 'desc').to_sym]) }
-  scope :by_updated_at, lambda { |way| order_by([:updated_at, (way || 'desc').to_sym]) }
-  scope :by_created_at, lambda { |way| order_by([:created_at, (way || 'desc').to_sym]) }
+  scope :by_url,        lambda { |way = 'desc'| order_by([:url, way.to_sym]) }
+  scope :by_hits,       lambda { |way = 'desc'| order_by([:hits, way.to_sym]) }
+  scope :by_updated_at, lambda { |way = 'desc'| order_by([:updated_at, way.to_sym]) }
+  scope :by_created_at, lambda { |way = 'desc'| order_by([:created_at, way.to_sym]) }
   
   # ===============
   # = Validations =

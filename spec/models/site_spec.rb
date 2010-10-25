@@ -1,33 +1,5 @@
 # coding: utf-8
 
-# == Schema Information
-#
-# Table name: sites
-#
-#  id                    :integer         not null, primary key
-#  user_id               :integer
-#  hostname              :string(255)
-#  dev_hostnames         :string(255)
-#  token                 :string(255)
-#  license               :string(255)
-#  loader                :string(255)
-#  state                 :string(255)
-#  loader_hits_cache     :integer(8)      default(0)
-#  player_hits_cache     :integer(8)      default(0)
-#  flash_hits_cache      :integer(8)      default(0)
-#  archived_at           :datetime
-#  created_at            :datetime
-#  updated_at            :datetime
-#  player_mode           :string(255)     default("stable")
-#  requests_s3_cache     :integer(8)      default(0)
-#  traffic_s3_cache      :integer(8)      default(0)
-#  traffic_voxcast_cache :integer(8)      default(0)
-#  google_rank           :integer
-#  alexa_rank            :integer
-#  path                  :string(255)
-#  wildcard              :boolean
-#
-
 require 'spec_helper'
 
 describe Site do
@@ -297,14 +269,16 @@ describe Site do
         @site.archived_at.should be_present
       end
       
-      it "should be able to set path" do
-        @site.update_attributes(:path => '/users/thibaud')
-        @site.path.should == 'users/thibaud'
-      end
-      
-      it "should be able to set wildcard" do
-        @site.update_attributes(:wildcard => "1")
-        @site.wildcard.should be_true
+      if MySublimeVideo::Release.public?
+        it "should be able to set path" do
+          @site.update_attributes(:path => '/users/thibaud')
+          @site.path.should == 'users/thibaud'
+        end
+        
+        it "should be able to set wildcard" do
+          @site.update_attributes(:wildcard => "1")
+          @site.wildcard.should be_true
+        end
       end
       
     end
@@ -366,8 +340,8 @@ describe Site do
         user = Factory(:user)
         site = Factory(:site, :user => user, :loader_hits_cache => 33, :player_hits_cache => 11)
         log = Factory(:log_voxcast)
-        Factory(:site_usage, :site => site, :log => log, :loader_hits => 16, :player_hits => 5, :started_at => 1.minute.from_now, :ended_at => 2.minute.from_now)
-        site.reset_hits_cache!(Time.now)
+        Factory(:site_usage, :site_id => site.id, :day => Time.now.beginning_of_day, :loader_hits => 16, :player_hits => 5)
+        site.reset_hits_cache!(1.day.ago)
         site.loader_hits_cache.should == 16
         site.player_hits_cache.should == 5
       end
@@ -388,5 +362,99 @@ describe Site do
       end
     end
     
+    describe "referrer_type" do
+      context "without wildcard or path" do
+        subject { Factory(:site, :hostname => "jilion.com", :dev_hostnames => "jilion.local, localhost, 127.0.0.1") }
+        
+        it { subject.referrer_type("http://jilion.com").should == "main" }
+        it { subject.referrer_type("http://jilion.com/test/cool").should == "main" }
+        it { subject.referrer_type("https://jilion.com").should == "main" }
+        it { subject.referrer_type("http://www.jilion.com").should == "main" }
+        it { subject.referrer_type("http://jilion.local").should == "dev" }
+        it { subject.referrer_type("http://127.0.0.1:3000/super.html").should == "dev" }
+        it { subject.referrer_type("http://localhost:3000?genial=com").should == "dev" }
+        it { subject.referrer_type("http://blog.jilion.com").should == "invalid" }
+        it { subject.referrer_type("http://google.com").should == "invalid" }
+        it { subject.referrer_type("google.com").should == "invalid" }
+        it { subject.referrer_type("jilion.com").should == "invalid" }
+        it { subject.referrer_type("-").should == "invalid" }
+        it { subject.referrer_type(nil).should == "invalid" }
+      end
+      if MySublimeVideo::Release.public?
+        context "with wildcard" do
+          subject { Factory(:site, :hostname => "jilion.com", :dev_hostnames => "jilion.local, localhost, 127.0.0.1", :wildcard => true) }
+          
+          it { subject.referrer_type("http://blog.jilion.com").should == "main" }
+          it { subject.referrer_type("http://jilion.com").should == "main" }
+          it { subject.referrer_type("http://jilion.com/test/cool").should == "main" }
+          it { subject.referrer_type("https://jilion.com").should == "main" }
+          it { subject.referrer_type("http://www.jilion.com").should == "main" }
+          it { subject.referrer_type("http://jilion.local").should == "dev" }
+          it { subject.referrer_type("http://127.0.0.1:3000/super.html").should == "dev" }
+          it { subject.referrer_type("http://localhost:3000?genial=com").should == "dev" }
+          it { subject.referrer_type("http://google.com").should == "invalid" }
+          it { subject.referrer_type("google.com").should == "invalid" }
+          it { subject.referrer_type("jilion.com").should == "invalid" }
+          it { subject.referrer_type("-").should == "invalid" }
+          it { subject.referrer_type(nil).should == "invalid" }
+        end
+        context "with path" do
+          subject { Factory(:site, :hostname => "jilion.com", :dev_hostnames => "jilion.local, localhost, 127.0.0.1", :path => "demo") }
+          
+          it { subject.referrer_type("http://jilion.com/demo/cool").should == "main" }
+          it { subject.referrer_type("http://127.0.0.1:3000/demo/super.html").should == "dev" }
+          it { subject.referrer_type("http://localhost:3000/demo?genial=com").should == "dev" }
+          it { subject.referrer_type("http://localhost:3000?genial=com").should == "invalid" }
+          it { subject.referrer_type("http://jilion.local").should == "invalid" }
+          it { subject.referrer_type("http://jilion.com/test/cool").should == "invalid" }
+          it { subject.referrer_type("http://jilion.com").should == "invalid" }
+          it { subject.referrer_type("https://jilion.com").should == "invalid" }
+          it { subject.referrer_type("http://www.jilion.com").should == "invalid" }
+          it { subject.referrer_type("http://blog.jilion.com").should == "invalid" }
+          it { subject.referrer_type("http://google.com").should == "invalid" }
+          it { subject.referrer_type("google.com").should == "invalid" }
+          it { subject.referrer_type("jilion.com").should == "invalid" }
+          it { subject.referrer_type("-").should == "invalid" }
+          it { subject.referrer_type(nil).should == "invalid" }
+        end
+      end
+    end
+    
   end
 end
+
+# == Schema Information
+#
+# Table name: sites
+#
+#  id                    :integer         not null, primary key
+#  user_id               :integer
+#  hostname              :string(255)
+#  dev_hostnames         :string(255)
+#  token                 :string(255)
+#  license               :string(255)
+#  loader                :string(255)
+#  state                 :string(255)
+#  loader_hits_cache     :integer(8)      default(0)
+#  player_hits_cache     :integer(8)      default(0)
+#  flash_hits_cache      :integer(8)      default(0)
+#  archived_at           :datetime
+#  created_at            :datetime
+#  updated_at            :datetime
+#  player_mode           :string(255)     default("stable")
+#  requests_s3_cache     :integer(8)      default(0)
+#  traffic_s3_cache      :integer(8)      default(0)
+#  traffic_voxcast_cache :integer(8)      default(0)
+#  google_rank           :integer
+#  alexa_rank            :integer
+#  path                  :string(255)
+#  wildcard              :boolean
+#
+# Indexes
+#
+#  index_sites_on_created_at                     (created_at)
+#  index_sites_on_hostname                       (hostname)
+#  index_sites_on_player_hits_cache_and_user_id  (player_hits_cache,user_id)
+#  index_sites_on_user_id                        (user_id)
+#
+

@@ -1,3 +1,17 @@
+class Admin < ActiveRecord::Base
+  
+  devise :database_authenticatable, :invitable, :registerable, :recoverable,
+         :rememberable, :trackable, :validatable, :lockable
+  
+  # Pagination
+  cattr_accessor :per_page
+  self.per_page = 25
+  
+  attr_accessible :email, :password, :password_confirmation, :remember_me
+  
+end
+
+
 # == Schema Information
 #
 # Table name: admins
@@ -21,16 +35,10 @@
 #  created_at           :datetime
 #  updated_at           :datetime
 #
+# Indexes
+#
+#  index_admins_on_email                 (email) UNIQUE
+#  index_admins_on_invitation_token      (invitation_token)
+#  index_admins_on_reset_password_token  (reset_password_token) UNIQUE
+#
 
-class Admin < ActiveRecord::Base
-  
-  devise :database_authenticatable, :invitable, :registerable, :recoverable,
-         :rememberable, :trackable, :validatable, :lockable
-  
-  # Pagination
-  cattr_accessor :per_page
-  self.per_page = 25
-  
-  attr_accessible :email, :password, :password_confirmation, :remember_me
-  
-end

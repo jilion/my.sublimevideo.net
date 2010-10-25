@@ -39,7 +39,6 @@ end
 
 Factory.define :site_usage do |f|
   f.site_id     { Factory(:site).id }
-  f.association :log, :factory => :log_voxcast
 end
 
 Factory.define :invoice do |f|
@@ -47,7 +46,7 @@ Factory.define :invoice do |f|
 end
 
 Factory.define :release do |f|
-  f.zip  { File.new(Rails.root.join('spec/fixtures/release.zip')) }
+  f.zip { File.new(Rails.root.join('spec/fixtures/release.zip')) }
 end
 
 Factory.define :referrer do |f|

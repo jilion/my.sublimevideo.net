@@ -14,6 +14,12 @@ describe Notify do
       Notify.send(message)
     end
     
+    it "should notify via hoptoad with exception" do
+      message = 'Yo!'
+      HoptoadNotifier.should_receive(:notify).with("exception", :error_message => message)
+      Notify.send(message, :exception => "exception")
+    end
+    
     it "should notify via prowl" do
       message = 'Yo!'
       Notify.should_receive(:prowl).with(message)

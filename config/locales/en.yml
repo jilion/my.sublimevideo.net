@@ -31,10 +31,10 @@ en:
   
   ticket:
     type:
-      choose_type:            "Choose a category"
-      bug_report:             "Bug report"
-      improvement_suggestion: "Improvement suggestion"
-      feature_request:        "Feature request"
+      choose-type:            "Choose a category"
+      bug-report:             "Bug report"
+      improvement-suggestion: "Improvement suggestion"
+      feature-request:        "Feature request"
       other:                  "Other"
     
   sites:

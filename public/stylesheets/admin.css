@@ -223,6 +223,7 @@ ul.no_bullet {
 
 #main table th {
   padding:8px 0;
+  white-space:nowrap;
   background:#ddd;
   background:-webkit-gradient(linear,left top,left bottom,from(#eee),to(#ccc));
   background:-moz-linear-gradient(top, #eee, #ccc);
@@ -335,4 +336,14 @@ form label.icon {
 #main p.summary {
   float:right;
   text-align: right;
+}
+
+/* =================== */
+/* = Player Releases = */
+/* =================== */
+
+#player_releases h3 {
+  padding:25px 0 0;
+  font-size:22px;
+  font-weight:600;
 }

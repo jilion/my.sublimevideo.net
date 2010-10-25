@@ -1,32 +1,3 @@
-# == Schema Information
-#
-# Table name: sites
-#
-#  id                    :integer         not null, primary key
-#  user_id               :integer
-#  hostname              :string(255)
-#  dev_hostnames         :string(255)
-#  token                 :string(255)
-#  license               :string(255)
-#  loader                :string(255)
-#  state                 :string(255)
-#  loader_hits_cache     :integer(8)      default(0)
-#  player_hits_cache     :integer(8)      default(0)
-#  flash_hits_cache      :integer(8)      default(0)
-#  archived_at           :datetime
-#  created_at            :datetime
-#  updated_at            :datetime
-#  player_mode           :string(255)     default("stable")
-#  requests_s3_cache     :integer(8)      default(0)
-#  traffic_s3_cache      :integer(8)      default(0)
-#  traffic_voxcast_cache :integer(8)      default(0)
-#  google_rank           :integer
-#  alexa_rank            :integer
-#  alias_hostnames       :string(255)
-#  path                  :string(255)
-#  wildcard              :boolean
-#
-
 class Site < ActiveRecord::Base
   
   PLAYER_MODES = %w[dev beta stable]
@@ -35,7 +6,10 @@ class Site < ActiveRecord::Base
   cattr_accessor :per_page
   self.per_page = 100
   
-  attr_accessible :hostname, :dev_hostnames, :path, :wildcard
+  attr_accessible :hostname, :dev_hostnames
+  if MySublimeVideo::Release.public?
+    attr_accessible :path, :wildcard
+  end
   
   uniquify :token, :chars => Array('a'..'z') + Array('0'..'9')
   
@@ -164,11 +138,24 @@ class Site < ActiveRecord::Base
     VoxcastCDN.delay.purge("/l/#{token}.js")
   end
   
+  # TODO Remove after beta
   def reset_hits_cache!(time)
     # Warning Lot of request here
-    self.loader_hits_cache = usages.started_after(time).sum(:loader_hits)
-    self.player_hits_cache = usages.started_after(time).sum(:player_hits)
-    self.flash_hits_cache  = usages.started_after(time).sum(:flash_hits)
+    self.loader_hits_cache = usages.after(time).sum(:loader_hits)
+    self.player_hits_cache = usages.after(time).sum(:player_hits)
+    self.flash_hits_cache  = usages.after(time).sum(:flash_hits)
+    save!
+  end
+  
+  # TODO Remove after beta
+  def reset_caches!
+    # Warning Lot of request here
+    self.loader_hits_cache     = usages.where(:started_at => nil).sum(:loader_hits) || 0
+    self.player_hits_cache     = usages.where(:started_at => nil).sum(:player_hits) || 0
+    self.flash_hits_cache      = usages.where(:started_at => nil).sum(:flash_hits) || 0
+    self.requests_s3_cache     = usages.where(:started_at => nil).sum(:requests_s3) || 0
+    self.traffic_s3_cache      = usages.where(:started_at => nil).sum(:traffic_s3) || 0
+    self.traffic_voxcast_cache = usages.where(:started_at => nil).sum(:traffic_voxcast) || 0
     save!
   end
   
@@ -192,6 +179,27 @@ class Site < ActiveRecord::Base
   
   def need_path?
     %w[web.me.com homepage.mac.com].include?(hostname) && path.blank?
+  end
+  
+  def referrer_type(referrer)
+    host = URI.parse(referrer).host
+    if main_referrer?(host)
+      "main"
+    elsif dev_referrer?(host)
+      "dev"
+    else
+      "invalid"
+    end
+  rescue
+    "invalid"
+  end
+  
+  def main_referrer?(host)
+    host == hostname || host == "www.#{hostname}"
+  end
+  
+  def dev_referrer?(host)
+    dev_hostnames.split(', ').any? { |h| host == h || host == "www.#{h}" }
   end
   
 private
@@ -239,3 +247,40 @@ private
   end
   
 end
+
+
+# == Schema Information
+#
+# Table name: sites
+#
+#  id                    :integer         not null, primary key
+#  user_id               :integer
+#  hostname              :string(255)
+#  dev_hostnames         :string(255)
+#  token                 :string(255)
+#  license               :string(255)
+#  loader                :string(255)
+#  state                 :string(255)
+#  loader_hits_cache     :integer(8)      default(0)
+#  player_hits_cache     :integer(8)      default(0)
+#  flash_hits_cache      :integer(8)      default(0)
+#  archived_at           :datetime
+#  created_at            :datetime
+#  updated_at            :datetime
+#  player_mode           :string(255)     default("stable")
+#  requests_s3_cache     :integer(8)      default(0)
+#  traffic_s3_cache      :integer(8)      default(0)
+#  traffic_voxcast_cache :integer(8)      default(0)
+#  google_rank           :integer
+#  alexa_rank            :integer
+#  path                  :string(255)
+#  wildcard              :boolean
+#
+# Indexes
+#
+#  index_sites_on_created_at                     (created_at)
+#  index_sites_on_hostname                       (hostname)
+#  index_sites_on_player_hits_cache_and_user_id  (player_hits_cache,user_id)
+#  index_sites_on_user_id                        (user_id)
+#
+
