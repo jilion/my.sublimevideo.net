@@ -1,14 +1,15 @@
-%tr{ :id => dom_id(site), :class => cycle("", "alt") }
+%tr{ :id => dom_id(site), :class => cycle("", "alt") + "#{" invalid" unless site.valid?}" }
   %td.site
     .wrap
       = link_to hostname_with_path_and_wildcard(site, :truncate => 30), "http://#{hostname_with_path(site)}", :class => "external_link", :onclick => "window.open(this); return false", :title => hostname_with_path(site)
       -#- if site.wildcard?
       -#  %span
       -#    %i= "wildcard support"
-      - if site.need_path?
-        %span
-          -# TODO: Update this text
-          %i= "you should add a path"
+      - if public?
+        - if site.need_path?
+          %span
+            -# TODO: Update this text
+            %i= "you should add a path"
       - unless site.valid?
         %span
           -# TODO: Update this text
@@ -40,4 +41,4 @@
     -#      %h5= "Player hits"
     -#    %td.player_hits= number_with_delimiter(site.player_hits_cache)
   %td.delete
-    = button_to 'Delete', site, :onclick => "return MySublimeVideo.confirmDeleteSite(this)", :method => :delete, :remote => true, :disabled => !site.valid?
+    = button_to 'Delete', site, :onclick => "return MySublimeVideo.confirmDeleteSite(this)", :method => :delete, :remote => true

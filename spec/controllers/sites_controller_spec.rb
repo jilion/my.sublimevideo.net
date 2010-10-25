@@ -50,9 +50,17 @@ describe SitesController do
       put :update, :id => '1', :site => {}
       response.should redirect_to(sites_url)
     end
+    it "should respond with success to DELETE :destroy and archive site" do
+      @mock_user.stub_chain(:sites, :find).with("1").and_return(mock_site)
+      mock_site.stub(:valid?).and_return(true)
+      mock_site.stub(:archive)
+      delete :destroy, :id => '1'
+      response.should redirect_to(sites_url)
+    end
     it "should respond with success to DELETE :destroy" do
       @mock_user.stub_chain(:sites, :find).with("1").and_return(mock_site)
-      mock_site.stub(:archive)
+      mock_site.stub(:valid?).and_return(false)
+      mock_site.stub(:destroy)
       delete :destroy, :id => '1'
       response.should redirect_to(sites_url)
     end

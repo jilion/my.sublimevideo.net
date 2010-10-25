@@ -81,7 +81,7 @@ class SitesController < ApplicationController
   # DELETE /sites/1
   def destroy
     @site = current_user.sites.find(params[:id])
-    @site.archive
+    @site.valid? ? @site.archive : @site.destroy
     respond_with(@site) do |format|
       format.html { redirect_to sites_path }
     end
