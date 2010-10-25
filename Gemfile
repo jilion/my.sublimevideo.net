@@ -30,7 +30,7 @@ gem 'devise',                '~> 1.1.3'
 gem 'devise_invitable',      :git => 'git://github.com/rymai/devise_invitable.git'
 
 gem 'memcached',             '~> 0.20.1'
-gem 'dalli',                 '~> 0.9.10'
+gem 'dalli',                 '~> 0.10.1'
 
 gem 'aws',                   '~> 2.3.22'
 gem 'fog',                   '~> 0.3.13' # for carrierwave 0.5 final
@@ -72,16 +72,17 @@ group :development do
 end
 
 group :test do
+  gem 'growl'
   gem 'guard'
   gem 'guard-rspec'
   gem 'guard-livereload'
+  gem 'guard-bundler'
   
   gem 'shoulda',            '~> 2.11.3'
   gem 'steak',              '~> 1.0.0.rc.1'
-  gem 'capybara',           '~> 0.4.0.rc'
-  # gem 'capybara-envjs',   '~> 0.1.6'
+  gem 'capybara',           '~> 0.4.0'
+  # gem 'capybara-envjs',     '~> 0.4.0'
   # gem 'akephalos',        '~> 0.2.4'
-  # gem 'launchy',          '~> 0.3.7' # should be included in capybara Development Dependencies
   
   gem 'webmock',            '~> 1.4.0'
   gem 'vcr',                '~> 1.2.0'
