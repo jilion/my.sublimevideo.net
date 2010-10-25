@@ -1,8 +1,8 @@
 = title_and_content_header("#{@site.hostname} (#{@site.user.full_name})")
 
-= render :partial => '/admin/stats/usage_per_day', :locals => { :site => @site, :title => "Video usage per day for #{@site.hostname}" }
+= render :partial => '/admin/stats/sites/usage_per_day', :locals => { :site => @site, :title => "VPV per day, total and averages for #{@site.hostname} between #{l(30.days.ago.to_date, :format => :small)} and #{l(Date.today, :format => :small)}" }
 
-#usage_per_day{ :width => '560px', :height => '200px' }
+#usage_per_day{ :width => '900px', :height => '250px' }
 
 %h3 Infos
 

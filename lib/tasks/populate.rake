@@ -62,7 +62,7 @@ namespace :db do
             dev_player_hits_cached     = (dev_player_hits * rand).to_i
             invalid_player_hits        = rand(100)
             invalid_player_hits_cached = (invalid_player_hits * rand).to_i
-            player_hits = loader_hits + main_player_hits + main_player_hits_cached + dev_player_hits + dev_player_hits_cached + invalid_player_hits + invalid_player_hits_cached
+            player_hits = main_player_hits + main_player_hits_cached + dev_player_hits + dev_player_hits_cached + invalid_player_hits + invalid_player_hits_cached
             
             site_usage = SiteUsage.new(:day => day, :site_id => site.id)
             site_usage.loader_hits = loader_hits

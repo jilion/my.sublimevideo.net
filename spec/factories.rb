@@ -38,11 +38,7 @@ Factory.define :log_s3_licenses, :class => Log::Amazon::S3::Licenses do |f|
 end
 
 Factory.define :site_usage do |f|
-  f.site_id     { Factory(:site).id }
-end
-
-Factory.define :stat_global, :class => Stat::Global do |f|
-  f.sequence(:day) { |i| Date.new(2010, (i%12)+1, (i%28)+1) }
+  f.site_id { Factory(:site).id }
 end
 
 Factory.define :invoice do |f|
