@@ -1,8 +1,5 @@
 = title_and_content_header("Stats")
 
-= content_for :js do
-  = javascript_include_tag 'highcharts/highcharts-adapter.min', 'highcharts/highcharts'
+= render :partial => '/admin/stats/usage_per_day', :locals => { :title => "Video global usage per day" }
 
-= render 'chart'
-
-#chart{ :width => '560px', :height => '300px' }
+#usage_per_day{ :width => '560px', :height => '300px' }

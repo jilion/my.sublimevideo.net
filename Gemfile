@@ -44,7 +44,7 @@ gem 'mongoid',               '~> 2.0.0.beta.19'
 gem 'zip',                   '~> 2.0.2', :require => 'zip/zip'
 gem 'countries',             '~> 0.3.0'
 gem 'PageRankr',             '~> 1.4.3', :require => 'page_rankr'
-
+gem 'array_stats',           '~> 0.6.0'
 gem 'rescue_me',             '~> 0.1.0'
 
 group :production do

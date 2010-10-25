@@ -1,10 +1,4 @@
 GIT
-  remote: git://github.com/bmabey/database_cleaner.git
-  revision: 474b226dd33329ba9b282b667c5d80d1a47bdce7
-  specs:
-    database_cleaner (0.6.0.rc.3)
-
-GIT
   remote: git://github.com/rymai/devise_invitable.git
   revision: 8b0cd0caf1e5ee30aab07602ff3b62f9be2cb0a4
   specs:
@@ -70,6 +64,7 @@ GEM
     annotate (2.4.0)
     arel (1.0.1)
       activesupport (~> 3.0.0)
+    array_stats (0.6.0)
     aws (2.3.22)
       http_connection
       uuidtools
@@ -170,6 +165,7 @@ GEM
     libnotify (0.1.4)
       ffi (>= 0.6.2)
     libxml-ruby (1.1.4)
+    liquid (2.2.2)
     mail (2.2.7)
       activesupport (>= 2.3.6)
       mime-types
@@ -289,6 +285,7 @@ DEPENDENCIES
   RedCloth (~> 4.2.3)
   activemerchant (~> 1.9.0)
   annotate (~> 2.4.0)
+  array_stats (~> 0.6.0)
   aws (~> 2.3.22)
   bson_ext (~> 1.1.1)
   bundler (~> 1.0)
