@@ -2,7 +2,7 @@
 require 'spec_helper'
 
 describe ProductionHostnameValidator do
-  subject { Spec::Support::Enterprise.new }
+  subject { RSpec::Support::Enterprise.new }
   
   describe "invalid hostnames" do
     %w[http://localhost école école.fr üpper.de localhost 123.123.123].each do |hostname|

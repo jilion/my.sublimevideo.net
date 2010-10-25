@@ -14,7 +14,7 @@ describe User::CreditCard do
   let(:user) { Factory(:user) }
   
   describe "with valid attributes" do
-    set(:user) { Factory(:user) }
+    let(:user) { Factory(:user) }
     
     before(:each) do
       VCR.insert_cassette('credit_card_visa_validation')

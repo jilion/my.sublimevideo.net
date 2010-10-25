@@ -1,4 +1,4 @@
-module Spec
+module RSpec
   module Support
     
     class Enterprise

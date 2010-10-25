@@ -14,7 +14,7 @@ describe Ticket do
   let(:user) { Factory(:user) }
   
   describe "factory" do
-    set(:ticket) { Ticket.new({ :user => user, :type => "bug-report", :subject => "Subject", :message => "Message" }) }
+    let(:ticket) { Ticket.new({ :user => user, :type => "bug-report", :subject => "Subject", :message => "Message" }) }
     subject { ticket }
     
     its(:type)    { should == "bug-report" }

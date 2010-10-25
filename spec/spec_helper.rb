@@ -20,7 +20,7 @@ Spork.each_run do
   # FactoryGirl.find_definitions
   # Dir[File.expand_path(File.join(File.dirname(__FILE__),'factories','**','*.rb'))].each {|f| require f}
   # 
-  # Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
+  Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
   
   VCR.config do |c|
     c.cassette_library_dir     = 'spec/fixtures/vcr_cassettes'
@@ -44,14 +44,14 @@ Spork.each_run do
     # instead of true.
     config.use_transactional_fixtures = true
     
-    config.before(:suite) do
-      DatabaseCleaner.strategy = :truncation
-      DatabaseCleaner.orm = "mongoid"
-    end
+    # config.before(:suite) do
+    #   DatabaseCleaner.strategy = :truncation
+    #   DatabaseCleaner.orm = "mongoid"
+    # end
     
     config.before(:each) do
       Capybara.reset_sessions!
-      DatabaseCleaner.clean
+      # DatabaseCleaner.clean
     end
     
     # Clear MongoDB Collection

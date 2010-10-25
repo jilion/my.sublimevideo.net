@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe User do
-  set(:user) { Factory(:user) }
+  let(:user) { Factory(:user) }
   
   context "with valid attributes" do
     subject { user }

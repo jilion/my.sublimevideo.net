@@ -1,5 +1,5 @@
 # http://rhnh.net/2010/10/06/transactional-before-all-with-rspec-and-datamapper
-module Spec
+module RSpec
   module Support
     module RSpecExtensions
       module Set
@@ -37,4 +37,4 @@ module Spec
   end
 end
 
-RSpec.configuration.include(Spec::Support::RSpecExtensions::Set)
+# RSpec.configuration.include(Spec::Support::RSpecExtensions::Set)

@@ -2,7 +2,7 @@
 require 'spec_helper'
 
 describe HostnamesValidator do
-  subject { Spec::Support::Enterprise.new }
+  subject { RSpec::Support::Enterprise.new }
   
   describe "invalid hostnames" do
     ['123.123.123,localhost', ', ,123.123.123,'].each do |hostnames|
