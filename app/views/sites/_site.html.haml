@@ -2,19 +2,21 @@
 %tr{ :id => dom_id(site), :class => cycle("", "alt") + "#{" invalid" unless site.valid?}" }
   %td.site
     .wrap
-      = link_to hostname_with_path_and_wildcard(site, :truncate => 30), "http://#{hostname_with_path(site)}", :class => "external_link", :onclick => "window.open(this); return false", :title => hostname_with_path(site)
+      = link_to "http://#{hostname_with_path(site)}", :class => "external_link", :onclick => site.valid? ? "window.open(this); return false" : "return MySublimeVideo.showSiteSettings(#{site.id})", :title => site.valid? ? hostname_with_path(site) : "Your domain is invalid please update it." do
+        = hostname_with_path_and_wildcard(site, :truncate => 30)
+        - unless site.valid?
+          %span.invalid><
+            -# TODO: Update this text
+            %em= "Invalid"
+        
       -#- if site.wildcard?
       -#  %span
-      -#    %i= "wildcard support"
+      -#    %em= "wildcard support"
       - if public?
         - if site.need_path?
           %span
             -# TODO: Update this text
-            %i= "you should add a path"
-      - unless site.valid?
-        %span
-          -# TODO: Update this text
-          %i= "invalid, please update it!"
+            %em= "you should add a path"
       
       - if site.pending?
         = link_to "", :class => "settings disabled", :title => "Settings", :onclick => "return false" do
