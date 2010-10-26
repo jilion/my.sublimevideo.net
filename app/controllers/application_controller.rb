@@ -21,6 +21,14 @@ protected
     current_user rescue nil
   end
   
+  def info_for_paper_trail
+    { :admin_id => current_admin_id, :ip => request.remote_ip, :user_agent => request.user_agent }
+  end
+  
+  def current_admin_id
+    current_admin.try(:id) rescue nil
+  end
+  
   module DeviseInvitable::Controllers::Helpers
   protected
     def authenticate_inviter!

@@ -2,23 +2,29 @@ require 'spec_helper'
 
 describe SiteUsage do
   
-  describe "with cdn.sublimevideo.net.log.1286528280-1286528340.gz logs file" do
+  describe "with cdn.sublimevideo.net.log.1286528280-1286528340.gz logs file", :focus => true do
     before(:each) do
       logs_file = File.new(Rails.root.join('spec/fixtures/logs/voxcast/cdn.sublimevideo.net.log.1286528280-1286528340.gz'))
       VoxcastCDN.stub(:logs_download).with('cdn.sublimevideo.net.log.1286528280-1286528340.gz').and_return(logs_file)
       @log = Factory(:log_voxcast, :name => 'cdn.sublimevideo.net.log.1286528280-1286528340.gz')
       @trackers = LogAnalyzer.parse(@log.file, 'LogsFileFormat::VoxcastSites')
       
+      Timecop.travel(@log.started_at - 1.minute)
       @site1 = Factory(:site, :hostname => 'artofthetitle.com')
       @site1.token = 'ktfcm2l7'
       @site1.save
+      Timecop.return
+      VoxcastCDN.stub(:purge)
+      @site1.activate
+      @site1.update_attributes(:hostname => 'bob.com')
+      
       @site2 = Factory(:site, :user => @site1.user, :hostname => 'sonymusic.se')
       @site2.token = 'mhud9lff'
       @site2.save
     end
     
     it "should clean trackers" do
-      SiteUsage.hits_traffic_and_requests_from(@trackers).should == {
+      SiteUsage.hits_traffic_and_requests_from(@log, @trackers).should == {
         :traffic_voxcast         => {"pvbj8rly"=>33528, "ot85lofm"=>110083, "mhud9lff"=>200134, "mimpia8j"=>181, "1nayz6hi"=>362, "ktfcm2l7"=>443482, "wbk2y56l"=>1988, "yekse1l8"=>361, "ibvjcopp"=>76498, "ocjeksk2"=>1976, "d73zpa3a"=>1988, "ccadedyg"=>4175, "j0lqevol"=>1977, "gsmhage0"=>78960, "ubaredbq"=>5964, "invxef8i"=>110017, "t5yhm4z1"=>117566, "mkjjb06j"=>1976, "pre0h6qx"=>81531, "nat10aym"=>1988, "iqa1kt1d"=>1988, "khgm2p4y"=>154983, "aov41s0h"=>1976, "fvkbs2ej"=>57743, "l6bza2zd"=>1987},
         :loader_hits             => {"mhud9lff"=>5, "1nayz6hi"=>2, "ktfcm2l7"=>7, "wbk2y56l"=>1, "yekse1l8"=>2, "ocjeksk2"=>1, "d73zpa3a"=>1, "j0lqevol"=>1, "gsmhage0"=>1, "ubaredbq"=>3, "mkjjb06j"=>1, "pre0h6qx"=>1, "nat10aym"=>1, "iqa1kt1d"=>1, "aov41s0h"=>1, "fvkbs2ej"=>1, "khgm2p4y"=>1, "l6bza2zd"=>1},
         :main_player_hits        => {"mhud9lff"=>2, "ktfcm2l7"=>5},
@@ -29,7 +35,7 @@ describe SiteUsage do
     end
     
     it "should get tokens from trackers" do
-      hbrs = SiteUsage.hits_traffic_and_requests_from(@trackers)
+      hbrs = SiteUsage.hits_traffic_and_requests_from(@log, @trackers)
       SiteUsage.tokens_from(hbrs).should include("ot85lofm")
       SiteUsage.tokens_from(hbrs).should include("mhud9lff")
       SiteUsage.tokens_from(hbrs).should include("ktfcm2l7")
@@ -95,7 +101,7 @@ describe SiteUsage do
     end
     
     it "should clean trackers" do
-      SiteUsage.hits_traffic_and_requests_from(@trackers).should == { 
+      SiteUsage.hits_traffic_and_requests_from(@log, @trackers).should == { 
         :traffic_voxcast => { "g8thugh6" => 367093, "g3325oz4" => 70696 },
         :loader_hits => { "g8thugh6" => 1, "g3325oz4" => 3 },
         :main_player_hits => { "g8thugh6" => 1, "g3325oz4" => 1 },
@@ -108,7 +114,7 @@ describe SiteUsage do
     end
     
     it "should get tokens from trackers" do
-      hbrs = SiteUsage.hits_traffic_and_requests_from(@trackers)
+      hbrs = SiteUsage.hits_traffic_and_requests_from(@log, @trackers)
       SiteUsage.tokens_from(hbrs).should == ["g8thugh6", "g3325oz4"]
     end
     
@@ -159,14 +165,14 @@ describe SiteUsage do
     end
     
     it "should clean trackers" do
-      SiteUsage.hits_traffic_and_requests_from(@trackers).should == {
+      SiteUsage.hits_traffic_and_requests_from(@log, @trackers).should == {
         :requests_s3=>{"fnhbfvkb"=>1, "7jbwuuni"=>1, "gperx9p4"=>1, "pbgopxwy"=>1, "6vibplhv"=>1, "ub4rrhk4"=>1},
         :traffic_s3=>{"fnhbfvkb"=>734, "gperx9p4"=>727, "7jbwuuni"=>734, "pbgopxwy"=>734, "6vibplhv"=>734, "ub4rrhk4"=>734}
       }
     end
     
     it "should get tokens from trackers" do
-      hbrs = SiteUsage.hits_traffic_and_requests_from(@trackers)
+      hbrs = SiteUsage.hits_traffic_and_requests_from(@log, @trackers)
       SiteUsage.tokens_from(hbrs).should include("fnhbfvkb")
       SiteUsage.tokens_from(hbrs).should include("7jbwuuni")
       SiteUsage.tokens_from(hbrs).should include("gperx9p4")

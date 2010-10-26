@@ -10,6 +10,7 @@ Spork.prefork do
   require File.dirname(__FILE__) + "/../config/environment" unless defined?(Rails)
   require 'rspec/rails'
   require 'shoulda'
+  require 'timecop'
   
   # require 'akephalos'
   # Capybara.javascript_driver = :akephalos
@@ -51,6 +52,10 @@ Spork.each_run do
     #   DatabaseCleaner.strategy = :truncation
     #   DatabaseCleaner.orm = "mongoid"
     # end
+    
+    config.before(:all) do
+      PaperTrail.enabled = false
+    end
     
     config.before(:each) do
       Capybara.reset_sessions!
