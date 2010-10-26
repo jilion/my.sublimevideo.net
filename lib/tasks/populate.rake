@@ -13,7 +13,7 @@ namespace :db do
     
     desc "Empty all the tables"
     task :empty_all_tables => :environment do
-      timed { empty_tables("delayed_jobs", Invoice, Log, SiteUsage, Site, User, Admin) }
+      timed { empty_tables("delayed_jobs", Invoice, Log, Mail::Template, Mail::Log, Site, SiteUsage, User, Admin) }
     end
     
     desc "Load all development fixtures."
@@ -22,6 +22,7 @@ namespace :db do
       timed { create_admins }
       timed { create_users(argv_count) }
       timed { create_sites(argv_count) }
+      timed { create_site_usages }
       timed { create_mail_templates }
     end
     
@@ -50,7 +51,7 @@ namespace :db do
     end
     
     desc "Create fake usages"
-    task :usages => :environment do
+    task :site_usages => :environment do
       timed { empty_tables(SiteUsage) }
       timed { create_site_usages }
     end
