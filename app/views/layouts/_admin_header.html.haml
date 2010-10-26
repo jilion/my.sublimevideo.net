@@ -13,16 +13,16 @@
     -#    %li.releases{ :class => ('active' if controller_name == 'releases') }= link_to "Player", admin_releases_path
     -#    %li.admins{ :class => ('active' if controller_name == 'admins') }= link_to "Admins", admin_admins_path
     %ul#favorite_links
-      - [:sites, :stats, :users, [:releases, { :link_text => "Player" }], :delayed_jobs, :admins, :mails].each do |r|
+      - [:sites, :users, :stats, [:releases, { :link_text => "Player" }], :mails, [:delayed_jobs, { :urls => %w[djs], :link_text => "DJs" }], :admins].each do |r|
         - name = r.is_a?(Array) ? r[0] : r
         - if zeno? || name != :releases || Rails.env.development?
-          = activatable_menu_item(:li, name, (r.is_a?(Array) ? r[1] : {}).reverse_merge!(:namespace => 'admin'))
+          = activable_menu_item(:li, name, (r.is_a?(Array) ? r[1] : {}).reverse_merge!(:namespace => 'admin'))
           
   .right
     %ul.extra_links
       - if admin_signed_in?
         %li= link_to "Logout", destroy_admin_session_path
-        = activatable_menu_item(:li, :registration, :link_text => current_admin.email, :namespace => %w[edit admin], :controller_name => "registrations", :class => 'user')
+        %li= link_to current_admin.email, edit_admin_registration_path
       - else
         = link_to "Login", new_admin_session_path, :class => "user"
   .spacer
