@@ -41,7 +41,7 @@ class SiteUsage
   # =================
   
   def self.create_usages_from_trackers!(log, trackers)
-    hbrs   = hits_traffic_and_requests_from(trackers)
+    hbrs   = hits_traffic_and_requests_from(log, trackers)
     tokens = tokens_from(hbrs)
     while tokens.present?
       Site.where(:token => tokens.pop(100)).each do |site|
@@ -79,7 +79,7 @@ private
   end
   
   # Compact trackers from RequestLogAnalyzer
-  def self.hits_traffic_and_requests_from(trackers)
+  def self.hits_traffic_and_requests_from(log, trackers)
     trackers.inject({}) do |trackers, tracker|
       case tracker.options[:title]
       when :loader_hits, :flash_hits, :requests_s3
@@ -88,7 +88,7 @@ private
         tracker.categories.each do |array, hits|
           token, status, referrer = array[0], array[1], array[2]
           if site = Site.find_by_token(token)
-            referrer_type = site.referrer_type(referrer)
+            referrer_type = site.referrer_type(referrer, log.started_at)
             if status == 200
               player_hits_type = "#{referrer_type}_player_hits".to_sym
               trackers[player_hits_type] = player_hits_tracker(trackers, player_hits_type, token, hits)

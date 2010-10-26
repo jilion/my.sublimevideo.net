@@ -294,6 +294,20 @@ describe Site do
     
   end
   
+  describe "Versioning", :focus => true do
+    
+    it "should work!" do
+      with_versioning do
+        site = Factory(:site)
+        old_hostname = site.hostname
+        site.activate
+        site.update_attributes :hostname => "bob.com"
+        site.versions.last.reify.hostname.should == old_hostname
+      end
+    end
+    
+  end
+  
   describe "Callbacks" do
     
     describe "before_create" do

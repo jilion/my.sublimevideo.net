@@ -2,7 +2,7 @@ class DevHostnamesValidator < ActiveModel::EachValidator
   
   def validate_each(record, attribute, hostnames)
     if hostnames.present? 
-      if Hostname.wildcard?(hostnames)
+      if MySublimeVideo::Release.public? && Hostname.wildcard?(hostnames)
         record.errors.add(attribute, I18n.t('sites.errors.messages.wildcard'), :default => options[:message])
       elsif !Hostname.dev_valid?(hostnames)
         record.errors.add(attribute, I18n.t('errors.messages.invalid'), :default => options[:message])

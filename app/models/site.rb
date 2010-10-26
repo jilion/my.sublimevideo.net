@@ -6,6 +6,12 @@ class Site < ActiveRecord::Base
   cattr_accessor :per_page
   self.per_page = 100
   
+  # Versioning
+  has_paper_trail :ignore => [
+    :loader_hits_cache, :player_hits_cache, :flash_hits_cache,
+    :requests_s3_cache, :traffic_s3_cache, :traffic_voxcast_cache
+  ]
+  
   attr_accessible :hostname, :dev_hostnames
   if MySublimeVideo::Release.public?
     attr_accessible :path, :wildcard
