@@ -3,57 +3,55 @@ require 'spec_helper'
 describe Admin::Users::InvitationsController do
   include Devise::TestHelpers
   
+  before(:each) { request.env['devise.mapping'] = Devise.mappings[:user] }
+  
   context "with logged in admin" do
-    before :each do
-      mock_admin = Factory(:admin)
-      mock_admin.stub!(:confirmed? => true)
-      sign_in :admin, mock_admin
+    before(:each) { sign_in :admin, logged_in_admin }
+    
+    it "should respond with success to GET :new" do
+      get :new
+      response.should be_success
     end
     
-    describe "invite user" do
-      before(:each) { request.env['devise.mapping'] = Devise.mappings[:user] }
-      it "should respond with success to POST :create" do
-        post :create, :user => { :email => 'remy@jilion.com' }
+    describe "POST :create" do
+      before(:each) { User.stub!(:invite) { mock_user } }
+      
+      it "should respond with success if invite succeed" do
+        mock_user.stub!(:invited? => true)
+        post :create, :user => { :email => "remy@jilion.com" }
         response.should redirect_to(admin_users_url)
+      end
+      it "should respond with success if invite fail" do
+        mock_user.stub!(:invited? => false)
+        post :create, :user => { :email => "remy@jilion.com" }
+        response.should be_success
+        response.should render_template("new")
       end
     end
   end
   
   context "with logged in user" do
-    before :each do
-      @mock_user = Factory(:user)
-      @mock_user.stub!(:active? => true, :confirmed? => true)
-      sign_in :user, @mock_user
-    end
+    before(:each) { sign_in :user, logged_in_user }
     
-    describe "invite user" do
-      before(:each) { request.env['devise.mapping'] = Devise.mappings[:user] }
-      it "should respond with redirect to GET :new" do
-        get :new
-        response.should redirect_to(new_admin_session_path)
-      end
+    it "should respond with redirect to GET :new" do
+      get :new
+      response.should redirect_to(new_admin_session_path)
+    end
+    it "should respond with redirect to POST :create" do
+      post :create, :user => { :email => "remy@jilion.com" }
+      response.should redirect_to(new_admin_session_path)
     end
   end
   
   context "as guest" do
-    describe "invite user" do
-      before(:each) { request.env['devise.mapping'] = Devise.mappings[:user] }
-      it "should respond with redirect to POST :create" do
-        controller.stub!(:resource_name => :user)
-        post :create, :user => { :email => 'remy@jilion.com' }
-        response.should redirect_to(new_admin_session_path)
-      end
+    it "should respond with redirect to GET :new" do
+      get :new
+      response.should redirect_to(new_admin_session_path)
     end
-  end
-  
-private
-  
-  def mock_admin(stubs = {})
-    @mock_admin ||= mock_model(Admin, stubs)
-  end
-  
-  def mock_user(stubs = {})
-    @mock_user ||= mock_model(User, stubs)
+    it "should respond with redirect to POST :create" do
+      post :create, :user => { :email => "remy@jilion.com" }
+      response.should redirect_to(new_admin_session_path)
+    end
   end
   
 end

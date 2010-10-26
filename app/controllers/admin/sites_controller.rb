@@ -20,10 +20,9 @@ class Admin::SitesController < Admin::AdminController
   
   # GET /admin/sites
   def index
-    @sites = Site.includes(:user)
+    @sites = Site.includes(:user).by_date
     @sites = @sites.not_archived unless params[:archived_included]
-    @sites = apply_scopes(@sites, :default => { :by_date => 'desc' })
-    respond_with(@sites)
+    respond_with(apply_scopes(@sites))
   end
   
   # GET /admin/sites/1/edit

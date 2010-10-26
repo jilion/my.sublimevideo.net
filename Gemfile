@@ -25,6 +25,7 @@ gem 'voxel_hapi',            :git => 'git://github.com/thibaudgg/voxel_hapi.git'
 gem 'request-log-analyzer',  '~> 1.9.6', :require => 'request_log_analyzer'
 gem 'public_suffix_service', '~> 0.6.0'
 gem 'RedCloth',              '~> 4.2.3'
+gem 'liquid',                '~> 2.2.2'
 
 gem 'devise',                '~> 1.1.3'
 gem 'devise_invitable',      :git => 'git://github.com/rymai/devise_invitable.git'
@@ -43,9 +44,9 @@ gem 'mongoid',               '~> 2.0.0.beta.19'
 gem 'zip',                   '~> 2.0.2', :require => 'zip/zip'
 gem 'countries',             '~> 0.3.0'
 gem 'PageRankr',             '~> 1.4.3', :require => 'page_rankr'
-
+gem 'array_stats',           '~> 0.6.0'
 gem 'rescue_me',             '~> 0.1.0'
-gem 'paper_trail',           '~> 1.6.1'
+# gem 'paper_trail',           '~> 1.6.1'
 
 group :production do
   gem 'rack-google-analytics', '~> 0.9.2', :require => 'rack/google-analytics'
@@ -70,6 +71,7 @@ group :development do
   gem 'heroku_tasks',  '~> 0.1.4'
   gem 'taps',          '~> 0.3.13' # heroku db pull/push
   gem 'timecop',       '~> 0.3.5'
+  gem 'silent-postgres'
 end
 
 group :test do

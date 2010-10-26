@@ -9,8 +9,19 @@ class Admin < ActiveRecord::Base
   
   attr_accessible :email, :password, :password_confirmation, :remember_me
   
+  # ================
+  # = Associations =
+  # ================
+  
+  has_many :mail_logs, :class_name => "Mail::Log"
+  
+  # ==========
+  # = Scopes =
+  # ==========
+  # sort
+  scope :by_date, lambda { |way = 'desc'| order("#{Admin.quoted_table_name}.created_at #{way}") }
+  
 end
-
 
 # == Schema Information
 #

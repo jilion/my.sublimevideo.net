@@ -19,9 +19,11 @@ module SortHelper
     class_up = 'up' if active ? (way == (options[:reverse] ? 'asc' : 'desc')) : (options[:default_way] == (options[:reverse] ? 'desc' : 'asc'))
     
     url_params = params.reject { |k, v| k =~ /by_.*/ }
-    link_to(url_for(url_params.merge("by_#{field}" => way)), :class => ['sort', field, class_active, class_up].join(" "), :remote => options[:remote], :onclick => "MySublimeVideo.makeRemoteLinkSticky(this); MySublimeVideo.showTableSpinner()") do
-      content_tag(:strong, content_tag(:span, options[:label], :class => 'arrow')) \
-      + content_tag(:span, '', :class => 'corner')
+    link_to(url_for(url_params.merge("by_#{field}" => way)),
+              :class => ['sort', field, class_active, class_up].join(" "),
+              :remote => options[:remote],
+              :onclick => "MySublimeVideo.makeRemoteLinkSticky(this); MySublimeVideo.showTableSpinner()") do
+      content_tag(:strong, content_tag(:span, options[:label], :class => 'arrow')) + content_tag(:span, '', :class => 'corner')
     end
   end
   

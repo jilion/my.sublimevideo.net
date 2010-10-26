@@ -1,8 +1,10 @@
 class Admin::AdminsController < Admin::AdminController
   respond_to :js, :html
   
+  has_scope :by_date
+  
   def index
-    @admins = Admin.where(:encrypted_password.ne => nil)
+    @admins = apply_scopes(Admin.where(:encrypted_password.ne => nil).by_date)
     respond_with(@admins)
   end
   

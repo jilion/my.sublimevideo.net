@@ -13,11 +13,11 @@
     -#    %li.releases{ :class => ('active' if controller_name == 'releases') }= link_to "Player", admin_releases_path
     -#    %li.admins{ :class => ('active' if controller_name == 'admins') }= link_to "Admins", admin_admins_path
     %ul#favorite_links
-      - [:sites, :users, [:releases, { :link_text => "Player" }], :delayed_jobs, :admins].each do |r|
+      - [:sites, :stats, :users, [:releases, { :link_text => "Player" }], :delayed_jobs, :admins, :mails].each do |r|
         - name = r.is_a?(Array) ? r[0] : r
         - if (current_admin && current_admin.email == "zeno@jilion.com") || name != :releases || Rails.env.development?
-          = activatable_menu_item(:li, name, (r.is_a?(Array) ? r[1] : {}).merge(:namespace => 'admin'))
-        
+          = activatable_menu_item(:li, name, (r.is_a?(Array) ? r[1] : {}).reverse_merge!(:namespace => 'admin'))
+          
   .right
     %ul.extra_links
       - if admin_signed_in?
