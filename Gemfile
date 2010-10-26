@@ -18,7 +18,7 @@ gem 'will_paginate',         '~> 3.0.pre2'
 gem 'has_scope',             :git => 'git://github.com/rymai/has_scope.git'
 gem 'jammit',                '~> 0.5.3'
 gem 'meta_where',            '~> 0.9.5'
-gem 'hoptoad_notifier',      '~> 2.3.10'
+gem 'hoptoad_notifier',      '~> 2.3.11'
 gem 'prowl',                 '~> 0.1.3'
 gem 'activemerchant',        '~> 1.9.0'
 gem 'voxel_hapi',            :git => 'git://github.com/thibaudgg/voxel_hapi.git', :branch => '1.9.2' # VoxCast CDN
@@ -45,6 +45,7 @@ gem 'countries',             '~> 0.3.0'
 gem 'PageRankr',             '~> 1.4.3', :require => 'page_rankr'
 
 gem 'rescue_me',             '~> 0.1.0'
+gem 'paper_trail',           '~> 1.6.1'
 
 group :production do
   gem 'rack-google-analytics', '~> 0.9.2', :require => 'rack/google-analytics'

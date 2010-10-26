@@ -127,6 +127,16 @@ describe Site do
         site.should be_valid
         site.errors[:hostname].should_not be_present
       end
+      
+      it "should validate uniqueness even on update", :focus => true do
+        VoxcastCDN.stub(:purge)
+        site = Factory(:site, :user => @site.user)
+        site.activate
+        site = Site.find(site.id)
+        site.hostname = @site.hostname
+        site.should_not be_valid
+        site.errors[:hostname].should be_present
+      end
     end
     
     it "should prevent update of hostname when not active" do

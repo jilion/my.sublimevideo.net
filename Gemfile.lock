@@ -146,7 +146,7 @@ GEM
       launchy (~> 0.3.2)
       rest-client (>= 1.4.0, < 1.7.0)
     heroku_tasks (0.1.4)
-    hoptoad_notifier (2.3.10)
+    hoptoad_notifier (2.3.11)
       activesupport
       builder
     http_connection (1.4.0)
@@ -181,6 +181,9 @@ GEM
     nokogiri (1.4.3.1)
     open_gem (1.4.2)
       launchy (~> 0.3.5)
+    paper_trail (1.6.1)
+      actionpack (>= 2.3)
+      activerecord (>= 2.3)
     pg (0.9.0)
     polyglot (0.3.1)
     prowl (0.1.3)
@@ -300,7 +303,7 @@ DEPENDENCIES
   has_scope!
   heroku (~> 1.11.0)
   heroku_tasks (~> 0.1.4)
-  hoptoad_notifier (~> 2.3.10)
+  hoptoad_notifier (~> 2.3.11)
   i18n (~> 0.4.1)
   jammit (~> 0.5.3)
   libxml-ruby (~> 1.1.3)
@@ -308,6 +311,7 @@ DEPENDENCIES
   meta_where (~> 0.9.5)
   mongo (~> 1.0.9)
   mongoid (~> 2.0.0.beta.19)
+  paper_trail (~> 1.6.1)
   pg (~> 0.9.0)
   prowl (~> 0.1.3)
   public_suffix_service (~> 0.6.0)

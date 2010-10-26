@@ -1,3 +1,7 @@
+guard 'bundler' do
+  watch('^Gemfile')
+end
+
 guard 'livereload' do
   watch('^app/.+\.(erb|haml)$')
   watch('^app/helpers/.+\.rb$')
@@ -14,7 +18,3 @@ guard 'rspec', :version => 2 do
   watch('^spec/factories.rb')                         { "spec/models" }
   watch('^spec/spec_helper.rb')                       { "spec" }
 end
-
-# guard 'bundler' do
-#   watch('^Gemfile')
-# end
