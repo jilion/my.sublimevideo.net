@@ -14,7 +14,7 @@
   = @mail_log.snapshot[:subject]
 %br
 
-= auto_link(simple_format(@mail_log.snapshot[:body]))
+= simple_format(@mail_log.snapshot[:body])
 
 %br
 %hr

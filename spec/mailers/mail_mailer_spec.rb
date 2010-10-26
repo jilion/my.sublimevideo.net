@@ -1,9 +1,6 @@
 require 'spec_helper'
 
 describe MailMailer do
-  include ActionView::Helpers::TagHelper
-  include ActionView::Helpers::TextHelper
-  
   subject { Factory(:user) }
   
   before(:each) do
@@ -45,12 +42,12 @@ describe MailMailer do
     
     it "should set subject to Liquidified template.subject" do
       @last_delivery.subject.should == Liquid::Template.parse(@template.subject).render("user" => subject)
-      @last_delivery.subject.should == "John Doe, help us shaping the right pricing"
+      @last_delivery.subject.should == "John Doe (#{subject.email}), help us shaping the right pricing"
     end
     
     it "should set the body to Liquidified-simple_formated-auto_linked template.body" do
-      @last_delivery.body.raw_source.should == auto_link(simple_format(Liquid::Template.parse(@template.body).render("user" => subject)))
-      @last_delivery.body.raw_source.should == "<p>Hi John Doe, please respond to the survey, by clicking on the following link:\n<br /><a href=\"http://survey.com\">http://survey.com</a></p>"
+      @last_delivery.body.raw_source.should == Liquid::Template.parse(@template.body).render("user" => subject)
+      @last_delivery.body.raw_source.should == "Hi John Doe (#{subject.email}), please respond to the survey, by clicking on the following link:\nhttp://survey.com"
     end
   end
   
