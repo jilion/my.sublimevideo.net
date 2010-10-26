@@ -10,4 +10,8 @@ module Admin::AdminHelper
     date ? l(date, :format => :semi_full) : "-"
   end
   
+  def zeno?
+    current_admin && current_admin.email == "zeno@jilion.com"
+  end
+  
 end

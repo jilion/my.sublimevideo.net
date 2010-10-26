@@ -15,7 +15,7 @@
     %ul#favorite_links
       - [:sites, :stats, :users, [:releases, { :link_text => "Player" }], :delayed_jobs, :admins, :mails].each do |r|
         - name = r.is_a?(Array) ? r[0] : r
-        - if (current_admin && current_admin.email == "zeno@jilion.com") || name != :releases || Rails.env.development?
+        - if zeno? || name != :releases || Rails.env.development?
           = activatable_menu_item(:li, name, (r.is_a?(Array) ? r[1] : {}).reverse_merge!(:namespace => 'admin'))
           
   .right
