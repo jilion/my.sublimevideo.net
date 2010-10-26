@@ -11,34 +11,40 @@
 require 'spec_helper'
 
 describe Ticket do
-  let(:user)   { Factory(:user) }
-  let(:ticket) { Ticket.new({ :user => Factory(:user), :type => "bug-report", :subject => "Subject", :message => "Message" }) }
+  let(:user) { Factory(:user) }
   
-  context "with valid attributes" do
+  describe "factory" do
+    let(:ticket) { Ticket.new({ :user => user, :type => "bug-report", :subject => "Subject", :message => "Message" }) }
     subject { ticket }
     
-    its(:subject)         { should == "Subject" }
-    its(:type)            { should == "bug-report" }
+    its(:type)    { should == "bug-report" }
+    its(:subject) { should == "Subject" }
+    its(:message) { should == "Message" }
+    
     it { should be_valid }
-    its(:message)         { should == "Message" }
   end
   
   describe "validates" do
+    Ticket::TYPES.each do |type|
+      it { should allow_value(type).for(:type) }
+    end
+    
+    %w[foo bar test].each do |type|
+      it { should_not allow_value(type).for(:type) }
+    end
+    
     it "should validate presence of user" do
       ticket = Ticket.new({ :user => nil, :type => "bug-report", :subject => nil, :message => "Message" })
       ticket.should_not be_valid
       ticket.errors[:user].should be_present
     end
-    it "should validate inclusion of type in possible types" do
-      ticket = Ticket.new({ :user => user, :type => "foo", :subject => "Subject", :message => "Message" })
-      ticket.should_not be_valid
-      ticket.errors[:type].should be_present
-    end
+    
     it "should validate presence of subject" do
       ticket = Ticket.new({ :user => user, :type => "bug-report", :subject => nil, :message => "Message" })
       ticket.should_not be_valid
       ticket.errors[:subject].should be_present
     end
+    
     it "should validate presence of message" do
       ticket = Ticket.new({ :user => user, :type => "bug-report", :subject => "Subject", :message => nil })
       ticket.should_not be_valid
@@ -47,6 +53,8 @@ describe Ticket do
   end
   
   describe "instance methods" do
+    let(:ticket) { Ticket.new({ :user => user, :type => "bug-report", :subject => "Subject", :message => "Message" }) }
+    
     describe "#save" do
       it "should delay Ticket#post_ticket" do
         ticket.save

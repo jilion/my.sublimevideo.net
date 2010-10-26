@@ -31,8 +31,7 @@ describe Site do
       site.errors[:hostname].should be_present
     end
     
-    # BETA
-    if MySublimeVideo::Release.beta?
+    context "beta release only", :release => :beta do
       it "should limit 10 sites per user" do
         user = Factory(:user)
         10.times { Factory(:site, :user => user) }
@@ -49,8 +48,8 @@ describe Site do
     end
     
     describe "validate hostname" do
-      %w[http://asdasd slurp .com 901.12312.123 école école.fr üpper.de].each do |host|
-        it "should validate validity of hostname: #{host}" do
+      %w[http://asdasd slurp .com 901.12312.123 école école.fr üpper.de localhost].each do |host|
+        it "should have errors if hostname is invalid: #{host}" do
           site = Factory.build(:site, :hostname => host)
           site.should_not be_valid
           site.errors[:hostname].should be_present
@@ -58,7 +57,7 @@ describe Site do
       end
       
       %w[ftp://asdasd.com asdasd.com 124.123.151.123 htp://aasds.com www.youtube.com?v=31231].each do |host|
-        it "should validate non-validity of hostname: #{host}" do
+        it "should not have error if hostname is valid: #{host}" do
           site = Factory.build(:site, :hostname => host)
           site.should be_valid
           site.errors[:hostname].should be_empty
@@ -215,7 +214,7 @@ describe Site do
       site = Factory(:site)
       site.activate
       delay_mock = mock('Delay')
-      VoxcastCDN.should_receive(:delay).twice.and_return(delay_mock)
+      VoxcastCDN.should_receive(:delay).twice { delay_mock }
       delay_mock.should_receive(:purge).with("/js/#{site.token}.js")
       delay_mock.should_receive(:purge).with("/l/#{site.token}.js")
       site.activate
@@ -229,7 +228,7 @@ describe Site do
       
       it "should clear & purge license & loader when suspend" do
         delay_mock = mock('Delay')
-        VoxcastCDN.should_receive(:delay).twice.and_return(delay_mock)
+        VoxcastCDN.should_receive(:delay).twice { delay_mock }
         delay_mock.should_receive(:purge).with("/js/#{@site.token}.js")
         delay_mock.should_receive(:purge).with("/l/#{@site.token}.js")
         @site.suspend
@@ -249,7 +248,7 @@ describe Site do
       
       it "should clear & purge license & loader and set archived_at when archive" do
         delay_mock = mock('Delay')
-        VoxcastCDN.should_receive(:delay).twice.and_return(delay_mock)
+        VoxcastCDN.should_receive(:delay).twice { delay_mock }
         delay_mock.should_receive(:purge).with("/js/#{@site.token}.js")
         delay_mock.should_receive(:purge).with("/l/#{@site.token}.js")
         @site.archive
@@ -386,8 +385,6 @@ describe Site do
   end
   
 end
-
-
 # == Schema Information
 #
 # Table name: sites
@@ -412,9 +409,6 @@ end
 #  traffic_voxcast_cache :integer(8)      default(0)
 #  google_rank           :integer
 #  alexa_rank            :integer
-#  alias_hostnames       :string(255)
-#  path                  :string(255)
-#  wildcard              :boolean
 #
 # Indexes
 #

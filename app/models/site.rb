@@ -36,20 +36,20 @@ class Site < ActiveRecord::Base
   # admin
   scope :with_activity, where(:player_hits_cache.gte => 1)
   # sort
-  scope :by_hostname,             lambda { |way| order(:hostname.send(way || 'asc')) }
-  scope :by_user,                 lambda { |way| includes(:user).order(:users => [:first_name.send(way || 'desc'), :email.send(way || 'desc')]) }
-  scope :by_state,                lambda { |way| order(:state.send(way || 'desc')) }
-  scope :by_loader_hits_cache,    lambda { |way| order(:loader_hits_cache.send(way || 'desc')) }
-  scope :by_player_hits_cache,    lambda { |way| order(:player_hits_cache.send(way || 'desc')) }
-  scope :by_traffic,              lambda { |way| order("(sites.traffic_s3_cache + sites.traffic_voxcast_cache) #{way || 'desc'}") }
-  scope :by_flash_percentage,     lambda { |way| where(:player_hits_cache.gt => 0).order("(sites.flash_hits_cache::real/sites.player_hits_cache) #{way || 'desc'}") }
-  scope :by_loader_player_ratio,  lambda { |way| where(:player_hits_cache.gt => 0).order("(sites.loader_hits_cache::real/sites.player_hits_cache) #{way || 'desc'}") }
-  scope :by_traffic_player_ratio, lambda { |way| where(:player_hits_cache.gt => 0).order("((sites.traffic_s3_cache + sites.traffic_voxcast_cache)::real/sites.player_hits_cache) #{way || 'desc'}") }
-  scope :by_google_rank,          lambda { |way| where(:google_rank.gte => 0).order(:google_rank.send(way || 'desc')) }
-  scope :by_alexa_rank,           lambda { |way| where(:alexa_rank.gte => 1).order(:alexa_rank.send(way || 'desc')) }
-  scope :by_date,                 lambda { |way| order(:created_at.send(way || 'desc')) }
+  scope :by_hostname,             lambda { |way = 'asc'| order("#{Site.quoted_table_name}.hostname #{way}") }
+  scope :by_user,                 lambda { |way = 'desc'| includes(:user).order("#{User.quoted_table_name}.first_name #{way}, #{User.quoted_table_name}.email #{way}") }
+  scope :by_state,                lambda { |way = 'desc'| order("#{Site.quoted_table_name}.state #{way}") }
+  scope :by_loader_hits_cache,    lambda { |way = 'desc'| order("#{Site.quoted_table_name}.loader_hits_cache #{way}") }
+  scope :by_player_hits_cache,    lambda { |way = 'desc'| order("#{Site.quoted_table_name}.player_hits_cache #{way}") }
+  scope :by_traffic,              lambda { |way = 'desc'| order("(#{Site.quoted_table_name}.traffic_s3_cache + #{Site.quoted_table_name}.traffic_voxcast_cache) #{way}") }
+  scope :by_flash_percentage,     lambda { |way = 'desc'| where(:player_hits_cache.gt => 0).order("(#{Site.quoted_table_name}.flash_hits_cache::real/sites.player_hits_cache) #{way}") }
+  scope :by_loader_player_ratio,  lambda { |way = 'desc'| where(:player_hits_cache.gt => 0).order("(#{Site.quoted_table_name}.loader_hits_cache::real/sites.player_hits_cache) #{way}") }
+  scope :by_traffic_player_ratio, lambda { |way = 'desc'| where(:player_hits_cache.gt => 0).order("((#{Site.quoted_table_name}.traffic_s3_cache + #{Site.quoted_table_name}.traffic_voxcast_cache)::real/#{Site.quoted_table_name}.player_hits_cache) #{way}") }
+  scope :by_google_rank,          lambda { |way = 'desc'| where(:google_rank.gte => 0).order("#{Site.quoted_table_name}.google_rank #{way}") }
+  scope :by_alexa_rank,           lambda { |way = 'desc'| where(:alexa_rank.gte => 1).order("#{Site.quoted_table_name}.alexa_rank #{way}") }
+  scope :by_date,                 lambda { |way = 'desc'| order("#{Site.quoted_table_name}.created_at #{way}") }
   # search
-  scope :search, lambda { |q| includes(:user).where(["LOWER(sites.hostname) LIKE LOWER(?) OR LOWER(sites.dev_hostnames) LIKE LOWER(?) OR LOWER(users.email) LIKE LOWER(?) OR LOWER(users.first_name) LIKE LOWER(?) OR LOWER(users.last_name) LIKE LOWER(?)", "%#{q}%", "%#{q}%", "%#{q}%", "%#{q}%", "%#{q}%"]) }
+  scope :search, lambda { |q| includes(:user).where(["LOWER(#{Site.quoted_table_name}.hostname) LIKE LOWER(?) OR LOWER(#{Site.quoted_table_name}.dev_hostnames) LIKE LOWER(?) OR LOWER(#{User.quoted_table_name}.email) LIKE LOWER(?) OR LOWER(#{User.quoted_table_name}.first_name) LIKE LOWER(?) OR LOWER(#{User.quoted_table_name}.last_name) LIKE LOWER(?)", "%#{q}%", "%#{q}%", "%#{q}%", "%#{q}%", "%#{q}%"]) }
   
   # ===============
   # = Validations =
@@ -75,8 +75,8 @@ class Site < ActiveRecord::Base
   # =================
   
   state_machine :initial => :pending do
-    before_transition :on => :activate,     :do => :set_loader_and_license_file
-    after_transition  :active => :active,   :do => :purge_loader_and_license_file
+    before_transition :on => :activate,   :do => :set_loader_and_license_file
+    after_transition  :active => :active, :do => :purge_loader_and_license_file
     
     before_transition :on => :archive,             :do => :set_archived_at
     before_transition :on => [:archive, :suspend], :do => :remove_loader_and_license_file
@@ -254,8 +254,6 @@ private
   end
   
 end
-
-
 # == Schema Information
 #
 # Table name: sites
@@ -280,9 +278,6 @@ end
 #  traffic_voxcast_cache :integer(8)      default(0)
 #  google_rank           :integer
 #  alexa_rank            :integer
-#  alias_hostnames       :string(255)
-#  path                  :string(255)
-#  wildcard              :boolean
 #
 # Indexes
 #

@@ -14,29 +14,33 @@ describe User::CreditCard do
   let(:user) { Factory(:user) }
   
   describe "with valid attributes" do
+    let(:user) { Factory(:user) }
+    
     before(:each) do
       VCR.insert_cassette('credit_card_visa_validation')
       user.update_attributes(valid_attributes)
     end
+    
     subject { user }
     
-    it { should be_valid }
-    it { should be_credit_card }
-    it { should be_cc }
     its(:cc_type)         { should == 'visa' }
     its(:cc_last_digits)  { should == 1111 }
     its(:cc_expire_on)    { should == 1.year.from_now.to_date }
     its(:cc_updated_at)   { should be_present }
     
+    it { should be_valid }
+    it { should be_credit_card }
+    it { should be_cc }
+    
     it "should void authorization after verification" do
       mock_response = mock('response', :success? => true)
-      Ogone.should_receive(:void).and_return(mock_response)
+      Ogone.should_receive(:void) { mock_response }
       user.save
     end
     
     it "should notify if void authorization after verification failed" do
       mock_response = mock('response', :success? => false, :message => 'failed')
-      Ogone.stub(:void).and_return(mock_response)
+      Ogone.stub(:void) { mock_response }
       Notify.should_receive(:send)
       user.save
     end
@@ -112,32 +116,19 @@ describe User::CreditCard do
   describe "module method" do
     
     describe "send_credit_card_expiration" do
-      
       it "should send 'cc will expire' email when user's credit card will expire at the end of the current month" do
         user.update_attribute(:cc_expire_on, Time.now.utc)
         lambda { User::CreditCard.send_credit_card_expiration }.should change(ActionMailer::Base.deliveries, :size).by(1)
-        last_delivery = ActionMailer::Base.deliveries.last
-        last_delivery.from.should == ["noreply@sublimevideo.net"]
-        last_delivery.to.should include user.email
-        last_delivery.subject.should include "Your credit card will expire at the end of the month"
       end
       
       it "should send 'cc is expired' email when user's credit card is expired 1 month ago" do
         user.update_attribute(:cc_expire_on, 1.month.ago)
         lambda { User::CreditCard.send_credit_card_expiration }.should change(ActionMailer::Base.deliveries, :size).by(1)
-        last_delivery = ActionMailer::Base.deliveries.last
-        last_delivery.from.should == ["noreply@sublimevideo.net"]
-        last_delivery.to.should include user.email
-        last_delivery.subject.should include "Your credit card is expired"
       end
       
       it "should send 'cc is expired' email when user's credit card is expired 1 year ago" do
         user.update_attribute(:cc_expire_on, 1.year.ago)
         lambda { User::CreditCard.send_credit_card_expiration }.should change(ActionMailer::Base.deliveries, :size).by(1)
-        last_delivery = ActionMailer::Base.deliveries.last
-        last_delivery.from.should == ["noreply@sublimevideo.net"]
-        last_delivery.to.should include user.email
-        last_delivery.subject.should include "Your credit card is expired"
       end
       
       it "should not send expiration email when user's credit card will not expire at the end of the current month" do
@@ -145,7 +136,6 @@ describe User::CreditCard do
         
         lambda { User::Trial.send_credit_card_expiration }.should_not change(ActionMailer::Base.deliveries, :size)
       end
-      
     end
     
   end

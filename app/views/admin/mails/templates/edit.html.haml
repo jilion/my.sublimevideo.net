@@ -1,0 +1,40 @@
+= title_and_content_header("Mail template '#{@mail_template.title}'")
+
+%h3 Final look
+%br
+
+%p
+  %strong= "Subject: "
+  = Liquid::Template.parse(@mail_template.subject).render("user" => User.first)
+%br
+
+= auto_link(simple_format(Liquid::Template.parse(@mail_template.body).render("user" => User.first)))
+
+%br
+%hr
+%br
+
+%p= link_to "Send a mail with this template", new_admin_mail_path(:template_id => @mail_template.id)
+
+%br
+
+%h3 Edition
+
+= form_for [:admin, @mail_template] do |f|
+  %p
+    = f.label :title
+    = f.text_field :title
+  %p
+    = f.label :subject
+    = f.text_field :subject
+  %p
+    = f.label :body
+    = f.text_area :body
+  .actions
+    = f.submit 'Update mail template', :class => "add"
+    
+%br
+%hr
+%br
+
+%p= link_to "Back to mails", admin_mails_path

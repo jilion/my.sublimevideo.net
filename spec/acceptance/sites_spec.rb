@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/acceptance_helper'
+require 'spec_helper'
 
 feature "Sites actions:" do
   
@@ -94,7 +94,7 @@ feature "Sites actions:" do
     page.should have_css('a.next_page')
   end
   
-  if MySublimeVideo::Release.public?
+  context "public release only", :release => :public do
     scenario "user suspended" do
       @current_user.suspend
       visit "/sites"

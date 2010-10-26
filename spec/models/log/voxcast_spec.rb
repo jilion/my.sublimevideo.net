@@ -76,9 +76,9 @@ describe Log::Voxcast do
   
   context "created with valid attributes from 4076.voxcdn.com" do
     before(:each) do
-      VoxcastCDN.stub(:logs_download).with('4076.voxcdn.com.log.1279103340-1279103400.gz').and_return(
+      VoxcastCDN.stub(:logs_download).with('4076.voxcdn.com.log.1279103340-1279103400.gz') {
         File.new(Rails.root.join('spec/fixtures/logs/voxcast/4076.voxcdn.com.log.1279103340-1279103400.gz'))
-      )
+      }
     end
     subject { Factory(:log_voxcast, :name => '4076.voxcdn.com.log.1279103340-1279103400.gz') }
     
@@ -115,7 +115,7 @@ describe Log::Voxcast do
     it "should download and save new logs & launch delayed job" do
       VCR.use_cassette('multi_logs_fix') do
         lambda { Log::Voxcast.fetch_download_and_create_new_logs }.should change(Log::Voxcast, :count).by(4)
-        Delayed::Job.first.name.should == 'Class#fetch_download_and_create_new_logs'
+        Delayed::Job.order(:created_at.asc).first.name.should == 'Class#fetch_download_and_create_new_logs'
       end
     end
     
@@ -146,7 +146,7 @@ describe Log::Voxcast do
   describe "Instance Methods" do
     before(:each) do
       log_file = File.new(Rails.root.join('spec/fixtures/logs/voxcast/cdn.sublimevideo.net.log.1284549900-1284549960.gz'))
-      VoxcastCDN.stub(:logs_download).with('cdn.sublimevideo.net.log.1284549900-1284549960.gz').and_return(log_file)
+      VoxcastCDN.stub(:logs_download).with('cdn.sublimevideo.net.log.1284549900-1284549960.gz') { log_file }
       @log = Factory(:log_voxcast, :name => 'cdn.sublimevideo.net.log.1284549900-1284549960.gz')
     end
     

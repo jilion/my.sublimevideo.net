@@ -1,0 +1,196 @@
+<%
+stats_from ||= 30.days.ago.beginning_of_day
+interval     = 1.day
+title      ||= "VPV per day, total and averages between #{l(stats_from.to_date, :format => :small)} and #{l(Date.today, :format => :small)}"
+
+usages         = Stat.usages(stats_from, Date.today)
+loader_usages  = usages.map { |u| u["loader_usage"].to_i }
+invalid_usages = usages.map { |u| u["invalid_usage"].to_i }
+dev_usages     = usages.map { |u| u["dev_usage"].to_i }
+main_usages    = usages.map { |u| u["main_usage"].to_i }
+all_usages     = usages.map { |u| u["all_usage"].to_i }
+
+total_loader_usages  = loader_usages.inject([]) { |memo, u| memo << ((memo.last || 0) + u) }
+total_invalid_usages = invalid_usages.inject([]) { |memo, u| memo << ((memo.last || 0) + u) }
+total_dev_usages     = dev_usages.inject([]) { |memo, u| memo << ((memo.last || 0) + u) }
+total_main_usages    = main_usages.inject([]) { |memo, u| memo << ((memo.last || 0) + u) }
+total_all_usages     = all_usages.inject([]) { |memo, u| memo << ((memo.last || 0) + u) }
+
+total_loader_usages = loader_usages.inject([]) { |memo, u| memo << ((memo.last || 0) + u) }
+total_all_usages    = all_usages.inject([]) { |memo, u| memo << ((memo.last || 0) + u) }
+total_main_usages   = main_usages.inject([]) { |memo, u| memo << ((memo.last || 0) + u) }
+%>
+<script type = "text/javascript" charset="utf-8">
+  document.observe("dom:loaded", function() {
+    var chart = new Highcharts.Chart({
+      chart: {
+        renderTo: 'usage_per_day',
+        marginTop: 80,
+        backgroundColor: '#EEE'
+      },
+      title: {
+        text: '<%= title %>'
+      },
+      xAxis: {
+        type: 'datetime',
+        showFirstLabel: true,
+        showLastLabel: true
+      },
+      yAxis: {
+        title: {
+          text: 'Video-page views',
+          margin: 70
+        },
+        labels: {
+          formatter: function() {
+            return Highcharts.numberFormat(this.value, 0, '.', "'");
+          }
+        }
+      },
+      legend: {
+        verticalAlign: 'top',
+        y: 30,
+        width: 950,
+        symbolWidth: 12,
+        backgroundColor: '#FFFFFF',
+        borderColor: '#CCC'
+      },
+      tooltip: {
+        formatter: function() {
+          var date = "<b>" + Highcharts.dateFormat("%B %e,  %Y", this.x) + "</b><br/>";
+          var percentage_of_total = '';
+          
+          var date = null;
+          var percentage_of_total = '';
+          var percentage_of_limit = null;
+          
+          date = Highcharts.dateFormat("%B %e,  %Y", this.x);
+          if (["Invalid", "Invalid cached", "Dev", "Dev cached", "Main", "Main cached"].indexOf(this.series.name) != -1) {
+            percentage_of_total = " (" + Highcharts.numberFormat(this.percentage, 1) + "%)";
+          }
+          else if (this.series.name == "Loader") {
+            percentage_of_limit = "Loader / Player: " + Highcharts.numberFormat((this.y / (this.total - this.y)), 1);
+          }
+          
+          return date + this.series.name + ": " + Highcharts.numberFormat(this.y, 0) + percentage_of_total;
+        }
+      },
+      series: [
+        {
+          type: 'column',
+          name: 'Loader',
+          visible: false,
+          color: '#AA0',
+          data: <%= loader_usages %>
+        },
+        {
+          type: 'column',
+          name: 'Invalid cached',
+          color: '#F80',
+          data: <%= usages.map { |u| u["invalid_usage_cached"].to_i } %>
+        },
+        {
+          type: 'column',
+          name: 'Invalid',
+          color: '#F00',
+          data: <%= invalid_usages %>
+        },
+        {
+          type: 'column',
+          name: 'Dev cached',
+          color: '#1C1',
+          data: <%= usages.map { |u| u["dev_usage_cached"].to_i } %>
+        },
+        {
+          type: 'column',
+          name: 'Dev',
+          color: '#3F3',
+          data: <%= dev_usages %>
+        },
+        {
+          type: 'column',
+          name: 'Main cached',
+          color: '#08F',
+          data: <%= usages.map { |u| u["main_usage_cached"].to_i } %>
+        },
+        {
+          type: 'column',
+          name: 'Main',
+          color: '#00F',
+          data: <%= main_usages %>
+        },
+        
+        {
+          type: 'line',
+          name: 'AVG Loader',
+          visible: false,
+          color: '#FF0',
+          data: <%= Array.new.tap { |arr| total_loader_usages.each_with_index { |item, index| arr << (item / (index + 1)).to_i } } %>
+        },
+        {
+          type: 'line',
+          name: 'AVG Invalid',
+          visible: false,
+          color: '#FC3',
+          data: <%= Array.new.tap { |arr| total_invalid_usages.each_with_index { |item, index| arr << (item / (index + 1)).to_i } } %>
+        },
+        {
+          type: 'line',
+          name: 'AVG Dev',
+          visible: false,
+          color: '#090',
+          data: <%= Array.new.tap { |arr| total_dev_usages.each_with_index { |item, index| arr << (item / (index + 1)).to_i } } %>
+        },
+        {
+          type: 'line',
+          name: 'AVG Main',
+          color: '#0FF',
+          data: <%= Array.new.tap { |arr| total_main_usages.each_with_index { |item, index| arr << (item / (index + 1)).to_i } } %>
+        },
+        
+        {
+          type: 'line',
+          name: 'TOT Main',
+          visible: false,
+          data: <%= total_main_usages %>
+        },
+        {
+          type: 'line',
+          name: 'TOT All',
+          visible: false,
+          data: <%= total_all_usages %>
+        }
+      ],
+      plotOptions: {
+        column: {
+          pointInterval: <%= interval * 1000 %>,
+          pointStart: <%= stats_from.to_i * 1000 %>,
+          stacking: 'normal',
+          shadow: false
+        },
+        line: {
+          pointInterval: <%= interval * 1000 %>,
+          pointStart: <%= stats_from.to_i * 1000 %>,
+          lineWidth: 2,
+          marker: {
+            enabled: false
+          },
+          shadow: false,
+          states: {
+            hover: {
+              lineWidth: 2,
+              marker: {
+                enabled: true
+              }
+            }
+          }
+        }
+      },
+      credits: {
+        enabled: true,
+        text: "Generation time: <%= Time.now.to_s(:format => :fully_full) %> / Copyright © <%= Date.today.year %> - SublimeVideo®",
+        href: "http://sublimevideo.net"
+      }
+    });
+  });
+</script>

@@ -21,13 +21,8 @@ namespace :db do
       delete_all_files_in_public('uploads/tmp')
       timed { create_admins }
       timed { create_users(argv_count) }
-      timed { create_sites }
-    end
-    
-    desc "Load User development fixtures."
-    task :users => :environment do
-      timed { empty_tables(Site, User) }
-      timed { create_users(argv_count) }
+      timed { create_sites(argv_count) }
+      timed { create_mail_templates }
     end
     
     desc "Load Admin development fixtures."
@@ -36,10 +31,59 @@ namespace :db do
       timed { create_admins }
     end
     
+    desc "Load User development fixtures."
+    task :users => :environment do
+      timed { empty_tables(Site, User) }
+      timed { create_users(argv_count) }
+    end
+    
     desc "Load Site development fixtures."
     task :sites => :environment do
       timed { empty_tables(Site) }
-      timed { create_sites }
+      timed { create_sites(argv_count) }
+    end
+    
+    desc "Load Mail templates development fixtures."
+    task :mail_templates => :environment do
+      timed { empty_tables(Mail::Template) }
+      timed { create_mail_templates }
+    end
+    
+    desc "Create fake usages"
+    task :usages => :environment do
+      timed do
+        empty_tables(SiteUsage)
+        Site.all.each do |site|
+          (30.days.ago.to_date..Date.today).each do |day|
+            loader_hits                = rand(3000)
+            main_player_hits           = rand(1000)
+            main_player_hits_cached    = (main_player_hits * rand).to_i
+            dev_player_hits            = rand(200)
+            dev_player_hits_cached     = (dev_player_hits * rand).to_i
+            invalid_player_hits        = rand(100)
+            invalid_player_hits_cached = (invalid_player_hits * rand).to_i
+            player_hits = main_player_hits + main_player_hits_cached + dev_player_hits + dev_player_hits_cached + invalid_player_hits + invalid_player_hits_cached
+            
+            site_usage = SiteUsage.new(:day => day, :site_id => site.id)
+            site_usage.loader_hits = loader_hits
+            site_usage.main_player_hits           = main_player_hits
+            site_usage.main_player_hits_cached    = main_player_hits_cached
+            site_usage.dev_player_hits            = dev_player_hits
+            site_usage.dev_player_hits_cached     = dev_player_hits_cached
+            site_usage.invalid_player_hits        = invalid_player_hits
+            site_usage.invalid_player_hits_cached = invalid_player_hits_cached
+            site_usage.player_hits                = player_hits
+            site_usage.flash_hits                 = (player_hits * rand / 3).to_i
+            site_usage.requests_s3                = player_hits - (main_player_hits_cached + dev_player_hits_cached + invalid_player_hits_cached)
+            site_usage.traffic_s3                 = site_usage.requests_s3 * 150000 # 150 KB
+            site_usage.traffic_voxcast            = player_hits * 150000
+            
+            site_usage.save
+            
+            puts "#{player_hits} video-page views on #{day} for site ##{site.id}!"
+          end
+        end
+      end
     end
     
   end
@@ -104,6 +148,18 @@ def create_users(count = 0)
       user.country      = 'US'
       user.postal_code  = Faker::Address.zip_code
       user.email        = Faker::Internet.email
+      user.use_personal = rand > 0.5
+      user.use_company  = rand > 0.5
+      user.use_clients  = user.use_company && rand > 0.3
+      
+      if user.use_company
+        user.company_name          = Faker::Company.name
+        user.company_url           = "#{rand > 0.5 ? "http://" : "www."}#{Faker::Internet.domain_name}"
+        user.company_job_title     = Faker::Company.bs
+        user.company_employees     = ["Company size", "1 employee", "2-5 employees", "6-20 employees", "21-100 employees", "101-1000 employees", ">1001 employees"].sample
+        user.company_videos_served = ["Nr. of videos served", "0-1'000 videos/month", "1'000-10'000 videos/month", "10'000-100'000 videos/month", "100'000-1mio videos/month", ">1mio videos/month", "Don't know"].sample
+      end
+      
       user.password     = '123456'
       user.confirmed_at = rand(10).days.ago
       user.save
@@ -120,7 +176,7 @@ def create_sites(max = 5)
   User.all.each do |user|
     rand(max).times do |i|
       site            = user.sites.build
-      site.hostname   = "#{rand > 0.5 ? '' : %w[www. blog. my. git. sv. ji. geek.].sample}#{Faker::Internet.domain_name}"
+      site.hostname   = "#{rand > 0.5 ? '' : %w[www. blog. my. git. sv. ji. geek. yin. yang. chi. cho. chu. foo. bar. rem.].sample}#{user.id}#{i}#{Faker::Internet.domain_name}"
       site.created_at = rand(1500).days.ago
       site.flash_hits_cache  = rand(1000)
       site.player_hits_cache = rand(500) + site.flash_hits_cache
@@ -130,6 +186,18 @@ def create_sites(max = 5)
     end
   end
   print "0-#{max} random sites created for each user!\n"
+end
+
+def create_mail_templates(count = 5)
+    count.times do |i|
+      mail_template            = Mail::Template.new
+      mail_template.title      = Faker::Lorem.sentence(1)
+      mail_template.subject    = Faker::Lorem.sentence(1)
+      mail_template.body       = Faker::Lorem.paragraphs(3).join("\n\n")
+      mail_template.created_at = rand(50).days.ago
+      mail_template.save!
+    end
+  print "#{count} random mail templates created!\n"
 end
 
 def argv_count

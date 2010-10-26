@@ -1,0 +1,16 @@
+- if @mail_templates.empty?
+  = "No mail templates yet!"
+- else
+  - params[:mail_templates] = true
+  %table.main#mail_templates
+    %tr
+      %th= link_to_sort :title, :reverse => true
+      %th= "Subject"
+      %th= "Body"
+      %th= link_to_sort :date, :default_way => 'desc', :default => true, :label => "Created at"
+    = render :partial => 'admin/mails/templates/mail_template', :object => @mail_templates
+    
+  .pagination_wrap
+    = remote_will_paginate(@mail_templates, :params => params.merge(:format => nil))
+    = page_entries_info(@mail_templates)
+  - params[:mail_templates] = nil
