@@ -42,6 +42,8 @@ en:
   sites:
     errors:
       messages:
-        wildcard: "is invalid, you can set wildcard option in site settings"
+        # TODO: Change for public launch
+        # wildcard: "is invalid, you can set wildcard option in site settings"
+        wildcard: "is invalid, wildcard is not allowed at the moment"
         duplicate: "must be unique"
         include_hostname: "can not include site domain"

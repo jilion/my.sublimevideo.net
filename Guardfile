@@ -2,6 +2,11 @@ guard 'bundler' do
   watch('^Gemfile')
 end
 
+guard 'passenger', :standalone => true do
+  watch('lib/.*\.rb')
+  watch('config/.*\.rb')
+end
+
 guard 'livereload' do
   watch('^app/.+\.(erb|haml)$')
   watch('^app/helpers/.+\.rb$')

@@ -23,7 +23,7 @@ gem 'prowl',                 '~> 0.1.3'
 gem 'activemerchant',        '~> 1.9.0'
 gem 'voxel_hapi',            :git => 'git://github.com/thibaudgg/voxel_hapi.git', :branch => '1.9.2' # VoxCast CDN
 gem 'request-log-analyzer',  '~> 1.9.6', :require => 'request_log_analyzer'
-gem 'public_suffix_service', '~> 0.6.0'
+gem 'public_suffix_service', '~> 0.7.0'
 gem 'RedCloth',              '~> 4.2.3'
 gem 'liquid',                '~> 2.2.2'
 
@@ -80,6 +80,7 @@ group :test do
   gem 'guard-rspec'
   gem 'guard-livereload'
   gem 'guard-bundler'
+  gem 'guard-passenger'
   
   gem 'shoulda',            '~> 2.11.3'
   gem 'steak',              '~> 1.0.0.rc.1'

@@ -2,21 +2,23 @@ require 'spec_helper'
 
 describe SiteUsage do
   
-  describe "with cdn.sublimevideo.net.log.1286528280-1286528340.gz logs file", :focus => true do
+  describe "with cdn.sublimevideo.net.log.1286528280-1286528340.gz logs file" do
     before(:each) do
       logs_file = File.new(Rails.root.join('spec/fixtures/logs/voxcast/cdn.sublimevideo.net.log.1286528280-1286528340.gz'))
       VoxcastCDN.stub(:logs_download).with('cdn.sublimevideo.net.log.1286528280-1286528340.gz').and_return(logs_file)
       @log = Factory(:log_voxcast, :name => 'cdn.sublimevideo.net.log.1286528280-1286528340.gz')
       @trackers = LogAnalyzer.parse(@log.file, 'LogsFileFormat::VoxcastSites')
       
-      Timecop.travel(@log.started_at - 1.minute)
-      @site1 = Factory(:site, :hostname => 'artofthetitle.com')
-      @site1.token = 'ktfcm2l7'
-      @site1.save
-      Timecop.return
-      VoxcastCDN.stub(:purge)
-      @site1.activate
-      @site1.update_attributes(:hostname => 'bob.com')
+      with_versioning do
+        Timecop.travel(@log.started_at - 1.minute)
+        @site1 = Factory(:site, :hostname => 'artofthetitle.com')
+        @site1.token = 'ktfcm2l7'
+        @site1.save
+        Timecop.return
+        VoxcastCDN.stub(:purge)
+        @site1.activate
+        @site1.update_attributes(:hostname => 'bob.com')
+      end
       
       @site2 = Factory(:site, :user => @site1.user, :hostname => 'sonymusic.se')
       @site2.token = 'mhud9lff'

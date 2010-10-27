@@ -179,11 +179,12 @@ class Site < ActiveRecord::Base
     %w[web.me.com homepage.mac.com].include?(hostname) && path.blank?
   end
   
-  def referrer_type(referrer)
+  def referrer_type(referrer, timestamp = Time.now.utc)
+    past_site = version_at(timestamp)
     host = URI.parse(referrer).host
-    if main_referrer?(host)
+    if main_referrer?(host, past_site.hostname)
       "main"
-    elsif dev_referrer?(host)
+    elsif dev_referrer?(host, past_site.dev_hostnames)
       "dev"
     else
       "invalid"
@@ -192,12 +193,12 @@ class Site < ActiveRecord::Base
     "invalid"
   end
   
-  def main_referrer?(host)
-    host == hostname || host == "www.#{hostname}"
+  def main_referrer?(host, past_hostname)
+    host == past_hostname || host == "www.#{past_hostname}"
   end
   
-  def dev_referrer?(host)
-    dev_hostnames.split(', ').any? { |h| host == h || host == "www.#{h}" }
+  def dev_referrer?(host, past_dev_hostnames)
+    past_dev_hostnames.split(', ').any? { |h| host == h || host == "www.#{h}" }
   end
   
 private

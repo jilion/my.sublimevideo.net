@@ -188,19 +188,19 @@ describe Site do
     
     describe "dev_hostnames=" do
       it "should downcase dev_hostnames" do
-        dev_host = "LOCALHOST, test;ERR, 127.]BOO[:3000, JOKE;foo"
+        dev_host = "LOCALHOST, test;ERR, 127.]BOO[, JOKE;foo"
         site = Factory.build(:site, :dev_hostnames => dev_host)
         site.dev_hostnames.should == dev_host.downcase
       end
       
       it "should clean valid dev_hostnames (dev_hostnames should never contain /.+://(www.)?/)" do
         site = Factory(:site, :dev_hostnames => 'http://www.localhost:3000, 127.0.0.1:3000')
-        site.dev_hostnames.should == 'www.localhost, 127.0.0.1'
+        site.dev_hostnames.should == 'localhost, 127.0.0.1'
       end
       
       it "should clean invalid dev_hostnames (dev_hostnames should never contain /.+://(www.)?/)" do
         site = Factory.build(:site, :dev_hostnames => 'http://www.test;err, ftp://127.]boo[:3000, www.joke;foo')
-        site.dev_hostnames.should == 'test;err, 127.]boo[:3000, joke;foo'
+        site.dev_hostnames.should == 'test;err, 127.]boo[, joke;foo'
       end
     end
   end
@@ -294,7 +294,7 @@ describe Site do
     
   end
   
-  describe "Versioning", :focus => true do
+  describe "Versioning" do
     
     it "should work!" do
       with_versioning do
@@ -386,6 +386,27 @@ describe Site do
     end
     
     describe "referrer_type" do
+      
+      context "with versioning" do
+        subject do
+          with_versioning do
+            Timecop.travel(1.day.ago)
+            site = Factory(:site, :hostname => "jilion.com", :dev_hostnames => "localhost, 127.0.0.1")
+            site.activate
+            Timecop.return
+            site.update_attributes(:hostname => "jilion.net", :dev_hostnames => "jilion.local, localhost, 127.0.0.1")
+            site
+          end
+        end
+        
+        it { subject.referrer_type("http://jilion.com").should == "invalid" }
+        it { subject.referrer_type("http://jilion.net").should == "main" }
+        it { subject.referrer_type("http://jilion.local").should == "dev" }
+        it { subject.referrer_type("http://jilion.com", 1.day.ago).should == "main" }
+        it { subject.referrer_type("http://jilion.net", 1.day.ago).should == "invalid" }
+        it { subject.referrer_type("http://jilion.local", 1.day.ago).should == "invalid" }
+      end
+      
       context "without wildcard or path" do
         subject { Factory(:site, :hostname => "jilion.com", :dev_hostnames => "jilion.local, localhost, 127.0.0.1") }
         

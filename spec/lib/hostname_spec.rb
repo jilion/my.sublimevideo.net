@@ -11,7 +11,9 @@ describe Hostname do
     it { subject.clean("éCOLE").should == "école" }
     it { subject.clean("éCOLE.fr").should == "école.fr" }
     it { subject.clean("http://www.école.fr").should == "école.fr" }
-    it { subject.clean(".com").should == ".com" }
+    it { subject.clean("http://www.école.fr/super.html").should == "école.fr" }
+    it { subject.clean("http://www.école.fr?super=cool").should == "école.fr" }
+    it { subject.clean(".com").should == "com" }
     it { subject.clean("co.uk").should == "co.uk" }
     it { subject.clean("*.com").should == "*.com" }
     it { subject.clean("www.*.com").should == "*.com" }
@@ -32,8 +34,8 @@ describe Hostname do
     it { subject.clean("www").should == "www" }
     it { subject.clean("test;ERR").should == "test;err" }
     it { subject.clean("http://test;ERR").should == "test;err" }
-    it { subject.clean("http://www.localhost:3000").should == "www.localhost" }
-    it { subject.clean("ftp://127.]boo[:3000").should == "127.]boo[:3000" }
+    it { subject.clean("http://www.localhost:3000").should == "localhost" }
+    it { subject.clean("ftp://127.]boo[:3000").should == "127.]boo[" }
     it { subject.clean("www.joke;foo").should == "joke;foo" }
     it { subject.clean("http://www.bob.com,,localhost:3000").should == "bob.com, localhost" }
   end
@@ -72,26 +74,27 @@ describe Hostname do
   describe "dev_valid?" do
     it { subject.dev_valid?(nil).should be_true }
     it { subject.dev_valid?("").should be_true }
-    it { subject.dev_valid?("co.uk").should be_true }
-    it { subject.dev_valid?("www").should be_true }
-    it { subject.dev_valid?("éCOLE").should be_true }
     it { subject.dev_valid?("124.123.151.123").should be_true }
+    it { subject.dev_valid?("google.local").should be_true }
     it { subject.dev_valid?("localhost").should be_true }
     it { subject.dev_valid?("localhost:8888").should be_true }
-    it { subject.dev_valid?("com").should be_true }
-    it { subject.dev_valid?("google.local").should be_true }
-    it { subject.dev_valid?("google.dev").should be_true }
     it { subject.dev_valid?("google.prod").should be_true }
+    it { subject.dev_valid?("google.dev").should be_true }
     it { subject.dev_valid?("google.test").should be_true }
+    it { subject.dev_valid?("http://www.localhost:3000").should be_true }
+    it { subject.dev_valid?("www").should be_true }
+    it { subject.dev_valid?("co.uk").should be_true }
+    it { subject.dev_valid?("com").should be_true }
+    
+    it { subject.dev_valid?("éCOLE").should be_true }
     it { subject.dev_valid?("test;ERR").should be_true }
     it { subject.dev_valid?("http://test;ERR").should be_true }
-    it { subject.dev_valid?("http://www.localhost:3000").should be_true }
-    it { subject.dev_valid?("ftp://127.]boo[:3000").should be_true }
     it { subject.dev_valid?("www.joke;foo").should be_true }
-    it { subject.dev_valid?("*").should be_true }
+    it { subject.dev_valid?("ftp://127.]boo[:3000").should be_true }
     it { subject.dev_valid?("*.*").should be_true }
+    it { subject.dev_valid?("*").should be_true }
+    it { subject.dev_valid?(".com").should be_true }
     
-    it { subject.dev_valid?(".com").should be_false }
     it { subject.dev_valid?("http://www.bob.com,,localhost:3000").should be_false }
     it { subject.dev_valid?("*.google.com").should be_false }
     it { subject.dev_valid?("staging.google.com").should be_false }
@@ -124,6 +127,7 @@ describe Hostname do
   
   describe "duplicate?" do
     it { subject.duplicate?("http://localhost:3000, localhost").should be_true }
+    it { subject.duplicate?("http://www.localhost:3000, localhost").should be_true }
     it { subject.duplicate?("127.0.0.1, bob, 127.0.0.1").should be_true }
     it { subject.duplicate?("*.*, *.*").should be_true }
     it { subject.duplicate?("*, *").should be_true }
@@ -134,7 +138,6 @@ describe Hostname do
     it { subject.duplicate?("localhost").should be_false }
     it { subject.duplicate?("bob.fr, bob.com").should be_false }
     it { subject.duplicate?("google.fr, staging.google.fr").should be_false }
-    it { subject.duplicate?("http://www.localhost:3000, localhost").should be_false }
   end
   
   describe "include?" do

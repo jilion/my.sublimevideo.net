@@ -118,7 +118,6 @@ ActiveRecord::Schema.define(:version => 20101026120936) do
     t.integer  "traffic_voxcast_cache", :limit => 8, :default => 0
     t.integer  "google_rank"
     t.integer  "alexa_rank"
-    t.string   "alias_hostnames"
     t.string   "path"
     t.boolean  "wildcard"
   end
