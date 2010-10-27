@@ -42,21 +42,27 @@ Spork.each_run do
     # If you're not using ActiveRecord, or you'd prefer not to run each of your
     # examples within a transaction, comment the following line or assign false
     # instead of true.
-    config.use_transactional_fixtures = true
+    config.use_transactional_fixtures = false
     
-    # config.before(:suite) do
-    #   DatabaseCleaner.strategy = :truncation
-    #   DatabaseCleaner.orm = "mongoid"
-    # end
+    config.before(:suite) do
+      DatabaseCleaner[:active_record].strategy = :transaction
+      DatabaseCleaner[:mongoid].strategy       = :truncation
+      DatabaseCleaner.clean_with(:truncation) # clean all the databases
+    end
     
     config.before(:each) do
       Capybara.reset_sessions!
-      # DatabaseCleaner.clean
+      DatabaseCleaner.start
     end
     
     # Clear MongoDB Collection
     config.after(:each) do
-      Mongoid.master.collections.select { |c| c.name !~ /system/ }.each(&:drop)
+      DatabaseCleaner.clean
+      # Mongoid.master.collections.select { |c| c.name !~ /system/ }.each(&:drop)
+    end
+    
+    config.after(:suite) do
+      DatabaseCleaner.clean_with(:truncation) # clean all the databases
     end
   end
 end

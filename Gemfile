@@ -74,6 +74,7 @@ group :development do
 end
 
 group :test do
+  gem 'database_cleaner', '>= 0.6'
   gem 'growl'
   gem 'guard'
   gem 'guard-rspec'

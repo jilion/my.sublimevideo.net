@@ -1,7 +1,8 @@
 require 'spec_helper'
 
 describe Mail::Template do
-  subject { Factory(:mail_template) }
+  set(:mail_template) { Factory(:mail_template) }
+  subject { mail_template }
   
   context "with valid attributes" do
     its(:title)   { should =~ /Pricing survey \d+/ }
@@ -11,20 +12,15 @@ describe Mail::Template do
     it { should be_valid }
   end
   
-  describe "should be invalid" do
-    %w[title subject body].each do |attribute|
-      it "without #{attribute}" do
-        mt = Factory.build(:mail_template, attribute.to_sym => nil)
-        mt.should_not be_valid
-        mt.errors[attribute.to_sym].should be_present
-      end
+  describe "validates" do
+    it { should have_many :logs }
+    
+    [:title, :subject, :body].each do |attr|
+      it { should allow_mass_assignment_of(attr) }
+      it { should validate_presence_of(attr) }
     end
     
-    it "without a unique title" do
-      mt = Factory.build(:mail_template, :title => subject.title)
-      mt.should_not be_valid
-      mt.errors[:title].should be_present
-    end
+    it { should validate_uniqueness_of(:title) }
   end
   
 end
