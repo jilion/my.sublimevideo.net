@@ -9,20 +9,43 @@ describe Admin::Mails::TemplatesController do
       Mail::Template.stub(:find).with("1") { mock_mail_template }
     end
     
+    it "should respond with success to GET :new" do
+      get :new
+      response.should be_success
+    end
+    
+    describe "POST :create" do
+      before(:each) { Mail::Template.stub(:new).and_return(mock_mail_template) }
+      
+      it "should respond with redirect when save succeed" do
+        mock_mail_template.stub(:save).and_return(true)
+        
+        post :create, :mail_template => { :title => 'AAA', :subject => 'BBB', :body => 'CCC' }
+        response.should redirect_to(admin_mails_path)
+      end
+      
+      it "should respond with success when save fails" do
+        mock_mail_template.stub(:save).and_return(false)
+        
+        post :create, :mail_template => { :title => 'AAA', :subject => 'BBB', :body => 'CCC' }
+        response.should be_success
+      end
+    end
+    
     it "should respond with success to GET :edit" do
       get :edit, :id => '1'
       response.should be_success
     end
     
     describe "PUT :update" do
-      it "should respond with redirect to PUT :update that succeed" do
+      it "should respond with redirect when update_attributes succeed" do
         mock_mail_template.stub(:update_attributes).and_return(true)
         
         put :update, :id => '1', :mail_template => { :title => 'AAA', :subject => 'BBB', :body => 'CCC' }
         response.should redirect_to(edit_admin_mail_template_path(mock_mail_template.id))
       end
       
-      it "should respond with success to PUT :update that failed" do
+      it "should respond with success when update_attributes fails" do
         mock_mail_template.stub(:update_attributes).and_return(false)
         
         put :update, :id => '1', :mail_template => { :title => 'AAA', :subject => 'BBB', :body => 'CCC' }

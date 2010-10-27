@@ -10,7 +10,7 @@ describe Mail::Letter do
       let(:mail_template) { Factory(:mail_template) }
       let(:mail_letter)   { Mail::Letter.new(attributes) }
       
-      before(:each) { User.stub_chain(:with_activity, :all).and_return([user]) }
+      before(:each) { User.stub_chain(:with_activity).and_return([user]) }
       
       it "should save all the data" do
         ml = mail_letter.deliver_and_log
@@ -33,17 +33,45 @@ describe Mail::Letter do
       end
       
       context "with multiple users to send emails to" do
-        before(:each) { User.stub_chain(:with_activity, :all).and_return([user, Factory(:user), Factory(:user)]) }
-        
-        it "should delay delivery of mails" do
-          lambda do
+        context "with the 'with_activity' filter" do
+          before(:each) { User.stub_chain(:with_activity).and_return([user, Factory(:user), Factory(:user)]) }
+          
+          it "should delay delivery of mails" do
+            lambda do
+              mail_letter.deliver_and_log
+            end.should change(Delayed::Job.where(:handler.matches => "%deliver%"), :count).by(3)
+          end
+          
+          it "should actually send email when workers do their jobs" do
             mail_letter.deliver_and_log
-          end.should change(Delayed::Job.where(:handler.matches => "%deliver%"), :count).by(3)
+            lambda { Delayed::Worker.new(:quiet => true).work_off }.should change(ActionMailer::Base.deliveries, :size).by(3)
+          end
         end
         
-        it "should actually send email when workers do their jobs" do
-          mail_letter.deliver_and_log
-          lambda { Delayed::Worker.new(:quiet => true).work_off }.should change(ActionMailer::Base.deliveries, :size).by(3)
+        context "with the 'with_invalid_site' filter" do
+          let(:user_with_invalid_site) { Factory(:user, :invitation_token => nil) }
+          before(:each) do
+            attributes[:criteria] = 'with_invalid_site'
+            @invalid_site = Factory.build(:site, :user => user_with_invalid_site, :hostname => 'test')
+            @invalid_site.save(:validate => false)
+          end
+          
+          it "should delay delivery of mails" do
+            @invalid_site.should_not be_valid
+            lambda do
+              mail_letter.deliver_and_log
+            end.should change(Delayed::Job.where(:handler.matches => "%deliver%"), :count).by(1)
+          end
+          
+          it "should actually send email when workers do their jobs" do
+            mail_letter.deliver_and_log
+            lambda { Delayed::Worker.new(:quiet => true).work_off }.should change(ActionMailer::Base.deliveries, :size).by(1)
+          end
+          
+          it "should send email to the user with invalid sites when workers do their jobs" do
+            mail_letter.deliver_and_log
+            ActionMailer::Base.deliveries.last.to.should == [user_with_invalid_site.email]
+          end
         end
       end
       

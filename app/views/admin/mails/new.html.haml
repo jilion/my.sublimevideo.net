@@ -8,7 +8,7 @@
   .entry.criteria
     = f.label :criteria
     = "All users "
-    = f.select :criteria, %w[with_activity].map{ |c| [c.gsub('_', ' '), c] }
+    = f.select :criteria, %w[with_activity with_invalid_site dev].map{ |c| [c.gsub('_', ' '), c] }
     
   %br
   

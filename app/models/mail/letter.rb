@@ -13,17 +13,20 @@ class Mail::Letter
   def deliver_and_log
     return nil unless @template.present? && @admin_id.present? && @criteria.present?
     
-    users = User
-    users = if @criteria.is_a?(Array)
-      @criteria.each { |c| users = users.send(c) }
-      users
-    else
-      users.send(@criteria)
-    end.all
-    
+    users = case @criteria
+            when 'dev'
+              User.where(:email => ["thibaud@jilion.com", "remy@jilion.com", "zeno@jilion.com"])
+            when 'with_invalid_site'
+              User.beta.includes(:sites).all.select { |u| u.sites.any? { |s| !s.valid? } }
+            else
+              User.send(@criteria)
+            end
+            
     users.each { |u| self.class.delay.deliver(u, @template) }
     
-    @template.logs.create(:admin_id => @admin_id, :criteria => @criteria, :user_ids => users.map(&:id))
+    unless @criteria == 'dev'
+      @template.logs.create(:admin_id => @admin_id, :criteria => @criteria, :user_ids => users.map(&:id))
+    end
   end
   
 private

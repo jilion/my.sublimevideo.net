@@ -13,7 +13,7 @@ namespace :db do
     
     desc "Empty all the tables"
     task :empty_all_tables => :environment do
-      timed { empty_tables("delayed_jobs", Invoice, Log, SiteUsage, Site, User, Admin) }
+      timed { empty_tables("delayed_jobs", Invoice, Log, Mail::Template, Mail::Log, Site, SiteUsage, User, Admin) }
     end
     
     desc "Load all development fixtures."
@@ -22,6 +22,7 @@ namespace :db do
       timed { create_admins }
       timed { create_users(argv_count) }
       timed { create_sites(argv_count) }
+      timed { create_site_usages }
       timed { create_mail_templates }
     end
     
@@ -50,40 +51,9 @@ namespace :db do
     end
     
     desc "Create fake usages"
-    task :usages => :environment do
-      timed do
-        empty_tables(SiteUsage)
-        Site.all.each do |site|
-          (30.days.ago.to_date..Date.today).each do |day|
-            loader_hits                = rand(3000)
-            main_player_hits           = rand(1000)
-            main_player_hits_cached    = (main_player_hits * rand).to_i
-            dev_player_hits            = rand(200)
-            dev_player_hits_cached     = (dev_player_hits * rand).to_i
-            invalid_player_hits        = rand(100)
-            invalid_player_hits_cached = (invalid_player_hits * rand).to_i
-            player_hits = main_player_hits + main_player_hits_cached + dev_player_hits + dev_player_hits_cached + invalid_player_hits + invalid_player_hits_cached
-            
-            site_usage = SiteUsage.new(:day => day, :site_id => site.id)
-            site_usage.loader_hits = loader_hits
-            site_usage.main_player_hits           = main_player_hits
-            site_usage.main_player_hits_cached    = main_player_hits_cached
-            site_usage.dev_player_hits            = dev_player_hits
-            site_usage.dev_player_hits_cached     = dev_player_hits_cached
-            site_usage.invalid_player_hits        = invalid_player_hits
-            site_usage.invalid_player_hits_cached = invalid_player_hits_cached
-            site_usage.player_hits                = player_hits
-            site_usage.flash_hits                 = (player_hits * rand / 3).to_i
-            site_usage.requests_s3                = player_hits - (main_player_hits_cached + dev_player_hits_cached + invalid_player_hits_cached)
-            site_usage.traffic_s3                 = site_usage.requests_s3 * 150000 # 150 KB
-            site_usage.traffic_voxcast            = player_hits * 150000
-            
-            site_usage.save
-            
-            puts "#{player_hits} video-page views on #{day} for site ##{site.id}!"
-          end
-        end
-      end
+    task :site_usages => :environment do
+      timed { empty_tables(SiteUsage) }
+      timed { create_site_usages }
     end
     
   end
@@ -186,6 +156,39 @@ def create_sites(max = 5)
     end
   end
   print "0-#{max} random sites created for each user!\n"
+end
+
+def create_site_usages
+  Site.all.each do |site|
+    (30.days.ago.to_date..Date.today).each do |day|
+      loader_hits                = rand(3000)
+      main_player_hits           = rand(1000)
+      main_player_hits_cached    = (main_player_hits * rand).to_i
+      dev_player_hits            = rand(200)
+      dev_player_hits_cached     = (dev_player_hits * rand).to_i
+      invalid_player_hits        = rand(100)
+      invalid_player_hits_cached = (invalid_player_hits * rand).to_i
+      player_hits = main_player_hits + main_player_hits_cached + dev_player_hits + dev_player_hits_cached + invalid_player_hits + invalid_player_hits_cached
+      
+      site_usage = SiteUsage.new(:day => day, :site_id => site.id)
+      site_usage.loader_hits = loader_hits
+      site_usage.main_player_hits           = main_player_hits
+      site_usage.main_player_hits_cached    = main_player_hits_cached
+      site_usage.dev_player_hits            = dev_player_hits
+      site_usage.dev_player_hits_cached     = dev_player_hits_cached
+      site_usage.invalid_player_hits        = invalid_player_hits
+      site_usage.invalid_player_hits_cached = invalid_player_hits_cached
+      site_usage.player_hits                = player_hits
+      site_usage.flash_hits                 = (player_hits * rand / 3).to_i
+      site_usage.requests_s3                = player_hits - (main_player_hits_cached + dev_player_hits_cached + invalid_player_hits_cached)
+      site_usage.traffic_s3                 = site_usage.requests_s3 * 150000 # 150 KB
+      site_usage.traffic_voxcast            = player_hits * 150000
+      
+      site_usage.save
+      
+      puts "#{player_hits} video-page views on #{day} for site ##{site.id}!"
+    end
+  end
 end
 
 def create_mail_templates(count = 5)

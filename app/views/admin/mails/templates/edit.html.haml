@@ -8,31 +8,25 @@
   = Liquid::Template.parse(@mail_template.subject).render("user" => User.first)
 %br
 
-= auto_link(simple_format(Liquid::Template.parse(@mail_template.body).render("user" => User.first)))
+= simple_format(Liquid::Template.parse(@mail_template.body).render("user" => User.first))
 
 %br
 %hr
 %br
 
-%p= link_to "Send a mail with this template", new_admin_mail_path(:template_id => @mail_template.id)
+%h3 Send email
+%br
 
+%p= link_to "Send a new mail with this template", new_admin_mail_path(:template_id => @mail_template.id)
+
+%br
+%hr
 %br
 
 %h3 Edition
 
-= form_for [:admin, @mail_template] do |f|
-  %p
-    = f.label :title
-    = f.text_field :title
-  %p
-    = f.label :subject
-    = f.text_field :subject
-  %p
-    = f.label :body
-    = f.text_area :body
-  .actions
-    = f.submit 'Update mail template', :class => "add"
-    
+= render :partial => 'form', :locals => { :mail_template => @mail_template }
+
 %br
 %hr
 %br
