@@ -63,22 +63,18 @@ total_main_usages   = main_usages.inject([]) { |memo, u| memo << ((memo.last || 
       },
       tooltip: {
         formatter: function() {
-          var date = "<b>" + Highcharts.dateFormat("%B %e,  %Y", this.x) + "</b><br/>";
+          var date = "<strong>" + Highcharts.dateFormat("%B %e,  %Y", this.x) + "</strong><br/>";
           var percentage_of_total = '';
+          var percentage_of_limit = '';
           
-          var date = null;
-          var percentage_of_total = '';
-          var percentage_of_limit = null;
-          
-          date = Highcharts.dateFormat("%B %e,  %Y", this.x);
           if (["Invalid", "Invalid cached", "Dev", "Dev cached", "Main", "Main cached"].indexOf(this.series.name) != -1) {
             percentage_of_total = " (" + Highcharts.numberFormat(this.percentage, 1) + "%)";
           }
           else if (this.series.name == "Loader") {
-            percentage_of_limit = "Loader / Player: " + Highcharts.numberFormat((this.y / (this.total - this.y)), 1);
+            percentage_of_limit = "<br/>Loader / Player: " + Highcharts.numberFormat((this.y / (this.total - this.y)), 1);
           }
           
-          return date + this.series.name + ": " + Highcharts.numberFormat(this.y, 0) + percentage_of_total;
+          return date + this.series.name + ": " + Highcharts.numberFormat(this.y, 0) + percentage_of_total + percentage_of_limit;
         }
       },
       series: [

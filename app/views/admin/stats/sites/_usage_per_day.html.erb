@@ -1,6 +1,6 @@
 <%
 from_days      ||= 60
-site_billed_at   = from_days.days.ago.beginning_of_day # we fake ~ site.billed_at: 1.month.ago.change(:day => site.billed_at)
+last_billed_on   = site.created_at.change(:month => Date.today.month).beginning_of_day
 stats_from       = from_days.days.ago.beginning_of_day
 interval         = 1.day
 title            = "VPV per day, total and averages for #{site.hostname} between #{l(from_days.days.ago.to_date, :format => :small)} and #{l(Date.today, :format => :small)}"
@@ -69,15 +69,13 @@ huge_daily_limit  = huge_monthly_limit / 30 # we fake ~ site.plan.limit
       },
       tooltip: {
         formatter: function() {
-          if (["AVG Perso", "AVG Pro", "AVG Enterprise"].indexOf(this.series.name) != -1) return false;
+          var date = "<strong>" + Highcharts.dateFormat("%B %e,  %Y", this.x) + "</strong><br/>";
           
-          if(this.series.name == "Last billed on") return this.series.name + ": <%= l(site_billed_at, :format => :date) %>";
+          if(this.series.name == "Billing days") return date;
           
-          var date = null;
           var percentage_of_total = '';
-          var percentage_of_limit = null;
+          var percentage_of_limit = '';
           
-          date = Highcharts.dateFormat("%B %e,  %Y", this.x);
           if (["Invalid", "Invalid cached", "Dev", "Dev cached", "Main", "Main cached"].indexOf(this.series.name) != -1) {
             percentage_of_total = " (" + Highcharts.numberFormat(this.percentage, 1) + "%)";
           }
@@ -87,8 +85,7 @@ huge_daily_limit  = huge_monthly_limit / 30 # we fake ~ site.plan.limit
           else if (this.series.name == "TOT Main") {
             percentage_of_limit = Highcharts.numberFormat((this.y / <%= pro_monthly_limit %>)*100, 0) + "% of pro plan limit";
           }
-          date = date ? "<b>" + date + "</b><br/>" : '';
-          percentage_of_limit = percentage_of_limit ? "<br/>" + percentage_of_limit : ''
+          if(percentage_of_limit) percentage_of_limit = "<br/>" + percentage_of_limit
           
           return date + this.series.name + ": " + Highcharts.numberFormat(this.y, 0) + percentage_of_total + percentage_of_limit;
         }
@@ -213,6 +210,19 @@ huge_daily_limit  = huge_monthly_limit / 30 # we fake ~ site.plan.limit
         name: 'LIMIT Enterprise',
         visible: false,
         data: <%= Array.new(main_usages.size, huge_monthly_limit) %>
+      },
+      {
+        type: 'scatter',
+        name: 'Billing days',
+        data: <%
+            d = last_billed_on
+            datas = []
+            while(d >= site.created_at.beginning_of_day && d >= stats_from) do
+              datas << [d.to_i * 1000, all_usages.max]
+              d = 1.month.until(d).beginning_of_day
+            end
+          %>
+          <%= datas.inspect %>
       }],
       plotOptions: {
         column: {
@@ -236,6 +246,12 @@ huge_daily_limit  = huge_monthly_limit / 30 # we fake ~ site.plan.limit
                 enabled: true
               }
             }
+          }
+        },
+        scatter: {
+          marker: {
+            symbol: 'circle',
+            radius: 6
           }
         }
       },
