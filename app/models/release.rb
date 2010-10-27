@@ -56,24 +56,30 @@ class Release < ActiveRecord::Base
   def zipfile
     # Download file from S3 to read the zip content
     # please don't forget to call delete_zipfile
-    @zip_file = File.new(Rails.root.join("tmp/#{zip.filename}"), 'w', :encoding => 'ASCII-8BIT')
-    @zip_file.write(zip.read)
-    @zip_file.flush
-    @zipfile ||= Zip::ZipFile.open(@zip_file.path)
+    unless @zipfile
+      @local_zip_file = File.new(Rails.root.join("tmp/#{read_attribute(:zip)}"), 'w', :encoding => 'ASCII-8BIT')
+      @local_zip_file.write(zip.read)
+      @local_zip_file.flush
+      @zipfile = Zip::ZipFile.open(@local_zip_file.path)
+    end
+    @zipfile
   end
   
-  def zip_files
-    @zip_files ||= zipfile.select do |file|
-      file.file? && !file.name.match(/__MACOSX/)
+  def files_in_zip
+    @files_in_zip ||= zipfile.select { |file| file.file? && !file.name.match(/__MACOSX/) }
+    if block_given?
+      @files_in_zip.each { |e| yield e }
+      delete_zipfile # clean tmp file
+    else
+      @files_in_zip
     end
   end
   
   def delete_zipfile
-    File.delete(@zip_file.path)
+    File.delete(@local_zip_file.path)
     @zipfile = nil
-    @zip_files = nil
+    @files_in_zip = nil
   end
-  
   
 private
   
@@ -85,10 +91,9 @@ private
   # after_transition to dev
   def overwrite_dev_with_zip_content
     S3.player_bucket.delete_folder('dev')
-    zip_files.each do |file|
+    files_in_zip do |file|
       S3.player_bucket.put("dev/#{file.name}", zipfile.read(file), {}, "public-read")
     end
-    delete_zipfile # clean tmp file
   end
   
   # after_transition to beta, stable
@@ -116,6 +121,7 @@ private
   
   # after_transition on flag
   def purge_old_release_dir
+    return unless Rails.env.production? || Rails.env.test?
     case state
     when 'dev', 'beta'
       VoxcastCDN.purge_dir "/p/#{state}"
@@ -142,4 +148,3 @@ end
 #
 #  index_releases_on_state  (state)
 #
-

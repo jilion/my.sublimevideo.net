@@ -1,12 +1,11 @@
-require File.dirname(__FILE__) + '/acceptance_helper'
+require 'spec_helper'
 
 feature "Credit cards update:" do
-  
   background do
     sign_in_as :user, { :without_cc => true }
   end
   
-  if MySublimeVideo::Release.public?
+  context "public release only", :release => :public do
     it "add a new credit card" do
       visit "/"
       click_link('Add a Credit Card')
@@ -28,5 +27,4 @@ feature "Credit cards update:" do
       page.should have_content('1111')
     end
   end
-  
 end

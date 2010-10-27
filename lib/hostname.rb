@@ -55,9 +55,8 @@ module Hostname
     
     def clean_one(hostname)
       hostname.downcase!
-      hostname = "http://#{hostname}" unless hostname =~ %r(^\w+://.*$) # made it parseable by URI
+      hostname.gsub!(%r(^.+://), '')
       begin
-        hostname = URI.parse(hostname).host
         pss = PublicSuffixService.parse(hostname)
         if pss.trd == 'www'
           hostname = [pss.sld, pss.tld].compact.join('.')
@@ -65,7 +64,10 @@ module Hostname
           hostname = [pss.trd, pss.sld, pss.tld].compact.join('.')
         end
       rescue
-        hostname = hostname.gsub(%r(.+://(www\.)?), '')
+        hostname.gsub!(%r(^www\.), '')
+        hostname.gsub!(%r(:.*), '')
+        hostname.gsub!(%r(\?.*), '')
+        hostname.gsub!(%r(\/.*), '')
       end
       hostname
     end

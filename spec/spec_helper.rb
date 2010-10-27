@@ -10,6 +10,7 @@ Spork.prefork do
   require File.dirname(__FILE__) + "/../config/environment" unless defined?(Rails)
   require 'rspec/rails'
   require 'shoulda'
+  require 'timecop'
   
   # require 'akephalos'
   # Capybara.javascript_driver = :akephalos
@@ -19,7 +20,10 @@ end
 
 Spork.each_run do
   # This code will be run each time you run your specs.
-  
+  # require 'factory_girl'
+  # FactoryGirl.find_definitions
+  # Dir[File.expand_path(File.join(File.dirname(__FILE__),'factories','**','*.rb'))].each {|f| require f}
+  # 
   Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
   
   VCR.config do |c|
@@ -29,10 +33,12 @@ Spork.each_run do
   end
   
   RSpec.configure do |config|
-    config.include Shoulda::ActionController::Matchers
+    config.include(Shoulda::ActionController::Matchers)
+    config.include(Capybara)
     
     config.filter_run :focus => true
     config.run_all_when_everything_filtered = true
+    config.exclusion_filter = { :release => lambda { |release| MySublimeVideo::Release.current != release.to_sym } }
     
     config.mock_with :rspec
     config.fixture_path = "#{::Rails.root}/spec/fixtures"
@@ -42,8 +48,22 @@ Spork.each_run do
     # instead of true.
     config.use_transactional_fixtures = true
     
+    # config.before(:suite) do
+    #   DatabaseCleaner.strategy = :truncation
+    #   DatabaseCleaner.orm = "mongoid"
+    # end
+    
+    config.before(:all) do
+      PaperTrail.enabled = false
+    end
+    
+    config.before(:each) do
+      Capybara.reset_sessions!
+      # DatabaseCleaner.clean
+    end
+    
     # Clear MongoDB Collection
-    config.before :each do
+    config.after(:each) do
       Mongoid.master.collections.select { |c| c.name !~ /system/ }.each(&:drop)
     end
   end

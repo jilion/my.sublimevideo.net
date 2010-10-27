@@ -1,0 +1,17 @@
+= title_and_content_header("Send a mail")
+
+= form_for [:admin, @mail_log], :url => admin_mails_path do |f|
+  .entry.template
+    = f.label :template_id, "Template"
+    = f.select :template_id, Mail::Template.all.map { |t| [t.title, t.id] }, :selected => params[:template_id]
+    
+  .entry.criteria
+    = f.label :criteria
+    = "All users "
+    = f.select :criteria, %w[with_activity with_invalid_site dev].map{ |c| [c.gsub('_', ' '), c] }
+    
+  %br
+  
+  .entry.submit.send
+    = f.submit "Send mail", :confirm => 'Are you sure?'
+    .spacer

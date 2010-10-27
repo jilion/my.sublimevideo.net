@@ -1278,10 +1278,37 @@ ul#trial_legend li em {
   box-shadow:rgba(255,255,255,0.5) 0 1px 0;
 }
 
+#content table.main tr.invalid td.site a.external_link {
+  color:#623838;
+  background:#ddc2c2;
+  background:-webkit-gradient(linear,left top,left bottom,from(#ebcfcf),to(#d3b7b7));
+  background:-moz-linear-gradient(top, #ebcfcf, #d3b7b7);
+  border-color:#9a7676;
+  padding-right:34px;
+  position:relative;
+}
+
 #content table.main td.site a.external_link:active {
   background:-webkit-gradient(linear,left top,left bottom,from(#b6c4d1),to(#d1e0ed));
   background:-moz-linear-gradient(top, #b6c4d1, #d1e0ed);
 }
+
+#content table.main tr.invalid td.site a.external_link:active {
+  background:-webkit-gradient(linear,left top,left bottom,from(#d3b7b7),to(#ebcfcf));
+  background:-moz-linear-gradient(top, #d3b7b7, #ebcfcf);
+}
+
+#content table.main tr.invalid td.site a.external_link span.invalid {
+  display:block;
+  width:21px;
+  height:19px;
+  background:url(/images/embed/sites/invalid_icon.png) no-repeat;
+  position:absolute;
+  top:7px;
+  right:8px;
+}
+
+#content table.main tr.invalid td.site a.external_link span.invalid em {display:none;}
 
 #content table.main td.site .settings {
   display:block;
@@ -1613,7 +1640,7 @@ ul#trial_legend li em {
 
 .popup .content p.desc {
   padding:5px 0;
-  line-height:24px;
+  line-height:21px;
 }
 
 .popup .content p.desc a {

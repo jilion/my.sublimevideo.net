@@ -33,8 +33,7 @@ describe Site do
       site.errors[:hostname].should be_present
     end
     
-    # BETA
-    if MySublimeVideo::Release.beta?
+    context "beta release only", :release => :beta do
       it "should limit 10 sites per user" do
         user = Factory(:user)
         10.times { Factory(:site, :user => user) }
@@ -52,7 +51,7 @@ describe Site do
     
     describe "hostname" do
       %w[http://asdasd slurp .com 901.12312.123 école 124.123.151.123 *.google.com *.com jilion.local].each do |host|
-        it "should not validate: #{host}" do
+        it "should have errors if hostname is invalid: #{host}" do
           site = Factory.build(:site, :hostname => host)
           site.should_not be_valid
           site.errors[:hostname].should be_present
@@ -60,7 +59,7 @@ describe Site do
       end
       
       %w[ftp://asdasd.com asdasd.com école.fr üpper.de htp://aasds.com www.youtube.com?v=31231].each do |host|
-        it "should validate: #{host}" do
+        it "should not have error if hostname is valid: #{host}" do
           site = Factory.build(:site, :hostname => host)
           site.should be_valid
           site.errors[:hostname].should be_empty
@@ -126,6 +125,16 @@ describe Site do
         site.should be_valid
         site.errors[:hostname].should_not be_present
       end
+      
+      it "should validate uniqueness even on update" do
+        VoxcastCDN.stub(:purge)
+        site = Factory(:site, :user => @site.user)
+        site.activate
+        site = Site.find(site.id)
+        site.hostname = @site.hostname
+        site.should_not be_valid
+        site.errors[:hostname].should be_present
+      end
     end
     
     it "should prevent update of hostname when not active" do
@@ -178,19 +187,19 @@ describe Site do
     
     describe "dev_hostnames=" do
       it "should downcase dev_hostnames" do
-        dev_host = "LOCALHOST, test;ERR, 127.]BOO[:3000, JOKE;foo"
+        dev_host = "LOCALHOST, test;ERR, 127.]BOO[, JOKE;foo"
         site = Factory.build(:site, :dev_hostnames => dev_host)
         site.dev_hostnames.should == dev_host.downcase
       end
       
       it "should clean valid dev_hostnames (dev_hostnames should never contain /.+://(www.)?/)" do
         site = Factory(:site, :dev_hostnames => 'http://www.localhost:3000, 127.0.0.1:3000')
-        site.dev_hostnames.should == 'www.localhost, 127.0.0.1'
+        site.dev_hostnames.should == 'localhost, 127.0.0.1'
       end
       
       it "should clean invalid dev_hostnames (dev_hostnames should never contain /.+://(www.)?/)" do
         site = Factory.build(:site, :dev_hostnames => 'http://www.test;err, ftp://127.]boo[:3000, www.joke;foo')
-        site.dev_hostnames.should == 'test;err, 127.]boo[:3000, joke;foo'
+        site.dev_hostnames.should == 'test;err, 127.]boo[, joke;foo'
       end
     end
   end
@@ -224,7 +233,7 @@ describe Site do
       site = Factory(:site)
       site.activate
       delay_mock = mock('Delay')
-      VoxcastCDN.should_receive(:delay).twice.and_return(delay_mock)
+      VoxcastCDN.should_receive(:delay).twice { delay_mock }
       delay_mock.should_receive(:purge).with("/js/#{site.token}.js")
       delay_mock.should_receive(:purge).with("/l/#{site.token}.js")
       site.activate
@@ -238,7 +247,7 @@ describe Site do
       
       it "should clear & purge license & loader when suspend" do
         delay_mock = mock('Delay')
-        VoxcastCDN.should_receive(:delay).twice.and_return(delay_mock)
+        VoxcastCDN.should_receive(:delay).twice { delay_mock }
         delay_mock.should_receive(:purge).with("/js/#{@site.token}.js")
         delay_mock.should_receive(:purge).with("/l/#{@site.token}.js")
         @site.suspend
@@ -258,7 +267,7 @@ describe Site do
       
       it "should clear & purge license & loader and set archived_at when archive" do
         delay_mock = mock('Delay')
-        VoxcastCDN.should_receive(:delay).twice.and_return(delay_mock)
+        VoxcastCDN.should_receive(:delay).twice { delay_mock }
         delay_mock.should_receive(:purge).with("/js/#{@site.token}.js")
         delay_mock.should_receive(:purge).with("/l/#{@site.token}.js")
         @site.archive
@@ -268,16 +277,32 @@ describe Site do
         @site.archived_at.should be_present
       end
       
-      it "should be able to set path" do
-        @site.update_attributes(:path => '/users/thibaud')
-        @site.path.should == 'users/thibaud'
+      if MySublimeVideo::Release.public?
+        it "should be able to set path" do
+          @site.update_attributes(:path => '/users/thibaud')
+          @site.path.should == 'users/thibaud'
+        end
+        
+        it "should be able to set wildcard" do
+          @site.update_attributes(:wildcard => "1")
+          @site.wildcard.should be_true
+        end
       end
       
-      it "should be able to set wildcard" do
-        @site.update_attributes(:wildcard => "1")
-        @site.wildcard.should be_true
+    end
+    
+  end
+  
+  describe "Versioning" do
+    
+    it "should work!" do
+      with_versioning do
+        site = Factory(:site)
+        old_hostname = site.hostname
+        site.activate
+        site.update_attributes :hostname => "bob.com"
+        site.versions.last.reify.hostname.should == old_hostname
       end
-      
     end
     
   end
@@ -337,8 +362,8 @@ describe Site do
         user = Factory(:user)
         site = Factory(:site, :user => user, :loader_hits_cache => 33, :player_hits_cache => 11)
         log = Factory(:log_voxcast)
-        Factory(:site_usage, :site => site, :log => log, :loader_hits => 16, :player_hits => 5, :started_at => 1.minute.from_now, :ended_at => 2.minute.from_now)
-        site.reset_hits_cache!(Time.now)
+        Factory(:site_usage, :site_id => site.id, :day => Time.now.beginning_of_day, :loader_hits => 16, :player_hits => 5)
+        site.reset_hits_cache!(1.day.ago)
         site.loader_hits_cache.should == 16
         site.player_hits_cache.should == 5
       end
@@ -356,6 +381,85 @@ describe Site do
       it "should be false" do
         site = Factory(:site, :hostname => 'jilion.com')
         site.need_path?.should be_false
+      end
+    end
+    
+    describe "referrer_type" do
+      
+      context "with versioning" do
+        subject do
+          with_versioning do
+            Timecop.travel(1.day.ago)
+            site = Factory(:site, :hostname => "jilion.com", :dev_hostnames => "localhost, 127.0.0.1")
+            site.activate
+            Timecop.return
+            site.update_attributes(:hostname => "jilion.net", :dev_hostnames => "jilion.local, localhost, 127.0.0.1")
+            site
+          end
+        end
+        
+        it { subject.referrer_type("http://jilion.com").should == "invalid" }
+        it { subject.referrer_type("http://jilion.net").should == "main" }
+        it { subject.referrer_type("http://jilion.local").should == "dev" }
+        it { subject.referrer_type("http://jilion.com", 1.day.ago).should == "main" }
+        it { subject.referrer_type("http://jilion.net", 1.day.ago).should == "invalid" }
+        it { subject.referrer_type("http://jilion.local", 1.day.ago).should == "invalid" }
+      end
+      
+      context "without wildcard or path" do
+        subject { Factory(:site, :hostname => "jilion.com", :dev_hostnames => "jilion.local, localhost, 127.0.0.1") }
+        
+        it { subject.referrer_type("http://jilion.com").should == "main" }
+        it { subject.referrer_type("http://jilion.com/test/cool").should == "main" }
+        it { subject.referrer_type("https://jilion.com").should == "main" }
+        it { subject.referrer_type("http://www.jilion.com").should == "main" }
+        it { subject.referrer_type("http://jilion.local").should == "dev" }
+        it { subject.referrer_type("http://127.0.0.1:3000/super.html").should == "dev" }
+        it { subject.referrer_type("http://localhost:3000?genial=com").should == "dev" }
+        it { subject.referrer_type("http://blog.jilion.com").should == "invalid" }
+        it { subject.referrer_type("http://google.com").should == "invalid" }
+        it { subject.referrer_type("google.com").should == "invalid" }
+        it { subject.referrer_type("jilion.com").should == "invalid" }
+        it { subject.referrer_type("-").should == "invalid" }
+        it { subject.referrer_type(nil).should == "invalid" }
+      end
+      if MySublimeVideo::Release.public?
+        context "with wildcard" do
+          subject { Factory(:site, :hostname => "jilion.com", :dev_hostnames => "jilion.local, localhost, 127.0.0.1", :wildcard => true) }
+          
+          it { subject.referrer_type("http://blog.jilion.com").should == "main" }
+          it { subject.referrer_type("http://jilion.com").should == "main" }
+          it { subject.referrer_type("http://jilion.com/test/cool").should == "main" }
+          it { subject.referrer_type("https://jilion.com").should == "main" }
+          it { subject.referrer_type("http://www.jilion.com").should == "main" }
+          it { subject.referrer_type("http://jilion.local").should == "dev" }
+          it { subject.referrer_type("http://127.0.0.1:3000/super.html").should == "dev" }
+          it { subject.referrer_type("http://localhost:3000?genial=com").should == "dev" }
+          it { subject.referrer_type("http://google.com").should == "invalid" }
+          it { subject.referrer_type("google.com").should == "invalid" }
+          it { subject.referrer_type("jilion.com").should == "invalid" }
+          it { subject.referrer_type("-").should == "invalid" }
+          it { subject.referrer_type(nil).should == "invalid" }
+        end
+        context "with path" do
+          subject { Factory(:site, :hostname => "jilion.com", :dev_hostnames => "jilion.local, localhost, 127.0.0.1", :path => "demo") }
+          
+          it { subject.referrer_type("http://jilion.com/demo/cool").should == "main" }
+          it { subject.referrer_type("http://127.0.0.1:3000/demo/super.html").should == "dev" }
+          it { subject.referrer_type("http://localhost:3000/demo?genial=com").should == "dev" }
+          it { subject.referrer_type("http://localhost:3000?genial=com").should == "invalid" }
+          it { subject.referrer_type("http://jilion.local").should == "invalid" }
+          it { subject.referrer_type("http://jilion.com/test/cool").should == "invalid" }
+          it { subject.referrer_type("http://jilion.com").should == "invalid" }
+          it { subject.referrer_type("https://jilion.com").should == "invalid" }
+          it { subject.referrer_type("http://www.jilion.com").should == "invalid" }
+          it { subject.referrer_type("http://blog.jilion.com").should == "invalid" }
+          it { subject.referrer_type("http://google.com").should == "invalid" }
+          it { subject.referrer_type("google.com").should == "invalid" }
+          it { subject.referrer_type("jilion.com").should == "invalid" }
+          it { subject.referrer_type("-").should == "invalid" }
+          it { subject.referrer_type(nil).should == "invalid" }
+        end
       end
     end
     
@@ -386,7 +490,6 @@ end
 #  traffic_voxcast_cache :integer(8)      default(0)
 #  google_rank           :integer
 #  alexa_rank            :integer
-#  alias_hostnames       :string(255)
 #  path                  :string(255)
 #  wildcard              :boolean
 #

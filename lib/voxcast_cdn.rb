@@ -23,13 +23,22 @@ module VoxcastCDN
     end
     
     def fetch_logs_names(hostnames = yml[:hostnames].split(', '))
-      logs_hash = client.voxel_voxcast_ondemand_logs_list(:device_id => yml[:device_id])
-      logs_hash['log_files']['sites']['hostname'].inject([]) do |logs_names, hostname_logs_hash|
-        if hostnames.include?(hostname_logs_hash['name']) && hostname_logs_hash['log_file'].present?
-          logs_names += hostname_logs_hash['log_file'].map { |l| l['content'] }
+      # FIX voxel.voxcast.ondemand.logs.list that seems to need a hostname now
+      logs_names = []
+      hostnames.each do |hostname_to_retrieve_logs|
+        logs_hash = client.voxel_voxcast_ondemand_logs_list(:hostname => hostname_to_retrieve_logs, :device_id => yml[:device_id])
+        if logs_hash['log_files']['sites']['hostname']['log_file'].present?
+          logs_names.concat(logs_hash['log_files']['sites']['hostname']['log_file'].map { |l| l['content'] })
         end
-        logs_names
       end
+      logs_names
+      # logs_hash = client.voxel_voxcast_ondemand_logs_list(:device_id => yml[:device_id])
+      # logs_hash['log_files']['sites']['hostname'].inject([]) do |logs_names, hostname_logs_hash|
+      #   if hostnames.include?(hostname_logs_hash['name']) && hostname_logs_hash['log_file'].present?
+      #     logs_names += hostname_logs_hash['log_file'].map { |l| l['content'] }
+      #   end
+      #   logs_names
+      # end
     end
     
     def logs_download(filename)
