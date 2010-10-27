@@ -1,3 +1,5 @@
+require 'ipaddr'
+
 module Hostname
   class << self
     
@@ -76,7 +78,12 @@ module Hostname
       ssp = PublicSuffixService.parse(hostname)
       ssp.sld.present? && ssp.tld != 'local'
     rescue
-      false
+      begin 
+        ipaddr = IPAddr.new(hostname)
+        ipaddr.ipv4? || ipaddr.ipv6?
+      rescue
+        false
+      end
     end
     
     def dev_valid_one?(hostname)

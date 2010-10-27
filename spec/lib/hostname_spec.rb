@@ -50,7 +50,9 @@ describe Hostname do
     it { subject.valid?("www.com").should be_true }
     it { subject.valid?("ftp://www.www.com").should be_true }
     it { subject.valid?("https://www.co.uk").should be_true }
+    it { subject.valid?("124.123.151.123").should be_true }
     
+    it { subject.valid?("3ffe:505:2::1").should be_false } # ipv6
     it { subject.valid?("google.local").should be_false }
     it { subject.valid?(nil).should be_false }
     it { subject.valid?("").should be_false }
@@ -60,7 +62,6 @@ describe Hostname do
     it { subject.valid?("*").should be_false }
     it { subject.valid?("*.*").should be_false }
     it { subject.valid?("éCOLE").should be_false }
-    it { subject.valid?("124.123.151.123").should be_false }
     it { subject.valid?("localhost").should be_false }
     it { subject.valid?("com").should be_false }
     it { subject.valid?("test;ERR").should be_false }
@@ -142,6 +143,7 @@ describe Hostname do
   
   describe "include?" do
     it { subject.include?("http://localhost:3000, localhost", 'localhost').should be_true }
+    it { subject.include?("124.123.151.123, localhost", '124.123.151.123').should be_true }
     it { subject.include?("127.0.0.1, bob, 127.0.0.1", 'bob').should be_true }
     it { subject.include?("*.*, *.*", '*.*').should be_true }
     it { subject.include?("google.fr, jilion.com", "google.fr").should be_true }

@@ -51,7 +51,7 @@ describe Site do
     end
     
     describe "hostname" do
-      %w[http://asdasd slurp .com 901.12312.123 école 124.123.151.123 *.google.com *.com jilion.local].each do |host|
+      %w[http://asdasd slurp .com 901.12312.123 école *.google.com *.com jilion.local].each do |host|
         it "should have errors if hostname is invalid: #{host}" do
           site = Factory.build(:site, :hostname => host)
           site.should_not be_valid
@@ -59,7 +59,7 @@ describe Site do
         end
       end
       
-      %w[ftp://asdasd.com asdasd.com école.fr üpper.de htp://aasds.com www.youtube.com?v=31231].each do |host|
+      %w[ftp://asdasd.com asdasd.com école.fr 124.123.151.123 üpper.de htp://aasds.com www.youtube.com?v=31231].each do |host|
         it "should not have error if hostname is valid: #{host}" do
           site = Factory.build(:site, :hostname => host)
           site.should be_valid
