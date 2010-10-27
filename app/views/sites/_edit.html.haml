@@ -6,8 +6,16 @@
   .entry
     = f.label :hostname
     %p.desc
-      = "Be careful when editing main domain, player will no more working on old hostname."
+      = "Be careful when updating this domain, player will no more working on old domain."
     = f.text_field :hostname, :class => "text", :autocomplete => :off
+  .entry
+    = f.label :extra_hostnames
+    %p.desc
+      = "The extra domains are meant to be used for:"
+      %ul
+        %li= "staging domains"
+        %li= "alias domains (multiple domain names for the same content)"
+    = f.text_field :extra_hostnames, :class => "text", :autocomplete => :off
   .entry
     = f.label :dev_hostnames
     %p.desc= "Add domains to use in development separated by a comma:"

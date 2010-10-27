@@ -2,6 +2,7 @@ en:
   attributes:
     hostname:     "Domain"
     dev_hostnames:        "Development domains"
+    extra_hostnames:        "Extra domains"
     terms_and_conditions: "Terms & Conditions"
     cc_type:      "Card type"
     cc_number:    "Card number"

@@ -23,6 +23,15 @@ module Hostname
     end
     
     # one site or list of sites separated by comma
+    def extra_valid?(hostnames)
+      if hostnames.present?
+        clean(hostnames).split(', ').all? { |h| valid_one?(h) }
+      else
+        true
+      end
+    end
+    
+    # one site or list of sites separated by comma
     def dev_valid?(hostnames)
       if hostnames.present?
         clean(hostnames).split(', ').all? { |h| dev_valid_one?(h) }

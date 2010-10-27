@@ -12,7 +12,7 @@ class Site < ActiveRecord::Base
     :requests_s3_cache, :traffic_s3_cache, :traffic_voxcast_cache
   ]
   
-  attr_accessible :hostname, :dev_hostnames
+  attr_accessible :hostname, :dev_hostnames, :extra_hostnames
   if MySublimeVideo::Release.public?
     attr_accessible :path, :wildcard
   end
@@ -63,10 +63,11 @@ class Site < ActiveRecord::Base
   # = Validations =
   # ===============
   
-  validates :user,          :presence => true
-  validates :hostname,      :presence => true, :hostname_uniqueness => true, :hostname => true
-  validates :dev_hostnames, :dev_hostnames => true
-  validates :player_mode,   :inclusion => { :in => PLAYER_MODES }
+  validates :user,            :presence => true
+  validates :hostname,        :presence => true, :hostname_uniqueness => true, :hostname => true
+  validates :dev_hostnames,   :dev_hostnames => true
+  validates :extra_hostnames, :extra_hostnames => true
+  validates :player_mode,     :inclusion => { :in => PLAYER_MODES }
   validate  :must_be_active_to_update_hostnames
   # BETA
   validate  :limit_site_number_per_user if MySublimeVideo::Release.beta?
@@ -108,6 +109,10 @@ class Site < ActiveRecord::Base
   
   def dev_hostnames=(attribute)
     write_attribute(:dev_hostnames, Hostname.clean(attribute)) if attribute.present?
+  end
+  
+  def extra_hostnames=(attribute)
+    write_attribute(:extra_hostnames, Hostname.clean(attribute)) if attribute.present?
   end
   
   def path=(attribute)

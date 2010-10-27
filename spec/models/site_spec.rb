@@ -9,6 +9,7 @@ describe Site do
     
     its(:hostname)        { should =~ /jilion[0-9]+\.com/ }
     its(:dev_hostnames)   { should == "localhost, 127.0.0.1" }
+    its(:extra_hostnames) { should be_nil }
     its(:path)            { should be_nil }
     its(:wildcard)        { should be_false }
     its(:token)           { should =~ /^[a-z0-9]{8}$/ }
@@ -68,10 +69,28 @@ describe Site do
       end
     end
     
+    describe "extra_hostnames" do
+      ["*.jilion.com", 'localhost, jilion.net', 'jilion.local', 'jilion.dev, jilion.net', 'jilion.com'].each do |extra_hosts|
+        it "should not validate: #{extra_hosts}" do
+          site = Factory.build(:site, :hostname => 'jilion.com', :extra_hostnames => extra_hosts)
+          site.should_not be_valid
+          site.errors[:extra_hostnames].should be_present
+        end
+      end
+      
+      ['jilion.net', 'jilion.org, jilion.fr', 'jilion.org, 124.123.123.123', nil, ', ,', '127.0.0.1'].each do |extra_hosts|
+        it "should validate: #{extra_hosts}" do
+          site = Factory.build(:site, :hostname => 'jilion.com', :extra_hostnames => extra_hosts)
+          site.should be_valid
+          site.errors[:extra_hostnames].should be_empty
+        end
+      end
+    end
+    
     describe "dev_hostnames" do
-      ["*.google.local", 'staging.google.com', 'google.com', 'localhost, localhost', 'jilion.local'].each do |dev_hosts|
+      ["*.google.local", 'staging.google.com', 'google.com', 'localhost, localhost'].each do |dev_hosts|
         it "should not validate: #{dev_hosts}" do
-          site = Factory.build(:site, :hostname => 'jilion.local', :dev_hostnames => dev_hosts)
+          site = Factory.build(:site, :hostname => 'jilion.com', :dev_hostnames => dev_hosts)
           site.should_not be_valid
           site.errors[:dev_hostnames].should be_present
         end
@@ -183,6 +202,32 @@ describe Site do
           site = Factory.build(:site, :hostname => host)
           site.hostname.should_not =~ %r(.+://(www.)?)
         end
+      end
+    end
+    
+    describe "extra_hostnames=" do
+      %w[ÉCOLE ÉCOLE.fr ÜPPER.de ASDASD.COM 124.123.151.123 mIx3Dd0M4iN.CoM].each do |host|
+        it "should downcase extra_hostnames: #{host}" do
+          site = Factory.build(:site, :extra_hostnames => host)
+          site.extra_hostnames.should == host.downcase
+        end
+      end
+      
+      it "should clean valid hostname (hostname should never contain /.+://(www.)?/)" do
+        site = Factory(:site, :extra_hostnames => 'http://www.youtube.com?v=31231')
+        site.extra_hostnames.should == 'youtube.com'
+      end
+      
+      %w[http://www.youtube.com?v=31231 www.youtube.com?v=31231 youtube.com?v=31231].each do |host|
+        it "should clean invalid extra_hostnames #{host} (extra_hostnames should never contain /.+://(www.)?/)" do
+          site = Factory.build(:site, :extra_hostnames => host)
+          site.extra_hostnames.should == "youtube.com"
+        end
+      end
+      
+      it "should clean valid extra_hostnames (dev_hostnames should never contain /.+://(www.)?/)" do
+        site = Factory(:site, :extra_hostnames => 'http://www.jime.org:3000, 127.0.0.1:3000')
+        site.extra_hostnames.should == 'jime.org, 127.0.0.1'
       end
     end
     
