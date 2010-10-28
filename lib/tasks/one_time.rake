@@ -32,9 +32,7 @@ class Log
       begin
         Log.delay(:priority => 200).parse_log(log_id)
       rescue => ex
-        puts "Error during the reparsing of Log ##{log_id}"
-        puts ex.inspect
-        # Notify.send("Error during the reparsing of Log ##{log_id}", :exception => ex)
+        Notify.send("Error during the reparsing of Log ##{log_id}", :exception => ex)
       end
     end
     puts "Delayed #{log_ids.size} individual logs."
