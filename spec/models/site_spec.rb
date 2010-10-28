@@ -10,7 +10,7 @@ describe Site do
     subject { valid_site }
     
     its(:hostname)        { should =~ /jilion[0-9]+\.com/ }
-    its(:dev_hostnames)   { should == "localhost, 127.0.0.1" }
+    its(:dev_hostnames)   { should == "127.0.0.1, localhost" }
     its(:extra_hostnames) { should be_nil }
     its(:path)            { should be_nil }
     its(:wildcard)        { should be_false }
@@ -52,7 +52,7 @@ describe Site do
     
     describe "hostname" do
       %w[http://asdasd slurp .com 901.12312.123 école *.google.com *.com jilion.local].each do |host|
-        it "should have errors if hostname is invalid: #{host}" do
+        it "should not allow: #{host}" do
           site = Factory.build(:site, :hostname => host)
           site.should_not be_valid
           site.errors[:hostname].should be_present
@@ -60,7 +60,7 @@ describe Site do
       end
       
       %w[ftp://asdasd.com asdasd.com école.fr 124.123.151.123 üpper.de htp://aasds.com www.youtube.com?v=31231].each do |host|
-        it "should not have error if hostname is valid: #{host}" do
+        it "should allow: #{host}" do
           site = Factory.build(:site, :hostname => host)
           site.should be_valid
           site.errors[:hostname].should be_empty
@@ -70,7 +70,7 @@ describe Site do
     
     describe "extra_hostnames" do
       ["*.jilion.com", 'localhost, jilion.net', 'jilion.local', 'jilion.dev, jilion.net', 'jilion.com'].each do |extra_hosts|
-        it "should not validate: #{extra_hosts}" do
+        it "should not allow: #{extra_hosts}" do
           site = Factory.build(:site, :hostname => 'jilion.com', :extra_hostnames => extra_hosts)
           site.should_not be_valid
           site.errors[:extra_hostnames].should be_present
@@ -78,7 +78,7 @@ describe Site do
       end
       
       ['jilion.net', 'jilion.org, jilion.fr', 'jilion.org, 124.123.123.123', nil, ', ,', '127.0.0.1'].each do |extra_hosts|
-        it "should validate: #{extra_hosts}" do
+        it "should allow: #{extra_hosts}" do
           site = Factory.build(:site, :hostname => 'jilion.com', :extra_hostnames => extra_hosts)
           site.should be_valid
           site.errors[:extra_hostnames].should be_empty
@@ -88,7 +88,7 @@ describe Site do
     
     describe "dev_hostnames" do
       ["*.google.local", 'staging.google.com', 'google.com', 'localhost, localhost'].each do |dev_hosts|
-        it "should not validate: #{dev_hosts}" do
+        it "should not allow: #{dev_hosts}" do
           site = Factory.build(:site, :hostname => 'jilion.com', :dev_hostnames => dev_hosts)
           site.should_not be_valid
           site.errors[:dev_hostnames].should be_present
@@ -96,7 +96,7 @@ describe Site do
       end
       
       ['123.123.123,localhost', 'google.local', ', ,123.123.123,', 'localhost', ', ,', 'localhost,, , 127.0.0.1'].each do |dev_hosts|
-        it "should validate: #{dev_hosts}" do
+        it "should allow: #{dev_hosts}" do
           site = Factory.build(:site, :dev_hostnames => dev_hosts)
           site.should be_valid
           site.errors[:dev_hostnames].should be_empty
@@ -106,7 +106,7 @@ describe Site do
     
     describe "validate player_mode" do
       %w[fake test].each do |player_mode|
-        it "should add an error if player_mode: #{player_mode}, is not included in %w[dev beta stable]" do
+        it "should not allow: #{player_mode}" do
           site = Factory.build(:site, :player_mode => player_mode)
           site.should_not be_valid
           site.errors[:player_mode].should be_present
@@ -114,7 +114,7 @@ describe Site do
       end
       
       %w[dev beta stable].each do |player_mode|
-        it "should not add an error if player_mode: #{player_mode}, is included in %w[dev beta stable]" do
+        it "should allow: #{player_mode}" do
           site = Factory.build(:site, :player_mode => player_mode)
           site.should be_valid
           site.errors[:player_mode].should be_empty
@@ -147,10 +147,10 @@ describe Site do
       
       it "should validate uniqueness even on update" do
         VoxcastCDN.stub(:purge)
-        site = Factory(:site, :user => @site.user)
+        site = Factory(:site, :user => existing_site.user)
         site.activate
         site = Site.find(site.id)
-        site.hostname = @site.hostname
+        site.hostname = existing_site.hostname
         site.should_not be_valid
         site.errors[:hostname].should be_present
       end
@@ -161,7 +161,7 @@ describe Site do
       site.update_attributes(:hostname => 'site.com')
       site.reload.hostname.should == 'jilion.com'
     end
-    it "should ba able to update hostname even when active" do
+    it "should be able to update hostname even when active" do
       site = Factory(:site, :hostname => 'jilion.com')
       site.activate
       site.update_attributes(:hostname => 'site.com')
@@ -355,9 +355,9 @@ describe Site do
   describe "Callbacks" do
     
     describe "before_create" do
-      it "should set default dev_hostnames before create" do
+      it "should set default dev_hostnames if not set" do
         site = Factory(:site, :dev_hostnames => nil)
-        site.dev_hostnames.should == 'localhost, 127.0.0.1'
+        site.dev_hostnames.should == '127.0.0.1, localhost'
       end
     end
     
@@ -373,7 +373,7 @@ describe Site do
     describe "#template_hostnames" do
       it "should return good template_hostnames" do
         site = Factory(:site)
-        site.template_hostnames.should == "'#{site.hostname}','localhost','127.0.0.1'"
+        site.template_hostnames.should == "'#{site.hostname}','127.0.0.1','localhost'"
       end
     end
     
@@ -518,12 +518,9 @@ describe Site do
     
   end
   
-  describe "Special Methods", :focus => true do
+  describe "Special Methods" do
     describe ".update_hostnames" do
       before(:all) do
-        HoptoadNotifier.stub(:notify)
-        Notify.stub(:prowl)
-        
         @not_public_hostname     = Factory.build(:site, :hostname => 'jilion.local').tap { |s| s.save(:validate => false) }
         @not_local_dev_hostname1 = Factory.build(:site, :hostname => 'jilion.com', :dev_hostnames => 'localhost, jilion.net').tap { |s| s.save(:validate => false) }
         @not_local_dev_hostname2 = Factory.build(:site, :hostname => 'jilion.com', :dev_hostnames => 'jilion.net, jilion.org').tap { |s| s.save(:validate => false) }
@@ -539,15 +536,19 @@ describe Site do
       
       context "actually test the method" do
         before(:all) do
-          @old_updated_at = @not_public_hostname.updated_at
+          Delayed::Job.delete_all
           described_class.update_hostnames
+        end
+        
+        it "should have delayed 3 site activations" do
+          Delayed::Job.count.should == 3
+          Delayed::Job.last.name.should == 'Site#activate'
         end
         
         it "should not modify site when hostname is invalid" do
           @not_public_hostname.reload.hostname.should == 'jilion.local'
-          @not_public_hostname.dev_hostnames.should   == 'localhost, 127.0.0.1'
-          @not_public_hostname.extra_hostnames.should == 'jilion.net'
-          @not_public_hostname.updated_at.should      == @old_updated_at
+          @not_public_hostname.dev_hostnames.should   == '127.0.0.1, localhost'
+          @not_public_hostname.extra_hostnames.should == nil
         end
         
         it "should move dev hostnames that belong to extra hostnames" do
@@ -559,19 +560,29 @@ describe Site do
         it "should move dev hostnames that belong to extra hostnames (bis)" do
           @not_local_dev_hostname2.reload.hostname.should == 'jilion.com'
           @not_local_dev_hostname2.dev_hostnames.should   == ''
-          @not_local_dev_hostname2.extra_hostnames.should == 'jilion.net, jilion.org'
+          @not_local_dev_hostname2.extra_hostnames.should == 'jilion.org, jilion.net'
         end
         
         it "should remove duplicate dev domain" do
           @duplicated_dev_hostname.reload.hostname.should == '127.0.0.1'
           @duplicated_dev_hostname.dev_hostnames.should   == 'localhost'
-          @duplicated_dev_hostname.extra_hostnames.should == ''
+          @duplicated_dev_hostname.extra_hostnames.should == nil
         end
         
         it "should not modify hostname when hostname is invalid, move dev hostnames that belong to extra hostnames, remove duplicate dev domain" do
           @mixed_invalid_site.reload.hostname.should == 'jilion.local'
-          @mixed_invalid_site.dev_hostnames.should   == 'localhost, 127.0.0.1'
+          @mixed_invalid_site.dev_hostnames.should   == '127.0.0.1, localhost'
           @mixed_invalid_site.extra_hostnames.should == 'jilion.net'
+        end
+        
+        it "3 sites are now valid, 2 are still invalid" do
+          [@not_public_hostname, @mixed_invalid_site].each do |invalid_site|
+            invalid_site.should_not be_valid
+          end
+          
+          [@not_local_dev_hostname1, @not_local_dev_hostname2, @duplicated_dev_hostname].each do |valid_site|
+            valid_site.should be_valid
+          end
         end
       end
     end

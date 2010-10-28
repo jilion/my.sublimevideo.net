@@ -25,11 +25,11 @@ namespace :one_time do
   end
   
   # Move in domain branch
-  desc "Update invalid sites"
+  desc "Update invalid sites move invalid dev hostnames into the extra_hostnames and remove dev hostnames that are duplication of main hostname"
   task :update_invalid_sites => :environment do
-    
-    Site.update_invalid_sites
-    
+    timed do
+      puts Site.update_hostnames.join("\n")
+    end
   end
   
 end

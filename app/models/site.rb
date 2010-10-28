@@ -108,7 +108,7 @@ class Site < ActiveRecord::Base
   end
   
   def dev_hostnames=(attribute)
-    write_attribute(:dev_hostnames, Hostname.clean(attribute)) if attribute.present?
+    write_attribute(:dev_hostnames, Hostname.clean(attribute)) # if attribute.present?
   end
   
   def extra_hostnames=(attribute)
@@ -209,44 +209,42 @@ class Site < ActiveRecord::Base
   # Method for the :one_time rake task
   def self.update_hostnames
     invalid_sites = Site.all.reject { |s| s.valid? }
-    puts "[Before] #{invalid_sites.size} invalid sites"
+    result = []
+    result << "[Before] #{invalid_sites.size} invalid sites, let's try to repair them!\n\n"
     
-    Site.all.each do |site|
-      # puts "[Before] Site ##{site.id} (valid?: #{site.valid?}) is now:\n\tHOSTNAME => #{site.hostname},\n\tDEV => #{site.dev_hostnames},\n\tEXTRA => #{site.extra_hostnames}"
-      
+    invalid_sites.each do |site|
       old_dev_hostnames = site.dev_hostnames.split(',')
       new_dev_hostnames = old_dev_hostnames.dup
       extra_hostnames   = []
       
       old_dev_hostnames.each do |dev_hostname|
-        # puts "Hostname invalid." unless Hostname.valid?(site.hostname)
-        
         # invalid dev hostname
         # OR valid main hostname and duplicated in dev hostnames
         # => remove it from the dev hostnames
         if !Hostname.dev_valid?(dev_hostname) || (Hostname.dev_valid?(dev_hostname) && Hostname.duplicate?([site.hostname, dev_hostname].join(",")))
           new_dev_hostnames.delete(dev_hostname)
           
-          # dev hostname valid for extra hostnames
-          extra_hostnames << dev_hostname if Hostname.extra_valid?(dev_hostname)
+          # dev hostname valid for extra hostnames AND dev hostname is not a duplicate of hostname
+          if Hostname.extra_valid?(dev_hostname) && !Hostname.duplicate?([site.hostname, dev_hostname].join(","))
+            extra_hostnames << dev_hostname
+          end
         end
       end
       
       if (new_dev_hostnames != old_dev_hostnames) || extra_hostnames.present?
         site.dev_hostnames   = new_dev_hostnames.sort.join(",")
         site.extra_hostnames = extra_hostnames.sort.join(",")
-        begin
-          site.save!
-        rescue => ex
-          Notify.send("Error during Site.update_hostnames", :exception => ex)
-        end
+        site.save(:validate => false)
+        site.delay.activate if site.valid?
       end
-      
-      # puts "[After] Site ##{site.id} (valid?: #{site.valid?}) is now:\n\tHOSTNAME => #{site.hostname},\n\tDEV => #{site.dev_hostnames},\n\tEXTRA => #{site.extra_hostnames}"
+      result << "##{site.id} (#{'still in' unless site.valid?}valid)"
+      result << "MAIN : #{site.hostname} (#{'in' unless Hostname.valid?(site.hostname)}valid)"
+      result << "DEV  : #{old_dev_hostnames.join(", ").inspect} => #{site.dev_hostnames.inspect}"
+      result << "EXTRA: #{site.extra_hostnames.inspect}\n\n"
     end
     
-    invalid_sites = Site.all.reject { |s| s.valid? }
-    puts "[After] #{invalid_sites.size} invalid sites"
+    result << "[After] #{Site.all.reject { |s| s.valid? }.size} invalid sites remaining!!"
+    result
   end
   # Method for the :one_time rake task
   
@@ -272,7 +270,7 @@ private
   
   # before_create
   def set_default_dev_hostnames
-    write_attribute(:dev_hostnames, "localhost, 127.0.0.1") unless dev_hostnames.present?
+    write_attribute(:dev_hostnames, "127.0.0.1, localhost") unless dev_hostnames.present?
   end
   
   # after_create
