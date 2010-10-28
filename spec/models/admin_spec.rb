@@ -1,30 +1,24 @@
 require 'spec_helper'
 
 describe Admin do
+  set(:admin) { Factory(:admin) }
   
   context "with valid attributes" do
-    subject { Factory(:admin) }
+    subject { admin }
     
-    its(:email)            { should match /email\d+@admin.com/ }
+    its(:email) { should match /email\d+@admin.com/ }
+    
     it { should be_valid }
   end
   
   describe "validates" do
-    it "should validate presence of email" do
-      admin = Factory.build(:admin, :email => nil)
-      admin.should_not be_valid
-      admin.should have(1).error_on(:email)
+    it { should have_many :mail_logs }
+    
+    [:email, :password, :password_confirmation, :remember_me].each do |attr|
+      it { should allow_mass_assignment_of(attr) }
     end
     
-    context "with already a site in db" do
-      before(:each) { @admin = Factory(:admin) }
-      
-      it "should validate uniqueness of email" do
-        admin = Factory.build(:admin, :email => @admin.email)
-        admin.should_not be_valid
-        admin.should have(1).error_on(:email)
-      end
-    end
+    # Devise checks presence/uniqueness/format of email, presence/length of password
   end
   
 end

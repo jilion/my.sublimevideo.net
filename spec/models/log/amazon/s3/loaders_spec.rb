@@ -1,12 +1,14 @@
 require 'spec_helper'
 
 describe Log::Amazon::S3::Loaders do
+  let(:log_s3_loaders) { Factory(:log_s3_loaders) }
+  
   before(:each) { VCR.insert_cassette('s3/loaders/logs_list') }
   
   context "created with valid attributes" do
-    subject { Factory(:log_s3_loaders) }
+    subject { log_s3_loaders }
     
-    it { subject.file.url.should == "/uploads/s3/sublimevideo.loaders/2010-07-14-09-22-26-63B226D3944909C8" }
+    its("file.url") { should == "/uploads/s3/sublimevideo.loaders/2010-07-14-09-22-26-63B226D3944909C8" }
     
     it "should have good log content" do
       log = described_class.find(subject.id) # to be sure that log is well saved with CarrierWave

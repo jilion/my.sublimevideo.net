@@ -1,8 +1,9 @@
 require 'spec_helper'
 
 describe Mail::Log do
+  set(:mail_log) { Factory(:mail_log) }
   
-  subject { Factory(:mail_log) }
+  subject { mail_log }
   
   context "with valid attributes" do
     its(:template) { should be_present }
@@ -13,13 +14,13 @@ describe Mail::Log do
     it { should be_valid }
   end
   
-  describe "should be invalid" do
-    %w[template_id admin_id criteria user_ids].each do |attribute|
-      it "without #{attribute}" do
-        ml = Factory.build(:mail_log, attribute.to_sym => nil)
-        ml.should_not be_valid
-        ml.errors[attribute.to_sym].should be_present
-      end
+  describe "validates" do
+    it { should belong_to :template }
+    it { should belong_to :admin }
+    
+    [:template_id, :admin_id, :criteria, :user_ids].each do |attr|
+      it { should allow_mass_assignment_of(attr) }
+      it { should validate_presence_of(attr) }
     end
   end
   
