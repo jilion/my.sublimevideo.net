@@ -4,7 +4,9 @@ require 'spec_helper'
 describe Site do
   
   context "with valid attributes" do
-    subject { Factory(:site) }
+    set(:valid_site) { Factory(:site) }
+    
+    subject { valid_site }
     
     its(:hostname)      { should =~ /jilion[0-9]+\.com/ }
     its(:dev_hostnames) { should == "localhost, 127.0.0.1" }
@@ -13,23 +15,20 @@ describe Site do
     its(:license)       { should_not be_present }
     its(:loader)        { should_not be_present }
     its(:player_mode)   { should == 'stable' }
+    
     it { be_pending }
     it { be_valid }
   end
   
-  describe "validations" do
-    it "should validate presence of user" do
-      site = Factory.build(:site, :user => nil)
-      site.should_not be_valid
-      site.errors[:user].should be_present
+  describe "validates" do
+    it { should belong_to :user }
+    
+    [:hostname, :dev_hostnames].each do |attr|
+      it { should allow_mass_assignment_of(attr) }
     end
     
-    it "should validate presence of hostname" do
-      site = Factory.build(:site, :hostname => nil)
-      site.should_not be_valid
-      site.hostname.should be_nil
-      site.errors[:hostname].should be_present
-    end
+    it { should validate_presence_of(:user) }
+    it { should validate_presence_of(:hostname) }
     
     context "beta release only", :release => :beta do
       it "should limit 10 sites per user" do
@@ -84,8 +83,8 @@ describe Site do
     end
     
     describe "validate player_mode" do
-      %w[fake test foo bar].each do |player_mode|
-        it "should validate inclusion of player_mode #{player_mode} in %w[dev beta stable]" do
+      %w[fake test].each do |player_mode|
+        it "should add an error if player_mode: #{player_mode}, is not included in %w[dev beta stable]" do
           site = Factory.build(:site, :player_mode => player_mode)
           site.should_not be_valid
           site.errors[:player_mode].should be_present
@@ -93,7 +92,7 @@ describe Site do
       end
       
       %w[dev beta stable].each do |player_mode|
-        it "should validate inclusion of player_mode #{player_mode} in %w[dev beta stable]" do
+        it "should not add an error if player_mode: #{player_mode}, is included in %w[dev beta stable]" do
           site = Factory.build(:site, :player_mode => player_mode)
           site.should be_valid
           site.errors[:player_mode].should be_empty
@@ -102,24 +101,24 @@ describe Site do
     end
     
     context "with already a site in db" do
-      before(:each) { @site = Factory(:site) }
+      set(:existing_site) { Factory(:site) }
       
       it "should validate uniqueness of hostname by user" do
-        site = Factory.build(:site, :user => @site.user, :hostname => @site.hostname)
+        site = Factory.build(:site, :user => existing_site.user, :hostname => existing_site.hostname)
         site.should_not be_valid
         site.errors[:hostname].should be_present
       end
       
       it "should validate uniqueness of hostname by user case-unsensitive" do
-        site = Factory.build(:site, :user => @site.user, :hostname => @site.hostname.upcase)
+        site = Factory.build(:site, :user => existing_site.user, :hostname => existing_site.hostname.upcase)
         site.should_not be_valid
         site.errors[:hostname].should be_present
       end
       
       it "should validate uniqueness, but ignore archived sites" do
         VoxcastCDN.stub(:purge)
-        @site.archive
-        site = Factory.build(:site, :user => @site.user, :hostname => @site.hostname)
+        existing_site.archive
+        site = Factory.build(:site, :user => existing_site.user, :hostname => existing_site.hostname)
         site.should be_valid
         site.errors[:hostname].should_not be_present
       end
@@ -280,53 +279,58 @@ describe Site do
   
   describe "Instance Methods" do
     
-    it "should return good template_hostnames" do
-      site = Factory(:site)
-      site.template_hostnames.should == "'#{site.hostname}','localhost','127.0.0.1'"
-    end
-    
-    it "should update ranks" do
-      VCR.use_cassette('sites/ranks') do
-        site = Factory(:site, :hostname => 'jilion.com')
-        site.update_ranks
-        site.google_rank.should == 4
-        site.alexa_rank.should == 94430
+    describe "#template_hostnames" do
+      it "should return good template_hostnames" do
+        site = Factory(:site)
+        site.template_hostnames.should == "'#{site.hostname}','localhost','127.0.0.1'"
       end
     end
     
-    it "should set license file with template_hostnames" do
-      site = Factory(:site)
-      site.set_loader_and_license_file
-      site.license.read.should include(site.template_hostnames)
+    describe "#update_ranks" do
+      it "should update ranks" do
+        VCR.use_cassette('sites/ranks') do
+          site = Factory(:site, :hostname => 'jilion.com')
+          site.update_ranks
+          site.google_rank.should == 4
+          site.alexa_rank.should == 94430
+        end
+      end
     end
     
-    it "should set loader file with token" do
-      site = Factory(:site)
-      site.set_loader_and_license_file
-      site.loader.read.should include(site.token)
+    describe "#set_loader_and_license_file" do
+      set(:site_with_set_loader_and_license_file) { Factory(:site).tap { |s| s.set_loader_and_license_file } }
+      
+      it "should set license file with template_hostnames" do
+        site_with_set_loader_and_license_file.license.read.should include(site_with_set_loader_and_license_file.template_hostnames)
+      end
+      
+      it "should set loader file with token" do
+        site_with_set_loader_and_license_file.loader.read.should include(site_with_set_loader_and_license_file.token)
+      end
+      
+      it "should set loader file with stable player_mode" do
+        site_with_set_loader_and_license_file.loader.read.should include("http://cdn.sublimevideo.net/p/sublime.js?t=#{site_with_set_loader_and_license_file.token}")
+      end
     end
     
-    it "should set loader file with stable player_mode" do
-      site = Factory(:site)
-      site.set_loader_and_license_file
-      site.loader.read.should include("http://cdn.sublimevideo.net/p/sublime.js?t=#{site.token}")
-    end
-    
-    it "should reset hits cache" do
-      VCR.use_cassette('one_saved_logs') do
-        user = Factory(:user)
-        site = Factory(:site, :user => user, :loader_hits_cache => 33, :player_hits_cache => 11)
-        log = Factory(:log_voxcast)
-        Factory(:site_usage, :site_id => site.id, :day => Time.now.beginning_of_day, :loader_hits => 16, :player_hits => 5)
-        site.reset_hits_cache!(1.day.ago)
-        site.loader_hits_cache.should == 16
-        site.player_hits_cache.should == 5
+    describe "#reset_hits_cache!" do
+      it "should reset hits cache" do
+        VCR.use_cassette('one_saved_logs') do
+          user = Factory(:user)
+          site = Factory(:site, :user => user, :loader_hits_cache => 33, :player_hits_cache => 11)
+          log = Factory(:log_voxcast)
+          Factory(:site_usage, :site_id => site.id, :day => Time.now.beginning_of_day, :loader_hits => 16, :player_hits => 5)
+          site.reset_hits_cache!(1.day.ago)
+          site.loader_hits_cache.should == 16
+          site.player_hits_cache.should == 5
+        end
       end
     end
     
     describe "referrer_type" do
       context "without wildcard or path" do
-        subject { Factory(:site, :hostname => "jilion.com", :dev_hostnames => "jilion.local, localhost, 127.0.0.1") }
+        set(:site_without_wildcard) { Factory(:site, :hostname => "jilion.com", :dev_hostnames => "jilion.local, localhost, 127.0.0.1") }
+        subject { site_without_wildcard }
         
         it { subject.referrer_type("http://jilion.com").should == "main" }
         it { subject.referrer_type("http://jilion.com/test/cool").should == "main" }
@@ -342,9 +346,11 @@ describe Site do
         it { subject.referrer_type("-").should == "invalid" }
         it { subject.referrer_type(nil).should == "invalid" }
       end
+      
       if MySublimeVideo::Release.public?
         context "with wildcard" do
-          subject { Factory(:site, :hostname => "jilion.com", :dev_hostnames => "jilion.local, localhost, 127.0.0.1", :wildcard => true) }
+          set(:site_with_wildcard) { Factory(:site, :hostname => "jilion.com", :dev_hostnames => "jilion.local, localhost, 127.0.0.1", :wildcard => true) }
+          subject { site_with_wildcard }
           
           it { subject.referrer_type("http://blog.jilion.com").should == "main" }
           it { subject.referrer_type("http://jilion.com").should == "main" }
@@ -361,7 +367,8 @@ describe Site do
           it { subject.referrer_type(nil).should == "invalid" }
         end
         context "with path" do
-          subject { Factory(:site, :hostname => "jilion.com", :dev_hostnames => "jilion.local, localhost, 127.0.0.1", :path => "demo") }
+          set(:site_with_path) { Factory(:site, :hostname => "jilion.com", :dev_hostnames => "jilion.local, localhost, 127.0.0.1", :path => "demo") }
+          subject { site_with_path }
           
           it { subject.referrer_type("http://jilion.com/demo/cool").should == "main" }
           it { subject.referrer_type("http://127.0.0.1:3000/demo/super.html").should == "dev" }

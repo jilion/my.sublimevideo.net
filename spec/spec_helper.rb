@@ -61,7 +61,7 @@ Spork.each_run do
       # Mongoid.master.collections.select { |c| c.name !~ /system/ }.each(&:drop)
     end
     
-    config.after(:suite) do
+    config.after(:all) do
       DatabaseCleaner.clean_with(:truncation) # clean all the databases
     end
   end
