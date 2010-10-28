@@ -24,6 +24,14 @@ namespace :one_time do
     Site.all.each { |site| site.delay(:priority => 400).reset_caches! }
   end
   
+  # Move in domain branch
+  desc "Update invalid sites"
+  task :update_invalid_sites => :environment do
+    
+    Site.update_invalid_sites
+    
+  end
+  
 end
 
 class Log

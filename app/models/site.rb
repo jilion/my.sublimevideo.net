@@ -206,6 +206,46 @@ class Site < ActiveRecord::Base
     past_dev_hostnames.split(', ').any? { |h| host == h || host == "www.#{h}" }
   end
   
+  # Method for the :ont_time rake task
+  def self.update_hostnames
+    invalid_sites = Site.all.reject { |s| s.valid? }
+    puts "[Before] #{invalid_sites.size} invalid sites"
+    
+    Site.all.each do |site|
+      # puts "[Before] Site ##{site.id} (valid?: #{site.valid?}) is now:\n\tHOSTNAME => #{site.hostname},\n\tDEV => #{site.dev_hostnames},\n\tEXTRA => #{site.extra_hostnames}"
+      
+      old_dev_hostnames = site.dev_hostnames.split(',')
+      new_dev_hostnames = old_dev_hostnames.dup
+      extra_hostnames   = []
+      
+      old_dev_hostnames.each do |dev_hostname|
+        # puts "Hostname invalid." unless Hostname.valid?(site.hostname)
+        
+        # invalid dev hostname
+        # OR valid main hostname and duplicated in dev hostnames
+        # => remove it from the dev hostnames
+        if !Hostname.dev_valid?(dev_hostname) || (Hostname.dev_valid?(dev_hostname) && Hostname.duplicate?([site.hostname, dev_hostname].join(",")))
+          new_dev_hostnames.delete(dev_hostname)
+          
+          # dev hostname valid for extra hostnames
+          extra_hostnames << dev_hostname if Hostname.extra_valid?(dev_hostname)
+        end
+      end
+      
+      if (new_dev_hostnames != old_dev_hostnames) || extra_hostnames.present?
+        site.dev_hostnames   = new_dev_hostnames.sort.join(",")
+        site.extra_hostnames = extra_hostnames.sort.join(",")
+        site.save
+      end
+      
+      # puts "[After] Site ##{site.id} (valid?: #{site.valid?}) is now:\n\tHOSTNAME => #{site.hostname},\n\tDEV => #{site.dev_hostnames},\n\tEXTRA => #{site.extra_hostnames}"
+    end
+    
+    invalid_sites = Site.all.reject { |s| s.valid? }
+    puts "[After] #{invalid_sites.size} invalid sites"
+  end
+  # Method for the :ont_time rake task
+  
 private
   
   # BETA validate
