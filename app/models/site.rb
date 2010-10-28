@@ -217,6 +217,7 @@ class Site < ActiveRecord::Base
   def self.update_hostnames
     invalid_sites = Site.all.reject { |s| s.valid? }
     result = []
+    repaired_sites = 0
     result << "[Before] #{invalid_sites.size} invalid sites, let's try to repair them!\n\n"
     
     invalid_sites.each do |site|
@@ -238,11 +239,17 @@ class Site < ActiveRecord::Base
         end
       end
       
+      new_dev_hostnames.uniq!
+      extra_hostnames.uniq!
+      
       if (new_dev_hostnames != old_dev_hostnames) || extra_hostnames.present?
         site.dev_hostnames   = new_dev_hostnames.sort.join(",")
         site.extra_hostnames = extra_hostnames.sort.join(",")
         site.save(:validate => false)
-        site.delay.activate if site.valid?
+        if site.valid?
+          site.delay.activate
+          repaired_sites += 1
+        end
       end
       result << "##{site.id} (#{'still in' unless site.valid?}valid)"
       result << "MAIN : #{site.hostname} (#{'in' unless Hostname.valid?(site.hostname)}valid)"
@@ -250,7 +257,7 @@ class Site < ActiveRecord::Base
       result << "EXTRA: #{site.extra_hostnames.inspect}\n\n"
     end
     
-    result << "[After] #{Site.all.reject { |s| s.valid? }.size} invalid sites remaining!!"
+    result << "[After] #{invalid_sites.size - repaired_sites} invalid sites remaining!!"
     result
   end
   # Method for the :one_time rake task

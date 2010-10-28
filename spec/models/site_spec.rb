@@ -547,12 +547,13 @@ describe Site do
         @not_public_hostname     = Factory.build(:site, :hostname => 'jilion.local').tap { |s| s.save(:validate => false) }
         @not_local_dev_hostname1 = Factory.build(:site, :hostname => 'jilion.com', :dev_hostnames => 'localhost, jilion.net').tap { |s| s.save(:validate => false) }
         @not_local_dev_hostname2 = Factory.build(:site, :hostname => 'jilion.com', :dev_hostnames => 'jilion.net, jilion.org').tap { |s| s.save(:validate => false) }
-        @duplicated_dev_hostname = Factory.build(:site, :hostname => '127.0.0.1', :dev_hostnames => 'localhost, 127.0.0.1').tap { |s| s.save(:validate => false) }
+        @duplicated_dev_hostname1 = Factory.build(:site, :hostname => '127.0.0.1', :dev_hostnames => 'localhost, 127.0.0.1').tap { |s| s.save(:validate => false) }
+        @duplicated_dev_hostname2 = Factory.build(:site, :hostname => 'jilion.com', :dev_hostnames => 'localhost, 127.0.0.1, 127.0.0.1').tap { |s| s.save(:validate => false) }
         @mixed_invalid_site      = Factory.build(:site, :hostname => 'jilion.local', :dev_hostnames => 'localhost, jilion.local, 127.0.0.1, jilion.net').tap { |s| s.save(:validate => false) }
       end
       
       it "all sites created should be invalid" do
-        [@not_public_hostname, @not_local_dev_hostname1, @not_local_dev_hostname2, @duplicated_dev_hostname, @mixed_invalid_site].each do |invalid_site|
+        [@not_public_hostname, @not_local_dev_hostname1, @not_local_dev_hostname2, @duplicated_dev_hostname1, @duplicated_dev_hostname2, @mixed_invalid_site].each do |invalid_site|
           invalid_site.should_not be_valid
         end
       end
@@ -564,7 +565,7 @@ describe Site do
         end
         
         it "should have delayed 3 site activations" do
-          Delayed::Job.count.should == 3
+          Delayed::Job.count.should == 4
           Delayed::Job.last.name.should == 'Site#activate'
         end
         
@@ -587,9 +588,15 @@ describe Site do
         end
         
         it "should remove duplicate dev domain" do
-          @duplicated_dev_hostname.reload.hostname.should == '127.0.0.1'
-          @duplicated_dev_hostname.dev_hostnames.should   == 'localhost'
-          @duplicated_dev_hostname.extra_hostnames.should == nil
+          @duplicated_dev_hostname1.reload.hostname.should == '127.0.0.1'
+          @duplicated_dev_hostname1.dev_hostnames.should   == 'localhost'
+          @duplicated_dev_hostname1.extra_hostnames.should == nil
+        end
+        
+        it "should remove duplicate dev domain (bis)" do
+          @duplicated_dev_hostname2.reload.hostname.should == 'jilion.com'
+          @duplicated_dev_hostname2.dev_hostnames.should   == '127.0.0.1, localhost'
+          @duplicated_dev_hostname2.extra_hostnames.should == nil
         end
         
         it "should not modify hostname when hostname is invalid, move dev hostnames that belong to extra hostnames, remove duplicate dev domain" do
@@ -603,7 +610,7 @@ describe Site do
             invalid_site.should_not be_valid
           end
           
-          [@not_local_dev_hostname1, @not_local_dev_hostname2, @duplicated_dev_hostname].each do |valid_site|
+          [@not_local_dev_hostname1, @not_local_dev_hostname2, @duplicated_dev_hostname1, @duplicated_dev_hostname2].each do |valid_site|
             valid_site.should be_valid
           end
         end
