@@ -64,7 +64,7 @@
 #   end
 #   
 #   # 8.3s => 4.27s
-#   context "beta release", :focus => true do
+#   context "beta release" do
 #     before(:each) { VCR.insert_cassette('release/beta') }
 #     
 #     # set(:beta_release1) { VCR.use_cassette('release/beta') { Factory(:release).tap { |r| r.flag } } }
@@ -119,7 +119,7 @@
 #   end
 #   
 #   # 5.12s => 1.55s
-#   context "stable release", :focus => true do
+#   context "stable release" do
 #     before(:each) { VCR.insert_cassette('release/stable') }
 #     
 #     # set(:stable_release) { VCR.use_cassette('release/stable') { Factory(:release).tap { |r| 2.times { r.flag } } } }
