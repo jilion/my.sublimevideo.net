@@ -190,6 +190,8 @@ class Site < ActiveRecord::Base
     host = URI.parse(referrer).host
     if main_referrer?(host, past_site.hostname)
       "main"
+    elsif extra_referrer?(host, past_site.extra_hostnames)
+      "extra"
     elsif dev_referrer?(host, past_site.dev_hostnames)
       "dev"
     else
@@ -201,6 +203,10 @@ class Site < ActiveRecord::Base
   
   def main_referrer?(host, past_hostname)
     host == past_hostname || host == "www.#{past_hostname}"
+  end
+  
+  def extra_referrer?(host, past_extra_hostnames)
+    past_extra_hostnames.split(', ').any? { |h| host == h || host == "www.#{h}" }
   end
   
   def dev_referrer?(host, past_dev_hostnames)
@@ -229,7 +235,10 @@ private
   
   # before_create
   def set_default_dev_hostnames
-    write_attribute(:dev_hostnames, "localhost, 127.0.0.1") unless dev_hostnames.present?
+    unless dev_hostnames.present?
+      dev_hosts = (hostname == '127.0.0.1') ? 'localhost' : 'localhost, 127.0.0.1'
+      write_attribute(:dev_hostnames, dev_hosts)
+    end
   end
   
   # after_create

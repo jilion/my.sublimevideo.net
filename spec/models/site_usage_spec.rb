@@ -64,6 +64,8 @@ describe SiteUsage do
       usage.player_hits.should                == 6
       usage.main_player_hits.should           == 5
       usage.main_player_hits_cached.should    == 1
+      usage.extra_player_hits.should          == 0
+      usage.extra_player_hits_cached.should   == 0
       usage.dev_player_hits.should            == 0
       usage.dev_player_hits_cached.should     == 0
       usage.invalid_player_hits.should        == 0
@@ -132,6 +134,8 @@ describe SiteUsage do
       usage.player_hits.should                == 3
       usage.main_player_hits.should           == 1
       usage.main_player_hits_cached.should    == 2
+      usage.extra_player_hits.should          == 0
+      usage.extra_player_hits_cached.should   == 0
       usage.dev_player_hits.should            == 0
       usage.dev_player_hits_cached.should     == 0
       usage.invalid_player_hits.should        == 0
