@@ -206,7 +206,7 @@ class Site < ActiveRecord::Base
     past_dev_hostnames.split(', ').any? { |h| host == h || host == "www.#{h}" }
   end
   
-  # Method for the :ont_time rake task
+  # Method for the :one_time rake task
   def self.update_hostnames
     invalid_sites = Site.all.reject { |s| s.valid? }
     puts "[Before] #{invalid_sites.size} invalid sites"
@@ -235,7 +235,11 @@ class Site < ActiveRecord::Base
       if (new_dev_hostnames != old_dev_hostnames) || extra_hostnames.present?
         site.dev_hostnames   = new_dev_hostnames.sort.join(",")
         site.extra_hostnames = extra_hostnames.sort.join(",")
-        site.save
+        begin
+          site.save!
+        rescue => ex
+          Notify.send("Error during Site.update_hostnames", :exception => ex)
+        end
       end
       
       # puts "[After] Site ##{site.id} (valid?: #{site.valid?}) is now:\n\tHOSTNAME => #{site.hostname},\n\tDEV => #{site.dev_hostnames},\n\tEXTRA => #{site.extra_hostnames}"
@@ -244,7 +248,7 @@ class Site < ActiveRecord::Base
     invalid_sites = Site.all.reject { |s| s.valid? }
     puts "[After] #{invalid_sites.size} invalid sites"
   end
-  # Method for the :ont_time rake task
+  # Method for the :one_time rake task
   
 private
   

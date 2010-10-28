@@ -1,20 +1,23 @@
 require 'spec_helper'
 
 describe Log::Amazon::S3::Player do
+  let(:log_s3_player) { Factory(:log_s3_player) }
+  
   before(:each) { VCR.insert_cassette('s3/player/logs_list') }
   
   context "built with valid attributes" do
-    subject { Factory(:log_s3_player) }
+    subject { log_s3_player }
     
-    it { should_not be_parsed }
-    it { should be_valid }
     its(:hostname)   { should == 'sublimevideo.player' }
     its(:started_at) { should == Time.zone.parse('2010-07-16-05-22-13').utc }
     its(:ended_at)   { should == (Time.zone.parse('2010-07-16-05-22-13') + 1.day).utc }
+    
+    it { should_not be_parsed }
+    it { should be_valid }
   end
   
   context "created with valid attributes" do
-    subject { Factory(:log_s3_player) }
+    subject { log_s3_player }
     
     its("file.url") { should == "/uploads/s3/sublimevideo.player/2010-07-16-05-22-13-8C4ECFE09170CCD5" }
     

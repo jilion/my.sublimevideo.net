@@ -11,18 +11,14 @@ describe SiteUsage do
       
       with_versioning do
         Timecop.travel(@log.started_at - 1.minute)
-        @site1 = Factory(:site, :hostname => 'artofthetitle.com')
-        @site1.token = 'ktfcm2l7'
-        @site1.save
+        @site1 = Factory(:site, :hostname => 'artofthetitle.com').tap { |s| s.token = 'ktfcm2l7'; s.save }
         Timecop.return
         VoxcastCDN.stub(:purge)
         @site1.activate
         @site1.update_attributes(:hostname => 'bob.com')
       end
       
-      @site2 = Factory(:site, :user => @site1.user, :hostname => 'sonymusic.se')
-      @site2.token = 'mhud9lff'
-      @site2.save
+      @site2 = Factory(:site, :user => @site1.user, :hostname => 'sonymusic.se').tap { |s| s.token = 'mhud9lff'; s.save }
     end
     
     it "should clean trackers" do
@@ -91,12 +87,8 @@ describe SiteUsage do
         File.new(Rails.root.join('spec/fixtures/logs/voxcast/cdn.sublimevideo.net.log.1275002700-1275002760.gz'))
       )
       
-      @site1 = Factory(:site, :hostname => 'zeno.name')
-      @site1.token = 'g3325oz4'
-      @site1.save
-      @site2 = Factory(:site, :user => @site1.user, :hostname => 'octavez.com')
-      @site2.token = 'g8thugh6'
-      @site2.save
+      @site1 = Factory(:site, :hostname => 'zeno.name').tap { |s| s.token = 'g3325oz4'; s.save }
+      @site2 = Factory(:site, :user => @site1.user, :hostname => 'octavez.com').tap { |s| s.token = 'g8thugh6'; s.save }
       
       @log = Factory(:log_voxcast)
       @trackers = LogAnalyzer.parse(@log.file, 'LogsFileFormat::VoxcastSites')
@@ -155,12 +147,8 @@ describe SiteUsage do
   
   describe "Trackers parsing with s3 loaders" do
     before(:each) do
-      @site1 = Factory(:site)
-      @site1.token = 'gperx9p4'
-      @site1.save
-      @site2 = Factory(:site, :user => @site1.user, :hostname => 'google.com')
-      @site2.token = 'pbgopxwy'
-      @site2.save
+      @site1 = Factory(:site).tap { |s| s.token = 'gperx9p4'; s.save }
+      @site2 = Factory(:site, :user => @site1.user, :hostname => 'google.com').tap { |s| s.token = 'pbgopxwy'; s.save }
       
       @log = Factory(:log_s3_loaders)
       @trackers = LogAnalyzer.parse(@log.file, 'LogsFileFormat::S3Loaders')
@@ -189,11 +177,11 @@ describe SiteUsage do
       usages.map(&:site).should include(@site1)
       usages.map(&:site).should include(@site2)
       usage = usages.select { |u| u.site == @site1 }.first
-      usage.site.should              == @site1
-      usage.loader_hits.should       == 0
-      usage.player_hits.should       == 0
-      usage.flash_hits.should        == 0
-      usage.requests_s3.should       == 1
+      usage.site.should            == @site1
+      usage.loader_hits.should     == 0
+      usage.player_hits.should     == 0
+      usage.flash_hits.should      == 0
+      usage.requests_s3.should     == 1
       usage.traffic_s3.should      == 727
       usage.traffic_voxcast.should == 0
     end
