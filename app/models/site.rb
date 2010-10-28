@@ -121,6 +121,7 @@ class Site < ActiveRecord::Base
   
   def template_hostnames
     hostnames  = [hostname]
+    hostnames += extra_hostnames.split(', ') if extra_hostnames.present?
     hostnames += dev_hostnames.split(', ')
     hostnames.map! { |hostname| "'" + hostname + "'" }
     hostnames.join(',')

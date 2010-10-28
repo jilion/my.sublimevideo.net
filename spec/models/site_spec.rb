@@ -372,8 +372,8 @@ describe Site do
   describe "Instance Methods" do
     
     it "should return good template_hostnames" do
-      site = Factory(:site)
-      site.template_hostnames.should == "'#{site.hostname}','localhost','127.0.0.1'"
+      site = Factory(:site, :extra_hostnames => "jilion.net, jilion.org")
+      site.template_hostnames.should == "'#{site.hostname}','jilion.net','jilion.org','localhost','127.0.0.1'"
     end
     
     it "should update ranks" do
