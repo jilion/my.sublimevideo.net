@@ -189,3 +189,51 @@ jeffbagley.com // localhost, 127.0.0.1, jeffbagley.nfshost.com
 picasso.local // localhost, 127.0.0.1
 test.sat-music.info // test.sat-music.info, localhost, 127.0.0.1
 p7coffee.com // localhost, 127.0.0.1, p7coffee.dev, p7coffee.com
+
+After one_time:update_invalid_sites task
+
+## Site.not_archived.all.reject { |s| s.valid? }.each { |s| puts "#{s.id} :: #{s.hostname} // #{s.extra_hostnames} // #{s.dev_hostnames} :: #{s.loader_hits_cache}" }
+
+25 :: sublimevideo-dev.local //  // localhost, 127.0.0.1, zeno.local, octave.local, jilion.local, 192.168.0.104 :: 3
+89 :: amadeus.local //  // localhost, 127.0.0.1 :: 0
+188 :: libor.artwork.cz //  // 127.0.0.1, localhost, localhost :: 10
+353 :: pai.local //  // localhost, 127.0.0.1 :: 0
+633 :: ben.mohu.local //  // localhost, 127.0.0.1 :: 23
+660 :: html5.local //  // localhost, 127.0.0.1 :: 159
+674 :: guerilladrivein.local //  // localhost, 127.0.0.1 :: 24
+746 :: picsengine.com //  // localhost, 127.0.0.1, localhost :: 7178
+952 :: bullittbookings.ltd //  // localhost, 127.0.0.1 :: 10
+964 :: tom.local //  // localhost, 127.0.0.1 :: 0
+994 :: blogspot.com //  // localhost, 127.0.0.1 :: 0
+1641 :: racingclub.com.or //  // localhost, 127.0.0.1 :: 0
+2017 :: this.is.useless.for.me.have.thousands.of.subdomains //  // localhost, 127.0.0.1 :: 0
+2222 :: yourdomain.com //  // localhost, 127.0.0.1 :: 0
+2223 :: yourdomain.com //  // localhost, 127.0.0.1 :: 0
+2228 :: renren.com //  // localhost, 127.0.0.1 :: 0
+2229 :: renren.com //  // localhost, 127.0.0.1 :: 0
+2231 :: swjtu.edu.cn //  // localhost, 127.0.0.1 :: 0
+2232 :: swjtu.edu.cn //  // localhost, 127.0.0.1 :: 0
+2247 :: thewildernessdowntown.com //  // localhost, 127.0.0.1 :: 0
+2248 :: thewildernessdowntown.com //  // localhost, 127.0.0.1 :: 0
+2357 :: am-pm.fr //  // localhost, 127.0.0.1, localhost :: 0
+2607 :: test.lo //  // localhost, 127.0.0.1 :: 0
+2656 :: eyespeak.dev //  // localhost, 127.0.0.1 :: 0
+2819 :: inlust.local //  // localhost, 127.0.0.1 :: 0
+2866 :: softhome.eg //  // localhost, 127.0.0.1 :: 1
+2949 :: dev1.hg //  // localhost, 127.0.0.1 :: 0
+2950 :: dev4.hg //  // localhost, 127.0.0.1 :: 0
+3064 :: new.csl-sofas //  // localhost, 127.0.0.1 :: 6
+3089 :: fallon.local //  // localhost, 127.0.0.1 :: 8
+3216 :: test.hot //  // localhost, 127.0.0.1 :: 15
+3228 :: maximilian-schmidt.de //  // localhost, 127.0.0.1, localhost :: 0
+3324 :: merlin.local //  // localhost, 127.0.0.1 :: 0
+3445 :: klabukov.dev //  // localhost, 127.0.0.1, 10.10.0.146 :: 155
+3555 :: yakatrin.dev //  // localhost, 127.0.0.1 :: 14
+3855 :: index.html //  // localhost, 127.0.0.1 :: 1
+4046 :: hometec.loc //  // localhost, 127.0.0.1 :: 567
+4131 :: picasso.local //  // localhost, 127.0.0.1 :: 0
+641 :: phoenix.local //  //  :: 0
+1345 :: server1.destiny //  // 127.0.0.1, 192.168.0.2, localhost :: 0
+3733 :: dle.local // test.sat-music.info // 127.0.0.1, 192.168.0.101, localhost :: 314
+
+
