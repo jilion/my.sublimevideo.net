@@ -548,7 +548,7 @@ describe Site do
         @not_local_dev_hostname1 = Factory.build(:site, :hostname => 'jilion.com', :dev_hostnames => 'localhost, jilion.net').tap { |s| s.save(:validate => false) }
         @not_local_dev_hostname2 = Factory.build(:site, :hostname => 'jilion.com', :dev_hostnames => 'jilion.net, jilion.org').tap { |s| s.save(:validate => false) }
         @duplicated_dev_hostname1 = Factory.build(:site, :hostname => '127.0.0.1', :dev_hostnames => 'localhost, 127.0.0.1').tap { |s| s.save(:validate => false) }
-        @duplicated_dev_hostname2 = Factory.build(:site, :hostname => 'jilion.com', :dev_hostnames => 'localhost, 127.0.0.1, 127.0.0.1').tap { |s| s.save(:validate => false) }
+        @duplicated_dev_hostname2 = Factory.build(:site, :hostname => 'jilion.com', :dev_hostnames => 'localhost, 127.0.0.1, 127.0.0.1, localhost').tap { |s| s.save(:validate => false) }
         @mixed_invalid_site      = Factory.build(:site, :hostname => 'jilion.local', :dev_hostnames => 'localhost, jilion.local, 127.0.0.1, jilion.net').tap { |s| s.save(:validate => false) }
       end
       
@@ -584,7 +584,7 @@ describe Site do
         it "should move dev hostnames that belong to extra hostnames (bis)" do
           @not_local_dev_hostname2.reload.hostname.should == 'jilion.com'
           @not_local_dev_hostname2.dev_hostnames.should   == ''
-          @not_local_dev_hostname2.extra_hostnames.should == 'jilion.org, jilion.net'
+          @not_local_dev_hostname2.extra_hostnames.should == 'jilion.net, jilion.org'
         end
         
         it "should remove duplicate dev domain" do
