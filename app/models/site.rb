@@ -222,10 +222,11 @@ class Site < ActiveRecord::Base
     
     invalid_sites.each do |site|
       old_dev_hostnames = site.dev_hostnames.split(',')
-      new_dev_hostnames = old_dev_hostnames.dup
+      new_dev_hostnames = []
       extra_hostnames   = []
       
       old_dev_hostnames.each do |dev_hostname|
+        dev_hostname = Hostname.clean(dev_hostname)
         # invalid dev hostname
         # OR valid main hostname and duplicated in dev hostnames
         # => remove it from the dev hostnames
@@ -236,6 +237,8 @@ class Site < ActiveRecord::Base
           if Hostname.extra_valid?(dev_hostname) && !Hostname.duplicate?([site.hostname, dev_hostname].join(","))
             extra_hostnames << dev_hostname
           end
+        else
+          new_dev_hostnames << dev_hostname
         end
       end
       
