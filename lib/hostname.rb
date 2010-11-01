@@ -1,3 +1,5 @@
+require 'ipaddr'
+
 module Hostname
   class << self
     
@@ -17,6 +19,15 @@ module Hostname
     def valid?(hostnames)
       if hostnames.present?
         clean(hostnames).split(', ').all? { |h| valid_one?(h) }
+      end
+    end
+    
+    # one site or list of sites separated by comma
+    def extra_valid?(hostnames)
+      if hostnames.present?
+        clean(hostnames).split(', ').all? { |h| valid_one?(h) }
+      else
+        true
       end
     end
     
@@ -76,7 +87,12 @@ module Hostname
       ssp = PublicSuffixService.parse(hostname)
       ssp.sld.present? && ssp.tld != 'local'
     rescue
-      false
+      begin 
+        ipaddr = IPAddr.new(hostname)
+        ipaddr.ipv4? || ipaddr.ipv6?
+      rescue
+        false
+      end
     end
     
     def dev_valid_one?(hostname)

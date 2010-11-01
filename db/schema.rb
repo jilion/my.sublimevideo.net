@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101026120936) do
+ActiveRecord::Schema.define(:version => 20101027140154) do
 
   create_table "admins", :force => true do |t|
     t.string   "email",                               :default => "", :null => false
@@ -120,6 +120,7 @@ ActiveRecord::Schema.define(:version => 20101026120936) do
     t.integer  "alexa_rank"
     t.string   "path"
     t.boolean  "wildcard"
+    t.string   "extra_hostnames"
   end
 
   add_index "sites", ["created_at"], :name => "index_sites_on_created_at"

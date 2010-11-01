@@ -1,8 +1,15 @@
 require 'spec_helper'
 
+# before refactoring: 18.52s
+# after refactoring:  11.06s
+# 1.67x faster
 describe User do
-  let(:user) { Factory(:user) }
+  set(:user) { Factory(:user) }
+  before(:each) { Delayed::Job.delete_all }
   
+  # before refactoring let: 5.72s
+  # after refactoring set:  2.01s
+  # 2.84x faster
   context "with valid attributes" do
     subject { user }
     
@@ -78,18 +85,12 @@ describe User do
     
     context "use_company is checked" do
       it "should validate company fields if use_company is checked" do
-        user = accept_invitation(:use_company => true, :company_name => nil, :company_url => nil, :company_job_title => nil, :company_employees => nil, :company_videos_served => nil)
-        user.should have(1).error_on(:company_name)
-        user.should have(1).error_on(:company_url)
-        user.should have(1).error_on(:company_job_title)
-        user.should have(1).error_on(:company_employees)
-        user.should have(1).error_on(:company_videos_served)
-        
-        user.errors[:company_name].should == ["can't be blank"]
-        user.errors[:company_url].should == ["can't be blank"]
-        user.errors[:company_job_title].should == ["can't be blank"]
-        user.errors[:company_employees].should == ["can't be blank"]
-        user.errors[:company_videos_served].should == ["can't be blank"]
+        fields = [:company_name, :company_url, :company_job_title, :company_employees, :company_videos_served]
+        user = accept_invitation(Hash[fields.map { |f| [f, nil] }.concat([:use_company, true])])
+        fields.each do |f|
+          user.should have(1).error_on(f)
+          user.errors[f].should == ["can't be blank"]
+        end
       end
       
       it "should validate company url" do
@@ -153,8 +154,8 @@ describe User do
     # =============
     describe "event(:unsuspend) { transition :suspended => :active }" do
       before(:each) do
-        @site1  = Factory(:site, :user => user, :hostname => "rymai.com")
-        @site2  = Factory(:site, :user => user, :hostname => "octavez.com")
+        @site1 = Factory(:site, :user => user, :hostname => "rymai.com")
+        @site2 = Factory(:site, :user => user, :hostname => "octavez.com")
         VCR.use_cassette('user/suspend') { user.suspend }
         VCR.insert_cassette('user/unsuspend')
       end

@@ -24,6 +24,14 @@ namespace :one_time do
     Site.all.each { |site| site.delay(:priority => 400).reset_caches! }
   end
   
+  # Move in domain branch
+  desc "Update invalid sites move invalid dev hostnames into the extra_hostnames and remove dev hostnames that are duplication of main hostname"
+  task :update_invalid_sites => :environment do
+    timed do
+      puts Site.update_hostnames.join("\n")
+    end
+  end
+  
 end
 
 class Log
@@ -32,9 +40,7 @@ class Log
       begin
         Log.delay(:priority => 200).parse_log(log_id)
       rescue => ex
-        puts "Error during the reparsing of Log ##{log_id}"
-        puts ex.inspect
-        # Notify.send("Error during the reparsing of Log ##{log_id}", :exception => ex)
+        Notify.send("Error during the reparsing of Log ##{log_id}", :exception => ex)
       end
     end
     puts "Delayed #{log_ids.size} individual logs."

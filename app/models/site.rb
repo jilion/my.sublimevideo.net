@@ -12,7 +12,7 @@ class Site < ActiveRecord::Base
     :requests_s3_cache, :traffic_s3_cache, :traffic_voxcast_cache
   ]
   
-  attr_accessible :hostname, :dev_hostnames
+  attr_accessible :hostname, :dev_hostnames, :extra_hostnames
   if MySublimeVideo::Release.public?
     attr_accessible :path, :wildcard
   end
@@ -63,10 +63,11 @@ class Site < ActiveRecord::Base
   # = Validations =
   # ===============
   
-  validates :user,          :presence => true
-  validates :hostname,      :presence => true, :hostname_uniqueness => true, :hostname => true
-  validates :dev_hostnames, :dev_hostnames => true
-  validates :player_mode,   :inclusion => { :in => PLAYER_MODES }
+  validates :user,            :presence => true
+  validates :hostname,        :presence => true, :hostname_uniqueness => true, :hostname => true
+  validates :dev_hostnames,   :dev_hostnames => true
+  validates :extra_hostnames, :extra_hostnames => true
+  validates :player_mode,     :inclusion => { :in => PLAYER_MODES }
   validate  :must_be_active_to_update_hostnames
   # BETA
   validate  :limit_site_number_per_user if MySublimeVideo::Release.beta?
@@ -107,7 +108,11 @@ class Site < ActiveRecord::Base
   end
   
   def dev_hostnames=(attribute)
-    write_attribute(:dev_hostnames, Hostname.clean(attribute)) if attribute.present?
+    write_attribute(:dev_hostnames, Hostname.clean(attribute)) # if attribute.present?
+  end
+  
+  def extra_hostnames=(attribute)
+    write_attribute(:extra_hostnames, Hostname.clean(attribute)) if attribute.present?
   end
   
   def path=(attribute)
@@ -116,6 +121,7 @@ class Site < ActiveRecord::Base
   
   def template_hostnames
     hostnames  = [hostname]
+    hostnames += extra_hostnames.split(', ') if extra_hostnames.present?
     hostnames += dev_hostnames.split(', ')
     hostnames.map! { |hostname| "'" + hostname + "'" }
     hostnames.join(',')
@@ -184,6 +190,8 @@ class Site < ActiveRecord::Base
     host = URI.parse(referrer).host
     if main_referrer?(host, past_site.hostname)
       "main"
+    elsif extra_referrer?(host, past_site.extra_hostnames)
+      "extra"
     elsif dev_referrer?(host, past_site.dev_hostnames)
       "dev"
     else
@@ -197,9 +205,59 @@ class Site < ActiveRecord::Base
     host == past_hostname || host == "www.#{past_hostname}"
   end
   
+  def extra_referrer?(host, past_extra_hostnames)
+    past_extra_hostnames.split(', ').any? { |h| host == h || host == "www.#{h}" }
+  end
+  
   def dev_referrer?(host, past_dev_hostnames)
     past_dev_hostnames.split(', ').any? { |h| host == h || host == "www.#{h}" }
   end
+  
+  # Method for the :one_time rake task
+  def self.update_hostnames
+    invalid_sites = Site.not_archived.reject { |s| s.valid? }
+    result = []
+    repaired_sites = 0
+    result << "[Before] #{invalid_sites.size} invalid sites, let's try to repair them!\n\n"
+    
+    invalid_sites.each do |site|
+      old_dev_hostnames = site.dev_hostnames.split(', ')
+      new_dev_hostnames = []
+      extra_hostnames   = []
+      
+      old_dev_hostnames.each do |dev_hostname|
+        next if Hostname.duplicate?([site.hostname, dev_hostname].join(', '))
+        
+        if Hostname.dev_valid?(dev_hostname)
+          new_dev_hostnames << dev_hostname
+        elsif Hostname.extra_valid?(dev_hostname)
+          extra_hostnames << dev_hostname
+        end
+      end
+      
+      new_dev_hostnames.uniq!
+      extra_hostnames.uniq!
+      
+      if (new_dev_hostnames != old_dev_hostnames) || extra_hostnames.present?
+        site.hostname        = Hostname.clean(site.hostname)
+        site.dev_hostnames   = Hostname.clean(new_dev_hostnames.sort.join(', '))
+        site.extra_hostnames = Hostname.clean(extra_hostnames.sort.join(', '))
+        site.save(:validate => false)
+        if site.valid?
+          site.delay.activate
+          repaired_sites += 1
+        end
+      end
+      result << "##{site.id} (#{'still in' unless site.valid?}valid)"
+      result << "MAIN : #{site.hostname} (#{'in' unless Hostname.valid?(site.hostname)}valid)"
+      result << "DEV  : #{old_dev_hostnames.join(", ").inspect} => #{site.dev_hostnames.inspect}"
+      result << "EXTRA: #{site.extra_hostnames.inspect}\n\n"
+    end
+    
+    result << "[After] #{invalid_sites.size - repaired_sites} invalid sites remaining!!"
+    result
+  end
+  # Method for the :one_time rake task
   
 private
   
@@ -223,7 +281,10 @@ private
   
   # before_create
   def set_default_dev_hostnames
-    write_attribute(:dev_hostnames, "localhost, 127.0.0.1") unless dev_hostnames.present?
+    unless dev_hostnames.present?
+      dev_hosts = (hostname == '127.0.0.1') ? 'localhost' : '127.0.0.1, localhost'
+      write_attribute(:dev_hostnames, dev_hosts)
+    end
   end
   
   # after_create

@@ -3,16 +3,18 @@ require 'spec_helper'
 describe Log::Voxcast do
   
   context "built with valid attributes" do
+    let(:log_voxcast) { Factory.build(:log_voxcast, :name => 'cdn.sublimevideo.net.log.1274773200-1274773260.gz') }
     before(:each) { VCR.insert_cassette('one_logs') }
     
-    subject { Factory.build(:log_voxcast, :name => 'cdn.sublimevideo.net.log.1274773200-1274773260.gz') }
+    subject { log_voxcast }
+    
+    its(:hostname)   { should == 'cdn.sublimevideo.net' }
+    its(:started_at) { should == Time.zone.at(1274773200).utc }
+    its(:ended_at)   { should == Time.zone.at(1274773260).utc }
     
     it { should_not be_parsed }
     it { should_not be_referrers_parsed }
     it { should be_valid }
-    its(:hostname)   { should == 'cdn.sublimevideo.net' }
-    its(:started_at) { should == Time.zone.at(1274773200).utc }
-    its(:ended_at)   { should == Time.zone.at(1274773260).utc }
     
     after(:each) { VCR.eject_cassette }
   end
@@ -157,10 +159,12 @@ describe Log::Voxcast do
         VoxcastCDN.should_not_receive(:logs_download)
         subject.parse_and_create_referrers!
       end
+      
       subject { @log }
       
-      it { should be_referrers_parsed }
       its(:referrers_parsed_at) { should be_present }
+      
+      it { should be_referrers_parsed }
       
       it "should not reparse if already done" do
         Referrer.should_not_receive(:create_or_update_from_trackers!)

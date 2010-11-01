@@ -8,6 +8,8 @@ class SiteUsage
   field :player_hits,                :type => Integer, :default => 0
   field :main_player_hits,           :type => Integer, :default => 0
   field :main_player_hits_cached,    :type => Integer, :default => 0
+  field :extra_player_hits,          :type => Integer, :default => 0
+  field :extra_player_hits_cached,   :type => Integer, :default => 0
   field :dev_player_hits,            :type => Integer, :default => 0
   field :dev_player_hits_cached,     :type => Integer, :default => 0
   field :invalid_player_hits,        :type => Integer, :default => 0
@@ -111,9 +113,12 @@ private
   
   def self.hits_traffic_and_requests_for_token(hbrs, token)
     hbr_attributes = [
-     :loader_hits, :player_hits, :main_player_hits, :main_player_hits_cached, :dev_player_hits,
-     :dev_player_hits_cached, :invalid_player_hits, :invalid_player_hits_cached, :flash_hits,
-     :requests_s3, :traffic_s3, :traffic_voxcast
+     :loader_hits, :player_hits,
+     :main_player_hits, :main_player_hits_cached,
+     :extra_player_hits, :extra_player_hits_cached,
+     :dev_player_hits, :dev_player_hits_cached,
+     :invalid_player_hits, :invalid_player_hits_cached,
+     :flash_hits, :requests_s3, :traffic_s3, :traffic_voxcast
     ]
     hbr_attributes.inject({}) do |token_hbr, attribute|
      value = (hbr = hbrs[attribute]) ? hbr[token].to_i : 0

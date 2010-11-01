@@ -50,7 +50,9 @@ describe Hostname do
     it { subject.valid?("www.com").should be_true }
     it { subject.valid?("ftp://www.www.com").should be_true }
     it { subject.valid?("https://www.co.uk").should be_true }
+    it { subject.valid?("124.123.151.123").should be_true }
     
+    it { subject.valid?("3ffe:505:2::1").should be_false } # ipv6
     it { subject.valid?("google.local").should be_false }
     it { subject.valid?(nil).should be_false }
     it { subject.valid?("").should be_false }
@@ -60,7 +62,6 @@ describe Hostname do
     it { subject.valid?("*").should be_false }
     it { subject.valid?("*.*").should be_false }
     it { subject.valid?("éCOLE").should be_false }
-    it { subject.valid?("124.123.151.123").should be_false }
     it { subject.valid?("localhost").should be_false }
     it { subject.valid?("com").should be_false }
     it { subject.valid?("test;ERR").should be_false }
@@ -69,6 +70,39 @@ describe Hostname do
     it { subject.valid?("ftp://127.]boo[:3000").should be_false }
     it { subject.valid?("www.joke;foo").should be_false }
     it { subject.valid?("http://www.bob.com,,localhost:3000").should be_false }
+  end
+  
+  describe "extra_valid?" do
+    it { subject.extra_valid?(nil).should be_true }
+    it { subject.extra_valid?("").should be_true }
+    it { subject.extra_valid?("*.google.com").should be_true }
+    it { subject.extra_valid?("éCOLE.fr").should be_true }
+    it { subject.extra_valid?("ASDASD.COM").should be_true }
+    it { subject.extra_valid?("jilion.org, jilion.net").should be_true }
+    it { subject.extra_valid?("広告掲載.jp").should be_true }
+    it { subject.extra_valid?("http://www.youtube.com?v=31231").should be_true }
+    it { subject.extra_valid?("http://www.www.com").should be_true }
+    it { subject.extra_valid?("www.com").should be_true }
+    it { subject.extra_valid?("ftp://www.www.com").should be_true }
+    it { subject.extra_valid?("https://www.co.uk").should be_true }
+    it { subject.extra_valid?("124.123.151.123").should be_true }
+    
+    it { subject.extra_valid?("3ffe:505:2::1").should be_false } # ipv6
+    it { subject.extra_valid?("google.local").should be_false }
+    it { subject.extra_valid?(".com").should be_false }
+    it { subject.extra_valid?("co.uk").should be_false }
+    it { subject.extra_valid?("www").should be_false }
+    it { subject.extra_valid?("*").should be_false }
+    it { subject.extra_valid?("*.*").should be_false }
+    it { subject.extra_valid?("éCOLE").should be_false }
+    it { subject.extra_valid?("localhost").should be_false }
+    it { subject.extra_valid?("com").should be_false }
+    it { subject.extra_valid?("test;ERR").should be_false }
+    it { subject.extra_valid?("http://test;ERR").should be_false }
+    it { subject.extra_valid?("http://www.localhost:3000").should be_false }
+    it { subject.extra_valid?("ftp://127.]boo[:3000").should be_false }
+    it { subject.extra_valid?("www.joke;foo").should be_false }
+    it { subject.extra_valid?("http://www.bob.com,,localhost:3000").should be_false }
   end
   
   describe "dev_valid?" do
@@ -142,6 +176,7 @@ describe Hostname do
   
   describe "include?" do
     it { subject.include?("http://localhost:3000, localhost", 'localhost').should be_true }
+    it { subject.include?("124.123.151.123, localhost", '124.123.151.123').should be_true }
     it { subject.include?("127.0.0.1, bob, 127.0.0.1", 'bob').should be_true }
     it { subject.include?("*.*, *.*", '*.*').should be_true }
     it { subject.include?("google.fr, jilion.com", "google.fr").should be_true }
