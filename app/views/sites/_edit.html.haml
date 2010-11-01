@@ -6,21 +6,21 @@
   .entry
     = f.label :hostname
     %p.desc
-      = "Be careful when updating this domain, player will no more working on old domain."
+      = "Be careful when updating this domain, player will not work anymore on the former domain."
     = f.text_field :hostname, :class => "text", :autocomplete => :off
     %p.desc.small
       = raw "If needed you can #{link_to "add staging or alias domains", "", :onclick => "$('extra_hostnames').toggle(); return false"} for this site."
   .entry#extra_hostnames{ :style => "display:none" }
     = f.label :extra_hostnames
     %p.desc
-      = "The extra domains are meant to be used for:"
+      = "Add extra domains separated by commas. Extra domains are meant to be used exclusively for:"
       %ul
         %li= "staging domains"
         %li= "alias domains (multiple domain names for the same content)"
     = f.text_field :extra_hostnames, :class => "text", :autocomplete => :off
   .entry
     = f.label :dev_hostnames
-    %p.desc= "Add domains to use in development (local domains only) separated by a comma:"
+    %p.desc= "Add (local only) development domains separated by commas:"
     = f.text_field :dev_hostnames, :class => "text", :autocomplete => :off
   - if public?
     .entry

@@ -9,7 +9,7 @@ gem 'pg',                    '~> 0.9.0'
 gem 'libxml-ruby',           '~> 1.1.3', :require => 'libxml'
 
 gem 'i18n',                  '~> 0.4.1'
-gem 'haml',                  '~> 3.0.22'
+gem 'haml',                  '~> 3.0.23'
 gem 'state_machine',         '~> 0.9.4'
 gem 'responders',            '~> 0.6.2'
 gem 'uniquify',              '~> 0.1.0'
@@ -33,7 +33,7 @@ gem 'devise_invitable',      :git => 'git://github.com/rymai/devise_invitable.gi
 gem 'memcached',             '~> 0.20.1'
 gem 'dalli',                 '~> 0.10.1'
 
-gem 'aws',                   '~> 2.3.22'
+gem 'aws',                   '~> 2.3.24'
 gem 'fog',                   '~> 0.3.13' # for carrierwave 0.5 final
 gem 'carrierwave',           '~> 0.5.0'
 
@@ -46,7 +46,7 @@ gem 'countries',             '~> 0.3.0'
 gem 'PageRankr',             '~> 1.4.3', :require => 'page_rankr'
 gem 'array_stats',           '~> 0.6.0'
 gem 'rescue_me',             '~> 0.1.0'
-gem 'paper_trail',           :git => 'git://github.com/thibaudgg/paper_trail.git'
+gem 'paper_trail',           '~> 1.6.3'
 
 group :production do
   gem 'rack-google-analytics', '~> 0.9.2', :require => 'rack/google-analytics'
@@ -75,6 +75,7 @@ group :development do
 end
 
 group :test do
+  gem 'database_cleaner', '>= 0.6'
   gem 'growl'
   gem 'guard'
   gem 'guard-rspec'
@@ -83,7 +84,7 @@ group :test do
   gem 'guard-passenger'
   
   gem 'shoulda',            '~> 2.11.3'
-  gem 'steak',              '~> 1.0.0.rc.1'
+  gem 'steak',              '~> 1.0.0.rc.2'
   gem 'capybara',           '~> 0.4.0'
   # gem 'capybara-envjs',     '~> 0.4.0'
   # gem 'akephalos',          '~> 0.2.4'

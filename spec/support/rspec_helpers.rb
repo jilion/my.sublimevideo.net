@@ -3,7 +3,7 @@ module RSpec
   module Support
     module RSpecExtensions
       module Set
-
+        
         module ClassMethods
           # Generates a method whose return value is memoized
           # in before(:all). Great for DB setup when combined with
@@ -20,21 +20,21 @@ module RSpec
             end
           end
         end
-
+        
         module InstanceMethods
           def __memoized # :nodoc:
             @__memoized ||= {}
           end
         end
-
+        
         def self.included(mod) # :nodoc:
           mod.extend ClassMethods
           mod.__send__ :include, InstanceMethods
         end
-
+        
       end
     end
   end
 end
 
-# RSpec.configuration.include(Spec::Support::RSpecExtensions::Set)
+RSpec.configuration.include(RSpec::Support::RSpecExtensions::Set)

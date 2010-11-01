@@ -151,7 +151,7 @@ def create_sites(max = 5)
       site.flash_hits_cache  = rand(1000)
       site.player_hits_cache = rand(500) + site.flash_hits_cache
       site.loader_hits_cache = rand(10000) + site.player_hits_cache
-      site.save!
+      site.save(:validate => false)
       site.activate
     end
   end

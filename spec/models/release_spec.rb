@@ -1,6 +1,215 @@
+# require 'spec_helper'
+# 
+# describe Release do
+#   
+#   # 4.33s => 2.63
+#   context "dev release" do
+#     set(:dev_release) { VCR.use_cassette('release/dev') { Factory(:release) } }
+#     subject { dev_release }
+#     before(:each) do
+#       VoxcastCDN.stub(:purge_dir).once
+#       VCR.insert_cassette('release/dev')
+#     end
+#     
+#     it { should be_dev }
+#     
+#     it "should be the dev release" do
+#       subject.should == Release.dev_release
+#     end
+#     
+#     it "should purge /p/beta when flagged (becoming the stable release)" do
+#       VoxcastCDN.should_receive(:purge_dir).with('/p/beta')
+#       subject.flag
+#     end
+#     
+#     describe "when flagged" do
+#       before(:each) do
+#         S3.player_bucket.put("beta/foo.txt", "bar")
+#         subject.flag
+#       end
+#       
+#       it { should be_beta }
+#       
+#       it "should remove no more used files in beta dir" do
+#         # VCR.eject_cassette
+#         VCR.use_cassette('release/dev_remove') do
+#           keys_names = S3.keys_names(S3.player_bucket, 'prefix' => 'beta')
+#           keys_names.should_not include("beta/foo.txt")
+#         end
+#       end
+#       
+#       it "should copy dev files inside beta dir" do
+#         keys_names = S3.keys_names(S3.player_bucket, 'prefix' => 'beta/', :remove_prefix => true)
+#         keys_names.sort.should == subject.files_in_zip.map(&:to_s).sort
+#       end
+#       
+#       it "should copy dev files inside beta dir with public-read" do
+#         # VCR.eject_cassette
+#         VCR.use_cassette('release/dev_read') do
+#           S3.player_bucket.keys('prefix' => 'beta').each do |key|
+#             all_users_grantee = key.grantees.detect { |g| g.name == "AllUsers" }
+#             all_users_grantee.perms.should == ["READ"]
+#           end
+#         end
+#       end
+#     end
+#     
+#     describe "when archived" do
+#       before(:each) { subject.archive }
+#       
+#       it { should be_archived }
+#     end
+#     
+#     after(:all) { VCR.eject_cassette }
+#   end
+#   
+#   # 8.3s => 4.27s
+#   context "beta release" do
+#     before(:each) { VCR.insert_cassette('release/beta') }
+#     
+#     # set(:beta_release1) { VCR.use_cassette('release/beta') { Factory(:release).tap { |r| r.flag } } }
+#     
+#     describe "when not flagged" do
+#       subject { beta_release }
+#       before(:each) { VoxcastCDN.stub(:purge_dir).twice }
+#       
+#       it { should be_beta }
+#       
+#       it "should also be the dev release when no really dev release exists" do
+#         subject.should == Release.dev_release
+#       end
+#       
+#       it "should be the beta release" do
+#         subject.should == Release.beta_release
+#       end
+#       
+#       it "should purge /p when flagged (becoming the stable release)" do
+#         VoxcastCDN.should_receive(:purge_dir).with('/p')
+#         subject.flag
+#       end
+#     end
+#     
+#     describe "when flagged" do
+#       subject { beta_release }
+#       before(:each) do
+#         stable_release
+#         subject.flag
+#       end
+#       
+#       it { should be_stable }
+#       
+#       it "should copy beta files inside stable dir" do
+#         keys_names = S3.keys_names(S3.player_bucket, 'prefix' => 'stable/', :remove_prefix => true)
+#         keys_names.sort.should == subject.files_in_zip.map(&:to_s).sort
+#       end
+#       
+#       it "should archive old stable_release" do
+#         stable_release.reload.should be_archived
+#       end
+#     end
+#     
+#     describe "when archived" do
+#       subject { beta_release1 }
+#       before(:each) { subject.archive }
+#       
+#       it { should be_archived }
+#     end
+#     
+#     after(:each) { VCR.eject_cassette }
+#   end
+#   
+#   # 5.12s => 1.55s
+#   context "stable release" do
+#     before(:each) { VCR.insert_cassette('release/stable') }
+#     
+#     # set(:stable_release) { VCR.use_cassette('release/stable') { Factory(:release).tap { |r| 2.times { r.flag } } } }
+#     subject { stable_release }
+#     before(:each) { VoxcastCDN.stub(:purge_dir).exactly(3).times }
+#     
+#     it { should be_stable }
+#     
+#     it "should not be flaggable" do
+#       subject.flag.should be_false
+#     end
+#     
+#     it "should also be the dev release when no really dev release exists" do
+#       subject.should == Release.dev_release
+#     end
+#     
+#     it "should also be the beta release when no really beta release exists" do
+#       subject.should == Release.beta_release
+#     end
+#     
+#     it "should be the stable release" do
+#       subject.should == Release.stable_release
+#     end
+#     
+#     describe "when archived" do
+#       before(:each) { subject.archive }
+#       
+#       it { should be_archived }
+#     end
+#     
+#     after(:each) { VCR.eject_cassette }
+#   end
+#   
+#   # 1.93s => 1.03s
+#   describe "instance methods" do
+#     set(:dev_release) { VCR.use_cassette('release/dev') { Factory(:release) } }
+#     before(:all) { VCR.insert_cassette('release/valid') }
+#     subject { dev_release }
+#     
+#     describe "#zipfile" do
+#       it "should save the zip locally" do
+#         subject.zipfile
+#         File.file?(Rails.root.join("tmp/#{subject.zip.filename}")).should be_true
+#       end
+#       
+#       it "should return a Zip::Zipfile object" do
+#         subject.zipfile.should be_instance_of(Zip::ZipFile)
+#       end
+#     end
+#     
+#     describe "#files_in_zip" do
+#       it "should auto-clear the local zip file when called with a block" do
+#         subject.files_in_zip do |files_in_zip_array|
+#           File.file?(Rails.root.join("tmp/#{subject.zip.filename}")).should be_true
+#         end
+#         File.file?(Rails.root.join("tmp/#{subject.zip.filename}")).should be_false
+#       end
+#       
+#       it "should not clear the local zip file when called without block" do
+#         subject.files_in_zip
+#         File.file?(Rails.root.join("tmp/#{subject.zip.filename}")).should be_true
+#       end
+#     end
+#     
+#     describe "#delete_zipfile" do
+#       it "should clear the local zip file" do
+#         subject.zipfile
+#         File.file?(Rails.root.join("tmp/#{subject.zip.filename}")).should be_true
+#         subject.delete_zipfile
+#         File.file?(Rails.root.join("tmp/#{subject.zip.filename}")).should be_false
+#       end
+#     end
+#     
+#     after(:all) do
+#       VCR.eject_cassette
+#       subject.delete_zipfile if File.file?(Rails.root.join("tmp/#{subject.zip.filename}"))
+#     end
+#   end
+#   
+# end
+
 require 'spec_helper'
 
 describe Release do
+  let(:archived_release) { Factory(:release).tap { |r| r.archive } }
+  let(:dev_release) { Factory(:release) }
+  let(:beta_release) { Factory(:release).tap { |r| r.flag } }
+  let(:stable_release) { Factory(:release).tap { |r| 2.times { r.flag } } }
+  
+  before(:each) { VoxcastCDN.stub(:purge_dir) }
   
   context "with valid attributes" do
     before(:each) { VCR.insert_cassette('release/valid') }
@@ -8,6 +217,7 @@ describe Release do
     
     its(:date) { should =~ /^[0-9]{4}-[0-9]{2}-[0-9]{2}-[0-9]{2}-[0-9]{2}-[0-9]{2}$/ }
     its(:zip)  { should be_present }
+    
     it { should be_dev }
     it { should be_valid }
     
@@ -20,7 +230,7 @@ describe Release do
     it "should only allow zip file" do
       release = Factory.build(:release, :zip => File.new(Rails.root.join('spec/fixtures/railscast_intro.mov')))
       release.should_not be_valid
-      release.errors[:zip].should == ["is not an allowed file type", "can't be blank"]
+      release.errors[:zip].should include("is not an allowed file type")
     end
   end
   
@@ -47,14 +257,17 @@ describe Release do
       end
       
       it { should be_dev }
+      
       it "should empty dev dir" do
         keys_name = S3.keys_names(S3.player_bucket, 'prefix' => 'dev')
         keys_name.should_not include("dev/foo.txt")
       end
+      
       it "should put zip files inside dev dir" do
         keys_names = S3.keys_names(S3.player_bucket, 'prefix' => 'dev/', :remove_prefix => true)
         keys_names.sort.should == subject.files_in_zip.map(&:to_s).sort
       end
+      
       it "should put zip files inside dev dir with public-read" do
         S3.player_bucket.keys('prefix' => 'dev').each do |key|
           all_users_grantee = key.grantees.detect { |g| g.name == "AllUsers" }
@@ -68,12 +281,15 @@ describe Release do
   
   context "dev release" do
     before(:each) { VCR.insert_cassette('release/dev') }
+    
     subject { dev_release }
     
     it { should be_dev }
+    
     it "should be the dev release" do
       subject.should == Release.dev_release
     end
+    
     it "should purge /p/beta when flagged (becoming the stable release)" do
       VoxcastCDN.should_receive(:purge_dir).with('/p/beta')
       subject.flag
@@ -86,16 +302,19 @@ describe Release do
       end
       
       it { should be_beta }
+      
       it "should remove no more used files in beta dir" do
         VCR.eject_cassette
-        VCR.insert_cassette('release/dev_remove')
+        VCR.insert_cassette('release/dev_read')
         keys_names = S3.keys_names(S3.player_bucket, 'prefix' => 'beta')
         keys_names.should_not include("beta/foo.txt")
       end
+      
       it "should copy dev files inside beta dir" do
         keys_names = S3.keys_names(S3.player_bucket, 'prefix' => 'beta/', :remove_prefix => true)
         keys_names.sort.should == subject.files_in_zip.map(&:to_s).sort
       end
+      
       it "should copy dev files inside beta dir with public-read" do
         VCR.eject_cassette
         VCR.insert_cassette('release/dev_read')
@@ -105,6 +324,7 @@ describe Release do
         end
       end
     end
+    
     describe "when archived" do
       before(:each) { subject.archive }
       
@@ -116,15 +336,19 @@ describe Release do
   
   context "beta release" do
     before(:each) { VCR.insert_cassette('release/beta') }
+    
     subject { beta_release }
     
     it { should be_beta }
+    
     it "should also be the dev release when no really dev release exists" do
       subject.should == Release.dev_release
     end
+    
     it "should be the beta release" do
       subject.should == Release.beta_release
     end
+    
     it "should purge /p when flagged (becoming the stable release)" do
       VoxcastCDN.should_receive(:purge_dir).with('/p')
       subject.flag
@@ -156,6 +380,7 @@ describe Release do
   
   context "stable release" do
     before(:each) { VCR.insert_cassette('release/stable') }
+    
     subject { stable_release }
     
     it { should be_stable }
@@ -183,7 +408,11 @@ describe Release do
   end
   
   describe "instance methods" do
-    before(:each) { VCR.insert_cassette('release/valid') }
+    set(:dev_release) { VCR.use_cassette('release/dev') { Factory(:release) } }
+    before(:all) { VCR.insert_cassette('release/valid') }
+    subject { dev_release }
+    # before(:each) { VCR.insert_cassette('release/valid') }
+    
     subject { dev_release }
     
     describe "#zipfile" do
@@ -220,39 +449,10 @@ describe Release do
       end
     end
     
-    after(:each) do
+    after(:all) do
       VCR.eject_cassette
       subject.delete_zipfile if File.file?(Rails.root.join("tmp/#{subject.zip.filename}"))
     end
-  end
-  
-private
-  
-  def archived_release
-    VoxcastCDN.stub(:purge_dir).once
-    release = Factory(:release)
-    release.archive
-    release
-  end
-  
-  def dev_release
-    VoxcastCDN.stub(:purge_dir).once
-    Factory(:release)
-  end
-  
-  def beta_release
-    VoxcastCDN.stub(:purge_dir).twice
-    release = Factory(:release)
-    release.flag
-    release
-  end
-  
-  def stable_release
-    VoxcastCDN.stub(:purge_dir).exactly(3).times
-    release = Factory(:release)
-    release.flag
-    release.flag
-    release
   end
   
 end
