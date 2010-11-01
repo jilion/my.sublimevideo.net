@@ -84,6 +84,7 @@ module Hostname
     end
     
     def valid_one?(hostname)
+      return true if ["blogspot.com", "appspot.com", "operaunite.com"].include?(hostname)
       ssp = PublicSuffixService.parse(hostname)
       ssp.sld.present? && ssp.tld != 'local'
     rescue
