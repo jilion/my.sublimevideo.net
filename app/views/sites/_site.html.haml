@@ -9,14 +9,13 @@
             -# TODO: Update this text
             %em= "Invalid"
         
-      -#- if site.wildcard?
-      -#  %span
-      -#    %em= "wildcard support"
-      - if public?
-        - if site.need_path?
-          %span
-            -# TODO: Update this text
-            %em= "you should add a path"
+      - if site.wildcard?
+        %span
+          %em= "wildcard support"
+      - if site.need_path?
+        %span
+          -# TODO: Update this text
+          %em= "you should add a path"
       
       - if site.pending?
         = link_to "", :class => "settings disabled", :title => "Settings", :onclick => "return false" do

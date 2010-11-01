@@ -12,10 +12,6 @@ class ApplicationController < ActionController::Base
   
 protected
   
-  def public_release_only
-    redirect_to sites_path unless MySublimeVideo::Release.public?
-  end
-  
   def user_for_paper_trail
     params[:user][:email].downcase! if params[:user] && params[:user][:email]
     current_user rescue nil

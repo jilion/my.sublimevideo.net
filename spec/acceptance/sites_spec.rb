@@ -102,13 +102,11 @@ feature "Sites actions:" do
     page.should have_css('a.next_page')
   end
   
-  context "public release only", :release => :public do
-    scenario "user suspended" do
-      @current_user.suspend
-      visit "/sites"
-      
-      current_url.should =~ %r(http://[^/]+/suspended)
-    end
+  scenario "user suspended" do
+    @current_user.suspend
+    visit "/sites"
+    
+    current_url.should =~ %r(http://[^/]+/suspended)
   end
   
 end

@@ -41,10 +41,6 @@ Factory.define :site_usage do |f|
   f.site_id { Factory(:site).id }
 end
 
-Factory.define :invoice do |f|
-  f.association :user
-end
-
 Factory.define :release do |f|
   f.zip { File.new(Rails.root.join('spec/fixtures/release.zip')) }
 end

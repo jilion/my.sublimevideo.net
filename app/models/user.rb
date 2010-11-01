@@ -1,6 +1,4 @@
 class User < ActiveRecord::Base
-  include Trial
-  include LimitAlert
   include CreditCard
   
   devise :database_authenticatable, :registerable, :confirmable,
@@ -18,8 +16,6 @@ class User < ActiveRecord::Base
                   :use_personal, :use_company, :use_clients,
                   :company_name, :company_url, :company_job_title, :company_employees, :company_videos_served,
                   :terms_and_conditions
-  # Trial
-  attr_accessible :limit_alert_amount
   # Credit Card
   attr_accessible :cc_update, :cc_type, :cc_full_name, :cc_number, :cc_expire_on, :cc_verification_value
   
@@ -34,9 +30,6 @@ class User < ActiveRecord::Base
   # = Scopes =
   # ==========
   
-  scope :in_trial,        where(:trial_ended_at => nil)
-  scope :not_in_trial,    where(:trial_ended_at.ne => nil)
-  scope :limit_alertable, where(:limit_alert_amount.gt => 0, :limit_alert_email_sent_at => nil)
   scope :without_cc,      where(:cc_type => nil, :cc_last_digits => nil)
   scope :with_cc,         where(:cc_type.ne => nil, :cc_last_digits.ne => nil)
   
@@ -78,7 +71,6 @@ class User < ActiveRecord::Base
   
   before_create :set_next_invoiced_on
   before_save :store_credit_card, :keep_some_credit_card_info # in user/credit_card
-  before_save :clear_limit_alert_email_sent_at_when_limit_alert_amount_is_augmented # in user/limit_alert
   after_update :update_email_on_zendesk
   
   # =================
@@ -100,10 +92,6 @@ class User < ActiveRecord::Base
   # allow suspended user to login (devise)
   def active?
     %w[active suspended].include?(state) && invitation_token.nil?
-  end
-  
-  def welcome?
-    sites.empty? && !credit_card?
   end
   
   def full_name

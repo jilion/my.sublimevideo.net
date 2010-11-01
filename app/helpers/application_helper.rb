@@ -2,10 +2,6 @@
 
 module ApplicationHelper
   
-  def public?
-    MySublimeVideo::Release.public?
-  end
-  
   def display_bool(boolean)
     boolean ? "✓" : "-"
   end

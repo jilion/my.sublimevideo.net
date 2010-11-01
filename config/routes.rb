@@ -35,7 +35,6 @@ MySublimeVideo::Application.routes.draw do
     get :state, :on => :member
     resource :addons, :only => [:edit, :update], :controller => 'sites/addons'
   end
-  resources :invoices, :only => [:index, :show]
   resource :card, :controller => 'credit_cards', :as => :credit_card, :only => [:edit, :update]
   
   # match ':page', :to => 'pages#show', :via => :get, :as => :page, :page => /terms|privacy|suspended/
@@ -144,8 +143,6 @@ end
 #                    site GET    /sites/:id(.:format)                   {:action=>"show", :controller=>"sites"}
 #                    site PUT    /sites/:id(.:format)                   {:action=>"update", :controller=>"sites"}
 #                    site DELETE /sites/:id(.:format)                   {:action=>"destroy", :controller=>"sites"}
-#                invoices GET    /invoices(.:format)                    {:action=>"index", :controller=>"invoices"}
-#                 invoice GET    /invoices/:id(.:format)                {:action=>"show", :controller=>"invoices"}
 #        edit_credit_card GET    /card/edit(.:format)                   {:action=>"edit", :controller=>"credit_cards"}
 #             credit_card PUT    /card(.:format)                        {:action=>"update", :controller=>"credit_cards"}
 #                    page GET    /:page(.:format)                       {:page=>/terms|privacy/, :controller=>"pages", :action=>"show"}

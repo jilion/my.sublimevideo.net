@@ -8,7 +8,7 @@ describe UserMailer do
       before(:each) do
         subject
         ActionMailer::Base.deliveries.clear
-        UserMailer.send(mail, subject, :trial_ended).deliver
+        UserMailer.send(mail, subject, :invoice_problem).deliver
         @last_delivery = ActionMailer::Base.deliveries.last
       end
       
@@ -31,9 +31,9 @@ describe UserMailer do
   end
   
   describe "#account_suspended" do
-    context "when reason given is :trial_ended" do
+    context "when reason given is :invoice_problem" do
       before(:each) do
-        UserMailer.account_suspended(subject, :trial_ended).deliver
+        UserMailer.account_suspended(subject, :invoice_problem).deliver
         @last_delivery = ActionMailer::Base.deliveries.last
       end
       
@@ -42,7 +42,7 @@ describe UserMailer do
       end
       
       it "should set a body that contain infos" do
-        @last_delivery.body.raw_source.should include "Trial is over!"
+        @last_delivery.body.raw_source.should include "Hi"
       end
     end
   end

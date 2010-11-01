@@ -1,7 +1,5 @@
 class CreditCardsController < ApplicationController
   
-  before_filter :public_release_only
-  
   # GET /card/edit
   def edit
   end

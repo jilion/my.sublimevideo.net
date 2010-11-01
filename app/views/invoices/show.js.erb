@@ -1,7 +1,0 @@
-<%- if %w[sites].include? params[:type] %>
-  var popup = $("invoices_<%= params[:type] %>_<%= @invoice.to_param %>");
-  if (popup) {
-    popup.removeClassName("loading");
-    popup.down(".content").update("<%= escape_javascript(render params[:type]) %>")
-  }
-<%- end %>

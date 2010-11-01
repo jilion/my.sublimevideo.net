@@ -12,13 +12,11 @@ feature "Pages:" do
     page.should have_content('Privacy Policy')
   end
   
-  context "public release only", :release => :public do
-    scenario "suspended" do
-      sign_in_as :user
-      @current_user.suspend
-      visit "/suspended"
-      page.should have_content('Your account is suspended')
-    end
+  scenario "suspended" do
+    sign_in_as :user
+    @current_user.suspend
+    visit "/suspended"
+    page.should have_content('Your account is suspended')
   end
   
 end

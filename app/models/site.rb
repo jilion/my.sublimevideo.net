@@ -12,10 +12,7 @@ class Site < ActiveRecord::Base
     :requests_s3_cache, :traffic_s3_cache, :traffic_voxcast_cache
   ]
   
-  attr_accessible :hostname, :dev_hostnames, :extra_hostnames
-  if MySublimeVideo::Release.public?
-    attr_accessible :path, :wildcard
-  end
+  attr_accessible :hostname, :dev_hostnames, :extra_hostnames, :path, :wildcard
   
   uniquify :token, :chars => Array('a'..'z') + Array('0'..'9')
   
@@ -69,8 +66,6 @@ class Site < ActiveRecord::Base
   validates :extra_hostnames, :extra_hostnames => true
   validates :player_mode,     :inclusion => { :in => PLAYER_MODES }
   validate  :must_be_active_to_update_hostnames
-  # BETA
-  validate  :limit_site_number_per_user if MySublimeVideo::Release.beta?
   
   # =============
   # = Callbacks =
@@ -260,13 +255,6 @@ class Site < ActiveRecord::Base
   # Method for the :one_time rake task
   
 private
-  
-  # BETA validate
-  def limit_site_number_per_user
-    if new_record? && errors[:hostname].blank? && user && user.sites.not_archived.count >= 10
-      errors.add(:base, "You can only add up to 10 sites during the beta")
-    end
-  end
   
   # validate
   def must_be_active_to_update_hostnames

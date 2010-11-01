@@ -32,7 +32,7 @@ describe User do
     it { should have_many :sites }
     it { should have_many :invoices }
     
-    [:first_name, :last_name, :email, :remember_me, :password, :postal_code, :country, :use_personal, :use_company, :use_clients, :company_name, :company_url, :company_job_title, :company_employees, :company_videos_served, :terms_and_conditions, :limit_alert_amount, :cc_update, :cc_type, :cc_full_name, :cc_number, :cc_expire_on, :cc_verification_value].each do |attr|
+    [:first_name, :last_name, :email, :remember_me, :password, :postal_code, :country, :use_personal, :use_company, :use_clients, :company_name, :company_url, :company_job_title, :company_employees, :company_videos_served, :terms_and_conditions, :cc_update, :cc_type, :cc_full_name, :cc_number, :cc_expire_on, :cc_verification_value].each do |attr|
       it { should allow_mass_assignment_of(attr) }
     end
     
@@ -221,15 +221,6 @@ describe User do
   end
   
   describe "instance methods" do
-    it "should be welcome if sites is empty" do
-      user.should be_welcome
-    end
-    
-    it "shouldn't be welcome if user as a credit_card" do
-      user.stub(:credit_card?).and_return(true)
-      user.should_not be_welcome
-    end
-    
     it "should be active when suspended to allow login" do
       user.suspend
       user.should be_active

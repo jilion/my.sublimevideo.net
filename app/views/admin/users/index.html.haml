@@ -19,26 +19,3 @@
   
 #users_table_wrap
   = render "users"
-  
--#%script{ :type => "text/javascript", :charset => "utf-8" }
--#  == window.onload = function () {
--#  ==     var r = Raphael("users_count");
--#  ==     r.g.txtattr.font = "12px 'Fontin Sans', Fontin-Sans, sans-serif";
--#  =     "var pie = r.g.piechart(280, 60, 50, [#{User.in_trial.with_cc.size}, #{User.in_trial.without_cc.size}, #{User.not_in_trial.size}],"
--#  =     "{ legend: ['%% (#{User.in_trial.with_cc.size}) – In trial with credit card', '%% (#{User.in_trial.without_cc.size}) – In trial without credit card', '%% (#{User.not_in_trial.size}) – Not in trial'], legendpos: 'west'});"
--#  ==     pie.hover(function () {
--#  ==         this.sector.stop();
--#  ==         this.sector.scale(1.1, 1.1, this.cx, this.cy);
--#  ==         if (this.label) {
--#  ==             this.label[0].stop();
--#  ==             this.label[0].scale(1.5);
--#  ==             this.label[1].attr({"font-weight": 800});
--#  ==         }
--#  ==     }, function () {
--#  ==         this.sector.animate({scale: [1, 1, this.cx, this.cy]}, 500, "bounce");
--#  ==         if (this.label) {
--#  ==             this.label[0].animate({scale: 1}, 500, "bounce");
--#  ==             this.label[1].attr({"font-weight": 400});
--#  ==         }
--#  ==     });
--#  == };  

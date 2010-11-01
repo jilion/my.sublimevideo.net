@@ -3,27 +3,18 @@ require 'spec_helper'
 
 feature "Users actions:" do
   
-  context "public release only", :release => :public do
-    scenario "register is available after the public release" do
-      visit "/register"
-      current_url.should =~ %r(http://[^/]+/register)
-      
-      fill_in "Full name", :with => "John Doe"
-      fill_in "Email",     :with => "john@doe.com"
-      fill_in "Password",  :with => "123456"
-      check "I agree to the Terms & Conditions."
-      click_button "Register"
-      
-      current_url.should =~ %r(http://[^/]+/sites)
-      page.should have_content "John Doe"
-    end
-  end
-  
-  context "public release only", :release => :beta do
-    scenario "register is not available during the beta" do
-      visit "/register"
-      current_url.should =~ %r(http://[^/]+/login)
-    end
+  scenario "register is available after the public release" do
+    visit "/register"
+    current_url.should =~ %r(http://[^/]+/register)
+    
+    fill_in "Full name", :with => "John Doe"
+    fill_in "Email",     :with => "john@doe.com"
+    fill_in "Password",  :with => "123456"
+    check "I agree to the Terms & Conditions."
+    click_button "Register"
+    
+    current_url.should =~ %r(http://[^/]+/sites)
+    page.should have_content "John Doe"
   end
   
   scenario "update email" do
@@ -67,17 +58,6 @@ feature "Users actions:" do
     User.last.full_name.should == "John Doe"
   end
   
-  context "public release only", :release => :public do
-    scenario "update limit alert amount" do
-      sign_in_as :user
-      click_link('John Doe')
-      select "$100", :from => "user_limit_alert_amount"
-      click_button "user_email_notifications_submit"
-      
-      User.last.limit_alert_amount.should == 10000
-    end
-  end
-  
   scenario "accept invitation without token should redirect to /login" do
     visit "/invitation/accept"
     current_url.should =~ %r(^http://[^/]+/login$)
@@ -104,7 +84,6 @@ feature "Users actions:" do
     click_button "Join"
     
     current_url.should =~ %r(http://[^/]+/sites)
-    page.should have_content "Welcome" if MySublimeVideo::Release.public?
     page.should have_content "Rémy Coutable"
     
     invited_user.reload.full_name.should == "Rémy Coutable"

@@ -7,25 +7,15 @@ module RecurringJob
     '%Log::Amazon::S3::Licenses%fetch_and_create_new_logs%'
   ]
   
-  NAMES = if MySublimeVideo::Release.public?
-    [
-      '%User::LimitAlert%send_limit_alerts%',
-      '%User::CreditCard%send_credit_card_expiration%',
-      '%User::Trial%supervise_users%'
-    ] + logs_tasks
-  else
-    logs_tasks
-  end
+  NAMES = [
+    '%User::CreditCard%send_credit_card_expiration%'
+  ] + logs_tasks
   
   class << self
     
     def launch_all
       Log.delay_fetch_and_create_new_logs
-      if MySublimeVideo::Release.public?
-        User::CreditCard.delay_send_credit_card_expiration
-        User::Trial.delay_supervise_users
-        User::LimitAlert.delay_send_limit_alerts
-      end
+      User::CreditCard.delay_send_credit_card_expiration
     end
     
     def supervise

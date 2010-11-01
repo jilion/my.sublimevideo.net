@@ -1,13 +1,10 @@
 = title("My Sites")
   
 = content_for :bottom do
-  - if public? && current_user.welcome? && !params[:trial]
-    = render "layouts/welcome"
     
 = content_for :content_header do
   %h2= "My Sites"
   %p.title_desc= raw "Generate SublimeVideo players for your sites by entering their hostnames below. Each subdomain must have its own player, for instance: <em>yourdomain.com</em> or <em>sub.yourdomain.com</em>."
-  = render "layouts/account_activity"
   
 - @site = current_user.sites.build
 #new_site_wrap

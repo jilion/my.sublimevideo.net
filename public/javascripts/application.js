@@ -120,11 +120,6 @@ MySublimeVideo.showSiteAddons = function(siteId) {
   return false;
 };
 
-MySublimeVideo.showInvoice = function(invoiceId, type) {
-  MySublimeVideo.openPopup(invoiceId, "invoices_"+type, '/invoices/'+invoiceId+'?type='+type);
-  return false;
-};
-
 MySublimeVideo.confirmDeleteSite = function(el) {
   if (confirm('Are you sure?')) {
     setTimeout(function(){ // setTimeout essential otherwise the form won't be able to be submitted by rails.js
