@@ -215,7 +215,7 @@ class Site < ActiveRecord::Base
   
   # Method for the :one_time rake task
   def self.update_hostnames
-    invalid_sites = Site.all.reject { |s| s.valid? }
+    invalid_sites = Site.not_archived.reject { |s| s.valid? }
     result = []
     repaired_sites = 0
     result << "[Before] #{invalid_sites.size} invalid sites, let's try to repair them!\n\n"
