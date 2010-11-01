@@ -7,10 +7,10 @@ class Site < ActiveRecord::Base
   self.per_page = 100
   
   # Versioning
-  has_paper_trail :ignore => [
-    :loader_hits_cache, :player_hits_cache, :flash_hits_cache,
-    :requests_s3_cache, :traffic_s3_cache, :traffic_voxcast_cache
-  ]
+  has_paper_trail # :ignore => [
+  #   :loader_hits_cache, :player_hits_cache, :flash_hits_cache,
+  #   :requests_s3_cache, :traffic_s3_cache, :traffic_voxcast_cache
+  # ]
   
   attr_accessible :hostname, :dev_hostnames, :extra_hostnames, :path, :wildcard
   
@@ -137,26 +137,26 @@ class Site < ActiveRecord::Base
     VoxcastCDN.delay.purge("/l/#{token}.js")
   end
   
-  # TODO Remove after beta
-  def reset_hits_cache!(time)
-    # Warning Lot of request here
-    self.loader_hits_cache = usages.after(time).sum(:loader_hits)
-    self.player_hits_cache = usages.after(time).sum(:player_hits)
-    self.flash_hits_cache  = usages.after(time).sum(:flash_hits)
-    save!
-  end
-  
-  # TODO Remove after beta
-  def reset_caches!
-    # Warning Lot of request here
-    self.loader_hits_cache     = usages.where(:started_at => nil).sum(:loader_hits) || 0
-    self.player_hits_cache     = usages.where(:started_at => nil).sum(:player_hits) || 0
-    self.flash_hits_cache      = usages.where(:started_at => nil).sum(:flash_hits) || 0
-    self.requests_s3_cache     = usages.where(:started_at => nil).sum(:requests_s3) || 0
-    self.traffic_s3_cache      = usages.where(:started_at => nil).sum(:traffic_s3) || 0
-    self.traffic_voxcast_cache = usages.where(:started_at => nil).sum(:traffic_voxcast) || 0
-    save!
-  end
+  # # TODO Remove after beta
+  # def reset_hits_cache!(time)
+  #   # Warning Lot of request here
+  #   self.loader_hits_cache = usages.after(time).sum(:loader_hits)
+  #   self.player_hits_cache = usages.after(time).sum(:player_hits)
+  #   self.flash_hits_cache  = usages.after(time).sum(:flash_hits)
+  #   save!
+  # end
+  # 
+  # # TODO Remove after beta
+  # def reset_caches!
+  #   # Warning Lot of request here
+  #   self.loader_hits_cache     = usages.where(:started_at => nil).sum(:loader_hits) || 0
+  #   self.player_hits_cache     = usages.where(:started_at => nil).sum(:player_hits) || 0
+  #   self.flash_hits_cache      = usages.where(:started_at => nil).sum(:flash_hits) || 0
+  #   self.requests_s3_cache     = usages.where(:started_at => nil).sum(:requests_s3) || 0
+  #   self.traffic_s3_cache      = usages.where(:started_at => nil).sum(:traffic_s3) || 0
+  #   self.traffic_voxcast_cache = usages.where(:started_at => nil).sum(:traffic_voxcast) || 0
+  #   save!
+  # end
   
   def update_ranks
     ranks = PageRankr.ranks(hostname)
@@ -165,16 +165,16 @@ class Site < ActiveRecord::Base
     self.save
   end
   
-  # use it carefully
-  def clear_caches
-    self.loader_hits_cache     = 0
-    self.player_hits_cache     = 0
-    self.flash_hits_cache      = 0
-    self.requests_s3_cache     = 0
-    self.traffic_s3_cache      = 0
-    self.traffic_voxcast_cache = 0
-    self.save
-  end
+  # # use it carefully
+  # def clear_caches
+  #   self.loader_hits_cache     = 0
+  #   self.player_hits_cache     = 0
+  #   self.flash_hits_cache      = 0
+  #   self.requests_s3_cache     = 0
+  #   self.traffic_s3_cache      = 0
+  #   self.traffic_voxcast_cache = 0
+  #   self.save
+  # end
   
   def need_path?
     %w[web.me.com homepage.mac.com].include?(hostname) && path.blank?
@@ -183,9 +183,9 @@ class Site < ActiveRecord::Base
   def referrer_type(referrer, timestamp = Time.now.utc)
     past_site = version_at(timestamp)
     host = URI.parse(referrer).host
-    if main_referrer?(host, past_site.hostname)
+    if main_referrer?(referrer, host, past_site)
       "main"
-    elsif extra_referrer?(host, past_site.extra_hostnames)
+    elsif extra_referrer?(referrer, host, past_site)
       "extra"
     elsif dev_referrer?(host, past_site.dev_hostnames)
       "dev"
@@ -196,12 +196,24 @@ class Site < ActiveRecord::Base
     "invalid"
   end
   
-  def main_referrer?(host, past_hostname)
-    host == past_hostname || host == "www.#{past_hostname}"
+  def main_referrer?(referrer, host, past_site)
+    if past_site.path?
+      return referrer.include?("#{past_site.hostname}/#{past_site.path}") || referrer.include?("www.#{past_site.hostname}/#{past_site.path}") || false
+    elsif past_site.wildcard?
+      return host.include?(past_site.hostname)
+    else
+      host == past_site.hostname || host == "www.#{past_site.hostname}"
+    end
   end
   
-  def extra_referrer?(host, past_extra_hostnames)
-    past_extra_hostnames.split(', ').any? { |h| host == h || host == "www.#{h}" }
+  def extra_referrer?(referrer, host, past_site)
+    if past_site.path?
+      return past_site.extra_hostnames.split(', ').any? { |h| referrer.include?("#{h}/#{past_site.path}") || referrer.include?("www.#{h}/#{past_site.path}") }
+    elsif past_site.wildcard?
+      return past_site.extra_hostnames.split(', ').any? { |h| host.include?(h) }
+    else
+      past_site.extra_hostnames.split(', ').any? { |h| host == h || host == "www.#{h}" }
+    end
   end
   
   def dev_referrer?(host, past_dev_hostnames)
@@ -296,38 +308,34 @@ private
   
 end
 
+
 # == Schema Information
 #
 # Table name: sites
 #
-#  id                    :integer         not null, primary key
-#  user_id               :integer
-#  hostname              :string(255)
-#  dev_hostnames         :string(255)
-#  token                 :string(255)
-#  license               :string(255)
-#  loader                :string(255)
-#  state                 :string(255)
-#  loader_hits_cache     :integer(8)      default(0)
-#  player_hits_cache     :integer(8)      default(0)
-#  flash_hits_cache      :integer(8)      default(0)
-#  archived_at           :datetime
-#  created_at            :datetime
-#  updated_at            :datetime
-#  player_mode           :string(255)     default("stable")
-#  requests_s3_cache     :integer(8)      default(0)
-#  traffic_s3_cache      :integer(8)      default(0)
-#  traffic_voxcast_cache :integer(8)      default(0)
-#  google_rank           :integer
-#  alexa_rank            :integer
-#  path                  :string(255)
-#  wildcard              :boolean
+#  id              :integer         not null, primary key
+#  user_id         :integer
+#  hostname        :string(255)
+#  dev_hostnames   :string(255)
+#  token           :string(255)
+#  license         :string(255)
+#  loader          :string(255)
+#  state           :string(255)
+#  archived_at     :datetime
+#  created_at      :datetime
+#  updated_at      :datetime
+#  player_mode     :string(255)     default("stable")
+#  google_rank     :integer
+#  alexa_rank      :integer
+#  path            :string(255)
+#  wildcard        :boolean
+#  extra_hostnames :string(255)
+#  plan_id         :integer
 #
 # Indexes
 #
-#  index_sites_on_created_at                     (created_at)
-#  index_sites_on_hostname                       (hostname)
-#  index_sites_on_player_hits_cache_and_user_id  (player_hits_cache,user_id)
-#  index_sites_on_user_id                        (user_id)
+#  index_sites_on_created_at  (created_at)
+#  index_sites_on_hostname    (hostname)
+#  index_sites_on_user_id     (user_id)
 #
 

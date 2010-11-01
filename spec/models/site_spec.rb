@@ -397,19 +397,19 @@ describe Site do
       end
     end
     
-    describe "#reset_hits_cache!" do
-      it "should reset hits cache" do
-        VCR.use_cassette('one_saved_logs') do
-          user = Factory(:user)
-          site = Factory(:site, :user => user, :loader_hits_cache => 33, :player_hits_cache => 11)
-          log = Factory(:log_voxcast)
-          Factory(:site_usage, :site_id => site.id, :day => Time.now.beginning_of_day, :loader_hits => 16, :player_hits => 5)
-          site.reset_hits_cache!(1.day.ago)
-          site.loader_hits_cache.should == 16
-          site.player_hits_cache.should == 5
-        end
-      end
-    end
+    # describe "#reset_hits_cache!" do
+    #   it "should reset hits cache" do
+    #     VCR.use_cassette('one_saved_logs') do
+    #       user = Factory(:user)
+    #       site = Factory(:site, :user => user, :loader_hits_cache => 33, :player_hits_cache => 11)
+    #       log = Factory(:log_voxcast)
+    #       Factory(:site_usage, :site_id => site.id, :day => Time.now.beginning_of_day, :loader_hits => 16, :player_hits => 5)
+    #       site.reset_hits_cache!(1.day.ago)
+    #       site.loader_hits_cache.should == 16
+    #       site.player_hits_cache.should == 5
+    #     end
+    #   end
+    # end
     
     describe "need_path?" do
       it "should be true" do
@@ -599,38 +599,34 @@ describe Site do
   
 end
 
+
 # == Schema Information
 #
 # Table name: sites
 #
-#  id                    :integer         not null, primary key
-#  user_id               :integer
-#  hostname              :string(255)
-#  dev_hostnames         :string(255)
-#  token                 :string(255)
-#  license               :string(255)
-#  loader                :string(255)
-#  state                 :string(255)
-#  loader_hits_cache     :integer(8)      default(0)
-#  player_hits_cache     :integer(8)      default(0)
-#  flash_hits_cache      :integer(8)      default(0)
-#  archived_at           :datetime
-#  created_at            :datetime
-#  updated_at            :datetime
-#  player_mode           :string(255)     default("stable")
-#  requests_s3_cache     :integer(8)      default(0)
-#  traffic_s3_cache      :integer(8)      default(0)
-#  traffic_voxcast_cache :integer(8)      default(0)
-#  google_rank           :integer
-#  alexa_rank            :integer
-#  path                  :string(255)
-#  wildcard              :boolean
+#  id              :integer         not null, primary key
+#  user_id         :integer
+#  hostname        :string(255)
+#  dev_hostnames   :string(255)
+#  token           :string(255)
+#  license         :string(255)
+#  loader          :string(255)
+#  state           :string(255)
+#  archived_at     :datetime
+#  created_at      :datetime
+#  updated_at      :datetime
+#  player_mode     :string(255)     default("stable")
+#  google_rank     :integer
+#  alexa_rank      :integer
+#  path            :string(255)
+#  wildcard        :boolean
+#  extra_hostnames :string(255)
+#  plan_id         :integer
 #
 # Indexes
 #
-#  index_sites_on_created_at                     (created_at)
-#  index_sites_on_hostname                       (hostname)
-#  index_sites_on_player_hits_cache_and_user_id  (player_hits_cache,user_id)
-#  index_sites_on_user_id                        (user_id)
+#  index_sites_on_created_at  (created_at)
+#  index_sites_on_hostname    (hostname)
+#  index_sites_on_user_id     (user_id)
 #
 

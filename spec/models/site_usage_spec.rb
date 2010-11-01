@@ -138,15 +138,15 @@ describe SiteUsage do
       usage.traffic_voxcast.should            == 70696
     end
     
-    it "should update site.loader_hits_cache" do
-      lambda { SiteUsage.create_usages_from_trackers!(@log, @trackers) }.should change { @site1.reload.loader_hits_cache }.by(3)
-    end
-    it "should update site.player_hits_cache" do
-      lambda { SiteUsage.create_usages_from_trackers!(@log, @trackers) }.should change { @site1.reload.player_hits_cache }.by(3)
-    end
-    it "should update site.flash_hits_cache" do
-      lambda { SiteUsage.create_usages_from_trackers!(@log, @trackers) }.should change { @site1.reload.flash_hits_cache }.by(0)
-    end
+    # it "should update site.loader_hits_cache" do
+    #   lambda { SiteUsage.create_usages_from_trackers!(@log, @trackers) }.should change { @site1.reload.loader_hits_cache }.by(3)
+    # end
+    # it "should update site.player_hits_cache" do
+    #   lambda { SiteUsage.create_usages_from_trackers!(@log, @trackers) }.should change { @site1.reload.player_hits_cache }.by(3)
+    # end
+    # it "should update site.flash_hits_cache" do
+    #   lambda { SiteUsage.create_usages_from_trackers!(@log, @trackers) }.should change { @site1.reload.flash_hits_cache }.by(0)
+    # end
   end
   
   describe "Trackers parsing with s3 loaders" do
