@@ -37,8 +37,7 @@ MySublimeVideo::Application.routes.draw do
   end
   resource :card, :controller => 'credit_cards', :as => :credit_card, :only => [:edit, :update]
   
-  # match ':page', :to => 'pages#show', :via => :get, :as => :page, :page => /terms|privacy|suspended/
-  match ':page', :to => 'pages#show', :via => :get, :as => :page, :page => /terms|privacy/
+  match ':page', :to => 'pages#show', :via => :get, :as => :page, :page => /terms|privacy|suspended/
   
   resource :ticket, :only => [:new, :create], :path => '/feedback', :path_names => { :new =>  ''}
   

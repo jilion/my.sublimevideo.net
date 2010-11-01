@@ -64,7 +64,7 @@ namespace :sm do
   
   desc "Draw the States Diagrams for every model having State Machine"
   task :draw => :environment do
-    %x(rake state_machine:draw CLASS=Invoice,Log,Site,User TARGET=doc/state_diagrams FORMAT=jpg ORIENTATION=landscape)
+    %x(rake state_machine:draw CLASS=Invoice,Log,Site,User TARGET=doc/state_diagrams FORMAT=png ORIENTATION=landscape)
   end
   
 end
