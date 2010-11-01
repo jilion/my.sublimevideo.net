@@ -494,17 +494,19 @@ describe Site do
         it { subject.referrer_type("-").should == "invalid" }
         it { subject.referrer_type(nil).should == "invalid" }
       end
+      
       context "with path" do
         set(:site_with_path) { Factory(:site, :hostname => "jilion.com", :extra_hostnames => 'jilion.org, staging.jilion.com', :dev_hostnames => "jilion.local, localhost, 127.0.0.1", :path => "demo") }
         subject { site_with_path }
         
-        it { subject.referrer_type("http://staging.jilion.com").should == "main" }
-        it { subject.referrer_type("http://jilion.org").should == "extra" }
+        it { subject.referrer_type("http://jilion.com/demo").should == "main" }
+        it { subject.referrer_type("http://jilion.org/demo").should == "extra" }
+        it { subject.referrer_type("http://jilion.org/demo/cool").should == "extra" }
         it { subject.referrer_type("http://jilion.com/demo/cool").should == "main" }
         it { subject.referrer_type("http://127.0.0.1:3000/demo/super.html").should == "dev" }
         it { subject.referrer_type("http://localhost:3000/demo?genial=com").should == "dev" }
-        it { subject.referrer_type("http://localhost:3000?genial=com").should == "invalid" }
-        it { subject.referrer_type("http://jilion.local").should == "invalid" }
+        it { subject.referrer_type("http://localhost:3000?genial=com").should == "dev" }
+        it { subject.referrer_type("http://jilion.local").should == "dev" }
         it { subject.referrer_type("http://jilion.com/test/cool").should == "invalid" }
         it { subject.referrer_type("http://jilion.com").should == "invalid" }
         it { subject.referrer_type("https://jilion.com").should == "invalid" }
