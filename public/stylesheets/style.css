@@ -1633,6 +1633,10 @@ ul#trial_legend li em {
   line-height:21px;
 }
 
+.popup .content p.desc.small {
+  font-size:13px;
+}
+
 .popup .content p.desc a {
   font-weight:600;
   border-bottom:1px solid #7f858f;
