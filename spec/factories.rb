@@ -68,3 +68,27 @@ Factory.define :mail_log, :class => Mail::Log do |f|
                   h[:body]    = "Blublu"
                 }
 end
+
+Factory.define :plan do |f|
+  f.name          'Personal'
+  f.term_type     'month'
+  f.player_hits   10_000
+  f.price         10
+  f.overage_price 1
+end
+
+Factory.define :invoice do |f|
+  f.association :user
+  f.started_on  Date.new(2010,1,1)
+  f.ended_on    Date.new(2010,1,31)
+end
+
+Factory.define :invoice_item do |f|
+  f.association :site
+  f.association :invoice
+  f.item_type   'Plan'
+  f.item_id     { Factory(:plan).id }
+  f.started_on  Date.new(2010,1,1)
+  f.ended_on    Date.new(2010,1,31)
+  f.price       100
+end

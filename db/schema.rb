@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101101104735) do
+ActiveRecord::Schema.define(:version => 20101101154550) do
 
   create_table "admins", :force => true do |t|
     t.string   "email",                               :default => "", :null => false
@@ -51,16 +51,34 @@ ActiveRecord::Schema.define(:version => 20101101104735) do
 
   add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
 
+  create_table "invoice_items", :force => true do |t|
+    t.integer  "site_id"
+    t.integer  "invoice_id"
+    t.string   "item_type"
+    t.integer  "item_id"
+    t.integer  "price"
+    t.integer  "overage_amount"
+    t.integer  "overage_price"
+    t.date     "started_on"
+    t.date     "ended_on"
+    t.datetime "canceled_at"
+    t.integer  "refund"
+    t.integer  "refunded_invoice_item_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "invoices", :force => true do |t|
     t.integer  "user_id"
     t.string   "reference"
     t.string   "state"
-    t.datetime "charged_at"
     t.date     "started_on"
     t.date     "ended_on"
-    t.integer  "amount",       :limit => 8, :default => 0
-    t.integer  "sites_amount", :limit => 8, :default => 0
-    t.text     "sites"
+    t.datetime "charged_at"
+    t.integer  "amount",     :default => 0
+    t.integer  "attempts",   :default => 0
+    t.string   "last_error"
+    t.datetime "failed_at"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -87,6 +105,16 @@ ActiveRecord::Schema.define(:version => 20101101104735) do
     t.datetime "updated_at"
   end
 
+  create_table "plans", :force => true do |t|
+    t.string   "name"
+    t.string   "term_type"
+    t.integer  "player_hits"
+    t.integer  "price"
+    t.integer  "overage_price"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "releases", :force => true do |t|
     t.string   "token"
     t.string   "date"
@@ -106,26 +134,20 @@ ActiveRecord::Schema.define(:version => 20101101104735) do
     t.string   "license"
     t.string   "loader"
     t.string   "state"
-    t.integer  "loader_hits_cache",     :limit => 8, :default => 0
-    t.integer  "player_hits_cache",     :limit => 8, :default => 0
-    t.integer  "flash_hits_cache",      :limit => 8, :default => 0
     t.datetime "archived_at"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "player_mode",                        :default => "stable"
-    t.integer  "requests_s3_cache",     :limit => 8, :default => 0
-    t.integer  "traffic_s3_cache",      :limit => 8, :default => 0
-    t.integer  "traffic_voxcast_cache", :limit => 8, :default => 0
+    t.string   "player_mode",     :default => "stable"
     t.integer  "google_rank"
     t.integer  "alexa_rank"
     t.string   "path"
     t.boolean  "wildcard"
     t.string   "extra_hostnames"
+    t.integer  "plan_id"
   end
 
   add_index "sites", ["created_at"], :name => "index_sites_on_created_at"
   add_index "sites", ["hostname"], :name => "index_sites_on_hostname"
-  add_index "sites", ["player_hits_cache", "user_id"], :name => "index_sites_on_player_hits_cache_and_user_id"
   add_index "sites", ["user_id"], :name => "index_sites_on_user_id"
 
   create_table "users", :force => true do |t|
