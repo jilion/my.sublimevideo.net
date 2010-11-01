@@ -51,6 +51,9 @@ describe Hostname do
     it { subject.valid?("ftp://www.www.com").should be_true }
     it { subject.valid?("https://www.co.uk").should be_true }
     it { subject.valid?("124.123.151.123").should be_true }
+    it { subject.valid?("blogspot.com").should be_true }
+    it { subject.valid?("appspot.com").should be_true }
+    it { subject.valid?("operaunite.com").should be_true }
     
     it { subject.valid?("3ffe:505:2::1").should be_false } # ipv6
     it { subject.valid?("google.local").should be_false }
@@ -86,7 +89,10 @@ describe Hostname do
     it { subject.extra_valid?("ftp://www.www.com").should be_true }
     it { subject.extra_valid?("https://www.co.uk").should be_true }
     it { subject.extra_valid?("124.123.151.123").should be_true }
-    
+    it { subject.valid?("blogspot.com").should be_true }
+    it { subject.valid?("appspot.com").should be_true }
+    it { subject.valid?("operaunite.com").should be_true }
+
     it { subject.extra_valid?("3ffe:505:2::1").should be_false } # ipv6
     it { subject.extra_valid?("google.local").should be_false }
     it { subject.extra_valid?(".com").should be_false }
