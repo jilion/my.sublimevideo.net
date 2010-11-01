@@ -6,16 +6,15 @@ describe CreditCardsController do
   context "with logged in user" do
     before(:each) { sign_in :user, logged_in_user }
     
-      it "should respond with success to GET :edit" do
-        get :edit
-        response.should be_success
-      end
-      it "should respond with success to PUT :update" do
-        @mock_user.should_receive(:update_attributes).with({}).and_return(true)
-        
-        put :update, :user => {}
-        response.should redirect_to(edit_user_registration_path)
-      end
+    it "should respond with success to GET :edit" do
+      get :edit
+      response.should be_success
+    end
+    it "should respond with success to PUT :update" do
+      @mock_user.should_receive(:update_attributes).with({}).and_return(true)
+      
+      put :update, :user => {}
+      response.should redirect_to(edit_user_registration_path)
     end
   end
   
