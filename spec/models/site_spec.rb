@@ -41,6 +41,20 @@ describe Site do
     it { should_not allow_value('fake').for(:player_mode) }
     
     describe "hostname" do
+      
+      it "should not be required until activation" do
+        site = Factory.build(:site, :hostname => nil)
+        site.should be_valid
+        site.errors[:hostname].should be_empty
+      end
+      
+      it "should be required on activation" do
+        site = Factory(:site, :hostname => nil)
+        site.should be_valid
+        site.activate.should be_false
+        site.errors[:hostname].should be_present
+      end
+      
       %w[http://asdasd slurp .com 901.12312.123 école *.google.com *.com jilion.local].each do |host|
         it "should not allow: #{host}" do
           site = Factory.build(:site, :hostname => host)
@@ -59,7 +73,7 @@ describe Site do
     end
     
     describe "extra_hostnames" do
-      ["*.jilion.com", 'localhost, jilion.net', 'jilion.local', 'jilion.dev, jilion.net', 'jilion.com'].each do |extra_hosts|
+      ["*.jilion.com", 'localhost, jilion.net', 'jilion.local', 'jilion.dev, jilion.net', 'jilion.com', '127.0.0.1'].each do |extra_hosts|
         it "should not allow: #{extra_hosts}" do
           site = Factory.build(:site, :hostname => 'jilion.com', :extra_hostnames => extra_hosts)
           site.should_not be_valid
@@ -67,7 +81,7 @@ describe Site do
         end
       end
       
-      ['jilion.net', 'jilion.org, jilion.fr', 'jilion.org, 124.123.123.123', nil, ', ,', '127.0.0.1'].each do |extra_hosts|
+      ['jilion.net', 'jilion.org, jilion.fr', 'jilion.org, 124.123.123.123', nil, ', ,'].each do |extra_hosts|
         it "should allow: #{extra_hosts}" do
           site = Factory.build(:site, :hostname => 'jilion.com', :extra_hostnames => extra_hosts)
           site.should be_valid
@@ -197,8 +211,8 @@ describe Site do
       end
       
       it "should clean valid extra_hostnames (dev_hostnames should never contain /.+://(www.)?/)" do
-        site = Factory(:site, :extra_hostnames => 'http://www.jime.org:3000, 127.0.0.1:3000')
-        site.extra_hostnames.should == 'jime.org, 127.0.0.1'
+        site = Factory(:site, :extra_hostnames => 'http://www.jime.org:3000, 33.123.0.1:3000')
+        site.extra_hostnames.should == 'jime.org, 33.123.0.1'
       end
     end
     
@@ -328,11 +342,6 @@ describe Site do
       it "should set default dev_hostnames if not set" do
         site = Factory(:site, :dev_hostnames => nil)
         site.dev_hostnames.should == '127.0.0.1, localhost'
-      end
-      
-      it "should not set 127.0.0.1 dev_hostnames by default before create if main domain is 127.0.0.1" do
-        site = Factory(:site, :hostname => '127.0.0.1', :dev_hostnames => nil)
-        site.dev_hostnames.should == 'localhost'
       end
     end
     

@@ -53,7 +53,7 @@ class Site < ActiveRecord::Base
   # ===============
   
   validates :user,            :presence => true
-  validates :hostname,        :presence => true, :hostname_uniqueness => true, :hostname => true
+  validates :hostname,        :hostname_uniqueness => true, :hostname => true
   validates :dev_hostnames,   :dev_hostnames => true
   validates :extra_hostnames, :extra_hostnames => true
   validates :player_mode,     :inclusion => { :in => PLAYER_MODES }
@@ -84,6 +84,10 @@ class Site < ActiveRecord::Base
     event(:suspend)    { transition [:pending, :active] => :suspended }
     event(:unsuspend)  { transition :suspended => :active }
     event(:archive)    { transition [:pending, :active] => :archived }
+    
+    state :active, :suspended, :archived do
+      validates_presence_of :hostname
+    end
   end
   
   # ====================
@@ -189,6 +193,8 @@ class Site < ActiveRecord::Base
     result << "[Before] #{invalid_sites.size} invalid sites, let's try to repair them!\n\n"
     
     invalid_sites.each do |site|
+      old_hostname      = site.hostname
+      new_hostname      = nil
       old_dev_hostnames = site.dev_hostnames.split(', ')
       new_dev_hostnames = []
       extra_hostnames   = []
@@ -242,10 +248,7 @@ private
   
   # before_create
   def set_default_dev_hostnames
-    unless dev_hostnames.present?
-      dev_hosts = (hostname == '127.0.0.1') ? 'localhost' : '127.0.0.1, localhost'
-      write_attribute(:dev_hostnames, dev_hosts)
-    end
+    write_attribute(:dev_hostnames, '127.0.0.1, localhost') unless dev_hostnames.present?
   end
   
   # after_create
