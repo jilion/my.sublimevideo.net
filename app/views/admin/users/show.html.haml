@@ -8,9 +8,7 @@
   %li= "Location: #{@user.country} (#{@user.postal_code})"
   - unless @user.confirmed?
     %li= "Confirmation sent at: " + display_date(@user.confirmation_sent_at)
-  - if @user.invited?
-    %li= "Invitation sent at: " + display_date(@user.invitation_sent_at)
-
+    
 %br
 
 %ul

@@ -42,73 +42,41 @@ describe User do
     it { should validate_presence_of(:postal_code) }
     it { should validate_presence_of(:country) }
     it { should validate_acceptance_of(:terms_and_conditions) }
-  end
-  
-  context "already confirmed" do
-    subject do
-      user = Factory(:user, :confirmed_at => Time.now)
-      User.find(user.id) # hard reload
-    end
-    
-    it { should be_confirmed }
-    
-    it "should be able to update his first_name" do
-      subject.update_attributes(:first_name => 'bob').should be_true
-    end
-  end
-  
-  context "invited" do
-    before(:each) do
-      User.attr_accessible << "enthusiast_id"
-      @user = User.invite(:email => "bob@bob.com", :enthusiast_id => 12)
-      User.attr_accessible.delete "enthusiast_id"
-    end
-    subject { @user }
-    
-    it { should be_invited }
-    its(:enthusiast_id) { should == 12 }
-    
-    it "should not be able to update enthusiast_id" do
-      subject.update_attributes(:enthusiast_id => 13)
-      subject.enthusiast_id.should == 12
-    end
-    
-    it "should validate password length" do
-      user = accept_invitation(:password => "short")
-      user.should have(1).error_on(:password)
-    end
     
     it "should validate presence of at least one usage" do
-      user = accept_invitation(:use_personal => nil, :use_company => nil, :use_clients => nil)
-      user.should have(1).error_on(:use)
+      user = Factory.build(:user, :use_personal => nil, :use_company => nil, :use_clients => nil)
+      user.should_not be_valid
+      user.errors[:use].should == ["Please check at least one option"]
     end
     
     context "use_company is checked" do
       it "should validate company fields if use_company is checked" do
         fields = [:company_name, :company_url, :company_job_title, :company_employees, :company_videos_served]
-        user = accept_invitation(Hash[fields.map { |f| [f, nil] }.concat([:use_company, true])])
+        user = Factory.build(:user, Hash[fields.map { |f| [f, nil] }].merge({ :use_personal => false, :use_company => true }))
+        user.should_not be_valid
         fields.each do |f|
-          user.should have(1).error_on(f)
           user.errors[f].should == ["can't be blank"]
         end
       end
       
       it "should validate company url" do
-        user = accept_invitation(:use_company => true, :company_url => "http://localhost")
+        user = Factory.build(:user, :use_company => true, :company_url => "http://localhost")
         user.should_not be_valid
-        user.should have(1).error_on(:company_url)
         user.errors[:company_url].should == ["is invalid"]
       end
     end
+  end
+  
+  context "invited" do
+    subject { Factory(:user).tap { |u| u.send(:attributes=, { :invitation_token => '123', :invitation_sent_at => Time.now, :email => "bob@bob.com", :enthusiast_id => 12 }, false); u.save(:validate => false) } }
     
-    it "should validate acceptance of terms_and_conditions" do
-      user = accept_invitation(:terms_and_conditions => "0")
-      user.should have(1).error_on(:terms_and_conditions)
-    end
+    its(:enthusiast_id) { should == 12 }
     
-    it "should be valid" do
-      user = accept_invitation
-      user.should be_valid
+    it { should be_invited }
+    
+    it "should not be able to update enthusiast_id" do
+      subject.update_attributes(:enthusiast_id => 13)
+      subject.enthusiast_id.should == 12
     end
   end
   

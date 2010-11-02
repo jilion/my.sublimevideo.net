@@ -100,4 +100,3 @@ end
 #
 #  index_invoices_on_user_id  (user_id)
 #
-

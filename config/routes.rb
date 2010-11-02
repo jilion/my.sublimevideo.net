@@ -9,14 +9,7 @@ MySublimeVideo::Application.routes.draw do
   :path_names => { :sign_in => 'login', :sign_out => 'logout' },
   :controllers => { :sessions => "users/sessions" },
   :skip => [:invitations, :registrations] do
-    # We need to declare these routes manually because we don't want
-    # to generate GET /invitation/new and POST /invitation, so we had to skip :invitations
-    resource :user_invitation, :controller => 'devise/invitations', :only => [:update],
-    :path => '/invitation/accept', :path_names => { :edit => '' } do
-      get :edit, :as => :accept
-    end
-    
-    resource :user_registration, :only => [], :controller => 'users/registrations', :path => '' do
+    resource :user_registration, :only => [], :controller => 'devise/registrations', :path => '' do
       get    :new,     :path => '/register', :as => 'new'
       post   :create,  :path => '/register'
       
@@ -29,6 +22,7 @@ MySublimeVideo::Application.routes.draw do
     %w[log_in sign_in signin].each         { |action| match action => redirect('/login'),    :via => :get }
     %w[log_out sign_out signout exit].each { |action| match action => redirect('/logout'),   :via => :get }
   end
+  match '/invitation/accept' => redirect('/register'), :via => :get
   
   resource :users, :only => :update, :path => '/account/info'
   resources :sites do
@@ -48,13 +42,6 @@ MySublimeVideo::Application.routes.draw do
   # =========
   
   match 'admin', :to => redirect('/admin/users'), :as => 'admin'
-  
-  devise_scope :user do
-    resource :user_invitation, :only => [], :controller => 'admin/users/invitations', :path => "" do
-      get  :new,    :path => '/admin/users/invitation/new', :as => 'new'
-      post :create, :path => '/admin/users/invitation'
-    end
-  end
   
   devise_for :admins,
   :path => 'admin',
@@ -98,7 +85,6 @@ MySublimeVideo::Application.routes.draw do
   # =======
   
   namespace "api" do
-    resources :invitations, :only => [:create]
   end
   
 end
