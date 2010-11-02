@@ -475,6 +475,9 @@ describe Site do
         it { subject.referrer_type("http://127.0.0.1:3000/super.html").should == "dev" }
         it { subject.referrer_type("http://localhost:3000?genial=com").should == "dev" }
         it { subject.referrer_type("http://google.com").should == "invalid" }
+        it { subject.referrer_type("http://superjilion.com").should == "invalid" }
+        it { subject.referrer_type("http://superjilion.org").should == "invalid" }
+        it { subject.referrer_type("http://superjilion.net").should == "invalid" }
         it { subject.referrer_type("google.com").should == "invalid" }
         it { subject.referrer_type("jilion.com").should == "invalid" }
         it { subject.referrer_type("-").should == "invalid" }
@@ -486,14 +489,19 @@ describe Site do
         subject { site_with_path }
         
         it { subject.referrer_type("http://jilion.com/demo").should == "main" }
+        it { subject.referrer_type("https://jilion.com/demo").should == "main" }
         it { subject.referrer_type("http://jilion.org/demo").should == "extra" }
         it { subject.referrer_type("http://jilion.org/demo/cool").should == "extra" }
+        it { subject.referrer_type("http://staging.jilion.com/demo/cool").should == "extra" }
         it { subject.referrer_type("http://jilion.com/demo/cool").should == "main" }
         it { subject.referrer_type("http://127.0.0.1:3000/demo/super.html").should == "dev" }
         it { subject.referrer_type("http://localhost:3000/demo?genial=com").should == "dev" }
         it { subject.referrer_type("http://localhost:3000?genial=com").should == "dev" }
         it { subject.referrer_type("http://jilion.local").should == "dev" }
         it { subject.referrer_type("http://jilion.com/test/cool").should == "invalid" }
+        it { subject.referrer_type("http://superjilion.com/demo").should == "invalid" }
+        it { subject.referrer_type("http://superjilion.org/demo").should == "invalid" }
+        it { subject.referrer_type("http://topstaging.jilion.com/demo").should == "invalid" }
         it { subject.referrer_type("http://jilion.com").should == "invalid" }
         it { subject.referrer_type("https://jilion.com").should == "invalid" }
         it { subject.referrer_type("http://www.jilion.com").should == "invalid" }
@@ -557,13 +565,13 @@ describe Site do
         it "should remove duplicate dev domain" do
           @duplicated_dev_hostname1.reload.hostname.should == '127.0.0.1'
           @duplicated_dev_hostname1.dev_hostnames.should   == 'localhost'
-          @duplicated_dev_hostname1.extra_hostnames.should == nil
+          @duplicated_dev_hostname1.extra_hostnames.should == ''
         end
         
         it "should remove duplicate dev domain (bis)" do
           @duplicated_dev_hostname2.reload.hostname.should == 'jilion.com'
           @duplicated_dev_hostname2.dev_hostnames.should   == '127.0.0.1, localhost'
-          @duplicated_dev_hostname2.extra_hostnames.should == nil
+          @duplicated_dev_hostname2.extra_hostnames.should == ''
         end
         
         it "should not modify hostname when hostname is invalid, move dev hostnames that belong to extra hostnames, remove duplicate dev domain" do

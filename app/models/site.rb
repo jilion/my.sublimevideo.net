@@ -90,15 +90,15 @@ class Site < ActiveRecord::Base
   # ====================
   
   def hostname=(attribute)
-    write_attribute(:hostname, Hostname.clean(attribute)) if attribute.present?
+    write_attribute(:hostname, Hostname.clean(attribute))
   end
   
   def dev_hostnames=(attribute)
-    write_attribute(:dev_hostnames, Hostname.clean(attribute)) # if attribute.present?
+    write_attribute(:dev_hostnames, Hostname.clean(attribute))
   end
   
   def extra_hostnames=(attribute)
-    write_attribute(:extra_hostnames, Hostname.clean(attribute)) if attribute.present?
+    write_attribute(:extra_hostnames, Hostname.clean(attribute))
   end
   
   def path=(attribute)
