@@ -1,9 +1,5 @@
 class ChangeIntToBigint < ActiveRecord::Migration
   def self.up
-    change_column(:invoices, :amount,                :bigint)
-    change_column(:invoices, :sites_amount,          :bigint)
-    change_column(:invoices, :videos_amount,         :bigint)
-    
     change_column(:sites, :loader_hits_cache,        :bigint)
     change_column(:sites, :player_hits_cache,        :bigint)
     change_column(:sites, :flash_hits_cache,         :bigint)
@@ -48,10 +44,6 @@ class ChangeIntToBigint < ActiveRecord::Migration
   end
   
   def self.down
-    change_column(:invoices, :amount,                :integer)
-    change_column(:invoices, :sites_amount,          :integer)
-    change_column(:invoices, :videos_amount,         :integer)
-    
     change_column(:sites, :loader_hits_cache,        :integer)
     change_column(:sites, :player_hits_cache,        :integer)
     change_column(:sites, :flash_hits_cache,         :integer)

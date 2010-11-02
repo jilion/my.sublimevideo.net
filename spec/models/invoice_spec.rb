@@ -37,6 +37,7 @@ describe Invoice do
   
 end
 
+
 # == Schema Information
 #
 # Table name: invoices
@@ -45,10 +46,10 @@ end
 #  user_id    :integer
 #  reference  :string(255)
 #  state      :string(255)
+#  amount     :integer
 #  started_on :date
 #  ended_on   :date
 #  charged_at :datetime
-#  amount     :integer         default(0)
 #  attempts   :integer         default(0)
 #  last_error :string(255)
 #  failed_at  :datetime

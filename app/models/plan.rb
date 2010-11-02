@@ -2,6 +2,13 @@ class Plan < ActiveRecord::Base
   
   # attr_accessible ...
   
+  # ================
+  # = Associations =
+  # ================
+  
+  has_many :sites
+  has_many :invoice_items, :as => :item
+  
   # ==========
   # = Scopes =
   # ==========
@@ -29,6 +36,7 @@ class Plan < ActiveRecord::Base
   # ====================
   
 end
+
 # == Schema Information
 #
 # Table name: plans
@@ -42,4 +50,3 @@ end
 #  created_at    :datetime
 #  updated_at    :datetime
 #
-

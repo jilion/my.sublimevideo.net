@@ -7,8 +7,8 @@ class RemoveVideo < ActiveRecord::Migration
     remove_index :videos, :hits_cache
     remove_index :videos, :created_at
     
-    remove_column :invoices, :videos_amount
-    remove_column :invoices, :videos
+    # remove_column :invoices, :videos_amount
+    # remove_column :invoices, :videos
     
     drop_table :video_profiles
     drop_table :video_profile_versions

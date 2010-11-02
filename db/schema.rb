@@ -10,7 +10,25 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101101154550) do
+ActiveRecord::Schema.define(:version => 20101102081552) do
+
+  create_table "addons", :force => true do |t|
+    t.string   "name"
+    t.string   "term_type"
+    t.integer  "price"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "addons_sites", :id => false, :force => true do |t|
+    t.integer  "site_id"
+    t.integer  "addon_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "addons_sites", ["addon_id"], :name => "index_addons_sites_on_addon_id"
+  add_index "addons_sites", ["site_id"], :name => "index_addons_sites_on_site_id"
 
   create_table "admins", :force => true do |t|
     t.string   "email",                               :default => "", :null => false
@@ -56,26 +74,30 @@ ActiveRecord::Schema.define(:version => 20101101154550) do
     t.integer  "invoice_id"
     t.string   "item_type"
     t.integer  "item_id"
-    t.integer  "price"
-    t.integer  "overage_amount"
-    t.integer  "overage_price"
     t.date     "started_on"
     t.date     "ended_on"
     t.datetime "canceled_at"
-    t.integer  "refund"
+    t.integer  "price"
+    t.integer  "overage_amount",           :default => 0
+    t.integer  "overage_price"
+    t.integer  "refund",                   :default => 0
     t.integer  "refunded_invoice_item_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
+  add_index "invoice_items", ["invoice_id"], :name => "index_invoice_items_on_invoice_id"
+  add_index "invoice_items", ["item_type", "item_id"], :name => "index_invoice_items_on_item_type_and_item_id"
+  add_index "invoice_items", ["site_id"], :name => "index_invoice_items_on_site_id"
+
   create_table "invoices", :force => true do |t|
     t.integer  "user_id"
     t.string   "reference"
     t.string   "state"
+    t.integer  "amount"
     t.date     "started_on"
     t.date     "ended_on"
     t.datetime "charged_at"
-    t.integer  "amount",     :default => 0
     t.integer  "attempts",   :default => 0
     t.string   "last_error"
     t.datetime "failed_at"
@@ -148,6 +170,7 @@ ActiveRecord::Schema.define(:version => 20101101154550) do
 
   add_index "sites", ["created_at"], :name => "index_sites_on_created_at"
   add_index "sites", ["hostname"], :name => "index_sites_on_hostname"
+  add_index "sites", ["plan_id"], :name => "index_sites_on_plan_id"
   add_index "sites", ["user_id"], :name => "index_sites_on_user_id"
 
   create_table "users", :force => true do |t|
