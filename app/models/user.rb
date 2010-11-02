@@ -35,6 +35,7 @@ class User < ActiveRecord::Base
   
   # admin
   scope :enthusiast,      where(:enthusiast_id.ne => nil)
+  scope :invited,         where(:invitation_token.ne => nil)
   scope :beta,            where(:invitation_token => nil)
   scope :use_personal,    where(:use_personal => true)
   scope :use_company,     where(:use_company => true)
