@@ -1,6 +1,8 @@
 class Plan < ActiveRecord::Base
   
-  # attr_accessible ...
+  TERM_TYPES = %w[month year]
+  
+  attr_accessible :name, :term_type, :player_hits, :price, :overage_price
   
   # ================
   # = Associations =
@@ -17,11 +19,11 @@ class Plan < ActiveRecord::Base
   # = Validations =
   # ===============
   
-  validates :name,          :presence => true
-  validates :term_type,     :presence => true
-  validates :player_hits,   :presence => true
-  validates :price,         :presence => true
-  validates :overage_price, :presence => true
+  validates :name,          :presence => true, :uniqueness => true
+  validates :term_type,     :presence => true, :inclusion => { :in => TERM_TYPES }
+  validates :player_hits,   :presence => true, :numericality => true
+  validates :price,         :presence => true, :numericality => true
+  validates :overage_price, :presence => true, :numericality => true
   
   # =============
   # = Callbacks =

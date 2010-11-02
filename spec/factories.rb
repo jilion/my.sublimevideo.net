@@ -70,11 +70,17 @@ Factory.define :mail_log, :class => Mail::Log do |f|
 end
 
 Factory.define :plan do |f|
-  f.name          'Personal'
+  f.name          'small_month'
   f.term_type     'month'
   f.player_hits   10_000
   f.price         10
   f.overage_price 1
+end
+
+Factory.define :addon do |f|
+  f.name          'SSL'
+  f.term_type     'month'
+  f.price         10
 end
 
 Factory.define :invoice do |f|

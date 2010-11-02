@@ -1,6 +1,6 @@
 class InvoiceItem < ActiveRecord::Base
   
-  # attr_accessible ...
+  attr_accessible :site_id, :item_type, :item_id, :started_on, :ended_on, :price, :overage_amount, :overage_price, :refund, :refunded_invoice_item_id
   
   # ================
   # = Associations =
@@ -25,7 +25,11 @@ class InvoiceItem < ActiveRecord::Base
   validates :item_id,    :presence => true
   validates :started_on, :presence => true
   validates :ended_on,   :presence => true
-  validates :price,      :presence => true
+  validates :price,      :presence => true, :numericality => true
+  
+  validates :overage_amount, :numericality => true, :allow_nil => true
+  validates :overage_price,  :numericality => true, :allow_nil => true
+  validates :refund,         :numericality => true, :allow_nil => true
   
   # =============
   # = Callbacks =

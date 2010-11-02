@@ -1,6 +1,6 @@
 class Invoice < ActiveRecord::Base
   
-  # attr_accessible ...
+  attr_accessible :user_id, :started_on, :ended_on
   
   uniquify :reference, :chars => Array('A'..'Z') + Array('1'..'9')
   
@@ -22,7 +22,7 @@ class Invoice < ActiveRecord::Base
   validates :user,       :presence => true
   validates :started_on, :presence => true
   validates :ended_on,   :presence => true
-  validates :amount,     :presence => true
+  validates :amount,     :presence => { :if => :ready? }, :numericality => true, :allow_nil => true
   
   # =============
   # = Callbacks =
@@ -33,6 +33,8 @@ class Invoice < ActiveRecord::Base
   # =================
   
   state_machine :initial => :current do
+    event(:prepare_for_charging) { transition :current => :ready }
+    event(:archive) { transition :ready => :archived }
   end
   
   # =================

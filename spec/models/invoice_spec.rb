@@ -1,11 +1,8 @@
 require 'spec_helper'
 
 describe Invoice do
-  
   context "with valid attributes" do
-    set(:invoice) { Factory(:invoice) }
-    
-    subject { invoice }
+    subject { Factory(:invoice) }
     
     its(:user)       { should be_present }
     its(:reference)  { should =~ /^[A-Z1-9]{8}$/ }
@@ -22,21 +19,64 @@ describe Invoice do
   end
   
   describe "validates" do
+    subject { Factory(:invoice) }
+    
     it { should belong_to :user }
     it { should have_many :invoice_items }
     
-    # [:hostname, :dev_hostnames].each do |attr|
-    #   it { should allow_mass_assignment_of(attr) }
-    # end
+    [:user_id, :started_on, :ended_on].each do |attr|
+      it { should allow_mass_assignment_of(attr) }
+    end
     
     it { should validate_presence_of(:user) }
     it { should validate_presence_of(:started_on) }
     it { should validate_presence_of(:ended_on) }
-    it { should validate_presence_of(:amount) }
+    
+    it "should validate presence of amount only if the invoice is in 'ready' state" do
+      subject.should be_current
+      subject.amount.should be_nil
+      subject.should be_valid
+      
+      subject.state = 'ready'
+      
+      subject.should be_ready
+      subject.amount.should be_nil
+      subject.should_not be_valid
+      subject.errors[:amount].should == ["can't be blank"]
+    end
+  end
+  
+  describe "State Machine" do
+    subject { Factory(:invoice) }
+    
+    describe "initial state" do
+      it { should be_current }
+    end
+    
+    describe "#prepare_for_charging" do
+      before(:each) { subject.amount = 10 }
+      
+      it "should set state to ready" do
+        subject.prepare_for_charging
+        subject.should be_ready
+      end
+    end
+    
+    describe "#archive" do
+      before(:each) do
+        subject.amount = 10
+        subject.prepare_for_charging
+      end
+      
+      it "should set state to archived" do
+        subject.archive
+        subject.should be_archived
+      end
+    end
+    
   end
   
 end
-
 
 # == Schema Information
 #
