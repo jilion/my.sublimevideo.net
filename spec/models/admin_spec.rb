@@ -1,10 +1,8 @@
 require 'spec_helper'
 
 describe Admin do
-  set(:admin) { Factory(:admin) }
-  
   context "with valid attributes" do
-    subject { admin }
+    subject { Factory(:admin) }
     
     its(:email) { should match /email\d+@admin.com/ }
     
@@ -12,6 +10,8 @@ describe Admin do
   end
   
   describe "validates" do
+    subject { Factory(:admin) }
+    
     it { should have_many :mail_logs }
     
     [:email, :password, :password_confirmation, :remember_me].each do |attr|
@@ -52,4 +52,3 @@ end
 #  index_admins_on_invitation_token      (invitation_token)
 #  index_admins_on_reset_password_token  (reset_password_token) UNIQUE
 #
-

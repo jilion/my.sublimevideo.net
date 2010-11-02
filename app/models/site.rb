@@ -21,8 +21,9 @@ class Site < ActiveRecord::Base
   # ================
   
   belongs_to :user
-  has_many :invoices
   belongs_to :plan
+  has_many :invoice_items
+  has_many :invoices, :through => :invoice_items
   has_and_belongs_to_many :addons
   # Mongoid associations
   def usages

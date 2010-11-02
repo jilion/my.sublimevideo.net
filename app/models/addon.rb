@@ -1,6 +1,6 @@
 class Addon < ActiveRecord::Base
   
-  # attr_accessible ...
+  attr_accessible :name, :term_type, :price
   
   # ================
   # = Associations =
@@ -17,6 +17,10 @@ class Addon < ActiveRecord::Base
   # = Validations =
   # ===============
   
+  validates :name,      :presence => true, :uniqueness => true
+  validates :term_type, :presence => true, :inclusion => { :in => Plan::TERM_TYPES }
+  validates :price,     :presence => true, :numericality => true
+  
   # =============
   # = Callbacks =
   # =============
@@ -32,8 +36,6 @@ class Addon < ActiveRecord::Base
   # ====================
   # = Instance Methods =
   # ====================
-  
-protected
   
 end
 

@@ -26,7 +26,6 @@ describe Mail::Log do
   
 end
 
-
 # == Schema Information
 #
 # Table name: mail_logs
@@ -44,4 +43,3 @@ end
 #
 #  index_mail_logs_on_template_id  (template_id)
 #
-

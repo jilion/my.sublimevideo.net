@@ -2,11 +2,8 @@
 require 'spec_helper'
 
 describe Site do
-  
   context "with valid attributes" do
-    set(:valid_site) { Factory(:site) }
-    
-    subject { valid_site }
+    subject { Factory(:site) }
     
     its(:hostname)        { should =~ /jilion[0-9]+\.com/ }
     its(:dev_hostnames)   { should == "127.0.0.1, localhost" }
@@ -24,14 +21,24 @@ describe Site do
   end
   
   describe "validates" do
+    subject { Factory(:site) }
+    
     it { should belong_to :user }
+    it { should belong_to :plan }
+    it { should have_many :invoice_items }
+    it { should have_many(:invoices).through(:invoice_items) }
+    it { should have_and_belong_to_many :addons }
     
     [:hostname, :dev_hostnames].each do |attr|
       it { should allow_mass_assignment_of(attr) }
     end
     
     it { should validate_presence_of(:user) }
-    it { should validate_presence_of(:hostname) }
+    
+    it { should allow_value('dev').for(:player_mode) }
+    it { should allow_value('beta').for(:player_mode) }
+    it { should allow_value('stable').for(:player_mode) }
+    it { should_not allow_value('fake').for(:player_mode) }
     
     describe "hostname" do
       %w[http://asdasd slurp .com 901.12312.123 école *.google.com *.com jilion.local].each do |host|
@@ -83,24 +90,6 @@ describe Site do
           site = Factory.build(:site, :dev_hostnames => dev_hosts)
           site.should be_valid
           site.errors[:dev_hostnames].should be_empty
-        end
-      end
-    end
-    
-    describe "validate player_mode" do
-      %w[fake test].each do |player_mode|
-        it "should not allow: #{player_mode}" do
-          site = Factory.build(:site, :player_mode => player_mode)
-          site.should_not be_valid
-          site.errors[:player_mode].should be_present
-        end
-      end
-      
-      %w[dev beta stable].each do |player_mode|
-        it "should allow: #{player_mode}" do
-          site = Factory.build(:site, :player_mode => player_mode)
-          site.should be_valid
-          site.errors[:player_mode].should be_empty
         end
       end
     end

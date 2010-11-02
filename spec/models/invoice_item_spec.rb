@@ -1,11 +1,8 @@
 require 'spec_helper'
 
 describe InvoiceItem do
-  
   context "with valid attributes" do
-    set(:invoice_item) { Factory(:invoice_item) }
-    
-    subject { invoice_item }
+    subject { Factory(:invoice_item) }
     
     its(:site)                     { should be_present }
     its(:invoice)                  { should be_present }
@@ -24,12 +21,16 @@ describe InvoiceItem do
   end
   
   describe "validates" do
+    subject { Factory(:invoice_item) }
+    
     it { should belong_to :site }
     it { should belong_to :invoice }
+    it { should belong_to :item }
+    it { should belong_to :refunded_invoice_item }
     
-    # [:hostname, :dev_hostnames].each do |attr|
-    #   it { should allow_mass_assignment_of(attr) }
-    # end
+    [:site_id, :item_type, :item_id, :started_on, :ended_on, :price, :overage_amount, :overage_price, :refund, :refunded_invoice_item_id].each do |attr|
+      it { should allow_mass_assignment_of(attr) }
+    end
     
     it { should validate_presence_of(:site) }
     it { should validate_presence_of(:invoice) }
@@ -38,10 +39,14 @@ describe InvoiceItem do
     it { should validate_presence_of(:started_on) }
     it { should validate_presence_of(:ended_on) }
     it { should validate_presence_of(:price) }
+    
+    it { should validate_numericality_of(:price) }
+    it { should validate_numericality_of(:overage_amount) }
+    it { should validate_numericality_of(:overage_price) }
+    it { should validate_numericality_of(:refund) }
   end
   
 end
-
 
 # == Schema Information
 #
@@ -69,4 +74,3 @@ end
 #  index_invoice_items_on_item_type_and_item_id  (item_type,item_id)
 #  index_invoice_items_on_site_id                (site_id)
 #
-
