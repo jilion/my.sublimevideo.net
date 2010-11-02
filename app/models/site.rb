@@ -107,9 +107,10 @@ class Site < ActiveRecord::Base
   end
   
   def template_hostnames
-    hostnames  = [hostname]
+    hostnames = []
+    hostnames << hostname if hostname.present?
     hostnames += extra_hostnames.split(', ') if extra_hostnames.present?
-    hostnames += dev_hostnames.split(', ')
+    hostnames += dev_hostnames.split(', ') if dev_hostnames.present?
     hostnames.map! { |hostname| "'" + hostname + "'" }
     hostnames.join(',')
   end
@@ -145,9 +146,9 @@ class Site < ActiveRecord::Base
     host = URI.parse(referrer).host
     if main_referrer?(referrer, host, past_site)
       "main"
-    elsif extra_referrer?(referrer, host, past_site)
+    elsif extra_or_dev_referrer?(referrer, host, past_site, past_site.extra_hostnames.split(', '))
       "extra"
-    elsif dev_referrer?(host, past_site.dev_hostnames)
+    elsif extra_or_dev_referrer?(referrer, host, past_site, past_site.dev_hostnames.split(', '))
       "dev"
     else
       "invalid"
@@ -157,27 +158,27 @@ class Site < ActiveRecord::Base
   end
   
   def main_referrer?(referrer, host, past_site)
-    if past_site.path?
-      return referrer.include?("#{past_site.hostname}/#{past_site.path}") || referrer.include?("www.#{past_site.hostname}/#{past_site.path}") || false
+    if past_site.path? && past_site.wildcard?
+      return referrer =~ /^.+:\/\/(.*\.)?#{past_site.hostname}(\:[0-9]+)?\/#{past_site.path}.*$/
+    elsif past_site.path?
+      return referrer =~ /^.+:\/\/(www\.)?#{past_site.hostname}(\:[0-9]+)?\/#{past_site.path}.*$/
     elsif past_site.wildcard?
-      return host.include?(past_site.hostname)
+      return referrer =~ /^.+:\/\/(.*\.)?#{past_site.hostname}.*$/
     else
-      host == past_site.hostname || host == "www.#{past_site.hostname}"
+      return host =~ /^(www\.)?#{past_site.hostname}$/
     end
   end
   
-  def extra_referrer?(referrer, host, past_site)
-    if past_site.path?
-      return past_site.extra_hostnames.split(', ').any? { |h| referrer.include?("#{h}/#{past_site.path}") || referrer.include?("www.#{h}/#{past_site.path}") }
+  def extra_or_dev_referrer?(referrer, host, past_site, past_hosts)
+    if past_site.path? && past_site.wildcard?
+      return past_hosts.any? { |h| referrer =~ /^.+:\/\/(.*\.)?#{h}(\:[0-9]+)?\/#{past_site.path}.*$/ }
+    elsif past_site.path?
+      return past_hosts.any? { |h| referrer =~ /^.+:\/\/(www\.)?#{h}(\:[0-9]+)?\/#{past_site.path}.*$/ }
     elsif past_site.wildcard?
-      return past_site.extra_hostnames.split(', ').any? { |h| host.include?(h) }
+      return past_hosts.any? { |h| referrer =~ /^.+:\/\/(.*\.)?#{h}.*$/ }
     else
-      past_site.extra_hostnames.split(', ').any? { |h| host == h || host == "www.#{h}" }
+      return past_hosts.any? { |h| host =~ /^(www\.)?#{h}$/ }
     end
-  end
-  
-  def dev_referrer?(host, past_dev_hostnames)
-    past_dev_hostnames.split(', ').any? { |h| host == h || host == "www.#{h}" }
   end
   
   # Method for the :one_time rake task

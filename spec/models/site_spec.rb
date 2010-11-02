@@ -461,6 +461,7 @@ describe Site do
         it { subject.referrer_type("http://jilion.org").should == "extra" }
         it { subject.referrer_type("http://jilion.net").should == "extra" }
         it { subject.referrer_type("http://jilion.local").should == "dev" }
+        it { subject.referrer_type("http://staging.jilion.local").should == "dev" }
         it { subject.referrer_type("http://127.0.0.1:3000/super.html").should == "dev" }
         it { subject.referrer_type("http://localhost:3000?genial=com").should == "dev" }
         it { subject.referrer_type("http://google.com").should == "invalid" }
@@ -485,8 +486,11 @@ describe Site do
         it { subject.referrer_type("http://jilion.com/demo/cool").should == "main" }
         it { subject.referrer_type("http://127.0.0.1:3000/demo/super.html").should == "dev" }
         it { subject.referrer_type("http://localhost:3000/demo?genial=com").should == "dev" }
-        it { subject.referrer_type("http://localhost:3000?genial=com").should == "dev" }
-        it { subject.referrer_type("http://jilion.local").should == "dev" }
+        it { subject.referrer_type("http://jilion.local/demo").should == "dev" }
+        it { subject.referrer_type("http://jilion.local").should == "invalid" }
+        it { subject.referrer_type("http://cool.jilion.local/demo").should == "invalid" }
+        it { subject.referrer_type("http://localhost:3000?genial=com").should == "invalid" }
+        it { subject.referrer_type("http://staging.jilion.local").should == "invalid" }
         it { subject.referrer_type("http://jilion.com/test/cool").should == "invalid" }
         it { subject.referrer_type("http://superjilion.com/demo").should == "invalid" }
         it { subject.referrer_type("http://superjilion.org/demo").should == "invalid" }
@@ -501,6 +505,48 @@ describe Site do
         it { subject.referrer_type("-").should == "invalid" }
         it { subject.referrer_type(nil).should == "invalid" }
       end
+      
+      context "with wildcard and path" do
+        set(:site_with_wildcard_and_path) { Factory(:site, :hostname => "jilion.com", :extra_hostnames => 'jilion.org, jilion.net', :dev_hostnames => "jilion.local, localhost, 127.0.0.1", :path => "demo", :wildcard => true) }
+        subject { site_with_wildcard_and_path }
+        
+        it { subject.referrer_type("http://jilion.com/demo").should == "main" }
+        it { subject.referrer_type("https://jilion.com/demo").should == "main" }
+        it { subject.referrer_type("http://staging.jilion.com/demo").should == "main" }
+        it { subject.referrer_type("http://jilion.com/demo/cool").should == "main" }
+        it { subject.referrer_type("http://jilion.org/demo").should == "extra" }
+        it { subject.referrer_type("http://jilion.net/demo/cool").should == "extra" }
+        it { subject.referrer_type("http://staging.jilion.local/demo/top").should == "dev" }
+        it { subject.referrer_type("http://staging.jilion.local").should == "invalid" }
+        it { subject.referrer_type("http://127.0.0.1:3000/demo/super.html").should == "dev" }
+        it { subject.referrer_type("http://localhost:3000/demo?genial=com").should == "dev" }
+        it { subject.referrer_type("http://jilion.local/demo").should == "dev" }
+        it { subject.referrer_type("http://cool.jilion.local/demo").should == "dev" }
+        it { subject.referrer_type("http://jilion.local").should == "invalid" }
+        it { subject.referrer_type("http://localhost:3000?genial=com").should == "invalid" }
+        it { subject.referrer_type("http://blog.jilion.com").should == "invalid" }
+        it { subject.referrer_type("http://jilion.com").should == "invalid" }
+        it { subject.referrer_type("http://jilion.com/test/cool").should == "invalid" }
+        it { subject.referrer_type("https://jilion.com").should == "invalid" }
+        it { subject.referrer_type("http://www.jilion.com").should == "invalid" }
+        it { subject.referrer_type("http://staging.jilion.com").should == "invalid" }
+        it { subject.referrer_type("http://jilion.org").should == "invalid" }
+        it { subject.referrer_type("http://jilion.net").should == "invalid" }
+        it { subject.referrer_type("http://staging.jilion.local").should == "invalid" }
+        it { subject.referrer_type("http://jilion.com/test/cool").should == "invalid" }
+        it { subject.referrer_type("http://superjilion.com/demo").should == "invalid" }
+        it { subject.referrer_type("http://superjilion.org/demo").should == "invalid" }
+        it { subject.referrer_type("http://jilion.com").should == "invalid" }
+        it { subject.referrer_type("https://jilion.com").should == "invalid" }
+        it { subject.referrer_type("http://www.jilion.com").should == "invalid" }
+        it { subject.referrer_type("http://blog.jilion.com").should == "invalid" }
+        it { subject.referrer_type("http://google.com").should == "invalid" }
+        it { subject.referrer_type("google.com").should == "invalid" }
+        it { subject.referrer_type("jilion.com").should == "invalid" }
+        it { subject.referrer_type("-").should == "invalid" }
+        it { subject.referrer_type(nil).should == "invalid" }
+      end
+      
     end
     
   end
