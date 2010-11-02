@@ -46,7 +46,7 @@ describe User do
     it "should validate presence of at least one usage" do
       user = Factory.build(:user, :use_personal => nil, :use_company => nil, :use_clients => nil)
       user.should_not be_valid
-      user.errors[:use].should == ["Please check at least one option."]
+      user.errors[:use].should == ["Please check at least one option"]
     end
     
     context "use_company is checked" do

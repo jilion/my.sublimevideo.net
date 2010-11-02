@@ -3,54 +3,96 @@ require 'spec_helper'
 
 feature "Users actions:" do
   
-  scenario "register for personal use" do
-    visit "/register"
-    current_url.should =~ %r(^http://[^/]+/register$)
+  feature "register" do
+    before(:each) do
+      visit "/register"
+      current_url.should =~ %r(^http://[^/]+/register$)
+    end
     
-    fill_in "Email",              :with => "remy@jilion.com"
-    fill_in "Password",           :with => "123456"
-    fill_in "First name",         :with => "Rémy"
-    fill_in "Last name",          :with => "Coutable"
-    select "Switzerland",         :from => "Country"
-    fill_in "Zip or Postal Code", :with => "CH-1024"
-    check "Personal"
-    check "user_terms_and_conditions"
-    click_button "Sign Up"
+    feature "register for personal use" do
+      scenario "with all fields needed" do
+        fill_in "Email",              :with => "remy@jilion.com"
+        fill_in "Password",           :with => "123456"
+        fill_in "First name",         :with => "Rémy"
+        fill_in "Last name",          :with => "Coutable"
+        select "Switzerland",         :from => "Country"
+        fill_in "Zip or Postal Code", :with => "CH-1024"
+        check "Personal"
+        check "user_terms_and_conditions"
+        click_button "Sign Up"
+        
+        current_url.should =~ %r(^http://[^/]+/sites$)
+        page.should have_content "Rémy Coutable"
+        
+        User.last.full_name.should == "Rémy Coutable"
+        User.last.email.should == "remy@jilion.com"
+      end
+      
+      scenario "with errors" do
+        fill_in "Email",              :with => ""
+        fill_in "Password",           :with => ""
+        fill_in "First name",         :with => ""
+        fill_in "Last name",          :with => ""
+        fill_in "Zip or Postal Code", :with => ""
+        click_button "Sign Up"
+        
+        current_url.should =~ %r(^http://[^/]+/register$)
+        page.should have_content "Email can't be blank"
+        page.should have_content "Password can't be blank"
+        page.should have_content "First name can't be blank"
+        page.should have_content "Last name can't be blank"
+        page.should have_content "Postal code can't be blank"
+        page.should have_content "Please check at least one option"
+        page.should have_content "Terms & Conditions must be accepted"
+      end
+    end
     
-    current_url.should =~ %r(^http://[^/]+/sites$)
-    page.should have_content "Rémy Coutable"
+    feature "register for company use" do
+      scenario "with all fields needed" do
+        fill_in "Email",              :with => "remy@jilion.com"
+        fill_in "Password",           :with => "123456"
+        fill_in "First name",         :with => "Rémy"
+        fill_in "Last name",          :with => "Coutable"
+        select "Switzerland",         :from => "Country"
+        fill_in "Zip or Postal Code", :with => "CH-1024"
+        check "For my company"
+        fill_in "Company name",       :with => "Jilion"
+        fill_in "Company website",    :with => "jilion.com"
+        fill_in "Job title",          :with => "Dev"
+        select "2-5 employees",       :from => "Company size"
+        select "1'000-10'000 videos/month", :from => "Nr. of videos served"
+        check "user_terms_and_conditions"
+        click_button "Sign Up"
+        
+        current_url.should =~ %r(^http://[^/]+/sites$)
+        page.should have_content "Rémy Coutable"
+        
+        User.last.full_name.should == "Rémy Coutable"
+        User.last.email.should == "remy@jilion.com"
+      end
+      
+      scenario "with errors" do
+        fill_in "Email",              :with => "remy@jilion.com"
+        fill_in "Password",           :with => "123456"
+        fill_in "First name",         :with => "Rémy"
+        fill_in "Last name",          :with => "Coutable"
+        select "Switzerland",         :from => "Country"
+        fill_in "Zip or Postal Code", :with => "CH-1024"
+        check "For my company"
+        fill_in "Company name",       :with => ""
+        fill_in "Company website",    :with => ""
+        fill_in "Job title",          :with => ""
+        check "user_terms_and_conditions"
+        click_button "Sign Up"
+        
+        current_url.should =~ %r(^http://[^/]+/register$)
+        page.should have_content "Company name can't be blank"
+        page.should have_content "Company url can't be blank"
+        page.should have_content "Company job title can't be blank"
+      end
+    end
     
-    User.last.full_name.should == "Rémy Coutable"
-    User.last.email.should == "remy@jilion.com"
   end
-  
-  scenario "register for company use" do
-    visit "/register"
-    current_url.should =~ %r(^http://[^/]+/register$)
-    
-    fill_in "Email",              :with => "remy@jilion.com"
-    fill_in "Password",           :with => "123456"
-    fill_in "First name",         :with => "Rémy"
-    fill_in "Last name",          :with => "Coutable"
-    select "Switzerland",         :from => "Country"
-    fill_in "Zip or Postal Code", :with => "CH-1024"
-    check "For my company"
-    fill_in "Company name",       :with => "Jilion"
-    fill_in "Company website",    :with => "jilion.com"
-    fill_in "Job title",          :with => "Dev"
-    select "2-5 employees",       :from => "Company size"
-    select "1'000-10'000 videos/month", :from => "Nr. of videos served"
-    
-    check "user_terms_and_conditions"
-    click_button "Sign Up"
-    
-    current_url.should =~ %r(^http://[^/]+/sites$)
-    page.should have_content "Rémy Coutable"
-    
-    User.last.full_name.should == "Rémy Coutable"
-    User.last.email.should == "remy@jilion.com"
-  end
-  
   
   scenario "update email" do
     sign_in_as :user, { :email => "old@jilion.com" }

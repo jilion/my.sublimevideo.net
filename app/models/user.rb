@@ -61,7 +61,6 @@ class User < ActiveRecord::Base
   validate :validates_credit_card_attributes # in user/credit_card
   validate :validates_use_presence, :on => :create
   validate :validates_company_fields, :on => :create
-  validate :validates_terms_and_conditions, :on => :create
   
   # =============
   # = Callbacks =
@@ -105,7 +104,7 @@ private
   # validate
   def validates_use_presence
     if !use_personal && !use_company && !use_clients
-      self.errors.add(:use, "Please check at least one option.")
+      self.errors.add(:use, "Please check at least one option")
     end
   end
   
@@ -117,13 +116,6 @@ private
       self.errors.add(:company_job_title, :blank) unless company_job_title.present?
       self.errors.add(:company_employees, :blank) unless company_employees.present?
       self.errors.add(:company_videos_served, :blank) unless company_videos_served.present?
-    end
-  end
-  
-  # validate
-  def validates_terms_and_conditions
-    if terms_and_conditions != "1"
-      self.errors.add(:terms_and_conditions, :accepted)
     end
   end
   
