@@ -7,10 +7,7 @@ class Site < ActiveRecord::Base
   self.per_page = 100
   
   # Versioning
-  has_paper_trail # :ignore => [
-  #   :loader_hits_cache, :player_hits_cache, :flash_hits_cache,
-  #   :requests_s3_cache, :traffic_s3_cache, :traffic_voxcast_cache
-  # ]
+  has_paper_trail
   
   attr_accessible :hostname, :dev_hostnames, :extra_hostnames, :path, :wildcard
   
@@ -43,18 +40,9 @@ class Site < ActiveRecord::Base
   scope :archived,     where(:state => 'archived')
   scope :not_archived, where(:state.not_eq => 'archived')
   
-  # admin
-  scope :with_activity, where(:player_hits_cache.gte => 1)
-  # sort
   scope :by_hostname,             lambda { |way = 'asc'| order("#{Site.quoted_table_name}.hostname #{way}") }
   scope :by_user,                 lambda { |way = 'desc'| includes(:user).order("#{User.quoted_table_name}.first_name #{way}, #{User.quoted_table_name}.email #{way}") }
   scope :by_state,                lambda { |way = 'desc'| order("#{Site.quoted_table_name}.state #{way}") }
-  scope :by_loader_hits_cache,    lambda { |way = 'desc'| order("#{Site.quoted_table_name}.loader_hits_cache #{way}") }
-  scope :by_player_hits_cache,    lambda { |way = 'desc'| order("#{Site.quoted_table_name}.player_hits_cache #{way}") }
-  scope :by_traffic,              lambda { |way = 'desc'| order("(#{Site.quoted_table_name}.traffic_s3_cache + #{Site.quoted_table_name}.traffic_voxcast_cache) #{way}") }
-  scope :by_flash_percentage,     lambda { |way = 'desc'| where(:player_hits_cache.gt => 0).order("(#{Site.quoted_table_name}.flash_hits_cache::real/sites.player_hits_cache) #{way}") }
-  scope :by_loader_player_ratio,  lambda { |way = 'desc'| where(:player_hits_cache.gt => 0).order("(#{Site.quoted_table_name}.loader_hits_cache::real/sites.player_hits_cache) #{way}") }
-  scope :by_traffic_player_ratio, lambda { |way = 'desc'| where(:player_hits_cache.gt => 0).order("((#{Site.quoted_table_name}.traffic_s3_cache + #{Site.quoted_table_name}.traffic_voxcast_cache)::real/#{Site.quoted_table_name}.player_hits_cache) #{way}") }
   scope :by_google_rank,          lambda { |way = 'desc'| where(:google_rank.gte => 0).order("#{Site.quoted_table_name}.google_rank #{way}") }
   scope :by_alexa_rank,           lambda { |way = 'desc'| where(:alexa_rank.gte => 1).order("#{Site.quoted_table_name}.alexa_rank #{way}") }
   scope :by_date,                 lambda { |way = 'desc'| order("#{Site.quoted_table_name}.created_at #{way}") }
@@ -141,44 +129,12 @@ class Site < ActiveRecord::Base
     VoxcastCDN.delay.purge("/l/#{token}.js")
   end
   
-  # # TODO Remove after beta
-  # def reset_hits_cache!(time)
-  #   # Warning Lot of request here
-  #   self.loader_hits_cache = usages.after(time).sum(:loader_hits)
-  #   self.player_hits_cache = usages.after(time).sum(:player_hits)
-  #   self.flash_hits_cache  = usages.after(time).sum(:flash_hits)
-  #   save!
-  # end
-  # 
-  # # TODO Remove after beta
-  # def reset_caches!
-  #   # Warning Lot of request here
-  #   self.loader_hits_cache     = usages.where(:started_at => nil).sum(:loader_hits) || 0
-  #   self.player_hits_cache     = usages.where(:started_at => nil).sum(:player_hits) || 0
-  #   self.flash_hits_cache      = usages.where(:started_at => nil).sum(:flash_hits) || 0
-  #   self.requests_s3_cache     = usages.where(:started_at => nil).sum(:requests_s3) || 0
-  #   self.traffic_s3_cache      = usages.where(:started_at => nil).sum(:traffic_s3) || 0
-  #   self.traffic_voxcast_cache = usages.where(:started_at => nil).sum(:traffic_voxcast) || 0
-  #   save!
-  # end
-  
   def update_ranks
     ranks = PageRankr.ranks(hostname)
     self.google_rank = ranks[:google]
     self.alexa_rank  = ranks[:alexa]
     self.save
   end
-  
-  # # use it carefully
-  # def clear_caches
-  #   self.loader_hits_cache     = 0
-  #   self.player_hits_cache     = 0
-  #   self.flash_hits_cache      = 0
-  #   self.requests_s3_cache     = 0
-  #   self.traffic_s3_cache      = 0
-  #   self.traffic_voxcast_cache = 0
-  #   self.save
-  # end
   
   def need_path?
     %w[web.me.com homepage.mac.com].include?(hostname) && path.blank?

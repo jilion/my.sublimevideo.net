@@ -5,7 +5,7 @@ feature "Credit cards update:" do
     sign_in_as :user, { :without_cc => true }
   end
   
-  it "add a new credit card" do
+  pending "add a new credit card" do
     visit "/"
     click_link('Add a Credit Card')
     

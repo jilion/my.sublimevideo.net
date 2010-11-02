@@ -4,7 +4,7 @@ describe PagesController do
   include Devise::TestHelpers
   
   context "with logged in unsuspended user" do
-    before(:each) { sign_in :user, logged_in_user(:suspended? => false) }
+    before(:each) { sign_in :user, logged_in_user }
     
     %w[terms privacy].each do |page|
       it "should respond with success to GET :show, on #{page} page" do
@@ -20,7 +20,7 @@ describe PagesController do
   end
   
   context "with logged in suspended user" do
-    before(:each) { sign_in :user, logged_in_user(:suspended? => true) }
+    before(:each) { sign_in :user, logged_in_user(:state => "suspended") }
     
     %w[terms privacy].each do |page|
       it "should respond with success to GET :show, on #{page} page" do

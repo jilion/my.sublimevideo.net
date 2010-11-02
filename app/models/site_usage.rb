@@ -55,8 +55,6 @@ class SiteUsage
             { "$inc" => hbr_token },
             :upsert => true
           )
-          # TODO Remove this after beta
-          # update_site_hits_cache(site, hbr_token)
         rescue => ex
           Notify.send("Error on site_usage (#{site.id}, #{day}) update (from log #{log.hostname}, #{log.name}. Data: #{hbr_token}", :exception => ex)
         end
@@ -65,20 +63,6 @@ class SiteUsage
   end
   
 private
-  
-  # TODO Remove this after beta
-  # after_create_or_update "callback"
-  # def self.update_site_hits_cache(site, hbr_token)
-  #   Site.update_counters(
-  #     site.id,
-  #     :loader_hits_cache     => hbr_token[:loader_hits],
-  #     :player_hits_cache     => hbr_token[:player_hits],
-  #     :flash_hits_cache      => hbr_token[:flash_hits],
-  #     :requests_s3_cache     => hbr_token[:requests_s3],
-  #     :traffic_s3_cache      => hbr_token[:traffic_s3],
-  #     :traffic_voxcast_cache => hbr_token[:traffic_voxcast]
-  #   )
-  # end
   
   # Compact trackers from RequestLogAnalyzer
   def self.hits_traffic_and_requests_from(log, trackers)

@@ -36,15 +36,12 @@ class User < ActiveRecord::Base
   # admin
   scope :enthusiast,      where(:enthusiast_id.ne => nil)
   scope :beta,            where(:invitation_token => nil)
-  scope :with_activity,   includes(:sites).where(:sites => { :player_hits_cache.gte => 1 })
   scope :use_personal,    where(:use_personal => true)
   scope :use_company,     where(:use_company => true)
   scope :use_clients,     where(:use_clients => true)
   # sort
   scope :by_name_or_email, lambda { |way = 'asc'| order("#{User.quoted_table_name}.first_name #{way}, #{User.quoted_table_name}.email #{way}") }
   scope :by_beta,          lambda { |way = 'desc'| order("#{User.quoted_table_name}.invitation_token #{way}") }
-  scope :by_player_hits,   lambda { |way = 'asc'| joins(:sites).group("#{User.quoted_table_name}.#{User.first.attributes.keys.join(", #{User.quoted_table_name}.")}").order("SUM(#{Site.quoted_table_name}.player_hits_cache) #{way}") }
-  scope :by_traffic,       lambda { |way = 'asc'| joins(:sites).group("#{User.quoted_table_name}.#{User.first.attributes.keys.join(", #{User.quoted_table_name}.")}").order("SUM(#{Site.quoted_table_name}.traffic_voxcast_cache + #{Site.quoted_table_name}.traffic_s3_cache) #{way}") }
   scope :by_date,          lambda { |way = 'desc'| order("#{User.quoted_table_name}.created_at #{way}") }
   
   # search

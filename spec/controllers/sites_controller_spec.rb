@@ -5,7 +5,7 @@ describe SitesController do
   
   context "with logged in user" do
     before(:each) do
-      sign_in :user, logged_in_user(:suspended? => false)
+      sign_in :user, logged_in_user
       logged_in_user.stub_chain(:sites, :find).with('1') { mock_site }
       User.stub(:find) { logged_in_user }
     end
@@ -76,7 +76,7 @@ describe SitesController do
   end
   
   context "with suspended logged in user" do
-    before(:each) { sign_in :user, logged_in_user(:suspended? => true) }
+    before(:each) { sign_in :user, logged_in_user(:state => "suspended") }
     
     it "should respond with success to GET :index" do
       get :index
