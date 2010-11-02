@@ -3,6 +3,9 @@ require 'ipaddr'
 module Hostname
   class << self
     
+    # http://en.wikipedia.org/wiki/Pseudo-top-level_domain
+    PSEUDO_TLD = %w[bitnet csnet exit i2p local onion oz freenet uucp root]
+    
     # one hostname or list of hostnames separated by comma
     def clean(hostnames)
       if hostnames.present?
@@ -86,14 +89,14 @@ module Hostname
     def valid_one?(hostname)
       return true if ["blogspot.com", "appspot.com", "operaunite.com"].include?(hostname)
       ssp = PublicSuffixService.parse(hostname)
-      ssp.sld.present? && ssp.tld != 'local'
+      ssp.sld.present? && !PSEUDO_TLD.include?(ssp.tld)
     rescue
       ipv4?(hostname) && !ipv4_local?(hostname)
     end
     
     def dev_valid_one?(hostname)
       ssp = PublicSuffixService.parse(hostname)
-      ssp.tld == 'local'
+      PSEUDO_TLD.include?(ssp.tld)
     rescue
       if ipv4?(hostname)
         ipv4_local?(hostname)
