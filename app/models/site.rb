@@ -137,44 +137,12 @@ class Site < ActiveRecord::Base
     VoxcastCDN.delay.purge("/l/#{token}.js")
   end
   
-  # # TODO Remove after beta
-  # def reset_hits_cache!(time)
-  #   # Warning Lot of request here
-  #   self.loader_hits_cache = usages.after(time).sum(:loader_hits)
-  #   self.player_hits_cache = usages.after(time).sum(:player_hits)
-  #   self.flash_hits_cache  = usages.after(time).sum(:flash_hits)
-  #   save!
-  # end
-  # 
-  # # TODO Remove after beta
-  # def reset_caches!
-  #   # Warning Lot of request here
-  #   self.loader_hits_cache     = usages.where(:started_at => nil).sum(:loader_hits) || 0
-  #   self.player_hits_cache     = usages.where(:started_at => nil).sum(:player_hits) || 0
-  #   self.flash_hits_cache      = usages.where(:started_at => nil).sum(:flash_hits) || 0
-  #   self.requests_s3_cache     = usages.where(:started_at => nil).sum(:requests_s3) || 0
-  #   self.traffic_s3_cache      = usages.where(:started_at => nil).sum(:traffic_s3) || 0
-  #   self.traffic_voxcast_cache = usages.where(:started_at => nil).sum(:traffic_voxcast) || 0
-  #   save!
-  # end
-  
   def update_ranks
     ranks = PageRankr.ranks(hostname)
     self.google_rank = ranks[:google]
     self.alexa_rank  = ranks[:alexa]
     self.save
   end
-  
-  # # use it carefully
-  # def clear_caches
-  #   self.loader_hits_cache     = 0
-  #   self.player_hits_cache     = 0
-  #   self.flash_hits_cache      = 0
-  #   self.requests_s3_cache     = 0
-  #   self.traffic_s3_cache      = 0
-  #   self.traffic_voxcast_cache = 0
-  #   self.save
-  # end
   
   def need_path?
     %w[web.me.com homepage.mac.com].include?(hostname) && path.blank?
