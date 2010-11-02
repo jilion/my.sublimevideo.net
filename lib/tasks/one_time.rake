@@ -24,11 +24,17 @@ namespace :one_time do
     Site.all.each { |site| site.delay(:priority => 400).reset_caches! }
   end
   
-  # Move in domain branch
   desc "Update invalid sites move invalid dev hostnames into the extra_hostnames and remove dev hostnames that are duplication of main hostname"
   task :update_invalid_sites => :environment do
     timed do
-      puts Site.update_hostnames.join("\n")
+      puts OneTime::Site.update_hostnames.join("\n")
+    end
+  end
+  
+  desc "Delete users that are invited but not yet registered, please check User.invited before !!!"
+  task :delete_not_registered_invited_users => :environment do
+    timed do
+      puts OneTime::User.delete_invited_not_yet_registered_users + " invited users deleted"
     end
   end
   
