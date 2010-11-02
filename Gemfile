@@ -89,7 +89,7 @@ group :test do
   # gem 'capybara-envjs',     '~> 0.4.0'
   # gem 'akephalos',          '~> 0.2.4'
   
-  gem 'webmock',            '~> 1.4.0'
+  gem 'webmock',            '~> 1.5.0'
   gem 'vcr',                '~> 1.2.0'
   
   gem 'spork',              '~> 0.9.0.rc2'
