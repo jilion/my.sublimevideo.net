@@ -37,6 +37,7 @@ class Mail::Template < ActiveRecord::Base
   end
   
 end
+
 # == Schema Information
 #
 # Table name: mail_templates
@@ -48,4 +49,3 @@ end
 #  created_at :datetime
 #  updated_at :datetime
 #
-

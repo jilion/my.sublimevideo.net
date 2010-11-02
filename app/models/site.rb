@@ -24,6 +24,9 @@ class Site < ActiveRecord::Base
   # ================
   
   belongs_to :user
+  has_many :invoices
+  belongs_to :plan
+  has_and_belongs_to_many :addons
   # Mongoid associations
   def usages
     SiteUsage.where(:site_id => id)
@@ -308,7 +311,6 @@ private
   
 end
 
-
 # == Schema Information
 #
 # Table name: sites
@@ -336,6 +338,6 @@ end
 #
 #  index_sites_on_created_at  (created_at)
 #  index_sites_on_hostname    (hostname)
+#  index_sites_on_plan_id     (plan_id)
 #  index_sites_on_user_id     (user_id)
 #
-

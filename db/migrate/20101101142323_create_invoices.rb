@@ -1,6 +1,6 @@
 class CreateInvoices < ActiveRecord::Migration
   def self.up
-    drop_table :invoices # remove old invoices table
+    drop_table :invoices if Invoice.table_exists? # remove old invoices table
     
     create_table :invoices do |t|
       t.integer  :user_id
@@ -22,7 +22,7 @@ class CreateInvoices < ActiveRecord::Migration
     
     add_index :invoices, :user_id
   end
-
+  
   def self.down
     drop_table :invoices
     

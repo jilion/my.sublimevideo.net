@@ -24,7 +24,7 @@ class User < ActiveRecord::Base
   # ================
   
   has_many :sites
-  has_many :invoices, :autosave => false, :validate => false
+  has_many :invoices
   
   # ==========
   # = Scopes =
@@ -161,7 +161,6 @@ protected
   
 end
 
-
 # == Schema Information
 #
 # Table name: users
@@ -217,4 +216,3 @@ end
 #  index_users_on_email                 (email) UNIQUE
 #  index_users_on_reset_password_token  (reset_password_token) UNIQUE
 #
-

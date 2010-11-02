@@ -19,9 +19,16 @@ class CreateInvoiceItems < ActiveRecord::Migration
       
       t.timestamps
     end
+    
+    add_index :invoice_items, :site_id
+    add_index :invoice_items, :invoice_id
+    add_index :invoice_items, [:item_type, :item_id]
   end
-
+  
   def self.down
+    remove_index :invoice_items, [:item_type, :item_id]
+    remove_index :invoice_items, :invoice_id
+    remove_index :invoice_items, :site_id
     drop_table :invoice_items
   end
 end
