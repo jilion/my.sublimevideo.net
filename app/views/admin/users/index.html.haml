@@ -1,10 +1,5 @@
--#= content_for :js do
--#  = javascript_include_tag("raphael/raphael-min", "raphael/g.raphael-min", "raphael/g.pie-min")
-  
 = title("Users")
 = content_header(admin_users_page_title(@users))
-
-= link_to "Invite a user", new_user_invitation_path, :class => "add"
 
 = render "filter_links"
 
@@ -16,6 +11,6 @@
     = submit_tag "search", :name => '', :id => 'search_button'
     = image_tag('/images/embed/admin/spinner.gif', :id => 'search_form_spinner', :style => "display:none;")
 %br
-  
+
 #users_table_wrap
   = render "users"
