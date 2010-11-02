@@ -56,6 +56,8 @@ describe Hostname do
     it { subject.valid?("operaunite.com").should be_true }
     
     it { subject.valid?("3ffe:505:2::1").should be_false } # ipv6
+    it { subject.valid?("127.0.0.1").should be_false }
+    it { subject.valid?("0.0.0.0").should be_false }
     it { subject.valid?("google.local").should be_false }
     it { subject.valid?(nil).should be_false }
     it { subject.valid?("").should be_false }
@@ -89,11 +91,13 @@ describe Hostname do
     it { subject.extra_valid?("ftp://www.www.com").should be_true }
     it { subject.extra_valid?("https://www.co.uk").should be_true }
     it { subject.extra_valid?("124.123.151.123").should be_true }
-    it { subject.valid?("blogspot.com").should be_true }
-    it { subject.valid?("appspot.com").should be_true }
-    it { subject.valid?("operaunite.com").should be_true }
-
+    it { subject.extra_valid?("blogspot.com").should be_true }
+    it { subject.extra_valid?("appspot.com").should be_true }
+    it { subject.extra_valid?("operaunite.com").should be_true }
+    
     it { subject.extra_valid?("3ffe:505:2::1").should be_false } # ipv6
+    it { subject.extra_valid?("127.0.0.1").should be_false }
+    it { subject.extra_valid?("0.0.0.0").should be_false }
     it { subject.extra_valid?("google.local").should be_false }
     it { subject.extra_valid?(".com").should be_false }
     it { subject.extra_valid?("co.uk").should be_false }
@@ -114,7 +118,8 @@ describe Hostname do
   describe "dev_valid?" do
     it { subject.dev_valid?(nil).should be_true }
     it { subject.dev_valid?("").should be_true }
-    it { subject.dev_valid?("124.123.151.123").should be_true }
+    it { subject.dev_valid?("127.0.0.1").should be_true }
+    it { subject.dev_valid?("0.0.0.0").should be_true }
     it { subject.dev_valid?("google.local").should be_true }
     it { subject.dev_valid?("localhost").should be_true }
     it { subject.dev_valid?("localhost:8888").should be_true }
@@ -135,6 +140,7 @@ describe Hostname do
     it { subject.dev_valid?("*").should be_true }
     it { subject.dev_valid?(".com").should be_true }
     
+    it { subject.dev_valid?("124.123.151.123").should be_false }
     it { subject.dev_valid?("http://www.bob.com,,localhost:3000").should be_false }
     it { subject.dev_valid?("*.google.com").should be_false }
     it { subject.dev_valid?("staging.google.com").should be_false }

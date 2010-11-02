@@ -88,19 +88,35 @@ module Hostname
       ssp = PublicSuffixService.parse(hostname)
       ssp.sld.present? && ssp.tld != 'local'
     rescue
-      begin 
-        ipaddr = IPAddr.new(hostname)
-        ipaddr.ipv4? || ipaddr.ipv6?
-      rescue
-        false
-      end
+      ipv4?(hostname) && !ipv4_local?(hostname)
     end
     
     def dev_valid_one?(hostname)
       ssp = PublicSuffixService.parse(hostname)
       ssp.tld == 'local'
     rescue
-      true
+      if ipv4?(hostname)
+        ipv4_local?(hostname)
+      else
+        true
+      end
+    end
+    
+    def ipv4?(hostname)
+      begin 
+        ipaddr = IPAddr.new(hostname)
+        ipaddr.ipv4?
+      rescue
+        false
+      end
+    end
+    
+    def ipv4_local?(hostname)
+      begin
+        hostname == "0.0.0.0" || Addrinfo.tcp(hostname, 80).ipv4_loopback?
+      rescue
+        false
+      end
     end
     
   end
