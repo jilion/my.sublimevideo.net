@@ -1,15 +1,15 @@
 %p.summary
-  - loader_hits = Site.sum(:loader_hits_cache)
+  - loader_hits = SiteUsage.sum(:loader_hits).to_i
   = "Loader hits: #{number_with_delimiter(loader_hits, :delimiter => "'")}"
   |
-  - player_hits = Site.sum(:player_hits_cache)
+  - player_hits = SiteUsage.sum(:player_hits).to_i
   = "Player hits: #{number_with_delimiter(player_hits, :delimiter => "'")}"
   |
-  - traffic = Site.sum(:traffic_s3_cache) + Site.sum(:traffic_voxcast_cache)
+  - traffic = SiteUsage.sum(:traffic_s3).to_i + SiteUsage.sum(:traffic_voxcast).to_i
   = "Traffic: #{number_to_human_size(traffic, :precision => 4)}"
   - if player_hits > 0
     %br/
-    - flash_hits = Site.sum(:flash_hits_cache)
+    - flash_hits = SiteUsage.sum(:flash_hits).to_i
     = "Flash: #{number_to_percentage(flash_hits / player_hits.to_f * 100, :precision => 2)}"
     |
     = "Loader/Player: #{number_with_delimiter(BigDecimal.new((loader_hits / player_hits.to_f).to_s, 2).ceil(2), :delimiter => "'")}"

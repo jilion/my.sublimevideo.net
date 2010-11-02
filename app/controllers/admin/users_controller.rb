@@ -3,7 +3,6 @@ class Admin::UsersController < Admin::AdminController
   
   has_scope :enthusiast, :type => :boolean
   has_scope :beta, :type => :boolean
-  has_scope :with_activity, :type => :boolean
   has_scope :use_personal, :type => :boolean
   has_scope :use_company, :type => :boolean
   has_scope :use_clients, :type => :boolean

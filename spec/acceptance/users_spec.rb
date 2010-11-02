@@ -3,7 +3,7 @@ require 'spec_helper'
 
 feature "Users actions:" do
   
-  scenario "register is available after the public release" do
+  pending "register is available after the public release" do
     visit "/register"
     current_url.should =~ %r(http://[^/]+/register)
     

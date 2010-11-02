@@ -32,7 +32,6 @@ describe Invoice do
     it { should validate_presence_of(:user) }
     it { should validate_presence_of(:started_on) }
     it { should validate_presence_of(:ended_on) }
-    it { should validate_presence_of(:amount) }
   end
   
 end

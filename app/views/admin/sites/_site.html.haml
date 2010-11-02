@@ -7,28 +7,6 @@
       = link_to site.user.full_name, admin_user_path(site.user), :title => "#{site.user.full_name} <#{site.user.email}>"
   %td.state
     %small= site.state
-  %td.loader_hits_cache
-    %small= number_with_delimiter(site.loader_hits_cache, :delimiter => "'")
-  %td.player_hits_cache
-    %small= number_with_delimiter(site.player_hits_cache, :delimiter => "'")
-  %td.traffic
-    - traffic = site.traffic_s3_cache + site.traffic_voxcast_cache
-    %small= number_to_human_size(traffic, :precision => 4)
-  %td.flash_percent
-    - if site.player_hits_cache > 0
-      %small= number_to_percentage(site.flash_hits_cache / site.player_hits_cache.to_f * 100, :precision => 2)
-    - else
-      %small= "-"
-  %td.ratio
-    - if site.player_hits_cache > 0
-      %small= number_with_delimiter(site.loader_hits_cache / site.player_hits_cache, :delimiter => "'")
-    - else
-      %small= "-"
-  %td.ratio
-    - if site.player_hits_cache > 0
-      %small= number_to_human_size(traffic / site.player_hits_cache.to_f, :precision => 4)
-    - else
-      %small= "-"
   %td.rank
     %small= site.alexa_rank
   %td.rank

@@ -18,13 +18,13 @@
 %br
 
 %ul
-  %li= "Loader hits: " + number_with_delimiter(@site.loader_hits_cache, :delimiter => "'")
-  %li= "Player hits: " + number_with_delimiter(@site.player_hits_cache, :delimiter => "'")
-  %li= "Flash hits: " + number_with_delimiter(@site.flash_hits_cache, :delimiter => "'")
+  %li= "Loader hits: " + number_with_delimiter(@site.usages.sum(:loader_hits), :delimiter => "'")
+  %li= "Player hits: " + number_with_delimiter(@site.usages.sum(:player_hits), :delimiter => "'")
+  %li= "Flash hits: " + number_with_delimiter(@site.usages.sum(:flash_hits), :delimiter => "'")
   
-  %li= "S3 requests: " + number_with_delimiter(@site.requests_s3_cache, :delimiter => "'")
-  %li= "S3 traffic: " + number_to_human_size(@site.traffic_s3_cache, :precision => 4)
-  %li= "Voxcast traffic: " + number_to_human_size(@site.traffic_voxcast_cache, :precision => 4)
+  %li= "S3 requests: " + number_with_delimiter(@site.usages.sum(:requests_s3), :delimiter => "'")
+  %li= "S3 traffic: " + number_to_human_size(@site.usages.sum(:traffic_s3), :precision => 4)
+  %li= "Voxcast traffic: " + number_to_human_size(@site.usages.sum(:traffic_voxcast), :precision => 4)
 
 %br
 %hr

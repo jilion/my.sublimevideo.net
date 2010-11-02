@@ -397,20 +397,6 @@ describe Site do
       end
     end
     
-    # describe "#reset_hits_cache!" do
-    #   it "should reset hits cache" do
-    #     VCR.use_cassette('one_saved_logs') do
-    #       user = Factory(:user)
-    #       site = Factory(:site, :user => user, :loader_hits_cache => 33, :player_hits_cache => 11)
-    #       log = Factory(:log_voxcast)
-    #       Factory(:site_usage, :site_id => site.id, :day => Time.now.beginning_of_day, :loader_hits => 16, :player_hits => 5)
-    #       site.reset_hits_cache!(1.day.ago)
-    #       site.loader_hits_cache.should == 16
-    #       site.player_hits_cache.should == 5
-    #     end
-    #   end
-    # end
-    
     describe "need_path?" do
       it "should be true" do
         site = Factory(:site, :hostname => 'web.me.com')

@@ -22,7 +22,6 @@ class Invoice < ActiveRecord::Base
   validates :user,       :presence => true
   validates :started_on, :presence => true
   validates :ended_on,   :presence => true
-  validates :amount,     :presence => true
   
   # =============
   # = Callbacks =
