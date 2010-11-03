@@ -10,7 +10,7 @@ describe HostnameUniquenessValidator do
       validates(subject, :hostname, subject.hostname)
       
       subject.should_not be_valid
-      subject.errors[:hostname].should == ["has already been taken"]
+      subject.errors[:hostname].should be_present
     end
   end
   
@@ -28,6 +28,14 @@ describe HostnameUniquenessValidator do
       validates(subject, :hostnames, subject.hostname)
       
       archived_site.should be_archived
+      subject.should be_valid
+      subject.errors[:hostnames].should == []
+    end
+    
+    it "should not add an error if the hostname is blank" do
+      Factory(:site, :user => subject.user, :hostname => nil)
+      validates(subject, :hostnames, nil)
+      
       subject.should be_valid
       subject.errors[:hostnames].should == []
     end

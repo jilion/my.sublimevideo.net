@@ -18,7 +18,9 @@ end
 
 Factory.define :site do |f|
   f.sequence(:hostname) { |n| "jilion#{n}.com" }
+  f.dev_hostnames       'localhost'
   f.association         :user
+  f.association         :plan
 end
 
 Factory.define :log_voxcast, :class => Log::Voxcast do |f|
@@ -70,7 +72,7 @@ Factory.define :mail_log, :class => MailLog do |f|
 end
 
 Factory.define :plan do |f|
-  f.name          'small_month'
+  f.sequence(:name) { |n| "small_month_#{n}" }
   f.term_type     'month'
   f.player_hits   10_000
   f.price         10
@@ -78,9 +80,9 @@ Factory.define :plan do |f|
 end
 
 Factory.define :addon do |f|
-  f.name          'SSL'
-  f.term_type     'month'
-  f.price         10
+  f.name      'SSL'
+  f.term_type 'month'
+  f.price     10
 end
 
 Factory.define :invoice do |f|

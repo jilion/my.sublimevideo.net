@@ -12,7 +12,7 @@ module Hostname
         hostnames.split(',').select { |h| h.present? }.map do |hostname|
           hostname.strip!
           clean_one(hostname)
-        end.join(', ')
+        end.sort.join(', ')
       else
         hostnames
       end

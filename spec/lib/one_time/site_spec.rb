@@ -32,7 +32,7 @@ describe OneTime::Site do
       
       it "should not modify site when hostname is invalid" do
         @not_public_hostname.reload.hostname.should == nil
-        @not_public_hostname.dev_hostnames.should   == '127.0.0.1, jilion.local, localhost'
+        @not_public_hostname.dev_hostnames.should   == 'jilion.local, localhost'
         @not_public_hostname.extra_hostnames.should == nil
       end
       

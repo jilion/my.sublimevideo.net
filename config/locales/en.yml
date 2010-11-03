@@ -1,22 +1,42 @@
 en:
-  attributes:
-    hostname:     "Domain"
-    dev_hostnames:        "Development domains"
-    extra_hostnames:        "Extra domains"
-    terms_and_conditions: "Terms & Conditions"
-    cc_type:      "Card type"
-    cc_number:    "Card number"
-    cc_expire_on: "Expiration date"
-    cc_full_name: "Name on Card"
-    cc_verification_value: "CSC"
-    company_employees: "Company size"
-    company_videos_served: "Nr. of videos served"
-    
-    min_width:  "Minimum width"
-    min_height: "Minimum height"
-    type:       ""
-    
-  
+  activerecord:
+    attributes:
+      site:
+        hostname:             "Domain"
+        dev_hostnames:        "Development domains"
+        extra_hostnames:      "Extra domains"
+      user:
+        terms_and_conditions: "Terms & Conditions"
+        cc_type:      "Card type"
+        cc_number:    "Card number"
+        cc_expire_on: "Expiration date"
+        cc_full_name: "Name on Card"
+        cc_verification_value: "CSC"
+        company_employees: "Company size"
+        company_videos_served: "Nr. of videos served"
+        
+    errors:
+      models:
+        site:
+          attributes:
+            hostname:
+              wildcard_singular: "is invalid, please check wildcard option instead"
+              taken:             "You have already registered this domain"
+            dev_hostnames:
+              invalid: "are invalid"
+              wildcard: "are invalid, please check wildcard option instead"
+              duplicate: "must be unique"
+              include_hostname: "cannot include site domain"
+            extra_hostnames:
+              invalid: "are invalid"
+              wildcard: "are invalid, please check wildcard option instead"
+              duplicate: "must be unique"
+              include_hostname: "cannot include site domain"
+        user:
+          attributes:
+            company_url:
+              invalid: "is invalid"
+              
   time:
     formats:
       date: "%B %d, %Y"
@@ -24,14 +44,12 @@ en:
       semi_full: "%d %b, %I:%M%p"
       fully_full: "%d %b %Y, %H:%M:%S"
       semi_short: "%d %b %H:%M:%S"
-    
-  
+      
   date:
     formats:
       default: "%B %d, %Y"
       small:   "%m/%d/%Y"
-    
-  
+      
   ticket:
     type:
       choose-type:            "Choose a category"
@@ -39,10 +57,3 @@ en:
       improvement-suggestion: "Improvement suggestion"
       feature-request:        "Feature request"
       other:                  "Other"
-    
-  sites:
-    errors:
-      messages:
-        wildcard: "is invalid, please check wildcard option instead"
-        duplicate: "must be unique"
-        include_hostname: "can not include site domain"

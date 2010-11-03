@@ -8,7 +8,7 @@ describe Plan do
   context "with valid attributes" do
     subject { Factory(:plan) }
     
-    its(:name)          { should == 'small_month' }
+    its(:name)          { should =~ /small_month_\d+/ }
     its(:term_type)     { should == 'month' }
     its(:player_hits)   { should == 10_000 }
     its(:price)         { should == 10 }

@@ -17,8 +17,7 @@ module Spec
             user.confirm! unless options[:confirm] == false
             user.lock! if options[:locked] == true
             unless options[:without_cc] == true
-              user.update_attribute(:cc_type, 'visa')
-              user.update_attribute(:cc_last_digits, 123)
+              user.update_attributes(:cc_type => 'visa', :cc_last_digits => 123, :cc_expire_on => 2.years.from_now)
             end
             user
           end

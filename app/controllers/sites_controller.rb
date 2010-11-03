@@ -24,7 +24,7 @@ class SitesController < ApplicationController
   
   # GET /sites/new
   def new
-    @site = current_user.sites.build
+    @site = current_user.sites.build(:dev_hostnames => Site::DEFAULT_DEV_DOMAINS)
     respond_with(@site) do |format|
       format.html
     end

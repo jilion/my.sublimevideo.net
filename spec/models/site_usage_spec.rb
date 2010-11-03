@@ -74,11 +74,13 @@ describe SiteUsage do
     
     it "should increment existing entries" do
       SiteUsage.create_usages_from_trackers!(@log, @trackers)
-      SiteUsage.all[0].main_player_hits.should == 5
-      SiteUsage.all[1].traffic_voxcast.should == 200134
+      usage = SiteUsage.where(:site_id => @site1.id).first
+      usage.main_player_hits.should == 5
+      usage.traffic_voxcast.should == 443482
+      
       SiteUsage.create_usages_from_trackers!(@log, @trackers)
-      SiteUsage.all[0].main_player_hits.should == 10
-      SiteUsage.all[1].traffic_voxcast.should == 400268
+      usage.reload.main_player_hits.should == 5*2
+      usage.traffic_voxcast.should == 443482*2
     end
     
   end

@@ -1,5 +1,6 @@
 class Site < ActiveRecord::Base
   
+  DEFAULT_DEV_DOMAINS = '127.0.0.1, localhost'
   PLAYER_MODES = %w[dev beta stable]
   
   # Pagination
@@ -54,10 +55,12 @@ class Site < ActiveRecord::Base
   # ===============
   
   validates :user,            :presence => true
+  validates :plan,            :presence => { :message => "Please choose a plan" }
   validates :hostname,        :hostname_uniqueness => true, :hostname => true
   validates :dev_hostnames,   :dev_hostnames => true
   validates :extra_hostnames, :extra_hostnames => true
   validates :player_mode,     :inclusion => { :in => PLAYER_MODES }
+  validate  :at_least_one_domain_set
   validate  :must_be_active_to_update_hostnames
   
   # =============
@@ -102,18 +105,17 @@ class Site < ActiveRecord::Base
     write_attribute(:hostname, Hostname.clean(attribute))
   end
   
-  def dev_hostnames=(attribute)
-    write_attribute(:dev_hostnames, Hostname.clean(attribute))
-  end
-  
   def extra_hostnames=(attribute)
     write_attribute(:extra_hostnames, Hostname.clean(attribute))
   end
   
-  def path=(attribute)
-    write_attribute :path, attribute.gsub(/^\//, '')
+  def dev_hostnames=(attribute)
+    write_attribute(:dev_hostnames, Hostname.clean(attribute))
   end
   
+  def path=(attribute)
+    write_attribute :path, attribute.sub('/', '')
+  end
   
   def set_user_attributes
     user.attributes = user_attributes if user && user_attributes.present?
@@ -156,12 +158,11 @@ class Site < ActiveRecord::Base
   
   def referrer_type(referrer, timestamp = Time.now.utc)
     past_site = version_at(timestamp)
-    host = URI.parse(referrer).host
-    if main_referrer?(referrer, host, past_site)
+    if main_referrer?(referrer, past_site)
       "main"
-    elsif extra_or_dev_referrer?(referrer, host, past_site, past_site.extra_hostnames.split(', '))
+    elsif extra_referrer?(referrer, past_site, past_site.extra_hostnames.split(', '))
       "extra"
-    elsif extra_or_dev_referrer?(referrer, host, past_site, past_site.dev_hostnames.split(', '))
+    elsif dev_referrer?(referrer, past_site, past_site.dev_hostnames.split(', '))
       "dev"
     else
       "invalid"
@@ -170,36 +171,39 @@ class Site < ActiveRecord::Base
     "invalid"
   end
   
-  def main_referrer?(referrer, host, past_site)
-    if past_site.path? && past_site.wildcard?
-      return referrer =~ /^.+:\/\/(.*\.)?#{past_site.hostname}(\:[0-9]+)?\/#{past_site.path}.*$/
-    elsif past_site.path?
-      return referrer =~ /^.+:\/\/(www\.)?#{past_site.hostname}(\:[0-9]+)?\/#{past_site.path}.*$/
-    elsif past_site.wildcard?
-      return referrer =~ /^.+:\/\/(.*\.)?#{past_site.hostname}.*$/
-    else
-      return host =~ /^(www\.)?#{past_site.hostname}$/
-    end
-  end
-  
-  def extra_or_dev_referrer?(referrer, host, past_site, past_hosts)
-    if past_site.path? && past_site.wildcard?
-      return past_hosts.any? { |h| referrer =~ /^.+:\/\/(.*\.)?#{h}(\:[0-9]+)?\/#{past_site.path}.*$/ }
-    elsif past_site.path?
-      return past_hosts.any? { |h| referrer =~ /^.+:\/\/(www\.)?#{h}(\:[0-9]+)?\/#{past_site.path}.*$/ }
-    elsif past_site.wildcard?
-      return past_hosts.any? { |h| referrer =~ /^.+:\/\/(.*\.)?#{h}.*$/ }
-    else
-      return past_hosts.any? { |h| host =~ /^(www\.)?#{h}$/ }
-    end
-  end
-  
 private
+  
+  def self.referrer_match_hostname?(referrer, hostname, path = '', wildcard = false)
+    if path || wildcard
+      referrer =~ /^.+:\/\/(#{wildcard ? '.*' : 'www'}\.)?#{hostname}#{"(\:[0-9]+)?\/#{path}" if path.present?}.*$/
+    else
+      URI.parse(referrer).host =~ /^(www\.)?#{hostname}$/
+    end
+  end
+  
+  def main_referrer?(referrer, past_site)
+    self.class.referrer_match_hostname?(referrer, past_site.hostname, past_site.path, past_site.wildcard)
+  end
+  
+  def extra_referrer?(referrer, past_site, past_hosts)
+    past_hosts.any? { |h| self.class.referrer_match_hostname?(referrer, h, past_site.path, past_site.wildcard) }
+  end
+  
+  def dev_referrer?(referrer, past_site, past_hosts)
+    past_hosts.any? { |h| self.class.referrer_match_hostname?(referrer, h, '', past_site.wildcard) }
+  end
+  
+  # validate
+  def at_least_one_domain_set
+    unless active? || hostname.present? || dev_hostnames.present? || extra_hostnames.present?
+      errors[:base] << "Please set at least a development or an extra domain"
+    end
+  end
   
   # validate
   def must_be_active_to_update_hostnames
     if !new_record? && pending?
-      message = "can not be updated when site in progress, please wait before update again"
+      message = "cannot be updated when site in progress, please wait before update again"
       errors[:hostname]        << message if hostname_changed?
       errors[:extra_hostnames] << message if extra_hostnames_changed?
       errors[:dev_hostnames]   << message if dev_hostnames_changed?
@@ -210,7 +214,7 @@ private
   
   # before_create
   def set_default_dev_hostnames
-    write_attribute(:dev_hostnames, '127.0.0.1, localhost') unless dev_hostnames.present?
+    write_attribute(:dev_hostnames, DEFAULT_DEV_DOMAINS) unless dev_hostnames.present?
   end
   
   # after_create

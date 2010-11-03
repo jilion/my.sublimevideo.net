@@ -121,7 +121,7 @@ describe Log::Voxcast do
       end
     end
     
-    it "should download and only save news logs" do
+    it "should download and save only news logs" do
       VCR.use_cassette('multi_logs_with_already_existing_log_fix') do
         Factory(:log_voxcast, :name => 'cdn.sublimevideo.net.log.1274348520-1274348580.gz')
         lambda { Log::Voxcast.fetch_download_and_create_new_logs }.should change(Log::Voxcast, :count).by(3)
