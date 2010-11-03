@@ -121,7 +121,7 @@ GEM
     ffaker (0.4.0)
     ffi (0.6.3)
       rake (>= 0.8.7)
-    fog (0.3.13)
+    fog (0.3.14)
       builder
       excon (>= 0.2.4)
       formatador (>= 0.0.15)
@@ -146,7 +146,7 @@ GEM
     guard-rspec (0.1.4)
       guard (>= 0.2.0)
     haml (3.0.23)
-    heroku (1.11.0)
+    heroku (1.12.0)
       json_pure (>= 1.2.0, < 1.5.0)
       launchy (~> 0.3.2)
       rest-client (>= 1.4.0, < 1.7.0)
@@ -177,11 +177,11 @@ GEM
       activesupport (~> 3.0.0)
       arel (~> 1.0.1)
     mime-types (1.16)
-    mongo (1.0.9)
-      bson (>= 1.0.5)
-    mongoid (2.0.0.beta.19)
+    mongo (1.1.1)
+      bson (>= 1.1.1)
+    mongoid (2.0.0.beta.20)
       activemodel (~> 3.0)
-      mongo (= 1.0.9)
+      mongo (~> 1.1)
       tzinfo (~> 0.3.22)
       will_paginate (~> 3.0.pre)
     net-ssh (2.0.23)
@@ -234,7 +234,7 @@ GEM
       rspec-expectations (~> 2.0.1)
     rspec-rails (2.0.1)
       rspec (~> 2.0.0)
-    ruby-graphviz (0.9.18)
+    ruby-graphviz (0.9.19)
     ruby-hmac (0.4.0)
     rubyzip (0.9.4)
     selenium-webdriver (0.0.29)
@@ -302,7 +302,7 @@ DEPENDENCIES
   devise_invitable!
   factory_girl_rails (~> 1.0.0)
   ffaker (~> 0.4.0)
-  fog (~> 0.3.13)
+  fog (~> 0.3.14)
   growl
   guard
   guard-bundler
@@ -311,7 +311,7 @@ DEPENDENCIES
   guard-rspec
   haml (~> 3.0.23)
   has_scope!
-  heroku (~> 1.11.0)
+  heroku (~> 1.12.0)
   heroku_tasks (~> 0.1.4)
   hoptoad_notifier (~> 2.3.11)
   i18n (~> 0.4.1)
@@ -320,8 +320,8 @@ DEPENDENCIES
   liquid (~> 2.2.2)
   memcached (~> 0.20.1)
   meta_where (~> 0.9.5)
-  mongo (~> 1.0.9)
-  mongoid (~> 2.0.0.beta.19)
+  mongo (~> 1.1.1)
+  mongoid (~> 2.0.0.beta.20)
   paper_trail (~> 1.6.3)
   pg (~> 0.9.0)
   prowl (~> 0.1.3)
