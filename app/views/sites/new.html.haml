@@ -1,0 +1,101 @@
+= title_and_content_header("New site creation")
+
+= form_for @site do |f|
+
+  %h3 Site settings
+  .entry.site
+    = f.label :hostname, "", :class => "icon"
+    %p.desc
+      = "Can be left empty..."
+    = f.text_field :hostname, :class => "text", :placeholder => "yourdomain.com", :autocomplete => :off
+    -#- if @site.errors.key?(:base)
+    -#  .inline_errors
+    -#    %span= @site.errors[:base].first
+    %p.desc.small
+      = raw "If needed, you can #{link_to "add a staging or alias domain", "", :onclick => "$('extra_hostnames').toggle(); return false"} for this site."
+  .entry#extra_hostnames{ :style => @site.extra_hostnames.present? ? "display:block" : "display:none" }
+    = f.label :extra_hostnames
+    %p.desc
+      = "Add extra domains separated by commas. Extra domains are meant to be used exclusively for staging domains and alias domains (multiple domain names for the same content)."
+    = f.text_field :extra_hostnames, :class => "text", :autocomplete => :off
+  .entry
+    = f.label :dev_hostnames
+    %p.desc= "Add (local only) development domains separated by commas."
+    = f.text_field :dev_hostnames, :class => "text", :autocomplete => :off
+  .entry
+    = f.label :path, "Limit site to a certain path"
+    %p.desc= "Path will be also added to extra domains"
+    %p
+      = "#{@site.hostname}/"
+      = f.text_field :path, :class => "text", :autocomplete => :off
+  .entry
+    = f.label :wildcard, "Wildcard (*.#{@site.hostname})"
+    %p.desc= "Wildcard will be also added to extra and dev domains"
+    = f.check_box :wildcard
+  
+  %h3 Choose a plan
+  .entry.plan
+    - plans = Plan.all
+    %h4 Perso
+    - perso_plan =  plans.detect { |p| p.name == 'perso_year' } 
+    = f.label :plan_id, "Yearly", :for => "plan_id_perso_year"
+    = f.radio_button :plan_id, perso_plan.id, :id => "plan_id_perso_year"
+    %ul
+      %li= "videopage views: #{perso_plan.player_hits} per month"
+      %li= "price: #{number_to_currency(perso_plan.price / 100.0)} per year"
+      %li= "overages: #{number_to_currency(perso_plan.overage_price / 100.0)} per block of #{Plan::OVERAGES_PLAYER_HITS} videopage views"
+    %br
+    
+    %h4 Pro
+    - pro_month_plan =  plans.detect { |p| p.name == 'pro_month' } 
+    = f.label :plan_id, "Month", :for => "plan_id_pro_month"
+    = f.radio_button :plan_id, pro_month_plan.id, :id => "plan_id_pro_month"
+    %ul
+      %li= "videopage views: #{pro_month_plan.player_hits} per month"
+      %li= "price: #{number_to_currency(pro_month_plan.price / 100.0)} per month"
+      %li= "overages: #{number_to_currency(pro_month_plan.overage_price / 100.0)} per block of #{Plan::OVERAGES_PLAYER_HITS} videopage views"
+    
+    - pro_year_plan =  plans.detect { |p| p.name == 'pro_year' } 
+    = f.label :plan_id, "Year", :for => "plan_id_pro_year"
+    = f.radio_button :plan_id, pro_year_plan.id, :id => "plan_id_pro_year"
+    %ul
+      %li= "videopage views: #{pro_year_plan.player_hits} per month"
+      %li= "price: #{number_to_currency(pro_year_plan.price / 100.0)} per year"
+      %li= "overages: #{number_to_currency(pro_year_plan.overage_price / 100.0)} per block of #{Plan::OVERAGES_PLAYER_HITS} videopage views"
+    %br
+    
+    %h4 Enterprise
+    - enterprise_month_plan =  plans.detect { |p| p.name == 'enterprise_month' } 
+    = f.label :plan_id, "Month", :for => "plan_id_enterprise_month"
+    = f.radio_button :plan_id, enterprise_month_plan.id, :id => "plan_id_enterprise_month"
+    %ul
+      %li= "videopage views: #{enterprise_month_plan.player_hits} per month"
+      %li= "price: #{number_to_currency(enterprise_month_plan.price / 100.0)} per month"
+      %li= "overages: #{number_to_currency(enterprise_month_plan.overage_price / 100.0)} per block of #{Plan::OVERAGES_PLAYER_HITS} videopage views"
+    
+    - enterprise_year_plan =  plans.detect { |p| p.name == 'enterprise_year' } 
+    = f.label :plan_id, "Year", :for => "plan_id_enterprise_year"
+    = f.radio_button :plan_id, enterprise_year_plan.id, :id => "plan_id_enterprise_year"
+    %ul
+      %li= "videopage views: #{enterprise_year_plan.player_hits} per month"
+      %li= "price: #{number_to_currency(enterprise_year_plan.price / 100.0)} per year"
+      %li= "overages: #{number_to_currency(enterprise_year_plan.overage_price / 100.0)} per block of #{Plan::OVERAGES_PLAYER_HITS} videopage views"
+    %br
+    
+  %h3 Choose addons
+  %ul
+    - Addon.all.each do |addon|
+      %li
+        = f.label :addon_ids, addon.name.humanize, :for => "addon_id_#{addon.name}"
+        = f.check_box :addon_ids, { :id => "addon_id_#{addon.name}", :name => "site[addon_ids][]" }, addon.id, nil  
+        %ul
+          %li= "price: #{number_to_currency(addon.price / 100.0)} per #{addon.term_type}"
+          
+  - if !current_user.cc? || current_user.cc_expired?
+    %h3 Credit card
+    - @user ||= @site.user
+    = f.fields_for :user_attributes, @user do |ff|
+      = render 'credit_cards/form', :f => ff
+      
+  .actions
+    = f.submit 'Add', :class => "add"

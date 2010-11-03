@@ -35,8 +35,7 @@ describe SitesController do
     end
     it "should respond with success to GET :new" do
       logged_in_user.stub_chain(:sites, :build) { mock_site }
-      
-      get :new, :format => :js
+      get :new
       response.should be_success
     end
     it "should respond with success to GET :edit" do

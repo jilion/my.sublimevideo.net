@@ -1,6 +1,7 @@
 class Plan < ActiveRecord::Base
   
   TERM_TYPES = %w[month year]
+  OVERAGES_PLAYER_HITS = 1000
   
   attr_accessible :name, :term_type, :player_hits, :price, :overage_price
   

@@ -12,9 +12,7 @@ module LayoutHelper
   end
   
   def content_header(text, header_size = 2)
-    content_for :content_header do
-      content_tag(:"h#{header_size}", text.html_safe)
-    end
+    content_tag(:"h#{header_size}", text.html_safe)
   end
   
   def activable_content_tag(tag, options = {})

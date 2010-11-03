@@ -1,5 +1,6 @@
 class SitesController < ApplicationController
-  respond_to :html, :js
+  respond_to :html
+  respond_to :js, :except => [:new, :create]
   
   before_filter :redirect_suspended_user
   
@@ -25,8 +26,7 @@ class SitesController < ApplicationController
   def new
     @site = current_user.sites.build
     respond_with(@site) do |format|
-      format.html { redirect_to sites_path }
-      format.js
+      format.html
     end
   end
   
@@ -53,12 +53,9 @@ class SitesController < ApplicationController
     @site = current_user.sites.build(params[:site])
     respond_with(@site) do |format|
       if @site.save
-        @site.delay.activate
         format.html { redirect_to sites_path }
-        format.js
       else
-        format.html { redirect_to sites_path }
-        format.js   { render :new }
+        format.html { render :new }
       end
     end
   end

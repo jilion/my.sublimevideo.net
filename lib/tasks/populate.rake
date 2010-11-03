@@ -13,7 +13,7 @@ namespace :db do
     
     desc "Empty all the tables"
     task :empty_all_tables => :environment do
-      timed { empty_tables("delayed_jobs", Invoice, Log, Mail::Template, Mail::Log, Site, SiteUsage, User, Admin) }
+      timed { empty_tables("delayed_jobs", Invoice, Log, Mail::Template, Mail::Log, Site, SiteUsage, User, Admin, Plan) }
     end
     
     desc "Load all development fixtures."
@@ -24,6 +24,8 @@ namespace :db do
       timed { create_sites(argv_count) }
       timed { create_site_usages }
       timed { create_mail_templates }
+      timed { create_plans }
+      timed { create_addons }
     end
     
     desc "Load Admin development fixtures."
@@ -56,6 +58,17 @@ namespace :db do
       timed { create_site_usages }
     end
     
+    desc "Create fake plans"
+    task :plans => :environment do
+      timed { empty_tables(Plan) }
+      timed { create_plans }
+    end
+    
+    desc "Create fake addons"
+    task :addons => :environment do
+      timed { empty_tables(Addon) }
+      timed { create_addons }
+    end
   end
   
 end
@@ -104,7 +117,9 @@ def create_users(count = 0)
         :country => 'CH',
         :postal_code => '1024',
         :email => user_infos[1],
-        :password => "123456"
+        :password => "123456",
+        :use_personal => true,
+        :terms_and_conditions => "1"
       )
       user.confirmed_at = Time.now
       user.save!
@@ -118,9 +133,14 @@ def create_users(count = 0)
       user.country      = 'US'
       user.postal_code  = Faker::Address.zip_code
       user.email        = Faker::Internet.email
-      user.use_personal = rand > 0.5
-      user.use_company  = rand > 0.5
-      user.use_clients  = user.use_company && rand > 0.3
+      case rand
+      when 0..0.4
+        user.use_personal = true
+      when 0.4..0.7
+        user.use_company  = true
+      when 0.7..1
+        user.use_clients  = true
+      end
       
       if user.use_company
         user.company_name          = Faker::Company.name
@@ -132,6 +152,7 @@ def create_users(count = 0)
       
       user.password     = '123456'
       user.confirmed_at = rand(10).days.ago
+      user.terms_and_conditions = "1"
       user.save
     end
     print "#{count} random users created!\n"
@@ -148,9 +169,6 @@ def create_sites(max = 5)
       site            = user.sites.build
       site.hostname   = "#{rand > 0.5 ? '' : %w[www. blog. my. git. sv. ji. geek. yin. yang. chi. cho. chu. foo. bar. rem.].sample}#{user.id}#{i}#{Faker::Internet.domain_name}"
       site.created_at = rand(1500).days.ago
-      site.flash_hits_cache  = rand(1000)
-      site.player_hits_cache = rand(500) + site.flash_hits_cache
-      site.loader_hits_cache = rand(10000) + site.player_hits_cache
       site.save(:validate => false)
       site.activate
     end
@@ -189,6 +207,26 @@ def create_site_usages
       puts "#{player_hits} video-page views on #{day} for site ##{site.id}!"
     end
   end
+end
+
+def create_plans
+  plans = [
+    { :name => "perso_year",       :term_type => "year",  :player_hits => 3000,   :price => 2990,  :overage_price => 299 },
+    { :name => "pro_month",        :term_type => "month", :player_hits => 30000,  :price => 999,   :overage_price => 199 },
+    { :name => "pro_year",         :term_type => "year",  :player_hits => 30000,  :price => 9990,  :overage_price => 199 },
+    { :name => "enterprise_month", :term_type => "month", :player_hits => 300000, :price => 4999,  :overage_price => 99 },
+    { :name => "enterprise_year",  :term_type => "year",  :player_hits => 300000, :price => 49990, :overage_price => 99 }
+  ]
+  plans.each { |attributes| Plan.create(attributes) }
+  print "#{plans.size} plans created!\n"
+end
+
+def create_addons
+  addons = [
+    { :name => "ssl_month", :term_type => "month", :price => 499 }
+  ]
+  addons.each { |attributes| Addon.create(attributes) }
+  print "#{addons.size} addon(s) created!\n"
 end
 
 def create_mail_templates(count = 5)

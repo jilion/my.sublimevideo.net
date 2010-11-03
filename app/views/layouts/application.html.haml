@@ -41,9 +41,6 @@
                       .notice= flash[:notice]
                     - if flash[:alert]
                       .alert= flash[:alert]
-                      
-                = yield :content_header
-                
                 = yield
       #footer
         %p.right

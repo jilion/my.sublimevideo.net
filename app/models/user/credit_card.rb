@@ -42,6 +42,7 @@ module User::CreditCard
   def credit_card_expired?
     cc_expire_on.year < Time.now.utc.year || cc_expire_on.month < Time.now.utc.month
   end
+  alias :cc_expired? :credit_card_expired?
   
   def cc_full_name=(attribute)
     @cc_full_name = attribute

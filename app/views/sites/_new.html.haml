@@ -1,9 +1,0 @@
-= form_for @site, :remote => true, :html => { :class => "site" } do |f|
-  .entry.site
-    = f.label :hostname, "", :class => "icon"
-    = f.text_field :hostname, :class => "text", :placeholder => "yourdomain.com", :required => true, :autocomplete => :off
-    - if @site.errors.key?(:base)
-      .inline_errors
-        %span= @site.errors[:base].first
-  .actions
-    = f.submit 'Add', :class => "add"

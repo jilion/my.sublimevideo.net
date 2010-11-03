@@ -9,7 +9,8 @@ class Site < ActiveRecord::Base
   # Versioning
   has_paper_trail
   
-  attr_accessible :hostname, :dev_hostnames, :extra_hostnames, :path, :wildcard
+  attr_accessor :user_attributes
+  attr_accessible :hostname, :dev_hostnames, :extra_hostnames, :path, :wildcard, :plan_id, :addon_ids, :user_attributes
   
   uniquify :token, :chars => Array('a'..'z') + Array('0'..'9')
   
@@ -20,7 +21,7 @@ class Site < ActiveRecord::Base
   # = Associations =
   # ================
   
-  belongs_to :user
+  belongs_to :user, :validate => true, :autosave => true
   belongs_to :plan
   has_many :invoice_items
   has_many :invoices, :through => :invoice_items
@@ -63,6 +64,7 @@ class Site < ActiveRecord::Base
   # = Callbacks =
   # =============
   
+  before_validation :set_user_attributes
   before_create :set_default_dev_hostnames
   after_create :delay_ranks_update
   
@@ -110,6 +112,11 @@ class Site < ActiveRecord::Base
   
   def path=(attribute)
     write_attribute :path, attribute.gsub(/^\//, '')
+  end
+  
+  
+  def set_user_attributes
+    user.attributes = user_attributes if user && user_attributes.present?
   end
   
   def template_hostnames
