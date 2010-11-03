@@ -8,7 +8,7 @@
       %th= "Subject"
       %th= "Body"
       %th= link_to_sort :date, :default_way => 'desc', :default => true, :label => "Created at"
-    = render :partial => 'admin/mails/templates/mail_template', :object => @mail_templates
+    = render :partial => 'admin/mail_templates/mail_template', :object => @mail_templates
     
   .pagination_wrap
     = remote_will_paginate(@mail_templates, :params => params.merge(:format => nil))

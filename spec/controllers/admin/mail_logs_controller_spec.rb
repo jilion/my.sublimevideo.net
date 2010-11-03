@@ -1,13 +1,13 @@
 require 'spec_helper'
 
-describe Admin::Mails::LogsController do
+describe Admin::MailLogsController do
   include Devise::TestHelpers
   
   context "with logged in admin" do
     before(:each) { sign_in :admin, logged_in_admin }
     
     it "should respond with success to GET :show" do
-      Mail::Log.stub(:find).with("1") { mock_mail_log }
+      MailLog.stub(:find).with("1") { mock_mail_log }
       
       get :show, :id => '1'
       response.should be_success

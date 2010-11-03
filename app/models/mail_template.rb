@@ -1,6 +1,4 @@
-class Mail::Template < ActiveRecord::Base
-  
-  set_table_name 'mail_templates'
+class MailTemplate < ActiveRecord::Base
   
   # Pagination
   cattr_accessor :per_page
@@ -12,14 +10,14 @@ class Mail::Template < ActiveRecord::Base
   # = Associations =
   # ================
   
-  has_many :logs, :class_name => "Mail::Log"
+  has_many :logs, :class_name => "MailLog", :foreign_key => "template_id"
   
   # ==========
   # = Scopes =
   # ==========
   # sort
-  scope :by_title, lambda { |way = 'asc'| order("#{Mail::Template.quoted_table_name}.title #{way}") }
-  scope :by_date,  lambda { |way = 'desc'| order("#{Mail::Template.quoted_table_name}.created_at #{way}") }
+  scope :by_title, lambda { |way = 'asc'| order("#{MailTemplate.quoted_table_name}.title #{way}") }
+  scope :by_date,  lambda { |way = 'desc'| order("#{MailTemplate.quoted_table_name}.created_at #{way}") }
   
   # ===============
   # = Validations =

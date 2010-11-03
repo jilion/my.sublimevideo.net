@@ -31,15 +31,15 @@ module Spec
       end
       
       def mock_mail_template(stubs={})
-        @mock_mail_template ||= mock_model(Mail::Template, stubs)
+        @mock_mail_template ||= mock_model(MailTemplate, stubs)
       end
       
       def mock_mail_letter(stubs={})
-        @mock_mail_letter ||= mock_model(Mail::Letter, stubs)
+        @mock_mail_letter ||= mock_model(MailLetter, stubs)
       end
       
       def mock_mail_log(stubs={})
-        @mock_mail_log ||= mock_model(Mail::Log, stubs)
+        @mock_mail_log ||= mock_model(MailLog, stubs)
       end
       
       def mock_delayed_job(stubs={})

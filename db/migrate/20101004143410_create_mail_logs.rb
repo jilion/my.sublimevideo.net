@@ -5,7 +5,7 @@ class CreateMailLogs < ActiveRecord::Migration
       t.integer :admin_id
       t.text :criteria # criteria used to select user_ids (serialized form params)
       t.text :user_ids # IDs of users who've been sent the mail
-      t.text :snapshot # snapshot of the template, serialization of Mail::Template
+      t.text :snapshot # snapshot of the template, serialization of MailTemplate
       t.timestamps
     end
     

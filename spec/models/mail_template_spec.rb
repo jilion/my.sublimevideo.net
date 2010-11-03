@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Mail::Template do
+describe MailTemplate do
   set(:mail_template) { Factory(:mail_template) }
   subject { mail_template }
   

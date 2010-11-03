@@ -8,8 +8,8 @@ describe Admin::MailsController do
     
     describe "GET :index" do
       before(:each) do
-        Mail::Log.stub_chain(:by_date, :paginate) { [mock_mail_log] }
-        Mail::Template.stub_chain(:by_date, :paginate) { [mock_mail_template] }
+        MailLog.stub_chain(:by_date, :paginate) { [mock_mail_log] }
+        MailTemplate.stub_chain(:by_date, :paginate) { [mock_mail_template] }
         get :index
       end
       
@@ -26,7 +26,7 @@ describe Admin::MailsController do
     
     describe "GET :new" do
       before(:each) do
-        Mail::Log.stub(:new) { mock_mail_log }
+        MailLog.stub(:new) { mock_mail_log }
         get :new
       end
       
@@ -40,7 +40,7 @@ describe Admin::MailsController do
     
     describe "POST :create" do
       before(:each) do
-        Mail::Letter.stub(:new).with({ "template_id" => '1', "criteria" => "with_activity", "admin_id" => logged_in_admin.id }) { mock_mail_letter }
+        MailLetter.stub(:new).with({ "template_id" => '1', "criteria" => "with_activity", "admin_id" => logged_in_admin.id }) { mock_mail_letter }
         mock_mail_letter.stub_chain(:delay, :deliver_and_log) { mock_mail_log }
       end
       

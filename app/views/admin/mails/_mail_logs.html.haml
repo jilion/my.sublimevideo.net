@@ -8,7 +8,7 @@
       %th= link_to_sort :template_title, :label => "Template", :reverse => true
       %th= "# of receivers"
       %th= link_to_sort :date, :default_way => 'desc', :default => true, :label => "Created at"
-    = render :partial => 'admin/mails/logs/mail_log', :object => @mail_logs
+    = render :partial => 'admin/mail_logs/mail_log', :object => @mail_logs
     
   .pagination_wrap
     = remote_will_paginate(@mail_logs, :params => params.merge(:format => nil))

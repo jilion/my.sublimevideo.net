@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Mail::Letter do
+describe MailLetter do
   
   describe "Class Methods" do
     describe "#deliver_and_log" do
@@ -8,7 +8,7 @@ describe Mail::Letter do
       set(:admin)         { Factory(:admin) }
       set(:attributes)    { { :admin_id => admin.id, :template_id => mail_template.id.to_s, :criteria => "with_activity" } }
       set(:mail_template) { Factory(:mail_template) }
-      set(:mail_letter)   { Mail::Letter.new(attributes) }
+      set(:mail_letter)   { MailLetter.new(attributes) }
       
       before(:each) { User.stub_chain(:with_activity).and_return([user]) }
       
@@ -34,7 +34,7 @@ describe Mail::Letter do
       
       context "with multiple users to send emails to" do
         context "with the 'dev' filter" do
-          set(:mail_letter_dev) { Mail::Letter.new(attributes.merge(:criteria => 'dev')) }
+          set(:mail_letter_dev) { MailLetter.new(attributes.merge(:criteria => 'dev')) }
           before(:each) { User.stub!(:where).with(:email => ["thibaud@jilion.com", "remy@jilion.com", "zeno@jilion.com", "octave@jilion.com"]).and_return([user]) }
           subject { mail_letter_dev.deliver_and_log }
           
@@ -56,8 +56,8 @@ describe Mail::Letter do
             ActionMailer::Base.deliveries.last.subject.should =~ /help us shaping the right pricing/
           end
           
-          it "should not create a new Mail::Log record" do
-            lambda { subject }.should_not change(Mail::Log, :count)
+          it "should not create a new MailLog record" do
+            lambda { subject }.should_not change(MailLog, :count)
           end
         end
         
@@ -87,15 +87,15 @@ describe Mail::Letter do
             ActionMailer::Base.deliveries.last.subject.should =~ /help us shaping the right pricing/
           end
           
-          it "should create a new Mail::Log record" do
-            lambda { subject }.should change(Mail::Log, :count).by(1)
+          it "should create a new MailLog record" do
+            lambda { subject }.should change(MailLog, :count).by(1)
           end
         end
         
         context "with the 'with_invalid_site' filter" do
           set(:user_with_invalid_site)   { Factory(:user, :invitation_token => nil) }
           set(:user_with_invalid_site2)  { Factory(:user, :invitation_token => nil) }
-          set(:mail_letter_invalid_site) { Mail::Letter.new(attributes.merge(:criteria => 'with_invalid_site')) }
+          set(:mail_letter_invalid_site) { MailLetter.new(attributes.merge(:criteria => 'with_invalid_site')) }
           before(:all) do
             invalid_site = Factory.build(:site, :user => user_with_invalid_site, :hostname => 'test')
             invalid_site.save(:validate => false)
@@ -122,8 +122,8 @@ describe Mail::Letter do
             ActionMailer::Base.deliveries.last.subject.should =~ /help us shaping the right pricing/
           end
           
-          it "should create a new Mail::Log record" do
-            lambda { subject }.should change(Mail::Log, :count).by(1)
+          it "should create a new MailLog record" do
+            lambda { subject }.should change(MailLog, :count).by(1)
           end
         end
       end

@@ -13,7 +13,7 @@ class Admin < ActiveRecord::Base
   # = Associations =
   # ================
   
-  has_many :mail_logs, :class_name => "Mail::Log"
+  has_many :mail_logs, :class_name => "MailLog"
   
   # ==========
   # = Scopes =

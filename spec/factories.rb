@@ -51,13 +51,13 @@ Factory.define :referrer do |f|
   f.hits  12
 end
 
-Factory.define :mail_template, :class => Mail::Template do |f|
+Factory.define :mail_template, :class => MailTemplate do |f|
   f.sequence(:title) { |n| "Pricing survey #{n}" }
   f.subject          "{{user.full_name}} ({{user.email}}), help us shaping the right pricing"
   f.body             "Hi {{user.full_name}} ({{user.email}}), please respond to the survey, by clicking on the following link:\nhttp://survey.com"
 end
 
-Factory.define :mail_log, :class => Mail::Log do |f|
+Factory.define :mail_log, :class => MailLog do |f|
   f.association :template, :factory => :mail_template
   f.association :admin
   f.criteria    ["with_activity"]

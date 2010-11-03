@@ -13,7 +13,7 @@ namespace :db do
     
     desc "Empty all the tables"
     task :empty_all_tables => :environment do
-      timed { empty_tables("delayed_jobs", Invoice, Log, Mail::Template, Mail::Log, Site, SiteUsage, User, Admin, Plan) }
+      timed { empty_tables("delayed_jobs", Invoice, Log, MailTemplate, MailLog, Site, SiteUsage, User, Admin, Plan) }
     end
     
     desc "Load all development fixtures."
@@ -48,7 +48,7 @@ namespace :db do
     
     desc "Load Mail templates development fixtures."
     task :mail_templates => :environment do
-      timed { empty_tables(Mail::Template) }
+      timed { empty_tables(MailTemplate) }
       timed { create_mail_templates }
     end
     
@@ -231,7 +231,7 @@ end
 
 def create_mail_templates(count = 5)
     count.times do |i|
-      mail_template            = Mail::Template.new
+      mail_template            = MailTemplate.new
       mail_template.title      = Faker::Lorem.sentence(1)
       mail_template.subject    = Faker::Lorem.sentence(1)
       mail_template.body       = Faker::Lorem.paragraphs(3).join("\n\n")

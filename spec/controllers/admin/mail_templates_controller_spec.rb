@@ -1,12 +1,12 @@
 require 'spec_helper'
 
-describe Admin::Mails::TemplatesController do
+describe Admin::MailTemplatesController do
   include Devise::TestHelpers
   
   context "with logged in admin" do
     before(:each) do
       sign_in :admin, logged_in_admin
-      Mail::Template.stub(:find).with("1") { mock_mail_template }
+      MailTemplate.stub(:find).with("1") { mock_mail_template }
     end
     
     it "should respond with success to GET :new" do
@@ -15,7 +15,7 @@ describe Admin::Mails::TemplatesController do
     end
     
     describe "POST :create" do
-      before(:each) { Mail::Template.stub(:new).and_return(mock_mail_template) }
+      before(:each) { MailTemplate.stub(:new).and_return(mock_mail_template) }
       
       it "should respond with redirect when save succeed" do
         mock_mail_template.stub(:save).and_return(true)

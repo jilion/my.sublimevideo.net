@@ -1,6 +1,4 @@
-class Mail::Log < ActiveRecord::Base
-  
-  set_table_name 'mail_logs'
+class MailLog < ActiveRecord::Base
   
   # Pagination
   cattr_accessor :per_page
@@ -16,16 +14,16 @@ class Mail::Log < ActiveRecord::Base
   # = Associations =
   # ================
   
-  belongs_to :template, :class_name => "Mail::Template"
+  belongs_to :template, :class_name => "MailTemplate", :foreign_key => "template_id"
   belongs_to :admin
   
   # ==========
   # = Scopes =
   # ==========
   # sort
-  scope :by_template_title, lambda { |way = 'asc'| includes(:template).order("#{Mail::Template.quoted_table_name}.title #{way}") }
+  scope :by_template_title, lambda { |way = 'asc'| includes(:template).order("#{MailTemplate.quoted_table_name}.title #{way}") }
   scope :by_admin_email,    lambda { |way = 'asc'| includes(:admin).order("#{Admin.quoted_table_name}.email #{way}") }
-  scope :by_date,           lambda { |way = 'desc'| order("#{Mail::Log.quoted_table_name}.created_at #{way}") }
+  scope :by_date,           lambda { |way = 'desc'| order("#{MailLog.quoted_table_name}.created_at #{way}") }
   
   # ===============
   # = Validations =
@@ -47,7 +45,7 @@ class Mail::Log < ActiveRecord::Base
 protected
   
   def snapshotize_template
-    self.snapshot = Mail::Template.find(template_id).snapshotize
+    self.snapshot = MailTemplate.find(template_id).snapshotize
   end
   
 end

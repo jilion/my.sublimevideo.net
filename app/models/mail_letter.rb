@@ -1,8 +1,8 @@
-class Mail::Letter
+class MailLetter
   extend ActiveModel::Naming
   
   def initialize(params)
-    @template = Mail::Template.find(params[:template_id])
+    @template = MailTemplate.find(params[:template_id])
     @admin_id, @criteria = params[:admin_id], params[:criteria]
   end
   

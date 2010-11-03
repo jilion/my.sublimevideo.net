@@ -8,7 +8,7 @@ feature "Mail templates index:" do
   
   scenario "should be possible to edit mail template" do
     mail_template = Factory(:mail_template)
-    Mail::Template.all.size.should == 1
+    MailTemplate.all.size.should == 1
     
     visit "/admin/mails/templates/#{mail_template.id}/edit"
     

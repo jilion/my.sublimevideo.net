@@ -70,9 +70,9 @@ MySublimeVideo::Application.routes.draw do
     resources :admins, :only => [:index, :destroy]
     resources :sites, :only => [:index, :edit, :update]
     resources :mails, :only => [:index, :new, :create]
-    scope "mails", :module => "mails" do
-      resources :templates, :only => [:new, :create, :edit, :update], :as => 'mail_templates'
-      resources :logs,      :only => [:show],          :as => 'mail_logs'
+    scope "mails" do
+      resources :mail_templates, :only => [:new, :create, :edit, :update], :path => "templates"
+      resources :mail_logs,      :only => [:show]                        , :path => "logs"
     end
     resources :delayed_jobs, :only => [:index, :show, :update, :destroy], :path => "djs"
     resources :releases, :only => [:index, :create, :update]

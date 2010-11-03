@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Mail::Log do
+describe MailLog do
   set(:mail_log) { Factory(:mail_log) }
   
   subject { mail_log }

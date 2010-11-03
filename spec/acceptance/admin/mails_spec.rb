@@ -6,8 +6,8 @@ feature "Mails index with no logs and no templates" do
   end
   
   scenario "should be 0 template and 0 log created" do
-    Mail::Template.all.size.should == 0
-    Mail::Log.all.size.should == 0
+    MailTemplate.all.size.should == 0
+    MailLog.all.size.should == 0
   end
   
   scenario "should have text instead of tables if no templates or no logs exist" do
@@ -31,8 +31,8 @@ feature "Mails index with logs and templates" do
   end
   
   scenario "should be 1 template and 1 log created" do
-    Mail::Template.all.size.should == 1
-    Mail::Log.all.size.should == 1
+    MailTemplate.all.size.should == 1
+    MailLog.all.size.should == 1
   end
   
   scenario "should have a table containing mail logs and a table containing mail templates" do
@@ -85,7 +85,7 @@ feature "Mails sending" do
       Delayed::Worker.new(:quiet => true).work_off
       ActionMailer::Base.deliveries.size.should == 1
       
-      latest_log = Mail::Log.by_date.first
+      latest_log = MailLog.by_date.first
       latest_log.template_id.should == @mail_template.id
       latest_log.admin_id.should == @admin.id
       latest_log.snapshot.should == @mail_template.snapshotize
@@ -119,7 +119,7 @@ feature "Mails sending" do
       Delayed::Worker.new(:quiet => true).work_off
       ActionMailer::Base.deliveries.size.should == 1
       
-      latest_log = Mail::Log.by_date.first
+      latest_log = MailLog.by_date.first
       latest_log.template_id.should == @mail_template.id
       latest_log.admin_id.should == @admin.id
       latest_log.snapshot.should == @mail_template.snapshotize
