@@ -42,6 +42,16 @@ describe Site do
     it { should allow_value('stable').for(:player_mode) }
     it { should_not allow_value('fake').for(:player_mode) }
     
+    describe "user credit card" do
+      it "should be validate" do
+        site = Factory.build(:site, :user_attributes => { :cc_full_name => "Bob", :cc_expire_on => 1.year.from_now } )
+        site.should_not be_valid
+        site.user.errors[:cc_number].should be_present
+        site.user.errors[:cc_type].should be_present
+        site.user.errors[:cc_verification_value].should be_present
+      end
+    end
+    
     describe "hostname" do
       it "should not be required until activation" do
         site = Factory.build(:site, :hostname => nil)
@@ -358,10 +368,11 @@ describe Site do
   end
   
   describe "Callbacks" do
-    describe "before_create" do
-      it "should set default dev_hostnames if not set" do
-        site = Factory(:site, :dev_hostnames => nil)
-        site.dev_hostnames.should == '127.0.0.1, localhost'
+    describe "before_validation" do
+      it "should set user_attributes" do
+        user = Factory(:user, :first_name => "Bob")
+        site = Factory(:site, :user => user, :user_attributes => { :first_name => "John" })
+        user.reload.first_name.should == "John"
       end
     end
     

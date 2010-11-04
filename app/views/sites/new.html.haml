@@ -99,6 +99,9 @@
           
   - if !current_user.cc? || current_user.cc_expired?
     %h3 Credit card
+    - if current_user.cc_expired?
+      %p.warning Your credit card is expired. Please update it.
+    
     - @user ||= @site.user
     = f.fields_for :user_attributes, @user do |ff|
       = render 'credit_cards/form', :f => ff
