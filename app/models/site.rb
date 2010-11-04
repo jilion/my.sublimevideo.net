@@ -257,6 +257,8 @@ end
 #  wildcard        :boolean
 #  extra_hostnames :string(255)
 #  plan_id         :integer
+#  cdn_up_to_date  :boolean
+#  activated_at    :datetime
 #
 # Indexes
 #
@@ -265,3 +267,4 @@ end
 #  index_sites_on_plan_id     (plan_id)
 #  index_sites_on_user_id     (user_id)
 #
+

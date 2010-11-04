@@ -51,3 +51,4 @@ end
 #  index_admins_on_invitation_token      (invitation_token)
 #  index_admins_on_reset_password_token  (reset_password_token) UNIQUE
 #
+

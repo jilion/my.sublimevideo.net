@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101102081552) do
+ActiveRecord::Schema.define(:version => 20101104113606) do
 
   create_table "addons", :force => true do |t|
     t.string   "name"
@@ -166,6 +166,8 @@ ActiveRecord::Schema.define(:version => 20101102081552) do
     t.boolean  "wildcard"
     t.string   "extra_hostnames"
     t.integer  "plan_id"
+    t.boolean  "cdn_up_to_date"
+    t.datetime "activated_at"
   end
 
   add_index "sites", ["created_at"], :name => "index_sites_on_created_at"

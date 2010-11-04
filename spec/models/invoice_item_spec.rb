@@ -74,3 +74,4 @@ end
 #  index_invoice_items_on_item_type_and_item_id  (item_type,item_id)
 #  index_invoice_items_on_site_id                (site_id)
 #
+
