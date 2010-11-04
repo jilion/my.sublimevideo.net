@@ -67,3 +67,4 @@ end
 #
 #  index_mail_logs_on_template_id  (template_id)
 #
+

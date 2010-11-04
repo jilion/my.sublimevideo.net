@@ -68,7 +68,6 @@ class Site < ActiveRecord::Base
   # =============
   
   before_validation :set_user_attributes
-  before_create :set_default_dev_hostnames
   after_create :delay_ranks_update
   
   # =================
@@ -115,10 +114,6 @@ class Site < ActiveRecord::Base
   
   def path=(attribute)
     write_attribute :path, attribute.sub('/', '')
-  end
-  
-  def set_user_attributes
-    user.attributes = user_attributes if user && user_attributes.present?
   end
   
   def template_hostnames
@@ -173,24 +168,11 @@ class Site < ActiveRecord::Base
   
 private
   
-  def self.referrer_match_hostname?(referrer, hostname, path = '', wildcard = false)
-    if path || wildcard
-      referrer =~ /^.+:\/\/(#{wildcard ? '.*' : 'www'}\.)?#{hostname}#{"(\:[0-9]+)?\/#{path}" if path.present?}.*$/
-    else
-      URI.parse(referrer).host =~ /^(www\.)?#{hostname}$/
+  # before_validation
+  def set_user_attributes
+    if user && user_attributes.present?
+      user.attributes = user_attributes
     end
-  end
-  
-  def main_referrer?(referrer, past_site)
-    self.class.referrer_match_hostname?(referrer, past_site.hostname, past_site.path, past_site.wildcard)
-  end
-  
-  def extra_referrer?(referrer, past_site, past_hosts)
-    past_hosts.any? { |h| self.class.referrer_match_hostname?(referrer, h, past_site.path, past_site.wildcard) }
-  end
-  
-  def dev_referrer?(referrer, past_site, past_hosts)
-    past_hosts.any? { |h| self.class.referrer_match_hostname?(referrer, h, '', past_site.wildcard) }
   end
   
   # validate
@@ -212,11 +194,6 @@ private
     end
   end
   
-  # before_create
-  def set_default_dev_hostnames
-    write_attribute(:dev_hostnames, DEFAULT_DEV_DOMAINS) unless dev_hostnames.present?
-  end
-  
   # after_create
   def delay_ranks_update
     delay(:priority => 100, :run_at => 30.seconds.from_now).update_ranks
@@ -234,6 +211,26 @@ private
   
   def set_archived_at
     self.archived_at = Time.now.utc
+  end
+  
+  def main_referrer?(referrer, past_site)
+    self.class.referrer_match_hostname?(referrer, past_site.hostname, past_site.path, past_site.wildcard)
+  end
+  
+  def extra_referrer?(referrer, past_site, past_hosts)
+    past_hosts.any? { |h| self.class.referrer_match_hostname?(referrer, h, past_site.path, past_site.wildcard) }
+  end
+  
+  def dev_referrer?(referrer, past_site, past_hosts)
+    past_hosts.any? { |h| self.class.referrer_match_hostname?(referrer, h, '', past_site.wildcard) }
+  end
+  
+  def self.referrer_match_hostname?(referrer, hostname, path = '', wildcard = false)
+    if path || wildcard
+      referrer =~ /^.+:\/\/(#{wildcard ? '.*' : 'www'}\.)?#{hostname}#{"(\:[0-9]+)?\/#{path}" if path.present?}.*$/
+    else
+      URI.parse(referrer).host =~ /^(www\.)?#{hostname}$/
+    end
   end
   
 end
@@ -260,6 +257,8 @@ end
 #  wildcard        :boolean
 #  extra_hostnames :string(255)
 #  plan_id         :integer
+#  cdn_up_to_date  :boolean
+#  activated_at    :datetime
 #
 # Indexes
 #
@@ -268,3 +267,4 @@ end
 #  index_sites_on_plan_id     (plan_id)
 #  index_sites_on_user_id     (user_id)
 #
+
