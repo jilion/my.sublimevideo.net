@@ -39,6 +39,9 @@ class Site < ActiveRecord::Base
   # = Scopes =
   # ==========
   
+  scope :with_plan,   includes(:plan)
+  scope :with_addons, includes(:addons)
+  
   scope :archived,     where(:state => 'archived')
   scope :not_archived, where(:state.not_eq => 'archived')
   
@@ -184,14 +187,14 @@ private
   
   # validate
   def must_be_active_to_update_hostnames
-    if !new_record? && pending?
-      message = "cannot be updated when site in progress, please wait before update again"
-      errors[:hostname]        << message if hostname_changed?
-      errors[:extra_hostnames] << message if extra_hostnames_changed?
-      errors[:dev_hostnames]   << message if dev_hostnames_changed?
-      errors[:path]            << message if path_changed?
-      errors[:wildcard]        << message if wildcard_changed?
-    end
+    # if !new_record? && pending?
+    #   message = "cannot be updated when site in progress, please wait before update again"
+    #   errors[:hostname]        << message if hostname_changed?
+    #   errors[:extra_hostnames] << message if extra_hostnames_changed?
+    #   errors[:dev_hostnames]   << message if dev_hostnames_changed?
+    #   errors[:path]            << message if path_changed?
+    #   errors[:wildcard]        << message if wildcard_changed?
+    # end
   end
   
   # after_create

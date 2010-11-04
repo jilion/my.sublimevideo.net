@@ -12,13 +12,14 @@ describe SitesController do
     
     describe "GET :index" do
       before(:each) do
-        logged_in_user.stub_chain(:sites, :not_archived, :by_date).and_return([mock_site])
+        logged_in_user.stub_chain(:sites, :not_archived, :with_plan, :with_addons, :by_date).and_return([mock_site])
         get :index
       end
       
       it "should assign sites array as @sites" do
         assigns(:sites).should == [mock_site]
       end
+      
       it "should respond with success" do
         response.should be_success
       end
@@ -28,49 +29,46 @@ describe SitesController do
       get :show, :id => '1', :format => :js
       response.should be_success
     end
-    it "should respond with success to GET :state" do
-      mock_site.stub(:active?).and_return(true)
-      get :state, :id => '1', :format => :js
-      response.should be_success
-    end
+    
     it "should respond with success to GET :new" do
       logged_in_user.stub_chain(:sites, :build) { mock_site }
       get :new
       response.should be_success
     end
+    
     it "should respond with success to GET :edit" do
       get :edit, :id => '1', :format => :js
       response.should be_success
     end
+    
     it "should respond with success to POST :create" do
       logged_in_user.stub_chain(:sites, :build).with({}) { mock_site }
-      mock_site.stub(:save).and_return(true)
-      mock_site.stub_chain(:delay, :activate).and_return(true)
+      mock_site.stub(:save) { true }
+      mock_site.stub_chain(:delay, :activate) { true }
       
       post :create, :site => {}
       response.should redirect_to(sites_url)
     end
+    
     it "should respond with success to PUT :update" do
-      mock_site.stub(:update_attributes).with({}).and_return(true)
-      mock_site.stub_chain(:delay, :activate).and_return(true)
+      mock_site.stub(:update_attributes).with({}) { true }
+      mock_site.stub_chain(:delay, :activate) { true }
       
       put :update, :id => '1', :site => {}
       response.should redirect_to(sites_url)
     end
     
     it "should respond with success to DELETE :destroy and archive site" do
-      logged_in_user.stub_chain(:sites, :find).with("1").and_return(mock_site)
-      mock_site.stub(:valid?).and_return(true)
+      logged_in_user.stub_chain(:sites, :find).with("1") { mock_site }
       mock_site.stub(:archive)
       delete :destroy, :id => '1'
       response.should redirect_to(sites_url)
     end
-    it "should respond with success to DELETE :destroy" do
-      logged_in_user.stub_chain(:sites, :find).with("1").and_return(mock_site)
-      mock_site.stub(:valid?).and_return(false)
-      mock_site.stub(:destroy)
-      delete :destroy, :id => '1'
-      response.should redirect_to(sites_url)
+    
+    it "should respond with success to GET :state" do
+      mock_site.stub(:active?).and_return(true)
+      get :state, :id => '1', :format => :js
+      response.should be_success
     end
   end
   

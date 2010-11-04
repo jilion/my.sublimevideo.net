@@ -9,7 +9,7 @@ class SitesController < ApplicationController
   
   # GET /sites
   def index
-    @sites = apply_scopes(current_user.sites.not_archived.by_date)
+    @sites = apply_scopes(current_user.sites.not_archived.with_plan.with_addons.by_date)
     respond_with(@sites)
   end
   
@@ -34,17 +34,7 @@ class SitesController < ApplicationController
   def edit
     @site = current_user.sites.find(params[:id])
     respond_with(@site) do |format|
-      format.html { redirect_to sites_path }
-      format.js
-    end
-  end
-  
-  # GET /sites/1/state
-  def state
-    @site = current_user.sites.find(params[:id])
-    respond_with(@site) do |format|
-      format.js   { head :ok unless @site.active? }
-      format.html { redirect_to sites_path }
+      format.html
     end
   end
   
@@ -65,12 +55,9 @@ class SitesController < ApplicationController
     @site = current_user.sites.find(params[:id])
     respond_with(@site) do |format|
       if @site.update_attributes(params[:site])
-        @site.delay.activate # re-generate license file
         format.html { redirect_to sites_path }
-        format.js
       else
-        format.html { redirect_to sites_path }
-        format.js   { render :edit }
+        format.html { render :edit }
       end
     end
   end
@@ -78,16 +65,19 @@ class SitesController < ApplicationController
   # DELETE /sites/1
   def destroy
     @site = current_user.sites.find(params[:id])
-    @site.valid? ? @site.archive : @site.destroy
+    @site.archive
     respond_with(@site) do |format|
       format.html { redirect_to sites_path }
     end
   end
   
-protected
-  
-  def redirect_suspended_user
-    redirect_to page_path('suspended') if current_user.suspended?
+  # GET /sites/1/state
+  def state
+    @site = current_user.sites.find(params[:id])
+    respond_with(@site) do |format|
+      format.js   { head :ok unless @site.active? }
+      format.html { redirect_to sites_path }
+    end
   end
   
 end

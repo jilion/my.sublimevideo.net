@@ -1,4 +1,5 @@
 %tr{ :id => dom_id(site), :class => cycle("", "alt") }
+  %td.plan= site.plan.name.humanize
   %td.site
     .wrap
       = link_to "http://#{hostname_with_path(site)}", :class => "external_link", :onclick => "window.open(this); return false", :title => hostname_with_path(site) do
@@ -13,14 +14,13 @@
           %em= "you should add a path"
           
       -#%em.date= l site.created_at.to_date, :format => :small
+      - if site.addons.present?
+        = "Add-ons: #{site.addons.map { |a| a.name.sub("_#{a.term_type}", '').humanize }.join(", ")}"
+      - else
+        No add-ons.
   %td.code
-    - if site.pending?
-      .in_progress
-        %em= "Uploading to cloud"
-    - else
-      = link_to "Embed code", "", :class => "embed_code", :onclick => "return MySublimeVideo.showSiteEmbedCode(#{site.id})"
-      
-  %td.hits= "42"
+    = link_to "Embed code", "", :class => "embed_code", :onclick => "return MySublimeVideo.showSiteEmbedCode(#{site.id})"
+    
   %td.edit
     .wrap
       = link_to content_tag(:span, "settings"), edit_site_path(site), :class => "settings", :title => "Settings"
