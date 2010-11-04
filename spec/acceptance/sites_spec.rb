@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 feature "Sites" do
+  # fixtures :plans, :addons
   before(:all) do
     # move this somewhere else and DRY it with the populate
     plans = [
@@ -11,6 +12,11 @@ feature "Sites" do
       { :name => "enterprise_year",  :term_type => "year",  :player_hits => 300000, :price => 49990, :overage_price => 99 }
     ]
     plans.each { |attributes| Plan.create(attributes) }
+    
+    addons = [
+      { :name => "ssl_month", :term_type => "month", :price => 499 }
+    ]
+    addons.each { |attributes| Addon.create(attributes) }
   end
   background do
     sign_in_as :user
@@ -73,15 +79,31 @@ feature "Sites" do
     # site.license.read.should include(site.template_hostnames)
   end
   
-  scenario "edit" do
-    create_site
-    edit_site :path => '/ipad', :dev_hostnames => 'sjobs.dev, apple.local'
+  feature "edit" do
+    scenario "edit settings" do
+      create_site
+      edit_site_settings :path => '/ipad', :dev_hostnames => 'sjobs.dev, apple.local'
+      
+      current_url.should =~ %r(http://[^/]+/sites)
+      page.should have_content('apple.com/ipad')
+      @current_user.sites.last.dev_hostnames.should == "apple.local, sjobs.dev"
+    end
     
-    current_url.should =~ %r(http://[^/]+/sites)
-    page.should have_content('apple.com/ipad')
+    scenario "edit plan" do
+      create_site
+      edit_site_plan
+      
+      current_url.should =~ %r(http://[^/]+/sites)
+      page.should have_content('Enterprise year')
+    end
     
-    site = @current_user.sites.last
-    site.dev_hostnames.should == "apple.local, sjobs.dev"
+    scenario "edit addons" do
+      create_site
+      edit_site_addons
+      
+      current_url.should =~ %r(http://[^/]+/sites)
+      page.should have_content('Add-ons: Ssl')
+    end
   end
   
   pending "archive a site" do
@@ -113,14 +135,30 @@ def create_site(hostname = 'google.com')
   end
 end
 
-def edit_site(options = {})
-  within(:css, "tr#site_#{options[:id] || @current_user.sites.last.id}") do
-    click_link "Settings"
-  end
+def edit_site_settings(options = {})
+  visit_settings(options[:id] || @current_user.sites.last.id)
   fill_in "site_hostname", :with => options[:hostname] || 'apple.com'
   fill_in "site_extra_hostnames", :with => options[:extra_hostnames] || ''
   fill_in "site_dev_hostnames", :with => options[:dev_hostnames] || ''
   fill_in "site_path", :with => options[:path] || ''
   choose "plan_id_enterprise_year"
-  click_button "Update"
+  click_button "Update settings"
+end
+
+def edit_site_plan(options = {})
+  visit_settings(options[:id] || @current_user.sites.last.id)
+  choose "plan_id_enterprise_year"
+  click_button "Update plan"
+end
+
+def edit_site_addons(options = {})
+  visit_settings(options[:id] || @current_user.sites.last.id)
+  check "Ssl month"
+  click_button "Update addons"
+end
+
+def visit_settings(id)
+  within(:css, "tr#site_#{id}") do
+    click_link "Settings"
+  end
 end

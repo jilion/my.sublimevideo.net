@@ -1,0 +1,34 @@
+perso_year:
+  name:          perso_year
+  term_type:     year
+  player_hits:   3000
+  price:         2990
+  overage_price: 299
+  
+pro_month:
+  name:          perso_year
+  term_type:     month
+  player_hits:   30000
+  price:         999
+  overage_price: 199
+  
+pro_year:
+  name:          perso_year
+  term_type:     year
+  player_hits:   30000
+  price:         9990
+  overage_price: 199
+  
+enterprise_month:
+  name:          perso_year
+  term_type:     month
+  player_hits:   300000
+  price:         4999
+  overage_price: 99
+  
+enterprise_year:
+  name:          perso_year
+  term_type:     year
+  player_hits:   300000
+  price:         49990
+  overage_price: 99
