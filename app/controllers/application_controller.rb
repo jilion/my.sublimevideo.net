@@ -25,6 +25,10 @@ protected
     current_admin.try(:id) rescue nil
   end
   
+  def redirect_suspended_user
+    redirect_to page_path('suspended') if current_user.suspended?
+  end
+  
   module DeviseInvitable::Controllers::Helpers
   protected
     def authenticate_inviter!
