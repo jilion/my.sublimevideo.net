@@ -46,6 +46,23 @@ document.observe("dom:loaded", function() {
     MySublimeVideo.addSiteHandler = new AddSiteHandler();
     MySublimeVideo.sitesPoller = new SitesPoller();
   }
+  
+  
+  // ===================================================
+  // = Fix a <select> CSS bug in Safari (under v4.0.5) =
+  // ===================================================
+  var webkitVersionNumber = navigator.userAgent.match(/AppleWebKit\/([0-9]+)./);
+  var isSafari405OrPrevious = navigator.userAgent.indexOf("Macintosh") > -1 &&
+                              webkitVersionNumber &&
+                              parseInt(webkitVersionNumber[1],10) <= 531; // NOTE: Safari 4.0.4 and 4.0.5 have the same webkit version number (531)
+                                                                          // Safari 5.0 has webkit version 533
+                                                                          // Safari 4.0.5 is the last version pre-5.0
+  
+  if (isSafari405OrPrevious) {
+    $$('select').each(function(element){
+      element.setStyle({ fontFamily:"Lucida Grande, Arial, sans-serif", fontSize:"15px" });
+    });
+  }
 
 });
 
@@ -124,7 +141,7 @@ MySublimeVideo.confirmDeleteSite = function(el) {
   if (confirm('Are you sure?')) {
     setTimeout(function(){ // setTimeout essential otherwise the form won't be able to be submitted by rails.js
       el.disable();
-    }, 100)
+    }, 100);
     MySublimeVideo.showTableSpinner();
   }
   else {
@@ -313,7 +330,7 @@ var PlaceholderManager = Class.create({
         if (Prototype.Browser.IE) {
           setTimeout(function(){
             this.field.focus();
-          }.bind(this),0)
+          }.bind(this),0);
         }
         else {
           this.field.focus();
