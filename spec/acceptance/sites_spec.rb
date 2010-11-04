@@ -121,7 +121,7 @@ def create_site(hostname = 'google.com')
   fill_in "site_hostname", :with => hostname
   choose "plan_id_pro_month"
   
-  if page.has_css?('#site_user_attributes_cc_full_name')#!@current_user.cc? || @current_user.cc_expired?
+  if !@current_user.cc? || @current_user.cc_expired?
     VCR.use_cassette('credit_card_visa_validation') do
       fill_in "site_user_attributes_cc_full_name", :with => "John Doe"
       fill_in "site_user_attributes_cc_number", :with => "4111111111111111"

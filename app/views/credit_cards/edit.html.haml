@@ -1,8 +1,7 @@
 = title_and_content_header "Credit card"
 
-= form_for current_user, :url => credit_card_path, :html => { :class => "main_form" } do |f|
+= form_for @user, :url => credit_card_path, :html => { :class => "main_form" } do |f|
   = render 'form', :f => f
   
   .entry.update
     = f.submit "Update", :id => 'user_submit', :class => "submit small"
-    -#= link_to "Cancel", :back, :class => "cancel"

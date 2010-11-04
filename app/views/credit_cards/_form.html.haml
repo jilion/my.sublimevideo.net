@@ -8,15 +8,15 @@
 .entry.card
   .radio_wrap
     = f.radio_button :cc_type, "visa"
-    = f.label :cc_type, "<span>Visa</span>".html_safe, :class => "visa", :title => "Visa", :for => "user_cc_type_visa"
+    = f.label :cc_type, content_tag(:span, "Visa"), :class => "visa", :title => "Visa", :for => "user_cc_type_visa"
   .radio_wrap
     = f.radio_button :cc_type, "master"
-    = f.label :cc_type, "<span>MasterCard</span>".html_safe, :class => "master", :title => "MasterCard", :for => "user_cc_type_master"
+    = f.label :cc_type, content_tag(:span, "MasterCard"), :class => "master", :title => "MasterCard", :for => "user_cc_type_master"
   .spacer
   
 .entry.full_name
   = f.label :cc_full_name, nil, :class => "icon"
-  = f.text_field :cc_full_name, :class => "text", :placeholder => "Name on Card", :required => true
+  = f.text_field :cc_full_name, :class => "text", :placeholder => "Name on card", :required => true
   
 .entry.card_number
   = f.label :cc_number, nil, :class => "icon"

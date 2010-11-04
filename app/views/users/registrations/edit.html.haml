@@ -4,7 +4,7 @@
   #credit_card_summary
     %h3.section_title= "Billing Info"
     %p{ :class => current_user.cc_type }<
-      = "#{current_user.credit_card_name} ending in <strong>#{current_user.cc_last_digits}</strong>".html_safe
+      = raw "#{t("user.credit_card.type.#{current_user.cc_type}")} ending in #{content_tag(:strong, current_user.cc_last_digits)}"
       = link_to 'Change credit card', edit_credit_card_path
       
 = render 'users/form'
