@@ -952,7 +952,7 @@ form .entry a.cancel {
   box-shadow:inset rgba(0,0,0,0.5) 1px 1px 0, inset #5b4564 1px 2px 0;
 }
 
-#content table.main th.delete {
+#content table.main th.delete, #content table.main th.settings {
   width:18px;
   -webkit-border-top-right-radius:10px;
   -moz-border-radius-topright:10px;
@@ -1122,29 +1122,19 @@ form .entry a.cancel {
 
 #content table.main tr.invalid td.site a.external_link span.invalid em {display:none;}
 
-#content table.main td.site .settings {
+#content table.main td.edit .settings {
   display:block;
   width:24px;
   height:24px;
   background:url(/images/embed/settings_btn.png) no-repeat;
-  position:absolute;
+/*  position:absolute;
   top:1px;
   right:29px;
-}
-#content table.main td.site .addons {
-  display:block;
-  width:24px;
-  height:24px;
-  background:url(/images/embed/settings_btn.png) no-repeat;
-  position:absolute;
-  top:1px;
-  right:4px;
-}
+*/}
 
-#content table.main td.site .settings span {display:none;}
-#content table.main td.site .addons span {display:none;}
+#content table.main td.edit .settings span {display:none;}
 
-#content table.main td.site .settings.disabled {
+#content table.main td.edit .settings.disabled {
   opacity:0.4;
   cursor:default;
 }

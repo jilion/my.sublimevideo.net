@@ -1,6 +1,6 @@
 = title_and_content_header("New site creation")
 
-= form_for @site do |f|
+= form_for @site, :html => { :class => "main_form" } do |f|
 
   %h3 Site settings
   - if @site.errors.key?(:base)
