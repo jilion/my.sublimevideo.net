@@ -18,7 +18,7 @@ gem 'will_paginate',         '~> 3.0.pre2'
 gem 'has_scope',             :git => 'git://github.com/rymai/has_scope.git'
 gem 'jammit',                '~> 0.5.3'
 gem 'meta_where',            '~> 0.9.5'
-gem 'hoptoad_notifier',      '~> 2.3.11'
+gem 'hoptoad_notifier',      '~> 2.3.12'
 gem 'prowl',                 '~> 0.1.3'
 gem 'activemerchant',        '~> 1.9.0'
 gem 'voxel_hapi',            :git => 'git://github.com/thibaudgg/voxel_hapi.git', :branch => '1.9.2' # VoxCast CDN
@@ -31,10 +31,10 @@ gem 'devise',                '~> 1.1.3'
 gem 'devise_invitable',      :git => 'git://github.com/rymai/devise_invitable.git'
 
 gem 'memcached',             '~> 0.20.1'
-gem 'dalli',                 '~> 0.10.1'
+gem 'dalli',                 '~> 0.11.0'
 
 gem 'aws',                   '~> 2.3.24'
-gem 'fog',                   '~> 0.3.14' # for carrierwave 0.5 final
+gem 'fog',                   '~> 0.3.15' # for carrierwave 0.5 final
 gem 'carrierwave',           '~> 0.5.0'
 
 gem 'bson_ext',              '~> 1.1.1'
@@ -67,7 +67,7 @@ group :development do
   gem 'annotate',      '~> 2.4.0'
   gem 'wirble',        '~> 0.1.3'
   gem 'ruby-graphviz', :require => 'graphviz'
-  gem 'heroku',        '~> 1.12.0'
+  gem 'heroku',        '~> 1.12.1'
   gem 'heroku_tasks',  '~> 0.1.4'
   gem 'taps',          '~> 0.3.13' # heroku db pull/push
   gem 'timecop',       '~> 0.3.5'
