@@ -119,6 +119,10 @@ class Site < ActiveRecord::Base
     write_attribute :path, attribute.sub('/', '')
   end
   
+  # def to_param
+  #   token
+  # end
+  
   def template_hostnames
     hostnames = []
     hostnames << hostname if hostname.present?
