@@ -10,7 +10,7 @@ class Site < ActiveRecord::Base
   # Versioning
   has_paper_trail
   
-  attr_accessor :user_attributes
+  attr_accessor :user_attributes, :addon_ids_was
   attr_accessible :hostname, :dev_hostnames, :extra_hostnames, :path, :wildcard, :plan_id, :addon_ids, :user_attributes
   
   uniquify :token, :chars => Array('a'..'z') + Array('0'..'9')
@@ -68,6 +68,7 @@ class Site < ActiveRecord::Base
   
   before_validation :set_user_attributes
   after_create :delay_ranks_update
+  after_update :refresh_loader_and_license
   
   # =================
   # = State Machine =
@@ -109,6 +110,11 @@ class Site < ActiveRecord::Base
   
   def path=(attribute)
     write_attribute :path, attribute.sub('/', '')
+  end
+  
+  def addon_ids=(ids)
+    @addon_ids_was = addon_ids
+    super
   end
   
   def template_hostnames
@@ -160,26 +166,37 @@ private
     delay(:priority => 100, :run_at => 30.seconds.from_now).update_ranks
   end
   
+  # after_update
+  def refresh_loader_and_license
+    if previous_changes.key?(:player_mode)
+      update_loader_and_license_file(:license => true)
+    elsif (previous_changes.keys & %w[hostname extra_hostnames dev_hostnames path wildcard]).present? || @addon_ids_was != addon_ids
+      update_loader_and_license_file(:loader => true)
+      @addon_ids_was = addon_ids
+    end
+  end
+  
   def set_cnd_up_to_date_to_false
     self.cdn_up_to_date = false
   end
   
   def delay_update_loader_and_license_file
-    delay.update_loader_and_license_file
+    delay.update_loader_and_license_file(:loader => true, :license => true)
   end
   
   def delay_remove_loader_and_license_file
     delay.remove_loader_and_license_file
   end
   
-  def update_loader_and_license_file
+  def update_loader_and_license_file(options = {})
     # ensure that VoxcastCDN purge API call was ok to set cdn_up_to_date to true
     transaction do
-      self.set_template("loader")
-      self.set_template("license")
+      self.set_template("loader") if options[:loader]
+      self.set_template("license") if options[:license]
       self.cdn_up_to_date = true
       self.save
-      purge_loader_and_license_file
+      purge_loader_file if options[:loader]
+      purge_license_file if options[:license]
     end
   end
   
@@ -188,11 +205,15 @@ private
     self.remove_license = true
     self.cdn_up_to_date = false
     self.save
-    purge_loader_and_license_file
+    purge_loader_file
+    purge_license_file
   end
   
-  def purge_loader_and_license_file
+  def purge_loader_file
     VoxcastCDN.purge("/js/#{token}.js")
+  end
+  
+  def purge_license_file
     VoxcastCDN.purge("/l/#{token}.js")
   end
   
