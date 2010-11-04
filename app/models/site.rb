@@ -42,13 +42,13 @@ class Site < ActiveRecord::Base
   scope :archived,     where(:state => 'archived')
   scope :not_archived, where(:state.not_eq => 'archived')
   
-  scope :by_hostname,             lambda { |way = 'asc'| order("#{Site.quoted_table_name}.hostname #{way}") }
-  scope :by_user,                 lambda { |way = 'desc'| includes(:user).order("#{User.quoted_table_name}.first_name #{way}, #{User.quoted_table_name}.email #{way}") }
-  scope :by_state,                lambda { |way = 'desc'| order("#{Site.quoted_table_name}.state #{way}") }
-  scope :by_google_rank,          lambda { |way = 'desc'| where(:google_rank.gte => 0).order("#{Site.quoted_table_name}.google_rank #{way}") }
-  scope :by_alexa_rank,           lambda { |way = 'desc'| where(:alexa_rank.gte => 1).order("#{Site.quoted_table_name}.alexa_rank #{way}") }
-  scope :by_date,                 lambda { |way = 'desc'| order("#{Site.quoted_table_name}.created_at #{way}") }
-  scope :search, lambda { |q| includes(:user).where(["LOWER(#{Site.quoted_table_name}.hostname) LIKE LOWER(?) OR LOWER(#{Site.quoted_table_name}.dev_hostnames) LIKE LOWER(?) OR LOWER(#{User.quoted_table_name}.email) LIKE LOWER(?) OR LOWER(#{User.quoted_table_name}.first_name) LIKE LOWER(?) OR LOWER(#{User.quoted_table_name}.last_name) LIKE LOWER(?)", "%#{q}%", "%#{q}%", "%#{q}%", "%#{q}%", "%#{q}%"]) }
+  scope :by_hostname,    lambda { |way = 'asc'| order("#{Site.quoted_table_name}.hostname #{way}") }
+  scope :by_user,        lambda { |way = 'desc'| includes(:user).order("#{User.quoted_table_name}.first_name #{way}, #{User.quoted_table_name}.email #{way}") }
+  scope :by_state,       lambda { |way = 'desc'| order("#{Site.quoted_table_name}.state #{way}") }
+  scope :by_google_rank, lambda { |way = 'desc'| where(:google_rank.gte => 0).order("#{Site.quoted_table_name}.google_rank #{way}") }
+  scope :by_alexa_rank,  lambda { |way = 'desc'| where(:alexa_rank.gte => 1).order("#{Site.quoted_table_name}.alexa_rank #{way}") }
+  scope :by_date,        lambda { |way = 'desc'| order("#{Site.quoted_table_name}.created_at #{way}") }
+  scope :search,         lambda { |q| includes(:user).where(["LOWER(#{Site.quoted_table_name}.hostname) LIKE LOWER(?) OR LOWER(#{Site.quoted_table_name}.dev_hostnames) LIKE LOWER(?) OR LOWER(#{User.quoted_table_name}.email) LIKE LOWER(?) OR LOWER(#{User.quoted_table_name}.first_name) LIKE LOWER(?) OR LOWER(#{User.quoted_table_name}.last_name) LIKE LOWER(?)", "%#{q}%", "%#{q}%", "%#{q}%", "%#{q}%", "%#{q}%"]) }
   
   # ===============
   # = Validations =
@@ -61,7 +61,6 @@ class Site < ActiveRecord::Base
   validates :extra_hostnames, :extra_hostnames => true
   validates :player_mode,     :inclusion => { :in => PLAYER_MODES }
   validate  :at_least_one_domain_set
-  validate  :must_be_active_to_update_hostnames
   
   # =============
   # = Callbacks =
@@ -74,24 +73,20 @@ class Site < ActiveRecord::Base
   # = State Machine =
   # =================
   
-  state_machine :initial => :pending do
-    before_transition :on => :activate,   :do => :set_loader_and_license_file
-    after_transition  :active => :active, :do => :purge_loader_and_license_file
+  state_machine :initial => :dev do
+    before_transition :to => :archived,               :do => :set_archived_at
+    before_transition :to => [:dev, :active],         :do => :set_cnd_up_to_date_to_false
+    after_transition  :to => [:dev, :active],         :do => :delay_update_loader_and_license_file
+    after_transition  :to => [:archived, :suspended], :do => :delay_remove_loader_and_license_file
     
-    before_transition :on => :archive,             :do => :set_archived_at
-    before_transition :on => [:archive, :suspend], :do => :remove_loader_and_license_file
-    after_transition  :on => [:archive, :suspend], :do => :purge_loader_and_license_file
-    
-    before_transition :on => :unsuspend, :do => :set_loader_and_license_file
-    
-    event(:activate)   { transition [:pending, :active] => :active }
-    event(:suspend)    { transition [:pending, :active] => :suspended }
+    event(:activate)   { transition :dev => :active }
+    event(:archive)    { transition [:dev, :active] => :archived }
+    event(:suspend)    { transition :active => :suspended }
     event(:unsuspend)  { transition :suspended => :active }
-    event(:archive)    { transition [:pending, :active] => :archived }
     
     state :beta # Pending, using in lib/one_time/site.rb
     
-    state :active, :suspended, :archived do
+    state :active do
       validates_presence_of :hostname
     end
   end
@@ -123,28 +118,6 @@ class Site < ActiveRecord::Base
     hostnames += dev_hostnames.split(', ') if dev_hostnames.present?
     hostnames.map! { |hostname| "'" + hostname + "'" }
     hostnames.join(',')
-  end
-  
-  def set_loader_and_license_file
-    set_template("loader")
-    set_template("license")
-  end
-  
-  def remove_loader_and_license_file
-    self.remove_loader = true
-    self.remove_license = true
-  end
-  
-  def purge_loader_and_license_file
-    VoxcastCDN.delay.purge("/js/#{token}.js")
-    VoxcastCDN.delay.purge("/l/#{token}.js")
-  end
-  
-  def update_ranks
-    ranks = PageRankr.ranks(hostname)
-    self.google_rank = ranks[:google]
-    self.alexa_rank  = ranks[:alexa]
-    self.save
   end
   
   def need_path?
@@ -182,21 +155,52 @@ private
     end
   end
   
-  # validate
-  def must_be_active_to_update_hostnames
-    if !new_record? && pending?
-      message = "cannot be updated when site in progress, please wait before update again"
-      errors[:hostname]        << message if hostname_changed?
-      errors[:extra_hostnames] << message if extra_hostnames_changed?
-      errors[:dev_hostnames]   << message if dev_hostnames_changed?
-      errors[:path]            << message if path_changed?
-      errors[:wildcard]        << message if wildcard_changed?
-    end
-  end
-  
   # after_create
   def delay_ranks_update
     delay(:priority => 100, :run_at => 30.seconds.from_now).update_ranks
+  end
+  
+  def set_cnd_up_to_date_to_false
+    self.cdn_up_to_date = false
+  end
+  
+  def delay_update_loader_and_license_file
+    delay.update_loader_and_license_file
+  end
+  
+  def delay_remove_loader_and_license_file
+    delay.remove_loader_and_license_file
+  end
+  
+  def update_loader_and_license_file
+    # ensure that VoxcastCDN purge API call was ok to set cdn_up_to_date to true
+    transaction do
+      self.set_template("loader")
+      self.set_template("license")
+      self.cdn_up_to_date = true
+      self.save
+      purge_loader_and_license_file
+    end
+  end
+  
+  def remove_loader_and_license_file
+    self.remove_loader  = true
+    self.remove_license = true
+    self.cdn_up_to_date = false
+    self.save
+    purge_loader_and_license_file
+  end
+  
+  def purge_loader_and_license_file
+    VoxcastCDN.purge("/js/#{token}.js")
+    VoxcastCDN.purge("/l/#{token}.js")
+  end
+  
+  def update_ranks
+    ranks = PageRankr.ranks(hostname)
+    self.google_rank = ranks[:google]
+    self.alexa_rank  = ranks[:alexa]
+    self.save
   end
   
   def set_template(name)

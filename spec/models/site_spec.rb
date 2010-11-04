@@ -17,7 +17,7 @@ describe Site do
     its(:loader)          { should_not be_present }
     its(:player_mode)     { should == 'stable' }
     
-    it { be_pending }
+    it { be_dev }
     it { be_valid }
   end
   

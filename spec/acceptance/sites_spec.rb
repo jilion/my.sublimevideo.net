@@ -60,7 +60,7 @@ feature "Sites actions:" do
     end
   end
   
-  pending "archive a pending site" do
+  pending "archive a dev site" do
     create_site
     
     page.should have_content('google.com')
