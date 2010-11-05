@@ -13,6 +13,11 @@
           -# TODO: Update this text
           %em= "you should add a path"
           
+      - unless site.cdn_up_to_date?
+        %span.in_progress
+          -# TODO: Update this text
+          %em= "cdn update in progress..."
+          
       -#%em.date= l site.created_at.to_date, :format => :small
       - if site.addons.present?
         = "Add-ons: #{site.addons.map { |a| a.name.sub("_#{a.term_type}", '').humanize }.join(", ")}"

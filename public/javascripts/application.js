@@ -432,9 +432,9 @@ var PopupHandler = Class.create({
 
 var SitesPoller = Class.create({
   initialize: function() {
-    this.pollingDelay   = 3000;
-    this.maxAttempts    = 20; // try for 3000 * 20 ms = 1 minute
-    this.attemptedPolls = 0;
+    this.pollingDelay = 3000;
+    this.maxAttempts  = 20; // try for 3000 ms * 20 = 1 minute
+    this.attempts     = 0;
     this.checkForSiteInProgress();
   },
   checkForSiteInProgress: function() {
@@ -453,8 +453,8 @@ var SitesPoller = Class.create({
     this.poll = null;
   },
   remoteCheckForStateUpdate: function() {
-    if (this.attemptedPolls < this.maxAttempts) {
-      this.attemptedPolls++;
+    if (this.attempts < this.maxAttempts) {
+      this.attempts++;
       new Ajax.Request('/sites/'+this.currentSiteId+'/state', { method: 'get' });
     }
     else {
@@ -466,15 +466,17 @@ var SitesPoller = Class.create({
     // Stop polling
     this.stopPolling();
     
+    // TODO: Replace that with just hidding the spinner (since we'll always show the embed code button)
     // Building the Embed Code button
-    var codeWrap = $$("#site_"+siteId+" .code").first();
-    if (codeWrap) {
-      var embedCodeButton = new Element("a", {
-        href:"/sites/"+siteId,
-        className:"embed_code",
-        onclick:"return MySublimeVideo.showSiteEmbedCode("+siteId+")"
-      }).update("Embed code");
-      codeWrap.update(embedCodeButton);
+    var inProgressWrap = $$("#site_"+siteId+" .in_progress").first();
+    if (inProgressWrap) {
+      inProgressWrap.remove();
+      // var embedCodeButton = new Element("a", {
+      //   href:"/sites/"+siteId,
+      //   className:"embed_code",
+      //   onclick:"return MySublimeVideo.showSiteEmbedCode("+siteId+")"
+      // }).update("Embed code");
+      // codeWrap.update(embedCodeButton);
     }
     
     // Updating the open settings button
