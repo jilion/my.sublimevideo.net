@@ -53,8 +53,7 @@ class SitesController < ApplicationController
   # PUT /sites/1
   def update
     respond_with(@site, :password_protected => true) do |format|
-      if password_valid? && @site.update_attributes(params[:site])
-      if @site.update_attributes(params[:site])
+      if current_user.valid_password?(params[:site].delete(:user_password)) && @site.update_attributes(params[:site])
         format.html { redirect_to sites_path }
       else
         format.html { render :edit }

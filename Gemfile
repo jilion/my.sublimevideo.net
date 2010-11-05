@@ -63,7 +63,7 @@ group :development, :test do
 end
 
 group :development do
-  gem 'ffaker',        '~> 0.4.0'
+  gem 'ffaker',        '~> 1.0.0'
   gem 'annotate',      '~> 2.4.0'
   gem 'wirble',        '~> 0.1.3'
   gem 'ruby-graphviz', :require => 'graphviz'

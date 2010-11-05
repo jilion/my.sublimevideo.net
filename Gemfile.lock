@@ -118,7 +118,7 @@ GEM
     factory_girl_rails (1.0)
       factory_girl (~> 1.3)
       rails (>= 3.0.0.beta4)
-    ffaker (0.4.0)
+    ffaker (1.0.0)
     ffi (0.6.3)
       rake (>= 0.8.7)
     fog (0.3.16)
@@ -301,7 +301,7 @@ DEPENDENCIES
   devise (~> 1.1.3)
   devise_invitable!
   factory_girl_rails (~> 1.0.0)
-  ffaker (~> 0.4.0)
+  ffaker (~> 1.0.0)
   fog (~> 0.3.16)
   growl
   guard

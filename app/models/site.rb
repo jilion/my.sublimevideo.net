@@ -64,14 +64,16 @@ class Site < ActiveRecord::Base
   validates :extra_hostnames, :extra_hostnames => true
   validates :player_mode,     :inclusion => { :in => PLAYER_MODES }
   validate  :at_least_one_domain_set
+  validate  :must_be_up_to_date_to_update_settings_or_addons
   
   # =============
   # = Callbacks =
   # =============
   
   before_validation :set_user_attributes
+  before_save :prepare_cdn_update
   after_create :delay_ranks_update
-  after_update :refresh_loader_and_license
+  after_save :execute_cdn_update
   
   # =================
   # = State Machine =
@@ -79,9 +81,6 @@ class Site < ActiveRecord::Base
   
   state_machine :initial => :dev do
     before_transition :to => :archived,               :do => :set_archived_at
-    
-    before_transition :to => [:dev, :active],         :do => :set_cnd_up_to_date_to_false
-    after_transition  :to => [:dev, :active],         :do => :delay_update_loader_and_license_file
     
     after_transition  :to => [:archived, :suspended], :do => :delay_remove_loader_and_license_file
     
@@ -119,7 +118,7 @@ class Site < ActiveRecord::Base
   
   def addon_ids=(ids)
     @addon_ids_was = addon_ids
-    # TODO do as in activerecord
+    self.addons = Addon.find(ids)
   end
   
   def to_param
@@ -128,8 +127,8 @@ class Site < ActiveRecord::Base
   
   def template_hostnames
     hostnames = []
-    hostnames << hostname if hostname.present?
-    hostnames += extra_hostnames.split(', ') if extra_hostnames.present?
+    hostnames << hostname if active? && hostname.present?
+    hostnames += extra_hostnames.split(', ') if active? && extra_hostnames.present?
     hostnames += dev_hostnames.split(', ') if dev_hostnames.present?
     hostnames.map! { |hostname| "'" + hostname + "'" }
     hostnames.join(',')
@@ -154,6 +153,14 @@ class Site < ActiveRecord::Base
     "invalid"
   end
   
+  def settings_changed?
+    (changes & %w[hostname extra_hostnames dev_hostnames path wildcard]).present?
+  end
+  
+  def addons_changed?
+    @addon_ids_was != addon_ids
+  end
+  
 private
   
   # before_validation
@@ -170,35 +177,46 @@ private
     end
   end
   
-  # after_create
-  def delay_ranks_update
-    delay(:priority => 100, :run_at => 30.seconds.from_now).update_ranks
+  # validate
+  def must_be_up_to_date_to_update_settings_or_addons
+    if !new_record? && !cdn_up_to_date?
+      message = "cannot be updated when site in progress, please wait before update again"
+      errors[:hostname]        << message if hostname_changed?
+      errors[:extra_hostnames] << message if extra_hostnames_changed?
+      errors[:dev_hostnames]   << message if dev_hostnames_changed?
+      errors[:path]            << message if path_changed?
+      errors[:wildcard]        << message if wildcard_changed?
+      errors[:addons]          << message if addons_changed?
+    end
   end
   
   # before_save
-  def test_if_cdn_needs_update
-    if player_mode_changed? # loader
+  def prepare_cdn_update
+    return if @skip_save_callbacks
+    
+    if new_record? || player_mode_changed? # loader
       set_cnd_up_to_date_to_false
       @loader_needs_update = true
     end
-    if settings_changed? || addons_changed? || (state_changed? && %w[dev active].include?(state))
+    
+    if new_record? || settings_changed? || addons_changed? || (state_changed? && %w[dev active].include?(state))
       set_cnd_up_to_date_to_false
       @license_needs_update = true
     end
   end
   
+  # after_create
+  def delay_ranks_update
+    delay(:priority => 100, :run_at => 30.seconds.from_now).update_ranks
+  end
+  
   # after_save
-  def refresh_loader_and_license
+  def execute_cdn_update
+    return if @skip_save_callbacks
+    
     if @loader_needs_update || @license_needs_update
       delay.update_loader_and_license_file(:loader => @loader_needs_update, :license => @license_needs_update)
     end
-    
-    # if previous_changes.key?(:player_mode)
-    #   update_loader_and_license_file(:loader => true)
-    # elsif (previous_changes.keys & %w[hostname extra_hostnames dev_hostnames path wildcard]).present? || @addon_ids_was != addon_ids
-    #   update_loader_and_license_file(:license => true)
-    #   @addon_ids_was = addon_ids
-    # end
   end
   
   def set_cnd_up_to_date_to_false
@@ -209,40 +227,43 @@ private
     delay.remove_loader_and_license_file
   end
   
+  # delayed stuff
   def update_loader_and_license_file(options = {})
-    # ensure that VoxcastCDN purge API call was ok to set cdn_up_to_date to true
     transaction do
-      self.set_template("loader") if options[:loader]
-      self.set_template("license") if options[:license]
-      self.cdn_up_to_date = true
-      purge_loader_file if options[:loader]
-      purge_license_file if options[:license]
-      self.save
+      begin
+        if options[:loader]
+          set_template("loader")
+          purge_template("loader")
+        end
+        if options[:license]
+          set_template("license")
+          purge_template("license")
+        end
+        self.cdn_up_to_date = true
+        @skip_save_callbacks = true
+        self.save!
+        @skip_save_callbacks = false
+      rescue => ex
+        Notify.send(ex.message, :exception => ex)
+      end
     end
-  end
-  
-  def remove_loader_and_license_file
-    self.remove_loader  = true
-    self.remove_license = true
-    self.cdn_up_to_date = false
-    self.save
-    purge_loader_file
-    purge_license_file
-  end
-  
-  def purge_loader_file
-    VoxcastCDN.purge("/js/#{token}.js")
-  end
-  
-  def purge_license_file
-    VoxcastCDN.purge("/l/#{token}.js")
   end
   
   def update_ranks
     ranks = PageRankr.ranks(hostname)
     self.google_rank = ranks[:google]
     self.alexa_rank  = ranks[:alexa]
+    @skip_save_callbacks = true
+    self.save!
+    @skip_save_callbacks = false
+  end
+  
+  def remove_loader_and_license_file
+    self.remove_loader, self.remove_license = true
+    self.cdn_up_to_date = false
     self.save
+    purge_template("loader")
+    purge_template("license")
   end
   
   def set_template(name)
@@ -253,6 +274,12 @@ private
     tempfile.flush
     
     self.send("#{name}=", tempfile)
+  end
+  
+  def purge_template(name)
+    mapping = { :loader => 'js', :license => 'l' }
+    raise "Unknown template name!" unless mapping.keys.include?(name.to_sym)
+    VoxcastCDN.purge("/#{mapping[name.to_sym]}/#{token}.js")
   end
   
   def set_archived_at
