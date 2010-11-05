@@ -63,14 +63,13 @@ class SitesController < ApplicationController
   # PUT /sites/1
   def update
     @site = current_user.sites.find(params[:id])
-    respond_with(@site) do |format|
-      if @site.update_attributes(params[:site])
+    respond_with(@site, :password_protected => true) do |format|
+      if password_valid? && @site.update_attributes(params[:site])
         @site.delay.activate # re-generate license file
         format.html { redirect_to sites_path }
         format.js
       else
-        format.html { redirect_to sites_path }
-        format.js   { render :edit }
+        format.html { redirect_to :edit }
       end
     end
   end

@@ -76,8 +76,10 @@ class Site < ActiveRecord::Base
   
   state_machine :initial => :dev do
     before_transition :to => :archived,               :do => :set_archived_at
+    
     before_transition :to => [:dev, :active],         :do => :set_cnd_up_to_date_to_false
     after_transition  :to => [:dev, :active],         :do => :delay_update_loader_and_license_file
+    
     after_transition  :to => [:archived, :suspended], :do => :delay_remove_loader_and_license_file
     
     event(:activate)   { transition :dev => :active }
@@ -166,22 +168,34 @@ private
     delay(:priority => 100, :run_at => 30.seconds.from_now).update_ranks
   end
   
-  # after_update
-  def refresh_loader_and_license
-    if previous_changes.key?(:player_mode)
-      update_loader_and_license_file(:license => true)
-    elsif (previous_changes.keys & %w[hostname extra_hostnames dev_hostnames path wildcard]).present? || @addon_ids_was != addon_ids
-      update_loader_and_license_file(:loader => true)
-      @addon_ids_was = addon_ids
+  # before_save
+  def test_if_cdn_needs_update
+    if player_mode_changed? # loader
+      set_cnd_up_to_date_to_false
+      @loader_needs_update = true
     end
+    if settings_changed? || addons_changed? || (state_changed? && %w[dev active].include?(state))
+      set_cnd_up_to_date_to_false
+      @license_needs_update = true
+    end
+  end
+  
+  # after_save
+  def refresh_loader_and_license
+    if @loader_needs_update || @license_needs_update
+      delay.update_loader_and_license_file(:loader => @loader_needs_update, :license => @license_needs_update)
+    end
+    
+    # if previous_changes.key?(:player_mode)
+    #   update_loader_and_license_file(:loader => true)
+    # elsif (previous_changes.keys & %w[hostname extra_hostnames dev_hostnames path wildcard]).present? || @addon_ids_was != addon_ids
+    #   update_loader_and_license_file(:license => true)
+    #   @addon_ids_was = addon_ids
+    # end
   end
   
   def set_cnd_up_to_date_to_false
     self.cdn_up_to_date = false
-  end
-  
-  def delay_update_loader_and_license_file
-    delay.update_loader_and_license_file(:loader => true, :license => true)
   end
   
   def delay_remove_loader_and_license_file
@@ -194,9 +208,9 @@ private
       self.set_template("loader") if options[:loader]
       self.set_template("license") if options[:license]
       self.cdn_up_to_date = true
-      self.save
       purge_loader_file if options[:loader]
       purge_license_file if options[:license]
+      self.save
     end
   end
   
