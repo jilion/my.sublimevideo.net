@@ -39,6 +39,9 @@ class Site < ActiveRecord::Base
   # = Scopes =
   # ==========
   
+  scope :with_plan,   includes(:plan)
+  scope :with_addons, includes(:addons)
+  
   scope :archived,     where(:state => 'archived')
   scope :not_archived, where(:state.not_eq => 'archived')
   
@@ -116,7 +119,11 @@ class Site < ActiveRecord::Base
   
   def addon_ids=(ids)
     @addon_ids_was = addon_ids
-    super
+    # TODO do as in activerecord
+  end
+  
+  def to_param
+    token
   end
   
   def template_hostnames

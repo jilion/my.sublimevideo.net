@@ -3,19 +3,19 @@ class SitesController < ApplicationController
   respond_to :js, :except => [:new, :create]
   
   before_filter :redirect_suspended_user
+  before_filter :find_by_token, :only => [:show, :edit, :update, :destroy, :state]
   
   has_scope :by_hostname
   has_scope :by_date
   
   # GET /sites
   def index
-    @sites = apply_scopes(current_user.sites.not_archived.by_date)
+    @sites = apply_scopes(current_user.sites.not_archived.with_plan.with_addons.by_date)
     respond_with(@sites)
   end
   
   # GET /sites/1
   def show
-    @site = current_user.sites.find(params[:id])
     respond_with(@site) do |format|
       format.html { redirect_to sites_path }
       format.js
@@ -32,19 +32,9 @@ class SitesController < ApplicationController
   
   # GET /sites/1/edit
   def edit
-    @site = current_user.sites.find(params[:id])
     respond_with(@site) do |format|
-      format.html { redirect_to sites_path }
+      format.html
       format.js
-    end
-  end
-  
-  # GET /sites/1/state
-  def state
-    @site = current_user.sites.find(params[:id])
-    respond_with(@site) do |format|
-      format.js   { head :ok unless @site.active? }
-      format.html { redirect_to sites_path }
     end
   end
   
@@ -62,31 +52,36 @@ class SitesController < ApplicationController
   
   # PUT /sites/1
   def update
-    @site = current_user.sites.find(params[:id])
     respond_with(@site, :password_protected => true) do |format|
       if password_valid? && @site.update_attributes(params[:site])
-        @site.delay.activate # re-generate license file
+      if @site.update_attributes(params[:site])
         format.html { redirect_to sites_path }
-        format.js
       else
-        format.html { redirect_to :edit }
+        format.html { render :edit }
       end
     end
   end
   
   # DELETE /sites/1
   def destroy
-    @site = current_user.sites.find(params[:id])
-    @site.valid? ? @site.archive : @site.destroy
+    @site.archive
     respond_with(@site) do |format|
       format.html { redirect_to sites_path }
     end
   end
   
-protected
+  # GET /sites/1/state
+  def state
+    respond_with(@site) do |format|
+      format.js   { head :ok unless @site.cdn_up_to_date? }
+      format.html { redirect_to sites_path }
+    end
+  end
   
-  def redirect_suspended_user
-    redirect_to page_path('suspended') if current_user.suspended?
+private
+  
+  def find_by_token
+    @site = current_user.sites.find_by_token(params[:id])
   end
   
 end

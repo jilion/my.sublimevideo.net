@@ -1,6 +1,8 @@
 class TicketsController < ApplicationController
   respond_to :html
   
+  before_filter :redirect_suspended_user
+  
   # GET /feedback
   def new
     @ticket = Ticket.new

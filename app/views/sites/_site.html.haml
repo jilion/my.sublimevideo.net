@@ -1,14 +1,10 @@
--# TODO, remove site.valid? check, once all beta site has been updated and are valid.
-%tr{ :id => dom_id(site), :class => cycle("", "alt") + "#{" invalid" unless site.valid?}" }
+%tr{ :id => dom_id(site), :class => cycle("", "alt") }
+  %td.plan= site.plan.name.humanize
   %td.site
     .wrap
-      = link_to "http://#{hostname_with_path(site)}", :class => "external_link", :onclick => site.valid? ? "window.open(this); return false" : "return MySublimeVideo.showSiteSettings(#{site.id})", :title => site.valid? ? hostname_with_path(site) : "Your domain is invalid please update it." do
+      = link_to "http://#{hostname_with_path(site)}", :class => "external_link", :onclick => "window.open(this); return false", :title => hostname_with_path(site) do
         = hostname_with_path_and_wildcard(site, :truncate => 30)
-        - unless site.valid?
-          %span.invalid><
-            -# TODO: Update this text
-            %em= "Invalid"
-            
+        
       - if site.wildcard?
         %span
           %em= "wildcard support"
@@ -17,15 +13,19 @@
           -# TODO: Update this text
           %em= "you should add a path"
           
-        = link_to "", :class => "settings", :title => "Settings", :onclick => "return MySublimeVideo.showSiteSettings(#{site.id})" do
-          %span= "settings"
-      -#%em.date= l site.created_at.to_date, :format => :small
       - unless site.cdn_up_to_date?
-        %span.in_progess
+        %span.in_progress
+          -# TODO: Update this text
           %em= "cdn update in progress..."
+          
+      -#%em.date= l site.created_at.to_date, :format => :small
+      - if site.addons.present?
+        = "Add-ons: #{site.addons.map { |a| a.name.sub("_#{a.term_type}", '').humanize }.join(", ")}"
+      - else
+        No add-ons.
   %td.code
-      = link_to "Embed code", "", :class => "embed_code", :onclick => "return MySublimeVideo.showSiteEmbedCode(#{site.id})"
-      
-  %td.hits
-  %td.delete
-    = button_to 'Delete', site, :onclick => "return MySublimeVideo.confirmDeleteSite(this)", :method => :delete, :remote => true
+    = link_to "Embed code", "", :class => "embed_code", :onclick => "return MySublimeVideo.showSiteEmbedCode(#{site.id})"
+    
+  %td.edit
+    .wrap
+      = link_to content_tag(:span, "settings"), edit_site_path(site), :class => "settings", :title => "Settings"

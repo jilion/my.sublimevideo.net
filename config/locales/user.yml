@@ -1,0 +1,6 @@
+en:
+  user:
+    credit_card:
+      type:
+        visa:   'Visa'
+        master: 'MasterCard'  

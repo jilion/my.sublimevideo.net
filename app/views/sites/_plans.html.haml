@@ -1,0 +1,48 @@
+- if f.object.errors.key?(:plan)
+  .inline_errors
+    %span= f.object.errors[:plan].first
+.entry.plan
+  - plans = Plan.all
+  %h4 Perso
+  - perso_plan =  plans.detect { |p| p.name == 'perso_year' } 
+  = f.label :plan_id, "Yearly", :for => "plan_id_perso_year"
+  = f.radio_button :plan_id, perso_plan.id, :id => "plan_id_perso_year"
+  %ul
+    %li= "videopage views: #{perso_plan.player_hits} per month"
+    %li= "price: #{number_to_currency(perso_plan.price / 100.0)} per #{perso_plan.term_type}"
+    %li= "overages: #{number_to_currency(perso_plan.overage_price / 100.0)} per block of #{Plan::OVERAGES_PLAYER_HITS} videopage views"
+  %br
+  
+  %h4 Pro
+  - pro_month_plan =  plans.detect { |p| p.name == 'pro_month' } 
+  %ul
+    %li= "videopage views: #{pro_month_plan.player_hits} per month"
+    %li= "overages: #{number_to_currency(pro_month_plan.overage_price / 100.0)} per block of #{Plan::OVERAGES_PLAYER_HITS} videopage views"
+  = f.label :plan_id, "Month", :for => "plan_id_pro_month"
+  = f.radio_button :plan_id, pro_month_plan.id, :id => "plan_id_pro_month"
+  %ul
+    %li= "price: #{number_to_currency(pro_month_plan.price / 100.0)} per #{pro_month_plan.term_type}"
+    
+  - pro_year_plan =  plans.detect { |p| p.name == 'pro_year' } 
+  = f.label :plan_id, "Year", :for => "plan_id_pro_year"
+  = f.radio_button :plan_id, pro_year_plan.id, :id => "plan_id_pro_year"
+  %ul
+    %li= "price: #{number_to_currency(pro_year_plan.price / 100.0)} per #{pro_year_plan.term_type}"
+  %br
+  
+  %h4 Enterprise
+  - enterprise_month_plan =  plans.detect { |p| p.name == 'enterprise_month' } 
+  %ul
+    %li= "videopage views: #{enterprise_month_plan.player_hits} per month"
+    %li= "overages: #{number_to_currency(enterprise_month_plan.overage_price / 100.0)} per block of #{Plan::OVERAGES_PLAYER_HITS} videopage views"
+  = f.label :plan_id, "Month", :for => "plan_id_enterprise_month"
+  = f.radio_button :plan_id, enterprise_month_plan.id, :id => "plan_id_enterprise_month"
+  %ul
+    %li= "price: #{number_to_currency(enterprise_month_plan.price / 100.0)} per #{enterprise_month_plan.term_type}"
+  
+  - enterprise_year_plan =  plans.detect { |p| p.name == 'enterprise_year' } 
+  = f.label :plan_id, "Year", :for => "plan_id_enterprise_year"
+  = f.radio_button :plan_id, enterprise_year_plan.id, :id => "plan_id_enterprise_year"
+  %ul
+    %li= "price: #{number_to_currency(enterprise_year_plan.price / 100.0)} per #{enterprise_year_plan.term_type}"
+  %br

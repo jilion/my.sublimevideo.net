@@ -1,0 +1,8 @@
+en:
+  ticket:
+    type:
+      choose-type:            "Choose a category"
+      bug-report:             "Bug report"
+      improvement-suggestion: "Improvement suggestion"
+      feature-request:        "Feature request"
+      other:                  "Other"

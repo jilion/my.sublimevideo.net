@@ -57,34 +57,28 @@ module User::CreditCard
     [cc_update, cc_number, cc_first_name, cc_last_name, cc_verification_value].any?(&:present?)
   end
   
-  def credit_card_name
-    case cc_type
-    when 'visa'
-      'Visa'
-    when 'master'
-      'MasterCard'
-    end
-  end
-  
   # validates
   def validates_credit_card_attributes
     if credit_card_attributes_present?
       unless credit_card.valid?
         if cc_first_name.blank? || cc_last_name.blank?
-          self.errors.add(:cc_full_name, :empty)
+          self.errors.add(:cc_full_name, :blank)
         end
         # I18n Warning: credit_card errors are not localized
-        credit_card.errors.each do |attribute,errors|
+        Rails.logger.debug credit_card.errors.inspect
+        credit_card.errors.each do |attribute, errors|
           attribute = case attribute
           when 'month', 'year'
             errors.each do |error|
               self.errors.add(:cc_expire_on, error)
             end
+          when 'number'
+            self.errors.add(:cc_number, :invalid)
           when 'first_name', 'last_name'
             # do nothing
           else
             errors.each do |error|
-              self.errors.add("cc_#{attribute}".to_sym, error)
+              self.errors.add(:"cc_#{attribute}", error)
             end
           end
         end

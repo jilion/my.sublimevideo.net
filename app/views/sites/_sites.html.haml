@@ -3,18 +3,18 @@
     .dark_rounded_corners
       %table.main#sites
         %tr
+          %th.plan Plan
           %th.site
             .wrap
               %strong
                 = image_tag "/images/embed/small_spinner.gif", :class => "spinner", :id => "table_spinner", :style => "display:none"
-                = "Site"
+                Site
               - unless @sites.one?
                 .sorting
                   = link_to_sort :date, :default_way => 'desc', :reverse => true, :default => true, :label => "latest"
                   = link_to_sort :hostname
-          %th.code= "Player Code"
-          %th.hits= "Player Hits"
-          %th.delete
+          %th.code Player Code
+          %th.settings Edit
           
         = render @sites
         

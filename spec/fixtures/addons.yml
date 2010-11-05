@@ -1,0 +1,4 @@
+ssl:
+  name:      ssl_month
+  term_type: month
+  price:     499

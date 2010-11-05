@@ -1,0 +1,34 @@
+- if f.object.errors.key?(:base)
+  .inline_errors
+    %span= f.object.errors[:base].first
+    
+.entry.site
+  = f.label :hostname, "", :class => "icon"
+  %p.desc
+    = "Main domain, you can leave it empty."
+  = f.text_field :hostname, :class => "text", :placeholder => "yourdomain.com", :autocomplete => :off
+  %p.desc.small
+    = raw "If needed, you can #{link_to "add a staging or alias domain", "", :onclick => "$('extra_hostnames').toggle(); return false"} for this site."
+    
+.entry#extra_hostnames{ :style => f.object.extra_hostnames.present? ? "display:block" : "display:none" }
+  = f.label :extra_hostnames
+  %p.desc
+    = "Add extra domains separated by commas. Extra domains are meant to be used exclusively for staging domains and alias domains (multiple domain names for the same content)."
+  = f.text_field :extra_hostnames, :class => "text", :placeholder => "yourdomain.ch", :autocomplete => :off
+  
+.entry
+  = f.label :dev_hostnames
+  %p.desc= "Add (local only) development domains separated by commas."
+  = f.text_field :dev_hostnames, :class => "text", :placeholder => "127.0.0.1, localhost", :autocomplete => :off
+  
+.entry
+  = f.label :path, "Limit the validity of your player to a certain path"
+  %p.desc= "Path will be also added to extra domains (not on development domains)."
+  %p
+    = "#{f.object.hostname || 'yourdomain.com'}/"
+    = f.text_field :path, :class => "text", :autocomplete => :off
+    
+  .entry
+    = f.label :wildcard, "Wildcard (*.#{@site.hostname})"
+    %p.desc= "Wildcard will be also added to extra and dev domains."
+    = f.check_box :wildcard
