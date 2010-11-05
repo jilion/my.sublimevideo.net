@@ -30,22 +30,6 @@ describe Site do
     it { should validate_presence_of(:user) }
     it { should validate_presence_of(:hostname) }
     
-    context "beta release only", :release => :beta do
-      it "should limit 10 sites per user" do
-        user = Factory(:user)
-        10.times { Factory(:site, :user => user) }
-        site = Factory.build(:site, :user => user)
-        site.should_not be_valid
-        site.errors[:base].should be_present
-      end
-      it "should limit 10 active sites per user" do
-        user = Factory(:user)
-        10.times { Factory(:site, :user => user, :state => 'archived') }
-        site = Factory.build(:site, :user => user)
-        site.should be_valid
-      end
-    end
-    
     describe "validate hostname" do
       %w[http://asdasd slurp .com 901.12312.123 école école.fr üpper.de localhost].each do |host|
         it "should have errors if hostname is invalid: #{host}" do
@@ -392,6 +376,7 @@ describe Site do
   end
   
 end
+
 # == Schema Information
 #
 # Table name: sites
