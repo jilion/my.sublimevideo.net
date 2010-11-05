@@ -432,15 +432,17 @@ var PopupHandler = Class.create({
 
 var SitesPoller = Class.create({
   initialize: function() {
-    this.pollingDelay = 3000;
-    this.maxAttempts  = 20; // try for 3000 ms * 20 = 1 minute
-    this.attempts     = 0;
+    this.pollingDelay  = 3000;
+    this.maxAttempts   = 20; // try for 3000 ms * 20 = 1 minute
+    this.attempts      = 0;
+    this.currentSiteId = null;
+    this.poll          = null;
     this.checkForSiteInProgress();
   },
   checkForSiteInProgress: function() {
     var siteInProgress = $$('#sites .in_progress').first();
     if (siteInProgress) {
-      this.currentSiteId = parseInt(siteInProgress.up('tr').id.replace("site_",''), 10);
+      this.currentSiteId = parseInt(siteInProgress.up('tr').id.replace("site_", ''), 10);
       this.startPolling();
     }
   },
@@ -466,25 +468,9 @@ var SitesPoller = Class.create({
     // Stop polling
     this.stopPolling();
     
-    // TODO: Replace that with just hidding the spinner (since we'll always show the embed code button)
-    // Building the Embed Code button
+    // Remove the "cdn updating in progress..." test
     var inProgressWrap = $$("#site_"+siteId+" .in_progress").first();
-    if (inProgressWrap) {
-      inProgressWrap.remove();
-      // var embedCodeButton = new Element("a", {
-      //   href:"/sites/"+siteId,
-      //   className:"embed_code",
-      //   onclick:"return MySublimeVideo.showSiteEmbedCode("+siteId+")"
-      // }).update("Embed code");
-      // codeWrap.update(embedCodeButton);
-    }
-    
-    // Updating the open settings button
-    var settingsButton = $$("#site_"+siteId+" .settings").first();
-    if (settingsButton) {
-      settingsButton.removeClassName("disabled");
-      settingsButton.writeAttribute("onclick", "return MySublimeVideo.showSiteSettings("+siteId+")");
-    }
+    if (inProgressWrap) inProgressWrap.remove();
     
     // Check if a restart polling is needed
     this.checkForSiteInProgress();

@@ -39,15 +39,6 @@ class SitesController < ApplicationController
     end
   end
   
-  # GET /sites/1/state
-  def state
-    @site = current_user.sites.find(params[:id])
-    respond_with(@site) do |format|
-      format.js   { head :ok unless @site.cdn_up_to_date? }
-      format.html { redirect_to sites_path }
-    end
-  end
-  
   # POST /sites
   def create
     @site = current_user.sites.build(params[:site])
@@ -85,7 +76,7 @@ class SitesController < ApplicationController
   def state
     @site = current_user.sites.find(params[:id])
     respond_with(@site) do |format|
-      format.js   { head :ok unless @site.active? }
+      format.js   { head :ok unless @site.cdn_up_to_date? }
       format.html { redirect_to sites_path }
     end
   end
