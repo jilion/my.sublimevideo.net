@@ -33,12 +33,12 @@ gem 'devise_invitable',      :git => 'git://github.com/rymai/devise_invitable.gi
 gem 'memcached',             '~> 0.20.1'
 gem 'dalli',                 '~> 0.11.0'
 
-gem 'aws',                   '~> 2.3.24'
-gem 'fog',                   '~> 0.3.15' # for carrierwave 0.5 final
+gem 'aws',                   '~> 2.3.25'
+gem 'fog',                   '~> 0.3.16' # for carrierwave 0.5 final
 gem 'carrierwave',           '~> 0.5.0'
 
-gem 'bson_ext',              '~> 1.1.1'
-gem 'mongo',                 '~> 1.1.1'
+gem 'bson_ext',              '~> 1.1.2'
+gem 'mongo',                 '~> 1.1.2'
 gem 'mongoid',               '~> 2.0.0.beta.20'
 
 gem 'zip',                   '~> 2.0.2', :require => 'zip/zip'
