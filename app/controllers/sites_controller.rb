@@ -3,6 +3,7 @@ class SitesController < ApplicationController
   respond_to :js, :except => [:new, :create]
   
   before_filter :redirect_suspended_user
+  before_filter :find_by_token, :only => [:show, :edit, :update, :destroy, :state]
   
   has_scope :by_hostname
   has_scope :by_date
@@ -15,7 +16,6 @@ class SitesController < ApplicationController
   
   # GET /sites/1
   def show
-    @site = current_user.sites.find(params[:id])
     respond_with(@site) do |format|
       format.html { redirect_to sites_path }
       format.js
@@ -32,7 +32,6 @@ class SitesController < ApplicationController
   
   # GET /sites/1/edit
   def edit
-    @site = current_user.sites.find(params[:id])
     respond_with(@site) do |format|
       format.html
       format.js
@@ -53,7 +52,6 @@ class SitesController < ApplicationController
   
   # PUT /sites/1
   def update
-    @site = current_user.sites.find(params[:id])
     respond_with(@site) do |format|
       if @site.update_attributes(params[:site])
         format.html { redirect_to sites_path }
@@ -65,7 +63,6 @@ class SitesController < ApplicationController
   
   # DELETE /sites/1
   def destroy
-    @site = current_user.sites.find(params[:id])
     @site.archive
     respond_with(@site) do |format|
       format.html { redirect_to sites_path }
@@ -74,11 +71,16 @@ class SitesController < ApplicationController
   
   # GET /sites/1/state
   def state
-    @site = current_user.sites.find(params[:id])
     respond_with(@site) do |format|
       format.js   { head :ok unless @site.cdn_up_to_date? }
       format.html { redirect_to sites_path }
     end
+  end
+  
+private
+  
+  def find_by_token
+    @site = current_user.sites.find_by_token(params[:id])
   end
   
 end

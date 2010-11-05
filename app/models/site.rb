@@ -119,9 +119,9 @@ class Site < ActiveRecord::Base
     write_attribute :path, attribute.sub('/', '')
   end
   
-  # def to_param
-  #   token
-  # end
+  def to_param
+    token
+  end
   
   def template_hostnames
     hostnames = []
@@ -187,18 +187,6 @@ private
     unless active? || hostname.present? || dev_hostnames.present? || extra_hostnames.present?
       errors[:base] << "Please set at least a development or an extra domain"
     end
-  end
-  
-  # validate
-  def must_be_active_to_update_hostnames
-    # if !new_record? && pending?
-    #   message = "cannot be updated when site in progress, please wait before update again"
-    #   errors[:hostname]        << message if hostname_changed?
-    #   errors[:extra_hostnames] << message if extra_hostnames_changed?
-    #   errors[:dev_hostnames]   << message if dev_hostnames_changed?
-    #   errors[:path]            << message if path_changed?
-    #   errors[:wildcard]        << message if wildcard_changed?
-    # end
   end
   
   # after_create
