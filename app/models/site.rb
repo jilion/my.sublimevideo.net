@@ -64,7 +64,6 @@ class Site < ActiveRecord::Base
   validates :extra_hostnames, :extra_hostnames => true
   validates :player_mode,     :inclusion => { :in => PLAYER_MODES }
   validate  :at_least_one_domain_set
-  validate  :must_be_active_to_update_hostnames
   
   # =============
   # = Callbacks =

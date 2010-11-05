@@ -32,3 +32,17 @@ enterprise_year:
   player_hits:   300000
   price:         49990
   overage_price: 99
+# == Schema Information
+#
+# Table name: plans
+#
+#  id            :integer         not null, primary key
+#  name          :string(255)
+#  term_type     :string(255)
+#  player_hits   :integer
+#  price         :integer
+#  overage_price :integer
+#  created_at    :datetime
+#  updated_at    :datetime
+#
+

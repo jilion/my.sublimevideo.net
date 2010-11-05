@@ -108,7 +108,7 @@ feature "Sites" do
   
   pending "archive a site" do
     create_site
-    visit "/sites/#{@current_user.sites.last.id}/edit"
+    visit "/sites/#{@current_user.sites.last.token}/edit"
     VoxcastCDN.stub_chain(:delay, :purge).twice
     click_button "Destroy"
     
