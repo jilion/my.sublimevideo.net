@@ -51,3 +51,21 @@ protected
   end
   
 end
+# == Schema Information
+#
+# Table name: mail_logs
+#
+#  id          :integer         not null, primary key
+#  template_id :integer
+#  admin_id    :integer
+#  criteria    :text
+#  user_ids    :text
+#  snapshot    :text
+#  created_at  :datetime
+#  updated_at  :datetime
+#
+# Indexes
+#
+#  index_mail_logs_on_template_id  (template_id)
+#
+

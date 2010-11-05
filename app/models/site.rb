@@ -60,8 +60,6 @@ class Site < ActiveRecord::Base
   validates :dev_hostnames, :hostnames => true
   validates :player_mode,   :inclusion => { :in => PLAYER_MODES }
   validate  :must_be_active_to_update_hostnames
-  # BETA
-  validate  :limit_site_number_per_user if MySublimeVideo::Release.beta?
   
   # =============
   # = Callbacks =
@@ -214,13 +212,6 @@ class Site < ActiveRecord::Base
   
 private
   
-  # BETA validate
-  def limit_site_number_per_user
-    if new_record? && errors[:hostname].blank? && user && user.sites.not_archived.count >= 10
-      errors.add(:base, "You can only add up to 10 sites during the beta")
-    end
-  end
-  
   # validate
   def must_be_active_to_update_hostnames
     if !new_record? && pending?
@@ -254,6 +245,7 @@ private
   end
   
 end
+
 # == Schema Information
 #
 # Table name: sites
