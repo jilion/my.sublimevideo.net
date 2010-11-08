@@ -34,7 +34,7 @@ gem 'memcached',             '~> 0.20.1'
 gem 'dalli',                 '~> 0.11.0'
 
 gem 'aws',                   '~> 2.3.25'
-gem 'fog',                   '~> 0.3.16' # for carrierwave 0.5 final
+gem 'fog',                   '~> 0.3.17' # for carrierwave 0.5 final
 gem 'carrierwave',           '~> 0.5.0'
 
 gem 'bson_ext',              '~> 1.1.2'
@@ -59,11 +59,11 @@ end
 
 group :development, :test do
   gem 'silent-postgres'
-  gem 'rspec-rails',   '~> 2.0.1'
+  gem 'rspec-rails',   '~> 2.1.0'
 end
 
 group :development do
-  gem 'ffaker',        '~> 0.4.0'
+  gem 'ffaker',        '~> 1.0.0'
   gem 'annotate',      '~> 2.4.0'
   gem 'wirble',        '~> 0.1.3'
   gem 'ruby-graphviz', :require => 'graphviz'

@@ -71,7 +71,7 @@ GEM
       uuidtools
       xml-simple
     bcrypt-ruby (2.1.2)
-    braintree (2.6.1)
+    braintree (2.6.2)
       builder
     bson (1.1.2)
     bson_ext (1.1.2)
@@ -118,10 +118,10 @@ GEM
     factory_girl_rails (1.0)
       factory_girl (~> 1.3)
       rails (>= 3.0.0.beta4)
-    ffaker (0.4.0)
+    ffaker (1.0.0)
     ffi (0.6.3)
       rake (>= 0.8.7)
-    fog (0.3.16)
+    fog (0.3.17)
       builder
       excon (>= 0.2.4)
       formatador (>= 0.0.15)
@@ -141,9 +141,9 @@ GEM
       em-websocket (~> 0.1.3)
       guard
       json (~> 1.4.6)
-    guard-passenger (0.0.5)
+    guard-passenger (0.1.0)
       guard (>= 0.2.1)
-    guard-rspec (0.1.4)
+    guard-rspec (0.1.7)
       guard (>= 0.2.0)
     haml (3.0.23)
     heroku (1.12.1)
@@ -222,18 +222,16 @@ GEM
     responders (0.6.2)
     rest-client (1.6.1)
       mime-types (>= 1.16)
-    rspec (2.0.1)
-      rspec-core (~> 2.0.1)
-      rspec-expectations (~> 2.0.1)
-      rspec-mocks (~> 2.0.1)
-    rspec-core (2.0.1)
-    rspec-expectations (2.0.1)
-      diff-lcs (>= 1.1.2)
-    rspec-mocks (2.0.1)
-      rspec-core (~> 2.0.1)
-      rspec-expectations (~> 2.0.1)
-    rspec-rails (2.0.1)
-      rspec (~> 2.0.0)
+    rspec (2.1.0)
+      rspec-core (~> 2.1.0)
+      rspec-expectations (~> 2.1.0)
+      rspec-mocks (~> 2.1.0)
+    rspec-core (2.1.0)
+    rspec-expectations (2.1.0)
+      diff-lcs (~> 1.1.2)
+    rspec-mocks (2.1.0)
+    rspec-rails (2.1.0)
+      rspec (~> 2.1.0)
     ruby-graphviz (0.9.19)
     ruby-hmac (0.4.0)
     rubyzip (0.9.4)
@@ -301,8 +299,8 @@ DEPENDENCIES
   devise (~> 1.1.3)
   devise_invitable!
   factory_girl_rails (~> 1.0.0)
-  ffaker (~> 0.4.0)
-  fog (~> 0.3.16)
+  ffaker (~> 1.0.0)
+  fog (~> 0.3.17)
   growl
   guard
   guard-bundler
@@ -334,7 +332,7 @@ DEPENDENCIES
   request-log-analyzer (~> 1.9.6)
   rescue_me (~> 0.1.0)
   responders (~> 0.6.2)
-  rspec-rails (~> 2.0.1)
+  rspec-rails (~> 2.1.0)
   ruby-graphviz
   shoulda (~> 2.11.3)
   silent-postgres

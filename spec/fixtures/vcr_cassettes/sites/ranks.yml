@@ -1,73 +1,157 @@
 --- 
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
-    method: :get
-    uri: http://toolbarqueries.google.com:80/search?ch=61966422966&client=navclient-auto&features=Rank&q=info:jilion.com
-    body: 
+    method: :post
+    uri: https://api.voxel.net:443/version/1.0/
+    body: device_id=48182&paths=%2fjs%2fhtp0urw7.js&verbosity=compact&method=voxel.voxcast.ondemand.content.purge_file&timestamp=2010-11-08T10%3a17%3a48%2b01%3a00&key=f0bdf4e54d590835e7100c926c2d1a47&api_sig=9d2f779d649eb26760640f71fb302d30
     headers: 
       accept: 
       - "*/*"
+      user-agent: 
+      - Ruby
+      - Voxel hAPI ruby Client; 1.0
+      content-type: 
+      - application/x-www-form-urlencoded
+      connection: 
+      - close
   response: !ruby/struct:VCR::Response 
     status: !ruby/struct:VCR::ResponseStatus 
       code: 200
       message: OK
     headers: 
-      expires: 
-      - Fri, 01 Jan 1990 00:00:00 GMT
-      content-type: 
-      - text/html; charset=ISO-8859-1
-      x-xss-protection: 
-      - 1; mode=block
-      server: 
-      - gws
       date: 
-      - Wed, 08 Sep 2010 19:23:16 GMT
-      set-cookie: 
-      - PREF=ID=9e209cbe9d6a5483:TM=1283973796:LM=1283973796:S=YzoILPqYOF738Rvv; expires=Fri, 07-Sep-2012 19:23:16 GMT; path=/; domain=.google.com
-      cache-control: 
-      - no-cache, must-revalidate
-      transfer-encoding: 
-      - chunked
-      pragma: 
-      - no-cache
+      - Mon, 08 Nov 2010 09:17:48 GMT
+      server: 
+      - Apache
+      x-powered-by: 
+      - PHP/5.2.14
+      access-control-allow-origin: 
+      - "*"
+      vary: 
+      - Accept-Encoding
+      content-length: 
+      - "201"
+      connection: 
+      - close
+      content-type: 
+      - application/xml; charset=utf-8
     body: |
-      Rank_1:1:4
+      <?xml version="1.0"?>
+      <rsp stat="ok"><transaction><type>remove-url</type><id>626e96d1-3116-4c5d-923c-79ef1db5228f</id><expiration>1289208769</expiration><status>inprogress</status></transaction></rsp>
+
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :post
+    uri: https://api.voxel.net:443/version/1.0/
+    body: device_id=48182&paths=%2fl%2fhtp0urw7.js&verbosity=compact&method=voxel.voxcast.ondemand.content.purge_file&timestamp=2010-11-08T10%3a17%3a49%2b01%3a00&key=f0bdf4e54d590835e7100c926c2d1a47&api_sig=6f837358b6343e70f893a19804c19a9c
+    headers: 
+      accept: 
+      - "*/*"
+      user-agent: 
+      - Ruby
+      - Voxel hAPI ruby Client; 1.0
+      content-type: 
+      - application/x-www-form-urlencoded
+      connection: 
+      - close
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      date: 
+      - Mon, 08 Nov 2010 09:17:49 GMT
+      server: 
+      - Apache
+      x-powered-by: 
+      - PHP/5.2.14
+      access-control-allow-origin: 
+      - "*"
+      vary: 
+      - Accept-Encoding
+      content-length: 
+      - "201"
+      connection: 
+      - close
+      content-type: 
+      - application/xml; charset=utf-8
+    body: |
+      <?xml version="1.0"?>
+      <rsp stat="ok"><transaction><type>remove-url</type><id>fb1c66d2-0de1-48ef-913a-24336c9a1af9</id><expiration>1289208770</expiration><status>inprogress</status></transaction></rsp>
 
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
     method: :get
-    uri: http://data.alexa.com:80/data?cli=10&dat=snbamz&url=jilion.com
+    uri: http://data.alexa.com:80/data?cli=10&dat=snbamz&url=sublimevideo.net
     body: 
     headers: 
       accept: 
       - "*/*"
+      user-agent: 
+      - Ruby
   response: !ruby/struct:VCR::Response 
     status: !ruby/struct:VCR::ResponseStatus 
       code: 200
       message: OK
     headers: 
-      connection: 
-      - close
+      content-length: 
+      - "343"
       content-type: 
       - text/xml
-      content-length: 
-      - "368"
+      connection: 
+      - close
     body: |-
       <?xml version="1.0" encoding="UTF-8"?>
       
-      <ALEXA VER="0.9" URL="jilion.com/" HOME="0" AID="=">
+      <ALEXA VER="0.9" URL="sublimevideo.net/" HOME="0" AID="=">
       <RLS PREFIX="http://" more="0">
       </RLS>
-      <SD TITLE="A" FLAGS="" HOST="jilion.com">
-      <LANG LEX="en" CODE="us-ascii"/>
-      <LINKSIN NUM="482"/>
-      <CHILD SRATING="0"/>
+      <SD TITLE="A" FLAGS="" HOST="sublimevideo.net">
+      <SPEED TEXT="699" PCT="86"/>
       </SD>
       <SD>
-      <POPULARITY URL="jilion.com/" TEXT="117935"/>
-      <REACH RANK="94430"/>
-      <RANK DELTA="+65488"/>
+      <POPULARITY URL="sublimevideo.net/" TEXT="121772"/>
+      <REACH RANK="108330"/>
+      <RANK DELTA="-2837504"/>
       </SD>
       </ALEXA>
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: http://toolbarqueries.google.com:80/search?ch=63148545275&client=navclient-auto&features=Rank&q=info:sublimevideo.net
+    body: 
+    headers: 
+      accept: 
+      - "*/*"
+      user-agent: 
+      - Ruby
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      date: 
+      - Mon, 08 Nov 2010 09:21:47 GMT
+      pragma: 
+      - no-cache
+      expires: 
+      - Fri, 01 Jan 1990 00:00:00 GMT
+      cache-control: 
+      - no-cache, must-revalidate
+      content-type: 
+      - text/html; charset=ISO-8859-1
+      set-cookie: 
+      - PREF=ID=b79122ee6632866e:FF=0:TM=1289208107:LM=1289208107:S=oCRJ5jtib2Hj40Mr; expires=Wed, 07-Nov-2012 09:21:47 GMT; path=/; domain=.google.com
+      server: 
+      - gws
+      x-xss-protection: 
+      - 1; mode=block
+      transfer-encoding: 
+      - chunked
+    body: |
+      Rank_1:1:0
+
     http_version: "1.1"

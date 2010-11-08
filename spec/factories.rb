@@ -80,7 +80,7 @@ Factory.define :plan do |f|
 end
 
 Factory.define :addon do |f|
-  f.name      'SSL'
+  f.sequence(:name) { |n| "SSL_#{n}" }
   f.term_type 'month'
   f.price     10
 end

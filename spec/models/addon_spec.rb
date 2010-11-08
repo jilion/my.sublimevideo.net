@@ -4,7 +4,7 @@ describe Addon do
   context "with valid attributes" do
     subject { Factory(:addon) }
     
-    its(:name)      { should == "SSL" }
+    its(:name)      { should =~ /SSL_\d+/ }
     its(:term_type) { should == 'month' }
     its(:price)     { should == 10 }
     
