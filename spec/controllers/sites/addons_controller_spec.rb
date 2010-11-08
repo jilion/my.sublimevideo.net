@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe Sites::AddonsController do
-  include Devise::TestHelpers
   
   context "with logged in user" do
     before :each do

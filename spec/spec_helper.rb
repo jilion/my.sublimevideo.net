@@ -33,8 +33,9 @@ Spork.each_run do
   end
   
   RSpec.configure do |config|
-    config.include(Shoulda::ActionController::Matchers)
-    config.include(Capybara)
+    config.include Shoulda::ActionController::Matchers
+    config.include Capybara
+    config.include Devise::TestHelpers, :type => :controller
     
     config.filter_run :focus => true
     config.run_all_when_everything_filtered = true

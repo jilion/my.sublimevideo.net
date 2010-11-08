@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe PagesController do
-  include Devise::TestHelpers
   
   context "with logged in unsuspended user" do
     before(:each) { sign_in :user, logged_in_user }

@@ -23,11 +23,11 @@ module Spec
       end
       
       def logged_in_user(options = {})
-        unless @logged_in_user
-          @logged_in_user = Factory(:user, options)
-          @logged_in_user.stub!(:active? => true, :confirmed? => true)
+        unless @current_user
+          @current_user = Factory(:user, options)
+          @current_user.stub!(:active? => true, :confirmed? => true)
         end
-        @logged_in_user
+        @current_user
       end
       
       def mock_mail_template(stubs={})

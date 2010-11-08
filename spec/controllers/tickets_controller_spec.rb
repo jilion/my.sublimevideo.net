@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe TicketsController do
-  include Devise::TestHelpers
   
   context "as logged in user" do
     before(:each) do

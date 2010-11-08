@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe Admin::MailTemplatesController do
-  include Devise::TestHelpers
   
   context "with logged in admin" do
     before(:each) do

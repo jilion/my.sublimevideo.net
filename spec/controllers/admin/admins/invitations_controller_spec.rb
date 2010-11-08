@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe Admin::Admins::InvitationsController do
-  include Devise::TestHelpers
   
   before(:each) { request.env['devise.mapping'] = Devise.mappings[:admin] }
   

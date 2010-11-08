@@ -1,9 +1,5 @@
 MySublimeVideo::Application.routes.draw do
   
-  get "logs/show"
-
-  resource :protection, :only => [:show, :create]
-  
   devise_for :users,
   :path => '',
   :path_names => { :sign_in => 'login', :sign_out => 'logout' },
@@ -22,6 +18,7 @@ MySublimeVideo::Application.routes.draw do
     %w[log_in sign_in signin].each         { |action| match action => redirect('/login'),    :via => :get }
     %w[log_out sign_out signout exit].each { |action| match action => redirect('/logout'),   :via => :get }
   end
+  match '/password/validate' => "users/passwords#validate", :via => :post
   match '/invitation/accept' => redirect('/register'), :via => :get
   
   resource :users, :only => :update, :path => '/account/info'
