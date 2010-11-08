@@ -196,8 +196,13 @@ public
   
   def template_hostnames
     hostnames = []
-    hostnames << hostname if active? && hostname.present?
-    hostnames += extra_hostnames.split(', ') if active? && extra_hostnames.present?
+    if active?
+      hostnames << hostname if hostname.present?
+      hostnames += extra_hostnames.split(', ') if extra_hostnames.present?
+      hostnames << "path:#{path}" if path.present?
+      hostnames << "wildcard:#{wildcard.to_s}" if wildcard.present?
+      hostnames << "addons:#{addons.map { |a| a.name }.join(',')}" if path.present?
+    end
     hostnames += dev_hostnames.split(', ') if dev_hostnames.present?
     hostnames.map! { |hostname| "'" + hostname + "'" }
     hostnames.join(',')
@@ -265,7 +270,7 @@ protected
   # validate
   def must_be_up_to_date_to_update_settings_or_addons
     if !new_record? && !cdn_up_to_date?
-      message = "cannot be updated when site in progress, please wait before update again"
+      message = "cannot be updated when site's player files are not uploaded to the cloud"
       errors[:hostname]        << message if hostname_changed?
       errors[:extra_hostnames] << message if extra_hostnames_changed?
       errors[:dev_hostnames]   << message if dev_hostnames_changed?

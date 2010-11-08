@@ -21,11 +21,11 @@ namespace :db do
       delete_all_files_in_public('uploads/tmp')
       timed { create_admins }
       timed { create_users(argv_count) }
+      timed { create_plans }
+      timed { create_addons }
       timed { create_sites(argv_count) }
       timed { create_site_usages }
       timed { create_mail_templates }
-      timed { create_plans }
-      timed { create_addons }
     end
     
     desc "Load Admin development fixtures."
@@ -163,11 +163,15 @@ def create_sites(max = 5)
   delete_all_files_in_public('uploads/licenses')
   delete_all_files_in_public('uploads/loaders')
   create_users if User.all.empty?
+  create_plans if Plan.all.empty?
+  plans = Plan.all
+  subdomains = %w[www. blog. my. git. sv. ji. geek. yin. yang. chi. cho. chu. foo. bar. rem.]
   
   User.all.each do |user|
     rand(max).times do |i|
       site            = user.sites.build
-      site.hostname   = "#{rand > 0.5 ? '' : %w[www. blog. my. git. sv. ji. geek. yin. yang. chi. cho. chu. foo. bar. rem.].sample}#{user.id}#{i}#{Faker::Internet.domain_name}"
+      site.plan       = plans.sample
+      site.hostname   = "#{rand > 0.5 ? '' : subdomains.sample}#{user.id}#{i}#{Faker::Internet.domain_name}"
       site.created_at = rand(1500).days.ago
       site.save(:validate => false)
       site.activate
