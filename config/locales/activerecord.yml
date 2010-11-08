@@ -20,6 +20,7 @@ en:
         site:
           attributes:
             hostname:
+              invalid:  "is invalid"
               wildcard: "is invalid, please check wildcard option instead"
               taken:    "You have already registered this domain"
             dev_hostnames:
