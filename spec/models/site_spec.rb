@@ -2,8 +2,8 @@
 require 'spec_helper'
 
 describe Site do
-  # 9.89s => 2.72s
-  context "from factory" do
+  # 3.6s
+  context "From factory" do
     set(:site_from_factory) { Factory(:site) }
     subject { site_from_factory }
     
@@ -23,7 +23,8 @@ describe Site do
     it { should be_valid }
   end
   
-  describe "associations" do
+  # 3.2s
+  describe "Associations" do
     set(:site_for_associations) { Factory(:site) }
     subject { site_for_associations }
     
@@ -34,9 +35,8 @@ describe Site do
     it { should have_and_belong_to_many :addons }
   end
   
-  describe "validates " do
-    # subject { Factory(:site) }
-    
+  # TODO 86s
+  describe "Validates " do
     [:hostname, :dev_hostnames].each do |attribute|
       it { should allow_mass_assignment_of(attribute) }
     end
@@ -53,6 +53,7 @@ describe Site do
     specify { Site.validators_on(:extra_hostnames).map(&:class).should == [ExtraHostnamesValidator] }
     specify { Site.validators_on(:dev_hostnames).map(&:class).should == [DevHostnamesValidator] }
     
+    # 4s
     describe "must_be_up_to_date_to_update_settings_or_addons" do
       let(:addon) { Factory(:addon) }
       
@@ -68,6 +69,7 @@ describe Site do
       end
     end
     
+    # 15s
     describe "hostname" do
       it "should be required if state is active" do
         site = Factory(:site, :hostname => nil)
@@ -76,6 +78,7 @@ describe Site do
         site.should have(1).error_on(:hostname)
       end
       
+      # SHOULD BE TESTED IN VALIDATOR SPECS
       %w[http://asdasd slurp .com 901.12312.123 école *.google.com *.com jilion.local].each do |host|
         it "should not allow: #{host}" do
           site = Factory.build(:site, :hostname => host)
@@ -93,6 +96,8 @@ describe Site do
       end
     end
     
+    # 11s
+    # SHOULD BE TESTED IN VALIDATOR SPECS
     describe "extra_hostnames" do
       ["*.jilion.com", 'localhost, jilion.net', 'jilion.local', 'jilion.dev, jilion.net', 'jilion.com', '127.0.0.1'].each do |extra_hosts|
         it "should not allow: #{extra_hosts}" do
@@ -111,6 +116,8 @@ describe Site do
       end
     end
     
+    # 10s
+    # SHOULD BE TESTED IN VALIDATOR SPECS
     describe "dev_hostnames" do
       ["*.google.local", 'staging.google.com', 'google.com', 'localhost, localhost'].each do |dev_hosts|
         it "should not allow: #{dev_hosts}" do
@@ -129,6 +136,7 @@ describe Site do
       end
     end
     
+    # 3.6s
     describe "no hostnames at all" do
       it "should require at least one of hostname, dev, or extra domains on creation" do
         site = Factory.build(:site, :hostname => '', :extra_hostnames => '', :dev_hostnames => '')
@@ -145,6 +153,8 @@ describe Site do
       end
     end
     
+    # 12s
+    # SHOULD BE TESTED IN VALIDATOR SPECS
     describe "hostname uniqueness, " do
       let(:existing_site) { Factory(:site) }
       
@@ -198,6 +208,7 @@ describe Site do
       end
     end
     
+    # 9s
     describe "hostname update, " do
       { :hostname => ["jilion.com", "test.com"], :extra_hostnames => ["staging.jilion.com", "test.staging.com"], :dev_hostnames => ["jilion.local", "test.local"] }.each do |attribute, values|
         it "should not be able to update #{attribute} when cdn_up_to_date is false" do
@@ -227,6 +238,7 @@ describe Site do
     end
   end
   
+  # 17.3s
   describe "Attributes Accessors, " do
     describe "hostname=" do
       %w[ÉCOLE ÉCOLE.fr ÜPPER.de ASDASD.COM 124.123.151.123 mIx3Dd0M4iN.CoM].each do |host|
@@ -320,7 +332,7 @@ describe Site do
       end
     end
     
-    describe "#path=" do
+    describe "path=" do
       it "should remove first /" do
         site = Factory(:site, :path => '/users/thibaud')
         site.path.should == 'users/thibaud'
@@ -328,10 +340,11 @@ describe Site do
     end
   end
   
+  # 17.3s
   describe "State Machine, " do
     before(:each) { VoxcastCDN.stub(:purge) }
     
-    describe "#activate" do
+    describe "activate" do
       subject do
         site = Factory(:site, :hostname => "jilion.com", :extra_hostnames => "jilion.staging.com, jilion.org")
         Delayed::Worker.new(:quiet => true).work_off
@@ -370,7 +383,7 @@ describe Site do
         site
       end
       
-      describe "#suspend" do
+      describe "suspend" do
         it "should clear & purge license & loader" do
           VoxcastCDN.should_receive(:purge).with("/js/#{subject.token}.js")
           VoxcastCDN.should_receive(:purge).with("/l/#{subject.token}.js")
@@ -381,7 +394,7 @@ describe Site do
         end
       end
       
-      describe "#unsuspend" do
+      describe "unsuspend" do
         it "should reset license & loader" do
           subject.suspend
           Delayed::Worker.new(:quiet => true).work_off
@@ -392,7 +405,7 @@ describe Site do
         end
       end
       
-      describe "#archive" do
+      describe "archive" do
         it "should clear & purge license & loader and set archived_at" do
           VoxcastCDN.should_receive(:purge).with("/js/#{subject.token}.js")
           VoxcastCDN.should_receive(:purge).with("/l/#{subject.token}.js")
@@ -406,6 +419,7 @@ describe Site do
     end
   end
   
+  # 3.5s
   describe "Versioning, " do
     it "should work!" do
       with_versioning do
@@ -418,6 +432,7 @@ describe Site do
     end
   end
   
+  # TODO 64.3s
   describe "Callbacks, " do
     describe "before_validation" do
       it "should set user_attributes" do
@@ -453,8 +468,9 @@ describe Site do
         subject { Factory.build(:site) }
         
         it "should delay update_loader_and_license once" do
+          count_before = Delayed::Job.where(:handler.matches => "%update_loader_and_license%").count
           lambda { subject.save }.should change(Delayed::Job, :count).by(2)
-          Delayed::Job.where(:handler.matches => "%update_loader_and_license%").count.should == 1
+          Delayed::Job.where(:handler.matches => "%update_loader_and_license%").count.should == count_before + 1
         end
         
         it "should update loader and license content" do
@@ -584,32 +600,35 @@ describe Site do
         lambda { Factory(:site) }.should change(Delayed::Job.where(:handler.matches => "%update_ranks%"), :count).by(1)
       end
       
-      it "should delay update_ranks" do
+      it "should update ranks" do
         Timecop.travel(1.minute.ago)
         site = Factory(:site, :hostname => 'sublimevideo.net')
         Timecop.return
+        # puts site.inspect
+        # Delayed::Job.all.map { | dj| puts dj.handler }
+        # Delayed::Job.all.map { | dj| puts dj.last_error }
         VCR.use_cassette('sites/ranks') do
           Delayed::Worker.new(:quiet => true).work_off
         end
+        # puts site.reload.inspect
+        # Delayed::Job.all.map { | dj| puts dj.handler }
+        # Delayed::Job.all.map { | dj| puts dj.last_error }
         site.reload.google_rank.should == 0
         site.alexa_rank.should  == 108330
       end
     end
   end
   
-  describe "Class Methods, " do
-    
-  end
-  
-  describe "Instance Methods, " do
-    describe "#settings_changed?" do
+  # 26.7s
+  describe "Instance methods, " do
+    describe "settings_changed?" do
       subject { Factory(:site) }
       
+      it "should return false if no attribute has changed" do
+        subject.should_not be_settings_changed
+      end
+      
       { :hostname => "jilion.com", :extra_hostnames => "test.staging.com", :dev_hostnames => "test.local", :path => "yu", :wildcard => true }.each do |attribute, value|
-        it "should return false if #{attribute} hasn't changed" do
-          subject.should_not be_settings_changed
-        end
-        
         it "should return true if #{attribute} has changed" do
           subject.send("#{attribute}=", value)
           subject.should be_settings_changed
@@ -617,7 +636,7 @@ describe Site do
       end
     end
     
-    describe "#addons_changed?" do
+    describe "addons_changed?" do
       let(:addon1) { Factory(:addon) }
       let(:addon2) { Factory(:addon) }
       subject { Factory(:site) }
@@ -632,7 +651,7 @@ describe Site do
       end
     end
     
-    describe "#template_hostnames" do
+    describe "template_hostnames" do
       set(:site_for_template) { Factory(:site, :hostname => "jilion.com", :extra_hostnames => "jilion.net, jilion.org", :dev_hostnames => '127.0.0.1,localhost', :path => 'foo', :wildcard => true, :addons => [Factory(:addon, :name => 'ssl'), Factory(:addon, :name => 'stat')]) }
       
       context "site is not active" do
@@ -649,7 +668,7 @@ describe Site do
       end
     end
     
-    describe "#set_template" do
+    describe "set_template" do
       context "license" do
         let(:site_with_set_template_license) { Factory(:site).tap { |s| s.set_template("license") } }
         
@@ -670,7 +689,7 @@ describe Site do
       end
     end
     
-    describe "#need_path?" do
+    describe "need_path?" do
       it "should be true" do
         site = Factory(:site, :hostname => 'web.me.com')
         site.need_path?.should be_true
@@ -685,7 +704,7 @@ describe Site do
       end
     end
     
-    describe "#referrer_type" do
+    describe "referrer_type" do
       context "with versioning" do
         # 23s with 'subject' (each), 4s with 'set' (all)
         set(:site_with_versioning) do
