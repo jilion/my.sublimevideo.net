@@ -3,8 +3,8 @@ guard 'bundler' do
 end
 
 guard 'passenger' do
-  watch('lib/.*\.rb')
-  watch('config/.*\.rb')
+  watch('^lib/.*\.rb$')
+  watch('^config/.*\.rb$')
 end
 
 guard 'livereload' do
