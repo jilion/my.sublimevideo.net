@@ -2,7 +2,8 @@ source :rubygems
 
 gem 'bundler',               '~> 1.0.3'
 
-gem 'rails',                 '~> 3.0.1'
+# gem 'rails',                 '~> 3.0.1'
+gem 'rails',                 :git => 'git://github.com/thibaudgg/rails.git', :branch => 'spork' # 3.0.1
 gem 'rack',                  '~> 1.2.1'
 gem 'pg',                    '~> 0.9.0'
 
@@ -27,7 +28,8 @@ gem 'public_suffix_service', '~> 0.7.0'
 gem 'RedCloth',              '~> 4.2.3'
 gem 'liquid',                '~> 2.2.2'
 
-gem 'devise',                '~> 1.1.3'
+# gem 'devise',                '~> 1.1.3'
+gem 'devise',                :git => 'git://github.com/thibaudgg/devise.git', :branch => 'spork' # 1.1.3
 gem 'devise_invitable',      :git => 'git://github.com/rymai/devise_invitable.git'
 
 gem 'memcached',             '~> 0.20.1'
@@ -39,7 +41,8 @@ gem 'carrierwave',           '~> 0.5.0'
 
 gem 'bson_ext',              '~> 1.1.2'
 gem 'mongo',                 '~> 1.1.2'
-gem 'mongoid',               '~> 2.0.0.beta.20'
+# gem 'mongoid',               '~> 2.0.0.beta.20'
+gem 'mongoid',               :git => 'git://github.com/thibaudgg/mongoid.git', :branch => 'spork' # 2.0.0.beta.20
 
 gem 'zip',                   '~> 2.0.2', :require => 'zip/zip'
 gem 'countries',             '~> 0.3.0'
@@ -70,7 +73,6 @@ group :development do
   gem 'heroku',        '~> 1.12.2'
   gem 'heroku_tasks',  '~> 0.1.4'
   gem 'taps',          '~> 0.3.13' # heroku db pull/push
-  gem 'timecop',       '~> 0.3.5'
   gem 'silent-postgres'
 end
 
@@ -82,8 +84,8 @@ group :test do
   gem 'guard-livereload'
   gem 'guard-bundler'
   gem 'guard-passenger'
+  gem 'timecop',       '~> 0.3.5'
   
-  gem 'shoulda',            '~> 2.11.3'
   gem 'steak',              '~> 1.0.0.rc.2'
   gem 'capybara',           '~> 0.4.0'
   # gem 'capybara-envjs',     '~> 0.4.0'
@@ -93,5 +95,7 @@ group :test do
   gem 'vcr',                '~> 1.2.0'
   
   gem 'spork',              '~> 0.9.0.rc2'
-  gem 'factory_girl_rails', '~> 1.0.0'
+  
+  gem 'shoulda',            '~> 2.11.3'
+  gem 'factory_girl_rails', '~> 1.0.0', :require => false # loaded in spec_helper Spork.each_run
 end

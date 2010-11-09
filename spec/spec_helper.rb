@@ -1,30 +1,21 @@
 require 'rubygems'
 require 'spork'
+ENV["RAILS_ENV"] ||= 'test'
 
 Spork.prefork do
   # Loading more in this block will cause your tests to run faster. However, 
   # if you change any configuration or code from libraries loaded here, you'll
   # need to restart spork for it take effect.
   
-  ENV["RAILS_ENV"] ||= 'test'
-  require File.dirname(__FILE__) + "/../config/environment" unless defined?(Rails)
+  require File.dirname(__FILE__) + "/../config/environment"
   require 'rspec/rails'
-  require 'shoulda'
-  require 'timecop'
+  
+  # require 'timecop'
   
   # require 'akephalos'
   # Capybara.javascript_driver = :akephalos
   # require 'capybara/envjs'
   # Capybara.javascript_driver = :envjs
-end
-
-Spork.each_run do
-  # This code will be run each time you run your specs.
-  # require 'factory_girl'
-  # FactoryGirl.find_definitions
-  # Dir[File.expand_path(File.join(File.dirname(__FILE__),'factories','**','*.rb'))].each {|f| require f}
-  # 
-  Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
   
   VCR.config do |c|
     c.cassette_library_dir     = 'spec/fixtures/vcr_cassettes'
@@ -73,6 +64,22 @@ Spork.each_run do
       DatabaseCleaner.clean_with(:truncation) # clean all the databases
     end
   end
+end
+
+Spork.each_run do
+  # This code will be run each time you run your specs.
+  
+  # Needed to prevent routes.rb to be load on Rails initialization and make User/Admin model loaded by devise_for
+  MySublimeVideo::Application.reload_routes!
+  
+  # Needed to prevent all models loaded by Mongoid
+  Rails::Mongoid.load_models(MySublimeVideo::Application)
+  
+  # Factory need to be required each launch to prevent loading of all models
+  require 'factory_girl'
+  require Rails.root.join("spec/factories")
+  
+  Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
 end
 
 # --- Instructions ---
