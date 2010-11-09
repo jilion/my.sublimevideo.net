@@ -29,7 +29,7 @@ feature "Sites" do
       page.should have_no_css('div.sorting')
       page.should have_no_css('a.sort')
       
-      create_site "remy.me"
+      create_site :hostname => "remy.me"
       
       current_url.should =~ %r(http://[^/]+/sites)
       page.should have_content('google.com')
@@ -47,7 +47,7 @@ feature "Sites" do
       page.should have_no_css('div.pagination')
       page.should have_no_css('span.next_page')
       
-      create_site "remy.me"
+      create_site :hostname => "remy.me"
       
       current_url.should =~ %r(http://[^/]+/sites)
       page.should have_css('div.pagination')
@@ -71,17 +71,20 @@ feature "Sites" do
     page.should have_content('google.com')
     
     # Delayed::Job.last.name.should == 'Site#activate'
-    # Delayed::Worker.new(:quiet => true).work_off
-    
+    Delayed::Worker.new(:quiet => true).work_off
+    # 
     site = @current_user.sites.last
     site.hostname.should == "google.com"
-    # site.loader.read.should include(site.token)
-    # site.license.read.should include(site.template_hostnames)
+    site.loader.read.should include(site.token)
+    site.license.read.should include(site.template_hostnames)
   end
   
   feature "edit" do
+    background do
+      create_site :cdn_up_to_date => true
+    end
+    
     scenario "edit settings" do
-      create_site
       edit_site_settings :path => '/ipad', :dev_hostnames => 'sjobs.dev, apple.local'
       
       current_url.should =~ %r(http://[^/]+/sites)
@@ -90,7 +93,6 @@ feature "Sites" do
     end
     
     scenario "edit plan" do
-      create_site
       edit_site_plan
       
       current_url.should =~ %r(http://[^/]+/sites)
@@ -98,7 +100,6 @@ feature "Sites" do
     end
     
     scenario "edit addons" do
-      create_site
       edit_site_addons
       
       current_url.should =~ %r(http://[^/]+/sites)
@@ -118,9 +119,11 @@ feature "Sites" do
   
 end
 
-def create_site(hostname = 'google.com')
+def create_site(*args)
+  options = args.extract_options!
+  
   visit "/sites/new"
-  fill_in "site_hostname", :with => hostname
+  fill_in "site_hostname", :with => (options[:hostname] or 'google.com')
   choose "plan_id_pro_month"
   
   if !@current_user.cc? || @current_user.cc_expired?
@@ -133,6 +136,7 @@ def create_site(hostname = 'google.com')
   else
     click_button "Add"
   end
+  Site.last.update_attribute(:cdn_up_to_date, true) if options[:cdn_up_to_date]
 end
 
 def edit_site_settings(options = {})
@@ -154,6 +158,7 @@ end
 def edit_site_addons(options = {})
   visit_settings(options[:id] || @current_user.sites.last.id)
   check "Ssl month"
+  
   click_button "Update addons"
 end
 

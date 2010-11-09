@@ -48,8 +48,9 @@ class SitesController < ApplicationController
   # PUT /sites/1
   def update
     @site.attributes = params[:site]
-    respond_with(@site) do |format|
-      if valid_password? && @site.save
+    valid_password_flash
+    respond_with(@site, :flash => valid_password?) do |format|
+      if @site.valid? && valid_password? && @site.save
         format.html { redirect_to sites_path }
       else
         format.html { render :edit }
@@ -59,6 +60,7 @@ class SitesController < ApplicationController
   
   # DELETE /sites/1
   def destroy
+    valid_password_flash
     @site.archive if valid_password?
     respond_with(@site) do |format|
       format.html { redirect_to sites_path }
@@ -81,9 +83,11 @@ private
   end
   
   def valid_password?
-    valid_password = !@site.active? || (params[:password] && current_user.valid_password?(params[:password]))
-    flash[:alert] = "Your password is needed for this action!" unless valid_password
-    valid_password
+    @valid_password ||= !@site.active? || (params[:password] && current_user.valid_password?(params[:password]))
+  end
+  
+  def valid_password_flash
+    flash[:alert] = "Your password is needed for this action!" unless valid_password?
   end
   
 end

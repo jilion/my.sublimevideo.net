@@ -271,6 +271,26 @@ describe Site do
       end
     end
     
+    describe "addon_ids=" do
+      let(:addon1) { Factory(:addon) }
+      let(:addon2) { Factory(:addon) }
+      subject { Factory(:site) }
+      
+      it "should remove blank ids" do
+        subject.addon_ids = ["", nil]
+        subject.addons.should be_empty
+        subject.save
+        subject.addons.should be_empty
+      end
+      
+      it "should set new addons" do
+        subject.addon_ids = [addon1.id, addon2.id]
+        subject.addons.should == [addon1, addon2]
+        subject.save
+        subject.addons.should == [addon1, addon2]
+      end
+    end
+    
     describe "#path=" do
       it "should remove first /" do
         site = Factory(:site, :path => '/users/thibaud')

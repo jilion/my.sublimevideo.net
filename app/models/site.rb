@@ -185,9 +185,9 @@ public
     write_attribute :path, attribute.sub('/', '')
   end
   
-  def addon_ids=(ids)
+  def addon_ids=(ids = [])
     @addon_ids_was = addon_ids
-    self.addons = Addon.find(ids)
+    self.addons = Addon.find(ids.reject { |i| i.blank? })
   end
   
   def to_param
