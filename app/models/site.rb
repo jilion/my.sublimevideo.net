@@ -61,8 +61,8 @@ class Site < ActiveRecord::Base
   validates :user,            :presence => true
   validates :plan,            :presence => { :message => "Please choose a plan" }
   validates :hostname,        :hostname_uniqueness => true, :hostname => true
-  validates :dev_hostnames,   :dev_hostnames => true
   validates :extra_hostnames, :extra_hostnames => true
+  validates :dev_hostnames,   :dev_hostnames => true
   validates :player_mode,     :inclusion => { :in => PLAYER_MODES }
   validate  :at_least_one_domain_set
   validate  :must_be_up_to_date_to_update_settings_or_addons
@@ -201,7 +201,7 @@ public
       hostnames += extra_hostnames.split(', ') if extra_hostnames.present?
       hostnames << "path:#{path}" if path.present?
       hostnames << "wildcard:#{wildcard.to_s}" if wildcard.present?
-      hostnames << "addons:#{addons.map { |a| a.name }.join(',')}" if path.present?
+      hostnames << "addons:#{addons.map { |a| a.name }.sort.join(',')}" if path.present?
     end
     hostnames += dev_hostnames.split(', ') if dev_hostnames.present?
     hostnames.map! { |hostname| "'" + hostname + "'" }

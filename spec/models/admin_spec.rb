@@ -1,18 +1,24 @@
 require 'spec_helper'
 
 describe Admin do
-  context "with valid attributes" do
-    subject { Factory(:admin) }
+  context "from factory" do
+    set(:admin_from_factory) { Factory(:admin) }
+    subject { admin_from_factory }
     
     its(:email) { should match /email\d+@admin.com/ }
     
     it { should be_valid }
   end
   
-  describe "validates" do
-    subject { Factory(:admin) }
+  describe "associations" do
+    set(:admin_for_associations) { Factory(:admin) }
+    subject { admin_for_associations }
     
     it { should have_many :mail_logs }
+  end
+  
+  describe "validates" do
+    subject { Factory(:admin) }
     
     [:email, :password, :password_confirmation, :remember_me].each do |attr|
       it { should allow_mass_assignment_of(attr) }

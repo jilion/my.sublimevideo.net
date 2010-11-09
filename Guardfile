@@ -14,7 +14,7 @@ guard 'livereload' do
   watch('^config/locales/.+\.ym$')
 end
 
-guard 'rspec', :version => 2, :bundler => false, :fail_fast => true, :formatter => "instafail" do
+guard 'rspec', :version => 2, :bundler => false, :formatter => "instafail" do
   watch('^spec/(.*)_spec.rb')
   watch('^app/(.*)\.rb')                              { |m| "spec/#{m[1]}_spec.rb" }
   watch('^lib/(.*)\.rb')                              { |m| "spec/lib/#{m[1]}_spec.rb" }

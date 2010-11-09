@@ -2,7 +2,8 @@ require 'spec_helper'
 
 describe Addon do
   context "with valid attributes" do
-    subject { Factory(:addon) }
+    set(:addon_from_factory) { Factory(:addon) }
+    subject { addon_from_factory }
     
     its(:name)      { should =~ /SSL_\d+/ }
     its(:term_type) { should == 'month' }
@@ -11,11 +12,16 @@ describe Addon do
     it { be_valid }
   end
   
-  describe "validates" do
-    subject { Factory(:addon) }
+  describe "associations" do
+    set(:addon_for_associations) { Factory(:addon) }
+    subject { addon_for_associations }
     
     it { should have_many :invoice_items }
     it { should have_and_belong_to_many :sites }
+  end
+  
+  describe "validates" do
+    subject { Factory(:addon) }
     
     [:name, :term_type, :price].each do |attr|
       it { should allow_mass_assignment_of(attr) }

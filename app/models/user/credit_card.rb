@@ -65,7 +65,6 @@ module User::CreditCard
           self.errors.add(:cc_full_name, :blank)
         end
         # I18n Warning: credit_card errors are not localized
-        Rails.logger.debug credit_card.errors.inspect
         credit_card.errors.each do |attribute, errors|
           attribute = case attribute
           when 'month', 'year'

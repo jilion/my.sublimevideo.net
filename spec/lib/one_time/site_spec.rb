@@ -20,10 +20,7 @@ describe OneTime::Site do
     end
     
     context "actually test the method" do
-      before(:all) do
-        # Delayed::Job.delete_all
-        described_class.update_hostnames
-      end
+      before(:all) { described_class.update_hostnames }
       
       # it "should have delayed 3 site activations" do
       #   Delayed::Job.count.should == 4
