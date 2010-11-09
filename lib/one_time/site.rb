@@ -36,8 +36,8 @@ module OneTime
           site.hostname        = Hostname.clean(site.hostname) if site.hostname.present?
           site.dev_hostnames   = Hostname.clean(new_dev_hostnames.sort.join(', '))
           site.extra_hostnames = Hostname.clean(extra_hostnames.sort.join(', ')) if extra_hostnames.present?
+          site.cdn_up_to_date  = true
           site.save
-          # site.delay.activate
           repaired_sites += 1
           
           result << "##{site.id} (#{'still in' unless site.valid?}valid)"

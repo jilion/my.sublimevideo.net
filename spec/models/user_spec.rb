@@ -4,14 +4,10 @@ require 'spec_helper'
 # after refactoring:  11.06s
 # 1.67x faster
 describe User do
-  set(:user) { Factory(:user) }
-  before(:each) { Delayed::Job.delete_all }
   
-  # before refactoring let: 5.72s
-  # after refactoring set:  2.01s
-  # 2.84x faster
-  context "with valid attributes" do
-    subject { user }
+  context "from factory" do
+    set(:user_from_factory) { Factory(:user) }
+    subject { user_from_factory }
     
     its(:terms_and_conditions) { should be_true }
     its(:first_name)           { should == "John" }
@@ -28,10 +24,15 @@ describe User do
     it { should be_valid }
   end
   
-  describe "validates" do
+  describe "associations" do
+    set(:user_for_associations) { Factory(:user) }
+    subject { user_for_associations }
+    
     it { should have_many :sites }
     it { should have_many :invoices }
-    
+  end
+  
+  describe "validates " do
     [:first_name, :last_name, :email, :remember_me, :password, :postal_code, :country, :use_personal, :use_company, :use_clients, :company_name, :company_url, :company_job_title, :company_employees, :company_videos_served, :terms_and_conditions, :cc_update, :cc_type, :cc_full_name, :cc_number, :cc_expire_on, :cc_verification_value].each do |attr|
       it { should allow_mass_assignment_of(attr) }
     end
@@ -46,23 +47,79 @@ describe User do
     it "should validate presence of at least one usage" do
       user = Factory.build(:user, :use_personal => nil, :use_company => nil, :use_clients => nil)
       user.should_not be_valid
-      user.errors[:use].should == ["Please check at least one option"]
+      user.should have(1).error_on(:use)
+      
     end
     
-    context "use_company is checked" do
+    context "when use_company is checked" do
       it "should validate company fields if use_company is checked" do
         fields = [:company_name, :company_url, :company_job_title, :company_employees, :company_videos_served]
         user = Factory.build(:user, Hash[fields.map { |f| [f, nil] }].merge({ :use_personal => false, :use_company => true }))
         user.should_not be_valid
         fields.each do |f|
-          user.errors[f].should == ["can't be blank"]
+          user.should have(1).error_on(f)
         end
       end
       
       it "should validate company url" do
         user = Factory.build(:user, :use_company => true, :company_url => "http://localhost")
         user.should_not be_valid
-        user.errors[:company_url].should == ["is invalid"]
+        user.should have(1).error_on(:company_url)
+      end
+    end
+  end
+  
+  describe "user credit card when at least 1 credit card field is given" do
+    it "should be valid without any credit card field" do
+      user = Factory.build(:user, :cc_update => nil, :cc_number => nil, :cc_first_name => nil, :cc_last_name => nil, :cc_verification_value => nil, :cc_expire_on => nil)
+      user.should be_valid
+    end
+    
+    context "with at least a credit card field given" do
+      it "should require first and last name" do
+        user = Factory.build(:user, :cc_expire_on => 1.year.from_now, :cc_first_name => "Bob")
+        user.should_not be_valid
+        user.should have(1).error_on(:cc_full_name)
+      end
+      
+      it "should not allow expire date in the future" do
+        user = Factory.build(:user, :cc_full_name => "John Doe", :cc_expire_on => 1.year.ago)
+        user.should_not be_valid
+        user.should have(2).errors_on(:cc_expire_on)
+      end
+      
+      describe "credit card number" do
+        it "should require one" do
+          user = Factory.build(:user, :cc_expire_on => 1.year.from_now, :cc_full_name => "John Doe")
+          user.should_not be_valid
+          user.should have(1).error_on(:cc_number)
+        end
+        
+        it "should require a valid one" do
+          user = Factory.build(:user, :cc_expire_on => 1.year.from_now, :cc_full_name => "John Doe", :cc_number => '1234')
+          user.should_not be_valid
+          user.should have(1).error_on(:cc_number)
+        end
+      end
+      
+      describe "credit card type" do
+        it "should require one" do
+          user = Factory.build(:user, :cc_expire_on => 1.year.from_now, :cc_full_name => "John Doe")
+          user.should_not be_valid
+          user.should have(2).errors_on(:cc_type)
+        end
+        
+        it "should require a valid one" do
+          user = Factory.build(:user, :cc_expire_on => 1.year.from_now, :cc_full_name => "John Doe", :cc_type => 'foo')
+          user.should_not be_valid
+          user.should have(1).error_on(:cc_type)
+        end
+      end
+      
+      it "should require a credit card verification value" do
+        user = Factory.build(:user, :cc_expire_on => 1.year.from_now, :cc_full_name => "John Doe")
+        user.should_not be_valid
+        user.should have(1).error_on(:cc_verification_value)
       end
     end
   end
@@ -70,9 +127,10 @@ describe User do
   context "invited" do
     subject { Factory(:user).tap { |u| u.send(:attributes=, { :invitation_token => '123', :invitation_sent_at => Time.now, :email => "bob@bob.com", :enthusiast_id => 12 }, false); u.save(:validate => false) } }
     
-    its(:enthusiast_id) { should == 12 }
-    
-    it { should be_invited }
+    it "should set enthusiast_id" do
+      subject.should be_invited
+      subject.enthusiast_id.should == 12
+    end
     
     it "should not be able to update enthusiast_id" do
       subject.update_attributes(:enthusiast_id => 13)
@@ -80,7 +138,9 @@ describe User do
     end
   end
   
+  # TODO slow: 8.8s for 5 examples => 1.76s/ex
   describe "State Machine" do
+    let(:user) { Factory(:user) }
     
     describe "initial state" do
       subject { user }
@@ -91,10 +151,8 @@ describe User do
     # = suspend =
     # ===========
     describe "event(:suspend) { transition :active => :suspended }" do
-      before(:each) { VCR.insert_cassette('user/suspend') }
-      
-      let(:site1)  { Factory(:site, :user => user, :hostname => "rymai.com")   }
-      let(:site2)  { Factory(:site, :user => user, :hostname => "octavez.com") }
+      let(:site1) { Factory(:site, :user => user, :hostname => "rymai.com").tap { |s| s.update_attribute(:state, 'active') } }
+      let(:site2) { Factory(:site, :user => user, :hostname => "octavez.com").tap { |s| s.update_attribute(:state, 'dev') } }
       
       it "should set the state as :suspended from :active" do
         user.should be_active
@@ -104,29 +162,24 @@ describe User do
       
       describe "callbacks" do
         describe "before_transition :on => :suspend, :do => :suspend_sites" do
-          it "should suspend each user' site" do
-            site1.should_not be_suspended
-            site2.should_not be_suspended
+          it "should suspend each user' active site" do
+            site1.should be_active
+            site2.should be_dev
             user.suspend
             site1.reload.should be_suspended
-            site2.reload.should be_suspended
+            site2.reload.should be_dev
           end
         end
       end
-      
-      after(:each) { VCR.eject_cassette }
     end
     
     # =============
     # = unsuspend =
     # =============
     describe "event(:unsuspend) { transition :suspended => :active }" do
-      before(:each) do
-        @site1 = Factory(:site, :user => user, :hostname => "rymai.com")
-        @site2 = Factory(:site, :user => user, :hostname => "octavez.com")
-        VCR.use_cassette('user/suspend') { user.suspend }
-        VCR.insert_cassette('user/unsuspend')
-      end
+      let(:site1) { Factory(:site, :user => user, :hostname => "rymai.com").tap { |s| s.update_attribute(:state, 'suspended') } }
+      let(:site2) { Factory(:site, :user => user, :hostname => "octavez.com").tap { |s| s.update_attribute(:state, 'dev') } }
+      before(:each) { user.update_attribute(:state, 'suspended') }
       
       it "should set the state as :active from :suspended" do
         user.should be_suspended
@@ -137,31 +190,30 @@ describe User do
       describe "callbacks" do
         describe "before_transition :on => :unsuspend, :do => :unsuspend_sites" do
           it "should suspend each user' site" do
-            @site1.reload.should be_suspended
-            @site2.reload.should be_suspended
+            site1.reload.should be_suspended
+            site2.reload.should be_dev
             user.unsuspend
-            @site1.reload.should_not be_suspended
-            @site2.reload.should_not be_suspended
+            site1.reload.should be_active
+            site2.reload.should be_dev
           end
         end
       end
-      
-      after(:each) { VCR.eject_cassette }
     end
     
   end
   
+  # TODO slow: 3s for 4 examples => 0.75s/ex
   describe "callbacks" do
+    let(:user) { Factory(:user) }
+    
     describe "after_update :update_email_on_zendesk" do
       it "should not delay Module#put if email has not changed" do
         user.zendesk_id = 15483194
-        user.save
         Delayed::Job.last.should be_nil
       end
       
       it "should not delay Module#put if user has no zendesk_id" do
-        user.email = "new@email.com"
-        user.save
+        user.email      = "new@email.com"
         user.email.should == "new@email.com"
         Delayed::Job.last.should be_nil
       end
@@ -178,25 +230,30 @@ describe User do
         user.zendesk_id = 15483194
         user.email      = "new@email.com"
         user.save
-        user.reload.email.should == "new@email.com"
         VCR.use_cassette("user/update_email_on_zendesk") { Delayed::Worker.new(:quiet => true).work_off }
         Delayed::Job.last.should be_nil
         VCR.use_cassette("user/email_on_zendesk_after_update") do
-          JSON.parse(Zendesk.get("/users/15483194/user_identities.json").body).select{ |h| h["identity_type"] == "email" }.map { |h| h["value"] }.should include "new@email.com"
+          JSON.parse(Zendesk.get("/users/15483194/user_identities.json").body).select { |h| h["identity_type"] == "email" }.map { |h| h["value"] }.should include("new@email.com")
         end
       end
     end
   end
   
+  describe "attributes accessor" do
+    describe "email=" do
+      it "should downcase email" do
+        user = Factory.build(:user, :email => "BOB@cool.com")
+        user.email.should == "bob@cool.com"
+      end
+    end
+  end
+  
   describe "instance methods" do
-    it "should be active when suspended to allow login" do
+    let(:user) { Factory(:user) }
+    
+    it "should be active when suspended in order to allow login" do
       user.suspend
       user.should be_active
-    end
-    
-    it "should downcase email" do
-      user = Factory.build(:user, :email => "BOB@cool.com")
-      user.email.should == "bob@cool.com"
     end
   end
   

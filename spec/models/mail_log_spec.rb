@@ -1,11 +1,10 @@
 require 'spec_helper'
 
 describe MailLog do
-  set(:mail_log) { Factory(:mail_log) }
-  
-  subject { mail_log }
-  
-  context "with valid attributes" do
+  context "from factory" do
+    set(:mail_log_from_factory) { Factory(:mail_log) }
+    subject { mail_log_from_factory }
+    
     its(:template) { should be_present }
     its(:admin)    { should be_present }
     its(:criteria) { should == ["with_activity"] }
@@ -14,16 +13,20 @@ describe MailLog do
     it { should be_valid }
   end
   
-  describe "validates" do
+  describe "associations" do
+    set(:mail_log_for_associations) { Factory(:mail_log) }
+    subject { mail_log_for_associations }
+    
     it { should belong_to :template }
     it { should belong_to :admin }
-    
+  end
+  
+  describe "validates" do
     [:template_id, :admin_id, :criteria, :user_ids].each do |attr|
       it { should allow_mass_assignment_of(attr) }
       it { should validate_presence_of(attr) }
     end
   end
-  
 end
 
 # == Schema Information

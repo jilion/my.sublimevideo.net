@@ -1,12 +1,11 @@
 require 'spec_helper'
 
 describe Plan do
-  describe Plan::TERM_TYPES do
-    it { should == %w[month year] }
-  end
+  specify { Plan::TERM_TYPES.should == %w[month year] }
   
-  context "with valid attributes" do
-    subject { Factory(:plan) }
+  context "from factory" do
+    set(:plan_from_factory) { Factory(:plan) }
+    subject { plan_from_factory }
     
     its(:name)          { should =~ /small_month_\d+/ }
     its(:term_type)     { should == 'month' }
@@ -14,14 +13,19 @@ describe Plan do
     its(:price)         { should == 10 }
     its(:overage_price) { should == 1 }
     
-    it { be_valid }
+    it { should be_valid }
+  end
+  
+  describe "associations" do
+    set(:plan_for_associations) { Factory(:plan) }
+    subject { plan_for_associations }
+    
+    it { should have_many :sites }
+    it { should have_many :invoice_items }
   end
   
   describe "validates" do
     subject { Factory(:plan) }
-    
-    it { should have_many :sites }
-    it { should have_many :invoice_items }
     
     [:name, :term_type, :player_hits, :price, :overage_price].each do |attr|
       it { should allow_mass_assignment_of(attr) }

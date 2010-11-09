@@ -1,6 +1,6 @@
 class SitesController < ApplicationController
   respond_to :html
-  respond_to :js, :except => [:new, :create]
+  respond_to :js, :only => [:index, :show]
   
   before_filter :redirect_suspended_user
   before_filter :find_by_token, :only => [:show, :edit, :update, :destroy]
@@ -25,17 +25,12 @@ class SitesController < ApplicationController
   # GET /sites/new
   def new
     @site = current_user.sites.build(:dev_hostnames => Site::DEFAULT_DEV_DOMAINS)
-    respond_with(@site) do |format|
-      format.html
-    end
+    respond_with(@site)
   end
   
   # GET /sites/1/edit
   def edit
-    respond_with(@site) do |format|
-      format.html
-      format.js
-    end
+    respond_with(@site)
   end
   
   # POST /sites
@@ -52,8 +47,10 @@ class SitesController < ApplicationController
   
   # PUT /sites/1
   def update
-    respond_with(@site, :password_required => @site.active?) do |format|
-      if @site.update_attributes(params[:site])
+    @site.attributes = params[:site]
+    valid_password_flash
+    respond_with(@site, :flash => valid_password?) do |format|
+      if @site.valid? && valid_password? && @site.save
         format.html { redirect_to sites_path }
       else
         format.html { render :edit }
@@ -63,8 +60,9 @@ class SitesController < ApplicationController
   
   # DELETE /sites/1
   def destroy
-    @site.archive
-    respond_with(@site, :password_required => true) do |format|
+    valid_password_flash
+    @site.archive if valid_password?
+    respond_with(@site) do |format|
       format.html { redirect_to sites_path }
     end
   end
@@ -82,6 +80,14 @@ private
   
   def find_by_token
     @site = current_user.sites.find_by_token(params[:id])
+  end
+  
+  def valid_password?
+    @valid_password ||= !@site.active? || (params[:password] && current_user.valid_password?(params[:password]))
+  end
+  
+  def valid_password_flash
+    flash[:alert] = "Your password is needed for this action!" unless valid_password?
   end
   
 end

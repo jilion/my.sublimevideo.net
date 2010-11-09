@@ -57,6 +57,7 @@ Spork.prefork do
     # Clear MongoDB Collection
     config.after(:each) do
       DatabaseCleaner.clean
+      Delayed::Job.delete_all
       # Mongoid.master.collections.select { |c| c.name !~ /system/ }.each(&:drop)
     end
     

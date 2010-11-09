@@ -7,6 +7,7 @@ describe SitesController do
       sign_in :user, logged_in_user
       logged_in_user.stub_chain(:sites, :find_by_token).with('a1b2c3') { mock_site }
       logged_in_user.stub_chain(:sites, :find).with('1') { mock_site }
+      mock_site.stub(:attributes=)
       User.stub(:find) { logged_in_user }
     end
     
@@ -41,7 +42,7 @@ describe SitesController do
     end
     
     it "should respond with success to GET :edit" do
-      get :edit, :id => 'a1b2c3', :format => :js
+      get :edit, :id => 'a1b2c3'
       
       assigns(:site).should == mock_site
       response.should be_success
@@ -50,7 +51,6 @@ describe SitesController do
     it "should respond with success to POST :create" do
       logged_in_user.stub_chain(:sites, :build).with({}) { mock_site }
       mock_site.stub(:save) { true }
-      mock_site.stub_chain(:delay, :activate) { true }
       
       post :create, :site => {}
       
@@ -61,7 +61,7 @@ describe SitesController do
     context "site is not active" do
       it "should respond with success to PUT :update when site is not active (not password required)" do
         mock_site.stub(:active?) { false }
-        mock_site.stub(:update_attributes).with({}) { true }
+        mock_site.stub(:save) { true }
         
         put :update, :id => 'a1b2c3', :site => {}
         
@@ -73,8 +73,7 @@ describe SitesController do
     context "site is active" do
       it "should respond with success to PUT :update when site is active and password is not good" do
         mock_site.stub(:active?) { true }
-        logged_in_user.stub(:valid_password?) { false }
-        mock_site.stub(:update_attributes).with({}) { false }
+        mock_site.stub(:save) { false }
         
         put :update, :id => 'a1b2c3', :site => {}, :password => 'abcd'
         
@@ -84,8 +83,7 @@ describe SitesController do
       
       it "should respond with success to PUT :update when site is active and password is good" do
         mock_site.stub(:active?) { true }
-        logged_in_user.stub(:valid_password?) { true }
-        mock_site.stub(:update_attributes).with({}) { true }
+        mock_site.stub(:save) { true }
         
         put :update, :id => 'a1b2c3', :site => {}, :password => '123456'
         
@@ -95,6 +93,7 @@ describe SitesController do
     end
     
     it "should respond with success to DELETE :destroy and archive site" do
+      mock_site.stub(:active?) { true }
       mock_site.stub(:archive)
       
       delete :destroy, :id => 'a1b2c3'

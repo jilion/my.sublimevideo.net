@@ -40,7 +40,7 @@ module User::CreditCard
   alias :cc? :credit_card?
   
   def credit_card_expired?
-    cc_expire_on.year < Time.now.utc.year || cc_expire_on.month < Time.now.utc.month
+    cc_expire_on.present? and cc_expire_on.year < Time.now.utc.year || cc_expire_on.month < Time.now.utc.month
   end
   alias :cc_expired? :credit_card_expired?
   
@@ -65,7 +65,6 @@ module User::CreditCard
           self.errors.add(:cc_full_name, :blank)
         end
         # I18n Warning: credit_card errors are not localized
-        Rails.logger.debug credit_card.errors.inspect
         credit_card.errors.each do |attribute, errors|
           attribute = case attribute
           when 'month', 'year'

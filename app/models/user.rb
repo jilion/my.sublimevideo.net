@@ -67,8 +67,8 @@ class User < ActiveRecord::Base
   # =============
   
   before_create :set_next_invoiced_on
-  before_save :store_credit_card, :keep_some_credit_card_info # in user/credit_card
-  after_update :update_email_on_zendesk
+  before_save   :store_credit_card, :keep_some_credit_card_info # in user/credit_card
+  after_update  :update_email_on_zendesk
   
   # =================
   # = State Machine =
@@ -136,7 +136,7 @@ private
   
   # after_update
   def update_email_on_zendesk
-    if zendesk_id.present? && email_changed?
+    if zendesk_id.present? && previous_changes.keys.include?("email")
       Zendesk.delay(:priority => 25).put("/users/#{zendesk_id}.xml", :user => { :email => email })
     end
   end

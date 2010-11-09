@@ -2,8 +2,10 @@
 require 'spec_helper'
 
 describe Site do
-  context "with valid attributes" do
-    subject { Factory(:site) }
+  # 9.89s => 2.72s
+  context "from factory" do
+    set(:site_from_factory) { Factory(:site) }
+    subject { site_from_factory }
     
     its(:user)            { should be_present }
     its(:plan)            { should be_present }
@@ -15,20 +17,25 @@ describe Site do
     its(:token)           { should =~ /^[a-z0-9]{8}$/ }
     its(:license)         { should_not be_present }
     its(:loader)          { should_not be_present }
-    its(:player_mode)     { should == 'stable' }
+    its(:player_mode)     { should == "stable" }
     
-    it { be_dev }
-    it { be_valid }
+    it { should be_dev }
+    it { should be_valid }
   end
   
-  describe "validates" do
-    subject { Factory(:site) }
+  describe "associations" do
+    set(:site_for_associations) { Factory(:site) }
+    subject { site_for_associations }
     
     it { should belong_to :user }
     it { should belong_to :plan }
     it { should have_many :invoice_items }
     it { should have_many(:invoices).through(:invoice_items) }
     it { should have_and_belong_to_many :addons }
+  end
+  
+  describe "validates " do
+    # subject { Factory(:site) }
     
     [:hostname, :dev_hostnames].each do |attribute|
       it { should allow_mass_assignment_of(attribute) }
@@ -42,35 +49,38 @@ describe Site do
     it { should allow_value('stable').for(:player_mode) }
     it { should_not allow_value('fake').for(:player_mode) }
     
-    describe "user credit card" do
-      it "should be validate" do
-        site = Factory.build(:site, :user_attributes => { :cc_full_name => "Bob", :cc_expire_on => 1.year.from_now } )
-        site.should_not be_valid
-        site.user.errors[:cc_number].should be_present
-        site.user.errors[:cc_type].should be_present
-        site.user.errors[:cc_verification_value].should be_present
+    specify { Site.validators_on(:hostname).map(&:class).should == [HostnameUniquenessValidator, HostnameValidator, ActiveModel::Validations::PresenceValidator] }
+    specify { Site.validators_on(:extra_hostnames).map(&:class).should == [ExtraHostnamesValidator] }
+    specify { Site.validators_on(:dev_hostnames).map(&:class).should == [DevHostnamesValidator] }
+    
+    describe "must_be_up_to_date_to_update_settings_or_addons" do
+      let(:addon) { Factory(:addon) }
+      
+      it "should add errors to attributes that has changed if cdn_up_to_date is false" do
+        site = Factory(:site)
+        site.attributes = { :hostname => "jilion.com", :extra_hostnames => "staging.jilion.com", :dev_hostnames => "jilion.local", :path => 'foo', :wildcard => true, :addon_ids => [addon.id] }
+        site.should have(1).error_on(:hostname)
+        site.should have(1).error_on(:extra_hostnames)
+        site.should have(1).error_on(:dev_hostnames)
+        site.should have(1).error_on(:path)
+        site.should have(1).error_on(:wildcard)
+        site.should have(1).error_on(:addons)
       end
     end
     
     describe "hostname" do
-      it "should not be required until activation" do
-        site = Factory.build(:site, :hostname => nil)
-        site.should be_valid
-        site.errors[:hostname].should be_empty
-      end
-      
-      it "should be required on activation" do
+      it "should be required if state is active" do
         site = Factory(:site, :hostname => nil)
-        site.should be_valid
-        site.activate.should be_false
-        site.errors[:hostname].should be_present
+        site.state = 'active'
+        site.should_not be_valid
+        site.should have(1).error_on(:hostname)
       end
       
       %w[http://asdasd slurp .com 901.12312.123 école *.google.com *.com jilion.local].each do |host|
         it "should not allow: #{host}" do
           site = Factory.build(:site, :hostname => host)
           site.should_not be_valid
-          site.errors[:hostname].should be_present
+          site.should have(1).error_on(:hostname)
         end
       end
       
@@ -78,7 +88,7 @@ describe Site do
         it "should allow: #{host}" do
           site = Factory.build(:site, :hostname => host)
           site.should be_valid
-          site.errors[:hostname].should be_empty
+          site.should have(:no).errors_on(:hostname)
         end
       end
     end
@@ -88,7 +98,7 @@ describe Site do
         it "should not allow: #{extra_hosts}" do
           site = Factory.build(:site, :hostname => 'jilion.com', :extra_hostnames => extra_hosts)
           site.should_not be_valid
-          site.errors[:extra_hostnames].should be_present
+          site.should have(1).error_on(:extra_hostnames)
         end
       end
       
@@ -96,7 +106,7 @@ describe Site do
         it "should allow: #{extra_hosts}" do
           site = Factory.build(:site, :hostname => 'jilion.com', :extra_hostnames => extra_hosts)
           site.should be_valid
-          site.errors[:extra_hostnames].should be_empty
+          site.should have(:no).errors_on(:extra_hostnames)
         end
       end
     end
@@ -106,7 +116,7 @@ describe Site do
         it "should not allow: #{dev_hosts}" do
           site = Factory.build(:site, :hostname => 'jilion.com', :dev_hostnames => dev_hosts)
           site.should_not be_valid
-          site.errors[:dev_hostnames].should be_present
+          site.should have(1).error_on(:dev_hostnames)
         end
       end
       
@@ -114,7 +124,7 @@ describe Site do
         it "should allow: #{dev_hosts}" do
           site = Factory.build(:site, :dev_hostnames => dev_hosts)
           site.should be_valid
-          site.errors[:dev_hostnames].should be_empty
+          site.should have(:no).errors_on(:dev_hostnames)
         end
       end
     end
@@ -123,7 +133,7 @@ describe Site do
       it "should require at least one of hostname, dev, or extra domains on creation" do
         site = Factory.build(:site, :hostname => '', :extra_hostnames => '', :dev_hostnames => '')
         site.should_not be_valid
-        site.errors[:base].should == ["Please set at least a development or an extra domain"]
+        site.should have(1).error_on(:base)
       end
       
       it "should not add an error on base because an error is already added on hostname when blank and site is active" do
@@ -131,45 +141,64 @@ describe Site do
         site.hostname = nil
         site.dev_hostnames = nil
         site.should_not be_valid
-        site.errors[:base].should == []
+        site.should have(:no).error_on(:base)
       end
     end
     
-    context "with already a site in db" do
+    describe "hostname uniqueness, " do
       let(:existing_site) { Factory(:site) }
       
-      it "should validate uniqueness of hostname by user" do
-        site = Factory.build(:site, :user => existing_site.user, :hostname => existing_site.hostname)
-        site.should_not be_valid
-        site.errors[:hostname].should == ["You have already registered this domain"]
+      context "on create" do
+        it "should allow 2 users to register the same hostname" do
+          site = Factory.build(:site, :user => Factory(:user), :hostname => existing_site.hostname)
+          site.should be_valid
+          site.should have(:no).errors_on(:hostname)
+        end
+        
+        it "should ignore archived sites" do
+          VoxcastCDN.stub(:purge)
+          existing_site.archive
+          site = Factory.build(:site, :user => existing_site.user, :hostname => existing_site.hostname)
+          site.should be_valid
+          site.should have(:no).errors_on(:hostname)
+        end
+        
+        it "should scope by user" do
+          site = Factory.build(:site, :user => existing_site.user, :hostname => existing_site.hostname)
+          site.should_not be_valid
+          site.should have(1).error_on(:hostname)
+        end
       end
       
-      it "should validate uniqueness of hostname by user case-unsensitive" do
-        site = Factory.build(:site, :user => existing_site.user, :hostname => existing_site.hostname.upcase)
-        site.should_not be_valid
-        site.errors[:hostname].should == ["You have already registered this domain"]
-      end
-      
-      it "should validate uniqueness, but ignore archived sites" do
-        VoxcastCDN.stub(:purge)
-        existing_site.archive
-        site = Factory.build(:site, :user => existing_site.user, :hostname => existing_site.hostname)
-        site.should be_valid
-        site.errors[:hostname].should be_empty
-      end
-      
-      it "should validate uniqueness even on update" do
-        VoxcastCDN.stub(:purge)
-        site = Factory(:site, :user => existing_site.user)
-        site.activate
-        site = Site.find(site.id)
-        site.hostname = existing_site.hostname
-        site.should_not be_valid
-        site.errors[:hostname].should be_present
+      context "on update" do
+        subject { Factory(:site, :user => existing_site.user).tap { |s| s.update_attribute(:cdn_up_to_date, true) } }
+        
+        it "should allow 2 users to register the same hostname" do
+          site = Factory(:site, :user => Factory(:user))
+          site.update_attribute(:cdn_up_to_date, true)
+          site.hostname = existing_site.hostname
+          site.should be_valid
+          site.should have(:no).errors_on(:hostname)
+        end
+        
+        it "should ignore archived sites" do
+          VoxcastCDN.stub(:purge)
+          existing_site.archive
+          existing_site.should be_archived
+          subject.hostname = existing_site.hostname
+          subject.should be_valid
+          subject.should have(:no).errors_on(:hostname)
+        end
+        
+        it "should scope by user" do
+          subject.hostname = existing_site.hostname
+          subject.should_not be_valid
+          subject.should have(1).error_on(:hostname)
+        end
       end
     end
     
-    describe "update hostname" do
+    describe "hostname update, " do
       { :hostname => ["jilion.com", "test.com"], :extra_hostnames => ["staging.jilion.com", "test.staging.com"], :dev_hostnames => ["jilion.local", "test.local"] }.each do |attribute, values|
         it "should not be able to update #{attribute} when cdn_up_to_date is false" do
           site = Factory(:site, attribute => values[0])
@@ -183,9 +212,9 @@ describe Site do
         
         it "should be able to update #{attribute} when cdn_up_to_date is true" do
           VoxcastCDN.stub(:purge)
-          
           site = Factory(:site, attribute => values[0])
-          Delayed::Worker.new(:quiet => true).work_off
+          site.update_attribute(:cdn_up_to_date, true)
+          # Delayed::Worker.new(:quiet => true).work_off
           site.reload.cdn_up_to_date.should be_true
           site.send("#{attribute}=", values[1])
           
@@ -198,7 +227,7 @@ describe Site do
     end
   end
   
-  describe "Attributes Accessors" do
+  describe "Attributes Accessors, " do
     describe "hostname=" do
       %w[ÉCOLE ÉCOLE.fr ÜPPER.de ASDASD.COM 124.123.151.123 mIx3Dd0M4iN.CoM].each do |host|
         it "should downcase hostname: #{host}" do
@@ -268,6 +297,26 @@ describe Site do
       it "should clean invalid dev_hostnames (dev_hostnames should never contain /.+://(www.)?/)" do
         site = Factory.build(:site, :dev_hostnames => 'http://www.test;err, ftp://127.]boo[:3000, www.joke;foo')
         site.dev_hostnames.should == '127.]boo[, joke;foo, test;err'
+      end
+    end
+    
+    describe "addon_ids=" do
+      let(:addon1) { Factory(:addon) }
+      let(:addon2) { Factory(:addon) }
+      subject { Factory(:site) }
+      
+      it "should remove blank ids" do
+        subject.addon_ids = ["", nil]
+        subject.addons.should be_empty
+        subject.save
+        subject.addons.should be_empty
+      end
+      
+      it "should set new addons" do
+        subject.addon_ids = [addon1.id, addon2.id]
+        subject.addons.should == [addon1, addon2]
+        subject.save
+        subject.addons.should == [addon1, addon2]
       end
     end
     
@@ -357,7 +406,7 @@ describe Site do
     end
   end
   
-  describe "Versioning" do
+  describe "Versioning, " do
     it "should work!" do
       with_versioning do
         site = Factory(:site)
@@ -369,7 +418,7 @@ describe Site do
     end
   end
   
-  describe "Callbacks" do
+  describe "Callbacks, " do
     describe "before_validation" do
       it "should set user_attributes" do
         user = Factory(:user, :first_name => "Bob")
@@ -379,7 +428,6 @@ describe Site do
     end
     
     describe "before_save" do
-      
       it "should set cdn_up_to_date to false" do
         Factory(:site).cdn_up_to_date.should be_false
       end
@@ -437,6 +485,7 @@ describe Site do
           before(:each) do
             Addon.stub(:find).with([1])   { [Factory(:addon)] }
             Addon.stub(:find).with([1,2]) { [Factory(:addon, :name => 'ssl'), Factory(:addon, :name => 'stat')] }
+            PageRankr.stub(:ranks)
           end
           
           { :hostname => "test.com", :extra_hostnames => "test.staging.com", :dev_hostnames => "test.local", :path => "yu", :wildcard => true, :addon_ids => [1, 2] }.each do |attribute, value|
@@ -542,18 +591,17 @@ describe Site do
         VCR.use_cassette('sites/ranks') do
           Delayed::Worker.new(:quiet => true).work_off
         end
-        site = Site.find(site.id)
-        site.google_rank.should == 0
+        site.reload.google_rank.should == 0
         site.alexa_rank.should  == 108330
       end
     end
   end
   
-  describe "Class Methods" do
+  describe "Class Methods, " do
     
   end
   
-  describe "Instance Methods" do
+  describe "Instance Methods, " do
     describe "#settings_changed?" do
       subject { Factory(:site) }
       
@@ -760,7 +808,7 @@ describe Site do
         it { subject.referrer_type("-").should == "invalid" }
         it { subject.referrer_type(nil).should == "invalid" }
       end
-    
+      
       context "with wildcard and path" do
         set(:site_with_wildcard_and_path) { Factory(:site, :hostname => "jilion.com", :extra_hostnames => 'jilion.org, jilion.net', :dev_hostnames => "jilion.local, localhost, 127.0.0.1", :path => "demo", :wildcard => true) }
         subject { site_with_wildcard_and_path }
@@ -805,7 +853,6 @@ describe Site do
       end
     end
   end
-  
 end
 
 # == Schema Information

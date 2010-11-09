@@ -1,8 +1,9 @@
 require 'spec_helper'
 
 describe InvoiceItem do
-  context "with valid attributes" do
-    subject { Factory(:invoice_item) }
+  context "from factory" do
+    set(:invoice_item_from_factory) { Factory(:invoice_item) }
+    subject { invoice_item_from_factory }
     
     its(:site)                     { should be_present }
     its(:invoice)                  { should be_present }
@@ -20,13 +21,18 @@ describe InvoiceItem do
     it { be_valid }
   end
   
-  describe "validates" do
-    subject { Factory(:invoice_item) }
+  describe "associations" do
+    set(:invoice_item_for_associations) { Factory(:invoice_item) }
+    subject { invoice_item_for_associations }
     
     it { should belong_to :site }
     it { should belong_to :invoice }
     it { should belong_to :item }
     it { should belong_to :refunded_invoice_item }
+  end
+  
+  describe "validates" do
+    subject { Factory(:invoice_item) }
     
     [:site_id, :item_type, :item_id, :started_on, :ended_on, :price, :overage_amount, :overage_price, :refund, :refunded_invoice_item_id].each do |attr|
       it { should allow_mass_assignment_of(attr) }

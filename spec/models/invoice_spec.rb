@@ -1,8 +1,9 @@
 require 'spec_helper'
 
 describe Invoice do
-  context "with valid attributes" do
-    subject { Factory(:invoice) }
+  context "from factory" do
+    set(:invoice_from_factory) { Factory(:invoice) }
+    subject { invoice_from_factory }
     
     its(:user)       { should be_present }
     its(:reference)  { should =~ /^[A-Z1-9]{8}$/ }
@@ -18,11 +19,16 @@ describe Invoice do
     it { be_valid }
   end
   
-  describe "validates" do
-    subject { Factory(:invoice) }
+  describe "associations" do
+    set(:invoice_for_associations) { Factory(:invoice) }
+    subject { invoice_for_associations }
     
     it { should belong_to :user }
     it { should have_many :invoice_items }
+  end
+  
+  describe "validates" do
+    subject { Factory(:invoice) }
     
     [:user_id, :started_on, :ended_on].each do |attr|
       it { should allow_mass_assignment_of(attr) }
