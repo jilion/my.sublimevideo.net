@@ -177,7 +177,7 @@ describe Site do
           site.send("#{attribute}=", values[1])
           
           site.should_not be_valid
-          site.errors[attribute].should == ["cannot be updated when site in progress, please wait before update again"]
+          site.errors[attribute].should == ["cannot be updated when site's player files are not uploaded to the cloud"]
           site.reload.send(attribute).should == values[0]
         end
         
@@ -354,7 +354,6 @@ describe Site do
           subject.archived_at.should be_present
         end
       end
-      
     end
   end
   
@@ -380,13 +379,18 @@ describe Site do
     end
     
     describe "before_save" do
+      
+      it "should set cdn_up_to_date to false" do
+        Factory(:site).cdn_up_to_date.should be_false
+      end
+      
       context "settings has changed" do
-        { :hostname => ["jilion.com", "test.com"], :extra_hostnames => ["staging.jilion.com", "test.staging.com"], :dev_hostnames => ["jilion.local", "test.local"], :path => ["yo", "yu"], :wildcard => [false, true] }.each do |attribute, values|
+        { :hostname => "test.com", :extra_hostnames => "test.staging.com", :dev_hostnames => "test.local", :path => "yu", :wildcard => true }.each do |attribute, value|
           describe "change on #{attribute}" do
-            subject { Factory(:site, attribute => values[0]) }
+            subject { Factory(:site, :hostname => "jilion.com", :extra_hostnames => "staging.jilion.com", :dev_hostnames => "jilion.local", :path => "yo", :wildcard => false) }
             
             it "should set cdn_up_to_date to false" do
-              subject.update_attributes(attribute => values[1])
+              subject.update_attributes(attribute => value)
               subject.cdn_up_to_date.should be_false
             end
           end
@@ -400,26 +404,22 @@ describe Site do
       context "on create" do
         subject { Factory.build(:site) }
         
-        it "should delay one time update license and/or loader on cdn" do
+        it "should delay update_loader_and_license once" do
           lambda { subject.save }.should change(Delayed::Job, :count).by(2)
           Delayed::Job.where(:handler.matches => "%update_loader_and_license%").count.should == 1
         end
         
-        it "should update loader content" do
+        it "should update loader and license content" do
           subject.loader.read.should be_nil
-          subject.save
-          Delayed::Worker.new(:quiet => true).work_off
-          subject.reload.loader.read.should be_present
-        end
-        
-        it "should update license content" do
           subject.license.read.should be_nil
           subject.save
           Delayed::Worker.new(:quiet => true).work_off
-          subject.reload.license.read.should be_present
+          subject.reload.loader.read.should be_present
+          subject.license.read.should be_present
         end
         
         it "should set cdn_up_to_date to true" do
+          subject.cdn_up_to_date.should be_false
           subject.save
           Delayed::Worker.new(:quiet => true).work_off
           subject.reload.cdn_up_to_date.should be_true
@@ -432,16 +432,17 @@ describe Site do
         end
       end
       
-      context "on update of settings, or addons or state (to dev or active)" do
-        set(:addon1) { Factory(:addon) }
-        set(:addon2) { Factory(:addon) }
-        
+      context "on update of settings, addons or state (to dev or active)" do
         describe "attributes that appears in the license" do
-          { :hostname => "test.com", :extra_hostnames => "test.staging.com", :dev_hostnames => "test.local" }.each do |attribute, value|
-          # { :hostname => ["jilion.com", "test.com"], :extra_hostnames => ["staging.jilion.com", "test.staging.com"], :dev_hostnames => ["jilion.local", "test.local"], :path => ["yo", "yu"], :wildcard => [false, true], :addon_ids => [[addon1.id], [addon1.id, addon2.id]], :state => ['dev', 'active'] }.each do |attribute, values|
+          before(:each) do
+            Addon.stub(:find).with([1])   { [Factory(:addon)] }
+            Addon.stub(:find).with([1,2]) { [Factory(:addon, :name => 'ssl'), Factory(:addon, :name => 'stat')] }
+          end
+          
+          { :hostname => "test.com", :extra_hostnames => "test.staging.com", :dev_hostnames => "test.local", :path => "yu", :wildcard => true, :addon_ids => [1, 2] }.each do |attribute, value|
             describe "#{attribute} has changed" do
               subject do
-                site = Factory(:site, :hostname => "jilion.com", :extra_hostnames => "staging.jilion.com", :dev_hostnames => "jilion.local", :path => "yo", :wildcard => false, :addon_ids => [addon1.id], :state => 'dev')
+                site = Factory(:site, :hostname => "jilion.com", :extra_hostnames => "staging.jilion.com", :dev_hostnames => "jilion.local", :path => "yo", :wildcard => false, :addon_ids => [1], :state => 'dev')
                 Delayed::Worker.new(:quiet => true).work_off
                 site.reload
               end
@@ -452,15 +453,40 @@ describe Site do
                 Delayed::Job.where(:handler.matches => "%update_loader_and_license%").count.should == 1
               end
               
-              it "should update license content" do
+              it "should update license content with dev_hostnames only when site is dev" do
                 old_license_content = subject.license.read
                 subject.send("#{attribute}=", value)
-                # set the state 'active' so the hotname and extra_hostnames are written in the license
+                subject.save
+                Delayed::Worker.new(:quiet => true).work_off
+                
+                subject.reload.should be_dev
+                if attribute == :dev_hostnames
+                  subject.license.read.should_not == old_license_content
+                  subject.license.read.should include(value.to_s)
+                else
+                  subject.license.read.should == old_license_content
+                  subject.license.read.should_not include(value.to_s)
+                end
+              end
+              
+              it "should update license content with #{attribute} value when site is active" do
+                old_license_content = subject.license.read
+                subject.send("#{attribute}=", value)
                 subject.activate
                 Delayed::Worker.new(:quiet => true).work_off
+                
                 subject.reload.should be_active
-                subject.send(attribute).should == value
                 subject.license.read.should_not == old_license_content
+                case attribute
+                when :hostname, :extra_hostnames, :dev_hostnames
+                  subject.license.read.should include(value.to_s)
+                when :path
+                  subject.license.read.should include("path:yu")
+                when :path
+                  subject.license.read.should include("wildcard:true")
+                when :addon_ids
+                  subject.license.read.should include("addons:ssl,stat")
+                end
               end
               
               it "should purge license on CDN" do
@@ -470,33 +496,33 @@ describe Site do
               end
             end
           end
-          
-          describe "attributes that appears in the loader" do
-            describe "player_mode has changed" do
-              subject do
-                site = Factory(:site, :player_mode => 'dev')
-                Delayed::Worker.new(:quiet => true).work_off
-                site.reload
-              end
-              
-              it "should delay update_loader_and_license once" do
-                subject
-                lambda { subject.update_attribute(:player_mode, 'beta') }.should change(Delayed::Job, :count).by(1)
-                Delayed::Job.where(:handler.matches => "%update_loader_and_license%").count.should == 1
-              end
-              
-              it "should update loader content" do
-                old_loader_content = subject.loader.read
-                subject.update_attribute(:player_mode, 'beta')
-                Delayed::Worker.new(:quiet => true).work_off
-                subject.reload.loader.read.should_not == old_loader_content
-              end
-              
-              it "should purge loader on CDN" do
-                VoxcastCDN.should_receive(:purge).with("/js/#{subject.token}.js")
-                subject.update_attribute(:player_mode, 'beta')
-                Delayed::Worker.new(:quiet => true).work_off
-              end
+        end
+        
+        describe "attributes that appears in the loader" do
+          describe "player_mode has changed" do
+            subject do
+              site = Factory(:site, :player_mode => 'dev')
+              Delayed::Worker.new(:quiet => true).work_off
+              site.reload
+            end
+            
+            it "should delay update_loader_and_license once" do
+              subject
+              lambda { subject.update_attribute(:player_mode, 'beta') }.should change(Delayed::Job, :count).by(1)
+              Delayed::Job.where(:handler.matches => "%update_loader_and_license%").count.should == 1
+            end
+            
+            it "should update loader content" do
+              old_loader_content = subject.loader.read
+              subject.update_attribute(:player_mode, 'beta')
+              Delayed::Worker.new(:quiet => true).work_off
+              subject.reload.loader.read.should_not == old_loader_content
+            end
+            
+            it "should purge loader on CDN" do
+              VoxcastCDN.should_receive(:purge).with("/js/#{subject.token}.js")
+              subject.update_attribute(:player_mode, 'beta')
+              Delayed::Worker.new(:quiet => true).work_off
             end
           end
         end
@@ -559,21 +585,22 @@ describe Site do
     end
     
     describe "#template_hostnames" do
+      set(:site_for_template) { Factory(:site, :hostname => "jilion.com", :extra_hostnames => "jilion.net, jilion.org", :dev_hostnames => '127.0.0.1,localhost', :path => 'foo', :wildcard => true, :addons => [Factory(:addon, :name => 'ssl'), Factory(:addon, :name => 'stat')]) }
+      
       context "site is not active" do
         it "should include only dev hostnames" do
-          site = Factory(:site, :extra_hostnames => "jilion.net, jilion.org", :dev_hostnames => '127.0.0.1,localhost')
-          site.template_hostnames.should == "'127.0.0.1','localhost'"
+          site_for_template.template_hostnames.should == "'127.0.0.1','localhost'"
         end
       end
       
       context "site is active" do
-        it "should includes hostname, extra_hostnames & dev_hostnames" do
-          site = Factory(:site, :extra_hostnames => "jilion.net, jilion.org", :dev_hostnames => '127.0.0.1,localhost').tap { |s| s.update_attribute(:state, 'active') }
-          site.template_hostnames.should == "'#{site.hostname}','jilion.net','jilion.org','127.0.0.1','localhost'"
+        it "should include hostname, extra_hostnames, path, wildcard, addons' names & dev_hostnames" do
+          site_for_template.update_attribute(:state, 'active')
+          site_for_template.template_hostnames.should == "'jilion.com','jilion.net','jilion.org','path:foo','wildcard:true','addons:ssl,stat','127.0.0.1','localhost'"
         end
       end
     end
-  
+    
     describe "#set_template" do
       context "license" do
         let(:site_with_set_template_license) { Factory(:site).tap { |s| s.set_template("license") } }

@@ -6,6 +6,7 @@ describe SitesController do
     before(:each) do
       sign_in :user, logged_in_user
       logged_in_user.stub_chain(:sites, :find_by_token).with('a1b2c3') { mock_site }
+      logged_in_user.stub_chain(:sites, :find).with('1') { mock_site }
       User.stub(:find) { logged_in_user }
     end
     
@@ -26,18 +27,22 @@ describe SitesController do
     
     it "should respond with success to GET :show" do
       get :show, :id => 'a1b2c3', :format => :js
+      
       assigns(:site).should == mock_site
       response.should be_success
     end
     
     it "should respond with success to GET :new" do
       logged_in_user.stub_chain(:sites, :build) { mock_site }
+      
       get :new
+      
       response.should be_success
     end
     
     it "should respond with success to GET :edit" do
       get :edit, :id => 'a1b2c3', :format => :js
+      
       assigns(:site).should == mock_site
       response.should be_success
     end
@@ -48,43 +53,77 @@ describe SitesController do
       mock_site.stub_chain(:delay, :activate) { true }
       
       post :create, :site => {}
+      
       assigns(:site).should == mock_site
       response.should redirect_to(sites_url)
     end
     
-    it "should respond with success to PUT :update" do
-      mock_site.stub(:update_attributes).with({}) { true }
-      mock_site.stub_chain(:delay, :activate) { true }
+    context "site is not active" do
+      it "should respond with success to PUT :update when site is not active (not password required)" do
+        mock_site.stub(:active?) { false }
+        mock_site.stub(:update_attributes).with({}) { true }
+        
+        put :update, :id => 'a1b2c3', :site => {}
+        
+        assigns(:site).should == mock_site
+        response.should redirect_to(sites_url)
+      end
+    end
+    
+    context "site is active" do
+      it "should respond with success to PUT :update when site is active and password is not good" do
+        mock_site.stub(:active?) { true }
+        logged_in_user.stub(:valid_password?) { false }
+        mock_site.stub(:update_attributes).with({}) { false }
+        
+        put :update, :id => 'a1b2c3', :site => {}, :password => 'abcd'
+        
+        assigns(:site).should == mock_site
+        response.should be_success
+      end
       
-      put :update, :id => 'a1b2c3', :site => {}
-      assigns(:site).should == mock_site
-      response.should redirect_to(sites_url)
+      it "should respond with success to PUT :update when site is active and password is good" do
+        mock_site.stub(:active?) { true }
+        logged_in_user.stub(:valid_password?) { true }
+        mock_site.stub(:update_attributes).with({}) { true }
+        
+        put :update, :id => 'a1b2c3', :site => {}, :password => '123456'
+        
+        assigns(:site).should == mock_site
+        response.should redirect_to(sites_url)
+      end
     end
     
     it "should respond with success to DELETE :destroy and archive site" do
       mock_site.stub(:archive)
+      
       delete :destroy, :id => 'a1b2c3'
+      
       assigns(:site).should == mock_site
       response.should redirect_to(sites_url)
     end
     
     it "should respond with success to GET :state when cdn_up_to_date? is false" do
       mock_site.stub(:cdn_up_to_date?).and_return(false)
-      get :state, :id => 'a1b2c3', :format => :js
+      
+      get :state, :id => '1', :format => :js
+      
       assigns(:site).should == mock_site
       response.should be_success
     end
     
     it "should respond with success to GET :state when cdn_up_to_date? is true" do
       mock_site.stub(:cdn_up_to_date?).and_return(true)
-      get :state, :id => 'a1b2c3', :format => :js
+      
+      get :state, :id => '1', :format => :js
+      
       assigns(:site).should == mock_site
       response.should be_success
     end
   end
   
   context "with suspended logged in user" do
-    before(:each) { sign_in :user, logged_in_user(:state => "suspended") }
+    before(:each) { sign_in :user, logged_in_user(:state => 'suspended') }
     
     it "should respond with success to GET :index" do
       get :index

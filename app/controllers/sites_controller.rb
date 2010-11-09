@@ -3,7 +3,7 @@ class SitesController < ApplicationController
   respond_to :js, :except => [:new, :create]
   
   before_filter :redirect_suspended_user
-  before_filter :find_by_token, :only => [:show, :edit, :update, :destroy, :state]
+  before_filter :find_by_token, :only => [:show, :edit, :update, :destroy]
   
   has_scope :by_hostname
   has_scope :by_date
@@ -52,8 +52,8 @@ class SitesController < ApplicationController
   
   # PUT /sites/1
   def update
-    respond_with(@site, :password_protected => true) do |format|
-      if current_user.valid_password?(params[:site].delete(:user_password)) && @site.update_attributes(params[:site])
+    respond_with(@site, :password_required => @site.active?) do |format|
+      if @site.update_attributes(params[:site])
         format.html { redirect_to sites_path }
       else
         format.html { render :edit }
@@ -64,13 +64,14 @@ class SitesController < ApplicationController
   # DELETE /sites/1
   def destroy
     @site.archive
-    respond_with(@site) do |format|
+    respond_with(@site, :password_required => true) do |format|
       format.html { redirect_to sites_path }
     end
   end
   
   # GET /sites/1/state
   def state
+    @site = current_user.sites.find(params[:id])
     respond_with(@site) do |format|
       format.js   { head :ok unless @site.cdn_up_to_date? }
       format.html { redirect_to sites_path }

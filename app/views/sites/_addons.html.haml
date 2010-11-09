@@ -5,3 +5,5 @@
       = f.check_box :addon_ids, { :id => "addon_id_#{addon.name}", :name => "site[addon_ids][]" }, addon.id, nil  
       %ul
         %li= "price: #{number_to_currency(addon.price / 100.0)} per #{addon.term_type}"
+        
+= render 'password', :site => f.object
