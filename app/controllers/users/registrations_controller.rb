@@ -1,11 +1,8 @@
 class Users::RegistrationsController < Devise::RegistrationsController
+  include RedirectionFilters
   
-  before_filter :redirect_wrong_password_for_user!, :only => [:update, :destroy]
-  
-private
-  
-  def redirect_wrong_password_for_user!
-    redirect_wrong_password(resource, params[:password])
+  before_filter :only => [:update, :destroy] do |controller|
+    redirect_wrong_password(resource, params[:user][:current_password])
   end
   
 end

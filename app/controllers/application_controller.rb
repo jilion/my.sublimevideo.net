@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::Base
   include CustomDevisePaths
+  include RedirectionFilters
   
   respond_to :html
   responders Responders::FlashResponder, Responders::PaginatedResponder, Responders::HttpCacheResponder
@@ -23,24 +24,6 @@ protected
   
   def current_admin_id
     current_admin.try(:id) rescue nil
-  end
-  
-  def redirect_suspended_user
-    redirect_to page_path('suspended') if current_user.suspended?
-  end
-  
-  def redirect_wrong_password(resource, password)
-    unless current_user.valid_password?(password)
-      flash[:alert] = "The given password is invalid!"
-      Rails.logger.debug resource.class
-      route = case resource.class.to_s
-      when 'User'
-        edit_user_registration_path
-      else
-        [:edit, resource]
-      end
-      redirect_to route and return
-    end
   end
   
   module DeviseInvitable::Controllers::Helpers

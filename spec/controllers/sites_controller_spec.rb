@@ -47,7 +47,7 @@ describe SitesController do
     describe "POST :create" do
       before(:each) { logged_in_user2.stub_chain(:sites, :create).with({}) { mock_site } }
       
-      it "should redirect to /sites when succeed" do
+      it "should redirect to /sites when create succeeds" do
         post :create, :site => {}
         assigns(:site).should == mock_site
         response.should redirect_to(sites_url)
@@ -66,7 +66,7 @@ describe SitesController do
       before(:each) { mock_site.stub(:active?).and_return(false) }
       
       describe "PUT :update" do
-        it "should redirect to /sites when update_attributes succeed" do
+        it "should redirect to /sites when update_attributes succeeds" do
           mock_site.stub(:update_attributes).and_return(true)
           
           put :update, :id => 'a1b2c3'
@@ -74,7 +74,7 @@ describe SitesController do
           response.should redirect_to(sites_url)
         end
         
-        it "should redirect to /sites when update_attributes fail" do
+        it "should redirect to /sites when update_attributes fails" do
           mock_site.stub(:update_attributes).and_return(false)
           mock_site.should_receive(:errors).any_number_of_times.and_return(["error"])
           
@@ -101,15 +101,15 @@ describe SitesController do
         
         describe "PUT :update" do
           it "should redirect to /sites/:token/edit" do
-            put :update, :id => 'a1b2c3', :password => 'abcd'
+            put :update, :id => 'a1b2c3', :current_password => 'abcd'
             assigns(:site).should == mock_site
             response.should redirect_to(edit_site_url(mock_site))
           end
         end
         
         describe "DELETE :destroy" do
-          it "should redirect to /sites/:token/edit with a wrong password" do
-            delete :destroy, :id => 'a1b2c3', :password => 'abcd'
+          it "should redirect to /sites/:token/edit" do
+            delete :destroy, :id => 'a1b2c3', :current_password => 'abcd'
             assigns(:site).should == mock_site
             response.should redirect_to(edit_site_url(mock_site))
           end
@@ -120,19 +120,19 @@ describe SitesController do
         before(:each) { logged_in_user2.stub(:valid_password?).with('123456').and_return(true) }
         
         describe "PUT :update" do
-          it "should redirect to /sites when update_attributes succeed" do
+          it "should redirect to /sites when update_attributes succeeds" do
             mock_site.stub(:update_attributes).and_return(true)
             
-            put :update, :id => 'a1b2c3', :password => '123456'
+            put :update, :id => 'a1b2c3', :current_password => '123456'
             assigns(:site).should == mock_site
             response.should redirect_to(sites_url)
           end
           
-          it "should redirect to /sites/:token/edit when update_attributes fail" do
+          it "should redirect to /sites/:token/edit when update_attributes fails" do
             mock_site.stub(:update_attributes).and_return(false)
             mock_site.should_receive(:errors).any_number_of_times.and_return(["error"])
             
-            put :update, :id => 'a1b2c3', :password => '123456'
+            put :update, :id => 'a1b2c3', :current_password => '123456'
             assigns(:site).should == mock_site
             response.should render_template(:edit)
           end
@@ -141,8 +141,8 @@ describe SitesController do
         describe "DELETE :destroy" do
           before(:each) { mock_site.stub(:archive) }
           
-          it "should redirect to /sites with a good password" do
-            delete :destroy, :id => 'a1b2c3', :password => '123456'
+          it "should redirect to /sites" do
+            delete :destroy, :id => 'a1b2c3', :current_password => '123456'
             assigns(:site).should == mock_site
             response.should redirect_to(sites_url)
           end
