@@ -132,8 +132,8 @@ MySublimeVideo.showSiteSettings = function(siteId) {
   return false;
 };
 
-MySublimeVideo.showSiteStats = function(siteId) {
-  MySublimeVideo.openPopup(siteId, "stats", '/sites/'+siteId+'/stats');
+MySublimeVideo.showSiteUsage = function(siteId) {
+  MySublimeVideo.openPopup(siteId, "usage", '/sites/'+siteId+'/usage');
   return false;
 };
 

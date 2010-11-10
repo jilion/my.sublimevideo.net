@@ -118,8 +118,8 @@ describe SitesController do
       response.should be_success
     end
     
-    it "should respond with success to GET :stats" do
-      get :stats, :id => 'a1b2c3', :format => :js
+    it "should respond with success to GET :usage" do
+      get :usage, :id => 'a1b2c3', :format => :js
       
       assigns(:site).should == mock_site
       response.should be_success
@@ -149,8 +149,8 @@ describe SitesController do
       get :state, :id => '1'
       response.should redirect_to(page_path("suspended"))
     end
-    it "should respond with success to GET :stats" do
-      get :stats, :id => 'a1b2c3'
+    it "should respond with success to GET :usage" do
+      get :usage, :id => 'a1b2c3'
       response.should redirect_to(page_path("suspended"))
     end
     it "should respond with success to POST :create" do
@@ -188,8 +188,8 @@ describe SitesController do
       get :state, :id => '1'
       response.should redirect_to(new_user_session_path)
     end
-    it "should respond with redirect to GET :stats" do
-      get :stats, :id => 'a1b2c3'
+    it "should respond with redirect to GET :usage" do
+      get :usage, :id => 'a1b2c3'
       response.should redirect_to(new_user_session_path)
     end
     it "should respond with redirect to POST :create" do

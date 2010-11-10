@@ -3,7 +3,7 @@ class SitesController < ApplicationController
   respond_to :js, :only => [:index, :show]
   
   before_filter :redirect_suspended_user
-  before_filter :find_by_token, :only => [:show, :edit, :update, :destroy, :stats]
+  before_filter :find_by_token, :only => [:show, :edit, :update, :destroy, :usage]
   
   has_scope :by_hostname
   has_scope :by_date
@@ -77,8 +77,8 @@ class SitesController < ApplicationController
     end
   end
   
-  # GET /sites/1/stats
-  def stats
+  # GET /sites/1/usage
+  def usage
     respond_with(@site) do |format|
       format.js
       format.html { redirect_to sites_path }
