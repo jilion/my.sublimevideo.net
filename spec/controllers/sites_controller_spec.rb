@@ -60,8 +60,8 @@ describe SitesController do
     
     context "site is not active" do
       it "should respond with success to PUT :update when site is not active (not password required)" do
-        mock_site.stub(:active?) { false }
-        mock_site.stub(:save) { true }
+        mock_site.stub(:active?).and_return(false)
+        mock_site.stub(:update_attributes).with({}) { true }
         
         put :update, :id => 'a1b2c3', :site => {}
         
@@ -71,19 +71,17 @@ describe SitesController do
     end
     
     context "site is active" do
+      before(:each) { mock_site.stub(:active?).and_return(true) }
+      
       it "should respond with success to PUT :update when site is active and password is not good" do
-        mock_site.stub(:active?) { true }
-        mock_site.stub(:save) { false }
-        
         put :update, :id => 'a1b2c3', :site => {}, :password => 'abcd'
         
         assigns(:site).should == mock_site
-        response.should be_success
+        response.should redirect_to(edit_site_url(mock_site))
       end
       
       it "should respond with success to PUT :update when site is active and password is good" do
-        mock_site.stub(:active?) { true }
-        mock_site.stub(:save) { true }
+        mock_site.stub(:update_attributes).with({}) { true }
         
         put :update, :id => 'a1b2c3', :site => {}, :password => '123456'
         

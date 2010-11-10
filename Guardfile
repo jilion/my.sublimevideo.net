@@ -3,12 +3,12 @@ guard 'bundler' do
 end
 
 guard 'passenger' do
-  watch('^lib/.*\.rb$')
+  # watch('^lib/.*\.rb$')
   watch('^config/application.rb$')
   watch('^config/environment.rb$')
   watch('^config/environments/.*\.rb$')
   watch('^config/initializers/.*\.rb$')
-end
+gcend
 
 # guard 'livereload' do
 #   watch('^app/.+\.(erb|haml)$')
