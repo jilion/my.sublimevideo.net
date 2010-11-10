@@ -39,9 +39,11 @@ describe CreditCardsController do
       
       it "should render :edit on PUT :update that fail" do
         logged_in_user.should_receive(:update_attributes).with({}) { false }
+        logged_in_user.should_receive(:errors).any_number_of_times.and_return(["error"])
         
         put :update, :user => {}
         response.should be_success
+        response.should render_template(:edit)
       end
     end
   end
