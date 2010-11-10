@@ -179,7 +179,7 @@ GEM
       json (~> 1.4.6)
     guard-passenger (0.1.0)
       guard (>= 0.2.1)
-    guard-rspec (0.1.7)
+    guard-rspec (0.1.8)
       guard (>= 0.2.0)
     haml (3.0.23)
     heroku (1.12.2)
