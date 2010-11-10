@@ -4,15 +4,18 @@ end
 
 guard 'passenger' do
   # watch('^lib/.*\.rb$')
-  watch('^config/.*\.rb$')
-end
+  watch('^config/application.rb$')
+  watch('^config/environment.rb$')
+  watch('^config/environments/.*\.rb$')
+  watch('^config/initializers/.*\.rb$')
+gcend
 
-guard 'livereload' do
-  watch('^app/.+\.(erb|haml)$')
-  watch('^app/helpers/.+\.rb$')
-  watch('^/public/.+\.(css|js|html)$')
-  watch('^config/locales/.+\.ym$')
-end
+# guard 'livereload' do
+#   watch('^app/.+\.(erb|haml)$')
+#   watch('^app/helpers/.+\.rb$')
+#   watch('^/public/.+\.(css|js|html)$')
+#   watch('^config/locales/.+\.ym$')
+# end
 
 guard 'rspec', :version => 2, :drb => true, :bundler => false, :formatter => "instafail" do
   watch('^spec/spec_helper.rb')                       { "spec" }

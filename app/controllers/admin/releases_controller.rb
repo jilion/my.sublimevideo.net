@@ -33,7 +33,7 @@ class Admin::ReleasesController < Admin::AdminController
 private
   
   def allow_only_zeno
-    if Rails.env.production?
+    unless Rails.env.development?
       redirect_to '/admin' unless current_admin.email == "zeno@jilion.com"
     end
   end

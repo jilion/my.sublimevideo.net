@@ -3,7 +3,7 @@ class SitesController < ApplicationController
   respond_to :js, :only => [:index, :show]
   
   before_filter :redirect_suspended_user
-  before_filter :find_by_token, :only => [:show, :edit, :update, :destroy]
+  before_filter :find_by_token, :only => [:show, :edit, :update, :destroy, :stats]
   before_filter :redirect_wrong_password_for_active_site!, :only => [:update, :destroy]
   
   has_scope :by_hostname
@@ -17,8 +17,8 @@ class SitesController < ApplicationController
   # GET /sites/1
   def show
     respond_with(@site) do |format|
-      format.html { redirect_to sites_path }
       format.js
+      format.html { redirect_to sites_path }
     end
   end
   
@@ -53,6 +53,14 @@ class SitesController < ApplicationController
   def state
     respond_with(@site = current_user.sites.find(params[:id])) do |format|
       format.js   { head :ok unless @site.cdn_up_to_date? }
+      format.html { redirect_to sites_path }
+    end
+  end
+  
+  # GET /sites/1/stats
+  def stats
+    respond_with(@site) do |format|
+      format.js
       format.html { redirect_to sites_path }
     end
   end

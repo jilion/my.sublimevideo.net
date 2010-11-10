@@ -132,6 +132,11 @@ MySublimeVideo.showSiteSettings = function(siteId) {
   return false;
 };
 
+MySublimeVideo.showSiteStats = function(siteId) {
+  MySublimeVideo.openPopup(siteId, "stats", '/sites/'+siteId+'/stats');
+  return false;
+};
+
 MySublimeVideo.showSiteAddons = function(siteId) {
   MySublimeVideo.openPopup(siteId, "settings", '/sites/'+siteId+'/addons/edit');
   return false;
