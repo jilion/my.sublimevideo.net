@@ -489,18 +489,12 @@ describe Site do
       end
       
       it "should update ranks" do
-        Timecop.travel(1.minute.ago)
+        Timecop.travel(10.minutes.ago)
         site = Factory(:site, :hostname => 'sublimevideo.net')
         Timecop.return
-        # puts site.inspect
-        # Delayed::Job.all.map { | dj| puts dj.handler }
-        # Delayed::Job.all.map { | dj| puts dj.last_error }
         VCR.use_cassette('sites/ranks') do
           Delayed::Worker.new(:quiet => true).work_off
         end
-        # puts site.reload.inspect
-        # Delayed::Job.all.map { | dj| puts dj.handler }
-        # Delayed::Job.all.map { | dj| puts dj.last_error }
         site.reload.google_rank.should == 0
         site.alexa_rank.should  == 108330
       end
