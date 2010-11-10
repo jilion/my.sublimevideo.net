@@ -24,9 +24,9 @@ Spork.prefork do
   end
   
   RSpec.configure do |config|
-    config.include Shoulda::ActionController::Matchers
-    config.include Capybara
-    config.include Devise::TestHelpers, :type => :controller
+    # config.include Shoulda::ActionController::Matchers
+    # config.include Capybara
+    # config.include Devise::TestHelpers, :type => :controller
     
     config.filter_run :focus => true
     config.run_all_when_everything_filtered = true
@@ -64,22 +64,29 @@ Spork.prefork do
       DatabaseCleaner.clean_with(:truncation) # clean all the databases
     end
   end
+
 end
 
 Spork.each_run do
   # This code will be run each time you run your specs.
   
-  # Needed to prevent routes.rb to be load on Rails initialization and make User/Admin model loaded by devise_for
-  MySublimeVideo::Application.reload_routes!
-  
   # Needed to prevent all models loaded by Mongoid
   Rails::Mongoid.load_models(MySublimeVideo::Application)
+  
+  # Needed to prevent routes.rb to be load on Rails initialization and make User/Admin model loaded by devise_for
+  MySublimeVideo::Application.reload_routes!
   
   # Factory need to be required each launch to prevent loading of all models
   require 'factory_girl'
   require Rails.root.join("spec/factories")
   
   Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
+  
+  RSpec.configure do |config|
+    config.include Shoulda::ActionController::Matchers
+    config.include Capybara
+    config.include Devise::TestHelpers, :type => :controller
+  end
 end
 
 # --- Instructions ---
