@@ -2,7 +2,7 @@ class ApplicationController < ActionController::Base
   include CustomDevisePaths
   
   respond_to :html
-  responders Responders::FlashResponder, Responders::PaginatedResponder, Responders::HttpCacheResponder
+  responders Responders::FlashResponder, Responders::PaginatedResponder, Responders::HttpCacheResponder, Responders::PasswordResponder
   
   layout 'application'
   

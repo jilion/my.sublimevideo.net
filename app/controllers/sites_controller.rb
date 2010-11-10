@@ -47,23 +47,24 @@ class SitesController < ApplicationController
   
   # PUT /sites/1
   def update
-    @site.attributes = params[:site]
-    valid_password_flash
-    respond_with(@site, :flash => valid_password?) do |format|
-      if @site.valid? && valid_password? && @site.save
-        format.html { redirect_to sites_path }
-      else
-        format.html { render :edit }
+    respond_with(@site, :password_required => @site.active?) do |format|
+      format.html do
+        if @site.update_attributes(params[:site])
+          redirect_to sites_path
+        else
+          render :edit
+        end
       end
     end
   end
   
   # DELETE /sites/1
   def destroy
-    valid_password_flash
-    @site.archive if valid_password?
-    respond_with(@site) do |format|
-      format.html { redirect_to sites_path }
+    respond_with(@site, :password_required => @site.active?) do |format|
+      format.html do
+        @site.archive
+        redirect_to sites_path
+      end
     end
   end
   

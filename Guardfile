@@ -3,7 +3,7 @@ guard 'bundler' do
 end
 
 guard 'passenger' do
-  watch('^lib/.*\.rb$')
+  # watch('^lib/.*\.rb$')
   watch('^config/.*\.rb$')
 end
 
