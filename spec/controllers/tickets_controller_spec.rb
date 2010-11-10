@@ -4,10 +4,9 @@ describe TicketsController do
   
   context "as logged in user" do
     before(:each) do
-      sign_in :user, logged_in_user
-      logged_in_user.stub!(:full_name).and_return("John Doe")
-      logged_in_user.stub!(:email).and_return("john@doe.com")
-      User.stub(:find) { logged_in_user }
+      sign_in :user, authenticated_user
+      @current_user.stub!(:full_name).and_return("John Doe")
+      @current_user.stub!(:email).and_return("john@doe.com")
     end
     
     describe "GET new" do
@@ -59,16 +58,6 @@ describe TicketsController do
     end
   end
   
-  context "as guest" do
-    it "should respond with redirect to GET :new" do
-      get :new
-      response.should redirect_to(new_user_session_path)
-    end
-    
-    it "should respond with redirect to POST :create" do
-      post :create, :ticket => { :type => "request", :subject => "Subject", :message => "Message" }
-      response.should redirect_to(new_user_session_path)
-    end
-  end
+  it_should_behave_like "redirect when connected", '/login', [:guest], { :get => :new, :post => :create }
   
 end

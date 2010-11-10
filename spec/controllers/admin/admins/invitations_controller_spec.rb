@@ -5,42 +5,33 @@ describe Admin::Admins::InvitationsController do
   before(:each) { request.env['devise.mapping'] = Devise.mappings[:admin] }
   
   context "with logged in admin" do
-    before(:each) { sign_in :admin, logged_in_admin }
+    before :each do
+      sign_in :admin, authenticated_admin
+      Admin.stub(:invite).with({ "email" => 'remy@jilion.com' }) { mock_admin }
+    end
     
     it "should respond with success to GET :new" do
       get :new
       response.should be_success
+      response.should render_template(:new)
     end
     
-    it "should respond with redirect to POST :create" do
+    it "should respond with redirect on POST :create that succeeds" do
+      mock_admin.stub(:invited?) { true }
+      
       post :create, :admin => { :email => 'remy@jilion.com' }
       response.should redirect_to(admin_admins_url)
     end
-  end
-  
-  context "with logged in user" do
-    before(:each) { sign_in :user, logged_in_user }
     
-    it "should respond with redirect to GET :new" do
-      get :new
-      response.should redirect_to(new_admin_session_path)
-    end
-    it "should respond with redirect to POST :create" do
+    it "should render :new on POST :create that fails" do
+      mock_admin.stub(:invited?) { false }
+      
       post :create, :admin => { :email => 'remy@jilion.com' }
-      response.should redirect_to(new_admin_session_path)
+      response.should be_success
+      response.should render_template(:new)
     end
   end
   
-  context "as guest" do
-    it "should respond with redirect to GET :new" do
-      get :new
-      response.should redirect_to(new_admin_session_path)
-    end
-    
-    it "should respond with redirect to POST :create" do
-      post :create, :admin => { :email => 'remy@jilion.com' }
-      response.should redirect_to(new_admin_session_path)
-    end
-  end
+  it_should_behave_like "redirect when connected", '/admin/login', [:user, :guest], { :get => :new, :post => :create }
   
 end

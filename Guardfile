@@ -8,7 +8,7 @@ guard 'passenger' do
   watch('^config/environment.rb$')
   watch('^config/environments/.*\.rb$')
   watch('^config/initializers/.*\.rb$')
-gcend
+end
 
 # guard 'livereload' do
 #   watch('^app/.+\.(erb|haml)$')

@@ -3,12 +3,12 @@ require 'spec_helper'
 describe PagesController do
   
   context "with logged in unsuspended user" do
-    before(:each) { sign_in :user, logged_in_user }
+    before(:each) { sign_in :user, authenticated_user(:suspended? => false) }
     
     %w[terms privacy].each do |page|
       it "should respond with success to GET :show, on #{page} page" do
         get :show, :page => page
-        response.should be_success
+        response.should render_template("pages/#{page}")
       end
     end
     
@@ -19,18 +19,18 @@ describe PagesController do
   end
   
   context "with logged in suspended user" do
-    before(:each) { sign_in :user, logged_in_user(:state => "suspended") }
+    before(:each) { sign_in :user, authenticated_user(:suspended? => true) }
     
     %w[terms privacy].each do |page|
       it "should respond with success to GET :show, on #{page} page" do
         get :show, :page => page
-        response.should be_success
+        response.should render_template("pages/#{page}")
       end
     end
     
     it "should respond with success to GET :show, on suspended page" do
       get :show, :page => 'suspended'
-      response.should be_success
+      response.should render_template("pages/suspended")
     end
   end
   
@@ -38,7 +38,7 @@ describe PagesController do
     %w[terms privacy].each do |page|
       it "should respond with success to GET :show, on #{page} page" do
         get :show, :page => page
-        response.should be_success
+        response.should render_template("pages/#{page}")
       end
     end
     

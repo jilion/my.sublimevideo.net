@@ -5,13 +5,10 @@ describe Users::RegistrationsController do
   before(:each) { request.env['devise.mapping'] = Devise.mappings[:user] }
   
   context "with logged in user" do
-    before :each do
-      sign_in :user, logged_in_user2
-      User.stub(:find).and_return(logged_in_user2)
-    end
+    before(:each) { sign_in :user, authenticated_user }
     
     context "with wrong password" do
-      before(:each) { logged_in_user2.stub(:valid_password?).with('abcd').and_return(false) }
+      before(:each) { @current_user.stub(:valid_password?).with('abcd').and_return(false) }
       
       describe "PUT :update" do
         it "should redirect to /account/edit" do
@@ -31,11 +28,11 @@ describe Users::RegistrationsController do
     end
       
     context "with good password" do
-      before(:each) { logged_in_user2.stub(:valid_password?).with('123456').and_return(true) }
+      before(:each) { @current_user.stub(:valid_password?).with('123456').and_return(true) }
       
       describe "PUT :update" do
         it "should redirect to /sites when update_attributes succeeds" do
-          logged_in_user2.stub(:update_with_password).and_return(true)
+          @current_user.stub(:update_with_password) { true }
           
           put :update, :user => { :current_password => '123456' }
           request.flash[:alert].should be_nil
@@ -43,8 +40,8 @@ describe Users::RegistrationsController do
         end
         
         it "should redirect to /sites/:token/edit when update_attributes fails" do
-          logged_in_user2.stub(:update_with_password).and_return(false)
-          logged_in_user2.should_receive(:errors).any_number_of_times.and_return(["error"])
+          @current_user.stub(:update_with_password) { false }
+          @current_user.should_receive(:errors).any_number_of_times.and_return(["error"])
           
           put :update, :user => { :current_password => '123456' }
           request.flash[:alert].should be_nil
