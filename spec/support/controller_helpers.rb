@@ -31,6 +31,10 @@ module Spec
         # @logged_in_user = mock_model(User, stubs.reverse_merge(:active? => true, :confirmed? => true, :suspended? => false))
       end
       
+      def logged_in_user2(stubs = {})
+        @current_user ||= mock_model(User, stubs.reverse_merge(:active? => true, :confirmed? => true, :suspended? => false))
+      end
+      
       def mock_mail_template(stubs = {})
         @mock_mail_template ||= mock_model(MailTemplate, stubs)
       end
