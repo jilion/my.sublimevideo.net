@@ -27,14 +27,8 @@ class Admin::SitesController < Admin::AdminController
   def update
     @site = Site.find(params[:id])
     @site.player_mode = params[:site][:player_mode]
-    respond_with(@site) do |format|
-      if @site.save
-        @site.delay.activate # re-generate license file
-        format.html { redirect_to admin_sites_path }
-      else
-        format.html { render :edit }
-      end
-    end
+    @site.save
+    respond_with(@site, :location => admin_sites_path)
   end
   
 end

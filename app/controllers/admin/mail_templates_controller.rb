@@ -9,14 +9,8 @@ class Admin::MailTemplatesController < Admin::AdminController
   # POST /admin/mails/templates
   def create
     @mail_template = MailTemplate.new(params[:mail_template])
-    respond_with(@mail_template) do |format|
-      if @mail_template.save
-        format.html { redirect_to admin_mails_url }
-      else
-        format.html { render :new }
-      end
-    end
-    
+    @mail_template.save
+    respond_with(@mail_template, :location => admin_mails_url)
   end
   
   # GET /admin/mails/templates/1/edit
@@ -28,13 +22,8 @@ class Admin::MailTemplatesController < Admin::AdminController
   # PUT /admin/mails/templates/1
   def update
     @mail_template = MailTemplate.find(params[:id])
-    respond_with(@mail_template) do |format|
-      if @mail_template.update_attributes(params[:mail_template])
-        format.html { redirect_to edit_admin_mail_template_url(@mail_template) }
-      else
-        format.html { render :edit }
-      end
-    end
+    @mail_template.update_attributes(params[:mail_template])
+    respond_with(@mail_template, :location => edit_admin_mail_template_url(@mail_template))
   end
   
 end

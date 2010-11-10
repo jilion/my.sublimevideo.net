@@ -24,7 +24,6 @@ describe Admin::SitesController do
       it "should respond with redirect to successful PUT :update" do
         mock_site.stub(:player_mode=).and_return(true)
         mock_site.stub(:save).and_return(true)
-        mock_site.stub_chain(:delay, :activate).and_return(true)
         
         put :update, :id => '1', :site => {}
         response.should redirect_to(admin_sites_url)
@@ -33,9 +32,11 @@ describe Admin::SitesController do
       it "should respond with success to failing PUT :update" do
         mock_site.stub(:player_mode=).and_return(true)
         mock_site.stub(:save).and_return(false)
+        mock_site.should_receive(:errors).any_number_of_times.and_return(["error"])
         
         put :update, :id => '1', :site => {}
         response.should be_success
+        response.should render_template(:edit)
       end
     end
   end

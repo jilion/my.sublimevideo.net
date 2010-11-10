@@ -11,9 +11,7 @@ class Admin::AdminsController < Admin::AdminController
   def destroy
     @admin = Admin.find(params[:id])
     @admin.destroy
-    respond_with(@admin) do |format|
-      format.html { redirect_to admin_admins_path }
-    end
+    respond_with(@admin, :location => admin_admins_path)
   end
   
 end
