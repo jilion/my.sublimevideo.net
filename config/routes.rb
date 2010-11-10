@@ -25,7 +25,7 @@ MySublimeVideo::Application.routes.draw do
   resources :sites do
     member do
       get :state
-      get :stats
+      get :usage
     end
     # resource :addons, :only => [:edit, :update], :controller => 'sites/addons'
   end

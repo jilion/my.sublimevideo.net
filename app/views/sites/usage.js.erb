@@ -1,0 +1,5 @@
+var popup = $("usage_<%= @site.token %>");
+if (popup) {
+  popup.removeClassName("loading");
+  popup.down(".content").update("<%= escape_javascript(render 'usage') %>")
+}

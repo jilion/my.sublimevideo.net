@@ -167,15 +167,15 @@ describe SitesController do
       end
     end
     
-    it "should respond with success to GET :stats" do
-      get :stats, :id => 'a1b2c3', :format => :js
+    it "should respond with success to GET :usage" do
+      get :usage, :id => 'a1b2c3', :format => :js
       
       assigns(:site).should == mock_site
       response.should be_success
     end
   end
   
-  verb_and_actions = { :get => [:index, :show, :new, :edit, :state, :stats], :post => :create, :put => :update, :delete => :destroy }
+  verb_and_actions = { :get => [:index, :show, :new, :edit, :state, :usage], :post => :create, :put => :update, :delete => :destroy }
   it_should_behave_like "redirect when connected", '/suspended', [[:user, { :suspended? => true }]], verb_and_actions
   it_should_behave_like "redirect when connected", '/login', [:guest], verb_and_actions
   
