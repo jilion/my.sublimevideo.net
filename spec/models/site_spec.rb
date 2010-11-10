@@ -77,63 +77,6 @@ describe Site do
         site.should_not be_valid
         site.should have(1).error_on(:hostname)
       end
-      
-      # SHOULD BE TESTED IN VALIDATOR SPECS
-      %w[http://asdasd slurp .com 901.12312.123 école *.google.com *.com jilion.local].each do |host|
-        it "should not allow: #{host}" do
-          site = Factory.build(:site, :hostname => host)
-          site.should_not be_valid
-          site.should have(1).error_on(:hostname)
-        end
-      end
-      
-      %w[ftp://asdasd.com asdasd.com école.fr 124.123.151.123 üpper.de htp://aasds.com www.youtube.com?v=31231].each do |host|
-        it "should allow: #{host}" do
-          site = Factory.build(:site, :hostname => host)
-          site.should be_valid
-          site.should have(:no).errors_on(:hostname)
-        end
-      end
-    end
-    
-    # 11s
-    # SHOULD BE TESTED IN VALIDATOR SPECS
-    describe "extra_hostnames" do
-      ["*.jilion.com", 'localhost, jilion.net', 'jilion.local', 'jilion.dev, jilion.net', 'jilion.com', '127.0.0.1'].each do |extra_hosts|
-        it "should not allow: #{extra_hosts}" do
-          site = Factory.build(:site, :hostname => 'jilion.com', :extra_hostnames => extra_hosts)
-          site.should_not be_valid
-          site.should have(1).error_on(:extra_hostnames)
-        end
-      end
-      
-      ['jilion.net', 'jilion.org, jilion.fr', 'jilion.org, 124.123.123.123', nil, ', ,'].each do |extra_hosts|
-        it "should allow: #{extra_hosts}" do
-          site = Factory.build(:site, :hostname => 'jilion.com', :extra_hostnames => extra_hosts)
-          site.should be_valid
-          site.should have(:no).errors_on(:extra_hostnames)
-        end
-      end
-    end
-    
-    # 10s
-    # SHOULD BE TESTED IN VALIDATOR SPECS
-    describe "dev_hostnames" do
-      ["*.google.local", 'staging.google.com', 'google.com', 'localhost, localhost'].each do |dev_hosts|
-        it "should not allow: #{dev_hosts}" do
-          site = Factory.build(:site, :hostname => 'jilion.com', :dev_hostnames => dev_hosts)
-          site.should_not be_valid
-          site.should have(1).error_on(:dev_hostnames)
-        end
-      end
-      
-      ['123.123.123,localhost', 'google.local', ', ,123.123.123,', 'localhost', ', ,', 'localhost,, , 127.0.0.1'].each do |dev_hosts|
-        it "should allow: #{dev_hosts}" do
-          site = Factory.build(:site, :dev_hostnames => dev_hosts)
-          site.should be_valid
-          site.should have(:no).errors_on(:dev_hostnames)
-        end
-      end
     end
     
     # 3.6s
@@ -150,61 +93,6 @@ describe Site do
         site.dev_hostnames = nil
         site.should_not be_valid
         site.should have(:no).error_on(:base)
-      end
-    end
-    
-    # 12s
-    # SHOULD BE TESTED IN VALIDATOR SPECS
-    describe "hostname uniqueness, " do
-      let(:existing_site) { Factory(:site) }
-      
-      context "on create" do
-        it "should allow 2 users to register the same hostname" do
-          site = Factory.build(:site, :user => Factory(:user), :hostname => existing_site.hostname)
-          site.should be_valid
-          site.should have(:no).errors_on(:hostname)
-        end
-        
-        it "should ignore archived sites" do
-          VoxcastCDN.stub(:purge)
-          existing_site.archive
-          site = Factory.build(:site, :user => existing_site.user, :hostname => existing_site.hostname)
-          site.should be_valid
-          site.should have(:no).errors_on(:hostname)
-        end
-        
-        it "should scope by user" do
-          site = Factory.build(:site, :user => existing_site.user, :hostname => existing_site.hostname)
-          site.should_not be_valid
-          site.should have(1).error_on(:hostname)
-        end
-      end
-      
-      context "on update" do
-        subject { Factory(:site, :user => existing_site.user).tap { |s| s.update_attribute(:cdn_up_to_date, true) } }
-        
-        it "should allow 2 users to register the same hostname" do
-          site = Factory(:site, :user => Factory(:user))
-          site.update_attribute(:cdn_up_to_date, true)
-          site.hostname = existing_site.hostname
-          site.should be_valid
-          site.should have(:no).errors_on(:hostname)
-        end
-        
-        it "should ignore archived sites" do
-          VoxcastCDN.stub(:purge)
-          existing_site.archive
-          existing_site.should be_archived
-          subject.hostname = existing_site.hostname
-          subject.should be_valid
-          subject.should have(:no).errors_on(:hostname)
-        end
-        
-        it "should scope by user" do
-          subject.hostname = existing_site.hostname
-          subject.should_not be_valid
-          subject.should have(1).error_on(:hostname)
-        end
       end
     end
     

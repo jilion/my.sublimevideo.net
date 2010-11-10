@@ -4,11 +4,12 @@ module RSpec
     class Enterprise
       extend ActiveModel::Naming
       
-      attr_accessor :hostnames
+      attr_accessor :hostname, :extra_hostnames, :dev_hostnames
       attr_reader   :errors
       
-      def initialize
+      def initialize(attributes = {})
         @errors = ActiveModel::Errors.new(self)
+        attributes.each { |a, v| send("#{a}=", v) }
       end
     end
     
