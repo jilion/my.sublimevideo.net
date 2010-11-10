@@ -8,7 +8,15 @@ guard 'passenger' do
   watch('^config/environment.rb$')
   watch('^config/environments/.*\.rb$')
   watch('^config/initializers/.*\.rb$')
-gcend
+end
+
+guard 'spork' do
+  watch('^config/application.rb$')
+  watch('^config/environment.rb$')
+  watch('^config/environments/.*\.rb$')
+  watch('^config/initializers/.*\.rb$')
+  watch('^spec/spec_helper.rb')
+end
 
 # guard 'livereload' do
 #   watch('^app/.+\.(erb|haml)$')

@@ -63,6 +63,7 @@ end
 group :development, :test do
   gem 'silent-postgres'
   gem 'rspec-rails',   '~> 2.1.0'
+  gem 'passenger',     '~> 3.0.0'
 end
 
 group :development do
@@ -73,18 +74,19 @@ group :development do
   gem 'heroku',        '~> 1.12.2'
   gem 'heroku_tasks',  '~> 0.1.4'
   gem 'taps',          '~> 0.3.13' # heroku db pull/push
-  gem 'silent-postgres'
 end
 
 group :test do
   gem 'database_cleaner', '>= 0.6'
   gem 'growl'
+  gem 'rb-fsevent',         '~> 0.3.6'
   gem 'guard'
   gem 'guard-rspec'
   gem 'guard-livereload'
   gem 'guard-bundler'
   gem 'guard-passenger'
-  gem 'timecop',       '~> 0.3.5'
+  gem 'guard-spork'
+  gem 'timecop',            '~> 0.3.5'
   
   gem 'steak',              '~> 1.0.0.rc.2'
   gem 'capybara',           '~> 0.4.0'
