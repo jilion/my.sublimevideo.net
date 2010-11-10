@@ -23,8 +23,11 @@ MySublimeVideo::Application.routes.draw do
   
   resource :users, :only => :update, :path => '/account/info'
   resources :sites do
-    get :state, :on => :member
-    resource :addons, :only => [:edit, :update], :controller => 'sites/addons'
+    member do
+      get :state
+      get :stats
+    end
+    # resource :addons, :only => [:edit, :update], :controller => 'sites/addons'
   end
   resource :card, :controller => 'credit_cards', :as => :credit_card, :only => [:edit, :update]
   

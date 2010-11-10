@@ -1,4 +1,4 @@
-var popup = $("embed_code_site_<%= @site.id %>");
+var popup = $("embed_code_site_<%= @site.token %>");
 if (popup) {
   popup.removeClassName("loading");
   popup.down(".content").update("<%= escape_javascript(render 'show') %>")

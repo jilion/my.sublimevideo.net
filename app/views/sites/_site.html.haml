@@ -24,7 +24,9 @@
       - else
         No add-ons.
   %td.code
-    = link_to "Embed code", "", :class => "embed_code", :onclick => "return MySublimeVideo.showSiteEmbedCode(#{site.id})"
+    = link_to "Stats", "", :onclick => "return MySublimeVideo.showSiteStats('#{site.token}')"
+  %td.code
+    = link_to "Embed code", "", :class => "embed_code", :onclick => "return MySublimeVideo.showSiteEmbedCode('#{site.token}')"
     
   %td.edit
     .wrap
