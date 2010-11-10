@@ -2,7 +2,7 @@ class ApplicationController < ActionController::Base
   include CustomDevisePaths
   
   respond_to :html
-  responders Responders::FlashResponder, Responders::PaginatedResponder, Responders::HttpCacheResponder, Responders::PasswordResponder
+  responders Responders::FlashResponder, Responders::PaginatedResponder, Responders::HttpCacheResponder
   
   layout 'application'
   
@@ -29,12 +29,25 @@ protected
     redirect_to page_path('suspended') if current_user.suspended?
   end
   
+  def redirect_wrong_password(resource, password)
+    unless current_user.valid_password?(password)
+      flash[:alert] = "The given password is invalid!"
+      Rails.logger.debug resource.class
+      route = case resource.class.to_s
+      when 'User'
+        edit_user_registration_path
+      else
+        [:edit, resource]
+      end
+      redirect_to route and return
+    end
+  end
+  
   module DeviseInvitable::Controllers::Helpers
   protected
     def authenticate_inviter!
       authenticate_admin!
     end
   end
-  
   
 end
