@@ -10,7 +10,7 @@
 = render 'users/form'
 .spacer
 
-= form_for @user, :url => "/account/credentials", :html => { :method => :put, :class => "main_form", :id => "edit_credentials" } do |f|
+= form_for @user, :url => "/account/credentials", :html => { :method => :put, :class => "main_form", :id => "edit_credentials", "data-password-protected" => true } do |f|
   %h3.section_title= "Email & Password"
   .entry.email
     = f.label :email, "", :class => "icon"

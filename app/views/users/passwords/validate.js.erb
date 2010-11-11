@@ -1,0 +1,14 @@
+if (MySublimeVideo.passwordCheckerManager) {
+  <% if @valid_password %>
+    MySublimeVideo.passwordCheckerManager.originForm.insert({
+      bottom: "<input type='password' name='user[current_password]' style='display:none;' value='<%= params[:password] %>' />"
+    });
+    MySublimeVideo.popupHandler.close();
+    MySublimeVideo.passwordCheckerManager.originForm.submit();
+  <% else %>
+    MySublimeVideo.passwordCheckerManager.popup.setStyle({
+      background: '#f00'
+    });
+    MySublimeVideo.passwordCheckerManager.popup.shake();
+  <% end %>
+}

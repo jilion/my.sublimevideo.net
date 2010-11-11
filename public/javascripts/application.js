@@ -4,18 +4,12 @@ document.observe("dom:loaded", function() {
   
   S2.Extensions.webkitCSSTransitions = true;
   
-  // ================
-  // = Edit account =
-  // ================
-  // Note: leave this before the "new PlaceholderManager()"
-  if ($("edit_credentials")) MySublimeVideo.currentPasswordHandler = new CurrentPasswordHandler();
-  
   // ================================================================
   // = Password fields, selects and placeholders and forms managers =
   // ================================================================
   
   $$('input[type=password]').each(function(input, index){
-    new PasswordFieldManager(input, index);
+    new ShowPasswordFieldManager(input, index);
   });
   
   if (!supportsHtml5InputAttribute("placeholder")) {
@@ -36,7 +30,7 @@ document.observe("dom:loaded", function() {
   // =================
   
   $$('#flash .notice').each(function(element){
-    MySublimeVideo.hideFlashNoticeDelayed(element);
+    MySublimeVideo.hideFlashMessageDelayed(element);
   });
   
   // =====================================
@@ -70,18 +64,18 @@ document.observe("dom:loaded", function() {
 // = Global functions =
 // ====================
 
-MySublimeVideo.flashNotice = function(message) {
+MySublimeVideo.flashMessage = function(type, message) {
   var flashDiv = $("flash");
   if (flashDiv) flashDiv.remove();
   
-  var noticeDiv = new Element("div", { className:"notice" }).update(message);
+  var noticeDiv = new Element("div", { className:type }).update(message);
   flashDiv = new Element("div", { id:"flash" }).insert(noticeDiv);
   $("content").insert({ top: flashDiv });
   
-  MySublimeVideo.hideFlashNoticeDelayed(noticeDiv);
+  MySublimeVideo.hideFlashMessageDelayed(noticeDiv);
 };
 
-MySublimeVideo.hideFlashNoticeDelayed = function(flashEl) {
+MySublimeVideo.hideFlashMessageDelayed = function(flashEl) {
   setTimeout(function(){
     flashEl.morph('top:-35px', { duration: 0.7 });
   }, 15000);
@@ -142,17 +136,6 @@ MySublimeVideo.showSiteAddons = function(siteId) {
   return false;
 };
 
-MySublimeVideo.confirmDeleteSite = function(el) {
-  if (confirm('Are you sure?')) {
-    setTimeout(function(){ // setTimeout essential otherwise the form won't be able to be submitted by rails.js
-      el.disable();
-    }, 100);
-    MySublimeVideo.showTableSpinner();
-  }
-  else {
-    return false; //important, we need to block the submit event!
-  }
-};
 
 // ===========
 // = Classes =
@@ -198,33 +181,45 @@ var AddSiteHandler = Class.create({
   }
 });
 
+/*
+FormManager manages:
+  on form submit:
+    - disabling of submit button
+    - asking for password
+    - cleaning of pseudo-placeholders
+    - cleaning HTML5 errors that are not present anymore but there still are errors (on other fields)
+*/
 var FormManager = Class.create({
   initialize: function(form) {
     var submitEvent = Prototype.Browser.IE ? "emulated:submit" : "submit";
-    form.on(submitEvent, function(event){
-      
+    form.on(submitEvent, function(event) {
       // Disable submit button for ajax forms to prevent double submissions (quickly click muliple times the form submit button)
       //
       // (PAY ATTENTION: this considers that the ajax call will re-render the entire form hence re-enabling the submit button. 
       //  If we'll have some ajax forms that won't reload themselves, the code below must be updated)
-      if (event.findElement("form[data-remote]")) {
-        form.select("input[type=submit]","button").each(function(button){
+      if (form.readAttribute("data-remote") != null) {
+        form.select("input[type=submit]","button").each(function(button) {
           button.disable();
         });
       }
       
+      if (form.readAttribute("data-password-protected") == "true") {
+        event.stop(); // don't submit form
+        MySublimeVideo.passwordCheckerManager = new PasswordCheckerManager(event.element());
+      }
+      
       // Reset pseudo-placeholders values (for browsers who don't support HTML5 placeholders)
       if (!supportsHtml5InputAttribute("placeholder")) {
-        form.select("input.placeholder").each(function(input){
+        form.select("input.placeholder").each(function(input) {
           input.value = "";
         });
       }
     });
     
-    form.select("input[type=submit]").each(function(submitButton){
+    form.select("input[type=submit]").each(function(submitButton) {
       submitButton.on("click", function() { //when HTML5 form validitation doesn't pass, the submit event is not fired
         // HTML5 Input validity
-        form.select("input").each(function(input){
+        form.select("input").each(function(input) {
           if (input.validity) {
             if (input.validity.valid) input.removeClassName("errors");
             else input.addClassName("errors");
@@ -232,15 +227,42 @@ var FormManager = Class.create({
         });
       });
     });
+  }
+});
+
+var PasswordCheckerManager = Class.create({
+  initialize: function(originForm) {
+    this.originForm = originForm;
+    MySublimeVideo.openPopup(0, "password_checker", null);
+    this.popup = $("password_checker_0");
     
+    if (this.popup) {
+      this.popup.removeClassName("loading");
+      
+      var passwordCheckerForm = new Element("form", {
+        id:"password_checker",
+        action:"/password/validate",
+        "data-remote":"true"
+      }).update("<div class='entry site'>" +
+      "<label for='password'>Your current password is needed to perform this action:</label>" +
+      "<input type='password' id='password' name='password' placeholder='Please enter your current password' class='text' />" +
+      "<div class='actions'><input type='submit' class='submit small' value='Done' /></div>" +
+      "</div>");
+      passwordCheckerForm.store("originFormId", this.originForm.id);
+      this.popup.down(".content").update(passwordCheckerForm);
+    }
   }
 });
 
 
-var PasswordFieldManager = Class.create({
+/*
+ShowPasswordFieldManager manages:
+  - showing/hiding in clear text the entered password
+*/
+var ShowPasswordFieldManager = Class.create({
   initialize: function(field, index) {
     this.field = field;
-    this.field.store("passwordFieldManager", this); // so that the placeholderManager can eventually pick this up
+    this.field.store("showPasswordFieldManager", this); // so that the placeholderManager can eventually pick this up
     
     // Only add the Show password checkbox if the input field has the "show_password" class
     if (this.field.hasClassName("show_password")) { 
@@ -280,7 +302,6 @@ var PasswordFieldManager = Class.create({
   replacePasswordField: function(passwordField, textOrPassword) {
     // I can't simply modify the type attribute of the field (from "password" to "text"), because IE doesn't support this
     // cf: http://www.alistapart.com/articles/the-problem-with-passwords
-    // ddd("Replacing password field")
     var newPasswordField = new Element("input", {
       id: passwordField.id,
       name: passwordField.name,
@@ -300,14 +321,16 @@ var PasswordFieldManager = Class.create({
   }
 });
 
-
+/*
+PlaceholderManager manages pseudo-placeholders
+*/
 var PlaceholderManager = Class.create({
   initialize: function(field, check) {
     //
     // NOTE: 'field' can be textfield or textarea
     //
     this.field = field;
-    this.passwordFieldManager = this.field.retrieve("passwordFieldManager"); //it means field.type == "password"
+    this.showPasswordFieldManager = this.field.retrieve("showPasswordFieldManager"); //it means field.type == "password"
     
     // Just for Firefox, if I reload the page twice...
     if (this.field.value == this.field.readAttribute("placeholder")) {
@@ -328,8 +351,8 @@ var PlaceholderManager = Class.create({
       this.field.value = "";
       this.field.removeClassName("placeholder");
       
-      if (this.passwordFieldManager) {
-        this.field = this.passwordFieldManager.replacePasswordField(this.field, this.passwordFieldManager.isShowingPassword());
+      if (this.showPasswordFieldManager) {
+        this.field = this.showPasswordFieldManager.replacePasswordField(this.field, this.showPasswordFieldManager.isShowingPassword());
         
         // refocus (the newly create field)
         if (Prototype.Browser.IE) {
@@ -352,7 +375,7 @@ var PlaceholderManager = Class.create({
       // The bugs happens when a field is not valid (from the HTML5 validity point of view) because of the way we 
       // reset the fields value in FormManager before submitting the form on browsers who do not support HTML5 placeholders...
       if (this.field.validity && !this.field.validity.valid) {
-        if (this.passwordFieldManager) {
+        if (this.showPasswordFieldManager) {
           this.resetField();
         }
         else {
@@ -366,8 +389,8 @@ var PlaceholderManager = Class.create({
       this.field.addClassName("placeholder");
       this.field.value = this.field.readAttribute("placeholder");
       
-      if (this.passwordFieldManager) {
-        this.field = this.passwordFieldManager.replacePasswordField(this.field, true);
+      if (this.showPasswordFieldManager) {
+        this.field = this.showPasswordFieldManager.replacePasswordField(this.field, true);
         this.setupObservers(); //since we have a new field
       }
     }
@@ -378,6 +401,9 @@ var PlaceholderManager = Class.create({
   }
 });
 
+/*
+PopupHandler handles creation and behavior of SV pop-up (used for showing the embed code and the usage, asking the password..)
+*/
 var PopupHandler = Class.create({
   initialize: function(popup) {
     this.keyDownHandler = document.on("keydown", this.keyDown.bind(this));
@@ -416,7 +442,10 @@ var PopupHandler = Class.create({
     
     this.startKeyboardObservers();
     
-    new Ajax.Request(url, { method: 'get' }); //js.erb of the called method will take care of replacing the wrap div with the response content
+    if(url != null) {
+      //js.erb of the called method will take care of replacing the wrap div with the response content
+      new Ajax.Request(url, { method:'get' });
+    }
   },
   close: function() {
     this.stopKeyboardObservers();
@@ -483,25 +512,25 @@ var SitesPoller = Class.create({
 });
 
 
-var CurrentPasswordHandler = Class.create({
-  initialize: function() {
-    this.emailField          = $("user_email");
-    this.passwordField       = $("user_password");
-    this.currentPasswordWrap = $("current_password_wrap");
-    
-    [this.emailField, this.passwordField].each(function(field){
-      this.setupField(field);
-    }.bind(this));
-  },
-  setupField: function(field) {
-    field.on("focus", function(e){
-      this.showCurrentPassword();
-    }.bind(this));
-  },
-  showCurrentPassword: function() {
-    this.currentPasswordWrap.show();
-  }
-});
+// var CurrentPasswordHandler = Class.create({
+//   initialize: function() {
+//     this.emailField          = $("user_email");
+//     this.passwordField       = $("user_password");
+//     this.currentPasswordWrap = $("current_password_wrap");
+//     
+//     [this.emailField, this.passwordField].each(function(field){
+//       this.setupField(field);
+//     }.bind(this));
+//   },
+//   setupField: function(field) {
+//     field.on("focus", function(e){
+//       this.showCurrentPassword();
+//     }.bind(this));
+//   },
+//   showCurrentPassword: function() {
+//     this.currentPasswordWrap.show();
+//   }
+// });
 
 
 function supportsHtml5InputOfType(inputType) { // e.g. "email"
@@ -515,5 +544,36 @@ function supportsHtml5InputAttribute(attribute) { // e.g "placeholder"
   return attribute in i;
 }
 
+
+Element.addMethods({
+  shake: function(element, options) {
+    S2.Extensions.webkitCSSTransitions = false; //essential, cause webkit transitions in this case are less smooth
+    
+    element = $(element);
+    var originalLeft = parseFloat(element.getStyle('left') || '0');
+    var oldStyle = { left:originalLeft };
+    element.makePositioned();
+    
+    var opts = { distance:15, duration:0.5 };
+    Object.extend(opts, options);
+    var distance = opts.distance;
+    var duration = opts.duration;
+
+    var split = parseFloat(duration) / 10.0;
+
+    var shakeEffect = element.morph('left:' + (originalLeft+distance) + 'px', { duration:split 
+      }).morph('left:' + (originalLeft-distance) + 'px', { duration:split*2
+        }).morph('left:' + (originalLeft+distance) + 'px', { duration:split*2
+          }).morph('left:' + (originalLeft-distance) + 'px', { duration:split*2
+            }).morph('left:' + (originalLeft+distance) + 'px', { duration:split*2
+              }).morph('left:' + (originalLeft) + 'px', { duration:split*2, after: function() {
+                element.undoPositioned().setStyle(oldStyle);
+                }});
+
+    return shakeEffect;
+  },
+  pulsate: function(element, options) {
+  }
+});
 
 function ddd(){console.log.apply(console, arguments);}

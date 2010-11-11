@@ -1,4 +1,4 @@
 MySublimeVideo.closePopup();
-MySublimeVideo.flashNotice('<%= flash[:notice] %>');
+MySublimeVideo.flashMessage('notice', '<%= flash[:notice] %>');
 
 new Ajax.Request('/sites.js', { method: 'get' });
