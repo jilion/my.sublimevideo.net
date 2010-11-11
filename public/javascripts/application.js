@@ -244,12 +244,13 @@ var PasswordCheckerManager = Class.create({
         action:"/password/validate",
         "data-remote":"true"
       }).update("<div class='entry site'>" +
-      "<label for='password'>Your current password is needed to perform this action:</label>" +
-      "<input type='password' id='password' name='password' placeholder='Please enter your current password' class='text' />" +
+      "<label for='password_check'>Your current password is needed to perform this action:</label>" +
+      "<input type='password' id='password_check' name='password' placeholder='Please enter your current password' class='text' />" +
       "<div class='actions'><input type='submit' class='submit small' value='Done' /></div>" +
       "</div>");
       passwordCheckerForm.store("originFormId", this.originForm.id);
       this.popup.down(".content").update(passwordCheckerForm);
+      $('password_check').focus();
     }
   }
 });
