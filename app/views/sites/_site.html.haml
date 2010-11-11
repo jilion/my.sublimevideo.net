@@ -24,7 +24,13 @@
       - else
         No add-ons.
   %td.code
-    = link_to "Usage", "", :onclick => "return MySublimeVideo.showSiteUsage('#{site.token}')"
+    - if site.active?
+      = link_to "Usage", "", :onclick => "return MySublimeVideo.showSiteUsage('#{site.token}')"
+    - else
+      = form_for [:activate, site], :html => { "data-password-protected" => true } do |f|
+        .actions
+          = f.submit 'Activate', :class => "submit small"
+          
   %td.code
     = link_to "Embed code", "", :class => "embed_code", :onclick => "return MySublimeVideo.showSiteEmbedCode('#{site.token}')"
     

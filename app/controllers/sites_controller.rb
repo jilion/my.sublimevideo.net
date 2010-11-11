@@ -3,8 +3,8 @@ class SitesController < ApplicationController
   respond_to :js, :only => [:index, :show]
   
   before_filter :redirect_suspended_user
-  before_filter :find_by_token, :only => [:show, :edit, :update, :destroy, :usage]
-  before_filter :redirect_wrong_password_for_active_site!, :only => [:update, :destroy]
+  before_filter :find_by_token, :only => [:show, :edit, :update, :activate, :destroy, :usage]
+  before_filter :redirect_wrong_password_for_active_site!, :only => [:update, :activate, :destroy]
   
   has_scope :by_hostname
   has_scope :by_date
@@ -40,6 +40,12 @@ class SitesController < ApplicationController
   # PUT /sites/1
   def update
     @site.update_attributes(params[:site])
+    respond_with(@site, :location => sites_path)
+  end
+  
+  # PUT /sites/1/activate
+  def activate
+    @site.activate
     respond_with(@site, :location => sites_path)
   end
   

@@ -106,6 +106,14 @@ describe SitesController do
           end
         end
         
+        describe "PUT :activate" do
+          it "should redirect to /sites/:token/edit" do
+            put :activate, :id => 'a1b2c3', :user => { :current_password => 'abcd' }
+            assigns(:site).should == mock_site
+            response.should redirect_to(edit_site_url(mock_site))
+          end
+        end
+        
         describe "DELETE :destroy" do
           it "should redirect to /sites/:token/edit" do
             delete :destroy, :id => 'a1b2c3', :user => { :current_password => 'abcd' }
@@ -134,6 +142,24 @@ describe SitesController do
             put :update, :id => 'a1b2c3', :site => {}, :user => { :current_password => '123456' }
             assigns(:site).should == mock_site
             response.should render_template(:edit)
+          end
+        end
+        
+        describe "PUT :activate" do
+          it "should redirect to /sites when update_attributes succeeds" do
+            mock_site.stub(:activate) { true }
+            
+            put :activate, :id => 'a1b2c3', :user => { :current_password => '123456' }
+            assigns(:site).should == mock_site
+            response.should redirect_to(sites_url)
+          end
+          
+          it "should redirect to /sites when update_attributes fails" do
+            mock_site.stub(:activate){ false }
+            
+            put :activate, :id => 'a1b2c3', :user => { :current_password => '123456' }
+            assigns(:site).should == mock_site
+            response.should redirect_to(sites_url)
           end
         end
         

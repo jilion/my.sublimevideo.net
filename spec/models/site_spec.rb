@@ -53,22 +53,6 @@ describe Site do
     specify { Site.validators_on(:extra_hostnames).map(&:class).should == [ExtraHostnamesValidator] }
     specify { Site.validators_on(:dev_hostnames).map(&:class).should == [DevHostnamesValidator] }
     
-    # 4s
-    describe "must_be_up_to_date_to_update_settings_or_addons" do
-      let(:addon) { Factory(:addon) }
-      
-      it "should add errors to attributes that has changed if cdn_up_to_date is false" do
-        site = Factory(:site)
-        site.attributes = { :hostname => "jilion.com", :extra_hostnames => "staging.jilion.com", :dev_hostnames => "jilion.local", :path => 'foo', :wildcard => true, :addon_ids => [addon.id] }
-        site.should have(1).error_on(:hostname)
-        site.should have(1).error_on(:extra_hostnames)
-        site.should have(1).error_on(:dev_hostnames)
-        site.should have(1).error_on(:path)
-        site.should have(1).error_on(:wildcard)
-        site.should have(1).error_on(:addons)
-      end
-    end
-    
     # 15s
     describe "hostname" do
       it "should be required if state is active" do
@@ -93,35 +77,6 @@ describe Site do
         site.dev_hostnames = nil
         site.should_not be_valid
         site.should have(:no).error_on(:base)
-      end
-    end
-    
-    # 9s
-    describe "hostname update, " do
-      { :hostname => ["jilion.com", "test.com"], :extra_hostnames => ["staging.jilion.com", "test.staging.com"], :dev_hostnames => ["jilion.local", "test.local"] }.each do |attribute, values|
-        it "should not be able to update #{attribute} when cdn_up_to_date is false" do
-          site = Factory(:site, attribute => values[0])
-          site.cdn_up_to_date.should be_false
-          site.send("#{attribute}=", values[1])
-          
-          site.should_not be_valid
-          site.errors[attribute].should == ["cannot be updated when site's player files are not uploaded to the cloud"]
-          site.reload.send(attribute).should == values[0]
-        end
-        
-        it "should be able to update #{attribute} when cdn_up_to_date is true" do
-          VoxcastCDN.stub(:purge)
-          site = Factory(:site, attribute => values[0])
-          site.update_attribute(:cdn_up_to_date, true)
-          # Delayed::Worker.new(:quiet => true).work_off
-          site.reload.cdn_up_to_date.should be_true
-          site.send("#{attribute}=", values[1])
-          
-          site.should be_valid
-          site.errors[attribute].should be_empty
-          site.save
-          site.reload.send(attribute).should == values[1]
-        end
       end
     end
   end
@@ -237,6 +192,12 @@ describe Site do
         site = Factory(:site, :hostname => "jilion.com", :extra_hostnames => "jilion.staging.com, jilion.org")
         Delayed::Worker.new(:quiet => true).work_off
         site
+      end
+      
+      it "should set activated_at" do
+        subject.activated_at.should be_nil
+        subject.activate
+        subject.activated_at.should be_present
       end
       
       it "should update license file" do

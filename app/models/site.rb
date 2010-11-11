@@ -65,7 +65,6 @@ class Site < ActiveRecord::Base
   validates :dev_hostnames,   :dev_hostnames => true
   validates :player_mode,     :inclusion => { :in => PLAYER_MODES }
   validate  :at_least_one_domain_set
-  validate  :must_be_up_to_date_to_update_settings_or_addons
   
   # =============
   # = Callbacks =
@@ -82,7 +81,8 @@ class Site < ActiveRecord::Base
   
   state_machine :initial => :dev do
     before_transition :to => :dev,      :do => :set_cdn_up_to_date_to_false
-    before_transition :to => :archived, :do => :set_archived_at
+    before_transition :on => :activate, :do => :set_activated_at
+    before_transition :on => :archive,  :do => :set_archived_at
     
     after_transition  :to => [:archived, :suspended], :do => :delay_remove_loader_and_license
     
@@ -267,19 +267,6 @@ protected
     end
   end
   
-  # validate
-  def must_be_up_to_date_to_update_settings_or_addons
-    if !new_record? && !cdn_up_to_date?
-      message = "cannot be updated when site's player files are not uploaded to the cloud"
-      errors[:hostname]        << message if hostname_changed?
-      errors[:extra_hostnames] << message if extra_hostnames_changed?
-      errors[:dev_hostnames]   << message if dev_hostnames_changed?
-      errors[:path]            << message if path_changed?
-      errors[:wildcard]        << message if wildcard_changed?
-      errors[:addons]          << message if addons_changed?
-    end
-  end
-  
   # before_save
   def prepare_cdn_update
     if new_record? || player_mode_changed? # loader
@@ -310,7 +297,12 @@ protected
     self.cdn_up_to_date = false
   end
   
-  # before_transition :to => :archived
+  # before_transition :on => :activate
+  def set_activated_at
+    self.activated_at = Time.now.utc
+  end
+  
+  # before_transition :on => :archive
   def set_archived_at
     self.archived_at = Time.now.utc
   end
