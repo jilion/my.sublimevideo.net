@@ -10,7 +10,7 @@ guard 'passenger' do
   watch('^config/initializers/.*\.rb$')
 end
 
-guard 'spork' do
+guard 'spork', :wait => 40 do
   watch('^config/application.rb$')
   watch('^config/environment.rb$')
   watch('^config/environments/.*\.rb$')
