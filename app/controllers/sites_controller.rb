@@ -3,7 +3,7 @@ class SitesController < ApplicationController
   respond_to :js, :only => [:index, :show]
   
   before_filter :redirect_suspended_user
-  before_filter :find_by_token, :only => [:show, :edit, :update, :activate, :destroy, :usage]
+  before_filter :find_by_token, :only => [:code, :edit, :update, :activate, :destroy, :usage]
   before_filter :redirect_wrong_password_for_active_site!, :only => [:update, :activate, :destroy]
   
   has_scope :by_hostname
@@ -14,8 +14,8 @@ class SitesController < ApplicationController
     respond_with(@sites = apply_scopes(current_user.sites.not_archived.with_plan.with_addons.by_date))
   end
   
-  # GET /sites/1
-  def show
+  # GET /sites/1/code
+  def code
     respond_with(@site) do |format|
       format.js
       format.html { redirect_to sites_path }

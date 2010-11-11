@@ -22,9 +22,10 @@ MySublimeVideo::Application.routes.draw do
   match '/invitation/accept' => redirect('/register'), :via => :get
   
   resource :users, :only => :update, :path => '/account/info'
-  resources :sites do
+  resources :sites, :except => [:show] do
     member do
       get :state
+      get :code
       get :usage
       put :activate
     end
