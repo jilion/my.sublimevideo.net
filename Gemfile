@@ -86,6 +86,7 @@ group :test do
   gem 'guard-bundler'
   gem 'guard-passenger'
   gem 'guard-spork'
+  gem 'guard-ego'
   gem 'timecop',            '~> 0.3.5'
   
   gem 'steak',              '~> 1.0.0.rc.2'

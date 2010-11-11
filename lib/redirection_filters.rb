@@ -5,7 +5,6 @@ module RedirectionFilters
   end
   
   def redirect_wrong_password(resource, password)
-    Rails.logger.debug params.inspect
     unless current_user.valid_password?(password)
       flash[:alert] = "The given password is invalid!"
       route = case resource.class.to_s

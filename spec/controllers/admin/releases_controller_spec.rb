@@ -51,7 +51,6 @@ describe Admin::ReleasesController do
   end
   
   it_should_behave_like "redirect when connected", '/admin', [[:admin, { :email => "remy@jilion.com" }]], { :get => :index, :post => :create, :put => :update }
-  
   it_should_behave_like "redirect when connected", '/admin/login', [:authenticated_user, :guest], { :get => :index, :post => :create, :put => :update }
   
 end

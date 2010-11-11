@@ -25,7 +25,7 @@ end
 #   watch('^config/locales/.+\.ym$')
 # end
 
-guard 'rspec', :version => 2, :drb => true, :bundler => false, :formatter => "instafail" do
+guard 'rspec', :version => 2, :drb => true, :bundler => false, :formatter => "instafail", :fail_fast => true do
   watch('^spec/spec_helper.rb')                       { "spec" }
   watch('^spec/factories.rb')                         { "spec/models" }
   watch('^app/controllers/application_controller.rb') { "spec/controllers" }
