@@ -17,4 +17,18 @@ every day invoice rake task at 00:01
     - add existing site(s) plan/addons (create invoice items)
     
     - set next_invoiced_on += 1.month
-    - las
+    
+delete plan/cancel addon:
+  - invoice_item's canceled_at is set on any cancel of a plan or addon
+  
+delete plan:
+  - archived instantly
+  - all tied addons are cancelled
+  
+cancel addon:
+  - invoice_item cancelled instantly
+
+addon:
+  - addon cycle are tied to their plan cycle
+  - addons are billed pro-rated using the difference between created_at & canceled_at
+  

@@ -19,7 +19,7 @@ describe User do
     its(:email)                { should match /email\d+@user.com/ }
     its(:invoices_count)       { should == 0 }
     its(:last_invoiced_on)     { should be_nil }
-    its(:next_invoiced_on)     { should == Time.now.utc.to_date + 1.month }
+    its(:next_invoiced_on)     { should be_nil }
     
     it { should be_valid }
   end

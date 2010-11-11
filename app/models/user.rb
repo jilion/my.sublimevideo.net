@@ -66,7 +66,6 @@ class User < ActiveRecord::Base
   # = Callbacks =
   # =============
   
-  before_create :set_next_invoiced_on
   before_save   :store_credit_card, :keep_some_credit_card_info # in user/credit_card
   after_update  :update_email_on_zendesk
   
@@ -117,11 +116,6 @@ private
       self.errors.add(:company_employees, :blank) unless company_employees.present?
       self.errors.add(:company_videos_served, :blank) unless company_videos_served.present?
     end
-  end
-  
-  # before_create
-  def set_next_invoiced_on
-    self.next_invoiced_on ||= Time.now.utc.to_date + 1.month
   end
   
   # before_transition (suspend)
