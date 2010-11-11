@@ -250,7 +250,7 @@ GEM
     rack-test (0.5.6)
       rack (>= 1.0)
     rake (0.8.7)
-    rb-fsevent (0.3.6)
+    rb-fsevent (0.3.8)
     request-log-analyzer (1.9.7)
     rescue_me (0.1.0)
     responders (0.6.2)
@@ -269,8 +269,8 @@ GEM
     ruby-graphviz (0.9.19)
     ruby-hmac (0.4.0)
     rubyzip (0.9.4)
-    selenium-webdriver (0.0.29)
-      childprocess (>= 0.0.7)
+    selenium-webdriver (0.1.0)
+      childprocess (= 0.1.4)
       ffi (~> 0.6.3)
       json_pure
       rubyzip

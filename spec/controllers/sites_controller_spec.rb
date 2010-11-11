@@ -100,7 +100,7 @@ describe SitesController do
         
         describe "PUT :update" do
           it "should redirect to /sites/:token/edit" do
-            put :update, :id => 'a1b2c3', :site => {},  :current_password => 'abcd'
+            put :update, :id => 'a1b2c3', :site => {}, :user => { :current_password => 'abcd' }
             assigns(:site).should == mock_site
             response.should redirect_to(edit_site_url(mock_site))
           end
@@ -108,7 +108,7 @@ describe SitesController do
         
         describe "DELETE :destroy" do
           it "should redirect to /sites/:token/edit" do
-            delete :destroy, :id => 'a1b2c3', :current_password => 'abcd'
+            delete :destroy, :id => 'a1b2c3', :user => { :current_password => 'abcd' }
             assigns(:site).should == mock_site
             response.should redirect_to(edit_site_url(mock_site))
           end
@@ -122,7 +122,7 @@ describe SitesController do
           it "should redirect to /sites when update_attributes succeeds" do
             mock_site.stub(:update_attributes).with({}) { true }
             
-            put :update, :id => 'a1b2c3', :site => {}, :current_password => '123456'
+            put :update, :id => 'a1b2c3', :site => {}, :user => { :current_password => '123456' }
             assigns(:site).should == mock_site
             response.should redirect_to(sites_url)
           end
@@ -131,7 +131,7 @@ describe SitesController do
             mock_site.stub(:update_attributes).with({}) { false }
             mock_site.should_receive(:errors).any_number_of_times.and_return(["error"])
             
-            put :update, :id => 'a1b2c3', :site => {}, :current_password => '123456'
+            put :update, :id => 'a1b2c3', :site => {}, :user => { :current_password => '123456' }
             assigns(:site).should == mock_site
             response.should render_template(:edit)
           end
@@ -141,7 +141,7 @@ describe SitesController do
           before(:each) { mock_site.stub(:archive) }
           
           it "should redirect to /sites" do
-            delete :destroy, :id => 'a1b2c3', :current_password => '123456'
+            delete :destroy, :id => 'a1b2c3', :user => { :current_password => '123456' }
             assigns(:site).should == mock_site
             response.should redirect_to(sites_url)
           end
