@@ -72,7 +72,7 @@ private
   end
   
   def redirect_wrong_password_for_active_site!
-    redirect_wrong_password(@site, params[:current_password]) if @site.active?
+    redirect_wrong_password(@site) if @site.active?
   end
   
 end

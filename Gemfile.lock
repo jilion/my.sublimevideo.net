@@ -185,7 +185,7 @@ GEM
       guard (>= 0.2.1)
     guard-rspec (0.1.8)
       guard (>= 0.2.0)
-    guard-spork (0.0.1)
+    guard-spork (0.0.2)
       guard (>= 0.2.0)
       spork (~> 0.9.0.rc2)
     haml (3.0.23)

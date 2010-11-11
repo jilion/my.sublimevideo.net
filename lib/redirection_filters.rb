@@ -4,9 +4,8 @@ module RedirectionFilters
     redirect_to page_path('suspended') if current_user.suspended?
   end
   
-  def redirect_wrong_password(resource, password)
-    Rails.logger.debug params.inspect
-    unless current_user.valid_password?(password)
+  def redirect_wrong_password(resource)
+    if params[:user].blank? || !current_user.valid_password?(params[:user][:current_password])
       flash[:alert] = "The given password is invalid!"
       route = case resource.class.to_s
       when 'User'
