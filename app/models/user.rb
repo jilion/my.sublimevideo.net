@@ -25,6 +25,7 @@ class User < ActiveRecord::Base
   
   has_many :sites
   has_many :invoices
+  has_one  :last_invoice, :class_name => "Invoice", :conditions => { :state => "ready" }, :order => "ended_on DESC"
   has_one  :next_invoice, :class_name => "Invoice", :conditions => { :state => "next" }
   
   # ==========

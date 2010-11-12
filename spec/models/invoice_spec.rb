@@ -37,12 +37,19 @@ describe Invoice do
     it { should validate_presence_of(:user) }
     it { should validate_presence_of(:started_on) }
     
-    it "should not allow two next invoices" do
-      invoice2 = Factory.build(:invoice, :user => subject.user.reload)
-      invoice2.should_not be_valid
-      invoice2.errors[:state].should == ["'next' should be unique per user"]
+    describe "uniqueness of next invoice" do
+      it "should not allow two next invoices" do
+        invoice2 = Factory.build(:invoice, :user => subject.user.reload)
+        invoice2.should_not be_valid
+        invoice2.errors[:state].should == ["'next' should be unique per user"]
+      end
+      
+      it "should allow one next invoices (self)" do
+        subject.charged_at = Time.now.utc
+        subject.should be_valid
+        subject.errors[:state].should be_empty
+      end
     end
-    
     
     context "with state ready" do
       before(:each) { subject.state = 'ready' }

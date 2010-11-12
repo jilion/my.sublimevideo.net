@@ -18,17 +18,29 @@ every day invoice rake task at 00:01
     
     - set next_invoiced_on += 1.month
     
-delete plan/cancel addon:
-  - invoice_item's canceled_at is set on any cancel of a plan or addon
-  
+
+all plans cycle should be set to the same as the user billing period
+
 delete plan:
   - archived instantly
   - all tied addons are cancelled
   
-cancel addon:
-  - invoice_item cancelled instantly
-
 addon:
   - addon cycle are tied to their plan cycle
-  - addons are billed pro-rated using the difference between created_at & canceled_at
+  - addons are billed pro-rated by day using the difference between started_on/canceled_on & canceled_at
   
+new addon:
+- addon cancelled instantly
+- new invoice_item created for the next_invoice with:
+  - started_on  = nil
+  - ended_on    = next_invoice.ended_on
+  - canceled_on = Time.now.utc
+  
+cancel addon:
+  - addon cancelled instantly
+  - new invoice_item created for the next_invoice with:
+    - started_on  = nil
+    - ended_on    = next_invoice.ended_on
+    - canceled_on = Time.now.utc
+    
+le cancel est un invoice_item comme un autre, avec juste un canceled_on et un ended_on au lieu de started_on et ended_on

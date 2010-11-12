@@ -15,6 +15,9 @@ class InvoiceItem < ActiveRecord::Base
   # = Scopes =
   # ==========
   
+  scope :not_canceled, where(:canceled_at => nil) # probably change canceled_at to canceled_on
+  scope :canceled, where(:canceled_at.ne => nil)
+  
   # ===============
   # = Validations =
   # ===============

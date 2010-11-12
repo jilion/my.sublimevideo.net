@@ -31,6 +31,17 @@ describe InvoiceItem do
     it { should belong_to :refunded_invoice_item }
   end
   
+  describe "scopes" do
+    before(:each) do
+      InvoiceItem.delete_all
+      @not_canceled_invoice_item = Factory(:invoice_item)
+      @canceled_invoice_item = Factory(:invoice_item, :canceled_at => Time.now.utc)
+    end
+    
+    specify { InvoiceItem.not_canceled.should == [@not_canceled_invoice_item] }
+    specify { InvoiceItem.canceled.should == [@canceled_invoice_item] }
+  end
+  
   describe "validates" do
     subject { Factory(:invoice_item) }
     

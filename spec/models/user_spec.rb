@@ -31,8 +31,15 @@ describe User do
     it { should have_many :sites }
     it { should have_many :invoices }
     
-    it "should have a next invoice" do
-      user = Factory(:user)
+    it "should have_one last_invoice" do
+      user     = Factory(:user)
+      invoice1 = Factory(:invoice, :user => user, :amount => 1, :state => 'ready', :ended_on => 3.days.ago)
+      invoice2 = Factory(:invoice, :user => user, :amount => 1, :state => 'ready', :ended_on => 2.days.ago)
+      user.reload.last_invoice.should == invoice2
+    end
+    
+    it "should have_one next_invoice" do
+      user    = Factory(:user)
       invoice = Factory(:invoice, :user => user)
       user.reload.next_invoice.should == invoice
     end
@@ -55,7 +62,7 @@ describe User do
       end
       after(:each) { Timecop.return }
       
-      it "should return users that have their next_invoiced_on today or have next_invoiced_on at nil and with a sites.activated_at + trial_days = today" do
+      specify do
         users = User.billable_on(Time.now.utc.to_date)
         users.should include(@user_billable_today)
         users.should include(@user_trial_ending_today)
