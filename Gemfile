@@ -77,27 +77,25 @@ group :development do
 end
 
 group :test do
-  gem 'database_cleaner', '>= 0.6'
   gem 'growl'
-  gem 'rb-fsevent',         '~> 0.3.6'
-  gem 'guard'
-  gem 'guard-rspec'
-  gem 'guard-livereload'
-  gem 'guard-bundler'
-  gem 'guard-passenger'
-  gem 'guard-spork'
-  gem 'guard-ego'
-  gem 'timecop',            '~> 0.3.5'
-  
-  gem 'steak',              '~> 1.0.0.rc.2'
-  gem 'capybara',           '~> 0.4.0'
-  # gem 'capybara-envjs',     '~> 0.4.0'
-  # gem 'akephalos',          '~> 0.2.4'
-  
-  gem 'webmock',            '~> 1.5.0'
-  gem 'vcr',                '~> 1.2.0'
-  
   gem 'spork',              '~> 0.9.0.rc2'
+  gem 'guard'
+  gem 'rb-fsevent',         '~> 0.3.9'
+  gem 'guard-livereload'
+  gem 'guard-rspec'
+  gem 'guard-passenger'
+  gem 'guard-bundler'
+  gem 'guard-ego'
+  gem 'guard-spork'
+  
+  gem 'database_cleaner', '>= 0.6'
+  gem 'timecop',            '~> 0.3.5'
+  gem 'capybara',           '~> 0.4.0'
+  gem 'steak',              '~> 1.0.0.rc.2'
+  # gem 'akephalos',          '~> 0.2.4'
+  # gem 'capybara-envjs',     '~> 0.4.0'
+  gem 'webmock',            '~> 1.6.0'
+  gem 'vcr',                '~> 1.3.0'
   
   gem 'shoulda',            '~> 2.11.3'
   gem 'factory_girl_rails', '~> 1.0.0', :require => false # loaded in spec_helper Spork.each_run
