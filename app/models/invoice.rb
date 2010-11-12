@@ -41,12 +41,6 @@ class Invoice < ActiveRecord::Base
   # = Class Methods =
   # =================
   
-  class << self
-    def billable_users
-      User.includes(:sites).where({ :next_invoiced_on.lte => Date.today } | ({ :next_invoiced_on => nil } & { :sites => { :activated_at.lte => Date.today - Billing.trial_days } }))
-    end
-  end
-  
   # ====================
   # = Instance Methods =
   # ====================

@@ -32,6 +32,36 @@ describe User do
     it { should have_many :invoices }
   end
   
+  describe "scope" do
+    
+    describe "billable_on", :focus => true do
+      before(:each) do
+        Timecop.travel(Date.new(2010,1,15).to_time.utc)
+        @user_billable_yesterday     = Factory(:user).tap { |u| u.update_attribute(:next_invoiced_on, Time.now.utc - 1.day) }
+        @user_billable_today         = Factory(:user).tap { |u| u.update_attribute(:next_invoiced_on, Time.now.utc) }
+        @user_billable_tomorrow      = Factory(:user).tap { |u| u.update_attribute(:next_invoiced_on, Time.now.utc + 1.day) }
+        @user_trial_ending_yesterday = Factory(:user)
+        @user_trial_ending_today     = Factory(:user)
+        @user_trial_ending_tomorrow  = Factory(:user)
+        Factory(:site, :user => @user_trial_ending_yesterday).tap { |u| u.update_attribute(:activated_at, Time.now.utc - Billing.trial_days - 1.day) }
+        Factory(:site, :user => @user_trial_ending_today).tap { |u| u.update_attribute(:activated_at, Time.now.utc - Billing.trial_days) }
+        Factory(:site, :user => @user_trial_ending_tomorrow).tap { |u| u.update_attribute(:activated_at, Time.now.utc - Billing.trial_days + 1.day) }
+      end
+      after(:each) { Timecop.return }
+      
+      it "should return users that have their next_invoiced_on today or have next_invoiced_on at nil and with a sites.activated_at + trial_days = today" do
+        users = User.billable_on(Time.now.utc.to_date)
+        users.should include(@user_billable_today)
+        users.should include(@user_trial_ending_today)
+        users.should_not include(@user_billable_tomorrow)
+        users.should_not include(@user_billable_yesterday)
+        users.should_not include(@user_trial_ending_yesterday)
+        users.should_not include(@user_trial_ending_tomorrow)
+      end
+    end
+    
+  end
+  
   describe "validates " do
     [:first_name, :last_name, :email, :remember_me, :password, :postal_code, :country, :use_personal, :use_company, :use_clients, :company_name, :company_url, :company_job_title, :company_employees, :company_videos_served, :terms_and_conditions, :cc_update, :cc_type, :cc_full_name, :cc_number, :cc_expire_on, :cc_verification_value].each do |attr|
       it { should allow_mass_assignment_of(attr) }

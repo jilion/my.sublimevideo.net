@@ -33,6 +33,9 @@ class User < ActiveRecord::Base
   scope :without_cc,      where(:cc_type => nil, :cc_last_digits => nil)
   scope :with_cc,         where(:cc_type.ne => nil, :cc_last_digits.ne => nil)
   
+  # invoice
+  scope :billable_on,     lambda { |date = Time.now.utc.to_date| includes(:sites).where({ :next_invoiced_on => date.to_date } | ({ :next_invoiced_on => nil } & { :sites => { :activated_at.gte => date.to_date - Billing.trial_days, :activated_at.lt => date.to_date - Billing.trial_days + 1.day } })) }
+  
   # admin
   scope :enthusiast,      where(:enthusiast_id.ne => nil)
   scope :invited,         where(:invitation_token.ne => nil)

@@ -1,6 +1,10 @@
 module Billing
   class << self
     
+    def trial_days
+      yml[:trial_days].days
+    end
+    
     def method_missing(name)
       yml[name.to_sym]
     end

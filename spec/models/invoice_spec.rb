@@ -80,36 +80,6 @@ describe Invoice do
       end
     end
   end
-  
-  describe "Class methods" do
-    describe "billable_users" do
-      before(:each) do
-        Timecop.travel(Date.new(2010,1,15))
-        Billing.stub(:trial_days) { 10 }
-        @user_billable_yesterday     = Factory(:user).tap { |u| u.update_attribute(:next_invoiced_on, Date.today - 1) }
-        @user_billable_today         = Factory(:user).tap { |u| u.update_attribute(:next_invoiced_on, Date.today) }
-        @user_billable_tomorrow      = Factory(:user).tap { |u| u.update_attribute(:next_invoiced_on, Date.today + 1) }
-        @user_trial_ending_yesterday = Factory(:user)
-        @user_trial_ending_today     = Factory(:user)
-        @user_trial_ending_tomorrow  = Factory(:user)
-        Factory(:site, :user => @user_trial_ending_yesterday).tap { |u| u.update_attribute(:activated_at, Date.today - Billing.trial_days - 1) }
-        Factory(:site, :user => @user_trial_ending_today).tap { |u| u.update_attribute(:activated_at, Date.today - Billing.trial_days) }
-        Factory(:site, :user => @user_trial_ending_tomorrow).tap { |u| u.update_attribute(:activated_at, Date.today - Billing.trial_days + 1) }
-      end
-      after(:each) { Timecop.return }
-      
-      it "should not return users that have their next_invoiced_on after today" +
-         "should return users that have their next_invoiced_on today or before" + 
-         "should return users that a nil have next_invoiced_on and with a sites.activated_at + trial_days <= today" do
-        users = Invoice.billable_users
-        users.should_not include(@user_billable_tomorrow)
-        users.should include(@user_billable_yesterday)
-        users.should include(@user_billable_today)
-        users.should include(@user_trial_ending_yesterday)
-        users.should include(@user_trial_ending_today)
-      end
-    end
-  end
 end
 
 # == Schema Information
