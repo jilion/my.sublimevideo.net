@@ -25,6 +25,7 @@ class User < ActiveRecord::Base
   
   has_many :sites
   has_many :invoices
+  has_one  :next_invoice, :class_name => "Invoice", :conditions => { :state => "next" }
   
   # ==========
   # = Scopes =

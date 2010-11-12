@@ -14,7 +14,7 @@ en:
         cc_verification_value: "CSC"
         company_employees: "Company size"
         company_videos_served: "Nr. of videos served"
-        
+    
     errors:
       models:
         site:
@@ -33,6 +33,13 @@ en:
               wildcard: "are invalid, please check wildcard option instead"
               duplicate: "must be unique"
               include_hostname: "cannot include site domain"
+          
+        invoice:
+          attributes:
+            state:
+              uniqueness: "'next' should be unique per user"
+              
+            
         user:
           attributes:
             company_url:

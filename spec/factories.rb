@@ -87,8 +87,7 @@ end
 
 Factory.define :invoice do |f|
   f.association :user
-  f.started_on  Date.new(2010,1,1)
-  f.ended_on    Date.new(2010,1,31)
+  f.started_on  { Time.now.utc.to_date }
 end
 
 Factory.define :invoice_item do |f|
@@ -96,7 +95,5 @@ Factory.define :invoice_item do |f|
   f.association :invoice
   f.item_type   'Plan'
   f.item_id     { Factory(:plan).id }
-  f.started_on  Date.new(2010,1,1)
-  f.ended_on    Date.new(2010,1,31)
   f.price       100
 end

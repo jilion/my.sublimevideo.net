@@ -77,6 +77,9 @@ Spork.each_run do
   # Needed to prevent routes.rb to be load on Rails initialization and make User/Admin model loaded by devise_for
   MySublimeVideo::Application.reload_routes!
   
+  # Reload yml locales
+  I18n.reload!
+  
   # Factory need to be required each launch to prevent loading of all models
   require 'factory_girl'
   require Rails.root.join("spec/factories")

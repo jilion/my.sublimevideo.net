@@ -21,29 +21,66 @@ class Invoice < ActiveRecord::Base
   
   validates :user,       :presence => true
   validates :started_on, :presence => true
-  validates :ended_on,   :presence => true
-  validates :amount,     :presence => { :if => :ready? }, :numericality => true, :allow_nil => true
+  validates :amount,     :numericality => true, :allow_nil => true
+  validate :uniqueness_of_next_invoice
   
   # =============
   # = Callbacks =
   # =============
   
+  before_create :create_invoice_items
+  
   # =================
   # = State Machine =
   # =================
   
-  state_machine :initial => :current do
-    event(:prepare_for_charging) { transition :current => :ready }
+  state_machine :initial => :next do
+    event(:prepare_for_charging) { transition :next => :ready }
     event(:archive) { transition :ready => :archived }
+    
+    state :ready do
+      validates :amount, :presence => true
+      validates :ended_on, :presence => true
+    end
   end
   
   # =================
   # = Class Methods =
   # =================
   
+  def self.process_invoices_for_users_billable_on(date) # utc date!
+    User.billable_on(date).each do |user|
+      billable_invoice(user)
+      billable_invoice.calculate_overrage
+      billable_invoice.calculate_refund
+      billable_invoice.ended_on = date + 1.month
+      billable_invoice.ready
+      
+      next_invoice = user.invoices.create(:started_on => date + 1.month)
+      user.next_invoiced_on = date + 1.month
+    end
+  end
+  
+  def self.billable_invoice(user)
+    user.next_invoice || user.invoices.create(:started_on => date)
+  end
+  
   # ====================
   # = Instance Methods =
   # ====================
+  
+private
+  
+  # validate
+  def uniqueness_of_next_invoice
+    if user && user.next_invoice.present?
+      self.errors.add(:state, :uniqueness)
+    end
+  end
+  
+  def create_invoice_items
+    
+  end
   
 end
 

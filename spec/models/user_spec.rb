@@ -30,11 +30,17 @@ describe User do
     
     it { should have_many :sites }
     it { should have_many :invoices }
+    
+    it "should have a next invoice" do
+      user = Factory(:user)
+      invoice = Factory(:invoice, :user => user)
+      user.reload.next_invoice.should == invoice
+    end
   end
   
   describe "scope" do
     
-    describe "billable_on", :focus => true do
+    describe "billable_on" do
       before(:each) do
         Timecop.travel(Date.new(2010,1,15).to_time.utc)
         @user_billable_yesterday     = Factory(:user).tap { |u| u.update_attribute(:next_invoiced_on, Time.now.utc - 1.day) }

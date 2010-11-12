@@ -9,8 +9,8 @@ describe InvoiceItem do
     its(:invoice)                  { should be_present }
     its(:item_type)                { should == 'Plan' }
     its(:item_id)                  { should be_present }
-    its(:started_on)               { should == Date.new(2010,1,1) }
-    its(:ended_on)                 { should == Date.new(2010,1,31) }
+    # its(:started_on)               { should == Date.new(2010,1,1) }
+    # its(:ended_on)                 { should == Date.new(2010,1,31) }
     its(:canceled_at)              { should be_nil }
     its(:price)                    { should == 100 }
     its(:overage_amount)           { should == 0 }
@@ -42,8 +42,8 @@ describe InvoiceItem do
     it { should validate_presence_of(:invoice) }
     it { should validate_presence_of(:item_type) }
     it { should validate_presence_of(:item_id) }
-    it { should validate_presence_of(:started_on) }
-    it { should validate_presence_of(:ended_on) }
+    # it { should validate_presence_of(:started_on) }
+    # it { should validate_presence_of(:ended_on) }
     it { should validate_presence_of(:price) }
     
     it { should validate_numericality_of(:price) }

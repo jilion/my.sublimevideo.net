@@ -1,19 +1,19 @@
 every day invoice rake task at 00:01
   
-  - billable users
-    - next_invoiced_on == today
-    - next_invoiced_on == nil && site.activated_at + trial_days == today
+  ✓ billable users
+    ✓ next_invoiced_on == today
+    ✓ next_invoiced_on == nil && site.activated_at + trial_days == today
   
   - for each billable users
-    - if current invoice exists
+    - if billable invoice exists
       - calculate overages amount (saved on invoice items)
     - else
-      - create first new current invoice
+      - create first new billable invoice
       - add existing site(s) plan/addons (create invoice items)
     - flag as ready (calculate definitive amount)
     - delay charge
     
-    - create new current invoice
+    - create next invoice
     - add existing site(s) plan/addons (create invoice items)
     
     - set next_invoiced_on += 1.month

@@ -23,8 +23,8 @@ class InvoiceItem < ActiveRecord::Base
   validates :invoice,    :presence => true
   validates :item_type,  :presence => true
   validates :item_id,    :presence => true
-  validates :started_on, :presence => true
-  validates :ended_on,   :presence => true
+  # validates :started_on, :presence => true
+  # validates :ended_on,   :presence => true
   validates :price,      :presence => true, :numericality => true
   
   validates :overage_amount, :numericality => true, :allow_nil => true

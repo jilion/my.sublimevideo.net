@@ -7,15 +7,15 @@ describe Invoice do
     
     its(:user)       { should be_present }
     its(:reference)  { should =~ /^[A-Z1-9]{8}$/ }
-    its(:state)      { should == 'current' }
     its(:amount)     { should be_nil }
-    its(:started_on) { should == Date.new(2010,1,1) }
-    its(:ended_on)   { should == Date.new(2010,1,31) }
+    its(:started_on) { should == Time.now.utc.to_date }
+    its(:ended_on)   { should be_nil }
     its(:charged_at) { should be_nil }
     its(:attempts)   { should == 0 }
     its(:last_error) { should be_nil }
     its(:failed_at)  { should be_nil }
     
+    it { be_next }
     it { be_valid }
   end
   
@@ -36,30 +36,34 @@ describe Invoice do
     
     it { should validate_presence_of(:user) }
     it { should validate_presence_of(:started_on) }
-    it { should validate_presence_of(:ended_on) }
     
-    it "should validate presence of amount only if the invoice is in 'ready' state" do
-      subject.should be_current
-      subject.amount.should be_nil
-      subject.should be_valid
-      
-      subject.state = 'ready'
-      
-      subject.should be_ready
-      subject.amount.should be_nil
-      subject.should_not be_valid
-      subject.errors[:amount].should == ["can't be blank"]
+    it "should not allow two next invoices" do
+      invoice2 = Factory.build(:invoice, :user => subject.user.reload)
+      invoice2.should_not be_valid
+      invoice2.errors[:state].should == ["'next' should be unique per user"]
     end
+    
+    
+    context "with state ready" do
+      before(:each) { subject.state = 'ready' }
+      
+      it { should validate_presence_of(:ended_on) }
+      it { should validate_presence_of(:amount) }
+    end
+  end
+  
+  describe "callbacks" do
+    
   end
   
   describe "State Machine" do
     subject { Factory(:invoice) }
     
     describe "initial state" do
-      it { should be_current }
+      it { should be_next }
     end
     
-    describe "prepare_for_charging" do
+    pending "prepare_for_charging" do
       before(:each) { subject.amount = 10 }
       
       it "should set state to ready" do
@@ -68,7 +72,7 @@ describe Invoice do
       end
     end
     
-    describe "archive" do
+    pending "archive" do
       before(:each) do
         subject.amount = 10
         subject.prepare_for_charging
