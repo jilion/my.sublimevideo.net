@@ -32,14 +32,22 @@ describe InvoiceItem do
   end
   
   describe "scopes" do
-    before(:each) do
-      InvoiceItem.delete_all
+    before(:all) do
       @not_canceled_invoice_item = Factory(:invoice_item)
       @canceled_invoice_item = Factory(:invoice_item, :canceled_at => Time.now.utc)
     end
     
-    specify { InvoiceItem.not_canceled.should == [@not_canceled_invoice_item] }
-    specify { InvoiceItem.canceled.should == [@canceled_invoice_item] }
+    specify do
+      not_canceled_invoice_items = InvoiceItem.not_canceled
+      not_canceled_invoice_items.should include(@not_canceled_invoice_item)
+      not_canceled_invoice_items.should_not include(@canceled_invoice_item)
+    end
+    
+    specify do
+      canceled_invoice_items = InvoiceItem.canceled
+      canceled_invoice_items.should include(@canceled_invoice_item)
+      canceled_invoice_items.should_not include(@not_canceled_invoice_item)
+    end
   end
   
   describe "validates" do
