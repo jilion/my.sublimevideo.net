@@ -10,6 +10,7 @@ class Referrer
   index :site_id
   index :token
   index :url
+  index :hits
   index :created_at
   
   attr_accessible :token, :url, :hits
