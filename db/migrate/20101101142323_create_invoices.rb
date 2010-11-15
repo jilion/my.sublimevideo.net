@@ -9,9 +9,8 @@ class CreateInvoices < ActiveRecord::Migration
       t.string   :state
       t.integer  :amount
       
-      t.date     :started_on
-      t.date     :ended_on
-      t.datetime :charged_at
+      t.date     :billed_on
+      t.datetime :paid_at
       
       t.integer  :attempts, :default => 0
       t.string   :last_error

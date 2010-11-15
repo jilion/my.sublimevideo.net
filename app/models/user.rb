@@ -25,8 +25,8 @@ class User < ActiveRecord::Base
   
   has_many :sites
   has_many :invoices
-  has_one  :last_invoice, :class_name => "Invoice", :conditions => { :state => "ready" }, :order => "ended_on DESC"
-  has_one  :next_invoice, :class_name => "Invoice", :conditions => { :state => "next" }
+  # has_one  :last_invoice, :class_name => "Invoice", :conditions => { :state => "p" }, :order => "ended_on DESC"
+  has_one  :open_invoice, :class_name => "Invoice", :conditions => { :state => "open" }
   
   # ==========
   # = Scopes =
@@ -36,7 +36,7 @@ class User < ActiveRecord::Base
   scope :with_cc,         where(:cc_type.ne => nil, :cc_last_digits.ne => nil)
   
   # invoice
-  scope :billable_on,     lambda { |date = Time.now.utc.to_date| includes(:sites).where({ :next_invoiced_on => date.to_date } | ({ :next_invoiced_on => nil } & { :sites => { :activated_at.gte => date.to_date - Billing.trial_days, :activated_at.lt => date.to_date - Billing.trial_days + 1.day } })) }
+  scope :billable_on,     lambda { |date = Time.now.utc.to_date| includes(:sites).where({ :billable_on => date.to_date } | ({ :billable_on => nil } & { :sites => { :activated_at.gte => date.to_date - Billing.trial_days, :activated_at.lt => date.to_date - Billing.trial_days + 1.day } })) }
   
   # admin
   scope :enthusiast,      where(:enthusiast_id.ne => nil)
@@ -173,7 +173,7 @@ end
 #  locked_at             :datetime
 #  invoices_count        :integer         default(0)
 #  last_invoiced_on      :date
-#  next_invoiced_on      :date
+#  billable_on      :date
 #  cc_type               :string(255)
 #  cc_last_digits        :integer
 #  cc_expire_on          :date

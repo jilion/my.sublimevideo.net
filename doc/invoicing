@@ -1,8 +1,8 @@
 every day invoice rake task at 00:01
   
   ✓ billable users
-    ✓ next_invoiced_on == today
-    ✓ next_invoiced_on == nil && site.activated_at + trial_days == today
+    ✓ billable_on == today
+    ✓ billable_on == nil && site.activated_at + trial_days == today
   
   - for each billable users
     - if billable invoice exists
@@ -14,9 +14,9 @@ every day invoice rake task at 00:01
     - delay charge
     
     - create next invoice
-    - add existing site(s) plan/addons (create invoice items)
+    - add existing site(s) addons (create invoice items)
     
-    - set next_invoiced_on += 1.month
+    - set billable_on += 1.month
     
 
 all plans cycle should be set to the same as the user billing period

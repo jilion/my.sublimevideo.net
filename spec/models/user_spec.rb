@@ -18,8 +18,8 @@ describe User do
     its(:use_personal)         { should be_true }
     its(:email)                { should match /email\d+@user.com/ }
     its(:invoices_count)       { should == 0 }
-    its(:last_invoiced_on)     { should be_nil }
-    its(:next_invoiced_on)     { should be_nil }
+    # its(:last_invoiced_on)     { should be_nil }
+    its(:billable_on)     { should be_nil }
     
     it { should be_valid }
   end
@@ -31,17 +31,17 @@ describe User do
     it { should have_many :sites }
     it { should have_many :invoices }
     
-    it "should have_one last_invoice" do
-      user     = Factory(:user)
-      invoice1 = Factory(:invoice, :user => user, :amount => 1, :state => 'ready', :ended_on => 3.days.ago)
-      invoice2 = Factory(:invoice, :user => user, :amount => 1, :state => 'ready', :ended_on => 2.days.ago)
-      user.reload.last_invoice.should == invoice2
-    end
+    # it "should have_one last_invoice" do
+    #   user     = Factory(:user)
+    #   invoice1 = Factory(:invoice, :user => user, :amount => 1, :state => 'ready', :ended_on => 3.days.ago)
+    #   invoice2 = Factory(:invoice, :user => user, :amount => 1, :state => 'ready', :ended_on => 2.days.ago)
+    #   user.reload.last_invoice.should == invoice2
+    # end
     
-    it "should have_one next_invoice" do
+    it "should have_one open_invoice" do
       user    = Factory(:user)
       invoice = Factory(:invoice, :user => user)
-      user.reload.next_invoice.should == invoice
+      user.reload.open_invoice.should == invoice
     end
   end
   
@@ -50,9 +50,9 @@ describe User do
     describe "billable_on" do
       before(:each) do
         Timecop.travel(Date.new(2010,1,15).to_time.utc)
-        @user_billable_yesterday     = Factory(:user).tap { |u| u.update_attribute(:next_invoiced_on, Time.now.utc - 1.day) }
-        @user_billable_today         = Factory(:user).tap { |u| u.update_attribute(:next_invoiced_on, Time.now.utc) }
-        @user_billable_tomorrow      = Factory(:user).tap { |u| u.update_attribute(:next_invoiced_on, Time.now.utc + 1.day) }
+        @user_billable_yesterday     = Factory(:user).tap { |u| u.update_attribute(:billable_on, Time.now.utc - 1.day) }
+        @user_billable_today         = Factory(:user).tap { |u| u.update_attribute(:billable_on, Time.now.utc) }
+        @user_billable_tomorrow      = Factory(:user).tap { |u| u.update_attribute(:billable_on, Time.now.utc + 1.day) }
         @user_trial_ending_yesterday = Factory(:user)
         @user_trial_ending_today     = Factory(:user)
         @user_trial_ending_tomorrow  = Factory(:user)
@@ -348,7 +348,7 @@ end
 #  locked_at             :datetime
 #  invoices_count        :integer         default(0)
 #  last_invoiced_on      :date
-#  next_invoiced_on      :date
+#  billable_on      :date
 #  cc_type               :string(255)
 #  cc_last_digits        :integer
 #  cc_expire_on          :date

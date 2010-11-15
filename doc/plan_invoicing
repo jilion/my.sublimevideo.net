@@ -1,0 +1,27 @@
+Context: 1 dev site with monthly plan
+  Describe: dev site activated
+    - no new invoice item created
+    
+  Describe: active site cancelect within trial
+    - site archived
+    
+  Describe: active site.activated_at + trial_days == today
+    - billable invoice created
+    - invoice_item created
+      - started_on = today
+      - ended_on = today + 1.month
+    - user.billable_on = invoice_item created
+    - next invoice created
+    
+
+Context: 1 activated & billed upfront site with monthly plan
+  Describe: canceled
+    - site archived
+    - invoice_item.canceled_at = today
+    - no refund
+    
+  Describe: downgrade to monthly/yearly
+    - invoice_item.canceled_at = today
+    - new invoice_item created with the new plan
+      - started_on = canceled invoice_item.started_on
+  

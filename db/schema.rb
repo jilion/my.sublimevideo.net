@@ -195,7 +195,7 @@ ActiveRecord::Schema.define(:version => 20101104113606) do
     t.datetime "locked_at"
     t.integer  "invoices_count",                       :default => 0
     t.date     "last_invoiced_on"
-    t.date     "next_invoiced_on"
+    t.date     "billable_on"
     t.string   "cc_type"
     t.integer  "cc_last_digits"
     t.date     "cc_expire_on"
