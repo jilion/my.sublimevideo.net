@@ -1,6 +1,6 @@
 source :rubygems
 
-gem 'bundler',               '~> 1.0.3'
+gem 'bundler',               '~> 1.0.5'
 
 # gem 'rails',                 '~> 3.0.1'
 gem 'rails',                 :git => 'git://github.com/thibaudgg/rails.git', :branch => 'spork' # 3.0.1
@@ -14,7 +14,7 @@ gem 'haml',                  '~> 3.0.23'
 gem 'state_machine',         '~> 0.9.4'
 gem 'responders',            '~> 0.6.2'
 gem 'uniquify',              '~> 0.1.0'
-gem 'delayed_job',           '~> 2.1.0.pre2'
+gem 'delayed_job',           '~> 2.1.1'
 gem 'will_paginate',         '~> 3.0.pre2'
 gem 'has_scope',             :git => 'git://github.com/rymai/has_scope.git'
 gem 'jammit',                '~> 0.5.4'
@@ -33,7 +33,7 @@ gem 'devise',                :git => 'git://github.com/thibaudgg/devise.git', :b
 gem 'devise_invitable',      :git => 'git://github.com/rymai/devise_invitable.git'
 
 gem 'memcached',             '~> 0.20.1'
-gem 'dalli',                 '~> 0.11.0'
+gem 'dalli',                 '~> 0.11.1'
 
 gem 'aws',                   '~> 2.3.25'
 gem 'fog',                   '~> 0.3.17' # for carrierwave 0.5 final
@@ -94,7 +94,7 @@ group :test do
   gem 'steak',              '~> 1.0.0.rc.2'
   # gem 'akephalos',          '~> 0.2.4'
   # gem 'capybara-envjs',     '~> 0.4.0'
-  gem 'webmock',            '~> 1.6.0'
+  gem 'webmock',            '~> 1.6.1'
   gem 'vcr',                '~> 1.3.0'
   
   gem 'shoulda',            '~> 2.11.3'
