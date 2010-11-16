@@ -1,6 +1,8 @@
 class InvoiceItem < ActiveRecord::Base
   
-  attr_accessible :site_id, :item_type, :item_id, :started_on, :ended_on, :price, :overage_amount, :overage_price, :refund, :refunded_invoice_item_id
+  attr_accessible :site_id, :item_type, :item_id, :price, :amount, :info
+  
+  serialize :info
   
   # ================
   # = Associations =
@@ -9,14 +11,13 @@ class InvoiceItem < ActiveRecord::Base
   belongs_to :site
   belongs_to :invoice
   belongs_to :item, :polymorphic => true
-  belongs_to :refunded_invoice_item, :class_name => "InvoiceItem"
   
   # ==========
   # = Scopes =
   # ==========
   
-  scope :not_canceled, where(:canceled_at => nil) # probably change canceled_at to canceled_on
-  scope :canceled, where(:canceled_at.ne => nil)
+  scope :not_canceled, where(:canceled_at => nil)
+  scope :canceled,     where(:canceled_at.ne => nil)
   
   # ===============
   # = Validations =
@@ -26,14 +27,14 @@ class InvoiceItem < ActiveRecord::Base
   validates :invoice,    :presence => true
   validates :item_type,  :presence => true
   validates :item_id,    :presence => true
-  validates :started_on, :presence => true
-  validates :ended_on,   :presence => true
   validates :price,      :presence => true, :numericality => true
-  validates :amount, :numericality => true, :allow_nil => true
+  validates :amount,     :numericality => true, :allow_nil => true
   
   # =============
   # = Callbacks =
   # =============
+  
+  before_create :set_started_and_ended_on
   
   # =================
   # = State Machine =
@@ -46,6 +47,13 @@ class InvoiceItem < ActiveRecord::Base
   # ====================
   # = Instance Methods =
   # ====================
+  
+private
+  
+  def set_started_and_ended_on
+    self.started_on = Time.now.utc.to_date
+    self.ended_on   = 1.send(item.term_type).from_now.to_date
+  end
   
 end
 

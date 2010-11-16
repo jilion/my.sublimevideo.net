@@ -2,58 +2,57 @@ require 'spec_helper'
 
 describe InvoiceItem do
   context "from factory" do
-    set(:invoice_item_from_factory) { Factory(:invoice_item) }
+    set(:invoice_item_from_factory) { Factory(:plan_invoice_item) }
     subject { invoice_item_from_factory }
     
     its(:site)                     { should be_present }
     its(:invoice)                  { should be_present }
+    its(:type)                     { should == 'InvoiceItem::Plan' }
     its(:item_type)                { should == 'Plan' }
     its(:item_id)                  { should be_present }
-    # its(:started_on)               { should == Date.new(2010,1,1) }
-    # its(:ended_on)                 { should == Date.new(2010,1,31) }
+    its(:started_on)               { should == Time.now.utc.to_date }
+    its(:ended_on)                 { should == 1.month.from_now.to_date }
     its(:canceled_at)              { should be_nil }
-    its(:price)                    { should == 100 }
-    its(:overage_amount)           { should == 0 }
-    its(:overage_price)            { should be_nil }
-    its(:refund)                   { should == 0 }
-    its(:refunded_invoice_item_id) { should be_nil }
+    its(:price)                    { should == 50 }
+    its(:amount)                   { should == 50 }
     
     it { be_valid }
   end
   
   describe "associations" do
-    set(:invoice_item_for_associations) { Factory(:invoice_item) }
+    set(:invoice_item_for_associations) { Factory(:plan_invoice_item) }
     subject { invoice_item_for_associations }
     
     it { should belong_to :site }
     it { should belong_to :invoice }
     it { should belong_to :item }
-    it { should belong_to :refunded_invoice_item }
   end
   
   describe "scopes" do
     before(:all) do
-      @not_canceled_invoice_item = Factory(:invoice_item)
-      @canceled_invoice_item = Factory(:invoice_item, :canceled_at => Time.now.utc)
+      Factory(:plan_invoice_item)
+      @not_canceled_invoice_item = InvoiceItem::Plan.last
+      Factory(:plan_invoice_item, :canceled_at => Time.now.utc)
+      @canceled_invoice_item = InvoiceItem::Plan.last
     end
     
     specify do
-      not_canceled_invoice_items = InvoiceItem.not_canceled
+      not_canceled_invoice_items = InvoiceItem::Plan.not_canceled
       not_canceled_invoice_items.should include(@not_canceled_invoice_item)
       not_canceled_invoice_items.should_not include(@canceled_invoice_item)
     end
     
     specify do
-      canceled_invoice_items = InvoiceItem.canceled
+      canceled_invoice_items = InvoiceItem::Plan.canceled
       canceled_invoice_items.should include(@canceled_invoice_item)
       canceled_invoice_items.should_not include(@not_canceled_invoice_item)
     end
   end
   
   describe "validates" do
-    subject { Factory(:invoice_item) }
+    subject { Factory(:plan_invoice_item) }
     
-    [:site_id, :item_type, :item_id, :started_on, :ended_on, :price, :overage_amount, :overage_price, :refund, :refunded_invoice_item_id].each do |attr|
+    [:site_id, :item_type, :item_id, :started_on, :ended_on, :price, :amount, :info].each do |attr|
       it { should allow_mass_assignment_of(attr) }
     end
     
@@ -61,14 +60,10 @@ describe InvoiceItem do
     it { should validate_presence_of(:invoice) }
     it { should validate_presence_of(:item_type) }
     it { should validate_presence_of(:item_id) }
-    # it { should validate_presence_of(:started_on) }
-    # it { should validate_presence_of(:ended_on) }
     it { should validate_presence_of(:price) }
     
     it { should validate_numericality_of(:price) }
-    it { should validate_numericality_of(:overage_amount) }
-    it { should validate_numericality_of(:overage_price) }
-    it { should validate_numericality_of(:refund) }
+    it { should validate_numericality_of(:amount) }
   end
   
 end

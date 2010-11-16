@@ -8,14 +8,12 @@ describe Invoice do
     its(:user)       { should be_present }
     its(:reference)  { should =~ /^[A-Z1-9]{8}$/ }
     its(:amount)     { should be_nil }
-    its(:started_on) { should == Time.now.utc.to_date }
-    its(:ended_on)   { should be_nil }
-    its(:charged_at) { should be_nil }
+    its(:paid_at) { should be_nil }
     its(:attempts)   { should == 0 }
     its(:last_error) { should be_nil }
     its(:failed_at)  { should be_nil }
     
-    it { be_next }
+    it { be_open }
     it { be_valid }
   end
   
@@ -30,12 +28,7 @@ describe Invoice do
   describe "validates" do
     subject { Factory(:invoice) }
     
-    [:user_id, :started_on, :ended_on].each do |attr|
-      it { should allow_mass_assignment_of(attr) }
-    end
-    
     it { should validate_presence_of(:user) }
-    it { should validate_presence_of(:started_on) }
     
     describe "uniqueness of open invoice" do
       it "should not allow two open invoices" do
@@ -45,7 +38,7 @@ describe Invoice do
       end
       
       it "should allow one next invoices (self)" do
-        subject.charged_at = Time.now.utc
+        subject.paid_at = Time.now.utc
         subject.should be_valid
         subject.errors[:state].should be_empty
       end
@@ -55,7 +48,12 @@ describe Invoice do
       before(:each) { subject.state = 'unpaid' }
       
       it { should validate_presence_of(:amount) }
-      it { should validate_presence_of(:closed_on) }
+    end
+    
+    context "with state paid" do
+      before(:each) { subject.state = 'paid' }
+      
+      it { should validate_presence_of(:billed_on) }
     end
   end
   

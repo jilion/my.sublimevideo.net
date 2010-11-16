@@ -1,7 +1,5 @@
 class Invoice < ActiveRecord::Base
   
-  attr_accessible :user_id
-  
   uniquify :reference, :chars => Array('A'..'Z') + Array('1'..'9')
   
   # ================
@@ -19,8 +17,8 @@ class Invoice < ActiveRecord::Base
   # = Validations =
   # ===============
   
-  validates :user,       :presence => true
-  validates :amount,     :numericality => true, :allow_nil => true
+  validates :user,   :presence => true
+  validates :amount, :numericality => true, :allow_nil => true
   validate  :uniqueness_of_open_invoice
   
   # =============
@@ -37,7 +35,10 @@ class Invoice < ActiveRecord::Base
     
     state :unpaid do
       validates :amount,    :presence => true
-      validates :closed_on, :presence => true
+    end
+    
+    state :paid do
+      validates :billed_on, :presence => true
     end
   end
   

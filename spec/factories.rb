@@ -87,13 +87,44 @@ end
 
 Factory.define :invoice do |f|
   f.association :user
-  f.started_on  { Time.now.utc.to_date }
 end
 
 Factory.define :invoice_item do |f|
   f.association :site
   f.association :invoice
+  f.started_on  { Time.now.utc.to_date }
+end
+
+Factory.define :addon_invoice_item, :parent => :invoice_item do |f|
+  f.type        'InvoiceItem::Addon'
+  f.item_type   'Addon'
+  f.item_id     { Factory(:addon).id }
+  f.price       10
+  f.amount      10
+end
+
+Factory.define :overage_invoice_item, :parent => :invoice_item do |f|
+  f.type        'InvoiceItem::Overage'
   f.item_type   'Plan'
   f.item_id     { Factory(:plan).id }
-  f.price       100
+  f.price       1
+  f.amount      5
+  f.info        Hash.new({ :player_hits => 5500 })
 end
+
+Factory.define :plan_invoice_item, :parent => :invoice_item do |f|
+  f.type        'InvoiceItem::Plan'
+  f.item_type   'Plan'
+  f.item_id     { Factory(:plan).id }
+  f.price       50
+  f.amount      50
+end
+
+Factory.define :refund_invoice_item, :parent => :invoice_item do |f|
+  f.type        'InvoiceItem::Refund'
+  f.item_type   'Plan'
+  f.item_id     { Factory(:plan).id }
+  f.price       50
+  f.amount      50
+end
+
