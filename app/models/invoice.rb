@@ -130,6 +130,7 @@ private
   
 end
 
+
 # == Schema Information
 #
 # Table name: invoices
@@ -139,16 +140,12 @@ end
 #  reference  :string(255)
 #  state      :string(255)
 #  amount     :integer
-#  closed_on  :date
-#  charged_at :datetime
+#  billed_on  :date
+#  paid_at    :datetime
 #  attempts   :integer         default(0)
 #  last_error :string(255)
 #  failed_at  :datetime
 #  created_at :datetime
 #  updated_at :datetime
-#
-# Indexes
-#
-#  index_invoices_on_user_id  (user_id)
 #
 

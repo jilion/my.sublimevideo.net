@@ -1,4 +1,4 @@
-class InvoiceItem::Addon < InvoiceItem
+class InvoiceItem::Overage < InvoiceItem
   
 end
 

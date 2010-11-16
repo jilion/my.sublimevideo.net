@@ -717,6 +717,7 @@ describe Site do
   end
 end
 
+
 # == Schema Information
 #
 # Table name: sites
@@ -739,14 +740,8 @@ end
 #  wildcard        :boolean
 #  extra_hostnames :string(255)
 #  plan_id         :integer
+#  billable_on     :date
 #  cdn_up_to_date  :boolean
 #  activated_at    :datetime
-#
-# Indexes
-#
-#  index_sites_on_created_at  (created_at)
-#  index_sites_on_hostname    (hostname)
-#  index_sites_on_plan_id     (plan_id)
-#  index_sites_on_user_id     (user_id)
 #
 

@@ -3,7 +3,6 @@ class CreateAddons < ActiveRecord::Migration
     create_table :addons do |t|
       t.string  :name
       t.string  :term_type
-      t.integer :price
       
       t.timestamps
     end

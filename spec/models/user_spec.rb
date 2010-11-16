@@ -324,6 +324,7 @@ protected
 end
 
 
+
 # == Schema Information
 #
 # Table name: users
@@ -346,9 +347,6 @@ end
 #  last_sign_in_ip       :string(255)
 #  failed_attempts       :integer         default(0)
 #  locked_at             :datetime
-#  invoices_count        :integer         default(0)
-#  last_invoiced_on      :date
-#  billable_on      :date
 #  cc_type               :string(255)
 #  cc_last_digits        :integer
 #  cc_expire_on          :date
@@ -372,11 +370,6 @@ end
 #  company_job_title     :string(255)
 #  company_employees     :string(255)
 #  company_videos_served :string(255)
-#
-# Indexes
-#
-#  index_users_on_confirmation_token    (confirmation_token) UNIQUE
-#  index_users_on_email                 (email) UNIQUE
-#  index_users_on_reset_password_token  (reset_password_token) UNIQUE
+#  billable_on           :date
 #
 

@@ -1,4 +1,4 @@
-class InvoiceItem::Addon < InvoiceItem
+class InvoiceItem::Plan < InvoiceItem
   
 end
 

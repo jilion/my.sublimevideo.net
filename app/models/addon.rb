@@ -39,6 +39,7 @@ class Addon < ActiveRecord::Base
   
 end
 
+
 # == Schema Information
 #
 # Table name: addons
@@ -46,7 +47,6 @@ end
 #  id         :integer         not null, primary key
 #  name       :string(255)
 #  term_type  :string(255)
-#  price      :integer
 #  created_at :datetime
 #  updated_at :datetime
 #

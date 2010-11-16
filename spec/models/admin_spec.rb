@@ -29,6 +29,7 @@ describe Admin do
   
 end
 
+
 # == Schema Information
 #
 # Table name: admins
@@ -51,11 +52,5 @@ end
 #  invitation_sent_at   :datetime
 #  created_at           :datetime
 #  updated_at           :datetime
-#
-# Indexes
-#
-#  index_admins_on_email                 (email) UNIQUE
-#  index_admins_on_invitation_token      (invitation_token)
-#  index_admins_on_reset_password_token  (reset_password_token) UNIQUE
 #
 

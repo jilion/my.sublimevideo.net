@@ -3,6 +3,7 @@ class CreateAddonsSites < ActiveRecord::Migration
     create_table :addons_sites, :id => false, :force => true do |t|
       t.integer :site_id
       t.integer :addon_id
+      
       t.timestamps
     end
     

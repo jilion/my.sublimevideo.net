@@ -10,12 +10,11 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101104113606) do
+ActiveRecord::Schema.define(:version => 20101116153056) do
 
   create_table "addons", :force => true do |t|
     t.string   "name"
     t.string   "term_type"
-    t.integer  "price"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -29,6 +28,18 @@ ActiveRecord::Schema.define(:version => 20101104113606) do
 
   add_index "addons_sites", ["addon_id"], :name => "index_addons_sites_on_addon_id"
   add_index "addons_sites", ["site_id"], :name => "index_addons_sites_on_site_id"
+
+  create_table "addonships", :force => true do |t|
+    t.integer  "plan_id"
+    t.integer  "addon_id"
+    t.integer  "price"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "addonships", ["addon_id"], :name => "index_addonships_on_addon_id"
+  add_index "addonships", ["plan_id", "addon_id"], :name => "index_addonships_on_plan_id_and_addon_id"
+  add_index "addonships", ["plan_id"], :name => "index_addonships_on_plan_id"
 
   create_table "admins", :force => true do |t|
     t.string   "email",                               :default => "", :null => false
@@ -70,6 +81,7 @@ ActiveRecord::Schema.define(:version => 20101104113606) do
   add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
 
   create_table "invoice_items", :force => true do |t|
+    t.string   "type"
     t.integer  "site_id"
     t.integer  "invoice_id"
     t.string   "item_type"
@@ -78,10 +90,8 @@ ActiveRecord::Schema.define(:version => 20101104113606) do
     t.date     "ended_on"
     t.datetime "canceled_at"
     t.integer  "price"
-    t.integer  "overage_amount",           :default => 0
-    t.integer  "overage_price"
-    t.integer  "refund",                   :default => 0
-    t.integer  "refunded_invoice_item_id"
+    t.integer  "amount"
+    t.text     "info"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -95,9 +105,8 @@ ActiveRecord::Schema.define(:version => 20101104113606) do
     t.string   "reference"
     t.string   "state"
     t.integer  "amount"
-    t.date     "started_on"
-    t.date     "ended_on"
-    t.datetime "charged_at"
+    t.date     "billed_on"
+    t.datetime "paid_at"
     t.integer  "attempts",   :default => 0
     t.string   "last_error"
     t.datetime "failed_at"
@@ -166,6 +175,7 @@ ActiveRecord::Schema.define(:version => 20101104113606) do
     t.boolean  "wildcard"
     t.string   "extra_hostnames"
     t.integer  "plan_id"
+    t.date     "billable_on"
     t.boolean  "cdn_up_to_date"
     t.datetime "activated_at"
   end
@@ -193,9 +203,6 @@ ActiveRecord::Schema.define(:version => 20101104113606) do
     t.string   "last_sign_in_ip"
     t.integer  "failed_attempts",                      :default => 0
     t.datetime "locked_at"
-    t.integer  "invoices_count",                       :default => 0
-    t.date     "last_invoiced_on"
-    t.date     "billable_on"
     t.string   "cc_type"
     t.integer  "cc_last_digits"
     t.date     "cc_expire_on"
@@ -219,8 +226,10 @@ ActiveRecord::Schema.define(:version => 20101104113606) do
     t.string   "company_job_title"
     t.string   "company_employees"
     t.string   "company_videos_served"
+    t.date     "billable_on"
   end
 
+  add_index "users", ["billable_on"], :name => "index_users_on_billable_on"
   add_index "users", ["confirmation_token"], :name => "index_users_on_confirmation_token", :unique => true
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
   add_index "users", ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true

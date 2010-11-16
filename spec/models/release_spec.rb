@@ -254,6 +254,7 @@ describe Release do
   
 end
 
+
 # == Schema Information
 #
 # Table name: releases
@@ -265,9 +266,5 @@ end
 #  state      :string(255)
 #  created_at :datetime
 #  updated_at :datetime
-#
-# Indexes
-#
-#  index_releases_on_state  (state)
 #
 
