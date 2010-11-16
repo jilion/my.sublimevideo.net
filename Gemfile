@@ -30,8 +30,8 @@ gem 'liquid',                '~> 2.2.2'
 gem 'devise',                '~> 1.1.3'
 gem 'devise_invitable',      :git => 'git://github.com/rymai/devise_invitable.git'
 
-gem 'memcached',             '~> 0.20.1'
-gem 'dalli',                 '~> 0.10.1'
+# gem 'memcached',             '~> 0.20.1'
+gem 'dalli',                 '~> 0.11.1'
 
 gem 'aws',                   '~> 2.3.22'
 gem 'fog',                   '~> 0.3.13' # for carrierwave 0.5 final
