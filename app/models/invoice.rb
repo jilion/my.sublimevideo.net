@@ -50,9 +50,9 @@ class Invoice < ActiveRecord::Base
     User.billable_on(date).each do |user|
       transaction do
         open_invoice = self.open_invoice(user)
-        open_invoice.create_invoice_items_for_plans
-        open_invoice.calculate_plans_overages
-        open_invoice.calculate_addons_price
+        # open_invoice.create_invoice_items_for_plans
+        # open_invoice.calculate_plans_overages
+        # open_invoice.calculate_addons_price
         
         if open_invoice.chargeable?
           open_invoice.billed_on = date
@@ -60,7 +60,7 @@ class Invoice < ActiveRecord::Base
           open_invoice.delay.charge
           
           next_open_invoice = user.invoices.create
-          next_open_invoice.create_invoice_items_for_addons
+          # next_open_invoice.create_invoice_items_for_addons
         else
           open_invoice.create_invoice_items_for_addons
         end

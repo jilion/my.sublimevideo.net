@@ -2,15 +2,15 @@ source :rubygems
 
 gem 'bundler',               '~> 1.0.5'
 
-# gem 'rails',                 '~> 3.0.1'
-gem 'rails',                 :git => 'git://github.com/thibaudgg/rails.git', :branch => 'spork' # 3.0.1
+# gem 'rails',                 '~> 3.0.2'
+gem 'rails',                 :git => 'git://github.com/thibaudgg/rails.git', :branch => 'spork' # 3.0.2
 gem 'rack',                  '~> 1.2.1'
 gem 'pg',                    '~> 0.9.0'
 
 gem 'libxml-ruby',           '~> 1.1.3', :require => 'libxml'
 
 gem 'i18n',                  '~> 0.4.1'
-gem 'haml',                  '~> 3.0.23'
+gem 'haml',                  '~> 3.0.24'
 gem 'state_machine',         '~> 0.9.4'
 gem 'responders',            '~> 0.6.2'
 gem 'uniquify',              '~> 0.1.0'
@@ -18,7 +18,7 @@ gem 'delayed_job',           '~> 2.1.1'
 gem 'will_paginate',         '~> 3.0.pre2'
 gem 'has_scope',             :git => 'git://github.com/rymai/has_scope.git'
 gem 'jammit',                '~> 0.5.4'
-gem 'meta_where',            '~> 0.9.5'
+gem 'meta_where',            '~> 0.9.9'
 gem 'hoptoad_notifier',      '~> 2.3.12'
 gem 'prowl',                 '~> 0.1.3'
 gem 'activemerchant',        '~> 1.9.0'
@@ -35,7 +35,7 @@ gem 'devise_invitable',      :git => 'git://github.com/rymai/devise_invitable.gi
 gem 'memcached',             '~> 0.20.1'
 gem 'dalli',                 '~> 0.11.1'
 
-gem 'aws',                   '~> 2.3.25'
+gem 'aws',                   '~> 2.3.26'
 gem 'fog',                   '~> 0.3.17' # for carrierwave 0.5 final
 gem 'carrierwave',           '~> 0.5.0'
 
@@ -71,7 +71,7 @@ group :development do
   gem 'annotate',      '~> 2.4.0'
   gem 'wirble',        '~> 0.1.3'
   gem 'ruby-graphviz', :require => 'graphviz'
-  gem 'heroku',        '~> 1.12.2'
+  gem 'heroku',        '~> 1.13.1'
   gem 'heroku_tasks',  '~> 0.1.4'
   gem 'taps',          '~> 0.3.13' # heroku db pull/push
 end
@@ -79,7 +79,7 @@ end
 group :test do
   gem 'growl'
   gem 'spork',              '~> 0.9.0.rc2'
-  gem 'guard'
+  gem 'guard',              :git => "git://github.com/guard/guard.git"
   gem 'rb-fsevent',         '~> 0.3.9'
   gem 'guard-livereload'
   gem 'guard-rspec'

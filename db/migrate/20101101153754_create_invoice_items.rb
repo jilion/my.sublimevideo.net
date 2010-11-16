@@ -1,6 +1,7 @@
 class CreateInvoiceItems < ActiveRecord::Migration
   def self.up
     create_table :invoice_items do |t|
+      t.string   :type
       t.integer  :site_id
       t.integer  :invoice_id
       
@@ -12,10 +13,9 @@ class CreateInvoiceItems < ActiveRecord::Migration
       t.datetime :canceled_at
       
       t.integer  :price
-      t.integer  :overage_amount, :default => 0
-      t.integer  :overage_price
-      t.integer  :refund, :default => 0
-      t.integer  :refunded_invoice_item_id
+      t.integer  :amount
+      
+      t.text     :info # serialized
       
       t.timestamps
     end
