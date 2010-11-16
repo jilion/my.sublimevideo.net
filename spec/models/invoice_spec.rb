@@ -37,11 +37,11 @@ describe Invoice do
     it { should validate_presence_of(:user) }
     it { should validate_presence_of(:started_on) }
     
-    describe "uniqueness of next invoice" do
-      it "should not allow two next invoices" do
+    describe "uniqueness of open invoice" do
+      it "should not allow two open invoices" do
         invoice2 = Factory.build(:invoice, :user => subject.user.reload)
         invoice2.should_not be_valid
-        invoice2.errors[:state].should == ["'next' should be unique per user"]
+        invoice2.errors[:state].should == ["'open' should be unique per user"]
       end
       
       it "should allow one next invoices (self)" do
@@ -51,11 +51,11 @@ describe Invoice do
       end
     end
     
-    context "with state ready" do
-      before(:each) { subject.state = 'ready' }
+    context "with state unpaid" do
+      before(:each) { subject.state = 'unpaid' }
       
-      it { should validate_presence_of(:ended_on) }
       it { should validate_presence_of(:amount) }
+      it { should validate_presence_of(:closed_on) }
     end
   end
   
@@ -67,7 +67,7 @@ describe Invoice do
     subject { Factory(:invoice) }
     
     describe "initial state" do
-      it { should be_next }
+      it { should be_open }
     end
     
     pending "prepare_for_charging" do

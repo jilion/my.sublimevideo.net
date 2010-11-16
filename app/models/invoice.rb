@@ -1,6 +1,6 @@
 class Invoice < ActiveRecord::Base
   
-  attr_accessible :user_id, :started_on, :ended_on
+  attr_accessible :user_id
   
   uniquify :reference, :chars => Array('A'..'Z') + Array('1'..'9')
   
@@ -20,7 +20,6 @@ class Invoice < ActiveRecord::Base
   # ===============
   
   validates :user,       :presence => true
-  validates :started_on, :presence => true
   validates :amount,     :numericality => true, :allow_nil => true
   validate  :uniqueness_of_open_invoice
   
@@ -37,8 +36,8 @@ class Invoice < ActiveRecord::Base
     event(:charge) { transition :unpaid => [:paid, :failed], :failed => [:failed, :paid] }
     
     state :unpaid do
-      validates :amount, :presence => true
-      validates :ended_on, :presence => true
+      validates :amount,    :presence => true
+      validates :closed_on, :presence => true
     end
   end
   
