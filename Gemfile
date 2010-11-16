@@ -68,7 +68,7 @@ group :development do
   gem 'ruby-graphviz', :require => 'graphviz'
   gem 'heroku',        '~> 1.11.0'
   gem 'heroku_tasks',  '~> 0.1.4'
-  gem 'taps',          '~> 0.3.13' # heroku db pull/push
+  gem 'taps',          '~> 0.3.14' # heroku db pull/push
   gem 'timecop',       '~> 0.3.5'
   gem 'silent-postgres'
 end
