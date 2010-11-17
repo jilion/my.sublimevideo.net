@@ -342,3 +342,6 @@ DEPENDENCIES
   will_paginate (~> 3.0.pre2)
   wirble (~> 0.1.3)
   zip (~> 2.0.2)
+
+METADATA
+  version: 1.0.6
