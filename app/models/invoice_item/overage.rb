@@ -1,5 +1,7 @@
 class InvoiceItem::Overage < InvoiceItem
   
+  
+  
 end
 
 

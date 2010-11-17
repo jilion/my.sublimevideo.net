@@ -53,7 +53,7 @@ describe InvoiceItem do
   describe "validates" do
     subject { Factory(:plan_invoice_item) }
     
-    [:site, :item, :price, :amount, :info].each do |attr|
+    [:site, :item, :price, :started_on, :ended_on, :info].each do |attr|
       it { should allow_mass_assignment_of(attr) }
     end
     

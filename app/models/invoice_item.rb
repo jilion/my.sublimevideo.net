@@ -1,6 +1,6 @@
 class InvoiceItem < ActiveRecord::Base
   
-  attr_accessible :site, :item, :price, :amount, :info
+  attr_accessible :site, :item, :price, :started_on, :ended_on, :info
   
   serialize :info
   
@@ -39,12 +39,6 @@ class InvoiceItem < ActiveRecord::Base
   # = Callbacks =
   # =============
   
-  before_validation :set_invoice_from_site_user, :on => :create
-  
-  # =================
-  # = State Machine =
-  # =================
-  
   # =================
   # = Class Methods =
   # =================
@@ -53,11 +47,11 @@ class InvoiceItem < ActiveRecord::Base
   # = Instance Methods =
   # ====================
   
-private
-  
-  # before_validation
-  def set_invoice_from_site_user
-    self.invoice ||= site && site.user.open_invoice
+  def site=(site)
+    if site.present?
+      self.site_id = site.id
+      self.invoice = site.user.open_invoice
+    end
   end
   
 end
