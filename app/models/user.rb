@@ -6,7 +6,7 @@ class User < ActiveRecord::Base
   
   # Pagination
   cattr_accessor :per_page
-  self.per_page = 100
+  self.per_page = 50
   
   # Mail template
   liquid_methods :email, :first_name, :last_name, :full_name
@@ -148,7 +148,6 @@ protected
   end
   
 end
-
 
 
 # == Schema Information

@@ -145,4 +145,8 @@ end
 #  created_at :datetime
 #  updated_at :datetime
 #
+# Indexes
+#
+#  index_releases_on_state  (state)
+#
 

@@ -33,7 +33,7 @@ gem 'liquid',                '~> 2.2.2'
 gem 'devise',                :git => 'git://github.com/thibaudgg/devise.git', :branch => 'spork' # 1.1.3
 gem 'devise_invitable',      :git => 'git://github.com/rymai/devise_invitable.git'
 
-gem 'memcached',             '~> 0.20.1'
+# gem 'memcached',             '~> 0.20.1'
 gem 'dalli',                 '~> 0.11.1'
 
 gem 'aws',                   '~> 2.3.26'
@@ -75,7 +75,9 @@ group :development do
   gem 'ruby-graphviz', :require => 'graphviz'
   gem 'heroku',        '~> 1.13.5'
   gem 'heroku_tasks',  '~> 0.1.4'
-  gem 'taps',          '~> 0.3.13' # heroku db pull/push
+  gem 'taps',          '~> 0.3.14' # heroku db pull/push
+  gem 'timecop',       '~> 0.3.5'
+  gem 'silent-postgres'
 end
 
 group :test do

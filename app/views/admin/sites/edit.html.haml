@@ -32,8 +32,16 @@
 
 %h3= "Active pages"
 
+%h4= "Last"
 %ul
-  - @site.referrers.by_updated_at.each do |referrer|
+  - @site.referrers.by_created_at.limit(10).each do |referrer|
+    %li
+      = link_to truncate(referrer.url, :length => 50), referrer.url
+      = "(hits: #{referrer.hits}, created_at: #{display_date(referrer.created_at)}, updated_at: #{display_date(referrer.updated_at)})"
+  
+%h4= "Popular"
+%ul
+  - @site.referrers.by_hits.limit(10).each do |referrer|
     %li
       = link_to truncate(referrer.url, :length => 50), referrer.url
       = "(hits: #{referrer.hits}, created_at: #{display_date(referrer.created_at)}, updated_at: #{display_date(referrer.updated_at)})"

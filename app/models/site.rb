@@ -5,7 +5,7 @@ class Site < ActiveRecord::Base
   
   # Pagination
   cattr_accessor :per_page
-  self.per_page = 100
+  self.per_page = 50
   
   # Versioning
   has_paper_trail
@@ -58,6 +58,7 @@ class Site < ActiveRecord::Base
   # = Validations =
   # ===============
   
+<<<<<<< HEAD
   validates :user,            :presence => true
   validates :plan,            :presence => { :message => "Please choose a plan" }
   validates :hostname,        :hostname_uniqueness => true, :hostname => true
@@ -65,6 +66,13 @@ class Site < ActiveRecord::Base
   validates :dev_hostnames,   :dev_hostnames => true
   validates :player_mode,     :inclusion => { :in => PLAYER_MODES }
   validate  :at_least_one_domain_set
+=======
+  validates :user,          :presence => true
+  validates :hostname,      :presence => true, :hostname_uniqueness => true, :production_hostname => true
+  validates :dev_hostnames, :hostnames => true
+  validates :player_mode,   :inclusion => { :in => PLAYER_MODES }
+  validate  :must_be_active_to_update_hostnames
+>>>>>>> master
   
   # =============
   # = Callbacks =
@@ -253,6 +261,7 @@ public
   
 protected
   
+<<<<<<< HEAD
   # before_validation
   def set_user_attributes
     if user && user_attributes.present?
@@ -260,6 +269,8 @@ protected
     end
   end
   
+=======
+>>>>>>> master
   # validate
   def at_least_one_domain_set
     unless active? || hostname.present? || dev_hostnames.present? || extra_hostnames.present?
@@ -327,7 +338,10 @@ protected
 end
 
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> master
 # == Schema Information
 #
 # Table name: sites

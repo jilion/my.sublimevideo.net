@@ -2,6 +2,7 @@
 
 = "Current server time: #{l(Time.now.utc, :format => :fully_full)}"
 
+= image_tag "/images/embed/spinner.gif", :class => "spinner", :id => "table_spinner", :style => "display:none"
 %table.main#delayed_jobs
   %tr
     %th.name= "Name"
