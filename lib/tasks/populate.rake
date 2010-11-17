@@ -13,7 +13,7 @@ namespace :db do
     
     desc "Empty all the tables"
     task :empty_all_tables => :environment do
-      timed { empty_tables("delayed_jobs", Invoice, Log, MailTemplate, MailLog, Site, SiteUsage, User, Admin, Plan) }
+      timed { empty_tables("delayed_jobs", Invoice, InvoiceItem, Log, MailTemplate, MailLog, Site, SiteUsage, User, Admin, Plan, Addon, Addonship) }
     end
     
     desc "Load all development fixtures."
@@ -66,7 +66,7 @@ namespace :db do
     
     desc "Create fake addons"
     task :addons => :environment do
-      timed { empty_tables(Addon) }
+      timed { empty_tables(Plan, Addon, Addonship) }
       timed { create_addons }
     end
   end
@@ -226,15 +226,11 @@ def create_plans
 end
 
 def create_addons
+  create_plans if Plan.all.empty?
   addons = [
-    { :name => "ssl_month", :term_type => "month" }
+    { :name => "ssl_month", :term_type => "month", :addonships_attributes => Plan.all.map { |p| { :plan_id => p.id, :price => p.id*100+99 } } }
   ]
   addons.each { |attributes| Addon.create(attributes) }
-  Plan.all.each do |plan|
-    Addon.all.each do |addon|
-      Addonship.create(:addon_id => addon.id, :plan_id => plan.id, :price => 499)
-    end
-  end
   print "#{addons.size} addon(s) created!\n"
 end
 

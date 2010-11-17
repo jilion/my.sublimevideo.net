@@ -17,8 +17,6 @@ describe User do
     its(:postal_code)          { should == "2000" }
     its(:use_personal)         { should be_true }
     its(:email)                { should match /email\d+@user.com/ }
-    its(:invoices_count)       { should == 0 }
-    # its(:last_invoiced_on)     { should be_nil }
     its(:billable_on)     { should be_nil }
     
     it { should be_valid }
@@ -91,6 +89,7 @@ describe User do
       user = Factory.build(:user, :use_personal => nil, :use_company => nil, :use_clients => nil)
       user.should_not be_valid
       user.should have(1).error_on(:use)
+      user.errors[:use].should == ["Please check at least one option"]
       
     end
     

@@ -80,10 +80,9 @@ feature "Admins invitations:" do
     current_url.should =~ %r(http://[^/]+/admin/invitation/accept\?invitation_token=#{invited_admin.invitation_token})
     fill_in "Password", :with => "123456"
     click_button "Go!"
+    
     current_url.should =~ %r(http://[^/]+/admin/djs)
-    
     page.should have_content(I18n.translate('devise.invitations.admin.updated'))
-    
     invited_admin.email.should == "invited@admin.com"
     invited_admin.reload.invitation_token.should be_nil
     

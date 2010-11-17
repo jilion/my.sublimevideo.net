@@ -22,6 +22,8 @@ describe Plan do
     
     it { should have_many :sites }
     it { should have_many :invoice_items }
+    it { should have_many :addonships }
+    it { should have_many :addons }
   end
   
   describe "validates" do

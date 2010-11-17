@@ -1,13 +1,17 @@
 class Addon < ActiveRecord::Base
   
-  attr_accessible :name, :term_type
+  attr_accessible :name, :term_type, :addonships_attributes
   
   # ================
   # = Associations =
   # ================
   
-  has_many :invoice_items, :as => :item
   has_and_belongs_to_many :sites
+  has_many :invoice_items, :as => :item
+  has_many :addonships
+  has_many :plans, :through => :addonships
+  
+  accepts_nested_attributes_for :addonships
   
   # ==========
   # = Scopes =
@@ -35,6 +39,10 @@ class Addon < ActiveRecord::Base
   # ====================
   # = Instance Methods =
   # ====================
+  
+  def price(plan)
+    addonships.find_by_plan_id(plan.id).try(:price)
+  end
   
 end
 

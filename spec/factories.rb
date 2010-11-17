@@ -84,6 +84,12 @@ Factory.define :addon do |f|
   f.term_type 'month'
 end
 
+Factory.define :addonship do |f|
+  f.plan_id  { Factory(:plan).id }
+  f.addon_id { Factory(:addon).id }
+  f.price    99
+end
+
 Factory.define :invoice do |f|
   f.association :user
 end
@@ -95,35 +101,35 @@ Factory.define :invoice_item do |f|
 end
 
 Factory.define :addon_invoice_item, :parent => :invoice_item do |f|
-  f.type        'InvoiceItem::Addon'
-  f.item_type   'Addon'
-  f.item_id     { Factory(:addon).id }
-  f.price       10
-  f.amount      10
+  f.type      'InvoiceItem::Addon'
+  f.item_type 'Addon'
+  f.item_id   { Factory(:addon).id }
+  f.price     10
+  f.amount    10
 end
 
 Factory.define :overage_invoice_item, :parent => :invoice_item do |f|
-  f.type        'InvoiceItem::Overage'
-  f.item_type   'Plan'
-  f.item_id     { Factory(:plan).id }
-  f.price       1
-  f.amount      5
-  f.info        Hash.new({ :player_hits => 5500 })
+  f.type      'InvoiceItem::Overage'
+  f.item_type 'Plan'
+  f.item_id   { Factory(:plan).id }
+  f.price     1
+  f.amount    5
+  f.info      Hash.new({ :player_hits => 5500 })
 end
 
 Factory.define :plan_invoice_item, :parent => :invoice_item do |f|
-  f.type        'InvoiceItem::Plan'
-  f.item_type   'Plan'
-  f.item_id     { Factory(:plan).id }
-  f.price       50
-  f.amount      50
+  f.type      'InvoiceItem::Plan'
+  f.item_type 'Plan'
+  f.item_id   { Factory(:plan).id }
+  f.price     50
+  f.amount    50
 end
 
 Factory.define :refund_invoice_item, :parent => :invoice_item do |f|
-  f.type        'InvoiceItem::Refund'
-  f.item_type   'Plan'
-  f.item_id     { Factory(:plan).id }
-  f.price       50
-  f.amount      50
+  f.type      'InvoiceItem::Refund'
+  f.item_type 'Plan'
+  f.item_id   { Factory(:plan).id }
+  f.price     50
+  f.amount    50
 end
 

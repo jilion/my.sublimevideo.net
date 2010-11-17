@@ -1,19 +1,16 @@
 = title_and_content_header "Settings for #{content_tag(:strong, truncate_middle(@site.hostname, :length => 18))}"
 
-%h3 Site settings
-= form_for @site, :html => { :class => "edit_settings", "data-password-protected" => @site.active? } do |f|
+= form_for @site, :html => { :id => "edit_site_settings", "data-password-protected" => @site.active? } do |f|
   = render 'settings', :f => f
   .actions
     = f.submit 'Update settings', :class => "submit small"
     
-%h3 Change your plan
-= form_for @site, :html => { :class => "edit_plans", "data-password-protected" => @site.active? } do |f|
+= form_for @site, :html => { :id => "edit_site_plan", "data-password-protected" => @site.active? } do |f|
   = render 'plans', :f => f
   .actions
     = f.submit 'Update plans', :class => "submit small"
     
-%h3 Addons
-= form_for @site, :html => { :class => "edit_addons", "data-password-protected" => @site.active? } do |f|
+= form_for @site, :html => { :id => "edit_site_addons", "data-password-protected" => @site.active? } do |f|
   = render 'addons', :f => f
   .actions
     = f.submit 'Update addons', :class => "submit small"

@@ -95,6 +95,7 @@ class Site < ActiveRecord::Base
     
     state :active do
       validates_presence_of :hostname
+      validate :addons_available_for_plan
     end
   end
   
@@ -263,7 +264,14 @@ protected
   # validate
   def at_least_one_domain_set
     unless active? || hostname.present? || dev_hostnames.present? || extra_hostnames.present?
-      errors[:base] << "Please set at least a development or an extra domain"
+      self.errors.add(:base, :at_least_one_domain)
+    end
+  end
+  
+  # validate
+  def addons_available_for_plan
+    (self.addons - self.plan.addons).each do |addon|
+      self.errors.add(:base, :addons_not_available, :addon_name => addon.name, :plan_name => plan.name)
     end
   end
   

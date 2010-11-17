@@ -846,7 +846,7 @@ form .entry a.cancel {
   position:relative;
 }
 
-#new_site_wrap .spinner {
+/*#new_site_wrap .spinner {
   position:absolute;
   right:80px;
   top:26px;
@@ -860,7 +860,7 @@ form .entry a.cancel {
   color:#666;
   font-style:italic;
 }
-
+*/
 #content form.site {
   width:668px;
   background:url(/images/embed/breakline.png) no-repeat;

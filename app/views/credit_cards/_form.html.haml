@@ -1,9 +1,8 @@
-- @user ||= current_user
-- reset_credit_card_attributes
+- reset_credit_card_attributes(f.object)
 = f.hidden_field :cc_update, :value => true
-- if @user.errors[:base].present?
+- if f.object.errors[:base].present?
   .global_errors
-    %p= @user.errors[:base]
+    %p= f.object.errors[:base]
     
 .entry.card
   .radio_wrap

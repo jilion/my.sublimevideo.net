@@ -1,5 +1,8 @@
 class Addonship < ActiveRecord::Base
   
+  belongs_to :plan
+  belongs_to :addon
+  
 end
 
 
