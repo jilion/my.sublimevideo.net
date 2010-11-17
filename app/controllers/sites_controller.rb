@@ -1,6 +1,6 @@
 class SitesController < ApplicationController
   respond_to :html
-  respond_to :js, :only => [:index, :show]
+  respond_to :js, :only => [:index, :code, :new]
   
   before_filter :redirect_suspended_user
   before_filter :find_by_token, :only => [:code, :edit, :update, :activate, :destroy, :usage]
@@ -24,7 +24,7 @@ class SitesController < ApplicationController
   
   # GET /sites/new
   def new
-    respond_with(@site = current_user.sites.build(:dev_hostnames => Site::DEFAULT_DEV_DOMAINS))
+    respond_with(@site = current_user.sites.build((params[:site] || {}).reverse_merge(:dev_hostnames => Site::DEFAULT_DEV_DOMAINS)))
   end
   
   # GET /sites/1/edit

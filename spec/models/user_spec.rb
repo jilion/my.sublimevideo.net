@@ -73,6 +73,7 @@ describe User do
       user = Factory.build(:user, :use_personal => nil, :use_company => nil, :use_clients => nil)
       user.should_not be_valid
       user.should have(1).error_on(:use)
+      user.errors[:use].should == ["Please check at least one option"]
       
     end
     

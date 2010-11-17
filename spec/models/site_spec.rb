@@ -71,6 +71,7 @@ describe Site do
         site = Factory.build(:site, :hostname => '', :extra_hostnames => '', :dev_hostnames => '')
         site.should_not be_valid
         site.should have(1).error_on(:base)
+        site.errors[:base].should == ["Please set at least a development or an extra domain"]
       end
       
       it "should not add an error on base because an error is already added on hostname when blank and site is active" do
@@ -79,6 +80,35 @@ describe Site do
         site.dev_hostnames = nil
         site.should_not be_valid
         site.should have(:no).error_on(:base)
+      end
+    end
+    
+    describe "ensure that addons exits for current plan" do
+      set(:plan1)           { Factory(:plan) }
+      set(:plan2)           { Factory(:plan) }
+      set(:addon_for_plan1) { Factory(:addon, :addonships_attributes => [{ :plan_id => plan1.id, :price => 99 }]) }
+      let(:site)            { Factory(:site, :plan => plan1, :addon_ids => [addon_for_plan1]) }
+      
+      context "site is dev" do
+        before(:each) { site.plan = plan2 }
+        
+        it "should not add an error" do
+          site.should be_valid
+          site.should have(:no).error_on(:base)
+        end
+      end
+      
+      context "site is active" do
+        before(:each) do
+          site.update_attribute(:state, 'active')
+          site.plan = plan2
+        end
+        
+        it "should not add an error" do
+          site.should_not be_valid
+          site.should have(1).error_on(:base)
+          site.errors[:base].should == ["Add-on '#{addon_for_plan1.name}' is not available for the plan '#{plan2.name}'. Please cancel this add-on before changing your plan."]
+        end
       end
     end
   end
@@ -379,16 +409,21 @@ describe Site do
       
       context "on update of settings, addons or state (to dev or active)" do
         describe "attributes that appears in the license" do
+          set(:plan)   { Factory(:plan) }
+          set(:addon1) { Factory(:addon, :name => 'ssl', :addonships_attributes => [{ :plan_id => plan.id, :price => 99 }]) }
+          set(:addon2) { Factory(:addon, :name => 'stat', :addonships_attributes => [{ :plan_id => plan.id, :price => 99 }]) }
+          
           before(:each) do
-            Addon.stub(:find).with([1])   { [Factory(:addon)] }
-            Addon.stub(:find).with([1,2]) { [Factory(:addon, :name => 'ssl'), Factory(:addon, :name => 'stat')] }
+            Addon.stub(:find).with([1])   { [addon1] }
+            Addon.stub(:find).with([1,2]) { [addon1, addon2] }
+            Addon.stub(:find).with(:all)  { [addon1, addon2] }
             PageRankr.stub(:ranks)
           end
           
           { :hostname => "test.com", :extra_hostnames => "test.staging.com", :dev_hostnames => "test.local", :path => "yu", :wildcard => true, :addon_ids => [1, 2] }.each do |attribute, value|
             describe "#{attribute} has changed" do
               subject do
-                site = Factory(:site, :hostname => "jilion.com", :extra_hostnames => "staging.jilion.com", :dev_hostnames => "jilion.local", :path => "yo", :wildcard => false, :addon_ids => [1], :state => 'dev')
+                site = Factory(:site, :plan => plan, :hostname => "jilion.com", :extra_hostnames => "staging.jilion.com", :dev_hostnames => "jilion.local", :path => "yo", :wildcard => false, :addon_ids => [1], :state => 'dev')
                 Delayed::Worker.new(:quiet => true).work_off
                 site.reload
               end
@@ -402,8 +437,7 @@ describe Site do
               it "should update license content with dev_hostnames only when site is dev" do
                 old_license_content = subject.license.read
                 subject.send("#{attribute}=", value)
-                subject.save
-                Delayed::Worker.new(:quiet => true).work_off
+                subject.save && Delayed::Worker.new(:quiet => true).work_off
                 
                 subject.reload.should be_dev
                 if attribute == :dev_hostnames
@@ -418,8 +452,7 @@ describe Site do
               it "should update license content with #{attribute} value when site is active" do
                 old_license_content = subject.license.read
                 subject.send("#{attribute}=", value)
-                subject.activate
-                Delayed::Worker.new(:quiet => true).work_off
+                subject.activate && Delayed::Worker.new(:quiet => true).work_off
                 
                 subject.reload.should be_active
                 subject.license.read.should_not == old_license_content
@@ -527,7 +560,7 @@ describe Site do
     end
     
     describe "template_hostnames" do
-      set(:site_for_template) { Factory(:site, :hostname => "jilion.com", :extra_hostnames => "jilion.net, jilion.org", :dev_hostnames => '127.0.0.1,localhost', :path => 'foo', :wildcard => true, :addons => [Factory(:addon, :name => 'ssl'), Factory(:addon, :name => 'stat')]) }
+      set(:site_for_template) { Factory(:site, :hostname => "jilion.com", :extra_hostnames => "jilion.net, jilion.org", :dev_hostnames => '127.0.0.1,localhost', :path => 'foo', :wildcard => true, :addons => [Factory(:addon, :name => 'ssl_gold'), Factory(:addon, :name => 'customization')]) }
       
       context "site is not active" do
         it "should include only dev hostnames" do
@@ -538,7 +571,7 @@ describe Site do
       context "site is active" do
         it "should include hostname, extra_hostnames, path, wildcard, addons' names & dev_hostnames" do
           site_for_template.update_attribute(:state, 'active')
-          site_for_template.template_hostnames.should == "'jilion.com','jilion.net','jilion.org','path:foo','wildcard:true','addons:ssl,stat','127.0.0.1','localhost'"
+          site_for_template.template_hostnames.should == "'jilion.com','jilion.net','jilion.org','path:foo','wildcard:true','addons:customization,ssl_gold','127.0.0.1','localhost'"
         end
       end
     end

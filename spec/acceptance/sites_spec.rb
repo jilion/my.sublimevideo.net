@@ -14,7 +14,7 @@ feature "Sites" do
     plans.each { |attributes| Plan.create(attributes) }
     
     addons = [
-      { :name => "ssl_month", :term_type => "month", :price => 499 }
+      { :name => "ssl_month", :term_type => "month", :addonships_attributes => Plan.all.map { |p| { :plan_id => p.id, :price => p.id*100+99 } } }
     ]
     addons.each { |attributes| Addon.create(attributes) }
   end

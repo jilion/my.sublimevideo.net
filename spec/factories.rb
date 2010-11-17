@@ -91,6 +91,12 @@ Factory.define :addon do |f|
   f.term_type 'month'
 end
 
+Factory.define :addonship do |f|
+  f.plan_id  { Factory(:plan).id }
+  f.addon_id { Factory(:addon).id }
+  f.price    99
+end
+
 Factory.define :invoice do |f|
   f.association :user
 end

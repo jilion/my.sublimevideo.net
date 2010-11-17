@@ -11,6 +11,9 @@ class Plan < ActiveRecord::Base
   
   has_many :sites
   has_many :invoice_items, :as => :item
+  has_many :addonships
+  has_many :addons, :through => :addonships
+  
   
   # ==========
   # = Scopes =

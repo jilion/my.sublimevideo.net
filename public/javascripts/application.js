@@ -36,11 +36,12 @@ document.observe("dom:loaded", function() {
   // =====================================
   // = Add site hanlder and Sites poller =
   // =====================================
-  if ($("new_site")) {
-    MySublimeVideo.addSiteHandler = new AddSiteHandler();
+  if ($("sites_table_wrap")) {
     MySublimeVideo.sitesPoller = new SitesPoller();
   }
-  
+  if ($("new_site")) {
+    MySublimeVideo.siteFormHandler = new SiteFormHandler();
+  }
   
   // ===================================================
   // = Fix a <select> CSS bug in Safari (under v4.0.5) =
@@ -121,18 +122,8 @@ MySublimeVideo.showSiteEmbedCode = function(siteId) {
   return false;
 };
 
-MySublimeVideo.showSiteSettings = function(siteId) {
-  MySublimeVideo.openPopup(siteId, "settings", '/sites/'+siteId+'/edit');
-  return false;
-};
-
 MySublimeVideo.showSiteUsage = function(siteId) {
   MySublimeVideo.openPopup(siteId, "usage", '/sites/'+siteId+'/usage');
-  return false;
-};
-
-MySublimeVideo.showSiteAddons = function(siteId) {
-  MySublimeVideo.openPopup(siteId, "settings", '/sites/'+siteId+'/addons/edit');
   return false;
 };
 
@@ -141,19 +132,27 @@ MySublimeVideo.showSiteAddons = function(siteId) {
 // = Classes =
 // ===========
 
-var AddSiteHandler = Class.create({
+var SiteFormHandler = Class.create({
   initialize: function() {
+    
     this.setup();
   },
   setup: function() { //call this after ajax call to re-setup this handler
     this.element = $("new_site"); // this is a <form>
     
-    this.beforeAjaxHandler = this.element.on('ajax:before', function(){
-      this.numberOfRequestsUntilSpinnerHides = 1;
-      this.element.next(".spinner").show();
-      //only listen to this once (we can stop the listener now) because this.element will soon be replaced
-      this.beforeAjaxHandler.stop();
+    $$('input.plan_radio').each(function(radio){
+      radio.on('change', function(){
+        $('addons').down(".spinner").show();
+        new Ajax.Request('/sites/new'), { method: 'get', parameters: this.element.serialize() });
+      }.bind(this));
     }.bind(this));
+    
+    // this.beforeAjaxHandler = this.element.on('ajax:before', function(){
+    //   this.numberOfRequestsUntilSpinnerHides = 1;
+    //   this.element.next(".spinner").show();
+    //   //only listen to this once (we can stop the listener now) because this.element will soon be replaced
+    //   this.beforeAjaxHandler.stop();
+    // }.bind(this));
     
     // Unfourtunately we can't use: this.completeAjaxHandler = this.element.on('ajax:complete', function(event){....
     // ...because on successful creation, create.js.erb will execute two new Ajax requests one of which will
@@ -162,7 +161,7 @@ var AddSiteHandler = Class.create({
   reloadAfterAjax: function() {
     // Note: at this point, this.element has already been replaced
     
-    this.hideSpinner();
+    // this.hideSpinner();
     
     this.setup();
     
@@ -176,7 +175,7 @@ var AddSiteHandler = Class.create({
     this.numberOfRequestsUntilSpinnerHides -= 1;
     
     if (this.numberOfRequestsUntilSpinnerHides == 0) {
-      $('new_site_wrap').down(".spinner").hide();
+      $('addons').down(".spinner").hide();
     }
   }
 });

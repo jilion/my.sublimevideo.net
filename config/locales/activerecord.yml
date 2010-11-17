@@ -2,9 +2,9 @@ en:
   activerecord:
     attributes:
       site:
-        hostname:             "Domain"
-        dev_hostnames:        "Development domains"
-        extra_hostnames:      "Extra domains"
+        hostname:        "Domain"
+        dev_hostnames:   "Development domains"
+        extra_hostnames: "Extra domains"
       user:
         terms_and_conditions: "Terms & Conditions"
         cc_type:      "Card type"
@@ -19,6 +19,9 @@ en:
       models:
         site:
           attributes:
+            base:
+              at_least_one_domain: "Please set at least a development or an extra domain"
+              addons_not_available: "Add-on '%{addon_name}' is not available for the plan '%{plan_name}'. Please cancel this add-on before changing your plan."
             hostname:
               invalid:  "is invalid"
               wildcard: "is invalid, please check wildcard option instead"
@@ -41,6 +44,8 @@ en:
               
         user:
           attributes:
+            use:
+              at_least_one_option: "Please check at least one option"
             company_url:
               invalid: "is invalid"
             cc_number:

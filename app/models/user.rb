@@ -11,7 +11,7 @@ class User < ActiveRecord::Base
   # Mail template
   liquid_methods :email, :first_name, :last_name, :full_name
   
-  attr_accessor :terms_and_conditions
+  attr_accessor :terms_and_conditions, :use
   attr_accessible :first_name, :last_name, :email, :remember_me, :password, :postal_code, :country,
                   :use_personal, :use_company, :use_clients,
                   :company_name, :company_url, :company_job_title, :company_employees, :company_videos_served,
@@ -107,7 +107,7 @@ private
   # validate
   def validates_use_presence
     if !use_personal && !use_company && !use_clients
-      self.errors.add(:use, "Please check at least one option")
+      self.errors.add(:use, :at_least_one_option)
     end
   end
   
