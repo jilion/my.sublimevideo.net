@@ -3,7 +3,8 @@
 module Admin::AdminHelper
   
   def display_bool(boolean)
-    boolean ? "✓" : "-"
+    # boolean ? "✓" : "-"
+    boolean ? "x" : "-"
   end
   
   def display_date(date)
