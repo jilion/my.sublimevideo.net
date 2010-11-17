@@ -25,7 +25,6 @@ class User < ActiveRecord::Base
   
   has_many :sites
   has_many :invoices
-  # has_one  :last_invoice, :class_name => "Invoice", :conditions => { :state => "p" }, :order => "ended_on DESC"
   has_one  :open_invoice, :class_name => "Invoice", :conditions => { :state => "open" }
   
   # ==========
@@ -36,7 +35,7 @@ class User < ActiveRecord::Base
   scope :with_cc,         where(:cc_type.ne => nil, :cc_last_digits.ne => nil)
   
   # invoice
-  scope :billable_on,     lambda { |date = Time.now.utc.to_date| includes(:sites).where({ :billable_on => date.to_date } | ({ :billable_on => nil } & { :sites => { :activated_at.gte => date.to_date - Billing.trial_days, :activated_at.lt => date.to_date - Billing.trial_days + 1.day } })) }
+  scope :billable_on,     lambda { |date = Time.now.utc.to_date| where(:billable_on => date.to_date) }
   
   # admin
   scope :enthusiast,      where(:enthusiast_id.ne => nil)
@@ -148,8 +147,6 @@ protected
   end
   
 end
-
-
 
 
 # == Schema Information

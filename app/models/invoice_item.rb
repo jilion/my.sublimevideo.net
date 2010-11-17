@@ -1,6 +1,6 @@
 class InvoiceItem < ActiveRecord::Base
   
-  attr_accessible :site_id, :item_type, :item_id, :price, :amount, :info
+  attr_accessible :site, :item, :price, :amount, :info
   
   serialize :info
   
@@ -11,6 +11,8 @@ class InvoiceItem < ActiveRecord::Base
   belongs_to :site
   belongs_to :invoice
   belongs_to :item, :polymorphic => true
+  
+  delegate :user, :to => :site
   
   # ==========
   # = Scopes =
@@ -27,6 +29,9 @@ class InvoiceItem < ActiveRecord::Base
   validates :invoice,    :presence => true
   validates :item_type,  :presence => true
   validates :item_id,    :presence => true
+  validates :started_on, :presence => true
+  validates :ended_on,   :presence => true
+  validates :item_id,    :presence => true
   validates :price,      :presence => true, :numericality => true
   validates :amount,     :numericality => true, :allow_nil => true
   
@@ -34,7 +39,7 @@ class InvoiceItem < ActiveRecord::Base
   # = Callbacks =
   # =============
   
-  before_create :set_started_and_ended_on
+  before_validation :set_invoice_from_site_user, :on => :create
   
   # =================
   # = State Machine =
@@ -50,13 +55,12 @@ class InvoiceItem < ActiveRecord::Base
   
 private
   
-  def set_started_and_ended_on
-    self.started_on = Time.now.utc.to_date
-    self.ended_on   = 1.send(item.term_type).from_now.to_date
+  # before_validation
+  def set_invoice_from_site_user
+    self.invoice ||= site && site.user.open_invoice
   end
   
 end
-
 
 
 # == Schema Information

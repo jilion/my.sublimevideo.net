@@ -8,7 +8,8 @@ describe Invoice do
     its(:user)       { should be_present }
     its(:reference)  { should =~ /^[A-Z1-9]{8}$/ }
     its(:amount)     { should be_nil }
-    its(:paid_at) { should be_nil }
+    its(:billed_on)  { should be_nil }
+    its(:paid_at)    { should be_nil }
     its(:attempts)   { should == 0 }
     its(:last_error) { should be_nil }
     its(:failed_at)  { should be_nil }
@@ -48,12 +49,11 @@ describe Invoice do
       before(:each) { subject.state = 'unpaid' }
       
       it { should validate_presence_of(:amount) }
+      it { should validate_presence_of(:billed_on) }
     end
     
     context "with state paid" do
       before(:each) { subject.state = 'paid' }
-      
-      it { should validate_presence_of(:billed_on) }
     end
   end
   
@@ -68,29 +68,17 @@ describe Invoice do
       it { should be_open }
     end
     
-    pending "prepare_for_charging" do
+    pending "unpaid state" do
       before(:each) { subject.amount = 10 }
       
       it "should set state to ready" do
-        subject.prepare_for_charging
-        subject.should be_ready
+        subject.ready
+        subject.should unpaid
       end
     end
     
-    pending "archive" do
-      before(:each) do
-        subject.amount = 10
-        subject.prepare_for_charging
-      end
-      
-      it "should set state to archived" do
-        subject.archive
-        subject.should be_archived
-      end
-    end
   end
 end
-
 
 
 # == Schema Information

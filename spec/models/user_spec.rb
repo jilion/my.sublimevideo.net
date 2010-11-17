@@ -17,7 +17,7 @@ describe User do
     its(:postal_code)          { should == "2000" }
     its(:use_personal)         { should be_true }
     its(:email)                { should match /email\d+@user.com/ }
-    its(:billable_on)     { should be_nil }
+    its(:billable_on)          { should be_nil }
     
     it { should be_valid }
   end
@@ -28,13 +28,6 @@ describe User do
     
     it { should have_many :sites }
     it { should have_many :invoices }
-    
-    # it "should have_one last_invoice" do
-    #   user     = Factory(:user)
-    #   invoice1 = Factory(:invoice, :user => user, :amount => 1, :state => 'ready', :ended_on => 3.days.ago)
-    #   invoice2 = Factory(:invoice, :user => user, :amount => 1, :state => 'ready', :ended_on => 2.days.ago)
-    #   user.reload.last_invoice.should == invoice2
-    # end
     
     it "should have_one open_invoice" do
       user    = Factory(:user)
@@ -51,23 +44,14 @@ describe User do
         @user_billable_yesterday     = Factory(:user).tap { |u| u.update_attribute(:billable_on, Time.now.utc - 1.day) }
         @user_billable_today         = Factory(:user).tap { |u| u.update_attribute(:billable_on, Time.now.utc) }
         @user_billable_tomorrow      = Factory(:user).tap { |u| u.update_attribute(:billable_on, Time.now.utc + 1.day) }
-        @user_trial_ending_yesterday = Factory(:user)
-        @user_trial_ending_today     = Factory(:user)
-        @user_trial_ending_tomorrow  = Factory(:user)
-        Factory(:site, :user => @user_trial_ending_yesterday).tap { |u| u.update_attribute(:activated_at, Time.now.utc - Billing.trial_days - 1.day) }
-        Factory(:site, :user => @user_trial_ending_today).tap { |u| u.update_attribute(:activated_at, Time.now.utc - Billing.trial_days) }
-        Factory(:site, :user => @user_trial_ending_tomorrow).tap { |u| u.update_attribute(:activated_at, Time.now.utc - Billing.trial_days + 1.day) }
       end
       after(:each) { Timecop.return }
       
       specify do
         users = User.billable_on(Time.now.utc.to_date)
         users.should include(@user_billable_today)
-        users.should include(@user_trial_ending_today)
         users.should_not include(@user_billable_tomorrow)
         users.should_not include(@user_billable_yesterday)
-        users.should_not include(@user_trial_ending_yesterday)
-        users.should_not include(@user_trial_ending_tomorrow)
       end
     end
     
@@ -321,8 +305,6 @@ protected
   end
   
 end
-
-
 
 
 # == Schema Information
