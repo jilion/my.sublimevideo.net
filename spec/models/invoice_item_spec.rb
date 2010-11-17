@@ -5,8 +5,9 @@ describe InvoiceItem do
     set(:invoice_item_from_factory) { Factory(:plan_invoice_item) }
     subject { invoice_item_from_factory }
     
-    its(:site)                     { should be_present }
-    its(:invoice)                  { should be_present }
+    its(:site)                     { should == invoice_item_from_factory.site }
+    its(:user)                     { should == invoice_item_from_factory.site.user }
+    its(:invoice)                  { should == invoice_item_from_factory.site.user.open_invoice }
     its(:type)                     { should == 'InvoiceItem::Plan' }
     its(:item_type)                { should == 'Plan' }
     its(:item_id)                  { should be_present }
@@ -16,7 +17,7 @@ describe InvoiceItem do
     its(:price)                    { should == 50 }
     its(:amount)                   { should == 50 }
     
-    it { be_valid }
+    it { should be_valid }
   end
   
   describe "associations" do
@@ -52,7 +53,7 @@ describe InvoiceItem do
   describe "validates" do
     subject { Factory(:plan_invoice_item) }
     
-    [:site_id, :item_type, :item_id, :price, :amount, :info].each do |attr|
+    [:site, :item, :price, :amount, :info].each do |attr|
       it { should allow_mass_assignment_of(attr) }
     end
     
@@ -61,6 +62,8 @@ describe InvoiceItem do
     it { should validate_presence_of(:item_type) }
     it { should validate_presence_of(:item_id) }
     it { should validate_presence_of(:price) }
+    it { should validate_presence_of(:started_on) }
+    it { should validate_presence_of(:ended_on) }
     
     it { should validate_numericality_of(:price) }
     it { should validate_numericality_of(:amount) }

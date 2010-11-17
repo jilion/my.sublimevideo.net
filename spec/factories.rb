@@ -23,6 +23,13 @@ Factory.define :site do |f|
   f.association         :plan
 end
 
+Factory.define :active_site, :parent => :site do |f|
+  f.after_create do |site| 
+    site.activate
+    site.user.reload
+  end
+end
+
 Factory.define :log_voxcast, :class => Log::Voxcast do |f|
   f.name "cdn.sublimevideo.net.log.1275002700-1275002760.gz"
 end
@@ -89,40 +96,33 @@ Factory.define :invoice do |f|
 end
 
 Factory.define :invoice_item do |f|
-  f.association :site
-  f.association :invoice
+  f.association :site, :factory => :active_site
   f.started_on  { Time.now.utc.to_date }
+  f.ended_on    { 1.month.from_now.to_date }
 end
 
-Factory.define :addon_invoice_item, :parent => :invoice_item do |f|
-  f.type        'InvoiceItem::Addon'
-  f.item_type   'Addon'
-  f.item_id     { Factory(:addon).id }
+Factory.define :addon_invoice_item, :parent => :invoice_item, :class => InvoiceItem::Addon do |f|
+  f.item        { Factory(:addon) }
   f.price       10
   f.amount      10
 end
 
-Factory.define :overage_invoice_item, :parent => :invoice_item do |f|
-  f.type        'InvoiceItem::Overage'
-  f.item_type   'Plan'
-  f.item_id     { Factory(:plan).id }
+Factory.define :overage_invoice_item, :parent => :invoice_item, :class => InvoiceItem::Overage do |f|
+  f.item        { Factory(:plan) }
   f.price       1
   f.amount      5
   f.info        Hash.new({ :player_hits => 5500 })
 end
 
-Factory.define :plan_invoice_item, :parent => :invoice_item do |f|
-  f.type        'InvoiceItem::Plan'
-  f.item_type   'Plan'
-  f.item_id     { Factory(:plan).id }
+Factory.define :plan_invoice_item, :parent => :invoice_item, :class => InvoiceItem::Plan do |f|
+  f.item        { Factory(:plan) }
   f.price       50
   f.amount      50
 end
 
-Factory.define :refund_invoice_item, :parent => :invoice_item do |f|
-  f.type        'InvoiceItem::Refund'
+Factory.define :refund_invoice_item, :parent => :invoice_item, :class => InvoiceItem::Refund do |f|
   f.item_type   'Plan'
-  f.item_id     { Factory(:plan).id }
+  f.item_id     { Factory(:plan) }
   f.price       50
   f.amount      50
 end
