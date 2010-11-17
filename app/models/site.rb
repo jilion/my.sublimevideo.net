@@ -81,7 +81,7 @@ class Site < ActiveRecord::Base
   
   state_machine :initial => :dev do
     before_transition :to => :dev,      :do => :set_cdn_up_to_date_to_false
-    before_transition :on => :activate, :do => :set_activated_at
+    before_transition :on => :activate, :do => :set_activated_at_and_billable_on
     before_transition :on => :archive,  :do => :set_archived_at
     
     after_transition  :to => [:archived, :suspended], :do => :delay_remove_loader_and_license
@@ -298,8 +298,9 @@ protected
   end
   
   # before_transition :on => :activate
-  def set_activated_at
+  def set_activated_at_and_billable_on
     self.activated_at = Time.now.utc
+    self.billable_on = (activated_at + Billing.trial_days).to_date
   end
   
   # before_transition :on => :archive
@@ -325,7 +326,6 @@ protected
   end
   
 end
-
 
 
 # == Schema Information

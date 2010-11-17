@@ -18,6 +18,8 @@ describe Site do
     its(:license)         { should_not be_present }
     its(:loader)          { should_not be_present }
     its(:player_mode)     { should == "stable" }
+    its(:activated_at)    { should be_nil }
+    its(:billable_on)     { should be_nil }
     
     it { should be_dev }
     it { should be_valid }
@@ -198,6 +200,12 @@ describe Site do
         subject.activated_at.should be_nil
         subject.activate
         subject.activated_at.should be_present
+      end
+      
+      it "should set billable_on" do
+        subject.billable_on.should be_nil
+        subject.activate
+        subject.billable_on.should == (subject.activated_at + Billing.trial_days).to_date
       end
       
       it "should update license file" do
