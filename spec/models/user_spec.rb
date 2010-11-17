@@ -44,23 +44,14 @@ describe User do
         @user_billable_yesterday     = Factory(:user).tap { |u| u.update_attribute(:billable_on, Time.now.utc - 1.day) }
         @user_billable_today         = Factory(:user).tap { |u| u.update_attribute(:billable_on, Time.now.utc) }
         @user_billable_tomorrow      = Factory(:user).tap { |u| u.update_attribute(:billable_on, Time.now.utc + 1.day) }
-        @user_trial_ending_yesterday = Factory(:user)
-        @user_trial_ending_today     = Factory(:user)
-        @user_trial_ending_tomorrow  = Factory(:user)
-        Factory(:site, :user => @user_trial_ending_yesterday).tap { |s| s.update_attribute(:billable_on, Time.now.utc - 1.day) }
-        Factory(:site, :user => @user_trial_ending_today).tap { |s| s.update_attribute(:billable_on, Time.now.utc) }
-        Factory(:site, :user => @user_trial_ending_tomorrow).tap { |s| s.update_attribute(:billable_on, Time.now.utc + 1.day) }
       end
       after(:each) { Timecop.return }
       
       specify do
         users = User.billable_on(Time.now.utc.to_date)
         users.should include(@user_billable_today)
-        users.should include(@user_trial_ending_today)
         users.should_not include(@user_billable_tomorrow)
         users.should_not include(@user_billable_yesterday)
-        users.should_not include(@user_trial_ending_yesterday)
-        users.should_not include(@user_trial_ending_tomorrow)
       end
     end
     
