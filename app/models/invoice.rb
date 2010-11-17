@@ -62,7 +62,7 @@ class Invoice < ActiveRecord::Base
           next_open_invoice = user.invoices.create
           # next_open_invoice.create_invoice_items_for_addons
         else
-          open_invoice.create_invoice_items_for_addons
+          # open_invoice.create_invoice_items_for_addons
         end
         user.update_attribute(:billable_on, date + 1.month)
       end
@@ -85,17 +85,17 @@ class Invoice < ActiveRecord::Base
     end
   end
   
-  def create_invoice_items_for_plans
-  end
-  
-  def create_invoice_items_for_addons
-  end
-  
-  def calculate_plans_overages
-  end
-  
-  def calculate_addons_price
-  end
+  # def create_invoice_items_for_plans
+  # end
+  # 
+  # def create_invoice_items_for_addons
+  # end
+  # 
+  # def calculate_plans_overages
+  # end
+  # 
+  # def calculate_addons_price
+  # end
   
   def chargeable?
     

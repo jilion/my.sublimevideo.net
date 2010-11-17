@@ -151,6 +151,7 @@ end
 
 
 
+
 # == Schema Information
 #
 # Table name: users
@@ -173,7 +174,6 @@ end
 #  last_sign_in_ip       :string(255)
 #  failed_attempts       :integer         default(0)
 #  locked_at             :datetime
-#  billable_on           :date
 #  cc_type               :string(255)
 #  cc_last_digits        :integer
 #  cc_expire_on          :date
@@ -197,6 +197,7 @@ end
 #  company_job_title     :string(255)
 #  company_employees     :string(255)
 #  company_videos_served :string(255)
+#  billable_on           :date
 #
 # Indexes
 #

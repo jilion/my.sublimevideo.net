@@ -82,7 +82,6 @@ end
 Factory.define :addon do |f|
   f.sequence(:name) { |n| "SSL_#{n}" }
   f.term_type 'month'
-  f.price     10
 end
 
 Factory.define :invoice do |f|

@@ -34,8 +34,6 @@ describe Addon do
     it { should allow_value('month').for(:term_type) }
     it { should allow_value('year').for(:term_type) }
     it { should_not allow_value('foo').for(:term_type) }
-    
-    it { should validate_numericality_of(:price) }
   end
 end
 
