@@ -1,10 +1,11 @@
 source :rubygems
 
-gem 'bundler',               '~> 1.0.5'
+gem 'bundler',               '~> 1.0.6'
 
 # gem 'rails',                 '~> 3.0.2'
 gem 'rails',                 :git => 'git://github.com/thibaudgg/rails.git', :branch => 'spork' # 3.0.2
 gem 'rack',                  '~> 1.2.1'
+gem 'arel',                  '~> 2.0.3'
 gem 'pg',                    '~> 0.9.0'
 
 gem 'libxml-ruby',           '~> 1.1.3', :require => 'libxml'
@@ -18,7 +19,7 @@ gem 'delayed_job',           '~> 2.1.1'
 gem 'will_paginate',         '~> 3.0.pre2'
 gem 'has_scope',             :git => 'git://github.com/rymai/has_scope.git'
 gem 'jammit',                '~> 0.5.4'
-gem 'meta_where',            '~> 0.9.9'
+gem 'meta_where',            '~> 0.9.9.1'
 gem 'hoptoad_notifier',      '~> 2.3.12'
 gem 'prowl',                 '~> 0.1.3'
 gem 'activemerchant',        '~> 1.9.0'
@@ -36,7 +37,7 @@ gem 'memcached',             '~> 0.20.1'
 gem 'dalli',                 '~> 0.11.1'
 
 gem 'aws',                   '~> 2.3.26'
-gem 'fog',                   '~> 0.3.17' # for carrierwave 0.5 final
+gem 'fog',                   '~> 0.3.19' # for carrierwave 0.5 final
 gem 'carrierwave',           '~> 0.5.0'
 
 gem 'bson_ext',              '~> 1.1.2'
@@ -64,6 +65,7 @@ group :development, :test do
   gem 'silent-postgres'
   gem 'rspec-rails',   '~> 2.1.0'
   gem 'passenger',     '~> 3.0.0'
+  # gem 'awesome_print'
 end
 
 group :development do
@@ -71,7 +73,7 @@ group :development do
   gem 'annotate',      '~> 2.4.0'
   gem 'wirble',        '~> 0.1.3'
   gem 'ruby-graphviz', :require => 'graphviz'
-  gem 'heroku',        '~> 1.13.1'
+  gem 'heroku',        '~> 1.13.5'
   gem 'heroku_tasks',  '~> 0.1.4'
   gem 'taps',          '~> 0.3.13' # heroku db pull/push
 end
