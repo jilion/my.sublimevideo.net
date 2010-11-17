@@ -92,6 +92,7 @@ describe Invoice do
 end
 
 
+
 # == Schema Information
 #
 # Table name: invoices
@@ -108,5 +109,9 @@ end
 #  failed_at  :datetime
 #  created_at :datetime
 #  updated_at :datetime
+#
+# Indexes
+#
+#  index_invoices_on_user_id  (user_id)
 #
 

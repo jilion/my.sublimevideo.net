@@ -150,49 +150,57 @@ protected
 end
 
 
+
 # == Schema Information
 #
 # Table name: users
 #
-#  id                                    :integer         not null, primary key
-#  state                                 :string(255)
-#  email                                 :string(255)     default(""), not null
-#  encrypted_password                    :string(128)     default(""), not null
-#  password_salt                         :string(255)     default(""), not null
-#  full_name                             :string(255)
-#  confirmation_token                    :string(255)
-#  confirmed_at                          :datetime
-#  confirmation_sent_at                  :datetime
-#  reset_password_token                  :string(255)
-#  remember_token                        :string(255)
-#  remember_created_at                   :datetime
-#  sign_in_count                         :integer         default(0)
-#  current_sign_in_at                    :datetime
-#  last_sign_in_at                       :datetime
-#  current_sign_in_ip                    :string(255)
-#  last_sign_in_ip                       :string(255)
-#  failed_attempts                       :integer         default(0)
-#  locked_at                             :datetime
-#  invoices_count                        :integer         default(0)
-#  last_invoiced_on                      :date
-#  billable_on                           :date
-#  trial_ended_at                        :datetime
-#  trial_usage_information_email_sent_at :datetime
-#  trial_usage_warning_email_sent_at     :datetime
-#  limit_alert_amount                    :integer         default(0)
-#  limit_alert_email_sent_at             :datetime
-#  cc_type                               :string(255)
-#  cc_last_digits                        :integer
-#  cc_expire_on                          :date
-#  cc_updated_at                         :datetime
-#  video_settings                        :text
-#  created_at                            :datetime
-#  updated_at                            :datetime
-#  invitation_token                      :string(20)
-#  invitation_sent_at                    :datetime
+#  id                    :integer         not null, primary key
+#  state                 :string(255)
+#  email                 :string(255)     default(""), not null
+#  encrypted_password    :string(128)     default(""), not null
+#  password_salt         :string(255)     default(""), not null
+#  confirmation_token    :string(255)
+#  confirmed_at          :datetime
+#  confirmation_sent_at  :datetime
+#  reset_password_token  :string(255)
+#  remember_token        :string(255)
+#  remember_created_at   :datetime
+#  sign_in_count         :integer         default(0)
+#  current_sign_in_at    :datetime
+#  last_sign_in_at       :datetime
+#  current_sign_in_ip    :string(255)
+#  last_sign_in_ip       :string(255)
+#  failed_attempts       :integer         default(0)
+#  locked_at             :datetime
+#  billable_on           :date
+#  cc_type               :string(255)
+#  cc_last_digits        :integer
+#  cc_expire_on          :date
+#  cc_updated_at         :datetime
+#  video_settings        :text
+#  created_at            :datetime
+#  updated_at            :datetime
+#  invitation_token      :string(20)
+#  invitation_sent_at    :datetime
+#  zendesk_id            :integer
+#  enthusiast_id         :integer
+#  first_name            :string(255)
+#  last_name             :string(255)
+#  postal_code           :string(255)
+#  country               :string(255)
+#  use_personal          :boolean
+#  use_company           :boolean
+#  use_clients           :boolean
+#  company_name          :string(255)
+#  company_url           :string(255)
+#  company_job_title     :string(255)
+#  company_employees     :string(255)
+#  company_videos_served :string(255)
 #
 # Indexes
 #
+#  index_users_on_billable_on           (billable_on)
 #  index_users_on_confirmation_token    (confirmation_token) UNIQUE
 #  index_users_on_email                 (email) UNIQUE
 #  index_users_on_reset_password_token  (reset_password_token) UNIQUE

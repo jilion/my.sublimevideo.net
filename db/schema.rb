@@ -203,6 +203,7 @@ ActiveRecord::Schema.define(:version => 20101116153056) do
     t.string   "last_sign_in_ip"
     t.integer  "failed_attempts",                      :default => 0
     t.datetime "locked_at"
+    t.date     "billable_on"
     t.string   "cc_type"
     t.integer  "cc_last_digits"
     t.date     "cc_expire_on"
@@ -226,7 +227,6 @@ ActiveRecord::Schema.define(:version => 20101116153056) do
     t.string   "company_job_title"
     t.string   "company_employees"
     t.string   "company_videos_served"
-    t.date     "billable_on"
   end
 
   add_index "users", ["billable_on"], :name => "index_users_on_billable_on"

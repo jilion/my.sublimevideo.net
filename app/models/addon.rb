@@ -19,7 +19,6 @@ class Addon < ActiveRecord::Base
   
   validates :name,      :presence => true, :uniqueness => true
   validates :term_type, :presence => true, :inclusion => { :in => Plan::TERM_TYPES }
-  validates :price,     :presence => true, :numericality => true
   
   # =============
   # = Callbacks =

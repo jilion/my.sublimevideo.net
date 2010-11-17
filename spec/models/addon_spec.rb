@@ -7,7 +7,6 @@ describe Addon do
     
     its(:name)      { should =~ /SSL_\d+/ }
     its(:term_type) { should == 'month' }
-    its(:price)     { should == 10 }
     
     it { be_valid }
   end
@@ -29,7 +28,6 @@ describe Addon do
     
     it { should validate_presence_of(:name) }
     it { should validate_presence_of(:term_type) }
-    it { should validate_presence_of(:price) }
     
     it { should validate_uniqueness_of(:name) }
     

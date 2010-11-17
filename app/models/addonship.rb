@@ -3,6 +3,7 @@ class Addonship < ActiveRecord::Base
 end
 
 
+
 # == Schema Information
 #
 # Table name: addonships
@@ -13,5 +14,11 @@ end
 #  price      :integer
 #  created_at :datetime
 #  updated_at :datetime
+#
+# Indexes
+#
+#  index_addonships_on_addon_id              (addon_id)
+#  index_addonships_on_plan_id               (plan_id)
+#  index_addonships_on_plan_id_and_addon_id  (plan_id,addon_id)
 #
 

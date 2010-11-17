@@ -227,9 +227,14 @@ end
 
 def create_addons
   addons = [
-    { :name => "ssl_month", :term_type => "month", :price => 499 }
+    { :name => "ssl_month", :term_type => "month" }
   ]
   addons.each { |attributes| Addon.create(attributes) }
+  Plan.all.each do |plan|
+    Addon.all.each do |addon|
+      Addonship.create(:addon_id => addon.id, :plan_id => plan.id, :price => 499)
+    end
+  end
   print "#{addons.size} addon(s) created!\n"
 end
 
