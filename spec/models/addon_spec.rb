@@ -22,7 +22,7 @@ describe Addon do
   describe "validates" do
     subject { Factory(:addon) }
     
-    [:name, :term_type, :price].each do |attr|
+    [:name, :term_type].each do |attr|
       it { should allow_mass_assignment_of(attr) }
     end
     

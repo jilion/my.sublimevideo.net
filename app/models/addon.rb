@@ -1,6 +1,6 @@
 class Addon < ActiveRecord::Base
   
-  attr_accessible :name, :term_type, :price
+  attr_accessible :name, :term_type
   
   # ================
   # = Associations =
