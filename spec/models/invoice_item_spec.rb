@@ -51,8 +51,6 @@ describe InvoiceItem do
   end
   
   describe "validates" do
-    subject { Factory(:plan_invoice_item) }
-    
     [:site, :item, :price, :started_on, :ended_on, :info].each do |attr|
       it { should allow_mass_assignment_of(attr) }
     end
@@ -70,7 +68,6 @@ describe InvoiceItem do
   end
   
 end
-
 
 
 # == Schema Information

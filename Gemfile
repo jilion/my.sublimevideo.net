@@ -95,7 +95,7 @@ group :test do
   gem 'database_cleaner', '>= 0.6'
   gem 'timecop',            '~> 0.3.5'
   gem 'capybara',           '~> 0.4.0'
-  gem 'steak',              '~> 1.0.0.rc.3'
+  gem 'steak',              '1.0.0.rc.2'
   # gem 'akephalos',          '~> 0.2.4'
   # gem 'capybara-envjs',     '~> 0.4.0'
   gem 'webmock',            '~> 1.6.1'
