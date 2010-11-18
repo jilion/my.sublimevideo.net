@@ -4,10 +4,10 @@ describe InvoiceItem::Plan do
   
   # 1/1   1/15  2/1   2/15  3/1   3/15  4/1 => date
   #  ^     ^     ^     ^     ^     ^     ^
-  #  |--o--X--o--|--o--X'-o--|-----X-----|
-  #     1     2     3     4                  => scenario
-  #           2'    3'    4'                 => scenario' (site cancelled before date)
-  #           2"    3"    4"                 => scenario" (plan upgraded/downgraded before date <=> current plan invoice_item canceled and new invoice_item created)
+  #  |--o--X--o--|--o--X'-o--|--o--X-----|
+  #     1     2     3     4                 => scenario
+  #           2'    3'    4'                => scenario' (site cancelled before date)
+  #           2"    3"    4"                => scenario" (plan upgraded/downgraded before date <=> current plan invoice_item canceled and new invoice_item created)
   # 
   # Legend :
   #   | is for site billing cycle
@@ -78,21 +78,22 @@ describe InvoiceItem::Plan do
       specify { open_invoice_items.should have(0).invoice_item }
     end
     
-    context "(scenario 2'') with current plan for site cycle already paid and upgraded", :focus => true do
+    context "(scenario 2'') with current plan for site cycle already paid and upgraded" do
       set(:user_scenario2s) { Factory(:user, :billable_on => Time.new(2010,2,15).utc.to_date) }
       set(:site_scenario2s) { Factory(:active_site, :user => user_scenario2s, :billable_on => Time.new(2010,2,1).utc.to_date) }
-      set(:old_invoice_item_scenario2s) { Factory(:plan_invoice_item, :site => site_scenario2s, :started_on => Time.new(2010,2,1).utc.to_date, :ended_on => Time.new(2010,3,1).utc.to_date, :canceled_at => Time.new(2010,1,19).utc) }
-      set(:new_invoice_item_scenario2s) { Factory(:plan_invoice_item, :site => site_scenario2s, :started_on => Time.new(2010,2,1).utc.to_date, :ended_on => Time.new(2010,3,1).utc.to_date) }
-      set(:new_plan) { Factory(:plan) }
+      set(:old_invoice_item_scenario2s) { Factory(:plan_invoice_item, :site => site_scenario2s, :started_on => Time.new(2010,1,1).utc.to_date, :ended_on => Time.new(2010,2,1).utc.to_date, :canceled_at => Time.new(2010,1,19).utc) }
+      set(:new_invoice_item_scenario2s) { Factory(:plan_invoice_item, :site => site_scenario2s, :started_on => Time.new(2010,1,1).utc.to_date, :ended_on => Time.new(2010,2,1).utc.to_date) }
+      set(:new_plan_scenario2s) { Factory(:plan) }
       let(:open_invoice_items) { InvoiceItem::Plan.open_invoice_items(site_scenario2s) }
       before(:each) do
         Timecop.travel(Time.new(2010,1,19).utc)
-        site_scenario2s.update_attribute(:plan_id, new_plan.id)
+        site_scenario2s.update_attribute(:plan_id, new_plan_scenario2s.id)
         Timecop.travel(Time.new(2010,1,20).utc)
       end
       
       specify { user_scenario2s.billable_on.should == Time.new(2010,2,15).utc.to_date }
       specify { site_scenario2s.billable_on.should == Time.new(2010,2,1).utc.to_date }
+      specify { old_invoice_item_scenario2s.canceled_at.should == Time.new(2010,1,19).utc }
       specify { open_invoice_items.should have(3).invoice_items } # implement upgrade/downgrade
       
       describe "should return a persisted and canceled record of the old plan for the current site cycle" do
@@ -106,7 +107,7 @@ describe InvoiceItem::Plan do
         subject { open_invoice_items.second }
         
         it { should == new_invoice_item_scenario2s }
-        it { subject.site.plan.should == new_plan }
+        it { subject.site.plan.should == new_plan_scenario2s }
         it { should be_persisted }
       end
       
@@ -168,6 +169,40 @@ describe InvoiceItem::Plan do
       end
     end
     
+    context "(scenario 3'') with current plan for site cycle not paid yet and upgraded" do
+      set(:user_scenario3s) { Factory(:user, :billable_on => Time.new(2010,2,15).utc.to_date) }
+      set(:site_scenario3s) { Factory(:active_site, :user => user_scenario3s, :billable_on => Time.new(2010,3,1).utc.to_date) }
+      set(:old_invoice_item_scenario3s) { Factory(:plan_invoice_item, :site => site_scenario3s, :started_on => Time.new(2010,2,1).utc.to_date, :ended_on => Time.new(2010,3,1).utc.to_date, :canceled_at => Time.new(2010,2,6).utc) }
+      set(:new_invoice_item_scenario3s) { Factory(:plan_invoice_item, :site => site_scenario3s, :started_on => Time.new(2010,2,1).utc.to_date, :ended_on => Time.new(2010,3,1).utc.to_date) }
+      set(:new_plan_scenario3s) { Factory(:plan) }
+      let(:open_invoice_items) { InvoiceItem::Plan.open_invoice_items(site_scenario3s) }
+      before(:each) do
+        Timecop.travel(Time.new(2010,2,6).utc)
+        site_scenario3s.update_attribute(:plan_id, new_plan_scenario3s.id)
+        Timecop.travel(Time.new(2010,2,7).utc)
+      end
+      
+      specify { user_scenario3s.billable_on.should == Time.new(2010,2,15).utc.to_date }
+      specify { site_scenario3s.billable_on.should == Time.new(2010,3,1).utc.to_date }
+      specify { old_invoice_item_scenario3s.canceled_at.should == Time.new(2010,2,6).utc }
+      specify { open_invoice_items.should have(2).invoice_items }
+      
+      describe "should return a persisted and canceled record of the old plan for the current site cycle" do
+        subject { open_invoice_items.first }
+        
+        it { should == old_invoice_item_scenario3s }
+        it { should be_persisted }
+      end
+      
+      describe "should return a persisted record of the new plan for the current site cycle" do
+        subject { open_invoice_items.last }
+        
+        it { should == new_invoice_item_scenario3s }
+        it { subject.site.plan.should == new_plan_scenario3s }
+        it { should be_persisted }
+      end
+    end
+    
     context "(scenario 4) with current plan for site cycle not paid yet and the open invoice not completed on last user.billable_on (still open), because of a too small amount" do
       set(:user_scenario4) { Factory(:user, :billable_on => Time.new(2010,3,15).utc.to_date) }
       set(:site_scenario4) { Factory(:active_site, :user => user_scenario4, :billable_on => Time.new(2010,3,1).utc.to_date) }
@@ -206,7 +241,7 @@ describe InvoiceItem::Plan do
     context "(scenario 4') with current plan for site cycle not paid yet and the open invoice not completed on last user.billable_on (still open), because of a too small amount and canceled" do
       set(:user_scenario4p) { Factory(:user, :billable_on => Time.new(2010,3,15).utc.to_date) }
       set(:site_scenario4p) { Factory(:active_site, :user => user_scenario4p, :billable_on => Time.new(2010,3,1).utc.to_date) }
-      set(:invoice_item_scenario4p) { Factory(:plan_invoice_item, :site => site_scenario4p, :started_on => Time.new(2010,2,1).utc.to_date, :ended_on => Time.new(2010,3,1).utc.to_date, :canceled_at => Time.new(2010,2,19).utc) }
+      set(:invoice_item_scenario4p) { Factory(:plan_invoice_item, :site => site_scenario4p, :started_on => Time.new(2010,2,1).utc, :ended_on => Time.new(2010,3,1).utc, :canceled_at => Time.new(2010,2,19).utc) }
       let(:open_invoice_items) { InvoiceItem::Plan.open_invoice_items(site_scenario4p) }
       before(:each) do
         Timecop.travel(Time.new(2010,2,19).utc)
@@ -224,6 +259,54 @@ describe InvoiceItem::Plan do
         
         it { should == invoice_item_scenario4p }
         it { should be_persisted }
+      end
+    end
+    
+    context "(scenario 4'') with current plan for site cycle not paid yet and the open invoice not completed on last user.billable_on (still open), because of a too small amount and upgraded" do
+      set(:user_scenario4s) { Factory(:user, :billable_on => Time.new(2010,3,15).utc.to_date) }
+      set(:site_scenario4s) { Factory(:active_site, :user => user_scenario4s, :billable_on => Time.new(2010,3,1).utc.to_date) }
+      set(:old_invoice_item_scenario4s) { Factory(:plan_invoice_item, :site => site_scenario4s, :started_on => Time.new(2010,2,1).utc, :ended_on => Time.new(2010,3,1).utc, :canceled_at => Time.new(2010,2,19).utc) }
+      set(:new_invoice_item_scenario4s) { Factory(:plan_invoice_item, :site => site_scenario4s, :started_on => Time.new(2010,2,1).utc, :ended_on => Time.new(2010,3,1).utc) }
+      set(:new_plan_scenario4s) { Factory(:plan) }
+      let(:open_invoice_items) { InvoiceItem::Plan.open_invoice_items(site_scenario4s) }
+      before(:each) do
+        Timecop.travel(Time.new(2010,2,19).utc)
+        site_scenario4s.update_attribute(:plan_id, new_plan_scenario4s.id)
+        Timecop.travel(Time.new(2010,2,20).utc)
+      end
+      
+      specify { user_scenario4s.billable_on.should == Time.new(2010,3,15).utc.to_date }
+      specify { site_scenario4s.billable_on.should == Time.new(2010,3,1).utc.to_date }
+      specify { old_invoice_item_scenario4s.canceled_at.should == Time.new(2010,2,19).utc }
+      specify { open_invoice_items.should have(3).invoice_items }
+      
+      describe "should return a persisted and canceled record of the old plan for the current site cycle" do
+        subject { open_invoice_items.first }
+        
+        it { should == old_invoice_item_scenario4s }
+        it { should be_persisted }
+      end
+      
+      describe "should return a persisted record of the new plan for the current site cycle" do
+        subject { open_invoice_items.second }
+        
+        it { should == new_invoice_item_scenario4s }
+        it { subject.site.plan.should == new_plan_scenario4s }
+        it { should be_persisted }
+      end
+      
+      describe "should return a new record for the next site cycle" do
+        subject { open_invoice_items.last }
+        
+        its(:site)        { should == site_scenario4s }
+        its(:item)        { should == site_scenario4s.plan }
+        its(:invoice)     { should == site_scenario4s.user.open_invoice }
+        its(:price)       { should == site_scenario4s.plan.price }
+        its(:amount)      { should == site_scenario4s.plan.price }
+        its(:started_on)  { should == site_scenario4s.billable_on }
+        its(:ended_on)    { should == site_scenario4s.billable_on + 1.send(site_scenario4s.plan.term_type) }
+        
+        it { should be_new_record }
       end
     end
     

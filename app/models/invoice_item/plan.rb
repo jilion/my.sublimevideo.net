@@ -6,7 +6,6 @@ class InvoiceItem::Plan < InvoiceItem
   
   def self.open_invoice_items(site, date = Time.now.utc.to_date)
     open_invoice_items = where(:invoice_id => site.user.open_invoice).order(:started_on, :canceled_at).all
-    puts open_invoice_items.inspect
     if (!site.archived? || site.billable_on >= site.user.billable_on) && 
         (open_invoice_items.empty? || (open_invoice_items.present? && open_invoice_items.last.ended_on < site.user.billable_on))
       open_invoice_items << new(
