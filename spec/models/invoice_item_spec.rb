@@ -70,7 +70,6 @@ describe InvoiceItem do
 end
 
 
-
 # == Schema Information
 #
 # Table name: invoice_items
