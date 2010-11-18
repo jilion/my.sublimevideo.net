@@ -5,6 +5,10 @@ module Billing
       yml[:trial_days].days
     end
     
+    def billing_period
+      yml[:billing_period_in_months].months
+    end
+    
     def method_missing(name)
       yml[name.to_sym]
     end

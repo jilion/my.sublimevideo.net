@@ -5,14 +5,20 @@ class InvoiceItem::Plan < InvoiceItem
   # =================
   
   def self.open_invoice_item(site, date = Time.now.utc.to_date)
-    open_invoice_item = new(
-      :site       => site,
-      :item       => site.plan,
-      :price      => site.plan.price,
-      :started_on => site.billable_on,
-      :ended_on   => site.billable_on + 1.send(site.plan.term_type)
-    )
-    open_invoice_item.calculate_and_set_amount
+    puts site.billable_on
+    puts site.user.billable_on
+    return nil if site.archived? && site.billable_on < site.user.billable_on
+    
+    unless open_invoice_item = where(:invoice_id => site.user.open_invoice, :ended_on.gte => site.user.billable_on).first
+      open_invoice_item = new(
+        :site       => site,
+        :item       => site.plan,
+        :price      => site.plan.price,
+        :started_on => site.billable_on,
+        :ended_on   => site.billable_on + 1.send(site.plan.term_type)
+      )
+      open_invoice_item.calculate_and_set_amount
+    end
     open_invoice_item
   end
   

@@ -1,2 +1,3 @@
 trial_days: 10
+billing_period_in_months: 1
 minimum_amount: 800  # in cents

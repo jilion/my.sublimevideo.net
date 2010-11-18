@@ -30,7 +30,7 @@ class Invoice < ActiveRecord::Base
   # =================
   
   state_machine :initial => :open do
-    event(:ready)  { transition :open => :unpaid }
+    event(:complete)  { transition :open => :unpaid }
     event(:charge) { transition :unpaid => [:paid, :failed], :failed => [:failed, :paid] }
     
     state :unpaid do
@@ -54,7 +54,7 @@ class Invoice < ActiveRecord::Base
         
         if open_invoice.chargeable?
           open_invoice.billed_on = date
-          open_invoice.ready
+          open_invoice.complete
           open_invoice.delay.charge
           
           user.invoices.create # next open invoice

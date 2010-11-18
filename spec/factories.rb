@@ -24,7 +24,7 @@ Factory.define :site do |f|
 end
 
 Factory.define :active_site, :parent => :site do |f|
-  f.after_create do |site| 
+  f.after_create do |site|
     site.activate
     site.user.reload
   end
