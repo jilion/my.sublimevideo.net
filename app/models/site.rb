@@ -311,8 +311,8 @@ protected
   
   # before_transition :on => :activate
   def set_activated_at_and_billable_on
-    self.activated_at = Time.now.utc
-    self.billable_on  = (activated_at + Billing.trial_days).to_date
+    self.activated_at  = Time.now.utc
+    self.billable_on ||= (activated_at + Billing.trial_days).to_date # ||= used in testing
   end
   
   # before_transition :on => :activate

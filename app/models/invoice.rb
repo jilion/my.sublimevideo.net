@@ -59,7 +59,7 @@ class Invoice < ActiveRecord::Base
           
           user.invoices.create # next open invoice
         end
-        user.update_attribute(:billable_on, date + 1.month)
+        user.update_attribute(:billable_on, date + Billing.billing_period)
       end
     end
   end

@@ -30,28 +30,24 @@ describe InvoiceItem do
   end
   
   describe "scopes" do
-    before(:all) do
-      Factory(:plan_invoice_item)
-      @not_canceled_invoice_item = InvoiceItem::Plan.last
-      Factory(:plan_invoice_item, :canceled_at => Time.now.utc)
-      @canceled_invoice_item = InvoiceItem::Plan.last
-    end
+    set(:not_canceled_invoice_item) { Factory(:plan_invoice_item) }
+    set(:canceled_invoice_item) { Factory(:plan_invoice_item, :canceled_at => Time.now.utc) }
     
     specify do
       not_canceled_invoice_items = InvoiceItem::Plan.not_canceled
-      not_canceled_invoice_items.should include(@not_canceled_invoice_item)
-      not_canceled_invoice_items.should_not include(@canceled_invoice_item)
+      not_canceled_invoice_items.should include(not_canceled_invoice_item)
+      not_canceled_invoice_items.should_not include(canceled_invoice_item)
     end
     
     specify do
       canceled_invoice_items = InvoiceItem::Plan.canceled
-      canceled_invoice_items.should include(@canceled_invoice_item)
-      canceled_invoice_items.should_not include(@not_canceled_invoice_item)
+      canceled_invoice_items.should include(canceled_invoice_item)
+      canceled_invoice_items.should_not include(not_canceled_invoice_item)
     end
   end
   
   describe "validates" do
-    [:site, :item, :price, :started_on, :ended_on, :info].each do |attr|
+    [:site, :item, :price, :amount, :started_on, :ended_on, :info].each do |attr|
       it { should allow_mass_assignment_of(attr) }
     end
     
