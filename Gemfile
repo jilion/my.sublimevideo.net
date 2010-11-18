@@ -1,11 +1,11 @@
 source :rubygems
 
-gem 'bundler',               '~> 1.0.6'
+gem 'bundler',               '~> 1.0.7'
 
 # gem 'rails',                 '~> 3.0.2'
 gem 'rails',                 :git => 'git://github.com/thibaudgg/rails.git', :branch => 'spork' # 3.0.2
 gem 'rack',                  '~> 1.2.1'
-gem 'arel',                  '~> 2.0.3'
+gem 'arel',                  '~> 2.0.4'
 gem 'pg',                    '~> 0.9.0'
 
 gem 'libxml-ruby',           '~> 1.1.3', :require => 'libxml'
@@ -19,7 +19,7 @@ gem 'delayed_job',           '~> 2.1.1'
 gem 'will_paginate',         '~> 3.0.pre2'
 gem 'has_scope',             :git => 'git://github.com/rymai/has_scope.git'
 gem 'jammit',                '~> 0.5.4'
-gem 'meta_where',            '~> 0.9.9.1'
+gem 'meta_where',            '~> 0.9.9.2'
 gem 'hoptoad_notifier',      '~> 2.3.12'
 gem 'prowl',                 '~> 0.1.3'
 gem 'activemerchant',        '~> 1.9.0'
@@ -37,7 +37,7 @@ gem 'devise_invitable',      :git => 'git://github.com/rymai/devise_invitable.gi
 gem 'dalli',                 '~> 0.11.1'
 
 gem 'aws',                   '~> 2.3.26'
-gem 'fog',                   '~> 0.3.19' # for carrierwave 0.5 final
+gem 'fog',                   '~> 0.3.21' # for carrierwave 0.5 final
 gem 'carrierwave',           '~> 0.5.0'
 
 gem 'bson_ext',              '~> 1.1.2'
@@ -73,7 +73,7 @@ group :development do
   gem 'annotate',      '~> 2.4.0'
   gem 'wirble',        '~> 0.1.3'
   gem 'ruby-graphviz', :require => 'graphviz'
-  gem 'heroku',        '~> 1.13.5'
+  gem 'heroku',        '~> 1.13.7'
   gem 'heroku_tasks',  '~> 0.1.4'
   gem 'taps',          '~> 0.3.14' # heroku db pull/push
   gem 'timecop',       '~> 0.3.5'
@@ -95,11 +95,11 @@ group :test do
   gem 'database_cleaner', '>= 0.6'
   gem 'timecop',            '~> 0.3.5'
   gem 'capybara',           '~> 0.4.0'
-  gem 'steak',              '~> 1.0.0.rc.2'
+  gem 'steak',              '~> 1.0.0.rc.3'
   # gem 'akephalos',          '~> 0.2.4'
   # gem 'capybara-envjs',     '~> 0.4.0'
   gem 'webmock',            '~> 1.6.1'
-  gem 'vcr',                '~> 1.3.0'
+  gem 'vcr',                '~> 1.3.2'
   
   gem 'shoulda',            '~> 2.11.3'
   gem 'factory_girl_rails', '~> 1.0.0', :require => false # loaded in spec_helper Spork.each_run
