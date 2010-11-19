@@ -2,8 +2,15 @@ class InvoiceItem::Refund < InvoiceItem
   
   # belongs_to :refunded_invoice_item, :class_name => "InvoiceItem"
   
+  # =================
+  # = Class Methods =
+  # =================
+  
+  def self.open_invoice_items(site, date = Time.now.utc.to_date)
+    where(:invoice_id => site.user.open_invoice).order(:started_on).all
+  end
+  
 end
-
 
 # == Schema Information
 #

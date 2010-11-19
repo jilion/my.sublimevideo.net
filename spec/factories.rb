@@ -127,8 +127,6 @@ Factory.define :plan_invoice_item, :parent => :invoice_item, :class => InvoiceIt
 end
 
 Factory.define :refund_invoice_item, :parent => :invoice_item, :class => InvoiceItem::Refund do |f|
-  f.item_type   'Plan'
-  f.item_id     { Factory(:plan) }
   f.price       50
   f.amount      50
 end

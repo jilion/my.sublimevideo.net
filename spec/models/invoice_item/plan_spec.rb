@@ -2,9 +2,11 @@ require 'spec_helper'
 
 describe InvoiceItem::Plan do
   
+  # TODO, create a scenario where X & o are at the same date
+  
   # 1/1   1/15  2/1   2/15  3/1   3/15  4/1 => date
   #  ^     ^     ^     ^     ^     ^     ^
-  #  |--o--X--o--|--o--X'-o--|--o--X-----|
+  #  |--o--X--o--|--o--X'-o--|-----X-----|
   #     1     2     3     4                 => scenario
   #           2'    3'    4'                => scenario' (site cancelled before date)
   #           2"    3"    4"                => scenario" (plan upgraded/downgraded before date <=> current plan invoice_item canceled and new invoice_item created)
