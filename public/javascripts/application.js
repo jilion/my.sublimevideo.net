@@ -143,7 +143,7 @@ var SiteFormHandler = Class.create({
     $$('input.plan_radio').each(function(radio){
       radio.on('change', function(){
         $('addons').down(".spinner").show();
-        new Ajax.Request('/sites/new'), { method: 'get', parameters: this.element.serialize() });
+        new Ajax.Request('/sites/new', { method: 'get', parameters: this.element.serialize() });
       }.bind(this));
     }.bind(this));
     
