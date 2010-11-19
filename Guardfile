@@ -27,7 +27,7 @@ end
 
 guard 'rspec', :version => 2, :drb => true, :bundler => false, :formatter => "instafail", :fail_fast => true do
   watch('^spec/spec_helper.rb')                       { "spec" }
-  watch('^spec/factories.rb')                         { "spec/models" }
+  # watch('^spec/factories.rb')                         { "spec/models" }
   watch('^app/controllers/application_controller.rb') { "spec/controllers" }
   watch('^spec/support/controller_helpers.rb')        { "spec/controllers" }
   watch('^spec/support/acceptance_helpers.rb')        { "spec/acceptance" }
