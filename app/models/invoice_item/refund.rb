@@ -1,7 +1,5 @@
 class InvoiceItem::Refund < InvoiceItem
   
-  # belongs_to :refunded_invoice_item, :class_name => "InvoiceItem"
-  
   # =================
   # = Class Methods =
   # =================

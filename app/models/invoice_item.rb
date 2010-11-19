@@ -43,6 +43,10 @@ class InvoiceItem < ActiveRecord::Base
   # = Class Methods =
   # =================
   
+  def self.process_invoice_items_for_sites_billable_on(date) # utc date!
+    
+  end
+  
   # ====================
   # = Instance Methods =
   # ====================
