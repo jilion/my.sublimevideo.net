@@ -16,17 +16,17 @@ describe InvoiceItem::Refund do
     after(:each) { Timecop.return }
     
     context "(scenario 1) with plan upgraded" do
-      set(:user) { Factory(:user, :billable_on => Time.new(2010,1,15).utc.to_date) }
-      set(:site) { Factory(:active_site, :user => user, :billable_on => Time.new(2010,2,1).utc.to_date) }
-      set(:plan_invoice_item) { Factory(:plan_invoice_item, :site => site, :started_on => Time.new(2010,1,1).utc.to_date, :ended_on => Time.new(2010,2,1).utc.to_date, :canceled_at => Time.new(2010,1,9).utc) }
-      set(:invoice_item) { Factory(:refund_invoice_item, :site => site, :item => plan_invoice_item, :started_on => Time.new(2010,1,1).utc, :ended_on => Time.new(2010,2,1).utc) }
+      set(:user) { Factory(:user, :billable_on => Time.utc_time(2010,1,15)) }
+      set(:site) { Factory(:active_site, :user => user, :billable_on => Time.utc_time(2010,2,1)) }
+      set(:plan_invoice_item) { Factory(:plan_invoice_item, :site => site, :started_on => Time.utc_time(2010,1,1), :ended_on => Time.utc_time(2010,2,1), :canceled_at => Time.utc_time(2010,1,9)) }
+      set(:invoice_item) { Factory(:refund_invoice_item, :site => site, :item => plan_invoice_item, :started_on => Time.utc_time(2010,1,1).utc, :ended_on => Time.utc_time(2010,2,1)) }
       let(:open_invoice_items) { InvoiceItem::Refund.open_invoice_items(site) }
       before(:each) do
-        Timecop.travel(Time.new(2010,1,10).utc)
+        Timecop.travel(Time.utc_time(2010,1,10))
       end
       
-      specify { user.billable_on.should == Time.new(2010,1,15).utc.to_date }
-      specify { site.billable_on.should == Time.new(2010,2,1).utc.to_date }
+      specify { user.billable_on.should == Time.utc_time(2010,1,15).to_date }
+      specify { site.billable_on.should == Time.utc_time(2010,2,1).to_date }
       specify { open_invoice_items.should have(1).invoice_item }
       
       describe "should return a persisted item" do
