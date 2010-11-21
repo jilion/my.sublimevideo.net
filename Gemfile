@@ -87,7 +87,7 @@ group :test do
   gem 'rb-fsevent',         '~> 0.3.9'
   gem 'guard-livereload'
   gem 'guard-rspec'
-  gem 'guard-passenger'
+  gem 'guard-passenger',    :git => 'git://github.com/guard/guard-passenger.git', :branch => 'refactoring'
   gem 'guard-bundler'
   gem 'guard-ego'
   gem 'guard-spork'
