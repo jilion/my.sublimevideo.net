@@ -34,10 +34,10 @@ gem 'devise',                :git => 'git://github.com/thibaudgg/devise.git', :b
 gem 'devise_invitable',      :git => 'git://github.com/rymai/devise_invitable.git'
 
 # gem 'memcached',             '~> 0.20.1'
-gem 'dalli',                 '~> 0.11.1'
+gem 'dalli',                 '~> 0.11.2'
 
 gem 'aws',                   '~> 2.3.26'
-gem 'fog',                   '~> 0.3.21' # for carrierwave 0.5 final
+gem 'fog',                   '~> 0.3.23' # for carrierwave 0.5 final
 gem 'carrierwave',           '~> 0.5.0'
 
 gem 'bson_ext',              '~> 1.1.2'
@@ -50,7 +50,7 @@ gem 'countries',             '~> 0.3.0'
 gem 'PageRankr',             '~> 1.4.3', :require => 'page_rankr'
 gem 'array_stats',           '~> 0.6.0'
 gem 'rescue_me',             '~> 0.1.0'
-gem 'paper_trail',           '~> 1.6.3'
+gem 'paper_trail',           '~> 1.6.4'
 
 group :production do
   gem 'rack-google-analytics', '~> 0.9.2', :require => 'rack/google-analytics'
@@ -73,7 +73,7 @@ group :development do
   gem 'annotate',      '~> 2.4.0'
   gem 'wirble',        '~> 0.1.3'
   gem 'ruby-graphviz', :require => 'graphviz'
-  gem 'heroku',        '~> 1.13.7'
+  gem 'heroku',        '~> 1.14.0'
   gem 'heroku_tasks',  '~> 0.1.4'
   gem 'taps',          '~> 0.3.14' # heroku db pull/push
   gem 'timecop',       '~> 0.3.5'
@@ -99,7 +99,7 @@ group :test do
   # gem 'akephalos',          '~> 0.2.4'
   # gem 'capybara-envjs',     '~> 0.4.0'
   gem 'webmock',            '~> 1.6.1'
-  gem 'vcr',                '~> 1.3.2'
+  gem 'vcr',                '~> 1.3.3'
   
   gem 'shoulda',            '~> 2.11.3'
   gem 'factory_girl_rails', '~> 1.0.0', :require => false # loaded in spec_helper Spork.each_run
