@@ -131,3 +131,7 @@ Factory.define :refund_invoice_item, :parent => :invoice_item, :class => Invoice
   f.amount      50
 end
 
+Factory.define :lifetime do |f|
+  f.association :site, :factory => :active_site
+  f.item        { Factory(:addon) }
+end
