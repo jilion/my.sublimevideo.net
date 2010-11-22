@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101116153056) do
+ActiveRecord::Schema.define(:version => 20101122152338) do
 
   create_table "addons", :force => true do |t|
     t.string   "name"
@@ -115,6 +115,17 @@ ActiveRecord::Schema.define(:version => 20101116153056) do
   end
 
   add_index "invoices", ["user_id"], :name => "index_invoices_on_user_id"
+
+  create_table "lifetimes", :force => true do |t|
+    t.integer  "site_id"
+    t.string   "item_type"
+    t.integer  "item_id"
+    t.datetime "created_at"
+    t.datetime "deleted_at"
+  end
+
+  add_index "lifetimes", ["site_id", "item_type", "item_id", "created_at"], :name => "index_lifetimes_created_at"
+  add_index "lifetimes", ["site_id", "item_type", "item_id", "deleted_at"], :name => "index_lifetimes_deleted_at", :unique => true
 
   create_table "mail_logs", :force => true do |t|
     t.integer  "template_id"
