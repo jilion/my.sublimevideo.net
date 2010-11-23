@@ -14,8 +14,8 @@ describe InvoiceItem do
     its(:item_id)     { should be_present }
     specify { subject.started_at.to_i.should == Time.now.utc.beginning_of_month.to_i }
     specify { subject.ended_at.to_i.should == Time.now.utc.end_of_month.to_i }
-    its(:price)       { should == 50 }
-    its(:amount)      { should == 50 }
+    its(:price)       { should == 1000 }
+    its(:amount)      { should == 1000 }
     
     it { should be_valid }
   end

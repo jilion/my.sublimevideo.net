@@ -4,9 +4,9 @@
   - if f.object.plan_id?
     %h3 Add-ons
     %ul
-      - f.object.plan.addons.each do |addon|
+      - Addon.all.each do |addon|
         %li
           = f.label :addon_ids, addon.name.humanize, :for => "addon_id_#{addon.name}"
           = f.check_box :addon_ids, { :id => "addon_id_#{addon.name}", :name => "site[addon_ids][]" }, addon.id, nil
           %ul
-            %li= "price: #{number_to_currency(addon.price(f.object.plan) / 100.0)} per #{addon.term_type}"
+            %li= "price: #{number_to_currency(addon.price / 100.0)} per month"

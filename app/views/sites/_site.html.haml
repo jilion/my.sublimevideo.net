@@ -20,7 +20,7 @@
           
       -#%em.date= l site.created_at.to_date, :format => :small
       - if site.addons.present?
-        = "Add-ons: #{site.addons.map { |a| a.name.sub("_#{a.term_type}", '').humanize }.join(", ")}"
+        = "Add-ons: #{site.addons.map { |a| a.name.humanize }.join(", ")}"
       - else
         No add-ons.
   %td.code
