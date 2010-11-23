@@ -22,13 +22,13 @@ class Release < ActiveRecord::Base
   # =================
   
   state_machine :initial => :archived do
+    event(:flag)    { transition :archived => :dev, :dev => :beta, :beta => :stable }
+    event(:archive) { transition [:dev, :beta, :stable] => :archived }
+    
     after_transition :to => :dev, :do => :overwrite_dev_with_zip_content
     after_transition :to => [:beta, :stable], :do => :copy_content_to_next_state
     after_transition :to => [:dev, :beta, :stable], :do => :archive_old_release
     after_transition :on => :flag, :do => :purge_old_release_dir
-    
-    event(:flag)    { transition :archived => :dev, :dev => :beta, :beta => :stable }
-    event(:archive) { transition [:dev, :beta, :stable] => :archived }
   end
   
   # =================

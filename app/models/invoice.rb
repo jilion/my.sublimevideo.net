@@ -31,16 +31,16 @@ class Invoice < ActiveRecord::Base
   # =================
   
   state_machine :initial => :open do
-    after_transition  :to => :complete, :do => :delay_charge
-    
-    event(:complete)  { transition :open => :unpaid }
-    event(:charge) { transition :unpaid => [:paid, :failed], :failed => [:failed, :paid] }
-    
     state :unpaid do
       validates :amount, :presence => true
     end
     
     state :paid
+    
+    event(:complete) { transition :open => :unpaid }
+    event(:charge)   { transition :unpaid => [:paid, :failed], :failed => [:failed, :paid] }
+    
+    after_transition  :to => :complete, :do => :delay_charge
   end
   
   # =================

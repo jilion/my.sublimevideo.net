@@ -74,11 +74,11 @@ class User < ActiveRecord::Base
   # =================
   
   state_machine :initial => :active do
-    before_transition :on => :suspend, :do => :suspend_sites
-    before_transition :on => :unsuspend, :do => :unsuspend_sites
-    
     event(:suspend)   { transition :active => :suspended }
     event(:unsuspend) { transition :suspended => :active }
+    
+    before_transition :on => :suspend, :do => :suspend_sites
+    before_transition :on => :unsuspend, :do => :unsuspend_sites
   end
   
   # ====================

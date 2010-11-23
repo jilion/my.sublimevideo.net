@@ -80,23 +80,22 @@ class Site < ActiveRecord::Base
   # =================
   
   state_machine :initial => :dev do
-    before_transition :to => :dev,      :do => :set_cdn_up_to_date_to_false
-    before_transition :on => :activate, :do => :set_activated_at
-    before_transition :on => :archive,  :do => :set_archived_at
+    state :beta # Pending, using in lib/one_time/site.rb
     
-    after_transition  :to => [:archived, :suspended], :do => :delay_remove_loader_and_license
+    state :active do
+      validates_presence_of :hostname
+    end
     
     event(:activate)   { transition :dev => :active }
     event(:archive)    { transition [:dev, :active] => :archived }
     event(:suspend)    { transition :active => :suspended }
     event(:unsuspend)  { transition :suspended => :active }
     
-    state :beta # Pending, using in lib/one_time/site.rb
+    before_transition :to => :dev,      :do => :set_cdn_up_to_date_to_false
+    before_transition :on => :activate, :do => :set_activated_at
+    before_transition :on => :archive,  :do => :set_archived_at
     
-    state :active do
-      validates_presence_of :hostname
-      validate :addons_available_for_plan
-    end
+    after_transition  :to => [:archived, :suspended], :do => :delay_remove_loader_and_license
   end
   
   # =================
