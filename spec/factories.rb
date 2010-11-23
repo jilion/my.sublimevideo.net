@@ -78,8 +78,8 @@ end
 Factory.define :plan do |f|
   f.sequence(:name) { |n| "small#{n}" }
   f.player_hits   10_000
-  f.price         10
-  f.overage_price 1
+  f.price         1000
+  f.overage_price 100
 end
 
 Factory.define :addon do |f|
@@ -101,27 +101,22 @@ end
 
 Factory.define :invoice_item do |f|
   f.association :site, :factory => :active_site
+  f.association :invoice, :factory => :invoice
   f.started_at  { Time.now.utc.beginning_of_month }
   f.ended_at    { Time.now.utc.end_of_month }
 end
 
-Factory.define :addon_invoice_item, :parent => :invoice_item, :class => InvoiceItem::Addon do |f|
-  f.item        { Factory(:addon) }
-  f.price       10
-  f.amount      10
+Factory.define :plan_invoice_item, :parent => :invoice_item, :class => InvoiceItem::Plan do |f|
+  f.item   { Factory(:plan) }
 end
 
 Factory.define :overage_invoice_item, :parent => :invoice_item, :class => InvoiceItem::Overage do |f|
-  f.item        { Factory(:plan) }
-  f.price       1
-  f.amount      5
-  f.info        Hash.new({ :player_hits => 5500 })
+  f.item   { Factory(:plan) }
+  f.info   Hash.new({ :player_hits => 5500 })
 end
 
-Factory.define :plan_invoice_item, :parent => :invoice_item, :class => InvoiceItem::Plan do |f|
-  f.item        { Factory(:plan) }
-  f.price       50
-  f.amount      50
+Factory.define :addon_invoice_item, :parent => :invoice_item, :class => InvoiceItem::Addon do |f|
+  f.item   { Factory(:addon) }
 end
 
 Factory.define :lifetime do |f|

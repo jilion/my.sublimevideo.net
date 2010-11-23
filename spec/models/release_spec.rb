@@ -255,7 +255,6 @@ describe Release do
 end
 
 
-
 # == Schema Information
 #
 # Table name: releases

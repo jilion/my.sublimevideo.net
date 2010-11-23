@@ -33,6 +33,7 @@ class Lifetime < ActiveRecord::Base
   end
 end
 
+
 # == Schema Information
 #
 # Table name: lifetimes

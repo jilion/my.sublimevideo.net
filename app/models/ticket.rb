@@ -64,6 +64,7 @@ private
   
 end
 
+
 # == Schema Information
 #
 #  type            :integer   not null

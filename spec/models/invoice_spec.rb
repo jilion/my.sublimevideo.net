@@ -64,11 +64,17 @@ describe Invoice do
         subject.should unpaid
       end
     end
-    
   end
+  
+  describe "#minutes" do
+    subject { Factory(:invoice, :started_at => Time.utc(2010,2).beginning_of_month, :ended_at => Time.utc(2010,2).end_of_month) }
+    
+    it "should return minutes between started_at and ended_at" do
+      subject.minutes.should == 28 * 24 * 60
+    end
+  end
+  
 end
-
-
 
 
 # == Schema Information

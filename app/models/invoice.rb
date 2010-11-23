@@ -53,7 +53,7 @@ class Invoice < ActiveRecord::Base
     invoice
   end
   
-  def self.complete_invoices_for_billable_users(started_at, ended_at) # utc date!
+  def self.complete_invoices_for_billable_users(started_at, ended_at) # utc dates!
     User.billable(started_at, ended_at).each do |user|
       invoice = build(:user => site, :started_at => started_at, :ended_at => ended_at)
       invoice.set_amount # not saved if not chargeable
@@ -67,8 +67,12 @@ class Invoice < ActiveRecord::Base
   
   def build_invoice_items
     user.sites.billable(started_at, ended_at).each do |site|
-      invoice_items << InvoiceItem::Plan.build(:site => site, :invoice => invoice)
+      invoice_items << InvoiceItem::Plan.build(:site => site, :invoice => self)
     end
+  end
+  
+  def minutes
+    (ended_at - started_at).to_f / 60
   end
   
   def set_amount
@@ -80,7 +84,6 @@ class Invoice < ActiveRecord::Base
   end
   
 end
-
 
 
 # == Schema Information

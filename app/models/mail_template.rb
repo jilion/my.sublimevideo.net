@@ -36,6 +36,7 @@ class MailTemplate < ActiveRecord::Base
   
 end
 
+
 # == Schema Information
 #
 # Table name: mail_templates

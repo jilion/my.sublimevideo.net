@@ -1,6 +1,6 @@
 class InvoiceItem < ActiveRecord::Base
   
-  attr_accessible :site, :item, :price, :amount, :started_at, :ended_at, :info
+  attr_accessible :site, :invoice, :item, :price, :amount, :started_at, :ended_at, :info
   serialize :info
   
   # ================
@@ -28,7 +28,7 @@ class InvoiceItem < ActiveRecord::Base
   validates :started_at, :presence => true
   validates :ended_at,   :presence => true
   validates :price,      :presence => true, :numericality => true
-  validates :amount,     :numericality => true, :allow_nil => true
+  validates :amount,     :presence => true, :numericality => true
   
   # =============
   # = Callbacks =
