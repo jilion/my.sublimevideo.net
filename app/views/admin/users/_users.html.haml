@@ -13,5 +13,5 @@
   = render @users
   
 .pagination_wrap
-  = will_paginate(:params => { :format => nil }, :renderer => 'WillPaginate::ViewHelpers::LinkRendererRemote')
-  = page_entries_info @users
+  = remote_will_paginate(@users, :params => params.merge(:format => nil))
+  = page_entries_info(@users)

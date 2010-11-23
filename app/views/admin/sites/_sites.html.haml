@@ -16,5 +16,5 @@
   = render @sites
   
 .pagination_wrap
-  = will_paginate(:params => { :format => nil }, :renderer => 'WillPaginate::ViewHelpers::LinkRendererRemote')
-  = page_entries_info @sites
+  = remote_will_paginate(@sites, :params => params.merge(:format => nil))
+  = page_entries_info(@sites)
