@@ -1,10 +1,6 @@
 class InvoiceItem::Overage < InvoiceItem
   
-  
-  
 end
-
-
 
 
 # == Schema Information

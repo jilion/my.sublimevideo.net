@@ -39,8 +39,6 @@ class Addon < ActiveRecord::Base
 end
 
 
-
-
 # == Schema Information
 #
 # Table name: addons

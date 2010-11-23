@@ -268,13 +268,6 @@ protected
     end
   end
   
-  # validate
-  def addons_available_for_plan
-    (self.addons - self.plan.addons).each do |addon|
-      self.errors.add(:base, :addons_not_available, :addon_name => addon.name, :plan_name => plan.name)
-    end
-  end
-  
   # before_save
   def prepare_cdn_update
     if new_record? || player_mode_changed? # loader
@@ -333,7 +326,6 @@ protected
   end
   
 end
-
 
 
 # == Schema Information

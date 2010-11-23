@@ -81,35 +81,6 @@ describe Site do
         site.should have(:no).error_on(:base)
       end
     end
-    
-    describe "ensure that addons exits for current plan" do
-      set(:plan1)           { Factory(:plan) }
-      set(:plan2)           { Factory(:plan) }
-      set(:addon_for_plan1) { Factory(:addon, :addonships_attributes => [{ :plan_id => plan1.id, :price => 99 }]) }
-      let(:site)            { Factory(:site, :plan => plan1, :addon_ids => [addon_for_plan1]) }
-      
-      context "site is dev" do
-        before(:each) { site.plan = plan2 }
-        
-        it "should not add an error" do
-          site.should be_valid
-          site.should have(:no).error_on(:base)
-        end
-      end
-      
-      context "site is active" do
-        before(:each) do
-          site.update_attribute(:state, 'active')
-          site.plan = plan2
-        end
-        
-        it "should not add an error" do
-          site.should_not be_valid
-          site.should have(1).error_on(:base)
-          site.errors[:base].should == ["Add-on '#{addon_for_plan1.name}' is not available for the plan '#{plan2.name}'. Please cancel this add-on before changing your plan."]
-        end
-      end
-    end
   end
   
   # 17.3s
@@ -379,8 +350,8 @@ describe Site do
       context "on update of settings, addons or state (to dev or active)" do
         describe "attributes that appears in the license" do
           set(:plan)   { Factory(:plan) }
-          set(:addon1) { Factory(:addon, :name => 'ssl', :addonships_attributes => [{ :plan_id => plan.id, :price => 99 }]) }
-          set(:addon2) { Factory(:addon, :name => 'stat', :addonships_attributes => [{ :plan_id => plan.id, :price => 99 }]) }
+          set(:addon1) { Factory(:addon, :name => 'ssl', :price => 99) }
+          set(:addon2) { Factory(:addon, :name => 'stat', :price => 99) }
           
           before(:each) do
             Addon.stub(:find).with([1])   { [addon1] }

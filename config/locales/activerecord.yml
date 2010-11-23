@@ -21,7 +21,6 @@ en:
           attributes:
             base:
               at_least_one_domain: "Please set at least a development or an extra domain"
-              addons_not_available: "Add-on '%{addon_name}' is not available for the plan '%{plan_name}'. Please cancel this add-on before changing your plan."
             hostname:
               invalid:  "is invalid"
               wildcard: "is invalid, please check wildcard option instead"
