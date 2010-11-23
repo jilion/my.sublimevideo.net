@@ -39,9 +39,9 @@ document.observe("dom:loaded", function() {
   if ($("sites_table_wrap")) {
     MySublimeVideo.sitesPoller = new SitesPoller();
   }
-  if ($("new_site")) {
-    MySublimeVideo.siteFormHandler = new SiteFormHandler();
-  }
+  // if ($("new_site")) {
+  //   MySublimeVideo.siteFormHandler = new SiteFormHandler();
+  // }
   
   // ===================================================
   // = Fix a <select> CSS bug in Safari (under v4.0.5) =
@@ -140,12 +140,12 @@ var SiteFormHandler = Class.create({
   setup: function() { //call this after ajax call to re-setup this handler
     this.element = $("new_site"); // this is a <form>
     
-    $$('input.plan_radio').each(function(radio){
-      radio.on('change', function(){
-        $('addons').down(".spinner").show();
-        new Ajax.Request('/sites/new', { method: 'get', parameters: this.element.serialize() });
-      }.bind(this));
-    }.bind(this));
+    // $$('input.plan_radio').each(function(radio){
+    //   radio.on('change', function(){
+    //     $('addons').down(".spinner").show();
+    //     new Ajax.Request('/sites/new', { method: 'get', parameters: this.element.serialize() });
+    //   }.bind(this));
+    // }.bind(this));
     
     // this.beforeAjaxHandler = this.element.on('ajax:before', function(){
     //   this.numberOfRequestsUntilSpinnerHides = 1;

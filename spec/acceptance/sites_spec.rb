@@ -5,16 +5,14 @@ feature "Sites" do
   before(:all) do
     # move this somewhere else and DRY it with the populate
     plans = [
-      { :name => "perso_year",       :term_type => "year",  :player_hits => 3000,   :price => 2990,  :overage_price => 299 },
-      { :name => "pro_month",        :term_type => "month", :player_hits => 30000,  :price => 999,   :overage_price => 199 },
-      { :name => "pro_year",         :term_type => "year",  :player_hits => 30000,  :price => 9990,  :overage_price => 199 },
-      { :name => "enterprise_month", :term_type => "month", :player_hits => 300000, :price => 4999,  :overage_price => 99 },
-      { :name => "enterprise_year",  :term_type => "year",  :player_hits => 300000, :price => 49990, :overage_price => 99 }
+      { :name => "perso",      :player_hits => 3000,   :price => 2990, :overage_price => 299 },
+      { :name => "pro",        :player_hits => 30000,  :price => 999,  :overage_price => 199 },
+      { :name => "enterprise", :player_hits => 300000, :price => 4999, :overage_price => 99 }
     ]
     plans.each { |attributes| Plan.create(attributes) }
     
     addons = [
-      { :name => "ssl_month", :term_type => "month", :addonships_attributes => Plan.all.map { |p| { :plan_id => p.id, :price => p.id*100+99 } } }
+      { :name => "ssl", :price => 499 }
     ]
     addons.each { |attributes| Addon.create(attributes) }
   end
@@ -96,7 +94,7 @@ feature "Sites" do
       edit_site_plan
       
       current_url.should =~ %r(http://[^/]+/sites)
-      page.should have_content('Enterprise year')
+      page.should have_content('Enterprise')
     end
     
     scenario "edit addons" do
@@ -124,7 +122,7 @@ def create_site(*args)
   
   visit "/sites/new"
   fill_in "site_hostname", :with => (options[:hostname] or 'google.com')
-  choose "plan_id_pro_month"
+  choose "plan_id_pro"
   
   if !@current_user.cc? || @current_user.cc_expired?
     VCR.use_cassette('credit_card_visa_validation') do
@@ -145,19 +143,19 @@ def edit_site_settings(options = {})
   fill_in "site_extra_hostnames", :with => options[:extra_hostnames] || ''
   fill_in "site_dev_hostnames", :with => options[:dev_hostnames] || ''
   fill_in "site_path", :with => options[:path] || ''
-  choose "plan_id_enterprise_year"
+  choose "plan_id_enterprise"
   click_button "Update settings"
 end
 
 def edit_site_plan(options = {})
   visit_settings(options[:id] || @current_user.sites.last.id)
-  choose "plan_id_enterprise_year"
+  choose "plan_id_enterprise"
   click_button "Update plan"
 end
 
 def edit_site_addons(options = {})
   visit_settings(options[:id] || @current_user.sites.last.id)
-  check "Ssl month"
+  check "Ssl"
   
   click_button "Update addons"
 end

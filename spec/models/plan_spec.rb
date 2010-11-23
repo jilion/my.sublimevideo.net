@@ -8,8 +8,8 @@ describe Plan do
     
     its(:name)          { should =~ /small\d+/ }
     its(:player_hits)   { should == 10_000 }
-    its(:price)         { should == 10 }
-    its(:overage_price) { should == 1 }
+    its(:price)         { should == 1000 }
+    its(:overage_price) { should == 100 }
     
     it { should be_valid }
   end
@@ -41,7 +41,6 @@ describe Plan do
   end
   
 end
-
 
 
 # == Schema Information

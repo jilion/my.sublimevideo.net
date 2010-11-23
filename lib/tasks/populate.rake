@@ -13,7 +13,7 @@ namespace :db do
     
     desc "Empty all the tables"
     task :empty_all_tables => :environment do
-      timed { empty_tables("delayed_jobs", Invoice, InvoiceItem, Log, MailTemplate, MailLog, Site, SiteUsage, User, Admin, Plan, Addon, Addonship) }
+      timed { empty_tables("delayed_jobs", Invoice, InvoiceItem, Log, MailTemplate, MailLog, Site, SiteUsage, User, Admin, Plan, Addon) }
     end
     
     desc "Load all development fixtures."
@@ -66,7 +66,7 @@ namespace :db do
     
     desc "Create fake addons"
     task :addons => :environment do
-      timed { empty_tables(Plan, Addon, Addonship) }
+      timed { empty_tables(Plan, Addon) }
       timed { create_addons }
     end
   end
