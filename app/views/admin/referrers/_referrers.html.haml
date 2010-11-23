@@ -7,5 +7,5 @@
   = render @referrers
   
 .pagination_wrap
-  = will_paginate(:params => { :format => nil }, :renderer => 'WillPaginate::ViewHelpers::LinkRendererRemote')
-  = page_entries_info @referrers
+  = remote_will_paginate(@referrers, :params => params.merge(:format => nil))
+  = page_entries_info(@referrers)

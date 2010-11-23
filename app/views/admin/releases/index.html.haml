@@ -41,14 +41,6 @@
       - else
         %td{ :colspan => 3 }= "none"
         
-  %h3= "Archived releases"
-  %table
-    %tr
-      %th= "Release Date"
-      %th= "Download"
-      %th= "Actions"
-    - Release.order(:date.desc).limit(20).each do |release|
-      %tr{ :class => cycle("", "alt") }
-        %td= release.date
-        %td= link_to "zip archive", release.zip.url
-        %td= button_to "flag as dev", [:admin, release], :confirm => 'Are you sure?', :method => :put      
+  %h3= "All releases"
+  #releases_table_wrap
+    = render 'releases'

@@ -9,5 +9,5 @@
   = render @admins
   
 .pagination_wrap
-  = will_paginate(:params => { :format => nil }, :renderer => 'WillPaginate::ViewHelpers::LinkRendererRemote')
-  = page_entries_info @admins
+  = remote_will_paginate(@admins, :params => params.merge(:format => nil))
+  = page_entries_info(@admins)
