@@ -3,14 +3,20 @@ ssl:
   term_type: month
   price:     499
 
+
+
 # == Schema Information
 #
 # Table name: addons
 #
 #  id         :integer         not null, primary key
 #  name       :string(255)
-#  term_type  :string(255)
+#  price      :integer
 #  created_at :datetime
 #  updated_at :datetime
+#
+# Indexes
+#
+#  index_addons_on_name  (name) UNIQUE
 #
 

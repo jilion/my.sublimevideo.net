@@ -19,7 +19,6 @@ describe Site do
     its(:loader)          { should_not be_present }
     its(:player_mode)     { should == "stable" }
     its(:activated_at)    { should be_nil }
-    its(:billable_on)     { should be_nil }
     
     it { should be_dev }
     it { should be_valid }
@@ -230,36 +229,6 @@ describe Site do
         subject.activated_at.should be_nil
         subject.activate.should be_true
         subject.activated_at.should be_present
-      end
-      
-      it "should set billable_on" do
-        subject.billable_on.should be_nil
-        subject.activate.should be_true
-        subject.billable_on.should == (subject.activated_at + Billing.trial_days).to_date
-      end
-      
-      it "should set user.billable_on if nil" do
-        subject.user.billable_on.should be_nil
-        subject.activate.should be_true
-        subject.user.reload.billable_on.should == (Time.now.utc + Billing.trial_days).to_date
-      end
-      
-      it "should not update/set user.billable_on if present" do
-        subject.user.update_attribute(:billable_on, 5.days.from_now)
-        subject.activate.should be_true
-        subject.user.reload.billable_on.should == 5.days.from_now.to_date
-      end
-      
-      it "should create open invoice if none exists yet" do
-        subject.user.open_invoice.should be_nil
-        subject.activate.should be_true
-        subject.user.reload.open_invoice.should be_present
-      end
-      
-      it "should not create new open invoice if one already exist" do
-        invoice = subject.user.invoices.create
-        subject.activate.should be_true
-        subject.user.reload.open_invoice.should == invoice
       end
       
       it "should update license file" do
@@ -784,6 +753,7 @@ end
 
 
 
+
 # == Schema Information
 #
 # Table name: sites
@@ -806,7 +776,6 @@ end
 #  wildcard        :boolean
 #  extra_hostnames :string(255)
 #  plan_id         :integer
-#  billable_on     :date
 #  cdn_up_to_date  :boolean
 #  activated_at    :datetime
 #

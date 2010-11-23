@@ -25,7 +25,6 @@ class User < ActiveRecord::Base
   
   has_many :sites
   has_many :invoices
-  has_one  :open_invoice, :class_name => "Invoice", :conditions => { :state => "open" }
   
   # ==========
   # = Scopes =
@@ -33,9 +32,6 @@ class User < ActiveRecord::Base
   
   scope :without_cc,      where(:cc_type => nil, :cc_last_digits => nil)
   scope :with_cc,         where(:cc_type.ne => nil, :cc_last_digits.ne => nil)
-  
-  # invoice
-  scope :billable_on,     lambda { |date = Time.now.utc.to_date| where(:billable_on => date.to_date) }
   
   # admin
   scope :enthusiast,      where(:enthusiast_id.ne => nil)
@@ -150,6 +146,7 @@ end
 
 
 
+
 # == Schema Information
 #
 # Table name: users
@@ -172,7 +169,6 @@ end
 #  last_sign_in_ip       :string(255)
 #  failed_attempts       :integer         default(0)
 #  locked_at             :datetime
-#  billable_on           :date
 #  cc_type               :string(255)
 #  cc_last_digits        :integer
 #  cc_expire_on          :date
@@ -199,7 +195,6 @@ end
 #
 # Indexes
 #
-#  index_users_on_billable_on           (billable_on)
 #  index_users_on_confirmation_token    (confirmation_token) UNIQUE
 #  index_users_on_email                 (email) UNIQUE
 #  index_users_on_reset_password_token  (reset_password_token) UNIQUE

@@ -14,10 +14,12 @@ ActiveRecord::Schema.define(:version => 20101122152338) do
 
   create_table "addons", :force => true do |t|
     t.string   "name"
-    t.string   "term_type"
+    t.integer  "price"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "addons", ["name"], :name => "index_addons_on_name", :unique => true
 
   create_table "addons_sites", :id => false, :force => true do |t|
     t.integer  "site_id"
@@ -28,18 +30,6 @@ ActiveRecord::Schema.define(:version => 20101122152338) do
 
   add_index "addons_sites", ["addon_id"], :name => "index_addons_sites_on_addon_id"
   add_index "addons_sites", ["site_id"], :name => "index_addons_sites_on_site_id"
-
-  create_table "addonships", :force => true do |t|
-    t.integer  "plan_id"
-    t.integer  "addon_id"
-    t.integer  "price"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "addonships", ["addon_id"], :name => "index_addonships_on_addon_id"
-  add_index "addonships", ["plan_id", "addon_id"], :name => "index_addonships_on_plan_id_and_addon_id"
-  add_index "addonships", ["plan_id"], :name => "index_addonships_on_plan_id"
 
   create_table "admins", :force => true do |t|
     t.string   "email",                               :default => "", :null => false
@@ -86,9 +76,8 @@ ActiveRecord::Schema.define(:version => 20101122152338) do
     t.integer  "invoice_id"
     t.string   "item_type"
     t.integer  "item_id"
-    t.date     "started_on"
-    t.date     "ended_on"
-    t.datetime "canceled_at"
+    t.datetime "started_at"
+    t.datetime "ended_at"
     t.integer  "price"
     t.integer  "amount"
     t.text     "info"
@@ -105,7 +94,8 @@ ActiveRecord::Schema.define(:version => 20101122152338) do
     t.string   "reference"
     t.string   "state"
     t.integer  "amount"
-    t.date     "billed_on"
+    t.datetime "started_at"
+    t.datetime "ended_at"
     t.datetime "paid_at"
     t.integer  "attempts",   :default => 0
     t.string   "last_error"
@@ -114,6 +104,8 @@ ActiveRecord::Schema.define(:version => 20101122152338) do
     t.datetime "updated_at"
   end
 
+  add_index "invoices", ["user_id", "ended_at"], :name => "index_invoices_on_user_id_and_ended_at", :unique => true
+  add_index "invoices", ["user_id", "started_at"], :name => "index_invoices_on_user_id_and_started_at", :unique => true
   add_index "invoices", ["user_id"], :name => "index_invoices_on_user_id"
 
   create_table "lifetimes", :force => true do |t|
@@ -149,13 +141,14 @@ ActiveRecord::Schema.define(:version => 20101122152338) do
 
   create_table "plans", :force => true do |t|
     t.string   "name"
-    t.string   "term_type"
     t.integer  "player_hits"
     t.integer  "price"
     t.integer  "overage_price"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "plans", ["name"], :name => "index_plans_on_name", :unique => true
 
   create_table "releases", :force => true do |t|
     t.string   "token"
@@ -186,7 +179,6 @@ ActiveRecord::Schema.define(:version => 20101122152338) do
     t.boolean  "wildcard"
     t.string   "extra_hostnames"
     t.integer  "plan_id"
-    t.date     "billable_on"
     t.boolean  "cdn_up_to_date"
     t.datetime "activated_at"
   end
@@ -214,7 +206,6 @@ ActiveRecord::Schema.define(:version => 20101122152338) do
     t.string   "last_sign_in_ip"
     t.integer  "failed_attempts",                      :default => 0
     t.datetime "locked_at"
-    t.date     "billable_on"
     t.string   "cc_type"
     t.integer  "cc_last_digits"
     t.date     "cc_expire_on"
@@ -240,7 +231,6 @@ ActiveRecord::Schema.define(:version => 20101122152338) do
     t.string   "company_videos_served"
   end
 
-  add_index "users", ["billable_on"], :name => "index_users_on_billable_on"
   add_index "users", ["confirmation_token"], :name => "index_users_on_confirmation_token", :unique => true
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
   add_index "users", ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true

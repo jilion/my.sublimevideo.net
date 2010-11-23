@@ -17,9 +17,10 @@ class Invoice < ActiveRecord::Base
   # = Validations =
   # ===============
   
-  validates :user,   :presence => true
+  validates :user, :presence => true
+  validates :started_at, :presence => true
+  validates :ended_at, :presence => true
   validates :amount, :numericality => true, :allow_nil => true
-  validate  :uniqueness_of_open_invoice
   
   # =============
   # = Callbacks =
@@ -30,37 +31,33 @@ class Invoice < ActiveRecord::Base
   # =================
   
   state_machine :initial => :open do
+    after_transition  :to => :complete, :do => :delay_charge
+    
     event(:complete)  { transition :open => :unpaid }
     event(:charge) { transition :unpaid => [:paid, :failed], :failed => [:failed, :paid] }
     
     state :unpaid do
-      validates :amount,    :presence => true
-      validates :billed_on, :presence => true
+      validates :amount, :presence => true
     end
     
-    state :paid do
-    end
+    state :paid
   end
   
   # =================
   # = Class Methods =
   # =================
   
-  def self.process_invoices_for_users_billable_on(date) # utc date!
-    User.billable_on(date).each do |user|
-      transaction do
-        open_invoice = user.open_invoice
-        open_invoice.calculate_and_set_amount # not saved if not chargeable
-        
-        if open_invoice.chargeable?
-          open_invoice.billed_on = date
-          open_invoice.complete
-          open_invoice.delay.charge
-          
-          user.invoices.create # next open invoice
-        end
-        user.update_attribute(:billable_on, date + Billing.billing_period)
-      end
+  def self.build(attributes = {})
+    invoice = new(attributes)
+    invoice.build_invoice_items
+    invoice
+  end
+  
+  def self.complete_invoices_for_billable_users(started_at, ended_at) # utc date!
+    User.billable(started_at, ended_at).each do |user|
+      invoice = build(:user => site, :started_at => started_at, :ended_at => ended_at)
+      invoice.set_amount # not saved if not chargeable
+      invoice.complete
     end
   end
   
@@ -68,24 +65,23 @@ class Invoice < ActiveRecord::Base
   # = Instance Methods =
   # ====================
   
-  def chargeable?
-    
-  end
-  
-  def calculate_and_set_amount
-    
-  end
-  
-private
-  
-  # validate
-  def uniqueness_of_open_invoice
-    if user && user.open_invoice.present?
-      self.errors.add(:state, :uniqueness)
+  def build_invoice_items
+    user.sites.billable(started_at, ended_at).each do |site|
+      invoice_items << InvoiceItem::Plan.build(:site => site, :invoice => invoice)
     end
   end
   
+  def set_amount
+    
+  end
+  
+  def delay_charge
+    # ...
+  end
+  
 end
+
+
 
 # == Schema Information
 #
@@ -96,7 +92,8 @@ end
 #  reference  :string(255)
 #  state      :string(255)
 #  amount     :integer
-#  billed_on  :date
+#  started_at :datetime
+#  ended_at   :datetime
 #  paid_at    :datetime
 #  attempts   :integer         default(0)
 #  last_error :string(255)
@@ -106,6 +103,8 @@ end
 #
 # Indexes
 #
-#  index_invoices_on_user_id  (user_id)
+#  index_invoices_on_user_id                 (user_id)
+#  index_invoices_on_user_id_and_ended_at    (user_id,ended_at) UNIQUE
+#  index_invoices_on_user_id_and_started_at  (user_id,started_at) UNIQUE
 #
 

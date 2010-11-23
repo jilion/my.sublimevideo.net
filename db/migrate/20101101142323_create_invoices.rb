@@ -9,8 +9,9 @@ class CreateInvoices < ActiveRecord::Migration
       t.string   :state
       t.integer  :amount
       
-      t.date     :billed_on
-      t.datetime :paid_at
+      t.datetime  :started_at
+      t.datetime  :ended_at
+      t.datetime  :paid_at
       
       t.integer  :attempts, :default => 0
       t.string   :last_error
@@ -20,11 +21,14 @@ class CreateInvoices < ActiveRecord::Migration
     end
     
     add_index :invoices, :user_id
+    add_index :invoices, [:user_id, :started_at], :unique => true
+    add_index :invoices, [:user_id, :ended_at], :unique => true
   end
   
   def self.down
-    drop_table :invoices
-    
     remove_index :invoices, :user_id
+    remove_index :invoices, [:user_id, :started_at]
+    remove_index :invoices, [:user_id, :ended_at]
+    drop_table :invoices
   end
 end

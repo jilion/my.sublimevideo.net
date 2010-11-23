@@ -4,51 +4,62 @@ class InvoiceItem::Plan < InvoiceItem
   # = Class Methods =
   # =================
   
-  def self.open_invoice_items(site, date = Time.now.utc.to_date)
-    open_invoice_items = where(:invoice_id => site.user.open_invoice).order(:started_on, :canceled_at).all
-    if (!site.archived? || site.billable_on >= site.user.billable_on) && 
-        (open_invoice_items.empty? || (open_invoice_items.present? && open_invoice_items.last.ended_on < site.user.billable_on))
-      open_invoice_items << new(
-        :site       => site,
-        :item       => site.plan,
-        :price      => site.plan.price,
-        :amount     => site.plan.price,
-        :started_on => site.billable_on,
-        :ended_on   => site.billable_on + 1.send(site.plan.term_type)
-      )
-    end
-    open_invoice_items
+  def self.build(attributes = {})
+    invoice_item = new(attributes)
+    invoice_item.set_item_and_price
+    invoice_item.set_started_at_and_ended_at
+    invoice_item.set_amount
+    invoice_item
   end
   
   # ====================
   # = Instance Methods =
   # ====================
   
-  # def calculate_and_set_amount
-  #   self.amount = price
-  # end
+  def set_item_and_price
+    self.item  = site.plan
+    self.price = site.plan.price
+  end
+  
+  def set_started_at_and_ended_at
+    self.started_at = [site.activated_at, invoice.started_at].max
+    self.ended_at   = site.archived_at || invoice.ended_at
+  end
+  
+  def set_amount
+    # pro-rate plan price
+    # self.amount = price * percentage
+  end
+  
+  def minutes
+    # (ended_at - started_at).to_f / 60
+  end
+  
+  def percentage
+    # minutes / invoice.minutes_in_month 
+  end
   
 end
+
 
 
 # == Schema Information
 #
 # Table name: invoice_items
 #
-#  id          :integer         not null, primary key
-#  type        :string(255)
-#  site_id     :integer
-#  invoice_id  :integer
-#  item_type   :string(255)
-#  item_id     :integer
-#  started_on  :date
-#  ended_on    :date
-#  canceled_at :datetime
-#  price       :integer
-#  amount      :integer
-#  info        :text
-#  created_at  :datetime
-#  updated_at  :datetime
+#  id         :integer         not null, primary key
+#  type       :string(255)
+#  site_id    :integer
+#  invoice_id :integer
+#  item_type  :string(255)
+#  item_id    :integer
+#  started_at :datetime
+#  ended_at   :datetime
+#  price      :integer
+#  amount     :integer
+#  info       :text
+#  created_at :datetime
+#  updated_at :datetime
 #
 # Indexes
 #

@@ -24,10 +24,7 @@ Factory.define :site do |f|
 end
 
 Factory.define :active_site, :parent => :site do |f|
-  f.after_create do |site|
-    site.activate
-    site.user.reload
-  end
+  f.after_create { |site| site.activate }
 end
 
 Factory.define :log_voxcast, :class => Log::Voxcast do |f|
@@ -79,8 +76,7 @@ Factory.define :mail_log, :class => MailLog do |f|
 end
 
 Factory.define :plan do |f|
-  f.sequence(:name) { |n| "small_month_#{n}" }
-  f.term_type     'month'
+  f.sequence(:name) { |n| "small#{n}" }
   f.player_hits   10_000
   f.price         10
   f.overage_price 1
@@ -88,7 +84,7 @@ end
 
 Factory.define :addon do |f|
   f.sequence(:name) { |n| "SSL_#{n}" }
-  f.term_type 'month'
+  f.price           33
 end
 
 Factory.define :addonship do |f|
@@ -99,12 +95,14 @@ end
 
 Factory.define :invoice do |f|
   f.association :user
+  f.started_at  { Time.now.utc.beginning_of_month }
+  f.ended_at    { Time.now.utc.end_of_month }
 end
 
 Factory.define :invoice_item do |f|
   f.association :site, :factory => :active_site
-  f.started_on  { Time.now.utc.to_date }
-  f.ended_on    { 1.month.from_now.to_date }
+  f.started_at  { Time.now.utc.beginning_of_month }
+  f.ended_at    { Time.now.utc.end_of_month }
 end
 
 Factory.define :addon_invoice_item, :parent => :invoice_item, :class => InvoiceItem::Addon do |f|
@@ -122,11 +120,6 @@ end
 
 Factory.define :plan_invoice_item, :parent => :invoice_item, :class => InvoiceItem::Plan do |f|
   f.item        { Factory(:plan) }
-  f.price       50
-  f.amount      50
-end
-
-Factory.define :refund_invoice_item, :parent => :invoice_item, :class => InvoiceItem::Refund do |f|
   f.price       50
   f.amount      50
 end

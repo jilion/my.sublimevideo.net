@@ -81,11 +81,7 @@ class Site < ActiveRecord::Base
   
   state_machine :initial => :dev do
     before_transition :to => :dev,      :do => :set_cdn_up_to_date_to_false
-    before_transition :on => :activate, :do => [
-      :set_activated_at_and_billable_on,
-      :set_user_billable_on,
-      :create_user_open_invoice
-    ]
+    before_transition :on => :activate, :do => :set_activated_at
     before_transition :on => :archive,  :do => :set_archived_at
     
     after_transition  :to => [:archived, :suspended], :do => :delay_remove_loader_and_license
@@ -310,19 +306,8 @@ protected
   end
   
   # before_transition :on => :activate
-  def set_activated_at_and_billable_on
-    self.activated_at  = Time.now.utc
-    self.billable_on ||= (activated_at + Billing.trial_days).to_date # ||= used in testing
-  end
-  
-  # before_transition :on => :activate
-  def set_user_billable_on
-    self.user.billable_on ||= (Time.now.utc + Billing.trial_days).to_date
-  end
-  
-  # before_transition :on => :activate
-  def create_user_open_invoice
-    self.user.invoices.create unless user.open_invoice.present?
+  def set_activated_at
+    self.activated_at = Time.now.utc
   end
   
   # before_transition :on => :archive
@@ -350,6 +335,7 @@ protected
 end
 
 
+
 # == Schema Information
 #
 # Table name: sites
@@ -372,7 +358,6 @@ end
 #  wildcard        :boolean
 #  extra_hostnames :string(255)
 #  plan_id         :integer
-#  billable_on     :date
 #  cdn_up_to_date  :boolean
 #  activated_at    :datetime
 #

@@ -2,16 +2,18 @@ class CreatePlans < ActiveRecord::Migration
   def self.up
     create_table :plans do |t|
       t.string  :name
-      t.string  :term_type
       t.integer :player_hits
       t.integer :price
       t.integer :overage_price
       
       t.timestamps
     end
+    
+    add_index :plans, :name, :unique => true
   end
 
   def self.down
+    remove_index :plans, :name
     drop_table :plans
   end
 end

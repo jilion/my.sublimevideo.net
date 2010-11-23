@@ -17,7 +17,6 @@ describe User do
     its(:postal_code)          { should == "2000" }
     its(:use_personal)         { should be_true }
     its(:email)                { should match /email\d+@user.com/ }
-    its(:billable_on)          { should be_nil }
     
     it { should be_valid }
   end
@@ -28,33 +27,6 @@ describe User do
     
     it { should have_many :sites }
     it { should have_many :invoices }
-    
-    it "should have_one open_invoice" do
-      user    = Factory(:user)
-      invoice = Factory(:invoice, :user => user)
-      user.reload.open_invoice.should == invoice
-    end
-  end
-  
-  describe "scope" do
-    
-    describe "billable_on" do
-      before(:each) do
-        Timecop.travel(Date.new(2010,1,15).to_time.utc)
-        @user_billable_yesterday     = Factory(:user).tap { |u| u.update_attribute(:billable_on, Time.now.utc - 1.day) }
-        @user_billable_today         = Factory(:user).tap { |u| u.update_attribute(:billable_on, Time.now.utc) }
-        @user_billable_tomorrow      = Factory(:user).tap { |u| u.update_attribute(:billable_on, Time.now.utc + 1.day) }
-      end
-      after(:each) { Timecop.return }
-      
-      specify do
-        users = User.billable_on(Time.now.utc.to_date)
-        users.should include(@user_billable_today)
-        users.should_not include(@user_billable_tomorrow)
-        users.should_not include(@user_billable_yesterday)
-      end
-    end
-    
   end
   
   describe "validates " do
@@ -308,6 +280,7 @@ end
 
 
 
+
 # == Schema Information
 #
 # Table name: users
@@ -330,7 +303,6 @@ end
 #  last_sign_in_ip       :string(255)
 #  failed_attempts       :integer         default(0)
 #  locked_at             :datetime
-#  billable_on           :date
 #  cc_type               :string(255)
 #  cc_last_digits        :integer
 #  cc_expire_on          :date
@@ -357,7 +329,6 @@ end
 #
 # Indexes
 #
-#  index_users_on_billable_on           (billable_on)
 #  index_users_on_confirmation_token    (confirmation_token) UNIQUE
 #  index_users_on_email                 (email) UNIQUE
 #  index_users_on_reset_password_token  (reset_password_token) UNIQUE

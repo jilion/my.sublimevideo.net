@@ -215,11 +215,9 @@ end
 
 def create_plans
   plans = [
-    { :name => "perso_year",       :term_type => "year",  :player_hits => 3000,   :price => 2990,  :overage_price => 299 },
-    { :name => "pro_month",        :term_type => "month", :player_hits => 30000,  :price => 999,   :overage_price => 199 },
-    { :name => "pro_year",         :term_type => "year",  :player_hits => 30000,  :price => 9990,  :overage_price => 199 },
-    { :name => "enterprise_month", :term_type => "month", :player_hits => 300000, :price => 4999,  :overage_price => 99 },
-    { :name => "enterprise_year",  :term_type => "year",  :player_hits => 300000, :price => 49990, :overage_price => 99 }
+    { :name => "perso",      :player_hits => 3000,   :price => 299,  :overage_price => 299 },
+    { :name => "pro",        :player_hits => 30000,  :price => 999,  :overage_price => 199 },
+    { :name => "enterprise", :player_hits => 300000, :price => 4999, :overage_price => 99 },
   ]
   plans.each { |attributes| Plan.create(attributes) }
   print "#{plans.size} plans created!\n"
@@ -228,7 +226,7 @@ end
 def create_addons
   create_plans if Plan.all.empty?
   addons = [
-    { :name => "ssl_month", :term_type => "month", :addonships_attributes => Plan.all.map { |p| { :plan_id => p.id, :price => p.id*100+99 } } }
+    { :name => "ssl", :price => 499 }
   ]
   addons.each { |attributes| Addon.create(attributes) }
   print "#{addons.size} addon(s) created!\n"

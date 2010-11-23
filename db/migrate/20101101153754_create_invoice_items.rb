@@ -8,12 +8,11 @@ class CreateInvoiceItems < ActiveRecord::Migration
       t.string   :item_type
       t.integer  :item_id
       
-      t.date     :started_on
-      t.date     :ended_on
-      t.datetime :canceled_at
+      t.datetime  :started_at
+      t.datetime  :ended_at
       
-      t.integer  :price
-      t.integer  :amount
+      t.integer   :price
+      t.integer   :amount
       
       t.text     :info # serialized
       
