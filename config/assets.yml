@@ -1,8 +1,17 @@
 package_assets: on
 embed_assets: datauri
-javascript_compressor: closure
-compressor_options:
-  compilation_level: "SIMPLE_OPTIMIZATIONS"
+javascript_compressor: yui
+## =========================
+## Note About the compressor:
+##
+## There was an issue with closure compiler who was rewriting this line of prototype.js: if (!Node) var Node = { };
+## to this: Node||(Node={});
+## And this fires an JS error in IE "'Node' is undefined"
+## So we switched to the YUI compressor
+## =========================
+# javascript_compressor: closure
+# compressor_options:
+#   compilation_level: "SIMPLE_OPTIMIZATIONS"
   
 stylesheets:
   style:
