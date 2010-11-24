@@ -16,14 +16,6 @@ class InvoiceItem::Plan < InvoiceItem
   # = Instance Methods =
   # ====================
   
-  def minutes
-    ((ended_at - started_at).to_f / 60).ceil
-  end
-  
-  def percentage
-    (minutes / invoice.minutes.to_f).round(2)
-  end
-  
   def set_item_and_price
     self.item  = site.plan
     self.price = site.plan.price

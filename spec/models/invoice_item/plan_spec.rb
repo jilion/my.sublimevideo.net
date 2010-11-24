@@ -8,7 +8,7 @@ describe InvoiceItem::Plan do
     set(:invoice) { Factory(:invoice, :user => user, :started_at => Time.utc(2010,2).beginning_of_month, :ended_at => Time.utc(2010,2).end_of_month) }
     
     context "with a site activated before this month and not archived" do
-      set(:site1) { Factory(:site, :user => user, :activated_at => Time.utc(2010,1,15)) }
+      set(:site1) { Factory(:site, :user => user, :plan => plan, :activated_at => Time.utc(2010,1,15)) }
       subject { InvoiceItem::Plan.build(:site => site1, :invoice => invoice) }
       
       specify { site1.activated_at.to_i.should == Time.utc(2010,1,15).to_i }
@@ -25,7 +25,7 @@ describe InvoiceItem::Plan do
     end
     
     context "with a site activated before this month and archived" do
-      set(:site2) { Factory(:site, :user => user, :activated_at => Time.utc(2010,1,15), :archived_at => Time.utc(2010,2,15)) }
+      set(:site2) { Factory(:site, :user => user, :plan => plan, :activated_at => Time.utc(2010,1,15), :archived_at => Time.utc(2010,2,15)) }
       subject { InvoiceItem::Plan.build(:site => site2, :invoice => invoice) }
       
       specify { site2.activated_at.to_i.should == Time.utc(2010,1,15).to_i }
@@ -41,7 +41,7 @@ describe InvoiceItem::Plan do
     end
     
     context "with a site activated during the month and not archived" do
-      set(:site3) { Factory(:site, :user => user, :activated_at => Time.utc(2010,2,20)) }
+      set(:site3) { Factory(:site, :user => user, :plan => plan, :activated_at => Time.utc(2010,2,20)) }
       subject { InvoiceItem::Plan.build(:site => site3, :invoice => invoice) }
       
       specify { site3.activated_at.to_i.should == Time.utc(2010,2,20).to_i }
@@ -57,7 +57,7 @@ describe InvoiceItem::Plan do
     end
     
     context "with a site activated and archived during the month" do
-      set(:site4) { Factory(:site, :user => user, :activated_at => Time.utc(2010,2,15), :archived_at => Time.utc(2010,2,20)) }
+      set(:site4) { Factory(:site, :user => user, :plan => plan, :activated_at => Time.utc(2010,2,15), :archived_at => Time.utc(2010,2,20)) }
       subject { InvoiceItem::Plan.build(:site => site4, :invoice => invoice) }
       
       specify { site4.activated_at.to_i.should == Time.utc(2010,2,15).to_i }
@@ -73,6 +73,7 @@ describe InvoiceItem::Plan do
     end
     
   end
+  
 end
 
 

@@ -1,7 +1,7 @@
 class InvoiceItem < ActiveRecord::Base
   
   attr_accessible :site, :invoice, :item, :price, :amount, :started_at, :ended_at, :info
-  serialize :info
+  serialize :info, Hash
   
   # ================
   # = Associations =
@@ -41,6 +41,14 @@ class InvoiceItem < ActiveRecord::Base
   # ====================
   # = Instance Methods =
   # ====================
+  
+  def minutes
+    ((ended_at - started_at).to_f / 60).ceil
+  end
+  
+  def percentage
+    (minutes / invoice.minutes.to_f).round(2)
+  end
   
 end
 

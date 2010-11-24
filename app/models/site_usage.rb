@@ -36,7 +36,7 @@ class SiteUsage
   
   scope :after,   lambda { |date| where(:day => { "$gte" => date }) }
   scope :before,  lambda { |date| where(:day => { "$lt" => date }) }
-  scope :between, lambda { |start_date, end_date| where(:day => { "$gte" => start_date }, :day => { "$lt" => end_date }) }
+  scope :between, lambda { |start_date, end_date| where(:day => { "$gte" => start_date, "$lt" => end_date }) }
   
   # =================
   # = Class Methods =

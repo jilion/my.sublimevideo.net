@@ -13,13 +13,13 @@
     %ul
       %li= "videopage views: #{perso_plan.player_hits} per month"
       %li= "price: #{number_to_currency(perso_plan.price / 100.0)} per month"
-      %li= "overages: #{number_to_currency(perso_plan.overage_price / 100.0)} per block of #{Plan::OVERAGES_PLAYER_HITS} videopage views"
+      %li= "overages: #{number_to_currency(perso_plan.overage_price / 100.0)} per block of #{Plan::OVERAGES_PLAYER_HITS_BLOCK} videopage views"
     
     %h4 Pro
     - pro_plan =  plans.detect { |p| p.name == 'pro' } 
     %ul
       %li= "videopage views: #{pro_plan.player_hits} per month"
-      %li= "overages: #{number_to_currency(pro_plan.overage_price / 100.0)} per block of #{Plan::OVERAGES_PLAYER_HITS} videopage views"
+      %li= "overages: #{number_to_currency(pro_plan.overage_price / 100.0)} per block of #{Plan::OVERAGES_PLAYER_HITS_BLOCK} videopage views"
     = f.label :plan_id, "Month", :for => "plan_id_pro"
     = f.radio_button :plan_id, pro_plan.id, :id => "plan_id_pro", :class => "plan_radio"
     %ul
@@ -29,7 +29,7 @@
     - enterprise_plan =  plans.detect { |p| p.name == 'enterprise' } 
     %ul
       %li= "videopage views: #{enterprise_plan.player_hits} per month"
-      %li= "overages: #{number_to_currency(enterprise_plan.overage_price / 100.0)} per block of #{Plan::OVERAGES_PLAYER_HITS} videopage views"
+      %li= "overages: #{number_to_currency(enterprise_plan.overage_price / 100.0)} per block of #{Plan::OVERAGES_PLAYER_HITS_BLOCK} videopage views"
     = f.label :plan_id, "Month", :for => "plan_id_enterprise"
     = f.radio_button :plan_id, enterprise_plan.id, :id => "plan_id_enterprise", :class => "plan_radio"
     %ul

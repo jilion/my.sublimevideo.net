@@ -1,6 +1,6 @@
 class Plan < ActiveRecord::Base
   
-  OVERAGES_PLAYER_HITS = 1000
+  OVERAGES_PLAYER_HITS_BLOCK = 1000
   
   attr_accessible :name, :player_hits, :price, :overage_price
   

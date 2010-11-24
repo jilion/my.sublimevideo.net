@@ -1,5 +1,53 @@
 class InvoiceItem::Overage < InvoiceItem
   
+  # =================
+  # = Class Methods =
+  # =================
+  
+  def self.build(attributes = {})
+    invoice_item = new(attributes.merge(:info => {}))
+    invoice_item.set_item_and_price
+    invoice_item.set_started_at_and_ended_at
+    invoice_item.set_player_hits_used
+    invoice_item.set_amount
+    invoice_item
+  end
+  
+  # ====================
+  # = Instance Methods =
+  # ====================
+  
+  def set_item_and_price
+    self.item                    = site.plan
+    self.price                   = site.plan.overage_price
+    self.info[:plan_player_hits] = site.plan.player_hits
+  end
+  
+  def set_started_at_and_ended_at
+    self.started_at = [site.activated_at, invoice.started_at].max
+    self.ended_at   = site.archived_at || invoice.ended_at
+  end
+  
+  def set_player_hits_used
+    self.info[:player_hits_used] = SiteUsage.where(:site_id => site.id).between(started_at.beginning_of_day, ended_at.end_of_day).find.sum do |su|
+      su.main_player_hits + su.main_player_hits_cached + su.extra_player_hits + su.extra_player_hits_cached
+    end
+  end
+  
+  def set_amount
+    self.amount = price * overage_blocks
+  end
+  
+private
+  
+  def overage_blocks
+    [((info[:player_hits_used] - prorated_plan_player_hits).to_f / ::Plan::OVERAGES_PLAYER_HITS_BLOCK).ceil, 0].max
+  end
+  
+  def prorated_plan_player_hits
+    (info[:plan_player_hits] * percentage).ceil
+  end
+  
 end
 
 

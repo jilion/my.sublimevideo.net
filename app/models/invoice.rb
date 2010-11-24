@@ -35,8 +35,6 @@ class Invoice < ActiveRecord::Base
       validates :amount, :presence => true
     end
     
-    state :paid
-    
     event(:complete) { transition :open => :unpaid }
     event(:charge)   { transition :unpaid => [:paid, :failed], :failed => [:failed, :paid] }
     
@@ -56,7 +54,7 @@ class Invoice < ActiveRecord::Base
   def self.complete_invoices_for_billable_users(started_at, ended_at) # utc dates!
     User.billable(started_at, ended_at).each do |user|
       invoice = build(:user => site, :started_at => started_at, :ended_at => ended_at)
-      invoice.set_amount # not saved if not chargeable
+      invoice.set_amount
       invoice.complete
     end
   end
@@ -66,8 +64,10 @@ class Invoice < ActiveRecord::Base
   # ====================
   
   def build_invoice_items
-    user.sites.billable(started_at, ended_at).each do |site|
-      invoice_items << InvoiceItem::Plan.build(:site => site, :invoice => self)
+    user.sites.includes(:versions).billable(started_at, ended_at).each do |site|
+      past_site = site.version_at(ended_at)
+      invoice_items << InvoiceItem::Plan.build(:site => past_site, :invoice => self)
+      invoice_items << InvoiceItem::Overage.build(:site => past_site, :invoice => self)
     end
   end
   
