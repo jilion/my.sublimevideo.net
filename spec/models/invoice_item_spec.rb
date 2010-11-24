@@ -29,7 +29,7 @@ describe InvoiceItem do
   end
   
   describe "validates" do
-    [:site, :invoice, :item, :price, :amount, :started_at, :ended_at, :info].each do |attr|
+    [:site, :invoice, :info].each do |attr|
       it { should allow_mass_assignment_of(attr) }
     end
     

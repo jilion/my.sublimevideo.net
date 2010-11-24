@@ -6,33 +6,13 @@ class Lifetime < ActiveRecord::Base
   belongs_to :site
   belongs_to :item, :polymorphic => true
   
-  def self.addons_minutes_uptime(user, year, month)
-    month_start = Time.utc(year, month).beginning_of_month
-    month_end   = Time.utc(year, month).end_of_month
-    
-    results = []
-    where({ :site_id => user.sites },
-          { :created_at.lte => month_end },
-          { :deleted_at => nil } | { :deleted_at => month_start..month_end }).each do |lifetime|
-      started_at = ([lifetime.created_at, month_start].max).change(:usec => 0)
-      ended_at   = (lifetime.deleted_at || month_end).change(:usec => 0)
-      
-      results << { :type => "site",
-                   :site_id => lifetime.site.id,
-                   :addon_id => lifetime.item_id,
-                   :started_at => started_at,
-                   :ended_at => ended_at,
-                   :minutes => seconds_to_minutes(ended_at - started_at)
-                 }
-    end
-    results
-  end
+  # ==========
+  # = Scopes =
+  # ==========
   
-  def self.seconds_to_minutes(seconds)
-    (seconds / 60.0).ceil
-  end
+  scope :alive_between, lambda { |started_at, ended_at| where({ :created_at.lte => ended_at }, { :deleted_at => nil } | { :deleted_at.gte => started_at }) }
+  
 end
-
 
 # == Schema Information
 #

@@ -66,8 +66,11 @@ class Invoice < ActiveRecord::Base
   def build_invoice_items
     user.sites.includes(:versions).billable(started_at, ended_at).each do |site|
       past_site = site.version_at(ended_at)
-      invoice_items << InvoiceItem::Plan.build(:site => past_site, :invoice => self)
+      invoice_items << (plan_invoice_item = InvoiceItem::Plan.build(:site => past_site, :invoice => self))
       invoice_items << InvoiceItem::Overage.build(:site => past_site, :invoice => self)
+      Lifetime.where(:site => site, :item_type => "Addon").alive_between(plan_invoice_item.started_at, plan_invoice_item.ended_at).each do |lifetime|
+        invoice_items << InvoiceItem::Addon.build(:site => past_site, :lifetime => lifetime, :invoice => self)
+      end
     end
   end
   

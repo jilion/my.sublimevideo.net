@@ -1,5 +1,38 @@
 class InvoiceItem::Addon < InvoiceItem
   
+  attr_accessible :lifetime
+  attr_accessor :lifetime
+  
+  # =================
+  # = Class Methods =
+  # =================
+  
+  def self.build(attributes = {})
+    invoice_item = new(attributes)
+    invoice_item.set_item_and_price
+    invoice_item.set_started_at_and_ended_at
+    invoice_item.set_amount
+    invoice_item
+  end
+  
+  # ====================
+  # = Instance Methods =
+  # ====================
+  
+  def set_item_and_price
+    self.item  = lifetime.item
+    self.price = lifetime.item.price
+  end
+  
+  def set_started_at_and_ended_at
+    self.started_at = [lifetime.created_at, site.activated_at, invoice.started_at].compact.max
+    self.ended_at   = lifetime.deleted_at || site.archived_at || invoice.ended_at
+  end
+  
+  def set_amount
+    self.amount = (price * percentage).ceil
+  end
+  
 end
 
 

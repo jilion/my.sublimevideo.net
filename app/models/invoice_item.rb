@@ -1,6 +1,6 @@
 class InvoiceItem < ActiveRecord::Base
   
-  attr_accessible :site, :invoice, :item, :price, :amount, :started_at, :ended_at, :info
+  attr_accessible :site, :invoice, :info
   serialize :info, Hash
   
   # ================
