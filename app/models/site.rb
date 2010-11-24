@@ -28,6 +28,7 @@ class Site < ActiveRecord::Base
   has_many :invoice_items
   has_many :invoices, :through => :invoice_items
   has_and_belongs_to_many :addons
+  has_many :lifetimes
   # Mongoid associations
   def usages
     SiteUsage.where(:site_id => id)
@@ -231,7 +232,7 @@ public
     (changed & %w[hostname extra_hostnames dev_hostnames path wildcard]).present?
   end
   
-  def addons_changed?
+  def addon_ids_changed?
     @addon_ids_was && @addon_ids_was != addon_ids
   end
   
@@ -274,7 +275,7 @@ protected
       @loader_needs_update = true
     end
     
-    if new_record? || settings_changed? || addons_changed? || (state_changed? && %w[dev active].include?(state))
+    if new_record? || settings_changed? || addon_ids_changed? || (state_changed? && %w[dev active].include?(state))
       set_cdn_up_to_date_to_false
       @license_needs_update = true
     end

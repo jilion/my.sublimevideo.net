@@ -3,6 +3,7 @@ class Lifetime < ActiveRecord::Base
   # ================
   # = Associations =
   # ================
+  
   belongs_to :site
   belongs_to :item, :polymorphic => true
   

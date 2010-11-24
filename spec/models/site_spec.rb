@@ -34,6 +34,7 @@ describe Site do
     it { should have_many :invoice_items }
     it { should have_many(:invoices).through(:invoice_items) }
     it { should have_and_belong_to_many :addons }
+    it { should have_many(:lifetimes) }
   end
   
   # TODO 86s
@@ -484,7 +485,7 @@ describe Site do
       end
     end
     
-    describe "addons_changed?" do
+    describe "addon_ids_changed?" do
       let(:addon1) { Factory(:addon) }
       let(:addon2) { Factory(:addon) }
       subject { Factory(:site) }
