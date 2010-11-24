@@ -23,7 +23,7 @@
     == <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
   %body
     #global
-      = render "layouts/header"
+      = render 'layouts/header'
       
       - if user_signed_in? && current_user.suspended?
         #user_state.suspended

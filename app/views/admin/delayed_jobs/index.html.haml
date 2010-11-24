@@ -18,5 +18,5 @@
   = render :partial => 'delayed_job', :collection => @delayed_jobs
   
 .pagination_wrap
-  = will_paginate(:params => { :format => nil }, :renderer => 'WillPaginate::ViewHelpers::LinkRendererRemote')
-  = page_entries_info @delayed_jobs
+  = remote_will_paginate(@delayed_jobs, :params => params.merge(:format => nil))
+  = page_entries_info(@delayed_jobs)

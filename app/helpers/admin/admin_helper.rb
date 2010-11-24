@@ -1,10 +1,8 @@
 # coding: utf-8
-
 module Admin::AdminHelper
   
   def display_bool(boolean)
-    # boolean ? "✓" : "-"
-    boolean ? "x" : "-"
+    boolean ? "✓" : "-"
   end
   
   def display_date(date)
