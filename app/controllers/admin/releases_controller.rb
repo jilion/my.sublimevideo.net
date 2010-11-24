@@ -1,9 +1,13 @@
 class Admin::ReleasesController < Admin::AdminController
+  respond_to :html
+  respond_to :js, :only => :index
   
   before_filter :allow_only_zeno
   
   # GET /admin/releases
   def index
+    @releases = Release.order(:date.desc)
+    respond_with(@releases)
   end
   
   # POST /admin/releases

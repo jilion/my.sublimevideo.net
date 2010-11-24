@@ -1,5 +1,9 @@
 class Release < ActiveRecord::Base
   
+  # Pagination
+  cattr_accessor :per_page
+  self.per_page = 25
+  
   attr_accessible :zip
   mount_uploader :zip, ReleaseUploader
   uniquify :token, :length => 10, :chars => Array('A'..'Z') + Array('0'..'9')

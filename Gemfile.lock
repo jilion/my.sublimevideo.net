@@ -338,6 +338,7 @@ DEPENDENCIES
   bundler (~> 1.0.7)
   capybara (~> 0.4.0)
   carrierwave (~> 0.5.0)
+  configuration (= 1.1.0)
   countries (~> 0.3.0)
   dalli (~> 0.11.2)
   database_cleaner (>= 0.6)

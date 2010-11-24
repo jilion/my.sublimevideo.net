@@ -1,0 +1,9 @@
+%table
+  %tr
+    %th= "Release Date"
+    %th= "Download"
+    %th= "Actions"
+  = render @releases
+.pagination_wrap
+  = remote_will_paginate(@releases, :params => params.merge(:format => nil))
+  = page_entries_info(@releases)
