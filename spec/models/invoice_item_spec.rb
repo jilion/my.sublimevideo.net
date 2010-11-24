@@ -46,6 +46,16 @@ describe InvoiceItem do
     it { should validate_numericality_of(:amount) }
   end
   
+  describe "#minutes" do
+    specify { build_invoice_item(Time.utc(2010,1).beginning_of_month, Time.utc(2010,1).end_of_month).minutes.should == 31*24*60 }
+    specify { build_invoice_item(Time.utc(2010,1,1,0,0,0), Time.utc(2010,1,1,0,0,0)).minutes.should == 0 }
+    specify { build_invoice_item(Time.utc(2010,1,1,0,0,0), Time.utc(2010,1,1,0,0,1)).minutes.should == 1 }
+  end
+  
+end
+
+def build_invoice_item(started_at, ended_at)
+  Factory.build(:plan_invoice_item, :started_at => started_at, :ended_at => ended_at)
 end
 
 
