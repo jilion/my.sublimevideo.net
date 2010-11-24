@@ -6,8 +6,8 @@ guard 'passenger', :ping => true do
   # watch('^lib/.*\.rb$')
   watch('^config/application.rb$')
   watch('^config/environment.rb$')
-  watch('^config/environments/.*\.rb$')
-  watch('^config/initializers/.*\.rb$')
+  watch('^config/environments/.*.rb$')
+  watch('^config/initializers/.*.rb$')
 end
 
 guard 'spork', :wait => 40 do
