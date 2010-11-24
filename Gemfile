@@ -8,7 +8,6 @@ gem 'rack',                  '~> 1.2.1'
 gem 'arel',                  '~> 2.0.4'
 gem 'pg',                    '~> 0.9.0'
 
-gem 'configuration',         '1.1.0'
 gem 'libxml-ruby',           '~> 1.1.3', :require => 'libxml'
 
 gem 'i18n',                  '~> 0.4.1'
