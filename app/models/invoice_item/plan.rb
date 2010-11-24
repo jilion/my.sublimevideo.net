@@ -35,7 +35,7 @@ class InvoiceItem::Plan < InvoiceItem
   end
   
   def set_amount
-    self.amount = (price * percentage).to_i
+    self.amount = (price * percentage).ceil
   end
   
 end
