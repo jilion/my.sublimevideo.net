@@ -47,6 +47,7 @@ gem 'countries',             '~> 0.3.0'
 gem 'PageRankr',             '~> 1.4.3', :require => 'page_rankr'
 gem 'array_stats',           '~> 0.6.0'
 gem 'rescue_me',             '~> 0.1.0'
+gem 'addressable',           '~> 2.2.2'
 
 group :production do
   gem 'rack-google-analytics', '~> 0.9.2', :require => 'rack/google-analytics'
