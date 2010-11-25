@@ -14,6 +14,6 @@ describe Admin::MailLogsController do
     end
   end
   
-  it_should_behave_like "redirect when connected", '/admin/login', [:user, :guest], { :get => :show }
+  it_should_behave_like "redirect when connected as", '/admin/login', [:user, :guest], { :get => :show }
   
 end

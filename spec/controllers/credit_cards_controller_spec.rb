@@ -45,6 +45,6 @@ describe CreditCardsController do
     end
   end
   
-  it_should_behave_like "redirect when connected", '/login', [:guest], { :get => :edit, :put => :update }
+  it_should_behave_like "redirect when connected as", '/login', [:guest], { :get => :edit, :put => :update }
   
 end

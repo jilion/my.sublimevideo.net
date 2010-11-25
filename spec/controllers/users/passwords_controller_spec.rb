@@ -23,6 +23,6 @@ describe Users::PasswordsController do
     end
   end
   
-  it_should_behave_like "redirect when connected", '/login', :guest, { :post => :validate }
+  it_should_behave_like "redirect when connected as", '/login', :guest, { :post => :validate }
   
 end

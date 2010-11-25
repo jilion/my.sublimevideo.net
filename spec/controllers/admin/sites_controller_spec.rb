@@ -43,6 +43,6 @@ describe Admin::SitesController do
     end
   end
   
-  it_should_behave_like "redirect when connected", '/admin/login', [:user, :guest], { :get => [:index, :edit], :put => :update }
+  it_should_behave_like "redirect when connected as", '/admin/login', [:user, :guest], { :get => [:index, :edit], :put => :update }
   
 end

@@ -2,7 +2,7 @@ module Spec
   module Support
     module ControllerHelpers
       
-      shared_examples_for "redirect when connected" do |url, roles, verb_actions, params={}|
+      shared_examples_for "redirect when connected as" do |url, roles, verb_actions, params={}|
         roles = [roles] unless roles.is_a?(Array)
         roles.each do |role|
           

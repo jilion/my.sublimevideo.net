@@ -59,6 +59,6 @@ describe Admin::MailTemplatesController do
     end
   end
   
-  it_should_behave_like "redirect when connected", '/admin/login', [:user, :guest], { :get => :edit, :put => :update }
+  it_should_behave_like "redirect when connected as", '/admin/login', [:user, :guest], { :get => :edit, :put => :update }
   
 end

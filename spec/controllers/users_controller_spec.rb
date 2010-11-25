@@ -21,6 +21,6 @@ describe UsersController do
     end
   end
   
-  it_should_behave_like "redirect when connected", '/login', [:guest], { :put => :update }, nil
+  it_should_behave_like "redirect when connected as", '/login', [:guest], { :put => :update }, nil
   
 end
