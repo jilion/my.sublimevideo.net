@@ -26,7 +26,7 @@ class InvoiceItem::Addon < InvoiceItem
   
   def set_started_at_and_ended_at
     self.started_at = [lifetime.created_at, site.activated_at, invoice.started_at].compact.max
-    self.ended_at   = lifetime.deleted_at || site.archived_at || invoice.ended_at
+    self.ended_at   = [lifetime.deleted_at, site.archived_at, invoice.ended_at].compact.min
   end
   
   def set_amount
