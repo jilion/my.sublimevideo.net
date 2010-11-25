@@ -24,7 +24,7 @@ describe InvoiceItem::Plan do
       
       its(:minutes)    { should == 28 * 24 * 60 }
       its(:percentage) { should == (28 / 28.0).round(2) }
-      its(:amount)     { should == (1000 * (28 / 28.0).round(2)).ceil }
+      its(:amount)     { should == (1000 * (28 / 28.0).round(2)).round }
       specify          { subject.started_at.to_i.should == invoice.started_at.to_i }
       specify          { subject.ended_at.to_i.should == invoice.ended_at.to_i }
     end
@@ -35,7 +35,7 @@ describe InvoiceItem::Plan do
       
       its(:minutes)    { should == 14 * 24 * 60 }
       its(:percentage) { should == (14 / 28.0).round(2) }
-      its(:amount)     { should == (1000 * (14 / 28.0).round(2)).ceil }
+      its(:amount)     { should == (1000 * (14 / 28.0).round(2)).round }
       specify          { subject.started_at.to_i.should == invoice.started_at.to_i }
       specify          { subject.ended_at.to_i.should == Time.utc(2010,2,15).to_i }
     end
@@ -46,7 +46,7 @@ describe InvoiceItem::Plan do
       
       its(:minutes)    { should == 9 * 24 * 60 }
       its(:percentage) { should == (9 / 28.0).round(2) }
-      its(:amount)     { should == (1000 * (9 / 28.0).round(2)).ceil }
+      its(:amount)     { should == (1000 * (9 / 28.0).round(2)).round }
       specify          { subject.started_at.to_i.should == subject.site.activated_at.to_i }
       specify          { subject.ended_at.to_i.should == invoice.ended_at.to_i }
     end
@@ -57,7 +57,7 @@ describe InvoiceItem::Plan do
       
       its(:minutes)    { should == 5 * 24 * 60 }
       its(:percentage) { should == (5 / 28.0).round(2) }
-      its(:amount)     { should == (1000 * (5 / 28.0).round(2)).ceil }
+      its(:amount)     { should == (1000 * (5 / 28.0).round(2)).round }
       specify          { subject.started_at.to_i.should == subject.site.activated_at.to_i }
       specify          { subject.ended_at.to_i.should == Time.utc(2010,2,20).to_i }
     end

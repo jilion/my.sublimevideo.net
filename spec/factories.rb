@@ -95,7 +95,7 @@ end
 
 Factory.define :invoice_item do |f|
   f.association :site, :factory => :active_site
-  f.association :invoice, :factory => :invoice
+  f.association :invoice
   f.started_at  { Time.now.utc.beginning_of_month }
   f.ended_at    { Time.now.utc.end_of_month }
 end

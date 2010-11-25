@@ -329,7 +329,7 @@ PLATFORMS
 DEPENDENCIES
   PageRankr (~> 1.4.3)
   RedCloth (~> 4.2.3)
-  activemerchant (~> 1.9.0)
+  activemerchant (~> 1.9.1)
   annotate (~> 2.4.0)
   arel (~> 2.0.4)
   array_stats (~> 0.6.0)
@@ -357,7 +357,7 @@ DEPENDENCIES
   guard-spork
   haml (~> 3.0.24)
   has_scope!
-  heroku (~> 1.14.3)
+  heroku (~> 1.14.4)
   heroku_tasks (~> 0.1.4)
   hoptoad_notifier (~> 2.3.12)
   i18n (~> 0.4.1)

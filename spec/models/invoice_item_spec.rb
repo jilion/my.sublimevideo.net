@@ -52,6 +52,22 @@ describe InvoiceItem do
     specify { build_invoice_item(Time.utc(2010,1,1,0,0,0), Time.utc(2010,1,1,0,0,1)).minutes.should == 1 }
   end
   
+  describe "#percentage" do
+    context "with a full month invoice and a one week invoice item" do
+      set(:full_month_invoice) { Factory(:invoice, :started_at => Time.utc(2010,2).beginning_of_month, :ended_at => Time.utc(2010,2).end_of_month) }
+      subject { Factory(:plan_invoice_item, :invoice => full_month_invoice, :started_at => Time.utc(2010,2,10), :ended_at => Time.utc(2010,2,17)) }
+      
+      its(:percentage) { should == 7 / 28.0 }
+    end
+    context "with a two weeks invoice and a two days invoice item" do
+      set(:two_weeks_invoice) { Factory(:invoice, :started_at => Time.utc(2010,2.1), :ended_at => Time.utc(2010,2,14).end_of_day) }
+      subject { Factory(:plan_invoice_item, :invoice => two_weeks_invoice, :started_at => Time.utc(2010,2,2), :ended_at => Time.utc(2010,2,3).end_of_day) }
+      
+      its(:percentage) { should == (2 / 28.0).round(2) }
+    end
+    
+  end
+  
 end
 
 def build_invoice_item(started_at, ended_at)

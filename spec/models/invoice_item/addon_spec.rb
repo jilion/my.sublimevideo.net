@@ -33,7 +33,7 @@ describe InvoiceItem::Addon do
         
         its(:minutes)    { should == 28 * 24 * 60 }
         its(:percentage) { should == (28 / 28.0).round(2) }
-        its(:amount)     { should == (100 * (28 / 28.0).round(2)).ceil }
+        its(:amount)     { should == (100 * (28 / 28.0).round(2)).round }
         specify          { subject.started_at.to_i.should == subject.invoice.started_at.to_i }
       end
     end
@@ -46,7 +46,7 @@ describe InvoiceItem::Addon do
         
         its(:minutes)    { should == 9 * 24 * 60 }
         its(:percentage) { should == (9 / 28.0).round(2) }
-        its(:amount)     { should == (100 * (9 / 28.0).round(2)).ceil }
+        its(:amount)     { should == (100 * (9 / 28.0).round(2)).round }
         specify          { subject.started_at.to_i.should == subject.site.activated_at.to_i }
       end
     end
@@ -59,7 +59,7 @@ describe InvoiceItem::Addon do
         
         its(:minutes)    { should == 9 * 24 * 60 }
         its(:percentage) { should == (9 / 28.0).round(2) }
-        its(:amount)     { should == (100 * (9 / 28.0).round(2)).ceil }
+        its(:amount)     { should == (100 * (9 / 28.0).round(2)).round }
         specify          { subject.started_at.to_i.should == subject.lifetime.created_at.to_i }
       end
     end
@@ -72,7 +72,7 @@ describe InvoiceItem::Addon do
         
         its(:minutes)    { should == 9 * 24 * 60 }
         its(:percentage) { should == (9 / 28.0).round(2) }
-        its(:amount)     { should == (100 * (9 / 28.0).round(2)).ceil }
+        its(:amount)     { should == (100 * (9 / 28.0).round(2)).round }
         specify          { subject.ended_at.to_i.should == subject.invoice.ended_at.to_i }
       end
     end
@@ -85,7 +85,7 @@ describe InvoiceItem::Addon do
         
         its(:minutes)    { should == 5 * 24 * 60 }
         its(:percentage) { should == (5 / 28.0).round(2) }
-        its(:amount)     { should == (100 * (5 / 28.0).round(2)).ceil }
+        its(:amount)     { should == (100 * (5 / 28.0).round(2)).round }
         specify          { subject.ended_at.to_i.should == subject.site.archived_at.to_i }
       end
     end
@@ -98,7 +98,7 @@ describe InvoiceItem::Addon do
         
         its(:minutes)    { should == 5 * 24 * 60 }
         its(:percentage) { should == (5 / 28.0).round(2) }
-        its(:amount)     { should == (100 * (5 / 28.0).round(2)).ceil }
+        its(:amount)     { should == (100 * (5 / 28.0).round(2)).round }
         specify          { subject.ended_at.to_i.should == subject.lifetime.deleted_at.to_i }
       end
     end

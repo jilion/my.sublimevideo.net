@@ -62,11 +62,27 @@ describe Invoice do
     end
   end
   
-  describe "#minutes" do
-    subject { Factory(:invoice, :started_at => Time.utc(2010,2).beginning_of_month, :ended_at => Time.utc(2010,2).end_of_month) }
-    
-    it "should return minutes between started_at and ended_at" do
-      subject.minutes.should == 28 * 24 * 60
+  describe ".build", :focus => true do
+    # invoice = new(attributes)
+    # invoice.build_invoice_items
+    # invoice.set_amount
+    # invoice
+  end
+  
+  describe "#minutes_in_month" do
+    context "with invoice included in one month" do
+      subject { Factory(:invoice, :started_at => Time.utc(2010,2,10), :ended_at => Time.utc(2010,2,27)) }
+      
+      it "should return minutes in the month where started_at and ended_at are included" do
+        subject.minutes_in_month.should == 28 * 24 * 60
+      end
+    end
+    context "with invoice included in two month" do
+      subject { Factory(:invoice, :started_at => Time.utc(2010,2,10), :ended_at => Time.utc(2010,3,27)) }
+      
+      it "should return minutes in the month where started_at and ended_at are included" do
+        subject.minutes_in_month.should == (28+31) * 24 * 60
+      end
     end
   end
   

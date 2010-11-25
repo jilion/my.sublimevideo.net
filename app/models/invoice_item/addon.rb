@@ -30,7 +30,7 @@ class InvoiceItem::Addon < InvoiceItem
   end
   
   def set_amount
-    self.amount = (price * percentage).ceil
+    self.amount = (price * percentage).round
   end
   
 end

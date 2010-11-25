@@ -22,7 +22,7 @@ gem 'jammit',                '~> 0.5.4'
 gem 'meta_where',            '~> 0.9.9.2'
 gem 'hoptoad_notifier',      '~> 2.3.12'
 gem 'prowl',                 '~> 0.1.3'
-gem 'activemerchant',        '~> 1.9.0'
+gem 'activemerchant',        '~> 1.9.1'
 gem 'voxel_hapi',            :git => 'git://github.com/thibaudgg/voxel_hapi.git', :branch => '1.9.2' # VoxCast CDN
 gem 'request-log-analyzer',  '~> 1.9.6', :require => 'request_log_analyzer'
 gem 'public_suffix_service', '~> 0.7.0'
@@ -65,7 +65,7 @@ group :development, :test do
   gem 'silent-postgres'
   gem 'rspec-rails',   '~> 2.1.0'
   gem 'passenger',     '~> 3.0.0'
-  # gem 'awesome_print'
+  # gem 'awesome_print', '~> 0.3.1' # liquid problem
 end
 
 group :development do
@@ -73,7 +73,7 @@ group :development do
   gem 'annotate',      '~> 2.4.0'
   gem 'wirble',        '~> 0.1.3'
   gem 'ruby-graphviz', :require => 'graphviz'
-  gem 'heroku',        '~> 1.14.3'
+  gem 'heroku',        '~> 1.14.4'
   gem 'heroku_tasks',  '~> 0.1.4'
   gem 'taps',          '~> 0.3.14' # heroku db pull/push
   gem 'timecop',       '~> 0.3.5'

@@ -41,6 +41,8 @@ class Site < ActiveRecord::Base
   # = Scopes =
   # ==========
   
+  scope :billable, lambda { |started_at, ended_at| where({ :activated_at.lte => ended_at }, { :archived_at => nil } | { :archived_at.gte => started_at }) }
+  
   scope :with_plan,   includes(:plan)
   scope :with_addons, includes(:addons)
   

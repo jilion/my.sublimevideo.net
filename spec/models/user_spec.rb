@@ -29,6 +29,29 @@ describe User do
     it { should have_many :invoices }
   end
   
+  describe "Scopes" do
+    
+    describe "#billable" do
+      before(:all) do
+        @user1 = Factory(:user)
+        Factory(:site, :user => @user1, :activated_at => Time.utc(2010,1,15))
+        Factory(:site, :user => @user1, :activated_at => Time.utc(2010,2,15))
+        @user2 = Factory(:user)
+        Factory(:site, :user => @user2, :activated_at => Time.utc(2010,2,1), :archived_at => Time.utc(2010,2,2))
+        @user3 = Factory(:user)
+        Factory(:site, :user => @user3, :activated_at => Time.utc(2010,2,1), :archived_at => Time.utc(2010,2,20))
+        @user4 = Factory(:user)
+        Factory(:site, :user => @user4, :activated_at => Time.utc(2010,2,1), :archived_at => Time.utc(2010,2,28))
+      end
+      
+      specify { User.billable(Time.utc(2010,1,1), Time.utc(2010,1,10)).should == [] }
+      specify { User.billable(Time.utc(2010,1,1), Time.utc(2010,1,25)).should == [@user1] }
+      specify { User.billable(Time.utc(2010,2,5), Time.utc(2010,2,25)).should == [@user1, @user3, @user4] }
+      specify { User.billable(Time.utc(2010,2,21), Time.utc(2010,2,25)).should == [@user1, @user4] }
+    end
+    
+  end
+  
   describe "validates " do
     [:first_name, :last_name, :email, :remember_me, :password, :postal_code, :country, :use_personal, :use_company, :use_clients, :company_name, :company_url, :company_job_title, :company_employees, :company_videos_served, :terms_and_conditions, :cc_update, :cc_type, :cc_full_name, :cc_number, :cc_expire_on, :cc_verification_value].each do |attr|
       it { should allow_mass_assignment_of(attr) }

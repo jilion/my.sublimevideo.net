@@ -37,6 +37,26 @@ describe Site do
     it { should have_many(:lifetimes) }
   end
   
+  describe "Scopes" do
+    
+    describe "#billable" do
+      before(:all) do
+        user = Factory(:user)
+        @site1 = Factory(:site, :user => user, :activated_at => Time.utc(2010,1,15))
+        @site2 = Factory(:site, :user => user, :activated_at => Time.utc(2010,2,15))
+        @site3 = Factory(:site, :user => user, :activated_at => Time.utc(2010,2,1), :archived_at => Time.utc(2010,2,2))
+        @site4 = Factory(:site, :user => user, :activated_at => Time.utc(2010,2,1), :archived_at => Time.utc(2010,2,20))
+        @site5 = Factory(:site, :user => user, :activated_at => Time.utc(2010,2,1), :archived_at => Time.utc(2010,2,28))
+      end
+      
+      specify { Site.billable(Time.utc(2010,1,1), Time.utc(2010,1,10)).should == [] }
+      specify { Site.billable(Time.utc(2010,1,1), Time.utc(2010,1,25)).should == [@site1] }
+      specify { Site.billable(Time.utc(2010,2,5), Time.utc(2010,2,25)).should == [@site1, @site2, @site4, @site5] }
+      specify { Site.billable(Time.utc(2010,2,21), Time.utc(2010,2,25)).should == [@site1, @site2, @site5] }
+    end
+    
+  end
+  
   # TODO 86s
   describe "Validates " do
     [:hostname, :dev_hostnames].each do |attribute|
@@ -491,12 +511,12 @@ describe Site do
       subject { Factory(:site) }
       
       it "should return false if addons hasn't changed" do
-        subject.should_not be_addons_changed
+        subject.should_not be_addon_ids_changed
       end
       
       it "should return true if addons has changed" do
         subject.addon_ids = [addon1.id, addon2.id]
-        subject.should be_addons_changed
+        subject.should be_addon_ids_changed
       end
     end
     
