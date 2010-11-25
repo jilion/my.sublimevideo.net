@@ -3,25 +3,28 @@ require 'spec_helper'
 describe InvoiceItem::Overage do
   
   describe ".build(attributes = {})" do
-    set(:user)    { Factory(:user) }
-    set(:plan)    { Factory(:plan, :price => 1000, :overage_price => 100, :player_hits => 2000) }
-    set(:invoice) { Factory(:invoice, :user => user, :started_at => Time.utc(2010,2).beginning_of_month, :ended_at => Time.utc(2010,2).end_of_month) }
+    before(:all) do
+      @user    = Factory(:user)
+      @plan    = Factory(:plan, :price => 1000, :overage_price => 100, :player_hits => 2000)
+      @site    = Factory(:site, :user => @user, :plan => @plan, :activated_at => Time.utc(2010,1,15))
+      @invoice = Factory(:invoice, :user => @user, :started_at => Time.utc(2010,2).beginning_of_month, :ended_at => Time.utc(2010,2).end_of_month)
+    end
     
     describe "shared logic" do
-      set(:site) { Factory(:site, :user => user, :plan => plan, :activated_at => Time.utc(2010,1,15)) }
-      subject { InvoiceItem::Overage.build(:site => site, :invoice => invoice) }
+      before(:all) { @site = Factory(:site, :user => @user, :plan => @plan, :activated_at => Time.utc(2010,1,15)) }
+      subject { InvoiceItem::Overage.build(:site => @site, :invoice => @invoice) }
       
-      specify { site.activated_at.to_i.should == Time.utc(2010,1,15).to_i }
-      specify { site.archived_at.to_i.should == 0 }
+      specify { @site.activated_at.to_i.should == Time.utc(2010,1,15).to_i }
+      specify { @site.archived_at.to_i.should == 0 }
       
-      its(:item)  { should == site.plan }
-      its(:price) { should == site.plan.overage_price }
+      its(:item)  { should == @site.plan }
+      its(:price) { should == @site.plan.overage_price }
     end
     
     context "with a site activated before this month and not archived" do
-      set(:site1) { site = Factory(:site, :user => user, :plan => plan, :activated_at => Time.utc(2010,1,15)) }
-      before(:each) { set_site_usages(site1) }
-      subject { InvoiceItem::Overage.build(:site => site1, :invoice => invoice) }
+      before(:all) { @site = Factory(:site, :user => @user, :plan => @plan, :activated_at => Time.utc(2010,1,15)) }
+      before(:each) { set_site_usages(@site) }
+      subject { InvoiceItem::Overage.build(:site => @site, :invoice => @invoice) }
       
       its(:info)                      { should == { :plan_player_hits => 2000, :player_hits_used => 1500 * 3 } }
       its(:overage_blocks)            { should == 3 }
@@ -29,14 +32,14 @@ describe InvoiceItem::Overage do
       its(:minutes)                   { should == 28 * 24 * 60 }
       its(:percentage)                { should == (28 / 28.0).round(2) }
       its(:amount)                    { should == 100 * 3 }
-      specify                         { subject.started_at.to_i.should == invoice.started_at.to_i }
-      specify                         { subject.ended_at.to_i.should == invoice.ended_at.to_i }
+      specify                         { subject.started_at.to_i.should == subject.invoice.started_at.to_i }
+      specify                         { subject.ended_at.to_i.should == subject.invoice.ended_at.to_i }
     end
     
     context "with a site activated before this month and archived" do
-      set(:site2) { Factory(:site, :user => user, :plan => plan, :activated_at => Time.utc(2010,1,15), :archived_at => Time.utc(2010,2,15)) }
-      before(:each) { set_site_usages(site2) }
-      subject { InvoiceItem::Overage.build(:site => site2, :invoice => invoice) }
+      before(:all) { @site = Factory(:site, :user => @user, :plan => @plan, :activated_at => Time.utc(2010,1,15), :archived_at => Time.utc(2010,2,15)) }
+      before(:each) { set_site_usages(@site) }
+      subject { InvoiceItem::Overage.build(:site => @site, :invoice => @invoice) }
       
       its(:info)                      { should == { :plan_player_hits => 2000, :player_hits_used => 1500 * 2 } }
       its(:overage_blocks)            { should == 2 }
@@ -44,14 +47,14 @@ describe InvoiceItem::Overage do
       its(:minutes)                   { should == 14 * 24 * 60 }
       its(:percentage)                { should == (14 / 28.0).round(2) }
       its(:amount)                    { should == 100 * 2 }
-      specify                         { subject.started_at.to_i.should == invoice.started_at.to_i }
+      specify                         { subject.started_at.to_i.should == subject.invoice.started_at.to_i }
       specify                         { subject.ended_at.to_i.should == subject.site.archived_at.to_i }
     end
     
     context "with a site activated during the month and not archived" do
-      set(:site3) { Factory(:site, :user => user, :plan => plan, :activated_at => Time.utc(2010,2,20)) }
-      before(:each) { set_site_usages(site3) }
-      subject { InvoiceItem::Overage.build(:site => site3, :invoice => invoice) }
+      before(:all) { @site = Factory(:site, :user => @user, :plan => @plan, :activated_at => Time.utc(2010,2,20)) }
+      before(:each) { set_site_usages(@site) }
+      subject { InvoiceItem::Overage.build(:site => @site, :invoice => @invoice) }
       
       its(:info)                      { should == { :plan_player_hits => 2000, :player_hits_used => 1500 * 1 } }
       its(:overage_blocks)            { should == 1 }
@@ -60,13 +63,13 @@ describe InvoiceItem::Overage do
       its(:percentage)                { should == (9 / 28.0).round(2) }
       its(:amount)                    { should == 100 * 1 }
       specify                         { subject.started_at.to_i.should == subject.site.activated_at.to_i }
-      specify                         { subject.ended_at.to_i.should == invoice.ended_at.to_i }
+      specify                         { subject.ended_at.to_i.should == subject.invoice.ended_at.to_i }
     end
     
     context "with a site activated and archived during the month" do
-      set(:site4) { Factory(:site, :user => user, :plan => plan, :activated_at => Time.utc(2010,2,15), :archived_at => Time.utc(2010,2,20)) }
-      before(:each) { set_site_usages(site4) }
-      subject { InvoiceItem::Overage.build(:site => site4, :invoice => invoice) }
+      before(:all) { @site = Factory(:site, :user => @user, :plan => @plan, :activated_at => Time.utc(2010,2,15), :archived_at => Time.utc(2010,2,20)) }
+      before(:each) { set_site_usages(@site) }
+      subject { InvoiceItem::Overage.build(:site => @site, :invoice => @invoice) }
       
       its(:info)                      { should == { :plan_player_hits => 2000, :player_hits_used => 1500 * 2 } }
       its(:overage_blocks)            { should == 3 }
@@ -79,9 +82,9 @@ describe InvoiceItem::Overage do
     end
     
     context "with a site activated and archived during the month (without site usages)" do
-      set(:site5) { Factory(:site, :user => user, :plan => plan, :activated_at => Time.utc(2010,2,2), :archived_at => Time.utc(2010,2,14)) }
-      before(:each) { set_site_usages(site5) }
-      subject { InvoiceItem::Overage.build(:site => site5, :invoice => invoice) }
+      before(:all) { @site = Factory(:site, :user => @user, :plan => @plan, :activated_at => Time.utc(2010,2,2), :archived_at => Time.utc(2010,2,14)) }
+      before(:each) { set_site_usages(@site) }
+      subject { InvoiceItem::Overage.build(:site => @site, :invoice => @invoice) }
       
       its(:info)                      { should == { :plan_player_hits => 2000, :player_hits_used => 1500 * 0 } }
       its(:overage_blocks)            { should == 0 }
