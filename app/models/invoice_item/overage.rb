@@ -5,17 +5,22 @@ class InvoiceItem::Overage < InvoiceItem
   # =================
   
   def self.build(attributes = {})
-    invoice_item = new(attributes.merge(:info => {}))
-    invoice_item.set_item_and_price
-    invoice_item.set_started_at_and_ended_at
-    invoice_item.set_player_hits_used
-    invoice_item.set_amount
-    invoice_item
+    new(attributes.merge(:info => {})).build
   end
   
   # ====================
   # = Instance Methods =
   # ====================
+  
+  def build
+    set_item_and_price
+    set_started_at_and_ended_at
+    set_player_hits_used
+    set_amount
+    self
+  end
+  
+private
   
   def set_item_and_price
     self.item                    = site.plan
@@ -37,8 +42,6 @@ class InvoiceItem::Overage < InvoiceItem
   def set_amount
     self.amount = price * overage_blocks
   end
-  
-private
   
   def overage_blocks
     [((info[:player_hits_used] - prorated_plan_player_hits).to_f / ::Plan::OVERAGES_PLAYER_HITS_BLOCK).ceil, 0].max

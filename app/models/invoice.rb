@@ -46,10 +46,7 @@ class Invoice < ActiveRecord::Base
   # =================
   
   def self.build(attributes = {})
-    invoice = new(attributes)
-    invoice.build_invoice_items
-    invoice.set_amount
-    invoice
+    new(attributes).build
   end
   
   # pending
@@ -63,6 +60,12 @@ class Invoice < ActiveRecord::Base
   # ====================
   # = Instance Methods =
   # ====================
+  
+  def build
+    build_invoice_items
+    set_amount
+    self
+  end
   
   def minutes_in_month
     ((ended_at.end_of_month - started_at.beginning_of_month).to_f / 60).ceil

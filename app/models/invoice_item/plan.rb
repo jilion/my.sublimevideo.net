@@ -5,16 +5,21 @@ class InvoiceItem::Plan < InvoiceItem
   # =================
   
   def self.build(attributes = {})
-    invoice_item = new(attributes)
-    invoice_item.set_item_and_price
-    invoice_item.set_started_at_and_ended_at
-    invoice_item.set_amount
-    invoice_item
+    new(attributes).build
   end
   
   # ====================
   # = Instance Methods =
   # ====================
+  
+  def build
+    set_item_and_price
+    set_started_at_and_ended_at
+    set_amount
+    self
+  end
+  
+private
   
   def set_item_and_price
     self.item  = site.plan
