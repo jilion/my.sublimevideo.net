@@ -48,13 +48,14 @@ class Invoice < ActiveRecord::Base
   def self.build(attributes = {})
     invoice = new(attributes)
     invoice.build_invoice_items
+    invoice.set_amount
     invoice
   end
   
+  # pending
   def self.complete_invoices_for_billable_users(started_at, ended_at) # utc dates!
     User.billable(started_at, ended_at).each do |user|
-      invoice = build(:user => site, :started_at => started_at, :ended_at => ended_at)
-      invoice.set_amount
+      invoice = build(:user => user, :started_at => started_at, :ended_at => ended_at)
       invoice.complete
     end
   end
@@ -63,28 +64,32 @@ class Invoice < ActiveRecord::Base
   # = Instance Methods =
   # ====================
   
+  def minutes_in_month
+    ((ended_at.end_of_month - started_at.beginning_of_month).to_f / 60).ceil
+  end
+  
+private
+  
   def build_invoice_items
     user.sites.includes(:versions).billable(started_at, ended_at).each do |site|
+      # Allow to have the good billable plan
       past_site = site.version_at(ended_at)
-      
+      # Plan
       invoice_items << (plan_invoice_item = InvoiceItem::Plan.build(:site => past_site, :invoice => self))
-      
+      # Overages
       invoice_items << InvoiceItem::Overage.build(:site => past_site, :invoice => self)
-      
+      # Addons
       Lifetime.where(:site => site, :item_type => "Addon").alive_between(plan_invoice_item.started_at, plan_invoice_item.ended_at).each do |lifetime|
         invoice_items << InvoiceItem::Addon.build(:site => past_site, :lifetime => lifetime, :invoice => self)
       end
     end
   end
   
-  def minutes
-    (ended_at - started_at).to_f / 60
-  end
-  
   def set_amount
-    
+    self.amount = invoice_items.sum { |invoice_item| invoice_item.amount }
   end
   
+  # after_transition  :to => :complete
   def delay_charge
     # ...
   end

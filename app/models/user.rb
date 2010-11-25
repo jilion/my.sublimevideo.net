@@ -30,6 +30,8 @@ class User < ActiveRecord::Base
   # = Scopes =
   # ==========
   
+  scope :billable, lambda { |started_at, ended_at| includes(:sites).where(:sites => [{ :activated_at.lte => ended_at }, { :archived_at => nil } | { :archived_at.gte => started_at }]) }
+  
   scope :without_cc,      where(:cc_type => nil, :cc_last_digits => nil)
   scope :with_cc,         where(:cc_type.ne => nil, :cc_last_digits.ne => nil)
   

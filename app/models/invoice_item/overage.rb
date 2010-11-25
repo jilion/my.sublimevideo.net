@@ -45,7 +45,7 @@ private
   end
   
   def prorated_plan_player_hits
-    (info[:plan_player_hits] * percentage).ceil
+    (info[:plan_player_hits] * percentage).round
   end
   
 end
