@@ -45,10 +45,6 @@ describe Invoice do
     end
   end
   
-  describe "callbacks" do
-    
-  end
-  
   describe "State Machine" do
     subject { Factory(:invoice) }
     
