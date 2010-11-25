@@ -38,7 +38,7 @@ class Invoice < ActiveRecord::Base
     event(:complete) { transition :open => :unpaid }
     event(:charge)   { transition :unpaid => [:paid, :failed], :failed => [:failed, :paid] }
     
-    after_transition  :to => :complete, :do => :delay_charge
+    after_transition :to => :complete, :do => :delay_charge
   end
   
   # =================
@@ -82,17 +82,17 @@ private
       # Overages
       invoice_items << InvoiceItem::Overage.build(:site => past_site, :invoice => self)
       # Addons
-      Lifetime.where(:site => site, :item_type => "Addon").alive_between(plan_invoice_item.started_at, plan_invoice_item.ended_at).each do |lifetime|
+      past_site.lifetimes.where(:item_type => "Addon").alive_between(plan_invoice_item.started_at, plan_invoice_item.ended_at).each do |lifetime|
         invoice_items << InvoiceItem::Addon.build(:site => past_site, :lifetime => lifetime, :invoice => self)
       end
     end
   end
   
   def set_amount
-    self.amount = invoice_items.sum { |invoice_item| invoice_item.amount }
+    self.amount = invoice_items.to_a.sum(&:amount)
   end
   
-  # after_transition  :to => :complete
+  # after_transition :to => :complete
   def delay_charge
     # ...
   end

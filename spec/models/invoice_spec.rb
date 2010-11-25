@@ -62,11 +62,73 @@ describe Invoice do
     end
   end
   
-  describe ".build", :focus => true do
-    # invoice = new(attributes)
-    # invoice.build_invoice_items
-    # invoice.set_amount
-    # invoice
+  describe ".build" do
+    before(:all) do
+      @user   = Factory(:user)
+      @plan1  = Factory(:plan, :price => 1000, :overage_price => 100, :player_hits => 2000)
+      @addon1 = Factory(:addon, :price => 399)
+      @addon2 = Factory(:addon, :price => 499)
+      Timecop.travel(Time.utc(2010,2).beginning_of_month)
+      @site = Factory(:site, :user => @user, :plan => @plan1, :addon_ids => [@addon1.id, @addon2.id], :activated_at => Time.now)
+      Timecop.return
+    end
+    before(:each) do
+      player_hits = { :main_player_hits => 1500 }
+      Factory(:site_usage, player_hits.merge(:site_id => @site.id, :day => Time.utc(2010,1,15).beginning_of_day))
+      Factory(:site_usage, player_hits.merge(:site_id => @site.id, :day => Time.utc(2010,2,1).beginning_of_day))
+      Factory(:site_usage, player_hits.merge(:site_id => @site.id, :day => Time.utc(2010,2,20).beginning_of_day))
+      Factory(:site_usage, player_hits.merge(:site_id => @site.id, :day => Time.utc(2010,3,1).beginning_of_day))
+    end
+    
+    context "site plan has not changed between invoice.ended_at and Time.now" do
+      subject { Invoice.build(:user => @user, :started_at => Time.utc(2010,2).beginning_of_month, :ended_at => Time.utc(2010,2).end_of_month) }
+      
+      specify { subject.invoice_items.size.should == 1 + 2 + 1 } # 1 plan, 2 addon lifetimes, 1 overage
+      specify { subject.invoice_items[0].item.should == @plan1 }
+      specify { subject.invoice_items[1].item.should == @plan1 }
+      specify { subject.invoice_items[2].item.should == @addon1 }
+      specify { subject.invoice_items[3].item.should == @addon2 }
+      
+      specify { subject.invoice_items.all? { |ii| ii.site == @site }.should be_true }
+      specify { subject.invoice_items.all? { |ii| ii.invoice == subject }.should be_true }
+      
+      its(:amount)     { should == 1000 + 399 + 499 + 100 } # plan.price + addon1.price + addon2.price + 1 overage block
+      its(:started_at) { should == Time.utc(2010,2).beginning_of_month }
+      its(:ended_at)   { should == Time.utc(2010,2).end_of_month }
+      its(:paid_at)    { should be_nil }
+      its(:attempts)   { should == 0 }
+      its(:last_error) { should be_nil }
+      its(:failed_at)  { should be_nil }
+      it { should be_open }
+    end
+    
+    context "site plan has changed between invoice.ended_at and Time.now" do
+      before(:all) do
+        @plan2  = Factory(:plan, :price => 999999, :overage_price => 999, :player_hits => 200)
+        @addon3 = Factory(:addon, :price => 9999)
+        Timecop.travel(Time.utc(2010,3,2))
+        with_versioning { @site.reload.update_attributes(:plan_id => @plan2.id, :addon_ids => [@addon3.id]) }
+        Timecop.return
+      end
+      subject { Invoice.build(:user => @user, :started_at => Time.utc(2010,2).beginning_of_month, :ended_at => Time.utc(2010,2).end_of_month) }
+      
+      specify { subject.invoice_items.size.should == 1 + 2 + 1 } # 1 plan, 2 addon lifetimes, 1 overage
+      specify { subject.invoice_items[0].item.should == @plan1 }
+      specify { subject.invoice_items[1].item.should == @plan1 }
+      specify { subject.invoice_items[2].item.should == @addon1 }
+      specify { subject.invoice_items[3].item.should == @addon2 }
+      specify { subject.invoice_items.all? { |ii| ii.site == @site.version_at(Time.utc(2010,2).end_of_month) }.should be_true }
+      specify { subject.invoice_items.all? { |ii| ii.invoice == subject }.should be_true }
+      
+      its(:amount)     { should == 1000 + 399 + 499 + 100 } # plan.price + addon1.price + addon2.price + 1 overage block
+      its(:started_at) { should == Time.utc(2010,2).beginning_of_month }
+      its(:ended_at)   { should == Time.utc(2010,2).end_of_month }
+      its(:paid_at)    { should be_nil }
+      its(:attempts)   { should == 0 }
+      its(:last_error) { should be_nil }
+      its(:failed_at)  { should be_nil }
+      it { should be_open }
+    end
   end
   
   describe "#minutes_in_month" do
