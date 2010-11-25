@@ -71,6 +71,10 @@ class Invoice < ActiveRecord::Base
     ((ended_at.end_of_month - started_at.beginning_of_month).to_f / 60).ceil
   end
   
+  def to_param
+    reference
+  end
+  
 private
   
   def build_invoice_items
@@ -89,7 +93,7 @@ private
   end
   
   def set_amount
-    self.amount = invoice_items.to_a.sum(&:amount)
+    self.amount = invoice_items.inject(0) { |sum, invoice_item| sum + invoice_item.amount }
   end
   
   # after_transition :to => :complete
