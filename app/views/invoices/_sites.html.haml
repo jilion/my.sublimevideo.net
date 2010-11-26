@@ -1,0 +1,18 @@
+- invoice.invoice_items.group_by { |invoice_item| invoice_item.site }.sort { |a,b| a[0].hostname <=> b[0].hostname }.each do |site_and_invoice_items|
+  - site = site_and_invoice_items.first
+  - invoice_items = site_and_invoice_items.second
+  %h3= "#{site.hostname} (#{site.token})"
+  
+  - plan_invoice_item = invoice_items.detect { |invoice_item| invoice_item.type == 'InvoiceItem::Plan' }
+  = render 'plan_invoice_item', :plan_invoice_item => plan_invoice_item
+  
+  - overage_invoice_item = invoice_items.detect { |invoice_item| invoice_item.type == 'InvoiceItem::Overage' }
+  = render 'overage_invoice_item', :overage_invoice_item => overage_invoice_item
+  
+  - addons_invoice_items = invoice_items.select { |invoice_item| invoice_item.type == 'InvoiceItem::Addon' }
+  - unless addons_invoice_items.empty?
+    %h4= "Add-ons"
+    - addons_invoice_items.group_by { |invoice_item| invoice_item.item }.each do |addon, addon_invoice_items|
+      %h4= addon.name.humanize
+      = render :partial => 'addon_invoice_item', :collection => addon_invoice_items
+  %hr

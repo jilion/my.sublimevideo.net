@@ -12,4 +12,8 @@ module InvoicesHelper
     end
   end
   
+  def invoice_item_dates(invoice_item)
+    "#{l(invoice_item.started_at, :format => :minutes)} - #{l(invoice_item.ended_at, :format => :minutes)}"
+  end
+  
 end

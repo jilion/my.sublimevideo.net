@@ -83,14 +83,14 @@ end
 group :test do
   gem 'growl'
   gem 'spork',              '~> 0.9.0.rc2'
-  gem 'guard',              :git => "git://github.com/guard/guard.git"
   gem 'rb-fsevent',         '~> 0.3.9'
-  gem 'guard-livereload'
-  gem 'guard-rspec'
-  gem 'guard-passenger',    :git => 'git://github.com/guard/guard-passenger.git', :branch => 'refactoring'
-  gem 'guard-bundler'
+  gem 'guard',              :git => "git://github.com/guard/guard.git"
   gem 'guard-ego'
+  gem 'guard-bundler'
+  gem 'guard-passenger',    :git => 'git://github.com/guard/guard-passenger.git', :branch => 'refactoring'
   gem 'guard-spork'
+  gem 'guard-rspec'
+  gem 'guard-livereload'
   
   gem 'database_cleaner', '>= 0.6'
   gem 'timecop',            '~> 0.3.5'

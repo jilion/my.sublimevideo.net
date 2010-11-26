@@ -119,7 +119,12 @@ def create_users(count = 0)
         :email => user_infos[1],
         :password => "123456",
         :use_personal => true,
-        :terms_and_conditions => "1"
+        :terms_and_conditions => "1",
+        :cc_type => 'visa',
+        :cc_full_name => user_infos[0],
+        :cc_number => "4111111111111111",
+        :cc_verification_value => "111",
+        :cc_expire_on => 2.years.from_now
       )
       user.confirmed_at = Time.now
       user.save!

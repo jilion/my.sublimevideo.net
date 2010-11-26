@@ -7,4 +7,4 @@
     %li= invoice_item.inspect
     
 %strong Total:
-= @invoice.amount
+= number_to_currency(@invoice.amount/100.0)

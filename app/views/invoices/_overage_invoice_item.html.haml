@@ -1,0 +1,12 @@
+%h4= "Overages"
+%p= "Plan player hits: #{overage_invoice_item.info[:plan_player_hits]}"
+%p= "Pro-rated plan player hits: #{overage_invoice_item.prorated_plan_player_hits}"
+%p= "Player hits used: #{overage_invoice_item.info[:player_hits_used]}"
+%table
+  %tr
+    %td.date
+      %span= invoice_item_dates(overage_invoice_item)
+    %td.calculation
+      %span= "#{number_to_currency(overage_invoice_item.price/100.0)} per block of #{Plan::OVERAGES_PLAYER_HITS_BLOCK} * #{overage_invoice_item.info[:overage_blocks]}"
+    %td.amount
+      %span= number_to_currency(overage_invoice_item.amount/100.0)

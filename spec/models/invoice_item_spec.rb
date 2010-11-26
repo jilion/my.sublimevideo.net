@@ -63,7 +63,7 @@ describe InvoiceItem do
       set(:two_weeks_invoice) { Factory(:invoice, :started_at => Time.utc(2010,2.1), :ended_at => Time.utc(2010,2,14).end_of_day) }
       subject { Factory(:plan_invoice_item, :invoice => two_weeks_invoice, :started_at => Time.utc(2010,2,2), :ended_at => Time.utc(2010,2,3).end_of_day) }
       
-      its(:percentage) { should == (2 / 28.0).round(2) }
+      its(:percentage) { should == (2 / 28.0).round(4) }
     end
     
   end

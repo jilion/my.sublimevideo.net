@@ -47,7 +47,7 @@ class InvoiceItem < ActiveRecord::Base
   end
   
   def percentage
-    (minutes / invoice.minutes_in_month.to_f).round(2)
+    (minutes / invoice.minutes_in_month.to_f).round(4)
   end
   
 end

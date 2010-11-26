@@ -26,11 +26,10 @@ describe InvoiceItem::Overage do
       before(:each) { set_site_usages(@site) }
       subject { InvoiceItem::Overage.build(:site => @site, :invoice => @invoice) }
       
-      its(:info)                      { should == { :plan_player_hits => 2000, :player_hits_used => 1500 * 3 } }
-      its(:overage_blocks)            { should == 3 }
+      its(:info)                      { should == { :plan_player_hits => 2000, :player_hits_used => 1500 * 3, :overage_blocks => 3 } }
       its(:prorated_plan_player_hits) { should == 2000 }
       its(:minutes)                   { should == 28 * 24 * 60 }
-      its(:percentage)                { should == (28 / 28.0).round(2) }
+      its(:percentage)                { should == (28 / 28.0).round(4) }
       its(:amount)                    { should == 100 * 3 }
       specify                         { subject.started_at.to_i.should == subject.invoice.started_at.to_i }
       specify                         { subject.ended_at.to_i.should == subject.invoice.ended_at.to_i }
@@ -41,11 +40,10 @@ describe InvoiceItem::Overage do
       before(:each) { set_site_usages(@site) }
       subject { InvoiceItem::Overage.build(:site => @site, :invoice => @invoice) }
       
-      its(:info)                      { should == { :plan_player_hits => 2000, :player_hits_used => 1500 * 2 } }
-      its(:overage_blocks)            { should == 2 }
+      its(:info)                      { should == { :plan_player_hits => 2000, :player_hits_used => 1500 * 2, :overage_blocks => 2 } }
       its(:prorated_plan_player_hits) { should == 2000 * 0.5 }
       its(:minutes)                   { should == 14 * 24 * 60 }
-      its(:percentage)                { should == (14 / 28.0).round(2) }
+      its(:percentage)                { should == (14 / 28.0).round(4) }
       its(:amount)                    { should == 100 * 2 }
       specify                         { subject.started_at.to_i.should == subject.invoice.started_at.to_i }
       specify                         { subject.ended_at.to_i.should == subject.site.archived_at.to_i }
@@ -56,11 +54,10 @@ describe InvoiceItem::Overage do
       before(:each) { set_site_usages(@site) }
       subject { InvoiceItem::Overage.build(:site => @site, :invoice => @invoice) }
       
-      its(:info)                      { should == { :plan_player_hits => 2000, :player_hits_used => 1500 * 1 } }
-      its(:overage_blocks)            { should == 1 }
-      its(:prorated_plan_player_hits) { should == 2000 * 0.32 }
+      its(:info)                      { should == { :plan_player_hits => 2000, :player_hits_used => 1500 * 1, :overage_blocks => 1 } }
+      its(:prorated_plan_player_hits) { should == (2000 * 0.3214).round }
       its(:minutes)                   { should == 9 * 24 * 60 }
-      its(:percentage)                { should == (9 / 28.0).round(2) }
+      its(:percentage)                { should == (9 / 28.0).round(4) }
       its(:amount)                    { should == 100 * 1 }
       specify                         { subject.started_at.to_i.should == subject.site.activated_at.to_i }
       specify                         { subject.ended_at.to_i.should == subject.invoice.ended_at.to_i }
@@ -71,11 +68,10 @@ describe InvoiceItem::Overage do
       before(:each) { set_site_usages(@site) }
       subject { InvoiceItem::Overage.build(:site => @site, :invoice => @invoice) }
       
-      its(:info)                      { should == { :plan_player_hits => 2000, :player_hits_used => 1500 * 2 } }
-      its(:overage_blocks)            { should == 3 }
-      its(:prorated_plan_player_hits) { should == 2000 * 0.18 }
+      its(:info)                      { should == { :plan_player_hits => 2000, :player_hits_used => 1500 * 2, :overage_blocks => 3 } }
+      its(:prorated_plan_player_hits) { should == (2000 * 0.1786).round }
       its(:minutes)                   { should == 5 * 24 * 60 }
-      its(:percentage)                { should == (5 / 28.0).round(2) }
+      its(:percentage)                { should == (5 / 28.0).round(4) }
       its(:amount)                    { should == 100 * 3 }
       specify                         { subject.started_at.to_i.should == subject.site.activated_at.to_i }
       specify                         { subject.ended_at.to_i.should == subject.site.archived_at.to_i }
@@ -86,11 +82,10 @@ describe InvoiceItem::Overage do
       before(:each) { set_site_usages(@site) }
       subject { InvoiceItem::Overage.build(:site => @site, :invoice => @invoice) }
       
-      its(:info)                      { should == { :plan_player_hits => 2000, :player_hits_used => 1500 * 0 } }
-      its(:overage_blocks)            { should == 0 }
-      its(:prorated_plan_player_hits) { should == 2000 * 0.43 }
+      its(:info)                      { should == { :plan_player_hits => 2000, :player_hits_used => 1500 * 0, :overage_blocks => 0 } }
+      its(:prorated_plan_player_hits) { should == (2000 * 0.4286).round }
       its(:minutes)                   { should == 12 * 24 * 60 }
-      its(:percentage)                { should == (12 / 28.0).round(2) }
+      its(:percentage)                { should == (12 / 28.0).round(4) }
       its(:amount)                    { should == 100 * 0 }
       specify                         { subject.started_at.to_i.should == subject.site.activated_at.to_i }
       specify                         { subject.ended_at.to_i.should == subject.site.archived_at.to_i }

@@ -1,9 +1,13 @@
+# Doesn't seem to work...
+# guard 'ego' do
+#   watch('Guardfile')
+# end
+
 guard 'bundler' do
-  watch(%|^Gemfile|)
+  watch('Gemfile')
 end
 
 guard 'passenger' do
-  # watch(%|^lib/.*\.rb|)
   watch(%|^config/application\.rb|)
   watch(%|^config/environment\.rb|)
   watch(%|^config/environments/.*\.rb|)
@@ -18,20 +22,26 @@ guard 'spork', :wait => 40 do
   watch(%|^spec/spec_helper\.rb|)
 end
 
+guard 'rspec', :version => 2, :drb => true, :bundler => false, :formatter => "instafail", :fail_fast => true do
+  watch(%|^spec/spec_helper\.rb|)                              { "spec" }
+  watch(%|^app/controllers/application_controller\.rb|)        { "spec/controllers" }
+  watch(%|^config/routes\.rb|)                                 { "spec/routing" }
+  watch(%r{^spec/support/(controller|acceptance)_helpers\.rb}) { |m| "spec/#{m[1]}" }
+  watch(%|^spec/.*_spec\.rb|)                                  
+  watch(%|^app/(.*)\.rb|)                                      { |m| "spec/#{m[1]}_spec.rb" }
+  watch(%|^lib/(.*)\.rb|)                                      { |m| "spec/lib/#{m[1]}_spec.rb" }
+  
+  # temporary watcher
+  # watch(%|site_observer(_spec)?\.rb|) {
+  #   ["spec/models/site_observer_spec.rb",
+  #    "spec/models/invoice_item_spec.rb", "spec/models/invoice_item/addon_spec.rb",
+  #    "spec/models/invoice_item/overage_spec.rb", "spec/models/invoice_item/plan_spec.rb"]
+  #  }
+end
+
 # guard 'livereload' do
 #   watch(%r(^app/.+\.(erb|haml)))
 #   watch(%|^app/helpers/.+\.rb|)
 #   watch(%r(^/public/.+\.(css|js|html)))
 #   watch(%|^config/locales/.+\.ym|)
 # end
-
-guard 'rspec', :version => 2, :drb => true, :bundler => false, :formatter => "instafail", :fail_fast => true do
-  watch(%|^spec/spec_helper\.rb|)                       { "spec" }
-  watch(%|^app/controllers/application_controller\.rb|) { "spec/controllers" }
-  watch(%|^spec/support/controller_helpers\.rb|)        { "spec/controllers" }
-  watch(%|^spec/support/acceptance_helpers\.rb|)        { "spec/acceptance" }
-  watch(%|^config/routes\.rb|)                          { "spec/routing" }
-  watch(%|^spec/.*_spec\.rb|)
-  watch(%|^app/(.*)\.rb|)                               { |m| "spec/#{m[1]}_spec.rb" }
-  watch(%|^lib/(.*)\.rb|)                               { |m| "spec/lib/#{m[1]}_spec.rb" }
-end
