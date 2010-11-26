@@ -8,7 +8,7 @@ module InvoicesHelper
         "#{l(invoice.started_at, :format => :month_year)} - #{l(invoice.ended_at, :format => :month_year)}"
       end
     else
-      "#{l(invoice.started_at, :format => :date)} - #{l(Time.now, :format => :date)}"
+      "#{l(invoice.started_at, :format => :usage_statement)} to #{l(Time.now, :format => :usage_statement)}"
     end
   end
   

@@ -2,7 +2,8 @@ en:
   time:
     formats:
       date: "%B %d, %Y"
-      minutes: "%d %b  %R"
+      minutes: "%d %b %R"
+      usage_statement: "%d %b %Y"
       full: "%m/%d/%Y %I:%M %p"
       semi_full: "%d %b, %I:%M%p"
       fully_full: "%d %b %Y, %H:%M:%S"
