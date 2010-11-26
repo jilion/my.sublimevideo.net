@@ -24,14 +24,14 @@ private
       end
       # New addon ids
       (site.addon_ids - site.addon_ids_was).each do |addon_id|
-        site.lifetimes.create(:item_id => addon_id, :item_type => "Addon", :created_at => site.updated_at)
+        site.lifetimes.create(:item_id => addon_id, :item_type => "Addon", :created_at => Time.now.utc)
       end
     end
   end
   
   def set_deleted_at_to_old_lifetime(site, item_id, item_type)
     site.lifetimes.where(:item_id => item_id, :item_type => item_type, :deleted_at => nil).first.tap do |old_lifetime|
-      old_lifetime.update_attributes(:deleted_at => site.updated_at)
+      old_lifetime.update_attributes(:deleted_at => Time.now.utc)
     end
   end
   
