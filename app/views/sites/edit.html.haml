@@ -17,6 +17,6 @@
     
 %hr
 
-= form_for @site, :html => { :method => :destroy, :class => "edit", "data-password-protected" => true } do |f|
+= form_for @site, :html => { :method => :delete, :class => "edit", "data-password-protected" => true } do |f|
   .actions
     = f.submit "! Destroy !", :class => "submit small"

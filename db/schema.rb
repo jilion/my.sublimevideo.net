@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101122152338) do
+ActiveRecord::Schema.define(:version => 20101126084849) do
 
   create_table "addons", :force => true do |t|
     t.string   "name"
@@ -210,7 +210,6 @@ ActiveRecord::Schema.define(:version => 20101122152338) do
     t.integer  "cc_last_digits"
     t.date     "cc_expire_on"
     t.datetime "cc_updated_at"
-    t.text     "video_settings"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "invitation_token",      :limit => 20
