@@ -9,9 +9,11 @@ describe InvoicesController do
     end
     
     it "should respond with success on GET :usage" do
-      Invoice.should_receive(:build).with(:user => @current_user, :started_at => Time.now.utc.beginning_of_month, :ended_at => Time.now.utc.end_of_month) { mock_invoice }
-      
-      get :usage
+      Timecop.freeze(Time.utc(2010,1,15)) do
+        Invoice.should_receive(:build).with(:user => @current_user, :started_at => Time.utc(2010,1,1), :ended_at => Time.utc(2010,1,15)) { mock_invoice }
+        
+        get :usage
+      end
       response.should be_success
     end
     

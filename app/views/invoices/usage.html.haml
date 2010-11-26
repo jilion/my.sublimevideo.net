@@ -8,6 +8,6 @@
       = invoice_dates(@invoice)
       
 = render "sites", :invoice => @invoice
-    
+
 %strong Total:
 = number_to_currency(@invoice.amount/100.0)

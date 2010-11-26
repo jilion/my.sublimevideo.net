@@ -15,7 +15,7 @@ describe SiteObserver do
       end
       subject { @site.lifetimes.order(:created_at).first  }
       
-      it { should belong_to(@site).the_item(plan1).of_type("Plan").created_at(Time.utc(2010,1,1)).and_deleted_at(nil) }
+      it { should belong_to_site(@site).the_item(plan1).of_type("Plan").created_at(Time.utc(2010,1,1)).and_deleted_at(nil) }
     end
     
     context "with already a site created" do
@@ -30,12 +30,12 @@ describe SiteObserver do
         describe "first lifetime" do
           subject { @site.lifetimes.order(:created_at).first  }
           
-          it { should belong_to(@site).the_item(plan1).of_type("Plan").created_at(Time.utc(2010,1,1)).and_deleted_at(Time.utc(2010,2,2)) }
+          it { should belong_to_site(@site).the_item(plan1).of_type("Plan").created_at(Time.utc(2010,1,1)).and_deleted_at(Time.utc(2010,2,2)) }
         end
         describe "second lifetime" do
           subject { @site.lifetimes.order(:created_at).second }
           
-          it { should belong_to(@site).the_item(plan2).of_type("Plan").created_at(Time.utc(2010,2,2)).and_deleted_at(nil) }
+          it { should belong_to_site(@site).the_item(plan2).of_type("Plan").created_at(Time.utc(2010,2,2)).and_deleted_at(nil) }
         end
       end
       
@@ -49,17 +49,17 @@ describe SiteObserver do
         describe "first lifetime" do
           subject { @site.lifetimes.order(:created_at).first  }
           
-          it { should belong_to(@site).the_item(plan1).of_type("Plan").created_at(Time.utc(2010,1,1)).and_deleted_at(Time.utc(2010,2,2)) }
+          it { should belong_to_site(@site).the_item(plan1).of_type("Plan").created_at(Time.utc(2010,1,1)).and_deleted_at(Time.utc(2010,2,2)) }
         end
         describe "second lifetime" do
           subject { @site.lifetimes.order(:created_at).second }
           
-          it { should belong_to(@site).the_item(plan2).of_type("Plan").created_at(Time.utc(2010,2,2)).and_deleted_at(Time.utc(2010,3,3)) }
+          it { should belong_to_site(@site).the_item(plan2).of_type("Plan").created_at(Time.utc(2010,2,2)).and_deleted_at(Time.utc(2010,3,3)) }
         end
         describe "third lifetime" do
           subject { @site.lifetimes.order(:created_at).third }
           
-          it { should belong_to(@site).the_item(plan1).of_type("Plan").created_at(Time.utc(2010,3,3)).and_deleted_at(nil) }
+          it { should belong_to_site(@site).the_item(plan1).of_type("Plan").created_at(Time.utc(2010,3,3)).and_deleted_at(nil) }
         end
       end
     end
@@ -80,12 +80,12 @@ describe SiteObserver do
       describe "addon1 lifetime" do
         subject { @site.lifetimes.where(:item_id => addon1.id).order(:created_at).first }
         
-        it { should belong_to(@site).the_item(addon1).of_type("Addon").created_at(Time.utc(2010,1,1)).and_deleted_at(nil) }
+        it { should belong_to_site(@site).the_item(addon1).of_type("Addon").created_at(Time.utc(2010,1,1)).and_deleted_at(nil) }
       end
       describe "addon2 lifetime" do
         subject { @site.lifetimes.where(:item_id => addon2.id).order(:created_at).first }
         
-        it { should belong_to(@site).the_item(addon2).of_type("Addon").created_at(Time.utc(2010,1,1)).and_deleted_at(nil) }
+        it { should belong_to_site(@site).the_item(addon2).of_type("Addon").created_at(Time.utc(2010,1,1)).and_deleted_at(nil) }
       end
     end
     
@@ -101,17 +101,17 @@ describe SiteObserver do
         describe "addon1 lifetime" do
           subject { @site.lifetimes.where(:item_id => addon1.id).order(:created_at).first }
           
-          it { should belong_to(@site).the_item(addon1).of_type("Addon").created_at(Time.utc(2010,1,1)).and_deleted_at(Time.utc(2010,2,2)) }
+          it { should belong_to_site(@site).the_item(addon1).of_type("Addon").created_at(Time.utc(2010,1,1)).and_deleted_at(Time.utc(2010,2,2)) }
         end
         describe "addon2 lifetime" do
           subject { @site.lifetimes.where(:item_id => addon2.id).order(:created_at).first }
           
-          it { should belong_to(@site).the_item(addon2).of_type("Addon").created_at(Time.utc(2010,1,1)).and_deleted_at(nil) }
+          it { should belong_to_site(@site).the_item(addon2).of_type("Addon").created_at(Time.utc(2010,1,1)).and_deleted_at(nil) }
         end
         describe "addon3 lifetime" do
           subject { @site.lifetimes.where(:item_id => addon3.id).order(:created_at).first }
           
-          it { should belong_to(@site).the_item(addon3).of_type("Addon").created_at(Time.utc(2010,2,2)).and_deleted_at(nil) }
+          it { should belong_to_site(@site).the_item(addon3).of_type("Addon").created_at(Time.utc(2010,2,2)).and_deleted_at(nil) }
         end
       end
       
@@ -125,22 +125,22 @@ describe SiteObserver do
         describe "addon1 lifetime first" do
           subject { @site.lifetimes.where(:item_id => addon1.id).order(:created_at).first }
           
-          it { should belong_to(@site).the_item(addon1).of_type("Addon").created_at(Time.utc(2010,1,1)).and_deleted_at(Time.utc(2010,2,2)) }
+          it { should belong_to_site(@site).the_item(addon1).of_type("Addon").created_at(Time.utc(2010,1,1)).and_deleted_at(Time.utc(2010,2,2)) }
         end
         describe "addon1 lifetime second" do
           subject { @site.lifetimes.where(:item_id => addon1.id).order(:created_at).second }
           
-          it { should belong_to(@site).the_item(addon1).of_type("Addon").created_at(Time.utc(2010,3,3)).and_deleted_at(nil) }
+          it { should belong_to_site(@site).the_item(addon1).of_type("Addon").created_at(Time.utc(2010,3,3)).and_deleted_at(nil) }
         end
         describe "addon2 lifetime" do
           subject { @site.lifetimes.where(:item_id => addon2.id).order(:created_at).first }
           
-          it { should belong_to(@site).the_item(addon2).of_type("Addon").created_at(Time.utc(2010,1,1)).and_deleted_at(Time.utc(2010,3,3)) }
+          it { should belong_to_site(@site).the_item(addon2).of_type("Addon").created_at(Time.utc(2010,1,1)).and_deleted_at(Time.utc(2010,3,3)) }
         end
         describe "addon3 lifetime" do
           subject { @site.lifetimes.where(:item_id => addon3.id).order(:created_at).first }
           
-          it { should belong_to(@site).the_item(addon3).of_type("Addon").created_at(Time.utc(2010,2,2)).and_deleted_at(Time.utc(2010,3,3)) }
+          it { should belong_to_site(@site).the_item(addon3).of_type("Addon").created_at(Time.utc(2010,2,2)).and_deleted_at(Time.utc(2010,3,3)) }
         end
       end
       
@@ -149,7 +149,7 @@ describe SiteObserver do
   
 end
 
-RSpec::Matchers.define :belong_to do |site|
+RSpec::Matchers.define :belong_to_site do |site|
   match do |actual|
     actual.site == site && actual.item == @item && actual.item_type == @item_type \
     && actual.created_at == @creation_date && actual.deleted_at == @deletion_date
