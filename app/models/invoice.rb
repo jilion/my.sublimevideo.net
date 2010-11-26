@@ -17,10 +17,10 @@ class Invoice < ActiveRecord::Base
   # = Validations =
   # ===============
   
-  validates :user, :presence => true
+  validates :user,       :presence => true
   validates :started_at, :presence => true
-  validates :ended_at, :presence => true
-  validates :amount, :numericality => true, :allow_nil => true
+  validates :ended_at,   :presence => true
+  validates :amount,     :numericality => true, :allow_nil => true
   
   # =============
   # = Callbacks =
@@ -38,7 +38,7 @@ class Invoice < ActiveRecord::Base
     event(:complete) { transition :open => :unpaid }
     event(:charge)   { transition :unpaid => [:paid, :failed], :failed => [:failed, :paid] }
     
-    after_transition :to => :complete, :do => :delay_charge
+    after_transition :on => :complete, :do => :delay_charge
   end
   
   # =================
@@ -57,6 +57,10 @@ class Invoice < ActiveRecord::Base
     end
   end
   
+  def self.charge(invoice_id)
+    invoice = Invoice.find(invoice_id)
+  end
+  
   # ====================
   # = Instance Methods =
   # ====================
@@ -64,10 +68,12 @@ class Invoice < ActiveRecord::Base
   def build
     build_invoice_items
     set_amount
+    set_transaction_fees
+    set_vat
     self
   end
   
-  def minutes_in_month
+  def minutes_in_months
     ((ended_at.end_of_month - started_at.beginning_of_month).to_f / 60).ceil
   end
   
@@ -96,9 +102,17 @@ private
     self.amount = invoice_items.inject(0) { |sum, invoice_item| sum + invoice_item.amount }
   end
   
+  def set_transaction_fees
+    
+  end
+  
+  def set_vat
+    
+  end
+  
   # after_transition :to => :complete
   def delay_charge
-    # ...
+    Invoice.delay.charge(self.id) if amount > 0
   end
   
 end
