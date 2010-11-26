@@ -1,15 +1,14 @@
 GIT
   remote: git://github.com/guard/guard-passenger.git
-  revision: f4c3a804cdf0d06c8a9bca2d1931578482e0ca9d
+  revision: cff9fb133cd5f9ee347ab3933f8b5bd541e100de
   branch: refactoring
   specs:
-    guard-passenger (0.2.0)
-      guard (>= 0.2.1)
+    guard-passenger (0.1.0)
       guard (>= 0.2.1)
 
 GIT
   remote: git://github.com/guard/guard.git
-  revision: 85beb5e97af5e055443d6ed20a3cdb4684351b5d
+  revision: ae55268e88519820de324210616de65b81193382
   specs:
     guard (0.2.2)
       open_gem (~> 1.4.2)
