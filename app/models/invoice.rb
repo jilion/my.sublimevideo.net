@@ -32,15 +32,16 @@ class Invoice < ActiveRecord::Base
   # =================
   
   state_machine :initial => :open do
-    state :unpaid# do
-    #   validates :amount, :presence => true
-    # end
+    state :unpaid
     
-    event(:complete) { transition :open => :unpaid }
-    event(:charge)   { transition :unpaid => [:paid, :failed], :failed => [:failed, :paid] }
+    event(:complete) do
+      transition :open => :paid, :if => :amount_is_zero?
+      transition :open => :unpaid
+    end
+    event(:charge) { transition [:unpaid, :failed] => [:paid, :failed] }
     
     before_transition :on => :complete, :do => :set_completed_at
-    after_transition :on => :complete, :do => :delay_charge
+    after_transition :open => :unpaid, :do => [:delay_charge, :send_invoice_completed_email]
   end
   
   # =================
@@ -59,7 +60,6 @@ class Invoice < ActiveRecord::Base
     )
   end
   
-  # pending
   def self.complete_invoices_for_billable_users(started_at, ended_at) # utc dates!
     User.billable(started_at, ended_at).each do |user|
       invoice = build(:user => user, :started_at => started_at, :ended_at => ended_at)
@@ -69,13 +69,34 @@ class Invoice < ActiveRecord::Base
   
   def self.charge(invoice_id)
     invoice = find(invoice_id)
+    # TODO Add VAT & transaction fees !!
+    final_amount = invoice.amount # + var + transaction_fees
     
-    
+    transaction do
+      begin
+        payment = Ogone.purchase(final_amount, invoice.user.credit_card_alias, :currency => 'USD')
+        
+        if payment.success?
+          invoice.update_attributes(:charging_delayed_job_id => nil, :state => 'paid', :paid_at => Time.now.utc)
+        elsif invoice.attempts < Billing.max_charging_attempts
+          invoice.update_attributes(:last_error => payment.message, :state => 'unpaid')
+          invoice.delay_charge # will retry after 2, 4, 8 and 16 hours
+        else # failed !!
+          invoice.update_attributes(:charging_delayed_job_id => nil, :last_error => payment.message, :state => 'failed')
+          User.delay_suspend(invoice.user_id)
+          InvoiceMailer.payment_failed(invoice).deliver!
+        end
+      rescue => ex
+        Notify.send("Charging failed: #{ex.message}", :exception => ex)
+      end
+    end
   end
   
   # ====================
   # = Instance Methods =
   # ====================
+  
+public
   
   def build
     build_invoice_items
@@ -91,6 +112,18 @@ class Invoice < ActiveRecord::Base
   
   def to_param
     reference
+  end
+  
+  # after_transition :open => :unpaid
+  def delay_charge
+    transaction do
+      begin
+        delayed_job = self.class.delay(:run_at => charging_delay).charge(self.id)
+        self.update_attributes(:attempts => attempts + 1, :charging_delayed_job_id => delayed_job.id)
+      rescue => ex
+        Notify.send("Delay cherging failed: #{ex.message}", :exception => ex)
+      end
+    end
   end
   
 private
@@ -115,11 +148,9 @@ private
   end
   
   def set_transaction_fees
-    
   end
   
   def set_vat
-    
   end
   
   # before_transition :on => :complete
@@ -127,12 +158,17 @@ private
     self.completed_at = Time.now.utc
   end
   
-  # after_transition :on => :complete
-  def delay_charge
-    # if amount > 0
-      delayed_job = self.class.delay(:run_at => 5.days.from_now).charge(self.id)
-      self.update_attribute(:charging_delayed_job_id, delayed_job.id)
-    # end
+  # after_transition :open => :unpaid
+  def send_invoice_completed_email
+    InvoiceMailer.invoice_completed(self).deliver!
+  end
+  
+  def amount_is_zero?
+    amount <= 0
+  end
+  
+  def charging_delay
+    (attempts == 0 ? Billing.days_before_charging.days : (2**attempts).hours).from_now
   end
   
 end
