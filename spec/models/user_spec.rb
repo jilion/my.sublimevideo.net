@@ -269,6 +269,33 @@ describe User do
     end
   end
   
+  describe "class methods" do
+    
+    describe ".delay_suspend" do
+      before(:all) do
+        @user = Factory(:user)
+      end
+      subject { User.delay_suspend(@user.id) }
+      
+      specify { lambda { subject }.should change(Delayed::Job.where(:handler.matches => "%suspend%"), :count).by(1) }
+      
+      it "should delay charging in Billing.days_before_suspend_user.days.from_now by default" do
+        subject
+        Delayed::Job.last.run_at.should be_within(3).of(Billing.days_before_suspend_user.days.from_now) # seconds of tolerance
+      end
+      
+      context "giving a custom run_at" do
+        subject { User.delay_suspend(@user.id, Time.utc(2010,7,24)) }
+        
+        specify do
+          subject
+          Delayed::Job.last.run_at.should == Time.utc(2010,7,24)
+        end
+      end
+    end
+    
+  end
+  
   describe "instance methods" do
     let(:user) { Factory(:user) }
     

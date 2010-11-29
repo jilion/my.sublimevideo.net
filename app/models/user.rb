@@ -83,6 +83,19 @@ class User < ActiveRecord::Base
     before_transition :on => :unsuspend, :do => :unsuspend_sites
   end
   
+  # =================
+  # = Class Methods =
+  # =================
+  
+  def self.delay_suspend(user_id, run_at = Billing.days_before_suspend_user.days.from_now)
+    delay(:run_at => run_at).suspend(user_id)
+  end
+  
+  def self.suspend(user_id)
+    user = find(user_id)
+    user.suspend!
+  end
+  
   # ====================
   # = Instance Methods =
   # ====================
