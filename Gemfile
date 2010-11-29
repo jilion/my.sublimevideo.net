@@ -30,11 +30,10 @@ gem 'RedCloth',              '~> 4.2.3'
 gem 'liquid',                '~> 2.2.2'
 
 # gem 'devise',                '~> 1.1.3'
-gem 'devise',                :git => 'git://github.com/thibaudgg/devise.git', :branch => 'spork' # 1.1.3
+gem 'devise',                :git => 'git://github.com/thibaudgg/devise.git', :branch => 'spork' # 1.1.5
 gem 'devise_invitable',      :git => 'git://github.com/rymai/devise_invitable.git'
 
-# gem 'memcached',             '~> 0.20.1'
-gem 'dalli',                 '~> 0.11.2'
+gem 'dalli',                 '~> 1.0.0'
 
 gem 'aws',                   '~> 2.3.26'
 gem 'fog',                   '~> 0.3.25' # for carrierwave 0.5 final
@@ -63,7 +62,7 @@ end
 
 group :development, :test do
   gem 'silent-postgres'
-  gem 'rspec-rails',   '~> 2.1.0'
+  gem 'rspec-rails',   '~> 2.2.0'
   gem 'passenger',     '~> 3.0.0'
   gem 'timecop',       '~> 0.3.5'
   # gem 'awesome_print', '~> 0.3.1' # liquid problem
