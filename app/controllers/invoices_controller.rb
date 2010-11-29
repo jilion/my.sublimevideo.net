@@ -1,14 +1,11 @@
 class InvoicesController < ApplicationController
   respond_to :html
+  respond_to :js, :only => :usage
   
   before_filter :redirect_suspended_user
   
   def usage
-    @invoice = Invoice.build(
-      :user => current_user,
-      :started_at => Time.now.utc.beginning_of_month,
-      :ended_at => Time.now.utc
-    )
+    @invoice = Invoice.usage_statement(current_user)
     respond_with(@invoice)
   end
   

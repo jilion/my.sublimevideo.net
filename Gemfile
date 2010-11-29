@@ -30,7 +30,8 @@ gem 'RedCloth',              '~> 4.2.3'
 gem 'liquid',                '~> 2.2.2'
 
 # gem 'devise',                '~> 1.1.3'
-gem 'devise',                :git => 'git://github.com/thibaudgg/devise.git', :branch => 'spork' # 1.1.5
+# gem 'devise',                :git => 'git://github.com/thibaudgg/devise.git', :branch => 'spork' # 1.1.5
+gem 'devise',                :git => 'git://github.com/rymai/devise.git', :branch => 'spork' # 1.1.5
 gem 'devise_invitable',      :git => 'git://github.com/rymai/devise_invitable.git'
 
 gem 'dalli',                 '~> 1.0.0'
@@ -86,7 +87,7 @@ group :test do
   gem 'guard',              :git => "git://github.com/guard/guard.git"
   gem 'guard-ego'
   gem 'guard-bundler'
-  gem 'guard-passenger',    :git => 'git://github.com/guard/guard-passenger.git', :branch => 'refactoring'
+  gem 'guard-passenger'
   gem 'guard-spork'
   gem 'guard-rspec'
   gem 'guard-livereload'

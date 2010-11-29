@@ -21,6 +21,8 @@ MySublimeVideo::Application.configure do
   # Block routes reloading, done in spec_helper.rb in Spork each_run
   config.action_dispatch.reload_routes = false
   
+  Devise.eager_load_routes = false
+  
   # Disable request forgery protection in test environment
   config.action_controller.allow_forgery_protection = false
   

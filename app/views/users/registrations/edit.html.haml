@@ -9,9 +9,16 @@
       
   #current_usage
     %h3.section_title= "Current Usage"
-    %p
-      = link_to 'View current usage', usage_invoices_path
+    %p#current_usage_amount
+      = "Calculating current usage..."
       
+- if current_user.invoices.present?
+  #past_invoices
+    %h3.section_title= "Past invoices"
+    %ul
+      - current_user.invoices.each do |invoice|
+        %li= link_to "#{invoice_dates(invoice)} - #{charging_status(invoice)}", invoice_path(invoice)
+        
 = render 'users/form'
 .spacer
 

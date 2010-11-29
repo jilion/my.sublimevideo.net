@@ -7,7 +7,7 @@ guard 'bundler' do
   watch('Gemfile')
 end
 
-guard 'passenger' do
+guard 'passenger', :ping => true do
   watch(%|^config/application\.rb|)
   watch(%|^config/environment\.rb|)
   watch(%|^config/environments/.*\.rb|)

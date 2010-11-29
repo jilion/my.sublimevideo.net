@@ -147,6 +147,7 @@ protected
 end
 
 
+
 # == Schema Information
 #
 # Table name: users
@@ -173,7 +174,6 @@ end
 #  cc_last_digits        :integer
 #  cc_expire_on          :date
 #  cc_updated_at         :datetime
-#  video_settings        :text
 #  created_at            :datetime
 #  updated_at            :datetime
 #  invitation_token      :string(20)

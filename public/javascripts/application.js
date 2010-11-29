@@ -39,6 +39,10 @@ document.observe("dom:loaded", function() {
   if ($("sites_table_wrap")) {
     MySublimeVideo.sitesPoller = new SitesPoller();
   }
+  // Load current usage in Ajax since it can be a heavy calculation
+  if ($('current_usage_amount')) {
+    new Ajax.Request('/invoices/usage', { method:'get' });
+  }
   // if ($("new_site")) {
   //   MySublimeVideo.siteFormHandler = new SiteFormHandler();
   // }

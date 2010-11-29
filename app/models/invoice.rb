@@ -7,6 +7,7 @@ class Invoice < ActiveRecord::Base
   # ================
   
   belongs_to :user
+  belongs_to :charging_delayed_job, :class_name => "::Delayed::Job"
   has_many :invoice_items
   
   # ==========
@@ -20,7 +21,7 @@ class Invoice < ActiveRecord::Base
   validates :user,       :presence => true
   validates :started_at, :presence => true
   validates :ended_at,   :presence => true
-  validates :amount,     :numericality => true, :allow_nil => true
+  validates :amount,     :presence => true, :numericality => true
   
   # =============
   # = Callbacks =
@@ -31,13 +32,14 @@ class Invoice < ActiveRecord::Base
   # =================
   
   state_machine :initial => :open do
-    state :unpaid do
-      validates :amount, :presence => true
-    end
+    state :unpaid# do
+    #   validates :amount, :presence => true
+    # end
     
     event(:complete) { transition :open => :unpaid }
     event(:charge)   { transition :unpaid => [:paid, :failed], :failed => [:failed, :paid] }
     
+    before_transition :on => :complete, :do => :set_completed_at
     after_transition :on => :complete, :do => :delay_charge
   end
   
@@ -49,6 +51,14 @@ class Invoice < ActiveRecord::Base
     new(attributes).build
   end
   
+  def self.usage_statement(user)
+    build(
+      :user => user,
+      :started_at => Time.now.utc.beginning_of_month,
+      :ended_at => Time.now.utc
+    )
+  end
+  
   # pending
   def self.complete_invoices_for_billable_users(started_at, ended_at) # utc dates!
     User.billable(started_at, ended_at).each do |user|
@@ -58,7 +68,9 @@ class Invoice < ActiveRecord::Base
   end
   
   def self.charge(invoice_id)
-    invoice = Invoice.find(invoice_id)
+    invoice = find(invoice_id)
+    
+    
   end
   
   # ====================
@@ -110,31 +122,42 @@ private
     
   end
   
-  # after_transition :to => :complete
+  # before_transition :on => :complete
+  def set_completed_at
+    self.completed_at = Time.now.utc
+  end
+  
+  # after_transition :on => :complete
   def delay_charge
-    Invoice.delay.charge(self.id) if amount > 0
+    # if amount > 0
+      delayed_job = self.class.delay(:run_at => 5.days.from_now).charge(self.id)
+      self.update_attribute(:charging_delayed_job_id, delayed_job.id)
+    # end
   end
   
 end
+
 
 
 # == Schema Information
 #
 # Table name: invoices
 #
-#  id         :integer         not null, primary key
-#  user_id    :integer
-#  reference  :string(255)
-#  state      :string(255)
-#  amount     :integer
-#  started_at :datetime
-#  ended_at   :datetime
-#  paid_at    :datetime
-#  attempts   :integer         default(0)
-#  last_error :string(255)
-#  failed_at  :datetime
-#  created_at :datetime
-#  updated_at :datetime
+#  id                      :integer         not null, primary key
+#  user_id                 :integer
+#  reference               :string(255)
+#  state                   :string(255)
+#  amount                  :integer
+#  started_at              :datetime
+#  ended_at                :datetime
+#  paid_at                 :datetime
+#  attempts                :integer         default(0)
+#  last_error              :string(255)
+#  failed_at               :datetime
+#  created_at              :datetime
+#  updated_at              :datetime
+#  completed_at            :datetime
+#  charging_delayed_job_id :integer
 #
 # Indexes
 #

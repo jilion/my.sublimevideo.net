@@ -16,4 +16,16 @@ module InvoicesHelper
     "#{l(invoice_item.started_at, :format => :minutes)} - #{l(invoice_item.ended_at, :format => :minutes)}"
   end
   
+  def charging_status(invoice)
+    if invoice.unpaid?
+      if invoice.charging_delayed_job_id?
+        "Will be charged on #{l(invoice.charging_delayed_job.run_at, :format => :minutes)}."
+      else
+        "Not charged yet."
+      end
+    elsif invoice.paid?
+      "Charged on #{l(invoice.charged_at, :format => :minutes)}."
+    end
+  end
+  
 end

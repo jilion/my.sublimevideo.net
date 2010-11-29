@@ -1,10 +1,17 @@
 = title_and_content_header("Invoice: #{invoice_dates(@invoice)}")
 
-%h3= invoice_dates(@invoice)
+%table{ :border => 1 }
+  %tr
+    %td
+      = render 'user_billing_info', :user => @invoice.user
+    %td
+      = invoice_dates(@invoice)
+%hr
+= charging_status(@invoice)
+%hr
+= render "sites", :invoice => @invoice
 
-%ul
-  - @invoice.invoice_items.each do |invoice_item|
-    %li= invoice_item.inspect
-    
 %strong Total:
 = number_to_currency(@invoice.amount/100.0)
+%hr
+= charging_status(@invoice)

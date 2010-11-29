@@ -8,7 +8,7 @@ describe Invoice do
     
     its(:user)       { should be_present }
     its(:reference)  { should =~ /^[A-Z1-9]{8}$/ }
-    its(:amount)     { should be_nil }
+    its(:amount)     { should == 10000 }
     its(:started_at) { should be_present }
     its(:ended_at)   { should be_present }
     its(:paid_at)    { should be_nil }
@@ -16,8 +16,8 @@ describe Invoice do
     its(:last_error) { should be_nil }
     its(:failed_at)  { should be_nil }
     
-    it { be_open }
-    it { be_valid }
+    it { should be_open }
+    it { should be_valid }
   end
   
   describe "associations" do
@@ -25,6 +25,7 @@ describe Invoice do
     subject { @invoice }
     
     it { should belong_to :user }
+    it { should belong_to :charging_delayed_job }
     it { should have_many :invoice_items }
   end
   
@@ -35,16 +36,7 @@ describe Invoice do
     it { should validate_presence_of(:user) }
     it { should validate_presence_of(:started_at) }
     it { should validate_presence_of(:ended_at) }
-    
-    context "with state unpaid" do
-      before(:each) { subject.state = 'unpaid' }
-      
-      it { should validate_presence_of(:amount) }
-    end
-    
-    context "with state paid" do
-      before(:each) { subject.state = 'paid' }
-    end
+    it { should validate_presence_of(:amount) }
   end
   
   describe "State Machine" do
@@ -136,7 +128,6 @@ describe Invoice do
     end
   end
   
-  describe "#minutes_in_months" do
   describe ".complete_invoices_for_billable_users" do
     before(:all) do
       Invoice.delete_all
@@ -162,8 +153,17 @@ describe Invoice do
       subject
       Invoice.all.all? { |invoice| invoice.unpaid? }.should be_true
     end
+    it "should set invoices completed_at" do
+      subject
+      Invoice.all.all? { |invoice| invoice.completed_at.present? }.should be_true
+    end
+    it "should set invoices charging_delayed_job_id" do
+      subject
+      Invoice.all.all? { |invoice| invoice.charging_delayed_job_id.present? }.should be_true
+    end
   end
   
+  describe "#minutes_in_months" do
     context "with invoice included in one month" do
       subject { Factory(:invoice, :started_at => Time.utc(2010,2,10), :ended_at => Time.utc(2010,2,27)) }
       
@@ -183,23 +183,26 @@ describe Invoice do
 end
 
 
+
 # == Schema Information
 #
 # Table name: invoices
 #
-#  id         :integer         not null, primary key
-#  user_id    :integer
-#  reference  :string(255)
-#  state      :string(255)
-#  amount     :integer
-#  started_at :datetime
-#  ended_at   :datetime
-#  paid_at    :datetime
-#  attempts   :integer         default(0)
-#  last_error :string(255)
-#  failed_at  :datetime
-#  created_at :datetime
-#  updated_at :datetime
+#  id                      :integer         not null, primary key
+#  user_id                 :integer
+#  reference               :string(255)
+#  state                   :string(255)
+#  amount                  :integer
+#  started_at              :datetime
+#  ended_at                :datetime
+#  paid_at                 :datetime
+#  attempts                :integer         default(0)
+#  last_error              :string(255)
+#  failed_at               :datetime
+#  created_at              :datetime
+#  updated_at              :datetime
+#  completed_at            :datetime
+#  charging_delayed_job_id :integer
 #
 # Indexes
 #

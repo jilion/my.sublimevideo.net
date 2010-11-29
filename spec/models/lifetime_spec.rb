@@ -10,7 +10,7 @@ describe Lifetime do
     its(:created_at) { should be_present }
     its(:deleted_at) { should be_nil }
     
-    it { be_valid }
+    it { should be_valid }
   end
   
   describe "associations" do

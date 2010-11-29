@@ -108,3 +108,29 @@ def set_site_usages(site)
   Factory(:site_usage, player_hits.merge(:site_id => site.id, :day => Time.utc(2010,2,20).beginning_of_day))
   Factory(:site_usage, player_hits.merge(:site_id => site.id, :day => Time.utc(2010,3,1).beginning_of_day))
 end
+
+# == Schema Information
+#
+# Table name: invoice_items
+#
+#  id         :integer         not null, primary key
+#  type       :string(255)
+#  site_id    :integer
+#  invoice_id :integer
+#  item_type  :string(255)
+#  item_id    :integer
+#  started_at :datetime
+#  ended_at   :datetime
+#  price      :integer
+#  amount     :integer
+#  info       :text
+#  created_at :datetime
+#  updated_at :datetime
+#
+# Indexes
+#
+#  index_invoice_items_on_invoice_id             (invoice_id)
+#  index_invoice_items_on_item_type_and_item_id  (item_type,item_id)
+#  index_invoice_items_on_site_id                (site_id)
+#
+

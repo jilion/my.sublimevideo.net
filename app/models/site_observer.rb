@@ -12,7 +12,7 @@ private
       if site.plan_id_was.present?
         set_deleted_at_to_old_lifetime(site, site.plan_id_was, "Plan")
       end
-      site.lifetimes.create(:item => site.plan, :created_at => site.updated_at)
+      site.lifetimes.create(:item => site.plan, :created_at => Time.now.utc)
     end
   end
   

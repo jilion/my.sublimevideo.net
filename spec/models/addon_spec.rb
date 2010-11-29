@@ -8,7 +8,7 @@ describe Addon do
     
     its(:name) { should =~ /SSL_\d+/ }
     
-    it { be_valid }
+    it { should be_valid }
   end
   
   describe "associations" do

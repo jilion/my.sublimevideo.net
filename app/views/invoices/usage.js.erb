@@ -1,0 +1,3 @@
+$('current_usage_amount').update('<%= escape_javascript(
+  "#{invoice_dates(@invoice)}: #{link_to(content_tag(:strong, number_to_currency(@invoice.amount/100.0)), usage_invoices_path)}".html_safe
+) %>');
