@@ -65,6 +65,7 @@ group :development, :test do
   gem 'silent-postgres'
   gem 'rspec-rails',   '~> 2.1.0'
   gem 'passenger',     '~> 3.0.0'
+  gem 'timecop',       '~> 0.3.5'
   # gem 'awesome_print', '~> 0.3.1' # liquid problem
 end
 
@@ -76,7 +77,6 @@ group :development do
   gem 'heroku',        '~> 1.14.4'
   gem 'heroku_tasks',  '~> 0.1.4'
   gem 'taps',          '~> 0.3.14' # heroku db pull/push
-  gem 'timecop',       '~> 0.3.5'
   gem 'silent-postgres'
 end
 
@@ -92,8 +92,7 @@ group :test do
   gem 'guard-rspec'
   gem 'guard-livereload'
   
-  gem 'database_cleaner', '>= 0.6'
-  gem 'timecop',            '~> 0.3.5'
+  gem 'database_cleaner',   '>= 0.6'
   gem 'capybara',           '~> 0.4.0'
   gem 'steak',              '1.0.0.rc.2'
   # gem 'akephalos',          '~> 0.2.4'
