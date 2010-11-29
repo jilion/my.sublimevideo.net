@@ -1,1 +1,3 @@
-minimum_amount: 800  # in cents
+days_before_charging: 5
+max_charging_attempts: 5
+days_before_suspend_user: 10
