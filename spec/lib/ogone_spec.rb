@@ -1,3 +1,4 @@
+# coding: utf-8
 require 'spec_helper'
 
 describe Ogone do
@@ -19,7 +20,7 @@ describe Ogone do
       after(:each) { VCR.eject_cassette }
       
       describe "authorize of $1 with alias" do
-        before(:each) { VCR.insert_cassette('ogone_visa_authorize_1') }
+        before(:each) { VCR.insert_cassette('ogone_visa_authorize_1_alias') }
         subject { Ogone.authorize(100, @cc, :currency => 'USD', :store => 'sublime_33') }
         
         it { should be_success }
@@ -44,7 +45,7 @@ describe Ogone do
         its(:message) { should == "The transaction was successful" }
       end
       
-      describe "payment of $2000 via alias" do
+      describe "payment of $20 via alias" do
         before(:each) { VCR.insert_cassette('ogone_visa_payment_2000_alias') }
         subject { Ogone.purchase(2000, 'sublime_33', :currency => 'USD') }
         
@@ -58,6 +59,14 @@ describe Ogone do
         
         it { should_not be_success }
         its(:message) { should == "We received an unknown status for the transaction. we will contact your acquirer and update the status of the transaction within one working day. please check the status later." }
+      end
+      
+      describe "payment of €20" do
+        before(:each) { VCR.insert_cassette('ogone_visa_payment_20_euros') }
+        subject { Ogone.purchase(2000, @cc, :currency => 'EUR') }
+        
+        it { should_not be_success }
+        its(:message) { should == "The currency is not accepted by the merchant:eur" }
       end
       
       describe "payment of $10000" do
