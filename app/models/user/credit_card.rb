@@ -57,6 +57,10 @@ module User::CreditCard
     [cc_update, cc_number, cc_first_name, cc_last_name, cc_verification_value].any?(&:present?)
   end
   
+  def credit_card_alias
+    "sublime_#{id}"
+  end
+  
   # validates
   def validates_credit_card_attributes
     if credit_card_attributes_present?
@@ -88,7 +92,7 @@ module User::CreditCard
   # before_save
   def store_credit_card
     if credit_card_attributes_present? && errors.empty?
-      authorize = Ogone.authorize(100 + rand(500), credit_card, :currency => 'USD', :store => "sublime_#{id}")
+      authorize = Ogone.authorize(100 + rand(500), credit_card, :currency => 'USD', :store => credit_card_alias)
       if authorize.success?
         void_authorization(authorize)
       else

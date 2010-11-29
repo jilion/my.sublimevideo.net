@@ -3,7 +3,7 @@
   request: !ruby/struct:VCR::Request 
     method: :post
     uri: https://secure.ogone.com:443/ncol/test/orderdirect.asp
-    body: Operation=SAL&CN=John+Doe&orderID=a53483354341a5a218534ad0628b6d&amount=1000&CVC=111&USERID=sublime&CARDNO=4111111111111111&PSWD=WWQMNC89&currency=USD&ED=1011&PSPID=jilion
+    body: Operation=SAL&CN=John+Doe&orderID=ac4345834867276f042215e71763b4&amount=1000000&CVC=111&USERID=sublime&CARDNO=4111111111111111&PSWD=WWQMNC89&currency=USD&ED=1011&PSPID=jilion
     headers: 
       accept: 
       - "*/*"
@@ -12,7 +12,7 @@
       connection: 
       - close
       content-length: 
-      - "171"
+      - "174"
       host: 
       - secure.ogone.com
   response: !ruby/struct:VCR::Response 
@@ -27,29 +27,29 @@
       content-type: 
       - text/html
       date: 
-      - Thu, 10 Jun 2010 13:56:47 GMT
+      - Thu, 10 Jun 2010 13:47:05 GMT
       server: 
       - Microsoft-IIS/6.0
       content-length: 
-      - "317"
+      - "331"
       cache-control: 
       - private
     body: |-
       <?xml version="1.0"?><ncresponse
-      orderID="a53483354341a5a218534ad0628b6d"
-      PAYID="7476601"
-      NCSTATUS="0"
-      NCERROR="0"
-      NCERRORPLUS="!"
-      ACCEPTANCE="test123"
-      STATUS="9"
+      orderID="ac4345834867276f042215e71763b4"
+      PAYID="7476519"
+      NCSTATUS="3"
+      NCERROR="30001001"
+      NCERRORPLUS="CARD REFUSED"
+      ACCEPTANCE=""
+      STATUS="2"
       IPCTY="99"
       CCCTY="US"
       ECI="7"
       CVCCheck="NO"
       AAVCheck="NO"
       VC="NO"
-      amount="10"
+      amount="10000"
       currency="USD"
       PM="CreditCard"
       BRAND="VISA">
