@@ -1,0 +1,13 @@
+Hi <%= @invoice.user.full_name %>,
+
+your invoice for <%= invoice_dates(@invoice) %> is now ready.
+
+We will charge it on <%= l(@invoice.charging_delayed_job.run_at, :format => :minutes) %>, if you have any question or doubt about its content, please use our support form: http://my.sublimevideo.net/support
+
+<%= invoice_dates(@invoice) %> invoice information:
+
+Reference: #<%= @invoice.reference %>
+Amount: <%= number_to_currency(@invoice.amount/100.0) %>
+
+
+The SublimeVideo team
