@@ -18,10 +18,11 @@ class Invoice < ActiveRecord::Base
   # = Validations =
   # ===============
   
-  validates :user,       :presence => true
-  validates :started_at, :presence => true
-  validates :ended_at,   :presence => true
-  validates :amount,     :presence => true, :numericality => true
+  validates :user,                 :presence => true
+  validates :started_at,           :presence => true
+  validates :ended_at,             :presence => true
+  validates :invoice_items_amount, :presence => true, :numericality => true
+  validates :amount,               :presence => true, :numericality => true
   
   # =============
   # = Callbacks =
@@ -32,16 +33,25 @@ class Invoice < ActiveRecord::Base
   # =================
   
   state_machine :initial => :open do
-    state :unpaid
-    
     event(:complete) do
-      transition :open => :paid, :if => :amount_is_zero?
+      transition :open => :paid, :if => lambda { |invoice| invoice.amount == 0 }
       transition :open => :unpaid
     end
-    event(:charge) { transition [:unpaid, :failed] => [:paid, :failed] }
+    event(:fail) do
+      transition :unpaid => :unpaid, :if => lambda { |invoice| invoice.attempts < Billing.max_charging_attempts }
+      transition :unpaid => :failed
+    end
+    event(:succeed) { transition [:unpaid, :failed] => :paid }
     
     before_transition :on => :complete, :do => :set_completed_at
-    after_transition :open => :unpaid, :do => [:delay_charge, :send_invoice_completed_email]
+    
+    before_transition [:open, :unpaid] => :unpaid, :do => [:delay_charge_and_set_charging_delayed_job_id, :increment_attempts]
+    after_transition  :open => :unpaid, :do => :send_invoice_completed_email
+    
+    before_transition :unpaid => :failed, :do => [:clear_charging_delayed_job_id, :delay_suspend_user]
+    after_transition  :unpaid => :failed, :do => :send_payment_failed_email
+    
+    before_transition [:open, :unpaid, :failed] => :paid, :do => [:clear_charging_delayed_job_id, :set_paid_at]
   end
   
   # =================
@@ -54,9 +64,9 @@ class Invoice < ActiveRecord::Base
   
   def self.usage_statement(user)
     build(
-      :user => user,
+      :user       => user,
       :started_at => Time.now.utc.beginning_of_month,
-      :ended_at => Time.now.utc
+      :ended_at   => Time.now.utc
     )
   end
   
@@ -69,26 +79,19 @@ class Invoice < ActiveRecord::Base
   
   def self.charge(invoice_id)
     invoice = find(invoice_id)
-    # TODO Add VAT & transaction fees !!
-    final_amount = invoice.amount # + var + transaction_fees
     
-    transaction do
-      begin
-        payment = Ogone.purchase(final_amount, invoice.user.credit_card_alias, :currency => 'USD')
-        
-        if payment.success?
-          invoice.update_attributes(:charging_delayed_job_id => nil, :state => 'paid', :paid_at => Time.now.utc)
-        elsif invoice.attempts < Billing.max_charging_attempts
-          invoice.update_attributes(:last_error => payment.message, :state => 'unpaid')
-          invoice.delay_charge # will retry after 2, 4, 8 and 16 hours
-        else # failed !!
-          invoice.update_attributes(:charging_delayed_job_id => nil, :last_error => payment.message, :state => 'failed')
-          User.delay_suspend(invoice.user_id)
-          InvoiceMailer.payment_failed(invoice).deliver!
-        end
-      rescue => ex
-        Notify.send("Charging failed: #{ex.message}", :exception => ex)
-      end
+    @payment = begin
+      Ogone.purchase(invoice.amount, invoice.user.credit_card_alias, :order_id => invoice.reference, :currency => 'USD')
+    rescue => ex
+      Notify.send("Charging failed: #{ex.message}", :exception => ex)
+      nil
+    end
+    
+    if @payment && (@payment.success? || @payment.params["NCERROR"] == "50001113") # 50001113: orderID already processed with success
+      invoice.succeed
+    else
+      invoice.last_error = @payment.message if @payment
+      invoice.fail
     end
   end
   
@@ -100,9 +103,10 @@ public
   
   def build
     build_invoice_items
-    set_amount
-    set_transaction_fees
+    set_invoice_items_amount
     set_vat
+    set_transaction_fees
+    set_amount
     self
   end
   
@@ -112,18 +116,6 @@ public
   
   def to_param
     reference
-  end
-  
-  # after_transition :open => :unpaid
-  def delay_charge
-    transaction do
-      begin
-        delayed_job = self.class.delay(:run_at => charging_delay).charge(self.id)
-        self.update_attributes(:attempts => attempts + 1, :charging_delayed_job_id => delayed_job.id)
-      rescue => ex
-        Notify.send("Delay cherging failed: #{ex.message}", :exception => ex)
-      end
-    end
   end
   
 private
@@ -143,19 +135,29 @@ private
     end
   end
   
-  def set_amount
-    self.amount = invoice_items.inject(0) { |sum, invoice_item| sum + invoice_item.amount }
-  end
-  
-  def set_transaction_fees
+  def set_invoice_items_amount
+    self.invoice_items_amount = invoice_items.inject(0) { |sum, invoice_item| sum + invoice_item.amount }
   end
   
   def set_vat
   end
   
-  # before_transition :on => :complete
-  def set_completed_at
-    self.completed_at = Time.now.utc
+  def set_transaction_fees
+  end
+  
+  def set_amount
+    self.amount = self.invoice_items_amount
+  end
+  
+  # before_transition [:open, :unpaid] => :unpaid
+  def delay_charge_and_set_charging_delayed_job_id
+    delayed_job = self.class.delay(:run_at => charging_delay).charge(self.id)
+    self.charging_delayed_job_id = delayed_job.id
+  end
+  
+  # before_transition [:open, :unpaid] => :unpaid
+  def increment_attempts
+    self.attempts += 1
   end
   
   # after_transition :open => :unpaid
@@ -163,8 +165,29 @@ private
     InvoiceMailer.invoice_completed(self).deliver!
   end
   
-  def amount_is_zero?
-    amount <= 0
+  # before_transition :on => :complete
+  def set_completed_at
+    self.completed_at = Time.now.utc
+  end
+  
+  # before_transition :unpaid => :failed, before_transition :on => :succeed
+  def clear_charging_delayed_job_id
+    self.charging_delayed_job_id = nil
+  end
+  
+  # before_transition :unpaid => :failed
+  def delay_suspend_user
+    User.delay_suspend(self.user_id)
+  end
+  
+  # before_transition :unpaid => :failed
+  def send_payment_failed_email
+    InvoiceMailer.payment_failed(self).deliver!
+  end
+  
+  # before_transition [:open, :unpaid, :failed] => :paid
+  def set_paid_at
+    self.paid_at = Time.now.utc
   end
   
   def charging_delay
@@ -172,7 +195,6 @@ private
   end
   
 end
-
 
 
 # == Schema Information
@@ -194,6 +216,7 @@ end
 #  updated_at              :datetime
 #  completed_at            :datetime
 #  charging_delayed_job_id :integer
+#  invoice_items_amount    :integer
 #
 # Indexes
 #

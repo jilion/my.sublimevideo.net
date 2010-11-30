@@ -3,7 +3,7 @@
   request: !ruby/struct:VCR::Request 
     method: :post
     uri: https://secure.ogone.com:443/ncol/test/orderdirect.asp
-    body: Operation=RES&ECI=9&orderID=91781753b2484f2f1f8cf450576304&amount=2000&ALIAS=sublime_33&USERID=sublime&PSWD=WWQMNC89&currency=USD&PSPID=jilion
+    body: Operation=SAL&ECI=9&orderID=91781753b2484f2f1f8cf450576304&amount=2000&ALIAS=sublime_33&USERID=sublime&PSWD=WWQMNC89&currency=USD&PSPID=jilion
     headers: 
       accept: 
       - "*/*"

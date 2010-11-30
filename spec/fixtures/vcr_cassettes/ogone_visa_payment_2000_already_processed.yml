@@ -1,0 +1,225 @@
+--- 
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :post
+    uri: https://secure.ogone.com:443/ncol/test/orderdirect.asp
+    body: Operation=SAL&ECI=9&orderID=1234&amount=2000&ALIAS=sublime_33&USERID=sublime&PSWD=WWQMNC89&currency=USD&PSPID=jilion
+    headers: 
+      accept: 
+      - "*/*"
+      content-type: 
+      - application/x-www-form-urlencoded
+      connection: 
+      - close
+      content-length: 
+      - "142"
+      host: 
+      - secure.ogone.com
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      x-powered-by: 
+      - ASP.NET
+      connection: 
+      - close
+      content-type: 
+      - text/html
+      date: 
+      - Thu, 10 Jun 2010 14:09:23 GMT
+      server: 
+      - Microsoft-IIS/6.0
+      content-length: 
+      - "336"
+      cache-control: 
+      - private
+    body: |-
+      <?xml version="1.0"?><ncresponse
+      orderID="1234"
+      PAYID="7476714"
+      NCSTATUS="0"
+      NCERROR="50001113"
+      NCERRORPLUS="Already processed"
+      ACCEPTANCE="test123"
+      STATUS="5"
+      IPCTY="99"
+      CCCTY="US"
+      ECI="9"
+      CVCCheck="NO"
+      AAVCheck="NO"
+      VC="NO"
+      amount="20"
+      currency="USD"
+      PM="CreditCard"
+      BRAND="VISA" ALIAS="sublime_33">
+      </ncresponse>
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: https://prowl.weks.net:443/publicapi/add?apikey=%5B%224f5c3597999287896a2473a817a1983866bbdc39,%22,%20%221817dcfca231ac0123aa127c9ee8fe37e4dcb15d,&application=MySublime&description=Charging%20failed:%20undefined%20method%20%60info'%20for%20%23%3CActiveMerchant::Billing::Response:0x00000106919f68%3E&event=Alert&priority=2
+    body: 
+    headers: 
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 401
+      message: Unauthorized
+    headers: 
+      date: 
+      - Tue, 30 Nov 2010 14:08:31 GMT
+      server: 
+      - Apache/2.2.3 (CentOS)
+      x-powered-by: 
+      - PHP/5.1.6
+      content-length: 
+      - "102"
+      content-type: 
+      - text/xml
+    body: |
+      <?xml version="1.0" encoding="UTF-8"?>
+      <prowl>
+      <error code="401">Invalid API key(s).</error>
+      </prowl>
+
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: https://prowl.weks.net:443/publicapi/add?apikey=%5B%224f5c3597999287896a2473a817a1983866bbdc39,%22,%20%221817dcfca231ac0123aa127c9ee8fe37e4dcb15d,&application=MySublime&description=Charging%20failed:%20undefined%20method%20%60info'%20for%20%23%3CActiveMerchant::Billing::Response:0x000001062b9038%3E&event=Alert&priority=2
+    body: 
+    headers: 
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 401
+      message: Unauthorized
+    headers: 
+      date: 
+      - Tue, 30 Nov 2010 14:13:40 GMT
+      server: 
+      - Apache/2.2.3 (CentOS)
+      x-powered-by: 
+      - PHP/5.1.6
+      content-length: 
+      - "102"
+      content-type: 
+      - text/xml
+    body: |
+      <?xml version="1.0" encoding="UTF-8"?>
+      <prowl>
+      <error code="401">Invalid API key(s).</error>
+      </prowl>
+
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: https://prowl.weks.net:443/publicapi/add?apikey=%5B%224f5c3597999287896a2473a817a1983866bbdc39,%22,%20%221817dcfca231ac0123aa127c9ee8fe37e4dcb15d,&application=MySublime&description=Charging%20failed:%20undefined%20method%20%60info'%20for%20%23%3CActiveMerchant::Billing::Response:0x00000105d20d38%3E&event=Alert&priority=2
+    body: 
+    headers: 
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 401
+      message: Unauthorized
+    headers: 
+      date: 
+      - Tue, 30 Nov 2010 14:13:51 GMT
+      server: 
+      - Apache/2.2.3 (CentOS)
+      x-powered-by: 
+      - PHP/5.1.6
+      content-length: 
+      - "102"
+      content-type: 
+      - text/xml
+    body: |
+      <?xml version="1.0" encoding="UTF-8"?>
+      <prowl>
+      <error code="401">Invalid API key(s).</error>
+      </prowl>
+
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: https://prowl.weks.net:443/publicapi/add?apikey=%5B%224f5c3597999287896a2473a817a1983866bbdc39,%22,%20%221817dcfca231ac0123aa127c9ee8fe37e4dcb15d,&application=MySublime&description=Charging%20failed:%20undefined%20method%20%60info'%20for%20%23%3CActiveMerchant::Billing::Response:0x00000106187e08%3E&event=Alert&priority=2
+    body: 
+    headers: 
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 401
+      message: Unauthorized
+    headers: 
+      date: 
+      - Tue, 30 Nov 2010 14:14:12 GMT
+      server: 
+      - Apache/2.2.3 (CentOS)
+      x-powered-by: 
+      - PHP/5.1.6
+      content-length: 
+      - "102"
+      content-type: 
+      - text/xml
+    body: |
+      <?xml version="1.0" encoding="UTF-8"?>
+      <prowl>
+      <error code="401">Invalid API key(s).</error>
+      </prowl>
+
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: https://prowl.weks.net:443/publicapi/add?apikey=%5B%224f5c3597999287896a2473a817a1983866bbdc39,%22,%20%221817dcfca231ac0123aa127c9ee8fe37e4dcb15d,&application=MySublime&description=Charging%20failed:%20can't%20convert%20String%20into%20Integer&event=Alert&priority=2
+    body: 
+    headers: 
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 401
+      message: Unauthorized
+    headers: 
+      date: 
+      - Tue, 30 Nov 2010 14:16:41 GMT
+      server: 
+      - Apache/2.2.3 (CentOS)
+      x-powered-by: 
+      - PHP/5.1.6
+      content-length: 
+      - "102"
+      content-type: 
+      - text/xml
+    body: |
+      <?xml version="1.0" encoding="UTF-8"?>
+      <prowl>
+      <error code="401">Invalid API key(s).</error>
+      </prowl>
+
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: https://prowl.weks.net:443/publicapi/add?apikey=%5B%224f5c3597999287896a2473a817a1983866bbdc39,%22,%20%221817dcfca231ac0123aa127c9ee8fe37e4dcb15d,&application=MySublime&description=Charging%20failed:%20undefined%20method%20%60text'%20for%20%5B%22orderID%22,%20%221234%22%5D:Array&event=Alert&priority=2
+    body: 
+    headers: 
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 401
+      message: Unauthorized
+    headers: 
+      date: 
+      - Tue, 30 Nov 2010 14:19:53 GMT
+      server: 
+      - Apache/2.2.3 (CentOS)
+      x-powered-by: 
+      - PHP/5.1.6
+      content-length: 
+      - "102"
+      content-type: 
+      - text/xml
+    body: |
+      <?xml version="1.0" encoding="UTF-8"?>
+      <prowl>
+      <error code="401">Invalid API key(s).</error>
+      </prowl>
+
+    http_version: "1.1"

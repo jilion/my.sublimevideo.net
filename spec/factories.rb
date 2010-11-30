@@ -89,9 +89,10 @@ end
 
 Factory.define :invoice do |f|
   f.association :user
-  f.started_at  { Time.now.utc.beginning_of_month }
-  f.ended_at    { Time.now.utc.end_of_month }
-  f.amount      10000
+  f.started_at           { Time.now.utc.beginning_of_month }
+  f.ended_at             { Time.now.utc.end_of_month }
+  f.invoice_items_amount 10000
+  f.amount               10000
 end
 
 Factory.define :invoice_item do |f|

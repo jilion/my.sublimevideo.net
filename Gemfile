@@ -22,7 +22,9 @@ gem 'jammit',                '~> 0.5.4'
 gem 'meta_where',            '~> 0.9.9.2'
 gem 'hoptoad_notifier',      '~> 2.3.12'
 gem 'prowl',                 '~> 0.1.3'
-gem 'activemerchant',        '~> 1.9.1'
+# gem 'activemerchant',        '~> 1.9.1'
+# Pull request: https://github.com/Shopify/active_merchant/pull/64
+gem 'activemerchant',        :git => 'git://github.com/rymai/active_merchant.git' # with the fix for Ogone#parse
 gem 'voxel_hapi',            :git => 'git://github.com/thibaudgg/voxel_hapi.git', :branch => '1.9.2' # VoxCast CDN
 gem 'request-log-analyzer',  '~> 1.9.6', :require => 'request_log_analyzer'
 gem 'public_suffix_service', '~> 0.7.0'

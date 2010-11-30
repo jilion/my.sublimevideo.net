@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101129100038) do
+ActiveRecord::Schema.define(:version => 20101130101448) do
 
   create_table "addons", :force => true do |t|
     t.string   "name"
@@ -104,6 +104,7 @@ ActiveRecord::Schema.define(:version => 20101129100038) do
     t.datetime "updated_at"
     t.datetime "completed_at"
     t.integer  "charging_delayed_job_id"
+    t.integer  "invoice_items_amount"
   end
 
   add_index "invoices", ["user_id", "ended_at"], :name => "index_invoices_on_user_id_and_ended_at", :unique => true
