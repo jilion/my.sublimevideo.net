@@ -1,34 +1,32 @@
 require 'spec_helper'
 
 describe Admin do
-  context "from factory" do
-    set(:admin_from_factory) { Factory(:admin) }
-    subject { admin_from_factory }
+  context "Factory" do
+    before(:all) { @admin = Factory(:admin) }
+    subject { @admin }
     
     its(:email) { should match /email\d+@admin.com/ }
     
     it { should be_valid }
-  end
+  end # Factory
   
-  describe "associations" do
-    set(:admin_for_associations) { Factory(:admin) }
-    subject { admin_for_associations }
+  describe "Associations" do
+    before(:all) { @admin = Factory(:admin) }
+    subject { @admin }
     
     it { should have_many :mail_logs }
-  end
+  end # Associations
   
-  describe "validates" do
-    subject { Factory(:admin) }
+  describe "Validations" do
+    before(:all) { @admin = Factory(:admin) }
+    subject { @admin }
     
     [:email, :password, :password_confirmation, :remember_me].each do |attr|
       it { should allow_mass_assignment_of(attr) }
     end
-    
-    # Devise checks presence/uniqueness/format of email, presence/length of password
-  end
+  end # Validations
   
 end
-
 
 
 # == Schema Information

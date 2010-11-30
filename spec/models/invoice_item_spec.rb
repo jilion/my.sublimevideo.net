@@ -1,34 +1,35 @@
 require 'spec_helper'
 
 describe InvoiceItem do
-  set(:invoice_item) { Factory(:plan_invoice_item) }
   
-  context "from factory" do
-    subject { invoice_item }
+  context "Factory" do
+    before(:all) { @invoice_item = Factory(:plan_invoice_item) }
+    subject { @invoice_item }
     
-    its(:site)        { should be_present }
-    its(:invoice)     { should be_present }
-    its(:user)        { should == invoice_item.site.user }
-    its(:type)        { should == 'InvoiceItem::Plan' }
-    its(:item_type)   { should == 'Plan' }
-    its(:item_id)     { should be_present }
+    its(:site)      { should be_present }
+    its(:invoice)   { should be_present }
+    its(:user)      { should == @invoice_item.site.user }
+    its(:type)      { should == 'InvoiceItem::Plan' }
+    its(:item_type) { should == 'Plan' }
+    its(:item_id)   { should be_present }
     specify { subject.started_at.to_i.should == Time.now.utc.beginning_of_month.to_i }
     specify { subject.ended_at.to_i.should == Time.now.utc.end_of_month.to_i }
-    its(:price)       { should == 1000 }
-    its(:amount)      { should == 1000 }
+    its(:price)     { should == 1000 }
+    its(:amount)    { should == 1000 }
     
     it { should be_valid }
-  end
+  end # Factory
   
-  describe "associations" do
-    subject { invoice_item }
+  describe "Associations" do
+    before(:all) { @invoice_item = Factory(:plan_invoice_item) }
+    subject { @invoice_item }
     
     it { should belong_to :site }
     it { should belong_to :invoice }
     it { should belong_to :item }
-  end
+  end # Associations
   
-  describe "validates" do
+  describe "Validations" do
     [:site, :invoice, :info].each do |attr|
       it { should allow_mass_assignment_of(attr) }
     end
@@ -44,7 +45,7 @@ describe InvoiceItem do
     
     it { should validate_numericality_of(:price) }
     it { should validate_numericality_of(:amount) }
-  end
+  end # Validations
   
   describe "#minutes" do
     specify { build_invoice_item(Time.utc(2010,1).beginning_of_month, Time.utc(2010,1).end_of_month).minutes.should == 31*24*60 }
@@ -54,14 +55,21 @@ describe InvoiceItem do
   
   describe "#percentage" do
     context "with a full month invoice and a one week invoice item" do
-      set(:full_month_invoice) { Factory(:invoice, :started_at => Time.utc(2010,2).beginning_of_month, :ended_at => Time.utc(2010,2).end_of_month) }
-      subject { Factory(:plan_invoice_item, :invoice => full_month_invoice, :started_at => Time.utc(2010,2,10), :ended_at => Time.utc(2010,2,17)) }
+      before(:all) do
+        @invoice      = Factory(:invoice, :started_at => Time.utc(2010,2).beginning_of_month, :ended_at => Time.utc(2010,2).end_of_month)
+        @invoice_item = Factory(:plan_invoice_item, :invoice => @invoice, :started_at => Time.utc(2010,2,10), :ended_at => Time.utc(2010,2,17))
+      end
+      subject { @invoice_item }
       
       its(:percentage) { should == 7 / 28.0 }
     end
+    
     context "with a two weeks invoice and a two days invoice item" do
-      set(:two_weeks_invoice) { Factory(:invoice, :started_at => Time.utc(2010,2.1), :ended_at => Time.utc(2010,2,14).end_of_day) }
-      subject { Factory(:plan_invoice_item, :invoice => two_weeks_invoice, :started_at => Time.utc(2010,2,2), :ended_at => Time.utc(2010,2,3).end_of_day) }
+      before(:all) do
+        @invoice      = Factory(:invoice, :started_at => Time.utc(2010,2.1), :ended_at => Time.utc(2010,2,14).end_of_day)
+        @invoice_item = Factory(:plan_invoice_item, :invoice => @invoice, :started_at => Time.utc(2010,2,2), :ended_at => Time.utc(2010,2,3).end_of_day)
+      end
+      subject { @invoice_item }
       
       its(:percentage) { should == (2 / 28.0).round(4) }
     end
