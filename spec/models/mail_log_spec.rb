@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe MailLog do
-  context "from factory" do
+  context "Factory" do
     set(:mail_log_from_factory) { Factory(:mail_log) }
     subject { mail_log_from_factory }
     
@@ -13,7 +13,7 @@ describe MailLog do
     it { should be_valid }
   end
   
-  describe "associations" do
+  describe "Associations" do
     set(:mail_log_for_associations) { Factory(:mail_log) }
     subject { mail_log_for_associations }
     
@@ -21,7 +21,7 @@ describe MailLog do
     it { should belong_to :admin }
   end
   
-  describe "validates" do
+  describe "Validations" do
     [:template_id, :admin_id, :criteria, :user_ids].each do |attr|
       it { should allow_mass_assignment_of(attr) }
       it { should validate_presence_of(attr) }

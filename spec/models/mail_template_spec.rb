@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe MailTemplate do
-  context "from factory" do
+  context "Factory" do
     set(:mail_template_from_factory) { Factory(:mail_template) }
     subject { mail_template_from_factory }
     
@@ -12,14 +12,14 @@ describe MailTemplate do
     it { should be_valid }
   end
   
-  describe "associations" do
+  describe "Associations" do
     set(:mail_template_for_associations) { Factory(:mail_template) }
     subject { mail_template_for_associations }
     
     it { should have_many :logs }
   end
   
-  describe "validates" do
+  describe "Validations" do
     [:title, :subject, :body].each do |attr|
       it { should allow_mass_assignment_of(attr) }
       it { should validate_presence_of(attr) }

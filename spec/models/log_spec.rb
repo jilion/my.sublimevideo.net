@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Log do
   
-  describe "Class methods" do
+  describe "Class Methods" do
     
     describe "delay_fetch_and_create_new_logs" do
       

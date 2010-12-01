@@ -17,10 +17,8 @@ describe Ogone do
     end
     
     describe ".authorize" do
-      after(:each) { VCR.eject_cassette }
-      
       describe "authorize of $1 with alias" do
-        before(:each) { VCR.insert_cassette('ogone_visa_authorize_1_alias') }
+        use_vcr_cassette "ogone_visa_authorize_1_alias"
         subject { Ogone.authorize(100, @cc, :currency => 'USD', :store => 'sublime_33') }
         
         it { should be_success }
@@ -35,10 +33,8 @@ describe Ogone do
     end
     
     describe ".purchase" do
-      after(:each) { VCR.eject_cassette }
-      
       describe "payment of $10" do
-        before(:each) { VCR.insert_cassette('ogone_visa_payment_10') }
+        use_vcr_cassette "ogone_visa_payment_10"
         subject { Ogone.purchase(1000, @cc, :currency => 'USD') }
         
         it { should be_success }
@@ -46,7 +42,7 @@ describe Ogone do
       end
       
       describe "payment of $20 via alias" do
-        before(:each) { VCR.insert_cassette('ogone_visa_payment_2000_alias') }
+        use_vcr_cassette "ogone_visa_payment_2000_alias"
         subject { Ogone.purchase(2000, 'sublime_33', :currency => 'USD') }
         
         it { should be_success }
@@ -54,7 +50,7 @@ describe Ogone do
       end
       
       describe "payment of $9999" do
-        before(:each) { VCR.insert_cassette('ogone_visa_payment_9999') }
+        use_vcr_cassette "ogone_visa_payment_9999"
         subject { Ogone.purchase(999900, @cc, :currency => 'USD') }
         
         it { should_not be_success }
@@ -62,7 +58,7 @@ describe Ogone do
       end
       
       describe "payment of €20" do
-        before(:each) { VCR.insert_cassette('ogone_visa_payment_20_euros') }
+        use_vcr_cassette "ogone_visa_payment_20_euros"
         subject { Ogone.purchase(2000, @cc, :currency => 'EUR') }
         
         it { should_not be_success }
@@ -70,7 +66,7 @@ describe Ogone do
       end
       
       describe "payment of $10000" do
-        before(:each) { VCR.insert_cassette('ogone_visa_payment_10000') }
+        use_vcr_cassette "ogone_visa_payment_10000"
         subject { Ogone.purchase(1000000, @cc, :currency => 'USD') }
         
         it { should_not be_success }
@@ -93,10 +89,8 @@ describe Ogone do
     end
     
     describe ".purchase" do
-      after(:each) { VCR.eject_cassette }
-      
       describe "payment of $100" do
-        before(:each) { VCR.insert_cassette('ogone_master_100') }
+        use_vcr_cassette "ogone_master_100"
         subject { Ogone.purchase(10000, @cc, :currency => 'USD') }
         
         it { should be_success }

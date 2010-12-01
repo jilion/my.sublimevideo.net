@@ -1,11 +1,10 @@
 require 'spec_helper'
 
 describe Log::Amazon::S3::Player do
+  use_vcr_cassette "s3/player/logs_list"
   let(:log_s3_player) { Factory(:log_s3_player) }
   
-  before(:each) { VCR.insert_cassette('s3/player/logs_list') }
-  
-  context "built with valid attributes" do
+  context "Factory" do
     subject { log_s3_player }
     
     its(:hostname)   { should == 'sublimevideo.player' }
@@ -57,6 +56,4 @@ describe Log::Amazon::S3::Player do
       }
     end
   end
-  
-  after(:each) { VCR.eject_cassette }
 end

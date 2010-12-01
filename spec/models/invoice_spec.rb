@@ -404,11 +404,10 @@ describe Invoice do
       subject { Invoice.charge(@invoice.id) }
       
       describe "Ogone call" do
+        use_vcr_cassette "ogone_visa_payment_2000_alias"
         before(:each) do
           @invoice.reload.update_attributes(:reference => "1234")
-          VCR.insert_cassette('ogone_visa_payment_2000_alias') # successful payment
         end
-        after(:each) { VCR.eject_cassette }
         
         it "should pass right options" do
           Ogone.should_receive(:purchase).with(@invoice.amount, @user.credit_card_alias, :order_id => @invoice.reference, :currency => 'USD')
@@ -417,11 +416,10 @@ describe Invoice do
       end
       
       context "with a succeeding purchase" do
+        use_vcr_cassette "ogone_visa_payment_2000_alias"
         before(:each) do
           @invoice.reload.update_attribute(:charging_delayed_job_id, 1)
-          VCR.insert_cassette('ogone_visa_payment_2000_alias') # successful payment
         end
-        after(:each) { VCR.eject_cassette }
         
         it "should not set last_error" do
           @invoice.last_error.should be_nil
@@ -455,8 +453,7 @@ describe Invoice do
       end
       
       context "with a failing purchase" do
-        before(:each) { VCR.insert_cassette('ogone_visa_payment_9999') } # failing payment
-        after(:each) { VCR.eject_cassette }
+        use_vcr_cassette "ogone_visa_payment_9999"
         
         (1...Billing.max_charging_attempts).each do |attempts|
           context "with only #{attempts} attempt(s) failed" do
@@ -576,11 +573,10 @@ describe Invoice do
       end
       
       context "with a already charged invoice" do
+        use_vcr_cassette "ogone_visa_payment_2000_already_processed"
         before(:each) do
           @invoice.reload.update_attribute(:charging_delayed_job_id, 1)
-          VCR.insert_cassette('ogone_visa_payment_2000_already_processed')
         end
-        after(:each) { VCR.eject_cassette }
         
         it "should set paid_at to Time.now.utc" do
           @invoice.paid_at.should be_nil

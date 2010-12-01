@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Referrer do
   
-  describe "validates" do
+  describe "Validations" do
     [:token, :url, :hits].each do |attr|
       it { should allow_mass_assignment_of(attr) }
     end
@@ -23,7 +23,7 @@ describe Referrer do
       end
     end
     
-    describe "create_or_update_from_trackers!" do
+    describe ".create_or_update_from_trackers!" do
       before(:each) { Referrer.create_or_update_from_trackers!(@trackers) }
       
       let(:site) { Site.find_by_token('k8qaaj1l') }

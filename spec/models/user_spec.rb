@@ -5,7 +5,7 @@ require 'spec_helper'
 # 1.67x faster
 describe User do
   
-  context "from factory" do
+  context "Factory" do
     set(:user_from_factory) { Factory(:user) }
     subject { user_from_factory }
     
@@ -21,7 +21,7 @@ describe User do
     it { should be_valid }
   end
   
-  describe "associations" do
+  describe "Associations" do
     set(:user_for_associations) { Factory(:user) }
     subject { user_for_associations }
     
@@ -52,7 +52,7 @@ describe User do
     
   end
   
-  describe "validates " do
+  describe "Validations" do
     [:first_name, :last_name, :email, :remember_me, :password, :postal_code, :country, :use_personal, :use_company, :use_clients, :company_name, :company_url, :company_job_title, :company_employees, :company_videos_served, :terms_and_conditions, :cc_update, :cc_type, :cc_full_name, :cc_number, :cc_expire_on, :cc_verification_value].each do |attr|
       it { should allow_mass_assignment_of(attr) }
     end
@@ -69,7 +69,6 @@ describe User do
       user.should_not be_valid
       user.should have(1).error_on(:use)
       user.errors[:use].should == ["Please check at least one option"]
-      
     end
     
     context "when use_company is checked" do
@@ -181,7 +180,7 @@ describe User do
         user.should be_suspended
       end
       
-      describe "callbacks" do
+      describe "Callbacks" do
         describe "before_transition :on => :suspend, :do => :suspend_sites" do
           it "should suspend each user' active site" do
             site1.should be_active
@@ -208,7 +207,7 @@ describe User do
         user.should be_active
       end
       
-      describe "callbacks" do
+      describe "Callbacks" do
         describe "before_transition :on => :unsuspend, :do => :unsuspend_sites" do
           it "should suspend each user' site" do
             site1.reload.should be_suspended
@@ -224,7 +223,7 @@ describe User do
   end
   
   # TODO slow: 3s for 4 examples => 0.75s/ex
-  describe "callbacks" do
+  describe "Callbacks" do
     let(:user) { Factory(:user) }
     
     describe "after_update :update_email_on_zendesk" do
@@ -269,7 +268,7 @@ describe User do
     end
   end
   
-  describe "class methods" do
+  describe "Class Methods" do
     
     describe ".delay_suspend" do
       before(:all) do
@@ -296,7 +295,7 @@ describe User do
     
   end
   
-  describe "instance methods" do
+  describe "Instance Methods" do
     let(:user) { Factory(:user) }
     
     it "should be active when suspended in order to allow login" do

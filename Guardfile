@@ -8,10 +8,10 @@ guard 'bundler' do
 end
 
 guard 'passenger', :ping => true do
-  watch(%|^config/application\.rb|)
-  watch(%|^config/environment\.rb|)
-  watch(%|^config/environments/.*\.rb|)
-  watch(%|^config/initializers/.*\.rb|)
+  watch('config/application\.rb')
+  watch('config/environment\.rb')
+  watch(%|config/environments/.*\.rb|)
+  watch(%|config/initializers/.*\.rb|)
 end
 
 guard 'spork', :wait => 40 do
@@ -22,7 +22,7 @@ guard 'spork', :wait => 40 do
   watch(%|^spec/spec_helper\.rb|)
 end
 
-guard 'rspec', :version => 2, :drb => true, :bundler => false, :fail_fast => true do #, :formatter => "instafail" do
+guard 'rspec', :version => 2, :drb => true, :bundler => false, :fail_fast => true, :formatter => "instafail" do
   watch(%|^spec/spec_helper\.rb|)                              { "spec" }
   watch(%|^app/controllers/application_controller\.rb|)        { "spec/controllers" }
   watch(%|^config/routes\.rb|)                                 { "spec/routing" }

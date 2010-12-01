@@ -2,11 +2,9 @@ require 'spec_helper'
 
 describe Log::Voxcast do
   
-  context "built with valid attributes" do
-    let(:log_voxcast) { Factory.build(:log_voxcast, :name => 'cdn.sublimevideo.net.log.1274773200-1274773260.gz') }
-    before(:each) { VCR.insert_cassette('one_logs') }
-    
-    subject { log_voxcast }
+  context "Factory build" do
+    use_vcr_cassette "one_logs"
+    subject { Factory.build(:log_voxcast, :name => 'cdn.sublimevideo.net.log.1274773200-1274773260.gz') }
     
     its(:hostname)   { should == 'cdn.sublimevideo.net' }
     its(:started_at) { should == Time.zone.at(1274773200).utc }
@@ -15,28 +13,23 @@ describe Log::Voxcast do
     it { should_not be_parsed }
     it { should_not be_referrers_parsed }
     it { should be_valid }
-    
-    after(:each) { VCR.eject_cassette }
   end
   
-  describe "validates" do
+  describe "Validations" do
     context "with already the same log in db" do
-      before(:each) { VCR.insert_cassette('one_saved_logs') }
+      use_vcr_cassette "one_saved_logs"
       
       it "should validate uniqueness of name" do
-        Factory(:log_voxcast) 
+        Factory(:log_voxcast)
         log = Factory.build(:log_voxcast)
         log.should_not be_valid
-        log.errors[:name].should be_present
+        log.should have(1).error_on(:name)
       end
-      
-      after(:each) { VCR.eject_cassette }
     end
   end
   
-  context "created with valid attributes" do
-    before(:each) { VCR.insert_cassette('one_saved_logs') }
-    
+  context "Factory create" do
+    use_vcr_cassette "one_saved_logs"
     subject { Factory(:log_voxcast) }
     
     its(:created_at) { should be_present }
@@ -72,11 +65,9 @@ describe Log::Voxcast do
       job.name.should == 'Class#parse_log'
       job.priority.should == 20
     end
-    
-    after(:each) { VCR.eject_cassette }
   end
   
-  context "created with valid attributes from 4076.voxcdn.com" do
+  context "Factory from 4076.voxcdn.com" do
     before(:each) do
       VoxcastCDN.stub(:logs_download).with('4076.voxcdn.com.log.1279103340-1279103400.gz') {
         File.new(Rails.root.join('spec/fixtures/logs/voxcast/4076.voxcdn.com.log.1279103340-1279103400.gz'))

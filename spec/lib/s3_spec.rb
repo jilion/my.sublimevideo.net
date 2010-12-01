@@ -22,16 +22,15 @@ describe S3 do
   
   describe "logs list" do
     before(:all) { S3.reset_yml_options }
+    use_vcr_cassette "s3/logs_bucket_all_keys"
     
     it "should return max 100 keys" do
-      VCR.use_cassette('s3/logs_bucket_all_keys') do
-        S3.logs_name_list.should have(104).names
-      end
+      S3.logs_name_list.should have(104).names
     end
   end
   
   describe ".keys_names" do
-    before(:each) { VCR.insert_cassette('s3/keys_names') }
+    use_vcr_cassette "s3/keys_names"
     
     it "should return the names of all keys" do
       S3.keys_names(S3.player_bucket).should == ["beta/black_pixel.gif",
@@ -86,8 +85,6 @@ describe S3 do
         end
       end
     end
-    
-    after(:each) { VCR.eject_cassette }
   end
   
 end

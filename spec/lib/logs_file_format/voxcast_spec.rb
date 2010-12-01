@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe LogsFileFormat::Voxcast do
   
-  describe "class methods" do
+  describe "Class Methods" do
     subject { LogsFileFormat::VoxcastSites }
     
     ["p/sublime.swf?t=6vibplhv","/p/close_button.png?t=6vibplhv", "/p/ie/transparent_pixel.gif?t=6vibplhv", "/p/beta/sublime.js?t=6vibplhv&super=top", '/6vibplhv/posterframe.jpg', '/js/6vibplhv/posterframe.js', '/js/6vibplhv.js', '/l/6vibplhv.js'].each do |path|

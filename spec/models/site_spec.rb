@@ -58,7 +58,7 @@ describe Site do
   end
   
   # TODO 86s
-  describe "Validates " do
+  describe "Validations" do
     [:hostname, :dev_hostnames].each do |attribute|
       it { should allow_mass_assignment_of(attribute) }
     end

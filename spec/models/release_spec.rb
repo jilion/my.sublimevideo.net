@@ -2,14 +2,14 @@ require 'spec_helper'
 
 describe Release do
   let(:archived_release) { Factory(:release).tap { |r| r.archive } }
-  let(:dev_release) { Factory(:release) }
-  let(:beta_release) { Factory(:release).tap { |r| r.flag } }
-  let(:stable_release) { Factory(:release).tap { |r| 2.times { r.flag } } }
+  let(:dev_release)      { Factory(:release) }
+  let(:beta_release)     { Factory(:release).tap { |r| r.flag } }
+  let(:stable_release)   { Factory(:release).tap { |r| 2.times { r.flag } } }
   
   before(:each) { VoxcastCDN.stub(:purge_dir) }
   
-  context "with valid attributes" do
-    before(:each) { VCR.insert_cassette('release/valid') }
+  context "Factory" do
+    use_vcr_cassette "release/dev"
     subject { dev_release }
     
     its(:date) { should =~ /^[0-9]{4}-[0-9]{2}-[0-9]{2}-[0-9]{2}-[0-9]{2}-[0-9]{2}$/ }
@@ -17,11 +17,9 @@ describe Release do
     
     it { should be_dev }
     it { should be_valid }
-    
-    after(:each) { VCR.eject_cassette }
   end
   
-  describe "validations" do
+  describe "Validations" do
     it { should validate_presence_of(:zip) }
     
     it "should only allow zip file" do
@@ -32,7 +30,7 @@ describe Release do
   end
   
   context "archived release" do
-    before(:each) { VCR.insert_cassette('release/archived') }
+    use_vcr_cassette "release/archived"
     subject { archived_release }
     
     it { should be_archived }
@@ -72,12 +70,10 @@ describe Release do
         end
       end
     end
-    
-    after(:each) { VCR.eject_cassette }
   end
   
   context "dev release" do
-    before(:each) { VCR.insert_cassette('release/dev') }
+    use_vcr_cassette "release/dev"
     
     subject { dev_release }
     
@@ -93,6 +89,7 @@ describe Release do
     end
     
     describe "when flagged" do
+      use_vcr_cassette "release/dev_read"
       before(:each) do
         S3.player_bucket.put("beta/foo.txt", "bar")
         subject.flag
@@ -101,8 +98,6 @@ describe Release do
       it { should be_beta }
       
       it "should remove no more used files in beta dir" do
-        VCR.eject_cassette
-        VCR.insert_cassette('release/dev_read')
         keys_names = S3.keys_names(S3.player_bucket, 'prefix' => 'beta')
         keys_names.should_not include("beta/foo.txt")
       end
@@ -113,8 +108,6 @@ describe Release do
       end
       
       it "should copy dev files inside beta dir with public-read" do
-        VCR.eject_cassette
-        VCR.insert_cassette('release/dev_read')
         S3.player_bucket.keys('prefix' => 'beta').each do |key|
           all_users_grantee = key.grantees.detect { |g| g.name == "AllUsers" }
           all_users_grantee.perms.should == ["READ"]
@@ -127,12 +120,10 @@ describe Release do
       
       it { should be_archived }
     end
-    
-    after(:each) { VCR.eject_cassette }
   end
   
   context "beta release" do
-    before(:each) { VCR.insert_cassette('release/beta') }
+    use_vcr_cassette "release/beta"
     
     subject { beta_release }
     
@@ -171,12 +162,10 @@ describe Release do
       
       it { should be_archived }
     end
-    
-    after(:each) { VCR.eject_cassette }
   end
   
   context "stable release" do
-    before(:each) { VCR.insert_cassette('release/stable') }
+    use_vcr_cassette "release/stable"
     
     subject { stable_release }
     
@@ -188,7 +177,7 @@ describe Release do
     it "should also be the dev release when no really dev release exists" do
       subject.should == Release.dev_release
     end
-    it "should also be the beta releas when no really beta release existse" do
+    it "should also be the beta release when no really beta release existse" do
       subject.should == Release.beta_release
     end
     it "should be the stable release" do
@@ -200,17 +189,11 @@ describe Release do
       
       it { should be_archived }
     end
-    
-    after(:each) { VCR.eject_cassette }
   end
   
-  describe "instance methods" do
-    set(:dev_release) { VCR.use_cassette('release/dev') { Factory(:release) } }
-    before(:all) { VCR.insert_cassette('release/valid') }
-    subject { dev_release }
-    # before(:each) { VCR.insert_cassette('release/valid') }
-    
-    subject { dev_release }
+  describe "Instance Methods" do
+    use_vcr_cassette "release/valid"
+    subject { VCR.use_cassette('release/dev') { dev_release } }
     
     describe "#zipfile" do
       it "should save the zip locally" do
@@ -247,7 +230,6 @@ describe Release do
     end
     
     after(:all) do
-      VCR.eject_cassette
       subject.delete_zipfile if File.file?(Rails.root.join("tmp/#{subject.zip.filename}"))
     end
   end

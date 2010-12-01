@@ -13,7 +13,7 @@ require 'spec_helper'
 describe Ticket do
   let(:user) { Factory(:user) }
   
-  describe "factory" do
+  describe "Factory" do
     let(:ticket) { Ticket.new({ :user => user, :type => "bug-report", :subject => "Subject", :message => "Message" }) }
     subject { ticket }
     
@@ -24,7 +24,7 @@ describe Ticket do
     it { should be_valid }
   end
   
-  describe "validates" do
+  describe "Validations" do
     Ticket::TYPES.each do |type|
       it { should allow_value(type).for(:type) }
     end
@@ -52,7 +52,7 @@ describe Ticket do
     end
   end
   
-  describe "instance methods" do
+  describe "Instance Methods" do
     let(:ticket) { Ticket.new({ :user => user, :type => "bug-report", :subject => "Subject", :message => "Message" }) }
     
     describe "#save" do
@@ -70,7 +70,7 @@ describe Ticket do
     end
     
     describe "#post_ticket" do
-      before(:each) { VCR.insert_cassette("ticket/post_ticket") }
+      use_vcr_cassette "ticket/post_ticket"
       
       it "should create the ticket on Zendesk" do
         zendesk_tickets_count_before_post = VCR.use_cassette("ticket/zendesk_tickets_before_post") do
@@ -104,8 +104,6 @@ describe Ticket do
         ticket.post_ticket
         Delayed::Job.last.name.should == 'Ticket#verify_user'
       end
-      
-      after(:each) { VCR.eject_cassette }
     end
     
     describe "#verify_user" do

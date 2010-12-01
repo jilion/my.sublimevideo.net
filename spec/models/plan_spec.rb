@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Plan do
   set(:plan) { Factory(:plan) }
   
-  context "from factory" do
+  context "Factory" do
     subject { plan }
     
     its(:name)          { should =~ /small\d+/ }
@@ -14,14 +14,14 @@ describe Plan do
     it { should be_valid }
   end
   
-  describe "associations" do
+  describe "Associations" do
     subject { plan }
     
     it { should have_many :sites }
     it { should have_many :invoice_items }
   end
   
-  describe "validates" do
+  describe "Validations" do
     subject { Factory(:plan) }
     
     [:name, :player_hits, :price, :overage_price].each do |attr|

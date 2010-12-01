@@ -1,11 +1,10 @@
 require 'spec_helper'
 
 describe Log::Amazon::S3::Loaders do
+  use_vcr_cassette "s3/loaders/logs_list"
   let(:log_s3_loaders) { Factory(:log_s3_loaders) }
   
-  before(:each) { VCR.insert_cassette('s3/loaders/logs_list') }
-  
-  context "created with valid attributes" do
+  context "Factory" do
     subject { log_s3_loaders }
     
     its("file.url") { should == "/uploads/s3/sublimevideo.loaders/2010-07-14-09-22-26-63B226D3944909C8" }
@@ -46,6 +45,4 @@ describe Log::Amazon::S3::Loaders do
       }
     end
   end
-  
-  after(:each) { VCR.eject_cassette }
 end

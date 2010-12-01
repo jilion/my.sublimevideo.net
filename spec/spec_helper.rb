@@ -9,8 +9,7 @@ Spork.prefork do
   
   require File.dirname(__FILE__) + "/../config/environment"
   require 'rspec/rails'
-  
-  # require 'timecop'
+  require 'vcr'
   
   # require 'akephalos'
   # Capybara.javascript_driver = :akephalos
@@ -27,6 +26,7 @@ Spork.prefork do
     # config.include Shoulda::ActionController::Matchers
     # config.include Capybara
     # config.include Devise::TestHelpers, :type => :controller
+    config.extend VCR::RSpec::Macros
     
     config.filter_run :focus => true
     config.run_all_when_everything_filtered = true
