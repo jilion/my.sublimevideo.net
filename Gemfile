@@ -3,9 +3,9 @@ source :rubygems
 gem 'bundler',               '~> 1.0.7'
 
 # gem 'rails',                 '~> 3.0.2'
-gem 'rails',                 :git => 'git://github.com/thibaudgg/rails.git', :branch => 'spork' # 3.0.2
+gem 'rails',                 :git => 'git://github.com/thibaudgg/rails.git', :branch => 'spork' # 3.0.3
 gem 'rack',                  '~> 1.2.1'
-gem 'arel',                  '~> 2.0.4'
+gem 'arel',                  '~> 2.0.5'
 gem 'pg',                    '~> 0.9.0'
 
 gem 'libxml-ruby',           '~> 1.1.3', :require => 'libxml'
@@ -88,7 +88,8 @@ group :test do
   gem 'rb-fsevent',         '~> 0.3.9'
   gem 'guard',              :git => "git://github.com/guard/guard.git"
   gem 'guard-ego'
-  gem 'guard-bundler'
+  # gem 'guard-bundler'
+  gem 'guard-bundler',      :git => '/Users/remy/Development/Ruby/Gems/guard@guard-bundler'
   gem 'guard-passenger'
   gem 'guard-spork'
   gem 'guard-rspec'
