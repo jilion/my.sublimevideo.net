@@ -270,7 +270,10 @@ private
   
   # before_save
   def prepare_cdn_update
-    if new_record? || player_mode_changed? # loader
+    @loader_needs_update  = false
+    @license_needs_update = false
+    
+    if new_record? || player_mode_changed? || (state_changed? && %w[dev active].include?(state))
       set_cdn_up_to_date_to_false
       @loader_needs_update = true
     end

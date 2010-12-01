@@ -268,8 +268,13 @@ describe Site do
       
       describe "unsuspend" do
         it "should reset license & loader" do
+          VoxcastCDN.should_receive(:purge).with("/js/#{subject.token}.js")
+          VoxcastCDN.should_receive(:purge).with("/l/#{subject.token}.js")
           subject.suspend
           Delayed::Worker.new(:quiet => true).work_off
+          subject.reload.loader.should_not be_present
+          subject.license.should_not be_present
+          
           subject.unsuspend
           Delayed::Worker.new(:quiet => true).work_off
           subject.reload.loader.should be_present
