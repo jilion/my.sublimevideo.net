@@ -20,13 +20,8 @@ module User::CreditCard
   
   def self.send_credit_card_expiration
     delay_send_credit_card_expiration
-    User.where(:cc_expire_on.lt => 1.month.from_now).each do |user|
-      if user.credit_card_expired? && !user.suspended?
-        user.suspend!
-        CreditCardMailer.is_expired(user).deliver!
-      else
-        CreditCardMailer.will_expire(user).deliver!
-      end
+    User.where(:cc_expire_on => Time.now.utc.end_of_month).each do |user|
+      CreditCardMailer.will_expire(user).deliver!
     end
   end
   
@@ -40,7 +35,7 @@ module User::CreditCard
   alias :cc? :credit_card?
   
   def credit_card_expired?
-    cc_expire_on.present? and cc_expire_on.year < Time.now.utc.year || cc_expire_on.month < Time.now.utc.month
+    cc_expire_on? && (cc_expire_on.year < Time.now.utc.year || cc_expire_on.month < Time.now.utc.month)
   end
   alias :cc_expired? :credit_card_expired?
   
@@ -51,6 +46,10 @@ module User::CreditCard
       @cc_first_name = names.first
       @cc_last_name  = names.size > 1 ? names.drop(1).join(" ") : "-"
     end
+  end
+  
+  def cc_expire_on=(attribute)
+    write_attribute(:cc_expire_on, attribute.respond_to?(:end_of_month) ? attribute.end_of_month.to_date : attribute)
   end
   
   def credit_card_attributes_present?
@@ -124,8 +123,8 @@ private
     @credit_card ||= ActiveMerchant::Billing::CreditCard.new(
       :type               => cc_type,
       :number             => cc_number,
-      :month              => cc_expire_on.month,
-      :year               => cc_expire_on.year,
+      :month              => cc_expire_on.try(:month),
+      :year               => cc_expire_on.try(:year),
       :first_name         => cc_first_name,
       :last_name          => cc_last_name,
       :verification_value => cc_verification_value

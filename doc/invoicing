@@ -1,3 +1,5 @@
+OUT OF DATE !!
+
 every day invoice rake task at 00:01
   
   ✓ billable users
@@ -43,4 +45,12 @@ cancel addon:
     - ended_on    = next_invoice.ended_on
     - canceled_on = Time.now.utc
     
-le cancel est un invoice_item comme un autre, avec juste un canceled_on et un ended_on au lieu de started_on et ended_on
+OUT OF DATE !!
+
+Suspend user:
+  - Payment has failed 5 times (first time + 4 retry)
+  - User will be suspended after the last failed retry + 10 days
+  
+Unsuspend user:
+  - User has changed its credit card info and hit the "retry the payment" button
+  - Add a "suspending_delayed_job_id" field to User in order to delete the delayed "suspend user" job

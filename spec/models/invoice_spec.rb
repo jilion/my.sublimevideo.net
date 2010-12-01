@@ -30,6 +30,19 @@ describe Invoice do
     it { should have_many :invoice_items }
   end # Associations
   
+  describe "Scopes" do
+    before(:all) do
+      @open_invoice    = Factory(:invoice, :state => 'open')
+      @paid_invoice    = Factory(:invoice, :state => 'paid')
+      @failed_invoice1 = Factory(:invoice, :state => 'failed')
+      @failed_invoice2 = Factory(:invoice, :state => 'failed')
+    end
+    
+    describe "#failed" do
+      specify { Invoice.failed.all.should == [@failed_invoice1, @failed_invoice2] }
+    end
+  end
+  
   describe "Validations" do
     before(:all) { @invoice = Factory(:invoice) }
     subject { @invoice }
@@ -173,23 +186,23 @@ describe Invoice do
         end
       end
       
-      describe "before_transition :unpaid => :failed, :do => [:clear_charging_delayed_job_id, :delay_suspend_user]" do
+      describe "before_transition :unpaid => :failed, :do => [:set_failed_at, :clear_charging_delayed_job_id, :delay_suspend_user]" do
         context "from unpaid" do
           before(:each) { subject.reload.update_attributes(:state => 'unpaid', :attempts => Billing.max_charging_attempts, :charging_delayed_job_id => 1) }
           
+          it "should set failed_at" do
+            subject.failed_at.should be_nil
+            subject.fail
+            subject.failed_at.should be_present
+          end
           it "should clear charging_delayed_job_id" do
             subject.charging_delayed_job_id.should be_present
             subject.fail
             subject.charging_delayed_job_id.should be_nil
           end
-          
-          it "should delay suspend user" do
+          it "should delay suspend user in Billing.days_before_suspend_user days" do
             lambda { subject.fail }.should change(Delayed::Job, :count).by(1)
             Delayed::Job.last.name.should == "Class#suspend"
-          end
-          
-          it "should delay User.suspend in Billing.days_before_suspend_user days" do
-            subject.fail
             Delayed::Job.last.run_at.should be_within(3).of(Billing.days_before_suspend_user.days.from_now) # seconds of tolerance
           end
         end
@@ -207,36 +220,69 @@ describe Invoice do
       end
       
       describe "before_transition [:open, :unpaid, :failed] => :paid, :do => [:clear_charging_delayed_job_id, :set_paid_at]" do
-        context "from open" do
-          before(:each) { subject.reload.update_attributes(:state => 'open', :amount => 0, :charging_delayed_job_id => 1) }
-          
-          it "should clear charging_delayed_job_id" do
-            subject.charging_delayed_job_id.should be_present
-            subject.complete
-            subject.charging_delayed_job_id.should be_nil
-          end
-          
-          it "should set paid_at" do
-            subject.paid_at.should be_nil
-            subject.complete
-            subject.paid_at.should be_present
-          end
-        end
-        
-        %w[unpaid failed].each do |state|
+        %w[open unpaid failed].each do |state|
           context "from #{state}" do
-            before(:each) { subject.reload.update_attributes(:state => state, :charging_delayed_job_id => 1) }
+            before(:each) { subject.reload.update_attributes(:state => state, :amount => 0, :charging_delayed_job_id => 1) }
             
             it "should clear charging_delayed_job_id" do
               subject.charging_delayed_job_id.should be_present
-              subject.succeed
+              subject.send(state == 'open' ? :complete : :succeed)
               subject.charging_delayed_job_id.should be_nil
             end
             
             it "should set paid_at" do
               subject.paid_at.should be_nil
-              subject.succeed
+              subject.send(state == 'open' ? :complete : :succeed)
               subject.paid_at.should be_present
+            end
+          end
+        end
+      end
+      
+      describe "after_transition [:open, :unpaid, :failed] => :paid, :do => :unsuspend_user" do
+        context "with a non-suspended user" do
+          %w[open unpaid failed].each do |state|
+            context "from #{state}" do
+              before(:each) do
+                subject.reload.update_attributes(:state => state, :amount => 0)
+                subject.user.should_not be_suspended
+              end
+              
+              it "should not delay un-suspend_user" do
+                lambda { subject.send(state == 'open' ? :complete : :succeed) }.should_not change(Delayed::Job, :count)
+                subject.should be_paid
+              end
+            end
+          end
+        end
+        
+        context "with a suspended user" do
+          %w[open unpaid failed].each do |state|
+            context "from #{state}" do
+              before(:each) do
+                subject.reload.update_attributes(:state => state, :amount => 0)
+                subject.user.update_attribute(:state, 'suspended')
+                subject.user.should be_suspended
+              end
+              
+              context "with no more unpaid invoice" do
+                it "should delay un-suspend_user" do
+                  lambda { subject.send(state == 'open' ? :complete : :succeed) }.should change(Delayed::Job, :count).by(1)
+                  Delayed::Job.last.name.should == "Class#unsuspend"
+                  subject.should be_paid
+                end
+              end
+              
+              context "with more unpaid invoice" do
+                before(:each) do
+                  Factory(:invoice, :user => subject.user, :state => 'failed', :started_at => Time.now.utc, :ended_at => Time.now.utc)
+                end
+                
+                it "should not delay un-suspend_user" do
+                  lambda { subject.send(state == 'open' ? :complete : :succeed) }.should_not change(Delayed::Job, :count)
+                  subject.should be_paid
+                end
+              end
             end
           end
         end
@@ -485,7 +531,10 @@ describe Invoice do
                 @invoice.reload.paid_at.should be_nil
               end
               describe "delay charging" do
-                specify { lambda { subject }.should change(Delayed::Job.where(:handler.matches => "%charge%"), :count).by(1) }
+                it "should delay suspend user" do
+                  lambda { subject }.should change(Delayed::Job, :count).by(1)
+                  Delayed::Job.last.name.should == "Class#charge"
+                end
                 it "should delay charging in 2**#{attempts} hours " do
                   subject
                   Delayed::Job.last.run_at.should be_within(3).of((2**attempts).hours.from_now) # seconds of tolerance
@@ -536,9 +585,12 @@ describe Invoice do
               subject
               @invoice.reload.charging_delayed_job_id.should be_nil
             end
-            describe "delay User.suspend" do
-              specify { lambda { subject }.should change(Delayed::Job.where(:handler.matches => "%suspend%"), :count).by(1) }
-              it "should delay User.suspend in Billing.days_before_suspend_user days" do
+            describe "delay user.suspend" do
+              it "should delay suspend user" do
+                lambda { subject }.should change(Delayed::Job, :count).by(1)
+                Delayed::Job.last.name.should == "Class#suspend"
+              end
+              it "should delay user.suspend in Billing.days_before_suspend_user days" do
                 subject
                 Delayed::Job.last.run_at.should be_within(3).of(Billing.days_before_suspend_user.days.from_now) # seconds of tolerance
               end
@@ -555,19 +607,23 @@ describe Invoice do
           end
         end
         
-        pending "with an exception raised by Ogone.purchase" do
+        context "with an exception raised by Ogone.purchase" do
           before(:each) do
-            Ogone.stub!(:purchase).and_raise(Exception)
+            Ogone.should_receive(:purchase).and_raise("Exception")
+            Notify.stub!(:send)
           end
+          
+          specify { expect { subject }.to_not raise_error }
           
           it "should Notify of the exception" do
             Notify.should_receive(:send)
-            expect { subject }.to raise_error(Exception)
+            subject
           end
           
           it "should fail the invoice" do
+            Invoice.stub!(:find) { @invoice }
             @invoice.should_receive(:fail)
-            expect { subject }.to raise_error(Exception)
+            subject
           end
         end
       end

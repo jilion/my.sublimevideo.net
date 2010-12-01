@@ -4,11 +4,11 @@ describe UserMailer do
   subject { Factory(:user) }
   
   describe "common checks" do
-    %w[account_suspended].each do |mail|
+    %w[account_suspended account_unsuspended].each do |mail|
       before(:each) do
         subject
         ActionMailer::Base.deliveries.clear
-        UserMailer.send(mail, subject, :invoice_problem).deliver
+        mail == 'account_suspended' ? UserMailer.send(mail, subject, :credit_card_charging_impossible).deliver : UserMailer.send(mail, subject).deliver
         @last_delivery = ActionMailer::Base.deliveries.last
       end
       
@@ -33,7 +33,7 @@ describe UserMailer do
   describe "#account_suspended" do
     context "when reason given is :invoice_problem" do
       before(:each) do
-        UserMailer.account_suspended(subject, :invoice_problem).deliver
+        UserMailer.account_suspended(subject, :credit_card_charging_impossible).deliver
         @last_delivery = ActionMailer::Base.deliveries.last
       end
       
@@ -42,8 +42,24 @@ describe UserMailer do
       end
       
       it "should set a body that contain infos" do
-        @last_delivery.body.raw_source.should include "Hi"
+        @last_delivery.body.raw_source.should include "your account has been suspended!"
+        @last_delivery.body.raw_source.should include I18n.t("user.account_suspended.credit_card_charging_impossible")
       end
+    end
+  end
+  
+  describe "#account_unsuspended" do
+    before(:each) do
+      UserMailer.account_unsuspended(subject).deliver
+      @last_delivery = ActionMailer::Base.deliveries.last
+    end
+    
+    it "should set proper subject" do
+      @last_delivery.subject.should == "Your account has been un-suspended"
+    end
+    
+    it "should set a body that contain infos" do
+      @last_delivery.body.raw_source.should include "your account has been un-suspended!"
     end
   end
   

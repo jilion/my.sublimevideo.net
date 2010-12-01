@@ -23,6 +23,7 @@ class User < ActiveRecord::Base
   # = Associations =
   # ================
   
+  belongs_to :suspending_delayed_job, :class_name => "::Delayed::Job"
   has_many :sites
   has_many :invoices
   
@@ -80,20 +81,24 @@ class User < ActiveRecord::Base
     event(:unsuspend) { transition :suspended => :active }
     
     before_transition :on => :suspend, :do => :suspend_sites
-    before_transition :on => :unsuspend, :do => :unsuspend_sites
+    after_transition  :on => :suspend, :do => :send_account_suspended_email
+    
+    before_transition :on => :unsuspend, :do => [:clear_suspending_delayed_job_id, :unsuspend_sites]
+    after_transition  :on => :unsuspend, :do => :send_account_unsuspended_email
   end
   
   # =================
   # = Class Methods =
   # =================
   
-  def self.delay_suspend(user_id, run_at = Billing.days_before_suspend_user.days.from_now)
-    delay(:run_at => run_at).suspend(user_id)
-  end
-  
   def self.suspend(user_id)
     user = find(user_id)
     user.suspend!
+  end
+  
+  def self.unsuspend(user_id)
+    user = find(user_id)
+    user.unsuspend!
   end
   
   # ====================
@@ -111,6 +116,17 @@ class User < ActiveRecord::Base
   
   def email=(email)
     write_attribute(:email, email.try(:downcase))
+  end
+  
+  def delay_suspend_and_set_suspending_delayed_job_id(run_at = Billing.days_before_suspend_user.days.from_now)
+    transaction do
+      begin
+        delayed_job = User.delay(:run_at => run_at).suspend(self.id)
+        self.update_attribute(:suspending_delayed_job_id, delayed_job.id)
+      rescue => ex
+        Notify.send("User#suspend for user ##{self.id} has failed: #{ex.message}", :exception => ex)
+      end
+    end
   end
   
 private
@@ -133,14 +149,32 @@ private
     end
   end
   
-  # before_transition (suspend)
+  # before_transition :on => :suspend
   def suspend_sites
     sites.map(&:suspend)
   end
   
-  # before_transition (unsuspend)
+  # after_transition :on => :suspend
+  def send_account_suspended_email
+    reason = if self.credit_card_expired?
+      :credit_card_expired
+    elsif self.invoices.failed.present?
+      :credit_card_charging_impossible
+    end
+    UserMailer.account_suspended(self, reason).deliver!
+  end
+  
+  # before_transition :on => :unsuspend
+  def clear_suspending_delayed_job_id
+    self.suspending_delayed_job_id = nil
+  end
   def unsuspend_sites
     sites.map(&:unsuspend)
+  end
+  
+  # after_transition :on => :unsuspend
+  def send_account_unsuspended_email
+    UserMailer.account_unsuspended(self).deliver!
   end
   
   # after_update

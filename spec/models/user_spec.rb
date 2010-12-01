@@ -6,8 +6,8 @@ require 'spec_helper'
 describe User do
   
   context "Factory" do
-    set(:user_from_factory) { Factory(:user) }
-    subject { user_from_factory }
+    before(:all) { @user = Factory(:user) }
+    subject { @user }
     
     its(:terms_and_conditions) { should be_true }
     its(:first_name)           { should == "John" }
@@ -22,9 +22,10 @@ describe User do
   end
   
   describe "Associations" do
-    set(:user_for_associations) { Factory(:user) }
-    subject { user_for_associations }
+    before(:all) { @user = Factory(:user) }
+    subject { @user }
     
+    it { should belong_to :suspending_delayed_job }
     it { should have_many :sites }
     it { should have_many :invoices }
   end
@@ -162,22 +163,21 @@ describe User do
   describe "State Machine" do
     let(:user) { Factory(:user) }
     
-    describe "initial state" do
+    describe "Initial State" do
       subject { user }
       it { should be_active }
     end
     
-    # ===========
-    # = suspend =
-    # ===========
-    describe "event(:suspend) { transition :active => :suspended }" do
+    describe "#suspend" do
       let(:site1) { Factory(:site, :user => user, :hostname => "rymai.com").tap { |s| s.update_attribute(:state, 'active') } }
       let(:site2) { Factory(:site, :user => user, :hostname => "octavez.com").tap { |s| s.update_attribute(:state, 'dev') } }
       
-      it "should set the state as :suspended from :active" do
-        user.should be_active
-        user.suspend
-        user.should be_suspended
+      context "from active state" do
+        it "should set user to suspended" do
+          user.should be_active
+          user.suspend
+          user.should be_suspended
+        end
       end
       
       describe "Callbacks" do
@@ -190,31 +190,50 @@ describe User do
             site2.reload.should be_dev
           end
         end
+        
+        describe "after_transition  :on => :suspend, :do => :send_account_suspended_email" do
+          it "should send an email to invoice.user" do
+            user
+            lambda { user.suspend }.should change(ActionMailer::Base.deliveries, :count).by(1)
+            ActionMailer::Base.deliveries.last.to.should == [user.email]
+          end
+        end
       end
     end
     
-    # =============
-    # = unsuspend =
-    # =============
-    describe "event(:unsuspend) { transition :suspended => :active }" do
+    describe "#unsuspend" do
       let(:site1) { Factory(:site, :user => user, :hostname => "rymai.com").tap { |s| s.update_attribute(:state, 'suspended') } }
       let(:site2) { Factory(:site, :user => user, :hostname => "octavez.com").tap { |s| s.update_attribute(:state, 'dev') } }
-      before(:each) { user.update_attribute(:state, 'suspended') }
+      before(:each) { user.state = 'suspended'; user.suspending_delayed_job_id = 1; user.save }
       
-      it "should set the state as :active from :suspended" do
-        user.should be_suspended
-        user.unsuspend
-        user.should be_active
+      context "from suspended state" do
+        it "should set the user to active" do
+          user.should be_suspended
+          user.unsuspend
+          user.should be_active
+        end
       end
       
       describe "Callbacks" do
-        describe "before_transition :on => :unsuspend, :do => :unsuspend_sites" do
+        describe "before_transition :on => :unsuspend, :do => [:clear_suspending_delayed_job_id, :unsuspend_sites]" do
           it "should suspend each user' site" do
             site1.reload.should be_suspended
             site2.reload.should be_dev
             user.unsuspend
             site1.reload.should be_active
             site2.reload.should be_dev
+          end
+          it "should clear suspending_delayed_job_id" do
+            user.suspending_delayed_job_id.should == 1
+            user.unsuspend
+            user.suspending_delayed_job_id.should be_nil
+          end
+        end
+        
+        describe "after_transition  :on => :unsuspend, :do => :send_account_unsuspended_email" do
+          it "should send an email to invoice.user" do
+            lambda { user.unsuspend }.should change(ActionMailer::Base.deliveries, :count).by(1)
+            ActionMailer::Base.deliveries.last.to.should == [user.email]
           end
         end
       end
@@ -270,38 +289,69 @@ describe User do
   
   describe "Class Methods" do
     
-    describe ".delay_suspend" do
-      before(:all) do
-        @user = Factory(:user)
+  end
+  
+  describe "Instance Methods" do
+    let(:user) { Factory(:user) }
+    
+    describe "#active?" do
+      it "should be active when suspended in order to allow login" do
+        user.suspend
+        user.should be_active
       end
-      subject { User.delay_suspend(@user.id) }
+    end
+    
+    describe "#delay_suspend_and_set_suspending_delayed_job_id" do
+      before(:all) { @user = Factory(:user) }
+      subject { @user.delay_suspend_and_set_suspending_delayed_job_id }
       
-      specify { lambda { subject }.should change(Delayed::Job.where(:handler.matches => "%suspend%"), :count).by(1) }
+      it "should delay suspend user" do
+        lambda { subject }.should change(Delayed::Job, :count).by(1)
+        Delayed::Job.last.name.should == "Class#suspend"
+      end
       
       it "should delay charging in Billing.days_before_suspend_user.days.from_now by default" do
         subject
         Delayed::Job.last.run_at.should be_within(3).of(Billing.days_before_suspend_user.days.from_now) # seconds of tolerance
       end
       
+      it "should set suspending_delayed_job_id" do
+        @user.reload.suspending_delayed_job_id.should be_nil
+        subject
+        @user.reload.suspending_delayed_job_id.should == Delayed::Job.last.id
+      end
+      
       context "giving a custom run_at" do
-        subject { User.delay_suspend(@user.id, Time.utc(2010,7,24)) }
-        
         specify do
-          subject
+          @user.delay_suspend_and_set_suspending_delayed_job_id(Time.utc(2010,7,24))
           Delayed::Job.last.run_at.should == Time.utc(2010,7,24)
         end
       end
+      
+      context "with an exception raised by User.delay.suspend" do
+        before(:each) do
+          User.should_receive(:delay).and_raise("Exception")
+          Notify.stub!(:send)
+        end
+        
+        specify { expect { subject }.to_not raise_error }
+        
+        it "should not delay suspend user" do
+          lambda { subject }.should_not change(Delayed::Job, :count)
+        end
+        it "should Notify of the exception" do
+          Notify.should_receive(:send)
+          subject
+        end
+        it "should not set suspending_delayed_job_id" do
+          @user.reload.suspending_delayed_job_id.should be_nil
+          subject
+          @user.reload.suspending_delayed_job_id.should be_nil
+        end
+      end
+      
     end
     
-  end
-  
-  describe "Instance Methods" do
-    let(:user) { Factory(:user) }
-    
-    it "should be active when suspended in order to allow login" do
-      user.suspend
-      user.should be_active
-    end
   end
   
 protected
@@ -326,7 +376,6 @@ protected
   end
   
 end
-
 
 
 # == Schema Information
