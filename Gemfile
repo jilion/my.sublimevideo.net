@@ -5,7 +5,7 @@ gem 'bundler',               '~> 1.0.7'
 # gem 'rails',                 '~> 3.0.2'
 gem 'rails',                 :git => 'git://github.com/thibaudgg/rails.git', :branch => 'spork' # 3.0.3
 gem 'rack',                  '~> 1.2.1'
-gem 'arel',                  '~> 2.0.5'
+gem 'arel',                  '2.0.4' # Use this version until count with left outer joins are fixed (https://gist.github.com/723780)
 gem 'pg',                    '~> 0.9.0'
 
 gem 'libxml-ruby',           '~> 1.1.3', :require => 'libxml'
@@ -26,7 +26,7 @@ gem 'prowl',                 '~> 0.1.3'
 # Pull request: https://github.com/Shopify/active_merchant/pull/64
 gem 'activemerchant',        :git => 'git://github.com/rymai/active_merchant.git' # with the fix for Ogone#parse
 gem 'voxel_hapi',            :git => 'git://github.com/thibaudgg/voxel_hapi.git', :branch => '1.9.2' # VoxCast CDN
-gem 'request-log-analyzer',  '~> 1.9.6', :require => 'request_log_analyzer'
+gem 'request-log-analyzer',  '~> 1.9.8', :require => 'request_log_analyzer'
 gem 'public_suffix_service', '~> 0.7.0'
 gem 'RedCloth',              '~> 4.2.3'
 gem 'liquid',                '~> 2.2.2'
@@ -65,7 +65,7 @@ end
 
 group :development, :test do
   gem 'silent-postgres'
-  gem 'rspec-rails',   '~> 2.2.0'
+  gem 'rspec-rails',   '~> 2.2.1'
   gem 'passenger',     '~> 3.0.0'
   gem 'timecop',       '~> 0.3.5'
   # gem 'awesome_print', '~> 0.3.1' # liquid problem
