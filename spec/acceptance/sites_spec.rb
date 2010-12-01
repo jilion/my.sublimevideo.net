@@ -37,7 +37,7 @@ feature "Sites" do
       page.should have_css('a.sort.hostname')
     end
     
-    scenario "pagination links displayed only if count of sites > Site.per_page", :focus => true do
+    scenario "pagination links displayed only if count of sites > Site.per_page" do
       Site.stub!(:per_page).and_return(1)
       create_site
       
@@ -68,9 +68,8 @@ feature "Sites" do
     current_url.should =~ %r(http://[^/]+/sites)
     page.should have_content('google.com')
     
-    # Delayed::Job.last.name.should == 'Site#activate'
     Delayed::Worker.new(:quiet => true).work_off
-    # 
+    
     site = @current_user.sites.last
     site.hostname.should == "google.com"
     site.loader.read.should include(site.token)

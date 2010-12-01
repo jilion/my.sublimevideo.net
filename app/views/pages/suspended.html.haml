@@ -9,9 +9,19 @@
     = link_to edit_credit_card_path do
       %strong= "Update your Credit Card"
       
-#unpaid_invoices
-  %h3.section_title= "Your Past Non-Charged Invoices"
-  = "You have to pay the following invoice(s) in order to see your account re-activated:"
-  %ul
-    - current_user.invoices.failed.each do |invoice|
-      %li= link_to "#{invoice_dates(invoice)} - #{charging_status(invoice)}", invoice_path(invoice)
+- failed_invoices = current_user.invoices.failed
+
+- if failed_invoices.empty?
+  = "Your account should be re-activated in a few minutes, we will send you an email."
+- else
+  #unpaid_invoices
+    %h3.section_title= "Your Past Non-Paid Invoices"
+    = "You have to pay the following invoice(s) in order to see your account re-activated:"
+    %ul
+      - failed_invoices.each do |invoice|
+        %li
+          = link_to "#{invoice_dates(invoice)} - #{charging_status(invoice)}", invoice_path(invoice)
+          - unless current_user.cc_expired?
+            = form_for invoice, :url => pay_invoice_path(invoice), :html => { :method => 'post', "data-password-protected" => true } do |f|
+              .entry.update
+                = f.submit "Pay the #{invoice_dates(invoice)} invoice"
