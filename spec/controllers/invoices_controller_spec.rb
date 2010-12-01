@@ -5,7 +5,7 @@ describe InvoicesController do
   context "with a logged in user" do
     before(:each) do
       sign_in :user, authenticated_user
-      @current_user.stub_chain(:invoices, :find_by_reference).with('QWE123TYU') { mock_invoice }
+      @current_user.stub_chain(:invoices, :find_by_reference).with('QWE123TYU') { mock_invoice(:id => 1) }
     end
     
     it "should respond with success on GET :usage" do
@@ -21,9 +21,15 @@ describe InvoicesController do
       get :show, :id => 'QWE123TYU'
       response.should be_success
     end
+    
+    it "should respond with redirect on POST :pay" do
+      Invoice.should_receive(:charge).with(1)
+      
+      post :pay, :id => 'QWE123TYU'
+      response.should redirect_to(page_path('suspended'))
+    end
   end
   
-  it_should_behave_like "redirect when connected as", '/login', [:guest], { :get => :usage, :get => :show }
-  it_should_behave_like "redirect when connected as", '/suspended', [[:user, { :suspended? => true }]], { :get => :usage, :get => :show }
+  it_should_behave_like "redirect when connected as", '/login', [:guest], { :get => [:usage, :show], :post => :pay }
   
 end

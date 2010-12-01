@@ -33,6 +33,7 @@ MySublimeVideo::Application.routes.draw do
   resource :card, :controller => 'credit_cards', :as => :credit_card, :only => [:edit, :update]
   resources :invoices, :only => :show do
     get :usage, :on => :collection
+    post :pay, :on => :member, :as => 'pay'
   end
   
   match ':page', :to => 'pages#show', :via => :get, :as => :page, :page => /terms|privacy|suspended/
