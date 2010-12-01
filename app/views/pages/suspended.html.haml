@@ -1,8 +1,17 @@
 = title_and_content_header("Your account is suspended")
 
-%ul
-  %li
+#credit_card_summary
+  %h3.section_title= "Your Credit Card Info"
+  - if current_user.cc_expired?
+    %span{ :style => "color:red;" }= "This Credit Card is expired, please update it."
+  %p{ :class => current_user.cc_type }
+    = raw "#{t("user.credit_card.type.#{current_user.cc_type}")} ending in #{content_tag(:strong, current_user.cc_last_digits)}"
     = link_to edit_credit_card_path do
       %strong= "Update your Credit Card"
-      %span
-        %em= "Please update your credit card to unsuspend your account"
+      
+#unpaid_invoices
+  %h3.section_title= "Your Past Non-Charged Invoices"
+  = "You have to pay the following invoice(s) in order to see your account re-activated:"
+  %ul
+    - current_user.invoices.failed.each do |invoice|
+      %li= link_to "#{invoice_dates(invoice)} - #{charging_status(invoice)}", invoice_path(invoice)

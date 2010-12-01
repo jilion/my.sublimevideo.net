@@ -24,12 +24,6 @@
   %body
     #global
       = render 'layouts/header'
-      
-      - if user_signed_in? && current_user.suspended?
-        #user_state.suspended
-          %p
-            = link_to "Your account is suspended, please do something!", page_path('suspended')
-            
       #main_wrap
         #main
           #rounded_corners_fix

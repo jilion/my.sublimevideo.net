@@ -165,22 +165,38 @@ feature "User session:" do
     page.should have_content('Documentation')
   end
   
-  scenario "login" do
-    create_user :user => {
-      :first_name => "John",
-      :last_name => "Doe",
-      :email => "john@doe.com",
-      :password => "123456"
-    }
+  feature "login" do
+    background do
+      create_user :user => {
+        :first_name => "John",
+        :last_name => "Doe",
+        :email => "john@doe.com",
+        :password => "123456"
+      }
+    end
     
-    visit "/login"
-    page.should_not have_content('John Doe')
-    fill_in "Email",     :with => "John@doe.com"
-    fill_in "Password",  :with => "123456"
-    click_button "Login"
+    scenario "not suspended user" do
+      visit "/login"
+      page.should_not have_content('John Doe')
+      fill_in "Email",     :with => "John@doe.com"
+      fill_in "Password",  :with => "123456"
+      click_button "Login"
+      
+      current_url.should =~ %r(^http://[^/]+/sites$)
+      page.should have_content "John Doe"
+    end
     
-    current_url.should =~ %r(^http://[^/]+/sites$)
-    page.should have_content "John Doe"
+    scenario "suspended user" do
+      @current_user.suspend
+      visit "/login"
+      page.should_not have_content('John Doe')
+      fill_in "Email",     :with => "John@doe.com"
+      fill_in "Password",  :with => "123456"
+      click_button "Login"
+      
+      current_url.should =~ %r(http://[^/]+/suspended)
+      page.should have_content "John Doe"
+    end
   end
   
   scenario "logout" do

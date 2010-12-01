@@ -86,7 +86,7 @@ class Site < ActiveRecord::Base
     state :beta # Pending, using in lib/one_time/site.rb
     
     state :active do
-      validates_presence_of :hostname
+      validates :hostname, :presence => true
     end
     
     event(:activate)   { transition :dev => :active }
@@ -107,61 +107,59 @@ class Site < ActiveRecord::Base
   
 protected
   
-  class << self
-    def referrer_match_hostname?(referrer, hostname, path = '', wildcard = false)
-      if path || wildcard
-        referrer =~ /^.+:\/\/(#{wildcard ? '.*' : 'www'}\.)?#{hostname}#{"(\:[0-9]+)?\/#{path}" if path.present?}.*$/
-      else
-        URI.parse(referrer).host =~ /^(www\.)?#{hostname}$/
+  def self.referrer_match_hostname?(referrer, hostname, path = '', wildcard = false)
+    if path || wildcard
+      referrer =~ /^.+:\/\/(#{wildcard ? '.*' : 'www'}\.)?#{hostname}#{"(\:[0-9]+)?\/#{path}" if path.present?}.*$/
+    else
+      URI.parse(referrer).host =~ /^(www\.)?#{hostname}$/
+    end
+  end
+  
+  # delayed method
+  def self.update_loader_and_license(site_id, options = {})
+    site = Site.find(site_id)
+    transaction do
+      begin
+        if options[:loader]
+          purge_loader = site.loader.present?
+          site.set_template("loader")
+          site.purge_template("loader") if purge_loader
+        end
+        if options[:license]
+          purge_license = site.license.present?
+          site.set_template("license")
+          site.purge_template("license") if purge_license
+        end
+        site.cdn_up_to_date = true
+        site.save!
+      rescue => ex
+        Notify.send(ex.message, :exception => ex)
       end
     end
-    
-    # delayed method
-    def update_loader_and_license(id, options = {})
-      site = Site.find(id)
-      transaction do
-        begin
-          if options[:loader]
-            purge_loader = site.loader.present?
-            site.set_template("loader")
-            site.purge_template("loader") if purge_loader
-          end
-          if options[:license]
-            purge_license = site.license.present?
-            site.set_template("license")
-            site.purge_template("license") if purge_license
-          end
-          site.cdn_up_to_date = true
-          site.save!
-        rescue => ex
-          Notify.send(ex.message, :exception => ex)
-        end
-      end
-    end
-    
-    # delayed method
-    def update_ranks(id)
-      site = Site.find(id)
-      ranks = PageRankr.ranks(site.hostname)
-      site.google_rank = ranks[:google]
-      site.alexa_rank  = ranks[:alexa]
-      site.save!
-    end
-    
-    # delayed method
-    def remove_loader_and_license(id)
-      site = Site.find(id)
-      transaction do
-        begin
-          site.remove_loader  = true
-          site.remove_license = true
-          site.cdn_up_to_date = false
-          site.purge_template("loader")
-          site.purge_template("license")
-          site.save!
-        rescue => ex
-          Notify.send(ex.message, :exception => ex)
-        end
+  end
+  
+  # delayed method
+  def self.update_ranks(site_id)
+    site = Site.find(site_id)
+    ranks = PageRankr.ranks(site.hostname)
+    site.google_rank = ranks[:google]
+    site.alexa_rank  = ranks[:alexa]
+    site.save!
+  end
+  
+  # delayed method
+  def self.remove_loader_and_license(site_id)
+    site = Site.find(site_id)
+    transaction do
+      begin
+        site.remove_loader  = true
+        site.remove_license = true
+        site.cdn_up_to_date = false
+        site.purge_template("loader")
+        site.purge_template("license")
+        site.save!
+      rescue => ex
+        Notify.send(ex.message, :exception => ex)
       end
     end
   end
@@ -254,7 +252,7 @@ public
     VoxcastCDN.purge("/#{mapping[name.to_sym]}/#{token}.js")
   end
   
-protected
+private
   
   # before_validation
   def set_user_attributes

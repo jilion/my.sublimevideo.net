@@ -37,7 +37,7 @@ feature "Sites" do
       page.should have_css('a.sort.hostname')
     end
     
-    scenario "pagination links displayed only if count of sites > Site.per_page" do
+    scenario "pagination links displayed only if count of sites > Site.per_page", :focus => true do
       Site.stub!(:per_page).and_return(1)
       create_site
       

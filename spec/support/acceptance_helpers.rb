@@ -16,8 +16,8 @@ module Spec
           user.confirm! unless options[:confirm] == false
           user.lock! if options[:locked] == true
           unless options[:without_cc] == true
-            user.attributes = { :cc_type => 'visa', :cc_expire_on => 2.years.from_now }
-            user.cc_last_digits = 123 # can't be mass-assigned
+            user.attributes = { :cc_type => options[:cc_type] || 'visa', :cc_expire_on => options[:cc_expire_on] || 2.years.from_now }
+            user.cc_last_digits = 1234 # can't be mass-assigned
             user.save(:validate => false)
           end
           user

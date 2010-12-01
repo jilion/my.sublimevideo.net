@@ -24,7 +24,9 @@ module InvoicesHelper
         "Not charged yet."
       end
     elsif invoice.paid?
-      "Charged on #{l(invoice.charged_at, :format => :minutes)}."
+      "Charged on #{l(invoice.paid_at, :format => :minutes)}."
+    elsif invoice.failed?
+      "Charging has failed on #{l(invoice.failed_at, :format => :minutes)} with the following error: \"#{invoice.last_error}\"."
     end
   end
   

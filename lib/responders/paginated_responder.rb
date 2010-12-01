@@ -28,7 +28,7 @@ module Responders
     end
     
     def set_instance_variable(klass)
-      controller.instance_variable_set "@#{controller.controller_name}", resource.paginate(:page => controller.request.params[:page], :per_page => klass.per_page)
+      controller.instance_variable_set "@#{controller.controller_name}", resource.paginate(:page => controller.request.params[:page] || 1, :per_page => klass.per_page)
     end
     
   end
