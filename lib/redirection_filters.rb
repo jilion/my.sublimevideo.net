@@ -1,7 +1,7 @@
 module RedirectionFilters
   
   def redirect_suspended_user
-    redirect_to page_path('suspended') if current_user.suspended?
+    redirect_to page_path('suspended') if current_user && current_user.suspended?
   end
   
   def redirect_wrong_password(resource)

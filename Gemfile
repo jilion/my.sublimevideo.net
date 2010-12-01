@@ -88,8 +88,7 @@ group :test do
   gem 'rb-fsevent',         '~> 0.3.9'
   gem 'guard',              :git => "git://github.com/guard/guard.git"
   gem 'guard-ego'
-  # gem 'guard-bundler'
-  gem 'guard-bundler',      :git => '/Users/remy/Development/Ruby/Gems/guard@guard-bundler'
+  gem 'guard-bundler'
   gem 'guard-passenger'
   gem 'guard-spork'
   gem 'guard-rspec'

@@ -1,11 +1,4 @@
 GIT
-  remote: /Users/remy/Development/Ruby/Gems/guard@guard-bundler
-  revision: 1f8ed76404ecc305698436f6b6a50887ba574d9e
-  specs:
-    guard-bundler (0.1.1)
-      guard (>= 0.2.2)
-
-GIT
   remote: git://github.com/guard/guard.git
   revision: 62f9cd53114f66ddf1561042cc9af354b1b6c4da
   specs:
@@ -191,6 +184,8 @@ GEM
       ruby-hmac
     formatador (0.0.16)
     growl (1.0.3)
+    guard-bundler (0.1.1)
+      guard (>= 0.2.2)
     guard-ego (0.0.1)
       guard (>= 0.2.1)
     guard-livereload (0.1.2)
@@ -355,7 +350,7 @@ DEPENDENCIES
   fog (~> 0.3.25)
   growl
   guard!
-  guard-bundler!
+  guard-bundler
   guard-ego
   guard-livereload
   guard-passenger
