@@ -7,16 +7,18 @@ module Spec
       end
       
       def create_user(options = {})
-        options[:confirm]    = options[:user].delete(:confirm) || options[:confirm]
-        options[:without_cc] = options[:user].delete(:without_cc) || options[:without_cc]
-        options[:locked]     = options[:user].delete(:locked) || options[:locked]
+        options[:confirm]      = options[:user].delete(:confirm) || options[:confirm]
+        options[:without_cc]   = options[:user].delete(:without_cc) || options[:without_cc]
+        options[:locked]       = options[:user].delete(:locked) || options[:locked]
+        options[:cc_type]      = options[:user].delete(:cc_type) || options[:cc_type] || 'visa'
+        options[:cc_expire_on] = options[:user].delete(:cc_expire_on) || options[:cc_expire_on] || 2.years.from_now
         
         @current_user ||= begin
           user = Factory(:user, options[:user] || {})
           user.confirm! unless options[:confirm] == false
           user.lock! if options[:locked] == true
           unless options[:without_cc] == true
-            user.attributes = { :cc_type => options[:cc_type] || 'visa', :cc_expire_on => options[:cc_expire_on] || 2.years.from_now }
+            user.attributes = { :cc_type => options[:cc_type], :cc_expire_on => options[:cc_expire_on] }
             user.cc_last_digits = 1234 # can't be mass-assigned
             user.save(:validate => false)
           end
