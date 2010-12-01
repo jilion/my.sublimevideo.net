@@ -11,7 +11,8 @@ class SitesController < ApplicationController
   
   # GET /sites
   def index
-    respond_with(@sites = apply_scopes(current_user.sites.not_archived.with_plan.with_addons.by_date))
+    @sites = apply_scopes(current_user.sites.not_archived.with_plan.with_addons.by_date)
+    respond_with(@sites)
   end
   
   # GET /sites/1/code
@@ -24,7 +25,8 @@ class SitesController < ApplicationController
   
   # GET /sites/new
   def new
-    respond_with(@site = current_user.sites.build((params[:site] || {}).reverse_merge(:dev_hostnames => Site::DEFAULT_DEV_DOMAINS)))
+    @site = current_user.sites.build((params[:site] || {}).reverse_merge(:dev_hostnames => Site::DEFAULT_DEV_DOMAINS))
+    respond_with(@site)
   end
   
   # GET /sites/1/edit
@@ -34,7 +36,8 @@ class SitesController < ApplicationController
   
   # POST /sites
   def create
-    respond_with(@site = current_user.sites.create(params[:site]), :location => sites_path)
+    @site = current_user.sites.create(params[:site])
+    respond_with(@site, :location => sites_path)
   end
   
   # PUT /sites/1
@@ -57,7 +60,8 @@ class SitesController < ApplicationController
   
   # GET /sites/1/state
   def state
-    respond_with(@site = current_user.sites.find(params[:id])) do |format|
+    @site = current_user.sites.find(params[:id])
+    respond_with(@site) do |format|
       format.js   { head :ok unless @site.cdn_up_to_date? }
       format.html { redirect_to sites_path }
     end
