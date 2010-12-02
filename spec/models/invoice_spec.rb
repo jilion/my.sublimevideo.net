@@ -100,7 +100,7 @@ describe Invoice do
           
           context "while attempts < Billing.max_charging_attempts" do
             (1...Billing.max_charging_attempts).each do |attempts|
-              it "should set unpaid invoice to unpaid if it's the attempt ##{attempts}" do
+              it "should set invoice to unpaid if it's the attempt ##{attempts}" do
                 subject.attempts = attempts
                 subject.fail
                 subject.should be_unpaid
@@ -110,11 +110,23 @@ describe Invoice do
           
           context "when attempts >= Billing.max_charging_attempts" do
             (Billing.max_charging_attempts..Billing.max_charging_attempts+1).each do |attempts|
-              it "should set unpaid invoice to failed if it's the attempt ##{attempts}" do
+              it "should set invoice to failed if it's the attempt ##{attempts}" do
                 subject.attempts = attempts
                 subject.fail
                 subject.should be_failed
               end
+            end
+          end
+        end
+        
+        context "from failed state" do
+          before(:each) { subject.reload.update_attribute(:state, 'failed') }
+          
+          context "while attempts < Billing.max_charging_attempts" do
+            it "should set invoice to failed " do
+              subject.should be_failed
+              subject.fail
+              subject.should be_failed
             end
           end
         end
@@ -147,7 +159,7 @@ describe Invoice do
         end
       end
       
-      describe "before_transition [:open, :unpaid] => :unpaid, :do => [:delay_charge_and_set_charging_delayed_job_id, :increment_attempts]" do
+      describe "before_transition [:open, :unpaid] => :unpaid, :do => [:delay_charge_and_set_charging_delayed_job_id]" do
         context "from open" do
           before(:each) { subject.reload.update_attribute(:state, 'open') }
           
@@ -156,8 +168,8 @@ describe Invoice do
             Delayed::Job.last.name.should == "Class#charge"
           end
           
-          it "should increments attempts" do
-            lambda { subject.complete }.should change(subject, :attempts).by(1)
+          it "should not increments attempts until charge" do
+            lambda { subject.complete }.should_not change(subject, :attempts)
           end
         end
         
@@ -169,8 +181,8 @@ describe Invoice do
             Delayed::Job.last.name.should == "Class#charge"
           end
           
-          it "should increments attempts" do
-            lambda { subject.fail }.should change(subject, :attempts).by(1)
+          it "should not increments attempts until charge" do
+            lambda { subject.complete }.should_not change(subject, :attempts)
           end
         end
       end
@@ -186,7 +198,7 @@ describe Invoice do
         end
       end
       
-      describe "before_transition :unpaid => :failed, :do => [:set_failed_at, :clear_charging_delayed_job_id, :delay_suspend_user]" do
+      describe "before_transition any => :failed, :do => [:set_failed_at, :clear_charging_delayed_job_id]" do
         context "from unpaid" do
           before(:each) { subject.reload.update_attributes(:state => 'unpaid', :attempts => Billing.max_charging_attempts, :charging_delayed_job_id => 1) }
           
@@ -200,6 +212,28 @@ describe Invoice do
             subject.fail
             subject.charging_delayed_job_id.should be_nil
           end
+        end
+        
+        context "from failed" do
+          before(:each) { subject.reload.update_attributes(:state => 'failed', :charging_delayed_job_id => 1) }
+          
+          it "should set failed_at" do
+            subject.failed_at.should be_nil
+            subject.fail
+            subject.failed_at.should be_present
+          end
+          it "should clear charging_delayed_job_id" do
+            subject.charging_delayed_job_id.should be_present
+            subject.fail
+            subject.charging_delayed_job_id.should be_nil
+          end
+        end
+      end
+      
+      describe "before_transition :unpaid => :failed, :do => :delay_suspend_user" do
+        context "from unpaid" do
+          before(:each) { subject.reload.update_attributes(:state => 'unpaid', :attempts => Billing.max_charging_attempts, :charging_delayed_job_id => 1) }
+          
           it "should delay suspend user in Billing.days_before_suspend_user days" do
             lambda { subject.fail }.should change(Delayed::Job, :count).by(1)
             Delayed::Job.last.name.should == "Class#suspend"
@@ -290,7 +324,7 @@ describe Invoice do
       
     end # Transitions
     
-  end
+  end # State Machine
   
   describe "Class Methods" do
     
@@ -316,11 +350,13 @@ describe Invoice do
         subject { Invoice.build(:user => @user, :started_at => Time.utc(2010,2).beginning_of_month, :ended_at => Time.utc(2010,2).end_of_month) }
         
         specify { subject.invoice_items.size.should == 1 + 2 + 1 } # 1 plan, 2 addon lifetimes, 1 overage
-        specify { subject.invoice_items[0].item.should == @plan1 }
-        specify { subject.invoice_items[1].item.should == @plan1 }
-        specify { subject.invoice_items[2].item.should == @addon1 }
-        specify { subject.invoice_items[3].item.should == @addon2 }
-        
+        specify do
+          invoice_items_items = subject.invoice_items.map(&:item)
+          invoice_items_items.should include(@plan1)
+          invoice_items_items.should include(@plan1)
+          invoice_items_items.should include(@addon1)
+          invoice_items_items.should include(@addon2)
+        end
         specify { subject.invoice_items.all? { |ii| ii.site == @site }.should be_true }
         specify { subject.invoice_items.all? { |ii| ii.invoice == subject }.should be_true }
         
@@ -346,10 +382,13 @@ describe Invoice do
         subject { Invoice.build(:user => @user, :started_at => Time.utc(2010,2).beginning_of_month, :ended_at => Time.utc(2010,2).end_of_month) }
         
         specify { subject.invoice_items.size.should == 1 + 2 + 1 } # 1 plan, 2 addon lifetimes, 1 overage
-        specify { subject.invoice_items[0].item.should == @plan1 }
-        specify { subject.invoice_items[1].item.should == @plan1 }
-        specify { subject.invoice_items[2].item.should == @addon1 }
-        specify { subject.invoice_items[3].item.should == @addon2 }
+        specify do
+          invoice_items_items = subject.invoice_items.map(&:item)
+          invoice_items_items.should include(@plan1)
+          invoice_items_items.should include(@plan1)
+          invoice_items_items.should include(@addon1)
+          invoice_items_items.should include(@addon2)
+        end
         specify { subject.invoice_items.all? { |ii| ii.site == @site.version_at(Time.utc(2010,2).end_of_month) }.should be_true }
         specify { subject.invoice_items.all? { |ii| ii.invoice == subject }.should be_true }
         
@@ -363,7 +402,7 @@ describe Invoice do
         its(:failed_at)            { should be_nil }
         it { should be_open }
       end
-    end
+    end # .build
     
     describe ".complete_invoices_for_billable_users" do
       before(:all) do
@@ -440,7 +479,7 @@ describe Invoice do
         subject
         Invoice.all.all? { |invoice| invoice.completed_at.present? }.should be_true
       end
-    end
+    end # .complete_invoices_for_billable_users
     
     describe ".charge" do
       before(:all) do
@@ -449,7 +488,7 @@ describe Invoice do
       end
       subject { Invoice.charge(@invoice.id) }
       
-      describe "Ogone call" do
+      describe "common logic" do
         use_vcr_cassette "ogone_visa_payment_2000_alias"
         before(:each) do
           @invoice.reload.update_attributes(:reference => "1234")
@@ -495,13 +534,16 @@ describe Invoice do
             subject
             @invoice.reload.paid_at.should be_present
           end
+          it "should increments attempts" do
+            lambda { subject; @invoice.reload }.should change(@invoice, :attempts).by(1)
+          end
         end
       end
       
       context "with a failing purchase" do
         use_vcr_cassette "ogone_visa_payment_9999"
         
-        (1...Billing.max_charging_attempts).each do |attempts|
+        (0...Billing.max_charging_attempts).each do |attempts|
           context "with only #{attempts} attempt(s) failed" do
             before(:each) do
               @invoice.reload.update_attributes(:attempts => attempts, :charging_delayed_job_id => 1)
@@ -537,7 +579,7 @@ describe Invoice do
                 end
                 it "should delay charging in 2**#{attempts} hours " do
                   subject
-                  Delayed::Job.last.run_at.should be_within(3).of((2**attempts).hours.from_now) # seconds of tolerance
+                  Delayed::Job.last.run_at.should be_within(3).of((2**@invoice.reload.attempts).hours.from_now) # seconds of tolerance
                 end
                 it "should set charging_delayed_job_id to the new delayed job created" do
                   @invoice.charging_delayed_job_id.should == 1
@@ -585,6 +627,9 @@ describe Invoice do
               subject
               @invoice.reload.charging_delayed_job_id.should be_nil
             end
+            it "should increments attempts" do
+              lambda { subject; @invoice.reload }.should change(@invoice, :attempts).by(1)
+            end
             describe "delay user.suspend" do
               it "should delay suspend user" do
                 lambda { subject }.should change(Delayed::Job, :count).by(1)
@@ -601,7 +646,7 @@ describe Invoice do
               specify { lambda { subject }.should change(ActionMailer::Base.deliveries, :count).by(1) }
               specify do
                 subject
-                ActionMailer::Base.deliveries.map(&:to).should == [[@user.email]]
+                ActionMailer::Base.deliveries.last.to.should == [@user.email]
               end
             end
           end
@@ -611,47 +656,71 @@ describe Invoice do
           before(:each) do
             Ogone.should_receive(:purchase).and_raise("Exception")
             Notify.stub!(:send)
+            @invoice.reload
           end
           
           specify { expect { subject }.to_not raise_error }
-          
           it "should Notify of the exception" do
             Notify.should_receive(:send)
             subject
           end
-          
           it "should fail the invoice" do
             Invoice.stub!(:find) { @invoice }
             @invoice.should_receive(:fail)
             subject
           end
+          it "should increments attempts" do
+            lambda { subject; @invoice.reload }.should change(@invoice, :attempts).by(1)
+          end
         end
       end
       
       context "with a already charged invoice" do
-        use_vcr_cassette "ogone_visa_payment_2000_already_processed"
-        before(:each) do
-          @invoice.reload.update_attribute(:charging_delayed_job_id, 1)
+        context "with paid state" do
+          before(:each) do
+            @invoice.reload.update_attribute(:state, 'paid')
+          end
+          
+          specify { Ogone.should_not_receive(:purchase) }
+          specify do
+            @invoice.should_not_receive(:succeed)
+            @invoice.should_not_receive(:fail)
+            subject
+          end
+          it "should not increments attempts" do
+            lambda { subject; @invoice.reload }.should_not change(@invoice, :attempts)
+          end
         end
         
-        it "should set paid_at to Time.now.utc" do
-          @invoice.paid_at.should be_nil
-          subject
-          @invoice.reload.paid_at.should be_present
-        end
-        it "should clear charging_delayed_job_id" do
-          @invoice.charging_delayed_job_id.should == 1
-          subject
-          @invoice.reload.charging_delayed_job_id.should be_nil
-        end
-        it "should set state to 'paid'" do
-          @invoice.should be_unpaid
-          subject
-          @invoice.reload.should be_paid
+        context "but invalid state (not paid)" do
+          use_vcr_cassette "ogone_visa_payment_2000_already_processed"
+          before(:each) do
+            @invoice.reload.update_attribute(:charging_delayed_job_id, 1)
+          end
+          
+          it "should set paid_at to Time.now.utc" do
+            @invoice.paid_at.should be_nil
+            subject
+            @invoice.reload.paid_at.should be_present
+          end
+          it "should clear charging_delayed_job_id" do
+            @invoice.charging_delayed_job_id.should == 1
+            subject
+            @invoice.reload.charging_delayed_job_id.should be_nil
+          end
+          it "should set state to 'paid'" do
+            @invoice.should be_unpaid
+            subject
+            @invoice.reload.should be_paid
+          end
+          it "should increments attempts" do
+            lambda { subject; @invoice.reload }.should change(@invoice, :attempts).by(1)
+          end
         end
       end
       
-    end
+    end # .charge
+    
   end # Class Methods
   
   describe "#minutes_in_months" do
@@ -669,7 +738,7 @@ describe Invoice do
         subject.minutes_in_months.should == (28+31) * 24 * 60
       end
     end
-  end
+  end # #minutes_in_months
   
 end
 

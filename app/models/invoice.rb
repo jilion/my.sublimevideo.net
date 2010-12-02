@@ -43,16 +43,18 @@ class Invoice < ActiveRecord::Base
     event(:fail) do
       transition :unpaid => :unpaid,
                  :if => lambda { |invoice| invoice.attempts < Billing.max_charging_attempts }
-      transition :unpaid => :failed
+      transition [:unpaid, :failed] => :failed
     end
     event(:succeed) { transition [:unpaid, :failed] => :paid }
     
     before_transition :on => :complete, :do => :set_completed_at
+    before_transition :on => [:fail, :succeed], :do => :increment_attempts
     
-    before_transition [:open, :unpaid] => :unpaid, :do => [:delay_charge_and_set_charging_delayed_job_id, :increment_attempts]
+    before_transition [:open, :unpaid] => :unpaid, :do => [:delay_charge_and_set_charging_delayed_job_id]
     after_transition  :open => :unpaid, :do => :send_invoice_completed_email
     
-    before_transition :unpaid => :failed, :do => [:set_failed_at, :clear_charging_delayed_job_id, :delay_suspend_user]
+    before_transition any => :failed, :do => [:set_failed_at, :clear_charging_delayed_job_id]
+    before_transition :unpaid => :failed, :do => :delay_suspend_user
     after_transition  :unpaid => :failed, :do => :send_payment_failed_email
     
     before_transition [:open, :unpaid, :failed] => :paid, :do => [:clear_charging_delayed_job_id, :set_paid_at]
@@ -85,6 +87,7 @@ class Invoice < ActiveRecord::Base
   
   def self.charge(invoice_id)
     invoice = find(invoice_id)
+    return if invoice.paid?
     
     @payment = begin
       Ogone.purchase(invoice.amount, invoice.user.credit_card_alias, :order_id => invoice.reference, :currency => 'USD')
@@ -161,11 +164,6 @@ private
     self.charging_delayed_job_id = delayed_job.id
   end
   
-  # before_transition [:open, :unpaid] => :unpaid
-  def increment_attempts
-    self.attempts += 1
-  end
-  
   # after_transition :open => :unpaid
   def send_invoice_completed_email
     InvoiceMailer.invoice_completed(self).deliver!
@@ -174,6 +172,11 @@ private
   # before_transition :on => :complete
   def set_completed_at
     self.completed_at = Time.now.utc
+  end
+  
+  # before_transition :on => [:fail, :succeed]
+  def increment_attempts
+    self.attempts += 1
   end
   
   # before_transition :unpaid => :failed, before_transition :on => :succeed
