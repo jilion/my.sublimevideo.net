@@ -146,16 +146,22 @@ describe User::CreditCard do
       
       context "with no cc_expire_on" do
         before(:each) { user }
+        
+        specify { user.cc_expire_on.should be_nil }
         specify { user.should_not be_credit_card_expired }
       end
       
       context "with a credit card not expired" do
         before(:each) { user.update_attributes(valid_attributes.merge(:cc_expire_on => 1.year.from_now)) }
+        
+        specify { user.cc_expire_on.should == 1.year.from_now.end_of_month.to_date }
         specify { user.should_not be_credit_card_expired }
       end
       
       context "with a credit card expired" do
-        before(:each) { user.update_attributes(valid_attributes.merge(:cc_expire_on => 1.day.ago)) }
+        before(:each) { user.update_attributes(valid_attributes.merge(:cc_expire_on => 1.month.ago)) }
+        
+        specify { user.cc_expire_on.should == 1.month.ago.end_of_month.to_date }
         specify { user.should be_credit_card_expired }
       end
     end
