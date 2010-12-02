@@ -6,16 +6,16 @@ gem 'bundler',               '~> 1.0.7'
 gem 'rails',                 :git => 'git://github.com/thibaudgg/rails.git', :branch => 'spork' # 3.0.3
 gem 'rack',                  '~> 1.2.1'
 gem 'arel',                  '2.0.4' # Use this version until count with left outer joins are fixed (https://gist.github.com/723780)
-gem 'pg',                    '~> 0.9.0'
+gem 'pg',                    '~> 0.10.0'
 
 gem 'libxml-ruby',           '~> 1.1.3', :require => 'libxml'
 
-gem 'i18n',                  '~> 0.4.1'
+gem 'i18n',                  '~> 0.5.0'
 gem 'haml',                  '~> 3.0.24'
 gem 'state_machine',         '~> 0.9.4'
 gem 'responders',            '~> 0.6.2'
 gem 'uniquify',              '~> 0.1.0'
-gem 'delayed_job',           '~> 2.1.1'
+gem 'delayed_job',           '2.1.1' # 2.1.2 is failing !!!!!
 gem 'will_paginate',         '~> 3.0.pre2'
 gem 'has_scope',             :git => 'git://github.com/rymai/has_scope.git'
 gem 'jammit',                '~> 0.5.4'
@@ -39,8 +39,8 @@ gem 'devise_invitable',      :git => 'git://github.com/rymai/devise_invitable.gi
 gem 'dalli',                 '~> 1.0.0'
 
 gem 'aws',                   '~> 2.3.26'
-gem 'fog',                   '~> 0.3.25' # for carrierwave 0.5 final
-gem 'carrierwave',           '~> 0.5.0'
+gem 'fog',                   '0.3.26'
+gem 'carrierwave',           '~> 0.5.1'
 
 gem 'bson_ext',              '~> 1.1.2'
 gem 'mongo',                 '~> 1.1.2'
@@ -76,7 +76,7 @@ group :development do
   gem 'annotate',      '~> 2.4.0'
   gem 'wirble',        '~> 0.1.3'
   gem 'ruby-graphviz', :require => 'graphviz'
-  gem 'heroku',        '~> 1.14.4'
+  gem 'heroku',        '~> 1.14.6'
   gem 'heroku_tasks',  '~> 0.1.4'
   gem 'taps',          '~> 0.3.14' # heroku db pull/push
   gem 'silent-postgres'
