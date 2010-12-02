@@ -42,8 +42,8 @@ gem 'aws',                   '~> 2.3.26'
 gem 'fog',                   '0.3.26'
 gem 'carrierwave',           '~> 0.5.1'
 
-gem 'bson_ext',              '~> 1.1.2'
-gem 'mongo',                 '~> 1.1.2'
+gem 'bson_ext',              '~> 1.1.4'
+gem 'mongo',                 '~> 1.1.4'
 # gem 'mongoid',               '~> 2.0.0.beta.20'
 gem 'mongoid',               :git => 'git://github.com/thibaudgg/mongoid.git', :branch => 'spork' # 2.0.0.beta.20
 

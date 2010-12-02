@@ -335,7 +335,7 @@ DEPENDENCIES
   arel (= 2.0.4)
   array_stats (~> 0.6.0)
   aws (~> 2.3.26)
-  bson_ext (~> 1.1.2)
+  bson_ext (~> 1.1.4)
   bundler (~> 1.0.7)
   capybara (~> 0.4.0)
   carrierwave (~> 0.5.1)
@@ -366,7 +366,7 @@ DEPENDENCIES
   libxml-ruby (~> 1.1.3)
   liquid (~> 2.2.2)
   meta_where (~> 0.9.9.2)
-  mongo (~> 1.1.2)
+  mongo (~> 1.1.4)
   mongoid!
   paper_trail (~> 1.6.4)
   passenger (~> 3.0.0)
