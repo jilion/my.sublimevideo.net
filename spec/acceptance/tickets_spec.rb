@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 feature "Feedback actions:" do
-  
+  before(:all) { @worker = Delayed::Worker.new }
   background do
     @current_user = sign_in_as :user
     visit "/feedback"
@@ -21,7 +21,7 @@ feature "Feedback actions:" do
     page.should have_content "Your message has been submitted."
     
     Delayed::Job.last.name.should == 'Ticket#post_ticket'
-    VCR.use_cassette("ticket/post_ticket") { Delayed::Worker.new(:quiet => true).work_off }
+    VCR.use_cassette("ticket/post_ticket") { @worker.work_off }
     Delayed::Job.last.should be_nil
     @current_user.reload.zendesk_id.should be_present
   end

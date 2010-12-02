@@ -4,6 +4,7 @@ require 'spec_helper'
 # after refactoring:  11.06s
 # 1.67x faster
 describe User do
+  before(:all) { @worker = Delayed::Worker.new }
   
   context "Factory" do
     before(:all) { @user = Factory(:user) }
@@ -269,7 +270,7 @@ describe User do
         user.zendesk_id = 15483194
         user.email      = "new@email.com"
         user.save
-        VCR.use_cassette("user/update_email_on_zendesk") { Delayed::Worker.new(:quiet => true).work_off }
+        VCR.use_cassette("user/update_email_on_zendesk") { @worker.work_off }
         Delayed::Job.last.should be_nil
         VCR.use_cassette("user/email_on_zendesk_after_update") do
           JSON.parse(Zendesk.get("/users/15483194/user_identities.json").body).select { |h| h["identity_type"] == "email" }.map { |h| h["value"] }.should include("new@email.com")

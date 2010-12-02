@@ -2,10 +2,12 @@
 require 'spec_helper'
 
 describe Site do
+  before(:all) { @worker = Delayed::Worker.new }
+  
   # 3.6s
-  context "From factory" do
-    set(:site_from_factory) { Factory(:site) }
-    subject { site_from_factory }
+  context "Factory" do
+    before(:all) { @site = Factory(:site) }
+    subject { @site }
     
     its(:user)            { should be_present }
     its(:plan)            { should be_present }
@@ -26,8 +28,8 @@ describe Site do
   
   # 3.2s
   describe "Associations" do
-    set(:site_for_associations) { Factory(:site) }
-    subject { site_for_associations }
+    before(:all) { @site = Factory(:site) }
+    subject { @site }
     
     it { should belong_to :user }
     it { should belong_to :plan }
@@ -105,7 +107,7 @@ describe Site do
   end
   
   # 17.3s
-  describe "Attributes Accessors, " do
+  describe "Attributes Accessors" do
     describe "hostname=" do
       %w[ÉCOLE ÉCOLE.fr ÜPPER.de ASDASD.COM 124.123.151.123 mIx3Dd0M4iN.CoM].each do |host|
         it "should downcase hostname: #{host}" do
@@ -207,13 +209,13 @@ describe Site do
   end
   
   # 17.3s
-  describe "State Machine, " do
+  describe "State Machine" do
     before(:each) { VoxcastCDN.stub(:purge) }
     
     describe "activate" do
       subject do
         site = Factory(:site, :hostname => "jilion.com", :extra_hostnames => "jilion.staging.com, jilion.org")
-        Delayed::Worker.new(:quiet => true).work_off
+        @worker.work_off
         site
       end
       
@@ -226,7 +228,7 @@ describe Site do
       it "should update license file" do
         old_license_content = subject.license.read
         subject.activate.should be_true
-        Delayed::Worker.new(:quiet => true).work_off
+        @worker.work_off
         subject.reload.license.read.should_not == old_license_content
       end
       
@@ -234,7 +236,7 @@ describe Site do
         subject.license.read.should be_nil
         subject.license.read.should be_nil
         subject.activate.should be_true
-        Delayed::Worker.new(:quiet => true).work_off
+        @worker.work_off
         subject.reload.license.read.should include("jilion.com")
         subject.license.read.should include("jilion.staging.com")
         subject.license.read.should include("jilion.org")
@@ -244,14 +246,14 @@ describe Site do
         VoxcastCDN.should_receive(:purge).with("/js/#{subject.token}.js")
         VoxcastCDN.should_receive(:purge).with("/l/#{subject.token}.js")
         subject.activate.should be_true
-        Delayed::Worker.new(:quiet => true).work_off
+        @worker.work_off
       end
     end
     
-    context "with an activated site, " do
+    context "with an activated site" do
       subject do
         site = Factory(:site).tap { |s| s.activate }
-        Delayed::Worker.new(:quiet => true).work_off
+        @worker.work_off
         site
       end
       
@@ -260,7 +262,7 @@ describe Site do
           VoxcastCDN.should_receive(:purge).with("/js/#{subject.token}.js")
           VoxcastCDN.should_receive(:purge).with("/l/#{subject.token}.js")
           subject.suspend
-          Delayed::Worker.new(:quiet => true).work_off
+          @worker.work_off
           subject.reload.loader.should_not be_present
           subject.license.should_not be_present
         end
@@ -271,12 +273,12 @@ describe Site do
           VoxcastCDN.should_receive(:purge).with("/js/#{subject.token}.js")
           VoxcastCDN.should_receive(:purge).with("/l/#{subject.token}.js")
           subject.suspend
-          Delayed::Worker.new(:quiet => true).work_off
+          @worker.work_off
           subject.reload.loader.should_not be_present
           subject.license.should_not be_present
           
           subject.unsuspend
-          Delayed::Worker.new(:quiet => true).work_off
+          @worker.work_off
           subject.reload.loader.should be_present
           subject.license.should be_present
         end
@@ -287,7 +289,7 @@ describe Site do
           VoxcastCDN.should_receive(:purge).with("/js/#{subject.token}.js")
           VoxcastCDN.should_receive(:purge).with("/l/#{subject.token}.js")
           subject.archive
-          Delayed::Worker.new(:quiet => true).work_off
+          @worker.work_off
           subject.reload.loader.should_not be_present
           subject.license.should_not be_present
           subject.archived_at.should be_present
@@ -297,7 +299,7 @@ describe Site do
   end
   
   # 3.5s
-  describe "Versioning, " do
+  describe "Versioning" do
     it "should work!" do
       with_versioning do
         site = Factory(:site)
@@ -310,7 +312,7 @@ describe Site do
   end
   
   # TODO 64.3s
-  describe "Callbacks, " do
+  describe "Callbacks" do
     describe "before_validation" do
       it "should set user_attributes" do
         user = Factory(:user, :first_name => "Bob")
@@ -354,7 +356,7 @@ describe Site do
           subject.loader.read.should be_nil
           subject.license.read.should be_nil
           subject.save
-          Delayed::Worker.new(:quiet => true).work_off
+          @worker.work_off
           subject.reload.loader.read.should be_present
           subject.license.read.should be_present
         end
@@ -362,14 +364,14 @@ describe Site do
         it "should set cdn_up_to_date to true" do
           subject.cdn_up_to_date.should be_false
           subject.save
-          Delayed::Worker.new(:quiet => true).work_off
+          @worker.work_off
           subject.reload.cdn_up_to_date.should be_true
         end
         
         it "should not purge loader or license file" do
           VoxcastCDN.should_not_receive(:purge)
           subject.save
-          Delayed::Worker.new(:quiet => true).work_off
+          @worker.work_off
         end
       end
       
@@ -390,7 +392,7 @@ describe Site do
             describe "#{attribute} has changed" do
               subject do
                 site = Factory(:site, :plan => plan, :hostname => "jilion.com", :extra_hostnames => "staging.jilion.com", :dev_hostnames => "jilion.local", :path => "yo", :wildcard => false, :addon_ids => [1], :state => 'dev')
-                Delayed::Worker.new(:quiet => true).work_off
+                @worker.work_off
                 site.reload
               end
               
@@ -403,7 +405,7 @@ describe Site do
               it "should update license content with dev_hostnames only when site is dev" do
                 old_license_content = subject.license.read
                 subject.send("#{attribute}=", value)
-                subject.save && Delayed::Worker.new(:quiet => true).work_off
+                subject.save && @worker.work_off
                 
                 subject.reload.should be_dev
                 if attribute == :dev_hostnames
@@ -418,7 +420,7 @@ describe Site do
               it "should update license content with #{attribute} value when site is active" do
                 old_license_content = subject.license.read
                 subject.send("#{attribute}=", value)
-                subject.activate && Delayed::Worker.new(:quiet => true).work_off
+                subject.activate && @worker.work_off
                 
                 subject.reload.should be_active
                 subject.license.read.should_not == old_license_content
@@ -437,7 +439,7 @@ describe Site do
               it "should purge license on CDN" do
                 VoxcastCDN.should_receive(:purge).with("/l/#{subject.token}.js")
                 subject.update_attribute(attribute, value)
-                Delayed::Worker.new(:quiet => true).work_off
+                @worker.work_off
               end
             end
           end
@@ -447,7 +449,7 @@ describe Site do
           describe "player_mode has changed" do
             subject do
               site = Factory(:site, :player_mode => 'dev')
-              Delayed::Worker.new(:quiet => true).work_off
+              @worker.work_off
               site.reload
             end
             
@@ -460,14 +462,14 @@ describe Site do
             it "should update loader content" do
               old_loader_content = subject.loader.read
               subject.update_attribute(:player_mode, 'beta')
-              Delayed::Worker.new(:quiet => true).work_off
+              @worker.work_off
               subject.reload.loader.read.should_not == old_loader_content
             end
             
             it "should purge loader on CDN" do
               VoxcastCDN.should_receive(:purge).with("/js/#{subject.token}.js")
               subject.update_attribute(:player_mode, 'beta')
-              Delayed::Worker.new(:quiet => true).work_off
+              @worker.work_off
             end
           end
         end
@@ -485,7 +487,7 @@ describe Site do
         site = Factory(:site, :hostname => 'sublimevideo.net')
         Timecop.return
         VCR.use_cassette('sites/ranks') do
-          Delayed::Worker.new(:quiet => true).work_off
+          @worker.work_off
         end
         site.reload.google_rank.should == 0
         site.alexa_rank.should  == 108330
@@ -494,7 +496,7 @@ describe Site do
   end
   
   # 26.7s
-  describe "Instance methods, " do
+  describe "Instance Methods" do
     describe "settings_changed?" do
       subject { Factory(:site) }
       
@@ -586,11 +588,11 @@ describe Site do
             Timecop.travel(1.day.ago)
             site = Factory(:site, :hostname => "jilion.com", :extra_hostnames => 'jilion.org, jilion.net', :dev_hostnames => "localhost, 127.0.0.1")
             site.activate
-            Delayed::Worker.new(:quiet => true).work_off
+            @worker.work_off
             Timecop.return
             site.reload
             site.update_attributes(:hostname => "jilion.net", :extra_hostnames => 'jilion.org, jilion.com', :dev_hostnames => "jilion.local, localhost, 127.0.0.1")
-            Delayed::Worker.new(:quiet => true).work_off
+            @worker.work_off
             site
           end
         end
@@ -747,8 +749,6 @@ describe Site do
     end
   end
 end
-
-
 
 
 # == Schema Information

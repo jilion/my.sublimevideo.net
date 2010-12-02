@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 feature "Sites" do
-  # fixtures :plans, :addons
   before(:all) do
+    @worker = Delayed::Worker.new
     # move this somewhere else and DRY it with the populate
     plans = [
       { :name => "perso",      :player_hits => 3000,   :price => 2990, :overage_price => 299 },
@@ -68,7 +68,7 @@ feature "Sites" do
     current_url.should =~ %r(http://[^/]+/sites)
     page.should have_content('google.com')
     
-    Delayed::Worker.new(:quiet => true).work_off
+    @worker.work_off
     
     site = @current_user.sites.last
     site.hostname.should == "google.com"

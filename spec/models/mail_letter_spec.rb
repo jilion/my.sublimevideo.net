@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe MailLetter do
+  before(:all) { @worker = Delayed::Worker.new }
   
   describe "Class Methods" do
     describe "#deliver_and_log" do
@@ -44,13 +45,13 @@ describe MailLetter do
           
           it "should actually send email when workers do their jobs" do
             subject
-            lambda { Delayed::Worker.new(:quiet => true).work_off }.should change(ActionMailer::Base.deliveries, :size).by(1)
+            lambda { @worker.work_off }.should change(ActionMailer::Base.deliveries, :size).by(1)
           end
           
           it "should send email to user with activity sites and should send appropriate template" do
             ActionMailer::Base.deliveries.clear
             subject
-            Delayed::Worker.new(:quiet => true).work_off
+            @worker.work_off
             
             ActionMailer::Base.deliveries.last.to.should == [user.email]
             ActionMailer::Base.deliveries.last.subject.should =~ /help us shaping the right pricing/
@@ -75,13 +76,13 @@ describe MailLetter do
           
           it "should actually send email when workers do their jobs" do
             subject
-            lambda { Delayed::Worker.new(:quiet => true).work_off }.should change(ActionMailer::Base.deliveries, :size).by(3)
+            lambda { @worker.work_off }.should change(ActionMailer::Base.deliveries, :size).by(3)
           end
           
           it "should send email to user with activity sites and should send appropriate template" do
             ActionMailer::Base.deliveries.clear
             subject
-            Delayed::Worker.new(:quiet => true).work_off
+            @worker.work_off
             
             ActionMailer::Base.deliveries.map(&:to).flatten.should == [user.email, user_with_activity1.email, user_with_activity2.email]
             ActionMailer::Base.deliveries.last.subject.should =~ /help us shaping the right pricing/
@@ -110,13 +111,13 @@ describe MailLetter do
           
           it "should actually send email when workers do their jobs" do
             subject
-            lambda { Delayed::Worker.new(:quiet => true).work_off }.should change(ActionMailer::Base.deliveries, :size).by(1)
+            lambda { @worker.work_off }.should change(ActionMailer::Base.deliveries, :size).by(1)
           end
           
           it "should send email to user with invalid sites and should send appropriate template" do
             ActionMailer::Base.deliveries.clear
             subject
-            Delayed::Worker.new(:quiet => true).work_off
+            @worker.work_off
             
             ActionMailer::Base.deliveries.last.to.should == [user_with_invalid_site.email]
             ActionMailer::Base.deliveries.last.subject.should =~ /help us shaping the right pricing/
