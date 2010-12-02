@@ -5,4 +5,5 @@ en:
       bug-report:             "Bug report"
       improvement-suggestion: "Improvement suggestion"
       feature-request:        "Feature request"
+      billing-question:       "Billing question"
       other:                  "Other"

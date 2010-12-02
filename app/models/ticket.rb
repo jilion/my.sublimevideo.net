@@ -7,7 +7,7 @@ class Ticket
   
   attr_accessor :user, :type, :subject, :message
   
-  TYPES = ["bug-report", "improvement-suggestion", "feature-request", "other"]
+  TYPES = ["bug-report", "improvement-suggestion", "feature-request", "billing-question", "other"]
   
   validates :user,    :presence => true
   validates :type,    :inclusion => { :in => Ticket::TYPES, :message => "You must choose a category" }
