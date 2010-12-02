@@ -129,6 +129,10 @@ class User < ActiveRecord::Base
     end
   end
   
+  def vat_rate
+    country == 'CH' ? 0.08 : 0.0
+  end
+  
 private
   
   # validate

@@ -149,13 +149,15 @@ private
   end
   
   def set_vat
+    self.vat_rate   = user.vat_rate
+    self.vat_amount = (invoice_items_amount * vat_rate).round
   end
   
   def set_transaction_fees
   end
   
   def set_amount
-    self.amount = self.invoice_items_amount
+    self.amount = invoice_items_amount + vat_amount
   end
   
   # before_transition [:open, :unpaid] => :unpaid

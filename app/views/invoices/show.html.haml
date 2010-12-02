@@ -5,12 +5,22 @@
     %td
       = render 'user_billing_info', :user => @invoice.user
     %td
+      = render 'our_billing_info', :user => @invoice.user
+  %tr
+    %td
       = invoice_dates(@invoice)
 %hr
 = charging_status(@invoice)
 %hr
 = render "sites", :invoice => @invoice
 
+%strong Invoice Items Total:
+= number_to_currency(@invoice.invoice_items_amount/100.0)
+
+- if @invoice.vat_amount > 0
+  %strong VAT:
+  = "#{@invoice.vat_rate*100.0}% x #{number_to_currency(@invoice.invoice_items_amount/100.0)} = #{number_to_currency(@invoice.vat_amount/100.0)}"
+  
 %strong Total:
 = number_to_currency(@invoice.amount/100.0)
 %hr

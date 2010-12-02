@@ -304,7 +304,7 @@ describe User do
     
     describe "#delay_suspend_and_set_suspending_delayed_job_id" do
       before(:all) { @user = Factory(:user) }
-      subject { @user.delay_suspend_and_set_suspending_delayed_job_id }
+      subject { @user.reload.delay_suspend_and_set_suspending_delayed_job_id }
       
       it "should delay suspend user" do
         lambda { subject }.should change(Delayed::Job, :count).by(1)
@@ -350,8 +350,26 @@ describe User do
           @user.reload.suspending_delayed_job_id.should be_nil
         end
       end
+    end # #delay_suspend_and_set_suspending_delayed_job_id
+    
+    describe "#vat_rate" do
+      before(:all) { @user = Factory(:user) }
+      subject { @user.reload }
       
-    end
+      context "user in Switzerland" do
+        it "should return a VAT rate of 8.0%" do
+          subject.update_attribute(:country, 'CH')
+          subject.vat_rate.should == 0.08
+        end
+      end
+      
+      context "user from everywhere else" do
+        it "should return a VAT rate of 0.0%" do
+          subject.update_attribute(:country, 'FR')
+          subject.vat_rate.should == 0.0
+        end
+      end
+    end # #vat_rate
     
   end
   
