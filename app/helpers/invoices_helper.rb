@@ -8,25 +8,25 @@ module InvoicesHelper
         "#{l(invoice.started_at, :format => :month_year)} - #{l(invoice.ended_at, :format => :month_year)}"
       end
     else
-      "#{l(invoice.started_at, :format => :usage_statement)} to #{l(Time.now, :format => :usage_statement)}"
+      "#{l(invoice.started_at, :format => :invoice)} to #{l(Time.now, :format => :invoice)}"
     end
   end
   
   def invoice_item_dates(invoice_item)
-    "#{l(invoice_item.started_at, :format => :minutes)} - #{l(invoice_item.ended_at, :format => :minutes)}"
+    "#{l(invoice_item.started_at, :format => :minutes_timezone)} - #{l(invoice_item.ended_at, :format => :minutes_timezone)}"
   end
   
   def charging_status(invoice)
     if invoice.unpaid?
       if invoice.charging_delayed_job_id?
-        "Will be charged on #{l(invoice.charging_delayed_job.run_at, :format => :minutes)}."
+        "Will be charged on #{l(invoice.charging_delayed_job.run_at, :format => :minutes_timezone)}"
       else
-        "Not charged yet."
+        "Not charged yet"
       end
     elsif invoice.paid?
-      "Charged on #{l(invoice.paid_at, :format => :minutes)}."
+      "Charged on #{l(invoice.paid_at, :format => :minutes_timezone)}"
     elsif invoice.failed?
-      "Charging has failed on #{l(invoice.failed_at, :format => :minutes)} with the following error: \"#{invoice.last_error}\"."
+      "Charging has failed on #{l(invoice.failed_at, :format => :minutes_timezone)} with the following error: \"#{invoice.last_error}\""
     end
   end
   

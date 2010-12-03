@@ -1496,6 +1496,10 @@ form .entry a.cancel {
 
 #credit_card_summary p strong {font-weight:600;}
 
+#past_invoices {
+  background:url(/images/embed/breakline.png) no-repeat -228px 100%;
+  padding:10px 0 20px;
+}
 
 .popup table.stats {
   border-collapse:collapse;

@@ -1,4 +1,4 @@
-= title_and_content_header("Edit My Account")
+= title_and_content_header("My Account")
 
 - if current_user.credit_card?
   #credit_card_summary
@@ -19,12 +19,15 @@
     %h3.section_title= "Past invoices"
     %ul
       - current_user.invoices.each do |invoice|
-        %li= link_to "#{invoice_dates(invoice)} - #{charging_status(invoice)}", invoice_path(invoice)
-        
+        %li
+          = raw "#{invoice_dates(invoice)} - #{content_tag(:em, charging_status(invoice))}"
+          = raw " (#{link_to("view details", invoice_path(invoice))})"
+  .spacer
+  
 = render 'users/form'
 .spacer
 
-= form_for @user, :url => "/account/credentials", :html => { :method => :put, :class => "main_form", :id => "edit_credentials", "data-password-protected" => true } do |f|
+= form_for @user, :url => "/account/credentials", :html => { :method => :put, :class => "main_form section", :id => "edit_credentials", "data-password-protected" => true } do |f|
   %h3.section_title= "Email & Password"
   .entry.email
     = f.label :email, "", :class => "icon"
