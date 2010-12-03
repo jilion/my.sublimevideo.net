@@ -12,7 +12,7 @@
 - failed_invoices = current_user.invoices.failed
 
 - if failed_invoices.empty?
-  = "Your account should be re-activated in a few minutes, we will send you an email."
+  %h3= "Your account should be re-activated in a few minutes, you will receive an email when it will be done."
 - else
   #unpaid_invoices
     %h3.section_title= "Your Past Non-Paid Invoices"

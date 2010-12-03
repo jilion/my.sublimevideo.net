@@ -1,0 +1,12 @@
+%table{ :border => 2 }
+  - if invoice.vat_amount > 0
+    %tr
+      %td Invoice Items Total
+      %td= number_to_currency(invoice.invoice_items_amount/100.0)
+    %tr
+      %td VAT:
+      %td= "#{invoice.vat_rate*100.0}% x #{number_to_currency(invoice.invoice_items_amount/100.0)} = #{number_to_currency(invoice.vat_amount/100.0)}"
+      
+  %tr
+    %td Total:
+    %td= number_to_currency(invoice.amount/100.0)

@@ -8,7 +8,7 @@ describe Users::RegistrationsController do
     before(:each) { sign_in :user, authenticated_user }
     
     context "with wrong password" do
-      before(:each) { @current_user.stub(:valid_password?).with('abcd').and_return(false) }
+      before(:each) { @current_user.should_receive(:valid_password?).with('abcd').and_return(false) }
       
       describe "PUT :update" do
         it "should redirect to /account/edit" do
@@ -28,7 +28,7 @@ describe Users::RegistrationsController do
     end
       
     context "with good password" do
-      before(:each) { @current_user.stub(:valid_password?).with('123456').and_return(true) }
+      before(:each) { @current_user.should_receive(:valid_password?).with('123456').and_return(true) }
       
       describe "PUT :update" do
         it "should redirect to /sites when update_attributes succeeds" do

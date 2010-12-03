@@ -1,24 +1,16 @@
 = title_and_content_header("Usage statement")
 
+%h3= invoice_dates(@invoice)
+
 %table{ :border => 1 }
   %tr
     %td
       = render 'user_billing_info', :user => @invoice.user
-  %tr
-    %td
-      = invoice_dates(@invoice)
 %hr
 
 = render "sites", :invoice => @invoice
 
-%strong Invoice Items Total:
-= number_to_currency(@invoice.invoice_items_amount/100.0)
+= render "total", :invoice => @invoice
 
-- if @invoice.vat_amount > 0
-  %strong VAT:
-  = "#{@invoice.vat_rate*100.0}% x #{number_to_currency(@invoice.invoice_items_amount/100.0)} = #{number_to_currency(@invoice.vat_amount/100.0)}"
-  
-%strong Total:
-= number_to_currency(@invoice.amount/100.0)
 %hr
 #notes= "This is a statement of current usage, not an invoice. It is provided for your reference; at the end of the month, your usage statement will be snapshotted into an invoice."
