@@ -1,8 +1,0 @@
-= form_for @user, :url => users_path, :html => { :method => :put, :class => "main_form section", :id => "edit_user_#{@user.id}_email_notifications" } do |f|
-  %h3.section_title= "Email notifications"
-  -#.entry.select
-  -#  = f.label :limit_alert_amount, "Notify me when my current usage reaches the following amount".html_safe, :class => "note"
-  -#  = f.select :limit_alert_amount, limit_amounts_select_options, :class => "select"
-  .spacer
-  .entry.update
-    = f.submit "Update", :id => 'user_email_notifications_submit', :class => "submit small"

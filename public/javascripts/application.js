@@ -470,8 +470,8 @@ var PopupHandler = Class.create({
 
 var SitesPoller = Class.create({
   initialize: function() {
-    this.pollingDelay  = 3000;
-    this.maxAttempts   = 20; // try for 3000 ms * 20 = 1 minute
+    this.pollingDelay  = 1000;
+    this.maxAttempts   = 10; // try for !1000 ms = 55 seconds
     this.attempts      = 0;
     this.currentSiteId = null;
     this.poll          = null;
@@ -486,10 +486,10 @@ var SitesPoller = Class.create({
   },
   startPolling: function() {
     if (this.poll) this.stopPolling();
-    this.poll = setInterval(this.remoteCheckForStateUpdate.bind(this), this.pollingDelay);
+    this.poll = setTimeout(this.remoteCheckForStateUpdate.bind(this), this.pollingDelay * this.attempts);
   },
   stopPolling: function() {
-    clearInterval(this.poll);
+    clearTimeout(this.poll);
     this.poll = null;
   },
   remoteCheckForStateUpdate: function() {
