@@ -47,9 +47,7 @@
     = f.submit "Update", :class => "submit small", :id => "user_credentials_submit"
 .spacer
 
-= render 'users/email_notifications_form'
-
--# %h3 Cancel my account
--# 
--# %p
--#   = "Unhappy? #{link_to "Cancel my account", registration_path(resource_name), :confirm => "Are you sure?", :method => :delete}."
+= form_for @user, :url => registration_path(resource_name), :html => { :method => :delete, :class => "main_form section", "data-password-protected" => true } do |f|
+  %h3.section_title Delete my account
+  .entry.delete
+    = f.submit "Delete my account", :class => "submit small"
