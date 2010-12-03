@@ -28,8 +28,8 @@ describe "Pages" do
       
       feature "suspended user" do
         background do
-          sign_in_as :user, { :cc_expire_on => 2.days.ago }
-          @current_user.cc_expire_on = 2.days.ago
+          sign_in_as :user, { :cc_expire_on => 1.month.ago }
+          @current_user.cc_expire_on = 1.month.ago
           @current_user.save(:validate => false)
           @current_user.should be_cc_expired
           @invoice = Factory(:invoice, :user => @current_user, :state => 'failed', :started_at => Time.utc(2010,1), :ended_at => Time.utc(2010,1), :failed_at => Time.utc(2010,2,10), :last_error => "Credit Card expired.")
@@ -44,7 +44,7 @@ describe "Pages" do
           page.should have_content("This Credit Card is expired, please update it.")
           page.should have_content("Visa ending in 1234")
           page.should have_content("Update your Credit Card")
-          page.should have_content("January 2010 - Charging has failed on #{I18n.l(@invoice.failed_at, :format => :minutes_timezone)} with the following error: \"#{@invoice.last_error}\".")
+          page.should have_content("January 2010 - Charging has failed on #{I18n.l(@invoice.failed_at, :format => :minutes_timezone)} with the following error: \"#{@invoice.last_error}\"")
         end
         
         scenario "updating credit card" do
@@ -87,8 +87,8 @@ describe "Pages" do
           @invoice2 = Factory(:invoice, :user => @current_user, :state => 'failed', :started_at => Time.utc(2010,2), :ended_at => Time.utc(2010,2), :failed_at => Time.utc(2010,3,10), :last_error => "Credit Card invalid.")
           
           visit '/suspended'
-          page.should have_content("January 2010 - Charging has failed on #{I18n.l(@invoice.failed_at, :format => :minutes_timezone)} with the following error: \"#{@invoice.last_error}\".")
-          page.should have_content("February 2010 - Charging has failed on #{I18n.l(@invoice2.failed_at, :format => :minutes_timezone)} with the following error: \"#{@invoice2.last_error}\".")
+          page.should have_content("January 2010 - Charging has failed on #{I18n.l(@invoice.failed_at, :format => :minutes_timezone)} with the following error: \"#{@invoice.last_error}\"")
+          page.should have_content("February 2010 - Charging has failed on #{I18n.l(@invoice2.failed_at, :format => :minutes_timezone)} with the following error: \"#{@invoice2.last_error}\"")
           
           click_link_or_button "Update your Credit Card"
           
