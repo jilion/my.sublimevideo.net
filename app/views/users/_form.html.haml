@@ -9,14 +9,14 @@
       = f.text_field :last_name, :class => "text no_icon", :placeholder => "Last name", :required => true
     .spacer
     
-  -#.entry.select
-  -#  .country.left_field
-  -#    = f.label :country, "Country", :class => "icon"
-  -#    = f.country_select :country, options_for_select("Country", :selected => "Country")
-  -#  .last_name.right_field
-  -#    = f.label :postal_code, "Zip or Postal Code", :class => "icon"
-  -#    = f.text_field :postal_code, :class => "text no_icon", :placeholder => "Zip or Postal Code", :required => true
-  -#  .spacer
-
+  .entry.select
+    .country.left_field
+      = f.label :country, "Country", :class => "icon"
+      = f.country_select :country, options_for_select("Country", :selected => "Country")
+    .last_name.right_field
+      = f.label :postal_code, "Zip or Postal Code", :class => "icon"
+      = f.text_field :postal_code, :class => "text no_icon", :placeholder => "Zip or Postal Code", :required => true
+    .spacer
+    
   .entry.update
     = f.submit "Update", :id => 'user_submit', :class => "submit small"
