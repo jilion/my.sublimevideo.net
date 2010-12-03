@@ -44,6 +44,8 @@ describe User do
         Factory(:site, :user => @user3, :activated_at => Time.utc(2010,2,1), :archived_at => Time.utc(2010,2,20))
         @user4 = Factory(:user)
         Factory(:site, :user => @user4, :activated_at => Time.utc(2010,2,1), :archived_at => Time.utc(2010,2,28))
+        @user5 = Factory(:user, :state => 'archived')
+        Factory(:site, :user => @user5, :activated_at => Time.utc(2010,2,1), :archived_at => Time.utc(2010,2,28))
       end
       
       specify { User.billable(Time.utc(2010,1,1), Time.utc(2010,1,10)).should == [] }
