@@ -1,15 +1,15 @@
 require 'spec_helper'
 
-feature "Feedback actions:" do
+feature "Support actions:" do
   before(:all) { @worker = Delayed::Worker.new }
   background do
     @current_user = sign_in_as :user
-    visit "/feedback"
+    visit "/support"
   end
   
   scenario "navigation" do
-    click_link "Feedback"
-    current_url.should =~ %r(http://[^/]+/feedback)
+    click_link "Support"
+    current_url.should =~ %r(http://[^/]+/support)
   end
   
   scenario "submit a valid ticket" do
@@ -32,7 +32,7 @@ feature "Feedback actions:" do
     fill_in "Message", :with => "I have a request this is a long text!"
     click_button "Send"
     
-    current_url.should =~ %r(http://[^/]+/feedback)
+    current_url.should =~ %r(http://[^/]+/support)
     page.should have_content "You must choose a category"
     page.should have_no_content "Your message has been submitted."
     Delayed::Job.last.should be_nil
@@ -44,7 +44,7 @@ feature "Feedback actions:" do
     fill_in "Message", :with => "I have a request this is a long text!"
     click_button "Send"
     
-    current_url.should =~ %r(http://[^/]+/feedback)
+    current_url.should =~ %r(http://[^/]+/support)
     
     page.should have_content "Subject can't be blank"
     page.should have_no_content "Your message has been submitted."
@@ -57,7 +57,7 @@ feature "Feedback actions:" do
     fill_in "Message", :with => ""
     click_button "Send"
     
-    current_url.should =~ %r(http://[^/]+/feedback)
+    current_url.should =~ %r(http://[^/]+/support)
     page.should have_content "Message can't be blank"
     page.should have_no_content "Your message has been submitted."
     Delayed::Job.last.should be_nil

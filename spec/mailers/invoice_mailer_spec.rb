@@ -32,7 +32,8 @@ describe InvoiceMailer do
     
     specify do
       @last_delivery.subject.should == "January 2010 invoice is ready to be charged."
-      @last_delivery.body.raw_source.should include "if you have any question or doubt about its content, please use our support form: http://my.sublimevideo.net/support"
+      @last_delivery.body.raw_source.should include "if you have any question or doubt about its content, please use our support form:"
+      @last_delivery.body.raw_source.should include "/support"
     end
   end
   
