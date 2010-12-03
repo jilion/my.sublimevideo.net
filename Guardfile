@@ -22,7 +22,7 @@ guard 'spork', :wait => 40 do
   watch(%|^spec/spec_helper\.rb|)
 end
 
-guard 'rspec', :version => 2, :drb => true, :bundler => false, :fail_fast => true, :formatter => "instafail" do
+guard 'rspec', :version => 2, :drb => true, :bundler => false, :fail_fast => false, :formatter => "instafail" do
   watch(%|^spec/spec_helper\.rb|)                              { "spec" }
   watch(%|^app/controllers/application_controller\.rb|)        { "spec/controllers" }
   watch(%|^config/routes\.rb|)                                 { "spec/routing" }
