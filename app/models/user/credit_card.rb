@@ -12,8 +12,12 @@ module User::CreditCard
   
   attr_accessor :cc_update, :cc_full_name, :cc_first_name, :cc_last_name, :cc_number, :cc_verification_value
   
+  # ================================
+  # = User class methods extension =
+  # ================================
+  
   def self.delay_send_credit_card_expiration(interval = 1.week)
-    unless Delayed::Job.already_delayed?('%send_credit_card_expiration%')
+    unless Delayed::Job.already_delayed?('%User::CreditCard%send_credit_card_expiration%')
       delay(:run_at => interval.from_now).send_credit_card_expiration
     end
   end

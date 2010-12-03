@@ -22,7 +22,7 @@ describe RecurringJob do
       subject.supervise
     end
     
-    it "should nbotify if all recurring jobs aren't delayed" do
+    it "should notify if all recurring jobs aren't delayed" do
       subject.launch_all
       Delayed::Job.last.delete
       Notify.should_receive(:send)

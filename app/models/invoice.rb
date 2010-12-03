@@ -78,11 +78,18 @@ class Invoice < ActiveRecord::Base
     )
   end
   
+  def self.delay_complete_invoices_for_billable_users(started_at, ended_at)
+    unless Delayed::Job.already_delayed?('%Invoice%complete_invoices_for_billable_users%')
+      delay(:priority => 1, :run_at => ended_at + Billing.days_before_creating_invoice.days).complete_invoices_for_billable_users(started_at, ended_at)
+    end
+  end
+  
   def self.complete_invoices_for_billable_users(started_at, ended_at) # utc dates!
     User.billable(started_at, ended_at).each do |user|
       invoice = build(:user => user, :started_at => started_at, :ended_at => ended_at)
       invoice.complete
     end
+    delay_complete_invoices_for_billable_users(ended_at.next_month.beginning_of_month, ended_at.next_month.end_of_month)
   end
   
   def self.charge(invoice_id)
@@ -93,6 +100,7 @@ class Invoice < ActiveRecord::Base
       Ogone.purchase(invoice.amount, invoice.user.credit_card_alias, :order_id => invoice.reference, :currency => 'USD')
     rescue => ex
       Notify.send("Charging failed: #{ex.message}", :exception => ex)
+      invoice.last_error = ex.message
       nil
     end
     

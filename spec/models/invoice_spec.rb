@@ -328,7 +328,7 @@ describe Invoice do
   
   describe "Class Methods" do
     
-    describe ".build", :focus => true do
+    describe ".build" do
       before(:all) do
         @plan1  = Factory(:plan, :price => 1000, :overage_price => 100, :player_hits => 2000)
         @addon1 = Factory(:addon, :price => 399)
@@ -438,6 +438,29 @@ describe Invoice do
       specify { lambda { subject }.should change(@user1.invoices, :count).by(1) }
       specify { lambda { subject }.should change(@user2.invoices, :count).by(1) }
       specify { lambda { subject }.should change(@user3.invoices, :count).by(1) }
+      
+      describe "delay complete_invoices_for_billable_users" do
+        before(:each) { Timecop.travel(Time.utc(2009,1)) }
+        after(:each) { Timecop.return }
+        subject { Invoice.complete_invoices_for_billable_users(Time.utc(2009,1).beginning_of_month, Time.utc(2009,1).end_of_month) }
+        
+        it "should delay complete_invoices_for_billable_users" do
+          lambda { subject }.should change(Delayed::Job, :count).by(1)
+          handler = YAML.load(Delayed::Job.last.handler)
+          handler['args'][0].to_i.should == Time.utc(2009,2).beginning_of_month.to_i
+          handler['args'][1].to_i.should == Time.utc(2009,2).end_of_month.to_i
+        end
+        
+        it "should delay complete_invoices_for_billable_users Billing.days_before_creating_invoice days after ended_at of the next invoice" do
+          subject
+          Delayed::Job.last.run_at.should == Time.utc(2009,2).end_of_month + Billing.days_before_creating_invoice.days
+        end
+        
+        it "should not delay complete_invoices_for_billable_users if one pending already present" do
+          subject
+          lambda { Invoice.complete_invoices_for_billable_users(Time.utc(2009,2).beginning_of_month, Time.utc(2009,2).end_of_month) }.should_not change(Delayed::Job, :count)
+        end
+      end
       
       describe "delay_charge" do
         it "should only delay charge for invoices with amount > 0" do
