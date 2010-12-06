@@ -53,6 +53,8 @@ gem 'PageRankr',             '~> 1.4.3', :require => 'page_rankr'
 gem 'array_stats',           '~> 0.6.0'
 gem 'rescue_me',             '~> 0.1.0'
 gem 'paper_trail',           '~> 1.6.4'
+gem 'settingslogic',         '~> 2.0.6'
+gem 'pdfkit',                '~> 0.4.6'
 
 group :production do
   gem 'rack-google-analytics', '~> 0.9.2', :require => 'rack/google-analytics'
@@ -100,7 +102,7 @@ group :test do
   # gem 'akephalos',          '~> 0.2.4'
   # gem 'capybara-envjs',     '~> 0.4.0'
   gem 'webmock',            '~> 1.6.1'
-  gem 'vcr',                '~> 1.3.3'
+  gem 'vcr',                '~> 1.4.0'
   
   gem 'shoulda',            '~> 2.11.3'
   gem 'factory_girl_rails', '~> 1.0.0', :require => false # loaded in spec_helper Spork.each_run
