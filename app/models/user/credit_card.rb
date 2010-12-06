@@ -24,7 +24,7 @@ module User::CreditCard
   
   def self.send_credit_card_expiration
     delay_send_credit_card_expiration
-    User.where(:cc_expire_on => Time.now.utc.end_of_month).each do |user|
+    User.where(:cc_expire_on => Time.now.utc.end_of_month.to_date).each do |user|
       CreditCardMailer.will_expire(user).deliver!
     end
   end
@@ -38,8 +38,13 @@ module User::CreditCard
   end
   alias :cc? :credit_card?
   
+  def credit_card_expire_this_month?
+    cc_expire_on == Time.now.utc.end_of_month.to_date
+  end
+  alias :cc_expire_this_month? :credit_card_expire_this_month?
+  
   def credit_card_expired?
-    cc_expire_on? && (cc_expire_on.year < Time.now.utc.year || cc_expire_on.month < Time.now.utc.month)
+    cc_expire_on? && cc_expire_on < Time.now.utc.to_date
   end
   alias :cc_expired? :credit_card_expired?
   
