@@ -8,7 +8,7 @@ describe InvoiceMailer do
   subject { @invoice }
   
   describe "common checks" do
-    %w[invoice_completed payment_failed].each do |mail|
+    %w[invoice_completed charging_failed].each do |mail|
       before(:each) do
         ActionMailer::Base.deliveries.clear
         InvoiceMailer.send(mail, subject).deliver
@@ -37,9 +37,9 @@ describe InvoiceMailer do
     end
   end
   
-  describe "#payment_failed" do
+  describe "#charging_failed" do
     before(:all) do
-      InvoiceMailer.payment_failed(subject).deliver
+      InvoiceMailer.charging_failed(subject).deliver
       @last_delivery = ActionMailer::Base.deliveries.last
     end
     
