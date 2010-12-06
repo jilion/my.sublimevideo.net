@@ -13,6 +13,8 @@
 
 - if failed_invoices.empty?
   %h3= "Your account should be re-activated in a few minutes, you will receive an email when it will be done."
+- elsif failed_invoices.all? { |invoice| invoice.charging_delayed_job_id? }
+  %h3= "Your failed invoices are being charged... You will receive an email when your account is re-activated."
 - else
   #unpaid_invoices
     %h3.section_title= "Your Past Non-Paid Invoices"
