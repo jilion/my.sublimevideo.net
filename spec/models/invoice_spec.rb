@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe Invoice do
+  before(:all) { @worker = Delayed::Worker.new }
   
   describe "Factory" do
     before(:all) { @invoice = Factory(:invoice) }
@@ -94,6 +95,18 @@ describe Invoice do
         end
       end
       
+      describe "#retry" do
+        context "from failed state" do
+          before(:each) { subject.reload.update_attribute(:state, 'failed') }
+          
+          it "should set open invoice to failed" do
+            subject.should be_failed
+            subject.retry
+            subject.should be_failed
+          end
+        end
+      end
+      
       describe "#fail" do
         context "from unpaid state" do
           before(:each) { subject.reload.update_attribute(:state, 'unpaid') }
@@ -159,7 +172,42 @@ describe Invoice do
         end
       end
       
-      describe "before_transition [:open, :unpaid] => :unpaid, :do => [:delay_charge_and_set_charging_delayed_job_id]" do
+      describe "before_transition :on => :retry" do
+        context "from failed" do
+          before(:each) { subject.reload.update_attributes(:state => 'failed', :attempts => Billing.max_charging_attempts) }
+          
+          it "should delay Invoice.charge" do
+            lambda { subject.retry }.should change(Delayed::Job, :count).by(1)
+            Delayed::Job.last.name.should == "Class#charge"
+          end
+          
+          it "should not increments attempts" do
+            lambda { subject.retry }.should_not change(subject, :attempts)
+          end
+          
+          context "user is suspended" do
+            before(:each) { subject.user.reload.update_attribute(:state, 'suspended') }
+            
+            it "should delay Invoice.charge" do
+              lambda { subject.retry }.should change(Delayed::Job, :count).by(1)
+              Delayed::Job.last.name.should == "Class#charge"
+            end
+            
+            it "should not increments attempts" do
+              lambda { subject.retry }.should_not change(subject, :attempts)
+            end
+            
+            it "should not re-delay another charging" do
+              lambda { subject.retry }.should change(Delayed::Job, :count).by(1)
+              lambda do
+                VCR.use_cassette('ogone_visa_payment_2000_alias') { @worker.work_off }
+              end.should change(Delayed::Job, :count).by(-1)
+            end
+          end
+        end
+      end
+      
+      describe "before_transition [:open, :unpaid] => [:unpaid, :failed], :do => :delay_charge_and_set_charging_delayed_job_id" do
         context "from open" do
           before(:each) { subject.reload.update_attribute(:state, 'open') }
           
@@ -181,8 +229,21 @@ describe Invoice do
             Delayed::Job.last.name.should == "Class#charge"
           end
           
-          it "should not increments attempts until charge" do
-            lambda { subject.complete }.should_not change(subject, :attempts)
+          it "should increments attempts" do
+            lambda { subject.fail }.should change(subject, :attempts).by(1)
+          end
+          
+          context "user is suspended" do
+            before(:each) { subject.user.reload.update_attribute(:state, 'suspended') }
+            
+            it "should not delay Invoice.charge" do
+              lambda { subject.fail }.should_not change(Delayed::Job, :count)
+              Delayed::Job.last.should be_nil
+            end
+            
+            it "should increments attempts" do
+              lambda { subject.fail }.should change(subject, :attempts).by(1)
+            end
           end
         end
       end
@@ -235,14 +296,20 @@ describe Invoice do
           before(:each) { subject.reload.update_attributes(:state => 'unpaid', :attempts => Billing.max_charging_attempts, :charging_delayed_job_id => 1) }
           
           it "should delay suspend user in Billing.days_before_suspend_user days" do
-            lambda { subject.fail }.should change(Delayed::Job, :count).by(1)
-            Delayed::Job.last.name.should == "Class#suspend"
-            Delayed::Job.last.run_at.should be_within(3).of(Billing.days_before_suspend_user.days.from_now) # seconds of tolerance
+            lambda { subject.fail }.should change(Delayed::Job, :count).by(2)
+            Delayed::Job.where(:handler.matches => "%Class%suspend%").count.should == 1
+            Delayed::Job.where(:handler.matches => "%Class%suspend%").first.run_at.should be_within(3).of(Billing.days_before_suspend_user.days.from_now) # seconds of tolerance
+          end
+          
+          it "should delay suspend user in Billing.days_before_suspend_user days" do
+            lambda { subject.fail }.should change(Delayed::Job, :count).by(2)
+            Delayed::Job.where(:handler.matches => "%Class%charge%").count.should == 1
+            Delayed::Job.where(:handler.matches => "%Class%charge%").first.run_at.should be_within(3).of(Billing.hours_between_retries_before_user_suspend.hours.from_now) # seconds of tolerance
           end
         end
       end
       
-      describe "after_transition  :unpaid => :failed, :do => :send_payment_failed_email" do
+      describe "after_transition  :unpaid => :failed, :do => :send_charging_failed_email" do
         context "from unpaid" do
           before(:each) { subject.reload.update_attributes(:state => 'unpaid', :attempts => Billing.max_charging_attempts) }
           
@@ -665,13 +732,21 @@ describe Invoice do
               lambda { subject; @invoice.reload }.should change(@invoice, :attempts).by(1)
             end
             describe "delay user.suspend" do
-              it "should delay suspend user" do
-                lambda { subject }.should change(Delayed::Job, :count).by(1)
-                Delayed::Job.last.name.should == "Class#suspend"
+              it "should delay user.suspend" do
+                lambda { subject }.should change(Delayed::Job, :count).by(2)
+                Delayed::Job.where(:handler.matches => "%Class%suspend%").count.should == 1
               end
               it "should delay user.suspend in Billing.days_before_suspend_user days" do
                 subject
-                Delayed::Job.last.run_at.should be_within(3).of(Billing.days_before_suspend_user.days.from_now) # seconds of tolerance
+                Delayed::Job.where(:handler.matches => "%Class%suspend%").last.run_at.should be_within(3).of(Billing.days_before_suspend_user.days.from_now) # seconds of tolerance
+              end
+              it "should delay Invoice.charge" do
+                lambda { subject }.should change(Delayed::Job, :count).by(2)
+                Delayed::Job.where(:handler.matches => "%Class%charge%").count.should == 1
+              end
+              it "should delay Invoice.charge in Billing.hours_between_retries_before_user_suspend hours" do
+                subject
+                Delayed::Job.where(:handler.matches => "%Class%charge%").last.run_at.should be_within(3).of(Billing.hours_between_retries_before_user_suspend.hours.from_now) # seconds of tolerance
               end
             end
             describe "send mail" do

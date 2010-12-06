@@ -204,10 +204,42 @@ describe User do
       end
     end
     
+    describe "#cancel_suspend" do
+      before(:each) do
+        user.delay_suspend_and_set_suspending_delayed_job_id
+      end
+      subject { user }
+      
+      context "from active state" do
+        it "should set user to active" do
+          subject.should be_active
+          subject.cancel_suspend
+          subject.should be_active
+        end
+      end
+      
+      describe "Callbacks" do
+        describe "before_transition :on => :cancel_suspend, :do => :clear_suspending_delayed_job_id" do
+          it "should clear suspending_delayed_job_id" do
+            subject.suspending_delayed_job_id.should be_present
+            subject.cancel_suspend
+            subject.suspending_delayed_job_id.should be_nil
+          end
+          
+          it "should clear the delayed job scheduled to suspend the user" do
+            delayed_job_id = subject.suspending_delayed_job_id
+            Delayed::Job.find(delayed_job_id).should be_present
+            subject.cancel_suspend
+            lambda { Delayed::Job.find(delayed_job_id) }.should raise_error(ActiveRecord::RecordNotFound)
+          end
+        end
+      end
+    end
+    
     describe "#unsuspend" do
       let(:site1) { Factory(:site, :user => user, :hostname => "rymai.com").tap { |s| s.update_attribute(:state, 'suspended') } }
       let(:site2) { Factory(:site, :user => user, :hostname => "octavez.com").tap { |s| s.update_attribute(:state, 'dev') } }
-      before(:each) { user.state = 'suspended'; user.suspending_delayed_job_id = 1; user.save }
+      before(:each) { user.update_attribute(:state, 'suspended') }
       
       context "from suspended state" do
         it "should set the user to active" do
@@ -218,18 +250,13 @@ describe User do
       end
       
       describe "Callbacks" do
-        describe "before_transition :on => :unsuspend, :do => [:clear_suspending_delayed_job_id, :unsuspend_sites]" do
+        describe "before_transition :on => :unsuspend, :do => :unsuspend_sites" do
           it "should suspend each user' site" do
             site1.reload.should be_suspended
             site2.reload.should be_dev
             user.unsuspend
             site1.reload.should be_active
             site2.reload.should be_dev
-          end
-          it "should clear suspending_delayed_job_id" do
-            user.suspending_delayed_job_id.should == 1
-            user.unsuspend
-            user.suspending_delayed_job_id.should be_nil
           end
         end
         
@@ -255,7 +282,8 @@ describe User do
       end
       
       it "should not delay Module#put if user has no zendesk_id" do
-        user.email      = "new@email.com"
+        user.email = "new@email.com"
+        user.save
         user.email.should == "new@email.com"
         Delayed::Job.last.should be_nil
       end
@@ -276,6 +304,47 @@ describe User do
         Delayed::Job.last.should be_nil
         VCR.use_cassette("user/email_on_zendesk_after_update") do
           JSON.parse(Zendesk.get("/users/15483194/user_identities.json").body).select { |h| h["identity_type"] == "email" }.map { |h| h["value"] }.should include("new@email.com")
+        end
+      end
+    end
+    
+    describe "after_update :charge_failed_invoices" do
+      context "with no failed invoices" do
+        it "should not delay Class#charge" do
+          user.cc_updated_at = Time.now.utc
+          user.save
+          Delayed::Job.last.should be_nil
+        end
+      end
+      
+      context "with failed invoices" do
+        before(:all) do
+          @user = Factory(:user)
+          Factory(:invoice, :user => @user, :state => 'paid', :started_at => Time.utc(2010,1), :ended_at => Time.utc(2010,2))
+          Factory(:invoice, :user => @user, :state => 'failed', :started_at => Time.utc(2010,2), :ended_at => Time.utc(2010,3))
+          Factory(:invoice, :user => @user, :state => 'failed', :started_at => Time.utc(2010,3), :ended_at => Time.utc(2010,4))
+        end
+        subject { @user }
+        
+        it "should not delay Class#charge if cc_updated_at has not changed" do
+          subject.reload.country = 'FR'
+          lambda { subject.save }.should_not change(Delayed::Job, :count)
+        end
+        
+        it "should delay Class#charge if the user has failed invoices and cc_updated_at has changed" do
+          subject.reload.cc_updated_at = Time.now.utc
+          lambda { subject.save }.should change(Delayed::Job, :count).by(2)
+          Delayed::Job.last.name.should == 'Class#charge'
+        end
+        
+        context "with a suspended user" do
+          before(:all) { subject.reload.update_attribute(:state, 'suspended') }
+          
+          it "should delay Class#charge if the user has failed invoices and cc_updated_at has changed" do
+            subject.cc_updated_at = Time.now.utc
+            lambda { subject.save }.should change(Delayed::Job, :count).by(2)
+            Delayed::Job.last.name.should == 'Class#charge'
+          end
         end
       end
     end
@@ -353,25 +422,6 @@ describe User do
         end
       end
     end # #delay_suspend_and_set_suspending_delayed_job_id
-    
-    describe "#vat_rate" do
-      before(:all) { @user = Factory(:user) }
-      subject { @user.reload }
-      
-      context "user in Switzerland" do
-        it "should return a VAT rate of 8.0%" do
-          subject.update_attribute(:country, 'CH')
-          subject.vat_rate.should == 0.08
-        end
-      end
-      
-      context "user from everywhere else" do
-        it "should return a VAT rate of 0.0%" do
-          subject.update_attribute(:country, 'FR')
-          subject.vat_rate.should == 0.0
-        end
-      end
-    end # #vat_rate
     
   end
   

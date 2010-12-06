@@ -36,30 +36,37 @@ class Invoice < ActiveRecord::Base
   
   state_machine :initial => :open do
     event(:complete) do
-      transition :open => :paid,
-                 :if => lambda { |invoice| invoice.amount == 0 }
+      transition :open => :paid, :if => lambda { |invoice| invoice.amount == 0 }
       transition :open => :unpaid
     end
+    event(:retry)   { transition :failed => :failed }
     event(:fail) do
-      transition :unpaid => :unpaid,
-                 :if => lambda { |invoice| invoice.attempts < Billing.max_charging_attempts }
+      transition :unpaid => :unpaid, :if => lambda { |invoice| invoice.attempts < Billing.max_charging_attempts }
       transition [:unpaid, :failed] => :failed
     end
     event(:succeed) { transition [:unpaid, :failed] => :paid }
     
     before_transition :on => :complete, :do => :set_completed_at
+    
     before_transition :on => [:fail, :succeed], :do => :increment_attempts
     
-    before_transition [:open, :unpaid] => :unpaid, :do => [:delay_charge_and_set_charging_delayed_job_id]
+    before_transition :on => :retry, :do => :delay_charge_and_set_charging_delayed_job_id
+    
+    before_transition [:open, :unpaid] => [:unpaid, :failed], :do => :delay_charge_and_set_charging_delayed_job_id, :unless => lambda { |invoice| invoice.user.suspended? }
     after_transition  :open => :unpaid, :do => :send_invoice_completed_email
     
     before_transition any => :failed, :do => [:set_failed_at, :clear_charging_delayed_job_id]
     before_transition :unpaid => :failed, :do => :delay_suspend_user
-    after_transition  :unpaid => :failed, :do => :send_payment_failed_email
+    after_transition  :unpaid => :failed, :do => :send_charging_failed_email
     
-    before_transition [:open, :unpaid, :failed] => :paid, :do => [:clear_charging_delayed_job_id, :set_paid_at]
-    after_transition  [:open, :unpaid, :failed] => :paid, :do => :unsuspend_user,
-                      :if => lambda { |invoice| invoice.user.suspended? && invoice.user.invoices.failed.empty? }
+    before_transition any => :paid, :do => [:set_paid_at, :clear_charging_delayed_job_id]
+    after_transition  any => :paid do |invoice, transition|
+      if invoice.user.suspended? && invoice.user.invoices.failed.empty?
+        User.delay.unsuspend(invoice.user_id)
+      elsif invoice.user.suspending_delayed_job_id?
+        invoice.user.cancel_suspend
+      end
+    end
   end
   
   # =================
@@ -121,8 +128,8 @@ public
   def build
     build_invoice_items
     set_invoice_items_amount
-    set_vat
     set_transaction_fees
+    set_vat
     set_amount
     self
   end
@@ -156,19 +163,20 @@ private
     self.invoice_items_amount = invoice_items.inject(0) { |sum, invoice_item| sum + invoice_item.amount }
   end
   
-  def set_vat
-    self.vat_rate   = user.vat_rate
-    self.vat_amount = (invoice_items_amount * vat_rate).round
+  def set_transaction_fees
+    self.transaction_fees = 0
   end
   
-  def set_transaction_fees
+  def set_vat
+    self.vat_rate   = Vat.for_country(user.country)
+    self.vat_amount = ((invoice_items_amount + transaction_fees) * vat_rate).round
   end
   
   def set_amount
-    self.amount = invoice_items_amount + vat_amount
+    self.amount = invoice_items_amount + transaction_fees + vat_amount
   end
   
-  # before_transition [:open, :unpaid] => :unpaid
+  # before_transition any => [:unpaid, :failed]
   def delay_charge_and_set_charging_delayed_job_id
     delayed_job = Invoice.delay(:run_at => charging_delay).charge(self.id)
     self.charging_delayed_job_id = delayed_job.id
@@ -189,34 +197,41 @@ private
     self.attempts += 1
   end
   
-  # before_transition :unpaid => :failed, before_transition :on => :succeed
+  # before_transition any => :failed, before_transition any => :paid
   def clear_charging_delayed_job_id
     self.charging_delayed_job_id = nil
   end
   
-  # before_transition :unpaid => :failed
+  # before_transition any => :failed
   def set_failed_at
     self.failed_at = Time.now.utc
   end
+  
+  # before_transition :unpaid => :failed
   def delay_suspend_user
     self.user.delay_suspend_and_set_suspending_delayed_job_id
   end
-  def send_payment_failed_email
-    InvoiceMailer.payment_failed(self).deliver!
+  
+  # after_transition  :unpaid => :failed
+  def send_charging_failed_email
+    InvoiceMailer.charging_failed(self).deliver!
   end
   
-  # before_transition [:open, :unpaid, :failed] => :paid
+  # before_transition any => :paid
   def set_paid_at
     self.paid_at = Time.now.utc
   end
   
-  # after_transition [:open, :unpaid, :failed] => :paid
-  def unsuspend_user
-    User.delay.unsuspend(self.user_id)
-  end
-  
   def charging_delay
-    (attempts == 0 ? Billing.days_before_charging.days : (2**attempts).hours).from_now
+    if open?
+      Billing.days_before_charging.days
+    elsif user.suspended?
+      0.seconds
+    elsif attempts > Billing.max_charging_attempts
+      Billing.hours_between_retries_before_user_suspend.hours
+    else
+      (2**attempts).hours
+    end.from_now
   end
   
 end

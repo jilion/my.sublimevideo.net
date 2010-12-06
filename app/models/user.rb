@@ -70,21 +70,24 @@ class User < ActiveRecord::Base
   # =============
   
   before_save   :store_credit_card, :keep_some_credit_card_info # in user/credit_card
-  after_update  :update_email_on_zendesk
+  after_update  :update_email_on_zendesk, :charge_failed_invoices
   
   # =================
   # = State Machine =
   # =================
   
   state_machine :initial => :active do
-    event(:suspend)   { transition :active => :suspended }
-    event(:unsuspend) { transition :suspended => :active }
-    event(:archive)   { transition :active => :archived }
+    event(:suspend)        { transition :active => :suspended }
+    event(:cancel_suspend) { transition :active => :active }
+    event(:unsuspend)      { transition :suspended => :active }
+    event(:archive)        { transition :active => :archived }
     
     before_transition :on => :suspend, :do => :suspend_sites
     after_transition  :on => :suspend, :do => :send_account_suspended_email
     
-    before_transition :on => :unsuspend, :do => [:clear_suspending_delayed_job_id, :unsuspend_sites]
+    before_transition :on => :cancel_suspend, :do => [:delete_suspending_delayed_job, :clear_suspending_delayed_job_id]
+    
+    before_transition :on => :unsuspend, :do => :unsuspend_sites
     after_transition  :on => :unsuspend, :do => :send_account_unsuspended_email
   end
   
@@ -130,8 +133,8 @@ class User < ActiveRecord::Base
     end
   end
   
-  def vat_rate
-    country == 'CH' ? 0.08 : 0.0
+  def will_be_suspended?
+    suspending_delayed_job_id?
   end
   
 private
@@ -169,10 +172,17 @@ private
     UserMailer.account_suspended(self, reason).deliver!
   end
   
-  # before_transition :on => :unsuspend
+  # before_transition :on => :cancel_suspend
+  def delete_suspending_delayed_job
+    Delayed::Job.find(suspending_delayed_job_id).delete
+  end
+  
+  # before_transition :on => :cancel_suspend
   def clear_suspending_delayed_job_id
     self.suspending_delayed_job_id = nil
   end
+  
+  # before_transition :on => :unsuspend
   def unsuspend_sites
     sites.map(&:unsuspend)
   end
@@ -184,8 +194,15 @@ private
   
   # after_update
   def update_email_on_zendesk
-    if zendesk_id.present? && previous_changes.keys.include?("email")
+    if zendesk_id.present? && email_changed?
       Zendesk.delay(:priority => 25).put("/users/#{zendesk_id}.xml", :user => { :email => email })
+    end
+  end
+  
+  # after_update
+  def charge_failed_invoices
+    if cc_updated_at_changed? && invoices.failed.present?
+      invoices.failed.each { |invoice| invoice.retry }
     end
   end
   
