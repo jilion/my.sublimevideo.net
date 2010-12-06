@@ -5,7 +5,7 @@
     %td
       = render 'user_billing_info', :user => @invoice.user
     %td
-      = render 'our_billing_info', :user => @invoice.user
+      = render 'our_billing_info', :invoice => @invoice
 %hr
 
 = render "sites", :invoice => @invoice
