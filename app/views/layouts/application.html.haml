@@ -30,12 +30,7 @@
           #rounded_corners_fix
             #white_halo
               #content
-                - if flash.present?
-                  #flash
-                    - if flash[:notice]
-                      .notice= flash[:notice]
-                    - if flash[:alert]
-                      .alert= flash[:alert]
+                = render 'layouts/flash', :flash => flash if flash.present?
                 = yield
       #footer
         %p.right

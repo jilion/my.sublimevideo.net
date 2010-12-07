@@ -1,12 +1,14 @@
 #sticky_notice
   - if current_user.will_be_suspended?
-    = "You will be suspended in #{distance_of_time_in_words(Time.now.utc, Delayed::Job.find(current_user.suspending_delayed_job_id).run_at)}."
-    
-  - elsif current_user.cc_expire_this_month?
-    = "Your credit card will expire at the end of the month, you should update it to prevent any problem."
-    
-  - elsif current_user.cc_expired?
-    = "Your credit card is expired, you should update it to prevent any problem."
-    
+    = "You will be suspended in #{time_ago_in_words(Delayed::Job.find(current_user.suspending_delayed_job_id).run_at)}."
+    - if current_user.cc_expired?
+      = "Your credit card is expired, you should update it in order to pay your invoices and to re-activate your account."
+      
+  - elsif current_user.cc_expire_this_month? || current_user.cc_expired?
+    - if current_user.cc_expire_this_month?
+      = "Your credit card will expire at the end of the month, you should update it to prevent any problem."
+    - elsif current_user.cc_expired?
+      = "Your credit card is expired, you should update it to prevent any problem."
+      
   - if current_user.cc_expire_this_month? || current_user.cc_expired?
     %p= link_to 'Change your credit card', edit_credit_card_path
