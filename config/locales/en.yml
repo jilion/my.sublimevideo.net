@@ -3,6 +3,7 @@ en:
     formats:
       date: "%B %d, %Y"
       minutes_timezone: "%d %b %Y, %R %Z"
+      seconds_timezone: "%d %b %Y, %R:%S %Z"
       invoice: "%d %b %Y"
       short_invoice: "%d %b %y"
       full: "%m/%d/%Y %I:%M %p"

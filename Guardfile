@@ -39,9 +39,11 @@ guard 'rspec', :version => 2, :drb => true, :bundler => false, :fail_fast => fal
   #  }
 end
 
-# guard 'livereload' do
-#   watch(%r(^app/.+\.(erb|haml)))
-#   watch(%|^app/helpers/.+\.rb|)
-#   watch(%r(^/public/.+\.(css|js|html)))
-#   watch(%|^config/locales/.+\.ym|)
-# end
+guard 'livereload' do
+  watch(%r{app/.+\.(erb|haml)})
+  watch(%|app/helpers/.+\.rb|)
+  watch(%r{public/javascripts/.+\.js})
+  watch(%r{public/stylesheets/.+\.css})
+  watch(%r{public/.+\.html})
+  watch(%|config/locales/.+\.yml|)
+end

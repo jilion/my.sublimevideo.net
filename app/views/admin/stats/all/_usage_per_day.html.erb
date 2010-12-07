@@ -1,10 +1,8 @@
 <%
 from_days  ||= 60
 stats_from   = from_days.days.ago.beginning_of_day
-interval     = 1.day
-title        = "VPV per day, total and averages between #{l(stats_from.to_date, :format => :small)} and #{l(Date.today, :format => :small)}"
 
-usages         = Stat.usages(stats_from, Date.today)
+usages = Stat.usages(stats_from, Date.today)
 usages = (stats_from.to_date..Date.today).inject([]) do |memo, day|
   usage_on_day = usages.detect { |u| u["day"].to_date == day }
   memo << (usage_on_day ? usage_on_day : { "day" => day })
@@ -31,11 +29,15 @@ total_main_usages   = main_usages.inject([]) { |memo, u| memo << ((memo.last || 
     var chart = new Highcharts.Chart({
       chart: {
         renderTo: 'usage_per_day',
-        marginTop: 80,
+        marginTop: 100,
         backgroundColor: '#EEE'
       },
       title: {
-        text: '<%= title %>'
+        text: "VPV per day, total and averages"
+      },
+      subtitle: {
+         text: '<%= "#{l(stats_from, :format => :seconds_timezone)} - #{l(Time.now, :format => :seconds_timezone)}" %>',
+         x: -20
       },
       xAxis: {
         type: 'datetime',
@@ -55,7 +57,7 @@ total_main_usages   = main_usages.inject([]) { |memo, u| memo << ((memo.last || 
       },
       legend: {
         verticalAlign: 'top',
-        y: 30,
+        y: 50,
         width: 950,
         symbolWidth: 12,
         backgroundColor: '#FFFFFF',
@@ -163,36 +165,8 @@ total_main_usages   = main_usages.inject([]) { |memo, u| memo << ((memo.last || 
           data: <%= total_all_usages %>
         }
       ],
-      plotOptions: {
-        column: {
-          pointInterval: <%= interval * 1000 %>,
-          pointStart: <%= stats_from.to_i * 1000 %>,
-          stacking: 'normal',
-          shadow: false
-        },
-        line: {
-          pointInterval: <%= interval * 1000 %>,
-          pointStart: <%= stats_from.to_i * 1000 %>,
-          lineWidth: 2,
-          marker: {
-            enabled: false
-          },
-          shadow: false,
-          states: {
-            hover: {
-              lineWidth: 2,
-              marker: {
-                enabled: true
-              }
-            }
-          }
-        }
-      },
-      credits: {
-        enabled: true,
-        text: "Generation time: <%= Time.now.to_s(:format => :fully_full) %> / Copyright © <%= Date.today.year %> - SublimeVideo®",
-        href: "http://sublimevideo.net"
-      }
+      plotOptions: <%= raw plot_options(stats_from).to_json %>,
+      credits: <%= raw credits.to_json %>
     });
   });
 </script>
