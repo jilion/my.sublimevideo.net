@@ -3,7 +3,7 @@ class SitesController < ApplicationController
   respond_to :js, :only => [:index, :code, :new]
   
   before_filter :redirect_suspended_user
-  before_filter :find_by_token, :only => [:code, :edit, :update, :destroy, :usage]
+  before_filter :find_by_token, :only => [:code, :edit, :update, :activate, :destroy, :usage]
   before_filter :redirect_wrong_password_for_active_site!, :only => [:update, :activate, :destroy]
   
   has_scope :by_hostname
@@ -48,7 +48,6 @@ class SitesController < ApplicationController
   
   # PUT /sites/1/activate
   def activate
-    @site = current_user.sites.dev.find_by_token(params[:id])
     @site.activate
     respond_with(@site, :location => sites_path)
   end
