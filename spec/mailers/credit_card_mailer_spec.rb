@@ -41,7 +41,7 @@ describe CreditCardMailer do
     end
     
     it "should set a body that contain the link to edit the credit card" do
-      @last_delivery.body.raw_source.should include "https://#{ActionMailer::Base.default_url_options[:host]}/card/edit"
+      @last_delivery.body.encoded.should include "https://#{ActionMailer::Base.default_url_options[:host]}/card/edit"
     end
   end
   
@@ -56,7 +56,7 @@ describe CreditCardMailer do
     end
     
     it "should set a body that contains the link to edit the credit card" do
-      @last_delivery.body.raw_source.should include "https://#{ActionMailer::Base.default_url_options[:host]}/card/edit"
+      @last_delivery.body.encoded.should include "https://#{ActionMailer::Base.default_url_options[:host]}/card/edit"
     end
   end
   

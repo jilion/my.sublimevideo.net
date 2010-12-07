@@ -60,7 +60,7 @@ end
 Factory.define :mail_template, :class => MailTemplate do |f|
   f.sequence(:title) { |n| "Pricing survey #{n}" }
   f.subject          "{{user.full_name}} ({{user.email}}), help us shaping the right pricing"
-  f.body             "Hi {{user.full_name}} ({{user.email}}), please respond to the survey, by clicking on the following link:\nhttp://survey.com"
+  f.body             "Hi {{user.full_name}} ({{user.email}}), please respond to the survey, by clicking on the following link:\r\nhttp://survey.com"
 end
 
 Factory.define :mail_log, :class => MailLog do |f|
@@ -93,6 +93,9 @@ Factory.define :invoice do |f|
   f.ended_at             { Time.now.utc.end_of_month }
   f.invoice_items_amount 10000
   f.amount               10000
+  f.vat_rate             0.08
+  f.vat_amount           800
+  f.transaction_fees     100
 end
 
 Factory.define :invoice_item do |f|

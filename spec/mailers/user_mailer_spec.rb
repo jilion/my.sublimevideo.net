@@ -42,8 +42,8 @@ describe UserMailer do
       end
       
       it "should set a body that contain infos" do
-        @last_delivery.body.raw_source.should include "your account has been suspended!"
-        @last_delivery.body.raw_source.should include I18n.t("user.account_suspended.credit_card_charging_impossible")
+        @last_delivery.body.encoded.should include "your account has been suspended!"
+        @last_delivery.body.encoded.should include I18n.t("user.account_suspended.credit_card_charging_impossible")
       end
     end
   end
@@ -59,7 +59,7 @@ describe UserMailer do
     end
     
     it "should set a body that contain infos" do
-      @last_delivery.body.raw_source.should include "your account has been un-suspended!"
+      @last_delivery.body.encoded.should include "your account has been un-suspended!"
     end
   end
   

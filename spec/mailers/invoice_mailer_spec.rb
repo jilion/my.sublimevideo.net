@@ -7,20 +7,33 @@ describe InvoiceMailer do
   end
   subject { @invoice }
   
-  describe "common checks" do
-    %w[invoice_completed charging_failed].each do |mail|
-      before(:each) do
-        ActionMailer::Base.deliveries.clear
-        InvoiceMailer.send(mail, subject).deliver
-        @last_delivery = ActionMailer::Base.deliveries.last
-      end
-      
-      specify do
-        ActionMailer::Base.deliveries.size.should == 1
-        @last_delivery.from.should == ["noreply@sublimevideo.net"]
-        @last_delivery.to.should == [subject.user.email]
-        @last_delivery.content_type.should == "text/plain; charset=UTF-8"
-      end
+  describe "invoice_completed common checks" do
+    before(:each) do
+      ActionMailer::Base.deliveries.clear
+      InvoiceMailer.invoice_completed(subject).deliver
+      @last_delivery = ActionMailer::Base.deliveries.last
+    end
+    
+    specify do
+      ActionMailer::Base.deliveries.size.should == 1
+      @last_delivery.from.should == ["noreply@sublimevideo.net"]
+      @last_delivery.to.should == [subject.user.email]
+      @last_delivery.content_type.should =~ /multipart\/mixed; boundary=\".+\"; charset=UTF-8/
+    end
+  end
+  
+  describe "charging_failed common checks" do
+    before(:each) do
+      ActionMailer::Base.deliveries.clear
+      InvoiceMailer.charging_failed(subject).deliver
+      @last_delivery = ActionMailer::Base.deliveries.last
+    end
+    
+    specify do
+      ActionMailer::Base.deliveries.size.should == 1
+      @last_delivery.from.should == ["noreply@sublimevideo.net"]
+      @last_delivery.to.should == [subject.user.email]
+      @last_delivery.content_type.should == "text/plain; charset=UTF-8"
     end
   end
   
@@ -32,8 +45,9 @@ describe InvoiceMailer do
     
     specify do
       @last_delivery.subject.should == "January 2010 invoice is ready to be charged."
-      @last_delivery.body.raw_source.should include "if you have any question or doubt about its content, please use our support form:"
-      @last_delivery.body.raw_source.should include "/support"
+      @last_delivery.body.encoded.should include "if you have any question or doubt about its content, please use our support form:"
+      @last_delivery.body.encoded.should include "/support"
+      @last_delivery.attachments["invoice_#{subject.ended_at.month}_#{subject.ended_at.year}.pdf"].should be_present
     end
   end
   
@@ -45,7 +59,7 @@ describe InvoiceMailer do
     
     specify do
       @last_delivery.subject.should == "January 2010 invoice charging has failed."
-      @last_delivery.body.raw_source.should include "Please update your credit card information here: http://my.sublimevideo.net/card/edit"
+      @last_delivery.body.encoded.should include "Please update your credit card information here: http://my.sublimevideo.net/card/edit"
     end
   end
   

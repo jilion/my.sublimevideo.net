@@ -46,8 +46,8 @@ describe MailMailer do
     end
     
     it "should set the body to Liquidified-simple_formated-auto_linked template.body" do
-      @last_delivery.body.raw_source.should == Liquid::Template.parse(@template.body).render("user" => subject)
-      @last_delivery.body.raw_source.should == "Hi John Doe (#{subject.email}), please respond to the survey, by clicking on the following link:\nhttp://survey.com"
+      @last_delivery.body.encoded.should == Liquid::Template.parse(@template.body).render("user" => subject)
+      @last_delivery.body.encoded.should == "Hi John Doe (#{subject.email}), please respond to the survey, by clicking on the following link:\r\nhttp://survey.com"
     end
   end
   
