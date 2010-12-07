@@ -18,9 +18,7 @@ feature "Mail logs show:" do
     page.should have_content(mail_log.template.title)
     page.should have_content(mail_log.template.subject)
     
-    mail_log.template.body.split("\n").each do |body_parts|
-      page.should have_content(body_parts)
-    end
+    page.should have_content(mail_log.template.body)
     
     page.should have_content(mail_log.admin_id.to_s)
     page.should have_content(mail_log.template_id.to_s)

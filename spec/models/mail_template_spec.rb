@@ -7,7 +7,7 @@ describe MailTemplate do
     
     its(:title)   { should =~ /Pricing survey \d+/ }
     its(:subject) { should == "{{user.full_name}} ({{user.email}}), help us shaping the right pricing" }
-    its(:body)    { should == "Hi {{user.full_name}} ({{user.email}}), please respond to the survey, by clicking on the following link:\nhttp://survey.com" }
+    its(:body)    { should == "Hi {{user.full_name}} ({{user.email}}), please respond to the survey, by clicking on the following link: http://survey.com" }
     
     it { should be_valid }
   end

@@ -45,7 +45,7 @@ feature "Sticky notices" do
   
   feature "user will be suspended" do
     background do
-      sign_in_as :user, :suspending_delayed_job_id => 1
+      sign_in_as :user, :suspend => true
     end
     
     scenario "show a notice" do
@@ -58,7 +58,7 @@ feature "Sticky notices" do
   
   feature "user will be suspended and credit card will expire this month" do
     background do
-      sign_in_as :user, :suspending_delayed_job_id => 1, :cc_expire_on => Time.now.utc
+      sign_in_as :user, :suspend => true, :cc_expire_on => Time.now.utc
     end
     
     scenario "show a notice" do
@@ -71,7 +71,7 @@ feature "Sticky notices" do
   
   feature "user will be suspended and credit card is expired" do
     background do
-      sign_in_as :user, :suspending_delayed_job_id => 1, :cc_expire_on => 2.month.ago
+      sign_in_as :user, :suspend => true, :cc_expire_on => 2.month.ago
     end
     
     scenario "show a notice" do
