@@ -44,12 +44,12 @@ class User < ActiveRecord::Base
   scope :use_company,     where(:use_company => true)
   scope :use_clients,     where(:use_clients => true)
   # sort
-  scope :by_name_or_email, lambda { |way = 'asc'| order("#{User.quoted_table_name}.first_name #{way}, #{User.quoted_table_name}.email #{way}") }
-  scope :by_beta,          lambda { |way = 'desc'| order("#{User.quoted_table_name}.invitation_token #{way}") }
-  scope :by_date,          lambda { |way = 'desc'| order("#{User.quoted_table_name}.created_at #{way}") }
+  scope :by_name_or_email, lambda { |way = 'asc'| order(:first_name.send(way), :email.send(way)) }
+  scope :by_beta,          lambda { |way = 'desc'| order(:invitation_token.send(way)) }
+  scope :by_date,          lambda { |way = 'desc'| order(:created_at.send(way)) }
   
   # search
-  scope :search, lambda { |q| includes(:sites).where(["LOWER(#{User.quoted_table_name}.email) LIKE LOWER(?) OR LOWER(#{User.quoted_table_name}.first_name) LIKE LOWER(?) OR LOWER(#{User.quoted_table_name}.last_name) LIKE LOWER(?) OR LOWER(#{Site.quoted_table_name}.hostname) LIKE LOWER(?) OR LOWER(#{Site.quoted_table_name}.dev_hostnames) LIKE LOWER(?)", "%#{q}%", "%#{q}%", "%#{q}%", "%#{q}%", "%#{q}%"]) }
+  scope :search, lambda { |q| includes(:sites).where(["LOWER(email) LIKE LOWER(?) OR LOWER(first_name) LIKE LOWER(?) OR LOWER(last_name) LIKE LOWER(?) OR LOWER(hostname) LIKE LOWER(?) OR LOWER(dev_hostnames) LIKE LOWER(?)", "%#{q}%", "%#{q}%", "%#{q}%", "%#{q}%", "%#{q}%"]) }
   
   # ===============
   # = Validations =

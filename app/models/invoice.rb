@@ -26,10 +26,6 @@ class Invoice < ActiveRecord::Base
   validates :invoice_items_amount, :presence => true, :numericality => true
   validates :amount,               :presence => true, :numericality => true
   
-  # =============
-  # = Callbacks =
-  # =============
-  
   # =================
   # = State Machine =
   # =================

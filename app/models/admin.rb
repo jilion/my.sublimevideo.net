@@ -18,7 +18,7 @@ class Admin < ActiveRecord::Base
   # ==========
   # = Scopes =
   # ==========
-  scope :by_date, lambda { |way = 'desc'| order("#{Admin.quoted_table_name}.created_at #{way}") }
+  scope :by_date, lambda { |way = 'desc'| order(:created_at.send(way)) }
   
 end
 

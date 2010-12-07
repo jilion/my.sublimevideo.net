@@ -1,8 +1,5 @@
 class Stat
   
-  # ====================
-  # = Instance Methods =
-  # ====================
   def self.usages(start_date, end_date, options = {})
     conditions = {
       :day => {

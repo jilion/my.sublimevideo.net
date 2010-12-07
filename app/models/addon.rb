@@ -9,32 +9,12 @@ class Addon < ActiveRecord::Base
   has_and_belongs_to_many :sites
   has_many :invoice_items, :as => :item
   
-  # ==========
-  # = Scopes =
-  # ==========
-  
   # ===============
   # = Validations =
   # ===============
   
   validates :name, :presence => true, :uniqueness => true
   validates :price, :presence => true, :numericality => true
-  
-  # =============
-  # = Callbacks =
-  # =============
-  
-  # =================
-  # = State Machine =
-  # =================
-  
-  # =================
-  # = Class Methods =
-  # =================
-  
-  # ====================
-  # = Instance Methods =
-  # ====================
   
 end
 

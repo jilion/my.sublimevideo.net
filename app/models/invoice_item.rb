@@ -13,10 +13,6 @@ class InvoiceItem < ActiveRecord::Base
   
   delegate :user, :to => :site
   
-  # ==========
-  # = Scopes =
-  # ==========
-  
   # ===============
   # = Validations =
   # ===============
@@ -29,14 +25,6 @@ class InvoiceItem < ActiveRecord::Base
   validates :ended_at,   :presence => true
   validates :price,      :presence => true, :numericality => true
   validates :amount,     :presence => true, :numericality => true
-  
-  # =============
-  # = Callbacks =
-  # =============
-  
-  # =================
-  # = Class Methods =
-  # =================
   
   # ====================
   # = Instance Methods =

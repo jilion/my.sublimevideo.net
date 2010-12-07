@@ -16,8 +16,8 @@ class MailTemplate < ActiveRecord::Base
   # = Scopes =
   # ==========
   # sort
-  scope :by_title, lambda { |way = 'asc'| order("#{MailTemplate.quoted_table_name}.title #{way}") }
-  scope :by_date,  lambda { |way = 'desc'| order("#{MailTemplate.quoted_table_name}.created_at #{way}") }
+  scope :by_title, lambda { |way = 'asc'| order(:title.send(way)) }
+  scope :by_date,  lambda { |way = 'desc'| order(:created_at.send(way)) }
   
   # ===============
   # = Validations =
