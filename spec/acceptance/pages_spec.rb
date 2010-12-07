@@ -71,13 +71,12 @@ describe "Pages" do
           end
           
           current_url.should =~ %r(^http://[^/]+/suspended$)
-          VCR.use_cassette "ogone_visa_payment_2000_alias" do
-            click_button "Pay the January 2010 invoice"
-          end
-          
+          lambda { click_button "Pay the January 2010 invoice" }.should change(Delayed::Job, :count).by(1)
           current_url.should =~ %r(^http://[^/]+/suspended$)
           
-          @worker.work_off # delayed unsuspend is done
+          VCR.use_cassette "ogone_visa_payment_2000_alias" do
+            @worker.work_off
+          end
           
           visit '/suspended'
           current_url.should =~ %r(^http://[^/]+/sites$)
@@ -100,20 +99,18 @@ describe "Pages" do
           end
           
           current_url.should =~ %r(^http://[^/]+/suspended$)
-          VCR.use_cassette "ogone_visa_payment_2000_alias" do
-            click_button "Pay the January 2010 invoice"
-          end
-          
-          current_url.should =~ %r(^http://[^/]+/suspended$)
-          page.should_not have_content("January 2010")
+          page.should have_content("January 2010")
           page.should have_content("February 2010")
-          VCR.use_cassette "ogone_visa_payment_2000_alias" do
-            click_button "Pay the February 2010 invoice"
-          end
+          lambda { click_button "Pay the January 2010 invoice" }.should change(Delayed::Job, :count).by(1)
+          
+          current_url.should =~ %r(^http://[^/]+/suspended$)
+          lambda { click_button "Pay the February 2010 invoice" }.should change(Delayed::Job, :count).by(1)
           
           current_url.should =~ %r(^http://[^/]+/suspended$)
           
-          @worker.work_off # delayed unsuspend is done
+          VCR.use_cassette "ogone_visa_payment_2000_alias" do
+            @worker.work_off
+          end
           
           visit '/suspended'
           current_url.should =~ %r(^http://[^/]+/sites$)

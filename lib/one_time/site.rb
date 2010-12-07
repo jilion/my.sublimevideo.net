@@ -52,8 +52,8 @@ module OneTime
       end
       
       def set_beta_state
-        Site.update_all(:state => 'beta')
-        "#{Site.where(:state => 'beta').count} beta sites."
+        ::Site.update_all(:state => 'beta')
+        "#{::Site.where(:state => 'beta').count} beta sites."
       end
       
     end

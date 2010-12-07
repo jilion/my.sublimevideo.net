@@ -15,7 +15,7 @@
         == body {background:#fff;display:none;}
     /[if lte IE 8]
       = include_stylesheets(:style_ie, :embed_assets => false)
-    
+      
     = include_javascripts(:default)
     = yield :header
     = csrf_meta_tag
