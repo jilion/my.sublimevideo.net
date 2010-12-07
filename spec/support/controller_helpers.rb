@@ -87,6 +87,14 @@ module Spec
         @mock_ticket ||= mock_model(Ticket, stubs).as_null_object
       end
       
+      def mock_plan(stubs = {})
+        @mock_plan ||= mock_model(Plan, stubs)
+      end
+      
+      def mock_addon(stubs = {})
+        @mock_addon ||= mock_model(Addon, stubs)
+      end
+      
       def mock_invoice(stubs = {})
         @mock_invoice ||= mock_model(Invoice, stubs)
       end

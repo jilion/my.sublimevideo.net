@@ -46,7 +46,9 @@ class Site < ActiveRecord::Base
   scope :with_plan,   includes(:plan)
   scope :with_addons, includes(:addons)
   
+  scope :beta,         where(:state => 'beta')
   scope :dev,          where(:state => 'dev')
+  scope :active,       where(:state => 'active')
   scope :archived,     where(:state => 'archived')
   scope :not_archived, where(:state.not_eq => 'archived')
   # sort

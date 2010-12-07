@@ -4,14 +4,11 @@
       = "#{"DEV" if Rails.env.development?} MySublimeVideo"
       %em= "Admin"
   - if admin_signed_in?
-    -#.popup_menu
-    -#  %h3= link_to "Menu", "", :onclick => "return false"
-    -#  %ul
-    -#    %li.users{ :class => ('active' if controller_name == 'users') }= link_to "Users", admin_users_path
-    -#    %li.sites{ :class => ('active' if controller_name == 'sites') }= link_to "Sites", admin_sites_path
-    -#    %li.delayed_jobs{ :class => ('active' if controller_name == 'delayed_jobs') }= link_to "Delayed Jobs", admin_delayed_jobs_path
-    -#    %li.releases{ :class => ('active' if controller_name == 'releases') }= link_to "Player", admin_releases_path
-    -#    %li.admins{ :class => ('active' if controller_name == 'admins') }= link_to "Admins", admin_admins_path
+    .popup_menu
+      %h3= link_to "Menu", "", :onclick => "return false"
+      %ul
+        - [:plans, :addons].each do |name|
+          = activable_menu_item(:li, name, {}.reverse_merge!(:namespace => 'admin'))
     %ul#favorite_links
       - [:sites, :users, :stats, [:releases, { :link_text => "Player" }], :mails, [:delayed_jobs, { :urls => %w[djs], :link_text => "DJs" }], :admins].each do |r|
         - name = r.is_a?(Array) ? r[0] : r

@@ -1,0 +1,13 @@
+%table.main#plans
+  %tr
+    %th.title
+      .wrap
+        %strong= "Name"
+    %th= "VPV"
+    %th= "Price per month"
+    %th= "Overages price per #{Plan::OVERAGES_PLAYER_HITS_BLOCK} VPV"
+    %th= "# beta sites"
+    %th= "# dev sites"
+    %th= "# active sites"
+    %th= "Estimated revenue"
+  = render @plans

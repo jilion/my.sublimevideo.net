@@ -11,10 +11,6 @@ class Plan < ActiveRecord::Base
   has_many :sites
   has_many :invoice_items, :as => :item
   
-  # ==========
-  # = Scopes =
-  # ==========
-  
   # ===============
   # = Validations =
   # ===============
@@ -23,18 +19,6 @@ class Plan < ActiveRecord::Base
   validates :player_hits,   :presence => true, :numericality => true
   validates :price,         :presence => true, :numericality => true
   validates :overage_price, :presence => true, :numericality => true
-  
-  # =============
-  # = Callbacks =
-  # =============
-  
-  # =================
-  # = Class Methods =
-  # =================
-  
-  # ====================
-  # = Instance Methods =
-  # ====================
   
 end
 

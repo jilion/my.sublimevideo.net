@@ -122,7 +122,7 @@ MySublimeVideo.showTableSpinner = function() {
 };
 
 MySublimeVideo.showSiteEmbedCode = function(siteId) {
-  MySublimeVideo.openPopup(siteId, "embed_code_site", '/sites/'+siteId);
+  MySublimeVideo.openPopup(siteId, "embed_code_site", '/sites/'+siteId+'/code');
   return false;
 };
 

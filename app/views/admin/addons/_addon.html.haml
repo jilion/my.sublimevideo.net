@@ -1,0 +1,13 @@
+%tr{ :class => cycle("", "alt") }
+  %td.name
+    = addon.name.humanize
+  %td.price
+    = number_to_currency(addon.price/100.0)
+  %td.used_in_beta
+    = number_with_delimiter(addon.sites.beta.count)
+  %td.used_in_dev
+    = number_with_delimiter(addon.sites.dev.count)
+  %td.used_in_active
+    = number_with_delimiter(addon.sites.active.count)
+  %td.estimated_revenue
+    %strong= number_to_currency((addon.sites.active.count * addon.price)/100.0)
