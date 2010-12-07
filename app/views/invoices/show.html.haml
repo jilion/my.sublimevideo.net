@@ -1,16 +1,15 @@
-= title_and_content_header("Invoice: #{invoice_dates(@invoice)}")
+- invoice ||= @invoice
+= title_and_content_header("Invoice: #{invoice_dates(invoice)}")
 
 %table{ :border => 1 }
   %tr
-    %td
-      = render 'user_billing_info', :user => @invoice.user
-    %td
-      = render 'our_billing_info', :invoice => @invoice
+    %td= render "user_billing_info", :user => invoice.user
+    %td= render "our_billing_info", :invoice => invoice
 %hr
 
-= render "sites", :invoice => @invoice
+= render "sites", :invoice => invoice
 
-= render "total", :invoice => @invoice
+= render "total", :invoice => invoice
 
 %hr
-= charging_status(@invoice)
+= charging_status(invoice)
