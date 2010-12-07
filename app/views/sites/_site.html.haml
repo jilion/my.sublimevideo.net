@@ -1,5 +1,9 @@
 %tr{ :id => dom_id(site), :class => cycle("", "alt") }
-  %td.plan= site.plan.name.humanize
+  %td.plan
+    - if site.plan
+      = site.plan.name.humanize
+    - else
+      = "No plan"
   %td.site
     .wrap
       = link_to "http://#{hostname_with_path(site)}", :class => "external_link", :onclick => "window.open(this); return false", :title => hostname_with_path(site) do
@@ -26,7 +30,7 @@
   %td.code
     - if site.active?
       = link_to "Usage", "", :onclick => "return MySublimeVideo.showSiteUsage('#{site.token}')"
-    - else
+    - elsif site.dev?
       = form_for [:activate, site], :html => { "data-password-protected" => true } do |f|
         .actions
           = f.submit 'Activate', :class => "submit small"

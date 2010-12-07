@@ -52,7 +52,7 @@ feature "Sticky notices" do
       visit '/sites'
       
       current_url.should =~ %r(http://[^/]+/sites)
-      page.should have_content("You will be suspended on")
+      page.should have_content("You will be suspended in")
     end
   end
   
@@ -65,7 +65,7 @@ feature "Sticky notices" do
       visit '/sites'
       
       current_url.should =~ %r(http://[^/]+/sites)
-      page.should have_content("You will be suspended on")
+      page.should have_content("You will be suspended in")
     end
   end
   
@@ -78,7 +78,7 @@ feature "Sticky notices" do
       visit '/sites'
       
       current_url.should =~ %r(http://[^/]+/sites)
-      page.should have_content("You will be suspended on")
+      page.should have_content("You will be suspended in")
     end
   end
 end

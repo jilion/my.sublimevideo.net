@@ -21,7 +21,7 @@
       - current_user.invoices.each do |invoice|
         %li
           = raw "#{invoice_dates(invoice)} - #{content_tag(:em, charging_status(invoice))}"
-          = raw " (#{link_to("view details", invoice_path(invoice))})"
+          = raw " (#{link_to("view details", invoice_path(invoice, :format => 'pdf'))})"
   .spacer
   
 = render 'users/form'

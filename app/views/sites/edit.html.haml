@@ -1,4 +1,4 @@
-= title_and_content_header("Settings for #{content_tag(:strong, truncate_middle(@site.hostname, :length => 18))}")
+= title_and_content_header("Settings for #{content_tag(:strong, truncate_middle(@site.hostname, :length => 30))}")
 
 = form_for @site, :html => { :id => "edit_site_settings", "data-password-protected" => @site.active? } do |f|
   = render 'settings', :f => f
