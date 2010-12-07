@@ -78,13 +78,15 @@ class Site < ActiveRecord::Base
   before_save :prepare_cdn_update
   after_create :delay_ranks_update
   after_save :execute_cdn_update
+  # Temporary, used in lib/one_time/site.rb and lib/tasks/one_time.rake
+  after_update :set_state_to_dev, :if => lambda { |site| site.beta? }
   
   # =================
   # = State Machine =
   # =================
   
   state_machine :initial => :dev do
-    state :beta # Pending, using in lib/one_time/site.rb
+    state :beta # Temporary, used in lib/one_time/site.rb and lib/tasks/one_time.rake
     
     state :active do
       validates :hostname, :presence => true
@@ -295,6 +297,11 @@ private
     if @loader_needs_update || @license_needs_update
       Site.delay.update_loader_and_license(self.id, :loader => @loader_needs_update, :license => @license_needs_update)
     end
+  end
+  
+  # after_update
+  def set_state_to_dev
+    self.update_attribute(:state, 'dev')
   end
   
   # before_transition :to => :dev
