@@ -49,14 +49,24 @@ class Site < ActiveRecord::Base
   scope :dev,          where(:state => 'dev')
   scope :archived,     where(:state => 'archived')
   scope :not_archived, where(:state.not_eq => 'archived')
-  
+  # sort
   scope :by_hostname,    lambda { |way = 'asc'| order(:hostname.send(way)) }
   scope :by_user,        lambda { |way = 'desc'| includes(:user).order(:users => [:first_name.send(way), :email.send(way)]) }
   scope :by_state,       lambda { |way = 'desc'| order(:state.send(way)) }
   scope :by_google_rank, lambda { |way = 'desc'| where(:google_rank.gte => 0).order(:google_rank.send(way)) }
   scope :by_alexa_rank,  lambda { |way = 'desc'| where(:alexa_rank.gte => 1).order(:alexa_rank.send(way)) }
   scope :by_date,        lambda { |way = 'desc'| order(:created_at.send(way)) }
-  scope :search,         lambda { |q| includes(:user).where(["LOWER(#{Site.quoted_table_name}.hostname) LIKE LOWER(?) OR LOWER(#{Site.quoted_table_name}.dev_hostnames) LIKE LOWER(?) OR LOWER(#{User.quoted_table_name}.email) LIKE LOWER(?) OR LOWER(#{User.quoted_table_name}.first_name) LIKE LOWER(?) OR LOWER(#{User.quoted_table_name}.last_name) LIKE LOWER(?)", "%#{q}%", "%#{q}%", "%#{q}%", "%#{q}%", "%#{q}%"]) }
+  # scope :search,         lambda { |q| includes(:user).where(["LOWER(#{Site.quoted_table_name}.hostname) LIKE LOWER(?) OR LOWER(#{Site.quoted_table_name}.dev_hostnames) LIKE LOWER(?) OR LOWER(#{User.quoted_table_name}.email) LIKE LOWER(?) OR LOWER(#{User.quoted_table_name}.first_name) LIKE LOWER(?) OR LOWER(#{User.quoted_table_name}.last_name) LIKE LOWER(?)", "%#{q}%", "%#{q}%", "%#{q}%", "%#{q}%", "%#{q}%"]) }
+  # search
+  scope :search, lambda { |q|
+    joins(:user).
+    where(:lower.func(:email).matches % :lower.func("%#{q}%") \
+        | :lower.func(:first_name).matches % :lower.func("%#{q}%") \
+        | :lower.func(:last_name).matches % :lower.func("%#{q}%") \
+        | :lower.func(:hostname).matches % :lower.func("%#{q}%") \
+        | :lower.func(:dev_hostnames).matches % :lower.func("%#{q}%") \
+        | :lower.func(:extra_hostnames).matches % :lower.func("%#{q}%"))
+  }
   
   # ===============
   # = Validations =

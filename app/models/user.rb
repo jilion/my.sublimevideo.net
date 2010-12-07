@@ -47,9 +47,15 @@ class User < ActiveRecord::Base
   scope :by_name_or_email, lambda { |way = 'asc'| order(:first_name.send(way), :email.send(way)) }
   scope :by_beta,          lambda { |way = 'desc'| order(:invitation_token.send(way)) }
   scope :by_date,          lambda { |way = 'desc'| order(:created_at.send(way)) }
-  
   # search
-  scope :search, lambda { |q| includes(:sites).where(["LOWER(email) LIKE LOWER(?) OR LOWER(first_name) LIKE LOWER(?) OR LOWER(last_name) LIKE LOWER(?) OR LOWER(hostname) LIKE LOWER(?) OR LOWER(dev_hostnames) LIKE LOWER(?)", "%#{q}%", "%#{q}%", "%#{q}%", "%#{q}%", "%#{q}%"]) }
+  scope :search, lambda { |q|
+    joins(:sites).
+    where(:lower.func(:email).matches % :lower.func("%#{q}%") \
+        | :lower.func(:first_name).matches % :lower.func("%#{q}%") \
+        | :lower.func(:last_name).matches % :lower.func("%#{q}%") \
+        | :lower.func(:hostname).matches % :lower.func("%#{q}%") \
+        | :lower.func(:dev_hostnames).matches % :lower.func("%#{q}%"))
+  }
   
   # ===============
   # = Validations =
