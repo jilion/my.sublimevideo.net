@@ -2,6 +2,7 @@ module OneTime
   module Site
     
     class << self
+      
       # Method used in the 'one_time:update_invalid_sites' rake task
       def update_hostnames
         invalid_sites = ::Site.not_archived.reject { |s| s.valid? }
@@ -49,6 +50,12 @@ module OneTime
         result << "[After] #{invalid_sites.size - repaired_sites} invalid sites remaining!!"
         result
       end
+      
+      def set_beta_state
+        Site.update_all(:state => 'beta')
+        "#{Site.where(:state => 'beta').count} beta sites."
+      end
+      
     end
     
   end
