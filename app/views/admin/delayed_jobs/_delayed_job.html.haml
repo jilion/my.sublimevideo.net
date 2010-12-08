@@ -1,4 +1,4 @@
-%tr{ :id => dom_id(delayed_job), :class => cycle("", "alt ") + (recurring_job?(delayed_job) ? "recurring" : "") }
+%tr[delayed_job]{ :class => cycle("", "alt ") + (recurring_job?(delayed_job) ? "recurring" : "") }
   %td.name.left
     = link_to job_name(delayed_job), admin_delayed_job_path(delayed_job)
   %td.priority
@@ -19,4 +19,3 @@
     = delayed_job.locked_at.blank? ? "-" : button_to('Unlock', admin_delayed_job_path(delayed_job), :method => :put)
   %td.delete
     = button_to('Delete', admin_delayed_job_path(delayed_job), :confirm => 'Are you sure?', :method => :delete)
-    

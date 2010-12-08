@@ -1,4 +1,8 @@
 class Admin::DelayedJobsController < Admin::AdminController
+  respond_to :html
+  respond_to :js, :only => :index
+  
+  before_filter :find_by_id, :only => [:show, :update, :destroy]
   
   # GET /admin/djs
   def index
@@ -8,29 +12,30 @@ class Admin::DelayedJobsController < Admin::AdminController
   
   # GET /admin/djs/1
   def show
-    @delayed_job = Delayed::Job.find(params[:id])
     respond_with(@delayed_job)
   end
   
   # PUT /admin/djs/1
   def update
-    @delayed_job = Delayed::Job.find(params[:id])
     @delayed_job.update_attributes(:locked_at => nil, :locked_by => nil)
-    redirect_to admin_delayed_jobs_path
+    respond_with(@site, :location => admin_delayed_jobs_path)
   end
   
   # DELETE /admin/djs/1
   def destroy
-    @delayed_job = Delayed::Job.find(params[:id])
     @delayed_job.destroy
-    redirect_to admin_delayed_jobs_path
+    respond_with(@site, :location => admin_delayed_jobs_path)
   end
   
 protected
   
+  def find_by_id
+    @delayed_job = Delayed::Job.find(params[:id])
+  end
+  
   def sort_from_params
-    if key = params.keys.select{ |k| k =~ /by_(\w)+/ }.try(:first)
-      key.sub('by_', '').to_sym.send(params[key.to_sym])
+    if key = params.keys.detect { |k| k =~ /^by_(\w+)$/ }
+      $1.to_sym.send(params[key.to_sym])
     else
       :created_at.desc
     end

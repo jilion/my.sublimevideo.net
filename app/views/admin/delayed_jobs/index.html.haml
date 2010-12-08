@@ -1,22 +1,6 @@
 = title_and_content_header("Delayed jobs")
 
-= "Current server time: #{l(Time.now.utc, :format => :fully_full)}"
+= "Current UTC time: #{l(Time.now.utc, :format => :seconds_timezone)}"
 
-= image_tag "/images/embed/spinner.gif", :class => "spinner", :id => "table_spinner", :style => "display:none"
-%table.main#delayed_jobs
-  %tr
-    %th.name= "Name"
-    %th.priority= link_to_sort :priority, :remote => false
-    %th.run_at= link_to_sort :run_at, :default_way => 'desc', :default => true, :remote => false
-    %th.attempts= link_to_sort :attempts, :default_way => 'desc', :remote => false
-    %th.last_error= "Last error"
-    %th.locked_at= link_to_sort :locked_at, :reverse => true, :remote => false
-    %th.locked_by= link_to_sort :locked_by, :remote => false
-    %th.failed_at= link_to_sort :failed_at, :reverse => true, :remote => false
-    %th.unlock= "Unlock"
-    %th.delete= "Delete"
-  = render :partial => 'delayed_job', :collection => @delayed_jobs
-  
-.pagination_wrap
-  = remote_will_paginate(@delayed_jobs, :params => params.merge(:format => nil))
-  = page_entries_info(@delayed_jobs)
+#delayed_jobs_table_wrap
+  = render 'delayed_jobs'
