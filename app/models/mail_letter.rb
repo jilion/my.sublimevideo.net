@@ -11,13 +11,13 @@ class MailLetter
   # ====================
   
   def deliver_and_log
-    return nil unless @template.present? && @admin_id.present? && @criteria.present?
+    return nil if @template.blank? || @admin_id.blank? || @criteria.blank?
     
     users = case @criteria
             when 'dev'
               User.where(:email => ["thibaud@jilion.com", "remy@jilion.com", "zeno@jilion.com", "octave@jilion.com"])
             when 'with_invalid_site'
-              User.beta.includes(:sites).all.select { |u| u.sites.not_archived.any? { |s| !s.valid? } }
+              User.beta.joins(:sites).where(:sites => { :state.ne => 'archived' }).all.select { |u| u.sites.any? { |s| !s.valid? } }
             else
               User.send(@criteria)
             end

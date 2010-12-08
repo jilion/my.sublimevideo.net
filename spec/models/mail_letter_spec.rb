@@ -5,39 +5,40 @@ describe MailLetter do
   
   describe "Class Methods" do
     describe "#deliver_and_log" do
-      set(:user)          { Factory(:user) }
-      set(:admin)         { Factory(:admin) }
-      set(:attributes)    { { :admin_id => admin.id, :template_id => mail_template.id.to_s, :criteria => "with_activity" } }
-      set(:mail_template) { Factory(:mail_template) }
-      set(:mail_letter)   { MailLetter.new(attributes) }
-      
-      before(:each) { User.stub_chain(:with_activity).and_return([user]) }
+      before(:all) do
+        @user          = Factory(:user)
+        @site          = Factory(:site, :user => @user).tap { |site| site.update_attribute(:hostname, 'localhost') }
+        @admin         = Factory(:admin)
+        @mail_template = Factory(:mail_template)
+        @attributes    = { :admin_id => @admin.id, :template_id => @mail_template.id.to_s, :criteria => "with_invalid_site" }
+        @mail_letter   = MailLetter.new(@attributes)
+      end
+      subject { @mail_letter.deliver_and_log }
       
       it "should save all the data" do
-        ml = mail_letter.deliver_and_log
-        
-        ml.admin.should    == admin
-        ml.template.should == mail_template
-        ml.criteria.should == "with_activity"
-        ml.user_ids.should == [user.id]
-        ml.snapshot.should == mail_template.snapshotize
+        subject.admin.should    == @admin
+        subject.template.should == @mail_template
+        subject.criteria.should == "with_invalid_site"
+        subject.user_ids.should == [@user.id]
+        subject.snapshot.should == @mail_template.snapshotize
       end
       
       it "should keep a snapshot that doesn't change when the original template is modified" do
-        ml = mail_letter.deliver_and_log
+        subject
+        old_snapshot = @mail_template.snapshotize
+        @mail_template.reload.update_attributes(:title => "foo", :subject => "bar", :body => "John Doe")
         
-        old_snapshot = mail_template.snapshotize
-        mail_template.update_attributes(:title => "foo", :subject => "bar", :body => "John Doe")
-        
-        ml.snapshot.should_not == mail_template.reload.snapshotize
-        ml.snapshot.should     == old_snapshot
+        subject.snapshot.should_not == @mail_template.snapshotize
+        subject.snapshot.should == old_snapshot
       end
       
       context "with multiple users to send emails to" do
         context "with the 'dev' filter" do
-          set(:mail_letter_dev) { MailLetter.new(attributes.merge(:criteria => 'dev')) }
-          before(:each) { User.stub!(:where).with(:email => ["thibaud@jilion.com", "remy@jilion.com", "zeno@jilion.com", "octave@jilion.com"]).and_return([user]) }
-          subject { mail_letter_dev.deliver_and_log }
+          before(:all) do
+            @mail_letter = MailLetter.new(@attributes.merge(:criteria => 'dev'))
+          end
+          before(:each) { User.stub!(:where).with(:email => ["thibaud@jilion.com", "remy@jilion.com", "zeno@jilion.com", "octave@jilion.com"]).and_return([@user]) }
+          subject { @mail_letter.deliver_and_log }
           
           it "should delay delivery of mails" do
             lambda { subject }.should change(Delayed::Job.where(:handler.matches => "%deliver%"), :count).by(1)
@@ -53,7 +54,7 @@ describe MailLetter do
             subject
             @worker.work_off
             
-            ActionMailer::Base.deliveries.last.to.should == [user.email]
+            ActionMailer::Base.deliveries.last.to.should == [@user.email]
             ActionMailer::Base.deliveries.last.subject.should =~ /help us shaping the right pricing/
           end
           
@@ -62,48 +63,43 @@ describe MailLetter do
           end
         end
         
-        context "with the 'with_activity' filter" do
-          set(:user_with_activity1) { Factory(:user) }
-          set(:user_with_activity2) { Factory(:user) }
-          before(:each) { User.stub_chain(:with_activity).and_return([user, user_with_activity1, user_with_activity2]) }
-          subject { mail_letter.deliver_and_log }
-          
-          it "should delay delivery of mails" do
-            lambda do
-              subject
-            end.should change(Delayed::Job.where(:handler.matches => "%deliver%"), :count).by(3)
-          end
-          
-          it "should actually send email when workers do their jobs" do
-            subject
-            lambda { @worker.work_off }.should change(ActionMailer::Base.deliveries, :size).by(3)
-          end
-          
-          it "should send email to user with activity sites and should send appropriate template" do
-            ActionMailer::Base.deliveries.clear
-            subject
-            @worker.work_off
-            
-            ActionMailer::Base.deliveries.map(&:to).flatten.should == [user.email, user_with_activity1.email, user_with_activity2.email]
-            ActionMailer::Base.deliveries.last.subject.should =~ /help us shaping the right pricing/
-          end
-          
-          it "should create a new MailLog record" do
-            lambda { subject }.should change(MailLog, :count).by(1)
-          end
-        end
+        # context "with the 'with_activity' filter" do
+        #   set(:user_with_activity1) { Factory(:user) }
+        #   set(:user_with_activity2) { Factory(:user) }
+        #   before(:each) { User.stub_chain(:with_activity).and_return([user, user_with_activity1, user_with_activity2]) }
+        #   subject { mail_letter.deliver_and_log }
+        #   
+        #   it "should delay delivery of mails" do
+        #     lambda do
+        #       subject
+        #     end.should change(Delayed::Job.where(:handler.matches => "%deliver%"), :count).by(3)
+        #   end
+        #   
+        #   it "should actually send email when workers do their jobs" do
+        #     subject
+        #     lambda { @worker.work_off }.should change(ActionMailer::Base.deliveries, :size).by(3)
+        #   end
+        #   
+        #   it "should send email to user with activity sites and should send appropriate template" do
+        #     ActionMailer::Base.deliveries.clear
+        #     subject
+        #     @worker.work_off
+        #     
+        #     ActionMailer::Base.deliveries.map(&:to).flatten.should == [user.email, user_with_activity1.email, user_with_activity2.email]
+        #     ActionMailer::Base.deliveries.last.subject.should =~ /help us shaping the right pricing/
+        #   end
+        #   
+        #   it "should create a new MailLog record" do
+        #     lambda { subject }.should change(MailLog, :count).by(1)
+        #   end
+        # end
         
         context "with the 'with_invalid_site' filter" do
-          set(:user_with_invalid_site)   { Factory(:user, :invitation_token => nil) }
-          set(:user_with_invalid_site2)  { Factory(:user, :invitation_token => nil) }
-          set(:mail_letter_invalid_site) { MailLetter.new(attributes.merge(:criteria => 'with_invalid_site')) }
           before(:all) do
-            invalid_site = Factory.build(:site, :user => user_with_invalid_site, :hostname => 'test')
-            invalid_site.save(:validate => false)
-            archived_invalid_site = Factory.build(:site, :user => user_with_invalid_site2, :state => 'archived', :hostname => 'test')
-            archived_invalid_site.save(:validate => false)
+            @user2 = Factory(:user, :invitation_token => nil)
+            Factory(:site, :user => @user2).tap { |site| site.update_attributes(:state => 'archived', :hostname => 'localhost') }
           end
-          subject { mail_letter_invalid_site.deliver_and_log }
+          subject { MailLetter.new(@attributes.merge(:criteria => 'with_invalid_site')).deliver_and_log }
           
           it "should delay delivery of mails" do
             lambda { subject }.should change(Delayed::Job.where(:handler.matches => "%deliver%"), :count).by(1)
@@ -119,7 +115,7 @@ describe MailLetter do
             subject
             @worker.work_off
             
-            ActionMailer::Base.deliveries.last.to.should == [user_with_invalid_site.email]
+            ActionMailer::Base.deliveries.last.to.should == [@user.email]
             ActionMailer::Base.deliveries.last.subject.should =~ /help us shaping the right pricing/
           end
           

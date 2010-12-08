@@ -64,36 +64,36 @@ describe "Mails" do
       @mail_template = Factory(:mail_template)
     end
     
-    context "choosing 'with activity' criteria" do
-      background do
-        User.stub_chain(:with_activity).and_return { [@user] }
-        ActionMailer::Base.deliveries.clear
-      end
-      
-      scenario "should be possible to send an email from a template to a selection of users" do
-        visit "/admin/mails/new"
-        
-        page.should have_content("Send a mail")
-        ActionMailer::Base.deliveries.should be_empty
-        
-        select @mail_template.title, :from => "Template"
-        select "with activity", :from => "Criteria"
-        click_button "Send mail"
-        
-        current_url.should =~ %r(http://[^/]+/admin/mails)
-        
-        page.should have_content("Sending in progress...")
-        
-        Delayed::Job.where(:handler.matches => "%deliver_and_log%").count.should == 1
-        lambda { @worker.work_off }.should change(ActionMailer::Base.deliveries, :count).by(1)
-        
-        latest_log = MailLog.by_date.first
-        latest_log.template_id.should == @mail_template.id
-        latest_log.admin_id.should == @admin.id
-        latest_log.snapshot.should == @mail_template.snapshotize
-        latest_log.criteria.should == "with_activity"
-      end
-    end
+    # context "choosing 'with activity' criteria" do
+    #   background do
+    #     User.stub_chain(:with_activity).and_return { [@user] }
+    #     ActionMailer::Base.deliveries.clear
+    #   end
+    #   
+    #   scenario "should be possible to send an email from a template to a selection of users" do
+    #     visit "/admin/mails/new"
+    #     
+    #     page.should have_content("Send a mail")
+    #     ActionMailer::Base.deliveries.should be_empty
+    #     
+    #     select @mail_template.title, :from => "Template"
+    #     select "with activity", :from => "Criteria"
+    #     click_button "Send mail"
+    #     
+    #     current_url.should =~ %r(http://[^/]+/admin/mails)
+    #     
+    #     page.should have_content("Sending in progress...")
+    #     
+    #     Delayed::Job.where(:handler.matches => "%deliver_and_log%").count.should == 1
+    #     lambda { @worker.work_off }.should change(ActionMailer::Base.deliveries, :count).by(1)
+    #     
+    #     latest_log = MailLog.by_date.first
+    #     latest_log.template_id.should == @mail_template.id
+    #     latest_log.admin_id.should == @admin.id
+    #     latest_log.snapshot.should == @mail_template.snapshotize
+    #     latest_log.criteria.should == "with_activity"
+    #   end
+    # end
     
     context "choosing 'with invalid site' criteria" do
       let(:user_with_invalid_site) { Factory(:user, :invitation_token => nil) }

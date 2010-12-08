@@ -7,7 +7,7 @@ describe MailLog do
     
     its(:template) { should be_present }
     its(:admin)    { should be_present }
-    its(:criteria) { should == ["with_activity"] }
+    its(:criteria) { should == ["with_invalid_site"] }
     its(:user_ids) { should == [1,2,3,4,5] }
     
     it { should be_valid }
