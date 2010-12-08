@@ -384,7 +384,7 @@ describe User do
       
       it "should delay charging in Billing.days_before_suspend_user.days.from_now by default" do
         subject
-        Delayed::Job.last.run_at.should be_within(3).of(Billing.days_before_suspend_user.days.from_now) # seconds of tolerance
+        Delayed::Job.last.run_at.should be_within(5).of(Billing.days_before_suspend_user.days.from_now) # seconds of tolerance
       end
       
       it "should set suspending_delayed_job_id" do

@@ -26,6 +26,11 @@ protected
     current_admin.try(:id) rescue nil
   end
   
+  def zeno?
+    (admin_signed_in? && current_admin.email == "zeno@jilion.com") || Rails.env.development?
+  end
+  helper_method :zeno?
+  
   module DeviseInvitable::Controllers::Helpers
   protected
     def authenticate_inviter!

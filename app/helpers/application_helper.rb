@@ -7,7 +7,7 @@ module ApplicationHelper
   end
   
   def display_date(date)
-    date ? l(date, :format => :semi_full) : "-"
+    date ? l(date, :format => :minutes_timezone) : "-"
   end
   
 end

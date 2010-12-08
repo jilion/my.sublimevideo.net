@@ -7,10 +7,10 @@
     .popup_menu
       %h3= link_to "Menu", "", :onclick => "return false"
       %ul
-        - [:plans, :addons].each do |name|
+        - [:plans, :addons, :mails, :admins].each do |name|
           = activable_menu_item(:li, name, {}.reverse_merge!(:namespace => 'admin'))
     %ul#favorite_links
-      - [:sites, :users, :stats, [:releases, { :link_text => "Player" }], :mails, [:delayed_jobs, { :urls => %w[djs], :link_text => "DJs" }], :admins].each do |r|
+      - [:sites, :users, :stats, [:releases, { :link_text => "Player" }], [:delayed_jobs, { :urls => %w[djs], :link_text => "DJs" }]].each do |r|
         - name = r.is_a?(Array) ? r[0] : r
         - if zeno? || name != :releases || Rails.env.development?
           = activable_menu_item(:li, name, (r.is_a?(Array) ? r[1] : {}).reverse_merge!(:namespace => 'admin'))

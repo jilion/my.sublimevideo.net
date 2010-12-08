@@ -1,5 +1,4 @@
 %p
-  - sites = Site.scoped
-  = link_to "All (#{sites.count})", admin_sites_path(:archived_included => true)
+  = link_to "All (#{Site.count})", admin_sites_path(:archived_included => true)
   |
-  = link_to "Active (#{sites.not_archived.count})", admin_sites_path
+  = link_to "Active (#{Site.not_archived.count})", admin_sites_path

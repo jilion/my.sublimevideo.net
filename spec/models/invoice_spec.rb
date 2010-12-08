@@ -298,13 +298,13 @@ describe Invoice do
           it "should delay suspend user in Billing.days_before_suspend_user days" do
             lambda { subject.fail }.should change(Delayed::Job, :count).by(2)
             Delayed::Job.where(:handler.matches => "%Class%suspend%").count.should == 1
-            Delayed::Job.where(:handler.matches => "%Class%suspend%").first.run_at.should be_within(3).of(Billing.days_before_suspend_user.days.from_now) # seconds of tolerance
+            Delayed::Job.where(:handler.matches => "%Class%suspend%").first.run_at.should be_within(5).of(Billing.days_before_suspend_user.days.from_now) # seconds of tolerance
           end
           
           it "should delay suspend user in Billing.days_before_suspend_user days" do
             lambda { subject.fail }.should change(Delayed::Job, :count).by(2)
             Delayed::Job.where(:handler.matches => "%Class%charge%").count.should == 1
-            Delayed::Job.where(:handler.matches => "%Class%charge%").first.run_at.should be_within(3).of(Billing.hours_between_retries_before_user_suspend.hours.from_now) # seconds of tolerance
+            Delayed::Job.where(:handler.matches => "%Class%charge%").first.run_at.should be_within(5).of(Billing.hours_between_retries_before_user_suspend.hours.from_now) # seconds of tolerance
           end
         end
       end
@@ -536,8 +536,8 @@ describe Invoice do
         
         it "should delay charge in Billing.days_before_charging days from now" do
           subject
-          Delayed::Job.find(@user1.invoices[0].charging_delayed_job_id).run_at.should be_within(3).of(Billing.days_before_charging.days.from_now) # seconds of tolerance
-          Delayed::Job.find(@user2.invoices[0].charging_delayed_job_id).run_at.should be_within(3).of(Billing.days_before_charging.days.from_now) # seconds of tolerance
+          Delayed::Job.find(@user1.invoices[0].charging_delayed_job_id).run_at.should be_within(5).of(Billing.days_before_charging.days.from_now) # seconds of tolerance
+          Delayed::Job.find(@user2.invoices[0].charging_delayed_job_id).run_at.should be_within(5).of(Billing.days_before_charging.days.from_now) # seconds of tolerance
         end
       end
       
@@ -680,7 +680,7 @@ describe Invoice do
                 end
                 it "should delay charging in 2**#{attempts} hours " do
                   subject
-                  Delayed::Job.last.run_at.should be_within(3).of((2**@invoice.reload.attempts).hours.from_now) # seconds of tolerance
+                  Delayed::Job.last.run_at.should be_within(5).of((2**@invoice.reload.attempts).hours.from_now) # seconds of tolerance
                 end
                 it "should set charging_delayed_job_id to the new delayed job created" do
                   @invoice.charging_delayed_job_id.should == 1
@@ -738,7 +738,7 @@ describe Invoice do
               end
               it "should delay user.suspend in Billing.days_before_suspend_user days" do
                 subject
-                Delayed::Job.where(:handler.matches => "%Class%suspend%").last.run_at.should be_within(3).of(Billing.days_before_suspend_user.days.from_now) # seconds of tolerance
+                Delayed::Job.where(:handler.matches => "%Class%suspend%").last.run_at.should be_within(5).of(Billing.days_before_suspend_user.days.from_now) # seconds of tolerance
               end
               it "should delay Invoice.charge" do
                 lambda { subject }.should change(Delayed::Job, :count).by(2)
@@ -746,7 +746,7 @@ describe Invoice do
               end
               it "should delay Invoice.charge in Billing.hours_between_retries_before_user_suspend hours" do
                 subject
-                Delayed::Job.where(:handler.matches => "%Class%charge%").last.run_at.should be_within(3).of(Billing.hours_between_retries_before_user_suspend.hours.from_now) # seconds of tolerance
+                Delayed::Job.where(:handler.matches => "%Class%charge%").last.run_at.should be_within(5).of(Billing.hours_between_retries_before_user_suspend.hours.from_now) # seconds of tolerance
               end
             end
             describe "send mail" do
