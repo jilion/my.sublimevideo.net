@@ -497,7 +497,7 @@ describe Site do
   
   # 26.7s
   describe "Instance Methods" do
-    describe "settings_changed?" do
+    describe "#settings_changed?" do
       subject { Factory(:site) }
       
       it "should return false if no attribute has changed" do
@@ -512,7 +512,7 @@ describe Site do
       end
     end
     
-    describe "addon_ids_changed?" do
+    describe "#addon_ids_changed?" do
       let(:addon1) { Factory(:addon) }
       let(:addon2) { Factory(:addon) }
       subject { Factory(:site) }
@@ -527,45 +527,60 @@ describe Site do
       end
     end
     
-    describe "template_hostnames" do
-      set(:site_for_template) { Factory(:site, :hostname => "jilion.com", :extra_hostnames => "jilion.net, jilion.org", :dev_hostnames => '127.0.0.1,localhost', :path => 'foo', :wildcard => true, :addons => [Factory(:addon, :name => 'ssl_gold'), Factory(:addon, :name => 'customization')]) }
+    describe "#template_hostnames" do
+      before(:all) do
+        @site = Factory(:site, :hostname => "jilion.com", :extra_hostnames => "jilion.net, jilion.org", :dev_hostnames => '127.0.0.1,localhost', :path => 'foo', :wildcard => true, :addons => [Factory(:addon, :name => 'ssl_gold'), Factory(:addon, :name => 'customization')])
+        @site.plan = nil
+        @site.save(:validate => false)
+      end
+      subject { @site }
       
       context "site is not active" do
         it "should include only dev hostnames" do
-          site_for_template.template_hostnames.should == "'127.0.0.1','localhost'"
+          subject.reload.template_hostnames.should == "'127.0.0.1','localhost'"
         end
       end
       
-      context "site is active" do
-        it "should include hostname, extra_hostnames, path, wildcard, addons' names & dev_hostnames" do
-          site_for_template.update_attribute(:state, 'active')
-          site_for_template.template_hostnames.should == "'jilion.com','jilion.net','jilion.org','path:foo','wildcard:true','addons:customization,ssl_gold','127.0.0.1','localhost'"
+      %w[beta active].each do |state|
+        context "site is #{state}" do
+          it "should include hostname, extra_hostnames, path, wildcard, addons' names & dev_hostnames" do
+            subject.reload.update_attribute(:state, state)
+            subject.state.should == state
+            subject.template_hostnames.should == "'jilion.com','jilion.net','jilion.org','path:foo','wildcard:true','addons:customization,ssl_gold','127.0.0.1','localhost'"
+          end
         end
       end
     end
     
-    describe "set_template" do
+    describe "#set_template" do
       context "license" do
-        let(:site_with_set_template_license) { Factory(:site).tap { |s| s.set_template("license") } }
+        before(:all) do
+          @site = Factory(:site).tap { |s| s.set_template("license") }
+        end
+        subject { @site }
         
         it "should set license file with template_hostnames" do
-          site_with_set_template_license.license.read.should include(site_with_set_template_license.template_hostnames)
+          subject.license.read.should include(subject.template_hostnames)
         end
       end
+      
       context "loader" do
-        set(:site_with_set_template_loader) { Factory(:site).tap { |s| s.set_template("loader") } }
+        before(:all) do
+          @site = Factory(:site).tap { |s| s.set_template("loader") }
+        end
+        subject { @site }
         
         it "should set loader file with token" do
-          site_with_set_template_loader.loader.read.should include(site_with_set_template_loader.token)
+          subject.loader.read.should include(subject.token)
         end
         
         it "should set loader file with stable player_mode" do
-          site_with_set_template_loader.loader.read.should include("http://cdn.sublimevideo.net/p/sublime.js?t=#{site_with_set_template_loader.token}")
+          subject.loader.read.should include("http://cdn.sublimevideo.net/p/sublime.js?t=#{subject.token}")
         end
       end
     end
     
-    describe "need_path?" do
+    describe "#need_path?" do
       it "should be true" do
         site = Factory(:site, :hostname => 'web.me.com')
         site.need_path?.should be_true
@@ -580,11 +595,11 @@ describe Site do
       end
     end
     
-    describe "referrer_type" do
+    describe "#referrer_type" do
       context "with versioning" do
         # 23s with 'subject' (each), 4s with 'set' (all)
-        set(:site_with_versioning) do
-          with_versioning do
+        before(:all) do
+          @site = with_versioning do
             Timecop.travel(1.day.ago)
             site = Factory(:site, :hostname => "jilion.com", :extra_hostnames => 'jilion.org, jilion.net', :dev_hostnames => "localhost, 127.0.0.1")
             site.activate
@@ -596,7 +611,7 @@ describe Site do
             site
           end
         end
-        subject { site_with_versioning }
+        subject { @site }
         
         it { subject.referrer_type("http://jilion.net").should == "main" }
         it { subject.referrer_type("http://jilion.com").should == "extra" }

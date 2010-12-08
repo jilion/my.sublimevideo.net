@@ -212,7 +212,7 @@ public
   
   def template_hostnames
     hostnames = []
-    if active?
+    if active? || beta?
       hostnames << hostname if hostname.present?
       hostnames += extra_hostnames.split(', ') if extra_hostnames.present?
       hostnames << "path:#{path}" if path.present?
@@ -278,7 +278,7 @@ private
   
   # validate
   def at_least_one_domain_set
-    unless active? || hostname.present? || dev_hostnames.present? || extra_hostnames.present?
+    if !active? && hostname.blank? && dev_hostnames.blank? && extra_hostnames.blank?
       self.errors.add(:base, :at_least_one_domain)
     end
   end
