@@ -5,7 +5,6 @@ describe Admin::SitesController do
   context "with logged in admin" do
     before :each do
       sign_in :admin, authenticated_admin
-      Site.stub(:find).with('1') { mock_site }
     end
     
     it "should respond with success to GET :index" do
@@ -15,19 +14,28 @@ describe Admin::SitesController do
     end
     
     it "should respond with success to GET :edit" do
-      Site.stub_chain(:includes, :find).with('1') { mock_site }
+      Site.stub_chain(:includes, :find_by_token).with('abc123') { mock_site }
       
-      get :edit, :id => '1'
+      get :edit, :id => 'abc123'
       response.should be_success
       response.should render_template(:edit)
     end
     
+    it "should respond with success to GET :edit" do
+      get :show, :id => 'abc123'
+      response.should redirect_to(edit_admin_site_url('abc123'))
+    end
+    
     describe "PUT :update" do
+      before(:each) do
+        Site.stub(:find_by_token).with('abc123') { mock_site }
+      end
+      
       it "should respond with redirect to successful PUT :update" do
         mock_site.stub(:player_mode=) { true }
         mock_site.stub(:save) { true }
         
-        put :update, :id => '1', :site => {}
+        put :update, :id => 'abc123', :site => {}
         response.should redirect_to(admin_sites_url)
       end
       
@@ -36,7 +44,7 @@ describe Admin::SitesController do
         mock_site.stub(:save) { false }
         mock_site.should_receive(:errors).any_number_of_times.and_return(["error"])
         
-        put :update, :id => '1', :site => {}
+        put :update, :id => 'abc123', :site => {}
         response.should be_success
         response.should render_template(:edit)
       end

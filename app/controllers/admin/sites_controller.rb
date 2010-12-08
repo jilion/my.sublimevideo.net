@@ -12,23 +12,28 @@ class Admin::SitesController < Admin::AdminController
   
   # GET /admin/sites
   def index
-    @sites = Site.includes(:user).by_date
+    @sites = Site.includes(:user)
     @sites = @sites.not_archived unless params[:archived_included]
-    respond_with(apply_scopes(@sites))
+    respond_with(apply_scopes(@sites).by_date)
+  end
+  
+  # GET /admin/sites/1
+  def show
+    redirect_to edit_admin_site_path(params[:id])
   end
   
   # GET /admin/sites/1/edit
   def edit
-    @site = Site.includes(:user).find(params[:id])
+    @site = Site.includes(:user).find_by_token(params[:id])
     respond_with(@site)
   end
   
   # PUT /admin/sites/1
   def update
-    @site = Site.find(params[:id])
+    @site = Site.find_by_token(params[:id])
     @site.player_mode = params[:site][:player_mode]
     @site.save
-    respond_with(@site, :location => admin_sites_path)
+    respond_with(@site, :location => [:admin, :sites])
   end
   
 end
