@@ -10,7 +10,7 @@ class Admin::MailTemplatesController < Admin::AdminController
   def create
     @mail_template = MailTemplate.new(params[:mail_template])
     @mail_template.save
-    respond_with(@mail_template, :location => admin_mails_url)
+    respond_with(@mail_template, :location => [:admin, :mails])
   end
   
   # GET /admin/mails/templates/1/edit
@@ -23,7 +23,7 @@ class Admin::MailTemplatesController < Admin::AdminController
   def update
     @mail_template = MailTemplate.find(params[:id])
     @mail_template.update_attributes(params[:mail_template])
-    respond_with(@mail_template, :location => edit_admin_mail_template_url(@mail_template))
+    respond_with(@mail_template, :location => [:edit,  :admin, @mail_template])
   end
   
 end

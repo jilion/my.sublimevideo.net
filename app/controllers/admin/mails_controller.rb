@@ -1,5 +1,4 @@
 class Admin::MailsController < Admin::AdminController
-  include ActionView::Helpers::TextHelper
   respond_to :js, :html
   
   # For MailLog
@@ -29,7 +28,7 @@ class Admin::MailsController < Admin::AdminController
   def create
     @mail_letter = MailLetter.new(params[:mail_log].merge(:admin_id => current_admin.id))
     @mail_letter.delay.deliver_and_log
-    redirect_to admin_mails_url, :notice => "Sending in progress..."
+    redirect_to [:admin, :mails], :notice => "Sending in progress..."
   end
   
 end

@@ -17,8 +17,8 @@ class Admin::UsersController < Admin::AdminController
   
   # GET /admin/users
   def index
-    @users = apply_scopes(User.includes(:sites).by_date)
-    respond_with(@users)
+    @users = User.includes(:sites)
+    respond_with(apply_scopes(@users).by_date)
   end
   
   # GET /admin/users/1

@@ -7,7 +7,7 @@ class Admin::Admins::InvitationsController < Devise::InvitationsController
     
     if resource.invited?
       set_flash_message(:notice, :send_instructions, :email => params[resource_name][:email])
-      redirect_to admin_admins_url
+      redirect_to [:admin, :admins]
     else
       render_with_scope :new
     end

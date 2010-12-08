@@ -15,7 +15,7 @@ class Admin::ReleasesController < Admin::AdminController
     @release = Release.new(params[:release])
     respond_with(@release) do |format|
       if @release.save
-        format.html { redirect_to admin_releases_path }
+        format.html { redirect_to [:admin, :releases] }
       else
         format.html { render :index }
       end
@@ -27,7 +27,7 @@ class Admin::ReleasesController < Admin::AdminController
     @release = Release.find(params[:id])
     respond_with(@release) do |format|
       if @release.flag
-        format.html { redirect_to admin_releases_path }
+        format.html { redirect_to [:admin, :releases] }
       else
         format.html { render :index }
       end

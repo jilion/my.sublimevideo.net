@@ -13,17 +13,17 @@ describe Admin::SitesController do
       response.should render_template(:index)
     end
     
+    it "should respond with redirect to GET :show" do
+      get :show, :id => 'abc123'
+      response.should redirect_to(edit_admin_site_url('abc123'))
+    end
+    
     it "should respond with success to GET :edit" do
       Site.stub_chain(:includes, :find_by_token).with('abc123') { mock_site }
       
       get :edit, :id => 'abc123'
       response.should be_success
       response.should render_template(:edit)
-    end
-    
-    it "should respond with success to GET :edit" do
-      get :show, :id => 'abc123'
-      response.should redirect_to(edit_admin_site_url('abc123'))
     end
     
     describe "PUT :update" do

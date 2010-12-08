@@ -11,7 +11,7 @@ class Admin::AdminsController < Admin::AdminController
   def destroy
     @admin = Admin.find(params[:id])
     @admin.destroy
-    respond_with(@admin, :location => admin_admins_path)
+    respond_with(@admin, :location => [:admin, :admins])
   end
   
 end
