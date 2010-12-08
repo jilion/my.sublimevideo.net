@@ -9,17 +9,19 @@ class Stat
     }
     conditions[:site_id] = options[:site_id].to_i if options[:site_id]
     
-    SiteUsage.collection.group(
+    usages = SiteUsage.collection.group(
       # "function(x) {
       #   return { 'day' : new Date(x.day.getFullYear(), x.day.getMonth(), x.day.getDate(), 0, 0, 0) };
       # }", # key used to group
       [:day],
       conditions,
-      { :loader_usage => 0,
+      {
+        :loader_usage => 0,
         :invalid_usage => 0, :invalid_usage_cached => 0,
         :dev_usage => 0, :dev_usage_cached => 0,
         :main_usage => 0, :main_usage_cached => 0,
-        :all_usage => 0 }, # memo variable name and initial value
+        :all_usage => 0
+      }, # memo variable name and initial value
       "function(doc, prev) {
         prev.loader_usage         += doc.loader_hits;
         prev.invalid_usage        += doc.invalid_player_hits;
@@ -31,6 +33,9 @@ class Stat
         prev.all_usage            += doc.player_hits;
       }" # reduce function
     )
+    (start_date.to_date..end_date.to_date).inject([]) do |memo, day|
+      memo << (usages.detect { |u| u["day"].to_date == day } || { "day" => day })
+    end
   end
   
 end

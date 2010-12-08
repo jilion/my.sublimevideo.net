@@ -3,42 +3,20 @@ from_days  ||= 60
 stats_from   = from_days.days.ago.beginning_of_day
 
 usages = Stat.usages(stats_from, Date.today)
-usages = (stats_from.to_date..Date.today).inject([]) do |memo, day|
-  usage_on_day = usages.detect { |u| u["day"].to_date == day }
-  memo << (usage_on_day ? usage_on_day : { "day" => day })
+usages = %w[loader_usage invalid_usage dev_usage main_usage all_usage invalid_usage_cached dev_usage_cached main_usage_cached].inject({}) do |memo, type|
+  memo[type] = usages.map { |u| u[type].to_i }
+  memo["total_#{type}"] = memo[type].inject([]) { |memo, u| memo << ((memo.last || 0) + u) }
+  memo
 end
-
-loader_usages  = usages.map { |u| u["loader_usage"].to_i }
-invalid_usages = usages.map { |u| u["invalid_usage"].to_i }
-dev_usages     = usages.map { |u| u["dev_usage"].to_i }
-main_usages    = usages.map { |u| u["main_usage"].to_i }
-all_usages     = usages.map { |u| u["all_usage"].to_i }
-
-total_loader_usages  = loader_usages.inject([]) { |memo, u| memo << ((memo.last || 0) + u) }
-total_invalid_usages = invalid_usages.inject([]) { |memo, u| memo << ((memo.last || 0) + u) }
-total_dev_usages     = dev_usages.inject([]) { |memo, u| memo << ((memo.last || 0) + u) }
-total_main_usages    = main_usages.inject([]) { |memo, u| memo << ((memo.last || 0) + u) }
-total_all_usages     = all_usages.inject([]) { |memo, u| memo << ((memo.last || 0) + u) }
-
-total_loader_usages = loader_usages.inject([]) { |memo, u| memo << ((memo.last || 0) + u) }
-total_all_usages    = all_usages.inject([]) { |memo, u| memo << ((memo.last || 0) + u) }
-total_main_usages   = main_usages.inject([]) { |memo, u| memo << ((memo.last || 0) + u) }
 %>
 <script type = "text/javascript" charset="utf-8">
   document.observe("dom:loaded", function() {
     var chart = new Highcharts.Chart({
-      chart: {
-        renderTo: 'usage_per_day',
-        marginTop: 100,
-        backgroundColor: '#EEE'
-      },
+      chart: <%= raw chart('usage_per_day').to_json %>,
       title: {
         text: "VPV per day, total and averages"
       },
-      subtitle: {
-         text: '<%= "#{l(stats_from, :format => :seconds_timezone)} - #{l(Time.now, :format => :seconds_timezone)}" %>',
-         x: -20
-      },
+      subtitle: <%= raw usage_date_subtitle(stats_from).to_json %>,
       xAxis: {
         type: 'datetime',
         showFirstLabel: true,
@@ -55,14 +33,7 @@ total_main_usages   = main_usages.inject([]) { |memo, u| memo << ((memo.last || 
           }
         }
       },
-      legend: {
-        verticalAlign: 'top',
-        y: 50,
-        width: 950,
-        symbolWidth: 12,
-        backgroundColor: '#FFFFFF',
-        borderColor: '#CCC'
-      },
+      legend: <%= raw usage_legend.to_json %>,
       tooltip: {
         formatter: function() {
           var date = "<strong>" + Highcharts.dateFormat("%B %e,  %Y", this.x) + "</strong><br/>";
@@ -80,92 +51,23 @@ total_main_usages   = main_usages.inject([]) { |memo, u| memo << ((memo.last || 
         }
       },
       series: [
-        {
-          type: 'column',
-          name: 'Loader',
-          visible: false,
-          color: '#AA0',
-          data: <%= loader_usages %>
-        },
-        {
-          type: 'column',
-          name: 'Invalid cached',
-          color: '#F80',
-          data: <%= usages.map { |u| u["invalid_usage_cached"].to_i } %>
-        },
-        {
-          type: 'column',
-          name: 'Invalid',
-          color: '#F00',
-          data: <%= invalid_usages %>
-        },
-        {
-          type: 'column',
-          name: 'Dev cached',
-          color: '#1C1',
-          data: <%= usages.map { |u| u["dev_usage_cached"].to_i } %>
-        },
-        {
-          type: 'column',
-          name: 'Dev',
-          color: '#3F3',
-          data: <%= dev_usages %>
-        },
-        {
-          type: 'column',
-          name: 'Main cached',
-          color: '#08F',
-          data: <%= usages.map { |u| u["main_usage_cached"].to_i } %>
-        },
-        {
-          type: 'column',
-          name: 'Main',
-          color: '#00F',
-          data: <%= main_usages %>
-        },
+        <%= raw serie(usages["loader_usage"], 'Loader', '#AA0', :visible => false).to_json %>,
+        <%= raw serie(usages["invalid_usage_cached"], 'Invalid cached', '#F80').to_json %>,
+        <%= raw serie(usages["invalid_usage"], 'Invalid', '#F00').to_json %>,
+        <%= raw serie(usages["dev_usage_cached"], 'Dev cached', '#1C1').to_json %>,
+        <%= raw serie(usages["dev_usage"], 'Dev', '#3F3').to_json %>,
+        <%= raw serie(usages["main_usage_cached"], 'Main cached', '#08F').to_json %>,
+        <%= raw serie(usages["main_usage"], 'Main', '#00F').to_json %>,
         
-        {
-          type: 'line',
-          name: 'AVG Loader',
-          visible: false,
-          color: '#FF0',
-          data: <%= Array.new.tap { |arr| total_loader_usages.each_with_index { |item, index| arr << (item / (index + 1)).to_i } } %>
-        },
-        {
-          type: 'line',
-          name: 'AVG Invalid',
-          visible: false,
-          color: '#FC3',
-          data: <%= Array.new.tap { |arr| total_invalid_usages.each_with_index { |item, index| arr << (item / (index + 1)).to_i } } %>
-        },
-        {
-          type: 'line',
-          name: 'AVG Dev',
-          visible: false,
-          color: '#090',
-          data: <%= Array.new.tap { |arr| total_dev_usages.each_with_index { |item, index| arr << (item / (index + 1)).to_i } } %>
-        },
-        {
-          type: 'line',
-          name: 'AVG Main',
-          color: '#0FF',
-          data: <%= Array.new.tap { |arr| total_main_usages.each_with_index { |item, index| arr << (item / (index + 1)).to_i } } %>
-        },
+        <%= raw serie(average_array(usages["total_loader_usage"]), 'AVG Loader', '#FF0', :type => 'line', :visible => false).to_json %>,
+        <%= raw serie(average_array(usages["total_invalid_usage"]), 'AVG Invalid', '#FC3', :type => 'line', :visible => false).to_json %>,
+        <%= raw serie(average_array(usages["total_dev_usage"]), 'AVG Dev', '#6F6', :type => 'line', :visible => false).to_json %>,
+        <%= raw serie(average_array(usages["total_main_usage"]), 'AVG Main', '#0FF', :type => 'line').to_json %>,
         
-        {
-          type: 'line',
-          name: 'TOT Main',
-          visible: false,
-          data: <%= total_main_usages %>
-        },
-        {
-          type: 'line',
-          name: 'TOT All',
-          visible: false,
-          data: <%= total_all_usages %>
-        }
+        <%= raw serie(usages["total_main_usage"], 'TOT Main', '', :type => 'line', :visible => false).to_json %>,
+        <%= raw serie(usages["total_all_usage"], 'TOT All', '', :type => 'line', :visible => false).to_json %>,
       ],
-      plotOptions: <%= raw plot_options(stats_from).to_json %>,
+      plotOptions: <%= raw usage_plot_options(stats_from).to_json %>,
       credits: <%= raw credits.to_json %>
     });
   });
