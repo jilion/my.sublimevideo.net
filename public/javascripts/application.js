@@ -86,9 +86,9 @@ MySublimeVideo.hideFlashMessageDelayed = function(flashEl) {
   }, 15000);
 };
 
-MySublimeVideo.openPopup = function(itemId, idPrefix, url) { // item can be site
+MySublimeVideo.openPopup = function(itemId, idPrefix, url, class_name) { // item can be site
   if (!MySublimeVideo.popupHandler) MySublimeVideo.popupHandler = new PopupHandler();
-  MySublimeVideo.popupHandler.open(itemId, idPrefix, url);
+  MySublimeVideo.popupHandler.open(itemId, idPrefix, url, class_name);
 };
 
 
@@ -122,12 +122,12 @@ MySublimeVideo.showTableSpinner = function() {
 };
 
 MySublimeVideo.showSiteEmbedCode = function(siteId) {
-  MySublimeVideo.openPopup(siteId, "embed_code_site", '/sites/'+siteId+'/code');
+  MySublimeVideo.openPopup(siteId, "embed_code_site", '/sites/'+siteId+'/code', 'popup');
   return false;
 };
 
 MySublimeVideo.showSiteUsage = function(siteId) {
-  MySublimeVideo.openPopup(siteId, "usage", '/sites/'+siteId+'/usage');
+  MySublimeVideo.openPopup(siteId, "usage", '/sites/'+siteId+'/usage', 'usage_popup');
   return false;
 };
 
@@ -236,7 +236,7 @@ var FormManager = Class.create({
 var PasswordCheckerManager = Class.create({
   initialize: function(originForm) {
     this.originForm = originForm;
-    MySublimeVideo.openPopup(0, "password_checker", null);
+    MySublimeVideo.openPopup(0, "password_checker", null, 'popup');
     this.popup = $("password_checker_0");
     
     if (this.popup) {
@@ -411,6 +411,7 @@ PopupHandler handles creation and behavior of SV pop-up (used for showing the em
 var PopupHandler = Class.create({
   initialize: function(popup) {
     this.keyDownHandler = document.on("keydown", this.keyDown.bind(this));
+    this.class_name = null;
   },
   startKeyboardObservers: function() {
     this.keyDownHandler.start();
@@ -418,7 +419,7 @@ var PopupHandler = Class.create({
   stopKeyboardObservers: function() {
     this.keyDownHandler.stop();
   },
-  open: function(itemId, idPrefix, url) {
+  open: function(itemId, idPrefix, url, class_name) {
     // Creates the base skeleton for the popup, and will render it's content via an ajax request:
     //
     // <div class='popup loading'>
@@ -428,12 +429,13 @@ var PopupHandler = Class.create({
     //   <a class='close'><span>Close</span></a>
     // </div>
     
+    this.class_name = class_name;
     this.close();
     
     var popupId = idPrefix + "_" + itemId;
     var popupLoading = new Element("div", {
       id:popupId,
-      className:"popup loading"
+      className: this.class_name + " loading"
     }).update("<div class='wrap'><div class='content "+idPrefix+"'></div></div>");
     var closeButton = new Element("a", {
       href:"",
@@ -453,7 +455,7 @@ var PopupHandler = Class.create({
   },
   close: function() {
     this.stopKeyboardObservers();
-    $$('.popup').each(function(el) {
+    $$('.' + this.class_name).each(function(el) {
       el.remove();
       // el.fade({ after :function(){ el.remove(); }});
     });

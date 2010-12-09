@@ -1,40 +1,58 @@
 class Stat
   
-  def self.usages(start_date, end_date, options = {})
-    conditions = {
-      :day => {
-        "$gte" => start_date.to_date.to_time.beginning_of_day,
-        "$lte" => end_date.to_date.to_time.end_of_day
+  class << self
+    def usages(start_date, end_date, options = {})
+      labels = options[:labels] || labels_to_fields_mapping.keys
+      conditions = {
+        :day => {
+          "$gte" => start_date.to_date.to_time.beginning_of_day,
+          "$lte" => end_date.to_date.to_time.end_of_day
+        }
       }
-    }
-    conditions[:site_id] = options[:site_id].to_i if options[:site_id]
+      conditions[:site_id] = options[:site_id].to_i if options[:site_id]
+      
+      usages = SiteUsage.collection.group(
+        [:day],
+        conditions,
+        {
+          :loader_usage => 0,
+          :invalid_usage => 0, :invalid_usage_cached => 0,
+          :dev_usage => 0, :dev_usage_cached => 0,
+          :main_usage => 0, :main_usage_cached => 0,
+          :all_usage => 0
+        }, # memo variable name and initial value
+        reduce(labels, options[:merge_cached])
+      )
+      
+      # insert empty hash for days without usage
+      usages = (start_date.to_date..end_date.to_date).inject([]) do |memo, day|
+        memo << (usages.detect { |u| u["day"].to_date == day } || { "day" => day })
+      end
+      
+      labels.inject({}) do |memo, type|
+        memo[type.to_s]       = usages.map { |u| u[type.to_s].to_i }
+        memo["total_#{type}"] = memo[type.to_s].inject([]) { |memo, u| memo << ((memo.last || 0) + u) }
+        memo
+      end
+    end
     
-    usages = SiteUsage.collection.group(
-      # "function(x) {
-      #   return { 'day' : new Date(x.day.getFullYear(), x.day.getMonth(), x.day.getDate(), 0, 0, 0) };
-      # }", # key used to group
-      [:day],
-      conditions,
+    def reduce(labels, merge_cached = false)
+      labels.inject("function(doc, prev) {") do |js,label|
+        js += "prev.#{label} += doc.#{labels_to_fields_mapping[label.to_sym]}#{" + doc.#{labels_to_fields_mapping[label.to_sym]}_cached" if merge_cached};"
+      end + "}"
+    end
+    
+    def labels_to_fields_mapping
       {
-        :loader_usage => 0,
-        :invalid_usage => 0, :invalid_usage_cached => 0,
-        :dev_usage => 0, :dev_usage_cached => 0,
-        :main_usage => 0, :main_usage_cached => 0,
-        :all_usage => 0
-      }, # memo variable name and initial value
-      "function(doc, prev) {
-        prev.loader_usage         += doc.loader_hits;
-        prev.invalid_usage        += doc.invalid_player_hits;
-        prev.invalid_usage_cached += doc.invalid_player_hits_cached;
-        prev.dev_usage            += doc.dev_player_hits;
-        prev.dev_usage_cached     += doc.dev_player_hits_cached;
-        prev.main_usage           += doc.main_player_hits;
-        prev.main_usage_cached    += doc.main_player_hits_cached;
-        prev.all_usage            += doc.player_hits;
-      }" # reduce function
-    )
-    (start_date.to_date..end_date.to_date).inject([]) do |memo, day|
-      memo << (usages.detect { |u| u["day"].to_date == day } || { "day" => day })
+        loader_usage: 'loader_hits',
+        invalid_usage: 'invalid_player_hits',
+        invalid_usage_cached: 'invalid_player_hits_cached',
+        dev_usage: 'dev_player_hits',
+        dev_usage_cached: 'dev_player_hits_cached',
+        main_usage: 'main_player_hits',
+        main_usage_cached: 'main_player_hits_cached',
+        all_usage: 'player_hits'
+      }
     end
   end
   

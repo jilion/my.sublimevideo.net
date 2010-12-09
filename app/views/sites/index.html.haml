@@ -1,6 +1,8 @@
+- content_for :header do
+ = javascript_include_tag 'highcharts/highcharts-adapter.min', 'highcharts/highcharts'
+ 
 = title_and_content_header("My Sites")
 
 = link_to "New site", new_site_path
 
-#sites_table_wrap
-  = render 'sites'
+#sites_table_wrap= render 'sites'

@@ -1261,7 +1261,14 @@ form .entry a.cancel {
 
 .popup {
   width:450px;
-/*  height:300px;*/
+}
+
+/* remy */
+.usage_popup {
+  width:850px;
+}
+/* remy */
+.popup, .usage_popup {
   position:fixed;
   margin:auto;
   top:20%;
@@ -1282,8 +1289,8 @@ form .entry a.cancel {
   -moz-border-radius:10px;
   border-radius:10px;
 }
-
-.popup .wrap {
+/* remy */
+.popup .wrap, .usage_popup .wrap {
 /*  height:100%;*/
   border:1px solid #000;
   background:#b9bdc7;
@@ -1297,23 +1304,23 @@ form .entry a.cancel {
   border-radius:4px;
   -webkit-background-clip:padding-box;
 }
-
-.popup .content {
+/* remy */
+.popup .content, .usage_popup .content {
   padding:20px;
 }
-
-.popup.loading .content {
+/* remy */
+.popup.loading .content, .usage_popup.loading .content {
   height:130px;
   background:url(/images/embed/big_spinner.gif) no-repeat center;
 }
-
-.popup .content h3 {
+/* remy */
+.popup .content h3, .usage_popup .content h3 {
   font-size:24px;
   font-weight:normal;
   padding-bottom:5px;
 }
-
-.popup .content h3 strong {
+/* remy */
+.popup .content h3 strong, .usage_popup .content h3 strong {
   font-weight:600;
 }
 
@@ -1391,7 +1398,7 @@ form .entry a.cancel {
   left:30px;
 }
 
-.popup a.close {
+.popup a.close, .usage_popup a.close {
   display:block;
   width:32px;
   height:32px;
@@ -1401,7 +1408,7 @@ form .entry a.cancel {
   left:-16px;
 }
 
-.popup a.close span {display:none;}
+.popup a.close span, .usage_popup a.close span {display:none;}
 
 .pagination_wrap {
   position:relative;
