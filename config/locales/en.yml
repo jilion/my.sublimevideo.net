@@ -4,13 +4,8 @@ en:
       date: "%B %d, %Y"
       minutes_timezone: "%d %b %Y, %R %Z"
       seconds_timezone: "%d %b %Y, %R:%S %Z"
-      invoice: "%d %b %Y"
-      short_invoice: "%d %b %y"
-      full: "%m/%d/%Y %I:%M %p"
-      semi_full: "%d %b, %I:%M%p"
-      fully_full: "%d %b %Y, %H:%M:%S"
-      semi_short: "%d %b %H:%M:%S  %Z"
-      month_year: "%B %Y"
+      seconds_timezone_y: "%d %b %y, %R:%S %Z"
+      month_fullyear: "%B %Y"
       
   date:
     formats:
@@ -19,5 +14,5 @@ en:
       
   number:
     format:
-      separator: "."
-      delimiter: "'"
+      separator: "." # US separator
+      delimiter: "'" # CH delimiter

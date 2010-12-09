@@ -1,0 +1,46 @@
+<h3>Usage for <%= hostname_with_path(@site) %></h3>
+
+<%
+stats_from = Time.now.utc.beginning_of_month
+# stats_from = 30.days.ago.beginning_of_day
+usages = Stat.usages(stats_from, Date.today, { :site_id => @site.id, :merge_cached => true, :labels => %w[main_usage dev_usage] })
+plans = Plan.all
+
+graph = Graph.new do |g|
+  g.option(chart: chart('current_usage'))
+  g.option(title: { text: "#{l(stats_from, :format => :date)} - #{l(Time.now, :format => :date)}" })
+  g.option(legend: usage_legend({ width: 150, y: 30 }))
+  g.option(xAxis: { type: 'datetime', showFirstLabel: true, showLastLabel: true })
+  g.raw_option(%(yAxis: {
+    title: {
+      text: 'Video-page views',
+      margin: 60
+    },
+    min: 0,
+    labels: {
+      formatter: function() { return Highcharts.numberFormat(this.value, 0, '.', ","); }
+    }
+  }))
+  g.raw_option(%(tooltip: {
+    formatter: function() {
+      var date = "<strong>" + Highcharts.dateFormat("%B %d,  %Y", this.x) + "</strong><br/>";
+      return date + this.series.name + ": " + Highcharts.numberFormat(this.y, 0) + " video-page views";
+    }
+  }))
+  g.option(series: [
+    # serie(usages["dev_usage"], 'Dev vpv', '#3F3', visible: false),
+    # serie(usages["main_usage"], 'Billable vpv', '#00F'),
+    
+    # serie(evolutive_average_array(usages["total_main_usage"]), 'Your average', '#0FF', type: 'line'),
+    # serie(usages["total_dev_usage"], 'Your total dev usage', '', type: 'line'),
+    serie(usages["total_main_usage"], 'Your total usage', '', type: 'line'),
+    
+    # serie(Array.new(usages["main_usage"].size, @site.plan.player_hits / 30), "#{@site.plan.name.humanize} plan's average", '', type: 'line'),
+    serie(Array.new(usages["main_usage"].size, @site.plan.player_hits), "#{@site.plan.name.humanize} plan's limit", '', type: 'line')
+  ])
+  g.option(plotOptions: usage_plot_options(stats_from))
+  g.option(credits: credits)
+end
+%>
+<div id="current_usage" style="width: 100%; height: 450px;"></div>
+<%= raw graph.draw({}) %>
