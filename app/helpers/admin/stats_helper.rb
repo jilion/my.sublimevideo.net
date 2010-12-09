@@ -9,21 +9,22 @@ module Admin::StatsHelper
     }
   end
   
-  def usage_date_subtitle(start_at)
+  def usage_date_subtitle(start_at, options = {})
+    options[:date_format] ||= :date
     {
-      text: "#{l(start_at, :format => :seconds_timezone)} - #{l(Time.now, :format => :seconds_timezone)}",
+      text: options[:text] || "#{l(start_at, :format => options[:date_format].to_sym)} - #{l(Time.now.utc, :format => options[:date_format].to_sym)}",
       x: -20
     }
   end
   
-  def usage_legend
+  def usage_legend(options = {})
     {
-      verticalAlign: 'top',
-      y: 50,
-      width: 970,
-      symbolWidth: 12,
-      backgroundColor: '#FFFFFF',
-      borderColor: '#CCC'
+      verticalAlign: options[:vertical_align] || 'top',
+      y: options[:y] || 50,
+      width: options[:width] || 970,
+      symbolWidth: options[:symbol_width] || 12,
+      backgroundColor: options[:background_color] || '#FFFFFF',
+      borderColor: options[:border_color] || '#CCC'
     }
   end
   
@@ -37,7 +38,7 @@ module Admin::StatsHelper
     }
   end
   
-  def average_array(array)
+  def evolutive_average_array(array)
     Array.new.tap { |arr| array.each_with_index { |item, index| arr << (item / (index + 1)).to_i } }
   end
   
@@ -72,7 +73,7 @@ module Admin::StatsHelper
   def credits
     {
       :enabled => true,
-      :text => "Generated at: #{l(Time.now.in_time_zone('Bern'), :format => :seconds_timezone)} / Copyright © #{Date.today.year} - SublimeVideo®",
+      :text => "Generated at: #{l(Time.now.utc, :format => :seconds_timezone)} / Copyright © #{Date.today.year} - SublimeVideo®",
       :href => "http://sublimevideo.net"
     }
   end

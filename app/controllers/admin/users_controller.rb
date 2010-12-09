@@ -6,6 +6,7 @@ class Admin::UsersController < Admin::AdminController
   has_scope :use_personal, :type => :boolean
   has_scope :use_company, :type => :boolean
   has_scope :use_clients, :type => :boolean
+  has_scope :will_be_suspended, :type => :boolean
   # sort
   has_scope :by_name_or_email
   has_scope :by_beta

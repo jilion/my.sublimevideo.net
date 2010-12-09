@@ -3,12 +3,12 @@ module InvoicesHelper
   def invoice_dates(invoice)
     if invoice.persisted?
       if invoice.started_at.year == invoice.ended_at.year && invoice.started_at.month == invoice.ended_at.month
-        l(invoice.ended_at, :format => :month_year)
+        l(invoice.ended_at, :format => :month_fullyear)
       else
-        "#{l(invoice.started_at, :format => :month_year)} - #{l(invoice.ended_at, :format => :month_year)}"
+        "#{l(invoice.started_at, :format => :month_fullyear)} - #{l(invoice.ended_at, :format => :month_fullyear)}"
       end
     else
-      "#{l(invoice.started_at, :format => :invoice)} to #{l(Time.now, :format => :invoice)}"
+      "#{l(invoice.started_at, :format => :date)} to #{l(Time.now, :format => :date)}"
     end
   end
   
