@@ -852,6 +852,7 @@ describe Invoice do
 end
 
 
+
 # == Schema Information
 #
 # Table name: invoices
@@ -872,6 +873,9 @@ end
 #  completed_at            :datetime
 #  charging_delayed_job_id :integer
 #  invoice_items_amount    :integer
+#  vat_rate                :float
+#  vat_amount              :integer
+#  transaction_fees        :integer
 #
 # Indexes
 #

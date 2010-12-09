@@ -1,5 +1,5 @@
 = title_and_content_header("Delayed jobs")
 
-= "Current UTC time: #{l(Time.now.utc, :format => :seconds_timezone)}"
+%p= current_utc_time
 
 #delayed_jobs_table_wrap= render 'delayed_jobs'

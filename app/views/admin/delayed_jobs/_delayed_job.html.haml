@@ -2,19 +2,19 @@
   %td.name.left
     = link_to job_name(delayed_job), admin_delayed_job_path(delayed_job)
   %td.priority
-    = link_to delayed_job.priority, admin_delayed_job_path(delayed_job)
+    %small= link_to delayed_job.priority, admin_delayed_job_path(delayed_job)
   %td.run_at
-    = link_to l(delayed_job.run_at, :format => :semi_short), admin_delayed_job_path(delayed_job)
+    %small= link_to l(delayed_job.run_at, :format => :seconds_timezone_y), admin_delayed_job_path(delayed_job)
   %td.attempts
-    = link_to delayed_job.attempts, admin_delayed_job_path(delayed_job)
+    %small= link_to delayed_job.attempts, admin_delayed_job_path(delayed_job)
   %td.last_error
-    = link_to delayed_job.last_error.blank? ? "-" : truncate(delayed_job.last_error, :length => 20), admin_delayed_job_path(delayed_job)
+    %small= link_to delayed_job.last_error.blank? ? "-" : truncate(delayed_job.last_error, :length => 20), admin_delayed_job_path(delayed_job)
   %td.locked_at
-    = link_to delayed_job.locked_at.blank? ? "-" : l(delayed_job.locked_at, :format => :semi_short), admin_delayed_job_path(delayed_job)
+    %small= link_to delayed_job.locked_at.blank? ? "-" : l(delayed_job.locked_at, :format => :seconds_timezone_y), admin_delayed_job_path(delayed_job)
   %td.locked_by
-    = link_to delayed_job.locked_by.blank? ? "-" : delayed_job.locked_by, admin_delayed_job_path(delayed_job)
+    %small= link_to delayed_job.locked_by.blank? ? "-" : delayed_job.locked_by, admin_delayed_job_path(delayed_job)
   %td.failed_at
-    = link_to delayed_job.failed_at.blank? ? "-" : l(delayed_job.failed_at, :format => :semi_short), admin_delayed_job_path(delayed_job)
+    %small= link_to delayed_job.failed_at.blank? ? "-" : l(delayed_job.failed_at, :format => :seconds_timezone_y), admin_delayed_job_path(delayed_job)
   %td.unlock
     = delayed_job.locked_at.blank? ? "-" : button_to('Unlock', admin_delayed_job_path(delayed_job), :method => :put)
   %td.delete
