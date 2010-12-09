@@ -11,3 +11,5 @@
   = link_to "#{users.use_company.count} company usage", admin_users_path(:use_company => true)
   |
   = link_to "#{users.use_clients.count} clients usage", admin_users_path(:use_clients => true)
+  |
+  = link_to "#{users.will_be_suspended.count} clients will be suspended", admin_users_path(:will_be_suspended => true)
