@@ -12,7 +12,7 @@
   - if addons_invoice_items.present?
     %h4 Add-ons
     - addons_invoice_items.each do |addon, addon_invoice_items|
-      %h4= addon.name.humanize
+      %h4= "#{addon.name.humanize} (#{display_amount(addon.price)} per month)"
       = render :partial => 'addon_invoice_item', :collection => addon_invoice_items
       
   %table{ :border => 2 }

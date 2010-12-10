@@ -13,7 +13,7 @@ module MySublimeVideo
     # -- all .rb files in that directory are automatically loaded.
     
     require 'pdfkit'
-    config.middleware.use PDFKit::Middleware
+    config.middleware.use(PDFKit::Middleware, {}, :only => %r[^/invoices])
     
     # Add additional load paths for your own custom dirs
     config.autoload_paths += %W[#{config.root}/lib]

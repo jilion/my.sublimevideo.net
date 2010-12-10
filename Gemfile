@@ -55,7 +55,8 @@ gem 'array_stats',           '0.6.0'
 gem 'rescue_me',             '0.1.0'
 gem 'paper_trail',           '1.6.4'
 gem 'settingslogic',         '2.0.6'
-gem 'pdfkit',                '0.4.6'
+# gem 'pdfkit',                '0.4.6'
+gem 'pdfkit',                :git => 'git://github.com/rymai/PDFKit.git' # include the conditions hash with :only
 
 group :production do
   gem 'rack-google-analytics', '0.9.2', :require => 'rack/google-analytics'

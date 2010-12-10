@@ -19,7 +19,7 @@ class SitesController < ApplicationController
   def code
     respond_with(@site) do |format|
       format.js
-      format.html { redirect_to sites_path }
+      format.html { redirect_to :sites }
     end
   end
   
@@ -37,25 +37,25 @@ class SitesController < ApplicationController
   # POST /sites
   def create
     @site = current_user.sites.create(params[:site])
-    respond_with(@site, :location => sites_path)
+    respond_with(@site, :location => :sites)
   end
   
   # PUT /sites/1
   def update
     @site.update_attributes(params[:site])
-    respond_with(@site, :location => sites_path)
+    respond_with(@site, :location => :sites)
   end
   
   # PUT /sites/1/activate
   def activate
     @site.activate
-    respond_with(@site, :location => sites_path)
+    respond_with(@site, :location => :sites)
   end
   
   # DELETE /sites/1
   def destroy
     @site.archive
-    respond_with(@site, :location => sites_path)
+    respond_with(@site, :location => :sites)
   end
   
   # GET /sites/1/state
@@ -63,7 +63,7 @@ class SitesController < ApplicationController
     @site = current_user.sites.find(params[:id])
     respond_with(@site) do |format|
       format.js
-      format.html { redirect_to sites_path }
+      format.html { redirect_to :sites }
     end
   end
   
@@ -71,7 +71,7 @@ class SitesController < ApplicationController
   def usage
     respond_with(@site) do |format|
       format.js
-      format.html { redirect_to sites_path }
+      format.html { redirect_to :sites }
     end
   end
   
