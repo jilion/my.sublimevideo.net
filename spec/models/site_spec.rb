@@ -490,7 +490,7 @@ describe Site do
           @worker.work_off
         end
         site.reload.google_rank.should == 0
-        site.alexa_rank.should  == 108330
+        site.alexa_rank.should  == 100573
       end
     end
   end

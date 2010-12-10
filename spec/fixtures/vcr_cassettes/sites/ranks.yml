@@ -84,43 +84,6 @@
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
     method: :get
-    uri: http://data.alexa.com:80/data?cli=10&dat=snbamz&url=sublimevideo.net
-    body: 
-    headers: 
-      accept: 
-      - "*/*"
-      user-agent: 
-      - Ruby
-  response: !ruby/struct:VCR::Response 
-    status: !ruby/struct:VCR::ResponseStatus 
-      code: 200
-      message: OK
-    headers: 
-      content-length: 
-      - "343"
-      content-type: 
-      - text/xml
-      connection: 
-      - close
-    body: |-
-      <?xml version="1.0" encoding="UTF-8"?>
-      
-      <ALEXA VER="0.9" URL="sublimevideo.net/" HOME="0" AID="=">
-      <RLS PREFIX="http://" more="0">
-      </RLS>
-      <SD TITLE="A" FLAGS="" HOST="sublimevideo.net">
-      <SPEED TEXT="699" PCT="86"/>
-      </SD>
-      <SD>
-      <POPULARITY URL="sublimevideo.net/" TEXT="121772"/>
-      <REACH RANK="108330"/>
-      <RANK DELTA="-2837504"/>
-      </SD>
-      </ALEXA>
-    http_version: "1.1"
-- !ruby/struct:VCR::HTTPInteraction 
-  request: !ruby/struct:VCR::Request 
-    method: :get
     uri: http://toolbarqueries.google.com:80/search?ch=63148545275&client=navclient-auto&features=Rank&q=info:sublimevideo.net
     body: 
     headers: 
@@ -154,4 +117,35 @@
     body: |
       Rank_1:1:0
 
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: http://data.alexa.com:80/data?cli=10&dat=snbamz&url=sublimevideo.net
+    body: 
+    headers: 
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      content-length: 
+      - "341"
+      content-type: 
+      - text/xml
+    body: |-
+      <?xml version="1.0" encoding="UTF-8"?>
+      
+      <ALEXA VER="0.9" URL="sublimevideo.net/" HOME="0" AID="=">
+      <RLS PREFIX="http://" more="0">
+      </RLS>
+      <SD TITLE="A" FLAGS="" HOST="sublimevideo.net">
+      <SPEED TEXT="997" PCT="72"/>
+      </SD>
+      <SD>
+      <POPULARITY URL="sublimevideo.net/" TEXT="100573"/>
+      <REACH RANK="90406"/>
+      <RANK DELTA="-412362"/>
+      </SD>
+      </ALEXA>
     http_version: "1.1"

@@ -155,10 +155,10 @@ protected
   
   # delayed method
   def self.update_ranks(site_id)
-    site = Site.find(site_id)
+    site  = Site.find(site_id)
     ranks = PageRankr.ranks(site.hostname)
     site.google_rank = ranks[:google]
-    site.alexa_rank  = ranks[:alexa]
+    site.alexa_rank  = ranks[:alexa][:global] # [:us] if also returned
     site.save!
   end
   
