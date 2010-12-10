@@ -3,6 +3,9 @@
     %tr
       %td Invoice Items Total
       %td= number_to_currency(invoice.invoice_items_amount/100.0)
+      %td
+        - if invoice.total_invoice_items_amount < Billing.minimum_billable_amount
+          = "The minimum amount billed is #{display_amount(Billing.minimum_billable_amount)}."
     %tr
       %td VAT:
       %td= "#{invoice.vat_rate*100.0}% x #{number_to_currency(invoice.invoice_items_amount/100.0)} = #{number_to_currency(invoice.vat_amount/100.0)}"

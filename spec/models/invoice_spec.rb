@@ -423,6 +423,22 @@ describe Invoice do
         its(:amount)               { should == 1000 + 399 + 499 + 100 + ((1000 + 399 + 499 + 100) * 0.08).round }
       end
       
+      describe "minimum billable amount" do
+        before(:all) do
+          @cheap_user = Factory(:user, :country => 'FR')
+          @cheap_plan = Factory(:plan, :price => 200)
+          Timecop.travel(Time.utc(2010,2).beginning_of_month) do
+            @cheap_site = Factory(:site, :user => @cheap_user, :plan => @cheap_plan, :activated_at => Time.now)
+          end
+        end
+        subject { Invoice.build(:user => @cheap_user, :started_at => Time.utc(2010,2).beginning_of_month, :ended_at => Time.utc(2010,2).end_of_month) }
+        
+        its(:invoice_items_amount) { should == Billing.minimum_billable_amount }
+        its(:vat_rate)             { should == 0 }
+        its(:vat_amount)           { should == 0 }
+        its(:amount)               { should == Billing.minimum_billable_amount }
+      end
+      
       context "site plan has not changed between invoice.ended_at and Time.now" do
         before(:each) { @user.reload }
         

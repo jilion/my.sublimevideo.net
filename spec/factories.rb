@@ -95,7 +95,6 @@ Factory.define :invoice do |f|
   f.amount               10000
   f.vat_rate             0.08
   f.vat_amount           800
-  f.transaction_fees     100
 end
 
 Factory.define :invoice_item do |f|

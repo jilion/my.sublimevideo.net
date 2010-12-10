@@ -124,7 +124,6 @@ public
   def build
     build_invoice_items
     set_invoice_items_amount
-    set_transaction_fees
     set_vat
     set_amount
     self
@@ -136,6 +135,10 @@ public
   
   def to_param
     reference
+  end
+  
+  def total_invoice_items_amount
+    @total_invoice_items_amount ||= invoice_items.inject(0) { |sum, invoice_item| sum + invoice_item.amount }
   end
   
 private
@@ -156,20 +159,20 @@ private
   end
   
   def set_invoice_items_amount
-    self.invoice_items_amount = invoice_items.inject(0) { |sum, invoice_item| sum + invoice_item.amount }
-  end
-  
-  def set_transaction_fees
-    self.transaction_fees = 0
+    self.invoice_items_amount = if !total_invoice_items_amount.zero? && total_invoice_items_amount < Billing.minimum_billable_amount
+      Billing.minimum_billable_amount
+    else
+      total_invoice_items_amount
+    end
   end
   
   def set_vat
     self.vat_rate   = Vat.for_country(user.country)
-    self.vat_amount = ((invoice_items_amount + transaction_fees) * vat_rate).round
+    self.vat_amount = (invoice_items_amount * vat_rate).round
   end
   
   def set_amount
-    self.amount = invoice_items_amount + transaction_fees + vat_amount
+    self.amount = invoice_items_amount + vat_amount
   end
   
   # before_transition any => [:unpaid, :failed]
@@ -234,6 +237,7 @@ end
 
 
 
+
 # == Schema Information
 #
 # Table name: invoices
@@ -256,7 +260,6 @@ end
 #  invoice_items_amount    :integer
 #  vat_rate                :float
 #  vat_amount              :integer
-#  transaction_fees        :integer
 #
 # Indexes
 #

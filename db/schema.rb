@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101206134039) do
+ActiveRecord::Schema.define(:version => 20101202120334) do
 
   create_table "addons", :force => true do |t|
     t.string   "name"
@@ -107,7 +107,6 @@ ActiveRecord::Schema.define(:version => 20101206134039) do
     t.integer  "invoice_items_amount"
     t.float    "vat_rate"
     t.integer  "vat_amount"
-    t.integer  "transaction_fees"
   end
 
   add_index "invoices", ["user_id", "ended_at"], :name => "index_invoices_on_user_id_and_ended_at", :unique => true
