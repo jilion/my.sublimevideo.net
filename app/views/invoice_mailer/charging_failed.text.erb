@@ -9,7 +9,7 @@ If the problem is with your bank, please do the necessary and then retry the cha
 <%= invoice_dates(@invoice) %> invoice information:
 
 Reference: #<%= @invoice.reference %>
-Amount: <%= number_to_currency(@invoice.amount/100.0) %>
+Amount: <%= display_amount(@invoice.amount) %>
 
 Note that if the problem is not solved in <%= Billing.days_before_suspend_user %> days, we will have to suspend your account.
 

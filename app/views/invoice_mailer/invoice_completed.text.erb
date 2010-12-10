@@ -7,7 +7,7 @@ We will charge it on <%= l(@invoice.charging_delayed_job.run_at, :format => :min
 <%= invoice_dates(@invoice) %> invoice information:
 
 Reference: #<%= @invoice.reference %>
-Amount: <%= number_to_currency(@invoice.amount/100.0) %>
+Amount: <%= display_amount(@invoice.amount) %>
 
 
 The SublimeVideo team

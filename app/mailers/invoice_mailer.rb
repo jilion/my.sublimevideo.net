@@ -1,5 +1,5 @@
 class InvoiceMailer < SublimeVideoMailer
-  helper InvoicesHelper
+  helper :application, :invoices
   
   def invoice_completed(invoice)
     @invoice = invoice

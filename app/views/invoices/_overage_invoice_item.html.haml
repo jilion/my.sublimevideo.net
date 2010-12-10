@@ -10,6 +10,6 @@
     %td.date
       %span= invoice_item_dates(overage_invoice_item)
     %td.calculation
-      %span= "#{number_to_currency(overage_invoice_item.price/100.0)} per block of #{Plan::OVERAGES_PLAYER_HITS_BLOCK} x #{overage_invoice_item.info[:overage_blocks]} ="
+      %span= "#{display_amount(overage_invoice_item.price)} per block of #{Plan::OVERAGES_PLAYER_HITS_BLOCK} x #{overage_invoice_item.info[:overage_blocks]} ="
     %td.amount
-      %span= number_to_currency(overage_invoice_item.amount/100.0)
+      %span= display_amount(overage_invoice_item.amount)

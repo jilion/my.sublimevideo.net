@@ -4,9 +4,9 @@
   %td.player_hits
     = number_with_delimiter(plan.player_hits)
   %td.price
-    = number_to_currency(plan.price/100.0)
+    = display_amount(plan.price)
   %td.overage_price
-    = number_to_currency(plan.overage_price/100.0)
+    = display_amount(plan.overage_price)
   %td.used_in_beta
     = number_with_delimiter(plan.sites.beta.count)
   %td.used_in_dev
@@ -14,4 +14,4 @@
   %td.used_in_active
     = number_with_delimiter(plan.sites.active.count)
   %td.estimated_revenue
-    %strong= number_to_currency((plan.sites.active.count * plan.price)/100.0)
+    %strong= display_amount(plan.sites.active.count * plan.price)

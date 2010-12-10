@@ -1,7 +1,7 @@
 $('current_usage_amount').update('<%= escape_javascript(
   invoice_dates(@invoice) +
   ": " +
-  content_tag(:strong, number_to_currency(@invoice.amount/100.0)) +
+  content_tag(:strong, display_amount(@invoice.amount)) +
   " (" +
   link_to("view details", usage_invoices_path) +
   ")"

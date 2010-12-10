@@ -10,7 +10,7 @@
   - if player_hits > 0
     %br/
     - flash_hits = SiteUsage.sum(:flash_hits).to_i
-    = "Flash: #{number_to_percentage(flash_hits / player_hits.to_f * 100, :precision => 2)}"
+    = "Flash: #{display_percentage(flash_hits / player_hits.to_f)}"
     |
     = "Loader/Player: #{number_with_delimiter(BigDecimal.new((loader_hits / player_hits.to_f).to_s, 2).ceil(2), :delimiter => "'")}"
     |

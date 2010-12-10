@@ -2,14 +2,14 @@
   - if invoice.vat_amount > 0
     %tr
       %td Invoice Items Total
-      %td= number_to_currency(invoice.invoice_items_amount/100.0)
       %td
         - if invoice.total_invoice_items_amount < Billing.minimum_billable_amount
           = "The minimum amount billed is #{display_amount(Billing.minimum_billable_amount)}."
+        = display_amount(invoice.invoice_items_amount)
     %tr
       %td VAT:
-      %td= "#{invoice.vat_rate*100.0}% x #{number_to_currency(invoice.invoice_items_amount/100.0)} = #{number_to_currency(invoice.vat_amount/100.0)}"
+      %td= "#{display_percentage(invoice.vat_rate)} x #{display_amount(invoice.invoice_items_amount)} = #{display_amount(invoice.vat_amount)}"
       
   %tr
     %td Total:
-    %td= number_to_currency(invoice.amount/100.0)
+    %td= display_amount(invoice.amount)

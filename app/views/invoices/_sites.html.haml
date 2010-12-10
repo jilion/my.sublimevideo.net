@@ -18,6 +18,5 @@
   %table{ :border => 2 }
     %tr
       %td{ :colspan => 2 } Total
-      %td= number_to_currency((plan_invoice_item.amount + overage_invoice_item.amount + addons_invoice_items.sum(&:amount)) / 100.0)
-      
+      %td= display_amount(plan_invoice_item.amount + overage_invoice_item.amount + addons_invoice_items.sum(&:amount))
   %hr
