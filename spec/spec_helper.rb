@@ -52,6 +52,7 @@ Spork.prefork do
     config.before(:each) do
       Capybara.reset_sessions!
       DatabaseCleaner.start
+      PDFKit.stub!(:new) { mock('pdf', :to_pdf => []) }
     end
     
     # Clear MongoDB Collection
