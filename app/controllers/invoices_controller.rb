@@ -2,6 +2,10 @@ class InvoicesController < ApplicationController
   respond_to :html
   respond_to :js, :only => :usage
   
+  def index
+    redirect_to edit_user_registration_path
+  end
+  
   def usage
     @invoice = Invoice.usage_statement(current_user)
     respond_with(@invoice)
