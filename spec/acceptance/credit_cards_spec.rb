@@ -12,11 +12,11 @@ feature "Credit cards update:" do
       click_link(@current_user.full_name)
       current_url.should =~ %r(^http://[^/]+/account/edit$)
       
-      page.should_not have_content("Change credit card")
+      page.should have_content("Add a credit card")
       
-      visit "/card/edit" # should redirect if no credit card
+      visit "/card/edit"
       
-      current_url.should =~ %r(^http://[^/]+/account/edit$)
+      current_url.should =~ %r(^http://[^/]+/card/edit$)
     end
     
   end

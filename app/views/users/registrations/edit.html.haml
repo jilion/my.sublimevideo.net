@@ -1,14 +1,16 @@
 = title_and_content_header("My Account")
 
-- if current_user.credit_card?
-  #credit_card_summary
-    %h3.section_title= "Billing Info"
+#credit_card_summary
+  %h3.section_title= "Billing Info"
+  - if current_user.credit_card?
     - if current_user.cc_expired?
       = "This credit card is expired, please update it as soon as possible to prevent any charging problem."
     %p{ :class => current_user.cc_type }<
       = raw "#{t("user.credit_card.type.#{current_user.cc_type}")} ending in #{content_tag(:strong, current_user.cc_last_digits)}"
       = link_to 'Change credit card', edit_credit_card_path
-      
+  - else
+    = link_to 'Add a credit card', edit_credit_card_path
+    
   #current_usage
     %h3.section_title= "Current Usage"
     %p#current_usage_amount
