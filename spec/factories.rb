@@ -9,6 +9,8 @@ Factory.define :user do |f|
   f.sequence(:email)     { |n| "email#{n}@user.com" }
   f.password             "123456"
   f.terms_and_conditions "1"
+  f.cc_type              "visa"
+  f.cc_last_digits       1234
 end
 
 Factory.define :admin do |f|

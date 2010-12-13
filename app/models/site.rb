@@ -108,12 +108,13 @@ class Site < ActiveRecord::Base
     
     state :active do
       validates :hostname, :presence => true
+      validate :verify_presence_of_credit_card
     end
     
-    event(:activate)   { transition :dev => :active }
-    event(:archive)    { transition [:dev, :active] => :archived }
-    event(:suspend)    { transition :active => :suspended }
-    event(:unsuspend)  { transition :suspended => :active }
+    event(:activate)  { transition :dev => :active }
+    event(:archive)   { transition [:dev, :active] => :archived }
+    event(:suspend)   { transition :active => :suspended }
+    event(:unsuspend) { transition :suspended => :active }
     
     before_transition :to => :dev,      :do => :set_cdn_up_to_date_to_false
     before_transition :on => :activate, :do => :set_activated_at
@@ -287,6 +288,11 @@ private
     if !active? && hostname.blank? && dev_hostnames.blank? && extra_hostnames.blank?
       self.errors.add(:base, :at_least_one_domain)
     end
+  end
+  
+  # validate on :active
+  def verify_presence_of_credit_card
+    self.errors.add(:base, :credit_card_needed) unless user.cc?
   end
   
   # before_save

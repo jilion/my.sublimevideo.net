@@ -59,7 +59,6 @@ describe Site do
     
   end
   
-  # TODO 86s
   describe "Validations" do
     [:hostname, :dev_hostnames].each do |attribute|
       it { should allow_mass_assignment_of(attribute) }
@@ -77,7 +76,6 @@ describe Site do
     specify { Site.validators_on(:extra_hostnames).map(&:class).should == [ExtraHostnamesValidator] }
     specify { Site.validators_on(:dev_hostnames).map(&:class).should == [DevHostnamesValidator] }
     
-    # 15s
     describe "hostname" do
       it "should be required if state is active" do
         site = Factory(:site, :hostname => nil)
@@ -87,7 +85,14 @@ describe Site do
       end
     end
     
-    # 3.6s
+    it "should require a credit card if state is active" do
+      user = Factory(:user, :cc_type => nil, :cc_last_digits => nil)
+      site = Factory(:site, :user => user)
+      site.state = 'active'
+      site.should_not be_valid
+      site.should have(1).error_on(:base)
+    end
+    
     describe "no hostnames at all" do
       it "should require at least one of hostname, dev, or extra domains on creation" do
         site = Factory.build(:site, :hostname => '', :extra_hostnames => '', :dev_hostnames => '')
