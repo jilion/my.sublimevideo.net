@@ -3,32 +3,8 @@ require 'spec_helper'
 describe UserMailer do
   subject { Factory(:user) }
   
-  describe "common checks" do
-    %w[account_suspended account_unsuspended].each do |mail|
-      before(:each) do
-        subject
-        ActionMailer::Base.deliveries.clear
-        mail == 'account_suspended' ? UserMailer.send(mail, subject, :credit_card_charging_impossible).deliver : UserMailer.send(mail, subject).deliver
-        @last_delivery = ActionMailer::Base.deliveries.last
-      end
-      
-      it "should send an email" do
-        ActionMailer::Base.deliveries.size.should == 1
-      end
-      
-      it "should send the mail from noreply@sublimevideo.net" do
-        @last_delivery.from.should == ["noreply@sublimevideo.net"]
-      end
-      
-      it "should send the mail to user.email" do
-        @last_delivery.to.should == [subject.email]
-      end
-      
-      it "should set content_type to text/plain (set by default by the Mail gem)" do
-        @last_delivery.content_type.should == "text/plain; charset=UTF-8"
-      end
-    end
-  end
+  it_should_behave_like "common mailer checks", %w[account_suspended], :params => [Factory(:user), :credit_card_charging_impossible]
+  it_should_behave_like "common mailer checks", %w[account_unsuspended], :params => [Factory(:user)]
   
   describe "#account_suspended" do
     context "when reason given is :invoice_problem" do

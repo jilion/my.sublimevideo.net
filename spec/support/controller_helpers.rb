@@ -3,7 +3,7 @@ module Spec
     module ControllerHelpers
       
       shared_examples_for "redirect when connected as" do |url, roles, verb_actions, params={}|
-        roles = [roles] unless roles.is_a?(Array)
+        roles = [roles].flatten
         roles.each do |role|
           
           role_name, role_stubs = if role.is_a?(Array)
@@ -14,7 +14,7 @@ module Spec
           context "as a #{role_name}" do
             verb_actions.each do |verb, actions|
               
-              actions = [actions] unless actions.is_a?(Array)
+              actions = [actions].flatten
               actions.each do |action|
                 before(:each) do
                   case role_name.to_sym

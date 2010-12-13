@@ -1,34 +1,12 @@
 require 'spec_helper'
 
 describe CreditCardMailer do
-  subject { Factory(:user, :cc_expire_on => 1.day.from_now) }
-  
-  describe "common checks" do
-    %w[is_expired will_expire].each do |mail|
-      before(:each) do
-        subject
-        ActionMailer::Base.deliveries.clear
-        CreditCardMailer.send(mail, subject).deliver
-        @last_delivery = ActionMailer::Base.deliveries.last
-      end
-      
-      it "should send an email" do
-        ActionMailer::Base.deliveries.size.should == 1
-      end
-      
-      it "should send the mail from noreply@sublimevideo.net" do
-        @last_delivery.from.should == ["noreply@sublimevideo.net"]
-      end
-      
-      it "should send the mail to user.email" do
-        @last_delivery.to.should == [subject.email]
-      end
-      
-      it "should set content_type to text/plain (set by default by the Mail gem)" do
-        @last_delivery.content_type.should == "text/plain; charset=UTF-8"
-      end
-    end
+  before(:all) do
+    @user = Factory(:user, :cc_expire_on => 1.day.from_now)
   end
+  subject { @user }
+  
+  it_should_behave_like "common mailer checks", %w[is_expired will_expire], :params => [Factory(:user, :cc_expire_on => 1.day.from_now)]
   
   describe "#is_expired" do
     before(:each) do
