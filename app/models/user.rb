@@ -33,6 +33,7 @@ class User < ActiveRecord::Base
   
   scope :billable, lambda { |started_at, ended_at| where(:state.ne => 'archived').includes(:sites).where(:sites => [{ :activated_at.lte => ended_at }, { :archived_at => nil } | { :archived_at.gte => started_at }]) }
   
+  # credit_card scopes
   scope :without_cc, where(:cc_type => nil, :cc_last_digits => nil)
   scope :with_cc,    where(:cc_type.ne => nil, :cc_last_digits.ne => nil)
   
@@ -44,10 +45,12 @@ class User < ActiveRecord::Base
   scope :use_company,       where(:use_company => true)
   scope :use_clients,       where(:use_clients => true)
   scope :will_be_suspended, where(:suspending_delayed_job_id.ne => nil)
+  
   # sort
   scope :by_name_or_email, lambda { |way = 'asc'| order(:first_name.send(way), :email.send(way)) }
   scope :by_beta,          lambda { |way = 'desc'| order(:invitation_token.send(way)) }
   scope :by_date,          lambda { |way = 'desc'| order(:created_at.send(way)) }
+  
   # search
   scope :search, lambda { |q|
     joins(:sites).
@@ -118,7 +121,7 @@ class User < ActiveRecord::Base
   
   # allow suspended user to login (devise)
   def active?
-    %w[active suspended].include?(state) && invitation_token.nil?
+    %w[active beta suspended].include?(state) && invitation_token.nil?
   end
   
   def full_name

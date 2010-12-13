@@ -359,16 +359,16 @@ describe User do
     end
   end
   
-  describe "Class Methods" do
-    
-  end
-  
   describe "Instance Methods" do
     let(:user) { Factory(:user) }
     
     describe "#active?" do
       it "should be active when suspended in order to allow login" do
         user.suspend
+        user.should be_active
+      end
+      it "should be active when beta in order to allow login" do
+        user.update_attribute(:state, 'beta')
         user.should be_active
       end
     end
@@ -447,6 +447,8 @@ protected
   end
   
 end
+
+
 
 
 
