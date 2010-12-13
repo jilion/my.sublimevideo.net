@@ -96,8 +96,8 @@ class Site < ActiveRecord::Base
   before_save :prepare_cdn_update
   after_create :delay_ranks_update
   after_save :execute_cdn_update
-  # Temporary, used in lib/one_time/site.rb and lib/tasks/one_time.rake
-  after_update :set_state_to_dev, :if => lambda { |site| site.beta? && site.plan_id? }
+  # Temporary
+  after_update :set_state_to_active, :if => lambda { |site| site.beta? && site.plan_id? }
   
   # =================
   # = State Machine =
@@ -227,7 +227,7 @@ public
       hostnames << "addons:#{addons.map { |a| a.name }.sort.join(',')}" if path.present?
     end
     hostnames += dev_hostnames.split(', ') if dev_hostnames.present?
-    hostnames.map! { |hostname| "'" + hostname + "'" }
+    hostnames.map! { |hostname| "'#{hostname}'" }
     hostnames.join(',')
   end
   
@@ -324,8 +324,8 @@ private
   end
   
   # after_update
-  def set_state_to_dev
-    self.update_attribute(:state, 'dev')
+  def set_state_to_active
+    self.update_attribute(:state, 'active')
   end
   
   # before_transition :to => :dev
@@ -361,7 +361,6 @@ private
   end
   
 end
-
 
 
 # == Schema Information
