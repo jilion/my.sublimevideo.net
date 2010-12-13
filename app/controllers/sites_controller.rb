@@ -3,7 +3,7 @@ class SitesController < ApplicationController
   respond_to :js, :only => [:index, :code, :new]
   
   before_filter :redirect_suspended_user
-  before_filter :find_by_token, :only => [:code, :edit, :update, :activate, :destroy, :usage]
+  before_filter :find_by_token, :only => [:code, :transition, :edit, :update, :activate, :destroy, :usage]
   before_filter :redirect_wrong_password_for_active_site!, :only => [:update, :activate, :destroy]
   
   has_scope :by_hostname
@@ -29,9 +29,20 @@ class SitesController < ApplicationController
     respond_with(@site)
   end
   
+  # GET /sites/1/transition
+  def transition
+    respond_with(@site)
+  end
+  
   # GET /sites/1/edit
   def edit
-    respond_with(@site)
+    respond_with(@site) do |format|
+      if @site.beta?
+        format.html { redirect_to transition_site_path(@site.to_param) }
+      else
+        format.html
+      end
+    end
   end
   
   # POST /sites
@@ -49,7 +60,11 @@ class SitesController < ApplicationController
   # PUT /sites/1/activate
   def activate
     @site.activate
-    respond_with(@site, :location => :sites)
+    respond_with(@site, :location => :sites) do |format|
+      unless current_user.cc?
+        format.html { redirect_to [:edit, :credit_card], :notice => t("activerecord.errors.models.site.attributes.base.credit_card_needed") }
+      end
+    end
   end
   
   # DELETE /sites/1

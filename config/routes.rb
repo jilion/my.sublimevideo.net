@@ -26,6 +26,7 @@ MySublimeVideo::Application.routes.draw do
     member do
       get :state
       get :code
+      get :transition
       get :usage
       put :activate
     end

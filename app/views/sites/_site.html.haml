@@ -2,6 +2,8 @@
   %td.plan
     - if site.plan
       = site.plan.name.humanize
+    - elsif site.beta?
+      = "Beta"
     - else
       = "No plan"
   %td.site
@@ -9,9 +11,6 @@
       = link_to "http://#{hostname_with_path(site)}", :class => "external_link", :onclick => "window.open(this); return false", :title => hostname_with_path(site) do
         = hostname_with_path_and_wildcard(site, :truncate => 30)
         
-      - if site.wildcard?
-        %span
-          %em= "wildcard support"
       - if site.need_path?
         %span
           -# TODO: Update this text
@@ -20,7 +19,7 @@
       - unless site.cdn_up_to_date?
         %span.in_progress
           -# TODO: Update this text
-          %em= "cdn update in progress..."
+          %em= "updating CDN..."
           
       -#%em.date= l site.created_at.to_date, :format => :small
       - if site.addons.present?
@@ -28,7 +27,9 @@
       - else
         No add-ons.
   %td.code
-    - if site.active?
+    - if site.beta?
+      = link_to "Choose a plan", [:transition, site]
+    - elsif site.active?
       = link_to "Usage", "", :onclick => "return MySublimeVideo.showSiteUsage('#{site.token}')"
     - elsif site.dev?
       = form_for [:activate, site], :html => { "data-password-protected" => true } do |f|
@@ -40,4 +41,5 @@
     
   %td.edit
     .wrap
-      = link_to content_tag(:span, "settings"), edit_site_path(site), :class => "settings", :title => "Settings"
+      - unless site.beta?
+        = link_to content_tag(:span, "settings"), edit_site_path(site), :class => "settings", :title => "Settings"

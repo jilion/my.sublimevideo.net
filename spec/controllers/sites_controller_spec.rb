@@ -37,18 +37,43 @@ describe SitesController do
       response.should render_template(:new)
     end
     
-    it "should render :edit on GET :edit" do
-      get :edit, :id => 'a1b2c3'
-      assigns(:site).should == mock_site
-      response.should render_template(:edit)
+    it "should render :transition on GET :transition" do
+      get :transition, :id => 'a1b2c3'
+      response.should render_template(:transition)
+    end
+    
+    describe "GET :edit" do
+      context "site is not beta" do
+        before :each do
+          @current_user.stub_chain(:sites, :find_by_token).with('a1b2c3') { @mock_site = mock_site(:beta? => false) }
+        end
+        
+        it "should render :edit" do
+          get :edit, :id => 'a1b2c3'
+          assigns(:site).should == @mock_site
+          response.should render_template(:edit)
+        end
+      end
+      
+      context "site is beta" do
+        before :each do
+          @current_user.stub_chain(:sites, :find_by_token).with('a1b2c3') { @mock_site = mock_site(:beta? => true, :token => 'a1b2c3') }
+        end
+        
+        it "should redirect to :transition if site is beta" do
+          get :edit, :id => 'a1b2c3'
+          assigns(:site).should == @mock_site
+          response.should redirect_to([:transition, @mock_site])
+        end
+      end
     end
     
     describe "POST :create" do
-      before(:each) { @current_user.stub_chain(:sites, :create).with({}).and_return(mock_site) }
+      before(:each) { @current_user.stub_chain(:sites, :create).with({}).and_return(@mock_site = mock_site) }
       
       it "should redirect to /sites when create succeeds" do
         post :create, :site => {}
-        assigns(:site).should == mock_site
+        assigns(:site).should == @mock_site
         response.should redirect_to(sites_url)
       end
       

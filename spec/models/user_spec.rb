@@ -367,10 +367,6 @@ describe User do
         user.suspend
         user.should be_active
       end
-      it "should be active when beta in order to allow login" do
-        user.update_attribute(:state, 'beta')
-        user.should be_active
-      end
     end
     
     describe "#delay_suspend_and_set_suspending_delayed_job_id" do
