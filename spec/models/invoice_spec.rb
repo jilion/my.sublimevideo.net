@@ -869,6 +869,7 @@ end
 
 
 
+
 # == Schema Information
 #
 # Table name: invoices
@@ -891,7 +892,6 @@ end
 #  invoice_items_amount    :integer
 #  vat_rate                :float
 #  vat_amount              :integer
-#  transaction_fees        :integer
 #
 # Indexes
 #

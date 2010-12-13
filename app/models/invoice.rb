@@ -92,7 +92,7 @@ class Invoice < ActiveRecord::Base
       invoice = build(:user => user, :started_at => started_at, :ended_at => ended_at)
       invoice.complete
     end
-    delay_complete_invoices_for_billable_users(ended_at.next_month.beginning_of_month, ended_at.next_month.end_of_month)
+    delay_complete_invoices_for_billable_users(*TimeUtil.next_full_month(ended_at))
   end
   
   def self.charge(invoice_id)
@@ -234,8 +234,6 @@ private
   end
   
 end
-
-
 
 
 # == Schema Information
