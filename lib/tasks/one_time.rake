@@ -36,16 +36,28 @@ namespace :one_time do
       Site.all.each { |site| site.delay(:priority => 400).reset_caches! }
     end
     
+    desc "Update invalid staff sites move invalid dev hostnames into the extra_hostnames and remove dev hostnames that are duplication of main hostname"
+    task :update_staff_invalid_hostnames => :environment do
+      timed do
+        puts OneTime::Site.update_hostnames(true).join("\n")
+      end
+    end
+    
     desc "Update invalid sites move invalid dev hostnames into the extra_hostnames and remove dev hostnames that are duplication of main hostname"
     task :update_invalid_hostnames => :environment do
       timed do
-        puts OneTime::Site.update_hostnames.join("\n")
+        puts OneTime::Site.update_hostnames(false).join("\n")
       end
+    end
+    
+    desc "Set all staff sites state to 'beta'"
+    task :set_staff_beta_state => :environment do
+      puts OneTime::Site.set_beta_state(true)
     end
     
     desc "Set all sites state to 'beta'"
     task :set_beta_state => :environment do
-      puts OneTime::Site.set_beta_state
+      puts OneTime::Site.set_beta_state(false)
     end
   end
   

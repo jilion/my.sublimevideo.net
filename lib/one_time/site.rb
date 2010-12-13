@@ -1,11 +1,16 @@
 module OneTime
   module Site
     
+    STAFF_EMAILS = ["mehdi@jilion.com", "zeno@jilion.com", "thibaud@jilion.com", "octave@jilion.com", "remy@jilion.com"]
+    
     class << self
       
       # Method used in the 'one_time:update_invalid_sites' rake task
-      def update_hostnames
-        invalid_sites = ::Site.not_archived.reject { |s| s.valid? }
+      def update_hostnames(staff = true)
+        invalid_sites = ::Site
+        invalid_sites = invalid_sites.includes(:user).where(:users => { :email => STAFF_EMAILS }) if staff
+        invalid_sites = invalid_sites.not_archived.reject { |s| s.valid? }
+        
         result = []
         repaired_sites = 0
         result << "[Before] #{invalid_sites.size} invalid sites, let's try to repair them!\n\n"
@@ -33,13 +38,11 @@ module OneTime
           new_dev_hostnames.uniq!
           extra_hostnames.uniq!
           
-          site.state           = "beta" # TODO Check that and replace it with something like "beta"
           site.hostname        = Hostname.clean(site.hostname) if site.hostname.present?
           site.dev_hostnames   = Hostname.clean(new_dev_hostnames.sort.join(', '))
           site.extra_hostnames = Hostname.clean(extra_hostnames.sort.join(', ')) if extra_hostnames.present?
           site.cdn_up_to_date  = true
-          site.save
-          repaired_sites += 1
+          repaired_sites += 1 if site.save
           
           result << "##{site.id} (#{'still in' unless site.valid?}valid)"
           result << "MAIN : #{site.hostname} (#{'in' unless Hostname.valid?(site.hostname)}valid)"
@@ -51,9 +54,12 @@ module OneTime
         result
       end
       
-      def set_beta_state
-        ::Site.update_all(:state => 'beta')
-        "#{::Site.where(:state => 'beta').count} beta sites."
+      def set_beta_state(staff = true)
+        sites = ::Site
+        sites = sites.joins(:user).where(:users => { :email => STAFF_EMAILS }) if staff
+        
+        ::Site.where(:id => sites.all.map(&:id)).update_all(:state => 'beta')
+        "#{::Site.where(:state => 'beta').count} beta sites (on #{::Site.count} total sites)."
       end
       
     end
