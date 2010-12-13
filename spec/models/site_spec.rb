@@ -766,30 +766,32 @@ describe Site do
 end
 
 
+
 # == Schema Information
 #
 # Table name: sites
 #
-#  id              :integer         not null, primary key
-#  user_id         :integer
-#  hostname        :string(255)
-#  dev_hostnames   :string(255)
-#  token           :string(255)
-#  license         :string(255)
-#  loader          :string(255)
-#  state           :string(255)
-#  archived_at     :datetime
-#  created_at      :datetime
-#  updated_at      :datetime
-#  player_mode     :string(255)     default("stable")
-#  google_rank     :integer
-#  alexa_rank      :integer
-#  path            :string(255)
-#  wildcard        :boolean
-#  extra_hostnames :string(255)
-#  plan_id         :integer
-#  cdn_up_to_date  :boolean
-#  activated_at    :datetime
+#  id                       :integer         not null, primary key
+#  user_id                  :integer
+#  hostname                 :string(255)
+#  dev_hostnames            :string(255)
+#  token                    :string(255)
+#  license                  :string(255)
+#  loader                   :string(255)
+#  state                    :string(255)
+#  archived_at              :datetime
+#  created_at               :datetime
+#  updated_at               :datetime
+#  player_mode              :string(255)     default("stable")
+#  google_rank              :integer
+#  alexa_rank               :integer
+#  path                     :string(255)
+#  wildcard                 :boolean
+#  extra_hostnames          :string(255)
+#  plan_id                  :integer
+#  cdn_up_to_date           :boolean
+#  activated_at             :datetime
+#  last_usage_alert_sent_at :datetime
 #
 # Indexes
 #

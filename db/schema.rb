@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101202120334) do
+ActiveRecord::Schema.define(:version => 20101210154257) do
 
   create_table "addons", :force => true do |t|
     t.string   "name"
@@ -177,7 +177,7 @@ ActiveRecord::Schema.define(:version => 20101202120334) do
     t.datetime "archived_at"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "player_mode",     :default => "stable"
+    t.string   "player_mode",              :default => "stable"
     t.integer  "google_rank"
     t.integer  "alexa_rank"
     t.string   "path"
@@ -186,6 +186,7 @@ ActiveRecord::Schema.define(:version => 20101202120334) do
     t.integer  "plan_id"
     t.boolean  "cdn_up_to_date"
     t.datetime "activated_at"
+    t.datetime "last_usage_alert_sent_at"
   end
 
   add_index "sites", ["created_at"], :name => "index_sites_on_created_at"

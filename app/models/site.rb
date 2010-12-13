@@ -43,14 +43,20 @@ class Site < ActiveRecord::Base
   
   scope :billable, lambda { |started_at, ended_at| where({ :activated_at.lte => ended_at }, { :archived_at => nil } | { :archived_at.gte => started_at }) }
   
+  # usage_alert scopes
+  scope :not_alerted_this_month, where({ :last_usage_alert_sent_at.lt => Time.now.utc.beginning_of_month } | { :last_usage_alert_sent_at => nil })
+  
+  # includes
   scope :with_plan,   includes(:plan)
   scope :with_addons, includes(:addons)
   
+  # filter
   scope :beta,         where(:state => 'beta')
   scope :dev,          where(:state => 'dev')
   scope :active,       where(:state => 'active')
   scope :archived,     where(:state => 'archived')
   scope :not_archived, where(:state.not_eq => 'archived')
+  
   # sort
   scope :by_hostname,    lambda { |way = 'asc'| order(:hostname.send(way)) }
   scope :by_user,        lambda { |way = 'desc'| includes(:user).order(:users => [:first_name.send(way), :email.send(way)]) }
@@ -58,7 +64,7 @@ class Site < ActiveRecord::Base
   scope :by_google_rank, lambda { |way = 'desc'| where(:google_rank.gte => 0).order(:google_rank.send(way)) }
   scope :by_alexa_rank,  lambda { |way = 'desc'| where(:alexa_rank.gte => 1).order(:alexa_rank.send(way)) }
   scope :by_date,        lambda { |way = 'desc'| order(:created_at.send(way)) }
-  # scope :search,         lambda { |q| includes(:user).where(["LOWER(#{Site.quoted_table_name}.hostname) LIKE LOWER(?) OR LOWER(#{Site.quoted_table_name}.dev_hostnames) LIKE LOWER(?) OR LOWER(#{User.quoted_table_name}.email) LIKE LOWER(?) OR LOWER(#{User.quoted_table_name}.first_name) LIKE LOWER(?) OR LOWER(#{User.quoted_table_name}.last_name) LIKE LOWER(?)", "%#{q}%", "%#{q}%", "%#{q}%", "%#{q}%", "%#{q}%"]) }
+  
   # search
   scope :search, lambda { |q|
     joins(:user).
@@ -351,30 +357,32 @@ private
 end
 
 
+
 # == Schema Information
 #
 # Table name: sites
 #
-#  id              :integer         not null, primary key
-#  user_id         :integer
-#  hostname        :string(255)
-#  dev_hostnames   :string(255)
-#  token           :string(255)
-#  license         :string(255)
-#  loader          :string(255)
-#  state           :string(255)
-#  archived_at     :datetime
-#  created_at      :datetime
-#  updated_at      :datetime
-#  player_mode     :string(255)     default("stable")
-#  google_rank     :integer
-#  alexa_rank      :integer
-#  path            :string(255)
-#  wildcard        :boolean
-#  extra_hostnames :string(255)
-#  plan_id         :integer
-#  cdn_up_to_date  :boolean
-#  activated_at    :datetime
+#  id                       :integer         not null, primary key
+#  user_id                  :integer
+#  hostname                 :string(255)
+#  dev_hostnames            :string(255)
+#  token                    :string(255)
+#  license                  :string(255)
+#  loader                   :string(255)
+#  state                    :string(255)
+#  archived_at              :datetime
+#  created_at               :datetime
+#  updated_at               :datetime
+#  player_mode              :string(255)     default("stable")
+#  google_rank              :integer
+#  alexa_rank               :integer
+#  path                     :string(255)
+#  wildcard                 :boolean
+#  extra_hostnames          :string(255)
+#  plan_id                  :integer
+#  cdn_up_to_date           :boolean
+#  activated_at             :datetime
+#  last_usage_alert_sent_at :datetime
 #
 # Indexes
 #

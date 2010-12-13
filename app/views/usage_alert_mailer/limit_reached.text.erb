@@ -1,0 +1,11 @@
+Hi,
+
+you have reached the <%= @site.plan.name.humanize %> plan's limit for this month.
+
+We advise you to upgrade to the next plan in order to avoid any overages at the end of the month.
+
+Click on the link below to choose an new plan for <%= @site.hostname %>:
+
+https://<%= ActionMailer::Base.default_url_options[:host] %>/sites/<%= @site.to_param %>/edit
+
+The SublimeVideo team
