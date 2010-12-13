@@ -171,20 +171,35 @@ describe SitesController do
         end
         
         describe "PUT :activate" do
-          it "should redirect to /sites when update_attributes succeeds" do
+          before(:each) { @current_user.stub(:valid_password?).with('123456').and_return(true) }
+          
+          it "should redirect to /card/edit when current_user has no credit card" do
+            @current_user.stub(:cc?).and_return(false)
             mock_site.stub(:activate) { true }
             
             put :activate, :id => 'a1b2c3', :user => { :current_password => '123456' }
             assigns(:site).should == mock_site
-            response.should redirect_to(sites_url)
+            response.should redirect_to(edit_credit_card_url)
           end
           
-          it "should redirect to /sites when update_attributes fails" do
-            mock_site.stub(:activate){ false }
+          context "current_user has a credit card" do
+            before(:each) { @current_user.stub(:cc?).and_return(true) }
             
-            put :activate, :id => 'a1b2c3', :user => { :current_password => '123456' }
-            assigns(:site).should == mock_site
-            response.should redirect_to(sites_url)
+            it "should redirect to /sites when update_attributes succeeds" do
+              mock_site.stub(:activate) { true }
+              
+              put :activate, :id => 'a1b2c3', :user => { :current_password => '123456' }
+              assigns(:site).should == mock_site
+              response.should redirect_to(sites_url)
+            end
+            
+            it "should redirect to /sites when update_attributes fails" do
+              mock_site.stub(:activate){ false }
+              
+              put :activate, :id => 'a1b2c3', :user => { :current_password => '123456' }
+              assigns(:site).should == mock_site
+              response.should redirect_to(sites_url)
+            end
           end
         end
         

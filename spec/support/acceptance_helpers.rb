@@ -19,11 +19,14 @@ module Spec
           user.confirm! unless options[:confirm] == false
           user.lock! if options[:locked] == true
           user.delay_suspend_and_set_suspending_delayed_job_id if options[:suspend] == true
-          unless options[:without_cc] == true
+          if options[:without_cc] == true
+            user.attributes = { :cc_type => nil }
+            user.cc_last_digits = nil # can't be mass-assigned
+          else
             user.attributes = { :cc_type => options[:cc_type], :cc_expire_on => options[:cc_expire_on] }
             user.cc_last_digits = 1234 # can't be mass-assigned
-            user.save(:validate => false)
           end
+          user.save(:validate => false)
           user
         end
       end

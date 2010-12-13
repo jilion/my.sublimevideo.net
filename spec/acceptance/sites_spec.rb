@@ -128,10 +128,10 @@ def create_site(*args)
       fill_in "site_user_attributes_cc_full_name", :with => "John Doe"
       fill_in "site_user_attributes_cc_number", :with => "4111111111111111"
       fill_in "site_user_attributes_cc_verification_value", :with => "111"
-      click_button "Add"
+      click_button "Create"
     end
   else
-    click_button "Add"
+    click_button "Create"
   end
   Site.last.update_attribute(:cdn_up_to_date, true) if options[:cdn_up_to_date]
 end

@@ -128,13 +128,13 @@ describe User do
       
       describe "credit card type" do
         it "should require one" do
-          user = Factory.build(:user, :cc_expire_on => 1.year.from_now, :cc_full_name => "John Doe")
+          user = Factory.build(:user, :cc_type => nil, :cc_expire_on => 1.year.from_now, :cc_full_name => "John Doe")
           user.should_not be_valid
           user.should have(2).errors_on(:cc_type)
         end
         
         it "should require a valid one" do
-          user = Factory.build(:user, :cc_expire_on => 1.year.from_now, :cc_full_name => "John Doe", :cc_type => 'foo')
+          user = Factory.build(:user, :cc_type => 'foo', :cc_expire_on => 1.year.from_now, :cc_full_name => "John Doe")
           user.should_not be_valid
           user.should have(1).error_on(:cc_type)
         end
