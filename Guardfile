@@ -28,8 +28,11 @@ guard 'rspec', :version => 2, :drb => true, :bundler => false, :fail_fast => fal
   watch('config/routes\.rb')                                  { "spec/routing" }
   watch(%r{spec/support/(controller|acceptance)_helpers\.rb}) { |m| "spec/#{m[1]}" }
   watch(%r|spec/.*_spec\.rb|)                                  
-  watch(%r|app/(.*)\.rb|)                                      { |m| "spec/#{m[1]}_spec.rb" }
-  watch(%r|lib/(.*)\.rb|)                                      { |m| "spec/lib/#{m[1]}_spec.rb" }
+  
+  watch(%r|app/controllers/(.*)_controller\.rb|)              { |m| ["spec/routing/#{m[1]}_routing_spec.rb", "spec/controllers/#{m[1]}_controller_spec.rb", "spec/acceptance/#{m[1]}_spec.rb"] }
+  
+  watch(%r|app/(.*)\.rb|)                                     { |m| "spec/#{m[1]}_spec.rb" }
+  watch(%r|lib/(.*)\.rb|)                                     { |m| "spec/lib/#{m[1]}_spec.rb" }
   
   # temporary watcher
   # watch(%|site_observer(_spec)?\.rb|) {
