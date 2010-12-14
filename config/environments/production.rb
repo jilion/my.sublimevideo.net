@@ -1,7 +1,7 @@
 MySublimeVideo::Application.configure do
   # Settings specified here will take precedence over those in config/environment.rb
-  config.middleware.use(Rack::GoogleAnalytics, :tracker => 'UA-10280941-8')
   config.middleware.use(Rack::SslEnforcer)
+  config.middleware.use(Rack::GoogleAnalytics, :tracker => 'UA-10280941-8')
 
   # The production environment is meant for finished, "live" apps.
   # Code is not reloaded between requests
@@ -24,7 +24,9 @@ MySublimeVideo::Application.configure do
   # config.log_level = :debug
 
   # Use a different logger for distributed setups
-  # config.logger = SyslogLogger.new
+  config.logger = Logger.new(STDOUT)
+  # Heroku logs config
+  config.action_controller.logger = Logger.new(STDOUT)
 
   # Use a different cache store in production
   config.cache_store = :dalli_store
