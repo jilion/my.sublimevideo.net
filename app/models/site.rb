@@ -88,7 +88,7 @@ class Site < ActiveRecord::Base
     event(:archive)    { transition [:pending, :active] => :archived }
   end
   
-  # Site.not_archived.each { |site| Site.delay.update_and_purge_loader(site.id) }
+  # Site.not_archived.find_each(:batch_size => 500) { |site| Site.delay.update_and_purge_loader(site.id) }
   def self.update_and_purge_loader(id)
     if site = Site.find(id)
       site.set_template("loader")
