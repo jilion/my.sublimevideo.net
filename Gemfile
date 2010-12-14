@@ -2,10 +2,10 @@ source :rubygems
 
 gem 'bundler',               '1.0.7'
 
-# gem 'rails',                 '~> 3.0.2'
+# gem 'rails',                 '~> 3.0.3'
 gem 'rails',                 :git => 'git://github.com/thibaudgg/rails.git', :branch => 'spork' # 3.0.3
 gem 'rack',                  '1.2.1'
-gem 'arel',                  '2.0.6' # Use this version until count with left outer joins are fixed (https://gist.github.com/723780)
+gem 'arel',                  '2.0.6'
 gem 'pg',                    '0.10.0'
 
 gem 'libxml-ruby',           '1.1.3', :require => 'libxml'
