@@ -88,6 +88,15 @@ class Site < ActiveRecord::Base
     event(:archive)    { transition [:pending, :active] => :archived }
   end
   
+  # Site.not_archived.each { |site| Site.delay.update_and_purge_loader(site.id) }
+  def self.update_and_purge_loader(id)
+    if site = Site.find(id)
+      site.set_template("loader")
+      site.save
+      VoxcastCDN.purge("/js/#{site.token}.js")
+    end
+  end
+  
   # ====================
   # = Instance Methods =
   # ====================
@@ -210,6 +219,16 @@ class Site < ActiveRecord::Base
     dev_hostnames.split(', ').any? { |h| host == h || host == "www.#{h}" }
   end
   
+  def set_template(name)
+    template = ERB.new(File.new(Rails.root.join("app/templates/sites/#{name}.js.erb")).read)
+    
+    tempfile = Tempfile.new(name, "#{Rails.root}/tmp")
+    tempfile.print template.result(binding)
+    tempfile.flush
+    
+    self.send("#{name}=", tempfile)
+  end
+  
 private
   
   # validate
@@ -228,16 +247,6 @@ private
   # after_create
   def delay_ranks_update
     delay(:priority => 100, :run_at => 30.seconds.from_now).update_ranks
-  end
-  
-  def set_template(name)
-    template = ERB.new(File.new(Rails.root.join("app/templates/sites/#{name}.js.erb")).read)
-    
-    tempfile = Tempfile.new(name, "#{Rails.root}/tmp")
-    tempfile.print template.result(binding)
-    tempfile.flush
-    
-    self.send("#{name}=", tempfile)
   end
   
   def set_archived_at
