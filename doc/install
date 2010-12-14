@@ -4,5 +4,8 @@ brew install postgresql
 # Install Bundler
 gem install bundler
 
+# Install PDFKit
+brew install wkhtmltopdf
+
 # Run bundle install
 bi (jime alias for bundle install)
