@@ -17,7 +17,7 @@ module Admin::StatsHelper
     }
   end
   
-  def usage_legend(options = {})
+  def legend(options = {})
     {
       verticalAlign: options[:vertical_align] || 'top',
       y: options[:y] || 50,
@@ -39,10 +39,10 @@ module Admin::StatsHelper
   end
   
   def evolutive_average_array(array)
-    Array.new.tap { |arr| array.each_with_index { |item, index| arr << (item / (index + 1)).to_i } }
+    Array.new.tap { |arr| array.each_with_index { |item, index| arr << (item.to_f / (index + 1)).round(2) } }
   end
   
-  def usage_plot_options(start_at, interval = 1.day)
+  def plot_options(start_at, interval = 1.day)
      {
       column: {
         pointInterval: interval * 1000, # in ms

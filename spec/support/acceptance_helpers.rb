@@ -18,7 +18,7 @@ module Spec
           user = Factory(:user, options[:user] || {})
           user.confirm! unless options[:confirm] == false
           user.lock! if options[:locked] == true
-          user.delay_suspend_and_set_suspending_delayed_job_id if options[:suspend] == true
+          user.delay_suspend if options[:suspend] == true
           if options[:without_cc] == true
             user.attributes = { :cc_type => nil }
             user.cc_last_digits = nil # can't be mass-assigned

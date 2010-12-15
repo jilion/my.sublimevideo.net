@@ -95,7 +95,7 @@ class User < ActiveRecord::Base
     before_transition :on => :suspend, :do => :suspend_sites
     after_transition  :on => :suspend, :do => :send_account_suspended_email
     
-    before_transition :on => :cancel_suspend, :do => [:delete_suspending_delayed_job, :clear_suspending_delayed_job_id]
+    before_transition :on => :cancel_suspend, :do => :delete_suspending_delayed_job
     
     before_transition :on => :unsuspend, :do => :unsuspend_sites
     after_transition  :on => :unsuspend, :do => :send_account_unsuspended_email
@@ -132,7 +132,7 @@ class User < ActiveRecord::Base
     write_attribute(:email, email.try(:downcase))
   end
   
-  def delay_suspend_and_set_suspending_delayed_job_id(run_at = Billing.days_before_suspend_user.days.from_now)
+  def delay_suspend(run_at = Billing.days_before_suspend_user.days.from_now)
     transaction do
       begin
         delayed_job = User.delay(:run_at => run_at).suspend(self.id)
@@ -174,21 +174,12 @@ private
   
   # after_transition :on => :suspend
   def send_account_suspended_email
-    reason = if self.credit_card_expired?
-      :credit_card_expired
-    elsif self.invoices.failed.present?
-      :credit_card_charging_impossible
-    end
-    UserMailer.account_suspended(self, reason).deliver!
+    UserMailer.account_suspended(self).deliver!
   end
   
   # before_transition :on => :cancel_suspend
   def delete_suspending_delayed_job
     Delayed::Job.find(suspending_delayed_job_id).delete
-  end
-  
-  # before_transition :on => :cancel_suspend
-  def clear_suspending_delayed_job_id
     self.suspending_delayed_job_id = nil
   end
   

@@ -91,59 +91,59 @@ describe User do
         user.should have(1).error_on(:company_url)
       end
     end
-  end
-  
-  describe "user credit card when at least 1 credit card field is given" do
-    it "should be valid without any credit card field" do
-      user = Factory.build(:user, :cc_update => nil, :cc_number => nil, :cc_first_name => nil, :cc_last_name => nil, :cc_verification_value => nil, :cc_expire_on => nil)
-      user.should be_valid
-    end
     
-    context "with at least a credit card field given" do
-      it "should require first and last name" do
-        user = Factory.build(:user, :cc_expire_on => 1.year.from_now, :cc_first_name => "Bob")
-        user.should_not be_valid
-        user.should have(1).error_on(:cc_full_name)
+    describe "user credit card when at least 1 credit card field is given" do
+      it "should be valid without any credit card field" do
+        user = Factory.build(:user, :cc_update => nil, :cc_number => nil, :cc_first_name => nil, :cc_last_name => nil, :cc_verification_value => nil, :cc_expire_on => nil)
+        user.should be_valid
       end
       
-      it "should not allow expire date in the future" do
-        user = Factory.build(:user, :cc_full_name => "John Doe", :cc_expire_on => 1.year.ago)
-        user.should_not be_valid
-        user.should have(2).errors_on(:cc_expire_on)
-      end
-      
-      describe "credit card number" do
-        it "should require one" do
+      context "with at least a credit card field given" do
+        it "should require first and last name" do
+          user = Factory.build(:user, :cc_expire_on => 1.year.from_now, :cc_first_name => "Bob")
+          user.should_not be_valid
+          user.should have(1).error_on(:cc_full_name)
+        end
+        
+        it "should not allow expire date in the future" do
+          user = Factory.build(:user, :cc_full_name => "John Doe", :cc_expire_on => 1.year.ago)
+          user.should_not be_valid
+          user.should have(2).errors_on(:cc_expire_on)
+        end
+        
+        describe "credit card number" do
+          it "should require one" do
+            user = Factory.build(:user, :cc_expire_on => 1.year.from_now, :cc_full_name => "John Doe")
+            user.should_not be_valid
+            user.should have(1).error_on(:cc_number)
+          end
+          
+          it "should require a valid one" do
+            user = Factory.build(:user, :cc_expire_on => 1.year.from_now, :cc_full_name => "John Doe", :cc_number => '1234')
+            user.should_not be_valid
+            user.should have(1).error_on(:cc_number)
+          end
+        end
+        
+        describe "credit card type" do
+          it "should require one" do
+            user = Factory.build(:user, :cc_type => nil, :cc_expire_on => 1.year.from_now, :cc_full_name => "John Doe")
+            user.should_not be_valid
+            user.should have(2).errors_on(:cc_type)
+          end
+          
+          it "should require a valid one" do
+            user = Factory.build(:user, :cc_type => 'foo', :cc_expire_on => 1.year.from_now, :cc_full_name => "John Doe")
+            user.should_not be_valid
+            user.should have(1).error_on(:cc_type)
+          end
+        end
+        
+        it "should require a credit card verification value" do
           user = Factory.build(:user, :cc_expire_on => 1.year.from_now, :cc_full_name => "John Doe")
           user.should_not be_valid
-          user.should have(1).error_on(:cc_number)
+          user.should have(1).error_on(:cc_verification_value)
         end
-        
-        it "should require a valid one" do
-          user = Factory.build(:user, :cc_expire_on => 1.year.from_now, :cc_full_name => "John Doe", :cc_number => '1234')
-          user.should_not be_valid
-          user.should have(1).error_on(:cc_number)
-        end
-      end
-      
-      describe "credit card type" do
-        it "should require one" do
-          user = Factory.build(:user, :cc_type => nil, :cc_expire_on => 1.year.from_now, :cc_full_name => "John Doe")
-          user.should_not be_valid
-          user.should have(2).errors_on(:cc_type)
-        end
-        
-        it "should require a valid one" do
-          user = Factory.build(:user, :cc_type => 'foo', :cc_expire_on => 1.year.from_now, :cc_full_name => "John Doe")
-          user.should_not be_valid
-          user.should have(1).error_on(:cc_type)
-        end
-      end
-      
-      it "should require a credit card verification value" do
-        user = Factory.build(:user, :cc_expire_on => 1.year.from_now, :cc_full_name => "John Doe")
-        user.should_not be_valid
-        user.should have(1).error_on(:cc_verification_value)
       end
     end
   end
@@ -162,7 +162,6 @@ describe User do
     end
   end
   
-  # TODO slow: 8.8s for 5 examples => 1.76s/ex
   describe "State Machine" do
     let(:user) { Factory(:user) }
     
@@ -206,7 +205,7 @@ describe User do
     
     describe "#cancel_suspend" do
       before(:each) do
-        user.delay_suspend_and_set_suspending_delayed_job_id
+        user.delay_suspend
       end
       subject { user }
       
@@ -219,18 +218,18 @@ describe User do
       end
       
       describe "Callbacks" do
-        describe "before_transition :on => :cancel_suspend, :do => :clear_suspending_delayed_job_id" do
-          it "should clear suspending_delayed_job_id" do
-            subject.suspending_delayed_job_id.should be_present
-            subject.cancel_suspend
-            subject.suspending_delayed_job_id.should be_nil
-          end
-          
+        describe "before_transition :on => :cancel_suspend, :do => :delete_suspending_delayed_job" do
           it "should clear the delayed job scheduled to suspend the user" do
             delayed_job_id = subject.suspending_delayed_job_id
             Delayed::Job.find(delayed_job_id).should be_present
             subject.cancel_suspend
             lambda { Delayed::Job.find(delayed_job_id) }.should raise_error(ActiveRecord::RecordNotFound)
+          end
+          
+          it "should clear suspending_delayed_job_id" do
+            subject.suspending_delayed_job_id.should be_present
+            subject.cancel_suspend
+            subject.suspending_delayed_job_id.should be_nil
           end
         end
       end
@@ -271,7 +270,6 @@ describe User do
     
   end
   
-  # TODO slow: 3s for 4 examples => 0.75s/ex
   describe "Callbacks" do
     let(:user) { Factory(:user) }
     
@@ -369,9 +367,9 @@ describe User do
       end
     end
     
-    describe "#delay_suspend_and_set_suspending_delayed_job_id" do
+    describe "#delay_suspend" do
       before(:all) { @user = Factory(:user) }
-      subject { @user.reload.delay_suspend_and_set_suspending_delayed_job_id }
+      subject { @user.reload.delay_suspend }
       
       it "should delay suspend user" do
         lambda { subject }.should change(Delayed::Job, :count).by(1)
@@ -391,7 +389,7 @@ describe User do
       
       context "giving a custom run_at" do
         specify do
-          @user.delay_suspend_and_set_suspending_delayed_job_id(Time.utc(2010,7,24))
+          @user.delay_suspend(Time.utc(2010,7,24))
           Delayed::Job.last.run_at.should == Time.utc(2010,7,24)
         end
       end
@@ -417,7 +415,7 @@ describe User do
           @user.reload.suspending_delayed_job_id.should be_nil
         end
       end
-    end # #delay_suspend_and_set_suspending_delayed_job_id
+    end # #delay_suspend
     
   end
   

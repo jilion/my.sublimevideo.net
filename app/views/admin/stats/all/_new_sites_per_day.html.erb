@@ -1,0 +1,42 @@
+<%
+from_days ||= 60
+stats_from  = from_days.days.ago.beginning_of_day
+
+sites_count = Site.select("COUNT(*) as total, DATE(created_at) as day").where(:created_at.gte => stats_from).group(:day).map { |site| { :day => site.day.to_date, :total => site.total.to_i } }
+
+sites_count = (stats_from.to_date..Time.now.utc.to_date).inject([]) do |memo, day|
+  memo << (sites_count.detect { |sc| sc[:day].to_date == day }.try(:[], :total) || 0)
+end
+
+graph = Graph.new do |g|
+  g.option(chart: chart('new_sites_per_day'))
+  g.option(title: { text: "New sites per day" })
+  g.option(subtitle: usage_date_subtitle(stats_from, { :date_format => :seconds_timezone }))
+  g.option(legend: legend(width: 350))
+  g.option(xAxis: { type: 'datetime', showFirstLabel: true, showLastLabel: true })
+  g.raw_option(%(yAxis: {
+    title: {
+      text: 'Number of sites created',
+      margin: 30
+    },
+    allowDecimals: false,
+    min: 0
+  }))
+  g.raw_option(%(tooltip: {
+    formatter: function() {
+      var date = "<strong>" + Highcharts.dateFormat("%B %e,  %Y", this.x) + "</strong><br/>";
+      return date + this.series.name + ": " + Highcharts.numberFormat(this.y, 2);
+    }
+  }))
+  g.option(series: [
+    serie(sites_count, 'New sites', '#08F'),
+    
+    serie(evolutive_average_array(sites_count), 'AVG new sites', '#FF0', :type => 'line'),
+    
+    serie(sites_count.inject([]) { |memo, sc| memo << ((memo.last || 0) + sc) }, 'TOT new sites', '', :type => 'line', :visible => false),
+  ])
+  g.option(plotOptions: plot_options(stats_from))
+  g.option(credits: credits)
+end
+%>
+<%= raw graph.draw %>
