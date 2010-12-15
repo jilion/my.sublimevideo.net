@@ -16,7 +16,7 @@ class User < ActiveRecord::Base
                   :use_personal, :use_company, :use_clients,
                   :company_name, :company_url, :company_job_title, :company_employees, :company_videos_served,
                   :terms_and_conditions
-  # Credit Card
+  # Credit card
   attr_accessible :cc_update, :cc_type, :cc_full_name, :cc_number, :cc_expire_on, :cc_verification_value
   
   # ================
@@ -144,7 +144,7 @@ class User < ActiveRecord::Base
   end
   
   def will_be_suspended?
-    suspending_delayed_job_id?
+    suspending_delayed_job
   end
   
 private
@@ -220,8 +220,6 @@ protected
   end
   
 end
-
-
 
 
 # == Schema Information

@@ -52,9 +52,13 @@ describe Invoice do
     it { should validate_presence_of(:started_at) }
     it { should validate_presence_of(:ended_at) }
     it { should validate_presence_of(:invoice_items_amount) }
+    it { should validate_presence_of(:vat_rate) }
+    it { should validate_presence_of(:vat_amount) }
     it { should validate_presence_of(:amount) }
     
     it { should validate_numericality_of(:invoice_items_amount) }
+    it { should validate_numericality_of(:vat_rate) }
+    it { should validate_numericality_of(:vat_amount) }
     it { should validate_numericality_of(:amount) }
   end # Validations
   

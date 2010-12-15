@@ -24,6 +24,8 @@ class Invoice < ActiveRecord::Base
   validates :started_at,           :presence => true
   validates :ended_at,             :presence => true
   validates :invoice_items_amount, :presence => true, :numericality => true
+  validates :vat_rate,             :presence => true, :numericality => true
+  validates :vat_amount,           :presence => true, :numericality => true
   validates :amount,               :presence => true, :numericality => true
   
   # =================
@@ -59,7 +61,7 @@ class Invoice < ActiveRecord::Base
     after_transition  any => :paid do |invoice, transition|
       if invoice.user.suspended? && invoice.user.invoices.failed.empty?
         User.delay.unsuspend(invoice.user_id)
-      elsif invoice.user.suspending_delayed_job_id?
+      elsif invoice.user.will_be_suspended?
         invoice.user.cancel_suspend
       end
     end
@@ -119,8 +121,6 @@ class Invoice < ActiveRecord::Base
   # = Instance Methods =
   # ====================
   
-public
-  
   def build
     build_invoice_items
     set_invoice_items_amount
@@ -139,6 +139,10 @@ public
   
   def total_invoice_items_amount
     @total_invoice_items_amount ||= invoice_items.inject(0) { |sum, invoice_item| sum + invoice_item.amount }
+  end
+  
+  def will_be_charged?
+    charging_delayed_job
   end
   
 private
