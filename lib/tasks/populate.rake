@@ -177,7 +177,7 @@ def create_sites(max = 5)
       site            = user.sites.build
       site.plan       = plans.sample
       site.hostname   = "#{rand > 0.5 ? '' : subdomains.sample}#{user.id}#{i}#{Faker::Internet.domain_name}"
-      site.created_at = rand(1500).days.ago
+      site.created_at = rand(500).days.ago
       site.save(:validate => false)
       site.activate
     end

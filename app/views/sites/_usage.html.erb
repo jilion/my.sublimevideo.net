@@ -9,7 +9,7 @@ plans = Plan.all
 graph = Graph.new do |g|
   g.option(chart: chart('current_usage'))
   g.option(title: { text: "#{l(stats_from, :format => :date)} - #{l(Time.now, :format => :date)}" })
-  g.option(legend: usage_legend({ width: 150, y: 30 }))
+  g.option(legend: legend({ width: 150, y: 30 }))
   g.option(xAxis: { type: 'datetime', showFirstLabel: true, showLastLabel: true })
   g.raw_option(%(yAxis: {
     title: {
@@ -38,7 +38,7 @@ graph = Graph.new do |g|
     # serie(Array.new(usages["main_usage"].size, @site.plan.player_hits / 30), "#{@site.plan.name.humanize} plan's average", '', type: 'line'),
     serie(Array.new(usages["main_usage"].size, @site.plan.player_hits), "#{@site.plan.name.humanize} plan's limit", '', type: 'line')
   ])
-  g.option(plotOptions: usage_plot_options(stats_from))
+  g.option(plotOptions: plot_options(stats_from))
   g.option(credits: credits)
 end
 %>
