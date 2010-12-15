@@ -1,7 +1,8 @@
 = title_and_content_header("Stats")
-= render :partial => '/admin/stats/all/usage_per_day'
-= render :partial => '/admin/stats/all/new_sites_per_day'
 
-#usage_per_day{ :style => "width: 100%; height: 650px;" }
-%br
-#new_sites_per_day{ :style => "width: 100%; height: 650px;" }
+%ul
+  %li= link_to "Global usage per day", admin_stat_path('usage_per_day'), :remote => true
+  %li= link_to "New sites per day", admin_stat_path('new_sites_per_day'), :remote => true
+  
+#graph
+  = render :partial => params[:id] if params[:id]
