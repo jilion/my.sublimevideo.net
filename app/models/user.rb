@@ -92,12 +92,12 @@ class User < ActiveRecord::Base
     event(:unsuspend)      { transition :suspended => :active }
     event(:archive)        { transition :active => :archived }
     
-    before_transition :on => :suspend, :do => :suspend_sites
+    before_transition :on => :suspend, :do => [:set_failed_invoices_count_on_suspend, :suspend_sites]
     after_transition  :on => :suspend, :do => :send_account_suspended_email
     
     before_transition :on => :cancel_suspend, :do => :delete_suspending_delayed_job
     
-    before_transition :on => :unsuspend, :do => :unsuspend_sites
+    before_transition :on => :unsuspend, :do => [:set_failed_invoices_count_on_suspend, :unsuspend_sites]
     after_transition  :on => :unsuspend, :do => :send_account_unsuspended_email
   end
   
@@ -167,6 +167,11 @@ private
     end
   end
   
+  # before_transition :on => :suspend, before_transition :on => :unsuspend
+  def set_failed_invoices_count_on_suspend
+    self.failed_invoices_count_on_suspend = invoices.failed.count
+  end
+  
   # before_transition :on => :suspend
   def suspend_sites
     sites.map(&:suspend)
@@ -217,51 +222,54 @@ protected
 end
 
 
+
+
 # == Schema Information
 #
 # Table name: users
 #
-#  id                        :integer         not null, primary key
-#  state                     :string(255)
-#  email                     :string(255)     default(""), not null
-#  encrypted_password        :string(128)     default(""), not null
-#  password_salt             :string(255)     default(""), not null
-#  confirmation_token        :string(255)
-#  confirmed_at              :datetime
-#  confirmation_sent_at      :datetime
-#  reset_password_token      :string(255)
-#  remember_token            :string(255)
-#  remember_created_at       :datetime
-#  sign_in_count             :integer         default(0)
-#  current_sign_in_at        :datetime
-#  last_sign_in_at           :datetime
-#  current_sign_in_ip        :string(255)
-#  last_sign_in_ip           :string(255)
-#  failed_attempts           :integer         default(0)
-#  locked_at                 :datetime
-#  cc_type                   :string(255)
-#  cc_last_digits            :integer
-#  cc_expire_on              :date
-#  cc_updated_at             :datetime
-#  created_at                :datetime
-#  updated_at                :datetime
-#  invitation_token          :string(20)
-#  invitation_sent_at        :datetime
-#  zendesk_id                :integer
-#  enthusiast_id             :integer
-#  first_name                :string(255)
-#  last_name                 :string(255)
-#  postal_code               :string(255)
-#  country                   :string(255)
-#  use_personal              :boolean
-#  use_company               :boolean
-#  use_clients               :boolean
-#  company_name              :string(255)
-#  company_url               :string(255)
-#  company_job_title         :string(255)
-#  company_employees         :string(255)
-#  company_videos_served     :string(255)
-#  suspending_delayed_job_id :integer
+#  id                               :integer         not null, primary key
+#  state                            :string(255)
+#  email                            :string(255)     default(""), not null
+#  encrypted_password               :string(128)     default(""), not null
+#  password_salt                    :string(255)     default(""), not null
+#  confirmation_token               :string(255)
+#  confirmed_at                     :datetime
+#  confirmation_sent_at             :datetime
+#  reset_password_token             :string(255)
+#  remember_token                   :string(255)
+#  remember_created_at              :datetime
+#  sign_in_count                    :integer         default(0)
+#  current_sign_in_at               :datetime
+#  last_sign_in_at                  :datetime
+#  current_sign_in_ip               :string(255)
+#  last_sign_in_ip                  :string(255)
+#  failed_attempts                  :integer         default(0)
+#  locked_at                        :datetime
+#  cc_type                          :string(255)
+#  cc_last_digits                   :integer
+#  cc_expire_on                     :date
+#  cc_updated_at                    :datetime
+#  created_at                       :datetime
+#  updated_at                       :datetime
+#  invitation_token                 :string(20)
+#  invitation_sent_at               :datetime
+#  zendesk_id                       :integer
+#  enthusiast_id                    :integer
+#  first_name                       :string(255)
+#  last_name                        :string(255)
+#  postal_code                      :string(255)
+#  country                          :string(255)
+#  use_personal                     :boolean
+#  use_company                      :boolean
+#  use_clients                      :boolean
+#  company_name                     :string(255)
+#  company_url                      :string(255)
+#  company_job_title                :string(255)
+#  company_employees                :string(255)
+#  company_videos_served            :string(255)
+#  suspending_delayed_job_id        :integer
+#  failed_invoices_count_on_suspend :integer         default(0)
 #
 # Indexes
 #
