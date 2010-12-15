@@ -4,8 +4,3 @@ en:
       type:
         visa:   'Visa'
         master: 'MasterCard'
-        
-    account_suspended:
-      credit_card_expired: "Credit card has expired."
-      credit_card_charging_impossible: "Credit card charging impossible."
-  

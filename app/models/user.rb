@@ -174,12 +174,7 @@ private
   
   # after_transition :on => :suspend
   def send_account_suspended_email
-    reason = if self.credit_card_expired?
-      :credit_card_expired
-    elsif self.invoices.failed.present?
-      :credit_card_charging_impossible
-    end
-    UserMailer.account_suspended(self, reason).deliver!
+    UserMailer.account_suspended(self).deliver!
   end
   
   # before_transition :on => :cancel_suspend
