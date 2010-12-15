@@ -11,8 +11,8 @@ feature "Sticky notices" do
       
       current_url.should =~ %r(http://[^/]+/sites)
       page.should_not have_content("Your credit card will expire at the end of the month")
-      page.should_not have_content("Your credit card is expired")
-      page.should_not have_content("Change your credit card")
+      page.should_not have_content("Your credit card is expired.")
+      page.should_not have_content("change it")
     end
   end
   
@@ -26,7 +26,7 @@ feature "Sticky notices" do
       
       current_url.should =~ %r(http://[^/]+/sites)
       page.should have_content("Your credit card will expire at the end of the month")
-      page.should have_content("Change your credit card")
+      page.should have_content("change it")
     end
   end
   
@@ -52,7 +52,7 @@ feature "Sticky notices" do
       visit '/sites'
       
       current_url.should =~ %r(http://[^/]+/sites)
-      page.should have_content("You will be suspended in")
+      page.should have_content("Your account will be suspended in")
     end
   end
   
@@ -65,7 +65,7 @@ feature "Sticky notices" do
       visit '/sites'
       
       current_url.should =~ %r(http://[^/]+/sites)
-      page.should have_content("You will be suspended in")
+      page.should have_content("Your account will be suspended in")
     end
   end
   
@@ -78,7 +78,7 @@ feature "Sticky notices" do
       visit '/sites'
       
       current_url.should =~ %r(http://[^/]+/sites)
-      page.should have_content("You will be suspended in")
+      page.should have_content("Your account will be suspended in")
     end
   end
 end
