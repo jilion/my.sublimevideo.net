@@ -1,7 +1,7 @@
 class UserMailer < SublimeVideoMailer
   
   def account_suspended(user)
-    @user   = user
+    @user = user
     mail(:to => "#{@user.full_name} <#{@user.email}>", :subject => "Your account has been suspended")
   end
   

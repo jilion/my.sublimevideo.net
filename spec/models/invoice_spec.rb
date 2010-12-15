@@ -207,7 +207,7 @@ describe Invoice do
         end
       end
       
-      describe "before_transition [:open, :unpaid] => [:unpaid, :failed], :do => :delay_charge_and_set_charging_delayed_job_id" do
+      describe "before_transition [:open, :unpaid] => [:unpaid, :failed], :do => :delay_charge" do
         context "from open" do
           before(:each) { subject.reload.update_attribute(:state, 'open') }
           
@@ -301,7 +301,7 @@ describe Invoice do
             Delayed::Job.where(:handler.matches => "%Class%suspend%").first.run_at.should be_within(5).of(Billing.days_before_suspend_user.days.from_now) # seconds of tolerance
           end
           
-          it "should delay suspend user in Billing.days_before_suspend_user days" do
+          it "should delay charge user in Billing.days_before_suspend_user days" do
             lambda { subject.fail }.should change(Delayed::Job, :count).by(2)
             Delayed::Job.where(:handler.matches => "%Class%charge%").count.should == 1
             Delayed::Job.where(:handler.matches => "%Class%charge%").first.run_at.should be_within(5).of(Billing.hours_between_retries_before_user_suspend.hours.from_now) # seconds of tolerance
@@ -320,21 +320,20 @@ describe Invoice do
         end
       end
       
-      describe "before_transition [:open, :unpaid, :failed] => :paid, :do => [:clear_charging_delayed_job_id, :set_paid_at]" do
+      describe "before_transition [:open, :unpaid, :failed] => :paid, :do => [:set_paid_at, :clear_charging_delayed_job_id]" do
         %w[open unpaid failed].each do |state|
           context "from #{state}" do
             before(:each) { subject.reload.update_attributes(:state => state, :amount => 0, :charging_delayed_job_id => 1) }
-            
-            it "should clear charging_delayed_job_id" do
-              subject.charging_delayed_job_id.should be_present
-              subject.send(state == 'open' ? :complete : :succeed)
-              subject.charging_delayed_job_id.should be_nil
-            end
             
             it "should set paid_at" do
               subject.paid_at.should be_nil
               subject.send(state == 'open' ? :complete : :succeed)
               subject.paid_at.should be_present
+            end
+            it "should clear charging_delayed_job_id" do
+              subject.charging_delayed_job_id.should be_present
+              subject.send(state == 'open' ? :complete : :succeed)
+              subject.charging_delayed_job_id.should be_nil
             end
           end
         end
@@ -748,20 +747,14 @@ describe Invoice do
               lambda { subject; @invoice.reload }.should change(@invoice, :attempts).by(1)
             end
             describe "delay user.suspend" do
-              it "should delay user.suspend" do
+              it "should delay user.suspend in Billing.days_before_suspend_user days" do
                 lambda { subject }.should change(Delayed::Job, :count).by(2)
                 Delayed::Job.where(:handler.matches => "%Class%suspend%").count.should == 1
-              end
-              it "should delay user.suspend in Billing.days_before_suspend_user days" do
-                subject
                 Delayed::Job.where(:handler.matches => "%Class%suspend%").last.run_at.should be_within(5).of(Billing.days_before_suspend_user.days.from_now) # seconds of tolerance
               end
-              it "should delay Invoice.charge" do
+              it "should delay Invoice.charge in Billing.hours_between_retries_before_user_suspend hours" do
                 lambda { subject }.should change(Delayed::Job, :count).by(2)
                 Delayed::Job.where(:handler.matches => "%Class%charge%").count.should == 1
-              end
-              it "should delay Invoice.charge in Billing.hours_between_retries_before_user_suspend hours" do
-                subject
                 Delayed::Job.where(:handler.matches => "%Class%charge%").last.run_at.should be_within(5).of(Billing.hours_between_retries_before_user_suspend.hours.from_now) # seconds of tolerance
               end
             end
