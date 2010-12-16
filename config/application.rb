@@ -19,6 +19,9 @@ module MySublimeVideo
       config.autoload_paths += [dir] if config.autoload_paths.exclude?(dir)
     end
     
+    # Heroku logs config
+    config.action_controller.logger = Logger.new(STDOUT)
+    
     # Only load the plugins named here, in the order given (default is alphabetical).
     # :all can be used as a placeholder for all plugins not explicitly named
     # config.plugins = [ :exception_notification, :ssl_requirement, :all ]

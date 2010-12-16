@@ -24,9 +24,7 @@ MySublimeVideo::Application.configure do
   # config.log_level = :debug
 
   # Use a different logger for distributed setups
-  config.logger = Logger.new(STDOUT)
-  # Heroku logs config
-  config.action_controller.logger = Logger.new(STDOUT)
+  # config.logger = SyslogLogger.new
 
   # Use a different cache store in production
   config.cache_store = :dalli_store

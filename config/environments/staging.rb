@@ -21,12 +21,10 @@ MySublimeVideo::Application.configure do
   # just comment this out and Rails will serve the files
 
   # See everything in the log (default is :info)
-  # config.log_level = :debug
+  config.log_level = :debug
 
   # Use a different logger for distributed setups
   config.logger = Logger.new(STDOUT)
-  # Heroku logs config
-  config.action_controller.logger = Logger.new(STDOUT)
 
   # Use a different cache store in production
   config.cache_store = :dalli_store
