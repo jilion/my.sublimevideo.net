@@ -26,7 +26,6 @@ describe Site do
     it { should be_valid }
   end
   
-  # 3.2s
   describe "Associations" do
     before(:all) { @site = Factory(:site) }
     subject { @site }
@@ -111,7 +110,6 @@ describe Site do
     end
   end
   
-  # 17.3s
   describe "Attributes Accessors" do
     describe "hostname=" do
       %w[ÉCOLE ÉCOLE.fr ÜPPER.de ASDASD.COM 124.123.151.123 mIx3Dd0M4iN.CoM].each do |host|
@@ -213,56 +211,101 @@ describe Site do
     end
   end
   
-  # 17.3s
   describe "State Machine" do
     before(:each) { VoxcastCDN.stub(:purge) }
     
-    describe "activate" do
-      subject do
-        site = Factory(:site, :hostname => "jilion.com", :extra_hostnames => "jilion.staging.com, jilion.org")
-        @worker.work_off
-        site
+    describe "#activate" do
+      context "from dev state" do
+        subject do
+          site = Factory(:site, :hostname => "jilion.com", :extra_hostnames => "jilion.staging.com, jilion.org")
+          @worker.work_off
+          site.reload
+        end
+        
+        it "should set activated_at" do
+          subject.activated_at.should be_nil
+          subject.activate.should be_true
+          subject.activated_at.should be_present
+        end
+        
+        it "should update license file" do
+          old_license_content = subject.license.read
+          subject.activate.should be_true
+          @worker.work_off
+          subject.reload.license.read.should_not == old_license_content
+        end
+        
+        it "should add extra and main hostnames in license file" do
+          subject.license.read.should include("localhost")
+          subject.license.read.should_not include("jilion.com")
+          subject.license.read.should_not include("jilion.staging.com")
+          subject.license.read.should_not include("jilion.org")
+          subject.activate.should be_true
+          @worker.work_off
+          subject.reload.license.read.should include("jilion.com")
+          subject.license.read.should include("jilion.staging.com")
+          subject.license.read.should include("jilion.org")
+        end
+        
+        it "should purge loader & license file" do
+          VoxcastCDN.should_receive(:purge).with("/js/#{subject.token}.js")
+          VoxcastCDN.should_receive(:purge).with("/l/#{subject.token}.js")
+          subject.activate.should be_true
+          @worker.work_off
+        end
       end
       
-      it "should set activated_at" do
-        subject.activated_at.should be_nil
-        subject.activate.should be_true
-        subject.activated_at.should be_present
-      end
-      
-      it "should update license file" do
-        old_license_content = subject.license.read
-        subject.activate.should be_true
-        @worker.work_off
-        subject.reload.license.read.should_not == old_license_content
-      end
-      
-      it "should add extra and main hostnames in license file" do
-        subject.license.read.should be_nil
-        subject.license.read.should be_nil
-        subject.activate.should be_true
-        @worker.work_off
-        subject.reload.license.read.should include("jilion.com")
-        subject.license.read.should include("jilion.staging.com")
-        subject.license.read.should include("jilion.org")
-      end
-      
-      it "should purge loader & license file" do
-        VoxcastCDN.should_receive(:purge).with("/js/#{subject.token}.js")
-        VoxcastCDN.should_receive(:purge).with("/l/#{subject.token}.js")
-        subject.activate.should be_true
-        @worker.work_off
+      context "from beta state" do
+        subject do
+          Timecop.travel(10.days.ago)
+          site = Factory(:site, :hostname => "jilion.com", :extra_hostnames => "jilion.staging.com, jilion.org").tap { |s| s.activate }
+          Timecop.return
+          @worker.work_off # populate license / loader
+          
+          # site.reload.plan_id = nil # put site in the a beta state
+          site.reload.update_attribute(:plan_id, nil) # put site in the a beta state
+          # site.save(:validate => false)
+          
+          site.reload.update_attribute(:state, 'beta')
+          # site.save(:validate => false)
+          
+          site.reload.should be_beta
+          site.plan_id.should be_nil
+          site
+        end
+        
+        # activate is not directly called on beta sites, it's fired when site is beta and has a plan_id
+        it "should reset activated_at" do
+          old_activated_at = subject.activated_at
+          subject.update_attribute(:plan_id, Plan.first.id)
+          subject.reload.plan_id.should be_present
+          subject.should be_active
+          subject.activated_at.should_not == old_activated_at
+        end
+        
+        it "should not update license file" do
+          old_license_content = subject.license.read
+          subject.update_attribute(:plan_id, 1)
+          @worker.work_off
+          subject.reload.license.read.should == old_license_content
+        end
+        
+        it "should not purge loader & license file" do
+          VoxcastCDN.should_not_receive(:purge)
+          subject.update_attribute(:plan_id, 1)
+          @worker.work_off
+        end
       end
     end
     
     context "with an activated site" do
-      subject do
-        site = Factory(:site).tap { |s| s.activate }
-        @worker.work_off
-        site
-      end
-      
-      describe "suspend" do
+      describe "#suspend" do
+        subject do
+          site = Factory(:site).tap { |s| s.activate }
+          @worker.work_off
+          site
+        end
+        
         it "should clear & purge license & loader" do
           VoxcastCDN.should_receive(:purge).with("/js/#{subject.token}.js")
           VoxcastCDN.should_receive(:purge).with("/l/#{subject.token}.js")
@@ -273,7 +316,13 @@ describe Site do
         end
       end
       
-      describe "unsuspend" do
+      describe "#unsuspend" do
+        subject do
+          site = Factory(:site).tap { |s| s.activate }
+          @worker.work_off
+          site
+        end
+        
         it "should reset license & loader" do
           VoxcastCDN.should_receive(:purge).with("/js/#{subject.token}.js")
           VoxcastCDN.should_receive(:purge).with("/l/#{subject.token}.js")

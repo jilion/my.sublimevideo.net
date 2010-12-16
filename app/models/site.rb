@@ -93,10 +93,10 @@ class Site < ActiveRecord::Base
   
   before_validation :set_user_attributes
   before_save :prepare_cdn_update
-  after_create :delay_ranks_update
   after_save :execute_cdn_update
+  after_create :delay_ranks_update
   # Temporary
-  after_update :set_state_to_active, :if => lambda { |site| site.beta? && site.plan_id? }
+  after_update :activate, :if => lambda { |site| site.beta? && site.plan_id? }
   
   # =================
   # = State Machine =
@@ -110,8 +110,8 @@ class Site < ActiveRecord::Base
       validate :verify_presence_of_credit_card
     end
     
-    event(:activate)  { transition :dev => :active }
     event(:archive)   { transition [:dev, :active] => :archived }
+    event(:activate)  { transition [:dev, :beta] => :active }
     event(:suspend)   { transition :active => :suspended }
     event(:unsuspend) { transition :suspended => :active }
     
