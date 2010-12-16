@@ -352,15 +352,48 @@ describe Site do
         end
       end
       
-      describe "archive" do
-        it "should clear & purge license & loader and set archived_at" do
-          VoxcastCDN.should_receive(:purge).with("/js/#{subject.token}.js")
-          VoxcastCDN.should_receive(:purge).with("/l/#{subject.token}.js")
-          subject.archive
-          @worker.work_off
-          subject.reload.loader.should_not be_present
-          subject.license.should_not be_present
-          subject.archived_at.should be_present
+      describe "#archive" do
+        context "from active state" do
+          subject do
+            site = Factory(:site).tap { |s| s.activate }
+            @worker.work_off
+            site
+          end
+          
+          it "should clear & purge license & loader and set archived_at" do
+            VoxcastCDN.should_receive(:purge).with("/js/#{subject.token}.js")
+            VoxcastCDN.should_receive(:purge).with("/l/#{subject.token}.js")
+            lambda { subject.archive }.should change(Delayed::Job, :count).by(1)
+            subject.reload.should be_archived
+            lambda { @worker.work_off }.should change(Delayed::Job, :count).by(-1)
+            subject.reload.loader.should_not be_present
+            subject.license.should_not be_present
+            subject.archived_at.should be_present
+          end
+        end
+        
+        context "from beta state" do
+          subject do
+            site = Factory(:site).tap { |s| s.activate }
+            @worker.work_off
+            site.reload.update_attribute(:plan_id, nil) # put site in the a beta state
+            site.reload.update_attribute(:state, 'beta')
+            site.reload.should be_beta
+            site.plan_id.should be_nil
+            site
+          end
+          
+          it "should clear & purge license & loader and set archived_at" do
+            VoxcastCDN.should_receive(:purge).with("/js/#{subject.token}.js")
+            VoxcastCDN.should_receive(:purge).with("/l/#{subject.token}.js")
+            lambda { subject.archive }.should change(Delayed::Job, :count).by(1)
+            subject.archive
+            subject.reload.should be_archived
+            lambda { @worker.work_off }.should change(Delayed::Job, :count).by(-1)
+            subject.loader.should_not be_present
+            subject.license.should_not be_present
+            subject.archived_at.should be_present
+          end
         end
       end
     end
@@ -665,7 +698,6 @@ describe Site do
     
     describe "#referrer_type" do
       context "with versioning" do
-        # 23s with 'subject' (each), 4s with 'set' (all)
         before(:all) do
           @site = with_versioning do
             Timecop.travel(1.day.ago)

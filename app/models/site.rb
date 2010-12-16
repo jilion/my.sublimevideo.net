@@ -117,8 +117,8 @@ class Site < ActiveRecord::Base
       validate :verify_presence_of_credit_card
     end
     
-    event(:archive)   { transition [:dev, :active] => :archived }
     event(:activate)  { transition [:dev, :beta] => :active }
+    event(:archive)   { transition [:dev, :beta, :active] => :archived }
     event(:suspend)   { transition :active => :suspended }
     event(:unsuspend) { transition :suspended => :active }
     
@@ -126,7 +126,7 @@ class Site < ActiveRecord::Base
     before_transition :on => :activate, :do => :set_activated_at
     before_transition :on => :archive,  :do => :set_archived_at
     
-    after_transition  :to => [:archived, :suspended], :do => :delay_remove_loader_and_license
+    after_transition  :to => [:suspended, :archived], :do => :delay_remove_loader_and_license
   end
   
   # =================
@@ -180,11 +180,9 @@ protected
     site = Site.find(site_id)
     transaction do
       begin
-        site.remove_loader  = true
-        site.remove_license = true
+        site.remove_loader, site.remove_license = true, true
         site.cdn_up_to_date = false
-        site.purge_template("loader")
-        site.purge_template("license")
+        %w[loader license].each { |template| site.purge_template(template) }
         site.save!
       rescue => ex
         Notify.send(ex.message, :exception => ex)
@@ -349,7 +347,7 @@ private
     self.archived_at = Time.now.utc
   end
   
-  # after_transition :to => [:archived, :suspended]
+  # after_transition :to => [:suspended, :archived]
   def delay_remove_loader_and_license
     Site.delay.remove_loader_and_license(self.id)
   end
