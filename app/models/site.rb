@@ -105,8 +105,15 @@ class Site < ActiveRecord::Base
   state_machine :initial => :dev do
     state :beta # Temporary, used in lib/one_time/site.rb and lib/tasks/one_time.rake
     
+    state :dev do
+      # TODO: When beta state will be removed, place the following validates for every state
+      validates :plan, :presence => { :message => "Please choose a plan" }
+    end
+    
     state :active do
       validates :hostname, :presence => true
+      # TODO: When beta state will be removed, place the following validates for every state
+      validates :plan, :presence => { :message => "Please choose a plan" }
       validate :verify_presence_of_credit_card
     end
     

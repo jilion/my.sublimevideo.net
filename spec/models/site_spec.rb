@@ -64,7 +64,6 @@ describe Site do
     end
     
     it { should validate_presence_of(:user) }
-    it { should validate_presence_of(:plan).with_message("Please choose a plan") }
     
     it { should allow_value('dev').for(:player_mode) }
     it { should allow_value('beta').for(:player_mode) }
@@ -81,6 +80,21 @@ describe Site do
         site.state = 'active'
         site.should_not be_valid
         site.should have(1).error_on(:hostname)
+      end
+    end
+    
+    describe "plan" do
+      it "should be required if state is dev" do
+        site = Factory.build(:site, :state => 'dev', :plan => nil)
+        site.should be_dev
+        site.should_not be_valid
+        site.should have(1).error_on(:plan)
+      end
+      it "should be required if state is active" do
+        site = Factory.build(:site, :state => 'active', :plan => nil)
+        site.should be_active
+        site.should_not be_valid
+        site.should have(1).error_on(:plan)
       end
     end
     
