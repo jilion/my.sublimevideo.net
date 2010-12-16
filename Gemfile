@@ -70,7 +70,7 @@ end
 group :development, :test do
   gem 'silent-postgres'
   gem 'rspec-rails',   '~> 2.3.0'
-  gem 'passenger',     '~> 3.0.0'
+  gem 'passenger',     '~> 3.0.2'
   gem 'timecop',       '~> 0.3.5'
   # gem 'awesome_print', '~> 0.3.1' # liquid problem
 end

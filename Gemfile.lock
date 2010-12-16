@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/guard/guard.git
-  revision: ebe94d213b90a7c2239bee8cb82da1d5f69eb12f
+  revision: c788c00099e06d8c18519fec38e0f5a60e3bfd98
   specs:
     guard (0.2.2)
       open_gem (~> 1.4.2)
@@ -246,7 +246,7 @@ GEM
     paper_trail (1.6.4)
       actionpack (>= 2.3)
       activerecord (>= 2.3)
-    passenger (3.0.1)
+    passenger (3.0.2)
       daemon_controller (>= 0.2.5)
       fastthread (>= 1.0.1)
       file-tail
@@ -377,7 +377,7 @@ DEPENDENCIES
   mongo (= 1.1.5)
   mongoid!
   paper_trail (= 1.6.4)
-  passenger (~> 3.0.0)
+  passenger (~> 3.0.2)
   pdfkit!
   pg (= 0.10.0)
   prowl (= 0.1.3)
