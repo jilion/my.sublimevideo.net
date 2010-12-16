@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101215111240) do
+ActiveRecord::Schema.define(:version => 20101216173447) do
 
   create_table "addons", :force => true do |t|
     t.string   "name"
@@ -236,6 +236,7 @@ ActiveRecord::Schema.define(:version => 20101215111240) do
     t.string   "company_videos_served"
     t.integer  "suspending_delayed_job_id"
     t.integer  "failed_invoices_count_on_suspend",                :default => 0
+    t.datetime "archived_at"
   end
 
   add_index "users", ["confirmation_token"], :name => "index_users_on_confirmation_token", :unique => true

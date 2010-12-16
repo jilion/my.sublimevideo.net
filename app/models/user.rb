@@ -103,6 +103,9 @@ class User < ActiveRecord::Base
     
     before_transition :on => :unsuspend, :do => [:set_failed_invoices_count_on_suspend, :unsuspend_sites]
     after_transition  :on => :unsuspend, :do => :send_account_unsuspended_email
+    
+    before_transition :on => :archive, :do => [:set_archived_at, :archive_sites, :delay_complete_current_invoice]
+    after_transition  :on => :archive, :do => :send_account_archived_email
   end
   
   # =================
@@ -202,14 +205,28 @@ private
     UserMailer.account_unsuspended(self).deliver!
   end
   
+  # before_transition :on => :archive
+  def set_archived_at
+    self.archived_at = Time.now.utc
+  end
+  def archive_sites
+    sites.map(&:archive)
+  end
+  def delay_complete_current_invoice
+    Invoice.usage_statement(self).delay.complete
+  end
+  
+  # after_transition :on => :archive
+  def send_account_archived_email
+    UserMailer.account_archived(self).deliver!
+  end
+  
   # after_update
   def update_email_on_zendesk
     if zendesk_id.present? && email_changed?
       Zendesk.delay(:priority => 25).put("/users/#{zendesk_id}.xml", :user => { :email => email })
     end
   end
-  
-  # after_update
   def charge_failed_invoices
     if cc_updated_at_changed? && invoices.failed.present?
       invoices.failed.each { |invoice| invoice.retry }
@@ -272,6 +289,7 @@ end
 #  company_videos_served            :string(255)
 #  suspending_delayed_job_id        :integer
 #  failed_invoices_count_on_suspend :integer         default(0)
+#  archived_at                      :datetime
 #
 # Indexes
 #

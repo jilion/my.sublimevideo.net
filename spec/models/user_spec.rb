@@ -288,8 +288,50 @@ describe User do
         end
         
         describe "after_transition  :on => :unsuspend, :do => :send_account_unsuspended_email" do
-          it "should send an email to invoice.user" do
+          it "should send an email to user" do
             lambda { subject.unsuspend }.should change(ActionMailer::Base.deliveries, :count).by(1)
+            ActionMailer::Base.deliveries.last.to.should == [subject.email]
+          end
+        end
+      end
+    end
+    
+    describe "#archive" do
+      before(:each) { @user.reload.update_attribute(:state, 'active') }
+      subject { @user.reload }
+      
+      context "from active state" do
+        it "should set the user to archived" do
+          subject.should be_active
+          subject.archive
+          subject.should be_archived
+        end
+      end
+      
+      describe "Callbacks" do
+        describe "before_transition :on => :archive, :do => [:set_archived_at, :archive_sites, :delay_complete_current_invoice]" do
+          specify do
+            subject.archived_at.should be_nil
+            subject.archive
+            subject.archived_at.should be_present
+          end
+          
+          it "should archive each user' site" do
+            @dev_site.reload.should be_dev
+            subject.archive
+            @dev_site.reload.should be_archived
+          end
+          
+          it "should delay Class#complete of the usage statement" do
+            lambda { subject.archive }.should change(Delayed::Job, :count).by(2)
+            Delayed::Job.where(:handler.matches => "%Site%remove_loader_and_license%").count.should == 1
+            Delayed::Job.where(:handler.matches => "%Invoice%complete%").count.should == 1
+          end
+        end
+        
+        describe "after_transition  :on => :archive, :do => :send_account_archived_email" do
+          it "should send an email to user" do
+            lambda { subject.archive }.should change(ActionMailer::Base.deliveries, :count).by(1)
             ActionMailer::Base.deliveries.last.to.should == [subject.email]
           end
         end
@@ -471,8 +513,6 @@ protected
 end
 
 
-
-
 # == Schema Information
 #
 # Table name: users
@@ -519,6 +559,7 @@ end
 #  company_videos_served            :string(255)
 #  suspending_delayed_job_id        :integer
 #  failed_invoices_count_on_suspend :integer         default(0)
+#  archived_at                      :datetime
 #
 # Indexes
 #

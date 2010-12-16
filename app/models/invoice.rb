@@ -51,7 +51,7 @@ class Invoice < ActiveRecord::Base
     before_transition :on => :retry, :do => :delay_charge
     
     before_transition [:open, :unpaid] => [:unpaid, :failed], :do => :delay_charge, :unless => lambda { |invoice| invoice.user.suspended? }
-    after_transition  :open => :unpaid, :do => :send_invoice_completed_email
+    after_transition  :open => :unpaid, :do => :send_invoice_completed_email, :unless => lambda { |invoice| invoice.user.archived? }
     
     before_transition any => :failed, :do => [:set_failed_at, :clear_charging_delayed_job_id]
     before_transition :unpaid => :failed, :do => :delay_suspend_user
@@ -226,10 +226,10 @@ private
   end
   
   def charging_delay
-    if open?
-      Billing.days_before_charging.days
-    elsif user.suspended?
+    if user.suspended? || user.archived?
       0.seconds
+    elsif open?
+      Billing.days_before_charging.days
     elsif attempts > Billing.max_charging_attempts
       Billing.hours_between_retries_before_user_suspend.hours
     else
