@@ -43,8 +43,8 @@ gem 'fog',                   '0.3.26' # there's a conflict between named-paramet
 # gem 'fog',                   :git => 'git://github.com/rymai/fog.git' # there's a conflict between named-parameters (dependency) and settinglogic
 gem 'carrierwave',           '0.5.1'
 
-gem 'bson_ext',              '1.1.4'
-gem 'mongo',                 '1.1.4'
+gem 'bson_ext',              '1.1.5'
+gem 'mongo',                 '1.1.5'
 # gem 'mongoid',               '~> 2.0.0.beta.20'
 gem 'mongoid',               :git => 'git://github.com/thibaudgg/mongoid.git', :branch => 'spork' # 2.0.0.beta.20
 
@@ -80,7 +80,7 @@ group :development do
   gem 'annotate',      '~> 2.4.0'
   gem 'wirble',        '~> 0.1.3'
   gem 'ruby-graphviz', :require => 'graphviz'
-  gem 'heroku',        '~> 1.14.9'
+  gem 'heroku',        '~> 1.14.10'
   gem 'heroku_tasks',  '~> 0.1.4'
   gem 'taps',          '~> 0.3.14' # heroku db pull/push
   gem 'silent-postgres'
