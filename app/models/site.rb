@@ -51,11 +51,11 @@ class Site < ActiveRecord::Base
   scope :with_addons, includes(:addons)
   
   # filter
-  scope :beta,         where(:state => 'beta')
-  scope :dev,          where(:state => 'dev')
-  scope :active,       where(:state => 'active')
-  scope :archived,     where(:state => 'archived')
-  scope :not_archived, where(:state.not_eq => 'archived')
+  scope :beta,         lambda { with_state(:beta) }
+  scope :dev,          lambda { with_state(:dev) }
+  scope :active,       lambda { with_state(:active) }
+  scope :archived,     lambda { with_state(:archived) }
+  scope :not_archived, lambda { without_state(:archived) }
   
   # sort
   scope :by_hostname,    lambda { |way = 'asc'| order(:hostname.send(way)) }
@@ -66,7 +66,7 @@ class Site < ActiveRecord::Base
   scope :by_date,        lambda { |way = 'desc'| order(:created_at.send(way)) }
   
   # search
-  scope :search, lambda { |q|
+  def self.search(q)
     joins(:user).
     where(:lower.func(:email).matches % :lower.func("%#{q}%") \
         | :lower.func(:first_name).matches % :lower.func("%#{q}%") \
@@ -74,14 +74,13 @@ class Site < ActiveRecord::Base
         | :lower.func(:hostname).matches % :lower.func("%#{q}%") \
         | :lower.func(:dev_hostnames).matches % :lower.func("%#{q}%") \
         | :lower.func(:extra_hostnames).matches % :lower.func("%#{q}%"))
-  }
+  end
   
   # ===============
   # = Validations =
   # ===============
   
   validates :user,            :presence => true
-  validates :plan,            :presence => { :message => "Please choose a plan" }
   validates :hostname,        :hostname_uniqueness => true, :hostname => true
   validates :extra_hostnames, :extra_hostnames => true
   validates :dev_hostnames,   :dev_hostnames => true

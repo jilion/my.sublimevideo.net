@@ -31,7 +31,11 @@ class User < ActiveRecord::Base
   # = Scopes =
   # ==========
   
-  scope :billable, lambda { |started_at, ended_at| where(:state.ne => 'archived').includes(:sites).where(:sites => [{ :activated_at.lte => ended_at }, { :archived_at => nil } | { :archived_at.gte => started_at }]) }
+  def self.billable(started_at, ended_at)
+    includes(:sites).
+    without_state(:archived).
+    where(:sites => [{ :activated_at.lte => ended_at }, { :archived_at => nil } | { :archived_at.gte => started_at }])
+  end
   
   # credit_card scopes
   scope :without_cc, where(:cc_type => nil, :cc_last_digits => nil)
@@ -52,14 +56,14 @@ class User < ActiveRecord::Base
   scope :by_date,          lambda { |way = 'desc'| order(:created_at.send(way)) }
   
   # search
-  scope :search, lambda { |q|
+  def self.search(q)
     joins(:sites).
     where(:lower.func(:email).matches % :lower.func("%#{q}%") \
         | :lower.func(:first_name).matches % :lower.func("%#{q}%") \
         | :lower.func(:last_name).matches % :lower.func("%#{q}%") \
         | :lower.func(:hostname).matches % :lower.func("%#{q}%") \
         | :lower.func(:dev_hostnames).matches % :lower.func("%#{q}%"))
-  }
+  end
   
   # ===============
   # = Validations =
