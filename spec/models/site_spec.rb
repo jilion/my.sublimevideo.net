@@ -727,8 +727,10 @@ describe Site do
       end
       
       context "without wildcard or path" do
-        set(:site_without_wildcard) { Factory(:site, :hostname => "jilion.com", :extra_hostnames => 'jilion.org, staging.jilion.com', :dev_hostnames => "jilion.local, localhost, 127.0.0.1") }
-        subject { site_without_wildcard }
+        before(:all) do
+          @site = Factory(:site, :hostname => "jilion.com", :extra_hostnames => 'jilion.org, staging.jilion.com', :dev_hostnames => "jilion.local, localhost, 127.0.0.1")
+        end
+        subject { @site }
         
         it { subject.referrer_type("http://jilion.com").should == "main" }
         it { subject.referrer_type("http://jilion.com/test/cool").should == "main" }
@@ -747,12 +749,17 @@ describe Site do
         it { subject.referrer_type("google.com").should == "invalid" }
         it { subject.referrer_type("jilion.com").should == "invalid" }
         it { subject.referrer_type("-").should == "invalid" }
-        it { subject.referrer_type(nil).should == "invalid" }
+        it "should send a notify" do
+          Notify.should_receive(:send)
+          subject.referrer_type(nil).should == "invalid"
+        end
       end
       
       context "with wildcard" do
-        set(:site_with_wildcard) { Factory(:site, :hostname => "jilion.com", :extra_hostnames => 'jilion.org, jilion.net', :dev_hostnames => "jilion.local, localhost, 127.0.0.1", :wildcard => true) }
-        subject { site_with_wildcard }
+        before(:all) do
+          @site = Factory(:site, :hostname => "jilion.com", :extra_hostnames => 'jilion.org, jilion.net', :dev_hostnames => "jilion.local, localhost, 127.0.0.1", :wildcard => true)
+        end
+        subject { @site }
         
         it { subject.referrer_type("http://blog.jilion.com").should == "main" }
         it { subject.referrer_type("http://jilion.com").should == "main" }
@@ -777,12 +784,17 @@ describe Site do
         it { subject.referrer_type("google.com").should == "invalid" }
         it { subject.referrer_type("jilion.com").should == "invalid" }
         it { subject.referrer_type("-").should == "invalid" }
-        it { subject.referrer_type(nil).should == "invalid" }
+        it "should send a notify" do
+          Notify.should_receive(:send)
+          subject.referrer_type(nil).should == "invalid"
+        end
       end
       
       context "with path" do
-        set(:site_with_path) { Factory(:site, :hostname => "jilion.com", :extra_hostnames => 'jilion.org, staging.jilion.com', :dev_hostnames => "jilion.local, localhost, 127.0.0.1", :path => "demo") }
-        subject { site_with_path }
+        before(:all) do
+          @site = Factory(:site, :hostname => "jilion.com", :extra_hostnames => 'jilion.org, staging.jilion.com', :dev_hostnames => "jilion.local, localhost, 127.0.0.1", :path => "demo")
+        end
+        subject { @site }
         
         it { subject.referrer_type("http://jilion.com/demo").should == "main" }
         it { subject.referrer_type("https://jilion.com/demo").should == "main" }
@@ -816,12 +828,17 @@ describe Site do
         it { subject.referrer_type("google.com").should == "invalid" }
         it { subject.referrer_type("jilion.com").should == "invalid" }
         it { subject.referrer_type("-").should == "invalid" }
-        it { subject.referrer_type(nil).should == "invalid" }
+        it "should send a notify" do
+          Notify.should_receive(:send)
+          subject.referrer_type(nil).should == "invalid"
+        end
       end
       
       context "with wildcard and path" do
-        set(:site_with_wildcard_and_path) { Factory(:site, :hostname => "jilion.com", :extra_hostnames => 'jilion.org, jilion.net', :dev_hostnames => "jilion.local, localhost, 127.0.0.1", :path => "demo", :wildcard => true) }
-        subject { site_with_wildcard_and_path }
+        before(:all) do
+          @site = Factory(:site, :hostname => "jilion.com", :extra_hostnames => 'jilion.org, jilion.net', :dev_hostnames => "jilion.local, localhost, 127.0.0.1", :path => "demo", :wildcard => true)
+        end
+        subject { @site }
         
         it { subject.referrer_type("http://jilion.com/demo").should == "main" }
         it { subject.referrer_type("https://jilion.com/demo").should == "main" }
@@ -859,7 +876,10 @@ describe Site do
         it { subject.referrer_type("google.com").should == "invalid" }
         it { subject.referrer_type("jilion.com").should == "invalid" }
         it { subject.referrer_type("-").should == "invalid" }
-        it { subject.referrer_type(nil).should == "invalid" }
+        it "should send a notify" do
+          Notify.should_receive(:send)
+          subject.referrer_type(nil).should == "invalid"
+        end
       end
     end
   end

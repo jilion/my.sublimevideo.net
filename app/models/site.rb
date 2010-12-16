@@ -135,14 +135,6 @@ class Site < ActiveRecord::Base
   
 protected
   
-  def self.referrer_match_hostname?(referrer, hostname, path = '', wildcard = false)
-    if path || wildcard
-      referrer =~ /^.+:\/\/(#{wildcard ? '.*' : 'www'}\.)?#{hostname}#{"(\:[0-9]+)?\/#{path}" if path.present?}.*$/
-    else
-      URI.parse(referrer).host =~ /^(www\.)?#{hostname}$/
-    end
-  end
-  
   # delayed method
   def self.update_loader_and_license(site_id, options = {})
     site = Site.find(site_id)
@@ -221,6 +213,34 @@ public
     token
   end
   
+  def need_path?
+    %w[web.me.com homepage.mac.com].include?(hostname) && path.blank?
+  end
+  
+  def settings_changed?
+    (changed & %w[hostname extra_hostnames dev_hostnames path wildcard]).present?
+  end
+  
+  def addon_ids_changed?
+    @addon_ids_was && @addon_ids_was != addon_ids
+  end
+  
+  def referrer_type(referrer, timestamp = Time.now.utc)
+    past_site = version_at(timestamp)
+    if past_site.main_referrer?(referrer)
+      "main"
+    elsif past_site.extra_referrer?(referrer)
+      "extra"
+    elsif past_site.dev_referrer?(referrer)
+      "dev"
+    else
+      "invalid"
+    end
+  rescue => ex
+    Notify.send("Referrer type could not be guessed: #{ex.message}", :exception => ex)
+    "invalid"
+  end
+  
   def template_hostnames
     hostnames = []
     if active? || beta?
@@ -233,33 +253,6 @@ public
     hostnames += dev_hostnames.split(', ') if dev_hostnames.present?
     hostnames.map! { |hostname| "'#{hostname}'" }
     hostnames.join(',')
-  end
-  
-  def need_path?
-    %w[web.me.com homepage.mac.com].include?(hostname) && path.blank?
-  end
-  
-  def referrer_type(referrer, timestamp = Time.now.utc)
-    past_site = version_at(timestamp)
-    if main_referrer?(referrer, past_site)
-      "main"
-    elsif extra_referrer?(referrer, past_site, past_site.extra_hostnames.split(', '))
-      "extra"
-    elsif dev_referrer?(referrer, past_site, past_site.dev_hostnames.split(', '))
-      "dev"
-    else
-      "invalid"
-    end
-  rescue
-    "invalid"
-  end
-  
-  def settings_changed?
-    (changed & %w[hostname extra_hostnames dev_hostnames path wildcard]).present?
-  end
-  
-  def addon_ids_changed?
-    @addon_ids_was && @addon_ids_was != addon_ids
   end
   
   def set_template(name)
@@ -352,16 +345,31 @@ private
     Site.delay.remove_loader_and_license(self.id)
   end
   
-  def main_referrer?(referrer, past_site)
-    self.class.referrer_match_hostname?(referrer, past_site.hostname, past_site.path, past_site.wildcard)
+  # ===================
+  # = Utility Methods =
+  # ===================
+  
+protected
+  
+  def self.referrer_match_hostname?(referrer, hostname, path = '', wildcard = false)
+    referrer = URI.parse(referrer)
+    if path || wildcard
+      (referrer.host =~ /^(#{wildcard ? '.*' : 'www'}\.)?#{hostname}$/) && (path.blank? || referrer.path =~ %r{^/#{path}.*$})
+    else
+      referrer.host =~ /^(www\.)?#{hostname}$/
+    end
   end
   
-  def extra_referrer?(referrer, past_site, past_hosts)
-    past_hosts.any? { |h| self.class.referrer_match_hostname?(referrer, h, past_site.path, past_site.wildcard) }
+  def main_referrer?(referrer)
+    self.class.referrer_match_hostname?(referrer, hostname, path, wildcard)
   end
   
-  def dev_referrer?(referrer, past_site, past_hosts)
-    past_hosts.any? { |h| self.class.referrer_match_hostname?(referrer, h, '', past_site.wildcard) }
+  def extra_referrer?(referrer)
+    extra_hostnames.split(', ').any? { |h| self.class.referrer_match_hostname?(referrer, h, path, wildcard) }
+  end
+  
+  def dev_referrer?(referrer)
+    dev_hostnames.split(', ').any? { |h| self.class.referrer_match_hostname?(referrer, h, '', wildcard) }
   end
   
 end
