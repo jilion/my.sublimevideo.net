@@ -4,3 +4,6 @@ hours_between_retries_before_user_suspend: 6
 max_charging_attempts: 5
 days_before_suspend_user: 10
 minimum_billable_amount: 300
+
+beta_discount_rate: 0.2
+months_of_beta_discount: 3
