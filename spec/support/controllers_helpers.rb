@@ -57,8 +57,8 @@ module Spec
       
       def authenticated_user(stubs = {})
         unless @current_user
-          @current_user = mock_model(User, stubs.reverse_merge(:active? => true, :confirmed? => true, :suspended? => false))
           User.stub(:find) { @current_user }
+          @current_user = mock_model(User, stubs.reverse_merge(:active? => true, :confirmed? => true, :suspended? => false))
         end
         @current_user
       end
