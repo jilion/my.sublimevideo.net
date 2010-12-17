@@ -1,20 +1,5 @@
 var MySublimeVideo = MySublimeVideo || {};
 
-document.observe("dom:loaded", function() {
-  MySublimeVideo.initStarringForm();
-});
-
-
-// ====================
-// = Onclick handlers =
-// ====================
-
-MySublimeVideo.initStarringForm = function() {
-  $$(".with_spinner").each(function(element){
-    new SpinnerForElement(element, true);
-  });
-}
-
 // ===========
 // = Classes =
 // ===========
@@ -30,7 +15,7 @@ var SpinnerForElement = Class.create({
     var element = $(this.elementId);
     element.on('ajax:before', function(){
       if(this.spinner == null) {
-        this.spinner = new Element('img', { src: '/images/embed/admin/spinner.gif' })
+        this.spinner = new Element('img', { src: '/images/embed/admin/spinner.gif' });
         element.insert({ after: this.spinner });
       }
       if(this.updateElement) element.update(this.spinner);

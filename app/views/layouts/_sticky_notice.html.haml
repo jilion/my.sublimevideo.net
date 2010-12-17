@@ -1,14 +1,21 @@
-#sticky_notice
-  - if current_user.will_be_suspended?
-    = "You will be suspended in #{time_ago_in_words(Delayed::Job.find(current_user.suspending_delayed_job_id).run_at)}."
-    - if current_user.cc_expired?
-      = "Your credit card is expired, you should update it in order to pay your invoices and to re-activate your account."
-      
-  - elsif current_user.cc_expire_this_month? || current_user.cc_expired?
-    - if current_user.cc_expire_this_month?
-      = "Your credit card will expire at the end of the month, you should update it to prevent any problem."
-    - elsif current_user.cc_expired?
-      = "Your credit card is expired, you should update it to prevent any problem."
-      
-  - if current_user.cc_expire_this_month? || current_user.cc_expired?
-    %p= link_to 'Change your credit card', edit_credit_card_path
+- if current_user.cc_expire_this_month? || current_user.cc_expired? || current_user.will_be_suspended?
+  #sticky_notice{ :style => "background-color:#BBB; border:4px solid #933;" }
+    - if current_user.cc_expire_this_month? || current_user.cc_expired?
+      %p
+        - edit_cc_link = link_to('change it', edit_credit_card_path)
+        - if current_user.cc_expired?
+          = t("user.credit_card.expired")
+          = raw t("user.please_link", :link => edit_cc_link)
+        - else
+          = raw t("user.credit_card.will_expire_please_link", :link => edit_cc_link)
+        
+    - if suspending_delayed_job = current_user.will_be_suspended?
+      %p
+        = t("user.will_be_suspended_in", :time => time_ago_in_words(suspending_delayed_job.run_at))
+        - failed_invoices = current_user.invoices.failed
+        - if failed_invoices.present?
+          = "because you have #{t("failed_invoices", :count => failed_invoices.size)}."
+          = link_to "More info here", edit_user_registration_path
+        - else
+          = ". "
+          = raw t("please_link_to_know_more_about_it", :link => link_to("contact us", new_ticket_path))

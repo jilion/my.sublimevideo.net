@@ -51,11 +51,11 @@ class Site < ActiveRecord::Base
   scope :with_addons, includes(:addons)
   
   # filter
-  scope :beta,         where(:state => 'beta')
-  scope :dev,          where(:state => 'dev')
-  scope :active,       where(:state => 'active')
-  scope :archived,     where(:state => 'archived')
-  scope :not_archived, where(:state.not_eq => 'archived')
+  scope :beta,         lambda { with_state(:beta) }
+  scope :dev,          lambda { with_state(:dev) }
+  scope :active,       lambda { with_state(:active) }
+  scope :archived,     lambda { with_state(:archived) }
+  scope :not_archived, lambda { without_state(:archived) }
   
   # sort
   scope :by_hostname,    lambda { |way = 'asc'| order(:hostname.send(way)) }
@@ -66,7 +66,7 @@ class Site < ActiveRecord::Base
   scope :by_date,        lambda { |way = 'desc'| order(:created_at.send(way)) }
   
   # search
-  scope :search, lambda { |q|
+  def self.search(q)
     joins(:user).
     where(:lower.func(:email).matches % :lower.func("%#{q}%") \
         | :lower.func(:first_name).matches % :lower.func("%#{q}%") \
@@ -74,14 +74,13 @@ class Site < ActiveRecord::Base
         | :lower.func(:hostname).matches % :lower.func("%#{q}%") \
         | :lower.func(:dev_hostnames).matches % :lower.func("%#{q}%") \
         | :lower.func(:extra_hostnames).matches % :lower.func("%#{q}%"))
-  }
+  end
   
   # ===============
   # = Validations =
   # ===============
   
   validates :user,            :presence => true
-  validates :plan,            :presence => { :message => "Please choose a plan" }
   validates :hostname,        :hostname_uniqueness => true, :hostname => true
   validates :extra_hostnames, :extra_hostnames => true
   validates :dev_hostnames,   :dev_hostnames => true
@@ -94,10 +93,10 @@ class Site < ActiveRecord::Base
   
   before_validation :set_user_attributes
   before_save :prepare_cdn_update
-  after_create :delay_ranks_update
   after_save :execute_cdn_update
+  after_create :delay_ranks_update
   # Temporary
-  after_update :set_state_to_active, :if => lambda { |site| site.beta? && site.plan_id? }
+  after_update :activate, :if => lambda { |site| site.beta? && site.plan_id? }
   
   # =================
   # = State Machine =
@@ -106,13 +105,20 @@ class Site < ActiveRecord::Base
   state_machine :initial => :dev do
     state :beta # Temporary, used in lib/one_time/site.rb and lib/tasks/one_time.rake
     
+    state :dev do
+      # TODO: When beta state will be removed, place the following validates for every state
+      validates :plan, :presence => { :message => "Please choose a plan" }
+    end
+    
     state :active do
       validates :hostname, :presence => true
+      # TODO: When beta state will be removed, place the following validates for every state
+      validates :plan, :presence => { :message => "Please choose a plan" }
       validate :verify_presence_of_credit_card
     end
     
-    event(:activate)  { transition :dev => :active }
-    event(:archive)   { transition [:dev, :active] => :archived }
+    event(:activate)  { transition [:dev, :beta] => :active }
+    event(:archive)   { transition [:dev, :beta, :active] => :archived }
     event(:suspend)   { transition :active => :suspended }
     event(:unsuspend) { transition :suspended => :active }
     
@@ -120,7 +126,7 @@ class Site < ActiveRecord::Base
     before_transition :on => :activate, :do => :set_activated_at
     before_transition :on => :archive,  :do => :set_archived_at
     
-    after_transition  :to => [:archived, :suspended], :do => :delay_remove_loader_and_license
+    after_transition  :to => [:suspended, :archived], :do => :delay_remove_loader_and_license
   end
   
   # =================
@@ -128,14 +134,6 @@ class Site < ActiveRecord::Base
   # =================
   
 protected
-  
-  def self.referrer_match_hostname?(referrer, hostname, path = '', wildcard = false)
-    if path || wildcard
-      referrer =~ /^.+:\/\/(#{wildcard ? '.*' : 'www'}\.)?#{hostname}#{"(\:[0-9]+)?\/#{path}" if path.present?}.*$/
-    else
-      URI.parse(referrer).host =~ /^(www\.)?#{hostname}$/
-    end
-  end
   
   # delayed method
   def self.update_loader_and_license(site_id, options = {})
@@ -174,11 +172,9 @@ protected
     site = Site.find(site_id)
     transaction do
       begin
-        site.remove_loader  = true
-        site.remove_license = true
+        site.remove_loader, site.remove_license = true, true
         site.cdn_up_to_date = false
-        site.purge_template("loader")
-        site.purge_template("license")
+        %w[loader license].each { |template| site.purge_template(template) }
         site.save!
       rescue => ex
         Notify.send(ex.message, :exception => ex)
@@ -217,6 +213,34 @@ public
     token
   end
   
+  def need_path?
+    %w[web.me.com homepage.mac.com].include?(hostname) && path.blank?
+  end
+  
+  def settings_changed?
+    (changed & %w[hostname extra_hostnames dev_hostnames path wildcard]).present?
+  end
+  
+  def addon_ids_changed?
+    @addon_ids_was && @addon_ids_was != addon_ids
+  end
+  
+  def referrer_type(referrer, timestamp = Time.now.utc)
+    past_site = version_at(timestamp)
+    if past_site.main_referrer?(referrer)
+      "main"
+    elsif past_site.extra_referrer?(referrer)
+      "extra"
+    elsif past_site.dev_referrer?(referrer)
+      "dev"
+    else
+      "invalid"
+    end
+  rescue => ex
+    Notify.send("Referrer type could not be guessed: #{ex.message}", :exception => ex)
+    "invalid"
+  end
+  
   def template_hostnames
     hostnames = []
     if active? || beta?
@@ -229,33 +253,6 @@ public
     hostnames += dev_hostnames.split(', ') if dev_hostnames.present?
     hostnames.map! { |hostname| "'#{hostname}'" }
     hostnames.join(',')
-  end
-  
-  def need_path?
-    %w[web.me.com homepage.mac.com].include?(hostname) && path.blank?
-  end
-  
-  def referrer_type(referrer, timestamp = Time.now.utc)
-    past_site = version_at(timestamp)
-    if main_referrer?(referrer, past_site)
-      "main"
-    elsif extra_referrer?(referrer, past_site, past_site.extra_hostnames.split(', '))
-      "extra"
-    elsif dev_referrer?(referrer, past_site, past_site.dev_hostnames.split(', '))
-      "dev"
-    else
-      "invalid"
-    end
-  rescue
-    "invalid"
-  end
-  
-  def settings_changed?
-    (changed & %w[hostname extra_hostnames dev_hostnames path wildcard]).present?
-  end
-  
-  def addon_ids_changed?
-    @addon_ids_was && @addon_ids_was != addon_ids
   end
   
   def set_template(name)
@@ -343,21 +340,36 @@ private
     self.archived_at = Time.now.utc
   end
   
-  # after_transition :to => [:archived, :suspended]
+  # after_transition :to => [:suspended, :archived]
   def delay_remove_loader_and_license
     Site.delay.remove_loader_and_license(self.id)
   end
   
-  def main_referrer?(referrer, past_site)
-    self.class.referrer_match_hostname?(referrer, past_site.hostname, past_site.path, past_site.wildcard)
+  # ===================
+  # = Utility Methods =
+  # ===================
+  
+protected
+  
+  def self.referrer_match_hostname?(referrer, hostname, path = '', wildcard = false)
+    referrer = URI.parse(referrer)
+    if path || wildcard
+      (referrer.host =~ /^(#{wildcard ? '.*' : 'www'}\.)?#{hostname}$/) && (path.blank? || referrer.path =~ %r{^/#{path}.*$})
+    else
+      referrer.host =~ /^(www\.)?#{hostname}$/
+    end
   end
   
-  def extra_referrer?(referrer, past_site, past_hosts)
-    past_hosts.any? { |h| self.class.referrer_match_hostname?(referrer, h, past_site.path, past_site.wildcard) }
+  def main_referrer?(referrer)
+    self.class.referrer_match_hostname?(referrer, hostname, path, wildcard)
   end
   
-  def dev_referrer?(referrer, past_site, past_hosts)
-    past_hosts.any? { |h| self.class.referrer_match_hostname?(referrer, h, '', past_site.wildcard) }
+  def extra_referrer?(referrer)
+    extra_hostnames.split(', ').any? { |h| self.class.referrer_match_hostname?(referrer, h, path, wildcard) }
+  end
+  
+  def dev_referrer?(referrer)
+    dev_hostnames.split(', ').any? { |h| self.class.referrer_match_hostname?(referrer, h, '', wildcard) }
   end
   
 end

@@ -16,7 +16,7 @@ class User < ActiveRecord::Base
                   :use_personal, :use_company, :use_clients,
                   :company_name, :company_url, :company_job_title, :company_employees, :company_videos_served,
                   :terms_and_conditions
-  # Credit Card
+  # Credit card
   attr_accessible :cc_update, :cc_type, :cc_full_name, :cc_number, :cc_expire_on, :cc_verification_value
   
   # ================
@@ -31,7 +31,11 @@ class User < ActiveRecord::Base
   # = Scopes =
   # ==========
   
-  scope :billable, lambda { |started_at, ended_at| where(:state.ne => 'archived').includes(:sites).where(:sites => [{ :activated_at.lte => ended_at }, { :archived_at => nil } | { :archived_at.gte => started_at }]) }
+  def self.billable(started_at, ended_at)
+    includes(:sites).
+    without_state(:archived).
+    where(:sites => [{ :activated_at.lte => ended_at }, { :archived_at => nil } | { :archived_at.gte => started_at }])
+  end
   
   # credit_card scopes
   scope :without_cc, where(:cc_type => nil, :cc_last_digits => nil)
@@ -52,14 +56,14 @@ class User < ActiveRecord::Base
   scope :by_date,          lambda { |way = 'desc'| order(:created_at.send(way)) }
   
   # search
-  scope :search, lambda { |q|
+  def self.search(q)
     joins(:sites).
     where(:lower.func(:email).matches % :lower.func("%#{q}%") \
         | :lower.func(:first_name).matches % :lower.func("%#{q}%") \
         | :lower.func(:last_name).matches % :lower.func("%#{q}%") \
         | :lower.func(:hostname).matches % :lower.func("%#{q}%") \
         | :lower.func(:dev_hostnames).matches % :lower.func("%#{q}%"))
-  }
+  end
   
   # ===============
   # = Validations =
@@ -92,13 +96,16 @@ class User < ActiveRecord::Base
     event(:unsuspend)      { transition :suspended => :active }
     event(:archive)        { transition :active => :archived }
     
-    before_transition :on => :suspend, :do => :suspend_sites
+    before_transition :on => :suspend, :do => [:set_failed_invoices_count_on_suspend, :suspend_sites]
     after_transition  :on => :suspend, :do => :send_account_suspended_email
     
     before_transition :on => :cancel_suspend, :do => :delete_suspending_delayed_job
     
-    before_transition :on => :unsuspend, :do => :unsuspend_sites
+    before_transition :on => :unsuspend, :do => [:set_failed_invoices_count_on_suspend, :unsuspend_sites]
     after_transition  :on => :unsuspend, :do => :send_account_unsuspended_email
+    
+    before_transition :on => :archive, :do => [:set_archived_at, :archive_sites, :delay_complete_current_invoice]
+    after_transition  :on => :archive, :do => :send_account_archived_email
   end
   
   # =================
@@ -144,7 +151,7 @@ class User < ActiveRecord::Base
   end
   
   def will_be_suspended?
-    suspending_delayed_job_id?
+    suspending_delayed_job
   end
   
 private
@@ -165,6 +172,11 @@ private
       self.errors.add(:company_employees, :blank) unless company_employees.present?
       self.errors.add(:company_videos_served, :blank) unless company_videos_served.present?
     end
+  end
+  
+  # before_transition :on => :suspend, before_transition :on => :unsuspend
+  def set_failed_invoices_count_on_suspend
+    self.failed_invoices_count_on_suspend = invoices.failed.count
   end
   
   # before_transition :on => :suspend
@@ -193,14 +205,28 @@ private
     UserMailer.account_unsuspended(self).deliver!
   end
   
+  # before_transition :on => :archive
+  def set_archived_at
+    self.archived_at = Time.now.utc
+  end
+  def archive_sites
+    sites.map(&:archive)
+  end
+  def delay_complete_current_invoice
+    Invoice.usage_statement(self).delay.complete
+  end
+  
+  # after_transition :on => :archive
+  def send_account_archived_email
+    UserMailer.account_archived(self).deliver!
+  end
+  
   # after_update
   def update_email_on_zendesk
     if zendesk_id.present? && email_changed?
       Zendesk.delay(:priority => 25).put("/users/#{zendesk_id}.xml", :user => { :email => email })
     end
   end
-  
-  # after_update
   def charge_failed_invoices
     if cc_updated_at_changed? && invoices.failed.present?
       invoices.failed.each { |invoice| invoice.retry }
@@ -221,47 +247,49 @@ end
 #
 # Table name: users
 #
-#  id                        :integer         not null, primary key
-#  state                     :string(255)
-#  email                     :string(255)     default(""), not null
-#  encrypted_password        :string(128)     default(""), not null
-#  password_salt             :string(255)     default(""), not null
-#  confirmation_token        :string(255)
-#  confirmed_at              :datetime
-#  confirmation_sent_at      :datetime
-#  reset_password_token      :string(255)
-#  remember_token            :string(255)
-#  remember_created_at       :datetime
-#  sign_in_count             :integer         default(0)
-#  current_sign_in_at        :datetime
-#  last_sign_in_at           :datetime
-#  current_sign_in_ip        :string(255)
-#  last_sign_in_ip           :string(255)
-#  failed_attempts           :integer         default(0)
-#  locked_at                 :datetime
-#  cc_type                   :string(255)
-#  cc_last_digits            :integer
-#  cc_expire_on              :date
-#  cc_updated_at             :datetime
-#  created_at                :datetime
-#  updated_at                :datetime
-#  invitation_token          :string(20)
-#  invitation_sent_at        :datetime
-#  zendesk_id                :integer
-#  enthusiast_id             :integer
-#  first_name                :string(255)
-#  last_name                 :string(255)
-#  postal_code               :string(255)
-#  country                   :string(255)
-#  use_personal              :boolean
-#  use_company               :boolean
-#  use_clients               :boolean
-#  company_name              :string(255)
-#  company_url               :string(255)
-#  company_job_title         :string(255)
-#  company_employees         :string(255)
-#  company_videos_served     :string(255)
-#  suspending_delayed_job_id :integer
+#  id                               :integer         not null, primary key
+#  state                            :string(255)
+#  email                            :string(255)     default(""), not null
+#  encrypted_password               :string(128)     default(""), not null
+#  password_salt                    :string(255)     default(""), not null
+#  confirmation_token               :string(255)
+#  confirmed_at                     :datetime
+#  confirmation_sent_at             :datetime
+#  reset_password_token             :string(255)
+#  remember_token                   :string(255)
+#  remember_created_at              :datetime
+#  sign_in_count                    :integer         default(0)
+#  current_sign_in_at               :datetime
+#  last_sign_in_at                  :datetime
+#  current_sign_in_ip               :string(255)
+#  last_sign_in_ip                  :string(255)
+#  failed_attempts                  :integer         default(0)
+#  locked_at                        :datetime
+#  cc_type                          :string(255)
+#  cc_last_digits                   :integer
+#  cc_expire_on                     :date
+#  cc_updated_at                    :datetime
+#  created_at                       :datetime
+#  updated_at                       :datetime
+#  invitation_token                 :string(20)
+#  invitation_sent_at               :datetime
+#  zendesk_id                       :integer
+#  enthusiast_id                    :integer
+#  first_name                       :string(255)
+#  last_name                        :string(255)
+#  postal_code                      :string(255)
+#  country                          :string(255)
+#  use_personal                     :boolean
+#  use_company                      :boolean
+#  use_clients                      :boolean
+#  company_name                     :string(255)
+#  company_url                      :string(255)
+#  company_job_title                :string(255)
+#  company_employees                :string(255)
+#  company_videos_served            :string(255)
+#  suspending_delayed_job_id        :integer
+#  failed_invoices_count_on_suspend :integer         default(0)
+#  archived_at                      :datetime
 #
 # Indexes
 #

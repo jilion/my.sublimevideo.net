@@ -3,6 +3,6 @@ $('current_usage_amount').update('<%= escape_javascript(
   ": " +
   content_tag(:strong, display_amount(@invoice.amount)) +
   " (" +
-  link_to("view details", usage_invoices_path) +
+  link_to("view details", usage_invoices_path, :target => "blank") +
   ")"
 ).html_safe %>');

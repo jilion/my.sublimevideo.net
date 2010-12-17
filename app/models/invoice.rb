@@ -24,6 +24,8 @@ class Invoice < ActiveRecord::Base
   validates :started_at,           :presence => true
   validates :ended_at,             :presence => true
   validates :invoice_items_amount, :presence => true, :numericality => true
+  validates :vat_rate,             :presence => true, :numericality => true
+  validates :vat_amount,           :presence => true, :numericality => true
   validates :amount,               :presence => true, :numericality => true
   
   # =================
@@ -49,7 +51,7 @@ class Invoice < ActiveRecord::Base
     before_transition :on => :retry, :do => :delay_charge
     
     before_transition [:open, :unpaid] => [:unpaid, :failed], :do => :delay_charge, :unless => lambda { |invoice| invoice.user.suspended? }
-    after_transition  :open => :unpaid, :do => :send_invoice_completed_email
+    after_transition  :open => :unpaid, :do => :send_invoice_completed_email, :unless => lambda { |invoice| invoice.user.archived? }
     
     before_transition any => :failed, :do => [:set_failed_at, :clear_charging_delayed_job_id]
     before_transition :unpaid => :failed, :do => :delay_suspend_user
@@ -59,7 +61,7 @@ class Invoice < ActiveRecord::Base
     after_transition  any => :paid do |invoice, transition|
       if invoice.user.suspended? && invoice.user.invoices.failed.empty?
         User.delay.unsuspend(invoice.user_id)
-      elsif invoice.user.suspending_delayed_job_id?
+      elsif invoice.user.will_be_suspended?
         invoice.user.cancel_suspend
       end
     end
@@ -119,8 +121,6 @@ class Invoice < ActiveRecord::Base
   # = Instance Methods =
   # ====================
   
-public
-  
   def build
     build_invoice_items
     set_invoice_items_amount
@@ -139,6 +139,10 @@ public
   
   def total_invoice_items_amount
     @total_invoice_items_amount ||= invoice_items.inject(0) { |sum, invoice_item| sum + invoice_item.amount }
+  end
+  
+  def will_be_charged?
+    charging_delayed_job
   end
   
 private
@@ -222,10 +226,10 @@ private
   end
   
   def charging_delay
-    if open?
-      Billing.days_before_charging.days
-    elsif user.suspended?
+    if user.suspended? || user.archived?
       0.seconds
+    elsif open?
+      Billing.days_before_charging.days
     elsif attempts > Billing.max_charging_attempts
       Billing.hours_between_retries_before_user_suspend.hours
     else

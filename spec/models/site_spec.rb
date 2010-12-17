@@ -26,7 +26,6 @@ describe Site do
     it { should be_valid }
   end
   
-  # 3.2s
   describe "Associations" do
     before(:all) { @site = Factory(:site) }
     subject { @site }
@@ -65,7 +64,6 @@ describe Site do
     end
     
     it { should validate_presence_of(:user) }
-    it { should validate_presence_of(:plan).with_message("Please choose a plan") }
     
     it { should allow_value('dev').for(:player_mode) }
     it { should allow_value('beta').for(:player_mode) }
@@ -82,6 +80,21 @@ describe Site do
         site.state = 'active'
         site.should_not be_valid
         site.should have(1).error_on(:hostname)
+      end
+    end
+    
+    describe "plan" do
+      it "should be required if state is dev" do
+        site = Factory.build(:site, :state => 'dev', :plan => nil)
+        site.should be_dev
+        site.should_not be_valid
+        site.should have(1).error_on(:plan)
+      end
+      it "should be required if state is active" do
+        site = Factory.build(:site, :state => 'active', :plan => nil)
+        site.should be_active
+        site.should_not be_valid
+        site.should have(1).error_on(:plan)
       end
     end
     
@@ -111,7 +124,6 @@ describe Site do
     end
   end
   
-  # 17.3s
   describe "Attributes Accessors" do
     describe "hostname=" do
       %w[ÉCOLE ÉCOLE.fr ÜPPER.de ASDASD.COM 124.123.151.123 mIx3Dd0M4iN.CoM].each do |host|
@@ -213,56 +225,101 @@ describe Site do
     end
   end
   
-  # 17.3s
   describe "State Machine" do
     before(:each) { VoxcastCDN.stub(:purge) }
     
-    describe "activate" do
-      subject do
-        site = Factory(:site, :hostname => "jilion.com", :extra_hostnames => "jilion.staging.com, jilion.org")
-        @worker.work_off
-        site
+    describe "#activate" do
+      context "from dev state" do
+        subject do
+          site = Factory(:site, :hostname => "jilion.com", :extra_hostnames => "jilion.staging.com, jilion.org")
+          @worker.work_off
+          site.reload
+        end
+        
+        it "should set activated_at" do
+          subject.activated_at.should be_nil
+          subject.activate.should be_true
+          subject.activated_at.should be_present
+        end
+        
+        it "should update license file" do
+          old_license_content = subject.license.read
+          subject.activate.should be_true
+          @worker.work_off
+          subject.reload.license.read.should_not == old_license_content
+        end
+        
+        it "should add extra and main hostnames in license file" do
+          subject.license.read.should include("localhost")
+          subject.license.read.should_not include("jilion.com")
+          subject.license.read.should_not include("jilion.staging.com")
+          subject.license.read.should_not include("jilion.org")
+          subject.activate.should be_true
+          @worker.work_off
+          subject.reload.license.read.should include("jilion.com")
+          subject.license.read.should include("jilion.staging.com")
+          subject.license.read.should include("jilion.org")
+        end
+        
+        it "should purge loader & license file" do
+          VoxcastCDN.should_receive(:purge).with("/js/#{subject.token}.js")
+          VoxcastCDN.should_receive(:purge).with("/l/#{subject.token}.js")
+          subject.activate.should be_true
+          @worker.work_off
+        end
       end
       
-      it "should set activated_at" do
-        subject.activated_at.should be_nil
-        subject.activate.should be_true
-        subject.activated_at.should be_present
-      end
-      
-      it "should update license file" do
-        old_license_content = subject.license.read
-        subject.activate.should be_true
-        @worker.work_off
-        subject.reload.license.read.should_not == old_license_content
-      end
-      
-      it "should add extra and main hostnames in license file" do
-        subject.license.read.should be_nil
-        subject.license.read.should be_nil
-        subject.activate.should be_true
-        @worker.work_off
-        subject.reload.license.read.should include("jilion.com")
-        subject.license.read.should include("jilion.staging.com")
-        subject.license.read.should include("jilion.org")
-      end
-      
-      it "should purge loader & license file" do
-        VoxcastCDN.should_receive(:purge).with("/js/#{subject.token}.js")
-        VoxcastCDN.should_receive(:purge).with("/l/#{subject.token}.js")
-        subject.activate.should be_true
-        @worker.work_off
+      context "from beta state" do
+        subject do
+          Timecop.travel(10.days.ago)
+          site = Factory(:site, :hostname => "jilion.com", :extra_hostnames => "jilion.staging.com, jilion.org").tap { |s| s.activate }
+          Timecop.return
+          @worker.work_off # populate license / loader
+          
+          # site.reload.plan_id = nil # put site in the a beta state
+          site.reload.update_attribute(:plan_id, nil) # put site in the a beta state
+          # site.save(:validate => false)
+          
+          site.reload.update_attribute(:state, 'beta')
+          # site.save(:validate => false)
+          
+          site.reload.should be_beta
+          site.plan_id.should be_nil
+          site
+        end
+        
+        # activate is not directly called on beta sites, it's fired when site is beta and has a plan_id
+        it "should reset activated_at" do
+          old_activated_at = subject.activated_at
+          subject.update_attribute(:plan_id, Plan.first.id)
+          subject.reload.plan_id.should be_present
+          subject.should be_active
+          subject.activated_at.should_not == old_activated_at
+        end
+        
+        it "should not update license file" do
+          old_license_content = subject.license.read
+          subject.update_attribute(:plan_id, 1)
+          @worker.work_off
+          subject.reload.license.read.should == old_license_content
+        end
+        
+        it "should not purge loader & license file" do
+          VoxcastCDN.should_not_receive(:purge)
+          subject.update_attribute(:plan_id, 1)
+          @worker.work_off
+        end
       end
     end
     
     context "with an activated site" do
-      subject do
-        site = Factory(:site).tap { |s| s.activate }
-        @worker.work_off
-        site
-      end
-      
-      describe "suspend" do
+      describe "#suspend" do
+        subject do
+          site = Factory(:site).tap { |s| s.activate }
+          @worker.work_off
+          site
+        end
+        
         it "should clear & purge license & loader" do
           VoxcastCDN.should_receive(:purge).with("/js/#{subject.token}.js")
           VoxcastCDN.should_receive(:purge).with("/l/#{subject.token}.js")
@@ -273,7 +330,13 @@ describe Site do
         end
       end
       
-      describe "unsuspend" do
+      describe "#unsuspend" do
+        subject do
+          site = Factory(:site).tap { |s| s.activate }
+          @worker.work_off
+          site
+        end
+        
         it "should reset license & loader" do
           VoxcastCDN.should_receive(:purge).with("/js/#{subject.token}.js")
           VoxcastCDN.should_receive(:purge).with("/l/#{subject.token}.js")
@@ -289,15 +352,48 @@ describe Site do
         end
       end
       
-      describe "archive" do
-        it "should clear & purge license & loader and set archived_at" do
-          VoxcastCDN.should_receive(:purge).with("/js/#{subject.token}.js")
-          VoxcastCDN.should_receive(:purge).with("/l/#{subject.token}.js")
-          subject.archive
-          @worker.work_off
-          subject.reload.loader.should_not be_present
-          subject.license.should_not be_present
-          subject.archived_at.should be_present
+      describe "#archive" do
+        context "from active state" do
+          subject do
+            site = Factory(:site).tap { |s| s.activate }
+            @worker.work_off
+            site
+          end
+          
+          it "should clear & purge license & loader and set archived_at" do
+            VoxcastCDN.should_receive(:purge).with("/js/#{subject.token}.js")
+            VoxcastCDN.should_receive(:purge).with("/l/#{subject.token}.js")
+            lambda { subject.archive }.should change(Delayed::Job, :count).by(1)
+            subject.reload.should be_archived
+            lambda { @worker.work_off }.should change(Delayed::Job, :count).by(-1)
+            subject.reload.loader.should_not be_present
+            subject.license.should_not be_present
+            subject.archived_at.should be_present
+          end
+        end
+        
+        context "from beta state" do
+          subject do
+            site = Factory(:site).tap { |s| s.activate }
+            @worker.work_off
+            site.reload.update_attribute(:plan_id, nil) # put site in the a beta state
+            site.reload.update_attribute(:state, 'beta')
+            site.reload.should be_beta
+            site.plan_id.should be_nil
+            site
+          end
+          
+          it "should clear & purge license & loader and set archived_at" do
+            VoxcastCDN.should_receive(:purge).with("/js/#{subject.token}.js")
+            VoxcastCDN.should_receive(:purge).with("/l/#{subject.token}.js")
+            lambda { subject.archive }.should change(Delayed::Job, :count).by(1)
+            subject.archive
+            subject.reload.should be_archived
+            lambda { @worker.work_off }.should change(Delayed::Job, :count).by(-1)
+            subject.loader.should_not be_present
+            subject.license.should_not be_present
+            subject.archived_at.should be_present
+          end
         end
       end
     end
@@ -602,7 +698,6 @@ describe Site do
     
     describe "#referrer_type" do
       context "with versioning" do
-        # 23s with 'subject' (each), 4s with 'set' (all)
         before(:all) do
           @site = with_versioning do
             Timecop.travel(1.day.ago)
@@ -632,8 +727,10 @@ describe Site do
       end
       
       context "without wildcard or path" do
-        set(:site_without_wildcard) { Factory(:site, :hostname => "jilion.com", :extra_hostnames => 'jilion.org, staging.jilion.com', :dev_hostnames => "jilion.local, localhost, 127.0.0.1") }
-        subject { site_without_wildcard }
+        before(:all) do
+          @site = Factory(:site, :hostname => "jilion.com", :extra_hostnames => 'jilion.org, staging.jilion.com', :dev_hostnames => "jilion.local, localhost, 127.0.0.1")
+        end
+        subject { @site }
         
         it { subject.referrer_type("http://jilion.com").should == "main" }
         it { subject.referrer_type("http://jilion.com/test/cool").should == "main" }
@@ -652,12 +749,17 @@ describe Site do
         it { subject.referrer_type("google.com").should == "invalid" }
         it { subject.referrer_type("jilion.com").should == "invalid" }
         it { subject.referrer_type("-").should == "invalid" }
-        it { subject.referrer_type(nil).should == "invalid" }
+        it "should send a notify" do
+          Notify.should_receive(:send)
+          subject.referrer_type(nil).should == "invalid"
+        end
       end
       
       context "with wildcard" do
-        set(:site_with_wildcard) { Factory(:site, :hostname => "jilion.com", :extra_hostnames => 'jilion.org, jilion.net', :dev_hostnames => "jilion.local, localhost, 127.0.0.1", :wildcard => true) }
-        subject { site_with_wildcard }
+        before(:all) do
+          @site = Factory(:site, :hostname => "jilion.com", :extra_hostnames => 'jilion.org, jilion.net', :dev_hostnames => "jilion.local, localhost, 127.0.0.1", :wildcard => true)
+        end
+        subject { @site }
         
         it { subject.referrer_type("http://blog.jilion.com").should == "main" }
         it { subject.referrer_type("http://jilion.com").should == "main" }
@@ -682,12 +784,17 @@ describe Site do
         it { subject.referrer_type("google.com").should == "invalid" }
         it { subject.referrer_type("jilion.com").should == "invalid" }
         it { subject.referrer_type("-").should == "invalid" }
-        it { subject.referrer_type(nil).should == "invalid" }
+        it "should send a notify" do
+          Notify.should_receive(:send)
+          subject.referrer_type(nil).should == "invalid"
+        end
       end
       
       context "with path" do
-        set(:site_with_path) { Factory(:site, :hostname => "jilion.com", :extra_hostnames => 'jilion.org, staging.jilion.com', :dev_hostnames => "jilion.local, localhost, 127.0.0.1", :path => "demo") }
-        subject { site_with_path }
+        before(:all) do
+          @site = Factory(:site, :hostname => "jilion.com", :extra_hostnames => 'jilion.org, staging.jilion.com', :dev_hostnames => "jilion.local, localhost, 127.0.0.1", :path => "demo")
+        end
+        subject { @site }
         
         it { subject.referrer_type("http://jilion.com/demo").should == "main" }
         it { subject.referrer_type("https://jilion.com/demo").should == "main" }
@@ -721,12 +828,17 @@ describe Site do
         it { subject.referrer_type("google.com").should == "invalid" }
         it { subject.referrer_type("jilion.com").should == "invalid" }
         it { subject.referrer_type("-").should == "invalid" }
-        it { subject.referrer_type(nil).should == "invalid" }
+        it "should send a notify" do
+          Notify.should_receive(:send)
+          subject.referrer_type(nil).should == "invalid"
+        end
       end
       
       context "with wildcard and path" do
-        set(:site_with_wildcard_and_path) { Factory(:site, :hostname => "jilion.com", :extra_hostnames => 'jilion.org, jilion.net', :dev_hostnames => "jilion.local, localhost, 127.0.0.1", :path => "demo", :wildcard => true) }
-        subject { site_with_wildcard_and_path }
+        before(:all) do
+          @site = Factory(:site, :hostname => "jilion.com", :extra_hostnames => 'jilion.org, jilion.net', :dev_hostnames => "jilion.local, localhost, 127.0.0.1", :path => "demo", :wildcard => true)
+        end
+        subject { @site }
         
         it { subject.referrer_type("http://jilion.com/demo").should == "main" }
         it { subject.referrer_type("https://jilion.com/demo").should == "main" }
@@ -764,7 +876,10 @@ describe Site do
         it { subject.referrer_type("google.com").should == "invalid" }
         it { subject.referrer_type("jilion.com").should == "invalid" }
         it { subject.referrer_type("-").should == "invalid" }
-        it { subject.referrer_type(nil).should == "invalid" }
+        it "should send a notify" do
+          Notify.should_receive(:send)
+          subject.referrer_type(nil).should == "invalid"
+        end
       end
     end
   end

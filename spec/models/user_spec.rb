@@ -163,41 +163,55 @@ describe User do
   end
   
   describe "State Machine" do
-    let(:user) { Factory(:user) }
+    before(:all) do
+      @user     = Factory(:user)
+      @dev_site = Factory(:site, :user => @user, :hostname => "octavez.com").tap { |s| s.update_attribute(:state, 'dev') }
+      @invoice1 = Factory(:invoice, :user => @user, :state => 'failed', :started_at => Time.utc(2010,2), :ended_at => Time.utc(2010,3))
+      @invoice2 = Factory(:invoice, :user => @user, :state => 'failed', :started_at => Time.utc(2010,3), :ended_at => Time.utc(2010,4))
+    end
     
     describe "Initial State" do
-      subject { user }
+      subject { @user }
       it { should be_active }
     end
     
     describe "#suspend" do
-      let(:site1) { Factory(:site, :user => user, :hostname => "rymai.com").tap { |s| s.update_attribute(:state, 'active') } }
-      let(:site2) { Factory(:site, :user => user, :hostname => "octavez.com").tap { |s| s.update_attribute(:state, 'dev') } }
+      before(:all) do
+        @active_site = Factory(:site, :user => @user, :hostname => "rymai.com", :state => 'active')
+      end
+      subject { @user }
       
       context "from active state" do
         it "should set user to suspended" do
-          user.should be_active
-          user.suspend
-          user.should be_suspended
+          subject.reload.should be_active
+          subject.suspend
+          subject.should be_suspended
         end
       end
       
       describe "Callbacks" do
+        describe "before_transition :on => :suspend, :do => :set_failed_invoices_count_on_suspend" do
+          specify do
+            subject.reload.failed_invoices_count_on_suspend.should == 0
+            subject.suspend
+            subject.failed_invoices_count_on_suspend.should == 2
+          end
+        end
+        
         describe "before_transition :on => :suspend, :do => :suspend_sites" do
           it "should suspend each user' active site" do
-            site1.should be_active
-            site2.should be_dev
-            user.suspend
-            site1.reload.should be_suspended
-            site2.reload.should be_dev
+            @active_site.reload.should be_active
+            @dev_site.reload.should be_dev
+            subject.reload.suspend
+            @active_site.reload.should be_suspended
+            @dev_site.reload.should be_dev
           end
         end
         
         describe "after_transition  :on => :suspend, :do => :send_account_suspended_email" do
           it "should send an email to invoice.user" do
-            user
-            lambda { user.suspend }.should change(ActionMailer::Base.deliveries, :count).by(1)
-            ActionMailer::Base.deliveries.last.to.should == [user.email]
+            lambda { subject.reload.suspend }.should change(ActionMailer::Base.deliveries, :count).by(1)
+            ActionMailer::Base.deliveries.last.to.should == [subject.email]
           end
         end
       end
@@ -205,9 +219,9 @@ describe User do
     
     describe "#cancel_suspend" do
       before(:each) do
-        user.delay_suspend
+        @user.reload.delay_suspend
       end
-      subject { user }
+      subject { @user }
       
       context "from active state" do
         it "should set user to active" do
@@ -236,33 +250,89 @@ describe User do
     end
     
     describe "#unsuspend" do
-      let(:site1) { Factory(:site, :user => user, :hostname => "rymai.com").tap { |s| s.update_attribute(:state, 'suspended') } }
-      let(:site2) { Factory(:site, :user => user, :hostname => "octavez.com").tap { |s| s.update_attribute(:state, 'dev') } }
-      before(:each) { user.update_attribute(:state, 'suspended') }
+      before(:all) do
+        @suspended_site = Factory(:site, :user => @user, :hostname => "rymai.me", :state => 'suspended')
+      end
+      before(:each) { @user.reload.update_attribute(:state, 'suspended') }
+      subject { @user }
       
       context "from suspended state" do
         it "should set the user to active" do
-          user.should be_suspended
-          user.unsuspend
-          user.should be_active
+          subject.reload.should be_suspended
+          subject.unsuspend
+          subject.should be_active
         end
       end
       
       describe "Callbacks" do
+        describe "before_transition :on => :suspend, :do => :set_failed_invoices_count_on_suspend" do
+          before(:all) do
+            subject.reload.suspend
+          end
+          specify do
+            subject.failed_invoices_count_on_suspend.should == 2
+            @invoice1.reload.update_attribute(:state, 'paid')
+            subject.unsuspend
+            subject.failed_invoices_count_on_suspend.should == 1
+          end
+        end
+        
         describe "before_transition :on => :unsuspend, :do => :unsuspend_sites" do
           it "should suspend each user' site" do
-            site1.reload.should be_suspended
-            site2.reload.should be_dev
-            user.unsuspend
-            site1.reload.should be_active
-            site2.reload.should be_dev
+            @suspended_site.reload.should be_suspended
+            @dev_site.reload.should be_dev
+            subject.reload.unsuspend
+            @suspended_site.reload.should be_active
+            @dev_site.reload.should be_dev
           end
         end
         
         describe "after_transition  :on => :unsuspend, :do => :send_account_unsuspended_email" do
-          it "should send an email to invoice.user" do
-            lambda { user.unsuspend }.should change(ActionMailer::Base.deliveries, :count).by(1)
-            ActionMailer::Base.deliveries.last.to.should == [user.email]
+          it "should send an email to user" do
+            lambda { subject.unsuspend }.should change(ActionMailer::Base.deliveries, :count).by(1)
+            ActionMailer::Base.deliveries.last.to.should == [subject.email]
+          end
+        end
+      end
+    end
+    
+    describe "#archive" do
+      before(:each) { @user.reload.update_attribute(:state, 'active') }
+      subject { @user.reload }
+      
+      context "from active state" do
+        it "should set the user to archived" do
+          subject.should be_active
+          subject.archive
+          subject.should be_archived
+        end
+      end
+      
+      describe "Callbacks" do
+        describe "before_transition :on => :archive, :do => [:set_archived_at, :archive_sites, :delay_complete_current_invoice]" do
+          specify do
+            subject.archived_at.should be_nil
+            subject.archive
+            subject.archived_at.should be_present
+          end
+          
+          it "should archive each user' site" do
+            @dev_site.reload.should be_dev
+            subject.archive
+            @dev_site.reload.should be_archived
+          end
+          
+          it "should delay Class#complete of the usage statement" do
+            lambda { subject.archive }.should change(Delayed::Job, :count).by(2)
+            Delayed::Job.where(:handler.matches => "%Site%remove_loader_and_license%").count.should == 1
+            Delayed::Job.where(:handler.matches => "%Invoice%complete%").count.should == 1
+          end
+        end
+        
+        describe "after_transition  :on => :archive, :do => :send_account_archived_email" do
+          it "should send an email to user" do
+            lambda { subject.archive }.should change(ActionMailer::Base.deliveries, :count).by(1)
+            ActionMailer::Base.deliveries.last.to.should == [subject.email]
           end
         end
       end
@@ -443,54 +513,53 @@ protected
 end
 
 
-
-
-
 # == Schema Information
 #
 # Table name: users
 #
-#  id                        :integer         not null, primary key
-#  state                     :string(255)
-#  email                     :string(255)     default(""), not null
-#  encrypted_password        :string(128)     default(""), not null
-#  password_salt             :string(255)     default(""), not null
-#  confirmation_token        :string(255)
-#  confirmed_at              :datetime
-#  confirmation_sent_at      :datetime
-#  reset_password_token      :string(255)
-#  remember_token            :string(255)
-#  remember_created_at       :datetime
-#  sign_in_count             :integer         default(0)
-#  current_sign_in_at        :datetime
-#  last_sign_in_at           :datetime
-#  current_sign_in_ip        :string(255)
-#  last_sign_in_ip           :string(255)
-#  failed_attempts           :integer         default(0)
-#  locked_at                 :datetime
-#  cc_type                   :string(255)
-#  cc_last_digits            :integer
-#  cc_expire_on              :date
-#  cc_updated_at             :datetime
-#  created_at                :datetime
-#  updated_at                :datetime
-#  invitation_token          :string(20)
-#  invitation_sent_at        :datetime
-#  zendesk_id                :integer
-#  enthusiast_id             :integer
-#  first_name                :string(255)
-#  last_name                 :string(255)
-#  postal_code               :string(255)
-#  country                   :string(255)
-#  use_personal              :boolean
-#  use_company               :boolean
-#  use_clients               :boolean
-#  company_name              :string(255)
-#  company_url               :string(255)
-#  company_job_title         :string(255)
-#  company_employees         :string(255)
-#  company_videos_served     :string(255)
-#  suspending_delayed_job_id :integer
+#  id                               :integer         not null, primary key
+#  state                            :string(255)
+#  email                            :string(255)     default(""), not null
+#  encrypted_password               :string(128)     default(""), not null
+#  password_salt                    :string(255)     default(""), not null
+#  confirmation_token               :string(255)
+#  confirmed_at                     :datetime
+#  confirmation_sent_at             :datetime
+#  reset_password_token             :string(255)
+#  remember_token                   :string(255)
+#  remember_created_at              :datetime
+#  sign_in_count                    :integer         default(0)
+#  current_sign_in_at               :datetime
+#  last_sign_in_at                  :datetime
+#  current_sign_in_ip               :string(255)
+#  last_sign_in_ip                  :string(255)
+#  failed_attempts                  :integer         default(0)
+#  locked_at                        :datetime
+#  cc_type                          :string(255)
+#  cc_last_digits                   :integer
+#  cc_expire_on                     :date
+#  cc_updated_at                    :datetime
+#  created_at                       :datetime
+#  updated_at                       :datetime
+#  invitation_token                 :string(20)
+#  invitation_sent_at               :datetime
+#  zendesk_id                       :integer
+#  enthusiast_id                    :integer
+#  first_name                       :string(255)
+#  last_name                        :string(255)
+#  postal_code                      :string(255)
+#  country                          :string(255)
+#  use_personal                     :boolean
+#  use_company                      :boolean
+#  use_clients                      :boolean
+#  company_name                     :string(255)
+#  company_url                      :string(255)
+#  company_job_title                :string(255)
+#  company_employees                :string(255)
+#  company_videos_served            :string(255)
+#  suspending_delayed_job_id        :integer
+#  failed_invoices_count_on_suspend :integer         default(0)
+#  archived_at                      :datetime
 #
 # Indexes
 #

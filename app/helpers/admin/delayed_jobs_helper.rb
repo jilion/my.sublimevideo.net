@@ -3,7 +3,7 @@ module Admin::DelayedJobsHelper
   def job_name(job)
     case job.name
     when "Module#send_credit_card_expiration"
-      "Credit Card expiration"
+      "Credit card expiration"
     when "Class#fetch_download_and_create_new_logs", "Class#fetch_and_create_new_logs"
       case job.handler
       when /Log::Voxcast/

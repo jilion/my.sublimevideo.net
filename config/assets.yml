@@ -17,4 +17,5 @@ javascripts:
     - public/javascripts/s2.js
     - public/javascripts/application.js
   admin:
+    - public/javascripts/effects.js
     - public/javascripts/admin.js

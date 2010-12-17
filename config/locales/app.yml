@@ -1,0 +1,7 @@
+en:
+  please_link: "Please %{link}"
+  please_link_to_know_more_about_it: "Please %{link} to know more about it."
+  
+  failed_invoices:
+    one:                "1 failed invoice"
+    other:              "%{count} failed invoices"  

@@ -52,9 +52,13 @@ describe Invoice do
     it { should validate_presence_of(:started_at) }
     it { should validate_presence_of(:ended_at) }
     it { should validate_presence_of(:invoice_items_amount) }
+    it { should validate_presence_of(:vat_rate) }
+    it { should validate_presence_of(:vat_amount) }
     it { should validate_presence_of(:amount) }
     
     it { should validate_numericality_of(:invoice_items_amount) }
+    it { should validate_numericality_of(:vat_rate) }
+    it { should validate_numericality_of(:vat_amount) }
     it { should validate_numericality_of(:amount) }
   end # Validations
   
@@ -178,7 +182,7 @@ describe Invoice do
           
           it "should delay Invoice.charge" do
             lambda { subject.retry }.should change(Delayed::Job, :count).by(1)
-            Delayed::Job.last.name.should == "Class#charge"
+            Delayed::Job.where(:handler.matches => "%Class%charge%").count.should == 1
           end
           
           it "should not increments attempts" do
@@ -190,7 +194,7 @@ describe Invoice do
             
             it "should delay Invoice.charge" do
               lambda { subject.retry }.should change(Delayed::Job, :count).by(1)
-              Delayed::Job.last.name.should == "Class#charge"
+              Delayed::Job.where(:handler.matches => "%Class%charge%").count.should == 1
             end
             
             it "should not increments attempts" do
@@ -211,22 +215,39 @@ describe Invoice do
         context "from open" do
           before(:each) { subject.reload.update_attribute(:state, 'open') }
           
-          it "should delay Invoice.charge" do
+          it "should delay Invoice.charge in Billing.days_before_charging.days" do
             lambda { subject.complete }.should change(Delayed::Job, :count).by(1)
-            Delayed::Job.last.name.should == "Class#charge"
+            Delayed::Job.where(:handler.matches => "%Class%charge%").count.should == 1
+            Delayed::Job.where(:handler.matches => "%Class%charge%").first.run_at.should be_within(5).of(Billing.days_before_charging.days.from_now) # seconds of tolerance
           end
           
           it "should not increments attempts until charge" do
             lambda { subject.complete }.should_not change(subject, :attempts)
           end
+          
+          context "user is archived" do
+            before(:each) { subject.user.reload.update_attribute(:state, 'archived') }
+            
+            it "should delay Invoice.charge in 0.seconds" do
+              lambda { subject.complete }.should change(Delayed::Job, :count).by(1)
+              Delayed::Job.where(:handler.matches => "%Class%charge%").count.should == 1
+              Delayed::Job.where(:handler.matches => "%Class%charge%").first.run_at.should be_within(5).of(0.seconds.from_now) # seconds of tolerance
+            end
+            
+            it "should not increments attempts until charge" do
+              lambda { subject.complete }.should_not change(subject, :attempts)
+            end
+          end
+          
         end
         
         context "from unpaid" do
           before(:each) { subject.reload.update_attribute(:state, 'unpaid') }
           
-          it "should delay Invoice.charge" do
+          it "should delay Invoice.charge in (2**attempts).hours" do
             lambda { subject.fail }.should change(Delayed::Job, :count).by(1)
-            Delayed::Job.last.name.should == "Class#charge"
+            Delayed::Job.where(:handler.matches => "%Class%charge%").count.should == 1
+            Delayed::Job.where(:handler.matches => "%Class%charge%").first.run_at.should be_within(5).of((2**1).hours.from_now) # seconds of tolerance
           end
           
           it "should increments attempts" do
@@ -236,7 +257,7 @@ describe Invoice do
           context "user is suspended" do
             before(:each) { subject.user.reload.update_attribute(:state, 'suspended') }
             
-            it "should not delay Invoice.charge" do
+            it "should not delay Invoice.charge in 0.seconds" do
               lambda { subject.fail }.should_not change(Delayed::Job, :count)
               Delayed::Job.last.should be_nil
             end
@@ -255,6 +276,14 @@ describe Invoice do
           it "should send an email to invoice.user" do
             lambda { subject.complete }.should change(ActionMailer::Base.deliveries, :count).by(1)
             ActionMailer::Base.deliveries.last.to.should == [subject.user.email]
+          end
+          
+          context "with an archived user" do
+            before(:each) { subject.reload.user.update_attribute(:state, 'archived') }
+            
+            it "should not send an email to the user" do
+              lambda { subject.complete }.should_not change(ActionMailer::Base.deliveries, :count)
+            end
           end
         end
       end
@@ -368,7 +397,7 @@ describe Invoice do
               context "with no more unpaid invoice" do
                 it "should delay un-suspend_user" do
                   lambda { subject.send(state == 'open' ? :complete : :succeed) }.should change(Delayed::Job, :count).by(1)
-                  Delayed::Job.last.name.should == "Class#unsuspend"
+                  Delayed::Job.where(:handler.matches => "%Class%unsuspend%").count.should == 1
                   subject.should be_paid
                 end
               end
@@ -691,7 +720,7 @@ describe Invoice do
               describe "delay charging" do
                 it "should delay suspend user" do
                   lambda { subject }.should change(Delayed::Job, :count).by(1)
-                  Delayed::Job.last.name.should == "Class#charge"
+                  Delayed::Job.where(:handler.matches => "%Class%charge%").count.should == 1
                 end
                 it "should delay charging in 2**#{attempts} hours " do
                   subject
@@ -859,8 +888,6 @@ describe Invoice do
   end # #minutes_in_months
   
 end
-
-
 
 
 # == Schema Information
