@@ -58,7 +58,7 @@ module OneTime
         sites = ::Site
         sites = sites.joins(:user).where(:users => { :email => STAFF_EMAILS }) if staff
         
-        ::Site.where(:id => sites.all.map(&:id)).update_all(:state => 'beta')
+        ::Site.with_state(:active).where(:id => sites.all.map(&:id)).update_all(:state => 'beta')
         "#{::Site.where(:state => 'beta').count} beta sites (on #{::Site.count} total sites)."
       end
       

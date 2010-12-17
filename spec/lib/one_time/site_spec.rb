@@ -122,31 +122,30 @@ describe OneTime::Site do
   
   describe ".set_beta_state" do
     before(:all) do
-      @staff_site_1 = Factory(:site, :user => @zeno)
-      @staff_site_2 = Factory(:site, :user => @remy)
-      @other_site_1 = Factory(:site)
-      @other_site_2 = Factory(:site)
+      @staff_site_1 = Factory(:site, :user => @zeno, :state => 'pending')
+      @staff_site_2 = Factory(:site, :user => @remy, :state => 'active')
+      @other_site_1 = Factory(:site, :state => 'active')
+      @other_site_2 = Factory(:site, :state => 'archived')
     end
     
     it "all sites created should be dev" do
-      [@staff_site_1, @staff_site_2, @other_site_1, @other_site_2].each do |site|
-        site.should be_dev
-      end
+      @staff_site_1.should be_pending
+      @staff_site_2.should be_active
+      @other_site_1.should be_active
+      @other_site_2.should be_archived
     end
     
     context "actually test the method for staff sites only" do
       before(:all) { described_class.set_beta_state(true) }
       
       it "should set staff sites to beta" do
-        [@staff_site_1.reload, @staff_site_2.reload].each do |site|
-          site.should be_beta
-        end
+        @staff_site_1.reload.should be_pending
+        @staff_site_2.reload.should be_beta
       end
       
       it "let the other as they were before" do
-        [@other_site_1.reload, @other_site_2.reload].each do |site|
-          site.should be_dev
-        end
+        @other_site_1.reload.should be_active
+        @other_site_2.reload.should be_archived
       end
     end
     
@@ -154,9 +153,10 @@ describe OneTime::Site do
       before(:all) { described_class.set_beta_state(false) }
       
       it "should set all sites to beta" do
-        [@staff_site_1.reload, @staff_site_2.reload, @other_site_1.reload, @other_site_2.reload].each do |site|
-          site.should be_beta
-        end
+        @staff_site_1.reload.should be_pending
+        @staff_site_2.reload.should be_beta
+        @other_site_1.reload.should be_beta
+        @other_site_2.reload.should be_archived
       end
     end
   end
