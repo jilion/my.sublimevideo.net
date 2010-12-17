@@ -62,11 +62,32 @@ describe User do
     end
     
     # Devise checks presence/uniqueness/format of email, presence/length of password
+    it { should validate_presence_of(:email) }
     it { should validate_presence_of(:first_name) }
     it { should validate_presence_of(:last_name) }
     it { should validate_presence_of(:postal_code) }
     it { should validate_presence_of(:country) }
     it { should validate_acceptance_of(:terms_and_conditions) }
+    
+    describe "validates uniqueness of email among non-archived users only" do
+      context "email already taken by an active user" do
+        it "should add an error" do
+          active_user = Factory(:user, :state => 'active', :email => "john@doe.com")
+          user = Factory.build(:user, :email => active_user.email)
+          user.should_not be_valid
+          user.should have(1).error_on(:email)
+        end
+      end
+      
+      context "email already taken by an archived user" do
+        it "should not add an error" do
+          archived_user = Factory(:user, :state => 'archived', :email => "john@doe.com")
+          user = Factory.build(:user, :email => archived_user.email)
+          user.should be_valid
+          user.errors.should be_empty
+        end
+      end
+    end
     
     it "should validate presence of at least one usage" do
       user = Factory.build(:user, :use_personal => nil, :use_company => nil, :use_clients => nil)
@@ -165,7 +186,7 @@ describe User do
   describe "State Machine" do
     before(:all) do
       @user     = Factory(:user)
-      @dev_site = Factory(:site, :user => @user, :hostname => "octavez.com").tap { |s| s.update_attribute(:state, 'dev') }
+      @dev_site = Factory(:site,    :user => @user, :state => 'dev', :hostname => "octavez.com")
       @invoice1 = Factory(:invoice, :user => @user, :state => 'failed', :started_at => Time.utc(2010,2), :ended_at => Time.utc(2010,3))
       @invoice2 = Factory(:invoice, :user => @user, :state => 'failed', :started_at => Time.utc(2010,3), :ended_at => Time.utc(2010,4))
     end

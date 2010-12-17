@@ -2,7 +2,7 @@ class User < ActiveRecord::Base
   include CreditCard
   
   devise :database_authenticatable, :registerable, :confirmable,
-         :recoverable, :rememberable, :trackable, :validatable, :lockable, :invitable
+         :recoverable, :rememberable, :trackable, :lockable, :invitable
   
   # Pagination
   cattr_accessor :per_page
@@ -69,12 +69,23 @@ class User < ActiveRecord::Base
   # = Validations =
   # ===============
   
-  validates :first_name, :presence => true
-  validates :last_name, :presence => true
+  validates_presence_of     :email
+  validates                 :email, :email_uniqueness => true
+  validates_format_of       :email, :with => Devise.email_regexp, :allow_blank => true
+  
+  with_options :if => :password_required? do |v|
+    v.validates_presence_of     :password
+    v.validates_confirmation_of :password
+    v.validates_length_of       :password, :within => Devise.password_length, :allow_blank => true
+  end
+  
+  validates :first_name,  :presence => true
+  validates :last_name,   :presence => true
   validates :postal_code, :presence => true
-  validates :country, :presence => true
-  validates :terms_and_conditions, :acceptance => { :accept => "1" }, :on => :create
+  validates :country,     :presence => true
   validates :company_url, :hostname => true, :allow_blank => true
+  validates :terms_and_conditions, :acceptance => { :accept => "1" }, :on => :create
+  
   validate :validates_credit_card_attributes # in user/credit_card
   validate :validates_use_presence, :on => :create
   validate :validates_company_fields, :on => :create

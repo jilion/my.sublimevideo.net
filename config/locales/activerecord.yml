@@ -25,7 +25,7 @@ en:
             hostname:
               invalid:  "is invalid"
               wildcard: "is invalid, please check wildcard option instead"
-              taken:    "You have already registered this domain"
+              taken:    "is already registered"
             dev_hostnames:
               invalid: "are invalid"
               wildcard: "are invalid, please check wildcard option instead"
