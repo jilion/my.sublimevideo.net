@@ -96,6 +96,7 @@ describe SiteUsage do
       
       @log = Factory(:log_voxcast)
       @trackers = LogAnalyzer.parse(@log.file, 'LogsFileFormat::VoxcastSites')
+      Notify.should_receive(:send).any_number_of_times
     end
     
     it "should clean trackers" do

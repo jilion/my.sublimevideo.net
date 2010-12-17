@@ -2,8 +2,10 @@ require 'spec_helper'
 
 describe MailTemplate do
   context "Factory" do
-    set(:mail_template_from_factory) { Factory(:mail_template) }
-    subject { mail_template_from_factory }
+    before(:all) do
+      @mail_template = Factory(:mail_template)
+    end
+    subject { @mail_template }
     
     its(:title)   { should =~ /Pricing survey \d+/ }
     its(:subject) { should == "{{user.full_name}} ({{user.email}}), help us shaping the right pricing" }
@@ -13,8 +15,10 @@ describe MailTemplate do
   end
   
   describe "Associations" do
-    set(:mail_template_for_associations) { Factory(:mail_template) }
-    subject { mail_template_for_associations }
+    before(:all) do
+      @mail_template = Factory(:mail_template)
+    end
+    subject { @mail_template }
     
     it { should have_many :logs }
   end

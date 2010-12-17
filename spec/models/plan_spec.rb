@@ -1,11 +1,12 @@
 require 'spec_helper'
 
 describe Plan do
-  set(:plan) { Factory(:plan) }
+  before(:all) do
+    @plan = Factory(:plan)
+  end
+  subject { @plan }
   
   context "Factory" do
-    subject { plan }
-    
     its(:name)          { should =~ /small\d+/ }
     its(:player_hits)   { should == 10_000 }
     its(:price)         { should == 1000 }
@@ -15,15 +16,11 @@ describe Plan do
   end
   
   describe "Associations" do
-    subject { plan }
-    
     it { should have_many :sites }
     it { should have_many :invoice_items }
   end
   
   describe "Validations" do
-    subject { Factory(:plan) }
-    
     [:name, :player_hits, :price, :overage_price].each do |attr|
       it { should allow_mass_assignment_of(attr) }
     end

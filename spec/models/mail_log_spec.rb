@@ -2,8 +2,10 @@ require 'spec_helper'
 
 describe MailLog do
   context "Factory" do
-    set(:mail_log_from_factory) { Factory(:mail_log) }
-    subject { mail_log_from_factory }
+    before(:all) do
+      @mail_log = Factory(:mail_log)
+    end
+    subject { @mail_log }
     
     its(:template) { should be_present }
     its(:admin)    { should be_present }
@@ -14,8 +16,10 @@ describe MailLog do
   end
   
   describe "Associations" do
-    set(:mail_log_for_associations) { Factory(:mail_log) }
-    subject { mail_log_for_associations }
+    before(:all) do
+      @mail_log = Factory(:mail_log)
+    end
+    subject { @mail_log }
     
     it { should belong_to :template }
     it { should belong_to :admin }

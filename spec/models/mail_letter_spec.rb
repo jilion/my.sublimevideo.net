@@ -64,9 +64,11 @@ describe MailLetter do
         end
         
         # context "with the 'with_activity' filter" do
-        #   set(:user_with_activity1) { Factory(:user) }
-        #   set(:user_with_activity2) { Factory(:user) }
-        #   before(:each) { User.stub_chain(:with_activity).and_return([user, user_with_activity1, user_with_activity2]) }
+        #   before(:all) do
+        #     @user2 = Factory(:user, :invitation_token => nil)
+        #     Factory(:site, :user => @user2, :state => 'archived', :hostname => 'localhost')
+        #   end
+        #   before(:each) { User.stub_chain(:with_activity).and_return([@user, @user2]) }
         #   subject { mail_letter.deliver_and_log }
         #   
         #   it "should delay delivery of mails" do
@@ -85,7 +87,7 @@ describe MailLetter do
         #     subject
         #     @worker.work_off
         #     
-        #     ActionMailer::Base.deliveries.map(&:to).flatten.should == [user.email, user_with_activity1.email, user_with_activity2.email]
+        #     ActionMailer::Base.deliveries.map(&:to).flatten.should == [@user.email, @user2.email]
         #     ActionMailer::Base.deliveries.last.subject.should =~ /help us shaping the right pricing/
         #   end
         #   
@@ -97,7 +99,7 @@ describe MailLetter do
         context "with the 'with_invalid_site' filter" do
           before(:all) do
             @user2 = Factory(:user, :invitation_token => nil)
-            Factory(:site, :user => @user2).tap { |site| site.update_attributes(:state => 'archived', :hostname => 'localhost') }
+            Factory(:site, :user => @user2, :state => 'archived', :hostname => 'localhost')
           end
           subject { MailLetter.new(@attributes.merge(:criteria => 'with_invalid_site')).deliver_and_log }
           

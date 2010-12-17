@@ -2,12 +2,14 @@
 require 'spec_helper'
 
 describe HostnameUniquenessValidator do
-  set(:existing_site) { Factory(:site) }
+  before(:all) do
+    @site = Factory(:site)
+  end
   
   context "on create" do
     it "should scope by user" do
-      site = Factory.build(:site, :user => existing_site.user)
-      validate_hostname_uniqueness(site, :hostname, existing_site.hostname)
+      site = Factory.build(:site, :user => @site.user)
+      validate_hostname_uniqueness(site, :hostname, @site.hostname)
       site.errors[:hostname].size.should == 1
     end
     
@@ -19,24 +21,24 @@ describe HostnameUniquenessValidator do
     
     it "should allow 2 users to register the same hostname" do
       site = Factory.build(:site, :user => Factory(:user))
-      validate_hostname_uniqueness(site, :hostname, existing_site.hostname)
+      validate_hostname_uniqueness(site, :hostname, @site.hostname)
       site.errors[:hostname].size.should == 0
     end
     
     it "should ignore archived sites" do
       VoxcastCDN.stub(:purge)
-      existing_site.archive
-      site = Factory.build(:site, :user => existing_site.user)
-      validate_hostname_uniqueness(site, :hostname, existing_site.hostname)
+      @site.archive
+      site = Factory.build(:site, :user => @site.user)
+      validate_hostname_uniqueness(site, :hostname, @site.hostname)
       site.errors[:hostname].size.should == 0
     end
   end
   
   context "on update" do
-    subject { Factory(:site, :user => existing_site.user).tap { |s| s.update_attribute(:cdn_up_to_date, true) } }
+    subject { Factory(:site, :user => @site.user).tap { |s| s.update_attribute(:cdn_up_to_date, true) } }
     
     it "should scope by user" do
-      validate_hostname_uniqueness(subject, :hostname, existing_site.hostname)
+      validate_hostname_uniqueness(subject, :hostname, @site.hostname)
       subject.errors[:hostname].size.should == 1
     end
     
@@ -47,15 +49,15 @@ describe HostnameUniquenessValidator do
     
     it "should allow 2 users to register the same hostname" do
       site = Factory(:site, :user => Factory(:user))
-      validate_hostname_uniqueness(site, :hostname, existing_site.hostname)
+      validate_hostname_uniqueness(site, :hostname, @site.hostname)
       site.errors[:hostname].size.should == 0
     end
     
     it "should ignore archived sites" do
       VoxcastCDN.stub(:purge)
-      existing_site.archive
-      existing_site.should be_archived
-      validate_hostname_uniqueness(subject, :hostname, existing_site.hostname)
+      @site.archive
+      @site.should be_archived
+      validate_hostname_uniqueness(subject, :hostname, @site.hostname)
       subject.errors[:hostname].size.should == 0
     end
   end

@@ -4,7 +4,6 @@ require 'spec_helper'
 describe Site do
   before(:all) { @worker = Delayed::Worker.new }
   
-  # 3.6s
   context "Factory" do
     before(:all) { @site = Factory(:site) }
     subject { @site }
@@ -400,7 +399,6 @@ describe Site do
     end
   end
   
-  # 3.5s
   describe "Versioning" do
     it "should work!" do
       with_versioning do
@@ -413,7 +411,6 @@ describe Site do
     end
   end
   
-  # TODO 64.3s
   describe "Callbacks" do
     describe "before_validation" do
       it "should set user_attributes" do
@@ -479,21 +476,23 @@ describe Site do
       
       context "on update of settings, addons or state (to dev or active)" do
         describe "attributes that appears in the license" do
-          set(:plan)   { Factory(:plan) }
-          set(:addon1) { Factory(:addon, :name => 'ssl', :price => 99) }
-          set(:addon2) { Factory(:addon, :name => 'stat', :price => 99) }
+          before(:all) do
+            @plan = Factory(:plan)
+            @addon1 = Factory(:addon, :name => 'ssl', :price => 99)
+            @addon2 = Factory(:addon, :name => 'stat', :price => 99)
+          end
           
           before(:each) do
-            Addon.stub(:find).with([1])   { [addon1] }
-            Addon.stub(:find).with([1,2]) { [addon1, addon2] }
-            Addon.stub(:find).with(:all)  { [addon1, addon2] }
+            Addon.stub(:find).with([1])   { [@addon1] }
+            Addon.stub(:find).with([1,2]) { [@addon1, @addon2] }
+            Addon.stub(:find).with(:all)  { [@addon1, @addon2] }
             PageRankr.stub(:ranks)
           end
           
           { :hostname => "test.com", :extra_hostnames => "test.staging.com", :dev_hostnames => "test.local", :path => "yu", :wildcard => true, :addon_ids => [1, 2] }.each do |attribute, value|
             describe "#{attribute} has changed" do
               subject do
-                site = Factory(:site, :plan => plan, :hostname => "jilion.com", :extra_hostnames => "staging.jilion.com", :dev_hostnames => "jilion.local", :path => "yo", :wildcard => false, :addon_ids => [1], :state => 'dev')
+                site = Factory(:site, :plan => @plan, :hostname => "jilion.com", :extra_hostnames => "staging.jilion.com", :dev_hostnames => "jilion.local", :path => "yo", :wildcard => false, :addon_ids => [1], :state => 'dev')
                 @worker.work_off
                 site.reload
               end
@@ -592,12 +591,11 @@ describe Site do
           @worker.work_off
         end
         site.reload.google_rank.should == 0
-        site.alexa_rank.should  == 100573
+        site.alexa_rank.should == 100573
       end
     end
   end
   
-  # 26.7s
   describe "Instance Methods" do
     describe "#settings_changed?" do
       subject { Factory(:site) }
@@ -885,7 +883,6 @@ describe Site do
     end
   end
 end
-
 
 
 # == Schema Information
