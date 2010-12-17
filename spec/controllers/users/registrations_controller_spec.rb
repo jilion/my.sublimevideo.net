@@ -51,7 +51,10 @@ describe Users::RegistrationsController do
       
       describe "DELETE :destroy" do
         it "should redirect to /sites" do
+          @current_user.should_receive(:archive)
+          
           delete :destroy, :user => { :current_password => '123456' }
+          assigns(:user).should be(@current_user)
           response.should redirect_to(new_user_session_url)
         end
       end

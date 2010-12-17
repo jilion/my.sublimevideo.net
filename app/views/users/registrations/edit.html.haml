@@ -51,7 +51,11 @@
     = f.submit "Update", :class => "submit small", :id => "user_credentials_submit"
 .spacer
 
-= form_for @user, :url => user_registration_path, :html => { :method => :delete, :class => "main_form section", "data-password-protected" => true } do |f|
-  %h3.section_title Delete my account
+= form_for @user, :url => "/account", :html => { :method => :delete, :class => "main_form section", "data-password-protected" => true } do |f|
+  %h3.section_title= "Delete account"
+  = "Please understand that:"
+  %ul
+    %li= "All you SublimeVideo licenses will be instantly removed from our servers and will never be available anymore."
+    %li= "Furthermore, your current usage (until now) will be charged."
   .entry.delete
-    = f.submit "Delete my account", :class => "submit small"
+    = f.submit "Delete account", :class => "submit small"

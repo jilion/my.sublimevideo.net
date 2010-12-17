@@ -6,4 +6,10 @@ class Users::RegistrationsController < Devise::RegistrationsController
     redirect_wrong_password(resource)
   end
   
+  def destroy
+    @user = User.find(current_user.id)
+    @user.archive
+    sign_out_and_redirect(@user)
+  end
+  
 end

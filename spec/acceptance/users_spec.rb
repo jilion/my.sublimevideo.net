@@ -92,6 +92,29 @@ feature "Users actions:" do
       end
     end
     
+    feature "with the email of an archived user" do
+      scenario "archived user" do
+        archived_user = Factory(:user)
+        archived_user.archive
+        
+        fill_in "Email",              :with => archived_user.email
+        fill_in "Password",           :with => "123456"
+        fill_in "First name",         :with => "Rémy"
+        fill_in "Last name",          :with => "Coutable"
+        select "Switzerland",         :from => "Country"
+        fill_in "Zip or Postal Code", :with => "CH-1024"
+        check "Personal"
+        check "user_terms_and_conditions"
+        click_button "Sign Up"
+        
+        current_url.should =~ %r(^http://[^/]+/sites$)
+        page.should have_content "Rémy Coutable"
+        
+        User.last.full_name.should == "Rémy Coutable"
+        User.last.email.should == archived_user.email
+      end
+    end
+    
   end
   
   scenario "update email" do
@@ -196,6 +219,18 @@ feature "User session:" do
       
       current_url.should =~ %r(http://[^/]+/suspended)
       page.should have_content "John Doe"
+    end
+    
+    scenario "archived user" do
+      @current_user.archive
+      visit "/login"
+      page.should_not have_content('John Doe')
+      fill_in "Email",     :with => "John@doe.com"
+      fill_in "Password",  :with => "123456"
+      click_button "Login"
+      
+      current_url.should =~ %r(http://[^/]+/login)
+      page.should_not have_content "John Doe"
     end
   end
   

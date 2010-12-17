@@ -123,6 +123,13 @@ class User < ActiveRecord::Base
   # = Class Methods =
   # =================
   
+  # Devise overriding
+  # avoid the "not active yet" flash message to be displayed for archived users!
+  def self.find_for_authentication(conditions={})
+    conditions[:state.ne] = 'archived'
+    super
+  end
+  
   def self.suspend(user_id)
     user = find(user_id)
     user.suspend!
@@ -137,6 +144,7 @@ class User < ActiveRecord::Base
   # = Instance Methods =
   # ====================
   
+  # Devise overriding
   # allow suspended user to login (devise)
   def active?
     %w[active suspended].include?(state) && invitation_token.nil?
