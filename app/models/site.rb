@@ -103,6 +103,7 @@ class Site < ActiveRecord::Base
   # =================
   
   state_machine :initial => :dev do
+    state :pending # Temporary, used in the master branch
     state :beta # Temporary, used in lib/one_time/site.rb and lib/tasks/one_time.rake
     
     state :dev do

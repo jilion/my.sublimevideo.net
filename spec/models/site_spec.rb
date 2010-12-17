@@ -231,8 +231,9 @@ describe Site do
     describe "#activate" do
       context "from dev state" do
         subject do
-          site = Factory(:site, :hostname => "jilion.com", :extra_hostnames => "jilion.staging.com, jilion.org")
+          site = Factory(:site, :state => 'dev', :hostname => "jilion.com", :extra_hostnames => "jilion.staging.com, jilion.org")
           @worker.work_off
+          site.should be_dev
           site.reload
         end
         
