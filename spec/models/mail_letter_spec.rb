@@ -66,7 +66,7 @@ describe MailLetter do
         # context "with the 'with_activity' filter" do
         #   before(:all) do
         #     @user2 = Factory(:user, :invitation_token => nil)
-        #     Factory(:site, :user => @user2, :state => 'archived', :hostname => 'localhost')
+        #     Factory(:site, :user => @user2, :state => 'archived').tap { |site| site.update_attribute(:hostname, 'localhost') }
         #   end
         #   before(:each) { User.stub_chain(:with_activity).and_return([@user, @user2]) }
         #   subject { mail_letter.deliver_and_log }
