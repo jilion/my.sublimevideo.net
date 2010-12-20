@@ -8,8 +8,11 @@
       = "No plan"
   %td.site
     .wrap
-      = link_to "http://#{hostname_with_path(site)}", :class => "external_link", :onclick => "window.open(this); return false", :title => hostname_with_path(site) do
-        = hostname_with_path_and_wildcard(site, :truncate => 30)
+      - if site.hostname.present?
+        = link_to "http://#{hostname_with_path(site)}", :class => "external_link", :onclick => "window.open(this); return false", :title => hostname_with_path(site) do
+          = hostname_with_path_and_wildcard(site, :truncate => 30)
+      - else
+        = link_to "add an hostname", [:edit, site]
         
       - if site.need_path?
         %span
@@ -31,10 +34,10 @@
       = link_to "Choose a plan", [:transition, site]
     - elsif site.active?
       = link_to "Usage", "", :onclick => "return MySublimeVideo.showSiteUsage('#{site.token}')"
-    - elsif site.dev?
+    - elsif site.dev? && site.hostname.present?
       = form_for [:activate, site], :html => { "data-password-protected" => true } do |f|
         .actions
-          = f.submit 'Activate', :class => "submit small"
+          = f.submit 'Activate', :class => "submit small", :id => "activate_site_#{site.id}"
           
   %td.code
     = link_to "Embed code", "", :class => "embed_code", :onclick => "return MySublimeVideo.showSiteEmbedCode('#{site.token}')"

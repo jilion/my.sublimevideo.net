@@ -60,6 +60,13 @@ feature "Sites" do
       
       current_url.should =~ %r(http://[^/]+/suspended)
     end
+    
+    scenario "site without an hostname", :focus => true do
+      create_site(:hostname => "")
+      
+      page.should have_content('add an hostname')
+      page.should have_no_css("#activate_site_#{Site.last.id}")
+    end
   end
   
   scenario "create" do
@@ -120,7 +127,7 @@ def create_site(*args)
   options = args.extract_options!
   
   visit "/sites/new"
-  fill_in "site_hostname", :with => (options[:hostname] or 'google.com')
+  fill_in "site_hostname", :with => (options[:hostname] || 'google.com')
   choose "plan_id_pro"
   
   if !@current_user.cc? || @current_user.cc_expired?
