@@ -99,7 +99,7 @@ describe MailLetter do
         context "with the 'with_invalid_site' filter" do
           before(:all) do
             @user2 = Factory(:user, :invitation_token => nil)
-            Factory(:site, :user => @user2, :state => 'archived', :hostname => 'localhost')
+            Factory(:site, :user => @user2, :state => 'archived').tap { |site| site.update_attribute(:hostname, 'localhost') }
           end
           subject { MailLetter.new(@attributes.merge(:criteria => 'with_invalid_site')).deliver_and_log }
           
