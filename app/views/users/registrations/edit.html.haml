@@ -12,22 +12,26 @@
   - else
     = link_to 'Add a credit card', edit_credit_card_path
     
-#current_usage
-  %h3.section_title= "Current Usage"
-  %p#current_usage_amount
-    = "Calculating current usage..."
+#invoices
+  #current_usage
+    %h3.section_title= "Current Usage"
+    - if current_user.sites.active.count == 0 && current_user.sites.archived == 0
+      %p= "No current usage at this moment."
+    - else
+      %p#current_usage_amount
+        = "Calculating current usage..."
     
-- if current_user.invoices.present?
-  #past_invoices
-    %h3.section_title= "Past invoices"
-    %ul
-      - current_user.invoices.each do |invoice|
-        %li
-          = raw "#{invoice_dates(invoice)} - #{content_tag(:em, charging_status(invoice))}"
-          - if invoice.failed?
-            %br
-          = raw " (#{link_to("view details", invoice_path(invoice, :format => 'pdf'), :target => 'blank')})"
-  .spacer
+  - if current_user.invoices.present?
+    #past_invoices
+      %h3.section_title= "Past invoices"
+      %ul
+        - current_user.invoices.each do |invoice|
+          %li
+            = raw "#{invoice_dates(invoice)} - #{content_tag(:em, charging_status(invoice))}"
+            - if invoice.failed?
+              %br
+            = raw " (#{link_to("view details", invoice_path(invoice, :format => 'pdf'), :target => 'blank')})"
+    .spacer
   
 = render 'users/form'
 .spacer
