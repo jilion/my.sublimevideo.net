@@ -215,9 +215,7 @@ public
   end
   
   def alerted_this_month?
-    last_usage_alert_sent_at.present? &&
-      Time.now.utc.beginning_of_month <= last_usage_alert_sent_at &&
-      last_usage_alert_sent_at < Time.now.utc.end_of_month
+    (Time.now.utc.beginning_of_month..Time.now.utc.end_of_month).cover?(last_usage_alert_sent_at)
   end
   
   def need_path?
