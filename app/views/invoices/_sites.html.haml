@@ -18,5 +18,6 @@
   %table{ :border => 2 }
     %tr
       %td{ :colspan => 2 } Total
-      %td= display_amount(plan_invoice_item.amount + overage_invoice_item.amount + addons_invoice_items.sum(&:amount))
+      - addons_invoice_items_amount = addons_invoice_items.sum { |addon, addon_invoice_items| addon_invoice_items.sum(&:amount) }
+      %td= display_amount(plan_invoice_item.amount + overage_invoice_item.amount + addons_invoice_items_amount)
   %hr
