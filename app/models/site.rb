@@ -214,6 +214,12 @@ public
     token
   end
   
+  def alerted_this_month?
+    last_usage_alert_sent_at.present? &&
+      Time.now.utc.beginning_of_month <= last_usage_alert_sent_at &&
+      last_usage_alert_sent_at < Time.now.utc.end_of_month
+  end
+  
   def need_path?
     %w[web.me.com homepage.mac.com].include?(hostname) && path.blank?
   end

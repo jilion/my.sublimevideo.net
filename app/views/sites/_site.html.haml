@@ -18,12 +18,17 @@
         %span
           -# TODO: Update this text
           %em= "you should add a path"
-          
+      
+      - if site.alerted_this_month?
+        %span.alerted
+          -# TODO: Update this text
+          %em= "Plan limit reached, overages will occur."
+      
       - unless site.cdn_up_to_date?
         %span.in_progress
           -# TODO: Update this text
           %em= "updating CDN..."
-          
+      
       -#%em.date= l site.created_at.to_date, :format => :small
       - if site.addons.present?
         = "Add-ons: #{site.addons.map { |a| a.name.humanize }.join(", ")}"
