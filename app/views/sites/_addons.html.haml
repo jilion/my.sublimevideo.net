@@ -1,12 +1,11 @@
 #addons
   = image_tag "/images/embed/spinner.gif", :class => "spinner", :style => "display:none"
   
-  - if f.object.plan_id?
-    %h3 Add-ons
-    %ul
-      - Addon.all.each do |addon|
-        %li
-          = f.label :addon_ids, addon.name.humanize, :for => "addon_id_#{addon.name}"
-          = f.check_box :addon_ids, { :id => "addon_id_#{addon.name}", :name => "site[addon_ids][]" }, addon.id, nil
-          %ul
-            %li= "price: #{display_amount(addon.price)} per month"
+  %h3 Add-ons
+  %ul
+    - Addon.all.each do |addon|
+      %li
+        = f.label :addon_ids, addon.name.humanize, :for => "addon_id_#{addon.name}"
+        = f.check_box :addon_ids, { :id => "addon_id_#{addon.name}", :name => "site[addon_ids][]" }, addon.id, nil
+        %ul
+          %li= "price: #{display_amount(addon.price)} per month"
