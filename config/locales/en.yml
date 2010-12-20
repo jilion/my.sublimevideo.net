@@ -11,6 +11,7 @@ en:
     formats:
       default: "%B %d, %Y"
       small:   "%m/%d/%Y"
+      month_fullyear: "%B %Y"
       
   number:
     format:
