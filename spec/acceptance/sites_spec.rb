@@ -61,7 +61,7 @@ feature "Sites" do
       current_url.should =~ %r(http://[^/]+/suspended)
     end
     
-    scenario "site without an hostname", :focus => true do
+    scenario "site without an hostname" do
       create_site(:hostname => "")
       
       page.should have_content('add an hostname')
