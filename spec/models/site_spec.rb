@@ -83,12 +83,14 @@ describe Site do
     end
     
     describe "plan" do
+      # TODO: When beta state will be removed, plan should be required for every state
       it "should be required if state is dev" do
         site = Factory.build(:site, :state => 'dev', :plan => nil)
         site.should be_dev
         site.should_not be_valid
         site.should have(1).error_on(:plan)
       end
+      # TODO: When beta state will be removed, plan should be required for every state
       it "should be required if state is active" do
         site = Factory.build(:site, :state => 'active', :plan => nil)
         site.should be_active
@@ -227,6 +229,44 @@ describe Site do
   describe "State Machine" do
     before(:each) { VoxcastCDN.stub(:purge) }
     
+    describe "#rollback" do
+      context "from beta state" do
+        subject do
+          Timecop.travel(10.days.ago)
+          site = Factory(:site, :hostname => "jilion.com", :extra_hostnames => "jilion.staging.com, jilion.org").tap { |s| s.activate }
+          Timecop.return
+          @worker.work_off # populate license / loader
+          
+          site.reload.update_attribute(:plan_id, nil) # put site in the a beta state
+          site.reload.update_attribute(:state, 'beta')
+          
+          site.reload.should be_beta
+          site.plan_id.should be_nil
+          site
+        end
+        
+        it "should rollback to dev state" do
+          subject.should be_beta
+          subject.rollback.should be_true
+          subject.should be_dev
+        end
+        
+        it "should update license file" do
+          old_license_content = subject.license.read
+          subject.rollback.should be_true
+          @worker.work_off
+          subject.reload.license.read.should_not == old_license_content
+        end
+        
+        it "should purge loader & license file" do
+          VoxcastCDN.should_receive(:purge).with("/js/#{subject.token}.js")
+          VoxcastCDN.should_receive(:purge).with("/l/#{subject.token}.js")
+          subject.rollback.should be_true
+          @worker.work_off
+        end
+      end
+    end
+    
     describe "#activate" do
       context "from dev state" do
         subject do
@@ -276,12 +316,8 @@ describe Site do
           Timecop.return
           @worker.work_off # populate license / loader
           
-          # site.reload.plan_id = nil # put site in the a beta state
           site.reload.update_attribute(:plan_id, nil) # put site in the a beta state
-          # site.save(:validate => false)
-          
           site.reload.update_attribute(:state, 'beta')
-          # site.save(:validate => false)
           
           site.reload.should be_beta
           site.plan_id.should be_nil

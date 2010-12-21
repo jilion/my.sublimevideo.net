@@ -108,7 +108,7 @@ class Site < ActiveRecord::Base
     
     state :dev do
       # TODO: When beta state will be removed, place the following validates for every state
-      validates :plan, :presence => { :message => "Please choose a plan" }
+      validates :plan, :presence => { :message => "Please choose a plan" }, :if => :new_record?
     end
     
     state :active do
@@ -118,12 +118,12 @@ class Site < ActiveRecord::Base
       validate :verify_presence_of_credit_card
     end
     
+    event(:rollback)  { transition :beta => :dev }
     event(:activate)  { transition [:dev, :beta] => :active }
     event(:archive)   { transition [:dev, :beta, :active] => :archived }
     event(:suspend)   { transition :active => :suspended }
     event(:unsuspend) { transition :suspended => :active }
     
-    before_transition :to => :dev,      :do => :set_cdn_up_to_date_to_false
     before_transition :on => :activate, :do => :set_activated_at
     before_transition :on => :archive,  :do => :set_archived_at
     
@@ -303,12 +303,11 @@ private
     @license_needs_update = false
     
     if new_record? || player_mode_changed? || (state_changed? && %w[dev active].include?(state))
-      set_cdn_up_to_date_to_false
+      self.cdn_up_to_date  = false
       @loader_needs_update = true
     end
-    
     if new_record? || settings_changed? || addon_ids_changed? || (state_changed? && %w[dev active].include?(state))
-      set_cdn_up_to_date_to_false
+      self.cdn_up_to_date   = false
       @license_needs_update = true
     end
   end
@@ -323,16 +322,6 @@ private
     if @loader_needs_update || @license_needs_update
       Site.delay.update_loader_and_license(self.id, :loader => @loader_needs_update, :license => @license_needs_update)
     end
-  end
-  
-  # after_update
-  def set_state_to_active
-    self.update_attribute(:state, 'active')
-  end
-  
-  # before_transition :to => :dev
-  def set_cdn_up_to_date_to_false
-    self.cdn_up_to_date = false
   end
   
   # before_transition :on => :activate

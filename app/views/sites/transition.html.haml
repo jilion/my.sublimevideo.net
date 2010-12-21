@@ -1,3 +1,10 @@
-= title_and_content_header("Configure your site")
+= title_and_content_header("Update your site")
 
-#transition_site_wrap= render 'form', :site => @site
+#transition_site_wrap
+  .update
+    = render 'form', :site => @site
+  
+  .rollback
+    %h3= "Rollback to development state"
+    %p= "Player will no more working on #{@site.hostname})"
+    = button_to "Back to development state"

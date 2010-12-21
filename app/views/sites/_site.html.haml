@@ -37,6 +37,8 @@
   %td.code
     - if site.beta?
       = link_to "Choose a plan", [:transition, site]
+    - elsif site.plan_id.empty?
+      = link_to "Choose a plan", [:edit, site]
     - elsif site.active?
       = link_to "Usage", "", :onclick => "return MySublimeVideo.showSiteUsage('#{site.token}')"
     - elsif site.dev? && site.hostname.present?
@@ -50,4 +52,4 @@
   %td.edit
     .wrap
       - unless site.beta?
-        = link_to content_tag(:span, "settings"), edit_site_path(site), :class => "settings", :title => "Settings"
+        = link_to content_tag(:span, "settings"), [:edit, site], :class => "settings", :title => "Settings"
