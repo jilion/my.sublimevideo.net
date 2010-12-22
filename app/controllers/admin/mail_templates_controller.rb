@@ -13,13 +13,13 @@ class Admin::MailTemplatesController < Admin::AdminController
     respond_with(@mail_template, :location => [:admin, :mails])
   end
   
-  # GET /admin/mails/templates/1/edit
+  # GET /admin/mails/templates/:id/edit
   def edit
     @mail_template = MailTemplate.find(params[:id])
     respond_with(@mail_template)
   end
   
-  # PUT /admin/mails/templates/1
+  # PUT /admin/mails/templates/:id
   def update
     @mail_template = MailTemplate.find(params[:id])
     @mail_template.update_attributes(params[:mail_template])

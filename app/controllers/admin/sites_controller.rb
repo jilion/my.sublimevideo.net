@@ -17,18 +17,18 @@ class Admin::SitesController < Admin::AdminController
     respond_with(apply_scopes(@sites).by_date)
   end
   
-  # GET /admin/sites/1
+  # GET /admin/sites/:id
   def show
     redirect_to edit_admin_site_path(params[:id])
   end
   
-  # GET /admin/sites/1/edit
+  # GET /admin/sites/:id/edit
   def edit
     @site = Site.includes(:user).find_by_token(params[:id])
     respond_with(@site)
   end
   
-  # PUT /admin/sites/1
+  # PUT /admin/sites/:id
   def update
     @site = Site.find_by_token(params[:id])
     @site.player_mode = params[:site][:player_mode]

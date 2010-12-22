@@ -10,18 +10,18 @@ class Admin::DelayedJobsController < Admin::AdminController
     respond_with(@delayed_jobs)
   end
   
-  # GET /admin/djs/1
+  # GET /admin/djs/:id
   def show
     respond_with(@delayed_job)
   end
   
-  # PUT /admin/djs/1
+  # PUT /admin/djs/:id
   def update
     @delayed_job.update_attributes(:locked_at => nil, :locked_by => nil)
     respond_with(@site, :location => [:admin, :delayed_jobs])
   end
   
-  # DELETE /admin/djs/1
+  # DELETE /admin/djs/:id
   def destroy
     @delayed_job.destroy
     respond_with(@site, :location => [:admin, :delayed_jobs])

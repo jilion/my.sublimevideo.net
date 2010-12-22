@@ -3,7 +3,7 @@ class UsersController < ApplicationController
   
   before_filter :redirect_suspended_user
   
-  # PUT /users/1
+  # PUT /users/:id
   def update
     @user = User.find(current_user.id)
     respond_with(@user) do |format|

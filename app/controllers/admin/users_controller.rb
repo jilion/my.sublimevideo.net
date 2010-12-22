@@ -22,7 +22,7 @@ class Admin::UsersController < Admin::AdminController
     respond_with(apply_scopes(@users).by_date)
   end
   
-  # GET /admin/users/1
+  # GET /admin/users/:id
   def show
     @user = User.find(params[:id])
     respond_with(@user)
