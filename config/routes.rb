@@ -66,7 +66,7 @@ MySublimeVideo::Application.routes.draw do
       get  :new,    :path => '/admin/admins/invitation/new', :as => 'new'
       post :create, :path => '/admin/admins/invitation'
       get  :edit,   :path => '/admin/invitation/accept', :as => 'accept'
-      put  :update, :path => '/admin/invitation'
+      put  :update, :path => '/admin/admins/invitation'
     end
     
     resource :admin_registration, :only => [], :controller => 'admin/admins/registrations', :path => "" do

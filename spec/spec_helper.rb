@@ -23,8 +23,8 @@ Spork.each_run do
   Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
   
   VCR.config do |c|
+    c.stub_with   :webmock # or :fakeweb
     c.cassette_library_dir     = 'spec/fixtures/vcr_cassettes'
-    c.http_stubbing_library    = :webmock # or :fakeweb
     c.default_cassette_options = { :record => :new_episodes }
   end
   

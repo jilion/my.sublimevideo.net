@@ -378,6 +378,8 @@ describe Site do
 end
 
 
+
+
 # == Schema Information
 #
 # Table name: sites

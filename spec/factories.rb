@@ -58,13 +58,13 @@ end
 Factory.define :mail_template, :class => Mail::Template do |f|
   f.sequence(:title) { |n| "Pricing survey #{n}" }
   f.subject          "{{user.full_name}} ({{user.email}}), help us shaping the right pricing"
-  f.body             "Hi {{user.full_name}} ({{user.email}}), please respond to the survey, by clicking on the following link:\nhttp://survey.com"
+  f.body             "Hi {{user.full_name}} ({{user.email}}), please respond to the survey, by clicking on the following <a href=\"http://survey.com\">link</a>"
 end
 
 Factory.define :mail_log, :class => Mail::Log do |f|
   f.association :template, :factory => :mail_template
   f.association :admin
-  f.criteria    ["with_activity"]
+  f.criteria    ["with_invalid_site"]
   f.user_ids    [1,2,3,4,5]
   f.snapshot    Hash.new.tap { |h|
                   h[:title]   = "Blabla"

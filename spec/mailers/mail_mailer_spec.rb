@@ -5,7 +5,7 @@ describe MailMailer do
   
   before(:each) do
     @template = Factory(:mail_template)
-    subject
+    subject # send confirmation mail
     ActionMailer::Base.deliveries.clear
   end
   
@@ -29,7 +29,7 @@ describe MailMailer do
       end
       
       it "should set content_type to text/plain (set by default by the Mail gem)" do
-        @last_delivery.content_type.should == "text/plain; charset=UTF-8"
+        @last_delivery.content_type.should == "text/html; charset=UTF-8"
       end
     end
   end
@@ -47,7 +47,7 @@ describe MailMailer do
     
     it "should set the body to Liquidified-simple_formated-auto_linked template.body" do
       @last_delivery.body.raw_source.should == Liquid::Template.parse(@template.body).render("user" => subject)
-      @last_delivery.body.raw_source.should == "Hi John Doe (#{subject.email}), please respond to the survey, by clicking on the following link:\nhttp://survey.com"
+      @last_delivery.body.raw_source.should == "Hi John Doe (#{subject.email}), please respond to the survey, by clicking on the following <a href=\"http://survey.com\">link</a>"
     end
   end
   

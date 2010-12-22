@@ -15,7 +15,9 @@ class Mail::Letter
     
     users = case @criteria
             when 'dev'
-              User.where(:email => ["thibaud@jilion.com", "remy@jilion.com", "zeno@jilion.com"])
+              User.where(:email => ["thibaud@jilion.com", "remy@jilion.com", "zeno@jilion.com", "octave@jilion.com"])
+            when 'all'
+              User.all
             when 'with_invalid_site'
               User.beta.includes(:sites).all.select { |u| u.sites.any? { |s| !s.valid? } }
             else
