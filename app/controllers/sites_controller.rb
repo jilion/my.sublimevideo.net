@@ -3,8 +3,9 @@ class SitesController < ApplicationController
   respond_to :js, :only => [:index, :code, :new]
   
   before_filter :redirect_suspended_user
-  before_filter :find_by_token, :only => [:code, :transition, :edit, :update, :activate, :destroy, :usage]
-  before_filter :redirect_wrong_password_for_active_site!, :only => [:update, :activate, :destroy]
+  before_filter :find_by_token, :only => [:code, :transition, :edit, :update, :activate, :rollback, :destroy, :usage]
+  before_filter :redirect_wrong_password_for_active_site!, :only => :update
+  before_filter :redirect_wrong_password!, :only => [:activate, :destroy, :rollback]
   
   has_scope :by_hostname
   has_scope :by_date
@@ -15,7 +16,7 @@ class SitesController < ApplicationController
     respond_with(@sites)
   end
   
-  # GET /sites/1/code
+  # GET /sites/:id/code
   def code
     respond_with(@site) do |format|
       format.js
@@ -29,12 +30,12 @@ class SitesController < ApplicationController
     respond_with(@site)
   end
   
-  # GET /sites/1/transition
+  # GET /sites/:id/transition
   def transition
     respond_with(@site)
   end
   
-  # GET /sites/1/edit
+  # GET /sites/:id/edit
   def edit
     respond_with(@site) do |format|
       if @site.beta?
@@ -51,13 +52,13 @@ class SitesController < ApplicationController
     respond_with(@site, :location => :sites)
   end
   
-  # PUT /sites/1
+  # PUT /sites/:id
   def update
     @site.update_attributes(params[:site])
     respond_with(@site, :location => :sites)
   end
   
-  # PUT /sites/1/activate
+  # PUT /sites/:id/activate
   def activate
     @site.activate
     respond_with(@site, :location => :sites) do |format|
@@ -67,13 +68,20 @@ class SitesController < ApplicationController
     end
   end
   
-  # DELETE /sites/1
+  # TODO: Remove after beta transition
+  # PUT /sites/:id/rollback
+  def rollback
+    @site.rollback
+    respond_with(@site, :location => :sites)
+  end
+  
+  # DELETE /sites/:id
   def destroy
     @site.archive
     respond_with(@site, :location => :sites)
   end
   
-  # GET /sites/1/state
+  # GET /sites/:id/state
   def state
     @site = current_user.sites.find(params[:id])
     respond_with(@site) do |format|
@@ -82,7 +90,7 @@ class SitesController < ApplicationController
     end
   end
   
-  # GET /sites/1/usage
+  # GET /sites/:id/usage
   def usage
     respond_with(@site) do |format|
       format.js
@@ -98,6 +106,10 @@ private
   
   def redirect_wrong_password_for_active_site!
     redirect_wrong_password(@site) if @site.active?
+  end
+  
+  def redirect_wrong_password!
+    redirect_wrong_password(@site)
   end
   
 end

@@ -29,6 +29,7 @@ MySublimeVideo::Application.routes.draw do
       get :transition
       get :usage
       put :activate
+      put :rollback # TODO: Remove after beta transition
     end
   end
   resource :card, :controller => 'credit_cards', :as => :credit_card, :only => [:edit, :update]

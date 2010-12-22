@@ -24,22 +24,28 @@ describe SitesController do
       end
     end
     
-    it "should render :code on GET :code" do
-      get :code, :id => 'a1b2c3', :format => :js
-      assigns(:site).should == mock_site
-      response.should render_template(:code)
+    describe "GET :code" do
+      it "should render :code" do
+        get :code, :id => 'a1b2c3', :format => :js
+        assigns(:site).should == mock_site
+        response.should render_template(:code)
+      end
     end
     
-    it "should render :new on GET :new" do
-      @current_user.stub_chain(:sites, :build) { mock_site }
-      
-      get :new
-      response.should render_template(:new)
+    describe "GET :new" do
+      it "should render :new" do
+        @current_user.stub_chain(:sites, :build) { mock_site }
+        
+        get :new
+        response.should render_template(:new)
+      end
     end
     
-    it "should render :transition on GET :transition" do
-      get :transition, :id => 'a1b2c3'
-      response.should render_template(:transition)
+    describe "GET :transition" do
+      it "should render :transition" do
+        get :transition, :id => 'a1b2c3'
+        response.should render_template(:transition)
+      end
     end
     
     describe "GET :edit" do
@@ -68,153 +74,6 @@ describe SitesController do
       end
     end
     
-    describe "POST :create" do
-      before(:each) { @current_user.stub_chain(:sites, :create).with({}).and_return(@mock_site = mock_site) }
-      
-      it "should redirect to /sites when create succeeds" do
-        post :create, :site => {}
-        assigns(:site).should == @mock_site
-        response.should redirect_to(sites_url)
-      end
-      
-      it "should render :new when fail" do
-        mock_site.should_receive(:errors).any_number_of_times.and_return(["error"])
-        
-        post :create, :site => {}
-        assigns(:site).should == mock_site
-        response.should render_template(:new)
-      end
-    end
-    
-    context "site is not active" do
-      before(:each) { mock_site.stub(:active?).and_return(false) }
-      
-      describe "PUT :update" do
-        it "should redirect to /sites when update_attributes succeeds" do
-          mock_site.stub(:update_attributes).with({}) { true }
-          
-          put :update, :site => {}, :id => 'a1b2c3'
-          assigns(:site).should == mock_site
-          response.should redirect_to(sites_url)
-        end
-        
-        it "should redirect to /sites when update_attributes fails" do
-          mock_site.stub(:update_attributes).with({}) { false }
-          mock_site.should_receive(:errors).any_number_of_times.and_return(["error"])
-          
-          put :update, :site => {}, :id => 'a1b2c3'
-          assigns(:site).should == mock_site
-          response.should render_template(:edit)
-        end
-      end
-      
-      it "should redirect to /sites on DELETE :destroy" do
-        mock_site.stub(:archive)
-        
-        delete :destroy, :id => 'a1b2c3'
-        assigns(:site).should == mock_site
-        response.should redirect_to(sites_url)
-      end
-    end
-    
-    context "site is active" do
-      before(:each) { mock_site.stub(:active?).and_return(true) }
-      
-      context "with wrong password" do
-        before(:each) { @current_user.stub(:valid_password?).with('abcd').and_return(false) }
-        
-        describe "PUT :update" do
-          it "should redirect to /sites/:token/edit" do
-            put :update, :id => 'a1b2c3', :site => {}, :user => { :current_password => 'abcd' }
-            assigns(:site).should == mock_site
-            response.should redirect_to(edit_site_url(mock_site))
-          end
-        end
-        
-        describe "PUT :activate" do
-          it "should redirect to /sites/:token/edit" do
-            put :activate, :id => 'a1b2c3', :user => { :current_password => 'abcd' }
-            assigns(:site).should == mock_site
-            response.should redirect_to(edit_site_url(mock_site))
-          end
-        end
-        
-        describe "DELETE :destroy" do
-          it "should redirect to /sites/:token/edit" do
-            delete :destroy, :id => 'a1b2c3', :user => { :current_password => 'abcd' }
-            assigns(:site).should == mock_site
-            response.should redirect_to(edit_site_url(mock_site))
-          end
-        end
-      end
-        
-      context "with good password" do
-        before(:each) { @current_user.stub(:valid_password?).with('123456').and_return(true) }
-        
-        describe "PUT :update" do
-          it "should redirect to /sites when update_attributes succeeds" do
-            mock_site.stub(:update_attributes).with({}) { true }
-            
-            put :update, :id => 'a1b2c3', :site => {}, :user => { :current_password => '123456' }
-            assigns(:site).should == mock_site
-            response.should redirect_to(sites_url)
-          end
-          
-          it "should redirect to /sites/:token/edit when update_attributes fails" do
-            mock_site.stub(:update_attributes).with({}) { false }
-            mock_site.should_receive(:errors).any_number_of_times.and_return(["error"])
-            
-            put :update, :id => 'a1b2c3', :site => {}, :user => { :current_password => '123456' }
-            assigns(:site).should == mock_site
-            response.should render_template(:edit)
-          end
-        end
-        
-        describe "PUT :activate" do
-          before(:each) { @current_user.stub(:valid_password?).with('123456').and_return(true) }
-          
-          it "should redirect to /card/edit when current_user has no credit card" do
-            @current_user.stub(:cc?).and_return(false)
-            mock_site.stub(:activate) { true }
-            
-            put :activate, :id => 'a1b2c3', :user => { :current_password => '123456' }
-            assigns(:site).should == mock_site
-            response.should redirect_to(edit_credit_card_url)
-          end
-          
-          context "current_user has a credit card" do
-            before(:each) { @current_user.stub(:cc?).and_return(true) }
-            
-            it "should redirect to /sites when update_attributes succeeds" do
-              mock_site.stub(:activate) { true }
-              
-              put :activate, :id => 'a1b2c3', :user => { :current_password => '123456' }
-              assigns(:site).should == mock_site
-              response.should redirect_to(sites_url)
-            end
-            
-            it "should redirect to /sites when update_attributes fails" do
-              mock_site.stub(:activate){ false }
-              
-              put :activate, :id => 'a1b2c3', :user => { :current_password => '123456' }
-              assigns(:site).should == mock_site
-              response.should redirect_to(sites_url)
-            end
-          end
-        end
-        
-        describe "DELETE :destroy" do
-          before(:each) { mock_site.stub(:archive) }
-          
-          it "should redirect to /sites" do
-            delete :destroy, :id => 'a1b2c3', :user => { :current_password => '123456' }
-            assigns(:site).should == mock_site
-            response.should redirect_to(sites_url)
-          end
-        end
-      end
-    end
-    
     describe "GET :state" do
       it "should respond with :ok when cdn_up_to_date? is false" do
         mock_site.stub(:cdn_up_to_date?).and_return(false)
@@ -233,15 +92,194 @@ describe SitesController do
       end
     end
     
-    it "should respond with success to GET :usage" do
-      get :usage, :id => 'a1b2c3', :format => :js
+    describe "GET :usage" do
+      it "should respond with success to " do
+        get :usage, :id => 'a1b2c3', :format => :js
+        
+        assigns(:site).should == mock_site
+        response.should be_success
+      end
+    end
+    
+    describe "POST :create" do
+      before(:each) { @current_user.stub_chain(:sites, :create).with({}).and_return(@mock_site = mock_site) }
       
-      assigns(:site).should == mock_site
-      response.should be_success
+      it "should redirect to /sites when create succeeds" do
+        post :create, :site => {}
+        assigns(:site).should == @mock_site
+        response.should redirect_to(sites_url)
+      end
+      
+      it "should render :new when fail" do
+        mock_site.should_receive(:errors).any_number_of_times.and_return(["error"])
+        
+        post :create, :site => {}
+        assigns(:site).should == mock_site
+        response.should render_template(:new)
+      end
+    end
+    
+    describe "PUT :update" do
+      context "site is not active" do
+        before(:each) { mock_site.stub(:active?).and_return(false) }
+        
+        it "should redirect to /sites when update_attributes succeeds" do
+          mock_site.stub(:update_attributes).with({}) { true }
+          
+          put :update, :site => {}, :id => 'a1b2c3'
+          assigns(:site).should == mock_site
+          response.should redirect_to(sites_url)
+        end
+        
+        it "should redirect to /sites when update_attributes fails" do
+          mock_site.stub(:update_attributes).with({}) { false }
+          mock_site.should_receive(:errors).any_number_of_times.and_return(["error"])
+          
+          put :update, :site => {}, :id => 'a1b2c3'
+          assigns(:site).should == mock_site
+          response.should render_template(:edit)
+        end
+      end
+      
+      context "site is active" do
+        before(:each) { mock_site.stub(:active?).and_return(true) }
+        
+        context "with wrong password" do
+          before(:each) { @current_user.stub(:valid_password?).with('abcd').and_return(false) }
+          
+          it "should redirect to /sites/:token/edit" do
+            put :update, :id => 'a1b2c3', :site => {}, :user => { :current_password => 'abcd' }
+            assigns(:site).should == mock_site
+            response.should redirect_to(edit_site_url(mock_site))
+          end
+        end
+        
+        context "with good password" do
+          before(:each) { @current_user.stub(:valid_password?).with('123456').and_return(true) }
+          
+          it "should redirect to /sites when update_attributes succeeds" do
+            mock_site.stub(:update_attributes).with({}) { true }
+            
+            put :update, :id => 'a1b2c3', :site => {}, :user => { :current_password => '123456' }
+            assigns(:site).should == mock_site
+            response.should redirect_to(sites_url)
+          end
+          
+          it "should redirect to /sites/:token/edit when update_attributes fails" do
+            mock_site.stub(:update_attributes).with({}) { false }
+            mock_site.should_receive(:errors).any_number_of_times.and_return(["error"])
+            
+            put :update, :id => 'a1b2c3', :site => {}, :user => { :current_password => '123456' }
+            assigns(:site).should == mock_site
+            response.should render_template(:edit)
+          end
+        end
+      end
+    end
+    
+    describe "PUT :activate" do
+      context "with wrong password" do
+        before(:each) { @current_user.stub(:valid_password?).with('abcd').and_return(false) }
+        
+        it "should redirect to /sites/:token/edit" do
+          put :activate, :id => 'a1b2c3', :user => { :current_password => 'abcd' }
+          assigns(:site).should == mock_site
+          response.should redirect_to(edit_site_url(mock_site))
+        end
+      end
+      
+      context "with good password" do
+        before(:each) { @current_user.stub(:valid_password?).with('123456').and_return(true) }
+        
+        it "should redirect to /card/edit when current_user has no credit card" do
+          @current_user.stub(:cc?).and_return(false)
+          mock_site.stub(:activate) { true }
+          
+          put :activate, :id => 'a1b2c3', :user => { :current_password => '123456' }
+          assigns(:site).should == mock_site
+          response.should redirect_to(edit_credit_card_url)
+        end
+        
+        context "current_user has a credit card" do
+          before(:each) { @current_user.stub(:cc?).and_return(true) }
+          
+          it "should redirect to /sites when activate succeeds" do
+            mock_site.stub(:activate) { true }
+            
+            put :activate, :id => 'a1b2c3', :user => { :current_password => '123456' }
+            assigns(:site).should == mock_site
+            response.should redirect_to(sites_url)
+          end
+          
+          it "should redirect to /sites when activate fails" do
+            mock_site.stub(:activate){ false }
+            
+            put :activate, :id => 'a1b2c3', :user => { :current_password => '123456' }
+            assigns(:site).should == mock_site
+            response.should redirect_to(sites_url)
+          end
+        end
+      end
+    end
+    
+    describe "PUT :rollback" do
+      context "with wrong password" do
+        before(:each) { @current_user.stub(:valid_password?).with('abcd').and_return(false) }
+        
+        it "should redirect to /sites/:token/edit" do
+          put :rollback, :id => 'a1b2c3', :user => { :current_password => 'abcd' }
+          assigns(:site).should == mock_site
+          response.should redirect_to(edit_site_url(mock_site))
+        end
+      end
+      
+      context "with good password" do
+        before(:each) { @current_user.stub(:valid_password?).with('123456').and_return(true) }
+        
+        it "should redirect to /sites when rollback succeeds" do
+          mock_site.stub(:rollback) { true }
+          
+          put :rollback, :id => 'a1b2c3', :user => { :current_password => '123456' }
+          assigns(:site).should == mock_site
+          response.should redirect_to(sites_url)
+        end
+        
+        it "should redirect to /sites when rollback fails" do
+          mock_site.stub(:rollback){ false }
+          
+          put :rollback, :id => 'a1b2c3', :user => { :current_password => '123456' }
+          assigns(:site).should == mock_site
+          response.should redirect_to(sites_url)
+        end
+      end
+    end
+    
+    describe "DELETE :destroy" do
+      before(:each) { mock_site.stub(:archive) }
+      
+      context "with wrong password" do
+        before(:each) { @current_user.stub(:valid_password?).with('abcd').and_return(false) }
+        
+        it "should redirect to /sites/:token/edit" do
+          delete :destroy, :id => 'a1b2c3', :user => { :current_password => 'abcd' }
+          assigns(:site).should == mock_site
+          response.should redirect_to(edit_site_url(mock_site))
+        end
+      end
+      
+      context "with good password" do
+        before(:each) { @current_user.stub(:valid_password?).with('123456').and_return(true) }
+        
+        it "should redirect to /sites" do
+          delete :destroy, :id => 'a1b2c3', :user => { :current_password => '123456' }
+          assigns(:site).should == mock_site
+          response.should redirect_to(sites_url)
+        end
+      end
     end
   end
   
-  verb_and_actions = { :get => [:index, :code, :new, :edit, :state, :usage], :post => :create, :put => :update, :delete => :destroy }
+  verb_and_actions = { :get => [:index, :code, :new, :edit, :state, :usage], :post => :create, :put => [:update, :activate, :rollback], :delete => :destroy }
   it_should_behave_like "redirect when connected as", '/suspended', [[:user, { :suspended? => true }]], verb_and_actions
   it_should_behave_like "redirect when connected as", '/login', [:guest], verb_and_actions
   

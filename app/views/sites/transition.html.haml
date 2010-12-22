@@ -7,4 +7,6 @@
   .rollback
     %h3= "Rollback to development state"
     %p= "Player will no more working on #{@site.hostname})"
-    = button_to "Back to development state"
+    = form_for [:rollback, @site], :html => { :method => :put, :class => "edit", "data-password-protected" => true } do |f|
+      .actions
+        = f.submit "Back to development state", :class => "submit small"
