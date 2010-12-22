@@ -23,6 +23,9 @@ MySublimeVideo::Application.configure do
   # See everything in the log (default is :info)
   # config.log_level = :debug
 
+  # Heroku logs config
+  config.action_controller.logger = Logger.new(STDOUT)
+
   # Use a different logger for distributed setups
   # config.logger = SyslogLogger.new
 
