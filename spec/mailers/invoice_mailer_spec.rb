@@ -38,7 +38,7 @@ describe InvoiceMailer do
   end
   
   describe "#invoice_completed" do
-    before(:all) do
+    before(:each) do
       InvoiceMailer.invoice_completed(subject).deliver
       @last_delivery = ActionMailer::Base.deliveries.last
     end

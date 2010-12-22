@@ -37,7 +37,7 @@
   %td.code
     - if site.beta?
       = link_to "Choose a plan", [:transition, site]
-    - elsif site.plan_id.empty?
+    - elsif site.plan_id.blank?
       = link_to "Choose a plan", [:edit, site]
     - elsif site.active?
       = link_to "Usage", "", :onclick => "return MySublimeVideo.showSiteUsage('#{site.token}')"
