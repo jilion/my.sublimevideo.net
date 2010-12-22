@@ -1,21 +1,19 @@
-guard 'bundler' do
-  watch('^Gemfile')
+guard 'passenger', :ping => true do
+  watch('config/application.rb')
+  watch('config/environment.rb')
+  watch(%r{config/environments/.+\.rb})
+  watch(%r{config/initializers/.+\.rb})
 end
 
-guard 'livereload' do
-  watch('^app/.+\.(erb|haml)$')
-  watch('^app/helpers/.+\.rb$')
-  watch('^/public/.+\.(css|js|html)$')
-  watch('^config/locales/.+\.ym$')
-end
-
-guard 'rspec', :version => 2 do
-  watch('^spec/(.*)_spec.rb')
-  watch('^app/(.*)\.rb')                              { |m| "spec/#{m[1]}_spec.rb" }
-  watch('^lib/(.*)\.rb')                              { |m| "spec/lib/#{m[1]}_spec.rb" }
-  watch('^config/routes.rb')                          { "spec/routing" }
-  watch('^app/controllers/application_controller.rb') { "spec/controllers" }
-  watch('^spec/support/controller_spec_helpers.rb')   { "spec/controllers" }
-  watch('^spec/factories.rb')                         { "spec/models" }
-  watch('^spec/spec_helper.rb')                       { "spec" }
+guard 'rspec', :version => 2, :formatter => "instafail" do
+  watch('spec/spec_helper.rb')                                 { "spec" }
+  watch('app/controllers/application_controller.rb')           { "spec/controllers" }
+  watch('config/routes.rb')                                    { "spec/routing" }
+  watch(%r{spec/support/(controllers|acceptance)_helpers\.rb}) { |m| "spec/#{m[1]}" }
+  watch(%r{spec/.+_spec\.rb})
+  
+  watch(%r{app/controllers/(.+)_controller\.rb}) { |m| ["spec/routing/#{m[1]}_routing_spec.rb", "spec/controllers/#{m[1]}_controller_spec.rb", "spec/acceptance/#{m[1]}_spec.rb"] }
+  
+  watch(%r{app/(.+)\.rb}) { |m| "spec/#{m[1]}_spec.rb" }
+  watch(%r{lib/(.+)\.rb}) { |m| "spec/lib/#{m[1]}_spec.rb" }
 end
