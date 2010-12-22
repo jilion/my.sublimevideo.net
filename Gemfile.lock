@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/guard/guard.git
-  revision: 1c86b1e6325ae34fb10462e40056de019a6b0c71
+  revision: a21bb8e306e44fd153c8b88a7c59c00e451b1d52
   specs:
     guard (0.2.2)
       open_gem (~> 1.4.2)
@@ -128,7 +128,7 @@ GEM
       http_connection
       uuidtools
       xml-simple
-    bcrypt-ruby (2.1.2)
+    bcrypt-ruby (2.1.3)
     braintree (2.6.2)
       builder
     bson (1.1.5)
@@ -153,7 +153,7 @@ GEM
     countries (0.3.0)
       currencies (>= 0.2.0)
     crack (0.1.8)
-    culerity (0.2.12)
+    culerity (0.2.13)
     currencies (0.2.1)
     daemon_controller (0.2.5)
     daemons (1.1.0)
