@@ -128,7 +128,7 @@ describe OneTime::Site do
       @other_site_2 = Factory(:site, :state => 'archived')
     end
     
-    it "all sites created should be dev" do
+    it "all sites created should not be dev" do
       @staff_site_1.should be_pending
       @staff_site_2.should be_active
       @other_site_1.should be_active
@@ -159,6 +159,30 @@ describe OneTime::Site do
         @other_site_2.reload.should be_archived
       end
     end
+  end
+  
+  describe ".rollback_beta_sites_to_dev" do
+    before(:all) do
+      @site_1 = Factory(:site, :state => 'beta')
+      @site_2 = Factory(:site, :state => 'beta')
+      @site_3 = Factory(:site, :state => 'archived')
+      @worker = Delayed::Worker.new 
+    end
+    
+    specify do
+      @site_1.reload.should be_beta
+      @site_2.reload.should be_beta
+      @site_3.reload.should be_archived
+    end
+    
+    it "should rollback beta site to dev state" do
+      described_class.rollback_beta_sites_to_dev
+      @worker.work_off
+      @site_1.reload.should be_dev
+      @site_2.reload.should be_dev
+      @site_3.reload.should be_archived
+    end
+    
   end
   
 end

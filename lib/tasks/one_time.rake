@@ -59,6 +59,11 @@ namespace :one_time do
     task :set_beta_state => :environment do
       puts OneTime::Site.set_beta_state(false)
     end
+    
+    desc "Rollback all beta sites to 'dev' state"
+    task :rollback_beta_sites => :environment do
+      puts OneTime::Site.rollback_beta_sites_to_dev
+    end
   end
   
 end

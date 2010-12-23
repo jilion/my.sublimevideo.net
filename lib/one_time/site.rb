@@ -62,6 +62,10 @@ module OneTime
         "#{::Site.where(:state => 'beta').count} beta sites (on #{::Site.count} total sites)."
       end
       
+      def rollback_beta_sites_to_dev
+        ::Site.beta.all.each { |site| site.delay.rollback }
+      end
+      
     end
     
   end
