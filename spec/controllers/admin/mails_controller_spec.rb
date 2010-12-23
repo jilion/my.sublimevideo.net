@@ -8,8 +8,8 @@ describe Admin::MailsController do
     
     describe "GET :index" do
       before(:each) do
-        Mail::Log.stub_chain(:by_date, :paginate) { [mock_mail_log] }
-        Mail::Template.stub_chain(:by_date, :paginate) { [mock_mail_template] }
+        Mail::Log.stub_chain(:scoped, :by_date, :paginate) { [mock_mail_log] }
+        Mail::Template.stub_chain(:scoped, :by_date, :paginate) { [mock_mail_template] }
         get :index
       end
       

@@ -13,10 +13,10 @@ class Admin::MailsController < Admin::AdminController
   # GET /admin/mails
   def index
     if params[:mail_logs] || !(params[:mail_logs] || params[:mail_templates])
-      @mail_logs = apply_scopes(Mail::Log.by_date).paginate(:page => params[:page], :per_page => Mail::Log.per_page)
+      @mail_logs = apply_scopes(Mail::Log.scoped).by_date.paginate(:page => params[:page], :per_page => Mail::Log.per_page)
     end
     if params[:mail_templates] || !(params[:mail_logs] || params[:mail_templates])
-      @mail_templates = apply_scopes(Mail::Template.by_date).paginate(:page => params[:page], :per_page => Mail::Template.per_page)
+      @mail_templates = apply_scopes(Mail::Template.scoped).by_date.paginate(:page => params[:page], :per_page => Mail::Template.per_page)
     end
   end
   

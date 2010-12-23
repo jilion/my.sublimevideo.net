@@ -8,7 +8,8 @@ class SitesController < ApplicationController
   
   # GET /sites
   def index
-    @sites = apply_scopes(current_user.sites.not_archived.by_date)
+    @sites = current_user.sites.not_archived
+    @sites = apply_scopes(@sites).by_date
     respond_with(@sites)
   end
   
