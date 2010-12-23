@@ -34,8 +34,8 @@ gem 'devise_invitable',      :git => 'git://github.com/rymai/devise_invitable.gi
 # gem 'memcached',             '~> 0.20.1'
 gem 'dalli',                 '~> 1.0.0'
 
-gem 'aws',                   '~> 2.3.22'
-gem 'fog',                   '0.3.26' # for carrierwave 0.5 final
+gem 'aws',                   '~> 2.3.34'
+gem 'fog',                   '0.3.33' # for carrierwave 0.5 final
 gem 'carrierwave',           '~> 0.5.0'
 
 gem 'bson_ext',              '~> 1.1.5'
@@ -69,7 +69,7 @@ group :development do
   gem 'annotate',      '~> 2.4.0'
   gem 'wirble',        '~> 0.1.3'
   gem 'ruby-graphviz', :require => 'graphviz'
-  gem 'heroku',        '~> 1.11.0'
+  gem 'heroku',        '~> 1.15.1'
   gem 'heroku_tasks',  '~> 0.1.4'
   gem 'taps',          '~> 0.3.14' # heroku db pull/push
   gem 'timecop',       '~> 0.3.5'
