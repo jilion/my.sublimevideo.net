@@ -38,9 +38,8 @@ gem 'devise_invitable',      :git => 'git://github.com/rymai/devise_invitable.gi
 
 gem 'dalli',                 '1.0.0'
 
-gem 'aws',                   '2.3.30'
-gem 'fog',                   '0.3.26' # there's a conflict between named-parameters (dependency) and settinglogic
-# gem 'fog',                   :git => 'git://github.com/rymai/fog.git' # there's a conflict between named-parameters (dependency) and settinglogic
+gem 'aws',                   '2.3.34'
+gem 'fog',                   '0.3.33'
 gem 'carrierwave',           '0.5.1'
 
 gem 'bson_ext',              '1.1.5'
@@ -80,7 +79,7 @@ group :development do
   gem 'annotate',      '~> 2.4.0'
   gem 'wirble',        '~> 0.1.3'
   gem 'ruby-graphviz', :require => 'graphviz'
-  gem 'heroku',        '~> 1.15.0'
+  gem 'heroku',        '~> 1.15.1'
   gem 'heroku_tasks',  '~> 0.1.4'
   gem 'taps',          '~> 0.3.14' # heroku db pull/push
   gem 'silent-postgres'
