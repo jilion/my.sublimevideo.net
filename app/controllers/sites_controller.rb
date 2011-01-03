@@ -12,7 +12,8 @@ class SitesController < ApplicationController
   
   # GET /sites
   def index
-    @sites = apply_scopes(current_user.sites.not_archived.with_plan.with_addons.by_date)
+    @sites = current_user.sites.not_archived.with_plan.with_addons
+    @sites = apply_scopes(@sites).by_date
     respond_with(@sites)
   end
   

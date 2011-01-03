@@ -5,11 +5,11 @@ describe MailMailer do
   
   before(:each) do
     @template = Factory(:mail_template)
-    subject
+    subject # send confirmation mail
     ActionMailer::Base.deliveries.clear
   end
   
-  it_should_behave_like "common mailer checks", %w[send_mail_with_template], :params => [Factory(:user), Factory(:mail_template)]
+  it_should_behave_like "common mailer checks", %w[send_mail_with_template], :params => [Factory(:user), Factory(:mail_template)], :content_type => %r{text/html; charset=UTF-8}
   
   describe "#send_mail_with_template" do
     before(:each) do
@@ -24,7 +24,7 @@ describe MailMailer do
     
     it "should set the body to Liquidified-simple_formated-auto_linked template.body" do
       @last_delivery.body.encoded.should == Liquid::Template.parse(@template.body).render("user" => subject)
-      @last_delivery.body.encoded.should == "Hi John Doe (#{subject.email}), please respond to the survey, by clicking on the following link: http://survey.com"
+      @last_delivery.body.encoded.should == "Hi John Doe (#{subject.email}), please respond to the survey, by clicking on the following <a href=\"http://survey.com\">link</a>"
     end
   end
   

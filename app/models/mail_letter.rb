@@ -16,6 +16,10 @@ class MailLetter
     users = case @criteria
             when 'dev'
               User.where(:email => ["thibaud@jilion.com", "remy@jilion.com", "zeno@jilion.com", "octave@jilion.com"])
+            when 'all'
+              User.all
+            when 'invited_after_2010_12_23'
+              User.where(:created_at.gt => Time.utc(2010,12,23))
             when 'with_invalid_site'
               User.beta.joins(:sites).where(:sites => { :state.ne => 'archived' }).all.select { |u| u.sites.any? { |s| !s.valid? } }
             else

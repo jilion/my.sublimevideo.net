@@ -1,6 +1,6 @@
 = title_and_content_header("Complete your invitation")
 
-= form_for resource, :as => resource_name, :url => '/admin/invitation', :html => { :method => :put } do |f|
+= form_for resource, :as => resource_name, :url => admin_invitation_path, :html => { :method => :put } do |f|
   = f.hidden_field :invitation_token
   
   .entry.password

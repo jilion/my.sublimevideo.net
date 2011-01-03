@@ -1,12 +1,3 @@
-# Doesn't seem to work...
-
-guard 'passenger', :ping => true do
-  watch('config/application.rb')
-  watch('config/environment.rb')
-  watch(%r{config/environments/.+\.rb})
-  watch(%r{config/initializers/.+\.rb})
-end
-
 group 'backend' do
   
   guard 'bundler' do

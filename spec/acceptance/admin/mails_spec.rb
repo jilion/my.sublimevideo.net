@@ -128,5 +128,4 @@ describe "Mails" do
       end
     end
   end
-  
 end

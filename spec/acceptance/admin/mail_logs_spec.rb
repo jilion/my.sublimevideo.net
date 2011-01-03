@@ -18,7 +18,7 @@ feature "Mail logs show:" do
     page.should have_content(mail_log.template.title)
     page.should have_content(mail_log.template.subject)
     
-    page.should have_content(mail_log.template.body)
+    page.should have_content("Hi {{user.full_name}} ({{user.email}}), please respond to the survey, by clicking on the following link")
     
     page.should have_content(mail_log.admin_id.to_s)
     page.should have_content(mail_log.template_id.to_s)

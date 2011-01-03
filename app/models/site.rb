@@ -276,6 +276,16 @@ public
     VoxcastCDN.purge("/#{mapping[name.to_sym]}/#{token}.js")
   end
   
+  def set_template(name)
+    template = ERB.new(File.new(Rails.root.join("app/templates/sites/#{name}.js.erb")).read)
+    
+    tempfile = Tempfile.new(name, "#{Rails.root}/tmp")
+    tempfile.print template.result(binding)
+    tempfile.flush
+    
+    self.send("#{name}=", tempfile)
+  end
+  
 private
   
   # before_validation

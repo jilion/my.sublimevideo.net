@@ -79,6 +79,7 @@ feature "Admins invitations:" do
     visit "/admin/invitation/accept?invitation_token=#{invited_admin.invitation_token}"
     current_url.should =~ %r(http://[^/]+/admin/invitation/accept\?invitation_token=#{invited_admin.invitation_token})
     fill_in "Password", :with => "123456"
+    
     click_button "Go!"
     
     current_url.should =~ %r(http://[^/]+/admin/djs)

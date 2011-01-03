@@ -14,7 +14,8 @@ class Admin::SitesController < Admin::AdminController
   def index
     @sites = Site.includes(:user)
     @sites = @sites.not_archived unless params[:archived_included]
-    respond_with(apply_scopes(@sites).by_date)
+    @sites = apply_scopes(@sites).by_date
+    respond_with(@sites)
   end
   
   # GET /admin/sites/:id
