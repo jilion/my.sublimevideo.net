@@ -61,7 +61,7 @@ feature "Mails sending" do
     @mail_template = Factory(:mail_template)
   end
   
-  context "choosing 'with activity' criteria" do
+  context "choosing 'all' criteria" do
     background do
       User.stub_chain(:with_activity).and_return { [@user] }
       ActionMailer::Base.deliveries.clear
