@@ -31,7 +31,7 @@ gem 'public_suffix_service', '0.8.1'
 gem 'RedCloth',              '4.2.3'
 gem 'liquid',                '2.2.2'
 
-# gem 'devise',                '~> 1.1.3'
+# gem 'devise',                '~> 1.1.5'
 # gem 'devise',                :git => 'git://github.com/thibaudgg/devise.git', :branch => 'spork' # 1.1.5
 gem 'devise',                :git => 'git://github.com/rymai/devise.git', :branch => 'spork' # 1.1.5
 gem 'devise_invitable',      :git => 'git://github.com/rymai/devise_invitable.git'
@@ -39,7 +39,7 @@ gem 'devise_invitable',      :git => 'git://github.com/rymai/devise_invitable.gi
 gem 'dalli',                 '1.0.0'
 
 gem 'aws',                   '2.3.34'
-gem 'fog',                   '0.3.33'
+gem 'fog',                   '0.3.34'
 gem 'carrierwave',           '0.5.1'
 
 gem 'bson_ext',              '1.1.5'
@@ -54,8 +54,7 @@ gem 'array_stats',           '0.6.0'
 gem 'rescue_me',             '0.1.0'
 gem 'paper_trail',           '1.6.4'
 gem 'settingslogic',         '2.0.6'
-# gem 'pdfkit',                '0.4.6'
-gem 'pdfkit',                :git => 'git://github.com/rymai/PDFKit.git' # include the conditions hash with :only
+gem 'pdfkit',                '0.5.0'
 
 group :production do
   gem 'rack-google-analytics', '0.9.2', :require => 'rack/google-analytics'
@@ -68,10 +67,9 @@ end
 
 group :development, :test do
   gem 'silent-postgres'
-  gem 'rspec-rails',   '~> 2.3.1'
+  gem 'rspec-rails',   '~> 2.4.1'
   gem 'passenger',     '~> 3.0.2'
   gem 'timecop',       '~> 0.3.5'
-  # gem 'awesome_print', '~> 0.3.1' # liquid problem
 end
 
 group :development do
