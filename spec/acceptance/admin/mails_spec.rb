@@ -64,9 +64,43 @@ describe "Mails" do
       @mail_template = Factory(:mail_template)
     end
     
-    # context "choosing 'with activity' criteria" do
+    context "choosing 'all' criteria" do
+      background do
+        User.stub_chain(:with_activity).and_return { [@user] }
+        ActionMailer::Base.deliveries.clear
+      end
+      
+      scenario "should be possible to send an email from a template to a selection of users" do
+        visit "/admin/mails/new"
+        
+        page.should have_content("Send a mail")
+        ActionMailer::Base.deliveries.size.should == 0
+        
+        select @mail_template.title, :from => "Template"
+        select "all", :from => "Criteria"
+        click_button "Send mail"
+        
+        current_url.should =~ %r(http://[^/]+/admin/mails)
+        
+        page.should have_content("Sending in progress...")
+        
+        Delayed::Job.where(:handler.matches => "%deliver_and_log%").count.should == 1
+        Delayed::Worker.new(:quiet => true).work_off
+        ActionMailer::Base.deliveries.size.should == 1
+        
+        latest_log = MailLog.by_date.first
+        latest_log.template_id.should == @mail_template.id
+        latest_log.admin_id.should == @admin.id
+        latest_log.snapshot.should == @mail_template.snapshotize
+        latest_log.criteria.should == "all"
+      end
+    end
+    
+    # context "choosing 'with invalid site' criteria" do
+    #   let(:user_with_invalid_site) { Factory(:user, :invitation_token => nil) }
     #   background do
-    #     User.stub_chain(:with_activity).and_return { [@user] }
+    #     @invalid_site = Factory.build(:site, :user => user_with_invalid_site, :hostname => 'test')
+    #     @invalid_site.save(:validate => false)
     #     ActionMailer::Base.deliveries.clear
     #   end
     #   
@@ -77,7 +111,7 @@ describe "Mails" do
     #     ActionMailer::Base.deliveries.should be_empty
     #     
     #     select @mail_template.title, :from => "Template"
-    #     select "with activity", :from => "Criteria"
+    #     select "with invalid site", :from => "Criteria"
     #     click_button "Send mail"
     #     
     #     current_url.should =~ %r(http://[^/]+/admin/mails)
@@ -91,41 +125,8 @@ describe "Mails" do
     #     latest_log.template_id.should == @mail_template.id
     #     latest_log.admin_id.should == @admin.id
     #     latest_log.snapshot.should == @mail_template.snapshotize
-    #     latest_log.criteria.should == "with_activity"
+    #     latest_log.criteria.should == "with_invalid_site"
     #   end
     # end
-    
-    context "choosing 'with invalid site' criteria" do
-      let(:user_with_invalid_site) { Factory(:user, :invitation_token => nil) }
-      background do
-        @invalid_site = Factory.build(:site, :user => user_with_invalid_site, :hostname => 'test')
-        @invalid_site.save(:validate => false)
-        ActionMailer::Base.deliveries.clear
-      end
-      
-      scenario "should be possible to send an email from a template to a selection of users" do
-        visit "/admin/mails/new"
-        
-        page.should have_content("Send a mail")
-        ActionMailer::Base.deliveries.should be_empty
-        
-        select @mail_template.title, :from => "Template"
-        select "with invalid site", :from => "Criteria"
-        click_button "Send mail"
-        
-        current_url.should =~ %r(http://[^/]+/admin/mails)
-        
-        page.should have_content("Sending in progress...")
-        
-        Delayed::Job.where(:handler.matches => "%deliver_and_log%").count.should == 1
-        lambda { @worker.work_off }.should change(ActionMailer::Base.deliveries, :count).by(1)
-        
-        latest_log = MailLog.by_date.first
-        latest_log.template_id.should == @mail_template.id
-        latest_log.admin_id.should == @admin.id
-        latest_log.snapshot.should == @mail_template.snapshotize
-        latest_log.criteria.should == "with_invalid_site"
-      end
-    end
   end
 end
