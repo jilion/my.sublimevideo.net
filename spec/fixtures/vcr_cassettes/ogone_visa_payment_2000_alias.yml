@@ -1,0 +1,46 @@
+--- 
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :post
+    uri: https://secure.ogone.com:443/ncol/test/orderdirect.asp
+    body: orderID=4BE3DCZ9&ALIAS=sublime_1369&ECI=9&currency=USD&amount=10000&PSPID=jilion&USERID=sublime&PSWD=WWQMNC89&Operation=SAL
+    headers: 
+      content-type: 
+      - application/x-www-form-urlencoded
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      date: 
+      - Mon, 03 Jan 2011 14:53:10 GMT
+      server: 
+      - Microsoft-IIS/6.0
+      x-powered-by: 
+      - ASP.NET
+      content-length: 
+      - "272"
+      content-type: 
+      - text/html
+      cache-control: 
+      - private
+    body: |
+      <?xml version="1.0"?>
+      <ncresponse
+      			
+      orderID="4BE3DCZ9"
+      PAYID="0"
+      NCSTATUS="5"
+      NCERROR="50001111"
+      ACCEPTANCE=""
+      STATUS="0"
+      ECI="9"
+      amount=""
+      currency="USD"
+      PM=""
+      BRAND=""
+      ALIAS="sublime_1369"
+      NCERRORPLUS=" no card no|no exp date|no brand">
+      </ncresponse>
+
+    http_version: "1.1"
