@@ -261,7 +261,7 @@ GEM
       rack (>= 1.0)
     rake (0.8.7)
     rb-fsevent (0.3.9)
-    request-log-analyzer (1.9.8)
+    request-log-analyzer (1.9.10)
     rescue_me (0.1.0)
     responders (0.6.2)
     rest-client (1.6.1)
@@ -383,7 +383,7 @@ DEPENDENCIES
   rack-ssl-enforcer (= 0.2.0)
   rails!
   rb-fsevent (~> 0.3.9)
-  request-log-analyzer (= 1.9.8)
+  request-log-analyzer (= 1.9.10)
   rescue_me (= 0.1.0)
   responders (= 0.6.2)
   rspec-rails (~> 2.4.1)

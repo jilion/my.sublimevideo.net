@@ -26,7 +26,7 @@ gem 'prowl',                 '0.1.3'
 # Pull request: https://github.com/Shopify/active_merchant/pull/64
 gem 'activemerchant',        :git => 'git://github.com/rymai/active_merchant.git' # with the fix for Ogone#parse
 gem 'voxel_hapi',            :git => 'git://github.com/thibaudgg/voxel_hapi.git', :branch => '1.9.2' # VoxCast CDN
-gem 'request-log-analyzer',  '1.9.8', :require => 'request_log_analyzer'
+gem 'request-log-analyzer',  '1.9.10', :require => 'request_log_analyzer'
 gem 'public_suffix_service', '0.8.1'
 gem 'RedCloth',              '4.2.3'
 gem 'liquid',                '2.2.2'
