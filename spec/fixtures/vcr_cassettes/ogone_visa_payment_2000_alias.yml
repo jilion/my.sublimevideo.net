@@ -3,7 +3,7 @@
   request: !ruby/struct:VCR::Request 
     method: :post
     uri: https://secure.ogone.com:443/ncol/test/orderdirect.asp
-    body: orderID=9796eeda0e0cfdeae6ee64a9a08579&CN=John+Doe&CARDNO=4111111111111111&ED=1012&CVC=111&currency=EUR&amount=2000&PSPID=jilion&USERID=sublime&PSWD=WWQMNC89&Operation=SAL
+    body: orderID=92f03dea3f9c73a77132f11d8ddb99&ALIAS=sublime_33&ECI=9&currency=USD&amount=2000&PSPID=jilion&USERID=sublime&PSWD=WWQMNC89&Operation=SAL
     headers: 
       content-type: 
       - application/x-www-form-urlencoded
@@ -13,33 +13,36 @@
       message: OK
     headers: 
       date: 
-      - Tue, 04 Jan 2011 08:00:01 GMT
+      - Tue, 04 Jan 2011 07:57:40 GMT
       server: 
       - Microsoft-IIS/6.0
       x-powered-by: 
       - ASP.NET
       content-length: 
-      - "304"
+      - "337"
       content-type: 
       - text/html
       cache-control: 
       - private
-    body: |
-      <?xml version="1.0"?>
-      <ncresponse
-      			
-      orderID="9796eeda0e0cfdeae6ee64a9a08579"
-      PAYID="0"
-      NCSTATUS="5"
-      NCERROR="50001122"
-      ACCEPTANCE=""
-      STATUS="0"
-      ECI="0"
+    body: |-
+      <?xml version="1.0"?><ncresponse
+      orderID="92f03dea3f9c73a77132f11d8ddb99"
+      PAYID="9063318"
+      NCSTATUS="0"
+      NCERROR="0"
+      ACCEPTANCE="test123"
+      STATUS="9"
+      IPCTY="99"
+      CCCTY="US"
+      ECI="9"
+      CVCCheck="NO"
+      AAVCheck="NO"
+      VC="NO"
       amount="20"
-      currency="EUR"
+      currency="USD"
       PM="CreditCard"
       BRAND="VISA"
-      NCERRORPLUS="The currency is not accepted by the merchant:EUR">
+      ALIAS="sublime_33"
+      NCERRORPLUS="!">
       </ncresponse>
-
     http_version: "1.1"

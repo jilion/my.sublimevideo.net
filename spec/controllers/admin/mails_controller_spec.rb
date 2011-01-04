@@ -6,8 +6,8 @@ describe Admin::MailsController do
     before(:each) { sign_in :admin, authenticated_admin }
     
     it "should assign mail logs array as @mail_logs and mail templates array as @mail_templates and render :index on GET :index" do
-      MailLog.stub_chain(:by_date, :paginate) { [mock_mail_log] }
-      MailTemplate.stub_chain(:by_date, :paginate) { [mock_mail_template] }
+      MailLog.stub_chain(:scoped, :by_date, :paginate) { [mock_mail_log] }
+      MailTemplate.stub_chain(:scoped, :by_date, :paginate) { [mock_mail_template] }
       
       get :index
       assigns(:mail_logs).should == [mock_mail_log]
