@@ -39,7 +39,8 @@ module Admin::StatsHelper
   end
   
   def evolutive_average_array(array)
-    Array.new.tap { |arr| array.each_with_index { |item, index| arr << (item.to_f / (index + 1)).round(2) } }
+    zeros_days = array.select { |value| value.zero? }.size
+    Array.new.tap { |arr| array.each_with_index { |item, index| arr << (item.to_f / [(index + 1 - zeros_days), 1].max).round(2) } }
   end
   
   def plot_options(start_at, interval = 1.day)
