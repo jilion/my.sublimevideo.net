@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe CampaignMonitor do
-  let(:user) { Factory(:user) }
+  let(:user) { Factory(:user, :email => "cm@jilion.com") }
   
   specify { CampaignMonitor.api_key.should == "8844ec1803ffbe6501c3d7e9cfa23bf3" }
   specify { CampaignMonitor.list_id.should == "a064dfc4b8ccd774252a2e9c9deb9244" }

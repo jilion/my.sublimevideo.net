@@ -483,7 +483,7 @@ describe Site do
         
         it "should delay update_loader_and_license once" do
           count_before = Delayed::Job.where(:handler.matches => "%update_loader_and_license%").count
-          lambda { subject.save }.should change(Delayed::Job, :count).by(2)
+          lambda { subject.save }.should change(Delayed::Job, :count).by(3)
           Delayed::Job.where(:handler.matches => "%update_loader_and_license%").count.should == count_before + 1
         end
         

@@ -149,3 +149,38 @@
       </SD>
       </ALEXA>
     http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :post
+    uri: http://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:80/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json
+    body: "{\"EmailAddress\":\"email260@user.com\",\"Name\":\"John Doe\",\"CustomFields\":[{\"Key\":\"user_id\",\"Value\":272},{\"Key\":\"segment\",\"Value\":\"test\"}],\"Resubscribe\":true}"
+    headers: 
+      user-agent: 
+      - createsend-ruby-0.6.1
+      content-type: 
+      - application/json
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 201
+      message: Created
+    headers: 
+      date: 
+      - Wed, 05 Jan 2011 17:43:24 GMT
+      server: 
+      - Microsoft-IIS/6.0
+      p3p: 
+      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
+      x-powered-by: 
+      - ASP.NET
+      x-aspnet-version: 
+      - 4.0.30319
+      x-aspnetmvc-version: 
+      - "2.0"
+      cache-control: 
+      - private, s-maxage=0
+      content-type: 
+      - application/json; charset=utf-8
+      content-length: 
+      - "19"
+    body: "\"email260@user.com\""
+    http_version: "1.1"

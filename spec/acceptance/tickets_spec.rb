@@ -4,6 +4,7 @@ feature "Support actions:" do
   before(:all) { @worker = Delayed::Worker.new }
   background do
     @current_user = sign_in_as :user
+    Delayed::Job.delete_all
     visit "/support"
   end
   

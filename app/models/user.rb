@@ -274,6 +274,7 @@ protected
 
 end
 
+
 # == Schema Information
 #
 # Table name: users
@@ -330,3 +331,4 @@ end
 #  index_users_on_email_and_archived_at  (email,archived_at) UNIQUE
 #  index_users_on_reset_password_token   (reset_password_token) UNIQUE
 #
+

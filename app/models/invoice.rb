@@ -251,6 +251,7 @@ private
 
 end
 
+
 # == Schema Information
 #
 # Table name: invoices
@@ -273,6 +274,8 @@ end
 #  invoice_items_amount    :integer
 #  vat_rate                :float
 #  vat_amount              :integer
+#  discount_rate           :float           default(0.0)
+#  discount_amount         :float           default(0.0)
 #
 # Indexes
 #
@@ -280,3 +283,4 @@ end
 #  index_invoices_on_user_id_and_ended_at    (user_id,ended_at) UNIQUE
 #  index_invoices_on_user_id_and_started_at  (user_id,started_at) UNIQUE
 #
+
