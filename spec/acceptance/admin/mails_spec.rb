@@ -9,8 +9,8 @@ describe "Mails" do
     end
     
     scenario "should be 0 template and 0 log created" do
-      MailTemplate.all.size.should == 0
-      MailLog.all.size.should == 0
+      MailTemplate.all.should be_empty
+      MailLog.all.should be_empty
     end
     
     scenario "should have text instead of tables if no templates or no logs exist" do

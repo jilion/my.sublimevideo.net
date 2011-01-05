@@ -10,5 +10,7 @@ describe Billing do
   specify { Billing.days_before_suspend_user.should == 10 }
   specify { Billing.max_charging_attempts.should == 5 }
   specify { Billing.minimum_billable_amount.should == 300 }
+  specify { Billing.beta_discount_rate.should == 0.2 }
+  specify { Billing.discounted_months.should == 3 }
   
 end

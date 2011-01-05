@@ -237,6 +237,7 @@ ActiveRecord::Schema.define(:version => 20101217111417) do
     t.integer  "suspending_delayed_job_id"
     t.integer  "failed_invoices_count_on_suspend",                :default => 0
     t.datetime "archived_at"
+    t.integer  "remaining_discounted_months"
   end
 
   add_index "users", ["confirmation_token"], :name => "index_users_on_confirmation_token", :unique => true
