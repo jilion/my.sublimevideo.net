@@ -17,6 +17,7 @@ describe User do
     its(:country)              { should == "CH" }
     its(:postal_code)          { should == "2000" }
     its(:use_personal)         { should be_true }
+    its(:newsletter)           { should be_true }
     its(:email)                { should match /email\d+@user.com/ }
     
     it { should be_valid }
@@ -364,6 +365,40 @@ describe User do
   describe "Callbacks" do
     let(:user) { Factory(:user) }
     
+    describe "after_save :newsletter_subscription" do
+      use_vcr_cassette "campaign_monitor/user"
+      
+      it "should subscribe on user creation" do
+        user
+        @worker.work_off 
+        CampaignMonitor.state(user.email).should == "Active"
+      end
+      
+      it "should not subscribe on user creation if newsletter is false" do
+        user = Factory(:user, :newsletter => "0", :email => "no_newsletter@jilion.com")
+        @worker.work_off
+        CampaignMonitor.state(user.email).should == "Unknown"
+      end
+      
+      it "should subscribe new email and unsubscribe old email on user email update" do
+        old_email = user.email
+        @worker.work_off
+        CampaignMonitor.state(user.email).should == "Active"
+        user.update_attributes(:email => "new@jilion.com")
+        @worker.work_off
+        CampaignMonitor.state(old_email).should == "Unsubscribed"
+        CampaignMonitor.state(user.email).should == "Active"
+      end
+      
+      it "should do nothing if user just change is name" do
+        user
+        @worker.work_off
+        user.update_attributes(:first_name => "bob")
+        Delayed::Job.count.should == 0
+      end
+      
+    end
+    
     describe "after_update :update_email_on_zendesk" do
       it "should not delay Module#put if email has not changed" do
         user.zendesk_id = 15483194
@@ -536,6 +571,7 @@ end
 
 
 
+
 # == Schema Information
 #
 # Table name: users
@@ -583,6 +619,7 @@ end
 #  suspending_delayed_job_id        :integer
 #  failed_invoices_count_on_suspend :integer         default(0)
 #  archived_at                      :datetime
+#  newsletter                       :boolean
 #
 # Indexes
 #

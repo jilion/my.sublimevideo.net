@@ -15,7 +15,7 @@ class User < ActiveRecord::Base
   attr_accessible :first_name, :last_name, :email, :remember_me, :password, :postal_code, :country,
                   :use_personal, :use_company, :use_clients,
                   :company_name, :company_url, :company_job_title, :company_employees, :company_videos_served,
-                  :terms_and_conditions
+                  :newsletter, :terms_and_conditions
   # Credit card
   attr_accessible :cc_update, :cc_type, :cc_full_name, :cc_number, :cc_expire_on, :cc_verification_value
   
@@ -96,6 +96,7 @@ class User < ActiveRecord::Base
   
   before_save   :store_credit_card, :keep_some_credit_card_info # in user/credit_card
   after_update  :update_email_on_zendesk, :charge_failed_invoices
+  after_save    :newsletter_subscription
   
   # =================
   # = State Machine =
@@ -240,6 +241,14 @@ private
     UserMailer.account_archived(self).deliver!
   end
   
+  # after_save
+  def newsletter_subscription
+    if newsletter? && email_changed?
+      CampaignMonitor.delay.unsubscribe(email_was) if email_was.present?
+      CampaignMonitor.delay.subscribe(self)
+    end
+  end
+  
   # after_update
   def update_email_on_zendesk
     if zendesk_id.present? && email_changed?
@@ -260,8 +269,6 @@ protected
   end
   
 end
-
-
 
 
 # == Schema Information
@@ -311,6 +318,7 @@ end
 #  suspending_delayed_job_id        :integer
 #  failed_invoices_count_on_suspend :integer         default(0)
 #  archived_at                      :datetime
+#  newsletter                       :boolean
 #
 # Indexes
 #

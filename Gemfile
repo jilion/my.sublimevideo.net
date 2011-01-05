@@ -55,6 +55,7 @@ gem 'rescue_me',             '0.1.0'
 gem 'paper_trail',           '1.6.4'
 gem 'settingslogic',         '2.0.6'
 gem 'pdfkit',                '0.5.0'
+gem 'createsend',            '0.2.0' # Campaign Monitor
 
 group :production do
   gem 'rack-google-analytics', '0.9.2', :require => 'rack/google-analytics'

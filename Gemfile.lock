@@ -147,6 +147,10 @@ GEM
     countries (0.3.0)
       currencies (>= 0.2.0)
     crack (0.1.8)
+    createsend (0.2.0)
+      hashie (~> 0.4.0)
+      httparty (~> 0.6.1)
+      json
     culerity (0.2.13)
     currencies (0.2.1)
     daemon_controller (0.2.5)
@@ -201,6 +205,7 @@ GEM
       guard (>= 0.2.0)
       spork (>= 0.8.4)
     haml (3.0.24)
+    hashie (0.4.0)
     heroku (1.15.1)
       json_pure (>= 1.2.0, < 1.5.0)
       launchy (~> 0.3.2)
@@ -210,6 +215,8 @@ GEM
       activesupport
       builder
     http_connection (1.4.0)
+    httparty (0.6.1)
+      crack (= 0.1.8)
     i18n (0.5.0)
     jammit (0.5.4)
       closure-compiler (>= 0.1.0)
@@ -343,6 +350,7 @@ DEPENDENCIES
   capybara (~> 0.4.0)
   carrierwave (= 0.5.1)
   countries (= 0.3.0)
+  createsend (= 0.2.0)
   dalli (= 1.0.0)
   database_cleaner (>= 0.6)
   delayed_job (= 2.1.1)
