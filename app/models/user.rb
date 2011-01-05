@@ -96,12 +96,8 @@ class User < ActiveRecord::Base
 
   before_save   :store_credit_card, :keep_some_credit_card_info # in user/credit_card
   after_update  :update_email_on_zendesk, :charge_failed_invoices
-<<<<<<< HEAD
   after_save    :newsletter_subscription
-  
-=======
 
->>>>>>> d94ba734b0f40173051efb447fc54da75cae7176
   # =================
   # = State Machine =
   # =================
