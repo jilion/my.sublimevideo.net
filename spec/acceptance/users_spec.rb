@@ -28,7 +28,7 @@ feature "Users actions:" do
         User.last.email.should == "remy@jilion.com"
       end
       
-      scenario "with newsletter", :focus => true do
+      scenario "with newsletter" do
         fill_in "Email",              :with => "remy@jilion.com"
         fill_in "Password",           :with => "123456"
         fill_in "First name",         :with => "Rémy"

@@ -367,6 +367,7 @@ describe User do
     
     describe "after_save :newsletter_subscription" do
       use_vcr_cassette "campaign_monitor/user"
+      let(:user) { Factory(:user, :newsletter => "1", :email => "newsletter@jilion.com") }
       
       it "should subscribe on user creation" do
         user
@@ -402,14 +403,14 @@ describe User do
     describe "after_update :update_email_on_zendesk" do
       it "should not delay Module#put if email has not changed" do
         user.zendesk_id = 15483194
-        Delayed::Job.last.should be_nil
+        Delayed::Job.count.should == 1
       end
       
       it "should not delay Module#put if user has no zendesk_id" do
         user.email = "new@email.com"
         user.save
         user.email.should == "new@email.com"
-        Delayed::Job.last.should be_nil
+        Delayed::Job.count.should == 3
       end
       
       it "should delay Module#put if the user has a zendesk_id and his email has changed" do
@@ -417,7 +418,7 @@ describe User do
         user.email      = "new@email.com"
         user.save
         user.email.should == "new@email.com"
-        Delayed::Job.last.name.should == 'Module#put'
+        Delayed::Job.all.any? { |dj| dj.name == 'Module#put' }.should be_true
       end
       
       it "should update user's email on Zendesk if this user has a zendesk_id and his email has changed" do
@@ -437,7 +438,7 @@ describe User do
         it "should not delay Class#charge" do
           user.cc_updated_at = Time.now.utc
           user.save
-          Delayed::Job.last.should be_nil
+          Delayed::Job.count.should == 1
         end
       end
       
