@@ -104,5 +104,5 @@ group :test do
   gem 'vcr',                '~> 1.4.0'
   
   gem 'shoulda',            '~> 2.11.3'
-  gem 'factory_girl_rails', '~> 1.0.0', :require => false # loaded in spec_helper Spork.each_run
+  gem 'factory_girl_rails', '~> 1.0.1', :require => false # loaded in spec_helper Spork.each_run
 end
