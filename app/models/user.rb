@@ -1,16 +1,16 @@
 class User < ActiveRecord::Base
   include CreditCard
-  
+
   devise :database_authenticatable, :registerable, :confirmable,
          :recoverable, :rememberable, :trackable, :lockable, :invitable
-  
+
   # Pagination
   cattr_accessor :per_page
   self.per_page = 50
-  
+
   # Mail template
   liquid_methods :email, :first_name, :last_name, :full_name
-  
+
   attr_accessor :terms_and_conditions, :use
   attr_accessible :first_name, :last_name, :email, :remember_me, :password, :postal_code, :country,
                   :use_personal, :use_company, :use_clients,
@@ -18,29 +18,29 @@ class User < ActiveRecord::Base
                   :newsletter, :terms_and_conditions
   # Credit card
   attr_accessible :cc_update, :cc_type, :cc_full_name, :cc_number, :cc_expire_on, :cc_verification_value
-  
+
   # ================
   # = Associations =
   # ================
-  
+
   belongs_to :suspending_delayed_job, :class_name => "::Delayed::Job"
   has_many :sites
   has_many :invoices
-  
+
   # ==========
   # = Scopes =
   # ==========
-  
+
   def self.billable(started_at, ended_at)
     includes(:sites).
     without_state(:archived).
     where(:sites => [{ :activated_at.lte => ended_at }, { :archived_at => nil } | { :archived_at.gte => started_at }])
   end
-  
+
   # credit_card scopes
   scope :without_cc, where(:cc_type => nil, :cc_last_digits => nil)
   scope :with_cc,    where(:cc_type.ne => nil, :cc_last_digits.ne => nil)
-  
+
   # admin
   scope :enthusiast,        where(:enthusiast_id.ne => nil)
   scope :invited,           where(:invitation_token.ne => nil)
@@ -49,12 +49,12 @@ class User < ActiveRecord::Base
   scope :use_company,       where(:use_company => true)
   scope :use_clients,       where(:use_clients => true)
   scope :will_be_suspended, where(:suspending_delayed_job_id.ne => nil)
-  
+
   # sort
   scope :by_name_or_email, lambda { |way = 'asc'| order(:first_name.send(way), :email.send(way)) }
   scope :by_beta,          lambda { |way = 'desc'| order(:invitation_token.send(way)) }
   scope :by_date,          lambda { |way = 'desc'| order(:created_at.send(way)) }
-  
+
   # search
   def self.search(q)
     joins(:sites).
@@ -64,101 +64,109 @@ class User < ActiveRecord::Base
         | :lower.func(:hostname).matches % :lower.func("%#{q}%") \
         | :lower.func(:dev_hostnames).matches % :lower.func("%#{q}%"))
   end
-  
+
   # ===============
   # = Validations =
   # ===============
-  
+
   validates_presence_of     :email
   validates                 :email, :email_uniqueness => true
   validates_format_of       :email, :with => Devise.email_regexp, :allow_blank => true
-  
+
   with_options :if => :password_required? do |v|
     v.validates_presence_of     :password
     v.validates_confirmation_of :password
     v.validates_length_of       :password, :within => Devise.password_length, :allow_blank => true
   end
-  
+
   validates :first_name,  :presence => true
   validates :last_name,   :presence => true
   validates :postal_code, :presence => true
   validates :country,     :presence => true
   validates :company_url, :hostname => true, :allow_blank => true
   validates :terms_and_conditions, :acceptance => { :accept => "1" }, :on => :create
-  
+
   validate :validates_credit_card_attributes # in user/credit_card
   validate :validates_use_presence, :on => :create
   validate :validates_company_fields, :on => :create
-  
+
   # =============
   # = Callbacks =
   # =============
-  
+
   before_save   :store_credit_card, :keep_some_credit_card_info # in user/credit_card
   after_update  :update_email_on_zendesk, :charge_failed_invoices
+<<<<<<< HEAD
   after_save    :newsletter_subscription
   
+=======
+
+>>>>>>> d94ba734b0f40173051efb447fc54da75cae7176
   # =================
   # = State Machine =
   # =================
-  
+
   state_machine :initial => :active do
     event(:suspend)        { transition :active => :suspended }
     event(:cancel_suspend) { transition :active => :active }
     event(:unsuspend)      { transition :suspended => :active }
     event(:archive)        { transition :active => :archived }
-    
+
     before_transition :on => :suspend, :do => [:set_failed_invoices_count_on_suspend, :suspend_sites]
     after_transition  :on => :suspend, :do => :send_account_suspended_email
-    
+
     before_transition :on => :cancel_suspend, :do => :delete_suspending_delayed_job
-    
+
     before_transition :on => :unsuspend, :do => [:set_failed_invoices_count_on_suspend, :unsuspend_sites]
     after_transition  :on => :unsuspend, :do => :send_account_unsuspended_email
-    
+
     before_transition :on => :archive, :do => [:set_archived_at, :archive_sites, :delay_complete_current_invoice]
     after_transition  :on => :archive, :do => :send_account_archived_email
   end
-  
+
   # =================
   # = Class Methods =
   # =================
-  
+
   # Devise overriding
   # avoid the "not active yet" flash message to be displayed for archived users!
   def self.find_for_authentication(conditions={})
     conditions[:state.ne] = 'archived'
     super
   end
-  
+
   def self.suspend(user_id)
     user = find(user_id)
     user.suspend!
   end
-  
+
   def self.unsuspend(user_id)
     user = find(user_id)
     user.unsuspend!
   end
-  
+
   # ====================
   # = Instance Methods =
   # ====================
-  
+
   # Devise overriding
   # allow suspended user to login (devise)
   def active?
     %w[active suspended].include?(state) && invitation_token.nil?
   end
-  
+
+  def get_discount?
+    remaining_discounted_months? && remaining_discounted_months > 0
+  end
+
   def full_name
     first_name.to_s + ' ' + last_name.to_s
   end
-  
+
   def email=(email)
     write_attribute(:email, email.try(:downcase))
   end
-  
+
   def delay_suspend(run_at = Billing.days_before_suspend_user.days.from_now)
     transaction do
       begin
@@ -169,20 +177,20 @@ class User < ActiveRecord::Base
       end
     end
   end
-  
+
   def will_be_suspended?
     suspending_delayed_job
   end
-  
+
 private
-  
+
   # validate
   def validates_use_presence
     if !use_personal && !use_company && !use_clients
       self.errors.add(:use, :at_least_one_option)
     end
   end
-  
+
   # validate
   def validates_company_fields
     if use_company
@@ -193,38 +201,38 @@ private
       self.errors.add(:company_videos_served, :blank) unless company_videos_served.present?
     end
   end
-  
+
   # before_transition :on => :suspend, before_transition :on => :unsuspend
   def set_failed_invoices_count_on_suspend
     self.failed_invoices_count_on_suspend = invoices.failed.count
   end
-  
+
   # before_transition :on => :suspend
   def suspend_sites
     sites.map(&:suspend)
   end
-  
+
   # after_transition :on => :suspend
   def send_account_suspended_email
     UserMailer.account_suspended(self).deliver!
   end
-  
+
   # before_transition :on => :cancel_suspend
   def delete_suspending_delayed_job
     Delayed::Job.find(suspending_delayed_job_id).delete
     self.suspending_delayed_job_id = nil
   end
-  
+
   # before_transition :on => :unsuspend
   def unsuspend_sites
     sites.map(&:unsuspend)
   end
-  
+
   # after_transition :on => :unsuspend
   def send_account_unsuspended_email
     UserMailer.account_unsuspended(self).deliver!
   end
-  
+
   # before_transition :on => :archive
   def set_archived_at
     self.archived_at = Time.now.utc
@@ -260,16 +268,15 @@ private
       invoices.failed.each { |invoice| invoice.retry }
     end
   end
-  
+
 protected
-  
+
   # Allow User.invite to assign enthusiast_id
   def mass_assignment_authorizer
     new_record? ? (self.class.active_authorizer + ["enthusiast_id"]) : super
   end
-  
-end
 
+end
 
 # == Schema Information
 #
@@ -318,6 +325,7 @@ end
 #  suspending_delayed_job_id        :integer
 #  failed_invoices_count_on_suspend :integer         default(0)
 #  archived_at                      :datetime
+#  remaining_discounted_months      :integer
 #  newsletter                       :boolean
 #
 # Indexes
@@ -326,4 +334,3 @@ end
 #  index_users_on_email_and_archived_at  (email,archived_at) UNIQUE
 #  index_users_on_reset_password_token   (reset_password_token) UNIQUE
 #
-

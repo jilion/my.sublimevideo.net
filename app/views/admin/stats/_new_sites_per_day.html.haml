@@ -25,7 +25,7 @@
     g.raw_option(%(tooltip: {
       formatter: function() {
         var date = "<strong>" + Highcharts.dateFormat("%B %e,  %Y", this.x) + "</strong><br/>";
-        return date + this.series.name + ": " + Highcharts.numberFormat(this.y, 2);
+        return date + this.series.name + ": " + Highcharts.numberFormat(this.y, 0);
       }
     }))
     g.option(series: [

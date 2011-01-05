@@ -6,10 +6,15 @@
         = display_amount(invoice.invoice_items_amount)
         - if invoice.total_invoice_items_amount < Billing.minimum_billable_amount
           = " (the minimum amount billed is #{display_amount(Billing.minimum_billable_amount)})"
+          
+    - if invoice.discount_amount > 0
+      %tr
+        %td= "Discount #{display_percentage(invoice.discount_rate)}:"
+        %td
+          = display_amount(invoice.discount_amount)
     %tr
       %td= "VAT #{display_percentage(invoice.vat_rate)}:"
       %td= display_amount(invoice.vat_amount)
-      
   %tr
     %td
       %strong Total:

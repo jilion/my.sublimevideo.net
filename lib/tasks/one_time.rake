@@ -28,6 +28,13 @@ namespace :one_time do
         puts OneTime::User.delete_invited_not_yet_registered_users + " invited users deleted"
       end
     end
+    
+    desc "Set remaining_discounted_months to all users"
+    task :set_remaining_discounted_months => :environment do
+      timed do
+        puts OneTime::User.set_remaining_discounted_months + " beta users will get a discount"
+      end
+    end
   end
   
   namespace :sites do

@@ -107,6 +107,8 @@ ActiveRecord::Schema.define(:version => 20110105152100) do
     t.integer  "invoice_items_amount"
     t.float    "vat_rate"
     t.integer  "vat_amount"
+    t.float    "discount_rate",           :default => 0.0
+    t.float    "discount_amount",         :default => 0.0
   end
 
   add_index "invoices", ["user_id", "ended_at"], :name => "index_invoices_on_user_id_and_ended_at", :unique => true
@@ -237,6 +239,7 @@ ActiveRecord::Schema.define(:version => 20110105152100) do
     t.integer  "suspending_delayed_job_id"
     t.integer  "failed_invoices_count_on_suspend",                :default => 0
     t.datetime "archived_at"
+    t.integer  "remaining_discounted_months"
     t.boolean  "newsletter"
   end
 
