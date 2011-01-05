@@ -35,6 +35,7 @@ class Invoice < ActiveRecord::Base
   state_machine :initial => :open do
     event(:complete) do
       transition :open => :paid, :if => lambda { |invoice| invoice.amount == 0 }
+      transition :open => :failed, :if => lambda { |invoice| invoice.user.cc_expired? }
       transition :open => :unpaid
     end
     event(:retry) { transition :failed => :failed }
@@ -47,11 +48,9 @@ class Invoice < ActiveRecord::Base
     before_transition :on => :complete, :do => :set_completed_at
     after_transition  :on => :complete, :do => :decrement_user_remaining_discounted_months
 
-    before_transition :on => [:fail, :succeed], :do => :increment_attempts
-
     before_transition :on => :retry, :do => :delay_charge
 
-    before_transition [:open, :unpaid] => [:unpaid, :failed], :do => :delay_charge, :unless => lambda { |invoice| invoice.user.suspended? }
+    before_transition :open => :unpaid, :unpaid => [:unpaid, :failed], :do => :delay_charge, :unless => lambda { |invoice| invoice.user.suspended? }
     after_transition  :open => :unpaid, :do => :send_invoice_completed_email, :unless => lambda { |invoice| invoice.user.archived? }
 
     before_transition any => :failed, :do => [:set_failed_at, :clear_charging_delayed_job_id]
@@ -109,6 +108,7 @@ class Invoice < ActiveRecord::Base
       invoice.last_error = ex.message
       nil
     end
+    invoice.increment_attempts
 
     if @payment && (@payment.success? || @payment.params["NCERROR"] == "50001113") # 50001113: orderID already processed with success
       invoice.succeed
@@ -145,6 +145,11 @@ class Invoice < ActiveRecord::Base
 
   def will_be_charged?
     charging_delayed_job
+  end
+
+  # before_transition :on => [:fail, :succeed]
+  def increment_attempts
+    self.attempts += 1
   end
 
 private
@@ -201,15 +206,10 @@ private
   def set_completed_at
     self.completed_at = Time.now.utc
   end
-  
+
   # after_transition :on => :complete
   def decrement_user_remaining_discounted_months
     self.user.decrement(:remaining_discounted_months) if user.get_discount?
-  end
-
-  # before_transition :on => [:fail, :succeed]
-  def increment_attempts
-    self.attempts += 1
   end
 
   # before_transition any => :failed, before_transition any => :paid
@@ -242,7 +242,7 @@ private
       0.seconds
     elsif open?
       Billing.days_before_charging.days
-    elsif attempts > Billing.max_charging_attempts
+    elsif attempts >= Billing.max_charging_attempts
       Billing.hours_between_retries_before_user_suspend.hours
     else
       (2**attempts).hours
