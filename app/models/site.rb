@@ -216,8 +216,8 @@ public
     token
   end
   
-  def alerted_this_month?
-    (Time.now.utc.beginning_of_month..Time.now.utc.end_of_month).cover?(last_usage_alert_sent_at)
+  def plan_player_hits_reached_alerted_this_month?
+    (Time.now.utc.beginning_of_month..Time.now.utc.end_of_month).cover?(plan_player_hits_reached_alert_sent_at)
   end
   
   def need_path?

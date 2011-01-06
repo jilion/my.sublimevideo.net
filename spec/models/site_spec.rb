@@ -633,18 +633,18 @@ describe Site do
   end
   
   describe "Instance Methods" do
-    describe "#alerted_this_month?" do
-      it "should return true when last_usage_alert_sent_at happened durring the current month" do
-        site = Factory.build(:site, :last_usage_alert_sent_at => Time.now.utc)
-        site.should be_alerted_this_month
+    describe "#plan_player_hits_reached_alerted_this_month?" do
+      it "should return true when plan_player_hits_reached_alert_sent_at happened durring the current month" do
+        site = Factory.build(:site, :plan_player_hits_reached_alert_sent_at => Time.now.utc)
+        site.should be_plan_player_hits_reached_alerted_this_month
       end
-      it "should return false when last_usage_alert_sent_at happened durring the last month" do
-        site = Factory.build(:site, :last_usage_alert_sent_at => Time.now.utc - 1.month)
-        site.should_not be_alerted_this_month
+      it "should return false when plan_player_hits_reached_alert_sent_at happened durring the last month" do
+        site = Factory.build(:site, :plan_player_hits_reached_alert_sent_at => Time.now.utc - 1.month)
+        site.should_not be_plan_player_hits_reached_alerted_this_month
       end
-      it "should return false when last_usage_alert_sent_at is nil" do
-        site = Factory.build(:site, :last_usage_alert_sent_at => nil)
-        site.should_not be_alerted_this_month
+      it "should return false when plan_player_hits_reached_alert_sent_at is nil" do
+        site = Factory.build(:site, :plan_player_hits_reached_alert_sent_at => nil)
+        site.should_not be_plan_player_hits_reached_alerted_this_month
       end
     end
     
