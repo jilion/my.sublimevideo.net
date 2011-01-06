@@ -1,16 +1,16 @@
 #header
   %h1
-    = link_to admin_signed_in? ? sites_path : new_admin_session_path do
+    = link_to admin_path do
       = "#{"DEV" if Rails.env.development?} MySublimeVideo"
       %em= "Admin"
   - if admin_signed_in?
     .popup_menu
       %h3= link_to "Menu", "", :onclick => "return false"
       %ul
-        - [:plans, :addons, :mails, :admins].each do |name|
+        - [:plans, :addons, :referrers, :mails, :admins].each do |name|
           = activable_menu_item(:li, name, {}.reverse_merge!(:namespace => 'admin'))
     %ul#favorite_links
-      - [:sites, :users, :stats, [:releases, { :link_text => "Player" }], [:delayed_jobs, { :urls => %w[djs], :link_text => "DJs" }]].each do |r|
+      - [:sites, :users, [:releases, { :link_text => "Player" }], [:delayed_jobs, { :urls => %w[djs], :link_text => "DJs" }]].each do |r|
         - name = r.is_a?(Array) ? r[0] : r
         - if zeno? || name != :releases || Rails.env.development?
           = activable_menu_item(:li, name, (r.is_a?(Array) ? r[1] : {}).reverse_merge!(:namespace => 'admin'))

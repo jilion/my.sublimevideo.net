@@ -1,6 +1,9 @@
 class Admin::SitesController < Admin::AdminController
   respond_to :js, :html
   
+  #filter
+  has_scope :next_plan_recommended_alert_sent_at_alerted_this_month
+  # sort
   has_scope :by_hostname
   has_scope :by_user
   has_scope :by_state

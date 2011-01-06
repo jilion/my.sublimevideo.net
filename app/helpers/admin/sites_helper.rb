@@ -1,9 +1,15 @@
 module Admin::SitesHelper
   
   def admin_sites_page_title(sites)
-    states = (params[:archived_included] ? [] : ["active"])
-    # states << "with activity" if params[:with_activity].present?
-    "#{sites.total_entries} #{states.join(' & ')} sites".titleize
+    pluralized_sites = pluralize(sites.total_entries, 'site')
+    state = if params[:archived_included]
+      " not archived"
+    elsif params[:next_plan_recommended_alert_sent_at_alerted_this_month]
+      " should upgrade plan"
+    else
+      ""
+    end
+    "#{pluralized_sites}#{state}".titleize
   end
   
   def links_to_hostnames(site)

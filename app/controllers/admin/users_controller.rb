@@ -1,6 +1,7 @@
 class Admin::UsersController < Admin::AdminController
   respond_to :js, :html
   
+  # filter
   has_scope :enthusiast, :type => :boolean
   has_scope :beta, :type => :boolean
   has_scope :use_personal, :type => :boolean

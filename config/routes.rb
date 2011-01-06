@@ -48,7 +48,7 @@ MySublimeVideo::Application.routes.draw do
   # = Admin =
   # =========
   
-  match 'admin', :to => redirect('/admin/users'), :as => 'admin'
+  match 'admin', :to => redirect('/admin/dashboard'), :as => 'admin'
   
   devise_for :admins,
   :path => 'admin',
@@ -73,6 +73,7 @@ MySublimeVideo::Application.routes.draw do
   end
   
   namespace "admin" do
+    resource  :dashboard,  :only => :index
     resources :users,  :only => [:index, :show]
     resources :admins, :only => [:index, :destroy]
     resources :sites,  :only => [:index, :show, :edit, :update]
@@ -86,7 +87,7 @@ MySublimeVideo::Application.routes.draw do
     resources :delayed_jobs, :only => [:index, :show, :update, :destroy], :path => "djs"
     resources :releases,     :only => [:index, :create, :update]
     resources :referrers,    :only => :index
-    resources :stats,        :only => [:index, :show]
+    # resources :stats,        :only => [:index, :show]
   end
   
   # =======

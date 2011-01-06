@@ -1,16 +1,19 @@
 module Admin::UsersHelper
   
   def admin_users_page_title(users)
-    state = if params[:enthusiast].present?
-      "enthusiast"
-    elsif params[:beta].present?
-      "in beta"
-    # elsif params[:with_activity].present?
-    #   "with activity"
+    pluralized_users = pluralize(users.total_entries, 'user')
+    state = if params[:will_be_suspended]
+      " will be suspended"
+    elsif params[:use_personal]
+      " with personal usage"
+    elsif params[:use_company]
+      " with company usage"
+    elsif params[:use_clients]
+      " with client usage"
     else
       ""
     end
-    "#{users.total_entries} #{state} users".titleize
+    "#{pluralized_users}#{state}".titleize
   end
   
   def link_to_user(user)

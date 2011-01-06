@@ -1,13 +1,8 @@
 = title("Sites")
 = content_header(admin_sites_page_title(@sites))
 
-- cache 'sites_summary', :expires_in => 1.minute do
-  = render 'summary'
-
 = render 'filter_links'
-= link_to "Active pages", admin_referrers_path, :title => 'aka referrers'
 
-%br
 %br
 .search
   %h3= "Looking for more?"

@@ -46,6 +46,7 @@ class Site < ActiveRecord::Base
   # usage_alert scopes
   scope :plan_player_hits_reached_alerted_this_month, where({ :plan_player_hits_reached_alert_sent_at.gte => Time.now.utc.beginning_of_month })
   scope :plan_player_hits_reached_not_alerted_this_month, where({ :plan_player_hits_reached_alert_sent_at.lt => Time.now.utc.beginning_of_month } | { :plan_player_hits_reached_alert_sent_at => nil })
+  scope :next_plan_recommended_alert_sent_at_alerted_this_month, where({ :next_plan_recommended_alert_sent_at.gte => Time.now.utc.beginning_of_month })
   scope :next_plan_recommended_alert_sent_at_not_alerted_this_month, where({ :next_plan_recommended_alert_sent_at.lt => Time.now.utc.beginning_of_month } | { :next_plan_recommended_alert_sent_at => nil })
   
   # includes

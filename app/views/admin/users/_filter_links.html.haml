@@ -1,15 +1,11 @@
 %p
   - users = User.scoped
-  = link_to "All (#{users.count})", admin_users_path
+  = link_to "#{content_tag(:strong, users.count)} All".html_safe, admin_users_path
   |
-  = link_to "#{users.enthusiast.count} From enthusiast", admin_users_path(:enthusiast => true)
+  = link_to "#{content_tag(:strong, users.will_be_suspended.count)} Will be suspended".html_safe, admin_users_path(:will_be_suspended => true)
   |
-  = link_to "#{users.beta.count} in beta", admin_users_path(:beta => true)
+  = link_to "#{content_tag(:strong, users.use_personal.count)} Personal usage".html_safe, admin_users_path(:use_personal => true)
   |
-  = link_to "#{users.use_personal.count} personal usage", admin_users_path(:use_personal => true)
+  = link_to "#{content_tag(:strong, users.use_company.count)} Company usage".html_safe, admin_users_path(:use_company => true)
   |
-  = link_to "#{users.use_company.count} company usage", admin_users_path(:use_company => true)
-  |
-  = link_to "#{users.use_clients.count} clients usage", admin_users_path(:use_clients => true)
-  |
-  = link_to "#{users.will_be_suspended.count} clients will be suspended", admin_users_path(:will_be_suspended => true)
+  = link_to "#{content_tag(:strong, users.use_clients.count)} Clients usage".html_safe, admin_users_path(:use_clients => true)
