@@ -397,7 +397,6 @@ describe User do
         user.update_attributes(:first_name => "bob")
         Delayed::Job.count.should == 0
       end
-      
     end
     
     describe "after_update :update_email_on_zendesk" do
@@ -576,6 +575,7 @@ protected
 end
 
 
+
 # == Schema Information
 #
 # Table name: users
@@ -624,7 +624,7 @@ end
 #  failed_invoices_count_on_suspend :integer         default(0)
 #  archived_at                      :datetime
 #  remaining_discounted_months      :integer
-#  newsletter                       :boolean
+#  newsletter                       :boolean         default(TRUE)
 #
 # Indexes
 #

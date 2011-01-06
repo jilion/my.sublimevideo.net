@@ -28,24 +28,6 @@ feature "Users actions:" do
         User.last.email.should == "remy@jilion.com"
       end
       
-      scenario "with newsletter" do
-        fill_in "Email",              :with => "remy@jilion.com"
-        fill_in "Password",           :with => "123456"
-        fill_in "First name",         :with => "Rémy"
-        fill_in "Last name",          :with => "Coutable"
-        select "Switzerland",         :from => "Country"
-        fill_in "Zip or Postal Code", :with => "CH-1024"
-        check "Personal"
-        check "user_newsletter"
-        check "user_terms_and_conditions"
-        click_button "Sign Up"
-        
-        current_url.should =~ %r(^http://[^/]+/sites$)
-        page.should have_content "Rémy Coutable"
-        
-        Delayed::Job.last.name.should == 'Class#subscribe'
-      end
-      
       scenario "with errors" do
         fill_in "Email",              :with => ""
         fill_in "Password",           :with => ""

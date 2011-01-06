@@ -198,9 +198,9 @@ ActiveRecord::Schema.define(:version => 20110105152100) do
 
   create_table "users", :force => true do |t|
     t.string   "state"
-    t.string   "email",                                           :default => "", :null => false
-    t.string   "encrypted_password",               :limit => 128, :default => "", :null => false
-    t.string   "password_salt",                                   :default => "", :null => false
+    t.string   "email",                                           :default => "",   :null => false
+    t.string   "encrypted_password",               :limit => 128, :default => "",   :null => false
+    t.string   "password_salt",                                   :default => "",   :null => false
     t.string   "confirmation_token"
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
@@ -240,7 +240,7 @@ ActiveRecord::Schema.define(:version => 20110105152100) do
     t.integer  "failed_invoices_count_on_suspend",                :default => 0
     t.datetime "archived_at"
     t.integer  "remaining_discounted_months"
-    t.boolean  "newsletter"
+    t.boolean  "newsletter",                                      :default => true
   end
 
   add_index "users", ["confirmation_token"], :name => "index_users_on_confirmation_token", :unique => true

@@ -275,6 +275,7 @@ protected
 end
 
 
+
 # == Schema Information
 #
 # Table name: users
@@ -323,7 +324,7 @@ end
 #  failed_invoices_count_on_suspend :integer         default(0)
 #  archived_at                      :datetime
 #  remaining_discounted_months      :integer
-#  newsletter                       :boolean
+#  newsletter                       :boolean         default(TRUE)
 #
 # Indexes
 #

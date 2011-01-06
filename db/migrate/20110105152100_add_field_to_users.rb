@@ -1,6 +1,6 @@
 class AddFieldToUsers < ActiveRecord::Migration
   def self.up
-    add_column :users, :newsletter, :boolean
+    add_column :users, :newsletter, :boolean, :default => true
   end
 
   def self.down
