@@ -251,7 +251,6 @@ private
 
 end
 
-
 # == Schema Information
 #
 # Table name: invoices
@@ -283,4 +282,3 @@ end
 #  index_invoices_on_user_id_and_ended_at    (user_id,ended_at) UNIQUE
 #  index_invoices_on_user_id_and_started_at  (user_id,started_at) UNIQUE
 #
-

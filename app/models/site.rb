@@ -44,7 +44,9 @@ class Site < ActiveRecord::Base
   scope :billable, lambda { |started_at, ended_at| where({ :activated_at.lte => ended_at }, { :archived_at => nil } | { :archived_at.gte => started_at }) }
   
   # usage_alert scopes
-  scope :not_alerted_this_month, where({ :last_usage_alert_sent_at.lt => Time.now.utc.beginning_of_month } | { :last_usage_alert_sent_at => nil })
+  scope :plan_player_hits_reached_alerted_this_month, where({ :plan_player_hits_reached_alert_sent_at.gte => Time.now.utc.beginning_of_month })
+  scope :plan_player_hits_reached_not_alerted_this_month, where({ :plan_player_hits_reached_alert_sent_at.lt => Time.now.utc.beginning_of_month } | { :plan_player_hits_reached_alert_sent_at => nil })
+  scope :next_plan_recommended_alert_sent_at_not_alerted_this_month, where({ :next_plan_recommended_alert_sent_at.lt => Time.now.utc.beginning_of_month } | { :next_plan_recommended_alert_sent_at => nil })
   
   # includes
   scope :with_plan,   includes(:plan)
@@ -379,31 +381,33 @@ protected
 end
 
 
+
 # == Schema Information
 #
 # Table name: sites
 #
-#  id                       :integer         not null, primary key
-#  user_id                  :integer
-#  hostname                 :string(255)
-#  dev_hostnames            :string(255)
-#  token                    :string(255)
-#  license                  :string(255)
-#  loader                   :string(255)
-#  state                    :string(255)
-#  archived_at              :datetime
-#  created_at               :datetime
-#  updated_at               :datetime
-#  player_mode              :string(255)     default("stable")
-#  google_rank              :integer
-#  alexa_rank               :integer
-#  path                     :string(255)
-#  wildcard                 :boolean
-#  extra_hostnames          :string(255)
-#  plan_id                  :integer
-#  cdn_up_to_date           :boolean
-#  activated_at             :datetime
-#  last_usage_alert_sent_at :datetime
+#  id                                     :integer         not null, primary key
+#  user_id                                :integer
+#  hostname                               :string(255)
+#  dev_hostnames                          :string(255)
+#  token                                  :string(255)
+#  license                                :string(255)
+#  loader                                 :string(255)
+#  state                                  :string(255)
+#  archived_at                            :datetime
+#  created_at                             :datetime
+#  updated_at                             :datetime
+#  player_mode                            :string(255)     default("stable")
+#  google_rank                            :integer
+#  alexa_rank                             :integer
+#  path                                   :string(255)
+#  wildcard                               :boolean
+#  extra_hostnames                        :string(255)
+#  plan_id                                :integer
+#  cdn_up_to_date                         :boolean
+#  activated_at                           :datetime
+#  plan_player_hits_reached_alert_sent_at :datetime
+#  next_plan_recommended_alert_sent_at    :datetime
 #
 # Indexes
 #
