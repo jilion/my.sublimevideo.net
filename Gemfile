@@ -36,10 +36,10 @@ gem 'liquid',                '2.2.2'
 gem 'devise',                :git => 'git://github.com/rymai/devise.git', :branch => 'spork' # 1.1.5
 gem 'devise_invitable',      :git => 'git://github.com/rymai/devise_invitable.git'
 
-gem 'dalli',                 '1.0.0'
+gem 'dalli',                 '1.0.1'
 
 gem 'aws',                   '2.3.34'
-gem 'fog',                   '0.3.34'
+gem 'fog',                   '0.4.0'
 gem 'carrierwave',           '0.5.1'
 
 gem 'bson_ext',              '1.1.5'
@@ -78,7 +78,7 @@ group :development do
   gem 'annotate',      '~> 2.4.0'
   gem 'wirble',        '~> 0.1.3'
   gem 'ruby-graphviz', :require => 'graphviz'
-  gem 'heroku',        '~> 1.15.1'
+  gem 'heroku',        '~> 1.16.2'
   gem 'heroku_tasks',  '~> 0.1.4'
   gem 'taps',          '~> 0.3.14' # heroku db pull/push
   gem 'silent-postgres'
