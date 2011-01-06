@@ -20,7 +20,6 @@ module Site::UsageAlert
 
   def self.send_usage_alerts
     delay_send_usage_alerts
-
     send_plan_player_hits_reached_alerts
     send_next_plan_recommended_alerts
   end
@@ -43,12 +42,11 @@ private
 
   def self.send_next_plan_recommended_alerts
     invoice = Invoice.new(:started_at => TimeUtil.current_month.first, :ended_at => TimeUtil.current_month.second)
-    Site.billable(*TimeUtil.current_month).plan_player_hits_reached_alerted_this_month.
-    next_plan_recommended_alert_sent_at_not_alerted_this_month.each do |site|
-      if site.plan.price + InvoiceItem::Overage.build(:invoice => invoice, :site => site).amount > site.plan.next_plan.price
+    Site.plan_player_hits_reached_alerted_this_month.next_plan_recommended_alert_sent_at_not_alerted_this_month.each do |site|
+      if site.plan.next_plan.present? && (site.plan.price + InvoiceItem::Overage.build(:invoice => invoice, :site => site).amount) > site.plan.next_plan.price
         Site.transaction do
           site.touch(:next_plan_recommended_alert_sent_at)
-          UsageAlertMailer.next_plan_recommended_alert(site).deliver!
+          UsageAlertMailer.next_plan_recommended(site).deliver!
         end
       end
     end

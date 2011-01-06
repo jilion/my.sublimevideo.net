@@ -100,6 +100,13 @@ describe Site::UsageAlert do
           specify { lambda { Site::UsageAlert.send_usage_alerts }.should change(ActionMailer::Base.deliveries, :size).by(1) }
         end
 
+        context "with plan_player_hits_reached alert already sent during the month and next_plan_recommended alert not sent and no next_plan" do
+          before(:all) { @site = Factory(:site, :plan => @plan2, :activated_at => 2.months.ago, :plan_player_hits_reached_alert_sent_at => Time.now.utc.beginning_of_month, :next_plan_recommended_alert_sent_at => nil) }
+          subject { @site }
+
+          specify { lambda { Site::UsageAlert.send_usage_alerts }.should_not change(ActionMailer::Base.deliveries, :size) }
+        end
+
         context "with plan_player_hits_reached alert and next_plan_recommended alert already sent during the month" do
           before(:all) { @site = Factory(:site, :plan => @plan1, :activated_at => 2.months.ago, :plan_player_hits_reached_alert_sent_at => Time.now.utc.beginning_of_month, :next_plan_recommended_alert_sent_at => Time.now.utc.beginning_of_month) }
           subject { @site }

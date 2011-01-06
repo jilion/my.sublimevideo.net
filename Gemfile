@@ -95,7 +95,7 @@ group :test do
   gem 'guard-spork'
   gem 'guard-rspec'
   gem 'guard-livereload'
-  
+
   gem 'database_cleaner',   '>= 0.6'
   gem 'capybara',           '~> 0.4.0'
   gem 'steak',              '1.0.0.rc.2'
@@ -103,7 +103,7 @@ group :test do
   # gem 'capybara-envjs',     '~> 0.4.0'
   gem 'webmock',            '~> 1.6.1'
   gem 'vcr',                '~> 1.4.0'
-  
+
   gem 'shoulda',            '~> 2.11.3'
   gem 'factory_girl_rails', '~> 1.0.1', :require => false # loaded in spec_helper Spork.each_run
 end
