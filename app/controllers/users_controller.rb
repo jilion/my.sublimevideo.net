@@ -1,8 +1,8 @@
 class UsersController < ApplicationController
   respond_to :html
-  
+
   before_filter :redirect_suspended_user
-  
+
   # PUT /users/:id
   def update
     @user = User.find(current_user.id)
@@ -14,5 +14,5 @@ class UsersController < ApplicationController
       end
     end
   end
-  
+
 end

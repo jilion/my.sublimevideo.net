@@ -1,22 +1,22 @@
 class MailLog < ActiveRecord::Base
-  
+
   # Pagination
   cattr_accessor :per_page
   self.per_page = 10
-  
+
   attr_accessible :template_id, :admin_id, :criteria, :user_ids
-  
+
   serialize :criteria
   serialize :user_ids
   serialize :snapshot
-  
+
   # ================
   # = Associations =
   # ================
-  
+
   belongs_to :template, :class_name => "MailTemplate", :foreign_key => "template_id"
   belongs_to :admin
-  
+
   # ==========
   # = Scopes =
   # ==========
@@ -24,7 +24,7 @@ class MailLog < ActiveRecord::Base
   scope :by_template_title, lambda { |way = 'asc'| includes(:template).order(:template => :title.send(way)) }
   scope :by_admin_email,    lambda { |way = 'asc'| includes(:admin).order(:admin => :email.send(way)) }
   scope :by_date,           lambda { |way = 'desc'| order(:created_at.send(way)) }
-  
+
   # ===============
   # = Validations =
   # ===============
@@ -32,24 +32,23 @@ class MailLog < ActiveRecord::Base
   validates :admin_id, :presence => true
   validates :criteria, :presence => true
   validates :user_ids, :presence => true
-  
+
   # =============
   # = Callbacks =
   # =============
   before_create :snapshotize_template
-  
+
   # ====================
   # = Instance Methods =
   # ====================
-  
+
 protected
-  
+
   def snapshotize_template
     self.snapshot = MailTemplate.find(template_id).snapshotize
   end
-  
-end
 
+end
 
 # == Schema Information
 #
@@ -68,4 +67,3 @@ end
 #
 #  index_mail_logs_on_template_id  (template_id)
 #
-

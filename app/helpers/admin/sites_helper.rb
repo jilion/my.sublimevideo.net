@@ -1,5 +1,5 @@
 module Admin::SitesHelper
-  
+
   def admin_sites_page_title(sites)
     pluralized_sites = pluralize(sites.total_entries, 'site')
     state = if params[:archived_included]
@@ -11,7 +11,7 @@ module Admin::SitesHelper
     end
     "#{pluralized_sites}#{state}".titleize
   end
-  
+
   def links_to_hostnames(site)
     html = ""
     if site.hostname?
@@ -24,14 +24,14 @@ module Admin::SitesHelper
     html += " (#{link_to("details", [:edit, :admin, site], :title => "EXTRA: #{site.extra_hostnames}; DEV: #{site.dev_hostnames}")})"
     raw html
   end
-  
+
   def joined_links(hostnames)
     return if hostnames.empty?
-    
+
     hostnames = hostnames.split(',')
     first_hostname = hostnames.shift
     html = link_to first_hostname, "http://#{first_hostname}"
     html += ", #{hostnames.size} more" unless hostnames.empty?
   end
-  
+
 end

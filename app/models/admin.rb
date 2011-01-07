@@ -1,27 +1,26 @@
 class Admin < ActiveRecord::Base
-  
+
   devise :database_authenticatable, :invitable, :registerable, :recoverable,
          :rememberable, :trackable, :validatable, :lockable
-  
+
   # Pagination
   cattr_accessor :per_page
   self.per_page = 25
-  
+
   attr_accessible :email, :password, :password_confirmation, :remember_me
-  
+
   # ================
   # = Associations =
   # ================
-  
+
   has_many :mail_logs, :class_name => "MailLog"
-  
+
   # ==========
   # = Scopes =
   # ==========
   scope :by_date, lambda { |way = 'desc'| order(:created_at.send(way)) }
-  
-end
 
+end
 
 # == Schema Information
 #
@@ -52,4 +51,3 @@ end
 #  index_admins_on_invitation_token      (invitation_token)
 #  index_admins_on_reset_password_token  (reset_password_token) UNIQUE
 #
-

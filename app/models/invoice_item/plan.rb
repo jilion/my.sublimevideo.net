@@ -1,42 +1,41 @@
 class InvoiceItem::Plan < InvoiceItem
-  
+
   # =================
   # = Class Methods =
   # =================
-  
+
   def self.build(attributes = {})
     new(attributes).build
   end
-  
+
   # ====================
   # = Instance Methods =
   # ====================
-  
+
   def build
     set_item_and_price
     set_started_at_and_ended_at
     set_amount
     self
   end
-  
+
 private
-  
+
   def set_item_and_price
     self.item  = site.plan
     self.price = site.plan.price
   end
-  
+
   def set_started_at_and_ended_at
     self.started_at = [site.activated_at, invoice.started_at].max
     self.ended_at   = site.archived_at || invoice.ended_at
   end
-  
+
   def set_amount
     self.amount = (price * percentage).round
   end
-  
-end
 
+end
 
 # == Schema Information
 #
@@ -62,4 +61,3 @@ end
 #  index_invoice_items_on_item_type_and_item_id  (item_type,item_id)
 #  index_invoice_items_on_site_id                (site_id)
 #
-

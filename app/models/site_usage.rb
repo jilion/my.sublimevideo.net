@@ -1,9 +1,9 @@
 class SiteUsage
   include Mongoid::Document
-  
+
   field :site_id,         :type => Integer
   field :day,             :type => DateTime
-  
+
   field :loader_hits,                :type => Integer, :default => 0
   field :player_hits,                :type => Integer, :default => 0
   field :main_player_hits,           :type => Integer, :default => 0
@@ -18,30 +18,30 @@ class SiteUsage
   field :requests_s3,                :type => Integer, :default => 0
   field :traffic_s3,                 :type => Integer, :default => 0
   field :traffic_voxcast,            :type => Integer, :default => 0
-  
+
   index :site_id
   index [[:site_id, Mongo::ASCENDING], [:day, Mongo::ASCENDING]]#, :unique => true
-  
+
   # ================
   # = Associations =
   # ================
-  
+
   def site
     Site.find_by_id(site_id)
   end
-  
+
   # ==========
   # = Scopes =
   # ==========
-  
+
   scope :after,   lambda { |date| where(:day => { "$gte" => date }) }
   scope :before,  lambda { |date| where(:day => { "$lt" => date }) }
   scope :between, lambda { |start_date, end_date| where(:day => { "$gte" => start_date, "$lt" => end_date }) }
-  
+
   # =================
   # = Class Methods =
   # =================
-  
+
   def self.create_usages_from_trackers!(log, trackers)
     hbrs   = hits_traffic_and_requests_from(log, trackers)
     tokens = tokens_from(hbrs)
@@ -61,9 +61,9 @@ class SiteUsage
       end
     end
   end
-  
+
 private
-  
+
   # Compact trackers from RequestLogAnalyzer
   def self.hits_traffic_and_requests_from(log, trackers)
     trackers.inject({}) do |trackers, tracker|
@@ -94,7 +94,7 @@ private
       trackers
     end
   end
-  
+
   def self.hits_traffic_and_requests_for_token(hbrs, token)
     hbr_attributes = [
      :loader_hits, :player_hits,
@@ -110,7 +110,7 @@ private
      token_hbr
     end
   end
-  
+
   def self.player_hits_tracker(trackers, type, token, hits)
     trackers[type] ||= {}
     if trackers[type][token]
@@ -120,11 +120,11 @@ private
     end
     trackers[type]
   end
-  
+
   def self.tokens_from(hbrs)
     hbrs.inject([]) do |tokens, (k, v)|
       tokens += v.collect { |k, v| k }
     end.compact.uniq
   end
-  
+
 end

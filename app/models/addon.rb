@@ -1,23 +1,22 @@
 class Addon < ActiveRecord::Base
-  
+
   attr_accessible :name, :price
-  
+
   # ================
   # = Associations =
   # ================
-  
+
   has_and_belongs_to_many :sites
   has_many :invoice_items, :as => :item
-  
+
   # ===============
   # = Validations =
   # ===============
-  
+
   validates :name, :presence => true, :uniqueness => true
   validates :price, :presence => true, :numericality => true
-  
-end
 
+end
 
 # == Schema Information
 #
@@ -33,4 +32,3 @@ end
 #
 #  index_addons_on_name  (name) UNIQUE
 #
-

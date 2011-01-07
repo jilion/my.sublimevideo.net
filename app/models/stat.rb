@@ -1,5 +1,5 @@
 class Stat
-  
+
   class << self
     def usages(start_date, end_date, options = {})
       labels = options[:labels] || labels_to_fields_mapping.keys
@@ -10,7 +10,7 @@ class Stat
         }
       }
       conditions[:site_id] = options[:site_id].to_i if options[:site_id]
-      
+
       usages = SiteUsage.collection.group(
         [:day],
         conditions,
@@ -23,25 +23,25 @@ class Stat
         }, # memo variable name and initial value
         reduce(labels, options[:merge_cached])
       )
-      
+
       # insert empty hash for days without usage
       usages = (start_date.to_date..end_date.to_date).inject([]) do |memo, day|
         memo << (usages.detect { |u| u["day"].to_date == day } || { "day" => day })
       end
-      
+
       labels.inject({}) do |memo, type|
         memo[type.to_s]       = usages.map { |u| u[type.to_s].to_i }
         memo["total_#{type}"] = memo[type.to_s].inject([]) { |memo, u| memo << ((memo.last || 0) + u) }
         memo
       end
     end
-    
+
     def reduce(labels, merge_cached = false)
       labels.inject("function(doc, prev) {") do |js,label|
         js += "prev.#{label} += doc.#{labels_to_fields_mapping[label.to_sym]}#{" + doc.#{labels_to_fields_mapping[label.to_sym]}_cached" if merge_cached};"
       end + "}"
     end
-    
+
     def labels_to_fields_mapping
       {
         loader_usage: 'loader_hits',
@@ -55,5 +55,5 @@ class Stat
       }
     end
   end
-  
+
 end

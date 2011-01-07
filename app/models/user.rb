@@ -241,12 +241,12 @@ private
   def delay_complete_current_invoice
     Invoice.usage_statement(self).delay.complete
   end
-  
+
   # after_transition :on => :archive
   def send_account_archived_email
     UserMailer.account_archived(self).deliver!
   end
-  
+
   # after_save
   def newsletter_subscription
     if newsletter? && email_changed?
@@ -254,7 +254,7 @@ private
       CampaignMonitor.delay.subscribe(self)
     end
   end
-  
+
   # after_update
   def update_email_on_zendesk
     if zendesk_id.present? && email_changed?
@@ -275,8 +275,6 @@ protected
   end
 
 end
-
-
 
 # == Schema Information
 #
@@ -334,4 +332,3 @@ end
 #  index_users_on_email_and_archived_at  (email,archived_at) UNIQUE
 #  index_users_on_reset_password_token   (reset_password_token) UNIQUE
 #
-

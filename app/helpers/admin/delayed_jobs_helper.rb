@@ -1,5 +1,5 @@
 module Admin::DelayedJobsHelper
-  
+
   def job_name(job)
     case job.name
     when "Module#send_credit_card_expiration"
@@ -19,7 +19,7 @@ module Admin::DelayedJobsHelper
       job.name
     end
   end
-  
+
   def recurring_job?(job)
     [
       "Module#send_credit_card_expiration",
@@ -27,5 +27,5 @@ module Admin::DelayedJobsHelper
       "Class#fetch_and_create_new_logs"
     ].include?(job.name)
   end
-  
+
 end

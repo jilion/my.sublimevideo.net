@@ -1,5 +1,5 @@
 class Users::PasswordsController < ApplicationController
-  
+
   # POST /password/validate
   def validate
     @valid_password = current_user.valid_password?(params[:password])
@@ -7,5 +7,5 @@ class Users::PasswordsController < ApplicationController
       format.js
     end
   end
-  
+
 end

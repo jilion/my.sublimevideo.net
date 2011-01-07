@@ -1,11 +1,11 @@
 module TextHelper
-  
+
   # If text is longer than +options[:length]+ (defaults to 30), text will be middle-truncated
   # and the last characters will be replaced with the +options[:omission]+ (defaults to "...").
   def truncate_middle_reusing_rails_truncate(text, *args)
     options = args.extract_options!
     options.reverse_merge!(:length => 30, :omission => "...")
-    
+
     if text
       if text.mb_chars.length <= options[:length]
         text
@@ -16,13 +16,13 @@ module TextHelper
       end
     end
   end
-  
+
   # If text is longer than +options[:length]+ (defaults to 30), text will be middle-truncated
   # and the last characters will be replaced with the +options[:omission]+ (defaults to "...").
   def truncate_middle(text, *args)
     options = args.extract_options!
     options.reverse_merge!(:length => 30, :omission => "...")
-    
+
     if text
       if text.mb_chars.length <= options[:length]
         text
@@ -32,5 +32,5 @@ module TextHelper
       end
     end
   end
-  
+
 end

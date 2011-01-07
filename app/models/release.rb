@@ -1,62 +1,62 @@
 class Release < ActiveRecord::Base
-  
+
   # Pagination
   cattr_accessor :per_page
   self.per_page = 25
-  
+
   attr_accessible :zip
   mount_uploader :zip, ReleaseUploader
   uniquify :token, :length => 10, :chars => Array('A'..'Z') + Array('0'..'9')
-  
+
   # ===============
   # = Validations =
   # ===============
-  
+
   validates :zip, :presence => true
-  
+
   # =============
   # = Callbacks =
   # =============
-  
+
   before_validation :set_date
   after_create :flag
-  
+
   # =================
   # = State Machine =
   # =================
-  
+
   state_machine :initial => :archived do
     event(:flag)    { transition :archived => :dev, :dev => :beta, :beta => :stable }
     event(:archive) { transition [:dev, :beta, :stable] => :archived }
-    
+
     after_transition :to => :dev, :do => :overwrite_dev_with_zip_content
     after_transition :to => [:beta, :stable], :do => :copy_content_to_next_state
     after_transition :to => [:dev, :beta, :stable], :do => :archive_old_release
     after_transition :on => :flag, :do => :purge_old_release_dir
   end
-  
+
   # =================
   # = Class Methods =
   # =================
-  
+
   def self.stable_release
     where(:state => "stable").first
   end
-  
+
   def self.beta_release
      releases = where({ :state => "beta" } | { :state => "stable" }).all
      releases.detect { |r| r.state == "beta" } || releases.detect { |r| r.state == "stable" }
   end
-  
+
   def self.dev_release
      releases = where({ :state => "dev" } | { :state => "beta" } | { :state => "stable" })
      releases.detect { |r| r.state == "dev" } || releases.detect { |r| r.state == "beta" } || releases.detect { |r| r.state == "stable" }
   end
-  
+
   # ====================
   # = Instance Methods =
   # ====================
-  
+
   def zipfile
     # Download file from S3 to read the zip content
     # please don't forget to call delete_zipfile
@@ -68,7 +68,7 @@ class Release < ActiveRecord::Base
     end
     @zipfile
   end
-  
+
   def files_in_zip
     @files_in_zip ||= zipfile.select { |file| file.file? && !file.name.match(/__MACOSX/) }
     if block_given?
@@ -78,20 +78,20 @@ class Release < ActiveRecord::Base
       @files_in_zip
     end
   end
-  
+
   def delete_zipfile
     File.delete(@local_zip_file.path)
     @zipfile = nil
     @files_in_zip = nil
   end
-  
+
 private
-  
+
   # before_validation
   def set_date
     self.date ||= Time.now.utc.strftime("%Y-%m-%d-%H-%M-%S")
   end
-  
+
   # after_transition to dev
   def overwrite_dev_with_zip_content
     S3.player_bucket.delete_folder('dev')
@@ -99,7 +99,7 @@ private
       S3.player_bucket.put("dev/#{file.name}", zipfile.read(file), {}, "public-read")
     end
   end
-  
+
   # after_transition to beta, stable
   def copy_content_to_next_state
     old_keys_names = S3.keys_names(S3.player_bucket, 'prefix' => state, :remove_prefix => true)
@@ -115,14 +115,14 @@ private
       S3.client.interface.delete(S3.player_bucket.name, state + name)
     end
   end
-  
+
   # after_transition to dev, beta, stable
   def archive_old_release
     old_release = Release.where(:state => state, :id.not_eq => self.id).first
     # old_release can be nil if there was no old release with that state
     old_release.try(:archive)
   end
-  
+
   # after_transition on flag
   def purge_old_release_dir
     return unless Rails.env.production? || Rails.env.test?
@@ -133,9 +133,8 @@ private
       VoxcastCDN.purge_dir "/p"
     end
   end
-  
-end
 
+end
 
 # == Schema Information
 #
@@ -153,4 +152,3 @@ end
 #
 #  index_releases_on_state  (state)
 #
-
