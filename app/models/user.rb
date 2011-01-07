@@ -49,6 +49,8 @@ class User < ActiveRecord::Base
   scope :use_company,       where(:use_company => true)
   scope :use_clients,       where(:use_clients => true)
   scope :will_be_suspended, where(:suspending_delayed_job_id.ne => nil)
+  scope :created_between,   lambda { |start_date, end_date| where(:created_at.gte => start_date, :created_at.lt => end_date) }
+  scope :signed_in_between, lambda { |start_date, end_date| where(:current_sign_in_at.gte => start_date, :current_sign_in_at.lt => end_date) }
 
   # sort
   scope :by_name_or_email, lambda { |way = 'asc'| order(:first_name.send(way), :email.send(way)) }

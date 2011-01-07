@@ -37,7 +37,7 @@ group 'frontend' do
     watch(%r{config/initializers/.+\.rb})
   end
   
-  guard 'livereload' do
+  guard 'livereload', :api_version => '1.5' do
     watch(%r{app/.+\.(erb|haml)})
     watch(%r{app/helpers/.+\.rb})
     watch(%r{public/javascripts/.+\.js})

@@ -39,7 +39,7 @@ private
   end
   
   def set_player_hits_used
-    self.info[:player_hits_used] = SiteUsage.where(:site_id => site.id).between(started_at.beginning_of_day, ended_at.end_of_day).find.sum do |su|
+    self.info[:player_hits_used] = SiteUsage.where(:site_id => site.id).between(started_at.midnight, ended_at.end_of_day).find.sum do |su|
       su.main_player_hits + su.main_player_hits_cached + su.extra_player_hits + su.extra_player_hits_cached
     end
   end

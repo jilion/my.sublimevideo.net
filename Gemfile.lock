@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/guard/guard.git
-  revision: a21bb8e306e44fd153c8b88a7c59c00e451b1d52
+  revision: 48b9c2b824f526175632e047cfbd5bfd30195928
   specs:
     guard (0.2.2)
       open_gem (~> 1.4.2)
@@ -161,6 +161,7 @@ GEM
       activesupport (~> 3.0)
       daemons
     diff-lcs (1.1.2)
+    em-dir-watcher (0.9.4)
     em-websocket (0.2.0)
       addressable (>= 2.1.1)
       eventmachine (>= 0.12.9)
@@ -228,6 +229,10 @@ GEM
       rake (>= 0.8.1)
     libxml-ruby (1.1.3)
     liquid (2.2.2)
+    livereload (1.5)
+      em-dir-watcher (>= 0.1)
+      em-websocket (>= 0.1.2)
+      ruby-json (>= 1.1.2)
     mail (2.2.13)
       activesupport (>= 2.3.6)
       i18n (>= 0.4.0)
@@ -288,6 +293,7 @@ GEM
       rspec (~> 2.4.0)
     ruby-graphviz (0.9.20)
     ruby-hmac (0.4.0)
+    ruby-json (1.1.2)
     rubyzip (0.9.4)
     selenium-webdriver (0.1.2)
       childprocess (~> 0.1.5)
@@ -376,6 +382,7 @@ DEPENDENCIES
   jammit (= 0.5.4)
   libxml-ruby (= 1.1.3)
   liquid (= 2.2.2)
+  livereload
   meta_where (= 0.9.10)
   mongo (= 1.1.5)
   mongoid!

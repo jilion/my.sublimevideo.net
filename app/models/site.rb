@@ -60,6 +60,9 @@ class Site < ActiveRecord::Base
   scope :archived,     lambda { with_state(:archived) }
   scope :not_archived, lambda { without_state(:archived) }
 
+  # admin
+  scope :created_between, lambda { |start_date, end_date| where(:created_at.gte => start_date, :created_at.lt => end_date) }
+
   # sort
   scope :by_hostname,    lambda { |way = 'asc'| order(:hostname.send(way)) }
   scope :by_user,        lambda { |way = 'desc'| includes(:user).order(:users => [:first_name.send(way), :email.send(way)]) }

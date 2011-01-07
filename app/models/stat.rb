@@ -5,7 +5,7 @@ class Stat
       labels = options[:labels] || labels_to_fields_mapping.keys
       conditions = {
         :day => {
-          "$gte" => start_date.to_date.to_time.beginning_of_day,
+          "$gte" => start_date.to_date.to_time.midnight,
           "$lte" => end_date.to_date.to_time.end_of_day
         }
       }

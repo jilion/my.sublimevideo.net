@@ -55,7 +55,7 @@ describe SiteUsage do
       usages.map(&:site).should include(@site2)
       usage = usages.select { |u| u.site == @site1 }.first
       usage.site.should                       == @site1
-      usage.day.should                        == @log.started_at.utc.to_time.beginning_of_day
+      usage.day.should                        == @log.started_at.utc.to_time.midnight
       usage.loader_hits.should                == 7
       usage.player_hits.should                == 6
       usage.main_player_hits.should           == 5
@@ -124,7 +124,7 @@ describe SiteUsage do
       usages.map(&:site).should include(@site2)
       usage = usages.select { |u| u.site == @site1 }.first
       usage.site.should                       == @site1
-      usage.day.should                        == @log.started_at.utc.to_time.beginning_of_day
+      usage.day.should                        == @log.started_at.utc.to_time.midnight
       usage.loader_hits.should                == 3
       usage.player_hits.should                == 3
       usage.main_player_hits.should           == 1

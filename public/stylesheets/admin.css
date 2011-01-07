@@ -288,6 +288,11 @@ ul.no_bullet {
   margin:1px 6px 0 0;
 }
 
+#main form.date_chooser {
+  float:right;
+  margin:-50px 0 0;
+}
+
 #footer {
   text-align:center;
   padding:10px 0;
@@ -333,9 +338,15 @@ form label.icon {
   position:absolute;
 }
 
-#main p.summary {
-  float:right;
-  text-align: right;
+#main .dashboard_box {
+  float:left;
+  background:-webkit-gradient(linear,left top,left bottom,from(#888),to(#BBB));
+  background:-moz-linear-gradient(top, #888, #BBB);
+  width:320px;
+  margin:20px;
+  padding:10px 10px;
+  border-radius:20px;
+  -webkit-box-shadow:inset #222 0 1px 4px;
 }
 
 /* =================== */

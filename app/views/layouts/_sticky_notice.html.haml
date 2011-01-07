@@ -8,7 +8,7 @@
           = raw t("user.please_link", :link => edit_cc_link)
         - else
           = raw t("user.credit_card.will_expire_please_link", :link => edit_cc_link)
-        
+
     - if suspending_delayed_job = current_user.will_be_suspended?
       %p
         = t("user.will_be_suspended_in", :time => time_ago_in_words(suspending_delayed_job.run_at))

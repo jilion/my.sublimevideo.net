@@ -1,0 +1,15 @@
+- sites_created_during_range = Site.created_between(@date_range_from, @date_range_to).count
+- sites_created_yesterday    = Site.created_between(Time.now.yesterday.midnight, Time.now.yesterday.end_of_day).count
+- sites_created_today        = Site.created_between(Date.today, Time.now).count
+
+%h4 New sites
+
+%p.summary
+  = number_to_human(sites_created_during_range, :significant => false, :precision => 2, :delimiter => "'")
+  = " between #{l(@date_range_from, :format => :Y_m_d)} and #{l(@date_range_to, :format => :Y_m_d)}"
+  %br
+  = number_to_human(sites_created_yesterday, :significant => false, :precision => 2, :delimiter => "'")
+  = " yesterday"
+  %br
+  = number_to_human(sites_created_today, :significant => false, :precision => 2, :delimiter => "'")
+  = " today"

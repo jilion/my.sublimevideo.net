@@ -102,11 +102,11 @@ def set_site_usages(site)
     :extra_player_hits => Plan::OVERAGES_PLAYER_HITS_BLOCK/4,
     :extra_player_hits_cached => Plan::OVERAGES_PLAYER_HITS_BLOCK/4
   } # == 1500 player_hits
-  Factory(:site_usage, player_hits.merge(:site_id => site.id, :day => Time.utc(2010,1,15).beginning_of_day))
-  Factory(:site_usage, player_hits.merge(:site_id => site.id, :day => Time.utc(2010,2,1).beginning_of_day))
-  Factory(:site_usage, player_hits.merge(:site_id => site.id, :day => Time.utc(2010,2,15).beginning_of_day))
-  Factory(:site_usage, player_hits.merge(:site_id => site.id, :day => Time.utc(2010,2,20).beginning_of_day))
-  Factory(:site_usage, player_hits.merge(:site_id => site.id, :day => Time.utc(2010,3,1).beginning_of_day))
+  Factory(:site_usage, player_hits.merge(:site_id => site.id, :day => Time.utc(2010,1,15).midnight))
+  Factory(:site_usage, player_hits.merge(:site_id => site.id, :day => Time.utc(2010,2,1).midnight))
+  Factory(:site_usage, player_hits.merge(:site_id => site.id, :day => Time.utc(2010,2,15).midnight))
+  Factory(:site_usage, player_hits.merge(:site_id => site.id, :day => Time.utc(2010,2,20).midnight))
+  Factory(:site_usage, player_hits.merge(:site_id => site.id, :day => Time.utc(2010,3,1).midnight))
 end
 
 # == Schema Information

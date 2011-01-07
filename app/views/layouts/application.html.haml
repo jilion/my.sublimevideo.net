@@ -4,18 +4,18 @@
     %title= "MySublimeVideo - #{yield :title}"
     %meta{ "http-equiv" => "X-UA-Compatible", :content => "chrome=1" }
     %meta{ "http-equiv" => "Content-Type", :content => "text/html;charset=UTF-8" }
-    
+
     = include_stylesheets :style
-    
+
     %link{ :rel => "shortcut icon", :href => "/favicon.ico", :type => "image/x-icon" }
-    
+
     /[if lte IE 6]
       %meta{ "http-equiv" => "Refresh", :content => "0;url=http://jilion.com/ie" }
       %style{ :type => "text/css", :media => "screen" }
         == body {background:#fff;display:none;}
     /[if lte IE 8]
       = include_stylesheets(:style_ie, :embed_assets => false)
-      
+
     = include_javascripts(:default)
     = yield :header
     = csrf_meta_tag
@@ -38,5 +38,5 @@
           = link_to "Jilion®", "http://jilion.com"
         %p.links= "#{link_to "SublimeVideo.net", "http://sublimevideo.net"} | #{link_to "Terms & Conditions", page_path(:page => 'terms')} | #{link_to "Privacy Policy", page_path(:page => 'privacy') }".html_safe
         %p.copyright= "Copyright © 2010 Jilion® — SublimeVideo and Jilion are registered trademarks"
-        
+
     = yield :bottom

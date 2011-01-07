@@ -1,6 +1,6 @@
 :ruby
   from_days ||= 60
-  stats_from  = from_days.days.ago.beginning_of_day
+  stats_from  = from_days.days.ago.midnight
   
   sites_count = Site.select("COUNT(*) as total, DATE(created_at) as day").where(:created_at.gte => stats_from).group(:day).map { |site| { :day => site.day.to_date, :total => site.total.to_i } }
   

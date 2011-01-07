@@ -94,6 +94,7 @@ group :test do
   gem 'guard-passenger'
   gem 'guard-spork'
   gem 'guard-rspec'
+  gem 'livereload'
   gem 'guard-livereload'
 
   gem 'database_cleaner',   '>= 0.6'

@@ -14,7 +14,7 @@
         - name = r.is_a?(Array) ? r[0] : r
         - if zeno? || name != :releases || Rails.env.development?
           = activable_menu_item(:li, name, (r.is_a?(Array) ? r[1] : {}).reverse_merge!(:namespace => 'admin'))
-          
+
   .right
     %ul.extra_links
       - if admin_signed_in?

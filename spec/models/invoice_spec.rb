@@ -453,10 +453,10 @@ describe Invoice do
       end
       before(:each) do
         player_hits = { :main_player_hits => 1500 }
-        Factory(:site_usage, player_hits.merge(:site_id => @site.id, :day => Time.utc(2010,1,15).beginning_of_day))
-        Factory(:site_usage, player_hits.merge(:site_id => @site.id, :day => Time.utc(2010,2,1).beginning_of_day))
-        Factory(:site_usage, player_hits.merge(:site_id => @site.id, :day => Time.utc(2010,2,20).beginning_of_day))
-        Factory(:site_usage, player_hits.merge(:site_id => @site.id, :day => Time.utc(2010,3,1).beginning_of_day))
+        Factory(:site_usage, player_hits.merge(:site_id => @site.id, :day => Time.utc(2010,1,15).midnight))
+        Factory(:site_usage, player_hits.merge(:site_id => @site.id, :day => Time.utc(2010,2,1).midnight))
+        Factory(:site_usage, player_hits.merge(:site_id => @site.id, :day => Time.utc(2010,2,20).midnight))
+        Factory(:site_usage, player_hits.merge(:site_id => @site.id, :day => Time.utc(2010,3,1).midnight))
       end
       subject { Invoice.build(:user => @user, :started_at => Time.utc(2010,2).beginning_of_month, :ended_at => Time.utc(2010,2).end_of_month) }
 
@@ -576,9 +576,9 @@ describe Invoice do
         @site3 = Factory(:site, :user => @user3, :activated_at => Time.utc(2010,2,28,23,58))
         @site4 = Factory(:site, :user => @user4, :activated_at => Time.utc(2010,3,15))
         player_hits = { :main_player_hits => 1500 }
-        Factory(:site_usage, player_hits.merge(:site_id => @site1.id, :day => Time.utc(2010,2,15).beginning_of_day))
-        Factory(:site_usage, player_hits.merge(:site_id => @site2.id, :day => Time.utc(2010,2,20).beginning_of_day))
-        Factory(:site_usage, player_hits.merge(:site_id => @site2.id, :day => Time.utc(2010,2,21).beginning_of_day))
+        Factory(:site_usage, player_hits.merge(:site_id => @site1.id, :day => Time.utc(2010,2,15).midnight))
+        Factory(:site_usage, player_hits.merge(:site_id => @site2.id, :day => Time.utc(2010,2,20).midnight))
+        Factory(:site_usage, player_hits.merge(:site_id => @site2.id, :day => Time.utc(2010,2,21).midnight))
       end
       subject { Invoice.complete_invoices_for_billable_users(Time.utc(2010,2).beginning_of_month, Time.utc(2010,2).end_of_month) }
 

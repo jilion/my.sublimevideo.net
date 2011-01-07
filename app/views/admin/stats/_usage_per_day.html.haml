@@ -1,6 +1,6 @@
 :ruby
   from_days ||= 60
-  stats_from  = from_days.days.ago.beginning_of_day
+  stats_from  = from_days.days.ago.midnight
   
   usages = Stat.usages(stats_from, Date.today)
   
