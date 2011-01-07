@@ -23,7 +23,7 @@ graph = Graph.new do |g|
       var percentage_of_total = '';
       var loader_per_player = '';
       var total = '';
-      
+
       if (["Invalid", "Invalid cached", "Dev", "Dev cached", "Main", "Main cached"].indexOf(this.series.name) != -1) {
         percentage_of_total = " (" + Highcharts.numberFormat(this.percentage, 1) + "%)";
         total = "<br/>Total: " + Highcharts.numberFormat(this.total, 0);
@@ -31,7 +31,7 @@ graph = Graph.new do |g|
       else if (this.series.name == "Loader") {
         loader_per_player = "<br/>Loader / Player: " + Highcharts.numberFormat((this.y / (this.total - this.y)), 1);
       }
-      
+
       return date + this.series.name + ": " + Highcharts.numberFormat(this.y, 0) + percentage_of_total + loader_per_player + total;
     }
   }))
@@ -43,12 +43,12 @@ graph = Graph.new do |g|
     serie(usages["dev_usage"], 'Dev', '#3F3'),
     serie(usages["main_usage_cached"], 'Main cached', '#08F'),
     serie(usages["main_usage"], 'Main', '#00F'),
-    
+
     serie(evolutive_average_array(usages["total_loader_usage"]), 'AVG Loader', '#FF0', :type => 'line', :visible => false),
     serie(evolutive_average_array(usages["total_invalid_usage"]), 'AVG Invalid', '#FC3', :type => 'line', :visible => false),
     serie(evolutive_average_array(usages["total_dev_usage"]), 'AVG Dev', '#6F6', :type => 'line', :visible => false),
     serie(evolutive_average_array(usages["total_main_usage"].zip(usages["main_usage_cached"]).map { |item| item.reduce(:+) }), 'AVG Main', '#0FF', :type => 'line'),
-    
+
     serie(usages["total_main_usage"], 'TOT Main', '', :type => 'line', :visible => false),
     serie(usages["total_all_usage"], 'TOT All', '', :type => 'line', :visible => false)
   ])
