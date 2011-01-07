@@ -1,83 +1,112 @@
 = title_and_content_header("#{@site.hostname} (#{@site.user.full_name})")
-- from_days = 60
-= render :partial => '/admin/stats/sites/usage_per_day', :locals => { :site => @site, :from_days => from_days }
 
-#usage_per_day{ :width => '900px', :height => '250px' }
+= render '/admin/shared/date_chooser'
+%br.spacer
+= render :partial => 'timeline_usage', :locals => { :site => @site }
 
-%h3 Infos
-%h4 Hostnames
-%ul
-  %li= "Wildcard: #{display_bool(@site.wildcard)}"
-  %li= "Path: #{@site.path}"
-  %li
-    = "Hostname: "
-    = link_to(@site.hostname, "http://#{@site.hostname}")
-  %li= "Extra hostnames: #{@site.extra_hostnames}"
-  %li= "Dev hostnames: #{@site.dev_hostnames}"
-  
-%br
-
-%h4 General
-%ul
-  %li
-    = "Token: "
-    %strong= @site.token
-  %li
-    = "Plan: "
-    %strong= @site.plan_id? ? @site.plan.name.humanize : "No plan (#{@site.state} site)"
-  %li
-    = "Player Mode: "
-    %strong= @site.player_mode
-  %li
-    = "User: "
-    = link_to(@site.user.full_name, [:admin, @site.user])
-%br
-
-%h4 Details
-
-%ul
-  %li= "State: " + @site.state
-  %li= "CDN up-to-date: #{display_bool(@site.cdn_up_to_date)}"
-  %li= "Created at: " + display_date(@site.created_at)
-  %li= "Updated at: " + display_date(@site.updated_at)
-  %li= "Archived at: " + display_date(@site.archived_at)
-%br
-
-%h4 Usage
-%ul
-  %li= "Loader hits: #{number_with_delimiter(@site.usages.sum(:loader_hits).to_i)}"
-  %li
-    - main_player_hits_cached = @site.usages.sum(:main_player_hits_cached).to_i
-    - extra_player_hits_cached = @site.usages.sum(:extra_player_hits_cached).to_i
-    - dev_player_hits_cached = @site.usages.sum(:dev_player_hits_cached).to_i
-    - invalid_player_hits_cached = @site.usages.sum(:invalid_player_hits_cached).to_i
-    = "Player hits: #{number_with_delimiter(@site.usages.sum(:player_hits).to_i)} / #{number_with_delimiter(main_player_hits_cached + extra_player_hits_cached + dev_player_hits_cached + invalid_player_hits_cached)}"
-    %ul
-      %li= "Main player hits: #{number_with_delimiter(@site.usages.sum(:main_player_hits).to_i)} / #{number_with_delimiter(main_player_hits_cached)}"
-      %li= "Extra player hits: #{number_with_delimiter(@site.usages.sum(:extra_player_hits).to_i)} / #{number_with_delimiter(extra_player_hits_cached)}"
-      %li= "Dev player hits: #{number_with_delimiter(@site.usages.sum(:dev_player_hits).to_i)} / #{number_with_delimiter(dev_player_hits_cached)}"
-      %li= "Invalid player hits: #{number_with_delimiter(@site.usages.sum(:invalid_player_hits).to_i)} / #{number_with_delimiter(invalid_player_hits_cached)}"
-  %li= "Flash hits: #{number_with_delimiter(@site.usages.sum(:flash_hits).to_i)}"
-  
-  %li= "S3 requests: #{number_with_delimiter(@site.usages.sum(:requests_s3).to_i)}"
-  %li= "S3 traffic: #{number_to_human_size(@site.usages.sum(:traffic_s3), :precision => 4)}"
-  %li= "Voxcast traffic: #{number_to_human_size(@site.usages.sum(:traffic_voxcast), :precision => 4)}"
-%br
-
-%h4 Active pages
-
-%h5 Popular
 %table
   %tr
-    %th URL
+    %th Hostnames
+    %th General
+    %th Details
+    %th Usage
+  %tr
+    %td{ :style => "text-align:left;"}
+      %ul
+        %li= "Wildcard: #{display_bool(@site.wildcard)}"
+        %li= "Path: #{@site.path}"
+        %li
+          = "Hostname: "
+          = link_to(@site.hostname, "http://#{@site.hostname}")
+        %li= "Extra hostnames: #{@site.extra_hostnames}"
+        %li= "Dev hostnames: #{@site.dev_hostnames}"
+    %td{ :style => "text-align:left;"}
+      %ul
+        %li
+          = "Token: "
+          %strong= @site.token
+        %li
+          = "Plan: "
+          %strong= @site.plan_id? ? @site.plan.name.humanize : "No plan (#{@site.state} site)"
+        %li
+          = "Player Mode: "
+          %strong= @site.player_mode
+        %li
+          = "User: "
+          = link_to(@site.user.full_name, [:admin, @site.user])
+    %td{ :style => "text-align:left;"}
+      %ul
+        %li= "State: " + @site.state
+        %li= "CDN up-to-date: #{display_bool(@site.cdn_up_to_date)}"
+        %li= "Created at: " + display_date(@site.created_at)
+        %li= "Updated at: " + display_date(@site.updated_at)
+        %li= "Archived at: " + display_date(@site.archived_at)
+      %br
+    - loader_hits                = @site.usages.between(@date_range_from, @date_range_to).sum(:loader_hits).to_i
+    - main_player_hits           = @site.usages.between(@date_range_from, @date_range_to).sum(:main_player_hits).to_i
+    - main_player_hits_cached    = @site.usages.between(@date_range_from, @date_range_to).sum(:main_player_hits_cached).to_i
+    - extra_player_hits          = @site.usages.between(@date_range_from, @date_range_to).sum(:extra_player_hits).to_i
+    - extra_player_hits_cached   = @site.usages.between(@date_range_from, @date_range_to).sum(:extra_player_hits_cached).to_i
+    - dev_player_hits            = @site.usages.between(@date_range_from, @date_range_to).sum(:dev_player_hits).to_i
+    - dev_player_hits_cached     = @site.usages.between(@date_range_from, @date_range_to).sum(:dev_player_hits_cached).to_i
+    - invalid_player_hits        = @site.usages.between(@date_range_from, @date_range_to).sum(:invalid_player_hits).to_i
+    - invalid_player_hits_cached = @site.usages.between(@date_range_from, @date_range_to).sum(:invalid_player_hits_cached).to_i
+    - flash_hits                 = @site.usages.between(@date_range_from, @date_range_to).sum(:flash_hits).to_i
+    - s3_requests                = @site.usages.between(@date_range_from, @date_range_to).sum(:requests_s3).to_i
+    - s3_traffic                 = @site.usages.between(@date_range_from, @date_range_to).sum(:traffic_s3).to_i
+    - voxcast_traffic            = @site.usages.between(@date_range_from, @date_range_to).sum(:traffic_voxcast).to_i
+    %td{ :style => "text-align:left;" }
+      %ul
+        %li
+          = "Loader hits: "
+          = number_to_human(loader_hits, :significant => false, :precision => 3, :delimiter => "'")
+        %li
+          = "Player hits: "
+          = number_with_delimiter(main_player_hits, :significant => false, :precision => 3, :delimiter => "'")
+          = "(#{number_with_delimiter(main_player_hits_cached + extra_player_hits_cached + dev_player_hits_cached + invalid_player_hits_cached, :significant => false, :precision => 3, :delimiter => "'")} cached)"
+          %ul
+            %li
+              = "Main player hits: "
+              = number_to_human(main_player_hits, :significant => false, :precision => 3, :delimiter => "'")
+              = "(#{number_to_human(main_player_hits_cached, :significant => false, :precision => 3, :delimiter => "'")} cached)"
+            %li
+              = "Extra player hits: "
+              = number_to_human(extra_player_hits, :significant => false, :precision => 3, :delimiter => "'")
+              = "(#{number_to_human(extra_player_hits_cached, :significant => false, :precision => 3, :delimiter => "'")} cached)"
+            %li
+              = "Dev player hits: "
+              = number_with_delimiter(dev_player_hits, :significant => false, :precision => 3, :delimiter => "'")
+              = "(#{number_with_delimiter(dev_player_hits_cached, :significant => false, :precision => 3, :delimiter => "'")} cached)"
+            %li
+              = "Invalid player hits: "
+              = number_with_delimiter(invalid_player_hits, :significant => false, :precision => 3, :delimiter => "'")
+              = "(#{number_with_delimiter(invalid_player_hits_cached, :significant => false, :precision => 3, :delimiter => "'")} cached)"
+        %li
+          = "Flash hits: "
+          = number_to_human(flash_hits, :significant => false, :precision => 3, :delimiter => "'")
+  
+        %li
+          = "S3 requests: "
+          = number_to_human(s3_requests, :significant => false, :precision => 3, :delimiter => "'")
+        %li
+          = "S3 traffic: "
+          = number_to_human_size(s3_traffic, :precision => 4)
+        %li
+          = "Voxcast traffic: "
+          = number_to_human_size(voxcast_traffic, :precision => 4)
+
+%h3 Active pages
+
+%table
+  %tr
+    %th Popular URL
     %th Hits
     %th Last hit
   = render :partial => 'referrer', :collection => @site.referrers.by_hits.limit(10)
     
-%h5 Last
 %table
   %tr
-    %th URL
+    %th Last URL
     %th Hits
     %th Last hit
   = render :partial => 'referrer', :collection => @site.referrers.by_updated_at.limit(5)

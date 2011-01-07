@@ -1,14 +1,11 @@
 <%
-from_days ||= 60
-stats_from  = from_days.days.ago.midnight
-
-usages = Stat.usages(stats_from, Date.today, { :site_id => site.try(:id) })
+usages = Stat.usages(@date_range_from, @date_range_to, { :site_id => site.try(:id) })
 plans = Plan.all
 
 graph = Graph.new do |g|
-  g.option(chart: chart('usage_per_day'))
+  g.option(chart: chart('timeline_usage'))
   g.option(title: { text: "VPV per day, total and averages for #{site.hostname}" })
-  g.option(subtitle: usage_date_subtitle(stats_from, { :date_format => :seconds_timezone }))
+  g.option(subtitle: usage_date_subtitle(@date_range_from, @date_range_to))
   g.option(legend: legend)
   g.option(xAxis: { type: 'datetime', showFirstLabel: true, showLastLabel: true })
   g.raw_option(%(yAxis: {
@@ -24,9 +21,9 @@ graph = Graph.new do |g|
   g.raw_option(%(tooltip: {
     formatter: function() {
       var date = "<strong>" + Highcharts.dateFormat("%B %e,  %Y", this.x) + "</strong><br/>";
-
       var percentage_of_total = '';
       var loader_per_player = '';
+      var total = '';
 
       if (["Invalid", "Invalid cached", "Dev", "Dev cached", "Main", "Main cached"].indexOf(this.series.name) != -1) {
         percentage_of_total = " (" + Highcharts.numberFormat(this.percentage, 1) + "%)";
@@ -36,7 +33,7 @@ graph = Graph.new do |g|
         loader_per_player = "<br/>Loader / Player: " + Highcharts.numberFormat((this.y / (this.total - this.y)), 1);
       }
 
-      return date + this.series.name + ": " + Highcharts.numberFormat(this.y, 0) + percentage_of_total + loader_per_player;
+      return date + this.series.name + ": " + Highcharts.numberFormat(this.y, 0) + percentage_of_total + loader_per_player + total;
     }
   }))
   g.option(series: [
@@ -64,8 +61,8 @@ graph = Graph.new do |g|
       memo << serie(Array.new(usages["main_usage"].size, plan.player_hits), "LIM #{plan.name.humanize}", '', type: 'line', visible: false); memo
     end
   ].flatten)
-  g.option(plotOptions: plot_options(stats_from))
+  g.option(plotOptions: plot_options(@date_range_from))
   g.option(credits: credits)
 end
 %>
-<%= raw graph.draw %>
+<div id="timeline_usage" style="width: 100%; height: 300px;"><%= raw graph.draw %></div>

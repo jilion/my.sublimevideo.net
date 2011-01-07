@@ -1,6 +1,8 @@
 class Admin::SitesController < Admin::AdminController
   respond_to :js, :html
 
+  before_filter :compute_date_range, :only => :edit
+
   #filter
   has_scope :next_plan_recommended_alert_sent_at_alerted_this_month
   # sort

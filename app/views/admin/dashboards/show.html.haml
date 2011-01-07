@@ -2,7 +2,7 @@
 
 = render '/admin/shared/date_chooser'
 
-#timeline_usage.dashboard_timeline
+#timeline.dashboard_timeline
   %h3 Usage
   - cache 'dashboard_timeline_usage', :expires_in => 10.minutes do
     = render 'timeline_usage'
