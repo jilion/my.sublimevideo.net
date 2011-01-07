@@ -1,5 +1,5 @@
 MySublimeVideo::Application.routes.draw do
-  
+
   devise_for :users,
   :path => '',
   :path_names => { :sign_in => 'login', :sign_out => 'logout' },
@@ -8,19 +8,19 @@ MySublimeVideo::Application.routes.draw do
     resource :user_registration, :only => [], :controller => 'users/registrations', :path => '' do
       get    :new,     :path => '/register', :as => 'new'
       post   :create,  :path => '/register'
-      
+
       get    :edit,    :path => '/account/edit', :as => 'edit'
       put    :update,  :path => '/account/credentials'
       delete :destroy, :path => '/account'
     end
-    
+
     %w[sign_up signup].each                { |action| match action => redirect('/register'), :via => :get }
     %w[log_in sign_in signin].each         { |action| match action => redirect('/login'),    :via => :get }
     %w[log_out sign_out signout exit].each { |action| match action => redirect('/logout'),   :via => :get }
   end
   match '/password/validate' => "users/passwords#validate", :via => :post
   match '/invitation/accept' => redirect('/register'), :via => :get
-  
+
   resource :users, :only => :update, :path => '/account/info'
   resources :sites, :except => :show do
     member do
@@ -37,19 +37,19 @@ MySublimeVideo::Application.routes.draw do
     get :usage, :on => :collection
     post :pay, :on => :member, :as => 'pay'
   end
-  
+
   match ':page', :to => 'pages#show', :via => :get, :as => :page, :page => /terms|privacy|suspended/
-  
+
   resource :ticket, :only => [:new, :create], :path => '/support', :path_names => { :new =>  ''}
-  
+
   root :to => redirect("/sites")
-  
+
   # =========
   # = Admin =
   # =========
-  
+
   match 'admin', :to => redirect('/admin/dashboard'), :as => 'admin'
-  
+
   devise_for :admins,
   :path => 'admin',
   :module => 'admin/admins',
@@ -61,19 +61,19 @@ MySublimeVideo::Application.routes.draw do
       get  :edit,   :path => '/admin/invitation/accept', :as => 'accept'
       put  :update, :path => '/admin/admins/invitation'
     end
-    
+
     resource :admin_registration, :only => [], :controller => 'admin/admins/registrations', :path => "" do
       get    :edit,    :path => '/admin/account/edit', :as => 'edit'
       put    :update,  :path => '/admin/account'
       delete :destroy, :path => '/admin/account'
     end
-    
+
     %w[log_in sign_in signin].each         { |action| match "admin/#{action}" => redirect('/admin/login'),  :via => :get }
     %w[log_out sign_out signout exit].each { |action| match "admin/#{action}" => redirect('/admin/logout'), :via => :get }
   end
-  
+
   namespace "admin" do
-    resource  :dashboard,  :only => :index
+    resource  :dashboard,  :only => :show
     resources :users,  :only => [:index, :show]
     resources :admins, :only => [:index, :destroy]
     resources :sites,  :only => [:index, :show, :edit, :update]
@@ -89,14 +89,14 @@ MySublimeVideo::Application.routes.draw do
     resources :referrers,    :only => :index
     # resources :stats,        :only => [:index, :show]
   end
-  
+
   # =======
   # = API =
   # =======
-  
+
   namespace "api" do
   end
-  
+
 end
 #== Route Map
 # Generated on 29 Sep 2010 17:07
@@ -154,13 +154,13 @@ end
 # edit_admin_registration GET    /admin/account/edit(.:format)          {:action=>"edit", :controller=>"admin/admins/registrations"}
 #      admin_registration PUT    /admin/account(.:format)               {:action=>"update", :controller=>"admin/admins/registrations"}
 #      admin_registration DELETE /admin/account(.:format)               {:action=>"destroy", :controller=>"admin/admins/registrations"}
-#            admin_log_in GET    /admin/log_in(.:format)                
-#           admin_sign_in GET    /admin/sign_in(.:format)               
-#            admin_signin GET    /admin/signin(.:format)                
-#           admin_log_out GET    /admin/log_out(.:format)               
-#          admin_sign_out GET    /admin/sign_out(.:format)              
-#           admin_signout GET    /admin/signout(.:format)               
-#              admin_exit GET    /admin/exit(.:format)                  
+#            admin_log_in GET    /admin/log_in(.:format)
+#           admin_sign_in GET    /admin/sign_in(.:format)
+#            admin_signin GET    /admin/signin(.:format)
+#           admin_log_out GET    /admin/log_out(.:format)
+#          admin_sign_out GET    /admin/sign_out(.:format)
+#           admin_signout GET    /admin/signout(.:format)
+#              admin_exit GET    /admin/exit(.:format)
 #       new_admin_session GET    /admin/login(.:format)                 {:action=>"new", :controller=>"admin/admins/sessions"}
 #           admin_session POST   /admin/login(.:format)                 {:action=>"create", :controller=>"admin/admins/sessions"}
 #   destroy_admin_session GET    /admin/logout(.:format)                {:action=>"destroy", :controller=>"admin/admins/sessions"}
