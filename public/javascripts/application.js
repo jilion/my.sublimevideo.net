@@ -1,17 +1,17 @@
 var MySublimeVideo = MySublimeVideo || {};
 
 document.observe("dom:loaded", function() {
-  
+
   S2.Extensions.webkitCSSTransitions = true;
-  
+
   // ================================================================
   // = Password fields, selects and placeholders and forms managers =
   // ================================================================
-  
+
   $$('input[type=password]').each(function(input, index){
     new ShowPasswordFieldManager(input, index);
   });
-  
+
   if (!supportsHtml5InputAttribute("placeholder")) {
     $$("input[placeholder]").each(function(input){
       new PlaceholderManager(input);
@@ -20,19 +20,19 @@ document.observe("dom:loaded", function() {
       new PlaceholderManager(textarea);
     });
   }
-  
+
   $$("form").each(function(form){
     new FormManager(form);
   });
-  
+
   // =================
   // = Flash notices =
   // =================
-  
+
   $$('#flash .notice').each(function(element){
     MySublimeVideo.hideFlashMessageDelayed(element);
   });
-  
+
   // =====================================
   // = Add site hanlder and Sites poller =
   // =====================================
@@ -46,7 +46,7 @@ document.observe("dom:loaded", function() {
   // if ($("new_site")) {
   //   MySublimeVideo.siteFormHandler = new SiteFormHandler();
   // }
-  
+
   // ===================================================
   // = Fix a <select> CSS bug in Safari (under v4.0.5) =
   // ===================================================
@@ -56,12 +56,18 @@ document.observe("dom:loaded", function() {
                               parseInt(webkitVersionNumber[1],10) <= 531; // NOTE: Safari 4.0.4 and 4.0.5 have the same webkit version number (531)
                                                                           // Safari 5.0 has webkit version 533
                                                                           // Safari 4.0.5 is the last version pre-5.0
-  
+
   if (isSafari405OrPrevious) {
     $$('select').each(function(element){
       element.setStyle({ fontFamily:"Lucida Grande, Arial, sans-serif", fontSize:"15px" });
     });
   }
+
+  Event.observe(window, 'popstate', function(e) {
+    new Ajax.Request(location.href, {
+      method: 'get'
+    });
+  });
 
 });
 
@@ -72,11 +78,11 @@ document.observe("dom:loaded", function() {
 MySublimeVideo.flashMessage = function(type, message) {
   var flashDiv = $("flash");
   if (flashDiv) flashDiv.remove();
-  
+
   var noticeDiv = new Element("div", { className:type }).update(message);
   flashDiv = new Element("div", { id:"flash" }).insert(noticeDiv);
   $("content").insert({ top: flashDiv });
-  
+
   MySublimeVideo.hideFlashMessageDelayed(noticeDiv);
 };
 
@@ -138,37 +144,37 @@ MySublimeVideo.showSiteUsage = function(siteId) {
 
 var SiteFormHandler = Class.create({
   initialize: function() {
-    
+
     this.setup();
   },
   setup: function() { //call this after ajax call to re-setup this handler
     this.element = $("new_site"); // this is a <form>
-    
+
     // $$('input.plan_radio').each(function(radio){
     //   radio.on('change', function(){
     //     $('addons').down(".spinner").show();
     //     new Ajax.Request('/sites/new', { method: 'get', parameters: this.element.serialize() });
     //   }.bind(this));
     // }.bind(this));
-    
+
     // this.beforeAjaxHandler = this.element.on('ajax:before', function(){
     //   this.numberOfRequestsUntilSpinnerHides = 1;
     //   this.element.next(".spinner").show();
     //   //only listen to this once (we can stop the listener now) because this.element will soon be replaced
     //   this.beforeAjaxHandler.stop();
     // }.bind(this));
-    
+
     // Unfourtunately we can't use: this.completeAjaxHandler = this.element.on('ajax:complete', function(event){....
     // ...because on successful creation, create.js.erb will execute two new Ajax requests one of which will
     // reload this form, hence it would be too early to reload/resetup the placeholder here...
   },
   reloadAfterAjax: function() {
     // Note: at this point, this.element has already been replaced
-    
+
     // this.hideSpinner();
-    
+
     this.setup();
-    
+
     // Re-apply other handlers (form and placeholder managers)
     if (!supportsHtml5InputAttribute("placeholder")) {
       new PlaceholderManager(this.element.down("input[placeholder]"));
@@ -177,7 +183,7 @@ var SiteFormHandler = Class.create({
   },
   hideSpinner: function() { //tries to hide spinners (unless another ajax request must still complete)
     this.numberOfRequestsUntilSpinnerHides -= 1;
-    
+
     if (this.numberOfRequestsUntilSpinnerHides == 0) {
       $('addons').down(".spinner").hide();
     }
@@ -198,19 +204,19 @@ var FormManager = Class.create({
     form.on(submitEvent, function(event) {
       // Disable submit button for ajax forms to prevent double submissions (quickly click muliple times the form submit button)
       //
-      // (PAY ATTENTION: this considers that the ajax call will re-render the entire form hence re-enabling the submit button. 
+      // (PAY ATTENTION: this considers that the ajax call will re-render the entire form hence re-enabling the submit button.
       //  If we'll have some ajax forms that won't reload themselves, the code below must be updated)
       if (form.readAttribute("data-remote") != null) {
         form.select("input[type=submit]","button").each(function(button) {
           button.disable();
         });
       }
-      
+
       if (form.readAttribute("data-password-protected") == "true") {
         event.stop(); // don't submit form
         MySublimeVideo.passwordCheckerManager = new PasswordCheckerManager(event.element());
       }
-      
+
       // Reset pseudo-placeholders values (for browsers who don't support HTML5 placeholders)
       if (!supportsHtml5InputAttribute("placeholder")) {
         form.select("input.placeholder").each(function(input) {
@@ -218,7 +224,7 @@ var FormManager = Class.create({
         });
       }
     });
-    
+
     form.select("input[type=submit]").each(function(submitButton) {
       submitButton.on("click", function() { //when HTML5 form validitation doesn't pass, the submit event is not fired
         // HTML5 Input validity
@@ -238,10 +244,10 @@ var PasswordCheckerManager = Class.create({
     this.originForm = originForm;
     MySublimeVideo.openPopup(0, "password_checker", null, 'popup');
     this.popup = $("password_checker_0");
-    
+
     if (this.popup) {
       this.popup.removeClassName("loading");
-      
+
       var passwordCheckerForm = new Element("form", {
         id:"password_checker",
         action:"/password/validate",
@@ -267,14 +273,14 @@ var ShowPasswordFieldManager = Class.create({
   initialize: function(field, index) {
     this.field = field;
     this.field.store("showPasswordFieldManager", this); // so that the placeholderManager can eventually pick this up
-    
+
     // Only add the Show password checkbox if the input field has the "show_password" class
-    if (this.field.hasClassName("show_password")) { 
+    if (this.field.hasClassName("show_password")) {
       var showPasswordWrap = new Element("div", { className:'checkbox_wrap' });
       var showPasswordLabel = new Element("label", { 'for':"show_password_"+index }).update("Show password");
       this.showPasswordCheckbox = new Element("input", { type:"checkbox", id:"show_password_"+index });
       showPasswordWrap.insert(this.showPasswordCheckbox).insert(showPasswordLabel);
-      
+
       var errorMessage = this.field.up().select(".inline_errors").first();
       if (errorMessage) {
         errorMessage.insert({ after: showPasswordWrap });
@@ -282,7 +288,7 @@ var ShowPasswordFieldManager = Class.create({
       else {
         this.field.insert({ after: showPasswordWrap });
       }
-      
+
       this.showPasswordCheckbox.on("click", this.toggleShowPassword.bind(this));
       this.showPasswordCheckbox.checked = false; //Firefox reload ;-)
     }
@@ -315,11 +321,11 @@ var ShowPasswordFieldManager = Class.create({
       required: passwordField.readAttribute("required"),
       className: passwordField.className,
       type: textOrPassword ? 'text' : 'password'
-    }); 
+    });
     passwordField.purge(); //removes eventual observers and storage keys
     passwordField.replace(newPasswordField);
     this.field = newPasswordField;
-    
+
     if(this.field.id == "user_password" && $("current_password_wrap")) MySublimeVideo.currentPasswordHandler.setupField(this.field);
     return newPasswordField;
   }
@@ -335,13 +341,13 @@ var PlaceholderManager = Class.create({
     //
     this.field = field;
     this.showPasswordFieldManager = this.field.retrieve("showPasswordFieldManager"); //it means field.type == "password"
-    
+
     // Just for Firefox, if I reload the page twice...
     if (this.field.value == this.field.readAttribute("placeholder")) {
       this.field.value = "";
       this.field.removeClassName("placeholder");
     }
-    
+
     this.setupObservers();
     this.resetField(); //if it's a password field this will also take care to initially replace it with regular text fields (until it receives focus)
   },
@@ -354,10 +360,10 @@ var PlaceholderManager = Class.create({
     if (this.field.value == this.field.readAttribute("placeholder")) {
       this.field.value = "";
       this.field.removeClassName("placeholder");
-      
+
       if (this.showPasswordFieldManager) {
         this.field = this.showPasswordFieldManager.replacePasswordField(this.field, this.showPasswordFieldManager.isShowingPassword());
-        
+
         // refocus (the newly create field)
         if (Prototype.Browser.IE) {
           setTimeout(function(){
@@ -367,7 +373,7 @@ var PlaceholderManager = Class.create({
         else {
           this.field.focus();
         }
-        
+
         this.setupObservers(); //since we have a new field
       }
     }
@@ -376,7 +382,7 @@ var PlaceholderManager = Class.create({
       // = OPERA GRRRRRRRRRR =
       // =====================
       //... in fact Opera is currently the only browser supporting HTML5 form validty but NOT HTML5 placeholders!
-      // The bugs happens when a field is not valid (from the HTML5 validity point of view) because of the way we 
+      // The bugs happens when a field is not valid (from the HTML5 validity point of view) because of the way we
       // reset the fields value in FormManager before submitting the form on browsers who do not support HTML5 placeholders...
       if (this.field.validity && !this.field.validity.valid) {
         if (this.showPasswordFieldManager) {
@@ -392,7 +398,7 @@ var PlaceholderManager = Class.create({
     if (this.field.value == "") {
       this.field.addClassName("placeholder");
       this.field.value = this.field.readAttribute("placeholder");
-      
+
       if (this.showPasswordFieldManager) {
         this.field = this.showPasswordFieldManager.replacePasswordField(this.field, true);
         this.setupObservers(); //since we have a new field
@@ -428,10 +434,10 @@ var PopupHandler = Class.create({
     //   </div>
     //   <a class='close'><span>Close</span></a>
     // </div>
-    
+
     this.class_name = class_name;
     this.close();
-    
+
     var popupId = idPrefix + "_" + itemId;
     var popupLoading = new Element("div", {
       id:popupId,
@@ -443,11 +449,11 @@ var PopupHandler = Class.create({
       onclick:"return MySublimeVideo.closePopup()"
     }).update("<span>Close</span>");
     popupLoading.insert({ bottom:closeButton });
-    
+
     $('global').insert({ after:popupLoading });
-    
+
     this.startKeyboardObservers();
-    
+
     if(url != null) {
       //js.erb of the called method will take care of replacing the wrap div with the response content
       new Ajax.Request(url, { method:'get' });
@@ -507,11 +513,11 @@ var SitesPoller = Class.create({
   updateSite: function(siteId) {
     // Stop polling
     this.stopPolling();
-    
+
     // Remove the "cdn updating in progress..." test
     var inProgressWrap = $$("#site_"+siteId+" .in_progress").first();
     if (inProgressWrap) inProgressWrap.remove();
-    
+
     // Check if a restart polling is needed
     this.checkForSiteInProgress();
   }
@@ -523,7 +529,7 @@ var SitesPoller = Class.create({
 //     this.emailField          = $("user_email");
 //     this.passwordField       = $("user_password");
 //     this.currentPasswordWrap = $("current_password_wrap");
-//     
+//
 //     [this.emailField, this.passwordField].each(function(field){
 //       this.setupField(field);
 //     }.bind(this));
@@ -554,12 +560,12 @@ function supportsHtml5InputAttribute(attribute) { // e.g "placeholder"
 Element.addMethods({
   shake: function(element, options) {
     S2.Extensions.webkitCSSTransitions = false; //essential, cause webkit transitions in this case are less smooth
-    
+
     element = $(element);
     var originalLeft = parseFloat(element.getStyle('left') || '0');
     var oldStyle = { left:originalLeft };
     element.makePositioned();
-    
+
     var opts = { distance:15, duration:0.5 };
     Object.extend(opts, options);
     var distance = opts.distance;
@@ -567,7 +573,7 @@ Element.addMethods({
 
     var split = parseFloat(duration) / 10.0;
 
-    var shakeEffect = element.morph('left:' + (originalLeft+distance) + 'px', { duration:split 
+    var shakeEffect = element.morph('left:' + (originalLeft+distance) + 'px', { duration:split
       }).morph('left:' + (originalLeft-distance) + 'px', { duration:split*2
         }).morph('left:' + (originalLeft+distance) + 'px', { duration:split*2
           }).morph('left:' + (originalLeft-distance) + 'px', { duration:split*2

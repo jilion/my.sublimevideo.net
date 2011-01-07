@@ -1,4 +1,3 @@
-= image_tag "/images/embed/spinner.gif", :class => "spinner", :id => "table_spinner", :style => "display:none"
 %table.main#delayed_jobs
   %tr
     %th.name= "Name"
@@ -12,7 +11,7 @@
     %th.unlock= "Unlock"
     %th.delete= "Delete"
   = render :partial => 'delayed_job', :collection => @delayed_jobs
-  
+
 .pagination_wrap
   = remote_will_paginate(@delayed_jobs, :params => params.merge(:format => nil))
   = page_entries_info(@delayed_jobs)

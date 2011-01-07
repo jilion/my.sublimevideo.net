@@ -1,15 +1,13 @@
 = title("Sites")
 = content_header(admin_sites_page_title(@sites))
 
+.search_form
+  = form_tag admin_sites_path, :method => :get, :id => 'search_form' do
+    = text_field_tag :search, '', :id => 'search_input', :placeholder => "Search", :type => "search", :autofocus => true, :autosave => "admin_search", :results => "5"
+
+.spacer
+
 = render 'filter_links'
 
-%br
-.search
-  %h3= "Looking for more?"
-  = form_tag(admin_sites_path, { :method => :get, :id => 'search_form', :remote => true, :onsubmit => "new SpinnerForElement('search_form');" }) do
-    = text_field_tag :search, '', :class => "text", :placeholder => "Keyword", :required => true
-    = submit_tag "search", :name => '', :id => 'search_button'
-    = image_tag('/images/embed/admin/spinner.gif', :id => 'search_form_spinner', :style => "display:none;")
-%br
 
 #sites_table_wrap= render 'sites'

@@ -206,6 +206,7 @@ ul.no_bullet {
 }
 
 #main h2 {
+  float: left;
   font-size:36px;
   font-weight:600;
   padding:0 0 10px;
@@ -299,6 +300,7 @@ a {
   text-decoration:none;
   color:#ca0063;
 }
+
 /* Dirty style */
 
 #content table.main td.delete a, #content table.main td.delete input {
@@ -336,6 +338,16 @@ form label.icon {
 #main p.summary {
   float:right;
   text-align: right;
+}
+
+
+#search_form {
+  float: right;
+}
+
+#table_spinner{
+  position:absolute;
+  left:50%;
 }
 
 /* =================== */
