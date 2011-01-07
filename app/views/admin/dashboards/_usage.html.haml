@@ -1,18 +1,17 @@
 - loader_hits = SiteUsage.between(@date_range_from, @date_range_to).sum(:loader_hits).to_i
 - player_hits = SiteUsage.between(@date_range_from, @date_range_to).sum(:player_hits).to_i
 - traffic = SiteUsage.between(@date_range_from, @date_range_to).sum(:traffic_s3).to_i + SiteUsage.between(@date_range_from, @date_range_to).sum(:traffic_voxcast).to_i
-- flash_hits = SiteUsage.between(@date_range_from, @date_range_to).sum(:flash_hits).to_i if player_hits > 0
 
 %h4 Loader hits
-%p.summary= number_to_human(loader_hits, :significant => false, :precision => 2, :delimiter => "'")
+%p.summary= number_to_human(loader_hits, :significant => false, :precision => 3, :delimiter => "'")
 
 %h4 Player hits
-%p.summary= number_to_human(player_hits, :significant => false, :precision => 2, :delimiter => "'")
+%p.summary= number_to_human(player_hits, :significant => false, :precision => 3, :delimiter => "'")
 
 %h4 Traffic
 %p.summary= number_to_human_size(traffic, :significant => false, :precision => 2)
 
-- if flash_hits
+- if player_hits > 0 && flash_hits = SiteUsage.between(@date_range_from, @date_range_to).sum(:flash_hits).to_i
   %h4 Flash
   %p.summary= display_percentage(flash_hits / player_hits.to_f)
 
@@ -20,4 +19,4 @@
   %p.summary= number_with_precision(BigDecimal.new((loader_hits / player_hits.to_f).to_s, 2), :significant => false, :precision => 2, :delimiter => "'")
 
   %h4 Traffic/Player
-  %p.summary= number_to_human_size(traffic / player_hits.to_f, :precision => 4)
+  %p.summary= number_to_human_size(traffic / player_hits.to_f, :significant => false, :precision => 2)

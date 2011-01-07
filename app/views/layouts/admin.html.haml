@@ -22,7 +22,6 @@
       #main
         #content
           = render 'layouts/flash', :flash => flash if flash.present?
-
           = image_tag "/images/embed/spinner.gif", :class => "spinner", :id => "table_spinner", :style => "display:none"
           = yield
       #footer

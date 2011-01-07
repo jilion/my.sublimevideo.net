@@ -10,10 +10,9 @@
   %td.sites
     %small
       %ul.no_bullet
-        - sites = user.sites.not_archived
-        - sites[0,2].each do |site|
+        - user.sites[0,2].each do |site|
           = content_tag :li do
             = links_to_hostnames(site)
-        %li= link_to("#{sites.size-2} more", admin_user_path(user)) if sites.size > 2
+        %li= link_to("#{user.sites.size-2} more", admin_user_path(user)) if user.sites.size > 2
   %td
     %small= display_date(user.created_at)

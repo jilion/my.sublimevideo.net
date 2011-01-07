@@ -1,3 +1,10 @@
+guard 'passenger', :ping => true do
+  watch('config/application.rb')
+  watch('config/environment.rb')
+  watch(%r{config/environments/.+\.rb})
+  watch(%r{config/initializers/.+\.rb})
+end
+
 group 'backend' do
   
   # guard 'bundler' do
@@ -29,14 +36,7 @@ group 'backend' do
 end
 
 group 'frontend' do
-  
-  guard 'passenger', :ping => true do
-    watch('config/application.rb')
-    watch('config/environment.rb')
-    watch(%r{config/environments/.+\.rb})
-    watch(%r{config/initializers/.+\.rb})
-  end
-  
+    
   guard 'livereload', :api_version => '1.5' do
     watch(%r{app/.+\.(erb|haml)})
     watch(%r{app/helpers/.+\.rb})

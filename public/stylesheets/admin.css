@@ -194,6 +194,7 @@ ul.no_bullet {
   padding:15px;
   min-width:800px;
   margin:15px;
+  position:relative; /* remy */
   background:#fff;
   border-radius:10px;
 }
@@ -206,7 +207,7 @@ ul.no_bullet {
 }
 
 #main h2 {
-  float: left;
+  float:left; /* thibaud */
   font-size:36px;
   font-weight:600;
   padding:0 0 10px;
@@ -290,8 +291,9 @@ ul.no_bullet {
 }
 
 #main form.date_chooser {
-  float:right;
-  margin:-50px 0 0;
+  position:absolute;
+  top:0;
+  right:10px;
 }
 
 #footer {
@@ -340,6 +342,7 @@ form label.icon {
   position:absolute;
 }
 
+/* remy */
 #main .dashboard_box {
   float:left;
   background:-webkit-gradient(linear,left top,left bottom,from(#888),to(#BBB));
@@ -351,11 +354,10 @@ form label.icon {
   -webkit-box-shadow:inset #222 0 1px 4px;
 }
 
-
+/* thibaud */
 #search_form {
-  float: right;
+  float:right;
 }
-
 #table_spinner{
   position:absolute;
   left:50%;

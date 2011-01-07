@@ -2,22 +2,24 @@
 
 = render '/admin/shared/date_chooser'
 
-#users.dashboard_box
-  %h3 Users
-  #users_data
-    - cache 'dashboard_users', :expires_in => 1.minute do
-      = render 'users'
-
-#sites.dashboard_box
-  %h3 Sites
-  #sites_data
-    - cache 'dashboard_sites', :expires_in => 1.minute do
-      = render 'sites'
-
-#usage.dashboard_box
+#timeline_usage.dashboard_timeline
   %h3 Usage
-  #usage_data
-    - cache 'dashboard_usage', :expires_in => 1.minute do
-      = render 'usage'
+  - cache 'dashboard_timeline_usage', :expires_in => 10.minutes do
+    = render 'timeline_usage'
+
+#box_users.dashboard_box
+  %h3 Users
+  - cache 'dashboard_box_users', :expires_in => 10.minutes do
+    = render 'users'
+
+#box_sites.dashboard_box
+  %h3 Sites
+  - cache 'dashboard_box_sites', :expires_in => 10.minutes do
+    = render 'sites'
+
+#box_usage.dashboard_box
+  %h3 Usage
+  - cache 'dashboard_box_usage', :expires_in => 10.minutes do
+    = render 'usage'
 
 .spacer

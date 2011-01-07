@@ -1,6 +1,6 @@
 # coding: utf-8
 module Admin::StatsHelper
-  
+
   def chart(id)
     {
       renderTo: id,
@@ -8,15 +8,15 @@ module Admin::StatsHelper
       backgroundColor: '#EEE'
     }
   end
-  
-  def usage_date_subtitle(start_at, options = {})
-    options[:date_format] ||= :date
+
+  def usage_date_subtitle(start_at, end_at, options = {})
+    options[:date_format] ||= :year_month_day
     {
-      text: options[:text] || "#{l(start_at, :format => options[:date_format].to_sym)} - #{l(Time.now.utc, :format => options[:date_format].to_sym)}",
+      text: options[:text] || "#{l(start_at, :format => options[:date_format].to_sym)} - #{l(end_at, :format => options[:date_format].to_sym)}",
       x: -20
     }
   end
-  
+
   def legend(options = {})
     {
       verticalAlign: options[:vertical_align] || 'top',
@@ -27,7 +27,7 @@ module Admin::StatsHelper
       borderColor: options[:border_color] || '#CCC'
     }
   end
-  
+
   def serie(data, title, color, options = {})
     {
       type: options[:type] || 'column',
@@ -37,12 +37,12 @@ module Admin::StatsHelper
       data: data
     }
   end
-  
+
   def evolutive_average_array(array)
     zeros_days = array.select { |value| value.zero? }.size
     Array.new.tap { |arr| array.each_with_index { |item, index| arr << (item.to_f / [(index + 1 - zeros_days), 1].max).round(2) } }
   end
-  
+
   def plot_options(start_at, interval = 1.day)
      {
       column: {
@@ -70,7 +70,7 @@ module Admin::StatsHelper
       }
     }
   end
-  
+
   def credits
     {
       :enabled => true,
@@ -78,5 +78,5 @@ module Admin::StatsHelper
       :href => "http://sublimevideo.net"
     }
   end
-  
+
 end

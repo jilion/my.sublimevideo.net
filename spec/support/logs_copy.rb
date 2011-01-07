@@ -4,7 +4,7 @@ RSpec.configure do |config|
     %w[s3/sublimevideo.player s3/sublimevideo.loaders s3/sublimevideo.licenses].each do |path|
       FileUtils.mkdir_p("public/uploads/#{path}")
     end
-    
+
     # S3 Player
     s3_player_log_file = "#{Rails.public_path}/uploads/s3/sublimevideo.player/2010-07-16-05-22-13-8C4ECFE09170CCD5"
     FileUtils.rm(s3_player_log_file, :force => true)
