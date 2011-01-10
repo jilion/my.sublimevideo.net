@@ -261,8 +261,8 @@ end
 def create_plans
   plans = [
     { name: "perso",      player_hits: 3000,   price: 299,  overage_price: 299 },
-    { name: "pro",        player_hits: 30000,  price: 999,  overage_price: 199 },
-    { name: "enterprise", player_hits: 300000, price: 4999, overage_price: 99 }
+    { name: "pro",        player_hits: 100000,  price: 999,  overage_price: 199 },
+    { name: "enterprise", player_hits: 1000000, price: 6999, overage_price: 99 }
   ]
   plans.each { |attributes| Plan.create(attributes) }
   puts "#{plans.size} plans created!"

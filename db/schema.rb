@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110107113306) do
+ActiveRecord::Schema.define(:version => 20110110150524) do
 
   create_table "addons", :force => true do |t|
     t.string   "name"
@@ -179,7 +179,7 @@ ActiveRecord::Schema.define(:version => 20110107113306) do
     t.datetime "archived_at"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "player_mode",                            :default => "stable"
+    t.string   "player_mode",                                :default => "stable"
     t.integer  "google_rank"
     t.integer  "alexa_rank"
     t.string   "path"
@@ -190,10 +190,16 @@ ActiveRecord::Schema.define(:version => 20110107113306) do
     t.datetime "activated_at"
     t.datetime "plan_player_hits_reached_alert_sent_at"
     t.datetime "next_plan_recommended_alert_sent_at"
+    t.integer  "last_30_days_main_player_hits_total_count",  :default => 0
+    t.integer  "last_30_days_extra_player_hits_total_count", :default => 0
+    t.integer  "last_30_days_dev_player_hits_total_count",   :default => 0
   end
 
   add_index "sites", ["created_at"], :name => "index_sites_on_created_at"
   add_index "sites", ["hostname"], :name => "index_sites_on_hostname"
+  add_index "sites", ["last_30_days_dev_player_hits_total_count"], :name => "index_sites_on_last_30_days_dev_player_hits_total_count"
+  add_index "sites", ["last_30_days_extra_player_hits_total_count"], :name => "index_sites_on_last_30_days_extra_player_hits_total_count"
+  add_index "sites", ["last_30_days_main_player_hits_total_count"], :name => "index_sites_on_last_30_days_main_player_hits_total_count"
   add_index "sites", ["plan_id"], :name => "index_sites_on_plan_id"
   add_index "sites", ["user_id"], :name => "index_sites_on_user_id"
 

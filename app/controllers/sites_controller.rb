@@ -1,6 +1,6 @@
 class SitesController < ApplicationController
   respond_to :html
-  respond_to :js, :only => [:index, :code, :new]
+  respond_to :js, :only => [:index, :code]
 
   before_filter :redirect_suspended_user
   before_filter :find_by_token, :only => [:code, :transition, :edit, :update, :activate, :rollback, :destroy, :usage]

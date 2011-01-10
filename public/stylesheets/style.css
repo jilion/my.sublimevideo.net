@@ -237,6 +237,10 @@ body {
   width:440px;
 }
 
+#content form.full {
+  width:100%;
+}
+
 #content form.section {
   background:url(/images/embed/breakline.png) no-repeat -228px 100%;
   padding-bottom:20px;
@@ -841,26 +845,6 @@ form .entry a.cancel {
 /* = My Sites = */
 /* ============ */
 
-#new_site_wrap {
-  width:668px;
-  position:relative;
-}
-
-/*#new_site_wrap .spinner {
-  position:absolute;
-  right:80px;
-  top:26px;
-}
-
-#new_site_wrap .spinner .label {
-  position:absolute;
-  left:45px;
-  top:10px;
-  white-space:nowrap;
-  color:#666;
-  font-style:italic;
-}
-*/
 #content form.site {
   width:668px;
   background:url(/images/embed/breakline.png) no-repeat;
@@ -1258,17 +1242,123 @@ form .entry a.cancel {
   opacity:0.3;
 }
 
+/* ============== */
+/* = Site (New) = */
+/* ============== */
+
+#site {
+  
+}
+
+ul#plans {
+  width:100%;
+  list-style-type:none;
+  float:left;
+  margin:25px 0 0;
+}
+
+ul#plans li {
+  display:block;
+  float:left;
+  width:280px;
+  height:254px;
+  background:url(/images/embed/sites/plans_box_background.png) no-repeat;
+  position:relative;
+}
+
+ul#plans li.pro {
+  margin:0 9px;
+}
+
+ul#plans .content {
+  padding:28px;
+}
+
+ul#plans label.title {
+  font-size:34px;
+  font-weight:200;
+  color:#5d6778;
+}
+
+ul#plans h4.number {
+  display:block;
+  padding:10px 0 1px;
+  text-align:center;
+  font-size:44px;
+  font-weight:600;
+  text-shadow:#fff 0 1px 0;
+}
+
+ul#plans li.perso h4.number {color:#949cab}
+ul#plans li.pro h4.number {color:#818996}
+ul#plans li.enterprise h4.number {color:#6a717c}
+
+ul#plans h5.label {
+  font-size:15px;
+  color:#8c96a6;
+  font-weight:normal;
+  display:block;
+  text-align:center;
+}
+
+ul#plans .radio_wrap {
+  position:absolute;
+  bottom:35px;
+  left:26px;
+}
+
+ul#plans .radio_wrap input {
+  float:left;
+  position:relative;
+  top:0;
+  left:0;
+  opacity:0;
+  width:46px;
+  height:46px;
+  z-index:2;
+}
+
+ul#plans .radio_wrap span.bg {
+  position:relative;
+  display:block;
+  width:46px;
+  height:46px;
+  background:url(/images/embed/sites/plans_checkbox.png) no-repeat;
+}
+
+/* Original concept by http://www.thecssninja.com/css/custom-inputs-using-css */
+ul#plans .radio_wrap input:checked + span.bg {background-position:0 -46px;}
+ul#plans .radio_wrap input:focus + span.bg {background-position:0 -92px;}
+ul#plans .radio_wrap input:focus:checked + span.bg {background-position:0 -138px;}
+
+ul#plans .pricing {
+  position:absolute;
+  right:28px;
+  bottom:35px;
+  text-align:right;
+  color:#8c96a6;
+  font-size:14px;
+}
+
+ul#plans .pricing h4.price {
+  font-size:25px;
+  font-weight:600;
+  color:#5d6778;
+  line-height:24px;
+}
+
+ul#plans .overages {
+  width:280px;
+  height:10px;
+  position:absolute;
+  bottom:0;
+  left:0;
+  text-align:center;
+  font-size:10px;
+}
 
 .popup {
   width:450px;
-}
-
-/* remy */
-.usage_popup {
-  width:850px;
-}
-/* remy */
-.popup, .usage_popup {
   position:fixed;
   margin:auto;
   top:20%;
@@ -1289,8 +1379,8 @@ form .entry a.cancel {
   -moz-border-radius:10px;
   border-radius:10px;
 }
-/* remy */
-.popup .wrap, .usage_popup .wrap {
+
+.popup .wrap {
 /*  height:100%;*/
   border:1px solid #000;
   background:#b9bdc7;
@@ -1304,23 +1394,23 @@ form .entry a.cancel {
   border-radius:4px;
   -webkit-background-clip:padding-box;
 }
-/* remy */
-.popup .content, .usage_popup .content {
+
+.popup .content {
   padding:20px;
 }
-/* remy */
-.popup.loading .content, .usage_popup.loading .content {
+
+.popup.loading .content {
   height:130px;
   background:url(/images/embed/big_spinner.gif) no-repeat center;
 }
-/* remy */
-.popup .content h3, .usage_popup .content h3 {
+
+.popup .content h3 {
   font-size:24px;
   font-weight:normal;
   padding-bottom:5px;
 }
-/* remy */
-.popup .content h3 strong, .usage_popup .content h3 strong {
+
+.popup .content h3 strong {
   font-weight:600;
 }
 
@@ -1398,7 +1488,7 @@ form .entry a.cancel {
   left:30px;
 }
 
-.popup a.close, .usage_popup a.close {
+.popup a.close {
   display:block;
   width:32px;
   height:32px;
@@ -1408,7 +1498,7 @@ form .entry a.cancel {
   left:-16px;
 }
 
-.popup a.close span, .usage_popup a.close span {display:none;}
+.popup a.close span {display:none;}
 
 .pagination_wrap {
   position:relative;
@@ -1503,7 +1593,7 @@ form .entry a.cancel {
 
 #credit_card_summary p strong {font-weight:600;}
 
-#past_invoices {
+/*#past_invoices {
   background:url(/images/embed/breakline.png) no-repeat -228px 100%;
   padding:10px 0 20px;
 }
@@ -1545,7 +1635,7 @@ form .entry a.cancel {
 
 .popup table.stats td.big_total {
   font-size:16px;
-}
+}*/
 
 div.text {
   width:640px;
