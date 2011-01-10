@@ -372,3 +372,13 @@ form label.icon {
   font-size:22px;
   font-weight:600;
 }
+
+/* remy */
+#main table.crado td {
+  padding:5px 5px;
+  text-align:left;
+}
+
+#main table.crado.center td {
+  text-align:center;
+}

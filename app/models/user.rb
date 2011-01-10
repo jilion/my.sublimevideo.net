@@ -108,7 +108,7 @@ class User < ActiveRecord::Base
     event(:suspend)        { transition :active => :suspended }
     event(:cancel_suspend) { transition :active => :active }
     event(:unsuspend)      { transition :suspended => :active }
-    event(:archive)        { transition :active => :archived }
+    event(:archive)        { transition all => :archived }
 
     before_transition :on => :suspend, :do => [:set_failed_invoices_count_on_suspend, :suspend_sites]
     after_transition  :on => :suspend, :do => :send_account_suspended_email
@@ -329,6 +329,8 @@ end
 # Indexes
 #
 #  index_users_on_confirmation_token     (confirmation_token) UNIQUE
+#  index_users_on_created_at             (created_at)
+#  index_users_on_current_sign_in_at     (current_sign_in_at)
 #  index_users_on_email_and_archived_at  (email,archived_at) UNIQUE
 #  index_users_on_reset_password_token   (reset_password_token) UNIQUE
 #

@@ -28,7 +28,9 @@ namespace :db do
       timed { create_addons }
       timed { create_sites(argv_count) }
       timed { create_site_usages }
+      timed { create_invoices(argv_count) }
       timed { create_mail_templates }
+      empty_tables("delayed_jobs")
     end
 
     desc "Load Admin development fixtures."
@@ -61,6 +63,12 @@ namespace :db do
     task :site_usages => :environment do
       timed { empty_tables(SiteUsage) }
       timed { create_site_usages }
+    end
+
+    desc "Create fake invoices"
+    task :invoices => :environment do
+      timed { empty_tables(Invoice) }
+      timed { create_invoices(argv_count) }
     end
 
     desc "Create fake plans"
@@ -184,12 +192,14 @@ def create_sites(max)
   plan_ids = Plan.all.map(&:id)
   subdomains = %w[www. blog. my. git. sv. ji. geek. yin. yang. chi. cho. chu. foo. bar. rem.]
   created_at_array = (Date.new(2010,9,14)..Date.today).to_a
-
+  ssl_addon_id = Addon.find_by_name('ssl')
+  
   User.all.each do |user|
     rand(max).times do |i|
       site = user.sites.build(
         plan_id: plan_ids.sample,
-        hostname: "#{rand > 0.75 ? subdomains.sample : ''}#{user.id}#{i}#{Faker::Internet.domain_name}"
+        hostname: "#{rand > 0.75 ? subdomains.sample : ''}#{user.id}#{i}#{Faker::Internet.domain_name}",
+        addon_ids: rand > 0.75 ? [ssl_addon_id] : []
       )
       site.created_at   = [user.confirmed_at.to_date, created_at_array.sample].max
       site.activated_at = site.created_at
@@ -205,12 +215,12 @@ def create_site_usages
   player_hits_total = 0
   Site.all.each do |site|
     (start_date..end_date).each do |day|
-      loader_hits                = rand(3000)
-      main_player_hits           = rand(1000)
+      loader_hits                = rand(30000)
+      main_player_hits           = rand(10000)
       main_player_hits_cached    = (main_player_hits * rand).to_i
-      dev_player_hits            = rand(200)
+      dev_player_hits            = rand(2000)
       dev_player_hits_cached     = (dev_player_hits * rand).to_i
-      invalid_player_hits        = rand(100)
+      invalid_player_hits        = rand(1000)
       invalid_player_hits_cached = (invalid_player_hits * rand).to_i
       player_hits = main_player_hits + main_player_hits_cached + dev_player_hits + dev_player_hits_cached + invalid_player_hits + invalid_player_hits_cached
       requests_s3 = player_hits - (main_player_hits_cached + dev_player_hits_cached + invalid_player_hits_cached)
@@ -236,6 +246,16 @@ def create_site_usages
     end
   end
   puts "#{player_hits_total} video-page views total created between #{start_date} and #{end_date}!"
+end
+
+def create_invoices(count = 5)
+  d = Site.first.created_at
+  while d < Time.now
+    Invoice.complete_invoices_for_billable_users(d.beginning_of_month, d.end_of_month)
+    d += 1.month
+  end
+  # end
+  puts "#{Invoice.count} invoices created!"
 end
 
 def create_plans

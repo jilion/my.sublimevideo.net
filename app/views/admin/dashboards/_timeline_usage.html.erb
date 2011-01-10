@@ -5,8 +5,8 @@ graph = Graph.new do |g|
   g.option(chart: chart('timeline_usage'))
   g.option(title: { text: "VPV per day, total and averages" })
   g.option(subtitle: usage_date_subtitle(@date_range_from, @date_range_to))
-  g.option(legend: legend)
-  g.option(xAxis: { type: 'datetime', showFirstLabel: true, showLastLabel: true })
+  g.option(legend: legend(width: 700))
+  g.option(xAxis: { type: 'datetime', showFirstLabel: true, showLastLabel: true, gridLineWidth: 1 })
   g.raw_option(%(yAxis: {
     title: {
       text: 'Video-page views',
@@ -56,4 +56,4 @@ graph = Graph.new do |g|
   g.option(credits: credits)
 end
 %>
-<div id="timeline_usage" style="width: 100%; height: 300px;"><%= raw graph.draw(:observe => request.xhr? ? false : "dom:loaded") %></div>
+<div id="timeline_usage" style="width: 100%; height: 400px;"><%= raw graph.draw(:observe => request.xhr? ? false : "dom:loaded") %></div>

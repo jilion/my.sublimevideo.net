@@ -8,15 +8,15 @@ class Admin::AdminController < ApplicationController
 
   def compute_date_range
     @date_range_from = if params[:date_range_from]
-      Time.new(params[:date_range_from][:year].to_i, params[:date_range_from][:month].to_i, params[:date_range_from][:day].to_i)
+      Time.utc(params[:date_range_from][:year].to_i, params[:date_range_from][:month].to_i, params[:date_range_from][:day].to_i)
     else
-      1.month.ago - 1.day
+      (1.month.ago - 1.day).utc
     end.midnight
 
     @date_range_to = if params[:date_range_to]
-      Time.new(params[:date_range_to][:year].to_i, params[:date_range_to][:month].to_i, params[:date_range_to][:day].to_i)
+      Time.utc(params[:date_range_to][:year].to_i, params[:date_range_to][:month].to_i, params[:date_range_to][:day].to_i)
     else
-      Time.now.yesterday
+      Time.now.utc.yesterday
     end.end_of_day
 
     if params[:date_range_from] || params[:date_range_to]

@@ -27,8 +27,12 @@ describe OneTime::User do
           described_class.delete_invited_not_yet_registered_users
         end
 
-        it "should only delete invited and not yet registered users" do
-          User.all.should == [@beta_user]
+        it "should only archive invited and not yet registered users" do
+          @invited_user.reload
+          User.all.should == [@beta_user, @invited_user]
+          User.with_state(:archived).all.should == [@invited_user]
+          User.beta.all.should == [@beta_user]
+          User.invited.all.should == [@invited_user]
         end
       end
     end

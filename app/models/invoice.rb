@@ -91,7 +91,7 @@ class Invoice < ActiveRecord::Base
 
   def self.complete_invoices_for_billable_users(started_at, ended_at) # utc dates!
     User.billable(started_at, ended_at).each do |user|
-      invoice = build(:user => user, :started_at => started_at, :ended_at => ended_at)
+      invoice = build(user: user, started_at: started_at, ended_at: ended_at)
       invoice.complete
     end
     delay_complete_invoices_for_billable_users(*TimeUtil.next_full_month(ended_at))
