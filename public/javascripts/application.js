@@ -63,11 +63,13 @@ document.observe("dom:loaded", function() {
     });
   }
 
-  Event.observe(window, 'popstate', function(e) {
-    new Ajax.Request(location.href, {
-      method: 'get'
+  if (history && history.pushState) {
+    Event.observe(window, 'popstate', function(e) {
+      new Ajax.Request(location.href, {
+        method: 'get'
+      });
     });
-  });
+  }
 
 });
 
@@ -115,6 +117,15 @@ MySublimeVideo.makeSticky = function(element) {
   element.addClassName("active");
 };
 
+MySublimeVideo.remoteSortLink = function(element) {
+  MySublimeVideo.makeRemoteLinkSticky(element);
+  MySublimeVideo.showTableSpinner();
+  if (history && history.pushState) {
+    history.pushState(null, document.title, element.href);
+  };
+};
+
+
 MySublimeVideo.makeRemoteLinkSticky = function(element) {
   var container = element.up();
   container.select("a.active[data-remote]").each(function(el){
@@ -122,6 +133,7 @@ MySublimeVideo.makeRemoteLinkSticky = function(element) {
   });
   element.addClassName("active");
 };
+
 
 MySublimeVideo.showTableSpinner = function() {
   $('table_spinner').show();

@@ -16,7 +16,9 @@ document.observe("dom:loaded", function() {
       parameters: params,
       onComplete: function(request) {
         $('table_spinner').hide();
-        history.replaceState(null, document.title, url + "?" + params);
+        if (history && history.pushState) {
+          history.replaceState(null, document.title, url + "?" + params);
+        }
       },
       onLoading:  function(request) { $('table_spinner').show(); }
     })
