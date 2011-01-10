@@ -364,23 +364,23 @@ describe User do
 
   describe "Callbacks" do
     let(:user) { Factory(:user) }
-    
+
     describe "after_save :newsletter_subscription" do
       use_vcr_cassette "campaign_monitor/user"
       let(:user) { Factory(:user, :newsletter => "1", :email => "newsletter@jilion.com") }
-      
+
       it "should subscribe on user creation" do
         user
-        @worker.work_off 
+        @worker.work_off
         CampaignMonitor.state(user.email).should == "Active"
       end
-      
+
       it "should not subscribe on user creation if newsletter is false" do
         user = Factory(:user, :newsletter => "0", :email => "no_newsletter@jilion.com")
         @worker.work_off
         CampaignMonitor.state(user.email).should == "Unknown"
       end
-      
+
       it "should subscribe new email and unsubscribe old email on user email update" do
         old_email = user.email
         @worker.work_off
@@ -390,7 +390,7 @@ describe User do
         CampaignMonitor.state(old_email).should == "Unsubscribed"
         CampaignMonitor.state(user.email).should == "Active"
       end
-      
+
       it "should do nothing if user just change is name" do
         user
         @worker.work_off
@@ -398,7 +398,7 @@ describe User do
         Delayed::Job.count.should == 0
       end
     end
-    
+
     describe "after_update :update_email_on_zendesk" do
       it "should not delay Module#put if email has not changed" do
         user.zendesk_id = 15483194
@@ -575,7 +575,6 @@ protected
 end
 
 
-
 # == Schema Information
 #
 # Table name: users
@@ -629,6 +628,8 @@ end
 # Indexes
 #
 #  index_users_on_confirmation_token     (confirmation_token) UNIQUE
+#  index_users_on_created_at             (created_at)
+#  index_users_on_current_sign_in_at     (current_sign_in_at)
 #  index_users_on_email_and_archived_at  (email,archived_at) UNIQUE
 #  index_users_on_reset_password_token   (reset_password_token) UNIQUE
 #

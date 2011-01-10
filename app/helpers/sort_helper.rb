@@ -22,7 +22,7 @@ module SortHelper
     link_to(url_for(url_params.merge("by_#{field}" => way)),
               :class => ['sort', field, class_active, class_up].join(" "),
               :remote => options[:remote],
-              :onclick => "MySublimeVideo.makeRemoteLinkSticky(this); MySublimeVideo.showTableSpinner(); history.pushState(null, document.title, this.href);") do
+              :onclick => "MySublimeVideo.remoteSortLink(this);") do
       content_tag(:strong, content_tag(:span, options[:label], :class => 'arrow')) + content_tag(:span, '', :class => 'corner')
     end
   end
