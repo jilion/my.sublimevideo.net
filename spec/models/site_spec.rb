@@ -473,6 +473,18 @@ describe Site do
           end
         end
       end
+
+      context "when plan change" do
+        let(:site) { Factory(:site, :plan_id => Factory(:plan).id) }
+
+        it "should clear *_alert_sent_at dates" do
+          site.touch(:plan_player_hits_reached_alert_sent_at)
+          site.touch(:next_plan_recommended_alert_sent_at)
+          site.update_attributes(:plan_id => Factory(:plan).id)
+          site.plan_player_hits_reached_alert_sent_at.should be_nil
+          site.next_plan_recommended_alert_sent_at.should be_nil
+        end
+      end
     end
 
     describe "after_save" do
@@ -610,8 +622,8 @@ describe Site do
             end
           end
         end
-
       end
+
     end
 
     describe "after_create" do
@@ -935,7 +947,6 @@ describe Site do
   end
 end
 
-
 # == Schema Information
 #
 # Table name: sites
@@ -970,4 +981,3 @@ end
 #  index_sites_on_plan_id     (plan_id)
 #  index_sites_on_user_id     (user_id)
 #
-

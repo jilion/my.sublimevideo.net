@@ -98,7 +98,7 @@ class Site < ActiveRecord::Base
   # =============
 
   before_validation :set_user_attributes
-  before_save :prepare_cdn_update
+  before_save :prepare_cdn_update, :clear_alerts_sent_at
   after_save :execute_cdn_update
   after_create :delay_ranks_update
   # Temporary
@@ -328,6 +328,15 @@ private
     end
   end
 
+  # before_save
+  def clear_alerts_sent_at
+    if plan_id_changed?
+      self.plan_player_hits_reached_alert_sent_at = nil
+      self.next_plan_recommended_alert_sent_at    = nil
+    end
+  end
+
+
   # after_create
   def delay_ranks_update
     Site.delay(:priority => 100, :run_at => 30.seconds.from_now).update_ranks(self.id)
@@ -339,6 +348,7 @@ private
       Site.delay.update_loader_and_license(self.id, :loader => @loader_needs_update, :license => @license_needs_update)
     end
   end
+
 
   # before_transition :on => :activate
   def set_activated_at
