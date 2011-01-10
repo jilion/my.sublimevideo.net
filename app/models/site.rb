@@ -292,6 +292,18 @@ public
     self.send("#{name}=", tempfile)
   end
 
+  def update_last_30_days_counters
+    self.last_30_days_main_player_hits_total_count  = 0
+    self.last_30_days_extra_player_hits_total_count = 0
+    self.last_30_days_dev_player_hits_total_count   = 0
+    usages.between(Time.now.utc.midnight - 30.days, Time.now.utc.midnight).all.each do |usage|
+      self.last_30_days_main_player_hits_total_count  += usage.main_player_hits + usage.main_player_hits_cached
+      self.last_30_days_extra_player_hits_total_count += usage.extra_player_hits + usage.extra_player_hits_cached
+      self.last_30_days_dev_player_hits_total_count   += usage.dev_player_hits + usage.dev_player_hits_cached
+    end
+    self.save
+  end
+
 private
 
   # before_validation
@@ -336,7 +348,6 @@ private
     end
   end
 
-
   # after_create
   def delay_ranks_update
     Site.delay(:priority => 100, :run_at => 30.seconds.from_now).update_ranks(self.id)
@@ -348,7 +359,6 @@ private
       Site.delay.update_loader_and_license(self.id, :loader => @loader_needs_update, :license => @license_needs_update)
     end
   end
-
 
   # before_transition :on => :activate
   def set_activated_at
@@ -394,37 +404,45 @@ protected
 
 end
 
+
 # == Schema Information
 #
 # Table name: sites
 #
-#  id                                     :integer         not null, primary key
-#  user_id                                :integer
-#  hostname                               :string(255)
-#  dev_hostnames                          :string(255)
-#  token                                  :string(255)
-#  license                                :string(255)
-#  loader                                 :string(255)
-#  state                                  :string(255)
-#  archived_at                            :datetime
-#  created_at                             :datetime
-#  updated_at                             :datetime
-#  player_mode                            :string(255)     default("stable")
-#  google_rank                            :integer
-#  alexa_rank                             :integer
-#  path                                   :string(255)
-#  wildcard                               :boolean
-#  extra_hostnames                        :string(255)
-#  plan_id                                :integer
-#  cdn_up_to_date                         :boolean
-#  activated_at                           :datetime
-#  plan_player_hits_reached_alert_sent_at :datetime
-#  next_plan_recommended_alert_sent_at    :datetime
+#  id                                         :integer         not null, primary key
+#  user_id                                    :integer
+#  hostname                                   :string(255)
+#  dev_hostnames                              :string(255)
+#  token                                      :string(255)
+#  license                                    :string(255)
+#  loader                                     :string(255)
+#  state                                      :string(255)
+#  archived_at                                :datetime
+#  created_at                                 :datetime
+#  updated_at                                 :datetime
+#  player_mode                                :string(255)     default("stable")
+#  google_rank                                :integer
+#  alexa_rank                                 :integer
+#  path                                       :string(255)
+#  wildcard                                   :boolean
+#  extra_hostnames                            :string(255)
+#  plan_id                                    :integer
+#  cdn_up_to_date                             :boolean
+#  activated_at                               :datetime
+#  plan_player_hits_reached_alert_sent_at     :datetime
+#  next_plan_recommended_alert_sent_at        :datetime
+#  last_30_days_main_player_hits_total_count  :integer         default(0)
+#  last_30_days_extra_player_hits_total_count :integer         default(0)
+#  last_30_days_dev_player_hits_total_count   :integer         default(0)
 #
 # Indexes
 #
-#  index_sites_on_created_at  (created_at)
-#  index_sites_on_hostname    (hostname)
-#  index_sites_on_plan_id     (plan_id)
-#  index_sites_on_user_id     (user_id)
+#  index_sites_on_created_at                                  (created_at)
+#  index_sites_on_hostname                                    (hostname)
+#  index_sites_on_last_30_days_dev_player_hits_total_count    (last_30_days_dev_player_hits_total_count)
+#  index_sites_on_last_30_days_extra_player_hits_total_count  (last_30_days_extra_player_hits_total_count)
+#  index_sites_on_last_30_days_main_player_hits_total_count   (last_30_days_main_player_hits_total_count)
+#  index_sites_on_plan_id                                     (plan_id)
+#  index_sites_on_user_id                                     (user_id)
 #
+

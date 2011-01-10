@@ -944,40 +944,82 @@ describe Site do
         end
       end
     end
+
+    describe "#update_last_30_days_counters", :focus => true do
+      before(:all) do |variable|
+        @site = Factory(:site, :last_30_days_main_player_hits_total_count => 1)
+        Factory(:site_usage, :site_id => @site.id, :day => Time.utc(2010,12,31).midnight,
+          :main_player_hits  => 6,   :main_player_hits_cached  => 4,
+          :extra_player_hits => 5,   :extra_player_hits_cached => 5,
+          :dev_player_hits   => 4,   :dev_player_hits_cached   => 6
+        )
+        Factory(:site_usage, :site_id => @site.id, :day => Time.utc(2011,1,1).midnight,
+          :main_player_hits  => 6,   :main_player_hits_cached  => 4,
+          :extra_player_hits => 5,   :extra_player_hits_cached => 5,
+          :dev_player_hits   => 4,   :dev_player_hits_cached   => 6
+        )
+        Factory(:site_usage, :site_id => @site.id, :day => Time.utc(2011,1,30).midnight,
+          :main_player_hits  => 6,   :main_player_hits_cached  => 4,
+          :extra_player_hits => 5,   :extra_player_hits_cached => 5,
+          :dev_player_hits   => 4,   :dev_player_hits_cached   => 6
+        )
+        Factory(:site_usage, :site_id => @site.id, :day => Time.utc(2011,1,31).midnight,
+          :main_player_hits  => 6,   :main_player_hits_cached  => 4,
+          :extra_player_hits => 5,   :extra_player_hits_cached => 5,
+          :dev_player_hits   => 4,   :dev_player_hits_cached   => 6
+        )
+      end
+
+      it "should update counters of non-archived sites from last 30 days site_usages" do
+        Timecop.travel(Time.utc(2011,1,31, 12))
+        @site.update_last_30_days_counters
+        @site.last_30_days_main_player_hits_total_count.should  == 20
+        @site.last_30_days_extra_player_hits_total_count.should == 20
+        @site.last_30_days_dev_player_hits_total_count.should   == 20
+      end
+
+    end
   end
 end
+
 
 # == Schema Information
 #
 # Table name: sites
 #
-#  id                                     :integer         not null, primary key
-#  user_id                                :integer
-#  hostname                               :string(255)
-#  dev_hostnames                          :string(255)
-#  token                                  :string(255)
-#  license                                :string(255)
-#  loader                                 :string(255)
-#  state                                  :string(255)
-#  archived_at                            :datetime
-#  created_at                             :datetime
-#  updated_at                             :datetime
-#  player_mode                            :string(255)     default("stable")
-#  google_rank                            :integer
-#  alexa_rank                             :integer
-#  path                                   :string(255)
-#  wildcard                               :boolean
-#  extra_hostnames                        :string(255)
-#  plan_id                                :integer
-#  cdn_up_to_date                         :boolean
-#  activated_at                           :datetime
-#  plan_player_hits_reached_alert_sent_at :datetime
-#  next_plan_recommended_alert_sent_at    :datetime
+#  id                                         :integer         not null, primary key
+#  user_id                                    :integer
+#  hostname                                   :string(255)
+#  dev_hostnames                              :string(255)
+#  token                                      :string(255)
+#  license                                    :string(255)
+#  loader                                     :string(255)
+#  state                                      :string(255)
+#  archived_at                                :datetime
+#  created_at                                 :datetime
+#  updated_at                                 :datetime
+#  player_mode                                :string(255)     default("stable")
+#  google_rank                                :integer
+#  alexa_rank                                 :integer
+#  path                                       :string(255)
+#  wildcard                                   :boolean
+#  extra_hostnames                            :string(255)
+#  plan_id                                    :integer
+#  cdn_up_to_date                             :boolean
+#  activated_at                               :datetime
+#  plan_player_hits_reached_alert_sent_at     :datetime
+#  next_plan_recommended_alert_sent_at        :datetime
+#  last_30_days_main_player_hits_total_count  :integer         default(0)
+#  last_30_days_extra_player_hits_total_count :integer         default(0)
+#  last_30_days_dev_player_hits_total_count   :integer         default(0)
 #
 # Indexes
 #
-#  index_sites_on_created_at  (created_at)
-#  index_sites_on_hostname    (hostname)
-#  index_sites_on_plan_id     (plan_id)
-#  index_sites_on_user_id     (user_id)
+#  index_sites_on_created_at                                  (created_at)
+#  index_sites_on_hostname                                    (hostname)
+#  index_sites_on_last_30_days_dev_player_hits_total_count    (last_30_days_dev_player_hits_total_count)
+#  index_sites_on_last_30_days_extra_player_hits_total_count  (last_30_days_extra_player_hits_total_count)
+#  index_sites_on_last_30_days_main_player_hits_total_count   (last_30_days_main_player_hits_total_count)
+#  index_sites_on_plan_id                                     (plan_id)
+#  index_sites_on_user_id                                     (user_id)
 #
