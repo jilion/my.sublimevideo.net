@@ -43,6 +43,38 @@ document.observe("dom:loaded", function() {
   if ($('current_usage_amount')) {
     new Ajax.Request('/invoices/usage', { method:'get' });
   }
+  
+  // Reproduce checkbox behavior for radio buttons for plans selection
+  if ($('plans')) {
+    var selectedElement = 0;
+    $$('ul#plans li input[type=radio]').each(function(element){
+      element.on('click', function(event){
+        setTimeout(function(){
+          selectedElement = element.value;          
+        },50);
+      });
+    });
+    $$('ul#plans li').each(function(element){
+      element.on('click', function(event){
+        var radioButton = element.down('input[type=radio]');
+        if (radioButton.checked) {
+          if (radioButton.value == selectedElement) {
+            radioButton.checked = false;
+            setTimeout(function(){
+              selectedElement = 0;              
+            },100);
+          }
+          else {
+            radioButton.checked = true;
+          }
+        }
+        else {
+          radioButton.checked = true;
+        }
+      });
+    });    
+  }
+
   // if ($("new_site")) {
   //   MySublimeVideo.siteFormHandler = new SiteFormHandler();
   // }

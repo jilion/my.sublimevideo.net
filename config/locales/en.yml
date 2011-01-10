@@ -18,4 +18,4 @@ en:
   number:
     format:
       separator: "." # US separator
-      delimiter: "'" # CH delimiter
+      delimiter: "," # US delimiter

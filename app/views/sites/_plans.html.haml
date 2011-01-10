@@ -1,37 +1,20 @@
-#plans
-  %h3 Plan
-  - if f.object.errors.key?(:plan)
-    .inline_errors
-      %span= f.object.errors[:plan].first
-      
-  - plans = Plan.all
-  
-  .entry.plan
-    - perso_plan =  plans.detect { |p| p.name == 'perso' }
-    = f.label :plan_id, content_tag(:strong, "Perso"), :for => "plan_id_perso"
-    = f.radio_button :plan_id, perso_plan.id, :id => "plan_id_perso", :class => "plan_radio"
-    %ul
-      %li= "videopage views: #{perso_plan.player_hits} per month"
-      %li= "price: #{display_amount(perso_plan.price)} per month"
-      %li= "overages: #{display_amount(perso_plan.overage_price)} per block of #{Plan::OVERAGES_PLAYER_HITS_BLOCK} videopage views"
-    %br
-    
-    - pro_plan =  plans.detect { |p| p.name == 'pro' }
-    = f.label :plan_id, content_tag(:strong, "Pro"), :for => "plan_id_pro"
-    = f.radio_button :plan_id, pro_plan.id, :id => "plan_id_pro", :class => "plan_radio"
-    %ul
-      %li= "videopage views: #{pro_plan.player_hits} per month"
-      %li= "overages: #{display_amount(pro_plan.overage_price)} per block of #{Plan::OVERAGES_PLAYER_HITS_BLOCK} videopage views"
-    %ul
-      %li= "price: #{display_amount(pro_plan.price)} per month"
-    %br
-    
-    - enterprise_plan =  plans.detect { |p| p.name == 'enterprise' } 
-    = f.label :plan_id, content_tag(:strong, "Enterprise"), :for => "plan_id_enterprise"
-    = f.radio_button :plan_id, enterprise_plan.id, :id => "plan_id_enterprise", :class => "plan_radio"
-    %ul
-      %li= "videopage views: #{enterprise_plan.player_hits} per month"
-      %li= "overages: #{display_amount(enterprise_plan.overage_price)} per block of #{Plan::OVERAGES_PLAYER_HITS_BLOCK} videopage views"
-    %ul
-      %li= "price: #{display_amount(enterprise_plan.price)} per month"
-    %br
+- if f.object.errors.key?(:plan)
+  .inline_errors
+    %span= f.object.errors[:plan].first
+
+%ul#plans
+  - Plan.where( :name => %w[perso pro enterprise]).each do |plan|
+    %li{ :class => plan.name }
+      .content
+        = f.label :plan_id, content_tag(:strong, plan.name.titlecase), :for => "plan_id_#{plan.name}", :class => "title"
+        %h4.number= number_with_delimiter(plan.player_hits)
+        %h5.label= "Videopage views per month"
+        .radio_wrap
+          = f.radio_button :plan_id, plan.id, :id => "plan_id_#{plan.name}", :class => "plan_radio"
+          %span.bg
+        .pricing
+          %h4.price= display_amount(plan.price)
+          %p.label= "per month"
+      .overages
+        %p.desc= "Overages: #{display_amount(plan.overage_price)} per block of #{Plan::OVERAGES_PLAYER_HITS_BLOCK} videopage views"
+.spacer
