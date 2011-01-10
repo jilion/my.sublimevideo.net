@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110105152100) do
+ActiveRecord::Schema.define(:version => 20110107113306) do
 
   create_table "addons", :force => true do |t|
     t.string   "name"
@@ -245,6 +245,8 @@ ActiveRecord::Schema.define(:version => 20110105152100) do
   end
 
   add_index "users", ["confirmation_token"], :name => "index_users_on_confirmation_token", :unique => true
+  add_index "users", ["created_at"], :name => "index_users_on_created_at"
+  add_index "users", ["current_sign_in_at"], :name => "index_users_on_current_sign_in_at"
   add_index "users", ["email", "archived_at"], :name => "index_users_on_email_and_archived_at", :unique => true
   add_index "users", ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true
 
