@@ -644,6 +644,44 @@ describe Site do
     end
   end
 
+  describe "Class Methods" do
+
+    describe ".delay_update_last_30_days_counters_for_not_archived_sites" do
+
+      it "should delay update_last_30_days_counters_for_not_archived_sites if not already delayed" do
+        expect { Site.update_last_30_days_counters_for_not_archived_sites }.should change(Delayed::Job.where(:handler.matches => '%Site%update_last_30_days_counters_for_not_archived_sites%'), :count).by(1)
+      end
+
+      it "should not delay update_last_30_days_counters_for_not_archived_sites if already delayed" do
+        Site.update_last_30_days_counters_for_not_archived_sites
+        expect { Site.update_last_30_days_counters_for_not_archived_sites }.should change(Delayed::Job.where(:handler.matches => '%Site%update_last_30_days_counters_for_not_archived_sites%'), :count).by(0)
+      end
+
+    end
+
+    describe "update_last_30_days_counters_for_not_archived_sites" do
+
+      it "should delay itself" do
+        Site.should_receive(:delay_update_last_30_days_counters_for_not_archived_sites)
+        Site.update_last_30_days_counters_for_not_archived_sites
+      end
+
+      it "should call update_last_30_days_counters on each non-archived sites" do
+        @active_site = Factory(:site, :state => 'active')
+        Factory(:site_usage, :site_id => @active_site.id, :day => Time.utc(2011,1,15).midnight, :main_player_hits  => 6)
+        @archived_site = Factory(:site, :state => 'archived')
+        Factory(:site_usage, :site_id => @archived_site.id, :day => Time.utc(2011,1,15).midnight, :main_player_hits  => 6)
+        Timecop.travel(Time.utc(2011,1,31, 12))
+        Site.update_last_30_days_counters_for_not_archived_sites
+        @active_site.reload.last_30_days_main_player_hits_total_count.should == 6
+        @archived_site.reload.last_30_days_main_player_hits_total_count.should == 0
+        Timecop.return
+      end
+
+    end
+
+  end
+
   describe "Instance Methods" do
     describe "#plan_player_hits_reached_alerted_this_month?" do
       it "should return true when plan_player_hits_reached_alert_sent_at happened durring the current month" do
@@ -945,7 +983,7 @@ describe Site do
       end
     end
 
-    describe "#update_last_30_days_counters", :focus => true do
+    describe "#update_last_30_days_counters" do
       before(:all) do |variable|
         @site = Factory(:site, :last_30_days_main_player_hits_total_count => 1)
         Factory(:site_usage, :site_id => @site.id, :day => Time.utc(2010,12,31).midnight,
@@ -976,8 +1014,8 @@ describe Site do
         @site.last_30_days_main_player_hits_total_count.should  == 20
         @site.last_30_days_extra_player_hits_total_count.should == 20
         @site.last_30_days_dev_player_hits_total_count.should   == 20
+        Timecop.return
       end
-
     end
   end
 end

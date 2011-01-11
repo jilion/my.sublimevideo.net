@@ -189,6 +189,19 @@ protected
     end
   end
 
+  def self.delay_update_last_30_days_counters_for_not_archived_sites
+    unless Delayed::Job.already_delayed?('%Site%update_last_30_days_counters_for_not_archived_sites%')
+      delay(:run_at => Time.new.utc.tomorrow.midnight + 1.hour).update_last_30_days_counters_for_not_archived_sites
+    end
+  end
+
+  def self.update_last_30_days_counters_for_not_archived_sites
+    delay_update_last_30_days_counters_for_not_archived_sites
+    not_archived.find_each(:batch_size => 100) do |site|
+      site.update_last_30_days_counters
+    end
+  end
+
   # ====================
   # = Instance Methods =
   # ====================
