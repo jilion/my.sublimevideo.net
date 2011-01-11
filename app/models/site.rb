@@ -54,11 +54,14 @@ class Site < ActiveRecord::Base
   scope :with_addons, includes(:addons)
 
   # filter
-  scope :beta,         lambda { with_state(:beta) }
-  scope :dev,          lambda { with_state(:dev) }
-  scope :active,       lambda { with_state(:active) }
-  scope :archived,     lambda { with_state(:archived) }
-  scope :not_archived, lambda { without_state(:archived) }
+  scope :beta,          lambda { with_state(:beta) }
+  scope :dev,           lambda { with_state(:dev) }
+  scope :active,        lambda { with_state(:active) }
+  scope :suspended,     lambda { with_state(:suspended) }
+  scope :archived,      lambda { with_state(:archived) }
+  scope :not_archived,  lambda { without_state(:archived) }
+  scope :with_wildcard, where(:wildcard => true)
+  scope :with_path,     where({:path.ne => nil} & {:path.ne => ''})
 
   # admin
   scope :created_between, lambda { |start_date, end_date| where(:created_at.gte => start_date, :created_at.lt => end_date) }
@@ -186,6 +189,19 @@ protected
       rescue => ex
         Notify.send(ex.message, :exception => ex)
       end
+    end
+  end
+
+  def self.delay_update_last_30_days_counters_for_not_archived_sites
+    unless Delayed::Job.already_delayed?('%Site%update_last_30_days_counters_for_not_archived_sites%')
+      delay(:run_at => Time.new.utc.tomorrow.midnight + 1.hour).update_last_30_days_counters_for_not_archived_sites
+    end
+  end
+
+  def self.update_last_30_days_counters_for_not_archived_sites
+    delay_update_last_30_days_counters_for_not_archived_sites
+    not_archived.find_each(:batch_size => 100) do |site|
+      site.update_last_30_days_counters
     end
   end
 
