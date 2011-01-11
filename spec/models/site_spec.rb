@@ -945,7 +945,7 @@ describe Site do
       end
     end
 
-    describe "#update_last_30_days_counters", :focus => true do
+    describe "#update_last_30_days_counters" do
       before(:all) do |variable|
         @site = Factory(:site, :last_30_days_main_player_hits_total_count => 1)
         Factory(:site_usage, :site_id => @site.id, :day => Time.utc(2010,12,31).midnight,
