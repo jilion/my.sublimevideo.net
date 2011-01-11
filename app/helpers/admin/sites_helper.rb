@@ -2,20 +2,22 @@ module Admin::SitesHelper
 
   def admin_sites_page_title(sites)
     pluralized_sites = pluralize(sites.total_entries, 'site')
-    state = if params[:archived_included]
+    state = if params.keys.all? { |k| k =~ /^by_/ || %w[action controller search].include?(k) }
       " not archived"
+    elsif params[:with_state]
+      " with #{params[:with_state]} state"
     elsif params[:next_plan_recommended_alert_sent_at_alerted_this_month]
       " should upgrade plan"
     else
       ""
     end
-    "#{pluralized_sites}#{state}".titleize
+    "#{pluralized_sites}#{state}".humanize
   end
 
   def links_to_hostnames(site)
     html = ""
     if site.hostname?
-      html += link_to site.hostname, "http://#{site.hostname}"
+      html += link_to hostname_with_path_and_wildcard(site), "http://#{site.hostname}"
     elsif site.extra_hostnames?
       html += "(ext) #{joined_links(site.extra_hostnames)}"
     else
