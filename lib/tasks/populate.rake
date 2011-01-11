@@ -7,17 +7,17 @@ BASE_USERS = [["Mehdi Aminian", "mehdi@jilion.com"], ["Zeno Crivelli", "zeno@jil
 namespace :db do
 
   desc "Load all development fixtures."
-  task :populate => ['populate:empty_all_tables', 'populate:all']
+  task populate: ['populate:empty_all_tables', 'populate:all']
 
   namespace :populate do
 
     desc "Empty all the tables"
-    task :empty_all_tables => :environment do
+    task empty_all_tables: :environment do
       timed { empty_tables("delayed_jobs", Invoice, InvoiceItem, Log, MailTemplate, MailLog, Site, SiteUsage, User, Admin, Plan, Addon) }
     end
 
     desc "Load all development fixtures."
-    task :all => :environment do
+    task all: :environment do
       delete_all_files_in_public('uploads/releases')
       delete_all_files_in_public('uploads/s3')
       delete_all_files_in_public('uploads/tmp')
@@ -30,55 +30,55 @@ namespace :db do
       timed { create_site_usages }
       timed { create_invoices(argv_count) }
       timed { create_mail_templates }
-      empty_tables("delayed_jobs")
     end
 
     desc "Load Admin development fixtures."
-    task :admins => :environment do
+    task admins: :environment do
       timed { empty_tables(Admin) }
       timed { create_admins }
     end
 
     desc "Load User development fixtures."
-    task :users => :environment do
+    task users: :environment do
       timed { empty_tables(Site, User) }
       timed { create_users(argv_count) }
       empty_tables("delayed_jobs")
     end
 
     desc "Load Site development fixtures."
-    task :sites => :environment do
+    task sites: :environment do
       timed { empty_tables(Site) }
       timed { create_sites(argv_count) }
       empty_tables("delayed_jobs")
     end
 
     desc "Load Mail templates development fixtures."
-    task :mail_templates => :environment do
+    task mail_templates: :environment do
       timed { empty_tables(MailTemplate) }
       timed { create_mail_templates }
     end
 
     desc "Create fake usages"
-    task :site_usages => :environment do
+    task site_usages: :environment do
       timed { empty_tables(SiteUsage) }
       timed { create_site_usages }
     end
 
     desc "Create fake invoices"
-    task :invoices => :environment do
+    task invoices: :environment do
       timed { empty_tables(Invoice) }
       timed { create_invoices(argv_count) }
+      # empty_tables("delayed_jobs")
     end
 
     desc "Create fake plans"
-    task :plans => :environment do
+    task plans: :environment do
       timed { empty_tables(Plan) }
       timed { create_plans }
     end
 
     desc "Create fake addons"
-    task :addons => :environment do
+    task addons: :environment do
       timed { empty_tables(Plan, Addon) }
       timed { create_addons }
     end
@@ -89,7 +89,7 @@ end
 namespace :sm do
 
   desc "Draw the States Diagrams for every model having State Machine"
-  task :draw => :environment do
+  task draw: :environment do
     %x(rake state_machine:draw CLASS=Invoice,Log,Site,User TARGET=doc/state_diagrams FORMAT=png ORIENTATION=landscape)
   end
 
@@ -193,17 +193,20 @@ def create_sites(max)
   subdomains = %w[www. blog. my. git. sv. ji. geek. yin. yang. chi. cho. chu. foo. bar. rem.]
   created_at_array = (Date.new(2010,9,14)..Date.today).to_a
   ssl_addon_id = Addon.find_by_name('ssl')
-  
+
   User.all.each do |user|
     rand(max).times do |i|
       site = user.sites.build(
+        state: 'active',
         plan_id: plan_ids.sample,
         hostname: "#{rand > 0.75 ? subdomains.sample : ''}#{user.id}#{i}#{Faker::Internet.domain_name}",
         addon_ids: rand > 0.75 ? [ssl_addon_id] : []
       )
       site.created_at   = [user.confirmed_at.to_date, created_at_array.sample].max
       site.activated_at = site.created_at
-      site.save!(validate: false)
+      Timecop.travel(site.created_at) do
+        site.save!(validate: false)
+      end
     end
   end
   puts "0-#{max} random sites created for each user!"
@@ -249,7 +252,8 @@ def create_site_usages
 end
 
 def create_invoices(count = 5)
-  d = Site.first.created_at
+  PDFKit.stub!(:new) { mock('pdf', :to_pdf => []) }
+  d = Site.minimum(:created_at)
   while d < Time.now
     Invoice.complete_invoices_for_billable_users(d.beginning_of_month, d.end_of_month)
     d += 1.month
@@ -259,22 +263,22 @@ def create_invoices(count = 5)
 end
 
 def create_plans
-  plans = [
-    { name: "perso",      player_hits: 3000,   price: 299,  overage_price: 299 },
+  plans_attributes = [
+    { name: "perso",      player_hits: 3000,    price: 299,  overage_price: 299 },
     { name: "pro",        player_hits: 100000,  price: 999,  overage_price: 199 },
     { name: "enterprise", player_hits: 1000000, price: 6999, overage_price: 99 }
   ]
-  plans.each { |attributes| Plan.create(attributes) }
-  puts "#{plans.size} plans created!"
+  plans_attributes.each { |attributes| Plan.create(attributes) }
+  puts "#{plans_attributes.size} plans created!"
 end
 
 def create_addons
   create_plans if Plan.all.empty?
-  addons = [
+  addons_attributes = [
     { name: "ssl", price: 499 }
   ]
-  addons.each { |attributes| Addon.create(attributes) }
-  puts "#{addons.size} addon(s) created!"
+  addons_attributes.each { |attributes| Addon.create(attributes) }
+  puts "#{addons_attributes.size} addon(s) created!"
 end
 
 def create_mail_templates(count = 5)
