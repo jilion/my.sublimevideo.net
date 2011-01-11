@@ -8,7 +8,7 @@
     %th Invoice Items
   - invoices.each do |invoice|
     %tr
-      %td= link_to(invoice_dates(invoice), [:admin, invoice])
+      %td= link_to(invoice_dates(invoice), [:edit, :admin, invoice])
       %td= display_amount(invoice.amount)
       %td
         %ul
