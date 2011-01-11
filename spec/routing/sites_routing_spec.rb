@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe SitesController do
-  
+
   it { should route(:get,    "sites").to(:action => :index) }
   it { should route(:get,    "sites/new").to(:action => :new) }
   it { should route(:get,    "sites/1/code").to(:action => :code, :id => "1") }
@@ -14,5 +14,5 @@ describe SitesController do
   it { should route(:delete, "sites/1").to(:action => :destroy, :id => "1") }
   it { should route(:get,    "sites/1/state").to(:action => :state, :id => "1") }
   it { should route(:get,    "sites/1/usage").to(:action => :usage, :id => "1") }
-  
+
 end

@@ -15,6 +15,7 @@ class Lifetime < ActiveRecord::Base
 
 end
 
+
 # == Schema Information
 #
 # Table name: lifetimes
@@ -31,3 +32,4 @@ end
 #  index_lifetimes_created_at  (site_id,item_type,item_id,created_at)
 #  index_lifetimes_deleted_at  (site_id,item_type,item_id,deleted_at) UNIQUE
 #
+
