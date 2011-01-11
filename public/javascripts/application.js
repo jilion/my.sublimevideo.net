@@ -46,33 +46,20 @@ document.observe("dom:loaded", function() {
   
   // Reproduce checkbox behavior for radio buttons for plans selection
   if ($('plans')) {
-    var selectedElement = 0;
-    $$('ul#plans li input[type=radio]').each(function(element){
-      element.on('click', function(event){
-        setTimeout(function(){
-          selectedElement = element.value;          
-        },50);
-      });
-    });
+    MySublimeVideo.SELECTED_PLAN = 0;
     $$('ul#plans li').each(function(element){
       element.on('click', function(event){
         var radioButton = element.down('input[type=radio]');
-        if (radioButton.checked) {
-          if (radioButton.value == selectedElement) {
-            radioButton.checked = false;
-            setTimeout(function(){
-              selectedElement = 0;              
-            },100);
-          }
-          else {
-            radioButton.checked = true;
-          }
+        if (MySublimeVideo.SELECTED_PLAN != radioButton.value) {
+          radioButton.checked = true;
+          MySublimeVideo.SELECTED_PLAN = radioButton.value;
         }
         else {
-          radioButton.checked = true;
+          radioButton.checked = false;
+          MySublimeVideo.SELECTED_PLAN = 0;
         }
       });
-    });    
+    });
   }
 
   // if ($("new_site")) {

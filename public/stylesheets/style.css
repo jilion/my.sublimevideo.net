@@ -1246,10 +1246,6 @@ form .entry a.cancel {
 /* = Site (New) = */
 /* ============== */
 
-#site {
-  
-}
-
 ul#plans {
   width:100%;
   list-style-type:none;
@@ -1264,6 +1260,15 @@ ul#plans li {
   height:254px;
   background:url(/images/embed/sites/plans_box_background.png) no-repeat;
   position:relative;
+}
+
+ul#plans li, ul#plans li * {
+  cursor:pointer;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -o-user-select: none;
+  user-select: none;
 }
 
 ul#plans li.pro {
@@ -1355,6 +1360,149 @@ ul#plans .overages {
   left:0;
   text-align:center;
   font-size:10px;
+}
+
+#site h3.headline {
+  display:block;
+  font-size:36px;
+  font-weight:600;
+  text-align:center;
+  padding:30px 0 5px;
+}
+
+#site h4.sub_headline {
+  display:block;
+  font-size:16px;
+  font-weight:normal;
+  text-align:center;
+  color:#666d7a;
+  padding:0 0 15px;
+}
+
+ul#addons {
+  list-style-type:none;
+  width:400px;
+  float:left;
+  padding:10px 0;
+}
+
+ul#addons .checkbox_wrap {
+  position:relative;
+}
+
+ul#addons .checkbox_wrap input {
+  float:left;
+  position:relative;
+  top:0;
+  left:0;
+  opacity:0;
+}
+
+@media all and (max-device-width: 1024px) {
+  ul#addons .checkbox_wrap input {
+    top:5px;
+    z-index:2;
+  }
+}
+
+ul#addons .checkbox_wrap label {
+  position:relative;
+  left:-5px;
+  display:block;
+  height:27px;
+  padding:7px 0 0 40px;
+  background:url(/images/embed/sites/addons_checkbox.png) no-repeat;
+  color:#5d636f;
+}
+
+ul#addons .checkbox_wrap label strong {
+  font-size:18px;
+  font-weight:600;
+}
+
+ul#addons .checkbox_wrap label span {
+  font-size:14px;
+  padding-left:5px;
+}
+
+/* Original concept by http://www.thecssninja.com/css/custom-inputs-using-css */
+ul#addons .checkbox_wrap input:checked + label {background-position:0 -34px;}
+ul#addons .checkbox_wrap input:focus + label {background-position:0 -68px;}
+ul#addons .checkbox_wrap input:focus:checked + label {background-position:0 -102px;}
+
+.no_plan {
+  padding:15px 0 0;
+  width:320px;
+  text-align:right;
+  float:right;
+  font-size:12px;
+}
+
+.no_plan a {
+  font-weight:600;
+  border-bottom:1px solid #7f858f;
+}
+
+.break_line {
+  clear:both;
+  margin:10px 0;
+  border-top:1px solid rgba(0,0,0,0.2);
+  border-bottom:1px solid rgba(255,255,255,0.5);
+}
+
+#site_setup {
+  position:relative;
+}
+
+#site_setup .entry.site .left {
+  float:left;
+}
+
+#site_setup .entry.site p.desc {
+  float:left;
+  width:270px;
+  font-size:13px;
+  color:#666d7a;
+  line-height:16px;
+  padding:3px 0 0 15px;
+}
+
+#site_setup .entry.site a.button {
+  display:block;
+  position:absolute;
+  top:5px;
+  right:0;
+  width:92px;
+  height:30px;
+  padding:10px 0 0 14px;
+  background:url(/images/embed/sites/box_toggler_button.png) no-repeat;
+  color:#4d5563;
+  font-size:15px;
+  font-weight:600;
+  text-shadow:rgba(255,255,255,0.5) 0 1px 0;
+}
+
+#site_setup .entry.site a.button:active {background-position:0 -40px}
+#site_setup .entry.site a.button.up {background-position:0 -80px}
+#site_setup .entry.site a.button.up:active {background-position:0 -120px}
+
+#site_setup .settings .left {
+  width:440px;
+  margin:0 20px 0 0;
+  padding:0 20px 0 0;
+  float:left;
+  background:url(/images/embed/sites/small_horizontal_breakline.png) no-repeat 100% 0;
+}
+
+#site_setup .settings .right {
+  width:370px;
+  float:left;
+}
+
+#site_setup .settings h4.title {
+  font-size:16px;
+  font-weight:600;
+  padding:10px 0 0;
 }
 
 .popup {
