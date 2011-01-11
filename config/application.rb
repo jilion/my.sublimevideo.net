@@ -12,7 +12,7 @@ module MySublimeVideo
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
 
-    config.middleware.use(PDFKit::Middleware, {}, :only => %r[^/invoices])
+    config.middleware.use(PDFKit::Middleware, {}, :only => %r[^(/admin)?/invoices])
 
     # Add additional load paths for your own custom dirs
     config.autoload_paths += %W[#{config.root}/lib]
