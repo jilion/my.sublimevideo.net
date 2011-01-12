@@ -4,7 +4,7 @@ plans = Plan.all
 
 graph = Graph.new do |g|
   g.option(chart: chart('timeline_usage'))
-  g.option(title: { text: "VPV per day, total and averages for #{hostname_with_path_and_wildcard(site)}" })
+  g.option(title: { text: "VPV per day, total and averages for #{site.hostname.present? ? hostname_with_path_and_wildcard(site) : site.token}" })
   g.option(subtitle: usage_date_subtitle(@date_range_from, @date_range_to))
   g.option(legend: legend)
   g.option(xAxis: {
