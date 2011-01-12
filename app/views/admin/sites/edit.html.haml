@@ -1,11 +1,14 @@
-= title_and_content_header("(#{@site.token}) #{link_to(hostname_with_path_and_wildcard(@site), "http://#{@site.hostname}/#{@site.path}")}")
+- if @site.hostname.present?
+  = title_and_content_header("(#{@site.token}) #{link_to(hostname_with_path_and_wildcard(@site), "http://#{@site.hostname}/#{@site.path}")}")
+- else
+  = title_and_content_header("#{@site.token}")
 
 = render '/admin/shared/date_chooser'
 %br.spacer
 
 = render partial: 'timeline_usage', locals: { site: @site }
 
-%p  
+%p
   = "State:"
   %strong= @site.state.humanize
   - if @site.archived?
@@ -27,7 +30,7 @@
 
 %p
   = "Dev hostnames:"
-  =content_tag(:strong, @site.dev_hostnames)
+  = content_tag(:strong, @site.dev_hostnames)
 
 %p
   = "Token: #{content_tag(:strong, @site.token)}".html_safe

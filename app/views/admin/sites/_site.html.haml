@@ -1,3 +1,4 @@
+- last_30_days_billable_player_hits_total_count = site.last_30_days_main_player_hits_total_count + site.last_30_days_extra_player_hits_total_count
 %tr[site]{ :class => cycle("", "alt") }
   %td.hostname
     = links_to_hostnames(site)
@@ -6,9 +7,22 @@
       = link_to site.user.full_name, [:admin, site.user], :title => "#{site.user.full_name} <#{site.user.email}>"
   %td.state
     %small= site.state
-  %td.rank
-    %small= site.alexa_rank
-  %td.rank
-    %small= site.google_rank
+  %td.plan
+    - if site.plan.present?
+      %small= link_to site.plan.name, admin_plans_path
+    - else
+      %small= '-'
+  %td.number
+    %small= number_with_delimiter(last_30_days_billable_player_hits_total_count)
+  %td.percentage
+    - if last_30_days_billable_player_hits_total_count > 0 
+      %small= display_percentage(site.last_30_days_extra_player_hits_total_count / last_30_days_billable_player_hits_total_count.to_f)
+    - else
+      %small= '-'
+  %td.percentage
+    - if site.plan.present?
+      %small= display_percentage(last_30_days_billable_player_hits_total_count / site.plan.player_hits.to_f)
+    - else
+      %small= '-'
   %td
     %small= display_date(site.created_at)

@@ -61,7 +61,9 @@ class Site < ActiveRecord::Base
   scope :archived,      lambda { with_state(:archived) }
   scope :not_archived,  lambda { without_state(:archived) }
   scope :with_wildcard, where(:wildcard => true)
-  scope :with_path,     where({:path.ne => nil} & {:path.ne => ''})
+  scope :with_path,     where({ :path.ne => nil } & { :path.ne => '' })
+  scope :with_extra_hostnames, where({ :extra_hostnames.ne => nil } & { :extra_hostnames.ne => '' })
+  scope :with_ssl,      joins(:addons).where(:addons => { :name => "ssl" })
 
   # admin
   scope :created_between, lambda { |start_date, end_date| where(:created_at.gte => start_date, :created_at.lt => end_date) }
@@ -70,9 +72,24 @@ class Site < ActiveRecord::Base
   scope :by_hostname,    lambda { |way = 'asc'| order(:hostname.send(way)) }
   scope :by_user,        lambda { |way = 'desc'| includes(:user).order(:users => [:first_name.send(way), :email.send(way)]) }
   scope :by_state,       lambda { |way = 'desc'| order(:state.send(way)) }
+  scope :by_plan_price,  lambda { |way = 'desc'| includes(:plan).order(:plans => :price.send(way)) }
   scope :by_google_rank, lambda { |way = 'desc'| where(:google_rank.gte => 0).order(:google_rank.send(way)) }
   scope :by_alexa_rank,  lambda { |way = 'desc'| where(:alexa_rank.gte => 1).order(:alexa_rank.send(way)) }
   scope :by_date,        lambda { |way = 'desc'| order(:created_at.send(way)) }
+  scope :by_last_30_days_billable_player_hits_total_count, lambda { |way = 'desc'|
+    order("(sites.last_30_days_main_player_hits_total_count + sites.last_30_days_extra_player_hits_total_count) #{way}")
+  }
+  scope :by_last_30_days_extra_player_hits_total_percentage, lambda { |way = 'desc'|
+    order("CASE WHEN (sites.last_30_days_main_player_hits_total_count + sites.last_30_days_extra_player_hits_total_count) > 0
+    THEN (sites.last_30_days_extra_player_hits_total_count / CAST(sites.last_30_days_main_player_hits_total_count + sites.last_30_days_extra_player_hits_total_count AS DECIMAL))
+    ELSE -1 END #{way}")
+  }
+  scope :by_last_30_days_plan_usage_persentage, lambda { |way = 'desc'|
+    includes(:plan).
+    order("CASE WHEN (sites.plan_id IS NOT NULL AND plans.player_hits > 0)
+    THEN ((sites.last_30_days_main_player_hits_total_count + sites.last_30_days_extra_player_hits_total_count) / CAST(plans.player_hits AS DECIMAL))
+    ELSE -1 END #{way}")
+  }
 
   # search
   def self.search(q)
