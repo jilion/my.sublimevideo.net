@@ -20,18 +20,26 @@ module SitesHelper
     uri.html_safe
   end
 
-  def hide_settings(site)
-    style = if site.extra_hostnames? \
-      || (site.dev_hostnames? && site.dev_hostnames != Site::DEFAULT_DEV_DOMAINS) \
-      || site.path? || site.wildcard?
-      ""
-    else
-      "display:none;"
-    end
+  def display_none_if(condition, value=nil)
+    value || "display:none;" unless condition
+  end
+
+  def display_text_if(value, condition)
+    value if condition
   end
 
   def display_block_if_or_none_otherwise(condition)
     condition ? "display:block" : "display:none"
+  end
+
+  def conditions_for_show_settings(site)
+    site.extra_hostnames? \
+    || (site.dev_hostnames? && site.dev_hostnames != Site::DEFAULT_DEV_DOMAINS) \
+    || site.path? || site.wildcard?
+  end
+  
+  def conditions_for_show_dev_hostnames_div(site)
+    site.dev_hostnames? && site.dev_hostnames != Site::DEFAULT_DEV_DOMAINS
   end
 
 end
