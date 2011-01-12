@@ -11,7 +11,7 @@ describe Site do
     its(:user)            { should be_present }
     its(:plan)            { should be_present }
     its(:hostname)        { should =~ /jilion[0-9]+\.com/ }
-    its(:dev_hostnames)   { should == "localhost" }
+    its(:dev_hostnames)   { should == "127.0.0.1, localhost" }
     its(:extra_hostnames) { should be_nil }
     its(:path)            { should be_nil }
     its(:wildcard)        { should be_false }
@@ -83,14 +83,6 @@ describe Site do
     end
 
     describe "plan" do
-      # TODO: When beta state will be removed, plan should be required for every state
-      it "should be required if state is dev" do
-        site = Factory.build(:site, :state => 'dev', :plan => nil)
-        site.should be_dev
-        site.should_not be_valid
-        site.should have(1).error_on(:plan)
-      end
-      # TODO: When beta state will be removed, plan should be required for every state
       it "should be required if state is active" do
         site = Factory.build(:site, :state => 'active', :plan => nil)
         site.should be_active
@@ -99,12 +91,14 @@ describe Site do
       end
     end
 
-    it "should require a credit card if state is active" do
-      user = Factory(:user, :cc_type => nil, :cc_last_digits => nil)
-      site = Factory(:site, :user => user)
-      site.state = 'active'
-      site.should_not be_valid
-      site.should have(1).error_on(:base)
+    describe "credit card" do
+      it "should be required if state is active" do
+        user = Factory(:user, :cc_type => nil, :cc_last_digits => nil)
+        site = Factory(:site, :user => user)
+        site.state = 'active'
+        site.should_not be_valid
+        site.should have(1).error_on(:base)
+      end
     end
 
     describe "no hostnames at all" do
@@ -233,14 +227,11 @@ describe Site do
       context "from beta state" do
         subject do
           Timecop.travel(10.days.ago)
-          site = Factory(:site, :hostname => "jilion.com", :extra_hostnames => "jilion.staging.com, jilion.org").tap { |s| s.activate }
+          site = Factory(:site, :plan_id => nil, :hostname => "jilion.com", :extra_hostnames => "jilion.staging.com, jilion.org").tap { |s| s.activate }
           Timecop.return
           @worker.work_off # populate license / loader
-
-          site.reload.update_attribute(:plan_id, nil) # put site in the a beta state
-          site.reload.update_attribute(:state, 'beta')
-
-          site.reload.should be_beta
+          site.state = 'beta'
+          site.should be_beta
           site.plan_id.should be_nil
           site
         end
@@ -312,14 +303,11 @@ describe Site do
       context "from beta state" do
         subject do
           Timecop.travel(10.days.ago)
-          site = Factory(:site, :hostname => "jilion.com", :extra_hostnames => "jilion.staging.com, jilion.org").tap { |s| s.activate }
+          site = Factory(:site, :plan_id => nil, :hostname => "jilion.com", :extra_hostnames => "jilion.staging.com, jilion.org").tap { |s| s.activate }
           Timecop.return
           @worker.work_off # populate license / loader
-
-          site.reload.update_attribute(:plan_id, nil) # put site in the a beta state
-          site.reload.update_attribute(:state, 'beta')
-
-          site.reload.should be_beta
+          site.update_attribute(:state, 'dev')
+          site.reload.should be_dev
           site.plan_id.should be_nil
           site
         end
@@ -327,7 +315,9 @@ describe Site do
         # activate is not directly called on beta sites, it's fired when site is beta and has a plan_id
         it "should reset activated_at" do
           old_activated_at = subject.activated_at
-          subject.update_attribute(:plan_id, Plan.first.id)
+          subject.state    = 'beta'
+          subject.plan_id  = Factory(:plan).id
+          subject.save
           subject.reload.plan_id.should be_present
           subject.should be_active
           subject.activated_at.should_not == old_activated_at
@@ -410,11 +400,10 @@ describe Site do
 
         context "from beta state" do
           subject do
-            site = Factory(:site).tap { |s| s.activate }
+            site = Factory(:site, :plan_id => nil).tap { |s| s.activate }
             @worker.work_off
-            site.reload.update_attribute(:plan_id, nil) # put site in the a beta state
-            site.reload.update_attribute(:state, 'beta')
-            site.reload.should be_beta
+            site.state = 'beta'
+            site.should be_beta # because a beta site with no plan become automatically a dev site
             site.plan_id.should be_nil
             site
           end
@@ -423,7 +412,6 @@ describe Site do
             VoxcastCDN.should_receive(:purge).with("/js/#{subject.token}.js")
             VoxcastCDN.should_receive(:purge).with("/l/#{subject.token}.js")
             lambda { subject.archive }.should change(Delayed::Job, :count).by(1)
-            subject.archive
             subject.reload.should be_archived
             lambda { @worker.work_off }.should change(Delayed::Job, :count).by(-1)
             subject.loader.should_not be_present
@@ -745,7 +733,7 @@ describe Site do
       %w[beta active].each do |state|
         context "site is #{state}" do
           it "should include hostname, extra_hostnames, path, wildcard, addons' names & dev_hostnames" do
-            subject.reload.update_attribute(:state, state)
+            subject.state = state
             subject.state.should == state
             subject.template_hostnames.should == "'jilion.com','jilion.net','jilion.org','path:foo','wildcard:true','addons:customization,ssl_gold','127.0.0.1','localhost'"
           end

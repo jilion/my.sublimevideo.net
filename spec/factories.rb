@@ -20,7 +20,7 @@ end
 
 Factory.define :site do |f|
   f.sequence(:hostname) { |n| "jilion#{n}.com" }
-  f.dev_hostnames       'localhost'
+  f.dev_hostnames       '127.0.0.1, localhost'
   f.association         :user
   f.association         :plan
 end

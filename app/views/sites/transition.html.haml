@@ -1,12 +1,3 @@
 = title_and_content_header("Update your site")
 
-#transition_site_wrap
-  .update
-    = render 'form', :site => @site
-  
-  .rollback
-    %h3= "Rollback to development state"
-    %p= "Player will no more working on #{@site.hostname})"
-    = form_for [:rollback, @site], :html => { :method => :put, :class => "edit", "data-password-protected" => true } do |f|
-      .actions
-        = f.submit "Back to development state", :class => "submit small"
+#site.new= render 'form', :site => @site

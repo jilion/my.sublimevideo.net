@@ -123,26 +123,51 @@ describe SitesController do
       context "site is not active" do
         before(:each) { mock_site.stub(:active?).and_return(false) }
         
-        it "should redirect to /sites when update_attributes succeeds" do
-          mock_site.stub(:update_attributes).with({}) { true }
+        context "site is in beta state" do
+          before(:each) { mock_site.should_receive(:beta?).and_return(true) }
           
-          put :update, :site => {}, :id => 'a1b2c3'
-          assigns(:site).should == mock_site
-          response.should redirect_to(sites_url)
+          it "should redirect to /sites when update_attributes succeeds" do
+            mock_site.stub(:update_attributes).with({}) { true }
+          
+            put :update, :site => {}, :id => 'a1b2c3'
+            assigns(:site).should == mock_site
+            response.should redirect_to(sites_url)
+          end
+        
+          it "should render :transition when update_attributes fails" do
+            mock_site.stub(:update_attributes).with({}) { false }
+            mock_site.should_receive(:errors).any_number_of_times.and_return(["error"])
+          
+            put :update, :site => {}, :id => 'a1b2c3'
+            assigns(:site).should == mock_site
+            response.should render_template(:transition)
+          end
         end
         
-        it "should redirect to /sites when update_attributes fails" do
-          mock_site.stub(:update_attributes).with({}) { false }
-          mock_site.should_receive(:errors).any_number_of_times.and_return(["error"])
+        context "site is not in beta state" do
+          before(:each) { mock_site.should_receive(:beta?).and_return(false) }
           
-          put :update, :site => {}, :id => 'a1b2c3'
-          assigns(:site).should == mock_site
-          response.should render_template(:edit)
+          it "should redirect to /sites when update_attributes succeeds" do
+            mock_site.stub(:update_attributes).with({}) { true }
+          
+            put :update, :site => {}, :id => 'a1b2c3'
+            assigns(:site).should == mock_site
+            response.should redirect_to(sites_url)
+          end
+          
+          it "should render :transition when update_attributes fails" do
+            mock_site.stub(:update_attributes).with({}) { false }
+            mock_site.should_receive(:errors).any_number_of_times.and_return(["error"])
+          
+            put :update, :site => {}, :id => 'a1b2c3'
+            assigns(:site).should == mock_site
+            response.should render_template(:edit)
+          end
         end
       end
       
       context "site is active" do
-        before(:each) { mock_site.stub(:active?).and_return(true) }
+        before(:each) { mock_site.stub(:active?).and_return(true) }        
         
         context "with wrong password" do
           before(:each) { @current_user.stub(:valid_password?).with('abcd').and_return(false) }
@@ -155,7 +180,10 @@ describe SitesController do
         end
         
         context "with good password" do
-          before(:each) { @current_user.stub(:valid_password?).with('123456').and_return(true) }
+          before(:each) do
+            @current_user.stub(:valid_password?).with('123456').and_return(true)
+            mock_site.should_receive(:beta?).and_return(false)
+          end
           
           it "should redirect to /sites when update_attributes succeeds" do
             mock_site.stub(:update_attributes).with({}) { true }
@@ -222,38 +250,6 @@ describe SitesController do
       end
     end
     
-    describe "PUT :rollback" do
-      context "with wrong password" do
-        before(:each) { @current_user.stub(:valid_password?).with('abcd').and_return(false) }
-        
-        it "should redirect to /sites/:token/edit" do
-          put :rollback, :id => 'a1b2c3', :user => { :current_password => 'abcd' }
-          assigns(:site).should == mock_site
-          response.should redirect_to(edit_site_url(mock_site))
-        end
-      end
-      
-      context "with good password" do
-        before(:each) { @current_user.stub(:valid_password?).with('123456').and_return(true) }
-        
-        it "should redirect to /sites when rollback succeeds" do
-          mock_site.stub(:rollback) { true }
-          
-          put :rollback, :id => 'a1b2c3', :user => { :current_password => '123456' }
-          assigns(:site).should == mock_site
-          response.should redirect_to(sites_url)
-        end
-        
-        it "should redirect to /sites when rollback fails" do
-          mock_site.stub(:rollback){ false }
-          
-          put :rollback, :id => 'a1b2c3', :user => { :current_password => '123456' }
-          assigns(:site).should == mock_site
-          response.should redirect_to(sites_url)
-        end
-      end
-    end
-    
     describe "DELETE :destroy" do
       before(:each) { mock_site.stub(:archive) }
       
@@ -279,7 +275,7 @@ describe SitesController do
     end
   end
   
-  verb_and_actions = { :get => [:index, :code, :new, :edit, :state, :usage], :post => :create, :put => [:update, :activate, :rollback], :delete => :destroy }
+  verb_and_actions = { :get => [:index, :code, :new, :edit, :state, :usage], :post => :create, :put => [:update, :activate], :delete => :destroy }
   it_should_behave_like "redirect when connected as", '/suspended', [[:user, { :suspended? => true }]], verb_and_actions
   it_should_behave_like "redirect when connected as", '/login', [:guest], verb_and_actions
   

@@ -121,8 +121,12 @@ class Site < ActiveRecord::Base
   before_save :prepare_cdn_update, :clear_alerts_sent_at
   after_save :execute_cdn_update
   after_create :delay_ranks_update
-  # Temporary
+  
+  # TODO: Remove after the one_time:sites:rollback_beta_sites rake task has been executed (no more site with the beta state)
+  # Temporary, after submitting /sites/:token/transition with with a plan selected
   after_update :activate, :if => lambda { |site| site.beta? && site.plan_id? }
+  # Temporary, after submitting /sites/:token/transition with no plan selected
+  after_update :rollback, :if => lambda { |site| site.beta? && !site.plan_id? }
 
   # =================
   # = State Machine =
@@ -132,14 +136,8 @@ class Site < ActiveRecord::Base
     state :pending # Temporary, used in the master branch
     state :beta # Temporary, used in lib/one_time/site.rb and lib/tasks/one_time.rake
 
-    state :dev do
-      # TODO: When beta state will be removed, place the following validates for every state
-      validates :plan, :presence => { :message => "Please choose a plan" }, :if => :new_record?
-    end
-
     state :active do
       validates :hostname, :presence => true
-      # TODO: When beta state will be removed, place the following validates for every state
       validates :plan, :presence => { :message => "Please choose a plan" }
       validate :verify_presence_of_credit_card
     end

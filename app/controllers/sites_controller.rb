@@ -3,9 +3,9 @@ class SitesController < ApplicationController
   respond_to :js, :only => [:index, :code]
 
   before_filter :redirect_suspended_user
-  before_filter :find_by_token, :only => [:code, :transition, :edit, :update, :activate, :rollback, :destroy, :usage]
+  before_filter :find_by_token, :only => [:code, :transition, :edit, :update, :activate, :destroy, :usage]
   before_filter :redirect_wrong_password_for_active_site!, :only => :update
-  before_filter :redirect_wrong_password!, :only => [:activate, :destroy, :rollback]
+  before_filter :redirect_wrong_password!, :only => [:activate, :destroy]
 
   has_scope :by_hostname
   has_scope :by_date
@@ -56,7 +56,14 @@ class SitesController < ApplicationController
   # PUT /sites/:id
   def update
     @site.update_attributes(params[:site])
-    respond_with(@site, :location => :sites)
+    respond_with(@site, :location => :sites) do |format|
+      # TODO: Remove this logic after the one_time:sites:rollback_beta_sites rake task has been executed (no more site with the beta state)
+      if @site.beta? && @site.errors.present?
+        format.html { render :transition } 
+      else
+        format.html
+      end
+    end
   end
 
   # PUT /sites/:id/activate
@@ -67,13 +74,6 @@ class SitesController < ApplicationController
         format.html { redirect_to [:edit, :credit_card], :notice => t("activerecord.errors.models.site.attributes.base.credit_card_needed") }
       end
     end
-  end
-
-  # TODO: Remove after beta transition
-  # PUT /sites/:id/rollback
-  def rollback
-    @site.rollback
-    respond_with(@site, :location => :sites)
   end
 
   # DELETE /sites/:id
@@ -99,7 +99,7 @@ class SitesController < ApplicationController
     end
   end
 
-private
+  private
 
   def find_by_token
     @site = current_user.sites.find_by_token(params[:id])
