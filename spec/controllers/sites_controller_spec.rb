@@ -124,7 +124,7 @@ describe SitesController do
         before(:each) { mock_site.stub(:active?).and_return(false) }
         
         context "site is in beta state" do
-          before(:each) { mock_site.should_receive(:beta?).and_return(true) }
+          before(:each) { mock_site.should_receive(:state_was).and_return('beta') }
           
           it "should redirect to /sites when update_attributes succeeds" do
             mock_site.stub(:update_attributes).with({}) { true }
@@ -145,7 +145,7 @@ describe SitesController do
         end
         
         context "site is not in beta state" do
-          before(:each) { mock_site.should_receive(:beta?).and_return(false) }
+          before(:each) { mock_site.should_receive(:state_was).and_return('dev') }
           
           it "should redirect to /sites when update_attributes succeeds" do
             mock_site.stub(:update_attributes).with({}) { true }
@@ -182,7 +182,7 @@ describe SitesController do
         context "with good password" do
           before(:each) do
             @current_user.stub(:valid_password?).with('123456').and_return(true)
-            mock_site.should_receive(:beta?).and_return(false)
+            mock_site.should_receive(:state_was).and_return('active')
           end
           
           it "should redirect to /sites when update_attributes succeeds" do
