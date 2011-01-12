@@ -15,13 +15,13 @@
   #site_setup_settings.settings{ :style => "display:none" }
     .left
       %h4.title= "Extra and development domains"
-      %a.add{ :href => "", :onclick => "$('site_setup_extra_hostnames').toggle(); return false" }= "Add staging or alias domains"
+      %a.add{ :href => "", :onclick => "$('site_setup_extra_hostnames').toggle(); $('site_setup_extra_hostnames').visible() ? this.addClassName('up') : this.removeClassName('up'); return false" }= "Add staging or alias domains"
       .entry.site#site_setup_extra_hostnames{ :style => f.object.extra_hostnames.present? ? "display:block" : "display:none" }
         = f.label :extra_hostnames, "", :class => "icon"
         = f.text_field :extra_hostnames, :class => "text", :placeholder => "yourdomain.ch", :autocomplete => :off
         %p.info= "Add extra domains separated by commas. Extra domains are meant to be used exclusively for staging domains and alias domains (multiple domain names for the same content)."
 
-      %a.add{ :href => "", :onclick => "$('site_setup_dev_hostnames').toggle(); return false" }= "Add development domains"
+      %a.add{ :href => "", :onclick => "$('site_setup_dev_hostnames').toggle(); $('site_setup_dev_hostnames').visible() ? this.addClassName('up') : this.removeClassName('up'); return false" }= "Add development domains"
       .entry.site#site_setup_dev_hostnames{ :style => (f.object.dev_hostnames.present? && f.object.dev_hostnames != Site::DEFAULT_DEV_DOMAINS) ? "display:block" : "display:none" }
         = f.label :dev_hostnames, "", :class => "icon"
         = f.text_field :dev_hostnames, :class => "text", :placeholder => "127.0.0.1, localhost", :autocomplete => :off
@@ -29,15 +29,15 @@
 
     .right
       %h4.title= "Advanced settings"
-      .entry
-        = f.label :path, "Restrict your player to a specific path"
+      .entry.path
+        = f.label :path, "Restrict your player to a specific path", :class => "info"
         %p
           = f.text_field :path, :class => "text no_icon", :placeholder => "/path", :autocomplete => :off
-        %p.desc= "Path will also be added to extra domains (not to development domains)."
+        %p.info= "Path will also be added to extra domains (not to development domains)."
       
-      .entry
+      .entry.wildcard
         .checkbox_wrap
           = f.check_box :wildcard
-          = f.label :wildcard, "Wildcard (*.#{f.object.hostname})"
-        %p.desc= "It will be also added to extra and dev domains."
+          = f.label :wildcard, "Wildcard (*.yourdomain.com)"
+        %p.info= "It will be also added to extra and dev domains."
     .spacer
