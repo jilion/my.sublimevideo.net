@@ -6,7 +6,7 @@ module OneTime
     class << self
       
       # Method used in the 'one_time:update_invalid_sites' rake task
-      def update_hostnames(staff = true)
+      def update_hostnames(staff=true)
         invalid_sites = ::Site
         invalid_sites = invalid_sites.includes(:user).where(:users => { :email => STAFF_EMAILS }) if staff
         invalid_sites = invalid_sites.not_archived.reject { |s| s.valid? }
@@ -41,7 +41,7 @@ module OneTime
           site.hostname        = Hostname.clean(site.hostname) if site.hostname.present?
           site.dev_hostnames   = Hostname.clean(new_dev_hostnames.sort.join(', '))
           site.extra_hostnames = Hostname.clean(extra_hostnames.sort.join(', ')) if extra_hostnames.present?
-          site.cdn_up_to_date  = true
+          site.cdn_up_to_date  = site.valid? # will reload the site's license if site is valid
           repaired_sites += 1 if site.save
           
           result << "##{site.id} (#{'still in' unless site.valid?}valid)"
@@ -54,7 +54,7 @@ module OneTime
         result
       end
       
-      def set_beta_state(staff = true)
+      def set_beta_state(staff=true)
         sites = ::Site
         sites = sites.joins(:user).where(:users => { :email => STAFF_EMAILS }) if staff
         
