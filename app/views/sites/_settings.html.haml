@@ -8,21 +8,21 @@
       = f.label :hostname, "", :class => "icon"
       = f.text_field :hostname, :class => "text", :placeholder => "yourdomain.com", :autocomplete => :off
     %p.desc= "Add your main domain or leave it empty if you just want to use it in development for now."
-    %a.button{ :href => "", :onclick => "$('site_setup_settings').toggle(); $('site_setup_settings').visible() ? this.addClassName('up') : this.removeClassName('up'); return false" }= "Settings"
+    %a.button{ :href => "", :onclick => "$('site_setup_settings').toggle(); this.toggleClassName('up'); return false" }= "Settings"
     .spacer
   .break_line
   -# #site_setup_settings.settings
-  #site_setup_settings.settings{ :style => "display:none" }
+  #site_setup_settings.settings{ :style => hide_settings(f.object) }
     .left
       %h4.title= "Extra and development domains"
       %a.add{ :href => "", :onclick => "$('site_setup_extra_hostnames').toggle(); $('site_setup_extra_hostnames').visible() ? this.addClassName('up') : this.removeClassName('up'); return false" }= "Add staging or alias domains"
-      .entry.site#site_setup_extra_hostnames{ :style => f.object.extra_hostnames.present? ? "display:block" : "display:none" }
+      .entry.site#site_setup_extra_hostnames{ :style => display_block_if_or_none_otherwise(f.object.extra_hostnames?) }
         = f.label :extra_hostnames, "", :class => "icon"
         = f.text_field :extra_hostnames, :class => "text", :placeholder => "yourdomain.ch", :autocomplete => :off
         %p.info= "Add extra domains separated by commas. Extra domains are meant to be used exclusively for staging domains and alias domains (multiple domain names for the same content)."
 
       %a.add{ :href => "", :onclick => "$('site_setup_dev_hostnames').toggle(); $('site_setup_dev_hostnames').visible() ? this.addClassName('up') : this.removeClassName('up'); return false" }= "Add development domains"
-      .entry.site#site_setup_dev_hostnames{ :style => (f.object.dev_hostnames.present? && f.object.dev_hostnames != Site::DEFAULT_DEV_DOMAINS) ? "display:block" : "display:none" }
+      .entry.site#site_setup_dev_hostnames{ :style => display_block_if_or_none_otherwise(f.object.dev_hostnames? && f.object.dev_hostnames != Site::DEFAULT_DEV_DOMAINS) }
         = f.label :dev_hostnames, "", :class => "icon"
         = f.text_field :dev_hostnames, :class => "text", :placeholder => "127.0.0.1, localhost", :autocomplete => :off
         %p.info= "Add (local only) development domains separated by commas."

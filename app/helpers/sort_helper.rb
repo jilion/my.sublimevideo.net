@@ -23,7 +23,7 @@ module SortHelper
               :class => ['sort', field, class_active, class_up].join(" "),
               :remote => options[:remote],
               :onclick => "MySublimeVideo.remoteSortLink(this);") do
-      content_tag(:strong, content_tag(:span, options[:label], :class => 'arrow')) + content_tag(:span, '', :class => 'corner')
+      content_tag(:strong, content_tag(:span, options[:label], :class => 'arrow', :title => options[:title])) + content_tag(:span, '', :class => 'corner')
     end
   end
 
