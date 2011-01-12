@@ -1,0 +1,15 @@
+%h3 Active pages
+
+%table
+  %tr
+    %th Popular URL
+    %th Hits
+    %th Last hit
+  = render partial: 'referrer', collection: site.referrers.by_hits.limit(10)
+
+%table
+  %tr
+    %th Last URL
+    %th Hits
+    %th Last hit
+  = render partial: 'referrer', collection: site.referrers.by_updated_at.limit(5)

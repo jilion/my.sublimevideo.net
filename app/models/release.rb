@@ -136,6 +136,7 @@ private
 
 end
 
+
 # == Schema Information
 #
 # Table name: releases
@@ -152,3 +153,4 @@ end
 #
 #  index_releases_on_state  (state)
 #
+

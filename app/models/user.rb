@@ -108,7 +108,7 @@ class User < ActiveRecord::Base
     event(:suspend)        { transition :active => :suspended }
     event(:cancel_suspend) { transition :active => :active }
     event(:unsuspend)      { transition :suspended => :active }
-    event(:archive)        { transition :active => :archived }
+    event(:archive)        { transition all => :archived }
 
     before_transition :on => :suspend, :do => [:set_failed_invoices_count_on_suspend, :suspend_sites]
     after_transition  :on => :suspend, :do => :send_account_suspended_email

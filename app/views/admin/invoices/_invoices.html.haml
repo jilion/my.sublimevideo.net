@@ -1,0 +1,16 @@
+%table.main#invoices
+  %tr
+    %th Reference
+    %th= link_to_sort :user
+    %th= link_to_sort :date, :default_way => 'desc', :default => true, :label => "Period"
+    -# %th= link_to_sort :invoice_items_count
+    %th # Sites
+    %th # Invoice items
+    %th= link_to_sort :amount
+    %th= link_to_sort :state
+    %th= link_to_sort :attempts
+  = render @invoices
+  
+.pagination_wrap
+  = remote_will_paginate(@invoices, :params => params.merge(:format => nil))
+  = page_entries_info(@invoices)

@@ -10,11 +10,36 @@ class Invoice < ActiveRecord::Base
   belongs_to :charging_delayed_job, :class_name => "::Delayed::Job"
   has_many :invoice_items
 
+  has_many :addon_invoice_items,   conditions: { type: "InvoiceItem::Addon" }, :class_name => "InvoiceItem"
+  has_many :overage_invoice_items, conditions: { type: "InvoiceItem::Overage" }, :class_name => "InvoiceItem"
+  has_many :plan_invoice_items,    conditions: { type: "InvoiceItem::Plan" }, :class_name => "InvoiceItem"
+
   # ==========
   # = Scopes =
   # ==========
 
-  scope :failed, where(:state => 'failed')
+  scope :paid,       where(state: 'paid')
+  scope :failed,     where(state: 'failed')
+  scope :where_user, lambda { |user_id| where(user_id: user_id) }
+  # sort
+  scope :by_amount, lambda { |way='desc'| order(:amount.send(way)) }
+  # I'd like to return an array of invoices ordered by their count of invoice items
+  # def self.by_invoice_items_count(way = 'desc')
+  #   joins(:invoice_items).select("invoice_id").group("invoice_id").order("COUNT(invoice_id) #{way}")
+  # end
+  scope :by_user,     lambda { |way='desc'| order(:users => [:first_name.send(way), :email.send(way)]) }
+  scope :by_state,    lambda { |way='desc'| order(:state.send(way)) }
+  scope :by_attempts, lambda { |way='desc'| order(:attempts.send(way)) }
+  scope :by_date,     lambda { |way='desc'| order(:created_at.send(way)) }
+
+  # search
+  def self.search(q)
+    joins(:user).
+    where(:lower.func(:email).matches % :lower.func("%#{q}%") \
+        | :lower.func(:first_name).matches % :lower.func("%#{q}%") \
+        | :lower.func(:last_name).matches % :lower.func("%#{q}%") \
+        | :lower.func(:reference).matches % :lower.func("%#{q}%"))
+  end
 
   # ===============
   # = Validations =
@@ -91,7 +116,7 @@ class Invoice < ActiveRecord::Base
 
   def self.complete_invoices_for_billable_users(started_at, ended_at) # utc dates!
     User.billable(started_at, ended_at).each do |user|
-      invoice = build(:user => user, :started_at => started_at, :ended_at => ended_at)
+      invoice = build(user: user, started_at: started_at, ended_at: ended_at)
       invoice.complete
     end
     delay_complete_invoices_for_billable_users(*TimeUtil.next_full_month(ended_at))
@@ -156,7 +181,7 @@ private
 
   def build_invoice_items
     user.sites.includes(:versions).billable(started_at, ended_at).each do |site|
-      # Allow to have the good billable plan
+      # Allow to have the right billable plan
       past_site = site.version_at(ended_at)
       # Plan
       invoice_items << (plan_invoice_item = InvoiceItem::Plan.build(:site => past_site, :invoice => self))
@@ -251,6 +276,7 @@ private
 
 end
 
+
 # == Schema Information
 #
 # Table name: invoices
@@ -282,3 +308,4 @@ end
 #  index_invoices_on_user_id_and_ended_at    (user_id,ended_at) UNIQUE
 #  index_invoices_on_user_id_and_started_at  (user_id,started_at) UNIQUE
 #
+

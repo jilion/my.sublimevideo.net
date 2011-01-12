@@ -32,9 +32,9 @@
 %h3= "Sites"
 
 %ul
-  - player_hits = user.sites.inject(0) { |sum, site| sum += site.usages.sum(:player_hits) }
+  - player_hits = @user.sites.inject(0) { |sum, site| sum += site.usages.sum(:player_hits) }
   %li= "Total player hits: #{number_with_delimiter(player_hits, :delimiter => "'")}"
-  - traffic = user.sites.inject(0) { |sum, site| sum += (site.usages.sum(:traffic_s3).to_i + site.usages.sum(:traffic_voxcast).to_i }
+  - traffic = @user.sites.inject(0) { |sum, site| sum += (site.usages.sum(:traffic_s3).to_i + site.usages.sum(:traffic_voxcast).to_i) }
   %li= "Total traffic: #{number_to_human_size(traffic, :precision => 4)}"
 
 %h4= "Active (#{@user.sites.not_archived.count})"

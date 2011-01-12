@@ -18,6 +18,7 @@ class Addon < ActiveRecord::Base
 
 end
 
+
 # == Schema Information
 #
 # Table name: addons
@@ -32,3 +33,4 @@ end
 #
 #  index_addons_on_name  (name) UNIQUE
 #
+

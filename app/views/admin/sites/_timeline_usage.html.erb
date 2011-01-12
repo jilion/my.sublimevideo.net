@@ -4,10 +4,24 @@ plans = Plan.all
 
 graph = Graph.new do |g|
   g.option(chart: chart('timeline_usage'))
-  g.option(title: { text: "VPV per day, total and averages for #{site.hostname}" })
+  g.option(title: { text: "VPV per day, total and averages for #{hostname_with_path_and_wildcard(site)}" })
   g.option(subtitle: usage_date_subtitle(@date_range_from, @date_range_to))
   g.option(legend: legend)
-  g.option(xAxis: { type: 'datetime', showFirstLabel: true, showLastLabel: true })
+  g.option(xAxis: {
+    type: 'datetime', showFirstLabel: true, showLastLabel: true, gridLineWidth: 1,
+    dateTimeLabelFormats: {
+    	day: '%e %b',
+    	week: '%e %b'
+    },
+    labels: {
+      y: 15
+    },
+    plotBands: [{
+        color: '#FFFFD9',
+        from: (Time.now.utc.beginning_of_day - 30.days).to_i * 1000,
+        to: Time.now.utc.beginning_of_day.to_i * 1000
+    }]
+  })
   g.raw_option(%(yAxis: {
     title: {
       text: 'Video-page views',
@@ -15,7 +29,7 @@ graph = Graph.new do |g|
     },
     min: 0,
     labels: {
-      formatter: function() { return Highcharts.numberFormat(this.value, 0, '.', "'"); }
+      formatter: function() { return Highcharts.numberFormat(this.value, 0); }
     }
   }))
   g.raw_option(%(tooltip: {

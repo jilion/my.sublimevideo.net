@@ -573,8 +573,6 @@ protected
   end
 
 end
-
-
 # == Schema Information
 #
 # Table name: users

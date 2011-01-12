@@ -1021,6 +1021,7 @@ describe Site do
 end
 
 
+
 # == Schema Information
 #
 # Table name: sites
@@ -1061,3 +1062,4 @@ end
 #  index_sites_on_plan_id                                     (plan_id)
 #  index_sites_on_user_id                                     (user_id)
 #
+

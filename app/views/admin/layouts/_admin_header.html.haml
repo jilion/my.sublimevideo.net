@@ -10,7 +10,7 @@
         - [:plans, :addons, :referrers, :mails, :admins].each do |name|
           = activable_menu_item(:li, name, {}.reverse_merge!(:namespace => 'admin'))
     %ul#favorite_links
-      - [:sites, :users, [:releases, { :link_text => "Player" }], [:delayed_jobs, { :urls => %w[djs], :link_text => "DJs" }]].each do |r|
+      - [:sites, :users, :invoices, [:releases, { :link_text => "Player" }], [:delayed_jobs, { :urls => %w[djs], :link_text => "DJs" }]].each do |r|
         - name = r.is_a?(Array) ? r[0] : r
         - if zeno? || name != :releases || Rails.env.development?
           = activable_menu_item(:li, name, (r.is_a?(Array) ? r[1] : {}).reverse_merge!(:namespace => 'admin'))

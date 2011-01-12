@@ -1,0 +1,19 @@
+- invoices = site.invoices.order(:ended_at.desc).limit(12).uniq
+%h3 Last 12 invoices
+
+%table.crado.center
+  %tr
+    %th Month Year
+    %th Amount
+    %th Invoice Items
+  - invoices.each do |invoice|
+    %tr
+      %td= link_to(invoice_dates(invoice), [:edit, :admin, invoice])
+      %td= display_amount(invoice.amount)
+      %td
+        %ul
+          - invoice.invoice_items.where(:site_id => site.id).each do |invoice_item|
+            %li
+              = invoice_item.type.demodulize
+              = " / "
+              = display_amount(invoice_item.amount)

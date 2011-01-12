@@ -1,0 +1,13 @@
+= title("Invoices")
+= content_header(admin_invoices_page_title(@invoices))
+
+.search_form
+  = form_tag admin_invoices_path, :method => :get, :id => 'search_form' do
+    = text_field_tag :search, '', :id => 'search_input', :placeholder => "Search", :type => "search", :autofocus => true, :autosave => "admin_search", :results => "5"
+
+.spacer
+
+= render 'filter_links'
+
+
+#invoices_table_wrap= render 'invoices'

@@ -11,8 +11,8 @@
     %a.button{ :href => "", :onclick => "$('site_setup_settings').toggle(); $('site_setup_settings').visible() ? this.addClassName('up') : this.removeClassName('up'); return false" }= "Settings"
     .spacer
   .break_line
-  #site_setup_settings.settings{ :style => "display:none" }
   -# #site_setup_settings.settings
+  #site_setup_settings.settings{ :style => "display:none" }
     .left
       %h4.title= "Extra and development domains"
       %a{ :href => "", :onclick => "$('site_setup_extra_hostnames').toggle(); return false" }= "Add staging or alias domains"
