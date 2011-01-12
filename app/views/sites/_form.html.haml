@@ -16,15 +16,16 @@
   .break_line
   
   = render 'settings', :f => f
-  -# 
-  -# - if !current_user.cc? || current_user.cc_expired?
-  -#   %h3 Credit card
-  -#   - if current_user.cc_expired?
-  -#     %p.warning Your credit card is expired. Please update it.
-  -#
-  -#   - user ||= site.user
-  -#   = f.fields_for :user_attributes, user do |ff|
-  -#     = render 'credit_cards/form', :f => ff
-  -#
+    
+  - if !current_user.cc? || current_user.cc_expired?
+    #site_credit_card
+      %h3.title= "Credit Card Information"
+      - if current_user.cc_expired?
+        %p.warning Your credit card is expired. Please update it.
+  
+      - user ||= site.user
+      = f.fields_for :user_attributes, user do |ff|
+        = render 'credit_cards/form', :f => ff
+  
   .actions
     = f.submit(site.persisted? ? "Update" : "Create", :class => "add")

@@ -1512,7 +1512,7 @@ ul#addons .checkbox_wrap input:focus:checked + label {background-position:0 -102
   width:426px;
   height:35px;
   padding:13px 0 0 20px;
-  margin:12px 0;
+  margin:14px 0 3px;
   background:url(/images/embed/sites/add_domains_box_button.png) no-repeat;
   color:#4d5563;
   font-size:17px;
