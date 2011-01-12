@@ -1,12 +1,6 @@
 %tr[user]{ :class => cycle("", "alt") }
   %td.full_name
     = link_to_user(user)
-  %td.beta
-    %small= display_bool(user.use_personal)
-  %td.beta
-    %small= display_bool(user.use_company)
-  %td.beta
-    %small= display_bool(user.use_clients)
   %td.sites
     - sites = user.sites.select { |s| !s.archived? }
     %small
@@ -15,5 +9,17 @@
           = content_tag :li do
             = links_to_hostnames(site)
         %li= link_to("#{sites.size-2} more", admin_user_path(user)) if sites.size > 2
+  %td.number
+    %small= number_with_delimiter(user.sites.all.sum { |s| s.last_30_days_main_player_hits_total_count + s.last_30_days_extra_player_hits_total_count })
+  %td.number
+    - if user.invoices.last.present?
+      %small= link_to display_amount(user.invoices.last.amount), [:admin, user.invoices.last], :title => "Invoice page"
+    - else
+      %small= '-'
+  %td.number
+    - if user.invoices.present?
+      %small= link_to display_amount(user.invoices.sum(:amount)), admin_invoices_path(:user_id => user.id), :title => "See all user invoices"
+    - else
+      %small= '-'
   %td
     %small= display_date(user.created_at)

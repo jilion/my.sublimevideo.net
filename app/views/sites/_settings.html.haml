@@ -11,7 +11,6 @@
     %a.button{ :href => "", :onclick => "$('site_setup_settings').toggle(); this.toggleClassName('up'); return false", :class => display_text_if("up", conditions_for_show_settings(f.object)) }= "Settings"
     .spacer
   .break_line
-  -# #site_setup_settings.settings
   #site_setup_settings.settings{ :style => display_none_if(conditions_for_show_settings(f.object)) }
     .left
       %h4.title= "Extra and development domains"
@@ -41,3 +40,4 @@
           = f.label :wildcard, "Wildcard (*.yourdomain.com)"
         %p.info= "It will be also added to extra and dev domains."
     .spacer
+    .break_line

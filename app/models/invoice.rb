@@ -20,7 +20,7 @@ class Invoice < ActiveRecord::Base
 
   scope :paid,       where(state: 'paid')
   scope :failed,     where(state: 'failed')
-  scope :where_user, lambda { |user_id| where(user_id: user_id) }
+  scope :user_id,    lambda { |user_id| where(user_id: user_id) }
   # sort
   scope :by_amount, lambda { |way='desc'| order(:amount.send(way)) }
   # I'd like to return an array of invoices ordered by their count of invoice items

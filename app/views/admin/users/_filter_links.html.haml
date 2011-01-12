@@ -1,11 +1,11 @@
 %p
   - users = User.scoped
-  = link_to "#{content_tag(:strong, users.count)} All".html_safe, admin_users_path
+  = link_to "#{content_tag(:strong, User.active_and_billable.count)} Active & billable".html_safe, admin_users_path
   |
-  = link_to "#{content_tag(:strong, users.will_be_suspended.count)} Will be suspended".html_safe, admin_users_path(:will_be_suspended => true)
+  = link_to "#{content_tag(:strong, User.active_and_not_billable.count)} Active & not billable".html_safe, admin_users_path(:active_and_not_billable => true)
   |
-  = link_to "#{content_tag(:strong, users.use_personal.count)} Personal usage".html_safe, admin_users_path(:use_personal => true)
+  = link_to "#{content_tag(:strong, User.will_be_suspended.count)} Will be suspended".html_safe, admin_users_path(:will_be_suspended => true)
   |
-  = link_to "#{content_tag(:strong, users.use_company.count)} Company usage".html_safe, admin_users_path(:use_company => true)
+  = link_to "#{content_tag(:strong, User.with_state(:suspended).count)} Suspended".html_safe, admin_users_path(:with_state => "suspended")
   |
-  = link_to "#{content_tag(:strong, users.use_clients.count)} Clients usage".html_safe, admin_users_path(:use_clients => true)
+  = link_to "#{content_tag(:strong, User.with_state(:archived).count)} Archived".html_safe, admin_users_path(:with_state => "archived")

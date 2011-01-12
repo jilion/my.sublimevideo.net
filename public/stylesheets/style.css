@@ -1512,7 +1512,7 @@ ul#addons .checkbox_wrap input:focus:checked + label {background-position:0 -102
   width:426px;
   height:35px;
   padding:13px 0 0 20px;
-  margin:12px 0;
+  margin:14px 0 3px;
   background:url(/images/embed/sites/add_domains_box_button.png) no-repeat;
   color:#4d5563;
   font-size:17px;
@@ -1554,6 +1554,49 @@ ul#addons .checkbox_wrap input:focus:checked + label {background-position:0 -102
 #site_setup .settings .right .entry .checkbox_wrap {
   margin:0;
 }
+
+#site_credit_card .left {
+  float:left;
+  width:440px;
+}
+
+#site_credit_card h3.title {
+  font-size:20px;
+  font-weight:600;
+  padding:8px 0 5px;
+}
+
+#site_credit_card .right {
+  width:390px;
+  float:left;
+  padding:80px 0 0 20px;
+}
+
+#site_credit_card .right .billing_info {
+  color:#666d7a;
+  line-height:20px;
+}
+
+#site .actions.center {
+  text-align:center;
+}
+
+#site .actions input.submit.big {
+  width:210px;
+  height:84px;
+  background:url(/images/embed/big_submit_button.png) no-repeat;
+  border:none;
+  font-family:"proxima-nova-1","proxima-nova-2", Helvetica, Arial, sans-serif;
+  font-size:22px;
+  color:#fff;
+  text-shadow:rgba(0,0,0,0.9) 0 -1px 1px;
+  font-weight:400;
+  outline:0;
+}
+
+#site .actions input.submit.big:active {background-position:0 -84px;}
+#site .actions input.submit.big:focus {background-position:0 -168px;}
+#site .actions input.submit.big:active:focus {background-position:0 -252px;}
 
 .popup {
   width:450px;
