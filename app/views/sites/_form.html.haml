@@ -1,10 +1,22 @@
 = form_for site, :html => { :class => "full" } do |f|
+
   = render 'plans', :f => f
 
-  -# = render 'addons', :f => f
-  -#
-  -# = render 'settings', :f => f
-  -#
+  %h3.headline= "Unlimited Free Testing on All Plans."
+  %h4.sub_headline= "SublimeVideo is free while you develop your site. Billing will only start when you make it live."
+
+  = render 'addons', :f => f
+  
+  .no_plan
+    %p><
+      ="In case you just want to test SublimeVideo in development, "
+      %a{ :href => "", :onclick => "$$('ul#plans li input[type=radio]').each(function(e){e.checked = false;}); MySublimeVideo.SELECTED_PLAN = 0; return false" }= "don’t select any plans"
+      = ". No credit card required."
+  .spacer
+  .break_line
+  
+  = render 'settings', :f => f
+  -# 
   -# - if !current_user.cc? || current_user.cc_expired?
   -#   %h3 Credit card
   -#   - if current_user.cc_expired?
