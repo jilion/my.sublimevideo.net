@@ -26,16 +26,28 @@ class User < ActiveRecord::Base
   belongs_to :suspending_delayed_job, :class_name => "::Delayed::Job"
   has_many :sites
   has_many :invoices
+  has_one :last_invoice, :class_name => "Invoice", :order => "ended_at DESC"
 
   # ==========
   # = Scopes =
   # ==========
 
-  def self.billable(started_at, ended_at)
+
+  scope :billable,  lambda { |started_at, ended_at|
     includes(:sites).
     without_state(:archived).
     where(:sites => [{ :activated_at.lte => ended_at }, { :archived_at => nil } | { :archived_at.gte => started_at }])
-  end
+  }
+  scope :active_and_billable, lambda {
+    includes(:sites).
+    with_state(:active).
+    where(:sites => [{ :activated_at.ne => nil }, { :archived_at => nil } | { :archived_at.gte => Time.now.utc.beginning_of_month }])
+  }
+  scope :active_and_not_billable, lambda {
+    includes(:sites).
+    with_state(:active).
+    where(:sites => [{ :activated_at => nil } | { :archived_at.lt => Time.now.utc.beginning_of_month }])
+  }
 
   # credit_card scopes
   scope :without_cc, where(:cc_type => nil, :cc_last_digits => nil)
@@ -53,9 +65,15 @@ class User < ActiveRecord::Base
   scope :signed_in_between, lambda { |start_date, end_date| where(:current_sign_in_at.gte => start_date, :current_sign_in_at.lt => end_date) }
 
   # sort
-  scope :by_name_or_email, lambda { |way = 'asc'| order(:first_name.send(way), :email.send(way)) }
-  scope :by_beta,          lambda { |way = 'desc'| order(:invitation_token.send(way)) }
-  scope :by_date,          lambda { |way = 'desc'| order(:created_at.send(way)) }
+  scope :by_name_or_email,   lambda { |way = 'asc'| order(:first_name.send(way), :email.send(way)) }
+  scope :by_sites_last_30_days_billable_player_hits_total_count,  lambda { |way = 'desc'|
+    joins(:sites).group(User.column_names.map { |c| "\"users\".\"#{c}\"" }.join(', ')).order("SUM(sites.last_30_days_main_player_hits_total_count) + SUM(sites.last_30_days_extra_player_hits_total_count) #{way}")
+  }
+  # scope :by_last_invoiced_amount,  lambda { |way = 'desc'|
+  #   includes(:invoices, :last_invoice).order("last_invoices_users.amount #{way}")
+  # }
+  scope :by_beta,            lambda { |way = 'desc'| order(:invitation_token.send(way)) }
+  scope :by_date,            lambda { |way = 'desc'| order(:created_at.send(way)) }
 
   # search
   def self.search(q)

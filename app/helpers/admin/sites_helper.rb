@@ -23,7 +23,7 @@ module Admin::SitesHelper
     else
       ""
     end
-    "#{pluralized_sites}#{state}".humanize
+    "#{pluralized_sites.titleize}#{state.humanize}"
   end
 
   def links_to_hostnames(site)

@@ -6,7 +6,7 @@ class Admin::InvoicesController < Admin::AdminController
   # filter
   has_scope :paid
   has_scope :failed
-  has_scope :where_user
+  has_scope :user_id
   # sort
   has_scope :by_user
   has_scope :by_date, :default_way
