@@ -586,7 +586,10 @@ var FaviconGetter = Class.create({
     if (response.query.results) {
       href = response.query.results.link.length > 0 ? response.query.results.link[0].href : response.query.results.link.href;
       if (href != null) {
-        if (href.match(/^\//)) {
+        if (href.match(/^\/\//)) {
+          href = "http:" + href;
+        }
+        else if (href.match(/^\//)) {
           href = "http://" + this.hostname + href;
         } 
         else if (!href.match(/^http/)) {
