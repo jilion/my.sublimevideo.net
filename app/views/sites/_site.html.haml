@@ -1,40 +1,30 @@
 %tr{ :id => dom_id(site), :class => cycle("", "alt") }
-  %td.plan
-    - if site.plan
-      = site.plan.name.humanize
-    - elsif site.beta?
-      = "Beta"
-    - else
-      = "No plan"
-  %td.site
+  %td.site{ :class => site.hostname.present? ? "has_domain" : "empty"}
     .wrap
       - if site.hostname.present?
-        = link_to "http://#{hostname_with_path(site)}", :class => "external_link", :onclick => "window.open(this); return false", :title => hostname_with_path(site) do
+        -# TODO: Remove condition when no more site in beta state
+        = link_to(site.beta? ? [:transition, site] : [:edit, site], :class => "domain", :title => "Edit #{hostname_with_path(site)}") do
+          = image_tag "/images/embed/sites/default_favicon.png", :alt => "Favicon", :size => "16x16", :id => "site_favicon_#{site.id}"
           = hostname_with_path_and_wildcard(site, :truncate => 30)
+        %input{ :type => "hidden", :class => "favicon_tag_id", :value => "site_favicon_#{site.id}" }
+        %input{ :type => "hidden", :class => "hostname_for_favicon", :value => hostname_with_path(site) }
       - else
-        = link_to "add an hostname", [:edit, site]
-        
-      - if site.need_path?
-        %span
-          -# TODO: Update this text
-          %em= "you should add a path"
+        = link_to "add an hostname", [:edit, site], :class => "domain"
+
+      .plan
+        - if site.plan
+          = site.plan.name.humanize
+        - elsif site.beta?
+          = "Beta"
+        - else
+          = "No plan"
       
-      - if site.plan_player_hits_reached_alerted_this_month?
-        %span.alerted
-          -# TODO: Update this text
-          %em= "Plan limit reached, overages will occur."
-      
-      - unless site.cdn_up_to_date?
-        %span.in_progress
-          -# TODO: Update this text
-          %em= "updating CDN..."
-      
-      -#%em.date= l site.created_at.to_date, :format => :small
       - if site.addons.present?
-        = "Add-ons: #{site.addons.map { |a| a.name.humanize }.join(", ")}"
-      - else
-        No add-ons.
-  %td.code
+        %ul.addons
+          - site.addons.each do |addon|
+            %li= addon.name.humanize
+      
+  %td.usage
     - if site.beta?
       = link_to "Choose a plan", [:transition, site]
     - elsif site.plan_id.blank?
@@ -46,10 +36,22 @@
         .actions
           = f.submit 'Activate', :class => "submit small", :id => "activate_site_#{site.id}"
           
+    .small_message
+      - if site.need_path?
+        %span
+          -# TODO: Update this text
+          %em= "you should add a path"
+      
+      - if site.plan_player_hits_reached_alerted_this_month?
+        %span.alerted
+          -# TODO: Update this text
+          %em= "Plan limit reached, overages will occur."
+      
   %td.code
     = link_to "Embed code", "", :class => "embed_code", :onclick => "return MySublimeVideo.showSiteEmbedCode('#{site.token}')"
     
-  %td.edit
-    .wrap
-      - unless site.beta?
-        = link_to content_tag(:span, "settings"), [:edit, site], :class => "settings", :title => "Settings"
+  %td.status
+    - unless site.cdn_up_to_date?
+      %span.in_progress
+        -# TODO: Update this text
+        %em= "updating CDN..."

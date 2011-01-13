@@ -845,44 +845,22 @@ form .entry a.cancel {
 /* = My Sites = */
 /* ============ */
 
-#content form.site {
-  width:668px;
-  background:url(/images/embed/breakline.png) no-repeat;
-  padding:18px 0;
-  position:relative;
-}
-
-#content form.site .entry.site {
-  background:url(/images/embed/breakline.png) no-repeat 0 100%;
-  padding-bottom:24px;
-}
-
-#content form.site .actions {
+#content a.add_site {
+  display:block;
   position:absolute;
-  top:18px;
-  left:455px;
-  width:130px;
-}
-
-#content form.site input.add, form input.submit.small {
-  width:97px;
-  height:48px;
-  background:url(/images/embed/add_btn.png) no-repeat;
-  border:none;
-  font-family:"proxima-nova-1","proxima-nova-2", Helvetica, Arial, sans-serif;
+  right:50px;
+  top:48px;
+  background:url(/images/embed/standard_link_btn.png) no-repeat;
+  width:109px;
+  height:33px;
+  padding:7px 0 0;
   font-size:18px;
   font-weight:600;
   text-align:center;
-  color:#4d5563;
-  text-shadow:rgba(255,255,255,0.45) 0 1px 0;
-  outline:0;
-  position:relative;
-  left:-5px;
+  text-shadow:rgba(255,255,255,0.5) 0 1px 0;
 }
 
-#content form.site input.add:active, form input.submit.small:active {background-position:0 -48px;}
-#content form.site input.add:focus, form input.submit.small:focus {background-position:0 -96px;}
-#content form.site input.add:active:focus, form input.submit.small:active:focus {background-position:0 -144px;}
+#content a.add_site:active {background-position:0 -40px}
 
 #content .main_table_wrap {
   border:1px solid #666;
@@ -892,6 +870,10 @@ form .entry a.cancel {
   -webkit-box-shadow:rgba(0,0,0,0.45) 0 1px 10px;
   -moz-box-shadow:rgba(0,0,0,0.45) 0 1px 10px;
   box-shadow:rgba(0,0,0,0.45) 0 1px 10px;
+}
+
+#sites_table_wrap {
+  padding:30px 0 0;
 }
 
 #content .main_table_wrap .dark_rounded_corners {
@@ -936,7 +918,7 @@ form .entry a.cancel {
   box-shadow:inset rgba(0,0,0,0.5) 1px 1px 0, inset #5b4564 1px 2px 0;
 }
 
-#content table.main th.delete, #content table.main th.settings {
+#content table.main th.status {
   width:18px;
   -webkit-border-top-right-radius:10px;
   -moz-border-radius-topright:10px;
@@ -952,7 +934,6 @@ form .entry a.cancel {
 }
 
 #content #sites_table_wrap table.main th.code, #content #sites_table_wrap table.main td.code {width:180px;}
-#content table.main th.hits, #content table.main td.hits {width:152px !important;padding:0;}
 
 #content table.main th .wrap {
   position:relative;
@@ -1045,7 +1026,7 @@ form .entry a.cancel {
   border-bottom-left-radius:10px;  
 }
 
-#content table.main tr:last-child td.delete {
+#content table.main tr:last-child td.status {
   -webkit-border-bottom-right-radius:10px;
   -moz-border-radius-bottomright:10px;
   border-bottom-right-radius:10px;  
@@ -1058,30 +1039,21 @@ form .entry a.cancel {
   text-align:left;
 }
 
-#content table.main td.site a.external_link {
+#content table.main td.site a.domain {
   font-size:21px;
   font-weight:600;
-  padding:4px 16px;
-  border:1px solid #76899a;
+  padding:4px 16px 4px 8px;
+  border:1px solid #777f8d;
   background:#c2d1de;
-  background:-webkit-gradient(linear,left top,left bottom,from(#d1e0ed),to(#b6c4d1));
-  background:-moz-linear-gradient(top, #d1e0ed, #b6c4d1);
-  -webkit-border-radius:20px;
-  -moz-border-radius:20px;
-  border-radius:20px;
-  -webkit-box-shadow:rgba(255,255,255,0.5) 0 1px 0;
-  -moz-box-shadow:rgba(255,255,255,0.5) 0 1px 0;
-  box-shadow:rgba(255,255,255,0.5) 0 1px 0;
-}
-
-#content table.main tr.invalid td.site a.external_link {
-  color:#623838;
-  background:#ddc2c2;
-  background:-webkit-gradient(linear,left top,left bottom,from(#ebcfcf),to(#d3b7b7));
-  background:-moz-linear-gradient(top, #ebcfcf, #d3b7b7);
-  border-color:#9a7676;
-  padding-right:34px;
-  position:relative;
+  background:-webkit-gradient(linear,left top,left bottom,from(rgba(255,255,255,0.7)),to(rgba(255,255,255,0)));
+  background:-moz-linear-gradient(top, rgba(255,255,255,0), rgba(255,255,255,0.7));
+  -webkit-border-radius:6px;
+  -moz-border-radius:6px;
+  border-radius:6px;
+  -webkit-box-shadow:rgba(0,0,0,0.25) 0 1px 3px;
+  -moz-box-shadow:rgba(0,0,0,0.25) 0 1px 3px;
+  box-shadow:rgba(0,0,0,0.25) 0 1px 3px;
+  -webkit-background-clip:padding-box;
 }
 
 #content table.main td.site a.external_link:active {
@@ -1089,22 +1061,14 @@ form .entry a.cancel {
   background:-moz-linear-gradient(top, #b6c4d1, #d1e0ed);
 }
 
-#content table.main tr.invalid td.site a.external_link:active {
-  background:-webkit-gradient(linear,left top,left bottom,from(#d3b7b7),to(#ebcfcf));
-  background:-moz-linear-gradient(top, #d3b7b7, #ebcfcf);
+#content table.main td.site a.domain img {
+  position:relative;
+  top:2px;
+  margin-right:2px;
+  -moz-border-radius:3px;
+  -webkit-border-radius:3px;
+  border-radius:3px;
 }
-
-#content table.main tr.invalid td.site a.external_link span.invalid {
-  display:block;
-  width:21px;
-  height:19px;
-  background:url(/images/embed/sites/invalid_icon.png) no-repeat;
-  position:absolute;
-  top:7px;
-  right:8px;
-}
-
-#content table.main tr.invalid td.site a.external_link span.invalid em {display:none;}
 
 #content table.main td.edit .settings {
   display:block;

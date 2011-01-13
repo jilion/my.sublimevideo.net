@@ -3,7 +3,7 @@ var MySublimeVideo = MySublimeVideo || {};
 document.observe("dom:loaded", function() {
 
   S2.Extensions.webkitCSSTransitions = true;
-
+  
   // ================================================================
   // = Password fields, selects and placeholders and forms managers =
   // ================================================================
@@ -38,6 +38,7 @@ document.observe("dom:loaded", function() {
   // =====================================
   if ($("sites_table_wrap")) {
     MySublimeVideo.sitesPoller = new SitesPoller();
+    MySublimeVideo.getFaviconsForSites();
   }
   // Load current usage in Ajax since it can be a heavy calculation
   if ($('current_usage_amount')) {
@@ -168,6 +169,12 @@ MySublimeVideo.showSiteUsage = function(siteId) {
   return false;
 };
 
+MySublimeVideo.getFaviconsForSites = function() {
+  MySublimeVideo.ALL_SITES_ROWS = [];
+  $$('#sites td.site.has_domain').each(function(element) {
+    MySublimeVideo.ALL_SITES_ROWS[MySublimeVideo.ALL_SITES_ROWS.length] = new FaviconGetter(element, MySublimeVideo.ALL_SITES_ROWS.length);
+  });
+};
 
 // ===========
 // = Classes =
@@ -554,6 +561,68 @@ var SitesPoller = Class.create({
   }
 });
 
+var FaviconGetter = Class.create({
+  initialize: function(element, index) {
+    this.hostname = element.down('input.hostname_for_favicon').value;
+    this.imgTag = $(element.down('input.favicon_tag_id').value);
+    this.index = index;
+    if (!this.imgTag.hasClassName('faviconized')) {
+      if (supportsHtml5Storage && localStorage[this.hostname]) {
+        this.imgTag.src = localStorage[this.hostname];
+      }
+      else {
+        this.startScrapping();        
+      }
+    }
+  },
+  
+  startScrapping: function() {
+    var scriptTag = new Element('script', {'type':'text/javascript', 'id':'tmp_favicon_getter_'+this.index, 'src':"http://query.yahooapis.com/v1/public/yql?q=select%20href%20from%20html%20where%20url%3D%22http%3A%2F%2F"+this.hostname+"%2F%22and%20xpath%3D%22%2Fhtml%2Fhead%2Flink%5B%40rel%3D'icon'%5D%20%7C%20%2Fhtml%2Fhead%2Flink%5B%40rel%3D'ICON'%5D%20%7C%20%2Fhtml%2Fhead%2Flink%5B%40rel%3D'shortcut%20icon'%5D%20%7C%20%2Fhtml%2Fhead%2Flink%5B%40rel%3D'SHORTCUT%20ICON'%5D%22&format=json&callback=MySublimeVideo.ALL_SITES_ROWS["+this.index+"].extractFavicon"});
+    $(document.body).insert(scriptTag);
+  },
+  
+  extractFavicon: function(response) {
+    var href = "";
+    if (response.query.results) {
+      href = response.query.results.link.length > 0 ? response.query.results.link[0].href : response.query.results.link.href;
+      if (href != null) {
+        if (href.match(/^\//)) {
+          href = "http://" + this.hostname + href;
+        } 
+        else if (!href.match(/^http/)) {
+          href = "http://" + this.hostname + "/" + href;
+        }
+        this.imgTag.src = href;
+        this.storeFaviconUrl();
+      }
+    }
+    else {
+      var defaultFaviconUrl = "http://" + this.hostname + "/favicon.ico";
+      var defaultFaviconUrlTester = new Image();
+      defaultFaviconUrlTester.observe("load", function(){
+        href = defaultFaviconUrl;
+        this.imgTag.src = href;
+        this.storeFaviconUrl();
+      }.bind(this));
+      defaultFaviconUrlTester.src = defaultFaviconUrl;
+    }
+    
+    this.imgTag.addClassName('faviconized');
+    this.removeScriptTag();
+  },
+  
+  storeFaviconUrl: function() {
+    if (supportsHtml5Storage) {
+      localStorage[this.hostname] = this.imgTag.src;
+    }
+  },
+  
+  removeScriptTag: function(){
+    $('tmp_favicon_getter_'+this.index).remove();
+  }
+  
+});
+
 
 // var CurrentPasswordHandler = Class.create({
 //   initialize: function() {
@@ -585,6 +654,15 @@ function supportsHtml5InputOfType(inputType) { // e.g. "email"
 function supportsHtml5InputAttribute(attribute) { // e.g "placeholder"
   var i = document.createElement('input');
   return attribute in i;
+}
+
+function supportsHtml5Storage() { 
+  try { 
+    return 'localStorage' in window && window['localStorage'] !== null; 
+  } 
+  catch (e) { 
+    return false; 
+  }
 }
 
 

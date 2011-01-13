@@ -3,7 +3,6 @@
     .dark_rounded_corners
       %table.main#sites
         %tr
-          %th.plan Plan
           %th.site
             .wrap
               %strong
@@ -13,9 +12,9 @@
                 .sorting
                   = link_to_sort :date, :default_way => 'desc', :reverse => true, :default => true, :label => "latest"
                   = link_to_sort :hostname
-          %th.stats
+          %th.usage Usage
           %th.code Player Code
-          %th.settings Edit
+          %th.status Status
           
         = render @sites
         
