@@ -18,6 +18,10 @@ class Invoice < ActiveRecord::Base
   # = Scopes =
   # ==========
 
+  scope :between, lambda { |started_at, ended_at|
+    where(:started_at.gte => started_at, :ended_at.lte => ended_at)
+  }
+
   scope :paid,       where(state: 'paid')
   scope :failed,     where(state: 'failed')
   scope :user_id,    lambda { |user_id| where(user_id: user_id) }

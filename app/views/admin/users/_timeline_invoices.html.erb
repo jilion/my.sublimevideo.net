@@ -1,0 +1,42 @@
+<%
+data = Stat::Invoice.timeline(@date_range_from.beginning_of_month, @date_range_to.end_of_month, { :user_id => user.try(:id) })
+
+graph = Graph.new do |g|
+  g.option(chart: chart('timeline_invoices'))
+  g.option(title: { text: "Invoices" })
+  g.option(subtitle: usage_date_subtitle(@date_range_from, @date_range_to))
+  g.option(legend: legend(enabled: false))
+  g.option(xAxis: {
+    type: 'datetime', showFirstLabel: true, showLastLabel: true, gridLineWidth: 1,
+    dateTimeLabelFormats: {
+    	day: '%e %b',
+    	week: '%e %b'
+    },
+    labels: {
+      y: 15
+    }
+  })
+  g.raw_option(%(yAxis: {
+    title: {
+      text: '$US',
+      margin: 70
+    },
+    min: 0,
+    labels: {
+      formatter: function() { return "$" + Highcharts.numberFormat(this.value / 100, 2); }
+    }
+  }))
+  g.raw_option(%(tooltip: {
+    formatter: function() {
+      var date = "<strong>" + Highcharts.dateFormat("%B %e,  %Y", this.x) + "</strong><br/>";
+      return date + this.series.name + ": $" + Highcharts.numberFormat(this.y / 100, 2);
+    }
+  }))
+  g.option(series: [
+    serie(data, 'Invoice amount', '#0000FF', type: 'area'),
+  ].flatten)
+  g.option(plotOptions: plot_options(@date_range_from.end_of_month, 1.month, marker: true))
+  g.option(credits: credits)
+end
+%>
+<div id="timeline_invoices" style="width: 100%; height: 300px;"><%= raw graph.draw %></div>

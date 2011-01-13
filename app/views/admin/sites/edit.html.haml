@@ -12,9 +12,9 @@
   = "State:"
   %strong= @site.state.humanize
   - if @site.archived?
-    = "since #{display_date(@site.archived_at)}"
+    = "since " + display_date(@site.archived_at)
   - elsif @site.active?
-    = "since #{display_date(@site.activated_at)}"
+    = "since " + display_date(@site.activated_at)
   = "| Plan: "
   %strong
     = @site.plan_id? ? @site.plan.name.humanize : "No plan"
@@ -33,8 +33,8 @@
   = content_tag(:strong, @site.dev_hostnames)
 
 %p
-  = "Token: #{content_tag(:strong, @site.token)}".html_safe
-  = "| Mode: #{content_tag(:strong, @site.player_mode)}".html_safe
+  = "Token: #{content_tag(:strong, @site.token)}".html_safe 
+  = "| Mode: #{content_tag(:strong, @site.player_mode)}".html_safe 
   = "| CDN #{@site.cdn_up_to_date ? 'is' : content_tag(:strong, 'IS NOT')} up-to-date".html_safe
 
 = render partial: 'usage_table', locals: { site: @site, from: @date_range_from, to: @date_range_to }

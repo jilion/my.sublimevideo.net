@@ -33,14 +33,18 @@ describe Invoice do
 
   describe "Scopes" do
     before(:all) do
-      @open_invoice    = Factory(:invoice, :state => 'open')
-      @paid_invoice    = Factory(:invoice, :state => 'paid')
-      @failed_invoice1 = Factory(:invoice, :state => 'failed')
-      @failed_invoice2 = Factory(:invoice, :state => 'failed')
+      @open_invoice    = Factory(:invoice, state: 'open',   started_at: 36.hours.ago, ended_at: 30.hours.ago)
+      @paid_invoice    = Factory(:invoice, state: 'paid',   started_at: 36.hours.ago, ended_at: 14.hours.ago)
+      @failed_invoice1 = Factory(:invoice, state: 'failed', started_at: 20.hours.ago, ended_at: 6.hours.ago)
+      @failed_invoice2 = Factory(:invoice, state: 'failed', started_at: 20.hours.ago, ended_at: 14.hours.ago)
     end
 
     describe "#failed" do
       specify { Invoice.failed.all.should == [@failed_invoice1, @failed_invoice2] }
+    end
+
+    describe "#between" do
+      specify { Invoice.between(24.hours.ago, 12.hours.ago).all.should == [@failed_invoice2] }
     end
   end
 

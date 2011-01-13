@@ -3,7 +3,7 @@
 <%
 stats_from = Time.now.utc.beginning_of_month
 # stats_from = 30.days.ago.midnight
-usages = Stat.usages(stats_from, Date.today, { :site_id => @site.id, :merge_cached => true, :labels => %w[main_usage dev_usage] })
+usages = Stat::SiteUsage.timeline(stats_from, Date.today, { :site_id => @site.id, :merge_cached => true, :labels => %w[main_usage dev_usage] })
 plans = Plan.all
 
 graph = Graph.new do |g|

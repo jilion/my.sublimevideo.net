@@ -1,6 +1,8 @@
 class Admin::UsersController < Admin::AdminController
   respond_to :js, :html
 
+  before_filter :compute_date_range, :only => :show
+
   # filter
   has_scope :active_and_billable, :type => :boolean
   has_scope :active_and_not_billable, :type => :boolean

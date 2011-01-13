@@ -1,5 +1,5 @@
 <%
-usages = Stat.usages(@date_range_from, @date_range_to)
+usages = Stat::SiteUsage.timeline(@date_range_from, @date_range_to)
 
 graph = Graph.new do |g|
   g.option(chart: chart('timeline_usage'))

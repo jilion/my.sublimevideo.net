@@ -9,7 +9,7 @@ module Admin::StatsHelper
     }
   end
 
-  def usage_date_subtitle(start_at, end_at, options = {})
+  def usage_date_subtitle(start_at, end_at, options={})
     options[:date_format] ||= :year_month_day
     {
       text: options[:text] || "#{l(start_at, format: options[:date_format].to_sym)} - #{l(end_at, format: options[:date_format].to_sym)}",
@@ -17,8 +17,9 @@ module Admin::StatsHelper
     }
   end
 
-  def legend(options = {})
+  def legend(options={})
     {
+      enabled: options[:enabled].nil? ? true : options[:enabled],
       verticalAlign: options[:vertical_align] || :top,
       y: options[:y] || 50,
       width: options[:width] || 970,
@@ -28,11 +29,11 @@ module Admin::StatsHelper
     }
   end
 
-  def serie(data, title, color, options = {})
+  def serie(data, title, color, options={})
     {
       type: options[:type] || :areaspline,
       name: title,
-      visible: !options[:visible].nil? ? options[:visible] : true,
+      visible: options[:visible].nil? ? true : options[:visible],
       color: color,
       data: data
     }
@@ -43,15 +44,16 @@ module Admin::StatsHelper
     Array.new.tap { |arr| array.each_with_index { |item, index| arr << (item.to_f / [(index + 1 - zeros_days), 1].max).round(2) } }
   end
 
-  def plot_options(start_at, interval = 1.day)
+  def plot_options(start_at, interval=1.day, options={})
     {
       series: {
         pointStart: start_at.to_i * 1000,
         pointInterval: interval * 1000, # in ms
         stacking: 'normal',
         shadow: false,
+        fillOpacity: 0.4,
         marker: {
-          enabled: false,
+          enabled: options[:marker] || false,
           states: {
             hover: {
               enabled: true
@@ -66,9 +68,6 @@ module Admin::StatsHelper
             }
           }
         }
-      },
-      areaspline: {
-        fillOpacity: 0.5
       },
       line: {
         lineWidth: 2

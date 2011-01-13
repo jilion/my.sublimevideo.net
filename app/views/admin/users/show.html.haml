@@ -2,28 +2,29 @@
 
 = content_header(raw "#{@user.full_name} <#{mail_to @user.email}>")
 
-%h3 Infos
+= render '/admin/shared/date_chooser'
+%br.spacer
 
-%ul
-  %li= "Location: #{@user.country} (#{@user.postal_code})"
+= render partial: 'timeline_invoices', locals: { user: @user }
+
+%p
+  = "State:"
+  %strong= @user.state.humanize
+  - if @user.confirmed?
+    = "since " + display_date(@user.confirmed_at)
   - unless @user.confirmed?
-    %li= "Confirmation sent at: " + display_date(@user.confirmation_sent_at)
-    
-%br
+    = "| Confirmation sent at: " + display_date(@user.confirmation_sent_at)
+  = "| Created #{time_ago_in_words(@user.created_at)} ago"
+  = "| Updated #{time_ago_in_words(@user.updated_at)} ago"
 
-%ul
-  %li= "Personal use: " + display_bool(@user.use_personal)
-  %li= "Use for my company: " + display_bool(@user.use_company)
+%p
+  = "Location: "
+  = content_tag(:strong, "#{@user.country} (#{@user.postal_code})")
+  = "| Personal use: " + display_bool(@user.use_personal)
+  = "| Use for clients: " + display_bool(@user.use_clients)
+  = "| Use for company: " + display_bool(@user.use_company)
   - if @user.use_company
-    %ul
-      %li= "Company name: " + @user.company_name
-      %li
-        = "Company url: "
-        = link_to(@user.company_url, "#{'http://' unless @user.company_url =~ %r(https?://)}#{@user.company_url}")
-      %li= "Job title: " + @user.company_job_title
-      %li= "Nbr. of employees: " + @user.company_employees
-      %li= "Videos served: " + @user.company_videos_served
-  %li= "Use for my clients: " + display_bool(@user.use_clients)
+  = "| #{@user.company_job_title} at #{@user.company_name} (#{link_to(@user.company_url, url_with_protocol(@user.company_url))}); #{pluralize(@user.company_employees, 'employee')}; #{pluralize(number_with_delimiter(@user.company_videos_served), 'video')} served".html_safe
 
 %br
 %hr
@@ -32,10 +33,13 @@
 %h3= "Sites"
 
 %ul
-  - player_hits = @user.sites.inject(0) { |sum, site| sum += site.usages.sum(:player_hits) }
-  %li= "Total player hits: #{number_with_delimiter(player_hits, :delimiter => "'")}"
-  - traffic = @user.sites.inject(0) { |sum, site| sum += (site.usages.sum(:traffic_s3).to_i + site.usages.sum(:traffic_voxcast).to_i) }
-  %li= "Total traffic: #{number_to_human_size(traffic, :precision => 4)}"
+  - total_player_hits = @user.sites.inject(0) { |sum, site| sum += site.usages.sum(:player_hits) }
+  %li= "Total player hits: #{number_with_delimiter(total_player_hits)}"
+  - range_player_hits = @user.sites.inject(0) { |sum, site| sum += site.usages.between(@date_range_from, @date_range_to).sum(:player_hits) }
+  %li= "Player hits: #{number_with_delimiter(range_player_hits)}"
+  
+  - total_traffic = @user.sites.inject(0) { |sum, site| sum += (site.usages.sum(:traffic_s3).to_i + site.usages.sum(:traffic_voxcast).to_i) }
+  %li= "Total traffic: #{number_to_human_size(total_traffic, :precision => 4)}"
 
 %h4= "Active (#{@user.sites.not_archived.count})"
 %ul
