@@ -103,9 +103,9 @@ class Invoice < ActiveRecord::Base
 
   def self.usage_statement(user)
     build(
-      :user       => user,
-      :started_at => Time.now.utc.beginning_of_month,
-      :ended_at   => Time.now.utc
+      user:       user,
+      started_at: Time.now.utc.beginning_of_month,
+      ended_at:   Time.now.utc
     )
   end
 

@@ -34,7 +34,7 @@ module Admin::StatsHelper
       type: options[:type] || :areaspline,
       name: title,
       visible: options[:visible].nil? ? true : options[:visible],
-      color: color,
+      # color: color,
       data: data
     }
   end

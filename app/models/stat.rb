@@ -2,7 +2,7 @@ class Stat
 
   module SiteUsage
     class << self
-      
+
       def timeline(start_date, end_date, options={})
         labels = options[:labels] || labels_to_fields_mapping.keys
         conditions = {
@@ -20,6 +20,7 @@ class Stat
             :loader_usage => 0,
             :invalid_usage => 0, :invalid_usage_cached => 0,
             :dev_usage => 0, :dev_usage_cached => 0,
+            :extra_usage => 0, :extra_usage_cached => 0,
             :main_usage => 0, :main_usage_cached => 0,
             :all_usage => 0
           }, # memo variable name and initial value
@@ -51,15 +52,17 @@ class Stat
           invalid_usage_cached: 'invalid_player_hits_cached',
           dev_usage: 'dev_player_hits',
           dev_usage_cached: 'dev_player_hits_cached',
+          extra_usage: 'extra_player_hits',
+          extra_usage_cached: 'extra_player_hits_cached',
           main_usage: 'main_player_hits',
           main_usage_cached: 'main_player_hits_cached',
           all_usage: 'player_hits'
         }
       end
-      
+
     end
   end
-  
+
   module Invoice
     class << self
 
@@ -70,8 +73,8 @@ class Stat
           data << h[1].inject(0) { |sum, grouped_invoices| sum += grouped_invoices.amount }
         end
       end
-      
+
     end
   end
-  
+
 end

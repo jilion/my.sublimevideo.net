@@ -2,14 +2,15 @@
   %td.site{ :class => site.hostname.present? ? "has_domain" : "empty"}
     .wrap
       - if site.hostname.present?
-        -# TODO: Remove condition when no more site in beta state
+        -# TODO: Remove condition when no more site in beta state and remove if production on default icon for favicon
         = link_to(site.beta? ? [:transition, site] : [:edit, site], :class => "domain", :title => "Edit #{hostname_with_path(site)}") do
-          = image_tag "/images/embed/sites/default_favicon.png", :alt => "Favicon", :size => "16x16", :id => "site_favicon_#{site.id}"
+          %span.settings_icon
+          = image_tag "https://getfavicon.appspot.com/http://#{hostname_with_path(site)}?defaulticon=http://#{hostname_with_path(site)}/favicon.ico", :onerror => "this.src='/images/embed/sites/default_favicon.png';", :alt => "Favicon", :size => "16x16", :id => "site_favicon_#{site.id}"
           = hostname_with_path_and_wildcard(site, :truncate => 30)
-        %input{ :type => "hidden", :class => "favicon_tag_id", :value => "site_favicon_#{site.id}" }
-        %input{ :type => "hidden", :class => "hostname_for_favicon", :value => hostname_with_path(site) }
       - else
-        = link_to "add an hostname", [:edit, site], :class => "domain"
+        = link_to [:edit, site], :class => "domain" do
+          %span.settings_icon
+          = "add an hostname"
 
       .plan
         - if site.plan
@@ -26,15 +27,26 @@
       
   %td.usage
     - if site.beta?
-      = link_to "Choose a plan", [:transition, site]
+      = link_to "Choose a plan", [:transition, site], :class => "std_button"
     - elsif site.plan_id.blank?
-      = link_to "Choose a plan", [:edit, site]
+      = link_to "Choose a plan", [:edit, site], :class => "std_button"
     - elsif site.active?
-      = link_to "Usage", "", :onclick => "return MySublimeVideo.showSiteUsage('#{site.token}')"
+      -# = link_to "Usage", "", :onclick => "return MySublimeVideo.showSiteUsage('#{site.token}')"
+      - usages = Stat.usages(*TimeUtil.current_month, site_id: site.id)
+      = number_with_delimiter(usages["total_main_usage"].last + usages["total_main_usage_cached"].last + usages["total_extra_usage"].last + usages["total_extra_usage_cached"].last)
+      = " / "
+      = number_with_delimiter(site.plan.player_hits)
+      - overage = @usage_statement.invoice_items.detect { |ii| ii.type == "InvoiceItem::Overage" && ii.site == site }
+      = "Overages: "
+      -# = overage.inspect
+      -# = overage.info[:plan_player_hits].inspect
+      -# = overage.info[:player_hits_used].inspect
+      = "Blocks : #{overage.info[:overage_blocks]}"
+      = "Amount : #{overage.amount}"
     - elsif site.dev? && site.hostname.present?
       = form_for [:activate, site], :html => { "data-password-protected" => true } do |f|
         .actions
-          = f.submit 'Activate', :class => "submit small", :id => "activate_site_#{site.id}"
+          = f.submit 'Activate', :class => "submit small std_button", :id => "activate_site_#{site.id}"
           
     .small_message
       - if site.need_path?

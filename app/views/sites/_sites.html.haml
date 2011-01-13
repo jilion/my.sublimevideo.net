@@ -1,4 +1,5 @@
 - if @sites.present?
+  - @usage_statement = Invoice.usage_statement(current_user)
   .main_table_wrap
     .dark_rounded_corners
       %table.main#sites
