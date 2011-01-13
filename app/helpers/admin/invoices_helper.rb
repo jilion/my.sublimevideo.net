@@ -9,10 +9,12 @@ module Admin::InvoicesHelper
       " paid"
     elsif params[:failed]
       " failed"
+    elsif params[:search].present?
+      " that contains '#{params[:search]}'"
     else
       ""
     end
-    "#{pluralized_invoices.humanize}#{state}"
+    "#{pluralized_invoices.titleize}#{state}"
   end
 
 end

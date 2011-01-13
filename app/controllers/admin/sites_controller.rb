@@ -13,6 +13,7 @@ class Admin::SitesController < Admin::AdminController
   has_scope :with_ssl
   has_scope :plan_player_hits_reached_alerted_this_month
   has_scope :next_plan_recommended_alert_sent_at_alerted_this_month
+  has_scope :user_id
   # sort
   has_scope :by_hostname
   has_scope :by_user

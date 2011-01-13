@@ -11,8 +11,10 @@ module LayoutHelper
     end
   end
 
-  def content_header(text, header_size = 2)
-    content_tag(:"h#{header_size}", text.html_safe)
+  def content_header(text, options = {})
+    options.reverse_merge!(:header_size => 2)
+
+    content_tag(:"h#{options[:header_size]}", text.html_safe, options)
   end
 
   def activable_content_tag(tag, options = {})

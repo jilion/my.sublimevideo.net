@@ -66,6 +66,7 @@ class Site < ActiveRecord::Base
   scope :with_ssl,      joins(:addons).where(:addons => { :name => "ssl" })
 
   # admin
+  scope :user_id,    lambda { |user_id| where(user_id: user_id) }
   scope :created_between, lambda { |start_date, end_date| where(:created_at.gte => start_date, :created_at.lt => end_date) }
 
   # sort

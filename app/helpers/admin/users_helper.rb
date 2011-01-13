@@ -2,7 +2,7 @@ module Admin::UsersHelper
 
   def admin_users_page_title(users)
     pluralized_users = pluralize(users.total_entries, 'user')
-    
+
     state = if params.keys.all? { |k| k =~ /^by_/ || %w[action controller search].include?(k) }
       " active & billable"
     elsif params[:active_and_not_billable]
@@ -11,10 +11,12 @@ module Admin::UsersHelper
       " will be suspended"
     elsif params[:with_state]
       " with #{params[:with_state]} state"
+    elsif params[:search].present?
+      " that contains '#{params[:search]}'"
     else
       ""
     end
-    "#{pluralized_users.titleize}#{state.humanize}"
+    "#{pluralized_users.titleize}#{state}"
   end
 
   def link_to_user(user)

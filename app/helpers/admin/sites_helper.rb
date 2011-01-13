@@ -20,10 +20,15 @@ module Admin::SitesHelper
       " notified limit reached this month"
     elsif params[:next_plan_recommended_alert_sent_at_alerted_this_month]
       " notified next plan recommended this month"
+    elsif params[:user_id]
+      user = User.find(params[:user_id])
+      " for #{user.full_name.titleize}" if user
+    elsif params[:search].present?
+      " that contains '#{params[:search]}'"
     else
       ""
     end
-    "#{pluralized_sites.titleize}#{state.humanize}"
+    "#{pluralized_sites.titleize}#{state}"
   end
 
   def links_to_hostnames(site)
