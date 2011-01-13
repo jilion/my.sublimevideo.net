@@ -637,12 +637,12 @@ describe Site do
     describe ".delay_update_last_30_days_counters_for_not_archived_sites" do
 
       it "should delay update_last_30_days_counters_for_not_archived_sites if not already delayed" do
-        expect { Site.update_last_30_days_counters_for_not_archived_sites }.should change(Delayed::Job.where(:handler.matches => '%Site%update_last_30_days_counters_for_not_archived_sites%'), :count).by(1)
+        expect { Site.delay_update_last_30_days_counters_for_not_archived_sites }.should change(Delayed::Job.where(:handler.matches => '%Site%update_last_30_days_counters_for_not_archived_sites%'), :count).by(1)
       end
 
       it "should not delay update_last_30_days_counters_for_not_archived_sites if already delayed" do
-        Site.update_last_30_days_counters_for_not_archived_sites
-        expect { Site.update_last_30_days_counters_for_not_archived_sites }.should change(Delayed::Job.where(:handler.matches => '%Site%update_last_30_days_counters_for_not_archived_sites%'), :count).by(0)
+        Site.delay_update_last_30_days_counters_for_not_archived_sites
+        expect { Site.delay_update_last_30_days_counters_for_not_archived_sites }.should change(Delayed::Job.where(:handler.matches => '%Site%update_last_30_days_counters_for_not_archived_sites%'), :count).by(0)
       end
 
     end
