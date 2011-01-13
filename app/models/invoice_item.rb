@@ -8,7 +8,7 @@ class InvoiceItem < ActiveRecord::Base
   # ================
 
   belongs_to :site
-  belongs_to :invoice
+  belongs_to :invoice, :counter_cache => true
   belongs_to :item, :polymorphic => true
 
   delegate :user, :to => :site

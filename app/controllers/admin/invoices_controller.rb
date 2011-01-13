@@ -11,7 +11,7 @@ class Admin::InvoicesController < Admin::AdminController
   has_scope :by_user
   has_scope :by_date, :default_way
   # has_scope :by_sites_count
-  # has_scope :by_invoice_items_count
+  has_scope :by_invoice_items_count
   has_scope :by_amount
   has_scope :by_state
   has_scope :by_attempts
@@ -21,7 +21,8 @@ class Admin::InvoicesController < Admin::AdminController
   # GET /admin/invoices
   def index
     @invoices = Invoice.includes(:user)
-    @invoices = apply_scopes(@invoices).by_date
+    @invoices = apply_scopes(@invoices)
+    @invoices.by_date unless params[:by_invoice_items_count]
     respond_with(@invoices)
   end
 

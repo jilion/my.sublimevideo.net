@@ -1,6 +1,6 @@
 class Invoice < ActiveRecord::Base
 
-  uniquify :reference, :chars => Array('A'..'Z') + Array('1'..'9')
+  uniquify :reference, :chars => Array('A'..'Z') - ['O'] + Array('1'..'9')
 
   # ================
   # = Associations =
@@ -23,10 +23,7 @@ class Invoice < ActiveRecord::Base
   scope :user_id,    lambda { |user_id| where(user_id: user_id) }
   # sort
   scope :by_amount, lambda { |way='desc'| order(:amount.send(way)) }
-  # I'd like to return an array of invoices ordered by their count of invoice items
-  # def self.by_invoice_items_count(way = 'desc')
-  #   joins(:invoice_items).select("invoice_id").group("invoice_id").order("COUNT(invoice_id) #{way}")
-  # end
+  scope :by_invoice_items_count, lambda { |way='desc'| order(:invoice_items_count.send(way)) }
   scope :by_user,     lambda { |way='desc'| order(:users => [:first_name.send(way), :email.send(way)]) }
   scope :by_state,    lambda { |way='desc'| order(:state.send(way)) }
   scope :by_attempts, lambda { |way='desc'| order(:attempts.send(way)) }
@@ -301,6 +298,7 @@ end
 #  vat_amount              :integer
 #  discount_rate           :float           default(0.0)
 #  discount_amount         :float           default(0.0)
+#  invoice_items_count     :integer
 #
 # Indexes
 #

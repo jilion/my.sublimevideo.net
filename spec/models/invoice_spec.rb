@@ -942,6 +942,7 @@ end
 #  vat_amount              :integer
 #  discount_rate           :float           default(0.0)
 #  discount_amount         :float           default(0.0)
+#  invoice_items_count     :integer
 #
 # Indexes
 #
