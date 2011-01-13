@@ -200,6 +200,19 @@ describe Invoice do
         end
       end
 
+      describe "after_transition :on => :complete, :do => :update_user_invoiced_amount" do
+        before(:each) { subject.reload.update_attribute(:state, 'open') }
+
+        it "should update user.last_invoiced_amount" do
+          subject.user.update_attribute(:last_invoiced_amount, 500)
+          expect { subject.complete }.should change(subject.user, :last_invoiced_amount).from(500).to(10000)
+        end
+        it "should increment user.total_invoiced_amount" do
+          subject.user.update_attribute(:total_invoiced_amount, 500)
+          expect { subject.complete }.should change(subject.user, :total_invoiced_amount).from(500).to(10500)
+        end
+      end
+
       describe "before_transition :on => :retry" do
         context "from failed" do
           before(:each) { subject.reload.update_attributes(:state => 'failed', :attempts => Billing.max_charging_attempts) }
@@ -259,7 +272,7 @@ describe Invoice do
 
         context "from unpaid" do
           before(:each) { subject.reload.update_attribute(:state, 'unpaid') }
-          
+
           context "with remaining charging attempts" do
 
             it "should delay Invoice.charge in (2**attempts).hours" do

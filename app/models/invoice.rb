@@ -68,7 +68,7 @@ class Invoice < ActiveRecord::Base
     event(:succeed) { transition [:unpaid, :failed] => :paid }
 
     before_transition :on => :complete, :do => :set_completed_at
-    after_transition  :on => :complete, :do => :decrement_user_remaining_discounted_months
+    after_transition  :on => :complete, :do => [:decrement_user_remaining_discounted_months, :update_user_invoiced_amount]
 
     before_transition :on => :retry, :do => :delay_charge
 
@@ -232,6 +232,13 @@ private
   # after_transition :on => :complete
   def decrement_user_remaining_discounted_months
     self.user.decrement(:remaining_discounted_months) if user.get_discount?
+  end
+
+  # after_transition :on => :complete
+  def update_user_invoiced_amount
+    self.user.last_invoiced_amount = amount
+    self.user.total_invoiced_amount += amount
+    self.user.save
   end
 
   # before_transition any => :failed, before_transition any => :paid

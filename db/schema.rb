@@ -249,13 +249,17 @@ ActiveRecord::Schema.define(:version => 20110113120826) do
     t.datetime "archived_at"
     t.integer  "remaining_discounted_months"
     t.boolean  "newsletter",                                      :default => true
+    t.integer  "last_invoiced_amount",                            :default => 0
+    t.integer  "total_invoiced_amount",                           :default => 0
   end
 
   add_index "users", ["confirmation_token"], :name => "index_users_on_confirmation_token", :unique => true
   add_index "users", ["created_at"], :name => "index_users_on_created_at"
   add_index "users", ["current_sign_in_at"], :name => "index_users_on_current_sign_in_at"
   add_index "users", ["email", "archived_at"], :name => "index_users_on_email_and_archived_at", :unique => true
+  add_index "users", ["last_invoiced_amount"], :name => "index_users_on_last_invoiced_amount"
   add_index "users", ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true
+  add_index "users", ["total_invoiced_amount"], :name => "index_users_on_total_invoiced_amount"
 
   create_table "versions", :force => true do |t|
     t.string   "item_type",  :null => false
