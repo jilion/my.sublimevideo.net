@@ -252,7 +252,7 @@ def create_site_usages
 end
 
 def create_invoices(count = 5)
-  PDFKit.stub!(:new) { mock('pdf', :to_pdf => []) }
+  # PDFKit.stub!(:new) { mock('pdf', :to_pdf => []) }
   d = Site.minimum(:created_at)
   while d < Time.now
     Invoice.complete_invoices_for_billable_users(d.beginning_of_month, d.end_of_month)

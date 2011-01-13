@@ -69,9 +69,8 @@ class User < ActiveRecord::Base
   scope :by_sites_last_30_days_billable_player_hits_total_count,  lambda { |way = 'desc'|
     joins(:sites).group(User.column_names.map { |c| "\"users\".\"#{c}\"" }.join(', ')).order("SUM(sites.last_30_days_main_player_hits_total_count) + SUM(sites.last_30_days_extra_player_hits_total_count) #{way}")
   }
-  # scope :by_last_invoiced_amount,  lambda { |way = 'desc'|
-  #   includes(:invoices, :last_invoice).order("last_invoices_users.amount #{way}")
-  # }
+  scope :by_last_invoiced_amount,  lambda { |way = 'desc'| order(:last_invoiced_amount.send(way)) }
+  scope :by_total_invoiced_amount,  lambda { |way = 'desc'| order(:total_invoiced_amount.send(way)) }
   scope :by_beta,            lambda { |way = 'desc'| order(:invitation_token.send(way)) }
   scope :by_date,            lambda { |way = 'desc'| order(:created_at.send(way)) }
 
@@ -82,7 +81,8 @@ class User < ActiveRecord::Base
         | :lower.func(:first_name).matches % :lower.func("%#{q}%") \
         | :lower.func(:last_name).matches % :lower.func("%#{q}%") \
         | :lower.func(:hostname).matches % :lower.func("%#{q}%") \
-        | :lower.func(:dev_hostnames).matches % :lower.func("%#{q}%"))
+        | :lower.func(:dev_hostnames).matches % :lower.func("%#{q}%")).
+    select("DISTINCT users.id, users.*")
   end
 
   # ===============
@@ -295,6 +295,7 @@ protected
 end
 
 
+
 # == Schema Information
 #
 # Table name: users
@@ -344,6 +345,8 @@ end
 #  archived_at                      :datetime
 #  remaining_discounted_months      :integer
 #  newsletter                       :boolean         default(TRUE)
+#  last_invoiced_amount             :integer         default(0)
+#  total_invoiced_amount            :integer         default(0)
 #
 # Indexes
 #
@@ -351,6 +354,8 @@ end
 #  index_users_on_created_at             (created_at)
 #  index_users_on_current_sign_in_at     (current_sign_in_at)
 #  index_users_on_email_and_archived_at  (email,archived_at) UNIQUE
+#  index_users_on_last_invoiced_amount   (last_invoiced_amount)
 #  index_users_on_reset_password_token   (reset_password_token) UNIQUE
+#  index_users_on_total_invoiced_amount  (total_invoiced_amount)
 #
 

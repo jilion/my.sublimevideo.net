@@ -79,7 +79,7 @@ group :development do
   gem 'annotate',      '~> 2.4.0'
   gem 'wirble',        '~> 0.1.3'
   gem 'ruby-graphviz', :require => 'graphviz'
-  gem 'heroku',        '~> 1.16.2'
+  gem 'heroku',        '~> 1.17.5'
   gem 'heroku_tasks',  '~> 0.1.4'
   gem 'taps',          '~> 0.3.14' # heroku db pull/push
   gem 'silent-postgres'
@@ -103,8 +103,8 @@ group :test do
   gem 'steak',              '1.0.0.rc.2'
   # gem 'akephalos',          '~> 0.2.4'
   # gem 'capybara-envjs',     '~> 0.4.0'
-  gem 'webmock',            '~> 1.6.1'
-  gem 'vcr',                '~> 1.4.0'
+  gem 'webmock',            '~> 1.6.2'
+  gem 'vcr',                '~> 1.5.0'
 
   gem 'shoulda',            '~> 2.11.3'
   gem 'factory_girl_rails', '~> 1.0.1', :require => false # loaded in spec_helper Spork.each_run

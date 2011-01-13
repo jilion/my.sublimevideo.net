@@ -1,2 +1,9 @@
 $('sites_table_wrap').update("<%= escape_javascript(render 'sites') %>");
 $('table_spinner').hide();
+<% if params[:search] %>
+  <% if params[:search].blank? %>
+    $('sites_title').update("<%= pluralize(@sites.total_entries, 'Site') %>");
+  <% else %>
+    $('sites_title').update("<%= "#{pluralize(@sites.total_entries, 'Site')} that contains '#{params[:search]}'" %>");
+  <% end %>
+<% end %>
