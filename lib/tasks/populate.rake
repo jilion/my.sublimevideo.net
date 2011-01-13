@@ -191,19 +191,19 @@ def create_sites(max)
   create_plans if Plan.all.empty?
   plan_ids = Plan.all.map(&:id)
   subdomains = %w[www. blog. my. git. sv. ji. geek. yin. yang. chi. cho. chu. foo. bar. rem.]
-  created_at_array = (Date.new(2010,9,14)..Date.today).to_a
+  created_at_array = (Date.new(2010,9,14)..10.days.ago.to_date).to_a
   ssl_addon_id = Addon.find_by_name('ssl')
 
   User.all.each do |user|
     rand(max).times do |i|
       site = user.sites.build(
-        state: 'active',
+        state: %w[dev active].sample,
         plan_id: plan_ids.sample,
         hostname: "#{rand > 0.75 ? subdomains.sample : ''}#{user.id}#{i}#{Faker::Internet.domain_name}",
         addon_ids: rand > 0.75 ? [ssl_addon_id] : []
       )
       site.created_at   = [user.confirmed_at.to_date, created_at_array.sample].max
-      site.activated_at = site.created_at
+      site.activated_at = site.created_at if site.active?
       Timecop.travel(site.created_at) do
         site.save!(validate: false)
       end
@@ -216,14 +216,29 @@ def create_site_usages
   start_date = Date.new(2010,9,14)
   end_date   = Date.today
   player_hits_total = 0
-  Site.all.each do |site|
+  i = rand(1000)
+  Site.active.each do |site|
     (start_date..end_date).each do |day|
-      loader_hits                = rand(30000)
-      main_player_hits           = rand(10000)
-      main_player_hits_cached    = (main_player_hits * rand).to_i
-      dev_player_hits            = rand(2000)
+      r = i % 4
+      p = (case r
+      when 0
+        site.plan.player_hits/30.0 - (site.plan.player_hits/30.0 / 2)
+      when 1
+        site.plan.player_hits/30.0 - (site.plan.player_hits/30.0 / 4)
+      when 2
+        site.plan.player_hits/30.0 + (site.plan.player_hits/30.0 / 4)
+      when 3
+        site.plan.player_hits/30.0 + (site.plan.player_hits/30.0 / 2)
+      end).to_i
+      i += rand(1000)
+      
+      # rand((site.plan.player_hits / 30)*5)
+      loader_hits                = p * rand(100)
+      main_player_hits           = p * 0.6 # rand(10000)
+      main_player_hits_cached    = p * 0.4 # (main_player_hits * rand).to_i
+      dev_player_hits            = rand(100)
       dev_player_hits_cached     = (dev_player_hits * rand).to_i
-      invalid_player_hits        = rand(1000)
+      invalid_player_hits        = rand(500)
       invalid_player_hits_cached = (invalid_player_hits * rand).to_i
       player_hits = main_player_hits + main_player_hits_cached + dev_player_hits + dev_player_hits_cached + invalid_player_hits + invalid_player_hits_cached
       requests_s3 = player_hits - (main_player_hits_cached + dev_player_hits_cached + invalid_player_hits_cached)
