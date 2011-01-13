@@ -1,8 +1,8 @@
 module LayoutHelper
 
-  def title_and_content_header(text, header_size = 2)
+  def title_and_content_header(text, options = {})
     title(text)
-    content_header(text, header_size)
+    content_header(text, options)
   end
 
   def title(text)
