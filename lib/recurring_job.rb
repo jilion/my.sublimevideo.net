@@ -7,17 +7,25 @@ module RecurringJob
     '%Log::Amazon::S3::Licenses%fetch_and_create_new_logs%'
   ]
 
+  stats_tasks = [
+    '%UsersStat%create_users_stats%'
+  ]
+
   NAMES = [
     '%User::CreditCard%send_credit_card_expiration%',
     '%Site::UsageAlert%send_usage_alerts%',
     '%Site%update_last_30_days_counters_for_not_archived_sites%',
     '%Invoice%complete_invoices_for_billable_users%'
-  ] + logs_tasks
+  ] + logs_tasks + stats_tasks
 
   class << self
 
     def launch_all
+      # Logs
       Log.delay_fetch_and_create_new_logs
+      # Stats
+      UsersStat.delay_create_users_stats
+      # Others
       User::CreditCard.delay_send_credit_card_expiration
       Site::UsageAlert.delay_send_usage_alerts
       Site.delay_update_last_30_days_counters_for_not_archived_sites

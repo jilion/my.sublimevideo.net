@@ -129,3 +129,10 @@ Factory.define :lifetime do |f|
   f.association :site, :factory => :active_site
   f.item        { Factory(:addon) }
 end
+
+Factory.define :users_stat do |f|
+  f.active_and_billable_count     0
+  f.active_and_not_billable_count 0
+  f.suspended_count               0
+  f.archived_count                0
+end
