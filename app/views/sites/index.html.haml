@@ -1,8 +1,8 @@
-- content_for :header do
- = javascript_include_tag 'highcharts/highcharts-adapter.min', 'highcharts/highcharts'
+-# - content_for :header do
+-#  = javascript_include_tag 'highcharts/highcharts-adapter.min', 'highcharts/highcharts'
  
-= title_and_content_header("My Sites")
+= title_and_content_header("My sites")
 
-= link_to "New site", new_site_path
+= link_to "Add a site", new_site_path, :class => "add_site"
 
 #sites_table_wrap= render 'sites'
