@@ -41,12 +41,12 @@ class User < ActiveRecord::Base
   scope :active_and_billable, lambda {
     includes(:sites).
     with_state(:active).
-    where(:sites => [{ :activated_at.ne => nil }, { :archived_at => nil } | { :archived_at.gte => Time.now.utc.beginning_of_month }])
+    where(:sites => { :activated_at.ne => nil, :archived_at => nil })
   }
   scope :active_and_not_billable, lambda {
     includes(:sites).
     with_state(:active).
-    where(:sites => [{ :activated_at => nil } | { :archived_at.lt => Time.now.utc.beginning_of_month }])
+    where(:sites => [{ :activated_at => nil } | { :archived_at.ne => nil }])
   }
 
   # credit_card scopes

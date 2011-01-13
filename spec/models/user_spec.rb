@@ -55,6 +55,27 @@ describe User do
       specify { User.billable(Time.utc(2010,2,21), Time.utc(2010,2,25)).should == [@user1, @user4] }
     end
 
+    context "with active & (not) billable users" do
+      before(:all) do
+        User.delete_all
+        @user1 = Factory(:user)
+        Factory(:site, :user => @user1, :activated_at => Time.utc(2011,1,1))
+        @user2 = Factory(:user)
+        Factory(:site, :user => @user2, :activated_at => Time.utc(2011,1,1), :archived_at => Time.utc(2011,1,2))
+        @user3 = Factory(:user)
+        Factory(:site, :user => @user3, :activated_at => nil)
+        @user4 = Factory(:user)
+        @user5 = Factory(:user, :state => 'archived')
+      end
+
+      describe "#active_and_billable" do
+        specify { User.active_and_billable.should == [@user1] }
+      end
+      describe "#active_and_not_billable" do
+        specify { User.active_and_not_billable.should == [@user2, @user3, @user4] }
+      end
+    end
+
   end
 
   describe "Validations" do
