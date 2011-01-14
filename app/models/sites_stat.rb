@@ -3,7 +3,7 @@ class SitesStat
   include Mongoid::Timestamps
 
   field :states_count, :type => Hash
-  field :plans_count, :type => Hash
+  field :plans_count,  :type => Hash
   field :addons_count, :type => Hash
 
   index :created_at
