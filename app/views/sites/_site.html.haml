@@ -32,7 +32,7 @@
       = link_to "Choose a plan", [:edit, site], :class => "std_button"
     - elsif site.active?
       -# = link_to "Usage", "", :onclick => "return MySublimeVideo.showSiteUsage('#{site.token}')"
-      - usages = Stat.usages(*TimeUtil.current_month, site_id: site.id)
+      - usages = Stat::SiteUsage.timeline(*TimeUtil.current_month, site_id: site.id)
       = number_with_delimiter(usages["total_main_usage"].last + usages["total_main_usage_cached"].last + usages["total_extra_usage"].last + usages["total_extra_usage_cached"].last)
       = " / "
       = number_with_delimiter(site.plan.player_hits)
