@@ -16,5 +16,11 @@ module ApplicationHelper
   def display_amount(amount_in_cents)
     number_to_currency(amount_in_cents / 100.0)
   end
-
+  
+  def info_box(&block)
+    content_tag(:div, :class => "info_box") do
+      capture_haml(&block).chomp + content_tag(:span, nil, :class => "arrow")
+    end
+  end
+  
 end
