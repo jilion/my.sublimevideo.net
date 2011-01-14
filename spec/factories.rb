@@ -131,8 +131,11 @@ Factory.define :lifetime do |f|
 end
 
 Factory.define :users_stat do |f|
-  f.active_and_billable_count     0
-  f.active_and_not_billable_count 0
-  f.suspended_count               0
-  f.archived_count                0
+  f.states_count  { {} }
+end
+
+Factory.define :sites_stat do |f|
+  f.states_count  { {} }
+  f.plans_count   { {} }
+  f.addons_count  { {} }
 end

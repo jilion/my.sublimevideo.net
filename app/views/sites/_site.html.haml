@@ -10,7 +10,7 @@
       - else
         = link_to [:edit, site], :class => "domain" do
           %span.settings_icon
-          = "add an hostname"
+          = "add a hostname"
 
       .plan
         - if site.plan
@@ -27,22 +27,23 @@
 
   %td.usage
     - if site.beta?
-      = link_to "Choose a plan", [:transition, site], :class => "std_button"
+      = link_to "Choose a plan", [:transition, site], :class => "choose_plan"
     - elsif site.plan_id.blank?
-      = link_to "Choose a plan", [:edit, site], :class => "std_button"
+      = link_to "Choose a plan", [:edit, site], :class => "choose_plan"
     - elsif site.active?
       -# = link_to "Usage", "", :onclick => "return MySublimeVideo.showSiteUsage('#{site.token}')"
-      - usages = Stat::SiteUsage.timeline(*TimeUtil.current_month, site_id: site.id)
-      = number_with_delimiter(usages["total_main_usage"].last + usages["total_main_usage_cached"].last + usages["total_extra_usage"].last + usages["total_extra_usage_cached"].last)
-      = " / "
-      = number_with_delimiter(site.plan.player_hits)
-      - overage = @usage_statement.invoice_items.detect { |ii| ii.type == "InvoiceItem::Overage" && ii.site == site }
-      = "Overages: "
-      -# = overage.inspect
-      -# = overage.info[:plan_player_hits].inspect
-      -# = overage.info[:player_hits_used].inspect
-      = "Blocks : #{overage.info[:overage_blocks]}"
-      = "Amount : #{overage.amount}"
+      - usages = Stat::SiteUsage.timeline(*TimeUtil.current_month, site_id: site.id)      
+      .progress_bar
+        - usage = usages["total_main_usage"].last + usages["total_main_usage_cached"].last + usages["total_extra_usage"].last + usages["total_extra_usage_cached"].last
+        .usage_bar{ :style => "width:#{display_percentage([usage/site.plan.player_hits.to_f, 1].min)}"}
+        - overage = @usage_statement.invoice_items.detect { |ii| ii.type == "InvoiceItem::Overage" && ii.site == site }
+        - if overage.info[:player_hits_used] > overage.info[:plan_player_hits]
+          .overages_bar{ :style => "width:#{display_percentage([(overage.info[:player_hits_used] - overage.info[:plan_player_hits])/site.plan.player_hits.to_f, 1].min)}"}
+        .plan_total= number_with_delimiter(site.plan.player_hits)
+        = info_box do
+          %p= "#{number_with_delimiter(usage)} Hits"
+          %p= display_percentage([usage/site.plan.player_hits.to_f, 1].min)
+          
     - elsif site.dev? && site.hostname.present?
       = form_for [:activate, site], :html => { "data-password-protected" => true } do |f|
         .actions
@@ -63,7 +64,12 @@
     = link_to "Embed code", "", :class => "embed_code", :onclick => "return MySublimeVideo.showSiteEmbedCode('#{site.token}')"
 
   %td.status
-    - unless site.cdn_up_to_date?
-      %span.in_progress
-        -# TODO: Update this text
-        %em= "updating CDN..."
+    .wrap
+      - unless !site.cdn_up_to_date?
+        %span.icon.in_progress
+        = info_box do
+          %p= "Your player is being deployed..."
+      - else
+        %span.icon.ok
+        = info_box do
+          %p= "Everything runs smoothly, it's ok!"

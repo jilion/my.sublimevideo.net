@@ -2,15 +2,6 @@ require 'spec_helper'
 
 describe UsersStat do
 
-  context "Factory build" do
-    subject { Factory.build(:users_stat) }
-
-    its(:active_and_billable_count)     { should == 0 }
-    its(:active_and_not_billable_count) { should == 0 }
-    its(:suspended_count)               { should == 0 }
-    its(:archived_count)                { should == 0 }
-  end
-
   describe ".delay_create_users_stats" do
 
     it "should delay create_users_stats if not already delayed" do
@@ -24,7 +15,7 @@ describe UsersStat do
 
     it "should delay create_users_stats for next hour" do
       UsersStat.delay_create_users_stats
-      Delayed::Job.last.run_at.should == Time.now.utc.change(:min => 0) + 1.hour
+      Delayed::Job.last.run_at.should == Time.new.utc.tomorrow.midnight
     end
 
   end
@@ -36,7 +27,7 @@ describe UsersStat do
       UsersStat.create_users_stats
     end
 
-    it "should create users stats for scope counter" do
+    it "should create users stats for states" do
       user1 = Factory(:user)
       Factory(:site, :user => user1, :activated_at => Time.utc(2011,1,1))
       user2 = Factory(:user)
@@ -51,10 +42,12 @@ describe UsersStat do
 
       UsersStat.count.should == 1
       users_stat = UsersStat.last
-      users_stat.active_and_billable_count.should     == 1
-      users_stat.active_and_not_billable_count.should == 3
-      users_stat.suspended_count.should               == 1
-      users_stat.archived_count.should                == 1
+      users_stat.states_count.should == {
+        "active_and_billable_count"     => 1,
+        "active_and_not_billable_count" => 3,
+        "suspended_count"               => 1,
+        "archived_count"                => 1
+      }
     end
 
   end
