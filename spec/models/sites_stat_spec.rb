@@ -1,0 +1,96 @@
+require 'spec_helper'
+
+describe SitesStat do
+
+  describe ".delay_create_sites_stats" do
+
+    it "should delay create_sites_stats if not already delayed" do
+      expect { SitesStat.delay_create_sites_stats }.should change(Delayed::Job.where(:handler.matches => '%SitesStat%create_sites_stats%'), :count).by(1)
+    end
+
+    it "should not delay create_sites_stats if already delayed" do
+      SitesStat.delay_create_sites_stats
+      expect { SitesStat.delay_create_sites_stats }.should change(Delayed::Job.where(:handler.matches => '%SitesStat%create_sites_stats%'), :count).by(0)
+    end
+
+    it "should delay create_sites_stats for next hour" do
+      SitesStat.delay_create_sites_stats
+      Delayed::Job.last.run_at.should == Time.new.utc.tomorrow.midnight
+    end
+
+  end
+
+  context "with a bunch of different sites" do
+    before(:all) do
+      user = Factory(:user)
+      @plan1 = Factory(:plan)
+      @plan2 = Factory(:plan)
+      @addon1 = Factory(:addon)
+      @addon2 = Factory(:addon)
+      @addon3 = Factory(:addon)
+      Factory(:site, :user => user, :state => 'dev', :plan_id => @plan1.id, :addon_ids => [@addon1.id, @addon2.id])
+      Factory(:site, :user => user, :state => 'active', :plan_id => @plan1.id, :addon_ids => [@addon1.id])
+      Factory(:site, :user => user, :state => 'suspended', :plan_id => @plan2.id, :addon_ids => [])
+    end
+
+    describe ".create_sites_stats" do
+
+      it "should delay itself" do
+        SitesStat.should_receive(:delay_create_sites_stats)
+        SitesStat.create_sites_stats
+      end
+
+      it "should create sites stats for states, plans & addons" do
+        SitesStat.create_sites_stats
+        SitesStat.count.should == 1
+        sites_stat = SitesStat.last
+        sites_stat.states_count.should == {
+          "dev"       => 1,
+          "active"    => 1,
+          "suspended" => 1
+        }
+        sites_stat.plans_count.should == {
+          @plan1.id.to_s => 2,
+          @plan2.id.to_s => 1
+        }
+        sites_stat.addons_count.should == {
+          @addon1.id.to_s => 2,
+          @addon2.id.to_s => 1
+        }
+      end
+
+    end
+
+    describe ".states_count" do
+      it "should include all used states" do
+        SitesStat.states_count.should == {
+          "dev"       => 1,
+          "active"    => 1,
+          "suspended" => 1
+        }
+      end
+    end
+
+    describe ".plans_count" do
+      it "should include all used plans" do
+        SitesStat.plans_count.should == {
+          @plan1.id.to_s => 2,
+          @plan2.id.to_s => 1
+        }
+      end
+    end
+
+    describe ".addons_count" do
+      it "should include all used addons" do
+        SitesStat.addons_count.should == {
+          @addon1.id.to_s => 2,
+          @addon2.id.to_s => 1
+        }
+      end
+    end
+
+
+  end
+
+
+end

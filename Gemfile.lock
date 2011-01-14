@@ -123,7 +123,7 @@ GEM
     annotate (2.4.0)
     arel (2.0.6)
     array_stats (0.6.0)
-    aws (2.3.34)
+    aws (2.4.0)
       activesupport
       http_connection
       uuidtools
@@ -355,7 +355,7 @@ DEPENDENCIES
   annotate (~> 2.4.0)
   arel (= 2.0.6)
   array_stats (= 0.6.0)
-  aws (= 2.3.34)
+  aws (= 2.4.0)
   bson_ext (= 1.1.5)
   bundler (= 1.0.7)
   capybara (~> 0.4.0)
