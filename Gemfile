@@ -38,7 +38,7 @@ gem 'devise_invitable',      :git => 'git://github.com/rymai/devise_invitable.gi
 
 gem 'dalli',                 '1.0.1'
 
-gem 'aws',                   '2.3.34'
+gem 'aws',                   '2.4.0'
 gem 'fog',                   '0.4.0'
 gem 'carrierwave',           '0.5.1'
 
