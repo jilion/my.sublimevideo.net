@@ -19,8 +19,6 @@ feature "Users pagination:" do
     User.count.should == 2
     visit "/admin/users"
 
-    save_and_open_page
-
     page.should have_css('div.pagination')
     page.should have_css('span.previous_page')
     page.should have_css('em.current_page')

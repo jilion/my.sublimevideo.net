@@ -3,10 +3,10 @@ module SitesHelper
   def sublimevideo_script_tag_for(site)
     %{<script type="text/javascript" src="http://cdn.sublimevideo.net/js/%s.js"></script>} % [site.token]
   end
-  
+
   def url_with_protocol(url)
     return '' if url.blank?
-    (url =~ %r(^https?://) ? '' : 'http://') + url 
+    (url =~ %r(^https?://) ? '' : 'http://') + url
   end
 
   def hostname_with_path(site)
@@ -42,7 +42,7 @@ module SitesHelper
     || (site.dev_hostnames? && site.dev_hostnames != Site::DEFAULT_DEV_DOMAINS) \
     || site.path? || site.wildcard?
   end
-  
+
   def conditions_for_show_dev_hostnames_div(site)
     site.dev_hostnames? && site.dev_hostnames != Site::DEFAULT_DEV_DOMAINS
   end

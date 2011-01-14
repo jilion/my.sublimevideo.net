@@ -1,10 +1,11 @@
 <%
-usages = Stat::SiteUsage.timeline(@date_range_from, @date_range_to, { :site_id => site.try(:id) })
+usages = Stat::SiteUsage.timeline(@date_range_from, @date_range_to, { :site_ids => [site.id] })
 plans  = Plan.all
+chart_title = "VPV per day, total and averages for #{hostname_with_path_and_wildcard(site)}"
 
 graph = Graph.new do |g|
   g.option(chart: chart('timeline_usage'))
-  g.option(title: { text: "VPV per day, total and averages for #{site.hostname.present? ? hostname_with_path_and_wildcard(site) : site.token}" })
+  g.option(title: { text: chart_title })
   g.option(subtitle: usage_date_subtitle(@date_range_from, @date_range_to))
   g.option(legend: legend)
   g.option(xAxis: {

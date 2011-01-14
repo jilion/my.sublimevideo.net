@@ -1,11 +1,14 @@
 # coding: utf-8
 module Admin::StatsHelper
 
-  def chart(id)
+  def chart(id, options={})
     {
       renderTo: id,
-      marginTop: 100,
-      backgroundColor: '#EEE'
+      marginTop: options[:margin_top] || 100,
+      marginLeft: options[:margin_left] || 90,
+      backgroundColor: '#FEFEFE',
+      borderWidth: 1,
+      marginBottom: 50
     }
   end
 
@@ -45,39 +48,28 @@ module Admin::StatsHelper
   end
 
   def plot_options(start_at, interval=1.day, options={})
+    points = options[:linear] ? {} : { pointStart: start_at.to_i * 1000, pointInterval: interval * 1000 }
     {
-      series: {
-        pointStart: start_at.to_i * 1000,
-        pointInterval: interval * 1000, # in ms
-        stacking: 'normal',
-        shadow: false,
-        fillOpacity: 0.4,
+      series: points.merge({
+        stacking: 'normal', shadow: false, fillOpacity: 0.4,
         marker: {
           enabled: options[:marker] || false,
-          states: {
-            hover: {
-              enabled: true
-            }
-          }
+          states: { hover: { enabled: true } }
         },
         states: {
           hover: {
             lineWidth: 2,
-            marker: {
-              enabled: true
-            }
+            marker: { enabled: true }
           }
         }
-      },
-      line: {
-        lineWidth: 2
-      }
+      }),
+      line: { lineWidth: 2 }
     }
   end
 
-  def credits
+  def credits(options={})
     {
-      enabled: true,
+      enabled: options[:enabled].nil? ? true : options[:enabled],
       text: "Generated at: #{l(Time.now.utc, format: :seconds_timezone)} / Copyright © #{Date.today.year} - SublimeVideo®",
       href: "http://sublimevideo.net"
     }

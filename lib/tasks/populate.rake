@@ -268,7 +268,7 @@ end
 
 def create_invoices(count = 5)
   d = Site.minimum(:created_at)
-  while d < Time.now
+  while d < Time.now.beginning_of_month
     Invoice.complete_invoices_for_billable_users(d.beginning_of_month, d.end_of_month)
     d += 1.month
   end

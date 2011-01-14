@@ -5,6 +5,7 @@
 = render '/admin/shared/date_chooser'
 %br.spacer
 
+= render partial: 'timeline_usage', locals: { user: @user }
 = render partial: 'timeline_invoices', locals: { user: @user }
 
 %p
@@ -14,8 +15,20 @@
     = "since " + display_date(@user.confirmed_at)
   - unless @user.confirmed?
     = "| Confirmation sent at: " + display_date(@user.confirmation_sent_at)
-  = "| Created #{time_ago_in_words(@user.created_at)} ago"
+  = "| Enthusiast ID: #{@user.enthusiast_id}"
+  = "| Zendesk ID: #{@user.zendesk_id}"
+  
+%p
+  = "Created #{time_ago_in_words(@user.created_at)} ago"
   = "| Updated #{time_ago_in_words(@user.updated_at)} ago"
+  = "| Sign in count: #{@user.sign_in_count}"
+  = "| Failed login attempts: #{@user.failed_attempts}"
+  
+%p
+  = "Current sign in at: " + display_date(@user.current_sign_in_at)
+  = "| Current sign in ip: #{@user.current_sign_in_ip}"
+  = "| Last sign in at: " + display_date(@user.last_sign_in_at)
+  = "| Last sign in ip: #{@user.last_sign_in_ip}"
 
 %p
   = "Location: "
@@ -23,8 +36,9 @@
   = "| Personal use: " + display_bool(@user.use_personal)
   = "| Use for clients: " + display_bool(@user.use_clients)
   = "| Use for company: " + display_bool(@user.use_company)
-  - if @user.use_company
-  = "| #{@user.company_job_title} at #{@user.company_name} (#{link_to(@user.company_url, url_with_protocol(@user.company_url))}); #{pluralize(@user.company_employees, 'employee')}; #{pluralize(number_with_delimiter(@user.company_videos_served), 'video')} served".html_safe
+
+- if @user.use_company
+  %p= "#{@user.company_job_title} at #{@user.company_name} (#{link_to(@user.company_url, url_with_protocol(@user.company_url))}); #{pluralize(@user.company_employees, 'employee')}; #{pluralize(number_with_delimiter(@user.company_videos_served), 'video')} served".html_safe
 
 %br
 %hr
@@ -37,7 +51,7 @@
   %li= "Total player hits: #{number_with_delimiter(total_player_hits)}"
   - range_player_hits = @user.sites.inject(0) { |sum, site| sum += site.usages.between(@date_range_from, @date_range_to).sum(:player_hits) }
   %li= "Player hits: #{number_with_delimiter(range_player_hits)}"
-  
+
   - total_traffic = @user.sites.inject(0) { |sum, site| sum += (site.usages.sum(:traffic_s3).to_i + site.usages.sum(:traffic_voxcast).to_i) }
   %li= "Total traffic: #{number_to_human_size(total_traffic, :precision => 4)}"
 
@@ -61,20 +75,8 @@
 %hr
 %br
 
-%h3 Details
-
-%ul
-  %li= "Created at: " + display_date(@user.created_at)
-  %li= "Zendesk ID: " + @user.zendesk_id.to_s
-  %li= "Enthusiast ID: " + @user.enthusiast_id.to_s
-  %li= "State: " + @user.state
-  %li= "Confirmed at: " + display_date(@user.confirmed_at)
-  %li= "Sign in count: " + @user.sign_in_count.to_s
-  %li= "Current sign in at: " + display_date(@user.current_sign_in_at)
-  %li= "Current sign in ip: " + @user.current_sign_in_ip.to_s
-  %li= "Last sign in at: " + display_date(@user.last_sign_in_at)
-  %li= "Last sign in ip: " + @user.last_sign_in_ip.to_s
-  %li= "Failed login attempts: " + @user.failed_attempts.to_s
+= render partial: '/admin/shared/usage_table', locals: { object: @user, from: @date_range_from, to: @date_range_to }
+= render partial: '/admin/shared/invoices_table', locals: { object: @user }
 
 %br
 %hr

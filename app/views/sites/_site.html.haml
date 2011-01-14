@@ -19,12 +19,12 @@
           = "Beta"
         - else
           = "No plan"
-      
+
       - if site.addons.present?
         %ul.addons
           - site.addons.each do |addon|
             %li= addon.name.humanize
-      
+
   %td.usage
     - if site.beta?
       = link_to "Choose a plan", [:transition, site], :class => "std_button"
@@ -47,21 +47,21 @@
       = form_for [:activate, site], :html => { "data-password-protected" => true } do |f|
         .actions
           = f.submit 'Activate', :class => "submit small std_button", :id => "activate_site_#{site.id}"
-          
+
     .small_message
       - if site.need_path?
         %span
           -# TODO: Update this text
           %em= "you should add a path"
-      
+
       - if site.plan_player_hits_reached_alerted_this_month?
         %span.alerted
           -# TODO: Update this text
           %em= "Plan limit reached, overages will occur."
-      
+
   %td.code
     = link_to "Embed code", "", :class => "embed_code", :onclick => "return MySublimeVideo.showSiteEmbedCode('#{site.token}')"
-    
+
   %td.status
     - unless site.cdn_up_to_date?
       %span.in_progress

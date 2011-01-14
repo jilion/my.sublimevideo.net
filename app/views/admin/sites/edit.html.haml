@@ -6,7 +6,8 @@
 = render '/admin/shared/date_chooser'
 %br.spacer
 
-= render partial: 'timeline_usage', locals: { site: @site }
+- if @site.active?
+  = render partial: 'timeline_usage', locals: { site: @site }
 
 %p
   = "State:"
@@ -37,8 +38,8 @@
   = "| Mode: #{content_tag(:strong, @site.player_mode)}".html_safe 
   = "| CDN #{@site.cdn_up_to_date ? 'is' : content_tag(:strong, 'IS NOT')} up-to-date".html_safe
 
-= render partial: 'usage_table', locals: { site: @site, from: @date_range_from, to: @date_range_to }
-= render partial: 'invoices_table', locals: { site: @site }
+= render partial: '/admin/shared/usage_table', locals: { object: @site, from: @date_range_from, to: @date_range_to }
+= render partial: '/admin/shared/invoices_table', locals: { object: @site }
 = render partial: 'referrers_table', locals: { site: @site }
 
 %br
