@@ -44,36 +44,40 @@
 %hr
 %br
 
-%h3= "Sites"
+- total_invoiced = @user.invoices.sum(:amount)
+- invoices_count = @user.invoices.count
 
-%ul
-  - total_player_hits = @user.sites.inject(0) { |sum, site| sum += site.usages.sum(:player_hits) }
-  %li= "Total player hits: #{number_with_delimiter(total_player_hits)}"
-  - range_player_hits = @user.sites.inject(0) { |sum, site| sum += site.usages.between(@date_range_from, @date_range_to).sum(:player_hits) }
-  %li= "Player hits: #{number_with_delimiter(range_player_hits)}"
+%p
+  = "Total billed: "
+  = link_to(content_tag(:strong, display_amount(total_invoiced)), admin_invoices_path(:user_id => @user.id))
+  = "in #{content_tag(:strong, pluralize(invoices_count, 'invoice'))}".html_safe
+  = "(average #{content_tag(:strong, display_amount(total_invoiced / invoices_count.to_f))} / invoice)".html_safe
 
-  - total_traffic = @user.sites.inject(0) { |sum, site| sum += (site.usages.sum(:traffic_s3).to_i + site.usages.sum(:traffic_voxcast).to_i) }
-  %li= "Total traffic: #{number_to_human_size(total_traffic, :precision => 4)}"
-
-%h4= "Active (#{@user.sites.not_archived.count})"
-%ul
-  - @user.sites.not_archived.each do |site|
-    %li
-      = link_to site.hostname, "http://#{site.hostname}"
-      (
-      = link_to "details", [:edit, :admin, site]
-      )
-%h4= "Archived (#{@user.sites.archived.count})"
-%ul
-  - @user.sites.archived.each do |site|
-    %li
-      = link_to site.hostname, "http://#{site.hostname}"
-      (
-      = link_to "details", [:edit, :admin, site]
-      )
 %br
 %hr
 %br
+
+%h3 Sites
+
+%table.crado
+  %tr
+    %td
+      %h4= "Active (#{@user.sites.not_archived.count})"
+      %ul
+        - @user.sites.not_archived.each do |site|
+          %li
+            = link_to site.hostname, "http://#{site.hostname}"
+            (
+            = link_to "details", [:edit, :admin, site]
+            )
+      %h4= "Archived (#{@user.sites.archived.count})"
+      %ul
+        - @user.sites.archived.each do |site|
+          %li
+            = link_to site.hostname, "http://#{site.hostname}"
+            (
+            = link_to "details", [:edit, :admin, site]
+            )
 
 = render partial: '/admin/shared/usage_table', locals: { object: @user, from: @date_range_from, to: @date_range_to }
 = render partial: '/admin/shared/invoices_table', locals: { object: @user }

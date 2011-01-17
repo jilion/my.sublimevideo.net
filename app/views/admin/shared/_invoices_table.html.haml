@@ -1,4 +1,5 @@
 - invoices = object.invoices.order(:ended_at.desc).limit(12).uniq
+
 %h3 Last 12 invoices
 
 %table.crado.center
@@ -12,8 +13,20 @@
       %td= display_amount(invoice.amount)
       %td
         %ul
-          - invoice.invoice_items.where(:site_id => (object.respond_to?(:sites) ? object.site_ids : object.id)).each do |invoice_item|
-            %li
-              = invoice_item.type.demodulize
-              = " / "
-              = display_amount(invoice_item.amount)
+          - invoice_items_grouped_by_site(invoice, site_id: (object.respond_to?(:sites) ? object.site_ids : object.id)).each do |site, invoice_items|
+
+            - plan_invoice_item    = get_plan_invoice_item(invoice_items)
+            - overage_invoice_item = get_overage_invoice_item(invoice_items)
+            - addons_invoice_items = get_addons_invoice_items_grouped_by_item(invoice_items)
+
+            = link_to(plan_invoice_item.site.hostname, [:edit, :admin, plan_invoice_item.site])
+            %p
+              = "Plan - #{plan_invoice_item.item.name.humanize}:"
+              = display_amount(plan_invoice_item.amount)
+              = ", overages:"
+              = display_amount(overage_invoice_item.amount)
+              = ", addons:"
+              - addons_invoice_items.each do |addon, addon_invoice_items|
+                = "#{addon.name}:"
+                - addon_invoice_items.each do |addon_invoice_item|
+                  = display_amount(addon_invoice_item.amount)

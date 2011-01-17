@@ -30,8 +30,10 @@ module InvoicesHelper
     end
   end
 
-  def invoice_items_grouped_by_site(invoice)
-    invoice.invoice_items.group_by { |invoice_item| invoice_item.site }.sort { |a,b| a[0].hostname <=> b[0].hostname }
+  def invoice_items_grouped_by_site(invoice, options={})
+    invoice_items = invoice.invoice_items
+    invoice_items = invoice_items.where(site_id: options[:site_id]) if options[:site_id]
+    invoice_items.group_by { |invoice_item| invoice_item.site }.sort { |a,b| a[0].hostname <=> b[0].hostname }
   end
 
   def get_plan_invoice_item(invoice_items)

@@ -1,48 +1,53 @@
 <%
 invoices = Stat::Invoice.timeline(@date_range_from.beginning_of_month, @date_range_to.end_of_month, { user_id: user.id })
 
-graph = Graph.new do |g|
-  g.option(chart: chart('timeline_invoices', margin_top: 50))
-  g.option(title: { text: "Past invoices" })
-  g.option(subtitle: usage_date_subtitle(invoices.first.ended_at, invoices.last.ended_at, date_format: :month_fullyear))
-  g.option(legend: legend(enabled: false))
+unless invoices.empty?
+  graph = Graph.new do |g|
+    g.option(chart: chart('timeline_invoices', margin_top: 50))
+    g.option(title: { text: "Past invoices" })
+    g.option(subtitle: usage_date_subtitle(invoices.first.ended_at, invoices.last.ended_at, date_format: :month_fullyear))
+    g.option(legend: legend(enabled: false))
 
-  categories = [l(invoices.first.ended_at, format: :date)]
-  while (d ||= invoices.first.ended_at) < invoices.last.ended_at
-    d = d.next_month.end_of_month
-    categories << l(d, format: :date)
+    categories = [l(invoices.first.ended_at, format: :Y_m_d)]
+    while (d ||= invoices.first.ended_at) < invoices.last.ended_at
+      d = d.next_month.end_of_month
+      categories << l(d, format: :Y_m_d)
+    end
+    g.option(xAxis: {
+      type: 'linear', showLastLabel: true, tickWidth: 0, maxPadding: 0.05,
+      categories: categories,
+      labels: {
+        y: 15
+      }
+    })
+    g.raw_option(%(yAxis: {
+      title: {
+        text: 'US $',
+        margin: 70,
+        rotation: 0
+      },
+      showFirstLabel: false,
+      min: 0,
+      labels: {
+        formatter: function() { return "$" + Highcharts.numberFormat(this.value / 100, 0); }
+      },
+      lineWidth: 1
+    }))
+    g.raw_option(%(tooltip: {
+      formatter: function() {
+        return "<strong>" + this.x + "</strong><br/><br/>" + this.series.name + ": <strong>$" + Highcharts.numberFormat(this.y / 100, 2) + "</strong>";
+      },
+      borderWidth: 1
+    }))
+    g.option(series: [
+      serie(invoices.map(&:amount), 'Invoice total amount', '#0000FF', type: 'area'),
+    ].flatten)
+    g.option(plotOptions: plot_options(@date_range_from.end_of_month, 1.month, marker: true, linear: true))
+    g.option(credits: credits)
   end
-  g.option(xAxis: {
-    type: 'linear', showLastLabel: true, tickWidth: 0, maxPadding: 0.05,
-    categories: categories,
-    labels: {
-      y: 15
-    }
-  })
-  g.raw_option(%(yAxis: {
-    title: {
-      text: 'US $',
-      margin: 70,
-      rotation: 0
-    },
-    showFirstLabel: false,
-    min: 0,
-    labels: {
-      formatter: function() { return "$" + Highcharts.numberFormat(this.value / 100, 0); }
-    },
-    lineWidth: 1
-  }))
-  g.raw_option(%(tooltip: {
-    formatter: function() {
-      return "<strong>" + this.x + "</strong><br/><br/>" + this.series.name + ": <strong>$" + Highcharts.numberFormat(this.y / 100, 2) + "</strong>";
-    },
-    borderWidth: 1
-  }))
-  g.option(series: [
-    serie(invoices.map(&:amount), 'Invoice total amount', '#0000FF', type: 'area'),
-  ].flatten)
-  g.option(plotOptions: plot_options(@date_range_from.end_of_month, 1.month, marker: true, linear: true))
-  g.option(credits: credits)
 end
+
+if graph
 %>
-<div id="timeline_invoices" style="width:40%; height:200px; float:right;"><%= raw graph.draw %></div>
+  <div id="timeline_invoices" style="width:40%; height:200px; float:right;"><%= raw graph.draw %></div>
+<% end%>
