@@ -1,0 +1,49 @@
+<%
+users = User.select("company_videos_served, COUNT(*) as total").group(:company_videos_served).map! { |u| [u.company_videos_served || "No info", u.total.to_i] }
+%>
+<script type = "text/javascript" charset="utf-8">
+document.observe("dom:loaded", function() {
+  new Highcharts.Chart({
+    chart: {
+      renderTo: 'videos_served',
+      plotBackgroundColor: null,
+      plotBorderWidth: null,
+      plotShadow: false
+    },
+    title: {
+      text: 'Number of videos served per month'
+    },
+    tooltip: {
+      formatter: function() {
+        return '<b>'+ this.point.name +'</b>: '+ Highcharts.numberFormat(this.y, 0, ',') +' users.';
+      }
+    },
+    plotOptions: {
+      pie: {
+        allowPointSelect: true,
+        cursor: 'pointer',
+        dataLabels: {
+          enabled: true,
+          distance: 30,
+          color: 'black',
+          formatter: function() {
+            return '<b>'+ this.point.name +'</b>: '+ Highcharts.numberFormat(this.percentage, 1, ',') +' %';
+          }
+        },
+        showInLegend: true
+      }
+    },
+    series: [{
+      type: 'pie',
+      text: 'Number of videos served per month',
+      data: <%= raw users.to_json %>
+    }],
+    credits: {
+      enabled: true,
+      text: "Generation time: <%= Time.now.to_s(:format => :fully_full) %> / Copyright © <%= Date.today.year %> - SublimeVideo®",
+      href: "http://sublimevideo.net"
+    }
+  });
+});
+</script>
+<div id="videos_served" style="width:45%; height:350px; float:left;"></div>

@@ -1,11 +1,9 @@
 <%
-from_days  ||= 60
-stats_from   = from_days.days.ago.beginning_of_day
-interval     = 1.day
-title        = "VPV per day, total and averages between #{l(stats_from.to_date, :format => :small)} and #{l(Date.today, :format => :small)}"
+interval = 1.day
+title    = "VPV per day, total and averages between #{l(@date_range_from.to_date, :format => :small)} and #{l(@date_range_to, :format => :small)}"
 
-usages         = Stat.usages(stats_from, Date.today)
-usages = (stats_from.to_date..Date.today).inject([]) do |memo, day|
+usages = Stat.usages(@date_range_from, @date_range_to)
+usages = (@date_range_from.to_date..@date_range_to.to_date).inject([]) do |memo, day|
   usage_on_day = usages.detect { |u| u["day"].to_date == day }
   memo << (usage_on_day ? usage_on_day : { "day" => day })
 end
@@ -28,7 +26,7 @@ total_main_usages   = main_usages.inject([]) { |memo, u| memo << ((memo.last || 
 %>
 <script type = "text/javascript" charset="utf-8">
   document.observe("dom:loaded", function() {
-    var chart = new Highcharts.Chart({
+    new Highcharts.Chart({
       chart: {
         renderTo: 'usage_per_day',
         marginTop: 80,
@@ -166,13 +164,13 @@ total_main_usages   = main_usages.inject([]) { |memo, u| memo << ((memo.last || 
       plotOptions: {
         column: {
           pointInterval: <%= interval * 1000 %>,
-          pointStart: <%= stats_from.to_i * 1000 %>,
+          pointStart: <%= @date_range_from.to_i * 1000 %>,
           stacking: 'normal',
           shadow: false
         },
         line: {
           pointInterval: <%= interval * 1000 %>,
-          pointStart: <%= stats_from.to_i * 1000 %>,
+          pointStart: <%= @date_range_from.to_i * 1000 %>,
           lineWidth: 2,
           marker: {
             enabled: false
@@ -196,3 +194,4 @@ total_main_usages   = main_usages.inject([]) { |memo, u| memo << ((memo.last || 
     });
   });
 </script>
+<div id="usage_per_day" width="100%" height="650px"></div>

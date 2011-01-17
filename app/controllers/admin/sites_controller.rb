@@ -1,6 +1,8 @@
 class Admin::SitesController < Admin::AdminController
   respond_to :js, :html
   
+  before_filter :compute_date_range, :only => :edit
+  
   has_scope :with_activity, :type => :boolean
   # sort
   has_scope :by_hostname

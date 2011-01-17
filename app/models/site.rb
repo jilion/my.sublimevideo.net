@@ -256,8 +256,6 @@ private
 end
 
 
-
-
 # == Schema Information
 #
 # Table name: sites

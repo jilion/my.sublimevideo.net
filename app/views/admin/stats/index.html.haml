@@ -1,5 +1,12 @@
 = title_and_content_header("Stats")
-- from_days = 60
-= render :partial => '/admin/stats/all/usage_per_day', :locals => { :from_days => from_days }
 
-#usage_per_day{ :style => "width: 100%; height: 650px;" }
+= render '/admin/shared/date_chooser'
+
+%br.spacer
+= render :partial => '/admin/stats/all/usage_per_day'
+
+%br.spacer
+= render :partial => '/admin/stats/all/employees'
+
+%br.spacer
+= render :partial => '/admin/stats/all/videos_served'
