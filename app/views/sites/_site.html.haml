@@ -7,6 +7,11 @@
           %span.settings_icon
           = image_tag "https://getfavicon.appspot.com/http://#{hostname_with_path(site)}?defaulticon=http://#{hostname_with_path(site)}/favicon.ico", :onerror => "this.src='/images/embed/sites/default_favicon.png';", :alt => "Favicon", :size => "16x16", :id => "site_favicon_#{site.id}"
           = hostname_with_path_and_wildcard(site, :truncate => 30)
+        - if site.need_path?
+          .warning
+            %span.icon= "warning"
+            = info_box do
+              %p= "You should probably add a path to restrict the vality of the player to your site, not the whole domain."
       - else
         = link_to [:edit, site], :class => "domain" do
           %span.settings_icon
@@ -25,11 +30,13 @@
           - site.addons.each do |addon|
             %li= addon.name.humanize
 
+      .spacer
+
   %td.usage
     - if site.beta?
-      = link_to "Choose a plan", [:transition, site], :class => "choose_plan"
+      = link_to "Choose a plan", [:transition, site], :class => "medium_button"
     - elsif site.plan_id.blank?
-      = link_to "Choose a plan", [:edit, site], :class => "choose_plan"
+      = link_to "Choose a plan", [:edit, site], :class => "medium_button"
     - elsif site.active?
       -# = link_to "Usage", "", :onclick => "return MySublimeVideo.showSiteUsage('#{site.token}')"
       - usages = Stat::SiteUsage.timeline(*TimeUtil.current_month, site_id: site.id)      
@@ -47,14 +54,9 @@
     - elsif site.dev? && site.hostname.present?
       = form_for [:activate, site], :html => { "data-password-protected" => true } do |f|
         .actions
-          = f.submit 'Activate', :class => "submit small std_button", :id => "activate_site_#{site.id}"
+          = f.submit 'Activate', :class => "submit small small_button", :id => "activate_site_#{site.id}"
 
     .small_message
-      - if site.need_path?
-        %span
-          -# TODO: Update this text
-          %em= "you should add a path"
-
       - if site.plan_player_hits_reached_alerted_this_month?
         %span.alerted
           -# TODO: Update this text

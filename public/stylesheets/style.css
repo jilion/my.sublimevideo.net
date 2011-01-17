@@ -845,9 +845,9 @@ form .entry a.cancel {
 /* = My Sites = */
 /* ============ */
 
-#content a.std_button, #content input.std_button {
+#content .small_button, #content .medium_button {
   display:block;
-  background:url(/images/embed/standard_link_btn.png) no-repeat;
+  background:url(/images/embed/small_link_btn.png) no-repeat;
   width:109px;
   height:33px;
   padding:7px 0 0;
@@ -861,14 +861,19 @@ form .entry a.cancel {
   cursor:pointer;
 }
 
-#content input.std_button {
+#content .medium_button {
+  width:141px;
+  background:url(/images/embed/medium_link_btn.png) no-repeat;
+}
+
+#content input.small_button, #content input.medium_button {
   height:40px;
   padding:0;
 }
 
-#content a.add_site:active {background-position:0 -40px}
+#content .small_button:active, #content .medium_button:active {background-position:0 -40px}
 
-#content a.std_button.add_site {
+#content a.small_button.add_site {
   position:absolute;
   right:50px;
   top:48px;
@@ -1057,6 +1062,7 @@ form .entry a.cancel {
   padding:4px 10px 4px 8px;
   border:1px solid #777f8d;
   position:relative;
+  float:left;
   background:#c2d1de;
   background:-webkit-gradient(linear,left top,left bottom,from(rgba(255,255,255,0.7)),to(rgba(255,255,255,0)));
   background:-moz-linear-gradient(top, rgba(255,255,255,0.7), rgba(255,255,255,0));
@@ -1103,6 +1109,28 @@ form .entry a.cancel {
 
 #content table.main td.site a.domain:hover span.settings_icon, #content table.main td.site.empty a.domain span.settings_icon {display:block}
 
+#content table.main td.site .warning {
+  float:left;
+  position:relative;
+  margin:7px 0 0 10px;
+}
+
+#content table.main td.site .warning span.icon {
+  display:block;
+  background:url(/images/embed/warning_icon.png) no-repeat;
+  width:24px;
+  height:23px;
+  text-indent:-9999px;
+  overflow:hidden;
+  cursor:pointer;
+}
+
+#content table.main td.site .warning .info_box {
+  top:-90px;
+  width:150px;
+  left:-70px;
+}
+
 #content table.main td.site .plan {
   position:absolute;
   top:-13px;
@@ -1134,7 +1162,7 @@ form .entry a.cancel {
   border-radius:3px;
 }
 
-#content table.main td.usage .std_button {
+#content table.main td.usage .small_button, #content table.main td.usage .medium_button {
   margin:0 auto;
 }
 
@@ -1266,7 +1294,7 @@ form .entry a.cancel {
   user-select: none;
 }
 
-#content .progress_bar:hover .info_box, #content .wrap:hover .info_box {display:block}
+#content .progress_bar:hover .info_box, #content td.status:hover .info_box, #content .warning:hover .info_box {display:block}
 
 #content .info_box span.arrow {
   display:block;

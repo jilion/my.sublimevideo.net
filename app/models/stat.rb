@@ -59,7 +59,7 @@ module Stat
       # cast values to integer
       @labels_to_fields.keys.inject({}) do |memo, type|
         memo[type.to_s]       = usages.map { |u| u[type.to_s].to_i }
-        memo["total_#{type}"] = memo[type.to_s].inject([]) { |memo, u| memo << ((memo.last || (total.empty? ? 0 : total[0][type.to_s])) + u) }
+        memo["total_#{type}"] = memo[type.to_s].inject([]) { |memo, u| memo << ((memo.last || (total.empty? ? 0 : total[0][type.to_s])).to_i + u) }
         memo
       end
     end
