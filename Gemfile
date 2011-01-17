@@ -5,7 +5,7 @@ gem 'bundler',               '1.0.7'
 # gem 'rails',                 '~> 3.0.3'
 gem 'rails',                 :git => 'git://github.com/thibaudgg/rails.git', :branch => 'spork' # 3.0.3
 gem 'rack',                  '1.2.1'
-gem 'arel',                  '2.0.6'
+gem 'arel',                  '2.0.7'
 gem 'pg',                    '0.10.0'
 
 gem 'libxml-ruby',           '1.1.3', :require => 'libxml'
@@ -38,7 +38,7 @@ gem 'devise_invitable',      :git => 'git://github.com/rymai/devise_invitable.gi
 
 gem 'dalli',                 '1.0.1'
 
-gem 'aws',                   '2.4.0'
+gem 'aws',                   '2.3.34' # bugs in 2.4.0
 gem 'fog',                   '0.4.0'
 gem 'carrierwave',           '0.5.1'
 
@@ -75,7 +75,7 @@ group :development, :test do
 end
 
 group :development do
-  gem 'ffaker',        '~> 1.0.0'
+  gem 'ffaker',        '~> 1.1.0'
   gem 'annotate',      '~> 2.4.0'
   gem 'wirble',        '~> 0.1.3'
   gem 'ruby-graphviz', :require => 'graphviz'
@@ -99,8 +99,8 @@ group :test do
   gem 'guard-livereload'
 
   gem 'database_cleaner',   '>= 0.6'
-  gem 'capybara',           '~> 0.4.0'
   gem 'steak',              '1.0.0.rc.2'
+  gem 'capybara',           '~> 0.4.0'
   # gem 'akephalos',          '~> 0.2.4'
   # gem 'capybara-envjs',     '~> 0.4.0'
   gem 'webmock',            '~> 1.6.2'
