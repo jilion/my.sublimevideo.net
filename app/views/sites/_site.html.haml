@@ -65,7 +65,7 @@
 
   %td.status
     .wrap
-      - unless !site.cdn_up_to_date?
+      - if !site.cdn_up_to_date?
         %span.icon.in_progress
         = info_box do
           %p= "Your player is being deployed..."
