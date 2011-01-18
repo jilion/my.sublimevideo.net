@@ -155,7 +155,7 @@ GEM
       launchy (~> 0.3.2)
       rest-client (>= 1.4.0, < 1.7.0)
     heroku_tasks (0.1.4)
-    hoptoad_notifier (2.3.12)
+    hoptoad_notifier (2.4.2)
       activesupport
       builder
     http_connection (1.4.0)
@@ -320,7 +320,7 @@ DEPENDENCIES
   has_scope!
   heroku (~> 1.15.1)
   heroku_tasks (~> 0.1.4)
-  hoptoad_notifier (~> 2.3.10)
+  hoptoad_notifier (~> 2.4.2)
   i18n (~> 0.4.1)
   jammit (~> 0.5.3)
   libxml-ruby (~> 1.1.3)
