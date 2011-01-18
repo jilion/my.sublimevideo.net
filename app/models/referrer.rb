@@ -60,7 +60,7 @@ class Referrer
     ref_hash.each do |url_and_token, hits|
       url, token = url_and_token[0],  url_and_token[1]
       if referrer = Referrer.where(:url => url, :token => token).first
-        referrer.hits.to_i += hits
+        referrer.hits = referrer.hits.to_i + hits
         referrer.save
       else
         create(
@@ -74,7 +74,7 @@ class Referrer
 
   def self.create_or_update_from_type!(token, url, type = 'c')
       if referrer = Referrer.where(:url => url, :token => token).first
-        referrer.contextual_hits.to_i += 1 if type == 'c'
+        referrer.contextual_hits = referrer.contextual_hits.to_i = 1 if type == 'c'
         referrer.save
       else
         create(
