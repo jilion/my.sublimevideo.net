@@ -2,7 +2,8 @@
   %td.url
     = link_to truncate(referrer.url, :length => 60), referrer.url
     = "(#{link_to("site details", edit_admin_site_path(referrer.site_id))})".html_safe
-  %td.hits= referrer.hits
+  %td.hits= referrer.hits || 0
+  %td.hits= referrer.contextual_hits || 0
   %td
     %small= display_date(referrer.created_at)
   %td
