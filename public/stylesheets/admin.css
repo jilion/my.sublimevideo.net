@@ -290,12 +290,6 @@ ul.no_bullet {
   margin:1px 6px 0 0;
 }
 
-#main form.date_chooser {
-  position:absolute;
-  top:0;
-  right:10px;
-}
-
 #footer {
   text-align:center;
   padding:10px 0;
@@ -374,6 +368,12 @@ form label.icon {
 }
 
 /* remy */
+#main form.date_chooser {
+  position:absolute;
+  top:0;
+  right:10px;
+}
+
 #main table.crado td {
   padding:5px 5px;
   text-align:left;

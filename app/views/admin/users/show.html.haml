@@ -44,14 +44,15 @@
 %hr
 %br
 
-- total_invoiced = @user.invoices.sum(:amount)
-- invoices_count = @user.invoices.count
 
-%p
-  = "Total billed: "
-  = link_to(content_tag(:strong, display_amount(total_invoiced)), admin_invoices_path(:user_id => @user.id))
-  = "in #{content_tag(:strong, pluralize(invoices_count, 'invoice'))}".html_safe
-  = "(average #{content_tag(:strong, display_amount(total_invoiced / invoices_count.to_f))} / invoice)".html_safe
+- invoices_count = @user.invoices.count
+- if invoices_count > 0
+  - total_invoiced = @user.invoices.sum(:amount)
+  %p
+    = "Total billed: "
+    = link_to(content_tag(:strong, display_amount(total_invoiced)), admin_invoices_path(:user_id => @user.id))
+    = "in #{content_tag(:strong, pluralize(invoices_count, 'invoice'))}".html_safe
+    = "(average #{content_tag(:strong, display_amount(total_invoiced / invoices_count.to_f))} / invoice)".html_safe
 
 %br
 %hr

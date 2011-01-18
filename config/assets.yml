@@ -12,7 +12,7 @@ javascript_compressor: yui
 # javascript_compressor: closure
 # compressor_options:
 #   compilation_level: "SIMPLE_OPTIMIZATIONS"
-  
+
 stylesheets:
   style:
     - public/stylesheets/style.css
@@ -28,3 +28,5 @@ javascripts:
   admin:
     - public/javascripts/effects.js
     - public/javascripts/admin.js
+    - public/javascripts/highcharts/prototype-adapter.js
+    - public/javascripts/highcharts/highcharts.js

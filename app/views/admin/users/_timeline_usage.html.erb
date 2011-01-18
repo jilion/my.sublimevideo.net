@@ -8,47 +8,20 @@ graph = Graph.new do |g|
   g.option(title: { text: chart_title })
   g.option(subtitle: usage_date_subtitle(@date_range_from, @date_range_to))
   g.option(legend: legend(width: 600))
-  g.option(xAxis: {
-    type: 'datetime', showFirstLabel: true, showLastLabel: true, gridLineWidth: 1,
-    dateTimeLabelFormats: {
-    	day: '%e %b',
-    	week: '%e %b'
-    },
-    labels: {
-      y: 15
-    },
-    plotBands: [{
-        color: '#FFFFD9',
-        from: (Time.now.utc.beginning_of_day - 30.days).to_i * 1000,
-        to: Time.now.utc.beginning_of_day.to_i * 1000
-    }]
-  })
-  g.raw_option(%(yAxis: {
-    title: {
-      text: 'Video-page views',
-      margin: 70
-    },
-    min: 0,
-    labels: {
-      formatter: function() { return Highcharts.numberFormat(this.value, 0); }
-    }
-  }))
-  g.raw_option(%(tooltip: {
-    formatter: function() {
-      var date = "<strong>" + Highcharts.dateFormat("%B %e,  %Y", this.x) + "</strong><br/><br/>";
-      var label = '';
+  g.option(xAxis: x_axis(@date_range_from, @date_range_to))
+  g.raw_option(y_axis("Video-page views"))
+  g.raw_option(tooltip(formatter: %(
+    var date  = "<strong>" + Highcharts.dateFormat("%B %e,  %Y", this.x) + "</strong><br/><br/>";
+    var label = "<strong>" + Highcharts.numberFormat(this.y, 0) + "</strong>";
+    
+    if (["Invalid", "Dev", "Extra", "Main"].indexOf(this.series.name) != -1)
+      label += " of " + Highcharts.numberFormat(this.total, 0) + " (" + Highcharts.numberFormat(this.percentage, 1) + "%)";
+    else if (this.series.name == "Loader")
+      label += "<br/>Loader / Player: " + Highcharts.numberFormat((this.y / (this.total - this.y)), 1);
+  
+    return date + this.series.name + " hits:<br/>" + label;
+  )))
 
-      if (["Invalid", "Dev", "Extra", "Main"].indexOf(this.series.name) != -1) {
-        label = " of " + Highcharts.numberFormat(this.total, 0) + " (" + Highcharts.numberFormat(this.percentage, 1) + "%)";
-      }
-      else if (this.series.name == "Loader") {
-        label = "<br/>Loader / Player: " + Highcharts.numberFormat((this.y / (this.total - this.y)), 1);
-      }
-      label = "<strong>" + Highcharts.numberFormat(this.y, 0) + "</strong>" + label;
-      
-      return date + this.series.name + " hits:<br/>" + label;
-    }
-  }))
   g.option(series: [
     serie(usages["loader_usage"], 'Loader', '#AAAA00', visible: false),
     serie(usages["invalid_usage"], 'Invalid', '#FF0000', visible: false),
@@ -56,9 +29,6 @@ graph = Graph.new do |g|
     serie(usages["extra_usage"], 'Extra', '#33FF33', visible: false),
     serie(usages["main_usage"], 'Main', '#0000FF'),
 
-    # serie(evolutive_average_array(usages["total_loader_usage"]), 'AVG Loader', '#FFFF00', type: 'line', visible: false),
-    # serie(evolutive_average_array(usages["total_invalid_usage"]), 'AVG Invalid', '#FFCC33', type: 'line', visible: false),
-    # serie(evolutive_average_array(usages["total_dev_usage"]), 'AVG Dev', '#66FF66', type: 'line', visible: false),
     serie(evolutive_average_array(usages["total_main_usage"]), 'AVG Main', '#00FFFF', type: 'line'),
 
     serie(usages["total_main_usage"], 'TOT Main', '', type: 'line', visible: false)

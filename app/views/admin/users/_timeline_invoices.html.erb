@@ -34,6 +34,12 @@ unless invoices.empty?
       lineWidth: 1
     }))
     g.raw_option(%(tooltip: {
+      borderWidth: 0,
+      backgroundColor: "rgba(0, 0, 0, .70)",
+      style: {
+      	color: '#FFFFFF',
+      	padding: '5px'
+      },
       formatter: function() {
         return "<strong>" + this.x + "</strong><br/><br/>" + this.series.name + ": <strong>$" + Highcharts.numberFormat(this.y / 100, 2) + "</strong>";
       },

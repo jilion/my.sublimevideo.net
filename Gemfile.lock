@@ -56,6 +56,12 @@ GIT
       will_paginate (~> 3.0.pre)
 
 GIT
+  remote: git://github.com/thibaudgg/rack-ssl-enforcer.git
+  revision: ae9144615d16fb59f19eef0ea9f0dbd88be14857
+  specs:
+    rack-ssl-enforcer (0.2.0)
+
+GIT
   remote: git://github.com/thibaudgg/rails.git
   revision: e9c025e81aa20f480a3d2fc6001360ab6782ad94
   branch: spork
@@ -213,7 +219,7 @@ GEM
       spork (>= 0.8.4)
     haml (3.0.24)
     hashie (0.4.0)
-    heroku (1.17.5)
+    heroku (1.17.6)
       json (~> 1.4.6)
       launchy (~> 0.3.2)
       rest-client (>= 1.4.0, < 1.7.0)
@@ -273,7 +279,6 @@ GEM
     rack-mount (0.6.13)
       rack (>= 1.0.0)
     rack-private (0.1.5)
-    rack-ssl-enforcer (0.2.0)
     rack-test (0.5.7)
       rack (>= 1.0)
     rake (0.8.7)
@@ -402,7 +407,7 @@ DEPENDENCIES
   rack (= 1.2.1)
   rack-google-analytics (= 0.9.2)
   rack-private (= 0.1.5)
-  rack-ssl-enforcer (= 0.2.0)
+  rack-ssl-enforcer!
   rails!
   rb-fsevent (~> 0.3.9)
   request-log-analyzer (= 1.9.10)

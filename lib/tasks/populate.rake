@@ -3,6 +3,7 @@ require 'state_machine'
 require 'ffaker' if Rails.env.development?
 
 BASE_USERS = [["Mehdi Aminian", "mehdi@jilion.com"], ["Zeno Crivelli", "zeno@jilion.com"], ["Thibaud Guillaume-Gentil", "thibaud@jilion.com"], ["Octave Zangs", "octave@jilion.com"], ["Rémy Coutable", "remy@jilion.com"]]
+COUNTRIES = %w[US FR CH ES DE BE UK CN SE NO FI BR CA]
 
 namespace :db do
 
@@ -128,8 +129,8 @@ def create_users(count)
       user = User.new(
         first_name: user_infos[0].split(' ').first,
         last_name: user_infos[0].split(' ').second,
-        country: 'CH',
-        postal_code: '1024',
+        country: COUNTRIES.sample,
+        postal_code: Faker::Address.zip_code,
         email: user_infos[1],
         password: "123456",
         use_personal: true,
@@ -142,7 +143,7 @@ def create_users(count)
       )
       user.created_at   = created_at_array.sample
       user.confirmed_at = user.created_at
-      user.save!
+      user.save!(validate: false)
       puts "User #{user_infos[1]}:123456"
     end
 
@@ -162,7 +163,7 @@ def create_users(count)
       user = User.new(
         first_name: Faker::Name.first_name,
         last_name: Faker::Name.last_name,
-        country: 'US',
+        country: COUNTRIES.sample,
         postal_code: Faker::Address.zip_code,
         email: Faker::Internet.email,
         use_personal: use_personal,
@@ -171,11 +172,19 @@ def create_users(count)
         password: '123456',
         terms_and_conditions: "1",
         company_name: Faker::Company.name,
-        company_url: "#{rand > 0.5 ? "http://" : "www."}#{Faker::Internet.domain_name}",
+        company_url: "#{rand > 0.5 ? "http://" : "www."}#{Faker::Internet.domain_name.sub(/(\.co)?\.uk/, '.be')}",
         company_job_title: Faker::Company.bs,
-        company_employees: ["Company size", "1 employee", "2-5 employees", "6-20 employees", "21-100 employees", "101-1000 employees", ">1001 employees"].sample,
-        company_videos_served: ["Nr. of videos served", "0-1'000 videos/month", "1'000-10'000 videos/month", "10'000-100'000 videos/month", "100'000-1mio videos/month", ">1mio videos/month", "Don't know"].sample
+        company_employees: ["1 employee", "2-5 employees", "6-20 employees", "21-100 employees", "101-1000 employees", ">1001 employees"].sample,
+        company_videos_served: ["0-1'000 videos/month", "1'000-10'000 videos/month", "10'000-100'000 videos/month", "100'000-1mio videos/month", ">1mio videos/month", "Don't know"].sample
       )
+      
+      if rand > 0.3
+        user.cc_type = 'visa'
+        user.cc_full_name = user.full_name
+        user.cc_number = "4111111111111111"
+        user.cc_verification_value = "111"
+        user.cc_expire_on = 2.years.from_now
+      end
       user.created_at   = created_at_array.sample
       user.confirmed_at = user.created_at
       user.save!(validate: false)
@@ -190,20 +199,21 @@ def create_sites(max)
   create_users if User.all.empty?
   create_plans if Plan.all.empty?
   plan_ids = Plan.all.map(&:id)
-  subdomains = %w[www. blog. my. git. sv. ji. geek. yin. yang. chi. cho. chu. foo. bar. rem.]
+  subdomains = %w[www blog my git sv ji geek yin yang chi cho chu foo bar rem]
   created_at_array = (Date.new(2010,9,14)..10.days.ago.to_date).to_a
   ssl_addon_id = Addon.find_by_name('ssl')
 
   User.all.each do |user|
     rand(max).times do |i|
       site = user.sites.build(
-        state: %w[dev active].sample,
         plan_id: plan_ids.sample,
-        hostname: "#{rand > 0.75 ? subdomains.sample : ''}#{user.id}#{i}#{Faker::Internet.domain_name}",
+        hostname: subdomains.sample + (rand > 0.75 ? "." : "") + user.id.to_s + i.to_s + Faker::Internet.domain_name.sub(/(\.co)?\.uk/, '.be'),
         addon_ids: rand > 0.75 ? [ssl_addon_id] : []
       )
+      site.state        = 'active' if user.cc? && rand > 0.2
       site.created_at   = [user.confirmed_at.to_date, created_at_array.sample].max
       site.activated_at = site.created_at if site.active?
+
       Timecop.travel(site.created_at) do
         site.save!(validate: false)
       end
@@ -232,10 +242,9 @@ def create_site_usages
       end).to_i
       i += rand(1000)
       
-      # rand((site.plan.player_hits / 30)*5)
       loader_hits                = p * rand(100)
-      main_player_hits           = p * 0.6 # rand(10000)
-      main_player_hits_cached    = p * 0.4 # (main_player_hits * rand).to_i
+      main_player_hits           = p * 0.6
+      main_player_hits_cached    = p * 0.4
       dev_player_hits            = rand(100)
       dev_player_hits_cached     = (dev_player_hits * rand).to_i
       invalid_player_hits        = rand(500)

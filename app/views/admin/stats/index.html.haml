@@ -1,8 +1,0 @@
-= title_and_content_header("Stats")
-
-%ul
-  %li= link_to "Global usage per day", admin_stat_path('usage_per_day'), :remote => true
-  %li= link_to "New sites per day", admin_stat_path('new_sites_per_day'), :remote => true
-  
-#graph
-  = render :partial => params[:id] if params[:id]
