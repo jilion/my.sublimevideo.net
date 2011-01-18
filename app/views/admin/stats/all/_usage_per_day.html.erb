@@ -38,8 +38,10 @@ total_main_usages   = main_usages.inject([]) { |memo, u| memo << ((memo.last || 
       },
       xAxis: {
         type: 'datetime',
-        showFirstLabel: true,
-        showLastLabel: true
+        tickInterval: <%= 1.day * 1000 %>,
+        labels: {
+          step: <%= (((@date_range_to - @date_range_from) / 1.day) / 12).floor %>
+        }
       },
       yAxis: {
         title: {

@@ -1,5 +1,5 @@
 <%
-users = User.select("company_employees, COUNT(*) as total").group(:company_employees).map! { |u| [u.company_employees || "Not a company", u.total.to_i] }
+users = User.beta.select("company_employees, COUNT(*) as total").group(:company_employees).map! { |u| [u.company_employees || "Not a company", u.total.to_i] }
 %>
 <script type = "text/javascript" charset="utf-8">
 document.observe("dom:loaded", function() {
