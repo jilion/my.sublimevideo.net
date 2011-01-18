@@ -2,18 +2,20 @@ class Referrer
   include Mongoid::Document
   include Mongoid::Timestamps
 
-  field :site_id, :type => Integer
+  field :site_id,         :type => Integer
   field :token
   field :url
-  field :hits,    :type => Integer
+  field :hits,            :type => Integer
+  field :contextual_hits, :type => Integer
 
   index :site_id
   index :token
   index :url
   index :hits
+  index :contextual_hits
   index :created_at
 
-  attr_accessible :token, :url, :hits
+  attr_accessible :token, :url, :hits, :contextual_hits
 
   # Pagination
   cattr_accessor :per_page
@@ -35,10 +37,11 @@ class Referrer
   # = Scopes =
   # ==========
 
-  scope :by_url,        lambda { |way = 'desc'| order_by([:url, way.to_sym]) }
-  scope :by_hits,       lambda { |way = 'desc'| order_by([:hits, way.to_sym]) }
-  scope :by_updated_at, lambda { |way = 'desc'| order_by([:updated_at, way.to_sym]) }
-  scope :by_created_at, lambda { |way = 'desc'| order_by([:created_at, way.to_sym]) }
+  scope :by_url,             lambda { |way = 'desc'| order_by([:url, way.to_sym]) }
+  scope :by_hits,            lambda { |way = 'desc'| order_by([:hits, way.to_sym]) }
+  scope :by_contextual_hits, lambda { |way = 'desc'| order_by([:contextual_hits, way.to_sym]) }
+  scope :by_updated_at,      lambda { |way = 'desc'| order_by([:updated_at, way.to_sym]) }
+  scope :by_created_at,      lambda { |way = 'desc'| order_by([:created_at, way.to_sym]) }
 
   # ===============
   # = Validations =
@@ -68,4 +71,18 @@ class Referrer
       end
     end
   end
+
+  def self.create_or_update_from_type!(token, url, type = 'c')
+      if referrer = Referrer.where(:url => url, :token => token).first
+        referrer.contextual_hits += 1 if type == 'c'
+        referrer.save
+      else
+        create(
+          :url             => url,
+          :token           => token,
+          :contextual_hits => type == 'c' ? 1 : 0
+        )
+      end
+  end
+
 end
