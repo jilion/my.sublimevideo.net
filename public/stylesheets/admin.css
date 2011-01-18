@@ -382,3 +382,18 @@ form label.icon {
 #main table.crado.center td {
   text-align:center;
 }
+
+#countries_table table {
+  width:20%;
+}
+
+#countries_table table th {
+  background:transparent;
+}
+
+#countries_table table td {
+ background:transparent;
+ border:1px solid #999;
+ padding:5px;
+ margin:0 0;
+}

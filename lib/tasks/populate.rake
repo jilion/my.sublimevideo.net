@@ -281,7 +281,6 @@ def create_invoices(count = 5)
     Invoice.complete_invoices_for_billable_users(d.beginning_of_month, d.end_of_month)
     d += 1.month
   end
-  # end
   puts "#{Invoice.count} invoices created!"
 end
 
