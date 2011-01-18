@@ -63,7 +63,7 @@ group :production do
 end
 
 group :production, :staging do
-  gem 'rack-ssl-enforcer', '0.2.0'
+  gem 'rack-ssl-enforcer', :git => 'git://github.com/thibaudgg/rack-ssl-enforcer.git'
   gem 'rack-private',      '0.1.5'
 end
 

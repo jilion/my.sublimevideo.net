@@ -34,6 +34,12 @@ graph = Graph.new do |g|
     }
   }))
   g.raw_option(%(tooltip: {
+    borderWidth: 0,
+    backgroundColor: "rgba(0, 0, 0, .70)",
+    style: {
+    	color: '#FFFFFF',
+    	padding: '5px'
+    },
     formatter: function() {
       var date = "<strong>" + Highcharts.dateFormat("%B %e,  %Y", this.x) + "</strong><br/><br/>";
       var label = '';
