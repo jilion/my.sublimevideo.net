@@ -59,7 +59,7 @@ describe Referrer do
     end
   end
 
-  describe ".create_or_update_from_type!", :focus => true do
+  describe ".create_or_update_from_type!" do
     let(:site) { Factory(:site) }
 
     it "should create referrer and set contextual_hits to 1 if url/token doesn't exist" do
