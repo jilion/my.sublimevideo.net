@@ -4,11 +4,11 @@ module Admin::StatsHelper
   def chart(id, options={})
     {
       renderTo: id,
-      marginTop: options[:margin_top] || 100,
+      marginTop: options[:margin_top] || 110,
       marginLeft: options[:margin_left] || 90,
-      backgroundColor: '#FEFEFE',
-      borderWidth: 1,
-      marginBottom: 50
+      backgroundColor: '#EEEEEE',
+      marginBottom: 50,
+      animation: false
     }
   end
 
@@ -24,12 +24,72 @@ module Admin::StatsHelper
     {
       enabled: options[:enabled].nil? ? true : options[:enabled],
       verticalAlign: options[:vertical_align] || :top,
-      y: options[:y] || 50,
+      y: options[:y] || 40,
       width: options[:width] || 970,
       symbolWidth: options[:symbol_width] || 12,
       backgroundColor: options[:background_color] || '#FFFFFF',
       borderColor: options[:border_color] || '#CCC'
     }
+  end
+  
+  def x_axis(start_at, end_at, interval=1.day, options={})
+    {
+      type: 'datetime',
+      max: end_at.to_i * 1000,
+      tickInterval: interval * 1000,
+      labels: {
+        step: ((end_at - start_at) / 12.day).floor,
+        y: 15
+      },
+      dateTimeLabelFormats: {
+      	day: '%e %b',
+      	week: '%e %b'
+      },
+      plotBands: [{
+        color: '#FFFFD9',
+        from: (Time.now.utc.beginning_of_day - 30.days).to_i * 1000,
+        to: Time.now.utc.beginning_of_day.to_i * 1000
+      }]
+    }
+  end
+
+  def y_axis(title, options={})
+    %(yAxis: {
+      title: {
+        text: '#{title}',
+        margin: #{options[:margin] || 70}
+      },
+      min: #{options[:min] || 0},
+      labels: {
+        formatter: function() { return Highcharts.numberFormat(this.value, 0); }
+      }
+    })
+  end
+  
+  def tooltip(options={})
+    default_formatter = %(function() {
+      var date  = "<strong>" + Highcharts.dateFormat("%B %e,  %Y", this.x) + "</strong><br/><br/>";
+      var label = "<strong>" + Highcharts.numberFormat(this.y, 0) + "</strong>";
+
+      if (["Invalid", "Dev", "Extra", "Main"].indexOf(this.series.name) != -1) {
+        label += " of " + Highcharts.numberFormat(this.total, 0) + " (" + Highcharts.numberFormat(this.percentage, 1) + "%)";
+      }
+      else if (this.series.name == "Loader") {
+        label += "<br/>Loader / Player: " + Highcharts.numberFormat((this.y / (this.total - this.y)), 1);
+      }
+
+      return date + this.series.name + " hits:<br/>" + label;
+    })
+    
+    %(tooltip: {
+      borderWidth: 0,
+      backgroundColor: "rgba(0, 0, 0, .70)",
+      style: {
+      	color: '#FFFFFF',
+      	padding: '5px'
+      },
+      formatter: function() { #{options[:formatter] || default_formatter} }
+    })
   end
 
   def serie(data, title, color, options={})
@@ -37,7 +97,7 @@ module Admin::StatsHelper
       type: options[:type] || :areaspline,
       name: title,
       visible: options[:visible].nil? ? true : options[:visible],
-      # color: color,
+      # color: color, # automatic colors
       data: data
     }
   end
@@ -54,16 +114,17 @@ module Admin::StatsHelper
         stacking: 'normal', shadow: false, fillOpacity: 0.4,
         marker: {
           enabled: options[:marker] || false,
+          radius: 3,
           states: { hover: { enabled: true } }
         },
         states: {
           hover: {
-            lineWidth: 2,
-            marker: { enabled: true }
+            lineWidth: 1
           }
         }
       }),
-      line: { lineWidth: 2 }
+      line: { lineWidth: 1 },
+      areaspline: { lineWidth: 1 }
     }
   end
 
