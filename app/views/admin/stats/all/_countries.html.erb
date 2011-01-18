@@ -1,5 +1,16 @@
 <%
-users = User.beta.select("country, COUNT(*) as total").group(:country).map! { |u| [u.country || "Unknown", u.total.to_i] }
+countries = User.beta.select("country, COUNT(*) as total").group(:country).map! { |u| [u.country || "Unknown", u.total.to_i] }
+other_countries = ["Other (less than 50 users)", 0]
+countries = countries.inject([]) do |memo, country|
+  if country[1] < 50
+    other_countries[1] += country[1]
+  else
+    memo << country
+  end
+  memo
+end
+countries << other_countries
+Rails.logger.info countries.inspect
 %>
 <script type = "text/javascript" charset="utf-8">
 document.observe("dom:loaded", function() {
@@ -38,7 +49,7 @@ document.observe("dom:loaded", function() {
     },
     series: [{
       type: 'pie',
-      data: <%= raw users.to_json %>
+      data: <%= raw countries.to_json %>
     }],
     credits: {
       enabled: true,

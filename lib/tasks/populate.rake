@@ -3,6 +3,7 @@ require 'state_machine'
 require 'ffaker' if Rails.env.development?
 
 BASE_USERS = [["Mehdi Aminian", "mehdi@jilion.com"], ["Zeno Crivelli", "zeno@jilion.com"], ["Thibaud Guillaume-Gentil", "thibaud@jilion.com"], ["Octave Zangs", "octave@jilion.com"], ["Rémy Coutable", "remy@jilion.com"]]
+COUNTRIES = %w[US FR CH ES DE BE UK CN SE NO FI BR CA]
 
 namespace :db do
   
@@ -95,13 +96,13 @@ def create_admins
   end
 end
 
-def create_users(count = 0)
+def create_users(count = 5)
   disable_perform_deliveries do
     BASE_USERS.each do |user_infos|
       user = User.create(
         :first_name => user_infos[0].split(' ').first,
         :last_name => user_infos[0].split(' ').second,
-        :country => 'CH',
+        :country => COUNTRIES.sample,
         :postal_code => '1024',
         :email => user_infos[1],
         :password => "123456"
@@ -115,7 +116,7 @@ def create_users(count = 0)
       user              = User.new
       user.first_name   = Faker::Name.first_name
       user.last_name    = Faker::Name.last_name
-      user.country      = 'US'
+      user.country      = COUNTRIES.sample
       user.postal_code  = Faker::Address.zip_code
       user.email        = Faker::Internet.email
       user.use_personal = rand > 0.5
