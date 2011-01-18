@@ -1,12 +1,10 @@
 <%
-from_days      ||= 60
 last_billed_on   = site.created_at.change(:month => Date.today.month).beginning_of_day
-stats_from       = from_days.days.ago.beginning_of_day
 interval         = 1.day
-title            = "VPV per day, total and averages for #{site.hostname} between #{l(from_days.days.ago.to_date, :format => :small)} and #{l(Date.today, :format => :small)}"
+title            = "VPV per day, total and averages for #{site.hostname} between #{l(@date_range_from, :format => :small)} and #{l(@date_range_to, :format => :small)}"
 
-usages = Stat.usages(stats_from, Date.today, { :site_id => site.try(:id) })
-usages = (stats_from.to_date..Date.today).inject([]) do |memo, day|
+usages = Stat.usages(@date_range_from, @date_range_to, { :site_id => site.try(:id) })
+usages = (@date_range_from.to_date..@date_range_to.to_date).inject([]) do |memo, day|
   usage_on_day = usages.detect { |u| u["day"].to_date == day }
   memo << (usage_on_day ? usage_on_day : { "day" => day })
 end
@@ -70,12 +68,12 @@ huge_daily_limit  = huge_monthly_limit / 30 # we fake ~ site.plan.limit
       tooltip: {
         formatter: function() {
           var date = "<strong>" + Highcharts.dateFormat("%B %e,  %Y", this.x) + "</strong><br/>";
-          
+
           if(this.series.name == "Billing days") return date;
-          
+
           var percentage_of_total = '';
           var percentage_of_limit = '';
-          
+
           if (["Invalid", "Invalid cached", "Dev", "Dev cached", "Main", "Main cached"].indexOf(this.series.name) != -1) {
             percentage_of_total = " (" + Highcharts.numberFormat(this.percentage, 1) + "%)";
           }
@@ -86,7 +84,7 @@ huge_daily_limit  = huge_monthly_limit / 30 # we fake ~ site.plan.limit
             percentage_of_limit = Highcharts.numberFormat((this.y / <%= pro_monthly_limit %>)*100, 0) + "% of pro plan limit";
           }
           if(percentage_of_limit) percentage_of_limit = "<br/>" + percentage_of_limit
-          
+
           return date + this.series.name + ": " + Highcharts.numberFormat(this.y, 0) + percentage_of_total + percentage_of_limit;
         }
       },
@@ -134,7 +132,7 @@ huge_daily_limit  = huge_monthly_limit / 30 # we fake ~ site.plan.limit
         color: '#00F',
         data: <%= main_usages %>
       },
-      
+
       {
         type: 'line',
         name: 'AVG Loader',
@@ -162,7 +160,7 @@ huge_daily_limit  = huge_monthly_limit / 30 # we fake ~ site.plan.limit
         color: '#0FF',
         data: <%= Array.new.tap { |arr| total_main_usages.each_with_index { |item, index| arr << (item / (index + 1)).to_i } } %>
       },
-      
+
       {
         type: 'line',
         name: 'TOT Main',
@@ -175,7 +173,7 @@ huge_daily_limit  = huge_monthly_limit / 30 # we fake ~ site.plan.limit
         visible: false,
         data: <%= total_all_usages %>
       },
-      
+
       {
         type: 'line',
         name: 'AVG Perso',
@@ -217,7 +215,7 @@ huge_daily_limit  = huge_monthly_limit / 30 # we fake ~ site.plan.limit
         data: <%
             d = last_billed_on
             datas = []
-            while(d >= site.created_at.beginning_of_day && d >= stats_from) do
+            while(d >= site.created_at.beginning_of_day && d >= @date_range_from) do
               datas << [d.to_i * 1000, all_usages.max]
               d = 1.month.until(d).beginning_of_day
             end
@@ -227,13 +225,13 @@ huge_daily_limit  = huge_monthly_limit / 30 # we fake ~ site.plan.limit
       plotOptions: {
         column: {
           pointInterval: <%= interval * 1000 %>,
-          pointStart: <%= stats_from.to_i * 1000 %>,
+          pointStart: <%= @date_range_from.to_i * 1000 %>,
           stacking: 'normal',
           shadow: false
         },
         line: {
           pointInterval: <%= interval * 1000 %>,
-          pointStart: <%= stats_from.to_i * 1000 %>,
+          pointStart: <%= @date_range_from.to_i * 1000 %>,
           lineWidth: 2,
           marker: {
             enabled: false
@@ -263,3 +261,4 @@ huge_daily_limit  = huge_monthly_limit / 30 # we fake ~ site.plan.limit
     });
   });
 </script>
+<div id="usage_per_day" width="100%" height="250px"></div>

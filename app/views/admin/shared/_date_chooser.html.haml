@@ -1,0 +1,10 @@
+= form_tag('', :class => "date_chooser", :method => :get) do
+  %p= label(:date_range, :from, "From: #{select_date(@date_range_from, :prefix => 'date_range_from', :use_short_month => true, :start_year => 2010, :end_year => Time.now.year)}".html_safe)
+
+  %p= label(:date_range, :to, "To&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: #{select_date(@date_range_to, :prefix => 'date_range_to', :use_short_month => true, :start_year => 2010, :end_year => Time.now.year)}".html_safe)
+
+  %div{ :style => "float:right;"}
+    = submit_tag "Select"
+    or
+    = link_to 'reset', request.path
+.spacer
