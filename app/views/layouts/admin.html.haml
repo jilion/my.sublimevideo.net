@@ -4,14 +4,13 @@
     %title= "MySublimeVideo Admin - #{yield :title}"
     %meta{ "http-equiv" => "X-UA-Compatible", :content => "chrome=1" }
     %meta{ "http-equiv" => "Content-Type", :content => "text/html;charset=UTF-8" }
-    
+
     = stylesheet_link_tag "admin"
-    
+
     %link{ :rel => "shortcut icon", :href => "/favicon.ico", :type => "image/x-icon" }
-    
+
     = yield :header
     = include_javascripts(:default, :admin)
-    = javascript_include_tag 'highcharts/highcharts-adapter.min', 'highcharts/highcharts'
     = yield :js
     = csrf_meta_tag
     = javascript_include_tag "#{request.protocol}use.typekit.com/zwt2duv.js"
@@ -27,11 +26,11 @@
                 .notice= flash[:notice]
               - if flash[:alert]
                 .alert= flash[:alert]
-                
+
           = yield :content_header
-          
+
           = yield
       #footer
         %p= "Copyright © 2010 - SublimeVideo®"
-        
+
     = yield :bottom

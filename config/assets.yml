@@ -28,3 +28,5 @@ javascripts:
   admin:
     - public/javascripts/effects.js
     - public/javascripts/admin.js
+    - public/javascripts/highcharts/prototype-adapter.js
+    - public/javascripts/highcharts/highcharts.js

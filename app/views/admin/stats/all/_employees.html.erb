@@ -6,16 +6,20 @@ document.observe("dom:loaded", function() {
   new Highcharts.Chart({
     chart: {
       renderTo: 'employees',
-      plotBackgroundColor: null,
-      plotBorderWidth: null,
-      plotShadow: false
+      backgroundColor: '#EEEEEE'
     },
     title: {
       text: 'Number of employees'
     },
     tooltip: {
+      borderWidth: 0,
+      backgroundColor: "rgba(0, 0, 0, .70)",
+      style: {
+      	color: '#FFFFFF',
+      	padding: '5px'
+      },
       formatter: function() {
-        return '<b>'+ this.point.name +'</b>: '+ Highcharts.numberFormat(this.y, 0, ',') +' users.';
+        return "<strong>" + this.point.name + "</strong>: " + Highcharts.numberFormat(this.y, 0) + " users";
       }
     },
     plotOptions: {
@@ -27,15 +31,13 @@ document.observe("dom:loaded", function() {
           distance: 30,
           color: 'black',
           formatter: function() {
-            return '<b>'+ this.point.name +'</b>: '+ Highcharts.numberFormat(this.percentage, 1, ',') +' %';
+            return "<strong>" + this.point.name + "</strong>: " + Highcharts.numberFormat(this.percentage, 1) + " %";
           }
-        },
-        showInLegend: true
+        }
       }
     },
     series: [{
       type: 'pie',
-      name: 'Number of employees',
       data: <%= raw users.to_json %>
     }],
     credits: {
@@ -46,4 +48,4 @@ document.observe("dom:loaded", function() {
   });
 });
 </script>
-<div id="employees" style="width:45%; height:350px; float:left;"></div>
+<div id="employees" style="width:100%; height:350px;"></div>

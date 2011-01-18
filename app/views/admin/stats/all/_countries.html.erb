@@ -1,15 +1,15 @@
 <%
-users = User.select("company_videos_served, COUNT(*) as total").group(:company_videos_served).map! { |u| [u.company_videos_served || "Not a company", u.total.to_i] }
+users = User.select("country, COUNT(*) as total").group(:country).map! { |u| [u.country, u.total.to_i] }
 %>
 <script type = "text/javascript" charset="utf-8">
 document.observe("dom:loaded", function() {
   new Highcharts.Chart({
     chart: {
-      renderTo: 'videos_served',
+      renderTo: 'countries',
       backgroundColor: '#EEEEEE'
     },
     title: {
-      text: 'Number of videos served per month'
+      text: 'Repartition of users by country'
     },
     tooltip: {
       borderWidth: 0,
@@ -48,4 +48,4 @@ document.observe("dom:loaded", function() {
   });
 });
 </script>
-<div id="videos_served" style="width:100%; height:350px;"></div>
+<div id="countries" style="width:100%; height:350px;"></div>

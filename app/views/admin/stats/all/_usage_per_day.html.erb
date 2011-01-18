@@ -29,8 +29,9 @@ total_main_usages   = main_usages.inject([]) { |memo, u| memo << ((memo.last || 
     new Highcharts.Chart({
       chart: {
         renderTo: 'usage_per_day',
-        marginTop: 80,
-        backgroundColor: '#EEE'
+        marginTop: 90,
+        marginBottom: 40,
+        backgroundColor: '#EEEEEE'
       },
       title: {
         text: '<%= title %>'
@@ -43,30 +44,37 @@ total_main_usages   = main_usages.inject([]) { |memo, u| memo << ((memo.last || 
       yAxis: {
         title: {
           text: 'Video-page views',
-          margin: 70
+          margin: 50
         },
         labels: {
           formatter: function() {
-            return Highcharts.numberFormat(this.value, 0, '.', "'");
+            return Highcharts.numberFormat(this.value, 0);
           }
         }
       },
       legend: {
         verticalAlign: 'top',
         y: 30,
-        width: 950,
+        width: 640,
         symbolWidth: 12,
         backgroundColor: '#FFFFFF',
-        borderColor: '#CCC'
+        borderColor: '#CCCCCC'
       },
       tooltip: {
+        borderWidth: 0,
+        backgroundColor: "rgba(0, 0, 0, .70)",
+        style: {
+        	color: '#FFFFFF',
+        	padding: '5px'
+        },
         formatter: function() {
-          var date = "<strong>" + Highcharts.dateFormat("%B %e,  %Y", this.x) + "</strong><br/>";
+          var date = "<strong>" + Highcharts.dateFormat("%B %e,  %Y", this.x) + "</strong><br/><br/>";
           var percentage_of_total = '';
           var percentage_of_limit = '';
           
           if (["Invalid", "Invalid cached", "Dev", "Dev cached", "Main", "Main cached"].indexOf(this.series.name) != -1) {
             percentage_of_total = " (" + Highcharts.numberFormat(this.percentage, 1) + "%)";
+            percentage_of_total += "<br/>Total: " + Highcharts.numberFormat(this.total, 0);
           }
           else if (this.series.name == "Loader") {
             percentage_of_limit = "<br/>Loader / Player: " + Highcharts.numberFormat((this.y / (this.total - this.y)), 1);
@@ -80,43 +88,47 @@ total_main_usages   = main_usages.inject([]) { |memo, u| memo << ((memo.last || 
           type: 'column',
           name: 'Loader',
           visible: false,
-          color: '#AA0',
+          color: '#AAAA00',
           data: <%= loader_usages %>
         },
         {
           type: 'column',
           name: 'Invalid cached',
-          color: '#F80',
+          visible: false,
+          color: '#FF8800',
           data: <%= usages.map { |u| u["invalid_usage_cached"].to_i } %>
         },
         {
           type: 'column',
           name: 'Invalid',
-          color: '#F00',
+          visible: false,
+          color: '#FF0000',
           data: <%= invalid_usages %>
         },
         {
           type: 'column',
           name: 'Dev cached',
-          color: '#1C1',
+          visible: false,
+          color: '#11CC11',
           data: <%= usages.map { |u| u["dev_usage_cached"].to_i } %>
         },
         {
           type: 'column',
           name: 'Dev',
-          color: '#3F3',
+          visible: false,
+          color: '#33FF33',
           data: <%= dev_usages %>
         },
         {
           type: 'column',
           name: 'Main cached',
-          color: '#08F',
+          color: '#0088FF',
           data: <%= usages.map { |u| u["main_usage_cached"].to_i } %>
         },
         {
           type: 'column',
           name: 'Main',
-          color: '#00F',
+          color: '#0000FF',
           data: <%= main_usages %>
         },
         
@@ -124,27 +136,27 @@ total_main_usages   = main_usages.inject([]) { |memo, u| memo << ((memo.last || 
           type: 'line',
           name: 'AVG Loader',
           visible: false,
-          color: '#FF0',
+          color: '#FFFF00',
           data: <%= Array.new.tap { |arr| total_loader_usages.each_with_index { |item, index| arr << (item / (index + 1)).to_i } } %>
         },
         {
           type: 'line',
           name: 'AVG Invalid',
           visible: false,
-          color: '#FC3',
+          color: '#FFCC33',
           data: <%= Array.new.tap { |arr| total_invalid_usages.each_with_index { |item, index| arr << (item / (index + 1)).to_i } } %>
         },
         {
           type: 'line',
           name: 'AVG Dev',
           visible: false,
-          color: '#090',
+          color: '#009900',
           data: <%= Array.new.tap { |arr| total_dev_usages.each_with_index { |item, index| arr << (item / (index + 1)).to_i } } %>
         },
         {
           type: 'line',
           name: 'AVG Main',
-          color: '#0FF',
+          color: '#00FFFF',
           data: <%= Array.new.tap { |arr| total_main_usages.each_with_index { |item, index| arr << (item / (index + 1)).to_i } } %>
         },
         
@@ -166,19 +178,18 @@ total_main_usages   = main_usages.inject([]) { |memo, u| memo << ((memo.last || 
           pointInterval: <%= interval * 1000 %>,
           pointStart: <%= @date_range_from.to_i * 1000 %>,
           stacking: 'normal',
+          pointPadding: 0,
           shadow: false
         },
         line: {
           pointInterval: <%= interval * 1000 %>,
           pointStart: <%= @date_range_from.to_i * 1000 %>,
-          lineWidth: 2,
           marker: {
             enabled: false
           },
           shadow: false,
           states: {
             hover: {
-              lineWidth: 2,
               marker: {
                 enabled: true
               }
@@ -194,4 +205,4 @@ total_main_usages   = main_usages.inject([]) { |memo, u| memo << ((memo.last || 
     });
   });
 </script>
-<div id="usage_per_day" width="100%" height="650px"></div>
+<div id="usage_per_day" style="width:100%; height:600px;"></div>
