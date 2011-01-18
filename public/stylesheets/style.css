@@ -1115,15 +1115,14 @@ form .entry a.cancel {
   margin:7px 0 0 10px;
 }
 
-#content table.main td.site .warning span.icon {
+#content table.main td.site .warning a.icon {
   display:block;
   background:url(/images/embed/warning_icon.png) no-repeat;
   width:24px;
   height:23px;
-  text-indent:-9999px;
-  overflow:hidden;
-  cursor:pointer;
 }
+
+#content table.main td.site .warning a.icon span {display:none}
 
 #content table.main td.site .warning .info_box {
   top:-90px;
@@ -1166,13 +1165,39 @@ form .entry a.cancel {
   margin:0 auto;
 }
 
+#content table.main td.usage .alert_icon {
+  width:18px;
+  height:17px;
+  position:relative;
+  float:left;
+  margin:-3px -5px -1px 10px;
+}
+
+#content table.main td.usage .alert_icon a.icon {
+  display:block;
+  width:18px;
+  height:17px;
+  background:url(/images/embed/alert_icon.png) no-repeat;
+}
+
+#content table.main td.usage .alert_icon a.icon span {display:none}
+
+#content table.main td.usage .alert_icon .info_box {
+  top:-75px;
+  width:134px;
+  left:-64px;
+}
+
+#content table.main td.usage .alert_icon .info_box a {
+  color:#fff;
+}
+
 #content table.main td.usage .progress_bar {
   width:85%;
   height:12px;
-  margin:0 auto;
+  margin:0 0 0 8%;
   position:relative;
   background:#adb4bf;
-  cursor:pointer;
   -moz-border-radius:20px;
   -webkit-border-radius:20px;
   border-radius:20px;
@@ -1181,18 +1206,23 @@ form .entry a.cancel {
   box-shadow:inset rgba(0,0,0,0.5) 0 1px 2px, rgba(255,255,255,0.4) 0 1px 0;
 }
 
+#content table.main td.usage .progress_bar.alert {
+  width:70%;
+  margin-right:7.5%;
+  float:right;
+}
+
 #content table.main td.usage .progress_bar .usage_bar, #content table.main td.usage .progress_bar .overages_bar {
   position:absolute;
   top:0;
   left:0;
   height:12px;
-  cursor:pointer;
   background:#4e1e61;
   background:-webkit-gradient(linear,left top,left bottom,from(#692882),to(#361543));
   background:-moz-linear-gradient(top, #692882, #361543);
   -moz-border-radius:20px;
   -webkit-border-radius:20px;
-  border-radius:2v0px;
+  border-radius:20px;
 }
 
 #content table.main td.usage .progress_bar .overages_bar {
@@ -1247,7 +1277,6 @@ form .entry a.cancel {
   width:24px;
   height:24px;
   margin:0 auto;
-  cursor:pointer;
 }
 
 #content table.main td.status .icon.in_progress {
@@ -1260,7 +1289,7 @@ form .entry a.cancel {
 
 #content table.main td.status .info_box {
   width:100px;
-  top:-50px;
+  top:-55px;
   left:-22px;
   right:auto;
 }
@@ -1294,7 +1323,7 @@ form .entry a.cancel {
   user-select: none;
 }
 
-#content .progress_bar:hover .info_box, #content td.status:hover .info_box, #content .warning:hover .info_box {display:block}
+#content .box_hovering_zone:hover .info_box {display:block}
 
 #content .info_box span.arrow {
   display:block;
