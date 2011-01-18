@@ -1,7 +1,6 @@
 <%
-last_billed_on   = site.created_at.change(:month => Date.today.month).beginning_of_day
-interval         = 1.day
-title            = "VPV per day, total and averages for #{site.hostname} between #{l(@date_range_from, :format => :small)} and #{l(@date_range_to, :format => :small)}"
+interval = 1.day
+title    = "VPV per day, total and averages for #{site.hostname} between #{l(@date_range_from, :format => :small)} and #{l(@date_range_to, :format => :small)}"
 
 usages = Stat.usages(@date_range_from, @date_range_to, { :site_id => site.try(:id) })
 usages = (@date_range_from.to_date..@date_range_to.to_date).inject([]) do |memo, day|
@@ -29,31 +28,33 @@ perso_daily_limit = perso_monthly_limit / 30 # we fake ~ site.plan.limit
 pro_daily_limit   = pro_monthly_limit / 30 # we fake ~ site.plan.limit
 huge_daily_limit  = huge_monthly_limit / 30 # we fake ~ site.plan.limit
 %>
-
 <script type = "text/javascript" charset="utf-8">
   document.observe("dom:loaded", function() {
-    var chart = new Highcharts.Chart({
+    new Highcharts.Chart({
       chart: {
         renderTo: 'usage_per_day',
-        marginTop: 80,
-        backgroundColor: '#EEE'
+        marginTop: 120,
+        marginBottom: 40,
+        backgroundColor: '#EEEEEE'
       },
       title: {
         text: '<%= title %>'
       },
       xAxis: {
         type: 'datetime',
-        showFirstLabel: true,
-        showLastLabel: true
+        tickInterval: <%= 1.day * 1000 %>,
+        labels: {
+          step: <%= (((@date_range_to - @date_range_from) / 1.day) / 12).floor %>
+        }
       },
       yAxis: {
         title: {
           text: 'Video-page views',
-          margin: 60
+          margin: 50
         },
         labels: {
           formatter: function() {
-            return Highcharts.numberFormat(this.value, 0, '.', "'");
+            return Highcharts.numberFormat(this.value, 0);
           }
         }
       },
@@ -63,19 +64,23 @@ huge_daily_limit  = huge_monthly_limit / 30 # we fake ~ site.plan.limit
         width: 950,
         symbolWidth: 12,
         backgroundColor: '#FFFFFF',
-        borderColor: '#CCC'
+        borderColor: '#CCCCCC'
       },
       tooltip: {
+        borderWidth: 0,
+        backgroundColor: "rgba(0, 0, 0, .70)",
+        style: {
+        	color: '#FFFFFF',
+        	padding: '5px'
+        },
         formatter: function() {
-          var date = "<strong>" + Highcharts.dateFormat("%B %e,  %Y", this.x) + "</strong><br/>";
-
-          if(this.series.name == "Billing days") return date;
-
+          var date = "<strong>" + Highcharts.dateFormat("%B %e,  %Y", this.x) + "</strong><br/><br/>";
           var percentage_of_total = '';
           var percentage_of_limit = '';
 
           if (["Invalid", "Invalid cached", "Dev", "Dev cached", "Main", "Main cached"].indexOf(this.series.name) != -1) {
             percentage_of_total = " (" + Highcharts.numberFormat(this.percentage, 1) + "%)";
+            percentage_of_total += "<br/>Total: " + Highcharts.numberFormat(this.total, 0);
           }
           else if (this.series.name == "Loader") {
             percentage_of_limit = "Loader / Player: " + Highcharts.numberFormat((this.y / (this.total - this.y)), 1);
@@ -208,19 +213,6 @@ huge_daily_limit  = huge_monthly_limit / 30 # we fake ~ site.plan.limit
         name: 'LIMIT Enterprise',
         visible: false,
         data: <%= Array.new(main_usages.size, huge_monthly_limit) %>
-      },
-      {
-        type: 'scatter',
-        name: 'Billing days',
-        data: <%
-            d = last_billed_on
-            datas = []
-            while(d >= site.created_at.beginning_of_day && d >= @date_range_from) do
-              datas << [d.to_i * 1000, all_usages.max]
-              d = 1.month.until(d).beginning_of_day
-            end
-          %>
-          <%= datas.inspect %>
       }],
       plotOptions: {
         column: {
@@ -245,12 +237,6 @@ huge_daily_limit  = huge_monthly_limit / 30 # we fake ~ site.plan.limit
               }
             }
           }
-        },
-        scatter: {
-          marker: {
-            symbol: 'circle',
-            radius: 6
-          }
         }
       },
       credits: {
@@ -261,4 +247,4 @@ huge_daily_limit  = huge_monthly_limit / 30 # we fake ~ site.plan.limit
     });
   });
 </script>
-<div id="usage_per_day" width="100%" height="250px"></div>
+<div id="usage_per_day" style="width:100%; height:300px;"></div>
