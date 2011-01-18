@@ -54,7 +54,7 @@ group :production do
 end
 
 group :production, :staging do
-  gem 'rack-ssl-enforcer', '~> 0.2.0', :require => 'rack/ssl-enforcer'
+  gem 'rack-ssl-enforcer', :git => 'git://github.com/thibaudgg/rack-ssl-enforcer.git'
   gem 'rack-private',      '~> 0.1.5'
 end
 
@@ -82,16 +82,16 @@ group :test do
   gem 'guard',              :git => "git://github.com/guard/guard.git"
   gem 'guard-rspec'
   gem 'guard-passenger'
-  
+
   gem 'shoulda',            '~> 2.11.3'
   gem 'steak',              '1.0.0.rc.2'
   gem 'capybara',           '~> 0.4.0'
   # gem 'capybara-envjs',     '~> 0.4.0'
   # gem 'akephalos',        '~> 0.2.4'
-  
+
   gem 'webmock',            '~> 1.6.1'
   gem 'vcr',                '~> 1.4.0'
-  
+
   gem 'spork',              '~> 0.9.0.rc2'
   gem 'factory_girl_rails', '~> 1.0.0'
 end
