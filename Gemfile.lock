@@ -137,8 +137,8 @@ GEM
     bcrypt-ruby (2.1.4)
     braintree (2.6.3)
       builder
-    bson (1.1.5)
-    bson_ext (1.1.5)
+    bson (1.2.0)
+    bson_ext (1.2.0)
     builder (2.1.2)
     capybara (0.4.0)
       celerity (>= 0.7.9)
@@ -186,7 +186,7 @@ GEM
       factory_girl (~> 1.3)
       railties (>= 3.0.0)
     fastthread (1.0.7)
-    ffaker (1.1.0)
+    ffaker (1.2.0)
     ffi (0.6.3)
       rake (>= 0.8.7)
     file-tail (1.0.5)
@@ -250,13 +250,13 @@ GEM
       i18n (>= 0.4.0)
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
-    meta_where (0.9.10)
+    meta_where (1.0.1)
       activerecord (~> 3.0.2)
       activesupport (~> 3.0.2)
       arel (~> 2.0.2)
     mime-types (1.16)
-    mongo (1.1.5)
-      bson (>= 1.1.5)
+    mongo (1.2.0)
+      bson (>= 1.2.0)
     net-ssh (2.0.24)
     nokogiri (1.4.4)
     open_gem (1.4.2)
@@ -349,7 +349,7 @@ GEM
     xml-simple (1.0.12)
     xpath (0.1.3)
       nokogiri (~> 1.3)
-    yui-compressor (0.9.1)
+    yui-compressor (0.9.3)
     zip (2.0.2)
 
 PLATFORMS
@@ -363,7 +363,7 @@ DEPENDENCIES
   arel (= 2.0.7)
   array_stats (= 0.6.0)
   aws (= 2.3.34)
-  bson_ext (= 1.1.5)
+  bson_ext (= 1.2.0)
   bundler (= 1.0.7)
   capybara (~> 0.4.0)
   carrierwave (= 0.5.1)
@@ -375,7 +375,7 @@ DEPENDENCIES
   devise!
   devise_invitable!
   factory_girl_rails (~> 1.0.1)
-  ffaker (~> 1.1.0)
+  ffaker (~> 1.2.0)
   fog (= 0.4.0)
   growl
   guard!
@@ -395,8 +395,8 @@ DEPENDENCIES
   libxml-ruby (= 1.1.3)
   liquid (= 2.2.2)
   livereload
-  meta_where (= 0.9.10)
-  mongo (= 1.1.5)
+  meta_where (= 1.0.1)
+  mongo (= 1.2.0)
   mongoid!
   paper_trail (= 1.6.4)
   passenger (~> 3.0.2)
