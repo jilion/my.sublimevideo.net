@@ -3,20 +3,20 @@ require 'state_machine'
 require 'ffaker' if Rails.env.development?
 
 BASE_USERS = [["Mehdi Aminian", "mehdi@jilion.com"], ["Zeno Crivelli", "zeno@jilion.com"], ["Thibaud Guillaume-Gentil", "thibaud@jilion.com"], ["Octave Zangs", "octave@jilion.com"], ["Rémy Coutable", "remy@jilion.com"]]
-COUNTRIES = %w[US FR CH ES DE BE UK CN SE NO FI BR CA]
+COUNTRIES = %w[US FR CH ES DE BE GB CN SE NO FI BR CA]
 
 namespace :db do
-  
+
   desc "Load all development fixtures."
   task :populate => ['populate:empty_all_tables', 'populate:all']
-  
+
   namespace :populate do
-    
+
     desc "Empty all the tables"
     task :empty_all_tables => :environment do
       timed { empty_tables("delayed_jobs", Invoice, Log, Mail::Template, Mail::Log, Site, SiteUsage, User, Admin) }
     end
-    
+
     desc "Load all development fixtures."
     task :all => :environment do
       delete_all_files_in_public('uploads/tmp')
@@ -26,48 +26,48 @@ namespace :db do
       timed { create_site_usages }
       timed { create_mail_templates }
     end
-    
+
     desc "Load Admin development fixtures."
     task :admins => :environment do
       timed { empty_tables(Admin) }
       timed { create_admins }
     end
-    
+
     desc "Load User development fixtures."
     task :users => :environment do
       timed { empty_tables(Site, User) }
       timed { create_users(argv_count) }
     end
-    
+
     desc "Load Site development fixtures."
     task :sites => :environment do
       timed { empty_tables(Site) }
       timed { create_sites(argv_count) }
     end
-    
+
     desc "Load Mail templates development fixtures."
     task :mail_templates => :environment do
       timed { empty_tables(Mail::Template) }
       timed { create_mail_templates }
     end
-    
+
     desc "Create fake usages"
     task :site_usages => :environment do
       timed { empty_tables(SiteUsage) }
       timed { create_site_usages }
     end
-    
+
   end
-  
+
 end
 
 namespace :sm do
-  
+
   desc "Draw the States Diagrams for every model having State Machine"
   task :draw => :environment do
     %x(rake state_machine:draw CLASS=Invoice,Log,Site,User TARGET=doc/state_diagrams FORMAT=jpg ORIENTATION=landscape)
   end
-  
+
 end
 
 private
@@ -111,7 +111,7 @@ def create_users(count = 5)
       user.save!
       print "User #{user_infos[1]}:123456 created!\n"
     end
-    
+
     count.times do |i|
       user              = User.new
       user.first_name   = Faker::Name.first_name
@@ -122,7 +122,7 @@ def create_users(count = 5)
       user.use_personal = rand > 0.5
       user.use_company  = rand > 0.5
       user.use_clients  = user.use_company && rand > 0.3
-      
+
       if user.use_company
         user.company_name          = Faker::Company.name
         user.company_url           = "#{rand > 0.5 ? "http://" : "www."}#{Faker::Internet.domain_name}"
@@ -130,7 +130,7 @@ def create_users(count = 5)
         user.company_employees     = ["Company size", "1 employee", "2-5 employees", "6-20 employees", "21-100 employees", "101-1000 employees", ">1001 employees"].sample
         user.company_videos_served = ["Nr. of videos served", "0-1'000 videos/month", "1'000-10'000 videos/month", "10'000-100'000 videos/month", "100'000-1mio videos/month", ">1mio videos/month", "Don't know"].sample
       end
-      
+
       user.password     = '123456'
       user.confirmed_at = rand(10).days.ago
       user.save
@@ -143,7 +143,7 @@ def create_sites(max = 5)
   delete_all_files_in_public('uploads/licenses')
   delete_all_files_in_public('uploads/loaders')
   create_users if User.all.empty?
-  
+
   User.all.each do |user|
     rand(max).times do |i|
       site            = user.sites.build
@@ -170,7 +170,7 @@ def create_site_usages
       invalid_player_hits        = rand(100)
       invalid_player_hits_cached = (invalid_player_hits * rand).to_i
       player_hits = main_player_hits + main_player_hits_cached + dev_player_hits + dev_player_hits_cached + invalid_player_hits + invalid_player_hits_cached
-      
+
       site_usage = SiteUsage.new(:day => day, :site_id => site.id)
       site_usage.loader_hits = loader_hits
       site_usage.main_player_hits           = main_player_hits
@@ -184,9 +184,9 @@ def create_site_usages
       site_usage.requests_s3                = player_hits - (main_player_hits_cached + dev_player_hits_cached + invalid_player_hits_cached)
       site_usage.traffic_s3                 = site_usage.requests_s3 * 150000 # 150 KB
       site_usage.traffic_voxcast            = player_hits * 150000
-      
+
       site_usage.save
-      
+
       puts "#{player_hits} video-page views on #{day} for site ##{site.id}!"
     end
   end
