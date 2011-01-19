@@ -1,11 +1,12 @@
 :ruby
+  minimum_users = 100
   countries = User.beta.select("country, COUNT(*) as total").group(:country).order("total DESC").map! { |u| [u.country || "Unknown", u.total.to_i] }
-  other_countries = ["Other (less than 50 users)", 0]
+  other_countries = ["Other (less than #{minimum_users} users)", 0]
   countries_with_others = countries.inject([]) do |memo, country|
-    if country[1] < 50
+    if country[1] < minimum_users
       other_countries[1] += country[1]
     else
-      memo << country
+      memo << [Country[country[0]].name, country[1]]
     end
     memo
   end << other_countries
@@ -16,7 +17,8 @@
     new Highcharts.Chart({
       chart: {
         renderTo: 'countries',
-        backgroundColor: '#EEEEEE'
+        backgroundColor: '#EEEEEE',
+        animation: false
       },
       title: {
         text: 'Repartition of users by country'
@@ -68,6 +70,5 @@
       %th # of users
     - countries.each do |country|
       %tr
-        %td= country.first
+        %td= Country[country.first].name
         %td= country.second
-  
