@@ -36,9 +36,9 @@ module Stat
       conditions[:site_id] = { "$in" => @options[:site_ids] } if @options[:site_ids]
 
       usages = ::SiteUsage.collection.group(
-        [:day],
-        conditions,
-        {
+        :key => [:day],
+        :conditions => conditions,
+        :initial => {
           :loader_usage => 0,
           :invalid_usage => 0, :invalid_usage_cached => 0,
           :dev_usage => 0, :dev_usage_cached => 0,
@@ -46,7 +46,7 @@ module Stat
           :main_usage => 0, :main_usage_cached => 0,
           :all_usage => 0
         }, # memo variable name and initial value
-        reduce
+        :reduce => reduce
       )
 
       total = total_usages_before_start_date
@@ -71,9 +71,9 @@ module Stat
       conditions[:site_id] = { "$in" => @options[:site_ids] } if @options[:site_ids]
 
       usages = ::SiteUsage.collection.group(
-        nil,
-        conditions,
-        {
+        :key => nil,
+        :conditions => conditions,
+        :initial => {
           :loader_usage => 0,
           :invalid_usage => 0, :invalid_usage_cached => 0,
           :dev_usage => 0, :dev_usage_cached => 0,
@@ -81,7 +81,7 @@ module Stat
           :main_usage => 0, :main_usage_cached => 0,
           :all_usage => 0
         }, # memo variable name and initial value
-        reduce
+        :reduce => reduce
       )
     end
 
