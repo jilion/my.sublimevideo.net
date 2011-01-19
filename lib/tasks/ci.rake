@@ -3,10 +3,10 @@ namespace :ci do
   task :build do
     RAILS_ENV = ENV['RAILS_ENV'] = 'test'
     sh "bundle --quiet"
-    Rake::Task["db:migrate"].invoke
-    Rake::Task["db:test:prepare"].invoke
-    Rake::Task["db:seed"].invoke
+    Rake::Task["db:migrate --trace"].invoke
+    Rake::Task["db:test:prepare --trace"].invoke
+    Rake::Task["db:seed --trace"].invoke
     SPORK = ENV['SPORK'] = 'false'
-    Rake::Task["spec"].invoke
+    Rake::Task["spec --trace"].invoke
   end
 end
