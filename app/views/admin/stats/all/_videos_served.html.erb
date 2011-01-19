@@ -1,5 +1,5 @@
 <%
-users = User.select("company_videos_served, COUNT(*) as total").group(:company_videos_served).map! { |u| [u.company_videos_served || "Not a company", u.total.to_i] }
+users = User.beta.select("company_videos_served, COUNT(*) as total").group(:company_videos_served).map! { |u| [u.company_videos_served || "Not a company", u.total.to_i] }
 %>
 <script type = "text/javascript" charset="utf-8">
 document.observe("dom:loaded", function() {
