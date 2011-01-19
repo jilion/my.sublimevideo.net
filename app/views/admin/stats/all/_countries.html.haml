@@ -6,7 +6,7 @@
     if country[1] < minimum_users
       other_countries[1] += country[1]
     else
-      memo << [Countries::ALL[country[0]].titleize, country[1]]
+      memo << [Country[country[0]].name, country[1]]
     end
     memo
   end << other_countries
@@ -70,5 +70,5 @@
       %th # of users
     - countries.each do |country|
       %tr
-        %td= Countries::ALL[country.first].titleize
+        %td= Country[country.first].name
         %td= country.second
