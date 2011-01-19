@@ -6,9 +6,6 @@
     if country[1] < minimum_users
       other_countries[1] += country[1]
     else
-      Rails.logger.info country.inspect
-      Rails.logger.info country[0]
-      Rails.logger.info Countries::ALL[country[0]]
       memo << [Countries::ALL[country[0]].titleize, country[1]]
     end
     memo
@@ -73,5 +70,5 @@
       %th # of users
     - countries.each do |country|
       %tr
-        %td= country.first
+        %td= Countries::ALL[country.first].titleize
         %td= country.second
