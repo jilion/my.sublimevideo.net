@@ -225,11 +225,10 @@ def create_site_usages
   start_date = Date.new(2010,9,14)
   end_date   = Date.today
   player_hits_total = 0
-  i = rand(1000)
+  i = 
   Site.active.each do |site|
     (start_date..end_date).each do |day|
-      r = i % 4
-      p = (case r
+      p = (case rand(1000) % 4
       when 0
         site.plan.player_hits/30.0 - (site.plan.player_hits/30.0 / 2)
       when 1
@@ -239,7 +238,6 @@ def create_site_usages
       when 3
         site.plan.player_hits/30.0 + (site.plan.player_hits/30.0 / 2)
       end).to_i
-      i += rand(1000)
       
       loader_hits                = p * rand(100)
       main_player_hits           = p * 0.6

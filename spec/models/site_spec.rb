@@ -42,11 +42,11 @@ describe Site do
     describe "#billable" do
       before(:all) do
         user = Factory(:user)
-        @site1 = Factory(:site, :user => user, :activated_at => Time.utc(2010,1,15))
-        @site2 = Factory(:site, :user => user, :activated_at => Time.utc(2010,2,15))
-        @site3 = Factory(:site, :user => user, :activated_at => Time.utc(2010,2,1), :archived_at => Time.utc(2010,2,2))
-        @site4 = Factory(:site, :user => user, :activated_at => Time.utc(2010,2,1), :archived_at => Time.utc(2010,2,20))
-        @site5 = Factory(:site, :user => user, :activated_at => Time.utc(2010,2,1), :archived_at => Time.utc(2010,2,28))
+        @site1 = Factory(:site, user: user, activated_at: Time.utc(2010,1,15))
+        @site2 = Factory(:site, user: user, activated_at: Time.utc(2010,2,15))
+        @site3 = Factory(:site, user: user, activated_at: Time.utc(2010,2,1), archived_at: Time.utc(2010,2,2))
+        @site4 = Factory(:site, user: user, activated_at: Time.utc(2010,2,1), archived_at: Time.utc(2010,2,20))
+        @site5 = Factory(:site, user: user, activated_at: Time.utc(2010,2,1), archived_at: Time.utc(2010,2,28))
       end
 
       specify { Site.billable(Time.utc(2010,1,1), Time.utc(2010,1,10)).should == [] }
@@ -75,7 +75,7 @@ describe Site do
 
     describe "hostname" do
       it "should be required if state is active" do
-        site = Factory(:site, :hostname => nil)
+        site = Factory(:site, hostname: nil)
         site.state = 'active'
         site.should_not be_valid
         site.should have(1).error_on(:hostname)
@@ -84,7 +84,7 @@ describe Site do
 
     describe "plan" do
       it "should be required if state is active" do
-        site = Factory.build(:site, :state => 'active', :plan => nil)
+        site = Factory.build(:site, state: 'active', plan: nil)
         site.should be_active
         site.should_not be_valid
         site.should have(1).error_on(:plan)
@@ -93,8 +93,8 @@ describe Site do
 
     describe "credit card" do
       it "should be required if state is active" do
-        user = Factory(:user, :cc_type => nil, :cc_last_digits => nil)
-        site = Factory(:site, :user => user)
+        user = Factory(:user, cc_type: nil, cc_last_digits: nil)
+        site = Factory(:site, user: user)
         site.state = 'active'
         site.should_not be_valid
         site.should have(1).error_on(:base)
@@ -103,14 +103,14 @@ describe Site do
 
     describe "no hostnames at all" do
       it "should require at least one of hostname, dev, or extra domains on creation" do
-        site = Factory.build(:site, :hostname => '', :extra_hostnames => '', :dev_hostnames => '')
+        site = Factory.build(:site, hostname: '', extra_hostnames: '', dev_hostnames: '')
         site.should_not be_valid
         site.should have(1).error_on(:base)
         site.errors[:base].should == ["Please set at least a development or an extra domain"]
       end
 
       it "should not add an error on base because an error is already added on hostname when blank and site is active" do
-        site = Factory(:site, :hostname => "test.com").tap { |s| s.activate }
+        site = Factory(:site, hostname: "test.com").tap { |s| s.activate }
         site.hostname = nil
         site.dev_hostnames = nil
         site.should_not be_valid
@@ -123,26 +123,26 @@ describe Site do
     describe "hostname=" do
       %w[ÉCOLE ÉCOLE.fr ÜPPER.de ASDASD.COM 124.123.151.123 mIx3Dd0M4iN.CoM].each do |host|
         it "should downcase hostname: #{host}" do
-          site = Factory.build(:site, :hostname => host)
+          site = Factory.build(:site, hostname: host)
           site.hostname.should == host.downcase
         end
       end
 
       it "should clean valid hostname (hostname should never contain /.+://(www.)?/)" do
-        site = Factory(:site, :hostname => 'http://www.youtube.com?v=31231')
+        site = Factory(:site, hostname: 'http://www.youtube.com?v=31231')
         site.hostname.should == 'youtube.com'
       end
 
       %w[http://www.youtube.com?v=31231 www.youtube.com?v=31231 youtube.com?v=31231].each do |host|
         it "should clean invalid hostname #{host} (hostname should never contain /.+://(www.)?/)" do
-          site = Factory.build(:site, :hostname => host)
+          site = Factory.build(:site, hostname: host)
           site.hostname.should == "youtube.com"
         end
       end
 
       %w[http://www.test,joke;foo test,joke;foo].each do |host|
         it "should clean invalid hostname #{host} (hostname should never contain /.+://(www.)?/)" do
-          site = Factory.build(:site, :hostname => host)
+          site = Factory.build(:site, hostname: host)
           site.hostname.should_not =~ %r(.+://(www.)?)
         end
       end
@@ -151,25 +151,25 @@ describe Site do
     describe "extra_hostnames=" do
       %w[ÉCOLE ÉCOLE.fr ÜPPER.de ASDASD.COM 124.123.151.123 mIx3Dd0M4iN.CoM].each do |host|
         it "should downcase extra_hostnames: #{host}" do
-          site = Factory.build(:site, :extra_hostnames => host)
+          site = Factory.build(:site, extra_hostnames: host)
           site.extra_hostnames.should == host.downcase
         end
       end
 
       it "should clean valid extra_hostnames (hostname should never contain /.+://(www.)?/)" do
-        site = Factory(:site, :extra_hostnames => 'http://www.youtube.com?v=31231')
+        site = Factory(:site, extra_hostnames: 'http://www.youtube.com?v=31231')
         site.extra_hostnames.should == 'youtube.com'
       end
 
       %w[http://www.youtube.com?v=31231 www.youtube.com?v=31231 youtube.com?v=31231].each do |host|
         it "should clean invalid extra_hostnames #{host} (extra_hostnames should never contain /.+://(www.)?/)" do
-          site = Factory.build(:site, :extra_hostnames => host)
+          site = Factory.build(:site, extra_hostnames: host)
           site.extra_hostnames.should == "youtube.com"
         end
       end
 
       it "should clean valid extra_hostnames (dev_hostnames should never contain /.+://(www.)?/)" do
-        site = Factory(:site, :extra_hostnames => 'http://www.jime.org:3000, 33.123.0.1:3000')
+        site = Factory(:site, extra_hostnames: 'http://www.jime.org:3000, 33.123.0.1:3000')
         site.extra_hostnames.should == '33.123.0.1, jime.org'
       end
     end
@@ -177,17 +177,17 @@ describe Site do
     describe "dev_hostnames=" do
       it "should downcase dev_hostnames" do
         dev_host = "127.]BOO[, JOKE;foo, LOCALHOST, test;ERR"
-        site = Factory.build(:site, :dev_hostnames => dev_host)
+        site = Factory.build(:site, dev_hostnames: dev_host)
         site.dev_hostnames.should == dev_host.downcase
       end
 
       it "should clean valid dev_hostnames (dev_hostnames should never contain /.+://(www.)?/)" do
-        site = Factory(:site, :dev_hostnames => 'http://www.localhost:3000, 127.0.0.1:3000')
+        site = Factory(:site, dev_hostnames: 'http://www.localhost:3000, 127.0.0.1:3000')
         site.dev_hostnames.should == '127.0.0.1, localhost'
       end
 
       it "should clean invalid dev_hostnames (dev_hostnames should never contain /.+://(www.)?/)" do
-        site = Factory.build(:site, :dev_hostnames => 'http://www.test;err, ftp://127.]boo[:3000, www.joke;foo')
+        site = Factory.build(:site, dev_hostnames: 'http://www.test;err, ftp://127.]boo[:3000, www.joke;foo')
         site.dev_hostnames.should == '127.]boo[, joke;foo, test;err'
       end
     end
@@ -214,7 +214,7 @@ describe Site do
 
     describe "path=" do
       it "should remove first /" do
-        site = Factory(:site, :path => '/users/thibaud')
+        site = Factory(:site, path: '/users/thibaud')
         site.path.should == 'users/thibaud'
       end
     end
@@ -227,7 +227,7 @@ describe Site do
       context "from beta state" do
         subject do
           Timecop.travel(10.days.ago)
-          site = Factory(:site, :plan_id => nil, :hostname => "jilion.com", :extra_hostnames => "jilion.staging.com, jilion.org").tap { |s| s.activate }
+          site = Factory(:site, plan_id: nil, hostname: "jilion.com", extra_hostnames: "jilion.staging.com, jilion.org").tap { |s| s.activate }
           Timecop.return
           @worker.work_off # populate license / loader
           site.state = 'beta'
@@ -261,7 +261,7 @@ describe Site do
     describe "#activate" do
       context "from dev state" do
         subject do
-          site = Factory(:site, :state => 'dev', :hostname => "jilion.com", :extra_hostnames => "jilion.staging.com, jilion.org")
+          site = Factory(:site, state: 'dev', hostname: "jilion.com", extra_hostnames: "jilion.staging.com, jilion.org")
           @worker.work_off
           site.should be_dev
           site.reload
@@ -303,7 +303,7 @@ describe Site do
       context "from beta state" do
         subject do
           Timecop.travel(10.days.ago)
-          site = Factory(:site, :plan_id => nil, :hostname => "jilion.com", :extra_hostnames => "jilion.staging.com, jilion.org").tap { |s| s.activate }
+          site = Factory(:site, plan_id: nil, hostname: "jilion.com", extra_hostnames: "jilion.staging.com, jilion.org").tap { |s| s.activate }
           Timecop.return
           @worker.work_off # populate license / loader
           site.update_attribute(:state, 'dev')
@@ -400,7 +400,7 @@ describe Site do
 
         context "from beta state" do
           subject do
-            site = Factory(:site, :plan_id => nil).tap { |s| s.activate }
+            site = Factory(:site, plan_id: nil).tap { |s| s.activate }
             @worker.work_off
             site.state = 'beta'
             site.should be_beta # because a beta site with no plan become automatically a dev site
@@ -429,7 +429,7 @@ describe Site do
         site = Factory(:site)
         old_hostname = site.hostname
         site.activate
-        site.update_attributes :hostname => "bob.com"
+        site.update_attributes hostname: "bob.com"
         site.versions.last.reify.hostname.should == old_hostname
       end
     end
@@ -438,8 +438,8 @@ describe Site do
   describe "Callbacks" do
     describe "before_validation" do
       it "should set user_attributes" do
-        user = Factory(:user, :first_name => "Bob")
-        site = Factory(:site, :user => user, :user_attributes => { :first_name => "John" })
+        user = Factory(:user, first_name: "Bob")
+        site = Factory(:site, user: user, user_attributes: { first_name: "John" })
         user.reload.first_name.should == "John"
       end
     end
@@ -450,9 +450,9 @@ describe Site do
       end
 
       context "settings has changed" do
-        { :hostname => "test.com", :extra_hostnames => "test.staging.com", :dev_hostnames => "test.local", :path => "yu", :wildcard => true }.each do |attribute, value|
+        { hostname: "test.com", extra_hostnames: "test.staging.com", dev_hostnames: "test.local", path: "yu", wildcard: true }.each do |attribute, value|
           describe "change on #{attribute}" do
-            subject { Factory(:site, :hostname => "jilion.com", :extra_hostnames => "staging.jilion.com", :dev_hostnames => "jilion.local", :path => "yo", :wildcard => false) }
+            subject { Factory(:site, hostname: "jilion.com", extra_hostnames: "staging.jilion.com", dev_hostnames: "jilion.local", path: "yo", wildcard: false) }
 
             it "should set cdn_up_to_date to false" do
               subject.update_attributes(attribute => value)
@@ -463,12 +463,12 @@ describe Site do
       end
 
       context "when plan change" do
-        let(:site) { Factory(:site, :plan_id => Factory(:plan).id) }
+        let(:site) { Factory(:site, plan_id: Factory(:plan).id) }
 
         it "should clear *_alert_sent_at dates" do
           site.touch(:plan_player_hits_reached_alert_sent_at)
           site.touch(:next_plan_recommended_alert_sent_at)
-          site.update_attributes(:plan_id => Factory(:plan).id)
+          site.update_attributes(plan_id: Factory(:plan).id)
           site.plan_player_hits_reached_alert_sent_at.should be_nil
           site.next_plan_recommended_alert_sent_at.should be_nil
         end
@@ -514,8 +514,8 @@ describe Site do
         describe "attributes that appears in the license" do
           before(:all) do
             @plan = Factory(:plan)
-            @addon1 = Factory(:addon, :name => 'ssl', :price => 99)
-            @addon2 = Factory(:addon, :name => 'stat', :price => 99)
+            @addon1 = Factory(:addon, name: 'ssl', price: 99)
+            @addon2 = Factory(:addon, name: 'stat', price: 99)
           end
 
           before(:each) do
@@ -525,10 +525,10 @@ describe Site do
             PageRankr.stub(:ranks)
           end
 
-          { :hostname => "test.com", :extra_hostnames => "test.staging.com", :dev_hostnames => "test.local", :path => "yu", :wildcard => true, :addon_ids => [1, 2] }.each do |attribute, value|
+          { hostname: "test.com", extra_hostnames: "test.staging.com", dev_hostnames: "test.local", path: "yu", wildcard: true, addon_ids: [1, 2] }.each do |attribute, value|
             describe "#{attribute} has changed" do
               subject do
-                site = Factory(:site, :plan => @plan, :hostname => "jilion.com", :extra_hostnames => "staging.jilion.com", :dev_hostnames => "jilion.local", :path => "yo", :wildcard => false, :addon_ids => [1], :state => 'dev')
+                site = Factory(:site, plan: @plan, hostname: "jilion.com", extra_hostnames: "staging.jilion.com", dev_hostnames: "jilion.local", path: "yo", wildcard: false, addon_ids: [1], state: 'dev')
                 @worker.work_off
                 site.reload
               end
@@ -585,7 +585,7 @@ describe Site do
         describe "attributes that appears in the loader" do
           describe "player_mode has changed" do
             subject do
-              site = Factory(:site, :player_mode => 'dev')
+              site = Factory(:site, player_mode: 'dev')
               @worker.work_off
               site.reload
             end
@@ -621,7 +621,7 @@ describe Site do
 
       it "should update ranks" do
         Timecop.travel(10.minutes.ago)
-        site = Factory(:site, :hostname => 'sublimevideo.net')
+        site = Factory(:site, hostname: 'sublimevideo.net')
         Timecop.return
         VCR.use_cassette('sites/ranks') do
           @worker.work_off
@@ -655,10 +655,10 @@ describe Site do
       end
 
       it "should call update_last_30_days_counters on each non-archived sites" do
-        @active_site = Factory(:site, :state => 'active')
-        Factory(:site_usage, :site_id => @active_site.id, :day => Time.utc(2011,1,15).midnight, :main_player_hits  => 6)
-        @archived_site = Factory(:site, :state => 'archived')
-        Factory(:site_usage, :site_id => @archived_site.id, :day => Time.utc(2011,1,15).midnight, :main_player_hits  => 6)
+        @active_site = Factory(:site, state: 'active')
+        Factory(:site_usage, site_id: @active_site.id, day: Time.utc(2011,1,15).midnight, main_player_hits: 6)
+        @archived_site = Factory(:site, state: 'archived')
+        Factory(:site_usage, site_id: @archived_site.id, day: Time.utc(2011,1,15).midnight, main_player_hits: 6)
         Timecop.travel(Time.utc(2011,1,31, 12))
         Site.update_last_30_days_counters_for_not_archived_sites
         @active_site.reload.last_30_days_main_player_hits_total_count.should == 6
@@ -673,15 +673,15 @@ describe Site do
   describe "Instance Methods" do
     describe "#plan_player_hits_reached_alerted_this_month?" do
       it "should return true when plan_player_hits_reached_alert_sent_at happened durring the current month" do
-        site = Factory.build(:site, :plan_player_hits_reached_alert_sent_at => Time.now.utc)
+        site = Factory.build(:site, plan_player_hits_reached_alert_sent_at: Time.now.utc)
         site.should be_plan_player_hits_reached_alerted_this_month
       end
       it "should return false when plan_player_hits_reached_alert_sent_at happened durring the last month" do
-        site = Factory.build(:site, :plan_player_hits_reached_alert_sent_at => Time.now.utc - 1.month)
+        site = Factory.build(:site, plan_player_hits_reached_alert_sent_at: Time.now.utc - 1.month)
         site.should_not be_plan_player_hits_reached_alerted_this_month
       end
       it "should return false when plan_player_hits_reached_alert_sent_at is nil" do
-        site = Factory.build(:site, :plan_player_hits_reached_alert_sent_at => nil)
+        site = Factory.build(:site, plan_player_hits_reached_alert_sent_at: nil)
         site.should_not be_plan_player_hits_reached_alerted_this_month
       end
     end
@@ -693,7 +693,7 @@ describe Site do
         subject.should_not be_settings_changed
       end
 
-      { :hostname => "jilion.com", :extra_hostnames => "test.staging.com", :dev_hostnames => "test.local", :path => "yu", :wildcard => true }.each do |attribute, value|
+      { hostname: "jilion.com", extra_hostnames: "test.staging.com", dev_hostnames: "test.local", path: "yu", wildcard: true }.each do |attribute, value|
         it "should return true if #{attribute} has changed" do
           subject.send("#{attribute}=", value)
           subject.should be_settings_changed
@@ -718,9 +718,9 @@ describe Site do
 
     describe "#template_hostnames" do
       before(:all) do
-        @site = Factory(:site, :hostname => "jilion.com", :extra_hostnames => "jilion.net, jilion.org", :dev_hostnames => '127.0.0.1,localhost', :path => 'foo', :wildcard => true, :addons => [Factory(:addon, :name => 'ssl_gold'), Factory(:addon, :name => 'customization')])
+        @site = Factory(:site, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', path: 'foo', wildcard: true, addons: [Factory(:addon, name: 'ssl_gold'), Factory(:addon, name: 'customization')])
         @site.plan = nil
-        @site.save(:validate => false)
+        @site.save(validate: false)
       end
       subject { @site }
 
@@ -771,15 +771,15 @@ describe Site do
 
     describe "#need_path?" do
       it "should be true" do
-        site = Factory(:site, :hostname => 'web.me.com')
+        site = Factory(:site, hostname: 'web.me.com')
         site.need_path?.should be_true
       end
       it "should be false when path present" do
-        site = Factory(:site, :hostname => 'web.me.com', :path => 'users/thibaud')
+        site = Factory(:site, hostname: 'web.me.com', path: 'users/thibaud')
         site.need_path?.should be_false
       end
       it "should be false" do
-        site = Factory(:site, :hostname => 'jilion.com')
+        site = Factory(:site, hostname: 'jilion.com')
         site.need_path?.should be_false
       end
     end
@@ -789,12 +789,12 @@ describe Site do
         before(:all) do
           @site = with_versioning do
             Timecop.travel(1.day.ago)
-            site = Factory(:site, :hostname => "jilion.com", :extra_hostnames => 'jilion.org, jilion.net', :dev_hostnames => "localhost, 127.0.0.1")
+            site = Factory(:site, hostname: "jilion.com", extra_hostnames: 'jilion.org, jilion.net', dev_hostnames: "localhost, 127.0.0.1")
             site.activate
             @worker.work_off
             Timecop.return
             site.reload
-            site.update_attributes(:hostname => "jilion.net", :extra_hostnames => 'jilion.org, jilion.com', :dev_hostnames => "jilion.local, localhost, 127.0.0.1")
+            site.update_attributes(hostname: "jilion.net", extra_hostnames: 'jilion.org, jilion.com', dev_hostnames: "jilion.local, localhost, 127.0.0.1")
             @worker.work_off
             site
           end
@@ -816,7 +816,7 @@ describe Site do
 
       context "without wildcard or path" do
         before(:all) do
-          @site = Factory(:site, :hostname => "jilion.com", :extra_hostnames => 'jilion.org, staging.jilion.com', :dev_hostnames => "jilion.local, localhost, 127.0.0.1")
+          @site = Factory(:site, hostname: "jilion.com", extra_hostnames: 'jilion.org, staging.jilion.com', dev_hostnames: "jilion.local, localhost, 127.0.0.1")
         end
         subject { @site }
 
@@ -845,7 +845,7 @@ describe Site do
 
       context "with wildcard" do
         before(:all) do
-          @site = Factory(:site, :hostname => "jilion.com", :extra_hostnames => 'jilion.org, jilion.net', :dev_hostnames => "jilion.local, localhost, 127.0.0.1", :wildcard => true)
+          @site = Factory(:site, hostname: "jilion.com", extra_hostnames: 'jilion.org, jilion.net', dev_hostnames: "jilion.local, localhost, 127.0.0.1", wildcard: true)
         end
         subject { @site }
 
@@ -880,7 +880,7 @@ describe Site do
 
       context "with path" do
         before(:all) do
-          @site = Factory(:site, :hostname => "jilion.com", :extra_hostnames => 'jilion.org, staging.jilion.com', :dev_hostnames => "jilion.local, localhost, 127.0.0.1", :path => "demo")
+          @site = Factory(:site, hostname: "jilion.com", extra_hostnames: 'jilion.org, staging.jilion.com', dev_hostnames: "jilion.local, localhost, 127.0.0.1", path: "demo")
         end
         subject { @site }
 
@@ -924,7 +924,7 @@ describe Site do
 
       context "with wildcard and path" do
         before(:all) do
-          @site = Factory(:site, :hostname => "jilion.com", :extra_hostnames => 'jilion.org, jilion.net', :dev_hostnames => "jilion.local, localhost, 127.0.0.1", :path => "demo", :wildcard => true)
+          @site = Factory(:site, hostname: "jilion.com", extra_hostnames: 'jilion.org, jilion.net', dev_hostnames: "jilion.local, localhost, 127.0.0.1", path: "demo", wildcard: true)
         end
         subject { @site }
 
@@ -972,27 +972,27 @@ describe Site do
     end
 
     describe "#update_last_30_days_counters" do
-      before(:all) do |variable|
-        @site = Factory(:site, :last_30_days_main_player_hits_total_count => 1)
-        Factory(:site_usage, :site_id => @site.id, :day => Time.utc(2010,12,31).midnight,
-          :main_player_hits  => 6,   :main_player_hits_cached  => 4,
-          :extra_player_hits => 5,   :extra_player_hits_cached => 5,
-          :dev_player_hits   => 4,   :dev_player_hits_cached   => 6
+      before(:all) do
+        @site = Factory(:site, last_30_days_main_player_hits_total_count: 1)
+        Factory(:site_usage, site_id: @site.id, day: Time.utc(2010,12,31).midnight,
+          main_player_hits:  6,   main_player_hits_cached: 4,
+          extra_player_hits: 5,   extra_player_hits_cached: 5,
+          dev_player_hits:   4,   dev_player_hits_cached: 6
         )
-        Factory(:site_usage, :site_id => @site.id, :day => Time.utc(2011,1,1).midnight,
-          :main_player_hits  => 6,   :main_player_hits_cached  => 4,
-          :extra_player_hits => 5,   :extra_player_hits_cached => 5,
-          :dev_player_hits   => 4,   :dev_player_hits_cached   => 6
+        Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,1,1).midnight,
+          main_player_hits:  6,   main_player_hits_cached: 4,
+          extra_player_hits: 5,   extra_player_hits_cached: 5,
+          dev_player_hits:   4,   dev_player_hits_cached: 6
         )
-        Factory(:site_usage, :site_id => @site.id, :day => Time.utc(2011,1,30).midnight,
-          :main_player_hits  => 6,   :main_player_hits_cached  => 4,
-          :extra_player_hits => 5,   :extra_player_hits_cached => 5,
-          :dev_player_hits   => 4,   :dev_player_hits_cached   => 6
+        Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,1,30).midnight,
+          main_player_hits:  6,   main_player_hits_cached: 4,
+          extra_player_hits: 5,   extra_player_hits_cached: 5,
+          dev_player_hits:   4,   dev_player_hits_cached: 6
         )
-        Factory(:site_usage, :site_id => @site.id, :day => Time.utc(2011,1,31).midnight,
-          :main_player_hits  => 6,   :main_player_hits_cached  => 4,
-          :extra_player_hits => 5,   :extra_player_hits_cached => 5,
-          :dev_player_hits   => 4,   :dev_player_hits_cached   => 6
+        Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,1,31).midnight,
+          main_player_hits:  6,   main_player_hits_cached: 4,
+          extra_player_hits: 5,   extra_player_hits_cached: 5,
+          dev_player_hits:   4,   dev_player_hits_cached: 6
         )
       end
 
@@ -1005,6 +1005,152 @@ describe Site do
         Timecop.return
       end
     end
+
+    describe "#current_billable_usage" do
+      before(:all) do
+        @site = Factory(:site)
+        Factory(:site_usage, site_id: @site.id, day: Time.utc(2010,12,31).midnight,
+          main_player_hits:  6, main_player_hits_cached: 4,
+          extra_player_hits: 5, extra_player_hits_cached: 5,
+          dev_player_hits:   4, dev_player_hits_cached: 6
+        )
+        Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,1,1).midnight,
+          main_player_hits:  6, main_player_hits_cached: 4,
+          extra_player_hits: 5, extra_player_hits_cached: 5,
+          dev_player_hits:   4, dev_player_hits_cached: 6
+        )
+        Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,1,15).midnight,
+          main_player_hits:  6, main_player_hits_cached: 4,
+          extra_player_hits: 5, extra_player_hits_cached: 5,
+          dev_player_hits:   4, dev_player_hits_cached: 6
+        )
+      end
+
+      it "should update counters of non-archived sites from last 30 days site_usages" do
+        Timecop.travel(Time.utc(2011,1,31,12))
+        @site.current_billable_usage.should == 40
+        Timecop.return
+      end
+    end
+    
+    describe "#current_percentage_of_plan_used" do
+      context "with usages less than the plan's limit" do
+        before(:all) do
+          @site = Factory(:site, plan: Factory(:plan, player_hits: 100))
+          Factory(:site_usage, site_id: @site.id, day: Time.utc(2010,12,31).midnight,
+            main_player_hits:  6, main_player_hits_cached:  4,
+            extra_player_hits: 5, extra_player_hits_cached: 5,
+            dev_player_hits:   4, dev_player_hits_cached:   6
+          )
+          Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,1,1).midnight,
+            main_player_hits:  6, main_player_hits_cached:  4,
+            extra_player_hits: 5, extra_player_hits_cached: 5,
+            dev_player_hits:   4, dev_player_hits_cached:   6
+          )
+          Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,1,15).midnight,
+            main_player_hits:  6, main_player_hits_cached:  4,
+            extra_player_hits: 5, extra_player_hits_cached: 5,
+            dev_player_hits:   4, dev_player_hits_cached:   6
+          )
+        end
+
+        it "should update counters of non-archived sites from last 30 days site_usages" do
+          Timecop.travel(Time.utc(2011,1,31,12))
+          @site.current_billable_usage.should == 40
+          @site.current_percentage_of_plan_used.should == 0.4
+          Timecop.return
+        end
+      end
+      
+      context "with usages more than the plan's limit" do
+        before(:all) do
+          @site = Factory(:site, plan: Factory(:plan, player_hits: 30))
+          Factory(:site_usage, site_id: @site.id, day: Time.utc(2010,12,31).midnight,
+            main_player_hits:  6, main_player_hits_cached:  4,
+            extra_player_hits: 5, extra_player_hits_cached: 5,
+            dev_player_hits:   4, dev_player_hits_cached:   6
+          )
+          Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,1,1).midnight,
+            main_player_hits:  6, main_player_hits_cached:  4,
+            extra_player_hits: 5, extra_player_hits_cached: 5,
+            dev_player_hits:   4, dev_player_hits_cached:   6
+          )
+          Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,1,15).midnight,
+            main_player_hits:  6, main_player_hits_cached:  4,
+            extra_player_hits: 5, extra_player_hits_cached: 5,
+            dev_player_hits:   4, dev_player_hits_cached:   6
+          )
+        end
+
+        it "should update counters of non-archived sites from last 30 days site_usages" do
+          Timecop.travel(Time.utc(2011,1,31,12))
+          @site.current_billable_usage.should == 40
+          @site.current_percentage_of_plan_used.should == 1
+          Timecop.return
+        end
+      end
+    end
+    
+    describe "#current_percentage_of_overages_compared_to_plan_limit" do
+      context "with usages less than 2x the plan's limit" do
+        before(:all) do
+          @site = Factory(:site, plan: Factory(:plan, player_hits: 30))
+          Factory(:site_usage, site_id: @site.id, day: Time.utc(2010,12,31).midnight,
+            main_player_hits:  6, main_player_hits_cached:  4,
+            extra_player_hits: 5, extra_player_hits_cached: 5,
+            dev_player_hits:   4, dev_player_hits_cached:   6
+          )
+          Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,1,1).midnight,
+            main_player_hits:  6, main_player_hits_cached:  4,
+            extra_player_hits: 5, extra_player_hits_cached: 5,
+            dev_player_hits:   4, dev_player_hits_cached:   6
+          )
+          Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,1,15).midnight,
+            main_player_hits:  6, main_player_hits_cached:  4,
+            extra_player_hits: 5, extra_player_hits_cached: 5,
+            dev_player_hits:   4, dev_player_hits_cached:   6
+          )
+        end
+
+        it "should update counters of non-archived sites from last 30 days site_usages" do
+          Timecop.travel(Time.utc(2011,1,31,12))
+          @site.current_billable_usage.should == 40
+          @site.current_percentage_of_plan_used.should == 1
+          @site.current_percentage_of_overages_compared_to_plan_limit.should == 0.33
+          Timecop.return
+        end
+      end
+      
+      context "with usages more than 2x the plan's limit" do
+        before(:all) do
+          @site = Factory(:site, plan: Factory(:plan, player_hits: 10))
+          Factory(:site_usage, site_id: @site.id, day: Time.utc(2010,12,31).midnight,
+            main_player_hits:  6, main_player_hits_cached:  4,
+            extra_player_hits: 5, extra_player_hits_cached: 5,
+            dev_player_hits:   4, dev_player_hits_cached:   6
+          )
+          Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,1,1).midnight,
+            main_player_hits:  6, main_player_hits_cached:  4,
+            extra_player_hits: 5, extra_player_hits_cached: 5,
+            dev_player_hits:   4, dev_player_hits_cached:   6
+          )
+          Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,1,15).midnight,
+            main_player_hits:  6, main_player_hits_cached:  4,
+            extra_player_hits: 5, extra_player_hits_cached: 5,
+            dev_player_hits:   4, dev_player_hits_cached:   6
+          )
+        end
+
+        it "should update counters of non-archived sites from last 30 days site_usages" do
+          Timecop.travel(Time.utc(2011,1,31,12))
+          @site.current_billable_usage.should == 40
+          @site.current_percentage_of_plan_used.should == 1
+          @site.current_percentage_of_overages_compared_to_plan_limit.should == 1
+          Timecop.return
+        end
+      end
+    end
+    
   end
 end
 

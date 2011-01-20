@@ -33,34 +33,7 @@
       .spacer
 
   %td.usage
-    - if site.beta?
-      = link_to "Choose a plan", [:transition, site], :class => "medium_button"
-    - elsif site.plan_id.blank?
-      = link_to "Choose a plan", [:edit, site], :class => "medium_button"
-    - elsif site.active?
-      -# = link_to "Usage", "", :onclick => "return MySublimeVideo.showSiteUsage('#{site.token}')"
-      - usages = Stat::SiteUsage.timeline(*TimeUtil.current_month, site_id: site.id)      
-      .progress_bar
-        - usage = usages["total_main_usage"].last + usages["total_main_usage_cached"].last + usages["total_extra_usage"].last + usages["total_extra_usage_cached"].last
-        .usage_bar{ :style => "width:#{display_percentage([usage/site.plan.player_hits.to_f, 1].min)}"}
-        - overage = @usage_statement.invoice_items.detect { |ii| ii.type == "InvoiceItem::Overage" && ii.site == site }
-        - if overage.info[:player_hits_used] > overage.info[:plan_player_hits]
-          .overages_bar{ :style => "width:#{display_percentage([(overage.info[:player_hits_used] - overage.info[:plan_player_hits])/site.plan.player_hits.to_f, 1].min)}"}
-        .plan_total= number_with_delimiter(site.plan.player_hits)
-        = info_box do
-          %p= "#{number_with_delimiter(usage)} Hits"
-          %p= display_percentage([usage/site.plan.player_hits.to_f, 1].min)
-          
-    - elsif site.dev? && site.hostname.present?
-      = form_for [:activate, site], :html => { "data-password-protected" => true } do |f|
-        .actions
-          = f.submit 'Activate', :class => "submit small small_button", :id => "activate_site_#{site.id}"
-
-    .small_message
-      - if site.plan_player_hits_reached_alerted_this_month?
-        %span.alerted
-          -# TODO: Update this text
-          %em= "Plan limit reached, overages will occur."
+    = render 'td_usage', site: site
 
   %td.code
     = link_to "Embed code", "", :class => "embed_code", :onclick => "return MySublimeVideo.showSiteEmbedCode('#{site.token}')"

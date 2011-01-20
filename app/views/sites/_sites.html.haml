@@ -1,5 +1,4 @@
 - if @sites.present?
-  - @usage_statement = Invoice.usage_statement(current_user)
   .main_table_wrap
     .dark_rounded_corners
       %table.main#sites
@@ -16,9 +15,8 @@
           %th.usage Usage
           %th.code Player Code
           %th.status Status
-          
         = render @sites
-        
+
   .pagination_wrap
     = remote_will_paginate(@sites, :params => params.merge(:format => nil))
     = page_entries_info(@sites)

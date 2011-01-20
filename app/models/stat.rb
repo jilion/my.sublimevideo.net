@@ -7,6 +7,7 @@ module Stat
       @end_date         = end_date
       @options          = options
       @labels_to_fields = options[:labels] ? labels_to_fields.select { |k, v| @options[:labels].include?(k) } : labels_to_fields
+      @base_conditions = @options[:site_ids] ? { site_id: { "$in" => [@options[:site_ids]].flatten } } : {}
     end
 
     def self.timeline(start_date, end_date, options={})
@@ -27,25 +28,15 @@ module Stat
     #
     # Return a hash of site usages. Default keys of the hash are the default labels (see the 'labels' options):
     def timeline
-      conditions = {
-        :day => {
-          "$gte" => @start_date.midnight,
-          "$lt"  => @end_date.end_of_day
-        }
-      }
-      conditions[:site_id] = { "$in" => @options[:site_ids] } if @options[:site_ids]
-
       usages = ::SiteUsage.collection.group(
         :key => [:day],
-        :conditions => conditions,
-        :initial => {
-          :loader_usage => 0,
-          :invalid_usage => 0, :invalid_usage_cached => 0,
-          :dev_usage => 0, :dev_usage_cached => 0,
-          :extra_usage => 0, :extra_usage_cached => 0,
-          :main_usage => 0, :main_usage_cached => 0,
-          :all_usage => 0
-        }, # memo variable name and initial value
+        :cond => @base_conditions.merge({
+          :day => {
+            "$gte" => @start_date.midnight,
+            "$lt"  => @end_date.end_of_day
+          }
+        }),
+        :initial => @labels_to_fields.keys.inject({}) { |hash, k| hash[k] = 0; hash },
         :reduce => reduce
       )
 
@@ -67,20 +58,12 @@ module Stat
     private
 
     def total_usages_before_start_date
-      conditions = { :day => { "$lt" => @start_date.to_date.to_time.midnight } }
-      conditions[:site_id] = { "$in" => @options[:site_ids] } if @options[:site_ids]
+      return [] if @options[:dont_add_total_usages_before_start_date]
 
       usages = ::SiteUsage.collection.group(
         :key => nil,
-        :conditions => conditions,
-        :initial => {
-          :loader_usage => 0,
-          :invalid_usage => 0, :invalid_usage_cached => 0,
-          :dev_usage => 0, :dev_usage_cached => 0,
-          :extra_usage => 0, :extra_usage_cached => 0,
-          :main_usage => 0, :main_usage_cached => 0,
-          :all_usage => 0
-        }, # memo variable name and initial value
+        :cond => @base_conditions.merge({ :day => { "$lt" => @start_date.to_date.to_time.midnight } }),
+        :initial => @labels_to_fields.keys.inject({}) { |hash, k| hash[k] = 0; hash },
         :reduce => reduce
       )
     end

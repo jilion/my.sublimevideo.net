@@ -335,6 +335,18 @@ public
     end
     self.save
   end
+  
+  def current_billable_usage
+    @current_billable_usage ||= usages.between(*TimeUtil.current_month).to_a.sum { |su| su.main_player_hits + su.main_player_hits_cached + su.extra_player_hits + su.extra_player_hits_cached }
+  end
+  
+  def current_percentage_of_plan_used
+    [(current_billable_usage / plan.player_hits.to_f).round(2), 1].min
+  end
+  
+  def current_percentage_of_overages_compared_to_plan_limit
+    [((current_billable_usage - plan.player_hits) / plan.player_hits.to_f).round(2), 1].min
+  end
 
 private
 
