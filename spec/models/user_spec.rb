@@ -29,7 +29,7 @@ describe User do
 
     it { should_not belong_to :suspending_delayed_job }
     it { should_not have_many :sites }
-    it { should_not have_many :invoices }
+    it { should have_many :invoices }
   end
 
   describe "Scopes" do
