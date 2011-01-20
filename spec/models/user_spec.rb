@@ -23,11 +23,11 @@ describe User do
     it { should be_valid }
   end
 
-  describe "Associations", :focus => true do
+  describe "Associations" do
     before(:all) { @user = Factory(:user) }
     subject { @user }
 
-    it { should_not belong_to :suspending_delayed_job }
+    it { should belong_to :suspending_delayed_job }
     it { should have_many :sites }
     it { should have_many :invoices }
   end
