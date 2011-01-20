@@ -159,17 +159,33 @@ def create_sites(max = 5)
   print "0-#{max} random sites created for each user!\n"
 end
 
+
 def create_site_usages
+  start_date = Date.new(2010,9,14)
+  end_date   = Date.today
+  player_hits_total = 0
   Site.all.each do |site|
-    (30.days.ago.to_date..Date.today).each do |day|
-      loader_hits                = rand(3000)
-      main_player_hits           = rand(1000)
-      main_player_hits_cached    = (main_player_hits * rand).to_i
-      dev_player_hits            = rand(200)
+    (start_date..end_date).each do |day|
+      ph = (case rand(1000) % 4
+      when 0
+        30000/30.0 - (30000/30.0 / 2)
+      when 1
+        30000/30.0 - (30000/30.0 / 4)
+      when 2
+        30000/30.0 + (30000/30.0 / 4)
+      when 3
+        30000/30.0 + (30000/30.0 / 2)
+      end).to_i
+
+      loader_hits                = ph * rand(100)
+      main_player_hits           = ph * 0.6
+      main_player_hits_cached    = ph * 0.4
+      dev_player_hits            = rand(100)
       dev_player_hits_cached     = (dev_player_hits * rand).to_i
-      invalid_player_hits        = rand(100)
+      invalid_player_hits        = rand(500)
       invalid_player_hits_cached = (invalid_player_hits * rand).to_i
-      player_hits = main_player_hits + main_player_hits_cached + dev_player_hits + dev_player_hits_cached + invalid_player_hits + invalid_player_hits_cached
+      player_hits                = main_player_hits + main_player_hits_cached + dev_player_hits + dev_player_hits_cached + invalid_player_hits + invalid_player_hits_cached
+      requests_s3                = player_hits - (main_player_hits_cached + dev_player_hits_cached + invalid_player_hits_cached)
 
       site_usage = SiteUsage.new(:day => day, :site_id => site.id)
       site_usage.loader_hits = loader_hits
@@ -181,15 +197,15 @@ def create_site_usages
       site_usage.invalid_player_hits_cached = invalid_player_hits_cached
       site_usage.player_hits                = player_hits
       site_usage.flash_hits                 = (player_hits * rand / 3).to_i
-      site_usage.requests_s3                = player_hits - (main_player_hits_cached + dev_player_hits_cached + invalid_player_hits_cached)
-      site_usage.traffic_s3                 = site_usage.requests_s3 * 150000 # 150 KB
+      site_usage.requests_s3                = requests_s3 # player_hits - (main_player_hits_cached + dev_player_hits_cached + invalid_player_hits_cached)
+      site_usage.traffic_s3                 = requests_s3 * 150000 # 150 KB
       site_usage.traffic_voxcast            = player_hits * 150000
 
-      site_usage.save
-
-      puts "#{player_hits} video-page views on #{day} for site ##{site.id}!"
+      site_usage.save!
+      player_hits_total += player_hits
     end
   end
+  puts "#{player_hits_total} video-page views total created between #{start_date} and #{end_date}!"
 end
 
 def create_mail_templates(count = 5)
