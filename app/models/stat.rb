@@ -29,8 +29,8 @@ module Stat
     def timeline
       conditions = {
         :day => {
-          "$gte" => @start_date.to_date.to_time.midnight,
-          "$lte" => @end_date.to_date.to_time.end_of_day
+          "$gte" => @start_date.midnight,
+          "$lt"  => @end_date.end_of_day
         }
       }
       conditions[:site_id] = { "$in" => @options[:site_ids] } if @options[:site_ids]

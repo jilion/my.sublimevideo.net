@@ -32,7 +32,6 @@ class User < ActiveRecord::Base
   # = Scopes =
   # ==========
 
-
   scope :billable,  lambda { |started_at, ended_at|
     includes(:sites).
     without_state(:archived).

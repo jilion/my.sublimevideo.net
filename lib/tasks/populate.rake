@@ -114,9 +114,7 @@ def create_admins
   disable_perform_deliveries do
     puts "Creating admins..."
     BASE_USERS.each do |admin_infos|
-      admin = Admin.create(full_name: admin_infos[0], email: admin_infos[1], password: "123456")
-      # admin.invitation_sent_at = Time.now
-      admin.save!
+      Admin.create(full_name: admin_infos[0], email: admin_infos[1], password: "123456")
       puts "Admin #{admin_infos[1]}:123456"
     end
   end
@@ -222,6 +220,7 @@ def create_sites(max)
   puts "0-#{max} random sites created for each user!"
 end
 
+
 def create_site_usages
   start_date = Date.new(2010,9,14)
   end_date   = Date.today
@@ -253,7 +252,7 @@ def create_site_usages
       requests_s3 = player_hits - (main_player_hits_cached + dev_player_hits_cached + invalid_player_hits_cached)
 
       site_usage = SiteUsage.new(
-        day: day,
+        day: day.to_time.utc.midnight,
         site_id: site.id,
         loader_hits: loader_hits,
         main_player_hits: main_player_hits,

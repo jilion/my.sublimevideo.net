@@ -5,9 +5,9 @@ module Admin::StatsHelper
     {
       renderTo: id,
       marginTop: options[:margin_top] || 110,
+      marginBottom: options[:margin_bottom] || 50,
       marginLeft: options[:margin_left] || 90,
       backgroundColor: '#EEEEEE',
-      marginBottom: 50,
       animation: false
     }
   end

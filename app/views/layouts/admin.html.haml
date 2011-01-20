@@ -24,6 +24,6 @@
           = image_tag "/images/embed/spinner.gif", :class => "spinner", :id => "table_spinner", :style => "display:none"
           = yield
       #footer
-        %p= "Copyright © 2010 - SublimeVideo®"
+        %p= "Copyright © #{Time.now.utc.year}  - SublimeVideo®"
 
     = yield :bottom
