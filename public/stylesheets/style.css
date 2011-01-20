@@ -1585,6 +1585,7 @@ ul#addons .checkbox_wrap input:focus:checked + label {background-position:0 -102
 #site_setup .entry.site a.button.up {background-position:0 -80px}
 #site_setup .entry.site a.button.up:active {background-position:0 -120px}
 
+
 #site_setup .settings .left {
   width:440px;
   margin:0 22px 0 0;
@@ -1680,6 +1681,8 @@ ul#addons .checkbox_wrap input:focus:checked + label {background-position:0 -102
   text-align:center;
 }
 
+#site.edit .actions.center {padding:20px 0;}
+
 #site .actions input.submit.big {
   width:210px;
   height:84px;
@@ -1696,6 +1699,71 @@ ul#addons .checkbox_wrap input:focus:checked + label {background-position:0 -102
 #site .actions input.submit.big:active {background-position:0 -84px;}
 #site .actions input.submit.big:focus {background-position:0 -168px;}
 #site .actions input.submit.big:active:focus {background-position:0 -252px;}
+
+/* ============= */
+/* = Site Edit = */
+/* ============= */
+
+ul.segmented_menu {
+  list-style-type:none;
+  position:absolute;
+  top:50px;
+  right:50px;
+}
+
+ul.segmented_menu li {
+  float:left;
+  display:block;
+}
+
+ul.segmented_menu li a {
+  display:block;
+  padding:8px 14px;
+  font-size:18px;
+  font-weight:600;
+  text-align:center;
+  font-family:inherit;
+  color:#4d5563;
+  text-shadow:rgba(255,255,255,0.5) 0 1px 0;
+  border:1px solid #5d6778;
+  background:#9fa5af;
+  background:-webkit-gradient(linear,left top,left bottom,from(rgba(118,127,141,0.25)),to(rgba(81,89,104,0.5)));
+  background:-moz-linear-gradient(top, rgba(118,127,141,0.2), rgba(81,89,104,0.4));
+  -moz-box-shadow: inset rgba(255,255,255,0.7) 0 1px 2px, rgba(255,255,255,0.6) 0 1px 0;
+  -webkit-box-shadow: inset rgba(255,255,255,0.7) 0 1px 2px, rgba(255,255,255,0.6) 0 1px 0;
+  box-shadow: inset rgba(255,255,255,0.7) 0 1px 2px, rgba(255,255,255,0.6) 0 1px 0;
+}
+
+ul.segmented_menu li.active a, ul.segmented_menu li a:active {
+  color:#e0e5ef;
+  text-shadow:rgba(0,0,0,0.4) 0 -1px 0;
+  border-color:#4e5664;
+  background:#7b8390;
+  background:-webkit-gradient(linear,left top,left bottom,from(rgba(85,94,109,0.8)),to(rgba(93,103,120,0.6)));
+  background:-moz-linear-gradient(top, rgba(85,94,109,0.8), rgba(93,103,120,0.6));
+  -moz-box-shadow: inset rgba(0,0,0,0.6) 0 1px 2px, rgba(255,255,255,0.5) 0 1px 0;
+  -webkit-box-shadow: inset rgba(0,0,0,0.7) 0 1px 5px, rgba(255,255,255,0.5) 0 1px 0;
+  box-shadow: inset rgba(255,255,255,0.6) 0 1px 2px, rgba(255,255,255,0.5) 0 1px 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+ul.segmented_menu li.first a {
+/*  border-right:none;*/
+  -moz-border-radius: 8px 0 0 8px;
+  -webkit-border-radius: 8px 0 0 8px;
+  border-radius: 8px 0 0 8px;
+}
+
+ul.segmented_menu li.last a {
+  border-left:none;
+  -moz-border-radius: 0 8px 8px 0;
+  -webkit-border-radius: 0 8px 8px 0;
+  border-radius: 0 8px 8px 0;
+}
+
+#site .section_box {
+  margin:20px 0 0;
+}
 
 .popup {
   width:450px;
@@ -2071,5 +2139,7 @@ a {
   outline:none;
   color:#4d5563;
 }
+
+img {border:none}
 
 input::-moz-focus-inner, button::-moz-focus-inner { border:0; }
