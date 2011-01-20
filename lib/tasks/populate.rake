@@ -3,7 +3,7 @@ require 'state_machine'
 require 'ffaker' if Rails.env.development?
 
 BASE_USERS = [["Mehdi Aminian", "mehdi@jilion.com"], ["Zeno Crivelli", "zeno@jilion.com"], ["Thibaud Guillaume-Gentil", "thibaud@jilion.com"], ["Octave Zangs", "octave@jilion.com"], ["Rémy Coutable", "remy@jilion.com"]]
-COUNTRIES = %w[US FR CH ES DE BE UK CN SE NO FI BR CA]
+COUNTRIES = %w[US FR CH ES DE BE GB CN SE NO FI BR CA]
 
 namespace :db do
 
@@ -69,7 +69,7 @@ namespace :db do
     task invoices: :environment do
       timed { empty_tables(Invoice) }
       timed { create_invoices(argv_count) }
-      # empty_tables("delayed_jobs")
+      empty_tables("delayed_jobs")
     end
 
     desc "Create fake plans"
@@ -281,7 +281,6 @@ def create_invoices(count = 5)
     Invoice.complete_invoices_for_billable_users(d.beginning_of_month, d.end_of_month)
     d += 1.month
   end
-  # end
   puts "#{Invoice.count} invoices created!"
 end
 

@@ -72,7 +72,7 @@ describe User do
         specify { User.active_and_billable.should == [@user1] }
       end
       describe "#active_and_not_billable" do
-        specify { User.active_and_not_billable.should == [@user2, @user3, @user4] }
+        specify { User.active_and_not_billable.sort_by(&:id).should == [@user2, @user3, @user4].sort_by(&:id) }
       end
     end
 

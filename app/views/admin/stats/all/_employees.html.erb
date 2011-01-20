@@ -1,12 +1,20 @@
 <%
-users = User.select("company_employees, COUNT(*) as total").group(:company_employees).map! { |u| [u.company_employees || "Not a company", u.total.to_i] }
+employees = User.beta.select("company_employees, COUNT(*) as total").group(:company_employees).order("total DESC").map! { |u| [u.company_employees || "Not a company", u.total.to_i] }
+
+employee_with_wrong_label = employees.detect { |e| e[0] == "Company size" }
+employee_not_a_company    = employees.detect { |e| e[0] == "Not a company" }
+if employee_with_wrong_label
+  employee_not_a_company[1] += employee_with_wrong_label[1]
+  employees.delete(employee_with_wrong_label)
+end
 %>
 <script type = "text/javascript" charset="utf-8">
 document.observe("dom:loaded", function() {
   new Highcharts.Chart({
     chart: {
       renderTo: 'employees',
-      backgroundColor: '#EEEEEE'
+      backgroundColor: '#EEEEEE',
+      animation: false
     },
     title: {
       text: 'Number of employees'
@@ -38,7 +46,7 @@ document.observe("dom:loaded", function() {
     },
     series: [{
       type: 'pie',
-      data: <%= raw users.to_json %>
+      data: <%= raw employees.to_json %>
     }],
     credits: {
       enabled: true,
