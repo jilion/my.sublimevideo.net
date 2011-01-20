@@ -1,22 +1,24 @@
-= title_and_content_header("Settings for #{content_tag(:strong, truncate_middle(@site.hostname, :length => 30))}")
+= title_and_content_header("Edit #{content_tag(:strong, truncate_middle(@site.hostname, :length => 30))}")
 
-= form_for @site, :html => { :id => "edit_site_settings", "data-password-protected" => @site.active? } do |f|
-  = render 'settings', :f => f
-  .actions
-    = f.submit 'Update settings', :class => "submit small"
-    
-= form_for @site, :html => { :id => "edit_site_plan", "data-password-protected" => @site.active? } do |f|
-  = render 'plans', :f => f
-  .actions
-    = f.submit 'Update plans', :class => "submit small"
-    
-= form_for @site, :html => { :id => "edit_site_addons", "data-password-protected" => @site.active? } do |f|
-  = render 'addons', :f => f
-  .actions
-    = f.submit 'Update addons', :class => "submit small"
-    
-%hr
+#site.edit
+  %ul.segmented_menu
+    %li.first.active= link_to "Settings", "", :onclick => "return MySublimeVideo.toggleBoxFromId(this, 'site_settings_box')"
+    %li.last= link_to "Change plan", "", :onclick => "return MySublimeVideo.toggleBoxFromId(this, 'change_plan_box')"
 
-= form_for @site, :html => { :method => :delete, :class => "edit", "data-password-protected" => true } do |f|
-  .actions
-    = f.submit "! Destroy !", :class => "submit small"
+  #site_settings_box.section_box
+    = form_for @site, :html => { :id => "edit_site_settings", "data-password-protected" => @site.active? } do |f|
+      = render 'settings', :f => f
+      .actions.center
+        = f.submit 'Update site', :class => "submit big"
+    .break_line
+    = form_for @site, :html => { :method => :delete, :class => "edit", "data-password-protected" => true } do |f|
+      %p= "If you delete your site, you will be charged only for the period it was active."
+      = f.submit "Delete my site", :class => "submit small"
+
+  #change_plan_box.section_box{ :style => "display:none" }
+    = form_for @site, :html => { :id => "edit_site_plan", "data-password-protected" => @site.active? } do |f|
+      = render 'plans', :f => f
+      = render 'addons', :f => f
+      .spacer
+      .actions.center
+        = f.submit 'Update plan', :class => "submit big"

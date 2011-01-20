@@ -168,6 +168,18 @@ MySublimeVideo.showSiteUsage = function(siteId) {
   return false;
 };
 
+MySublimeVideo.toggleBoxFromId = function(a, boxId) {
+  var box = $(boxId);
+  var li = a.up('li');
+  if (!li.hasClassName('active')) {
+    $$('ul.segmented_menu li').invoke('removeClassName','active');
+    li.addClassName('active');
+    $$('.section_box').invoke('hide');
+    box.show();
+  }
+  return false;
+};
+
 // ===========
 // = Classes =
 // ===========

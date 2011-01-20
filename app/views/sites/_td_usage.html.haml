@@ -4,23 +4,25 @@
   = link_to "Choose a plan", [:edit, site], :class => "medium_button"
 - elsif site.active?
   -# = link_to "Usage", "", :onclick => "return MySublimeVideo.showSiteUsage('#{site.token}')"
-  .progress_bar
+  - if site.current_percentage_of_overages_compared_to_plan_limit > 0
+    .alert_icon.box_hovering_zone
+      = link_to [:edit, site], :class => "icon" do
+        %span= "alert"
+      = info_box do
+        %p
+          %em= "You are about to pay overages, we invite you to upgrade your plan.".html_safe
+
+  .progress_bar.box_hovering_zone{ :class => site.current_percentage_of_overages_compared_to_plan_limit > 0 ? "alert" : "" }
     .usage_bar{ :style => "width:#{display_percentage(site.current_percentage_of_plan_used)}"}
     - if site.current_percentage_of_overages_compared_to_plan_limit > 0
       .overages_bar{ :style => "width:#{display_percentage(site.current_percentage_of_overages_compared_to_plan_limit)}"}
     .plan_total= number_with_delimiter(site.plan.player_hits)
-    
+
     = info_box do
       %p= pluralize(number_with_delimiter(site.current_billable_usage), "Hit")
       %p= display_percentage(site.current_percentage_of_plan_used)
-      
+
 - elsif site.dev? && site.hostname.present?
   = form_for [:activate, site], :html => { "data-password-protected" => true } do |f|
     .actions
       = f.submit 'Activate', :class => "submit small small_button", :id => "activate_site_#{site.id}"
-
-.small_message
-  - if site.plan_player_hits_reached_alerted_this_month?
-    %span.alerted
-      -# TODO: Update this text
-      %em= "Plan limit reached, overages will occur."

@@ -8,10 +8,11 @@
       = f.label :hostname, "", :class => "icon"
       = f.text_field :hostname, :class => "text", :placeholder => "yourdomain.com", :autocomplete => :off
     %p.desc= "Add your main domain or leave it empty if you just want to use it in development for now."
-    %a.button{ :href => "", :onclick => "$('site_setup_settings').toggle(); this.toggleClassName('up'); return false", :class => display_text_if("up", conditions_for_show_settings(f.object)) }= "Settings"
+    - unless f.object.persisted?
+      %a.button{ :href => "", :onclick => "$('site_setup_settings').toggle(); this.toggleClassName('up'); return false", :class => display_text_if("up", conditions_for_show_settings(f.object)) }= "Settings"
     .spacer
   .break_line
-  #site_setup_settings.settings{ :style => display_none_if(conditions_for_show_settings(f.object)) }
+  #site_setup_settings.settings{ :style => display_none_if(conditions_for_show_settings(f.object) || f.object.persisted?) }
     .left
       %h4.title= "Extra and development domains"
       %a.add{ :href => "", :onclick => "$('site_setup_extra_hostnames').toggle(); this.toggleClassName('up'); return false", :class => display_text_if("up", f.object.extra_hostnames?) }= "Add staging or alias domains"

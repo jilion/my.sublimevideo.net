@@ -8,10 +8,12 @@
           = image_tag "https://getfavicon.appspot.com/http://#{hostname_with_path(site)}?defaulticon=http://#{hostname_with_path(site)}/favicon.ico", :onerror => "this.src='/images/embed/sites/default_favicon.png';", :alt => "Favicon", :size => "16x16", :id => "site_favicon_#{site.id}"
           = hostname_with_path_and_wildcard(site, :truncate => 30)
         - if site.need_path?
-          .warning
-            %span.icon= "warning"
+          .warning.box_hovering_zone
+            = link_to site.beta? ? [:transition, site] : [:edit, site], :class => "icon" do
+              %span= "warning"
             = info_box do
-              %p= "You should probably add a path to restrict the vality of the player to your site, not the whole domain."
+              %p
+                %em= "You should probably add a path to restrict the validity of the player to your site, not on the whole domain."
       - else
         = link_to [:edit, site], :class => "domain" do
           %span.settings_icon
@@ -38,7 +40,7 @@
   %td.code
     = link_to "Embed code", "", :class => "embed_code", :onclick => "return MySublimeVideo.showSiteEmbedCode('#{site.token}')"
 
-  %td.status
+  %td.status.box_hovering_zone
     .wrap
       - if !site.cdn_up_to_date?
         %span.icon.in_progress
