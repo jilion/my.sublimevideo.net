@@ -3,7 +3,7 @@
 %p
   %strong= "Template used: "
   = "'#{@mail_log.snapshot[:title]}'"
-  
+
 %br
 
 %h3= "Mail content"
@@ -14,7 +14,7 @@
   = @mail_log.snapshot[:subject]
 %br
 
-= simple_format @mail_log.snapshot[:body]
+= raw @mail_log.snapshot[:body]
 
 %br
 %hr
@@ -29,7 +29,7 @@
     = "Template id: "
     = link_to(@mail_log.template_id, edit_admin_mail_template_path(@mail_log.template))
   %li= "Criteria: #{@mail_log.criteria.inspect}"
-  
+
 %br
 %hr
 %br

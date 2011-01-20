@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe MailMailer do
   subject { Factory(:user) }
-  
+
   before(:each) do
     @template = Factory(:mail_template)
     subject # send confirmation mail
@@ -16,16 +16,16 @@ describe MailMailer do
       MailMailer.send_mail_with_template(subject, @template).deliver
       @last_delivery = ActionMailer::Base.deliveries.last
     end
-    
+
     it "should set subject to Liquidified template.subject" do
       @last_delivery.subject.should == Liquid::Template.parse(@template.subject).render("user" => subject)
       @last_delivery.subject.should == "John Doe (#{subject.email}), help us shaping the right pricing"
     end
-    
+
     it "should set the body to Liquidified-simple_formated-auto_linked template.body" do
       @last_delivery.body.encoded.should == Liquid::Template.parse(@template.body).render("user" => subject)
-      @last_delivery.body.encoded.should == "Hi John Doe (#{subject.email}), please respond to the survey, by clicking on the following <a href=\"http://survey.com\">link</a>"
+      @last_delivery.body.encoded.should == "Hi John Doe (#{subject.email}), please respond to the survey, by clicking on the following url: http://survey.com"
     end
   end
-  
+
 end

@@ -9,8 +9,8 @@ describe MailTemplate do
     
     its(:title)   { should =~ /Pricing survey \d+/ }
     its(:subject) { should == "{{user.full_name}} ({{user.email}}), help us shaping the right pricing" }
-    its(:body)    { should == "Hi {{user.full_name}} ({{user.email}}), please respond to the survey, by clicking on the following <a href=\"http://survey.com\">link</a>" }
-    
+    its(:body)    { should == "Hi {{user.full_name}} ({{user.email}}), please respond to the survey, by clicking on the following url: http://survey.com" }
+
     it { should be_valid }
   end
   
@@ -28,7 +28,7 @@ describe MailTemplate do
       it { should allow_mass_assignment_of(attr) }
       it { should validate_presence_of(attr) }
     end
-    
+
     it { should validate_uniqueness_of(:title) }
   end
 end
