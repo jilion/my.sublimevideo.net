@@ -14,7 +14,7 @@
   = @mail_log.snapshot[:subject]
 %br
 
-= escape_once simple_format(@mail_log.snapshot[:body])
+= raw @mail_log.snapshot[:body]
 
 %br
 %hr
