@@ -253,7 +253,7 @@ def create_site_usages
       requests_s3 = player_hits - (main_player_hits_cached + dev_player_hits_cached + invalid_player_hits_cached)
 
       site_usage = SiteUsage.new(
-        day: day,
+        day: day.to_time.utc.midnight,
         site_id: site.id,
         loader_hits: loader_hits,
         main_player_hits: main_player_hits,
