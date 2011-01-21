@@ -15,7 +15,7 @@ gem 'haml',                  '3.0.24'
 gem 'state_machine',         '0.9.4'
 gem 'responders',            '0.6.2'
 gem 'uniquify',              '0.1.0'
-gem 'delayed_job',           '2.1.1' # 2.1.2 is failing !!!!!
+gem 'delayed_job',           '2.1.3' # 2.1.2 is failing !!!!!
 gem 'will_paginate',         '3.0.pre2'
 gem 'has_scope',             :git => 'git://github.com/rymai/has_scope.git'
 gem 'jammit',                '0.5.4'

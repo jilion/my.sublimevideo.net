@@ -31,7 +31,7 @@ describe CampaignMonitor do
 
   end
 
-  describe ".import", :focus => true do
+  describe ".import" do
     use_vcr_cassette "campaign_monitor/import", :record => :all
 
     it "should subscribe a list of user" do
