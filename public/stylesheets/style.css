@@ -845,7 +845,7 @@ form .entry a.cancel {
 /* = My Sites = */
 /* ============ */
 
-#content .small_button, #content .medium_button {
+.small_button, .medium_button {
   display:block;
   background:url(/images/embed/small_link_btn.png) no-repeat;
   width:109px;
@@ -861,17 +861,17 @@ form .entry a.cancel {
   cursor:pointer;
 }
 
-#content .medium_button {
+.medium_button {
   width:141px;
   background:url(/images/embed/medium_link_btn.png) no-repeat;
 }
 
-#content input.small_button, #content input.medium_button {
+input.small_button, input.medium_button {
   height:40px;
   padding:0;
 }
 
-#content .small_button:active, #content .medium_button:active {background-position:0 -40px}
+.small_button:active, .medium_button:active {background-position:0 -40px}
 
 #content a.small_button.add_site {
   position:absolute;
@@ -1763,6 +1763,35 @@ ul.segmented_menu li.last a {
 
 #site .section_box {
   margin:20px 0 0;
+}
+
+#site.edit form.delete input.delete_site {
+  background: url(/images/embed/sites/delete_small_icon.png) no-repeat 0 50%;
+  float:left;
+  padding:5px 6px 4px 20px;
+  border:none;
+  font-family:inherit;
+  font-size:13px;
+  color:#852626;
+  text-shadow:rgba(255,255,255,0.75) 0 1px 0;
+  cursor:pointer;
+}
+
+#site.edit form.delete p.desc {
+  float:left;
+  font-size:12px;
+  padding:6px 0 0 10px;
+}
+
+#password_checker input.text {
+  width:250px;
+  float:left;
+}
+
+#password_checker .actions {
+  float:left;
+  padding-left:9px;
+  margin-top:-1px;
 }
 
 .popup {

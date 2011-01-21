@@ -9,11 +9,7 @@
     = form_for @site, :html => { :id => "edit_site_settings", "data-password-protected" => @site.active? } do |f|
       = render 'settings', :f => f
       .actions.center
-        = f.submit 'Update site', :class => "submit big"
-    .break_line
-    = form_for @site, :html => { :method => :delete, :class => "edit", "data-password-protected" => true } do |f|
-      %p= "If you delete your site, you will be charged only for the period it was active."
-      = f.submit "Delete my site", :class => "submit small"
+        = f.submit 'Update settings', :class => "submit big"
 
   #change_plan_box.section_box{ :style => "display:none" }
     = form_for @site, :html => { :id => "edit_site_plan", "data-password-protected" => @site.active? } do |f|
@@ -22,3 +18,7 @@
       .spacer
       .actions.center
         = f.submit 'Update plan', :class => "submit big"
+  .break_line
+  = form_for @site, :html => { :method => :delete, :class => "delete", "data-password-protected" => true } do |f|
+    = f.submit "Delete my site", :class => "delete_site"
+    %p.desc= "If you delete your site, you will be charged only for the period it was active."

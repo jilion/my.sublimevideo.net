@@ -294,10 +294,13 @@ var PasswordCheckerManager = Class.create({
         id:"password_checker",
         action:"/password/validate",
         "data-remote":"true"
-      }).update("<div class='entry site'>" +
-      "<label for='password_check'>Your current password is needed to perform this action:</label>" +
-      "<input type='password' id='password_check' name='password' placeholder='Please enter your current password' class='text' />" +
-      "<div class='actions'><input type='submit' class='submit small' value='Done' /></div>" +
+      }).update(
+      "<p class='desc'>Your current password is needed to perform this action:</p>"+
+      "<div class='entry password'>" +
+      "<label for='password_check' class='icon'>Password</label>" +
+      "<input type='password' id='password_check' name='password' placeholder='Your current password' class='text' />" +
+      "<div class='actions'><input type='submit' class='small_button' value='Done' /></div>" +
+      "<div class='spacer'></div>" +
       "</div>");
       passwordCheckerForm.store("originFormId", this.originForm.id);
       this.popup.down(".content").update(passwordCheckerForm);
