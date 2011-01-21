@@ -4,6 +4,10 @@ class CampaignMonitor < Settingslogic
 
   class << self
 
+    def should_receive(*args)
+      super
+    end
+
     def subscribe(user)
       set_api_key
       CreateSend::Subscriber.add(
