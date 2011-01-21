@@ -36,10 +36,10 @@ namespace :one_time do
       end
     end
 
-    desc "Import all user beta user to campaign monitor "
-    task :import_all_beta_user_to_campaign_monitor => :environment do
+    desc "Import all beta users to campaign monitor "
+    task :import_all_beta_users_to_campaign_monitor => :environment do
       timed do
-        OneTime::User.import_all_beta_user_to_campaign_monitor
+        OneTime::User.import_all_beta_users_to_campaign_monitor
       end
     end
   end

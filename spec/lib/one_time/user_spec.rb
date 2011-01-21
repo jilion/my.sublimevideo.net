@@ -63,9 +63,9 @@ describe OneTime::User do
     end
 
     # not implemented because CampaignMonitor.should failed with method_missing of SettingsLogic
-    # describe ".import_all_beta_user_to_campaign_monitor" do
+    # describe ".import_all_beta_users_to_campaign_monitor" do
     #   CampaignMonitor.should_receive(:import).with([@beta_user])
-    #   described_class.import_all_beta_user_to_campaign_monitor
+    #   described_class.import_all_beta_users_to_campaign_monitor
     # end
 
   end

@@ -19,9 +19,9 @@ module OneTime
         ::User.beta.count.to_s
       end
 
-      # Method used in the 'one_time:import_all_beta_user_to_campaign_monitor' rake task
-      def import_all_beta_user_to_campaign_monitor
-        ::User.find_in_batches(:batch_size => 100) do |users|
+      # Method used in the 'one_time:import_all_beta_users_to_campaign_monitor' rake task
+      def import_all_beta_users_to_campaign_monitor
+        ::User.beta.find_in_batches(:batch_size => 100) do |users|
           CampaignMonitor.import(users)
           puts "#{users.count} beta users imported to CampaignMonitor sublimevideo list"
         end
