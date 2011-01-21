@@ -18,7 +18,7 @@ gem 'uniquify',              '0.1.0'
 gem 'delayed_job',           '2.1.3' # 2.1.2 is failing !!!!!
 gem 'will_paginate',         '3.0.pre2'
 gem 'has_scope',             :git => 'git://github.com/rymai/has_scope.git'
-gem 'jammit',                '0.5.4'
+gem 'jammit',                '0.6.0'
 gem 'meta_where',            '1.0.1'
 gem 'hoptoad_notifier',      '2.4.2'
 gem 'prowl',                 '0.1.3'
