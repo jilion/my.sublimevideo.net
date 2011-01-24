@@ -38,8 +38,8 @@ gem 'devise_invitable',      :git => 'git://github.com/rymai/devise_invitable.gi
 
 gem 'dalli',                 '1.0.1'
 
-gem 'aws',                   '2.3.34' # bugs in 2.4.0
-gem 'fog',                   '0.4.0'
+gem 'aws',                   '2.3.34' # bugs in 2.4.2
+gem 'fog',                   '0.4.1'
 gem 'carrierwave',           '0.5.1'
 
 gem 'bson_ext',              '1.2.0'
@@ -79,7 +79,7 @@ group :development do
   gem 'annotate',      '~> 2.4.0'
   gem 'wirble',        '~> 0.1.3'
   gem 'ruby-graphviz', :require => 'graphviz'
-  gem 'heroku',        '~> 1.17.8'
+  gem 'heroku',        '~> 1.17.10'
   gem 'heroku_tasks',  '~> 0.1.4'
   gem 'taps',          '~> 0.3.14' # heroku db pull/push
   gem 'silent-postgres'
@@ -100,11 +100,11 @@ group :test do
 
   gem 'database_cleaner',   '>= 0.6'
   gem 'steak',              '1.0.0.rc.2'
-  gem 'capybara',           '~> 0.4.0'
+  gem 'capybara',           '~> 0.4.1.1'
   # gem 'akephalos',          '~> 0.2.4'
   # gem 'capybara-envjs',     '~> 0.4.0'
   gem 'webmock',            '~> 1.6.2'
-  gem 'vcr',                '~> 1.5.0'
+  gem 'vcr',                '~> 1.5.1'
 
   gem 'shoulda',            '~> 2.11.3'
   gem 'factory_girl_rails', '~> 1.0.1', :require => false # loaded in spec_helper Spork.each_run

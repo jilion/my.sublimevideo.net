@@ -3,7 +3,7 @@
   request: !ruby/struct:VCR::Request 
     method: :post
     uri: http://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:80/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244/import.json
-    body: "{\"Subscribers\":[{\"EmailAddress\":\"cm1@jilion.com\",\"Name\":\"John Doe\",\"CustomFields\":[{\"Key\":\"user_id\",\"Value\":43},{\"Key\":\"segment\",\"Value\":\"test\"}]},{\"EmailAddress\":\"cm2@jilion.com\",\"Name\":\"John Doe\",\"CustomFields\":[{\"Key\":\"user_id\",\"Value\":44},{\"Key\":\"segment\",\"Value\":\"test\"}]}],\"Resubscribe\":false}"
+    body: "{\"Subscribers\":[{\"EmailAddress\":\"cm1@jilion.com\",\"Name\":\"John Doe\",\"CustomFields\":[{\"Key\":\"user_id\",\"Value\":484},{\"Key\":\"segment\",\"Value\":\"test\"}]},{\"EmailAddress\":\"cm2@jilion.com\",\"Name\":\"John Doe\",\"CustomFields\":[{\"Key\":\"user_id\",\"Value\":485},{\"Key\":\"segment\",\"Value\":\"test\"}]}],\"Resubscribe\":false}"
     headers: 
       user-agent: 
       - createsend-ruby-0.6.1
@@ -15,7 +15,7 @@
       message: Created
     headers: 
       date: 
-      - Thu, 20 Jan 2011 15:44:27 GMT
+      - Mon, 24 Jan 2011 07:57:51 GMT
       server: 
       - Microsoft-IIS/6.0
       p3p: 
@@ -50,7 +50,7 @@
       message: OK
     headers: 
       date: 
-      - Thu, 20 Jan 2011 15:44:28 GMT
+      - Mon, 24 Jan 2011 07:57:52 GMT
       server: 
       - Microsoft-IIS/6.0
       p3p: 
@@ -66,8 +66,8 @@
       content-type: 
       - application/json; charset=utf-8
       content-length: 
-      - "178"
-    body: "{\"EmailAddress\":\"cm1@jilion.com\",\"Name\":\"John Doe\",\"Date\":\"2011-01-20 16:43:00\",\"State\":\"Active\",\"CustomFields\":[{\"Key\":\"segment\",\"Value\":\"test\"},{\"Key\":\"user_id\",\"Value\":\"43\"}]}"
+      - "179"
+    body: "{\"EmailAddress\":\"cm1@jilion.com\",\"Name\":\"John Doe\",\"Date\":\"2011-01-20 16:43:00\",\"State\":\"Active\",\"CustomFields\":[{\"Key\":\"segment\",\"Value\":\"test\"},{\"Key\":\"user_id\",\"Value\":\"484\"}]}"
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
@@ -85,7 +85,7 @@
       message: OK
     headers: 
       date: 
-      - Thu, 20 Jan 2011 15:44:28 GMT
+      - Mon, 24 Jan 2011 07:57:52 GMT
       server: 
       - Microsoft-IIS/6.0
       p3p: 
@@ -101,6 +101,6 @@
       content-type: 
       - application/json; charset=utf-8
       content-length: 
-      - "178"
-    body: "{\"EmailAddress\":\"cm2@jilion.com\",\"Name\":\"John Doe\",\"Date\":\"2011-01-20 16:43:00\",\"State\":\"Active\",\"CustomFields\":[{\"Key\":\"segment\",\"Value\":\"test\"},{\"Key\":\"user_id\",\"Value\":\"44\"}]}"
+      - "179"
+    body: "{\"EmailAddress\":\"cm2@jilion.com\",\"Name\":\"John Doe\",\"Date\":\"2011-01-20 16:43:00\",\"State\":\"Active\",\"CustomFields\":[{\"Key\":\"segment\",\"Value\":\"test\"},{\"Key\":\"user_id\",\"Value\":\"485\"}]}"
     http_version: "1.1"
