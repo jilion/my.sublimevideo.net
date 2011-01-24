@@ -3,7 +3,7 @@ module OneTime
 
     class << self
       # Method used in the 'one_time:delete_not_registered_invited_users' rake task
-      def delete_invited_not_yet_registered_users
+      def archive_invited_not_yet_registered_users
         ::User.invited.each do |user|
           ::User.transaction do
             user.update_attribute(:state, 'archived')

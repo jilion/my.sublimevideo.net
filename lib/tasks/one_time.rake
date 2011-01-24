@@ -22,10 +22,10 @@ namespace :one_time do
   end
 
   namespace :users do
-    desc "Delete users that are invited but not yet registered, please check User.invited before !!!"
-    task :delete_invited_not_yet_registered => :environment do
+    desc "Archive users that are invited but not yet registered, please check User.invited before !!!"
+    task :archive_invited_not_yet_registered => :environment do
       timed do
-        puts OneTime::User.delete_invited_not_yet_registered_users + " invited users deleted"
+        puts OneTime::User.archive_invited_not_yet_registered_users + " invited users deleted"
       end
     end
 
