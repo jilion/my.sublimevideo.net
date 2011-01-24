@@ -3,19 +3,16 @@ class Stat
   # ====================
   # = Instance Methods =
   # ====================
-  def self.usages(start_date, end_date, options = {})
+  def self.usages(start_date, end_date, options={})
     conditions = {
       :day => {
-        "$gte" => start_date.to_date.to_time.beginning_of_day,
-        "$lte" => end_date.to_date.to_time.end_of_day
+        "$gte" => start_date.midnight,
+        "$lt"  => end_date.end_of_day
       }
     }
     conditions[:site_id] = options[:site_id].to_i if options[:site_id]
     
     SiteUsage.collection.group(
-      # "function(x) {
-      #   return { 'day' : new Date(x.day.getFullYear(), x.day.getMonth(), x.day.getDate(), 0, 0, 0) };
-      # }", # key used to group
       [:day],
       conditions,
       { :loader_usage => 0,
