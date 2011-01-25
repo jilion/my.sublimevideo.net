@@ -29,7 +29,7 @@ namespace :db do
       timed { create_addons }
       timed { create_sites(argv_count) }
       timed { create_site_usages }
-      timed { create_invoices(argv_count) }
+      timed { create_invoices }
       timed { create_mail_templates }
     end
 
@@ -68,7 +68,7 @@ namespace :db do
     desc "Create fake invoices"
     task invoices: :environment do
       timed { empty_tables(Invoice) }
-      timed { create_invoices(argv_count) }
+      timed { create_invoices }
       empty_tables("delayed_jobs")
     end
 
@@ -272,7 +272,7 @@ def create_site_usages
   puts "#{player_hits_total} video-page views total created between #{start_date} and #{end_date}!"
 end
 
-def create_invoices(count = 5)
+def create_invoices
   d = Site.minimum(:created_at)
   while d < Time.now.beginning_of_month
     Invoice.complete_invoices_for_billable_users(d.beginning_of_month, d.end_of_month)
@@ -301,13 +301,13 @@ def create_addons
 end
 
 def create_mail_templates(count = 5)
-    count.times do |i|
-      MailTemplate.create(
-        title: Faker::Lorem.sentence(1),
-        subject: Faker::Lorem.sentence(1),
-        body: Faker::Lorem.paragraphs(3).join("\n\n")
-      )
-    end
+  count.times do |i|
+    MailTemplate.create(
+      title: Faker::Lorem.sentence(1),
+      subject: Faker::Lorem.sentence(1),
+      body: Faker::Lorem.paragraphs(3).join("\n\n")
+    )
+  end
   puts "#{count} random mail templates created!"
 end
 
