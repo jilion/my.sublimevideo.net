@@ -1,57 +1,57 @@
 require 'spec_helper'
 
 feature "Credit cards update:" do
-  
+
   context "use has no credit card" do
     background do
       sign_in_as :user, :without_cc => true
       @current_user.should_not be_credit_card
     end
-    
+
     scenario "edit a new credit card" do
       click_link(@current_user.full_name)
       current_url.should =~ %r(^http://[^/]+/account/edit$)
-      
+
       page.should have_content("Add a credit card")
-      
+
       visit "/card/edit"
-      
+
       current_url.should =~ %r(^http://[^/]+/card/edit$)
     end
-    
+
   end
-  
+
   context "user has a credit card already" do
     background do
       sign_in_as :user
       @current_user.should be_credit_card
     end
-    
+
     scenario "edit a new credit card" do
       click_link(@current_user.full_name)
       current_url.should =~ %r(^http://[^/]+/account/edit$)
-      
-      click_link("Change credit card")
+
+      click_link("Update credit card")
       current_url.should =~ %r(^http://[^/]+/card/edit$)
-      
+
       set_credit_card
       should_save_credit_card_successfully
     end
-    
+
     scenario "edit a new credit card with a failed attempt" do
       click_link(@current_user.full_name)
       current_url.should =~ %r(^http://[^/]+/account/edit$)
-      
-      click_link("Change credit card")
+
+      click_link("Update credit card")
       current_url.should =~ %r(^http://[^/]+/card/edit$)
-      
+
       set_credit_card(false)
-      
+
       current_url.should =~ %r(^http://[^/]+/card$)
       page.should have_content("Name on card can't be blank")
       page.should have_content("Card number is invalid")
       page.should have_content("CSC is required")
-      
+
       set_credit_card
       should_save_credit_card_successfully
     end
