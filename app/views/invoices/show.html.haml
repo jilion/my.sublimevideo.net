@@ -1,15 +1,19 @@
 - invoice ||= @invoice
-= title_and_content_header("Invoice: #{invoice_dates(invoice)}")
+= title_and_content_header("SublimeVideo Invoice: #{invoice_dates(invoice)}")
 
-%table{ :border => 1 }
+%table#header
   %tr
-    %td= render "/invoices/user_billing_info", :user => invoice.user
-    %td= render "/invoices/our_billing_info", :invoice => invoice
-%hr
+    %td.our_info
+      = render "/invoices/our_billing_info", :invoice => invoice
+      .invoice_info
+        %p
+          %strong= "Invoice status: "
+          = "#{charging_status(invoice)}"
+        %p
+          %strong= "Invoice ID:"
+          = "#{invoice.reference.upcase}"
+    %td.user_info
+      %h4= "Bill to:"
+      = render "/invoices/user_billing_info", :user => invoice.user
 
 = render "/invoices/sites", :invoice => invoice
-
-= render "/invoices/total", :invoice => invoice
-
-%hr
-= charging_status(invoice)

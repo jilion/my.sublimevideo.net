@@ -18,6 +18,8 @@ stylesheets:
     - public/stylesheets/style.css
   style_ie:
     - public/stylesheets/style_ie.css
+  invoice:
+    - public/stylesheets/invoice.css
 
 javascripts:
   default:

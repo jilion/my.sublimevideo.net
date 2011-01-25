@@ -1,22 +1,22 @@
-%table{ :border => 2 }
-  %tr
-    %td Invoice Items Total
-    %td
-      = display_amount(invoice.invoice_items_amount)
-      - if invoice.total_invoice_items_amount < Billing.minimum_billable_amount
-        = " (the minimum amount billed is #{display_amount(Billing.minimum_billable_amount)})"
+%tr.pre_total
+  %td.right{ :colspan => 2 } Invoice Items Total
+  %td.total
+    = display_amount(invoice.invoice_items_amount)
+    - if invoice.total_invoice_items_amount < Billing.minimum_billable_amount
+      %p
+        %small= " (the minimum amount billed is #{display_amount(Billing.minimum_billable_amount)})"
         
-  - if invoice.discount_amount > 0
-    %tr
-      %td= "Discount #{display_percentage(invoice.discount_rate)}:"
-      %td
-        = display_amount(invoice.discount_amount)
-  - if invoice.vat_amount > 0
-    %tr
-      %td= "VAT #{display_percentage(invoice.vat_rate)}:"
-      %td= display_amount(invoice.vat_amount)
-  %tr
-    %td
-      %strong Total:
-    %td
-      %strong= display_amount(invoice.amount)
+- if invoice.discount_amount > 0
+  %tr.pre_total
+    %td.right{ :colspan => 2 }= "Discount #{display_percentage(invoice.discount_rate)}:"
+    %td.total
+      = display_amount(invoice.discount_amount)
+- if invoice.vat_amount > 0
+  %tr.pre_total
+    %td.right{ :colspan => 2 }= "VAT #{display_percentage(invoice.vat_rate)}:"
+    %td.total= display_amount(invoice.vat_amount)
+%tr.final_total
+  %td.right{ :colspan => 2 }
+    %strong Total
+  %td.total
+    %strong= display_amount(invoice.amount)

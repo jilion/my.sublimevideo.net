@@ -24,6 +24,10 @@ class InvoiceItem::Overage < InvoiceItem
   def prorated_plan_player_hits
     (info[:plan_player_hits] * percentage).round
   end
+  
+  def overage_player_hits
+    [info[:player_hits_used] - info[:plan_player_hits], 0].max
+  end
 
 private
 

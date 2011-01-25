@@ -1,8 +1,5 @@
-%h4 Jilion / Jime SA
-%p
-  Chemin de la Raye 13
-  %br
-  1024 Ecublens, Switzerland
-  
-- if invoice.vat_amount > 0
-  %p VAT Number: XXXXXXXXXXXX
+%h3= "Jilion / Jime SA"
+%p= "EPFL Scientific Park - PSE-D"
+%p= "1015 Lausanne, Switzerland"
+-# if invoice.vat_amount > 0
+%p= "VAT Number: CH729352"
