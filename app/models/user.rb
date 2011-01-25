@@ -174,6 +174,10 @@ class User < ActiveRecord::Base
     remaining_discounted_months? && remaining_discounted_months > 0
   end
 
+  def have_beta_sites?
+    sites.any? { |site| site.beta? }
+  end
+
   def full_name
     first_name.to_s + ' ' + last_name.to_s
   end

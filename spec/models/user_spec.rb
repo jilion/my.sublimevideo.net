@@ -520,6 +520,12 @@ describe User do
       specify { Factory(:user, :remaining_discounted_months => 1).should be_get_discount }
     end
 
+    describe "#have_beta_sites?" do
+      before(:all) { @site = Factory(:site, :state => "beta") }
+
+      specify { @site.user.have_beta_sites?.should be_true }
+    end
+
     describe "#delay_suspend" do
       before(:all) { @user = Factory(:user) }
       subject { @user.reload.delay_suspend }
