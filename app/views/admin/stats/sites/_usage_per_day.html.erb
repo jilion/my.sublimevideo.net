@@ -17,7 +17,6 @@ all_usages     = usages.map { |u| u["all_usage"].to_i }
 total_loader_usages  = loader_usages.inject([]) { |memo, u| memo << ((memo.last || 0) + u) }
 total_invalid_usages = invalid_usages.inject([]) { |memo, u| memo << ((memo.last || 0) + u) }
 total_dev_usages     = dev_usages.inject([]) { |memo, u| memo << ((memo.last || 0) + u) }
-total_main_usages    = main_usages.inject([]) { |memo, u| memo << ((memo.last || 0) + u) }
 total_all_usages     = all_usages.inject([]) { |memo, u| memo << ((memo.last || 0) + u) }
 
 perso_monthly_limit = 3000 # we fake ~ site.plan.limit
@@ -162,17 +161,11 @@ huge_daily_limit  = huge_monthly_limit / 30 # we fake ~ site.plan.limit
       },
       {
         type: 'line',
-        name: 'AVG Main',
+        name: 'AVG Total',
         color: '#0FF',
-        data: <%= Array.new.tap { |arr| total_main_usages.each_with_index { |item, index| arr << (item / (index + 1)).to_i } } %>
+        data: <%= Array.new.tap { |arr| total_all_usages.each_with_index { |item, index| arr << (item / (index + 1)).to_i } } %>
       },
 
-      {
-        type: 'line',
-        name: 'TOT Main',
-        visible: false,
-        data: <%= total_main_usages %>
-      },
       {
         type: 'line',
         name: 'TOT All',
