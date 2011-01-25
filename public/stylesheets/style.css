@@ -176,7 +176,7 @@ body {
 }
 
 #white_halo {
-  background:url(/images/embed/white_halo.png) center;
+  background:url(/images/embed/white_halo.png) center -300px no-repeat;
 }
 
 #content {
@@ -872,6 +872,26 @@ input.small_button, input.medium_button {
 }
 
 .small_button:active, .medium_button:active {background-position:0 -40px}
+
+input.link_looks, button.link_looks {
+  background:none;
+  font-family:inherit;
+  font-weight:600;
+  font-size:13px;
+  border:none;
+  border-bottom:1px solid #929fb6;
+  color:#4d5563;
+  cursor:pointer;
+  text-shadow:rgba(255,255,255,0.6) 0 1px 0;
+}
+
+input.link_looks.delete {
+  background:url(/images/embed/sites/delete_small_icon.png) no-repeat 0 50%;
+  padding:5px 6px 4px 20px;
+  color:#852626;
+  text-shadow:rgba(255,255,255,0.75) 0 1px 0;
+  border:none;
+}
 
 #content a.small_button.add_site {
   position:absolute;
@@ -1766,7 +1786,7 @@ ul.segmented_menu li.last a {
 }
 
 #site.edit form.delete input.delete_site {
-  background: url(/images/embed/sites/delete_small_icon.png) no-repeat 0 50%;
+  background:url(/images/embed/sites/delete_small_icon.png) no-repeat 0 50%;
   float:left;
   padding:5px 6px 4px 20px;
   border:none;
@@ -2005,14 +2025,46 @@ ul.segmented_menu li.last a {
   font-size:13px;
 }
 
+/* ============== */
+/* = My Account = */
+/* ============== */
+
+.content_left {
+  float:left;
+  width:440px;
+}
+
+.content_right {
+  float:left;
+  width:380px;
+  padding-left:38px;
+}
+
+.delete_account {
+  font-size:13px;
+}
+
+.delete_account ul {
+  padding:4px 0 4px 20px;
+  line-height:18px;
+}
+
+.delete_account ul li {
+  padding:2px 0;
+}
+
 #credit_card_summary {
   background:url(/images/embed/breakline.png) no-repeat -228px 100%;
   padding:10px 0 20px;
 }
 
 #credit_card_summary p {
+  padding:5px 0;
+  line-height:20px;
+}
+
+#credit_card_summary p.card {
   padding:7px 0 10px 55px;
-  width:385px;
   font-size:15px;
   margin-top:10px;
 }
@@ -2021,14 +2073,77 @@ ul.segmented_menu li.last a {
 
 #credit_card_summary p.visa {background:url(/images/embed/credit_cards/visa.png) no-repeat;}
 
+#credit_card_summary p.alert {
+  color:#a50015;
+}
+
 #credit_card_summary p a {
-  float:right;
-  font-size:12px;
+  font-size:13px;
   font-weight:600;
   border-bottom:1px solid #929fb6;
 }
 
 #credit_card_summary p strong {font-weight:600;}
+
+#invoices_summary {
+  padding:10px 0 0;
+}
+
+#invoices_summary p {
+  padding:3px 0;
+}
+
+#invoices_summary .right {
+  float:right;
+}
+
+#invoices_summary .current_usage em {
+  font-size:13px;
+}
+
+#invoices_summary .current_usage strong {
+  font-size:15px;
+}
+
+#invoices_summary .past_invoices {
+  background:url(/images/embed/breakline.png) no-repeat -228px 0;
+  padding:10px 0 0;
+  margin-top:15px;
+}
+
+#invoices_summary .past_invoices ul {
+  list-style-type:none;
+}
+
+#invoices_summary .past_invoices ul li {
+  padding:6px 0;
+  font-size:15px;
+}
+
+#invoices_summary .past_invoices ul li p.status {
+  background:#bbbfc5;
+  background:rgba(0,0,0,0.1);
+  padding:5px 7px;
+  font-size:12px;
+  text-shadow:rgba(255,255,255,0.5) 0 1px 0;
+  -moz-border-radius:4px;
+  -webkit-border-radius:4px;
+  border-radius:4px;
+}
+
+#invoices_summary .past_invoices ul li p.status.failed strong {
+  color:#a50015;
+}
+
+#invoices_summary .past_invoices ul li strong {
+  font-weight:600;
+}
+
+#invoices_summary a.details, #invoices_summary a.pdf {
+  font-weight:600;
+  font-size:12px;
+  border-bottom:1px solid #929fb6;
+}
 
 /*#past_invoices {
   background:url(/images/embed/breakline.png) no-repeat -228px 100%;

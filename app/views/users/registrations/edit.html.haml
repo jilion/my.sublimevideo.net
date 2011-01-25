@@ -1,66 +1,72 @@
 = title_and_content_header("My Account")
 
-#credit_card_summary
-  %h3.section_title= "Billing Info"
-  - if current_user.credit_card?
-    - if current_user.cc_expired?
-      = "This credit card is expired, please update it as soon as possible to prevent any charging problem."
-    %p{ :class => current_user.cc_type }<
-      = raw "#{t("user.credit_card.type.#{current_user.cc_type}")} ending in #{content_tag(:strong, current_user.cc_last_digits)}"
-    %p= "Will expire on: " + l(current_user.cc_expire_on, :format => :month_fullyear)
-    %p= link_to 'Change credit card', edit_credit_card_path
-  - else
-    = link_to 'Add a credit card', edit_credit_card_path
-    
-#invoices
-  #current_usage
-    %h3.section_title= "Current Usage"
-    - if current_user.sites.active.count == 0 && current_user.sites.archived == 0
-      %p= "No current usage at this moment."
-    - else
-      %p#current_usage_amount
-        = "Calculating current usage..."
-    
-  - if current_user.invoices.present?
-    #past_invoices
-      %h3.section_title= "Past invoices"
-      %ul
-        - current_user.invoices.each do |invoice|
-          %li
-            = raw "#{invoice_dates(invoice)} - #{content_tag(:em, charging_status(invoice))}"
-            - if invoice.failed?
-              %br
-            = raw " (#{link_to("view details", invoice_path(invoice, :format => 'pdf'), :target => 'blank')})"
-    .spacer
-  
-= render 'users/form'
-.spacer
+.content_left
+  = render 'users/form'
+  .spacer
 
-= form_for @user, :url => "/account/credentials", :html => { :method => :put, :class => "main_form section", :id => "edit_credentials", "data-password-protected" => true } do |f|
-  %h3.section_title= "Email & Password"
-  .entry.email
-    = f.label :email, "", :class => "icon"
-    = f.email_field :email, :class => "text", :placeholder => "Email", :required => true
-  %p.note= "Leave blank if you don't want to change it"
-  .entry.password
-    = f.label :password, "", :class => "icon"
-    = f.password_field :password, :class => "text show_password", :placeholder => "New password", :autocomplete => "off"
-    
-  #current_password_wrap{ :style => (@user.errors[:current_password].empty? ? "display:none;" : "") }
-    %p.note= "We need your current password to confirm your changes"
+  = form_for @user, :url => "/account/credentials", :html => { :method => :put, :class => "main_form section", :id => "edit_credentials", "data-password-protected" => true } do |f|
+    %h3.section_title= "Email & Password"
+    .entry.email
+      = f.label :email, "", :class => "icon"
+      = f.email_field :email, :class => "text", :placeholder => "Email", :required => true
+    %p.note= "Leave blank if you don't want to change it"
     .entry.password
-      = f.label :current_password, "", :class => "icon"
-      = f.password_field :current_password, :class => "text show_password", :placeholder => "Current password", :required => true
+      = f.label :password, "", :class => "icon"
+      = f.password_field :password, :class => "text show_password", :placeholder => "New password", :autocomplete => "off"
     
-  .entry.update
-    = f.submit "Update", :class => "submit small", :id => "user_credentials_submit"
-.spacer
+    #current_password_wrap{ :style => (@user.errors[:current_password].empty? ? "display:none;" : "") }
+      %p.note= "We need your current password to confirm your changes"
+      .entry.password
+        = f.label :current_password, "", :class => "icon"
+        = f.password_field :current_password, :class => "text show_password", :placeholder => "Current password", :required => true
+    
+    .entry.update
+      = f.submit "Update", :class => "submit small_button", :id => "user_credentials_submit"
+  .spacer
 
-= form_for @user, :url => "/account", :html => { :method => :delete, :class => "main_form section", "data-password-protected" => true } do |f|
-  %h3.section_title= "Delete account"
-  = "Please understand that:"
-  %ul
-    %li= "All you SublimeVideo licenses will be instantly removed from our servers and will never be available anymore."
-    %li= "Furthermore, your current usage (until now) will be charged."
-  .entry.delete
-    = f.submit "Delete account", :class => "submit small"
+  = form_for @user, :url => "/account", :html => { :method => :delete, :class => "main_form delete_account", "data-password-protected" => true } do |f|
+    %h3.section_title= "Delete account"
+    = "Please understand that:"
+    %ul
+      %li= "All your SublimeVideo licenses will be instantly removed from our servers and will never be available anymore."
+      %li= "Furthermore, your current usage (until now) will be charged."
+    .entry.delete
+      = f.submit "Delete account", :class => "submit link_looks delete"
+.content_right
+  #credit_card_summary
+    %h3.section_title= "Billing Info"
+    - if current_user.credit_card?
+      - if current_user.cc_expired?
+        %p.alert= "This credit card is expired, please update it as soon as possible to prevent any charging problem."
+      %p.card{ :class => current_user.cc_type }<
+        = raw "#{t("user.credit_card.type.#{current_user.cc_type}")} ending in #{content_tag(:strong, current_user.cc_last_digits)}"
+      %p= "Will expire on: " + l(current_user.cc_expire_on, :format => :month_fullyear)
+      %p= link_to 'Update credit card', edit_credit_card_path
+    - else
+      %p= "Add a credit card if you want to activate a site."
+      %p= link_to 'Add a credit card', edit_credit_card_path
+    
+  #invoices_summary
+    .current_usage
+      %h3.section_title= "Current Usage"
+      - if current_user.sites.active.count == 0 && current_user.sites.archived == 0
+        %p= "No current usage at this moment."
+      - else
+        %p#current_usage_amount
+          = "Calculating current usage..."
+    
+    - if current_user.invoices.present?
+      .past_invoices
+        %h3.section_title= "Past invoices"
+        %ul
+          - current_user.invoices.each do |invoice|
+            %li
+              .right
+                = link_to("view details", invoice_path(invoice), :onclick => "window.open(this); return false", :class => "details")
+                = link_to("PDF", invoice_path(invoice, :format => :pdf), :onclick => "window.open(this); return false", :class => "pdf")
+              %p
+                = raw "#{content_tag(:strong, display_amount(invoice.amount))} on #{invoice_dates(invoice)}"
+              = content_tag(:p, charging_status(invoice), :class => "status " + (invoice.failed? ? "failed" : ""))
+      .spacer
+  
+.spacer

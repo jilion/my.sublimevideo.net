@@ -26,7 +26,7 @@ module InvoicesHelper
     elsif invoice.paid?
       "Charged on #{l(invoice.paid_at, :format => :minutes_timezone)}"
     elsif invoice.failed?
-      "Charging failed on #{l(invoice.failed_at, :format => :minutes_timezone)} with the following error:<br />\"#{invoice.last_error}\"".html_safe
+      "<strong>Charging failed</strong> on #{l(invoice.failed_at, :format => :minutes_timezone)} with the following error: <em>\"#{invoice.last_error}\"</em>".html_safe
     end
   end
 
