@@ -3,7 +3,7 @@ module Notify
 
     def send(message, options = {})
       hoptoad(message, options)
-      prowl(message)
+      prowl(message) if Rails.env.production? || Rails.env.staging?
     end
 
   private

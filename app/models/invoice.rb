@@ -1,6 +1,6 @@
 class Invoice < ActiveRecord::Base
 
-  uniquify :reference, :chars => Array('A'..'Z') - ['O'] + Array('1'..'9')
+  uniquify :reference, :chars => Array('a'..'z') - ['o'] + Array('1'..'9')
 
   # ================
   # = Associations =

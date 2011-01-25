@@ -8,7 +8,7 @@ describe Invoice do
     subject { @invoice }
 
     its(:user)                 { should be_present }
-    its(:reference)            { should =~ /^[A-Z1-9]{8}$/ }
+    its(:reference)            { should =~ /^[a-z1-9]{8}$/ }
     its(:invoice_items_amount) { should == 10000 }
     its(:amount)               { should == 10000 }
     its(:started_at)           { should be_present }

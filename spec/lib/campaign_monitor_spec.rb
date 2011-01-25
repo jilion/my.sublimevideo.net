@@ -8,7 +8,7 @@ describe CampaignMonitor do
   specify { CampaignMonitor.segment.should == "test" }
 
   describe ".subscribe" do
-    use_vcr_cassette "campaign_monitor/subscribe"
+    use_vcr_cassette "campaign_monitor/subscribe"#, :record => :all
 
     it "should subscribe a user" do
       CampaignMonitor.subscribe(user).should be_true
@@ -32,7 +32,7 @@ describe CampaignMonitor do
   end
 
   describe ".import" do
-    use_vcr_cassette "campaign_monitor/import", :record => :all
+    use_vcr_cassette "campaign_monitor/import"
 
     it "should subscribe a list of user" do
       user1 = Factory(:user, :email => "cm1@jilion.com")

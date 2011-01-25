@@ -9,7 +9,7 @@ describe OneTime::User do
       @beta_user    = Factory(:user)
     end
 
-    describe ".delete_invited_not_yet_registered_users" do
+    describe ".archive_invited_not_yet_registered_users" do
       it "should exist 1 registered user and 1 invited user" do
         @invited_user.should be_invited
         @invited_user.should be_persisted
@@ -24,7 +24,7 @@ describe OneTime::User do
 
       context "actually test the method" do
         before(:each) do
-          described_class.delete_invited_not_yet_registered_users
+          described_class.archive_invited_not_yet_registered_users
         end
 
         it "should only archive invited and not yet registered users" do
