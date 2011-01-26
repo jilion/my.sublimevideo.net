@@ -39,6 +39,13 @@ a#print {
   font-size:28px;
 }
 
+p.notes {
+  width:60%;
+  font-size:14px;
+  line-height:20px;
+  padding:20px 0 0;
+}
+
 table {
   width:100%;
   border-collapse:collapse;
@@ -57,8 +64,12 @@ table {
   line-height:24px;
 }
 
+#header td.our_info {
+  width:60%;
+}
+
 .invoice_info {
-  width:70%;
+  width:80%;
   padding:15px 0 0;
   position:relative;
 }
