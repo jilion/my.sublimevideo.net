@@ -4,6 +4,7 @@ require 'ffaker' if Rails.env.development?
 
 BASE_USERS = [["Mehdi Aminian", "mehdi@jilion.com"], ["Zeno Crivelli", "zeno@jilion.com"], ["Thibaud Guillaume-Gentil", "thibaud@jilion.com"], ["Octave Zangs", "octave@jilion.com"], ["Rémy Coutable", "remy@jilion.com"]]
 COUNTRIES = %w[US FR CH ES DE BE GB CN SE NO FI BR CA]
+BASE_SITES = %w[vimeo.com dribbble.com jilion.com swisslegacy.com maxvoltar.com 37signals.com zeldman.com sumagency.com deaxon.com veerle.duoh.com]
 
 namespace :db do
 
@@ -121,7 +122,7 @@ def create_admins
 end
 
 def create_users(count)
-  created_at_array = (Date.new(2010,9,14)..Date.today).to_a
+  created_at_array = (Date.new(2010,9,14)..100.days.ago.to_date).to_a
   disable_perform_deliveries do
     BASE_USERS.each do |user_infos|
       user = User.new(
@@ -198,24 +199,39 @@ def create_sites(max)
   create_plans if Plan.all.empty?
   plan_ids = Plan.all.map(&:id)
   subdomains = %w[www blog my git sv ji geek yin yang chi cho chu foo bar rem]
-  created_at_array = (Date.new(2010,9,14)..10.days.ago.to_date).to_a
+  created_at_array = (Date.new(2010,9,14)..(1.month.ago - 2.days).to_date).to_a
   ssl_addon_id = Addon.find_by_name('ssl')
 
   User.all.each do |user|
-    rand(max).times do |i|
+    BASE_SITES.each do |hostname|
       site = user.sites.build(
         plan_id: plan_ids.sample,
-        hostname: subdomains.sample + (rand > 0.75 ? "." : "") + user.id.to_s + i.to_s + Faker::Internet.domain_name.sub(/(\.co)?\.uk/, '.be'),
+        hostname: hostname,
         addon_ids: rand > 0.75 ? [ssl_addon_id] : []
       )
       site.state        = 'active' if user.cc? && rand > 0.2
-      site.created_at   = [user.confirmed_at.to_date, created_at_array.sample].max
+      site.created_at   = created_at_array.sample
       site.activated_at = site.created_at if site.active?
 
       Timecop.travel(site.created_at) do
         site.save!(validate: false)
       end
     end
+    
+    # rand(max).times do |i|
+    #   site = user.sites.build(
+    #     plan_id: plan_ids.sample,
+    #     hostname: subdomains.sample + (rand > 0.75 ? "." : "") + user.id.to_s + i.to_s + Faker::Internet.domain_name.sub(/(\.co)?\.uk/, '.be'),
+    #     addon_ids: rand > 0.75 ? [ssl_addon_id] : []
+    #   )
+    #   site.state        = 'active' if user.cc? && rand > 0.2
+    #   site.created_at   = [user.confirmed_at.to_date, created_at_array.sample].max
+    #   site.activated_at = site.created_at if site.active?
+    # 
+    #   Timecop.travel(site.created_at) do
+    #     site.save!(validate: false)
+    #   end
+    # end
   end
   puts "0-#{max} random sites created for each user!"
 end
