@@ -59,7 +59,7 @@
       .past_invoices
         %h3.section_title= "Past invoices"
         %ul
-          - current_user.invoices.each do |invoice|
+          - current_user.invoices.by_date.each do |invoice|
             %li
               .right
                 = link_to("view details", invoice_path(invoice), :onclick => "window.open(this); return false", :class => "details")
