@@ -28,7 +28,7 @@ namespace :db do
       timed { create_users(argv_count) }
       timed { create_plans }
       timed { create_addons }
-      timed { create_sites(argv_count) }
+      timed { create_sites }
       timed { create_site_usages }
       timed { create_invoices }
       timed { create_mail_templates }
@@ -50,7 +50,7 @@ namespace :db do
     desc "Load Site development fixtures."
     task sites: :environment do
       timed { empty_tables(Site) }
-      timed { create_sites(argv_count) }
+      timed { create_sites }
       empty_tables("delayed_jobs")
     end
 
@@ -158,41 +158,41 @@ def create_users(count)
       use_clients = true
     end
 
-    count.times do |i|
-      user = User.new(
-        first_name: Faker::Name.first_name,
-        last_name: Faker::Name.last_name,
-        country: COUNTRIES.sample,
-        postal_code: Faker::Address.zip_code,
-        email: Faker::Internet.email,
-        use_personal: use_personal,
-        use_company: use_company,
-        use_clients: use_clients,
-        password: '123456',
-        terms_and_conditions: "1",
-        company_name: Faker::Company.name,
-        company_url: "#{rand > 0.5 ? "http://" : "www."}#{Faker::Internet.domain_name.sub(/(\.co)?\.uk/, '.be')}",
-        company_job_title: Faker::Company.bs,
-        company_employees: ["1 employee", "2-5 employees", "6-20 employees", "21-100 employees", "101-1000 employees", ">1001 employees"].sample,
-        company_videos_served: ["0-1'000 videos/month", "1'000-10'000 videos/month", "10'000-100'000 videos/month", "100'000-1mio videos/month", ">1mio videos/month", "Don't know"].sample
-      )
-
-      if rand > 0.3
-        user.cc_type = 'visa'
-        user.cc_full_name = user.full_name
-        user.cc_number = "4111111111111111"
-        user.cc_verification_value = "111"
-        user.cc_expire_on = 2.years.from_now
-      end
-      user.created_at   = created_at_array.sample
-      user.confirmed_at = user.created_at
-      user.save!(validate: false)
-    end
-    puts "+ #{count} random users created!"
+    # count.times do |i|
+    #   user = User.new(
+    #     first_name: Faker::Name.first_name,
+    #     last_name: Faker::Name.last_name,
+    #     country: COUNTRIES.sample,
+    #     postal_code: Faker::Address.zip_code,
+    #     email: Faker::Internet.email,
+    #     use_personal: use_personal,
+    #     use_company: use_company,
+    #     use_clients: use_clients,
+    #     password: '123456',
+    #     terms_and_conditions: "1",
+    #     company_name: Faker::Company.name,
+    #     company_url: "#{rand > 0.5 ? "http://" : "www."}#{Faker::Internet.domain_name.sub(/(\.co)?\.uk/, '.be')}",
+    #     company_job_title: Faker::Company.bs,
+    #     company_employees: ["1 employee", "2-5 employees", "6-20 employees", "21-100 employees", "101-1000 employees", ">1001 employees"].sample,
+    #     company_videos_served: ["0-1'000 videos/month", "1'000-10'000 videos/month", "10'000-100'000 videos/month", "100'000-1mio videos/month", ">1mio videos/month", "Don't know"].sample
+    #   )
+    # 
+    #   if rand > 0.3
+    #     user.cc_type = 'visa'
+    #     user.cc_full_name = user.full_name
+    #     user.cc_number = "4111111111111111"
+    #     user.cc_verification_value = "111"
+    #     user.cc_expire_on = 2.years.from_now
+    #   end
+    #   user.created_at   = created_at_array.sample
+    #   user.confirmed_at = user.created_at
+    #   user.save!(validate: false)
+    # end
+    # puts "+ #{count} random users created!"
   end
 end
 
-def create_sites(max)
+def create_sites
   delete_all_files_in_public('uploads/licenses')
   delete_all_files_in_public('uploads/loaders')
   create_users if User.all.empty?
@@ -200,14 +200,14 @@ def create_sites(max)
   plan_ids = Plan.all.map(&:id)
   subdomains = %w[www blog my git sv ji geek yin yang chi cho chu foo bar rem]
   created_at_array = (Date.new(2010,9,14)..(1.month.ago - 2.days).to_date).to_a
-  ssl_addon_id = Addon.find_by_name('ssl')
+  ssl_addon = Addon.find_by_name('ssl')
 
   User.all.each do |user|
     BASE_SITES.each do |hostname|
       site = user.sites.build(
         plan_id: plan_ids.sample,
         hostname: hostname,
-        addon_ids: rand > 0.75 ? [ssl_addon_id] : []
+        addon_ids: rand > 0.75 ? [ssl_addon.id] : []
       )
       site.state        = 'active' if user.cc? && rand > 0.2
       site.created_at   = created_at_array.sample
@@ -216,8 +216,10 @@ def create_sites(max)
       Timecop.travel(site.created_at) do
         site.save!(validate: false)
       end
+      site.update_attribute(:cdn_up_to_date, true) if rand > 0.5
     end
     
+    # My SUBLIME (or not) random sites generator, not used anymore, SNIIIIIIIFFFFFFFFFFFF!!!!!!!!!!!!!!!
     # rand(max).times do |i|
     #   site = user.sites.build(
     #     plan_id: plan_ids.sample,
@@ -233,7 +235,7 @@ def create_sites(max)
     #   end
     # end
   end
-  puts "0-#{max} random sites created for each user!"
+  puts "#{BASE_SITES.size} beautiful sites created for each user!"
 end
 
 
@@ -241,48 +243,56 @@ def create_site_usages
   start_date = Date.new(2010,9,14)
   end_date   = Date.today
   player_hits_total = 0
+  ssl_addon = Addon.find_by_name('ssl')
   Site.active.each do |site|
+    p = (case rand(4)
+    when 0
+      site.plan.player_hits/30.0 - (site.plan.player_hits/30.0 / 2)
+    when 1
+      site.plan.player_hits/30.0 - (site.plan.player_hits/30.0 / 4)
+    when 2
+      site.plan.player_hits/30.0 + (site.plan.player_hits/30.0 / 4)
+    when 3
+      site.plan.player_hits/30.0 + (site.plan.player_hits/30.0 / 2)
+    end).to_i
+
     (start_date..end_date).each do |day|
-      i = rand(1000) % 4
-      p = (case i
-      when 0
-        site.plan.player_hits/30.0 - (site.plan.player_hits/30.0 / 2)
-      when 1
-        site.plan.player_hits/30.0 - (site.plan.player_hits/30.0 / 4)
-      when 2
-        site.plan.player_hits/30.0 + (site.plan.player_hits/30.0 / 4)
-      when 3
-        site.plan.player_hits/30.0 + (site.plan.player_hits/30.0 / 2)
-      end).to_i
+      Timecop.travel(day) do
+        loader_hits                = p * rand(100)
+        main_player_hits           = p * 0.6
+        main_player_hits_cached    = p * 0.4
+        dev_player_hits            = rand(100)
+        dev_player_hits_cached     = (dev_player_hits * rand).to_i
+        invalid_player_hits        = rand(500)
+        invalid_player_hits_cached = (invalid_player_hits * rand).to_i
+        player_hits = main_player_hits + main_player_hits_cached + dev_player_hits + dev_player_hits_cached + invalid_player_hits + invalid_player_hits_cached
+        requests_s3 = player_hits - (main_player_hits_cached + dev_player_hits_cached + invalid_player_hits_cached)
 
-      loader_hits                = p * rand(100)
-      main_player_hits           = p * 0.6
-      main_player_hits_cached    = p * 0.4
-      dev_player_hits            = rand(100)
-      dev_player_hits_cached     = (dev_player_hits * rand).to_i
-      invalid_player_hits        = rand(500)
-      invalid_player_hits_cached = (invalid_player_hits * rand).to_i
-      player_hits = main_player_hits + main_player_hits_cached + dev_player_hits + dev_player_hits_cached + invalid_player_hits + invalid_player_hits_cached
-      requests_s3 = player_hits - (main_player_hits_cached + dev_player_hits_cached + invalid_player_hits_cached)
-
-      site_usage = SiteUsage.new(
-        day: day.to_time.utc.midnight,
-        site_id: site.id,
-        loader_hits: loader_hits,
-        main_player_hits: main_player_hits,
-        main_player_hits_cached: main_player_hits_cached,
-        dev_player_hits: dev_player_hits,
-        dev_player_hits_cached: dev_player_hits_cached,
-        invalid_player_hits: invalid_player_hits,
-        invalid_player_hits_cached: invalid_player_hits_cached,
-        player_hits: player_hits,
-        flash_hits: (player_hits * rand / 3).to_i,
-        requests_s3: requests_s3,
-        traffic_s3: requests_s3 * 150000, # 150 KB
-        traffic_voxcast: player_hits * 150000
-      )
-      site_usage.save!
-      player_hits_total += player_hits
+        site_usage = SiteUsage.new(
+          day: day.to_time.utc.midnight,
+          site_id: site.id,
+          loader_hits: loader_hits,
+          main_player_hits: main_player_hits,
+          main_player_hits_cached: main_player_hits_cached,
+          dev_player_hits: dev_player_hits,
+          dev_player_hits_cached: dev_player_hits_cached,
+          invalid_player_hits: invalid_player_hits,
+          invalid_player_hits_cached: invalid_player_hits_cached,
+          player_hits: player_hits,
+          flash_hits: (player_hits * rand / 3).to_i,
+          requests_s3: requests_s3,
+          traffic_s3: requests_s3 * 150000, # 150 KB
+          traffic_voxcast: player_hits * 150000
+        )
+        site_usage.save!
+        player_hits_total += player_hits
+      
+        if site.addons.include?(ssl_addon)
+          site.update_attribute(:addon_ids, []) if rand > 0.8
+        else
+          site.update_attribute(:addon_ids, [ssl_addon.id]) if rand > 0.8
+        end
+      end
     end
   end
   puts "#{player_hits_total} video-page views total created between #{start_date} and #{end_date}!"
@@ -295,12 +305,13 @@ def create_invoices
     d += 1.month
   end
   User.all.each do |user|
-    if user.invoices.size > 2
-      user.invoices[user.invoices.size - 2].tap do |i|
+    invoices = user.invoices
+    if invoices.size > 2
+      invoices[invoices.size - 2].tap do |i|
         i.attributes = { state: 'paid', paid_at: i.ended_at + 6.days }
         i.save(validate: false)
       end
-      user.invoices.last.tap do |i|
+      invoices.last.tap do |i|
         i.attributes = { state: 'failed', failed_at: i.ended_at + 15.days, last_error: "We received an unknown status for the transaction. We will contact your acquirer and update the status of the transaction within one working day. Please check the status later." }
         i.save(validate: false)
       end
