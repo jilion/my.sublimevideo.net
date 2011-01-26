@@ -70,7 +70,6 @@ namespace :db do
     task invoices: :environment do
       timed { empty_tables(Invoice) }
       timed { create_invoices }
-      empty_tables("delayed_jobs")
     end
 
     desc "Create fake plans"
