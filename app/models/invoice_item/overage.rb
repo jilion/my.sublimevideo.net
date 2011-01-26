@@ -20,10 +20,6 @@ class InvoiceItem::Overage < InvoiceItem
     set_amount
     self
   end
-
-  def prorated_plan_player_hits
-    (info[:plan_player_hits] * percentage).round
-  end
   
   def overage_player_hits
     [info[:player_hits_used] - info[:plan_player_hits], 0].max
@@ -49,7 +45,7 @@ private
   end
 
   def set_overage_blocks
-    self.info[:overage_blocks] = [((info[:player_hits_used] - prorated_plan_player_hits).to_f / ::Plan::OVERAGES_PLAYER_HITS_BLOCK).ceil, 0].max
+    self.info[:overage_blocks] = [((info[:player_hits_used] - info[:plan_player_hits]).to_f / ::Plan::OVERAGES_PLAYER_HITS_BLOCK).ceil, 0].max
   end
 
   def set_amount
