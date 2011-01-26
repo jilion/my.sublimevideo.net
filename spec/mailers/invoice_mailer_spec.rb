@@ -47,7 +47,6 @@ describe InvoiceMailer do
       @last_delivery.subject.should == "January 2010 invoice is ready to be charged."
       @last_delivery.body.encoded.should include "if you have any question or doubt about its content, please use our support form:"
       @last_delivery.body.encoded.should include "/support"
-      @last_delivery.attachments["invoice_#{subject.ended_at.month}_#{subject.ended_at.year}.pdf"].should be_present
     end
   end
   
