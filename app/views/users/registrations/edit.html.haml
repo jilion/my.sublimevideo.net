@@ -59,11 +59,10 @@
       .past_invoices
         %h3.section_title= "Past invoices"
         %ul
-          - current_user.invoices.each do |invoice|
+          - current_user.invoices.by_date.each do |invoice|
             %li
               .right
                 = link_to("view details", invoice_path(invoice), :onclick => "window.open(this); return false", :class => "details")
-                = link_to("PDF", invoice_path(invoice, :format => :pdf), :onclick => "window.open(this); return false", :class => "pdf")
               %p
                 = raw "#{content_tag(:strong, display_amount(invoice.amount))} on #{invoice_dates(invoice)}"
               = content_tag(:p, charging_status(invoice), :class => "status " + (invoice.failed? ? "failed" : ""))
