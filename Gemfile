@@ -7,6 +7,7 @@ gem 'rails',                 :git => 'git://github.com/thibaudgg/rails.git', :br
 gem 'rack',                  '1.2.1'
 gem 'arel',                  '2.0.7'
 gem 'pg',                    '0.10.1'
+gem 'mail',                  '~> 2.2.15'
 
 gem 'libxml-ruby',           '1.1.3', :require => 'libxml'
 
