@@ -514,7 +514,7 @@ describe Site do
         describe "attributes that appears in the license" do
           before(:all) do
             @plan = Factory(:plan)
-            @addon1 = Factory(:addon, name: 'ssl', price: 99)
+            @addon1 = Factory(:addon, name: 'SSL', price: 99)
             @addon2 = Factory(:addon, name: 'stat', price: 99)
           end
 
@@ -569,7 +569,7 @@ describe Site do
                 when :path
                   subject.license.read.should include("wildcard:true")
                 when :addon_ids
-                  subject.license.read.should include("addons:ssl,stat")
+                  subject.license.read.should include("addons:SSL,stat")
                 end
               end
 

@@ -199,7 +199,7 @@ def create_sites
   plan_ids = Plan.all.map(&:id)
   subdomains = %w[www blog my git sv ji geek yin yang chi cho chu foo bar rem]
   created_at_array = (Date.new(2010,9,14)..(1.month.ago - 2.days).to_date).to_a
-  ssl_addon = Addon.find_by_name('ssl')
+  ssl_addon = Addon.find_by_name('SSL')
 
   User.all.each do |user|
     BASE_SITES.each do |hostname|
@@ -242,7 +242,7 @@ def create_site_usages
   start_date = Date.new(2010,9,14)
   end_date   = Date.today
   player_hits_total = 0
-  ssl_addon = Addon.find_by_name('ssl')
+  ssl_addon = Addon.find_by_name('SSL')
   Site.active.each do |site|
     p = (case rand(4)
     when 0
@@ -332,7 +332,7 @@ end
 def create_addons
   create_plans if Plan.all.empty?
   addons_attributes = [
-    { name: "ssl", price: 499 }
+    { name: "SSL", price: 499 }
   ]
   addons_attributes.each { |attributes| Addon.create(attributes) }
   puts "#{addons_attributes.size} addon(s) created!"

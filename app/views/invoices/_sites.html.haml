@@ -22,7 +22,7 @@
               %tr
                 %td{ :colspan => 2 }
                   %h4
-                    = "#{addon.name.humanize} (#{display_amount(addon.price)} per month)"
+                    = "#{addon.name} (#{display_amount(addon.price)} per month)"
                     - if addon_invoice_items.sum(&:percentage) < 1
                       %em=" - #{display_percentage(addon_invoice_items.sum(&:percentage))} of usage"
                 - addon_invoice_items.sort_by { |invoice_item| invoice_item.ended_at }.each do |addon_invoice_item|

@@ -63,7 +63,7 @@ class Site < ActiveRecord::Base
   scope :with_wildcard, where(:wildcard => true)
   scope :with_path,     where({ :path.ne => nil } & { :path.ne => '' })
   scope :with_extra_hostnames, where({ :extra_hostnames.ne => nil } & { :extra_hostnames.ne => '' })
-  scope :with_ssl,      joins(:addons).where(:addons => { :name => "ssl" })
+  scope :with_ssl,      joins(:addons).where(:addons => { :name => "SSL" })
 
   # admin
   scope :user_id,    lambda { |user_id| where(user_id: user_id) }

@@ -12,7 +12,7 @@ feature "Sites" do
     plans.each { |attributes| Plan.create(attributes) }
 
     addons = [
-      { :name => "ssl", :price => 499 }
+      { :name => "SSL", :price => 499 }
     ]
     addons.each { |attributes| Addon.create(attributes) }
   end
@@ -131,7 +131,7 @@ feature "Sites" do
       edit_site_addons
 
       current_url.should =~ %r(http://[^/]+/sites)
-      page.should have_content('Add-ons: Ssl')
+      page.should have_content('Add-ons: SSL')
     end
   end
 
