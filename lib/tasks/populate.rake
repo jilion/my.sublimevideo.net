@@ -175,7 +175,7 @@ def create_users(count)
     #     company_employees: ["1 employee", "2-5 employees", "6-20 employees", "21-100 employees", "101-1000 employees", ">1001 employees"].sample,
     #     company_videos_served: ["0-1'000 videos/month", "1'000-10'000 videos/month", "10'000-100'000 videos/month", "100'000-1mio videos/month", ">1mio videos/month", "Don't know"].sample
     #   )
-    # 
+    #
     #   if rand > 0.3
     #     user.cc_type = 'visa'
     #     user.cc_full_name = user.full_name
@@ -206,6 +206,7 @@ def create_sites
       site = user.sites.build(
         plan_id: plan_ids.sample,
         hostname: hostname,
+        dev_hostnames: Site::DEFAULT_DEV_DOMAINS,
         addon_ids: rand > 0.75 ? [ssl_addon.id] : []
       )
       site.state        = 'active' if user.cc? && rand > 0.2
@@ -217,7 +218,7 @@ def create_sites
       end
       site.update_attribute(:cdn_up_to_date, true) if rand > 0.5
     end
-    
+
     # My SUBLIME (or not) random sites generator, not used anymore, SNIIIIIIIFFFFFFFFFFFF!!!!!!!!!!!!!!!
     # rand(max).times do |i|
     #   site = user.sites.build(
@@ -228,7 +229,7 @@ def create_sites
     #   site.state        = 'active' if user.cc? && rand > 0.2
     #   site.created_at   = [user.confirmed_at.to_date, created_at_array.sample].max
     #   site.activated_at = site.created_at if site.active?
-    # 
+    #
     #   Timecop.travel(site.created_at) do
     #     site.save!(validate: false)
     #   end
@@ -285,7 +286,7 @@ def create_site_usages
         )
         site_usage.save!
         player_hits_total += player_hits
-      
+
         if site.addons.include?(ssl_addon)
           site.update_attribute(:addon_ids, []) if rand > 0.8
         else
