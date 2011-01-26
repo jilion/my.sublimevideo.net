@@ -38,6 +38,10 @@ class InvoiceItem < ActiveRecord::Base
     (minutes / invoice.minutes_in_months.to_f).round(4)
   end
 
+  def site
+    site_id && Site.find(site_id).version_at(invoice.ended_at)
+  end
+
 end
 
 
