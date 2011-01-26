@@ -61,7 +61,12 @@ document.observe("dom:loaded", function() {
       });
     });
   }
-
+  
+  if (window.location.hash && $('site').hasClassName('edit')) {
+    MySublimeVideo.updateFromHash(window.location.hash);
+    HHash.init(MySublimeVideo.hashUrlHandler, $('hidden-iframe'));
+  }
+  
   // if ($("new_site")) {
   //   MySublimeVideo.siteFormHandler = new SiteFormHandler();
   // }
@@ -168,7 +173,7 @@ MySublimeVideo.showSiteUsage = function(siteId) {
   return false;
 };
 
-MySublimeVideo.toggleBoxFromId = function(a, boxId) {
+MySublimeVideo.toggleBoxFromId = function(a, boxId, hash) {
   var box = $(boxId);
   var li = a.up('li');
   if (!li.hasClassName('active')) {
@@ -177,8 +182,26 @@ MySublimeVideo.toggleBoxFromId = function(a, boxId) {
     $$('.section_box').invoke('hide');
     box.show();
   }
+  window.location.hash = hash;
   return false;
 };
+
+MySublimeVideo.updateFromHash = function(hash) {
+  switch (hash) {
+    case '#settings':
+      MySublimeVideo.toggleBoxFromId($$('ul.segmented_menu li a')[0], 'site_settings_box', 'settings');
+      break;
+    case '#change_plan':
+      MySublimeVideo.toggleBoxFromId($$('ul.segmented_menu li a')[1], 'change_plan_box', 'change_plan');
+      break;
+  }      
+}
+
+MySublimeVideo.hashUrlHandler = function(newHash, initial) {
+  if (!initial) {
+    MySublimeVideo.updateFromHash("#"+newHash);
+  }
+}
 
 // ===========
 // = Classes =

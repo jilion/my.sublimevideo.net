@@ -7,11 +7,12 @@
       = render "/invoices/our_billing_info", :invoice => invoice
       .invoice_info
         %p
-          %strong= "Invoice status: "
-          = "#{charging_status(invoice)}"
-        %p
           %strong= "Invoice ID:"
-          = "#{invoice.reference.upcase}"
+          = invoice.reference.upcase
+        %p
+          %strong= "Invoice status: "
+          = charging_status(invoice)
+        %span.stamp{ :class => invoice.state }= invoice.state
     %td.user_info
       %h4= "Bill to:"
       = render "/invoices/user_billing_info", :user => invoice.user

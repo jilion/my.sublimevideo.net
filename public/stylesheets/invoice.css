@@ -26,7 +26,7 @@ a#print {
   top:20px;
   right:20px;
   color:#fff;
-  background:#444;
+  background:#000;
   padding:6px 10px 5px;
   text-decoration:none;
   text-transform:uppercase;
@@ -58,9 +58,44 @@ table {
 }
 
 .invoice_info {
+  width:70%;
   padding:15px 0 0;
+  position:relative;
 }
 
+.invoice_info span.stamp {
+  position:absolute;
+  top:-60px;
+  right:-20px;
+  text-transform:uppercase;
+  color:#000;
+  padding:1px 5px 0;
+  font-size:20px;
+  font-weight:bold;
+  border:5px solid #000;
+  -moz-border-radius: 8px;
+  -webkit-border-radius: 8px;
+  border-radius: 8px;
+  -moz-transform: rotate(-15deg);
+  -webkit-transform: rotate(-15deg);
+  transform: rotate(-15deg);
+}
+
+.invoice_info span.stamp.paid {
+  border-color:#16b508;
+  color:#16b508;
+}
+
+.invoice_info span.stamp.failed {
+  border-color:#b6000e;
+  color:#b6000e;
+}
+
+/*.invoice_info span.stamp.unpaid {
+  border-color:#b6000e;
+  color:#b6000e;
+}
+*/
 #detail th, #detail td {
   border:1px solid #ddd;
   padding:4px 6px;

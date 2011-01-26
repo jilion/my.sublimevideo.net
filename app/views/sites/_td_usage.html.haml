@@ -6,7 +6,7 @@
   -# = link_to "Usage", "", :onclick => "return MySublimeVideo.showSiteUsage('#{site.token}')"
   - if site.current_percentage_of_overages_compared_to_plan_limit > 0
     .alert_icon.box_hovering_zone
-      = link_to [:edit, site], :class => "icon" do
+      = link_to(edit_site_path(site, :anchor => "change_plan"), :class => "icon") do
         %span= "alert"
       = info_box do
         %p

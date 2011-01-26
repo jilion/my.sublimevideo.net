@@ -1,9 +1,12 @@
 = title_and_content_header("Edit #{content_tag(:strong, truncate_middle(@site.hostname, :length => 30))}")
-
+= content_for :header do
+  = javascript_include_tag "hash"
+= content_for :bottom do
+  %iframe#hidden-iframe
 #site.edit
   %ul.segmented_menu
-    %li.first.active= link_to "Settings", "", :onclick => "return MySublimeVideo.toggleBoxFromId(this, 'site_settings_box')"
-    %li.last= link_to "Change plan", "", :onclick => "return MySublimeVideo.toggleBoxFromId(this, 'change_plan_box')"
+    %li.first.active= link_to "Settings", "", :onclick => "return MySublimeVideo.toggleBoxFromId(this, 'site_settings_box', 'settings')"
+    %li.last= link_to "Change plan", "", :onclick => "return MySublimeVideo.toggleBoxFromId(this, 'change_plan_box', 'change_plan')"
 
   #site_settings_box.section_box
     = form_for @site, :html => { :id => "edit_site_settings", "data-password-protected" => @site.active? } do |f|
