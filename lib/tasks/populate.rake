@@ -175,7 +175,7 @@ def create_users(count)
         company_employees: ["1 employee", "2-5 employees", "6-20 employees", "21-100 employees", "101-1000 employees", ">1001 employees"].sample,
         company_videos_served: ["0-1'000 videos/month", "1'000-10'000 videos/month", "10'000-100'000 videos/month", "100'000-1mio videos/month", ">1mio videos/month", "Don't know"].sample
       )
-      
+
       if rand > 0.3
         user.cc_type = 'visa'
         user.cc_full_name = user.full_name
@@ -225,10 +225,10 @@ def create_site_usages
   start_date = Date.new(2010,9,14)
   end_date   = Date.today
   player_hits_total = 0
-  i = 
   Site.active.each do |site|
     (start_date..end_date).each do |day|
-      p = (case rand(1000) % 4
+      i = rand(1000) % 4
+      p = (case i
       when 0
         site.plan.player_hits/30.0 - (site.plan.player_hits/30.0 / 2)
       when 1
@@ -238,7 +238,7 @@ def create_site_usages
       when 3
         site.plan.player_hits/30.0 + (site.plan.player_hits/30.0 / 2)
       end).to_i
-      
+
       loader_hits                = p * rand(100)
       main_player_hits           = p * 0.6
       main_player_hits_cached    = p * 0.4
@@ -277,6 +277,18 @@ def create_invoices
   while d < Time.now.beginning_of_month
     Invoice.complete_invoices_for_billable_users(d.beginning_of_month, d.end_of_month)
     d += 1.month
+  end
+  User.all.each do |user|
+    if user.invoices.size > 2
+      user.invoices[user.invoices.size - 2].tap do |i|
+        i.attributes = { state: 'paid', paid_at: i.ended_at + 6.days }
+        i.save(validate: false)
+      end
+      user.invoices.last.tap do |i|
+        i.attributes = { state: 'failed', failed_at: i.ended_at + 15.days, last_error: "We received an unknown status for the transaction. We will contact your acquirer and update the status of the transaction within one working day. Please check the status later." }
+        i.save(validate: false)
+      end
+    end
   end
   puts "#{Invoice.count} invoices created!"
 end
