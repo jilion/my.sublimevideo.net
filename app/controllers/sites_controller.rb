@@ -14,7 +14,7 @@ class SitesController < ApplicationController
   def index
     @sites = current_user.sites.not_archived.with_plan.with_addons
     @sites = apply_scopes(@sites).by_date
-    respond_with(@sites)
+    respond_with(@sites, :per_page => 10)
   end
 
   # GET /sites/:id/code
@@ -59,7 +59,7 @@ class SitesController < ApplicationController
     respond_with(@site, :location => :sites) do |format|
       # TODO: Remove this logic after the one_time:sites:rollback_beta_sites rake task has been executed (no more site with the beta state)
       if @site.state_was == 'beta' && @site.errors.present?
-        format.html { render :transition } 
+        format.html { render :transition }
       else
         format.html
       end
