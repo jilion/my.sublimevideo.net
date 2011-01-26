@@ -2139,7 +2139,7 @@ ul.segmented_menu li.last a {
   font-weight:600;
 }
 
-#invoices_summary a.details, #invoices_summary a.pdf {
+#invoices_summary a.details {
   font-weight:600;
   font-size:12px;
   border-bottom:1px solid #929fb6;

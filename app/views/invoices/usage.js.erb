@@ -5,6 +5,5 @@ $('current_usage_amount').update('<%= escape_javascript(
   content_tag(:strong, display_amount(@invoice.amount)) +
   " "+
   link_to("view details", usage_invoices_path, :onclick => "window.open(this); return false", :class => "details") + " " +
-  link_to("PDF", usage_invoices_path(:format => :pdf), :onclick => "window.open(this); return false", :class => "pdf") +
   "</p>"
 ).html_safe %>');

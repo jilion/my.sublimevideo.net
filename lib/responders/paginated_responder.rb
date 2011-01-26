@@ -1,18 +1,23 @@
 module Responders
   module PaginatedResponder
-    
+
+    def initialize(controller, resources, options={})
+      super
+      @per_page = options.delete(:per_page)
+    end
+
     def to_html
       add_pagination_scope!
       super
     end
-    
+
     def to_js
       add_pagination_scope!
       super
     end
-    
+
   protected
-    
+
     def add_pagination_scope!
       if get? && (resource.is_a?(ActiveRecord::Relation) || resource.is_a?(Mongoid::Criteria)) && controller.action_name == 'index'
         begin
@@ -26,10 +31,10 @@ module Responders
         end
       end
     end
-    
+
     def set_instance_variable(klass)
-      controller.instance_variable_set "@#{controller.controller_name}", resource.paginate(:page => controller.request.params[:page] || 1, :per_page => klass.per_page)
+      controller.instance_variable_set "@#{controller.controller_name}", resource.paginate(:page => controller.request.params[:page] || 1, :per_page => @per_page || klass.per_page)
     end
-    
+
   end
 end

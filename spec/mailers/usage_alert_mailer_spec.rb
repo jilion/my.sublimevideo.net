@@ -20,7 +20,7 @@ describe UsageAlertMailer do
     end
 
     it "should set a body that contain the link to edit the credit card" do
-      @last_delivery.body.encoded.should include "https://#{ActionMailer::Base.default_url_options[:host]}/sites/#{subject.to_param}/edit"
+      @last_delivery.body.encoded.should include "https://#{ActionMailer::Base.default_url_options[:host]}/sites/#{subject.to_param}/edit#change_plan"
     end
   end
 
@@ -35,7 +35,7 @@ describe UsageAlertMailer do
     end
 
     it "should set a body that contain the link to edit the credit card" do
-      @last_delivery.body.encoded.should include "https://#{ActionMailer::Base.default_url_options[:host]}/sites/#{subject.to_param}/edit"
+      @last_delivery.body.encoded.should include "https://#{ActionMailer::Base.default_url_options[:host]}/sites/#{subject.to_param}/edit#change_plan"
     end
   end
 end
