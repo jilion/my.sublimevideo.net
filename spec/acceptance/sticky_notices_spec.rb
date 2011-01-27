@@ -12,7 +12,7 @@ feature "Sticky notices" do
       current_url.should =~ %r(http://[^/]+/sites)
       page.should_not have_content("Your credit card will expire at the end of the month")
       page.should_not have_content("Your credit card is expired.")
-      page.should_not have_content("change it")
+      page.should_not have_content("update it")
     end
   end
 
@@ -26,7 +26,7 @@ feature "Sticky notices" do
 
       current_url.should =~ %r(http://[^/]+/sites)
       page.should have_content("Your credit card will expire at the end of the month")
-      page.should have_content("change it")
+      page.should have_content("update it")
     end
   end
 
@@ -81,20 +81,19 @@ feature "Sticky notices" do
       page.should have_content("Your account will be suspended in")
     end
   end
-
+  
   feature "user have beta sites" do
     background do
-      Timecop.travel(Date.new(2011, 2, 17))
       sign_in_as :user
     end
 
     scenario "show a notice" do
       Factory(:site, :user => @current_user, :state => "beta")
-      PublicLaunch.stub(:beta_transition_ended_on) { Date.new(2011, 3, 1) }
+      PublicLaunch.stub(:beta_transition_ended_on) { 12.days.from_now.to_date }
       visit '/sites'
 
       current_url.should =~ %r(http://[^/]+/sites)
-      page.should have_content("12 day(s) left to choose a plan for your beta site(s)")
+      page.should have_content("12 days left to choose a plan for your beta sites")
       Timecop.return
     end
   end
