@@ -1,27 +1,29 @@
 - if current_user.cc_expire_this_month? || current_user.cc_expired? || current_user.will_be_suspended? || (current_user.have_beta_sites? && PublicLaunch.days_left_before_end_of_beta_transition >= 0)
-  #sticky_notice{ :style => "background-color:#BBB; border:4px solid #933;" }
-    - if current_user.cc_expire_this_month? || current_user.cc_expired?
-      %p
-        - edit_cc_link = link_to('change it', edit_credit_card_path)
-        - if current_user.cc_expired?
-          = t("user.credit_card.expired")
-          = raw t("user.please_link", :link => edit_cc_link)
-        - else
-          = raw t("user.credit_card.will_expire_please_link", :link => edit_cc_link)
+  #sticky_notice
+    %h3 Warning
+    %ul
+      - if current_user.cc_expire_this_month? || current_user.cc_expired?
+        %li
+          - edit_cc_link = link_to('update it', edit_credit_card_path)
+          - if current_user.cc_expired?
+            = t("user.credit_card.expired")
+            = raw t("user.please_link", :link => edit_cc_link)
+          - else
+            = raw t("user.credit_card.will_expire_please_link", :link => edit_cc_link)
 
-    - if suspending_delayed_job = current_user.will_be_suspended?
-      %p
-        = t("user.will_be_suspended_in", :time => time_ago_in_words(suspending_delayed_job.run_at))
-        - failed_invoices = current_user.invoices.failed
-        - if failed_invoices.present?
-          = "because you have #{t("failed_invoices", :count => failed_invoices.size)}."
-          = link_to "More info here", edit_user_registration_path
-        - else
-          = ". "
-          = raw t("please_link_to_know_more_about_it", :link => link_to("contact us", new_ticket_path))
+      - if suspending_delayed_job = current_user.will_be_suspended?
+        %li
+          = t("user.will_be_suspended_in", :time => time_ago_in_words(suspending_delayed_job.run_at))
+          - failed_invoices = current_user.invoices.failed
+          - if failed_invoices.present?
+            = "because you have #{t("failed_invoices", :count => failed_invoices.size)}."
+            = raw "#{link_to "More info here", edit_user_registration_path}."
+          - else
+            = ". "
+            = raw t("please_link_to_know_more_about_it", :link => link_to("contact us", new_ticket_path))
 
-    - if current_user.have_beta_sites?
-      - if PublicLaunch.days_left_before_end_of_beta_transition >= 1
-        %p= "#{PublicLaunch.days_left_before_end_of_beta_transition} day(s) left to choose a plan for your beta site(s)"
-      - elsif PublicLaunch.days_left_before_end_of_beta_transition == 0
-        %p= "Your beta site(s) will be rollbacked to dev site(s) today!"
+      - if !current_user.have_beta_sites?
+        - if !(PublicLaunch.days_left_before_end_of_beta_transition >= 1)
+          %li= "#{pluralize(PublicLaunch.days_left_before_end_of_beta_transition, 'day')} left to choose a plan for your beta sites."
+        - elsif !PublicLaunch.days_left_before_end_of_beta_transition == 0
+          %li= "Your beta sites will be rollbacked to development-only sites today!"

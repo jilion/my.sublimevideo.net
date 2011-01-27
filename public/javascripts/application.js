@@ -66,7 +66,8 @@ document.observe("dom:loaded", function() {
     });
   }
   
-  if ($('site').hasClassName('edit')) {
+  var siteElement = $('site');
+  if (siteElement && siteElement.hasClassName('edit')) {
     MySublimeVideo.updateFromHash(window.location.hash);
     HHash.init(MySublimeVideo.hashUrlHandler, $('hidden-iframe'));
   }
