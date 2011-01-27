@@ -12,7 +12,6 @@ namespace :db do
   task populate: ['populate:empty_all_tables', 'populate:all']
 
   namespace :populate do
-
     desc "Empty all the tables"
     task empty_all_tables: :environment do
       timed { empty_tables("delayed_jobs", Invoice, InvoiceItem, Log, MailTemplate, MailLog, Site, SiteUsage, User, Admin, Plan, Addon) }
@@ -85,6 +84,29 @@ namespace :db do
     end
   end
 
+end
+
+namespace :sticky do
+  
+  desc "Empty all the tables"
+  task cc_will_expire: :environment do
+    timed do
+      email = argv("email")
+      return if email.nil?
+      
+      puts "Update credit card for #{email}, make it expire at the end of the month..."
+      User.find_by_email(email).tap do |user|
+        user.update_attributes({
+          cc_type: 'visa',
+          cc_full_name: user.full_name,
+          cc_number: "4111111111111111",
+          cc_verification_value: "111",
+          cc_expire_on: TimeUtil.current_month.last
+        })
+      end
+    end
+  end
+  
 end
 
 namespace :sm do
@@ -348,6 +370,10 @@ def create_mail_templates(count = 5)
     )
   end
   puts "#{count} random mail templates created!"
+end
+
+def argv(var_name)
+  ARGV.size > 1 ? ARGV[1].sub(/#{var_name}=/i, '') : nil
 end
 
 def argv_count
