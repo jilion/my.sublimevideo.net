@@ -86,9 +86,35 @@ namespace :db do
 
 end
 
+namespace :user do
+
+  desc "Suspend/unsuspend a user given an email (EMAIL=xx@xx.xx), you can pass the count of failed invoices on suspend with FAILED_INVOICES=N"
+  task suspend: :environment do
+    timed do
+      email = argv("email")
+      return if email.nil?
+
+      User.find_by_email(email).tap do |user|
+        if user.suspended?
+          puts "Unsuspend #{email}..."
+          # user.state = 'active'
+          user.update_attribute(:state, 'active')
+        else
+          puts "Suspend #{email}..."
+          # user.state = 'suspended'
+          # user.save!(validate: false)
+          user.update_attribute(:state, 'suspended')
+          user.update_attribute(:failed_invoices_count_on_suspend, argv_count("failed_invoices", 0))
+        end
+      end
+    end
+  end
+  
+end
+
 namespace :sticky do
 
-  desc "Expire the credit card of the user with the email given at the end of the month (or the opposite if already expiring at the end of the month)"
+  desc "Expire the credit card of the user with the given email (EMAIL=xx@xx.xx) at the end of the month (or the opposite if already expiring at the end of the month)"
   task cc_will_expire: :environment do
     timed do
       email = argv("email")
@@ -113,7 +139,7 @@ namespace :sticky do
     end
   end
 
-  desc "Delay suspend the user with the email given (or the opposite if already delayed suspended)"
+  desc "Delay suspend the user with the given email (EMAIL=xx@xx.xx) (or the opposite if already delayed suspended)"
   task will_be_suspended: :environment do
     timed do
       email = argv("email")
@@ -397,9 +423,19 @@ def create_mail_templates(count = 5)
 end
 
 def argv(var_name)
-  ARGV.size > 1 ? ARGV[1].sub(/#{var_name}=/i, '') : nil
+  var = ARGV.detect { |arg| arg =~ /(#{var_name}=)/i }
+  if var
+    var.sub($1, '')
+  else
+    nil
+  end
 end
 
-def argv_count
-  ARGV.size > 1 ? ARGV[1].sub(/COUNT=/, '').to_i : 5
+def argv_count(var_name='count', default_count=5)
+  var = ARGV.detect { |arg| arg =~ /(#{var_name}=)/i }
+  if var
+    var.sub($1, '').to_i
+  else
+    default_count
+  end
 end
