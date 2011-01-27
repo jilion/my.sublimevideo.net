@@ -66,7 +66,7 @@ document.observe("dom:loaded", function() {
     });
   }
   
-  if (window.location.hash && $('site').hasClassName('edit')) {
+  if ($('site').hasClassName('edit')) {
     MySublimeVideo.updateFromHash(window.location.hash);
     HHash.init(MySublimeVideo.hashUrlHandler, $('hidden-iframe'));
   }
@@ -192,11 +192,14 @@ MySublimeVideo.toggleBoxFromId = function(a, boxId, hash) {
 
 MySublimeVideo.updateFromHash = function(hash) {
   switch (hash) {
-    case '#settings':
-      MySublimeVideo.toggleBoxFromId($$('ul.segmented_menu li a')[0], 'site_settings_box', 'settings');
-      break;
+    // case '#settings':
+    //   MySublimeVideo.toggleBoxFromId($$('ul.segmented_menu li a')[0], 'site_settings_box', 'settings');
+    //   break;
     case '#change_plan':
       MySublimeVideo.toggleBoxFromId($$('ul.segmented_menu li a')[1], 'change_plan_box', 'change_plan');
+      break;
+    default:
+      MySublimeVideo.toggleBoxFromId($$('ul.segmented_menu li a')[0], 'site_settings_box', 'settings');
       break;
   }      
 }
