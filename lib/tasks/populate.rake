@@ -87,26 +87,50 @@ namespace :db do
 end
 
 namespace :sticky do
-  
-  desc "Empty all the tables"
+
+  desc "Expire the credit card of the user with the email given at the end of the month (or the opposite if already expiring at the end of the month)"
   task cc_will_expire: :environment do
     timed do
       email = argv("email")
       return if email.nil?
-      
-      puts "Update credit card for #{email}, make it expire at the end of the month..."
+
       User.find_by_email(email).tap do |user|
+        date = if user.cc_expire_on == TimeUtil.current_month.last.to_date
+          puts "Update credit card for #{email}, make it expire in 2 years..."
+          2.years.from_now
+        else
+          puts "Update credit card for #{email}, make it expire at the end of the month..."
+          TimeUtil.current_month.last
+        end
         user.update_attributes({
           cc_type: 'visa',
           cc_full_name: user.full_name,
           cc_number: "4111111111111111",
           cc_verification_value: "111",
-          cc_expire_on: TimeUtil.current_month.last
+          cc_expire_on: date
         })
       end
     end
   end
-  
+
+  desc "Delay suspend the user with the email given (or the opposite if already delayed suspended)"
+  task will_be_suspended: :environment do
+    timed do
+      email = argv("email")
+      return if email.nil?
+
+      User.find_by_email(email).tap do |user|
+        if user.will_be_suspended?
+          puts "Cancel the suspension of #{email}..."
+          user.cancel_suspend
+        else
+          puts "Delay the suspension of #{email}..."
+          user.delay_suspend
+        end
+      end
+    end
+  end
+
 end
 
 namespace :sm do
