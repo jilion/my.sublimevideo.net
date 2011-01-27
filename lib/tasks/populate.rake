@@ -88,32 +88,6 @@ end
 
 namespace :user do
 
-  desc "Suspend/unsuspend a user given an email (EMAIL=xx@xx.xx), you can pass the count of failed invoices on suspend with FAILED_INVOICES=N"
-  task suspend: :environment do
-    timed do
-      email = argv("email")
-      return if email.nil?
-
-      User.find_by_email(email).tap do |user|
-        if user.suspended?
-          puts "Unsuspend #{email}..."
-          # user.state = 'active'
-          user.update_attribute(:state, 'active')
-        else
-          puts "Suspend #{email}..."
-          # user.state = 'suspended'
-          # user.save!(validate: false)
-          user.update_attribute(:state, 'suspended')
-          user.update_attribute(:failed_invoices_count_on_suspend, argv_count("failed_invoices", 0))
-        end
-      end
-    end
-  end
-  
-end
-
-namespace :sticky do
-
   desc "Expire the credit card of the user with the given email (EMAIL=xx@xx.xx) at the end of the month (or the opposite if already expiring at the end of the month)"
   task cc_will_expire: :environment do
     timed do
@@ -140,7 +114,7 @@ namespace :sticky do
   end
 
   desc "Delay suspend the user with the given email (EMAIL=xx@xx.xx) (or the opposite if already delayed suspended)"
-  task will_be_suspended: :environment do
+  task delay_suspend: :environment do
     timed do
       email = argv("email")
       return if email.nil?
@@ -156,6 +130,29 @@ namespace :sticky do
       end
     end
   end
+
+  desc "Suspend/unsuspend a user given an email (EMAIL=xx@xx.xx), you can pass the count of failed invoices on suspend with FAILED_INVOICES=N"
+  task suspended: :environment do
+    timed do
+      email = argv("email")
+      return if email.nil?
+
+      User.find_by_email(email).tap do |user|
+        if user.suspended?
+          puts "Unsuspend #{email}..."
+          # user.state = 'active'
+          user.update_attribute(:state, 'active')
+        else
+          puts "Suspend #{email}..."
+          # user.state = 'suspended'
+          # user.save!(validate: false)
+          user.update_attribute(:state, 'suspended')
+          user.update_attribute(:failed_invoices_count_on_suspend, argv_count("failed_invoices", 0))
+        end
+      end
+    end
+  end
+  
 
 end
 
