@@ -50,13 +50,17 @@ document.observe("dom:loaded", function() {
     $$('ul#plans li').each(function(element){
       element.on('click', function(event){
         var radioButton = element.down('input[type=radio]');
-        if (MySublimeVideo.SELECTED_PLAN != radioButton.value) {
+        if (MySublimeVideo.ONE_SELECTED_PLAN_AT_LEAST != true) {
+          if (MySublimeVideo.SELECTED_PLAN != radioButton.value) {
+            radioButton.checked = true;
+            MySublimeVideo.SELECTED_PLAN = radioButton.value;
+          }
+          else {
+            radioButton.checked = false;
+            MySublimeVideo.SELECTED_PLAN = 0;
+          }
+        } else {
           radioButton.checked = true;
-          MySublimeVideo.SELECTED_PLAN = radioButton.value;
-        }
-        else {
-          radioButton.checked = false;
-          MySublimeVideo.SELECTED_PLAN = 0;
         }
       });
     });

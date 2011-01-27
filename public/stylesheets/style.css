@@ -1247,6 +1247,7 @@ input.link_looks.delete {
 
 #content table.main td.usage .progress_bar .overages_bar {
   z-index:2;
+  min-width:10px;
   height:10px;
   border: 1px solid #710000;
   background:#9f0000;
