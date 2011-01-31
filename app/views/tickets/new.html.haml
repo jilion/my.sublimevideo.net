@@ -9,6 +9,8 @@
   .entry.select.type
     = f.label :type, "", :class => "icon"
     = f.select :type, ticket_type_options
+    :javascript
+      if (window.location.hash == '#billing') $$('#ticket_type option').find(function(el){return !!(el.value == 'billing-question')}).selected = true;
   .entry.feedback_subject
     = f.label :subject, "", :class => "icon"
     = f.text_field :subject, :class => "text", :placeholder => "Subject", :required => true
@@ -16,4 +18,4 @@
     = f.label :message, "", :class => "icon"
     = f.text_area :message, :class => "text", :placeholder => "Message", :required => true
   .entry.update
-    = f.submit 'Send', :class => "submit small"
+    = f.submit 'Send', :class => "submit small_button"

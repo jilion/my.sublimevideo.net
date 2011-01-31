@@ -912,6 +912,49 @@ input.small_button, input.medium_button {
 
 .small_button:active, .medium_button:active {background-position:0 -40px}
 
+.submit_dynamic_button {
+  display:block;
+  width:auto;
+  height:33px;
+  padding:7px 10px 0;
+  font-size:18px;
+  font-weight:600;
+  text-align:center;
+  border:none;
+  font-family:inherit;
+  color:#4d5563;
+  text-shadow:rgba(255,255,255,0.5) 0 1px 0;
+  cursor:pointer;
+  border:1px solid #5d6778;
+  background:#9fa5af;
+  background:-webkit-gradient(linear,left top,left bottom,from(rgba(118,127,141,0.25)),to(rgba(81,89,104,0.5)));
+  background:-moz-linear-gradient(top, rgba(118,127,141,0.2), rgba(81,89,104,0.4));
+  -moz-box-shadow: inset rgba(255,255,255,0.7) 0 1px 2px, rgba(0,0,0,0.5) 0 1px 3px;
+  -webkit-box-shadow: inset rgba(255,255,255,0.7) 0 1px 2px, rgba(0,0,0,0.5) 0 1px 3px;
+  box-shadow: inset rgba(255,255,255,0.7) 0 1px 2px, rgba(0,0,0,0.5) 0 1px 3px;
+  -moz-border-radius:8px;
+  -webkit-border-radius:8px;
+  border-radius:8px;
+}
+
+.submit_dynamic_button:active {
+  background:#7d828c;
+  background:-webkit-gradient(linear,left top,left bottom,from(rgba(81,89,104,0.5)),to(rgba(118,127,141,0.25)));
+  background:-moz-linear-gradient(top, rgba(81,89,104,0.5), rgba(118,127,141,0.25));
+}
+
+.submit_dynamic_button:focus {
+  outline:none;
+  -webkit-box-shadow:inset rgba(255,255,255,0.7) 0 1px 2px, #0085c8 0 0 7px, #0085c8 0 0 7px, #0085c8 0 0 7px;
+  -moz-box-shadow:inset rgba(255,255,255,0.7) 0 1px 2px, #0085c8 0 0 7px, #0085c8 0 0 7px, #0085c8 0 0 7px;
+  box-shadow:inset rgba(255,255,255,0.7) 0 1px 2px, #0085c8 0 0 7px, #0085c8 0 0 7px, #0085c8 0 0 7px;
+}
+
+input.submit_dynamic_button {
+  height:40px;
+  padding-top:0;
+}
+
 input.link_looks, button.link_looks {
   background:none;
   font-family:inherit;
@@ -1450,12 +1493,12 @@ ul#plans h4.number {
   text-align:center;
   font-size:44px;
   font-weight:600;
-  text-shadow:#fff 0 1px 0;
+  text-shadow:#fff 0 1px 2px,rgba(0,0,0,0.45) 0px 0px 0px,#fff 0px 1px 2px;
 }
 
-ul#plans li.perso h4.number {color:#949cab}
-ul#plans li.pro h4.number {color:#818996}
-ul#plans li.enterprise h4.number {color:#6a717c}
+ul#plans li.perso h4.number {color:#939aa4;color:rgba(81,90,102,0.5)}
+ul#plans li.pro h4.number {color:#818996;color:rgba(63,71,86,0.55)}
+ul#plans li.enterprise h4.number {color:#6a717c;color:rgba(42,48,59,0.6)}
 
 ul#plans h5.label {
   font-size:15px;
@@ -1854,6 +1897,19 @@ ul.segmented_menu li.last a {
   margin-top:-1px;
 }
 
+#suspended p a {
+  font-weight:600;
+  border-bottom:1px solid #7f858f;
+}
+
+#failed_invoices {
+  width:440px;
+}
+
+#failed_invoices form {
+  margin:10px 0;
+} 
+
 .popup {
   width:450px;
   position:fixed;
@@ -2129,11 +2185,11 @@ ul.segmented_menu li.last a {
   padding:10px 0 0;
 }
 
-#invoices_summary p {
+#invoices_summary p, #failed_invoices p {
   padding:3px 0;
 }
 
-#invoices_summary .right {
+#invoices_summary .right, #failed_invoices .right {
   float:right;
 }
 
@@ -2145,22 +2201,28 @@ ul.segmented_menu li.last a {
   font-size:15px;
 }
 
+p#current_usage_amount {
+  padding-left:36px;
+  background:url(/images/embed/invoice_icon.png) no-repeat 0 7px;
+}
+
 #invoices_summary .past_invoices {
   background:url(/images/embed/breakline.png) no-repeat -228px 0;
   padding:10px 0 0;
   margin-top:15px;
 }
 
-#invoices_summary .past_invoices ul {
+#invoices_summary .past_invoices ul, #failed_invoices ul {
   list-style-type:none;
 }
 
-#invoices_summary .past_invoices ul li {
-  padding:6px 0;
+#invoices_summary .past_invoices ul li, #failed_invoices ul li {
+  padding:6px 0 6px 36px;
   font-size:15px;
+  background:url(/images/embed/invoice_icon.png) no-repeat 0 11px;
 }
 
-#invoices_summary .past_invoices ul li p.status {
+#invoices_summary .past_invoices ul li p.status, #failed_invoices ul li p.status {
   background:#bbbfc5;
   background:rgba(0,0,0,0.1);
   padding:5px 7px;
@@ -2171,15 +2233,15 @@ ul.segmented_menu li.last a {
   border-radius:4px;
 }
 
-#invoices_summary .past_invoices ul li p.status.failed strong {
+#invoices_summary .past_invoices ul li p.status.failed strong, #failed_invoices ul li p.status strong {
   color:#a50015;
 }
 
-#invoices_summary .past_invoices ul li strong {
+#invoices_summary .past_invoices ul li strong, #failed_invoices ul li strong {
   font-weight:600;
 }
 
-#invoices_summary a.details {
+#invoices_summary a.details, #failed_invoices a.details {
   font-weight:600;
   font-size:12px;
   border-bottom:1px solid #929fb6;

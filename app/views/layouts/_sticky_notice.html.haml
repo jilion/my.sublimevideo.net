@@ -1,4 +1,4 @@
-- if current_user.cc_expire_this_month? || current_user.cc_expired? || current_user.will_be_suspended? || (current_user.have_beta_sites? && PublicLaunch.days_left_before_end_of_beta_transition >= 0)
+- if !current_user.suspended? && (current_user.cc_expire_this_month? || current_user.cc_expired? || current_user.will_be_suspended? || (current_user.have_beta_sites? && PublicLaunch.days_left_before_end_of_beta_transition >= 0))
   #sticky_notice
     %h3 Warning
     %ul
@@ -22,8 +22,8 @@
             = ". "
             = raw t("please_link_to_know_more_about_it", :link => link_to("contact us", new_ticket_path))
 
-      - if !current_user.have_beta_sites?
-        - if !(PublicLaunch.days_left_before_end_of_beta_transition >= 1)
+      - if current_user.have_beta_sites?
+        - if PublicLaunch.days_left_before_end_of_beta_transition >= 1
           %li= "#{pluralize(PublicLaunch.days_left_before_end_of_beta_transition, 'day')} left to choose a plan for your beta sites."
-        - elsif !PublicLaunch.days_left_before_end_of_beta_transition == 0
+        - elsif PublicLaunch.days_left_before_end_of_beta_transition == 0
           %li= "Your beta sites will be rollbacked to development-only sites today!"
