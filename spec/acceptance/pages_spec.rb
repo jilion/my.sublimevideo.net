@@ -43,13 +43,14 @@ describe "Pages" do
 
           page.should have_content("Your credit card is expired.")
           page.should have_content("Visa ending in 1234")
-          page.should have_content("Change credit card")
-          page.should have_content("January 2010 - <strong>Charging failed</strong> on #{I18n.l(@invoice.failed_at, :format => :minutes_timezone)} with the following error:")
+          page.should have_content("Edit credit card")
+          page.should have_content("$100.00 on January 2010")
+          page.should have_content("Charging failed on #{I18n.l(@invoice.failed_at, :format => :minutes_timezone)} with the following error:")
           page.should have_content("\"#{@invoice.last_error}\"")
         end
 
         scenario "updating credit card" do
-          click_link_or_button "Change credit card"
+          click_link_or_button "Edit credit card"
 
           VCR.use_cassette('credit_card_visa_validation') do
             fill_in "user_cc_full_name", :with => "John Doe"
@@ -62,7 +63,7 @@ describe "Pages" do
         end
 
         scenario "updating credit card and paying the only failed invoice" do
-          click_link_or_button "Change credit card"
+          click_link_or_button "Edit credit card"
 
           VCR.use_cassette('credit_card_visa_validation') do
             fill_in "user_cc_full_name", :with => "John Doe"
@@ -88,12 +89,14 @@ describe "Pages" do
 
           visit '/suspended'
 
-          page.should have_content("January 2010 - <strong>Charging failed</strong> on #{I18n.l(@invoice.failed_at, :format => :minutes_timezone)} with the following error:")
+          page.should have_content("$100.00 on January 2010")
+          page.should have_content("Charging failed on #{I18n.l(@invoice.failed_at, :format => :minutes_timezone)} with the following error:")
           page.should have_content("\"#{@invoice.last_error}\"")
-          page.should have_content("February 2010 - <strong>Charging failed</strong> on #{I18n.l(@invoice2.failed_at, :format => :minutes_timezone)} with the following error:")
+          page.should have_content("$100.00 on February 2010")
+          page.should have_content("Charging failed on #{I18n.l(@invoice2.failed_at, :format => :minutes_timezone)} with the following error:")
           page.should have_content("\"#{@invoice2.last_error}\"")
 
-          click_link_or_button "Change credit card"
+          click_link_or_button "Edit credit card"
 
           VCR.use_cassette('credit_card_visa_validation') do
             fill_in "user_cc_full_name", :with => "John Doe"
