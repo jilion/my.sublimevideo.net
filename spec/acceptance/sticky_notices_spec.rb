@@ -85,11 +85,12 @@ feature "Sticky notices" do
   feature "user have beta sites" do
     background do
       sign_in_as :user
+      Timecop.travel(2010,2,1)
     end
 
-    scenario "show a notice" do
+    scenario "show a notice", :focus => true do
       Factory(:site, :user => @current_user, :state => "beta")
-      PublicLaunch.stub(:beta_transition_ended_on) { 12.days.from_now.to_date }
+      PublicLaunch.stub(:beta_transition_ended_on) { Date.new(2010,2,13) }
       visit '/sites'
 
       current_url.should =~ %r(http://[^/]+/sites)
