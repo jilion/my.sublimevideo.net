@@ -17,12 +17,7 @@ all_usages     = usages.map { |u| u["all_usage"].to_i }
 total_loader_usages  = loader_usages.inject([]) { |memo, u| memo << ((memo.last || 0) + u) }
 total_invalid_usages = invalid_usages.inject([]) { |memo, u| memo << ((memo.last || 0) + u) }
 total_dev_usages     = dev_usages.inject([]) { |memo, u| memo << ((memo.last || 0) + u) }
-total_main_usages    = main_usages.inject([]) { |memo, u| memo << ((memo.last || 0) + u) }
 total_all_usages     = all_usages.inject([]) { |memo, u| memo << ((memo.last || 0) + u) }
-
-total_loader_usages = loader_usages.inject([]) { |memo, u| memo << ((memo.last || 0) + u) }
-total_all_usages    = all_usages.inject([]) { |memo, u| memo << ((memo.last || 0) + u) }
-total_main_usages   = main_usages.inject([]) { |memo, u| memo << ((memo.last || 0) + u) }
 %>
 <script type = "text/javascript" charset="utf-8">
   document.observe("dom:loaded", function() {
@@ -97,28 +92,24 @@ total_main_usages   = main_usages.inject([]) { |memo, u| memo << ((memo.last || 
         {
           type: 'column',
           name: 'Invalid cached',
-          visible: false,
           color: '#FF8800',
           data: <%= usages.map { |u| u["invalid_usage_cached"].to_i } %>
         },
         {
           type: 'column',
           name: 'Invalid',
-          visible: false,
           color: '#FF0000',
           data: <%= invalid_usages %>
         },
         {
           type: 'column',
           name: 'Dev cached',
-          visible: false,
           color: '#11CC11',
           data: <%= usages.map { |u| u["dev_usage_cached"].to_i } %>
         },
         {
           type: 'column',
           name: 'Dev',
-          visible: false,
           color: '#33FF33',
           data: <%= dev_usages %>
         },
@@ -158,17 +149,11 @@ total_main_usages   = main_usages.inject([]) { |memo, u| memo << ((memo.last || 
         },
         {
           type: 'line',
-          name: 'AVG Main',
+          name: 'AVG Total',
           color: '#00FFFF',
-          data: <%= Array.new.tap { |arr| total_main_usages.each_with_index { |item, index| arr << (item / (index + 1)).to_i } } %>
+          data: <%= Array.new.tap { |arr| total_all_usages.each_with_index { |item, index| arr << (item / (index + 1)).to_i } } %>
         },
         
-        {
-          type: 'line',
-          name: 'TOT Main',
-          visible: false,
-          data: <%= total_main_usages %>
-        },
         {
           type: 'line',
           name: 'TOT All',
