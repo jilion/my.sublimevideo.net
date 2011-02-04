@@ -49,6 +49,8 @@ gem 'array_stats',           '~> 0.6.0'
 gem 'rescue_me',             '~> 0.1.0'
 gem 'addressable',           '~> 2.2.2'
 
+gem 'useragent', :git => 'git://github.com/Jilion/useragent.git'
+
 group :production do
   gem 'rack-google-analytics', '~> 0.9.2', :require => 'rack/google-analytics'
 end

@@ -6,7 +6,7 @@ module LogsFileFormat
       analyze = RequestLogAnalyzer::Aggregator::Summarizer::Definer.new
       analyze.frequency(:referrer, :title => :referrers,
         :category => lambda { |r| [r[:referrer], player_token_from(r[:path])] },
-        :if       => lambda { |r| player_token?(r[:path]) }
+        :if       => lambda { |r| player_token?(r[:path]) && countable_hit?(r) }
       )
       analyze.trackers
     end

@@ -1,4 +1,10 @@
 GIT
+  remote: git://github.com/Jilion/useragent.git
+  revision: e1836df84f8e57559d1de31c3578547ea9e9b796
+  specs:
+    useragent (0.2.3)
+
+GIT
   remote: git://github.com/guard/guard.git
   revision: a21bb8e306e44fd153c8b88a7c59c00e451b1d52
   specs:
@@ -350,6 +356,7 @@ DEPENDENCIES
   taps (~> 0.3.14)
   timecop (~> 0.3.5)
   uniquify (~> 0.1.0)
+  useragent!
   vcr (~> 1.4.0)
   voxel_hapi!
   webmock (~> 1.6.1)
