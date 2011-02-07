@@ -1,9 +1,8 @@
 source :rubygems
 
-gem 'bundler',               '1.0.7'
+gem 'bundler',               '~> 1.0.10'
 
-# gem 'rails',                 '~> 3.0.3'
-gem 'rails',                 :git => 'git://github.com/thibaudgg/rails.git', :branch => 'spork' # 3.0.3
+gem 'rails',                 '~> 3.0.3'
 gem 'rack',                  '1.2.1'
 gem 'arel',                  '2.0.7'
 gem 'pg',                    '0.10.1'
@@ -21,7 +20,7 @@ gem 'will_paginate',         '3.0.pre2'
 gem 'has_scope',             :git => 'git://github.com/rymai/has_scope.git'
 gem 'jammit',                '0.6.0'
 gem 'meta_where',            '1.0.1'
-gem 'hoptoad_notifier',      '2.4.2'
+gem 'hoptoad_notifier',      '~> 2.4.5'
 gem 'prowl',                 '0.1.3'
 # gem 'activemerchant',        '~> 1.9.1'
 # Pull request: https://github.com/Shopify/active_merchant/pull/64
@@ -32,21 +31,18 @@ gem 'public_suffix_service', '0.8.1'
 gem 'RedCloth',              '4.2.3'
 gem 'liquid',                '2.2.2'
 
-# gem 'devise',                '~> 1.1.5'
-# gem 'devise',                :git => 'git://github.com/thibaudgg/devise.git', :branch => 'spork' # 1.1.5
-gem 'devise',                :git => 'git://github.com/rymai/devise.git', :branch => 'spork' # 1.1.5
+gem 'devise',                '~> 1.1.5'
 gem 'devise_invitable',      :git => 'git://github.com/rymai/devise_invitable.git'
 
 gem 'dalli',                 '1.0.1'
 
 gem 'aws',                   '2.3.34' # bugs in 2.4.2
-gem 'fog',                   '0.4.1'
+gem 'fog',                   '0.5.1'
 gem 'carrierwave',           '0.5.1'
 
 gem 'bson_ext',              '1.2.0'
 gem 'mongo',                 '1.2.0'
-# gem 'mongoid',               '~> 2.0.0.beta.20'
-gem 'mongoid',               :git => 'git://github.com/thibaudgg/mongoid.git', :branch => 'spork' # 2.0.0.beta.20
+gem 'mongoid',               '~> 2.0.0.rc.7'
 
 gem 'zip',                   '2.0.2', :require => 'zip/zip'
 gem 'countries',             '0.3.0'
@@ -86,7 +82,7 @@ end
 
 group :test do
   gem 'growl'
-  gem 'spork',              '~> 0.9.0.rc2'
+  gem 'spork',              '~> 0.9.0.rc3'
   gem 'rb-fsevent',         '~> 0.3.9'
   gem 'guard'
   gem 'guard-ego'

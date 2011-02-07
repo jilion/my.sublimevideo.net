@@ -88,7 +88,7 @@ feature "Sticky notices" do
       Timecop.travel(2010,2,1)
     end
 
-    scenario "show a notice", :focus => true do
+    scenario "show a notice" do
       Factory(:site, :user => @current_user, :state => "beta")
       PublicLaunch.stub(:beta_transition_ended_on) { Date.new(2010,2,13) }
       visit '/sites'

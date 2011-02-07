@@ -7,6 +7,12 @@ Spork.prefork do
   # if you change any configuration or code from libraries loaded here, you'll
   # need to restart spork for it take effect.
 
+  # https://github.com/timcharper/spork/wiki/Spork.trap_method-Jujutsu
+  require "rails/mongoid"
+  Spork.trap_class_method(Rails::Mongoid, :load_models)
+  require "rails/application"
+  Spork.trap_method(Rails::Application, :reload_routes!)
+
   require File.dirname(__FILE__) + "/../config/environment"
   require 'rspec/rails'
   require 'vcr'
@@ -69,15 +75,6 @@ end
 
 Spork.each_run do
   # This code will be run each time you run your specs.
-
-  # Needed to prevent all models loaded by Mongoid
-  Rails::Mongoid.load_models(MySublimeVideo::Application)
-
-  # Needed to prevent routes.rb to be load on Rails initialization and make User/Admin model loaded by devise_for
-  MySublimeVideo::Application.reload_routes!
-
-  # Reload yml locales
-  I18n.reload!
 
   # Factory need to be required each launch to prevent loading of all models
   require 'factory_girl'
