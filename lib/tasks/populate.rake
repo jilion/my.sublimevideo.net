@@ -159,7 +159,6 @@ def create_sites(max = 5)
   print "0-#{max} random sites created for each user!\n"
 end
 
-
 def create_site_usages
   start_date = Date.new(2010,9,14)
   end_date   = Date.today
