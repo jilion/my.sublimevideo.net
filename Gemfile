@@ -40,7 +40,7 @@ gem 'carrierwave',           '~> 0.5.0'
 
 gem 'bson_ext',              '~> 1.2.0'
 gem 'mongo',                 '~> 1.2.0'
-gem 'mongoid',               '~> 2.0.0.rc.7'
+gem 'mongoid',               '2.0.0.beta.20'
 
 gem 'zip',                   '~> 2.0.2', :require => 'zip/zip'
 gem 'countries',             '~> 0.3.0'
