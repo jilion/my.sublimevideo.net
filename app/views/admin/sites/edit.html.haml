@@ -63,11 +63,12 @@
 %hr
 %br
 
-%h3 Mode update
+- if zeno? || Rails.env.development?
+  %h3 Mode update
 
-= form_for [:admin, @site] do |f|
-  = f.select :player_mode, Site::PLAYER_MODES
-  = f.submit "Update site"
+  = form_for [:admin, @site] do |f|
+    = f.select :player_mode, Site::PLAYER_MODES
+    = f.submit "Update site"
 
 %br
 %hr
