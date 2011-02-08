@@ -46,8 +46,21 @@
 %hr
 %br
 
-- if zeno?
-  %h3 Player mode update
+%h3 Details
+
+%ul
+  %li= "State: " + @site.state
+  %li= "Created at: " + display_date(@site.created_at)
+  %li= "Updated at: " + display_date(@site.updated_at)
+  %li= "Archived at: " + display_date(@site.archived_at)
+
+%br
+%hr
+%br
+
+- if zeno? || Rails.env.development?
+  %h3 Mode update
+
   = form_for [:admin, @site] do |f|
     = f.select :player_mode, Site::PLAYER_MODES
     = f.submit "Update player mode"
