@@ -37,11 +37,11 @@ class UsrAgent # fucking name conflict with UserAgent gem
   validates :site_id, :presence => true
   validates :token,   :presence => true
   validates :month,   :presence => true
-  
+
   # ====================
   # = Instance Methods =
   # ====================
-  
+
   def update_hashes(hits, useragent_hash = {})
     # platforms
     platforms_dup = self[:platforms].dup
@@ -58,7 +58,7 @@ class UsrAgent # fucking name conflict with UserAgent gem
     self.browsers = browsers_dup
     self.save
   end
-  
+
   # =================
   # = Class Methods =
   # =================
@@ -67,7 +67,7 @@ class UsrAgent # fucking name conflict with UserAgent gem
     ref_hash = trackers.detect { |t| t.options[:title] == :useragent }.categories
     ref_hash.each do |useragent_and_token, hits|
       useragent_string, token = useragent_and_token[0],  useragent_and_token[1]
-      useragent_hash = useragent_hash(useragent_string)      
+      useragent_hash = useragent_hash(useragent_string)
       month = log.started_at.utc.to_time.beginning_of_month
       if usr_agent = UsrAgent.where(:month => month, :token => token).first
         usr_agent.update_hashes(hits, useragent_hash)
@@ -81,15 +81,20 @@ class UsrAgent # fucking name conflict with UserAgent gem
       end
     end
   end
-  
+
 private
-  
+
   def self.useragent_hash(useragent_string)
     useragent = UserAgent.parse(useragent_string) # gem here
-    %w[browser version platform os].inject({}) do |hash, attr|
-      hash[attr.to_sym] = useragent.send(attr).gsub(/\./, '::').gsub(/\"/, '') || "unknown"
+    hash = %w[browser version platform os].inject({}) do |hash, attr|
+      hash[attr.to_sym] = useragent.send(attr).gsub(/\./, '::') || "unknown"
       hash
     end
+    if hash[:browser] == "unknown" || hash[:version] == "unknown"
+      unknowns = hash.select { |k, v| v == "unknown" }.keys
+      UsrAgentUnknown.create(:user_agent => useragent_string, :unknowns => unknowns )
+    end
+    hash
   end
 
 end
