@@ -7,3 +7,5 @@ $('table_spinner').hide();
     $('users_title').update("<%= "#{pluralize(@users.total_entries, 'User')} that contains '#{params[:search]}'" %>");
   <% end %>
 <% end %>
+$(document.body).scrollTo();
+$('search_button').disabled = false;

@@ -10,7 +10,7 @@ class Admin::AdminController < ApplicationController
     @date_range_from = if params[:date_range_from]
       Time.utc(params[:date_range_from][:year].to_i, params[:date_range_from][:month].to_i, params[:date_range_from][:day].to_i)
     else
-      (1.month.ago - 1.day).utc
+      1.month.ago.utc
     end.midnight
 
     @date_range_to = if params[:date_range_to]
@@ -18,8 +18,14 @@ class Admin::AdminController < ApplicationController
     else
       Time.now.utc.yesterday
     end.end_of_day
+    
+    @moving_avg = if params[:moving_avg]
+      params[:moving_avg].to_i
+    else
+      10
+    end
 
-    if params[:date_range_from] || params[:date_range_to]
+    if params[:date_range_from] || params[:date_range_to] || params[:moving_avg]
       expire_fragment('dashboard_timeline_usage')
       expire_fragment('dashboard_box_users')
       expire_fragment('dashboard_box_sites')

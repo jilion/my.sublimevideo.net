@@ -7,3 +7,5 @@ $('table_spinner').hide();
     $('sites_title').update("<%= "#{pluralize(@sites.total_entries, 'Site')} that contains '#{params[:search]}'" %>");
   <% end %>
 <% end %>
+$(document.body).scrollTo();
+$('search_button').disabled = false;

@@ -106,6 +106,14 @@ module Admin::StatsHelper
     zeros_days = array.select { |value| value.zero? }.size
     Array.new.tap { |arr| array.each_with_index { |item, index| arr << (item.to_f / [(index + 1 - zeros_days), 1].max).round(2) } }
   end
+  
+  def moving_average(array, range)
+    Array.new.tap do |arr|
+      (0..(array.size - range)).each do |index|
+        arr << array[index, range].mean
+      end
+    end
+  end
 
   def plot_options(start_at, interval=1.day, options={})
     points = options[:linear] ? {} : { pointStart: start_at.to_i * 1000, pointInterval: interval * 1000 }

@@ -1,9 +1,12 @@
 <%
 interval = 1.day
-title    = "VPV per day, total and averages for #{site.hostname} between #{l(@date_range_from, :format => :small)} and #{l(@date_range_to, :format => :small)}"
+moving_average_days_count = @moving_avg
+title      = "VPV per day, total and averages for #{site.hostname} between #{l(@date_range_from, :format => :small)} and #{l(@date_range_to, :format => :small)}"
+days_range = (@date_range_from.to_date..@date_range_to.to_date)
+days_count = days_range.to_a.size
 
-usages = Stat.usages(@date_range_from, @date_range_to, { :site_id => site.try(:id) })
-usages = (@date_range_from.to_date..@date_range_to.to_date).inject([]) do |memo, day|
+usages = Stat.usages(@date_range_from - (moving_average_days_count-1).days, @date_range_to, { :site_id => site.try(:id) })
+usages = ((@date_range_from - (moving_average_days_count-1).days).to_date..@date_range_to.to_date).inject([]) do |memo, day|
   usage_on_day = usages.detect { |u| u["day"].to_date == day }
   memo << (usage_on_day ? usage_on_day : { "day" => day })
 end
@@ -14,19 +17,22 @@ dev_usages     = usages.map { |u| u["dev_usage"].to_i }
 main_usages    = usages.map { |u| u["main_usage"].to_i }
 all_usages     = usages.map { |u| u["all_usage"].to_i }
 
-total_loader_usages  = loader_usages.inject([]) { |memo, u| memo << ((memo.last || 0) + u) }
-total_invalid_usages = invalid_usages.inject([]) { |memo, u| memo << ((memo.last || 0) + u) }
-total_dev_usages     = dev_usages.inject([]) { |memo, u| memo << ((memo.last || 0) + u) }
-total_main_usages    = main_usages.inject([]) { |memo, u| memo << ((memo.last || 0) + u) }
-total_all_usages     = all_usages.inject([]) { |memo, u| memo << ((memo.last || 0) + u) }
+total_main_usages = main_usages[moving_average_days_count-1..-1].inject([]) { |memo, u| memo << ((memo.last || 0) + u) }
+total_all_usages  = all_usages[moving_average_days_count-1..-1].inject([]) { |memo, u| memo << ((memo.last || 0) + u) }
 
-perso_monthly_limit = 3000 # we fake ~ site.plan.limit
-pro_monthly_limit   = 30000 # we fake ~ site.plan.limit
-huge_monthly_limit  = 300000 # we fake ~ site.plan.limit
+plans_limit = [[3_000, "Comet"], [50_000, "Star"], [200_000, "Galaxy"], [1_000_000, "Universe"]]
 
-perso_daily_limit = perso_monthly_limit / 30 # we fake ~ site.plan.limit
-pro_daily_limit   = pro_monthly_limit / 30 # we fake ~ site.plan.limit
-huge_daily_limit  = huge_monthly_limit / 30 # we fake ~ site.plan.limit
+selected_plan = case main_usages[moving_average_days_count-1..-1].total_sum / days_count
+when (0..(plans_limit[0][0] / 30))
+  0
+when ((plans_limit[0][0] / 30)..(plans_limit[1][0] / 30))
+  1
+when ((plans_limit[1][0] / 30)..(plans_limit[2][0] / 30))
+  2
+else
+  3
+end
+prorated_plan_limit = (28..31).include?(days_count) ? plans_limit[selected_plan][0] : (plans_limit[selected_plan][0] / 30) * days_count
 %>
 <script type = "text/javascript" charset="utf-8">
   document.observe("dom:loaded", function() {
@@ -87,7 +93,7 @@ huge_daily_limit  = huge_monthly_limit / 30 # we fake ~ site.plan.limit
             percentage_of_limit = "Loader / Player: " + Highcharts.numberFormat((this.y / (this.total - this.y)), 1);
           }
           else if (this.series.name == "TOT Main") {
-            percentage_of_limit = Highcharts.numberFormat((this.y / <%= pro_monthly_limit %>)*100, 0) + "% of pro plan limit";
+            percentage_of_limit = Highcharts.numberFormat((this.y / <%= (plans_limit[selected_plan][0] / 30) * days_count %>)*100, 0) + "% of <%= plans_limit[selected_plan][1] %> plan limit";
           }
           if(percentage_of_limit) percentage_of_limit = "<br/>" + percentage_of_limit
 
@@ -100,43 +106,43 @@ huge_daily_limit  = huge_monthly_limit / 30 # we fake ~ site.plan.limit
         name: 'Loader',
         visible: false,
         color: '#AA0',
-        data: <%= loader_usages %>
+        data: <%= loader_usages[moving_average_days_count-1..-1] %>
       },
       {
         type: 'column',
         name: 'Invalid cached',
         color: '#F80',
-        data: <%= usages.map { |u| u["invalid_usage_cached"].to_i } %>
+        data: <%= usages.map { |u| u["invalid_usage_cached"].to_i }[moving_average_days_count-1..-1] %>
       },
       {
         type: 'column',
         name: 'Invalid',
         color: '#F00',
-        data: <%= invalid_usages %>
+        data: <%= invalid_usages[moving_average_days_count-1..-1] %>
       },
       {
         type: 'column',
         name: 'Dev cached',
         color: '#1C1',
-        data: <%= usages.map { |u| u["dev_usage_cached"].to_i } %>
+        data: <%= usages.map { |u| u["dev_usage_cached"].to_i }[moving_average_days_count-1..-1] %>
       },
       {
         type: 'column',
         name: 'Dev',
         color: '#3F3',
-        data: <%= dev_usages %>
+        data: <%= dev_usages[moving_average_days_count-1..-1] %>
       },
       {
         type: 'column',
         name: 'Main cached',
         color: '#08F',
-        data: <%= usages.map { |u| u["main_usage_cached"].to_i } %>
+        data: <%= usages.map { |u| u["main_usage_cached"].to_i }[moving_average_days_count-1..-1] %>
       },
       {
         type: 'column',
         name: 'Main',
         color: '#00F',
-        data: <%= main_usages %>
+        data: <%= main_usages[moving_average_days_count-1..-1] %>
       },
 
       {
@@ -144,27 +150,27 @@ huge_daily_limit  = huge_monthly_limit / 30 # we fake ~ site.plan.limit
         name: 'AVG Loader',
         visible: false,
         color: '#FF0',
-        data: <%= Array.new.tap { |arr| total_loader_usages.each_with_index { |item, index| arr << (item / (index + 1)).to_i } } %>
+        data: <%= moving_average(loader_usages, moving_average_days_count) %>
       },
       {
         type: 'line',
         name: 'AVG Invalid',
         visible: false,
         color: '#FC3',
-        data: <%= Array.new.tap { |arr| total_invalid_usages.each_with_index { |item, index| arr << (item / (index + 1)).to_i } } %>
+        data: <%= moving_average(invalid_usages, moving_average_days_count) %>
       },
       {
         type: 'line',
         name: 'AVG Dev',
         visible: false,
         color: '#6F6',
-        data: <%= Array.new.tap { |arr| total_dev_usages.each_with_index { |item, index| arr << (item / (index + 1)).to_i } } %>
+        data: <%= moving_average(dev_usages, moving_average_days_count) %>
       },
       {
         type: 'line',
-        name: 'AVG Main',
+        name: 'AVG Total',
         color: '#0FF',
-        data: <%= Array.new.tap { |arr| total_main_usages.each_with_index { |item, index| arr << (item / (index + 1)).to_i } } %>
+        data: <%= moving_average(all_usages, moving_average_days_count) %>
       },
 
       {
@@ -182,38 +188,20 @@ huge_daily_limit  = huge_monthly_limit / 30 # we fake ~ site.plan.limit
 
       {
         type: 'line',
-        name: 'AVG Perso',
-        visible: false,
-        data: <%= Array.new(main_usages.size, perso_daily_limit) %>
+        name: 'AVG <%= plans_limit[selected_plan][1] %>',
+        data: <%= Array.new(main_usages.size - moving_average_days_count + 1, plans_limit[selected_plan][0]/30) %>
       },
       {
         type: 'line',
-        name: 'AVG Pro',
-        data: <%= Array.new(main_usages.size, pro_daily_limit) %>
+        name: 'LIMIT <%= plans_limit[selected_plan][1] %>',
+        visible: false,
+        data: <%= Array.new(main_usages.size - moving_average_days_count + 1, prorated_plan_limit) %>
       },
       {
         type: 'line',
-        name: 'AVG Enterprise',
+        name: 'LIMIT <%= plans_limit[selected_plan][1] %> + 30%',
         visible: false,
-        data: <%= Array.new(main_usages.size, huge_daily_limit) %>
-      },
-      {
-        type: 'line',
-        name: 'LIMIT Perso',
-        visible: false,
-        data: <%= Array.new(main_usages.size, perso_monthly_limit) %>
-      },
-      {
-        type: 'line',
-        name: 'LIMIT Pro',
-        visible: false,
-        data: <%= Array.new(main_usages.size, pro_monthly_limit) %>
-      },
-      {
-        type: 'line',
-        name: 'LIMIT Enterprise',
-        visible: false,
-        data: <%= Array.new(main_usages.size, huge_monthly_limit) %>
+        data: <%= Array.new(main_usages.size - moving_average_days_count + 1, prorated_plan_limit * 1.3) %>
       }],
       plotOptions: {
         column: {

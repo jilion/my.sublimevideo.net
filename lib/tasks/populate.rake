@@ -307,7 +307,6 @@ def create_sites
   puts "#{BASE_SITES.size} beautiful sites created for each user!"
 end
 
-
 def create_site_usages
   start_date = Date.new(2010,9,14)
   end_date   = Date.today

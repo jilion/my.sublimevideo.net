@@ -1,9 +1,10 @@
 <%
 interval = 1.day
+moving_average_days_count = @moving_avg
 title    = "VPV per day, total and averages between #{l(@date_range_from.to_date, :format => :small)} and #{l(@date_range_to, :format => :small)}"
 
-usages = Stat.usages(@date_range_from, @date_range_to)
-usages = (@date_range_from.to_date..@date_range_to.to_date).inject([]) do |memo, day|
+usages = Stat.usages(@date_range_from - (moving_average_days_count-1).days, @date_range_to)
+usages = ((@date_range_from - (moving_average_days_count-1).days).to_date..@date_range_to.to_date).inject([]) do |memo, day|
   usage_on_day = usages.detect { |u| u["day"].to_date == day }
   memo << (usage_on_day ? usage_on_day : { "day" => day })
 end
@@ -14,15 +15,8 @@ dev_usages     = usages.map { |u| u["dev_usage"].to_i }
 main_usages    = usages.map { |u| u["main_usage"].to_i }
 all_usages     = usages.map { |u| u["all_usage"].to_i }
 
-total_loader_usages  = loader_usages.inject([]) { |memo, u| memo << ((memo.last || 0) + u) }
-total_invalid_usages = invalid_usages.inject([]) { |memo, u| memo << ((memo.last || 0) + u) }
-total_dev_usages     = dev_usages.inject([]) { |memo, u| memo << ((memo.last || 0) + u) }
-total_main_usages    = main_usages.inject([]) { |memo, u| memo << ((memo.last || 0) + u) }
-total_all_usages     = all_usages.inject([]) { |memo, u| memo << ((memo.last || 0) + u) }
-
-total_loader_usages = loader_usages.inject([]) { |memo, u| memo << ((memo.last || 0) + u) }
-total_all_usages    = all_usages.inject([]) { |memo, u| memo << ((memo.last || 0) + u) }
-total_main_usages   = main_usages.inject([]) { |memo, u| memo << ((memo.last || 0) + u) }
+total_main_usages = main_usages[moving_average_days_count-1..-1].inject([]) { |memo, u| memo << ((memo.last || 0) + u) }
+total_all_usages  = all_usages[moving_average_days_count-1..-1].inject([]) { |memo, u| memo << ((memo.last || 0) + u) }
 %>
 <script type = "text/javascript" charset="utf-8">
   document.observe("dom:loaded", function() {
@@ -92,47 +86,43 @@ total_main_usages   = main_usages.inject([]) { |memo, u| memo << ((memo.last || 
           name: 'Loader',
           visible: false,
           color: '#AAAA00',
-          data: <%= loader_usages %>
+          data: <%= loader_usages[moving_average_days_count-1..-1] %>
         },
         {
           type: 'column',
           name: 'Invalid cached',
-          visible: false,
           color: '#FF8800',
-          data: <%= usages.map { |u| u["invalid_usage_cached"].to_i } %>
+          data: <%= usages.map { |u| u["invalid_usage_cached"].to_i }[moving_average_days_count-1..-1] %>
         },
         {
           type: 'column',
           name: 'Invalid',
-          visible: false,
           color: '#FF0000',
-          data: <%= invalid_usages %>
+          data: <%= invalid_usages[moving_average_days_count-1..-1] %>
         },
         {
           type: 'column',
           name: 'Dev cached',
-          visible: false,
           color: '#11CC11',
-          data: <%= usages.map { |u| u["dev_usage_cached"].to_i } %>
+          data: <%= usages.map { |u| u["dev_usage_cached"].to_i }[moving_average_days_count-1..-1] %>
         },
         {
           type: 'column',
           name: 'Dev',
-          visible: false,
           color: '#33FF33',
-          data: <%= dev_usages %>
+          data: <%= dev_usages[moving_average_days_count-1..-1] %>
         },
         {
           type: 'column',
           name: 'Main cached',
           color: '#0088FF',
-          data: <%= usages.map { |u| u["main_usage_cached"].to_i } %>
+          data: <%= usages.map { |u| u["main_usage_cached"].to_i }[moving_average_days_count-1..-1] %>
         },
         {
           type: 'column',
           name: 'Main',
           color: '#0000FF',
-          data: <%= main_usages %>
+          data: <%= main_usages[moving_average_days_count-1..-1] %>
         },
         
         {
@@ -140,27 +130,27 @@ total_main_usages   = main_usages.inject([]) { |memo, u| memo << ((memo.last || 
           name: 'AVG Loader',
           visible: false,
           color: '#FFFF00',
-          data: <%= Array.new.tap { |arr| total_loader_usages.each_with_index { |item, index| arr << (item / (index + 1)).to_i } } %>
+          data: <%= moving_average(loader_usages, moving_average_days_count) %>
         },
         {
           type: 'line',
           name: 'AVG Invalid',
           visible: false,
           color: '#FFCC33',
-          data: <%= Array.new.tap { |arr| total_invalid_usages.each_with_index { |item, index| arr << (item / (index + 1)).to_i } } %>
+          data: <%= moving_average(invalid_usages, moving_average_days_count) %>
         },
         {
           type: 'line',
           name: 'AVG Dev',
           visible: false,
           color: '#009900',
-          data: <%= Array.new.tap { |arr| total_dev_usages.each_with_index { |item, index| arr << (item / (index + 1)).to_i } } %>
+          data: <%= moving_average(dev_usages, moving_average_days_count) %>
         },
         {
           type: 'line',
-          name: 'AVG Main',
+          name: 'AVG Total',
           color: '#00FFFF',
-          data: <%= Array.new.tap { |arr| total_main_usages.each_with_index { |item, index| arr << (item / (index + 1)).to_i } } %>
+          data: <%= moving_average(all_usages, moving_average_days_count) %>
         },
         
         {
