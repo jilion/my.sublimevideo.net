@@ -67,11 +67,15 @@ class Log
 
   def self.create_new_logs(new_logs_names)
     existings_logs_names = only(:name).any_in(:name => new_logs_names).map(&:name)
-    new_logs = new_logs_names.inject([]) do |new_logs, logs_name|
-      new_logs << new(:name => logs_name)
+    new_logs_names.each do |name|
+      if existings_logs_names.exclude?(name)
+        begin
+          create(:name => name)
+        rescue => ex
+          HoptoadNotifier.notify(ex)
+        end
+      end
     end
-    new_logs = new_logs.select { |l| existings_logs_names.exclude?(l.name) }
-    new_logs.map(&:save)
   rescue => ex
     HoptoadNotifier.notify(ex)
   end
