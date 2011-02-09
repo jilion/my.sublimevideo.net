@@ -68,17 +68,18 @@ class UsrAgent # fucking name conflict with UserAgent gem
     ref_hash.each do |useragent_and_token, hits|
       useragent_string, token = useragent_and_token[0],  useragent_and_token[1]
       if useragent_string.present?
-        useragent_hash = useragent_hash(useragent_string)
-        month = log.started_at.utc.to_time.beginning_of_month
-        if usr_agent = UsrAgent.where(:month => month, :token => token).first
-          usr_agent.update_hashes(hits, useragent_hash)
-        else
-          self.create(
-            :month     => month,
-            :token     => token,
-            :platforms => { useragent_hash[:platform] => { useragent_hash[:os] => hits } },
-            :browsers  => { useragent_hash[:browser]  => { "versions" => { useragent_hash[:version] => hits }, "platforms" => { useragent_hash[:platform] => hits } } }
-          )
+        if useragent_hash = useragent_hash(useragent_string)
+          month = log.started_at.utc.to_time.beginning_of_month
+          if usr_agent = UsrAgent.where(:month => month, :token => token).first
+            usr_agent.update_hashes(hits, useragent_hash)
+          else
+            self.create(
+              :month     => month,
+              :token     => token,
+              :platforms => { useragent_hash[:platform] => { useragent_hash[:os] => hits } },
+              :browsers  => { useragent_hash[:browser]  => { "versions" => { useragent_hash[:version] => hits }, "platforms" => { useragent_hash[:platform] => hits } } }
+            )
+          end
         end
       end
     end
@@ -92,17 +93,19 @@ private
     rescue => ex
       Notify.send("UserAgent (gem) parsing problem with: #{useragent_string}", :exception => ex)
     end
-    hash = %w[browser version platform os].inject({}) do |hash, attr|
-      hash[attr.to_sym] = useragent.send(attr).try(:gsub,/\./, '::') || "unknown"
+    if useragent.present?
+      hash = %w[browser version platform os].inject({}) do |hash, attr|
+        hash[attr.to_sym] = useragent.send(attr).try(:gsub,/\./, '::') || "unknown"
+        hash
+      end
+      if hash[:browser] == "unknown" || hash[:version] == "unknown"
+        unknowns = hash.select { |k, v| v == "unknown" }.keys
+        unless UsrAgentUnknown.where(:user_agent => useragent_string).exists?
+          UsrAgentUnknown.create(:user_agent => useragent_string, :unknowns => unknowns )
+        end
+      end
       hash
     end
-    if hash[:browser] == "unknown" || hash[:version] == "unknown"
-      unknowns = hash.select { |k, v| v == "unknown" }.keys
-      unless UsrAgentUnknown.where(:user_agent => useragent_string).exists?
-        UsrAgentUnknown.create(:user_agent => useragent_string, :unknowns => unknowns )
-      end
-    end
-    hash
   end
 
 end
