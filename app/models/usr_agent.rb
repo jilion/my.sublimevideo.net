@@ -67,17 +67,19 @@ class UsrAgent # fucking name conflict with UserAgent gem
     ref_hash = trackers.detect { |t| t.options[:title] == :useragent }.categories
     ref_hash.each do |useragent_and_token, hits|
       useragent_string, token = useragent_and_token[0],  useragent_and_token[1]
-      useragent_hash = useragent_hash(useragent_string)
-      month = log.started_at.utc.to_time.beginning_of_month
-      if usr_agent = UsrAgent.where(:month => month, :token => token).first
-        usr_agent.update_hashes(hits, useragent_hash)
-      else
-        self.create(
-          :month     => month,
-          :token     => token,
-          :platforms => { useragent_hash[:platform] => { useragent_hash[:os] => hits } },
-          :browsers  => { useragent_hash[:browser]  => { "versions" => { useragent_hash[:version] => hits }, "platforms" => { useragent_hash[:platform] => hits } } }
-        )
+      if useragent_string.present?
+        useragent_hash = useragent_hash(useragent_string)
+        month = log.started_at.utc.to_time.beginning_of_month
+        if usr_agent = UsrAgent.where(:month => month, :token => token).first
+          usr_agent.update_hashes(hits, useragent_hash)
+        else
+          self.create(
+            :month     => month,
+            :token     => token,
+            :platforms => { useragent_hash[:platform] => { useragent_hash[:os] => hits } },
+            :browsers  => { useragent_hash[:browser]  => { "versions" => { useragent_hash[:version] => hits }, "platforms" => { useragent_hash[:platform] => hits } } }
+          )
+        end
       end
     end
   end
