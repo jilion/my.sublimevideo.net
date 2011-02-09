@@ -10,7 +10,7 @@ module Notify
 
     def hoptoad(message, options)
       if options[:exception]
-        HoptoadNotifier.notify(options[:exception], :error_message => message)
+        HoptoadNotifier.notify(:error_message => message + " // exception: #{options[:exception]}")
       else
         HoptoadNotifier.notify(:error_message => message)
       end

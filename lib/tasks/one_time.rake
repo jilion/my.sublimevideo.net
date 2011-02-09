@@ -78,6 +78,17 @@ namespace :one_time do
     task :rollback_beta_sites => :environment do
       puts OneTime::Site.rollback_beta_sites_to_dev
     end
+    
+    desc "Parse all unparsed user_agents logs"
+    task :parse_user_agents_logs => :environment do
+      count = Log::Voxcast.where(:user_agents_parsed_at => nil).count
+      skip  = 0
+      while skip < count
+        ids = Log::Voxcast.where(:user_agents_parsed_at => nil).only(:id).limit(1000).skip(skip).map(&:id)
+        ids.each { |id| Log::Voxcast.delay(:priority => 90, :run_at => 1.minute.from_now).parse_log_for_user_agents(id) }
+        skip += 1000
+      end
+    end
   end
 
 end

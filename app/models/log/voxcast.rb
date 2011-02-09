@@ -1,6 +1,7 @@
 class Log::Voxcast < Log
 
   field :referrers_parsed_at,  :type => DateTime
+  field :user_agents_parsed_at,  :type => DateTime
 
   # ================
   # = Associations =
@@ -19,7 +20,7 @@ class Log::Voxcast < Log
   # =============
 
   before_validation :download_and_set_log_file
-  after_create :delay_parse_referrers
+  after_create :delay_parse_referrers, :delay_parse_user_agents
 
   # ====================
   # = Instance Methods =
@@ -48,6 +49,21 @@ class Log::Voxcast < Log
     referrers_parsed_at.present?
   end
 
+  def parse_and_create_user_agents!
+    unless user_agents_parsed?
+      logs_file = copy_logs_file_to_tmp
+      trackers = LogAnalyzer.parse(logs_file, 'LogsFileFormat::VoxcastUserAgents')
+      UsrAgent.create_or_update_from_trackers!(self, trackers)
+      File.delete(logs_file.path)
+      self.user_agents_parsed_at = Time.now.utc
+      self.save
+    end
+  end
+
+  def user_agents_parsed?
+    user_agents_parsed_at.present?
+  end
+
   # =================
   # = Class Methods =
   # =================
@@ -69,6 +85,11 @@ class Log::Voxcast < Log
     log.parse_and_create_referrers!
   end
 
+  def self.parse_log_for_user_agents(id)
+    log = find(id)
+    log.parse_and_create_user_agents!
+  end
+
 private
 
   # before_validation
@@ -84,6 +105,11 @@ private
   # after_create
   def delay_parse_referrers
     self.class.delay(:priority => 90, :run_at => 1.minute.from_now).parse_log_for_referrers(id)
+  end
+
+  # after_create
+  def delay_parse_user_agents
+    self.class.delay(:priority => 90, :run_at => 1.minute.from_now).parse_log_for_user_agents(id)
   end
 
   # call from name= in Log
