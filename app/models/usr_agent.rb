@@ -94,7 +94,9 @@ private
     end
     if hash[:browser] == "unknown" || hash[:version] == "unknown"
       unknowns = hash.select { |k, v| v == "unknown" }.keys
-      UsrAgentUnknown.create(:user_agent => useragent_string, :unknowns => unknowns )
+      unless UsrAgentUnknown.where(:user_agent => useragent_string).exists?
+        UsrAgentUnknown.create(:user_agent => useragent_string, :unknowns => unknowns )
+      end
     end
     hash
   end
