@@ -87,7 +87,11 @@ class UsrAgent # fucking name conflict with UserAgent gem
 private
 
   def self.useragent_hash(useragent_string)
-    useragent = UserAgent.parse(useragent_string) # gem here
+    begin
+      useragent = UserAgent.parse(useragent_string) # gem here
+    rescue => ex
+      Notify.send("UserAgent (gem) parsing problem with: #{useragent_string}", :exception => ex)
+    end
     hash = %w[browser version platform os].inject({}) do |hash, attr|
       hash[attr.to_sym] = useragent.send(attr).try(:gsub,/\./, '::') || "unknown"
       hash
