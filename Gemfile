@@ -2,14 +2,13 @@ source :rubygems
 
 gem 'bundler',               '~> 1.0'
 
-gem 'rails',                 '~> 3.0.3'
+gem 'rails',                 '~> 3.0.4'
 gem 'rack',                  '~> 1.2.1'
 gem 'pg',                    '~> 0.10.0'
 
 gem 'configuration',         '~> 1.2.0'
 gem 'libxml-ruby',           '~> 1.1.3', :require => 'libxml'
 
-gem 'i18n',                  '~> 0.4.1'
 gem 'haml',                  '~> 3.0.22'
 gem 'state_machine',         '~> 0.9.4'
 gem 'responders',            '~> 0.6.2'
