@@ -1,30 +1,13 @@
-## MAC OS
-.DS_Store
-.Trashes
-.com.apple.timemachine.supported
-.fseventsd
-Desktop DB
-Desktop DF
-
 ## PROJECT::GENERAL
 coverage
 rdoc
-.bundle
 *.dat
-db/*.sqlite3*
-log/*.log
-tmp/**/*
-tmp/*
-!tmp/.gitkeep
 public/javascripts/all.js
 public/stylesheets/all.css
 public/rcov
 config/database.yml
 tmp/restart.txt
-
 backup.db
-
-capybara-*.html
 public/uploads
 public/js
 public/v
