@@ -89,7 +89,7 @@ private
   def self.useragent_hash(useragent_string)
     useragent = UserAgent.parse(useragent_string) # gem here
     hash = %w[browser version platform os].inject({}) do |hash, attr|
-      hash[attr.to_sym] = useragent.send(attr).gsub(/\./, '::') || "unknown"
+      hash[attr.to_sym] = useragent.send(attr).try(:gsub,/\./, '::') || "unknown"
       hash
     end
     if hash[:browser] == "unknown" || hash[:version] == "unknown"
