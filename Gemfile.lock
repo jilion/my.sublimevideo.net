@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/Jilion/useragent.git
-  revision: 0ff6af3e8a986e5affd6967e52e4bd87eec14468
+  revision: ea4286035a4fe2dbff900975af6654f8b83e1355
   specs:
     useragent (0.2.3)
 
