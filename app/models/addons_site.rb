@@ -1,14 +1,13 @@
 class AddonsSite < ActiveRecord::Base
 end
 
+
 # == Schema Information
 #
 # Table name: addons_sites
 #
-#  site_id    :integer
-#  addon_id   :integer
-#  created_at :datetime
-#  updated_at :datetime
+#  site_id  :integer
+#  addon_id :integer
 #
 # Indexes
 #

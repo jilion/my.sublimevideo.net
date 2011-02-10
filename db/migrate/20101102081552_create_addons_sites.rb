@@ -3,14 +3,12 @@ class CreateAddonsSites < ActiveRecord::Migration
     create_table :addons_sites, :id => false, :force => true do |t|
       t.integer :site_id
       t.integer :addon_id
-      
-      t.timestamps
     end
-    
+
     add_index :addons_sites, :site_id
     add_index :addons_sites, :addon_id
   end
-  
+
   def self.down
     remove_index :addons_sites, :addon_id
     remove_index :addons_sites, :site_id

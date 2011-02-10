@@ -30,7 +30,7 @@ class Admin::InvoicesController < Admin::AdminController
   def show
     @invoice = Invoice.includes(:user).find_by_reference(params[:id])
     respond_with(@invoice) do |format|
-      format.html { render :template => '/invoices/show', :layout => '/invoices' }
+      format.html { render :template => '/invoices/show', :layout => 'invoices' }
     end
   end
 

@@ -13,3 +13,8 @@ public/js
 public/v
 public/logs
 logfile
+log
+tmp
+!Guardfile
+!Gemfile
+!Gemfile.lock

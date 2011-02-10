@@ -3,15 +3,13 @@ source :rubygems
 gem 'bundler',               '~> 1.0.10'
 
 gem 'rails',                 '~> 3.0.4'
-gem 'rack',                  '1.2.1'
-gem 'arel',                  '2.0.7'
 gem 'pg',                    '0.10.1'
-gem 'mail',                  '~> 2.2.15'
+gem 'i18n',                  '~> 0.5.0'
+# gem 'mail',                  '~> 2.2.15'
 
 gem 'configuration',         '~> 1.2.0'
 gem 'libxml-ruby',           '1.1.3', :require => 'libxml'
 
-gem 'i18n',                  '0.5.0'
 gem 'haml',                  '3.0.24'
 gem 'state_machine',         '0.9.4'
 gem 'responders',            '0.6.2'
@@ -20,7 +18,7 @@ gem 'delayed_job',           '2.1.3'
 gem 'will_paginate',         '3.0.pre2'
 gem 'has_scope',             :git => 'git://github.com/rymai/has_scope.git'
 gem 'jammit',                '0.6.0'
-gem 'meta_where',            '1.0.1'
+gem 'meta_where',            '1.0.2'
 gem 'hoptoad_notifier',      '~> 2.4.5'
 gem 'prowl',                 '0.1.3'
 # gem 'activemerchant',        '~> 1.9.1'
@@ -50,9 +48,9 @@ gem 'countries',             '0.3.0'
 gem 'PageRankr',             '1.6.0', :require => 'page_rankr'
 gem 'array_stats',           '0.6.0'
 gem 'rescue_me',             '0.1.0'
-gem 'paper_trail',           '1.6.4'
+gem 'paper_trail',           '2.0.0'
 gem 'settingslogic',         '2.0.6'
-gem 'createsend',            '0.2.0' # Campaign Monitor
+gem 'createsend',            '0.2.1' # Campaign Monitor
 
 gem 'useragent', :git => 'git://github.com/Jilion/useragent.git'
 
@@ -96,7 +94,7 @@ group :test do
   gem 'livereload'
   gem 'guard-livereload'
 
-  gem 'database_cleaner',   '>= 0.6'
+  gem 'database_cleaner'
   gem 'steak',              '1.0.0.rc.2'
   gem 'capybara',           '~> 0.4.1.1'
   # gem 'akephalos',          '~> 0.2.4'

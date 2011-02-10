@@ -22,10 +22,8 @@ ActiveRecord::Schema.define(:version => 20110113120826) do
   add_index "addons", ["name"], :name => "index_addons_on_name", :unique => true
 
   create_table "addons_sites", :id => false, :force => true do |t|
-    t.integer  "site_id"
-    t.integer  "addon_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.integer "site_id"
+    t.integer "addon_id"
   end
 
   add_index "addons_sites", ["addon_id"], :name => "index_addons_sites_on_addon_id"

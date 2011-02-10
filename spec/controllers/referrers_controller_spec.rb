@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe ReferrersController do
-  include Devise::TestHelpers
 
   describe "GET redirect" do
 
@@ -10,7 +9,7 @@ describe ReferrersController do
       Referrer.should_receive(:create_or_update_from_type!).with('nln2ofdf', 'http://www.domain.com', 'c')
       get :redirect, :token => 'nln2ofdf', :type => 'c'
     end
-    
+
     it "should redirect from" do
       Referrer.stub(:create_or_update_from_type!)
       get :redirect, :token => 'nln2ofdf', :type => 'c'
