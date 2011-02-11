@@ -76,6 +76,7 @@ private
       :traffic_s3_cache      => hbr_token[:traffic_s3],
       :traffic_voxcast_cache => hbr_token[:traffic_voxcast]
     )
+    site.touch # for Site with_activity_on_last_30_days scope
   end
 
   # Compact trackers from RequestLogAnalyzer
