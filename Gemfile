@@ -18,7 +18,7 @@ gem 'delayed_job',           '2.1.3'
 gem 'will_paginate',         '3.0.pre2'
 gem 'has_scope',             :git => 'git://github.com/rymai/has_scope.git'
 gem 'jammit',                '0.6.0'
-gem 'meta_where',            '1.0.2'
+gem 'meta_where',            '~> 1.0.3'
 gem 'hoptoad_notifier',      '~> 2.4.5'
 gem 'prowl',                 '0.1.3'
 # gem 'activemerchant',        '~> 1.9.1'
@@ -39,8 +39,8 @@ gem 'aws',                   '2.3.34' # bugs in 2.4.2
 gem 'fog',                   '0.5.1'
 gem 'carrierwave',           '0.5.1'
 
-gem 'bson_ext',              '1.2.0'
-gem 'mongo',                 '1.2.0'
+gem 'bson_ext',              '1.2.1'
+gem 'mongo',                 '1.2.1'
 gem 'mongoid',               '~> 2.0.0.rc.7' # '2.0.0.beta.20'
 
 gem 'zip',                   '2.0.2', :require => 'zip/zip'
@@ -96,7 +96,7 @@ group :test do
 
   gem 'database_cleaner'
   gem 'steak',              '1.0.0.rc.2'
-  gem 'capybara',           '~> 0.4.1.1'
+  gem 'capybara',           '~> 0.4.1.2'
   # gem 'akephalos',          '~> 0.2.4'
   # gem 'capybara-envjs',     '~> 0.4.0'
   gem 'webmock',            '~> 1.6.2'
