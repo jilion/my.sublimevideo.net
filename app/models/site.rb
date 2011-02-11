@@ -35,6 +35,7 @@ class Site < ActiveRecord::Base
 
   # admin
   scope :with_activity, where(:player_hits_cache.gte => 1)
+  scope :with_activity_in_last_30_days, where(:player_hits_cache.gte => 1, :updated_at.gte => 30.days.ago)
   # sort
   scope :by_hostname,             lambda { |way = 'asc'| order("#{Site.quoted_table_name}.hostname #{way}") }
   scope :by_user,                 lambda { |way = 'desc'| includes(:user).order("#{User.quoted_table_name}.first_name #{way}, #{User.quoted_table_name}.email #{way}") }
@@ -254,6 +255,8 @@ private
   end
 
 end
+
+
 
 
 # == Schema Information

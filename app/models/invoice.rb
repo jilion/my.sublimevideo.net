@@ -164,6 +164,8 @@ private
 end
 
 
+
+
 # == Schema Information
 #
 # Table name: invoices
