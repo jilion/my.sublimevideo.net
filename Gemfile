@@ -27,7 +27,7 @@ gem 'public_suffix_service', '~> 0.6.0'
 gem 'RedCloth',              '~> 4.2.3'
 gem 'liquid',                '~> 2.2.2'
 
-gem 'devise',                '~> 1.1.3'
+gem 'devise',                '~> 1.1.6'
 gem 'devise_invitable',      :git => 'git://github.com/rymai/devise_invitable.git'
 
 # gem 'memcached',             '~> 0.20.1'
@@ -55,7 +55,7 @@ group :production do
 end
 
 group :production, :staging do
-  gem 'rack-ssl-enforcer', :git => 'git://github.com/thibaudgg/rack-ssl-enforcer.git'
+  gem 'rack-ssl-enforcer', '~> 0.2.1'
   gem 'rack-private',      '~> 0.1.5'
 end
 
