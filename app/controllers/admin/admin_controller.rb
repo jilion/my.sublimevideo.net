@@ -24,7 +24,7 @@ class Admin::AdminController < ApplicationController
     @moving_avg = if params[:moving_avg]
       params[:moving_avg].to_i
     else
-      10
+      30
     end
   end
   
