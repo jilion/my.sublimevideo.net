@@ -60,7 +60,7 @@ describe Log::Voxcast do
       jobs = Delayed::Job.all.sort_by { |j| j.name }
       job = jobs.pop
       job.name.should == 'Class#parse_log_for_user_agents'
-      job.priority.should == 90
+      job.priority.should == 95
       job = jobs.pop
       job.name.should == 'Class#parse_log_for_referrers'
       job.priority.should == 90

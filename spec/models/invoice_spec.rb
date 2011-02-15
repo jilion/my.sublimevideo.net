@@ -935,6 +935,8 @@ describe Invoice do
 end
 
 
+
+
 # == Schema Information
 #
 # Table name: invoices

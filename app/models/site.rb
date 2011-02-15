@@ -68,6 +68,8 @@ class Site < ActiveRecord::Base
   # admin
   scope :user_id,    lambda { |user_id| where(user_id: user_id) }
   scope :created_between, lambda { |start_date, end_date| where(:created_at.gte => start_date, :created_at.lt => end_date) }
+  # scope :with_activity, where(:player_hits_cache.gte => 1)
+  # scope :with_activity_in_last_30_days, where(:player_hits_cache.gte => 1, :updated_at.gte => 30.days.ago)
 
   # sort
   scope :by_hostname,    lambda { |way = 'asc'| order(:hostname.send(way)) }
@@ -447,6 +449,8 @@ protected
   end
 
 end
+
+
 
 
 # == Schema Information

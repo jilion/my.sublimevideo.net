@@ -14,6 +14,8 @@ class Admin::SitesController < Admin::AdminController
   has_scope :plan_player_hits_reached_alerted_this_month
   has_scope :next_plan_recommended_alert_sent_at_alerted_this_month
   has_scope :user_id
+  # has_scope :with_activity, :type => :boolean
+  # has_scope :with_activity_in_last_30_days, :type => :boolean
 
   # sort
   has_scope :by_hostname

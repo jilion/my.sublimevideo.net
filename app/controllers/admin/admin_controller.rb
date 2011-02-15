@@ -10,7 +10,7 @@ class Admin::AdminController < ApplicationController
     @date_range_from = if params[:date_range_from]
       Time.utc(params[:date_range_from][:year].to_i, params[:date_range_from][:month].to_i, params[:date_range_from][:day].to_i)
     else
-      1.month.ago.utc
+      Date.new(2010,9,14)
     end.midnight
 
     @date_range_to = if params[:date_range_to]
@@ -22,7 +22,7 @@ class Admin::AdminController < ApplicationController
     @moving_avg = if params[:moving_avg]
       params[:moving_avg].to_i
     else
-      10
+      30
     end
 
     if params[:date_range_from] || params[:date_range_to] || params[:moving_avg]
