@@ -37,8 +37,8 @@ gem 'aws',                   '~> 2.3.34'
 gem 'fog',                   '~> 0.5.3' # for carrierwave 0.5 final
 gem 'carrierwave',           '~> 0.5.0'
 
-gem 'bson_ext',              '~> 1.2.2'
-gem 'mongo',                 '~> 1.2.2'
+gem 'bson_ext',              '~> 1.2.0'
+gem 'mongo',                 '~> 1.2.0'
 gem 'mongoid',               '2.0.0.beta.20'
 
 gem 'zip',                   '~> 2.0.2', :require => 'zip/zip'
