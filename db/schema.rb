@@ -147,9 +147,9 @@ ActiveRecord::Schema.define(:version => 20110113120826) do
 
   create_table "plans", :force => true do |t|
     t.string   "name"
+    t.string   "cycle"
     t.integer  "player_hits"
     t.integer  "price"
-    t.integer  "overage_price"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

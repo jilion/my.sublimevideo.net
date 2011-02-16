@@ -2,13 +2,13 @@ class CreatePlans < ActiveRecord::Migration
   def self.up
     create_table :plans do |t|
       t.string  :name
+      t.string  :cycle # month or year
       t.integer :player_hits
       t.integer :price
-      t.integer :overage_price
-      
+
       t.timestamps
     end
-    
+
     add_index :plans, :name, :unique => true
   end
 

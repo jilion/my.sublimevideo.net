@@ -1,12 +1,12 @@
 %tr[plan]{ :class => cycle("", "alt") }
   %td.name
     = plan.name.humanize
+  %td.cycle
+    = plan.cycle.humanize
   %td.player_hits
     = number_with_delimiter(plan.player_hits)
   %td.price
     = display_amount(plan.price)
-  %td.overage_price
-    = display_amount(plan.overage_price)
   %td.used_in_beta
     = number_with_delimiter(plan.sites.beta.count)
   %td.used_in_dev

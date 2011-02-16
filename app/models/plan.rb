@@ -2,7 +2,7 @@ class Plan < ActiveRecord::Base
 
   OVERAGES_PLAYER_HITS_BLOCK = 1000
 
-  attr_accessible :name, :player_hits, :price, :overage_price
+  attr_accessible :name, :cycle, :player_hits, :price
 
   # ================
   # = Associations =
@@ -18,7 +18,7 @@ class Plan < ActiveRecord::Base
   validates :name,          :presence => true, :uniqueness => true
   validates :player_hits,   :presence => true, :numericality => true
   validates :price,         :presence => true, :numericality => true
-  validates :overage_price, :presence => true, :numericality => true
+  validates :cycle,         :presence => true, :inclusion => { :in => %w[month year] }
 
   # ====================
   # = Instance Methods =
@@ -28,6 +28,19 @@ class Plan < ActiveRecord::Base
     Plan.where(:price.gt => price).order(:price).first
   end
 
+  def month_price
+    case cycle
+    when "month"
+      price
+    when "year"
+      price / 12
+    end
+  end
+
+  def dev_plan?
+    name == "dev"
+  end
+
 end
 
 
@@ -35,16 +48,15 @@ end
 #
 # Table name: plans
 #
-#  id            :integer         not null, primary key
-#  name          :string(255)
-#  player_hits   :integer
-#  price         :integer
-#  overage_price :integer
-#  created_at    :datetime
-#  updated_at    :datetime
+#  id          :integer         not null, primary key
+#  name        :string(255)
+#  cycle       :string(255)
+#  player_hits :integer
+#  price       :integer
+#  created_at  :datetime
+#  updated_at  :datetime
 #
 # Indexes
 #
 #  index_plans_on_name  (name) UNIQUE
 #
-

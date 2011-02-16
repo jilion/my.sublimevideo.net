@@ -6,8 +6,8 @@ describe Site::UsageAlert do
 
     describe ".send_usage_alerts" do
       before(:all) do
-        @plan1 = Factory(:plan, :player_hits => 3000, :price => 5, :overage_price => 1)
-        @plan2 = Factory(:plan, :player_hits => 9000, :price => 10)
+        @plan1 = Factory(:plan, :cycle => "month", :player_hits => 3000, :price => 5)
+        @plan2 = Factory(:plan, :cycle => "month", :player_hits => 9000, :price => 10)
       end
 
       context "with site's usage not more than plan's limit" do

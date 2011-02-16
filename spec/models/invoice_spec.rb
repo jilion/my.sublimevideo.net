@@ -460,7 +460,7 @@ describe Invoice do
 
     describe ".build" do
       before(:all) do
-        @plan1  = Factory(:plan, :price => 1000, :overage_price => 100, :player_hits => 2000)
+        @plan1  = Factory(:plan, :cycle => "month", :price => 1000, :player_hits => 2000)
         @addon1 = Factory(:addon, :price => 399)
         @addon2 = Factory(:addon, :price => 499)
         @user   = Factory(:user, :country => 'FR')
@@ -550,7 +550,7 @@ describe Invoice do
 
       context "site plan has changed between invoice.ended_at and Time.now (site used in the invoice should be the one at the moment at the end of the period given to build)" do
         before(:all) do
-          @plan2  = Factory(:plan, :price => 999999, :overage_price => 999, :player_hits => 200)
+          @plan2  = Factory(:plan, :cycle => "month", :price => 999999, :player_hits => 200)
           @addon3 = Factory(:addon, :price => 9999)
           Timecop.travel(Time.utc(2010,3,2)) do
             with_versioning { @site.reload.update_attributes(:plan_id => @plan2.id, :addon_ids => [@addon3.id]) }

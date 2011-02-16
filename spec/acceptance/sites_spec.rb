@@ -5,9 +5,15 @@ feature "Sites" do
     @worker = Delayed::Worker.new
     # move this somewhere else and DRY it with the populate
     plans = [
-      { :name => "perso",      :player_hits => 3000,   :price => 2990, :overage_price => 299 },
-      { :name => "pro",        :player_hits => 30000,  :price => 999,  :overage_price => 199 },
-      { :name => "enterprise", :player_hits => 300000, :price => 4999, :overage_price => 99 }
+      { name: "dev",        cycle: "month", player_hits: 0,         price: 0 },
+      { name: "small",      cycle: "month", player_hits: 3_000,     price: 695 },
+      { name: "perso",      cycle: "month", player_hits: 50_000,    price: 1495 },
+      { name: "pro",        cycle: "month", player_hits: 200_000,   price: 4995 },
+      { name: "enterprise", cycle: "month", player_hits: 1_000_000, price: 9995 },
+      { name: "small",      cycle: "year",  player_hits: 3_000,     price: 6900 },
+      { name: "perso",      cycle: "year",  player_hits: 50_000,    price: 14900 },
+      { name: "pro",        cycle: "year",  player_hits: 200_000,   price: 49900 },
+      { name: "enterprise", cycle: "year",  player_hits: 1_000_000, price: 99900 }
     ]
     plans.each { |attributes| Plan.create(attributes) }
 
