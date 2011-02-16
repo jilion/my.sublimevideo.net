@@ -17,11 +17,11 @@ def delete_all_files_in_public(path)
   if path.gsub('.', '') =~ /\w+/ # don't remove all files and directories in /public ! ;)
     print "Deleting all files and directories in /public/#{path}\n"
     timed do
-      Dir.glob("#{Rails.public_path}/#{path}/**/*", File::FNM_DOTMATCH).each do |filename|
-        File.delete(filename) if File.file?(filename) && ['.', '..'].exclude?(File.basename(filename))
+      Dir["#{Rails.public_path}/#{path}/**/*"].each do |filename|
+        File.delete(filename) if File.file?(filename)
       end
-      Dir.glob("#{Rails.public_path}/#{path}/**/*", File::FNM_DOTMATCH).each do |filename|
-        Dir.delete(filename) if File.directory?(filename) && ['.', '..'].exclude?(File.basename(filename))
+      Dir["#{Rails.public_path}/#{path}/**/*"].each do |filename|
+        Dir.delete(filename) if File.directory?(filename)
       end
     end
   end
