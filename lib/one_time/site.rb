@@ -45,7 +45,7 @@ module OneTime
           repaired_sites += 1 if site.save
           
           result << "##{site.id} (#{'still in' unless site.valid?}valid)"
-          result << "MAIN : #{site.hostname} (#{'in' unless Hostname.valid?(site.hostname)}valid)"
+          result << "MAIN : #{site.hostname.inspect} (#{'in' unless Hostname.valid?(site.hostname)}valid)"
           result << "DEV  : #{old_dev_hostnames.join(", ").inspect} => #{site.dev_hostnames.inspect}"
           result << "EXTRA: #{site.extra_hostnames.inspect}\n\n"
         end

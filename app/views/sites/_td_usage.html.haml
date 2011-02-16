@@ -1,8 +1,6 @@
 - if site.beta?
   = link_to "Choose a plan", [:transition, site], :class => "medium_button"
-- elsif site.plan_id.blank?
-  = link_to "Choose a plan", [:edit, site], :class => "medium_button"
-- elsif site.active?
+- else
   -# = link_to "Usage", "", :onclick => "return MySublimeVideo.showSiteUsage('#{site.token}')"
 
   .progress_bar.box_hovering_zone
@@ -11,8 +9,3 @@
 
     = info_box do
       %p= pluralize(number_with_delimiter(site.current_billable_usage), "Hit")
-
-- elsif site.dev? && site.hostname.present?
-  = form_for [:activate, site], :html => { "data-password-protected" => true } do |f|
-    .actions
-      = f.submit 'Activate', :class => "submit small small_button", :id => "activate_site_#{site.id}"

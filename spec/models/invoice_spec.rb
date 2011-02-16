@@ -478,17 +478,17 @@ describe Invoice do
       context "with a Swiss user" do
         before(:each) { @user.reload.update_attribute(:country, 'CH') }
 
-        its(:invoice_items_amount) { should == 1000 + 100 }
+        its(:invoice_items_amount) { should == 1000 }
         its(:discount_rate)        { should == 0.0 }
         its(:discount_amount)      { should == 0.0 }
         its(:vat_rate)             { should == 0.08 }
-        its(:vat_amount)           { should == ((1000 + 100) * 0.08).round }
-        its(:amount)               { should == 1000 + 100 + ((1000 + 100) * 0.08).round }
+        its(:vat_amount)           { should == (1000 * 0.08).round }
+        its(:amount)               { should == 1000 + (1000 * 0.08).round }
 
         describe "user has a discount" do
           before(:each) { @user.reload.update_attribute(:remaining_discounted_months, 1) }
 
-          its(:invoice_items_amount) { should == 1000 + 100 }
+          its(:invoice_items_amount) { should == 1000 }
           its(:discount_rate)        { should == Billing.beta_discount_rate }
           it "discount_amount" do
             subject.discount_amount.should == (Billing.beta_discount_rate * subject.invoice_items_amount).round
@@ -522,7 +522,7 @@ describe Invoice do
       context "site plan has not changed between invoice.ended_at and Time.now" do
         before(:each) { @user.reload }
 
-        specify { subject.invoice_items.size.should == 1 + 1 } # 1 plan, 1 overage
+        specify { subject.invoice_items.size.should == 1 } # 1 plan
         specify do
           invoice_items_items = subject.invoice_items.map(&:item)
           invoice_items_items.should include(@plan1)
@@ -531,10 +531,10 @@ describe Invoice do
         specify { subject.invoice_items.all? { |ii| ii.site == @site }.should be_true }
         specify { subject.invoice_items.all? { |ii| ii.invoice == subject }.should be_true }
 
-        its(:invoice_items_amount) { should == 1000 + 100 } # plan.price + 1 overage block
+        its(:invoice_items_amount) { should == 1000 } # plan.price
         its(:vat_rate)             { should == 0.0 }
         its(:vat_amount)           { should == 0 }
-        its(:amount)               { should == 1000 + 100 } # plan.price + 1 overage block
+        its(:amount)               { should == 1000 } # plan.price
         its(:started_at)           { should == Time.utc(2010,2).beginning_of_month }
         its(:ended_at)             { should == Time.utc(2010,2).end_of_month }
         its(:paid_at)              { should be_nil }
@@ -552,7 +552,7 @@ describe Invoice do
           end
         end
 
-        specify { subject.invoice_items.size.should == 1 + 2 + 1 } # 1 plan, 1 overage
+        specify { subject.invoice_items.size.should == 1 } # 1 plan
         specify do
           invoice_items_items = subject.invoice_items.map(&:item)
           invoice_items_items.should include(@plan1)
@@ -561,8 +561,8 @@ describe Invoice do
         specify { subject.invoice_items.all? { |ii| ii.site == @site.version_at(Time.utc(2010,2).end_of_month) }.should be_true }
         specify { subject.invoice_items.all? { |ii| ii.invoice == subject }.should be_true }
 
-        its(:invoice_items_amount) { should == 1000 + 100 } # plan.price + 1 overage block
-        its(:amount)               { should == 1000 + 100 } # plan.price + 1 overage block
+        its(:invoice_items_amount) { should == 1000 } # plan.price
+        its(:amount)               { should == 1000 } # plan.price
         its(:started_at)           { should == Time.utc(2010,2).beginning_of_month }
         its(:ended_at)             { should == Time.utc(2010,2).end_of_month }
         its(:paid_at)              { should be_nil }

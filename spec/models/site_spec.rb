@@ -2,7 +2,11 @@
 require 'spec_helper'
 
 describe Site do
-  before(:all) { @worker = Delayed::Worker.new }
+  before(:all) do
+    @worker = Delayed::Worker.new
+    @dev_plan = Factory(:plan, name: "dev")
+    @pro_plan = Factory(:plan, name: "pro")
+  end
 
   context "Factory" do
     before(:all) { @site = Factory(:site) }
@@ -21,7 +25,7 @@ describe Site do
     its(:player_mode)     { should == "stable" }
     its(:activated_at)    { should be_nil }
 
-    it { should be_dev }
+    it { should be_active }
     it { should be_valid }
   end
 
@@ -57,63 +61,58 @@ describe Site do
   end
 
   describe "Validations" do
-    [:hostname, :dev_hostnames].each do |attribute|
+    subject { Factory(:site) }
+
+    [:hostname, :dev_hostnames, :extra_hostnames, :path, :wildcard, :plan_id, :user_attributes].each do |attribute|
       it { should allow_mass_assignment_of(attribute) }
     end
 
     it { should validate_presence_of(:user) }
+    it { should validate_presence_of(:plan) }
 
     it { should allow_value('dev').for(:player_mode) }
     it { should allow_value('beta').for(:player_mode) }
     it { should allow_value('stable').for(:player_mode) }
     it { should_not allow_value('fake').for(:player_mode) }
 
-    specify { Site.validators_on(:hostname).map(&:class).should == [HostnameUniquenessValidator, HostnameValidator, ActiveModel::Validations::PresenceValidator] }
+    specify { Site.validators_on(:hostname).map(&:class).should == [ActiveModel::Validations::PresenceValidator, HostnameUniquenessValidator, HostnameValidator] }
     specify { Site.validators_on(:extra_hostnames).map(&:class).should == [ExtraHostnamesValidator] }
     specify { Site.validators_on(:dev_hostnames).map(&:class).should == [DevHostnamesValidator] }
 
     describe "hostname" do
-      it "should be required if state is active" do
-        site = Factory(:site, hostname: nil)
-        site.state = 'active'
-        site.should_not be_valid
-        site.should have(1).error_on(:hostname)
+      context "with the dev plan" do
+        subject { Factory.build(:site, hostname: nil, plan: @dev_plan) }
+        it { should be_valid }
       end
-    end
-
-    describe "plan" do
-      it "should be required if state is active" do
-        site = Factory.build(:site, state: 'active', plan: nil)
-        site.should be_active
-        site.should_not be_valid
-        site.should have(1).error_on(:plan)
+      context "with any other plan than the dev plan" do
+        subject { Factory.build(:site, hostname: nil, plan: @pro_plan) }
+        it { should_not be_valid }
+        it { should have(1).error_on(:hostname) }
       end
     end
 
     describe "credit card" do
-      it "should be required if state is active" do
-        user = Factory(:user, cc_type: nil, cc_last_digits: nil)
-        site = Factory(:site, user: user)
-        site.state = 'active'
-        site.should_not be_valid
-        site.should have(1).error_on(:base)
+      context "with the dev plan" do
+        subject { Factory.build(:site, user: Factory(:user, cc_type: nil, cc_last_digits: nil), plan: @dev_plan) }
+        it { should be_valid }
+      end
+      context "with any other plan than the dev plan" do
+        subject { Factory.build(:site, user: Factory(:user, cc_type: nil, cc_last_digits: nil), plan: @pro_plan) }
+        it { should_not be_valid }
+        it { should have(1).error_on(:base) }
       end
     end
 
     describe "no hostnames at all" do
-      it "should require at least one of hostname, dev, or extra domains on creation" do
-        site = Factory.build(:site, hostname: '', extra_hostnames: '', dev_hostnames: '')
-        site.should_not be_valid
-        site.should have(1).error_on(:base)
-        site.errors[:base].should == ["Please set at least a development or an extra domain"]
+      context "hostnames are blank & plan is dev plan" do
+        subject { Factory.build(:site, hostname: nil, extra_hostnames: nil, dev_hostnames: nil, plan: @dev_plan) }
+        it { should be_valid }
       end
 
-      it "should not add an error on base because an error is already added on hostname when blank and site is active" do
-        site = Factory(:site, hostname: "test.com").tap { |s| s.activate }
-        site.hostname = nil
-        site.dev_hostnames = nil
-        site.should_not be_valid
-        site.should have(:no).error_on(:base)
+      context "hostnames are blank & plan is not dev plan" do
+        subject { Factory.build(:site, hostname: nil, extra_hostnames: nil, dev_hostnames: nil, plan: @pro_plan) }
+        it { should_not be_valid }
+        it { should have(1).error_on(:hostname) }
       end
     end
   end
@@ -202,7 +201,7 @@ describe Site do
   describe "State Machine" do
     before(:each) { VoxcastCDN.stub(:purge) }
 
-    describe "#rollback" do
+    pending "#rollback" do
       context "from beta state" do
         subject do
           Timecop.travel(10.days.ago)
@@ -237,7 +236,7 @@ describe Site do
       end
     end
 
-    describe "#activate" do
+    pending "#activate" do
       context "from dev state" do
         subject do
           site = Factory(:site, state: 'dev', hostname: "jilion.com", extra_hostnames: "jilion.staging.com, jilion.org")
@@ -317,86 +316,83 @@ describe Site do
       end
     end
 
-    context "with an activated site" do
-      describe "#suspend" do
+    describe "#suspend" do
+      subject do
+        site = Factory(:site)
+        @worker.work_off
+        site
+      end
+
+      it "should clear & purge license & loader" do
+        VoxcastCDN.should_receive(:purge).with("/js/#{subject.token}.js")
+        VoxcastCDN.should_receive(:purge).with("/l/#{subject.token}.js")
+        subject.suspend
+        @worker.work_off
+        subject.reload.loader.should_not be_present
+        subject.license.should_not be_present
+      end
+    end
+
+    describe "#unsuspend" do
+      subject do
+        site = Factory(:site)
+        @worker.work_off
+        site
+      end
+
+      it "should reset license & loader" do
+        VoxcastCDN.should_receive(:purge).with("/js/#{subject.token}.js")
+        VoxcastCDN.should_receive(:purge).with("/l/#{subject.token}.js")
+        subject.suspend
+        @worker.work_off
+        subject.reload.loader.should_not be_present
+        subject.license.should_not be_present
+
+        subject.unsuspend
+        @worker.work_off
+        subject.reload.loader.should be_present
+        subject.license.should be_present
+      end
+    end
+
+    describe "#archive" do
+      context "from active state" do
         subject do
-          site = Factory(:site).tap { |s| s.activate }
+          site = Factory(:site)
           @worker.work_off
           site
         end
 
-        it "should clear & purge license & loader" do
+        it "should clear & purge license & loader and set archived_at" do
           VoxcastCDN.should_receive(:purge).with("/js/#{subject.token}.js")
           VoxcastCDN.should_receive(:purge).with("/l/#{subject.token}.js")
-          subject.suspend
-          @worker.work_off
+          lambda { subject.archive }.should change(Delayed::Job, :count).by(1)
+          subject.reload.should be_archived
+          lambda { @worker.work_off }.should change(Delayed::Job, :count).by(-1)
           subject.reload.loader.should_not be_present
           subject.license.should_not be_present
+          subject.archived_at.should be_present
         end
       end
 
-      describe "#unsuspend" do
+      context "from beta state" do
         subject do
-          site = Factory(:site).tap { |s| s.activate }
+          site = Factory(:site, state: 'beta', plan: nil)
           @worker.work_off
+          site.should be_beta # because a beta site with no plan become automatically a dev site
+          site.plan.should be_nil
           site
         end
 
-        it "should reset license & loader" do
+        it "should clear & purge license & loader and set archived_at" do
           VoxcastCDN.should_receive(:purge).with("/js/#{subject.token}.js")
           VoxcastCDN.should_receive(:purge).with("/l/#{subject.token}.js")
-          subject.suspend
-          @worker.work_off
-          subject.reload.loader.should_not be_present
+          lambda { subject.archive }.should change(Delayed::Job, :count).by(1)
+          subject.reload.should be_archived
+          lambda { @worker.work_off }.should change(Delayed::Job, :count).by(-1)
+          subject.loader.should_not be_present
           subject.license.should_not be_present
-
-          subject.unsuspend
-          @worker.work_off
-          subject.reload.loader.should be_present
-          subject.license.should be_present
-        end
-      end
-
-      describe "#archive" do
-        context "from active state" do
-          subject do
-            site = Factory(:site).tap { |s| s.activate }
-            @worker.work_off
-            site
-          end
-
-          it "should clear & purge license & loader and set archived_at" do
-            VoxcastCDN.should_receive(:purge).with("/js/#{subject.token}.js")
-            VoxcastCDN.should_receive(:purge).with("/l/#{subject.token}.js")
-            lambda { subject.archive }.should change(Delayed::Job, :count).by(1)
-            subject.reload.should be_archived
-            lambda { @worker.work_off }.should change(Delayed::Job, :count).by(-1)
-            subject.reload.loader.should_not be_present
-            subject.license.should_not be_present
-            subject.archived_at.should be_present
-          end
-        end
-
-        context "from beta state" do
-          subject do
-            site = Factory(:site, plan_id: nil).tap { |s| s.activate }
-            @worker.work_off
-            site.state = 'beta'
-            site.should be_beta # because a beta site with no plan become automatically a dev site
-            site.plan_id.should be_nil
-            site
-          end
-
-          it "should clear & purge license & loader and set archived_at" do
-            VoxcastCDN.should_receive(:purge).with("/js/#{subject.token}.js")
-            VoxcastCDN.should_receive(:purge).with("/l/#{subject.token}.js")
-            lambda { subject.archive }.should change(Delayed::Job, :count).by(1)
-            subject.reload.should be_archived
-            lambda { @worker.work_off }.should change(Delayed::Job, :count).by(-1)
-            subject.loader.should_not be_present
-            subject.license.should_not be_present
-            subject.archived_at.should be_present
-          end
+          subject.archived_at.should be_present
         end
       end
     end
@@ -989,7 +985,7 @@ describe Site do
         Timecop.return
       end
     end
-    
+
     describe "#current_percentage_of_plan_used" do
       context "with usages less than the plan's limit" do
         before(:all) do
@@ -1018,7 +1014,7 @@ describe Site do
           Timecop.return
         end
       end
-      
+
       context "with usages more than the plan's limit" do
         before(:all) do
           @site = Factory(:site, plan: Factory(:plan, player_hits: 30))
@@ -1047,7 +1043,7 @@ describe Site do
         end
       end
     end
-        
+
   end
 end
 

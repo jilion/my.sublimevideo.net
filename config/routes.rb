@@ -40,7 +40,7 @@ MySublimeVideo::Application.routes.draw do
   match ':page', :to => 'pages#show', :via => :get, :as => :page, :page => /terms|privacy|suspended/
   match 'r/:type/:token', :to => 'referrers#redirect', :via => :get, :type => /c/, :token => /[a-z0-9]{8}/
 
-  resource :ticket, :only => [:new, :create], :path => '/support', :path_names => { :new =>  ''}
+  resource :ticket, :only => [:new, :create], :path => '/support', :path_names => { :new =>  '' }
 
   root :to => redirect("/sites")
 

@@ -1,5 +1,7 @@
 class Plan < ActiveRecord::Base
 
+  CYCLES = %w[month year]
+
   attr_accessible :name, :cycle, :player_hits, :price
 
   # ================
@@ -13,10 +15,10 @@ class Plan < ActiveRecord::Base
   # = Validations =
   # ===============
 
-  validates :name,          :presence => true, :uniqueness => true
-  validates :player_hits,   :presence => true, :numericality => true
-  validates :price,         :presence => true, :numericality => true
-  validates :cycle,         :presence => true, :inclusion => { :in => %w[month year] }
+  validates :name,        :presence => true, :uniqueness => true
+  validates :player_hits, :presence => true, :numericality => true
+  validates :price,       :presence => true, :numericality => true
+  validates :cycle,       :presence => true, :inclusion => { :in => CYCLES }
 
   # ====================
   # = Instance Methods =

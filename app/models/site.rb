@@ -1,5 +1,5 @@
 class Site < ActiveRecord::Base
-  
+
   DEFAULT_DEV_DOMAINS = '127.0.0.1, localhost'
   PLAYER_MODES = %w[dev beta stable]
 
@@ -94,24 +94,28 @@ class Site < ActiveRecord::Base
   # search
   def self.search(q)
     joins(:user).
-    where(:lower.func(:email).matches % :lower.func("%#{q}%") \
-        | :lower.func(:first_name).matches % :lower.func("%#{q}%") \
-        | :lower.func(:last_name).matches % :lower.func("%#{q}%") \
-        | :lower.func(:hostname).matches % :lower.func("%#{q}%") \
-        | :lower.func(:dev_hostnames).matches % :lower.func("%#{q}%") \
-        | :lower.func(:extra_hostnames).matches % :lower.func("%#{q}%"))
+    where(:lower.func(:email).matches % :lower.func("%#{q}%") |
+          :lower.func(:first_name).matches % :lower.func("%#{q}%") |
+          :lower.func(:last_name).matches % :lower.func("%#{q}%") |
+          :lower.func(:hostname).matches % :lower.func("%#{q}%") |
+          :lower.func(:dev_hostnames).matches % :lower.func("%#{q}%") |
+          :lower.func(:extra_hostnames).matches % :lower.func("%#{q}%"))
   end
 
   # ===============
   # = Validations =
   # ===============
 
-  validates :user,            :presence => true
-  validates :hostname,        :hostname_uniqueness => true, :hostname => true
+  validates :user,        :presence => true
+  validates :plan,        :presence => true, :if => proc { |s| !s.beta? && !s.archived? }
+  validates :player_mode, :inclusion => { :in => PLAYER_MODES }
+
+  validates :hostname,        :presence => { :unless => :in_dev_plan? }, :hostname_uniqueness => true, :hostname => true
   validates :extra_hostnames, :extra_hostnames => true
   validates :dev_hostnames,   :dev_hostnames => true
-  validates :player_mode,     :inclusion => { :in => PLAYER_MODES }
-  validate  :at_least_one_domain_set
+
+  # validate  :at_least_one_domain_set, :if => :in_dev_plan?
+  validate  :verify_presence_of_credit_card, :unless => :in_dev_plan?
 
   # =============
   # = Callbacks =
@@ -121,30 +125,28 @@ class Site < ActiveRecord::Base
   before_save :prepare_cdn_update, :clear_alerts_sent_at
   after_save :execute_cdn_update
   after_create :delay_ranks_update
-  
-  # TODO: Remove after the one_time:sites:rollback_beta_sites rake task has been executed (no more site with the beta state)
-  # Temporary, after submitting /sites/:token/transition with with a plan selected
-  after_update :activate, :if => lambda { |site| site.beta? && site.plan_id? }
-  # Temporary, after submitting /sites/:token/transition with no plan selected
-  after_update :rollback, :if => lambda { |site| site.beta? && !site.plan_id? }
+
+  # # TODO: Remove after the one_time:sites:rollback_beta_sites rake task has been executed (no more site with the beta state)
+  # # Temporary, after submitting /sites/:token/transition with with a plan selected
+  # after_update :activate, :if => lambda { |site| site.beta? && site.plan_id? }
+  # # Temporary, after submitting /sites/:token/transition with no plan selected
+  # after_update :rollback, :if => lambda { |site| site.beta? && !site.plan_id? }
+
+  # THE CALLBACKS ABOVE SHOULD CHANGE:
+  # - SET ALL BETA SITES WITH THE "BETA" PLAN
+  # - AFTER X DAYS, SET THE "DEV" PLAN FOR ALL THE REMAINING BETA SITES WITH THE "BETA" PLAN
 
   # =================
   # = State Machine =
   # =================
 
-  state_machine :initial => :dev do
+  state_machine :initial => :active do
     state :pending # Temporary, used in the master branch
     state :beta # Temporary, used in lib/one_time/site.rb and lib/tasks/one_time.rake
 
-    state :active do
-      validates :hostname, :presence => true
-      validates :plan, :presence => { :message => "Please choose a plan" }
-      validate :verify_presence_of_credit_card
-    end
-
-    event(:rollback)  { transition :beta => :dev }
-    event(:activate)  { transition [:dev, :beta] => :active }
-    event(:archive)   { transition [:dev, :beta, :active] => :archived }
+    # event(:rollback)  { transition :beta => :dev }
+    # event(:activate)  { transition [:dev, :beta] => :active }
+    event(:archive)   { transition [:beta, :active] => :archived }
     event(:suspend)   { transition :active => :suspended }
     event(:unsuspend) { transition :suspended => :active }
 
@@ -246,6 +248,10 @@ public
     token
   end
 
+  def in_dev_plan?
+    plan_id? && plan.dev_plan?
+  end
+
   def plan_player_hits_reached_alerted_this_month?
     (Time.now.utc.beginning_of_month..Time.now.utc.end_of_month).cover?(plan_player_hits_reached_alert_sent_at)
   end
@@ -324,11 +330,11 @@ public
     end
     self.save
   end
-  
+
   def current_billable_usage
     @current_billable_usage ||= usages.between(*TimeUtil.current_month).to_a.sum { |su| su.main_player_hits + su.main_player_hits_cached + su.extra_player_hits + su.extra_player_hits_cached }
   end
-  
+
   def current_percentage_of_plan_used
     [(current_billable_usage / plan.player_hits.to_f).round(2), 1].min
   end
@@ -343,15 +349,17 @@ private
   end
 
   # validate
-  def at_least_one_domain_set
-    if !active? && hostname.blank? && dev_hostnames.blank? && extra_hostnames.blank?
-      self.errors.add(:base, :at_least_one_domain)
-    end
-  end
+  # def at_least_one_domain_set
+  #   if dev_plan? && hostname.blank? && dev_hostnames.blank? && extra_hostnames.blank?
+  #     self.errors.add(:base, :at_least_one_domain)
+  #   end
+  # end
 
-  # validate on :active
+  # validate unless :in_dev_plan?
   def verify_presence_of_credit_card
-    self.errors.add(:base, :credit_card_needed) unless user.cc?
+    if user && !user.cc?
+      self.errors.add(:base, :credit_card_needed)
+    end
   end
 
   # before_save
@@ -432,8 +440,6 @@ protected
   end
 
 end
-
-
 
 
 # == Schema Information
