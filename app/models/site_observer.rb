@@ -2,7 +2,6 @@ class SiteObserver < ActiveRecord::Observer
 
   def after_save(site)
     update_plans_lifetime(site)
-    update_addons_lifetime(site)
   end
 
 private
@@ -13,19 +12,6 @@ private
         set_deleted_at_to_old_lifetime(site, site.plan_id_was, "Plan")
       end
       site.lifetimes.create(:item => site.plan, :created_at => Time.now.utc)
-    end
-  end
-
-  def update_addons_lifetime(site)
-    if site.addon_ids_changed?
-      # Removed addon ids
-      (site.addon_ids_was - site.addon_ids).each do |addon_id|
-        set_deleted_at_to_old_lifetime(site, addon_id, "Addon")
-      end
-      # New addon ids
-      (site.addon_ids - site.addon_ids_was).each do |addon_id|
-        site.lifetimes.create(:item_id => addon_id, :item_type => "Addon", :created_at => Time.now.utc)
-      end
     end
   end
 

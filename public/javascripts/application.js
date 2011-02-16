@@ -72,10 +72,6 @@ document.observe("dom:loaded", function() {
     HHash.init(MySublimeVideo.hashUrlHandler, $('hidden-iframe'));
   }
   
-  // if ($("new_site")) {
-  //   MySublimeVideo.siteFormHandler = new SiteFormHandler();
-  // }
-
   // ===================================================
   // = Fix a <select> CSS bug in Safari (under v4.0.5) =
   // ===================================================
@@ -214,54 +210,6 @@ MySublimeVideo.hashUrlHandler = function(newHash, initial) {
 // ===========
 // = Classes =
 // ===========
-
-var SiteFormHandler = Class.create({
-  initialize: function() {
-
-    this.setup();
-  },
-  setup: function() { //call this after ajax call to re-setup this handler
-    this.element = $("new_site"); // this is a <form>
-
-    // $$('input.plan_radio').each(function(radio){
-    //   radio.on('change', function(){
-    //     $('addons').down(".spinner").show();
-    //     new Ajax.Request('/sites/new', { method: 'get', parameters: this.element.serialize() });
-    //   }.bind(this));
-    // }.bind(this));
-
-    // this.beforeAjaxHandler = this.element.on('ajax:before', function(){
-    //   this.numberOfRequestsUntilSpinnerHides = 1;
-    //   this.element.next(".spinner").show();
-    //   //only listen to this once (we can stop the listener now) because this.element will soon be replaced
-    //   this.beforeAjaxHandler.stop();
-    // }.bind(this));
-
-    // Unfourtunately we can't use: this.completeAjaxHandler = this.element.on('ajax:complete', function(event){....
-    // ...because on successful creation, create.js.erb will execute two new Ajax requests one of which will
-    // reload this form, hence it would be too early to reload/resetup the placeholder here...
-  },
-  reloadAfterAjax: function() {
-    // Note: at this point, this.element has already been replaced
-
-    // this.hideSpinner();
-
-    this.setup();
-
-    // Re-apply other handlers (form and placeholder managers)
-    if (!supportsHtml5InputAttribute("placeholder")) {
-      new PlaceholderManager(this.element.down("input[placeholder]"));
-    }
-    new FormManager(this.element);
-  },
-  hideSpinner: function() { //tries to hide spinners (unless another ajax request must still complete)
-    this.numberOfRequestsUntilSpinnerHides -= 1;
-
-    if (this.numberOfRequestsUntilSpinnerHides == 0) {
-      $('addons').down(".spinner").hide();
-    }
-  }
-});
 
 /*
 FormManager manages:

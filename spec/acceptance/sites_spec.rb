@@ -16,11 +16,6 @@ feature "Sites" do
       { name: "enterprise", cycle: "year",  player_hits: 1_000_000, price: 99900 }
     ]
     plans.each { |attributes| Plan.create(attributes) }
-
-    addons = [
-      { :name => "SSL", :price => 499 }
-    ]
-    addons.each { |attributes| Addon.create(attributes) }
   end
   background do
     sign_in_as :user
@@ -94,7 +89,7 @@ feature "Sites" do
     create_site
     site = @current_user.sites.last
     # site.stub!(:beta? => true) # fake that the site is in beta state (should not have a plan, but no big deal for this test)
-    # @current_user.stub_chain(:sites, :not_archived, :with_plan, :with_addons, :by_date).and_return([site])
+    # @current_user.stub_chain(:sites, :not_archived, :with_plan, :by_date).and_return([site])
     # site.should be_beta
     visit "/sites"
     # within(:css, "tr#site_#{site.id}") do
@@ -133,12 +128,6 @@ feature "Sites" do
       page.should have_content('Enterprise')
     end
 
-    pending "edit addons" do
-      edit_site_addons
-
-      current_url.should =~ %r(http://[^/]+/sites)
-      page.should have_content('Add-ons: SSL')
-    end
   end
 
   # WAITING FOR OCTAVE TO FINISH THE PAGE
@@ -192,13 +181,6 @@ def edit_site_plan(options = {})
   visit_settings(options[:id] || @current_user.sites.last.id)
   choose "plan_id_enterprise"
   click_button "Update plan"
-end
-
-def edit_site_addons(options = {})
-  visit_settings(options[:id] || @current_user.sites.last.id)
-  check "SSL serving"
-
-  click_button "Update addons"
 end
 
 def visit_settings(id)

@@ -84,11 +84,6 @@ Factory.define :plan do |f|
   f.price         1000
 end
 
-Factory.define :addon do |f|
-  f.sequence(:name) { |n| "SSL_#{n}" }
-  f.price           33
-end
-
 Factory.define :invoice do |f|
   f.association :user
   f.started_at           { Time.now.utc.beginning_of_month }
@@ -112,15 +107,9 @@ Factory.define :plan_invoice_item, :parent => :invoice_item, :class => InvoiceIt
   f.amount 1000
 end
 
-Factory.define :addon_invoice_item, :parent => :invoice_item, :class => InvoiceItem::Addon do |f|
-  f.item   { Factory(:addon) }
-  f.price  10
-  f.amount 10
-end
-
 Factory.define :lifetime do |f|
   f.association :site, :factory => :active_site
-  f.item        { Factory(:addon) }
+  f.item        { Factory(:plan) }
 end
 
 Factory.define :users_stat do |f|
@@ -130,5 +119,4 @@ end
 Factory.define :sites_stat do |f|
   f.states_count  { {} }
   f.plans_count   { {} }
-  f.addons_count  { {} }
 end

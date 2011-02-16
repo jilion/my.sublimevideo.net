@@ -14,7 +14,7 @@ namespace :db do
   namespace :populate do
     desc "Empty all the tables"
     task empty_all_tables: :environment do
-      timed { empty_tables("delayed_jobs", Invoice, InvoiceItem, Log, MailTemplate, MailLog, Site, SiteUsage, User, Admin, Plan, Addon) }
+      timed { empty_tables("delayed_jobs", Invoice, InvoiceItem, Log, MailTemplate, MailLog, Site, SiteUsage, User, Admin, Plan) }
     end
 
     desc "Load all development fixtures."
@@ -26,7 +26,6 @@ namespace :db do
       timed { create_admins }
       timed { create_users(argv_count) }
       timed { create_plans }
-      timed { create_addons }
       timed { create_sites }
       timed { create_site_usages }
       timed { create_invoices }
@@ -77,11 +76,6 @@ namespace :db do
       timed { create_plans }
     end
 
-    desc "Create fake addons"
-    task addons: :environment do
-      timed { empty_tables(Plan, Addon) }
-      timed { create_addons }
-    end
   end
 
 end
@@ -268,15 +262,13 @@ def create_sites
   plan_ids = Plan.all.map(&:id)
   subdomains = %w[www blog my git sv ji geek yin yang chi cho chu foo bar rem]
   created_at_array = (Date.new(2010,9,14)..(1.month.ago - 2.days).to_date).to_a
-  ssl_addon = Addon.find_by_name('SSL')
 
   User.all.each do |user|
     BASE_SITES.each do |hostname|
       site = user.sites.build(
         plan_id: plan_ids.sample,
         hostname: hostname,
-        dev_hostnames: Site::DEFAULT_DEV_DOMAINS,
-        addon_ids: rand > 0.75 ? [ssl_addon.id] : []
+        dev_hostnames: Site::DEFAULT_DEV_DOMAINS
       )
       site.state        = 'active' if user.cc? && rand > 0.2
       site.created_at   = created_at_array.sample
@@ -292,8 +284,7 @@ def create_sites
     # rand(max).times do |i|
     #   site = user.sites.build(
     #     plan_id: plan_ids.sample,
-    #     hostname: subdomains.sample + (rand > 0.75 ? "." : "") + user.id.to_s + i.to_s + Faker::Internet.domain_name.sub(/(\.co)?\.uk/, '.be'),
-    #     addon_ids: rand > 0.75 ? [ssl_addon_id] : []
+    #     hostname: subdomains.sample + (rand > 0.75 ? "." : "") + user.id.to_s + i.to_s + Faker::Internet.domain_name.sub(/(\.co)?\.uk/, '.be')
     #   )
     #   site.state        = 'active' if user.cc? && rand > 0.2
     #   site.created_at   = [user.confirmed_at.to_date, created_at_array.sample].max
@@ -311,7 +302,6 @@ def create_site_usages
   start_date = Date.new(2010,9,14)
   end_date   = Date.today
   player_hits_total = 0
-  ssl_addon = Addon.find_by_name('SSL')
   Site.active.each do |site|
     p = (case rand(4)
     when 0
@@ -354,12 +344,6 @@ def create_site_usages
         )
         site_usage.save!
         player_hits_total += player_hits
-
-        if site.addons.include?(ssl_addon)
-          site.update_attribute(:addon_ids, []) if rand > 0.8
-        else
-          site.update_attribute(:addon_ids, [ssl_addon.id]) if rand > 0.8
-        end
       end
     end
   end
@@ -402,15 +386,6 @@ def create_plans
   ]
   plans_attributes.each { |attributes| Plan.create(attributes) }
   puts "#{plans_attributes.size} plans created!"
-end
-
-def create_addons
-  create_plans if Plan.all.empty?
-  addons_attributes = [
-    { name: "SSL", price: 499 }
-  ]
-  addons_attributes.each { |attributes| Addon.create(attributes) }
-  puts "#{addons_attributes.size} addon(s) created!"
 end
 
 def create_mail_templates(count = 5)

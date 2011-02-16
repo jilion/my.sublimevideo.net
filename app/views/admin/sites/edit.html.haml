@@ -19,7 +19,6 @@
   = "| Plan: "
   %strong
     = @site.plan_id? ? @site.plan.name.humanize : "No plan"
-    = "with SSL" if @site.addons.include?(Addon.find_by_name('ssl'))
   = "| User: #{content_tag(:strong, link_to(@site.user.full_name, [:admin, @site.user]))}".html_safe
   = "| Created #{time_ago_in_words(@site.created_at)} ago"
   = "| Updated #{time_ago_in_words(@site.updated_at)} ago"

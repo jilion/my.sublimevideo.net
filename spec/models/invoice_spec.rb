@@ -461,11 +461,9 @@ describe Invoice do
     describe ".build" do
       before(:all) do
         @plan1  = Factory(:plan, :cycle => "month", :price => 1000, :player_hits => 2000)
-        @addon1 = Factory(:addon, :price => 399)
-        @addon2 = Factory(:addon, :price => 499)
         @user   = Factory(:user, :country => 'FR')
         Timecop.travel(Time.utc(2010,2).beginning_of_month) do
-          @site = Factory(:site, :user => @user, :plan => @plan1, :addon_ids => [@addon1.id, @addon2.id], :activated_at => Time.now)
+          @site = Factory(:site, :user => @user, :plan => @plan1, :activated_at => Time.now)
         end
       end
       before(:each) do
@@ -480,17 +478,17 @@ describe Invoice do
       context "with a Swiss user" do
         before(:each) { @user.reload.update_attribute(:country, 'CH') }
 
-        its(:invoice_items_amount) { should == 1000 + 399 + 499 + 100 }
+        its(:invoice_items_amount) { should == 1000 + 100 }
         its(:discount_rate)        { should == 0.0 }
         its(:discount_amount)      { should == 0.0 }
         its(:vat_rate)             { should == 0.08 }
-        its(:vat_amount)           { should == ((1000 + 399 + 499 + 100) * 0.08).round }
-        its(:amount)               { should == 1000 + 399 + 499 + 100 + ((1000 + 399 + 499 + 100) * 0.08).round }
+        its(:vat_amount)           { should == ((1000 + 100) * 0.08).round }
+        its(:amount)               { should == 1000 + 100 + ((1000 + 100) * 0.08).round }
 
         describe "user has a discount" do
           before(:each) { @user.reload.update_attribute(:remaining_discounted_months, 1) }
 
-          its(:invoice_items_amount) { should == 1000 + 399 + 499 + 100 }
+          its(:invoice_items_amount) { should == 1000 + 100 }
           its(:discount_rate)        { should == Billing.beta_discount_rate }
           it "discount_amount" do
             subject.discount_amount.should == (Billing.beta_discount_rate * subject.invoice_items_amount).round
@@ -524,21 +522,19 @@ describe Invoice do
       context "site plan has not changed between invoice.ended_at and Time.now" do
         before(:each) { @user.reload }
 
-        specify { subject.invoice_items.size.should == 1 + 2 + 1 } # 1 plan, 2 addon lifetimes, 1 overage
+        specify { subject.invoice_items.size.should == 1 + 1 } # 1 plan, 1 overage
         specify do
           invoice_items_items = subject.invoice_items.map(&:item)
           invoice_items_items.should include(@plan1)
           invoice_items_items.should include(@plan1)
-          invoice_items_items.should include(@addon1)
-          invoice_items_items.should include(@addon2)
         end
         specify { subject.invoice_items.all? { |ii| ii.site == @site }.should be_true }
         specify { subject.invoice_items.all? { |ii| ii.invoice == subject }.should be_true }
 
-        its(:invoice_items_amount) { should == 1000 + 399 + 499 + 100 } # plan.price + addon1.price + addon2.price + 1 overage block
+        its(:invoice_items_amount) { should == 1000 + 100 } # plan.price + 1 overage block
         its(:vat_rate)             { should == 0.0 }
         its(:vat_amount)           { should == 0 }
-        its(:amount)               { should == 1000 + 399 + 499 + 100 } # plan.price + addon1.price + addon2.price + 1 overage block
+        its(:amount)               { should == 1000 + 100 } # plan.price + 1 overage block
         its(:started_at)           { should == Time.utc(2010,2).beginning_of_month }
         its(:ended_at)             { should == Time.utc(2010,2).end_of_month }
         its(:paid_at)              { should be_nil }
@@ -551,25 +547,22 @@ describe Invoice do
       context "site plan has changed between invoice.ended_at and Time.now (site used in the invoice should be the one at the moment at the end of the period given to build)" do
         before(:all) do
           @plan2  = Factory(:plan, :cycle => "month", :price => 999999, :player_hits => 200)
-          @addon3 = Factory(:addon, :price => 9999)
           Timecop.travel(Time.utc(2010,3,2)) do
-            with_versioning { @site.reload.update_attributes(:plan_id => @plan2.id, :addon_ids => [@addon3.id]) }
+            with_versioning { @site.reload.update_attributes(:plan_id => @plan2.id) }
           end
         end
 
-        specify { subject.invoice_items.size.should == 1 + 2 + 1 } # 1 plan, 2 addon lifetimes, 1 overage
+        specify { subject.invoice_items.size.should == 1 + 2 + 1 } # 1 plan, 1 overage
         specify do
           invoice_items_items = subject.invoice_items.map(&:item)
           invoice_items_items.should include(@plan1)
           invoice_items_items.should include(@plan1)
-          invoice_items_items.should include(@addon1)
-          invoice_items_items.should include(@addon2)
         end
         specify { subject.invoice_items.all? { |ii| ii.site == @site.version_at(Time.utc(2010,2).end_of_month) }.should be_true }
         specify { subject.invoice_items.all? { |ii| ii.invoice == subject }.should be_true }
 
-        its(:invoice_items_amount) { should == 1000 + 399 + 499 + 100 } # plan.price + addon1.price + addon2.price + 1 overage block
-        its(:amount)               { should == 1000 + 399 + 499 + 100 } # plan.price + addon1.price + addon2.price + 1 overage block
+        its(:invoice_items_amount) { should == 1000 + 100 } # plan.price + 1 overage block
+        its(:amount)               { should == 1000 + 100 } # plan.price + 1 overage block
         its(:started_at)           { should == Time.utc(2010,2).beginning_of_month }
         its(:ended_at)             { should == Time.utc(2010,2).end_of_month }
         its(:paid_at)              { should be_nil }

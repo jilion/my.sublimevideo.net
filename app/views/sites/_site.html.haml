@@ -27,11 +27,6 @@
         - else
           = "No plan"
 
-      - if site.addons.present?
-        %ul.addons
-          - site.addons.each do |addon|
-            %li= addon.name.humanize
-
       .spacer
 
   %td.usage

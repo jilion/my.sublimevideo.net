@@ -11,7 +11,7 @@ describe SitesController do
     
     describe "GET :index" do
       before :each do
-        @current_user.stub_chain(:sites, :not_archived, :with_plan, :with_addons, :by_date).and_return([mock_site])
+        @current_user.stub_chain(:sites, :not_archived, :with_plan, :by_date).and_return([mock_site])
         get :index
       end
       

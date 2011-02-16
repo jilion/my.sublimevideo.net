@@ -17,7 +17,6 @@
   #change_plan_box.section_box{ :style => "display:none" }
     = form_for @site, :html => { :id => "edit_site_plan", "data-password-protected" => @site.active? } do |f|
       = render 'plans', :f => f
-      = render 'addons', :f => f
       - unless @site.active?
         .no_plan
           %p><

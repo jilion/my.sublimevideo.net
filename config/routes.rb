@@ -84,7 +84,6 @@ MySublimeVideo::Application.routes.draw do
       end
     end
     resources :plans,     :only => :index
-    resources :addons,    :only => :index
     resources :admins,    :only => [:index, :destroy]
     resources :mails,     :only => [:index, :new, :create]
     scope "mails" do

@@ -4,7 +4,6 @@ class SitesStat
 
   field :states_count, :type => Hash
   field :plans_count,  :type => Hash
-  field :addons_count, :type => Hash
 
   index :created_at
 
@@ -22,8 +21,7 @@ class SitesStat
     delay_create_sites_stats
     self.create(
       :states_count => states_count,
-      :plans_count  => plans_count,
-      :addons_count => addons_count
+      :plans_count  => plans_count
     )
   end
 
@@ -40,14 +38,6 @@ class SitesStat
     plan_ids.inject({}) do |plans_count, plan_id|
       plans_count[plan_id.to_s] = Site.where(:plan_id => plan_id).count
       plans_count
-    end
-  end
-
-  def self.addons_count
-    addon_ids = AddonsSite.select("DISTINCT(addon_id)").map(&:addon_id)
-    addon_ids.inject({}) do |addons_count, addon_id|
-      addons_count[addon_id.to_s] = Site.joins(:addons).where(:addons_sites => { :addon_id => addon_id }).count
-      addons_count
     end
   end
 

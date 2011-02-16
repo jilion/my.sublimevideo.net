@@ -33,7 +33,6 @@ describe Site do
     it { should belong_to :plan }
     it { should have_many :invoice_items }
     it { should have_many(:invoices).through(:invoice_items) }
-    it { should have_and_belong_to_many :addons }
     it { should have_many(:lifetimes) }
   end
 
@@ -189,26 +188,6 @@ describe Site do
       it "should clean invalid dev_hostnames (dev_hostnames should never contain /.+://(www.)?/)" do
         site = Factory.build(:site, dev_hostnames: 'http://www.test;err, ftp://127.]boo[:3000, www.joke;foo')
         site.dev_hostnames.should == '127.]boo[, joke;foo, test;err'
-      end
-    end
-
-    describe "addon_ids=" do
-      let(:addon1) { Factory(:addon) }
-      let(:addon2) { Factory(:addon) }
-      subject { Factory(:site) }
-
-      it "should remove blank ids" do
-        subject.addon_ids = ["", nil]
-        subject.addons.should be_empty
-        subject.save
-        subject.addons.should be_empty
-      end
-
-      it "should set new addons" do
-        subject.addon_ids = [addon1.id, addon2.id]
-        subject.addons.should == [addon1, addon2]
-        subject.save
-        subject.addons.should == [addon1, addon2]
       end
     end
 
@@ -510,25 +489,20 @@ describe Site do
         end
       end
 
-      context "on update of settings, addons or state (to dev or active)" do
+      context "on update of settings or state (to dev or active)" do
         describe "attributes that appears in the license" do
           before(:all) do
             @plan = Factory(:plan)
-            @addon1 = Factory(:addon, name: 'SSL', price: 99)
-            @addon2 = Factory(:addon, name: 'stat', price: 99)
           end
 
           before(:each) do
-            Addon.stub(:find).with([1])   { [@addon1] }
-            Addon.stub(:find).with([1,2]) { [@addon1, @addon2] }
-            Addon.stub(:find).with(:all)  { [@addon1, @addon2] }
             PageRankr.stub(:ranks)
           end
 
-          { hostname: "test.com", extra_hostnames: "test.staging.com", dev_hostnames: "test.local", path: "yu", wildcard: true, addon_ids: [1, 2] }.each do |attribute, value|
+          { hostname: "test.com", extra_hostnames: "test.staging.com", dev_hostnames: "test.local", path: "yu", wildcard: true }.each do |attribute, value|
             describe "#{attribute} has changed" do
               subject do
-                site = Factory(:site, plan: @plan, hostname: "jilion.com", extra_hostnames: "staging.jilion.com", dev_hostnames: "jilion.local", path: "yo", wildcard: false, addon_ids: [1], state: 'dev')
+                site = Factory(:site, plan: @plan, hostname: "jilion.com", extra_hostnames: "staging.jilion.com", dev_hostnames: "jilion.local", path: "yo", wildcard: false, state: 'dev')
                 @worker.work_off
                 site.reload
               end
@@ -568,8 +542,6 @@ describe Site do
                   subject.license.read.should include("path:yu")
                 when :path
                   subject.license.read.should include("wildcard:true")
-                when :addon_ids
-                  subject.license.read.should include("addons:SSL,stat")
                 end
               end
 
@@ -701,24 +673,9 @@ describe Site do
       end
     end
 
-    describe "#addon_ids_changed?" do
-      let(:addon1) { Factory(:addon) }
-      let(:addon2) { Factory(:addon) }
-      subject { Factory(:site) }
-
-      it "should return false if addons hasn't changed" do
-        subject.should_not be_addon_ids_changed
-      end
-
-      it "should return true if addons has changed" do
-        subject.addon_ids = [addon1.id, addon2.id]
-        subject.should be_addon_ids_changed
-      end
-    end
-
     describe "#template_hostnames" do
       before(:all) do
-        @site = Factory(:site, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', path: 'foo', wildcard: true, addons: [Factory(:addon, name: 'ssl_gold'), Factory(:addon, name: 'customization')])
+        @site = Factory(:site, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', path: 'foo', wildcard: true)
         @site.plan = nil
         @site.save(validate: false)
       end
@@ -732,10 +689,10 @@ describe Site do
 
       %w[beta active].each do |state|
         context "site is #{state}" do
-          it "should include hostname, extra_hostnames, path, wildcard, addons' names & dev_hostnames" do
+          it "should include hostname, extra_hostnames, path, wildcard' names & dev_hostnames" do
             subject.state = state
             subject.state.should == state
-            subject.template_hostnames.should == "'jilion.com','jilion.net','jilion.org','path:foo','wildcard:true','addons:customization,ssl_gold','127.0.0.1','localhost'"
+            subject.template_hostnames.should == "'jilion.com','jilion.net','jilion.org','path:foo','wildcard:true','127.0.0.1','localhost'"
           end
         end
       end

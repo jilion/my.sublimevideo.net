@@ -10,9 +10,9 @@ class Site < ActiveRecord::Base
   # Versioning
   has_paper_trail
 
-  attr_accessor :user_attributes, :addon_ids_was
+  attr_accessor :user_attributes
 
-  attr_accessible :hostname, :dev_hostnames, :extra_hostnames, :path, :wildcard, :plan_id, :addon_ids, :user_attributes
+  attr_accessible :hostname, :dev_hostnames, :extra_hostnames, :path, :wildcard, :plan_id, :user_attributes
 
   uniquify :token, :chars => Array('a'..'z') + Array('0'..'9')
 
@@ -27,7 +27,6 @@ class Site < ActiveRecord::Base
   belongs_to :plan
   has_many :invoice_items
   has_many :invoices, :through => :invoice_items
-  has_and_belongs_to_many :addons
   has_many :lifetimes
   # Mongoid associations
   def usages
@@ -51,7 +50,6 @@ class Site < ActiveRecord::Base
 
   # includes
   scope :with_plan,   includes(:plan)
-  scope :with_addons, includes(:addons)
 
   # filter
   scope :beta,          lambda { with_state(:beta) }
@@ -63,7 +61,6 @@ class Site < ActiveRecord::Base
   scope :with_wildcard, where(:wildcard => true)
   scope :with_path,     where({ :path.ne => nil } & { :path.ne => '' })
   scope :with_extra_hostnames, where({ :extra_hostnames.ne => nil } & { :extra_hostnames.ne => '' })
-  scope :with_ssl,      joins(:addons).where(:addons => { :name => "SSL" })
 
   # admin
   scope :user_id,    lambda { |user_id| where(user_id: user_id) }
@@ -245,11 +242,6 @@ public
     write_attribute :path, attribute.sub('/', '')
   end
 
-  def addon_ids=(ids = [])
-    @addon_ids_was = addon_ids
-    self.addons = Addon.find(ids.reject { |i| i.blank? })
-  end
-
   def to_param
     token
   end
@@ -264,10 +256,6 @@ public
 
   def settings_changed?
     (changed & %w[hostname extra_hostnames dev_hostnames path wildcard]).present?
-  end
-
-  def addon_ids_changed?
-    @addon_ids_was && @addon_ids_was != addon_ids
   end
 
   def referrer_type(referrer, timestamp = Time.now.utc)
@@ -293,7 +281,6 @@ public
       hostnames += extra_hostnames.split(', ') if extra_hostnames.present?
       hostnames << "path:#{path}" if path.present?
       hostnames << "wildcard:#{wildcard.to_s}" if wildcard.present?
-      hostnames << "addons:#{addons.map { |a| a.name }.sort.join(',')}" if path.present?
     end
     hostnames += dev_hostnames.split(', ') if dev_hostnames.present?
     hostnames.map! { |hostname| "'#{hostname}'" }
@@ -376,7 +363,7 @@ private
       self.cdn_up_to_date  = false
       @loader_needs_update = true
     end
-    if new_record? || settings_changed? || addon_ids_changed? || (state_changed? && %w[dev active].include?(state))
+    if new_record? || settings_changed? || (state_changed? && %w[dev active].include?(state))
       self.cdn_up_to_date   = false
       @license_needs_update = true
     end

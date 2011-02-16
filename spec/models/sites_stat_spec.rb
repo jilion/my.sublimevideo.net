@@ -25,12 +25,9 @@ describe SitesStat do
       user = Factory(:user)
       @plan1 = Factory(:plan)
       @plan2 = Factory(:plan)
-      @addon1 = Factory(:addon)
-      @addon2 = Factory(:addon)
-      @addon3 = Factory(:addon)
-      Factory(:site, :user => user, :state => 'dev', :plan_id => @plan1.id, :addon_ids => [@addon1.id, @addon2.id])
-      Factory(:site, :user => user, :state => 'active', :plan_id => @plan1.id, :addon_ids => [@addon1.id])
-      Factory(:site, :user => user, :state => 'suspended', :plan_id => @plan2.id, :addon_ids => [])
+      Factory(:site, :user => user, :state => 'dev', :plan_id => @plan1.id)
+      Factory(:site, :user => user, :state => 'active', :plan_id => @plan1.id)
+      Factory(:site, :user => user, :state => 'suspended', :plan_id => @plan2.id)
     end
 
     describe ".create_sites_stats" do
@@ -40,7 +37,7 @@ describe SitesStat do
         SitesStat.create_sites_stats
       end
 
-      it "should create sites stats for states, plans & addons" do
+      it "should create sites stats for states & plans" do
         SitesStat.create_sites_stats
         SitesStat.count.should == 1
         sites_stat = SitesStat.last
@@ -52,10 +49,6 @@ describe SitesStat do
         sites_stat.plans_count.should == {
           @plan1.id.to_s => 2,
           @plan2.id.to_s => 1
-        }
-        sites_stat.addons_count.should == {
-          @addon1.id.to_s => 2,
-          @addon2.id.to_s => 1
         }
       end
 
@@ -80,17 +73,6 @@ describe SitesStat do
       end
     end
 
-    describe ".addons_count" do
-      it "should include all used addons" do
-        SitesStat.addons_count.should == {
-          @addon1.id.to_s => 2,
-          @addon2.id.to_s => 1
-        }
-      end
-    end
-
-
   end
-
 
 end
