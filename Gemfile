@@ -39,8 +39,8 @@ gem 'aws',                   '2.3.34' # bugs in 2.4.2
 gem 'fog',                   '0.5.1'
 gem 'carrierwave',           '0.5.1'
 
-gem 'bson_ext',              '1.2.1'
-gem 'mongo',                 '1.2.1'
+gem 'bson_ext',              '~> 1.2.2'
+gem 'mongo',                 '~> 1.2.2'
 gem 'mongoid',               '~> 2.0.0.rc.7' # '2.0.0.beta.20'
 
 gem 'zip',                   '2.0.2', :require => 'zip/zip'
