@@ -11,7 +11,6 @@ class Invoice < ActiveRecord::Base
   has_many :invoice_items
 
   has_many :addon_invoice_items,   conditions: { type: "InvoiceItem::Addon" }, :class_name => "InvoiceItem"
-  has_many :overage_invoice_items, conditions: { type: "InvoiceItem::Overage" }, :class_name => "InvoiceItem"
   has_many :plan_invoice_items,    conditions: { type: "InvoiceItem::Plan" }, :class_name => "InvoiceItem"
 
   # ==========
@@ -186,8 +185,6 @@ private
       past_site = site.version_at(ended_at)
       # Plan
       invoice_items << (plan_invoice_item = InvoiceItem::Plan.build(:site => past_site, :invoice => self))
-      # Overages
-      invoice_items << InvoiceItem::Overage.build(:site => past_site, :invoice => self)
       # Addons
       past_site.lifetimes.where(:item_type => "Addon").alive_between(plan_invoice_item.started_at, plan_invoice_item.ended_at).each do |lifetime|
         invoice_items << InvoiceItem::Addon.build(:site => past_site, :lifetime => lifetime, :invoice => self)

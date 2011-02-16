@@ -40,10 +40,6 @@ module InvoicesHelper
     invoice_items.detect { |invoice_item| invoice_item.type == 'InvoiceItem::Plan' }
   end
 
-  def get_overage_invoice_item(invoice_items)
-    invoice_items.detect { |invoice_item| invoice_item.type == 'InvoiceItem::Overage' }
-  end
-
   def get_addons_invoice_items_grouped_by_item(invoice_items)
     invoice_items.select { |invoice_item| invoice_item.type == 'InvoiceItem::Addon' }.group_by { |invoice_item| invoice_item.item }
   end

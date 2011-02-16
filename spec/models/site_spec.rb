@@ -1090,67 +1090,7 @@ describe Site do
         end
       end
     end
-    
-    describe "#current_percentage_of_overages_compared_to_plan_limit" do
-      context "with usages less than 2x the plan's limit" do
-        before(:all) do
-          @site = Factory(:site, plan: Factory(:plan, player_hits: 30))
-          Factory(:site_usage, site_id: @site.id, day: Time.utc(2010,12,31).midnight,
-            main_player_hits:  6, main_player_hits_cached:  4,
-            extra_player_hits: 5, extra_player_hits_cached: 5,
-            dev_player_hits:   4, dev_player_hits_cached:   6
-          )
-          Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,1,1).midnight,
-            main_player_hits:  6, main_player_hits_cached:  4,
-            extra_player_hits: 5, extra_player_hits_cached: 5,
-            dev_player_hits:   4, dev_player_hits_cached:   6
-          )
-          Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,1,15).midnight,
-            main_player_hits:  6, main_player_hits_cached:  4,
-            extra_player_hits: 5, extra_player_hits_cached: 5,
-            dev_player_hits:   4, dev_player_hits_cached:   6
-          )
-        end
-
-        it "should update counters of non-archived sites from last 30 days site_usages" do
-          Timecop.travel(Time.utc(2011,1,31,12))
-          @site.current_billable_usage.should == 40
-          @site.current_percentage_of_plan_used.should == 1
-          @site.current_percentage_of_overages_compared_to_plan_limit.should == 0.33
-          Timecop.return
-        end
-      end
-      
-      context "with usages more than 2x the plan's limit" do
-        before(:all) do
-          @site = Factory(:site, plan: Factory(:plan, player_hits: 10))
-          Factory(:site_usage, site_id: @site.id, day: Time.utc(2010,12,31).midnight,
-            main_player_hits:  6, main_player_hits_cached:  4,
-            extra_player_hits: 5, extra_player_hits_cached: 5,
-            dev_player_hits:   4, dev_player_hits_cached:   6
-          )
-          Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,1,1).midnight,
-            main_player_hits:  6, main_player_hits_cached:  4,
-            extra_player_hits: 5, extra_player_hits_cached: 5,
-            dev_player_hits:   4, dev_player_hits_cached:   6
-          )
-          Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,1,15).midnight,
-            main_player_hits:  6, main_player_hits_cached:  4,
-            extra_player_hits: 5, extra_player_hits_cached: 5,
-            dev_player_hits:   4, dev_player_hits_cached:   6
-          )
-        end
-
-        it "should update counters of non-archived sites from last 30 days site_usages" do
-          Timecop.travel(Time.utc(2011,1,31,12))
-          @site.current_billable_usage.should == 40
-          @site.current_percentage_of_plan_used.should == 1
-          @site.current_percentage_of_overages_compared_to_plan_limit.should == 1
-          Timecop.return
-        end
-      end
-    end
-    
+        
   end
 end
 

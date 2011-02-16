@@ -1,6 +1,0 @@
-%tr
-  %td.overages
-    %p
-      %strong= "Overages: #{number_with_delimiter(overage_invoice_item.overage_player_hits)} Hits"
-      = "(#{display_amount(overage_invoice_item.price)}/#{number_with_delimiter(Plan::OVERAGES_PLAYER_HITS_BLOCK)} Hits)"
-  %td.total= display_amount(overage_invoice_item.amount)

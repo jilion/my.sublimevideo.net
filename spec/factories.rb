@@ -112,13 +112,6 @@ Factory.define :plan_invoice_item, :parent => :invoice_item, :class => InvoiceIt
   f.amount 1000
 end
 
-Factory.define :overage_invoice_item, :parent => :invoice_item, :class => InvoiceItem::Overage do |f|
-  f.item   { Factory(:plan) }
-  f.price  1
-  f.amount 5
-  f.info   Hash.new({ :player_hits => 5500 })
-end
-
 Factory.define :addon_invoice_item, :parent => :invoice_item, :class => InvoiceItem::Addon do |f|
   f.item   { Factory(:addon) }
   f.price  10

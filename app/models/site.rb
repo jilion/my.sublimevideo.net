@@ -345,10 +345,6 @@ public
   def current_percentage_of_plan_used
     [(current_billable_usage / plan.player_hits.to_f).round(2), 1].min
   end
-  
-  def current_percentage_of_overages_compared_to_plan_limit
-    [((current_billable_usage - plan.player_hits) / plan.player_hits.to_f).round(2), 1].min
-  end
 
 private
 

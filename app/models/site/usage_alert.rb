@@ -43,7 +43,7 @@ private
   def self.send_next_plan_recommended_alerts
     invoice = Invoice.new(:started_at => TimeUtil.current_month.first, :ended_at => TimeUtil.current_month.second)
     Site.plan_player_hits_reached_alerted_this_month.next_plan_recommended_alert_sent_at_not_alerted_this_month.each do |site|
-      if site.plan.next_plan.present? && (site.plan.price + InvoiceItem::Overage.build(:invoice => invoice, :site => site).amount) > site.plan.next_plan.price
+      if site.plan.next_plan.present? && site.plan.price > site.plan.next_plan.price
         Site.transaction do
           site.touch(:next_plan_recommended_alert_sent_at)
           UsageAlertMailer.next_plan_recommended(site).deliver!

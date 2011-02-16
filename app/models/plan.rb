@@ -1,7 +1,5 @@
 class Plan < ActiveRecord::Base
 
-  OVERAGES_PLAYER_HITS_BLOCK = 1000
-
   attr_accessible :name, :cycle, :player_hits, :price
 
   # ================
@@ -60,3 +58,4 @@ end
 #
 #  index_plans_on_name  (name) UNIQUE
 #
+
