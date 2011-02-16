@@ -28,12 +28,6 @@ GIT
     has_scope (0.5.0)
 
 GIT
-  remote: git://github.com/thibaudgg/rack-ssl-enforcer.git
-  revision: ae9144615d16fb59f19eef0ea9f0dbd88be14857
-  specs:
-    rack-ssl-enforcer (0.2.0)
-
-GIT
   remote: git://github.com/thibaudgg/voxel_hapi.git
   revision: f82d1d11506ca4424b872a27cca22d71479a8633
   branch: 1.9.2
@@ -90,7 +84,7 @@ GEM
     bcrypt-ruby (2.1.4)
     braintree (2.7.0)
       builder
-    bson (1.2.1)
+    bson (1.2.2)
     bson_ext (1.2.1)
     builder (2.1.2)
     capybara (0.4.1.2)
@@ -105,7 +99,7 @@ GEM
     carrierwave (0.5.1)
       activesupport (~> 3.0)
     celerity (0.8.7)
-    childprocess (0.1.6)
+    childprocess (0.1.7)
       ffi (~> 0.6.3)
     closure-compiler (1.0.0)
     configuration (1.2.0)
@@ -118,14 +112,14 @@ GEM
       json
     culerity (0.2.15)
     currencies (0.4.0)
-    daemon_controller (0.2.5)
+    daemon_controller (0.2.6)
     daemons (1.1.0)
     dalli (1.0.2)
     database_cleaner (0.6.3)
     delayed_job (2.1.3)
       activesupport (~> 3.0)
       daemons
-    devise (1.1.5)
+    devise (1.1.6)
       bcrypt-ruby (~> 2.1.2)
       warden (~> 1.0.2)
     diff-lcs (1.1.2)
@@ -136,7 +130,7 @@ GEM
     erubis (2.6.6)
       abstract (>= 1.0.0)
     eventmachine (0.12.10)
-    excon (0.4.0)
+    excon (0.5.2)
     factory_girl (1.3.3)
     factory_girl_rails (1.0.1)
       factory_girl (~> 1.3)
@@ -178,12 +172,12 @@ GEM
       spork (>= 0.8.4)
     haml (3.0.24)
     hashie (0.4.0)
-    heroku (1.17.10)
+    heroku (1.17.14)
       json (~> 1.4.6)
       launchy (~> 0.3.2)
       rest-client (>= 1.4.0, < 1.7.0)
     heroku_tasks (0.1.4)
-    hoptoad_notifier (2.4.5)
+    hoptoad_notifier (2.4.6)
       activesupport
       builder
     http_connection (1.4.0)
@@ -242,6 +236,7 @@ GEM
     rack-mount (0.6.13)
       rack (>= 1.0.0)
     rack-private (0.1.5)
+    rack-ssl-enforcer (0.2.1)
     rack-test (0.5.7)
       rack (>= 1.0)
     rails (3.0.4)
@@ -281,7 +276,7 @@ GEM
     ruby-hmac (0.4.0)
     ruby-json (1.1.2)
     rubyzip (0.9.4)
-    selenium-webdriver (0.1.2)
+    selenium-webdriver (0.1.3)
       childprocess (~> 0.1.5)
       ffi (~> 0.6.3)
       json_pure
@@ -348,7 +343,7 @@ DEPENDENCIES
   dalli (~> 1.0.2)
   database_cleaner
   delayed_job (= 2.1.3)
-  devise (~> 1.1.5)
+  devise (= 1.1.6)
   devise_invitable!
   factory_girl_rails (~> 1.0.1)
   ffaker (~> 1.2.0)
@@ -381,7 +376,7 @@ DEPENDENCIES
   public_suffix_service (= 0.8.1)
   rack-google-analytics (= 0.9.2)
   rack-private (= 0.1.5)
-  rack-ssl-enforcer!
+  rack-ssl-enforcer (= 0.2.1)
   rails (~> 3.0.4)
   rb-fsevent (~> 0.3.9)
   request-log-analyzer (= 1.9.10)

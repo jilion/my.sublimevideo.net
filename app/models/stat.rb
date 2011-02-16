@@ -2,23 +2,23 @@ module Stat
 
   class SiteUsage
 
-    def initialize(start_date, end_date, options={})
-      @start_date       = start_date
-      @end_date         = end_date
+    def initialize(start_time, end_time, options={})
+      @start_time       = start_time
+      @end_time         = end_time
       @options          = options
       @labels_to_fields = options[:labels] ? labels_to_fields.select { |k, v| @options[:labels].include?(k) } : labels_to_fields
       @base_conditions = @options[:site_ids] ? { site_id: { "$in" => [@options[:site_ids]].flatten } } : {}
     end
 
-    def self.timeline(start_date, end_date, options={})
-      new(start_date, end_date, options).timeline
+    def self.timeline(start_time, end_time, options={})
+      new(start_time, end_time, options).timeline
     end
 
     # Used to display a site usages chart
     #
     # Params:
-    # * start_date: site_usages' day field must be >= this date
-    # * end_date: site_usages' day field must be < this date
+    # * start_time: site_usages' day field must be >= this date
+    # * end_time: site_usages' day field must be < this date
     # * options: Hash
     #   - site_ids: an array of sites' ids to restrict the selected invoices
     #   - labels: can be used to override labels, restrict usage fields retrieved.
@@ -32,18 +32,18 @@ module Stat
         :key => [:day],
         :cond => @base_conditions.merge({
           :day => {
-            "$gte" => @start_date.midnight,
-            "$lt"  => @end_date.end_of_day
+            "$gte" => @start_time.midnight,
+            "$lt"  => @end_time.end_of_day
           }
         }),
         :initial => @labels_to_fields.keys.inject({}) { |hash, k| hash[k] = 0; hash },
         :reduce => reduce
       )
 
-      total = total_usages_before_start_date
+      total = total_usages_before_start_time
 
       # insert empty hash for days without usage
-      usages = (@start_date.to_date..@end_date.to_date).inject([]) do |memo, day|
+      usages = (@start_time.to_date..@end_time.to_date).inject([]) do |memo, day|
         memo << (usages.detect { |u| u["day"].to_date == day } || { "day" => day })
       end
 
@@ -57,12 +57,12 @@ module Stat
 
     private
 
-    def total_usages_before_start_date
-      return [] if @options[:dont_add_total_usages_before_start_date]
+    def total_usages_before_start_time
+      return [] if @options[:dont_add_total_usages_before_start_time]
 
       usages = ::SiteUsage.collection.group(
         :key => nil,
-        :cond => @base_conditions.merge({ :day => { "$lt" => @start_date.to_date.to_time.midnight } }),
+        :cond => @base_conditions.merge({ :day => { "$lt" => @start_time.to_date.to_time.midnight } }),
         :initial => @labels_to_fields.keys.inject({}) { |hash, k| hash[k] = 0; hash },
         :reduce => reduce
       )
@@ -106,15 +106,15 @@ module Stat
     # Used to display an invoices chart
     #
     # Params:
-    # * start_date: invoices must be >= this date
-    # * end_date: invoices must be <= this date
+    # * start_time: invoices must be >= this date
+    # * end_time: invoices must be <= this date
     # * options: Hash
     #   - user_id: id of a user to restrict the selected invoices
     #
     # Return a array of invoices.
-    def self.timeline(start_date, end_date, options={})
+    def self.timeline(start_time, end_time, options={})
       conditions = options[:user_id] ? { user_id: options[:user_id].to_i } : {}
-      invoices = ::Invoice.where(conditions).between(start_date, end_date)
+      invoices = ::Invoice.where(conditions).between(start_time, end_time)
       invoices.order(:ended_at.asc)#group_by(&:ended_at).inject([]) do |data, h|
       #   data << h[1].inject(0) { |sum, grouped_invoices| sum += grouped_invoices.amount }
       # end

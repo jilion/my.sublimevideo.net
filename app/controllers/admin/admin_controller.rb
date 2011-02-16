@@ -10,7 +10,7 @@ class Admin::AdminController < ApplicationController
     @date_range_from = if params[:date_range_from]
       Time.utc(params[:date_range_from][:year].to_i, params[:date_range_from][:month].to_i, params[:date_range_from][:day].to_i)
     else
-      Date.new(2010,9,14)
+      Time.utc(2010,9,14)
     end.midnight
 
     @date_range_to = if params[:date_range_to]
