@@ -3,11 +3,11 @@ class Stat
   # ====================
   # = Instance Methods =
   # ====================
-  def self.usages(start_date, end_date, options={})
+  def self.usages(start_time, end_time, options={})
     conditions = {
       :day => {
-        "$gte" => start_date.midnight,
-        "$lt"  => end_date.end_of_day
+        "$gte" => start_time.midnight,
+        "$lt"  => end_time.end_of_day
       }
     }
     conditions[:site_id] = options[:site_id].to_i if options[:site_id]
