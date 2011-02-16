@@ -37,13 +37,13 @@ end
  
 group 'frontend' do
  
-  guard 'livereload', :api_version => '1.5', :apply_js_live => false do
-    watch(%r{app/.+\.(erb|haml)})
-    watch(%r{app/helpers/.+\.rb})
-    watch(%r{public/javascripts/.+\.js})
-    watch(%r{public/stylesheets/.+\.css})
-    watch(%r{public/.+\.html})
-    watch(%r{config/locales/.+\.yml})
-  end
+  # guard 'livereload', :api_version => '1.5', :apply_js_live => false do
+  #   watch(%r{app/.+\.(erb|haml)})
+  #   watch(%r{app/helpers/.+\.rb})
+  #   watch(%r{public/javascripts/.+\.js})
+  #   watch(%r{public/stylesheets/.+\.css})
+  #   watch(%r{public/.+\.html})
+  #   watch(%r{config/locales/.+\.yml})
+  # end
  
 end
