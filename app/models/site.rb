@@ -41,7 +41,7 @@ class Site < ActiveRecord::Base
   # = Scopes =
   # ==========
 
-  scope :billable, lambda { active.where({ :plan_id.not_in => [Plan.dev_plan.id,Plan.beta_plan.id] }, { :next_cycle_plan_id => nil } | { :next_cycle_plan_id.ne => Plan.dev_plan.id }) }
+  scope :billable, lambda { active.where({ :plan_id.not_in => [Plan.dev_plan.id, Plan.beta_plan.id] }, { :next_cycle_plan_id => nil } | { :next_cycle_plan_id.ne => Plan.dev_plan.id }) }
 
   # usage_alert scopes
   scope :plan_player_hits_reached_alerted_this_month, where({ :plan_player_hits_reached_alert_sent_at.gte => Time.now.utc.beginning_of_month })
@@ -333,7 +333,7 @@ public
   end
 
   def current_billable_usage
-    @current_billable_usage ||= usages.between(*TimeUtil.current_month).to_a.sum { |su| su.main_player_hits + su.main_player_hits_cached + su.extra_player_hits + su.extra_player_hits_cached }
+    @current_billable_usage ||= usages.between(paid_plan_cycle_started_at, paid_plan_cycle_ended_at).to_a.sum { |su| su.main_player_hits + su.main_player_hits_cached + su.extra_player_hits + su.extra_player_hits_cached }
   end
 
   def current_percentage_of_plan_used

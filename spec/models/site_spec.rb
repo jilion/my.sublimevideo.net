@@ -42,8 +42,9 @@ describe Site do
 
   describe "Scopes" do
 
-    describe "#billable", :focus => true do
+    describe "#billable" do
       before(:all) do
+        Site.delete_all
         user = Factory(:user)
         # billable
         @site1 = Factory(:site, user: user, plan: @paid_plan)
@@ -583,7 +584,6 @@ describe Site do
   describe "Class Methods" do
 
     describe ".delay_update_last_30_days_counters_for_not_archived_sites" do
-
       it "should delay update_last_30_days_counters_for_not_archived_sites if not already delayed" do
         expect { Site.delay_update_last_30_days_counters_for_not_archived_sites }.should change(Delayed::Job.where(:handler.matches => '%Site%update_last_30_days_counters_for_not_archived_sites%'), :count).by(1)
       end
@@ -592,11 +592,9 @@ describe Site do
         Site.delay_update_last_30_days_counters_for_not_archived_sites
         expect { Site.delay_update_last_30_days_counters_for_not_archived_sites }.should change(Delayed::Job.where(:handler.matches => '%Site%update_last_30_days_counters_for_not_archived_sites%'), :count).by(0)
       end
-
     end
 
     describe "update_last_30_days_counters_for_not_archived_sites" do
-
       it "should delay itself" do
         Site.should_receive(:delay_update_last_30_days_counters_for_not_archived_sites)
         Site.update_last_30_days_counters_for_not_archived_sites
@@ -613,7 +611,6 @@ describe Site do
         @archived_site.reload.last_30_days_main_player_hits_total_count.should == 0
         Timecop.return
       end
-
     end
 
   end
@@ -901,24 +898,24 @@ describe Site do
       before(:all) do
         @site = Factory(:site, last_30_days_main_player_hits_total_count: 1)
         Factory(:site_usage, site_id: @site.id, day: Time.utc(2010,12,31).midnight,
-          main_player_hits:  6,   main_player_hits_cached: 4,
+          main_player_hits:  6,   main_player_hits_cached:  4,
           extra_player_hits: 5,   extra_player_hits_cached: 5,
-          dev_player_hits:   4,   dev_player_hits_cached: 6
+          dev_player_hits:   4,   dev_player_hits_cached:   6
         )
         Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,1,1).midnight,
-          main_player_hits:  6,   main_player_hits_cached: 4,
+          main_player_hits:  6,   main_player_hits_cached:  4,
           extra_player_hits: 5,   extra_player_hits_cached: 5,
-          dev_player_hits:   4,   dev_player_hits_cached: 6
+          dev_player_hits:   4,   dev_player_hits_cached:   6
         )
         Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,1,30).midnight,
-          main_player_hits:  6,   main_player_hits_cached: 4,
+          main_player_hits:  6,   main_player_hits_cached:  4,
           extra_player_hits: 5,   extra_player_hits_cached: 5,
-          dev_player_hits:   4,   dev_player_hits_cached: 6
+          dev_player_hits:   4,   dev_player_hits_cached:   6
         )
         Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,1,31).midnight,
-          main_player_hits:  6,   main_player_hits_cached: 4,
+          main_player_hits:  6,   main_player_hits_cached:  4,
           extra_player_hits: 5,   extra_player_hits_cached: 5,
-          dev_player_hits:   4,   dev_player_hits_cached: 6
+          dev_player_hits:   4,   dev_player_hits_cached:   6
         )
       end
 
@@ -934,21 +931,21 @@ describe Site do
 
     describe "#current_billable_usage" do
       before(:all) do
-        @site = Factory(:site)
-        Factory(:site_usage, site_id: @site.id, day: Time.utc(2010,12,31).midnight,
-          main_player_hits:  6, main_player_hits_cached: 4,
+        @site = Factory(:site, paid_plan_cycle_started_at: Time.utc(2010,12,28).midnight, paid_plan_cycle_ended_at: Time.utc(2011,1,28).end_of_day)
+        Factory(:site_usage, site_id: @site.id, day: Time.utc(2010,12,29).midnight,
+          main_player_hits:  6, main_player_hits_cached:  4,
           extra_player_hits: 5, extra_player_hits_cached: 5,
-          dev_player_hits:   4, dev_player_hits_cached: 6
+          dev_player_hits:   4, dev_player_hits_cached:   6
         )
-        Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,1,1).midnight,
-          main_player_hits:  6, main_player_hits_cached: 4,
+        Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,1,5).midnight,
+          main_player_hits:  6, main_player_hits_cached:  4,
           extra_player_hits: 5, extra_player_hits_cached: 5,
-          dev_player_hits:   4, dev_player_hits_cached: 6
+          dev_player_hits:   4, dev_player_hits_cached:   6
         )
-        Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,1,15).midnight,
-          main_player_hits:  6, main_player_hits_cached: 4,
+        Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,2,5).midnight,
+          main_player_hits:  6, main_player_hits_cached:  4,
           extra_player_hits: 5, extra_player_hits_cached: 5,
-          dev_player_hits:   4, dev_player_hits_cached: 6
+          dev_player_hits:   4, dev_player_hits_cached:   6
         )
       end
 
@@ -962,18 +959,18 @@ describe Site do
     describe "#current_percentage_of_plan_used" do
       context "with usages less than the plan's limit" do
         before(:all) do
-          @site = Factory(:site, plan: Factory(:plan, player_hits: 100))
-          Factory(:site_usage, site_id: @site.id, day: Time.utc(2010,12,31).midnight,
+          @site = Factory(:site, plan: Factory(:plan, player_hits: 100), paid_plan_cycle_started_at: Time.utc(2010,12,28).midnight, paid_plan_cycle_ended_at: Time.utc(2011,1,28).end_of_day)
+          Factory(:site_usage, site_id: @site.id, day: Time.utc(2010,12,29).midnight,
             main_player_hits:  6, main_player_hits_cached:  4,
             extra_player_hits: 5, extra_player_hits_cached: 5,
             dev_player_hits:   4, dev_player_hits_cached:   6
           )
-          Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,1,1).midnight,
+          Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,1,5).midnight,
             main_player_hits:  6, main_player_hits_cached:  4,
             extra_player_hits: 5, extra_player_hits_cached: 5,
             dev_player_hits:   4, dev_player_hits_cached:   6
           )
-          Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,1,15).midnight,
+          Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,2,5).midnight,
             main_player_hits:  6, main_player_hits_cached:  4,
             extra_player_hits: 5, extra_player_hits_cached: 5,
             dev_player_hits:   4, dev_player_hits_cached:   6
@@ -990,18 +987,18 @@ describe Site do
 
       context "with usages more than the plan's limit" do
         before(:all) do
-          @site = Factory(:site, plan: Factory(:plan, player_hits: 30))
-          Factory(:site_usage, site_id: @site.id, day: Time.utc(2010,12,31).midnight,
+          @site = Factory(:site, plan: Factory(:plan, player_hits: 30), paid_plan_cycle_started_at: Time.utc(2010,12,28).midnight, paid_plan_cycle_ended_at: Time.utc(2011,1,28).end_of_day)
+          Factory(:site_usage, site_id: @site.id, day: Time.utc(2010,12,29).midnight,
             main_player_hits:  6, main_player_hits_cached:  4,
             extra_player_hits: 5, extra_player_hits_cached: 5,
             dev_player_hits:   4, dev_player_hits_cached:   6
           )
-          Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,1,1).midnight,
+          Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,1,5).midnight,
             main_player_hits:  6, main_player_hits_cached:  4,
             extra_player_hits: 5, extra_player_hits_cached: 5,
             dev_player_hits:   4, dev_player_hits_cached:   6
           )
-          Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,1,15).midnight,
+          Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,2,5).midnight,
             main_player_hits:  6, main_player_hits_cached:  4,
             extra_player_hits: 5, extra_player_hits_cached: 5,
             dev_player_hits:   4, dev_player_hits_cached:   6

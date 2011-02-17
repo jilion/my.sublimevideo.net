@@ -29,9 +29,6 @@ Spork.prefork do
   end
 
   RSpec.configure do |config|
-    # config.include Shoulda::ActionController::Matchers
-    # config.include Capybara
-    # config.include Devise::TestHelpers, :type => :controller
     config.extend VCR::RSpec::Macros
 
     config.filter_run :focus => true
