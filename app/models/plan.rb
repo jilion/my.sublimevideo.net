@@ -41,6 +41,22 @@ class Plan < ActiveRecord::Base
     name == "dev"
   end
 
+  def beta_plan?
+    name == "beta"
+  end
+
+  # =================
+  # = Class Methods =
+  # =================
+
+  def self.dev_plan
+    where(:name => "dev").first
+  end
+
+  def self.beta_plan
+    where(:name => "beta").first
+  end
+
 end
 
 

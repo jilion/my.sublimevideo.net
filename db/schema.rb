@@ -12,23 +12,6 @@
 
 ActiveRecord::Schema.define(:version => 20110113120826) do
 
-  create_table "addons", :force => true do |t|
-    t.string   "name"
-    t.integer  "price"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "addons", ["name"], :name => "index_addons_on_name", :unique => true
-
-  create_table "addons_sites", :id => false, :force => true do |t|
-    t.integer "site_id"
-    t.integer "addon_id"
-  end
-
-  add_index "addons_sites", ["addon_id"], :name => "index_addons_sites_on_addon_id"
-  add_index "addons_sites", ["site_id"], :name => "index_addons_sites_on_site_id"
-
   create_table "admins", :force => true do |t|
     t.string   "email",                               :default => "", :null => false
     t.string   "encrypted_password",   :limit => 128, :default => "", :null => false
@@ -186,7 +169,9 @@ ActiveRecord::Schema.define(:version => 20110113120826) do
     t.string   "extra_hostnames"
     t.integer  "plan_id"
     t.boolean  "cdn_up_to_date"
-    t.datetime "activated_at"
+    t.datetime "paid_plan_cycle_started_at"
+    t.datetime "paid_plan_cycle_ended_at"
+    t.integer  "next_cycle_plan_id"
     t.datetime "plan_player_hits_reached_alert_sent_at"
     t.datetime "next_plan_recommended_alert_sent_at"
     t.integer  "last_30_days_main_player_hits_total_count",  :default => 0

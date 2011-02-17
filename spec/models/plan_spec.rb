@@ -73,6 +73,11 @@ describe Plan do
     it { Factory(:plan, :name => "pro").should_not be_dev_plan }
   end
 
+  describe "#beta_plan?" do
+    it { Factory(:plan, :name => "beta").should be_beta_plan }
+    it { Factory(:plan, :name => "dev").should_not be_beta_plan }
+  end
+
 end
 
 

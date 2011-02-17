@@ -89,7 +89,7 @@ feature "Sites" do
     create_site
     site = @current_user.sites.last
     # site.stub!(:beta? => true) # fake that the site is in beta state (should not have a plan, but no big deal for this test)
-    # @current_user.stub_chain(:sites, :not_archived, :with_plan, :by_date).and_return([site])
+    # @current_user.stub_chain(:sites, :not_archived, :by_date).and_return([site])
     # site.should be_beta
     visit "/sites"
     # within(:css, "tr#site_#{site.id}") do

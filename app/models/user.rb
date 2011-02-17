@@ -32,6 +32,7 @@ class User < ActiveRecord::Base
   # = Scopes =
   # ==========
 
+  # TODO
   scope :billable,  lambda { |started_at, ended_at|
     includes(:sites).
     without_state(:archived).
@@ -175,7 +176,7 @@ class User < ActiveRecord::Base
   end
 
   def have_beta_sites?
-    sites.any? { |site| site.beta? }
+    sites.any? { |site| site.in_beta_plan? }
   end
 
   def full_name

@@ -4,8 +4,9 @@ require 'spec_helper'
 describe Site do
   before(:all) do
     @worker = Delayed::Worker.new
-    @dev_plan = Factory(:plan, name: "dev")
-    @pro_plan = Factory(:plan, name: "pro")
+    @dev_plan = Factory(:dev_plan)
+    @beta_plan = Factory(:beta_plan)
+    @paid_plan = Factory(:plan)
   end
 
   context "Factory" do
@@ -23,7 +24,6 @@ describe Site do
     its(:license)         { should_not be_present }
     its(:loader)          { should_not be_present }
     its(:player_mode)     { should == "stable" }
-    its(:activated_at)    { should be_nil }
 
     it { should be_active }
     it { should be_valid }
@@ -42,20 +42,20 @@ describe Site do
 
   describe "Scopes" do
 
-    describe "#billable" do
+    describe "#billable", :focus => true do
       before(:all) do
         user = Factory(:user)
-        @site1 = Factory(:site, user: user, activated_at: Time.utc(2010,1,15))
-        @site2 = Factory(:site, user: user, activated_at: Time.utc(2010,2,15))
-        @site3 = Factory(:site, user: user, activated_at: Time.utc(2010,2,1), archived_at: Time.utc(2010,2,2))
-        @site4 = Factory(:site, user: user, activated_at: Time.utc(2010,2,1), archived_at: Time.utc(2010,2,20))
-        @site5 = Factory(:site, user: user, activated_at: Time.utc(2010,2,1), archived_at: Time.utc(2010,2,28))
+        # billable
+        @site1 = Factory(:site, user: user, plan: @paid_plan)
+        @site2 = Factory(:site, user: user, plan: @paid_plan, next_cycle_plan: Factory(:plan))
+        # not billable
+        @site3 = Factory(:site, user: user, plan: @dev_plan)
+        @site4 = Factory(:site, user: user, plan: @beta_plan)
+        @site5 = Factory(:site, user: user, plan: @paid_plan, next_cycle_plan: @dev_plan)
+        @site6 = Factory(:site, user: user, state: "archived", archived_at: Time.utc(2010,2,28))
       end
 
-      specify { Site.billable(Time.utc(2010,1,1), Time.utc(2010,1,10)).should == [] }
-      specify { Site.billable(Time.utc(2010,1,1), Time.utc(2010,1,25)).should == [@site1] }
-      specify { Site.billable(Time.utc(2010,2,5), Time.utc(2010,2,25)).should == [@site1, @site2, @site4, @site5] }
-      specify { Site.billable(Time.utc(2010,2,21), Time.utc(2010,2,25)).should == [@site1, @site2, @site5] }
+      specify { Site.billable.should == [@site1, @site2] }
     end
 
   end
@@ -85,7 +85,7 @@ describe Site do
         it { should be_valid }
       end
       context "with any other plan than the dev plan" do
-        subject { Factory.build(:site, hostname: nil, plan: @pro_plan) }
+        subject { Factory.build(:site, hostname: nil, plan: @paid_plan) }
         it { should_not be_valid }
         it { should have(1).error_on(:hostname) }
       end
@@ -97,7 +97,7 @@ describe Site do
         it { should be_valid }
       end
       context "with any other plan than the dev plan" do
-        subject { Factory.build(:site, user: Factory(:user, cc_type: nil, cc_last_digits: nil), plan: @pro_plan) }
+        subject { Factory.build(:site, user: Factory(:user, cc_type: nil, cc_last_digits: nil), plan: @paid_plan) }
         it { should_not be_valid }
         it { should have(1).error_on(:base) }
       end
@@ -111,7 +111,7 @@ describe Site do
       end
 
       context "hostnames are blank & plan is not dev plan" do
-        subject { Factory.build(:site, hostname: nil, extra_hostnames: nil, dev_hostnames: nil, plan: @pro_plan) }
+        subject { Factory.build(:site, hostname: nil, extra_hostnames: nil, dev_hostnames: nil, plan: @paid_plan) }
         it { should_not be_valid }
         it { should have(1).error_on(:hostname) }
         it { should have(0).error_on(:base) }
@@ -376,27 +376,6 @@ describe Site do
           subject.archived_at.should be_present
         end
       end
-
-      context "from beta state" do
-        subject do
-          site = Factory(:site, state: 'beta', plan: nil)
-          @worker.work_off
-          site.should be_beta # because a beta site with no plan become automatically a dev site
-          site.plan.should be_nil
-          site
-        end
-
-        it "should clear & purge license & loader and set archived_at" do
-          VoxcastCDN.should_receive(:purge).with("/js/#{subject.token}.js")
-          VoxcastCDN.should_receive(:purge).with("/l/#{subject.token}.js")
-          lambda { subject.archive }.should change(Delayed::Job, :count).by(1)
-          subject.reload.should be_archived
-          lambda { @worker.work_off }.should change(Delayed::Job, :count).by(-1)
-          subject.loader.should_not be_present
-          subject.license.should_not be_present
-          subject.archived_at.should be_present
-        end
-      end
     end
   end
 
@@ -405,7 +384,6 @@ describe Site do
       with_versioning do
         site = Factory(:site)
         old_hostname = site.hostname
-        site.activate
         site.update_attributes hostname: "bob.com"
         site.versions.last.reify.hostname.should == old_hostname
       end
@@ -489,9 +467,6 @@ describe Site do
 
       context "on update of settings or state (to dev or active)" do
         describe "attributes that appears in the license" do
-          before(:all) do
-            @plan = Factory(:plan)
-          end
 
           before(:each) do
             PageRankr.stub(:ranks)
@@ -500,7 +475,7 @@ describe Site do
           { hostname: "test.com", extra_hostnames: "test.staging.com", dev_hostnames: "test.local", path: "yu", wildcard: true }.each do |attribute, value|
             describe "#{attribute} has changed" do
               subject do
-                site = Factory(:site, plan: @plan, hostname: "jilion.com", extra_hostnames: "staging.jilion.com", dev_hostnames: "jilion.local", path: "yo", wildcard: false, state: 'dev')
+                site = Factory(:site, plan: @dev_plan, hostname: "jilion.com", extra_hostnames: "staging.jilion.com", dev_hostnames: "jilion.local", path: "yo", wildcard: false)
                 @worker.work_off
                 site.reload
               end
@@ -511,12 +486,13 @@ describe Site do
                 Delayed::Job.where(:handler.matches => "%update_loader_and_license%").count.should == 1
               end
 
-              it "should update license content with dev_hostnames only when site is dev" do
+              it "should update license content with dev_hostnames only when site have a dev plan" do
                 old_license_content = subject.license.read
                 subject.send("#{attribute}=", value)
-                subject.save && @worker.work_off
+                subject.save
+                @worker.work_off
 
-                subject.reload.should be_dev
+                subject.reload
                 if attribute == :dev_hostnames
                   subject.license.read.should_not == old_license_content
                   subject.license.read.should include(value.to_s)
@@ -526,12 +502,14 @@ describe Site do
                 end
               end
 
-              it "should update license content with #{attribute} value when site is active" do
+              it "should update license content with #{attribute} value when site have a paid plan" do
                 old_license_content = subject.license.read
                 subject.send("#{attribute}=", value)
-                subject.activate && @worker.work_off
+                subject.plan_id = @paid_plan.id
+                subject.save
+                @worker.work_off
 
-                subject.reload.should be_active
+                subject.reload
                 subject.license.read.should_not == old_license_content
                 case attribute
                 when :hostname, :extra_hostnames, :dev_hostnames
@@ -673,23 +651,20 @@ describe Site do
 
     describe "#template_hostnames" do
       before(:all) do
-        @site = Factory(:site, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', path: 'foo', wildcard: true)
-        @site.plan = nil
-        @site.save(validate: false)
+        @site = Factory(:site, plan: @dev_plan, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', path: 'foo', wildcard: true)
       end
       subject { @site }
 
-      context "site is not active" do
+      context "site have dev plan" do
         it "should include only dev hostnames" do
           subject.reload.template_hostnames.should == "'127.0.0.1','localhost'"
         end
       end
 
-      %w[beta active].each do |state|
-        context "site is #{state}" do
+      %w[beta paid].each do |plan_name|
+        context "site have #{plan_name} plan" do
           it "should include hostname, extra_hostnames, path, wildcard' names & dev_hostnames" do
-            subject.state = state
-            subject.state.should == state
+            subject.plan = instance_variable_get(:"@#{plan_name}_plan")
             subject.template_hostnames.should == "'jilion.com','jilion.net','jilion.org','path:foo','wildcard:true','127.0.0.1','localhost'"
           end
         end
@@ -745,12 +720,8 @@ describe Site do
           @site = with_versioning do
             Timecop.travel(1.day.ago)
             site = Factory(:site, hostname: "jilion.com", extra_hostnames: 'jilion.org, jilion.net', dev_hostnames: "localhost, 127.0.0.1")
-            site.activate
-            @worker.work_off
             Timecop.return
-            site.reload
             site.update_attributes(hostname: "jilion.net", extra_hostnames: 'jilion.org, jilion.com', dev_hostnames: "jilion.local, localhost, 127.0.0.1")
-            @worker.work_off
             site
           end
         end
@@ -1050,8 +1021,6 @@ describe Site do
 end
 
 
-
-
 # == Schema Information
 #
 # Table name: sites
@@ -1075,7 +1044,9 @@ end
 #  extra_hostnames                            :string(255)
 #  plan_id                                    :integer
 #  cdn_up_to_date                             :boolean
-#  activated_at                               :datetime
+#  paid_plan_cycle_started_at                 :datetime
+#  paid_plan_cycle_ended_at                   :datetime
+#  next_cycle_plan_id                         :integer
 #  plan_player_hits_reached_alert_sent_at     :datetime
 #  next_plan_recommended_alert_sent_at        :datetime
 #  last_30_days_main_player_hits_total_count  :integer         default(0)

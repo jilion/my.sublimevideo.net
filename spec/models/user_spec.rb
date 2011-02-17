@@ -32,7 +32,7 @@ describe User do
     it { should have_many :invoices }
   end
 
-  describe "Scopes" do
+  pending "Scopes" do
 
     describe "#billable" do
       before(:all) do
@@ -205,10 +205,10 @@ describe User do
     end
   end
 
-  describe "State Machine" do
+  pending "State Machine" do
     before(:all) do
       @user     = Factory(:user)
-      @dev_site = Factory(:site,    :user => @user, :state => 'dev', :hostname => "octavez.com")
+      @dev_site = Factory(:site,    :user => @user, :plan => Factory(:dev_plan), :hostname => "octavez.com")
       @invoice1 = Factory(:invoice, :user => @user, :state => 'failed', :started_at => Time.utc(2010,2), :ended_at => Time.utc(2010,3))
       @invoice2 = Factory(:invoice, :user => @user, :state => 'failed', :started_at => Time.utc(2010,3), :ended_at => Time.utc(2010,4))
     end
@@ -521,7 +521,7 @@ describe User do
     end
 
     describe "#have_beta_sites?" do
-      before(:all) { @site = Factory(:site, :state => "beta") }
+      before(:all) { @site = Factory(:site, :plan => Factory(:beta_plan)) }
 
       specify { @site.user.have_beta_sites?.should be_true }
     end

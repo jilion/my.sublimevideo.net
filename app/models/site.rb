@@ -25,6 +25,7 @@ class Site < ActiveRecord::Base
 
   belongs_to :user, :validate => true, :autosave => true
   belongs_to :plan
+  belongs_to :next_cycle_plan, :class_name => "Plan"
   has_many :invoice_items
   has_many :invoices, :through => :invoice_items
   has_many :lifetimes
@@ -40,7 +41,7 @@ class Site < ActiveRecord::Base
   # = Scopes =
   # ==========
 
-  scope :billable, lambda { |started_at, ended_at| where({ :activated_at.lte => ended_at }, { :archived_at => nil } | { :archived_at.gte => started_at }) }
+  scope :billable, lambda { active.where({ :plan_id.not_in => [Plan.dev_plan.id,Plan.beta_plan.id] }, { :next_cycle_plan_id => nil } | { :next_cycle_plan_id.ne => Plan.dev_plan.id }) }
 
   # usage_alert scopes
   scope :plan_player_hits_reached_alerted_this_month, where({ :plan_player_hits_reached_alert_sent_at.gte => Time.now.utc.beginning_of_month })
@@ -48,12 +49,9 @@ class Site < ActiveRecord::Base
   scope :next_plan_recommended_alert_sent_at_alerted_this_month, where({ :next_plan_recommended_alert_sent_at.gte => Time.now.utc.beginning_of_month })
   scope :next_plan_recommended_alert_sent_at_not_alerted_this_month, where({ :next_plan_recommended_alert_sent_at.lt => Time.now.utc.beginning_of_month } | { :next_plan_recommended_alert_sent_at => nil })
 
-  # includes
-  scope :with_plan,   includes(:plan)
-
   # filter
-  scope :beta,          lambda { with_state(:beta) }
-  scope :dev,           lambda { with_state(:dev) }
+  scope :beta,          lambda { joins(:plan).where(:plan => { :name => "beta" }) }
+  scope :dev,           lambda { joins(:plan).where(:plan => { :name => "dev" }) }
   scope :active,        lambda { with_state(:active) }
   scope :suspended,     lambda { with_state(:suspended) }
   scope :archived,      lambda { with_state(:archived) }
@@ -107,7 +105,7 @@ class Site < ActiveRecord::Base
   # ===============
 
   validates :user,        :presence => true
-  validates :plan,        :presence => true, :if => proc { |s| !s.beta? && !s.archived? }
+  validates :plan,        :presence => true
   validates :player_mode, :inclusion => { :in => PLAYER_MODES }
 
   validates :hostname,        :presence => { :unless => :in_dev_plan? }, :hostname_uniqueness => true, :hostname => true
@@ -142,15 +140,14 @@ class Site < ActiveRecord::Base
 
   state_machine :initial => :active do
     state :pending # Temporary, used in the master branch
-    state :beta # Temporary, used in lib/one_time/site.rb and lib/tasks/one_time.rake
+    # state :beta # Temporary, used in lib/one_time/site.rb and lib/tasks/one_time.rake
 
     # event(:rollback)  { transition :beta => :dev }
     # event(:activate)  { transition [:dev, :beta] => :active }
-    event(:archive)   { transition [:beta, :active] => :archived }
+    event(:archive)   { transition :active => :archived }
     event(:suspend)   { transition :active => :suspended }
     event(:unsuspend) { transition :suspended => :active }
 
-    before_transition :on => :activate, :do => :set_activated_at
     before_transition :on => :archive,  :do => :set_archived_at
 
     after_transition  :to => [:suspended, :archived], :do => :delay_remove_loader_and_license
@@ -252,6 +249,10 @@ public
     plan_id? && plan.dev_plan?
   end
 
+  def in_beta_plan?
+    plan_id? && plan.beta_plan?
+  end
+
   def plan_player_hits_reached_alerted_this_month?
     (Time.now.utc.beginning_of_month..Time.now.utc.end_of_month).cover?(plan_player_hits_reached_alert_sent_at)
   end
@@ -282,7 +283,7 @@ public
 
   def template_hostnames
     hostnames = []
-    if active? || beta?
+    unless in_dev_plan?
       hostnames << hostname if hostname.present?
       hostnames += extra_hostnames.split(', ') if extra_hostnames.present?
       hostnames << "path:#{path}" if path.present?
@@ -350,7 +351,7 @@ private
 
   # validate
   def at_least_one_domain_set
-    if in_dev_plan? && hostname.blank? && dev_hostnames.blank? && extra_hostnames.blank?
+    if hostname.blank? && dev_hostnames.blank? && extra_hostnames.blank?
       self.errors.add(:base, :at_least_one_domain)
     end
   end
@@ -397,11 +398,6 @@ private
     end
   end
 
-  # before_transition :on => :activate
-  def set_activated_at
-    self.activated_at = Time.now.utc
-  end
-
   # before_transition :on => :archive
   def set_archived_at
     self.archived_at = Time.now.utc
@@ -442,6 +438,7 @@ protected
 end
 
 
+
 # == Schema Information
 #
 # Table name: sites
@@ -465,7 +462,9 @@ end
 #  extra_hostnames                            :string(255)
 #  plan_id                                    :integer
 #  cdn_up_to_date                             :boolean
-#  activated_at                               :datetime
+#  paid_plan_cycle_started_at                 :datetime
+#  paid_plan_cycle_ended_at                   :datetime
+#  next_cycle_plan_id                         :integer
 #  plan_player_hits_reached_alert_sent_at     :datetime
 #  next_plan_recommended_alert_sent_at        :datetime
 #  last_30_days_main_player_hits_total_count  :integer         default(0)

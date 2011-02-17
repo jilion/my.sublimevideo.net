@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Site::UsageAlert do
 
-  describe "Module Methods" do
+  pending "Module Methods" do
 
     describe ".send_usage_alerts" do
       before(:all) do

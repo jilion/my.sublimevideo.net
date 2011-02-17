@@ -25,8 +25,8 @@ describe SitesStat do
       user = Factory(:user)
       @plan1 = Factory(:plan)
       @plan2 = Factory(:plan)
-      Factory(:site, :user => user, :state => 'dev', :plan_id => @plan1.id)
       Factory(:site, :user => user, :state => 'active', :plan_id => @plan1.id)
+      Factory(:site, :user => user, :state => 'archived', :plan_id => @plan1.id)
       Factory(:site, :user => user, :state => 'suspended', :plan_id => @plan2.id)
     end
 
@@ -42,8 +42,8 @@ describe SitesStat do
         SitesStat.count.should == 1
         sites_stat = SitesStat.last
         sites_stat.states_count.should == {
-          "dev"       => 1,
           "active"    => 1,
+          "archived"  => 1,
           "suspended" => 1
         }
         sites_stat.plans_count.should == {
@@ -57,8 +57,8 @@ describe SitesStat do
     describe ".states_count" do
       it "should include all used states" do
         SitesStat.states_count.should == {
-          "dev"       => 1,
           "active"    => 1,
+          "archived"  => 1,
           "suspended" => 1
         }
       end
