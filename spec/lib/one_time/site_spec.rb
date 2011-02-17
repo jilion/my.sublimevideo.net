@@ -10,12 +10,12 @@ describe OneTime::Site do
   describe ".update_hostnames" do
     context "on all sites" do
       before(:all) do
-        @not_public_hostname      = Factory.build(:site, :hostname => 'jilion.local').tap { |s| s.save(:validate => false) }
-        @not_local_dev_hostname1  = Factory.build(:site, :hostname => 'jilion.com', :dev_hostnames => 'localhost, jilion.net').tap { |s| s.save(:validate => false) }
-        @not_local_dev_hostname2  = Factory.build(:site, :hostname => 'jilion.com', :dev_hostnames => 'jilion.net, jilion.org').tap { |s| s.save(:validate => false) }
-        @duplicated_dev_hostname1 = Factory.build(:site, :hostname => '127.0.0.1', :dev_hostnames => 'localhost, 127.0.0.1').tap { |s| s.save(:validate => false) }
-        @duplicated_dev_hostname2 = Factory.build(:site, :hostname => 'jilion.com', :dev_hostnames => 'localhost, 127.0.0.1, 127.0.0.1, localhost').tap { |s| s.save(:validate => false) }
-        @mixed_invalid_site       = Factory.build(:site, :hostname => 'jilion.local', :dev_hostnames => 'localhost, jilion.local, 127.0.0.1, jilion.net').tap { |s| s.save(:validate => false) }
+        @not_public_hostname      = Factory.build(:site, :state => 'beta', :hostname => 'jilion.local').tap { |s| s.save(:validate => false) }
+        @not_local_dev_hostname1  = Factory.build(:site, :state => 'beta', :hostname => 'jilion.com', :dev_hostnames => 'localhost, jilion.net').tap { |s| s.save(:validate => false) }
+        @not_local_dev_hostname2  = Factory.build(:site, :state => 'beta', :hostname => 'jilion.com', :dev_hostnames => 'jilion.net, jilion.org').tap { |s| s.save(:validate => false) }
+        @duplicated_dev_hostname1 = Factory.build(:site, :state => 'beta', :hostname => '127.0.0.1', :dev_hostnames => 'localhost, 127.0.0.1').tap { |s| s.save(:validate => false) }
+        @duplicated_dev_hostname2 = Factory.build(:site, :state => 'beta', :hostname => 'jilion.com', :dev_hostnames => 'localhost, 127.0.0.1, 127.0.0.1, localhost').tap { |s| s.save(:validate => false) }
+        @mixed_invalid_site       = Factory.build(:site, :state => 'beta', :hostname => 'jilion.local', :dev_hostnames => 'localhost, jilion.local, 127.0.0.1, jilion.net').tap { |s| s.save(:validate => false) }
       end
 
       it "all sites created should be invalid" do
@@ -25,7 +25,7 @@ describe OneTime::Site do
       end
 
       context "actually test the method" do
-        before(:all) { described_class.update_hostnames(false) }
+        before(:all) { puts described_class.update_hostnames(false) }
 
         it "should not modify site when hostname is invalid" do
           @not_public_hostname.reload.hostname.should == nil
@@ -175,11 +175,13 @@ describe OneTime::Site do
       @site_3.reload.should be_archived
     end
 
-    it "should rollback beta site to dev state" do
+    it "should rollback beta site to active state with dev plan" do
       described_class.rollback_beta_sites_to_dev
       @worker.work_off
-      @site_1.reload.should be_dev
-      @site_2.reload.should be_dev
+      @site_1.reload.should be_active
+      @site_1.plan.should be_dev_plan
+      @site_2.reload.should be_active
+      @site_2.should be_dev_plan
       @site_3.reload.should be_archived
     end
 
