@@ -106,13 +106,15 @@ describe Site do
     describe "no hostnames at all" do
       context "hostnames are blank & plan is dev plan" do
         subject { Factory.build(:site, hostname: nil, extra_hostnames: nil, dev_hostnames: nil, plan: @dev_plan) }
-        it { should be_valid }
+        it { should_not be_valid }
+        it { should have(1).error_on(:base) }
       end
 
       context "hostnames are blank & plan is not dev plan" do
         subject { Factory.build(:site, hostname: nil, extra_hostnames: nil, dev_hostnames: nil, plan: @pro_plan) }
         it { should_not be_valid }
         it { should have(1).error_on(:hostname) }
+        it { should have(0).error_on(:base) }
       end
     end
   end

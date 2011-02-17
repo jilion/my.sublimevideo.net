@@ -114,7 +114,7 @@ class Site < ActiveRecord::Base
   validates :extra_hostnames, :extra_hostnames => true
   validates :dev_hostnames,   :dev_hostnames => true
 
-  # validate  :at_least_one_domain_set, :if => :in_dev_plan?
+  validate  :at_least_one_domain_set, :if => :in_dev_plan?
   validate  :verify_presence_of_credit_card, :unless => :in_dev_plan?
 
   # =============
@@ -349,11 +349,11 @@ private
   end
 
   # validate
-  # def at_least_one_domain_set
-  #   if dev_plan? && hostname.blank? && dev_hostnames.blank? && extra_hostnames.blank?
-  #     self.errors.add(:base, :at_least_one_domain)
-  #   end
-  # end
+  def at_least_one_domain_set
+    if in_dev_plan? && hostname.blank? && dev_hostnames.blank? && extra_hostnames.blank?
+      self.errors.add(:base, :at_least_one_domain)
+    end
+  end
 
   # validate unless :in_dev_plan?
   def verify_presence_of_credit_card
