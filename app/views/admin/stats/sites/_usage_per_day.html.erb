@@ -95,6 +95,9 @@ prorated_plan_limit = (28..31).include?(days_count) ? plans_limit[selected_plan]
           else if (this.series.name == "TOT Main") {
             percentage_of_limit = Highcharts.numberFormat((this.y / <%= (plans_limit[selected_plan][0] / 30) * days_count %>)*100, 0) + "% of <%= plans_limit[selected_plan][1] %> plan limit";
           }
+          else if (this.series.name == "AVG Total") {
+            percentage_of_limit = "Monthly estimate: " + Highcharts.numberFormat(this.y*30, 0);
+          }
           if(percentage_of_limit) percentage_of_limit = "<br/>" + percentage_of_limit
 
           return date + this.series.name + ": " + Highcharts.numberFormat(this.y, 0) + percentage_of_total + percentage_of_limit;
