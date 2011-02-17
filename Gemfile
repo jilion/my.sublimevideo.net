@@ -95,7 +95,7 @@ group :test do
   gem 'guard-livereload'
 
   gem 'database_cleaner'
-  gem 'steak',              '1.0.0.rc.2'
+  # gem 'steak',              '1.0.0.rc.2'
   gem 'capybara',           '~> 0.4.1.2'
   # gem 'akephalos',          '~> 0.2.4'
   # gem 'capybara-envjs',     '~> 0.4.0'
