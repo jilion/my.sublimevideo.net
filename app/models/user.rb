@@ -32,22 +32,22 @@ class User < ActiveRecord::Base
   # = Scopes =
   # ==========
 
-  # TODO
-  scope :billable,  lambda {
-    includes(:sites).
-    without_state(:archived).
-    where(:sites => { :plan_id.not_in => [Plan.dev_plan.id, Plan.beta_plan.id] }, :sites =>  { :next_cycle_plan_id => nil } | { :next_cycle_plan_id.ne => Plan.dev_plan.id })
+  scope :billable, lambda {
+    includes(:sites).without_state(:archived).
+    where(:sites => [{ :state.ne => 'archived' } & { :plan_id.not_in => [Plan.dev_plan.id, Plan.beta_plan.id] }]).
+    where(:sites => [{ :next_cycle_plan_id => nil } | { :next_cycle_plan_id.ne => Plan.dev_plan.id }])
   }
   scope :active_and_billable, lambda {
-    includes(:sites).
-    with_state(:active).
-    where(:sites => { :activated_at.ne => nil, :archived_at => nil })
+    billable.with_state(:active)
   }
-  scope :active_and_not_billable, lambda {
-    includes(:sites).
-    with_state(:active).
-    where(:sites => [{ :activated_at => nil } | { :archived_at.ne => nil }])
-  }
+  # scope :active_and_not_billable, lambda {
+  #   (includes(:sites).with_state(:active).
+  #   where(:sites => [{ :state => 'archived' } | { :plan_id.in => [Plan.dev_plan.id, Plan.beta_plan.id] } | { :next_cycle_plan_id => Plan.dev_plan.id }])) - billable
+  # }
+  
+  def self.active_and_not_billable
+    with_state(:active) - billable # All the active users minus the billable ones
+  end
 
   # credit_card scopes
   scope :without_cc, where(:cc_type => nil, :cc_last_digits => nil)

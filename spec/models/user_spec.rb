@@ -4,7 +4,12 @@ require 'spec_helper'
 # after refactoring:  11.06s
 # 1.67x faster
 describe User do
-  before(:all) { @worker = Delayed::Worker.new }
+  before(:all) do
+    @worker    = Delayed::Worker.new
+    @dev_plan  = Factory(:dev_plan)
+    @beta_plan = Factory(:beta_plan)
+    @paid_plan = Factory(:plan)
+  end
 
   context "Factory" do
     before(:all) { @user = Factory(:user) }
@@ -34,46 +39,42 @@ describe User do
 
   describe "Scopes" do
     before(:all) do
-      @dev_plan = Factory(:dev_plan)
-      @beta_plan = Factory(:beta_plan)
-      @paid_plan = Factory(:plan)
+      User.delete_all
+      # Billable because of 1 paid plan
+      @user1 = Factory(:user)
+      Factory(:site, user: @user1, plan: @paid_plan)
+      Factory(:site, user: @user1, plan: @dev_plan)
+      
+      # Billable because next cycle plan is another paid plan
+      @user2 = Factory(:user)
+      Factory(:site, user: @user2, plan: @paid_plan, next_cycle_plan: Factory(:plan))
+      
+      # Not billable because next cycle plan is the dev plan
+      @user3 = Factory(:user)
+      Factory(:site, user: @user3, plan: @paid_plan, next_cycle_plan: @dev_plan)
+      
+      # Not billable because his site has been archived
+      @user4 = Factory(:user)
+      Factory(:site, user: @user4, state: "archived", archived_at: Time.utc(2010,2,28))
+
+      # Billable because next cycle plan is another paid plan, but not active
+      @user5 = Factory(:user, state: 'suspended')
+      Factory(:site, user: @user5, plan: @paid_plan, next_cycle_plan: Factory(:plan))
+      
+      # Not billable nor active
+      @user6 = Factory(:user, state: 'archived')
     end
 
-    describe "#billable", :focus => true do
-      before(:all) do
-        @user1 = Factory(:user)
-        Factory(:site, user: @user1, plan: @paid_plan)
-        Factory(:site, user: @user1, plan: @dev_plan)
-        @user2 = Factory(:user)
-        Factory(:site, user: @user2, plan: @paid_plan, next_cycle_plan: @dev_plan)
-        @user3 = Factory(:user)
-        Factory(:site, user: @user3, state: "archived", archived_at: Time.utc(2010,2,28))
-        @user4 = Factory(:user)
-        Factory(:site, user: @user4, plan: @paid_plan, next_cycle_plan: Factory(:plan))
-      end
-
-      specify { User.billable.should == [@user1, @user4] }
+    describe "#billable" do
+      specify { User.billable.should == [@user1, @user2, @user5] }
     end
 
-    context "with active & (not) billable users" do
-      before(:all) do
-        User.delete_all
-        @user1 = Factory(:user)
-        Factory(:site, :user => @user1, :activated_at => Time.utc(2011,1,1))
-        @user2 = Factory(:user)
-        Factory(:site, :user => @user2, :activated_at => Time.utc(2011,1,1), :archived_at => Time.utc(2011,1,2))
-        @user3 = Factory(:user)
-        Factory(:site, :user => @user3, :activated_at => nil)
-        @user4 = Factory(:user)
-        @user5 = Factory(:user, :state => 'archived')
-      end
+    describe "#active_and_billable" do
+      specify { User.active_and_billable.should == [@user1, @user2] }
+    end
 
-      describe "#active_and_billable" do
-        specify { User.active_and_billable.should == [@user1] }
-      end
-      describe "#active_and_not_billable" do
-        specify { User.active_and_not_billable.sort_by(&:id).should == [@user2, @user3, @user4].sort_by(&:id) }
-      end
+    describe "#active_and_not_billable" do
+      specify { User.active_and_not_billable.should == [@user3, @user4] }
     end
 
   end
@@ -521,7 +522,7 @@ describe User do
     end
 
     describe "#have_beta_sites?" do
-      before(:all) { @site = Factory(:site, :plan => Factory(:beta_plan)) }
+      before(:all) { @site = Factory(:site, :plan => @beta_plan) }
 
       specify { @site.user.have_beta_sites?.should be_true }
     end
