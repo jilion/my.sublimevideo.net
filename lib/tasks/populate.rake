@@ -28,7 +28,7 @@ namespace :db do
       timed { create_plans }
       timed { create_sites }
       timed { create_site_usages }
-      timed { create_invoices }
+      # timed { create_invoices }
       timed { create_mail_templates }
     end
 
@@ -272,7 +272,7 @@ def create_sites
       )
       site.state        = 'active' if user.cc? && rand > 0.2
       site.created_at   = created_at_array.sample
-      site.activated_at = site.created_at if site.active?
+      # site.activated_at = site.created_at if site.active?
 
       Timecop.travel(site.created_at) do
         site.save!(validate: false)
@@ -374,7 +374,8 @@ end
 
 def create_plans
   plans_attributes = [
-    { name: "dev",        cycle: "month", player_hits: 0,         price: 0 },
+    { name: "dev",        cycle: "none",  player_hits: 0,         price: 0 },
+    { name: "beta",       cycle: "none",  player_hits: 0,         price: 0 },
     { name: "small",      cycle: "month", player_hits: 3_000,     price: 695 },
     { name: "perso",      cycle: "month", player_hits: 50_000,    price: 1495 },
     { name: "pro",        cycle: "month", player_hits: 200_000,   price: 4995 },
