@@ -34,6 +34,7 @@ describe Plan do
 
     it { should allow_value("month").for(:cycle) }
     it { should allow_value("year").for(:cycle) }
+    it { should allow_value("none").for(:cycle) }
     it { should_not allow_value("foo").for(:cycle) }
   end
 

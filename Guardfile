@@ -1,8 +1,8 @@
 group 'backend' do
 
-  # guard 'bundler' do
-  #   watch('Gemfile')
-  # end
+  guard 'bundler' do
+    watch('Gemfile')
+  end
 
   guard 'spork', :wait => 40 do
     watch('Gemfile')
@@ -12,6 +12,7 @@ group 'backend' do
     watch(%r{config/initializers/.+\.rb})
     watch('spec/spec_helper.rb')
   end
+
   guard 'rspec', :version => 2, :drb => true, :bundler => false, :fail_fast => false, :formatter => "instafail" do
     watch('spec/spec_helper.rb')                                 { "spec" }
     watch('app/controllers/application_controller.rb')           { "spec/controllers" }

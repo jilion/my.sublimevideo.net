@@ -1,6 +1,6 @@
 class Plan < ActiveRecord::Base
 
-  CYCLES = %w[month year]
+  CYCLES = %w[month year none]
 
   attr_accessible :name, :cycle, :player_hits, :price
 

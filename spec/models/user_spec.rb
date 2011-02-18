@@ -32,27 +32,27 @@ describe User do
     it { should have_many :invoices }
   end
 
-  pending "Scopes" do
+  describe "Scopes" do
+    before(:all) do
+      @dev_plan = Factory(:dev_plan)
+      @beta_plan = Factory(:beta_plan)
+      @paid_plan = Factory(:plan)
+    end
 
-    describe "#billable" do
+    describe "#billable", :focus => true do
       before(:all) do
         @user1 = Factory(:user)
-        Factory(:site, :user => @user1, :activated_at => Time.utc(2010,1,15))
-        Factory(:site, :user => @user1, :activated_at => Time.utc(2010,2,15))
+        Factory(:site, user: @user1, plan: @paid_plan)
+        Factory(:site, user: @user1, plan: @dev_plan)
         @user2 = Factory(:user)
-        Factory(:site, :user => @user2, :activated_at => Time.utc(2010,2,1), :archived_at => Time.utc(2010,2,2))
+        Factory(:site, user: @user2, plan: @paid_plan, next_cycle_plan: @dev_plan)
         @user3 = Factory(:user)
-        Factory(:site, :user => @user3, :activated_at => Time.utc(2010,2,1), :archived_at => Time.utc(2010,2,20))
+        Factory(:site, user: @user3, state: "archived", archived_at: Time.utc(2010,2,28))
         @user4 = Factory(:user)
-        Factory(:site, :user => @user4, :activated_at => Time.utc(2010,2,1), :archived_at => Time.utc(2010,2,28))
-        @user5 = Factory(:user, :state => 'archived')
-        Factory(:site, :user => @user5, :activated_at => Time.utc(2010,2,1), :archived_at => Time.utc(2010,2,28))
+        Factory(:site, user: @user4, plan: @paid_plan, next_cycle_plan: Factory(:plan))
       end
 
-      specify { User.billable(Time.utc(2010,1,1), Time.utc(2010,1,10)).should == [] }
-      specify { User.billable(Time.utc(2010,1,1), Time.utc(2010,1,25)).should == [@user1] }
-      specify { User.billable(Time.utc(2010,2,5), Time.utc(2010,2,25)).should == [@user1, @user3, @user4] }
-      specify { User.billable(Time.utc(2010,2,21), Time.utc(2010,2,25)).should == [@user1, @user4] }
+      specify { User.billable.should == [@user1, @user4] }
     end
 
     context "with active & (not) billable users" do

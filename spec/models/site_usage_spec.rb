@@ -1,26 +1,25 @@
 require 'spec_helper'
 
 describe SiteUsage do
-  
+
   describe "with cdn.sublimevideo.net.log.1286528280-1286528340.gz logs file" do
     before(:each) do
       logs_file = File.new(Rails.root.join('spec/fixtures/logs/voxcast/cdn.sublimevideo.net.log.1286528280-1286528340.gz'))
       VoxcastCDN.stub(:logs_download).with('cdn.sublimevideo.net.log.1286528280-1286528340.gz').and_return(logs_file)
       @log = Factory(:log_voxcast, :name => 'cdn.sublimevideo.net.log.1286528280-1286528340.gz')
       @trackers = LogAnalyzer.parse(@log.file, 'LogsFileFormat::VoxcastSites')
-      
+
       with_versioning do
         Timecop.travel(@log.started_at - 1.minute)
         @site1 = Factory(:site, :hostname => 'artofthetitle.com').tap { |s| s.token = 'ktfcm2l7'; s.save }
         Timecop.return
         VoxcastCDN.stub(:purge)
-        @site1.activate
         @site1.update_attributes(:hostname => 'bob.com')
       end
-      
+
       @site2 = Factory(:site, :user => @site1.user, :hostname => 'sonymusic.se').tap { |s| s.token = 'mhud9lff'; s.save }
     end
-    
+
     it "should clean trackers" do
       SiteUsage.hits_traffic_and_requests_from(@log, @trackers).should == {
         :traffic_voxcast         => {"pvbj8rly"=>33528, "ot85lofm"=>110083, "mhud9lff"=>200134, "mimpia8j"=>181, "1nayz6hi"=>362, "ktfcm2l7"=>443482, "wbk2y56l"=>1988, "yekse1l8"=>361, "ibvjcopp"=>76498, "ocjeksk2"=>1976, "d73zpa3a"=>1988, "ccadedyg"=>4175, "j0lqevol"=>1977, "gsmhage0"=>78960, "ubaredbq"=>5964, "invxef8i"=>110017, "t5yhm4z1"=>117566, "mkjjb06j"=>1976, "pre0h6qx"=>81531, "nat10aym"=>1988, "iqa1kt1d"=>1988, "khgm2p4y"=>154983, "aov41s0h"=>1976, "fvkbs2ej"=>57743, "l6bza2zd"=>1987},
@@ -31,7 +30,7 @@ describe SiteUsage do
         :flash_hits              => {"t5yhm4z1"=>1}
       }
     end
-    
+
     it "should get tokens from trackers" do
       hbrs = SiteUsage.hits_traffic_and_requests_from(@log, @trackers)
       SiteUsage.tokens_from(hbrs).should include("ot85lofm")
@@ -47,7 +46,7 @@ describe SiteUsage do
       SiteUsage.tokens_from(hbrs).should include("ktfcm2l7")
       SiteUsage.tokens_from(hbrs).should include("fvkbs2ej")
     end
-    
+
     it "should create usages from trackers" do
       SiteUsage.create_usages_from_trackers!(@log, @trackers)
       usages = SiteUsage.all
@@ -71,36 +70,36 @@ describe SiteUsage do
       usage.traffic_s3.should                 == 0
       usage.traffic_voxcast.should            == 443482
     end
-    
+
     it "should increment existing entries" do
       SiteUsage.create_usages_from_trackers!(@log, @trackers)
       usage = SiteUsage.where(:site_id => @site1.id).first
       usage.main_player_hits.should == 5
       usage.traffic_voxcast.should == 443482
-      
+
       SiteUsage.create_usages_from_trackers!(@log, @trackers)
       usage.reload.main_player_hits.should == 5*2
       usage.traffic_voxcast.should == 443482*2
     end
-    
+
   end
-   
+
   describe "Trackers parsing with voxcast cdn.sublimevideo.net.log.1275002700-1275002760.gz logs file" do
     before(:each) do
       VoxcastCDN.stub(:logs_download).with('cdn.sublimevideo.net.log.1275002700-1275002760.gz').and_return(
         File.new(Rails.root.join('spec/fixtures/logs/voxcast/cdn.sublimevideo.net.log.1275002700-1275002760.gz'))
       )
-      
+
       @site1 = Factory(:site, :hostname => 'zeno.name').tap { |s| s.token = 'g3325oz4'; s.save }
       @site2 = Factory(:site, :user => @site1.user, :hostname => 'octavez.com').tap { |s| s.token = 'g8thugh6'; s.save }
-      
+
       @log = Factory(:log_voxcast)
       @trackers = LogAnalyzer.parse(@log.file, 'LogsFileFormat::VoxcastSites')
       Notify.should_receive(:send).any_number_of_times
     end
-    
+
     it "should clean trackers" do
-      SiteUsage.hits_traffic_and_requests_from(@log, @trackers).should == { 
+      SiteUsage.hits_traffic_and_requests_from(@log, @trackers).should == {
         :traffic_voxcast => { "g8thugh6" => 367093, "g3325oz4" => 70696 },
         :loader_hits => { "g8thugh6" => 1, "g3325oz4" => 3 },
         :main_player_hits => { "g8thugh6" => 1, "g3325oz4" => 1 },
@@ -111,12 +110,12 @@ describe SiteUsage do
         :flash_hits => {}
       }
     end
-    
+
     it "should get tokens from trackers" do
       hbrs = SiteUsage.hits_traffic_and_requests_from(@log, @trackers)
       SiteUsage.tokens_from(hbrs).should == ["g8thugh6", "g3325oz4"]
     end
-    
+
     it "should create usages from trackers" do
       SiteUsage.create_usages_from_trackers!(@log, @trackers)
       usages = SiteUsage.all
@@ -141,23 +140,23 @@ describe SiteUsage do
       usage.traffic_voxcast.should            == 70696
     end
   end
-  
+
   describe "Trackers parsing with s3 loaders" do
     before(:each) do
       @site1 = Factory(:site).tap { |s| s.token = 'gperx9p4'; s.save }
       @site2 = Factory(:site, :user => @site1.user, :hostname => 'google.com').tap { |s| s.token = 'pbgopxwy'; s.save }
-      
+
       @log = Factory(:log_s3_loaders)
       @trackers = LogAnalyzer.parse(@log.file, 'LogsFileFormat::S3Loaders')
     end
-    
+
     it "should clean trackers" do
       SiteUsage.hits_traffic_and_requests_from(@log, @trackers).should == {
         :requests_s3=>{"fnhbfvkb"=>1, "7jbwuuni"=>1, "gperx9p4"=>1, "pbgopxwy"=>1, "6vibplhv"=>1, "ub4rrhk4"=>1},
         :traffic_s3=>{"fnhbfvkb"=>734, "gperx9p4"=>727, "7jbwuuni"=>734, "pbgopxwy"=>734, "6vibplhv"=>734, "ub4rrhk4"=>734}
       }
     end
-    
+
     it "should get tokens from trackers" do
       hbrs = SiteUsage.hits_traffic_and_requests_from(@log, @trackers)
       SiteUsage.tokens_from(hbrs).should include("fnhbfvkb")
@@ -167,7 +166,7 @@ describe SiteUsage do
       SiteUsage.tokens_from(hbrs).should include("6vibplhv")
       SiteUsage.tokens_from(hbrs).should include("ub4rrhk4")
     end
-    
+
     it "should create usages from trackers" do
       SiteUsage.create_usages_from_trackers!(@log, @trackers)
       usages = SiteUsage.all

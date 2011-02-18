@@ -33,10 +33,10 @@ class User < ActiveRecord::Base
   # ==========
 
   # TODO
-  scope :billable,  lambda { |started_at, ended_at|
+  scope :billable,  lambda {
     includes(:sites).
     without_state(:archived).
-    where(:sites => [{ :activated_at.lte => ended_at }, { :archived_at => nil } | { :archived_at.gte => started_at }])
+    where(:sites => { :plan_id.not_in => [Plan.dev_plan.id, Plan.beta_plan.id] }, :sites =>  { :next_cycle_plan_id => nil } | { :next_cycle_plan_id.ne => Plan.dev_plan.id })
   }
   scope :active_and_billable, lambda {
     includes(:sites).

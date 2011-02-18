@@ -2,6 +2,8 @@ require 'spec_helper'
 
 describe InvoiceItem::Plan do
 
+pending do
+
   describe ".build(attributes = {})" do
     before(:all) do
       @user    = Factory(:user)
@@ -66,6 +68,8 @@ describe InvoiceItem::Plan do
     end
 
   end
+
+end
 
 end
 

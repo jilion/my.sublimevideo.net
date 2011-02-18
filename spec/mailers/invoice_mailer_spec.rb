@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe InvoiceMailer do
   before(:all) do
-    Factory(:site).activate # just to have a delayed_job
+    Factory(:site) # just to have a delayed_job
     @invoice = Factory(:invoice, :ended_at => Time.utc(2010,1), :charging_delayed_job_id => Delayed::Job.last.id)
   end
   subject { @invoice }

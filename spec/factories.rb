@@ -86,14 +86,14 @@ end
 
 Factory.define :dev_plan, :class => Plan  do |f|
   f.name          "dev"
-  f.cycle         "month"
+  f.cycle         "none"
   f.player_hits   0
   f.price         0
 end
 
 Factory.define :beta_plan, :class => Plan  do |f|
   f.name          "beta"
-  f.cycle         "month"
+  f.cycle         "none"
   f.player_hits   0
   f.price         0
 end

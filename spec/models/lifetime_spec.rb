@@ -1,27 +1,29 @@
 require 'spec_helper'
 
 describe Lifetime do
-  
+
+pending do
+
   context "Factory" do
     before(:all) { @lifetime = Factory(:lifetime) }
     subject { @lifetime }
-    
+
     its(:site)       { should be_present }
     its(:item)       { should be_present }
     its(:created_at) { should be_present }
     its(:deleted_at) { should be_nil }
-    
+
     it { should be_valid }
   end # Factory
-  
+
   describe "Associations" do
     before(:all) { @lifetime = Factory(:lifetime) }
     subject { @lifetime }
-    
+
     it { should belong_to :site }
     it { should belong_to :item }
   end # Associations
-  
+
   describe "Scopes" do
     describe "#alive_between scope" do
       before(:all) do
@@ -31,14 +33,16 @@ describe Lifetime do
         @lifetime4 = Factory(:lifetime, :created_at => Time.utc(2010,2,1), :deleted_at => Time.utc(2010,2,20))
         @lifetime5 = Factory(:lifetime, :created_at => Time.utc(2010,2,1), :deleted_at => Time.utc(2010,2,28))
       end
-      
+
       specify { Lifetime.alive_between(Time.utc(2010,1,1), Time.utc(2010,1,10)).should == [] }
       specify { Lifetime.alive_between(Time.utc(2010,1,1), Time.utc(2010,1,25)).should == [@lifetime1] }
       specify { Lifetime.alive_between(Time.utc(2010,2,5), Time.utc(2010,2,25)).should == [@lifetime1, @lifetime2, @lifetime4, @lifetime5] }
       specify { Lifetime.alive_between(Time.utc(2010,2,21), Time.utc(2010,2,25)).should == [@lifetime1, @lifetime2, @lifetime5] }
     end
   end # Scopes
-  
+
+end
+
 end
 
 # == Schema Information
