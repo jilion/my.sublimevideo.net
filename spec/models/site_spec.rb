@@ -3,10 +3,60 @@ require 'spec_helper'
 
 describe Site do
   before(:all) do
-    @worker = Delayed::Worker.new
-    @dev_plan = Factory(:dev_plan)
+    @worker    = Delayed::Worker.new
+    @dev_plan  = Factory(:dev_plan)
     @beta_plan = Factory(:beta_plan)
     @paid_plan = Factory(:plan)
+  end
+
+  describe "specs for a method to find out the numbers of month to add to the started date without keeping record of the past months count" do
+    before(:all) do
+      @started_date = Time.utc(2011,1,31)
+    end
+
+    it do
+      Timecop.travel(2011,2,25) do
+        now = Time.now.utc
+        years = now.year - @started_date.year
+        months = now.month - @started_date.month
+
+        # Date of the started_at 1 month after the initial start
+        (@started_date + years.years + months.months).should == Time.utc(2011,2,28)
+      end
+    end
+
+    it do
+      Timecop.travel(2011,3,2) do
+        now = Time.now.utc
+        years = now.year - @started_date.year
+        months = now.month - @started_date.month
+
+        # Date of the started_at 2 months after the initial start
+        (@started_date + years.years + months.months).should == Time.utc(2011,3,31)
+      end
+    end
+
+    it do
+      Timecop.travel(2012,2,25) do
+        now = Time.now.utc
+        years = now.year - @started_date.year
+        months = now.month - @started_date.month
+
+        # Date of the started_at 1 year and 1 month after the initial start
+        (@started_date + years.years + months.months).should == Time.utc(2012,2,29)
+      end
+    end
+
+    it do
+      Timecop.travel(2012,3,2) do
+        now = Time.now.utc
+        years = now.year - @started_date.year
+        months = now.month - @started_date.month
+
+        # Date of the started_at 1 year and 2 months after the initial start
+        (@started_date + years.years + months.months).should == Time.utc(2012,3,31)
+      end
+    end
   end
 
   context "Factory" do
