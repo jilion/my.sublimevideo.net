@@ -27,7 +27,14 @@ describe Plan do
     it { should validate_presence_of(:price) }
     it { should validate_presence_of(:cycle) }
 
-    it { should validate_uniqueness_of(:name) }
+    describe "uniqueness of name scoped by cycle" do
+      before(:each) do
+        Factory(:plan, :name => "foo", :cycle => "month")
+      end
+
+      it { Factory.build(:plan, :name => "foo", :cycle => "month").should_not be_valid }
+      it { Factory.build(:plan, :name => "foo", :cycle => "year").should be_valid }
+    end
 
     it { should validate_numericality_of(:player_hits) }
     it { should validate_numericality_of(:price) }
@@ -82,6 +89,7 @@ describe Plan do
 end
 
 
+
 # == Schema Information
 #
 # Table name: plans
@@ -96,6 +104,6 @@ end
 #
 # Indexes
 #
-#  index_plans_on_name  (name) UNIQUE
+#  index_plans_on_name_and_cycle  (name,cycle) UNIQUE
 #
 
