@@ -15,7 +15,7 @@ class Plan < ActiveRecord::Base
   # = Validations =
   # ===============
 
-  validates :name,        :presence => true, :uniqueness => true
+  validates :name,        :presence => true, :uniqueness => { :scope => :cycle }
   validates :player_hits, :presence => true, :numericality => true
   validates :price,       :presence => true, :numericality => true
   validates :cycle,       :presence => true, :inclusion => { :in => CYCLES }
@@ -60,6 +60,7 @@ class Plan < ActiveRecord::Base
 end
 
 
+
 # == Schema Information
 #
 # Table name: plans
@@ -74,6 +75,6 @@ end
 #
 # Indexes
 #
-#  index_plans_on_name  (name) UNIQUE
+#  index_plans_on_name_and_cycle  (name,cycle) UNIQUE
 #
 

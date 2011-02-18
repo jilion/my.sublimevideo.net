@@ -9,7 +9,7 @@ class CreatePlans < ActiveRecord::Migration
       t.timestamps
     end
 
-    add_index :plans, :name, :unique => true
+    add_index :plans, [:name, :cycle], :unique => true
   end
 
   def self.down

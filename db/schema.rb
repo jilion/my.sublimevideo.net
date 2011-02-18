@@ -137,7 +137,7 @@ ActiveRecord::Schema.define(:version => 20110113120826) do
     t.datetime "updated_at"
   end
 
-  add_index "plans", ["name"], :name => "index_plans_on_name", :unique => true
+  add_index "plans", ["name", "cycle"], :name => "index_plans_on_name_and_cycle", :unique => true
 
   create_table "releases", :force => true do |t|
     t.string   "token"
