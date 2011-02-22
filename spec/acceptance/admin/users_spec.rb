@@ -7,7 +7,7 @@ feature "Users pagination:" do
   end
 
   scenario "pagination links displayed only if count of users > User.per_page" do
-    Factory(:site, :activated_at => Time.now)
+    Factory(:site)
     User.count.should == 1
     visit "/admin/users"
     page.should have_no_css('div.pagination')
@@ -15,7 +15,7 @@ feature "Users pagination:" do
     page.should have_no_css('em.current_page')
     page.should have_no_css('a.next_page')
 
-    Factory(:site, :activated_at => Time.now)
+    Factory(:site)
     User.count.should == 2
     visit "/admin/users"
 

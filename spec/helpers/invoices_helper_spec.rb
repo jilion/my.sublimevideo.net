@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe InvoicesHelper do
 
-  describe "#invoice_items_grouped_by_site" do
+  pending "#invoice_items_grouped_by_site" do
     before(:all) do
       @user = Factory(:user)
       Timecop.travel(Time.utc(2010,2).beginning_of_month) do
