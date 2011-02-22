@@ -166,7 +166,6 @@ describe OneTime::Site do
       @site_1 = Factory(:site, :state => 'beta')
       @site_2 = Factory(:site, :state => 'beta')
       @site_3 = Factory(:site, :state => 'archived')
-      @worker = Delayed::Worker.new
     end
 
     specify do

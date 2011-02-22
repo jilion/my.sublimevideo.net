@@ -1,11 +1,11 @@
 %p
   = link_to "#{content_tag(:strong, Site.not_archived.count)} All (not archived)".html_safe, admin_sites_path
   |
-  = link_to "#{content_tag(:strong, Site.with_state(:beta).count)} Beta".html_safe, admin_sites_path(:with_state => 'beta')
+  = link_to "#{content_tag(:strong, Site.beta.count)} Beta".html_safe, admin_sites_path(:beta => true)
+  |
+  = link_to "#{content_tag(:strong, Site.dev.count)} Dev".html_safe, admin_sites_path(:dev => true)
   |
   = link_to "#{content_tag(:strong, Site.with_state(:active).count)} Active".html_safe, admin_sites_path(:with_state => 'active')
-  |
-  = link_to "#{content_tag(:strong, Site.with_state(:dev).count)} Dev".html_safe, admin_sites_path(:with_state => 'dev')
   |
   = link_to "#{content_tag(:strong, Site.with_state(:suspended).count)} Suspended".html_safe, admin_sites_path(:with_state => 'suspended')
   |
@@ -16,12 +16,12 @@
   = link_to "#{content_tag(:strong, Site.with_path.count)} With path".html_safe, admin_sites_path(:with_path => true)
   |
   = link_to "#{content_tag(:strong, Site.with_extra_hostnames.count)} With extra hostnames".html_safe, admin_sites_path(:with_extra_hostnames => true)
-  |
-  = link_to "#{content_tag(:strong, Site.with_ssl.count)} With SSL".html_safe, admin_sites_path(:with_ssl => true)
   %br/
+  |
+  = link_to "#{content_tag(:strong, Site.billable.count)} Billable".html_safe, admin_sites_path(:billable => true)
+  |
+  = link_to "#{content_tag(:strong, Site.not_billable.count)} Not Billable".html_safe, admin_sites_path(:not_billable => true)
+
   = link_to "#{content_tag(:strong, Site.plan_player_hits_reached_alerted_this_month.count)} Notified limit reached this month".html_safe, admin_sites_path(:plan_player_hits_reached_alerted_this_month => true)
   |
   = link_to "#{content_tag(:strong, Site.next_plan_recommended_alert_sent_at_alerted_this_month.count)} Notified next plan recommended this month".html_safe, admin_sites_path(:next_plan_recommended_alert_sent_at_alerted_this_month => true)
-  -# = link_to "#{sites.not_archived.with_activity.count} active & with activity", admin_sites_path(:with_activity => true)
-  -# |
-  -# = link_to "#{sites.not_archived.with_activity_in_last_30_days.count} active & with activity in last 30 days", admin_sites_path(:with_activity_in_last_30_days => true)

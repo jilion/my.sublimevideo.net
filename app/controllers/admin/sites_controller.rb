@@ -4,18 +4,19 @@ class Admin::SitesController < Admin::AdminController
   before_filter :compute_date_range, :only => :edit
 
   #filter
+  has_scope :dev
+  has_scope :beta
   has_scope :with_state do |controller, scope, value|
     scope.with_state(value.to_sym)
   end
   has_scope :with_wildcard
   has_scope :with_path
   has_scope :with_extra_hostnames
-  has_scope :with_ssl
+  has_scope :billable
+  has_scope :not_billable
   has_scope :plan_player_hits_reached_alerted_this_month
   has_scope :next_plan_recommended_alert_sent_at_alerted_this_month
   has_scope :user_id
-  # has_scope :with_activity, :type => :boolean
-  # has_scope :with_activity_in_last_30_days, :type => :boolean
 
   # sort
   has_scope :by_hostname

@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe MailLetter do
-  before(:all) { @worker = Delayed::Worker.new }
   
   describe "Class Methods" do
     describe "#deliver_and_log" do

@@ -57,6 +57,10 @@ class Plan < ActiveRecord::Base
     where(:name => "beta").first
   end
 
+  def self.paid_plans
+    where(:name.not_in => ["dev", "beta"])
+  end
+
 end
 
 

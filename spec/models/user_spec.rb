@@ -4,12 +4,6 @@ require 'spec_helper'
 # after refactoring:  11.06s
 # 1.67x faster
 describe User do
-  before(:all) do
-    @worker    = Delayed::Worker.new
-    @dev_plan  = Factory(:dev_plan)
-    @beta_plan = Factory(:beta_plan)
-    @paid_plan = Factory(:plan)
-  end
 
   context "Factory" do
     before(:all) { @user = Factory(:user) }
@@ -44,15 +38,15 @@ describe User do
       @user1 = Factory(:user)
       Factory(:site, user: @user1, plan: @paid_plan)
       Factory(:site, user: @user1, plan: @dev_plan)
-      
+
       # Billable because next cycle plan is another paid plan
       @user2 = Factory(:user)
       Factory(:site, user: @user2, plan: @paid_plan, next_cycle_plan: Factory(:plan))
-      
+
       # Not billable because next cycle plan is the dev plan
       @user3 = Factory(:user)
       Factory(:site, user: @user3, plan: @paid_plan, next_cycle_plan: @dev_plan)
-      
+
       # Not billable because his site has been archived
       @user4 = Factory(:user)
       Factory(:site, user: @user4, state: "archived", archived_at: Time.utc(2010,2,28))
@@ -60,13 +54,17 @@ describe User do
       # Billable because next cycle plan is another paid plan, but not active
       @user5 = Factory(:user, state: 'suspended')
       Factory(:site, user: @user5, plan: @paid_plan, next_cycle_plan: Factory(:plan))
-      
+
       # Not billable nor active
       @user6 = Factory(:user, state: 'archived')
     end
 
     describe "#billable" do
       specify { User.billable.should == [@user1, @user2, @user5] }
+    end
+
+    describe "#not_billable" do
+      specify { User.not_billable.should == [@user3, @user4, @user6] }
     end
 
     describe "#active_and_billable" do

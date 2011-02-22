@@ -51,7 +51,7 @@ describe SitesController do
     describe "GET :edit" do
       context "site is not beta" do
         before :each do
-          @current_user.stub_chain(:sites, :find_by_token).with('a1b2c3') { @mock_site = mock_site(:beta? => false) }
+          @current_user.stub_chain(:sites, :find_by_token).with('a1b2c3') { @mock_site = mock_site(:in_beta_plan? => false) }
         end
         
         it "should render :edit" do
@@ -63,7 +63,7 @@ describe SitesController do
       
       context "site is beta" do
         before :each do
-          @current_user.stub_chain(:sites, :find_by_token).with('a1b2c3') { @mock_site = mock_site(:beta? => true, :token => 'a1b2c3') }
+          @current_user.stub_chain(:sites, :find_by_token).with('a1b2c3') { @mock_site = mock_site(:in_beta_plan? => true, :token => 'a1b2c3') }
         end
         
         it "should redirect to :transition if site is beta" do

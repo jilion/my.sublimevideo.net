@@ -39,7 +39,7 @@ class SitesController < ApplicationController
   # GET /sites/:id/edit
   def edit
     respond_with(@site) do |format|
-      if @site.beta?
+      if @site.in_beta_plan?
         format.html { redirect_to transition_site_path(@site.to_param) }
       else
         format.html
