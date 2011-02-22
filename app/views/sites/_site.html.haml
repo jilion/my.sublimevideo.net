@@ -3,13 +3,13 @@
     .wrap
       - if site.hostname.present?
         -# TODO: Remove condition when no more site in beta state and remove if production on default icon for favicon
-        = link_to(site.in_beta_plan? ? [:transition, site] : [:edit, site], :class => "domain", :title => "Edit #{hostname_with_path(site)}") do
+        = link_to([:edit, site], :class => "domain", :title => "Edit #{hostname_with_path(site)}") do
           %span.settings_icon
           = image_tag "https://getfavicon.appspot.com/http://#{hostname_with_path(site)}?defaulticon=http://#{hostname_with_path(site)}/favicon.ico", :onerror => "this.src='/images/embed/sites/default_favicon.png';", :alt => "Favicon", :size => "16x16", :id => "site_favicon_#{site.id}"
           = hostname_with_path_and_wildcard(site, :truncate => 30)
         - if site.need_path?
           .warning.box_hovering_zone
-            = link_to site.in_beta_plan? ? [:transition, site] : [:edit, site], :class => "icon" do
+            = link_to [:edit, site], :class => "icon" do
               %span= "warning"
             = info_box do
               %p

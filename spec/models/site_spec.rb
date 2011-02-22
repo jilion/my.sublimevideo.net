@@ -81,7 +81,6 @@ describe Site do
     it { should belong_to :plan }
     it { should have_many :invoice_items }
     it { should have_many(:invoices).through(:invoice_items) }
-    it { should have_many(:lifetimes) }
   end
 
   describe "Scopes" do
