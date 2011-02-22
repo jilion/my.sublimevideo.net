@@ -2,12 +2,6 @@
 require 'spec_helper'
 
 describe Site do
-  before(:all) do
-    @worker    = Delayed::Worker.new
-    @dev_plan  = Factory(:dev_plan)
-    @beta_plan = Factory(:beta_plan)
-    @paid_plan = Factory(:plan)
-  end
 
   describe "specs for a method to find out the numbers of month to add to the started date without keeping record of the past months count" do
     before(:all) do
@@ -105,7 +99,12 @@ describe Site do
         @site6 = Factory(:site, user: user, state: "archived", archived_at: Time.utc(2010,2,28))
       end
 
-      specify { Site.billable.should == [@site1, @site2] }
+      describe "#billable" do
+        specify { Site.billable.should == [@site1, @site2] }
+      end
+      describe "#not_billable" do
+        specify { Site.not_billable.should == [@site3, @site4, @site5, @site6] }
+      end
     end
 
   end
@@ -1060,6 +1059,12 @@ describe Site do
           @site.current_percentage_of_plan_used.should == 1
           Timecop.return
         end
+        
+      end
+      
+      it "should return 0 if plan player_hits is 0" do
+        site = Factory(:site, plan: @dev_plan)
+        site.current_percentage_of_plan_used.should == 0
       end
     end
 

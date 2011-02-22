@@ -8,10 +8,7 @@
   %td.state
     %small= site.state
   %td.plan
-    - if site.plan.present?
-      %small= link_to site.plan.name, admin_plans_path
-    - else
-      %small= '-'
+    %small= link_to site.plan.name, admin_plans_path
   %td.number
     %small= number_with_delimiter(last_30_days_billable_player_hits_total_count)
   %td.percentage
@@ -20,7 +17,7 @@
     - else
       %small= '-'
   %td.percentage
-    - if site.plan.present?
+    - if site.plan.player_hits > 0
       %small= display_percentage(last_30_days_billable_player_hits_total_count / site.plan.player_hits.to_f)
     - else
       %small= '-'

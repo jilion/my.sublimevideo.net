@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe "Pages" do
-  before(:all) { @worker = Delayed::Worker.new }
 
   feature "Pages:" do
     scenario "terms" do

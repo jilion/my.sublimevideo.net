@@ -41,6 +41,7 @@ class Site < ActiveRecord::Base
   # ==========
 
   scope :billable, lambda { active.where({ :plan_id.not_in => [Plan.dev_plan.id, Plan.beta_plan.id] }, { :next_cycle_plan_id => nil } | { :next_cycle_plan_id.ne => Plan.dev_plan.id }) }
+  scope :not_billable, lambda { where(({ :state => 'active' } & ({ :plan_id.in => [Plan.dev_plan, Plan.beta_plan], :next_cycle_plan_id => nil } | { :next_cycle_plan_id => Plan.dev_plan })) | { :state.ne => 'active' }) }
 
   # usage_alert scopes
   scope :plan_player_hits_reached_alerted_this_month, where({ :plan_player_hits_reached_alert_sent_at.gte => Time.now.utc.beginning_of_month })
@@ -62,8 +63,6 @@ class Site < ActiveRecord::Base
   # admin
   scope :user_id,    lambda { |user_id| where(user_id: user_id) }
   scope :created_between, lambda { |start_date, end_date| where(:created_at.gte => start_date, :created_at.lt => end_date) }
-  # scope :with_activity, where(:player_hits_cache.gte => 1)
-  # scope :with_activity_in_last_30_days, where(:player_hits_cache.gte => 1, :updated_at.gte => 30.days.ago)
 
   # sort
   scope :by_hostname,    lambda { |way = 'asc'| order(:hostname.send(way)) }
@@ -125,9 +124,9 @@ class Site < ActiveRecord::Base
 
   # # TODO: Remove after the one_time:sites:rollback_beta_sites rake task has been executed (no more site with the beta state)
   # # Temporary, after submitting /sites/:token/transition with with a plan selected
-  # after_update :activate, :if => lambda { |site| site.beta? && site.plan_id? }
+  # after_update :activate, :if => lambda { |site| site.in_beta_plan? && site.plan_id? }
   # # Temporary, after submitting /sites/:token/transition with no plan selected
-  # after_update :rollback, :if => lambda { |site| site.beta? && !site.plan_id? }
+  # after_update :rollback, :if => lambda { |site| site.in_beta_plan? && !site.plan_id? }
 
   # THE CALLBACKS ABOVE SHOULD CHANGE:
   # - SET ALL BETA SITES WITH THE "BETA" PLAN
@@ -336,7 +335,11 @@ public
   end
 
   def current_percentage_of_plan_used
-    [(current_billable_usage / plan.player_hits.to_f).round(2), 1].min
+    if plan.player_hits > 0
+      [(current_billable_usage / plan.player_hits.to_f).round(2), 1].min
+    else
+      0
+    end
   end
 
 private

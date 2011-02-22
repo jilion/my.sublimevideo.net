@@ -2,7 +2,6 @@ require 'spec_helper'
 
 feature "Sites" do
   before(:all) do
-    @worker = Delayed::Worker.new
     # move this somewhere else and DRY it with the populate
     plans = [
       { name: "dev",        cycle: "month", player_hits: 0,         price: 0 },
@@ -88,7 +87,7 @@ feature "Sites" do
   pending "transition" do
     create_site
     site = @current_user.sites.last
-    # site.stub!(:beta? => true) # fake that the site is in beta state (should not have a plan, but no big deal for this test)
+    # site.stub!(:in_beta_plan? => true) # fake that the site is in beta state (should not have a plan, but no big deal for this test)
     # @current_user.stub_chain(:sites, :not_archived, :by_date).and_return([site])
     # site.should be_beta
     visit "/sites"

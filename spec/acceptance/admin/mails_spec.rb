@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe "Mails" do
-  before(:all) { @worker = Delayed::Worker.new }
   
   feature "Mails index with no logs and no templates" do
     background do

@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe Invoice do
-  before(:all) { @worker = Delayed::Worker.new }
 
 pending do
 

@@ -29,11 +29,11 @@ describe UsersStat do
 
     it "should create users stats for states" do
       user1 = Factory(:user)
-      Factory(:site, :user => user1, :activated_at => Time.utc(2011,1,1))
+      Factory(:site, user: user1, plan: @paid_plan)
       user2 = Factory(:user)
-      Factory(:site, :user => user2, :activated_at => Time.utc(2011,1,1), :archived_at => Time.utc(2011,1,2))
+      Factory(:site, user: user1, plan: @paid_plan, next_cycle_plan: @dev_plan)
       user3 = Factory(:user)
-      Factory(:site, :user => user3, :activated_at => nil)
+      Factory(:site, user: user3, plan: @dev_plan)
       user4 = Factory(:user)
       user5 = Factory(:user, :state => 'suspended')
       user6 = Factory(:user, :state => 'archived')

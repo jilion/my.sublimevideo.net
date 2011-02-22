@@ -32,22 +32,10 @@ class User < ActiveRecord::Base
   # = Scopes =
   # ==========
 
-  scope :billable, lambda {
-    includes(:sites).without_state(:archived).
-    where(:sites => [{ :state.ne => 'archived' } & { :plan_id.not_in => [Plan.dev_plan.id, Plan.beta_plan.id] }]).
-    where(:sites => [{ :next_cycle_plan_id => nil } | { :next_cycle_plan_id.ne => Plan.dev_plan.id }])
-  }
-  scope :active_and_billable, lambda {
-    billable.with_state(:active)
-  }
-  # scope :active_and_not_billable, lambda {
-  #   (includes(:sites).with_state(:active).
-  #   where(:sites => [{ :state => 'archived' } | { :plan_id.in => [Plan.dev_plan.id, Plan.beta_plan.id] } | { :next_cycle_plan_id => Plan.dev_plan.id }])) - billable
-  # }
-  
-  def self.active_and_not_billable
-    with_state(:active) - billable # All the active users minus the billable ones
-  end
+  scope :billable, lambda { scoped.merge(Site.billable) }
+  scope :not_billable, lambda { includes(:sites).where("(#{Site.billable.select("COUNT(sites.id)").where("sites.user_id = users.id").to_sql}) = 0") }
+  scope :active_and_billable, lambda { billable.with_state(:active) }
+  scope :active_and_not_billable, lambda { not_billable.with_state(:active) }
 
   # credit_card scopes
   scope :without_cc, where(:cc_type => nil, :cc_last_digits => nil)

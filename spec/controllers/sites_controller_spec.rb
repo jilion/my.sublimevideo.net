@@ -44,7 +44,7 @@ describe SitesController do
     describe "GET :edit" do
       context "site is not beta" do
         before :each do
-          @current_user.stub_chain(:sites, :find_by_token).with('a1b2c3') { @mock_site = mock_site(:beta? => false) }
+          @current_user.stub_chain(:sites, :find_by_token).with('a1b2c3') { @mock_site = mock_site(:in_beta_plan? => false) }
         end
         
         it "should render :edit" do

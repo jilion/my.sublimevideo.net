@@ -22,7 +22,7 @@
       .plan
         - if site.plan
           = site.plan.name.humanize
-        - elsif site.beta?
+        - elsif site.in_beta_plan?
           = "Beta"
         - else
           = "No plan"
