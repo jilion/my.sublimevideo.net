@@ -28,7 +28,6 @@ class Site < ActiveRecord::Base
   belongs_to :next_cycle_plan, :class_name => "Plan"
   has_many :invoice_items
   has_many :invoices, :through => :invoice_items
-  has_many :lifetimes
   # Mongoid associations
   def usages
     SiteUsage.where(:site_id => id)

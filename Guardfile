@@ -1,3 +1,23 @@
+group 'frontend' do
+
+  guard 'passenger', :ping => true do
+    watch('config/application.rb')
+    watch('config/environment.rb')
+    watch(%r{config/environments/.+\.rb})
+    watch(%r{config/initializers/.+\.rb})
+  end
+
+  guard 'livereload', :api_version => '1.5', :apply_js_live => false do
+    watch(%r{app/.+\.(erb|haml)})
+    watch(%r{app/helpers/.+\.rb})
+    watch(%r{public/javascripts/.+\.js})
+    watch(%r{public/stylesheets/.+\.css})
+    watch(%r{public/.+\.html})
+    watch(%r{config/locales/.+\.yml})
+  end
+
+end
+
 group 'backend' do
 
   guard 'bundler' do
@@ -24,26 +44,6 @@ group 'backend' do
 
     watch(%r{app/(.+)\.rb}) { |m| "spec/#{m[1]}_spec.rb" }
     watch(%r{lib/(.+)\.rb}) { |m| "spec/lib/#{m[1]}_spec.rb" }
-  end
-
-end
-
-group 'frontend' do
-
-  guard 'passenger', :ping => true do
-    watch('config/application.rb')
-    watch('config/environment.rb')
-    watch(%r{config/environments/.+\.rb})
-    watch(%r{config/initializers/.+\.rb})
-  end
-
-  guard 'livereload', :api_version => '1.5', :apply_js_live => false do
-    watch(%r{app/.+\.(erb|haml)})
-    watch(%r{app/helpers/.+\.rb})
-    watch(%r{public/javascripts/.+\.js})
-    watch(%r{public/stylesheets/.+\.css})
-    watch(%r{public/.+\.html})
-    watch(%r{config/locales/.+\.yml})
   end
 
 end

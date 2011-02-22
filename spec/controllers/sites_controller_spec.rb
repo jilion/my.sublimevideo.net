@@ -41,13 +41,6 @@ describe SitesController do
       end
     end
     
-    describe "GET :transition" do
-      it "should render :transition" do
-        get :transition, :id => 'a1b2c3'
-        response.should render_template(:transition)
-      end
-    end
-    
     describe "GET :edit" do
       context "site is not beta" do
         before :each do
@@ -58,18 +51,6 @@ describe SitesController do
           get :edit, :id => 'a1b2c3'
           assigns(:site).should == @mock_site
           response.should render_template(:edit)
-        end
-      end
-      
-      context "site is beta" do
-        before :each do
-          @current_user.stub_chain(:sites, :find_by_token).with('a1b2c3') { @mock_site = mock_site(:beta? => true, :token => 'a1b2c3') }
-        end
-        
-        it "should redirect to :transition if site is beta" do
-          get :edit, :id => 'a1b2c3'
-          assigns(:site).should == @mock_site
-          response.should redirect_to([:transition, @mock_site])
         end
       end
     end
@@ -124,8 +105,6 @@ describe SitesController do
         before(:each) { mock_site.stub(:active?).and_return(false) }
         
         context "site is in beta state" do
-          before(:each) { mock_site.should_receive(:state_was).and_return('beta') }
-          
           it "should redirect to /sites when update_attributes succeeds" do
             mock_site.stub(:update_attributes).with({}) { true }
           
@@ -134,19 +113,17 @@ describe SitesController do
             response.should redirect_to(sites_url)
           end
         
-          it "should render :transition when update_attributes fails" do
+          it "should render :edit when update_attributes fails" do
             mock_site.stub(:update_attributes).with({}) { false }
             mock_site.should_receive(:errors).any_number_of_times.and_return(["error"])
           
             put :update, :site => {}, :id => 'a1b2c3'
             assigns(:site).should == mock_site
-            response.should render_template(:transition)
+            response.should render_template(:edit)
           end
         end
         
-        context "site is not in beta state" do
-          before(:each) { mock_site.should_receive(:state_was).and_return('dev') }
-          
+        context "site is not in beta state" do          
           it "should redirect to /sites when update_attributes succeeds" do
             mock_site.stub(:update_attributes).with({}) { true }
           
@@ -182,7 +159,6 @@ describe SitesController do
         context "with good password" do
           before(:each) do
             @current_user.stub(:valid_password?).with('123456').and_return(true)
-            mock_site.should_receive(:state_was).and_return('active')
           end
           
           it "should redirect to /sites when update_attributes succeeds" do

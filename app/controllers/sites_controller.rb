@@ -39,11 +39,7 @@ class SitesController < ApplicationController
   # GET /sites/:id/edit
   def edit
     respond_with(@site) do |format|
-      if @site.beta?
-        format.html { redirect_to transition_site_path(@site.to_param) }
-      else
-        format.html
-      end
+      format.html
     end
   end
 
@@ -57,12 +53,7 @@ class SitesController < ApplicationController
   def update
     @site.update_attributes(params[:site])
     respond_with(@site, :location => :sites) do |format|
-      # TODO: Remove this logic after the one_time:sites:rollback_beta_sites rake task has been executed (no more site with the beta state)
-      if @site.state_was == 'beta' && @site.errors.present?
-        format.html { render :transition }
-      else
-        format.html
-      end
+      format.html
     end
   end
 
