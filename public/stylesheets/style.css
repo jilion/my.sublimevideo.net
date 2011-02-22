@@ -2057,14 +2057,14 @@ ul.segmented_menu li.last a {
   position:relative;
 }
 
-.pagination {
+nav.pagination {
   margin:0 auto;
   display:table;
   position:relative;
   padding:15px 25px 0;
 }
 
-.pagination .previous_page {
+nav.pagination .prev {
   display:block;
   text-indent:-9999px;
   background:url(/images/embed/paginate_arrow_left.png) no-repeat;
@@ -2074,9 +2074,9 @@ ul.segmented_menu li.last a {
   float:left;
 }
 
-.pagination span.previous_page {opacity:0.3;}
+nav.pagination span.prev {opacity:0.3;}
 
-.pagination .next_page {
+nav.pagination .next {
   display:block;
   text-indent:-9999px;
   background:url(/images/embed/paginate_arrow_right.png) no-repeat;
@@ -2086,16 +2086,16 @@ ul.segmented_menu li.last a {
   float:right;
 }
 
-.pagination span.next_page {opacity:0.3;}
+nav.pagination span.next {opacity:0.3;}
 
-.pagination a.page_link {
+nav.pagination span.page a {
   text-shadow:none;
   font-size:12px;
   padding:2px 6px 1px;
   float:left;
 }
 
-.pagination em.current_page {
+nav.pagination em.current {
   float:left;
   font-style:normal;
   background:#9da3b1;
@@ -2110,7 +2110,7 @@ ul.segmented_menu li.last a {
   box-shadow:rgba(255,255,255,0.5) 0 1px 0;
 }
 
-.pagination span.gap {
+nav.pagination span.gap {
   float:left;
 }
 

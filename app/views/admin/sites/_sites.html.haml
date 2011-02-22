@@ -11,5 +11,5 @@
   = render @sites
 
 .pagination_wrap
-  = remote_will_paginate(@sites, :params => params.merge(:format => nil))
-  = page_entries_info(@sites)
+  = paginate @sites
+  = page_entries_info @sites

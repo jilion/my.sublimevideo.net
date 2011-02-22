@@ -1,7 +1,7 @@
 module Admin::UsersHelper
 
   def admin_users_page_title(users)
-    pluralized_users = pluralize(users.total_entries, 'user')
+    pluralized_users = pluralize(users.total_count, 'user')
 
     state = if params.keys.all? { |k| k =~ /^by_/ || %w[action controller search].include?(k) }
       " active & billable"

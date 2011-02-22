@@ -1,7 +1,7 @@
 module Admin::SitesHelper
 
   def admin_sites_page_title(sites)
-    pluralized_sites = pluralize(sites.total_entries, 'site')
+    pluralized_sites = pluralize(sites.total_count, 'site')
     state = if params.keys.all? { |k| k =~ /^by_/ || %w[action controller search].include?(k) }
       " not archived"
     elsif params[:with_state]

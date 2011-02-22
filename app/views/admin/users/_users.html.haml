@@ -9,5 +9,5 @@
   = render @users
 
 .pagination_wrap
-  = remote_will_paginate(@users, :params => params.merge(:format => nil))
-  = page_entries_info(@users)
+  = paginate @users
+  = page_entries_info @users

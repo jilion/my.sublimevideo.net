@@ -11,6 +11,6 @@
     = render :partial => 'admin/mail_templates/mail_template', :collection => @mail_templates
     
   .pagination_wrap
-    = remote_will_paginate(@mail_templates, :params => params.merge(:format => nil))
-    = page_entries_info(@mail_templates)
+    = paginate @mail_templates
+    = page_entries_info @mail_templates
   - params[:mail_templates] = nil

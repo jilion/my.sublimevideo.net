@@ -2,9 +2,9 @@ $('users_table_wrap').update("<%= escape_javascript(render 'users') %>");
 $('table_spinner').hide();
 <% if params[:search] %>
   <% if params[:search].blank? %>
-    $('users_title').update("<%= pluralize(@users.total_entries, 'User') %>");
+    $('users_title').update("<%= pluralize(@users.total_count, 'User') %>");
   <% else %>
-    $('users_title').update("<%= "#{pluralize(@users.total_entries, 'User')} that contains '#{params[:search]}'" %>");
+    $('users_title').update("<%= "#{pluralize(@users.total_count, 'User')} that contains '#{params[:search]}'" %>");
   <% end %>
 <% end %>
 $(document.body).scrollTo();

@@ -11,5 +11,5 @@
   = render @invoices
 
 .pagination_wrap
-  = remote_will_paginate(@invoices, :params => params.merge(:format => nil))
-  = page_entries_info(@invoices)
+  = paginate @invoices
+  = page_entries_info @invoices

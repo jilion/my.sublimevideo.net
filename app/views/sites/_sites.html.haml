@@ -1,4 +1,4 @@
-- if @sites.present?
+- if @sites.all.present?
   .main_table_wrap
     .dark_rounded_corners
       %table.main#sites
@@ -18,5 +18,5 @@
         = render @sites
 
   .pagination_wrap
-    = remote_will_paginate(@sites, :params => params.merge(:format => nil))
-    = page_entries_info(@sites)
+    = paginate @sites
+    = page_entries_info @sites

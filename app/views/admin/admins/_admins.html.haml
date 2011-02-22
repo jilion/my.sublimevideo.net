@@ -8,5 +8,5 @@
   = render @admins
   
 .pagination_wrap
-  = remote_will_paginate(@admins, :params => params.merge(:format => nil))
+  = paginate @admins
   = page_entries_info(@admins)

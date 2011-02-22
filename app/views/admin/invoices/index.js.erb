@@ -2,8 +2,8 @@ $('invoices_table_wrap').update("<%= escape_javascript(render 'invoices') %>");
 $('table_spinner').hide();
 <% if params[:search] %>
   <% if params[:search].blank? %>
-    $('invoices_title').update("<%= pluralize(@invoices.total_entries, 'Invoice') %>");
+    $('invoices_title').update("<%= pluralize(@invoices.total_count, 'Invoice') %>");
   <% else %>
-    $('invoices_title').update("<%= "#{pluralize(@invoices.total_entries, 'Invoice')} that contains '#{params[:search]}'" %>");
+    $('invoices_title').update("<%= "#{pluralize(@invoices.total_count, 'Invoice')} that contains '#{params[:search]}'" %>");
   <% end %>
 <% end %>

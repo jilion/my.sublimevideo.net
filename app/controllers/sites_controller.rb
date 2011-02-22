@@ -14,7 +14,7 @@ class SitesController < ApplicationController
   def index
     @sites = current_user.sites.not_archived.includes(:plan)
     @sites = apply_scopes(@sites).by_date
-    respond_with(@sites, :per_page => 10)
+    respond_with(@sites, :per_page => 3)
   end
 
   # GET /sites/:id/code

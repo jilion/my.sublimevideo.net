@@ -11,7 +11,7 @@
     = render :partial => 'admin/mail_logs/mail_log', :collection => @mail_logs
     
   .pagination_wrap
-    = remote_will_paginate(@mail_logs, :params => params.merge(:format => nil))
-    = page_entries_info(@mail_logs)
+    = paginate @mail_logs
+    = page_entries_info @mail_logs
   - params[:mail_logs] = nil
     

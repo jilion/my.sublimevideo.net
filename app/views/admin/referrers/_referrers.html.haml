@@ -8,5 +8,5 @@
   = render @referrers
   
 .pagination_wrap
-  = remote_will_paginate(@referrers, :params => params.merge(:format => nil))
-  = page_entries_info(@referrers)
+  = paginate @referrers
+  = page_entries_info @referrers
