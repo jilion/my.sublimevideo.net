@@ -45,9 +45,9 @@ namespace :one_time do
   end
 
   namespace :sites do
-    desc "Reset sites caches"
-    task :reset_caches => :environment do
-      Site.all.each { |site| site.delay(:priority => 400).reset_caches! }
+    desc "Set all sites plan to the Beta plan"
+    task :set_beta_plan => :environment do
+      puts OneTime::Site.set_beta_plan
     end
 
     desc "Update invalid sites move invalid dev hostnames into the extra_hostnames and remove dev hostnames that are duplication of main hostname"
@@ -57,16 +57,16 @@ namespace :one_time do
       end
     end
 
-    desc "Set all sites plan to the Beta plan"
-    task :set_beta_plan => :environment do
-      puts OneTime::Site.set_beta_plan
-    end
-
     desc "Rollback all sites with the Beta plan to the Dev plan"
     task :rollback_beta_sites => :environment do
       puts OneTime::Site.rollback_beta_sites_to_dev
     end
     
+    desc "Reset sites caches"
+    task :reset_caches => :environment do
+      Site.all.each { |site| site.delay(:priority => 400).reset_caches! }
+    end
+
     desc "Parse all unparsed user_agents logs"
     task :parse_user_agents_logs => :environment do
       count = Log::Voxcast.where(:user_agents_parsed_at => nil).count

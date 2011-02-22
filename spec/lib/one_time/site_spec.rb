@@ -2,9 +2,21 @@
 require 'spec_helper'
 
 describe OneTime::Site do
-  before(:all) do
-    @zeno = Factory(:user, :email => "zeno@jilion.com")
-    @remy = Factory(:user, :email => "remy@jilion.com")
+
+  describe ".set_beta_plan" do
+    before(:all) do
+      @active_invalid   = Factory.build(:site, state: 'active', hostname: 'jilion.local').tap { |s| s.save(validate: false) }
+      @archived_invalid = Factory.build(:site, state: 'archived', hostname: 'jilion.local').tap { |s| s.save(validate: false) }
+    end
+
+    context "actually test the method for all sites" do
+      before(:all) { described_class.set_beta_plan }
+
+      it "should set all sites plan to beta" do
+        @active_invalid.reload.should be_in_beta_plan
+        @archived_invalid.reload.should be_archived
+      end
+    end
   end
 
   describe ".update_hostnames" do
@@ -71,22 +83,6 @@ describe OneTime::Site do
       end
     end
 
-  end
-
-  describe ".set_beta_plan" do
-    before(:all) do
-      @site_1 = Factory(:site, state: 'active')
-      @site_2 = Factory(:site, state: 'archived')
-    end
-
-    context "actually test the method for all sites" do
-      before(:all) { described_class.set_beta_plan }
-
-      it "should set all sites plan to beta" do
-        @site_1.reload.should be_in_beta_plan
-        @site_2.reload.should be_archived
-      end
-    end
   end
 
   describe ".rollback_beta_sites_to_dev" do

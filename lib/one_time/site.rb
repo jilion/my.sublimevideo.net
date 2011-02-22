@@ -3,8 +3,13 @@ module OneTime
 
     class << self
 
+      def set_beta_plan
+        ::Site.with_state(:active).update_all(:plan_id => Plan.find_by_name("beta").id)
+        "#{::Site.beta.count} sites are now using the Beta plan (on #{::Site.not_archived.count} non-archived sites)."
+      end
+
       # Method used in the 'one_time:update_invalid_sites' rake task
-      # SITES MUST BE IN THE BETA PLAN BEFORE RUNNING THIS METHOD (OTHERWISE, BLANK DOMAINS WILL NOT BE ACCEPTED)!!
+      # SITES MUST BE USING THE BETA PLAN BEFORE RUNNING THIS METHOD (OTHERWISE, BLANK DOMAINS WILL NOT BE ACCEPTED)!!
       def update_hostnames
         invalid_sites = ::Site.not_archived.reject { |s| s.valid? }
 
@@ -49,11 +54,6 @@ module OneTime
 
         result << "[After] #{invalid_sites.size - repaired_sites} invalid sites remaining!!"
         result
-      end
-
-      def set_beta_plan
-        ::Site.with_state(:active).update_all(:plan_id => Plan.find_by_name("beta").id)
-        "#{::Site.beta.count} beta sites (on #{::Site.count} total sites)."
       end
 
       def rollback_beta_sites_to_dev
