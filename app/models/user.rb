@@ -32,10 +32,10 @@ class User < ActiveRecord::Base
   # = Scopes =
   # ==========
 
-  scope :billable, lambda { scoped.merge(Site.billable) }
-  scope :not_billable, lambda { includes(:sites).where("(#{Site.billable.select("COUNT(sites.id)").where("sites.user_id = users.id").to_sql}) = 0") }
-  scope :active_and_billable, lambda { billable.with_state(:active) }
-  scope :active_and_not_billable, lambda { not_billable.with_state(:active) }
+  scope :billable,                lambda { scoped.merge(Site.billable) }
+  scope :not_billable,            lambda { includes(:sites).where("(#{Site.billable.select("COUNT(sites.id)").where("sites.user_id = users.id").to_sql}) = 0") }
+  scope :active_and_billable,     lambda { active.billable }
+  scope :active_and_not_billable, lambda { active.not_billable }
 
   # credit_card scopes
   scope :without_cc, where(:cc_type => nil, :cc_last_digits => nil)
@@ -45,6 +45,7 @@ class User < ActiveRecord::Base
   scope :enthusiast,        where(:enthusiast_id.ne => nil)
   scope :invited,           where(:invitation_token.ne => nil)
   scope :beta,              where(:invitation_token => nil)
+  scope :active,            where(:state => 'active')
   scope :use_personal,      where(:use_personal => true)
   scope :use_company,       where(:use_company => true)
   scope :use_clients,       where(:use_clients => true)
@@ -58,19 +59,18 @@ class User < ActiveRecord::Base
     joins(:sites).group(User.column_names.map { |c| "\"users\".\"#{c}\"" }.join(', ')).order("SUM(sites.last_30_days_main_player_hits_total_count) + SUM(sites.last_30_days_extra_player_hits_total_count) #{way}")
   }
   scope :by_last_invoiced_amount,  lambda { |way = 'desc'| order(:last_invoiced_amount.send(way)) }
-  scope :by_total_invoiced_amount,  lambda { |way = 'desc'| order(:total_invoiced_amount.send(way)) }
-  scope :by_beta,            lambda { |way = 'desc'| order(:invitation_token.send(way)) }
-  scope :by_date,            lambda { |way = 'desc'| order(:created_at.send(way)) }
+  scope :by_total_invoiced_amount, lambda { |way = 'desc'| order(:total_invoiced_amount.send(way)) }
+  scope :by_beta,                  lambda { |way = 'desc'| order(:invitation_token.send(way)) }
+  scope :by_date,                  lambda { |way = 'desc'| order(:created_at.send(way)) }
 
   # search
   def self.search(q)
     joins(:sites).
-    where(:lower.func(:email).matches % :lower.func("%#{q}%") \
-        | :lower.func(:first_name).matches % :lower.func("%#{q}%") \
-        | :lower.func(:last_name).matches % :lower.func("%#{q}%") \
-        | :lower.func(:hostname).matches % :lower.func("%#{q}%") \
-        | :lower.func(:dev_hostnames).matches % :lower.func("%#{q}%")).
-    select("DISTINCT users.id, users.*")
+    where(:lower.func(:email).matches % :lower.func("%#{q}%") |
+          :lower.func(:first_name).matches % :lower.func("%#{q}%") |
+          :lower.func(:last_name).matches % :lower.func("%#{q}%") |
+          :lower.func(:hostname).matches % :lower.func("%#{q}%") |
+          :lower.func(:dev_hostnames).matches % :lower.func("%#{q}%")).select("DISTINCT users.id, users.*")
   end
 
   # ===============

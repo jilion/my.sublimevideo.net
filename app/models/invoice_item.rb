@@ -30,13 +30,13 @@ class InvoiceItem < ActiveRecord::Base
   # = Instance Methods =
   # ====================
 
-  def minutes
-    ((ended_at - started_at).to_f / 60).ceil
-  end
+  # def minutes
+  #   ((ended_at - started_at).to_f / 60).ceil
+  # end
 
-  def percentage
-    (minutes / invoice.minutes_in_months.to_f).round(4)
-  end
+  # def percentage
+  #   (minutes / invoice.minutes_in_months.to_f).round(4)
+  # end
 
   def site
     site_id && Site.find(site_id).version_at(invoice.ended_at)

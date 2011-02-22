@@ -909,22 +909,22 @@ pending do
 
   end # Class Methods
 
-  describe "#minutes_in_months" do
-    context "with invoice included in one month" do
-      subject { Factory(:invoice, :started_at => Time.utc(2010,2,10), :ended_at => Time.utc(2010,2,27)) }
-
-      it "should return minutes in the month where started_at and ended_at are included" do
-        subject.minutes_in_months.should == 28 * 24 * 60
-      end
-    end
-    context "with invoice included in two month" do
-      subject { Factory(:invoice, :started_at => Time.utc(2010,2,10), :ended_at => Time.utc(2010,3,27)) }
-
-      it "should return minutes in the month where started_at and ended_at are included" do
-        subject.minutes_in_months.should == (28+31) * 24 * 60
-      end
-    end
-  end # #minutes_in_months
+  # describe "#minutes_in_months" do
+  #   context "with invoice included in one month" do
+  #     subject { Factory(:invoice, :started_at => Time.utc(2010,2,10), :ended_at => Time.utc(2010,2,27)) }
+  # 
+  #     it "should return minutes in the month where started_at and ended_at are included" do
+  #       subject.minutes_in_months.should == 28 * 24 * 60
+  #     end
+  #   end
+  #   context "with invoice included in two month" do
+  #     subject { Factory(:invoice, :started_at => Time.utc(2010,2,10), :ended_at => Time.utc(2010,3,27)) }
+  # 
+  #     it "should return minutes in the month where started_at and ended_at are included" do
+  #       subject.minutes_in_months.should == (28+31) * 24 * 60
+  #     end
+  #   end
+  # end # #minutes_in_months
 
 end
 end

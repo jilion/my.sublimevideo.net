@@ -52,10 +52,10 @@ class Site < ActiveRecord::Base
   # filter
   scope :beta,                 joins(:plan).where(:plan => { :name => "beta" })
   scope :dev,                  joins(:plan).where(:plan => { :name => "dev" })
-  scope :active,               lambda { with_state(:active) }
-  scope :suspended,            lambda { with_state(:suspended) }
-  scope :archived,             lambda { with_state(:archived) }
-  scope :not_archived,         lambda { without_state(:archived) }
+  scope :active,               where(:state => 'active')
+  scope :suspended,            where(:state => 'suspended')
+  scope :archived,             where(:state => 'archived')
+  scope :not_archived,         where(:state.ne => 'archived')
   scope :with_wildcard,        where(:wildcard => true)
   scope :with_path,            where({ :path.ne => nil } & { :path.ne => '' })
   scope :with_extra_hostnames, where({ :extra_hostnames.ne => nil } & { :extra_hostnames.ne => '' })

@@ -10,7 +10,7 @@ class Invoice < ActiveRecord::Base
   belongs_to :charging_delayed_job, :class_name => "::Delayed::Job"
   has_many :invoice_items
 
-  has_many :plan_invoice_items,    conditions: { type: "InvoiceItem::Plan" }, :class_name => "InvoiceItem"
+  has_many :plan_invoice_items, conditions: { type: "InvoiceItem::Plan" }, :class_name => "InvoiceItem"
 
   # ==========
   # = Scopes =
@@ -24,7 +24,7 @@ class Invoice < ActiveRecord::Base
   scope :failed,     where(state: 'failed')
   scope :user_id,    lambda { |user_id| where(user_id: user_id) }
   # sort
-  scope :by_amount, lambda { |way='desc'| order(:amount.send(way)) }
+  scope :by_amount,   lambda { |way='desc'| order(:amount.send(way)) }
   scope :by_invoice_items_count, lambda { |way='desc'| order(:invoice_items_count.send(way)) }
   scope :by_user,     lambda { |way='desc'| order(:users => [:first_name.send(way), :email.send(way)]) }
   scope :by_state,    lambda { |way='desc'| order(:state.send(way)) }
@@ -34,17 +34,17 @@ class Invoice < ActiveRecord::Base
   # search
   def self.search(q)
     joins(:user).
-    where(:lower.func(:email).matches % :lower.func("%#{q}%") \
-        | :lower.func(:first_name).matches % :lower.func("%#{q}%") \
-        | :lower.func(:last_name).matches % :lower.func("%#{q}%") \
-        | :lower.func(:reference).matches % :lower.func("%#{q}%"))
+    where(:lower.func(:email).matches % :lower.func("%#{q}%") |
+          :lower.func(:first_name).matches % :lower.func("%#{q}%") |
+          :lower.func(:last_name).matches % :lower.func("%#{q}%") |
+          :lower.func(:reference).matches % :lower.func("%#{q}%"))
   end
 
   # ===============
   # = Validations =
   # ===============
 
-  validates :user,                 :presence => true
+  validates :user,                 :presence => true # will change to :site
   validates :started_at,           :presence => true
   validates :ended_at,             :presence => true
   validates :invoice_items_amount, :presence => true, :numericality => true
@@ -155,9 +155,9 @@ class Invoice < ActiveRecord::Base
     self
   end
 
-  def minutes_in_months
-    ((ended_at.end_of_month - started_at.beginning_of_month).to_f / 60).ceil
-  end
+  # def minutes_in_months
+  #   ((ended_at.end_of_month - started_at.beginning_of_month).to_f / 60).ceil
+  # end
 
   def to_param
     reference
