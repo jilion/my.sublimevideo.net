@@ -84,29 +84,47 @@ describe Site do
   end
 
   describe "Scopes" do
-
-    describe "#billable" do
-      before(:all) do
-        Site.delete_all
-        user = Factory(:user)
-        # billable
-        @site1 = Factory(:site, user: user, plan: @paid_plan)
-        @site2 = Factory(:site, user: user, plan: @paid_plan, next_cycle_plan: Factory(:plan))
-        # not billable
-        @site3 = Factory(:site, user: user, plan: @dev_plan)
-        @site4 = Factory(:site, user: user, plan: @beta_plan)
-        @site5 = Factory(:site, user: user, plan: @paid_plan, next_cycle_plan: @dev_plan)
-        @site6 = Factory(:site, user: user, state: "archived", archived_at: Time.utc(2010,2,28))
-      end
-
-      describe "#billable" do
-        specify { Site.billable.should == [@site1, @site2] }
-      end
-      describe "#not_billable" do
-        specify { Site.not_billable.should == [@site3, @site4, @site5, @site6] }
-      end
+    before(:all) do
+      Site.delete_all
+      user = Factory(:user)
+      # billable
+      @site_billable_1 = Factory(:site, user: user, plan: @paid_plan)
+      @site_billable_2 = Factory(:site, user: user, plan: @paid_plan, next_cycle_plan: Factory(:plan))
+      # not billable
+      @site_not_billable_1 = Factory(:site, user: user, plan: @dev_plan)
+      @site_not_billable_2 = Factory(:site, user: user, plan: @beta_plan)
+      @site_not_billable_3 = Factory(:site, user: user, plan: @paid_plan, next_cycle_plan: @dev_plan)
+      @site_not_billable_4 = Factory(:site, user: user, state: "archived", archived_at: Time.utc(2010,2,28))
+      # with path
+      @site_with_path = Factory(:site, path: "foo", plan: @dev_plan)
+      # with extra_hostnames
+      @site_with_extra_hostnames = Factory(:site, extra_hostnames: "foo.com", plan: @paid_plan)
     end
 
+    describe "#beta" do
+      specify { Site.beta.should == [@site_not_billable_2] }
+    end
+
+    describe "#dev" do
+      specify { Site.dev.should == [@site_not_billable_1, @site_with_path] }
+    end
+
+    describe "#billable" do
+      specify { Site.billable.should == [@site_billable_1, @site_billable_2, @site_with_extra_hostnames] }
+    end
+    
+    describe "#not_billable" do
+      specify { Site.not_billable.should == [@site_not_billable_1, @site_not_billable_2, @site_not_billable_3, @site_not_billable_4, @site_with_path] }
+    end
+
+    describe "#with_path" do
+      specify { Site.with_path.should == [@site_with_path] }
+    end      
+
+    describe "#with_extra_hostnames" do
+      specify { Site.with_extra_hostnames.should == [@site_with_extra_hostnames] }
+    end      
+      
   end
 
   describe "Validations" do
@@ -131,6 +149,10 @@ describe Site do
     describe "hostname" do
       context "with the dev plan" do
         subject { Factory.build(:site, hostname: nil, plan: @dev_plan) }
+        it { should be_valid }
+      end
+      context "with the beta plan" do
+        subject { Factory.build(:site, hostname: nil, plan: @beta_plan) }
         it { should be_valid }
       end
       context "with any other plan than the dev plan" do
@@ -1059,9 +1081,9 @@ describe Site do
           @site.current_percentage_of_plan_used.should == 1
           Timecop.return
         end
-        
+
       end
-      
+
       it "should return 0 if plan player_hits is 0" do
         site = Factory(:site, plan: @dev_plan)
         site.current_percentage_of_plan_used.should == 0

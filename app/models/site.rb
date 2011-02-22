@@ -40,28 +40,28 @@ class Site < ActiveRecord::Base
   # = Scopes =
   # ==========
 
-  scope :billable, lambda { active.where({ :plan_id.not_in => [Plan.dev_plan.id, Plan.beta_plan.id] }, { :next_cycle_plan_id => nil } | { :next_cycle_plan_id.ne => Plan.dev_plan.id }) }
-  scope :not_billable, lambda { where(({ :state => 'active' } & ({ :plan_id.in => [Plan.dev_plan, Plan.beta_plan], :next_cycle_plan_id => nil } | { :next_cycle_plan_id => Plan.dev_plan })) | { :state.ne => 'active' }) }
+  scope :billable,     lambda { active.where({ :plan_id.not_in => Plan.where(:name => %w[beta dev]).map(&:id) }, { :next_cycle_plan_id => nil } | { :next_cycle_plan_id.ne => Plan.dev_plan.id }) }
+  scope :not_billable, lambda { where({ :state.ne => 'active' } | ({ :state => 'active' } & ({ :plan_id.in => Plan.where(:name => %w[beta dev]).map(&:id), :next_cycle_plan_id => nil } | { :next_cycle_plan_id => Plan.dev_plan }))) }
 
   # usage_alert scopes
-  scope :plan_player_hits_reached_alerted_this_month, where({ :plan_player_hits_reached_alert_sent_at.gte => Time.now.utc.beginning_of_month })
-  scope :plan_player_hits_reached_not_alerted_this_month, where({ :plan_player_hits_reached_alert_sent_at.lt => Time.now.utc.beginning_of_month } | { :plan_player_hits_reached_alert_sent_at => nil })
-  scope :next_plan_recommended_alert_sent_at_alerted_this_month, where({ :next_plan_recommended_alert_sent_at.gte => Time.now.utc.beginning_of_month })
+  scope :plan_player_hits_reached_alerted_this_month,                where(:plan_player_hits_reached_alert_sent_at.gte => Time.now.utc.beginning_of_month)
+  scope :plan_player_hits_reached_not_alerted_this_month,            where({ :plan_player_hits_reached_alert_sent_at.lt => Time.now.utc.beginning_of_month } | { :plan_player_hits_reached_alert_sent_at => nil })
+  scope :next_plan_recommended_alert_sent_at_alerted_this_month,     where(:next_plan_recommended_alert_sent_at.gte => Time.now.utc.beginning_of_month)
   scope :next_plan_recommended_alert_sent_at_not_alerted_this_month, where({ :next_plan_recommended_alert_sent_at.lt => Time.now.utc.beginning_of_month } | { :next_plan_recommended_alert_sent_at => nil })
 
   # filter
-  scope :beta,          lambda { joins(:plan).where(:plan => { :name => "beta" }) }
-  scope :dev,           lambda { joins(:plan).where(:plan => { :name => "dev" }) }
-  scope :active,        lambda { with_state(:active) }
-  scope :suspended,     lambda { with_state(:suspended) }
-  scope :archived,      lambda { with_state(:archived) }
-  scope :not_archived,  lambda { without_state(:archived) }
-  scope :with_wildcard, where(:wildcard => true)
-  scope :with_path,     where({ :path.ne => nil } & { :path.ne => '' })
+  scope :beta,                 joins(:plan).where(:plan => { :name => "beta" })
+  scope :dev,                  joins(:plan).where(:plan => { :name => "dev" })
+  scope :active,               lambda { with_state(:active) }
+  scope :suspended,            lambda { with_state(:suspended) }
+  scope :archived,             lambda { with_state(:archived) }
+  scope :not_archived,         lambda { without_state(:archived) }
+  scope :with_wildcard,        where(:wildcard => true)
+  scope :with_path,            where({ :path.ne => nil } & { :path.ne => '' })
   scope :with_extra_hostnames, where({ :extra_hostnames.ne => nil } & { :extra_hostnames.ne => '' })
 
   # admin
-  scope :user_id,    lambda { |user_id| where(user_id: user_id) }
+  scope :user_id,         lambda { |user_id| where(user_id: user_id) }
   scope :created_between, lambda { |start_date, end_date| where(:created_at.gte => start_date, :created_at.lt => end_date) }
 
   # sort
@@ -106,7 +106,7 @@ class Site < ActiveRecord::Base
   validates :plan,        :presence => true
   validates :player_mode, :inclusion => { :in => PLAYER_MODES }
 
-  validates :hostname,        :presence => { :unless => :in_dev_plan? }, :hostname_uniqueness => true, :hostname => true
+  validates :hostname,        :presence => { :unless => proc { |s| s.plan_id? && (s.in_beta_plan? || s.in_dev_plan?) } }, :hostname_uniqueness => true, :hostname => true
   validates :extra_hostnames, :extra_hostnames => true
   validates :dev_hostnames,   :dev_hostnames => true
 
@@ -122,23 +122,12 @@ class Site < ActiveRecord::Base
   after_save :execute_cdn_update
   after_create :delay_ranks_update
 
-  # # TODO: Remove after the one_time:sites:rollback_beta_sites rake task has been executed (no more site with the beta state)
-  # # Temporary, after submitting /sites/:token/transition with with a plan selected
-  # after_update :activate, :if => lambda { |site| site.in_beta_plan? && site.plan_id? }
-  # # Temporary, after submitting /sites/:token/transition with no plan selected
-  # after_update :rollback, :if => lambda { |site| site.in_beta_plan? && !site.plan_id? }
-
-  # THE CALLBACKS ABOVE SHOULD CHANGE:
-  # - SET ALL BETA SITES WITH THE "BETA" PLAN
-  # - AFTER X DAYS, SET THE "DEV" PLAN FOR ALL THE REMAINING BETA SITES WITH THE "BETA" PLAN
-
   # =================
   # = State Machine =
   # =================
 
   state_machine :initial => :active do
     state :pending # Temporary, used in the master branch
-    # state :beta # Temporary, used in lib/one_time/site.rb and lib/tasks/one_time.rake
 
     # event(:rollback)  { transition :beta => :dev }
     # event(:activate)  { transition [:dev, :beta] => :active }
