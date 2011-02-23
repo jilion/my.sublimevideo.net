@@ -14,7 +14,7 @@ class Admin::ReferrersController < Admin::AdminController
       @referrers = @referrers.send(by.to_sym, params[by.to_sym]) if params[by.to_sym]
     end
     @referrers.by_created_at if @referrers.scoped[:order_by].nil?
-    respond_with(@referrers)
+    respond_with(@referrers, :per_page => 100)
   end
 
 end

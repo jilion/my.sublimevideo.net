@@ -102,29 +102,29 @@ describe Site do
     end
 
     describe "#beta" do
-      specify { Site.beta.should == [@site_not_billable_2] }
+      specify { Site.beta.all.should =~ [@site_not_billable_2] }
     end
 
     describe "#dev" do
-      specify { Site.dev.should == [@site_not_billable_1, @site_with_path] }
+      specify { Site.dev.all.should =~ [@site_not_billable_1, @site_with_path] }
     end
 
     describe "#billable" do
-      specify { Site.billable.should == [@site_billable_1, @site_billable_2, @site_with_extra_hostnames] }
+      specify { Site.billable.all.should =~ [@site_billable_1, @site_billable_2, @site_with_extra_hostnames] }
     end
-    
+
     describe "#not_billable" do
-      specify { Site.not_billable.should == [@site_not_billable_1, @site_not_billable_2, @site_not_billable_3, @site_not_billable_4, @site_with_path] }
+      specify { Site.not_billable.all.should =~ [@site_not_billable_1, @site_not_billable_2, @site_not_billable_3, @site_not_billable_4, @site_with_path] }
     end
 
     describe "#with_path" do
-      specify { Site.with_path.should == [@site_with_path] }
-    end      
+      specify { Site.with_path.all.should =~ [@site_with_path] }
+    end
 
     describe "#with_extra_hostnames" do
-      specify { Site.with_extra_hostnames.should == [@site_with_extra_hostnames] }
-    end      
-      
+      specify { Site.with_extra_hostnames.all.should =~ [@site_with_extra_hostnames] }
+    end
+
   end
 
   describe "Validations" do

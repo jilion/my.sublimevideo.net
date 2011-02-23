@@ -96,23 +96,24 @@ end
 feature "Admins pagination:" do
   background do
     sign_in_as :admin
-    Admin.stub!(:per_page).and_return(1)
+    Responders::PaginatedResponder.stub(:per_page).and_return(1)
   end
 
   scenario "pagination links displayed only if count of amins > Admin.per_page" do
     Admin.all.size.should == 1
+
     visit "/admin/admins"
-    page.should have_no_css('div.pagination')
-    page.should have_no_css('span.previous_page')
-    page.should have_no_css('em.current_page')
-    page.should have_no_css('a.next_page')
+    page.should have_no_css('nav.pagination')
+    page.should have_no_css('span.prev')
+    page.should have_no_css('em.current')
+    page.should have_no_css('a.next')
 
     Factory(:admin)
     visit "/admin/admins"
 
-    page.should have_css('div.pagination')
-    page.should have_css('span.previous_page')
-    page.should have_css('em.current_page')
-    page.should have_css('a.next_page')
+    page.should have_css('nav.pagination')
+    page.should have_css('span.prev')
+    page.should have_css('em.current')
+    page.should have_css('a.next')
   end
 end

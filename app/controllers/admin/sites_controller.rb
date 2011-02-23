@@ -37,7 +37,7 @@ class Admin::SitesController < Admin::AdminController
       @sites = @sites.not_archived
     end
     @sites = apply_scopes(@sites).by_date
-    respond_with(@sites)
+    respond_with(@sites, :per_page => 50)
   end
 
   # GET /admin/sites/:id

@@ -1,9 +1,5 @@
 class MailTemplate < ActiveRecord::Base
 
-  # Pagination
-  cattr_accessor :per_page
-  self.per_page = 10
-
   attr_accessible :title, :subject, :body
 
   # ================

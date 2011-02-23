@@ -16,6 +16,11 @@ module Responders
       super
     end
 
+    # Could be stubbed
+    def self.per_page
+      nil
+    end
+
   protected
 
     def add_pagination_scope!
@@ -32,8 +37,16 @@ module Responders
       end
     end
 
+    def page_params
+      controller.request.params[:page]
+    end
+
+    def per_page(klass)
+      PaginatedResponder.per_page || @per_page || (klass.methods.include?(:per_page) ? klass.per_page : 25)
+    end
+
     def set_instance_variable(klass)
-      controller.instance_variable_set "@#{controller.controller_name}", resource.page(controller.request.params[:page] || 1).per(@per_page || klass.per_page)
+      controller.instance_variable_set "@#{controller.controller_name}", resource.page(page_params).per(per_page(klass))
     end
 
   end

@@ -17,3 +17,4 @@ module JobExtension
 end
 
 Delayed::Job.extend JobExtension
+Delayed::Job.extend Kaminari::ActiveRecordExtension

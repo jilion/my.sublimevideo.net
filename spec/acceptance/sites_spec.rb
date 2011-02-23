@@ -39,20 +39,20 @@ feature "Sites" do
     end
 
     pending "pagination links displayed only if count of sites > Site.per_page" do
-      Site.stub!(:per_page).and_return(1)
+      Responders::PaginatedResponder.stub(:per_page).and_return(1)
       create_site
 
       page.should have_no_content('Next')
-      page.should have_no_css('div.pagination')
-      page.should have_no_css('span.next_page')
+      page.should have_no_css('nav.pagination')
+      page.should have_no_css('span.next')
 
       create_site :hostname => "remy.me"
 
       current_url.should =~ %r(http://[^/]+/sites)
-      page.should have_css('div.pagination')
-      page.should have_css('span.previous_page')
-      page.should have_css('em.current_page')
-      page.should have_css('a.next_page')
+      page.should have_css('nav.pagination')
+      page.should have_css('span.prev')
+      page.should have_css('em.current')
+      page.should have_css('a.next')
     end
 
     pending "user suspended" do

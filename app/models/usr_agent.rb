@@ -14,10 +14,6 @@ class UsrAgent # fucking name conflict with UserAgent gem
 
   attr_accessible :token, :platforms, :browsers, :month
 
-  # Pagination
-  cattr_accessor :per_page
-  self.per_page = 100
-
   # ================
   # = Associations =
   # ================

@@ -3,10 +3,6 @@ class Site < ActiveRecord::Base
   DEFAULT_DEV_DOMAINS = '127.0.0.1, localhost'
   PLAYER_MODES = %w[dev beta stable]
 
-  # Pagination
-  cattr_accessor :per_page
-  self.per_page = 50
-
   # Versioning
   has_paper_trail
 

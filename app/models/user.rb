@@ -4,10 +4,6 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable, :confirmable,
          :recoverable, :rememberable, :trackable, :lockable, :invitable
 
-  # Pagination
-  cattr_accessor :per_page
-  self.per_page = 50
-
   # Mail template
   liquid_methods :email, :first_name, :last_name, :full_name
 

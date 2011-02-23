@@ -121,11 +121,6 @@ Factory.define :plan_invoice_item, :parent => :invoice_item, :class => InvoiceIt
   f.amount 1000
 end
 
-Factory.define :lifetime do |f|
-  f.association :site, :factory => :active_site
-  f.item        { Factory(:plan) }
-end
-
 Factory.define :users_stat do |f|
   f.states_count  { {} }
 end

@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe PublicLaunch do
 
-  its(:beta_transition_ended_on) { should == Date.new(2011, 3, 1) }
+  its(:beta_transition_ended_on) { should == Date.new(2011, 5, 1) }
 
   describe ".days_left_before_end_of_beta_transition" do
 
@@ -13,4 +13,5 @@ describe PublicLaunch do
       Timecop.return
     end
   end
+
 end

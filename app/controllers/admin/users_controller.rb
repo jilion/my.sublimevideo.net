@@ -26,7 +26,7 @@ class Admin::UsersController < Admin::AdminController
       @users = @users.active_and_billable
     end
     @users = apply_scopes(@users).by_date
-    respond_with(@users)
+    respond_with(@users, :per_page => 50)
   end
 
   # GET /admin/users/:id

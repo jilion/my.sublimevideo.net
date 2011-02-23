@@ -1,9 +1,5 @@
 class MailLog < ActiveRecord::Base
 
-  # Pagination
-  cattr_accessor :per_page
-  self.per_page = 10
-
   attr_accessible :template_id, :admin_id, :criteria, :user_ids
 
   serialize :criteria
