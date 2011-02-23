@@ -99,7 +99,7 @@ class Site < ActiveRecord::Base
   # ===============
 
   validates :user,        :presence => true
-  validates :plan,        :presence => true
+  validates :plan,        :presence => { :message => "Please choose a plan" }
   validates :player_mode, :inclusion => { :in => PLAYER_MODES }
 
   validates :hostname,        :presence => { :unless => proc { |s| s.plan_id? && (s.in_beta_plan? || s.in_dev_plan?) } }, :hostname_uniqueness => true, :hostname => true
