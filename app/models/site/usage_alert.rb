@@ -20,7 +20,6 @@ module Site::UsageAlert
   def self.send_usage_alerts
     delay_send_usage_alerts
     send_plan_player_hits_reached_alerts
-    send_next_plan_recommended_alerts
   end
 
 private
