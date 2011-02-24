@@ -3,7 +3,7 @@ var MySublimeVideo = MySublimeVideo || {};
 document.observe("dom:loaded", function() {
 
   S2.Extensions.webkitCSSTransitions = true;
-  
+
   // ================================================================
   // = Password fields, selects and placeholders and forms managers =
   // ================================================================
@@ -43,35 +43,7 @@ document.observe("dom:loaded", function() {
   if ($('current_usage_amount')) {
     new Ajax.Request('/invoices/usage', { method:'get' });
   }
-  
-  // Reproduce checkbox behavior for radio buttons for plans selection
-  if ($('plans')) {
-    MySublimeVideo.SELECTED_PLAN = 0;
-    $$('ul#plans li').each(function(element){
-      element.on('click', function(event){
-        var radioButton = element.down('input[type=radio]');
-        if (MySublimeVideo.ONE_SELECTED_PLAN_AT_LEAST != true) {
-          if (MySublimeVideo.SELECTED_PLAN != radioButton.value) {
-            radioButton.checked = true;
-            MySublimeVideo.SELECTED_PLAN = radioButton.value;
-          }
-          else {
-            radioButton.checked = false;
-            MySublimeVideo.SELECTED_PLAN = 0;
-          }
-        } else {
-          radioButton.checked = true;
-        }
-      });
-    });
-  }
-  
-  var siteElement = $('site');
-  if (siteElement && siteElement.hasClassName('edit')) {
-    MySublimeVideo.updateFromHash(window.location.hash);
-    HHash.init(MySublimeVideo.hashUrlHandler, $('hidden-iframe'));
-  }
-  
+
   // ===================================================
   // = Fix a <select> CSS bug in Safari (under v4.0.5) =
   // ===================================================
@@ -95,6 +67,23 @@ document.observe("dom:loaded", function() {
       });
     });
   }
+
+  // Reproduce checkbox behavior for radio buttons for plans selection
+  if ($('plans') && $('site_credit_card')) {
+    $$('ul#plans li').each(function(element){
+      element.on('click', function(event){
+        var radioButton = element.down('input[type=radio]');
+        var siteCreditCard = $('site_credit_card');
+        if (radioButton.id == "plan_dev") {
+          siteCreditCard.hide();
+        }
+        else {
+          siteCreditCard.show();
+        }
+      });
+    });
+  }
+
 
 });
 
@@ -135,11 +124,13 @@ MySublimeVideo.closePopup = function() {
   return false;
 };
 
-MySublimeVideo.makeSticky = function(element) {
-  $$('#header .active').each(function(el){
+MySublimeVideo.makeSticky = function(element, css_selector) {
+  $$(css_selector + ' .active').each(function(el){
     el.removeClassName('active');
   });
   element.addClassName("active");
+  var li = element.up('li');
+  if (li) li.addClassName("active");
 };
 
 MySublimeVideo.remoteSortLink = function(element) {
@@ -173,39 +164,6 @@ MySublimeVideo.showSiteUsage = function(siteId) {
   MySublimeVideo.openPopup(siteId, "usage", '/sites/'+siteId+'/usage', 'usage_popup');
   return false;
 };
-
-MySublimeVideo.toggleBoxFromId = function(a, boxId, hash) {
-  var box = $(boxId);
-  var li = a.up('li');
-  if (!li.hasClassName('active')) {
-    $$('ul.segmented_menu li').invoke('removeClassName','active');
-    li.addClassName('active');
-    $$('.section_box').invoke('hide');
-    box.show();
-  }
-  window.location.hash = hash;
-  return false;
-};
-
-MySublimeVideo.updateFromHash = function(hash) {
-  switch (hash) {
-    // case '#settings':
-    //   MySublimeVideo.toggleBoxFromId($$('ul.segmented_menu li a')[0], 'site_settings_box', 'settings');
-    //   break;
-    case '#change_plan':
-      MySublimeVideo.toggleBoxFromId($$('ul.segmented_menu li a')[1], 'change_plan_box', 'change_plan');
-      break;
-    default:
-      MySublimeVideo.toggleBoxFromId($$('ul.segmented_menu li a')[0], 'site_settings_box', 'settings');
-      break;
-  }      
-}
-
-MySublimeVideo.hashUrlHandler = function(newHash, initial) {
-  if (!initial) {
-    MySublimeVideo.updateFromHash("#"+newHash);
-  }
-}
 
 // ===========
 // = Classes =
@@ -579,12 +537,12 @@ function supportsHtml5InputAttribute(attribute) { // e.g "placeholder"
   return attribute in i;
 }
 
-function supportsHtml5Storage() { 
-  try { 
-    return 'localStorage' in window && window['localStorage'] !== null; 
-  } 
-  catch (e) { 
-    return false; 
+function supportsHtml5Storage() {
+  try {
+    return 'localStorage' in window && window['localStorage'] !== null;
+  }
+  catch (e) {
+    return false;
   }
 }
 

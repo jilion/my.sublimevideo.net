@@ -26,10 +26,9 @@ MySublimeVideo::Application.routes.draw do
     member do
       get :state
       get :code
-      get :transition
       get :usage
-      put :activate
     end
+    resource :plan, :only => [:edit, :update]
   end
   resource :card, :controller => 'credit_cards', :as => :credit_card, :only => [:edit, :update]
   resources :invoices, :only => [:index, :show] do

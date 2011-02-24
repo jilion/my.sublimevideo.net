@@ -25,10 +25,6 @@ Factory.define :site do |f|
   f.association         :plan
 end
 
-Factory.define :active_site, :parent => :site do |f|
-  f.after_create { |site| site.activate }
-end
-
 Factory.define :log_voxcast, :class => Log::Voxcast do |f|
   f.name "cdn.sublimevideo.net.log.1275002700-1275002760.gz"
 end

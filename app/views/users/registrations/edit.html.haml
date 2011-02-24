@@ -43,7 +43,7 @@
       %p= "Will expire on: " + l(current_user.cc_expire_on, :format => :month_fullyear)
       %p= link_to 'Update credit card', edit_credit_card_path
     - else
-      %p= "Add a credit card if you want to activate a site."
+      %p= "Add a credit card."
       %p= link_to 'Add a credit card', edit_credit_card_path
     
   #invoices_summary

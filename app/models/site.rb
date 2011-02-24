@@ -102,7 +102,7 @@ class Site < ActiveRecord::Base
   validates :plan,        :presence => { :message => "Please choose a plan" }
   validates :player_mode, :inclusion => { :in => PLAYER_MODES }
 
-  validates :hostname,        :presence => { :unless => proc { |s| s.plan_id? && (s.in_beta_plan? || s.in_dev_plan?) } }, :hostname_uniqueness => true, :hostname => true
+  validates :hostname,        :presence => { :if => proc { |s| s.in_paid_plan? } }, :hostname_uniqueness => true, :hostname => true
   validates :extra_hostnames, :extra_hostnames => true
   validates :dev_hostnames,   :dev_hostnames => true
 
@@ -125,8 +125,6 @@ class Site < ActiveRecord::Base
   state_machine :initial => :active do
     state :pending # Temporary, used in the master branch
 
-    # event(:rollback)  { transition :beta => :dev }
-    # event(:activate)  { transition [:dev, :beta] => :active }
     event(:archive)   { transition :active => :archived }
     event(:suspend)   { transition :active => :suspended }
     event(:unsuspend) { transition :suspended => :active }
@@ -236,6 +234,10 @@ public
     plan_id? && plan.beta_plan?
   end
 
+  def in_paid_plan?
+    plan_id? && !in_dev_plan? && !in_beta_plan?
+  end
+
   def plan_player_hits_reached_alerted_this_month?
     (Time.now.utc.beginning_of_month..Time.now.utc.end_of_month).cover?(plan_player_hits_reached_alert_sent_at)
   end
@@ -331,7 +333,8 @@ private
 
   # before_validation
   def set_user_attributes
-    if user && user_attributes.present?
+    # for user cc fields only
+    if user && user_attributes.present? && in_paid_plan?
       user.attributes = user_attributes
     end
   end

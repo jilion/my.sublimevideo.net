@@ -84,47 +84,18 @@ feature "Sites" do
     site.license.read.should include(site.template_hostnames)
   end
 
-  pending "transition" do
-    create_site
-    site = @current_user.sites.last
-    # site.stub!(:in_beta_plan? => true) # fake that the site is in beta state (should not have a plan, but no big deal for this test)
-    # @current_user.stub_chain(:sites, :not_archived, :by_date).and_return([site])
-    # site.should be_beta
-    visit "/sites"
-    # within(:css, "tr#site_#{site.id}") do
-    #   click_link "Choose a plan"
-    # end
-    visit "/sites/#{site.token}/transition"
-    page.should have_content('Update your site')
-    page.should have_content('Unlimited Free Testing on All Plans.')
-
-    fill_in "site_hostname", :with => 'rymai.local' # error!
-    click_button "Update"
-
-    # save_and_open_page
-    # should render the :transition template, not the :edit template
-    # page.should have_content('Unlimited Free Testing on All Plans.') # can't test until I managed to have a site in beta state!!!!
-  end
-
   # WAITING FOR OCTAVE TO FINISH THE PAGE
   feature "edit" do
     background do
       create_site :cdn_up_to_date => true
     end
 
-    pending "edit settings" do
+    pending "update settings" do
       edit_site_settings :path => '/ipad', :dev_hostnames => 'sjobs.dev, apple.local'
 
       current_url.should =~ %r(http://[^/]+/sites)
       page.should have_content('apple.com/ipad')
       @current_user.sites.last.dev_hostnames.should == "apple.local, sjobs.dev"
-    end
-
-    pending "edit plan" do
-      edit_site_plan
-
-      current_url.should =~ %r(http://[^/]+/sites)
-      page.should have_content('Enterprise')
     end
 
   end
@@ -151,7 +122,7 @@ def create_site(*args)
   fill_in "site_dev_hostnames", :with => options[:dev_hostnames] || 'rymai.local'
   fill_in "site_path", :with => options[:path] || '/videos'
   check   "Wildcard"
-  choose "plan_id_pro"
+  choose "plan_pro"
 
   if !@current_user.cc? || @current_user.cc_expired?
     VCR.use_cassette('credit_card_visa_validation') do
@@ -172,13 +143,13 @@ def edit_site_settings(options = {})
   fill_in "site_extra_hostnames", :with => options[:extra_hostnames] || ''
   fill_in "site_dev_hostnames", :with => options[:dev_hostnames] || ''
   fill_in "site_path", :with => options[:path] || ''
-  choose "plan_id_enterprise"
+  choose "plan_enterprise"
   click_button "Update settings"
 end
 
 def edit_site_plan(options = {})
   visit_settings(options[:id] || @current_user.sites.last.id)
-  choose "plan_id_enterprise"
+  choose "plan_enterprise"
   click_button "Update plan"
 end
 

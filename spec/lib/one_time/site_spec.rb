@@ -5,8 +5,8 @@ describe OneTime::Site do
 
   describe ".set_beta_plan" do
     before(:all) do
-      @active_invalid   = Factory.build(:site, state: 'active', hostname: 'jilion.local').tap { |s| s.save(validate: false) }
-      @archived_invalid = Factory.build(:site, state: 'archived', hostname: 'jilion.local').tap { |s| s.save(validate: false) }
+      @active_invalid   = Factory.build(:site, plan: nil, state: 'active', hostname: 'jilion.local').tap { |s| s.save(validate: false) }
+      @archived_invalid = Factory.build(:site, plan: nil, state: 'archived', hostname: 'jilion.local').tap { |s| s.save(validate: false) }
     end
 
     context "actually test the method for all sites" do
@@ -14,7 +14,7 @@ describe OneTime::Site do
 
       it "should set all sites plan to beta" do
         @active_invalid.reload.should be_in_beta_plan
-        @archived_invalid.reload.should be_archived
+        @archived_invalid.reload.should be_in_beta_plan
       end
     end
   end

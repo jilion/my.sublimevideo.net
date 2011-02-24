@@ -4,7 +4,7 @@ module OneTime
     class << self
 
       def set_beta_plan
-        ::Site.with_state(:active).update_all(:plan_id => Plan.find_by_name("beta").id)
+        ::Site.where(:plan_id => nil).update_all(:plan_id => Plan.find_by_name("beta").id)
         "#{::Site.beta.count} sites are now using the Beta plan (on #{::Site.not_archived.count} non-archived sites)."
       end
 

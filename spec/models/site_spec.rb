@@ -274,121 +274,6 @@ describe Site do
   describe "State Machine" do
     before(:each) { VoxcastCDN.stub(:purge) }
 
-    pending "#rollback" do
-      context "from beta state" do
-        subject do
-          Timecop.travel(10.days.ago)
-          site = Factory(:site, plan_id: nil, hostname: "jilion.com", extra_hostnames: "jilion.staging.com, jilion.org").tap { |s| s.activate }
-          Timecop.return
-          @worker.work_off # populate license / loader
-          site.state = 'beta'
-          site.should be_beta
-          site.plan_id.should be_nil
-          site
-        end
-
-        it "should rollback to dev state" do
-          subject.should be_beta
-          subject.rollback.should be_true
-          subject.should be_dev
-        end
-
-        it "should update license file" do
-          old_license_content = subject.license.read
-          subject.rollback.should be_true
-          @worker.work_off
-          subject.reload.license.read.should_not == old_license_content
-        end
-
-        it "should purge loader & license file" do
-          VoxcastCDN.should_receive(:purge).with("/js/#{subject.token}.js")
-          VoxcastCDN.should_receive(:purge).with("/l/#{subject.token}.js")
-          subject.rollback.should be_true
-          @worker.work_off
-        end
-      end
-    end
-
-    pending "#activate" do
-      context "from dev state" do
-        subject do
-          site = Factory(:site, state: 'dev', hostname: "jilion.com", extra_hostnames: "jilion.staging.com, jilion.org")
-          @worker.work_off
-          site.should be_dev
-          site.reload
-        end
-
-        it "should set activated_at" do
-          subject.activated_at.should be_nil
-          subject.activate.should be_true
-          subject.activated_at.should be_present
-        end
-
-        it "should update license file" do
-          old_license_content = subject.license.read
-          subject.activate.should be_true
-          @worker.work_off
-          subject.reload.license.read.should_not == old_license_content
-        end
-
-        it "should add extra and main hostnames in license file" do
-          subject.license.read.should include("localhost")
-          subject.license.read.should_not include("jilion.com")
-          subject.license.read.should_not include("jilion.staging.com")
-          subject.license.read.should_not include("jilion.org")
-          subject.activate.should be_true
-          @worker.work_off
-          subject.reload.license.read.should include("jilion.com")
-          subject.license.read.should include("jilion.staging.com")
-          subject.license.read.should include("jilion.org")
-        end
-
-        it "should purge loader & license file" do
-          VoxcastCDN.should_receive(:purge).with("/js/#{subject.token}.js")
-          VoxcastCDN.should_receive(:purge).with("/l/#{subject.token}.js")
-          subject.activate.should be_true
-          @worker.work_off
-        end
-      end
-
-      context "from beta state" do
-        subject do
-          Timecop.travel(10.days.ago)
-          site = Factory(:site, plan_id: nil, hostname: "jilion.com", extra_hostnames: "jilion.staging.com, jilion.org").tap { |s| s.activate }
-          Timecop.return
-          @worker.work_off # populate license / loader
-          site.update_attribute(:state, 'dev')
-          site.reload.should be_dev
-          site.plan_id.should be_nil
-          site
-        end
-
-        # activate is not directly called on beta sites, it's fired when site is beta and has a plan_id
-        it "should reset activated_at" do
-          old_activated_at = subject.activated_at
-          subject.state    = 'beta'
-          subject.plan_id  = Factory(:plan).id
-          subject.save
-          subject.reload.plan_id.should be_present
-          subject.should be_active
-          subject.activated_at.should_not == old_activated_at
-        end
-
-        it "should not update license file" do
-          old_license_content = subject.license.read
-          subject.update_attribute(:plan_id, 1)
-          @worker.work_off
-          subject.reload.license.read.should == old_license_content
-        end
-
-        it "should not purge loader & license file" do
-          VoxcastCDN.should_not_receive(:purge)
-          subject.update_attribute(:plan_id, 1)
-          @worker.work_off
-        end
-      end
-    end
-
     describe "#suspend" do
       subject do
         site = Factory(:site)
@@ -465,8 +350,14 @@ describe Site do
     describe "before_validation" do
       it "should set user_attributes" do
         user = Factory(:user, first_name: "Bob")
-        site = Factory(:site, user: user, user_attributes: { first_name: "John" })
+        Factory(:site, user: user, user_attributes: { first_name: "John" })
         user.reload.first_name.should == "John"
+      end
+
+      it "should not set user_attributes if site is not in paid plan" do
+        user = Factory(:user, first_name: "Bob")
+        Factory(:site, user: user, plan: @dev_plan, user_attributes: { first_name: "John" })
+        user.reload.first_name.should == "Bob"
       end
     end
 
