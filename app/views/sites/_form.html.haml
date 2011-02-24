@@ -3,13 +3,7 @@
   = render 'plans', :f => f
 
   %h3.headline= "Unlimited Free Testing on All Plans."
-  %h4.sub_headline= "SublimeVideo is free while you develop your site. Billing will only start when you make it live."
-  
-  .no_plan
-    %p><
-      ="In case you just want to test SublimeVideo in development, "
-      %a{ :href => "", :onclick => "$$('ul#plans li input[type=radio]').each(function(e){e.checked = false;}); MySublimeVideo.SELECTED_PLAN = 0; return false" }= "don’t select any plans"
-      = ". No credit card required."
+  %h4.sub_headline= "SublimeVideo is free while you develop your site."
   .spacer
   .break_line
   

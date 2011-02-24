@@ -135,7 +135,7 @@ describe Site do
     end
 
     it { should validate_presence_of(:user) }
-    it { should validate_presence_of(:plan) }
+    it { should validate_presence_of(:plan).with_message("Please choose a plan") }
 
     it { should allow_value('dev').for(:player_mode) }
     it { should allow_value('beta').for(:player_mode) }

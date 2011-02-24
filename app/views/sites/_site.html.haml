@@ -18,15 +18,8 @@
         = link_to [:edit, site], :class => "domain" do
           %span.settings_icon
           = "add a hostname"
-
       .plan
-        - if site.plan
-          = site.plan.name.humanize
-        - elsif site.in_beta_plan?
-          = "Beta"
-        - else
-          = "No plan"
-
+        = site.plan.name.humanize
       .spacer
 
   %td.usage
