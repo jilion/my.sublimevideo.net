@@ -3,7 +3,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   before_filter :redirect_suspended_user
   before_filter :only => [:update, :destroy] do |controller|
-    redirect_wrong_password(resource)
+    redirect_wrong_password_to(edit_user_registration_path)
   end
 
   def destroy

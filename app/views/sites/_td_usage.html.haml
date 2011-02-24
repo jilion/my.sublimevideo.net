@@ -1,5 +1,5 @@
-- if site.in_dev_plan? || site.in_beta_plan?
-  = link_to "Choose a plan", edit_site_path(site) + "#change_plan", :class => "medium_button"
+- if !site.in_paid_plan?
+  = link_to "Choose a plan", edit_site_plan_path(site), :class => "medium_button"
 - else
   -# = link_to "Usage", "", :onclick => "return MySublimeVideo.showSiteUsage('#{site.token}')"
   .progress_bar.box_hovering_zone

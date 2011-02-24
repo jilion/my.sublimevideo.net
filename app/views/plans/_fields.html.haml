@@ -6,11 +6,11 @@
   - Plan.where( :name => %w[dev perso pro enterprise]).each do |plan|
     %li{ :class => plan.name }
       .content
-        = f.label :plan_id, content_tag(:strong, plan.name.titlecase), :for => "plan_id_#{plan.name}", :class => "title"
+        = f.label :plan_id, content_tag(:strong, plan.name.titlecase), :for => "plan_#{plan.name}", :class => "title"
         %h4.number= number_with_delimiter(plan.player_hits.zero? ? "∞" : plan.player_hits)
         %h5.label= plan.player_hits.zero? ? "Unlimited pageviews" : "Video pageviews per month"
         .radio_wrap
-          = f.radio_button :plan_id, plan.id, :id => "plan_id_#{plan.name}", :class => "plan_radio"
+          = f.radio_button :plan_id, plan.id, :id => "plan_#{plan.name}", :class => "plan_radio"
           %span.bg
         .pricing
           %h4.price= plan.player_hits.zero? ? "FREE" : display_amount(plan.price)
