@@ -170,6 +170,8 @@ describe Transaction do
 
 end
 
+
+
 # == Schema Information
 #
 # Table name: transactions

@@ -21,10 +21,6 @@ class Transaction < ActiveRecord::Base
 
   validate :at_least_one_invoice
 
-  # ==========
-  # = Scopes =
-  # ==========
-
   # =================
   # = State Machine =
   # =================
@@ -59,6 +55,10 @@ class Transaction < ActiveRecord::Base
       transaction.fail
     end
   end
+  
+  # ====================
+  # = Instance Methods =
+  # ====================
 
 private
 

@@ -34,27 +34,6 @@ class UsrAgent # fucking name conflict with UserAgent gem
   validates :token,   :presence => true
   validates :month,   :presence => true
 
-  # ====================
-  # = Instance Methods =
-  # ====================
-
-  def update_hashes(hits, useragent_hash = {})
-    # platforms
-    platforms_dup = self[:platforms].dup
-    platforms_dup[useragent_hash[:platform]] ||= {}
-    platforms_dup[useragent_hash[:platform]][useragent_hash[:os]] = platforms_dup[useragent_hash[:platform]][useragent_hash[:os]].to_i + hits
-    self.platforms = {} # force dirty attribute https://github.com/mongoid/mongoid/issues/issue/323
-    self.platforms = platforms_dup
-    # browsers
-    browsers_dup = self[:browsers].dup
-    browsers_dup[useragent_hash[:browser]] ||= { "versions" => {}, "platforms" => {} }
-    browsers_dup[useragent_hash[:browser]]["versions"][useragent_hash[:version]] = browsers_dup[useragent_hash[:browser]]["versions"][useragent_hash[:version]].to_i + hits
-    browsers_dup[useragent_hash[:browser]]["platforms"][useragent_hash[:platform]] = browsers_dup[useragent_hash[:browser]]["platforms"][useragent_hash[:platform]].to_i + hits
-    self.browsers = {} # force dirty attribute https://github.com/mongoid/mongoid/issues/issue/323
-    self.browsers = browsers_dup
-    self.save
-  end
-
   # =================
   # = Class Methods =
   # =================
@@ -102,6 +81,27 @@ private
       end
       hash
     end
+  end
+
+  # ====================
+  # = Instance Methods =
+  # ====================
+
+  def update_hashes(hits, useragent_hash={})
+    # platforms
+    platforms_dup = self[:platforms].dup
+    platforms_dup[useragent_hash[:platform]] ||= {}
+    platforms_dup[useragent_hash[:platform]][useragent_hash[:os]] = platforms_dup[useragent_hash[:platform]][useragent_hash[:os]].to_i + hits
+    self.platforms = {} # force dirty attribute https://github.com/mongoid/mongoid/issues/issue/323
+    self.platforms = platforms_dup
+    # browsers
+    browsers_dup = self[:browsers].dup
+    browsers_dup[useragent_hash[:browser]] ||= { "versions" => {}, "platforms" => {} }
+    browsers_dup[useragent_hash[:browser]]["versions"][useragent_hash[:version]] = browsers_dup[useragent_hash[:browser]]["versions"][useragent_hash[:version]].to_i + hits
+    browsers_dup[useragent_hash[:browser]]["platforms"][useragent_hash[:platform]] = browsers_dup[useragent_hash[:browser]]["platforms"][useragent_hash[:platform]].to_i + hits
+    self.browsers = {} # force dirty attribute https://github.com/mongoid/mongoid/issues/issue/323
+    self.browsers = browsers_dup
+    self.save
   end
 
 end

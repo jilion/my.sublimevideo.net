@@ -16,35 +16,6 @@ class Invoice < ActiveRecord::Base
 
   delegate :user, :to => :site
 
-  # ==========
-  # = Scopes =
-  # ==========
-
-  scope :between, lambda { |started_at, ended_at|
-    where(:started_at.gte => started_at, :ended_at.lte => ended_at)
-  }
-
-  scope :paid,       where(state: 'paid')
-  scope :failed,     where(state: 'failed')
-  scope :site_id,    lambda { |site_id| where(site_id: site_id) }
-  scope :user_id,    lambda { |user_id| where(site_id: Site.where(user_id: user_id).map(&:id)) }
-  # sort
-  scope :by_amount,   lambda { |way='desc'| order(:amount.send(way)) }
-  scope :by_invoice_items_count, lambda { |way='desc'| order(:invoice_items_count.send(way)) }
-  # scope :by_user,     lambda { |way='desc'| order(:users => [:first_name.send(way), :email.send(way)]) }
-  scope :by_state,    lambda { |way='desc'| order(:state.send(way)) }
-  scope :by_attempts, lambda { |way='desc'| order(:attempts.send(way)) }
-  scope :by_date,     lambda { |way='desc'| order(:created_at.send(way)) }
-
-  # search
-  def self.search(q)
-    joins(:users).
-    where(:lower.func(:email).matches % :lower.func("%#{q}%") |
-          :lower.func(:first_name).matches % :lower.func("%#{q}%") |
-          :lower.func(:last_name).matches % :lower.func("%#{q}%") |
-          :lower.func(:reference).matches % :lower.func("%#{q}%"))
-  end
-
   # ===============
   # = Validations =
   # ===============
@@ -92,6 +63,35 @@ class Invoice < ActiveRecord::Base
         invoice.user.cancel_suspend
       end
     end
+  end
+
+  # ==========
+  # = Scopes =
+  # ==========
+
+  scope :between, lambda { |started_at, ended_at|
+    where(:started_at.gte => started_at, :ended_at.lte => ended_at)
+  }
+
+  scope :paid,       where(state: 'paid')
+  scope :failed,     where(state: 'failed')
+  scope :site_id,    lambda { |site_id| where(site_id: site_id) }
+  scope :user_id,    lambda { |user_id| where(site_id: Site.where(user_id: user_id).map(&:id)) }
+  # sort
+  scope :by_amount,   lambda { |way='desc'| order(:amount.send(way)) }
+  scope :by_invoice_items_count, lambda { |way='desc'| order(:invoice_items_count.send(way)) }
+  # scope :by_user,     lambda { |way='desc'| order(:users => [:first_name.send(way), :email.send(way)]) }
+  scope :by_state,    lambda { |way='desc'| order(:state.send(way)) }
+  scope :by_attempts, lambda { |way='desc'| order(:attempts.send(way)) }
+  scope :by_date,     lambda { |way='desc'| order(:created_at.send(way)) }
+
+  # search
+  def self.search(q)
+    joins(:users).
+    where(:lower.func(:email).matches % :lower.func("%#{q}%") |
+          :lower.func(:first_name).matches % :lower.func("%#{q}%") |
+          :lower.func(:last_name).matches % :lower.func("%#{q}%") |
+          :lower.func(:reference).matches % :lower.func("%#{q}%"))
   end
 
   # =================

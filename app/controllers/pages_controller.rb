@@ -6,7 +6,7 @@ class PagesController < ApplicationController
     render params[:page]
   end
 
-protected
+private
 
   def redirect_suspended_user!
     redirect_to root_path if params[:page] == 'suspended' && user_signed_in? && !current_user.suspended?

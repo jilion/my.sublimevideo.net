@@ -27,7 +27,7 @@ class Admin::DelayedJobsController < Admin::AdminController
     respond_with(@site, :location => [:admin, :delayed_jobs])
   end
 
-protected
+private
 
   def find_by_id
     @delayed_job = Delayed::Job.find(params[:id])

@@ -1,8 +1,5 @@
 require 'spec_helper'
 
-# before refactoring: 18.52s
-# after refactoring:  11.06s
-# 1.67x faster
 describe User do
 
   context "Factory" do
@@ -577,8 +574,6 @@ describe User do
 
   end
 
-protected
-
   def accept_invitation(attributes = {})
     default = {
       :password => "123456",
@@ -599,7 +594,6 @@ protected
   end
 
 end
-
 
 
 

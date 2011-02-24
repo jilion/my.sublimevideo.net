@@ -22,8 +22,10 @@ class Site < ActiveRecord::Base
   belongs_to :user, :validate => true, :autosave => true
   belongs_to :plan
   belongs_to :next_cycle_plan, :class_name => "Plan"
-  has_many :invoice_items
-  has_many :invoices, :through => :invoice_items
+  
+  has_many :invoices
+  has_many :invoice_items, :through => :invoices
+  
   # Mongoid associations
   def usages
     SiteUsage.where(:site_id => id)
@@ -138,8 +140,6 @@ class Site < ActiveRecord::Base
   # = Class Methods =
   # =================
 
-protected
-
   # delayed method
   def self.update_loader_and_license(site_id, options = {})
     site = Site.find(site_id)
@@ -199,12 +199,19 @@ protected
       site.update_last_30_days_counters
     end
   end
+  
+  def self.referrer_match_hostname?(referrer, hostname, path = '', wildcard = false)
+    referrer = URI.parse(referrer)
+    if path || wildcard
+      (referrer.host =~ /^(#{wildcard ? '.*' : 'www'}\.)?#{hostname}$/) && (path.blank? || referrer.path =~ %r{^/#{path}.*$})
+    else
+      referrer.host =~ /^(www\.)?#{hostname}$/
+    end
+  end
 
   # ====================
   # = Instance Methods =
   # ====================
-
-public
 
   def hostname=(attribute)
     write_attribute(:hostname, Hostname.clean(attribute))
@@ -323,6 +330,18 @@ public
     else
       0
     end
+  end  
+
+  def main_referrer?(referrer)
+    self.class.referrer_match_hostname?(referrer, hostname, path, wildcard)
+  end
+
+  def extra_referrer?(referrer)
+    extra_hostnames.split(', ').any? { |h| self.class.referrer_match_hostname?(referrer, h, path, wildcard) }
+  end
+
+  def dev_referrer?(referrer)
+    dev_hostnames.split(', ').any? { |h| self.class.referrer_match_hostname?(referrer, h, '', wildcard) }
   end
 
 private
@@ -388,33 +407,6 @@ private
   # after_transition :to => [:suspended, :archived]
   def delay_remove_loader_and_license
     Site.delay.remove_loader_and_license(self.id)
-  end
-
-  # ===================
-  # = Utility Methods =
-  # ===================
-
-protected
-
-  def self.referrer_match_hostname?(referrer, hostname, path = '', wildcard = false)
-    referrer = URI.parse(referrer)
-    if path || wildcard
-      (referrer.host =~ /^(#{wildcard ? '.*' : 'www'}\.)?#{hostname}$/) && (path.blank? || referrer.path =~ %r{^/#{path}.*$})
-    else
-      referrer.host =~ /^(www\.)?#{hostname}$/
-    end
-  end
-
-  def main_referrer?(referrer)
-    self.class.referrer_match_hostname?(referrer, hostname, path, wildcard)
-  end
-
-  def extra_referrer?(referrer)
-    extra_hostnames.split(', ').any? { |h| self.class.referrer_match_hostname?(referrer, h, path, wildcard) }
-  end
-
-  def dev_referrer?(referrer)
-    dev_hostnames.split(', ').any? { |h| self.class.referrer_match_hostname?(referrer, h, '', wildcard) }
   end
 
 end

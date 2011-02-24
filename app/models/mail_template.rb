@@ -8,19 +8,21 @@ class MailTemplate < ActiveRecord::Base
 
   has_many :logs, :class_name => "MailLog", :foreign_key => "template_id"
 
-  # ==========
-  # = Scopes =
-  # ==========
-  # sort
-  scope :by_title, lambda { |way = 'asc'| order(:title.send(way)) }
-  scope :by_date,  lambda { |way = 'desc'| order(:created_at.send(way)) }
-
   # ===============
   # = Validations =
   # ===============
-  validates :title, :presence => true, :uniqueness => true
+  
+  validates :title,   :presence => true, :uniqueness => true
   validates :subject, :presence => true
-  validates :body, :presence => true
+  validates :body,    :presence => true
+
+  # ==========
+  # = Scopes =
+  # ==========
+  
+  # sort
+  scope :by_title, lambda { |way = 'asc'| order(:title.send(way)) }
+  scope :by_date,  lambda { |way = 'desc'| order(:created_at.send(way)) }
 
   # ====================
   # = Instance Methods =
@@ -31,6 +33,7 @@ class MailTemplate < ActiveRecord::Base
   end
 
 end
+
 
 
 # == Schema Information

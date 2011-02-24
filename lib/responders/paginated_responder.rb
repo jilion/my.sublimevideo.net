@@ -21,7 +21,7 @@ module Responders
       nil
     end
 
-  protected
+  private
 
     def add_pagination_scope!
       if get? && (resource.is_a?(ActiveRecord::Relation) || resource.is_a?(Mongoid::Criteria)) && controller.action_name == 'index'
@@ -46,7 +46,7 @@ module Responders
     end
 
     def set_instance_variable(klass)
-      controller.instance_variable_set "@#{controller.controller_name}", resource.page(page_params).per(per_page(klass))
+      controller.instance_variable_set("@#{controller.controller_name}", resource.page(page_params).per(per_page(klass)))
     end
 
   end
