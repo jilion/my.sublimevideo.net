@@ -1,7 +1,5 @@
 class Transaction < ActiveRecord::Base
 
-  attr_accessible :cc_type, :cc_last_digits, :cc_expire_on, :amount
-
   # ================
   # = Associations =
   # ================
@@ -13,13 +11,13 @@ class Transaction < ActiveRecord::Base
   # = Validations =
   # ===============
 
-  validates :user,           :presence => true
-  validates :cc_type,        :presence => true
-  validates :cc_last_digits, :presence => true, :numericality => true
-  validates :cc_expire_on,   :presence => true
-  validates :amount,         :presence => true, :numericality => true
+  validate :at_least_one_invoice, :all_invoices_belong_to_same_user
 
-  validate :at_least_one_invoice
+  # =============
+  # = Callbacks =
+  # =============
+
+  before_create :reject_open_and_paid_invoices, :set_user_id, :set_cc_infos, :set_amount
 
   # =================
   # = State Machine =
@@ -28,10 +26,10 @@ class Transaction < ActiveRecord::Base
   state_machine :initial => :open do
     event(:succeed) { transition :open => :paid }
     event(:fail)    { transition :open => :failed }
-    
+
     after_transition :on => [:succeed, :fail], :do => :update_invoices
   end
-  
+
   # ==========
   # = Scopes =
   # ==========
@@ -42,11 +40,11 @@ class Transaction < ActiveRecord::Base
   # = Class Methods =
   # =================
 
-  def self.charge_invoices(invoice_ids)
-    invoices = Invoice.with_state(:unpaid).where(:id => invoice_ids)
+  def self.charge_by_invoice_ids(invoice_ids)
+    invoices = Invoice.where(:id => invoice_ids)
     transaction = new(:invoices => invoices)
-    
-    if transaction.save
+
+    if transaction.save!
       @payment = begin
         Ogone.purchase(transaction.amount, transaction.user.credit_card_alias, :order_id => transaction.id, :currency => 'USD')
       rescue => ex
@@ -64,20 +62,46 @@ class Transaction < ActiveRecord::Base
     else
       Notify.send("Transaction #{transaction.inspect} is not valid.")
     end
+
+    transaction
   end
-  
+
   # ====================
   # = Instance Methods =
   # ====================
 
 private
-
-  def update_invoices    
-    Invoice.update_all({ :state => state, :"#{state}_at" => updated_at }, { :id => invoice_ids })
-  end
-
+  
+  # =============
+  # = Validates =
+  # =============
+  
   def at_least_one_invoice
     self.errors.add(:base, :at_least_one_invoice) if invoices.empty?
+  end
+  
+  def all_invoices_belong_to_same_user
+    self.errors.add(:base, :all_invoices_must_belong_to_the_same_user) if invoices.any? { |invoice| invoice.user != invoices.first.user }
+  end
+
+  # before_create
+  def reject_open_and_paid_invoices
+    self.invoices.reject! { |invoice| invoice.open? || invoice.paid? }
+  end
+  def set_user_id
+    self.user_id = invoices.first.user.id
+  end
+  def set_cc_infos
+    self.cc_type        = user.cc_type
+    self.cc_last_digits = user.cc_last_digits
+    self.cc_expire_on   = user.cc_expire_on
+  end
+  def set_amount
+    self.amount = invoices.map(&:amount).sum
+  end
+
+  def update_invoices
+    Invoice.update_all({ :state => state, :"#{state}_at" => updated_at }, { :id => invoice_ids })
   end
 
 end

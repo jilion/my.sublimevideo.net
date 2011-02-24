@@ -120,11 +120,9 @@ Factory.define :plan_invoice_item, :parent => :invoice_item, :class => InvoiceIt
 end
 
 Factory.define :transaction do |f|
-  f.association :user
   f.cc_type        "visa"
   f.cc_last_digits 1111
   f.cc_expire_on   1.year.from_now.end_of_month.to_date
-  f.amount         9900
 end
 
 Factory.define :users_stat do |f|

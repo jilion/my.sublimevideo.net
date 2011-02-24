@@ -46,6 +46,7 @@ en:
           attributes:
             base:
               at_least_one_invoice: "A transaction must contain at least one invoice"
+              all_invoices_must_belong_to_the_same_user: "All invoices must belong to the same user"
               
         user:
           attributes:
