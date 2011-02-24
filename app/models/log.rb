@@ -36,19 +36,6 @@ class Log
 
   after_create :delay_parse
 
-  # ====================
-  # = Instance Methods =
-  # ====================
-
-  def name=(attribute)
-    write_attribute :name, attribute
-    set_dates_and_hostname_from_name
-  end
-
-  def parsed?
-    parsed_at.present?
-  end
-
   # =================
   # = Class Methods =
   # =================
@@ -85,6 +72,19 @@ class Log
     log.parse_and_create_usages!
     log.parsed_at = Time.now.utc
     log.save
+  end
+
+  # ====================
+  # = Instance Methods =
+  # ====================
+
+  def name=(attribute)
+    write_attribute :name, attribute
+    set_dates_and_hostname_from_name
+  end
+
+  def parsed?
+    parsed_at.present?
   end
 
 private

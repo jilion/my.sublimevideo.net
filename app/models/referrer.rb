@@ -24,10 +24,14 @@ class Referrer
   def site
     Site.find_by_id(site_id)
   end
-  def token=(token)
-    write_attribute(:token, token)
-    write_attribute(:site_id, Site.find_by_token(token).try(:id))
-  end
+
+  # ===============
+  # = Validations =
+  # ===============
+
+  validates :token,   :presence => true
+  validates :site_id, :presence => true
+  validates :url,     :presence => true, :format => { :with => /^http\:\/\/.*/ }
 
   # ==========
   # = Scopes =
@@ -38,14 +42,6 @@ class Referrer
   scope :by_contextual_hits, lambda { |way = 'desc'| order_by([:contextual_hits, way.to_sym]) }
   scope :by_updated_at,      lambda { |way = 'desc'| order_by([:updated_at, way.to_sym]) }
   scope :by_created_at,      lambda { |way = 'desc'| order_by([:created_at, way.to_sym]) }
-
-  # ===============
-  # = Validations =
-  # ===============
-
-  validates :token,   :presence => true
-  validates :site_id, :presence => true
-  validates :url,     :presence => true, :format => { :with => /^http\:\/\/.*/ }
 
   # =================
   # = Class Methods =
@@ -69,16 +65,25 @@ class Referrer
   end
 
   def self.create_or_update_from_type!(token, url, type = 'c')
-      if referrer = Referrer.where(:url => url, :token => token).first
-        referrer.contextual_hits = referrer.contextual_hits.to_i + 1 if type == 'c'
-        referrer.save
-      else
-        create(
-          :url             => url,
-          :token           => token,
-          :contextual_hits => type == 'c' ? 1 : 0
-        )
-      end
+    if referrer = Referrer.where(:url => url, :token => token).first
+      referrer.contextual_hits = referrer.contextual_hits.to_i + 1 if type == 'c'
+      referrer.save
+    else
+      create(
+        :url             => url,
+        :token           => token,
+        :contextual_hits => type == 'c' ? 1 : 0
+      )
+    end
+  end
+
+  # ====================
+  # = Instance Methods =
+  # ====================
+
+  def token=(token)
+    write_attribute(:token, token)
+    write_attribute(:site_id, Site.find_by_token(token).try(:id))
   end
 
 end

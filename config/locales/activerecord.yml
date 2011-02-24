@@ -42,6 +42,11 @@ en:
             state:
               uniqueness: "'open' should be unique per user"
               
+        transaction:
+          attributes:
+            base:
+              at_least_one_invoice: "A transaction must contain at least one invoice"
+              
         user:
           attributes:
             use:

@@ -7,10 +7,10 @@ class InvoiceItem < ActiveRecord::Base
   # = Associations =
   # ================
 
-  belongs_to :site
   belongs_to :invoice, :counter_cache => true
   belongs_to :item, :polymorphic => true
 
+  delegate :site, :to => :invoice
   delegate :user, :to => :site
 
   # ===============
@@ -30,19 +30,12 @@ class InvoiceItem < ActiveRecord::Base
   # = Instance Methods =
   # ====================
 
-  # def minutes
-  #   ((ended_at - started_at).to_f / 60).ceil
-  # end
-
-  # def percentage
-  #   (minutes / invoice.minutes_in_months.to_f).round(4)
-  # end
-
   def site
     site_id && Site.find(site_id).version_at(invoice.ended_at)
   end
 
 end
+
 
 
 # == Schema Information
@@ -51,7 +44,6 @@ end
 #
 #  id         :integer         not null, primary key
 #  type       :string(255)
-#  site_id    :integer
 #  invoice_id :integer
 #  item_type  :string(255)
 #  item_id    :integer
@@ -67,6 +59,5 @@ end
 #
 #  index_invoice_items_on_invoice_id             (invoice_id)
 #  index_invoice_items_on_item_type_and_item_id  (item_type,item_id)
-#  index_invoice_items_on_site_id                (site_id)
 #
 

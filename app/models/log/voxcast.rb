@@ -22,6 +22,32 @@ class Log::Voxcast < Log
   before_validation :download_and_set_log_file
   after_create :delay_parse_referrers, :delay_parse_user_agents
 
+  # =================
+  # = Class Methods =
+  # =================
+
+  def self.delay_fetch_download_and_create_new_logs(interval = 1.minute)
+    unless Delayed::Job.already_delayed?('%Log::Voxcast%fetch_download_and_create_new_logs%')
+      delay(:priority => 10, :run_at => interval.from_now).fetch_download_and_create_new_logs
+    end
+  end
+
+  def self.fetch_download_and_create_new_logs
+    delay_fetch_download_and_create_new_logs # relaunch the process in 1 min
+    new_logs_names = VoxcastCDN.fetch_logs_names
+    create_new_logs(new_logs_names)
+  end
+
+  def self.parse_log_for_referrers(id)
+    log = find(id)
+    log.parse_and_create_referrers!
+  end
+
+  def self.parse_log_for_user_agents(id)
+    log = find(id)
+    log.parse_and_create_user_agents!
+  end
+
   # ====================
   # = Instance Methods =
   # ====================
@@ -62,32 +88,6 @@ class Log::Voxcast < Log
 
   def user_agents_parsed?
     user_agents_parsed_at.present?
-  end
-
-  # =================
-  # = Class Methods =
-  # =================
-
-  def self.delay_fetch_download_and_create_new_logs(interval = 1.minute)
-    unless Delayed::Job.already_delayed?('%Log::Voxcast%fetch_download_and_create_new_logs%')
-      delay(:priority => 10, :run_at => interval.from_now).fetch_download_and_create_new_logs
-    end
-  end
-
-  def self.fetch_download_and_create_new_logs
-    delay_fetch_download_and_create_new_logs # relaunch the process in 1 min
-    new_logs_names = VoxcastCDN.fetch_logs_names
-    create_new_logs(new_logs_names)
-  end
-
-  def self.parse_log_for_referrers(id)
-    log = find(id)
-    log.parse_and_create_referrers!
-  end
-
-  def self.parse_log_for_user_agents(id)
-    log = find(id)
-    log.parse_and_create_user_agents!
   end
 
 private

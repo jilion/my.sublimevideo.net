@@ -8,8 +8,8 @@ pending do
     before(:all) { @invoice_item = Factory(:plan_invoice_item) }
     subject { @invoice_item }
 
-    its(:site)      { should be_present }
     its(:invoice)   { should be_present }
+    its(:site)      { should == @invoice_item.invoice.site }
     its(:user)      { should == @invoice_item.site.user }
     its(:type)      { should == 'InvoiceItem::Plan' }
     its(:item_type) { should == 'Plan' }
@@ -26,7 +26,6 @@ pending do
     before(:all) { @invoice_item = Factory(:plan_invoice_item) }
     subject { @invoice_item }
 
-    it { should belong_to :site }
     it { should belong_to :invoice }
     it { should belong_to :item }
   end # Associations
@@ -109,13 +108,13 @@ def build_invoice_item(started_at, ended_at)
 end
 
 
+
 # == Schema Information
 #
 # Table name: invoice_items
 #
 #  id         :integer         not null, primary key
 #  type       :string(255)
-#  site_id    :integer
 #  invoice_id :integer
 #  item_type  :string(255)
 #  item_id    :integer
@@ -131,6 +130,5 @@ end
 #
 #  index_invoice_items_on_invoice_id             (invoice_id)
 #  index_invoice_items_on_item_type_and_item_id  (item_type,item_id)
-#  index_invoice_items_on_site_id                (site_id)
 #
 

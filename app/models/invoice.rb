@@ -6,47 +6,21 @@ class Invoice < ActiveRecord::Base
   # = Associations =
   # ================
 
-  belongs_to :user
+  belongs_to :site
   belongs_to :charging_delayed_job, :class_name => "::Delayed::Job"
   has_many :invoice_items
 
   has_many :plan_invoice_items, conditions: { type: "InvoiceItem::Plan" }, :class_name => "InvoiceItem"
 
-  # ==========
-  # = Scopes =
-  # ==========
+  has_and_belongs_to_many :transactions
 
-  scope :between, lambda { |started_at, ended_at|
-    where(:started_at.gte => started_at, :ended_at.lte => ended_at)
-  }
-
-  scope :paid,       where(state: 'paid')
-  scope :failed,     where(state: 'failed')
-  scope :user_id,    lambda { |user_id| where(user_id: user_id) }
-  # sort
-  scope :by_amount,   lambda { |way='desc'| order(:amount.send(way)) }
-  scope :by_invoice_items_count, lambda { |way='desc'| order(:invoice_items_count.send(way)) }
-  scope :by_user,     lambda { |way='desc'| order(:users => [:first_name.send(way), :email.send(way)]) }
-  scope :by_state,    lambda { |way='desc'| order(:state.send(way)) }
-  scope :by_attempts, lambda { |way='desc'| order(:attempts.send(way)) }
-  scope :by_date,     lambda { |way='desc'| order(:created_at.send(way)) }
-
-  # search
-  def self.search(q)
-    joins(:user).
-    where(:lower.func(:email).matches % :lower.func("%#{q}%") |
-          :lower.func(:first_name).matches % :lower.func("%#{q}%") |
-          :lower.func(:last_name).matches % :lower.func("%#{q}%") |
-          :lower.func(:reference).matches % :lower.func("%#{q}%"))
-  end
+  delegate :user, :to => :site
 
   # ===============
   # = Validations =
   # ===============
 
-  validates :user,                 :presence => true # will change to :site
-  validates :started_at,           :presence => true
-  validates :ended_at,             :presence => true
+  validates :site,                 :presence => true # will change to :site
   validates :invoice_items_amount, :presence => true, :numericality => true
   validates :vat_rate,             :presence => true, :numericality => true
   validates :vat_amount,           :presence => true, :numericality => true
@@ -89,6 +63,37 @@ class Invoice < ActiveRecord::Base
         invoice.user.cancel_suspend
       end
     end
+  end
+
+  # ==========
+  # = Scopes =
+  # ==========
+
+  scope :between, lambda { |started_at, ended_at|
+    where(:created_at.gte => started_at, :created_at.lte => ended_at)
+  }
+
+  scope :paid,    where(state: 'paid')
+  scope :failed,  where(state: 'failed')
+  scope :site_id, lambda { |site_id| where(site_id: site_id) }
+  scope :user_id, lambda { |user_id| where(site_id: Site.where(user_id: user_id).map(&:id)) }
+  
+  # sort
+  scope :by_amount,   lambda { |way='desc'| order(:amount.send(way)) }
+  scope :by_invoice_items_count, lambda { |way='desc'| order(:invoice_items_count.send(way)) }
+  
+  # scope :by_user,     lambda { |way='desc'| order(:users => [:first_name.send(way), :email.send(way)]) }
+  scope :by_state,    lambda { |way='desc'| order(:state.send(way)) }
+  scope :by_attempts, lambda { |way='desc'| order(:attempts.send(way)) }
+  scope :by_date,     lambda { |way='desc'| order(:created_at.send(way)) }
+
+  # search
+  def self.search(q)
+    joins(:users).
+    where(:lower.func(:email).matches % :lower.func("%#{q}%") |
+          :lower.func(:first_name).matches % :lower.func("%#{q}%") |
+          :lower.func(:last_name).matches % :lower.func("%#{q}%") |
+          :lower.func(:reference).matches % :lower.func("%#{q}%"))
   end
 
   # =================
@@ -277,36 +282,31 @@ private
 end
 
 
+
 # == Schema Information
 #
 # Table name: invoices
 #
 #  id                      :integer         not null, primary key
-#  user_id                 :integer
+#  site_id                 :integer
 #  reference               :string(255)
 #  state                   :string(255)
 #  amount                  :integer
-#  started_at              :datetime
-#  ended_at                :datetime
-#  paid_at                 :datetime
-#  attempts                :integer         default(0)
-#  last_error              :string(255)
-#  failed_at               :datetime
-#  created_at              :datetime
-#  updated_at              :datetime
-#  completed_at            :datetime
-#  charging_delayed_job_id :integer
-#  invoice_items_amount    :integer
 #  vat_rate                :float
 #  vat_amount              :integer
-#  discount_rate           :float           default(0.0)
-#  discount_amount         :float           default(0.0)
-#  invoice_items_count     :integer
+#  discount_rate           :float
+#  discount_amount         :integer
+#  invoice_items_amount    :integer
+#  charging_delayed_job_id :integer
+#  invoice_items_count     :integer         default(0)
+#  transactions_count      :integer         default(0)
+#  created_at              :datetime
+#  updated_at              :datetime
+#  paid_at                 :datetime
+#  failed_at               :datetime
 #
 # Indexes
 #
-#  index_invoices_on_user_id                 (user_id)
-#  index_invoices_on_user_id_and_ended_at    (user_id,ended_at) UNIQUE
-#  index_invoices_on_user_id_and_started_at  (user_id,started_at) UNIQUE
+#  index_invoices_on_site_id  (site_id)
 #
 

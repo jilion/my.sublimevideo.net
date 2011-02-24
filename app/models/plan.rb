@@ -20,6 +20,24 @@ class Plan < ActiveRecord::Base
   validates :price,       :presence => true, :numericality => true
   validates :cycle,       :presence => true, :inclusion => { :in => CYCLES }
 
+  # ==========
+  # = Scopes =
+  # ==========
+  
+  scope :paid_plans, where(:name.not_in => ["dev", "beta"])
+
+  # =================
+  # = Class Methods =
+  # =================
+
+  def self.dev_plan
+    where(:name => "dev").first
+  end
+
+  def self.beta_plan
+    where(:name => "beta").first
+  end
+  
   # ====================
   # = Instance Methods =
   # ====================
@@ -43,22 +61,6 @@ class Plan < ActiveRecord::Base
 
   def beta_plan?
     name == "beta"
-  end
-
-  # =================
-  # = Class Methods =
-  # =================
-
-  def self.dev_plan
-    where(:name => "dev").first
-  end
-
-  def self.beta_plan
-    where(:name => "beta").first
-  end
-
-  def self.paid_plans
-    where(:name.not_in => ["dev", "beta"])
   end
 
 end

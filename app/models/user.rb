@@ -20,54 +20,11 @@ class User < ActiveRecord::Base
   # ================
 
   belongs_to :suspending_delayed_job, :class_name => "::Delayed::Job"
+  
   has_many :sites
-  has_many :invoices
+  has_many :invoices, :through => :sites
+
   has_one :last_invoice, :class_name => "Invoice", :order => "ended_at DESC"
-
-  # ==========
-  # = Scopes =
-  # ==========
-
-  scope :billable,                lambda { scoped.merge(Site.billable) }
-  scope :not_billable,            lambda { includes(:sites).where("(#{Site.billable.select("COUNT(sites.id)").where("sites.user_id = users.id").to_sql}) = 0") }
-  scope :active_and_billable,     lambda { active.billable }
-  scope :active_and_not_billable, lambda { active.not_billable }
-
-  # credit_card scopes
-  scope :without_cc, where(:cc_type => nil, :cc_last_digits => nil)
-  scope :with_cc,    where(:cc_type.ne => nil, :cc_last_digits.ne => nil)
-
-  # admin
-  scope :enthusiast,        where(:enthusiast_id.ne => nil)
-  scope :invited,           where(:invitation_token.ne => nil)
-  scope :beta,              where(:invitation_token => nil)
-  scope :active,            where(:state => 'active')
-  scope :use_personal,      where(:use_personal => true)
-  scope :use_company,       where(:use_company => true)
-  scope :use_clients,       where(:use_clients => true)
-  scope :will_be_suspended, where(:suspending_delayed_job_id.ne => nil)
-  scope :created_between,   lambda { |start_date, end_date| where(:created_at.gte => start_date, :created_at.lt => end_date) }
-  scope :signed_in_between, lambda { |start_date, end_date| where(:current_sign_in_at.gte => start_date, :current_sign_in_at.lt => end_date) }
-
-  # sort
-  scope :by_name_or_email,   lambda { |way = 'asc'| order(:first_name.send(way), :email.send(way)) }
-  scope :by_sites_last_30_days_billable_player_hits_total_count,  lambda { |way = 'desc'|
-    joins(:sites).group(User.column_names.map { |c| "\"users\".\"#{c}\"" }.join(', ')).order("SUM(sites.last_30_days_main_player_hits_total_count) + SUM(sites.last_30_days_extra_player_hits_total_count) #{way}")
-  }
-  scope :by_last_invoiced_amount,  lambda { |way = 'desc'| order(:last_invoiced_amount.send(way)) }
-  scope :by_total_invoiced_amount, lambda { |way = 'desc'| order(:total_invoiced_amount.send(way)) }
-  scope :by_beta,                  lambda { |way = 'desc'| order(:invitation_token.send(way)) }
-  scope :by_date,                  lambda { |way = 'desc'| order(:created_at.send(way)) }
-
-  # search
-  def self.search(q)
-    joins(:sites).
-    where(:lower.func(:email).matches % :lower.func("%#{q}%") |
-          :lower.func(:first_name).matches % :lower.func("%#{q}%") |
-          :lower.func(:last_name).matches % :lower.func("%#{q}%") |
-          :lower.func(:hostname).matches % :lower.func("%#{q}%") |
-          :lower.func(:dev_hostnames).matches % :lower.func("%#{q}%")).select("DISTINCT users.id, users.*")
-  end
 
   # ===============
   # = Validations =
@@ -122,6 +79,51 @@ class User < ActiveRecord::Base
 
     before_transition :on => :archive, :do => [:set_archived_at, :archive_sites, :delay_complete_current_invoice]
     after_transition  :on => :archive, :do => :send_account_archived_email
+  end
+
+  # ==========
+  # = Scopes =
+  # ==========
+
+  scope :billable,                lambda { scoped.merge(Site.billable) }
+  scope :not_billable,            lambda { includes(:sites).where("(#{Site.billable.select("COUNT(sites.id)").where("sites.user_id = users.id").to_sql}) = 0") }
+  scope :active_and_billable,     lambda { active.billable }
+  scope :active_and_not_billable, lambda { active.not_billable }
+
+  # credit_card scopes
+  scope :without_cc, where(:cc_type => nil, :cc_last_digits => nil)
+  scope :with_cc,    where(:cc_type.ne => nil, :cc_last_digits.ne => nil)
+
+  # admin
+  scope :enthusiast,        where(:enthusiast_id.ne => nil)
+  scope :invited,           where(:invitation_token.ne => nil)
+  scope :beta,              where(:invitation_token => nil)
+  scope :active,            where(:state => 'active')
+  scope :use_personal,      where(:use_personal => true)
+  scope :use_company,       where(:use_company => true)
+  scope :use_clients,       where(:use_clients => true)
+  scope :will_be_suspended, where(:suspending_delayed_job_id.ne => nil)
+  scope :created_between,   lambda { |start_date, end_date| where(:created_at.gte => start_date, :created_at.lt => end_date) }
+  scope :signed_in_between, lambda { |start_date, end_date| where(:current_sign_in_at.gte => start_date, :current_sign_in_at.lt => end_date) }
+
+  # sort
+  scope :by_name_or_email,   lambda { |way = 'asc'| order(:first_name.send(way), :email.send(way)) }
+  scope :by_sites_last_30_days_billable_player_hits_total_count,  lambda { |way = 'desc'|
+    joins(:sites).group(User.column_names.map { |c| "\"users\".\"#{c}\"" }.join(', ')).order("SUM(sites.last_30_days_main_player_hits_total_count) + SUM(sites.last_30_days_extra_player_hits_total_count) #{way}")
+  }
+  scope :by_last_invoiced_amount,  lambda { |way = 'desc'| order(:last_invoiced_amount.send(way)) }
+  scope :by_total_invoiced_amount, lambda { |way = 'desc'| order(:total_invoiced_amount.send(way)) }
+  scope :by_beta,                  lambda { |way = 'desc'| order(:invitation_token.send(way)) }
+  scope :by_date,                  lambda { |way = 'desc'| order(:created_at.send(way)) }
+
+  # search
+  def self.search(q)
+    joins(:sites).
+    where(:lower.func(:email).matches % :lower.func("%#{q}%") |
+          :lower.func(:first_name).matches % :lower.func("%#{q}%") |
+          :lower.func(:last_name).matches % :lower.func("%#{q}%") |
+          :lower.func(:hostname).matches % :lower.func("%#{q}%") |
+          :lower.func(:dev_hostnames).matches % :lower.func("%#{q}%")).select("DISTINCT users.id, users.*")
   end
 
   # =================
@@ -213,7 +215,7 @@ private
 
   # before_transition :on => :suspend
   def suspend_sites
-    sites.map(&:suspend)
+    sites.billable.map(&:suspend)
   end
 
   # after_transition :on => :suspend
@@ -272,8 +274,6 @@ private
       invoices.failed.each { |invoice| invoice.retry }
     end
   end
-
-protected
 
   # Allow User.invite to assign enthusiast_id
   def mass_assignment_authorizer

@@ -95,9 +95,7 @@ Factory.define :beta_plan, :class => Plan  do |f|
 end
 
 Factory.define :invoice do |f|
-  f.association :user
-  f.started_at           { Time.now.utc.beginning_of_month }
-  f.ended_at             { Time.now.utc.end_of_month }
+  f.association :site
   f.invoice_items_amount 10000
   f.amount               10000
   f.vat_rate             0.08
@@ -115,6 +113,14 @@ Factory.define :plan_invoice_item, :parent => :invoice_item, :class => InvoiceIt
   f.item   { Factory(:plan) }
   f.price  1000
   f.amount 1000
+end
+
+Factory.define :transaction do |f|
+  f.association :user
+  f.cc_type        "visa"
+  f.cc_last_digits 1111
+  f.cc_expire_on   1.year.from_now.end_of_month.to_date
+  f.amount         9900
 end
 
 Factory.define :users_stat do |f|

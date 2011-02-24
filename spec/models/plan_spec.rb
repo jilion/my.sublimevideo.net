@@ -46,7 +46,6 @@ describe Plan do
   end
 
   describe "#next_plan" do
-
     it "should return the next plan with a bigger price" do
       plan2 = Factory(:plan, :price => subject.price + 100)
       plan3 = Factory(:plan, :price => subject.price + 2000)
@@ -57,11 +56,9 @@ describe Plan do
       plan2 = Factory(:plan, :price => subject.price - 100)
       subject.next_plan.should be_nil
     end
-
   end
 
   describe "#month_price" do
-
     context "with month plan" do
       subject { Factory(:plan, :cycle => "month", :price => 1000) }
 
@@ -73,7 +70,6 @@ describe Plan do
 
       its(:month_price) { should == 10000 / 12 }
     end
-
   end
 
   describe "#dev_plan?" do

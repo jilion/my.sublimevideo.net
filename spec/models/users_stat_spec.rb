@@ -3,7 +3,6 @@ require 'spec_helper'
 describe UsersStat do
 
   describe ".delay_create_users_stats" do
-
     it "should delay create_users_stats if not already delayed" do
       expect { UsersStat.delay_create_users_stats }.should change(Delayed::Job.where(:handler.matches => '%UsersStat%create_users_stats%'), :count).by(1)
     end
@@ -17,11 +16,9 @@ describe UsersStat do
       UsersStat.delay_create_users_stats
       Delayed::Job.last.run_at.should == Time.new.utc.tomorrow.midnight
     end
-
   end
 
   describe ".create_users_stats" do
-
     it "should delay itself" do
       UsersStat.should_receive(:delay_create_users_stats)
       UsersStat.create_users_stats
@@ -49,7 +46,6 @@ describe UsersStat do
         "archived_count"                => 1
       }
     end
-
   end
 
 end

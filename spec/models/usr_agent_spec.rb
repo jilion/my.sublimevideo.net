@@ -3,7 +3,7 @@ require 'timecop'
 
 describe UsrAgent do
 
-  describe "validates" do
+  describe "Validations" do
     [:token, :platforms, :browsers, :month].each do |attr|
       it { should allow_mass_assignment_of(attr) }
     end

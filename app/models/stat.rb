@@ -111,13 +111,11 @@ module Stat
     # * options: Hash
     #   - user_id: id of a user to restrict the selected invoices
     #
-    # Return a array of invoices.
+    # Return an ActiveRecord::Relation.
     def self.timeline(start_time, end_time, options={})
-      conditions = options[:user_id] ? { user_id: options[:user_id].to_i } : {}
-      invoices = ::Invoice.where(conditions).between(start_time, end_time)
-      invoices.order(:ended_at.asc)#group_by(&:ended_at).inject([]) do |data, h|
-      #   data << h[1].inject(0) { |sum, grouped_invoices| sum += grouped_invoices.amount }
-      # end
+      invoices = ::Invoice.paid.between(start_time, end_time).order(:created_at.asc)
+      invoices = invoices.user_id(options[:user_id].to_i) if options[:user_id]
+      invoices
     end
 
   end

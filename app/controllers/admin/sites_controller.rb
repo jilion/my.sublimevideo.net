@@ -15,7 +15,6 @@ class Admin::SitesController < Admin::AdminController
   has_scope :billable
   has_scope :not_billable
   has_scope :plan_player_hits_reached_alerted_this_month
-  has_scope :next_plan_recommended_alert_sent_at_alerted_this_month
   has_scope :user_id
 
   # sort
