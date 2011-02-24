@@ -87,6 +87,8 @@ private
   # = Instance Methods =
   # ====================
 
+public
+
   def update_hashes(hits, useragent_hash={})
     # platforms
     platforms_dup = self[:platforms].dup
