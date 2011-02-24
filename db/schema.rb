@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110113120826) do
+ActiveRecord::Schema.define(:version => 20110223164835) do
 
   create_table "admins", :force => true do |t|
     t.string   "email",                               :default => "", :null => false
@@ -53,7 +53,6 @@ ActiveRecord::Schema.define(:version => 20110113120826) do
 
   create_table "invoice_items", :force => true do |t|
     t.string   "type"
-    t.integer  "site_id"
     t.integer  "invoice_id"
     t.string   "item_type"
     t.integer  "item_id"
@@ -68,34 +67,32 @@ ActiveRecord::Schema.define(:version => 20110113120826) do
 
   add_index "invoice_items", ["invoice_id"], :name => "index_invoice_items_on_invoice_id"
   add_index "invoice_items", ["item_type", "item_id"], :name => "index_invoice_items_on_item_type_and_item_id"
-  add_index "invoice_items", ["site_id"], :name => "index_invoice_items_on_site_id"
 
   create_table "invoices", :force => true do |t|
-    t.integer  "user_id"
+    t.integer  "site_id"
     t.string   "reference"
     t.string   "state"
     t.integer  "amount"
-    t.datetime "started_at"
-    t.datetime "ended_at"
-    t.datetime "paid_at"
-    t.integer  "attempts",                :default => 0
-    t.string   "last_error"
-    t.datetime "failed_at"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.datetime "completed_at"
-    t.integer  "charging_delayed_job_id"
-    t.integer  "invoice_items_amount"
     t.float    "vat_rate"
     t.integer  "vat_amount"
-    t.float    "discount_rate",           :default => 0.0
-    t.float    "discount_amount",         :default => 0.0
-    t.integer  "invoice_items_count"
+    t.float    "discount_rate"
+    t.integer  "discount_amount"
+    t.integer  "invoice_items_amount"
+    t.integer  "charging_delayed_job_id"
+    t.integer  "invoice_items_count",     :default => 0
+    t.integer  "transactions_count",      :default => 0
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.datetime "paid_at"
+    t.datetime "failed_at"
   end
 
-  add_index "invoices", ["user_id", "ended_at"], :name => "index_invoices_on_user_id_and_ended_at", :unique => true
-  add_index "invoices", ["user_id", "started_at"], :name => "index_invoices_on_user_id_and_started_at", :unique => true
-  add_index "invoices", ["user_id"], :name => "index_invoices_on_user_id"
+  add_index "invoices", ["site_id"], :name => "index_invoices_on_site_id"
+
+  create_table "invoices_transactions", :id => false, :force => true do |t|
+    t.integer "invoice_id"
+    t.integer "transaction_id"
+  end
 
   create_table "mail_logs", :force => true do |t|
     t.integer  "template_id"
@@ -162,7 +159,6 @@ ActiveRecord::Schema.define(:version => 20110113120826) do
     t.datetime "paid_plan_cycle_ended_at"
     t.integer  "next_cycle_plan_id"
     t.datetime "plan_player_hits_reached_alert_sent_at"
-    t.datetime "next_plan_recommended_alert_sent_at"
     t.integer  "last_30_days_main_player_hits_total_count",  :default => 0
     t.integer  "last_30_days_extra_player_hits_total_count", :default => 0
     t.integer  "last_30_days_dev_player_hits_total_count",   :default => 0
@@ -175,6 +171,18 @@ ActiveRecord::Schema.define(:version => 20110113120826) do
   add_index "sites", ["last_30_days_main_player_hits_total_count"], :name => "index_sites_on_last_30_days_main_player_hits_total_count"
   add_index "sites", ["plan_id"], :name => "index_sites_on_plan_id"
   add_index "sites", ["user_id"], :name => "index_sites_on_user_id"
+
+  create_table "transactions", :force => true do |t|
+    t.integer  "user_id"
+    t.string   "cc_type"
+    t.integer  "cc_last_digits"
+    t.date     "cc_expire_on"
+    t.string   "state"
+    t.integer  "amount"
+    t.text     "error"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "users", :force => true do |t|
     t.string   "state"

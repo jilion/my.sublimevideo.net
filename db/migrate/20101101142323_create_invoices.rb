@@ -1,34 +1,32 @@
 class CreateInvoices < ActiveRecord::Migration
   def self.up
-    drop_table :invoices if Invoice.table_exists? # remove old invoices table
-    
     create_table :invoices do |t|
-      t.integer  :user_id
-      
+      t.integer  :site_id
+
       t.string   :reference
       t.string   :state
-      t.integer  :amount
-      
-      t.datetime  :started_at
-      t.datetime  :ended_at
-      t.datetime  :paid_at
-      
-      t.integer  :attempts, :default => 0
-      t.string   :last_error
-      t.datetime :failed_at
-      
+
+      t.integer :amount
+      t.float   :vat_rate
+      t.integer :vat_amount
+      t.float   :discount_rate
+      t.integer :discount_amount
+      t.integer :invoice_items_amount
+      t.integer :charging_delayed_job_id
+
+      t.integer :invoice_items_count, :default => 0
+      t.integer :transactions_count, :default => 0
+
       t.timestamps
+      t.datetime :paid_at
+      t.datetime :failed_at
     end
-    
-    add_index :invoices, :user_id
-    add_index :invoices, [:user_id, :started_at], :unique => true
-    add_index :invoices, [:user_id, :ended_at], :unique => true
+
+    add_index :invoices, :site_id
   end
-  
+
   def self.down
-    remove_index :invoices, :user_id
-    remove_index :invoices, [:user_id, :started_at]
-    remove_index :invoices, [:user_id, :ended_at]
+    remove_index :invoices, :site_id
     drop_table :invoices
   end
 end
