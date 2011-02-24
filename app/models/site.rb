@@ -42,8 +42,6 @@ class Site < ActiveRecord::Base
   # usage_alert scopes
   scope :plan_player_hits_reached_alerted_this_month,                where(:plan_player_hits_reached_alert_sent_at.gte => Time.now.utc.beginning_of_month)
   scope :plan_player_hits_reached_not_alerted_this_month,            where({ :plan_player_hits_reached_alert_sent_at.lt => Time.now.utc.beginning_of_month } | { :plan_player_hits_reached_alert_sent_at => nil })
-  scope :next_plan_recommended_alert_sent_at_alerted_this_month,     where(:next_plan_recommended_alert_sent_at.gte => Time.now.utc.beginning_of_month)
-  scope :next_plan_recommended_alert_sent_at_not_alerted_this_month, where({ :next_plan_recommended_alert_sent_at.lt => Time.now.utc.beginning_of_month } | { :next_plan_recommended_alert_sent_at => nil })
 
   # filter
   scope :beta,                 joins(:plan).where(:plan => { :name => "beta" })
@@ -367,10 +365,7 @@ private
 
   # before_save
   def clear_alerts_sent_at
-    if plan_id_changed?
-      self.plan_player_hits_reached_alert_sent_at = nil
-      self.next_plan_recommended_alert_sent_at    = nil
-    end
+    self.plan_player_hits_reached_alert_sent_at = nil if plan_id_changed?
   end
 
   # after_create
@@ -453,7 +448,6 @@ end
 #  paid_plan_cycle_ended_at                   :datetime
 #  next_cycle_plan_id                         :integer
 #  plan_player_hits_reached_alert_sent_at     :datetime
-#  next_plan_recommended_alert_sent_at        :datetime
 #  last_30_days_main_player_hits_total_count  :integer         default(0)
 #  last_30_days_extra_player_hits_total_count :integer         default(0)
 #  last_30_days_dev_player_hits_total_count   :integer         default(0)

@@ -74,13 +74,13 @@ end
 end
 
 
+
 # == Schema Information
 #
 # Table name: invoice_items
 #
 #  id         :integer         not null, primary key
 #  type       :string(255)
-#  site_id    :integer
 #  invoice_id :integer
 #  item_type  :string(255)
 #  item_id    :integer
@@ -96,6 +96,5 @@ end
 #
 #  index_invoice_items_on_invoice_id             (invoice_id)
 #  index_invoice_items_on_item_type_and_item_id  (item_type,item_id)
-#  index_invoice_items_on_site_id                (site_id)
 #
 

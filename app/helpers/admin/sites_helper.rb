@@ -6,8 +6,6 @@ module Admin::SitesHelper
       " not archived"
     elsif params[:with_state]
       " with #{params[:with_state]} state"
-    elsif params[:next_plan_recommended_alert_sent_at_alerted_this_month]
-      " should upgrade plan"
     elsif params[:with_wildcard]
       " with wildcard"
     elsif params[:with_path]
@@ -18,8 +16,6 @@ module Admin::SitesHelper
       " with ssl"
     elsif params[:plan_player_hits_reached_alerted_this_month]
       " notified limit reached this month"
-    elsif params[:next_plan_recommended_alert_sent_at_alerted_this_month]
-      " notified next plan recommended this month"
     elsif params[:user_id]
       user = User.find(params[:user_id])
       " for #{user.full_name.titleize}" if user

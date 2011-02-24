@@ -3,7 +3,6 @@
 # Table name: sites
 #
 #  plan_player_hits_reached_alert_sent_at :datetime
-#  next_plan_recommended_alert_sent_at :datetime
 #
 
 module Site::UsageAlert
@@ -35,18 +34,6 @@ private
         Site.transaction do
           site.touch(:plan_player_hits_reached_alert_sent_at)
           UsageAlertMailer.plan_player_hits_reached(site).deliver!
-        end
-      end
-    end
-  end
-
-  def self.send_next_plan_recommended_alerts
-    invoice = Invoice.new(:started_at => TimeUtil.current_month.first, :ended_at => TimeUtil.current_month.second)
-    Site.plan_player_hits_reached_alerted_this_month.next_plan_recommended_alert_sent_at_not_alerted_this_month.each do |site|
-      if site.plan.next_plan.present? && site.plan.price > site.plan.next_plan.price
-        Site.transaction do
-          site.touch(:next_plan_recommended_alert_sent_at)
-          UsageAlertMailer.next_plan_recommended(site).deliver!
         end
       end
     end

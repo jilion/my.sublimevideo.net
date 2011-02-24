@@ -69,7 +69,7 @@ describe Site do
     its(:loader)          { should_not be_present }
     its(:player_mode)     { should == "stable" }
 
-    it { should be_active }
+    it { should be_active } # initial state
     it { should be_valid }
   end
 
@@ -493,10 +493,8 @@ describe Site do
 
         it "should clear *_alert_sent_at dates" do
           site.touch(:plan_player_hits_reached_alert_sent_at)
-          site.touch(:next_plan_recommended_alert_sent_at)
           site.update_attributes(plan_id: Factory(:plan).id)
           site.plan_player_hits_reached_alert_sent_at.should be_nil
-          site.next_plan_recommended_alert_sent_at.should be_nil
         end
       end
     end
@@ -1094,6 +1092,7 @@ describe Site do
 end
 
 
+
 # == Schema Information
 #
 # Table name: sites
@@ -1121,7 +1120,6 @@ end
 #  paid_plan_cycle_ended_at                   :datetime
 #  next_cycle_plan_id                         :integer
 #  plan_player_hits_reached_alert_sent_at     :datetime
-#  next_plan_recommended_alert_sent_at        :datetime
 #  last_30_days_main_player_hits_total_count  :integer         default(0)
 #  last_30_days_extra_player_hits_total_count :integer         default(0)
 #  last_30_days_dev_player_hits_total_count   :integer         default(0)

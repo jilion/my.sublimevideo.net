@@ -27,15 +27,16 @@ private
   end
 
   def set_started_at_and_ended_at
-    self.started_at = [site.activated_at, invoice.started_at].max
-    self.ended_at   = site.archived_at || invoice.ended_at
+    self.started_at = site.paid_plan_cycle_started_at
+    self.ended_at   = site.paid_plan_cycle_ended_at
   end
 
   def set_amount
-    self.amount = (price * percentage).round
+    self.amount = price
   end
 
 end
+
 
 
 # == Schema Information
@@ -44,7 +45,6 @@ end
 #
 #  id         :integer         not null, primary key
 #  type       :string(255)
-#  site_id    :integer
 #  invoice_id :integer
 #  item_type  :string(255)
 #  item_id    :integer
@@ -60,6 +60,5 @@ end
 #
 #  index_invoice_items_on_invoice_id             (invoice_id)
 #  index_invoice_items_on_item_type_and_item_id  (item_type,item_id)
-#  index_invoice_items_on_site_id                (site_id)
 #
 

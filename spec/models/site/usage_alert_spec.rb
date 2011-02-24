@@ -80,51 +80,27 @@ describe Site::UsageAlert do
           Factory(:site_usage, { :extra_player_hits => 30000, :site_id => @site.id , :day => Time.now.utc.beginning_of_month })
         end
 
-        context "with no plan_player_hits_reached alert nor next_plan_recommended alert ever sent" do
-          before(:all) { @site = Factory(:site, :plan => @plan1, :activated_at => 2.months.ago, :plan_player_hits_reached_alert_sent_at => nil, :next_plan_recommended_alert_sent_at => nil) }
+        context "with no plan_player_hits_reached alert ever sent" do
+          before(:all) { @site = Factory(:site, :plan => @plan1, :activated_at => 2.months.ago, :plan_player_hits_reached_alert_sent_at => nil) }
           subject { @site }
 
           specify { lambda { Site::UsageAlert.send_usage_alerts }.should change(ActionMailer::Base.deliveries, :size).by(2) }
         end
 
-        context "with plan_player_hits_reached alert sent before this month and next_plan_recommended alert never sent" do
-          before(:all) do
-            @site = Factory(:site, :plan => @plan1, :activated_at => 2.months.ago, :next_plan_recommended_alert_sent_at => nil)
-            @site.update_attribute(:plan_player_hits_reached_alert_sent_at, 1.month.ago)
-          end
-          subject { @site }
-
-          specify { subject.plan_player_hits_reached_alert_sent_at.should be_within(5).of(1.month.ago) }
-          specify { lambda { Site::UsageAlert.send_usage_alerts }.should change(ActionMailer::Base.deliveries, :size).by(2) }
-        end
-
-        context "with plan_player_hits_reached alert and next_plan_recommended alert sent before this month" do
+        context "with plan_player_hits_reached alert sent before this month" do
           before(:all) do
             @site = Factory(:site, :plan => @plan1, :activated_at => 2.months.ago)
             @site.update_attribute(:plan_player_hits_reached_alert_sent_at, 1.month.ago)
-            @site.update_attribute(:next_plan_recommended_alert_sent_at, 1.month.ago)
           end
           subject { @site }
 
           specify { subject.plan_player_hits_reached_alert_sent_at.should be_within(5).of(1.month.ago) }
-          specify { subject.next_plan_recommended_alert_sent_at.should be_within(5).of(1.month.ago) }
           specify { lambda { Site::UsageAlert.send_usage_alerts }.should change(ActionMailer::Base.deliveries, :size).by(2) }
         end
 
-        context "with plan_player_hits_reached alert already sent during the month and next_plan_recommended alert not sent" do
+        context "with plan_player_hits_reached alert already sent during the month" do
           before(:all) do
-            @site = Factory(:site, :plan => @plan1, :activated_at => 2.months.ago, :next_plan_recommended_alert_sent_at => nil)
-            @site.update_attribute(:plan_player_hits_reached_alert_sent_at, Time.now.utc.beginning_of_month)
-          end
-          subject { @site }
-
-          specify { subject.plan_player_hits_reached_alert_sent_at.should be_within(5).of(Time.now.utc.beginning_of_month) }
-          specify { lambda { Site::UsageAlert.send_usage_alerts }.should change(ActionMailer::Base.deliveries, :size).by(1) }
-        end
-
-        context "with plan_player_hits_reached alert already sent during the month and next_plan_recommended alert not sent and no next_plan" do
-          before(:all) do
-            @site = Factory(:site, :plan => @plan2, :activated_at => 2.months.ago, :next_plan_recommended_alert_sent_at => nil)
+            @site = Factory(:site, :plan => @plan1, :activated_at => 2.months.ago)
             @site.update_attribute(:plan_player_hits_reached_alert_sent_at, Time.now.utc.beginning_of_month)
           end
           subject { @site }
@@ -133,16 +109,14 @@ describe Site::UsageAlert do
           specify { lambda { Site::UsageAlert.send_usage_alerts }.should_not change(ActionMailer::Base.deliveries, :size) }
         end
 
-        context "with plan_player_hits_reached alert and next_plan_recommended alert already sent during the month" do
+        context "with plan_player_hits_reached alert already sent during the month and no next_plan" do
           before(:all) do
-            @site = Factory(:site, :plan => @plan1, :activated_at => 2.months.ago)
+            @site = Factory(:site, :plan => @plan2, :activated_at => 2.months.ago)
             @site.update_attribute(:plan_player_hits_reached_alert_sent_at, Time.now.utc.beginning_of_month)
-            @site.update_attribute(:next_plan_recommended_alert_sent_at, Time.now.utc.beginning_of_month)
           end
           subject { @site }
 
           specify { subject.plan_player_hits_reached_alert_sent_at.should be_within(5).of(Time.now.utc.beginning_of_month) }
-          specify { subject.next_plan_recommended_alert_sent_at.should be_within(5).of(Time.now.utc.beginning_of_month) }
           specify { lambda { Site::UsageAlert.send_usage_alerts }.should_not change(ActionMailer::Base.deliveries, :size) }
         end
       end
