@@ -25,7 +25,7 @@ describe User do
 
     it { should belong_to :suspending_delayed_job }
     it { should have_many :sites }
-    it { should have_many :invoices }
+    it { should have_many(:invoices).through(:sites) }
   end
 
   describe "Scopes" do
@@ -201,12 +201,14 @@ describe User do
     end
   end
 
-  pending "State Machine" do
+  describe "State Machine" do
     before(:all) do
-      @user     = Factory(:user)
-      @dev_site = Factory(:site,    :user => @user, :plan => Factory(:dev_plan), :hostname => "octavez.com")
-      @invoice1 = Factory(:invoice, :user => @user, :state => 'failed', :started_at => Time.utc(2010,2), :ended_at => Time.utc(2010,3))
-      @invoice2 = Factory(:invoice, :user => @user, :state => 'failed', :started_at => Time.utc(2010,3), :ended_at => Time.utc(2010,4))
+      @user           = Factory(:user)
+      @dev_site       = Factory(:site, user: @user, plan: @dev_plan, hostname: "octavez.com")
+      @paid_site      = Factory(:site, user: @user, hostname: "rymai.com")
+      @suspended_site = Factory(:site, user: @user, hostname: "rymai.me", state: 'suspended')
+      @invoice1       = Factory(:invoice, site: @paid_site, state: 'failed')
+      @invoice2       = Factory(:invoice, site: @paid_site, state: 'failed')
     end
 
     describe "Initial State" do
@@ -216,7 +218,6 @@ describe User do
 
     describe "#suspend" do
       before(:all) do
-        @active_site = Factory(:site, :user => @user, :hostname => "rymai.com", :state => 'active')
       end
       subject { @user }
 
@@ -229,7 +230,7 @@ describe User do
       end
 
       describe "Callbacks" do
-        describe "before_transition :on => :suspend, :do => :set_failed_invoices_count_on_suspend" do
+        pending "before_transition :on => :suspend, :do => :set_failed_invoices_count_on_suspend" do
           specify do
             subject.reload.failed_invoices_count_on_suspend.should == 0
             subject.suspend
@@ -239,11 +240,11 @@ describe User do
 
         describe "before_transition :on => :suspend, :do => :suspend_sites" do
           it "should suspend each user' active site" do
-            @active_site.reload.should be_active
-            @dev_site.reload.should be_dev
+            @paid_site.reload.should be_active
+            @dev_site.reload.should be_active
             subject.reload.suspend
-            @active_site.reload.should be_suspended
-            @dev_site.reload.should be_dev
+            @paid_site.reload.should be_suspended
+            @dev_site.reload.should be_active
           end
         end
 
@@ -289,9 +290,6 @@ describe User do
     end
 
     describe "#unsuspend" do
-      before(:all) do
-        @suspended_site = Factory(:site, :user => @user, :hostname => "rymai.me", :state => 'suspended')
-      end
       before(:each) { @user.reload.update_attribute(:state, 'suspended') }
       subject { @user }
 
@@ -304,7 +302,7 @@ describe User do
       end
 
       describe "Callbacks" do
-        describe "before_transition :on => :suspend, :do => :set_failed_invoices_count_on_suspend" do
+        pending "before_transition :on => :suspend, :do => :set_failed_invoices_count_on_suspend" do
           before(:all) do
             subject.reload.suspend
           end
@@ -319,10 +317,10 @@ describe User do
         describe "before_transition :on => :unsuspend, :do => :unsuspend_sites" do
           it "should suspend each user' site" do
             @suspended_site.reload.should be_suspended
-            @dev_site.reload.should be_dev
+            @dev_site.reload.should be_active
             subject.reload.unsuspend
             @suspended_site.reload.should be_active
-            @dev_site.reload.should be_dev
+            @dev_site.reload.should be_active
           end
         end
 
@@ -335,7 +333,7 @@ describe User do
       end
     end
 
-    describe "#archive" do
+    pending "#archive" do
       before(:each) { @user.reload.update_attribute(:state, 'active') }
       subject { @user.reload }
 
@@ -368,7 +366,7 @@ describe User do
           end
         end
 
-        describe "after_transition  :on => :archive, :do => :send_account_archived_email" do
+        describe "after_transition :on => :archive, :do => :send_account_archived_email" do
           it "should send an email to user" do
             lambda { subject.archive }.should change(ActionMailer::Base.deliveries, :count).by(1)
             ActionMailer::Base.deliveries.last.to.should == [subject.email]
@@ -449,7 +447,7 @@ describe User do
       end
     end
 
-    describe "after_update :charge_failed_invoices" do
+    pending "after_update :charge_failed_invoices" do
       context "with no failed invoices" do
         it "should not delay Class#charge" do
           user.cc_updated_at = Time.now.utc
@@ -461,9 +459,9 @@ describe User do
       context "with failed invoices" do
         before(:all) do
           @user = Factory(:user)
-          Factory(:invoice, :user => @user, :state => 'paid', :started_at => Time.utc(2010,1), :ended_at => Time.utc(2010,2))
-          Factory(:invoice, :user => @user, :state => 'failed', :started_at => Time.utc(2010,2), :ended_at => Time.utc(2010,3))
-          Factory(:invoice, :user => @user, :state => 'failed', :started_at => Time.utc(2010,3), :ended_at => Time.utc(2010,4))
+          Factory(:invoice, user: @user, state: 'paid')
+          Factory(:invoice, user: @user, state: 'failed')
+          Factory(:invoice, user: @user, state: 'failed')
         end
         subject { @user }
 

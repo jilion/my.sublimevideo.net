@@ -63,53 +63,35 @@ describe Stat::Invoice do
   before(:each) do
     @user1 = Factory(:user)
     @user2 = Factory(:user)
+    @site1 = Factory(:site, user: @user1)
+    @site2 = Factory(:site, user: @user2)
     @day1  = Time.utc(2010, 1, 1)
     @day2  = Time.utc(2010, 1, 31)
-    @day3  = Time.utc(2010, 2, 1)
-    @day4  = Time.utc(2010, 2, 28)
-    @invoice1 = Factory(:invoice, user: @user1, state: 'open',   started_at: 36.hours.ago, ended_at: @day2, amount: 1000)
-    @invoice2 = Factory(:invoice, user: @user2, state: 'paid',   started_at: 36.hours.ago, ended_at: @day2, amount: 1200)
-    @invoice3 = Factory(:invoice, user: @user1, state: 'failed', started_at: 20.hours.ago, ended_at: @day4, amount: 2000)
-    @invoice4 = Factory(:invoice, user: @user2, state: 'failed', started_at: 20.hours.ago, ended_at: @day4, amount: 2400)
+    Timecop.travel(Time.utc(2010, 1, 15)) do
+      @invoice1 = Factory(:invoice, site: @site1, state: 'open',   amount: 1000)
+      @invoice2 = Factory(:invoice, site: @site2, state: 'paid',   amount: 1200)
+      @invoice3 = Factory(:invoice, site: @site1, state: 'paid',   amount: 2000)
+      @invoice4 = Factory(:invoice, site: @site2, state: 'failed', amount: 2400)
+    end
+    Timecop.travel(Time.utc(2010, 2, 15)) do
+      @invoice5 = Factory(:invoice, site: @site1, state: 'paid', amount: 1000)
+    end
   end
   
   describe "Class Methods" do
     describe ".usages" do
       context "without a user_id given" do
-        subject { Stat::Invoice.timeline(@day1, @day4) }
+        subject { Stat::Invoice.timeline(@day1, @day2) }
         
-        it "should return an array" do
-          subject.should be_is_a(ActiveRecord::Relation)
-        end
-        
-        context "return an hash" do
-          it "of size 2" do
-            subject.size.should == 4
-          end
-          
-          it "which should contain the invoice amount per month" do
-            subject.should == [@invoice1, @invoice2, @invoice3, @invoice4]
-          end
-        end
+        specify { subject.should be_is_a(ActiveRecord::Relation) }
+        specify { subject.should == [@invoice2, @invoice3] }
       end
       
       context "with a user_id given" do
-        subject { Stat::Invoice.timeline(@day1, @day4, user_id: @user1.id) }
+        subject { Stat::Invoice.timeline(@day1, @day2, user_id: @user1.id) }
         
-        it "should return a hash" do
-          subject.should be_is_a(ActiveRecord::Relation)
-        end
-        
-        context "return a hash" do
-          it "of size 2" do
-            subject.size.should == 2
-          end
-          
-          it "which should contain the invoice amount per month" do
-            subject.should == [@invoice1, @invoice3]
-          end
-        end
-        
+        specify { subject.should be_is_a(ActiveRecord::Relation) }
+        specify { subject.should == [@invoice3] }
       end
     end
   end

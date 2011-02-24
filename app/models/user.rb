@@ -22,7 +22,7 @@ class User < ActiveRecord::Base
   belongs_to :suspending_delayed_job, :class_name => "::Delayed::Job"
   
   has_many :sites
-  has_many :invoices
+  has_many :invoices, :through => :sites
 
   has_one :last_invoice, :class_name => "Invoice", :order => "ended_at DESC"
 
@@ -215,7 +215,7 @@ private
 
   # before_transition :on => :suspend
   def suspend_sites
-    sites.map(&:suspend)
+    sites.billable.map(&:suspend)
   end
 
   # after_transition :on => :suspend

@@ -31,28 +31,38 @@ class Transaction < ActiveRecord::Base
     
     after_transition :on => [:succeed, :fail], :do => :update_invoices
   end
+  
+  # ==========
+  # = Scopes =
+  # ==========
+
+  scope :failed, where(state: 'failed')
 
   # =================
   # = Class Methods =
   # =================
 
-  def self.charge(transaction_id)
-    transaction = find(transaction_id)
-    return if transaction.paid?
+  def self.charge_invoices(invoice_ids)
+    invoices = Invoice.with_state(:unpaid).where(:id => invoice_ids)
+    transaction = new(:invoices => invoices)
+    
+    if transaction.save
+      @payment = begin
+        Ogone.purchase(transaction.amount, transaction.user.credit_card_alias, :order_id => transaction.id, :currency => 'USD')
+      rescue => ex
+        Notify.send("Charging failed: #{ex.message}", :exception => ex)
+        transaction.error = ex.message
+        nil
+      end
 
-    @payment = begin
-      Ogone.purchase(transaction.amount, transaction.user.credit_card_alias, :order_id => transaction.id, :currency => 'USD')
-    rescue => ex
-      Notify.send("Charging failed: #{ex.message}", :exception => ex)
-      transaction.error = ex.message
-      nil
-    end
-
-    if @payment && (@payment.success? || @payment.params["NCERROR"] == "50001113") # 50001113: orderID already processed with success
-      transaction.succeed
+      if @payment && (@payment.success? || @payment.params["NCERROR"] == "50001113") # 50001113: orderID already processed with success
+        transaction.succeed
+      else
+        transaction.error = @payment.message if @payment
+        transaction.fail
+      end
     else
-      transaction.error = @payment.message if @payment
-      transaction.fail
+      Notify.send("Transaction #{transaction.inspect} is not valid.")
     end
   end
   
