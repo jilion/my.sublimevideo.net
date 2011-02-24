@@ -17,15 +17,15 @@ class Transaction < ActiveRecord::Base
   # = Callbacks =
   # =============
 
-  before_create :reject_open_and_paid_invoices, :set_user_id, :set_cc_infos, :set_amount
+  before_create :reject_paid_invoices, :set_user_id, :set_cc_infos, :set_amount
 
   # =================
   # = State Machine =
   # =================
 
-  state_machine :initial => :open do
-    event(:succeed) { transition :open => :paid }
-    event(:fail)    { transition :open => :failed }
+  state_machine :initial => :unprocessed do
+    event(:succeed) { transition :unprocessed => :paid }
+    event(:fail)    { transition :unprocessed => :failed }
 
     after_transition :on => [:succeed, :fail], :do => :update_invoices
   end
@@ -39,6 +39,20 @@ class Transaction < ActiveRecord::Base
   # =================
   # = Class Methods =
   # =================
+
+  def self.delay_charge_unpaid_and_failed_invoices
+    unless Delayed::Job.already_delayed?('%Transaction%charge_unpaid_and_failed_invoices%')
+      # Invoice.create_invoices_for_billable_sites is delayed at Time.now.utc.tomorrow.change(:hour => 12)
+      # So we delay this task 4 hours after (to be sure all invoices of the day are created)
+      delay(:priority => 2, :run_at => Time.now.utc.tomorrow.change(:hour => 16)).charge_unpaid_and_failed_invoices
+    end
+  end
+
+
+  def self.charge_unpaid_and_failed_invoices
+    # charging implementation here
+    delay_charge_unpaid_and_failed_invoices
+  end
 
   def self.charge_by_invoice_ids(invoice_ids)
     invoices = Invoice.where(:id => invoice_ids)
@@ -71,22 +85,22 @@ class Transaction < ActiveRecord::Base
   # ====================
 
 private
-  
+
   # =============
   # = Validates =
   # =============
-  
+
   def at_least_one_invoice
     self.errors.add(:base, :at_least_one_invoice) if invoices.empty?
   end
-  
+
   def all_invoices_belong_to_same_user
     self.errors.add(:base, :all_invoices_must_belong_to_the_same_user) if invoices.any? { |invoice| invoice.user != invoices.first.user }
   end
 
   # before_create
-  def reject_open_and_paid_invoices
-    self.invoices.reject! { |invoice| invoice.open? || invoice.paid? }
+  def reject_paid_invoices
+    self.invoices.reject! { |invoice| invoice.paid? }
   end
   def set_user_id
     self.user_id = invoices.first.user.id
@@ -101,7 +115,12 @@ private
   end
 
   def update_invoices
-    Invoice.update_all({ :state => state, :"#{state}_at" => updated_at }, { :id => invoice_ids })
+    Transaction.transaction do
+      Invoice.update_all({ :state => state, :"#{state}_at" => updated_at }, { :id => invoice_ids })
+      if state == 'paid'
+        invoices.each { |invoice| invoice.update_site_for_next_cycle }
+      end
+    end
   end
 
 end

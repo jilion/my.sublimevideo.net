@@ -30,40 +30,52 @@ class Invoice < ActiveRecord::Base
   # = State Machine =
   # =================
 
-  state_machine :initial => :open do
-    event(:complete) do
-      transition :open => :paid, :if => lambda { |invoice| invoice.amount == 0 }
-      transition :open => :failed, :if => lambda { |invoice| invoice.user.cc_expired? }
-      transition :open => :unpaid
-    end
-    event(:retry) { transition :failed => :failed }
-    event(:fail) do
-      transition :unpaid => :unpaid, :if => lambda { |invoice| invoice.attempts < Billing.max_charging_attempts }
-      transition [:unpaid, :failed] => :failed
-    end
-    event(:succeed) { transition [:unpaid, :failed] => :paid }
-
-    before_transition :on => :complete, :do => :set_completed_at
-    after_transition  :on => :complete, :do => [:decrement_user_remaining_discounted_months, :update_user_invoiced_amount]
-
-    before_transition :on => :retry, :do => :delay_charge
-
-    before_transition :open => :unpaid, :unpaid => [:unpaid, :failed], :do => :delay_charge, :unless => lambda { |invoice| invoice.user.suspended? }
-    after_transition  :open => :unpaid, :do => :send_invoice_completed_email, :unless => lambda { |invoice| invoice.user.archived? }
-
-    before_transition any => :failed, :do => [:set_failed_at, :clear_charging_delayed_job_id]
-    before_transition :unpaid => :failed, :do => :delay_suspend_user
-    after_transition  :unpaid => :failed, :do => :send_charging_failed_email
-
-    before_transition any => :paid, :do => [:set_paid_at, :clear_charging_delayed_job_id]
-    after_transition  any => :paid do |invoice, transition|
-      if invoice.user.suspended? && invoice.user.invoices.failed.empty?
-        User.delay.unsuspend(invoice.user_id)
-      elsif invoice.user.will_be_suspended?
-        invoice.user.cancel_suspend
-      end
+  state_machine :initial => :unpaid do
+    state :failed
+    state :paid
+  end
+  
+  def update_site_for_next_cycle
+    # update site only if at least one InvoiceItem::Plan is present
+    if plan_invoice_items.present?
+      site.update_for_next_cycle
     end
   end
+  
+  # state_machine :initial => :open do
+  #   event(:complete) do
+  #     transition :open => :paid, :if => lambda { |invoice| invoice.amount == 0 }
+  #     transition :open => :failed, :if => lambda { |invoice| invoice.user.cc_expired? }
+  #     transition :open => :unpaid
+  #   end
+  #   event(:retry) { transition :failed => :failed }
+  #   event(:fail) do
+  #     transition :unpaid => :unpaid, :if => lambda { |invoice| invoice.attempts < Billing.max_charging_attempts }
+  #     transition [:unpaid, :failed] => :failed
+  #   end
+  #   event(:succeed) { transition [:unpaid, :failed] => :paid }
+  # 
+  #   before_transition :on => :complete, :do => :set_completed_at
+  #   after_transition  :on => :complete, :do => [:decrement_user_remaining_discounted_months, :update_user_invoiced_amount]
+  # 
+  #   before_transition :on => :retry, :do => :delay_charge
+  # 
+  #   before_transition :open => :unpaid, :unpaid => [:unpaid, :failed], :do => :delay_charge, :unless => lambda { |invoice| invoice.user.suspended? }
+  #   after_transition  :open => :unpaid, :do => :send_invoice_completed_email, :unless => lambda { |invoice| invoice.user.archived? }
+  # 
+  #   before_transition any => :failed, :do => [:set_failed_at, :clear_charging_delayed_job_id]
+  #   before_transition :unpaid => :failed, :do => :delay_suspend_user
+  #   after_transition  :unpaid => :failed, :do => :send_charging_failed_email
+  # 
+  #   before_transition any => :paid, :do => [:set_paid_at, :clear_charging_delayed_job_id]
+  #   after_transition  any => :paid do |invoice, transition|
+  #     if invoice.user.suspended? && invoice.user.invoices.failed.empty?
+  #       User.delay.unsuspend(invoice.user_id)
+  #     elsif invoice.user.will_be_suspended?
+  #       invoice.user.cancel_suspend
+  #     end
+  #   end
+  # end
 
   # ==========
   # = Scopes =
@@ -111,20 +123,31 @@ class Invoice < ActiveRecord::Base
       ended_at:   Time.now.utc
     )
   end
-
-  def self.delay_complete_invoices_for_billable_users(started_at, ended_at)
-    unless Delayed::Job.already_delayed?('%Invoice%complete_invoices_for_billable_users%')
-      delay(:priority => 1, :run_at => ended_at + Billing.days_before_creating_invoice.days).complete_invoices_for_billable_users(started_at, ended_at)
+  
+  def self.delay_create_invoices_for_billable_sites
+    unless Delayed::Job.already_delayed?('%Invoice%create_invoices_for_billable_sites%')
+      delay(:priority => 1, :run_at => Time.now.utc.tomorrow.change(:hour => 12)).create_invoices_for_billable_sites
     end
   end
 
-  def self.complete_invoices_for_billable_users(started_at, ended_at) # utc dates!
-    User.billable(started_at, ended_at).each do |user|
-      invoice = build(user: user, started_at: started_at, ended_at: ended_at)
-      invoice.complete
-    end
-    delay_complete_invoices_for_billable_users(*TimeUtil.next_full_month(ended_at))
+  def self.create_invoices_for_billable_sites
+    # implement invoices creation here
+    delay_create_invoices_for_billable_sites
   end
+
+  # def self.delay_complete_invoices_for_billable_users(started_at, ended_at)
+  #   unless Delayed::Job.already_delayed?('%Invoice%complete_invoices_for_billable_users%')
+  #     delay(:priority => 1, :run_at => ended_at + Billing.days_before_creating_invoice.days).complete_invoices_for_billable_users(started_at, ended_at)
+  #   end
+  # end
+  # 
+  # def self.complete_invoices_for_billable_users(started_at, ended_at) # utc dates!
+  #   User.billable(started_at, ended_at).each do |user|
+  #     invoice = build(user: user, started_at: started_at, ended_at: ended_at)
+  #     invoice.complete
+  #   end
+  #   delay_complete_invoices_for_billable_users(*TimeUtil.next_full_month(ended_at))
+  # end
 
   def self.charge(invoice_id)
     invoice = find(invoice_id)
@@ -188,7 +211,7 @@ private
       # Allow to have the right billable plan
       past_site = site.version_at(ended_at)
       # Plan
-      invoice_items << (plan_invoice_item = InvoiceItem::Plan.build(:site => past_site, :invoice => self))
+      invoice_items << InvoiceItem::Plan.build(:site => past_site, :invoice => self)
     end
   end
 

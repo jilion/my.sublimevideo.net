@@ -879,12 +879,12 @@ describe Site do
       end
 
       it "should update counters of non-archived sites from last 30 days site_usages" do
-        Timecop.travel(Time.utc(2011,1,31, 12))
-        @site.update_last_30_days_counters
-        @site.last_30_days_main_player_hits_total_count.should  == 20
-        @site.last_30_days_extra_player_hits_total_count.should == 20
-        @site.last_30_days_dev_player_hits_total_count.should   == 20
-        Timecop.return
+        Timecop.travel(Time.utc(2011,1,31, 12)) do
+          @site.update_last_30_days_counters
+          @site.last_30_days_main_player_hits_total_count.should  == 20
+          @site.last_30_days_extra_player_hits_total_count.should == 20
+          @site.last_30_days_dev_player_hits_total_count.should   == 20
+        end
       end
     end
 
@@ -909,9 +909,9 @@ describe Site do
       end
 
       it "should update counters of non-archived sites from last 30 days site_usages" do
-        Timecop.travel(Time.utc(2011,1,31,12))
-        @site.current_billable_usage.should == 40
-        Timecop.return
+        Timecop.travel(Time.utc(2011,1,31,12)) do
+          @site.current_billable_usage.should == 40
+        end
       end
     end
 
@@ -965,10 +965,10 @@ describe Site do
         end
 
         it "should update counters of non-archived sites from last 30 days site_usages" do
-          Timecop.travel(Time.utc(2011,1,31,12))
-          @site.current_billable_usage.should == 40
-          @site.current_percentage_of_plan_used.should == 1
-          Timecop.return
+          Timecop.travel(Time.utc(2011,1,31,12)) do
+            @site.current_billable_usage.should == 40
+            @site.current_percentage_of_plan_used.should == 1
+          end
         end
 
       end
@@ -977,6 +977,42 @@ describe Site do
         site = Factory(:site, plan: @dev_plan)
         site.current_percentage_of_plan_used.should == 0
       end
+    end
+
+    describe "#update_for_next_cycle" do
+
+      context "next plan is monthly" do
+        before(:all) do
+          @plan1 = Factory(:plan, cycle: "month")
+          @plan2 = Factory(:plan, cycle: "month")
+        end
+
+        context "with no plan change" do
+          before(:all) do
+            @site = Factory(:site, plan: @plan1, paid_plan_cycle_started_at: Time.utc(2011,1,15).midnight, paid_plan_cycle_ended_at: Time.utc(2011,2,14).end_of_day)
+            @site.reload.update_for_next_cycle
+          end
+
+          specify { @site.paid_plan_cycle_started_at.should == Time.utc(2011,2,15).midnight }
+          specify { @site.paid_plan_cycle_started_at.to_i.should == Time.utc(2011,2,15).midnight.to_i }
+          specify { @site.paid_plan_cycle_ended_at.to_i.should == Time.utc(2011,3,14).end_of_day.to_i }
+          specify { @site.plan_id.should == @plan1.id }
+          specify { @site.next_cycle_plan.should be_nil }
+        end
+
+        context "with plan change" do
+          before(:all) do
+            @site = Factory(:site, paid_plan_cycle_started_at: Time.utc(2011,1,15).midnight, paid_plan_cycle_ended_at: Time.utc(2011,2,14).end_of_day, next_cycle_plan_id: @plan2.id)
+            @site.reload.update_for_next_cycle
+          end
+
+          specify { @site.paid_plan_cycle_started_at.to_i.should == Time.utc(2011,2,15).midnight.to_i }
+          specify { @site.paid_plan_cycle_ended_at.to_i.should == Time.utc(2011,3,14).end_of_day.to_i }
+          specify { @site.plan_id.should == @plan2.id }
+          specify { @site.next_cycle_plan.should be_nil }
+        end
+      end
+
     end
 
   end

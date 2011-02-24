@@ -1,9 +1,11 @@
 require 'spec_helper'
 
 describe Transaction do
-
+  before(:all) do
+    @user = Factory(:user)
+  end
   context "Factory" do
-    
+
     before(:all) { @transaction = Factory(:transaction, invoices: [Factory(:invoice, amount: 1000, state: 'unpaid')]) }
     subject { @transaction }
 
@@ -15,7 +17,7 @@ describe Transaction do
     its(:amount)         { should == 1000 }
     its(:error)          { should be_nil }
 
-    it { should be_open } # initial state
+    it { should be_unprocessed } # initial state
     it { should be_valid }
   end # Factory
 
@@ -50,25 +52,24 @@ describe Transaction do
   describe "Callbacks" do
     before(:all) do
       @site = Factory(:site)
-      @invoice1 = Factory(:invoice, site: @site, amount: 100, state: 'open')
-      @invoice2 = Factory(:invoice, site: @site, amount: 200, state: 'unpaid')
-      @invoice3 = Factory(:invoice, site: @site, amount: 300, state: 'paid')
-      @invoice4 = Factory(:invoice, site: @site, amount: 400, state: 'failed')
+      @invoice1 = Factory(:invoice, site: @site, amount: 200, state: 'unpaid')
+      @invoice2 = Factory(:invoice, site: @site, amount: 300, state: 'paid')
+      @invoice3 = Factory(:invoice, site: @site, amount: 400, state: 'failed')
     end
     subject { @transaction }
 
-    describe "before_create :reject_open_and_paid_invoices" do
-      it "should reject any open or paid invoices" do
-        transaction = Factory.build(:transaction, invoices: [@invoice1, @invoice2, @invoice3, @invoice4])
-        transaction.invoices.should == [@invoice1, @invoice2, @invoice3, @invoice4]
+    describe "before_create :reject_paid_invoices" do
+      it "should reject any paid invoices" do
+        transaction = Factory.build(:transaction, invoices: [@invoice1, @invoice2, @invoice3])
+        transaction.invoices.should == [@invoice1, @invoice2, @invoice3]
         transaction.save!
-        transaction.reload.invoices.should == [@invoice2, @invoice4]
+        transaction.reload.invoices.should == [@invoice1, @invoice3]
       end
     end
 
     describe "before_create :set_user_id" do
       it "should set user_id" do
-        transaction = Factory.build(:transaction, invoices: [@invoice1, @invoice2, @invoice3, @invoice4])
+        transaction = Factory.build(:transaction, invoices: [@invoice1, @invoice2, @invoice3])
         transaction.user.should be_nil
         transaction.save!
         transaction.reload.user.should == @invoice1.user
@@ -77,7 +78,7 @@ describe Transaction do
 
     describe "before_create :set_cc_infos" do
       it "should set cc_type, cc_last_digits and cc_expire_on" do
-        transaction = Factory.build(:transaction, invoices: [@invoice1, @invoice2, @invoice3, @invoice4])
+        transaction = Factory.build(:transaction, invoices: [@invoice1, @invoice2, @invoice3])
         transaction.user.should be_nil
         transaction.save!
         transaction.reload.cc_type.should == @invoice1.user.cc_type
@@ -88,7 +89,7 @@ describe Transaction do
 
     describe "before_create :set_amount" do
       it "should set transaction amount to the sum of all its invoices amount" do
-        transaction = Factory.build(:transaction, invoices: [@invoice1, @invoice2, @invoice3, @invoice4])
+        transaction = Factory.build(:transaction, invoices: [@invoice1, @invoice2, @invoice3])
         transaction.amount.should be_nil
         transaction.save!
         transaction.reload.amount.should == 600
@@ -106,13 +107,13 @@ describe Transaction do
     subject { @transaction }
 
     describe "Initial state" do
-      it { should be_open }
+      it { should be_unprocessed }
     end
 
     describe "Events" do
 
       describe "#succeed" do
-        context "from open state" do
+        context "from unprocessed state" do
           before(:each) { subject.reload }
 
           it "should set transaction to paid" do
@@ -123,7 +124,7 @@ describe Transaction do
       end
 
       describe "#fail" do
-        context "from open state" do
+        context "from unprocessed state" do
           before(:each) { subject.reload }
 
           it "should set transaction to failed" do
@@ -182,11 +183,11 @@ describe Transaction do
 
   describe "Scopes" do
     before(:all) do
-      @site               = Factory(:site)
-      @invoice            = Factory(:invoice, site: @site, state: 'unpaid')
-      @transaction_open   = Factory(:transaction, invoices: [@invoice])
-      @transaction_failed = Factory(:transaction, invoices: [@invoice], state: 'failed')
-      @transaction_paid   = Factory(:transaction, invoices: [@invoice], state: 'paid')
+      @site                    = Factory(:site)
+      @invoice                 = Factory(:invoice, site: @site, state: 'unpaid')
+      @transaction_unprocessed = Factory(:transaction, invoices: [@invoice])
+      @transaction_failed      = Factory(:transaction, invoices: [@invoice], state: 'failed')
+      @transaction_paid        = Factory(:transaction, invoices: [@invoice], state: 'paid')
     end
 
     describe "#failed" do
@@ -202,11 +203,17 @@ describe Transaction do
 
         context "given unpaid invoices" do
           before(:all) do
-            @site     = Factory(:site)
-            @invoice1 = Factory(:invoice, site: @site, state: 'unpaid')
-            @invoice2 = Factory(:invoice, site: @site, state: 'unpaid')
+            @site1    = Factory(:site, user: @user)
+            @invoice1 = Factory(:invoice, site: @site1, state: 'unpaid')
+            @plan_invoice_item = Factory(:plan_invoice_item, invoice: @invoice1)
+            @invoice2 = Factory(:invoice, site: Factory(:site, user: @user), state: 'unpaid')
           end
-          subject { Transaction.charge_by_invoice_ids([@invoice1.id, @invoice2.id]) }
+          subject do
+            Timecop.travel(1.month.from_now) do
+              @transaction = Transaction.charge_by_invoice_ids([@invoice1.id, @invoice2.id])
+            end
+            @transaction
+          end
 
           it "should charge Ogone for the total amount of the invoices" do
             Ogone.should_receive(:purchase).with(@invoice1.amount + @invoice2.amount, @invoice1.user.credit_card_alias, { :order_id => an_instance_of(Fixnum), :currency => 'USD' })
@@ -218,14 +225,25 @@ describe Transaction do
             @invoice1.reload.should be_paid
             @invoice2.reload.should be_paid
           end
+          
+          it "should change site's paid_plan_cycle_started_at" do
+            old_paid_plan_cycle_started_at = @site1.reload.paid_plan_cycle_started_at
+            subject.reload
+            @site1.reload.paid_plan_cycle_started_at.should_not == old_paid_plan_cycle_started_at
+          end
+
+          it "should change site's paid_plan_cycle_ended_at" do
+            old_paid_plan_cycle_ended_at = @site1.reload.paid_plan_cycle_ended_at
+            subject.reload
+            @site1.reload.paid_plan_cycle_ended_at.should_not == old_paid_plan_cycle_ended_at
+          end
         end
 
         context "given invoices with mixed-state" do
           before(:all) do
-            @site     = Factory(:site)
-            @invoice1 = Factory(:invoice, site: @site, state: 'unpaid')
-            @invoice2 = Factory(:invoice, site: @site, state: 'failed')
-            @invoice3 = Factory(:invoice, site: @site, state: 'paid')
+            @invoice1 = Factory(:invoice, site: Factory(:site, user: @user), state: 'unpaid')
+            @invoice2 = Factory(:invoice, site: Factory(:site, user: @user), state: 'failed')
+            @invoice3 = Factory(:invoice, site: Factory(:site, user: @user), state: 'paid')
           end
           subject { Transaction.charge_by_invoice_ids([@invoice1.id, @invoice2.id, @invoice3.id]) }
 
@@ -248,11 +266,17 @@ describe Transaction do
 
         context "given unpaid invoices" do
           before(:all) do
-            @site     = Factory(:site)
-            @invoice1 = Factory(:invoice, site: @site, state: 'unpaid')
-            @invoice2 = Factory(:invoice, site: @site, state: 'unpaid')
+            @site1    = Factory(:site, user: @user)
+            @invoice1 = Factory(:invoice, site: @site1, state: 'unpaid')
+            @plan_invoice_item = Factory(:plan_invoice_item, invoice: @invoice1)
+            @invoice2 = Factory(:invoice, site: Factory(:site, user: @user), state: 'unpaid')
           end
-          subject { Transaction.charge_by_invoice_ids([@invoice1.id, @invoice2.id]) }
+          subject do
+            Timecop.travel(1.month.from_now) do
+              @transaction = Transaction.charge_by_invoice_ids([@invoice1.id, @invoice2.id])
+            end
+            @transaction
+          end
 
           it "should charge Ogone for the total amount of the invoices" do
             Ogone.should_receive(:purchase).with(@invoice1.amount + @invoice2.amount, @invoice1.user.credit_card_alias, { :order_id => an_instance_of(Fixnum), :currency => 'USD' })
@@ -264,12 +288,24 @@ describe Transaction do
             @invoice1.reload.should be_failed
             @invoice2.reload.should be_failed
           end
+          
+          it "should not change site's paid_plan_cycle_started_at" do
+            old_paid_plan_cycle_started_at = @site1.reload.paid_plan_cycle_started_at
+            subject.reload
+            @site1.reload.paid_plan_cycle_started_at.should == old_paid_plan_cycle_started_at
+          end
+
+          it "should not change site's paid_plan_cycle_ended_at" do
+            old_paid_plan_cycle_ended_at = @site1.reload.paid_plan_cycle_ended_at
+            subject.reload
+            @site1.reload.paid_plan_cycle_ended_at.should == old_paid_plan_cycle_ended_at
+          end
         end
 
         context "given invoices with mixed-state" do
           before(:all) do
-            @site     = Factory(:site)
-            @invoice1 = Factory(:invoice, site: @site, state: 'unpaid')
+            @site     = Factory(:site, user: @user)
+            @invoice1 = Factory(:invoice, site: Factory(:site, user: @user), state: 'unpaid')
             @invoice2 = Factory(:invoice, site: @site, state: 'failed')
             @invoice3 = Factory(:invoice, site: @site, state: 'paid')
           end

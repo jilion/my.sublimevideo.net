@@ -1,3 +1,26 @@
+Every day at 12:00 PM (midi):
+  - Creation of all invoices of the day (for all plans that has paid_plan_cycle_ended_at == today (next cycle will begin tomorrow))
+  - InvoiceItem::Plan has item_id to site.next_cycle_plan_id or site.plan_id (if no next_cycle_plan_id)
+  
+Every day at 02:00 PM:
+  - Charging of all 'unpaid' and 'failed' invoices (grouped by user)
+  - When a transaction succeed:
+    - Included invoices are updated to 'paid' and their linked site is updated (paid_plan_cycle_started_at, paid_plan_cycle_ended_at , new plan_id if applicable and reset next_cycle_plan_id)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 Context: 1 dev site with monthly plan
   Describe: dev site activated
     - no new invoice item created

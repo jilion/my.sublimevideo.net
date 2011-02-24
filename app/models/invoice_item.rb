@@ -31,7 +31,7 @@ class InvoiceItem < ActiveRecord::Base
   # ====================
 
   def site
-    site_id && Site.find(site_id).version_at(invoice.ended_at)
+    invoice.site.version_at(ended_at)
   end
 
 end

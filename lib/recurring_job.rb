@@ -11,25 +11,31 @@ module RecurringJob
     '%UsersStat%create_users_stats%'
   ]
 
+  billing_tasks = [
+    '%Invoice%create_invoices_for_billable_sites%',
+    '%Transaction%charge_unpaid_and_failed_invoices%'
+  ]
+
   NAMES = [
     '%User::CreditCard%send_credit_card_expiration%',
     '%Site::UsageAlert%send_usage_alerts%',
-    '%Site%update_last_30_days_counters_for_not_archived_sites%',
-    '%Invoice%complete_invoices_for_billable_users%'
-  ] + logs_tasks + stats_tasks
+    '%Site%update_last_30_days_counters_for_not_archived_sites%'
+  ] + logs_tasks + billing_tasks + stats_tasks
 
   class << self
 
     def launch_all
       # Logs
       Log.delay_fetch_and_create_new_logs
+      # Billing
+      Invoice.delay_create_invoices_for_billable_sites
+      Transaction.delay_charge_unpaid_and_failed_invoices
       # Stats
       UsersStat.delay_create_users_stats
       # Others
       User::CreditCard.delay_send_credit_card_expiration
       Site::UsageAlert.delay_send_usage_alerts
       Site.delay_update_last_30_days_counters_for_not_archived_sites
-      Invoice.delay_complete_invoices_for_billable_users(*TimeUtil.current_month)
     end
 
     def supervise

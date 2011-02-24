@@ -22,10 +22,10 @@ class Site < ActiveRecord::Base
   belongs_to :user, :validate => true, :autosave => true
   belongs_to :plan
   belongs_to :next_cycle_plan, :class_name => "Plan"
-  
+
   has_many :invoices
   has_many :invoice_items, :through => :invoices
-  
+
   # Mongoid associations
   def usages
     SiteUsage.where(:site_id => id)
@@ -197,7 +197,7 @@ class Site < ActiveRecord::Base
       site.update_last_30_days_counters
     end
   end
-  
+
   def self.referrer_match_hostname?(referrer, hostname, path = '', wildcard = false)
     referrer = URI.parse(referrer)
     if path || wildcard
@@ -332,7 +332,7 @@ class Site < ActiveRecord::Base
     else
       0
     end
-  end  
+  end
 
   def main_referrer?(referrer)
     self.class.referrer_match_hostname?(referrer, hostname, path, wildcard)
@@ -344,6 +344,21 @@ class Site < ActiveRecord::Base
 
   def dev_referrer?(referrer)
     dev_hostnames.split(', ').any? { |h| self.class.referrer_match_hostname?(referrer, h, '', wildcard) }
+  end
+
+  def update_for_next_cycle
+    new_plan = next_cycle_plan || plan
+
+    self.paid_plan_cycle_started_at = paid_plan_cycle_ended_at ? paid_plan_cycle_ended_at.tomorrow.midnight : Time.now.midnight
+    self.paid_plan_cycle_ended_at   = (paid_plan_cycle_started_at + 1.send(new_plan.cycle) - 1.day).end_of_day
+    self.plan                       = new_plan
+    self.next_cycle_plan            = nil
+
+    begin
+      self.save!
+    rescue => ex
+      Notify.send(ex.message, :exception => ex)
+    end
   end
 
 private
