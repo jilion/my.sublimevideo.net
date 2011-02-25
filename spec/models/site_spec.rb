@@ -88,11 +88,11 @@ describe Site do
       Site.delete_all
       user = Factory(:user)
       # billable
-      @site_billable_1 = Factory(:site, user: user, plan: @paid_plan)
-      @site_billable_2 = Factory(:site, user: user, plan: @paid_plan, next_cycle_plan: Factory(:plan))
+      @site_billable_1 = Factory(:site, user: user, plan: @paid_plan, paid_plan_cycle_ended_at: 1.day.ago)
+      @site_billable_2 = Factory(:site, user: user, plan: @paid_plan, next_cycle_plan: Factory(:plan), paid_plan_cycle_ended_at: 1.day.from_now)
       # not billable
-      @site_not_billable_1 = Factory(:site, user: user, plan: @dev_plan)
-      @site_not_billable_2 = Factory(:site, user: user, plan: @beta_plan)
+      @site_not_billable_1 = Factory(:site, user: user, plan: @dev_plan, paid_plan_cycle_ended_at: 1.day.ago)
+      @site_not_billable_2 = Factory(:site, user: user, plan: @beta_plan, paid_plan_cycle_ended_at: 1.day.from_now)
       @site_not_billable_3 = Factory(:site, user: user, plan: @paid_plan, next_cycle_plan: @dev_plan)
       @site_not_billable_4 = Factory(:site, user: user, state: "archived", archived_at: Time.utc(2010,2,28))
       # with path
@@ -115,6 +115,10 @@ describe Site do
 
     describe "#not_billable" do
       specify { Site.not_billable.all.should =~ [@site_not_billable_1, @site_not_billable_2, @site_not_billable_3, @site_not_billable_4, @site_with_path] }
+    end
+
+    describe "#to_be_renewed" do
+      specify { Site.to_be_renewed.all.should =~ [@site_billable_1, @site_not_billable_1] }
     end
 
     describe "#with_path" do
@@ -980,36 +984,204 @@ describe Site do
     end
 
     describe "#update_for_next_cycle" do
+      before(:all) do
+        @paid_plan2 = Factory(:plan, cycle: "month")
+        @paid_plan3 = Factory(:plan, cycle: "year")
+      end
 
-      context "next plan is monthly" do
+
+      context "with a failing save!" do
         before(:all) do
-          @plan1 = Factory(:plan, cycle: "month")
-          @plan2 = Factory(:plan, cycle: "month")
+          @site = Factory(:site, paid_plan_cycle_started_at: Time.utc(2011,1,15).midnight, paid_plan_cycle_ended_at: Time.utc(2011,2,14).end_of_day)
         end
 
-        context "with no plan change" do
+        it "should return false if save! fails" do
+          @site.should_receive(:save!).and_raise(ActiveRecord::RecordNotSaved)
+          @site.reload.update_for_next_cycle.should be_false
+        end
+      end
+
+      context "with no plan change" do
+        context "from a dev plan" do
           before(:all) do
-            @site = Factory(:site, plan: @plan1, paid_plan_cycle_started_at: Time.utc(2011,1,15).midnight, paid_plan_cycle_ended_at: Time.utc(2011,2,14).end_of_day)
+            @site = Factory(:site, plan: @dev_plan)
+
+            @site.paid_plan_cycle_started_at.should be_nil
+            @site.paid_plan_cycle_ended_at.should be_nil
+            @site.plan.should == @dev_plan
+
             @site.reload.update_for_next_cycle
           end
 
-          specify { @site.paid_plan_cycle_started_at.should == Time.utc(2011,2,15).midnight }
-          specify { @site.paid_plan_cycle_started_at.to_i.should == Time.utc(2011,2,15).midnight.to_i }
-          specify { @site.paid_plan_cycle_ended_at.to_i.should == Time.utc(2011,3,14).end_of_day.to_i }
-          specify { @site.plan_id.should == @plan1.id }
-          specify { @site.next_cycle_plan.should be_nil }
+          it "should not update paid plan cycle" do
+            @site.paid_plan_cycle_started_at.should be_nil
+            @site.paid_plan_cycle_ended_at.should be_nil
+          end
+
+          it "should update paid plan and reset next cycle plan" do
+            @site.plan.should == @dev_plan
+            @site.next_cycle_plan.should be_nil
+          end
         end
 
-        context "with plan change" do
+        context "from a beta plan" do
           before(:all) do
-            @site = Factory(:site, paid_plan_cycle_started_at: Time.utc(2011,1,15).midnight, paid_plan_cycle_ended_at: Time.utc(2011,2,14).end_of_day, next_cycle_plan_id: @plan2.id)
+            @site = Factory(:site, plan: @beta_plan)
+
+            @site.paid_plan_cycle_started_at.should be_nil
+            @site.paid_plan_cycle_ended_at.should be_nil
+            @site.plan.should == @beta_plan
+
             @site.reload.update_for_next_cycle
           end
 
-          specify { @site.paid_plan_cycle_started_at.to_i.should == Time.utc(2011,2,15).midnight.to_i }
-          specify { @site.paid_plan_cycle_ended_at.to_i.should == Time.utc(2011,3,14).end_of_day.to_i }
-          specify { @site.plan_id.should == @plan2.id }
-          specify { @site.next_cycle_plan.should be_nil }
+          it "should not update paid plan cycle" do
+            @site.paid_plan_cycle_started_at.should be_nil
+            @site.paid_plan_cycle_ended_at.should be_nil
+          end
+
+          it "should update paid plan and reset next cycle plan" do
+            @site.plan.should == @beta_plan
+            @site.next_cycle_plan.should be_nil
+          end
+        end
+        
+        context "from a paid plan" do
+          before(:all) do
+            @site = Factory(:site, plan: @paid_plan, paid_plan_cycle_started_at: Time.utc(2011,1,15).midnight, paid_plan_cycle_ended_at: Time.utc(2011,2,14).end_of_day)
+
+            @site.paid_plan_cycle_started_at.to_i.should == Time.utc(2011,1,15).midnight.to_i
+            @site.paid_plan_cycle_ended_at.to_i.should == Time.utc(2011,2,14).end_of_day.to_i
+            @site.plan.should == @paid_plan
+            @site.next_cycle_plan.should be_nil
+
+            @site.reload.update_for_next_cycle
+          end
+
+          it "should update paid plan cycle" do
+            @site.paid_plan_cycle_started_at.to_i.should == Time.utc(2011,2,15).midnight.to_i
+            @site.paid_plan_cycle_ended_at.to_i.should == Time.utc(2011,3,14).end_of_day.to_i
+          end
+
+          it "should update paid plan and reset next cycle plan" do
+            @site.plan.should == @paid_plan
+            @site.next_cycle_plan.should be_nil
+          end      
+        end
+      end
+
+      context "with plan change" do
+        context "from a dev plan" do
+          before(:all) do
+            @site = Factory(:site, plan: @dev_plan, next_cycle_plan_id: @paid_plan.id)
+
+            @site.paid_plan_cycle_started_at.should be_nil
+            @site.paid_plan_cycle_ended_at.should be_nil
+            @site.plan.should == @dev_plan
+
+            @site.reload.update_for_next_cycle
+          end
+
+          it "should not update paid plan cycle" do
+            @site.paid_plan_cycle_started_at.to_i.should == Time.now.utc.midnight.to_i
+            @site.paid_plan_cycle_ended_at.to_i.should == (Time.now.utc.midnight + 1.month - 1.day).end_of_day.to_i
+          end
+
+          it "should update paid plan and reset next cycle plan" do
+            @site.plan.should == @paid_plan
+            @site.next_cycle_plan.should be_nil
+          end
+        end
+
+        context "from a beta plan" do
+          before(:all) do
+            @site = Factory(:site, plan: @beta_plan, next_cycle_plan_id: @paid_plan.id)
+
+            @site.paid_plan_cycle_started_at.should be_nil
+            @site.paid_plan_cycle_ended_at.should be_nil
+            @site.plan.should == @beta_plan
+
+            @site.reload.update_for_next_cycle
+          end
+
+          it "should not update paid plan cycle" do
+            @site.paid_plan_cycle_started_at.to_i.should == Time.now.utc.midnight.to_i
+            @site.paid_plan_cycle_ended_at.to_i.should == (Time.now.utc.midnight + 1.month - 1.day).end_of_day.to_i
+          end
+
+          it "should update paid plan and reset next cycle plan" do
+            @site.plan.should == @paid_plan
+            @site.next_cycle_plan.should be_nil
+          end
+        end
+        
+        context "month to month" do
+          before(:all) do
+            @site = Factory(:site, plan: @paid_plan, paid_plan_cycle_started_at: Time.utc(2011,1,15).midnight, paid_plan_cycle_ended_at: Time.utc(2011,2,14).end_of_day, next_cycle_plan_id: @paid_plan2.id)
+
+            @site.paid_plan_cycle_started_at.to_i.should == Time.utc(2011,1,15).midnight.to_i
+            @site.paid_plan_cycle_ended_at.to_i.should == Time.utc(2011,2,14).end_of_day.to_i
+            @site.plan.should == @paid_plan
+            @site.next_cycle_plan.should == @paid_plan2
+
+            @site.reload.update_for_next_cycle
+          end
+
+          it "should update paid plan cycle" do
+            @site.paid_plan_cycle_started_at.to_i.should == Time.utc(2011,2,15).midnight.to_i
+            @site.paid_plan_cycle_ended_at.to_i.should == Time.utc(2011,3,14).end_of_day.to_i
+          end
+
+          it "should update paid plan and reset next cycle plan" do
+            @site.plan.should == @paid_plan2
+            @site.next_cycle_plan.should be_nil
+          end
+        end
+
+        context "month to year" do
+          before(:all) do
+            @site = Factory(:site, plan: @paid_plan, paid_plan_cycle_started_at: Time.utc(2011,1,15).midnight, paid_plan_cycle_ended_at: Time.utc(2011,2,14).end_of_day, next_cycle_plan_id: @paid_plan3.id)
+
+            @site.paid_plan_cycle_started_at.to_i.should == Time.utc(2011,1,15).midnight.to_i
+            @site.paid_plan_cycle_ended_at.to_i.should == Time.utc(2011,2,14).end_of_day.to_i
+            @site.plan.should == @paid_plan
+            @site.next_cycle_plan.should == @paid_plan3
+
+            @site.reload.update_for_next_cycle
+          end
+
+          it "should update paid plan cycle" do
+            @site.paid_plan_cycle_started_at.to_i.should == Time.utc(2011,2,15).midnight.to_i
+            @site.paid_plan_cycle_ended_at.to_i.should == Time.utc(2012,2,14).end_of_day.to_i
+          end
+
+          it "should update paid plan and reset next cycle plan" do
+            @site.plan.should == @paid_plan3
+            @site.next_cycle_plan.should be_nil
+          end
+        end
+
+        context "year to month" do
+          before(:all) do
+            @site = Factory(:site, plan: @paid_plan3, paid_plan_cycle_started_at: Time.utc(2011,1,15).midnight, paid_plan_cycle_ended_at: Time.utc(2012,1,14).end_of_day, next_cycle_plan_id: @paid_plan.id)
+
+            @site.paid_plan_cycle_started_at.to_i.should == Time.utc(2011,1,15).midnight.to_i
+            @site.paid_plan_cycle_ended_at.to_i.should == Time.utc(2012,1,14).end_of_day.to_i
+            @site.plan.should == @paid_plan3
+            @site.next_cycle_plan.should == @paid_plan
+
+            @site.reload.update_for_next_cycle
+          end
+
+          it "should update paid plan cycle" do
+            @site.paid_plan_cycle_started_at.to_i.should == Time.utc(2012,1,15).midnight.to_i
+            @site.paid_plan_cycle_ended_at.to_i.should == Time.utc(2012,2,14).end_of_day.to_i
+          end
+
+          it "should update paid plan and reset next cycle plan" do
+            @site.plan.should == @paid_plan
+            @site.next_cycle_plan.should be_nil
+          end
         end
       end
 

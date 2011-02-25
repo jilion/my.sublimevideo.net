@@ -63,6 +63,10 @@ class Plan < ActiveRecord::Base
     name == "beta"
   end
 
+  def paid_plan?
+    !dev_plan? && !beta_plan?
+  end
+
 end
 
 

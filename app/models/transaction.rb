@@ -43,14 +43,20 @@ class Transaction < ActiveRecord::Base
   def self.delay_charge_unpaid_and_failed_invoices
     unless Delayed::Job.already_delayed?('%Transaction%charge_unpaid_and_failed_invoices%')
       # Invoice.create_invoices_for_billable_sites is delayed at Time.now.utc.tomorrow.change(:hour => 12)
-      # So we delay this task 4 hours after (to be sure all invoices of the day are created)
-      delay(:priority => 2, :run_at => Time.now.utc.tomorrow.change(:hour => 16)).charge_unpaid_and_failed_invoices
+      # So we delay this task 1 hour after (to be sure all invoices of the day are created)
+      delay(:priority => 2, :run_at => Time.now.utc.tomorrow.change(:hour => 1)).charge_unpaid_and_failed_invoices
     end
   end
 
 
   def self.charge_unpaid_and_failed_invoices
     # charging implementation here
+    User.each do |user|
+      unpaid_or_failed_invoices = user.invoices.unpaid_or_failed
+      if unpaid_or_failed_invoices.present?
+        delay(:priority => 3).charge_by_invoice_ids(unpaid_or_failed_invoices.map(&:id))
+      end
+    end
     delay_charge_unpaid_and_failed_invoices
   end
 
@@ -114,13 +120,9 @@ private
     self.amount = invoices.map(&:amount).sum
   end
 
+  # after_transition :on => [:succeed, :fail]
   def update_invoices
-    Transaction.transaction do
-      Invoice.update_all({ :state => state, :"#{state}_at" => updated_at }, { :id => invoice_ids })
-      if state == 'paid'
-        invoices.each { |invoice| invoice.update_site_for_next_cycle }
-      end
-    end
+    Invoice.update_all({ :state => state, :"#{state}_at" => updated_at }, { :id => invoice_ids })
   end
 
 end

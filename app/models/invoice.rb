@@ -7,7 +7,7 @@ class Invoice < ActiveRecord::Base
   # ================
 
   belongs_to :site
-  belongs_to :charging_delayed_job, :class_name => "::Delayed::Job"
+  # belongs_to :charging_delayed_job, :class_name => "::Delayed::Job"
   has_many :invoice_items
 
   has_many :plan_invoice_items, conditions: { type: "InvoiceItem::Plan" }, :class_name => "InvoiceItem"
@@ -30,18 +30,15 @@ class Invoice < ActiveRecord::Base
   # = State Machine =
   # =================
 
-  state_machine :initial => :unpaid do
+  state_machine :initial => :open do
     state :failed
     state :paid
-  end
-  
-  def update_site_for_next_cycle
-    # update site only if at least one InvoiceItem::Plan is present
-    if plan_invoice_items.present?
-      site.update_for_next_cycle
+
+    event(:complete) do
+      transition :open => :unpaid
     end
   end
-  
+
   # state_machine :initial => :open do
   #   event(:complete) do
   #     transition :open => :paid, :if => lambda { |invoice| invoice.amount == 0 }
@@ -54,19 +51,19 @@ class Invoice < ActiveRecord::Base
   #     transition [:unpaid, :failed] => :failed
   #   end
   #   event(:succeed) { transition [:unpaid, :failed] => :paid }
-  # 
+  #
   #   before_transition :on => :complete, :do => :set_completed_at
   #   after_transition  :on => :complete, :do => [:decrement_user_remaining_discounted_months, :update_user_invoiced_amount]
-  # 
+  #
   #   before_transition :on => :retry, :do => :delay_charge
-  # 
+  #
   #   before_transition :open => :unpaid, :unpaid => [:unpaid, :failed], :do => :delay_charge, :unless => lambda { |invoice| invoice.user.suspended? }
   #   after_transition  :open => :unpaid, :do => :send_invoice_completed_email, :unless => lambda { |invoice| invoice.user.archived? }
-  # 
+  #
   #   before_transition any => :failed, :do => [:set_failed_at, :clear_charging_delayed_job_id]
   #   before_transition :unpaid => :failed, :do => :delay_suspend_user
   #   after_transition  :unpaid => :failed, :do => :send_charging_failed_email
-  # 
+  #
   #   before_transition any => :paid, :do => [:set_paid_at, :clear_charging_delayed_job_id]
   #   after_transition  any => :paid do |invoice, transition|
   #     if invoice.user.suspended? && invoice.user.invoices.failed.empty?
@@ -85,15 +82,16 @@ class Invoice < ActiveRecord::Base
     where(:created_at.gte => started_at, :created_at.lte => ended_at)
   }
 
-  scope :paid,    where(state: 'paid')
-  scope :failed,  where(state: 'failed')
-  scope :site_id, lambda { |site_id| where(site_id: site_id) }
-  scope :user_id, lambda { |user_id| where(site_id: Site.where(user_id: user_id).map(&:id)) }
-  
+  scope :failed,           where(state: 'failed')
+  scope :unpaid_or_failed, where(state: %w[unpaid failed])
+  scope :paid,             where(state: 'paid')
+  scope :site_id,          lambda { |site_id| where(site_id: site_id) }
+  scope :user_id,          lambda { |user_id| where(site_id: Site.where(user_id: user_id).map(&:id)) }
+
   # sort
-  scope :by_amount,   lambda { |way='desc'| order(:amount.send(way)) }
+  scope :by_amount,              lambda { |way='desc'| order(:amount.send(way)) }
   scope :by_invoice_items_count, lambda { |way='desc'| order(:invoice_items_count.send(way)) }
-  
+
   # scope :by_user,     lambda { |way='desc'| order(:users => [:first_name.send(way), :email.send(way)]) }
   scope :by_state,    lambda { |way='desc'| order(:state.send(way)) }
   scope :by_attempts, lambda { |way='desc'| order(:attempts.send(way)) }
@@ -112,35 +110,45 @@ class Invoice < ActiveRecord::Base
   # = Class Methods =
   # =================
 
-  def self.build(attributes = {})
-    new(attributes).build
-  end
-
-  def self.usage_statement(user)
-    build(
-      user:       user,
-      started_at: Time.now.utc.beginning_of_month,
-      ended_at:   Time.now.utc
-    )
-  end
-  
-  def self.delay_create_invoices_for_billable_sites
-    unless Delayed::Job.already_delayed?('%Invoice%create_invoices_for_billable_sites%')
-      delay(:priority => 1, :run_at => Time.now.utc.tomorrow.change(:hour => 12)).create_invoices_for_billable_sites
+  def self.delay_renew_active_sites_and_create_invoices
+    unless Delayed::Job.already_delayed?('%Invoice%update_billable_sites_and_create_invoices%')
+      delay(:priority => 1, :run_at => Time.now.utc.tomorrow.midnight).renew_active_sites_and_create_invoices
     end
   end
 
-  def self.create_invoices_for_billable_sites
+  def self.renew_active_sites_and_create_invoices
     # implement invoices creation here
-    delay_create_invoices_for_billable_sites
+    # 1 - take all active sites
+      # updates them
+    # delay invoice creation
+
+      Site.active.to_be_renewed.each do |site|
+        if site.update_for_next_cycle
+          Invoice.delay.complete_invoice(site.id)
+        end
+      end
+
+    delay_renew_active_sites_and_create_invoices
   end
+
+  def self.build(attributes={})
+    new(attributes).build
+  end
+
+  # def self.usage_statement(user)
+  #   build(
+  #     user:       user,
+  #     started_at: Time.now.utc.beginning_of_month,
+  #     ended_at:   Time.now.utc
+  #   )
+  # end
 
   # def self.delay_complete_invoices_for_billable_users(started_at, ended_at)
   #   unless Delayed::Job.already_delayed?('%Invoice%complete_invoices_for_billable_users%')
   #     delay(:priority => 1, :run_at => ended_at + Billing.days_before_creating_invoice.days).complete_invoices_for_billable_users(started_at, ended_at)
   #   end
   # end
-  # 
+  #
   # def self.complete_invoices_for_billable_users(started_at, ended_at) # utc dates!
   #   User.billable(started_at, ended_at).each do |user|
   #     invoice = build(user: user, started_at: started_at, ended_at: ended_at)
@@ -148,6 +156,11 @@ class Invoice < ActiveRecord::Base
   #   end
   #   delay_complete_invoices_for_billable_users(*TimeUtil.next_full_month(ended_at))
   # end
+
+  def self.complete_invoice(site_id)
+    site = Site.find(site_id)
+    build(site: site).complete if site
+  end
 
   def self.charge(invoice_id)
     invoice = find(invoice_id)
@@ -195,9 +208,9 @@ class Invoice < ActiveRecord::Base
     @total_invoice_items_amount ||= invoice_items.inject(0) { |sum, invoice_item| sum + invoice_item.amount }
   end
 
-  def will_be_charged?
-    charging_delayed_job
-  end
+  # def will_be_charged?
+  #   charging_delayed_job
+  # end
 
   # before_transition :on => [:fail, :succeed]
   def increment_attempts

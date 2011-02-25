@@ -12,7 +12,7 @@ module RecurringJob
   ]
 
   billing_tasks = [
-    '%Invoice%create_invoices_for_billable_sites%',
+    '%Invoice%renew_active_sites_and_create_invoices%',
     '%Transaction%charge_unpaid_and_failed_invoices%'
   ]
 
@@ -27,11 +27,14 @@ module RecurringJob
     def launch_all
       # Logs
       Log.delay_fetch_and_create_new_logs
+
       # Billing
-      Invoice.delay_create_invoices_for_billable_sites
+      Invoice.delay_renew_active_sites_and_create_invoices
       Transaction.delay_charge_unpaid_and_failed_invoices
+
       # Stats
       UsersStat.delay_create_users_stats
+
       # Others
       User::CreditCard.delay_send_credit_card_expiration
       Site::UsageAlert.delay_send_usage_alerts

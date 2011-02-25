@@ -7,7 +7,7 @@ class InvoicesController < ApplicationController
   end
 
   def usage
-    @invoice = Invoice.usage_statement(current_user)
+    @invoice = Invoice.new#usage_statement(current_user)
     respond_with(@invoice)
   end
 

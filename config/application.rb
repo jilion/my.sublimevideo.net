@@ -14,7 +14,7 @@ module MySublimeVideo
 
     # Add additional load paths for your own custom dirs
     config.autoload_paths += %W[#{config.root}/lib]
-    Dir["#{config.root}/lib/{logs_file_format,responders,transcoders,validators}/**/*.rb"].each do |f|
+    Dir["#{config.root}/lib/{logs_file_format,responders,validators}/**/*.rb"].each do |f|
       dir = File.expand_path(File.dirname(f))
       config.autoload_paths += [dir] if config.autoload_paths.exclude?(dir)
     end

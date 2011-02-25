@@ -38,9 +38,11 @@ class Site < ActiveRecord::Base
   # = Scopes =
   # ==========
 
-  scope :billable,     lambda { active.where({ :plan_id.not_in => Plan.where(:name => %w[beta dev]).map(&:id) }, { :next_cycle_plan_id => nil } | { :next_cycle_plan_id.ne => Plan.dev_plan.id }) }
-  scope :not_billable, lambda { where({ :state.ne => 'active' } | ({ :state => 'active' } & ({ :plan_id.in => Plan.where(:name => %w[beta dev]).map(&:id), :next_cycle_plan_id => nil } | { :next_cycle_plan_id => Plan.dev_plan }))) }
-
+  # billing
+  scope :billable,      lambda { active.where({ :plan_id.not_in => Plan.where(:name => %w[beta dev]).map(&:id) }, { :next_cycle_plan_id => nil } | { :next_cycle_plan_id.ne => Plan.dev_plan.id }) }
+  scope :not_billable,  lambda { where({ :state.ne => 'active' } | ({ :state => 'active' } & ({ :plan_id.in => Plan.where(:name => %w[beta dev]).map(&:id), :next_cycle_plan_id => nil } | { :next_cycle_plan_id => Plan.dev_plan }))) }
+  scope :to_be_renewed, where(:paid_plan_cycle_ended_at.lt => Time.now.utc)
+  
   # usage_alert scopes
   scope :plan_player_hits_reached_alerted_this_month,                where(:plan_player_hits_reached_alert_sent_at.gte => Time.now.utc.beginning_of_month)
   scope :plan_player_hits_reached_not_alerted_this_month,            where({ :plan_player_hits_reached_alert_sent_at.lt => Time.now.utc.beginning_of_month } | { :plan_player_hits_reached_alert_sent_at => nil })
@@ -347,17 +349,27 @@ class Site < ActiveRecord::Base
   end
 
   def update_for_next_cycle
-    new_plan = next_cycle_plan || plan
-
-    self.paid_plan_cycle_started_at = paid_plan_cycle_ended_at ? paid_plan_cycle_ended_at.tomorrow.midnight : Time.now.midnight
-    self.paid_plan_cycle_ended_at   = (paid_plan_cycle_started_at + 1.send(new_plan.cycle) - 1.day).end_of_day
-    self.plan                       = new_plan
-    self.next_cycle_plan            = nil
-
-    begin
-      self.save!
-    rescue => ex
-      Notify.send(ex.message, :exception => ex)
+    if plan.paid_plan? || next_cycle_plan
+      new_plan = next_cycle_plan || plan
+    
+      if new_plan.dev_plan?
+        self.paid_plan_cycle_started_at = nil
+        self.paid_plan_cycle_ended_at   = nil
+      else
+        self.paid_plan_cycle_started_at = paid_plan_cycle_ended_at ? paid_plan_cycle_ended_at.tomorrow.midnight : Time.now.utc.midnight
+        self.paid_plan_cycle_ended_at   = (paid_plan_cycle_started_at + 1.send(new_plan.cycle) - 1.day).end_of_day      
+      end
+      self.plan            = new_plan
+      self.next_cycle_plan = nil
+    
+      begin
+        self.save!
+      rescue => ex
+        Notify.send(ex.message, :exception => ex)
+        false
+      end
+    else
+      false # nothing to update
     end
   end
 
