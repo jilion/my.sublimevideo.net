@@ -3,7 +3,7 @@
     %span= f.object.errors[:plan].first
 
 %ul#plans
-  - Plan.where( :name => %w[dev perso pro enterprise]).each do |plan|
+  - Plan.where( :name.ne => "beta").each do |plan|
     %li{ :class => plan.name }
       .content
         = f.label :plan_id, content_tag(:strong, plan.name.titlecase), :for => "plan_#{plan.name}", :class => "title"

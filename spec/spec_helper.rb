@@ -17,14 +17,10 @@ Spork.prefork do
   require 'rspec/rails'
   require 'vcr'
 
-  # require 'akephalos'
-  # Capybara.javascript_driver = :akephalos
-  # require 'capybara/envjs'
-  # Capybara.javascript_driver = :envjs
-
   VCR.config do |config|
     config.stub_with :webmock # or :fakeweb
     config.cassette_library_dir     = 'spec/fixtures/vcr_cassettes'
+    config.ignore_localhost         = true
     config.default_cassette_options = { :record => :new_episodes }
   end
 

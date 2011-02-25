@@ -98,9 +98,6 @@ group :test do
   gem 'database_cleaner'
   gem 'steak',              '1.0.0.rc.2'
   gem 'capybara'
-  # gem 'capybara',           :git => 'git://github.com/jnicklas/capybara.git'
-  # gem 'akephalos',          '~> 0.2.4'
-  # gem 'capybara-envjs',     '~> 0.4.0'
   gem 'webmock'
   gem 'vcr'
 
