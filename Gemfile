@@ -2,9 +2,10 @@ source :rubygems
 
 gem 'bundler',               '~> 1.0.10'
 
-gem 'rails',                 '~> 3.0.4'
+gem 'rails',                 '~> 3.0.5.rc1'
 gem 'pg',                    '0.10.1'
 gem 'i18n',                  '~> 0.5.0'
+gem 'arel',                  '~> 2.0.9.rc1'
 # gem 'mail',                  '~> 2.2.15'
 
 gem 'configuration',         '~> 1.2.0'
@@ -14,7 +15,7 @@ gem 'haml',                  '3.0.24'
 gem 'state_machine',         '0.9.4'
 gem 'responders',            '0.6.2'
 gem 'uniquify',              '0.1.0'
-gem 'kaminari',              '~> 0.10.2'
+gem 'kaminari',              '~> 0.10.4'
 gem 'delayed_job',           '2.1.3'
 gem 'has_scope',             :git => 'git://github.com/rymai/has_scope.git'
 gem 'jammit',                '0.6.0'
@@ -37,10 +38,10 @@ gem 'dalli',                 '~> 1.0.2'
 
 gem 'aws',                   '2.3.34' # bugs in 2.4.2
 gem 'fog',                   '0.5.1'
-gem 'carrierwave',           '0.5.1'
+gem 'carrierwave',           '0.5.2'
 
-gem 'bson_ext',              '~> 1.2.2'
-gem 'mongo',                 '~> 1.2.2'
+gem 'bson_ext',              '~> 1.2.4'
+gem 'mongo',                 '~> 1.2.4'
 gem 'mongoid',               '~> 2.0.0.rc.7' # '2.0.0.beta.20'
 
 gem 'zip',                   '2.0.2', :require => 'zip/zip'
@@ -65,26 +66,26 @@ end
 
 group :development, :test do
   # gem 'silent-postgres'
-  gem 'rspec-rails',   '~> 2.5.0'
-  gem 'passenger',     '~> 3.0.2'
-  gem 'timecop',       '~> 0.3.5'
+  gem 'rspec-rails'
+  gem 'passenger'
+  gem 'timecop'
 end
 
 group :development do
-  gem 'ffaker',        '~> 1.2.0'
-  gem 'annotate',      '~> 2.4.0'
-  gem 'wirble',        '~> 0.1.3'
+  gem 'ffaker'
+  gem 'annotate'
+  gem 'wirble'
   gem 'ruby-graphviz', :require => 'graphviz'
-  gem 'heroku',        '~> 1.17.10'
-  gem 'heroku_tasks',  '~> 0.1.4'
-  gem 'taps',          '~> 0.3.14' # heroku db pull/push
+  gem 'heroku'
+  gem 'heroku_tasks'
+  gem 'taps'
   gem 'silent-postgres'
 end
 
 group :test do
   gem 'growl'
   gem 'spork',              '~> 0.9.0.rc3'
-  gem 'rb-fsevent',         '~> 0.3.9'
+  gem 'rb-fsevent'
   gem 'guard'
   gem 'guard-ego'
   gem 'guard-bundler'
@@ -96,13 +97,13 @@ group :test do
 
   gem 'database_cleaner'
   gem 'steak',              '1.0.0.rc.2'
-  gem 'capybara',           '~> 0.4.1.2'
+  gem 'capybara'
   # gem 'capybara',           :git => 'git://github.com/jnicklas/capybara.git'
   # gem 'akephalos',          '~> 0.2.4'
   # gem 'capybara-envjs',     '~> 0.4.0'
-  gem 'webmock',            '~> 1.6.2'
-  gem 'vcr',                '~> 1.6.0'
+  gem 'webmock'
+  gem 'vcr'
 
-  gem 'shoulda',            '~> 2.11.3'
-  gem 'factory_girl_rails', '~> 1.0.1', :require => false # loaded in spec_helper Spork.each_run
+  gem 'shoulda'
+  gem 'factory_girl_rails', :require => false # loaded in spec_helper Spork.each_run
 end
