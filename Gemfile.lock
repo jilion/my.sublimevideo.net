@@ -5,13 +5,27 @@ GIT
     useragent (0.2.3)
 
 GIT
-  remote: git://github.com/rymai/active_merchant.git
-  revision: 9487be4458b762b74d70bf9d6b18dd19c5b1433a
+  remote: git://github.com/ZenCocoon/active_merchant.git
+  revision: a1198fb7413e00aeee2d287dce641df99d13a6e4
   specs:
-    activemerchant (1.9.2)
-      activesupport (>= 2.3.2)
+    activemerchant (1.11.0)
+      activesupport (>= 2.3.8)
       braintree (>= 2.0.0)
       builder (>= 2.0.0)
+
+GIT
+  remote: git://github.com/jnicklas/capybara.git
+  revision: cb8de0c05e64985be1f591db37aea46629d20b39
+  specs:
+    capybara (0.4.1.1)
+      celerity (>= 0.7.9)
+      culerity (>= 0.2.4)
+      mime-types (>= 1.16)
+      nokogiri (>= 1.3.3)
+      rack (>= 1.0.0)
+      rack-test (>= 0.5.4)
+      selenium-webdriver (>= 0.0.27)
+      xpath (~> 0.1.3)
 
 GIT
   remote: git://github.com/rymai/devise_invitable.git
@@ -38,6 +52,12 @@ GIT
       rescue_me (~> 0.1.0)
       xml-simple (~> 1.0.12)
 
+PATH
+  remote: /Users/remy/Development/Ruby/Gems/guard@guard-rspec
+  specs:
+    guard-rspec (0.2.0)
+      guard (>= 0.2.2)
+
 GEM
   remote: http://rubygems.org/
   specs:
@@ -46,12 +66,12 @@ GEM
       nokogiri (>= 1.4.1)
     RedCloth (4.2.3)
     abstract (1.0.0)
-    actionmailer (3.0.5.rc1)
-      actionpack (= 3.0.5.rc1)
+    actionmailer (3.0.5)
+      actionpack (= 3.0.5)
       mail (~> 2.2.15)
-    actionpack (3.0.5.rc1)
-      activemodel (= 3.0.5.rc1)
-      activesupport (= 3.0.5.rc1)
+    actionpack (3.0.5)
+      activemodel (= 3.0.5)
+      activesupport (= 3.0.5)
       builder (~> 2.1.2)
       erubis (~> 2.6.6)
       i18n (~> 0.4)
@@ -59,22 +79,22 @@ GEM
       rack-mount (~> 0.6.13)
       rack-test (~> 0.5.7)
       tzinfo (~> 0.3.23)
-    activemodel (3.0.5.rc1)
-      activesupport (= 3.0.5.rc1)
+    activemodel (3.0.5)
+      activesupport (= 3.0.5)
       builder (~> 2.1.2)
       i18n (~> 0.4)
-    activerecord (3.0.5.rc1)
-      activemodel (= 3.0.5.rc1)
-      activesupport (= 3.0.5.rc1)
+    activerecord (3.0.5)
+      activemodel (= 3.0.5)
+      activesupport (= 3.0.5)
       arel (~> 2.0.2)
       tzinfo (~> 0.3.23)
-    activeresource (3.0.5.rc1)
-      activemodel (= 3.0.5.rc1)
-      activesupport (= 3.0.5.rc1)
-    activesupport (3.0.5.rc1)
+    activeresource (3.0.5)
+      activemodel (= 3.0.5)
+      activesupport (= 3.0.5)
+    activesupport (3.0.5)
     addressable (2.2.4)
     annotate (2.4.0)
-    arel (2.0.9.rc1)
+    arel (2.0.9)
     array_stats (0.6.0)
     aws (2.3.34)
       activesupport
@@ -87,15 +107,6 @@ GEM
     bson (1.2.4)
     bson_ext (1.2.4)
     builder (2.1.2)
-    capybara (0.4.1.2)
-      celerity (>= 0.7.9)
-      culerity (>= 0.2.4)
-      mime-types (>= 1.16)
-      nokogiri (>= 1.3.3)
-      rack (>= 1.0.0)
-      rack-test (>= 0.5.4)
-      selenium-webdriver (>= 0.0.27)
-      xpath (~> 0.1.3)
     carrierwave (0.5.2)
       activesupport (~> 3.0)
     celerity (0.8.8)
@@ -136,7 +147,7 @@ GEM
       factory_girl (~> 1.3)
       railties (>= 3.0.0)
     fastthread (1.0.7)
-    ffaker (1.2.0)
+    ffaker (1.3.0)
     ffi (0.6.3)
       rake (>= 0.8.7)
     file-tail (1.0.5)
@@ -165,8 +176,6 @@ GEM
       json (~> 1.4.6)
     guard-passenger (0.2.1)
       guard (~> 0.3)
-    guard-rspec (0.1.9)
-      guard (>= 0.2.2)
     guard-spork (0.1.4)
       guard (>= 0.2.2)
       spork (>= 0.8.4)
@@ -241,17 +250,17 @@ GEM
     rack-ssl-enforcer (0.2.1)
     rack-test (0.5.7)
       rack (>= 1.0)
-    rails (3.0.5.rc1)
-      actionmailer (= 3.0.5.rc1)
-      actionpack (= 3.0.5.rc1)
-      activerecord (= 3.0.5.rc1)
-      activeresource (= 3.0.5.rc1)
-      activesupport (= 3.0.5.rc1)
+    rails (3.0.5)
+      actionmailer (= 3.0.5)
+      actionpack (= 3.0.5)
+      activerecord (= 3.0.5)
+      activeresource (= 3.0.5)
+      activesupport (= 3.0.5)
       bundler (~> 1.0)
-      railties (= 3.0.5.rc1)
-    railties (3.0.5.rc1)
-      actionpack (= 3.0.5.rc1)
-      activesupport (= 3.0.5.rc1)
+      railties (= 3.0.5)
+    railties (3.0.5)
+      actionpack (= 3.0.5)
+      activesupport (= 3.0.5)
       rake (>= 0.8.7)
       thor (~> 0.14.4)
     rake (0.8.7)
@@ -289,14 +298,12 @@ GEM
     silent-postgres (0.0.7)
     sinatra (1.0)
       rack (>= 1.0)
-    spork (0.9.0.rc3)
+    spork (0.9.0.rc4)
     spruz (0.2.5)
     sqlite3 (1.3.3)
     sqlite3-ruby (1.3.3)
       sqlite3 (>= 1.3.3)
     state_machine (0.9.4)
-    steak (1.0.0.rc.2)
-      rspec
     taps (0.3.15)
       json (~> 1.4.6)
       rack (>= 1.0.1)
@@ -333,17 +340,16 @@ DEPENDENCIES
   RedCloth (= 4.2.3)
   activemerchant!
   annotate
-  arel (~> 2.0.9.rc1)
   array_stats (= 0.6.0)
   aws (= 2.3.34)
-  bson_ext (~> 1.2.4)
-  bundler (~> 1.0.10)
-  capybara
+  bson_ext (= 1.2.4)
+  bundler (= 1.0.10)
+  capybara!
   carrierwave (= 0.5.2)
-  configuration (~> 1.2.0)
+  configuration (= 1.2.0)
   countries (= 0.3.0)
   createsend (= 0.2.1)
-  dalli (~> 1.0.2)
+  dalli (= 1.0.2)
   database_cleaner
   delayed_job (= 2.1.3)
   devise (= 1.1.7)
@@ -357,21 +363,20 @@ DEPENDENCIES
   guard-ego
   guard-livereload
   guard-passenger
-  guard-rspec
+  guard-rspec!
   guard-spork
   haml (= 3.0.24)
   has_scope!
   heroku
   heroku_tasks
-  hoptoad_notifier (~> 2.4.5)
-  i18n (~> 0.5.0)
+  hoptoad_notifier (= 2.4.6)
   jammit (= 0.6.0)
   kaminari (~> 0.10.4)
   libxml-ruby (= 1.1.3)
   liquid (= 2.2.2)
   livereload
-  meta_where (~> 1.0.3)
-  mongo (~> 1.2.4)
+  meta_where (= 1.0.3)
+  mongo (= 1.2.4)
   mongoid (~> 2.0.0.rc.7)
   paper_trail (= 2.0.0)
   passenger
@@ -381,7 +386,7 @@ DEPENDENCIES
   rack-google-analytics (= 0.9.2)
   rack-private (= 0.1.5)
   rack-ssl-enforcer (= 0.2.1)
-  rails (~> 3.0.5.rc1)
+  rails (= 3.0.5)
   rb-fsevent
   request-log-analyzer (= 1.9.10)
   rescue_me (= 0.1.0)
@@ -391,9 +396,8 @@ DEPENDENCIES
   settingslogic (= 2.0.6)
   shoulda
   silent-postgres
-  spork (~> 0.9.0.rc3)
+  spork (~> 0.9.0.rc4)
   state_machine (= 0.9.4)
-  steak (= 1.0.0.rc.2)
   taps
   timecop
   uniquify (= 0.1.0)
