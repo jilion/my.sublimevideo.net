@@ -111,22 +111,19 @@ class Invoice < ActiveRecord::Base
   # =================
 
   def self.delay_renew_active_sites_and_create_invoices
-    unless Delayed::Job.already_delayed?('%Invoice%update_billable_sites_and_create_invoices%')
-      delay(:priority => 1, :run_at => Time.now.utc.tomorrow.midnight).renew_active_sites_and_create_invoices
+    unless Delayed::Job.already_delayed?('%Invoice%renew_active_sites_and_create_invoices%')
+      delay(:priority => 3, :run_at => Time.now.utc.tomorrow.midnight).renew_active_sites_and_create_invoices
     end
   end
 
   def self.renew_active_sites_and_create_invoices
-    # implement invoices creation here
-    # 1 - take all active sites
-      # updates them
-    # delay invoice creation
+    # 1 - take all active sites to be renewed
+    # 2 - updates them
+    # 3 - delay invoice creation
 
-      Site.active.to_be_renewed.each do |site|
-        if site.update_for_next_cycle
-          Invoice.delay.complete_invoice(site.id)
-        end
-      end
+    Site.active.to_be_renewed.each do |site|
+      delay(:priority => 1).complete_invoice(site.id) if site.update_for_next_cycle
+    end
 
     delay_renew_active_sites_and_create_invoices
   end
@@ -135,13 +132,10 @@ class Invoice < ActiveRecord::Base
     new(attributes).build
   end
 
-  # def self.usage_statement(user)
-  #   build(
-  #     user:       user,
-  #     started_at: Time.now.utc.beginning_of_month,
-  #     ended_at:   Time.now.utc
-  #   )
-  # end
+  def self.complete_invoice(site_id)
+    site = Site.find(site_id)
+    build(site: site).complete if site
+  end
 
   # def self.delay_complete_invoices_for_billable_users(started_at, ended_at)
   #   unless Delayed::Job.already_delayed?('%Invoice%complete_invoices_for_billable_users%')
@@ -157,31 +151,26 @@ class Invoice < ActiveRecord::Base
   #   delay_complete_invoices_for_billable_users(*TimeUtil.next_full_month(ended_at))
   # end
 
-  def self.complete_invoice(site_id)
-    site = Site.find(site_id)
-    build(site: site).complete if site
-  end
-
-  def self.charge(invoice_id)
-    invoice = find(invoice_id)
-    return if invoice.paid?
-
-    @payment = begin
-      Ogone.purchase(invoice.amount, invoice.user.credit_card_alias, :order_id => invoice.reference, :currency => 'USD')
-    rescue => ex
-      Notify.send("Charging failed: #{ex.message}", :exception => ex)
-      invoice.last_error = ex.message
-      nil
-    end
-    invoice.increment_attempts
-
-    if @payment && (@payment.success? || @payment.params["NCERROR"] == "50001113") # 50001113: orderID already processed with success
-      invoice.succeed
-    else
-      invoice.last_error = @payment.message if @payment
-      invoice.fail
-    end
-  end
+  # def self.charge(invoice_id)
+  #   invoice = find(invoice_id)
+  #   return if invoice.paid?
+  #
+  #   @payment = begin
+  #     Ogone.purchase(invoice.amount, invoice.user.credit_card_alias, :order_id => invoice.reference, :currency => 'USD')
+  #   rescue => ex
+  #     Notify.send("Charging failed: #{ex.message}", :exception => ex)
+  #     invoice.last_error = ex.message
+  #     nil
+  #   end
+  #   invoice.increment_attempts
+  #
+  #   if @payment && (@payment.success? || @payment.params["NCERROR"] == "50001113") # 50001113: orderID already processed with success
+  #     invoice.succeed
+  #   else
+  #     invoice.last_error = @payment.message if @payment
+  #     invoice.fail
+  #   end
+  # end
 
   # ====================
   # = Instance Methods =
@@ -213,27 +202,28 @@ class Invoice < ActiveRecord::Base
   # end
 
   # before_transition :on => [:fail, :succeed]
-  def increment_attempts
-    self.attempts += 1
-  end
+  # def increment_attempts
+  #   self.attempts += 1
+  # end
 
 private
 
   def build_invoice_items
-    user.sites.includes(:versions).billable(started_at, ended_at).each do |site|
-      # Allow to have the right billable plan
-      past_site = site.version_at(ended_at)
-      # Plan
-      invoice_items << InvoiceItem::Plan.build(:site => past_site, :invoice => self)
-    end
+    # user.sites.includes(:versions).billable(started_at, ended_at).each do |site|
+    #   # Allow to have the right billable plan
+    #   past_site = site.version_at(ended_at)
+    # Plan
+    invoice_items << InvoiceItem::Plan.build(invoice: self)
+    # end
   end
 
   def set_invoice_items_amount
-    self.invoice_items_amount = if !total_invoice_items_amount.zero? && total_invoice_items_amount < Billing.minimum_billable_amount
-      Billing.minimum_billable_amount
-    else
-      total_invoice_items_amount
-    end
+    # self.invoice_items_amount = if !total_invoice_items_amount.zero? && total_invoice_items_amount < Billing.minimum_billable_amount
+    #   Billing.minimum_billable_amount
+    # else
+    #   total_invoice_items_amount
+    # end
+    self.invoice_items_amount = total_invoice_items_amount
   end
 
   def set_discount_rate_and_amount
@@ -251,25 +241,25 @@ private
   end
 
   # before_transition [:open, :unpaid] => [:unpaid, :failed], before_transition :on => :retry
-  def delay_charge
-    delayed_job = Invoice.delay(:run_at => charging_delay).charge(self.id)
-    self.charging_delayed_job_id = delayed_job.id
-  end
+  # def delay_charge
+  #   delayed_job = Invoice.delay(:run_at => charging_delay).charge(self.id)
+  #   self.charging_delayed_job_id = delayed_job.id
+  # end
 
   # after_transition :open => :unpaid
-  def send_invoice_completed_email
-    InvoiceMailer.invoice_completed(self).deliver!
-  end
+  # def send_invoice_completed_email
+  #   InvoiceMailer.invoice_completed(self).deliver!
+  # end
 
   # before_transition :on => :complete
-  def set_completed_at
-    self.completed_at = Time.now.utc
-  end
+  # def set_completed_at
+  #   self.completed_at = Time.now.utc
+  # end
 
   # after_transition :on => :complete
-  def decrement_user_remaining_discounted_months
-    self.user.decrement(:remaining_discounted_months) if user.get_discount?
-  end
+  # def decrement_user_remaining_discounted_months
+  #   self.user.decrement(:remaining_discounted_months) if user.get_discount?
+  # end
 
   # after_transition :on => :complete
   def update_user_invoiced_amount
@@ -279,41 +269,41 @@ private
   end
 
   # before_transition any => :failed, before_transition any => :paid
-  def clear_charging_delayed_job_id
-    self.charging_delayed_job_id = nil
-  end
+  # def clear_charging_delayed_job_id
+  #   self.charging_delayed_job_id = nil
+  # end
 
   # before_transition any => :failed
-  def set_failed_at
-    self.failed_at = Time.now.utc
-  end
+  # def set_failed_at
+  #   self.failed_at = Time.now.utc
+  # end
 
   # before_transition :unpaid => :failed
-  def delay_suspend_user
-    self.user.delay_suspend
-  end
+  # def delay_suspend_user
+  #   self.user.delay_suspend
+  # end
 
   # after_transition  :unpaid => :failed
-  def send_charging_failed_email
-    InvoiceMailer.charging_failed(self).deliver!
-  end
+  # def send_charging_failed_email
+  #   InvoiceMailer.charging_failed(self).deliver!
+  # end
 
   # before_transition any => :paid
-  def set_paid_at
-    self.paid_at = Time.now.utc
-  end
+  # def set_paid_at
+  #   self.paid_at = Time.now.utc
+  # end
 
-  def charging_delay
-    if user.suspended? || user.archived?
-      0.seconds
-    elsif open?
-      Billing.days_before_charging.days
-    elsif attempts >= Billing.max_charging_attempts
-      Billing.hours_between_retries_before_user_suspend.hours
-    else
-      (2**attempts).hours
-    end.from_now
-  end
+  # def charging_delay
+  #   if user.suspended? || user.archived?
+  #     0.seconds
+  #   elsif open?
+  #     Billing.days_before_charging.days
+  #   elsif attempts >= Billing.max_charging_attempts
+  #     Billing.hours_between_retries_before_user_suspend.hours
+  #   else
+  #     (2**attempts).hours
+  #   end.from_now
+  # end
 
 end
 

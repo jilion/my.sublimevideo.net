@@ -7,7 +7,7 @@ class InvoicesController < ApplicationController
   end
 
   def usage
-    @invoice = Invoice.new#usage_statement(current_user)
+    @invoice = Invoice.build(site: current_user.sites.first)
     respond_with(@invoice)
   end
 

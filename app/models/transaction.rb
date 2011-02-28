@@ -40,43 +40,50 @@ class Transaction < ActiveRecord::Base
   # = Class Methods =
   # =================
 
-  def self.delay_charge_unpaid_and_failed_invoices
-    unless Delayed::Job.already_delayed?('%Transaction%charge_unpaid_and_failed_invoices%')
+  def self.delay_charge_all_unpaid_and_failed_invoices
+    unless Delayed::Job.already_delayed?('%Transaction%charge_all_unpaid_and_failed_invoices%')
       # Invoice.create_invoices_for_billable_sites is delayed at Time.now.utc.tomorrow.change(:hour => 12)
       # So we delay this task 1 hour after (to be sure all invoices of the day are created)
-      delay(:priority => 2, :run_at => Time.now.utc.tomorrow.change(:hour => 1)).charge_unpaid_and_failed_invoices
+      delay(:priority => 4, :run_at => Time.now.utc.tomorrow.change(:hour => 1)).charge_all_unpaid_and_failed_invoices
     end
   end
 
 
-  def self.charge_unpaid_and_failed_invoices
-    # charging implementation here
-    User.each do |user|
-      unpaid_or_failed_invoices = user.invoices.unpaid_or_failed
-      if unpaid_or_failed_invoices.present?
-        delay(:priority => 3).charge_by_invoice_ids(unpaid_or_failed_invoices.map(&:id))
-      end
+  def self.charge_all_unpaid_and_failed_invoices
+    User.all.each do |user|
+      delay(:priority => 2).charge_unpaid_and_failed_invoices_by_user_id(user.id) if user.invoices.unpaid_or_failed.present?
     end
-    delay_charge_unpaid_and_failed_invoices
+    delay_charge_all_unpaid_and_failed_invoices
+  end
+
+  def self.charge_unpaid_and_failed_invoices_by_user_id(user_id)
+    user = User.find(user_id)
+    if user
+      unpaid_or_failed_invoices = user.invoices.unpaid_or_failed
+      charge_by_invoice_ids(unpaid_or_failed_invoices.map(&:id)) if unpaid_or_failed_invoices.present?
+    end
   end
 
   def self.charge_by_invoice_ids(invoice_ids)
-    invoices = Invoice.where(:id => invoice_ids)
-    transaction = new(:invoices => invoices)
+    invoices = Invoice.where(id: invoice_ids)
+    transaction = new(invoices: invoices)
 
     if transaction.save!
       @payment = begin
-        Ogone.purchase(transaction.amount, transaction.user.credit_card_alias, :order_id => transaction.id, :currency => 'USD')
+        Ogone.purchase(transaction.amount, transaction.user.credit_card_alias, order_id: transaction.id, currency: 'USD')
       rescue => ex
-        Notify.send("Charging failed: #{ex.message}", :exception => ex)
+        Notify.send("Charging failed: #{ex.message}", exception: ex)
         transaction.error = ex.message
         nil
       end
 
-      if @payment && (@payment.success? || @payment.params["NCERROR"] == "50001113") # 50001113: orderID already processed with success
+      # @payment && (@payment.success? || @payment.params["NCERROR"] == "50001113")
+      # 50001113: orderID already processed with success
+      # since a transaction is never retried, we should never get this NCERROR code...
+      if @payment && @payment.success?
         transaction.succeed
       else
-        transaction.error = @payment.message if @payment
+        transaction.error = @payment.params["NCERRORPLUS"] if @payment
         transaction.fail
       end
     else
@@ -92,14 +99,12 @@ class Transaction < ActiveRecord::Base
 
 private
 
-  # =============
-  # = Validates =
-  # =============
-
+  # validates
   def at_least_one_invoice
     self.errors.add(:base, :at_least_one_invoice) if invoices.empty?
   end
 
+  # validates
   def all_invoices_belong_to_same_user
     self.errors.add(:base, :all_invoices_must_belong_to_the_same_user) if invoices.any? { |invoice| invoice.user != invoices.first.user }
   end
@@ -122,7 +127,7 @@ private
 
   # after_transition :on => [:succeed, :fail]
   def update_invoices
-    Invoice.update_all({ :state => state, :"#{state}_at" => updated_at }, { :id => invoice_ids })
+    Invoice.where(id: invoice_ids).update_all(:state => state, :"#{state}_at" => updated_at)
   end
 
 end

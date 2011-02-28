@@ -2,16 +2,20 @@ development:
   login:     "jilion"
   user:      "sublime"
   password:  "WWQMNC89"
+  created_after_10_may_2010: true
 test:
   login:     "jilion"
   user:      "sublime"
   password:  "WWQMNC89"
+  created_after_10_may_2010: true
 staging:
   login:     "jilion"
   user:      "sublime"
   password:  "WWQMNC89"
+  created_after_10_may_2010: true
 production:
   login:     "jilion"
   user:      "sublime"
   password:  "WWQMNC89"
+  created_after_10_may_2010: true
   # signature: "my_ogone_sha1_signature" # extra security, only if you configured your Ogone environment so

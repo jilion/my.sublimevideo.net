@@ -197,6 +197,53 @@ describe Transaction do
 
   describe "Class Methods" do
 
+    describe ".charge_all_unpaid_and_failed_invoices" do
+      before(:all) do
+        Invoice.delete_all
+        @invoice1 = Factory(:invoice, state: 'unpaid')
+        @invoice2 = Factory(:invoice, state: 'failed')
+        @invoice3 = Factory(:invoice, state: 'paid')
+      end
+      before(:each) do
+        Delayed::Job.delete_all
+      end
+      
+      it "should delay invoice charging for unpaid and failed invoices by user" do
+        expect { Transaction.charge_all_unpaid_and_failed_invoices }.to change(Delayed::Job.where(:handler.matches => "%charge_unpaid_and_failed_invoices_by_user_id%"), :count).by(2)
+        djs = Delayed::Job.where(:handler.matches => "%charge_unpaid_and_failed_invoices_by_user_id%")
+        djs.count.should == 2
+        YAML.load(djs.first.handler)['args'][0].should == @invoice1.site.user.id
+        YAML.load(djs.second.handler)['args'][0].should == @invoice2.site.user.id
+
+        @invoice1.should be_unpaid
+        @invoice2.should be_failed
+      end
+
+      it "should delay charge_unpaid_and_failed_invoices for the day after" do
+        Transaction.charge_all_unpaid_and_failed_invoices
+        djs = Delayed::Job.where(:handler.matches => "%charge_all_unpaid_and_failed_invoices%")
+        djs.count.should == 1
+        djs.first.run_at.to_i.should == Time.now.utc.tomorrow.change(:hour => 1).to_i
+      end
+    end # .charge_all_unpaid_and_failed_invoices
+
+
+    describe ".charge_unpaid_and_failed_invoices_by_user_id" do
+      use_vcr_cassette "ogone_visa_payment_2000_alias"
+
+      before(:all) do
+        Invoice.delete_all
+        @invoice1 = Factory(:invoice, state: 'unpaid')
+        @invoice2 = Factory(:invoice, state: 'failed')
+      end
+
+      it "should delay invoice charging for unpaid and failed invoices" do
+        @invoice1.should be_unpaid
+        Transaction.should_receive(:charge_by_invoice_ids).with([@invoice1.id]).and_return(an_instance_of(Transaction))
+        Transaction.charge_unpaid_and_failed_invoices_by_user_id(@invoice1.site.user.id)
+      end
+    end # .charge_unpaid_and_failed_invoices_of_user
+
     describe ".charge_by_invoice_ids" do
       context "with a succeeding purchase" do
         use_vcr_cassette "ogone_visa_payment_2000_alias"
@@ -205,7 +252,7 @@ describe Transaction do
           before(:all) do
             @site1    = Factory(:site, user: @user)
             @invoice1 = Factory(:invoice, site: @site1, state: 'unpaid')
-            @plan_invoice_item = Factory(:plan_invoice_item, invoice: @invoice1)
+            Factory(:plan_invoice_item, invoice: @invoice1)
             @invoice2 = Factory(:invoice, site: Factory(:site, user: @user), state: 'unpaid')
           end
           subject do
@@ -216,7 +263,7 @@ describe Transaction do
           end
 
           it "should charge Ogone for the total amount of the invoices" do
-            Ogone.should_receive(:purchase).with(@invoice1.amount + @invoice2.amount, @invoice1.user.credit_card_alias, { :order_id => an_instance_of(Fixnum), :currency => 'USD' })
+            Ogone.should_receive(:purchase).with(@invoice1.amount + @invoice2.amount, @invoice1.user.credit_card_alias, { order_id: an_instance_of(Fixnum), currency: 'USD' })
             subject
           end
 
@@ -224,18 +271,6 @@ describe Transaction do
             subject.reload.should be_paid
             @invoice1.reload.should be_paid
             @invoice2.reload.should be_paid
-          end
-          
-          it "should change site's paid_plan_cycle_started_at" do
-            old_paid_plan_cycle_started_at = @site1.reload.paid_plan_cycle_started_at
-            subject.reload
-            @site1.reload.paid_plan_cycle_started_at.should_not == old_paid_plan_cycle_started_at
-          end
-
-          it "should change site's paid_plan_cycle_ended_at" do
-            old_paid_plan_cycle_ended_at = @site1.reload.paid_plan_cycle_ended_at
-            subject.reload
-            @site1.reload.paid_plan_cycle_ended_at.should_not == old_paid_plan_cycle_ended_at
           end
         end
 
@@ -248,7 +283,7 @@ describe Transaction do
           subject { Transaction.charge_by_invoice_ids([@invoice1.id, @invoice2.id, @invoice3.id]) }
 
           it "should charge Ogone for the total amount of the invoices" do
-            Ogone.should_receive(:purchase).with(@invoice1.amount + @invoice2.amount, @invoice1.user.credit_card_alias, { :order_id => an_instance_of(Fixnum), :currency => 'USD' })
+            Ogone.should_receive(:purchase).with(@invoice1.amount + @invoice2.amount, @invoice1.user.credit_card_alias, { order_id: an_instance_of(Fixnum), currency: 'USD' })
             subject
           end
 
@@ -268,7 +303,7 @@ describe Transaction do
           before(:all) do
             @site1    = Factory(:site, user: @user)
             @invoice1 = Factory(:invoice, site: @site1, state: 'unpaid')
-            @plan_invoice_item = Factory(:plan_invoice_item, invoice: @invoice1)
+            Factory(:plan_invoice_item, invoice: @invoice1)
             @invoice2 = Factory(:invoice, site: Factory(:site, user: @user), state: 'unpaid')
           end
           subject do
@@ -279,26 +314,18 @@ describe Transaction do
           end
 
           it "should charge Ogone for the total amount of the invoices" do
-            Ogone.should_receive(:purchase).with(@invoice1.amount + @invoice2.amount, @invoice1.user.credit_card_alias, { :order_id => an_instance_of(Fixnum), :currency => 'USD' })
+            Ogone.should_receive(:purchase).with(@invoice1.amount + @invoice2.amount, @invoice1.user.credit_card_alias, { order_id: an_instance_of(Fixnum), currency: 'USD' })
             subject
           end
 
-          it "should set transaction and invoices to paid state" do
+          it "should set error field" do
+            subject.reload.error.should == "We received an unknown status for the transaction. We will contact your acquirer and update the status of the transaction within one working day. Please check the status later."
+          end
+
+          it "should set transaction and invoices to failed state" do
             subject.reload.should be_failed
             @invoice1.reload.should be_failed
             @invoice2.reload.should be_failed
-          end
-          
-          it "should not change site's paid_plan_cycle_started_at" do
-            old_paid_plan_cycle_started_at = @site1.reload.paid_plan_cycle_started_at
-            subject.reload
-            @site1.reload.paid_plan_cycle_started_at.should == old_paid_plan_cycle_started_at
-          end
-
-          it "should not change site's paid_plan_cycle_ended_at" do
-            old_paid_plan_cycle_ended_at = @site1.reload.paid_plan_cycle_ended_at
-            subject.reload
-            @site1.reload.paid_plan_cycle_ended_at.should == old_paid_plan_cycle_ended_at
           end
         end
 
@@ -312,7 +339,7 @@ describe Transaction do
           subject { Transaction.charge_by_invoice_ids([@invoice1.id, @invoice2.id, @invoice3.id]) }
 
           it "should charge Ogone for the total amount of the invoices" do
-            Ogone.should_receive(:purchase).with(@invoice1.amount + @invoice2.amount, @invoice1.user.credit_card_alias, { :order_id => an_instance_of(Fixnum), :currency => 'USD' })
+            Ogone.should_receive(:purchase).with(@invoice1.amount + @invoice2.amount, @invoice1.user.credit_card_alias, { order_id: an_instance_of(Fixnum), currency: 'USD' })
             subject
           end
 
@@ -324,7 +351,7 @@ describe Transaction do
           end
         end
       end
-    end
+    end # .charge_by_invoice_ids
 
   end # Class Methods
 
@@ -339,6 +366,8 @@ def valid_attributes
     :cc_verification_value => '111'
   }
 end
+
+
 
 # == Schema Information
 #

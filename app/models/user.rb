@@ -20,7 +20,7 @@ class User < ActiveRecord::Base
   # ================
 
   belongs_to :suspending_delayed_job, :class_name => "::Delayed::Job"
-  
+
   has_many :sites
   has_many :invoices, :through => :sites
 
@@ -30,9 +30,7 @@ class User < ActiveRecord::Base
   # = Validations =
   # ===============
 
-  validates_presence_of     :email
-  validates                 :email, :email_uniqueness => true
-  validates_format_of       :email, :with => Devise.email_regexp, :allow_blank => true
+  validates :email, :presence => true, :email_uniqueness => true, :format => { :with => Devise.email_regexp }, :allow_blank => true
 
   with_options :if => :password_required? do |v|
     v.validates_presence_of     :password
@@ -55,9 +53,9 @@ class User < ActiveRecord::Base
   # = Callbacks =
   # =============
 
-  before_save   :store_credit_card, :keep_some_credit_card_info # in user/credit_card
-  after_update  :update_email_on_zendesk, :charge_failed_invoices
-  after_save    :newsletter_subscription
+  before_save  :store_credit_card, :keep_some_credit_card_info # in user/credit_card
+  after_update :update_email_on_zendesk, :charge_failed_invoices
+  after_save   :newsletter_subscription
 
   # =================
   # = State Machine =
