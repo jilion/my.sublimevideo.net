@@ -79,4 +79,4 @@ module Spec
   end
 end
 
-RSpec.configuration.include(Spec::Support::AcceptanceHelpers)
+RSpec.configuration.include(Spec::Support::AcceptanceHelpers, :type => :request)

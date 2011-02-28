@@ -75,13 +75,14 @@ Spork.each_run do
 
   # Factory need to be required each launch to prevent loading of all models
   require 'factory_girl'
+  require 'capybara/rspec'
   require Rails.root.join("spec/factories")
 
   Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
 
   RSpec.configure do |config|
     config.include Shoulda::ActionController::Matchers
-    config.include Capybara
+    config.include Capybara, :type => :request
     config.include Devise::TestHelpers, :type => :controller
   end
 end
