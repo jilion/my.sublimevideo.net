@@ -84,7 +84,7 @@ describe "Mails" do
         page.should have_content("Sending in progress...")
         
         Delayed::Job.where(:handler.matches => "%deliver_and_log%").count.should == 1
-        Delayed::Worker.new(:quiet => true).work_off
+        @worker.work_off
         ActionMailer::Base.deliveries.size.should == 1
         
         latest_log = MailLog.by_date.first

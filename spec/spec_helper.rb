@@ -46,7 +46,7 @@ Spork.prefork do
 
     config.before(:all) do
       PaperTrail.enabled = false
-      @worker    = Delayed::Worker.new
+      @worker    = Delayed::Worker.new(:quiet => true)
       @dev_plan  = Factory(:dev_plan)
       @beta_plan = Factory(:beta_plan)
       @paid_plan = Factory(:plan)

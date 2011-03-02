@@ -333,19 +333,26 @@ describe User do
       end
     end
 
-    pending "#archive" do
+    describe "#archive", :focus => true do
       before(:each) { @user.reload.update_attribute(:state, 'active') }
       subject { @user.reload }
 
       context "from active state" do
+        it "should require current_password" do
+          subject.should be_active
+          subject.archive
+          subject.should_not be_archived
+        end
+
         it "should set the user to archived" do
           subject.should be_active
+          subject.current_password = "123456"
           subject.archive
           subject.should be_archived
         end
       end
 
-      describe "Callbacks" do
+      pending "Callbacks" do
         describe "before_transition :on => :archive, :do => [:set_archived_at, :archive_sites, :delay_complete_current_invoice]" do
           specify do
             subject.archived_at.should be_nil

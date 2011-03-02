@@ -7,8 +7,8 @@ class User < ActiveRecord::Base
   # Mail template
   liquid_methods :email, :first_name, :last_name, :full_name
 
-  attr_accessor :terms_and_conditions, :use
-  attr_accessible :first_name, :last_name, :email, :remember_me, :password, :postal_code, :country,
+  attr_accessor :terms_and_conditions, :use, :current_password
+  attr_accessible :first_name, :last_name, :email, :remember_me, :password, :current_password, :postal_code, :country,
                   :use_personal, :use_company, :use_clients,
                   :company_name, :company_url, :company_job_title, :company_employees, :company_videos_served,
                   :newsletter, :terms_and_conditions
@@ -20,7 +20,7 @@ class User < ActiveRecord::Base
   # ================
 
   belongs_to :suspending_delayed_job, :class_name => "::Delayed::Job"
-  
+
   has_many :sites
   has_many :invoices, :through => :sites
 
@@ -50,6 +50,7 @@ class User < ActiveRecord::Base
   validate :validates_credit_card_attributes # in user/credit_card
   validate :validates_use_presence, :on => :create
   validate :validates_company_fields, :on => :create
+  validate :validates_current_password_on_archive
 
   # =============
   # = Callbacks =
@@ -205,6 +206,17 @@ private
       self.errors.add(:company_job_title, :blank) unless company_job_title.present?
       self.errors.add(:company_employees, :blank) unless company_employees.present?
       self.errors.add(:company_videos_served, :blank) unless company_videos_served.present?
+    end
+  end
+
+  # validate
+  def validates_current_password_on_archive
+    if state_changed? && archived?
+      if current_password.blank?
+        self.errors.add(:current_password, :blank)
+      elsif !valid_password?(current_password)
+        self.errors.add(:current_password, :invalid)
+      end
     end
   end
 

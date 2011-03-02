@@ -44,7 +44,7 @@ module RecurringJob
     def supervise
       # check if recurring jobs are all delayed twice
       unless all_delayed?
-        sleep 5
+        sleep 10
         unless all_delayed?
           Notify.send("WARNING!!! All recurring jobs are not delayed, please investigate quickly!")
         end

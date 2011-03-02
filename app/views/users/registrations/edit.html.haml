@@ -14,7 +14,7 @@
           .content.password_checker
             %p.desc Your current password is needed to perform this action:
             .entry.password
-              = f.label :current_password, "Password", :class => "icon"
+              = f.label :current_password, "Current password", :class => "icon"
               = f.password_field :current_password, :placeholder => "Your current password", :class => "text", :required => true
               .actions
                 = f.submit "Done", :class => "small_button"
@@ -22,7 +22,7 @@
             %p
               or
               = link_to "cancel", edit_user_registration_path
-              
+
 
     %h3.section_title= "Email & Password"
     .entry.email
@@ -32,12 +32,6 @@
     .entry.password
       = f.label :password, "", :class => "icon"
       = f.password_field :password, :class => "text show_password", :placeholder => "New password", :autocomplete => "off", :value => params[:user] && params[:user][:password]
-
-    -##current_password_wrap{ :style => (@user.errors[:current_password].empty? ? "display:none;" : "") }
-    -#  %p.note= "We need your current password to confirm your changes"
-    -#  .entry.password
-    -#    = f.label :current_password, "", :class => "icon"
-    -#    = f.password_field :current_password, :class => "text show_password", :placeholder => "Current password", :required => true
 
     .entry.update
       = f.submit "Update", :class => "submit small_button", :id => "user_credentials_submit"
