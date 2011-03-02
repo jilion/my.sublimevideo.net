@@ -41,15 +41,15 @@ class Site < ActiveRecord::Base
   # billing
   scope :billable,      lambda { active.where({ :plan_id.not_in => Plan.where(:name => %w[beta dev]).map(&:id) }, { :next_cycle_plan_id => nil } | { :next_cycle_plan_id.ne => Plan.dev_plan.id }) }
   scope :not_billable,  lambda { where({ :state.ne => 'active' } | ({ :state => 'active' } & ({ :plan_id.in => Plan.where(:name => %w[beta dev]).map(&:id), :next_cycle_plan_id => nil } | { :next_cycle_plan_id => Plan.dev_plan }))) }
-  scope :to_be_renewed, where(:paid_plan_cycle_ended_at.lt => Time.now.utc)
+  scope :to_be_renewed, lambda { where(:paid_plan_cycle_ended_at.lt => Time.now.utc) }
 
   # usage_alert scopes
   scope :plan_player_hits_reached_alerted_this_month,                where(:plan_player_hits_reached_alert_sent_at.gte => Time.now.utc.beginning_of_month)
   scope :plan_player_hits_reached_not_alerted_this_month,            where({ :plan_player_hits_reached_alert_sent_at.lt => Time.now.utc.beginning_of_month } | { :plan_player_hits_reached_alert_sent_at => nil })
 
   # filter
-  scope :beta,                 joins(:plan).where(:plan => { :name => "beta" })
-  scope :dev,                  joins(:plan).where(:plan => { :name => "dev" })
+  scope :beta,                 lambda { joins(:plan).where(:plan => { :name => "beta" }) }
+  scope :dev,                  lambda { joins(:plan).where(:plan => { :name => "dev" }) }
   scope :active,               where(:state => 'active')
   scope :suspended,            where(:state => 'suspended')
   scope :archived,             where(:state => 'archived')
@@ -104,7 +104,7 @@ class Site < ActiveRecord::Base
   validates :plan,        :presence => { :message => "Please choose a plan" }
   validates :player_mode, :inclusion => { :in => PLAYER_MODES }
 
-  validates :hostname,        :presence => { :if => proc { |s| s.in_paid_plan? } }, :hostname_uniqueness => true, :hostname => true
+  validates :hostname,        :presence => { :if => :in_paid_plan? }, :hostname => true, :hostname_uniqueness => true
   validates :extra_hostnames, :extra_hostnames => true
   validates :dev_hostnames,   :dev_hostnames => true
 
@@ -116,8 +116,12 @@ class Site < ActiveRecord::Base
   # =============
 
   before_validation :set_user_attributes
+
   before_save :prepare_cdn_update, :clear_alerts_sent_at
+  before_save :reset_paid_plan_initially_started_at, :update_for_next_cycle, :if => :plan_id_changed?
+
   after_save :execute_cdn_update
+
   after_create :delay_ranks_update
 
   # =================
@@ -187,6 +191,7 @@ class Site < ActiveRecord::Base
     end
   end
 
+  # Recurring task
   def self.delay_update_last_30_days_counters_for_not_archived_sites
     unless Delayed::Job.already_delayed?('%Site%update_last_30_days_counters_for_not_archived_sites%')
       delay(:run_at => Time.new.utc.tomorrow.midnight + 1.hour).update_last_30_days_counters_for_not_archived_sites
@@ -325,7 +330,9 @@ class Site < ActiveRecord::Base
   end
 
   def current_billable_usage
-    @current_billable_usage ||= usages.between(paid_plan_cycle_started_at, paid_plan_cycle_ended_at).to_a.sum { |su| su.main_player_hits + su.main_player_hits_cached + su.extra_player_hits + su.extra_player_hits_cached }
+    @current_billable_usage ||= usages.between(paid_plan_cycle_started_at, paid_plan_cycle_ended_at).to_a.sum do |su|
+      su.main_player_hits + su.main_player_hits_cached + su.extra_player_hits + su.extra_player_hits_cached
+    end
   end
 
   def current_percentage_of_plan_used
@@ -348,40 +355,34 @@ class Site < ActiveRecord::Base
     dev_hostnames.split(', ').any? { |h| self.class.referrer_match_hostname?(referrer, h, '', wildcard) }
   end
 
+  # before_save :if => :plan_id_changed?
+  def reset_paid_plan_initially_started_at
+    self.paid_plan_initially_started_at = paid_plan_cycle_ended_at ? paid_plan_cycle_ended_at.tomorrow.midnight : Time.now.utc.midnight
+  end
+  
+  # before_save :if => :plan_id_changed?
   def update_for_next_cycle
-    if plan.paid_plan? || next_cycle_plan
+    if (plan.paid_plan? || next_cycle_plan) && (paid_plan_cycle_ended_at.nil? || paid_plan_cycle_ended_at < Time.now.utc)
       new_plan = next_cycle_plan || plan
 
       if new_plan.dev_plan?
         self.paid_plan_cycle_started_at = nil
         self.paid_plan_cycle_ended_at   = nil
       else
-        self.paid_plan_cycle_started_at = paid_plan_cycle_ended_at ? paid_plan_cycle_ended_at.tomorrow.midnight : Time.now.utc.midnight
-        self.paid_plan_cycle_ended_at   = (paid_plan_cycle_started_at + 1.send(new_plan.cycle) - 1.day).end_of_day
+        self.paid_plan_cycle_started_at = if paid_plan_cycle_ended_at
+          paid_plan_cycle_ended_at.tomorrow.midnight
+        else
+          paid_plan_initially_started_at.midnight
+        end
+        self.paid_plan_cycle_ended_at = (paid_plan_initially_started_at + advance_for_next_cycle_end(new_plan)).end_of_day
       end
       self.plan            = new_plan
       self.next_cycle_plan = nil
-
-      begin
-        self.save!
-      rescue => ex
-        Notify.send(ex.message, :exception => ex)
-        false
-      end
-    else
-      false # nothing to update
     end
+    true # don't block the callbacks chain
   end
-
+  
 private
-
-  # before_validation
-  def set_user_attributes
-    # for user cc fields only
-    if user && user_attributes.present? && in_paid_plan?
-      user.attributes = user_attributes
-    end
-  end
 
   # validate
   def at_least_one_domain_set
@@ -397,16 +398,26 @@ private
     end
   end
 
+  # before_validation
+  def set_user_attributes
+    # for user cc fields only
+    if user && user_attributes.present? && in_paid_plan?
+      user.attributes = user_attributes
+    end
+  end
+
   # before_save
   def prepare_cdn_update
     @loader_needs_update  = false
     @license_needs_update = false
-
-    if new_record? || player_mode_changed? || (state_changed? && %w[dev active].include?(state))
+    common_conditions = new_record? || (state_changed? && active?)
+    
+    if common_conditions || player_mode_changed?
       self.cdn_up_to_date  = false
       @loader_needs_update = true
     end
-    if new_record? || settings_changed? || (state_changed? && %w[dev active].include?(state))
+
+    if common_conditions || settings_changed? || plan_id_changed?
       self.cdn_up_to_date   = false
       @license_needs_update = true
     end
@@ -417,16 +428,16 @@ private
     self.plan_player_hits_reached_alert_sent_at = nil if plan_id_changed?
   end
 
-  # after_create
-  def delay_ranks_update
-    Site.delay(:priority => 100, :run_at => 30.seconds.from_now).update_ranks(self.id)
-  end
-
   # after_save
   def execute_cdn_update
     if @loader_needs_update || @license_needs_update
       Site.delay.update_loader_and_license(self.id, :loader => @loader_needs_update, :license => @license_needs_update)
     end
+  end
+
+  # after_create
+  def delay_ranks_update
+    Site.delay(:priority => 100, :run_at => 30.seconds.from_now).update_ranks(self.id)
   end
 
   # before_transition :on => :archive
@@ -437,6 +448,26 @@ private
   # after_transition :to => [:suspended, :archived]
   def delay_remove_loader_and_license
     Site.delay.remove_loader_and_license(self.id)
+  end
+
+  def months_since_paid_plan_initially_started_at
+    now = Time.now.utc
+    if paid_plan_initially_started_at && (now - paid_plan_initially_started_at >= 1.month)
+      months = now.month - paid_plan_initially_started_at.month
+      months -= 1 if months > 0 && (now.day - paid_plan_initially_started_at.day) < 0
+      
+      (now.year - paid_plan_initially_started_at.year) * 12 + months
+    else
+      0
+    end
+  end
+  
+  def advance_for_next_cycle_end(plan)
+    if plan.yearly?
+      (months_since_paid_plan_initially_started_at + 12).months
+    else
+      (months_since_paid_plan_initially_started_at + 1).months
+    end - 1.day
   end
 
 end
@@ -466,6 +497,7 @@ end
 #  extra_hostnames                            :string(255)
 #  plan_id                                    :integer
 #  cdn_up_to_date                             :boolean
+#  paid_plan_initially_started_at             :datetime
 #  paid_plan_cycle_started_at                 :datetime
 #  paid_plan_cycle_ended_at                   :datetime
 #  next_cycle_plan_id                         :integer

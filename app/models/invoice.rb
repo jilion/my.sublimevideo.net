@@ -110,6 +110,7 @@ class Invoice < ActiveRecord::Base
   # = Class Methods =
   # =================
 
+  # Recurring task
   def self.delay_renew_active_sites_and_create_invoices
     unless Delayed::Job.already_delayed?('%Invoice%renew_active_sites_and_create_invoices%')
       delay(:priority => 3, :run_at => Time.now.utc.tomorrow.midnight).renew_active_sites_and_create_invoices
@@ -122,7 +123,16 @@ class Invoice < ActiveRecord::Base
     # 3 - delay invoice creation
 
     Site.active.to_be_renewed.each do |site|
-      delay(:priority => 1).complete_invoice(site.id) if site.update_for_next_cycle
+      site.update_for_next_cycle
+
+      if site.changed?
+        begin
+          site.save!
+          delay(:priority => 1).complete_invoice(site.id)
+        rescue => ex
+          Notify.send(ex.message, :exception => ex)
+        end
+      end
     end
 
     delay_renew_active_sites_and_create_invoices

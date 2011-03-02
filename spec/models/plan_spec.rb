@@ -82,6 +82,12 @@ describe Plan do
     it { Factory(:plan, :name => "dev").should_not be_beta_plan }
   end
 
+  describe "#monthly?, #yearly? and #nonely?" do
+    it { Factory(:plan, cycle: "month").should be_monthly }
+    it { Factory(:plan, cycle: "year").should be_yearly }
+    it { Factory(:plan, cycle: "none").should be_nonely }
+  end
+
 end
 
 

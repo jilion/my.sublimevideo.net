@@ -10,6 +10,7 @@ class UsersStat
   # = Class Methods =
   # =================
 
+  # Recurring task
   def self.delay_create_users_stats
     unless Delayed::Job.already_delayed?('%UsersStat%create_users_stats%')
       delay(:run_at => Time.new.utc.tomorrow.midnight).create_users_stats # every hour

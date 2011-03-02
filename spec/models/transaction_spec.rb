@@ -114,23 +114,17 @@ describe Transaction do
 
       describe "#succeed" do
         context "from unprocessed state" do
-          before(:each) { subject.reload }
+          before(:each) { subject.reload.succeed }
 
-          it "should set transaction to paid" do
-            subject.succeed
-            subject.should be_paid
-          end
+          it { should be_paid }
         end
       end
 
       describe "#fail" do
         context "from unprocessed state" do
-          before(:each) { subject.reload }
+          before(:each) { subject.reload.fail }
 
-          it "should set transaction to failed" do
-            subject.fail
-            subject.should be_failed
-          end
+          it { should be_failed }
         end
       end
 

@@ -155,6 +155,7 @@ ActiveRecord::Schema.define(:version => 20110223164835) do
     t.string   "extra_hostnames"
     t.integer  "plan_id"
     t.boolean  "cdn_up_to_date"
+    t.datetime "paid_plan_initially_started_at"
     t.datetime "paid_plan_cycle_started_at"
     t.datetime "paid_plan_cycle_ended_at"
     t.integer  "next_cycle_plan_id"

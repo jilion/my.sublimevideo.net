@@ -39,7 +39,8 @@ class Transaction < ActiveRecord::Base
   # =================
   # = Class Methods =
   # =================
-
+  
+  # Recurring task
   def self.delay_charge_all_unpaid_and_failed_invoices
     unless Delayed::Job.already_delayed?('%Transaction%charge_all_unpaid_and_failed_invoices%')
       # Invoice.create_invoices_for_billable_sites is delayed at Time.now.utc.tomorrow.change(:hour => 12)

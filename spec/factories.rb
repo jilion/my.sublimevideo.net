@@ -75,9 +75,9 @@ end
 
 Factory.define :plan do |f|
   f.sequence(:name) { |n| "small#{n}" }
-  f.cycle         "month"
-  f.player_hits   10_000
-  f.price         1000
+  f.cycle           "month"
+  f.player_hits     10_000
+  f.price           1000
 end
 
 Factory.define :dev_plan, :class => Plan  do |f|

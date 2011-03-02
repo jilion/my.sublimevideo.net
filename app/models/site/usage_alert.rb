@@ -11,6 +11,7 @@ module Site::UsageAlert
   # = User class methods extension =
   # ================================
 
+  # Recurring task
   def self.delay_send_usage_alerts(interval = 1.hour)
     unless Delayed::Job.already_delayed?('%Site::UsageAlert%send_usage_alerts%')
       delay(:run_at => interval.from_now).send_usage_alerts

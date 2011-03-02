@@ -16,7 +16,7 @@ gem 'kaminari',              '~> 0.10.4'
 gem 'delayed_job',           '2.1.3'
 gem 'has_scope',             :git => 'git://github.com/rymai/has_scope.git'
 gem 'jammit',                '0.6.0'
-gem 'meta_where',            '1.0.3'
+gem 'meta_where',            '1.0.4'
 gem 'hoptoad_notifier',      '2.4.6'
 gem 'prowl',                 '0.1.3'
 # gem 'activemerchant',        '~> 1.9.1'
@@ -34,7 +34,7 @@ gem 'devise_invitable',      :git => 'git://github.com/rymai/devise_invitable.gi
 gem 'dalli',                 '1.0.2'
 
 gem 'aws',                   '2.3.34' # bugs in 2.4.2
-gem 'fog',                   '0.5.1'
+gem 'fog',                   '0.6.0'
 gem 'carrierwave',           '0.5.2'
 
 gem 'bson_ext',              '1.2.4'
@@ -62,7 +62,6 @@ group :production, :staging do
 end
 
 group :development, :test do
-  # gem 'silent-postgres'
   gem 'rspec-rails'
   gem 'passenger'
   gem 'timecop'
@@ -81,15 +80,14 @@ end
 
 group :test do
   gem 'growl'
-  gem 'spork',              '~> 0.9.0.rc4'
+  gem 'spork',              '~> 0.9.0.rc'
   gem 'rb-fsevent'
   gem 'guard'
   gem 'guard-ego'
   gem 'guard-bundler'
   gem 'guard-passenger'
   gem 'guard-spork'
-  # gem 'guard-rspec', :git => 'git://github.com/jimmycuadra/guard-rspec.git', :branch => 'arbitrary-arguments'
-  gem 'guard-rspec', :path => '/Users/remy/Development/Ruby/Gems/guard@guard-rspec'
+  gem 'guard-rspec'
   gem 'livereload'
   gem 'guard-livereload'
   gem 'shoulda'

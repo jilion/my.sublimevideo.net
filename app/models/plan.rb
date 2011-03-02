@@ -23,7 +23,8 @@ class Plan < ActiveRecord::Base
   # ==========
   # = Scopes =
   # ==========
-  
+
+  scope :free_plans, where(:name => ["dev", "beta"])
   scope :paid_plans, where(:name.not_in => ["dev", "beta"])
 
   # =================
@@ -37,7 +38,7 @@ class Plan < ActiveRecord::Base
   def self.beta_plan
     where(:name => "beta").first
   end
-  
+
   # ====================
   # = Instance Methods =
   # ====================
@@ -65,6 +66,12 @@ class Plan < ActiveRecord::Base
 
   def paid_plan?
     !dev_plan? && !beta_plan?
+  end
+
+  CYCLES.each do |c|
+    define_method("#{c}ly?") do
+      cycle == c
+    end
   end
 
 end

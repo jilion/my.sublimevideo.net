@@ -40,6 +40,7 @@ class Log
   # = Class Methods =
   # =================
 
+  # Recurring task
   def self.delay_fetch_and_create_new_logs
     # Sites
     Log::Voxcast.delay_fetch_download_and_create_new_logs

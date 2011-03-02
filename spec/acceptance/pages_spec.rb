@@ -53,7 +53,8 @@ describe "Pages" do
           # page.should have_content("\"#{@invoice.transactions.failed.last.error}\"")
         end
 
-        scenario "updating credit card" do
+        # FIXME Re-implement the "retry" charging method called from #charge_failed_invoices in user.rb
+        pending "updating credit card" do
           click_link_or_button "Edit credit card"
 
           VCR.use_cassette('credit_card_visa_validation') do
@@ -66,7 +67,8 @@ describe "Pages" do
           current_url.should =~ %r(^http://[^/]+/suspended$)
         end
 
-        scenario "updating credit card and paying the only failed invoice" do
+        # FIXME Re-implement the "retry" charging method called from #charge_failed_invoices in user.rb
+        pending "updating credit card and paying the only failed invoice" do
           click_link_or_button "Edit credit card"
 
           VCR.use_cassette('credit_card_visa_validation') do
@@ -90,12 +92,13 @@ describe "Pages" do
           # current_url.should =~ %r(^http://[^/]+/sites$)
         end
 
-        scenario "updating credit card and paying first failed invoice, then the second failed invoice" do
+        # FIXME Re-implement the "retry" charging method called from #charge_failed_invoices in user.rb
+        pending "updating credit card and paying first failed invoice, then the second failed invoice" do
           @site2        = Factory(:site, user: @current_user)
           @invoice2     = Factory(:invoice, site: @site, state: 'failed', failed_at: Time.utc(2010,2,10))
           @transaction2 = Factory(:transaction, invoices: [@invoice2], state: 'failed', error: "Credit Card invalid")
           @worker.work_off
-          
+
           visit '/suspended'
 
           # FIXME

@@ -16,6 +16,7 @@ module User::CreditCard
   # = User class methods extension =
   # ================================
 
+  # Recurring task
   def self.delay_send_credit_card_expiration(interval = 1.week)
     unless Delayed::Job.already_delayed?('%User::CreditCard%send_credit_card_expiration%')
       delay(:run_at => interval.from_now).send_credit_card_expiration

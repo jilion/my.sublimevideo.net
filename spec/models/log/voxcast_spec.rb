@@ -1,11 +1,11 @@
 require 'spec_helper'
 
 describe Log::Voxcast do
-  
+
   context "Factory build" do
     use_vcr_cassette "one_logs"
     subject { Factory.build(:log_voxcast, :name => 'cdn.sublimevideo.net.log.1274773200-1274773260.gz') }
-    
+
     its(:hostname)   { should == 'cdn.sublimevideo.net' }
     its(:started_at) { should == Time.zone.at(1274773200).utc }
     its(:ended_at)   { should == Time.zone.at(1274773260).utc }
@@ -14,11 +14,11 @@ describe Log::Voxcast do
     it { should_not be_referrers_parsed }
     it { should be_valid }
   end
-  
+
   describe "Validations" do
     context "with already the same log in db" do
       use_vcr_cassette "one_saved_logs"
-      
+
       it "should validate uniqueness of name" do
         Factory(:log_voxcast)
         log = Factory.build(:log_voxcast)
@@ -27,7 +27,7 @@ describe Log::Voxcast do
       end
     end
   end
-  
+
   context "Factory create" do
     use_vcr_cassette "one_saved_logs"
     subject { Factory(:log_voxcast) }
@@ -69,7 +69,7 @@ describe Log::Voxcast do
       job.priority.should == 20
     end
   end
-  
+
   context "Factory from 4076.voxcdn.com" do
     before(:each) do
       VoxcastCDN.stub(:logs_download).with('4076.voxcdn.com.log.1279103340-1279103400.gz') {
@@ -115,7 +115,7 @@ describe Log::Voxcast do
           Delayed::Job.order(:created_at.asc).first.name.should == 'Class#fetch_download_and_create_new_logs'
         end
       end
-      
+
       it "should download and save only news logs" do
         VCR.use_cassette('multi_logs_with_already_existing_log_fix') do
           Factory(:log_voxcast, :name => 'cdn.sublimevideo.net.log.1274348520-1274348580.gz')
@@ -123,12 +123,12 @@ describe Log::Voxcast do
         end
       end
     end
-    
+
     describe ".delay_fetch_download_and_create_new_logs" do
       it "should launch delayed fetch_download_and_create_new_logs" do
         lambda { Log::Voxcast.delay_fetch_download_and_create_new_logs }.should change(Delayed::Job, :count).by(1)
       end
-      
+
       it "should not launch delayed fetch_download_and_create_new_logs if one pending already present" do
         Log::Voxcast.delay_fetch_download_and_create_new_logs
         lambda { Log::Voxcast.delay_fetch_download_and_create_new_logs }.should_not change(Delayed::Job, :count)

@@ -5,9 +5,9 @@
   - if failed_invoices.empty? && current_user.failed_invoices_count_on_suspend > 0
     %h3.section_title{ :style => "color:green" }= "Your account will be re-activated"
     %p= t("user.will_be_reactivated")
-  - elsif failed_invoices.present? && failed_invoices.all? { |invoice| invoice.will_be_charged? }
-    %h3.section_title{ :style => "color:#d84d0a" }= "Charging in progress"
-    %p= t("user.failed_invoices_are_being_processed")
+  -# - elsif failed_invoices.present? && failed_invoices.all? { |invoice| invoice.will_be_charged? }
+  -#   %h3.section_title{ :style => "color:#d84d0a" }= "Charging in progress"
+  -#   %p= t("user.failed_invoices_are_being_processed")
   
   %h3.section_title= "Suspension reason"
   - if current_user.failed_invoices_count_on_suspend > 0
@@ -37,7 +37,8 @@
               = link_to("view details", invoice_path(invoice), :onclick => "window.open(this); return false", :class => "details")
             %p= raw "#{content_tag(:strong, display_amount(invoice.amount))} on #{invoice_dates(invoice)}"
             %p{ :class =>  "status " + (invoice.failed? ? "failed" : "") }= charging_status(invoice)
-            - if !invoice.will_be_charged? && !current_user.cc_expired?
+            -# - if !invoice.will_be_charged? && !current_user.cc_expired?
+            - if !current_user.cc_expired?
               = form_for invoice, :url => pay_invoice_path(invoice), :html => { :method => 'post', "data-password-protected" => true } do |f|
                 .entry.update
                   = f.submit "Pay the #{invoice_dates(invoice)} invoice", :class => "submit_dynamic_button"
