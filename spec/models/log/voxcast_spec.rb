@@ -119,7 +119,7 @@ describe Log::Voxcast do
   describe "Class Methods" do
     it "should download and save new logs & launch delayed job" do
       VCR.use_cassette('multi_logs_fix') do
-        lambda { Log::Voxcast.fetch_download_and_create_new_logs }.should change(Log::Voxcast, :count).by(4)
+        lambda { Log::Voxcast.fetch_download_and_create_new_logs }.should change(Delayed::Job, :count).by(9)
         Delayed::Job.order(:created_at.asc).first.name.should == 'Class#fetch_download_and_create_new_logs'
       end
     end
@@ -127,7 +127,7 @@ describe Log::Voxcast do
     it "should download and only save news logs" do
       VCR.use_cassette('multi_logs_with_already_existing_log_fix') do
         Factory(:log_voxcast, :name => 'cdn.sublimevideo.net.log.1274348520-1274348580.gz')
-        lambda { Log::Voxcast.fetch_download_and_create_new_logs }.should change(Log::Voxcast, :count).by(3)
+        lambda { Log::Voxcast.fetch_download_and_create_new_logs; Delayed::Worker.new(:quiet => true).work_off }.should change(Log::Voxcast, :count).by(3)
       end
     end
 
