@@ -92,9 +92,10 @@ feature "Users actions:" do
       end
     end
 
-    pending "with the email of an archived user" do
+    feature "with the email of an archived user" do
       scenario "archived user" do
         archived_user = Factory(:user)
+        archived_user.current_password = '123456'
         archived_user.archive
 
         fill_in "Email",              :with => archived_user.email
@@ -117,22 +118,26 @@ feature "Users actions:" do
 
   end
 
-  scenario "update email" do
+  scenario "update email (with current password confirmation)" do
     sign_in_as :user, { :email => "old@jilion.com" }
     click_link('John Doe')
     fill_in "Email",            :with => "New@jilion.com"
-    fill_in "Current password", :with => "123456"
     click_button "user_credentials_submit"
+
+    fill_in "Current password", :with => "123456"
+    click_button "Done"
 
     User.last.email.should == "new@jilion.com"
   end
 
-  scenario "update password" do
+  scenario "update password (with current password confirmation)" do
     sign_in_as :user
     click_link('John Doe')
     fill_in "Password", :with => "newpassword"
-    fill_in "Current password", :with => "123456"
     click_button "user_credentials_submit"
+
+    fill_in "Current password", :with => "123456"
+    click_button "Done"
 
     User.last.valid_password?("newpassword").should be_true
   end
@@ -156,6 +161,21 @@ feature "Users actions:" do
     page.should have_css('.inline_errors')
     page.should have_content("First name can't be blank")
     User.last.full_name.should == "John Doe"
+  end
+
+  scenario "delete his account (with current password confirmation)" do
+    sign_in_as :user
+    click_link('John Doe')
+
+    click_button "Delete account"
+
+    fill_in "Password", :with => "123456"
+    click_button "Done"
+
+    current_url.should =~ %r(^http://[^/]+/login$)
+    page.should_not have_content "John Doe"
+    page.should have_content "User was successfully destroyed."
+    User.last.should be_archived
   end
 
   scenario "accept invitation should always redirect to /register" do
@@ -221,7 +241,8 @@ feature "User session:" do
       page.should have_content "John Doe"
     end
 
-    pending "archived user" do
+    scenario "archived user" do
+      @current_user.current_password = '123456'
       @current_user.archive
       visit "/login"
       page.should_not have_content('John Doe')

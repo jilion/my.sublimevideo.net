@@ -55,14 +55,8 @@ class Log
 
   def self.create_new_logs(new_logs_names)
     existings_logs_names = only(:name).any_in(:name => new_logs_names).map(&:name)
-    new_logs_names.each do |name|
-      if existings_logs_names.exclude?(name)
-        begin
-          create(:name => name)
-        rescue => ex
-          HoptoadNotifier.notify(ex)
-        end
-      end
+    (new_logs_names - existings_logs_names).each do |name|
+      delay(:priority => 20).create(:name => name)
     end
   rescue => ex
     HoptoadNotifier.notify(ex)

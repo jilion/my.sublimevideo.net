@@ -131,6 +131,61 @@ describe User do
       end
     end
 
+    context "when update email" do
+      it "should validate current_password presence" do
+        user = Factory(:user)
+        user.update_attributes(:email => "bob@doe.com").should be_false
+        user.errors[:current_password].should == ["can't be blank"]
+      end
+
+      it "should validate current_password" do
+        user = Factory(:user)
+        user.update_attributes(:email => "bob@doe.com", :current_password => "wrong").should be_false
+        user.errors[:current_password].should == ["is invalid"]
+      end
+
+      it "should not validate current_password with other errors" do
+        user = Factory(:user)
+        user.update_attributes(:password => "newone", :email => 'wrong').should be_false
+        user.errors[:current_password].should be_empty
+      end
+    end
+
+    context "when update password" do
+      it "should validate current_password presence" do
+        user = Factory(:user)
+        user.update_attributes(:password => "newone").should be_false
+        user.errors[:current_password].should == ["can't be blank"]
+      end
+
+      it "should validate current_password" do
+        user = Factory(:user)
+        user.update_attributes(:password => "newone", :current_password => "wrong").should be_false
+        user.errors[:current_password].should == ["is invalid"]
+      end
+
+      it "should not validate current_password with other errors" do
+        user = Factory(:user)
+        user.update_attributes(:password => "newone", :email => '').should be_false
+        user.errors[:current_password].should be_empty
+      end
+    end
+
+    context "when archive" do
+      it "should validate current_password presence" do
+        user = Factory(:user)
+        user.archive.should be_false
+        user.errors[:current_password].should == ["can't be blank"]
+      end
+
+      it "should validate current_password" do
+        user = Factory(:user)
+        user.current_password = 'wrong'
+        user.archive.should be_false
+        user.errors[:current_password].should == ["is invalid"]
+      end
+    end
+
     describe "user credit card when at least 1 credit card field is given" do
       it "should be valid without any credit card field" do
         user = Factory.build(:user, :cc_update => nil, :cc_number => nil, :cc_first_name => nil, :cc_last_name => nil, :cc_verification_value => nil, :cc_expire_on => nil)
@@ -333,19 +388,26 @@ describe User do
       end
     end
 
-    pending "#archive" do
+    describe "#archive" do
       before(:each) { @user.reload.update_attribute(:state, 'active') }
       subject { @user.reload }
 
       context "from active state" do
+        it "should require current_password" do
+          subject.should be_active
+          subject.archive
+          subject.should_not be_archived
+        end
+
         it "should set the user to archived" do
           subject.should be_active
+          subject.current_password = "123456"
           subject.archive
           subject.should be_archived
         end
       end
 
-      describe "Callbacks" do
+      pending "Callbacks" do
         describe "before_transition :on => :archive, :do => [:set_archived_at, :archive_sites, :delay_complete_current_invoice]" do
           specify do
             subject.archived_at.should be_nil
@@ -421,15 +483,17 @@ describe User do
       end
 
       it "should not delay Module#put if user has no zendesk_id" do
-        user.email = "new@email.com"
+        user.email            = "new@email.com"
+        user.current_password = '123456'
         user.save
         user.email.should == "new@email.com"
         Delayed::Job.count.should == 3
       end
 
       it "should delay Module#put if the user has a zendesk_id and his email has changed" do
-        user.zendesk_id = 15483194
-        user.email      = "new@email.com"
+        user.zendesk_id       = 15483194
+        user.email            = "new@email.com"
+        user.current_password = '123456'
         user.save
         user.email.should == "new@email.com"
         Delayed::Job.all.any? { |dj| dj.name == 'Module#put' }.should be_true

@@ -1,0 +1,12 @@
+#password_checker.popup
+  .wrap
+    .content.password_checker
+      %p.desc= password_description
+      .entry.password
+        = f.label :current_password, password_label, :class => "icon"
+        = f.password_field :current_password, :placeholder => password_placeholder, :class => "text", :required => true
+        .actions
+          = f.submit "Done", :class => "small_button"
+        .spacer
+    = link_to cancel_url, :class => 'close',  :onclick => "return MySublimeVideo.closePopup()" do
+      %span Close

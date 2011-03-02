@@ -1,160 +1,106 @@
 require 'spec_helper'
 
-feature "Sites" do
-  before(:all) do
-    # move this somewhere else and DRY it with the populate
-    plans = [
-      { name: "dev",        cycle: "month", player_hits: 0,         price: 0 },
-      { name: "small",      cycle: "month", player_hits: 3_000,     price: 695 },
-      { name: "perso",      cycle: "month", player_hits: 50_000,    price: 1495 },
-      { name: "pro",        cycle: "month", player_hits: 200_000,   price: 4995 },
-      { name: "enterprise", cycle: "month", player_hits: 1_000_000, price: 9995 },
-      { name: "small",      cycle: "year",  player_hits: 3_000,     price: 6900 },
-      { name: "perso",      cycle: "year",  player_hits: 50_000,    price: 14900 },
-      { name: "pro",        cycle: "year",  player_hits: 200_000,   price: 49900 },
-      { name: "enterprise", cycle: "year",  player_hits: 1_000_000, price: 99900 }
-    ]
-    plans.each { |attributes| Plan.create(attributes) }
-  end
+feature "Sites actions:" do
+
   background do
     sign_in_as :user
   end
 
-  # WAITING FOR OCTAVE TO FINISH THE PAGE
-  feature "index" do
-    pending "sort buttons displayed only if count of sites > 1" do
-      create_site
-      page.should have_content('rymai.com')
-      page.should have_no_css('div.sorting')
-      page.should have_no_css('a.sort')
+  scenario "add a new site" do
+    visit "/sites"
+    fill_in "Domain", :with => "google.com"
+    click_button "Add"
 
-      create_site :hostname => "remy.me"
+    current_url.should =~ %r(http://[^/]+/sites)
+    page.should have_content('google.com')
 
-      current_url.should =~ %r(http://[^/]+/sites)
-      page.should have_content('rymai.com')
-      page.should have_content('remy.me')
-      page.should have_css('div.sorting')
-      page.should have_css('a.sort.date')
-      page.should have_css('a.sort.hostname')
+    Delayed::Job.last.name.should == 'Site#activate'
+    @worker.work_off
+
+    site = @current_user.sites.last
+    site.hostname.should == "google.com"
+    site.loader.read.should include(site.token)
+    site.license.read.should include(site.template_hostnames)
+  end
+
+  pending "edit a site" do
+    Capybara.default_wait_time = 5
+    site = Factory(:site, :user => @current_user, :hostname => 'google.com', :state => 'active')
+    visit "/sites"
+
+    page.should have_content('google.com')
+
+    within(:css, "tr#site_#{site.id}") do
+      click_link "Settings"
     end
+    fill_in "Development domains", :with => "google.local"
+    click_button "Update"
 
-    pending "pagination links displayed only if count of sites > Site.per_page" do
-      Responders::PaginatedResponder.stub(:per_page).and_return(1)
-      create_site
+    current_url.should =~ %r(http://[^/]+/sites)
+    page.should have_content('google.com')
 
-      page.should have_no_content('Next')
-      page.should have_no_css('nav.pagination')
-      page.should have_no_css('span.next')
+    site = @current_user.sites.last
+    site.dev_hostnames.should == "google.local"
+  end
 
-      create_site :hostname => "remy.me"
+  scenario "archive a pending site" do
+    visit "/sites"
+    fill_in "Domain", :with => "google.com"
+    click_button "Add"
 
-      current_url.should =~ %r(http://[^/]+/sites)
-      page.should have_css('nav.pagination')
-      page.should have_css('span.prev')
-      page.should have_css('em.current')
-      page.should have_css('a.next')
-    end
+    page.should have_content('google.com')
+    @current_user.sites.last.hostname.should == "google.com"
+    VoxcastCDN.stub_chain(:delay, :purge).twice
 
-    pending "user suspended" do
+    click_button "Delete"
+
+    page.should_not have_content('google.com')
+    @current_user.sites.not_archived.should be_empty
+  end
+
+  scenario "sort buttons displayed only if count of sites > 1" do
+    Factory(:site, :user => @current_user, :hostname => 'google.com', :state => 'active')
+    visit "/sites"
+    page.should have_content('google.com')
+    page.should have_no_css('div.sorting')
+    page.should have_no_css('a.sort')
+
+    fill_in "Domain", :with => "remy.me" # one day it'll be mine!
+    click_button "Add"
+
+    page.should have_content('google.com')
+    page.should have_content('remy.me')
+    page.should have_css('div.sorting')
+    page.should have_css('a.sort.date')
+    page.should have_css('a.sort.hostname')
+  end
+
+  scenario "pagination links displayed only if count of sites > Site.per_page" do
+    Site.stub!(:per_page).and_return(1)
+    visit "/sites"
+    fill_in "Domain", :with => "google.com"
+    click_button "Add"
+
+    page.should have_no_content('Next')
+    page.should have_no_css('div.pagination')
+    page.should have_no_css('span.next_page')
+
+    fill_in "Domain", :with => "remy.me"
+    click_button "Add"
+
+    page.should have_css('div.pagination')
+    page.should have_css('span.previous_page')
+    page.should have_css('em.current_page')
+    page.should have_css('a.next_page')
+  end
+
+  context "public release only", :release => :public do
+    scenario "user suspended" do
       @current_user.suspend
       visit "/sites"
 
       current_url.should =~ %r(http://[^/]+/suspended)
     end
-
-    pending "site without an hostname" do
-      create_site(:hostname => "")
-
-      page.should have_content('add an hostname')
-      page.should have_no_css("#activate_site_#{Site.last.id}")
-    end
   end
 
-  scenario "create" do
-    create_site
-
-    current_url.should =~ %r(http://[^/]+/sites)
-    page.should have_content('rymai.com')
-
-    @worker.work_off
-
-    site = @current_user.sites.last
-    site.hostname.should == "rymai.com"
-    site.loader.read.should include(site.token)
-    site.license.read.should include(site.template_hostnames)
-  end
-
-  # WAITING FOR OCTAVE TO FINISH THE PAGE
-  feature "edit" do
-    background do
-      create_site :cdn_up_to_date => true
-    end
-
-    pending "update settings" do
-      edit_site_settings :path => '/ipad', :dev_hostnames => 'sjobs.dev, apple.local'
-
-      current_url.should =~ %r(http://[^/]+/sites)
-      page.should have_content('apple.com/ipad')
-      @current_user.sites.last.dev_hostnames.should == "apple.local, sjobs.dev"
-    end
-
-  end
-
-  # WAITING FOR OCTAVE TO FINISH THE PAGE
-  pending "archive a site" do
-    create_site
-    visit "/sites/#{@current_user.sites.last.token}/edit"
-    VoxcastCDN.stub_chain(:delay, :purge).twice
-    click_button "Destroy"
-
-    page.should_not have_content('rymai.com')
-    @current_user.sites.last.should be_archived
-  end
-
-end
-
-def create_site(*args)
-  options = args.extract_options!
-
-  visit "/sites/new"
-  fill_in "site_hostname", :with => options[:hostname] || 'rymai.com'
-  fill_in "site_extra_hostnames", :with => options[:extra_hostnames] || 'rymai.ch, rymai.fr'
-  fill_in "site_dev_hostnames", :with => options[:dev_hostnames] || 'rymai.local'
-  fill_in "site_path", :with => options[:path] || '/videos'
-  check   "Wildcard"
-  choose "plan_pro"
-
-  if !@current_user.cc? || @current_user.cc_expired?
-    VCR.use_cassette('credit_card_visa_validation') do
-      fill_in "site_user_attributes_cc_full_name", :with => "John Doe"
-      fill_in "site_user_attributes_cc_number", :with => "4111111111111111"
-      fill_in "site_user_attributes_cc_verification_value", :with => "111"
-      click_button "Create"
-    end
-  else
-    click_button "Create"
-  end
-  Site.last.update_attribute(:cdn_up_to_date, true) if options[:cdn_up_to_date]
-end
-
-def edit_site_settings(options = {})
-  visit_settings(options[:id] || @current_user.sites.last.id)
-  fill_in "site_hostname", :with => options[:hostname] || 'apple.com'
-  fill_in "site_extra_hostnames", :with => options[:extra_hostnames] || ''
-  fill_in "site_dev_hostnames", :with => options[:dev_hostnames] || ''
-  fill_in "site_path", :with => options[:path] || ''
-  choose "plan_enterprise"
-  click_button "Update settings"
-end
-
-def edit_site_plan(options = {})
-  visit_settings(options[:id] || @current_user.sites.last.id)
-  choose "plan_enterprise"
-  click_button "Update plan"
-end
-
-def visit_settings(id)
-  within(:css, "tr#site_#{id}") do
-    click_link "Settings"
-  end
 end

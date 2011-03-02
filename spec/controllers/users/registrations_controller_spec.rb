@@ -1,64 +1,33 @@
 require 'spec_helper'
 
 describe Users::RegistrationsController do
-  
   before(:each) { request.env['devise.mapping'] = Devise.mappings[:user] }
-  
+
   context "with logged in user" do
     before(:each) { sign_in :user, authenticated_user }
-    
-    context "with wrong password" do
-      before(:each) { @current_user.should_receive(:valid_password?).with('abcd').and_return(false) }
-      
-      describe "PUT :update" do
-        it "should redirect to /account/edit" do
-          put :update, :user => { :current_password => 'abcd' }
-          request.flash[:alert].should be_present
-          response.should redirect_to(edit_user_registration_url)
-        end
+
+    describe "DELETE :destroy" do
+
+      it "should redirect to /login if current_password is sent" do
+        @current_user.should_receive(:current_password=).with('123456')
+        @current_user.should_receive(:archive).and_return(true)
+
+        delete :destroy, :user => { :current_password => '123456' }
+        assigns(:user).should be(@current_user)
+        response.should redirect_to(new_user_session_url)
       end
-      
-      describe "DELETE :destroy" do
-        it "should redirect to /account/edit" do
-          delete :destroy, :user => { :current_password => 'abcd' }
-          request.flash[:alert].should be_present
-          response.should redirect_to(edit_user_registration_url)
-        end
-      end
-    end
-      
-    context "with good password" do
-      before(:each) { @current_user.should_receive(:valid_password?).with('123456').and_return(true) }
-      
-      describe "PUT :update" do
-        it "should redirect to /sites when update_attributes succeeds" do
-          @current_user.stub(:update_with_password) { true }
-          
-          put :update, :user => { :current_password => '123456' }
-          request.flash[:alert].should be_nil
-          response.should redirect_to(edit_user_registration_url)
-        end
-        
-        it "should redirect to /sites/:token/edit when update_attributes fails" do
-          @current_user.stub(:update_with_password) { false }
-          @current_user.should_receive(:errors).any_number_of_times.and_return(["error"])
-          
-          put :update, :user => { :current_password => '123456' }
-          request.flash[:alert].should be_nil
-          response.should render_template(:edit)
-        end
-      end
-      
-      describe "DELETE :destroy" do
-        it "should redirect to /sites" do
-          @current_user.should_receive(:archive)
-          
-          delete :destroy, :user => { :current_password => '123456' }
-          assigns(:user).should be(@current_user)
-          response.should redirect_to(new_user_session_url)
-        end
+
+      it "should render 'users/registrations/edit' without" do
+        @current_user.should_receive(:current_password=).with('')
+        @current_user.should_receive(:archive).and_return(false)
+
+        delete :destroy, :user => { :current_password => '' }
+        assigns(:user).should be(@current_user)
+        response.should render_template('users/registrations/edit')
       end
     end
   end
-  
+
+  it_should_behave_like "redirect when connected as", '/suspended', [[:user, { :suspended? => true }]], { :delete => :destroy }
+
 end
