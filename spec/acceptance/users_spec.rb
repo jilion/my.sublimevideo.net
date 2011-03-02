@@ -95,6 +95,7 @@ feature "Users actions:" do
     feature "with the email of an archived user" do
       scenario "archived user" do
         archived_user = Factory(:user)
+        archived_user.current_password = '123456'
         archived_user.archive
 
         fill_in "Email",              :with => archived_user.email
@@ -162,19 +163,18 @@ feature "Users actions:" do
     User.last.full_name.should == "John Doe"
   end
 
-  scenario "delete his account (with current password confirmation)", :focus => true do
+  scenario "delete his account (with current password confirmation)" do
     sign_in_as :user
     click_link('John Doe')
 
     click_button "Delete account"
 
-    save_and_open_page
-
-    fill_in "Current password", :with => "123456"
+    fill_in "Password", :with => "123456"
     click_button "Done"
 
     current_url.should =~ %r(^http://[^/]+/login$)
     page.should_not have_content "John Doe"
+    page.should have_content "User was successfully destroyed."
     User.last.should be_archived
   end
 
@@ -242,6 +242,7 @@ feature "User session:" do
     end
 
     scenario "archived user" do
+      @current_user.current_password = '123456'
       @current_user.archive
       visit "/login"
       page.should_not have_content('John Doe')

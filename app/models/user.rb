@@ -35,9 +35,8 @@ class User < ActiveRecord::Base
   validates_format_of       :email, :with => Devise.email_regexp, :allow_blank => true
 
   with_options :if => :password_required? do |v|
-    v.validates_presence_of     :password
-    v.validates_confirmation_of :password
-    v.validates_length_of       :password, :within => Devise.password_length, :allow_blank => true
+    v.validates_presence_of :password, :on => :create
+    v.validates_length_of   :password, :within => Devise.password_length, :allow_blank => true
   end
 
   validates :first_name,  :presence => true
@@ -56,6 +55,7 @@ class User < ActiveRecord::Base
   # = Callbacks =
   # =============
 
+  before_save   :set_password
   before_save   :store_credit_card, :keep_some_credit_card_info # in user/credit_card
   after_update  :update_email_on_zendesk, :charge_failed_invoices
   after_save    :newsletter_subscription
@@ -153,6 +153,12 @@ class User < ActiveRecord::Base
   # ====================
 
   # Devise overriding
+  def password=(new_password)
+    @password = new_password
+    # setted in #set_password
+  end
+
+  # Devise overriding
   # allow suspended user to login (devise)
   def active?
     %w[active suspended].include?(state) && invitation_token.nil?
@@ -211,7 +217,7 @@ private
 
   # validate
   def validates_current_password_on_archive
-    if state_changed? && archived?
+    if !new_record? && ((state_changed? && archived?) || @password.present? || email_changed?) && errors.empty?
       if current_password.blank?
         self.errors.add(:current_password, :blank)
       elsif !valid_password?(current_password)
@@ -262,6 +268,15 @@ private
   # after_transition :on => :archive
   def send_account_archived_email
     UserMailer.account_archived(self).deliver!
+  end
+
+  # before_save
+  def set_password
+    if @password.present?
+      self.password_salt = self.class.password_salt
+      self.encrypted_password = password_digest(@password)
+      @password = nil
+    end
   end
 
   # after_save
