@@ -1,12 +1,12 @@
 module RecurringJob
-  
+
   logs_tasks = [
     '%Log::Voxcast%fetch_download_and_create_new_logs%',
     '%Log::Amazon::S3::Player%fetch_and_create_new_logs%',
     '%Log::Amazon::S3::Loaders%fetch_and_create_new_logs%',
     '%Log::Amazon::S3::Licenses%fetch_and_create_new_logs%'
   ]
-  
+
   NAMES = if MySublimeVideo::Release.public?
     [
       '%User::LimitAlert%send_limit_alerts%',
@@ -16,9 +16,9 @@ module RecurringJob
   else
     logs_tasks
   end
-  
+
   class << self
-    
+
     def launch_all
       Log.delay_fetch_and_create_new_logs
       if MySublimeVideo::Release.public?
@@ -27,26 +27,26 @@ module RecurringJob
         User::LimitAlert.delay_send_limit_alerts
       end
     end
-    
+
     def supervise
       # check if recurring jobs are all delayed twice
       unless all_delayed?
-        sleep 5
+        sleep 10
         unless all_delayed?
           Notify.send("WARNING!!! All recurring jobs are not delayed, please investigate quickly!")
         end
       end
     end
-    
+
     def test_exception
       raise "THIS A DELAYED JOB EXCEPTION TEST"
     end
-    
+
   private
-    
+
     def all_delayed?
       NAMES.all? { |name| Delayed::Job.already_delayed?(name) }
     end
-    
+
   end
 end
