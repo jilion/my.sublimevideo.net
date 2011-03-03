@@ -76,8 +76,8 @@ class User < ActiveRecord::Base
     before_transition :on => :unsuspend, :do => [:set_failed_invoices_count_on_suspend, :unsuspend_sites]
     after_transition  :on => :unsuspend, :do => :send_account_unsuspended_email
 
-    before_transition :on => :archive, :do => [:set_archived_at, :archive_sites]
-    after_transition  :on => :archive, :do => :send_account_archived_email
+    before_transition :on => :archive, :do => :set_archived_at
+    after_transition  :on => :archive, :do => [:send_account_archived_email, :archive_sites]
   end
 
   # ==========

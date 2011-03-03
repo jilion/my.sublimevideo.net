@@ -359,7 +359,7 @@ class Site < ActiveRecord::Base
   def reset_paid_plan_initially_started_at
     self.paid_plan_initially_started_at = paid_plan_cycle_ended_at ? paid_plan_cycle_ended_at.tomorrow.midnight : Time.now.utc.midnight
   end
-  
+
   # before_save :if => :plan_id_changed?
   def update_for_next_cycle
     if (plan.paid_plan? || next_cycle_plan) && (paid_plan_cycle_ended_at.nil? || paid_plan_cycle_ended_at < Time.now.utc)
@@ -381,7 +381,7 @@ class Site < ActiveRecord::Base
     end
     true # don't block the callbacks chain
   end
-  
+
 private
 
   # validate
@@ -411,7 +411,7 @@ private
     @loader_needs_update  = false
     @license_needs_update = false
     common_conditions = new_record? || (state_changed? && active?)
-    
+
     if common_conditions || player_mode_changed?
       self.cdn_up_to_date  = false
       @loader_needs_update = true
@@ -455,13 +455,13 @@ private
     if paid_plan_initially_started_at && (now - paid_plan_initially_started_at >= 1.month)
       months = now.month - paid_plan_initially_started_at.month
       months -= 1 if months > 0 && (now.day - paid_plan_initially_started_at.day) < 0
-      
+
       (now.year - paid_plan_initially_started_at.year) * 12 + months
     else
       0
     end
   end
-  
+
   def advance_for_next_cycle_end(plan)
     if plan.yearly?
       (months_since_paid_plan_initially_started_at + 12).months
