@@ -46,7 +46,7 @@ describe InvoiceMailer do
     specify do
       # FIXME
       # @last_delivery.subject.should == "January 2010 invoice is ready to be charged."
-      @last_delivery.body.encoded.should include "if you have any question or doubt about its content, please use our support form:"
+      @last_delivery.body.encoded.should include "If you have any question or doubt about its content, please use our support form:"
       @last_delivery.body.encoded.should include "/support"
     end
   end

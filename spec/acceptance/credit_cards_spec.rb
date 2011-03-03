@@ -2,7 +2,7 @@ require 'spec_helper'
 
 feature "Credit cards update:" do
 
-  context "use has no credit card" do
+  context "user has no credit card" do
     background do
       sign_in_as :user, :without_cc => true
       @current_user.should_not be_credit_card
@@ -21,7 +21,7 @@ feature "Credit cards update:" do
 
   end
 
-  context "user has a credit card already" do
+  context "user already has a credit card" do
     background do
       sign_in_as :user
       @current_user.should be_credit_card

@@ -80,7 +80,7 @@ end
 
 group :test do
   gem 'growl'
-  gem 'spork',              '~> 0.9.0.rc'
+  gem 'spork',              '~> 0.9.0.rc4'
   gem 'rb-fsevent'
   gem 'guard'
   gem 'guard-ego'

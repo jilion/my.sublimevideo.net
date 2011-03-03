@@ -8,16 +8,16 @@ feature "Sites pagination:" do
 
   scenario "pagination links displayed only if count of sites > Site.per_page" do
     Factory(:site)
-    Site.all.size.should == 1
+    Site.count.should == 1
     visit "/admin/sites"
     page.should have_no_css('nav.pagination')
     page.should have_no_css('span.prev')
     page.should have_no_css('em.current')
     page.should have_no_css('a.next')
-
+    
     Factory(:site)
     visit "/admin/sites"
-
+    
     page.should have_css('nav.pagination')
     page.should have_css('span.prev')
     page.should have_css('em.current')

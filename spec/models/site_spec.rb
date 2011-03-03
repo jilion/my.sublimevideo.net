@@ -128,7 +128,7 @@ describe Site do
           @site_not_to_be_renewed = Factory(:site)
         end
       end
-      
+
       specify { Site.to_be_renewed.all.should == [@site_to_be_renewed] }
     end
 
@@ -543,13 +543,13 @@ describe Site do
 
       it "should update ranks" do
         Timecop.travel(10.minutes.ago) do
-          site = Factory(:site, hostname: 'sublimevideo.net')
+          @site = Factory(:site, hostname: 'sublimevideo.net')
         end
         VCR.use_cassette('sites/ranks') do
           @worker.work_off
         end
-        site.reload.google_rank.should == 0
-        site.alexa_rank.should == 100573
+        @site.reload.google_rank.should == 0
+        @site.alexa_rank.should == 100573
       end
     end # after_create
 
@@ -1243,7 +1243,7 @@ describe Site do
             @site.paid_plan_cycle_started_at.should == Time.utc(2011,1,30).midnight
             @site.paid_plan_cycle_ended_at.should == Time.utc(2011,2,27).end_of_day
           end
-          
+
           1.upto(13) do |i|
             it "should update paid plan cycle #{i} months after" do
               Timecop.travel(Time.utc(2011,1,30) + i.months + 1.day) do
