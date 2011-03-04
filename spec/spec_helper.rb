@@ -61,7 +61,6 @@ Spork.prefork do
     config.after(:each) do
       DatabaseCleaner.clean
       Delayed::Job.delete_all
-      # Mongoid.master.collections.select { |c| c.name !~ /system/ }.each(&:drop)
     end
 
     config.after(:all) do

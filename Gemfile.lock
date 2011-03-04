@@ -162,8 +162,6 @@ GEM
       thor (~> 0.14.6)
     guard-bundler (0.1.2)
       guard (>= 0.2.2)
-    guard-ego (0.0.1)
-      guard (>= 0.2.1)
     guard-livereload (0.1.7)
       em-websocket (~> 0.2.0)
       guard (>= 0.2.2)
@@ -356,7 +354,6 @@ DEPENDENCIES
   growl
   guard
   guard-bundler
-  guard-ego
   guard-livereload
   guard-passenger
   guard-rspec
