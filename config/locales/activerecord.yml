@@ -22,7 +22,7 @@ en:
             base:
               at_least_one_domain: "Please set at least one domain"
               credit_card_needed:  "You need a valid credit card in order to register this site"
-              current_password_needed:  "You need a to enter your current password to perform this action."
+              current_password_needed:  "You need to enter your current password to perform this action."
             hostname:
               invalid:  "is invalid"
               wildcard: "is invalid, please check wildcard option instead"
