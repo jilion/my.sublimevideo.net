@@ -47,7 +47,7 @@ class User < ActiveRecord::Base
   validate :validates_credit_card_attributes # in user/credit_card
   validate :validates_use_presence, :on => :create
   validate :validates_company_fields, :on => :create
-  validate :validates_current_password_on_archive
+  validate :validates_current_password
 
   # =============
   # = Callbacks =
@@ -214,7 +214,7 @@ private
   end
 
   # validate
-  def validates_current_password_on_archive
+  def validates_current_password
     if !new_record? && ((state_changed? && archived?) || @password.present? || email_changed?) && errors.empty?
       if current_password.blank?
         self.errors.add(:current_password, :blank)

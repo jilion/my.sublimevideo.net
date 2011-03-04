@@ -203,6 +203,72 @@ describe Site do
         it { should have(0).error_on(:base) }
       end
     end
+
+    context "when update paid plan settings" do
+      subject { Factory(:site, plan: @paid_plan) }
+
+      it "should validate current_password presence" do
+        subject.update_attributes(:hostname => "newone.com").should be_false
+        subject.errors[:base].should == ["You need a to enter your current password to perform this action."]
+      end
+
+      it "should validate current_password" do
+        subject.update_attributes(:hostname => "newone.com", :user_attributes => { :current_password => "wrong" }).should be_false
+        subject.errors[:base].should == ["You need a to enter your current password to perform this action."]
+      end
+
+      it "should not validate current_password with other errors" do
+        subject.update_attributes(:hostname => "", :email => '').should be_false
+        subject.errors[:base].should be_empty
+      end
+    end
+
+    context "when update dev plan settings" do
+      subject { Factory(:site, plan: @dev_plan) }
+
+      it "should not validate current_password" do
+        subject.update_attributes(:hostname => "newone.com").should be_true
+        subject.errors[:base].should be_empty
+      end
+    end
+
+    context "when update dev plan to paid plan" do
+      subject { Factory(:site, plan: @dev_plan) }
+
+      it "should not validate current_password" do
+        subject.update_attributes(:plan_id => @paid_plan).should be_true
+        subject.errors[:base].should be_empty
+      end
+    end
+
+    context "when update paid plan to dev plan" do
+      subject { Factory(:site, plan: @paid_plan) }
+
+      it "should validate current_password presence" do
+        subject.update_attributes(:plan_id => @dev_plan).should be_false
+        subject.errors[:base].should == ["You need a to enter your current password to perform this action."]
+      end
+
+      it "should validate current_password" do
+        subject.update_attributes(:plan_id => @dev_plan, :user_attributes => { :current_password => "wrong" }).should be_false
+        subject.errors[:base].should == ["You need a to enter your current password to perform this action."]
+      end
+    end
+
+    context "when archive with paid plan" do
+      subject { Factory(:site, plan: @paid_plan) }
+
+      it "should validate current_password presence" do
+        subject.archive.should be_false
+        subject.errors[:base].should == ["You need a to enter your current password to perform this action."]
+      end
+
+      it "should validate current_password" do
+        subject.user.current_password = 'wrong'
+        subject.archive.should be_false
+        subject.errors[:base].should == ["You need a to enter your current password to perform this action."]
+      end
+    end
   end
 
   describe "Attributes Accessors" do
@@ -766,6 +832,7 @@ describe Site do
       context "with versioning" do
         before(:all) do
           @site = with_versioning do
+            puts "Before all: #{1.day.ago}"
             Timecop.travel(1.day.ago)
             site = Factory(:site, hostname: "jilion.com", extra_hostnames: 'jilion.org, jilion.net', dev_hostnames: "localhost, 127.0.0.1")
             Timecop.return
@@ -781,11 +848,12 @@ describe Site do
         it { subject.referrer_type("http://jilion.local").should == "dev" }
         it { subject.referrer_type("http://jilion.co.uk").should == "invalid" }
 
-        it { subject.referrer_type("http://jilion.net", 1.day.ago).should == "extra" }
-        it { subject.referrer_type("http://jilion.com", 1.day.ago).should == "main" }
-        it { subject.referrer_type("http://jilion.org", 1.day.ago).should == "extra" }
-        it { subject.referrer_type("http://jilion.local", 1.day.ago).should == "invalid" }
-        it { subject.referrer_type("http://jilion.co.uk", 1.day.ago).should == "invalid" }
+        it { puts "In it: #{1.day.ago}" }
+        it { subject.referrer_type("http://jilion.net", 1.day.ago + 10.second).should == "extra" }
+        it { subject.referrer_type("http://jilion.com", 1.day.ago + 10.second).should == "main" }
+        it { subject.referrer_type("http://jilion.org", 1.day.ago + 10.second).should == "extra" }
+        it { subject.referrer_type("http://jilion.local", 1.day.ago + 10.second).should == "invalid" }
+        it { subject.referrer_type("http://jilion.co.uk", 1.day.ago + 10.second).should == "invalid" }
       end
 
       context "without wildcard or path" do

@@ -280,7 +280,7 @@ describe Invoice do
           @worker.work_off
         end
         Delayed::Job.where(:handler.matches => "%complete_invoice%").should be_empty
-        
+
         @site1.reload.invoices.size.should == 1
         @site2.reload.invoices.size.should == 1
         @site3.reload.invoices.should be_empty

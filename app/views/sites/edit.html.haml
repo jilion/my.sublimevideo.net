@@ -6,7 +6,7 @@
     %li.last= link_to "Change plan", edit_site_plan_path(@site), :onclick => "MySublimeVideo.makeSticky(this, '.segmented_menu')"
 
   #site_settings_box.section_box
-    = form_for @site, :html => { :id => "edit_site_settings", "data-password-protected" => @site.active? } do |f|
+    = form_for @site, :html => { :id => "edit_site_settings", "data-password-protected" => @site.in_paid_plan? } do |f|
       = render 'fields', :f => f
       .actions.center
         = f.submit 'Update settings', :class => "submit big"

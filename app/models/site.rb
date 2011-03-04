@@ -110,6 +110,7 @@ class Site < ActiveRecord::Base
 
   validate  :at_least_one_domain_set, :if => :in_dev_plan?
   validate  :verify_presence_of_credit_card, :unless => :in_dev_plan?
+  validate  :validates_current_password, :if => :in_paid_plan?
 
   # =============
   # = Callbacks =
@@ -384,6 +385,14 @@ class Site < ActiveRecord::Base
 
 private
 
+  # before_validation
+  def set_user_attributes
+    # for user cc fields only
+    if user && user_attributes.present? && in_paid_plan?
+      user.attributes = user_attributes
+    end
+  end
+
   # validate
   def at_least_one_domain_set
     if hostname.blank? && dev_hostnames.blank? && extra_hostnames.blank?
@@ -398,11 +407,13 @@ private
     end
   end
 
-  # before_validation
-  def set_user_attributes
-    # for user cc fields only
-    if user && user_attributes.present? && in_paid_plan?
-      user.attributes = user_attributes
+
+  # validate if in_paid_plan?
+  def validates_current_password
+    if !new_record? && changes.present? && errors.empty?
+      if user.current_password.blank? || !user.valid_password?(user.current_password)
+        self.errors.add(:base, :current_password_needed)
+      end
     end
   end
 
