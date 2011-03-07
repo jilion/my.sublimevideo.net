@@ -7,7 +7,8 @@
     
   #change_plan_box.section_box
     = form_for @site, :url => site_plan_path(@site), :html => { :id => "edit_site_plan", "data-password-protected" => @site.in_paid_plan? } do |f|
-
+      - if @site.errors[:base] && @site.errors[:base].include?(t('activerecord.errors.models.site.attributes.base.current_password_needed'))
+        = password_box :resource => @site, :f => f, :cancel_url => edit_site_plan_path(@site)
       = render 'fields', :f => f
       = render 'sites/cc_fields', :f => f, :site => @site
 

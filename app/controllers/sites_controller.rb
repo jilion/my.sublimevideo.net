@@ -4,7 +4,6 @@ class SitesController < ApplicationController
 
   before_filter :redirect_suspended_user
   before_filter :find_by_token, :only => [:code, :edit, :update, :destroy, :usage]
-  before_filter :redirect_wrong_password_to_for_paid_site!, :only => [:update, :destroy]
 
   has_scope :by_hostname
   has_scope :by_date
@@ -24,9 +23,7 @@ class SitesController < ApplicationController
 
   # GET /sites/:id/edit
   def edit
-    respond_with(@site) do |format|
-      format.html
-    end
+    respond_with(@site)
   end
 
   # POST /sites
@@ -38,15 +35,20 @@ class SitesController < ApplicationController
   # PUT /sites/:id
   def update
     @site.update_attributes(params[:site])
-    respond_with(@site, :location => :sites) do |format|
-      format.html
-    end
+    respond_with(@site, :location => :sites)
   end
 
   # DELETE /sites/:id
   def destroy
-    @site.archive
-    respond_with(@site, :location => :sites)
+    @site.user_attributes = params[:site] && params[:site][:user_attributes]
+
+    respond_with(@site) do |format|
+      if @site.archive
+          format.html { redirect_to :sites }
+      else
+        format.html { render :edit }
+      end
+    end
   end
 
   # GET /sites/:id/state
@@ -78,10 +80,6 @@ private
 
   def find_by_token
     @site = current_user.sites.find_by_token(params[:id])
-  end
-
-  def redirect_wrong_password_to_for_paid_site!
-    redirect_wrong_password_to([:edit, @site]) if @site.in_paid_plan?
   end
 
 end

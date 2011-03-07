@@ -7,11 +7,17 @@
 
   #site_settings_box.section_box
     = form_for @site, :html => { :id => "edit_site_settings", "data-password-protected" => @site.in_paid_plan? } do |f|
+      - if params[:action] == 'update' && @site.errors[:base] && @site.errors[:base].include?(t('activerecord.errors.models.site.attributes.base.current_password_needed'))
+        = password_box :resource => @site, :f => f, :cancel_url => [:edit, @site]
       = render 'fields', :f => f
       .actions.center
         = f.submit 'Update settings', :class => "submit big"
 
   .break_line
-  = form_for @site, :html => { :method => :delete, :class => "delete", "data-password-protected" => true } do |f|
-    = f.submit "Delete my site", :class => "delete_site"
-    %p.desc= "If you delete your site, you will not be refunded (edit text)."
+  .spacer
+  = form_for @site, :html => { :method => :delete, "data-password-protected" => true } do |f|
+    - if params[:action] == 'destroy' && @site.errors[:base] && @site.errors[:base].include?(t('activerecord.errors.models.site.attributes.base.current_password_needed'))
+      = password_box :resource => @site, :f => f, :cancel_url => [:edit, @site]
+    .entry.delete
+      = f.submit "Delete my site", :class => "delete_site", :confirm => "Are you really sure?"
+      %p.desc= "If you delete your site, you will not be refunded (edit text)."

@@ -1869,7 +1869,7 @@ ul.segmented_menu li.last a {
   margin:20px 0 0;
 }
 
-#site.edit form.delete input.delete_site {
+#site.edit .entry.delete input.delete_site {
   background:url(/images/embed/sites/delete_small_icon.png) no-repeat 0 50%;
   float:left;
   padding:5px 6px 4px 20px;
@@ -1881,7 +1881,7 @@ ul.segmented_menu li.last a {
   cursor:pointer;
 }
 
-#site.edit form.delete p.desc {
+#site.edit .entry.delete p.desc {
   float:left;
   font-size:12px;
   padding:6px 0 0 10px;

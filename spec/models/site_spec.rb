@@ -233,16 +233,16 @@ describe Site do
     end
 
     context "when update dev plan to paid plan" do
-      subject { Factory(:site, plan: @dev_plan) }
+      subject { Factory(:site, plan: @dev_plan).reload }
 
       it "should not validate current_password" do
-        subject.update_attributes(:plan_id => @paid_plan).should be_true
+        subject.update_attributes(:plan_id => @paid_plan.id).should be_true
         subject.errors[:base].should be_empty
       end
     end
 
     context "when update paid plan to dev plan" do
-      subject { Factory(:site, plan: @paid_plan) }
+      subject { Factory(:site, plan: @paid_plan).reload }
 
       it "should validate current_password presence" do
         subject.update_attributes(:plan_id => @dev_plan).should be_false
