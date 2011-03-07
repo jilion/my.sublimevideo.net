@@ -110,7 +110,7 @@ class Site < ActiveRecord::Base
 
   validate  :at_least_one_domain_set, :if => :in_dev_plan?
   validate  :verify_presence_of_credit_card, :unless => :in_dev_plan?
-  validate  :validates_current_password, :if => :in_paid_plan?
+  validate  :validates_current_password
 
   # =============
   # = Callbacks =
@@ -248,7 +248,7 @@ class Site < ActiveRecord::Base
   end
 
   def in_paid_plan?
-    plan_id? && !in_dev_plan? && !in_beta_plan?
+    plan_id? && plan.paid_plan?
   end
 
   def plan_player_hits_reached_alerted_this_month?
@@ -387,8 +387,8 @@ private
 
   # before_validation
   def set_user_attributes
-    # for user cc fields only
-    if user && user_attributes.present? && in_paid_plan?
+    # for user cc fields & current_password only
+    if user && user_attributes.present? && in_or_was_in_paid_plan?
       user.attributes = user_attributes
     end
   end
@@ -409,7 +409,9 @@ private
 
   # validate if in_paid_plan?
   def validates_current_password
-    if !new_record? && ((state_changed? && archived?) || (changes.keys & (Array(self.class.accessible_attributes) + ['next_cycle_plan_id'])).present?) && errors.empty?
+    if !new_record? && in_or_was_in_paid_plan? &&
+      ((state_changed? && archived?) || (changes.keys & (Array(self.class.accessible_attributes) + ['next_cycle_plan_id'])).present?) &&
+      errors.empty?
       if user.current_password.blank? || !user.valid_password?(user.current_password)
         self.errors.add(:base, :current_password_needed)
       end
@@ -478,6 +480,10 @@ private
     else
       (months_since_paid_plan_initially_started_at + 1).months
     end - 1.day
+  end
+
+  def in_or_was_in_paid_plan?
+    plan_id? && ((plan_id_changed? && !Plan.find(plan_id_was).dev_plan?) || (!plan_id_changed? && plan.paid_plan?))
   end
 
 end

@@ -6,37 +6,35 @@ feature "Sites actions:" do
     sign_in_as :user
   end
 
-  # FIXME
-  pending "add a new site" do
-    visit "/sites"
+  scenario "add a new site" do
+    # visit "/sites"
+    click_link "Add a site"
+
     fill_in "Domain", :with => "google.com"
-    click_button "Add"
+    choose "plan_dev"
+    click_button "Create"
 
     current_url.should =~ %r(http://[^/]+/sites)
     page.should have_content('google.com')
 
-    Delayed::Job.last.name.should == 'Site#activate'
     @worker.work_off
-
     site = @current_user.sites.last
     site.hostname.should == "google.com"
     site.loader.read.should include(site.token)
     site.license.read.should include(site.template_hostnames)
   end
 
-  # FIXME
-  pending "edit a site" do
-    Capybara.default_wait_time = 5
-    site = Factory(:site, :user => @current_user, :hostname => 'google.com', :state => 'active')
+  scenario "edit a site" do
+    site = Factory(:site, :user => @current_user, :hostname => 'google.com')
+
     visit "/sites"
-
     page.should have_content('google.com')
-
-    within(:css, "tr#site_#{site.id}") do
-      click_link "Settings"
-    end
+    click_link "Edit google.com"
     fill_in "Development domains", :with => "google.local"
-    click_button "Update"
+    click_button "Update settings"
+
+    fill_in "Password", :with => "123456"
+    click_button "Done"
 
     current_url.should =~ %r(http://[^/]+/sites)
     page.should have_content('google.com')
@@ -45,58 +43,60 @@ feature "Sites actions:" do
     site.dev_hostnames.should == "google.local"
   end
 
-  # FIXME
-  pending "archive a pending site" do
-    visit "/sites"
-    fill_in "Domain", :with => "google.com"
-    click_button "Add"
+  scenario "archive a site" do
+    site = Factory(:site, :user => @current_user, :hostname => 'google.com')
 
+    visit "/sites"
     page.should have_content('google.com')
     @current_user.sites.last.hostname.should == "google.com"
     VoxcastCDN.stub_chain(:delay, :purge).twice
 
-    click_button "Delete"
+    click_link "Edit google.com"
+    click_button "Delete my site"
+
+    fill_in "Password", :with => "123456"
+    click_button "Done"
 
     page.should_not have_content('google.com')
     @current_user.sites.not_archived.should be_empty
   end
 
   # FIXME
-  pending "sort buttons displayed only if count of sites > 1" do
-    Factory(:site, :user => @current_user, :hostname => 'google.com', :state => 'active')
+  scenario "sort buttons displayed only if count of sites > 1" do
+    Factory(:site, :user => @current_user, :hostname => 'google.com')
     visit "/sites"
+
     page.should have_content('google.com')
     page.should have_no_css('div.sorting')
     page.should have_no_css('a.sort')
 
-    fill_in "Domain", :with => "remy.me" # one day it'll be mine!
-    click_button "Add"
+    Factory(:site, :user => @current_user, :hostname => 'google2.com')
+    visit "/sites"
 
     page.should have_content('google.com')
-    page.should have_content('remy.me')
+    page.should have_content('google2.com')
     page.should have_css('div.sorting')
     page.should have_css('a.sort.date')
     page.should have_css('a.sort.hostname')
   end
 
   # FIXME
-  pending "pagination links displayed only if count of sites > Site.per_page" do
+  scenario "pagination links displayed only if count of sites > Site.per_page" do
     Responders::PaginatedResponder.stub(:per_page).and_return(1)
+    Factory(:site, :user => @current_user, :hostname => 'google.com')
     visit "/sites"
-    fill_in "Domain", :with => "google.com"
-    click_button "Add"
 
     page.should have_no_content('Next')
-    page.should have_no_css('div.pagination')
-    page.should have_no_css('span.next_page')
+    page.should have_no_css('nav.pagination')
+    page.should have_no_css('span.next')
 
-    fill_in "Domain", :with => "remy.me"
-    click_button "Add"
+    Factory(:site, :user => @current_user, :hostname => 'google2.com')
+    visit "/sites"
 
-    page.should have_css('div.pagination')
-    page.should have_css('span.previous_page')
-    page.should have_css('em.current_page')
-    page.should have_css('a.next_page')
+    page.should have_css('nav.pagination')
+    page.should have_css('span.prev')
+    page.should have_css('em.current')
+    page.should have_css('a.next')
   end
 
   scenario "user suspended" do

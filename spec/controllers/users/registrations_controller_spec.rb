@@ -8,7 +8,7 @@ describe Users::RegistrationsController do
 
     describe "DELETE :destroy" do
 
-      it "should redirect to /login if current_password is sent" do
+      it "should redirect to /login if password is sent" do
         @current_user.should_receive(:current_password=).with('123456')
         @current_user.should_receive(:archive).and_return(true)
 
@@ -17,7 +17,7 @@ describe Users::RegistrationsController do
         response.should redirect_to(new_user_session_url)
       end
 
-      it "should render 'users/registrations/edit' without" do
+      it "should render 'users/registrations/edit' without password" do
         @current_user.should_receive(:current_password=).with('')
         @current_user.should_receive(:archive).and_return(false)
 
