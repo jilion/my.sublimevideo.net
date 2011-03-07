@@ -42,7 +42,7 @@ module Responders
     end
 
     def per_page(klass)
-      PaginatedResponder.per_page || @per_page || (klass.methods.include?(:per_page) ? klass.per_page : 25)
+      PaginatedResponder.per_page || @per_page || (klass.respond_to?(:per_page) ? klass.per_page : 25)
     end
 
     def set_instance_variable(klass)

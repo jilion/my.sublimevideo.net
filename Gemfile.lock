@@ -15,7 +15,7 @@ GIT
 
 GIT
   remote: git://github.com/jnicklas/capybara.git
-  revision: 74521456af11dca55bc00f5c24201081131163b2
+  revision: 47dbcdfdf0ae5896586f0131250a64b2553115a0
   specs:
     capybara (0.4.1.1)
       celerity (>= 0.7.9)

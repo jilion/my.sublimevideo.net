@@ -209,12 +209,12 @@ describe Site do
 
       it "should validate current_password presence" do
         subject.update_attributes(:hostname => "newone.com").should be_false
-        subject.errors[:base].should == ["You need a to enter your current password to perform this action."]
+        subject.errors[:base].should == [I18n.translate('activerecord.errors.models.site.attributes.base.current_password_needed')]
       end
 
       it "should validate current_password" do
         subject.update_attributes(:hostname => "newone.com", :user_attributes => { :current_password => "wrong" }).should be_false
-        subject.errors[:base].should == ["You need a to enter your current password to perform this action."]
+        subject.errors[:base].should == [I18n.translate('activerecord.errors.models.site.attributes.base.current_password_needed')]
       end
 
       it "should not validate current_password with other errors" do
@@ -246,12 +246,12 @@ describe Site do
 
       it "should validate current_password presence" do
         subject.update_attributes(:plan_id => @dev_plan).should be_false
-        subject.errors[:base].should == ["You need a to enter your current password to perform this action."]
+        subject.errors[:base].should == [I18n.translate('activerecord.errors.models.site.attributes.base.current_password_needed')]
       end
 
       it "should validate current_password" do
         subject.update_attributes(:plan_id => @dev_plan, :user_attributes => { :current_password => "wrong" }).should be_false
-        subject.errors[:base].should == ["You need a to enter your current password to perform this action."]
+        subject.errors[:base].should == [I18n.translate('activerecord.errors.models.site.attributes.base.current_password_needed')]
       end
     end
 
@@ -260,20 +260,20 @@ describe Site do
 
       it "should validate current_password presence" do
         subject.archive.should be_false
-        subject.errors[:base].should == ["You need a to enter your current password to perform this action."]
+        subject.errors[:base].should == [I18n.translate('activerecord.errors.models.site.attributes.base.current_password_needed')]
       end
 
       it "should validate current_password" do
         subject.user.current_password = 'wrong'
         subject.archive.should be_false
-        subject.errors[:base].should == ["You need a to enter your current password to perform this action."]
+        subject.errors[:base].should == [I18n.translate('activerecord.errors.models.site.attributes.base.current_password_needed')]
       end
     end
 
     context "when suspend with paid plan" do
       subject { Factory(:site, plan: @paid_plan) }
 
-      it "should validate current_password presence" do
+      it "should not validate current_password presence" do
         subject.suspend.should be_true
         subject.errors[:base].should be_empty
       end
