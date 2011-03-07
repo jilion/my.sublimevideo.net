@@ -407,10 +407,9 @@ private
     end
   end
 
-
   # validate if in_paid_plan?
   def validates_current_password
-    if !new_record? && changes.present? && errors.empty?
+    if !new_record? && ((state_changed? && archived?) || (changes.keys & (Array(self.class.accessible_attributes) + ['next_cycle_plan_id'])).present?) && errors.empty?
       if user.current_password.blank? || !user.valid_password?(user.current_password)
         self.errors.add(:base, :current_password_needed)
       end
