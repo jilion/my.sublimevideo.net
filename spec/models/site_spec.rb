@@ -269,6 +269,15 @@ describe Site do
         subject.errors[:base].should == ["You need a to enter your current password to perform this action."]
       end
     end
+
+    context "when suspend with paid plan" do
+      subject { Factory(:site, plan: @paid_plan) }
+
+      it "should validate current_password presence" do
+        subject.suspend.should be_true
+        subject.errors[:base].should be_empty
+      end
+    end
   end
 
   describe "Attributes Accessors" do
@@ -405,6 +414,7 @@ describe Site do
         it "should clear & purge license & loader and set archived_at" do
           VoxcastCDN.should_receive(:purge).with("/js/#{subject.token}.js")
           VoxcastCDN.should_receive(:purge).with("/l/#{subject.token}.js")
+          subject.user.current_password = '123456'
           lambda { subject.archive }.should change(Delayed::Job, :count).by(1)
           subject.reload.should be_archived
           lambda { @worker.work_off }.should change(Delayed::Job, :count).by(-1)
@@ -421,7 +431,7 @@ describe Site do
       with_versioning do
         site = Factory(:site)
         old_hostname = site.hostname
-        site.update_attributes hostname: "bob.com"
+        site.update_attributes hostname: "bob.com", user_attributes: { current_password: '123456' }
         site.versions.last.reify.hostname.should == old_hostname
       end
     end
@@ -454,6 +464,7 @@ describe Site do
       context "when plan has changed" do
         it "should call #update_for_next_cycle" do
           subject.should_receive(:update_for_next_cycle)
+          subject.user.current_password = '123456'
           subject.plan = Factory(:plan)
           subject.save
         end
@@ -545,6 +556,7 @@ describe Site do
               it "should update license content with #{attribute} value when site have a paid plan" do
                 old_license_content = subject.license.read
                 subject.send("#{attribute}=", value)
+                subject.user.current_password = '123456'
                 subject.plan_id = @paid_plan.id
                 subject.save
                 @worker.work_off
@@ -832,10 +844,10 @@ describe Site do
       context "with versioning" do
         before(:all) do
           @site = with_versioning do
-            puts "Before all: #{1.day.ago}"
             Timecop.travel(1.day.ago)
             site = Factory(:site, hostname: "jilion.com", extra_hostnames: 'jilion.org, jilion.net', dev_hostnames: "localhost, 127.0.0.1")
             Timecop.return
+            site.user.current_password = '123456'
             site.update_attributes(hostname: "jilion.net", extra_hostnames: 'jilion.org, jilion.com', dev_hostnames: "jilion.local, localhost, 127.0.0.1")
             site
           end
@@ -848,12 +860,11 @@ describe Site do
         it { subject.referrer_type("http://jilion.local").should == "dev" }
         it { subject.referrer_type("http://jilion.co.uk").should == "invalid" }
 
-        it { puts "In it: #{1.day.ago}" }
-        it { subject.referrer_type("http://jilion.net", 1.day.ago + 10.second).should == "extra" }
-        it { subject.referrer_type("http://jilion.com", 1.day.ago + 10.second).should == "main" }
-        it { subject.referrer_type("http://jilion.org", 1.day.ago + 10.second).should == "extra" }
-        it { subject.referrer_type("http://jilion.local", 1.day.ago + 10.second).should == "invalid" }
-        it { subject.referrer_type("http://jilion.co.uk", 1.day.ago + 10.second).should == "invalid" }
+        it { subject.referrer_type("http://jilion.net", 1.day.ago + 1.hour).should == "extra" }
+        it { subject.referrer_type("http://jilion.com", 1.day.ago + 1.hour).should == "main" }
+        it { subject.referrer_type("http://jilion.org", 1.day.ago + 1.hour).should == "extra" }
+        it { subject.referrer_type("http://jilion.local", 1.day.ago + 1.hour).should == "invalid" }
+        it { subject.referrer_type("http://jilion.co.uk", 1.day.ago + 1.hour).should == "invalid" }
       end
 
       context "without wildcard or path" do
@@ -1341,6 +1352,7 @@ describe Site do
             @site.next_cycle_plan.should == @paid_plan2
 
             Timecop.travel(Time.utc(2011,2,15)) do
+              @site.user.current_password = '123456'
               @site.update_for_next_cycle
               @site.save
             end
@@ -1371,6 +1383,7 @@ describe Site do
             @site.next_cycle_plan.should == @paid_plan3
 
             Timecop.travel(Time.utc(2011,2,15)) do
+              @site.user.current_password = '123456'
               @site.update_for_next_cycle
               @site.save
             end
@@ -1401,6 +1414,7 @@ describe Site do
             @site.next_cycle_plan.should == @paid_plan
 
             Timecop.travel(Time.utc(2012,1,15)) do
+              @site.user.current_password = '123456'
               @site.update_for_next_cycle
               @site.save
             end
@@ -1483,7 +1497,6 @@ describe Site do
 
   end
 end
-
 
 
 # == Schema Information
