@@ -24,15 +24,16 @@ feature "Plans" do
 
     scenario "update dev plan to paid plan" do
       site = Factory(:site, user: @current_user, plan: @dev_plan)
+      @paid_plan.update_attribute(:name, 'small')
 
       visit "/sites/#{site.token}/plan/edit"
 
-      choose "plan_small1"
+      choose "plan_small"
       click_button "Update plan"
 
       current_url.should =~ %r(http://[^/]+/sites$)
 
-      page.should have_content('Small1')
+      page.should have_content('Small')
     end
 
     pending "Update paid plan to paid plan with credit card data"

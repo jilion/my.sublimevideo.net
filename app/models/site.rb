@@ -483,7 +483,7 @@ private
   end
 
   def in_or_was_in_paid_plan?
-    plan_id? && ((plan_id_changed? && !Plan.find(plan_id_was).dev_plan?) || (!plan_id_changed? && plan.paid_plan?))
+    plan_id.present? && ((new_record? && plan.paid_plan?) || (plan_id_changed? && plan_id_was.present? && !Plan.find(plan_id_was).dev_plan?) || (!plan_id_changed? && plan.paid_plan?))
   end
 
 end
