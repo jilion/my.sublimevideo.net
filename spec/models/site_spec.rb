@@ -544,7 +544,7 @@ describe Site do
                 @worker.work_off
 
                 subject.reload
-                if attribute == :dev_hostnames
+                if [:dev_hostnames, :path, :wildcard].include?(attribute)
                   subject.license.read.should_not == old_license_content
                   subject.license.read.should include(value.to_s)
                 else
@@ -563,14 +563,7 @@ describe Site do
 
                 subject.reload
                 subject.license.read.should_not == old_license_content
-                case attribute
-                when :hostname, :extra_hostnames, :dev_hostnames
-                  subject.license.read.should include(value.to_s)
-                when :path
-                  subject.license.read.should include("path:yu")
-                when :path
-                  subject.license.read.should include("wildcard:true")
-                end
+                subject.license.read.should include(value.to_s)
               end
 
               it "should purge license on CDN" do

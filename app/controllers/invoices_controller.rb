@@ -1,27 +1,25 @@
 class InvoicesController < ApplicationController
-  respond_to :html
-  respond_to :js, :only => :usage
 
+  before_filter :redirect_suspended_user, :only => :index
+
+  # GET /sites/:site_id/invoices
   def index
-    redirect_to edit_user_registration_path
+    @site = current_user.sites.find_by_token(params[:site_id])
+    @invoices = @site.invoices
+    render :index, :layout => 'application'
   end
 
-  def usage
-    @invoice = Invoice.build(site: current_user.sites.first)
-    respond_with(@invoice)
-  end
-
+  # GET /invoices/:id
   def show
     @invoice = current_user.invoices.find_by_reference(params[:id])
     respond_with(@invoice)
   end
 
+  # PUT /invoices/:id/pay
   def pay
     @invoice = current_user.invoices.failed.find_by_reference(params[:id])
     @invoice.retry
-    respond_with(@invoice) do |format|
-      format.html { redirect_to page_path('suspended') }
-    end
+    redirect_to page_path('suspended')
   end
 
 end

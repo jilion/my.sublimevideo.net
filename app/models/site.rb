@@ -283,7 +283,7 @@ class Site < ActiveRecord::Base
     hash = { hn: [], wc: wildcard }
     unless in_dev_plan?
       hash[:hn] << [hostname, path].uniq.join('/')
-      hash[:hn] += extra_hostnames.split(', ').map { |hostname| [hostname, path].uniq.join('/') }
+      hash[:hn] += extra_hostnames.split(', ').map { |hostname| [hostname, path].uniq.join('/') } if extra_hostnames.present?
     end
     hash[:hn] += dev_hostnames.split(', ').map { |hostname| [hostname, path].uniq.join('/') }
     hash.to_json

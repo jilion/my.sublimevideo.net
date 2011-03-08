@@ -8,7 +8,7 @@
   -# - elsif failed_invoices.present? && failed_invoices.all? { |invoice| invoice.will_be_charged? }
   -#   %h3.section_title{ :style => "color:#d84d0a" }= "Charging in progress"
   -#   %p= t("user.failed_invoices_are_being_processed")
-  
+
   %h3.section_title= "Suspension reason"
   - if current_user.failed_invoices_count_on_suspend > 0
     %p= "Your account has been suspended because you have #{t('failed_invoices', :count => current_user.failed_invoices_count_on_suspend)}."
@@ -16,7 +16,7 @@
     %p
       = "Unknown reason."
       = raw t("please_link_to_know_more_about_it", :link => link_to("contact us", new_ticket_path(:anchor => "billing")))
-  
+
   #credit_card_summary
     %h3.section_title= "Your credit card info"
     - if current_user.cc_expired?
@@ -25,7 +25,7 @@
       = raw "#{t("user.credit_card.type.#{current_user.cc_type}")} ending in #{content_tag(:strong, current_user.cc_last_digits)}"
       = link_to edit_credit_card_path do
         %strong= "Edit credit card"
-      
+
   - if failed_invoices.present?
     %h3.section_title= "Your failed invoices"
     #failed_invoices
@@ -39,6 +39,6 @@
             %p{ :class =>  "status " + (invoice.failed? ? "failed" : "") }= charging_status(invoice)
             -# - if !invoice.will_be_charged? && !current_user.cc_expired?
             - if !current_user.cc_expired?
-              = form_for invoice, :url => pay_invoice_path(invoice), :html => { :method => 'post', "data-password-protected" => true } do |f|
+              = form_for invoice, :url => pay_invoice_path(invoice), :html => { "data-password-protected" => true } do |f|
                 .entry.update
                   = f.submit "Pay the #{invoice_dates(invoice)} invoice", :class => "submit_dynamic_button"
