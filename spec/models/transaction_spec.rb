@@ -201,13 +201,13 @@ describe Transaction do
       before(:each) do
         Delayed::Job.delete_all
       end
-      
+
       it "should delay invoice charging for unpaid and failed invoices by user" do
         expect { Transaction.charge_all_unpaid_and_failed_invoices }.to change(Delayed::Job.where(:handler.matches => "%charge_unpaid_and_failed_invoices_by_user_id%"), :count).by(2)
         djs = Delayed::Job.where(:handler.matches => "%charge_unpaid_and_failed_invoices_by_user_id%")
         djs.count.should == 2
-        YAML.load(djs.first.handler)['args'][0].should == @invoice1.site.user.id
-        YAML.load(djs.second.handler)['args'][0].should == @invoice2.site.user.id
+        YAML.load(djs.first.handler)['args'][0].should == @invoice1.reload.site.user.id
+        YAML.load(djs.second.handler)['args'][0].should == @invoice2.reload.site.user.id
 
         @invoice1.should be_unpaid
         @invoice2.should be_failed
@@ -232,7 +232,7 @@ describe Transaction do
       end
 
       it "should delay invoice charging for unpaid and failed invoices" do
-        @invoice1.should be_unpaid
+        @invoice1.reload.should be_unpaid
         Transaction.should_receive(:charge_by_invoice_ids).with([@invoice1.id]).and_return(an_instance_of(Transaction))
         Transaction.charge_unpaid_and_failed_invoices_by_user_id(@invoice1.site.user.id)
       end
@@ -251,9 +251,9 @@ describe Transaction do
           end
           subject do
             Timecop.travel(1.month.from_now) do
-              @transaction = Transaction.charge_by_invoice_ids([@invoice1.id, @invoice2.id])
+              @transaction = Transaction.charge_by_invoice_ids([@invoice1.reload.id, @invoice2.reload.id])
             end
-            @transaction
+            @transaction.reload
           end
 
           it "should charge Ogone for the total amount of the invoices" do
@@ -274,7 +274,7 @@ describe Transaction do
             @invoice2 = Factory(:invoice, site: Factory(:site, user: @user), state: 'failed')
             @invoice3 = Factory(:invoice, site: Factory(:site, user: @user), state: 'paid')
           end
-          subject { Transaction.charge_by_invoice_ids([@invoice1.id, @invoice2.id, @invoice3.id]) }
+          subject { Transaction.charge_by_invoice_ids([@invoice1.reload.id, @invoice2.reload.id, @invoice3.reload.id]) }
 
           it "should charge Ogone for the total amount of the invoices" do
             Ogone.should_receive(:purchase).with(@invoice1.amount + @invoice2.amount, @invoice1.user.credit_card_alias, { order_id: an_instance_of(Fixnum), currency: 'USD', description: an_instance_of(String) })
@@ -302,9 +302,9 @@ describe Transaction do
           end
           subject do
             Timecop.travel(1.month.from_now) do
-              @transaction = Transaction.charge_by_invoice_ids([@invoice1.id, @invoice2.id])
+              @transaction = Transaction.charge_by_invoice_ids([@invoice1.reload.id, @invoice2.reload.id])
             end
-            @transaction
+            @transaction.reload
           end
 
           it "should charge Ogone for the total amount of the invoices" do
@@ -330,7 +330,7 @@ describe Transaction do
             @invoice2 = Factory(:invoice, site: @site, state: 'failed')
             @invoice3 = Factory(:invoice, site: @site, state: 'paid')
           end
-          subject { Transaction.charge_by_invoice_ids([@invoice1.id, @invoice2.id, @invoice3.id]) }
+          subject { Transaction.charge_by_invoice_ids([@invoice1.reload.id, @invoice2.reload.id, @invoice3.reload.id]) }
 
           it "should charge Ogone for the total amount of the invoices" do
             Ogone.should_receive(:purchase).with(@invoice1.amount + @invoice2.amount, @invoice1.user.credit_card_alias, { order_id: an_instance_of(Fixnum), currency: 'USD', description: an_instance_of(String) })
@@ -348,9 +348,9 @@ describe Transaction do
     end # .charge_by_invoice_ids
 
   end # Class Methods
-  
+
   describe "Instance Methods" do
-    
+
     describe "#order_description" do
       before(:all) do
         @site1    = Factory(:site, user: @user, plan: @dev_plan)
@@ -358,13 +358,13 @@ describe Transaction do
         @invoice1 = Factory(:invoice, site: @site1, state: 'unpaid')
         @invoice2 = Factory(:invoice, site: @site2, state: 'failed')
       end
-      subject { Factory(:transaction, invoices: [@invoice1, @invoice2]) }
-      
+      subject { Factory(:transaction, invoices: [@invoice1.reload, @invoice2.reload]) }
+
       it "should create a description with the invoice' sites' plans' cycle" do
         "SublimeVideo: #{@dev_plan.name} plan for 1 #{@dev_plan.cycle}, #{@paid_plan.name} plan for 1 #{@paid_plan.cycle}"
       end
     end
-    
+
   end
 
 end
