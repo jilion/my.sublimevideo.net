@@ -4,7 +4,7 @@
   = render 'users/form'
   .spacer
   
-  = form_for @user, :url => users_path, :html => { :method => :put, :class => "main_form section", :id => "edit_credentials", "data-password-protected" => true } do |f|
+  = form_for @user, :url => users_path, :html => { :method => :put, :class => "main_form", :id => "edit_credentials", "data-password-protected" => true } do |f|
     - if params[:action] == 'update' && @user.errors[:current_password].present?
       = password_box :resource => @user, :f => f, :cancel_url => edit_user_registration_path, :password_state => "current"
 
@@ -21,19 +21,6 @@
       = f.submit "Update", :class => "submit small_button", :id => "user_credentials_submit"
   .spacer
 
-  = form_for @user, :url => "/account", :html => { :method => :delete, :class => "main_form delete_account", "data-password-protected" => true } do |f|
-    - if params[:action] == 'destroy' && @user.errors[:current_password].present?
-      = password_box :resource => @user, :f => f, :cancel_url => edit_user_registration_path
-
-    %h3.section_title= "Delete account"
-    = "Please understand that:"
-    %ul
-      %li= "All your SublimeVideo licenses will be instantly removed from our servers and will never be available anymore."
-      %li= "Furthermore, there will be no refunds."
-    .entry.delete
-      = f.submit "Delete account", :class => "submit link_looks delete", :confirm => "Are you really sure?"
-
-
 .content_right
   #credit_card_summary
     %h3.section_title= "Billing Info"
@@ -48,25 +35,17 @@
       %p= "Add a credit card."
       %p= link_to 'Add a credit card', edit_credit_card_path
 
-  #invoices_summary
-    .current_usage
-      %h3.section_title= "Current Usage"
-      - if current_user.sites.active.count == 0 && current_user.sites.archived == 0
-        %p= "No current usage at this moment."
-      - else
-        %p#current_usage_amount
-          = "Calculating current usage..."
+  #delete_account
+    %h3.section_title= "Delete account"
+    = form_for @user, :url => "/account", :html => { :method => :delete, :class => "main_form", "data-password-protected" => true } do |f|
+      - if params[:action] == 'destroy' && @user.errors[:current_password].present?
+        = password_box :resource => @user, :f => f, :cancel_url => edit_user_registration_path
+      %p= "Please understand that:"
+      %ul
+        %li= "All your SublimeVideo licenses will be instantly removed from our servers and will never be available anymore."
+        %li= "Furthermore, there will be no refunds."
+      .entry.delete
+        = f.submit "Delete account", :class => "submit link_looks delete", :confirm => "Are you really sure?"
 
-    - if current_user.invoices.present?
-      .past_invoices
-        %h3.section_title= "Past invoices"
-        %ul
-          - current_user.invoices.by_date.each do |invoice|
-            %li
-              .right
-                = link_to("view details", invoice_path(invoice), :onclick => "window.open(this); return false", :class => "details")
-              %p= raw "#{content_tag(:strong, display_amount(invoice.amount))} on #{invoice_dates(invoice)}"
-              %p{ :class =>  "status " + (invoice.failed? ? "failed" : "") }= charging_status(invoice)
-      .spacer
-
+  .spacer
 .spacer

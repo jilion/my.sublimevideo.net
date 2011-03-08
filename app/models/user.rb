@@ -24,7 +24,7 @@ class User < ActiveRecord::Base
   has_many :sites
   has_many :invoices, :through => :sites
 
-  has_one :last_invoice, :class_name => "Invoice", :order => "ended_at DESC"
+  has_one :last_invoice, :through => :sites, :source => :invoices, :order => :created_at.desc
 
   # ===============
   # = Validations =

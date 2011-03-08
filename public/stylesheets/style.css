@@ -2137,16 +2137,18 @@ nav.pagination span.gap {
   padding-left:38px;
 }
 
-.delete_account {
+#delete_account {
+  padding:10px 0 20px;
   font-size:13px;
 }
 
-.delete_account ul {
+#delete_account ul {
+  width:380px;
   padding:4px 0 4px 20px;
   line-height:18px;
 }
 
-.delete_account ul li {
+#delete_account ul li {
   padding:2px 0;
 }
 

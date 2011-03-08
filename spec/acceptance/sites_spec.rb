@@ -63,7 +63,6 @@ feature "Sites actions:" do
     @current_user.sites.not_archived.should be_empty
   end
 
-  # FIXME
   scenario "sort buttons displayed only if count of sites > 1" do
     Factory(:site, :user => @current_user, :hostname => 'google.com')
     visit "/sites"
@@ -82,7 +81,6 @@ feature "Sites actions:" do
     page.should have_css('a.sort.hostname')
   end
 
-  # FIXME
   scenario "pagination links displayed only if count of sites > Site.per_page" do
     Responders::PaginatedResponder.stub(:per_page).and_return(1)
     Factory(:site, :user => @current_user, :hostname => 'google.com')
