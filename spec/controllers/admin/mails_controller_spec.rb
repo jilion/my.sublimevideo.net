@@ -26,7 +26,7 @@ describe Admin::MailsController do
     end
 
     it "should redirect to /admin/mails if create_and_deliver succeed on POST :create" do
-      MailLetter.stub(:new).with({ "template_id" => '1', "criteria" => "with_invalid_site", "admin_id" => @current_admin.id }) { mock_mail_letter }
+      MailLetter.stub(:new).with({ "template_id" => '1', "criteria" => "with_invalid_site", "admin_id" => authenticated_admin.id }) { mock_mail_letter }
       mock_mail_letter.stub_chain(:delay, :deliver_and_log) { mock_mail_log }
 
       post :create, :mail_log => { :template_id => '1', :criteria => "with_invalid_site" }

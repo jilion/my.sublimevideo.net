@@ -6,7 +6,7 @@ describe Users::PasswordsController do
     before(:each) { sign_in :user, authenticated_user }
     
     it "should respond with success to POST :validate" do
-      @current_user.stub(:valid_password?).with("secret") { true }
+      authenticated_user.stub(:valid_password?).with("secret") { true }
       
       post :validate, :password => 'secret', :format => :js
       assigns(:valid_password).should be_true
@@ -14,7 +14,7 @@ describe Users::PasswordsController do
       response.should render_template(:validate)
     end
     it "should respond with success to POST :validate" do
-      @current_user.stub(:valid_password?).with("wrong_secret") { false }
+      authenticated_user.stub(:valid_password?).with("wrong_secret") { false }
       
       post :validate, :password => 'wrong_secret', :format => :js
       assigns(:valid_password).should be_false

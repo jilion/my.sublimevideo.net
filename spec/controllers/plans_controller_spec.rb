@@ -5,13 +5,13 @@ describe PlansController do
   context "with logged in user" do
     before :each do
       sign_in :user, authenticated_user
-      @current_user.stub_chain(:sites, :find_by_token).with('a1b2c3') { mock_site }
+      authenticated_user.stub_chain(:sites, :find_by_token).with('a1b2c3') { mock_site }
     end
 
     describe "GET :edit" do
       it "should render :edit" do
         get :edit, :site_id => 'a1b2c3'
-        assigns(:site).should == @mock_site
+        assigns(:site).should == mock_site
         response.should render_template(:edit)
       end
     end

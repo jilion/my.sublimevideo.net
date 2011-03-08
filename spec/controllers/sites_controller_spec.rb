@@ -5,13 +5,13 @@ describe SitesController do
   context "with logged in user" do
     before :each do
       sign_in :user, authenticated_user
-      @current_user.stub_chain(:sites, :find_by_token).with('a1b2c3') { mock_site }
-      @current_user.stub_chain(:sites, :find).with('1') { mock_site }
+      authenticated_user.stub_chain(:sites, :find_by_token).with('a1b2c3') { mock_site }
+      authenticated_user.stub_chain(:sites, :find).with('1') { mock_site }
     end
 
     describe "GET :index" do
       before :each do
-        @current_user.stub_chain(:sites, :not_archived, :includes, :by_date).and_return([mock_site])
+        authenticated_user.stub_chain(:sites, :not_archived, :includes, :by_date).and_return([mock_site])
         get :index
       end
 
@@ -34,7 +34,7 @@ describe SitesController do
 
     describe "GET :new" do
       it "should render :new" do
-        @current_user.stub_chain(:sites, :build) { mock_site }
+        authenticated_user.stub_chain(:sites, :build) { mock_site }
 
         get :new
         response.should render_template(:new)
@@ -44,7 +44,7 @@ describe SitesController do
     describe "GET :edit" do
       context "site is not beta" do
         before :each do
-          @current_user.stub_chain(:sites, :find_by_token).with('a1b2c3') { @mock_site = mock_site(:in_beta_plan? => false) }
+          authenticated_user.stub_chain(:sites, :find_by_token).with('a1b2c3') { @mock_site = mock_site(:in_beta_plan? => false) }
         end
 
         it "should render :edit" do
@@ -83,7 +83,7 @@ describe SitesController do
     end
 
     describe "POST :create" do
-      before(:each) { @current_user.stub_chain(:sites, :create).with({}).and_return(@mock_site = mock_site) }
+      before(:each) { authenticated_user.stub_chain(:sites, :create).with({}).and_return(@mock_site = mock_site) }
 
       it "should redirect to /sites when create succeeds" do
         post :create, :site => {}

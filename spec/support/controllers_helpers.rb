@@ -1,11 +1,12 @@
 module Spec
   module Support
     module ControllerHelpers
-      
+      extend ActiveSupport::Memoizable
+
       shared_examples_for "redirect when connected as" do |url, roles, verb_actions, params={}|
         roles = [roles] unless roles.is_a?(Array)
         roles.each do |role|
-          
+
           role_name, role_stubs = if role.is_a?(Array)
             [role[0], role[1]]
           else
@@ -13,7 +14,7 @@ module Spec
           end
           context "as a #{role_name}" do
             verb_actions.each do |verb, actions|
-              
+
               actions = [actions] unless actions.is_a?(Array)
               actions.each do |action|
                 before(:each) do
@@ -22,7 +23,7 @@ module Spec
                     sign_in(role_name.to_sym, send("authenticated_#{role_name}", role_stubs))
                   end
                 end
-                
+
                 it "should redirect to #{url} on #{verb.upcase} :#{action}" do
                   params_to_pass = params
                   params_to_pass = (params_to_pass.nil? || [:index, :new].include?(verb.to_sym)) ? {} : params_to_pass.reverse_merge({ :id => '1' })
@@ -34,67 +35,65 @@ module Spec
           end
         end
       end
-      
-      def mock_site(stubs = {})
-        @mock_site ||= mock_model(Site, stubs)
+
+      def authenticated_admin(stubs={})
+        admin = mock_admin(stubs.reverse_merge(:confirmed? => true))
+        Admin.stub(:find) { admin }
+        admin
       end
-      
-      def mock_user(stubs = {})
-        @mock_user ||= mock_model(User, stubs)
+
+      def authenticated_user(stubs={})
+        user = mock_user(stubs.reverse_merge(:active? => true, :confirmed? => true, :suspended? => false))
+        User.stub(:find) { user }
+        user
       end
-      
-      def mock_admin(stubs = {})
-        @mock_admin ||= mock_model(Admin, stubs)
+
+      def mock_site(stubs={})
+        mock_model(Site, stubs)
       end
-      
-      def authenticated_admin(stubs = {})
-        unless @current_admin
-          @current_admin = mock_model(Admin, stubs.reverse_merge(:confirmed? => true))
-          Admin.stub(:find) { @current_admin }
-        end
-        @current_admin
+
+      def mock_user(stubs={})
+        mock_model(User, stubs)
       end
-      
-      def authenticated_user(stubs = {})
-        unless @current_user
-          User.stub(:find) { @current_user }
-          @current_user = mock_model(User, stubs.reverse_merge(:active? => true, :confirmed? => true, :suspended? => false))
-        end
-        @current_user
+
+      def mock_admin(stubs={})
+        mock_model(Admin, stubs)
       end
-      
-      def mock_release(stubs = {})
-        @mock_release ||= mock_model(Release, stubs)
+
+      def mock_release(stubs={})
+        mock_model(Release, stubs)
       end
-      
-      def mock_mail_template(stubs = {})
-        @mock_mail_template ||= mock_model(MailTemplate, stubs)
+
+      def mock_mail_template(stubs={})
+        mock_model(MailTemplate, stubs)
       end
-      
-      def mock_mail_letter(stubs = {})
-        @mock_mail_letter ||= mock_model(MailLetter, stubs)
+
+      def mock_mail_letter(stubs={})
+        mock_model(MailLetter, stubs)
       end
-      
-      def mock_mail_log(stubs = {})
-        @mock_mail_log ||= mock_model(MailLog, stubs)
+
+      def mock_mail_log(stubs={})
+        mock_model(MailLog, stubs)
       end
-      
-      def mock_delayed_job(stubs = {})
-        @mock_delayed_job ||= mock_model(Delayed::Job, stubs)
+
+      def mock_delayed_job(stubs={})
+        mock_model(Delayed::Job, stubs)
       end
-      
-      def mock_ticket(stubs = {})
-        @mock_ticket ||= mock_model(Ticket, stubs).as_null_object
+
+      def mock_ticket(stubs={})
+        mock_model(Ticket, stubs).as_null_object
       end
-      
-      def mock_plan(stubs = {})
-        @mock_plan ||= mock_model(Plan, stubs)
+
+      def mock_plan(stubs={})
+        mock_model(Plan, stubs)
       end
-      
-      def mock_invoice(stubs = {})
-        @mock_invoice ||= mock_model(Invoice, stubs)
+
+      def mock_invoice(stubs={})
+        mock_model(Invoice, stubs)
       end
-      
+
+      memoize :authenticated_admin, :authenticated_user, :mock_site, :mock_user, :mock_admin, :mock_release, :mock_mail_template, :mock_mail_letter, :mock_mail_log, :mock_delayed_job, :mock_ticket, :mock_plan, :mock_invoice
+
     end
   end
 end

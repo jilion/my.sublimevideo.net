@@ -1,4 +1,5 @@
 class Invoice < ActiveRecord::Base
+  extend ActiveSupport::Memoizable
 
   uniquify :reference, :chars => Array('a'..'z') - ['o'] + Array('1'..'9')
 
@@ -204,8 +205,9 @@ class Invoice < ActiveRecord::Base
   end
 
   def total_invoice_items_amount
-    @total_invoice_items_amount ||= invoice_items.inject(0) { |sum, invoice_item| sum + invoice_item.amount }
+    invoice_items.inject(0) { |sum, invoice_item| sum + invoice_item.amount }
   end
+  memoize :total_invoice_items_amount
 
   # def will_be_charged?
   #   charging_delayed_job

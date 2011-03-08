@@ -2,6 +2,8 @@
 
 module VoxcastCDN
   class << self
+    extend ActiveSupport::Memoizable
+
     def devices_list
       client.voxel_devices_list
     end
@@ -23,22 +25,14 @@ module VoxcastCDN
     end
 
     def fetch_logs_names(hostnames = yml[:hostnames].split(', '))
-      # FIX voxel.voxcast.ondemand.logs.list that seems to need a hostname now
       logs_names = []
       hostnames.each do |hostname_to_retrieve_logs|
         logs_hash = client.voxel_voxcast_ondemand_logs_list(:hostname => hostname_to_retrieve_logs, :device_id => yml[:device_id])
         if logs_hash['log_files']['sites']['hostname']['log_file'].present?
-          logs_names.concat(logs_hash['log_files']['sites']['hostname']['log_file'].map { |l| l['content'] })
+          logs_names += logs_hash['log_files']['sites']['hostname']['log_file'].map { |l| l['content'] }
         end
       end
       logs_names
-      # logs_hash = client.voxel_voxcast_ondemand_logs_list(:device_id => yml[:device_id])
-      # logs_hash['log_files']['sites']['hostname'].inject([]) do |logs_names, hostname_logs_hash|
-      #   if hostnames.include?(hostname_logs_hash['name']) && hostname_logs_hash['log_file'].present?
-      #     logs_names += hostname_logs_hash['log_file'].map { |l| l['content'] }
-      #   end
-      #   logs_names
-      # end
     end
 
     def logs_download(filename)
@@ -52,8 +46,9 @@ module VoxcastCDN
   private
 
     def client
-      @client ||= VoxelHAPI.new(:hapi_authkey => { :key => yml[:key], :secret => yml[:secret] })
+      VoxelHAPI.new(:hapi_authkey => { :key => yml[:key], :secret => yml[:secret] })
     end
+    memoize :client
 
     def yml
       config_path = Rails.root.join('config', 'voxcast_cdn.yml')

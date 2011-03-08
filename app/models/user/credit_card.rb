@@ -9,6 +9,7 @@
 #
 
 module User::CreditCard
+  extend ActiveSupport::Memoizable
 
   attr_accessor :cc_update, :cc_full_name, :cc_first_name, :cc_last_name, :cc_number, :cc_verification_value
 
@@ -130,7 +131,7 @@ private
   end
 
   def credit_card
-    @credit_card ||= ActiveMerchant::Billing::CreditCard.new(
+    ActiveMerchant::Billing::CreditCard.new(
       :type               => cc_type,
       :number             => cc_number,
       :month              => cc_expire_on.try(:month),
@@ -140,5 +141,6 @@ private
       :verification_value => cc_verification_value
     )
   end
+  memoize :credit_card
 
 end

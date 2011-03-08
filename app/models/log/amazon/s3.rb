@@ -1,4 +1,5 @@
 class Log::Amazon::S3 < Log::Amazon
+  extend ActiveSupport::Memoizable
 
   # =================
   # = Class Methods =
@@ -19,8 +20,9 @@ private
 public
 
   def name_matches
-    @matches ||= name.match(/^([0-9]{4}-[0-9]{2}-[0-9]{2})-([0-9]{2})-([0-9]{2})-([0-9]{2})-[a-zA-Z0-9]+$/)
+    name.match(/^([0-9]{4}-[0-9]{2}-[0-9]{2})-([0-9]{2})-([0-9]{2})-([0-9]{2})-[a-zA-Z0-9]+$/)
   end
+  memoize :name_matches
 
 private
 

@@ -5,8 +5,8 @@ describe TicketsController do
   context "as logged in user" do
     before(:each) do
       sign_in :user, authenticated_user
-      @current_user.stub!(:full_name).and_return("John Doe")
-      @current_user.stub!(:email).and_return("john@doe.com")
+      authenticated_user.stub!(:full_name).and_return("John Doe")
+      authenticated_user.stub!(:email).and_return("john@doe.com")
     end
     
     describe "GET new" do

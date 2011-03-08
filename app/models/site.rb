@@ -1,4 +1,5 @@
 class Site < ActiveRecord::Base
+  extend ActiveSupport::Memoizable
 
   DEFAULT_DEV_DOMAINS = '127.0.0.1, localhost'
   PLAYER_MODES = %w[dev beta stable]
@@ -332,6 +333,7 @@ class Site < ActiveRecord::Base
       su.main_player_hits + su.main_player_hits_cached + su.extra_player_hits + su.extra_player_hits_cached
     end
   end
+  memoize :current_billable_usage
 
   def current_percentage_of_plan_used
     if plan.player_hits > 0

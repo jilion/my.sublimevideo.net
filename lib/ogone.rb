@@ -1,5 +1,6 @@
 module Ogone
   class << self
+    extend ActiveSupport::Memoizable
     
     def method_missing(name, *args)
       gateway.send(name, *args)
@@ -8,8 +9,9 @@ module Ogone
   private
     
     def gateway
-      @gateway ||= ActiveMerchant::Billing::OgoneGateway.new(yml)
+      ActiveMerchant::Billing::OgoneGateway.new(yml)
     end
+    memoize :gateway
     
     def yml
       config_path = Rails.root.join('config', 'ogone.yml')
