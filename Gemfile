@@ -11,6 +11,17 @@ gem 'bson_ext',              '1.2.4'
 gem 'mongo',                 '1.2.4'
 gem 'mongoid',               '~> 2.0.0.rc.7'
 
+# Views
+gem 'haml',                  '3.0.24'
+gem 'kaminari',              '~> 0.10.4' # need to be before delayed_job
+gem 'jammit',                '0.6.0'
+gem 'liquid',                '2.2.2'
+gem 'RedCloth',              '4.2.3'
+
+# Auth / invitations
+gem 'devise',                '1.1.7'
+gem 'devise_invitable',      :git => 'git://github.com/rymai/devise_invitable.git'
+
 # Internals
 gem 'delayed_job',           '2.1.4'
 gem 'rescue_me',             '0.1.0'
@@ -47,19 +58,10 @@ gem 'createsend',            '0.2.1' # Campaign Monitor
 gem 'hoptoad_notifier',      '2.4.6'
 gem 'prowl',                 '0.1.3'
 
-# Views
-gem 'haml',                  '3.0.24'
-gem 'kaminari',              '~> 0.10.4'
-gem 'jammit',                '0.6.0'
-gem 'liquid',                '2.2.2'
-gem 'RedCloth',              '4.2.3'
-
-# Auth / invitations
-gem 'devise',                '1.1.7'
-gem 'devise_invitable',      :git => 'git://github.com/rymai/devise_invitable.git'
-
 # Perf
 gem 'dalli',                 '1.0.2'
+
+
 
 group :production do
   gem 'rack-google-analytics', '0.9.2', :require => 'rack/google-analytics'
