@@ -537,14 +537,14 @@ describe Site do
                 Delayed::Job.where(:handler.matches => "%update_loader_and_license%").count.should == 1
               end
 
-              it "should update license content with dev_hostnames only when site have a dev plan" do
+              it "should update license content with #{attribute} only when site have a dev plan" do
                 old_license_content = subject.license.read
                 subject.send("#{attribute}=", value)
                 subject.save
                 @worker.work_off
 
                 subject.reload
-                if [:dev_hostnames, :path, :wildcard].include?(attribute)
+                if [:dev_hostnames, :wildcard].include?(attribute)
                   subject.license.read.should_not == old_license_content
                   subject.license.read.should include(value.to_s)
                 else
@@ -770,22 +770,70 @@ describe Site do
 
     describe "#license_json" do
       before(:all) do
-        @site = Factory(:site, plan: @dev_plan, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', path: 'foo', wildcard: true)
+        @site_with_all = Factory(:site, plan: @dev_plan, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', path: 'foo', wildcard: true)
+        @site_without_wildcard = Factory(:site, plan: @dev_plan, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', path: 'foo', wildcard: false)
+        @site_without_path = Factory(:site, plan: @dev_plan, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', wildcard: true)
+        @site_without_extra_hostnames = Factory(:site, plan: @dev_plan, hostname: "jilion.com", dev_hostnames: '127.0.0.1,localhost', wildcard: true)
       end
-      subject { @site }
 
-      context "site have dev plan" do
-        it "should include only dev hostnames" do
-          subject.reload.license_json.should == { hn: ['127.0.0.1/foo', 'localhost/foo'], wc: true }.to_json
+      context "site with dev plan" do
+        context "site with all settings" do
+          subject { @site_with_all.reload }
+          it "should include only dev hostnames without path" do
+            subject.reload.license_json.should == { h: ['127.0.0.1', 'localhost'], w: true }.to_json
+          end      
+        end
+        
+        context "site without wildcard" do
+          subject { @site_without_wildcard.reload }
+          it "should include only dev hostnames without path and wildcard" do
+            subject.license_json.should == { h: ['127.0.0.1', 'localhost'], w: false }.to_json
+          end
+        end
+        
+        
+        context "site without path" do
+          subject { @site_without_path.reload }
+          it "should include only dev hostnames without path" do
+            subject.reload.license_json.should == { h: ['127.0.0.1', 'localhost'], w: true }.to_json
+          end      
         end
       end
 
       %w[beta paid].each do |plan_name|
-        context "site have #{plan_name} plan" do
-          it "should include hostname, extra_hostnames, path, wildcard' names & dev_hostnames" do
-            subject.plan = instance_variable_get(:"@#{plan_name}_plan")
-            subject.license_json.should == { hn: ['jilion.com/foo','jilion.net/foo','jilion.org/foo', '127.0.0.1/foo', 'localhost/foo'], wc: true }.to_json
+        context "site with #{plan_name} plan" do
+          context "site with all settings" do
+            subject { @site_with_all.reload }
+            it "should include hostname, extra_hostnames, path, wildcard & dev_hostnames" do
+              subject.plan = instance_variable_get(:"@#{plan_name}_plan")
+              subject.license_json.should == { h: ['jilion.com/foo', 'jilion.net/foo', 'jilion.org/foo', '127.0.0.1', 'localhost'], w: true }.to_json
+            end
           end
+          
+          context "site without wildcard" do
+            subject { @site_without_wildcard.reload }
+            it "should include hostname, extra_hostnames, path, no wildcard & dev_hostnames" do
+              subject.plan = instance_variable_get(:"@#{plan_name}_plan")
+              subject.license_json.should == { h: ['jilion.com/foo', 'jilion.net/foo', 'jilion.org/foo', '127.0.0.1', 'localhost'], w: false }.to_json
+            end
+          end
+          
+          context "site without path" do
+            subject { @site_without_path.reload }
+            it "should include hostname, extra_hostnames, no path, wildcard & dev_hostnames" do
+              subject.plan = instance_variable_get(:"@#{plan_name}_plan")
+              subject.license_json.should == { h: ['jilion.com', 'jilion.net', 'jilion.org', '127.0.0.1', 'localhost'], w: true }.to_json
+            end
+          end
+          
+          context "site without extra_hostnames" do
+            subject { @site_without_extra_hostnames.reload }
+            it "should include hostname, no extra_hostnames, path, wildcard & dev_hostnames" do
+              subject.plan = instance_variable_get(:"@#{plan_name}_plan")
+              subject.license_json.should == { h: ['jilion.com', '127.0.0.1', 'localhost'], w: true }.to_json
+            end
+          end
+          
         end
       end
     end

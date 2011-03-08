@@ -280,12 +280,12 @@ class Site < ActiveRecord::Base
   end
 
   def license_json
-    hash = { hn: [], wc: wildcard }
+    hash = { h: [], w: wildcard }
     unless in_dev_plan?
-      hash[:hn] << [hostname, path].uniq.join('/')
-      hash[:hn] += extra_hostnames.split(', ').map { |hostname| [hostname, path].uniq.join('/') } if extra_hostnames.present?
+      hash[:h] << [hostname, path].compact.join('/')
+      hash[:h] += extra_hostnames.split(', ').map { |hostname| [hostname, path].compact.join('/') } if extra_hostnames.present?
     end
-    hash[:hn] += dev_hostnames.split(', ').map { |hostname| [hostname, path].uniq.join('/') }
+    hash[:h] += dev_hostnames.split(', ')
     hash.to_json
   end
 
