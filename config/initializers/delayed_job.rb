@@ -17,5 +17,3 @@ module JobExtension
 end
 
 Delayed::Job.extend JobExtension
-Delayed::Job.extend Kaminari::ActiveRecordExtension
-Delayed::Job.send :include, Kaminari::ActiveRecordExtension
