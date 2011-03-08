@@ -24,6 +24,8 @@ feature "Sites actions:" do
     site.license.read.should include(site.template_hostnames)
   end
 
+  pending "add a new site with credit card data"
+
   scenario "edit a site" do
     site = Factory(:site, :user => @current_user, :hostname => 'google.com')
 
