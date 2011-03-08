@@ -21,7 +21,7 @@ feature "Sites actions:" do
     site = @current_user.sites.last
     site.hostname.should == "google.com"
     site.loader.read.should include(site.token)
-    site.license.read.should include(site.template_hostnames)
+    site.license.read.should include(site.license_json)
   end
 
   pending "add a new site with credit card data"

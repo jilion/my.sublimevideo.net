@@ -775,7 +775,7 @@ describe Site do
       end
     end
 
-    describe "#template_hostnames" do
+    describe "#license_json" do
       before(:all) do
         @site = Factory(:site, plan: @dev_plan, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', path: 'foo', wildcard: true)
       end
@@ -783,7 +783,7 @@ describe Site do
 
       context "site have dev plan" do
         it "should include only dev hostnames" do
-          subject.reload.template_hostnames.should == "'127.0.0.1','localhost'"
+          subject.reload.license_json.should == { hn: ['127.0.0.1/foo', 'localhost/foo'], wc: true }.to_json
         end
       end
 
@@ -791,7 +791,7 @@ describe Site do
         context "site have #{plan_name} plan" do
           it "should include hostname, extra_hostnames, path, wildcard' names & dev_hostnames" do
             subject.plan = instance_variable_get(:"@#{plan_name}_plan")
-            subject.template_hostnames.should == "'jilion.com','jilion.net','jilion.org','path:foo','wildcard:true','127.0.0.1','localhost'"
+            subject.license_json.should == { hn: ['jilion.com/foo','jilion.net/foo','jilion.org/foo', '127.0.0.1/foo', 'localhost/foo'], wc: true }.to_json
           end
         end
       end
@@ -804,8 +804,8 @@ describe Site do
         end
         subject { @site }
 
-        it "should set license file with template_hostnames" do
-          subject.license.read.should include(subject.template_hostnames)
+        it "should set license file with license_json" do
+          subject.license.read.should include(subject.license_json)
         end
       end
 
@@ -877,6 +877,8 @@ describe Site do
         it { subject.referrer_type("http://jilion.com/test/cool").should == "main" }
         it { subject.referrer_type("https://jilion.com").should == "main" }
         it { subject.referrer_type("http://www.jilion.com").should == "main" }
+        it { subject.referrer_type("http://jilion.com:80/demo").should == "main" }
+        it { subject.referrer_type("https://jilion.com:443/demo").should == "main" }
 
         it { subject.referrer_type("http://staging.jilion.com").should == "extra" }
         it { subject.referrer_type("http://jilion.org").should == "extra" }
@@ -885,6 +887,7 @@ describe Site do
         it { subject.referrer_type("http://127.0.0.1:3000/super.html").should == "dev" }
         it { subject.referrer_type("http://localhost:3000?genial=com").should == "dev" }
 
+        it { subject.referrer_type("http://blog.jilion.local").should == "invalid" }
         it { subject.referrer_type("http://blog.jilion.com").should == "invalid" }
         it { subject.referrer_type("http://google.com").should == "invalid" }
         it { subject.referrer_type("google.com").should == "invalid" }
@@ -908,9 +911,13 @@ describe Site do
         it { subject.referrer_type("https://jilion.com").should == "main" }
         it { subject.referrer_type("http://www.jilion.com").should == "main" }
         it { subject.referrer_type("http://staging.jilion.com").should == "main" }
+        it { subject.referrer_type("http://jilion.com:80/demo").should == "main" }
+        it { subject.referrer_type("https://jilion.com:443/demo").should == "main" }
 
         it { subject.referrer_type("http://jilion.org").should == "extra" }
         it { subject.referrer_type("http://jilion.net").should == "extra" }
+        it { subject.referrer_type("http://jilion.net:80").should == "extra" }
+        it { subject.referrer_type("https://jilion.net:443").should == "extra" }
 
         it { subject.referrer_type("http://jilion.local").should == "dev" }
         it { subject.referrer_type("http://staging.jilion.local").should == "dev" }
@@ -939,9 +946,12 @@ describe Site do
 
         it { subject.referrer_type("http://jilion.com/demo").should == "main" }
         it { subject.referrer_type("https://jilion.com/demo").should == "main" }
+        it { subject.referrer_type("http://jilion.com:80/demo").should == "main" }
+        it { subject.referrer_type("https://jilion.com:443/demo").should == "main" }
         it { subject.referrer_type("http://jilion.com/demo/cool").should == "main" }
 
         it { subject.referrer_type("http://jilion.org/demo").should == "extra" }
+        it { subject.referrer_type("http://jilion.org:80/demo").should == "extra" }
         it { subject.referrer_type("http://jilion.org/demo/cool").should == "extra" }
         it { subject.referrer_type("http://staging.jilion.com/demo/cool").should == "extra" }
 
@@ -955,6 +965,8 @@ describe Site do
         it { subject.referrer_type("http://cool.jilion.local/demo").should == "invalid" }
         # wrong path
         it { subject.referrer_type("http://jilion.com/test/cool").should == "invalid" }
+        it { subject.referrer_type("http://jilion.com:80/test").should == "invalid" }
+        it { subject.referrer_type("https://jilion.com:443/test").should == "invalid" }
         # right path, but not registered main or extra domain but containing main or extra domain in it
         it { subject.referrer_type("http://superjilion.com/demo").should == "invalid" }
         it { subject.referrer_type("http://superjilion.org/demo").should == "invalid" }
@@ -962,6 +974,8 @@ describe Site do
         # not allowed without path
         it { subject.referrer_type("http://jilion.com").should == "invalid" }
         it { subject.referrer_type("http://jilion.org").should == "invalid" }
+        it { subject.referrer_type("http://jilion.com:80").should == "invalid" }
+        it { subject.referrer_type("https://jilion.com:443").should == "invalid" }
         it { subject.referrer_type("https://jilion.com").should == "invalid" }
         it { subject.referrer_type("http://www.jilion.com").should == "invalid" }
         it { subject.referrer_type("http://blog.jilion.com").should == "invalid" }
@@ -984,9 +998,13 @@ describe Site do
         it { subject.referrer_type("http://jilion.com/demo").should == "main" }
         it { subject.referrer_type("https://jilion.com/demo").should == "main" }
         it { subject.referrer_type("http://staging.jilion.com/demo").should == "main" }
+        it { subject.referrer_type("http://staging.jilion.com:80/demo").should == "main" }
         it { subject.referrer_type("http://jilion.com/demo/cool").should == "main" }
+        it { subject.referrer_type("http://jilion.com:80/demo").should == "main" }
+        it { subject.referrer_type("https://jilion.com:443/demo").should == "main" }
 
         it { subject.referrer_type("http://jilion.org/demo").should == "extra" }
+        it { subject.referrer_type("http://jilion.org:80/demo").should == "extra" }
         it { subject.referrer_type("http://jilion.net/demo/cool").should == "extra" }
 
         it { subject.referrer_type("http://staging.jilion.local/demo/top").should == "dev" }
@@ -1005,6 +1023,8 @@ describe Site do
         it { subject.referrer_type("http://jilion.com").should == "invalid" }
         it { subject.referrer_type("http://jilion.com/test/cool").should == "invalid" }
         it { subject.referrer_type("https://jilion.com").should == "invalid" }
+        it { subject.referrer_type("http://jilion.com:80").should == "invalid" }
+        it { subject.referrer_type("https://jilion.com:443").should == "invalid" }
         it { subject.referrer_type("http://www.jilion.com").should == "invalid" }
         it { subject.referrer_type("http://staging.jilion.com").should == "invalid" }
         it { subject.referrer_type("http://jilion.org").should == "invalid" }

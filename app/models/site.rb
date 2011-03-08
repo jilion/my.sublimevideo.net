@@ -279,17 +279,14 @@ class Site < ActiveRecord::Base
     "invalid"
   end
 
-  def template_hostnames
-    hostnames = []
+  def license_json
+    hash = { hn: [], wc: wildcard }
     unless in_dev_plan?
-      hostnames << hostname if hostname.present?
-      hostnames += extra_hostnames.split(', ') if extra_hostnames.present?
-      hostnames << "path:#{path}" if path.present?
-      hostnames << "wildcard:#{wildcard.to_s}" if wildcard.present?
+      hash[:hn] << [hostname, path].uniq.join('/')
+      hash[:hn] += extra_hostnames.split(', ').map { |hostname| [hostname, path].uniq.join('/') }
     end
-    hostnames += dev_hostnames.split(', ') if dev_hostnames.present?
-    hostnames.map! { |hostname| "'#{hostname}'" }
-    hostnames.join(',')
+    hash[:hn] += dev_hostnames.split(', ').map { |hostname| [hostname, path].uniq.join('/') }
+    hash.to_json
   end
 
   def set_template(name)
@@ -303,7 +300,7 @@ class Site < ActiveRecord::Base
   end
 
   def purge_template(name)
-    mapping = { :loader => 'js', :license => 'l' }
+    mapping = { loader: 'js', license: 'l' }
     raise "Unknown template name!" unless mapping.keys.include?(name.to_sym)
     VoxcastCDN.purge("/#{mapping[name.to_sym]}/#{token}.js")
   end
