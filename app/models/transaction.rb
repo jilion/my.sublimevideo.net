@@ -71,7 +71,8 @@ class Transaction < ActiveRecord::Base
 
     if transaction.save!
       @payment = begin
-        Ogone.purchase(transaction.amount, transaction.user.credit_card_alias, order_id: transaction.id, currency: 'USD')
+        options = { order_id: transaction.id, currency: 'USD', description: transaction.order_description }
+        Ogone.purchase(transaction.amount, transaction.user.credit_card_alias, options)
       rescue => ex
         Notify.send("Charging failed: #{ex.message}", exception: ex)
         transaction.error = ex.message
@@ -93,7 +94,11 @@ class Transaction < ActiveRecord::Base
 
     transaction
   end
-
+  
+  def order_description
+    "SublimeVideo: " + invoices.map { |i| "#{i.site.plan.name} plan for 1 #{i.site.plan.cycle}" }.join(',')
+  end
+  
   # ====================
   # = Instance Methods =
   # ====================

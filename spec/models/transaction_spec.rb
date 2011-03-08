@@ -257,7 +257,7 @@ describe Transaction do
           end
 
           it "should charge Ogone for the total amount of the invoices" do
-            Ogone.should_receive(:purchase).with(@invoice1.amount + @invoice2.amount, @invoice1.user.credit_card_alias, { order_id: an_instance_of(Fixnum), currency: 'USD' })
+            Ogone.should_receive(:purchase).with(@invoice1.amount + @invoice2.amount, @invoice1.user.credit_card_alias, { order_id: an_instance_of(Fixnum), currency: 'USD', description: an_instance_of(String) })
             subject
           end
 
@@ -277,7 +277,7 @@ describe Transaction do
           subject { Transaction.charge_by_invoice_ids([@invoice1.id, @invoice2.id, @invoice3.id]) }
 
           it "should charge Ogone for the total amount of the invoices" do
-            Ogone.should_receive(:purchase).with(@invoice1.amount + @invoice2.amount, @invoice1.user.credit_card_alias, { order_id: an_instance_of(Fixnum), currency: 'USD' })
+            Ogone.should_receive(:purchase).with(@invoice1.amount + @invoice2.amount, @invoice1.user.credit_card_alias, { order_id: an_instance_of(Fixnum), currency: 'USD', description: an_instance_of(String) })
             subject
           end
 
@@ -308,7 +308,7 @@ describe Transaction do
           end
 
           it "should charge Ogone for the total amount of the invoices" do
-            Ogone.should_receive(:purchase).with(@invoice1.amount + @invoice2.amount, @invoice1.user.credit_card_alias, { order_id: an_instance_of(Fixnum), currency: 'USD' })
+            Ogone.should_receive(:purchase).with(@invoice1.amount + @invoice2.amount, @invoice1.user.credit_card_alias, { order_id: an_instance_of(Fixnum), currency: 'USD', description: an_instance_of(String) })
             subject
           end
 
@@ -333,7 +333,7 @@ describe Transaction do
           subject { Transaction.charge_by_invoice_ids([@invoice1.id, @invoice2.id, @invoice3.id]) }
 
           it "should charge Ogone for the total amount of the invoices" do
-            Ogone.should_receive(:purchase).with(@invoice1.amount + @invoice2.amount, @invoice1.user.credit_card_alias, { order_id: an_instance_of(Fixnum), currency: 'USD' })
+            Ogone.should_receive(:purchase).with(@invoice1.amount + @invoice2.amount, @invoice1.user.credit_card_alias, { order_id: an_instance_of(Fixnum), currency: 'USD', description: an_instance_of(String) })
             subject
           end
 
@@ -348,6 +348,24 @@ describe Transaction do
     end # .charge_by_invoice_ids
 
   end # Class Methods
+  
+  describe "Instance Methods" do
+    
+    describe "#order_description" do
+      before(:all) do
+        @site1    = Factory(:site, user: @user, plan: @dev_plan)
+        @site2    = Factory(:site, user: @user, plan: @paid_plan)
+        @invoice1 = Factory(:invoice, site: @site1, state: 'unpaid')
+        @invoice2 = Factory(:invoice, site: @site2, state: 'failed')
+      end
+      subject { Factory(:transaction, invoices: [@invoice1, @invoice2]) }
+      
+      it "should create a description with the invoice' sites' plans' cycle" do
+        "SublimeVideo: #{@dev_plan.name} plan for 1 #{@dev_plan.cycle}, #{@paid_plan.name} plan for 1 #{@paid_plan.cycle}"
+      end
+    end
+    
+  end
 
 end
 
