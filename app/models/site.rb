@@ -152,12 +152,12 @@ class Site < ActiveRecord::Base
     transaction do
       begin
         if options[:loader]
-          purge_loader = site.loader.present?
+          purge_loader = site.loader?
           site.set_template("loader")
           site.purge_template("loader") if purge_loader
         end
         if options[:license]
-          purge_license = site.license.present?
+          purge_license = site.license?
           site.set_template("license")
           site.purge_template("license") if purge_license
         end
@@ -241,15 +241,15 @@ class Site < ActiveRecord::Base
   end
 
   def in_dev_plan?
-    plan_id? && plan.dev_plan?
+    plan && plan.dev_plan?
   end
 
   def in_beta_plan?
-    plan_id? && plan.beta_plan?
+    plan && plan.beta_plan?
   end
 
   def in_paid_plan?
-    plan_id? && plan.paid_plan?
+    plan && plan.paid_plan?
   end
 
   def plan_player_hits_reached_alerted_this_month?
@@ -257,7 +257,7 @@ class Site < ActiveRecord::Base
   end
 
   def need_path?
-    %w[web.me.com homepage.mac.com].include?(hostname) && path.blank?
+    %w[web.me.com homepage.mac.com].include?(hostname) && !path?
   end
 
   def settings_changed?
@@ -284,7 +284,7 @@ class Site < ActiveRecord::Base
     hash = { h: [], w: wildcard }
     unless in_dev_plan?
       hash[:h] << [hostname, path].compact.join('/')
-      hash[:h] += extra_hostnames.split(', ').map { |hostname| [hostname, path].compact.join('/') } if extra_hostnames.present?
+      hash[:h] += extra_hostnames.split(', ').map { |hostname| [hostname, path].compact.join('/') } if extra_hostnames?
     end
     hash[:h] += dev_hostnames.split(', ')
     hash.to_json
@@ -394,7 +394,7 @@ private
 
   # validate
   def at_least_one_domain_set
-    if hostname.blank? && dev_hostnames.blank? && extra_hostnames.blank?
+    if !hostname? && !dev_hostnames? && !extra_hostnames?
       self.errors.add(:base, :at_least_one_domain)
     end
   end
@@ -482,7 +482,9 @@ private
   end
 
   def in_or_was_in_paid_plan?
-    plan_id.present? && ((new_record? && plan.paid_plan?) || (plan_id_changed? && plan_id_was.present? && !Plan.find(plan_id_was).dev_plan?) || (!plan_id_changed? && plan.paid_plan?))
+    (new_record? && in_paid_plan?) ||
+    (plan_id_changed? && plan_id_was && !Plan.find(plan_id_was).dev_plan?) ||
+    (!plan_id_changed? && in_paid_plan?)
   end
 
 end
