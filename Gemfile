@@ -12,7 +12,7 @@ gem 'mongo',                 '1.2.4'
 gem 'mongoid',               '~> 2.0.0.rc.7'
 
 # Internals
-gem 'delayed_job',           '2.1.3'
+gem 'delayed_job',           '2.1.4'
 gem 'rescue_me',             '0.1.0'
 gem 'configuration',         '1.2.0'
 gem 'libxml-ruby',           '1.1.3', :require => 'libxml'
