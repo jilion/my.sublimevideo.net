@@ -1,4 +1,4 @@
-= title_and_content_header("Edit #{content_tag(:strong, truncate_middle(@site.hostname, :length => 30))}")
+= title_and_content_header(truncate_middle(@site.hostname.present? ?  @site.hostname : @site.hostname_was, :length => 40))
 
 #site.edit
   %ul.segmented_menu

@@ -1,5 +1,5 @@
 #site_setup
-  - if f.object.errors.key?(:base) && !f.object.errors[:base].include?(t('activerecord.errors.models.site.attributes.base.current_password_needed'))
+  - if f.object.errors[:base].present? && !f.object.errors[:base].include?(t('activerecord.errors.models.site.attributes.base.current_password_needed'))
     .inline_errors
       %span= f.object.errors[:base].first
       
