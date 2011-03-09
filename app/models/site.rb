@@ -42,7 +42,7 @@ class Site < ActiveRecord::Base
   # billing
   scope :billable,      lambda { active.where({ :plan_id.not_in => Plan.where(:name => %w[beta dev]).map(&:id) }, { :next_cycle_plan_id => nil } | { :next_cycle_plan_id.ne => Plan.dev_plan.id }) }
   scope :not_billable,  lambda { where({ :state.ne => 'active' } | ({ :state => 'active' } & ({ :plan_id.in => Plan.where(:name => %w[beta dev]).map(&:id), :next_cycle_plan_id => nil } | { :next_cycle_plan_id => Plan.dev_plan }))) }
-  scope :to_be_renewed, lambda { where(:paid_plan_cycle_ended_at.lt => Time.now.utc) }
+  scope :to_be_renewed, lambda { where(:plan_cycle_ended_at.lt => Time.now.utc) }
 
   # usage_alert scopes
   scope :plan_player_hits_reached_alerted_this_month,                where(:plan_player_hits_reached_alert_sent_at.gte => Time.now.utc.beginning_of_month)
@@ -120,10 +120,9 @@ class Site < ActiveRecord::Base
   before_validation :set_user_attributes
 
   before_save :prepare_cdn_update, :clear_alerts_sent_at
-  before_save :reset_paid_plan_initially_started_at, :update_for_next_cycle, :if => :plan_id_changed?
+  before_save :update_cycle_plan, :if => :plan_id_changed?
 
   after_save :execute_cdn_update
-
   after_create :delay_ranks_update
 
   # =================
@@ -152,12 +151,12 @@ class Site < ActiveRecord::Base
     transaction do
       begin
         if options[:loader]
-          purge_loader = site.loader?
+          purge_loader = site.loader.present?
           site.set_template("loader")
           site.purge_template("loader") if purge_loader
         end
         if options[:license]
-          purge_license = site.license?
+          purge_license = site.license.present?
           site.set_template("license")
           site.purge_template("license") if purge_license
         end
@@ -252,6 +251,12 @@ class Site < ActiveRecord::Base
     plan && plan.paid_plan?
   end
 
+  def in_or_was_in_paid_plan?
+    (new_record? && in_paid_plan?) ||
+    (plan_id_changed? && plan_id_was && !Plan.find(plan_id_was).dev_plan?) ||
+    (!plan_id_changed? && in_paid_plan?)
+  end
+
   def plan_player_hits_reached_alerted_this_month?
     (Time.now.utc.beginning_of_month..Time.now.utc.end_of_month).cover?(plan_player_hits_reached_alert_sent_at)
   end
@@ -328,8 +333,9 @@ class Site < ActiveRecord::Base
     self.save
   end
 
+  # TODO: DO NOT WORK FOR YEARLY PLAN
   def current_billable_usage
-    @current_billable_usage ||= usages.between(paid_plan_cycle_started_at, paid_plan_cycle_ended_at).to_a.sum do |su|
+    @current_billable_usage ||= usages.between(plan_cycle_started_at, plan_cycle_ended_at).to_a.sum do |su|
       su.main_player_hits + su.main_player_hits_cached + su.extra_player_hits + su.extra_player_hits_cached
     end
   end
@@ -356,25 +362,22 @@ class Site < ActiveRecord::Base
   end
 
   # before_save :if => :plan_id_changed?
-  def reset_paid_plan_initially_started_at
-    self.paid_plan_initially_started_at = paid_plan_cycle_ended_at ? paid_plan_cycle_ended_at.tomorrow.midnight : Time.now.utc.midnight
-  end
-
-  # before_save :if => :plan_id_changed?
-  def update_for_next_cycle
-    if (plan.paid_plan? || next_cycle_plan) && (paid_plan_cycle_ended_at.nil? || paid_plan_cycle_ended_at < Time.now.utc)
+  def update_cycle_plan
+    if plan_cycle_ended_at.nil? || plan_cycle_ended_at < Time.now.utc
       new_plan = next_cycle_plan || plan
 
+      self.plan_started_at = plan_cycle_started_at || Time.now.utc.midnight if plan_id_changed?
+
       if new_plan.dev_plan?
-        self.paid_plan_cycle_started_at = nil
-        self.paid_plan_cycle_ended_at   = nil
+        self.plan_cycle_started_at = nil
+        self.plan_cycle_ended_at   = nil
       else
-        self.paid_plan_cycle_started_at = if paid_plan_cycle_ended_at
-          paid_plan_cycle_ended_at.tomorrow.midnight
+        self.plan_cycle_started_at = if plan_cycle_ended_at
+          plan_cycle_ended_at.tomorrow.midnight
         else
-          paid_plan_initially_started_at.midnight
+          plan_started_at.midnight
         end
-        self.paid_plan_cycle_ended_at = (paid_plan_initially_started_at + advance_for_next_cycle_end(new_plan)).end_of_day
+        self.plan_cycle_ended_at = (plan_started_at + advance_for_next_cycle_end(new_plan)).end_of_day
       end
       self.plan            = new_plan
       self.next_cycle_plan = nil
@@ -461,13 +464,13 @@ private
     Site.delay.remove_loader_and_license(self.id)
   end
 
-  def months_since_paid_plan_initially_started_at
+  def months_since_plan_started_at
     now = Time.now.utc
-    if paid_plan_initially_started_at && (now - paid_plan_initially_started_at >= 1.month)
-      months = now.month - paid_plan_initially_started_at.month
-      months -= 1 if months > 0 && (now.day - paid_plan_initially_started_at.day) < 0
+    if plan_started_at && (now - plan_started_at >= 1.month)
+      months = now.month - plan_started_at.month
+      months -= 1 if months > 0 && (now.day - plan_started_at.day) < 0
 
-      (now.year - paid_plan_initially_started_at.year) * 12 + months
+      (now.year - plan_started_at.year) * 12 + months
     else
       0
     end
@@ -475,20 +478,13 @@ private
 
   def advance_for_next_cycle_end(plan)
     if plan.yearly?
-      (months_since_paid_plan_initially_started_at + 12).months
+      (months_since_plan_started_at + 12).months
     else
-      (months_since_paid_plan_initially_started_at + 1).months
+      (months_since_plan_started_at + 1).months
     end - 1.day
   end
 
-  def in_or_was_in_paid_plan?
-    (new_record? && in_paid_plan?) ||
-    (plan_id_changed? && plan_id_was && !Plan.find(plan_id_was).dev_plan?) ||
-    (!plan_id_changed? && in_paid_plan?)
-  end
-
 end
-
 
 
 # == Schema Information
@@ -514,9 +510,9 @@ end
 #  extra_hostnames                            :string(255)
 #  plan_id                                    :integer
 #  cdn_up_to_date                             :boolean
-#  paid_plan_initially_started_at             :datetime
-#  paid_plan_cycle_started_at                 :datetime
-#  paid_plan_cycle_ended_at                   :datetime
+#  plan_started_at             :datetime
+#  plan_cycle_started_at                 :datetime
+#  plan_cycle_ended_at                   :datetime
 #  next_cycle_plan_id                         :integer
 #  plan_player_hits_reached_alert_sent_at     :datetime
 #  last_30_days_main_player_hits_total_count  :integer         default(0)
