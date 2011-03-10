@@ -16,15 +16,20 @@
             %h4.price= display_amount(plan.price)
             %p.label= "per month"
           .radio_wrap
-            = f.radio_button :plan_id, plan.id, :id => "plan_#{plan.name}", :class => "plan_radio"
+            = f.radio_button :plan_id, plan.id, :id => "plan_#{plan.name}_#{plan.cycle}", :class => "plan_radio"
             %span.bg
         
         .yearly
-          - if yearly_plan = @plans.find { |p| p.name == plan.name && p.cycle == "year" }
+          - if yearly_plan = @plans.find { |p| p.name == plan.name && p.yearly? }
             .pricing
               %h4.price= display_amount(yearly_plan.price)
               %p.label= "per year"
             .radio_wrap
-              = f.radio_button :plan_id, yearly_plan.id, :id => "plan_#{plan.name}", :class => "plan_radio"
+              = f.radio_button :plan_id, yearly_plan.id, :id => "plan_#{yearly_plan.name}_#{yearly_plan.cycle}", :class => "plan_radio"
               %span.bg
 .spacer
+
+#dev_plan
+  .radio_wrap
+    = f.radio_button :plan_id, @dev_plan.id, :id => "plan_#{@dev_plan.name}", :class => "plan_radio"
+    %span.bg
