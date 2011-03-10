@@ -124,7 +124,7 @@ class Invoice < ActiveRecord::Base
     # 3 - delay invoice creation
 
     Site.active.to_be_renewed.each do |site|
-      site.update_for_next_cycle
+      site.update_cycle_plan
 
       if site.changed?
         begin

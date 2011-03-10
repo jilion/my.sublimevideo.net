@@ -1,6 +1,6 @@
 Every day at midnight:
   Task 1:
-    - Sites that renew tomorrow are updated (paid_plan_cycle_started_at, paid_plan_cycle_ended_at, new plan_id if applicable and reset next_cycle_plan_id)
+    - Sites that renew tomorrow are updated (plan_cycle_started_at, plan_cycle_ended_at, new plan_id if applicable and reset next_cycle_plan_id)
       -> Creation of the site's invoice
 
   Task 2:

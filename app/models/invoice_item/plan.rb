@@ -27,8 +27,8 @@ private
   end
 
   def set_started_at_and_ended_at
-    self.started_at = site.paid_plan_cycle_started_at
-    self.ended_at   = site.paid_plan_cycle_ended_at
+    self.started_at = site.plan_cycle_started_at
+    self.ended_at   = site.plan_cycle_ended_at
   end
 
   def set_amount

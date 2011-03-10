@@ -3,56 +3,6 @@ require 'spec_helper'
 
 describe Site do
 
-  pending "specs for a method to find out the numbers of month to add to the started date without keeping record of the past months count" do
-    before(:all) do
-      @started_date = Time.utc(2011,1,31)
-    end
-
-    it do
-      Timecop.travel(2011,2,25) do
-        now = Time.now.utc
-        years = now.year - @started_date.year
-        months = now.month - @started_date.month
-
-        # Date of the started_at 1 month after the initial start
-        (@started_date + years.years + months.months).should == Time.utc(2011,2,28)
-      end
-    end
-
-    it do
-      Timecop.travel(2011,3,2) do
-        now = Time.now.utc
-        years = now.year - @started_date.year
-        months = now.month - @started_date.month
-
-        # Date of the started_at 2 months after the initial start
-        (@started_date + years.years + months.months).should == Time.utc(2011,3,31)
-      end
-    end
-
-    it do
-      Timecop.travel(2012,2,25) do
-        now = Time.now.utc
-        years = now.year - @started_date.year
-        months = now.month - @started_date.month
-
-        # Date of the started_at 1 year and 1 month after the initial start
-        (@started_date + years.years + months.months).should == Time.utc(2012,2,29)
-      end
-    end
-
-    it do
-      Timecop.travel(2012,3,2) do
-        now = Time.now.utc
-        years = now.year - @started_date.year
-        months = now.month - @started_date.month
-
-        # Date of the started_at 1 year and 2 months after the initial start
-        (@started_date + years.years + months.months).should == Time.utc(2012,3,31)
-      end
-    end
-  end
-
   context "Factory" do
     before(:all) { @site = Factory(:site) }
     subject { @site }
@@ -68,8 +18,10 @@ describe Site do
     its(:license)         { should_not be_present }
     its(:loader)          { should_not be_present }
     its(:player_mode)     { should == "stable" }
-    its(:paid_plan_cycle_started_at) { should == Time.now.utc.midnight }
-    its(:paid_plan_cycle_ended_at)   { should == (Time.now.utc.midnight + 1.month - 1.day).end_of_day }
+    its(:plan_started_at) { should == Time.now.utc.midnight }
+    its(:plan_cycle_started_at) { should == Time.now.utc.midnight }
+    its(:plan_cycle_ended_at)   { should == (Time.now.utc.midnight + 1.month - 1.day).to_datetime.end_of_day }
+    its(:next_cycle_plan_id)    { should be_nil }
 
     it { should be_active } # initial state
     it { should be_valid }
@@ -462,8 +414,8 @@ describe Site do
       end
 
       context "when plan has changed" do
-        it "should call #update_for_next_cycle" do
-          subject.should_receive(:update_for_next_cycle)
+        it "should call #update_cycle_plan" do
+          subject.should_receive(:update_cycle_plan)
           subject.user.current_password = '123456'
           subject.plan = Factory(:plan)
           subject.save
@@ -473,8 +425,8 @@ describe Site do
       context "when plan doesn't change" do
         subject { Factory(:site, plan: @paid_plan) }
 
-        it "should not call #update_for_next_cycle" do
-          subject.should_not_receive(:update_for_next_cycle)
+        it "should not call #update_cycle_plan" do
+          subject.should_not_receive(:update_cycle_plan)
           subject.hostname = 'test.com'
           subject.save
         end
@@ -781,22 +733,22 @@ describe Site do
           subject { @site_with_all.reload }
           it "should include only dev hostnames without path" do
             subject.reload.license_json.should == { h: ['127.0.0.1', 'localhost'], w: true }.to_json
-          end      
+          end
         end
-        
+
         context "site without wildcard" do
           subject { @site_without_wildcard.reload }
           it "should include only dev hostnames without path and wildcard" do
             subject.license_json.should == { h: ['127.0.0.1', 'localhost'], w: false }.to_json
           end
         end
-        
-        
+
+
         context "site without path" do
           subject { @site_without_path.reload }
           it "should include only dev hostnames without path" do
             subject.reload.license_json.should == { h: ['127.0.0.1', 'localhost'], w: true }.to_json
-          end      
+          end
         end
       end
 
@@ -809,7 +761,7 @@ describe Site do
               subject.license_json.should == { h: ['jilion.com/foo', 'jilion.net/foo', 'jilion.org/foo', '127.0.0.1', 'localhost'], w: true }.to_json
             end
           end
-          
+
           context "site without wildcard" do
             subject { @site_without_wildcard.reload }
             it "should include hostname, extra_hostnames, path, no wildcard & dev_hostnames" do
@@ -817,7 +769,7 @@ describe Site do
               subject.license_json.should == { h: ['jilion.com/foo', 'jilion.net/foo', 'jilion.org/foo', '127.0.0.1', 'localhost'], w: false }.to_json
             end
           end
-          
+
           context "site without path" do
             subject { @site_without_path.reload }
             it "should include hostname, extra_hostnames, no path, wildcard & dev_hostnames" do
@@ -825,7 +777,7 @@ describe Site do
               subject.license_json.should == { h: ['jilion.com', 'jilion.net', 'jilion.org', '127.0.0.1', 'localhost'], w: true }.to_json
             end
           end
-          
+
           context "site without extra_hostnames" do
             subject { @site_without_extra_hostnames.reload }
             it "should include hostname, no extra_hostnames, path, wildcard & dev_hostnames" do
@@ -833,7 +785,7 @@ describe Site do
               subject.license_json.should == { h: ['jilion.com', '127.0.0.1', 'localhost'], w: true }.to_json
             end
           end
-          
+
         end
       end
     end
@@ -1205,295 +1157,303 @@ describe Site do
       end
     end
 
-    describe "#reset_paid_plan_initially_started_at" do
-      context "with a nil paid_plan_initially_started_at" do
-        subject do
-          Timecop.travel(Time.utc(2011,1,30)) { @site = Factory(:site, plan: @dev_plan) }
-          @site
-        end
-
-        it "should update paid_plan_initially_started_at" do
-          Timecop.travel(Time.utc(2012,12,21)) do
-            subject.reload.reset_paid_plan_initially_started_at
-            subject.paid_plan_initially_started_at.should be_within(5).of(Time.utc(2012,12,21).midnight)
-          end
-        end
-      end
-
-      context "with a present paid_plan_initially_started_at" do
-        subject do
-          Timecop.travel(Time.utc(2011,1,30)) { @site = Factory(:site) }
-          @site
-        end
-
-        it "should update paid_plan_initially_started_at" do
-          Timecop.travel(Time.utc(2012,12,21)) do
-            subject.reload.reset_paid_plan_initially_started_at
-            subject.paid_plan_initially_started_at.should be_within(5).of(Time.utc(2011,2,28).midnight)
-          end
-        end
-      end
-    end
-
-    describe "#update_for_next_cycle" do
+    describe "#update_cycle_plan" do
       before(:all) do
-        @paid_plan2 = Factory(:plan, cycle: "month")
-        @paid_plan3 = Factory(:plan, cycle: "year")
+        @paid_plan2        = Factory(:plan, cycle: "month")
+        @paid_plan_yearly  = Factory(:plan, cycle: "year")
+        @paid_plan_yearly2 = Factory(:plan, cycle: "year")
       end
 
-      context "with no plan change" do
-        context "from a dev plan" do
-          before(:all) do
-            Timecop.travel(Time.utc(2011,1,30)) do
-              @site = Factory(:site, plan: @dev_plan)
-            end
+      context "new site with dev plan" do
 
-            @site.paid_plan_cycle_started_at.should be_nil
-            @site.paid_plan_cycle_ended_at.should be_nil
-            @site.plan.should == @dev_plan
+        describe "on creation" do
+          before(:all) { Timecop.travel(Time.utc(2011,1,30)) { @site = Factory(:site, plan: @dev_plan) } }
+          subject { @site }
 
-            Timecop.travel(Time.utc(2011,3,3)) do
-              @site.reload.update_for_next_cycle
-              @site.save
-            end
-          end
-
-          it "should not update paid plan cycle" do
-            @site.paid_plan_cycle_started_at.should be_nil
-            @site.paid_plan_cycle_ended_at.should be_nil
-          end
-
-          it "should update paid plan and reset next cycle plan" do
-            @site.plan.should == @dev_plan
-            @site.next_cycle_plan.should be_nil
-          end
+          its(:plan_started_at)       { should == Time.utc(2011,1,30).midnight }
+          its(:plan_cycle_started_at) { should be_nil }
+          its(:plan_cycle_ended_at)   { should be_nil }
+          its(:plan)                  { should == @dev_plan }
+          its(:next_cycle_plan)       { should be_nil }
         end
 
-        context "from a beta plan" do
+        describe "when update_cycle_plan" do
           before(:all) do
-            Timecop.travel(Time.utc(2011,1,30)) do
-              @site = Factory(:site, plan: @beta_plan)
-            end
-
-            @site.paid_plan_cycle_started_at.should be_nil
-            @site.paid_plan_cycle_ended_at.should be_nil
-            @site.plan.should == @beta_plan
-
-            Timecop.travel(Time.utc(2011,3,3)) do
-              @site.reload.update_for_next_cycle
-              @site.save
-            end
+            Timecop.travel(Time.utc(2011,1,30)) { @site = Factory(:site, plan: @dev_plan) }
+            Timecop.travel(Time.utc(2011,3,3))  { @site.reload.update_cycle_plan }
           end
+          subject { @site }
 
-          it "should not update paid plan cycle" do
-            @site.paid_plan_cycle_started_at.should be_nil
-            @site.paid_plan_cycle_ended_at.should be_nil
-          end
-
-          it "should update paid plan and reset next cycle plan" do
-            @site.plan.should == @beta_plan
-            @site.next_cycle_plan.should be_nil
-          end
+          its(:plan_started_at)       { should == Time.utc(2011,1,30).midnight }
+          its(:plan_cycle_started_at) { should be_nil }
+          its(:plan_cycle_ended_at)   { should be_nil }
+          its(:plan)                  { should == @dev_plan }
+          its(:next_cycle_plan)       { should be_nil }
         end
 
-        context "from a paid plan" do
+        describe "when upgrade to monthly paid plan" do
           before(:all) do
-            Timecop.travel(Time.utc(2011,1,30)) do
-              @site = Factory(:site, plan: @paid_plan)
-            end
-
-            @site.paid_plan_cycle_started_at.should == Time.utc(2011,1,30).midnight
-            @site.paid_plan_cycle_ended_at.should == Time.utc(2011,2,27).end_of_day
-            @site.plan.should == @paid_plan
-            @site.next_cycle_plan.should be_nil
-
-            Timecop.travel(Time.utc(2011,3,3)) do
-              @site.reload.update_for_next_cycle
-              @site.save
-            end
+            Timecop.travel(Time.utc(2011,1,30)) { @site = Factory(:site, plan: @dev_plan) }
+            Timecop.travel(Time.utc(2011,2,10)) { @site.reload.update_attributes(plan_id: @paid_plan.id) }
           end
+          subject { @site }
 
-          it "should update paid plan cycle" do
-            @site.paid_plan_cycle_started_at.should == Time.utc(2011,2,28).midnight
-            @site.paid_plan_cycle_ended_at.should == Time.utc(2011,3,29).end_of_day
-          end
+          its(:plan_started_at)       { should == Time.utc(2011,2,10).midnight }
+          its(:plan_cycle_started_at) { should == Time.utc(2011,2,10).midnight }
+          its(:plan_cycle_ended_at)   { should == Time.utc(2011,3,9).to_datetime.end_of_day }
+          its(:plan)                  { should == @paid_plan }
+          its(:next_cycle_plan)       { should be_nil }
+        end
 
-          it "should update paid plan and reset next cycle plan" do
-            @site.plan.should == @paid_plan
-            @site.next_cycle_plan.should be_nil
+        describe "when upgrade to yearly paid plan" do
+          before(:all) do
+            Timecop.travel(Time.utc(2011,1,30)) { @site = Factory(:site, plan: @dev_plan) }
+            Timecop.travel(Time.utc(2011,5,15)) { subject.reload.update_attributes(plan_id: @paid_plan_yearly.id) }
           end
+          subject { @site }
+
+          its(:plan_started_at)       { should == Time.utc(2011,5,15).midnight }
+          its(:plan_cycle_started_at) { should == Time.utc(2011,5,15).midnight }
+          its(:plan_cycle_ended_at)   { should == Time.utc(2012,5,14).to_datetime.end_of_day }
+          its(:plan)                  { should == @paid_plan_yearly }
+          its(:next_cycle_plan)       { should be_nil }
         end
       end
 
-      context "with plan change" do
-        context "from a dev plan" do
-          before(:all) do
-            Timecop.travel(Time.utc(2011,1,15)) do
-              @site = Factory(:site, plan: @dev_plan)
-              @site.update_attribute(:next_cycle_plan_id, @paid_plan.id)
-            end
+      context "new site with monthly paid plan" do
 
-            @site.paid_plan_cycle_started_at.should be_nil
-            @site.paid_plan_cycle_ended_at.should be_nil
-            @site.plan.should == @dev_plan
+        describe "on creation" do
+          before(:all) { Timecop.travel(Time.utc(2011,1,30)) { @site = Factory(:site, plan: @paid_plan) } }
+          subject { @site }
 
-            Timecop.travel(Time.utc(2011,1,30)) do
-              @site.reset_paid_plan_initially_started_at # fake callback to set paid_plan_initially_started_at to today
-              @site.update_for_next_cycle
-            end
-            @site.paid_plan_initially_started_at.should be_within(5).of(Time.utc(2011,1,30).midnight)
-            @site.paid_plan_cycle_started_at.should == Time.utc(2011,1,30).midnight
-            @site.paid_plan_cycle_ended_at.should == Time.utc(2011,2,27).end_of_day
-          end
-
-          # 2011,1,30 => 2011,2,27
-          # 2011,2,28 => 2011,3,29
-          # 2011,3,30 => 2011,4,29
-          # etc.
-          1.upto(13) do |i|
-            it "should update paid plan cycle #{i} months after" do
-              Timecop.travel(Time.utc(2011,1,30) + i.months + 1.day) do
-                @site.update_for_next_cycle
-              end
-              @site.paid_plan_cycle_started_at.should == (@site.paid_plan_initially_started_at + i.months).midnight
-              @site.paid_plan_cycle_ended_at.should == (@site.paid_plan_initially_started_at + (i+1).months - 1.day).end_of_day
-            end
-          end
-
-          it "should update paid plan and reset next cycle plan" do
-            @site.plan.should == @paid_plan
-            @site.next_cycle_plan.should be_nil
-          end
+          its(:plan_started_at)       { should == Time.utc(2011,1,30).midnight }
+          its(:plan_cycle_started_at) { should == Time.utc(2011,1,30).midnight }
+          its(:plan_cycle_ended_at)   { should == Time.utc(2011,2,27).to_datetime.end_of_day }
+          its(:plan)                  { should == @paid_plan }
+          its(:next_cycle_plan)       { should be_nil }
         end
 
-        context "from a beta plan" do
+        describe "when update_cycle_plan (same cycle)" do
           before(:all) do
-            @site = Factory(:site, plan: @beta_plan)
-            @site.update_attribute(:next_cycle_plan_id, @paid_plan.id)
-
-            @site.paid_plan_cycle_started_at.should be_nil
-            @site.paid_plan_cycle_ended_at.should be_nil
-            @site.plan.should == @beta_plan
-
-            Timecop.travel(Time.utc(2011,1,30)) do
-              @site.reset_paid_plan_initially_started_at # fake callback to set paid_plan_initially_started_at to today
-              @site.update_for_next_cycle
-            end
-            @site.paid_plan_initially_started_at.should be_within(5).of(Time.utc(2011,1,30).midnight)
-            @site.paid_plan_cycle_started_at.should == Time.utc(2011,1,30).midnight
-            @site.paid_plan_cycle_ended_at.should == Time.utc(2011,2,27).end_of_day
+            Timecop.travel(Time.utc(2011,1,30)) { @site = Factory(:site, plan: @paid_plan) }
+            Timecop.travel(Time.utc(2011,2,5))  { @site.reload.update_cycle_plan }
           end
+          subject { @site }
 
-          1.upto(13) do |i|
-            it "should update paid plan cycle #{i} months after" do
-              Timecop.travel(Time.utc(2011,1,30) + i.months + 1.day) do
-                @site.update_for_next_cycle
-              end
-              @site.paid_plan_cycle_started_at.should == (@site.paid_plan_initially_started_at + i.months).midnight
-              @site.paid_plan_cycle_ended_at.should == (@site.paid_plan_initially_started_at + (i+1).months - 1.day).end_of_day
-            end
-          end
-
-          it "should update paid plan and reset next cycle plan" do
-            @site.plan.should == @paid_plan
-            @site.next_cycle_plan.should be_nil
-          end
+          its(:plan_started_at)       { should == Time.utc(2011,1,30).midnight }
+          its(:plan_cycle_started_at) { should == Time.utc(2011,1,30).midnight }
+          its(:plan_cycle_ended_at)   { should == Time.utc(2011,2,27).to_datetime.end_of_day }
+          its(:plan)                  { should == @paid_plan }
+          its(:next_cycle_plan)       { should be_nil }
         end
 
-        context "month to month" do
+        describe "when update_cycle_plan" do
           before(:all) do
-            Timecop.travel(Time.utc(2011,1,15)) do
-              @site = Factory(:site, plan: @paid_plan)
-            end
-            @site.update_attribute(:next_cycle_plan_id, @paid_plan2.id)
-            @paid_plan_initially_started_at = @site.paid_plan_initially_started_at
-            @site.paid_plan_cycle_started_at.to_i.should == Time.utc(2011,1,15).midnight.to_i
-            @site.paid_plan_cycle_ended_at.to_i.should == Time.utc(2011,2,14).end_of_day.to_i
-            @site.plan.should == @paid_plan
-            @site.next_cycle_plan.should == @paid_plan2
-
-            Timecop.travel(Time.utc(2011,2,15)) do
-              @site.user.current_password = '123456'
-              @site.update_for_next_cycle
-              @site.save
-            end
+            Timecop.travel(Time.utc(2011,1,30)) { @site = Factory(:site, plan: @paid_plan) }
+            Timecop.travel(Time.utc(2011,3,3))  { @site.reload.update_cycle_plan }
           end
+          subject { @site }
 
-          it "should update paid plan cycle" do
-            @site.paid_plan_initially_started_at.should_not == @paid_plan_initially_started_at
-            @site.paid_plan_cycle_started_at.to_i.should == Time.utc(2011,2,15).midnight.to_i
-            @site.paid_plan_cycle_ended_at.to_i.should == Time.utc(2011,3,14).end_of_day.to_i
-          end
-
-          it "should update paid plan and reset next cycle plan" do
-            @site.plan.should == @paid_plan2
-            @site.next_cycle_plan.should be_nil
-          end
+          its(:plan_started_at)       { should == Time.utc(2011,1,30).midnight }
+          its(:plan_cycle_started_at) { should == Time.utc(2011,2,28).midnight }
+          its(:plan_cycle_ended_at)   { should == Time.utc(2011,3,29).to_datetime.end_of_day }
+          its(:plan)                  { should == @paid_plan }
+          its(:next_cycle_plan)       { should be_nil }
         end
 
-        context "month to year" do
+        describe "when upgrade to monthly paid plan" do
           before(:all) do
-            Timecop.travel(Time.utc(2011,1,15)) do
-              @site = Factory(:site, plan: @paid_plan)
-            end
-            @site.update_attribute(:next_cycle_plan_id, @paid_plan3.id)
-            @paid_plan_initially_started_at = @site.paid_plan_initially_started_at
-            @site.paid_plan_cycle_started_at.to_i.should == Time.utc(2011,1,15).midnight.to_i
-            @site.paid_plan_cycle_ended_at.to_i.should == Time.utc(2011,2,14).end_of_day.to_i
-            @site.plan.should == @paid_plan
-            @site.next_cycle_plan.should == @paid_plan3
-
-            Timecop.travel(Time.utc(2011,2,15)) do
-              @site.user.current_password = '123456'
-              @site.update_for_next_cycle
-              @site.save
+            Timecop.travel(Time.utc(2011,1,30)) { @site = Factory(:site, plan: @paid_plan) }
+            Timecop.travel(Time.utc(2011,3,3))  { @site.reload.update_cycle_plan; @site.save }
+            Timecop.travel(Time.utc(2011,3,10)) do
+              @site.reload.update_attributes(
+                plan_id: @paid_plan2.id,
+                user_attributes: { current_password: '123456' }
+              )
             end
           end
+          subject { @site }
 
-          it "should update paid plan cycle" do
-            @site.paid_plan_initially_started_at.should_not == @paid_plan_initially_started_at
-            @site.paid_plan_cycle_started_at.to_i.should == Time.utc(2011,2,15).midnight.to_i
-            @site.paid_plan_cycle_ended_at.to_i.should == Time.utc(2012,2,14).end_of_day.to_i
-          end
-
-          it "should update paid plan and reset next cycle plan" do
-            @site.plan.should == @paid_plan3
-            @site.next_cycle_plan.should be_nil
-          end
+          its(:plan_started_at)       { should == Time.utc(2011,2,28).midnight }
+          its(:plan_cycle_started_at) { should == Time.utc(2011,2,28).midnight }
+          its(:plan_cycle_ended_at)   { should == Time.utc(2011,3,27).to_datetime.end_of_day }
+          its(:plan)                  { should == @paid_plan2 }
+          its(:next_cycle_plan)       { should be_nil }
         end
 
-        context "year to month" do
+        describe "when upgrade to yearly paid plan" do
           before(:all) do
-            Timecop.travel(Time.utc(2011,1,15)) do
-              @site = Factory(:site, plan: @paid_plan3)
-            end
-            @site.update_attribute(:next_cycle_plan_id, @paid_plan.id)
-            @paid_plan_initially_started_at = @site.paid_plan_initially_started_at
-            @site.paid_plan_cycle_started_at.to_i.should == Time.utc(2011,1,15).midnight.to_i
-            @site.paid_plan_cycle_ended_at.to_i.should == Time.utc(2012,1,14).end_of_day.to_i
-            @site.plan.should == @paid_plan3
-            @site.next_cycle_plan.should == @paid_plan
-
-            Timecop.travel(Time.utc(2012,1,15)) do
-              @site.user.current_password = '123456'
-              @site.update_for_next_cycle
-              @site.save
+            Timecop.travel(Time.utc(2011,1,30)) { @site = Factory(:site, plan: @paid_plan) }
+            Timecop.travel(Time.utc(2011,2,10)) do
+              @site.reload.update_attributes(
+                plan_id: @paid_plan_yearly.id,
+                user_attributes: { current_password: '123456' }
+              )
             end
           end
+          subject { @site }
 
-          it "should update paid plan cycle" do
-            @site.paid_plan_initially_started_at.should_not == @paid_plan_initially_started_at
-            @site.paid_plan_cycle_started_at.to_i.should == Time.utc(2012,1,15).midnight.to_i
-            @site.paid_plan_cycle_ended_at.to_i.should == Time.utc(2012,2,14).end_of_day.to_i
-          end
-
-          it "should update paid plan and reset next cycle plan" do
-            @site.plan.should == @paid_plan
-            @site.next_cycle_plan.should be_nil
-          end
+          its(:plan_started_at)       { should == Time.utc(2011,1,30).midnight }
+          its(:plan_cycle_started_at) { should == Time.utc(2011,1,30).midnight }
+          its(:plan_cycle_ended_at)   { should == Time.utc(2012,1,29).to_datetime.end_of_day }
+          its(:plan)                  { should == @paid_plan_yearly }
+          its(:next_cycle_plan)       { should be_nil }
         end
+
+        describe "when downgrade to dev plan" do
+          before(:all) do
+            Timecop.travel(Time.utc(2011,1,30)) { @site = Factory(:site, plan: @paid_plan) }
+            Timecop.travel(Time.utc(2011,3,1)) do
+              @site.reload
+              @site.next_cycle_plan = @dev_plan # TODO Move to update_attributes when plan_id= updated
+              @site.update_cycle_plan
+            end
+          end
+          subject { @site }
+
+          its(:plan_started_at)       { should == Time.utc(2011,2,28).midnight }
+          its(:plan_cycle_started_at) { should be_nil }
+          its(:plan_cycle_ended_at)   { should be_nil }
+          its(:plan)                  { should == @dev_plan }
+          its(:next_cycle_plan)       { should be_nil }
+        end
+
+        describe "when downgrade to monthly paid plan" do
+          before(:all) do
+            Timecop.travel(Time.utc(2011,1,30)) { @site = Factory(:site, plan: @paid_plan) }
+            Timecop.travel(Time.utc(2011,3,3))  { @site.reload.update_cycle_plan; @site.save }
+            Timecop.travel(Time.utc(2011,4,1)) do
+              @site.reload
+              @site.next_cycle_plan = @paid_plan2 # TODO Move to update_attributes when plan_id= updated
+              @site.update_cycle_plan
+            end
+          end
+          subject { @site }
+
+          its(:plan_started_at)       { should == Time.utc(2011,3,30).midnight }
+          its(:plan_cycle_started_at) { should == Time.utc(2011,3,30).midnight }
+          its(:plan_cycle_ended_at)   { should == Time.utc(2011,4,29).to_datetime.end_of_day }
+          its(:plan)                  { should == @paid_plan2 }
+          its(:next_cycle_plan)       { should be_nil }
+        end
+
       end
 
+      context "new site with yearly paid plan" do
+
+        describe "on creation" do
+          before(:all) { Timecop.travel(Time.utc(2011,1,30)) { @site = Factory(:site, plan: @paid_plan_yearly) } }
+          subject { @site }
+
+          its(:plan_started_at)       { should == Time.utc(2011,1,30).midnight }
+          its(:plan_cycle_started_at) { should == Time.utc(2011,1,30).midnight }
+          its(:plan_cycle_ended_at)   { should == Time.utc(2012,1,29).to_datetime.end_of_day }
+          its(:plan)                  { should == @paid_plan_yearly }
+          its(:next_cycle_plan)       { should be_nil }
+        end
+
+        describe "when update_cycle_plan (same cycle)" do
+          before(:all) do
+            Timecop.travel(Time.utc(2011,1,30)) { @site = Factory(:site, plan: @paid_plan_yearly) }
+            Timecop.travel(Time.utc(2011,5,5))  { @site.reload.update_cycle_plan }
+          end
+          subject { @site }
+
+          its(:plan_started_at)       { should == Time.utc(2011,1,30).midnight }
+          its(:plan_cycle_started_at) { should == Time.utc(2011,1,30).midnight }
+          its(:plan_cycle_ended_at)   { should == Time.utc(2012,1,29).to_datetime.end_of_day }
+          its(:plan)                  { should == @paid_plan_yearly }
+          its(:next_cycle_plan)       { should be_nil }
+        end
+
+        describe "when update_cycle_plan" do
+          before(:all) do
+            Timecop.travel(Time.utc(2011,1,30)) { @site = Factory(:site, plan: @paid_plan_yearly) }
+            Timecop.travel(Time.utc(2012,2,1))  { @site.reload.update_cycle_plan }
+          end
+          subject { @site }
+
+          its(:plan_started_at)       { should == Time.utc(2011,1,30).midnight }
+          its(:plan_cycle_started_at) { should == Time.utc(2012,1,30).midnight }
+          its(:plan_cycle_ended_at)   { should == Time.utc(2013,1,29).to_datetime.end_of_day }
+          its(:plan)                  { should == @paid_plan_yearly }
+          its(:next_cycle_plan)       { should be_nil }
+        end
+
+        describe "when upgrade to yearly paid plan" do
+          before(:all) do
+            Timecop.travel(Time.utc(2011,1,30)) { @site = Factory(:site, plan: @paid_plan_yearly) }
+            Timecop.travel(Time.utc(2011,2,10)) do
+              @site.reload.update_attributes(
+                plan_id: @paid_plan_yearly2.id,
+                user_attributes: { current_password: '123456' }
+              )
+            end
+          end
+          subject { @site }
+
+          its(:plan_started_at)       { should == Time.utc(2011,1,30).midnight }
+          its(:plan_cycle_started_at) { should == Time.utc(2011,1,30).midnight }
+          its(:plan_cycle_ended_at)   { should == Time.utc(2012,1,29).to_datetime.end_of_day }
+          its(:plan)                  { should == @paid_plan_yearly2 }
+          its(:next_cycle_plan)       { should be_nil }
+        end
+
+        describe "when downgrade to dev plan" do
+          before(:all) do
+            Timecop.travel(Time.utc(2011,1,30)) { @site = Factory(:site, plan: @paid_plan_yearly) }
+            Timecop.travel(Time.utc(2012,2,1)) do
+              @site.reload
+              @site.next_cycle_plan = @dev_plan # TODO Move to update_attributes when plan_id= updated
+              @site.update_cycle_plan
+            end
+          end
+          subject { @site }
+
+          its(:plan_started_at)       { should == Time.utc(2012,1,30).midnight }
+          its(:plan_cycle_started_at) { should be_nil }
+          its(:plan_cycle_ended_at)   { should be_nil }
+          its(:plan)                  { should == @dev_plan }
+          its(:next_cycle_plan)       { should be_nil }
+        end
+
+        describe "when downgrade to yearly paid plan" do
+          before(:all) do
+            Timecop.travel(Time.utc(2011,1,30)) { @site = Factory(:site, plan: @paid_plan_yearly) }
+            Timecop.travel(Time.utc(2012,2,1)) do
+              @site.reload
+              @site.next_cycle_plan = @paid_plan_yearly2 # TODO Move to update_attributes when plan_id= updated
+              @site.update_cycle_plan
+            end
+          end
+          subject { @site }
+
+          its(:plan_started_at)       { should == Time.utc(2012,1,30).midnight }
+          its(:plan_cycle_started_at) { should == Time.utc(2012,1,30).midnight }
+          its(:plan_cycle_ended_at)   { should == Time.utc(2013,1,29).to_datetime.end_of_day }
+          its(:plan)                  { should == @paid_plan_yearly2 }
+          its(:next_cycle_plan)       { should be_nil }
+        end
+
+        describe "when downgrade to monthly paid plan" do
+          before(:all) do
+            Timecop.travel(Time.utc(2011,1,30)) { @site = Factory(:site, plan: @paid_plan_yearly) }
+            Timecop.travel(Time.utc(2012,2,1))  { @site.reload.update_cycle_plan; @site.save }
+            Timecop.travel(Time.utc(2013,2,1)) do
+              @site.reload
+              @site.next_cycle_plan = @paid_plan # TODO Move to update_attributes when plan_id= updated
+              @site.update_cycle_plan
+            end
+          end
+          subject { @site }
+
+          its(:plan_started_at)       { should == Time.utc(2013,1,30).midnight }
+          its(:plan_cycle_started_at) { should == Time.utc(2013,1,30).midnight }
+          its(:plan_cycle_ended_at)   { should == Time.utc(2013,2,27).to_datetime.end_of_day }
+          its(:plan)                  { should == @paid_plan }
+          its(:next_cycle_plan)       { should be_nil }
+        end
+      end
     end
 
     describe "#advance_for_next_cycle_end" do
@@ -1501,10 +1461,10 @@ describe Site do
         before(:all) do
           @plan = Factory(:plan, cycle: "month")
           @site = Factory(:site)
-          @site.paid_plan_initially_started_at.should == Time.now.utc.midnight
+          @site.plan_started_at.should == Time.now.utc.midnight
         end
 
-        context "when now is less than 1 month after site.paid_plan_initially_started_at" do
+        context "when now is less than 1 month after site.plan_started_at" do
           it "should return 0 year + 1 month in advance - 1 day" do
             Timecop.travel(Time.now.utc.midnight + 1.day) do
               @site.send(:advance_for_next_cycle_end, @plan).should == 1.month - 1.day
@@ -1513,10 +1473,10 @@ describe Site do
         end
 
         1.upto(13) do |i|
-          context "when now is #{i} months after site.paid_plan_initially_started_at" do
+          context "when now is #{i} months after site.plan_started_at" do
             it "should return #{i} + 1 months in advance - 1 day" do
               Timecop.travel(Time.now.utc.midnight + i.months + 1.day) do
-                # puts @site.paid_plan_initially_started_at
+                # puts @site.plan_started_at
                 # puts Time.now.utc.midnight + i.months + 1.day
                 # r = @site.send(:advance_for_next_cycle_end, @plan)
                 # e = (i + 1).months - 1.day
@@ -1532,10 +1492,10 @@ describe Site do
         before(:all) do
           @plan = Factory(:plan, cycle: "year")
           @site = Factory(:site)
-          @site.paid_plan_initially_started_at.should == Time.now.utc.midnight
+          @site.plan_started_at.should == Time.now.utc.midnight
         end
 
-        context "when now is less than 1 yearly after site.paid_plan_initially_started_at" do
+        context "when now is less than 1 yearly after site.plan_started_at" do
           it "should return 12 months in advance - 1 day" do
             Timecop.travel(Time.now.utc.midnight + 1.day) do
               @site.send(:advance_for_next_cycle_end, @plan).should == 12.months - 1.day
@@ -1543,7 +1503,7 @@ describe Site do
           end
         end
 
-        context "when now is more than 1 year after site.paid_plan_initially_started_at" do
+        context "when now is more than 1 year after site.plan_started_at" do
           1.upto(3) do |i|
             it "should return #{i*12 + 12} months in advance - 1 day" do
               Timecop.travel(Time.now.utc.midnight + i.years + 1.day) do
@@ -1583,9 +1543,9 @@ end
 #  extra_hostnames                            :string(255)
 #  plan_id                                    :integer
 #  cdn_up_to_date                             :boolean
-#  paid_plan_initially_started_at             :datetime
-#  paid_plan_cycle_started_at                 :datetime
-#  paid_plan_cycle_ended_at                   :datetime
+#  plan_started_at             :datetime
+#  plan_cycle_started_at                 :datetime
+#  plan_cycle_ended_at                   :datetime
 #  next_cycle_plan_id                         :integer
 #  plan_player_hits_reached_alert_sent_at     :datetime
 #  last_30_days_main_player_hits_total_count  :integer         default(0)
