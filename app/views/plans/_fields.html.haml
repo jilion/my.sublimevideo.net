@@ -3,16 +3,28 @@
     %span= f.object.errors[:plan].first
 
 %ul#plans
-  - Plan.paid_plans.order(:player_hits.asc, :price.asc).each do |plan|
+  - @plans.each do |plan|
+    - next if plan.yearly?
+    
     %li{ :class => plan.name }
       .content
         = f.label :plan_id, content_tag(:strong, plan.name.titlecase), :for => "plan_#{plan.name}", :class => "title"
         %h4.number= number_with_delimiter(plan.player_hits)
-        %h5.label= plan.player_hits.zero? ? "Unlimited pageviews" : "Video pageviews per month"
-        .radio_wrap
-          = f.radio_button :plan_id, plan.id, :id => "plan_#{plan.name}", :class => "plan_radio"
-          %span.bg
-        .pricing
-          %h4.price= display_amount(plan.price)
-          %p.label= "per #{plan.cycle}" unless plan.cycle == 'none'
+        %h5.label= "Video pageviews per month"
+        .monthly
+          .pricing
+            %h4.price= display_amount(plan.price)
+            %p.label= "per month"
+          .radio_wrap
+            = f.radio_button :plan_id, plan.id, :id => "plan_#{plan.name}", :class => "plan_radio"
+            %span.bg
+        
+        .yearly
+          - if yearly_plan = @plans.find { |p| p.name == plan.name && p.cycle == "year" }
+            .pricing
+              %h4.price= display_amount(yearly_plan.price)
+              %p.label= "per year"
+            .radio_wrap
+              = f.radio_button :plan_id, yearly_plan.id, :id => "plan_#{plan.name}", :class => "plan_radio"
+              %span.bg
 .spacer

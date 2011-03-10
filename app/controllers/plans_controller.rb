@@ -5,6 +5,7 @@ class PlansController < ApplicationController
 
   # GET /sites/:site_id/plan/edit
   def edit
+    @plans = Plan.paid_plans.order(:player_hits.asc, :price.asc)
     respond_with(@site)
   end
 
