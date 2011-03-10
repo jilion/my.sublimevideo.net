@@ -363,24 +363,24 @@ class Site < ActiveRecord::Base
 
   # before_save :if => :plan_id_changed?
   def update_cycle_plan
-    if plan_cycle_ended_at.nil? || plan_cycle_ended_at < Time.now.utc
-      new_plan = next_cycle_plan || plan
+    self.plan            = next_cycle_plan || plan
+    self.next_cycle_plan = nil
 
-      self.plan_started_at = plan_cycle_started_at || Time.now.utc.midnight if plan_id_changed?
-
-      if new_plan.dev_plan?
-        self.plan_cycle_started_at = nil
-        self.plan_cycle_ended_at   = nil
-      else
-        self.plan_cycle_started_at = if plan_cycle_ended_at
-          plan_cycle_ended_at.tomorrow.midnight
-        else
-          plan_started_at.midnight
-        end
-        self.plan_cycle_ended_at = (plan_started_at + advance_for_next_cycle_end(new_plan)).end_of_day
+    # update plan_started_at
+    if plan_id_changed?
+      if plan_cycle_ended_at && plan_cycle_ended_at < Time.now.utc # Downgrade
+        self.plan_started_at = plan_cycle_ended_at.tomorrow.midnight
+      else # Upgrade or from Dev plan
+        self.plan_started_at = plan_cycle_started_at || Time.now.utc.midnight
       end
-      self.plan            = new_plan
-      self.next_cycle_plan = nil
+    end
+    # update plan_cycle_started_at & plan_cycle_ended_at
+    if plan.dev_plan?
+      self.plan_cycle_started_at = nil
+      self.plan_cycle_ended_at   = nil
+    elsif plan_id_changed? || plan_cycle_ended_at.nil? || plan_cycle_ended_at < Time.now.utc
+      self.plan_cycle_started_at = (plan_started_at + months_since_plan_started_at.months).midnight
+      self.plan_cycle_ended_at   = (plan_started_at + advance_for_next_cycle_end(plan)).to_datetime.end_of_day
     end
     true # don't block the callbacks chain
   end
