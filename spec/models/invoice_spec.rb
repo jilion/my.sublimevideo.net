@@ -241,16 +241,16 @@ describe Invoice do
         Timecop.travel(Time.utc(2010,2,28)) do
           @site1 = Factory(:site, plan: @plan1)
           @site2 = Factory(:site, plan: @plan1, next_cycle_plan: @plan2)
-          @site1.paid_plan_cycle_ended_at.should == Time.utc(2010,3,27).end_of_day
-          @site2.paid_plan_cycle_ended_at.should == Time.utc(2010,3,27).end_of_day
+          @site1.plan_cycle_ended_at.should == Time.utc(2010,3,27).end_of_day
+          @site2.plan_cycle_ended_at.should == Time.utc(2010,3,27).end_of_day
         end
 
         # not to be renewed
         Timecop.travel(Time.utc(2010,3,2)) do
           @site3 = Factory(:site, plan: @plan1)
           @site4 = Factory(:site, plan: @plan1, next_cycle_plan: @plan2)
-          @site3.paid_plan_cycle_ended_at.should == Time.utc(2010,4,1).end_of_day
-          @site4.paid_plan_cycle_ended_at.should == Time.utc(2010,4,1).end_of_day
+          @site3.plan_cycle_ended_at.should == Time.utc(2010,4,1).end_of_day
+          @site4.plan_cycle_ended_at.should == Time.utc(2010,4,1).end_of_day
         end
       end
       before(:each) do
@@ -261,11 +261,11 @@ describe Invoice do
       end
 
       it "should update site that need to be renewed" do
-        @site1.reload.paid_plan_cycle_ended_at.to_i.should == Time.utc(2010,4,27).end_of_day.to_i
-        @site2.reload.paid_plan_cycle_ended_at.to_i.should == Time.utc(2010,4,27).end_of_day.to_i
+        @site1.reload.plan_cycle_ended_at.to_i.should == Time.utc(2010,4,27).end_of_day.to_i
+        @site2.reload.plan_cycle_ended_at.to_i.should == Time.utc(2010,4,27).end_of_day.to_i
 
-        @site3.reload.paid_plan_cycle_ended_at.to_i.should == Time.utc(2010,4,1).end_of_day.to_i
-        @site4.reload.paid_plan_cycle_ended_at.to_i.should == Time.utc(2010,4,1).end_of_day.to_i
+        @site3.reload.plan_cycle_ended_at.to_i.should == Time.utc(2010,4,1).end_of_day.to_i
+        @site4.reload.plan_cycle_ended_at.to_i.should == Time.utc(2010,4,1).end_of_day.to_i
       end
 
       it "should delay create invoice for sites that need to be renewed" do

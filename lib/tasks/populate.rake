@@ -146,7 +146,7 @@ namespace :user do
       end
     end
   end
-  
+
 end
 
 namespace :sm do
