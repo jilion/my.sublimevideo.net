@@ -28,8 +28,8 @@ describe Invoice do
 
   describe "Scopes" do
     before(:all) do
+      Invoice.delete_all
       @open_invoice   = Factory(:invoice, state: 'open', created_at: 48.hours.ago)
-      @unpaid_invoice = Factory(:invoice, state: 'unpaid', created_at: 36.hours.ago)
       @failed_invoice = Factory(:invoice, state: 'failed', created_at: 25.hours.ago)
       @paid_invoice   = Factory(:invoice, state: 'paid', created_at: 18.hours.ago)
     end
@@ -38,12 +38,16 @@ describe Invoice do
       specify { Invoice.between(24.hours.ago, 12.hours.ago).all.should == [@paid_invoice] }
     end
 
+    describe "#open" do
+      specify { Invoice.open.all.should == [@open_invoice] }
+    end
+
     describe "#failed" do
       specify { Invoice.failed.all.should == [@failed_invoice] }
     end
 
-    describe "#unpaid_or_failed" do
-      specify { Invoice.unpaid_or_failed.all.should == [@unpaid_invoice, @failed_invoice] }
+    describe "#open_or_failed" do
+      specify { Invoice.open_or_failed.all.should == [@open_invoice, @failed_invoice] }
     end
 
     describe "#paid" do
@@ -74,27 +78,6 @@ describe Invoice do
     describe "Initial state" do
       it { should be_open }
     end
-
-    describe "Events" do
-
-      describe "#complete" do
-        context "from open state" do
-          before(:each) { subject.reload.update_attribute(:state, 'open') }
-
-          it "should set open invoice to unpaid if amount < 0" do
-            subject.reload.amount = -1
-            subject.complete
-            subject.should be_unpaid
-          end
-          it "should set open invoice to unpaid if amount < 0" do
-            subject.reload.amount = 1
-            subject.complete
-            subject.should be_unpaid
-          end
-        end
-      end
-
-    end # Events
 
     pending "Transitions" do
 
@@ -135,7 +118,7 @@ describe Invoice do
         end
       end
 
-      describe "after_transition  :open => :unpaid, :do => :send_invoice_completed_email" do
+      describe "after_transition  :open => :open, :do => :send_invoice_completed_email" do
         context "from open" do
           before(:each) { subject.reload.update_attribute(:state, 'open') }
 
@@ -154,9 +137,9 @@ describe Invoice do
         end
       end
 
-      describe "before_transition :unpaid => :failed, :do => :delay_suspend_user" do
-        context "from unpaid" do
-          before(:each) { subject.reload.update_attributes(state: 'unpaid', attempts: Billing.max_charging_attempts + 1, charging_delayed_job_id: 1) }
+      describe "before_transition :open => :failed, :do => :delay_suspend_user" do
+        context "from open" do
+          before(:each) { subject.reload.update_attributes(state: 'open', attempts: Billing.max_charging_attempts + 1, charging_delayed_job_id: 1) }
 
           it "should delay user.suspend in Billing.days_before_suspend_user days" do
             lambda { subject.fail }.should change(Delayed::Job.where(:handler.matches => "%Class%suspend%"), :count).by(1)
@@ -165,9 +148,9 @@ describe Invoice do
         end
       end
 
-      describe "after_transition :unpaid => :failed, :do => :send_charging_failed_email" do
-        context "from unpaid" do
-          before(:each) { subject.reload.update_attributes(state: 'unpaid', attempts: Billing.max_charging_attempts + 1) }
+      describe "after_transition :open => :failed, :do => :send_charging_failed_email" do
+        context "from open" do
+          before(:each) { subject.reload.update_attributes(state: 'open', attempts: Billing.max_charging_attempts + 1) }
 
           it "should send an email to invoice.user" do
             lambda { subject.fail }.should change(ActionMailer::Base.deliveries, :count).by(1)
@@ -176,9 +159,9 @@ describe Invoice do
         end
       end
 
-      describe "after_transition [:open, :unpaid, :failed] => :paid, :do => :unsuspend_user" do
+      describe "after_transition [:open, :failed] => :paid, :do => :unsuspend_user" do
         context "with a non-suspended user" do
-          %w[open unpaid failed].each do |state|
+          %w[open failed].each do |state|
             context "from #{state}" do
               before(:each) do
                 subject.reload.update_attributes(state: state, amount: 0)
@@ -194,7 +177,7 @@ describe Invoice do
         end
 
         context "with a suspended user" do
-          %w[open unpaid failed].each do |state|
+          %w[open failed].each do |state|
             context "from #{state}" do
               before(:each) do
                 subject.reload.update_attributes(state: state, amount: 0)
@@ -202,7 +185,7 @@ describe Invoice do
                 subject.user.should be_suspended
               end
 
-              context "with no more unpaid invoice" do
+              context "with no more open invoice" do
                 it "should delay un-suspend_user" do
                   lambda { subject.send(state == 'open' ? :complete : :succeed) }.should change(Delayed::Job, :count).by(1)
                   Delayed::Job.where(:handler.matches => "%Class%unsuspend%").count.should == 1
@@ -210,7 +193,7 @@ describe Invoice do
                 end
               end
 
-              context "with more unpaid invoice" do
+              context "with more open invoice" do
                 before(:each) do
                   Factory(:invoice, user: subject.user, state: 'failed', started_at: Time.now.utc, ended_at: Time.now.utc)
                 end
@@ -230,86 +213,6 @@ describe Invoice do
   end # State Machine
 
   describe "Class Methods" do
-
-    describe ".renew_active_sites_and_create_invoices" do
-      before(:all) do
-        Site.delete_all
-        @plan1 = Factory(:plan, cycle: "month")
-        @plan2 = Factory(:plan, cycle: "month")
-
-        # to be renewed
-        Timecop.travel(Time.utc(2010,2,28)) do
-          @site1 = Factory(:site, plan: @plan1)
-          @site2 = Factory(:site, plan: @plan1, next_cycle_plan: @plan2)
-          @site1.plan_cycle_ended_at.should == Time.utc(2010,3,27).to_datetime.end_of_day
-          @site2.plan_cycle_ended_at.should == Time.utc(2010,3,27).to_datetime.end_of_day
-        end
-
-        # not to be renewed
-        Timecop.travel(Time.utc(2010,3,2)) do
-          @site3 = Factory(:site, plan: @plan1)
-          @site4 = Factory(:site, plan: @plan1, next_cycle_plan: @plan2)
-          @site3.plan_cycle_ended_at.should == Time.utc(2010,4,1).to_datetime.end_of_day
-          @site4.plan_cycle_ended_at.should == Time.utc(2010,4,1).to_datetime.end_of_day
-        end
-      end
-      before(:each) do
-        Delayed::Job.delete_all
-        Timecop.travel(Time.utc(2010,3,30,1)) do
-          Invoice.renew_active_sites_and_create_invoices
-        end
-      end
-
-      it "should update site that need to be renewed" do
-        @site1.reload.plan_cycle_ended_at.should == Time.utc(2010,4,27).to_datetime.end_of_day
-        @site2.reload.plan_cycle_ended_at.should == Time.utc(2010,4,27).to_datetime.end_of_day
-
-        @site3.reload.plan_cycle_ended_at.should == Time.utc(2010,4,1).to_datetime.end_of_day
-        @site4.reload.plan_cycle_ended_at.should == Time.utc(2010,4,1).to_datetime.end_of_day
-      end
-
-      it "should delay create invoice for sites that need to be renewed" do
-        djs = Delayed::Job.where(:handler.matches => "%complete_invoice%")
-        djs.size.should == 2
-        YAML.load(djs.first.handler)['args'][0].to_i.should == @site1.id
-        YAML.load(djs.second.handler)['args'][0].to_i.should == @site2.id
-        @site1.invoices.should be_empty
-        @site2.invoices.should be_empty
-
-        Timecop.travel(Time.utc(2010,3,30,2)) do
-          @worker.work_off
-        end
-        Delayed::Job.where(:handler.matches => "%complete_invoice%").should be_empty
-
-        @site1.reload.invoices.size.should == 1
-        @site2.reload.invoices.size.should == 1
-        @site3.reload.invoices.should be_empty
-        @site4.reload.invoices.should be_empty
-      end
-
-      it "should delay charge_unpaid_and_failed_invoices for the day after" do
-        djs = Delayed::Job.where(:handler.matches => "%renew_active_sites_and_create_invoices%")
-        djs.size.should == 1
-        djs.first.run_at.to_i.should == Time.utc(2010,3,31).midnight.to_i
-      end
-
-
-      context "with a failing save!" do
-        before(:each) do
-          @site1.stub(:save!).and_raise(ActiveRecord::RecordNotSaved)
-          @site2.stub(:save!).and_raise(ActiveRecord::RecordNotSaved)
-          Delayed::Job.delete_all
-          Timecop.travel(Time.utc(2010,3,30,1)) do
-            Invoice.renew_active_sites_and_create_invoices
-          end
-        end
-
-        it "should return without delaying the invoices creation if save! fails" do
-          Delayed::Job.where(:handler.matches => "%complete_invoice%").should be_empty
-        end
-      end
-
-    end # .renew_active_sites_and_create_invoices
 
     describe ".build" do
       before(:all) do

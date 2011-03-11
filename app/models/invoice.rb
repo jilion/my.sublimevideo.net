@@ -33,25 +33,20 @@ class Invoice < ActiveRecord::Base
   state_machine :initial => :open do
     state :failed
     state :paid
-
-    event(:complete) do
-      transition :open => :unpaid
-    end
   end
 
   # ==========
   # = Scopes =
   # ==========
 
-  scope :between, lambda { |started_at, ended_at|
-    where(:created_at.gte => started_at, :created_at.lte => ended_at)
-  }
+  scope :between, lambda { |started_at, ended_at| where(:created_at.gte => started_at, :created_at.lte => ended_at) }
 
-  scope :failed,           where(state: 'failed')
-  scope :unpaid_or_failed, where(state: %w[unpaid failed])
-  scope :paid,             where(state: 'paid')
-  scope :site_id,          lambda { |site_id| where(site_id: site_id) }
-  scope :user_id,          lambda { |user_id| where(site_id: Site.where(user_id: user_id).map(&:id)) }
+  scope :open,           where(state: 'open')
+  scope :failed,         where(state: 'failed')
+  scope :open_or_failed, where(state: %w[open failed])
+  scope :paid,           where(state: 'paid')
+  scope :site_id,        lambda { |site_id| where(site_id: site_id) }
+  scope :user_id,        lambda { |user_id| where(site_id: Site.where(user_id: user_id).map(&:id)) }
 
   # sort
   scope :by_amount,              lambda { |way='desc'| order(:amount.send(way)) }
@@ -73,34 +68,6 @@ class Invoice < ActiveRecord::Base
   # =================
   # = Class Methods =
   # =================
-
-  # Recurring task
-  def self.delay_renew_active_sites_and_create_invoices
-    unless Delayed::Job.already_delayed?('%Invoice%renew_active_sites_and_create_invoices%')
-      delay(:priority => 3, :run_at => Time.now.utc.tomorrow.midnight).renew_active_sites_and_create_invoices
-    end
-  end
-
-  def self.renew_active_sites_and_create_invoices
-    # 1 - take all active sites to be renewed
-    # 2 - updates them
-    # 3 - delay invoice creation
-
-    Site.active.to_be_renewed.each do |site|
-      site.update_cycle_plan
-
-      if site.changed?
-        begin
-          site.save!
-          delay(:priority => 1).complete_invoice(site.id)
-        rescue => ex
-          Notify.send(ex.message, :exception => ex)
-        end
-      end
-    end
-
-    delay_renew_active_sites_and_create_invoices
-  end
 
   def self.build(attributes={})
     new(attributes).build

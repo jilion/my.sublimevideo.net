@@ -1,5 +1,26 @@
 module Site::Invoice
 
+  def self.included(base)
+    base.send :extend, ClassMethods
+  end
+
+  module ClassMethods
+    # Recurring task
+    def delay_renew_active_sites
+      unless Delayed::Job.already_delayed?('%Site%renew_active_sites%')
+        delay(:priority => 3, :run_at => Time.now.utc.tomorrow.midnight).renew_active_sites
+      end
+    end
+
+    def renew_active_sites
+      Site.active.to_be_renewed.each do |site|
+        site.update_cycle_plan
+        site.save!
+      end
+      delay_renew_active_sites
+    end
+  end
+
   # ====================
   # = Instance Methods =
   # ====================
@@ -24,6 +45,7 @@ module Site::Invoice
 
   # before_save :if => :plan_id_changed?
   def update_cycle_plan
+    @instant_charging    = false
     self.plan            = next_cycle_plan || plan
     self.next_cycle_plan = nil
 
@@ -31,7 +53,8 @@ module Site::Invoice
     if plan_id_changed?
       if plan_cycle_ended_at && plan_cycle_ended_at < Time.now.utc # Downgrade
         self.plan_started_at = plan_cycle_ended_at.tomorrow.midnight
-      else # Upgrade or from Dev plan
+      else # Upgrade or creation
+        @instant_charging = true
         self.plan_started_at = plan_cycle_started_at || Time.now.utc.midnight
       end
     end
@@ -70,6 +93,20 @@ private
     else
       (months_since_plan_started_at + 1).months
     end - 1.day
+  end
+  
+  # after_save
+  def create_invoice
+    if in_paid_plan? && (plan_id_changed? || plan_cycle_started_at_changed? || plan_cycle_ended_at_changed?)
+      invoice = Invoice.build(site: self)
+      invoice.save!
+    end
+    if @instant_charging
+      transaction = Transaction.charge_by_invoice_ids([invoice.id])
+      if transaction.failed?
+        self.errors.add(:base, transaction.error) # Acceptance test needed
+      end
+    end
   end
 
 end

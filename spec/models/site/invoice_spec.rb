@@ -2,6 +2,86 @@ require 'spec_helper'
 
 describe Site::Invoice do
 
+  describe ".renew_active_sites" do
+    before(:all) do
+      Site.delete_all
+      @plan1 = Factory(:plan, cycle: "month")
+      @plan2 = Factory(:plan, cycle: "month")
+
+      # to be renewed
+      Timecop.travel(Time.utc(2010,2,28)) do
+        @site1 = Factory(:site, plan: @plan1)
+        @site2 = Factory(:site, plan: @plan1, next_cycle_plan: @plan2)
+        @site1.plan_cycle_ended_at.should == Time.utc(2010,3,27).to_datetime.end_of_day
+        @site2.plan_cycle_ended_at.should == Time.utc(2010,3,27).to_datetime.end_of_day
+      end
+
+      # not to be renewed
+      Timecop.travel(Time.utc(2010,3,2)) do
+        @site3 = Factory(:site, plan: @plan1)
+        @site4 = Factory(:site, plan: @plan1, next_cycle_plan: @plan2)
+        @site3.plan_cycle_ended_at.should == Time.utc(2010,4,1).to_datetime.end_of_day
+        @site4.plan_cycle_ended_at.should == Time.utc(2010,4,1).to_datetime.end_of_day
+      end
+    end
+    before(:each) do
+      Delayed::Job.delete_all
+      Timecop.travel(Time.utc(2010,3,30,1)) do
+        Site.renew_active_sites
+      end
+    end
+
+    it "should update site that need to be renewed" do
+      @site1.reload.plan_cycle_ended_at.should == Time.utc(2010,4,27).to_datetime.end_of_day
+      @site2.reload.plan_cycle_ended_at.should == Time.utc(2010,4,27).to_datetime.end_of_day
+
+      @site3.reload.plan_cycle_ended_at.should == Time.utc(2010,4,1).to_datetime.end_of_day
+      @site4.reload.plan_cycle_ended_at.should == Time.utc(2010,4,1).to_datetime.end_of_day
+    end
+
+    it "should delay create invoice for sites that need to be renewed" do
+      djs = Delayed::Job.where(:handler.matches => "%complete_invoice%")
+      djs.size.should == 2
+      YAML.load(djs.first.handler)['args'][0].to_i.should == @site1.id
+      YAML.load(djs.second.handler)['args'][0].to_i.should == @site2.id
+      @site1.invoices.should be_empty
+      @site2.invoices.should be_empty
+
+      Timecop.travel(Time.utc(2010,3,30,2)) do
+        @worker.work_off
+      end
+      Delayed::Job.where(:handler.matches => "%complete_invoice%").should be_empty
+
+      @site1.reload.invoices.size.should == 1
+      @site2.reload.invoices.size.should == 1
+      @site3.reload.invoices.should be_empty
+      @site4.reload.invoices.should be_empty
+    end
+
+    it "should delay charge_open_and_failed_invoices for the day after" do
+      djs = Delayed::Job.where(:handler.matches => "%renew_active_sites%")
+      djs.size.should == 1
+      djs.first.run_at.to_i.should == Time.utc(2010,3,31).midnight.to_i
+    end
+
+
+    context "with a failing save!" do
+      before(:each) do
+        @site1.stub(:save!).and_raise(ActiveRecord::RecordNotSaved)
+        @site2.stub(:save!).and_raise(ActiveRecord::RecordNotSaved)
+        Delayed::Job.delete_all
+        Timecop.travel(Time.utc(2010,3,30,1)) do
+          Site.renew_active_sites
+        end
+      end
+
+      it "should return without delaying the invoices creation if save! fails" do
+        Delayed::Job.where(:handler.matches => "%complete_invoice%").should be_empty
+      end
+    end
+
+  end # .renew_active_sites
+
   describe "#update_cycle_plan" do
     before(:all) do
       @paid_plan2        = Factory(:plan, cycle: "month")

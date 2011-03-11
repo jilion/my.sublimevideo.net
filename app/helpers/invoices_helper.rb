@@ -18,7 +18,7 @@ module InvoicesHelper
   end
 
   def charging_status(invoice)
-    if invoice.unpaid?
+    if invoice.open?
       if invoice.charging_delayed_job.present?
         "Will be charged on #{l(invoice.charging_delayed_job.run_at, :format => :minutes_timezone)}"
       else
