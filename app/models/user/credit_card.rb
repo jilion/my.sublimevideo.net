@@ -1,13 +1,3 @@
-# == Schema Information
-#
-# Table name: users
-#
-#  cc_type              :string(255)
-#  cc_last_digits       :integer
-#  cc_expire_on         :date
-#  cc_updated_at        :datetime
-#
-
 module User::CreditCard
   extend ActiveSupport::Memoizable
 
@@ -144,3 +134,15 @@ private
   memoize :credit_card
 
 end
+
+User.send :include, User::CreditCard
+
+# == Schema Information
+#
+# Table name: users
+#
+#  cc_type              :string(255)
+#  cc_last_digits       :integer
+#  cc_expire_on         :date
+#  cc_updated_at        :datetime
+#

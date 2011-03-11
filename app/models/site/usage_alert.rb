@@ -1,14 +1,7 @@
-# == Schema Information
-#
-# Table name: sites
-#
-#  plan_player_hits_reached_alert_sent_at :datetime
-#
-
 module Site::UsageAlert
 
   # ================================
-  # = User class methods extension =
+  # = Site class methods extension =
   # ================================
 
   # Recurring task
@@ -40,3 +33,10 @@ private
   end
 
 end
+
+# == Schema Information
+#
+# Table name: sites
+#
+#  plan_player_hits_reached_alert_sent_at :datetime
+#
