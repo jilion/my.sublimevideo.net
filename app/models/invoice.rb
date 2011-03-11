@@ -8,7 +8,6 @@ class Invoice < ActiveRecord::Base
   # ================
 
   belongs_to :site
-  # belongs_to :charging_delayed_job, :class_name => "::Delayed::Job"
   has_many :invoice_items
 
   has_many :plan_invoice_items, conditions: { type: "InvoiceItem::Plan" }, :class_name => "InvoiceItem"
@@ -40,41 +39,6 @@ class Invoice < ActiveRecord::Base
     end
   end
 
-  # state_machine :initial => :open do
-  #   event(:complete) do
-  #     transition :open => :paid, :if => lambda { |invoice| invoice.amount == 0 }
-  #     transition :open => :failed, :if => lambda { |invoice| invoice.user.cc_expired? }
-  #     transition :open => :unpaid
-  #   end
-  #   event(:retry) { transition :failed => :failed }
-  #   event(:fail) do
-  #     transition :unpaid => :unpaid, :if => lambda { |invoice| invoice.attempts < Billing.max_charging_attempts }
-  #     transition [:unpaid, :failed] => :failed
-  #   end
-  #   event(:succeed) { transition [:unpaid, :failed] => :paid }
-  #
-  #   before_transition :on => :complete, :do => :set_completed_at
-  #   after_transition  :on => :complete, :do => [:decrement_user_remaining_discounted_months, :update_user_invoiced_amount]
-  #
-  #   before_transition :on => :retry, :do => :delay_charge
-  #
-  #   before_transition :open => :unpaid, :unpaid => [:unpaid, :failed], :do => :delay_charge, :unless => lambda { |invoice| invoice.user.suspended? }
-  #   after_transition  :open => :unpaid, :do => :send_invoice_completed_email, :unless => lambda { |invoice| invoice.user.archived? }
-  #
-  #   before_transition any => :failed, :do => [:set_failed_at, :clear_charging_delayed_job_id]
-  #   before_transition :unpaid => :failed, :do => :delay_suspend_user
-  #   after_transition  :unpaid => :failed, :do => :send_charging_failed_email
-  #
-  #   before_transition any => :paid, :do => [:set_paid_at, :clear_charging_delayed_job_id]
-  #   after_transition  any => :paid do |invoice, transition|
-  #     if invoice.user.suspended? && invoice.user.invoices.failed.empty?
-  #       User.delay.unsuspend(invoice.user_id)
-  #     elsif invoice.user.will_be_suspended?
-  #       invoice.user.cancel_suspend
-  #     end
-  #   end
-  # end
-
   # ==========
   # = Scopes =
   # ==========
@@ -93,7 +57,6 @@ class Invoice < ActiveRecord::Base
   scope :by_amount,              lambda { |way='desc'| order(:amount.send(way)) }
   scope :by_invoice_items_count, lambda { |way='desc'| order(:invoice_items_count.send(way)) }
 
-  # scope :by_user,     lambda { |way='desc'| order(:users => [:first_name.send(way), :email.send(way)]) }
   scope :by_state,    lambda { |way='desc'| order(:state.send(way)) }
   scope :by_attempts, lambda { |way='desc'| order(:attempts.send(way)) }
   scope :by_date,     lambda { |way='desc'| order(:created_at.send(way)) }
@@ -148,41 +111,6 @@ class Invoice < ActiveRecord::Base
     build(site: site).complete if site
   end
 
-  # def self.delay_complete_invoices_for_billable_users(started_at, ended_at)
-  #   unless Delayed::Job.already_delayed?('%Invoice%complete_invoices_for_billable_users%')
-  #     delay(:priority => 1, :run_at => ended_at + Billing.days_before_creating_invoice.days).complete_invoices_for_billable_users(started_at, ended_at)
-  #   end
-  # end
-  #
-  # def self.complete_invoices_for_billable_users(started_at, ended_at) # utc dates!
-  #   User.billable(started_at, ended_at).each do |user|
-  #     invoice = build(user: user, started_at: started_at, ended_at: ended_at)
-  #     invoice.complete
-  #   end
-  #   delay_complete_invoices_for_billable_users(*TimeUtil.next_full_month(ended_at))
-  # end
-
-  # def self.charge(invoice_id)
-  #   invoice = find(invoice_id)
-  #   return if invoice.paid?
-  #
-  #   @payment = begin
-  #     Ogone.purchase(invoice.amount, invoice.user.credit_card_alias, :order_id => invoice.reference, :currency => 'USD')
-  #   rescue => ex
-  #     Notify.send("Charging failed: #{ex.message}", :exception => ex)
-  #     invoice.last_error = ex.message
-  #     nil
-  #   end
-  #   invoice.increment_attempts
-  #
-  #   if @payment && (@payment.success? || @payment.params["NCERROR"] == "50001113") # 50001113: orderID already processed with success
-  #     invoice.succeed
-  #   else
-  #     invoice.last_error = @payment.message if @payment
-  #     invoice.fail
-  #   end
-  # end
-
   # ====================
   # = Instance Methods =
   # ====================
@@ -196,10 +124,6 @@ class Invoice < ActiveRecord::Base
     self
   end
 
-  # def minutes_in_months
-  #   ((ended_at.end_of_month - started_at.beginning_of_month).to_f / 60).ceil
-  # end
-
   def to_param
     reference
   end
@@ -209,32 +133,13 @@ class Invoice < ActiveRecord::Base
   end
   memoize :total_invoice_items_amount
 
-  # def will_be_charged?
-  #   charging_delayed_job
-  # end
-
-  # before_transition :on => [:fail, :succeed]
-  # def increment_attempts
-  #   self.attempts += 1
-  # end
-
 private
 
   def build_invoice_items
-    # user.sites.includes(:versions).billable(started_at, ended_at).each do |site|
-    #   # Allow to have the right billable plan
-    #   past_site = site.version_at(ended_at)
-    # Plan
     invoice_items << InvoiceItem::Plan.build(invoice: self)
-    # end
   end
 
   def set_invoice_items_amount
-    # self.invoice_items_amount = if !total_invoice_items_amount.zero? && total_invoice_items_amount < Billing.minimum_billable_amount
-    #   Billing.minimum_billable_amount
-    # else
-    #   total_invoice_items_amount
-    # end
     self.invoice_items_amount = total_invoice_items_amount
   end
 
@@ -252,27 +157,6 @@ private
     self.amount = invoice_items_amount - discount_amount + vat_amount
   end
 
-  # before_transition [:open, :unpaid] => [:unpaid, :failed], before_transition :on => :retry
-  # def delay_charge
-  #   delayed_job = Invoice.delay(:run_at => charging_delay).charge(self.id)
-  #   self.charging_delayed_job_id = delayed_job.id
-  # end
-
-  # after_transition :open => :unpaid
-  # def send_invoice_completed_email
-  #   InvoiceMailer.invoice_completed(self).deliver!
-  # end
-
-  # before_transition :on => :complete
-  # def set_completed_at
-  #   self.completed_at = Time.now.utc
-  # end
-
-  # after_transition :on => :complete
-  # def decrement_user_remaining_discounted_months
-  #   self.user.decrement(:remaining_discounted_months) if user.get_discount?
-  # end
-
   # after_transition :on => :complete
   def update_user_invoiced_amount
     self.user.last_invoiced_amount = amount
@@ -280,45 +164,7 @@ private
     self.user.save
   end
 
-  # before_transition any => :failed, before_transition any => :paid
-  # def clear_charging_delayed_job_id
-  #   self.charging_delayed_job_id = nil
-  # end
-
-  # before_transition any => :failed
-  # def set_failed_at
-  #   self.failed_at = Time.now.utc
-  # end
-
-  # before_transition :unpaid => :failed
-  # def delay_suspend_user
-  #   self.user.delay_suspend
-  # end
-
-  # after_transition  :unpaid => :failed
-  # def send_charging_failed_email
-  #   InvoiceMailer.charging_failed(self).deliver!
-  # end
-
-  # before_transition any => :paid
-  # def set_paid_at
-  #   self.paid_at = Time.now.utc
-  # end
-
-  # def charging_delay
-  #   if user.suspended? || user.archived?
-  #     0.seconds
-  #   elsif open?
-  #     Billing.days_before_charging.days
-  #   elsif attempts >= Billing.max_charging_attempts
-  #     Billing.hours_between_retries_before_user_suspend.hours
-  #   else
-  #     (2**attempts).hours
-  #   end.from_now
-  # end
-
 end
-
 
 
 # == Schema Information
