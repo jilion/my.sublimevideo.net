@@ -350,25 +350,25 @@ def create_site_usages
 end
 
 def create_invoices
-  d = Site.minimum(:created_at)
-  while d < Time.now.beginning_of_month
-    Invoice.complete_invoices_for_billable_users(d.beginning_of_month, d.end_of_month)
-    d += 1.month
-  end
-  User.all.each do |user|
-    invoices = user.invoices
-    if invoices.size > 2
-      invoices[invoices.size - 2].tap do |i|
-        i.attributes = { state: 'paid', paid_at: i.ended_at + 6.days }
-        i.save(validate: false)
-      end
-      invoices.last.tap do |i|
-        i.attributes = { state: 'failed', failed_at: i.ended_at + 15.days, last_error: "We received an unknown status for the transaction. We will contact your acquirer and update the status of the transaction within one working day. Please check the status later." }
-        i.save(validate: false)
-      end
-    end
-  end
-  puts "#{Invoice.count} invoices created!"
+  # d = Site.minimum(:created_at)
+  # while d < Time.now.beginning_of_month
+  #   Invoice.complete_invoices_for_billable_users(d.beginning_of_month, d.end_of_month)
+  #   d += 1.month
+  # end
+  # User.all.each do |user|
+  #   invoices = user.invoices
+  #   if invoices.size > 2
+  #     invoices[invoices.size - 2].tap do |i|
+  #       i.attributes = { state: 'paid', paid_at: i.ended_at + 6.days }
+  #       i.save(validate: false)
+  #     end
+  #     invoices.last.tap do |i|
+  #       i.attributes = { state: 'failed', failed_at: i.ended_at + 15.days, last_error: "We received an unknown status for the transaction. We will contact your acquirer and update the status of the transaction within one working day. Please check the status later." }
+  #       i.save(validate: false)
+  #     end
+  #   end
+  # end
+  # puts "#{Invoice.count} invoices created!"
 end
 
 def create_plans

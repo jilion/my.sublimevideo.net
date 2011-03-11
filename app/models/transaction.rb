@@ -41,27 +41,27 @@ class Transaction < ActiveRecord::Base
   # =================
   
   # Recurring task
-  def self.delay_charge_all_unpaid_and_failed_invoices
-    unless Delayed::Job.already_delayed?('%Transaction%charge_all_unpaid_and_failed_invoices%')
+  def self.delay_charge_all_open_and_failed_invoices
+    unless Delayed::Job.already_delayed?('%Transaction%charge_all_open_and_failed_invoices%')
       # Invoice.create_invoices_for_billable_sites is delayed at Time.now.utc.tomorrow.change(:hour => 12)
       # So we delay this task 1 hour after (to be sure all invoices of the day are created)
-      delay(:priority => 4, :run_at => Time.now.utc.tomorrow.change(:hour => 1)).charge_all_unpaid_and_failed_invoices
+      delay(:priority => 4, :run_at => Time.now.utc.tomorrow.change(:hour => 1)).charge_all_open_and_failed_invoices
     end
   end
 
 
-  def self.charge_all_unpaid_and_failed_invoices
+  def self.charge_all_open_and_failed_invoices
     User.all.each do |user|
-      delay(:priority => 2).charge_unpaid_and_failed_invoices_by_user_id(user.id) if user.invoices.unpaid_or_failed.present?
+      delay(:priority => 2).charge_open_and_failed_invoices_by_user_id(user.id) if user.invoices.open_or_failed.present?
     end
-    delay_charge_all_unpaid_and_failed_invoices
+    delay_charge_all_open_and_failed_invoices
   end
 
-  def self.charge_unpaid_and_failed_invoices_by_user_id(user_id)
+  def self.charge_open_and_failed_invoices_by_user_id(user_id)
     user = User.find(user_id)
     if user
-      unpaid_or_failed_invoices = user.invoices.unpaid_or_failed
-      charge_by_invoice_ids(unpaid_or_failed_invoices.map(&:id)) if unpaid_or_failed_invoices.present?
+      open_or_failed_invoices = user.invoices.open_or_failed
+      charge_by_invoice_ids(open_or_failed_invoices.map(&:id)) if open_or_failed_invoices.present?
     end
   end
 

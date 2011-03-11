@@ -1,40 +1,10 @@
 Every day at midnight:
   Task 1:
-    - Sites that renew tomorrow are updated (plan_cycle_started_at, plan_cycle_ended_at, new plan_id if applicable and reset next_cycle_plan_id)
+    - Sites that renew today are updated (plan_cycle_started_at, plan_cycle_ended_at, new plan_id if applicable and reset next_cycle_plan_id)
       -> Creation of the site's invoice
 
   Task 2:
-    - Charging of all 'unpaid' and 'failed' invoices (grouped by user)
+    - Charging of all 'open' and 'failed' invoices (grouped by user)
       -> When a transaction:
         - succeed: included invoices are updated to 'paid' (and their paid_at is set)
         - fail: included invoices are updated to 'fail' (and their failed_at is set)
-
-
-
-----------------------------------------------------------------------------------------------------
-Context: 1 dev site with monthly plan
-  Describe: dev site activated
-    - no new invoice item created
-
-  Describe: active site cancelect within trial
-    - site archived
-
-  Describe: active site.activated_at + trial_days == today
-    - billable invoice created
-    - invoice_item created
-      - started_on = today
-      - ended_on = today + 1.month
-    - user.billable_on = invoice_item created
-    - next invoice created
-
-
-Context: 1 activated & billed upfront site with monthly plan
-  Describe: canceled
-    - site archived
-    - invoice_item.canceled_at = today
-    - no refund
-
-  Describe: downgrade to monthly/yearly
-    - invoice_item.canceled_at = today
-    - new invoice_item created with the new plan
-      - started_on = canceled invoice_item.started_on

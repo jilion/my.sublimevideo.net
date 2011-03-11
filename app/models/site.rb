@@ -24,7 +24,7 @@ class Site < ActiveRecord::Base
   belongs_to :plan
   belongs_to :next_cycle_plan, :class_name => "Plan"
 
-  has_many :invoices
+  has_many :invoices, :class_name => "::Invoice"
   has_many :invoice_items, :through => :invoices
 
   # Mongoid associations
@@ -119,11 +119,12 @@ class Site < ActiveRecord::Base
 
   before_validation :set_user_attributes
 
-  before_save :prepare_cdn_update, :clear_alerts_sent_at
-  before_save :update_cycle_plan, :if => :plan_id_changed?
+  before_save :prepare_cdn_update # in site/templates
+  before_save :clear_alerts_sent_at
+  before_save :update_cycle_plan, :if => :plan_id_changed? # in site/invoice
 
-  after_save :execute_cdn_update
-  after_create :delay_ranks_update
+  after_save :execute_cdn_update # in site/templates
+  after_create :delay_ranks_update # in site/templates
 
   # =================
   # = State Machine =
@@ -138,35 +139,12 @@ class Site < ActiveRecord::Base
 
     before_transition :on => :archive,  :do => :set_archived_at
 
-    after_transition  :to => [:suspended, :archived], :do => :delay_remove_loader_and_license
+    after_transition  :to => [:suspended, :archived], :do => :delay_remove_loader_and_license  # in site/templates
   end
 
   # =================
   # = Class Methods =
   # =================
-
-  # delayed method
-  def self.update_loader_and_license(site_id, options = {})
-    site = Site.find(site_id)
-    transaction do
-      begin
-        if options[:loader]
-          purge_loader = site.loader.present?
-          site.set_template("loader")
-          site.purge_template("loader") if purge_loader
-        end
-        if options[:license]
-          purge_license = site.license.present?
-          site.set_template("license")
-          site.purge_template("license") if purge_license
-        end
-        site.cdn_up_to_date = true
-        site.save!
-      rescue => ex
-        Notify.send(ex.message, :exception => ex)
-      end
-    end
-  end
 
   # delayed method
   def self.update_ranks(site_id)
@@ -175,21 +153,6 @@ class Site < ActiveRecord::Base
     site.google_rank = ranks[:google]
     site.alexa_rank  = ranks[:alexa][:global] # [:us] if also returned
     site.save!
-  end
-
-  # delayed method
-  def self.remove_loader_and_license(site_id)
-    site = Site.find(site_id)
-    transaction do
-      begin
-        site.remove_loader, site.remove_license = true, true
-        site.cdn_up_to_date = false
-        %w[loader license].each { |template| site.purge_template(template) }
-        site.save!
-      rescue => ex
-        Notify.send(ex.message, :exception => ex)
-      end
-    end
   end
 
   # Recurring task
@@ -203,15 +166,6 @@ class Site < ActiveRecord::Base
     delay_update_last_30_days_counters_for_not_archived_sites
     not_archived.find_each(:batch_size => 100) do |site|
       site.update_last_30_days_counters
-    end
-  end
-
-  def self.referrer_match_hostname?(referrer, hostname, path = '', wildcard = false)
-    referrer = URI.parse(referrer)
-    if path || wildcard
-      (referrer.host =~ /^(#{wildcard ? '.*' : 'www'}\.)?#{hostname}$/) && (path.blank? || referrer.path =~ %r{^/#{path}.*$})
-    else
-      referrer.host =~ /^(www\.)?#{hostname}$/
     end
   end
 
@@ -239,86 +193,12 @@ class Site < ActiveRecord::Base
     token
   end
 
-  def in_dev_plan?
-    plan && plan.dev_plan?
-  end
-
-  def in_beta_plan?
-    plan && plan.beta_plan?
-  end
-
-  def in_paid_plan?
-    plan && plan.paid_plan?
-  end
-
-  def in_or_was_in_paid_plan?
-    (new_record? && in_paid_plan?) ||
-    (plan_id_changed? && plan_id_was && !Plan.find(plan_id_was).dev_plan?) ||
-    (!plan_id_changed? && in_paid_plan?)
-  end
-
   def plan_player_hits_reached_alerted_this_month?
     (Time.now.utc.beginning_of_month..Time.now.utc.end_of_month).cover?(plan_player_hits_reached_alert_sent_at)
   end
 
   def need_path?
     %w[web.me.com homepage.mac.com].include?(hostname) && !path?
-  end
-
-  def settings_changed?
-    (changed & %w[hostname extra_hostnames dev_hostnames path wildcard]).present?
-  end
-
-  def referrer_type(referrer, timestamp = Time.now.utc)
-    past_site = version_at(timestamp)
-    if past_site.main_referrer?(referrer)
-      "main"
-    elsif past_site.extra_referrer?(referrer)
-      "extra"
-    elsif past_site.dev_referrer?(referrer)
-      "dev"
-    else
-      "invalid"
-    end
-  rescue => ex
-    Notify.send("Referrer type could not be guessed: #{ex.message}", :exception => ex)
-    "invalid"
-  end
-
-  def license_json
-    hash = { h: [], w: wildcard }
-    unless in_dev_plan?
-      hash[:h] << [hostname, path].compact.join('/')
-      hash[:h] += extra_hostnames.split(', ').map { |hostname| [hostname, path].compact.join('/') } if extra_hostnames?
-    end
-    hash[:h] += dev_hostnames.split(', ')
-    hash.to_json
-  end
-
-  def set_template(name)
-    template = ERB.new(File.new(Rails.root.join("app/templates/sites/#{name}.js.erb")).read)
-
-    tempfile = Tempfile.new(name, "#{Rails.root}/tmp")
-    tempfile.print template.result(binding)
-    tempfile.flush
-
-    self.send("#{name}=", tempfile)
-  end
-
-  def purge_template(name)
-    mapping = { loader: 'js', license: 'l' }
-    raise "Unknown template name!" unless mapping.keys.include?(name.to_sym)
-    VoxcastCDN.purge("/#{mapping[name.to_sym]}/#{token}.js")
-  end
-
-  def set_template(name)
-    template = ERB.new(File.new(Rails.root.join("app/templates/sites/#{name}.js.erb")).read)
-
-    tempfile = Tempfile.new(name, "#{Rails.root}/tmp")
-    tempfile.print template.result(binding)
-    tempfile.flush
-
-    self.send("#{name}=", tempfile)
   end
 
   def update_last_30_days_counters
@@ -347,42 +227,6 @@ class Site < ActiveRecord::Base
     else
       0
     end
-  end
-
-  def main_referrer?(referrer)
-    self.class.referrer_match_hostname?(referrer, hostname, path, wildcard)
-  end
-
-  def extra_referrer?(referrer)
-    extra_hostnames.split(', ').any? { |h| self.class.referrer_match_hostname?(referrer, h, path, wildcard) }
-  end
-
-  def dev_referrer?(referrer)
-    dev_hostnames.split(', ').any? { |h| self.class.referrer_match_hostname?(referrer, h, '', wildcard) }
-  end
-
-  # before_save :if => :plan_id_changed?
-  def update_cycle_plan
-    self.plan            = next_cycle_plan || plan
-    self.next_cycle_plan = nil
-
-    # update plan_started_at
-    if plan_id_changed?
-      if plan_cycle_ended_at && plan_cycle_ended_at < Time.now.utc # Downgrade
-        self.plan_started_at = plan_cycle_ended_at.tomorrow.midnight
-      else # Upgrade or from Dev plan
-        self.plan_started_at = plan_cycle_started_at || Time.now.utc.midnight
-      end
-    end
-    # update plan_cycle_started_at & plan_cycle_ended_at
-    if plan.dev_plan?
-      self.plan_cycle_started_at = nil
-      self.plan_cycle_ended_at   = nil
-    elsif plan_id_changed? || plan_cycle_ended_at.nil? || plan_cycle_ended_at < Time.now.utc
-      self.plan_cycle_started_at = (plan_started_at + months_since_plan_started_at.months).midnight
-      self.plan_cycle_ended_at   = (plan_started_at + advance_for_next_cycle_end(plan)).to_datetime.end_of_day
-    end
-    true # don't block the callbacks chain
   end
 
 private
@@ -421,32 +265,8 @@ private
   end
 
   # before_save
-  def prepare_cdn_update
-    @loader_needs_update  = false
-    @license_needs_update = false
-    common_conditions = new_record? || (state_changed? && active?)
-
-    if common_conditions || player_mode_changed?
-      self.cdn_up_to_date  = false
-      @loader_needs_update = true
-    end
-
-    if common_conditions || settings_changed? || plan_id_changed?
-      self.cdn_up_to_date   = false
-      @license_needs_update = true
-    end
-  end
-
-  # before_save
   def clear_alerts_sent_at
     self.plan_player_hits_reached_alert_sent_at = nil if plan_id_changed?
-  end
-
-  # after_save
-  def execute_cdn_update
-    if @loader_needs_update || @license_needs_update
-      Site.delay.update_loader_and_license(self.id, :loader => @loader_needs_update, :license => @license_needs_update)
-    end
   end
 
   # after_create
@@ -457,31 +277,6 @@ private
   # before_transition :on => :archive
   def set_archived_at
     self.archived_at = Time.now.utc
-  end
-
-  # after_transition :to => [:suspended, :archived]
-  def delay_remove_loader_and_license
-    Site.delay.remove_loader_and_license(self.id)
-  end
-
-  def months_since_plan_started_at
-    now = Time.now.utc
-    if plan_started_at && (now - plan_started_at >= 1.month)
-      months = now.month - plan_started_at.month
-      months -= 1 if months > 0 && (now.day - plan_started_at.day) < 0
-
-      (now.year - plan_started_at.year) * 12 + months
-    else
-      0
-    end
-  end
-
-  def advance_for_next_cycle_end(plan)
-    if plan.yearly?
-      (months_since_plan_started_at + 12).months
-    else
-      (months_since_plan_started_at + 1).months
-    end - 1.day
   end
 
 end
@@ -510,9 +305,9 @@ end
 #  extra_hostnames                            :string(255)
 #  plan_id                                    :integer
 #  cdn_up_to_date                             :boolean
-#  plan_started_at             :datetime
-#  plan_cycle_started_at                 :datetime
-#  plan_cycle_ended_at                   :datetime
+#  plan_started_at                            :datetime
+#  plan_cycle_started_at                      :datetime
+#  plan_cycle_ended_at                        :datetime
 #  next_cycle_plan_id                         :integer
 #  plan_player_hits_reached_alert_sent_at     :datetime
 #  last_30_days_main_player_hits_total_count  :integer         default(0)
