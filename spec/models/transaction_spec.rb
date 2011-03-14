@@ -223,7 +223,7 @@ describe Transaction do
 
 
     describe ".charge_open_and_failed_invoices_by_user_id" do
-      use_vcr_cassette "ogone_visa_payment_2000_alias"
+      use_vcr_cassette "ogone/visa_payment_2000_alias"
 
       before(:all) do
         Invoice.delete_all
@@ -240,7 +240,7 @@ describe Transaction do
 
     describe ".charge_by_invoice_ids" do
       context "with a succeeding purchase" do
-        use_vcr_cassette "ogone_visa_payment_2000_alias"
+        use_vcr_cassette "ogone/visa_payment_2000_alias"
 
         context "given open invoices" do
           before(:all) do
@@ -257,7 +257,7 @@ describe Transaction do
           end
 
           it "should charge Ogone for the total amount of the invoices" do
-            Ogone.should_receive(:purchase).with(@invoice1.amount + @invoice2.amount, @invoice1.user.credit_card_alias, { order_id: an_instance_of(Fixnum), currency: 'USD', description: an_instance_of(String) })
+            Ogone.should_receive(:purchase).with(@invoice1.amount + @invoice2.amount, @invoice1.user.credit_card_alias, { order_id: an_instance_of(Fixnum), currency: 'USD', description: an_instance_of(String), flag_3ds: true }).and_return(mock('payment', :params => {}))
             subject
           end
 
@@ -277,7 +277,7 @@ describe Transaction do
           subject { Transaction.charge_by_invoice_ids([@invoice1.reload.id, @invoice2.reload.id, @invoice3.reload.id]) }
 
           it "should charge Ogone for the total amount of the invoices" do
-            Ogone.should_receive(:purchase).with(@invoice1.amount + @invoice2.amount, @invoice1.user.credit_card_alias, { order_id: an_instance_of(Fixnum), currency: 'USD', description: an_instance_of(String) })
+            Ogone.should_receive(:purchase).with(@invoice1.amount + @invoice2.amount, @invoice1.user.credit_card_alias, { order_id: an_instance_of(Fixnum), currency: 'USD', description: an_instance_of(String), flag_3ds: true }).and_return(mock('payment', :params => {}))
             subject
           end
 
@@ -291,7 +291,7 @@ describe Transaction do
       end
 
       context "with a failing purchase" do
-        use_vcr_cassette "ogone_visa_payment_9999"
+        use_vcr_cassette "ogone/visa_payment_9999"
 
         context "given open invoices" do
           before(:all) do
@@ -308,7 +308,7 @@ describe Transaction do
           end
 
           it "should charge Ogone for the total amount of the invoices" do
-            Ogone.should_receive(:purchase).with(@invoice1.amount + @invoice2.amount, @invoice1.user.credit_card_alias, { order_id: an_instance_of(Fixnum), currency: 'USD', description: an_instance_of(String) })
+            Ogone.should_receive(:purchase).with(@invoice1.amount + @invoice2.amount, @invoice1.user.credit_card_alias, { order_id: an_instance_of(Fixnum), currency: 'USD', description: an_instance_of(String) }, flag_3ds: true).and_return(mock('payment', :params => {}))
             subject
           end
 
@@ -333,7 +333,7 @@ describe Transaction do
           subject { Transaction.charge_by_invoice_ids([@invoice1.reload.id, @invoice2.reload.id, @invoice3.reload.id]) }
 
           it "should charge Ogone for the total amount of the invoices" do
-            Ogone.should_receive(:purchase).with(@invoice1.amount + @invoice2.amount, @invoice1.user.credit_card_alias, { order_id: an_instance_of(Fixnum), currency: 'USD', description: an_instance_of(String) })
+            Ogone.should_receive(:purchase).with(@invoice1.amount + @invoice2.amount, @invoice1.user.credit_card_alias, { order_id: an_instance_of(Fixnum), currency: 'USD', description: an_instance_of(String), flag_3ds: true }).and_return(mock('payment', :params => {}))
             subject
           end
 

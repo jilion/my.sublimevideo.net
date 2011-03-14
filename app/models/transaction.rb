@@ -1,3 +1,5 @@
+require 'base64'
+
 class Transaction < ActiveRecord::Base
 
   # ================
@@ -85,9 +87,11 @@ class Transaction < ActiveRecord::Base
     case payment.params["STATUS"].to_i
     when 9 # The payment has been accepted.
       transaction.succeed
+      
     when 46 # Waiting for identification)
-      transaction.error = payment.params["HTML_ANSWER"]
+      transaction.error = Base64.decode64(payment.params["HTML_ANSWER"])
       transaction.auth_needed
+      
     else # Something went wrong
       transaction.error = payment.params["NCERRORPLUS"] if payment
       transaction.fail
@@ -99,6 +103,10 @@ class Transaction < ActiveRecord::Base
   # ====================
   # = Instance Methods =
   # ====================
+  
+  def order_description
+    "SublimeVideo: " + invoices.map { |invoice| "Invoice ##{invoice.reference}" }.join(", ")
+  end
 
 private
 
@@ -131,10 +139,6 @@ private
   # after_transition :on => [:succeed, :fail]
   def update_invoices
     Invoice.where(id: invoice_ids).update_all(:state => state, :"#{state}_at" => updated_at)
-  end
-  
-  def order_description
-    "SublimeVideo: " + invoices.map { |invoice| "Invoice ##{invoice.reference}" }.join(',')
   end
 
 end

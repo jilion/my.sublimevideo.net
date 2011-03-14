@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Log::Voxcast do
 
   context "Factory build" do
-    use_vcr_cassette "one_logs"
+    use_vcr_cassette "ogone/one_log"
     subject { Factory.build(:log_voxcast, :name => 'cdn.sublimevideo.net.log.1274773200-1274773260.gz') }
 
     its(:hostname)   { should == 'cdn.sublimevideo.net' }
@@ -17,7 +17,7 @@ describe Log::Voxcast do
 
   describe "Validations" do
     context "with already the same log in db" do
-      use_vcr_cassette "one_saved_logs"
+      use_vcr_cassette "ogone/one_saved_log"
 
       it "should validate uniqueness of name" do
         Factory(:log_voxcast)
@@ -29,7 +29,7 @@ describe Log::Voxcast do
   end
 
   context "Factory create" do
-    use_vcr_cassette "one_saved_logs"
+    use_vcr_cassette "ogone/one_saved_log"
     subject { Factory(:log_voxcast) }
 
     its(:created_at) { should be_present }

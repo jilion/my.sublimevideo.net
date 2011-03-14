@@ -9,12 +9,13 @@
 #
 
 require 'spec_helper'
+require 'base64'
 
 describe User::CreditCard do
   let(:user) { Factory(:user) }
   
   describe "Factory" do
-    use_vcr_cassette "credit_card_visa_validation"
+    use_vcr_cassette "ogone/credit_card_visa_validation"
     before(:each) { user.update_attributes(valid_attributes) }
     subject { user }
     
@@ -26,19 +27,6 @@ describe User::CreditCard do
     it { should be_valid }
     it { should be_credit_card }
     it { should be_cc }
-    
-    it "should void authorization after verification" do
-      mock_response = mock('response', :success? => true)
-      Ogone.should_receive(:void) { mock_response }
-      user.save
-    end
-    
-    it "should notify if void authorization after verification failed" do
-      mock_response = mock('response', :success? => false, :message => 'failed')
-      Ogone.stub(:void) { mock_response }
-      Notify.should_receive(:send)
-      user.save
-    end
   end
   
   describe "Validations" do
@@ -53,7 +41,7 @@ describe User::CreditCard do
       user.errors[:cc_type].should be_present
     end
     it "should validates cc_type if matching cc_number" do
-      VCR.use_cassette('credit_card_master_validation') do
+      VCR.use_cassette('ogone/credit_card_master_validation') do
         user.attributes = valid_attributes.merge(:cc_number => '5399999999999999', :cc_type => 'master')
         user.should be_valid
       end
@@ -87,14 +75,6 @@ describe User::CreditCard do
       user.should_not be_valid
       user.errors[:cc_verification_value].should be_present
     end
-    
-    it "should add error on base if authorization failed" do
-      VCR.use_cassette('credit_card_visa_invalid_authorization') do
-        user.attributes = valid_attributes.merge(:cc_number => '4111113333333333')
-        user.save.should be_false
-        user.errors[:base].should be_present
-      end
-    end
   end
   
   describe "Module Methods" do
@@ -119,7 +99,7 @@ describe User::CreditCard do
     end
     
     describe "#cc_expire_on=" do
-      use_vcr_cassette "credit_card_visa_validation"
+      use_vcr_cassette "ogone/credit_card_visa_validation"
       
       it "should set cc_expire_on to nil" do
         user.update_attributes(valid_attributes.merge(:cc_expire_on => nil))
@@ -133,7 +113,7 @@ describe User::CreditCard do
     end
     
     describe "#cc_type" do
-      use_vcr_cassette "credit_card_visa_validation"
+      use_vcr_cassette "ogone/credit_card_visa_validation"
       before(:each) { user.update_attributes(valid_attributes.merge(:cc_type => nil)) }
       
       it "should take cc_type from cc_number if nil" do
@@ -142,7 +122,7 @@ describe User::CreditCard do
     end
     
     describe "#credit_card_expire_this_month?" do
-      use_vcr_cassette "credit_card_visa_validation"
+      use_vcr_cassette "ogone/credit_card_visa_validation"
       
       context "with no cc_expire_on" do
         before(:each) { user }
@@ -174,7 +154,7 @@ describe User::CreditCard do
     end
     
     describe "#credit_card_expired?" do
-      use_vcr_cassette "credit_card_visa_validation"
+      use_vcr_cassette "ogone/credit_card_visa_validation"
       
       context "with no cc_expire_on" do
         before(:each) { user }
@@ -202,6 +182,70 @@ describe User::CreditCard do
         
         specify { user.cc_expire_on.should == 1.month.ago.end_of_month.to_date }
         specify { user.should be_credit_card_expired }
+      end
+    end
+    
+    describe "#check_credit_card" do
+      before(:each) { user.update_attributes(valid_attributes) }
+      subject { user }
+      
+      context "valid authorization" do
+        use_vcr_cassette "ogone/void_authorization"
+        
+        it "should void successful authorization" do
+          options = { store: credit_card_alias, flag_3ds: true, paramplus: "USER_ID=#{subject.id}&CC_CHECK=TRUE" }
+          Ogone.should_receive(:authorize).with(an_instance_of(Fixnum), an_instance_of(CreditCard), options) { nil }
+          # subject.should_receive(:process_cc_authorization_response) { nil }
+          subject.check_credit_card.should be_nil
+        end
+      end      
+    end
+    
+    describe "#process_cc_authorization_response", :focus => true do
+      before(:each) { user.update_attributes(valid_attributes) }
+      subject { user }
+      
+      context "valid authorization" do
+        use_vcr_cassette "ogone/void_authorization"
+        
+        it "should void successful authorization" do
+          subject.should_receive(:void_authorization).with("1234;RES")
+          subject.process_cc_authorization_response({ "STATUS" => "5" }, "1234;RES").should be_nil
+        end
+      end
+      
+      context "3d secure authorization" do
+        use_vcr_cassette "ogone/3ds_authorization"
+        
+        it "should return the html to inject" do
+          subject.process_cc_authorization_response({ "STATUS" => "46", "HTML_ANSWER" => Base64.encode64("<html>No HTML.</html>") }, "1234;RES").should == "<html>No HTML.</html>"
+        end
+      end
+      
+      context "invalid authorization" do
+        it "should add an error on base if authorization failed" do
+          subject.process_cc_authorization_response({ "STATUS" => "51" }, "1234;RES").should be_nil
+          subject.errors[:base].should be_present
+        end
+      end
+    end
+    
+    describe "#void_authorization" do
+      use_vcr_cassette "ogone/void_authorization"
+      before(:each) { user.update_attributes(valid_attributes) }
+      subject { user }
+      
+      it "should void authorization after verification" do
+        mock_response = mock('response', :success? => true)
+        Ogone.should_receive(:void) { mock_response }
+        subject.void_authorization("1234;RES")
+      end
+
+      it "should notify if void authorization after verification failed" do
+        mock_response = mock('response', :success? => false, :message => 'failed')
+        Ogone.stub(:void) { mock_response }
+        Notify.should_receive(:send)
+        subject.void_authorization("1234;RES")
       end
     end
     

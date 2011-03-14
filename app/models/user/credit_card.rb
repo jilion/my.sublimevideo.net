@@ -91,23 +91,28 @@ module User::CreditCard
     end
   end
   
-  def check_credit_card
-    options = { store: credit_card_alias, flag_3ds: true } # , accept_url: '', decline_url: '', exception_url: '' }
+  def check_credit_card(options={})
+    options = options.merge(store: credit_card_alias, flag_3ds: true, paramplus: "USER_ID=#{self.id}&CC_CHECK=TRUE")
     authorize = Ogone.authorize(100 + rand(500), credit_card, options)
     
-    Rails.logger.info "authorize.params[\"STATUS\"]: #{authorize.params["STATUS"].to_i}"
+    Rails.logger.info options.inspect
+    Rails.logger.info "authorize: #{authorize.inspect}"
     
-    case authorize.params["STATUS"].to_i
+    process_cc_authorization_response(authorize.params, authorize.authorization)
+  end
+  
+  def process_cc_authorization_response(authorize_params, authorize_authorization)
+    case authorize_params["STATUS"].to_i
     when 5 # The authorization has been accepted.
-      void_authorization(authorize.authorization)
+      void_authorization(authorize_authorization)
       nil
-    when 46 # Waiting for identification
-      html_answer = Base64.encode64(authorize.params["HTML_ANSWER"])
-      Rails.logger.info "authorize.params[\"HTML_ANSWER\"]: #{authorize.params["HTML_ANSWER"].to_i}"
+      
+    when 46 # Waiting for identification (3-D Secure)
+      html_answer = authorize_params["HTML_ANSWER"] ? Base64.decode64(authorize_params["HTML_ANSWER"]) : "<html>No HTML.</html>"
+      Rails.logger.info "html_answer: #{html_answer}"
+      html_answer
       
     else # Something went wrong
-      Rails.logger.info "authorize.params[\"NCERROR\"]: #{authorize.params["NCERROR"]}"
-      Rails.logger.info "authorize.params[\"NCERRORPLUS\"]: #{authorize.params["NCERRORPLUS"]}"
       self.errors.add(:base, "Credit card authorization failed")
       Rails.logger.info self.errors.inspect
       nil
@@ -126,7 +131,7 @@ module User::CreditCard
   def void_authorization(authorization)
     void = Ogone.void(authorization)
     unless void.success?
-      Notify.send("Credit card void for user #{user.id} failed: #{void.message}")
+      Notify.send("Credit card void for user #{self.id} failed: #{void.message}")
     end
   end
 

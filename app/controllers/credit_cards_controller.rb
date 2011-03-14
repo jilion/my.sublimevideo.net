@@ -9,35 +9,22 @@ class CreditCardsController < ApplicationController
   def update
     @user = User.find(current_user.id)
     @user.attributes = params[:user]
-    check_3d_secure = @user.check_credit_card
+    check_3d_secure = @user.check_credit_card(accept_url: payment_ok_transaction_url, decline_url: payment_ko_transaction_url)
     Rails.logger.info @user.errors.inspect
-    
-    respond_with do |format|
+
+    respond_with(@user) do |format|
       format.html do
         if check_3d_secure.present?
-          html_inject = Base64.encode64(check_3d_secure)
-          Rails.logger.info "HTML ANSWER: #{html_inject}"
-          render :text => html_inject
+          Rails.logger.info "HTML ANSWER: #{check_3d_secure}"
+          render :text => check_3d_secure
         elsif @user.errors.empty?
           @user.save
           redirect_to [:edit, :user_registration]
         else
-          render :edit
+          render :edit, :status => :error
         end
       end
     end
   end
 
-  def accept_3ds
-    void_authorization([params["PAYID"], 'RES'].join(';'))
-  end
-  
-  def decline_3ds
-    "Credit card not accepted"
-  end
-  
-  def exception_3ds
-    "An exception occured"
-  end
-  
 end
