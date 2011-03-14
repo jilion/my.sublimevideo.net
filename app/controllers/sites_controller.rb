@@ -29,8 +29,28 @@ class SitesController < ApplicationController
   end
 
   # POST /sites
+  # Handle upfront charging + credit card infos storage here?
   def create
-    @site = current_user.sites.create(params[:site])
+    # @site = current_user.sites.create(params[:site])
+    @site = current_user.sites.build(params[:site])
+    
+    if @site.paid_plan? # charge NOW
+      # 1/ Create invoice
+      invoice = Invoice.build(site: @site)
+      invoice.save!
+      
+      # 2/ Charge it
+      transaction = Transaction.charge_by_invoice_ids([invoice.id])
+      if transaction.failed?
+        @site.errors.add(:base, transaction.error) # Acceptance test needed
+      else
+        
+      end
+      
+      # store credit card infos (if present, the check is in the model)
+      current_user.keep_some_credit_card_info
+    end
+      
     respond_with(@site, :location => :sites)
   end
 

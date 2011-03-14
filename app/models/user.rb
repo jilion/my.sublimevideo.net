@@ -53,7 +53,7 @@ class User < ActiveRecord::Base
   # =============
 
   before_save  :set_password
-  before_save  :store_credit_card, :keep_some_credit_card_info # in user/credit_card
+  before_save  :keep_some_credit_card_info # in user/credit_card
   after_update :update_email_on_zendesk, :charge_failed_invoices
   after_save   :newsletter_subscription
 

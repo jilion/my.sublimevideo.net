@@ -9,6 +9,7 @@ module Ogone
   private
     
     def gateway
+      ActiveMerchant::Billing::Base.gateway_mode = :test # :production
       ActiveMerchant::Billing::OgoneGateway.new(yml)
     end
     memoize :gateway

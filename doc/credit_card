@@ -1,0 +1,59 @@
+Nouvelle approche:
+
+- Manual payments (update credit card & create/update site's plan) are done in the controllers
+- Automatic recurrent payments are done in Site::Invoice
+
+Credit Card manual authorization/payment:
+- With 3-D Secure
+- Without
+
+
+
+3 Cases:
+1 - Update credit card (CreditCardsController#update)
+2 - Pay a plan on create (SitesController#create)
+3 - Pay a plan on update (SitesController#update)
+
+1 - CreditCardsController#update
+ask for authorize credit cards info
+
+if 3d secure needed
+  inject html_answer (remember to create new routes for the 3ds callbacks)
+else
+  ok or not
+end
+
+
+2 - SitesController#create
+create the site
+create an invoice
+try to charge the invoice (with the 3ds and paramplus with the new plan id flag if cc attributes present)
+
+if 3d secure needed
+  set the site to dev (will be updated once the 3ds form will redirect the user on the "success callback page", or "failed callback page"...)
+  inject html_answer (remember to create new routes for the 3ds callbacks)
+else
+  if ok
+    normal redirect
+  else
+    show errors
+  end
+end
+
+3 - SitesController#update
+update the site
+create an invoice
+try to charge the invoice (with the 3ds and paramplus with the new plan id flag if cc attributes present)
+
+if 3d secure needed
+  set the site to old plan (will be updated once the 3ds form will redirect the user on the "success callback page", or "failed callback page"...)
+  inject html_answer (remember to create new routes for the 3ds callbacks)
+else
+  if ok
+    normal redirect
+  else
+    show errors
+  end
+end
+
+

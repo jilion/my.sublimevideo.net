@@ -1,21 +1,46 @@
+# PROD
+
 development:
-  login:     "jilion"
-  user:      "sublime"
-  password:  "WWQMNC89"
+  # login:     jilionPROD
+  # user:      sublime_api
+  # password:  "F$WZe7,2>h5%6*3g"
+  # signature: "qI{No5w^R,Ee72Gi98DT#x)MV"
+  # signature_encryptor: sha512
+  # created_after_10_may_2010: true
+  # currency: USD
+
+  login:     jilion
+  user:      sublime
+  password:  WWQMNC89
+  signature: MacBook@Pro2an9All-Around7Powerhouse!
+  signature_encryptor: sha512
   created_after_10_may_2010: true
+  currency: USD
+  
+  
 test:
-  login:     "jilion"
-  user:      "sublime"
-  password:  "WWQMNC89"
+  login:     jilion
+  user:      sublime
+  password:  WWQMNC89
+  signature: MacBook@Pro2an9All-Around7Powerhouse!
+  signature_encryptor: sha512
   created_after_10_may_2010: true
+  currency: USD
+  
 staging:
-  login:     "jilion"
-  user:      "sublime"
-  password:  "WWQMNC89"
+  login:     jilion
+  user:      sublime
+  password:  WWQMNC89
+  signature: MacBook@Pro2an9All-Around7Powerhouse!
+  signature_encryptor: sha512
   created_after_10_may_2010: true
+  currency: USD
+  
 production:
-  login:     "jilion"
-  user:      "sublime"
-  password:  "WWQMNC89"
+  login:     jilion
+  user:      sublime
+  password:  WWQMNC89
+  signature: MacBook@Pro2an9All-Around7Powerhouse!
+  signature_encryptor: sha512
   created_after_10_may_2010: true
-  # signature: "my_ogone_sha1_signature" # extra security, only if you configured your Ogone environment so
+  currency: USD

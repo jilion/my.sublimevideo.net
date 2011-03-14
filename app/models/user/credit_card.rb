@@ -1,3 +1,5 @@
+require 'base64'
+
 module User::CreditCard
   extend ActiveSupport::Memoizable
 
@@ -88,17 +90,27 @@ module User::CreditCard
       end
     end
   end
-
-  # before_save
-  def store_credit_card
-    if credit_card_attributes_present? && errors.empty?
-      authorize = Ogone.authorize(100 + rand(500), credit_card, :currency => 'USD', :store => credit_card_alias)
-      if authorize.success?
-        void_authorization(authorize)
-      else
-        self.errors.add(:base, "Credit card authorization failed")
-        false
-      end
+  
+  def check_credit_card
+    options = { store: credit_card_alias, flag_3ds: true } # , accept_url: '', decline_url: '', exception_url: '' }
+    authorize = Ogone.authorize(100 + rand(500), credit_card, options)
+    
+    Rails.logger.info "authorize.params[\"STATUS\"]: #{authorize.params["STATUS"].to_i}"
+    
+    case authorize.params["STATUS"].to_i
+    when 5 # The authorization has been accepted.
+      void_authorization(authorize.authorization)
+      nil
+    when 46 # Waiting for identification
+      html_answer = Base64.encode64(authorize.params["HTML_ANSWER"])
+      Rails.logger.info "authorize.params[\"HTML_ANSWER\"]: #{authorize.params["HTML_ANSWER"].to_i}"
+      
+    else # Something went wrong
+      Rails.logger.info "authorize.params[\"NCERROR\"]: #{authorize.params["NCERROR"]}"
+      Rails.logger.info "authorize.params[\"NCERRORPLUS\"]: #{authorize.params["NCERRORPLUS"]}"
+      self.errors.add(:base, "Credit card authorization failed")
+      Rails.logger.info self.errors.inspect
+      nil
     end
   end
 
@@ -111,14 +123,14 @@ module User::CreditCard
     end
   end
 
-private
-
-  def void_authorization(authorize)
-    void = Ogone.void(authorize.authorization)
+  def void_authorization(authorization)
+    void = Ogone.void(authorization)
     unless void.success?
-      Notify.send("Credit card void for user #{id} failed: #{void.message}")
+      Notify.send("Credit card void for user #{user.id} failed: #{void.message}")
     end
   end
+
+private
 
   def credit_card
     ActiveMerchant::Billing::CreditCard.new(
