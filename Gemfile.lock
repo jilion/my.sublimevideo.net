@@ -15,11 +15,9 @@ GIT
 
 GIT
   remote: git://github.com/jnicklas/capybara.git
-  revision: 47dbcdfdf0ae5896586f0131250a64b2553115a0
+  revision: 6f2e8c547b6d27678eefc407976ef7296bec4627
   specs:
     capybara (0.4.1.1)
-      celerity (>= 0.7.9)
-      culerity (>= 0.2.4)
       mime-types (>= 1.16)
       nokogiri (>= 1.3.3)
       rack (>= 1.0.0)
@@ -103,7 +101,6 @@ GEM
     builder (2.1.2)
     carrierwave (0.5.2)
       activesupport (~> 3.0)
-    celerity (0.8.8)
     childprocess (0.1.7)
       ffi (~> 0.6.3)
     closure-compiler (1.0.0)
@@ -115,16 +112,15 @@ GEM
       hashie (~> 0.4.0)
       httparty (~> 0.6.1)
       json
-    culerity (0.2.15)
     currencies (0.4.0)
     daemon_controller (0.2.6)
     daemons (1.1.0)
     dalli (1.0.2)
-    database_cleaner (0.6.4)
+    database_cleaner (0.6.5)
     delayed_job (2.1.4)
       activesupport (~> 3.0)
       daemons
-    devise (1.1.7)
+    devise (1.1.8)
       bcrypt-ruby (~> 2.1.2)
       warden (~> 1.0.2)
     diff-lcs (1.1.2)
@@ -155,7 +151,7 @@ GEM
       net-ssh (>= 2.0.23)
       nokogiri (>= 1.4.4)
       ruby-hmac
-    formatador (0.0.16)
+    formatador (0.1.1)
     growl (1.0.3)
     guard (0.3.0)
       open_gem (~> 1.4.2)
@@ -175,10 +171,9 @@ GEM
       spork (>= 0.8.4)
     haml (3.0.24)
     hashie (0.4.0)
-    heroku (1.17.17)
-      json (~> 1.4.6)
+    heroku (1.18.3)
       launchy (~> 0.3.2)
-      rest-client (< 1.7.0, >= 1.4.0)
+      rest-client (>= 1.4.0, < 1.7.0)
     heroku_tasks (0.1.4)
     hoptoad_notifier (2.4.6)
       activesupport
@@ -199,7 +194,7 @@ GEM
       rake (>= 0.8.1)
     libxml-ruby (1.1.3)
     liquid (2.2.2)
-    livereload (1.5)
+    livereload (1.6)
       em-dir-watcher (>= 0.1)
       em-websocket (>= 0.1.2)
       ruby-json (>= 1.1.2)
@@ -226,7 +221,7 @@ GEM
       launchy (~> 0.3.5)
     paper_trail (2.0.0)
       rails (~> 3)
-    passenger (3.0.4)
+    passenger (3.0.5)
       daemon_controller (>= 0.2.5)
       fastthread (>= 1.0.1)
       file-tail
@@ -236,7 +231,7 @@ GEM
     polyglot (0.3.1)
     prowl (0.1.3)
     public_suffix_service (0.8.1)
-    rack (1.2.1)
+    rack (1.2.2)
     rack-google-analytics (0.9.2)
     rack-mount (0.6.13)
       rack (>= 1.0.0)
@@ -286,7 +281,7 @@ GEM
       ffi (~> 0.6.3)
       json_pure
       rubyzip
-    sequel (3.17.0)
+    sequel (3.20.0)
     settingslogic (2.0.6)
     shoulda (2.11.3)
     silent-postgres (0.0.7)
@@ -298,11 +293,10 @@ GEM
     sqlite3-ruby (1.3.3)
       sqlite3 (>= 1.3.3)
     state_machine (0.9.4)
-    taps (0.3.15)
-      json (~> 1.4.6)
+    taps (0.3.19)
       rack (>= 1.0.1)
-      rest-client (< 1.7.0, >= 1.4.0)
-      sequel (~> 3.17.0)
+      rest-client (>= 1.4.0, < 1.7.0)
+      sequel (~> 3.20.0)
       sinatra (~> 1.0.0)
       sqlite3-ruby (~> 1.2)
     thor (0.14.6)
@@ -346,7 +340,7 @@ DEPENDENCIES
   dalli (= 1.0.2)
   database_cleaner
   delayed_job (= 2.1.4)
-  devise (= 1.1.7)
+  devise (= 1.1.8)
   devise_invitable!
   factory_girl_rails
   ffaker
