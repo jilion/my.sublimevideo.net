@@ -19,7 +19,7 @@ gem 'liquid',                '2.2.2'
 gem 'RedCloth',              '4.2.3'
 
 # Auth / invitations
-gem 'devise',                '1.1.7'
+gem 'devise',                '1.1.8'
 gem 'devise_invitable',      :git => 'git://github.com/rymai/devise_invitable.git'
 
 # Internals
