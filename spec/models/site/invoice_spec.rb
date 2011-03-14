@@ -2,6 +2,17 @@ require 'spec_helper'
 
 describe Site::Invoice do
 
+  describe ".delay_renew_active_sites" do
+    it "should delay renew_active_sites if not already delayed" do
+      expect { Site.delay_renew_active_sites }.should change(Delayed::Job.where(:handler.matches => '%Site%renew_active_sites%'), :count).by(1)
+    end
+
+    it "should not delay renew_active_sites if already delayed" do
+      Site.delay_renew_active_sites
+      expect { Site.delay_renew_active_sites }.should change(Delayed::Job.where(:handler.matches => '%Site%renew_active_sites%'), :count).by(0)
+    end
+  end
+
   describe ".renew_active_sites" do
     before(:all) do
       Site.delete_all
@@ -39,54 +50,18 @@ describe Site::Invoice do
       @site4.reload.plan_cycle_ended_at.should == Time.utc(2010,4,1).to_datetime.end_of_day
     end
 
-    it "should delay create invoice for sites that need to be renewed" do
-      djs = Delayed::Job.where(:handler.matches => "%complete_invoice%")
-      djs.size.should == 2
-      YAML.load(djs.first.handler)['args'][0].to_i.should == @site1.id
-      YAML.load(djs.second.handler)['args'][0].to_i.should == @site2.id
-      @site1.invoices.should be_empty
-      @site2.invoices.should be_empty
-
-      Timecop.travel(Time.utc(2010,3,30,2)) do
-        @worker.work_off
-      end
-      Delayed::Job.where(:handler.matches => "%complete_invoice%").should be_empty
-
-      @site1.reload.invoices.size.should == 1
-      @site2.reload.invoices.size.should == 1
-      @site3.reload.invoices.should be_empty
-      @site4.reload.invoices.should be_empty
-    end
-
-    it "should delay charge_open_and_failed_invoices for the day after" do
-      djs = Delayed::Job.where(:handler.matches => "%renew_active_sites%")
-      djs.size.should == 1
-      djs.first.run_at.to_i.should == Time.utc(2010,3,31).midnight.to_i
-    end
-
-
-    context "with a failing save!" do
-      before(:each) do
-        @site1.stub(:save!).and_raise(ActiveRecord::RecordNotSaved)
-        @site2.stub(:save!).and_raise(ActiveRecord::RecordNotSaved)
-        Delayed::Job.delete_all
-        Timecop.travel(Time.utc(2010,3,30,1)) do
-          Site.renew_active_sites
-        end
-      end
-
-      it "should return without delaying the invoices creation if save! fails" do
-        Delayed::Job.where(:handler.matches => "%complete_invoice%").should be_empty
-      end
+    it "should delay renew_active_sites" do
+      Delayed::Job.where(:handler.matches => '%Site%renew_active_sites%').count.should == 1
     end
 
   end # .renew_active_sites
 
   describe "#update_cycle_plan" do
     before(:all) do
-      @paid_plan2        = Factory(:plan, cycle: "month")
-      @paid_plan_yearly  = Factory(:plan, cycle: "year")
-      @paid_plan_yearly2 = Factory(:plan, cycle: "year")
+      @paid_plan         = Factory(:plan, cycle: "month", price: 1000)
+      @paid_plan2        = Factory(:plan, cycle: "month", price: 5000)
+      @paid_plan_yearly  = Factory(:plan, cycle: "year",  price: 10000)
+      @paid_plan_yearly2 = Factory(:plan, cycle: "year",  price: 50000)
     end
 
     context "new site with dev plan" do
@@ -100,6 +75,7 @@ describe Site::Invoice do
         its(:plan_cycle_ended_at)   { should be_nil }
         its(:plan)                  { should == @dev_plan }
         its(:next_cycle_plan)       { should be_nil }
+        it { should be_instant_charging }
       end
 
       describe "when update_cycle_plan" do
@@ -114,6 +90,7 @@ describe Site::Invoice do
         its(:plan_cycle_ended_at)   { should be_nil }
         its(:plan)                  { should == @dev_plan }
         its(:next_cycle_plan)       { should be_nil }
+        it { should_not be_instant_charging }
       end
 
       describe "when upgrade to monthly paid plan" do
@@ -128,6 +105,7 @@ describe Site::Invoice do
         its(:plan_cycle_ended_at)   { should == Time.utc(2011,3,9).to_datetime.end_of_day }
         its(:plan)                  { should == @paid_plan }
         its(:next_cycle_plan)       { should be_nil }
+        it { should be_instant_charging }
       end
 
       describe "when upgrade to yearly paid plan" do
@@ -142,6 +120,7 @@ describe Site::Invoice do
         its(:plan_cycle_ended_at)   { should == Time.utc(2012,5,14).to_datetime.end_of_day }
         its(:plan)                  { should == @paid_plan_yearly }
         its(:next_cycle_plan)       { should be_nil }
+        it { should be_instant_charging }
       end
     end
 
@@ -156,6 +135,7 @@ describe Site::Invoice do
         its(:plan_cycle_ended_at)   { should == Time.utc(2011,2,27).to_datetime.end_of_day }
         its(:plan)                  { should == @paid_plan }
         its(:next_cycle_plan)       { should be_nil }
+        it { should be_instant_charging }
       end
 
       describe "when update_cycle_plan (same cycle)" do
@@ -170,6 +150,7 @@ describe Site::Invoice do
         its(:plan_cycle_ended_at)   { should == Time.utc(2011,2,27).to_datetime.end_of_day }
         its(:plan)                  { should == @paid_plan }
         its(:next_cycle_plan)       { should be_nil }
+        it { should_not be_instant_charging }
       end
 
       describe "when update_cycle_plan" do
@@ -184,6 +165,7 @@ describe Site::Invoice do
         its(:plan_cycle_ended_at)   { should == Time.utc(2011,3,29).to_datetime.end_of_day }
         its(:plan)                  { should == @paid_plan }
         its(:next_cycle_plan)       { should be_nil }
+        it { should_not be_instant_charging }
       end
 
       describe "when upgrade to monthly paid plan" do
@@ -204,6 +186,7 @@ describe Site::Invoice do
         its(:plan_cycle_ended_at)   { should == Time.utc(2011,3,27).to_datetime.end_of_day }
         its(:plan)                  { should == @paid_plan2 }
         its(:next_cycle_plan)       { should be_nil }
+        it { should be_instant_charging }
       end
 
       describe "when upgrade to yearly paid plan" do
@@ -223,15 +206,19 @@ describe Site::Invoice do
         its(:plan_cycle_ended_at)   { should == Time.utc(2012,1,29).to_datetime.end_of_day }
         its(:plan)                  { should == @paid_plan_yearly }
         its(:next_cycle_plan)       { should be_nil }
+        it { should be_instant_charging }
       end
 
       describe "when downgrade to dev plan" do
         before(:all) do
           Timecop.travel(Time.utc(2011,1,30)) { @site = Factory(:site, plan: @paid_plan) }
           Timecop.travel(Time.utc(2011,3,1)) do
-            @site.reload
-            @site.next_cycle_plan = @dev_plan # TODO Move to update_attributes when plan_id= updated
             @site.update_cycle_plan
+            @site.reload.update_attributes(
+              plan_id: @dev_plan.id, # will set next_cycle_plan_id
+              user_attributes: { current_password: '123456' }
+            )
+            @site.reload.update_cycle_plan
           end
         end
         subject { @site }
@@ -241,16 +228,19 @@ describe Site::Invoice do
         its(:plan_cycle_ended_at)   { should be_nil }
         its(:plan)                  { should == @dev_plan }
         its(:next_cycle_plan)       { should be_nil }
+        it { should_not be_instant_charging }
       end
 
       describe "when downgrade to monthly paid plan" do
         before(:all) do
-          Timecop.travel(Time.utc(2011,1,30)) { @site = Factory(:site, plan: @paid_plan) }
+          Timecop.travel(Time.utc(2011,1,30)) { @site = Factory(:site, plan: @paid_plan2) }
           Timecop.travel(Time.utc(2011,3,3))  { @site.reload.update_cycle_plan; @site.save }
           Timecop.travel(Time.utc(2011,4,1)) do
-            @site.reload
-            @site.next_cycle_plan = @paid_plan2 # TODO Move to update_attributes when plan_id= updated
-            @site.update_cycle_plan
+            @site.reload.update_attributes(
+              plan_id: @paid_plan.id, # will set next_cycle_plan_id
+              user_attributes: { current_password: '123456' }
+            )
+            @site.reload.update_cycle_plan
           end
         end
         subject { @site }
@@ -258,8 +248,9 @@ describe Site::Invoice do
         its(:plan_started_at)       { should == Time.utc(2011,3,30).midnight }
         its(:plan_cycle_started_at) { should == Time.utc(2011,3,30).midnight }
         its(:plan_cycle_ended_at)   { should == Time.utc(2011,4,29).to_datetime.end_of_day }
-        its(:plan)                  { should == @paid_plan2 }
+        its(:plan)                  { should == @paid_plan }
         its(:next_cycle_plan)       { should be_nil }
+        it { should_not be_instant_charging }
       end
 
     end
@@ -275,6 +266,7 @@ describe Site::Invoice do
         its(:plan_cycle_ended_at)   { should == Time.utc(2012,1,29).to_datetime.end_of_day }
         its(:plan)                  { should == @paid_plan_yearly }
         its(:next_cycle_plan)       { should be_nil }
+        it { should be_instant_charging }
       end
 
       describe "when update_cycle_plan (same cycle)" do
@@ -289,6 +281,7 @@ describe Site::Invoice do
         its(:plan_cycle_ended_at)   { should == Time.utc(2012,1,29).to_datetime.end_of_day }
         its(:plan)                  { should == @paid_plan_yearly }
         its(:next_cycle_plan)       { should be_nil }
+        it { should_not be_instant_charging }
       end
 
       describe "when update_cycle_plan" do
@@ -303,6 +296,7 @@ describe Site::Invoice do
         its(:plan_cycle_ended_at)   { should == Time.utc(2013,1,29).to_datetime.end_of_day }
         its(:plan)                  { should == @paid_plan_yearly }
         its(:next_cycle_plan)       { should be_nil }
+        it { should_not be_instant_charging }
       end
 
       describe "when upgrade to yearly paid plan" do
@@ -322,15 +316,18 @@ describe Site::Invoice do
         its(:plan_cycle_ended_at)   { should == Time.utc(2012,1,29).to_datetime.end_of_day }
         its(:plan)                  { should == @paid_plan_yearly2 }
         its(:next_cycle_plan)       { should be_nil }
+        it { should be_instant_charging }
       end
 
       describe "when downgrade to dev plan" do
         before(:all) do
           Timecop.travel(Time.utc(2011,1,30)) { @site = Factory(:site, plan: @paid_plan_yearly) }
           Timecop.travel(Time.utc(2012,2,1)) do
-            @site.reload
-            @site.next_cycle_plan = @dev_plan # TODO Move to update_attributes when plan_id= updated
-            @site.update_cycle_plan
+            @site.reload.update_attributes(
+              plan_id: @dev_plan.id, # will set next_cycle_plan_id
+              user_attributes: { current_password: '123456' }
+            )
+            @site.reload.update_cycle_plan
           end
         end
         subject { @site }
@@ -340,15 +337,18 @@ describe Site::Invoice do
         its(:plan_cycle_ended_at)   { should be_nil }
         its(:plan)                  { should == @dev_plan }
         its(:next_cycle_plan)       { should be_nil }
+        it { should_not be_instant_charging }
       end
 
       describe "when downgrade to yearly paid plan" do
         before(:all) do
           Timecop.travel(Time.utc(2011,1,30)) { @site = Factory(:site, plan: @paid_plan_yearly) }
           Timecop.travel(Time.utc(2012,2,1)) do
-            @site.reload
-            @site.next_cycle_plan = @paid_plan_yearly2 # TODO Move to update_attributes when plan_id= updated
-            @site.update_cycle_plan
+            @site.reload.update_attributes(
+              plan_id: @paid_plan_yearly2.id, # will set next_cycle_plan_id
+              user_attributes: { current_password: '123456' }
+            )
+            @site.reload.update_cycle_plan
           end
         end
         subject { @site }
@@ -358,6 +358,7 @@ describe Site::Invoice do
         its(:plan_cycle_ended_at)   { should == Time.utc(2013,1,29).to_datetime.end_of_day }
         its(:plan)                  { should == @paid_plan_yearly2 }
         its(:next_cycle_plan)       { should be_nil }
+        it { should_not be_instant_charging }
       end
 
       describe "when downgrade to monthly paid plan" do
@@ -365,9 +366,11 @@ describe Site::Invoice do
           Timecop.travel(Time.utc(2011,1,30)) { @site = Factory(:site, plan: @paid_plan_yearly) }
           Timecop.travel(Time.utc(2012,2,1))  { @site.reload.update_cycle_plan; @site.save }
           Timecop.travel(Time.utc(2013,2,1)) do
-            @site.reload
-            @site.next_cycle_plan = @paid_plan # TODO Move to update_attributes when plan_id= updated
-            @site.update_cycle_plan
+            @site.reload.update_attributes(
+              plan_id: @paid_plan.id, # will set next_cycle_plan_id
+              user_attributes: { current_password: '123456' }
+            )
+            @site.reload.update_cycle_plan
           end
         end
         subject { @site }
@@ -377,6 +380,7 @@ describe Site::Invoice do
         its(:plan_cycle_ended_at)   { should == Time.utc(2013,2,27).to_datetime.end_of_day }
         its(:plan)                  { should == @paid_plan }
         its(:next_cycle_plan)       { should be_nil }
+        it { should_not be_instant_charging }
       end
     end
   end

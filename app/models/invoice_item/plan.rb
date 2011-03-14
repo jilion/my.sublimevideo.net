@@ -1,5 +1,8 @@
 class InvoiceItem::Plan < InvoiceItem
 
+  attr_accessor   :refund
+  attr_accessible :refund
+
   # =================
   # = Class Methods =
   # =================
@@ -13,17 +16,18 @@ class InvoiceItem::Plan < InvoiceItem
   # ====================
 
   def build
-    set_item_and_price
+    self.item ||= site.plan
     set_started_at_and_ended_at
-    set_amount
+    set_price_and_amount
     self
   end
 
 private
 
-  def set_item_and_price
-    self.item  = site.plan
-    self.price = site.plan.price
+  def set_price_and_amount
+    self.price  = item.price
+    self.price  = -1 * price if refund
+    self.amount = price
   end
 
   def set_started_at_and_ended_at
@@ -31,12 +35,7 @@ private
     self.ended_at   = site.plan_cycle_ended_at
   end
 
-  def set_amount
-    self.amount = price
-  end
-
 end
-
 
 
 # == Schema Information

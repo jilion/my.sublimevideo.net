@@ -2,74 +2,35 @@ require 'spec_helper'
 
 describe InvoiceItem::Plan do
 
-pending do
-
   describe ".build(attributes = {})" do
     before(:all) do
       @user    = Factory(:user)
-      @plan    = Factory(:plan, :price => 1000)
-      @site    = Factory(:site, :user => @user, :plan => @plan, :activated_at => Time.utc(2010,1,15))
-      @invoice = Factory(:invoice, :user => @user, :started_at => Time.utc(2010,2).beginning_of_month, :ended_at => Time.utc(2010,2).end_of_month)
+      @plan    = Factory(:plan, price: 1000)
+      @site    = Factory(:site, user: @user, plan: @plan)
+      @invoice = Factory(:invoice, site: @site)
     end
 
-    describe "shared logic" do
-      before(:all) { @site = Factory(:site, :user => @user, :plan => @plan, :activated_at => Time.utc(2010,1,15)) }
-      subject { InvoiceItem::Plan.build(:site => @site, :invoice => @invoice) }
+    describe "with standard params" do
+      subject { InvoiceItem::Plan.build(invoice: @invoice) }
 
-      specify { @site.activated_at.to_i.should == Time.utc(2010,1,15).to_i }
-      specify { @site.archived_at.to_i.should == 0 }
-
-      its(:item)  { should == @site.plan }
-      its(:price) { should == @site.plan.price }
+      its(:item)       { should == @site.plan }
+      its(:price)      { should == @site.plan.price }
+      its(:amount)     { should == @site.plan.price }
+      its(:started_at) { should == @site.plan_cycle_started_at }
+      its(:ended_at)   { should == @site.plan_cycle_ended_at }
     end
 
-    context "with a site activated before this month and not archived" do
-      before(:all) { @site = Factory(:site, :user => @user, :plan => @plan, :activated_at => Time.utc(2010,1,15)) }
-      subject { InvoiceItem::Plan.build(:site => @site, :invoice => @invoice) }
+    describe "with refund params" do
+      before(:all) { @plan2 = Factory(:plan, price: 1000) }
+      subject { InvoiceItem::Plan.build(invoice: @invoice, item: @plan2, refund: true) }
 
-      its(:minutes)    { should == 28 * 24 * 60 }
-      its(:percentage) { should == (28 / 28.0).round(4) }
-      its(:amount)     { should == (1000 * (28 / 28.0).round(4)).round }
-      specify          { subject.started_at.to_i.should == subject.invoice.started_at.to_i }
-      specify          { subject.ended_at.to_i.should == subject.invoice.ended_at.to_i }
+      its(:item)       { should == @plan2 }
+      its(:price)      { should == -1 * @plan2.price }
+      its(:amount)     { should == -1 * @plan2.price }
+      its(:started_at) { should == @site.plan_cycle_started_at }
+      its(:ended_at)   { should == @site.plan_cycle_ended_at }
     end
-
-    context "with a site activated before this month and archived" do
-      before(:all) { @site = Factory(:site, :user => @user, :plan => @plan, :activated_at => Time.utc(2010,1,15), :archived_at => Time.utc(2010,2,15)) }
-      subject { InvoiceItem::Plan.build(:site => @site, :invoice => @invoice) }
-
-      its(:minutes)    { should == 14 * 24 * 60 }
-      its(:percentage) { should == (14 / 28.0).round(4) }
-      its(:amount)     { should == (1000 * (14 / 28.0).round(4)).round }
-      specify          { subject.started_at.to_i.should == subject.invoice.started_at.to_i }
-      specify          { subject.ended_at.to_i.should == subject.site.archived_at.to_i }
-    end
-
-    context "with a site activated during the month and not archived" do
-      before(:all) { @site = Factory(:site, :user => @user, :plan => @plan, :activated_at => Time.utc(2010,2,20)) }
-      subject { InvoiceItem::Plan.build(:site => @site, :invoice => @invoice) }
-
-      its(:minutes)    { should == 9 * 24 * 60 }
-      its(:percentage) { should == (9 / 28.0).round(4) }
-      its(:amount)     { should == (1000 * (9 / 28.0).round(4)).round }
-      specify          { subject.started_at.to_i.should == subject.site.activated_at.to_i }
-      specify          { subject.ended_at.to_i.should == subject.invoice.ended_at.to_i }
-    end
-
-    context "with a site activated and archived during the month" do
-      before(:all) { @site = Factory(:site, :user => @user, :plan => @plan, :activated_at => Time.utc(2010,2,15), :archived_at => Time.utc(2010,2,20)) }
-      subject { InvoiceItem::Plan.build(:site => @site, :invoice => @invoice) }
-
-      its(:minutes)    { should == 5 * 24 * 60 }
-      its(:percentage) { should == (5 / 28.0).round(4) }
-      its(:amount)     { should == (1000 * (5 / 28.0).round(4)).round }
-      specify          { subject.started_at.to_i.should == subject.site.activated_at.to_i }
-      specify          { subject.ended_at.to_i.should == subject.site.archived_at.to_i }
-    end
-
   end
-
-end
 
 end
 

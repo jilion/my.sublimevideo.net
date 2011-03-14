@@ -103,6 +103,10 @@ class Invoice < ActiveRecord::Base
 private
 
   def build_invoice_items
+    if site.instant_charging? && site.plan_id_changed? && site.plan_id_was
+      plan_was = Plan.find(site.plan_id_was)
+      invoice_items << InvoiceItem::Plan.build(invoice: self, item: plan_was, refund: true)
+    end
     invoice_items << InvoiceItem::Plan.build(invoice: self)
   end
 

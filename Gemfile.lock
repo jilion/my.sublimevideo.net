@@ -158,7 +158,7 @@ GEM
       thor (~> 0.14.6)
     guard-bundler (0.1.2)
       guard (>= 0.2.2)
-    guard-livereload (0.1.7)
+    guard-livereload (0.1.8)
       em-websocket (~> 0.2.0)
       guard (>= 0.2.2)
       json (~> 1.4.6)

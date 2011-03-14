@@ -43,16 +43,26 @@ class Plan < ActiveRecord::Base
   # = Instance Methods =
   # ====================
 
+  def upgrade?(new_plan)
+    if yearly? && new_plan.monthly?
+      false
+    else
+      month_price(10) <= new_plan.month_price(10)
+    end
+  end
+
   def next_plan
     Plan.where(:price.gt => price).order(:price).first
   end
 
-  def month_price
+  def month_price(months = 12)
     case cycle
     when "month"
       price
     when "year"
-      price / 12
+      price / months
+    else
+      0
     end
   end
 

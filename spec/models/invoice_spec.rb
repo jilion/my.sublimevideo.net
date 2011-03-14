@@ -216,40 +216,68 @@ describe Invoice do
 
     describe ".build" do
       before(:all) do
-        @plan1  = Factory(:plan, cycle: "month", price: 1000, player_hits: 2000)
-        @user   = Factory(:user, country: 'FR')
-        Timecop.travel(Time.utc(2010,2).beginning_of_month) do
-          @site = Factory(:site, user: @user, plan: @plan1)
+        @paid_plan = Factory(:plan, cycle: "month", price: 1000)
+      end
+
+      describe "standard invoice" do
+        before(:all) do
+          @user    = Factory(:user, country: 'FR')
+          @site    = Factory(:site, user: @user, plan: @paid_plan).reload
+          @invoice = Invoice.build(site: @site)
         end
-      end
-      before(:each) do
-        player_hits = { main_player_hits: 1500 }
-        Factory(:site_usage, player_hits.merge(site_id: @site.id, day: Time.utc(2010,1,15).midnight))
-        Factory(:site_usage, player_hits.merge(site_id: @site.id, day: Time.utc(2010,2,1).midnight))
-        Factory(:site_usage, player_hits.merge(site_id: @site.id, day: Time.utc(2010,2,20).midnight))
-        Factory(:site_usage, player_hits.merge(site_id: @site.id, day: Time.utc(2010,3,1).midnight))
-      end
-      subject { Invoice.build(site: @site) }
+        subject { @invoice }
 
-      specify { subject.invoice_items.size.should == 1 } # 1 plan
-      specify do
-        invoice_items_items = subject.invoice_items.map(&:item)
-        invoice_items_items.should include(@plan1)
-        invoice_items_items.should include(@plan1)
+        specify { subject.invoice_items.size.should == 1 } # 1 plan
+        specify { subject.invoice_items.all? { |ii| ii.item == @paid_plan }.should be_true }
+        specify { subject.invoice_items.all? { |ii| ii.site == @site }.should be_true }
+        specify { subject.invoice_items.all? { |ii| ii.invoice == subject }.should be_true }
+
+        its(:invoice_items_amount) { should == 1000 } # paid_plan.price
+        its(:vat_rate)             { should == 0.0 }
+        its(:vat_amount)           { should == 0 }
+        its(:amount)               { should == 1000 } # paid_plan.price
+        its(:paid_at)              { should be_nil }
+        its(:failed_at)            { should be_nil }
+        it { should be_open }
       end
-      specify { subject.invoice_items.all? { |ii| ii.site == @site }.should be_true }
-      specify { subject.invoice_items.all? { |ii| ii.invoice == subject }.should be_true }
 
-      its(:invoice_items_amount) { should == 1000 } # plan.price
-      its(:vat_rate)             { should == 0.0 }
-      its(:vat_amount)           { should == 0 }
-      its(:amount)               { should == 1000 } # plan.price
-      its(:paid_at)              { should be_nil }
-      its(:failed_at)            { should be_nil }
-      it { should be_open }
+      describe "with a site upgraded" do
+        before(:all) do
+          @user       = Factory(:user, country: 'FR')
+          @site       = Factory(:site, user: @user, plan: @paid_plan).reload
+          @paid_plan2 = Factory(:plan, cycle: "month", price: 3000)
+          # Simulate upgrade
+          @site.plan_id = @paid_plan2.id
+          @site.instance_variable_set(:@instant_charging, true)
 
-      context "with a Swiss user" do
-        before(:each) { @user.reload.update_attribute(:country, 'CH') }
+          @invoice = Invoice.build(site: @site)
+        end
+        subject { @invoice }
+
+        specify { subject.invoice_items.size.should == 2 }
+        specify { subject.invoice_items.all? { |ii| ii.site == @site }.should be_true }
+        specify { subject.invoice_items.all? { |ii| ii.invoice == subject }.should be_true }
+        specify { subject.invoice_items.first.item.should == @paid_plan }
+        specify { subject.invoice_items.first.price.should == -1000 }
+        specify { subject.invoice_items.second.item.should == @paid_plan2 }
+        specify { subject.invoice_items.second.price.should == 3000 }
+
+        its(:invoice_items_amount) { should == 2000 } # paid_plan2.price - paid_plan.price
+        its(:vat_rate)             { should == 0.0 }
+        its(:vat_amount)           { should == 0 }
+        its(:amount)               { should == 2000 } # paid_plan2.price - paid_plan.price
+        its(:paid_at)              { should be_nil }
+        its(:failed_at)            { should be_nil }
+        it { should be_open }
+      end
+
+      describe "with a Swiss user" do
+        before(:all) do
+          @user    = Factory(:user, country: 'CH')
+          @site    = Factory(:site, user: @user, plan: @paid_plan).reload
+          @invoice = Invoice.build(site: @site)
+        end
+        subject { @invoice }
 
         its(:invoice_items_amount) { should == 1000 }
         its(:discount_rate)        { should == 0.0 }
@@ -257,23 +285,22 @@ describe Invoice do
         its(:vat_rate)             { should == 0.08 }
         its(:vat_amount)           { should == (1000 * 0.08).round }
         its(:amount)               { should == 1000 + (1000 * 0.08).round }
+      end
 
-        describe "user has a discount" do
-          before(:each) { @user.reload.update_attribute(:remaining_discounted_months, 1) }
-
-          its(:invoice_items_amount) { should == 1000 }
-          its(:discount_rate)        { should == Billing.beta_discount_rate }
-          it "discount_amount" do
-            subject.discount_amount.should == (Billing.beta_discount_rate * subject.invoice_items_amount).round
-          end
-          its(:vat_rate)             { should == 0.08 }
-          it "vat_amount" do
-            subject.vat_amount.should == ((subject.invoice_items_amount - subject.discount_amount) * 0.08).round
-          end
-          it "amount" do
-            subject.amount.should == subject.invoice_items_amount - subject.discount_amount + subject.vat_amount
-          end
+      describe "with a user with a discount" do
+        before(:all) do
+          @user    = Factory(:user, country: 'FR', remaining_discounted_months: 1)
+          @site    = Factory(:site, user: @user, plan: @paid_plan).reload
+          @invoice = Invoice.build(site: @site)
         end
+        subject { @invoice }
+
+        its(:invoice_items_amount) { should == 1000 }
+        its(:discount_rate)        { should == Billing.beta_discount_rate }
+        its(:discount_amount)      { should == (Billing.beta_discount_rate * 1000).round }
+        its(:vat_rate)             { should == 0.0 }
+        its(:vat_amount)           { should == 0 }
+        its(:amount)               { should == 1000 - (Billing.beta_discount_rate * 1000).round }
       end
     end # .build
 
@@ -281,34 +308,6 @@ describe Invoice do
 
 end
 
-
-
-# == Schema Information
-#
-# Table name: invoices
-#
-#  id                      :integer         not null, primary key
-#  site_id                 :integer
-#  reference               :string(255)
-#  state                   :string(255)
-#  amount                  :integer
-#  vat_rate                :float
-#  vat_amount              :integer
-#  discount_rate           :float
-#  discount_amount         :integer
-#  invoice_items_amount    :integer
-#  charging_delayed_job_id :integer
-#  invoice_items_count     :integer         default(0)
-#  transactions_count      :integer         default(0)
-#  created_at              :datetime
-#  updated_at              :datetime
-#  paid_at                 :datetime
-#  failed_at               :datetime
-#
-# Indexes
-#
-#  index_invoices_on_site_id  (site_id)
-#
 
 # == Schema Information
 #

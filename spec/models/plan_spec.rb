@@ -88,8 +88,41 @@ describe Plan do
     it { Factory(:plan, cycle: "none").should be_nonely }
   end
 
-end
+  describe "#upgrade?" do
+    before(:all) do
+      @paid_plan         = Factory(:plan, cycle: "month", price: 1000)
+      @paid_plan2        = Factory(:plan, cycle: "month", price: 5000)
+      @paid_plan_yearly  = Factory(:plan, cycle: "year",  price: 10000)
+      @paid_plan_yearly2 = Factory(:plan, cycle: "year",  price: 50000)
+    end
 
+    it { @dev_plan.upgrade?(@paid_plan).should be_true }
+    it { @dev_plan.upgrade?(@paid_plan2).should be_true }
+    it { @dev_plan.upgrade?(@paid_plan_yearly).should be_true }
+    it { @dev_plan.upgrade?(@paid_plan_yearly2).should be_true }
+
+    it { @paid_plan.upgrade?(@dev_plan).should be_false }
+    it { @paid_plan.upgrade?(@paid_plan2).should be_true }
+    it { @paid_plan.upgrade?(@paid_plan_yearly).should be_true }
+    it { @paid_plan.upgrade?(@paid_plan_yearly2).should be_true }
+
+    it { @paid_plan2.upgrade?(@dev_plan).should be_false }
+    it { @paid_plan2.upgrade?(@paid_plan).should be_false }
+    it { @paid_plan2.upgrade?(@paid_plan_yearly).should be_false }
+    it { @paid_plan2.upgrade?(@paid_plan_yearly2).should be_true }
+
+    it { @paid_plan_yearly.upgrade?(@dev_plan).should be_false }
+    it { @paid_plan_yearly.upgrade?(@paid_plan).should be_false }
+    it { @paid_plan_yearly.upgrade?(@paid_plan2).should be_false }
+    it { @paid_plan_yearly.upgrade?(@paid_plan_yearly2).should be_true }
+
+    it { @paid_plan_yearly2.upgrade?(@dev_plan).should be_false }
+    it { @paid_plan_yearly2.upgrade?(@paid_plan).should be_false }
+    it { @paid_plan_yearly2.upgrade?(@paid_plan2).should be_false }
+    it { @paid_plan_yearly2.upgrade?(@paid_plan_yearly).should be_false }
+  end
+
+end
 
 
 # == Schema Information

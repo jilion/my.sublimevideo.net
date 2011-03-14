@@ -189,6 +189,19 @@ class Site < ActiveRecord::Base
     write_attribute :path, attribute.sub('/', '')
   end
 
+  def plan_id=(attribute)
+    if plan_id? && new_plan = Plan.find_by_id(attribute)
+      if plan.upgrade?(new_plan)
+        @plan = nil # clear plan association cache
+        write_attribute(:plan_id, attribute)
+      else
+        write_attribute(:next_cycle_plan_id, attribute)
+      end
+    else
+      write_attribute(:plan_id, attribute)
+    end
+  end
+
   def to_param
     token
   end
