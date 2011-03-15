@@ -659,6 +659,9 @@ end
 
 
 
+
+
+
 # == Schema Information
 #
 # Table name: users
@@ -682,7 +685,7 @@ end
 #  failed_attempts                  :integer         default(0)
 #  locked_at                        :datetime
 #  cc_type                          :string(255)
-#  cc_last_digits                   :integer
+#  cc_last_digits                   :string(255)
 #  cc_expire_on                     :date
 #  cc_updated_at                    :datetime
 #  created_at                       :datetime
