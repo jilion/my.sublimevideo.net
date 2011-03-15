@@ -192,12 +192,15 @@ class Site < ActiveRecord::Base
   def plan_id=(attribute)
     if plan_id? && new_plan = Plan.find_by_id(attribute)
       if plan.upgrade?(new_plan)
+        # Upgrade
         @plan = nil # clear plan association cache
         write_attribute(:plan_id, attribute)
       else
+        # Downgrade
         write_attribute(:next_cycle_plan_id, attribute)
       end
     else
+      # Creation
       write_attribute(:plan_id, attribute)
     end
   end

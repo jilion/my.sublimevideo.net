@@ -10,7 +10,7 @@ Factory.define :user do |f|
   f.password             "123456"
   f.terms_and_conditions "1"
   f.cc_type              "visa"
-  f.cc_last_digits       1234
+  f.cc_last_digits       "1234"
 end
 
 Factory.define :admin do |f|
