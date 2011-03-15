@@ -1,6 +1,6 @@
 group 'frontend' do
 
-  guard 'passenger', :cli => "--daemonize --port 6969", :ping => true do
+  guard 'passenger', :cli => "--daemonize", :ping => true do
     watch('config/application.rb')
     watch('config/environment.rb')
     watch(%r{^config/environments/.+\.rb})
