@@ -18,8 +18,6 @@ class SitesController < ApplicationController
   # GET /sites/new
   def new
     @site = current_user.sites.build((params[:site] || {}).reverse_merge(:dev_hostnames => Site::DEFAULT_DEV_DOMAINS))
-    @paid_plans = Plan.paid_plans.order(:player_hits.asc, :price.asc)
-    @dev_plan   = Plan.dev_plan
     respond_with(@site)
   end
 

@@ -272,6 +272,7 @@ private
       ((state_changed? && archived?) || (changes.keys & (Array(self.class.accessible_attributes) + ['next_cycle_plan_id'])).present?) &&
       errors.empty?
       if user.current_password.blank? || !user.valid_password?(user.current_password)
+        write_attribute(:plan_id, next_cycle_plan_id) if next_cycle_plan_id_changed? # For non-js plan update view
         self.errors.add(:base, :current_password_needed)
       end
     end
