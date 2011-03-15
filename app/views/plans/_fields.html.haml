@@ -13,13 +13,13 @@
     %li{ :class => "#{plan.name} box_#{i}" }
       .wrapper
         .header
-          %h3= content_tag(:strong, plan.name.titlecase)
+          %h3= content_tag(:strong, plan.name.titleize)
           %h4.number= number_with_delimiter(plan.player_hits)
           %h5.label= "Video pageviews per month"
         .monthly.select_box
           .pricing
             %h4.price= display_amount(plan.price)
-            = f.label :plan_id, raw("#{content_tag(:span, plan.name.titlecase)} per month"), :for => "plan_#{plan.name}_#{plan.cycle}", :class => "title"
+            = f.label :plan_id, raw("#{content_tag(:span, plan.name.titleize)} per month"), :for => "plan_#{plan.name}_#{plan.cycle}", :class => "title"
           .radio_wrap
             = f.radio_button :plan_id, plan.id, :id => "plan_#{plan.name}_#{plan.cycle}", :class => "plan_radio"
             %span.bg
@@ -27,7 +27,7 @@
           - if yearly_plan = paid_plans.find { |p| p.name == plan.name && p.yearly? }
             .pricing
               %h4.price= display_amount(yearly_plan.price)
-              = f.label :plan_id, raw("#{content_tag(:span, plan.name.titlecase)} per year"), :for => "plan_#{plan.name}_#{plan.cycle}", :class => "title"
+              = f.label :plan_id, raw("#{content_tag(:span, plan.name.titleize)} per year"), :for => "plan_#{plan.name}_#{plan.cycle}", :class => "title"
             .radio_wrap
               = f.radio_button :plan_id, yearly_plan.id, :id => "plan_#{yearly_plan.name}_#{yearly_plan.cycle}", :class => "plan_radio"
               %span.bg
@@ -37,6 +37,6 @@
 
 #dev_plan
   .radio_wrap
-    = f.label :plan_id, content_tag(:span, dev_plan.name.titlecase), :for => "plan_#{dev_plan.name}", :class => "title"
+    = f.label :plan_id, content_tag(:span, dev_plan.name.titleize), :for => "plan_#{dev_plan.name}", :class => "title"
     = f.radio_button :plan_id, dev_plan.id, :id => "plan_#{dev_plan.name}", :class => "plan_radio"
     %span.bg

@@ -83,6 +83,15 @@ class Plan < ActiveRecord::Base
       cycle == c
     end
   end
+  
+  def title
+    name.titleize + case cycle
+    when "month"
+      " (monthly)"
+    when "year"
+      " (yearly)"
+    end
+  end
 
 end
 
