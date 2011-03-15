@@ -37,6 +37,10 @@ module Site::Invoice
     plan && plan.paid_plan?
   end
 
+  def instant_charging?
+    @instant_charging == true
+  end
+
   def in_or_was_in_paid_plan?
     (new_record? && in_paid_plan?) ||
     (plan_id_changed? && plan_id_was && !Plan.find(plan_id_was).dev_plan?) ||
@@ -45,9 +49,11 @@ module Site::Invoice
 
   # before_save :if => :plan_id_changed?
   def update_cycle_plan
-    @instant_charging    = false
-    self.plan            = next_cycle_plan || plan
-    self.next_cycle_plan = nil
+    @instant_charging = false
+    if next_cycle_plan_id?
+      write_attribute(:plan_id, next_cycle_plan_id)
+      self.next_cycle_plan = nil
+    end
 
     # update plan_started_at
     if plan_id_changed?
@@ -94,13 +100,18 @@ private
       (months_since_plan_started_at + 1).months
     end - 1.day
   end
-  
+
   # after_save
-  def create_invoice # only for recurrent billing
-    unless @instant_charging
-      if in_paid_plan? && (plan_id_changed? || plan_cycle_started_at_changed? || plan_cycle_ended_at_changed?)
-        invoice = Invoice.build(site: self)
-        invoice.save!
+  def create_invoice
+    if in_paid_plan? && (plan_id_changed? || plan_cycle_started_at_changed? || plan_cycle_ended_at_changed?)
+      invoice = Invoice.build(site: self)
+      invoice.save!
+    end
+    if invoice && instant_charging?
+      transaction = Transaction.charge_by_invoice_ids([invoice.id])
+      if transaction.failed?
+        self.errors.add(:base, transaction.error) # Acceptance test needed
+        false
       end
     end
     

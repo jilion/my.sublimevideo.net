@@ -311,6 +311,136 @@ describe Site do
         site.path.should == 'users/thibaud'
       end
     end
+
+    describe "plan_id=" do
+      before(:all) do
+        @paid_plan         = Factory(:plan, cycle: "month", price: 1000)
+        @paid_plan2        = Factory(:plan, cycle: "month", price: 5000)
+        @paid_plan_yearly  = Factory(:plan, cycle: "year",  price: 10000)
+        @paid_plan_yearly2 = Factory(:plan, cycle: "year",  price: 50000)
+      end
+
+      describe "when upgrade from dev plan to monthly plan" do
+        before(:all) do
+          @site = Factory.build(:site, plan: @dev_plan)
+          @site.plan_id = @paid_plan.id
+        end
+        subject { @site }
+
+        its(:plan_id)            { should == @paid_plan.id }
+        its(:next_cycle_plan_id) { should be_nil }
+      end
+
+      describe "when upgrade from dev plan to yearly plan" do
+        before(:all) do
+          @site = Factory.build(:site, plan: @dev_plan)
+          @site.plan_id = @paid_plan_yearly.id
+        end
+        subject { @site }
+
+        its(:plan_id)            { should == @paid_plan_yearly.id }
+        its(:next_cycle_plan_id) { should be_nil }
+      end
+
+      describe "when upgrade from monthly plan to monthly plan" do
+        before(:all) do
+          @site = Factory.build(:site, plan: @paid_plan)
+          @site.plan_id = @paid_plan2.id
+        end
+        subject { @site }
+
+        its(:plan_id)            { should == @paid_plan2.id }
+        its(:next_cycle_plan_id) { should be_nil }
+      end
+
+      describe "when upgrade from monthly plan to yearly plan" do
+        before(:all) do
+          @site = Factory.build(:site, plan: @paid_plan)
+          @site.plan_id = @paid_plan_yearly.id
+        end
+        subject { @site }
+
+        its(:plan_id)            { should == @paid_plan_yearly.id }
+        its(:next_cycle_plan_id) { should be_nil }
+      end
+
+      describe "when downgrade from monthly plan to dev plan" do
+        before(:all) do
+          @site = Factory.build(:site, plan: @paid_plan)
+          @site.plan_id = @dev_plan.id
+        end
+        subject { @site }
+
+        its(:plan_id)            { should == @paid_plan.id }
+        its(:next_cycle_plan_id) { should == @dev_plan.id }
+      end
+
+      describe "when downgrade from monthly plan to monthly plan" do
+        before(:all) do
+          @site = Factory.build(:site, plan: @paid_plan2)
+          @site.plan_id = @paid_plan.id
+        end
+        subject { @site }
+
+        its(:plan_id)            { should == @paid_plan2.id }
+        its(:next_cycle_plan_id) { should == @paid_plan.id }
+      end
+
+      describe "when downgrade from monthly plan to yearly plan" do
+        before(:all) do
+          @site = Factory.build(:site, plan: @paid_plan2)
+          @site.plan_id = @paid_plan_yearly.id
+        end
+        subject { @site }
+
+        its(:plan_id)            { should == @paid_plan2.id }
+        its(:next_cycle_plan_id) { should == @paid_plan_yearly.id }
+      end
+
+      describe "when upgrade from yearly plan to yearly plan" do
+        before(:all) do
+          @site = Factory.build(:site, plan: @paid_plan_yearly)
+          @site.plan_id = @paid_plan_yearly2.id
+        end
+        subject { @site }
+
+        its(:plan_id)            { should == @paid_plan_yearly2.id }
+        its(:next_cycle_plan_id) { should be_nil }
+      end
+
+      describe "when downgrade from yearly plan to dev plan" do
+        before(:all) do
+          @site = Factory.build(:site, plan: @paid_plan_yearly)
+          @site.plan_id = @dev_plan.id
+        end
+        subject { @site }
+
+        its(:plan_id)            { should == @paid_plan_yearly.id }
+        its(:next_cycle_plan_id) { should == @dev_plan.id }
+      end
+
+      describe "when downgrade from yearly plan to monthly plan" do
+        before(:all) do
+          @site = Factory.build(:site, plan: @paid_plan_yearly)
+          @site.plan_id = @paid_plan.id
+        end
+        subject { @site }
+
+        its(:plan_id)            { should == @paid_plan_yearly.id }
+        its(:next_cycle_plan_id) { should == @paid_plan.id }
+      end
+
+      describe "when downgrade from yearly plan to yearly plan" do
+        before(:all) do
+          @site = Factory.build(:site, plan: @paid_plan_yearly2)
+          @site.plan_id = @paid_plan_yearly.id
+        end
+        subject { @site }
+
+        its(:plan_id)            { should == @paid_plan_yearly2.id }
+        its(:next_cycle_plan_id) { should == @paid_plan_yearly.id }
+      end
+    end
   end
 
   describe "State Machine" do
