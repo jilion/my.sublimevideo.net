@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110223164835) do
+ActiveRecord::Schema.define(:version => 20110314141207) do
 
   create_table "admins", :force => true do |t|
     t.string   "email",                               :default => "", :null => false
@@ -176,7 +176,7 @@ ActiveRecord::Schema.define(:version => 20110223164835) do
   create_table "transactions", :force => true do |t|
     t.integer  "user_id"
     t.string   "cc_type"
-    t.integer  "cc_last_digits"
+    t.string   "cc_last_digits"
     t.date     "cc_expire_on"
     t.string   "state"
     t.integer  "amount"
@@ -204,7 +204,7 @@ ActiveRecord::Schema.define(:version => 20110223164835) do
     t.integer  "failed_attempts",                                 :default => 0
     t.datetime "locked_at"
     t.string   "cc_type"
-    t.integer  "cc_last_digits"
+    t.string   "cc_last_digits"
     t.date     "cc_expire_on"
     t.datetime "cc_updated_at"
     t.datetime "created_at"

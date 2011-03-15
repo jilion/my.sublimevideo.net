@@ -1,3 +1,5 @@
+require 'base64'
+
 module User::CreditCard
   extend ActiveSupport::Memoizable
 
@@ -88,17 +90,32 @@ module User::CreditCard
       end
     end
   end
-
-  # before_save
-  def store_credit_card
-    if credit_card_attributes_present? && errors.empty?
-      authorize = Ogone.authorize(100 + rand(500), credit_card, :currency => 'USD', :store => credit_card_alias)
-      if authorize.success?
-        void_authorization(authorize)
-      else
-        self.errors.add(:base, "Credit card authorization failed")
-        false
-      end
+  
+  def check_credit_card(options={})
+    options = options.merge(store: credit_card_alias, flag_3ds: true, paramplus: "USER_ID=#{self.id}&CC_CHECK=TRUE")
+    authorize = Ogone.authorize(100 + rand(500), credit_card, options)
+    
+    Rails.logger.info options.inspect
+    Rails.logger.info "authorize: #{authorize.inspect}"
+    
+    process_cc_authorization_response(authorize.params, authorize.authorization)
+  end
+  
+  def process_cc_authorization_response(authorize_params, authorize_authorization)
+    case authorize_params["STATUS"].to_i
+    when 5 # The authorization has been accepted.
+      void_authorization(authorize_authorization)
+      nil
+      
+    when 46 # Waiting for identification (3-D Secure)
+      html_answer = authorize_params["HTML_ANSWER"] ? Base64.decode64(authorize_params["HTML_ANSWER"]) : "<html>No HTML.</html>"
+      Rails.logger.info "html_answer: #{html_answer}"
+      html_answer
+      
+    else # Something went wrong
+      self.errors.add(:base, "Credit card authorization failed")
+      Rails.logger.info self.errors.inspect
+      nil
     end
   end
 
@@ -111,14 +128,14 @@ module User::CreditCard
     end
   end
 
-private
-
-  def void_authorization(authorize)
-    void = Ogone.void(authorize.authorization)
+  def void_authorization(authorization)
+    void = Ogone.void(authorization)
     unless void.success?
-      Notify.send("Credit card void for user #{id} failed: #{void.message}")
+      Notify.send("Credit card void for user #{self.id} failed: #{void.message}")
     end
   end
+
+private
 
   def credit_card
     ActiveMerchant::Billing::CreditCard.new(

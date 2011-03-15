@@ -1,16 +1,13 @@
+defaults: &defaults
+  base_url: http://jilion.zendesk.com
+  username: zeno@jilion.com
+  password: wrank8
+
 development:
-  base_url: http://jilion.zendesk.com
-  username: zeno@jilion.com
-  password: wrank8
+  <<: *defaults
 test:
-  base_url: http://jilion.zendesk.com
-  username: zeno@jilion.com
-  password: wrank8
+  <<: *defaults
 staging:
-  base_url: http://jilion.zendesk.com
-  username: zeno@jilion.com
-  password: wrank8
+  <<: *defaults
 production:
-  base_url: http://jilion.zendesk.com
-  username: zeno@jilion.com
-  password: wrank8
+  <<: *defaults

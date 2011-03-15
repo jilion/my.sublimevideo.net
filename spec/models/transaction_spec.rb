@@ -223,7 +223,7 @@ describe Transaction do
 
 
     describe ".charge_open_and_failed_invoices_by_user_id" do
-      use_vcr_cassette "ogone_visa_payment_2000_alias"
+      use_vcr_cassette "ogone/visa_payment_2000_alias"
 
       before(:all) do
         Invoice.delete_all
@@ -240,7 +240,7 @@ describe Transaction do
 
     describe ".charge_by_invoice_ids" do
       context "with a succeeding purchase" do
-        use_vcr_cassette "ogone_visa_payment_2000_alias"
+        use_vcr_cassette "ogone/visa_payment_2000_alias"
 
         context "given open invoices" do
           before(:all) do
@@ -294,7 +294,7 @@ describe Transaction do
       end
 
       context "with a failing purchase" do
-        use_vcr_cassette "ogone_visa_payment_9999"
+        use_vcr_cassette "ogone/visa_payment_9999"
 
         context "given open invoices" do
           before(:all) do

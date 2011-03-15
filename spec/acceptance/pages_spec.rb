@@ -57,7 +57,7 @@ describe "Pages" do
         pending "updating credit card" do
           click_link_or_button "Edit credit card"
 
-          VCR.use_cassette('credit_card_visa_validation') do
+          VCR.use_cassette('ogone/credit_card_visa_validation') do
             fill_in "user_cc_full_name", :with => "John Doe"
             fill_in "user_cc_number", :with => "4111111111111111"
             fill_in "user_cc_verification_value", :with => "111"
@@ -71,7 +71,7 @@ describe "Pages" do
         pending "updating credit card and paying the only failed invoice" do
           click_link_or_button "Edit credit card"
 
-          VCR.use_cassette('credit_card_visa_validation') do
+          VCR.use_cassette('ogone/credit_card_visa_validation') do
             fill_in "user_cc_full_name", :with => "John Doe"
             fill_in "user_cc_number", :with => "4111111111111111"
             fill_in "user_cc_verification_value", :with => "111"
@@ -83,7 +83,7 @@ describe "Pages" do
           # lambda { click_button "Pay the January 2010 invoice" }.should change(Delayed::Job, :count).by(1)
           current_url.should =~ %r(^http://[^/]+/suspended$)
 
-          VCR.use_cassette "ogone_visa_payment_2000_alias" do
+          VCR.use_cassette "ogone/visa_payment_2000_alias" do
             @worker.work_off
           end
 
@@ -113,7 +113,7 @@ describe "Pages" do
 
           click_link_or_button "Edit credit card"
 
-          VCR.use_cassette('credit_card_visa_validation') do
+          VCR.use_cassette('ogone/credit_card_visa_validation') do
             fill_in "user_cc_full_name", :with => "John Doe"
             fill_in "user_cc_number", :with => "4111111111111111"
             fill_in "user_cc_verification_value", :with => "111"
@@ -132,7 +132,7 @@ describe "Pages" do
 
           current_url.should =~ %r(^http://[^/]+/suspended$)
 
-          VCR.use_cassette "ogone_visa_payment_2000_alias" do
+          VCR.use_cassette "ogone/visa_payment_2000_alias" do
             @worker.work_off
           end
 

@@ -43,6 +43,7 @@ gem 'request-log-analyzer',  '1.9.10', :require => 'request_log_analyzer'
 
 # gem 'activemerchant',        '~> 1.9.1'
 # Pull request: https://github.com/Shopify/active_merchant/pull/85
+# gem 'activemerchant',        :git => 'git://github.com/ZenCocoon/active_merchant.git' # with the fix for Ogone#parse and more
 gem 'activemerchant',        :git => 'git://github.com/rymai/active_merchant.git', :branch => '3ds_from_ZenCocoon'
 gem 'public_suffix_service', '0.8.1'
 gem 'useragent', :git => 'git://github.com/Jilion/useragent.git'

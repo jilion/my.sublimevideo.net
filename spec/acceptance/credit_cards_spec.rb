@@ -58,7 +58,7 @@ feature "Credit cards update:" do
   end
 end
 
-def set_credit_card(valid = true)
+def set_credit_card(valid=true)
   if valid
     choose 'user_cc_type_visa'
     fill_in 'Name on card', :with => 'Jime'
@@ -67,7 +67,7 @@ def set_credit_card(valid = true)
     select "2011", :from => 'user_cc_expire_on_1i'
     fill_in 'Security Code', :with => '111'
   end
-  VCR.use_cassette('credit_card_visa_validation') do
+  VCR.use_cassette('ogone/credit_card_visa_validation') do
     click_button "Update"
   end
 end

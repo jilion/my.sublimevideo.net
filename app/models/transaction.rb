@@ -1,3 +1,5 @@
+require 'base64'
+
 class Transaction < ActiveRecord::Base
 
   # ================
@@ -49,7 +51,6 @@ class Transaction < ActiveRecord::Base
     end
   end
 
-
   def self.charge_all_open_and_failed_invoices
     User.all.each do |user|
       delay(:priority => 2).charge_open_and_failed_invoices_by_user_id(user.id) if user.invoices.open_or_failed.present?
@@ -68,40 +69,41 @@ class Transaction < ActiveRecord::Base
   def self.charge_by_invoice_ids(invoice_ids)
     invoices = Invoice.where(id: invoice_ids)
     transaction = new(invoices: invoices)
+    transaction.save!
 
-    if transaction.save
-      @payment = begin
-        options = { order_id: transaction.id, currency: 'USD', description: transaction.order_description }
-        Ogone.purchase(transaction.amount, transaction.user.credit_card_alias, options)
-      rescue => ex
-        Notify.send("Charging failed: #{ex.message}", exception: ex)
-        transaction.error = ex.message
-        nil
-      end
+    payment = begin
+      options = { order_id: transaction.id, currency: 'USD', description: transaction.order_description, flag_3ds: true }
+      Ogone.purchase(transaction.amount, transaction.user.credit_card_alias, options)
+    rescue => ex
+      Notify.send("Charging failed: #{ex.message}", exception: ex)
+      transaction.error = ex.message
+      nil
+    end
+    # @payment && (@payment.success? || @payment.params["NCERROR"] == "50001113")
+    # 50001113: orderID already processed with success
+    # since a transaction is never retried, we should never get this NCERROR code...
 
-      # @payment && (@payment.success? || @payment.params["NCERROR"] == "50001113")
-      # 50001113: orderID already processed with success
-      # since a transaction is never retried, we should never get this NCERROR code...
-      if @payment && @payment.success?
-        transaction.succeed
-      else
-        transaction.error = @payment.params["NCERRORPLUS"] if @payment
-        transaction.fail
-      end
-    else
-      Notify.send("Transaction #{transaction.inspect} is not valid.")
+    case payment.params["STATUS"].to_i
+    when 9 # The payment has been accepted.
+      transaction.succeed
+    when 46 # Waiting for identification
+      transaction.error = Base64.decode64(payment.params["HTML_ANSWER"])
+      transaction.auth_needed
+    else # Something went wrong
+      transaction.error = payment.params["NCERRORPLUS"] if payment
+      transaction.fail
     end
 
     transaction
   end
 
-  def order_description
-    "SublimeVideo: " + self.invoices.all.map { |i| "#{i.site.plan.name} plan for 1 #{i.site.plan.cycle}" }.join(',')
-  end
-
   # ====================
   # = Instance Methods =
   # ====================
+
+  def order_description
+    "SublimeVideo Invoices: " + self.invoices.all.map { |invoice| "##{invoice.reference}" }.join(", ")
+  end
 
 private
 

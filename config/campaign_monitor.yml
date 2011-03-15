@@ -5,14 +5,17 @@ development:
   <<: *defaults
   list_id: a064dfc4b8ccd774252a2e9c9deb9244
   segment: dev
+
 test:
   <<: *defaults
   list_id: a064dfc4b8ccd774252a2e9c9deb9244
   segment: test
+
 staging:
   <<: *defaults
   list_id: a064dfc4b8ccd774252a2e9c9deb9244
   segment: staging
+
 production:
   <<: *defaults
   list_id: 1defd3a2fa342e3534126166f32e02d2
