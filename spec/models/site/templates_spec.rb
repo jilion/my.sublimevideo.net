@@ -300,7 +300,7 @@ describe Site::Templates do
         end
 
         it "should set loader file with stable player_mode" do
-          subject.loader.read.should include("/p/sublime.js?t=#{site_with_set_loader_and_license_file.token}")
+          subject.loader.read.should include("/p/sublime.js?t=#{subject.token}")
         end
       end
     end
