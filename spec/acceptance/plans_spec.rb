@@ -36,7 +36,7 @@ feature "Plans" do
       page.should have_content('Small')
     end
 
-    pending "Update paid plan to paid plan with credit card data"
+    pending "update paid plan to paid plan with credit card data"
 
   end
 

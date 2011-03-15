@@ -85,12 +85,7 @@ class Plan < ActiveRecord::Base
   end
   
   def title
-    name.titleize + case cycle
-    when "month"
-      " (monthly)"
-    when "year"
-      " (yearly)"
-    end
+    name.titleize + (cycle == "none" ? '' : " (#{cycle}ly)")
   end
 
 end
