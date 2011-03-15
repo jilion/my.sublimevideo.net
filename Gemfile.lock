@@ -24,7 +24,7 @@ GIT
 
 GIT
   remote: git://github.com/rymai/active_merchant.git
-  revision: a923d8e19e5a5e78b0809379b303fe6b989b5bfd
+  revision: 882b83ac466e8579f446354fa39d561583e2fa82
   branch: 3ds_from_ZenCocoon
   specs:
     activemerchant (1.12.0)
