@@ -34,8 +34,8 @@ MySublimeVideo::Application.routes.draw do
   resource :card, :controller => 'credit_cards', :as => :credit_card, :only => [:edit, :update]
   resource :transaction, :only => [] do
     member do
-      post :payment_ok
-      post :payment_ko
+      post :ok
+      post :ko
     end
   end
   resources :invoices, :only => :show do
