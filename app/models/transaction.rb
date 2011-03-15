@@ -41,7 +41,7 @@ class Transaction < ActiveRecord::Base
   # =================
   # = Class Methods =
   # =================
-  
+
   # Recurring task
   def self.delay_charge_all_open_and_failed_invoices
     unless Delayed::Job.already_delayed?('%Transaction%charge_all_open_and_failed_invoices%')
@@ -65,12 +65,12 @@ class Transaction < ActiveRecord::Base
       charge_by_invoice_ids(open_or_failed_invoices.map(&:id)) if open_or_failed_invoices.present?
     end
   end
-  
+
   def self.charge_by_invoice_ids(invoice_ids)
     invoices = Invoice.where(id: invoice_ids)
     transaction = new(invoices: invoices)
     transaction.save!
-    
+
     payment = begin
       options = { order_id: transaction.id, currency: 'USD', description: transaction.order_description, flag_3ds: true }
       Ogone.purchase(transaction.amount, transaction.user.credit_card_alias, options)
@@ -79,19 +79,16 @@ class Transaction < ActiveRecord::Base
       transaction.error = ex.message
       nil
     end
-
     # @payment && (@payment.success? || @payment.params["NCERROR"] == "50001113")
     # 50001113: orderID already processed with success
     # since a transaction is never retried, we should never get this NCERROR code...
-    
+
     case payment.params["STATUS"].to_i
     when 9 # The payment has been accepted.
       transaction.succeed
-      
-    when 46 # Waiting for identification)
+    when 46 # Waiting for identification
       transaction.error = Base64.decode64(payment.params["HTML_ANSWER"])
       transaction.auth_needed
-      
     else # Something went wrong
       transaction.error = payment.params["NCERRORPLUS"] if payment
       transaction.fail
@@ -99,13 +96,13 @@ class Transaction < ActiveRecord::Base
 
     transaction
   end
-    
+
   # ====================
   # = Instance Methods =
   # ====================
-  
+
   def order_description
-    "SublimeVideo: " + invoices.map { |invoice| "Invoice ##{invoice.reference}" }.join(", ")
+    "SublimeVideo Invoices: " + self.invoices.all.map { |invoice| "##{invoice.reference}" }.join(", ")
   end
 
 private
