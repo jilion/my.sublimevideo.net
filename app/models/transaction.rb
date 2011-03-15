@@ -72,7 +72,7 @@ class Transaction < ActiveRecord::Base
     transaction.save!
 
     payment = begin
-      options = { order_id: transaction.id, currency: 'USD', description: transaction.order_description, flag_3ds: true }
+      options = { order_id: transaction.id, currency: 'USD', description: transaction.order_description, d3d: true }
       Ogone.purchase(transaction.amount, transaction.user.credit_card_alias, options)
     rescue => ex
       Notify.send("Charging failed: #{ex.message}", exception: ex)

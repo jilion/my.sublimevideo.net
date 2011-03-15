@@ -92,29 +92,30 @@ module User::CreditCard
   end
 
   def check_credit_card(options={})
-    options = options.merge(store: credit_card_alias, flag_3ds: true, paramplus: "USER_ID=#{self.id}&CC_CHECK=TRUE")
-    authorize = Ogone.authorize(100 + rand(500), credit_card, options)
-
-    Rails.logger.info options.inspect
-    Rails.logger.info "authorize: #{authorize.inspect}"
+    options = options.merge(store: credit_card_alias, d3d: true, paramplus: "USER_ID=#{self.id}&CC_CHECK=TRUE")
+    authorize = Ogone.authorize(100, credit_card, options)
 
     process_cc_authorization_response(authorize.params, authorize.authorization)
   end
 
   def process_cc_authorization_response(authorize_params, authorize_authorization)
-    case authorize_params["STATUS"].to_i
-    when 5 # The authorization has been accepted.
+    case authorize_params["STATUS"]
+    when "5" # The authorization has been accepted.
+      # TODO: Do it cleaner
+      self.cc_type        = authorize_params["BRAND"].downcase if authorize_params["BRAND"]
+      self.cc_last_digits = authorize_params["CARDNO"][-4,4] if authorize_params["CARDNO"]
+      self.cc_expire_on   = Time.new("20#{authorize_params["ED"][2,2]}", authorize_params["ED"][0,2]) if authorize_params["ED"]
+      self.cc_updated_at  = Time.now.utc
+      
       void_authorization(authorize_authorization)
       nil
 
-    when 46 # Waiting for identification (3-D Secure)
+    when "46" # Waiting for identification (3-D Secure)
       html_answer = authorize_params["HTML_ANSWER"] ? Base64.decode64(authorize_params["HTML_ANSWER"]) : "<html>No HTML.</html>"
-      Rails.logger.info "html_answer: #{html_answer}"
       html_answer
 
     else # Something went wrong
       self.errors.add(:base, "Credit card authorization failed")
-      Rails.logger.info self.errors.inspect
       nil
     end
   end

@@ -22,17 +22,15 @@
   .spacer
 
 .content_right
-  #credit_card_summary
-    %h3.section_title= "Billing Info"
-    - if current_user.credit_card?
+  - if current_user.credit_card?
+    #credit_card_summary
+      %h3.section_title= "Billing Info"
       - if current_user.cc_expired?
         %p.alert= "This credit card is expired, please update it as soon as possible to prevent any charging problem."
       %p.card{ :class => current_user.cc_type }<
         = raw "#{t("user.credit_card.type.#{current_user.cc_type}")} ending in #{content_tag(:strong, current_user.cc_last_digits)}"
       %p= "Will expire on: " + l(current_user.cc_expire_on, :format => :month_fullyear)
       %p= link_to 'Update credit card', edit_credit_card_path
-    - else
-      %p= link_to 'Add a credit card', edit_credit_card_path
 
   #delete_account
     %h3.section_title= "Delete account"

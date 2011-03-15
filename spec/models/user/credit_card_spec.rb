@@ -193,20 +193,19 @@ describe User::CreditCard do
         use_vcr_cassette "ogone/void_authorization"
         before(:each) { user.update_attributes(valid_attributes) }
         subject { user }
-        
+
         it "should return nil" do
           subject.check_credit_card.should be_nil
         end
       end
-      
+
       context "3d secure authorization" do
         use_vcr_cassette "ogone/3ds_authorization"
         before(:each) { user.update_attributes(valid_3ds_attributes) }
         subject { user }
-        
-        # TODO: We should be able to test the real HTML_ANSWER returned by Ogone, but they don't return it, so ...
+
         it "should return a default html when HTML_ANSWER is not present" do
-          subject.check_credit_card.should == "<html>No HTML.</html>"
+          subject.check_credit_card.should be_present
         end
       end
 
@@ -241,7 +240,7 @@ describe User::CreditCard do
 
       context "3d secure authorization (status == 46)" do
         let(:params) { [{ "STATUS" => "46", "HTML_ANSWER" => Base64.encode64("<html>No HTML.</html>") }, "1234;RES"]}
-        
+
         it "should return the html to inject" do
           subject.process_cc_authorization_response(*params).should == "<html>No HTML.</html>"
         end
@@ -249,12 +248,12 @@ describe User::CreditCard do
 
       context "invalid authorization (status != 5 && status != 46)" do
         let(:params) { [{ "STATUS" => "51" }, "1234;RES"]}
-        
+
         it "should add an error on base to the user" do
           subject.process_cc_authorization_response(*params)
           subject.errors[:base].should be_present
         end
-              
+
         it "should return nil" do
           subject.process_cc_authorization_response(*params).should be_nil
         end
