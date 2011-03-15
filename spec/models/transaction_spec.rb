@@ -249,20 +249,19 @@ describe Transaction do
             Factory(:plan_invoice_item, invoice: @invoice1)
             @invoice2 = Factory(:invoice, site: Factory(:site, user: @user), state: 'open')
           end
-          subject do
-            Timecop.travel(1.month.from_now) do
-              @transaction = Transaction.charge_by_invoice_ids([@invoice1.reload.id, @invoice2.reload.id])
-            end
-            @transaction.reload
-          end
 
           it "should charge Ogone for the total amount of the invoices" do
-            Ogone.should_receive(:purchase).with(@invoice1.amount + @invoice2.amount, @invoice1.user.credit_card_alias, { order_id: an_instance_of(Fixnum), currency: 'USD', description: an_instance_of(String) })
-            subject
+            Ogone.should_receive(:purchase).with(@invoice1.amount + @invoice2.amount, @invoice1.user.credit_card_alias, {
+              order_id: an_instance_of(Fixnum),
+              currency: 'USD',
+              description: an_instance_of(String)
+            })
+            Timecop.travel(4.month.from_now) { Transaction.charge_by_invoice_ids([@invoice1.id, @invoice2.id]) }
           end
 
           it "should set transaction and invoices to paid state" do
-            subject.reload.should be_paid
+            @transaction = Transaction.charge_by_invoice_ids([@invoice1.id, @invoice2.id])
+            @transaction.should be_paid
             @invoice1.reload.should be_paid
             @invoice2.reload.should be_paid
           end
@@ -274,15 +273,19 @@ describe Transaction do
             @invoice2 = Factory(:invoice, site: Factory(:site, user: @user), state: 'failed')
             @invoice3 = Factory(:invoice, site: Factory(:site, user: @user), state: 'paid')
           end
-          subject { Transaction.charge_by_invoice_ids([@invoice1.reload.id, @invoice2.reload.id, @invoice3.reload.id]) }
 
           it "should charge Ogone for the total amount of the invoices" do
-            Ogone.should_receive(:purchase).with(@invoice1.amount + @invoice2.amount, @invoice1.user.credit_card_alias, { order_id: an_instance_of(Fixnum), currency: 'USD', description: an_instance_of(String) })
-            subject
+            Ogone.should_receive(:purchase).with(@invoice1.amount + @invoice2.amount, @invoice1.user.credit_card_alias, {
+              order_id: an_instance_of(Fixnum),
+              currency: 'USD',
+              description: an_instance_of(String)
+            })
+            Transaction.charge_by_invoice_ids([@invoice1.id, @invoice2.id, @invoice3.id])
           end
 
           it "should set transaction and invoices to paid state" do
-            subject.reload.should be_paid
+            transaction = Transaction.charge_by_invoice_ids([@invoice1.id, @invoice2.id, @invoice3.id])
+            transaction.should be_paid
             @invoice1.reload.should be_paid
             @invoice2.reload.should be_paid
             @invoice3.reload.should be_paid
@@ -300,24 +303,24 @@ describe Transaction do
             Factory(:plan_invoice_item, invoice: @invoice1)
             @invoice2 = Factory(:invoice, site: Factory(:site, user: @user), state: 'open')
           end
-          subject do
-            Timecop.travel(1.month.from_now) do
-              @transaction = Transaction.charge_by_invoice_ids([@invoice1.reload.id, @invoice2.reload.id])
-            end
-            @transaction.reload
-          end
 
           it "should charge Ogone for the total amount of the invoices" do
-            Ogone.should_receive(:purchase).with(@invoice1.amount + @invoice2.amount, @invoice1.user.credit_card_alias, { order_id: an_instance_of(Fixnum), currency: 'USD', description: an_instance_of(String) })
-            subject
+            Ogone.should_receive(:purchase).with(@invoice1.amount + @invoice2.amount, @invoice1.user.credit_card_alias, {
+              order_id: an_instance_of(Fixnum),
+              currency: 'USD',
+              description:an_instance_of(String)
+            })
+            Timecop.travel(1.month.from_now) { Transaction.charge_by_invoice_ids([@invoice1.id, @invoice2.id]) }
           end
 
           it "should set error field" do
-            subject.reload.error.should == "We received an unknown status for the transaction. We will contact your acquirer and update the status of the transaction within one working day. Please check the status later."
+            Timecop.travel(1.month.from_now) { @transaction = Transaction.charge_by_invoice_ids([@invoice1.id, @invoice2.id]) }
+            @transaction.error.should == "We received an unknown status for the transaction. We will contact your acquirer and update the status of the transaction within one working day. Please check the status later."
           end
 
           it "should set transaction and invoices to failed state" do
-            subject.reload.should be_failed
+            Timecop.travel(1.month.from_now) { @transaction = Transaction.charge_by_invoice_ids([@invoice1.id, @invoice2.id]) }
+            @transaction.should be_failed
             @invoice1.reload.should be_failed
             @invoice2.reload.should be_failed
           end
@@ -330,15 +333,20 @@ describe Transaction do
             @invoice2 = Factory(:invoice, site: @site, state: 'failed')
             @invoice3 = Factory(:invoice, site: @site, state: 'paid')
           end
-          subject { Transaction.charge_by_invoice_ids([@invoice1.reload.id, @invoice2.reload.id, @invoice3.reload.id]) }
 
           it "should charge Ogone for the total amount of the invoices" do
             Ogone.should_receive(:purchase).with(@invoice1.amount + @invoice2.amount, @invoice1.user.credit_card_alias, { order_id: an_instance_of(Fixnum), currency: 'USD', description: an_instance_of(String) })
-            subject
+            Transaction.charge_by_invoice_ids([@invoice1.id, @invoice2.id, @invoice3.id])
+          end
+
+          it "should set error field" do
+            transaction = Transaction.charge_by_invoice_ids([@invoice1.id, @invoice2.id, @invoice3.id])
+            transaction.error.should == "We received an unknown status for the transaction. We will contact your acquirer and update the status of the transaction within one working day. Please check the status later."
           end
 
           it "should set transaction and invoices to paid state" do
-            subject.reload.should be_failed
+            transaction = Transaction.charge_by_invoice_ids([@invoice1.id, @invoice2.id, @invoice3.id])
+            transaction.should be_failed
             @invoice1.reload.should be_failed
             @invoice2.reload.should be_failed
             @invoice3.reload.should be_paid

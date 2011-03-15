@@ -39,7 +39,7 @@ class Transaction < ActiveRecord::Base
   # =================
   # = Class Methods =
   # =================
-  
+
   # Recurring task
   def self.delay_charge_all_open_and_failed_invoices
     unless Delayed::Job.already_delayed?('%Transaction%charge_all_open_and_failed_invoices%')
@@ -69,7 +69,7 @@ class Transaction < ActiveRecord::Base
     invoices = Invoice.where(id: invoice_ids)
     transaction = new(invoices: invoices)
 
-    if transaction.save!
+    if transaction.save
       @payment = begin
         options = { order_id: transaction.id, currency: 'USD', description: transaction.order_description }
         Ogone.purchase(transaction.amount, transaction.user.credit_card_alias, options)
@@ -94,11 +94,11 @@ class Transaction < ActiveRecord::Base
 
     transaction
   end
-  
+
   def order_description
-    "SublimeVideo: " + invoices.map { |i| "#{i.site.plan.name} plan for 1 #{i.site.plan.cycle}" }.join(',')
+    "SublimeVideo: " + self.invoices.all.map { |i| "#{i.site.plan.name} plan for 1 #{i.site.plan.cycle}" }.join(',')
   end
-  
+
   # ====================
   # = Instance Methods =
   # ====================
