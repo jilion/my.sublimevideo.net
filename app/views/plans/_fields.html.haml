@@ -3,30 +3,33 @@
     %span= f.object.errors[:plan].first
 
 %ul#plans
-  - @plans.each do |plan|
+  - i = 0
+  - @paid_plans.each do |plan|
     - next if plan.yearly?
-    
-    %li{ :class => plan.name }
-      .content
-        = f.label :plan_id, content_tag(:strong, plan.name.titlecase), :for => "plan_#{plan.name}", :class => "title"
-        %h4.number= number_with_delimiter(plan.player_hits)
-        %h5.label= "Video pageviews per month"
-        .monthly
+    - i += 1
+    %li{ :class => "#{plan.name} box_#{i}" }
+      .wrapper
+        .header
+          = f.label :plan_id, content_tag(:strong, plan.name.titlecase), :for => "plan_#{plan.name}", :class => "title"
+          %h4.number= number_with_delimiter(plan.player_hits)
+          %h5.label= "Video pageviews per month"
+        .monthly.select_box
           .pricing
             %h4.price= display_amount(plan.price)
             %p.label= "per month"
           .radio_wrap
             = f.radio_button :plan_id, plan.id, :id => "plan_#{plan.name}_#{plan.cycle}", :class => "plan_radio"
             %span.bg
-        
-        .yearly
-          - if yearly_plan = @plans.find { |p| p.name == plan.name && p.yearly? }
+        .yearly.select_box
+          - if yearly_plan = @paid_plans.find { |p| p.name == plan.name && p.yearly? }
             .pricing
               %h4.price= display_amount(yearly_plan.price)
               %p.label= "per year"
             .radio_wrap
               = f.radio_button :plan_id, yearly_plan.id, :id => "plan_#{yearly_plan.name}_#{yearly_plan.cycle}", :class => "plan_radio"
               %span.bg
+      %span.save_label= "2 months free"
+        
 .spacer
 
 #dev_plan
