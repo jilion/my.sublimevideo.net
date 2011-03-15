@@ -361,6 +361,14 @@ form .feedback_subject label.icon {
   left:10px;
 }
 
+form .path label.icon {
+  width:7px;
+  height:15px;
+  background:url(/images/embed/path_field_icon.png) no-repeat;
+  top:18px;
+  left:10px;
+}
+
 form input.text, form textarea.text {
   width:400px;
   height:34px;
@@ -394,6 +402,11 @@ form textarea.text {
 form input.text.no_icon {
   width:428px;
   padding-left:10px;
+}
+
+form input.text.small_icon {
+  width:418px;
+  padding-left:20px;
 }
 
 form .left_field, form .right_field {
@@ -1449,23 +1462,31 @@ input.link_looks.delete {
 /* = Site (New) = */
 /* ============== */
 
-ul#plans {
+#plans ul {
   width:100%;
   list-style-type:none;
   float:left;
   margin:25px 0 0;
 }
 
-ul#plans li {
+#plans li {
   display:block;
   float:left;
-  width:280px;
-  height:254px;
-  background:url(/images/embed/sites/plans_box_background.png) no-repeat;
+  width:210px;
+  height:284px;
+  margin-right:6px;
   position:relative;
 }
 
-ul#plans li, ul#plans li * {
+#plans li .wrapper {
+  background:url(/images/embed/sites/plans_box_background.png) no-repeat;
+  width:210px;
+  height:284px;
+  position:relative;
+  z-index:3;
+}
+
+#plans li, #plans li * {
   cursor:pointer;
   -webkit-user-select: none;
   -khtml-user-select: none;
@@ -1474,95 +1495,180 @@ ul#plans li, ul#plans li * {
   user-select: none;
 }
 
-ul#plans li.pro {
-  margin:0 9px;
+#plans li.box_4 {
+  margin-right:0;
 }
 
-ul#plans .content {
-  padding:28px;
+#plans .header {
+  padding:31px 25px 0;
+  height:146px;
 }
 
-ul#plans label.title {
-  font-size:34px;
+#plans h3.title {
+  font-size:30px;
   font-weight:200;
   color:#5d6778;
 }
 
-ul#plans h4.number {
+#plans h4.number {
   display:block;
   padding:10px 0 1px;
   text-align:center;
-  font-size:44px;
+  font-size:35px;
   font-weight:600;
   text-shadow:#fff 0 1px 2px,rgba(0,0,0,0.45) 0px 0px 0px,#fff 0px 1px 2px;
 }
 
-ul#plans li.perso h4.number {color:#939aa4;color:rgba(81,90,102,0.5)}
-ul#plans li.pro h4.number {color:#818996;color:rgba(63,71,86,0.55)}
-ul#plans li.enterprise h4.number {color:#6a717c;color:rgba(42,48,59,0.6)}
+#plans li.box_1 h4.number {color:#939aa4;color:rgba(81,90,102,0.5)}
+#plans li.box_2 h4.number {color:#818996;color:rgba(63,71,86,0.55)}
+#plans li.box_3 h4.number {color:#6a717c;color:rgba(42,48,59,0.6)}
+#plans li.box_4 h4.number {color:#6a717c;color:rgba(24,27,33,0.6)}
 
-ul#plans h5.label {
-  font-size:15px;
+#plans h5.label {
+  font-size:14px;
   color:#8c96a6;
   font-weight:normal;
   display:block;
   text-align:center;
 }
 
-ul#plans .radio_wrap {
-  position:absolute;
-  bottom:35px;
-  left:26px;
+#plans .select_box {
+  float:left;
+  width:100px;
+  height:100px;
+  position:relative;
+  -o-transition:background 0.15s;
+  -moz-transition:background 0.15s;
+  -webkit-transition:background 0.15s;
+  transition:background 0.15s;
 }
 
-ul#plans .radio_wrap input {
+#plans .select_box:hover {
+  background:rgba(255,255,255,0.4);
+} 
+
+#plans .select_box.monthly {
+  margin-left:5px;
+}
+
+#plans .select_box .pricing {
+  text-align:center;
+  color:#8c96a6;
+  font-size:13px;
+}
+
+#plans .select_box label {
+  width:100px;
+  height:100px;
+  display:block;
+  position:absolute;
+  top:0;
+  left:0;
+}
+
+#plans .select_box.active label {
+  background:url(/images/embed/sites/plan_active_background.png) no-repeat;
+  height:101px;
+  top:-1px;
+  text-shadow:rgba(0,0,0,0.4) 0 -1px 0;
+}
+
+#plans .select_box .pricing h4.price {
+  color:#5d6778;
+  font-size:24px;
+  font-weight:600;
+  padding:18px 0 0;
+}
+
+#plans .select_box.active h4.price {
+  color:#d5ddeb;
+  -webkit-font-smoothing:antialiased;
+}
+
+#plans .select_box .pricing h4.price sup {
+  font-size:13px;
+}
+
+#plans .select_box.active .pricing h4.price sup {color:#c4ccdb}
+
+#plans .select_box .pricing span.name {display:none}
+
+#plans span.save_label {
+  display:block;
+  width:97px;
+  height:16px;
+  padding:2px 0 0;
+  background:url(/images/embed/sites/plans_2_months_free.png) no-repeat;
+  color:#e6daec;
+  font-size:9px;
+  font-weight:600;
+  text-transform:uppercase;
+  text-shadow:#bd90ee 0 0 3px;
+  letter-spacing:1px;
+  text-align:center;
+  position:absolute;
+  bottom:-11px;
+  right:7px;
+  z-index:2;
+}
+
+#plans .radio_wrap {
+  position:absolute;
+  bottom:7px;
+  left:35px;
+  z-index:2;
+}
+
+#plans .radio_wrap input {
   float:left;
   position:relative;
   top:0;
   left:0;
   opacity:0;
-  width:46px;
-  height:46px;
+  width:27px;
+  height:27px;
   z-index:2;
 }
 
-ul#plans .radio_wrap span.bg {
+#plans .radio_wrap span.bg {
   position:relative;
   display:block;
-  width:46px;
-  height:46px;
-  background:url(/images/embed/sites/plans_checkbox.png) no-repeat;
+  width:27px;
+  height:27px;
+  background:url(/images/embed/sites/plans_radiobutton.png) no-repeat;
 }
 
 /* Original concept by http://www.thecssninja.com/css/custom-inputs-using-css */
-ul#plans .radio_wrap input:checked + span.bg {background-position:0 -46px;}
-ul#plans .radio_wrap input:focus + span.bg {background-position:0 -92px;}
-ul#plans .radio_wrap input:focus:checked + span.bg {background-position:0 -138px;}
+#plans .radio_wrap input:checked + span.bg {background-position:0 -27px;}
+#plans .radio_wrap input:focus + span.bg {background-position:0 -54px;}
+#plans .radio_wrap input:focus:checked + span.bg {background-position:0 -81px;}
 
-ul#plans .pricing {
-  position:absolute;
-  right:28px;
-  bottom:35px;
-  text-align:right;
-  color:#8c96a6;
-  font-size:14px;
+#dev_plan {
+  position:relative;
+  height:40px;
+  margin:25px 0 0 0;
 }
 
-ul#plans .pricing h4.price {
-  font-size:25px;
-  font-weight:600;
-  color:#5d6778;
-  line-height:24px;
-}
-
-ul#plans .overages {
-  width:280px;
-  height:10px;
-  position:absolute;
-  bottom:0;
+#dev_plan .radio_wrap {
+  position:relative;
+  top:0;
   left:0;
-  text-align:center;
-  font-size:10px;
+  bottom:auto;
+  width:520px;
+}
+
+#dev_plan .radio_wrap label {
+  float:right;
+  margin:0 0 0 35px;
+  color:#666D7A;
+}
+
+#dev_plan .radio_wrap label strong {
+  color:#373b42;
+}
+
+#dev_plan .radio_wrap input {
+  position:absolute;
 }
 
 #site h3.headline {
@@ -1734,9 +1840,9 @@ ul#addons .checkbox_wrap input:focus:checked + label {background-position:0 -102
   padding:5px 7px 0;
 }
 
-#site_setup .settings .right .entry label.info {
+#site_setup .settings .right p.label_info {
   color:#636975;
-  padding:2px 0 3px;
+  padding:5px 0 0;
   display:block;
 }
 
@@ -1830,6 +1936,7 @@ ul.segmented_menu li a {
   color:#4d5563;
   text-shadow:rgba(255,255,255,0.5) 0 1px 0;
   border:1px solid #5d6778;
+  border-left:none;
   background:#9fa5af;
   background:-webkit-gradient(linear,left top,left bottom,from(rgba(118,127,141,0.25)),to(rgba(81,89,104,0.5)));
   background:-moz-linear-gradient(top, rgba(118,127,141,0.2), rgba(81,89,104,0.4));
@@ -1852,14 +1959,13 @@ ul.segmented_menu li.active a, ul.segmented_menu li a:active {
 }
 
 ul.segmented_menu li.first a {
-/*  border-right:none;*/
+  border-left:1px solid #5d6778;  
   -moz-border-radius: 8px 0 0 8px;
   -webkit-border-radius: 8px 0 0 8px;
   border-radius: 8px 0 0 8px;
 }
 
 ul.segmented_menu li.last a {
-  border-left:none;
   -moz-border-radius: 0 8px 8px 0;
   -webkit-border-radius: 0 8px 8px 0;
   border-radius: 0 8px 8px 0;

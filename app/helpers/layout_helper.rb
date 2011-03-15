@@ -22,7 +22,12 @@ module LayoutHelper
 
     classes = options[:class] ? options[:class].split(" ") : []
     classes << options[:active_class] if options[:urls].any? { |u| controller.request.url.include?("#{options[:namespace].join('/') + '/' if options[:namespace]}#{u}") }
-    content_tag(tag, :class => classes.join(" ")) do
+    options[:class] = classes.join(" ")
+    
+    tag_options = { :class => classes.join(" ") }
+    tag_options[:onclick] = options[:onclick]
+    
+    content_tag(tag, tag_options) do
       yield
     end
   end
