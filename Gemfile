@@ -45,7 +45,6 @@ gem 'request-log-analyzer',  '1.9.10', :require => 'request_log_analyzer'
 # Pull request: https://github.com/Shopify/active_merchant/pull/85
 # gem 'activemerchant',        :git => 'git://github.com/ZenCocoon/active_merchant.git' # with the fix for Ogone#parse and more
 gem 'activemerchant',        :git => 'git://github.com/rymai/active_merchant.git', :branch => '3ds_from_ZenCocoon'
-# gem 'activemerchant',        :path => '/Users/remy/Development/Ruby/Gems/rymai@active_merchant'
 gem 'public_suffix_service', '0.8.1'
 gem 'useragent', :git => 'git://github.com/Jilion/useragent.git'
 
@@ -92,7 +91,8 @@ group :development do
 end
 
 group :test do
-  gem 'spork',              '~> 0.9.0.rc4'
+  # gem 'spork',              '~> 0.9.0.rc4'
+  gem 'spork', :git => 'git://github.com/irohiroki/spork.git'
   gem 'rb-fsevent'
   gem 'growl'
   gem 'guard'

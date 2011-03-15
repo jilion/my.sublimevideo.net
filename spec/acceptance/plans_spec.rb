@@ -19,7 +19,7 @@ feature "Plans" do
       click_button "Done"
 
       current_url.should =~ %r(http://[^/]+/sites$)
-      page.should have_content('Dev')
+      site.reload.next_cycle_plan_id.should == Plan.dev_plan.id
     end
 
     scenario "update dev plan to paid plan" do
@@ -28,7 +28,7 @@ feature "Plans" do
 
       visit "/sites/#{site.token}/plan/edit"
 
-      choose "plan_small"
+      choose "plan_small_month"
       click_button "Update plan"
 
       current_url.should =~ %r(http://[^/]+/sites$)

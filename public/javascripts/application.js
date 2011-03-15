@@ -62,6 +62,7 @@ document.observe("dom:loaded", function() {
 
   if (history && history.pushState) {
     Event.observe(window, 'popstate', function(e) {
+      MySublimeVideo.showTableSpinner();
       new Ajax.Request(location.href, {
         method: 'get'
       });
@@ -152,7 +153,8 @@ MySublimeVideo.makeRemoteLinkSticky = function(element) {
 
 
 MySublimeVideo.showTableSpinner = function() {
-  $('table_spinner').show();
+  var tableSpinner = $('table_spinner');
+  if (tableSpinner) { tableSpinner.show(); }
 };
 
 MySublimeVideo.showSiteEmbedCode = function(siteId) {

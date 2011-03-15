@@ -5,8 +5,14 @@ GIT
     useragent (0.2.3)
 
 GIT
+  remote: git://github.com/irohiroki/spork.git
+  revision: 285a57813f5390fed1b3ab869f36aaae35baef4e
+  specs:
+    spork (0.9.0.rc4)
+
+GIT
   remote: git://github.com/jnicklas/capybara.git
-  revision: 6f2e8c547b6d27678eefc407976ef7296bec4627
+  revision: a0e5811ad1a5314918098bdd25e45ec5de260eb0
   specs:
     capybara (0.4.1.1)
       mime-types (>= 1.16)
@@ -18,7 +24,7 @@ GIT
 
 GIT
   remote: git://github.com/rymai/active_merchant.git
-  revision: d861306c9f2d218170aa85cceb5a8dcca1eb20cb
+  revision: a923d8e19e5a5e78b0809379b303fe6b989b5bfd
   branch: 3ds_from_ZenCocoon
   specs:
     activemerchant (1.12.0)
@@ -159,7 +165,7 @@ GEM
       thor (~> 0.14.6)
     guard-bundler (0.1.2)
       guard (>= 0.2.2)
-    guard-livereload (0.1.8)
+    guard-livereload (0.1.9)
       em-websocket (~> 0.2.0)
       guard (>= 0.2.2)
       json (~> 1.4.6)
@@ -167,7 +173,7 @@ GEM
       guard (~> 0.3)
     guard-rspec (0.2.0)
       guard (>= 0.2.2)
-    guard-spork (0.1.4)
+    guard-spork (0.1.5)
       guard (>= 0.2.2)
       spork (>= 0.8.4)
     haml (3.0.24)
@@ -288,7 +294,6 @@ GEM
     silent-postgres (0.0.7)
     sinatra (1.0)
       rack (>= 1.0)
-    spork (0.9.0.rc4)
     spruz (0.2.5)
     sqlite3 (1.3.3)
     sqlite3-ruby (1.3.3)
@@ -304,7 +309,7 @@ GEM
     timecop (0.3.5)
     treetop (1.4.9)
       polyglot (>= 0.3.1)
-    tzinfo (0.3.24)
+    tzinfo (0.3.25)
     uniquify (0.1.0)
     uuidtools (2.1.2)
     vcr (1.7.0)
@@ -384,7 +389,7 @@ DEPENDENCIES
   settingslogic (= 2.0.6)
   shoulda
   silent-postgres
-  spork (~> 0.9.0.rc4)
+  spork!
   state_machine (= 0.9.4)
   taps
   timecop
