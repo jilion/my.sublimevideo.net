@@ -1,26 +1,26 @@
 class Stat
-  
+
   # ====================
   # = Instance Methods =
   # ====================
-  def self.usages(start_date, end_date, options={})
+  def self.usages(start_time, end_time, options={})
     conditions = {
       :day => {
-        "$gte" => start_date.midnight,
-        "$lt"  => end_date.end_of_day
+        "$gte" => start_time.midnight,
+        "$lt"  => end_time.end_of_day
       }
     }
     conditions[:site_id] = options[:site_id].to_i if options[:site_id]
-    
+
     SiteUsage.collection.group(
-      [:day],
-      conditions,
-      { :loader_usage => 0,
+      :key => [:day],
+      :cond => conditions,
+      :initial => { :loader_usage => 0,
         :invalid_usage => 0, :invalid_usage_cached => 0,
         :dev_usage => 0, :dev_usage_cached => 0,
         :main_usage => 0, :main_usage_cached => 0,
         :all_usage => 0 }, # memo variable name and initial value
-      "function(doc, prev) {
+      :reduce => "function(doc, prev) {
         prev.loader_usage         += doc.loader_hits;
         prev.invalid_usage        += doc.invalid_player_hits;
         prev.invalid_usage_cached += doc.invalid_player_hits_cached;
@@ -32,5 +32,5 @@ class Stat
       }" # reduce function
     )
   end
-  
+
 end

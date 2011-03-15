@@ -24,7 +24,7 @@ module LogsFileFormat
       line.capture(:total_time).as(:duration, :unit => :msec)
       line.capture(:turnaround_time).as(:duration, :unit => :msec)
       line.capture(:referrer).as(:referrer)
-      line.capture(:user_agent).as(:user_agent)
+      line.capture(:useragent).as(:useragent)
     end
     
     report do |analyze|
@@ -60,7 +60,7 @@ module LogsFileFormat
       end
       
       # Can be implemented in subclasses for improved categorizations
-      def convert_user_agent(value, definition)
+      def convert_useragent(value, definition)
         value == '-' ? nil : value
       end
     end

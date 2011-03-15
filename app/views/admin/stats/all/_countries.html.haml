@@ -66,9 +66,11 @@
 #countries_table
   %table
     %tr
+      %th Rank
       %th Country
       %th # of users
-    - countries.each do |country|
+    - countries.each_with_index do |country, i|
       %tr
+        %td= i + 1
         %td= Country[country.first].name
         %td= country.second

@@ -1,9 +1,10 @@
 class Admin::SitesController < Admin::AdminController
   respond_to :js, :html
-  
+
   before_filter :compute_date_range, :only => :edit
-  
+
   has_scope :with_activity, :type => :boolean
+  has_scope :with_activity_in_last_30_days, :type => :boolean
   # sort
   has_scope :by_hostname
   has_scope :by_user
@@ -19,7 +20,7 @@ class Admin::SitesController < Admin::AdminController
   has_scope :by_date
   # search
   has_scope :search
-  
+
   # GET /admin/sites
   def index
     @sites = Site.includes(:user)
@@ -27,13 +28,13 @@ class Admin::SitesController < Admin::AdminController
     @sites = apply_scopes(@sites).by_date
     respond_with(@sites)
   end
-  
+
   # GET /admin/sites/1/edit
   def edit
     @site = Site.includes(:user).find(params[:id])
     respond_with(@site)
   end
-  
+
   # PUT /admin/sites/1
   def update
     @site = Site.find(params[:id])
@@ -47,5 +48,5 @@ class Admin::SitesController < Admin::AdminController
       end
     end
   end
-  
+
 end
