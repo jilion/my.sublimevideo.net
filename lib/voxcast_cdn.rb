@@ -59,8 +59,7 @@ module VoxcastCDN
     end
 
     def parse_paths(paths)
-      paths = paths.join('\n') if paths.is_a?(Array)
-      paths
+      paths.is_a?(Array) ? paths.join('\n') : paths
     end
   end
 end
