@@ -20,7 +20,7 @@ describe User::CreditCard do
     subject { user }
 
     its(:cc_type)         { should == 'visa' }
-    its(:cc_last_digits)  { should == 1111 }
+    its(:cc_last_digits)  { should == "1111" }
     its(:cc_expire_on)    { should == 1.year.from_now.end_of_month.to_date }
     its(:cc_updated_at)   { should be_present }
 
@@ -186,6 +186,9 @@ describe User::CreditCard do
     end
 
     describe "#check_credit_card" do
+      before(:each) { user.update_attributes(valid_attributes) }
+      subject { user }
+
       context "valid authorization" do
         use_vcr_cassette "ogone/void_authorization"
         before(:each) { user.update_attributes(valid_attributes) }

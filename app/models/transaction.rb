@@ -142,6 +142,7 @@ end
 
 
 
+
 # == Schema Information
 #
 # Table name: transactions
@@ -149,7 +150,7 @@ end
 #  id             :integer         not null, primary key
 #  user_id        :integer
 #  cc_type        :string(255)
-#  cc_last_digits :integer
+#  cc_last_digits :string(255)
 #  cc_expire_on   :date
 #  state          :string(255)
 #  amount         :integer
