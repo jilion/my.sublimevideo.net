@@ -29,10 +29,11 @@
 
     .right
       %h4.title= "Advanced settings"
+      %p.label_info= "Restrict your player to a specific path"
       .entry.path
-        = f.label :path, "Restrict your player to a specific path", :class => "info"
         %p
-          = f.text_field :path, :class => "text no_icon", :placeholder => "/path", :autocomplete => :off
+          = f.label :path, "", :class => "icon"
+          = f.text_field :path, :class => "text small_icon", :placeholder => "path", :autocomplete => :off
         %p.info= "Path will also be added to extra domains (not to development domains)."
       
       .entry.wildcard

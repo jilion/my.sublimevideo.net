@@ -5,38 +5,35 @@
 - paid_plans = Plan.paid_plans.order(:player_hits.asc, :price.asc)
 - dev_plan   = Plan.dev_plan
 
-%ul#plans
-  - i = 0
-  - paid_plans.each do |plan|
-    - next if plan.yearly?
-    - i += 1
-    %li{ :class => "#{plan.name} box_#{i}" }
-      .wrapper
-        .header
-          %h3= content_tag(:strong, plan.name.titlecase)
-          %h4.number= number_with_delimiter(plan.player_hits)
-          %h5.label= "Video pageviews per month"
-        .monthly.select_box
-          .pricing
-            %h4.price= display_amount(plan.price)
-            = f.label :plan_id, raw("#{content_tag(:span, plan.name.titlecase)} per month"), :for => "plan_#{plan.name}_#{plan.cycle}", :class => "title"
-          .radio_wrap
-            = f.radio_button :plan_id, plan.id, :id => "plan_#{plan.name}_#{plan.cycle}", :class => "plan_radio"
-            %span.bg
-        .yearly.select_box
-          - if yearly_plan = paid_plans.find { |p| p.name == plan.name && p.yearly? }
-            .pricing
-              %h4.price= display_amount(yearly_plan.price)
-              = f.label :plan_id, raw("#{content_tag(:span, plan.name.titlecase)} per year"), :for => "plan_#{plan.name}_#{plan.cycle}", :class => "title"
+#plans
+  %ul
+    - i = 0
+    - paid_plans.each do |plan|
+      - next if plan.yearly?
+      - i += 1
+      %li{ :class => "#{plan.name} box_#{i}" }
+        .wrapper
+          .header
+            %h3.title= content_tag(:strong, plan.name.titlecase)
+            %h4.number= number_with_delimiter(plan.player_hits)
+            %h5.label= "Video pageviews per month"
+          .monthly.select_box{ :class => plan.id == f.object.plan_id ? 'active' : '' }
+            = f.label :plan_id, raw(plan_label_content(plan)), :for => "plan_#{plan.name}_#{plan.cycle}"
             .radio_wrap
-              = f.radio_button :plan_id, yearly_plan.id, :id => "plan_#{yearly_plan.name}_#{yearly_plan.cycle}", :class => "plan_radio"
+              = f.radio_button :plan_id, plan.id, :id => "plan_#{plan.name}_#{plan.cycle}", :class => "plan_radio"
               %span.bg
-      %span.save_label= "2 months free"
+          - if yearly_plan = paid_plans.find { |p| p.name == plan.name && p.yearly? }
+            .yearly.select_box{ :class => yearly_plan.id == f.object.plan_id ? 'active' : '' }
+              = f.label :plan_id, raw(plan_label_content(yearly_plan, :year => true)), :for => "plan_#{yearly_plan.name}_#{yearly_plan.cycle}"
+              .radio_wrap
+                = f.radio_button :plan_id, yearly_plan.id, :id => "plan_#{yearly_plan.name}_#{yearly_plan.cycle}", :class => "plan_radio"
+                %span.bg
+        %span.save_label= "2 months free"
 
-.spacer
+  .spacer
 
-#dev_plan
-  .radio_wrap
-    = f.label :plan_id, content_tag(:span, dev_plan.name.titlecase), :for => "plan_#{dev_plan.name}", :class => "title"
-    = f.radio_button :plan_id, dev_plan.id, :id => "plan_#{dev_plan.name}", :class => "plan_radio"
-    %span.bg
+  #dev_plan{ :class => dev_plan.id == f.object.plan_id ? 'active' : '' }
+    .radio_wrap
+      = f.label :plan_id, raw("If you are not sure about what plan fit you best or you just want to try SublimeVideo in development, use our #{content_tag(:strong, 'unlimited free development plan')}."), :for => "plan_#{dev_plan.name}", :class => "title"
+      = f.radio_button :plan_id, dev_plan.id, :id => "plan_#{dev_plan.name}", :class => "plan_radio"
+      %span.bg

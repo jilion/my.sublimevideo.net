@@ -3,11 +3,9 @@
     %h1
       = link_to(user_signed_in? ? sites_path : new_user_session_path) do
         %span= "SublimeVideo"
-    -#- if user_signed_in? && controller_name != 'sessions'
-    -#  %ul#main_menu
-    -#    = activable_content_tag(:li, :sites, :onclick => "MySublimeVideo.makeSticky(this, '#header')") do
-    -#      = link_to sites_path do
-    -#        %span= "Sites"
+    - if user_signed_in? && controller_name != 'sessions'
+      %ul#main_menu
+        = activable_menu_item(:li, :sites, :onclick => "MySublimeVideo.makeSticky(this, '#header')")
     .right
       %ul.extra_links
         %li= link_to("Documentation", "http://docs.sublimevideo.net")

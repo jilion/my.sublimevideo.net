@@ -70,17 +70,12 @@ document.observe("dom:loaded", function() {
   }
 
   // Reproduce checkbox behavior for radio buttons for plans selection
-  if ($('plans') && $('site_credit_card')) {
-    $$('ul#plans li').each(function(element){
+  if ($('plans')) {
+    $$('#plans input[type=radio]').each(function(element){
       element.on('click', function(event){
-        var radioButton = element.down('input[type=radio]');
-        var siteCreditCard = $('site_credit_card');
-        if (radioButton.id == "plan_dev") {
-          siteCreditCard.hide();
-        }
-        else {
-          siteCreditCard.show();
-        }
+        var select_box = element.up('.select_box');
+        $$('#plans ul .select_box').invoke('removeClassName','active');
+        if (select_box) select_box.addClassName('active');
       });
     });
   }
