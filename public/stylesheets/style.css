@@ -1936,6 +1936,7 @@ ul.segmented_menu li a {
   color:#4d5563;
   text-shadow:rgba(255,255,255,0.5) 0 1px 0;
   border:1px solid #5d6778;
+  border-left:none;
   background:#9fa5af;
   background:-webkit-gradient(linear,left top,left bottom,from(rgba(118,127,141,0.25)),to(rgba(81,89,104,0.5)));
   background:-moz-linear-gradient(top, rgba(118,127,141,0.2), rgba(81,89,104,0.4));
@@ -1958,14 +1959,13 @@ ul.segmented_menu li.active a, ul.segmented_menu li a:active {
 }
 
 ul.segmented_menu li.first a {
-/*  border-right:none;*/
+  border-left:1px solid #5d6778;  
   -moz-border-radius: 8px 0 0 8px;
   -webkit-border-radius: 8px 0 0 8px;
   border-radius: 8px 0 0 8px;
 }
 
 ul.segmented_menu li.last a {
-  border-left:none;
   -moz-border-radius: 0 8px 8px 0;
   -webkit-border-radius: 0 8px 8px 0;
   border-radius: 0 8px 8px 0;
