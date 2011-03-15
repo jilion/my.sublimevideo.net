@@ -14,7 +14,7 @@
       %li{ :class => "#{plan.name} box_#{i}" }
         .wrapper
           .header
-            %h3.title= content_tag(:strong, plan.name.titlecase)
+            %h3.title= content_tag(:strong, plan.name.titleize)
             %h4.number= number_with_delimiter(plan.player_hits)
             %h5.label= "Video pageviews per month"
           .monthly.select_box{ :class => plan.id == f.object.plan_id ? 'active' : '' }

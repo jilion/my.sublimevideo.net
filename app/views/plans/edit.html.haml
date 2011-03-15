@@ -5,7 +5,16 @@
     %li.first= link_to "Settings", edit_site_path(@site), :onclick => "MySublimeVideo.makeSticky(this, '.segmented_menu')"
     %li.active= link_to "Change plan", edit_site_plan_path(@site), :onclick => "MySublimeVideo.makeSticky(this, '.segmented_menu')"
     %li.last= link_to "Invoices", site_invoices_path(@site), :onclick => "MySublimeVideo.makeSticky(this, '.segmented_menu')"
-
+    
+  - if @site.next_cycle_plan_id?
+    .current_status
+      %p= "Your current plan, #{@site.plan.title}, will ended on #{@site.plan_cycle_ended_at}" 
+    .next_cycle_plan
+      %p= "Your next plan, #{@site.next_cycle_plan.title}, will automatically start on #{@site.plan_cycle_ended_at.tomorrow.midnight}"
+  - else
+    .current_status
+      %p= "Your current plan, #{@site.plan.title}, will be automatically renewed on #{@site.plan_cycle_ended_at.tomorrow.midnight}"
+  
   #change_plan_box.section_box
     = form_for @site, :url => site_plan_path(@site), :html => { :id => "edit_site_plan", "data-password-protected" => @site.in_paid_plan? } do |f|
       - if @site.errors[:base] && @site.errors[:base].include?(t('activerecord.errors.models.site.attributes.base.current_password_needed'))
