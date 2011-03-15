@@ -22,6 +22,8 @@ describe Admin do
   end
   
 end
+
+
 # == Schema Information
 #
 # Table name: admins

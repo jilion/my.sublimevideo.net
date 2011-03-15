@@ -293,7 +293,7 @@ describe Site do
       end
       
       it "should set loader file with stable player_mode" do
-        site_with_set_loader_and_license_file.loader.read.should include("http://cdn.sublimevideo.net/p/sublime.js?t=#{site_with_set_loader_and_license_file.token}")
+        site_with_set_loader_and_license_file.loader.read.should include("/p/sublime.js?t=#{site_with_set_loader_and_license_file.token}")
       end
     end
     
@@ -376,6 +376,8 @@ describe Site do
   end
   
 end
+
+
 
 
 
