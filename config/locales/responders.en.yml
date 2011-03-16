@@ -9,6 +9,9 @@ en:
     sites:
       update:
         notice: "Site settings were successfully updated."
+    plans:
+      update:
+        notice: "Site plan were successfully updated."
     users:
       update:
         notice: "Account was successfully updated."

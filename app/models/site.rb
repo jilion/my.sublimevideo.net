@@ -195,6 +195,9 @@ class Site < ActiveRecord::Base
         # Upgrade
         @plan = nil # clear plan association cache
         write_attribute(:plan_id, attribute)
+      elsif plan == new_plan
+        # Reset next_cycle_plan
+        write_attribute(:next_cycle_plan_id, nil)
       else
         # Downgrade
         write_attribute(:next_cycle_plan_id, attribute)

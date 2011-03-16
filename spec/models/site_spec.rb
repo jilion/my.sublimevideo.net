@@ -353,6 +353,17 @@ describe Site do
         its(:next_cycle_plan_id) { should be_nil }
       end
 
+      describe "when update to the same monthly plan" do
+        before(:all) do
+          @site = Factory.build(:site, plan: @paid_plan, next_cycle_plan: @paid_plan2)
+          @site.plan_id = @paid_plan.id
+        end
+        subject { @site }
+
+        its(:plan_id)            { should == @paid_plan.id }
+        its(:next_cycle_plan_id) { should be_nil }
+      end
+
       describe "when upgrade from monthly plan to yearly plan" do
         before(:all) do
           @site = Factory.build(:site, plan: @paid_plan)

@@ -19,7 +19,11 @@
           %span.settings_icon
           = "add a hostname"
       .plan
-        = site.plan.name.humanize
+        = link_to [:edit, site, :plan] do
+          = site.plan.title + (site.next_cycle_plan_id? ? " => #{site.next_cycle_plan.title}" : "")
+      .cycle
+        - if site.in_paid_plan?
+          = l(site.plan_cycle_started_at, :format => :Y_m_d) + ' - ' + l(site.plan_cycle_ended_at, :format => :Y_m_d)
       .spacer
 
   %td.usage

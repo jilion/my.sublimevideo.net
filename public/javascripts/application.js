@@ -73,6 +73,7 @@ document.observe("dom:loaded", function() {
   if ($('plans')) {
     $$('#plans input[type=radio]').each(function(element){
       element.on('click', function(event){
+        MySublimeVideo.showPlanUpdateInfo(element);
         var select_box = element.up('.select_box');
         $$('#plans ul .select_box').invoke('removeClassName','active');
         if (select_box) select_box.addClassName('active');
@@ -108,6 +109,48 @@ MySublimeVideo.openPopup = function(itemId, idPrefix, url, class_name) { // item
   if (!MySublimeVideo.popupHandler) MySublimeVideo.popupHandler = new PopupHandler();
   MySublimeVideo.popupHandler.open(itemId, idPrefix, url, class_name);
 };
+
+// ==================
+// = Plan functions =
+// ==================
+
+MySublimeVideo.showPlanUpdateInfo = function(radioButton) {
+  var upgradeInfoDiv, downgradeInfoDiv, devDowngradeInfoDiv;
+  upgradeInfoDiv = $('plan_upgrade_info');
+  downgradeInfoDiv = $('plan_downgrade_info');
+  devDowngradeInfoDiv = $('dev_plan_downgrade_info');
+  switch (radioButton.readAttribute('data-plan_upgrade')) {
+  case "true":
+    upgradeInfoDiv.down('.plan_title').update(radioButton.readAttribute('data-plan_title'));
+    upgradeInfoDiv.down('.plan_update_price').update(radioButton.readAttribute('data-plan_update_price'));
+    upgradeInfoDiv.down('.plan_update_date').update(radioButton.readAttribute('data-plan_update_date'));
+    upgradeInfoDiv.show();
+    downgradeInfoDiv.hide();
+    devDowngradeInfoDiv.hide();
+    break;
+  case "false":
+    if (radioButton.readAttribute('data-plan_update_price') == 'FREE') {
+      devDowngradeInfoDiv.down('.plan_title').update(radioButton.readAttribute('data-plan_title'));
+      devDowngradeInfoDiv.down('.plan_update_date').update(radioButton.readAttribute('data-plan_update_date'));
+      devDowngradeInfoDiv.show();
+      downgradeInfoDiv.hide();
+    }
+    else {
+      downgradeInfoDiv.down('.plan_title').update(radioButton.readAttribute('data-plan_title'));
+      downgradeInfoDiv.down('.plan_update_price').update(radioButton.readAttribute('data-plan_update_price'));
+      downgradeInfoDiv.down('.plan_update_date').update(radioButton.readAttribute('data-plan_update_date'));
+      downgradeInfoDiv.show();
+      devDowngradeInfoDiv.hide();
+    }
+    upgradeInfoDiv.hide();
+    break;
+  default:
+    upgradeInfoDiv.hide();
+    downgradeInfoDiv.hide();
+    devDowngradeInfoDiv.hide();
+  }
+};
+
 
 
 // ====================
@@ -149,7 +192,7 @@ MySublimeVideo.makeRemoteLinkSticky = function(element) {
 
 MySublimeVideo.showTableSpinner = function() {
   var tableSpinner = $('table_spinner');
-  if (tableSpinner) { tableSpinner.show(); }
+  if (tableSpinner) tableSpinner.show();
 };
 
 MySublimeVideo.showSiteEmbedCode = function(siteId) {

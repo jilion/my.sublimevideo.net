@@ -46,6 +46,8 @@ class Plan < ActiveRecord::Base
   def upgrade?(new_plan)
     if yearly? && new_plan.monthly?
       false
+    elsif self == new_plan
+      nil
     else
       month_price(10) <= new_plan.month_price(10)
     end
@@ -83,9 +85,9 @@ class Plan < ActiveRecord::Base
       cycle == c
     end
   end
-  
+
   def title
-    name.titleize + (cycle == "none" ? '' : " (#{cycle}ly)")
+    name.titleize + (cycle == 'year' ? ' (yearly)' : '')
   end
 
 end
