@@ -232,14 +232,8 @@ class Site < ActiveRecord::Base
     self.save
   end
 
-  # TODO: DO NOT WORK FOR YEARLY PLAN
   def current_billable_usage
-    puts Time.now.utc
-    puts plan_cycle_started_at
-    puts plan_cycle_ended_at
-    puts usages.count
-    puts usages.between(plan_cycle_started_at, plan_cycle_ended_at).count
-    usages.between(plan_cycle_started_at, plan_cycle_ended_at).to_a.sum do |su|
+    usages.between(plan_month_cycle_started_at, plan_month_cycle_ended_at).to_a.sum do |su|
       su.main_player_hits + su.main_player_hits_cached + su.extra_player_hits + su.extra_player_hits_cached
     end
   end
@@ -265,7 +259,7 @@ class Site < ActiveRecord::Base
     if plan.monthly?
       plan_cycle_ended_at
     else
-      (plan_cycle_started_at + (months_since(plan_started_at) + 1).months - 1.day).end_of_day
+      (plan_cycle_started_at + (months_since(plan_cycle_started_at) + 1).months - 1.day).end_of_day
     end
   end
 

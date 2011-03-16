@@ -771,7 +771,7 @@ describe Site do
           @site.plan.player_hits      = 100
           @site.plan_cycle_started_at = Time.utc(2011,1,20)
           @site.plan_cycle_ended_at   = Time.utc(2012,1,20)
-          Timecop.travel(2010,3,25)
+          Timecop.travel(Time.utc(2011,3,25))
         end
         subject { @site }
 
@@ -788,12 +788,12 @@ describe Site do
           @site.plan.player_hits      = 100
           @site.plan_cycle_started_at = Time.utc(2011,1,20)
           @site.plan_cycle_ended_at   = Time.utc(2012,1,20)
-          Timecop.travel(2011,1,25)
+          Timecop.travel(Time.utc(2011,1,25))
         end
         subject { @site }
 
-        its(:current_billable_usage) { should == 40 }
-        its(:current_percentage_of_plan_used) { should == 0.4 }
+        its(:current_billable_usage) { should == 20 }
+        its(:current_percentage_of_plan_used) { should == 0.2 }
 
         after(:all) { Timecop.return }
       end
@@ -806,32 +806,32 @@ describe Site do
       end
     end
 
-    describe "#plan_month_cycle_started_at & #plan_month_cycle_ended_at", :focus => true do
+    describe "#plan_month_cycle_started_at & #plan_month_cycle_ended_at" do
       before(:all) { @site = Factory(:site) }
 
       context "with monthly plan" do
         before(:all) do
           @site.plan.cycle            = "month"
           @site.plan_cycle_started_at = Time.utc(2011,1,1).midnight
-          @site.plan_cycle_ended_at   = Time.utc(2011,1,31).to_datetime.end_of_day
+          @site.plan_cycle_ended_at   = Time.utc(2011,1,31).end_of_day
         end
         subject { @site }
 
         its(:plan_month_cycle_started_at) { should == Time.utc(2011,1,1).midnight }
-        its(:plan_month_cycle_ended_at)   { should == Time.utc(2011,1,31).to_datetime.end_of_day }
+        its(:plan_month_cycle_ended_at)   { should == Time.utc(2011,1,31).end_of_day }
       end
 
       context "with yearly plan" do
         before(:all) do
           @site.plan.cycle            = "year"
           @site.plan_cycle_started_at = Time.utc(2011,1,1).midnight
-          @site.plan_cycle_ended_at   = Time.utc(2011,12,31).to_datetime.end_of_day
+          @site.plan_cycle_ended_at   = Time.utc(2011,12,31).end_of_day
           Timecop.travel(Time.utc(2011,6,10))
         end
         subject { @site }
 
         its(:plan_month_cycle_started_at) { should == Time.utc(2011,6,1).midnight }
-        its(:plan_month_cycle_ended_at)   { should == Time.utc(2011,6,30).to_datetime.end_of_day }
+        its(:plan_month_cycle_ended_at)   { should == Time.utc(2011,6,30).end_of_day }
 
         after(:all) { Timecop.return }
       end
@@ -840,13 +840,13 @@ describe Site do
         before(:all) do
           @site.plan.cycle            = "year"
           @site.plan_cycle_started_at = Time.utc(2011,2,28).midnight
-          @site.plan_cycle_ended_at   = Time.utc(2012,2,27).to_datetime.end_of_day
+          @site.plan_cycle_ended_at   = Time.utc(2012,2,27).end_of_day
           Timecop.travel(Time.utc(2012,2,10))
         end
         subject { @site }
 
         its(:plan_month_cycle_started_at) { should == Time.utc(2012,1,28).midnight }
-        its(:plan_month_cycle_ended_at)   { should == Time.utc(2012,2,27).to_datetime.end_of_day }
+        its(:plan_month_cycle_ended_at)   { should == Time.utc(2012,2,27).end_of_day }
 
         after(:all) { Timecop.return }
       end

@@ -385,54 +385,36 @@ describe Site::Invoice do
     end
   end
 
-  describe "#months_since", :focus => true do
+  describe "#months_since" do
     before(:all) { @site = Factory.build(:site) }
 
-    specify do
-      @site.plan_started_at = Time.utc(2011,1,1).midnight
-      Timecop.travel(Time.utc(2011,6,2)) { @site.months_since(@site.plan_started_at).should == 5 }
-    end
-    specify do
-      @site.plan_started_at = Time.utc(2011,12,31).midnight
-      Timecop.travel(Time.utc(2012,1,1)) { @site.months_since(@site.plan_started_at).should == 0 }
-    end
-    specify do
-      @site.plan_started_at = Time.utc(2012,1,1).midnight
-      Timecop.travel(Time.utc(2012,1,1)) { @site.months_since(@site.plan_started_at).should == 0 }
-    end
-    specify do
-      @site.plan_started_at = Time.utc(2012,1,1).midnight
-      Timecop.travel(Time.utc(2012,2,1)) { @site.months_since(@site.plan_started_at).should == 1 }
-    end
-    specify do
-      @site.plan_started_at = Time.utc(2012,1,2).midnight
-      Timecop.travel(Time.utc(2012,2,1)) { @site.months_since(@site.plan_started_at).should == 0 }
-    end
-    specify do
-      @site.plan_started_at = Time.utc(2012,5,2).midnight
-      Timecop.travel(Time.utc(2012,8,1)) { @site.months_since(@site.plan_started_at).should == 2 }
-    end
-    specify do
-      @site.plan_started_at = Time.utc(2001,1,1).midnight
-      Timecop.travel(Time.utc(2012,1,2)) { @site.months_since(@site.plan_started_at).should == 11 * 12 }
-    end
-    specify do
-      @site.plan_started_at = Time.utc(2011,2,28).midnight
-      Timecop.travel(Time.utc(2011,3,10)) { @site.months_since(@site.plan_started_at).should == 0 }
-    end
-    specify do
-      @site.plan_started_at = Time.utc(2011,2,28).midnight
-      Timecop.travel(Time.utc(2012,4,1)) { @site.months_since(@site.plan_started_at).should == 13 }
-    end
-    specify do
-      @site.plan_started_at = Time.utc(2011,2,28).midnight
-      Timecop.travel(Time.utc(2012,3,1)) { @site.months_since(@site.plan_started_at).should == 12 }
-    end
-    specify do
-      @site.plan_started_at = Time.utc(2011,2,28).midnight
-      Timecop.travel(Time.utc(2012,2,1)) { @site.months_since(@site.plan_started_at).should == 11 }
+    context "with plan_started_at 2011,1,1" do
+      before(:all) { @site.plan_started_at = Time.utc(2011,1,1) }
+
+      specify { Timecop.travel(Time.utc(2011,1,1)) { @site.months_since(nil).should == 0 } }
+      specify { Timecop.travel(Time.utc(2011,1,1)) { @site.months_since(@site.plan_started_at).should == 0 } }
+      specify { Timecop.travel(Time.utc(2011,1,31)) { @site.months_since(@site.plan_started_at).should == 0 } }
+      specify { Timecop.travel(Time.utc(2011,2,1)) { @site.months_since(@site.plan_started_at).should == 1 } }
+      specify { Timecop.travel(Time.utc(2011,2,15)) { @site.months_since(@site.plan_started_at).should == 1 } }
+      specify { Timecop.travel(Time.utc(2011,2,28)) { @site.months_since(@site.plan_started_at).should == 1 } }
+      specify { Timecop.travel(Time.utc(2012,1,1)) { @site.months_since(@site.plan_started_at).should == 12 } }
+      specify { Timecop.travel(Time.utc(2013,1,15)) { @site.months_since(@site.plan_started_at).should == 24 } }
     end
 
+    context "with plan_started_at 2011,6,15" do
+      before(:all) { @site.plan_started_at = Time.utc(2011,6,15) }
+
+      specify { Timecop.travel(Time.utc(2011,6,20)) { @site.months_since(nil).should == 0 } }
+      specify { Timecop.travel(Time.utc(2011,6,20)) { @site.months_since(@site.plan_started_at).should == 0 } }
+      specify { Timecop.travel(Time.utc(2011,6,31)) { @site.months_since(@site.plan_started_at).should == 0 } }
+      specify { Timecop.travel(Time.utc(2011,7,10)) { @site.months_since(@site.plan_started_at).should == 0 } }
+      specify { Timecop.travel(Time.utc(2011,7,15)) { @site.months_since(@site.plan_started_at).should == 1 } }
+      specify { Timecop.travel(Time.utc(2011,7,25)) { @site.months_since(@site.plan_started_at).should == 1 } }
+      specify { Timecop.travel(Time.utc(2012,6,10)) { @site.months_since(@site.plan_started_at).should == 11 } }
+      specify { Timecop.travel(Time.utc(2012,6,15)) { @site.months_since(@site.plan_started_at).should == 12 } }
+      specify { Timecop.travel(Time.utc(2012,6,20)) { @site.months_since(@site.plan_started_at).should == 12 } }
+      specify { Timecop.travel(Time.utc(2012,6,25)) { @site.months_since(@site.plan_started_at).should == 12 } }
+    end
   end
 
   describe "#advance_for_next_cycle_end" do

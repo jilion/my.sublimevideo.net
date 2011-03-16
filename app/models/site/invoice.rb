@@ -77,10 +77,10 @@ module Site::Invoice
 
   def months_since(time)
     now = Time.now.utc
-    if time && (now - time >= 1.month)
-      months = now.month - time.month
-      months += (now.year - time.year) * 12
-      months -= 1 if (time.day - now.day) > 0
+    if time
+      months = (now.year - time.year) * 12
+      months += now.month - time.month
+      months -= 1 if (now.day - time.day) < 0
       months
     else
       0
