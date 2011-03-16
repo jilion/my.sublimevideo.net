@@ -6,13 +6,28 @@ describe CreditCardsController do
     before(:each) { sign_in :user, authenticated_user }
 
     describe "GET edit" do
-      it "should render :edit template" do
-        get :edit
-        response.should render_template(:edit)
+      context "with no credit card" do
+        before(:each) { authenticated_user.should_receive(:cc?).and_return(false) }
+
+        it "should redirect to account/edit" do
+          get :edit
+          response.should redirect_to(edit_user_registration_path)
+        end
+      end
+
+      context "with a credit card" do
+        before(:each) { authenticated_user.should_receive(:cc?).and_return(true) }
+
+        it "should render :edit template" do
+          get :edit
+          response.should render_template(:edit)
+        end
       end
     end
 
     describe "PUT update" do
+      before(:each) { authenticated_user.should_receive(:cc?).and_return(true) }
+      
       it "should redirect to /account/edit when authorization is ok without 3-d secure" do
         authenticated_user.should_receive(:attributes=).with({})
         authenticated_user.should_receive(:check_credit_card) { nil }

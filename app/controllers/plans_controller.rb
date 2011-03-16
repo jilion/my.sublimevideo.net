@@ -1,5 +1,4 @@
 class PlansController < ApplicationController
-
   before_filter :redirect_suspended_user
   before_filter :find_site_by_token
 

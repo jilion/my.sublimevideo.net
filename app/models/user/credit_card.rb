@@ -92,7 +92,13 @@ module User::CreditCard
   end
 
   def check_credit_card(options={})
-    options = options.merge(store: credit_card_alias, d3d: true, paramplus: "USER_ID=#{self.id}&CC_CHECK=TRUE")
+    options = options.merge({
+      store: credit_card_alias,
+      email: email,
+      billing_address: { zip: postal_code, country: country },
+      d3d: true,
+      paramplus: "USER_ID=#{self.id}&CC_CHECK=TRUE",
+    })
     authorize = Ogone.authorize(100, credit_card, options)
 
     process_cc_authorization_response(authorize.params, authorize.authorization)
@@ -101,18 +107,16 @@ module User::CreditCard
   def process_cc_authorization_response(authorize_params, authorize_authorization)
     case authorize_params["STATUS"]
     when "5" # The authorization has been accepted.
-      # TODO: Do it cleaner
       self.cc_type        = authorize_params["BRAND"].downcase if authorize_params["BRAND"]
-      self.cc_last_digits = authorize_params["CARDNO"][-4,4] if authorize_params["CARDNO"]
+      self.cc_last_digits = authorize_params["CARDNO"][-4,4]   if authorize_params["CARDNO"]
       self.cc_expire_on   = Time.new("20#{authorize_params["ED"][2,2]}", authorize_params["ED"][0,2]) if authorize_params["ED"]
       self.cc_updated_at  = Time.now.utc
-      
+
       void_authorization(authorize_authorization)
       nil
 
     when "46" # Waiting for identification (3-D Secure)
-      html_answer = authorize_params["HTML_ANSWER"] ? Base64.decode64(authorize_params["HTML_ANSWER"]) : "<html>No HTML.</html>"
-      html_answer
+      Base64.decode64(authorize_params["HTML_ANSWER"])
 
     else # Something went wrong
       self.errors.add(:base, "Credit card authorization failed")
@@ -131,9 +135,7 @@ module User::CreditCard
 
   def void_authorization(authorization)
     void = Ogone.void(authorization)
-    unless void.success?
-      Notify.send("Credit card void for user #{self.id} failed: #{void.message}")
-    end
+    Notify.send("Credit card void for user #{self.id} failed: #{void.message}") unless void.success?
   end
 
 private

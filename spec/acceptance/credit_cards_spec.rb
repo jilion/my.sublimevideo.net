@@ -8,15 +8,15 @@ feature "Credit cards update:" do
       @current_user.should_not be_credit_card
     end
 
-    pending "edit a new credit card" do
+    scenario "edit a new credit card" do
       click_link(@current_user.full_name)
       current_url.should =~ %r(^http://[^/]+/account/edit$)
 
       page.should_not have_content("Add a credit card")
 
-      visit "/card/edit" # add redirect
+      visit "/card/edit"
 
-      current_url.should =~ %r(^http://[^/]+/card/edit$)
+      current_url.should =~ %r(^http://[^/]+/account/edit$)
     end
 
   end
