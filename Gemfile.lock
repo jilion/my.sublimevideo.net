@@ -273,6 +273,7 @@ GEM
     rspec-core (2.5.1)
     rspec-expectations (2.5.0)
       diff-lcs (~> 1.1.2)
+    rspec-instafail (0.1.6)
     rspec-mocks (2.5.0)
     rspec-rails (2.5.0)
       actionpack (~> 3.0)
@@ -384,6 +385,7 @@ DEPENDENCIES
   request-log-analyzer (= 1.9.10)
   rescue_me (= 0.1.0)
   responders (= 0.6.2)
+  rspec-instafail
   rspec-rails
   ruby-graphviz
   settingslogic (= 2.0.6)

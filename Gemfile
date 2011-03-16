@@ -100,6 +100,7 @@ group :test do
   gem 'guard-passenger'
   gem 'guard-spork'
   gem 'guard-rspec'
+  gem 'rspec-instafail'
   gem 'livereload'
   gem 'guard-livereload'
 
