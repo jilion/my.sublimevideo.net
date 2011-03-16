@@ -7,4 +7,6 @@
     .plan_total= number_with_delimiter(site.plan.player_hits)
 
     = info_box do
-      %p= pluralize(number_with_delimiter(site.current_billable_usage.to_i), "Hit")
+      %p= pluralize(number_with_delimiter(site.current_billable_usage.to_i), "<br /> Hit").html_safe
+  %span.peaks_insurance_label= "Peaks Insurance ON"
+  = link_to "Upgrade", edit_site_plan_path(site), :class => "upgrade_button submit_dynamic_button"

@@ -21,8 +21,9 @@
       .plan
         = site.plan.name.humanize
       .spacer
-
-  %td.usage
+  
+  -# TODO: Ifized with real conditions
+  %td.usage{ :class => rand(2) == 1 ? "peaks_insurance" : "required_upgrade" }
     = render 'td_usage', site: site
 
   %td.code
