@@ -1,17 +1,18 @@
 en:
   time:
     formats:
-      date: "%B %d, %Y"
-      minutes_timezone: "%d %b %Y, %R %Z"
-      seconds_timezone: "%d %b %Y, %R:%S %Z"
-      seconds_timezone_y: "%d %b %y, %R:%S %Z"
+      date: "%B %e, %Y"
+      named_date: "%a, %e %b %Y"
+      minutes_timezone: "%e %b %Y, %R %Z"
+      seconds_timezone: "%e %b %Y, %R:%S %Z"
+      seconds_timezone_y: "%e %b %y, %R:%S %Z"
       month_fullyear: "%B %Y"
       Y_m_d: "%Y/%m/%d"
       year_month_day: "%Y %b %d"
 
   date:
     formats:
-      default: "%B %d, %Y"
+      default: "%B %e, %Y"
       small:   "%m/%d/%Y"
       month_fullyear: "%B %Y"
 

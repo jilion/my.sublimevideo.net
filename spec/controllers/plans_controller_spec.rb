@@ -22,7 +22,7 @@ describe PlansController do
 
         put :update, :site_id => 'a1b2c3', :site => {}, :user => { :current_password => '123456' }
         assigns(:site).should == mock_site
-        response.should redirect_to(sites_url)
+        response.should redirect_to sites_path
       end
 
       it "should redirect to /sites/:token/plan/edit when update_attributes fails" do
@@ -32,6 +32,16 @@ describe PlansController do
         put :update, :site_id => 'a1b2c3', :site => {}, :user => { :current_password => '123456' }
         assigns(:site).should == mock_site
         response.should render_template(:edit)
+      end
+    end
+
+    describe "DELETE :destroy" do
+      it "should redirect to /sites when update_attributes succeeds" do
+        mock_site.stub(:update_attribute).with(:next_cycle_plan_id, nil) { true }
+
+        delete :destroy, :site_id => 'a1b2c3'
+        assigns(:site).should == mock_site
+        response.should redirect_to sites_path
       end
     end
   end

@@ -1,5 +1,4 @@
 class InvoicesController < ApplicationController
-
   before_filter :redirect_suspended_user, :only => :index
 
   # GET /sites/:site_id/invoices

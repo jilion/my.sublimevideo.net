@@ -16,7 +16,7 @@ describe User::CreditCard do
 
   describe "Factory" do
     use_vcr_cassette "ogone/credit_card_visa_validation"
-    before(:each) { user.update_attributes(valid_attributes) }
+    before(:each) { user.update_attributes(valid_cc_attributes) }
     subject { user }
 
     its(:cc_type)         { should == 'visa' }
@@ -31,47 +31,47 @@ describe User::CreditCard do
 
   describe "Validations" do
     it "should validates cc_type" do
-      user.attributes = valid_attributes.merge(:cc_type => 'master')
+      user.attributes = valid_cc_attributes.merge(:cc_type => 'master')
       user.should_not be_valid
       user.errors[:cc_type].should be_present
     end
     it "should validates cc_type if not matching cc_number" do
-      user.attributes = valid_attributes.merge(:cc_number => '5399999999999999')
+      user.attributes = valid_cc_attributes.merge(:cc_number => '5399999999999999')
       user.should_not be_valid
       user.errors[:cc_type].should be_present
     end
     it "should validates cc_type if matching cc_number" do
       VCR.use_cassette('ogone/credit_card_master_validation') do
-        user.attributes = valid_attributes.merge(:cc_number => '5399999999999999', :cc_type => 'master')
+        user.attributes = valid_cc_attributes.merge(:cc_number => '5399999999999999', :cc_type => 'master')
         user.should be_valid
       end
     end
     it "should validates cc_number presence" do
-      user.attributes = valid_attributes.merge(:cc_number => nil)
+      user.attributes = valid_cc_attributes.merge(:cc_number => nil)
       user.should_not be_valid
       user.errors[:cc_number].should be_present
     end
     it "should validates cc_number" do
-      user.attributes = valid_attributes.merge(:cc_number => '33')
+      user.attributes = valid_cc_attributes.merge(:cc_number => '33')
       user.should_not be_valid
       user.errors[:cc_number].should be_present
     end
     it "should validates cc_expire_on" do
-      user.attributes = valid_attributes.merge(:cc_expire_on => 50.years.ago)
+      user.attributes = valid_cc_attributes.merge(:cc_expire_on => 50.years.ago)
       user.should_not be_valid
       user.errors[:cc_expire_on].should be_present
     end
     it "should validates cc_full_name presence" do
-      user.attributes = valid_attributes.merge(:cc_full_name => nil)
+      user.attributes = valid_cc_attributes.merge(:cc_full_name => nil)
       user.should_not be_valid
       user.errors[:cc_full_name].should be_present
     end
     it "should validates cc_full_name presence" do
-      user.attributes = valid_attributes.merge(:cc_full_name => "Jime")
+      user.attributes = valid_cc_attributes.merge(:cc_full_name => "Jime")
       user.should be_valid
     end
     it "should validates cc_verification_value presence" do
-      user.attributes = valid_attributes.merge(:cc_verification_value => nil)
+      user.attributes = valid_cc_attributes.merge(:cc_verification_value => nil)
       user.should_not be_valid
       user.errors[:cc_verification_value].should be_present
     end
@@ -102,19 +102,19 @@ describe User::CreditCard do
       use_vcr_cassette "ogone/credit_card_visa_validation"
 
       it "should set cc_expire_on to nil" do
-        user.update_attributes(valid_attributes.merge(:cc_expire_on => nil))
+        user.update_attributes(valid_cc_attributes.merge(:cc_expire_on => nil))
         user.cc_expire_on.should == nil
       end
 
       it "should set cc_expire_on to the end of month" do
-        user.update_attributes(valid_attributes.merge(:cc_expire_on => Time.utc(2010,1,15)))
+        user.update_attributes(valid_cc_attributes.merge(:cc_expire_on => Time.utc(2010,1,15)))
         user.cc_expire_on.should == Time.utc(2010,1,15).end_of_month.to_date
       end
     end
 
     describe "#cc_type" do
       use_vcr_cassette "ogone/credit_card_visa_validation"
-      before(:each) { user.update_attributes(valid_attributes.merge(:cc_type => nil)) }
+      before(:each) { user.update_attributes(valid_cc_attributes.merge(:cc_type => nil)) }
 
       it "should take cc_type from cc_number if nil" do
         user.cc_type.should == 'visa'
@@ -132,21 +132,21 @@ describe User::CreditCard do
       end
 
       context "with a credit card that will expire this month" do
-        before(:each) { user.update_attributes(valid_attributes.merge(:cc_expire_on => Time.now.utc)) }
+        before(:each) { user.update_attributes(valid_cc_attributes.merge(:cc_expire_on => Time.now.utc)) }
 
         specify { user.cc_expire_on.should == Time.now.utc.end_of_month.to_date }
         specify { user.should be_credit_card_expire_this_month }
       end
 
       context "with a credit card not expired" do
-        before(:each) { user.update_attributes(valid_attributes.merge(:cc_expire_on => 1.month.from_now)) }
+        before(:each) { user.update_attributes(valid_cc_attributes.merge(:cc_expire_on => 1.month.from_now)) }
 
         specify { user.cc_expire_on.should == 1.month.from_now.end_of_month.to_date }
         specify { user.should_not be_credit_card_expire_this_month }
       end
 
       context "with a credit card expired" do
-        before(:each) { user.update_attributes(valid_attributes.merge(:cc_expire_on => 1.month.ago)) }
+        before(:each) { user.update_attributes(valid_cc_attributes.merge(:cc_expire_on => 1.month.ago)) }
 
         specify { user.cc_expire_on.should == 1.month.ago.end_of_month.to_date }
         specify { user.should_not be_credit_card_expire_this_month }
@@ -164,21 +164,21 @@ describe User::CreditCard do
       end
 
       context "with a credit card not expired" do
-        before(:each) { user.update_attributes(valid_attributes.merge(:cc_expire_on => 1.year.from_now)) }
+        before(:each) { user.update_attributes(valid_cc_attributes.merge(:cc_expire_on => 1.year.from_now)) }
 
         specify { user.cc_expire_on.should == 1.year.from_now.end_of_month.to_date }
         specify { user.should_not be_credit_card_expired }
       end
 
       context "with a credit card not expired (bis)" do
-        before(:each) { user.update_attributes(valid_attributes.merge(:cc_expire_on => 1.month.from_now)) }
+        before(:each) { user.update_attributes(valid_cc_attributes.merge(:cc_expire_on => 1.month.from_now)) }
 
         specify { user.cc_expire_on.should == 1.month.from_now.end_of_month.to_date }
         specify { user.should_not be_credit_card_expired }
       end
 
       context "with a credit card expired" do
-        before(:each) { user.update_attributes(valid_attributes.merge(:cc_expire_on => 1.month.ago)) }
+        before(:each) { user.update_attributes(valid_cc_attributes.merge(:cc_expire_on => 1.month.ago)) }
 
         specify { user.cc_expire_on.should == 1.month.ago.end_of_month.to_date }
         specify { user.should be_credit_card_expired }
@@ -186,12 +186,12 @@ describe User::CreditCard do
     end
 
     describe "#check_credit_card" do
-      before(:each) { user.update_attributes(valid_attributes) }
+      before(:each) { user.update_attributes(valid_cc_attributes) }
       subject { user }
 
       context "valid authorization" do
         use_vcr_cassette "ogone/void_authorization"
-        before(:each) { user.update_attributes(valid_attributes) }
+        before(:each) { user.update_attributes(valid_cc_attributes) }
         subject { user }
 
         it "should return nil" do
@@ -201,7 +201,7 @@ describe User::CreditCard do
 
       context "3d secure authorization" do
         use_vcr_cassette "ogone/3ds_authorization"
-        before(:each) { user.update_attributes(valid_3ds_attributes) }
+        before(:each) { user.update_attributes(valid_cc_3ds_attributes) }
         subject { user }
 
         it "should return a default html when HTML_ANSWER is not present" do
@@ -211,7 +211,7 @@ describe User::CreditCard do
 
       context "invalid authorization" do
         use_vcr_cassette "ogone/invalid_authorization"
-        before(:each) { user.update_attributes(invalid_attributes) }
+        before(:each) { user.update_attributes(invalid_cc_attributes) }
         subject { user }
 
         it "should return nil" do
@@ -221,7 +221,7 @@ describe User::CreditCard do
     end
 
     describe "#process_cc_authorization_response" do
-      before(:each) { user.update_attributes(valid_attributes) }
+      before(:each) { user.update_attributes(valid_cc_attributes) }
       subject { user }
 
       context "valid authorization (status == 5)" do
@@ -262,7 +262,7 @@ describe User::CreditCard do
 
     describe "#void_authorization" do
       use_vcr_cassette "ogone/void_authorization"
-      before(:each) { user.update_attributes(valid_attributes) }
+      before(:each) { user.update_attributes(valid_cc_attributes) }
       subject { user }
 
       it "should void authorization after verification" do
@@ -281,34 +281,4 @@ describe User::CreditCard do
 
   end
 
-end
-
-def valid_attributes
-  {
-    :cc_type               => 'visa',
-    :cc_number             => '4111111111111111',
-    :cc_expire_on          => 1.year.from_now.to_date,
-    :cc_full_name          => 'John Doe Huber',
-    :cc_verification_value => '111'
-  }
-end
-
-def valid_3ds_attributes
-  {
-    :cc_type               => 'visa',
-    :cc_number             => '4000000000000002',
-    :cc_expire_on          => 1.year.from_now.to_date,
-    :cc_full_name          => 'John Doe Huber',
-    :cc_verification_value => '111'
-  }
-end
-
-def invalid_attributes
-  {
-    :cc_type               => 'visa',
-    :cc_number             => '4111111111110000',
-    :cc_expire_on          => 1.year.from_now.to_date,
-    :cc_full_name          => 'John',
-    :cc_verification_value => '111'
-  }
 end

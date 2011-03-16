@@ -10,7 +10,7 @@ class SitesController < ApplicationController
 
   # GET /sites
   def index
-    @sites = current_user.sites.not_archived.includes(:plan)
+    @sites = current_user.sites.not_archived.includes(:plan, :next_cycle_plan)
     @sites = apply_scopes(@sites).by_date
     respond_with(@sites, :per_page => 10)
   end

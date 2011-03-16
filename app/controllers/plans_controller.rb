@@ -1,5 +1,4 @@
 class PlansController < ApplicationController
-
   before_filter :redirect_suspended_user
   before_filter :find_site_by_token
 
@@ -11,6 +10,13 @@ class PlansController < ApplicationController
   # PUT /sites/:site_id/plan
   def update
     @site.update_attributes(params[:site])
+    respond_with(@site, :location => :sites)
+  end
+
+  # Clear site.next_cycle_plan_id
+  # DELETE /sites/:site_id/plan
+  def destroy
+    @site.update_attribute(:next_cycle_plan_id, nil)
     respond_with(@site, :location => :sites)
   end
 

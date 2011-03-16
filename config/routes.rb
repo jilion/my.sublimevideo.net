@@ -28,7 +28,7 @@ MySublimeVideo::Application.routes.draw do
       get :code
       get :usage
     end
-    resource :plan, :only => [:edit, :update]
+    resource :plan, :only => [:edit, :update, :destroy]
     resources :invoices, :only => :index
   end
   resource :card, :controller => 'credit_cards', :as => :credit_card, :only => [:edit, :update]
