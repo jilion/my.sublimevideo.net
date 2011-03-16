@@ -8,8 +8,11 @@ describe TransactionsController do
 
       describe "credit card authorization response" do
         before(:all) do
+          @sha_params = {
+            "PAYID" => "1234", "STATUS" => "5"
+          }
           @params = {
-            "PAYID" => "1234", "STATUS" => "5", "USER_ID" => "1", "CC_CHECK" => "TRUE",
+            "USER_ID" => "1", "CC_CHECK" => "TRUE",
             "SHASIGN" => Digest::SHA512.hexdigest(["PAYID=1234","STATUS=5"].join(Ogone.yml[:signature_out]) + Ogone.yml[:signature_out]).upcase
           }
         end
@@ -17,10 +20,10 @@ describe TransactionsController do
         context "with a succeeding cc authorization response" do
           it "should void authorization" do
             User.should_receive(:find).with(1).and_return(mock_user)
-            mock_user.should_receive(:process_cc_authorization_response).with(@params, "1234;RES") { nil }
+            mock_user.should_receive(:process_cc_authorization_response).with(@sha_params, "1234;RES").and_return({ state: "authorized" })
             mock_user.should_receive(:save) { true }
 
-            post :ok, @params
+            post :ok, @params.merge(@sha_params)
             flash[:notice].should be_present
             flash[:alert].should be_nil
             response.should redirect_to(edit_user_registration_url)
@@ -30,12 +33,11 @@ describe TransactionsController do
         context "with a non-succeeding cc authorization response" do
           it "should void authorization" do
             User.stub(:find).with(1).and_return(mock_user)
-            mock_user.should_receive(:process_cc_authorization_response).with(@params, "1234;RES") { nil }
-            mock_user.should_receive(:errors).at_least(1).times { { :base => "error" } }
+            mock_user.should_receive(:process_cc_authorization_response).with(@sha_params, "1234;RES").and_return({ state: "refused", message: "Foo bar" })
 
-            post :ok, @params
+            post :ok, @params.merge(@sha_params)
             flash[:notice].should be_nil
-            flash[:alert].should be_present
+            flash[:alert].should == "Foo bar"
           end
         end
       end
@@ -43,15 +45,18 @@ describe TransactionsController do
 
     context "with a tempered request" do
       before(:all) do
+        @sha_params = {
+          "PAYID" => "1234", "STATUS" => "5"
+        }
         @params = {
-          "PAYID" => "1234", "STATUS" => "5", "USER_ID" => "1", "CC_CHECK" => "TRUE",
+          "USER_ID" => "1", "CC_CHECK" => "TRUE",
           "SHASIGN" => Digest::SHA512.hexdigest(["PAYID=1234","STATUS=5"].join(Ogone.yml[:signature_out]) + Ogone.yml[:signature_out]).upcase
         }
-        @params["STATUS"] = "9" # tempering!!!!!
+        @sha_params["STATUS"] = "9" # tempering!!!!!
       end
 
       it "should void authorization" do
-        post :ok, @params
+        post :ok, @params.merge(@sha_params)
 
         response.body.should == "Tampered request!"
         response.status.should == 400

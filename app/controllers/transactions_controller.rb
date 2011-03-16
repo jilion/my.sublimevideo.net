@@ -26,7 +26,12 @@ class TransactionsController < ApplicationController
 
   # POST /transaction/ko
   def ko
-    # FUCK
+    if operation_was?(:cc_authorization)
+      process_cc_authorization
+
+    elsif operation_was?(:payment)
+
+    end
   end
 
 private
@@ -42,35 +47,24 @@ private
   end
 
   def tempered_request?
-    params.delete(:controller)
-    params.delete(:action)
+    @sha_params = params.select { |k, v| Ogone.sha_out_keys.include?(k.upcase) }
+    to_digest   = @sha_params.sort { |a, b| a[0].upcase <=> b[0].upcase }.map { |k, v| "#{k.upcase}=#{v}" unless v.blank? }.compact.join(Ogone.yml[:signature_out]) + Ogone.yml[:signature_out]
 
-    params_for_sha_out = params.select { |k, v| keys_used_for_sha_out.include?(k.upcase) }
-
-    string_to_digest = params_for_sha_out.sort { |a, b| a[0].upcase <=> b[0].upcase }.map { |k, v| "#{k.upcase}=#{v}" unless v.blank? }.compact.join(Ogone.yml[:signature_out]) + Ogone.yml[:signature_out]
-
-    params["SHASIGN"] != Digest::SHA512.hexdigest(string_to_digest).upcase
+    params["SHASIGN"] != Digest::SHA512.hexdigest(to_digest).upcase
   end
 
   def process_cc_authorization
     @user = User.find(params["USER_ID"].to_i)
-    @user.process_cc_authorization_response(params, [params["PAYID"], 'RES'].join(';'))
+    response = @user.process_cc_authorization_response(@sha_params, [params["PAYID"], 'RES'].join(';'))
 
     respond_with do |format|
-      if @user.errors.empty? && @user.save
+      if response[:state] == "authorized" && @user.save
         flash[:notice] = t("flash.credit_cards.update.notice")
-      else
-        flash[:alert] = "You credit card could not be authorized, please retry with another credit card."
+      elsif
+        flash[:alert] = response[:message]
       end
       format.html { redirect_to [:edit, :user_registration] }
     end
-  end
-
-  def keys_used_for_sha_out
-    %w[AAVADDRESS AAVCHECK AAVZIP ACCEPTANCE ALIAS AMOUNT BIN BRAND CARDNO CCCTY CN COMPLUS CREATION_STATUS CURRENCY
-      CVCCHECK DCC_COMMPERCENTAGE DCC_CONVAMOUNT DCC_CONVCCY DCC_EXCHRATE DCC_EXCHRATESOURCE DCC_EXCHRATETS
-      DCC_INDICATOR DCC_MARGINPERC ENTAGE DCC_VALIDHOURS DIGESTC ARDNO ECI ED ENCCARDNO IP IPCTY NBREMAILUSAGE
-      NBRIPUSAGE NBRIPUSAGE_ALLTX NBRUSAGE NCERROR ORDERID PAYID PM SCO_CATEGORY SCORING STATUS SUBSC RIPTION_ID TRXDATE VC]
   end
 
 end

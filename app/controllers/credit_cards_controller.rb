@@ -18,17 +18,19 @@ class CreditCardsController < ApplicationController
       exception_url: edit_user_registration_url,
       ip: request.try(:remote_ip)
     }
-    check_3d_secure = @user.valid? && @user.check_credit_card(options)
+    response = @user.valid? ? @user.check_credit_card(options) : nil
 
     respond_with(@user) do |format|
       format.html do
-        if check_3d_secure
-          render :text => check_3d_secure
-        elsif @user.errors.empty?
-          @user.save
-          redirect_to [:edit, :user_registration]
-        else
+        if response.nil?
           render :edit
+
+        elsif response[:state] == "d3d"
+          render :text => response[:message]
+
+        elsif response[:state] == "authorized" && @user.save
+          flash[:notice] = response[:message] if response[:message]
+          redirect_to [:edit, :user_registration]
         end
       end
     end

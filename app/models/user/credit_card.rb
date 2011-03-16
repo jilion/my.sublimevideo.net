@@ -91,6 +91,17 @@ module User::CreditCard
     end
   end
 
+  # before_save
+  def keep_some_credit_card_info(params={})
+    if credit_card_attributes_present? || params.present?
+      self.cc_type        = params["BRAND"] ? params["BRAND"].downcase : credit_card.type
+      self.cc_last_digits = params["CARDNO"] ? params["CARDNO"][-4,4] : credit_card.last_digits
+      self.cc_expire_on   = Time.new("20#{params["ED"][2,2]}", params["ED"][0,2]) if params["ED"]
+      self.cc_updated_at  = Time.now.utc
+    end
+  end
+
+  # Called from CreditCardsController#update
   def check_credit_card(options={})
     options = options.merge({
       store: credit_card_alias,
@@ -98,44 +109,43 @@ module User::CreditCard
       billing_address: { zip: postal_code, country: country },
       d3d: true,
       paramplus: "USER_ID=#{self.id}&CC_CHECK=TRUE",
+      logo: "https://sublimevideo.net/images/embed/main/sublimevideo.png"
     })
     authorize = Ogone.authorize(100, credit_card, options)
 
     process_cc_authorization_response(authorize.params, authorize.authorization)
   end
 
+  # Called from User::CreditCard#check_credit_card and from TransactionsController#ok/TransactionsController#ko
   def process_cc_authorization_response(authorize_params, authorize_authorization)
+    response = {}
     case authorize_params["STATUS"]
     when "5" # The authorization has been accepted.
-      self.cc_type        = authorize_params["BRAND"].downcase if authorize_params["BRAND"]
-      self.cc_last_digits = authorize_params["CARDNO"][-4,4]   if authorize_params["CARDNO"]
-      self.cc_expire_on   = Time.new("20#{authorize_params["ED"][2,2]}", authorize_params["ED"][0,2]) if authorize_params["ED"]
-      self.cc_updated_at  = Time.now.utc
-
+      keep_some_credit_card_info(authorize_params)
       void_authorization(authorize_authorization)
-      nil
+      response[:state] = "authorized"
 
     when "46" # Waiting for identification (3-D Secure)
-      Base64.decode64(authorize_params["HTML_ANSWER"])
+              # We return the HTML to render. This HTML will redirect the user to the 3-D Secure form.
+      response = { state: "d3d", message: Base64.decode64(authorize_params["HTML_ANSWER"]) }
 
-    else # Something went wrong
-      self.errors.add(:base, "Credit card authorization failed")
-      nil
+    when "0" # Authorization invalid or incomplete
+      response = { state: "invalid", message: "Credit card information invalid or incomplete, please retry." }
+      self.errors.add(:base, response[:message])
+
+    when "2" # Authorization refused
+      response = { state: "refused", message: "Credit card authorization refused, please retry." }
+      self.errors.add(:base, response[:message])
+
+    when "51" # Authorization waiting (authorization will be processed offline), should never receive this status
+      response = { state: "waiting", message: "Credit card authorization will be processed soon." }
+      self.errors.add(:base, response[:message])
+
+    when "52" # Authorization not known
+      response = { state: "unknown", message: "Credit card authorization is unknown." }
     end
-  end
 
-  # before_save
-  def keep_some_credit_card_info
-    if credit_card_attributes_present?
-      self.cc_type        = credit_card.type
-      self.cc_last_digits = credit_card.last_digits
-      self.cc_updated_at  = Time.now.utc
-    end
-  end
-
-  def void_authorization(authorization)
-    void = Ogone.void(authorization)
-    Notify.send("Credit card void for user #{self.id} failed: #{void.message}") unless void.success?
+    response
   end
 
 private
@@ -152,6 +162,12 @@ private
     )
   end
   memoize :credit_card
+
+  # Called from User::CreditCard#process_cc_authorization_response and TransactionsController#ok/TransactionsController#ko
+  def void_authorization(authorization)
+    void = Ogone.void(authorization)
+    Notify.send("Credit card void for user #{self.id} failed: #{void.message}") unless void.success?
+  end
 
 end
 

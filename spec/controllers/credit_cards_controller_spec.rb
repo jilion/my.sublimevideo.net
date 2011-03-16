@@ -30,7 +30,7 @@ describe CreditCardsController do
       
       it "should redirect to /account/edit when authorization is ok without 3-d secure" do
         authenticated_user.should_receive(:attributes=).with({})
-        authenticated_user.should_receive(:check_credit_card) { nil }
+        authenticated_user.should_receive(:check_credit_card).and_return({ state: "authorized" })
         authenticated_user.should_receive(:save) { true }
 
         put :update, :user => {}
@@ -39,7 +39,7 @@ describe CreditCardsController do
 
       it "should render HTML given by Aduno when authorization needs 3-d secure" do
         authenticated_user.should_receive(:attributes=).with({})
-        authenticated_user.should_receive(:check_credit_card) { "<html></html>" }
+        authenticated_user.should_receive(:check_credit_card).and_return({ state: "d3d", message: "<html></html>" })
 
         put :update, :user => {}
         response.body.should == "<html></html>"

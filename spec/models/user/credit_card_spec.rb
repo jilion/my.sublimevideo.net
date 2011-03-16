@@ -77,7 +77,7 @@ describe User::CreditCard do
     end
   end
 
-  describe "Module Methods" do
+  describe "Class Methods" do
 
     describe ".send_credit_card_expiration" do
       it "should send 'cc will expire' email when user's credit card will expire at the end of the current month" do
@@ -97,6 +97,10 @@ describe User::CreditCard do
         lambda { User::CreditCard.send_credit_card_expiration }.should_not change(ActionMailer::Base.deliveries, :size)
       end
     end
+
+  end
+
+  describe "Instance Methods" do
 
     describe "#cc_expire_on=" do
       use_vcr_cassette "ogone/credit_card_visa_validation"
@@ -122,8 +126,6 @@ describe User::CreditCard do
     end
 
     describe "#credit_card_expire_this_month?" do
-      use_vcr_cassette "ogone/credit_card_visa_validation"
-
       context "with no cc_expire_on" do
         before(:each) { user }
 
@@ -154,8 +156,6 @@ describe User::CreditCard do
     end
 
     describe "#credit_card_expired?" do
-      use_vcr_cassette "ogone/credit_card_visa_validation"
-
       context "with no cc_expire_on" do
         before(:each) { user }
 
@@ -186,16 +186,18 @@ describe User::CreditCard do
     end
 
     describe "#check_credit_card" do
-      before(:each) { user.update_attributes(valid_cc_attributes) }
-      subject { user }
-
       context "valid authorization" do
         use_vcr_cassette "ogone/void_authorization"
         before(:each) { user.update_attributes(valid_cc_attributes) }
         subject { user }
 
-        it "should return nil" do
-          subject.check_credit_card.should be_nil
+        it "should actually call Ogone and return a hash with infos" do
+          Ogone.should_receive(:authorize).with(100, an_instance_of(ActiveMerchant::Billing::CreditCard), an_instance_of(Hash)) { mock('authorize', :params => {}, :authorization => '123')}
+          subject.check_credit_card
+        end
+
+        it "should return a hash with infos" do
+          subject.check_credit_card.should == { state: "authorized" }
         end
       end
 
@@ -204,18 +206,22 @@ describe User::CreditCard do
         before(:each) { user.update_attributes(valid_cc_3ds_attributes) }
         subject { user }
 
-        it "should return a default html when HTML_ANSWER is not present" do
-          subject.check_credit_card.should be_present
+        it "should return the HTML_ANSWER returned by Ogone" do
+          resp = subject.check_credit_card
+          resp[:state].should == "d3d"
+          resp[:message].should be_an_instance_of(String)
         end
       end
 
-      context "invalid authorization" do
-        use_vcr_cassette "ogone/invalid_authorization"
+      context "refused authorization" do
+        use_vcr_cassette "ogone/refused_authorization"
         before(:each) { user.update_attributes(invalid_cc_attributes) }
         subject { user }
 
         it "should return nil" do
-          subject.check_credit_card.should be_nil
+          resp = subject.check_credit_card
+          resp[:state].should == "refused"
+          resp[:message].should be_an_instance_of(String)
         end
       end
     end
@@ -228,38 +234,88 @@ describe User::CreditCard do
         before(:each) { subject.should_receive(:void_authorization).with("1234;RES") }
         let(:params) { [{ "STATUS" => "5" }, "1234;RES"]}
 
+        it "should return a hash with infos" do
+          subject.process_cc_authorization_response(*params).should == { state: "authorized" }
+        end
+
         it "should not add an error on base to the user" do
           subject.process_cc_authorization_response(*params)
           subject.errors.should be_empty
         end
-
-        it "should return nil" do
-          subject.process_cc_authorization_response(*params).should be_nil
-        end
       end
 
       context "3d secure authorization (status == 46)" do
-        let(:params) { [{ "STATUS" => "46", "HTML_ANSWER" => Base64.encode64("<html>No HTML.</html>") }, "1234;RES"]}
+        let(:params) { [{ "STATUS" => "46", "HTML_ANSWER" => Base64.encode64("<html>No HTML.</html>") }, "1234;RES"] }
 
         it "should return the html to inject" do
-          subject.process_cc_authorization_response(*params).should == "<html>No HTML.</html>"
+          resp = subject.process_cc_authorization_response(*params)
+          resp[:state].should == "d3d"
+          resp[:message].should be_an_instance_of(String)
         end
       end
 
-      context "invalid authorization (status != 5 && status != 46)" do
-        let(:params) { [{ "STATUS" => "51" }, "1234;RES"]}
+      context "Authorization invalid or incomplete (status == 0)" do
+        let(:params) { [{ "STATUS" => "0" }, "1234;RES"] }
+
+        it "should return a hash with infos" do
+          resp = subject.process_cc_authorization_response(*params)
+          resp[:state].should == "invalid"
+          resp[:message].should be_an_instance_of(String)
+        end
 
         it "should add an error on base to the user" do
           subject.process_cc_authorization_response(*params)
-          subject.errors[:base].should be_present
+          subject.errors[:base].should == ["Credit card information invalid or incomplete, please retry."]
+        end
+      end
+
+      context "Authorization refused (status == 2)" do
+        let(:params) { [{ "STATUS" => "2" }, "1234;RES"] }
+
+        it "should return a hash with infos" do
+          resp = subject.process_cc_authorization_response(*params)
+          resp[:state].should == "refused"
+          resp[:message].should be_an_instance_of(String)
         end
 
-        it "should return nil" do
-          subject.process_cc_authorization_response(*params).should be_nil
+        it "should add an error on base to the user" do
+          subject.process_cc_authorization_response(*params)
+          subject.errors[:base].should == ["Credit card authorization refused, please retry."]
+        end
+      end
+
+      context "Authorization waiting (status == 51)" do
+        let(:params) { [{ "STATUS" => "51" }, "1234;RES"] }
+
+        it "should return a hash with infos" do
+          resp = subject.process_cc_authorization_response(*params)
+          resp[:state].should == "waiting"
+          resp[:message].should be_an_instance_of(String)
+        end
+
+        it "should add an error on base to the user" do
+          subject.process_cc_authorization_response(*params)
+          subject.errors[:base].should == ["Credit card authorization will be processed soon."]
+        end
+      end
+
+      context "Authorization not known (status == 52)" do
+        let(:params) { [{ "STATUS" => "52" }, "1234;RES"] }
+
+        it "should return a hash with infos" do
+          resp = subject.process_cc_authorization_response(*params)
+          resp[:state].should == "unknown"
+          resp[:message].should be_an_instance_of(String)
+        end
+
+        it "should not add an error on base to the user" do
+          subject.process_cc_authorization_response(*params)
+          subject.errors.should be_empty
         end
       end
     end
 
+    # Private method
     describe "#void_authorization" do
       use_vcr_cassette "ogone/void_authorization"
       before(:each) { user.update_attributes(valid_cc_attributes) }
@@ -268,14 +324,14 @@ describe User::CreditCard do
       it "should void authorization after verification" do
         mock_response = mock('response', :success? => true)
         Ogone.should_receive(:void) { mock_response }
-        subject.void_authorization("1234;RES")
+        subject.send(:void_authorization, "1234;RES")
       end
 
       it "should notify if void authorization after verification failed" do
         mock_response = mock('response', :success? => false, :message => 'failed')
         Ogone.stub(:void) { mock_response }
         Notify.should_receive(:send)
-        subject.void_authorization("1234;RES")
+        subject.send(:void_authorization, "1234;RES")
       end
     end
 

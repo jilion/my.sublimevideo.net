@@ -35,7 +35,17 @@ module Spec
       def invalid_cc_attributes
         {
           :cc_type               => 'visa',
-          :cc_number             => '4111111111110000',
+          :cc_number             => '4111113333333333',
+          :cc_expire_on          => 1.year.from_now.to_date,
+          :cc_full_name          => 'John',
+          :cc_verification_value => '111'
+        }
+      end
+
+      def uncertain_cc_attributes
+        {
+          :cc_type               => 'visa',
+          :cc_number             => '4111116666666666',
           :cc_expire_on          => 1.year.from_now.to_date,
           :cc_full_name          => 'John',
           :cc_verification_value => '111'
