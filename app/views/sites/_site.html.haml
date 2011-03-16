@@ -20,13 +20,15 @@
           = "add a hostname"
       .plan
         = link_to [:edit, site, :plan] do
-          = site.plan.title + (site.next_cycle_plan_id? ? " => #{site.next_cycle_plan.title}" : "")
+          = site.plan.title
+          %span.disabled= site.next_cycle_plan_id? ? " => #{site.next_cycle_plan.title}" : ""
       .cycle
         - if site.in_paid_plan?
-          = l(site.plan_cycle_started_at, :format => :Y_m_d) + ' - ' + l(site.plan_cycle_ended_at, :format => :Y_m_d)
+          = l(site.plan_cycle_started_at, :format => :d_b_Y) + ' - ' + l(site.plan_cycle_ended_at, :format => :d_b_Y)
       .spacer
   
   -# TODO: Ifized with real conditions
+  -# %td.usage
   %td.usage{ :class => rand(2) == 1 ? "peaks_insurance" : "required_upgrade" }
     = render 'td_usage', site: site
 
