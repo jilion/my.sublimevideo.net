@@ -19,35 +19,35 @@
             %h3.title= content_tag(:strong, plan.name.titleize)
             %h4.number= number_with_delimiter(plan.player_hits)
             %h5.label= "Video pageviews per month"
-          .monthly.select_box{ :class => plan == current_plan ? 'active' : '' }
+          .monthly.select_box{ :class => current_plan && plan == current_plan ? 'active' : '' }
             = f.label :plan_id, raw(plan_label_content(plan)), :for => "plan_#{plan.name}_#{plan.cycle}"
             .radio_wrap
-              = f.radio_button :plan_id, plan.id, :id => "plan_#{plan.name}_#{plan.cycle}", :class => "plan_radio",                                                                                    |
-                "data-plan_title" => plan.title,                                                                                                                                                       |
-                "data-plan_upgrade" => current_plan.upgrade?(plan),                                                                                                                                    |
-                "data-plan_update_price" => display_amount(current_plan.upgrade?(plan) ? plan.price - current_plan.price : plan.price ),                                                               |
-                "data-plan_update_date" => l((current_plan.upgrade?(plan) ? site.plan_cycle_started_at || Time.now.utc.midnight : site.plan_cycle_ended_at.tomorrow.midnight), :format => :named_date) |
+              = f.radio_button :plan_id, plan.id, :id => "plan_#{plan.name}_#{plan.cycle}", :class => "plan_radio",                                                                                                    |
+                "data-plan_title" => plan.title,                                                                                                                                                                       |
+                "data-plan_upgrade" => !current_plan || current_plan.upgrade?(plan),                                                                                                                                   |
+                "data-plan_update_price" => display_amount(current_plan && current_plan.upgrade?(plan) ? plan.price - current_plan.price : plan.price),                                                                |
+                "data-plan_update_date" => l((!current_plan || current_plan.upgrade?(plan) ? site.plan_cycle_started_at || Time.now.utc.midnight : site.plan_cycle_ended_at.tomorrow.midnight), :format => :named_date) |
               %span.bg
           - if yearly_plan = paid_plans.find { |p| p.name == plan.name && p.yearly? }
-            .yearly.select_box{ :class => yearly_plan == current_plan ? 'active' : '' }
+            .yearly.select_box{ :class => current_plan && yearly_plan == current_plan ? 'active' : '' }
               = f.label :plan_id, raw(plan_label_content(yearly_plan, :year => true)), :for => "plan_#{yearly_plan.name}_#{yearly_plan.cycle}"
               .radio_wrap
-                = f.radio_button :plan_id, yearly_plan.id, :id => "plan_#{yearly_plan.name}_#{yearly_plan.cycle}", :class => "plan_radio",                                                                      |
-                  "data-plan_title" => yearly_plan.title,                                                                                                                                                       |
-                  "data-plan_upgrade" => current_plan.upgrade?(yearly_plan),                                                                                                                                    |
-                  "data-plan_update_price" => display_amount(current_plan.upgrade?(yearly_plan) ? yearly_plan.price - current_plan.price : yearly_plan.price ),                                                 |
-                  "data-plan_update_date" => l((current_plan.upgrade?(yearly_plan) ? site.plan_cycle_started_at || Time.now.utc.midnight : site.plan_cycle_ended_at.tomorrow.midnight), :format => :named_date) |
+                = f.radio_button :plan_id, yearly_plan.id, :id => "plan_#{yearly_plan.name}_#{yearly_plan.cycle}", :class => "plan_radio",                                                                                      |
+                  "data-plan_title" => yearly_plan.title,                                                                                                                                                                       |
+                  "data-plan_upgrade" => !current_plan || current_plan.upgrade?(yearly_plan),                                                                                                                                   |
+                  "data-plan_update_price" => display_amount(current_plan && current_plan.upgrade?(yearly_plan) ? yearly_plan.price - current_plan.price : yearly_plan.price ),                                                 |
+                  "data-plan_update_date" => l((!current_plan || current_plan.upgrade?(yearly_plan) ? site.plan_cycle_started_at || Time.now.utc.midnight : site.plan_cycle_ended_at.tomorrow.midnight), :format => :named_date) |
                 %span.bg
         %span.save_label= "2 months free"
 
   .spacer
 
-  #dev_plan{ :class => dev_plan == current_plan ? 'active' : '' }
+  #dev_plan{ :class => current_plan && dev_plan == current_plan ? 'active' : '' }
     .radio_wrap
       = f.label :plan_id, raw("If you are not sure about what plan fit you best or you just want to try SublimeVideo in development, use our #{content_tag(:strong, 'unlimited free development plan')}."), :for => "plan_#{dev_plan.name}", :class => "title"
-      = f.radio_button :plan_id, dev_plan.id, :id => "plan_#{dev_plan.name}", :class => "plan_radio",    |
-        "data-plan_title" => 'the unlimited free development plan',                                      |
-        "data-plan_upgrade" => current_plan.upgrade?(dev_plan),                                          |
-        "data-plan_update_price" => "FREE",                                                              |
+      = f.radio_button :plan_id, dev_plan.id, :id => "plan_#{dev_plan.name}", :class => "plan_radio",                                |
+        "data-plan_title" => 'the unlimited free development plan',                                                                  |
+        "data-plan_upgrade" => !current_plan || current_plan.upgrade?(dev_plan),                                                                      |
+        "data-plan_update_price" => "FREE",                                                                                          |
         "data-plan_update_date" => site.plan_cycle_ended_at && l(site.plan_cycle_ended_at.tomorrow.midnight, :format => :named_date) |
       %span.bg
