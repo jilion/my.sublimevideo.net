@@ -716,88 +716,139 @@ describe Site do
       end
     end
 
-    describe "#current_billable_usage" do
-      before(:all) do
-        @site = Factory(:site, plan: Factory(:plan, player_hits: 100))
-        Factory(:site_usage, site_id: @site.id, day: Time.now.utc,
+    describe "#current_billable_usage & #current_percentage_of_plan_used" do
+      before(:all) { @site = Factory(:site) }
+      before(:each) do
+        Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,4,1),
           main_player_hits:  6, main_player_hits_cached:  4,
           extra_player_hits: 5, extra_player_hits_cached: 5,
           dev_player_hits:   4, dev_player_hits_cached:   6
         )
-        Factory(:site_usage, site_id: @site.id, day: Time.now.utc.tomorrow,
+        Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,3,30),
           main_player_hits:  6, main_player_hits_cached:  4,
           extra_player_hits: 5, extra_player_hits_cached: 5,
           dev_player_hits:   4, dev_player_hits_cached:   6
         )
-        Factory(:site_usage, site_id: @site.id, day: 2.months.ago,
+        Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,1,30),
           main_player_hits:  6, main_player_hits_cached:  4,
           extra_player_hits: 5, extra_player_hits_cached: 5,
           dev_player_hits:   4, dev_player_hits_cached:   6
         )
       end
 
-      it "should update counters of non-archived sites from last 30 days site_usages" do
-        @site.current_billable_usage.should == 40
+      context "with monthly plan" do
+        before(:all) do
+          @site.unmemoize_all
+          @site.plan.cycle            = "month"
+          @site.plan.player_hits      = 100
+          @site.plan_cycle_started_at = Time.utc(2011,3,20)
+          @site.plan_cycle_ended_at   = Time.utc(2011,4,20)
+        end
+        subject { @site }
+
+        its(:current_billable_usage) { should == 40 }
+        its(:current_percentage_of_plan_used) { should == 0.4 }
+      end
+
+      context "with monthly plan and overage" do
+        before(:all) do
+          @site.unmemoize_all
+          @site.plan.cycle            = "month"
+          @site.plan.player_hits      = 10
+          @site.plan_cycle_started_at = Time.utc(2011,3,20)
+          @site.plan_cycle_ended_at   = Time.utc(2011,4,20)
+        end
+        subject { @site }
+
+        its(:current_billable_usage) { should == 40 }
+        its(:current_percentage_of_plan_used) { should == 1 }
+      end
+
+      context "with yearly plan" do
+        before(:all) do
+          @site.unmemoize_all
+          @site.plan.cycle            = "year"
+          @site.plan.player_hits      = 100
+          @site.plan_cycle_started_at = Time.utc(2011,1,20)
+          @site.plan_cycle_ended_at   = Time.utc(2012,1,20)
+          Timecop.travel(2010,3,25)
+        end
+        subject { @site }
+
+        its(:current_billable_usage) { should == 40 }
+        its(:current_percentage_of_plan_used) { should == 0.4 }
+
+        after(:all) { Timecop.return }
+      end
+
+      context "with yearly plan (other date)" do
+        before(:all) do
+          @site.unmemoize_all
+          @site.plan.cycle            = "year"
+          @site.plan.player_hits      = 100
+          @site.plan_cycle_started_at = Time.utc(2011,1,20)
+          @site.plan_cycle_ended_at   = Time.utc(2012,1,20)
+          Timecop.travel(2011,1,25)
+        end
+        subject { @site }
+
+        its(:current_billable_usage) { should == 40 }
+        its(:current_percentage_of_plan_used) { should == 0.4 }
+
+        after(:all) { Timecop.return }
       end
     end
 
     describe "#current_percentage_of_plan_used" do
-      context "with usages less than the plan's limit" do
-        before(:all) do
-          @site = Factory(:site, plan: Factory(:plan, player_hits: 100))
-          Factory(:site_usage, site_id: @site.id, day: Time.now.utc,
-            main_player_hits:  6, main_player_hits_cached:  4,
-            extra_player_hits: 5, extra_player_hits_cached: 5,
-            dev_player_hits:   4, dev_player_hits_cached:   6
-          )
-          Factory(:site_usage, site_id: @site.id, day: Time.now.utc.tomorrow,
-            main_player_hits:  6, main_player_hits_cached:  4,
-            extra_player_hits: 5, extra_player_hits_cached: 5,
-            dev_player_hits:   4, dev_player_hits_cached:   6
-          )
-          Factory(:site_usage, site_id: @site.id, day: 2.months.ago,
-            main_player_hits:  6, main_player_hits_cached:  4,
-            extra_player_hits: 5, extra_player_hits_cached: 5,
-            dev_player_hits:   4, dev_player_hits_cached:   6
-          )
-        end
-
-        it "should update counters of non-archived sites from last 30 days site_usages" do
-          @site.current_billable_usage.should == 40
-          @site.current_percentage_of_plan_used.should == 0.4
-        end
-      end
-
-      context "with usages more than the plan's limit" do
-        before(:all) do
-          @site = Factory(:site, plan: Factory(:plan, player_hits: 30))
-          Factory(:site_usage, site_id: @site.id, day: Time.now.utc,
-            main_player_hits:  6, main_player_hits_cached:  4,
-            extra_player_hits: 5, extra_player_hits_cached: 5,
-            dev_player_hits:   4, dev_player_hits_cached:   6
-          )
-          Factory(:site_usage, site_id: @site.id, day: Time.now.utc.tomorrow,
-            main_player_hits:  6, main_player_hits_cached:  4,
-            extra_player_hits: 5, extra_player_hits_cached: 5,
-            dev_player_hits:   4, dev_player_hits_cached:   6
-          )
-          Factory(:site_usage, site_id: @site.id, day: 2.months.ago,
-            main_player_hits:  6, main_player_hits_cached:  4,
-            extra_player_hits: 5, extra_player_hits_cached: 5,
-            dev_player_hits:   4, dev_player_hits_cached:   6
-          )
-        end
-
-        it "should update counters of non-archived sites from last 30 days site_usages" do
-          @site.current_billable_usage.should == 40
-          @site.current_percentage_of_plan_used.should == 1
-        end
-
-      end
-
       it "should return 0 if plan player_hits is 0" do
         site = Factory(:site, plan: @dev_plan)
         site.current_percentage_of_plan_used.should == 0
+      end
+    end
+
+    describe "#plan_month_cycle_started_at & #plan_month_cycle_ended_at", :focus => true do
+      before(:all) { @site = Factory(:site) }
+
+      context "with monthly plan" do
+        before(:all) do
+          @site.plan.cycle            = "month"
+          @site.plan_cycle_started_at = Time.utc(2011,1,1).midnight
+          @site.plan_cycle_ended_at   = Time.utc(2011,1,31).to_datetime.end_of_day
+        end
+        subject { @site }
+
+        its(:plan_month_cycle_started_at) { should == Time.utc(2011,1,1).midnight }
+        its(:plan_month_cycle_ended_at)   { should == Time.utc(2011,1,31).to_datetime.end_of_day }
+      end
+
+      context "with yearly plan" do
+        before(:all) do
+          @site.plan.cycle            = "year"
+          @site.plan_cycle_started_at = Time.utc(2011,1,1).midnight
+          @site.plan_cycle_ended_at   = Time.utc(2011,12,31).to_datetime.end_of_day
+          Timecop.travel(Time.utc(2011,6,10))
+        end
+        subject { @site }
+
+        its(:plan_month_cycle_started_at) { should == Time.utc(2011,6,1).midnight }
+        its(:plan_month_cycle_ended_at)   { should == Time.utc(2011,6,30).to_datetime.end_of_day }
+
+        after(:all) { Timecop.return }
+      end
+
+      context "with yearly plan (other date)" do
+        before(:all) do
+          @site.plan.cycle            = "year"
+          @site.plan_cycle_started_at = Time.utc(2011,2,28).midnight
+          @site.plan_cycle_ended_at   = Time.utc(2012,2,27).to_datetime.end_of_day
+          Timecop.travel(Time.utc(2012,2,10))
+        end
+        subject { @site }
+
+        its(:plan_month_cycle_started_at) { should == Time.utc(2012,1,28).midnight }
+        its(:plan_month_cycle_ended_at)   { should == Time.utc(2012,2,27).to_datetime.end_of_day }
+
+        after(:all) { Timecop.return }
       end
     end
 

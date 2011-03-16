@@ -69,10 +69,22 @@ module Site::Invoice
       self.plan_cycle_started_at = nil
       self.plan_cycle_ended_at   = nil
     elsif plan_id_changed? || plan_cycle_ended_at.nil? || plan_cycle_ended_at < Time.now.utc
-      self.plan_cycle_started_at = (plan_started_at + months_since_plan_started_at.months).midnight
+      self.plan_cycle_started_at = (plan_started_at + months_since(plan_started_at).months).midnight
       self.plan_cycle_ended_at   = (plan_started_at + advance_for_next_cycle_end(plan)).to_datetime.end_of_day
     end
     true # don't block the callbacks chain
+  end
+
+  def months_since(time)
+    now = Time.now.utc
+    if time && (now - time >= 1.month)
+      months = now.month - time.month
+      months += (now.year - time.year) * 12
+      months -= 1 if (time.day - now.day) > 0
+      months
+    else
+      0
+    end
   end
 
 private
@@ -81,23 +93,11 @@ private
   # = Instance Methods =
   # ====================
 
-  def months_since_plan_started_at
-    now = Time.now.utc
-    if plan_started_at && (now - plan_started_at >= 1.month)
-      months = now.month - plan_started_at.month
-      months -= 1 if months > 0 && (now.day - plan_started_at.day) < 0
-
-      (now.year - plan_started_at.year) * 12 + months
-    else
-      0
-    end
-  end
-
   def advance_for_next_cycle_end(plan)
     if plan.yearly?
-      (months_since_plan_started_at + 12).months
+      (months_since(plan_started_at) + 12).months
     else
-      (months_since_plan_started_at + 1).months
+      (months_since(plan_started_at) + 1).months
     end - 1.day
   end
 
@@ -114,7 +114,7 @@ private
         false
       end
     end
-    
+
     # if in_paid_plan? && (plan_id_changed? || plan_cycle_started_at_changed? || plan_cycle_ended_at_changed?)
     #   invoice = Invoice.build(site: self)
     #   invoice.save!
