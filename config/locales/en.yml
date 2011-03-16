@@ -8,6 +8,7 @@ en:
       seconds_timezone_y: "%e %b %y, %R:%S %Z"
       month_fullyear: "%B %Y"
       Y_m_d: "%Y/%m/%d"
+      d_b_Y: "%d %b %Y"
       year_month_day: "%Y %b %d"
 
   date:
