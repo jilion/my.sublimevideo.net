@@ -63,9 +63,10 @@ document.observe("dom:loaded", function() {
   if (history && history.pushState) {
     Event.observe(window, 'popstate', function(e) {
       MySublimeVideo.showTableSpinner();
-      new Ajax.Request(location.href, {
-        method: 'get'
-      });
+      // alert("location: " + document.location + ", state: " + JSON.stringify(event.state));
+      // new Ajax.Request(location.href, {
+      //   method: 'get'
+      // });
     });
   }
 
@@ -180,7 +181,6 @@ MySublimeVideo.remoteSortLink = function(element) {
   };
 };
 
-
 MySublimeVideo.makeRemoteLinkSticky = function(element) {
   var container = element.up();
   container.select("a.active[data-remote]").each(function(el){
@@ -188,7 +188,6 @@ MySublimeVideo.makeRemoteLinkSticky = function(element) {
   });
   element.addClassName("active");
 };
-
 
 MySublimeVideo.showTableSpinner = function() {
   var tableSpinner = $('table_spinner');
