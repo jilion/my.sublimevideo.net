@@ -7,7 +7,7 @@ class Site < ActiveRecord::Base
   # Versioning
   has_paper_trail
 
-  attr_accessor :user_attributes
+  attr_accessor :user_attributes, :d3d_options
 
   attr_accessible :hostname, :dev_hostnames, :extra_hostnames, :path, :wildcard, :plan_id, :user_attributes
 
@@ -194,7 +194,8 @@ class Site < ActiveRecord::Base
       if plan.upgrade?(new_plan)
         # Upgrade
         @plan = nil # clear plan association cache
-        write_attribute(:plan_id, attribute)
+        self.pending_plan_id = attribute
+        # write_attribute(:plan_id, attribute)
       elsif plan == new_plan
         # Reset next_cycle_plan
         write_attribute(:next_cycle_plan_id, nil)
@@ -204,7 +205,8 @@ class Site < ActiveRecord::Base
       end
     else
       # Creation
-      write_attribute(:plan_id, attribute)
+      self.pending_plan_id = attribute
+      # write_attribute(:plan_id, attribute)
     end
   end
 
