@@ -2278,6 +2278,40 @@ ul.segmented_menu li.last a {
   left:30px;
 }
 
+.popup .checkbox_wrap {
+  margin:0 0 6px;
+  position:relative;
+}
+
+.popup .checkbox_wrap input {
+  float:left;
+  position:relative;
+  top:0;
+  left:0;
+  opacity:0;
+}
+
+@media all and (max-device-width: 1024px) {
+  .popup .checkbox_wrap input {
+    top:5px;
+    z-index:2;
+  }
+}
+
+.popup .checkbox_wrap label {
+  position:relative;
+  left:-5px;
+  display:block;
+  height:20px;
+  padding:6px 0 0 27px;
+  background:url(/images/embed/custom_checkbox.png) no-repeat;
+}
+
+/* Original concept by http://www.thecssninja.com/css/custom-inputs-using-css */
+.popup .checkbox_wrap input:checked + label {background-position:0 -26px;}
+.popup .checkbox_wrap input:focus + label {background-position:0 -52px;}
+.popup .checkbox_wrap input:focus:checked + label {background-position:0 -78px;}
+
 .popup a.close {
   display:block;
   width:32px;
