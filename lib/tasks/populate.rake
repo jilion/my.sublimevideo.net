@@ -183,8 +183,6 @@ def create_admins
 end
 
 def create_users(count = 10)
-  require 'user/credit_card'
-      
   created_at_array = (Date.new(2010,9,14)..100.days.ago.to_date).to_a
   disable_perform_deliveries do
     BASE_USERS.each do |user_infos|
@@ -255,12 +253,7 @@ def create_users(count = 10)
   end
 end
 
-def create_sites
-  require 'site/invoice'
-  require 'site/referrer'
-  require 'site/templates'
-  require 'site/usage_alert'
-  
+def create_sites  
   delete_all_files_in_public('uploads/licenses')
   delete_all_files_in_public('uploads/loaders')
   create_users if User.all.empty?
