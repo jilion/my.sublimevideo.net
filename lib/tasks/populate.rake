@@ -253,16 +253,7 @@ def create_users(count = 10)
   end
 end
 
-<<<<<<< HEAD
 def create_sites
-  require 'site/invoice'
-  require 'site/referrer'
-  require 'site/templates'
-  require 'site/usage_alert'
-
-=======
-def create_sites  
->>>>>>> 2c2c6659f09c49683f7ff9b9e9266eee6a9473f9
   delete_all_files_in_public('uploads/licenses')
   delete_all_files_in_public('uploads/loaders')
   create_users if User.all.empty?
