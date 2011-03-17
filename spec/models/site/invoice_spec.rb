@@ -437,11 +437,6 @@ describe Site::Invoice do
         context "when now is #{i} months after site.plan_started_at" do
           it "should return #{i} + 1 months in advance - 1 day" do
             Timecop.travel(Time.now.utc.midnight + i.months + 1.day) do
-              # puts @site.plan_started_at
-              # puts Time.now.utc.midnight + i.months + 1.day
-              # r = @site.send(:advance_for_next_cycle_end, @plan)
-              # e = (i + 1).months - 1.day
-              # puts "#{r} => #{e}" if e == r
               @site.send(:advance_for_next_cycle_end, @plan).should == (i + 1).months - 1.day
             end
           end

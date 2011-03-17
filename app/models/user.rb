@@ -1,4 +1,5 @@
 class User < ActiveRecord::Base
+  require 'user/credit_card'
 
   devise :database_authenticatable, :registerable, :confirmable,
          :recoverable, :rememberable, :trackable, :lockable, :invitable

@@ -1,7 +1,6 @@
 - if !site.in_paid_plan?
   = link_to "Choose a plan", edit_site_plan_path(site), :class => "medium_button"
 - else
-  -# = link_to "Usage", "", :onclick => "return MySublimeVideo.showSiteUsage('#{site.token}')"
   .progress_bar.box_hovering_zone
     .usage_bar{ :style => "width:#{display_percentage(site.current_percentage_of_plan_used)}"}
     .plan_total= number_with_delimiter(site.plan.player_hits)

@@ -73,14 +73,14 @@ describe SitesController do
       end
     end
 
-    describe "GET :usage" do
-      it "should respond with success to " do
-        get :usage, :id => 'a1b2c3', :format => :js
-
-        assigns(:site).should == mock_site
-        response.should be_success
-      end
-    end
+    # describe "GET :usage" do
+    #   it "should respond with success to " do
+    #     get :usage, :id => 'a1b2c3', :format => :js
+    #
+    #     assigns(:site).should == mock_site
+    #     response.should be_success
+    #   end
+    # end
 
     # TODO Remy
     pending "POST :create" do
@@ -141,7 +141,7 @@ describe SitesController do
     end
   end
 
-  verb_and_actions = { :get => [:index, :code, :new, :edit, :state, :usage], :post => :create, :put => :update, :delete => :destroy }
+  verb_and_actions = { :get => [:index, :code, :new, :edit, :state], :post => :create, :put => :update, :delete => :destroy }
   it_should_behave_like "redirect when connected as", '/suspended', [[:user, { :suspended? => true }]], verb_and_actions
   it_should_behave_like "redirect when connected as", '/login', [:guest], verb_and_actions
 

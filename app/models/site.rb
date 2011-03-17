@@ -1,5 +1,8 @@
 class Site < ActiveRecord::Base
   extend ActiveSupport::Memoizable
+  require 'site/invoice'
+  require 'site/referrer'
+  require 'site/templates'
 
   DEFAULT_DEV_DOMAINS = '127.0.0.1, localhost'
   PLAYER_MODES = %w[dev beta stable]
@@ -361,4 +364,3 @@ end
 #  index_sites_on_plan_id                                     (plan_id)
 #  index_sites_on_user_id                                     (user_id)
 #
-
