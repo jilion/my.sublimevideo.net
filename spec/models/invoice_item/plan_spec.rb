@@ -11,7 +11,7 @@ describe InvoiceItem::Plan do
     end
 
     describe "with standard params" do
-      subject { InvoiceItem::Plan.build(invoice: @invoice) }
+      subject { InvoiceItem::Plan.build(invoice: @invoice, item: @site.plan) }
 
       its(:item)       { should == @site.plan }
       its(:price)      { should == @site.plan.price }

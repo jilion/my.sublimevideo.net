@@ -7,7 +7,7 @@ class InvoiceItem::Plan < InvoiceItem
   # = Class Methods =
   # =================
 
-  def self.build(attributes = {})
+  def self.build(attributes={})
     new(attributes).build
   end
 
@@ -16,7 +16,6 @@ class InvoiceItem::Plan < InvoiceItem
   # ====================
 
   def build
-    self.item ||= site.plan
     set_started_at_and_ended_at
     set_price_and_amount
     self
