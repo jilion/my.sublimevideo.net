@@ -20,7 +20,7 @@ module SitesHelper
     p_trunc_length = (site.hostname.length < h_trunc_length) ? (h_trunc_length - site.hostname.length + (length * 1/3)) : (length * 1/3)
     uri = ''
     uri += "<span class='wildcard'>(*.)</span>" if site.wildcard?
-    uri += site.hostname.truncate(h_trunc_length)
+    uri += truncate_middle(site.hostname, :length => h_trunc_length)
     uri += "<span class='path'>/#{site.path.truncate(p_trunc_length)}</span>" if site.path.present?
     uri.html_safe
   end
