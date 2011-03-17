@@ -27,10 +27,32 @@ class SitesController < ApplicationController
   end
 
   # POST /sites
-  # Handle upfront charging + credit card infos storage here?
   def create
-    # @site = current_user.sites.create(params[:site])
     @site = current_user.sites.build(params[:site])
+    @site.d3d_options = {
+      accept_url: sites_url,
+      decline_url: sites_url,
+      exception_url: sites_url,
+      ip: request.try(:remote_ip)
+    }
+
+    respond_with(@user) do |format|
+      if @site.save
+        format.html do
+          if response.nil?
+            render :edit
+
+          elsif response[:state] == "d3d"
+            render :text => response[:message]
+
+          elsif response[:state] == "authorized" && @user.save
+            flash[:notice] = response[:message] if response[:message]
+            redirect_to [:edit, :user_registration]
+          end
+        end
+      end
+    end
+    
     
     if @site.paid_plan? # charge NOW
       # 1/ Create invoice
