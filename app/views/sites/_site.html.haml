@@ -29,7 +29,7 @@
   
   -# TODO: Ifized with real conditions
   -# %td.usage
-  %td.usage{ :class => rand(2) == 1 ? "peaks_insurance" : "required_upgrade" }
+  %td.usage{ :class => td_usage_class(site) }
     = render 'td_usage', site: site
 
   %td.code

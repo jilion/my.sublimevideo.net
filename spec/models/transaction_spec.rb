@@ -396,9 +396,6 @@ def valid_attributes
 end
 
 
-
-
-
 # == Schema Information
 #
 # Table name: transactions

@@ -1,12 +1,12 @@
-= title_and_content_header(truncate_middle(@site.hostname, :length => 40))
+= title_and_content_header(truncate_middle(@site.hostname, :length => 23))
 
 #site.edit
   %ul.segmented_menu
     %li.first= link_to "Settings", edit_site_path(@site), :onclick => "MySublimeVideo.makeSticky(this, '.segmented_menu')"
     %li.active= link_to "Change plan", edit_site_plan_path(@site), :onclick => "MySublimeVideo.makeSticky(this, '.segmented_menu')"
     %li.last= link_to "Invoices", site_invoices_path(@site), :onclick => "MySublimeVideo.makeSticky(this, '.segmented_menu')"
-  
-  - unless @site.in_beta_plan?
+
+  - if @site.errors.empty? && !@site.in_beta_plan?
     #status_box
       - if @site.next_cycle_plan_id?
         .current_status
@@ -28,7 +28,7 @@
         = password_box :resource => @site, :f => f, :cancel_url => edit_site_plan_path(@site)
       = render 'fields', :f => f
       = render 'sites/cc_fields', :f => f, :site => @site
-      
+
       #plan_upgrade_info.update_plan_message_box{ style: "display:none;" }
         %p=raw "New plan: #{content_tag(:strong, "?", class: "plan_title")} - will be directly upgraded and charged (#{content_tag(:span, "?", class: "plan_update_price")}) retro-actively from  #{content_tag(:span, "?", class: "plan_update_date")}."
       #plan_downgrade_info.update_plan_message_box{ style: "display:none;" }

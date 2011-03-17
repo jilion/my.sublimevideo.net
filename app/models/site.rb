@@ -47,9 +47,10 @@ class Site < ActiveRecord::Base
   scope :not_billable,  lambda { where({ :state.ne => 'active' } | ({ :state => 'active' } & ({ :plan_id.in => Plan.where(:name => %w[beta dev]).map(&:id), :next_cycle_plan_id => nil } | { :next_cycle_plan_id => Plan.dev_plan }))) }
   scope :to_be_renewed, lambda { where(:plan_cycle_ended_at.lt => Time.now.utc) }
 
-  # usage_alert scopes
-  scope :plan_player_hits_reached_alerted_this_month,                where(:plan_player_hits_reached_alert_sent_at.gte => Time.now.utc.beginning_of_month)
-  scope :plan_player_hits_reached_not_alerted_this_month,            where({ :plan_player_hits_reached_alert_sent_at.lt => Time.now.utc.beginning_of_month } | { :plan_player_hits_reached_alert_sent_at => nil })
+  scope :in_paid_plan, lambda { joins(:plan).merge(Plan.paid_plans) }
+
+  # usage_monitoring scopes
+  scope :plan_player_hits_reached_notified, where(:plan_player_hits_reached_notification_sent_at.ne => nil)
 
   # filter
   scope :beta,                 lambda { joins(:plan).where(:plan => { :name => "beta" }) }
@@ -197,8 +198,8 @@ class Site < ActiveRecord::Base
       if plan.upgrade?(new_plan)
         # Upgrade
         @plan = nil # clear plan association cache
-        self.pending_plan_id = attribute
-        # write_attribute(:plan_id, attribute)
+        # self.pending_plan_id = attribute
+        write_attribute(:plan_id, attribute)
       elsif plan == new_plan
         # Reset next_cycle_plan
         write_attribute(:next_cycle_plan_id, nil)
@@ -208,17 +209,13 @@ class Site < ActiveRecord::Base
       end
     else
       # Creation
-      self.pending_plan_id = attribute
-      # write_attribute(:plan_id, attribute)
+      # self.pending_plan_id = attribute
+      write_attribute(:plan_id, attribute)
     end
   end
 
   def to_param
     token
-  end
-
-  def plan_player_hits_reached_alerted_this_month?
-    (Time.now.utc.beginning_of_month..Time.now.utc.end_of_month).cover?(plan_player_hits_reached_alert_sent_at)
   end
 
   def need_path?
@@ -242,7 +239,6 @@ class Site < ActiveRecord::Base
       su.main_player_hits + su.main_player_hits_cached + su.extra_player_hits + su.extra_player_hits_cached
     end
   end
-  memoize :current_billable_usage
 
   def current_percentage_of_plan_used
     if plan.player_hits > 0
@@ -266,6 +262,10 @@ class Site < ActiveRecord::Base
     else
       (plan_cycle_started_at + (months_since(plan_cycle_started_at) + 1).months - 1.day).end_of_day
     end
+  end
+  
+  def percent_of_days_over_daily_limit(last_days = 90)
+    
   end
 
 private
@@ -306,7 +306,7 @@ private
 
   # before_save
   def clear_alerts_sent_at
-    self.plan_player_hits_reached_alert_sent_at = nil if plan_id_changed?
+    self.plan_player_hits_reached_notification_sent_at = nil if plan_id_changed?
   end
 
   # after_create
@@ -326,33 +326,36 @@ end
 #
 # Table name: sites
 #
-#  id                                         :integer         not null, primary key
-#  user_id                                    :integer
-#  hostname                                   :string(255)
-#  dev_hostnames                              :string(255)
-#  token                                      :string(255)
-#  license                                    :string(255)
-#  loader                                     :string(255)
-#  state                                      :string(255)
-#  archived_at                                :datetime
-#  created_at                                 :datetime
-#  updated_at                                 :datetime
-#  player_mode                                :string(255)     default("stable")
-#  google_rank                                :integer
-#  alexa_rank                                 :integer
-#  path                                       :string(255)
-#  wildcard                                   :boolean
-#  extra_hostnames                            :string(255)
-#  plan_id                                    :integer
-#  cdn_up_to_date                             :boolean
-#  plan_started_at                            :datetime
-#  plan_cycle_started_at                      :datetime
-#  plan_cycle_ended_at                        :datetime
-#  next_cycle_plan_id                         :integer
-#  plan_player_hits_reached_alert_sent_at     :datetime
-#  last_30_days_main_player_hits_total_count  :integer         default(0)
-#  last_30_days_extra_player_hits_total_count :integer         default(0)
-#  last_30_days_dev_player_hits_total_count   :integer         default(0)
+#  id                                            :integer         not null, primary key
+#  user_id                                       :integer
+#  hostname                                      :string(255)
+#  dev_hostnames                                 :string(255)
+#  token                                         :string(255)
+#  license                                       :string(255)
+#  loader                                        :string(255)
+#  state                                         :string(255)
+#  archived_at                                   :datetime
+#  created_at                                    :datetime
+#  updated_at                                    :datetime
+#  player_mode                                   :string(255)     default("stable")
+#  google_rank                                   :integer
+#  alexa_rank                                    :integer
+#  path                                          :string(255)
+#  wildcard                                      :boolean
+#  extra_hostnames                               :string(255)
+#  plan_id                                       :integer
+#  pending_plan_id                               :integer
+#  next_cycle_plan_id                            :integer
+#  cdn_up_to_date                                :boolean
+#  first_paid_plan_started_at                    :datetime
+#  plan_started_at                               :datetime
+#  plan_cycle_started_at                         :datetime
+#  plan_cycle_ended_at                           :datetime
+#  plan_player_hits_reached_notification_sent_at :datetime
+#  first_plan_upgrade_required_alert_sent_at     :datetime
+#  last_30_days_main_player_hits_total_count     :integer         default(0)
+#  last_30_days_extra_player_hits_total_count    :integer         default(0)
+#  last_30_days_dev_player_hits_total_count      :integer         default(0)
 #
 # Indexes
 #
@@ -364,3 +367,4 @@ end
 #  index_sites_on_plan_id                                     (plan_id)
 #  index_sites_on_user_id                                     (user_id)
 #
+

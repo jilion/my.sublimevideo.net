@@ -147,7 +147,7 @@ ActiveRecord::Schema.define(:version => 20110223160948) do
     t.datetime "archived_at"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "player_mode",                                :default => "stable"
+    t.string   "player_mode",                                   :default => "stable"
     t.integer  "google_rank"
     t.integer  "alexa_rank"
     t.string   "path"
@@ -161,10 +161,11 @@ ActiveRecord::Schema.define(:version => 20110223160948) do
     t.datetime "plan_started_at"
     t.datetime "plan_cycle_started_at"
     t.datetime "plan_cycle_ended_at"
-    t.datetime "plan_player_hits_reached_alert_sent_at"
-    t.integer  "last_30_days_main_player_hits_total_count",  :default => 0
-    t.integer  "last_30_days_extra_player_hits_total_count", :default => 0
-    t.integer  "last_30_days_dev_player_hits_total_count",   :default => 0
+    t.datetime "plan_player_hits_reached_notification_sent_at"
+    t.datetime "first_plan_upgrade_required_alert_sent_at"
+    t.integer  "last_30_days_main_player_hits_total_count",     :default => 0
+    t.integer  "last_30_days_extra_player_hits_total_count",    :default => 0
+    t.integer  "last_30_days_dev_player_hits_total_count",      :default => 0
   end
 
   add_index "sites", ["created_at"], :name => "index_sites_on_created_at"
