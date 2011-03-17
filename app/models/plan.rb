@@ -89,6 +89,10 @@ class Plan < ActiveRecord::Base
   def title
     name.titleize + (cycle == 'year' ? ' (yearly)' : '')
   end
+  
+  def daily_player_hits
+    player_hits / 30
+  end
 
 end
 

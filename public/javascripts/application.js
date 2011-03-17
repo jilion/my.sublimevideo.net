@@ -72,9 +72,10 @@ document.observe("dom:loaded", function() {
 
   // Reproduce checkbox behavior for radio buttons for plans selection
   if ($('plans')) {
+    var planUpgradeInfoDiv = $('plan_upgrade_info');
     $$('#plans input[type=radio]').each(function(element){
       element.on('click', function(event){
-        MySublimeVideo.showPlanUpdateInfo(element);
+        if (planUpgradeInfoDiv) MySublimeVideo.showPlanUpdateInfo(element);
         var select_box = element.up('.select_box');
         $$('#plans ul .select_box').invoke('removeClassName','active');
         if (select_box) select_box.addClassName('active');
@@ -507,7 +508,7 @@ var SitesPoller = Class.create({
     this.checkForSiteInProgress();
   },
   checkForSiteInProgress: function() {
-    var siteInProgress = $$('#sites span.icon.in_progress').first();
+    var siteInProgress = $$('#sites .in_progress').first();
     if (siteInProgress) {
       this.currentSiteId = parseInt(siteInProgress.up('tr').id.replace("site_", ''), 10);
       this.startPolling();
@@ -535,12 +536,9 @@ var SitesPoller = Class.create({
     // Stop polling
     this.stopPolling();
 
-    // Remove "in progress" span
-    var inProgressWrap = $$("#site_"+siteId+" span.icon.in_progress").first();
+    // Remove the "cdn updating in progress..." test
+    var inProgressWrap = $$("#site_"+siteId+" .in_progress").first();
     if (inProgressWrap) inProgressWrap.remove();
-    // Show "ok" span
-    var okWrap = $$("#site_"+siteId+" span.icon.ok").first();
-    if (okWrap) okWrap.show();
 
     // Check if a restart polling is needed
     this.checkForSiteInProgress();

@@ -9,7 +9,8 @@ class ModifySites < ActiveRecord::Migration
     add_column :sites, :plan_started_at, :datetime
     add_column :sites, :plan_cycle_started_at, :datetime
     add_column :sites, :plan_cycle_ended_at, :datetime
-    add_column :sites, :plan_player_hits_reached_alert_sent_at, :datetime
+    add_column :sites, :plan_player_hits_reached_notification_sent_at, :datetime
+    add_column :sites, :first_plan_upgrade_required_alert_sent_at, :datetime
 
     add_column :sites, :last_30_days_main_player_hits_total_count, :integer, :default => 0
     add_column :sites, :last_30_days_extra_player_hits_total_count, :integer, :default => 0
@@ -48,7 +49,8 @@ class ModifySites < ActiveRecord::Migration
     remove_column :sites, :plan_started_at
     remove_column :sites, :plan_cycle_started_at
     remove_column :sites, :plan_cycle_ended_at
-    remove_column :sites, :plan_player_hits_reached_alert_sent_at
+    remove_column :sites, :plan_player_hits_reached_notification_sent_at
+    remove_column :sites, :first_plan_upgrade_required_alert_sent_at
 
     remove_index :sites, :last_30_days_dev_player_hits_total_count
     remove_index :sites, :last_30_days_extra_player_hits_total_count

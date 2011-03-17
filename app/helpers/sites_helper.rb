@@ -46,5 +46,13 @@ module SitesHelper
   def conditions_for_show_dev_hostnames_div(site)
     site.dev_hostnames? && site.dev_hostnames != Site::DEFAULT_DEV_DOMAINS
   end
+  
+  def td_usage_class(site)
+    if site.plan_player_hits_reached_notification_sent_at?
+      "peaks_insurance"
+    elsif site.first_plan_upgrade_required_alert_sent_at?
+      "required_upgrade"
+    end
+  end
 
 end

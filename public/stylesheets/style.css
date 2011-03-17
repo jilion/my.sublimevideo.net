@@ -1511,6 +1511,10 @@ input.link_looks.delete {
 /* = Site (New) = */
 /* ============== */
 
+#plans {
+  position:relative;
+}
+
 #plans ul {
   width:100%;
   list-style-type:none;
@@ -1536,7 +1540,6 @@ input.link_looks.delete {
 }
 
 #plans li, #plans li * {
-  cursor:pointer;
   -webkit-user-select: none;
   -khtml-user-select: none;
   -moz-user-select: none;
@@ -1590,6 +1593,10 @@ input.link_looks.delete {
   -moz-transition:background 0.15s;
   -webkit-transition:background 0.15s;
   transition:background 0.15s;
+}
+
+#plans .select_box * {
+  cursor:pointer;
 }
 
 #plans .select_box:hover {
@@ -1720,6 +1727,21 @@ input.link_looks.delete {
   position:absolute;
 }
 
+#need_more {
+  position:absolute;
+  width:240px;
+  bottom:7px;
+  right:0;
+  text-align:right;
+  color:#666D7A;
+}
+
+#need_more a {
+  font-weight:600;
+  border-bottom:1px solid #7f858f;
+  color:#373b42;
+}
+
 #site h3.headline {
   display:block;
   font-size:36px;
@@ -1787,19 +1809,6 @@ ul#addons .checkbox_wrap label span {
 ul#addons .checkbox_wrap input:checked + label {background-position:0 -34px;}
 ul#addons .checkbox_wrap input:focus + label {background-position:0 -68px;}
 ul#addons .checkbox_wrap input:focus:checked + label {background-position:0 -102px;}
-
-.no_plan {
-  padding:15px 0 0;
-  width:320px;
-  text-align:right;
-  float:right;
-  font-size:12px;
-}
-
-.no_plan a {
-  font-weight:600;
-  border-bottom:1px solid #7f858f;
-}
 
 .break_line {
   clear:both;
@@ -2020,8 +2029,80 @@ ul.segmented_menu li.last a {
   border-radius: 0 8px 8px 0;
 }
 
+#status_box {
+  background:#9ea5b2;
+  background:rgba(98,106,124,0.3);
+  padding:13px;
+  margin:15px 0 0;
+  font-size:16px;
+  text-shadow:rgba(255,255,255,0.5) 0 1px 0;
+  -moz-border-radius:8px;
+  -webkit-border-radius:8px;
+  border-radius:8px;
+  -moz-box-shadow: inset rgba(0,0,0,0.4) 0 1px 5px, rgba(255,255,255,0.3) 0 1px 0;
+  -webkit-box-shadow: inset rgba(0,0,0,0.4) 0 1px 5px, rgba(255,255,255,0.3) 0 1px 0;
+  box-shadow: inset rgba(0,0,0,0.4) 0 1px 5px, rgba(255,255,255,0.3) 0 1px 0;
+}
+
+#status_box .next_cycle_plan {
+  background:#9098a6;
+  background:rgba(98,106,124,0.3);
+  margin:15px 0 0;
+  padding:10px;
+  position:relative;
+  -moz-border-radius:5px;
+  -webkit-border-radius:5px;
+  border-radius:5px;
+  -moz-box-shadow:inset rgba(0,0,0,0.4) 0 1px 3px, rgba(255,255,255,0.2) 0 1px 0;
+  -webkit-box-shadow:inset rgba(0,0,0,0.4) 0 1px 3px, rgba(255,255,255,0.2) 0 1px 0;
+  box-shadow:inset rgba(0,0,0,0.4) 0 1px 3px, rgba(255,255,255,0.2) 0 1px 0;
+}
+
+#status_box .next_cycle_plan .cancel_button {
+  position:absolute;
+  right:7px;
+  top:7px;
+  height:25px;
+  font-size:14px;
+  background:#8d96a5;
+  background:-webkit-gradient(linear,left top,left bottom,from(rgba(183,197,218,0.3)),to(rgba(81,89,104,0.3)));
+  background:-moz-linear-gradient(top, rgba(183,197,218,0.3), rgba(81,89,104,0.3));
+  -moz-border-radius:5px;
+  -webkit-border-radius:5px;
+  border-radius:5px;
+  -webkit-background-clip:padding-box;
+}
+
+#status_box .next_cycle_plan .cancel_button:active {
+  background:#7d828c;
+  background:-webkit-gradient(linear,left top,left bottom,from(rgba(81,89,104,0.5)),to(rgba(118,127,141,0.25)));
+  background:-moz-linear-gradient(top, rgba(81,89,104,0.5), rgba(118,127,141,0.25));
+}
+
+#status_box strong {
+  font-weight:600;
+}
+
 #site .section_box {
   margin:20px 0 0;
+}
+
+#site .update_plan_message_box {
+  margin:20px 0;
+  padding:10px 13px;
+  font-weight:600;
+  color:#6e5c33;
+  text-shadow:rgba(255,255,255,0.9) 0 1px 0;
+  background:#ffebbe;
+  background:-webkit-gradient(linear,left top,left bottom,from(#fff1d1),to(#ffe9b4));
+  background:-moz-linear-gradient(top, #fff1d1, #ffe9b4);
+  -moz-border-radius:4px;
+  -webkit-border-radius:4px;
+  border-radius:4px;
+  -webkit-box-shadow:rgba(0,0,0,0.35) 0 1px 5px;
+  -webkit-box-shadow:rgba(0,0,0,0.35) 0 1px 5px, inset 0 1px 1px rgba(255,255,255,0.95);
+  -moz-box-shadow:rgba(0,0,0,0.35) 0 1px 5px, inset 0 1px 1px rgba(255,255,255,0.95);
+  box-shadow:rgba(0,0,0,0.35) 0 1px 5px, inset 0 1px 1px rgba(255,255,255,0.95);
 }
 
 #site.edit .entry.delete input.delete_site {

@@ -51,3 +51,6 @@
         "data-plan_update_price" => "FREE",                                                                                          |
         "data-plan_update_date" => site.plan_cycle_ended_at && l(site.plan_cycle_ended_at.tomorrow.midnight, :format => :named_date) |
       %span.bg
+  
+  #need_more
+    %p= raw "Need more pageviews, custom support, or more. Please #{mail_to "enterprise@sublimevideo.net", "contact us"}."

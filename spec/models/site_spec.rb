@@ -71,6 +71,10 @@ describe Site do
       specify { Site.not_billable.all.should == [@site_not_billable_1, @site_not_billable_2, @site_not_billable_3, @site_not_billable_4, @site_with_path] }
     end
 
+    describe "#in_paid_plan" do
+      specify { Site.in_paid_plan.all.should =~ [@site_billable_1, @site_billable_2, @site_not_billable_3, @site_not_billable_4, @site_with_extra_hostnames] }
+    end
+
     describe "#to_be_renewed" do
       before(:each) do
         Timecop.travel(2.months.ago) do
@@ -642,28 +646,13 @@ describe Site do
       subject { Factory(:site, plan: @paid_plan) }
 
       pending "should clear *_alert_sent_at dates" do
-        subject.touch(:plan_player_hits_reached_alert_sent_at)
-        subject.plan_player_hits_reached_alert_sent_at.should be_present
+        subject.touch(:plan_player_hits_reached_notification_sent_at)
+        subject.plan_player_hits_reached_notification_sent_at.should be_present
         subject.plan = @dev_plan
         subject.save
-        subject.plan_player_hits_reached_alert_sent_at.should be_nil
+        subject.plan_player_hits_reached_notification_sent_at.should be_nil
       end
 
-    end
-
-    pending "#plan_player_hits_reached_alerted_this_month?" do
-      it "should return true when plan_player_hits_reached_alert_sent_at happened durring the current month" do
-        site = Factory.build(:site, plan_player_hits_reached_alert_sent_at: Time.now.utc)
-        site.should be_plan_player_hits_reached_alerted_this_month
-      end
-      it "should return false when plan_player_hits_reached_alert_sent_at happened durring the last month" do
-        site = Factory.build(:site, plan_player_hits_reached_alert_sent_at: Time.now.utc - 1.month)
-        site.should_not be_plan_player_hits_reached_alerted_this_month
-      end
-      it "should return false when plan_player_hits_reached_alert_sent_at is nil" do
-        site = Factory.build(:site, plan_player_hits_reached_alert_sent_at: nil)
-        site.should_not be_plan_player_hits_reached_alerted_this_month
-      end
     end
 
     describe "#need_path?" do
@@ -738,7 +727,6 @@ describe Site do
 
       context "with monthly plan" do
         before(:all) do
-          @site.unmemoize_all
           @site.plan.cycle            = "month"
           @site.plan.player_hits      = 100
           @site.plan_cycle_started_at = Time.utc(2011,3,20)
@@ -752,7 +740,6 @@ describe Site do
 
       context "with monthly plan and overage" do
         before(:all) do
-          @site.unmemoize_all
           @site.plan.cycle            = "month"
           @site.plan.player_hits      = 10
           @site.plan_cycle_started_at = Time.utc(2011,3,20)
@@ -766,7 +753,6 @@ describe Site do
 
       context "with yearly plan" do
         before(:all) do
-          @site.unmemoize_all
           @site.plan.cycle            = "year"
           @site.plan.player_hits      = 100
           @site.plan_cycle_started_at = Time.utc(2011,1,20)
@@ -783,7 +769,6 @@ describe Site do
 
       context "with yearly plan (other date)" do
         before(:all) do
-          @site.unmemoize_all
           @site.plan.cycle            = "year"
           @site.plan.player_hits      = 100
           @site.plan_cycle_started_at = Time.utc(2011,1,20)
@@ -860,33 +845,36 @@ end
 #
 # Table name: sites
 #
-#  id                                         :integer         not null, primary key
-#  user_id                                    :integer
-#  hostname                                   :string(255)
-#  dev_hostnames                              :string(255)
-#  token                                      :string(255)
-#  license                                    :string(255)
-#  loader                                     :string(255)
-#  state                                      :string(255)
-#  archived_at                                :datetime
-#  created_at                                 :datetime
-#  updated_at                                 :datetime
-#  player_mode                                :string(255)     default("stable")
-#  google_rank                                :integer
-#  alexa_rank                                 :integer
-#  path                                       :string(255)
-#  wildcard                                   :boolean
-#  extra_hostnames                            :string(255)
-#  plan_id                                    :integer
-#  cdn_up_to_date                             :boolean
-#  plan_started_at                            :datetime
-#  plan_cycle_started_at                      :datetime
-#  plan_cycle_ended_at                        :datetime
-#  next_cycle_plan_id                         :integer
-#  plan_player_hits_reached_alert_sent_at     :datetime
-#  last_30_days_main_player_hits_total_count  :integer         default(0)
-#  last_30_days_extra_player_hits_total_count :integer         default(0)
-#  last_30_days_dev_player_hits_total_count   :integer         default(0)
+#  id                                            :integer         not null, primary key
+#  user_id                                       :integer
+#  hostname                                      :string(255)
+#  dev_hostnames                                 :string(255)
+#  token                                         :string(255)
+#  license                                       :string(255)
+#  loader                                        :string(255)
+#  state                                         :string(255)
+#  archived_at                                   :datetime
+#  created_at                                    :datetime
+#  updated_at                                    :datetime
+#  player_mode                                   :string(255)     default("stable")
+#  google_rank                                   :integer
+#  alexa_rank                                    :integer
+#  path                                          :string(255)
+#  wildcard                                      :boolean
+#  extra_hostnames                               :string(255)
+#  plan_id                                       :integer
+#  pending_plan_id                               :integer
+#  next_cycle_plan_id                            :integer
+#  cdn_up_to_date                                :boolean
+#  first_paid_plan_started_at                    :datetime
+#  plan_started_at                               :datetime
+#  plan_cycle_started_at                         :datetime
+#  plan_cycle_ended_at                           :datetime
+#  plan_player_hits_reached_notification_sent_at :datetime
+#  first_plan_upgrade_required_alert_sent_at     :datetime
+#  last_30_days_main_player_hits_total_count     :integer         default(0)
+#  last_30_days_extra_player_hits_total_count    :integer         default(0)
+#  last_30_days_dev_player_hits_total_count      :integer         default(0)
 #
 # Indexes
 #
