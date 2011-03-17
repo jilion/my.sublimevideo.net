@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110314141207) do
+ActiveRecord::Schema.define(:version => 20110223160948) do
 
   create_table "admins", :force => true do |t|
     t.string   "email",                               :default => "", :null => false
@@ -154,11 +154,13 @@ ActiveRecord::Schema.define(:version => 20110314141207) do
     t.boolean  "wildcard"
     t.string   "extra_hostnames"
     t.integer  "plan_id"
+    t.integer  "pending_plan_id"
+    t.integer  "next_cycle_plan_id"
     t.boolean  "cdn_up_to_date"
+    t.datetime "first_paid_plan_started_at"
     t.datetime "plan_started_at"
     t.datetime "plan_cycle_started_at"
     t.datetime "plan_cycle_ended_at"
-    t.integer  "next_cycle_plan_id"
     t.datetime "plan_player_hits_reached_alert_sent_at"
     t.integer  "last_30_days_main_player_hits_total_count",  :default => 0
     t.integer  "last_30_days_extra_player_hits_total_count", :default => 0
@@ -180,6 +182,11 @@ ActiveRecord::Schema.define(:version => 20110314141207) do
     t.date     "cc_expire_on"
     t.string   "state"
     t.integer  "amount"
+    t.string   "pay_id"
+    t.string   "acceptance"
+    t.string   "status"
+    t.string   "eci"
+    t.string   "error_code"
     t.text     "error"
     t.datetime "created_at"
     t.datetime "updated_at"

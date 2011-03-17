@@ -1,4 +1,4 @@
-class CreateInvoices < ActiveRecord::Migration
+class CreateInvoicesAndInvoiceItems < ActiveRecord::Migration
   def self.up
     create_table :invoices do |t|
       t.integer  :site_id
@@ -21,12 +21,31 @@ class CreateInvoices < ActiveRecord::Migration
       t.datetime :paid_at
       t.datetime :failed_at
     end
-
     add_index :invoices, :site_id
+
+    create_table :invoice_items do |t|
+      t.string   :type
+      t.integer  :invoice_id
+
+      t.string   :item_type
+      t.integer  :item_id
+
+      t.datetime  :started_at
+      t.datetime  :ended_at
+
+      t.integer   :price
+      t.integer   :amount
+
+      t.text     :info # serialized
+
+      t.timestamps
+    end
+    add_index :invoice_items, :invoice_id
+    add_index :invoice_items, [:item_type, :item_id]
   end
 
   def self.down
-    remove_index :invoices, :site_id
+    drop_table :invoice_items
     drop_table :invoices
   end
 end

@@ -7,7 +7,7 @@ class CreateVersions < ActiveRecord::Migration
       t.string   :whodunnit
       t.text     :object
       t.datetime :created_at
-      
+
       # custom info fields
       t.string   :admin_id
       t.string   :ip
@@ -17,7 +17,6 @@ class CreateVersions < ActiveRecord::Migration
   end
 
   def self.down
-    remove_index :versions, [:item_type, :item_id]
     drop_table :versions
   end
 end

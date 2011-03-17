@@ -398,6 +398,7 @@ end
 
 
 
+
 # == Schema Information
 #
 # Table name: transactions
@@ -409,6 +410,11 @@ end
 #  cc_expire_on   :date
 #  state          :string(255)
 #  amount         :integer
+#  pay_id         :string(255)
+#  acceptance     :string(255)
+#  status         :string(255)
+#  eci            :string(255)
+#  error_code     :string(255)
 #  error          :text
 #  created_at     :datetime
 #  updated_at     :datetime

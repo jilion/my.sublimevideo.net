@@ -8,12 +8,10 @@ class CreatePlans < ActiveRecord::Migration
 
       t.timestamps
     end
-
     add_index :plans, [:name, :cycle], :unique => true
   end
 
   def self.down
-    remove_index :plans, :name
     drop_table :plans
   end
 end
