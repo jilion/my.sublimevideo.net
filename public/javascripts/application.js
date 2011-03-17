@@ -507,7 +507,7 @@ var SitesPoller = Class.create({
     this.checkForSiteInProgress();
   },
   checkForSiteInProgress: function() {
-    var siteInProgress = $$('#sites .in_progress').first();
+    var siteInProgress = $$('#sites span.icon.in_progress').first();
     if (siteInProgress) {
       this.currentSiteId = parseInt(siteInProgress.up('tr').id.replace("site_", ''), 10);
       this.startPolling();
@@ -535,9 +535,12 @@ var SitesPoller = Class.create({
     // Stop polling
     this.stopPolling();
 
-    // Remove the "cdn updating in progress..." test
-    var inProgressWrap = $$("#site_"+siteId+" .in_progress").first();
+    // Remove "in progress" span
+    var inProgressWrap = $$("#site_"+siteId+" span.icon.in_progress").first();
     if (inProgressWrap) inProgressWrap.remove();
+    // Show "ok" span
+    var okWrap = $$("#site_"+siteId+" span.icon.ok").first();
+    if (okWrap) okWrap.show();
 
     // Check if a restart polling is needed
     this.checkForSiteInProgress();

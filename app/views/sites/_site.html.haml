@@ -41,6 +41,9 @@
         %span.icon.in_progress
         = info_box do
           %p= "Your player is being deployed..."
+        %span.icon.ok{ style: "display:none;" }
+        = info_box do
+          %p= "Everything runs smoothly, it's ok!"
       - else
         %span.icon.ok
         = info_box do

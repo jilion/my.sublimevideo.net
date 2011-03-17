@@ -2,5 +2,5 @@
 <% if @site.cdn_up_to_date? %>
   MySublimeVideo.sitesPoller.updateSite(<%= @site.id %>);
 <% else %>
-MySublimeVideo.sitesPoller.startPolling();
+  MySublimeVideo.sitesPoller.startPolling();
 <% end %>
