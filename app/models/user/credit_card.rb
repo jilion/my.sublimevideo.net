@@ -94,7 +94,11 @@ module User::CreditCard
   # before_save
   def keep_some_credit_card_info(params={})
     if credit_card_attributes_present? || params.present?
-      self.cc_type        = params["BRAND"] ? params["BRAND"].downcase : credit_card.type
+      self.cc_type = if params["BRAND"]
+        params["BRAND"] =~ /mastercard/i ? 'master' : params["BRAND"].downcase
+      else
+        credit_card.type
+      end
       self.cc_last_digits = params["CARDNO"] ? params["CARDNO"][-4,4] : credit_card.last_digits
       self.cc_expire_on   = Time.new("20#{params["ED"][2,2]}", params["ED"][0,2]) if params["ED"]
       self.cc_updated_at  = Time.now.utc

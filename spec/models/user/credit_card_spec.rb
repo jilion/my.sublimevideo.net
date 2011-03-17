@@ -185,6 +185,30 @@ describe User::CreditCard do
       end
     end
 
+    describe "#keep_some_credit_card_info" do
+      context "by passing Ogone callback params with visa card" do
+        before(:each) do
+          user.keep_some_credit_card_info({ "BRAND" => "VISA", "CARDNO" => "XXXXXXXXXXXX1234", "ED" => "0212" })
+        end
+        subject { user }
+
+        its(:cc_type)        { should == "visa" }
+        its(:cc_last_digits) { should == "1234" }
+        its(:cc_expire_on)   { should == Time.utc(2012, 02).end_of_month.to_date }
+      end
+      
+      context "by passing Ogone callback params with mastercard card" do
+        before(:each) do
+          user.keep_some_credit_card_info({ "BRAND" => "MasterCard", "CARDNO" => "XXXXXXXXXXXX1234", "ED" => "0212" })
+        end
+        subject { user }
+
+        its(:cc_type)        { should == "master" }
+        its(:cc_last_digits) { should == "1234" }
+        its(:cc_expire_on)   { should == Time.utc(2012, 02).end_of_month.to_date }
+      end
+    end
+
     describe "#check_credit_card" do
       context "valid authorization" do
         use_vcr_cassette "ogone/void_authorization"
