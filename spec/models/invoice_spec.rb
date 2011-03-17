@@ -242,33 +242,65 @@ describe Invoice do
       end
 
       describe "with a site upgraded" do
-        before(:all) do
-          @user       = Factory(:user, country: 'FR')
-          @site       = Factory(:site, user: @user, plan: @paid_plan).reload
-          @paid_plan2 = Factory(:plan, cycle: "month", price: 3000)
-          # Simulate upgrade
-          @site.plan_id = @paid_plan2.id
-          @site.instance_variable_set(:@instant_charging, true)
+        context "from a paid plan" do
+          before(:all) do
+            @user       = Factory(:user, country: 'FR')
+            @site       = Factory(:site, user: @user, plan: @paid_plan).reload
+            @paid_plan2 = Factory(:plan, cycle: "month", price: 3000)
+            # Simulate upgrade
+            @site.plan_id = @paid_plan2.id
+            # @site.instance_variable_set(:@instant_charging, true)
 
-          @invoice = Invoice.build(site: @site)
+            @invoice = Invoice.build(site: @site)
+          end
+          subject { @invoice }
+
+          specify { subject.invoice_items.size.should == 2 }
+          specify { subject.invoice_items.all? { |ii| ii.site == @site }.should be_true }
+          specify { subject.invoice_items.all? { |ii| ii.invoice == subject }.should be_true }
+          specify { subject.invoice_items.first.item.should == @paid_plan }
+          specify { subject.invoice_items.first.price.should == -1000 }
+          specify { subject.invoice_items.second.item.should == @paid_plan2 }
+          specify { subject.invoice_items.second.price.should == 3000 }
+
+          its(:invoice_items_amount) { should == 2000 } # paid_plan2.price - paid_plan.price
+          its(:vat_rate)             { should == 0.0 }
+          its(:vat_amount)           { should == 0 }
+          its(:amount)               { should == 2000 } # paid_plan2.price - paid_plan.price
+          its(:paid_at)              { should be_nil }
+          its(:failed_at)            { should be_nil }
+          it { should be_open }
         end
-        subject { @invoice }
+        
+        %w[dev beta].each do |plan|
+          context "from a #{plan} plan" do
+            before(:all) do
+              @user      = Factory(:user, country: 'FR')
+              @site      = Factory(:site, user: @user, plan: instance_variable_get("@#{plan}_plan")).reload
+              @paid_plan = Factory(:plan, cycle: "month", price: 3000)
+              # Simulate upgrade
+              @site.plan_id = @paid_plan.id
+              # @site.instance_variable_set(:@instant_charging, true)
 
-        specify { subject.invoice_items.size.should == 2 }
-        specify { subject.invoice_items.all? { |ii| ii.site == @site }.should be_true }
-        specify { subject.invoice_items.all? { |ii| ii.invoice == subject }.should be_true }
-        specify { subject.invoice_items.first.item.should == @paid_plan }
-        specify { subject.invoice_items.first.price.should == -1000 }
-        specify { subject.invoice_items.second.item.should == @paid_plan2 }
-        specify { subject.invoice_items.second.price.should == 3000 }
+              @invoice = Invoice.build(site: @site)
+            end
+            subject { @invoice }
 
-        its(:invoice_items_amount) { should == 2000 } # paid_plan2.price - paid_plan.price
-        its(:vat_rate)             { should == 0.0 }
-        its(:vat_amount)           { should == 0 }
-        its(:amount)               { should == 2000 } # paid_plan2.price - paid_plan.price
-        its(:paid_at)              { should be_nil }
-        its(:failed_at)            { should be_nil }
-        it { should be_open }
+            specify { subject.invoice_items.size.should == 1 }
+            specify { subject.invoice_items.all? { |ii| ii.site == @site }.should be_true }
+            specify { subject.invoice_items.all? { |ii| ii.invoice == subject }.should be_true }
+            specify { subject.invoice_items.first.item.should == @paid_plan }
+            specify { subject.invoice_items.first.price.should == 3000 }
+
+            its(:invoice_items_amount) { should == 3000 } # paid_plan.price
+            its(:vat_rate)             { should == 0.0 }
+            its(:vat_amount)           { should == 0 }
+            its(:amount)               { should == 3000 } # paid_plan.price
+            its(:paid_at)              { should be_nil }
+            its(:failed_at)            { should be_nil }
+            it { should be_open }
+          end
+        end
       end
 
       describe "with a Swiss user" do
@@ -307,7 +339,6 @@ describe Invoice do
   end # Class Methods
 
 end
-
 
 
 
