@@ -1248,8 +1248,8 @@ input.link_looks.delete {
 
 #content table.main td.site .plan {
   position:absolute;
-  top:-13px;
-  right:-8px;
+  top:-15px;
+  right:-9px;
   font-size:12px;
   font-weight:600;
   text-transform:uppercase;
@@ -1262,8 +1262,8 @@ input.link_looks.delete {
 
 #content table.main td.site .cycle {
   position:absolute;
-  bottom:-13px;
-  right:-8px;
+  bottom:-15px;
+  right:-9px;
   font-size:12px;
   color:#6a7486;
   background:url(/images/embed/sites/cycle_icon.png) no-repeat 0 1px;
