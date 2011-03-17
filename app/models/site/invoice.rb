@@ -43,7 +43,7 @@ module Site::Invoice
 
   def in_or_was_in_paid_plan?
     (new_record? && in_paid_plan?) ||
-    (plan_id_changed? && plan_id_was && !Plan.find(plan_id_was).dev_plan?) ||
+    (plan_id_changed? && plan_id_was && Plan.find(plan_id_was).paid_plan?) ||
     (!plan_id_changed? && in_paid_plan?)
   end
 
