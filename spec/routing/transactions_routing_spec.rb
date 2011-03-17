@@ -2,7 +2,6 @@ require 'spec_helper'
 
 describe TransactionsController do
 
-  it { should route(:post, "transaction/ok").to(:action => :ok) }
-  it { should route(:post, "transaction/ko").to(:action => :ko) }
+  it { should route(:post, "transaction/callback").to(:action => :ok) }
 
 end

@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe TransactionsController do
 
-  describe "#ok" do
+  describe "#callback" do
 
     context "with a non-tempered request" do
 
@@ -23,7 +23,7 @@ describe TransactionsController do
             mock_user.should_receive(:process_cc_authorization_response).with(@sha_params, "1234;RES").and_return({ state: "authorized" })
             mock_user.should_receive(:save) { true }
 
-            post :ok, @params.merge(@sha_params)
+            post :callback, @params.merge(@sha_params)
             flash[:notice].should be_present
             flash[:alert].should be_nil
             response.should redirect_to(edit_user_registration_url)
@@ -35,7 +35,7 @@ describe TransactionsController do
             User.stub(:find).with(1).and_return(mock_user)
             mock_user.should_receive(:process_cc_authorization_response).with(@sha_params, "1234;RES").and_return({ state: "refused", message: "Foo bar" })
 
-            post :ok, @params.merge(@sha_params)
+            post :callback, @params.merge(@sha_params)
             flash[:notice].should be_nil
             flash[:alert].should == "Foo bar"
           end
@@ -56,16 +56,12 @@ describe TransactionsController do
       end
 
       it "should void authorization" do
-        post :ok, @params.merge(@sha_params)
+        post :callback, @params.merge(@sha_params)
 
         response.body.should == "Tampered request!"
         response.status.should == 400
       end
     end
-
-  end
-
-  describe "#ko" do
 
   end
 

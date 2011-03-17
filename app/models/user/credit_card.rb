@@ -116,7 +116,7 @@ module User::CreditCard
     process_cc_authorization_response(authorize.params, authorize.authorization)
   end
 
-  # Called from User::CreditCard#check_credit_card and from TransactionsController#ok/TransactionsController#ko
+  # Called from User::CreditCard#check_credit_card and from TransactionsController#callback
   def process_cc_authorization_response(authorize_params, authorize_authorization)
     response = {}
     case authorize_params["STATUS"]
@@ -163,7 +163,7 @@ private
   end
   memoize :credit_card
 
-  # Called from User::CreditCard#process_cc_authorization_response and TransactionsController#ok/TransactionsController#ko
+  # Called from User::CreditCard#process_cc_authorization_response and TransactionsController#callback
   def void_authorization(authorization)
     void = Ogone.void(authorization)
     Notify.send("Credit card void for user #{self.id} failed: #{void.message}") unless void.success?

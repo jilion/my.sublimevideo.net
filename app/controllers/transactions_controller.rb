@@ -14,18 +14,8 @@ class TransactionsController < ApplicationController
   # As a callback called by Ogone when a transaction succeed
   # In both cases, the transaction parameters are passed along.
   #
-  # POST /transaction/ok
-  def ok
-    if operation_was?(:cc_authorization)
-      process_cc_authorization
-
-    elsif operation_was?(:payment)
-
-    end
-  end
-
-  # POST /transaction/ko
-  def ko
+  # POST /transaction/callback
+  def callback
     if operation_was?(:cc_authorization)
       process_cc_authorization
 
