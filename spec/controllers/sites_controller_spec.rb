@@ -73,14 +73,14 @@ describe SitesController do
       end
     end
 
-    describe "GET :usage" do
-      it "should respond with success to " do
-        get :usage, :id => 'a1b2c3', :format => :js
-
-        assigns(:site).should == mock_site
-        response.should be_success
-      end
-    end
+    # describe "GET :usage" do
+    #   it "should respond with success to " do
+    #     get :usage, :id => 'a1b2c3', :format => :js
+    #
+    #     assigns(:site).should == mock_site
+    #     response.should be_success
+    #   end
+    # end
 
     # TODO Remy
     pending "POST :create" do

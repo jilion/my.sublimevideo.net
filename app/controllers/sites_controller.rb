@@ -88,13 +88,13 @@ class SitesController < ApplicationController
     end
   end
 
-  # GET /sites/:id/usage
-  def usage
-    respond_with(@site) do |format|
-      format.js
-      format.html { redirect_to :sites }
-    end
-  end
+  # # GET /sites/:id/usage
+  # def usage
+  #   respond_with(@site) do |format|
+  #     format.js
+  #     format.html { redirect_to :sites }
+  #   end
+  # end
 
 private
 
