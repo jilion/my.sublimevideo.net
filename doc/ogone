@@ -1,0 +1,82 @@
+Configuration:
+
+
+Global transaction parameters:
+  Default operation code: Authorisation
+  Default data capture (payment) procedure: Data capture by the merchant (manual or automatic).
+  Payment retry: 10
+  Processing for individual transactions: Always online (Immediate).
+  Default ECI value: 7 - E-commerce with SSL encryption
+
+
+Global security parameters:
+  Hashing method:
+    Compose the string to be hashed by concatenating the value of: Each parameter followed by the pass phrase. (Please refer to our documentation for further details)
+    Hash algorithm: SHA-512
+    Character encoding: ISO-8859-1
+
+
+Payment Page layout:
+  Cancel button:
+    Hide the "Cancel" button on the Ogone secure payment pages: TRUE
+
+  Back button redirection:
+    URL of the web page to display to the customer when he clicks the “back” button on our secure payment page: ""
+
+
+Data and origin verification:
+  Checks for e-Commerce:
+    URL of the merchant page containing the payment form that will call the page:orderstandard.asp: https://my.sublimevideo.net
+    SHA-IN Pass phrase: A STRONG PASS PHRASE
+  Checks for Ogone DirectLink and Ogone Batch (Automatic)
+    IP address of the server calling the APIs used for any automatic or direct processing: "" (we don't have a static IP)
+    SHA-IN Pass phrase: A STRONG PASS PHRASE
+
+
+Transaction feedback:
+  e-Commerce:
+    HTTP redirection in the browser:
+      Accepturl: ""
+      Declineurl: ""
+      Exceptionurl: ""
+      Cancelurl: ""
+      I want to receive transaction feedback parameters on the redirection URLs: FALSE
+      I want Ogone to display a short text to the customer on the secure payment page if a redirection to my website is detected immediately after the payment process: FALSE
+
+    Direct HTTP server-to-server request:
+      Timing of the request: Always online
+      URL of the merchant's post-payment page:
+        If the payment's status is "accepted", "on hold" or "uncertain": https://my.sublimevideo.net/transaction/callback
+        If the payment's status is "cancelled by the client" or "too many rejections by the acquirer": https://my.sublimevideo.net/transaction/callback
+      Request method: POST
+
+    Dynamic e-Commerce Parameters: All except AAVADDRESS, AAVZIP and BIN
+
+  General:
+    I want Ogone to display a "processing" message to the customer during payment processing: TRUE
+    I want Ogone to re-launch the "end of transaction" (post-payment request/redirection) process if required: FALSE
+
+  All transaction submission modes:
+    Security for request parameters:
+      SHA-OUT Pass phrase: A STRONG PASS PHRASE
+
+    HTTP request for status changes:
+      Timing of the request: No request.
+      URL on which the merchant wishes to get a deferred HTTP request, should the status of a transaction change offline: ""
+
+  Directlink:
+    Dynamic Parameters: All except AAVADDRESS and AAVZIP
+
+
+Transaction e-mails:
+  E-mails to the merchant:
+    E-mail address(es) for transaction-related e-mails: zeno@jilion.com ?
+    Receive transaction confirmation e-mails: No
+    Receive e-mails in case of offline transaction status changes: No
+
+  E-mails to the customer:
+    I want Ogone to send a transaction confirmation e-mail to the customer: FALSE
+
+
+Test Info:
+  I want to simulate transaction results based on the card number: TRUE
