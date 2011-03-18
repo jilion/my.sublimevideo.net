@@ -282,7 +282,7 @@ var PasswordCheckerManager = Class.create({
         action:"/password/validate",
         "data-remote":"true"
       }).update(
-      "<p class='desc'>Your password is needed to perform this action:</p>"+
+      "<p class='desc'>Your current password is needed to perform this action:</p>"+
       "<div class='entry password'>" +
       "<label for='password_check' class='icon'>Password</label>" +
       "<input type='password' id='password_check' name='password' placeholder='Your current password' class='text' />" +
