@@ -16,9 +16,9 @@ module Site::UsageMonitoring
 
     Site.active.in_paid_plan.where(:first_plan_upgrade_required_alert_sent_at => nil).each do |site|
       if site.current_billable_usage > site.plan.player_hits
-        if site.percent_of_days_over_daily_limit(90) > 0.5
+        if site.days_since(site.first_paid_plan_started_at) >= 20 && site.percentage_of_days_over_daily_limit(90) > 0.5
           site.touch(:first_plan_upgrade_required_alert_sent_at)
-          # mail will be sent with the daily alert (see below)
+          # "plan upgrade required" alert will be sent with the daily alert (see below)
         elsif site.plan_player_hits_reached_notification_sent_at.nil?
           site.touch(:plan_player_hits_reached_notification_sent_at)
           UsageMonitoringMailer.plan_player_hits_reached(site).deliver!

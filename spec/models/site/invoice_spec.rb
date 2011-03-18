@@ -391,13 +391,13 @@ describe Site::Invoice do
     context "with plan_started_at 2011,1,1" do
       before(:all) { @site.plan_started_at = Time.utc(2011,1,1) }
 
-      specify { Timecop.travel(Time.utc(2011,1,1)) { @site.months_since(nil).should == 0 } }
-      specify { Timecop.travel(Time.utc(2011,1,1)) { @site.months_since(@site.plan_started_at).should == 0 } }
+      specify { Timecop.travel(Time.utc(2011,1,1))  { @site.months_since(nil).should == 0 } }
+      specify { Timecop.travel(Time.utc(2011,1,1))  { @site.months_since(@site.plan_started_at).should == 0 } }
       specify { Timecop.travel(Time.utc(2011,1,31)) { @site.months_since(@site.plan_started_at).should == 0 } }
-      specify { Timecop.travel(Time.utc(2011,2,1)) { @site.months_since(@site.plan_started_at).should == 1 } }
+      specify { Timecop.travel(Time.utc(2011,2,1))  { @site.months_since(@site.plan_started_at).should == 1 } }
       specify { Timecop.travel(Time.utc(2011,2,15)) { @site.months_since(@site.plan_started_at).should == 1 } }
       specify { Timecop.travel(Time.utc(2011,2,28)) { @site.months_since(@site.plan_started_at).should == 1 } }
-      specify { Timecop.travel(Time.utc(2012,1,1)) { @site.months_since(@site.plan_started_at).should == 12 } }
+      specify { Timecop.travel(Time.utc(2012,1,1))  { @site.months_since(@site.plan_started_at).should == 12 } }
       specify { Timecop.travel(Time.utc(2013,1,15)) { @site.months_since(@site.plan_started_at).should == 24 } }
     end
 
@@ -414,6 +414,24 @@ describe Site::Invoice do
       specify { Timecop.travel(Time.utc(2012,6,15)) { @site.months_since(@site.plan_started_at).should == 12 } }
       specify { Timecop.travel(Time.utc(2012,6,20)) { @site.months_since(@site.plan_started_at).should == 12 } }
       specify { Timecop.travel(Time.utc(2012,6,25)) { @site.months_since(@site.plan_started_at).should == 12 } }
+    end
+  end
+
+  describe "#days_since" do
+    before(:all) { @site = Factory.build(:site) }
+
+    context "with first_paid_plan_started_at 2011,1,1" do
+      before(:all) { @site.first_paid_plan_started_at = Time.utc(2011,1,1) }
+
+      specify { Timecop.travel(Time.utc(2011,1,1))  { @site.days_since(nil).should == 0 } }
+      specify { Timecop.travel(Time.utc(2011,1,1))  { @site.days_since(@site.first_paid_plan_started_at).should == 0 } }
+      specify { Timecop.travel(Time.utc(2011,1,31)) { @site.days_since(@site.first_paid_plan_started_at).should == 30 } }
+      specify { Timecop.travel(Time.utc(2011,2,1))  { @site.days_since(@site.first_paid_plan_started_at).should == 31 } }
+      specify { Timecop.travel(Time.utc(2011,2,28)) { @site.days_since(@site.first_paid_plan_started_at).should == 58 } }
+      specify { Timecop.travel(Time.utc(2011,3,1))  { @site.days_since(@site.first_paid_plan_started_at).should == 59 } }
+      specify { Timecop.travel(Time.utc(2012,3,1))  { @site.days_since(@site.first_paid_plan_started_at).should == 425 } }
+      specify { Timecop.travel(Time.utc(2012,1,1))  { @site.days_since(@site.first_paid_plan_started_at).should == 365 } }
+      specify { Timecop.travel(Time.utc(2013,1,1))  { @site.days_since(@site.first_paid_plan_started_at).should == 731 } }
     end
   end
 

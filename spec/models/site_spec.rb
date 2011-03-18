@@ -727,6 +727,7 @@ describe Site do
 
       context "with monthly plan" do
         before(:all) do
+          @site.unmemoize_all
           @site.plan.cycle            = "month"
           @site.plan.player_hits      = 100
           @site.plan_cycle_started_at = Time.utc(2011,3,20)
@@ -740,6 +741,7 @@ describe Site do
 
       context "with monthly plan and overage" do
         before(:all) do
+          @site.unmemoize_all
           @site.plan.cycle            = "month"
           @site.plan.player_hits      = 10
           @site.plan_cycle_started_at = Time.utc(2011,3,20)
@@ -753,6 +755,7 @@ describe Site do
 
       context "with yearly plan" do
         before(:all) do
+          @site.unmemoize_all
           @site.plan.cycle            = "year"
           @site.plan.player_hits      = 100
           @site.plan_cycle_started_at = Time.utc(2011,1,20)
@@ -769,6 +772,7 @@ describe Site do
 
       context "with yearly plan (other date)" do
         before(:all) do
+          @site.unmemoize_all
           @site.plan.cycle            = "year"
           @site.plan.player_hits      = 100
           @site.plan_cycle_started_at = Time.utc(2011,1,20)
@@ -834,6 +838,80 @@ describe Site do
         its(:plan_month_cycle_ended_at)   { should == Time.utc(2012,2,27).end_of_day }
 
         after(:all) { Timecop.return }
+      end
+    end
+
+    describe "#percentage_of_days_over_daily_limit(90)" do
+
+      context "with dev_plan" do
+        subject { Factory(:site, plan: @dev_plan) }
+
+        its(:percentage_of_days_over_daily_limit) { should == 0 }
+      end
+
+      context "with paid plan" do
+        before(:all) do
+          @site = Factory(:site)
+          @site.plan.player_hits           = 30 * 300
+          @site.first_paid_plan_started_at = Time.utc(2011,1,1)
+        end
+
+        describe "with 1 historic day and 1 over limit" do
+          before(:each) do
+            Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,1,1),
+              main_player_hits:  100, main_player_hits_cached:  100,
+              extra_player_hits: 100, extra_player_hits_cached: 100,
+              dev_player_hits:   100, dev_player_hits_cached:   100
+            )
+            Timecop.travel(Time.utc(2011,1,2))
+          end
+          subject { @site }
+
+          its(:percentage_of_days_over_daily_limit) { should == 1.0 }
+
+          after(:each) { Timecop.return }
+        end
+
+        describe "with 2 historic days and 1 over limit" do
+          before(:each) do
+            Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,1,1), main_player_hits: 400)
+            Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,1,2), main_player_hits: 300)
+            Timecop.travel(Time.utc(2011,1,3))
+          end
+          subject { @site }
+
+          its(:percentage_of_days_over_daily_limit) { should == 0.5 }
+
+          after(:each) { Timecop.return }
+        end
+
+        describe "with 5 historic days and 2 over limit" do
+          before(:each) do
+            Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,1,1), main_player_hits: 400)
+            Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,1,2), main_player_hits: 300)
+            Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,1,3), main_player_hits: 500)
+            Timecop.travel(Time.utc(2011,1,6))
+          end
+          subject { @site }
+
+          its(:percentage_of_days_over_daily_limit) { should == 2 / 5.0 }
+
+          after(:each) { Timecop.return }
+        end
+
+        describe "with >90 historic days and 2 over limit" do
+          before(:each) do
+            Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,1,1), main_player_hits: 400)
+            Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,2,1), main_player_hits: 500)
+            Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,3,1), main_player_hits: 500)
+            Timecop.travel(Time.utc(2011,5,1))
+          end
+          subject { @site }
+
+          its(:percentage_of_days_over_daily_limit) { should == (2 / 90.0).round(2) }
+
+          after(:each) { Timecop.return }
+        end
       end
     end
 

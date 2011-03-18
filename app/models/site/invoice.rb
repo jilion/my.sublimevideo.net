@@ -87,6 +87,10 @@ module Site::Invoice
     end
   end
 
+  def days_since(time)
+    time ? ((Time.now.utc.midnight.to_i - time.midnight.to_i) / 1.day) : 0
+  end
+
 private
 
   # ====================

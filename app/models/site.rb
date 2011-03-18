@@ -235,13 +235,12 @@ class Site < ActiveRecord::Base
   end
 
   def current_billable_usage
-    usages.between(plan_month_cycle_started_at, plan_month_cycle_ended_at).to_a.sum do |su|
-      su.main_player_hits + su.main_player_hits_cached + su.extra_player_hits + su.extra_player_hits_cached
-    end
+    usages.between(plan_month_cycle_started_at, plan_month_cycle_ended_at).to_a.sum { |su| su.billable_player_hits }
   end
+  memoize :current_billable_usage
 
   def current_percentage_of_plan_used
-    if plan.player_hits > 0
+    if in_paid_plan?
       [(current_billable_usage / plan.player_hits.to_f).round(2), 1].min
     else
       0
@@ -263,9 +262,16 @@ class Site < ActiveRecord::Base
       (plan_cycle_started_at + (months_since(plan_cycle_started_at) + 1).months - 1.day).end_of_day
     end
   end
-  
-  def percent_of_days_over_daily_limit(last_days = 90)
-    
+
+  def percentage_of_days_over_daily_limit(max_days = 90)
+    if in_paid_plan?
+      last_days       = [days_since(first_paid_plan_started_at), max_days].min
+      over_limit_days = usages.between(last_days.days.ago.utc.midnight, Time.now.utc.midnight).to_a.count { |su| su.billable_player_hits > (plan.player_hits / 30.0) }
+
+      [(over_limit_days / last_days.to_f).round(2), 1].min
+    else
+      0
+    end
   end
 
 private

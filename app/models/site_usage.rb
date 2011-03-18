@@ -61,6 +61,14 @@ class SiteUsage
       end
     end
   end
+  
+  # ====================
+  # = Instance Methods =
+  # ====================
+
+  def billable_player_hits
+    main_player_hits + main_player_hits_cached + extra_player_hits + extra_player_hits_cached
+  end
 
 private
 
