@@ -132,14 +132,14 @@ MySublimeVideo.showPlanUpdateInfo = function(radioButton) {
   delayedDowngradeInfoDiv = $('plan_delayed_downgrade_info'),
   delayedChangeInfoDiv = $('plan_delayed_change_info'),
   delayedDowngradeTo_dev_info = $('plan_delayed_downgrade_to_dev_info');
-  
+
   upgradeInfoDiv.hide();
   upgradeFromDevInfoDiv.hide();
   delayedUpgradeInfoDiv.hide();
   delayedDowngradeInfoDiv.hide();
   delayedChangeInfoDiv.hide();
   delayedDowngradeTo_dev_info.hide();
-  
+
   switch (radioButton.readAttribute('data-plan_change_type')) {
     case "upgrade":
       MySublimeVideo.updatePlanInfo_(upgradeInfoDiv, radioButton);
@@ -284,15 +284,23 @@ var PasswordCheckerManager = Class.create({
     if (this.popup) {
       this.popup.removeClassName("loading");
 
+      var passwordState = this.originForm.readAttribute("data-password-state");
+      if (passwordState) {
+        passwordState = ' ' + passwordState;
+      }
+      else {
+        passwordState = ''
+      }
+
       var passwordCheckerForm = new Element("form", {
         id:"password_checker",
         action:"/password/validate",
         "data-remote":"true"
       }).update(
-      "<p class='desc'>Your current password is needed to perform this action:</p>"+
+      "<p class='desc'>Your" + passwordState + " password is needed to perform this action:</p>"+
       "<div class='entry password'>" +
-      "<label for='password_check' class='icon'>Password</label>" +
-      "<input type='password' id='password_check' name='password' placeholder='Your current password' class='text' />" +
+      "<label for='password_check' class='icon'>" + passwordState + " Password</label>" +
+      "<input type='password' id='password_check' name='password' placeholder='Your" + passwordState + " password' class='text' />" +
       "<div class='actions'><input type='submit' class='small_button' value='Done' /></div>" +
       "<div class='spacer'></div>" +
       "</div>");

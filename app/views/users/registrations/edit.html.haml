@@ -4,7 +4,7 @@
   = render 'users/form'
   .spacer
 
-  = form_for @user, :url => users_path, :html => { :method => :put, :class => "main_form", :id => "edit_credentials", "data-password-protected" => true } do |f|
+  = form_for @user, :url => users_path, :html => { :method => :put, :class => "main_form", :id => "edit_credentials", "data-password-protected" => true, "data-password-state" => 'current' } do |f|
     - if params[:action] == 'update' && @user.errors[:current_password].present?
       = password_box :resource => @user, :f => f, :cancel_url => edit_user_registration_path, :password_state => "current"
 

@@ -1,7 +1,9 @@
 %h3
-  Embed code for
-  %strong= hostname_with_path_and_wildcard(@site, :truncate => 40)
-  -#truncate_middle(@site.hostname, :length => 18)
+  - if @site.hostname?
+    Embed code for
+    %strong= truncate_middle(@site.hostname, :length => 40)
+  - else
+    Embed code
 %p.desc= "Copy the code below, and paste it into the pages on #{truncate_middle(@site.hostname)} where the SublimeVideo player will be used. We advise to put it into the <code>&lt;head&gt;</code> tag.".html_safe
 %form
   .embed_code

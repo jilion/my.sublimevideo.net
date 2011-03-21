@@ -13,40 +13,38 @@
       %br
       = "This field is optional for the Free Sandbox plan."
       -#= "You can leave this field empty if you selected the Free Sandbox plan."
-
-    -#- unless site.persisted?
-    -#  %a.button{ :href => "", :onclick => "$('site_setup_settings').toggle(); this.toggleClassName('up'); return false", :class => display_text_if("up", conditions_for_show_settings(site)) }= "Settings"
     .spacer
   .break_line
-  #site_setup_settings.settings{ :style => display_none_if(conditions_for_show_settings(site) || site.persisted?) }
-    .left
+  - if site.persisted?
+    #site_setup_settings.settings
+      .left
+        - unless site.in_dev_plan?
+          %h4.title= "Extra and development domains"
+          %a.add{ :href => "", :onclick => "$('site_setup_extra_hostnames').toggle(); this.toggleClassName('up'); return false", :class => display_text_if("up", site.extra_hostnames?) }= "Add staging or alias domains"
+          .entry.site#site_setup_extra_hostnames{ :style => display_block_if_or_none_otherwise(site.extra_hostnames?) }
+            = f.label :extra_hostnames, "", :class => "icon"
+            = f.text_field :extra_hostnames, :class => "text", :placeholder => "yourdomain.ch", :autocomplete => :off
+            %p.info= "Add extra domains separated by commas. Extra domains are meant to be used exclusively for staging domains and alias domains (multiple domain names for the same content)."
+        %a.add{ :href => "", :onclick => "$('site_setup_dev_hostnames').toggle(); this.toggleClassName('up'); return false", :class => display_text_if("up", conditions_for_show_dev_hostnames_div(site)) }= "Add development domains"
+        .entry.site#site_setup_dev_hostnames{ :style => display_block_if_or_none_otherwise(conditions_for_show_dev_hostnames_div(site)) }
+          = f.label :dev_hostnames, "", :class => "icon"
+          = f.text_field :dev_hostnames, :class => "text", :placeholder => "127.0.0.1, localhost", :autocomplete => :off
+          %p.info= "Add (local only) development domains separated by commas."
       - unless site.in_dev_plan?
-        %h4.title= "Extra and development domains"
-        %a.add{ :href => "", :onclick => "$('site_setup_extra_hostnames').toggle(); this.toggleClassName('up'); return false", :class => display_text_if("up", site.extra_hostnames?) }= "Add staging or alias domains"
-        .entry.site#site_setup_extra_hostnames{ :style => display_block_if_or_none_otherwise(site.extra_hostnames?) }
-          = f.label :extra_hostnames, "", :class => "icon"
-          = f.text_field :extra_hostnames, :class => "text", :placeholder => "yourdomain.ch", :autocomplete => :off
-          %p.info= "Add extra domains separated by commas. Extra domains are meant to be used exclusively for staging domains and alias domains (multiple domain names for the same content)."
-      %a.add{ :href => "", :onclick => "$('site_setup_dev_hostnames').toggle(); this.toggleClassName('up'); return false", :class => display_text_if("up", conditions_for_show_dev_hostnames_div(site)) }= "Add development domains"
-      .entry.site#site_setup_dev_hostnames{ :style => display_block_if_or_none_otherwise(conditions_for_show_dev_hostnames_div(site)) }
-        = f.label :dev_hostnames, "", :class => "icon"
-        = f.text_field :dev_hostnames, :class => "text", :placeholder => "127.0.0.1, localhost", :autocomplete => :off
-        %p.info= "Add (local only) development domains separated by commas."
-    - unless site.in_dev_plan?
-      .right
-        %h4.title= "Advanced settings"
-        %p.label_info= "Restrict your player to a specific path"
-        .entry.path
-          %p
-            = f.label :path, "", :class => "icon"
-            = f.text_field :path, :class => "text small_icon", :placeholder => "path", :autocomplete => :off
-          %p.info= "Path will also be added to extra domains (not to development domains)."
-        .entry.wildcard
-          .checkbox_wrap
-            = f.check_box :wildcard
-            = f.label :wildcard, "Wildcard (*.yourdomain.com)"
-          %p.info= "It will be also added to extra and dev domains."
-    .spacer
-    - if site.in_dev_plan?
-      %p= "More settings like alias and staging domains, custom path and wildcard option, are available on paying plans."
-    .break_line
+        .right
+          %h4.title= "Advanced settings"
+          %p.label_info= "Restrict your player to a specific path"
+          .entry.path
+            %p
+              = f.label :path, "", :class => "icon"
+              = f.text_field :path, :class => "text small_icon", :placeholder => "path", :autocomplete => :off
+            %p.info= "Path will also be added to extra domains (not to development domains)."
+          .entry.wildcard
+            .checkbox_wrap
+              = f.check_box :wildcard
+              = f.label :wildcard, "Wildcard (*.yourdomain.com)"
+            %p.info= "It will be also added to extra and dev domains."
+      .spacer
+      - if site.in_dev_plan?
+        %p= "More settings like alias and staging domains, custom path and wildcard option, are available on paying plans."
+      .break_line
