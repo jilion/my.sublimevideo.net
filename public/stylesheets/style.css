@@ -1702,7 +1702,7 @@ input.link_looks.delete {
 #dev_plan {
   position:relative;
   height:40px;
-  margin:25px 0 0 0;
+  margin:35px 0 20px 0;
 }
 
 #dev_plan .radio_wrap {
@@ -1710,7 +1710,7 @@ input.link_looks.delete {
   top:0;
   left:0;
   bottom:auto;
-  width:520px;
+  width:300px;
 }
 
 #dev_plan .radio_wrap label {
@@ -1729,7 +1729,7 @@ input.link_looks.delete {
 
 #need_more {
   position:absolute;
-  width:240px;
+  width:340px;
   bottom:7px;
   right:0;
   text-align:right;
@@ -1819,6 +1819,7 @@ ul#addons .checkbox_wrap input:focus:checked + label {background-position:0 -102
 
 #site_setup {
   position:relative;
+  margin-bottom:30px;
 }
 
 #site_setup .entry.site .left {
@@ -1856,15 +1857,15 @@ ul#addons .checkbox_wrap input:focus:checked + label {background-position:0 -102
 
 #site_setup .settings .left {
   width:440px;
-  margin:0 22px 0 0;
-  padding:0 25px 0 0;
   float:left;
-  background:url(/images/embed/sites/small_horizontal_breakline.png) no-repeat 100% 0;
 }
 
 #site_setup .settings .right {
   width:370px;
   float:left;
+  margin:0 0 0 22px;
+  padding:0 0 0 25px;
+  background:url(/images/embed/sites/small_horizontal_breakline.png) no-repeat 0 0;
 }
 
 #site_setup .settings h4.title {
@@ -2029,7 +2030,7 @@ ul.segmented_menu li.last a {
   border-radius: 0 8px 8px 0;
 }
 
-#status_box {
+#next_cycle_plan_box {
   background:#9ea5b2;
   background:rgba(98,106,124,0.3);
   padding:13px;
@@ -2044,7 +2045,7 @@ ul.segmented_menu li.last a {
   box-shadow: inset rgba(0,0,0,0.4) 0 1px 5px, rgba(255,255,255,0.3) 0 1px 0;
 }
 
-#status_box .next_cycle_plan {
+#next_cycle_plan_box {
   background:#9098a6;
   background:rgba(98,106,124,0.3);
   margin:15px 0 0;
@@ -2058,7 +2059,7 @@ ul.segmented_menu li.last a {
   box-shadow:inset rgba(0,0,0,0.4) 0 1px 3px, rgba(255,255,255,0.2) 0 1px 0;
 }
 
-#status_box .next_cycle_plan .cancel_button {
+#next_cycle_plan_box .cancel_button {
   position:absolute;
   right:7px;
   top:7px;
@@ -2073,13 +2074,13 @@ ul.segmented_menu li.last a {
   -webkit-background-clip:padding-box;
 }
 
-#status_box .next_cycle_plan .cancel_button:active {
+#next_cycle_plan_box .cancel_button:active {
   background:#7d828c;
   background:-webkit-gradient(linear,left top,left bottom,from(rgba(81,89,104,0.5)),to(rgba(118,127,141,0.25)));
   background:-moz-linear-gradient(top, rgba(81,89,104,0.5), rgba(118,127,141,0.25));
 }
 
-#status_box strong {
+#next_cycle_plan_box strong {
   font-weight:600;
 }
 

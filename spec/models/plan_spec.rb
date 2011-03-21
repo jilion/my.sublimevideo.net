@@ -127,6 +127,17 @@ describe Plan do
     it { @paid_plan_yearly2.upgrade?(@paid_plan_yearly2).should be_nil }
   end
 
+  describe "#title", focus: true do
+
+    specify { @dev_plan.title.should == "Free Sandbox" }
+    specify { @dev_plan.title(always_with_cycle: true).should == "Free Sandbox" }
+    specify { Factory(:plan, cycle: "month", name: "comet").title.should == "Comet" }
+    specify { Factory(:plan, cycle: "year", name: "comet").title.should == "Comet (yearly)" }
+    specify { Factory(:plan, cycle: "month", name: "comet").title(always_with_cycle: true).should == "Comet (monthly)" }
+    specify { Factory(:plan, cycle: "year", name: "comet").title(always_with_cycle: true).should == "Comet (yearly)" }
+
+  end
+
 end
 
 
