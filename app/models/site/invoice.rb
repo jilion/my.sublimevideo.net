@@ -6,13 +6,13 @@ module Site::Invoice
 
   module ClassMethods
     # Recurring task
-    def delay_renew_active_sites
-      unless Delayed::Job.already_delayed?('%Site%renew_active_sites%')
-        delay(:priority => 3, :run_at => Time.now.utc.tomorrow.midnight).renew_active_sites
+    def delay_renew_active_sites!
+      unless Delayed::Job.already_delayed?('%Site%renew_active_sites!%')
+        delay(:priority => 3, :run_at => Time.now.utc.tomorrow.midnight).renew_active_sites!
       end
     end
 
-    def renew_active_sites
+    def renew_active_sites!
       Site.active.to_be_renewed.each do |site|
         site.update_cycle_plan
         site.save!

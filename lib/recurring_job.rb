@@ -12,7 +12,7 @@ module RecurringJob
   ]
 
   billing_tasks = [
-    '%Site%renew_active_sites%',
+    '%Site%renew_active_sites!%',
     '%Transaction%charge_all_open_and_failed_invoices%'
   ]
 
@@ -29,7 +29,7 @@ module RecurringJob
       Log.delay_fetch_and_create_new_logs
 
       # Billing
-      Site.delay_renew_active_sites
+      Site.delay_renew_active_sites!
       Transaction.delay_charge_all_open_and_failed_invoices
 
       # Stats
