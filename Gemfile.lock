@@ -24,7 +24,7 @@ GIT
 
 GIT
   remote: git://github.com/rymai/active_merchant.git
-  revision: dd708ec8261d3ffa03e1de8725ee7582563e0c05
+  revision: 0ee2432be0a5dcee4980bd62a297785107901488
   branch: 3ds_from_ZenCocoon
   specs:
     activemerchant (1.12.0)
@@ -149,10 +149,10 @@ GEM
       rake (>= 0.8.7)
     file-tail (1.0.5)
       spruz (>= 0.1.0)
-    fog (0.6.0)
+    fog (0.7.0)
       builder
       excon (>= 0.5.5)
-      formatador (>= 0.0.16)
+      formatador (>= 0.1.1)
       json
       mime-types
       net-ssh (>= 2.0.23)
@@ -176,7 +176,7 @@ GEM
     guard-spork (0.1.5)
       guard (>= 0.2.2)
       spork (>= 0.8.4)
-    haml (3.0.24)
+    haml (3.0.25)
     hashie (0.4.0)
     heroku (1.18.3)
       launchy (~> 0.3.2)
@@ -351,7 +351,7 @@ DEPENDENCIES
   devise_invitable!
   factory_girl_rails
   ffaker
-  fog (= 0.6.0)
+  fog (= 0.7.0)
   growl
   guard
   guard-bundler
@@ -359,7 +359,7 @@ DEPENDENCIES
   guard-passenger
   guard-rspec
   guard-spork
-  haml (= 3.0.24)
+  haml (= 3.0.25)
   has_scope!
   heroku
   heroku_tasks
