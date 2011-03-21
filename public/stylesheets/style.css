@@ -1828,7 +1828,7 @@ ul#addons .checkbox_wrap input:focus:checked + label {background-position:0 -102
 
 #site_setup .entry.site p.desc {
   float:left;
-  width:270px;
+  width:400px;
   font-size:13px;
   color:#666d7a;
   line-height:16px;

@@ -8,9 +8,14 @@
     .left
       = f.label :hostname, "", :class => "icon"
       = f.text_field :hostname, :class => "text", :placeholder => "yourdomain.com", :autocomplete => :off
-    %p.desc= "Add your main domain or leave it empty if you just want to use it in development for now."
-    - unless site.persisted?
-      %a.button{ :href => "", :onclick => "$('site_setup_settings').toggle(); this.toggleClassName('up'); return false", :class => display_text_if("up", conditions_for_show_settings(site)) }= "Settings"
+    %p.desc
+      = "Add your domain or subdomain."
+      %br
+      = "This field is optional for the Free Sandbox plan."
+      -#= "You can leave this field empty if you selected the Free Sandbox plan."
+
+    -#- unless site.persisted?
+    -#  %a.button{ :href => "", :onclick => "$('site_setup_settings').toggle(); this.toggleClassName('up'); return false", :class => display_text_if("up", conditions_for_show_settings(site)) }= "Settings"
     .spacer
   .break_line
   #site_setup_settings.settings{ :style => display_none_if(conditions_for_show_settings(site) || site.persisted?) }
@@ -36,11 +41,12 @@
             = f.label :path, "", :class => "icon"
             = f.text_field :path, :class => "text small_icon", :placeholder => "path", :autocomplete => :off
           %p.info= "Path will also be added to extra domains (not to development domains)."
-      
         .entry.wildcard
           .checkbox_wrap
             = f.check_box :wildcard
             = f.label :wildcard, "Wildcard (*.yourdomain.com)"
           %p.info= "It will be also added to extra and dev domains."
     .spacer
+    - if site.in_dev_plan?
+      %p= "More settings like alias and staging domains, custom path and wildcard option, are available on paying plans."
     .break_line
