@@ -13,126 +13,71 @@ describe Site::UsageMonitoring do
     end
   end
 
-  pending "Module Methods" do
+  describe ".monitor_sites_usages" do
+    before(:all) { @plan = Factory(:plan, player_hits: 30 * 100) }
 
-    describe ".monitor_sites_usages" do
-      before(:all) do
-        @plan1 = Factory(:plan, :cycle => "month", :player_hits => 3000, :price => 5)
-        @plan2 = Factory(:plan, :cycle => "month", :player_hits => 9000, :price => 10)
-      end
+    it "should do nothing" do
+      Timecop.travel(Time.utc(2011,1,1)) { @site = Factory(:site, plan: @plan) }
 
-      context "with site's usage not more than plan's limit" do
-        before(:each) do
-          Factory(:site_usage, { :main_player_hits => 1500, :site_id => @site.id , :day => Time.now.utc.beginning_of_month })
-          Factory(:site_usage, { :extra_player_hits => 1300, :site_id => @site.id , :day => Time.now.utc.beginning_of_month })
-        end
+      UsageMonitoringMailer.should_not_receive(:plan_player_hits_reached)
+      UsageMonitoringMailer.should_not_receive(:plan_upgrade_required)
+      Site::UsageMonitoring.monitor_sites_usages
+      @site.reload
+      @site.plan_player_hits_reached_notification_sent_at.should be_nil
+      @site.first_plan_upgrade_required_alert_sent_at.should be_nil
+    end
 
-        context "with no last usage limit alert ever sent" do
-          before(:all) { @site = Factory(:site, :plan => @plan1, :activated_at => 2.months.ago, :plan_player_hits_reached_notification_sent_at => nil) }
-          subject { @site }
-
-          specify { lambda { Site::UsageMonitoring.monitor_sites_usages }.should_not change(ActionMailer::Base.deliveries, :size) }
-        end
-
-        context "with last usage limit alert sent before this month" do
-          before(:all) { @site = Factory(:site, :plan => @plan1, :activated_at => 2.months.ago, :plan_player_hits_reached_notification_sent_at => 1.month.ago) }
-          subject { @site }
-
-          specify { lambda { Site::UsageMonitoring.monitor_sites_usages }.should_not change(ActionMailer::Base.deliveries, :size) }
-        end
-
-        context "with last usage limit alert already sent during the month" do
-          before(:all) { @site = Factory(:site, :plan => @plan1, :activated_at => 2.months.ago, :plan_player_hits_reached_notification_sent_at => Time.now.utc.beginning_of_month) }
-          subject { @site }
-
-          specify { lambda { Site::UsageMonitoring.monitor_sites_usages }.should_not change(ActionMailer::Base.deliveries, :size) }
+    context "with required upgrade site" do
+      before(:each) do
+        Timecop.travel(Time.utc(2011,1,1)) { @site = Factory(:site, plan: @plan) }
+        (1..20).each do |day|
+          Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,1,day), main_player_hits: 200)
         end
       end
 
-      context "with site's usage more than plan's limit but less than next plan price" do
-        before(:each) do
-          Factory(:site_usage, { :main_player_hits => 1600, :site_id => @site.id , :day => Time.now.utc.beginning_of_month })
-          Factory(:site_usage, { :extra_player_hits => 1600, :site_id => @site.id , :day => Time.now.utc.beginning_of_month })
-        end
-
-        context "with no last usage limit alert ever sent" do
-          before(:all) { @site = Factory(:site, :plan => @plan1, :activated_at => 2.months.ago, :plan_player_hits_reached_notification_sent_at => nil) }
-          subject { @site }
-
-          specify { lambda { Site::UsageMonitoring.monitor_sites_usages }.should change(ActionMailer::Base.deliveries, :size).by(1) }
-        end
-
-        context "with last usage limit alert sent before this month" do
-          before(:all) do
-            @site = Factory(:site, :plan => @plan1, :activated_at => 2.months.ago)
-            @site.update_attribute(:plan_player_hits_reached_notification_sent_at, 1.month.ago)
-          end
-          subject { @site }
-
-          specify { subject.plan_player_hits_reached_notification_sent_at.should be_within(5).of(1.month.ago) }
-          specify { lambda { Site::UsageMonitoring.monitor_sites_usages }.should change(ActionMailer::Base.deliveries, :size).by(1) }
-        end
-
-        context "with last usage limit alert already sent during the month" do
-          before(:all) do
-            @site = Factory(:site, :plan => @plan1, :activated_at => 2.months.ago)
-            @site.update_attribute(:plan_player_hits_reached_notification_sent_at, Time.now.utc.beginning_of_month)
-          end
-          subject { @site }
-
-          specify { subject.plan_player_hits_reached_notification_sent_at.should be_within(5).of(Time.now.utc.beginning_of_month) }
-          specify { lambda { Site::UsageMonitoring.monitor_sites_usages }.should_not change(ActionMailer::Base.deliveries, :size) }
-        end
+      it "should required upgrade and send alert" do
+        @site.first_plan_upgrade_required_alert_sent_at.should be_nil
+        UsageMonitoringMailer.should_receive(:plan_upgrade_required).with(@site).and_return ( mock(:deliver! => true) )
+        Timecop.travel(Time.utc(2011,1,22)) { Site::UsageMonitoring.monitor_sites_usages }
+        @site.reload.first_plan_upgrade_required_alert_sent_at.should_not be_nil
       end
 
-      context "with site's usage more than plan's limit and more than next plan price" do
-        before(:each) do
-          Factory(:site_usage, { :main_player_hits => 30000, :site_id => @site.id , :day => Time.now.utc.beginning_of_month })
-          Factory(:site_usage, { :extra_player_hits => 30000, :site_id => @site.id , :day => Time.now.utc.beginning_of_month })
-        end
+      it "should just send alert" do
+        @site.touch(:first_plan_upgrade_required_alert_sent_at)
+        first_plan_upgrade_required_alert_sent_at = @site.first_plan_upgrade_required_alert_sent_at
 
-        context "with no plan_player_hits_reached alert ever sent" do
-          before(:all) { @site = Factory(:site, :plan => @plan1, :activated_at => 2.months.ago, :plan_player_hits_reached_notification_sent_at => nil) }
-          subject { @site }
-
-          specify { lambda { Site::UsageMonitoring.monitor_sites_usages }.should change(ActionMailer::Base.deliveries, :size).by(2) }
-        end
-
-        context "with plan_player_hits_reached alert sent before this month" do
-          before(:all) do
-            @site = Factory(:site, :plan => @plan1, :activated_at => 2.months.ago)
-            @site.update_attribute(:plan_player_hits_reached_notification_sent_at, 1.month.ago)
-          end
-          subject { @site }
-
-          specify { subject.plan_player_hits_reached_notification_sent_at.should be_within(5).of(1.month.ago) }
-          specify { lambda { Site::UsageMonitoring.monitor_sites_usages }.should change(ActionMailer::Base.deliveries, :size).by(2) }
-        end
-
-        context "with plan_player_hits_reached alert already sent during the month" do
-          before(:all) do
-            @site = Factory(:site, :plan => @plan1, :activated_at => 2.months.ago)
-            @site.update_attribute(:plan_player_hits_reached_notification_sent_at, Time.now.utc.beginning_of_month)
-          end
-          subject { @site }
-
-          specify { subject.plan_player_hits_reached_notification_sent_at.should be_within(5).of(Time.now.utc.beginning_of_month) }
-          specify { lambda { Site::UsageMonitoring.monitor_sites_usages }.should_not change(ActionMailer::Base.deliveries, :size) }
-        end
-
-        context "with plan_player_hits_reached alert already sent during the month and no next_plan" do
-          before(:all) do
-            @site = Factory(:site, :plan => @plan2, :activated_at => 2.months.ago)
-            @site.update_attribute(:plan_player_hits_reached_notification_sent_at, Time.now.utc.beginning_of_month)
-          end
-          subject { @site }
-
-          specify { subject.plan_player_hits_reached_notification_sent_at.should be_within(5).of(Time.now.utc.beginning_of_month) }
-          specify { lambda { Site::UsageMonitoring.monitor_sites_usages }.should_not change(ActionMailer::Base.deliveries, :size) }
-        end
+        UsageMonitoringMailer.should_receive(:plan_upgrade_required).with(@site).and_return ( mock(:deliver! => true) )
+        Timecop.travel(Time.utc(2011,1,22)) { Site::UsageMonitoring.monitor_sites_usages }
+        @site.reload.first_plan_upgrade_required_alert_sent_at.should == first_plan_upgrade_required_alert_sent_at # no change
       end
     end
 
+    context "with reached player hits site" do
+      before(:each) do
+        Timecop.travel(Time.utc(2011,1,1)) { @site = Factory(:site, plan: @plan) }
+        Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,1,1), main_player_hits: 3001)
+      end
+
+      it "should send player hits reached notification" do
+        @site.plan_player_hits_reached_notification_sent_at.should be_nil
+        UsageMonitoringMailer.should_receive(:plan_player_hits_reached).with(@site).and_return ( mock(:deliver! => true) )
+        Timecop.travel(Time.utc(2011,1,22)) { Site::UsageMonitoring.monitor_sites_usages }
+        @site.reload
+        @site.plan_player_hits_reached_notification_sent_at.should_not be_nil
+        @site.first_plan_upgrade_required_alert_sent_at.should be_nil
+      end
+
+      it "should not send player hits reached notification if already sent" do
+        @site.touch(:plan_player_hits_reached_notification_sent_at)
+
+        UsageMonitoringMailer.should_not_receive(:plan_player_hits_reached)
+        UsageMonitoringMailer.should_not_receive(:plan_upgrade_required)
+        Timecop.travel(Time.utc(2011,1,22)) { Site::UsageMonitoring.monitor_sites_usages }
+        @site.reload
+        @site.plan_player_hits_reached_notification_sent_at.should_not be_nil
+        @site.first_plan_upgrade_required_alert_sent_at.should be_nil
+      end
+    end
   end
 
 end

@@ -490,4 +490,26 @@ describe Site::Invoice do
 
   end
 
+  describe "#set_first_paid_plan_started_at" do
+
+    it "should be set if site created with paid plan" do
+      site = Factory(:site, plan: @paid_plan)
+      site.first_paid_plan_started_at.should be_present
+    end
+
+    it "should not be set if site created with dev plan" do
+      site = Factory(:site, plan: @dev_plan)
+      site.first_paid_plan_started_at.should be_nil
+    end
+
+    it "should be set when first upgrade to paid plan" do
+      site = Factory(:site, plan: @dev_plan)
+      site.first_paid_plan_started_at.should be_nil
+      site.reload.update_attributes(plan_id: @paid_plan.id)
+      site.update_cycle_plan
+      site.reload.first_paid_plan_started_at.should be_present
+    end
+
+  end
+
 end

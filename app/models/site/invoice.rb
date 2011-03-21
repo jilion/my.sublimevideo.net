@@ -105,6 +105,13 @@ private
     end - 1.day
   end
 
+  # before_save
+  def set_first_paid_plan_started_at
+    if (plan_id_changed? || plan_started_at_changed?) && in_paid_plan?
+      self.first_paid_plan_started_at ||= plan_started_at
+    end
+  end
+
   # after_save
   def create_invoice
     if in_paid_plan? && (plan_id_changed? || plan_cycle_started_at_changed? || plan_cycle_ended_at_changed?)
@@ -139,6 +146,7 @@ Site.send :include, Site::Invoice
 #
 # Table name: sites
 #
+#  first_paid_plan_started_at                 :datetime
 #  plan_started_at                            :datetime
 #  plan_cycle_started_at                      :datetime
 #  plan_cycle_ended_at                        :datetime
