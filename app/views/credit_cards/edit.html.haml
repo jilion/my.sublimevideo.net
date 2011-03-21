@@ -1,8 +1,7 @@
 = title_and_content_header("Update credit card")
 
-= form_for @user, :url => credit_card_path, :html => { :class => "main_form" } do |f|
-  = render 'fields', :f => f
-  
-  .entry.update
-    = f.submit "Update", :id => 'user_submit', :class => "submit small_button"
-
+#credit_card
+  = form_for @user, :url => credit_card_path, :html => { :class => "main_form" } do |f|
+    = render 'fields', :f => f
+    .entry.update
+      = f.submit "Update", :id => 'user_submit', :class => "submit small_button"
