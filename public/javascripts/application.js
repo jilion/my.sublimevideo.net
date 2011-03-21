@@ -116,44 +116,51 @@ MySublimeVideo.openPopup = function(itemId, idPrefix, url, class_name) { // item
 // = Plan functions =
 // ==================
 
-MySublimeVideo.showPlanUpdateInfo = function(radioButton) {
-  var upgradeInfoDiv, downgradeInfoDiv, devDowngradeInfoDiv;
-  upgradeInfoDiv = $('plan_upgrade_info');
-  downgradeInfoDiv = $('plan_downgrade_info');
-  devDowngradeInfoDiv = $('dev_plan_downgrade_info');
-  switch (radioButton.readAttribute('data-plan_upgrade')) {
-  case "true":
-    upgradeInfoDiv.down('.plan_title').update(radioButton.readAttribute('data-plan_title'));
-    upgradeInfoDiv.down('.plan_update_price').update(radioButton.readAttribute('data-plan_update_price'));
-    upgradeInfoDiv.down('.plan_update_date').update(radioButton.readAttribute('data-plan_update_date'));
-    upgradeInfoDiv.show();
-    downgradeInfoDiv.hide();
-    devDowngradeInfoDiv.hide();
-    break;
-  case "false":
-    if (radioButton.readAttribute('data-plan_update_price') == 'FREE') {
-      devDowngradeInfoDiv.down('.plan_title').update(radioButton.readAttribute('data-plan_title'));
-      devDowngradeInfoDiv.down('.plan_update_date').update(radioButton.readAttribute('data-plan_update_date'));
-      devDowngradeInfoDiv.show();
-      downgradeInfoDiv.hide();
-    }
-    else {
-      downgradeInfoDiv.down('.plan_title').update(radioButton.readAttribute('data-plan_title'));
-      downgradeInfoDiv.down('.plan_update_price').update(radioButton.readAttribute('data-plan_update_price'));
-      downgradeInfoDiv.down('.plan_update_date').update(radioButton.readAttribute('data-plan_update_date'));
-      downgradeInfoDiv.show();
-      devDowngradeInfoDiv.hide();
-    }
-    upgradeInfoDiv.hide();
-    break;
-  default:
-    upgradeInfoDiv.hide();
-    downgradeInfoDiv.hide();
-    devDowngradeInfoDiv.hide();
-  }
+MySublimeVideo.updatePlanInfo_ = function(infoDiv, radioButton) {
+  console.log(infoDiv)
+  infoDiv.select('.plan_title').invoke("update", radioButton.readAttribute('data-plan_title'));
+  infoDiv.select('.plan_price').invoke("update", radioButton.readAttribute('data-plan_price'));
+  infoDiv.select('.plan_update_price').invoke("update", radioButton.readAttribute('data-plan_update_price'));
+  infoDiv.select('.plan_update_date').invoke("update", radioButton.readAttribute('data-plan_update_date'));
+  infoDiv.show();
 };
 
-
+MySublimeVideo.showPlanUpdateInfo = function(radioButton) {
+  var upgradeInfoDiv = $('plan_upgrade_info'),
+  upgradeFromDevInfoDiv = $('plan_upgrade_from_dev_info'),
+  delayedUpgradeInfoDiv = $('plan_delayed_upgrade_info'),
+  delayedDowngradeInfoDiv = $('plan_delayed_downgrade_info'),
+  delayedChangeInfoDiv = $('plan_delayed_change_info'),
+  delayedDowngradeTo_dev_info = $('plan_delayed_downgrade_to_dev_info');
+  
+  upgradeInfoDiv.hide();
+  upgradeFromDevInfoDiv.hide();
+  delayedUpgradeInfoDiv.hide();
+  delayedDowngradeInfoDiv.hide();
+  delayedChangeInfoDiv.hide();
+  delayedDowngradeTo_dev_info.hide();
+  
+  switch (radioButton.readAttribute('data-plan_change_type')) {
+    case "upgrade":
+      MySublimeVideo.updatePlanInfo_(upgradeInfoDiv, radioButton);
+      break;
+    case "upgrade_from_dev":
+      MySublimeVideo.updatePlanInfo_(upgradeFromDevInfoDiv, radioButton);
+      break;
+    case "delayed_upgrade":
+      MySublimeVideo.updatePlanInfo_(delayedUpgradeInfoDiv, radioButton);
+      break;
+    case "delayed_downgrade":
+      MySublimeVideo.updatePlanInfo_(delayedDowngradeInfoDiv, radioButton);
+      break;
+    case "delayed_change":
+      MySublimeVideo.updatePlanInfo_(delayedChangeInfoDiv, radioButton);
+      break;
+    case "delayed_downgrade_to_dev":
+      MySublimeVideo.updatePlanInfo_(delayedDowngradeTo_dev_info, radioButton);
+      break;
+  }
+};
 
 // ====================
 // = Onclick handlers =

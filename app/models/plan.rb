@@ -86,10 +86,16 @@ class Plan < ActiveRecord::Base
     end
   end
 
-  def title
-    name.titleize + (cycle == 'year' ? ' (yearly)' : '')
+  def title(options = {})
+    if dev_plan?
+      "Free Sandbox"
+    elsif options[:always_with_cycle]
+      name.titleize + (cycle == 'year' ? ' (yearly)' : ' (monthly)')
+    else
+      name.titleize + (cycle == 'year' ? ' (yearly)' : '')
+    end
   end
-  
+
   def daily_player_hits
     player_hits / 30
   end
