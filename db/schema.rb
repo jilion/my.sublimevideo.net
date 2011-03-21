@@ -182,6 +182,7 @@ ActiveRecord::Schema.define(:version => 20110223160948) do
     t.date     "cc_expire_on"
     t.string   "state"
     t.integer  "amount"
+    t.string   "error_key"
     t.string   "pay_id"
     t.string   "acceptance"
     t.string   "status"
@@ -232,6 +233,7 @@ ActiveRecord::Schema.define(:version => 20110223160948) do
     t.string   "company_job_title"
     t.string   "company_employees"
     t.string   "company_videos_served"
+    t.string   "cc_alias"
     t.integer  "suspending_delayed_job_id"
     t.integer  "failed_invoices_count_on_suspend",                :default => 0
     t.datetime "archived_at"
