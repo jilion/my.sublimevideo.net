@@ -851,9 +851,7 @@ describe Site do
 
       context "with paid plan" do
         before(:all) do
-          @site = Factory(:site)
-          @site.plan.player_hits           = 30 * 300
-          @site.first_paid_plan_started_at = Time.utc(2011,1,1)
+          @site = Factory(:site, plan: Factory(:plan, player_hits: 30 * 300), first_paid_plan_started_at: Time.utc(2011,1,1))
         end
 
         describe "with 1 historic day and 1 over limit" do

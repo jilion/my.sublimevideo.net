@@ -126,6 +126,7 @@ class Site < ActiveRecord::Base
   before_save :prepare_cdn_update # in site/templates
   before_save :clear_alerts_sent_at
   before_save :update_cycle_plan, :if => :plan_id_changed? # in site/invoice
+  before_save :set_first_paid_plan_started_at # in site/invoice
 
   after_save :execute_cdn_update # in site/templates
   after_create :delay_ranks_update # in site/templates
