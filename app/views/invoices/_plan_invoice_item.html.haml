@@ -1,6 +1,6 @@
 %td
   %h4
-    = "Plan: #{plan_invoice_item.item.name.humanize} (#{display_amount(plan_invoice_item.price)} per month)"
+    = "Plan: #{plan_invoice_item.item.name.humanize} (#{display_amount(plan_invoice_item.amount)} per month)"
     - if plan_invoice_item.percentage < 1
       %em= "- #{display_percentage(plan_invoice_item.percentage)} of usage"
   %p.period= "Period: #{invoice_item_dates(plan_invoice_item)}"
