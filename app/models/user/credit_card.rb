@@ -58,10 +58,6 @@ module User::CreditCard
     [cc_update, cc_number, cc_first_name, cc_last_name, cc_verification_value].any?(&:present?)
   end
 
-  def credit_card_alias
-    "sublime_#{id}"
-  end
-
   # validates
   def validates_credit_card_attributes
     if credit_card_attributes_present?
@@ -107,7 +103,7 @@ module User::CreditCard
   # Called from CreditCardsController#update
   def check_credit_card(options={})
     options = options.merge({
-      store: credit_card_alias,
+      store: cc_alias,
       email: email,
       billing_address: { zip: postal_code, country: country },
       d3d: true,
@@ -180,7 +176,8 @@ User.send :include, User::CreditCard
 # Table name: users
 #
 #  cc_type              :string(255)
-#  cc_last_digits       :integer
+#  cc_last_digits       :string(255)
 #  cc_expire_on         :date
 #  cc_updated_at        :datetime
+#  cc_alias             :string
 #

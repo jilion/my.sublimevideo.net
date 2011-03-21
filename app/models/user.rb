@@ -15,6 +15,8 @@ class User < ActiveRecord::Base
   # Credit card
   attr_accessible :cc_update, :cc_type, :cc_full_name, :cc_number, :cc_expire_on, :cc_verification_value
 
+  uniquify :cc_alias, :chars => Array('a'..'z') + Array('0'..'9')
+
   # ================
   # = Associations =
   # ================
@@ -293,7 +295,7 @@ private
   end
   def charge_failed_invoices
     if cc_updated_at_changed? && invoices.failed.present?
-      invoices.failed.each { |invoice| invoice.retry }
+      Transaction.delay(:priority => 2).charge_open_and_failed_invoices_by_user_id(id)
     end
   end
 
@@ -350,6 +352,7 @@ end
 #  company_job_title                :string(255)
 #  company_employees                :string(255)
 #  company_videos_served            :string(255)
+#  cc_alias                         :string(255)
 #  suspending_delayed_job_id        :integer
 #  failed_invoices_count_on_suspend :integer         default(0)
 #  archived_at                      :datetime
