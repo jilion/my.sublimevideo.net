@@ -36,7 +36,7 @@ gem 'responders',            '0.6.2'
 gem 'has_scope',             :git => 'git://github.com/rymai/has_scope.git'
 
 gem 'aws',                   '2.3.34' # bugs in 2.4.2
-gem 'fog',                   '0.6.0'
+gem 'fog',                   '0.7.0'
 gem 'carrierwave',           '0.5.2'
 gem 'voxel_hapi',            :git => 'git://github.com/thibaudgg/voxel_hapi.git', :branch => '1.9.2' # VoxCast CDN
 gem 'request-log-analyzer',  '1.9.10', :require => 'request_log_analyzer'
@@ -61,8 +61,6 @@ gem 'prowl',                 '0.1.3'
 
 # Perf
 gem 'dalli',                 '1.0.2'
-
-
 
 group :production do
   gem 'rack-google-analytics', '0.9.2', :require => 'rack/google-analytics'
