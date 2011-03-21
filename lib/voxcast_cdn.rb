@@ -2,7 +2,6 @@
 
 module VoxcastCDN
   class << self
-    extend ActiveSupport::Memoizable
 
     def devices_list
       client.voxel_devices_list
@@ -46,9 +45,8 @@ module VoxcastCDN
   private
 
     def client
-      VoxelHAPI.new(:hapi_authkey => { :key => yml[:key], :secret => yml[:secret] })
+      @@client ||= VoxelHAPI.new(:hapi_authkey => { :key => yml[:key], :secret => yml[:secret] })
     end
-    memoize :client
 
     def yml
       config_path = Rails.root.join('config', 'voxcast_cdn.yml')

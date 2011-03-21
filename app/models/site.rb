@@ -1,5 +1,4 @@
 class Site < ActiveRecord::Base
-  extend ActiveSupport::Memoizable
   require 'site/invoice'
   require 'site/referrer'
   require 'site/templates'
@@ -238,14 +237,13 @@ class Site < ActiveRecord::Base
   end
 
   def current_billable_usage
-    usages.between(plan_month_cycle_started_at, plan_month_cycle_ended_at).to_a.sum do |su|
+    @current_billable_usage ||= usages.between(plan_month_cycle_started_at, plan_month_cycle_ended_at).to_a.sum do |su|
       su.main_player_hits + su.main_player_hits_cached + su.extra_player_hits + su.extra_player_hits_cached
     end
   end
-  memoize :current_billable_usage
 
   def current_percentage_of_plan_used
-    if plan.player_hits > 0
+    @current_percentage_of_plan_used ||= if plan.player_hits > 0
       [(current_billable_usage / plan.player_hits.to_f).round(2), 1].min
     else
       0

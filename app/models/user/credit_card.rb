@@ -1,7 +1,6 @@
 require 'base64'
 
 module User::CreditCard
-  extend ActiveSupport::Memoizable
 
   attr_accessor :cc_update, :cc_full_name, :cc_first_name, :cc_last_name, :cc_number, :cc_verification_value
 
@@ -165,7 +164,6 @@ private
       :verification_value => cc_verification_value
     )
   end
-  memoize :credit_card
 
   # Called from User::CreditCard#process_cc_authorization_response and TransactionsController#callback
   def void_authorization(authorization)

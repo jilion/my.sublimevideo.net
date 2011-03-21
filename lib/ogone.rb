@@ -1,6 +1,5 @@
 module Ogone
   class << self
-    extend ActiveSupport::Memoizable
 
     def method_missing(name, *args)
       gateway.send(name, *args)
@@ -27,9 +26,8 @@ module Ogone
     def gateway
       ActiveMerchant::Billing::Base.gateway_mode = :test
       Rails.logger.info "Ogone.gateway_mode: #{ActiveMerchant::Billing::Base.gateway_mode}"
-      ActiveMerchant::Billing::OgoneGateway.new(yml)
+      @@gateway ||= ActiveMerchant::Billing::OgoneGateway.new(yml)
     end
-    memoize :gateway
 
   end
 end

@@ -1,5 +1,4 @@
 class Invoice < ActiveRecord::Base
-  extend ActiveSupport::Memoizable
 
   uniquify :reference, :chars => Array('a'..'z') - ['o'] + Array('1'..'9')
 
@@ -95,11 +94,6 @@ class Invoice < ActiveRecord::Base
     reference
   end
 
-  def total_invoice_items_amount
-    invoice_items.inject(0) { |sum, invoice_item| sum + invoice_item.amount }
-  end
-  memoize :total_invoice_items_amount
-
 private
 
   def build_invoice_items
@@ -110,7 +104,7 @@ private
   end
 
   def set_invoice_items_amount
-    self.invoice_items_amount = total_invoice_items_amount
+    self.invoice_items_amount = invoice_items.inject(0) { |sum, invoice_item| sum + invoice_item.amount }
   end
 
   def set_discount_rate_and_amount
