@@ -44,6 +44,11 @@ module RecurringJob
     end
 
     def supervise
+      # check if there is no too much delayed jobs
+      max_jobs_allowed = 50
+      if too_much_jobs?(max_jobs_allowed)
+        Notify.send("WARNING!!! There is more than #{max_jobs_allowed} delayed jobs, please investigate quickly!")
+      end
       # check if recurring jobs are all delayed twice
       unless all_delayed?
         sleep 20
@@ -61,6 +66,10 @@ module RecurringJob
 
     def all_delayed?
       NAMES.all? { |name| Delayed::Job.already_delayed?(name) }
+    end
+
+    def too_much_jobs?(max)
+      Delayed::Job.count > max
     end
 
   end
