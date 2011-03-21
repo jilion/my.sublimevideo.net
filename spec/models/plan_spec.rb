@@ -127,7 +127,7 @@ describe Plan do
     it { @paid_plan_yearly2.upgrade?(@paid_plan_yearly2).should be_nil }
   end
 
-  describe "#title", focus: true do
+  describe "#title" do
 
     specify { @dev_plan.title.should == "Free Sandbox" }
     specify { @dev_plan.title(always_with_cycle: true).should == "Free Sandbox" }
