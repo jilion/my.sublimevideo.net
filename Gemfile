@@ -33,9 +33,9 @@ gem 'devise_invitable',      :git => 'git://github.com/rymai/devise_invitable.gi
 # gem 'memcached',             '~> 0.20.1'
 gem 'dalli',                 '~> 1.0.2'
 
-gem 'aws',                   '~> 2.3.34'
-gem 'fog',                   '~> 0.5.3' # for carrierwave 0.5 final
-gem 'carrierwave',           '~> 0.5.0'
+gem 'aws',                   '2.3.34'
+gem 'fog',                   '~> 0.7.0' # for carrierwave 0.5 final
+gem 'carrierwave',           '~> 0.5.2'
 
 gem 'bson_ext',              '~> 1.2.2'
 gem 'mongo',                 '~> 1.2.2'
