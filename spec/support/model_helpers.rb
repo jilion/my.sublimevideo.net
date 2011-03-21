@@ -22,7 +22,7 @@ module Spec
         }
       end
 
-      def valid_cc_3ds_attributes
+      def valid_cc_d3d_attributes
         {
           :cc_type               => 'visa',
           :cc_number             => '4000000000000002',
