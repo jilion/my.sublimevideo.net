@@ -196,7 +196,7 @@ describe User::CreditCard do
         its(:cc_last_digits) { should == "1234" }
         its(:cc_expire_on)   { should == Time.utc(2012, 02).end_of_month.to_date }
       end
-      
+
       context "by passing Ogone callback params with mastercard card" do
         before(:each) do
           user.keep_some_credit_card_info({ "BRAND" => "MasterCard", "CARDNO" => "XXXXXXXXXXXX1234", "ED" => "0212" })
@@ -212,7 +212,7 @@ describe User::CreditCard do
     describe "#check_credit_card" do
       context "valid authorization" do
         use_vcr_cassette "ogone/void_authorization"
-        before(:each) { user.update_attributes(valid_cc_attributes) }
+        before(:each) { user.attributes = valid_cc_attributes }
         subject { user }
 
         it "should actually call Ogone and return a hash with infos" do
@@ -221,19 +221,18 @@ describe User::CreditCard do
         end
 
         it "should return a hash with infos" do
-          subject.check_credit_card.should == { state: "authorized" }
+          subject.check_credit_card.should == "authorized"
         end
       end
 
       context "3d secure authorization" do
         use_vcr_cassette "ogone/3ds_authorization"
-        before(:each) { user.update_attributes(valid_cc_3ds_attributes) }
+        before(:each) { user.update_attributes(valid_cc_d3d_attributes) }
         subject { user }
 
         it "should return the HTML_ANSWER returned by Ogone" do
-          resp = subject.check_credit_card
-          resp[:state].should == "d3d"
-          resp[:message].should be_an_instance_of(String)
+          subject.check_credit_card.should == "d3d"
+          subject.d3d_html.should be_an_instance_of(String)
         end
       end
 
@@ -243,9 +242,7 @@ describe User::CreditCard do
         subject { user }
 
         it "should return nil" do
-          resp = subject.check_credit_card
-          resp[:state].should == "refused"
-          resp[:message].should be_an_instance_of(String)
+          subject.check_credit_card.should == "refused"
         end
       end
     end
@@ -254,12 +251,12 @@ describe User::CreditCard do
       before(:each) { user.update_attributes(valid_cc_attributes) }
       subject { user }
 
-      context "valid authorization (status == 5)" do
+      context "Authorized (status == 5)" do
         before(:each) { subject.should_receive(:void_authorization).with("1234;RES") }
         let(:params) { [{ "STATUS" => "5" }, "1234;RES"]}
 
         it "should return a hash with infos" do
-          subject.process_cc_authorization_response(*params).should == { state: "authorized" }
+          subject.process_cc_authorization_response(*params).should == "authorized"
         end
 
         it "should not add an error on base to the user" do
@@ -268,13 +265,11 @@ describe User::CreditCard do
         end
       end
 
-      context "3d secure authorization (status == 46)" do
+      context "Waiting for identification (status == 46)" do
         let(:params) { [{ "STATUS" => "46", "HTML_ANSWER" => Base64.encode64("<html>No HTML.</html>") }, "1234;RES"] }
 
         it "should return the html to inject" do
-          resp = subject.process_cc_authorization_response(*params)
-          resp[:state].should == "d3d"
-          resp[:message].should be_an_instance_of(String)
+          subject.process_cc_authorization_response(*params).should == "d3d"
         end
       end
 
@@ -282,9 +277,7 @@ describe User::CreditCard do
         let(:params) { [{ "STATUS" => "0" }, "1234;RES"] }
 
         it "should return a hash with infos" do
-          resp = subject.process_cc_authorization_response(*params)
-          resp[:state].should == "invalid"
-          resp[:message].should be_an_instance_of(String)
+          subject.process_cc_authorization_response(*params).should == "invalid"
         end
 
         it "should add an error on base to the user" do
@@ -297,9 +290,7 @@ describe User::CreditCard do
         let(:params) { [{ "STATUS" => "2" }, "1234;RES"] }
 
         it "should return a hash with infos" do
-          resp = subject.process_cc_authorization_response(*params)
-          resp[:state].should == "refused"
-          resp[:message].should be_an_instance_of(String)
+          subject.process_cc_authorization_response(*params).should == "refused"
         end
 
         it "should add an error on base to the user" do
@@ -312,14 +303,12 @@ describe User::CreditCard do
         let(:params) { [{ "STATUS" => "51" }, "1234;RES"] }
 
         it "should return a hash with infos" do
-          resp = subject.process_cc_authorization_response(*params)
-          resp[:state].should == "waiting"
-          resp[:message].should be_an_instance_of(String)
+          subject.process_cc_authorization_response(*params).should == "waiting"
         end
 
-        it "should add an error on base to the user" do
+        it "should not add an error on base to the user" do
           subject.process_cc_authorization_response(*params)
-          subject.errors[:base].should == ["Credit card authorization will be processed soon."]
+          subject.errors.should be_empty
         end
       end
 
@@ -327,14 +316,32 @@ describe User::CreditCard do
         let(:params) { [{ "STATUS" => "52" }, "1234;RES"] }
 
         it "should return a hash with infos" do
-          resp = subject.process_cc_authorization_response(*params)
-          resp[:state].should == "unknown"
-          resp[:message].should be_an_instance_of(String)
+          subject.process_cc_authorization_response(*params).should == "unknown"
         end
 
         it "should not add an error on base to the user" do
           subject.process_cc_authorization_response(*params)
           subject.errors.should be_empty
+        end
+      end
+    end
+
+    describe "#credit_card" do
+      context "when attributes are present" do
+        before(:each) { user.attributes = valid_cc_attributes }
+        subject { user }
+
+        it "should return a ActiveMerchant::Billing::CreditCard instance" do
+          subject.credit_card.should be_an_instance_of(ActiveMerchant::Billing::CreditCard)
+        end
+      end
+      
+      context "when attributes are not present" do
+        before(:each) { user.attributes = nil_cc_attributes }
+        subject { user }
+
+        it "should return a ActiveMerchant::Billing::CreditCard instance" do
+          subject.credit_card.should be_nil
         end
       end
     end

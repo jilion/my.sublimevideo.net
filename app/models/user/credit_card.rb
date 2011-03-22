@@ -2,7 +2,7 @@ require 'base64'
 
 module User::CreditCard
 
-  attr_accessor :cc_update, :cc_full_name, :cc_first_name, :cc_last_name, :cc_number, :cc_verification_value
+  attr_accessor :cc_update, :cc_full_name, :cc_first_name, :cc_last_name, :cc_number, :cc_verification_value, :d3d_html
 
   # ================================
   # = User class methods extension =
@@ -107,8 +107,7 @@ module User::CreditCard
       email: email,
       billing_address: { zip: postal_code, country: country },
       d3d: true,
-      paramplus: "USER_ID=#{self.id}&CC_CHECK=TRUE",
-      logo: "https://sublimevideo.net/images/embed/main/sublimevideo.png"
+      paramplus: "USER_ID=#{self.id}&CC_CHECK=TRUE"
     })
     authorize = Ogone.authorize(100, credit_card, options)
 
@@ -117,49 +116,54 @@ module User::CreditCard
 
   # Called from User::CreditCard#check_credit_card and from TransactionsController#callback
   def process_cc_authorization_response(authorize_params, authorize_authorization)
-    response = {}
+    response = ""
     case authorize_params["STATUS"]
-    when "5" # The authorization has been accepted.
+    when "5" # Authorized
       keep_some_credit_card_info(authorize_params)
       void_authorization(authorize_authorization)
-      response[:state] = "authorized"
+      response = "authorized"
 
     when "46" # Waiting for identification (3-D Secure)
               # We return the HTML to render. This HTML will redirect the user to the 3-D Secure form.
-      response = { state: "d3d", message: Base64.decode64(authorize_params["HTML_ANSWER"]) }
+      response = "d3d"
+      @d3d_html = Base64.decode64(authorize_params["HTML_ANSWER"])
 
-    when "0" # Authorization invalid or incomplete
-      response = { state: "invalid", message: "Credit card information invalid or incomplete, please retry." }
-      self.errors.add(:base, response[:message])
+    when "0" # Credit card information invalid or incomplete
+      response = "invalid"
+      self.errors.add(:base, I18n.t("credit_card.errors.#{response}"))
 
     when "2" # Authorization refused
-      response = { state: "refused", message: "Credit card authorization refused, please retry." }
-      self.errors.add(:base, response[:message])
+      response = "refused"
+      self.errors.add(:base, I18n.t("credit_card.errors.#{response}"))
 
     when "51" # Authorization waiting (authorization will be processed offline), should never receive this status
-      response = { state: "waiting", message: "Credit card authorization will be processed soon." }
-      self.errors.add(:base, response[:message])
+      response = "waiting"
 
     when "52" # Authorization not known
-      response = { state: "unknown", message: "Credit card authorization is unknown." }
+      response = "unknown"
+      Notify.send("Credit card authorization for user ##{self.id} (PAYID: #{authorize_params["PAYID"]}) has an uncertain state, please investigate quickly!")
     end
 
     response
   end
 
-private
-
   def credit_card
-    ActiveMerchant::Billing::CreditCard.new(
-      :type               => cc_type,
-      :number             => cc_number,
-      :month              => cc_expire_on.try(:month),
-      :year               => cc_expire_on.try(:year),
-      :first_name         => cc_first_name,
-      :last_name          => cc_last_name,
-      :verification_value => cc_verification_value
-    )
+    if credit_card_attributes_present?
+      @credit_card ||= ActiveMerchant::Billing::CreditCard.new(
+        :type               => cc_type,
+        :number             => cc_number,
+        :month              => cc_expire_on.try(:month),
+        :year               => cc_expire_on.try(:year),
+        :first_name         => cc_first_name,
+        :last_name          => cc_last_name,
+        :verification_value => cc_verification_value
+      )
+    else
+      nil
+    end
   end
+
+private
 
   # Called from User::CreditCard#process_cc_authorization_response and TransactionsController#callback
   def void_authorization(authorization)
