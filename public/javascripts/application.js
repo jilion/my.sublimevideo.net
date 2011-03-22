@@ -62,11 +62,12 @@ document.observe("dom:loaded", function() {
 
   if (history && history.pushState) {
     Event.observe(window, 'popstate', function(e) {
-      MySublimeVideo.showTableSpinner();
-      // alert("location: " + document.location + ", state: " + JSON.stringify(event.state));
-      // new Ajax.Request(location.href, {
-      //   method: 'get'
-      // });
+      if (!(/\/login$/).test(location.href)) {
+        MySublimeVideo.showTableSpinner();
+        new Ajax.Request(location.href, {
+          method: 'get'
+        });
+      };
     });
   }
 
