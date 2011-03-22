@@ -73,7 +73,8 @@ describe Site do
       end
 
       describe "#not_billable" do
-        specify { Site.not_billable.all.should == [@site_not_billable_1, @site_not_billable_2, @site_not_billable_3, @site_not_billable_4, @site_with_path] }
+        y @site_not_billable_1
+        specify { Site.not_billable.all.should =~ [@site_not_billable_1, @site_not_billable_2, @site_not_billable_3, @site_not_billable_4, @site_with_path] }
       end
 
       describe "#with_path" do
@@ -83,10 +84,10 @@ describe Site do
       describe "#with_extra_hostnames" do
         specify { Site.with_extra_hostnames.all.should == [@site_with_extra_hostnames] }
       end
-    end
 
-    describe "#in_paid_plan" do
-      specify { Site.in_paid_plan.all.should =~ [@site_billable_1, @site_billable_2, @site_not_billable_3, @site_not_billable_4, @site_with_extra_hostnames] }
+      describe "#in_paid_plan" do
+        specify { Site.in_paid_plan.all.should =~ [@site_billable_1, @site_billable_2, @site_not_billable_3, @site_not_billable_4, @site_with_extra_hostnames] }
+      end
     end
 
     describe "#to_be_renewed" do
@@ -140,15 +141,15 @@ describe Site do
 
     describe "hostname" do
       context "with the dev plan" do
-        subject { Factory.build(:new_site, hostname: nil, plan: @dev_plan) }
+        subject { Factory.build(:new_site, hostname: nil, plan_id: @dev_plan.id) }
         it { should be_valid }
       end
       context "with the beta plan" do
-        subject { Factory.build(:new_site, hostname: nil, plan: @beta_plan) }
+        subject { Factory.build(:new_site, hostname: nil, plan_id: @beta_plan.id) }
         it { should be_valid }
       end
       context "with any other plan than the dev plan" do
-        subject { Factory.build(:new_site, hostname: nil, plan: @paid_plan) }
+        subject { Factory.build(:new_site, hostname: nil, plan_id: @paid_plan.id) }
         it { should_not be_valid }
         it { should have(1).error_on(:hostname) }
       end
@@ -617,6 +618,18 @@ describe Site do
   describe "Callbacks" do
     subject { Factory(:site) }
 
+    describe "before_validation" do
+      subject { Factory.build(:new_site, dev_hostnames: nil) }
+
+      describe "#set_default_dev_hostnames" do
+        specify do
+          subject.dev_hostnames.should be_nil
+          subject.should be_valid
+          subject.dev_hostnames.should == Site::DEFAULT_DEV_DOMAINS
+        end
+      end
+    end
+
     describe "before_save" do
       describe "#clear_alerts_sent_at" do
         specify do
@@ -782,7 +795,6 @@ describe Site do
     describe "#current_billable_usage & #current_percentage_of_plan_used" do
       before(:all) do
         @site = Factory(:site)
-        @site.apply_pending_plan_changes!
       end
       before(:each) do
         Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,1,30),
@@ -795,7 +807,7 @@ describe Site do
           extra_player_hits: 7, extra_player_hits_cached: 8,
           dev_player_hits:   4, dev_player_hits_cached:   6
         )
-        Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,4,1),
+        Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,4,30),
         main_player_hits:   9, main_player_hits_cached:  10,
         extra_player_hits: 11, extra_player_hits_cached: 12,
         dev_player_hits:    4, dev_player_hits_cached:    6
@@ -804,60 +816,64 @@ describe Site do
 
       context "with monthly plan" do
         before(:all) do
+          @site.unmemoize_all
           @site.plan.cycle            = "month"
           @site.plan.player_hits      = 100
           @site.plan_cycle_started_at = Time.utc(2011,3,20)
           @site.plan_cycle_ended_at   = Time.utc(2011,4,20)
-          @site.save
+          Timecop.travel(Time.utc(2011,3,25))
         end
-        subject { @site.reload }
+        subject { @site }
 
-        its(:current_billable_usage)          { should == 5 + 6 + 7 + 8 + 9 + 10 + 11 + 12 }
-        its(:current_percentage_of_plan_used) { should == 68 / 100.0 }
+        its(:current_billable_usage)          { should == 5 + 6 + 7 + 8 }
+        its(:current_percentage_of_plan_used) { should == 26 / 100.0 }
       end
 
       context "with monthly plan and overage" do
         before(:all) do
+          @site.unmemoize_all
           @site.plan.cycle            = "month"
           @site.plan.player_hits      = 10
-          @site.plan_cycle_started_at = Time.utc(2011,3,20)
-          @site.plan_cycle_ended_at   = Time.utc(2011,4,20)
-          @site.save
+          @site.plan_cycle_started_at = Time.utc(2011,4,20)
+          @site.plan_cycle_ended_at   = Time.utc(2011,5,20)
+          Timecop.travel(Time.utc(2011,4,25))
         end
-        subject { @site.reload }
+        subject { @site }
 
-        its(:current_billable_usage)          { should == 5 + 6 + 7 + 8 + 9 + 10 + 11 + 12 }
+        its(:current_billable_usage)          { should == 9 + 10 + 11 + 12 }
         its(:current_percentage_of_plan_used) { should == 1 }
       end
 
       context "with yearly plan" do
         before(:all) do
+          @site.unmemoize_all
           @site.plan.cycle            = "year"
           @site.plan.player_hits      = 100
           @site.plan_cycle_started_at = Time.utc(2011,1,20)
           @site.plan_cycle_ended_at   = Time.utc(2012,1,20)
-          @site.save
+          Timecop.travel(Time.utc(2011,3,25))
         end
-        subject { @site.reload }
+        after(:all) { Timecop.return }
+        subject { @site }
 
-        its(:current_billable_usage)          { should == 1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 10 + 11 + 12 }
-        its(:current_percentage_of_plan_used) { should == 78 / 100.0 }
+        its(:current_billable_usage)          { should == 5 + 6 + 7 + 8 }
+        its(:current_percentage_of_plan_used) { should == 26 / 100.0 }
       end
 
       context "with yearly plan (other date)" do
         before(:all) do
+          @site.unmemoize_all
           @site.plan.cycle            = "year"
           @site.plan.player_hits      = 1000
           @site.plan_cycle_started_at = Time.utc(2011,1,20)
           @site.plan_cycle_ended_at   = Time.utc(2012,1,20)
-          @site.save
-          Timecop.travel(Time.utc(2011,1,25))
+          Timecop.travel(Time.utc(2011,1,31))
         end
         after(:all) { Timecop.return }
-        subject { @site.reload }
+        subject { @site }
 
-        its(:current_billable_usage)          { should == 0 }
-        its(:current_percentage_of_plan_used) { should == 0 }
+        its(:current_billable_usage)          { should == 1 + 2 + 3 + 4 }
+        its(:current_percentage_of_plan_used) { should == 10 / 1000.0 }
       end
     end
 
@@ -987,11 +1003,10 @@ describe Site do
         end
       end
     end
-    
+
   end # Instance Methods
 
 end
-
 
 
 

@@ -1,4 +1,5 @@
 class Site < ActiveRecord::Base
+  extend ActiveSupport::Memoizable
   require 'site/invoice'
   require 'site/referrer'
   require 'site/templates'
@@ -112,7 +113,7 @@ class Site < ActiveRecord::Base
   validates :plan,        :presence => { :message => "Please choose a plan" }, :unless => proc { |s| s.pending_plan_id? }
   validates :player_mode, :inclusion => { :in => PLAYER_MODES }
 
-  validates :hostname,        :presence => { :if => :in_paid_plan? }, :hostname => true, :hostname_uniqueness => true
+  validates :hostname,        :presence => { :if => :in_or_was_in_paid_plan? }, :hostname => true, :hostname_uniqueness => true
   validates :extra_hostnames, :extra_hostnames => true
   validates :dev_hostnames,   :dev_hostnames => true
 
@@ -124,6 +125,8 @@ class Site < ActiveRecord::Base
   # = Callbacks =
   # =============
 
+  before_validation :set_default_dev_hostnames, :unless => :dev_hostnames?
+  
   before_save :prepare_cdn_update # in site/templates
   before_save :clear_alerts_sent_at
   before_save :pend_plan_changes, :if => :pending_plan_id_changed? # in site/invoice
@@ -141,7 +144,7 @@ class Site < ActiveRecord::Base
   state_machine :initial => :active do
     state :pending # Temporary, used in the master branch
 
-    event(:archive)   { transition any => :archived }
+    event(:archive)   { transition [:active, :suspended] => :archived }
     event(:suspend)   { transition :active => :suspended }
     event(:unsuspend) { transition :suspended => :active }
 
@@ -222,6 +225,12 @@ class Site < ActiveRecord::Base
     user.attributes = attributes if attributes.present? # && in_or_was_in_paid_plan?
   end
 
+  def save_without_password_validation!
+    @skip_password_validation = true
+    self.save!
+    @skip_password_validation = false
+  end
+
   def to_param
     token
   end
@@ -243,11 +252,12 @@ class Site < ActiveRecord::Base
   end
 
   def current_billable_usage
-    @current_billable_usage ||= usages.between(plan_month_cycle_started_at, plan_month_cycle_ended_at).to_a.sum { |su| su.billable_player_hits }
+    usages.between(plan_month_cycle_started_at, plan_month_cycle_ended_at).to_a.sum { |su| su.billable_player_hits }
   end
+  memoize :current_billable_usage
 
   def current_percentage_of_plan_used
-    @current_percentage_of_plan_used ||= if in_paid_plan?
+    if in_paid_plan?
       [(current_billable_usage / plan.player_hits.to_f).round(2), 1].min
     else
       0
@@ -299,15 +309,20 @@ private
 
   # validate
   def validates_current_password
-    return unless @save_with_password
-
-    if in_or_was_in_paid_plan? && errors.empty? &&
-      ((state_changed? && archived?) || (changes.keys & (Array(self.class.accessible_attributes) + ['next_cycle_plan_id'])).present?)
+    return if @skip_password_validation
+    
+    if !new_record? && in_or_was_in_paid_plan? && errors.empty? &&
+      ((state_changed? && archived?) || (changes.keys & (Array(self.class.accessible_attributes) - ['plan_id'] + %w[pending_plan_id next_cycle_plan_id])).present?)
       if user.current_password.blank? || !user.valid_password?(user.current_password)
         write_attribute(:plan_id, next_cycle_plan_id) if next_cycle_plan_id_changed? # For non-js plan update view
         self.errors.add(:base, :current_password_needed)
       end
     end
+  end
+
+  # before_validation
+  def set_default_dev_hostnames
+    self.dev_hostnames = DEFAULT_DEV_DOMAINS
   end
 
   # before_save

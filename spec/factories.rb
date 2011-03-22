@@ -32,7 +32,7 @@ end
 
 Factory.define :site_pending, :parent => :new_site do |f|
   f.after_build  { |site| VCR.insert_cassette('ogone/visa_payment_10') }
-  f.after_create { |site| VCR.eject_cassette; }
+  f.after_create { |site| VCR.eject_cassette }
 end
 
 Factory.define :log_voxcast, :class => Log::Voxcast do |f|
