@@ -9,16 +9,16 @@ BASE_SITES = %w[vimeo.com dribbble.com jilion.com swisslegacy.com maxvoltar.com 
 namespace :db do
 
   desc "Load all development fixtures."
-  task populate: ['populate:empty_all_tables', 'populate:all']
+  task :populate => ['populate:empty_all_tables', 'populate:all']
 
   namespace :populate do
     desc "Empty all the tables"
-    task empty_all_tables: :environment do
+    task :empty_all_tables => :environment do
       timed { empty_tables("delayed_jobs", Invoice, InvoiceItem, Log, MailTemplate, MailLog, Site, SiteUsage, User, Admin, Plan) }
     end
 
     desc "Load all development fixtures."
-    task all: :environment do
+    task :all => :environment do
       delete_all_files_in_public('uploads/releases')
       delete_all_files_in_public('uploads/s3')
       delete_all_files_in_public('uploads/tmp')
@@ -33,45 +33,45 @@ namespace :db do
     end
 
     desc "Load Admin development fixtures."
-    task admins: :environment do
+    task :admins => :environment do
       timed { empty_tables(Admin) }
       timed { create_admins }
     end
 
     desc "Load User development fixtures."
-    task users: :environment do
+    task :users => :environment do
       timed { empty_tables(Site, User) }
       timed { create_users(argv_count) }
       empty_tables("delayed_jobs")
     end
 
     desc "Load Site development fixtures."
-    task sites: :environment do
+    task :sites => :environment do
       timed { empty_tables(Site) }
       timed { create_sites }
       empty_tables("delayed_jobs")
     end
 
     desc "Load Mail templates development fixtures."
-    task mail_templates: :environment do
+    task :mail_templates => :environment do
       timed { empty_tables(MailTemplate) }
       timed { create_mail_templates }
     end
 
     desc "Create fake usages"
-    task site_usages: :environment do
+    task :site_usages => :environment do
       timed { empty_tables(SiteUsage) }
       timed { create_site_usages }
     end
 
     desc "Create fake invoices"
-    task invoices: :environment do
+    task :invoices => :environment do
       timed { empty_tables(Invoice) }
       timed { create_invoices }
     end
 
     desc "Create fake plans"
-    task plans: :environment do
+    task :plans => :environment do
       timed { empty_tables(Plan) }
       timed { create_plans }
     end
@@ -83,7 +83,7 @@ end
 namespace :user do
 
   desc "Expire the credit card of the user with the given email (EMAIL=xx@xx.xx) at the end of the month (or the opposite if already expiring at the end of the month)"
-  task cc_will_expire: :environment do
+  task :cc_will_expire => :environment do
     timed do
       email = argv("email")
       return if email.nil?
@@ -108,7 +108,7 @@ namespace :user do
   end
 
   desc "Suspend/unsuspend a user given an email (EMAIL=xx@xx.xx), you can pass the count of failed invoices on suspend with FAILED_INVOICES=N"
-  task suspended: :environment do
+  task :suspended => :environment do
     timed do
       email = argv("email")
       return if email.nil?
@@ -133,7 +133,7 @@ end
 namespace :sm do
 
   desc "Draw the States Diagrams for every model having State Machine"
-  task draw: :environment do
+  task :draw => :environment do
     %x(rake state_machine:draw CLASS=Invoice,Log,Site,User TARGET=doc/state_diagrams FORMAT=png ORIENTATION=landscape)
   end
 
@@ -243,6 +243,8 @@ def create_sites
   subdomains = %w[www blog my git sv ji geek yin yang chi cho chu foo bar rem]
   created_at_array = (Date.new(2010,9,14)..(1.month.ago - 2.days).to_date).to_a
 
+  require 'invoice_item/plan' # FIXME WHY OH WHY !??!!!
+
   User.all.each do |user|
     BASE_SITES.each do |hostname|
       site = user.sites.build(
@@ -251,7 +253,7 @@ def create_sites
         dev_hostnames: Site::DEFAULT_DEV_DOMAINS
       )
       Timecop.travel(created_at_array.sample) do
-        site.save!
+        site.save! # TODO: USe VCR here to avoid calls to Ogone?!
       end
       site.cdn_up_to_date = true if rand > 0.5
       site.apply_pending_plan_changes!
