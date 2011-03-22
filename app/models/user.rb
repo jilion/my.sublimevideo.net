@@ -78,8 +78,8 @@ class User < ActiveRecord::Base
     before_transition :on => :unsuspend, :do => [:set_failed_invoices_count_on_suspend, :unsuspend_sites]
     after_transition  :on => :unsuspend, :do => :send_account_unsuspended_email
 
-    before_transition :on => :archive, :do => :set_archived_at
-    after_transition  :on => :archive, :do => [:send_account_archived_email, :archive_sites]
+    before_transition :on => :archive, :do => [:set_archived_at, :archive_sites]
+    after_transition  :on => :archive, :do => :send_account_archived_email
   end
 
   # ==========
@@ -178,21 +178,6 @@ class User < ActiveRecord::Base
 
   def email=(email)
     write_attribute(:email, email.try(:downcase))
-  end
-
-  def delay_suspend(run_at = Billing.days_before_suspend_user.days.from_now)
-    transaction do
-      begin
-        delayed_job = User.delay(:run_at => run_at).suspend(self.id)
-        self.update_attribute(:suspending_delayed_job_id, delayed_job.id)
-      rescue => ex
-        Notify.send("User#suspend for user ##{self.id} has failed: #{ex.message}", :exception => ex)
-      end
-    end
-  end
-
-  def will_be_suspended?
-    suspending_delayed_job
   end
 
 private

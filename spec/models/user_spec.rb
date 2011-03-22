@@ -285,14 +285,6 @@ describe User do
       end
 
       describe "Callbacks" do
-        pending "before_transition :on => :suspend, :do => :set_failed_invoices_count_on_suspend" do
-          specify do
-            subject.reload.failed_invoices_count_on_suspend.should == 0
-            subject.suspend
-            subject.failed_invoices_count_on_suspend.should == 2
-          end
-        end
-
         describe "before_transition :on => :suspend, :do => :suspend_sites" do
           it "should suspend each user' active site" do
             @paid_site.reload.should be_active
@@ -312,38 +304,6 @@ describe User do
       end
     end
 
-    describe "#cancel_suspend" do
-      before(:each) do
-        @user.reload.delay_suspend
-      end
-      subject { @user }
-
-      context "from active state" do
-        it "should set user to active" do
-          subject.should be_active
-          subject.cancel_suspend
-          subject.should be_active
-        end
-      end
-
-      describe "Callbacks" do
-        describe "before_transition :on => :cancel_suspend, :do => :delete_suspending_delayed_job" do
-          it "should clear the delayed job scheduled to suspend the user" do
-            delayed_job_id = subject.suspending_delayed_job_id
-            Delayed::Job.find(delayed_job_id).should be_present
-            subject.cancel_suspend
-            lambda { Delayed::Job.find(delayed_job_id) }.should raise_error(ActiveRecord::RecordNotFound)
-          end
-
-          it "should clear suspending_delayed_job_id" do
-            subject.suspending_delayed_job_id.should be_present
-            subject.cancel_suspend
-            subject.suspending_delayed_job_id.should be_nil
-          end
-        end
-      end
-    end
-
     describe "#unsuspend" do
       before(:each) { @user.reload.update_attribute(:state, 'suspended') }
       subject { @user }
@@ -357,18 +317,6 @@ describe User do
       end
 
       describe "Callbacks" do
-        pending "before_transition :on => :suspend, :do => :set_failed_invoices_count_on_suspend" do
-          before(:all) do
-            subject.reload.suspend
-          end
-          specify do
-            subject.failed_invoices_count_on_suspend.should == 2
-            @invoice1.reload.update_attribute(:state, 'paid')
-            subject.unsuspend
-            subject.failed_invoices_count_on_suspend.should == 1
-          end
-        end
-
         describe "before_transition :on => :unsuspend, :do => :unsuspend_sites" do
           it "should suspend each user' site" do
             @suspended_site.reload.should be_suspended
@@ -407,8 +355,8 @@ describe User do
         end
       end
 
-      pending "Callbacks" do
-        describe "before_transition :on => :archive, :do => [:set_archived_at, :archive_sites, :delay_complete_current_invoice]" do
+      describe "Callbacks", :focus => true do
+        describe "before_transition :on => :archive, :do => [:set_archived_at, :archive_sites]" do
           specify do
             subject.archived_at.should be_nil
             subject.archive
@@ -416,7 +364,7 @@ describe User do
           end
 
           it "should archive each user' site" do
-            @dev_site.reload.should be_dev
+            @dev_site.reload.should be_active
             subject.archive
             @dev_site.reload.should be_archived
           end
@@ -511,7 +459,7 @@ describe User do
       end
     end
 
-    pending "after_update :charge_failed_invoices" do
+    describe "after_update :charge_failed_invoices" do
       context "with no failed invoices" do
         it "should not delay Class#charge" do
           user.cc_updated_at = Time.now.utc
@@ -523,9 +471,10 @@ describe User do
       context "with failed invoices" do
         before(:all) do
           @user = Factory(:user)
-          Factory(:invoice, user: @user, state: 'paid')
-          Factory(:invoice, user: @user, state: 'failed')
-          Factory(:invoice, user: @user, state: 'failed')
+          @site1 = Factory(:site, user: @user)
+          @site2 = Factory(:site, user: @user)
+          Factory(:invoice, site: @site1, state: 'paid')
+          Factory(:invoice, site: @site2, state: 'failed')
         end
         subject { @user }
 
@@ -536,8 +485,8 @@ describe User do
 
         it "should delay Class#charge if the user has failed invoices and cc_updated_at has changed" do
           subject.reload.cc_updated_at = Time.now.utc
-          lambda { subject.save }.should change(Delayed::Job, :count).by(2)
-          Delayed::Job.last.name.should == 'Class#charge'
+          lambda { subject.save }.should change(Delayed::Job, :count).by(1)
+          Delayed::Job.last.name.should == 'Class#charge_open_and_failed_invoices_by_user_id'
         end
 
         context "with a suspended user" do
@@ -545,8 +494,8 @@ describe User do
 
           it "should delay Class#charge if the user has failed invoices and cc_updated_at has changed" do
             subject.cc_updated_at = Time.now.utc
-            lambda { subject.save }.should change(Delayed::Job, :count).by(2)
-            Delayed::Job.last.name.should == 'Class#charge'
+            lambda { subject.save }.should change(Delayed::Job, :count).by(1)
+            Delayed::Job.last.name.should == 'Class#charge_open_and_failed_invoices_by_user_id'
           end
         end
       end
@@ -662,6 +611,7 @@ end
 
 
 
+
 # == Schema Information
 #
 # Table name: users
@@ -706,6 +656,7 @@ end
 #  company_job_title                :string(255)
 #  company_employees                :string(255)
 #  company_videos_served            :string(255)
+#  cc_alias                         :string(255)
 #  suspending_delayed_job_id        :integer
 #  failed_invoices_count_on_suspend :integer         default(0)
 #  archived_at                      :datetime
