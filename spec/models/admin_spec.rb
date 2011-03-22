@@ -4,28 +4,28 @@ describe Admin do
   context "Factory" do
     before(:all) { @admin = Factory(:admin) }
     subject { @admin }
-    
+
     its(:email) { should match /email\d+@admin.com/ }
-    
+
     it { should be_valid }
   end # Factory
-  
+
   describe "Associations" do
     before(:all) { @admin = Factory(:admin) }
     subject { @admin }
-    
+
     it { should have_many :mail_logs }
   end # Associations
-  
+
   describe "Validations" do
     before(:all) { @admin = Factory(:admin) }
     subject { @admin }
-    
+
     [:email, :password, :password_confirmation, :remember_me].each do |attr|
       it { should allow_mass_assignment_of(attr) }
     end
   end # Validations
-  
+
 end
 
 
