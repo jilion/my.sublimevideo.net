@@ -108,7 +108,8 @@ describe Site::Invoice do
         context "with dev plan" do
           before(:all) do
             Timecop.travel(Time.utc(2011,1,30)) do
-              @site = Factory(:site_pending, plan_id: @dev_plan.id)
+              @site = Factory.build(:new_site, plan_id: @dev_plan.id)
+              @site.pend_plan_changes
             end
           end
           subject { @site }

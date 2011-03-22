@@ -43,45 +43,6 @@ feature "Sticky notices" do
     end
   end
 
-  feature "user will be suspended" do
-    background do
-      sign_in_as :user, :suspend => true
-    end
-
-    scenario "show a notice" do
-      visit '/sites'
-
-      current_url.should =~ %r(http://[^/]+/sites)
-      page.should have_content("Your account will be suspended in")
-    end
-  end
-
-  feature "user will be suspended and credit card will expire this month" do
-    background do
-      sign_in_as :user, :suspend => true, :cc_expire_on => Time.now.utc
-    end
-
-    scenario "show a notice" do
-      visit '/sites'
-
-      current_url.should =~ %r(http://[^/]+/sites)
-      page.should have_content("Your account will be suspended in")
-    end
-  end
-
-  feature "user will be suspended and credit card is expired" do
-    background do
-      sign_in_as :user, :suspend => true, :cc_expire_on => 2.month.ago
-    end
-
-    scenario "show a notice" do
-      visit '/sites'
-
-      current_url.should =~ %r(http://[^/]+/sites)
-      page.should have_content("Your account will be suspended in")
-    end
-  end
-
   feature "user have beta sites" do
     background do
       sign_in_as :user
