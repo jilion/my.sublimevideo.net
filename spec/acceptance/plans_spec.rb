@@ -30,7 +30,11 @@ feature "Plans" do
       page.should have_content("Your next plan, #{site.next_cycle_plan.title}, will automatically start on #{I18n.l site.plan_cycle_ended_at.tomorrow.midnight, :format => :named_date}")
     end
 
-    scenario "update dev plan to paid plan" do
+    # TODO Rémy
+    pending "update paid plan to paid plan with credit card data"
+
+    # TODO Rémy
+    pending "update dev plan to paid plan" do
       @paid_plan.reload.update_attribute(:name, 'small')
       site = Factory(:site, user: @current_user, plan: @dev_plan)
 
@@ -76,8 +80,6 @@ feature "Plans" do
 
       page.should have_content("Your current plan, #{site.plan.title}, will be automatically renewed on #{I18n.l site.plan_cycle_ended_at.tomorrow.midnight, :format => :named_date}")
     end
-
-    pending "update paid plan to paid plan with credit card data"
 
   end
 
