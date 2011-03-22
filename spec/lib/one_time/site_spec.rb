@@ -5,8 +5,8 @@ describe OneTime::Site do
 
   describe ".set_beta_plan" do
     before(:all) do
-      @active_invalid   = Factory.build(:site, plan: nil, state: 'active', hostname: 'jilion.local').tap { |s| s.save(validate: false) }
-      @archived_invalid = Factory.build(:site, plan: nil, state: 'archived', hostname: 'jilion.local').tap { |s| s.save(validate: false) }
+      @active_invalid   = Factory.build(:new_site, plan: nil, state: 'active', hostname: 'jilion.local').tap { |s| s.save(validate: false) }
+      @archived_invalid = Factory.build(:new_site, plan: nil, state: 'archived', hostname: 'jilion.local').tap { |s| s.save(validate: false) }
     end
 
     context "actually test the method for all sites" do
@@ -22,12 +22,12 @@ describe OneTime::Site do
   describe ".update_hostnames" do
     context "on all sites" do
       before(:all) do
-        @not_public_hostname      = Factory.build(:site, plan: @beta_plan, hostname: 'jilion.local').tap { |s| s.save(validate: false) }
-        @not_local_dev_hostname1  = Factory.build(:site, plan: @beta_plan, hostname: 'jilion.com', dev_hostnames: 'localhost, jilion.net').tap { |s| s.save(validate: false) }
-        @not_local_dev_hostname2  = Factory.build(:site, plan: @beta_plan, hostname: 'jilion.com', dev_hostnames: 'jilion.net, jilion.org').tap { |s| s.save(validate: false) }
-        @duplicated_dev_hostname1 = Factory.build(:site, plan: @beta_plan, hostname: '127.0.0.1', dev_hostnames: 'localhost, 127.0.0.1').tap { |s| s.save(validate: false) }
-        @duplicated_dev_hostname2 = Factory.build(:site, plan: @beta_plan, hostname: 'jilion.com', dev_hostnames: 'localhost, 127.0.0.1, 127.0.0.1, localhost').tap { |s| s.save(validate: false) }
-        @mixed_invalid_site       = Factory.build(:site, plan: @beta_plan, hostname: 'jilion.local', dev_hostnames: 'localhost, jilion.local, 127.0.0.1, jilion.net').tap { |s| s.save(validate: false) }
+        @not_public_hostname      = Factory.build(:new_site, plan: @beta_plan, hostname: 'jilion.local').tap { |s| s.save(validate: false) }
+        @not_local_dev_hostname1  = Factory.build(:new_site, plan: @beta_plan, hostname: 'jilion.com', dev_hostnames: 'localhost, jilion.net').tap { |s| s.save(validate: false) }
+        @not_local_dev_hostname2  = Factory.build(:new_site, plan: @beta_plan, hostname: 'jilion.com', dev_hostnames: 'jilion.net, jilion.org').tap { |s| s.save(validate: false) }
+        @duplicated_dev_hostname1 = Factory.build(:new_site, plan: @beta_plan, hostname: '127.0.0.1', dev_hostnames: 'localhost, 127.0.0.1').tap { |s| s.save(validate: false) }
+        @duplicated_dev_hostname2 = Factory.build(:new_site, plan: @beta_plan, hostname: 'jilion.com', dev_hostnames: 'localhost, 127.0.0.1, 127.0.0.1, localhost').tap { |s| s.save(validate: false) }
+        @mixed_invalid_site       = Factory.build(:new_site, plan: @beta_plan, hostname: 'jilion.local', dev_hostnames: 'localhost, jilion.local, 127.0.0.1, jilion.net').tap { |s| s.save(validate: false) }
       end
 
       it "all sites created should be invalid" do

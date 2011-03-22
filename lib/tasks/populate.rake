@@ -107,24 +107,6 @@ namespace :user do
     end
   end
 
-  desc "Delay suspend the user with the given email (EMAIL=xx@xx.xx) (or the opposite if already delayed suspended)"
-  task delay_suspend: :environment do
-    timed do
-      email = argv("email")
-      return if email.nil?
-
-      User.find_by_email(email).tap do |user|
-        if user.will_be_suspended?
-          puts "Cancel the suspension of #{email}..."
-          user.cancel_suspend
-        else
-          puts "Delay the suspension of #{email}..."
-          user.delay_suspend
-        end
-      end
-    end
-  end
-
   desc "Suspend/unsuspend a user given an email (EMAIL=xx@xx.xx), you can pass the count of failed invoices on suspend with FAILED_INVOICES=N"
   task suspended: :environment do
     timed do
@@ -265,34 +247,21 @@ def create_sites
   User.all.each do |user|
     BASE_SITES.each do |hostname|
       site = user.sites.build(
-        plan_id: plan_ids.sample,
+        plan_id: plan_ids.first,
         hostname: hostname,
         dev_hostnames: Site::DEFAULT_DEV_DOMAINS
       )
       site.state        = 'active' if user.cc? && rand > 0.2
       site.created_at   = created_at_array.sample
-      # site.activated_at = site.created_at if site.active?
 
       Timecop.travel(site.created_at) do
-        site.save!(validate: false)
+        site.save!#(validate: false)
       end
-      site.update_attribute(:cdn_up_to_date, true) if rand > 0.5
+      site.plan_id = plan_ids.sample
+      site.cdn_up_to_date = true if rand > 0.5
+      site.apply_pending_plan_changes!
+      site.save!
     end
-
-    # My SUBLIME (or not) random sites generator, not used anymore, SNIIIIIIIFFFFFFFFFFFF!!!!!!!!!!!!!!!
-    # rand(max).times do |i|
-    #   site = user.sites.build(
-    #     plan_id: plan_ids.sample,
-    #     hostname: subdomains.sample + (rand > 0.75 ? "." : "") + user.id.to_s + i.to_s + Faker::Internet.domain_name.sub(/(\.co)?\.uk/, '.be')
-    #   )
-    #   site.state        = 'active' if user.cc? && rand > 0.2
-    #   site.created_at   = [user.confirmed_at.to_date, created_at_array.sample].max
-    #   site.activated_at = site.created_at if site.active?
-    #
-    #   Timecop.travel(site.created_at) do
-    #     site.save!(validate: false)
-    #   end
-    # end
   end
   puts "#{BASE_SITES.size} beautiful sites created for each user!"
 end
