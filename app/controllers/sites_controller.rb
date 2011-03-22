@@ -40,12 +40,12 @@ class SitesController < ApplicationController
 
     respond_with(@site) do |format|
       if @site.save # will create invoice and charge...
-        
+
         if !@site.in_paid_plan?
           format.html { redirect_to :sites }
         else
           transaction = @site.last_invoice.transaction
-        
+
           if transaction.waiting_d3d?
             format.html { render :text => transaction.d3d_html }
 
@@ -54,12 +54,12 @@ class SitesController < ApplicationController
 
           elsif transaction.succeed?
             format.html { redirect_to :sites }
-            
-          elsif transaction.error_key == "unknown"
+
+          elsif transaction.unprocessed?
             format.html { redirect_to :sites, :notice => t("transaction.errors.#{transaction.error_key}") }
           end
         end
-        
+
       else
         format.html { render :new }
       end

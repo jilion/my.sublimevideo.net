@@ -128,7 +128,8 @@ describe SitesController do
             @mock_transaction.should_receive(:waiting_d3d?)    { false }
             @mock_transaction.should_receive(:failed?)         { false }
             @mock_transaction.should_receive(:succeed?)        { false }
-            @mock_transaction.should_receive(:error_key).twice { "unknown" }
+            @mock_transaction.should_receive(:unprocessed?)    { true }
+            @mock_transaction.should_receive(:error_key)       { "unknown" }
 
             post :create, :site => {}
             flash[:notice].should == I18n.t("transaction.errors.unknown")

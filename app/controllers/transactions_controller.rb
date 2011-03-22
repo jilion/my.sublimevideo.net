@@ -64,7 +64,6 @@ private
 
     respond_with do |format|
       if transaction.succeed?
-        transaction.invoices.map(&:site).uniq.each { |site| site.apply_pending_plan_changes! }
         format.html { redirect_to :sites, :notice => t("flash.sites.#{params["ACTION"]}.notice") }
 
       elsif transaction.failed?

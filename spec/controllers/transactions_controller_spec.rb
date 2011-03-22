@@ -59,7 +59,6 @@ describe TransactionsController do
         context "that succeeds" do
           it "should add a notice and redirect to /account/edit" do
             mock_transaction.should_receive(:succeed?) { true }
-            mock_transaction.stub_chain(:invoices, :map, :uniq, :each)
 
             post :callback, @params.merge(@sha_params)
             flash[:notice].should be_present
