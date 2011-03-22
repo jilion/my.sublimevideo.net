@@ -28,7 +28,7 @@ gem 'rescue_me',             '0.1.0'
 gem 'configuration',         '1.2.0'
 gem 'libxml-ruby',           '1.1.3', :require => 'libxml'
 
-gem 'state_machine',         '0.9.4'
+gem 'state_machine',         '0.10.0'
 gem 'paper_trail',           '2.0.0'
 gem 'uniquify',              '0.1.0'
 
@@ -36,7 +36,7 @@ gem 'responders',            '0.6.2'
 gem 'has_scope',             :git => 'git://github.com/rymai/has_scope.git'
 
 gem 'aws',                   '2.3.34' # bugs in 2.4.2
-gem 'fog',                   '0.7.0'
+gem 'fog',                   '0.7.1'
 gem 'carrierwave',           '0.5.2'
 gem 'voxel_hapi',            :git => 'git://github.com/thibaudgg/voxel_hapi.git', :branch => '1.9.2' # VoxCast CDN
 gem 'request-log-analyzer',  '1.9.10', :require => 'request_log_analyzer'
@@ -56,7 +56,7 @@ gem 'settingslogic',         '2.0.6'
 gem 'array_stats',           '0.6.0'
 gem 'createsend',            '0.2.1' # Campaign Monitor
 
-gem 'hoptoad_notifier',      '2.4.6'
+gem 'hoptoad_notifier',      '2.4.8'
 gem 'prowl',                 '0.1.3'
 
 # Perf
