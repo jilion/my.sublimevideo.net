@@ -71,8 +71,8 @@ module Site::Invoice
 
     # update pending_plan_cycle_started_at & pending_plan_cycle_ended_at
     if pending_plan_id_changed? && pending_plan_id? # new paid plan (creation, upgrade or downgrade)
-      self.pending_plan_cycle_started_at = pending_plan.dev_plan? ? nil : (pending_plan_started_at + months_since(pending_plan_started_at).months).midnight
-      self.pending_plan_cycle_ended_at   = pending_plan.dev_plan? ? nil : (pending_plan_started_at + advance_for_next_cycle_end(pending_plan, pending_plan_started_at)).to_datetime.end_of_day
+      self.pending_plan_cycle_started_at = !pending_plan.paid_plan? ? nil : (pending_plan_started_at + months_since(pending_plan_started_at).months).midnight
+      self.pending_plan_cycle_ended_at   = !pending_plan.paid_plan? ? nil : (pending_plan_started_at + advance_for_next_cycle_end(pending_plan, pending_plan_started_at)).to_datetime.end_of_day
 
     elsif plan_cycle_ended_at? && plan_cycle_ended_at < Time.now.utc # normal renew
       self.pending_plan_cycle_started_at = (plan_started_at + months_since(plan_started_at).months).midnight
