@@ -141,7 +141,7 @@ private
 
     elsif pending_plan_id_changed? && pending_plan_id? && !pending_plan.paid_plan?
       # directly update for free plans
-      apply_pending_plan_changes!
+      self.apply_pending_plan_changes!
     end
   end
 

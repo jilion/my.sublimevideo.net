@@ -1,11 +1,11 @@
 module Spec
   module Support
     module AcceptanceHelpers
-      
+
       def warden
         request.env['warden']
       end
-      
+
       def create_user(options = {})
         options[:confirm]      = options[:user].delete(:confirm) || options[:confirm]
         options[:without_cc]   = options[:user].delete(:without_cc) || options[:without_cc]
@@ -13,12 +13,11 @@ module Spec
         options[:cc_type]      = options[:user].delete(:cc_type) || options[:cc_type] || 'visa'
         options[:cc_expire_on] = options[:user].delete(:cc_expire_on) || options[:cc_expire_on] || 2.years.from_now
         options[:suspend]      = options[:user].delete(:suspend) || options[:suspend]
-        
+
         @current_user ||= begin
           user = Factory(:user, options[:user] || {})
           user.confirm! unless options[:confirm] == false
           user.lock! if options[:locked] == true
-          user.delay_suspend if options[:suspend] == true
           if options[:without_cc] == true
             user.attributes = { :cc_type => nil }
             user.cc_last_digits = nil # can't be mass-assigned
@@ -30,11 +29,11 @@ module Spec
           user
         end
       end
-      
+
       def create_admin(options = {})
         options[:accept_invitation] = options[:admin].delete(:accept_invitation) || options[:accept_invitation]
         options[:locked]            = options[:admin].delete(:locked) || options[:locked]
-        
+
         @current_admin ||= begin
           admin = Factory(:admin, options[:admin] || {})
           admin.accept_invitation if options[:accept_invitation] == true
@@ -42,7 +41,7 @@ module Spec
           admin
         end
       end
-      
+
       def sign_in_as(resource_name, options = {})
         options = { resource_name => options }
         resource = case resource_name
@@ -60,7 +59,7 @@ module Spec
         click_button 'Login'
         resource
       end
-      
+
       def send_invite_to(resource_name, email = "invited@invited.com")
         sign_in_as :admin
         visit "/admin/#{resource_name.to_s.pluralize}/invitation/new"
@@ -70,11 +69,11 @@ module Spec
         sign_out
         resource_name.to_s.classify.constantize.last
       end
-      
+
       def sign_out
         click_link_or_button "Logout"
       end
-      
+
     end
   end
 end
