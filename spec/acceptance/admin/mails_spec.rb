@@ -98,7 +98,7 @@ describe "Mails" do
     # context "choosing 'with invalid site' criteria" do
     #   let(:user_with_invalid_site) { Factory(:user, :invitation_token => nil) }
     #   background do
-    #     @invalid_site = Factory.build(:site, :user => user_with_invalid_site, :hostname => 'test')
+    #     @invalid_site = Factory.build(:new_site, :user => user_with_invalid_site, :hostname => 'test')
     #     @invalid_site.save(:validate => false)
     #     ActionMailer::Base.deliveries.clear
     #   end

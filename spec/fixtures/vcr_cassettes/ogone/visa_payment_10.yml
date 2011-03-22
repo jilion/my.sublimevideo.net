@@ -55,3 +55,38 @@
       BRAND="VISA">
       </ncresponse>
     http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :post
+    uri: http://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:80/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json
+    body: "{\"EmailAddress\":\"email10@user.com\",\"Name\":\"John Doe\",\"CustomFields\":[{\"Key\":\"user_id\",\"Value\":2},{\"Key\":\"segment\",\"Value\":\"test\"}],\"Resubscribe\":true}"
+    headers: 
+      user-agent: 
+      - createsend-ruby-0.6.1
+      content-type: 
+      - application/json
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 201
+      message: Created
+    headers: 
+      cache-control: 
+      - private, s-maxage=0
+      content-type: 
+      - application/json; charset=utf-8
+      server: 
+      - CMWEB04
+      x-aspnetmvc-version: 
+      - "2.0"
+      x-aspnet-version: 
+      - 4.0.30319
+      x-powered-by: 
+      - ASP.NET
+      p3p: 
+      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
+      date: 
+      - Mon, 21 Mar 2011 19:00:02 GMT
+      content-length: 
+      - "18"
+    body: "\"email10@user.com\""
+    http_version: "1.1"

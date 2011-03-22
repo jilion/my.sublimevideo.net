@@ -8,3 +8,11 @@ Every day at midnight:
       -> When a transaction:
         - succeed: included invoices are updated to 'paid' (and their paid_at is set)
         - fail: included invoices are updated to 'fail' (and their failed_at is set)
+
+
+Commit message:
+
+Changed the way we set the plan_id:
+- if it's an upgrade or a create, set the pending_plan_id
+- pend_plan_changes is triggered before save when pending_plan_id changes
+- invoices are created after save, and charged right away

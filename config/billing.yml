@@ -1,9 +1,4 @@
-days_before_creating_invoice: 1
-days_before_charging: 3
-hours_between_retries_before_user_suspend: 6
 max_charging_attempts: 5
 days_before_suspend_user: 10
-minimum_billable_amount: 300
 
 beta_discount_rate: 0.2
-discounted_months: 3

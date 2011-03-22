@@ -18,11 +18,21 @@ Factory.define :admin do |f|
   f.password         "123456"
 end
 
-Factory.define :site do |f|
+Factory.define :new_site, :class => Site do |f|
   f.sequence(:hostname) { |n| "jilion#{n}.com" }
   f.dev_hostnames       '127.0.0.1, localhost'
   f.association         :user
-  f.association         :plan
+  f.plan_id             { Factory(:plan).id }
+end
+
+Factory.define :site, :parent => :new_site do |f|
+  f.after_build  { |site| VCR.insert_cassette('ogone/visa_payment_10') }
+  f.after_create { |site| VCR.eject_cassette; site.apply_pending_plan_changes! }
+end
+
+Factory.define :site_pending, :parent => :new_site do |f|
+  f.after_build  { |site| VCR.insert_cassette('ogone/visa_payment_10') }
+  f.after_create { |site| VCR.eject_cassette }
 end
 
 Factory.define :log_voxcast, :class => Log::Voxcast do |f|

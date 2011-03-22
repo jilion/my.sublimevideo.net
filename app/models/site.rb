@@ -28,9 +28,13 @@ class Site < ActiveRecord::Base
   belongs_to :user, :validate => true, :autosave => true
   belongs_to :plan
   belongs_to :next_cycle_plan, :class_name => "Plan"
+  belongs_to :pending_plan,    :class_name => "Plan"
 
   has_many :invoices, :class_name => "::Invoice"
+  has_one  :last_invoice, :class_name => "::Invoice", :order => :created_at.desc
+
   has_many :invoice_items, :through => :invoices
+  has_many :transactions,  :through => :invoices
 
   # Mongoid associations
   def usages
@@ -47,7 +51,7 @@ class Site < ActiveRecord::Base
   # billing
   scope :billable,      lambda { active.where({ :plan_id.not_in => Plan.where(:name => %w[beta dev]).map(&:id) }, { :next_cycle_plan_id => nil } | { :next_cycle_plan_id.ne => Plan.dev_plan.id }) }
   scope :not_billable,  lambda { where({ :state.ne => 'active' } | ({ :state => 'active' } & ({ :plan_id.in => Plan.where(:name => %w[beta dev]).map(&:id), :next_cycle_plan_id => nil } | { :next_cycle_plan_id => Plan.dev_plan }))) }
-  scope :to_be_renewed, lambda { where(:plan_cycle_ended_at.lt => Time.now.utc) }
+  scope :to_be_renewed, lambda { where(:plan_cycle_ended_at.lt => Time.now.utc).where(:pending_plan_id => nil) }
 
   scope :in_paid_plan, lambda { joins(:plan).merge(Plan.paid_plans) }
 
@@ -109,10 +113,10 @@ class Site < ActiveRecord::Base
   # ===============
 
   validates :user,        :presence => true
-  validates :plan,        :presence => { :message => "Please choose a plan" }
+  validates :plan,        :presence => { :message => "Please choose a plan" }, :unless => proc { |s| s.pending_plan_id? }
   validates :player_mode, :inclusion => { :in => PLAYER_MODES }
 
-  validates :hostname,        :presence => { :if => :in_paid_plan? }, :hostname => true, :hostname_uniqueness => true
+  validates :hostname,        :presence => { :if => :in_or_was_in_paid_plan? }, :hostname => true, :hostname_uniqueness => true
   validates :extra_hostnames, :extra_hostnames => true
   validates :dev_hostnames,   :dev_hostnames => true
 
@@ -124,14 +128,16 @@ class Site < ActiveRecord::Base
   # = Callbacks =
   # =============
 
-  before_validation :set_user_attributes
-
+  before_validation :set_default_dev_hostnames, :unless => :dev_hostnames?
+  
   before_save :prepare_cdn_update # in site/templates
   before_save :clear_alerts_sent_at
-  before_save :update_cycle_plan, :if => :plan_id_changed? # in site/invoice
+  before_save :pend_plan_changes, :if => :pending_plan_id_changed? # in site/invoice
   before_save :set_first_paid_plan_started_at # in site/invoice
 
+  after_save :create_and_charge_invoice # in site/invoice
   after_save :execute_cdn_update # in site/templates
+
   after_create :delay_ranks_update # in site/templates
 
   # =================
@@ -141,11 +147,12 @@ class Site < ActiveRecord::Base
   state_machine :initial => :active do
     state :pending # Temporary, used in the master branch
 
-    event(:archive)   { transition :active => :archived }
+    event(:archive)   { transition [:active, :suspended] => :archived }
     event(:suspend)   { transition :active => :suspended }
     event(:unsuspend) { transition :suspended => :active }
 
-    before_transition :on => :archive,  :do => :set_archived_at
+    before_transition :on => :archive, :do => :set_archived_at
+    # before_transition :on => :unsuspend, :do => :pend_plan_changes # TODO!!
 
     after_transition  :to => [:suspended, :archived], :do => :delay_remove_loader_and_license  # in site/templates
   end
@@ -198,12 +205,12 @@ class Site < ActiveRecord::Base
   end
 
   def plan_id=(attribute)
-    if plan_id? && new_plan = Plan.find_by_id(attribute)
+    new_plan = Plan.find_by_id(attribute)
+    if plan_id?
       if plan.upgrade?(new_plan)
         # Upgrade
-        @plan = nil # clear plan association cache
-        # self.pending_plan_id = attribute
-        write_attribute(:plan_id, attribute)
+        write_attribute(:pending_plan_id, attribute)
+        write_attribute(:next_cycle_plan_id, nil)
       elsif plan == new_plan
         # Reset next_cycle_plan
         write_attribute(:next_cycle_plan_id, nil)
@@ -213,8 +220,7 @@ class Site < ActiveRecord::Base
       end
     else
       # Creation
-      # self.pending_plan_id = attribute
-      write_attribute(:plan_id, attribute)
+      write_attribute(:pending_plan_id, attribute)
     end
   end
 
@@ -223,6 +229,16 @@ class Site < ActiveRecord::Base
     write_attribute(:pending_plan_id, Plan.sponsored_plan)
     write_attribute(:next_cycle_plan_id, nil)
     save_without_password_validation!
+  end
+
+  def user_attributes=(attributes)
+    user.attributes = attributes if attributes.present? # && in_or_was_in_paid_plan?
+  end
+
+  def save_without_password_validation!
+    @skip_password_validation = true
+    self.save!
+    @skip_password_validation = false
   end
 
   def to_param
@@ -287,14 +303,6 @@ class Site < ActiveRecord::Base
 
 private
 
-  # before_validation
-  def set_user_attributes
-    # for user cc fields & current_password only
-    if user && user_attributes.present? && in_or_was_in_paid_plan?
-      user.attributes = user_attributes
-    end
-  end
-
   # validate
   def at_least_one_domain_set
     if !hostname? && !dev_hostnames? && !extra_hostnames?
@@ -309,16 +317,22 @@ private
     end
   end
 
-  # validate if in_paid_plan?
+  # validate
   def validates_current_password
-    if !new_record? && in_or_was_in_paid_plan? &&
-      ((state_changed? && archived?) || (changes.keys & (Array(self.class.accessible_attributes) + ['next_cycle_plan_id'])).present?) &&
-      errors.empty?
+    return if @skip_password_validation
+    
+    if !new_record? && in_or_was_in_paid_plan? && errors.empty? &&
+      ((state_changed? && archived?) || (changes.keys & (Array(self.class.accessible_attributes) - ['plan_id'] + %w[pending_plan_id next_cycle_plan_id])).present?)
       if user.current_password.blank? || !user.valid_password?(user.current_password)
         write_attribute(:plan_id, next_cycle_plan_id) if next_cycle_plan_id_changed? # For non-js plan update view
         self.errors.add(:base, :current_password_needed)
       end
     end
+  end
+
+  # before_validation
+  def set_default_dev_hostnames
+    self.dev_hostnames = DEFAULT_DEV_DOMAINS
   end
 
   # before_save
@@ -368,6 +382,9 @@ end
 #  plan_started_at                               :datetime
 #  plan_cycle_started_at                         :datetime
 #  plan_cycle_ended_at                           :datetime
+#  pending_plan_started_at                       :datetime
+#  pending_plan_cycle_started_at                 :datetime
+#  pending_plan_cycle_ended_at                   :datetime
 #  plan_player_hits_reached_notification_sent_at :datetime
 #  first_plan_upgrade_required_alert_sent_at     :datetime
 #  last_30_days_main_player_hits_total_count     :integer         default(0)
@@ -384,4 +401,3 @@ end
 #  index_sites_on_plan_id                                     (plan_id)
 #  index_sites_on_user_id                                     (user_id)
 #
-

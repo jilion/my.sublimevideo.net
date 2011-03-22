@@ -22,38 +22,10 @@ describe Invoice do
     subject { @invoice }
 
     it { should belong_to :site }
+    it { should have_one :user }
     it { should have_many :invoice_items }
     it { should have_and_belong_to_many :transactions }
   end # Associations
-
-  describe "Scopes" do
-    before(:all) do
-      Invoice.delete_all
-      @open_invoice   = Factory(:invoice, state: 'open', created_at: 48.hours.ago)
-      @failed_invoice = Factory(:invoice, state: 'failed', created_at: 25.hours.ago)
-      @paid_invoice   = Factory(:invoice, state: 'paid', created_at: 18.hours.ago)
-    end
-
-    describe "#between" do
-      specify { Invoice.between(24.hours.ago, 12.hours.ago).all.should == [@paid_invoice] }
-    end
-
-    describe "#open" do
-      specify { Invoice.open.all.should == [@open_invoice] }
-    end
-
-    describe "#failed" do
-      specify { Invoice.failed.all.should == [@failed_invoice] }
-    end
-
-    describe "#open_or_failed" do
-      specify { Invoice.open_or_failed.all.should == [@open_invoice, @failed_invoice] }
-    end
-
-    describe "#paid" do
-      specify { Invoice.paid.all.should == [@paid_invoice] }
-    end
-  end # Scopes
 
   describe "Validations" do
     before(:all) { @invoice = Factory(:invoice) }
@@ -79,98 +51,72 @@ describe Invoice do
       it { should be_open }
     end
 
-    pending "Transitions" do
+    describe "Transitions" do
 
-      describe "after_transition :on => :complete, :do => :decrement_user_remaining_discounted_months" do
-        before(:each) { subject.reload.update_attribute(:state, 'open') }
-
-        context "no remaining_discounted_months" do
-          before(:each) { subject.user.reload.update_attribute(:remaining_discounted_months, 0) }
-
-          it "should set open invoice directly to paid" do
-            subject.user.remaining_discounted_months.should == 0
-            subject.complete
-            subject.user.remaining_discounted_months.should == 0
-          end
-        end
-
-        context "a remaining_discounted_months" do
-          before(:each) { subject.user.reload.update_attribute(:remaining_discounted_months, 1) }
-
-          it "should set open invoice directly to paid" do
-            subject.user.remaining_discounted_months.should == 1
-            subject.complete
-            subject.user.remaining_discounted_months.should == 0
-          end
+      describe "before_transition :on => :succeed, :do => :set_paid_at" do
+        subject { @invoice.reload }
+        it "should set paid_at" do
+          subject.paid_at.should be_nil
+          subject.succeed
+          subject.paid_at.should be_present
         end
       end
 
-      describe "after_transition :on => :complete, :do => :update_user_invoiced_amount" do
-        before(:each) { subject.reload.update_attribute(:state, 'open') }
+      describe "before_transition :on => :fail, :do => :set_failed_at" do
+        subject { @invoice.reload }
+        it "should set failed_at" do
+          subject.failed_at.should be_nil
+          subject.fail
+          subject.failed_at.should be_present
+        end
+      end
+
+      describe "after_transition :on => :succeed, :do => :apply_pending_site_plan_changes" do
+        it "should call #apply_pending_plan_changes! on the site" do
+          site = Factory(:site)
+          site.should_receive(:apply_pending_plan_changes!)
+          Factory(:invoice, site: site).succeed
+        end
+      end
+
+      describe "after_transition :on => :succeed, :do => :update_user_invoiced_amount" do
+        subject { @invoice.reload }
 
         it "should update user.last_invoiced_amount" do
           subject.user.update_attribute(:last_invoiced_amount, 500)
-          expect { subject.complete }.should change(subject.user, :last_invoiced_amount).from(500).to(10000)
+          expect { subject.succeed }.should change(subject.user, :last_invoiced_amount).from(500).to(10000)
         end
+
         it "should increment user.total_invoiced_amount" do
           subject.user.update_attribute(:total_invoiced_amount, 500)
-          expect { subject.complete }.should change(subject.user, :total_invoiced_amount).from(500).to(10500)
+          expect { subject.succeed }.should change(subject.user, :total_invoiced_amount).from(500).to(10500)
+        end
+
+        it "should save user" do
+          old_user_last_invoiced_amount = subject.user.last_invoiced_amount
+          old_user_total_invoiced_amount = subject.user.total_invoiced_amount
+          subject.succeed
+          subject.user.reload
+          subject.user.last_invoiced_amount.should_not == old_user_last_invoiced_amount
+          subject.user.total_invoiced_amount.should_not == old_user_total_invoiced_amount
         end
       end
 
-      describe "after_transition  :open => :open, :do => :send_invoice_completed_email" do
-        context "from open" do
-          before(:each) { subject.reload.update_attribute(:state, 'open') }
+      describe "after_transition :on => :succeed, :do => :unsuspend_user" do
+        subject { @invoice.reload }
 
-          it "should send an email to invoice.user" do
-            lambda { subject.complete }.should change(ActionMailer::Base.deliveries, :count).by(1)
-            ActionMailer::Base.deliveries.last.to.should == [subject.user.email]
-          end
-
-          context "with an archived user" do
-            before(:each) { subject.reload.user.update_attribute(:state, 'archived') }
-
-            it "should not send an email to the user" do
-              lambda { subject.complete }.should_not change(ActionMailer::Base.deliveries, :count)
-            end
-          end
-        end
-      end
-
-      describe "before_transition :open => :failed, :do => :delay_suspend_user" do
-        context "from open" do
-          before(:each) { subject.reload.update_attributes(state: 'open', attempts: Billing.max_charging_attempts + 1, charging_delayed_job_id: 1) }
-
-          it "should delay user.suspend in Billing.days_before_suspend_user days" do
-            lambda { subject.fail }.should change(Delayed::Job.where(:handler.matches => "%Class%suspend%"), :count).by(1)
-            Delayed::Job.where(:handler.matches => "%Class%suspend%").first.run_at.should be_within(5).of(Billing.days_before_suspend_user.days.from_now) # seconds of tolerance
-          end
-        end
-      end
-
-      describe "after_transition :open => :failed, :do => :send_charging_failed_email" do
-        context "from open" do
-          before(:each) { subject.reload.update_attributes(state: 'open', attempts: Billing.max_charging_attempts + 1) }
-
-          it "should send an email to invoice.user" do
-            lambda { subject.fail }.should change(ActionMailer::Base.deliveries, :count).by(1)
-            ActionMailer::Base.deliveries.last.to.should == [subject.user.email]
-          end
-        end
-      end
-
-      describe "after_transition [:open, :failed] => :paid, :do => :unsuspend_user" do
         context "with a non-suspended user" do
           %w[open failed].each do |state|
             context "from #{state}" do
               before(:each) do
                 subject.reload.update_attributes(state: state, amount: 0)
-                subject.user.should_not be_suspended
+                subject.user.should be_active
               end
 
-              it "should not delay un-suspend_user" do
-                lambda { subject.send(state == 'open' ? :complete : :succeed) }.should_not change(Delayed::Job, :count)
+              it "should not un-suspend_user" do
+                subject.succeed
                 subject.should be_paid
+                subject.user.should be_active
               end
             end
           end
@@ -186,31 +132,65 @@ describe Invoice do
               end
 
               context "with no more open invoice" do
-                it "should delay un-suspend_user" do
-                  lambda { subject.send(state == 'open' ? :complete : :succeed) }.should change(Delayed::Job, :count).by(1)
-                  Delayed::Job.where(:handler.matches => "%Class%unsuspend%").count.should == 1
+                it "should un-suspend_user" do
+                  subject.succeed
                   subject.should be_paid
+                  subject.user.should be_active
                 end
               end
 
-              context "with more open invoice" do
+              context "with more failed invoice" do
                 before(:each) do
-                  Factory(:invoice, user: subject.user, state: 'failed', started_at: Time.now.utc, ended_at: Time.now.utc)
+                  Factory(:invoice, site: Factory(:site, user: subject.user), state: 'failed')
                 end
 
                 it "should not delay un-suspend_user" do
-                  lambda { subject.send(state == 'open' ? :complete : :succeed) }.should_not change(Delayed::Job, :count)
+                  subject.succeed
                   subject.should be_paid
+                  subject.user.should be_suspended
                 end
               end
             end
           end
         end
+
       end
 
     end # Transitions
 
   end # State Machine
+
+  describe "Scopes" do
+    
+    before(:all) do
+      Invoice.delete_all
+      @site = Factory(:site, plan: @dev_plan)
+      @open_invoice   = Factory(:invoice, site: @site, state: 'open', created_at: 48.hours.ago)
+      @failed_invoice = Factory(:invoice, site: @site, state: 'failed', created_at: 25.hours.ago)
+      @paid_invoice   = Factory(:invoice, site: @site, state: 'paid', created_at: 18.hours.ago)
+    end
+
+    describe "#between" do
+      specify { Invoice.between(24.hours.ago, 12.hours.ago).all.should == [@paid_invoice] }
+    end
+
+    describe "#open" do
+      specify { Invoice.open.all.should == [@open_invoice] }
+    end
+
+    describe "#failed" do
+      specify { Invoice.failed.all.should == [@failed_invoice] }
+    end
+
+    describe "#open_or_failed" do
+      specify { Invoice.open_or_failed.all.should == [@open_invoice, @failed_invoice] }
+    end
+
+    describe "#paid" do
+      specify { Invoice.paid.all.should == [@paid_invoice] }
+    end
+    
+  end # Scopes
 
   describe "Class Methods" do
 
@@ -242,39 +222,69 @@ describe Invoice do
       end
 
       describe "with a site upgraded" do
-        before(:all) do
-          @user       = Factory(:user, country: 'FR')
-          @site       = Factory(:site, user: @user, plan: @paid_plan).reload
-          @paid_plan2 = Factory(:plan, cycle: "month", price: 3000)
-          # Simulate upgrade
-          @site.plan_id = @paid_plan2.id
-          @site.instance_variable_set(:@instant_charging, true)
+        context "from a paid plan" do
+          before(:all) do
+            @user       = Factory(:user, country: 'FR')
+            @site       = Factory(:site, user: @user, plan: @paid_plan).reload
+            @paid_plan2 = Factory(:plan, cycle: "month", price: 3000)
+            # Simulate upgrade
+            @site.plan_id = @paid_plan2.id
+            @invoice = Invoice.build(site: @site)
+          end
+          subject { @invoice }
 
-          @invoice = Invoice.build(site: @site)
+          specify { subject.invoice_items.size.should == 2 }
+          specify { subject.invoice_items.all? { |ii| ii.site == @site }.should be_true }
+          specify { subject.invoice_items.all? { |ii| ii.invoice == subject }.should be_true }
+          specify { subject.invoice_items.first.item.should == @paid_plan }
+          specify { subject.invoice_items.first.price.should == 1000 }
+          specify { subject.invoice_items.first.amount.should == -1000 }
+          specify { subject.invoice_items.second.item.should == @paid_plan2 }
+          specify { subject.invoice_items.second.price.should == 3000 }
+          specify { subject.invoice_items.second.amount.should == 3000 }
+
+          its(:invoice_items_amount) { should == 2000 } # paid_plan2.price - paid_plan.price
+          its(:vat_rate)             { should == 0.0 }
+          its(:vat_amount)           { should == 0 }
+          its(:amount)               { should == 2000 } # paid_plan2.price - paid_plan.price
+          its(:paid_at)              { should be_nil }
+          its(:failed_at)            { should be_nil }
+          it { should be_open }
         end
-        subject { @invoice }
 
-        specify { subject.invoice_items.size.should == 2 }
-        specify { subject.invoice_items.all? { |ii| ii.site == @site }.should be_true }
-        specify { subject.invoice_items.all? { |ii| ii.invoice == subject }.should be_true }
-        specify { subject.invoice_items.first.item.should == @paid_plan }
-        specify { subject.invoice_items.first.price.should == -1000 }
-        specify { subject.invoice_items.second.item.should == @paid_plan2 }
-        specify { subject.invoice_items.second.price.should == 3000 }
+        %w[dev beta].each do |plan|
+          context "from a #{plan} plan" do
+            before(:all) do
+              @user      = Factory(:user, country: 'FR')
+              @site      = Factory(:site, user: @user, plan: instance_variable_get("@#{plan}_plan"))
+              @paid_plan = Factory(:plan, cycle: "month", price: 3000)
+              # Simulate upgrade
+              @site.plan_id = @paid_plan.id
+              @invoice = Invoice.build(site: @site)
+            end
+            subject { @invoice }
 
-        its(:invoice_items_amount) { should == 2000 } # paid_plan2.price - paid_plan.price
-        its(:vat_rate)             { should == 0.0 }
-        its(:vat_amount)           { should == 0 }
-        its(:amount)               { should == 2000 } # paid_plan2.price - paid_plan.price
-        its(:paid_at)              { should be_nil }
-        its(:failed_at)            { should be_nil }
-        it { should be_open }
+            specify { subject.invoice_items.size.should == 1 }
+            specify { subject.invoice_items.all? { |ii| ii.site == @site }.should be_true }
+            specify { subject.invoice_items.all? { |ii| ii.invoice == subject }.should be_true }
+            specify { subject.invoice_items.first.item.should == @paid_plan }
+            specify { subject.invoice_items.first.price.should == 3000 }
+
+            its(:invoice_items_amount) { should == 3000 } # paid_plan.price
+            its(:vat_rate)             { should == 0.0 }
+            its(:vat_amount)           { should == 0 }
+            its(:amount)               { should == 3000 } # paid_plan.price
+            its(:paid_at)              { should be_nil }
+            its(:failed_at)            { should be_nil }
+            it { should be_open }
+          end
+        end
       end
 
       describe "with a Swiss user" do
         before(:all) do
           @user    = Factory(:user, country: 'CH')
-          @site    = Factory(:site, user: @user, plan: @paid_plan).reload
+          @site    = Factory(:site, user: @user, plan: @paid_plan)
           @invoice = Invoice.build(site: @site)
         end
         subject { @invoice }
@@ -287,9 +297,9 @@ describe Invoice do
         its(:amount)               { should == 1000 + (1000 * 0.08).round }
       end
 
-      describe "with a user with a discount" do
+      pending "with a user with a discount" do
         before(:all) do
-          @user    = Factory(:user, country: 'FR', remaining_discounted_months: 1)
+          @user    = Factory(:user, country: 'FR')
           @site    = Factory(:site, user: @user, plan: @paid_plan).reload
           @invoice = Invoice.build(site: @site)
         end
@@ -307,7 +317,6 @@ describe Invoice do
   end # Class Methods
 
 end
-
 
 
 

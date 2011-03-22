@@ -1,6 +1,6 @@
 class InvoiceItem < ActiveRecord::Base
 
-  attr_accessible :site, :invoice, :item, :info
+  attr_accessible :invoice, :item, :info
   serialize :info, Hash
 
   # ================
@@ -17,7 +17,6 @@ class InvoiceItem < ActiveRecord::Base
   # = Validations =
   # ===============
 
-  validates :site,       :presence => true
   validates :invoice,    :presence => true
   validates :item_type,  :presence => true
   validates :item_id,    :presence => true
@@ -25,14 +24,6 @@ class InvoiceItem < ActiveRecord::Base
   validates :ended_at,   :presence => true
   validates :price,      :presence => true, :numericality => true
   validates :amount,     :presence => true, :numericality => true
-
-  # ====================
-  # = Instance Methods =
-  # ====================
-
-  def site
-    invoice.site.version_at(ended_at)
-  end
 
 end
 

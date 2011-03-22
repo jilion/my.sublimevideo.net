@@ -29,13 +29,6 @@ namespace :one_time do
       end
     end
 
-    desc "Set remaining_discounted_months to all users"
-    task :set_remaining_discounted_months => :environment do
-      timed do
-        puts OneTime::User.set_remaining_discounted_months + " beta users will get a discount"
-      end
-    end
-
     desc "Import all beta users to campaign monitor "
     task :import_all_beta_users_to_campaign_monitor => :environment do
       timed do

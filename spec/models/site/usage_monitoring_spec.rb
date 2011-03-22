@@ -17,7 +17,7 @@ describe Site::UsageMonitoring do
     before(:all) { @plan = Factory(:plan, player_hits: 30 * 100) }
 
     it "should do nothing" do
-      Timecop.travel(Time.utc(2011,1,1)) { @site = Factory(:site, plan: @plan) }
+      Timecop.travel(Time.utc(2011,1,1)) { @site = Factory(:site, plan_id: @plan.id) }
 
       UsageMonitoringMailer.should_not_receive(:plan_player_hits_reached)
       UsageMonitoringMailer.should_not_receive(:plan_upgrade_required)
@@ -29,7 +29,7 @@ describe Site::UsageMonitoring do
 
     context "with required upgrade site" do
       before(:each) do
-        Timecop.travel(Time.utc(2011,1,1)) { @site = Factory(:site, plan: @plan) }
+        Timecop.travel(Time.utc(2011,1,1)) { @site = Factory(:site, plan_id: @plan.id) }
         (1..20).each do |day|
           Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,1,day), main_player_hits: 200)
         end
@@ -39,7 +39,7 @@ describe Site::UsageMonitoring do
         @site.first_plan_upgrade_required_alert_sent_at.should be_nil
         UsageMonitoringMailer.should_receive(:plan_upgrade_required).with(@site).and_return ( mock(:deliver! => true) )
         Timecop.travel(Time.utc(2011,1,22)) { Site::UsageMonitoring.monitor_sites_usages }
-        @site.reload.first_plan_upgrade_required_alert_sent_at.should_not be_nil
+        @site.reload.first_plan_upgrade_required_alert_sent_at.should be_present
       end
 
       it "should just send alert" do
@@ -54,7 +54,7 @@ describe Site::UsageMonitoring do
 
     context "with reached player hits site" do
       before(:each) do
-        Timecop.travel(Time.utc(2011,1,1)) { @site = Factory(:site, plan: @plan) }
+        Timecop.travel(Time.utc(2011,1,1)) { @site = Factory(:site, plan_id: @plan.id) }
         Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,1,1), main_player_hits: 3001)
       end
 
@@ -62,8 +62,7 @@ describe Site::UsageMonitoring do
         @site.plan_player_hits_reached_notification_sent_at.should be_nil
         UsageMonitoringMailer.should_receive(:plan_player_hits_reached).with(@site).and_return ( mock(:deliver! => true) )
         Timecop.travel(Time.utc(2011,1,22)) { Site::UsageMonitoring.monitor_sites_usages }
-        @site.reload
-        @site.plan_player_hits_reached_notification_sent_at.should_not be_nil
+        @site.reload.plan_player_hits_reached_notification_sent_at.should be_present
         @site.first_plan_upgrade_required_alert_sent_at.should be_nil
       end
 

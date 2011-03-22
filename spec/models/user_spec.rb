@@ -23,7 +23,6 @@ describe User do
     before(:all) { @user = Factory(:user) }
     subject { @user }
 
-    it { should belong_to :suspending_delayed_job }
     it { should have_many :sites }
     it { should have_many(:invoices).through(:sites) }
   end
@@ -91,7 +90,7 @@ describe User do
       context "email already taken by an active user" do
         it "should add an error" do
           active_user = Factory(:user, :state => 'active', :email => "john@doe.com")
-          user = Factory.build(:user, :email => active_user.email)
+          user = Factory.build(:user, email: active_user.email)
           user.should_not be_valid
           user.should have(1).error_on(:email)
         end
@@ -99,8 +98,8 @@ describe User do
 
       context "email already taken by an archived user" do
         it "should not add an error" do
-          archived_user = Factory(:user, :state => 'archived', :email => "john@doe.com")
-          user = Factory.build(:user, :email => archived_user.email)
+          archived_user = Factory(:user, state: 'archived', email: "john@doe.com")
+          user = Factory.build(:user, email: archived_user.email)
           user.should be_valid
           user.errors.should be_empty
         end
@@ -285,14 +284,6 @@ describe User do
       end
 
       describe "Callbacks" do
-        pending "before_transition :on => :suspend, :do => :set_failed_invoices_count_on_suspend" do
-          specify do
-            subject.reload.failed_invoices_count_on_suspend.should == 0
-            subject.suspend
-            subject.failed_invoices_count_on_suspend.should == 2
-          end
-        end
-
         describe "before_transition :on => :suspend, :do => :suspend_sites" do
           it "should suspend each user' active site" do
             @paid_site.reload.should be_active
@@ -312,38 +303,6 @@ describe User do
       end
     end
 
-    describe "#cancel_suspend" do
-      before(:each) do
-        @user.reload.delay_suspend
-      end
-      subject { @user }
-
-      context "from active state" do
-        it "should set user to active" do
-          subject.should be_active
-          subject.cancel_suspend
-          subject.should be_active
-        end
-      end
-
-      describe "Callbacks" do
-        describe "before_transition :on => :cancel_suspend, :do => :delete_suspending_delayed_job" do
-          it "should clear the delayed job scheduled to suspend the user" do
-            delayed_job_id = subject.suspending_delayed_job_id
-            Delayed::Job.find(delayed_job_id).should be_present
-            subject.cancel_suspend
-            lambda { Delayed::Job.find(delayed_job_id) }.should raise_error(ActiveRecord::RecordNotFound)
-          end
-
-          it "should clear suspending_delayed_job_id" do
-            subject.suspending_delayed_job_id.should be_present
-            subject.cancel_suspend
-            subject.suspending_delayed_job_id.should be_nil
-          end
-        end
-      end
-    end
-
     describe "#unsuspend" do
       before(:each) { @user.reload.update_attribute(:state, 'suspended') }
       subject { @user }
@@ -357,18 +316,6 @@ describe User do
       end
 
       describe "Callbacks" do
-        pending "before_transition :on => :suspend, :do => :set_failed_invoices_count_on_suspend" do
-          before(:all) do
-            subject.reload.suspend
-          end
-          specify do
-            subject.failed_invoices_count_on_suspend.should == 2
-            @invoice1.reload.update_attribute(:state, 'paid')
-            subject.unsuspend
-            subject.failed_invoices_count_on_suspend.should == 1
-          end
-        end
-
         describe "before_transition :on => :unsuspend, :do => :unsuspend_sites" do
           it "should suspend each user' site" do
             @suspended_site.reload.should be_suspended
@@ -407,30 +354,26 @@ describe User do
         end
       end
 
-      pending "Callbacks" do
-        describe "before_transition :on => :archive, :do => [:set_archived_at, :archive_sites, :delay_complete_current_invoice]" do
-          specify do
+      describe "Callbacks" do
+        describe "before_transition :on => :archive, :do => [:set_archived_at, :archive_sites]" do
+          it "should set archived_at" do
             subject.archived_at.should be_nil
+            subject.current_password = "123456"
             subject.archive
             subject.archived_at.should be_present
           end
 
           it "should archive each user' site" do
-            @dev_site.reload.should be_dev
+            subject.sites.all? { |site| site.should_not be_archived }
+            subject.current_password = "123456"
             subject.archive
-            @dev_site.reload.should be_archived
-          end
-
-          it "should delay Class#complete of the usage statement" do
-            lambda { subject.archive }.should change(Delayed::Job, :count).by(2)
-            Delayed::Job.where(:handler.matches => "%Site%remove_loader_and_license%").count.should == 1
-            Delayed::Job.where(:handler.matches => "%Invoice%complete%").count.should == 1
+            subject.sites.all? { |site| site.reload.should be_archived }
           end
         end
 
         describe "after_transition :on => :archive, :do => :send_account_archived_email" do
           it "should send an email to user" do
-            lambda { subject.archive }.should change(ActionMailer::Base.deliveries, :count).by(1)
+            lambda { subject.current_password = "123456"; subject.archive }.should change(ActionMailer::Base.deliveries, :count).by(1)
             ActionMailer::Base.deliveries.last.to.should == [subject.email]
           end
         end
@@ -511,7 +454,7 @@ describe User do
       end
     end
 
-    pending "after_update :charge_failed_invoices" do
+    describe "after_update :charge_failed_invoices" do
       context "with no failed invoices" do
         it "should not delay Class#charge" do
           user.cc_updated_at = Time.now.utc
@@ -523,9 +466,10 @@ describe User do
       context "with failed invoices" do
         before(:all) do
           @user = Factory(:user)
-          Factory(:invoice, user: @user, state: 'paid')
-          Factory(:invoice, user: @user, state: 'failed')
-          Factory(:invoice, user: @user, state: 'failed')
+          @site1 = Factory(:site, user: @user)
+          @site2 = Factory(:site, user: @user)
+          Factory(:invoice, site: @site1, state: 'paid')
+          Factory(:invoice, site: @site2, state: 'failed')
         end
         subject { @user }
 
@@ -536,8 +480,8 @@ describe User do
 
         it "should delay Class#charge if the user has failed invoices and cc_updated_at has changed" do
           subject.reload.cc_updated_at = Time.now.utc
-          lambda { subject.save }.should change(Delayed::Job, :count).by(2)
-          Delayed::Job.last.name.should == 'Class#charge'
+          lambda { subject.save }.should change(Delayed::Job, :count).by(1)
+          Delayed::Job.last.name.should == 'Class#charge_open_and_failed_invoices_by_user_id'
         end
 
         context "with a suspended user" do
@@ -545,8 +489,8 @@ describe User do
 
           it "should delay Class#charge if the user has failed invoices and cc_updated_at has changed" do
             subject.cc_updated_at = Time.now.utc
-            lambda { subject.save }.should change(Delayed::Job, :count).by(2)
-            Delayed::Job.last.name.should == 'Class#charge'
+            lambda { subject.save }.should change(Delayed::Job, :count).by(1)
+            Delayed::Job.last.name.should == 'Class#charge_open_and_failed_invoices_by_user_id'
           end
         end
       end
@@ -556,7 +500,7 @@ describe User do
   describe "attributes accessor" do
     describe "email=" do
       it "should downcase email" do
-        user = Factory.build(:user, :email => "BOB@cool.com")
+        user = Factory.build(:user, email: "BOB@cool.com")
         user.email.should == "bob@cool.com"
       end
     end
@@ -572,67 +516,14 @@ describe User do
       end
     end
 
-    describe "#get_discount?" do
-      specify { Factory(:user, :remaining_discounted_months => nil).should_not be_get_discount }
-      specify { Factory(:user, :remaining_discounted_months => 0).should_not be_get_discount }
-      specify { Factory(:user, :remaining_discounted_months => 1).should be_get_discount }
+    pending "#get_discount?" do
     end
 
     describe "#have_beta_sites?" do
-      before(:all) { @site = Factory(:site, :plan => @beta_plan) }
+      before(:all) { @site = Factory(:site, plan_id: @beta_plan.id) }
 
       specify { @site.user.have_beta_sites?.should be_true }
     end
-
-    describe "#delay_suspend" do
-      before(:all) { @user = Factory(:user) }
-      subject { @user.reload.delay_suspend }
-
-      it "should delay suspend user" do
-        lambda { subject }.should change(Delayed::Job, :count).by(1)
-        Delayed::Job.last.name.should == "Class#suspend"
-      end
-
-      it "should delay charging in Billing.days_before_suspend_user.days.from_now by default" do
-        subject
-        Delayed::Job.last.run_at.should be_within(5).of(Billing.days_before_suspend_user.days.from_now) # seconds of tolerance
-      end
-
-      it "should set suspending_delayed_job_id" do
-        @user.reload.suspending_delayed_job_id.should be_nil
-        subject
-        @user.reload.suspending_delayed_job_id.should == Delayed::Job.last.id
-      end
-
-      context "giving a custom run_at" do
-        specify do
-          @user.delay_suspend(Time.utc(2010,7,24))
-          Delayed::Job.last.run_at.should == Time.utc(2010,7,24)
-        end
-      end
-
-      context "with an exception raised by User.delay.suspend" do
-        before(:each) do
-          User.should_receive(:delay).and_raise("Exception")
-          Notify.stub!(:send)
-        end
-
-        specify { expect { subject }.to_not raise_error }
-
-        it "should not delay suspend user" do
-          lambda { subject }.should_not change(Delayed::Job, :count)
-        end
-        it "should Notify of the exception" do
-          Notify.should_receive(:send)
-          subject
-        end
-        it "should not set suspending_delayed_job_id" do
-          @user.reload.suspending_delayed_job_id.should be_nil
-          subject
-          @user.reload.suspending_delayed_job_id.should be_nil
-        end
-      end
-    end # #delay_suspend
 
   end
 
@@ -662,57 +553,57 @@ end
 
 
 
+
+
 # == Schema Information
 #
 # Table name: users
 #
-#  id                               :integer         not null, primary key
-#  state                            :string(255)
-#  email                            :string(255)     default(""), not null
-#  encrypted_password               :string(128)     default(""), not null
-#  password_salt                    :string(255)     default(""), not null
-#  confirmation_token               :string(255)
-#  confirmed_at                     :datetime
-#  confirmation_sent_at             :datetime
-#  reset_password_token             :string(255)
-#  remember_token                   :string(255)
-#  remember_created_at              :datetime
-#  sign_in_count                    :integer         default(0)
-#  current_sign_in_at               :datetime
-#  last_sign_in_at                  :datetime
-#  current_sign_in_ip               :string(255)
-#  last_sign_in_ip                  :string(255)
-#  failed_attempts                  :integer         default(0)
-#  locked_at                        :datetime
-#  cc_type                          :string(255)
-#  cc_last_digits                   :string(255)
-#  cc_expire_on                     :date
-#  cc_updated_at                    :datetime
-#  created_at                       :datetime
-#  updated_at                       :datetime
-#  invitation_token                 :string(20)
-#  invitation_sent_at               :datetime
-#  zendesk_id                       :integer
-#  enthusiast_id                    :integer
-#  first_name                       :string(255)
-#  last_name                        :string(255)
-#  postal_code                      :string(255)
-#  country                          :string(255)
-#  use_personal                     :boolean
-#  use_company                      :boolean
-#  use_clients                      :boolean
-#  company_name                     :string(255)
-#  company_url                      :string(255)
-#  company_job_title                :string(255)
-#  company_employees                :string(255)
-#  company_videos_served            :string(255)
-#  suspending_delayed_job_id        :integer
-#  failed_invoices_count_on_suspend :integer         default(0)
-#  archived_at                      :datetime
-#  remaining_discounted_months      :integer
-#  newsletter                       :boolean         default(TRUE)
-#  last_invoiced_amount             :integer         default(0)
-#  total_invoiced_amount            :integer         default(0)
+#  id                    :integer         not null, primary key
+#  state                 :string(255)
+#  email                 :string(255)     default(""), not null
+#  encrypted_password    :string(128)     default(""), not null
+#  password_salt         :string(255)     default(""), not null
+#  confirmation_token    :string(255)
+#  confirmed_at          :datetime
+#  confirmation_sent_at  :datetime
+#  reset_password_token  :string(255)
+#  remember_token        :string(255)
+#  remember_created_at   :datetime
+#  sign_in_count         :integer         default(0)
+#  current_sign_in_at    :datetime
+#  last_sign_in_at       :datetime
+#  current_sign_in_ip    :string(255)
+#  last_sign_in_ip       :string(255)
+#  failed_attempts       :integer         default(0)
+#  locked_at             :datetime
+#  cc_type               :string(255)
+#  cc_last_digits        :string(255)
+#  cc_expire_on          :date
+#  cc_updated_at         :datetime
+#  created_at            :datetime
+#  updated_at            :datetime
+#  invitation_token      :string(20)
+#  invitation_sent_at    :datetime
+#  zendesk_id            :integer
+#  enthusiast_id         :integer
+#  first_name            :string(255)
+#  last_name             :string(255)
+#  postal_code           :string(255)
+#  country               :string(255)
+#  use_personal          :boolean
+#  use_company           :boolean
+#  use_clients           :boolean
+#  company_name          :string(255)
+#  company_url           :string(255)
+#  company_job_title     :string(255)
+#  company_employees     :string(255)
+#  company_videos_served :string(255)
+#  cc_alias              :string(255)
+#  archived_at           :datetime
+#  newsletter            :boolean         default(TRUE)
+#  last_invoiced_amount  :integer         default(0)
+#  total_invoiced_amount :integer         default(0)
 #
 # Indexes
 #

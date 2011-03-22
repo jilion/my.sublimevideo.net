@@ -1,5 +1,4 @@
 class Invoice < ActiveRecord::Base
-  extend ActiveSupport::Memoizable
 
   uniquify :reference, :chars => Array('a'..'z') - ['o'] + Array('1'..'9')
 
@@ -8,8 +7,10 @@ class Invoice < ActiveRecord::Base
   # ================
 
   belongs_to :site
-  has_many :invoice_items
 
+  has_one :user, :through => :site
+
+  has_many :invoice_items
   has_many :plan_invoice_items, conditions: { type: "InvoiceItem::Plan" }, :class_name => "InvoiceItem"
 
   has_and_belongs_to_many :transactions
@@ -31,8 +32,15 @@ class Invoice < ActiveRecord::Base
   # =================
 
   state_machine :initial => :open do
-    state :failed
     state :paid
+    state :failed
+
+    event(:succeed) { transition [:open, :failed] => :paid }
+    event(:fail)    { transition [:open, :failed] => :failed }
+
+    before_transition :on => :succeed, :do => :set_paid_at
+    before_transition :on => :fail,    :do => :set_failed_at
+    after_transition  :on => :succeed, :do => [:apply_pending_site_plan_changes!, :update_user_invoiced_amount, :unsuspend_user]
   end
 
   # ==========
@@ -95,27 +103,21 @@ class Invoice < ActiveRecord::Base
     reference
   end
 
-  def total_invoice_items_amount
-    invoice_items.inject(0) { |sum, invoice_item| sum + invoice_item.amount }
-  end
-  memoize :total_invoice_items_amount
-
 private
 
   def build_invoice_items
-    if site.instant_charging? && site.plan_id_changed? && site.plan_id_was
-      plan_was = Plan.find(site.plan_id_was)
-      invoice_items << InvoiceItem::Plan.build(invoice: self, item: plan_was, refund: true)
+    if site.pending_plan_id? && site.in_paid_plan?
+      invoice_items << InvoiceItem::Plan.build(invoice: self, item: Plan.find(site.plan_id), refund: true)
     end
-    invoice_items << InvoiceItem::Plan.build(invoice: self)
+    invoice_items << InvoiceItem::Plan.build(invoice: self, item: site.pending_plan || site.plan)
   end
 
   def set_invoice_items_amount
-    self.invoice_items_amount = total_invoice_items_amount
+    self.invoice_items_amount = invoice_items.inject(0) { |sum, invoice_item| sum + invoice_item.amount }
   end
 
   def set_discount_rate_and_amount
-    self.discount_rate   = self.user.get_discount? ? Billing.beta_discount_rate : 0.0
+    self.discount_rate   = 0 # self.user.get_discount? ? Billing.beta_discount_rate : 0.0
     self.discount_amount = (invoice_items_amount * discount_rate).round
   end
 
@@ -128,15 +130,30 @@ private
     self.amount = invoice_items_amount - discount_amount + vat_amount
   end
 
-  # after_transition :on => :complete
+  # before_transition :on => :succeed
+  def set_paid_at
+    self.paid_at = Time.now.utc
+  end
+
+  # before_transition :on => :fail
+  def set_failed_at
+    self.failed_at = Time.now.utc
+  end
+
+  # after_transition :on => :succeed
+  def apply_pending_site_plan_changes!
+    site.apply_pending_plan_changes!
+  end
   def update_user_invoiced_amount
     self.user.last_invoiced_amount = amount
     self.user.total_invoiced_amount += amount
     self.user.save
   end
+  def unsuspend_user
+    user.unsuspend if user.invoices.failed.empty?
+  end
 
 end
-
 
 
 

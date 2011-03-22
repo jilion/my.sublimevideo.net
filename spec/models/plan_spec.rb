@@ -4,6 +4,9 @@ describe Plan do
   subject { Factory(:plan) }
 
   context "Factory" do
+    before(:all) { @plan = Factory(:plan) }
+    subject { @plan }
+
     its(:name)          { should =~ /comet\d+/ }
     its(:cycle)         { should == "month" }
     its(:player_hits)   { should == 10_000 }
@@ -53,120 +56,122 @@ describe Plan do
     it { should_not allow_value("foo").for(:cycle) }
   end
 
-  describe ".create_custom" do
-
-    it "should create new custom plan" do
-      plan = Plan.create_custom(:cycle => "month", :player_hits => 10**7, :price => 999900)
-      plan.name.should == "custom#{Plan.custom_plans.count}"
-    end
-
-  end
-
-  describe "#next_plan" do
-    it "should return the next plan with a bigger price" do
-      plan2 = Factory(:plan, :price => subject.price + 100)
-      plan3 = Factory(:plan, :price => subject.price + 2000)
-      @paid_plan.next_plan.should == plan2
-    end
-
-    it "should be_nil if none bigger plan exist" do
-      plan2 = Factory(:plan, :price => 10**9)
-      plan2.next_plan.should be_nil
+  describe "Class Methods" do
+    describe ".create_custom" do
+      it "should create new custom plan" do
+        plan = Plan.create_custom(:cycle => "month", :player_hits => 10**7, :price => 999900)
+        plan.name.should == "custom#{Plan.custom_plans.count}"
+      end
     end
   end
 
-  describe "#month_price" do
-    context "with month plan" do
-      subject { Factory.build(:plan, :cycle => "month", :price => 1000) }
+  describe "Instance Methods" do
+    describe "#next_plan" do
+      it "should return the next plan with a bigger price" do
+        plan2 = Factory(:plan, :price => subject.price + 100)
+        plan3 = Factory(:plan, :price => subject.price + 2000)
+        @paid_plan.next_plan.should == plan2
+      end
 
-      its(:month_price) { should == 1000 }
+      it "should be_nil if none bigger plan exist" do
+        plan2 = Factory(:plan, :price => 10**9)
+        plan2.next_plan.should be_nil
+      end
     end
 
-    context "with year plan" do
-      subject { Factory.build(:plan, :cycle => "year", :price => 10000) }
+    describe "#month_price" do
+      context "with month plan" do
+        subject { Factory.build(:plan, :cycle => "month", :price => 1000) }
 
-      its(:month_price) { should == 10000 / 12 }
-    end
-  end
+        its(:month_price) { should == 1000 }
+      end
 
-  describe "#dev_plan?" do
-    it { Factory.build(:plan, :name => "dev").should be_dev_plan }
-    it { Factory.build(:plan, :name => "pro").should_not be_dev_plan }
-  end
+      context "with year plan" do
+        subject { Factory.build(:plan, :cycle => "year", :price => 10000) }
 
-  describe "#sponsored_plan?" do
-    it { Factory.build(:plan, :name => "dev").should_not be_sponsored_plan }
-    it { Factory.build(:plan, :name => "pro").should_not be_sponsored_plan }
-    it { Factory.build(:plan, :name => "sponsored").should be_sponsored_plan }
-  end
-
-  describe "#beta_plan?" do
-    it { Factory.build(:plan, :name => "beta").should be_beta_plan }
-    it { Factory.build(:plan, :name => "dev").should_not be_beta_plan }
-  end
-
-  describe "#standard_plan?" do
-    it { Factory.build(:plan, :name => "dev").should_not be_standard_plan }
-    it { Factory.build(:plan, :name => "beta").should_not be_standard_plan }
-    it { Factory.build(:plan, :name => "sponsored").should_not be_standard_plan }
-
-    Plan::STANDARD_NAMES.each do |name|
-      it { Factory.build(:plan, :name => name).should be_standard_plan }
-    end
-  end
-
-  describe "#custom_plan?" do
-    it { Factory.build(:plan, :name => "dev").should_not be_custom_plan }
-    it { Factory.build(:plan, :name => "beta").should_not be_custom_plan }
-    it { Factory.build(:plan, :name => "sponsored").should_not be_custom_plan }
-    it { Factory.build(:plan, :name => "custom").should be_custom_plan }
-    it { Factory.build(:plan, :name => "custom1").should be_custom_plan }
-    it { Factory.build(:plan, :name => "custom2").should be_custom_plan }
-  end
-
-  describe "#monthly?, #yearly? and #nonely?" do
-    it { Factory.build(:plan, cycle: "month").should be_monthly }
-    it { Factory.build(:plan, cycle: "year").should be_yearly }
-    it { Factory.build(:plan, cycle: "none").should be_nonely }
-  end
-
-  describe "#upgrade?" do
-    before(:all) do
-      @paid_plan         = Factory.build(:plan, cycle: "month", price: 1000)
-      @paid_plan2        = Factory.build(:plan, cycle: "month", price: 5000)
-      @paid_plan_yearly  = Factory.build(:plan, cycle: "year",  price: 10000)
-      @paid_plan_yearly2 = Factory.build(:plan, cycle: "year",  price: 50000)
+        its(:month_price) { should == 10000 / 12 }
+      end
     end
 
-    it { @dev_plan.upgrade?(@dev_plan).should be_nil }
-    it { @dev_plan.upgrade?(@paid_plan).should be_true }
-    it { @dev_plan.upgrade?(@paid_plan2).should be_true }
-    it { @dev_plan.upgrade?(@paid_plan_yearly).should be_true }
-    it { @dev_plan.upgrade?(@paid_plan_yearly2).should be_true }
+    describe "#dev_plan?" do
+      it { Factory.build(:plan, :name => "dev").should be_dev_plan }
+      it { Factory.build(:plan, :name => "pro").should_not be_dev_plan }
+    end
 
-    it { @paid_plan.upgrade?(@dev_plan).should be_false }
-    it { @paid_plan.upgrade?(@paid_plan).should be_nil }
-    it { @paid_plan.upgrade?(@paid_plan2).should be_true }
-    it { @paid_plan.upgrade?(@paid_plan_yearly).should be_true }
-    it { @paid_plan.upgrade?(@paid_plan_yearly2).should be_true }
+    describe "#sponsored_plan?" do
+      it { Factory.build(:plan, :name => "dev").should_not be_sponsored_plan }
+      it { Factory.build(:plan, :name => "pro").should_not be_sponsored_plan }
+      it { Factory.build(:plan, :name => "sponsored").should be_sponsored_plan }
+    end
 
-    it { @paid_plan2.upgrade?(@dev_plan).should be_false }
-    it { @paid_plan2.upgrade?(@paid_plan).should be_false }
-    it { @paid_plan2.upgrade?(@paid_plan2).should be_nil }
-    it { @paid_plan2.upgrade?(@paid_plan_yearly).should be_false }
-    it { @paid_plan2.upgrade?(@paid_plan_yearly2).should be_true }
+    describe "#beta_plan?" do
+      it { Factory.build(:plan, :name => "beta").should be_beta_plan }
+      it { Factory.build(:plan, :name => "dev").should_not be_beta_plan }
+    end
 
-    it { @paid_plan_yearly.upgrade?(@dev_plan).should be_false }
-    it { @paid_plan_yearly.upgrade?(@paid_plan).should be_false }
-    it { @paid_plan_yearly.upgrade?(@paid_plan2).should be_false }
-    it { @paid_plan_yearly.upgrade?(@paid_plan_yearly).should be_nil }
-    it { @paid_plan_yearly.upgrade?(@paid_plan_yearly2).should be_true }
+    describe "#standard_plan?" do
+      it { Factory.build(:plan, :name => "dev").should_not be_standard_plan }
+      it { Factory.build(:plan, :name => "beta").should_not be_standard_plan }
+      it { Factory.build(:plan, :name => "sponsored").should_not be_standard_plan }
 
-    it { @paid_plan_yearly2.upgrade?(@dev_plan).should be_false }
-    it { @paid_plan_yearly2.upgrade?(@paid_plan).should be_false }
-    it { @paid_plan_yearly2.upgrade?(@paid_plan2).should be_false }
-    it { @paid_plan_yearly2.upgrade?(@paid_plan_yearly).should be_false }
-    it { @paid_plan_yearly2.upgrade?(@paid_plan_yearly2).should be_nil }
+      Plan::STANDARD_NAMES.each do |name|
+        it { Factory.build(:plan, :name => name).should be_standard_plan }
+      end
+    end
+
+    describe "#custom_plan?" do
+      it { Factory.build(:plan, :name => "dev").should_not be_custom_plan }
+      it { Factory.build(:plan, :name => "beta").should_not be_custom_plan }
+      it { Factory.build(:plan, :name => "sponsored").should_not be_custom_plan }
+      it { Factory.build(:plan, :name => "custom").should be_custom_plan }
+      it { Factory.build(:plan, :name => "custom1").should be_custom_plan }
+      it { Factory.build(:plan, :name => "custom2").should be_custom_plan }
+    end
+
+    describe "#monthly?, #yearly? and #nonely?" do
+      it { Factory.build(:plan, cycle: "month").should be_monthly }
+      it { Factory.build(:plan, cycle: "year").should be_yearly }
+      it { Factory.build(:plan, cycle: "none").should be_nonely }
+    end
+
+    describe "#upgrade?" do
+      before(:all) do
+        @paid_plan         = Factory.build(:plan, cycle: "month", price: 1000)
+        @paid_plan2        = Factory.build(:plan, cycle: "month", price: 5000)
+        @paid_plan_yearly  = Factory.build(:plan, cycle: "year",  price: 10000)
+        @paid_plan_yearly2 = Factory.build(:plan, cycle: "year",  price: 50000)
+      end
+
+      it { @dev_plan.upgrade?(@dev_plan).should be_nil }
+      it { @dev_plan.upgrade?(@paid_plan).should be_true }
+      it { @dev_plan.upgrade?(@paid_plan2).should be_true }
+      it { @dev_plan.upgrade?(@paid_plan_yearly).should be_true }
+      it { @dev_plan.upgrade?(@paid_plan_yearly2).should be_true }
+
+      it { @paid_plan.upgrade?(@dev_plan).should be_false }
+      it { @paid_plan.upgrade?(@paid_plan).should be_nil }
+      it { @paid_plan.upgrade?(@paid_plan2).should be_true }
+      it { @paid_plan.upgrade?(@paid_plan_yearly).should be_true }
+      it { @paid_plan.upgrade?(@paid_plan_yearly2).should be_true }
+
+      it { @paid_plan2.upgrade?(@dev_plan).should be_false }
+      it { @paid_plan2.upgrade?(@paid_plan).should be_false }
+      it { @paid_plan2.upgrade?(@paid_plan2).should be_nil }
+      it { @paid_plan2.upgrade?(@paid_plan_yearly).should be_false }
+      it { @paid_plan2.upgrade?(@paid_plan_yearly2).should be_true }
+
+      it { @paid_plan_yearly.upgrade?(@dev_plan).should be_false }
+      it { @paid_plan_yearly.upgrade?(@paid_plan).should be_false }
+      it { @paid_plan_yearly.upgrade?(@paid_plan2).should be_false }
+      it { @paid_plan_yearly.upgrade?(@paid_plan_yearly).should be_nil }
+      it { @paid_plan_yearly.upgrade?(@paid_plan_yearly2).should be_true }
+
+      it { @paid_plan_yearly2.upgrade?(@dev_plan).should be_false }
+      it { @paid_plan_yearly2.upgrade?(@paid_plan).should be_false }
+      it { @paid_plan_yearly2.upgrade?(@paid_plan2).should be_false }
+      it { @paid_plan_yearly2.upgrade?(@paid_plan_yearly).should be_false }
+      it { @paid_plan_yearly2.upgrade?(@paid_plan_yearly2).should be_nil }
+    end
   end
 
   describe "#title" do
@@ -200,3 +205,22 @@ end
 #
 #  index_plans_on_name_and_cycle  (name,cycle) UNIQUE
 #
+
+# == Schema Information
+#
+# Table name: plans
+#
+#  id          :integer         not null, primary key
+#  name        :string(255)
+#  token       :string(255)
+#  cycle       :string(255)
+#  player_hits :integer
+#  price       :integer
+#  created_at  :datetime
+#  updated_at  :datetime
+#
+# Indexes
+#
+#  index_plans_on_name_and_cycle  (name,cycle) UNIQUE
+#
+

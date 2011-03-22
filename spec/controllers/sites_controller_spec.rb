@@ -5,8 +5,8 @@ describe SitesController do
   context "with logged in user" do
     before :each do
       sign_in :user, authenticated_user
-      authenticated_user.stub_chain(:sites, :find_by_token).with('a1b2c3') { mock_site }
-      authenticated_user.stub_chain(:sites, :find).with('1') { mock_site }
+      authenticated_user.stub_chain(:sites, :find_by_token).with('a1b2c3') { @mock_site = mock_site }
+      authenticated_user.stub_chain(:sites, :find).with('1') { @mock_site }
     end
 
     describe "GET :index" do
@@ -36,62 +36,119 @@ describe SitesController do
     end
 
     describe "GET :edit" do
-      context "site is not beta" do
-        before :each do
-          authenticated_user.stub_chain(:sites, :find_by_token).with('a1b2c3') { @mock_site = mock_site(:in_beta_plan? => false) }
-        end
-
-        it "should render :edit" do
-          get :edit, :id => 'a1b2c3'
-          assigns(:site).should == @mock_site
-          response.should render_template(:edit)
-        end
+      it "should render :edit" do
+        get :edit, :id => 'a1b2c3'
+        assigns(:site).should == mock_site
+        response.should render_template(:edit)
       end
     end
 
     describe "GET :state" do
       it "should respond with :ok when cdn_up_to_date? is false" do
-        mock_site.stub(:cdn_up_to_date?).and_return(false)
-
         get :state, :id => '1', :format => :js
-        assigns(:site).should == mock_site
+        assigns(:site).should == @mock_site
         response.should be_success
       end
 
       it "should render :state when cdn_up_to_date? is true" do
-        mock_site.stub(:cdn_up_to_date?).and_return(true)
-
         get :state, :id => '1', :format => :js
-        assigns(:site).should == mock_site
+        assigns(:site).should == @mock_site
         response.should render_template(:state)
       end
     end
 
-    # describe "GET :usage" do
-    #   it "should respond with success to " do
-    #     get :usage, :id => 'a1b2c3', :format => :js
-    #
-    #     assigns(:site).should == mock_site
-    #     response.should be_success
-    #   end
-    # end
-
-    # TODO Remy
-    pending "POST :create" do
-      before(:each) { authenticated_user.stub_chain(:sites, :create).with({}).and_return(mock_site) }
-
-      it "should redirect to /sites when create succeeds" do
-        post :create, :site => {}
-        assigns(:site).should == mock_site
-        response.should redirect_to(sites_url)
+    describe "POST :create" do
+      before(:each) do
+        authenticated_user.stub_chain(:sites, :build).with({}).and_return(@mock_site = mock_site)
+        @mock_site.should_receive(:d3d_options=) { hash_including(:action => "create") }
+        @mock_site.should_receive(:user).and_return(mock_user)
       end
 
-      it "should render :new when fail" do
-        mock_site.should_receive(:errors).any_number_of_times.and_return(["error"])
+      context "with a valid site" do
 
-        post :create, :site => {}
-        assigns(:site).should == mock_site
-        response.should render_template(:new)
+        describe "dev plan" do
+          before(:each) do
+            @mock_site.should_receive(:save) { true }
+            @mock_site.should_receive(:in_paid_plan?) { false }
+          end
+
+          it "should redirect to /sites" do
+            post :create, :site => {}
+            flash[:notice].should be_present
+            response.should redirect_to(sites_url)
+          end
+        end
+
+        describe "paid plan" do
+          before(:each) do
+            @mock_site.should_receive(:save) { true }
+            @mock_site.should_receive(:in_paid_plan?) { true }
+            @mock_site.stub_chain(:last_invoice, :transaction).and_return(@mock_transaction = mock_transaction(error_code: "refused"))
+          end
+
+          it "should render HTML given by Aduno when authorization needs 3-d secure" do
+            @mock_transaction.should_receive(:d3d_html)     { "<html></html>" }
+            @mock_transaction.should_receive(:waiting_d3d?) { true }
+
+            post :create, :site => {}
+            response.body.should == "<html></html>"
+          end
+
+          it "should render :edit template when payment is invalid" do
+            @mock_transaction.should_receive(:waiting_d3d?) { false }
+            @mock_transaction.should_receive(:failed?)      { true }
+            @mock_transaction.should_receive(:error_key)    { "invalid" }
+
+            post :create, :site => {}
+            flash[:alert].should == I18n.t("transaction.errors.invalid")
+            response.should redirect_to(edit_site_plan_url(@mock_site))
+          end
+
+          it "should render :edit template when payment is refused" do
+            @mock_transaction.should_receive(:waiting_d3d?) { false }
+            @mock_transaction.should_receive(:failed?)      { true }
+            @mock_transaction.should_receive(:error_key)    { "refused" }
+
+            post :create, :site => {}
+            flash[:alert].should == I18n.t("transaction.errors.refused")
+            response.should redirect_to(edit_site_plan_url(@mock_site))
+          end
+
+          it "should redirect to /sites when payment is ok without 3-d secure" do
+            @mock_transaction.should_receive(:waiting_d3d?)   { false }
+            @mock_transaction.should_receive(:failed?)        { false }
+            @mock_transaction.should_receive(:succeed?)       { true }
+
+            post :create, :site => {}
+            flash[:notice].should be_present
+            response.should redirect_to(sites_url)
+          end
+
+          it "should redirect to /sites when payment is ok without 3-d secure" do
+            @mock_transaction.should_receive(:waiting_d3d?)    { false }
+            @mock_transaction.should_receive(:failed?)         { false }
+            @mock_transaction.should_receive(:succeed?)        { false }
+            @mock_transaction.should_receive(:error_key).twice { "unknown" }
+
+            post :create, :site => {}
+            flash[:notice].should == I18n.t("transaction.errors.unknown")
+            response.should redirect_to(sites_url)
+          end
+        end
+
+      end
+
+      context "with an invalid site" do
+
+        before(:each) do
+          @mock_site.should_receive(:save) { false }
+        end
+
+        it "should render :new template" do
+          post :create, :site => {}
+          response.should render_template(:new)
+        end
+
       end
     end
 

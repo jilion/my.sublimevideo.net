@@ -37,31 +37,6 @@ describe OneTime::User do
       end
     end
 
-    describe ".set_remaining_discounted_months" do
-      it "should exist 1 registered user and 1 invited user" do
-        @invited_user.should be_invited
-        @invited_user.should be_persisted
-
-        @beta_user.should_not be_invited
-        @beta_user.should be_persisted
-
-        User.all.should == [@invited_user, @beta_user]
-        User.invited.all.should == [@invited_user]
-        User.beta.all.should == [@beta_user]
-      end
-
-      context "actually test the method" do
-        before(:each) do
-          described_class.set_remaining_discounted_months
-        end
-
-        it "should set remaining_discounted_months to Billing.discounted_months" do
-          @invited_user.reload.remaining_discounted_months.should be_nil
-          @beta_user.reload.remaining_discounted_months.should == Billing.discounted_months
-        end
-      end
-    end
-
     # not implemented because CampaignMonitor.should failed with method_missing of SettingsLogic
     # describe ".import_all_beta_users_to_campaign_monitor" do
     #   CampaignMonitor.should_receive(:import).with([@beta_user])

@@ -2,10 +2,7 @@
   %td.right{ :colspan => 2 } Invoice Items Total
   %td.total
     = display_amount(invoice.invoice_items_amount)
-    - if invoice.total_invoice_items_amount < Billing.minimum_billable_amount
-      %p
-        %small= " (the minimum amount billed is #{display_amount(Billing.minimum_billable_amount)})"
-        
+
 - if invoice.discount_amount > 0
   %tr.pre_total
     %td.right{ :colspan => 2 }= "Discount #{display_percentage(invoice.discount_rate)}:"

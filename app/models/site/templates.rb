@@ -94,17 +94,18 @@ private
   def prepare_cdn_update
     @loader_needs_update  = false
     @license_needs_update = false
-    common_conditions = new_record? || (state_changed? && active?)
 
-    if common_conditions || player_mode_changed?
-      self.cdn_up_to_date  = false
-      @loader_needs_update = true
-    end
-
-    if common_conditions || settings_changed? || plan_id_changed?
-      self.cdn_up_to_date   = false
+    if (state_changed? && active?) || pending_plan_id_changed? && pending_plan_id.nil?
+      @loader_needs_update  = true
       @license_needs_update = true
+    elsif !pending_plan_id?
+      @loader_needs_update  = player_mode_changed?
+      @license_needs_update = settings_changed? || (plan_id_changed? && (in_dev_plan? || Plan.find(plan_id_was).dev_plan?))
     end
+
+    self.cdn_up_to_date = !(@loader_needs_update || @license_needs_update)
+
+    true
   end
 
   # after_save

@@ -1,36 +1,34 @@
 require 'spec_helper'
 
 describe MailLog do
+
   context "Factory" do
-    before(:all) do
-      @mail_log = Factory(:mail_log)
-    end
+    before(:all) { @mail_log = Factory(:mail_log) }
     subject { @mail_log }
-    
+
     its(:template) { should be_present }
     its(:admin)    { should be_present }
     its(:criteria) { should == ["with_invalid_site"] }
     its(:user_ids) { should == [1,2,3,4,5] }
-    
+
     it { should be_valid }
   end
-  
+
   describe "Associations" do
-    before(:all) do
-      @mail_log = Factory(:mail_log)
-    end
+    before(:all) { @mail_log = Factory(:mail_log) }
     subject { @mail_log }
-    
+
     it { should belong_to :template }
     it { should belong_to :admin }
   end
-  
+
   describe "Validations" do
     [:template_id, :admin_id, :criteria, :user_ids].each do |attr|
       it { should allow_mass_assignment_of(attr) }
       it { should validate_presence_of(attr) }
     end
   end
+
 end
 
 

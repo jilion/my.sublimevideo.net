@@ -74,7 +74,6 @@ describe Release do
 
   context "dev release" do
     use_vcr_cassette "release/dev"
-
     subject { dev_release }
 
     it { should be_dev }
@@ -124,7 +123,6 @@ describe Release do
 
   context "beta release" do
     use_vcr_cassette "release/beta"
-
     subject { beta_release }
 
     it { should be_beta }
@@ -166,7 +164,6 @@ describe Release do
 
   context "stable release" do
     use_vcr_cassette "release/stable"
-
     subject { stable_release }
 
     it { should be_stable }

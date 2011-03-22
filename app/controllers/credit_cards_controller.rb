@@ -21,17 +21,19 @@ class CreditCardsController < ApplicationController
     response = @user.valid? ? @user.check_credit_card(options) : nil
 
     respond_with(@user) do |format|
-      format.html do
-        if response.nil?
-          render :edit
+      case response
+      when "d3d"
+        format.html { render :text => @user.d3d_html }
 
-        elsif response[:state] == "d3d"
-          render :text => response[:message]
+      when "authorized"
+        @user.save
+        format.html { redirect_to [:edit, :user_registration] }
 
-        elsif response[:state] == "authorized" && @user.save
-          flash[:notice] = response[:message] if response[:message]
-          redirect_to [:edit, :user_registration]
-        end
+      when "waiting", "unknown"
+        format.html { redirect_to [:edit, :user_registration], :notice => t("credit_card.errors.#{response}") }
+
+      else # response == "invalid", response == "refused" or user not valid
+        format.html { render :edit }
       end
     end
   end

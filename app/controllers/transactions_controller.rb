@@ -20,6 +20,7 @@ class TransactionsController < ApplicationController
       process_cc_authorization
 
     elsif operation_was?(:payment)
+      process_payment
 
     end
   end
@@ -32,7 +33,7 @@ private
       params["CC_CHECK"] && params["USER_ID"]
 
     when :payment
-      params["PAYMENT"] && params["USER_ID"]
+      params["PAYMENT"] && params["ORDERID"]
     end
   end
 
@@ -44,16 +45,32 @@ private
   end
 
   def process_cc_authorization
-    @user = User.find(params["USER_ID"].to_i)
-    response = @user.process_cc_authorization_response(@sha_params, [params["PAYID"], 'RES'].join(';'))
+    user = User.find(params["USER_ID"].to_i)
+    response = user.process_cc_authorization_response(@sha_params, [params["PAYID"], 'RES'].join(';'))
 
     respond_with do |format|
-      if response[:state] == "authorized" && @user.save
+      if response == "authorized" && user.save
         flash[:notice] = t("flash.credit_cards.update.notice")
       elsif
-        flash[:alert] = response[:message]
+        flash[:alert] = t("credit_card.errors.#{response}")
       end
       format.html { redirect_to [:edit, :user_registration] }
+    end
+  end
+
+  def process_payment
+    transaction = Transaction.find(params["ORDERID"].to_i)
+    transaction.process_payment_response(@sha_params)
+
+    respond_with do |format|
+      if transaction.succeed?
+        transaction.invoices.map(&:site).uniq.each { |site| site.apply_pending_plan_changes! }
+        format.html { redirect_to :sites, :notice => t("flash.sites.#{params["ACTION"]}.notice") }
+
+      elsif transaction.failed?
+        format.html { redirect_to :sites, :alert => t("transaction.errors.#{transaction.error_code}") }
+
+      end
     end
   end
 

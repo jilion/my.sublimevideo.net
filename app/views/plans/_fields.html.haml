@@ -7,7 +7,7 @@
 
 #plans
   %ul
-    - current_plan = f.object.plan
+    - current_plan = f.object.plan || f.object.pending_plan
     - site = f.object
     - i = 0
     - standard_plans.each do |plan|
@@ -22,13 +22,13 @@
           .monthly.select_box{ :class => current_plan && plan == current_plan ? 'active' : '' }
             = f.label :plan_id, raw(plan_label_content(plan)), :for => "plan_#{plan.name}_#{plan.cycle}"
             .radio_wrap
-              = f.radio_button :plan_id, plan.id, radio_button_options(site, plan, current_plan)
+              = f.radio_button :plan_id, plan.id, radio_button_options(site, plan, current_plan, :checked => current_plan && plan == current_plan)
               %span.bg
           - if yearly_plan = standard_plans.find { |p| p.name == plan.name && p.yearly? }
             .yearly.select_box{ :class => current_plan && yearly_plan == current_plan ? 'active' : '' }
               = f.label :plan_id, raw(plan_label_content(yearly_plan, :year => true)), :for => "plan_#{yearly_plan.name}_#{yearly_plan.cycle}"
               .radio_wrap
-                = f.radio_button :plan_id, yearly_plan.id, radio_button_options(site, yearly_plan, current_plan)
+                = f.radio_button :plan_id, yearly_plan.id, radio_button_options(site, yearly_plan, current_plan, :checked => current_plan && yearly_plan == current_plan)
                 %span.bg
         %span.save_label= "2 months free"
 

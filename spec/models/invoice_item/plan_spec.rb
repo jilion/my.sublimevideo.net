@@ -11,13 +11,13 @@ describe InvoiceItem::Plan do
     end
 
     describe "with standard params" do
-      subject { InvoiceItem::Plan.build(invoice: @invoice) }
+      subject { InvoiceItem::Plan.build(invoice: @invoice, item: @site.plan) }
 
       its(:item)       { should == @site.plan }
       its(:price)      { should == @site.plan.price }
       its(:amount)     { should == @site.plan.price }
-      its(:started_at) { should == @site.plan_cycle_started_at }
-      its(:ended_at)   { should == @site.plan_cycle_ended_at }
+      its(:started_at) { should == @site.pending_plan_cycle_started_at }
+      its(:ended_at)   { should == @site.pending_plan_cycle_ended_at }
     end
 
     describe "with refund params" do
@@ -25,7 +25,7 @@ describe InvoiceItem::Plan do
       subject { InvoiceItem::Plan.build(invoice: @invoice, item: @plan2, refund: true) }
 
       its(:item)       { should == @plan2 }
-      its(:price)      { should == -1 * @plan2.price }
+      its(:price)      { should == @plan2.price }
       its(:amount)     { should == -1 * @plan2.price }
       its(:started_at) { should == @site.plan_cycle_started_at }
       its(:ended_at)   { should == @site.plan_cycle_ended_at }

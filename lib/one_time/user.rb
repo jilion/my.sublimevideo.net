@@ -13,12 +13,6 @@ module OneTime
         ::User.invited.count.to_s
       end
 
-      # Method used in the 'one_time:set_remaining_discounted_months' rake task
-      def set_remaining_discounted_months
-        ::User.beta.update_all(:remaining_discounted_months => Billing.discounted_months)
-        ::User.beta.count.to_s
-      end
-
       # Method used in the 'one_time:import_all_beta_users_to_campaign_monitor' rake task
       def import_all_beta_users_to_campaign_monitor
         ::User.beta.find_in_batches(:batch_size => 100) do |users|

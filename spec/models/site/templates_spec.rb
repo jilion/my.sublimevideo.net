@@ -9,7 +9,7 @@ describe Site::Templates do
 
       specify do
         subject.should_receive(:prepare_cdn_update)
-        subject.save
+        subject.save!
       end
     end
 
@@ -17,33 +17,37 @@ describe Site::Templates do
       before(:each) { VoxcastCDN.stub(:purge) }
 
       context "on create" do
-        subject { Factory.build(:site) }
+        subject { Factory(:site_pending) }
 
         it "should delay update_loader_and_license once" do
+          subject
           count_before = Delayed::Job.where(:handler.matches => "%update_loader_and_license%").count
-          lambda { subject.save }.should change(Delayed::Job, :count).by(3)
-          Delayed::Job.where(:handler.matches => "%update_loader_and_license%").count.should == count_before + 1
+          lambda { subject.apply_pending_plan_changes! }.should change(Delayed::Job, :count).by(1)
+          djs = Delayed::Job.where(:handler.matches => "%update_loader_and_license%")
+          djs.count.should == count_before + 1
+          YAML.load(djs.first.handler)['args'][0].should be_true
+          YAML.load(djs.first.handler)['args'][1].should be_true
         end
 
         it "should update loader and license content" do
           subject.loader.read.should be_nil
           subject.license.read.should be_nil
-          subject.save
+          subject.apply_pending_plan_changes!
           @worker.work_off
           subject.reload.loader.read.should be_present
           subject.license.read.should be_present
         end
 
         it "should set cdn_up_to_date to true" do
+          subject.apply_pending_plan_changes!
           subject.cdn_up_to_date.should be_false
-          subject.save
           @worker.work_off
           subject.reload.cdn_up_to_date.should be_true
         end
 
         it "should not purge loader or license file" do
           VoxcastCDN.should_not_receive(:purge)
-          subject.save
+          subject.apply_pending_plan_changes!
           @worker.work_off
         end
       end
@@ -90,7 +94,7 @@ describe Site::Templates do
                 subject.send("#{attribute}=", value)
                 subject.user.current_password = '123456'
                 subject.plan_id = @paid_plan.id
-                subject.save
+                subject.apply_pending_plan_changes!
                 @worker.work_off
 
                 subject.reload
@@ -150,7 +154,7 @@ describe Site::Templates do
 
       context "new record" do
         subject do
-          site = Factory.build(:site, plan: @paid_plan)
+          site = Factory.build(:new_site, plan: @paid_plan)
           site.send :prepare_cdn_update
           site
         end
