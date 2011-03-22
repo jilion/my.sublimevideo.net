@@ -2,8 +2,6 @@ require 'spec_helper'
 
 describe InvoiceItem do
 
-pending do
-
   context "Factory" do
     before(:all) { @invoice_item = Factory(:plan_invoice_item) }
     subject { @invoice_item }
@@ -31,11 +29,10 @@ pending do
   end # Associations
 
   describe "Validations" do
-    [:site, :invoice, :info].each do |attr|
+    [:invoice, :item, :info].each do |attr|
       it { should allow_mass_assignment_of(attr) }
     end
 
-    it { should validate_presence_of(:site) }
     it { should validate_presence_of(:invoice) }
     it { should validate_presence_of(:item_type) }
     it { should validate_presence_of(:item_id) }
@@ -48,65 +45,7 @@ pending do
     it { should validate_numericality_of(:amount) }
   end # Validations
 
-  describe "#minutes" do
-    specify { build_invoice_item(Time.utc(2010,1).beginning_of_month, Time.utc(2010,1).end_of_month).minutes.should == 31*24*60 }
-    specify { build_invoice_item(Time.utc(2010,1,1,0,0,0), Time.utc(2010,1,1,0,0,0)).minutes.should == 0 }
-    specify { build_invoice_item(Time.utc(2010,1,1,0,0,0), Time.utc(2010,1,1,0,0,1)).minutes.should == 1 }
-  end
-
-  describe "#percentage" do
-    context "with a full month invoice and a one week invoice item" do
-      before(:all) do
-        @invoice      = Factory(:invoice, :started_at => Time.utc(2010,2).beginning_of_month, :ended_at => Time.utc(2010,2).end_of_month)
-        @invoice_item = Factory(:plan_invoice_item, :invoice => @invoice, :started_at => Time.utc(2010,2,10), :ended_at => Time.utc(2010,2,17))
-      end
-      subject { @invoice_item }
-
-      its(:percentage) { should == 7 / 28.0 }
-    end
-
-    context "with a two weeks invoice and a two days invoice item" do
-      before(:all) do
-        @invoice      = Factory(:invoice, :started_at => Time.utc(2010,2.1), :ended_at => Time.utc(2010,2,14).end_of_day)
-        @invoice_item = Factory(:plan_invoice_item, :invoice => @invoice, :started_at => Time.utc(2010,2,2), :ended_at => Time.utc(2010,2,3).end_of_day)
-      end
-      subject { @invoice_item }
-
-      its(:percentage) { should == (2 / 28.0).round(4) }
-    end
-
-  end
-
-  describe "#site" do
-
-    it "should be nil if site_id is nil" do
-      InvoiceItem.new.site.should be_nil
-    end
-
-    context "with versionned site" do
-      before(:all) do
-        Timecop.travel(Time.utc(2010,2).beginning_of_month) do
-          @site = Factory(:site, :hostname => "aaa.com", :activated_at => Time.now)
-        end
-        invoice = Invoice.build(:user => @site.user, :started_at => Time.utc(2010,2).beginning_of_month, :ended_at => Time.utc(2010,2).end_of_month)
-        @invoice_item = InvoiceItem.new(:site => @site, :invoice => invoice)
-      end
-
-      it "should take the versionned site" do
-        with_versioning { @site.reload.update_attributes(:hostname => "bbb.com") }
-        @invoice_item.site.hostname.should == "aaa.com"
-      end
-    end
-  end
-
 end
-
-end
-
-def build_invoice_item(started_at, ended_at)
-  Factory.build(:plan_invoice_item, :started_at => started_at, :ended_at => ended_at)
-end
-
 
 
 # == Schema Information
