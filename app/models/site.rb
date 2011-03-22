@@ -139,7 +139,7 @@ class Site < ActiveRecord::Base
   state_machine :initial => :active do
     state :pending # Temporary, used in the master branch
 
-    event(:archive)   { transition :active => :archived }
+    event(:archive)   { transition any => :archived }
     event(:suspend)   { transition :active => :suspended }
     event(:unsuspend) { transition :suspended => :active }
 

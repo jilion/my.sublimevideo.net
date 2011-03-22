@@ -254,7 +254,7 @@ describe Invoice do
           context "from a #{plan} plan" do
             before(:all) do
               @user      = Factory(:user, country: 'FR')
-              @site      = Factory(:site, user: @user, plan: instance_variable_get("@#{plan}_plan")).reload
+              @site      = Factory(:site, user: @user, plan: instance_variable_get("@#{plan}_plan"))
               @paid_plan = Factory(:plan, cycle: "month", price: 3000)
               # Simulate upgrade
               @site.plan_id = @paid_plan.id
@@ -282,7 +282,7 @@ describe Invoice do
       describe "with a Swiss user" do
         before(:all) do
           @user    = Factory(:user, country: 'CH')
-          @site    = Factory(:site, user: @user, plan: @paid_plan).reload
+          @site    = Factory(:site, user: @user, plan: @paid_plan)
           @invoice = Invoice.build(site: @site)
         end
         subject { @invoice }
@@ -295,9 +295,9 @@ describe Invoice do
         its(:amount)               { should == 1000 + (1000 * 0.08).round }
       end
 
-      describe "with a user with a discount" do
+      pending "with a user with a discount" do
         before(:all) do
-          @user    = Factory(:user, country: 'FR', remaining_discounted_months: 1)
+          @user    = Factory(:user, country: 'FR')
           @site    = Factory(:site, user: @user, plan: @paid_plan).reload
           @invoice = Invoice.build(site: @site)
         end

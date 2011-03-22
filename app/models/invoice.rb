@@ -117,7 +117,7 @@ private
   end
 
   def set_discount_rate_and_amount
-    self.discount_rate   = self.user.get_discount? ? Billing.beta_discount_rate : 0.0
+    self.discount_rate   = 0 # self.user.get_discount? ? Billing.beta_discount_rate : 0.0
     self.discount_amount = (invoice_items_amount * discount_rate).round
   end
 

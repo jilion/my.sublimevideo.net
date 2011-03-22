@@ -123,7 +123,6 @@ namespace :user do
           # user.state = 'suspended'
           # user.save!(validate: false)
           user.update_attribute(:state, 'suspended')
-          user.update_attribute(:failed_invoices_count_on_suspend, argv_count("failed_invoices", 0))
         end
       end
     end

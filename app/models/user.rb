@@ -21,8 +21,6 @@ class User < ActiveRecord::Base
   # = Associations =
   # ================
 
-  belongs_to :suspending_delayed_job, :class_name => "::Delayed::Job"
-
   has_many :sites
   has_many :invoices, :through => :sites
 
@@ -70,12 +68,12 @@ class User < ActiveRecord::Base
     event(:unsuspend)      { transition :suspended => :active }
     event(:archive)        { transition all => :archived }
 
-    before_transition :on => :suspend, :do => [:set_failed_invoices_count_on_suspend, :suspend_sites]
+    before_transition :on => :suspend, :do => :suspend_sites
     after_transition  :on => :suspend, :do => :send_account_suspended_email
 
     before_transition :on => :cancel_suspend, :do => :delete_suspending_delayed_job
 
-    before_transition :on => :unsuspend, :do => [:set_failed_invoices_count_on_suspend, :unsuspend_sites]
+    before_transition :on => :unsuspend, :do => :unsuspend_sites
     after_transition  :on => :unsuspend, :do => :send_account_unsuspended_email
 
     before_transition :on => :archive, :do => [:set_archived_at, :archive_sites]
@@ -165,7 +163,7 @@ class User < ActiveRecord::Base
   end
 
   def get_discount?
-    remaining_discounted_months? && remaining_discounted_months > 0
+    # TODO!!!!!!!!!!!!!!!!!!!!!!!!!!
   end
 
   def have_beta_sites?
@@ -209,11 +207,6 @@ private
         self.errors.add(:current_password, :invalid)
       end
     end
-  end
-
-  # before_transition :on => :suspend, before_transition :on => :unsuspend
-  def set_failed_invoices_count_on_suspend
-    self.failed_invoices_count_on_suspend = invoices.failed.count
   end
 
   # before_transition :on => :suspend

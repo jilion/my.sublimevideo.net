@@ -23,7 +23,6 @@ describe User do
     before(:all) { @user = Factory(:user) }
     subject { @user }
 
-    it { should belong_to :suspending_delayed_job }
     it { should have_many :sites }
     it { should have_many(:invoices).through(:sites) }
   end
@@ -91,7 +90,7 @@ describe User do
       context "email already taken by an active user" do
         it "should add an error" do
           active_user = Factory(:user, :state => 'active', :email => "john@doe.com")
-          user = Factory.build(:user, :email => active_user.email)
+          user = Factory.build(:user, email: active_user.email)
           user.should_not be_valid
           user.should have(1).error_on(:email)
         end
@@ -99,8 +98,8 @@ describe User do
 
       context "email already taken by an archived user" do
         it "should not add an error" do
-          archived_user = Factory(:user, :state => 'archived', :email => "john@doe.com")
-          user = Factory.build(:user, :email => archived_user.email)
+          archived_user = Factory(:user, state: 'archived', email: "john@doe.com")
+          user = Factory.build(:user, email: archived_user.email)
           user.should be_valid
           user.errors.should be_empty
         end
@@ -355,30 +354,26 @@ describe User do
         end
       end
 
-      describe "Callbacks", :focus => true do
+      describe "Callbacks" do
         describe "before_transition :on => :archive, :do => [:set_archived_at, :archive_sites]" do
-          specify do
+          it "should set archived_at" do
             subject.archived_at.should be_nil
+            subject.current_password = "123456"
             subject.archive
             subject.archived_at.should be_present
           end
 
           it "should archive each user' site" do
-            @dev_site.reload.should be_active
+            subject.sites.all? { |site| site.should_not be_archived }
+            subject.current_password = "123456"
             subject.archive
-            @dev_site.reload.should be_archived
-          end
-
-          it "should delay Class#complete of the usage statement" do
-            lambda { subject.archive }.should change(Delayed::Job, :count).by(2)
-            Delayed::Job.where(:handler.matches => "%Site%remove_loader_and_license%").count.should == 1
-            Delayed::Job.where(:handler.matches => "%Invoice%complete%").count.should == 1
+            subject.sites.all? { |site| site.reload.should be_archived }
           end
         end
 
         describe "after_transition :on => :archive, :do => :send_account_archived_email" do
           it "should send an email to user" do
-            lambda { subject.archive }.should change(ActionMailer::Base.deliveries, :count).by(1)
+            lambda { subject.current_password = "123456"; subject.archive }.should change(ActionMailer::Base.deliveries, :count).by(1)
             ActionMailer::Base.deliveries.last.to.should == [subject.email]
           end
         end
@@ -505,7 +500,7 @@ describe User do
   describe "attributes accessor" do
     describe "email=" do
       it "should downcase email" do
-        user = Factory.build(:user, :email => "BOB@cool.com")
+        user = Factory.build(:user, email: "BOB@cool.com")
         user.email.should == "bob@cool.com"
       end
     end
@@ -521,67 +516,14 @@ describe User do
       end
     end
 
-    describe "#get_discount?" do
-      specify { Factory(:user, :remaining_discounted_months => nil).should_not be_get_discount }
-      specify { Factory(:user, :remaining_discounted_months => 0).should_not be_get_discount }
-      specify { Factory(:user, :remaining_discounted_months => 1).should be_get_discount }
+    pending "#get_discount?" do
     end
 
     describe "#have_beta_sites?" do
-      before(:all) { @site = Factory(:site, :plan => @beta_plan) }
+      before(:all) { @site = Factory(:site, plan_id: @beta_plan.id) }
 
       specify { @site.user.have_beta_sites?.should be_true }
     end
-
-    describe "#delay_suspend" do
-      before(:all) { @user = Factory(:user) }
-      subject { @user.reload.delay_suspend }
-
-      it "should delay suspend user" do
-        lambda { subject }.should change(Delayed::Job, :count).by(1)
-        Delayed::Job.last.name.should == "Class#suspend"
-      end
-
-      it "should delay charging in Billing.days_before_suspend_user.days.from_now by default" do
-        subject
-        Delayed::Job.last.run_at.should be_within(5).of(Billing.days_before_suspend_user.days.from_now) # seconds of tolerance
-      end
-
-      it "should set suspending_delayed_job_id" do
-        @user.reload.suspending_delayed_job_id.should be_nil
-        subject
-        @user.reload.suspending_delayed_job_id.should == Delayed::Job.last.id
-      end
-
-      context "giving a custom run_at" do
-        specify do
-          @user.delay_suspend(Time.utc(2010,7,24))
-          Delayed::Job.last.run_at.should == Time.utc(2010,7,24)
-        end
-      end
-
-      context "with an exception raised by User.delay.suspend" do
-        before(:each) do
-          User.should_receive(:delay).and_raise("Exception")
-          Notify.stub!(:send)
-        end
-
-        specify { expect { subject }.to_not raise_error }
-
-        it "should not delay suspend user" do
-          lambda { subject }.should_not change(Delayed::Job, :count)
-        end
-        it "should Notify of the exception" do
-          Notify.should_receive(:send)
-          subject
-        end
-        it "should not set suspending_delayed_job_id" do
-          @user.reload.suspending_delayed_job_id.should be_nil
-          subject
-          @user.reload.suspending_delayed_job_id.should be_nil
-        end
-      end
-    end # #delay_suspend
 
   end
 
