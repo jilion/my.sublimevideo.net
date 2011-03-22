@@ -19,6 +19,8 @@ class Site < ActiveRecord::Base
   mount_uploader :license, LicenseUploader
   mount_uploader :loader, LoaderUploader
 
+  delegate :name, :to => :plan, :prefix => true
+
   # ================
   # = Associations =
   # ================
@@ -39,7 +41,7 @@ class Site < ActiveRecord::Base
     SiteUsage.where(:site_id => id)
   end
   def referrers
-    Referrer.where(:site_id => id)
+    ::Referrer.where(:site_id => id)
   end
 
   # ==========
@@ -57,8 +59,9 @@ class Site < ActiveRecord::Base
   scope :plan_player_hits_reached_notified, where(:plan_player_hits_reached_notification_sent_at.ne => nil)
 
   # filter
-  scope :beta,                 lambda { joins(:plan).where(:plan => { :name => "beta" }) }
-  scope :dev,                  lambda { joins(:plan).where(:plan => { :name => "dev" }) }
+  scope :beta,                 joins(:plan).where(:plan => { :name => "beta" })
+  scope :dev,                  joins(:plan).where(:plan => { :name => "dev" })
+  scope :sponsored,            joins(:plan).where(:plan => { :name => "sponsored" })
   scope :active,               where(:state => 'active')
   scope :suspended,            where(:state => 'suspended')
   scope :archived,             where(:state => 'archived')
@@ -126,7 +129,7 @@ class Site < ActiveRecord::Base
   # =============
 
   before_validation :set_default_dev_hostnames, :unless => :dev_hostnames?
-  
+
   before_save :prepare_cdn_update # in site/templates
   before_save :clear_alerts_sent_at
   before_save :pend_plan_changes, :if => :pending_plan_id_changed? # in site/invoice
@@ -221,6 +224,13 @@ class Site < ActiveRecord::Base
     end
   end
 
+  # Instantly change plan to sponsored_plan (no refund!)
+  def sponsor!
+    write_attribute(:pending_plan_id, Plan.sponsored_plan)
+    write_attribute(:next_cycle_plan_id, nil)
+    save_without_password_validation!
+  end
+
   def user_attributes=(attributes)
     user.attributes = attributes if attributes.present? # && in_or_was_in_paid_plan?
   end
@@ -310,7 +320,7 @@ private
   # validate
   def validates_current_password
     return if @skip_password_validation
-    
+
     if !new_record? && in_or_was_in_paid_plan? && errors.empty? &&
       ((state_changed? && archived?) || (changes.keys & (Array(self.class.accessible_attributes) - ['plan_id'] + %w[pending_plan_id next_cycle_plan_id])).present?)
       if user.current_password.blank? || !user.valid_password?(user.current_password)
@@ -392,4 +402,3 @@ end
 #  index_sites_on_plan_id                                     (plan_id)
 #  index_sites_on_user_id                                     (user_id)
 #
-

@@ -84,7 +84,7 @@ Factory.define :mail_log, :class => MailLog do |f|
 end
 
 Factory.define :plan do |f|
-  f.sequence(:name) { |n| "small#{n}" }
+  f.sequence(:name) { |n| "comet#{n}" }
   f.cycle           "month"
   f.player_hits     10_000
   f.price           1000
@@ -102,6 +102,20 @@ Factory.define :beta_plan, :class => Plan  do |f|
   f.cycle         "none"
   f.player_hits   0
   f.price         0
+end
+
+Factory.define :sponsored_plan, :class => Plan  do |f|
+  f.name          "sponsored"
+  f.cycle         "none"
+  f.player_hits   0
+  f.price         0
+end
+
+Factory.define :custom_plan, :class => Plan do |f|
+  f.sequence(:name) { |n| "custom#{n}" }
+  f.cycle           "month"
+  f.player_hits     10_000_000
+  f.price           20_000
 end
 
 Factory.define :invoice do |f|

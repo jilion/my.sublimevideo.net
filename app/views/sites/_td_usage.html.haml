@@ -1,5 +1,9 @@
-- if !site.in_paid_plan?
+- case site.plan_name
+- when 'dev', 'beta'
   = link_to "Choose a plan", edit_site_plan_path(site), :class => "medium_button"
+- when 'sponsored'
+  .usage
+    %p= pluralize(number_with_delimiter(site.current_billable_usage.to_i), "Sponsored hit").html_safe
 - else
   .progress_bar.box_hovering_zone
     .usage_bar{ :style => "width:#{display_percentage(site.current_percentage_of_plan_used)}"}

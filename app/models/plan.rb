@@ -1,8 +1,10 @@
 class Plan < ActiveRecord::Base
 
-  CYCLES = %w[month year none]
+  CYCLES         = %w[month year none]
+  STANDARD_NAMES = %w[comet planet star galaxy]
 
   attr_accessible :name, :cycle, :player_hits, :price
+  uniquify :token, :chars => Array('a'..'z') + Array('0'..'9'), :length => 12
 
   # ================
   # = Associations =
@@ -24,8 +26,10 @@ class Plan < ActiveRecord::Base
   # = Scopes =
   # ==========
 
-  scope :free_plans, where(:name => ["dev", "beta"])
-  scope :paid_plans, where(:name.not_in => ["dev", "beta"])
+  scope :free_plans,     where(:name => ["dev", "beta", "sponsored"])
+  scope :paid_plans,     where(:name.not_in => ["dev", "beta", "sponsored"])
+  scope :standard_plans, where(:name.in => STANDARD_NAMES)
+  scope :custom_plans,   where(:name.matches => "custom%")
 
   # =================
   # = Class Methods =
@@ -37,6 +41,15 @@ class Plan < ActiveRecord::Base
 
   def self.beta_plan
     where(:name => "beta").first
+  end
+
+  def self.sponsored_plan
+    where(:name => "sponsored").first
+  end
+
+  def self.create_custom(attributes)
+    name = "custom#{custom_plans.count + 1}"
+    create(attributes.merge(:name => name))
   end
 
   # ====================
@@ -76,8 +89,20 @@ class Plan < ActiveRecord::Base
     name == "beta"
   end
 
+  def sponsored_plan?
+    name == "sponsored"
+  end
+
+  def standard_plan?
+    STANDARD_NAMES.include?(name)
+  end
+
+  def custom_plan?
+    name =~ /^custom.*/
+  end
+
   def paid_plan?
-    !dev_plan? && !beta_plan?
+    !dev_plan? && !beta_plan? && !sponsored_plan?
   end
 
   CYCLES.each do |c|
@@ -89,6 +114,8 @@ class Plan < ActiveRecord::Base
   def title(options = {})
     if dev_plan?
       "Free Sandbox"
+    elsif sponsored_plan?
+      "Sponsored"
     elsif options[:always_with_cycle]
       name.titleize + (cycle == 'year' ? ' (yearly)' : ' (monthly)')
     else
@@ -103,13 +130,13 @@ class Plan < ActiveRecord::Base
 end
 
 
-
 # == Schema Information
 #
 # Table name: plans
 #
 #  id          :integer         not null, primary key
 #  name        :string(255)
+#  token       :string(255)
 #  cycle       :string(255)
 #  player_hits :integer
 #  price       :integer

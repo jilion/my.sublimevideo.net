@@ -81,6 +81,23 @@ feature "Plans" do
       #page.should have_content("Your current plan, #{site.plan.title}, will be automatically renewed on #{I18n.l site.plan_cycle_ended_at.tomorrow.midnight, :format => :named_date}")
     end
 
+    scenario "sponsored plan" do
+      site = Factory(:site, user: @current_user, plan: @sponsored_plan)
+      Factory(:site_usage, site_id: site.id, day: Time.now.utc, main_player_hits: 1000)
+
+      visit sites_path
+
+      page.should have_content("Sponsored")
+      page.should have_content("1,000 Sponsored hits")
+
+      click_link "Sponsored"
+
+      page.should have_content("Your plan are currently sponsored by Jilion.")
+      page.should have_content("If you have any questions, please contact us.")
+    end
+
+    pending "update paid plan to paid plan with credit card data"
+
   end
 
 end

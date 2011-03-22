@@ -243,7 +243,7 @@ describe Site::Templates do
         end
       end
 
-      %w[beta paid].each do |plan_name|
+      %w[sponsored beta paid].each do |plan_name|
         context "site with #{plan_name} plan" do
           context "site with all settings" do
             subject { @site_with_all.reload }

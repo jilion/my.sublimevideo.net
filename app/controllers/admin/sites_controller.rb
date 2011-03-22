@@ -6,6 +6,7 @@ class Admin::SitesController < Admin::AdminController
   #filter
   has_scope :dev
   has_scope :beta
+  has_scope :sponsored
   has_scope :with_state do |controller, scope, value|
     scope.with_state(value.to_sym)
   end
@@ -56,6 +57,13 @@ class Admin::SitesController < Admin::AdminController
     @site.player_mode = params[:site][:player_mode]
     @site.save
     respond_with(@site, :location => [:admin, :sites])
+  end
+
+  # PUT /admin/sites/:id/sponsor
+  def sponsor
+    @site = Site.find_by_token(params[:id])
+    @site.sponsor!
+    respond_with(@site, :location => [:admin, @site])
   end
 
 end
