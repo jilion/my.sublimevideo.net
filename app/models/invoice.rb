@@ -7,8 +7,10 @@ class Invoice < ActiveRecord::Base
   # ================
 
   belongs_to :site
-  has_many :invoice_items
 
+  has_one :user, :through => :site
+
+  has_many :invoice_items
   has_many :plan_invoice_items, conditions: { type: "InvoiceItem::Plan" }, :class_name => "InvoiceItem"
 
   has_and_belongs_to_many :transactions
@@ -30,8 +32,15 @@ class Invoice < ActiveRecord::Base
   # =================
 
   state_machine :initial => :open do
-    state :failed
     state :paid
+    state :failed
+
+    event(:succeed) { transition [:open, :failed] => :paid }
+    event(:fail)    { transition [:open, :failed] => :failed }
+
+    before_transition :on => :succeed, :do => :set_paid_at
+    before_transition :on => :fail,    :do => :set_failed_at
+    after_transition  :on => :succeed, :do => [:apply_pending_site_plan_changes!, :update_user_invoiced_amount, :unsuspend_user]
   end
 
   # ==========
@@ -121,11 +130,27 @@ private
     self.amount = invoice_items_amount - discount_amount + vat_amount
   end
 
-  # after_transition :on => :complete
+  # before_transition :on => :succeed
+  def set_paid_at
+    self.paid_at = Time.now.utc
+  end
+
+  # before_transition :on => :fail
+  def set_failed_at
+    self.failed_at = Time.now.utc
+  end
+
+  # after_transition :on => :succeed
+  def apply_pending_site_plan_changes!
+    site.apply_pending_plan_changes!
+  end
   def update_user_invoiced_amount
     self.user.last_invoiced_amount = amount
     self.user.total_invoiced_amount += amount
     self.user.save
+  end
+  def unsuspend_user
+    user.unsuspend if user.invoices.failed.empty?
   end
 
 end
