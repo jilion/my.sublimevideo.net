@@ -53,7 +53,7 @@ describe OneTime::Site do
 
         it "should move dev hostnames that belong to extra hostnames (bis)" do
           @not_local_dev_hostname2.reload.hostname.should == 'jilion.com'
-          @not_local_dev_hostname2.dev_hostnames.should   == ''
+          @not_local_dev_hostname2.dev_hostnames.should   == '127.0.0.1, localhost'
           @not_local_dev_hostname2.extra_hostnames.should == 'jilion.net, jilion.org'
         end
 

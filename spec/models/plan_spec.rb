@@ -5,6 +5,7 @@ describe Plan do
 
   context "Factory" do
     before(:all) { @plan = Factory(:plan) }
+    after(:all) { @plan.delete }
     subject { @plan }
 
     its(:name)          { should =~ /comet\d+/ }
@@ -59,8 +60,8 @@ describe Plan do
   describe "Class Methods" do
     describe ".create_custom" do
       it "should create new custom plan" do
-        plan = Plan.create_custom(:cycle => "month", :player_hits => 10**7, :price => 999900)
-        plan.name.should == "custom#{Plan.custom_plans.count}"
+        expect { @plan = Plan.create_custom(:cycle => "month", :player_hits => 10**7, :price => 999900) }.to change(Plan.custom_plans, :count)
+        @plan.name.should == "custom#{Plan.custom_plans.count}"
       end
     end
   end

@@ -108,29 +108,29 @@ class Transaction < ActiveRecord::Base
 
     case payment_params["STATUS"]
     when "9" # Payment requested (and accepted)
-      succeed
+      self.succeed
 
     when "46" # Waiting for identification (3-D Secure)
               # We return the HTML to render. This HTML will redirect the user to the 3-D Secure form.
       @ogone_response_infos = nil # we will not store infos returned by Ogone yet since the user has to identify himself first
       @d3d_html = Base64.decode64(payment_params["HTML_ANSWER"])
-      wait_d3d
+      self.wait_d3d
 
     when "0" # Credit card information invalid or incomplete
       self.error_key = "invalid"
-      fail
+      self.fail
 
     when "2" # Authorization refused
       self.error_key = "refused"
-      fail
+      self.fail
 
     when "51" # Authorization waiting (authorization will be processed offline), should never receive this status
       self.error_key = "waiting"
-      save
+      self.save
 
     when "52", "92" # Authorization not known, Payment uncertain
       self.error_key = "unknown"
-      save
+      self.save
       Notify.send("Transaction ##{self.id} (PAYID: #{payment_params["PAYID"]}) has an uncertain state, please investigate quickly!")
     end
     

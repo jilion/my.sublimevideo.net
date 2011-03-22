@@ -15,7 +15,7 @@ module Site::Invoice
     def renew_active_sites!
       Site.active.to_be_renewed.each do |site|
         site.pend_plan_changes
-        site.apply_pending_plan_changes!
+        site.apply_pending_plan_changes
       end
       delay_renew_active_sites!
     end
@@ -86,8 +86,8 @@ module Site::Invoice
     true # don't block the callbacks chain
   end
 
-  # called from Site::Invoice.renew_active_sites! and from Invoice#succeed's apply_pending_site_plan_changes! callback
-  def apply_pending_plan_changes!
+  # called from Site::Invoice.renew_active_sites! and from Invoice#succeed's apply_pending_site_plan_changes callback
+  def apply_pending_plan_changes
     write_attribute(:plan_id, pending_plan_id) if pending_plan_id?
 
     self.plan_started_at       = pending_plan_started_at       if pending_plan_started_at?
@@ -99,7 +99,7 @@ module Site::Invoice
     self.pending_plan_cycle_started_at = nil
     self.pending_plan_cycle_ended_at   = nil
 
-    save_without_password_validation!
+    save_without_password_validation
   end
 
   def months_since(time)
@@ -145,7 +145,7 @@ private
 
     elsif pending_plan_id_changed? && pending_plan_id? && !pending_plan.paid_plan?
       # directly update for free plans
-      self.apply_pending_plan_changes!
+      self.apply_pending_plan_changes
     end
   end
 

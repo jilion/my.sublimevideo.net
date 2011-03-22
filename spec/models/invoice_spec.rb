@@ -72,9 +72,9 @@ describe Invoice do
       end
 
       describe "after_transition :on => :succeed, :do => :apply_pending_site_plan_changes" do
-        it "should call #apply_pending_plan_changes! on the site" do
+        it "should call #apply_pending_plan_changes on the site" do
           site = Factory(:site)
-          site.should_receive(:apply_pending_plan_changes!)
+          site.should_receive(:apply_pending_plan_changes)
           Factory(:invoice, site: site).succeed
         end
       end
@@ -84,18 +84,18 @@ describe Invoice do
 
         it "should update user.last_invoiced_amount" do
           subject.user.update_attribute(:last_invoiced_amount, 500)
-          expect { subject.succeed }.should change(subject.user, :last_invoiced_amount).from(500).to(10000)
+          expect { subject.succeed }.should change(subject.user.reload, :last_invoiced_amount).from(500).to(10000)
         end
 
         it "should increment user.total_invoiced_amount" do
           subject.user.update_attribute(:total_invoiced_amount, 500)
-          expect { subject.succeed }.should change(subject.user, :total_invoiced_amount).from(500).to(10500)
+          expect { subject.succeed }.should change(subject.user.reload, :total_invoiced_amount).from(500).to(10500)
         end
 
         it "should save user" do
           old_user_last_invoiced_amount = subject.user.last_invoiced_amount
           old_user_total_invoiced_amount = subject.user.total_invoiced_amount
-          subject.succeed
+          subject.succeed!
           subject.user.reload
           subject.user.last_invoiced_amount.should_not == old_user_last_invoiced_amount
           subject.user.total_invoiced_amount.should_not == old_user_total_invoiced_amount
@@ -161,7 +161,7 @@ describe Invoice do
   end # State Machine
 
   describe "Scopes" do
-    
+
     before(:all) do
       Invoice.delete_all
       @site = Factory(:site, plan: @dev_plan)
@@ -189,7 +189,7 @@ describe Invoice do
     describe "#paid" do
       specify { Invoice.paid.all.should == [@paid_invoice] }
     end
-    
+
   end # Scopes
 
   describe "Class Methods" do

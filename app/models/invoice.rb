@@ -40,7 +40,7 @@ class Invoice < ActiveRecord::Base
 
     before_transition :on => :succeed, :do => :set_paid_at
     before_transition :on => :fail,    :do => :set_failed_at
-    after_transition  :on => :succeed, :do => [:apply_pending_site_plan_changes!, :update_user_invoiced_amount, :unsuspend_user]
+    after_transition  :on => :succeed, :do => [:apply_pending_site_plan_changes, :update_user_invoiced_amount, :unsuspend_user]
   end
 
   # ==========
@@ -141,8 +141,8 @@ private
   end
 
   # after_transition :on => :succeed
-  def apply_pending_site_plan_changes!
-    site.apply_pending_plan_changes!
+  def apply_pending_site_plan_changes
+    self.site.apply_pending_plan_changes
   end
   def update_user_invoiced_amount
     self.user.last_invoiced_amount = amount

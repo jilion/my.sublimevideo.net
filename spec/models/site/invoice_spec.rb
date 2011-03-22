@@ -19,12 +19,9 @@ describe Site::Invoice do
       before(:all) do
         Timecop.travel(Time.utc(2011,1,1)) do
           @site_to_be_renewed = Factory(:site)
-          @site_to_be_renewed.apply_pending_plan_changes!
         end
-        @site_not_to_be_renewed1 = Factory(:site) # this site has a pending_plan_id
-        @site_not_to_be_renewed1.apply_pending_plan_changes!
+        @site_not_to_be_renewed1 = Factory(:site)
         @site_not_to_be_renewed2 = Factory(:site, plan_started_at: 3.months.ago, plan_cycle_ended_at: 2.months.from_now)
-        @site_not_to_be_renewed2.apply_pending_plan_changes!
         VCR.use_cassette('ogone/visa_payment_10') { @site_not_to_be_renewed2.update_attribute(:plan_id, @paid_plan.id) }
       end
       before(:each) do
@@ -111,8 +108,7 @@ describe Site::Invoice do
         context "with dev plan" do
           before(:all) do
             Timecop.travel(Time.utc(2011,1,30)) do
-              @site = Factory.build(:new_site, plan_id: @dev_plan.id)
-              @site.pend_plan_changes
+              @site = Factory(:site_pending, plan_id: @dev_plan.id)
             end
           end
           subject { @site }
@@ -161,7 +157,7 @@ describe Site::Invoice do
         context "from dev plan to monthly paid plan" do
           before(:all) do
             Timecop.travel(Time.utc(2011,1,30)) { @site = Factory(:site, plan_id: @dev_plan.id) }
-            @site.apply_pending_plan_changes!
+            @site.apply_pending_plan_changes
             VCR.use_cassette('ogone/visa_payment_10') do
               @site.reload.plan_id = @paid_plan.id # upgrade
               Timecop.travel(Time.utc(2011,2,25)) { @site.pend_plan_changes }
@@ -181,7 +177,7 @@ describe Site::Invoice do
         context "from dev plan to yearly paid plan" do
           before(:all) do
             Timecop.travel(Time.utc(2011,1,30)) { @site = Factory(:site, plan_id: @dev_plan.id) }
-            @site.apply_pending_plan_changes!
+            @site.apply_pending_plan_changes
             VCR.use_cassette('ogone/visa_payment_10') do
               @site.reload.plan_id = @paid_plan_yearly.id # upgrade
               Timecop.travel(Time.utc(2011,2,25)) { @site.pend_plan_changes }
@@ -203,7 +199,7 @@ describe Site::Invoice do
             VCR.use_cassette('ogone/visa_payment_10') do
               @site = Factory.build(:new_site, plan_id: @paid_plan.id)
               Timecop.travel(Time.utc(2011,1,30)) { @site.pend_plan_changes }
-              @site.apply_pending_plan_changes!
+              @site.apply_pending_plan_changes
               @site.reload.plan_id = @paid_plan2.id # upgrade
               Timecop.travel(Time.utc(2011,2,25)) { @site.pend_plan_changes }
             end
@@ -224,7 +220,7 @@ describe Site::Invoice do
             VCR.use_cassette('ogone/visa_payment_10') do
               @site = Factory.build(:new_site, plan_id: @paid_plan.id)
               Timecop.travel(Time.utc(2011,1,30)) { @site.pend_plan_changes }
-              @site.apply_pending_plan_changes!
+              @site.apply_pending_plan_changes
               @site.reload.plan_id = @paid_plan_yearly.id # upgrade
               Timecop.travel(Time.utc(2011,2,25)) { @site.pend_plan_changes }
             end
@@ -245,7 +241,7 @@ describe Site::Invoice do
             VCR.use_cassette('ogone/visa_payment_10') do
               @site = Factory.build(:new_site, plan_id: @paid_plan_yearly.id)
               Timecop.travel(Time.utc(2011,1,30)) { @site.pend_plan_changes }
-              @site.apply_pending_plan_changes!
+              @site.apply_pending_plan_changes
               @site.reload.plan_id = @paid_plan_yearly2.id # upgrade
               Timecop.travel(Time.utc(2011,2,25)) { @site.pend_plan_changes }
             end
@@ -268,7 +264,7 @@ describe Site::Invoice do
             VCR.use_cassette('ogone/visa_payment_10') do
               @site = Factory.build(:new_site, plan_id: @paid_plan.id)
               Timecop.travel(Time.utc(2011,1,30)) { @site.pend_plan_changes }
-              @site.apply_pending_plan_changes!
+              @site.apply_pending_plan_changes
               Timecop.travel(Time.utc(2011,3,3)) { @site.pend_plan_changes }
             end
           end
@@ -289,7 +285,7 @@ describe Site::Invoice do
               VCR.use_cassette('ogone/visa_payment_10') do
                 @site = Factory.build(:new_site, plan_id: @paid_plan.id)
                 Timecop.travel(Time.utc(2011,1,30)) { @site.pend_plan_changes }
-                @site.apply_pending_plan_changes!
+                @site.apply_pending_plan_changes
                 @site.reload.plan_id = @dev_plan.id # downgrade
                 Timecop.travel(Time.utc(2011,3,3)) { @site.pend_plan_changes }
               end
@@ -310,7 +306,7 @@ describe Site::Invoice do
               VCR.use_cassette('ogone/visa_payment_10') do
                 @site = Factory.build(:new_site, plan_id: @paid_plan_yearly.id)
                 Timecop.travel(Time.utc(2011,1,30)) { @site.pend_plan_changes }
-                @site.apply_pending_plan_changes!
+                @site.apply_pending_plan_changes
                 @site.reload.plan_id = @dev_plan.id # downgrade
                 Timecop.travel(Time.utc(2012,3,3)) { @site.pend_plan_changes }
               end
@@ -331,7 +327,7 @@ describe Site::Invoice do
               VCR.use_cassette('ogone/visa_payment_10') do
                 @site = Factory.build(:new_site, plan_id: @paid_plan2.id)
                 Timecop.travel(Time.utc(2011,1,30)) { @site.pend_plan_changes }
-                @site.apply_pending_plan_changes!
+                @site.apply_pending_plan_changes
                 @site.reload.plan_id = @paid_plan.id # downgrade
                 Timecop.travel(Time.utc(2011,3,3)) { @site.pend_plan_changes }
               end
@@ -352,7 +348,7 @@ describe Site::Invoice do
               VCR.use_cassette('ogone/visa_payment_10') do
                 @site = Factory.build(:new_site, plan_id: @paid_plan_yearly2.id)
                 Timecop.travel(Time.utc(2011,1,30)) { @site.pend_plan_changes }
-                @site.apply_pending_plan_changes!
+                @site.apply_pending_plan_changes
                 @site.reload.plan_id = @paid_plan_yearly.id # downgrade
                 Timecop.travel(Time.utc(2012,2,15)) { @site.pend_plan_changes }
               end
@@ -373,7 +369,7 @@ describe Site::Invoice do
               VCR.use_cassette('ogone/visa_payment_10') do
                 @site = Factory.build(:new_site, plan_id: @paid_plan_yearly.id)
                 Timecop.travel(Time.utc(2011,1,30)) { @site.pend_plan_changes }
-                @site.apply_pending_plan_changes!
+                @site.apply_pending_plan_changes
                 @site.reload.plan_id = @paid_plan.id # downgrade
                 Timecop.travel(Time.utc(2012,2,25)) { @site.pend_plan_changes }
               end
@@ -392,7 +388,7 @@ describe Site::Invoice do
       end
     end # #pend_plan_changes
 
-    describe "#apply_pending_plan_changes!" do
+    describe "#apply_pending_plan_changes" do
       before(:all) do
         @site = Factory.build(:new_site)
         @site.pending_plan_id               = @paid_plan.id
@@ -400,21 +396,23 @@ describe Site::Invoice do
         @site.pending_plan_cycle_started_at = Time.utc(2012,12,21)
         @site.pending_plan_cycle_ended_at   = Time.utc(2013,12,20)
 
-        @site.apply_pending_plan_changes!
+        @site.apply_pending_plan_changes
       end
-      subject { @site.reload }
+      subject { @site }
 
       it { should be_persisted }
+      its(:plan_id)               { should == @paid_plan.id }
       its(:plan)                  { should == @paid_plan }
       its(:plan_started_at)       { should == Time.utc(2012,12,21) }
       its(:plan_cycle_started_at) { should == Time.utc(2012,12,21) }
       its(:plan_cycle_ended_at)   { should == Time.utc(2013,12,20) }
 
       its(:pending_plan_id)               { should be_nil }
+      its(:pending_plan)                  { should be_nil }
       its(:pending_plan_started_at)       { should be_nil }
       its(:pending_plan_cycle_started_at) { should be_nil }
       its(:pending_plan_cycle_ended_at)   { should be_nil }
-    end # #apply_pending_plan_changes!
+    end # #apply_pending_plan_changes
 
     describe "#months_since" do
       before(:all) { @site = Factory.build(:new_site) }
@@ -452,7 +450,7 @@ describe Site::Invoice do
       before(:all) do
         @site = Factory.build(:new_site, plan_id: @paid_plan.id)
         @site.pend_plan_changes
-        @site.apply_pending_plan_changes!
+        @site.apply_pending_plan_changes
       end
 
       context "with a monthly plan" do
@@ -510,12 +508,12 @@ describe Site::Invoice do
 
     # recurrent
       # site.pend_plan_changes
-      # site.apply_pending_plan_changes!
+      # site.apply_pending_plan_changes
 
     # upfront
       # plan_id = ... (set pending_plan_id, pending dates and pend_plan_changes)
       # save (create the invoice and charge it)
-      # apply_pending_plan_changes! when transaction is ok
+      # apply_pending_plan_changes when transaction is ok
     describe "#create_and_charge_invoice" do
       before(:all) do
         @paid_plan         = Factory(:plan, cycle: "month", price: 1000)
@@ -536,7 +534,7 @@ describe Site::Invoice do
         end
 
         context "on a saved record" do
-          before(:all) { Timecop.travel(Time.utc(2011,1,30)) { @site = Factory(:site, plan: @dev_plan) } }
+          before(:all) { Timecop.travel(Time.utc(2011,1,30)) { @site = Factory(:site_with_invoice, plan: @dev_plan) } }
 
           describe "when save with no changes" do
             subject { @site }
@@ -607,7 +605,7 @@ describe Site::Invoice do
         end
 
         context "on a saved record" do
-          before(:all) { Timecop.travel(Time.utc(2011,1,30)) { @site = Factory(:site, plan: @beta_plan) } }
+          before(:all) { Timecop.travel(Time.utc(2011,1,30)) { @site = Factory(:site_with_invoice, plan: @beta_plan) } }
 
           describe "when save with no changes" do
             subject { @site.reload }
@@ -681,7 +679,7 @@ describe Site::Invoice do
 
         context "on a saved record" do
           before(:all) do
-            Timecop.travel(Time.utc(2011,1,30)) { @site = Factory(:site, plan_id: @paid_plan.id) }
+            Timecop.travel(Time.utc(2011,1,30)) { @site = Factory(:site_with_invoice, plan_id: @paid_plan.id) }
           end
 
           describe "when save with no changes during the first cycle" do
@@ -740,7 +738,7 @@ describe Site::Invoice do
 
             it "should not create and not try to charge the invoice" do
               subject.reload.plan_id = @dev_plan.id
-              Timecop.travel(Time.utc(2011,2,10)) { expect { subject.save_without_password_validation! }.to_not change(subject.invoices, :count) }
+              Timecop.travel(Time.utc(2011,2,10)) { expect { subject.save_without_password_validation }.to_not change(subject.invoices, :count) }
               subject.reload.plan.should == @paid_plan
             end
           end
@@ -783,7 +781,7 @@ describe Site::Invoice do
 
         context "on a saved record" do
           before(:all) do
-            Timecop.travel(Time.utc(2011,1,30)) { @site = Factory(:site, plan_id: @paid_plan_yearly.id) }
+            Timecop.travel(Time.utc(2011,1,30)) { @site = Factory(:site_with_invoice, plan_id: @paid_plan_yearly.id) }
           end
 
           describe "when save with no changes during the first cycle" do
@@ -828,7 +826,7 @@ describe Site::Invoice do
 
             it "should not create and not try to charge the invoice" do
               subject.reload.plan_id = @dev_plan.id
-              Timecop.travel(Time.utc(2011,2,10)) { expect { subject.save_without_password_validation! }.to_not change(subject.invoices, :count) }
+              Timecop.travel(Time.utc(2011,2,10)) { expect { subject.save_without_password_validation }.to_not change(subject.invoices, :count) }
               subject.reload.plan.should == @paid_plan_yearly
             end
           end
@@ -838,7 +836,7 @@ describe Site::Invoice do
 
             it "should not create and not try to charge the invoice" do
               subject.plan_id = @paid_plan.id
-              Timecop.travel(Time.utc(2011,2,10)) { expect { subject.save_without_password_validation! }.to_not change(subject.invoices, :count) }
+              Timecop.travel(Time.utc(2011,2,10)) { expect { subject.save_without_password_validation }.to_not change(subject.invoices, :count) }
               subject.reload.plan.should == @paid_plan_yearly
             end
           end

@@ -3,6 +3,34 @@ require 'spec_helper'
 
 describe Site do
 
+  # describe "Test site with and without invoice" do
+  # 
+  #   context "WITH INVOICE" do
+  #     before(:all) do
+  #       @site = Factory(:site_with_invoice)
+  #     end
+  #     subject { @site.reload }
+  #     it "should be slow" do
+  #       start_time = Time.now
+  #       subject.plan_id.should be_present
+  #       puts "WITH INVOICE: Done in #{Time.now - start_time} seconds!"
+  #     end
+  #   end
+  # 
+  #   context "WITHOUT INVOICE" do
+  #     before(:all) { @site = Factory(:site) }
+  #     subject { @site.reload }
+  #     its(:user)                          { should be_present }
+  #     its(:plan)                          { should be_present }
+  #     it "should be quick" do
+  #       start_time = Time.now
+  #       subject.plan_id.should be_present
+  #       puts "WITHOUT INVOICE: Done in #{Time.now - start_time} seconds!"
+  #     end
+  #   end
+  # 
+  # end
+
   context "Factory" do
     before(:all) { @site = Factory(:site) }
     subject { @site.reload }
@@ -73,7 +101,6 @@ describe Site do
       end
 
       describe "#not_billable" do
-        y @site_not_billable_1
         specify { Site.not_billable.all.should =~ [@site_not_billable_1, @site_not_billable_2, @site_not_billable_3, @site_not_billable_4, @site_with_path] }
       end
 
@@ -94,12 +121,12 @@ describe Site do
       before(:all) do
         Timecop.travel(Time.utc(2011,1,1)) do
           @site_to_be_renewed = Factory(:site)
-          @site_to_be_renewed.apply_pending_plan_changes!
+          @site_to_be_renewed.apply_pending_plan_changes
         end
         @site_not_to_be_renewed1 = Factory(:site) # this site has a pending_plan_id
-        @site_not_to_be_renewed1.apply_pending_plan_changes!
+        @site_not_to_be_renewed1.apply_pending_plan_changes
         @site_not_to_be_renewed2 = Factory(:site, plan_started_at: 3.months.ago, plan_cycle_ended_at: 2.months.from_now)
-        @site_not_to_be_renewed2.apply_pending_plan_changes!
+        @site_not_to_be_renewed2.apply_pending_plan_changes
         VCR.use_cassette('ogone/visa_payment_10') { @site_not_to_be_renewed2.update_attribute(:plan_id, @paid_plan.id) }
       end
 
@@ -170,8 +197,8 @@ describe Site do
     describe "no hostnames at all" do
       context "hostnames are blank & plan is dev plan" do
         subject { Factory.build(:new_site, hostname: nil, extra_hostnames: nil, dev_hostnames: nil, plan: @dev_plan) }
-        it { should_not be_valid }
-        it { should have(1).error_on(:base) }
+        it { should be_valid } # dev hostnames are set before validation
+        it { should have(0).error_on(:base) }
       end
 
       context "hostnames are blank & plan is not dev plan" do
@@ -543,7 +570,7 @@ describe Site do
     describe "#suspend" do
       subject do
         site = Factory.build(:new_site)
-        site.apply_pending_plan_changes!
+        site.apply_pending_plan_changes
         @worker.work_off
         site
       end
@@ -561,7 +588,7 @@ describe Site do
     describe "#unsuspend" do
       subject do
         site = Factory.build(:new_site)
-        site.apply_pending_plan_changes!
+        site.apply_pending_plan_changes
         @worker.work_off
         site
       end
@@ -616,7 +643,6 @@ describe Site do
   end # Versioning
 
   describe "Callbacks" do
-    subject { Factory(:site) }
 
     describe "before_validation" do
       subject { Factory.build(:new_site, dev_hostnames: nil) }
@@ -631,6 +657,8 @@ describe Site do
     end
 
     describe "before_save" do
+      subject { Factory(:site) }
+
       describe "#clear_alerts_sent_at" do
         specify do
           subject.should_receive(:clear_alerts_sent_at)
@@ -641,25 +669,17 @@ describe Site do
       describe "#pend_plan_changes" do
         context "when pending_plan_id has changed" do
           it "should call #pend_plan_changes" do
-            subject.should_receive(:pend_plan_changes)
-            Invoice.should_receive(:build) { mock_invoice } # to avoid "Validation failed: Invoice items is invalid" error since we stub #pend_plan_changes
-            mock_invoice.should_receive(:save!)
-            subject.user.current_password = '123456'
-            new_plan = Factory(:plan)
-            subject.plan_id = new_plan.id
-            VCR.use_cassette('ogone/visa_payment_10') { subject.save }
-            subject.pending_plan_id.should == new_plan.id
+            subject.plan_id = @paid_plan.id
+            VCR.use_cassette('ogone/visa_payment_10') { subject.save_without_password_validation }
+            subject.pending_plan_id.should == @paid_plan.id
           end
         end
 
         context "when pending_plan_id doesn't change" do
-          subject { Factory(:site) }
-
           it "should not call #pend_plan_changes" do
-            subject.should_not_receive(:pend_plan_changes)
             subject.user.current_password = '123456'
             subject.hostname = 'test.com'
-            subject.save
+            subject.save_without_password_validation
             subject.pending_plan_id.should be_nil
           end
         end
@@ -667,6 +687,8 @@ describe Site do
     end # before_save
 
     describe "after_save" do
+      subject { Factory(:site) }
+
       describe "#create_and_charge_invoice" do
         it "should call #create_and_charge_invoice" do
           subject.should_receive(:create_and_charge_invoice)
@@ -739,6 +761,54 @@ describe Site do
         subject.plan = @dev_plan
         subject.save
         subject.plan_player_hits_reached_notification_sent_at.should be_nil
+      end
+    end
+
+    describe "#without_password_validation" do
+      subject { Factory(:site, hostname: "rymai.com") }
+
+      it "should ask password when not calling this method" do
+        subject.hostname.should == "rymai.com"
+        subject.hostname = "remy.com"
+        subject.save
+        subject.should_not be_valid
+        subject.should have(1).error_on(:base)
+      end
+
+      it "should not ask password when calling this method" do
+        subject.hostname.should == "rymai.com"
+        subject.hostname = "remy.com"
+        subject.without_password_validation { subject.save }
+        subject.should have(0).error_on(:base)
+        subject.reload.hostname.should == "remy.com"
+      end
+
+      it "should return the result of the given block" do
+        subject.without_password_validation { "foo" }.should == "foo"
+      end
+    end
+
+    describe "#save_without_password_validation" do
+      subject { Factory(:site, hostname: "rymai.com") }
+
+      it "should ask password when not calling this method" do
+        subject.hostname.should == "rymai.com"
+        subject.hostname = "remy.com"
+        subject.save
+        subject.should_not be_valid
+        subject.should have(1).error_on(:base)
+      end
+
+      it "should not ask password when calling this method" do
+        subject.hostname.should == "rymai.com"
+        subject.hostname = "remy.com"
+        subject.save_without_password_validation
+        subject.should have(0).error_on(:base)
+        subject.reload.hostname.should == "remy.com"
+      end
+
+      it "should return the result of the given block" do
+        subject.without_password_validation { "foo" }.should == "foo"
       end
     end
 
@@ -908,7 +978,7 @@ describe Site do
     describe "#plan_month_cycle_started_at & #plan_month_cycle_ended_at" do
       before(:all) do
         @site = Factory(:site)
-        @site.apply_pending_plan_changes!
+        @site.apply_pending_plan_changes
       end
 
       context "with monthly plan" do

@@ -256,7 +256,7 @@ def create_sites
         site.save! # TODO: USe VCR here to avoid calls to Ogone?!
       end
       site.cdn_up_to_date = true if rand > 0.5
-      site.apply_pending_plan_changes!
+      site.apply_pending_plan_changes
     end
   end
   puts "#{BASE_SITES.size} beautiful sites created for each user!"

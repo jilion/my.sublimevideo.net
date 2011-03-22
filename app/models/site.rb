@@ -228,17 +228,22 @@ class Site < ActiveRecord::Base
   def sponsor!
     write_attribute(:pending_plan_id, Plan.sponsored_plan)
     write_attribute(:next_cycle_plan_id, nil)
-    save_without_password_validation!
+    save_without_password_validation
   end
 
   def user_attributes=(attributes)
     user.attributes = attributes if attributes.present? # && in_or_was_in_paid_plan?
   end
-
-  def save_without_password_validation!
+  
+  def without_password_validation
     @skip_password_validation = true
-    self.save!
+    result = yield
     @skip_password_validation = false
+    result
+  end
+
+  def save_without_password_validation
+    without_password_validation { self.save }
   end
 
   def to_param

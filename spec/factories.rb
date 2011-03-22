@@ -25,10 +25,21 @@ Factory.define :new_site, :class => Site do |f|
   f.plan_id             { Factory(:plan).id }
 end
 
+# Don't create invoice nor try to charge
 Factory.define :site, :parent => :new_site do |f|
-  f.after_build  { |site| VCR.insert_cassette('ogone/visa_payment_10') }
-  f.after_create { |site| VCR.eject_cassette; site.apply_pending_plan_changes! }
+  f.after_build  { |site| site.pend_plan_changes; site.apply_pending_plan_changes }
 end
+
+Factory.define :site_with_invoice, :parent => :new_site do |f|
+  f.after_build  { |site| VCR.insert_cassette('ogone/visa_payment_10') }
+  f.after_create { |site| VCR.eject_cassette; site.apply_pending_plan_changes }
+end
+
+# Old
+# Factory.define :site, :parent => :new_site do |f|
+#   f.after_build  { |site| VCR.insert_cassette('ogone/visa_payment_10') }
+#   f.after_create { |site| VCR.eject_cassette; site.apply_pending_plan_changes }
+# end
 
 Factory.define :site_pending, :parent => :new_site do |f|
   f.after_build  { |site| VCR.insert_cassette('ogone/visa_payment_10') }

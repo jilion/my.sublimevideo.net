@@ -240,7 +240,9 @@ private
     self.archived_at = Time.now.utc
   end
   def archive_sites
-    sites.map(&:archive)
+    sites.each do |site|
+      site.without_password_validation { site.archive }
+    end
   end
 
   # after_transition :on => :archive

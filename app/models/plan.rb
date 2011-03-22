@@ -48,8 +48,7 @@ class Plan < ActiveRecord::Base
   end
 
   def self.create_custom(attributes)
-    name = "custom#{custom_plans.count + 1}"
-    create(attributes.merge(:name => name))
+    create(attributes.merge(:name => "custom#{custom_plans.count + 1}"))
   end
 
   # ====================
