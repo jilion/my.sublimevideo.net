@@ -7,15 +7,19 @@
     %li.last.active= link_to "Invoices", site_invoices_path(@site), :onclick => "MySublimeVideo.makeSticky(this, '.segmented_menu')"
 
   #invoices
+    %h3.section_title= "Next invoice"
+    - next_invoice = Invoice.build_next(site: @site)
+    %p= raw "#{content_tag(:strong, display_amount(next_invoice.amount))} on #{invoice_dates(next_invoice)}."
+
     %h3.section_title= "Past invoices"
     - if @invoices.present?
       %ul
         - @invoices.by_date.each do |invoice|
           %li
+            %p= raw "#{content_tag(:strong, display_amount(invoice.amount))} on #{invoice_dates(invoice)}."
+            %p{ :class => "status " + (invoice.failed? ? "failed" : "") }= "Status: #{charging_status(invoice)}."
             .right
               = link_to("view details", invoice_path(invoice), :onclick => "window.open(this); return false", :class => "details")
-            %p= raw "#{content_tag(:strong, display_amount(invoice.amount))} on #{invoice_dates(invoice)}"
-            %p{ :class =>  "status " + (invoice.failed? ? "failed" : "") }= charging_status(invoice)
     - else
       %p= 'None.'
     .spacer

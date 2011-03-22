@@ -6,15 +6,16 @@ module ApplicationHelper
   end
 
   def display_date(date)
-    date ? l(date, format: :minutes_timezone) : "-"
+    date ? l(date, :format => :minutes_timezone) : "-"
   end
 
   def display_percentage(fraction)
-    number_to_percentage(fraction * 100.0, precision: 2, strip_insignificant_zeros: true)
+    number_to_percentage(fraction * 100.0, :precision => 2, :strip_insignificant_zeros => true)
   end
 
   def display_amount(amount_in_cents)
-    number_to_currency(amount_in_cents / 100.0)
+    number = amount_in_cents / 100.0
+    number_to_currency(number, :precision => (number == number.to_i ? 0 : 2))
   end
 
   def display_amount_with_sup(amount_in_cents)
