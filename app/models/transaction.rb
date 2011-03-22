@@ -2,6 +2,8 @@ require 'base64'
 
 class Transaction < ActiveRecord::Base
 
+  attr_accessor :d3d_html
+
   # ================
   # = Associations =
   # ================
@@ -19,17 +21,20 @@ class Transaction < ActiveRecord::Base
   # = Callbacks =
   # =============
 
-  before_create :reject_paid_invoices, :set_user_id, :set_cc_infos, :set_amount
+  before_create :reject_paid_invoices, :set_user, :set_cc_infos, :set_amount
 
   # =================
   # = State Machine =
   # =================
 
   state_machine :initial => :unprocessed do
-    event(:succeed) { transition :unprocessed => :paid }
-    event(:fail)    { transition :unprocessed => :failed }
+    event(:succeed)  { transition :unprocessed => :paid }
+    event(:fail)     { transition :unprocessed => :failed }
+    event(:wait_d3d) { transition :unprocessed => :waiting_d3d }
 
-    after_transition :on => [:succeed, :fail], :do => :update_invoices
+    before_transition :on => [:succeed, :fail], :do => :set_fields_from_ogone_response
+    after_transition  :on => [:succeed, :fail], :do => :update_invoices
+    after_transition :on => :fail, :do => :send_charging_failed_email
   end
 
   # ==========
@@ -66,43 +71,74 @@ class Transaction < ActiveRecord::Base
     end
   end
 
-  def self.charge_by_invoice_ids(invoice_ids)
+  def self.charge_by_invoice_ids(invoice_ids, options={})
     invoices = Invoice.where(id: invoice_ids)
-    transaction = new(invoices: invoices)
+    transaction = new(invoices: invoices, user: options.delete(:user))
     transaction.save!
 
+    options = options.merge({
+      order_id: options.delete(:order_id) || transaction.id,
+      description: transaction.description,
+      store: transaction.user.cc_alias,
+      email: transaction.user.email,
+      billing_address: { zip: transaction.user.postal_code, country: transaction.user.country },
+      d3d: true,
+      paramplus: "PAYMENT=TRUE&ACTION=#{options.delete(:action)}" # options[:action] is used in TransactionsController for the flash notice (if applicable)
+    })
     payment = begin
-      options = { order_id: transaction.id, currency: 'USD', description: transaction.order_description, d3d: true }
-      Ogone.purchase(transaction.amount, transaction.user.credit_card_alias, options)
+      Ogone.purchase(transaction.amount, transaction.user.credit_card || transaction.user.cc_alias, options)
     rescue => ex
       Notify.send("Charging failed: #{ex.message}", exception: ex)
       transaction.error = ex.message
+      transaction.fail
+      puts ex.inspect
       nil
     end
-    # @payment && (@payment.success? || @payment.params["NCERROR"] == "50001113")
-    # 50001113: orderID already processed with success
-    # since a transaction is never retried, we should never get this NCERROR code...
-
-    case payment.params["STATUS"].to_i
-    when 9 # The payment has been accepted.
-      transaction.succeed
-    when 46 # Waiting for identification
-      transaction.error = Base64.decode64(payment.params["HTML_ANSWER"])
-      transaction.auth_needed
-    else # Something went wrong
-      transaction.error = payment.params["NCERRORPLUS"] if payment
-      transaction.fail
-    end
-
-    transaction
+    
+    payment ? transaction.process_payment_response(payment.params) : transaction
   end
 
   # ====================
   # = Instance Methods =
   # ====================
 
-  def order_description
-    "SublimeVideo Invoices: " + self.invoices.all.map { |invoice| "##{invoice.reference}" }.join(", ")
+  # Called from Transaction.charge_by_invoice_ids and from TransactionsController#callback
+  def process_payment_response(payment_params)
+    @ogone_response_infos = payment_params
+
+    case payment_params["STATUS"]
+    when "9" # Payment requested (and accepted)
+      succeed
+
+    when "46" # Waiting for identification (3-D Secure)
+              # We return the HTML to render. This HTML will redirect the user to the 3-D Secure form.
+      @ogone_response_infos = nil # we will not store infos returned by Ogone yet since the user has to identify himself first
+      @d3d_html = Base64.decode64(payment_params["HTML_ANSWER"])
+      wait_d3d
+
+    when "0" # Credit card information invalid or incomplete
+      self.error_key = "invalid"
+      fail
+
+    when "2" # Authorization refused
+      self.error_key = "refused"
+      fail
+
+    when "51" # Authorization waiting (authorization will be processed offline), should never receive this status
+      self.error_key = "waiting"
+      save
+
+    when "52", "92" # Authorization not known, Payment uncertain
+      self.error_key = "unknown"
+      save
+      Notify.send("Transaction ##{self.id} (PAYID: #{payment_params["PAYID"]}) has an uncertain state, please investigate quickly!")
+    end
+    
+    self # return self (can be useful)
+  end
+
+  def description
+    @description ||= "SublimeVideo Invoices: " + self.invoices.all.map { |invoice| "##{invoice.reference}" }.join(", ")
   end
 
 private
@@ -121,8 +157,8 @@ private
   def reject_paid_invoices
     self.invoices.reject! { |invoice| invoice.paid? }
   end
-  def set_user_id
-    self.user_id = invoices.first.user.id
+  def set_user
+    self.user = invoices.first.user unless user_id?
   end
   def set_cc_infos
     self.cc_type        = user.cc_type
@@ -133,9 +169,26 @@ private
     self.amount = invoices.map(&:amount).sum
   end
 
+  # before_transition :on => [:succeed, :fail]
+  def set_fields_from_ogone_response
+    if @ogone_response_infos.present?
+      self.pay_id     = @ogone_response_infos["PAYID"]
+      self.acceptance = @ogone_response_infos["ACCEPTANCE"]
+      self.status     = @ogone_response_infos["STATUS"]
+      self.eci        = @ogone_response_infos["ECI"]
+      self.error_code = @ogone_response_infos["NCERROR"]
+      self.error      = @ogone_response_infos["NCERRORPLUS"]
+    end
+  end
+
   # after_transition :on => [:succeed, :fail]
   def update_invoices
-    Invoice.where(id: invoice_ids).update_all(:state => state, :"#{state}_at" => updated_at)
+    Invoice.where(id: invoice_ids).each { |invoice| invoice.send(paid? ? :succeed : :fail) }
+  end
+  
+  # after_transition :on => :fail
+  def send_charging_failed_email
+    TransactionMailer.charging_failed(self).deliver!
   end
 
 end

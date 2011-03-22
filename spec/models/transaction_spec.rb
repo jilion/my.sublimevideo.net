@@ -132,7 +132,50 @@ describe Transaction do
 
     describe "Transitions" do
 
-      describe "after_transition on: [:succeed, :fail], do: :update_invoices" do
+      describe "before_transition :on => [:succeed, :fail], :do => :set_fields_from_ogone_response" do
+        context "with no response from Ogone" do
+          before(:each) { subject.instance_variable_set(:@ogone_response_infos, nil) }
+
+          %w[succeed fail].each do |event|
+            it "should not set Ogone specific fields on #{event}" do
+              subject.send event
+              subject.pay_id.should be_nil
+              subject.acceptance.should be_nil
+              subject.status.should be_nil
+              subject.eci.should be_nil
+              subject.error_code.should be_nil
+              subject.error.should be_nil
+            end
+          end
+        end
+
+        context "with a response from Ogone" do
+          before(:each) do
+            subject.reload.instance_variable_set(:@ogone_response_infos, {
+              "PAYID" => "123",
+              "ACCEPTANCE" => "321",
+              "STATUS" => "9",
+              "ECI" => "7",
+              "NCERROR" => "0",
+              "NCERRORPLUS" => "!"
+            })
+          end
+
+          %w[succeed fail].each do |event|
+            it "should set Ogone specific fields on #{event}" do
+              subject.send event
+              subject.pay_id.should == "123"
+              subject.acceptance.should == "321"
+              subject.status.should == "9"
+              subject.eci.should == "7"
+              subject.error_code.should == "0"
+              subject.error.should == "!"
+            end
+          end
+        end
+      end
+
+      describe "after_transition :on => [:succeed, :fail], :do => :update_invoices" do
         describe "initial invoices state" do
           specify do
             @invoice1.should be_open
@@ -149,10 +192,10 @@ describe Transaction do
 
           specify do
             @invoice1.reload.should be_paid
-            @invoice1.paid_at.to_i.should == subject.updated_at.to_i
+            @invoice1.paid_at.to_i.should be_within(5).of(subject.updated_at.to_i)
             @invoice1.failed_at.should be_nil
             @invoice2.reload.should be_paid
-            @invoice2.paid_at.to_i.should == subject.updated_at.to_i
+            @invoice2.paid_at.to_i.should be_within(5).of(subject.updated_at.to_i)
             @invoice2.failed_at.should be_nil
           end
         end
@@ -163,10 +206,22 @@ describe Transaction do
           specify do
             @invoice1.reload.should be_failed
             @invoice1.paid_at.should be_nil
-            @invoice1.failed_at.to_i.should == subject.updated_at.to_i
+            @invoice1.failed_at.to_i.should be_within(5).of(subject.updated_at.to_i)
             @invoice2.reload.should be_failed
             @invoice2.paid_at.should be_nil
-            @invoice2.failed_at.to_i.should == subject.updated_at.to_i
+            @invoice2.failed_at.to_i.should be_within(5).of(subject.updated_at.to_i)
+          end
+        end
+      end
+      
+      describe "after_transition :on => :fail, :do => :send_charging_failed_email" do
+        context "from open" do
+          subject { Factory(:transaction, invoices: [Factory(:invoice)]) }
+
+          it "should send an email to invoice.user" do
+            subject
+            lambda { subject.fail }.should change(ActionMailer::Base.deliveries, :count).by(1)
+            ActionMailer::Base.deliveries.last.to.should == [subject.user.email]
           end
         end
       end
@@ -221,10 +276,8 @@ describe Transaction do
       end
     end # .charge_all_open_and_failed_invoices
 
-
     describe ".charge_open_and_failed_invoices_by_user_id" do
       use_vcr_cassette "ogone/visa_payment_2000_alias"
-
       before(:all) do
         Invoice.delete_all
         @invoice1 = Factory(:invoice, state: 'open')
@@ -238,136 +291,152 @@ describe Transaction do
       end
     end # .charge_open_and_failed_invoices_of_user
 
-    pending ".charge_by_invoice_ids" do
+    describe ".charge_by_invoice_ids" do
+
+      context "with a new credit card given through options[:user]" do
+        before(:each) do
+          @user.reload
+          @invoice1 = Factory(:invoice, site: Factory(:site, user: @user, user_attributes: valid_cc_attributes), state: 'open')
+          @invoice2 = Factory(:invoice, site: Factory(:site, user: @user), state: 'failed')
+          @invoice3 = Factory(:invoice, site: Factory(:site, user: @user), state: 'paid')
+        end
+
+        it "should charge Ogone for the total amount of the open and failed invoices" do
+          Ogone.should_receive(:purchase).with(@invoice1.amount + @invoice2.amount, @user.credit_card, {
+            order_id: an_instance_of(Fixnum),
+            description: an_instance_of(String),
+            store: @user.cc_alias,
+            email: @user.email,
+            billing_address: { zip: @user.postal_code, country: @user.country },
+            d3d: true,
+            paramplus: "PAYMENT=TRUE&ACTION="
+          })
+          Transaction.charge_by_invoice_ids([@invoice1.id, @invoice2.id, @invoice3.id], { user: @user })
+        end
+      end
+
+      context "with a credit card alias" do
+        before(:each) do
+          @invoice1 = Factory(:invoice, site: Factory(:site, user: @user), state: 'open')
+          @invoice2 = Factory(:invoice, site: Factory(:site, user: @user), state: 'failed')
+          @invoice3 = Factory(:invoice, site: Factory(:site, user: @user), state: 'paid')
+        end
+
+        it "should charge Ogone for the total amount of the open and failed invoices" do
+          Ogone.should_receive(:purchase).with(@invoice1.amount + @invoice2.amount, @user.cc_alias, {
+            order_id: an_instance_of(Fixnum),
+            description: an_instance_of(String),
+            store: @user.cc_alias,
+            email: @user.email,
+            billing_address: { zip: @user.postal_code, country: @user.country },
+            d3d: true,
+            paramplus: "PAYMENT=TRUE&ACTION="
+          })
+          Transaction.charge_by_invoice_ids([@invoice1.id, @invoice2.id, @invoice3.id])
+        end
+      end
+
       context "with a succeeding purchase" do
-        use_vcr_cassette "ogone/visa_payment_2000_alias"
-
-        context "given open invoices" do
-          before(:all) do
-            @site1    = Factory(:site, user: @user)
-            @invoice1 = Factory(:invoice, site: @site1, state: 'open')
-            Factory(:plan_invoice_item, invoice: @invoice1)
-            @invoice2 = Factory(:invoice, site: Factory(:site, user: @user), state: 'open')
-          end
-
-          it "should charge Ogone for the total amount of the invoices" do
-            Ogone.should_receive(:purchase).with(@invoice1.amount + @invoice2.amount, @invoice1.user.credit_card_alias, {
-              order_id: an_instance_of(Fixnum),
-              currency: 'USD',
-              description: an_instance_of(String),
-              flag_3ds: true
-            })
-            Timecop.travel(4.month.from_now) { Transaction.charge_by_invoice_ids([@invoice1.id, @invoice2.id]) }
-          end
-
+        before(:each) do
+          @invoice1 = Factory(:invoice, site: Factory(:site, user: @user), state: 'open')
+        end
+        
+        context "credit card" do
+          use_vcr_cassette "ogone/visa_payment_2000_credit_card"
           it "should set transaction and invoices to paid state" do
-            @transaction = Transaction.charge_by_invoice_ids([@invoice1.id, @invoice2.id])
-            @transaction.should be_paid
+            @invoice1.should be_open
+            transaction = Transaction.charge_by_invoice_ids([@invoice1.id], { user: @user, order_id: rand(10000000) })
+            transaction.reload.should be_paid
             @invoice1.reload.should be_paid
-            @invoice2.reload.should be_paid
+          end
+        end
+        
+        context "alias" do
+          use_vcr_cassette "ogone/visa_payment_2000_alias"
+          it "should set transaction and invoices to paid state" do
+            @invoice1.should be_open
+            transaction = Transaction.charge_by_invoice_ids([@invoice1.id], { user: @user, order_id: rand(10000000) })
+            transaction.reload.should be_paid
+            @invoice1.reload.should be_paid
           end
         end
 
-        context "given invoices with mixed-state" do
-          before(:all) do
-            @invoice1 = Factory(:invoice, site: Factory(:site, user: @user), state: 'open')
-            @invoice2 = Factory(:invoice, site: Factory(:site, user: @user), state: 'failed')
-            @invoice3 = Factory(:invoice, site: Factory(:site, user: @user), state: 'paid')
+        context "with a purchase that need a 3d secure authentication" do
+          before(:each) do
+            Ogone.stub(:purchase) { mock('response', :params => { "STATUS" => "46", "HTML_ANSWER" => "foo" }) }
           end
 
-          it "should charge Ogone for the total amount of the invoices" do
-            Ogone.should_receive(:purchase).with(@invoice1.amount + @invoice2.amount, @invoice1.user.credit_card_alias, {
-              order_id: an_instance_of(Fixnum),
-              currency: 'USD',
-              description: an_instance_of(String),
-              flag_3ds: true
-            })
-            Transaction.charge_by_invoice_ids([@invoice1.id, @invoice2.id, @invoice3.id])
-          end
-
-          it "should set transaction and invoices to paid state" do
-            transaction = Transaction.charge_by_invoice_ids([@invoice1.id, @invoice2.id, @invoice3.id])
-            transaction.should be_paid
-            @invoice1.reload.should be_paid
-            @invoice2.reload.should be_paid
-            @invoice3.reload.should be_paid
+          it "should set transaction and invoices to failed state" do
+            @invoice1.should be_open
+            transaction = Transaction.charge_by_invoice_ids([@invoice1.id], { user: @user, order_id: rand(10000000) })
+            transaction.reload.should be_waiting_d3d
+            transaction.d3d_html.should be_an_instance_of(String)
+            transaction.error_key.should be_nil
+            @invoice1.reload.should be_open
           end
         end
       end
 
       context "with a failing purchase" do
-        use_vcr_cassette "ogone/visa_payment_9999"
+        before(:each) do
+          @invoice1 = Factory(:invoice, site: Factory(:site, user: @user), state: 'open')
+        end
 
-        context "given open invoices" do
-          before(:all) do
-            @site1    = Factory(:site, user: @user)
-            @invoice1 = Factory(:invoice, site: @site1, state: 'open')
-            Factory(:plan_invoice_item, invoice: @invoice1)
-            @invoice2 = Factory(:invoice, site: Factory(:site, user: @user), state: 'open')
-          end
-
-          it "should charge Ogone for the total amount of the invoices" do
-            Ogone.should_receive(:purchase).with(@invoice1.amount + @invoice2.amount, @invoice1.user.credit_card_alias, {
-              order_id: an_instance_of(Fixnum),
-              currency: 'USD',
-              description:an_instance_of(String),
-              flag_3ds: true
-            })
-            Timecop.travel(1.month.from_now) { Transaction.charge_by_invoice_ids([@invoice1.id, @invoice2.id]) }
-          end
-
-          it "should set error field" do
-            Timecop.travel(1.month.from_now) { @transaction = Transaction.charge_by_invoice_ids([@invoice1.id, @invoice2.id]) }
-            @transaction.error.should == "We received an unknown status for the transaction. We will contact your acquirer and update the status of the transaction within one working day. Please check the status later."
-          end
-
+        context "with a failing purchase due to an invalid credit card" do
+          before(:each) { Ogone.stub(:purchase) { mock('response', :params => { "STATUS" => "0" }) } }
           it "should set transaction and invoices to failed state" do
-            Timecop.travel(1.month.from_now) { @transaction = Transaction.charge_by_invoice_ids([@invoice1.id, @invoice2.id]) }
-            @transaction.should be_failed
+            @invoice1.should be_open
+            transaction = Transaction.charge_by_invoice_ids([@invoice1.id], { user: @user, order_id: rand(10000000) })
+            transaction.reload.should be_failed
+            transaction.error_key.should == "invalid"
             @invoice1.reload.should be_failed
-            @invoice2.reload.should be_failed
           end
         end
 
-        context "given invoices with mixed-state" do
-          before(:all) do
-            @site     = Factory(:site, user: @user)
-            @invoice1 = Factory(:invoice, site: Factory(:site, user: @user), state: 'open')
-            @invoice2 = Factory(:invoice, site: @site, state: 'failed')
-            @invoice3 = Factory(:invoice, site: @site, state: 'paid')
-          end
-
-          it "should charge Ogone for the total amount of the invoices" do
-            Ogone.should_receive(:purchase).with(@invoice1.amount + @invoice2.amount, @invoice1.user.credit_card_alias, {
-              order_id: an_instance_of(Fixnum),
-              currency: 'USD',
-              description: an_instance_of(String),
-              flag_3ds: true
-            })
-            Transaction.charge_by_invoice_ids([@invoice1.id, @invoice2.id, @invoice3.id])
-          end
-
-          it "should set error field" do
-            transaction = Transaction.charge_by_invoice_ids([@invoice1.id, @invoice2.id, @invoice3.id])
-            transaction.error.should == "We received an unknown status for the transaction. We will contact your acquirer and update the status of the transaction within one working day. Please check the status later."
-          end
-
-          it "should set transaction and invoices to paid state" do
-            transaction = Transaction.charge_by_invoice_ids([@invoice1.id, @invoice2.id, @invoice3.id])
-            transaction.should be_failed
+        context "with a failing purchase due to a refused purchase" do
+          before(:each) { Ogone.stub(:purchase) { mock('response', :params => { "STATUS" => "2" }) } }
+          it "should set transaction and invoices to failed state" do
+            @invoice1.should be_open
+            transaction = Transaction.charge_by_invoice_ids([@invoice1.id], { user: @user, order_id: rand(10000000) })
+            transaction.reload.should be_failed
+            transaction.error_key.should == "refused"
             @invoice1.reload.should be_failed
-            @invoice2.reload.should be_failed
-            @invoice3.reload.should be_paid
           end
         end
+
+        context "with a failing purchase due to a waiting authorization" do
+          before(:each) { Ogone.stub(:purchase) { mock('response', :params => { "STATUS" => "51" }) } }
+          it "should not succeed nor fail transaction nor invoices" do
+            @invoice1.should be_open
+            transaction = Transaction.charge_by_invoice_ids([@invoice1.id], { user: @user, order_id: rand(10000000) })
+            transaction.reload.should be_unprocessed
+            transaction.error_key.should == "waiting"
+            @invoice1.reload.should be_open
+          end
+        end
+
+        context "with a failing purchase due to a uncertain result" do
+          %w[52 92].each do |status|
+            before(:each) { Ogone.stub(:purchase) { mock('response', :params => { "STATUS" => status }) } }
+            it "should not succeed nor fail transaction nor invoices, with status #{status}" do
+              @invoice1.should be_open
+              transaction = Transaction.charge_by_invoice_ids([@invoice1.id], { user: @user, order_id: rand(10000000) })
+              transaction.reload.should be_unprocessed
+              transaction.error_key.should == "unknown"
+              @invoice1.reload.should be_open
+            end
+          end
+        end
+
       end
+
     end # .charge_by_invoice_ids
 
   end # Class Methods
 
   describe "Instance Methods" do
 
-    describe "#order_description" do
+    describe "#description" do
       before(:all) do
         @site1    = Factory(:site, user: @user, plan: @dev_plan)
         @site2    = Factory(:site, user: @user, plan: @paid_plan)
@@ -377,7 +446,7 @@ describe Transaction do
       subject { Factory(:transaction, invoices: [@invoice1.reload, @invoice2.reload]) }
 
       it "should create a description with invoices references" do
-        "SublimeVideo Invoices: ##{@invoice1.reference}, ##{@invoice2.reference}"
+        subject.description.should == "SublimeVideo Invoices: ##{@invoice1.reference}, ##{@invoice2.reference}"
       end
     end
 
@@ -397,8 +466,6 @@ end
 
 
 
-
-
 # == Schema Information
 #
 # Table name: transactions
@@ -410,6 +477,7 @@ end
 #  cc_expire_on   :date
 #  state          :string(255)
 #  amount         :integer
+#  error_key      :string(255)
 #  pay_id         :string(255)
 #  acceptance     :string(255)
 #  status         :string(255)
