@@ -2,6 +2,7 @@ class CreatePlans < ActiveRecord::Migration
   def self.up
     create_table :plans do |t|
       t.string  :name
+      t.string  :token
       t.string  :cycle # month or year
       t.integer :player_hits
       t.integer :price

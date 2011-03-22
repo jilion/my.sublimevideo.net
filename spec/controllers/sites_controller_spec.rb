@@ -10,16 +10,10 @@ describe SitesController do
     end
 
     describe "GET :index" do
-      before :each do
+      it "should render :index" do
         authenticated_user.stub_chain(:sites, :not_archived, :includes, :by_date).and_return([mock_site])
         get :index
-      end
-
-      it "should assign sites array as @sites" do
         assigns(:sites).should == [mock_site]
-      end
-
-      it "should render :index" do
         response.should render_template(:index)
       end
     end
@@ -84,11 +78,11 @@ describe SitesController do
 
     # TODO Remy
     pending "POST :create" do
-      before(:each) { authenticated_user.stub_chain(:sites, :create).with({}).and_return(@mock_site = mock_site) }
+      before(:each) { authenticated_user.stub_chain(:sites, :create).with({}).and_return(mock_site) }
 
       it "should redirect to /sites when create succeeds" do
         post :create, :site => {}
-        assigns(:site).should == @mock_site
+        assigns(:site).should == mock_site
         response.should redirect_to(sites_url)
       end
 

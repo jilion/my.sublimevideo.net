@@ -655,6 +655,27 @@ describe Site do
 
     end
 
+    pending "#sponsor!" do
+
+      it "should change plan to sponsored plan" do
+        site = Factory(:site)
+        site.next_cycle_plan_id = @dev_plan.id
+
+        site.next_cycle_plan_id.should be_present
+        site.plan_cycle_started_at.should be_present
+        site.plan_cycle_ended_at.should be_present
+
+        site.sponsor!
+        site.reload
+
+        site.should be_in_sponsored_plan
+        site.next_cycle_plan_id.should be_nil
+        site.plan_cycle_started_at.should be_nil
+        site.plan_cycle_ended_at.should be_nil
+      end
+
+    end
+
     describe "#need_path?" do
       it "should be true" do
         site = Factory(:site, hostname: 'web.me.com')

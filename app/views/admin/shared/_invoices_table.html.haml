@@ -1,4 +1,4 @@
-- invoices = object.invoices.order(:ended_at.desc).limit(12).uniq
+- invoices = object.invoices.order(:created_at.desc).limit(12).uniq
 
 %h3 Last 12 invoices
 

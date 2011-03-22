@@ -75,7 +75,11 @@ MySublimeVideo::Application.routes.draw do
   namespace "admin" do
     resource  :dashboard, :only => :show
     resources :users,     :only => [:index, :show]
-    resources :sites,     :only => [:index, :show, :edit, :update]
+    resources :sites,     :only => [:index, :show, :edit, :update] do
+      member do
+        put :sponsor
+      end
+    end
     resources :referrers, :only => :index
     resources :invoices,  :only => [:index, :show, :edit] do
       member do
@@ -83,7 +87,7 @@ MySublimeVideo::Application.routes.draw do
         put :cancel_charging
       end
     end
-    resources :plans,     :only => :index
+    resources :plans,     :only => [:index, :new, :create]
     resources :admins,    :only => [:index, :destroy]
     resources :mails,     :only => [:index, :new, :create]
     scope "mails" do

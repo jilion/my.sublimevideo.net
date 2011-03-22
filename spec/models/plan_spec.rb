@@ -4,12 +4,20 @@ describe Plan do
   subject { Factory(:plan) }
 
   context "Factory" do
-    its(:name)          { should =~ /small\d+/ }
+    its(:name)          { should =~ /comet\d+/ }
     its(:cycle)         { should == "month" }
     its(:player_hits)   { should == 10_000 }
     its(:price)         { should == 1000 }
+    its(:token)         { should =~ /^[a-z0-9]{12}$/ }
 
     it { should be_valid }
+  end
+
+  describe "Scopes" do
+    specify { Plan.free_plans.all.should =~ [@beta_plan, @dev_plan, @sponsored_plan] }
+    specify { Plan.paid_plans.all.should =~ [@paid_plan, @custom_plan] }
+    specify { Plan.standard_plans.all.should =~ [@paid_plan] }
+    specify { Plan.custom_plans.all.should =~ [@custom_plan] }
   end
 
   describe "Associations" do
@@ -45,55 +53,89 @@ describe Plan do
     it { should_not allow_value("foo").for(:cycle) }
   end
 
+  describe ".create_custom" do
+
+    it "should create new custom plan" do
+      plan = Plan.create_custom(:cycle => "month", :player_hits => 10**7, :price => 999900)
+      plan.name.should == "custom#{Plan.custom_plans.count}"
+    end
+
+  end
+
   describe "#next_plan" do
     it "should return the next plan with a bigger price" do
       plan2 = Factory(:plan, :price => subject.price + 100)
       plan3 = Factory(:plan, :price => subject.price + 2000)
-      subject.next_plan.should == plan2
+      @paid_plan.next_plan.should == plan2
     end
 
     it "should be_nil if none bigger plan exist" do
-      plan2 = Factory(:plan, :price => subject.price - 100)
-      subject.next_plan.should be_nil
+      plan2 = Factory(:plan, :price => 10**9)
+      plan2.next_plan.should be_nil
     end
   end
 
   describe "#month_price" do
     context "with month plan" do
-      subject { Factory(:plan, :cycle => "month", :price => 1000) }
+      subject { Factory.build(:plan, :cycle => "month", :price => 1000) }
 
       its(:month_price) { should == 1000 }
     end
 
     context "with year plan" do
-      subject { Factory(:plan, :cycle => "year", :price => 10000) }
+      subject { Factory.build(:plan, :cycle => "year", :price => 10000) }
 
       its(:month_price) { should == 10000 / 12 }
     end
   end
 
   describe "#dev_plan?" do
-    it { Factory(:plan, :name => "dev").should be_dev_plan }
-    it { Factory(:plan, :name => "pro").should_not be_dev_plan }
+    it { Factory.build(:plan, :name => "dev").should be_dev_plan }
+    it { Factory.build(:plan, :name => "pro").should_not be_dev_plan }
+  end
+
+  describe "#sponsored_plan?" do
+    it { Factory.build(:plan, :name => "dev").should_not be_sponsored_plan }
+    it { Factory.build(:plan, :name => "pro").should_not be_sponsored_plan }
+    it { Factory.build(:plan, :name => "sponsored").should be_sponsored_plan }
   end
 
   describe "#beta_plan?" do
-    it { Factory(:plan, :name => "beta").should be_beta_plan }
-    it { Factory(:plan, :name => "dev").should_not be_beta_plan }
+    it { Factory.build(:plan, :name => "beta").should be_beta_plan }
+    it { Factory.build(:plan, :name => "dev").should_not be_beta_plan }
+  end
+
+  describe "#standard_plan?" do
+    it { Factory.build(:plan, :name => "dev").should_not be_standard_plan }
+    it { Factory.build(:plan, :name => "beta").should_not be_standard_plan }
+    it { Factory.build(:plan, :name => "sponsored").should_not be_standard_plan }
+
+    Plan::STANDARD_NAMES.each do |name|
+      it { Factory.build(:plan, :name => name).should be_standard_plan }
+    end
+  end
+
+  describe "#custom_plan?" do
+    it { Factory.build(:plan, :name => "dev").should_not be_custom_plan }
+    it { Factory.build(:plan, :name => "beta").should_not be_custom_plan }
+    it { Factory.build(:plan, :name => "sponsored").should_not be_custom_plan }
+    it { Factory.build(:plan, :name => "custom").should be_custom_plan }
+    it { Factory.build(:plan, :name => "custom1").should be_custom_plan }
+    it { Factory.build(:plan, :name => "custom2").should be_custom_plan }
   end
 
   describe "#monthly?, #yearly? and #nonely?" do
-    it { Factory(:plan, cycle: "month").should be_monthly }
-    it { Factory(:plan, cycle: "year").should be_yearly }
-    it { Factory(:plan, cycle: "none").should be_nonely }
+    it { Factory.build(:plan, cycle: "month").should be_monthly }
+    it { Factory.build(:plan, cycle: "year").should be_yearly }
+    it { Factory.build(:plan, cycle: "none").should be_nonely }
   end
 
   describe "#upgrade?" do
     before(:all) do
-      @paid_plan         = Factory(:plan, cycle: "month", price: 1000)
-      @paid_plan2        = Factory(:plan, cycle: "month", price: 5000)
-      @paid_plan_yearly  = Factory(:plan, cycle: "year",  price: 10000)
-      @paid_plan_yearly2 = Factory(:plan, cycle: "year",  price: 50000)
+      @paid_plan         = Factory.build(:plan, cycle: "month", price: 1000)
+      @paid_plan2        = Factory.build(:plan, cycle: "month", price: 5000)
+      @paid_plan_yearly  = Factory.build(:plan, cycle: "year",  price: 10000)
+      @paid_plan_yearly2 = Factory.build(:plan, cycle: "year",  price: 50000)
     end
 
     it { @dev_plan.upgrade?(@dev_plan).should be_nil }
@@ -128,14 +170,14 @@ describe Plan do
   end
 
   describe "#title" do
-
     specify { @dev_plan.title.should == "Free Sandbox" }
     specify { @dev_plan.title(always_with_cycle: true).should == "Free Sandbox" }
-    specify { Factory(:plan, cycle: "month", name: "comet").title.should == "Comet" }
-    specify { Factory(:plan, cycle: "year", name: "comet").title.should == "Comet (yearly)" }
-    specify { Factory(:plan, cycle: "month", name: "comet").title(always_with_cycle: true).should == "Comet (monthly)" }
-    specify { Factory(:plan, cycle: "year", name: "comet").title(always_with_cycle: true).should == "Comet (yearly)" }
-
+    specify { @sponsored_plan.title.should == "Sponsored" }
+    specify { @sponsored_plan.title(always_with_cycle: true).should == "Sponsored" }
+    specify { Factory.build(:plan, cycle: "month", name: "comet").title.should == "Comet" }
+    specify { Factory.build(:plan, cycle: "year", name: "comet").title.should == "Comet (yearly)" }
+    specify { Factory.build(:plan, cycle: "month", name: "comet").title(always_with_cycle: true).should == "Comet (monthly)" }
+    specify { Factory.build(:plan, cycle: "year", name: "comet").title(always_with_cycle: true).should == "Comet (yearly)" }
   end
 
 end
@@ -147,6 +189,7 @@ end
 #
 #  id          :integer         not null, primary key
 #  name        :string(255)
+#  token       :string(255)
 #  cycle       :string(255)
 #  player_hits :integer
 #  price       :integer
@@ -157,4 +200,3 @@ end
 #
 #  index_plans_on_name_and_cycle  (name,cycle) UNIQUE
 #
-

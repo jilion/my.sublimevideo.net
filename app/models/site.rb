@@ -19,6 +19,8 @@ class Site < ActiveRecord::Base
   mount_uploader :license, LicenseUploader
   mount_uploader :loader, LoaderUploader
 
+  delegate :name, :to => :plan, :prefix => true
+
   # ================
   # = Associations =
   # ================
@@ -35,7 +37,7 @@ class Site < ActiveRecord::Base
     SiteUsage.where(:site_id => id)
   end
   def referrers
-    Referrer.where(:site_id => id)
+    ::Referrer.where(:site_id => id)
   end
 
   # ==========
@@ -53,8 +55,9 @@ class Site < ActiveRecord::Base
   scope :plan_player_hits_reached_notified, where(:plan_player_hits_reached_notification_sent_at.ne => nil)
 
   # filter
-  scope :beta,                 lambda { joins(:plan).where(:plan => { :name => "beta" }) }
-  scope :dev,                  lambda { joins(:plan).where(:plan => { :name => "dev" }) }
+  scope :beta,                 joins(:plan).where(:plan => { :name => "beta" })
+  scope :dev,                  joins(:plan).where(:plan => { :name => "dev" })
+  scope :sponsored,            joins(:plan).where(:plan => { :name => "sponsored" })
   scope :active,               where(:state => 'active')
   scope :suspended,            where(:state => 'suspended')
   scope :archived,             where(:state => 'archived')
@@ -213,6 +216,13 @@ class Site < ActiveRecord::Base
       # self.pending_plan_id = attribute
       write_attribute(:plan_id, attribute)
     end
+  end
+
+  # Instantly change plan to sponsored_plan (no refund!)
+  def sponsor!
+    write_attribute(:pending_plan_id, Plan.sponsored_plan)
+    write_attribute(:next_cycle_plan_id, nil)
+    save_without_password_validation!
   end
 
   def to_param

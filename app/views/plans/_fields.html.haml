@@ -2,7 +2,7 @@
   .inline_errors
     %span= f.object.errors[:plan].first
 
-- paid_plans = Plan.paid_plans.order(:player_hits.asc, :price.asc)
+- standard_plans = Plan.standard_plans.order(:player_hits.asc, :price.asc)
 - dev_plan   = Plan.dev_plan
 
 #plans
@@ -10,7 +10,7 @@
     - current_plan = f.object.plan
     - site = f.object
     - i = 0
-    - paid_plans.each do |plan|
+    - standard_plans.each do |plan|
       - next if plan.yearly?
       - i += 1
       %li{ :class => "#{plan.name} box_#{i}" }
@@ -24,7 +24,7 @@
             .radio_wrap
               = f.radio_button :plan_id, plan.id, radio_button_options(site, plan, current_plan)
               %span.bg
-          - if yearly_plan = paid_plans.find { |p| p.name == plan.name && p.yearly? }
+          - if yearly_plan = standard_plans.find { |p| p.name == plan.name && p.yearly? }
             .yearly.select_box{ :class => current_plan && yearly_plan == current_plan ? 'active' : '' }
               = f.label :plan_id, raw(plan_label_content(yearly_plan, :year => true)), :for => "plan_#{yearly_plan.name}_#{yearly_plan.cycle}"
               .radio_wrap
@@ -40,7 +40,6 @@
       = f.label :plan_id, raw("#{content_tag(:strong, 'Free Sandbox plan')}: Unlimited usage on your local development domain."), :for => "plan_#{dev_plan.name}", :class => "title"
       = f.radio_button :plan_id, dev_plan.id, radio_button_options(site, dev_plan, current_plan)
       %span.bg
-  
+
   #need_more
-    -#%p= raw "Need more pageviews, custom support, or more. Please #{mail_to "enterprise@sublimevideo.net", "contact us"}."
     %p= raw "Need more pageviews, custom support or have other enterprise-class requirements? Please #{mail_to "enterprise@sublimevideo.net", "contact us"}."

@@ -116,6 +116,7 @@ ActiveRecord::Schema.define(:version => 20110223160948) do
 
   create_table "plans", :force => true do |t|
     t.string   "name"
+    t.string   "token"
     t.string   "cycle"
     t.integer  "player_hits"
     t.integer  "price"

@@ -1,5 +1,5 @@
 :ruby
-  plans = Site.with_state(:dev, :active).select("plan_id, state, COUNT(*) as total").group(:plan_id, :state).order("total DESC, plan_id DESC").map { |s| [s.plan_id? ? "#{s.plan.name.titleize} (#{s.state})" : "No plan", s.total.to_i] }
+  plans = Site.with_state(:active).select("plan_id, state, COUNT(*) as total").group(:plan_id, :state).order("total DESC, plan_id DESC").map { |s| [s.plan_id? ? s.plan.title : "No plan", s.total.to_i] }
 
   graph = Graph.new do |g|
     g.option(chart: chart('plans_distribution', margin_top: 40, margin_bottom: 20))

@@ -46,10 +46,13 @@ Spork.prefork do
 
     config.before(:all) do
       PaperTrail.enabled = false
-      @worker    = Delayed::Worker.new(:quiet => true)
-      @dev_plan  = Factory(:dev_plan)
-      @beta_plan = Factory(:beta_plan)
-      @paid_plan = Factory(:plan)
+      @worker         = Delayed::Worker.new(:quiet => true)
+      # Plans
+      @dev_plan       = Factory(:dev_plan)
+      @beta_plan      = Factory(:beta_plan)
+      @paid_plan      = Factory(:plan, :name => 'comet')
+      @sponsored_plan = Factory(:sponsored_plan)
+      @custom_plan    = Factory(:custom_plan)
     end
 
     config.before(:each) do

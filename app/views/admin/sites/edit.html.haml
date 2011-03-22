@@ -14,12 +14,15 @@
   %strong= @site.state.humanize
   - if @site.archived?
     = "since " + display_date(@site.archived_at)
-  = "| Plan: "
-  %strong
-    = @site.plan_id? ? @site.plan.name.humanize : "No plan"
   = "| User: #{content_tag(:strong, link_to(@site.user.full_name, [:admin, @site.user]))}".html_safe
   = "| Created #{time_ago_in_words(@site.created_at)} ago"
   = "| Updated #{time_ago_in_words(@site.updated_at)} ago"
+
+%p
+  = "Plan: "
+  %strong= @site.plan.title
+  - if @site.in_paid_plan?
+    = "(" + l(@site.plan_cycle_started_at, :format => :d_b_Y) + ' - ' + l(@site.plan_cycle_ended_at, :format => :d_b_Y) + ")"
 
 %p
   = "Extra hostnames:"
@@ -55,12 +58,17 @@
 %hr
 %br
 
-- if zeno? || Rails.env.development?
+- if zeno?
   %h3 Mode update
 
   = form_for [:admin, @site] do |f|
     = f.select :player_mode, Site::PLAYER_MODES
-    = f.submit "Update player mode"
+    = f.submit "Update player mode", :confirm => "Are you sure?"
+    
+- if (zeno? || mehdi?) && !@site.in_sponsored_plan?
+  %h3 Sponsoring
+  = form_for [:sponsor, :admin, @site] do |f|
+    = f.submit "Change current plan to sponsored plan", :confirm => "Are you sure?"
 
 %br
 %hr

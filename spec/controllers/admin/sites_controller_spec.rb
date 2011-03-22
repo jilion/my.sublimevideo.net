@@ -49,8 +49,17 @@ describe Admin::SitesController do
         response.should render_template(:edit)
       end
     end
+
+    it "should respond with redirect to successful PUT :sponsor" do
+      Site.stub(:find_by_token).with('abc123') { mock_site }
+
+      mock_site.stub(:sponsor!) { true }
+
+      put :sponsor, :id => 'abc123', :site => {}
+      response.should redirect_to(admin_site_url(mock_site))
+    end
   end
 
-  it_should_behave_like "redirect when connected as", '/admin/login', [:user, :guest], { :get => [:index, :edit], :put => :update }
+  it_should_behave_like "redirect when connected as", '/admin/login', [:user, :guest], { :get => [:index, :edit], :put => [:update, :sponsor] }
 
 end

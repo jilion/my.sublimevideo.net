@@ -2,16 +2,26 @@
   %td.name
     = plan.name.humanize
   %td.cycle
-    = plan.cycle.humanize
+    - if plan.cycle != 'none'
+      = plan.cycle.humanize
+    - else
+      = "-"
   %td.player_hits
-    = number_with_delimiter(plan.player_hits)
+    - if plan.player_hits > 0
+      = number_with_delimiter(plan.player_hits)
+    - else
+      = "-"
   %td.price
-    = display_amount(plan.price)
-  %td.used_in_beta
-    = number_with_delimiter(plan.sites.beta.count)
-  %td.used_in_dev
-    = number_with_delimiter(plan.sites.dev.count)
+    - if plan.price > 0
+      = display_amount(plan.price)
+    - else
+      = "-"
+  %td.custom_token
+    - if plan.custom_plan?
+      = link_to plan.token, new_site_path(custom_plan: plan.token)
+    - else
+      = "-"
   %td.used_in_active
     = number_with_delimiter(plan.sites.active.count)
   %td.estimated_revenue
-    %strong= display_amount(plan.sites.active.count * plan.price)
+    %strong= display_amount(plan.sites.active.count * plan.month_price)
