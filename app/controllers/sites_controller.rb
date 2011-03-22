@@ -30,48 +30,32 @@ class SitesController < ApplicationController
   def create
     @site = current_user.sites.build(params[:site])
     @site.d3d_options = {
+      user: @site.user,
       accept_url: sites_url,
       decline_url: sites_url,
       exception_url: sites_url,
-      ip: request.try(:remote_ip)
+      ip: request.try(:remote_ip),
+      action: "create"
     }
 
-    respond_with(@user) do |format|
-      if @site.save
-        format.html do
-          if response.nil?
-            render :edit
+    respond_with(@site) do |format|
+      if @site.save # will create invoice and charge...
+        transaction = @site.last_invoice.transaction
 
-          elsif response[:state] == "d3d"
-            render :text => response[:message]
+        if transaction.waiting_d3d?
+          format.html { render :text => transaction.d3d_html }
 
-          elsif response[:state] == "authorized" && @user.save
-            flash[:notice] = response[:message] if response[:message]
-            redirect_to [:edit, :user_registration]
-          end
+        elsif transaction.failed?
+          format.html { redirect_to [:edit, @site, :plan], :alert => t("transaction.errors.#{transaction.error_code}") }
+
+        elsif transaction.succeed? || transaction.error_key == "unknown"
+          format.html { redirect_to :sites, :notice => t(transaction.succeed? ? "flash.sites.create.notice" : "transaction.errors.#{transaction.error_key}") }
+
         end
-      end
-    end
-    
-    
-    if @site.paid_plan? # charge NOW
-      # 1/ Create invoice
-      invoice = Invoice.build(site: @site)
-      invoice.save!
-      
-      # 2/ Charge it
-      transaction = Transaction.charge_by_invoice_ids([invoice.id])
-      if transaction.failed?
-        @site.errors.add(:base, transaction.error) # Acceptance test needed
       else
-        
+        format.html { render :edit }
       end
-      
-      # store credit card infos (if present, the check is in the model)
-      current_user.keep_some_credit_card_info
     end
-      
-    respond_with(@site, :location => :sites)
   end
 
   # PUT /sites/:id
