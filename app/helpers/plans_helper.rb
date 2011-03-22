@@ -32,8 +32,8 @@ module PlansHelper
     end
   end
 
-  def radio_button_options(site, plan, current_plan)
-    options = {}
+  def radio_button_options(site, plan, current_plan, options={})
+    options = options
     options[:id]    = plan.dev_plan? ? "plan_dev" : "plan_#{plan.name}_#{plan.cycle}"
     options[:class] = "plan_radio"
     options["data-plan_title"] = plan.title(always_with_cycle: true)
