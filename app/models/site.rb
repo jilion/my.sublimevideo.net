@@ -329,41 +329,44 @@ end
 
 
 
+
 # == Schema Information
 #
 # Table name: sites
 #
-#  id                                         :integer         not null, primary key
-#  user_id                                    :integer
-#  hostname                                   :string(255)
-#  dev_hostnames                              :string(255)
-#  token                                      :string(255)
-#  license                                    :string(255)
-#  loader                                     :string(255)
-#  state                                      :string(255)
-#  archived_at                                :datetime
-#  created_at                                 :datetime
-#  updated_at                                 :datetime
-#  player_mode                                :string(255)     default("stable")
-#  google_rank                                :integer
-#  alexa_rank                                 :integer
-#  path                                       :string(255)
-#  wildcard                                   :boolean
-#  extra_hostnames                            :string(255)
-#  plan_id                                    :integer
-#  pending_plan_id                            :integer
-#  next_cycle_plan_id                         :integer
-#  cdn_up_to_date                             :boolean
-#  first_paid_plan_started_at                 :datetime
-#  plan_started_at                            :datetime
-#  plan_cycle_started_at                      :datetime
-#  plan_cycle_ended_at                        :datetime
-#  pending_plan_started_at                    :datetime
-#  pending_plan_cycle_started_at              :datetime
-#  pending_plan_cycle_ended_at                :datetime
-#  last_30_days_main_player_hits_total_count  :integer         default(0)
-#  last_30_days_extra_player_hits_total_count :integer         default(0)
-#  last_30_days_dev_player_hits_total_count   :integer         default(0)
+#  id                                            :integer         not null, primary key
+#  user_id                                       :integer
+#  hostname                                      :string(255)
+#  dev_hostnames                                 :string(255)
+#  token                                         :string(255)
+#  license                                       :string(255)
+#  loader                                        :string(255)
+#  state                                         :string(255)
+#  archived_at                                   :datetime
+#  created_at                                    :datetime
+#  updated_at                                    :datetime
+#  player_mode                                   :string(255)     default("stable")
+#  google_rank                                   :integer
+#  alexa_rank                                    :integer
+#  path                                          :string(255)
+#  wildcard                                      :boolean
+#  extra_hostnames                               :string(255)
+#  plan_id                                       :integer
+#  pending_plan_id                               :integer
+#  next_cycle_plan_id                            :integer
+#  cdn_up_to_date                                :boolean
+#  first_paid_plan_started_at                    :datetime
+#  plan_started_at                               :datetime
+#  plan_cycle_started_at                         :datetime
+#  plan_cycle_ended_at                           :datetime
+#  pending_plan_started_at                       :datetime
+#  pending_plan_cycle_started_at                 :datetime
+#  pending_plan_cycle_ended_at                   :datetime
+#  plan_player_hits_reached_notification_sent_at :datetime
+#  first_plan_upgrade_required_alert_sent_at     :datetime
+#  last_30_days_main_player_hits_total_count     :integer         default(0)
+#  last_30_days_extra_player_hits_total_count    :integer         default(0)
+#  last_30_days_dev_player_hits_total_count      :integer         default(0)
 #
 # Indexes
 #
