@@ -212,11 +212,7 @@ class Site < ActiveRecord::Base
       end
     else
       # Creation
-      if new_plan.paid_plan?
-        write_attribute(:pending_plan_id, attribute)
-      else
-        write_attribute(:plan_id, attribute)
-      end
+      write_attribute(:pending_plan_id, attribute)
     end
   end
 

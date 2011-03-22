@@ -353,6 +353,17 @@ describe Site do
         @paid_plan_yearly2 = Factory(:plan, cycle: "year",  price: 50000)
       end
 
+      describe "when creating a dev plan" do
+        before(:all) do
+          @site = Factory.build(:new_site, plan_id: @dev_plan.id)
+        end
+        subject { @site }
+
+        its(:plan_id)            { should be_nil }
+        its(:pending_plan_id)    { should == @dev_plan.id }
+        its(:next_cycle_plan_id) { should be_nil }
+      end
+
       describe "when upgrade from dev plan to monthly plan" do
         before(:all) do
           @site = Factory.build(:new_site, plan: @dev_plan)
@@ -640,35 +651,13 @@ describe Site do
 
     describe "after_save" do
       describe "#create_and_charge_invoice" do
-        context "when pending_plan_id has changed and is present" do
-          it "should call #create_and_charge_invoice" do
-            subject.should_receive(:create_and_charge_invoice)
-            subject.user.current_password = '123456'
-            new_paid_plan = Factory(:plan)
-            subject.plan_id = new_paid_plan.id
-            VCR.use_cassette('ogone/visa_payment_10') { subject.save! }
-            subject.pending_plan_id.should == new_paid_plan.id
-          end
-        end
-
-        context "when pending_plan_id has changed and is not present" do
-          it "should not call #create_and_charge_invoice" do
-            subject.should_not_receive(:create_and_charge_invoice)
-            subject.user.current_password = '123456'
-            subject.pending_plan_id = nil
-            subject.save!
-            subject.pending_plan_id.should be_nil
-          end
-        end
-
-        context "when pending_plan_id doesn't change" do
-          it "should not call #create_and_charge_invoice" do
-            subject.should_not_receive(:create_and_charge_invoice)
-            subject.user.current_password = '123456'
-            subject.hostname = "test.com"
-            subject.save!
-            subject.hostname.should == "test.com"
-          end
+        it "should call #create_and_charge_invoice" do
+          subject.should_receive(:create_and_charge_invoice)
+          subject.user.current_password = '123456'
+          new_paid_plan = Factory(:plan)
+          subject.plan_id = new_paid_plan.id
+          VCR.use_cassette('ogone/visa_payment_10') { subject.save! }
+          subject.pending_plan_id.should == new_paid_plan.id
         end
       end
     end
