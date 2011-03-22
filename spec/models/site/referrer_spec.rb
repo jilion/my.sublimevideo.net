@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Site::Referrer do
-  
+
   describe "#referrer_type" do
     context "with versioning" do
       before(:all) do
@@ -205,5 +205,5 @@ describe Site::Referrer do
       end
     end
   end
-  
+
 end

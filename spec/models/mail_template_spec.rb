@@ -1,28 +1,25 @@
 require 'spec_helper'
 
 describe MailTemplate do
+
   context "Factory" do
-    before(:all) do
-      @mail_template = Factory(:mail_template)
-    end
+    before(:all) { @mail_template = Factory(:mail_template) }
     subject { @mail_template }
-    
+
     its(:title)   { should =~ /Pricing survey \d+/ }
     its(:subject) { should == "{{user.full_name}} ({{user.email}}), help us shaping the right pricing" }
     its(:body)    { should == "Hi {{user.full_name}} ({{user.email}}), please respond to the survey, by clicking on the following url: http://survey.com" }
 
     it { should be_valid }
   end
-  
+
   describe "Associations" do
-    before(:all) do
-      @mail_template = Factory(:mail_template)
-    end
+    before(:all) { @mail_template = Factory(:mail_template) }
     subject { @mail_template }
-    
+
     it { should have_many :logs }
   end
-  
+
   describe "Validations" do
     [:title, :subject, :body].each do |attr|
       it { should allow_mass_assignment_of(attr) }
@@ -31,6 +28,7 @@ describe MailTemplate do
 
     it { should validate_uniqueness_of(:title) }
   end
+
 end
 
 # == Schema Information

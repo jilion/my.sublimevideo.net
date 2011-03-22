@@ -19,7 +19,7 @@ private
 public
 
   def name_matches
-    @@name_matches ||= name.match(/^([0-9]{4}-[0-9]{2}-[0-9]{2})-([0-9]{2})-([0-9]{2})-([0-9]{2})-[a-zA-Z0-9]+$/)
+    @name_matches ||= name.match(/^([0-9]{4}-[0-9]{2}-[0-9]{2})-([0-9]{2})-([0-9]{2})-([0-9]{2})-[a-zA-Z0-9]+$/)
   end
 
 private
