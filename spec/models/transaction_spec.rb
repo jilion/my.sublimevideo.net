@@ -213,7 +213,7 @@ describe Transaction do
           end
         end
       end
-      
+
       describe "after_transition :on => :fail, :do => :send_charging_failed_email" do
         context "from open" do
           subject { Factory(:transaction, invoices: [Factory(:invoice)]) }
@@ -249,9 +249,15 @@ describe Transaction do
     describe ".charge_all_open_and_failed_invoices" do
       before(:all) do
         Invoice.delete_all
-        @invoice1 = Factory(:invoice, state: 'open')
-        @invoice2 = Factory(:invoice, state: 'failed')
-        @invoice3 = Factory(:invoice, state: 'paid')
+        @user1 = Factory(:user)
+        @user2 = Factory(:user)
+        @user3 = Factory(:user)
+        @site1 = Factory(:site, user: @user1)
+        @site2 = Factory(:site, user: @user2)
+        @site3 = Factory(:site, user: @user3)
+        @invoice1 = Factory(:invoice, state: 'open', site: @site1)
+        @invoice2 = Factory(:invoice, state: 'failed', site: @site2)
+        @invoice3 = Factory(:invoice, state: 'paid', site: @site3)
       end
       before(:each) do
         Delayed::Job.delete_all
@@ -286,7 +292,7 @@ describe Transaction do
 
       it "should delay invoice charging for open and failed invoices" do
         @invoice1.reload.should be_open
-        Transaction.should_receive(:charge_by_invoice_ids).with([@invoice1.id]).and_return(an_instance_of(Transaction))
+        Transaction.should_receive(:charge_by_invoice_ids).with(@invoice1.user.invoices.open_or_failed.map(&:id)).and_return(an_instance_of(Transaction))
         Transaction.charge_open_and_failed_invoices_by_user_id(@invoice1.site.user.id)
       end
     end # .charge_open_and_failed_invoices_of_user
@@ -340,7 +346,7 @@ describe Transaction do
         before(:each) do
           @invoice1 = Factory(:invoice, site: Factory(:site, user: @user), state: 'open')
         end
-        
+
         context "credit card" do
           use_vcr_cassette "ogone/visa_payment_2000_credit_card"
           it "should set transaction and invoices to paid state" do
@@ -350,7 +356,7 @@ describe Transaction do
             @invoice1.reload.should be_paid
           end
         end
-        
+
         context "alias" do
           use_vcr_cassette "ogone/visa_payment_2000_alias"
           it "should set transaction and invoices to paid state" do

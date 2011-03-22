@@ -530,7 +530,8 @@ describe Site::Invoice do
           subject { @site }
 
           it "should not create and not try to charge the invoice" do
-            expect { subject.save }.to_not change(subject.invoices, :count)
+            expect { subject.save! }.to_not change(subject.invoices, :count)
+            subject.reload.plan.should == @dev_plan
           end
         end
 
@@ -542,16 +543,19 @@ describe Site::Invoice do
 
             it "should not create and not try to charge the invoice" do
               expect { Timecop.travel(Time.utc(2011,3,3)) { subject.save! } }.to_not change(subject.invoices, :count)
+              subject.reload.plan.should == @dev_plan
             end
           end
 
           describe "when upgrade to monthly paid plan" do
             use_vcr_cassette "ogone/visa_payment_10"
-            before(:each) { @site.reload.plan_id = @paid_plan.id }
-            subject { @site }
+            subject { @site.reload }
 
             it "should create and try to charge the invoice" do
+              subject.plan_id = @paid_plan.id
+              subject.user_attributes = { current_password: "123456" }
               Timecop.travel(Time.utc(2011,2,10)) { expect { subject.save! }.to change(subject.invoices, :count).by(1) }
+              subject.reload.plan.should == @paid_plan
               subject.last_invoice.should be_paid
             end
           end
@@ -562,8 +566,9 @@ describe Site::Invoice do
             subject { @site }
 
             it "should create and try to charge the invoice" do
-              subject
+              subject.user_attributes = { current_password: "123456" }
               Timecop.travel(Time.utc(2011,2,10)) { expect { subject.save! }.to change(subject.invoices, :count).by(1) }
+              subject.reload.plan.should == @paid_plan_yearly
               subject.last_invoice.should be_paid
             end
           end
@@ -572,7 +577,9 @@ describe Site::Invoice do
             subject { @site }
 
             it "should not create and not try to charge the invoice" do
-              Timecop.travel(Time.utc(2011,2,10)) { expect { subject.suspend }.to_not change(subject.invoices, :count) }
+              Timecop.travel(Time.utc(2011,2,10)) { expect { subject.suspend! }.to_not change(subject.invoices, :count) }
+              subject.reload.plan.should == @dev_plan
+              subject.should be_suspended
             end
           end
 
@@ -580,7 +587,9 @@ describe Site::Invoice do
             subject { @site }
 
             it "should not create and not try to charge the invoice" do
-              Timecop.travel(Time.utc(2011,2,10)) { expect { subject.archive }.to_not change(subject.invoices, :count) }
+              Timecop.travel(Time.utc(2011,2,10)) { expect { subject.archive! }.to_not change(subject.invoices, :count) }
+              subject.reload.plan.should == @dev_plan
+              subject.should be_archived
             end
           end
         end
@@ -593,6 +602,7 @@ describe Site::Invoice do
 
           it "should not create and not try to charge the invoice" do
             expect { subject.save }.to_not change(subject.invoices, :count)
+            subject.reload.plan.should == @beta_plan
           end
         end
 
@@ -604,6 +614,7 @@ describe Site::Invoice do
 
             it "should not create and not try to charge the invoice" do
               expect { Timecop.travel(Time.utc(2011,3,3)) { subject.save! } }.to_not change(subject.invoices, :count)
+              subject.reload.plan.should == @beta_plan
             end
           end
 
@@ -613,7 +624,9 @@ describe Site::Invoice do
             subject { @site }
 
             it "should create and try to charge the invoice" do
+              subject.user_attributes = { current_password: "123456" }
               Timecop.travel(Time.utc(2011,2,10)) { expect { subject.save! }.to change(subject.invoices, :count).by(1) }
+              subject.reload.plan.should == @paid_plan
               subject.last_invoice.should be_paid
             end
           end
@@ -624,7 +637,9 @@ describe Site::Invoice do
             subject { @site }
 
             it "should create and try to charge the invoice" do
+              subject.user_attributes = { current_password: "123456" }
               Timecop.travel(Time.utc(2011,2,10)) { expect { subject.save! }.to change(subject.invoices, :count).by(1) }
+              subject.reload.plan.should == @paid_plan_yearly
               subject.last_invoice.should be_paid
             end
           end
@@ -633,7 +648,9 @@ describe Site::Invoice do
             subject { @site.reload }
 
             it "should not create and not try to charge the invoice" do
-              Timecop.travel(Time.utc(2011,2,10)) { expect { subject.suspend }.to_not change(subject.invoices, :count) }
+              Timecop.travel(Time.utc(2011,2,10)) { expect { subject.suspend! }.to_not change(subject.invoices, :count) }
+              subject.reload.plan.should == @beta_plan
+              subject.should be_suspended
             end
           end
 
@@ -641,7 +658,9 @@ describe Site::Invoice do
             subject { @site.reload }
 
             it "should not create and not try to charge the invoice" do
-              Timecop.travel(Time.utc(2011,2,10)) { expect { subject.archive }.to_not change(subject.invoices, :count) }
+              Timecop.travel(Time.utc(2011,2,10)) { expect { subject.archive! }.to_not change(subject.invoices, :count) }
+              subject.reload.plan.should == @beta_plan
+              subject.should be_archived
             end
           end
         end
@@ -655,60 +674,74 @@ describe Site::Invoice do
 
           it "should create and try to charge the invoice" do
             expect { subject.save }.to change(subject.invoices, :count).by(1)
+            subject.reload.plan.should == @paid_plan
             subject.last_invoice.should be_paid
           end
         end
 
         context "on a saved record" do
           before(:all) do
-            Timecop.travel(Time.utc(2011,1,30)) { @site = Factory(:site, plan_id: @paid_plan.id); @site.apply_pending_plan_changes! }
+            Timecop.travel(Time.utc(2011,1,30)) { @site = Factory(:site, plan_id: @paid_plan.id) }
           end
 
           describe "when save with no changes during the first cycle" do
             subject { @site }
 
             it "should not create and not try to charge the invoice" do
-              expect { Timecop.travel(Time.utc(2011,2,3)) { subject.save! } }.to_not change(subject.invoices, :count)
+              Timecop.travel(Time.utc(2011,2,3)) do
+                subject.pend_plan_changes
+                expect { subject.save! }.to_not change(subject.invoices, :count)
+              end
+              subject.reload.plan.should == @paid_plan
             end
           end
 
           describe "when save with no changes during the second cycle" do
             use_vcr_cassette "ogone/visa_payment_10"
             subject { @site }
-            
+
             it "should create and try to charge the invoice" do
-              expect { Timecop.travel(Time.utc(2011,3,3)) { subject.pend_plan_changes; subject.save! } }.to change(subject.invoices, :count).by(1)
+              Timecop.travel(Time.utc(2011,3,3)) do
+                subject.pend_plan_changes
+                expect { subject.save! }.to change(subject.invoices, :count).by(1)
+              end
+              subject.reload.plan.should == @paid_plan
             end
           end
 
           describe "when upgrade to monthly paid plan" do
             use_vcr_cassette "ogone/visa_payment_10"
-            before(:each) { @site.reload.plan_id = @paid_plan2.id }
-            subject { @site }
+            subject { @site.reload }
 
             it "should create and try to charge the invoice" do
+              subject.reload.plan_id = @paid_plan2.id
+              subject.user_attributes = { current_password: "123456" }
               Timecop.travel(Time.utc(2011,2,10)) { expect { subject.save! }.to change(subject.invoices, :count).by(1) }
+              subject.reload.plan.should == @paid_plan2
               subject.last_invoice.should be_paid
             end
           end
 
           describe "when upgrade to yearly paid plan" do
             use_vcr_cassette "ogone/visa_payment_10"
-            before(:each) { @site.reload.plan_id = @paid_plan_yearly.id }
-            subject { @site }
+            subject { @site.reload }
 
             it "should create and try to charge the invoice" do
+              subject.reload.plan_id = @paid_plan_yearly.id
+              subject.user_attributes = { current_password: "123456" }
               Timecop.travel(Time.utc(2011,2,10)) { expect { subject.save! }.to change(subject.invoices, :count).by(1) }
+              subject.reload.plan.should == @paid_plan_yearly
               subject.last_invoice.should be_paid
             end
           end
 
           describe "when downgrade" do
-            before(:each) { @site.reload.plan_id = @dev_plan.id }
-            subject { @site }
+            subject { @site.reload }
 
             it "should not create and not try to charge the invoice" do
-              Timecop.travel(Time.utc(2011,2,10)) { expect { subject.update_attributes(user: { current_password: "123456" }) }.to_not change(subject.invoices, :count) }
+              subject.reload.plan_id = @dev_plan.id
+              Timecop.travel(Time.utc(2011,2,10)) { expect { subject.save_without_password_validation! }.to_not change(subject.invoices, :count) }
+              subject.reload.plan.should == @paid_plan
             end
           end
 
@@ -716,7 +749,9 @@ describe Site::Invoice do
             subject { @site }
 
             it "should not create and not try to charge the invoice" do
-              Timecop.travel(Time.utc(2011,2,10)) { expect { subject.suspend }.to_not change(subject.invoices, :count) }
+              Timecop.travel(Time.utc(2011,2,10)) { expect { subject.suspend! }.to_not change(subject.invoices, :count) }
+              subject.reload.plan.should == @paid_plan
+              subject.should be_suspended
             end
           end
 
@@ -724,7 +759,10 @@ describe Site::Invoice do
             subject { @site.reload }
 
             it "should not create and not try to charge the invoice" do
-              Timecop.travel(Time.utc(2011,2,10)) { expect { subject.archive }.to_not change(subject.invoices, :count) }
+              subject.user_attributes = { current_password: "123456" }
+              Timecop.travel(Time.utc(2011,2,10)) { expect { subject.archive! }.to_not change(subject.invoices, :count) }
+              subject.reload.plan.should == @paid_plan
+              subject.should be_archived
             end
           end
         end
@@ -738,73 +776,90 @@ describe Site::Invoice do
 
           it "should create and try to charge the invoice" do
             expect { subject.save }.to change(subject.invoices, :count).by(1)
+            subject.reload.plan.should == @paid_plan_yearly
             subject.last_invoice.should be_paid
           end
         end
 
         context "on a saved record" do
           before(:all) do
-            Timecop.travel(Time.utc(2011,1,30)) { @site = Factory(:site, plan_id: @paid_plan_yearly.id); @site.apply_pending_plan_changes! }
+            Timecop.travel(Time.utc(2011,1,30)) { @site = Factory(:site, plan_id: @paid_plan_yearly.id) }
           end
 
           describe "when save with no changes during the first cycle" do
-            subject { @site }
+            subject { @site.reload }
 
             it "should not create and not try to charge the invoice" do
-              expect { Timecop.travel(Time.utc(2011,2,3)) { subject.pend_plan_changes; subject.save! } }.to_not change(subject.invoices, :count)
+              Timecop.travel(Time.utc(2011,2,3)) do
+                subject.pend_plan_changes
+                expect { subject.save! }.to_not change(subject.invoices, :count)
+              end
+              subject.reload.plan.should == @paid_plan_yearly
             end
           end
 
           describe "when save with no changes during the second cycle" do
-            subject { @site }
+            subject { @site.reload }
 
-            it "should not create and not try to charge the invoice" do
-              expect { Timecop.travel(Time.utc(2012,3,3)) { subject.pend_plan_changes; subject.save! } }.to change(subject.invoices, :count).by(1)
+            it "should create and try to charge the invoice" do
+              Timecop.travel(Time.utc(2012,3,3)) do
+                subject.pend_plan_changes
+                expect { subject.save! }.to change(subject.invoices, :count).by(1)
+              end
+              subject.reload.plan.should == @paid_plan_yearly
             end
           end
 
           describe "when upgrade to yearly paid plan" do
             use_vcr_cassette "ogone/visa_payment_10"
-            before(:each) { @site.reload.plan_id = @paid_plan_yearly2.id }
-            subject { @site }
+            subject { @site.reload }
 
             it "should create and try to charge the invoice" do
+              subject.reload.plan_id = @paid_plan_yearly2.id
+              subject.user_attributes = { current_password: "123456" }
               Timecop.travel(Time.utc(2011,2,10)) { expect { subject.save! }.to change(subject.invoices, :count).by(1) }
+              subject.reload.plan.should == @paid_plan_yearly2
               subject.last_invoice.should be_paid
             end
           end
 
           describe "when downgrade to dev plan" do
-            before(:each) { @site.reload.plan_id = @dev_plan.id }
-            subject { @site }
+            subject { @site.reload }
 
             it "should not create and not try to charge the invoice" do
-              Timecop.travel(Time.utc(2011,2,10)) { expect { subject.update_attributes(user: { current_password: "123456" }) }.to_not change(subject.invoices, :count) }
+              subject.reload.plan_id = @dev_plan.id
+              Timecop.travel(Time.utc(2011,2,10)) { expect { subject.save_without_password_validation! }.to_not change(subject.invoices, :count) }
+              subject.reload.plan.should == @paid_plan_yearly
             end
           end
 
           describe "when downgrade to paid plan" do
-            before(:each) { @site.reload.plan_id = @paid_plan.id }
-            subject { @site }
+            subject { @site.reload }
 
             it "should not create and not try to charge the invoice" do
-              Timecop.travel(Time.utc(2011,2,10)) { expect { subject.update_attributes(user: { current_password: "123456" }) }.to_not change(subject.invoices, :count) }
+              subject.plan_id = @paid_plan.id
+              Timecop.travel(Time.utc(2011,2,10)) { expect { subject.save_without_password_validation! }.to_not change(subject.invoices, :count) }
+              subject.reload.plan.should == @paid_plan_yearly
             end
           end
 
           describe "when suspend" do
-            subject { @site }
+            subject { @site.reload }
 
             it "should not create and not try to charge the invoice" do
-              Timecop.travel(Time.utc(2011,2,10)) { expect { subject.suspend }.to_not change(subject.invoices, :count) }
+              Timecop.travel(Time.utc(2011,2,10)) { expect { subject.suspend! }.to_not change(subject.invoices, :count) }
+              subject.reload.plan.should == @paid_plan_yearly
             end
           end
 
           describe "when archive" do
-            subject { @site }
+            subject { @site.reload }
 
             it "should not create and not try to charge the invoice" do
-              Timecop.travel(Time.utc(2011,2,10)) { expect { subject.archive }.to_not change(subject.invoices, :count) }
+              subject.user_attributes = { current_password: "123456" }
+              Timecop.travel(Time.utc(2011,2,10)) { expect { subject.archive! }.to_not change(subject.invoices, :count) }
+              subject.reload.plan.should == @paid_plan_yearly
+              subject.should be_archived
             end
           end
         end
@@ -813,7 +868,7 @@ describe Site::Invoice do
     end # #create_and_charge_invoice
 
     describe "#months_since" do
-      before(:all) { @site = Factory.build(:site) }
+      before(:all) { @site = Factory(:site) }
 
       context "with plan_started_at 2011,1,1" do
         before(:all) { @site.plan_started_at = Time.utc(2011,1,1) }
@@ -845,7 +900,7 @@ describe Site::Invoice do
     end
 
     describe "#days_since" do
-      before(:all) { @site = Factory.build(:site) }
+      before(:all) { @site = Factory(:site) }
 
       context "with first_paid_plan_started_at 2011,1,1" do
         before(:all) { @site.first_paid_plan_started_at = Time.utc(2011,1,1) }
@@ -874,24 +929,26 @@ describe Site::Invoice do
 
     describe "#set_first_paid_plan_started_at" do
       it "should be set if site created with paid plan" do
-        site = Factory(:site, plan: @paid_plan)
+        site = Factory(:site, plan_id: @paid_plan.id)
         site.first_paid_plan_started_at.should be_present
       end
 
       it "should not be set if site created with dev plan" do
-        site = Factory(:site, plan: @dev_plan)
+        site = Factory(:site, plan_id: @dev_plan.id)
         site.first_paid_plan_started_at.should be_nil
       end
 
       it "should be set when first upgrade to paid plan" do
-        site = Factory(:site, plan: @dev_plan)
+        site = Factory(:site, plan_id: @dev_plan.id)
         site.first_paid_plan_started_at.should be_nil
-        site.reload.update_attributes(plan_id: @paid_plan.id)
-        site.update_cycle_plan
+        site.reload.plan_id = @paid_plan.id
+        site.user_attributes = { current_password: "123456" }
+        VCR.use_cassette('ogone/visa_payment_10') { site.save! }
+        site.save!
         site.reload.first_paid_plan_started_at.should be_present
       end
     end
-    
+
   end # Instance Methods
-  
+
 end

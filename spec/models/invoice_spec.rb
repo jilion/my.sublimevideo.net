@@ -161,6 +161,7 @@ describe Invoice do
   end # State Machine
 
   describe "Scopes" do
+    
     before(:all) do
       Invoice.delete_all
       @site = Factory(:site, plan: @dev_plan)
@@ -188,6 +189,7 @@ describe Invoice do
     describe "#paid" do
       specify { Invoice.paid.all.should == [@paid_invoice] }
     end
+    
   end # Scopes
 
   describe "Class Methods" do

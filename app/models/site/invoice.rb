@@ -95,9 +95,7 @@ module Site::Invoice
     self.pending_plan_cycle_started_at = nil
     self.pending_plan_cycle_ended_at   = nil
 
-    @save_with_password = false
-    save!
-    @save_with_password = true
+    save_without_password_validation!
   end
 
   def months_since(time)
@@ -136,7 +134,7 @@ private
   # after_save BEFORE_SAVE TRIGGER AN INFINITE LOOP SINCE invoice.save also saves self
   def create_and_charge_invoice
     if (pending_plan_id_changed? && pending_plan_id? && pending_plan.paid_plan?) || # upgrade or create
-        (in_paid_plan? && (pending_plan_cycle_started_at_changed? || pending_plan_cycle_ended_at_changed?)) # recurrent
+        (in_paid_plan? && ((pending_plan_cycle_started_at_changed? && pending_plan_cycle_started_at?) || (pending_plan_cycle_ended_at_changed? && pending_plan_cycle_ended_at?))) # recurrent (ensure plan_cycle dates are set, not nil!)
       invoice = Invoice.build(site: self)
       invoice.save!
       Transaction.charge_by_invoice_ids([invoice.id], d3d_options || {}) if instant_charging?
