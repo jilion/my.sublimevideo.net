@@ -1,0 +1,14 @@
+en:
+  credit_card:
+    errors:
+      invalid: "Credit card information invalid or incomplete, please retry."
+      refused: "Credit card authorization refused, please retry."
+      waiting: "Credit card authorization will be processed soon."
+      unknown: "Credit card authorization is uncertain, we will get back to you shortly."
+
+  transaction:
+    errors:
+      invalid: "Credit card information invalid or incomplete, please retry."
+      refused: "Payment refused, please retry."
+      waiting: "Payment will be processed soon."
+      unknown: "Payment is uncertain, we will get back to you shortly."
