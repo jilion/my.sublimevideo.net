@@ -14,7 +14,7 @@ class Admin::SitesController < Admin::AdminController
   has_scope :with_extra_hostnames
   has_scope :billable
   has_scope :not_billable
-  has_scope :plan_player_hits_reached_alerted_this_month
+  has_scope :plan_player_hits_reached_notified
   has_scope :user_id
 
   # sort

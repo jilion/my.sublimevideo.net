@@ -20,7 +20,7 @@ module SitesHelper
     p_trunc_length = (site.hostname.length < h_trunc_length) ? (h_trunc_length - site.hostname.length + (length * 1/3)) : (length * 1/3)
     uri = ''
     uri += "<span class='wildcard'>(*.)</span>" if site.wildcard?
-    uri += site.hostname.truncate(h_trunc_length)
+    uri += truncate_middle(site.hostname, :length => h_trunc_length)
     uri += "<span class='path'>/#{site.path.truncate(p_trunc_length)}</span>" if site.path.present?
     uri.html_safe
   end
@@ -45,6 +45,14 @@ module SitesHelper
 
   def conditions_for_show_dev_hostnames_div(site)
     site.dev_hostnames? && site.dev_hostnames != Site::DEFAULT_DEV_DOMAINS
+  end
+  
+  def td_usage_class(site)
+    if site.in_paid_plan? && (site.plan_player_hits_reached_notification_sent_at? || site.current_billable_usage > site.plan.player_hits)
+      "peaks_insurance"
+    elsif site.first_plan_upgrade_required_alert_sent_at?
+      "required_upgrade"
+    end
   end
 
 end

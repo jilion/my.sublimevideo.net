@@ -338,14 +338,14 @@ def create_plans
   plans_attributes = [
     { name: "dev",        cycle: "none",  player_hits: 0,         price: 0 },
     { name: "beta",       cycle: "none",  player_hits: 0,         price: 0 },
-    { name: "small",      cycle: "month", player_hits: 3_000,     price: 990 },
-    { name: "perso",      cycle: "month", player_hits: 50_000,    price: 2490 },
-    { name: "pro",        cycle: "month", player_hits: 200_000,   price: 4490 },
-    { name: "enterprise", cycle: "month", player_hits: 1_000_000, price: 9990 },
-    { name: "small",      cycle: "year",  player_hits: 3_000,     price: 9900 },
-    { name: "perso",      cycle: "year",  player_hits: 50_000,    price: 24900 },
-    { name: "pro",        cycle: "year",  player_hits: 200_000,   price: 44900 },
-    { name: "enterprise", cycle: "year",  player_hits: 1_000_000, price: 99900 }
+    { name: "comet",      cycle: "month", player_hits: 3_000,     price: 990 },
+    { name: "planet",     cycle: "month", player_hits: 50_000,    price: 2490 },
+    { name: "star",       cycle: "month", player_hits: 200_000,   price: 4490 },
+    { name: "galaxy",     cycle: "month", player_hits: 1_000_000, price: 9990 },
+    { name: "comet",      cycle: "year",  player_hits: 3_000,     price: 9900 },
+    { name: "planet",     cycle: "year",  player_hits: 50_000,    price: 24900 },
+    { name: "star",       cycle: "year",  player_hits: 200_000,   price: 44900 },
+    { name: "galaxy",     cycle: "year",  player_hits: 1_000_000, price: 99900 }
   ]
   plans_attributes.each { |attributes| Plan.create(attributes) }
   puts "#{plans_attributes.size} plans created!"

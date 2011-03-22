@@ -6,7 +6,7 @@
         = link_to([:edit, site], :class => "domain", :title => "Edit #{hostname_with_path(site)}") do
           %span.settings_icon
           = image_tag "https://getfavicon.appspot.com/http://#{hostname_with_path(site)}?defaulticon=http://#{hostname_with_path(site)}/favicon.ico", :onerror => "this.src='/images/embed/sites/default_favicon.png';", :alt => "Favicon", :size => "16x16", :id => "site_favicon_#{site.id}"
-          = hostname_with_path_and_wildcard(site, :truncate => 30)
+          = truncate_middle(site.hostname, :length => 35)
         - if site.need_path?
           .warning.box_hovering_zone
             = link_to [:edit, site], :class => "icon" do
@@ -26,10 +26,8 @@
         - if site.in_paid_plan?
           = l(site.plan_cycle_started_at, :format => :d_b_Y) + ' - ' + l(site.plan_cycle_ended_at, :format => :d_b_Y)
       .spacer
-  
-  -# TODO: Ifized with real conditions
-  -# %td.usage
-  %td.usage{ :class => rand(2) == 1 ? "peaks_insurance" : "required_upgrade" }
+
+  %td.usage{ :class => td_usage_class(site) }
     = render 'td_usage', site: site
 
   %td.code
@@ -41,6 +39,10 @@
         %span.icon.in_progress
         = info_box do
           %p= "Your player is being deployed..."
+        .completed{ style: "display:none;" }
+          %span.icon.ok
+          = info_box do
+            %p= "Everything runs smoothly, it's ok!"
       - else
         %span.icon.ok
         = info_box do

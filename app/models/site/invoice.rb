@@ -112,6 +112,10 @@ module Site::Invoice
     end
   end
 
+  def days_since(time)
+    time ? ((Time.now.utc.midnight.to_i - time.midnight.to_i) / 1.day) : 0
+  end
+
 private
 
   def advance_for_next_cycle_end(plan, start_time=plan_started_at)
@@ -122,10 +126,17 @@ private
     end - 1.day
   end
 
+  # before_save
+  def set_first_paid_plan_started_at
+    if (plan_id_changed? || plan_started_at_changed?) && in_paid_plan?
+      self.first_paid_plan_started_at ||= plan_started_at
+    end
+  end
+
   # after_save BEFORE_SAVE TRIGGER AN INFINITE LOOP SINCE invoice.save also saves self
   def create_and_charge_invoice
     if (pending_plan_id_changed? && pending_plan_id? && pending_plan.paid_plan?) || # upgrade or create
-        (pending_plan_cycle_started_at_changed? && pending_plan_cycle_started_at?) || (pending_plan_cycle_ended_at_changed? && pending_plan_cycle_ended_at?) # recurrent
+        (in_paid_plan? && (pending_plan_cycle_started_at_changed? || pending_plan_cycle_ended_at_changed?)) # recurrent
       invoice = Invoice.build(site: self)
       invoice.save!
       Transaction.charge_by_invoice_ids([invoice.id], d3d_options || {}) if instant_charging?
@@ -144,6 +155,7 @@ Site.send :include, Site::Invoice
 #
 # Table name: sites
 #
+#  first_paid_plan_started_at                 :datetime
 #  plan_started_at                            :datetime
 #  plan_cycle_started_at                      :datetime
 #  plan_cycle_ended_at                        :datetime

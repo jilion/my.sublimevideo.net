@@ -14,7 +14,7 @@ module Admin::SitesHelper
       " with extra hostnames"
     elsif params[:with_ssl]
       " with ssl"
-    elsif params[:plan_player_hits_reached_alerted_this_month]
+    elsif params[:plan_player_hits_reached_notified]
       " notified limit reached this month"
     elsif params[:user_id]
       user = User.find(params[:user_id])

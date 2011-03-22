@@ -8,7 +8,8 @@ module RecurringJob
   ]
 
   stats_tasks = [
-    '%UsersStat%create_users_stats%'
+    '%UsersStat%create_users_stats%',
+    '%SitesStat%create_sites_stats%'
   ]
 
   billing_tasks = [
@@ -18,7 +19,7 @@ module RecurringJob
 
   NAMES = [
     '%User::CreditCard%send_credit_card_expiration%',
-    '%Site::UsageAlert%send_usage_alerts%',
+    '%Site::UsageMonitoring%monitor_sites_usages%',
     '%Site%update_last_30_days_counters_for_not_archived_sites%'
   ] + logs_tasks + billing_tasks + stats_tasks
 
@@ -34,17 +35,23 @@ module RecurringJob
 
       # Stats
       UsersStat.delay_create_users_stats
+      SitesStat.delay_create_sites_stats
 
       # Others
       User::CreditCard.delay_send_credit_card_expiration
-      Site::UsageAlert.delay_send_usage_alerts
+      Site::UsageMonitoring.delay_monitor_sites_usages
       Site.delay_update_last_30_days_counters_for_not_archived_sites
     end
 
     def supervise
+      # check if there is no too much delayed jobs
+      max_jobs_allowed = 50
+      if too_much_jobs?(max_jobs_allowed)
+        Notify.send("WARNING!!! There is more than #{max_jobs_allowed} delayed jobs, please investigate quickly!")
+      end
       # check if recurring jobs are all delayed twice
       unless all_delayed?
-        sleep 10
+        sleep 20
         unless all_delayed?
           Notify.send("WARNING!!! All recurring jobs are not delayed, please investigate quickly!")
         end
@@ -59,6 +66,10 @@ module RecurringJob
 
     def all_delayed?
       NAMES.all? { |name| Delayed::Job.already_delayed?(name) }
+    end
+
+    def too_much_jobs?(max)
+      Delayed::Job.count > max
     end
 
   end

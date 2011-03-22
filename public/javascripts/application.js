@@ -62,19 +62,21 @@ document.observe("dom:loaded", function() {
 
   if (history && history.pushState) {
     Event.observe(window, 'popstate', function(e) {
-      MySublimeVideo.showTableSpinner();
-      // alert("location: " + document.location + ", state: " + JSON.stringify(event.state));
-      // new Ajax.Request(location.href, {
-      //   method: 'get'
-      // });
+      if (!(/\/login$/).test(location.href)) {
+        MySublimeVideo.showTableSpinner();
+        new Ajax.Request(location.href, {
+          method: 'get'
+        });
+      };
     });
   }
 
   // Reproduce checkbox behavior for radio buttons for plans selection
   if ($('plans')) {
+    var planUpgradeInfoDiv = $('plan_upgrade_info');
     $$('#plans input[type=radio]').each(function(element){
       element.on('click', function(event){
-        MySublimeVideo.showPlanUpdateInfo(element);
+        if (planUpgradeInfoDiv) MySublimeVideo.showPlanUpdateInfo(element);
         var select_box = element.up('.select_box');
         $$('#plans ul .select_box').invoke('removeClassName','active');
         if (select_box) select_box.addClassName('active');
@@ -115,44 +117,51 @@ MySublimeVideo.openPopup = function(itemId, idPrefix, url, class_name) { // item
 // = Plan functions =
 // ==================
 
-MySublimeVideo.showPlanUpdateInfo = function(radioButton) {
-  var upgradeInfoDiv, downgradeInfoDiv, devDowngradeInfoDiv;
-  upgradeInfoDiv = $('plan_upgrade_info');
-  downgradeInfoDiv = $('plan_downgrade_info');
-  devDowngradeInfoDiv = $('dev_plan_downgrade_info');
-  switch (radioButton.readAttribute('data-plan_upgrade')) {
-  case "true":
-    upgradeInfoDiv.down('.plan_title').update(radioButton.readAttribute('data-plan_title'));
-    upgradeInfoDiv.down('.plan_update_price').update(radioButton.readAttribute('data-plan_update_price'));
-    upgradeInfoDiv.down('.plan_update_date').update(radioButton.readAttribute('data-plan_update_date'));
-    upgradeInfoDiv.show();
-    downgradeInfoDiv.hide();
-    devDowngradeInfoDiv.hide();
-    break;
-  case "false":
-    if (radioButton.readAttribute('data-plan_update_price') == 'FREE') {
-      devDowngradeInfoDiv.down('.plan_title').update(radioButton.readAttribute('data-plan_title'));
-      devDowngradeInfoDiv.down('.plan_update_date').update(radioButton.readAttribute('data-plan_update_date'));
-      devDowngradeInfoDiv.show();
-      downgradeInfoDiv.hide();
-    }
-    else {
-      downgradeInfoDiv.down('.plan_title').update(radioButton.readAttribute('data-plan_title'));
-      downgradeInfoDiv.down('.plan_update_price').update(radioButton.readAttribute('data-plan_update_price'));
-      downgradeInfoDiv.down('.plan_update_date').update(radioButton.readAttribute('data-plan_update_date'));
-      downgradeInfoDiv.show();
-      devDowngradeInfoDiv.hide();
-    }
-    upgradeInfoDiv.hide();
-    break;
-  default:
-    upgradeInfoDiv.hide();
-    downgradeInfoDiv.hide();
-    devDowngradeInfoDiv.hide();
-  }
+MySublimeVideo.updatePlanInfo_ = function(infoDiv, radioButton) {
+  console.log(infoDiv)
+  infoDiv.select('.plan_title').invoke("update", radioButton.readAttribute('data-plan_title'));
+  infoDiv.select('.plan_price').invoke("update", radioButton.readAttribute('data-plan_price'));
+  infoDiv.select('.plan_update_price').invoke("update", radioButton.readAttribute('data-plan_update_price'));
+  infoDiv.select('.plan_update_date').invoke("update", radioButton.readAttribute('data-plan_update_date'));
+  infoDiv.show();
 };
 
+MySublimeVideo.showPlanUpdateInfo = function(radioButton) {
+  var upgradeInfoDiv = $('plan_upgrade_info'),
+  upgradeFromDevInfoDiv = $('plan_upgrade_from_dev_info'),
+  delayedUpgradeInfoDiv = $('plan_delayed_upgrade_info'),
+  delayedDowngradeInfoDiv = $('plan_delayed_downgrade_info'),
+  delayedChangeInfoDiv = $('plan_delayed_change_info'),
+  delayedDowngradeTo_dev_info = $('plan_delayed_downgrade_to_dev_info');
 
+  upgradeInfoDiv.hide();
+  upgradeFromDevInfoDiv.hide();
+  delayedUpgradeInfoDiv.hide();
+  delayedDowngradeInfoDiv.hide();
+  delayedChangeInfoDiv.hide();
+  delayedDowngradeTo_dev_info.hide();
+
+  switch (radioButton.readAttribute('data-plan_change_type')) {
+    case "upgrade":
+      MySublimeVideo.updatePlanInfo_(upgradeInfoDiv, radioButton);
+      break;
+    case "upgrade_from_dev":
+      MySublimeVideo.updatePlanInfo_(upgradeFromDevInfoDiv, radioButton);
+      break;
+    case "delayed_upgrade":
+      MySublimeVideo.updatePlanInfo_(delayedUpgradeInfoDiv, radioButton);
+      break;
+    case "delayed_downgrade":
+      MySublimeVideo.updatePlanInfo_(delayedDowngradeInfoDiv, radioButton);
+      break;
+    case "delayed_change":
+      MySublimeVideo.updatePlanInfo_(delayedChangeInfoDiv, radioButton);
+      break;
+    case "delayed_downgrade_to_dev":
+      MySublimeVideo.updatePlanInfo_(delayedDowngradeTo_dev_info, radioButton);
+      break;
+  }
+};
 
 // ====================
 // = Onclick handlers =
@@ -196,6 +205,16 @@ MySublimeVideo.showTableSpinner = function() {
 
 MySublimeVideo.showSiteEmbedCode = function(siteId) {
   MySublimeVideo.openPopup(siteId, "embed_code_site", '/sites/'+siteId+'/code', 'popup');
+  return false;
+};
+
+MySublimeVideo.showSiteEmbedCodeWithSSL = function(element) {
+  var textarea = element.up().previous('textarea');
+  if (element.checked) {
+    textarea.value = textarea.value.gsub('http://cdn.sublimevideo.net','https://4076.voxcdn.com');
+  } else {
+    textarea.value = textarea.value.gsub('https://4076.voxcdn.com','http://cdn.sublimevideo.net');
+  }
   return false;
 };
 
@@ -266,15 +285,23 @@ var PasswordCheckerManager = Class.create({
     if (this.popup) {
       this.popup.removeClassName("loading");
 
+      var passwordState = this.originForm.readAttribute("data-password-state");
+      if (passwordState) {
+        passwordState = ' ' + passwordState;
+      }
+      else {
+        passwordState = ''
+      }
+
       var passwordCheckerForm = new Element("form", {
         id:"password_checker",
         action:"/password/validate",
         "data-remote":"true"
       }).update(
-      "<p class='desc'>Your password is needed to perform this action:</p>"+
+      "<p class='desc'>Your" + passwordState + " password is needed to perform this action:</p>"+
       "<div class='entry password'>" +
-      "<label for='password_check' class='icon'>Password</label>" +
-      "<input type='password' id='password_check' name='password' placeholder='Your current password' class='text' />" +
+      "<label for='password_check' class='icon'>" + passwordState + " Password</label>" +
+      "<input type='password' id='password_check' name='password' placeholder='Your" + passwordState + " password' class='text' />" +
       "<div class='actions'><input type='submit' class='small_button' value='Done' /></div>" +
       "<div class='spacer'></div>" +
       "</div>");
@@ -507,7 +534,7 @@ var SitesPoller = Class.create({
     this.checkForSiteInProgress();
   },
   checkForSiteInProgress: function() {
-    var siteInProgress = $$('#sites .in_progress').first();
+    var siteInProgress = $$('#sites span.icon.in_progress').first();
     if (siteInProgress) {
       this.currentSiteId = parseInt(siteInProgress.up('tr').id.replace("site_", ''), 10);
       this.startPolling();
@@ -535,9 +562,12 @@ var SitesPoller = Class.create({
     // Stop polling
     this.stopPolling();
 
-    // Remove the "cdn updating in progress..." test
-    var inProgressWrap = $$("#site_"+siteId+" .in_progress").first();
+    // Remove "in progress" span
+    var inProgressWrap = $$("#site_"+siteId+" span.icon.in_progress").first();
     if (inProgressWrap) inProgressWrap.remove();
+    // Show "ok" span
+    var okWrap = $$("#site_"+siteId+" td.status.box_hovering_zone div.completed").first();
+    if (okWrap) okWrap.show();
 
     // Check if a restart polling is needed
     this.checkForSiteInProgress();

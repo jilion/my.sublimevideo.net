@@ -1,4 +1,4 @@
-= title_and_content_header(truncate_middle(@site.hostname, :length => 40))
+= title_and_content_header(truncate_middle(@site.hostname.present? ? @site.hostname : "Edit site", :length => 23))
 
 #site.edit
   %ul.segmented_menu
@@ -6,32 +6,33 @@
     %li.active= link_to "Change plan", edit_site_plan_path(@site), :onclick => "MySublimeVideo.makeSticky(this, '.segmented_menu')"
     %li.last= link_to "Invoices", site_invoices_path(@site), :onclick => "MySublimeVideo.makeSticky(this, '.segmented_menu')"
 
-  - if @site.next_cycle_plan_id?
-    .current_status
-      %p= "Your current plan, #{@site.plan.title}, will end on #{l @site.plan_cycle_ended_at, :format => :named_date}"
-    .next_cycle_plan
-      %p= "Your next plan, #{@site.next_cycle_plan.title}, will automatically start on #{l @site.plan_cycle_ended_at.tomorrow.midnight, :format => :named_date}"
-      = button_to "cancel", [@site, :plan], :method => :delete
-  - elsif @site.in_paid_plan?
-    .current_status
-      %p= "Your current plan, #{@site.plan.title}, will be automatically renewed on #{l @site.plan_cycle_ended_at.tomorrow.midnight, :format => :named_date}"
-  - elsif @site.in_dev_plan?
-    .current_status
-      %p= "You are currently using the unlimited free development plan"
+  - if @site.errors.empty? && !@site.in_beta_plan? && @site.next_cycle_plan_id?
+    #next_cycle_plan_box
+      %p= raw "Your new plan #{content_tag :strong, @site.next_cycle_plan.title(always_with_cycle: true)} will automatically start on #{l @site.plan_cycle_ended_at.tomorrow.midnight, :format => :named_date}."
+      = button_to "Cancel", [@site, :plan], :method => :delete, :class => "cancel_button submit_dynamic_button"
 
   #change_plan_box.section_box
     = form_for @site, :url => site_plan_path(@site), :html => { :id => "edit_site_plan", "data-password-protected" => @site.in_paid_plan? } do |f|
       - if @site.errors[:base] && @site.errors[:base].include?(t('activerecord.errors.models.site.attributes.base.current_password_needed'))
         = password_box :resource => @site, :f => f, :cancel_url => edit_site_plan_path(@site)
       = render 'fields', :f => f
-      = render 'sites/cc_fields', :f => f, :site => @site
       
-      #plan_upgrade_info{ style: "display:none;" }
-        %p=raw "New plan, #{content_tag(:span, "?", class: "plan_title")}, will be directly upgraded and charged (#{content_tag(:span, "?", class: "plan_update_price")}) retro-actively from  #{content_tag(:span, "?", class: "plan_update_date")}"                          
-      #plan_downgrade_info{ style: "display:none;" }
-        %p=raw "New plan, #{content_tag(:span, "?", class: "plan_title")}, will be update and charged (#{content_tag(:span, "?", class: "plan_update_price")}) on #{content_tag(:span, "?", class: "plan_update_date")}"                          
-      #dev_plan_downgrade_info{ style: "display:none;" }
-        %p=raw "Current plan will be rollbacked to #{content_tag(:span, "?", class: "plan_title")} on #{content_tag(:span, "?", class: "plan_update_date")}"                          
+      #plan_upgrade_info.update_plan_message_box{ style: "display:none;" }
+        %p=raw "You will be immediately upgraded to the #{content_tag(:strong, "?", class: "plan_title")} plan. We will only charge you the difference of #{content_tag(:strong, "?", class: "plan_update_price")} for the upgrade, instead of the full price of #{content_tag(:strong, "?", class: "plan_price")}."
+      #plan_upgrade_from_dev_info.update_plan_message_box{ style: "display:none;" }
+        %p=raw "You will be immediately upgraded to the #{content_tag(:strong, "?", class: "plan_title")} plan. We will charge you #{content_tag(:strong, "?", class: "plan_update_price")}."
+      #plan_delayed_downgrade_info.update_plan_message_box{ style: "display:none;" }
+        %p=raw "You will be downgraded to the #{content_tag(:strong, "?", class: "plan_title")} plan on #{content_tag(:span, "?", class: "plan_update_date")}. On the same day, we will charge you #{content_tag(:strong, "?", class: "plan_update_price")}."
+      #plan_delayed_upgrade_info.update_plan_message_box{ style: "display:none;" }
+        %p=raw "You will be upgraded to the #{content_tag(:strong, "?", class: "plan_title")} plan on #{content_tag(:span, "?", class: "plan_update_date")}. On the same day, we will charge you #{content_tag(:strong, "?", class: "plan_update_price")}."
+      #plan_delayed_change_info.update_plan_message_box{ style: "display:none;" }
+        %p=raw "Your plan cycle will be changed to monthly on #{content_tag(:span, "?", class: "plan_update_date")}. On the same day, we will charge you #{content_tag(:strong, "?", class: "plan_update_price")}."
+      #plan_delayed_downgrade_to_dev_info.update_plan_message_box{ style: "display:none;" }
+        %p=raw "You will be downgraded to the #{content_tag(:strong, "?", class: "plan_title")} plan on #{content_tag(:span, "?", class: "plan_update_date")}."
       .spacer
+      
+      = render 'sites/cc_fields', :f => f, :site => @site
+      .spacer
+      
       .actions.center
         = f.submit 'Update plan', :class => "submit big"

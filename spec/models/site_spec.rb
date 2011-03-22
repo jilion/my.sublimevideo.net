@@ -85,6 +85,10 @@ describe Site do
       end
     end
 
+    describe "#in_paid_plan" do
+      specify { Site.in_paid_plan.all.should =~ [@site_billable_1, @site_billable_2, @site_not_billable_3, @site_not_billable_4, @site_with_extra_hostnames] }
+    end
+
     describe "#to_be_renewed" do
       before(:all) do
         Timecop.travel(Time.utc(2011,1,1)) do
@@ -717,27 +721,11 @@ describe Site do
       subject { Factory(:site, plan: @paid_plan) }
 
       pending "should clear *_alert_sent_at dates" do
-        subject.touch(:plan_player_hits_reached_alert_sent_at)
-        subject.plan_player_hits_reached_alert_sent_at.should be_present
+        subject.touch(:plan_player_hits_reached_notification_sent_at)
+        subject.plan_player_hits_reached_notification_sent_at.should be_present
         subject.plan = @dev_plan
         subject.save
-        subject.plan_player_hits_reached_alert_sent_at.should be_nil
-      end
-
-    end
-
-    pending "#plan_player_hits_reached_alerted_this_month?" do
-      it "should return true when plan_player_hits_reached_alert_sent_at happened durring the current month" do
-        site = Factory.build(:new_site, plan_player_hits_reached_alert_sent_at: Time.now.utc)
-        site.should be_plan_player_hits_reached_alerted_this_month
-      end
-      it "should return false when plan_player_hits_reached_alert_sent_at happened durring the last month" do
-        site = Factory.build(:new_site, plan_player_hits_reached_alert_sent_at: Time.now.utc - 1.month)
-        site.should_not be_plan_player_hits_reached_alerted_this_month
-      end
-      it "should return false when plan_player_hits_reached_alert_sent_at is nil" do
-        site = Factory.build(:new_site, plan_player_hits_reached_alert_sent_at: nil)
-        site.should_not be_plan_player_hits_reached_alerted_this_month
+        subject.plan_player_hits_reached_notification_sent_at.should be_nil
       end
     end
 
@@ -792,7 +780,7 @@ describe Site do
     end
 
     # FIXME Thibaud
-    pending "#current_billable_usage & #current_percentage_of_plan_used" do
+    describe "#current_billable_usage & #current_percentage_of_plan_used" do
       before(:all) do
         @site = Factory(:site)
         @site.apply_pending_plan_changes!
@@ -930,7 +918,79 @@ describe Site do
       end
     end
 
+    describe "#percentage_of_days_over_daily_limit(90)" do
+      context "with dev_plan" do
+        subject { Factory(:site, plan: @dev_plan) }
+
+        its(:percentage_of_days_over_daily_limit) { should == 0 }
+      end
+
+      context "with paid plan" do
+        before(:all) do
+          @site = Factory(:site, plan: Factory(:plan, player_hits: 30 * 300), first_paid_plan_started_at: Time.utc(2011,1,1))
+        end
+
+        describe "with 1 historic day and 1 over limit" do
+          before(:each) do
+            Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,1,1),
+              main_player_hits:  100, main_player_hits_cached:  100,
+              extra_player_hits: 100, extra_player_hits_cached: 100,
+              dev_player_hits:   100, dev_player_hits_cached:   100
+            )
+            Timecop.travel(Time.utc(2011,1,2))
+          end
+          subject { @site }
+
+          its(:percentage_of_days_over_daily_limit) { should == 1.0 }
+
+          after(:each) { Timecop.return }
+        end
+
+        describe "with 2 historic days and 1 over limit" do
+          before(:each) do
+            Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,1,1), main_player_hits: 400)
+            Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,1,2), main_player_hits: 300)
+            Timecop.travel(Time.utc(2011,1,3))
+          end
+          subject { @site }
+
+          its(:percentage_of_days_over_daily_limit) { should == 0.5 }
+
+          after(:each) { Timecop.return }
+        end
+
+        describe "with 5 historic days and 2 over limit" do
+          before(:each) do
+            Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,1,1), main_player_hits: 400)
+            Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,1,2), main_player_hits: 300)
+            Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,1,3), main_player_hits: 500)
+            Timecop.travel(Time.utc(2011,1,6))
+          end
+          subject { @site }
+
+          its(:percentage_of_days_over_daily_limit) { should == 2 / 5.0 }
+
+          after(:each) { Timecop.return }
+        end
+
+        describe "with >90 historic days and 2 over limit" do
+          before(:each) do
+            Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,1,1), main_player_hits: 400)
+            Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,2,1), main_player_hits: 500)
+            Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,3,1), main_player_hits: 500)
+            Timecop.travel(Time.utc(2011,5,1))
+          end
+          subject { @site }
+
+          its(:percentage_of_days_over_daily_limit) { should == (2 / 90.0).round(2) }
+
+          after(:each) { Timecop.return }
+        end
+      end
+    end
+    
   end # Instance Methods
+
 end
 
 
@@ -967,7 +1027,6 @@ end
 #  pending_plan_started_at                    :datetime
 #  pending_plan_cycle_started_at              :datetime
 #  pending_plan_cycle_ended_at                :datetime
-#  plan_player_hits_reached_alert_sent_at     :datetime
 #  last_30_days_main_player_hits_total_count  :integer         default(0)
 #  last_30_days_extra_player_hits_total_count :integer         default(0)
 #  last_30_days_dev_player_hits_total_count   :integer         default(0)

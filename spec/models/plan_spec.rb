@@ -138,6 +138,17 @@ describe Plan do
     end
   end
 
+  describe "#title" do
+
+    specify { @dev_plan.title.should == "Free Sandbox" }
+    specify { @dev_plan.title(always_with_cycle: true).should == "Free Sandbox" }
+    specify { Factory(:plan, cycle: "month", name: "comet").title.should == "Comet" }
+    specify { Factory(:plan, cycle: "year", name: "comet").title.should == "Comet (yearly)" }
+    specify { Factory(:plan, cycle: "month", name: "comet").title(always_with_cycle: true).should == "Comet (monthly)" }
+    specify { Factory(:plan, cycle: "year", name: "comet").title(always_with_cycle: true).should == "Comet (yearly)" }
+
+  end
+
 end
 
 
