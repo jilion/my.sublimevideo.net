@@ -5,9 +5,8 @@ describe TransactionsController do
   describe "#callback" do
 
     context "with a non-tempered request" do
-
       describe "credit card authorization response" do
-        before(:all) do
+        before(:each) do
           @sha_params = {
             "PAYID" => "1234", "STATUS" => "5"
           }
@@ -16,11 +15,11 @@ describe TransactionsController do
             "SHASIGN" => Digest::SHA512.hexdigest(["PAYID=1234","STATUS=5"].join(Ogone.yml[:signature_out]) + Ogone.yml[:signature_out]).upcase
           }
         end
+        before(:each) { User.stub(:find).with(1).and_return(mock_user) }
 
-        context "with a succeeding cc authorization response" do
-          it "should void authorization" do
-            User.should_receive(:find).with(1).and_return(mock_user)
-            mock_user.should_receive(:process_cc_authorization_response).with(@sha_params, "1234;RES").and_return({ state: "authorized" })
+        context "that succeeds" do
+          it "should add a notice and redirect to /account/edit" do
+            mock_user.should_receive(:process_cc_authorization_response).with(@sha_params, "1234;RES").and_return("authorized")
             mock_user.should_receive(:save) { true }
 
             post :callback, @params.merge(@sha_params)
@@ -30,14 +29,55 @@ describe TransactionsController do
           end
         end
 
-        context "with a non-succeeding cc authorization response" do
-          it "should void authorization" do
-            User.stub(:find).with(1).and_return(mock_user)
-            mock_user.should_receive(:process_cc_authorization_response).with(@sha_params, "1234;RES").and_return({ state: "refused", message: "Foo bar" })
+        context "that fails" do
+          it "should add an alert and redirect to /account/edit" do
+            mock_user.should_receive(:process_cc_authorization_response).with(@sha_params, "1234;RES").and_return("refused")
 
             post :callback, @params.merge(@sha_params)
             flash[:notice].should be_nil
-            flash[:alert].should == "Foo bar"
+            flash[:alert].should be_present
+            response.should redirect_to(edit_user_registration_url)
+          end
+        end
+      end
+
+      describe "payment response" do
+        before(:each) do
+          @sha_params = {
+            "PAYID" => "1234", "STATUS" => "5", "ORDERID" => "2"
+          }
+          @params = {
+            "PAYMENT" => "TRUE", "ACTION" => "create",
+            "SHASIGN" => Digest::SHA512.hexdigest(["ORDERID=2","PAYID=1234","STATUS=5"].join(Ogone.yml[:signature_out]) + Ogone.yml[:signature_out]).upcase
+          }
+        end
+        before(:each) do
+          Transaction.should_receive(:find).with(2).and_return(mock_transaction)
+          mock_transaction.should_receive(:process_payment_response).with(@sha_params)
+        end
+
+        context "that succeeds" do
+          it "should add a notice and redirect to /account/edit" do
+            mock_transaction.should_receive(:succeed?) { true }
+            mock_transaction.stub_chain(:invoices, :map, :uniq, :each)
+
+            post :callback, @params.merge(@sha_params)
+            flash[:notice].should be_present
+            flash[:alert].should be_nil
+            response.should redirect_to(sites_url)
+          end
+        end
+
+        context "that fails" do
+          it "should add an alert and redirect to /account/edit" do
+            mock_transaction.should_receive(:succeed?)   { false }
+            mock_transaction.should_receive(:failed?)    { true }
+            mock_transaction.should_receive(:error_code) { "refused" }
+
+            post :callback, @params.merge(@sha_params)
+            flash[:notice].should be_nil
+            flash[:alert].should be_present
+            response.should redirect_to(sites_url)
           end
         end
       end
