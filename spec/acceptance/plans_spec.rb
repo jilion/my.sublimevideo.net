@@ -8,7 +8,7 @@ feature "Plans" do
   feature "edit" do
 
     scenario "update paid plan to dev plan" do
-      site = Factory(:site, user: @current_user, plan: @paid_plan)
+      site = Factory(:site, user: @current_user, plan_id: @paid_plan.id)
 
       visit edit_site_plan_path(site)
 
@@ -33,17 +33,17 @@ feature "Plans" do
     # TODO Rémy
     pending "update paid plan to paid plan with credit card data"
 
-    # TODO Rémy
+    # TODO Rémy, password should not be needed  dev => paid
     pending "update dev plan to paid plan" do
-      @paid_plan.reload.update_attribute(:name, 'small')
-      site = Factory(:site, user: @current_user, plan: @dev_plan)
+      site = Factory(:site, user: @current_user, plan_id: @dev_plan.id)
 
       visit edit_site_plan_path(site)
 
       #page.should have_content("You are currently using the unlimited free development plan")
 
-      choose "plan_small_month"
+      choose "plan_comet_month"
       click_button "Update plan"
+
       site.reload
 
       current_url.should =~ %r(http://[^/]+/sites$)
@@ -56,7 +56,7 @@ feature "Plans" do
 
     scenario "cancel next plan automatic update" do
       @paid_plan.reload.update_attribute(:name, 'small')
-      site = Factory(:site, user: @current_user, plan: @paid_plan)
+      site = Factory(:site, user: @current_user, plan_id: @paid_plan.id)
 
       site.update_attribute(:next_cycle_plan_id, @dev_plan.id)
 
@@ -81,8 +81,9 @@ feature "Plans" do
       #page.should have_content("Your current plan, #{site.plan.title}, will be automatically renewed on #{I18n.l site.plan_cycle_ended_at.tomorrow.midnight, :format => :named_date}")
     end
 
-    scenario "sponsored plan" do
-      site = Factory(:site, user: @current_user, plan: @sponsored_plan)
+    # TODO Thibaud
+    pending "sponsored plan" do
+      site = Factory(:site, user: @current_user, plan_id: @sponsored_plan.id)
       Factory(:site_usage, site_id: site.id, day: Time.now.utc, main_player_hits: 1000)
 
       visit sites_path

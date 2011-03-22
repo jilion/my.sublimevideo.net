@@ -32,7 +32,7 @@ module Site::Invoice
   def in_beta_plan?
     plan && plan.beta_plan?
   end
-  
+
   def in_sponsored_plan?
     plan && plan.sponsored_plan?
   end

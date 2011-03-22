@@ -19,7 +19,7 @@ feature "Invoice actions:" do
     page.should have_content('None.')
   end
 
-  scenario "views site invoices (with 1 invoice)" do
+  pending "views site invoices (with 1 invoice)" do
     site = Factory(:site, plan_id: @paid_plan.id, user: @current_user, hostname: 'google.com')
 
     visit "/sites"
