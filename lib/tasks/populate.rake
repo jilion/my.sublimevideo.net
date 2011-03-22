@@ -246,20 +246,15 @@ def create_sites
   User.all.each do |user|
     BASE_SITES.each do |hostname|
       site = user.sites.build(
-        plan_id: plan_ids.first,
+        plan_id: plan_ids.sample,
         hostname: hostname,
         dev_hostnames: Site::DEFAULT_DEV_DOMAINS
       )
-      site.state        = 'active' if user.cc? && rand > 0.2
-      site.created_at   = created_at_array.sample
-
-      Timecop.travel(site.created_at) do
-        site.save!#(validate: false)
+      Timecop.travel(created_at_array.sample) do
+        site.save!
       end
-      site.plan_id = plan_ids.sample
       site.cdn_up_to_date = true if rand > 0.5
       site.apply_pending_plan_changes!
-      site.save!
     end
   end
   puts "#{BASE_SITES.size} beautiful sites created for each user!"
