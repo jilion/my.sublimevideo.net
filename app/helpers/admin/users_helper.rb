@@ -7,8 +7,6 @@ module Admin::UsersHelper
       " active & billable"
     elsif params[:active_and_not_billable]
       " active & not billable"
-    elsif params[:will_be_suspended]
-      " will be suspended"
     elsif params[:with_state]
       " with #{params[:with_state]} state"
     elsif params[:search].present?

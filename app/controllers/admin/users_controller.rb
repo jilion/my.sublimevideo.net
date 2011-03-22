@@ -6,7 +6,6 @@ class Admin::UsersController < Admin::AdminController
   # filter
   has_scope :active_and_billable, :type => :boolean
   has_scope :active_and_not_billable, :type => :boolean
-  has_scope :will_be_suspended, :type => :boolean
   has_scope :with_state do |controller, scope, value|
     scope.with_state(value.to_sym)
   end

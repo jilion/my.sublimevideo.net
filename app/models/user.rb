@@ -64,14 +64,11 @@ class User < ActiveRecord::Base
 
   state_machine :initial => :active do
     event(:suspend)        { transition :active => :suspended }
-    event(:cancel_suspend) { transition :active => :active }
     event(:unsuspend)      { transition :suspended => :active }
     event(:archive)        { transition all => :archived }
 
     before_transition :on => :suspend, :do => :suspend_sites
     after_transition  :on => :suspend, :do => :send_account_suspended_email
-
-    before_transition :on => :cancel_suspend, :do => :delete_suspending_delayed_job
 
     before_transition :on => :unsuspend, :do => :unsuspend_sites
     after_transition  :on => :unsuspend, :do => :send_account_unsuspended_email
@@ -101,7 +98,6 @@ class User < ActiveRecord::Base
   scope :use_personal,      where(:use_personal => true)
   scope :use_company,       where(:use_company => true)
   scope :use_clients,       where(:use_clients => true)
-  scope :will_be_suspended, where(:suspending_delayed_job_id.ne => nil)
   scope :created_between,   lambda { |start_date, end_date| where(:created_at.gte => start_date, :created_at.lt => end_date) }
   scope :signed_in_between, lambda { |start_date, end_date| where(:current_sign_in_at.gte => start_date, :current_sign_in_at.lt => end_date) }
 
@@ -217,12 +213,6 @@ private
   # after_transition :on => :suspend
   def send_account_suspended_email
     UserMailer.account_suspended(self).deliver!
-  end
-
-  # before_transition :on => :cancel_suspend
-  def delete_suspending_delayed_job
-    Delayed::Job.find(suspending_delayed_job_id).delete
-    self.suspending_delayed_job_id = nil
   end
 
   # before_transition :on => :unsuspend

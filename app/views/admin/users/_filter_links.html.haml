@@ -4,8 +4,6 @@
   |
   = link_to "#{content_tag(:strong, User.active_and_not_billable.count)} Active & not billable".html_safe, admin_users_path(:active_and_not_billable => true)
   |
-  = link_to "#{content_tag(:strong, User.will_be_suspended.count)} Will be suspended".html_safe, admin_users_path(:will_be_suspended => true)
-  |
   = link_to "#{content_tag(:strong, User.with_state(:suspended).count)} Suspended".html_safe, admin_users_path(:with_state => "suspended")
   |
   = link_to "#{content_tag(:strong, User.with_state(:archived).count)} Archived".html_safe, admin_users_path(:with_state => "archived")
