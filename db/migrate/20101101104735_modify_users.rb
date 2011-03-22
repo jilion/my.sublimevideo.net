@@ -3,10 +3,7 @@ class ModifyUsers < ActiveRecord::Migration
     change_column :users, :cc_last_digits, :string
 
     add_column :users, :cc_alias, :string
-    add_column :users, :suspending_delayed_job_id, :integer
-    add_column :users, :failed_invoices_count_on_suspend, :integer, :default => 0
     add_column :users, :archived_at, :datetime
-    add_column :users, :remaining_discounted_months, :integer
     add_column :users, :newsletter, :boolean, :default => true
     add_column :users, :last_invoiced_amount, :integer, :default => 0
     add_column :users, :total_invoiced_amount, :integer, :default => 0
@@ -38,10 +35,7 @@ class ModifyUsers < ActiveRecord::Migration
     add_column :users, :video_settings, :text
 
     remove_column :users, :cc_alias
-    remove_column :users, :suspending_delayed_job_id
-    remove_column :users, :failed_invoices_count_on_suspend
     remove_column :users, :archived_at
-    remove_column :users, :remaining_discounted_months
     remove_column :users, :newsletter
     remove_column :users, :total_invoiced_amount
     remove_column :users, :last_invoiced_amount

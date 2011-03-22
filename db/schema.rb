@@ -161,6 +161,9 @@ ActiveRecord::Schema.define(:version => 20110223160948) do
     t.datetime "plan_started_at"
     t.datetime "plan_cycle_started_at"
     t.datetime "plan_cycle_ended_at"
+    t.datetime "pending_plan_started_at"
+    t.datetime "pending_plan_cycle_started_at"
+    t.datetime "pending_plan_cycle_ended_at"
     t.datetime "plan_player_hits_reached_alert_sent_at"
     t.integer  "last_30_days_main_player_hits_total_count",  :default => 0
     t.integer  "last_30_days_extra_player_hits_total_count", :default => 0
@@ -195,21 +198,21 @@ ActiveRecord::Schema.define(:version => 20110223160948) do
 
   create_table "users", :force => true do |t|
     t.string   "state"
-    t.string   "email",                                           :default => "",   :null => false
-    t.string   "encrypted_password",               :limit => 128, :default => "",   :null => false
-    t.string   "password_salt",                                   :default => "",   :null => false
+    t.string   "email",                                :default => "",   :null => false
+    t.string   "encrypted_password",    :limit => 128, :default => "",   :null => false
+    t.string   "password_salt",                        :default => "",   :null => false
     t.string   "confirmation_token"
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
     t.string   "reset_password_token"
     t.string   "remember_token"
     t.datetime "remember_created_at"
-    t.integer  "sign_in_count",                                   :default => 0
+    t.integer  "sign_in_count",                        :default => 0
     t.datetime "current_sign_in_at"
     t.datetime "last_sign_in_at"
     t.string   "current_sign_in_ip"
     t.string   "last_sign_in_ip"
-    t.integer  "failed_attempts",                                 :default => 0
+    t.integer  "failed_attempts",                      :default => 0
     t.datetime "locked_at"
     t.string   "cc_type"
     t.string   "cc_last_digits"
@@ -217,7 +220,7 @@ ActiveRecord::Schema.define(:version => 20110223160948) do
     t.datetime "cc_updated_at"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "invitation_token",                 :limit => 20
+    t.string   "invitation_token",      :limit => 20
     t.datetime "invitation_sent_at"
     t.integer  "zendesk_id"
     t.integer  "enthusiast_id"
@@ -234,13 +237,10 @@ ActiveRecord::Schema.define(:version => 20110223160948) do
     t.string   "company_employees"
     t.string   "company_videos_served"
     t.string   "cc_alias"
-    t.integer  "suspending_delayed_job_id"
-    t.integer  "failed_invoices_count_on_suspend",                :default => 0
     t.datetime "archived_at"
-    t.integer  "remaining_discounted_months"
-    t.boolean  "newsletter",                                      :default => true
-    t.integer  "last_invoiced_amount",                            :default => 0
-    t.integer  "total_invoiced_amount",                           :default => 0
+    t.boolean  "newsletter",                           :default => true
+    t.integer  "last_invoiced_amount",                 :default => 0
+    t.integer  "total_invoiced_amount",                :default => 0
   end
 
   add_index "users", ["confirmation_token"], :name => "index_users_on_confirmation_token", :unique => true

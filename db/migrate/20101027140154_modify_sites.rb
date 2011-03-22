@@ -9,6 +9,9 @@ class ModifySites < ActiveRecord::Migration
     add_column :sites, :plan_started_at, :datetime
     add_column :sites, :plan_cycle_started_at, :datetime
     add_column :sites, :plan_cycle_ended_at, :datetime
+    add_column :sites, :pending_plan_started_at, :datetime
+    add_column :sites, :pending_plan_cycle_started_at, :datetime
+    add_column :sites, :pending_plan_cycle_ended_at, :datetime
     add_column :sites, :plan_player_hits_reached_alert_sent_at, :datetime
 
     add_column :sites, :last_30_days_main_player_hits_total_count, :integer, :default => 0
