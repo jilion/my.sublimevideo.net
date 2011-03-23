@@ -8,10 +8,10 @@
     
   .entry.card
     .radio_wrap
-      = f.radio_button :cc_type, "visa"
+      = f.radio_button :cc_type, "visa", :id => "user_cc_type_visa"
       = f.label :cc_type, content_tag(:span, "Visa"), :class => "visa", :title => "Visa", :for => "user_cc_type_visa"
     .radio_wrap
-      = f.radio_button :cc_type, "master"
+      = f.radio_button :cc_type, "master", :id => "user_cc_type_master"
       = f.label :cc_type, content_tag(:span, "MasterCard"), :class => "master", :title => "MasterCard", :for => "user_cc_type_master"
     .spacer
   
