@@ -44,8 +44,8 @@ module Site::Invoice
   def instant_charging?
     @instant_charging
   end
-
-  def in_or_was_in_paid_plan?
+  
+  def in_or_will_be_in_paid_plan?
     in_paid_plan? || (pending_plan_id && Plan.find(pending_plan_id).paid_plan?)
   end
 
@@ -98,7 +98,7 @@ module Site::Invoice
     self.pending_plan_started_at_will_change!
     self.pending_plan_cycle_started_at_will_change!
     self.pending_plan_cycle_ended_at_will_change!
-    
+
     self.plan_started_at               = pending_plan_started_at
     self.plan_cycle_started_at         = pending_plan_cycle_started_at
     self.plan_cycle_ended_at           = pending_plan_cycle_ended_at

@@ -32,16 +32,16 @@ describe User do
       User.delete_all
       # Billable because of 1 paid plan
       @user1 = Factory(:user)
-      Factory(:site, user: @user1, plan: @paid_plan)
-      Factory(:site, user: @user1, plan: @dev_plan)
+      Factory(:site, user: @user1, plan_id: @paid_plan.id)
+      Factory(:site, user: @user1, plan_id: @dev_plan.id)
 
       # Billable because next cycle plan is another paid plan
       @user2 = Factory(:user)
-      Factory(:site, user: @user2, plan: @paid_plan, next_cycle_plan: Factory(:plan))
+      Factory(:site, user: @user2, plan_id: @paid_plan.id).update_attribute(:next_cycle_plan_id, Factory(:plan).id)
 
       # Not billable because next cycle plan is the dev plan
       @user3 = Factory(:user)
-      Factory(:site, user: @user3, plan: @paid_plan, next_cycle_plan: @dev_plan)
+      Factory(:site, user: @user3, plan_id: @paid_plan.id).update_attribute(:next_cycle_plan_id, @dev_plan.id)
 
       # Not billable because his site has been archived
       @user4 = Factory(:user)
@@ -49,7 +49,7 @@ describe User do
 
       # Billable because next cycle plan is another paid plan, but not active
       @user5 = Factory(:user, state: 'suspended')
-      Factory(:site, user: @user5, plan: @paid_plan, next_cycle_plan: Factory(:plan))
+      Factory(:site, user: @user5, plan_id: @paid_plan.id).update_attribute(:next_cycle_plan_id, Factory(:plan).id)
 
       # Not billable nor active
       @user6 = Factory(:user, state: 'archived')
@@ -258,7 +258,7 @@ describe User do
   describe "State Machine" do
     before(:all) do
       @user           = Factory(:user)
-      @dev_site       = Factory(:site, user: @user, plan: @dev_plan, hostname: "octavez.com")
+      @dev_site       = Factory(:site, user: @user, plan_id: @dev_plan.id, hostname: "octavez.com")
       @paid_site      = Factory(:site, user: @user, hostname: "rymai.com")
       @suspended_site = Factory(:site, user: @user, hostname: "rymai.me", state: 'suspended')
       @invoice1       = Factory(:invoice, site: @paid_site, state: 'failed')

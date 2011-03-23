@@ -33,16 +33,17 @@ feature "Plans" do
     # TODO Rémy
     pending "update paid plan to paid plan with credit card data"
 
-    # TODO Rémy, password should not be needed  dev => paid
-    pending "update dev plan to paid plan" do
+    scenario "update dev plan to paid plan" do
       site = Factory(:site, user: @current_user, plan_id: @dev_plan.id)
 
       visit edit_site_plan_path(site)
 
       #page.should have_content("You are currently using the unlimited free development plan")
 
-      choose "plan_comet_month"
-      click_button "Update plan"
+      VCR.use_cassette('ogone/visa_payment_10') do
+        choose "plan_comet_month"
+        click_button "Update plan"
+      end
 
       site.reload
 
@@ -96,8 +97,6 @@ feature "Plans" do
       page.should have_content("Your plan are currently sponsored by Jilion.")
       page.should have_content("If you have any questions, please contact us.")
     end
-
-    pending "update paid plan to paid plan with credit card data"
 
   end
 

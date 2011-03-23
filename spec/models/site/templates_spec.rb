@@ -5,7 +5,7 @@ describe Site::Templates do
   describe "Callbacks" do
 
     describe "before_save" do
-      subject { Factory(:site, plan: @paid_plan) }
+      subject { Factory(:site, plan_id: @paid_plan.id) }
 
       specify do
         subject.should_receive(:prepare_cdn_update)
@@ -62,7 +62,7 @@ describe Site::Templates do
           { hostname: "test.com", extra_hostnames: "test.staging.com", dev_hostnames: "test.local", path: "yu", wildcard: true }.each do |attribute, value|
             describe "#{attribute} has changed" do
               subject do
-                site = Factory(:site, plan: @dev_plan, hostname: "jilion.com", extra_hostnames: "staging.jilion.com", dev_hostnames: "jilion.local", path: "yo", wildcard: false)
+                site = Factory(:site, plan_id: @dev_plan.id, hostname: "jilion.com", extra_hostnames: "staging.jilion.com", dev_hostnames: "jilion.local", path: "yo", wildcard: false)
                 @worker.work_off
                 site.reload
               end
@@ -149,12 +149,12 @@ describe Site::Templates do
 
     describe "#prepare_cdn_update" do
       before(:all) do
-        @site = Factory(:site, plan: @paid_plan).tap { |s| s.update_attribute(:cdn_up_to_date, true) }
+        @site = Factory(:site, plan_id: @paid_plan.id).tap { |s| s.update_attribute(:cdn_up_to_date, true) }
       end
 
       context "new record" do
         subject do
-          site = Factory.build(:new_site, plan: @paid_plan)
+          site = Factory.build(:new_site, plan_id: @paid_plan.id)
           site.send :prepare_cdn_update
           site
         end
@@ -213,22 +213,22 @@ describe Site::Templates do
 
     describe "#license_json" do
       before(:all) do
-        @site_with_all = Factory(:site, plan: @dev_plan, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', path: 'foo', wildcard: true)
-        @site_without_wildcard = Factory(:site, plan: @dev_plan, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', path: 'foo', wildcard: false)
-        @site_without_path = Factory(:site, plan: @dev_plan, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', wildcard: true)
-        @site_without_extra_hostnames = Factory(:site, plan: @dev_plan, hostname: "jilion.com", dev_hostnames: '127.0.0.1,localhost', wildcard: true)
+        @site_with_all = Factory(:site, plan_id: @dev_plan.id, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', path: 'foo', wildcard: true)
+        @site_without_wildcard = Factory(:site, plan_id: @dev_plan.id, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', path: 'foo', wildcard: false)
+        @site_without_path = Factory(:site, plan_id: @dev_plan.id, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', wildcard: true)
+        @site_without_extra_hostnames = Factory(:site, plan_id: @dev_plan.id, hostname: "jilion.com", dev_hostnames: '127.0.0.1,localhost', wildcard: true)
       end
 
       context "site with dev plan" do
         context "site with all settings" do
-          subject { @site_with_all.reload }
+          subject { @site_with_all }
           it "should include only dev hostnames without path" do
             subject.reload.license_json.should == { h: ['127.0.0.1', 'localhost'], w: true }.to_json
           end
         end
 
         context "site without wildcard" do
-          subject { @site_without_wildcard.reload }
+          subject { @site_without_wildcard }
           it "should include only dev hostnames without path and wildcard" do
             subject.license_json.should == { h: ['127.0.0.1', 'localhost'], w: false }.to_json
           end

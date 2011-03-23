@@ -87,7 +87,7 @@ describe OneTime::Site do
 
   describe ".rollback_beta_sites_to_dev" do
     before(:all) do
-      @site_1 = Factory(:site, plan: @beta_plan, state: 'active')
+      @site_1 = Factory(:site, plan_id: @beta_plan.id)
       @site_2 = Factory(:site, state: 'archived')
       described_class.rollback_beta_sites_to_dev
       @worker.work_off

@@ -218,25 +218,25 @@ describe Site do
 
     describe "validates_current_password" do
       context "on a dev plan" do
-        subject { Factory(:site, plan: @dev_plan) }
+        subject { Factory(:site, plan_id: @dev_plan.id) }
 
         it "should not validate current_password when modifying settings" do
           subject.update_attributes(hostname: "newone.com").should be_true
           subject.errors[:base].should be_empty
         end
         it "should not validate current_password when modifying plan" do
-          subject.update_attributes(plan: @paid_plan).should be_true
+          VCR.use_cassette('ogone/visa_payment_10') { subject.update_attributes(plan_id: @paid_plan.id).should be_true }
           subject.errors[:base].should be_empty
         end
       end
 
       context "on a paid plan" do
-        subject { Factory(:site, plan: @paid_plan) }
+        subject { Factory(:site, plan_id: @paid_plan.id) }
 
         describe "when creating a site in paid plan" do
           it "needs current_password" do
-            site = Factory.build(:new_site, plan: @paid_plan)
-            site.save.should be_true
+            site = Factory.build(:new_site, plan_id: @paid_plan.id)
+            VCR.use_cassette('ogone/visa_payment_10') { site.save.should be_true }
             subject.errors[:base].should be_empty
           end
 
@@ -1065,7 +1065,7 @@ describe Site do
 
     describe "#current_percentage_of_plan_used" do
       it "should return 0 if plan player_hits is 0" do
-        site = Factory(:site, plan: @dev_plan)
+        site = Factory(:site, plan_id: @dev_plan.id)
         site.current_percentage_of_plan_used.should == 0
       end
     end
@@ -1133,14 +1133,14 @@ describe Site do
 
     describe "#percentage_of_days_over_daily_limit(90)" do
       context "with dev_plan" do
-        subject { Factory(:site, plan: @dev_plan) }
+        subject { Factory(:site, plan_id: @dev_plan.id) }
 
         its(:percentage_of_days_over_daily_limit) { should == 0 }
       end
 
       context "with paid plan" do
         before(:all) do
-          @site = Factory(:site, plan: Factory(:plan, player_hits: 30 * 300), first_paid_plan_started_at: Time.utc(2011,1,1))
+          @site = Factory(:site, plan_id: Factory(:plan, player_hits: 30 * 300).id, first_paid_plan_started_at: Time.utc(2011,1,1))
         end
 
         describe "with 1 historic day and 1 over limit" do

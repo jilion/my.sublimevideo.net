@@ -50,7 +50,7 @@ feature "Sticky notices" do
     end
 
     scenario "show a notice" do
-      Factory(:site, :user => @current_user, :plan => @beta_plan)
+      Factory(:site, user: @current_user, plan_id: @beta_plan.id)
       PublicLaunch.stub(:beta_transition_ended_on) { Date.new(2010,2,13) }
       visit '/sites'
 

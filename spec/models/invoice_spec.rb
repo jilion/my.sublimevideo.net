@@ -164,7 +164,7 @@ describe Invoice do
 
     before(:all) do
       Invoice.delete_all
-      @site = Factory(:site, plan: @dev_plan)
+      @site = Factory(:site, plan_id: @dev_plan.id)
       @open_invoice   = Factory(:invoice, site: @site, state: 'open', created_at: 48.hours.ago)
       @failed_invoice = Factory(:invoice, site: @site, state: 'failed', created_at: 25.hours.ago)
       @paid_invoice   = Factory(:invoice, site: @site, state: 'paid', created_at: 18.hours.ago)
@@ -202,7 +202,7 @@ describe Invoice do
       describe "standard invoice" do
         before(:all) do
           @user    = Factory(:user, country: 'FR')
-          @site    = Factory(:site, user: @user, plan: @paid_plan).reload
+          @site    = Factory(:site, user: @user, plan_id: @paid_plan.id)
           @invoice = Invoice.build(site: @site)
         end
         subject { @invoice }
@@ -225,7 +225,7 @@ describe Invoice do
         context "from a paid plan" do
           before(:all) do
             @user       = Factory(:user, country: 'FR')
-            @site       = Factory(:site, user: @user, plan: @paid_plan).reload
+            @site       = Factory(:site, user: @user, plan_id: @paid_plan.id)
             @paid_plan2 = Factory(:plan, cycle: "month", price: 3000)
             # Simulate upgrade
             @site.plan_id = @paid_plan2.id
@@ -256,7 +256,7 @@ describe Invoice do
           context "from a #{plan} plan" do
             before(:all) do
               @user      = Factory(:user, country: 'FR')
-              @site      = Factory(:site, user: @user, plan: instance_variable_get("@#{plan}_plan"))
+              @site      = Factory(:site, user: @user, plan_id: instance_variable_get("@#{plan}_plan").id)
               @paid_plan = Factory(:plan, cycle: "month", price: 3000)
               # Simulate upgrade
               @site.plan_id = @paid_plan.id
@@ -284,7 +284,7 @@ describe Invoice do
       describe "with a Swiss user" do
         before(:all) do
           @user    = Factory(:user, country: 'CH')
-          @site    = Factory(:site, user: @user, plan: @paid_plan)
+          @site    = Factory(:site, user: @user, plan_id: @paid_plan.id)
           @invoice = Invoice.build(site: @site)
         end
         subject { @invoice }
@@ -300,7 +300,7 @@ describe Invoice do
       pending "with a user with a discount" do
         before(:all) do
           @user    = Factory(:user, country: 'FR')
-          @site    = Factory(:site, user: @user, plan: @paid_plan).reload
+          @site    = Factory(:site, user: @user, plan_id: @paid_plan.id).reload
           @invoice = Invoice.build(site: @site)
         end
         subject { @invoice }
