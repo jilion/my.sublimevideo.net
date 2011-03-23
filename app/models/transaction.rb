@@ -91,7 +91,6 @@ class Transaction < ActiveRecord::Base
       Notify.send("Charging failed: #{ex.message}", exception: ex)
       transaction.error = ex.message
       transaction.fail
-      puts ex.inspect
       nil
     end
     
