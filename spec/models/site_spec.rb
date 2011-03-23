@@ -179,14 +179,28 @@ describe Site do
     end
 
     describe "credit card" do
-      context "with the dev plan" do
+      context "with the free plan" do
         subject { Factory.build(:new_site, user: Factory(:user, cc_type: nil, cc_last_digits: nil), plan: @dev_plan) }
         it { should be_valid }
       end
-      context "with any other plan than the dev plan" do
+      
+      context "with any paid plan" do
         subject { Factory.build(:new_site, user: Factory(:user, cc_type: nil, cc_last_digits: nil), plan: @paid_plan) }
         it { should_not be_valid }
         it { should have(1).error_on(:base) }
+      end
+      
+      context "with any paid plan" do
+        user_attributes = {
+          cc_type: 'visa',
+          cc_full_name: BASE_USERS[i][0],
+          cc_number: "4111111111111111",
+          cc_verification_value: "111",
+          cc_expire_on: 2.years.from_now
+        }
+        
+        subject { Factory.build(:new_site, user_attributes: user_attributes, plan: @paid_plan) }
+        it { should be_valid }
       end
     end
 
