@@ -9,6 +9,7 @@ class Invoice < ActiveRecord::Base
   belongs_to :site
 
   has_one :user, :through => :site
+  has_one :last_failed_transaction, :class_name => "Transaction", :conditions => { :state => 'failed' }, :order => :created_at.desc
 
   has_many :invoice_items
   has_many :plan_invoice_items, conditions: { type: "InvoiceItem::Plan" }, :class_name => "InvoiceItem"
@@ -81,6 +82,10 @@ class Invoice < ActiveRecord::Base
     new(attributes).build
   end
 
+  def self.build_next(attributes={})
+    new(attributes).build(true)
+  end
+
   def self.complete_invoice(site_id)
     site = Site.find(site_id)
     build(site: site).complete if site
@@ -90,8 +95,8 @@ class Invoice < ActiveRecord::Base
   # = Instance Methods =
   # ====================
 
-  def build
-    build_invoice_items
+  def build(next_invoice=false)
+    build_invoice_items(next_invoice)
     set_invoice_items_amount
     set_discount_rate_and_amount
     set_vat_rate_and_amount
@@ -105,11 +110,12 @@ class Invoice < ActiveRecord::Base
 
 private
 
-  def build_invoice_items
+  def build_invoice_items(next_invoice)
     if site.pending_plan_id? && site.in_paid_plan?
       invoice_items << InvoiceItem::Plan.build(invoice: self, item: Plan.find(site.plan_id), refund: true)
     end
-    invoice_items << InvoiceItem::Plan.build(invoice: self, item: site.pending_plan || site.plan)
+    item = (next_invoice ? site.next_cycle_plan : site.pending_plan) || site.plan
+    invoice_items << InvoiceItem::Plan.build(invoice: self, item: item)
   end
 
   def set_invoice_items_amount
