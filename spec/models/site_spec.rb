@@ -6,25 +6,21 @@ describe Site do
   # describe "Test site with and without invoice" do
   # 
   #   context "WITH INVOICE" do
-  #     before(:all) do
-  #       @site = Factory(:site_with_invoice)
-  #     end
-  #     subject { @site.reload }
+  #     subject { Factory(:site_with_invoice) }
   #     it "should be slow" do
   #       start_time = Time.now
   #       subject.plan_id.should be_present
+  #       subject.invoices.count.should == 1
   #       puts "WITH INVOICE: Done in #{Time.now - start_time} seconds!"
   #     end
   #   end
   # 
   #   context "WITHOUT INVOICE" do
-  #     before(:all) { @site = Factory(:site) }
-  #     subject { @site.reload }
-  #     its(:user)                          { should be_present }
-  #     its(:plan)                          { should be_present }
+  #     subject { Factory(:site) }
   #     it "should be quick" do
   #       start_time = Time.now
   #       subject.plan_id.should be_present
+  #       subject.invoices.count.should == 0
   #       puts "WITHOUT INVOICE: Done in #{Time.now - start_time} seconds!"
   #     end
   #   end
@@ -553,15 +549,6 @@ describe Site do
       end
     end
 
-    describe "#user_attributes=" do
-      subject { Factory(:user, first_name: "Bob") }
-
-      it "should set user_attributes" do
-        Factory(:site, user: subject, plan: @paid_plan, user_attributes: { first_name: "John" })
-        subject.reload.first_name.should == "John"
-      end
-    end
-
   end
 
   describe "State Machine" do
@@ -646,6 +633,23 @@ describe Site do
 
     describe "before_validation" do
       subject { Factory.build(:new_site, dev_hostnames: nil) }
+
+      describe "#set_user_attributes" do
+        subject { Factory(:user, first_name: "Bob") }
+
+        it "should set user_attributes before validate" do
+          subject.first_name.should == "Bob"
+          site = Factory.build(:new_site, user: subject, plan: @paid_plan, user_attributes: { first_name: "John" })
+          site.should be_valid
+          subject.first_name.should == "John"
+        end
+
+        it "should set user_attributes and save the user when the site is saved" do
+          subject.first_name.should == "Bob"
+          site = Factory(:new_site, user: subject, plan: @paid_plan, user_attributes: { first_name: "John" })
+          subject.reload.first_name.should == "John"
+        end
+      end
 
       describe "#set_default_dev_hostnames" do
         specify do

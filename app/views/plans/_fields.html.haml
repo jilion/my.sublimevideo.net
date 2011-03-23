@@ -3,7 +3,7 @@
     %span= f.object.errors[:plan].first
 
 - standard_plans = Plan.standard_plans.order(:player_hits.asc, :price.asc)
-- dev_plan   = Plan.dev_plan
+- dev_plan       = Plan.dev_plan
 
 #plans
   %ul

@@ -128,6 +128,7 @@ class Site < ActiveRecord::Base
   # = Callbacks =
   # =============
 
+  before_validation :set_user_attributes
   before_validation :set_default_dev_hostnames, :unless => :dev_hostnames?
 
   before_save :prepare_cdn_update # in site/templates
@@ -231,8 +232,8 @@ class Site < ActiveRecord::Base
     save_without_password_validation
   end
 
-  def user_attributes=(attributes)
-    user.attributes = attributes if attributes.present? # && in_or_was_in_paid_plan?
+  def set_user_attributes
+    self.user.attributes = user_attributes if user && user_attributes.present? && in_or_was_in_paid_plan?
   end
   
   def without_password_validation
