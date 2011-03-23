@@ -7,7 +7,7 @@
     %li.last= link_to "Invoices", site_invoices_path(@site), :onclick => "MySublimeVideo.makeSticky(this, '.segmented_menu')"
 
   - if @site.in_sponsored_plan?
-    %p= "Your plan are currently sponsored by Jilion."
+    %p= "Your plan is currently sponsored by Jilion."
     %p=raw "If you have any questions, please #{mail_to "info@sublimevideo.net", "contact us"}."
   - else
     - if @site.errors.empty? && !@site.in_beta_plan? && @site.next_cycle_plan_id?

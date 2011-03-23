@@ -19,6 +19,13 @@
             %h3.title= content_tag(:strong, plan.name.titleize)
             %h4.number= number_with_delimiter(plan.player_hits)
             %h5.label= "Video pageviews per month"
+            %ul.features
+              %li
+                = "Standard" if i < 3
+                %strong= "#{ i > 2 ? 'Priority ':'' }Support"
+              %li.last
+                %strong= "SSL"
+                = "Serving"
           .monthly.select_box{ :class => current_plan && plan == current_plan ? 'active' : '' }
             = f.label :plan_id, raw(plan_label_content(plan)), :for => "plan_#{plan.name}_#{plan.cycle}"
             .radio_wrap
