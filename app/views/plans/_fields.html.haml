@@ -20,9 +20,7 @@
             %h4.number= number_with_delimiter(plan.player_hits)
             %h5.label= "Video pageviews per month"
             %ul.features
-              %li
-                = "Standard" if i < 3
-                %strong= "#{ i > 2 ? 'Priority ':'' }Support"
+              %li= plan_support(plan)
               %li.last
                 %strong= "SSL"
                 = "Serving"

@@ -31,6 +31,10 @@ module PlansHelper
       "delayed_downgrade"
     end
   end
+  
+  def plan_support(plan)
+    "#{"Standard " if plan.support == 'standard'}#{content_tag(:strong, "#{"Priority " if plan.support == 'priority'} Support")}".html_safe
+  end
 
   def radio_button_options(site, plan, current_plan, options={})
     options = options
