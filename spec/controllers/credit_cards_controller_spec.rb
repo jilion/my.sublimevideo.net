@@ -30,12 +30,8 @@ describe CreditCardsController do
         authenticated_user.should_receive(:cc?).and_return(true)
         authenticated_user.should_receive(:attributes=).with({})
       end
-      
+
       context "with a valid site" do
-        before(:each) do
-          authenticated_user.should_receive(:valid?) { true }
-        end
-        
         it "should render HTML given by Aduno when authorization needs 3-d secure" do
           authenticated_user.should_receive(:check_credit_card).and_return("d3d")
           authenticated_user.should_receive(:d3d_html) { "<html></html>" }
@@ -43,7 +39,7 @@ describe CreditCardsController do
           put :update, :user => {}
           response.body.should == "<html></html>"
         end
-        
+
         it "should render :edit template when authorization is invalid" do
           authenticated_user.should_receive(:check_credit_card) { "invalid" }
           authenticated_user.should_receive(:errors).at_least(1).times { { :base => "error" } }
@@ -61,7 +57,7 @@ describe CreditCardsController do
           flash[:alert].should be_nil
           response.should render_template(:edit)
         end
-        
+
         it "should redirect to /account/edit when authorization is waiting" do
           authenticated_user.should_receive(:check_credit_card) { "waiting" }
 
@@ -69,24 +65,19 @@ describe CreditCardsController do
           flash[:notice].should be_present
           response.should redirect_to(edit_user_registration_path)
         end
-        
+
         it "should redirect to /account/edit when authorization is ok without 3-d secure" do
           authenticated_user.should_receive(:check_credit_card).and_return("authorized")
-          authenticated_user.should_receive(:save) { true }
 
           put :update, :user => {}
           flash[:notice].should be_present
           response.should redirect_to(edit_user_registration_path)
         end
       end
-      
+
       context "with a valid site" do
-        before(:each) do
-          authenticated_user.should_receive(:valid?) { false }
-        end
-      
         it "should render :edit template when user is not valid" do
-          authenticated_user.should_receive(:errors).at_least(1).times { { :base => "error" } }
+          authenticated_user.should_receive(:check_credit_card).and_return(nil)
 
           put :update, :user => {}
           response.should render_template(:edit)

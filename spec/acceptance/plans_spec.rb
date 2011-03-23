@@ -94,7 +94,7 @@ feature "Plans" do
 
       click_link "Sponsored"
 
-      page.should have_content("Your plan are currently sponsored by Jilion.")
+      page.should have_content("Your plan is currently sponsored by Jilion.")
       page.should have_content("If you have any questions, please contact us.")
     end
 

@@ -460,16 +460,6 @@ describe Transaction do
 
 end
 
-def valid_attributes
-  {
-    :cc_type               => 'visa',
-    :cc_number             => '4111111111111111',
-    :cc_expire_on          => 1.year.from_now.to_date,
-    :cc_full_name          => 'John Doe Huber',
-    :cc_verification_value => '111'
-  }
-end
-
 
 # == Schema Information
 #

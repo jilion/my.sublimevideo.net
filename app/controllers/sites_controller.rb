@@ -48,9 +48,9 @@ class SitesController < ApplicationController
             format.html { render :text => transaction.d3d_html }
 
           elsif transaction.failed?
-            format.html { redirect_to [:edit, @site, :plan], :alert => t("transaction.errors.#{transaction.error_key}") }
+            format.html { redirect_to :sites, :notice => "", :alert => t("transaction.errors.#{transaction.error_key}") }
 
-          elsif transaction.succeed?
+          elsif transaction.paid?
             format.html { redirect_to :sites }
 
           elsif transaction.unprocessed?

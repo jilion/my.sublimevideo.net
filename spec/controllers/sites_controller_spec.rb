@@ -100,8 +100,9 @@ describe SitesController do
             @mock_transaction.should_receive(:error_key)    { "invalid" }
 
             post :create, :site => {}
+            flash[:notice].should == ""
             flash[:alert].should == I18n.t("transaction.errors.invalid")
-            response.should redirect_to(edit_site_plan_url(@mock_site))
+            response.should redirect_to(sites_url)
           end
 
           it "should render :edit template when payment is refused" do
@@ -110,14 +111,15 @@ describe SitesController do
             @mock_transaction.should_receive(:error_key)    { "refused" }
 
             post :create, :site => {}
+            flash[:notice].should == ""
             flash[:alert].should == I18n.t("transaction.errors.refused")
-            response.should redirect_to(edit_site_plan_url(@mock_site))
+            response.should redirect_to(sites_url)
           end
 
           it "should redirect to /sites when payment is ok without 3-d secure" do
             @mock_transaction.should_receive(:waiting_d3d?)   { false }
             @mock_transaction.should_receive(:failed?)        { false }
-            @mock_transaction.should_receive(:succeed?)       { true }
+            @mock_transaction.should_receive(:paid?)          { true }
 
             post :create, :site => {}
             flash[:notice].should be_present
@@ -127,7 +129,7 @@ describe SitesController do
           it "should redirect to /sites when payment is ok without 3-d secure" do
             @mock_transaction.should_receive(:waiting_d3d?)    { false }
             @mock_transaction.should_receive(:failed?)         { false }
-            @mock_transaction.should_receive(:succeed?)        { false }
+            @mock_transaction.should_receive(:paid?)           { false }
             @mock_transaction.should_receive(:unprocessed?)    { true }
             @mock_transaction.should_receive(:error_key)       { "unknown" }
 
