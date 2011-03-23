@@ -42,7 +42,7 @@ class SitesController < ApplicationController
       if @site.save # will create invoice and charge...
         
         if @site.in_or_was_in_paid_plan?
-          transaction = @site.last_invoice.transaction
+          transaction = @site.last_invoice.last_transaction
 
           if transaction.waiting_d3d?
             format.html { render :text => transaction.d3d_html }

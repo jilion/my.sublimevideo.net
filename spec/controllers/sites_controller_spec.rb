@@ -83,7 +83,7 @@ describe SitesController do
           before(:each) do
             @mock_site.should_receive(:save) { true }
             @mock_site.should_receive(:in_or_was_in_paid_plan?) { true }
-            @mock_site.stub_chain(:last_invoice, :transaction).and_return(@mock_transaction = mock_transaction(error_code: "refused"))
+            @mock_site.stub_chain(:last_invoice, :last_transaction).and_return(@mock_transaction = mock_transaction)
           end
 
           it "should render HTML given by Aduno when authorization needs 3-d secure" do
