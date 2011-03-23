@@ -2,7 +2,7 @@
 - current_plan = site.plan(true) || site.pending_plan(true)  # avoid association cache with (true)
 
 - if site.errors.key?(:plan)
-  .inline_errors
+  .inline_errors.plan
     %span= site.errors[:plan].first
 
 #plans
@@ -45,7 +45,6 @@
                 %li.last
                   %strong= "SSL"
                   = "Serving"
-
             .monthly.select_box{ :class => current_plan && plan == current_plan ? 'active' : '' }
               = f.label :plan_id, raw(plan_label_content(plan)), :for => "plan_#{plan.name}_#{plan.cycle}"
               .radio_wrap
