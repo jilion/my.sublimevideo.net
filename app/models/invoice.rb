@@ -17,6 +17,10 @@ class Invoice < ActiveRecord::Base
 
   delegate :user, :to => :site
 
+  def last_transaction
+    transactions.order(:created_at.desc).first
+  end
+
   def last_failed_transaction
     transactions.failed.order(:created_at.desc).first
   end
@@ -65,7 +69,6 @@ class Invoice < ActiveRecord::Base
   scope :by_invoice_items_count, lambda { |way='desc'| order(:invoice_items_count.send(way)) }
 
   scope :by_state,    lambda { |way='desc'| order(:state.send(way)) }
-  scope :by_attempts, lambda { |way='desc'| order(:attempts.send(way)) }
   scope :by_date,     lambda { |way='desc'| order(:created_at.send(way)) }
 
   # search
