@@ -9,10 +9,10 @@
       %td.title
         %h3= site.hostname
 
-      = render('/invoices/plan_invoice_item', :plan_invoice_item => plan_invoice_item)
-    %tr.subtotal
-      %td.right{ :colspan => 2 }
-        = "Subtotal for"
-        %strong= site.hostname
-      %td.total= display_amount(plan_invoice_item.amount)
+      = render "/invoices/plan_invoice_item", :plan_invoice_item => plan_invoice_item
+    -# %tr.subtotal
+    -#   %td.right{ :colspan => 2 }
+    -#     = "Subtotal for"
+    -#     %strong= site.hostname
+    -#   %td.total= display_amount(plan_invoice_item.amount)
   = render "/invoices/total", :invoice => invoice

@@ -1,19 +1,20 @@
-%tr.pre_total
-  %td.right{ :colspan => 2 } Invoice Items Total
-  %td.total
-    = display_amount(invoice.invoice_items_amount)
-
+-# %tr.pre_total
+-#   %td.right{ :colspan => 2 } Invoice Items Total
+-#   %td.total
+-#     = display_amount(invoice.invoice_items_amount)
 - if invoice.discount_amount > 0
   %tr.pre_total
     %td.right{ :colspan => 2 }= "Discount #{display_percentage(invoice.discount_rate)}:"
     %td.total
-      = display_amount(invoice.discount_amount)
+      = display_amount(invoice.discount_amount, :decimals => 2)
+
 - if invoice.vat_amount > 0
   %tr.pre_total
     %td.right{ :colspan => 2 }= "VAT #{display_percentage(invoice.vat_rate)}:"
-    %td.total= display_amount(invoice.vat_amount)
+    %td.total= display_amount(invoice.vat_amount, :decimals => 2)
+
 %tr.final_total
   %td.right{ :colspan => 2 }
     %strong Total
   %td.total
-    %strong= display_amount(invoice.amount)
+    %strong= display_amount(invoice.amount, :decimals => 2)

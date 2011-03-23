@@ -14,7 +14,7 @@
           = charging_status(invoice)
         %span.stamp{ :class => invoice.state }= invoice.state
     %td.user_info
-      %h4= "Bill to:"
+      %h4= "Billed to:"
       = render "/invoices/user_billing_info", :user => invoice.user
 
 = render "/invoices/sites", :invoice => invoice

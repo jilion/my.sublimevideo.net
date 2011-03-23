@@ -13,9 +13,9 @@ module ApplicationHelper
     number_to_percentage(fraction * 100.0, :precision => 2, :strip_insignificant_zeros => true)
   end
 
-  def display_amount(amount_in_cents)
+  def display_amount(amount_in_cents, options={})
     number = amount_in_cents / 100.0
-    number_to_currency(number, :precision => (number == number.to_i ? 0 : 2))
+    number_to_currency(number, :precision => (!options[:decimals] && number == number.to_i ? 0 : options[:decimals] || 2))
   end
 
   def display_amount_with_sup(amount_in_cents)
