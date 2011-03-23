@@ -372,13 +372,13 @@ describe Site do
 
     describe "plan_id=" do
       before(:all) do
-        @paid_plan         = Factory(:plan, cycle: "month", price: 1000)
-        @paid_plan2        = Factory(:plan, cycle: "month", price: 5000)
-        @paid_plan_yearly  = Factory(:plan, cycle: "year",  price: 10000)
-        @paid_plan_yearly2 = Factory(:plan, cycle: "year",  price: 50000)
+        @paid_plan         = Factory(:plan, name: "planet", cycle: "month", price: 1000)
+        @paid_plan2        = Factory(:plan, name: "star",   cycle: "month", price: 5000)
+        @paid_plan_yearly  = Factory(:plan, name: "planet", cycle: "year",  price: 10000)
+        @paid_plan_yearly2 = Factory(:plan, name: "star",   cycle: "year",  price: 50000)
       end
 
-      describe "when creating a dev plan" do
+      describe "when creating with a dev plan" do
         before(:all) do
           @site = Factory.build(:new_site, plan_id: @dev_plan.id)
         end
@@ -386,6 +386,28 @@ describe Site do
 
         its(:plan_id)            { should be_nil }
         its(:pending_plan_id)    { should == @dev_plan.id }
+        its(:next_cycle_plan_id) { should be_nil }
+      end
+
+      describe "when creating a with a custom plan (token)" do
+        before(:all) do
+          @site = Factory.build(:new_site, plan_id: @custom_plan.token)
+        end
+        subject { @site }
+
+        its(:plan_id)            { should be_nil }
+        its(:pending_plan_id)    { should == @custom_plan.id }
+        its(:next_cycle_plan_id) { should be_nil }
+      end
+
+      describe "when creating a with a custom plan (id)" do
+        before(:all) do
+          @site = Factory.build(:new_site, plan_id: @custom_plan.id)
+        end
+        subject { @site }
+
+        its(:plan_id)            { should be_nil }
+        its(:pending_plan_id)    { should be_nil }
         its(:next_cycle_plan_id) { should be_nil }
       end
 
@@ -434,6 +456,30 @@ describe Site do
 
         its(:plan_id)            { should == @paid_plan.id }
         its(:pending_plan_id)    { should == @paid_plan2.id }
+        its(:next_cycle_plan_id) { should be_nil }
+      end
+
+      describe "when upgrade from monthly plan to custom plan (token)" do
+        before(:all) do
+          @site = Factory.build(:new_site, plan: @paid_plan)
+          @site.plan_id = @custom_plan.token
+        end
+        subject { @site }
+
+        its(:plan_id)            { should == @paid_plan.id }
+        its(:pending_plan_id)    { should == @custom_plan.id }
+        its(:next_cycle_plan_id) { should be_nil }
+      end
+
+      describe "when upgrade from monthly plan to custom plan (id)" do
+        before(:all) do
+          @site = Factory.build(:new_site, plan: @paid_plan)
+          @site.plan_id = @custom_plan.id
+        end
+        subject { @site }
+
+        its(:plan_id)            { should == @paid_plan.id }
+        its(:pending_plan_id)    { should be_nil }
         its(:next_cycle_plan_id) { should be_nil }
       end
 

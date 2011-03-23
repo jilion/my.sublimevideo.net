@@ -6,9 +6,7 @@ feature "Sites actions:" do
     sign_in_as :user
   end
 
-  # TODO Remy
-  pending "add a new site" do
-    # visit "/sites"
+  scenario "add a new site" do
     click_link "Add a site"
 
     fill_in "Domain", :with => "google.com"

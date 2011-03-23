@@ -82,7 +82,11 @@ feature "Plans" do
       #page.should have_content("Your current plan, #{site.plan.title}, will be automatically renewed on #{I18n.l site.plan_cycle_ended_at.tomorrow.midnight, :format => :named_date}")
     end
 
-    scenario "sponsored plan" do
+  end
+
+  feature "sponsored plan" do
+
+    scenario "view" do
       site = Factory(:site, user: @current_user)
       site.sponsor!
       Factory(:site_usage, site_id: site.id, day: Time.now.utc, main_player_hits: 1000)
@@ -100,4 +104,49 @@ feature "Plans" do
 
   end
 
+  feature "custom plan" do
+
+    scenario "add a new site" do
+      visit new_site_path(custom_plan: @custom_plan.token)
+
+      VCR.use_cassette('ogone/visa_payment_10') do
+        choose "plan_custom"
+        fill_in "Domain", :with => "google.com"
+        click_button "Create"
+      end
+
+      current_url.should =~ %r(http://[^/]+/sites)
+      page.should have_content('google.com')
+      page.should have_content(@custom_plan.title)
+    end
+
+    scenario "view" do
+      site = Factory(:site, user: @current_user, plan_id: @custom_plan.token)
+
+      visit sites_path
+
+      click_link "Custom"
+
+      current_url.should =~ %r(http://[^/]+/sites/#{site.token}/plan/edit$)
+      page.should have_content(@custom_plan.title)
+    end
+
+    scenario "upgarde site" do
+      site = Factory(:site, user: @current_user, plan_id: @paid_plan.id)
+
+      visit edit_site_plan_path(site, custom_plan: @custom_plan.token)
+
+      choose "plan_custom"
+      click_button "Update plan"
+
+      VCR.use_cassette('ogone/visa_payment_10') do
+        fill_in "Password", :with => "123456"
+        click_button "Done"
+      end
+
+      current_url.should =~ %r(http://[^/]+/sites)
+      page.should have_content(@custom_plan.title)
+    end
+
+  end
 end

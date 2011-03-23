@@ -5,8 +5,8 @@ module PlansHelper
       content_tag(:h4, :class => "price") do
         display_amount_with_sup(plan.price)
       end + content_tag(:span, :class => "name") do
-        plan.name.titleize
-      end + (options[:year] ? "per year" : "per month")
+        plan.name.gsub(/\d/, '').titleize
+      end + (plan.yearly? ? "per year" : "per month")
     end
   end
 
@@ -34,8 +34,8 @@ module PlansHelper
 
   def radio_button_options(site, plan, current_plan, options={})
     options = options
-    options[:id]    = plan.dev_plan? ? "plan_dev" : "plan_#{plan.name}_#{plan.cycle}"
-    options[:class] = "plan_radio"
+    options[:id]    ||= plan.dev_plan? ? "plan_dev" : "plan_#{plan.name}_#{plan.cycle}"
+    options[:class] ||= "plan_radio"
     options["data-plan_title"] = plan.title(always_with_cycle: true)
     options["data-plan_price"] = display_amount(plan.price)
     unless site.new_record?
