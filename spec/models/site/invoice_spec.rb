@@ -78,17 +78,11 @@ describe Site::Invoice do
       end
     end # #instant_charging?
 
-    describe "#in_or_was_in_paid_plan? & #in_or_will_be_in_paid_plan?" do
-      context "site in dev plan" do
-        subject { Factory(:site, plan_id: @dev_plan.id) }
+    describe "#in_or_will_be_in_paid_plan?" do
 
-        it { should_not be_in_or_was_in_paid_plan }
-        it { should_not be_in_or_will_be_in_paid_plan }
-      end
       context "site in paid plan" do
         subject { Factory(:site, plan_id: @paid_plan.id) }
 
-        it { should be_in_or_was_in_paid_plan }
         it { should be_in_or_will_be_in_paid_plan }
       end
 
@@ -99,7 +93,6 @@ describe Site::Invoice do
         end
         subject { @site }
 
-        it { should_not be_in_or_was_in_paid_plan }
         it { should be_in_or_will_be_in_paid_plan }
       end
 
@@ -110,7 +103,6 @@ describe Site::Invoice do
         end
         subject { @site }
 
-        it { should be_in_or_was_in_paid_plan }
         it { should be_in_or_will_be_in_paid_plan }
       end
     end # #in_or_was_in_paid_plan?
