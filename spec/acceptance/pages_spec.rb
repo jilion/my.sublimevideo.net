@@ -27,11 +27,11 @@ describe "Pages" do
 
       feature "suspended user" do
         background do
-          sign_in_as :user, { :cc_expire_on => 1.month.ago }
+          sign_in_as :user
+          @site = Factory(:site, user: @current_user)
           @current_user.cc_expire_on = 1.month.ago
           @current_user.save(:validate => false)
           @current_user.should be_cc_expired
-          @site        = Factory(:site, user: @current_user)
           @invoice     = Factory(:invoice, site: @site, state: 'failed', failed_at: Time.utc(2010,2,10))
           @transaction = Factory(:transaction, invoices: [@invoice], state: 'failed', error: "Credit Card expired")
           @current_user.suspend
@@ -41,14 +41,15 @@ describe "Pages" do
 
         scenario "suspended page" do
           current_url.should =~ %r(^http://[^/]+/suspended$)
-          page.should have_content('Your account is suspended')
 
+          page.should have_content('Your account is suspended')
           page.should have_content("Your credit card is expired.")
-          page.should have_content("Visa ending in 1234")
-          page.should have_content("Edit credit card")
+          page.should have_content("Visa ending in 1111")
+          page.should have_content("Update credit card")
           # FIXME
           # page.should have_content("$100.00 on January 2010")
-          page.should have_content("Charging failed on #{I18n.l(@invoice.failed_at, :format => :minutes_timezone)} with the following error:")
+          # page.should have_content("Charging failed on #{I18n.l(@invoice.failed_at, :format => :minutes_timezone)} with the following error:")
+          page.should have_content("You have to pay the following invoice(s) in order to see your account re-activated:")
           # FIXME
           # page.should have_content("\"#{@invoice.transactions.failed.last.error}\"")
         end

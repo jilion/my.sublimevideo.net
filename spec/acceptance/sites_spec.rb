@@ -13,7 +13,8 @@ feature "Sites actions:" do
     choose "plan_dev"
     click_button "Create"
 
-    current_url.should =~ %r(http://[^/]+/sites)
+    current_url.should =~ %r(http://[^/]+/sites$)
+
     page.should have_content('google.com')
 
     @worker.work_off

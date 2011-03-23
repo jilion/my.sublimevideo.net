@@ -12,8 +12,6 @@ feature "Plans" do
 
       visit edit_site_plan_path(site)
 
-      #page.should have_content("Your current plan, #{site.plan.title}, will be automatically renewed on #{I18n.l site.plan_cycle_ended_at.tomorrow.midnight, :format => :named_date}")
-
       choose "plan_dev"
       click_button "Update plan"
 
@@ -26,7 +24,6 @@ feature "Plans" do
 
       click_link "#{site.plan.title} => #{site.next_cycle_plan.title}"
 
-      #page.should have_content("Your current plan, #{site.plan.title}, will end on #{I18n.l site.plan_cycle_ended_at, :format => :named_date}")
       page.should have_content("Your new plan #{site.next_cycle_plan.title} will automatically start on #{I18n.l site.plan_cycle_ended_at.tomorrow.midnight, :format => :named_date}.")
     end
 
@@ -37,8 +34,6 @@ feature "Plans" do
       site = Factory(:site, user: @current_user, plan_id: @dev_plan.id)
 
       visit edit_site_plan_path(site)
-
-      #page.should have_content("You are currently using the unlimited free development plan")
 
       VCR.use_cassette('ogone/visa_payment_10') do
         choose "plan_comet_month"
@@ -51,8 +46,6 @@ feature "Plans" do
       page.should have_content("#{site.plan.title}")
 
       click_link site.plan.title
-
-      #page.should have_content("Your current plan, #{site.plan.title}, will be automatically renewed on #{I18n.l site.plan_cycle_ended_at.tomorrow.midnight, :format => :named_date}")
     end
 
     scenario "cancel next plan automatic update" do
@@ -68,7 +61,6 @@ feature "Plans" do
       click_link "#{site.plan.title} => #{site.next_cycle_plan.title}"
 
       current_url.should =~ %r(http://[^/]+/sites/#{site.token}/plan/edit$)
-      #page.should have_content("Your current plan, #{site.plan.title}, will end on #{I18n.l site.plan_cycle_ended_at, :format => :named_date}")
       page.should have_content("Your new plan #{site.next_cycle_plan.title} will automatically start on #{I18n.l site.plan_cycle_ended_at.tomorrow.midnight, :format => :named_date}.")
 
       click_button "Cancel"
@@ -78,8 +70,6 @@ feature "Plans" do
       page.should have_content(site.plan.title)
 
       click_link site.plan.title
-
-      #page.should have_content("Your current plan, #{site.plan.title}, will be automatically renewed on #{I18n.l site.plan_cycle_ended_at.tomorrow.midnight, :format => :named_date}")
     end
 
   end
@@ -98,7 +88,7 @@ feature "Plans" do
 
       click_link "Sponsored"
 
-      page.should have_content("Your plan are currently sponsored by Jilion.")
+      page.should have_content("Your plan is currently sponsored by Jilion.")
       page.should have_content("If you have any questions, please contact us.")
     end
 
