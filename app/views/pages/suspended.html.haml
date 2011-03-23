@@ -11,11 +11,11 @@
 
   %h3.section_title= "Suspension reason"
   - if failed_invoices.count > 0
-   %p= "You currently have #{t('failed_invoices', :count => failed_invoices.count)}."
+    %p= "You currently have #{t('failed_invoices', :count => failed_invoices.count)}."
   - else
-   %p
-     = "Unknown reason."
-     = raw t("please_link_to_know_more_about_it", :link => link_to("contact us", new_ticket_path(:anchor => "billing")))
+    %p
+      = "Unknown reason."
+      = raw t("please_link_to_know_more_about_it", :link => link_to("contact us", new_ticket_path(:anchor => "billing")))
 
   #credit_card_summary
     %h3.section_title= "Your credit card info"
