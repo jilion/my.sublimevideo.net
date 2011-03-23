@@ -80,28 +80,37 @@ class Plan < ActiveRecord::Base
     end
   end
 
-  def dev_plan?
-    name == "dev"
-  end
-
+  # free plan
   def beta_plan?
     name == "beta"
   end
 
+  # free plan
+  def dev_plan?
+    name == "dev"
+  end
+
+  # free plan
   def sponsored_plan?
     name == "sponsored"
   end
 
+  def free_plan?
+    beta_plan? || dev_plan? || sponsored_plan?
+  end
+
+  # paid plan
   def standard_plan?
     STANDARD_NAMES.include?(name.gsub(/\d/, ''))
   end
 
+  # paid plan
   def custom_plan?
     name =~ /^custom.*/
   end
 
   def paid_plan?
-    !dev_plan? && !beta_plan? && !sponsored_plan?
+    !free_plan?
   end
 
   CYCLES.each do |c|

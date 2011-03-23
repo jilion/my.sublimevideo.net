@@ -69,7 +69,7 @@ describe SitesController do
         describe "dev plan" do
           before(:each) do
             @mock_site.should_receive(:save) { true }
-            @mock_site.should_receive(:in_paid_plan?) { false }
+            @mock_site.should_receive(:in_or_will_be_in_paid_plan?) { false }
           end
 
           it "should redirect to /sites" do
@@ -82,8 +82,8 @@ describe SitesController do
         describe "paid plan" do
           before(:each) do
             @mock_site.should_receive(:save) { true }
-            @mock_site.should_receive(:in_paid_plan?) { true }
-            @mock_site.stub_chain(:last_invoice, :transaction).and_return(@mock_transaction = mock_transaction(error_code: "refused"))
+            @mock_site.should_receive(:in_or_will_be_in_paid_plan?) { true }
+            @mock_site.stub_chain(:last_invoice, :last_transaction).and_return(@mock_transaction = mock_transaction)
           end
 
           it "should render HTML given by Aduno when authorization needs 3-d secure" do

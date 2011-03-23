@@ -14,7 +14,7 @@ namespace :db do
   namespace :populate do
     desc "Empty all the tables"
     task :empty_all_tables => :environment do
-      timed { empty_tables("delayed_jobs", Invoice, InvoiceItem, Log, MailTemplate, MailLog, Site, SiteUsage, User, Admin, Plan) }
+      timed { empty_tables("delayed_jobs", "invoices_transactions", InvoiceItem, Invoice, Transaction, Log, MailTemplate, MailLog, Site, SiteUsage, User, Admin, Plan) }
     end
 
     desc "Load all development fixtures."
@@ -28,7 +28,6 @@ namespace :db do
       timed { create_plans }
       timed { create_sites }
       timed { create_site_usages }
-      # timed { create_invoices }
       timed { create_mail_templates }
     end
 
@@ -40,14 +39,14 @@ namespace :db do
 
     desc "Load User development fixtures."
     task :users => :environment do
-      timed { empty_tables(Site, User) }
+      timed { empty_tables("invoices_transactions", InvoiceItem, Invoice, Transaction, Site, User) }
       timed { create_users(argv_index) }
       empty_tables("delayed_jobs")
     end
 
     desc "Load Site development fixtures."
     task :sites => :environment do
-      timed { empty_tables(Site) }
+      timed { empty_tables("invoices_transactions", InvoiceItem, Invoice, Transaction, Site) }
       timed { create_sites }
       empty_tables("delayed_jobs")
     end
@@ -62,12 +61,6 @@ namespace :db do
     task :site_usages => :environment do
       timed { empty_tables(SiteUsage) }
       timed { create_site_usages }
-    end
-
-    desc "Create fake invoices"
-    task :invoices => :environment do
-      timed { empty_tables(Invoice) }
-      timed { create_invoices }
     end
 
     desc "Create fake plans"
@@ -243,7 +236,8 @@ def create_sites
   delete_all_files_in_public('uploads/loaders')
   create_users if User.all.empty?
   create_plans if Plan.all.empty?
-  plan_ids = Plan.all.map(&:id)
+
+  plan_ids = Plan.where(:name.ne => "sponsored").all.map(&:id)
   subdomains = %w[www blog my git sv ji geek yin yang chi cho chu foo bar rem]
   created_at_array = (Date.new(2010,9,14)..(1.month.ago - 2.days).to_date).to_a
 
@@ -260,6 +254,7 @@ def create_sites
       end
       site.cdn_up_to_date = true if rand > 0.5
       site.apply_pending_plan_changes
+      site.sponsor! if rand > 0.75
     end
   end
   puts "#{BASE_SITES.size} beautiful sites created for each user!"
@@ -317,39 +312,17 @@ def create_site_usages
   puts "#{player_hits_total} video-page views total created between #{start_date} and #{end_date}!"
 end
 
-def create_invoices
-  # d = Site.minimum(:created_at)
-  # while d < Time.now.beginning_of_month
-  #   Invoice.complete_invoices_for_billable_users(d.beginning_of_month, d.end_of_month)
-  #   d += 1.month
-  # end
-  # User.all.each do |user|
-  #   invoices = user.invoices
-  #   if invoices.size > 2
-  #     invoices[invoices.size - 2].tap do |i|
-  #       i.attributes = { state: 'paid', paid_at: i.ended_at + 6.days }
-  #       i.save(validate: false)
-  #     end
-  #     invoices.last.tap do |i|
-  #       i.attributes = { state: 'failed', failed_at: i.ended_at + 15.days, last_error: "We received an unknown status for the transaction. We will contact your acquirer and update the status of the transaction within one working day. Please check the status later." }
-  #       i.save(validate: false)
-  #     end
-  #   end
-  # end
-  # puts "#{Invoice.count} invoices created!"
-end
-
 def create_plans
   plans_attributes = [
     { name: "dev",        cycle: "none",  player_hits: 0,          price: 0 },
     { name: "sponsored",  cycle: "none",  player_hits: 0,          price: 0 },
     { name: "beta",       cycle: "none",  player_hits: 0,          price: 0 },
     { name: "comet",      cycle: "month", player_hits: 3_000,      price: 990 },
-    { name: "planet",     cycle: "month", player_hits: 50_000,     price: 2490 },
+    { name: "planet",     cycle: "month", player_hits: 50_000,     price: 1990 },
     { name: "star",       cycle: "month", player_hits: 200_000,    price: 4990 },
     { name: "galaxy",     cycle: "month", player_hits: 1_000_000,  price: 9990 },
     { name: "comet",      cycle: "year",  player_hits: 3_000,      price: 9900 },
-    { name: "planet",     cycle: "year",  player_hits: 50_000,     price: 24900 },
+    { name: "planet",     cycle: "year",  player_hits: 50_000,     price: 19900 },
     { name: "star",       cycle: "year",  player_hits: 200_000,    price: 49900 },
     { name: "galaxy",     cycle: "year",  player_hits: 1_000_000,  price: 99900 },
     { name: "custom1",    cycle: "year",  player_hits: 10_000_000, price: 999900 }

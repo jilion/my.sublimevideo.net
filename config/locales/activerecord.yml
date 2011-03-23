@@ -9,7 +9,7 @@ en:
         terms_and_conditions: "Terms & Conditions"
         cc_type:      "Card type"
         cc_number:    "Card number"
-        cc_expire_on: "Expiration date"
+        cc_expire_on: "Credit card"
         cc_full_name: "Name on card"
         cc_verification_value: "CSC"
         company_employees: "Company size"

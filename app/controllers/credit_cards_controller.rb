@@ -18,15 +18,13 @@ class CreditCardsController < ApplicationController
       exception_url: edit_user_registration_url,
       ip: request.try(:remote_ip)
     }
-    response = @user.valid? ? @user.check_credit_card(options) : nil
 
     respond_with(@user) do |format|
-      case response
+      case @user.check_credit_card(options)
       when "d3d"
         format.html { render :text => @user.d3d_html }
 
       when "authorized"
-        @user.save
         format.html { redirect_to [:edit, :user_registration] }
 
       when "waiting", "unknown"

@@ -1,8 +1,16 @@
 module Ogone
   class << self
 
-    def method_missing(name, *args)
-      gateway.send(name, *args)
+    def authorize(*args)
+      gateway.authorize(*args)
+    end
+
+    def void(*args)
+      gateway.void(*args)
+    end
+
+    def purchase(*args)
+      gateway.purchase(*args)
     end
 
     def sha_out_keys

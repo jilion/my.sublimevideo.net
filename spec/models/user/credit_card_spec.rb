@@ -186,27 +186,15 @@ describe User::CreditCard do
     end
 
     describe "#keep_some_credit_card_info" do
-      context "by passing Ogone callback params with visa card" do
-        before(:each) do
-          user.keep_some_credit_card_info({ "BRAND" => "VISA", "CARDNO" => "XXXXXXXXXXXX1234", "ED" => "0212" })
-        end
-        subject { user }
-
-        its(:cc_type)        { should == "visa" }
-        its(:cc_last_digits) { should == "1234" }
-        its(:cc_expire_on)   { should == Time.utc(2012, 02).end_of_month.to_date }
+      before(:each) do
+        user.update_attributes(valid_cc_attributes)
+        user.keep_some_credit_card_info
       end
+      subject { user }
 
-      context "by passing Ogone callback params with mastercard card" do
-        before(:each) do
-          user.keep_some_credit_card_info({ "BRAND" => "MasterCard", "CARDNO" => "XXXXXXXXXXXX1234", "ED" => "0212" })
-        end
-        subject { user }
-
-        its(:cc_type)        { should == "master" }
-        its(:cc_last_digits) { should == "1234" }
-        its(:cc_expire_on)   { should == Time.utc(2012, 02).end_of_month.to_date }
-      end
+      its(:cc_type)        { should == "visa" }
+      its(:cc_last_digits) { should == "1111" }
+      its(:cc_expire_on)   { should be_present }
     end
 
     describe "#check_credit_card" do
@@ -335,7 +323,7 @@ describe User::CreditCard do
           subject.credit_card.should be_an_instance_of(ActiveMerchant::Billing::CreditCard)
         end
       end
-      
+
       context "when attributes are not present" do
         before(:each) { user.attributes = nil_cc_attributes }
         subject { user }

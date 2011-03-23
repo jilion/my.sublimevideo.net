@@ -11,23 +11,32 @@ module Spec
         options[:without_cc]   = options[:user].delete(:without_cc) || options[:without_cc]
         options[:locked]       = options[:user].delete(:locked) || options[:locked]
         options[:cc_type]      = options[:user].delete(:cc_type) || options[:cc_type] || 'visa'
+        options[:cc_number]    = options[:user].delete(:cc_number) || (options[:cc_type] == 'visa' ? "4111111111111111" : "5399999999999999")
         options[:cc_expire_on] = options[:user].delete(:cc_expire_on) || options[:cc_expire_on] || 2.years.from_now
         options[:suspend]      = options[:user].delete(:suspend) || options[:suspend]
 
         @current_user ||= begin
           user = Factory(:user, options[:user] || {})
-          user.confirm! unless options[:confirm] == false
-          user.lock! if options[:locked] == true
+          user.confirm! if !!options[:confirm]
           if options[:without_cc] == true
-            user.attributes = { :cc_type => nil }
-            user.cc_last_digits = nil # can't be mass-assigned
+            user.reset_credit_card_info
+            user.save!
           else
-            user.attributes = { :cc_type => options[:cc_type], :cc_expire_on => options[:cc_expire_on] }
-            user.cc_last_digits = 1234 # can't be mass-assigned
+            user.attributes = {
+              cc_type: options[:cc_type],
+              cc_full_name: user.full_name,
+              cc_number: options[:cc_number],
+              cc_verification_value: "111",
+              cc_expire_on: options[:cc_expire_on]
+            }
+            user.cc_last_digits = options[:cc_number][-4,4] # can't be mass-assigned
+            VCR.use_cassette('ogone/visa_authorize_1_alias') { user.check_credit_card }
+            user.save!(validate: (options[:cc_expire_on] < Time.now ? false : true))
           end
-          user.save(:validate => false)
+          user.lock! if !!options[:locked]
           user
         end
+        @current_user
       end
 
       def create_admin(options = {})
@@ -42,7 +51,7 @@ module Spec
         end
       end
 
-      def sign_in_as(resource_name, options = {})
+      def sign_in_as(resource_name, options={})
         options = { resource_name => options }
         resource = case resource_name
         when :user

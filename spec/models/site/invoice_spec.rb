@@ -46,22 +46,34 @@ describe Site::Invoice do
 
   describe "Instance Methods" do
 
+    describe "#in_beta_plan?" do
+      subject { Factory(:site, plan: @beta_plan) }
+
+      it { should be_in_beta_plan }
+    end # #in_beta_plan?
+
     describe "#in_dev_plan?" do
       subject { Factory(:site, plan_id: @dev_plan.id) }
 
       it { should be_in_dev_plan }
     end # #in_dev_plan?
 
-    describe "#in_beta_plan?" do
-      subject { Factory(:site, plan_id: @beta_plan.id) }
+    describe "#in_sponsored_plan?" do
+      subject { Factory(:site, plan: @sponsored_plan) }
 
-      it { should be_in_beta_plan }
-    end # #in_beta_plan?
+      it { should be_in_sponsored_plan }
+    end # #in_sponsored_plan?
 
     describe "#in_paid_plan?" do
-      subject { Factory(:site, plan_id: @paid_plan.id) }
+      context "standard plan" do
+        subject { Factory(:site, plan: @paid_plan) }
+        it { should be_in_paid_plan }
+      end
 
-      it { should be_in_paid_plan }
+      context "custom plan" do
+        subject { Factory(:site, plan: @custom_plan) }
+        it { should be_in_paid_plan }
+      end
     end # #in_paid_plan?
 
     describe "#instant_charging?" do
@@ -105,7 +117,7 @@ describe Site::Invoice do
 
         it { should be_in_or_will_be_in_paid_plan }
       end
-    end # #in_or_was_in_paid_plan?
+    end # #in_or_will_be_in_paid_plan?
 
     describe "#pend_plan_changes" do
       before(:all) do

@@ -25,12 +25,6 @@ describe Invoice do
     it { should have_one :user }
     it { should have_many :invoice_items }
     it { should have_and_belong_to_many :transactions }
-
-    it "should have one last_failed_transaction" do
-      transaction = Factory(:transaction, invoices: [subject])
-      failed_transaction = Factory(:transaction, invoices: [subject], state: 'failed')
-      subject.last_failed_transaction.should == failed_transaction
-    end
   end # Associations
 
   describe "Validations" do
@@ -321,6 +315,25 @@ describe Invoice do
     end # .build
 
   end # Class Methods
+
+  describe "Instance Methods" do
+    before(:all) do
+      @invoice = Factory(:invoice)
+      Factory(:transaction, invoices: [@invoice], state: 'failed', created_at: 4.days.ago)
+      @failed_transaction2 = Factory(:transaction, invoices: [@invoice], state: 'failed', created_at: 3.days.ago)
+      @paid_transaction = Factory(:transaction, invoices: [@invoice], state: 'paid', created_at: 2.days.ago)
+    end
+    subject { @invoice }
+    
+    describe "#last_transaction" do
+      it { subject.last_transaction.should == @paid_transaction }
+    end
+    
+    describe "#last_failed_transaction" do
+      it { subject.last_failed_transaction.should == @failed_transaction2 }
+    end
+    
+  end # Instance Methods
 
 end
 
