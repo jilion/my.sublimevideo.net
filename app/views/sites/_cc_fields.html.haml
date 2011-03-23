@@ -1,5 +1,9 @@
 - if !current_user.cc? || current_user.cc_expired?
-  #credit_card{ :style => (!site.in_paid_plan? || (site.new_record? && site.in_dev_plan?)) ? "display:none;" : "" }
+  - if error = site.errors[:base].detect { |error| error == t('activerecord.errors.models.site.attributes.base.credit_card_needed') }
+    .inline_errors
+      %span= error
+
+  #credit_card{ :style => (site.plan_id? && !site.in_paid_plan?) ? "display:none;" : "" }
     %h3.title= "Credit Card Information"
     - if current_user.cc_expired?
       %p.warning Your credit card is expired. Please update it.
