@@ -208,16 +208,14 @@ class Site < ActiveRecord::Base
   def plan_id=(attribute)
     new_plan = Plan.find_by_id(attribute)
     if plan_id?
-      if plan.upgrade?(new_plan)
-        # Upgrade
+      case plan.upgrade?(new_plan)
+      when true  # Upgrade
         write_attribute(:pending_plan_id, attribute)
         write_attribute(:next_cycle_plan_id, nil)
-      elsif plan == new_plan
-        # Reset next_cycle_plan
-        write_attribute(:next_cycle_plan_id, nil)
-      else
-        # Downgrade
+      when false # Downgrade
         write_attribute(:next_cycle_plan_id, attribute)
+      when nil # Same plan, reset next_cycle_plan
+        write_attribute(:next_cycle_plan_id, nil)
       end
     else
       # Creation
@@ -227,7 +225,7 @@ class Site < ActiveRecord::Base
 
   # Instantly change plan to sponsored_plan (no refund!)
   def sponsor!
-    write_attribute(:pending_plan_id, Plan.sponsored_plan)
+    write_attribute(:pending_plan_id, Plan.sponsored_plan.id)
     write_attribute(:next_cycle_plan_id, nil)
     save_without_password_validation
   end
@@ -235,7 +233,7 @@ class Site < ActiveRecord::Base
   def set_user_attributes
     self.user.attributes = user_attributes if user && user_attributes.present? && in_or_was_in_paid_plan?
   end
-  
+
   def without_password_validation
     @skip_password_validation = true
     result = yield
@@ -281,17 +279,23 @@ class Site < ActiveRecord::Base
   end
 
   def plan_month_cycle_started_at
-    if plan.monthly?
+    case plan.cycle
+    when 'none'
+      Time.now.utc.beginning_of_month
+    when 'month'
       plan_cycle_started_at
-    else
+    when 'year'
       plan_cycle_started_at + months_since(plan_cycle_started_at).months
     end
   end
 
   def plan_month_cycle_ended_at
-    if plan.monthly?
+    case plan.cycle
+    when 'none'
+      Time.now.utc.end_of_month
+    when 'month'
       plan_cycle_ended_at
-    else
+    when 'year'
       (plan_cycle_started_at + (months_since(plan_cycle_started_at) + 1).months - 1.day).end_of_day
     end
   end
