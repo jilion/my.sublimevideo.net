@@ -41,6 +41,7 @@ MySublimeVideo::Application.routes.draw do
   match 'r/:type/:token', :to => 'referrers#redirect', :via => :get, :type => /c/, :token => /[a-z0-9]{8}/
 
   resource :ticket, :only => [:new, :create], :path => '/support', :path_names => { :new =>  '' }
+  match '/feedback' => redirect('/support'), :via => :get
 
   root :to => redirect("/sites")
 

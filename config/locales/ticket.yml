@@ -1,9 +1,9 @@
 en:
   ticket:
     type:
-      choose-type:            "Choose a category"
-      bug-report:             "Bug report"
-      improvement-suggestion: "Improvement suggestion"
-      feature-request:        "Feature request"
-      billing-question:       "Billing question"
-      other:                  "Other"
+      choose-type: "Choose a category"
+      integration: "Integration question"
+      idea:        "Feature request / Improvement suggestion"
+      bug:         "Bug report"
+      billing:     "Billing question"
+      other:       "Other"

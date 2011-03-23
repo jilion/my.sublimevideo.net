@@ -20,7 +20,7 @@ describe TicketsController do
     
     describe "POST create" do
       describe "with valid params" do
-        let(:params) { { :type => "bug-report", :subject => "Subject", :message => "Message" } }
+        let(:params) { { :type => "idea", :subject => "Subject", :message => "Message" } }
         
         before(:each) do
           Ticket.stub(:new) { mock_ticket }
@@ -45,12 +45,12 @@ describe TicketsController do
           response.should render_template("new")
         end
         it "should render new template" do
-          post :create, :ticket => { :type => "bug-report", :subject => "", :message => "Message" }
+          post :create, :ticket => { :type => "idea", :subject => "", :message => "Message" }
           response.should be_success
           response.should render_template("new")
         end
         it "should render new template" do
-          post :create, :ticket => { :type => "bug-report", :subject => "Subject", :message => "" }
+          post :create, :ticket => { :type => "idea", :subject => "Subject", :message => "" }
           response.should be_success
           response.should render_template("new")
         end

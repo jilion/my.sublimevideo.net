@@ -1,16 +1,22 @@
 = title_and_content_header("Support")
 
 %p.title_desc
-  = "Use this form to send us bug reports, suggestions for improvement, feature requests, billing questions or any other comments."
+  -# = "Use this form to send us bug reports, suggestions for improvement, feature requests, billing questions or any other comments."
+  = raw "Please consult #{link_to("our documentation", "http://docs.sublimevideo.net")} first if you have a problem with integrating SublimeVideo or what seems to be a bug."
   %br
   = "Thank you for helping us improve SublimeVideo."
-  
+
 = form_for @ticket, :url => ticket_path do |f|
   .entry.select.type
     = f.label :type, "", :class => "icon"
     = f.select :type, ticket_type_options
     :javascript
-      if (window.location.hash == '#billing') $$('#ticket_type option').find(function(el){return !!(el.value == 'billing-question')}).selected = true;
+      if (window.location.hash) {
+        var ell = $$('#ticket_type option').find(function(el) {
+          return "#" + el.value === window.location.hash;
+        });
+        ell.selected = true;
+      }
   .entry.feedback_subject
     = f.label :subject, "", :class => "icon"
     = f.text_field :subject, :class => "text", :placeholder => "Subject", :required => true
@@ -19,3 +25,5 @@
     = f.text_area :message, :class => "text", :placeholder => "Message", :required => true
   .entry.update
     = f.submit 'Send', :class => "submit small_button"
+
+%p.title_desc= "Our response time is within normal European business hours (09:00 - 18:00 CET, 4am - 1pm EDT)."

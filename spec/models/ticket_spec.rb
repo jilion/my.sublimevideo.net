@@ -14,10 +14,10 @@ describe Ticket do
   let(:user) { Factory(:user) }
 
   describe "Factory" do
-    let(:ticket) { Ticket.new({ :user => user, :type => "bug-report", :subject => "Subject", :message => "Message" }) }
+    let(:ticket) { Ticket.new({ :user => user, :type => "bug", :subject => "Subject", :message => "Message" }) }
     subject { ticket }
 
-    its(:type)    { should == "bug-report" }
+    its(:type)    { should == "bug" }
     its(:subject) { should == "Subject" }
     its(:message) { should == "Message" }
 
@@ -34,19 +34,19 @@ describe Ticket do
     end
 
     it "should validate presence of user" do
-      ticket = Ticket.new({ :user => nil, :type => "bug-report", :subject => nil, :message => "Message" })
+      ticket = Ticket.new({ :user => nil, :type => "integration", :subject => nil, :message => "Message" })
       ticket.should_not be_valid
       ticket.errors[:user].should be_present
     end
 
     it "should validate presence of subject" do
-      ticket = Ticket.new({ :user => user, :type => "bug-report", :subject => nil, :message => "Message" })
+      ticket = Ticket.new({ :user => user, :type => "idea", :subject => nil, :message => "Message" })
       ticket.should_not be_valid
       ticket.errors[:subject].should be_present
     end
 
     it "should validate presence of message" do
-      ticket = Ticket.new({ :user => user, :type => "bug-report", :subject => "Subject", :message => nil })
+      ticket = Ticket.new({ :user => user, :type => "billing", :subject => "Subject", :message => nil })
       ticket.should_not be_valid
       ticket.errors[:message].should be_present
     end
@@ -61,7 +61,7 @@ describe Ticket do
     end
 
     describe "#save" do
-      let(:ticket) { Ticket.new({ :user => @user_with_standard_support.reload, :type => "bug-report", :subject => "I have a request!", :message => "I have a request this is a long text!" }) }
+      let(:ticket) { Ticket.new({ :user => @user_with_standard_support.reload, :type => "other", :subject => "I have a request!", :message => "I have a request this is a long text!" }) }
 
       it "should delay Ticket#post_ticket" do
         ticket.save
@@ -78,7 +78,7 @@ describe Ticket do
 
     describe "#post_ticket" do
       describe "common behavior" do
-        let(:ticket) { Ticket.new({ :user => @user_with_standard_support.reload, :type => "bug-report", :subject => "I have a request!", :message => "I have a request this is a long text!" }) }
+        let(:ticket) { Ticket.new({ :user => @user_with_standard_support.reload, :type => "idea", :subject => "I have a request!", :message => "I have a request this is a long text!" }) }
         use_vcr_cassette "ticket/post_ticket_standard_support"
 
         it "should create the ticket on Zendesk" do
@@ -112,7 +112,7 @@ describe Ticket do
       end
 
       context "user has standard support" do
-        let(:ticket) { Ticket.new({ :user => @user_with_standard_support.reload, :type => "bug-report", :subject => "I have a request!", :message => "I have a request this is a long text!" }) }
+        let(:ticket) { Ticket.new({ :user => @user_with_standard_support.reload, :type => "idea", :subject => "I have a request!", :message => "I have a request this is a long text!" }) }
         use_vcr_cassette "ticket/post_ticket_standard_support"
 
         it "should set the tags for the ticket based on its type" do
@@ -121,7 +121,7 @@ describe Ticket do
       end
 
       context "user has priority support" do
-        let(:ticket) { Ticket.new({ :user => @user_with_priority_support.reload, :type => "bug-report", :subject => "I have a request!", :message => "I have a request this is a long text!" }) }
+        let(:ticket) { Ticket.new({ :user => @user_with_priority_support.reload, :type => "idea", :subject => "I have a request!", :message => "I have a request this is a long text!" }) }
         use_vcr_cassette "ticket/post_ticket_priority_support"
 
         it "should set the tags for the ticket based on its type" do
@@ -131,7 +131,7 @@ describe Ticket do
     end # #post_ticket
 
     describe "#verify_user" do
-      let(:ticket) { Ticket.new({ :user => @user_with_standard_support.reload, :type => "bug-report", :subject => "I have a request!", :message => "I have a request this is a long text!" }) }
+      let(:ticket) { Ticket.new({ :user => @user_with_standard_support.reload, :type => "idea", :subject => "I have a request!", :message => "I have a request this is a long text!" }) }
 
       it "should set the user as verified on zendesk" do
         VCR.use_cassette("ticket/post_ticket_standard_support") { ticket.post_ticket }
