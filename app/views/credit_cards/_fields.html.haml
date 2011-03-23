@@ -5,7 +5,7 @@
     .global_errors
       - f.object.errors[:base].each do |error|
         %p= error
-    
+
   .entry.card
     .radio_wrap
       = f.radio_button :cc_type, "visa", :id => "user_cc_type_visa"
@@ -14,19 +14,19 @@
       = f.radio_button :cc_type, "master", :id => "user_cc_type_master"
       = f.label :cc_type, content_tag(:span, "MasterCard"), :class => "master", :title => "MasterCard", :for => "user_cc_type_master"
     .spacer
-  
+
   .entry.first_name
     = f.label :cc_full_name, nil, :class => "icon", :id => "user_cc_full_name"
     = f.text_field :cc_full_name, :class => "text", :placeholder => "Name on card", :required => true, :autocomplete => :off, :for => "user_cc_full_name"
-  
+
   .entry.card_number
     = f.label :cc_number, nil, :class => "icon", :id => "user_cc_number"
     = f.text_field :cc_number, :class => "text", :placeholder => "Card number", :required => true, :size => 16+3, :autocomplete => :off, :for => "user_cc_number"
-  
+
   .entry.select.float
     = f.label :cc_expire_on, :id => "user_cc_expire_on"
     = f.date_select :cc_expire_on, :discard_day => true, :use_month_names => %w[01 02 03 04 05 06 07 08 09 10 11 12], :start_year => Time.now.year, :end_year => Time.now.year + 20, :order => [:month, :year], :required => true, :for => "user_cc_expire_on"
-  
+
   .entry.small_field
     = f.label :cc_verification_value, "Security Code", :id => "user_cc_verification_value"
     = f.text_field :cc_verification_value, :class => "text", :placeholder => "CSC", :required => true, :autocomplete => :off, :for => "user_cc_verification_value"

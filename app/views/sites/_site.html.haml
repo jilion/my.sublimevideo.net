@@ -20,8 +20,8 @@
           = "add a hostname"
       .plan
         = link_to [:edit, site, :plan] do
-          = site.plan.title
-          - if site.next_cycle_plan_id?
+          = (site.plan || site.pending_plan).title
+          - if site.next_cycle_plan_id? # TODO handle the case when there is a pending_plan and a next_cycle_plan at the same time !!!
             %span.disabled= " => #{site.next_cycle_plan.title}"
       .cycle
         - if site.in_paid_plan?

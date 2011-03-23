@@ -1,15 +1,16 @@
-- case site.plan_name
-- when 'dev', 'beta'
-  = link_to "Choose a plan", edit_site_plan_path(site), :class => "medium_button"
-- when 'sponsored'
-  .usage
-    %p= pluralize(number_with_delimiter(site.current_billable_usage.to_i), "Sponsored hit").html_safe
-- else
-  .progress_bar.box_hovering_zone
-    .usage_bar{ :style => "width:#{display_percentage(site.current_percentage_of_plan_used)}"}
-    .plan_total= number_with_delimiter(site.plan.player_hits)
+- if plan = site.plan
+  - case plan.name
+  - when 'dev', 'beta'
+    = link_to "Choose a plan", edit_site_plan_path(site), :class => "medium_button"
+  - when 'sponsored'
+    .usage
+      %p= pluralize(number_with_delimiter(site.current_billable_usage.to_i), "Sponsored hit").html_safe
+  - else
+    .progress_bar.box_hovering_zone
+      .usage_bar{ :style => "width:#{display_percentage(site.current_percentage_of_plan_used)}"}
+      .plan_total= number_with_delimiter(plan.player_hits)
 
-    = info_box do
-      %p= pluralize(number_with_delimiter(site.current_billable_usage.to_i), "<br /> Hit").html_safe
-  %span.peaks_insurance_label= "Peaks Insurance ON"
-  = link_to "Upgrade", edit_site_plan_path(site), :class => "upgrade_button submit_dynamic_button"
+      = info_box do
+        %p= pluralize(number_with_delimiter(site.current_billable_usage.to_i), "<br /> Hit").html_safe
+    %span.peaks_insurance_label= "Peaks Insurance ON"
+    = link_to "Upgrade", edit_site_plan_path(site), :class => "upgrade_button submit_dynamic_button"
