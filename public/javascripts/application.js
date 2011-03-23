@@ -263,12 +263,12 @@ var FormManager = Class.create({
     });
 
     form.select("input[type=submit]").each(function(submitButton) {
-      submitButton.on("click", function() { //when HTML5 form validitation doesn't pass, the submit event is not fired
+      submitButton.on("click", function(event) { //when HTML5 form validitation doesn't pass, the submit event is not fired
         // HTML5 Input validity
         form.select("input").each(function(input) {
           if (input.validity) {
             if (input.validity.valid) input.removeClassName("errors");
-            else input.addClassName("errors");
+            else {input.addClassName("errors");event.stop();}
           }
         });
       });
