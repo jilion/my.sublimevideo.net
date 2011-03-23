@@ -1526,7 +1526,7 @@ input.link_looks.delete {
   display:block;
   float:left;
   width:210px;
-  height:284px;
+  height:384px;
   margin-right:6px;
   position:relative;
 }
@@ -1534,7 +1534,7 @@ input.link_looks.delete {
 #plans li .wrapper {
   background:url(/images/embed/sites/plans_box_background.png) no-repeat;
   width:210px;
-  height:284px;
+  height:384px;
   position:relative;
   z-index:3;
 }
@@ -1553,7 +1553,7 @@ input.link_looks.delete {
 
 #plans .header {
   padding:31px 25px 0;
-  height:146px;
+  height:246px;
 }
 
 #plans h3.title {
@@ -1582,6 +1582,32 @@ input.link_looks.delete {
   font-weight:normal;
   display:block;
   text-align:center;
+}
+
+#plans li ul.features {
+  list-style-type:none;
+  float:none;
+  margin:26px 0 0;
+  border-top:1px solid #d2d8e0;
+}
+
+#plans li ul.features li {
+  float:none;
+  height:auto;
+  width:auto;
+  margin:0;
+  border-top:1px solid #fff;
+  border-bottom:1px solid #d2d8e0;
+  text-align:center;
+  font-size:17px;
+  padding:11px 0;
+  color:#545e75;
+}
+
+#plans li ul.features li.last {border-bottom:none}
+
+#plans li ul.features li strong {
+  font-weight:600;
 }
 
 #plans .select_box {
