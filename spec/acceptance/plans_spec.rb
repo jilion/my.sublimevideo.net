@@ -81,9 +81,9 @@ feature "Plans" do
       #page.should have_content("Your current plan, #{site.plan.title}, will be automatically renewed on #{I18n.l site.plan_cycle_ended_at.tomorrow.midnight, :format => :named_date}")
     end
 
-    # TODO Thibaud
     scenario "sponsored plan" do
-      site = Factory(:site, user: @current_user, plan_id: @sponsored_plan.id)
+      site = Factory(:site, user: @current_user)
+      site.sponsor!
       Factory(:site_usage, site_id: site.id, day: Time.now.utc, main_player_hits: 1000)
 
       visit sites_path
