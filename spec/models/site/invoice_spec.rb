@@ -117,7 +117,7 @@ describe Site::Invoice do
 
         it { should be_in_or_will_be_in_paid_plan }
       end
-    end # #in_or_was_in_paid_plan?
+    end # #in_or_will_be_in_paid_plan?
 
     describe "#pend_plan_changes" do
       before(:all) do

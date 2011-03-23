@@ -121,7 +121,7 @@ class Site < ActiveRecord::Base
   validates :dev_hostnames,   :dev_hostnames => true
 
   validate  :at_least_one_domain_set, :if => :in_dev_plan?
-  validate  :verify_presence_of_credit_card, :if => :in_or_was_in_paid_plan?
+  validate  :verify_presence_of_credit_card, :if => :in_or_will_be_in_paid_plan?
   validate  :validates_current_password
 
   # =============
@@ -322,7 +322,7 @@ private
     end
   end
 
-  # validate if in_or_was_in_paid_plan?
+  # validate if in_or_will_be_in_paid_plan?
   def verify_presence_of_credit_card
     if user && !user.credit_card? && !user.credit_card_attributes_present?
       self.errors.add(:base, :credit_card_needed)
