@@ -281,7 +281,7 @@ class Site < ActiveRecord::Base
   end
 
   def plan_month_cycle_started_at
-    case plan.cycle
+    case plan.read_attribute(:cycle) # strange error in specs when using .cycle
     when 'month'
       plan_cycle_started_at
     when 'year'
@@ -292,7 +292,7 @@ class Site < ActiveRecord::Base
   end
 
   def plan_month_cycle_ended_at
-    case plan.cycle
+    case plan.read_attribute(:cycle) # strange error in specs when using .cycle
     when 'month'
       plan_cycle_ended_at
     when 'year'
