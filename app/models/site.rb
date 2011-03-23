@@ -207,19 +207,21 @@ class Site < ActiveRecord::Base
 
   def plan_id=(attribute)
     new_plan = Plan.find_by_id(attribute)
-    if plan_id?
-      case plan.upgrade?(new_plan)
-      when true  # Upgrade
+    if new_plan.present? && !new_plan.sponsored_plan?
+      if plan_id?
+        case plan.upgrade?(new_plan)
+        when true  # Upgrade
+          write_attribute(:pending_plan_id, attribute)
+          write_attribute(:next_cycle_plan_id, nil)
+        when false # Downgrade
+          write_attribute(:next_cycle_plan_id, attribute)
+        when nil # Same plan, reset next_cycle_plan
+          write_attribute(:next_cycle_plan_id, nil)
+        end
+      else
+        # Creation
         write_attribute(:pending_plan_id, attribute)
-        write_attribute(:next_cycle_plan_id, nil)
-      when false # Downgrade
-        write_attribute(:next_cycle_plan_id, attribute)
-      when nil # Same plan, reset next_cycle_plan
-        write_attribute(:next_cycle_plan_id, nil)
       end
-    else
-      # Creation
-      write_attribute(:pending_plan_id, attribute)
     end
   end
 
@@ -279,24 +281,24 @@ class Site < ActiveRecord::Base
   end
 
   def plan_month_cycle_started_at
-    case plan.cycle
-    when 'none'
-      Time.now.utc.beginning_of_month
+    case plan.read_attribute(:cycle) # strange error in specs when using .cycle
     when 'month'
       plan_cycle_started_at
     when 'year'
       plan_cycle_started_at + months_since(plan_cycle_started_at).months
+    when 'none'
+      plan_started_at + months_since(plan_started_at).months
     end
   end
 
   def plan_month_cycle_ended_at
-    case plan.cycle
-    when 'none'
-      Time.now.utc.end_of_month
+    case plan.read_attribute(:cycle) # strange error in specs when using .cycle
     when 'month'
       plan_cycle_ended_at
     when 'year'
       (plan_cycle_started_at + (months_since(plan_cycle_started_at) + 1).months - 1.day).end_of_day
+    when 'none'
+      (plan_started_at + (months_since(plan_started_at) + 1).months - 1.day).end_of_day
     end
   end
 
