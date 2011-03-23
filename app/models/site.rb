@@ -207,19 +207,21 @@ class Site < ActiveRecord::Base
 
   def plan_id=(attribute)
     new_plan = Plan.find_by_id(attribute)
-    if plan_id?
-      case plan.upgrade?(new_plan)
-      when true  # Upgrade
+    if new_plan.present? && !new_plan.sponsored_plan?
+      if plan_id?
+        case plan.upgrade?(new_plan)
+        when true  # Upgrade
+          write_attribute(:pending_plan_id, attribute)
+          write_attribute(:next_cycle_plan_id, nil)
+        when false # Downgrade
+          write_attribute(:next_cycle_plan_id, attribute)
+        when nil # Same plan, reset next_cycle_plan
+          write_attribute(:next_cycle_plan_id, nil)
+        end
+      else
+        # Creation
         write_attribute(:pending_plan_id, attribute)
-        write_attribute(:next_cycle_plan_id, nil)
-      when false # Downgrade
-        write_attribute(:next_cycle_plan_id, attribute)
-      when nil # Same plan, reset next_cycle_plan
-        write_attribute(:next_cycle_plan_id, nil)
       end
-    else
-      # Creation
-      write_attribute(:pending_plan_id, attribute)
     end
   end
 

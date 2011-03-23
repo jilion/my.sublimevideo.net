@@ -91,11 +91,11 @@ describe Site do
       end
 
       describe "#dev" do
-        specify { Site.dev.order("sites.id").all.should == [@site_not_billable_1, @site_with_path] }
+        specify { Site.dev.order("sites.id").all.should =~ [@site_not_billable_1, @site_with_path] }
       end
 
       describe "#billable" do
-        specify { Site.billable.all.should == [@site_billable_1, @site_billable_2, @site_with_extra_hostnames] }
+        specify { Site.billable.all.should =~ [@site_billable_1, @site_billable_2, @site_with_extra_hostnames] }
       end
 
       describe "#not_billable" do
@@ -401,6 +401,18 @@ describe Site do
         its(:next_cycle_plan_id) { should be_nil }
       end
 
+      describe "when upgrade from dev plan to sponsored" do
+        before(:all) do
+          @site = Factory.build(:new_site, plan: @dev_plan)
+          @site.plan_id = @sponsored_plan.id
+        end
+        subject { @site }
+
+        its(:plan_id)            { should == @dev_plan.id }
+        its(:pending_plan_id)    { should be_nil }
+        its(:next_cycle_plan_id) { should be_nil }
+      end
+
       describe "when upgrade from dev plan to yearly plan" do
         before(:all) do
           @site = Factory.build(:new_site, plan: @dev_plan)
@@ -458,6 +470,18 @@ describe Site do
 
         its(:plan_id)            { should == @paid_plan.id }
         its(:pending_plan_id)    { should == @paid_plan_yearly.id }
+        its(:next_cycle_plan_id) { should be_nil }
+      end
+
+      describe "when upgrade from paid plan to sponsored" do
+        before(:all) do
+          @site = Factory.build(:new_site, plan: @paid_plan)
+          @site.plan_id = @sponsored_plan.id
+        end
+        subject { @site }
+
+        its(:plan_id)            { should == @paid_plan.id }
+        its(:pending_plan_id)    { should be_nil }
         its(:next_cycle_plan_id) { should be_nil }
       end
 
