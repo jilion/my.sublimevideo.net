@@ -346,11 +346,11 @@ def create_plans
     { name: "beta",       cycle: "none",  player_hits: 0,          price: 0 },
     { name: "comet",      cycle: "month", player_hits: 3_000,      price: 990 },
     { name: "planet",     cycle: "month", player_hits: 50_000,     price: 2490 },
-    { name: "star",       cycle: "month", player_hits: 200_000,    price: 4490 },
+    { name: "star",       cycle: "month", player_hits: 200_000,    price: 4990 },
     { name: "galaxy",     cycle: "month", player_hits: 1_000_000,  price: 9990 },
     { name: "comet",      cycle: "year",  player_hits: 3_000,      price: 9900 },
     { name: "planet",     cycle: "year",  player_hits: 50_000,     price: 24900 },
-    { name: "star",       cycle: "year",  player_hits: 200_000,    price: 44900 },
+    { name: "star",       cycle: "year",  player_hits: 200_000,    price: 49900 },
     { name: "galaxy",     cycle: "year",  player_hits: 1_000_000,  price: 99900 },
     { name: "custom1",    cycle: "year",  player_hits: 10_000_000, price: 999900 }
   ]
