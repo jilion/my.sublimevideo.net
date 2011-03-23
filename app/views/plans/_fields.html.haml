@@ -24,12 +24,16 @@
             .radio_wrap
               = f.radio_button :plan_id, plan.id, radio_button_options(site, plan, current_plan, :checked => current_plan && plan == current_plan)
               %span.bg
+            - if current_plan && plan == current_plan
+              %span.current_label= "Current"
           - if yearly_plan = standard_plans.find { |p| p.name == plan.name && p.yearly? }
             .yearly.select_box{ :class => current_plan && yearly_plan == current_plan ? 'active' : '' }
               = f.label :plan_id, raw(plan_label_content(yearly_plan, :year => true)), :for => "plan_#{yearly_plan.name}_#{yearly_plan.cycle}"
               .radio_wrap
                 = f.radio_button :plan_id, yearly_plan.id, radio_button_options(site, yearly_plan, current_plan, :checked => current_plan && yearly_plan == current_plan)
                 %span.bg
+              - if current_plan && yearly_plan == current_plan
+                %span.current_label= "Current"
         %span.save_label= "2 months free"
 
   .spacer
@@ -37,7 +41,7 @@
   #dev_plan{ :class => current_plan && dev_plan == current_plan ? 'active' : '' }
     .radio_wrap
       -#= f.label :plan_id, raw("We also offer an #{content_tag(:strong, 'unlimited free sandbox plan')} that allows you to test SublimeVideo in your local development domain for free."), :for => "plan_#{dev_plan.name}", :class => "title"
-      = f.label :plan_id, raw("#{content_tag(:strong, 'Free Sandbox plan')}: Unlimited usage on your local development domain."), :for => "plan_#{dev_plan.name}", :class => "title"
+      = f.label :plan_id, raw("#{content_tag(:strong, 'Free Sandbox plan')}: Unlimited usage on your local development domain. #{current_plan && dev_plan == current_plan ? content_tag(:span, 'Current', :class => 'current_label') : ''}"), :for => "plan_#{dev_plan.name}", :class => "title"
       = f.radio_button :plan_id, dev_plan.id, radio_button_options(site, dev_plan, current_plan)
       %span.bg
 

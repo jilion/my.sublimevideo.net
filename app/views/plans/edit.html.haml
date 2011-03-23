@@ -24,7 +24,7 @@
         = render 'fields', :f => f
 
         #plan_upgrade_info.update_plan_message_box{ style: "display:none;" }
-          %p=raw "You will be immediately upgraded to the #{content_tag(:strong, "?", class: "plan_title")} plan. We will only charge you the difference of #{content_tag(:strong, "?", class: "plan_update_price")} for the upgrade, instead of the full price of #{content_tag(:strong, "?", class: "plan_price")}."
+          %p=raw "You will be immediately upgraded to the #{content_tag(:strong, "?", class: "plan_title")} plan. We will only charge you the difference of #{content_tag(:strong, "?", class: "plan_update_price")} for the upgrade, instead of the full price of #{content_tag(:span, "?", class: "plan_price")}."
         #plan_upgrade_from_dev_info.update_plan_message_box{ style: "display:none;" }
           %p=raw "You will be immediately upgraded to the #{content_tag(:strong, "?", class: "plan_title")} plan. We will charge you #{content_tag(:strong, "?", class: "plan_update_price")}."
         #plan_delayed_downgrade_info.update_plan_message_box{ style: "display:none;" }
