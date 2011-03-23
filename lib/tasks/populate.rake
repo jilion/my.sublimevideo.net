@@ -166,7 +166,7 @@ end
 def create_users(index=nil)
   created_at_array = (Date.new(2010,9,14)..100.days.ago.to_date).to_a
   disable_perform_deliveries do
-    (index ? index.upto(index) : 0.upto(BASE_USERS.count)).each do |i|
+    (index ? index.upto(index) : 0.upto(BASE_USERS.count - 1)).each do |i|
       user = User.new(
         first_name: BASE_USERS[i][0].split(' ').first,
         last_name: BASE_USERS[i][0].split(' ').second,
