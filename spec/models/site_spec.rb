@@ -852,23 +852,79 @@ describe Site do
     end
 
     describe "#sponsor!" do
-      it "should change plan to sponsored plan" do
-        site = Factory(:site)
-        site.next_cycle_plan_id = @dev_plan.id
+      context "sponsor a dev plan without next plan" do
+        before(:all) { Timecop.travel(1.day.ago) { @site = Factory(:site, plan_id: @dev_plan.id) } }
+        subject { @site.reload }
+        
+        it "should change plan to sponsored plan" do
+          subject.next_cycle_plan_id.should be_nil
+          subject.pending_plan_id.should be_nil
+          subject.plan_started_at.should be_present
+          initial_plan_started_at = subject.plan_started_at
+          subject.plan_cycle_started_at.should be_nil
+          subject.plan_cycle_ended_at.should be_nil
 
-        site.next_cycle_plan_id.should be_present
-        site.pending_plan_id.should be_nil
-        site.plan_cycle_started_at.should be_present
-        site.plan_cycle_ended_at.should be_present
+          subject.sponsor!
+          subject.reload
 
-        site.sponsor!
-        site.reload
+          subject.should be_in_sponsored_plan
+          subject.next_cycle_plan_id.should be_nil
+          subject.pending_plan_id.should be_nil
+          subject.plan_started_at.should be_present
+          subject.plan_started_at.should_not == initial_plan_started_at
+          subject.plan_cycle_started_at.should be_nil
+          subject.plan_cycle_ended_at.should be_nil
+        end
+      end
+      
+      context "sponsor a paid plan without next plan" do
+        before(:all) { Timecop.travel(1.day.ago) { @site = Factory(:site) } }
+        subject { @site.reload }
+        
+        it "should change plan to sponsored plan" do
+          subject.next_cycle_plan_id.should be_nil
+          subject.pending_plan_id.should be_nil
+          subject.plan_started_at.should be_present
+          initial_plan_started_at = subject.plan_started_at
+          subject.plan_cycle_started_at.should be_present
+          subject.plan_cycle_ended_at.should be_present
 
-        site.should be_in_sponsored_plan
-        site.pending_plan_id.should be_nil
-        site.next_cycle_plan_id.should be_nil
-        site.plan_cycle_started_at.should be_nil
-        site.plan_cycle_ended_at.should be_nil
+          subject.sponsor!
+          subject.reload
+
+          subject.should be_in_sponsored_plan
+          subject.next_cycle_plan_id.should be_nil
+          subject.pending_plan_id.should be_nil
+          subject.plan_started_at.should be_present
+          subject.plan_started_at.should == initial_plan_started_at # same as an upgrade
+          subject.plan_cycle_started_at.should be_nil
+          subject.plan_cycle_ended_at.should be_nil
+        end
+      end
+      
+      context "sponsor a paid plan with a next plan" do
+        before(:all) { Timecop.travel(1.day.ago) { @site = Factory(:site) } }
+        subject { @site.reload; @site.next_cycle_plan_id = @dev_plan.id; @site }
+        
+        it "should change plan to sponsored plan" do
+          subject.next_cycle_plan_id.should be_present
+          subject.pending_plan_id.should be_nil
+          subject.plan_started_at.should be_present
+          initial_plan_started_at = subject.plan_started_at
+          subject.plan_cycle_started_at.should be_present
+          subject.plan_cycle_ended_at.should be_present
+
+          subject.sponsor!
+          subject.reload
+
+          subject.should be_in_sponsored_plan
+          subject.next_cycle_plan_id.should be_nil
+          subject.pending_plan_id.should be_nil
+          subject.plan_started_at.should be_present
+          subject.plan_started_at.should == initial_plan_started_at # same as an upgrade
+          subject.plan_cycle_started_at.should be_nil
+          subject.plan_cycle_ended_at.should be_nil
+        end
       end
     end
 
