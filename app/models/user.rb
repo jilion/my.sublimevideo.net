@@ -152,6 +152,10 @@ class User < ActiveRecord::Base
     # setted in #set_password
   end
 
+  def email=(email)
+    write_attribute(:email, email.try(:downcase))
+  end
+
   # Devise overriding
   # allow suspended user to login (devise)
   def active?
@@ -169,9 +173,9 @@ class User < ActiveRecord::Base
   def full_name
     first_name.to_s + ' ' + last_name.to_s
   end
-
-  def email=(email)
-    write_attribute(:email, email.try(:downcase))
+  
+  def support
+    sites.active.map { |s| s.plan.support }.include?("priority") ? "priority" : "standard"
   end
 
 private

@@ -194,17 +194,42 @@ describe Plan do
       it { @paid_plan_yearly2.upgrade?(@paid_plan_yearly).should be_false }
       it { @paid_plan_yearly2.upgrade?(@paid_plan_yearly2).should be_nil }
     end
-  end
 
-  describe "#title" do
-    specify { @dev_plan.title.should == "Free Sandbox" }
-    specify { @dev_plan.title(always_with_cycle: true).should == "Free Sandbox" }
-    specify { @sponsored_plan.title.should == "Sponsored" }
-    specify { @sponsored_plan.title(always_with_cycle: true).should == "Sponsored" }
-    specify { Factory.build(:plan, cycle: "month", name: "comet").title.should == "Comet" }
-    specify { Factory.build(:plan, cycle: "year", name: "comet").title.should == "Comet (yearly)" }
-    specify { Factory.build(:plan, cycle: "month", name: "comet").title(always_with_cycle: true).should == "Comet (monthly)" }
-    specify { Factory.build(:plan, cycle: "year", name: "comet").title(always_with_cycle: true).should == "Comet (yearly)" }
+    describe "#title" do
+      specify { @dev_plan.title.should == "Free Sandbox" }
+      specify { @dev_plan.title(always_with_cycle: true).should == "Free Sandbox" }
+      specify { @sponsored_plan.title.should == "Sponsored" }
+      specify { @sponsored_plan.title(always_with_cycle: true).should == "Sponsored" }
+      specify { Factory.build(:plan, cycle: "month", name: "comet").title.should == "Comet" }
+      specify { Factory.build(:plan, cycle: "year", name: "comet").title.should == "Comet (yearly)" }
+      specify { Factory.build(:plan, cycle: "month", name: "comet").title(always_with_cycle: true).should == "Comet (monthly)" }
+      specify { Factory.build(:plan, cycle: "year", name: "comet").title(always_with_cycle: true).should == "Comet (yearly)" }
+    end
+
+    describe "#daily_player_hits" do
+      before(:all) do
+        @plan1 = Factory.build(:plan, cycle: "month", player_hits: 1000)
+        @plan2 = Factory.build(:plan, cycle: "year", player_hits: 2000)
+        @plan3 = Factory.build(:plan, cycle: "none", player_hits: 3000)
+      end
+
+      it { @plan1.daily_player_hits.should == 33 }
+      it { @plan2.daily_player_hits.should == 66 }
+      it { @plan3.daily_player_hits.should == 100 }
+    end
+
+    describe "#support" do
+      it { Factory.build(:plan, :name => "beta").support.should == "standard" }
+      it { Factory.build(:plan, :name => "dev").support.should == "standard" }
+      it { Factory.build(:plan, :name => "sponsored").support.should == "priority" }
+      it { Factory.build(:plan, :name => "comet").support.should == "standard" }
+      it { Factory.build(:plan, :name => "planet").support.should == "standard" }
+      it { Factory.build(:plan, :name => "star").support.should == "priority" }
+      it { Factory.build(:plan, :name => "galaxy").support.should == "priority" }
+      it { Factory.build(:plan, :name => "custom").support.should == "priority" }
+      it { Factory.build(:plan, :name => "custom1").support.should == "priority" }
+    end
+
   end
 
 end

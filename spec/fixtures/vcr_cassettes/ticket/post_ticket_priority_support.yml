@@ -1,0 +1,108 @@
+--- 
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :post
+    uri: http://zeno%40jilion.com:wrank8@jilion.zendesk.com:80/tickets.xml
+    body: <ticket><subject>I have a request!</subject><description>I have a request this is a long text!</description><set-tags>bug-report priority-support</set-tags><requester-name>John Doe</requester-name><requester-email>email8@user.com</requester-email></ticket>
+    headers: 
+      content-type: 
+      - application/xml
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 201
+      message: Created
+    headers: 
+      server: 
+      - nginx/0.8.53
+      date: 
+      - Wed, 23 Mar 2011 16:48:13 GMT
+      content-type: 
+      - application/xml; charset=utf-8
+      connection: 
+      - keep-alive
+      status: 
+      - 201 Created
+      p3p: 
+      - CP="NOI DSP COR NID ADMa OPTa OUR NOR"
+      location: 
+      - http://jilion.zendesk.com/tickets/815.xml
+      x-runtime: 
+      - "663"
+      content-length: 
+      - "1"
+      set-cookie: 
+      - _zendesk_session=BAh7DCIcd2FyZGVuLnVzZXIuZGVmYXVsdC5rZXlpA%2BuV6ToMYWNjb3VudGkCN6k6DWF1dGhfdmlhIhJCYXNpY1N0cmF0ZWd5Og91cGRhdGVkX2F0bCsHTCSKTToPc2Vzc2lvbl9pZCIlZmU2MzkwYzViNDY3ZDVmNjE1MTliODY4MWJmMjAyYTIiE3dhcmRlbi5tZXNzYWdlewA6B2lkIhVnc2psaW16dHItcHk4bzhh--ee0552dc99852fc5f039e7546900a943f1927b47; path=/; HttpOnly
+      cache-control: 
+      - no-cache
+    body: " "
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: http://zeno%40jilion.com:wrank8@jilion.zendesk.com:80/tickets/815.json
+    body: 
+    headers: 
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      server: 
+      - nginx/0.8.53
+      date: 
+      - Wed, 23 Mar 2011 16:48:13 GMT
+      content-type: 
+      - application/json; charset=utf-8
+      connection: 
+      - keep-alive
+      status: 
+      - 200 OK
+      etag: 
+      - "\"bb570ee66e0b65897a68fb2b9a0247fb\""
+      p3p: 
+      - CP="NOI DSP COR NID ADMa OPTa OUR NOR"
+      x-runtime: 
+      - "159"
+      content-length: 
+      - "1045"
+      set-cookie: 
+      - _zendesk_session=BAh7DCIcd2FyZGVuLnVzZXIuZGVmYXVsdC5rZXlpA%2BuV6ToMYWNjb3VudGkCN6k6DWF1dGhfdmlhIhJCYXNpY1N0cmF0ZWd5Og91cGRhdGVkX2F0bCsHTSSKTToPc2Vzc2lvbl9pZCIlZjg4YTdiYjZmOTlhY2M5YmEyYzk1YzZmZGE4MDM4OWYiE3dhcmRlbi5tZXNzYWdlewA6B2lkIhRoZmJsaW5qZ2IzZGp1dTg%3D--4f52399ba3b04f8cfc58ed06ed9151d77c646c6a; path=/; HttpOnly
+      cache-control: 
+      - private, max-age=0, must-revalidate
+    body: "{\"ticket_field_entries\":[],\"nice_id\":815,\"initially_assigned_at\":\"2011/03/23 17:48:12 +0100\",\"entry_id\":null,\"created_at\":\"2011/03/23 17:48:12 +0100\",\"resolution_time\":null,\"priority_id\":0,\"current_tags\":\"bug-report priority-support\",\"assignee_id\":15308267,\"linkings\":[],\"updated_at\":\"2011/03/23 17:48:12 +0100\",\"ticket_type_id\":0,\"status_updated_at\":\"2011/03/23 17:48:12 +0100\",\"solved_at\":null,\"original_recipient_address\":null,\"external_id\":null,\"assigned_at\":\"2011/03/23 17:48:12 +0100\",\"channel\":null,\"via_id\":5,\"subject\":\"I have a request!\",\"recipient\":null,\"group_id\":88332,\"score\":36,\"submitter_id\":15308267,\"base_score\":36,\"comments\":[{\"attachments\":[],\"created_at\":\"2011/03/23 17:48:12 +0100\",\"via_id\":5,\"value\":\"I have a request this is a long text!\",\"type\":\"Comment\",\"is_public\":true,\"author_id\":30873742}],\"latest_recipients\":null,\"due_date\":null,\"current_collaborators\":null,\"status_id\":1,\"description\":\"I have a request this is a long text!\",\"problem_id\":null,\"organization_id\":null,\"updated_by_type_id\":0,\"requester_id\":30873742}"
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: http://zeno%40jilion.com:wrank8@jilion.zendesk.com:80/tickets/815.json
+    body: 
+    headers: 
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      server: 
+      - nginx/0.8.53
+      date: 
+      - Wed, 23 Mar 2011 16:48:14 GMT
+      content-type: 
+      - application/json; charset=utf-8
+      connection: 
+      - keep-alive
+      status: 
+      - 200 OK
+      etag: 
+      - "\"0487ba549ad6df76b65c0d220f7e93ce\""
+      p3p: 
+      - CP="NOI DSP COR NID ADMa OPTa OUR NOR"
+      x-runtime: 
+      - "140"
+      content-length: 
+      - "1045"
+      set-cookie: 
+      - _zendesk_session=BAh7DCIcd2FyZGVuLnVzZXIuZGVmYXVsdC5rZXlpA%2BuV6ToMYWNjb3VudGkCN6k6DWF1dGhfdmlhIhJCYXNpY1N0cmF0ZWd5Og91cGRhdGVkX2F0bCsHTiSKTToPc2Vzc2lvbl9pZCIlYjZiOWRiZDliMzIwZTk4MWEyY2M3MjBiNWZmYjg3ZTgiE3dhcmRlbi5tZXNzYWdlewA6B2lkIhRubGVsaWtsZTVqaDN2MzI%3D--d5c2da702e2e1eade6956cdc73cac57a149e3c8f; path=/; HttpOnly
+      cache-control: 
+      - private, max-age=0, must-revalidate
+    body: "{\"nice_id\":815,\"initially_assigned_at\":\"2011/03/23 17:48:12 +0100\",\"ticket_field_entries\":[],\"entry_id\":null,\"created_at\":\"2011/03/23 17:48:12 +0100\",\"resolution_time\":null,\"priority_id\":0,\"current_tags\":\"bug-report priority-support\",\"assignee_id\":15308267,\"updated_at\":\"2011/03/23 17:48:12 +0100\",\"linkings\":[],\"ticket_type_id\":0,\"status_updated_at\":\"2011/03/23 17:48:12 +0100\",\"solved_at\":null,\"original_recipient_address\":null,\"external_id\":null,\"assigned_at\":\"2011/03/23 17:48:12 +0100\",\"via_id\":5,\"subject\":\"I have a request!\",\"recipient\":null,\"group_id\":88332,\"channel\":null,\"score\":36,\"submitter_id\":15308267,\"base_score\":36,\"comments\":[{\"attachments\":[],\"created_at\":\"2011/03/23 17:48:12 +0100\",\"via_id\":5,\"value\":\"I have a request this is a long text!\",\"type\":\"Comment\",\"is_public\":true,\"author_id\":30873742}],\"latest_recipients\":null,\"due_date\":null,\"current_collaborators\":null,\"status_id\":1,\"description\":\"I have a request this is a long text!\",\"organization_id\":null,\"problem_id\":null,\"updated_by_type_id\":0,\"requester_id\":30873742}"
+    http_version: "1.1"

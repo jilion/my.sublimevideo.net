@@ -30,7 +30,7 @@ class Ticket
       :ticket => {
         :subject     => @subject,
         :description => @message,
-        :set_tags    => @type
+        :set_tags    => "#{@type} #{@user.support}-support"
       }.merge(user_params)
     })
     ticket_id = response['location'].match(%r(#{Zendesk.base_url}/tickets/(\d+)\.xml))[1].to_i

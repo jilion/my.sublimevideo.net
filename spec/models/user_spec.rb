@@ -516,13 +516,49 @@ describe User do
       end
     end
 
-    pending "#get_discount?" do
-    end
+    pending "#get_discount?"
 
     describe "#have_beta_sites?" do
       before(:all) { @site = Factory(:site, plan_id: @beta_plan.id) }
 
       specify { @site.user.have_beta_sites?.should be_true }
+    end
+
+    describe "#support" do
+      context "user has no site" do
+        before(:all) do
+          @user = Factory(:user)
+        end
+        subject { @user.reload }
+
+        it { subject.support.should == "standard" }
+      end
+
+      context "user has only sites with standard support" do
+        before(:all) do
+          @user = Factory(:user)
+          Factory(:site, user: @user, plan_id: @dev_plan.id)
+          Factory(:site, user: @user, plan_id: @beta_plan.id)
+        end
+        subject { @user.reload }
+
+        it { @dev_plan.support.should == "standard" }
+        it { @beta_plan.support.should == "standard" }
+        it { subject.support.should == "standard" }
+      end
+
+      context "user has at least one site with priority support" do
+        before(:all) do
+          @user = Factory(:user)
+          Factory(:site, user: @user, plan_id: @dev_plan.id)
+          Factory(:site, user: @user, plan_id: @custom_plan.id)
+        end
+        subject { @user.reload }
+
+        it { @dev_plan.support.should == "standard" }
+        it { @custom_plan.support.should == "priority" }
+        it { subject.support.should == "priority" }
+      end
     end
 
   end
@@ -547,11 +583,6 @@ describe User do
   end
 
 end
-
-
-
-
-
 
 
 

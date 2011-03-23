@@ -83,3 +83,143 @@
       - 200 OK
     body: "{\"name\":\"Joe Blow\",\"locale_id\":null,\"openid_url\":null,\"created_at\":\"2010/08/30 17:57:24 +0200\",\"last_login\":null,\"details\":null,\"updated_at\":\"2010/08/30 18:11:59 +0200\",\"notes\":null,\"external_id\":null,\"restriction_id\":4,\"id\":16282300,\"is_verified\":true,\"phone\":null,\"is_active\":true,\"groups\":[],\"time_zone\":\"Amsterdam\",\"roles\":0,\"organization_id\":null,\"email\":\"email11@user.com\",\"uses_12_hour_clock\":false}"
     http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :put
+    uri: http://zeno%40jilion.com:wrank8@jilion.zendesk.com:80/users/30867775.xml
+    body: <user><password>d41d8cd98f00b204e9800998ecf8427e</password><is-verified>true</is-verified></user>
+    headers: 
+      content-type: 
+      - application/xml
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      server: 
+      - nginx/0.8.53
+      date: 
+      - Wed, 23 Mar 2011 15:52:35 GMT
+      content-type: 
+      - application/xml; charset=utf-8
+      connection: 
+      - keep-alive
+      status: 
+      - 200 OK
+      p3p: 
+      - CP="NOI DSP COR NID ADMa OPTa OUR NOR"
+      x-runtime: 
+      - "191"
+      content-length: 
+      - "1"
+      set-cookie: 
+      - _zendesk_session=BAh7DCIcd2FyZGVuLnVzZXIuZGVmYXVsdC5rZXlpA%2BuV6ToMYWNjb3VudGkCN6k6DWF1dGhfdmlhIhJCYXNpY1N0cmF0ZWd5Og91cGRhdGVkX2F0bCsHQxeKTToPc2Vzc2lvbl9pZCIlNzQ4NTlmMzk5MjhiNzQyZjYzMTQ5OTI4NTg1NDVmYWIiE3dhcmRlbi5tZXNzYWdlewA6B2lkIhQxNjhsaTZhb2oteTE4ZWU%3D--9bf6634cb79fa63331319f9590b3a3c6758172dd; path=/; HttpOnly
+      cache-control: 
+      - no-cache
+    body: " "
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: http://zeno%40jilion.com:wrank8@jilion.zendesk.com:80/users/30867775.json
+    body: 
+    headers: 
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      server: 
+      - nginx/0.8.53
+      date: 
+      - Wed, 23 Mar 2011 15:52:36 GMT
+      content-type: 
+      - application/json; charset=utf-8
+      connection: 
+      - keep-alive
+      status: 
+      - 200 OK
+      etag: 
+      - "\"fd573800e7e65cb12f78785daaa5f752\""
+      p3p: 
+      - CP="NOI DSP COR NID ADMa OPTa OUR NOR"
+      x-runtime: 
+      - "70"
+      content-length: 
+      - "465"
+      set-cookie: 
+      - _zendesk_session=BAh7DCIcd2FyZGVuLnVzZXIuZGVmYXVsdC5rZXlpA%2BuV6ToMYWNjb3VudGkCN6k6DWF1dGhfdmlhIhJCYXNpY1N0cmF0ZWd5Og91cGRhdGVkX2F0bCsHRBeKTToPc2Vzc2lvbl9pZCIlYmFiYmQyZDgzY2U1ZTg3ZGFlYTg5YTUzOGEyMWM5YmMiE3dhcmRlbi5tZXNzYWdlewA6B2lkIhVtOG9saTRrZXMtZzJhbm02--a592f11703143912ec6f5d16b4f45c56416a54da; path=/; HttpOnly
+      cache-control: 
+      - private, max-age=0, must-revalidate
+    body: "{\"name\":\"John Doe\",\"locale_id\":null,\"openid_url\":null,\"created_at\":\"2011/03/23 16:52:34 +0100\",\"is_verified\":true,\"last_login\":null,\"details\":null,\"updated_at\":\"2011/03/23 16:52:35 +0100\",\"notes\":null,\"email\":\"email7@user.com\",\"external_id\":null,\"restriction_id\":4,\"id\":30867775,\"photo_url\":\"http://jilion.zendesk.com/images/types/user_sm.png\",\"phone\":null,\"is_active\":true,\"time_zone\":\"Bern\",\"roles\":0,\"organization_id\":null,\"groups\":[],\"uses_12_hour_clock\":false}"
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :put
+    uri: http://zeno%40jilion.com:wrank8@jilion.zendesk.com:80/users/30868608.xml
+    body: <user><password>d41d8cd98f00b204e9800998ecf8427e</password><is-verified>true</is-verified></user>
+    headers: 
+      content-type: 
+      - application/xml
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      server: 
+      - nginx/0.8.53
+      date: 
+      - Wed, 23 Mar 2011 16:00:21 GMT
+      content-type: 
+      - application/xml; charset=utf-8
+      connection: 
+      - keep-alive
+      status: 
+      - 200 OK
+      p3p: 
+      - CP="NOI DSP COR NID ADMa OPTa OUR NOR"
+      x-runtime: 
+      - "266"
+      content-length: 
+      - "1"
+      set-cookie: 
+      - _zendesk_session=BAh7DCIcd2FyZGVuLnVzZXIuZGVmYXVsdC5rZXlpA%2BuV6ToMYWNjb3VudGkCN6k6DWF1dGhfdmlhIhJCYXNpY1N0cmF0ZWd5Og91cGRhdGVkX2F0bCsHFRmKTToPc2Vzc2lvbl9pZCIlNjYzMDIzNDczZDg2ZjNjNzJiMmQyZTJjZGE3YzNkYTEiE3dhcmRlbi5tZXNzYWdlewA6B2lkIhUyaWxsaW1ub3Mtd3l1bnpj--90c476c74c6eeff512faccfc4d64126c3181f63a; path=/; HttpOnly
+      cache-control: 
+      - no-cache
+    body: " "
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: http://zeno%40jilion.com:wrank8@jilion.zendesk.com:80/users/30868608.json
+    body: 
+    headers: 
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      server: 
+      - nginx/0.8.53
+      date: 
+      - Wed, 23 Mar 2011 16:00:22 GMT
+      content-type: 
+      - application/json; charset=utf-8
+      connection: 
+      - keep-alive
+      status: 
+      - 200 OK
+      etag: 
+      - "\"7c24faa8c9f2c795e78d75942e381dbc\""
+      p3p: 
+      - CP="NOI DSP COR NID ADMa OPTa OUR NOR"
+      x-runtime: 
+      - "70"
+      content-length: 
+      - "465"
+      set-cookie: 
+      - _zendesk_session=BAh7DCIcd2FyZGVuLnVzZXIuZGVmYXVsdC5rZXlpA%2BuV6ToMYWNjb3VudGkCN6k6DWF1dGhfdmlhIhJCYXNpY1N0cmF0ZWd5Og91cGRhdGVkX2F0bCsHFhmKTToPc2Vzc2lvbl9pZCIlMjViZGY0ZDMzMTYzY2VlOTliY2I0YWUyNWEzZjc5MzEiE3dhcmRlbi5tZXNzYWdlewA6B2lkIhVubGZsaXA2b3MtdnNsZWZh--9fca9156b40e7ca47dac69d090c83eae41824828; path=/; HttpOnly
+      cache-control: 
+      - private, max-age=0, must-revalidate
+    body: "{\"name\":\"John Doe\",\"locale_id\":null,\"openid_url\":null,\"created_at\":\"2011/03/23 17:00:03 +0100\",\"last_login\":null,\"details\":null,\"is_verified\":true,\"updated_at\":\"2011/03/23 17:00:21 +0100\",\"notes\":null,\"email\":\"email2@user.com\",\"external_id\":null,\"restriction_id\":4,\"id\":30868608,\"phone\":null,\"is_active\":true,\"photo_url\":\"http://jilion.zendesk.com/images/types/user_sm.png\",\"time_zone\":\"Bern\",\"roles\":0,\"organization_id\":null,\"groups\":[],\"uses_12_hour_clock\":false}"
+    http_version: "1.1"

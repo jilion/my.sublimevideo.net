@@ -113,7 +113,7 @@ class Site < ActiveRecord::Base
   # ===============
 
   validates :user,        :presence => true
-  validates :plan,        :presence => { :message => "Please choose a plan" }, :unless => proc { |s| s.pending_plan_id? }
+  validates :plan,        :presence => { :message => "Please choose a plan" }, :unless => :pending_plan_id?
   validates :player_mode, :inclusion => { :in => PLAYER_MODES }
 
   validates :hostname,        :presence => { :if => :in_or_will_be_in_paid_plan? }, :hostname => true, :hostname_uniqueness => true

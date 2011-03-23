@@ -134,6 +134,14 @@ class Plan < ActiveRecord::Base
   def daily_player_hits
     player_hits / 30
   end
+  
+  def support
+    if STANDARD_NAMES[-2,2].include?(name) || custom_plan? || sponsored_plan?
+      "priority"
+    else
+      "standard"
+    end
+  end
 
 end
 
