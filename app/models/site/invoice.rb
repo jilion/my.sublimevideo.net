@@ -25,12 +25,12 @@ module Site::Invoice
   # = Instance Methods =
   # ====================
 
-  def in_dev_plan?
-    plan && plan.dev_plan?
-  end
-
   def in_beta_plan?
     plan && plan.beta_plan?
+  end
+
+  def in_dev_plan?
+    plan && plan.dev_plan?
   end
 
   def in_sponsored_plan?
@@ -44,8 +44,8 @@ module Site::Invoice
   def instant_charging?
     @instant_charging
   end
-
-  def in_or_was_in_paid_plan?
+  
+  def in_or_will_be_in_paid_plan?
     in_paid_plan? || (pending_plan_id && Plan.find(pending_plan_id).paid_plan?)
   end
 
@@ -98,7 +98,7 @@ module Site::Invoice
     self.pending_plan_started_at_will_change!
     self.pending_plan_cycle_started_at_will_change!
     self.pending_plan_cycle_ended_at_will_change!
-    
+
     self.plan_started_at               = pending_plan_started_at
     self.plan_cycle_started_at         = pending_plan_cycle_started_at
     self.plan_cycle_ended_at           = pending_plan_cycle_ended_at
@@ -151,7 +151,7 @@ private
       invoice.save!
       Transaction.charge_by_invoice_ids([invoice.id], d3d_options || {}) if instant_charging?
 
-    elsif pending_plan_id_changed? && pending_plan_id? && !pending_plan.paid_plan?
+    elsif pending_plan_id_changed? && pending_plan_id? && pending_plan.free_plan?
       # directly update for free plans
       self.apply_pending_plan_changes
     end

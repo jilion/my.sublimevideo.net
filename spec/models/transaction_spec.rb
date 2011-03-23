@@ -444,8 +444,8 @@ describe Transaction do
 
     describe "#description" do
       before(:all) do
-        @site1    = Factory(:site, user: @user, plan: @dev_plan)
-        @site2    = Factory(:site, user: @user, plan: @paid_plan)
+        @site1    = Factory(:site, user: @user, plan_id: @dev_plan.id)
+        @site2    = Factory(:site, user: @user, plan_id: @paid_plan.id)
         @invoice1 = Factory(:invoice, site: @site1, state: 'open')
         @invoice2 = Factory(:invoice, site: @site2, state: 'failed')
       end
