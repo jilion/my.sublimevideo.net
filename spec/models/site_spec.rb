@@ -977,21 +977,21 @@ describe Site do
     end
 
     describe "#plan_month_cycle_started_at & #plan_month_cycle_ended_at" do
-      before(:all) do
-        @site = Factory(:site)
-        @site.apply_pending_plan_changes
-      end
+      before(:all) { @site = Factory(:site) }
 
       context "with free plan" do
         before(:all) do
           @site.plan.cycle            = "none"
+          @site.plan_started_at       = Time.utc(2011,1,10).midnight
           @site.plan_cycle_started_at = nil
           @site.plan_cycle_ended_at   = nil
+          Timecop.travel(Time.utc(2011,4,1))
         end
+        after(:all) { Timecop.return }
         subject { @site }
 
-        its(:plan_month_cycle_started_at) { should == Time.now.utc.beginning_of_month }
-        its(:plan_month_cycle_ended_at)   { should == Time.now.utc.end_of_month }
+        its(:plan_month_cycle_started_at) { should == Time.utc(2011,3,10).midnight }
+        its(:plan_month_cycle_ended_at)   { should == Time.utc(2011,4,9).end_of_day }
       end
 
       context "with monthly plan" do

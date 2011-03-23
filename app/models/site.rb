@@ -280,23 +280,23 @@ class Site < ActiveRecord::Base
 
   def plan_month_cycle_started_at
     case plan.cycle
-    when 'none'
-      Time.now.utc.beginning_of_month
     when 'month'
       plan_cycle_started_at
     when 'year'
       plan_cycle_started_at + months_since(plan_cycle_started_at).months
+    when 'none'
+      plan_started_at + months_since(plan_started_at).months
     end
   end
 
   def plan_month_cycle_ended_at
     case plan.cycle
-    when 'none'
-      Time.now.utc.end_of_month
     when 'month'
       plan_cycle_ended_at
     when 'year'
       (plan_cycle_started_at + (months_since(plan_cycle_started_at) + 1).months - 1.day).end_of_day
+    when 'none'
+      (plan_started_at + (months_since(plan_started_at) + 1).months - 1.day).end_of_day
     end
   end
 
