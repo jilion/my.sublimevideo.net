@@ -1,5 +1,5 @@
 - if f.object.errors.key?(:plan)
-  .inline_errors
+  .inline_errors.plan
     %span= f.object.errors[:plan].first
 
 - standard_plans = Plan.standard_plans.order(:player_hits.asc, :price.asc)

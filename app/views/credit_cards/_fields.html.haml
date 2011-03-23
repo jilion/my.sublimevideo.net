@@ -34,8 +34,8 @@
 .right
   .billing_info
     %p
-      = "Your credit card information is secure."
-      -#= "Your credit card information is protected with secure socket layer (SSL) encryption."
+      -# = "Your credit card information is secure."
+      = "Your credit card information is protected with secure socket layer (SSL) encryption."
       %br
       = link_to "Questions about billing?", new_ticket_path(:anchor => "billing")
 .spacer

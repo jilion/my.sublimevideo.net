@@ -372,7 +372,7 @@ form .path label.icon {
 form input.text, form textarea.text {
   width:400px;
   height:34px;
-  line-height:36px;
+/*  line-height:36px;*/
   padding:0 0 0 38px;
   background:#e6eaf1;
   border:1px solid #8a92a0;
@@ -437,14 +437,18 @@ form input.text:focus, form textarea.text:focus {
   outline-color:#0085c8;
 }
 
-form input.text::-webkit-input-placeholder, form textarea.text::-webkit-input-placeholder {color:#8896ae;}
+form input.text::-webkit-input-placeholder, form textarea.text::-webkit-input-placeholder {color:#8896ae}
+form input.text:-moz-placeholder, form textarea.text:-moz-placeholder {color:#8896ae}
+
 form input.text.placeholder, form textarea.text.placeholder {color:#8896ae;}
 
 form input.text.errors, form textarea.text.errors {
   background:#fadddd;
 }
 
-form input.text.errors::-webkit-input-placeholder, form textarea.text.errors::-webkit-input-placeholder {color:#d88282;}
+form input.text.errors::-webkit-input-placeholder, form textarea.text.errors::-webkit-input-placeholder {color:#d88282}
+form input.text.errors:-moz-placeholder, form textarea.text.errors:-moz-placeholder {color:#d88282}
+
 form input.text.errors.placeholder, form textarea.text.errors.placeholder {color:#d88282;}
 
 .popup form input.text {
@@ -1515,6 +1519,12 @@ input.link_looks.delete {
   position:relative;
 }
 
+.inline_errors.plan span {
+  -moz-border-radius:4px;
+  -webkit-border-radius:4px;
+  border-radius:4px;
+}
+
 #plans ul {
   width:100%;
   list-style-type:none;
@@ -1979,6 +1989,12 @@ ul#addons .checkbox_wrap input:focus:checked + label {background-position:0 -102
 
 #site_setup .settings .right .entry .checkbox_wrap {
   margin:0;
+}
+
+#site_setup .more_settings_desc {
+  padding:20px 0;
+  text-align:center;
+  font-style:italic;
 }
 
 #credit_card .left {
