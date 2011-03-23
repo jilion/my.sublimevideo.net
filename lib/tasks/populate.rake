@@ -14,7 +14,7 @@ namespace :db do
   namespace :populate do
     desc "Empty all the tables"
     task :empty_all_tables => :environment do
-      timed { empty_tables("delayed_jobs", Invoice, InvoiceItem, Log, MailTemplate, MailLog, Site, SiteUsage, User, Admin, Plan) }
+      timed { empty_tables("delayed_jobs", "invoices_transactions", InvoiceItem, Invoice, Transaction, Log, MailTemplate, MailLog, Site, SiteUsage, User, Admin, Plan) }
     end
 
     desc "Load all development fixtures."
@@ -39,14 +39,14 @@ namespace :db do
 
     desc "Load User development fixtures."
     task :users => :environment do
-      timed { empty_tables(Site, User) }
+      timed { empty_tables("invoices_transactions", InvoiceItem, Invoice, Transaction, Site, User) }
       timed { create_users(argv_index) }
       empty_tables("delayed_jobs")
     end
 
     desc "Load Site development fixtures."
     task :sites => :environment do
-      timed { empty_tables(Site) }
+      timed { empty_tables("invoices_transactions", InvoiceItem, Invoice, Transaction, Site) }
       timed { create_sites }
       empty_tables("delayed_jobs")
     end
@@ -236,7 +236,8 @@ def create_sites
   delete_all_files_in_public('uploads/loaders')
   create_users if User.all.empty?
   create_plans if Plan.all.empty?
-  plan_ids = Plan.all.map(&:id)
+
+  plan_ids = Plan.where(:name.ne => "sponsored").all.map(&:id)
   subdomains = %w[www blog my git sv ji geek yin yang chi cho chu foo bar rem]
   created_at_array = (Date.new(2010,9,14)..(1.month.ago - 2.days).to_date).to_a
 
@@ -253,6 +254,7 @@ def create_sites
       end
       site.cdn_up_to_date = true if rand > 0.5
       site.apply_pending_plan_changes
+      site.sponsor! if rand > 0.75
     end
   end
   puts "#{BASE_SITES.size} beautiful sites created for each user!"
