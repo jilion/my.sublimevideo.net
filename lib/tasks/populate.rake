@@ -28,7 +28,6 @@ namespace :db do
       timed { create_plans }
       timed { create_sites }
       timed { create_site_usages }
-      # timed { create_invoices }
       timed { create_mail_templates }
     end
 
@@ -62,12 +61,6 @@ namespace :db do
     task :site_usages => :environment do
       timed { empty_tables(SiteUsage) }
       timed { create_site_usages }
-    end
-
-    desc "Create fake invoices"
-    task :invoices => :environment do
-      timed { empty_tables(Invoice) }
-      timed { create_invoices }
     end
 
     desc "Create fake plans"
@@ -317,39 +310,17 @@ def create_site_usages
   puts "#{player_hits_total} video-page views total created between #{start_date} and #{end_date}!"
 end
 
-def create_invoices
-  # d = Site.minimum(:created_at)
-  # while d < Time.now.beginning_of_month
-  #   Invoice.complete_invoices_for_billable_users(d.beginning_of_month, d.end_of_month)
-  #   d += 1.month
-  # end
-  # User.all.each do |user|
-  #   invoices = user.invoices
-  #   if invoices.size > 2
-  #     invoices[invoices.size - 2].tap do |i|
-  #       i.attributes = { state: 'paid', paid_at: i.ended_at + 6.days }
-  #       i.save(validate: false)
-  #     end
-  #     invoices.last.tap do |i|
-  #       i.attributes = { state: 'failed', failed_at: i.ended_at + 15.days, last_error: "We received an unknown status for the transaction. We will contact your acquirer and update the status of the transaction within one working day. Please check the status later." }
-  #       i.save(validate: false)
-  #     end
-  #   end
-  # end
-  # puts "#{Invoice.count} invoices created!"
-end
-
 def create_plans
   plans_attributes = [
     { name: "dev",        cycle: "none",  player_hits: 0,          price: 0 },
     { name: "sponsored",  cycle: "none",  player_hits: 0,          price: 0 },
     { name: "beta",       cycle: "none",  player_hits: 0,          price: 0 },
     { name: "comet",      cycle: "month", player_hits: 3_000,      price: 990 },
-    { name: "planet",     cycle: "month", player_hits: 50_000,     price: 2490 },
+    { name: "planet",     cycle: "month", player_hits: 50_000,     price: 1990 },
     { name: "star",       cycle: "month", player_hits: 200_000,    price: 4990 },
     { name: "galaxy",     cycle: "month", player_hits: 1_000_000,  price: 9990 },
     { name: "comet",      cycle: "year",  player_hits: 3_000,      price: 9900 },
-    { name: "planet",     cycle: "year",  player_hits: 50_000,     price: 24900 },
+    { name: "planet",     cycle: "year",  player_hits: 50_000,     price: 19900 },
     { name: "star",       cycle: "year",  player_hits: 200_000,    price: 49900 },
     { name: "galaxy",     cycle: "year",  player_hits: 1_000_000,  price: 99900 },
     { name: "custom1",    cycle: "year",  player_hits: 10_000_000, price: 999900 }
