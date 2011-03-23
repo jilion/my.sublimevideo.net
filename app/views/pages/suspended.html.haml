@@ -10,12 +10,12 @@
   -#   %p= t("user.failed_invoices_are_being_processed")
 
   %h3.section_title= "Suspension reason"
-  -#- if failed_invoices.count > 0
-  -#  %p= "Your account has been suspended because you have #{t('failed_invoices', :count => failed_invoices.count)}."
-  -#- else
-  -#  %p
-  -#    = "Unknown reason."
-  -#    = raw t("please_link_to_know_more_about_it", :link => link_to("contact us", new_ticket_path(:anchor => "billing")))
+  - if failed_invoices.count > 0
+   %p= "You currently have #{t('failed_invoices', :count => failed_invoices.count)}."
+  - else
+   %p
+     = "Unknown reason."
+     = raw t("please_link_to_know_more_about_it", :link => link_to("contact us", new_ticket_path(:anchor => "billing")))
 
   #credit_card_summary
     %h3.section_title= "Your credit card info"
@@ -24,7 +24,7 @@
     %p.card{ :class => current_user.cc_type }
       = raw "#{t("user.credit_card.type.#{current_user.cc_type}")} ending in #{content_tag(:strong, current_user.cc_last_digits)}"
       = link_to edit_credit_card_path do
-        %strong= "Edit credit card"
+        %strong= "Update credit card"
 
   - if failed_invoices.present?
     %h3.section_title= "Your failed invoices"
@@ -33,12 +33,8 @@
       %ul
         - failed_invoices.each do |invoice|
           %li
-            .right
-              = link_to("view details", invoice_path(invoice), :onclick => "window.open(this); return false", :class => "details")
-            %p= raw "#{content_tag(:strong, display_amount(invoice.amount))} on #{invoice_dates(invoice)}"
-            %p{ :class =>  "status " + (invoice.failed? ? "failed" : "") }= charging_status(invoice)
-            -# - if !invoice.will_be_charged? && !current_user.cc_expired?
+            = render '/invoices/invoice_row', :invoice => invoice
             - if !current_user.cc_expired?
               = form_for invoice, :url => pay_invoice_path(invoice), :html => { "data-password-protected" => true } do |f|
                 .entry.update
-                  = f.submit "Pay the #{invoice_dates(invoice)} invoice", :class => "submit_dynamic_button"
+                  = f.submit "Pay this invoice manually", :class => "submit_dynamic_button"

@@ -17,10 +17,7 @@
       %ul
         - @invoices.by_date.each do |invoice|
           %li
-            %p= raw "#{content_tag(:strong, display_amount(invoice.amount))} on #{invoice_dates(invoice)}."
-            %p{ :class => "status " + (invoice.failed? ? "failed" : "") }= "Status: #{charging_status(invoice)}."
-            .right
-              = link_to("view details", invoice_path(invoice), :onclick => "window.open(this); return false", :class => "details")
+            = render 'invoice_row', :invoice => invoice
     - else
       %p= 'None.'
     .spacer
