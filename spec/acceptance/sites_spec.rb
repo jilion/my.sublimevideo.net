@@ -5,13 +5,11 @@ feature "Sites" do
   context "with a user with no credit card registered" do
     background do
       sign_in_as :user, :without_cc => true
+      visit "/sites/new"
     end
 
     feature "new" do
       scenario "in dev plan" do
-        visit "/sites"
-        click_link "Add a site"
-
         fill_in "Domain", :with => "google.com"
         choose "plan_dev"
         click_button "Create"
@@ -30,9 +28,6 @@ feature "Sites" do
       pending "in custom plan"
 
       pending "in paid plan" do
-        visit "/sites"
-        click_link "Add a site"
-
         fill_in "Domain", :with => "rymai.com"
         choose "plan_comet_month"
         VCR.use_cassette('ogone/visa_payment_10') { click_button "Create" }
@@ -42,15 +37,12 @@ feature "Sites" do
       end
 
       scenario "invalid in paid plan" do
-        visit "/sites"
-        click_link "Add a site"
-
         fill_in "Domain", :with => ""
         choose "plan_comet_month"
         click_button "Create"
 
         current_url.should =~ %r(http://[^/]+/sites)
-        page.should have_content('Please set at least one domain')
+        page.should have_content("Domain can't be blank")
       end
     end
 
@@ -127,7 +119,7 @@ feature "Sites" do
         click_button "Create"
 
         current_url.should =~ %r(http://[^/]+/sites)
-        page.should have_content('Please set at least one domain')
+        page.should have_content("Domain can't be blank")
       end
     end
 
@@ -142,6 +134,14 @@ feature "Sites" do
   context "no matter if the user has a credit card or not" do
     background do
       sign_in_as :user
+    end
+    
+    feature "navigation" do
+      scenario "new" do
+        visit "/sites"
+        click_link "Add a site"
+        page.should have_content('Choose a plan for your site')
+      end
     end
 
     feature "archive" do

@@ -120,7 +120,6 @@ class Site < ActiveRecord::Base
   validates :extra_hostnames, :extra_hostnames => true
   validates :dev_hostnames,   :dev_hostnames => true
 
-  validate  :at_least_one_domain_set, :if => :in_dev_plan?
   validate  :verify_presence_of_credit_card, :if => :in_or_will_be_in_paid_plan?
   validate  :validates_current_password
 
@@ -206,21 +205,27 @@ class Site < ActiveRecord::Base
   end
 
   def plan_id=(attribute)
-    new_plan = Plan.find_by_id(attribute)
-    if new_plan.present? && !new_plan.sponsored_plan?
+    if attribute.to_s == attribute.to_i.to_s # id passed
+      new_plan = Plan.find_by_id(attribute.to_i)
+      return unless new_plan.standard_plan? || new_plan.dev_plan? || new_plan.beta_plan?
+    else # token passed
+      new_plan = Plan.find_by_token(attribute)
+    end
+
+    if new_plan.present?
       if plan_id?
         case plan.upgrade?(new_plan)
         when true  # Upgrade
-          write_attribute(:pending_plan_id, attribute)
+          write_attribute(:pending_plan_id, new_plan.id)
           write_attribute(:next_cycle_plan_id, nil)
         when false # Downgrade
-          write_attribute(:next_cycle_plan_id, attribute)
+          write_attribute(:next_cycle_plan_id, new_plan.id)
         when nil # Same plan, reset next_cycle_plan
           write_attribute(:next_cycle_plan_id, nil)
         end
       else
         # Creation
-        write_attribute(:pending_plan_id, attribute)
+        write_attribute(:pending_plan_id, new_plan.id)
       end
     end
   end
@@ -315,13 +320,6 @@ class Site < ActiveRecord::Base
 
 private
 
-  # validate
-  def at_least_one_domain_set
-    if !hostname? && !dev_hostnames? && !extra_hostnames?
-      self.errors.add(:base, :at_least_one_domain)
-    end
-  end
-
   # validate if in_or_will_be_in_paid_plan?
   def verify_presence_of_credit_card
     if user && !user.credit_card? && !user.credit_card_attributes_present?
@@ -337,6 +335,7 @@ private
       ((state_changed? && archived?) || (changes.keys & (Array(self.class.accessible_attributes) - ['plan_id'] + %w[pending_plan_id next_cycle_plan_id])).present?)
       if user.current_password.blank? || !user.valid_password?(user.current_password)
         write_attribute(:plan_id, next_cycle_plan_id) if next_cycle_plan_id_changed? # For non-js plan update view
+        write_attribute(:plan_id, pending_plan_id) if pending_plan_id_changed? # For non-js plan update view
         self.errors.add(:base, :current_password_needed)
       end
     end

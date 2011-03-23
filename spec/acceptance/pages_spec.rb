@@ -40,11 +40,12 @@ describe "Pages" do
 
         scenario "suspended page" do
           current_url.should =~ %r(^http://[^/]+/suspended$)
-          page.should have_content('Your account is suspended')
 
+          page.should have_content('Your account is suspended')
           page.should have_content("Your credit card is expired.")
           page.should have_content("Visa ending in 1111")
           page.should have_content("Update credit card")
+          page.should have_content("You have to pay the following invoice(s) in order to see your account re-activated:")
           page.should have_content("$19.90 on #{I18n.l(@invoice.created_at, :format => :d_b_Y)}.")
           page.should have_content("Charging failed on #{I18n.l(@invoice.failed_at, :format => :minutes_timezone)} with the following error:")
           page.should have_content("\"#{@invoice.last_failed_transaction.error}\"")

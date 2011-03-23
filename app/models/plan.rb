@@ -101,7 +101,7 @@ class Plan < ActiveRecord::Base
 
   # paid plan
   def standard_plan?
-    STANDARD_NAMES.include?(name)
+    STANDARD_NAMES.include?(name.gsub(/\d/, ''))
   end
 
   # paid plan
@@ -124,6 +124,8 @@ class Plan < ActiveRecord::Base
       "Free Sandbox"
     elsif sponsored_plan?
       "Sponsored"
+    elsif custom_plan?
+      "Custom"
     elsif options[:always_with_cycle]
       name.titleize + (cycle == 'year' ? ' (yearly)' : ' (monthly)')
     else
