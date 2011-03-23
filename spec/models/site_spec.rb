@@ -4,7 +4,7 @@ require 'spec_helper'
 describe Site do
 
   # describe "Test site with and without invoice" do
-  # 
+  #
   #   context "WITH INVOICE" do
   #     subject { Factory(:site_with_invoice) }
   #     it "should be slow" do
@@ -14,7 +14,7 @@ describe Site do
   #       puts "WITH INVOICE: Done in #{Time.now - start_time} seconds!"
   #     end
   #   end
-  # 
+  #
   #   context "WITHOUT INVOICE" do
   #     subject { Factory(:site) }
   #     it "should be quick" do
@@ -24,7 +24,7 @@ describe Site do
   #       puts "WITHOUT INVOICE: Done in #{Time.now - start_time} seconds!"
   #     end
   #   end
-  # 
+  #
   # end
 
   context "Factory" do
@@ -71,17 +71,19 @@ describe Site do
         Site.delete_all
         user = Factory(:user)
         # billable
-        @site_billable_1 = Factory(:site, user: user, plan: @paid_plan)
-        @site_billable_2 = Factory(:site, user: user, plan: @paid_plan, next_cycle_plan: Factory(:plan))
+        @site_billable_1 = Factory(:site, user: user, plan_id: @paid_plan.id)
+        @site_billable_2 = Factory(:site, user: user, plan_id: @paid_plan.id)
+        @site_billable_2.update_attribute(:next_cycle_plan_id, Factory(:plan).id)
         # not billable
-        @site_not_billable_1 = Factory(:site, user: user, plan: @dev_plan)
-        @site_not_billable_2 = Factory(:site, user: user, plan: @beta_plan)
-        @site_not_billable_3 = Factory(:site, user: user, plan: @paid_plan, next_cycle_plan: @dev_plan)
+        @site_not_billable_1 = Factory(:site, user: user, plan_id: @dev_plan.id)
+        @site_not_billable_2 = Factory(:site, user: user, plan_id: @beta_plan.id)
+        @site_not_billable_3 = Factory(:site, user: user, plan_id: @paid_plan.id)
+        @site_not_billable_3.update_attribute(:next_cycle_plan_id, @dev_plan.id)
         @site_not_billable_4 = Factory(:site, user: user, state: "archived", archived_at: Time.utc(2010,2,28))
         # with path
-        @site_with_path = Factory(:site, path: "foo", plan: @dev_plan)
+        @site_with_path = Factory(:site, path: "foo", plan_id: @dev_plan.id)
         # with extra_hostnames
-        @site_with_extra_hostnames = Factory(:site, extra_hostnames: "foo.com", plan: @paid_plan)
+        @site_with_extra_hostnames = Factory(:site, extra_hostnames: "foo.com", plan_id: @paid_plan.id)
       end
 
       describe "#beta" do
@@ -115,14 +117,9 @@ describe Site do
 
     describe "#to_be_renewed" do
       before(:all) do
-        Timecop.travel(Time.utc(2011,1,1)) do
-          @site_to_be_renewed = Factory(:site)
-          @site_to_be_renewed.apply_pending_plan_changes
-        end
-        @site_not_to_be_renewed1 = Factory(:site) # this site has a pending_plan_id
-        @site_not_to_be_renewed1.apply_pending_plan_changes
+        Timecop.travel(2.months.ago) { @site_to_be_renewed = Factory(:site) }
+        @site_not_to_be_renewed1 = Factory(:site)
         @site_not_to_be_renewed2 = Factory(:site, plan_started_at: 3.months.ago, plan_cycle_ended_at: 2.months.from_now)
-        @site_not_to_be_renewed2.apply_pending_plan_changes
         VCR.use_cassette('ogone/visa_payment_10') { @site_not_to_be_renewed2.update_attribute(:plan_id, @paid_plan.id) }
       end
 
@@ -830,13 +827,13 @@ describe Site do
       end
     end
 
-    pending "#sponsor!" do
-
+    describe "#sponsor!" do
       it "should change plan to sponsored plan" do
         site = Factory(:site)
         site.next_cycle_plan_id = @dev_plan.id
 
         site.next_cycle_plan_id.should be_present
+        site.pending_plan_id.should be_nil
         site.plan_cycle_started_at.should be_present
         site.plan_cycle_ended_at.should be_present
 
@@ -844,11 +841,11 @@ describe Site do
         site.reload
 
         site.should be_in_sponsored_plan
+        site.pending_plan_id.should be_nil
         site.next_cycle_plan_id.should be_nil
         site.plan_cycle_started_at.should be_nil
         site.plan_cycle_ended_at.should be_nil
       end
-
     end
 
     describe "#need_path?" do
@@ -997,6 +994,18 @@ describe Site do
       before(:all) do
         @site = Factory(:site)
         @site.apply_pending_plan_changes
+      end
+
+      context "with free plan" do
+        before(:all) do
+          @site.plan.cycle            = "none"
+          @site.plan_cycle_started_at = nil
+          @site.plan_cycle_ended_at   = nil
+        end
+        subject { @site }
+
+        its(:plan_month_cycle_started_at) { should == Time.now.utc.beginning_of_month }
+        its(:plan_month_cycle_ended_at)   { should == Time.now.utc.end_of_month }
       end
 
       context "with monthly plan" do
