@@ -153,11 +153,15 @@ private
   def apply_pending_site_plan_changes
     self.site.apply_pending_plan_changes
   end
+  
+  # after_transition :on => :succeed
   def update_user_invoiced_amount
     self.user.last_invoiced_amount = amount
     self.user.total_invoiced_amount += amount
     self.user.save
   end
+  
+  # after_transition :on => :succeed
   def unsuspend_user
     user.unsuspend if user.invoices.failed.empty?
   end

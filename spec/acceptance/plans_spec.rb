@@ -82,7 +82,7 @@ feature "Plans" do
     end
 
     # TODO Thibaud
-    pending "sponsored plan" do
+    scenario "sponsored plan" do
       site = Factory(:site, user: @current_user, plan_id: @sponsored_plan.id)
       Factory(:site_usage, site_id: site.id, day: Time.now.utc, main_player_hits: 1000)
 
