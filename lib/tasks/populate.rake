@@ -24,7 +24,7 @@ namespace :db do
       delete_all_files_in_public('uploads/tmp')
       delete_all_files_in_public('uploads/voxcast')
       timed { create_admins }
-      timed { create_users(argv_count) }
+      timed { create_users(argv_index) }
       timed { create_plans }
       timed { create_sites }
       timed { create_site_usages }
@@ -41,7 +41,7 @@ namespace :db do
     desc "Load User development fixtures."
     task :users => :environment do
       timed { empty_tables(Site, User) }
-      timed { create_users(argv_count) }
+      timed { create_users(argv_index) }
       empty_tables("delayed_jobs")
     end
 
@@ -163,29 +163,33 @@ def create_admins
   end
 end
 
-def create_users(count = 10)
+def create_users(index=nil)
   created_at_array = (Date.new(2010,9,14)..100.days.ago.to_date).to_a
   disable_perform_deliveries do
-    BASE_USERS.each do |user_infos|
+    (index ? index.upto(index) : 0.upto(BASE_USERS.count)).each do |i|
       user = User.new(
-        first_name: user_infos[0].split(' ').first,
-        last_name: user_infos[0].split(' ').second,
+        first_name: BASE_USERS[i][0].split(' ').first,
+        last_name: BASE_USERS[i][0].split(' ').second,
         country: COUNTRIES.sample,
         postal_code: Faker::Address.zip_code,
-        email: user_infos[1],
+        email: BASE_USERS[i][1],
         password: "123456",
         use_personal: true,
-        terms_and_conditions: "1",
-        cc_type: 'visa',
-        cc_full_name: user_infos[0],
-        cc_number: "4111111111111111",
-        cc_verification_value: "111",
-        cc_expire_on: 2.years.from_now
+        terms_and_conditions: "1"
       )
       user.created_at   = created_at_array.sample
       user.confirmed_at = user.created_at
       user.save!(validate: false)
-      puts "User #{user_infos[1]}:123456"
+      user.attributes = {
+        cc_type: 'visa',
+        cc_full_name: BASE_USERS[i][0],
+        cc_number: "4111111111111111",
+        cc_verification_value: "111",
+        cc_expire_on: 2.years.from_now
+      }
+      user.check_credit_card
+      user.save!
+      puts "User #{BASE_USERS[i][1]}:123456"
     end
 
     use_personal = false
@@ -249,8 +253,7 @@ def create_sites
     BASE_SITES.each do |hostname|
       site = user.sites.build(
         plan_id: plan_ids.sample,
-        hostname: hostname,
-        dev_hostnames: Site::DEFAULT_DEV_DOMAINS
+        hostname: hostname
       )
       Timecop.travel(created_at_array.sample) do
         site.save! # TODO: USe VCR here to avoid calls to Ogone?!
@@ -375,9 +378,16 @@ def argv(var_name)
   end
 end
 
+def argv_index(var_name='index', default_index=nil)
+  if var = ARGV.detect { |arg| arg =~ /(#{var_name}=)/i }
+    var.sub($1, '').to_i
+  else
+    default_index
+  end
+end
+
 def argv_count(var_name='count', default_count=5)
-  var = ARGV.detect { |arg| arg =~ /(#{var_name}=)/i }
-  if var
+  if var = ARGV.detect { |arg| arg =~ /(#{var_name}=)/i }
     var.sub($1, '').to_i
   else
     default_count
