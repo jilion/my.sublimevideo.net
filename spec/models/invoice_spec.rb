@@ -25,6 +25,12 @@ describe Invoice do
     it { should have_one :user }
     it { should have_many :invoice_items }
     it { should have_and_belong_to_many :transactions }
+
+    it "should have one last_failed_transaction" do
+      transaction = Factory(:transaction, invoices: [subject])
+      failed_transaction = Factory(:transaction, invoices: [subject], state: 'failed')
+      subject.last_failed_transaction.should == failed_transaction
+    end
   end # Associations
 
   describe "Validations" do

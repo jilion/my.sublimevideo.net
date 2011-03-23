@@ -9,7 +9,6 @@ class Invoice < ActiveRecord::Base
   belongs_to :site
 
   has_one :user, :through => :site
-  has_one :last_failed_transaction, :class_name => "Transaction", :conditions => { :state => 'failed' }, :order => :created_at.desc
 
   has_many :invoice_items
   has_many :plan_invoice_items, conditions: { type: "InvoiceItem::Plan" }, :class_name => "InvoiceItem"
@@ -17,6 +16,10 @@ class Invoice < ActiveRecord::Base
   has_and_belongs_to_many :transactions
 
   delegate :user, :to => :site
+
+  def last_failed_transaction
+    transactions.failed.order(:created_at.desc).first
+  end
 
   # ===============
   # = Validations =
