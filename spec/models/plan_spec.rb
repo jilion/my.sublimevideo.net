@@ -121,12 +121,33 @@ describe Plan do
     end
 
     describe "#custom_plan?" do
-      it { Factory.build(:plan, :name => "dev").should_not be_custom_plan }
       it { Factory.build(:plan, :name => "beta").should_not be_custom_plan }
+      it { Factory.build(:plan, :name => "dev").should_not be_custom_plan }
       it { Factory.build(:plan, :name => "sponsored").should_not be_custom_plan }
+      it { Factory.build(:plan, :name => "comet").should_not be_custom_plan }
       it { Factory.build(:plan, :name => "custom").should be_custom_plan }
       it { Factory.build(:plan, :name => "custom1").should be_custom_plan }
       it { Factory.build(:plan, :name => "custom2").should be_custom_plan }
+    end
+
+    describe "#free_plan?" do
+      it { Factory.build(:plan, :name => "beta").should be_free_plan }
+      it { Factory.build(:plan, :name => "dev").should be_free_plan }
+      it { Factory.build(:plan, :name => "sponsored").should be_free_plan }
+      it { Factory.build(:plan, :name => "comet").should_not be_free_plan }
+      it { Factory.build(:plan, :name => "custom").should_not be_free_plan }
+      it { Factory.build(:plan, :name => "custom1").should_not be_free_plan }
+      it { Factory.build(:plan, :name => "custom2").should_not be_free_plan }
+    end
+
+    describe "#paid_plan?" do
+      it { Factory.build(:plan, :name => "beta").should_not be_paid_plan }
+      it { Factory.build(:plan, :name => "dev").should_not be_paid_plan }
+      it { Factory.build(:plan, :name => "sponsored").should_not be_paid_plan }
+      it { Factory.build(:plan, :name => "comet").should be_paid_plan }
+      it { Factory.build(:plan, :name => "custom").should be_paid_plan }
+      it { Factory.build(:plan, :name => "custom1").should be_paid_plan }
+      it { Factory.build(:plan, :name => "custom2").should be_paid_plan }
     end
 
     describe "#monthly?, #yearly? and #nonely?" do

@@ -193,7 +193,7 @@ describe Site do
       context "with any paid plan" do
         user_attributes = {
           cc_type: 'visa',
-          cc_full_name: BASE_USERS[i][0],
+          cc_full_name: "Rémy Coutable",
           cc_number: "4111111111111111",
           cc_verification_value: "111",
           cc_expire_on: 2.years.from_now

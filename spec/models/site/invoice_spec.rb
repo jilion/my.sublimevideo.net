@@ -46,22 +46,34 @@ describe Site::Invoice do
 
   describe "Instance Methods" do
 
-    describe "#in_dev_plan?" do
-      subject { Factory(:site, plan: @dev_plan) }
-
-      it { should be_in_dev_plan }
-    end # #in_dev_plan?
-
     describe "#in_beta_plan?" do
       subject { Factory(:site, plan: @beta_plan) }
 
       it { should be_in_beta_plan }
     end # #in_beta_plan?
 
-    describe "#in_paid_plan?" do
-      subject { Factory(:site, plan: @paid_plan) }
+    describe "#in_dev_plan?" do
+      subject { Factory(:site, plan: @dev_plan) }
 
-      it { should be_in_paid_plan }
+      it { should be_in_dev_plan }
+    end # #in_dev_plan?
+
+    describe "#in_sponsored_plan?" do
+      subject { Factory(:site, plan: @sponsored_plan) }
+
+      it { should be_in_sponsored_plan }
+    end # #in_sponsored_plan?
+
+    describe "#in_paid_plan?" do
+      context "dev plan" do
+        subject { Factory(:site, plan: @paid_plan) }
+        it { should be_in_paid_plan }
+      end
+
+      context "sponsored plan" do
+        subject { Factory(:site, plan: @custom_plan) }
+        it { should be_in_paid_plan }
+      end
     end # #in_paid_plan?
 
     describe "#instant_charging?" do
