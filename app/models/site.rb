@@ -116,7 +116,7 @@ class Site < ActiveRecord::Base
   validates :plan,        :presence => { :message => "Please choose a plan" }, :unless => proc { |s| s.pending_plan_id? }
   validates :player_mode, :inclusion => { :in => PLAYER_MODES }
 
-  validates :hostname,        :presence => { :if => :in_or_was_in_paid_plan? }, :hostname => true, :hostname_uniqueness => true
+  validates :hostname,        :presence => { :if => :in_or_will_be_in_paid_plan? }, :hostname => true, :hostname_uniqueness => true
   validates :extra_hostnames, :extra_hostnames => true
   validates :dev_hostnames,   :dev_hostnames => true
 
@@ -233,7 +233,7 @@ class Site < ActiveRecord::Base
   end
 
   def set_user_attributes
-    self.user.attributes = user_attributes if user && user_attributes.present? && in_or_was_in_paid_plan?
+    self.user.attributes = user_attributes if user && user_attributes.present? && in_or_will_be_in_paid_plan?
   end
 
   def without_password_validation

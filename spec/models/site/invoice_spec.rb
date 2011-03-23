@@ -47,19 +47,19 @@ describe Site::Invoice do
   describe "Instance Methods" do
 
     describe "#in_dev_plan?" do
-      subject { Factory(:site, plan: @dev_plan) }
+      subject { Factory(:site, plan_id: @dev_plan.id) }
 
       it { should be_in_dev_plan }
     end # #in_dev_plan?
 
     describe "#in_beta_plan?" do
-      subject { Factory(:site, plan: @beta_plan) }
+      subject { Factory(:site, plan_id: @beta_plan.id) }
 
       it { should be_in_beta_plan }
     end # #in_beta_plan?
 
     describe "#in_paid_plan?" do
-      subject { Factory(:site, plan: @paid_plan) }
+      subject { Factory(:site, plan_id: @paid_plan.id) }
 
       it { should be_in_paid_plan }
     end # #in_paid_plan?
@@ -78,21 +78,40 @@ describe Site::Invoice do
       end
     end # #instant_charging?
 
-    describe "#in_or_was_in_paid_plan?" do
+    describe "#in_or_was_in_paid_plan? & #in_or_will_be_in_paid_plan?" do
+      context "site in dev plan" do
+        subject { Factory(:site, plan_id: @dev_plan.id) }
+
+        it { should_not be_in_or_was_in_paid_plan }
+        it { should_not be_in_or_will_be_in_paid_plan }
+      end
       context "site in paid plan" do
-        subject { Factory(:site) }
+        subject { Factory(:site, plan_id: @paid_plan.id) }
 
         it { should be_in_or_was_in_paid_plan }
+        it { should be_in_or_will_be_in_paid_plan }
       end
 
-      context "site was dev is now paid" do
+      context "site is dev and updated to paid" do
         before(:each) do
-          @site = Factory.build(:new_site)
+          @site = Factory(:site, plan_id: @dev_plan.id)
           @site.plan_id = @paid_plan.id
         end
         subject { @site }
 
+        it { should_not be_in_or_was_in_paid_plan }
+        it { should be_in_or_will_be_in_paid_plan }
+      end
+
+      context "site is paid is now paid" do
+        before(:each) do
+          @site = Factory(:site, plan_id: @paid_plan.id)
+          @site.plan_id = @dev_plan.id
+        end
+        subject { @site }
+
         it { should be_in_or_was_in_paid_plan }
+        it { should be_in_or_will_be_in_paid_plan }
       end
     end # #in_or_was_in_paid_plan?
 
@@ -535,7 +554,7 @@ describe Site::Invoice do
         end
 
         context "on a saved record" do
-          before(:all) { Timecop.travel(Time.utc(2011,1,30)) { @site = Factory(:site_with_invoice, plan: @dev_plan) } }
+          before(:all) { Timecop.travel(Time.utc(2011,1,30)) { @site = Factory(:site_with_invoice, plan_id: @dev_plan.id) } }
 
           describe "when save with no changes" do
             subject { @site }
@@ -606,7 +625,7 @@ describe Site::Invoice do
         end
 
         context "on a saved record" do
-          before(:all) { Timecop.travel(Time.utc(2011,1,30)) { @site = Factory(:site_with_invoice, plan: @beta_plan) } }
+          before(:all) { Timecop.travel(Time.utc(2011,1,30)) { @site = Factory(:site_with_invoice, plan_id: @beta_plan.id) } }
 
           describe "when save with no changes" do
             subject { @site.reload }
