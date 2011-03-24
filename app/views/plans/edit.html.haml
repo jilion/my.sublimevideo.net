@@ -3,7 +3,7 @@
 #site.edit
   %ul.segmented_menu
     %li.first= link_to "Settings", edit_site_path(@site), :onclick => "MySublimeVideo.makeSticky(this, '.segmented_menu')"
-    %li.active= link_to "Change plan", edit_site_plan_path(@site), :onclick => "MySublimeVideo.makeSticky(this, '.segmented_menu')"
+    %li.active= link_to @site.in_beta_plan? ? "Choose plan" : "Change plan", edit_site_plan_path(@site), :onclick => "MySublimeVideo.makeSticky(this, '.segmented_menu')"
     %li.last= link_to "Invoices", site_invoices_path(@site), :onclick => "MySublimeVideo.makeSticky(this, '.segmented_menu')"
 
   - if @site.in_sponsored_plan?
