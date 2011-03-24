@@ -2,7 +2,7 @@
 module ApplicationHelper
 
   def display_bool(boolean)
-    boolean ? "✓" : "-"
+    boolean == 0 || boolean.blank? || !boolean ? "-" : "✓"
   end
 
   def display_date(date)
@@ -19,13 +19,9 @@ module ApplicationHelper
   end
 
   def display_amount_with_sup(amount_in_cents)
-    units   = amount_in_cents / 100
-    decimal = amount_in_cents - (units * 100)
-    if decimal.zero?
-      number_to_currency(units, :precision => 0)
-    else
-      number_to_currency(units, :precision => 0) + content_tag(:sup, ".#{decimal}")
-    end
+    units    = amount_in_cents / 100
+    decimals = amount_in_cents - (units * 100)
+    "#{number_to_currency(units, :precision => 0)}#{content_tag(:sup, ".#{decimals}") unless decimals.zero?}".html_safe
   end
   
   def info_box(&block)
