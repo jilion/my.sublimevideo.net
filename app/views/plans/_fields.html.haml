@@ -34,7 +34,7 @@
       - standard_plans.each do |standard_plan|
         - next if standard_plan.yearly?
         - i += 1
-        %li{ :class => "#{plan.name} box_#{i}" }
+        %li{ :class => "#{standard_plan.name} box_#{i}" }
           .wrapper
             .header
               %h3.title= content_tag(:strong, standard_plan.name.titleize)
