@@ -69,7 +69,7 @@ private
         format.html { redirect_to :sites, :notice => t("flash.sites.#{params["ACTION"]}.notice") }
 
       elsif transaction.failed?
-        format.html { redirect_to :sites, :alert => t("transaction.errors.#{transaction.error_code}") }
+        format.html { redirect_to :sites, :alert => t("transaction.errors.#{transaction.error_key}") }
       end
     end
   end
