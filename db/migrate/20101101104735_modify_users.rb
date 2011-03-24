@@ -20,6 +20,7 @@ class ModifyUsers < ActiveRecord::Migration
 
     remove_index :users, :column => [:email]
     add_index :users, [:email, :archived_at], :unique => true
+    add_index :users, :cc_alias, :unique => true
     add_index :users, :created_at
     add_index :users, :current_sign_in_at
     add_index :users, :last_invoiced_amount
@@ -41,6 +42,7 @@ class ModifyUsers < ActiveRecord::Migration
     remove_column :users, :last_invoiced_amount
 
     remove_index :users, :column => [:email, :archived_at]
+    remove_index :users, :cc_alias
     add_index :users, [:email], :unique => true
     remove_index :users, :current_sign_in_at
     remove_index :users, :created_at

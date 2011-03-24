@@ -22,6 +22,7 @@ class CreateInvoicesAndInvoiceItems < ActiveRecord::Migration
       t.datetime :failed_at
     end
     add_index :invoices, :site_id
+    add_index :invoices, :reference, :unique => true
 
     create_table :invoice_items do |t|
       t.string   :type
