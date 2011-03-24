@@ -220,7 +220,7 @@ describe User::CreditCard do
 
         it "should return the HTML_ANSWER returned by Ogone" do
           subject.check_credit_card.should == "d3d"
-          subject.d3d_html.should be_an_instance_of(String)
+          subject.d3d_html.should be_present
         end
       end
 

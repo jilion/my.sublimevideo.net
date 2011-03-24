@@ -27,7 +27,6 @@
     body: |
       <?xml version="1.0"?>
       <ncresponse
-      			
       orderID="7cbbff525393a2fa56f8be12359d5a"
       PAYID="9655848"
       NCSTATUS="5"

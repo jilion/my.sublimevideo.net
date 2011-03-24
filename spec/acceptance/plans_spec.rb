@@ -35,7 +35,7 @@ feature "Plans" do
 
       visit edit_site_plan_path(site)
 
-      VCR.use_cassette('ogone/visa_payment_10') do
+      VCR.use_cassette('ogone/visa_payment_generic') do
         choose "plan_comet_month"
         click_button "Update plan"
       end
@@ -98,7 +98,7 @@ feature "Plans" do
     scenario "add a new site" do
       visit new_site_path(custom_plan: @custom_plan.token)
 
-      VCR.use_cassette('ogone/visa_payment_10') do
+      VCR.use_cassette('ogone/visa_payment_generic') do
         choose "plan_custom"
         fill_in "Domain", :with => "google.com"
         click_button "Create"
@@ -128,7 +128,7 @@ feature "Plans" do
       choose "plan_custom"
       click_button "Update plan"
 
-      VCR.use_cassette('ogone/visa_payment_10') do
+      VCR.use_cassette('ogone/visa_payment_generic') do
         fill_in "Password", :with => "123456"
         click_button "Done"
       end

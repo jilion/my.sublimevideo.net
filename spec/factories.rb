@@ -35,7 +35,7 @@ Factory.define :site, :parent => :new_site do |f|
 end
 
 Factory.define :site_with_invoice, :parent => :new_site do |f|
-  f.after_build  { |site| VCR.insert_cassette('ogone/visa_payment_10') }
+  f.after_build  { |site| VCR.insert_cassette('ogone/visa_payment_generic') }
   f.after_create do |site|
     VCR.eject_cassette
     site.apply_pending_plan_changes
@@ -45,12 +45,12 @@ end
 
 # Old
 # Factory.define :site, :parent => :new_site do |f|
-#   f.after_build  { |site| VCR.insert_cassette('ogone/visa_payment_10') }
+#   f.after_build  { |site| VCR.insert_cassette('ogone/visa_payment_generic') }
 #   f.after_create { |site| VCR.eject_cassette; site.apply_pending_plan_changes }
 # end
 
 Factory.define :site_pending, :parent => :new_site do |f|
-  f.after_build  { |site| VCR.insert_cassette('ogone/visa_payment_10') }
+  f.after_build  { |site| VCR.insert_cassette('ogone/visa_payment_generic') }
   f.after_create { |site| VCR.eject_cassette }
 end
 

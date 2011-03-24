@@ -298,7 +298,6 @@ describe Transaction do
     end # .charge_open_and_failed_invoices_of_user
 
     describe ".charge_by_invoice_ids" do
-
       context "with a new credit card given through options[:user]" do
         before(:each) do
           @user.reload
@@ -437,6 +436,121 @@ describe Transaction do
       end
 
     end # .charge_by_invoice_ids
+
+    describe "#process_payment_response" do
+      before(:all) do
+        @site1    = Factory(:site, user: @user, plan_id: @dev_plan.id)
+        @site2    = Factory(:site, user: @user, plan_id: @paid_plan.id)
+        @invoice1 = Factory(:invoice, site: @site1, state: 'open')
+        @invoice2 = Factory(:invoice, site: @site2, state: 'failed')
+      end
+      subject { Factory(:transaction, invoices: [@invoice1.reload, @invoice2.reload]) }
+
+      it "should succeed with a STATUS == 9" do
+        subject.should be_unprocessed
+        subject.process_payment_response({
+          "PAYID" => "123",
+          "ACCEPTANCE" => "321",
+          "STATUS" => "9",
+          "ECI" => "7",
+          "NCERROR" => "0",
+          "NCERRORPLUS" => "!"
+        })
+        subject.should be_paid
+      end
+
+      it "should wait_d3d with a STATUS == 46" do
+        subject.should be_unprocessed
+        subject.d3d_html.should be_nil
+        subject.process_payment_response({
+          "PAYID" => "123",
+          "ACCEPTANCE" => "321",
+          "STATUS" => "46",
+          "ECI" => "7",
+          "NCERROR" => "0",
+          "NCERRORPLUS" => "!",
+          "HTML_ANSWER" => Base64.encode64("foo")
+        })
+        subject.should be_waiting_d3d
+        puts subject.d3d_html
+        subject.reload.d3d_html.should be_present
+      end
+
+      it "should fail with a STATUS == 0" do
+        subject.should be_unprocessed
+        subject.process_payment_response({
+          "PAYID" => "123",
+          "ACCEPTANCE" => "321",
+          "STATUS" => "0",
+          "ECI" => "7",
+          "NCERROR" => "0",
+          "NCERRORPLUS" => "!"
+        })
+        subject.should be_failed
+        subject.error_key.should == "invalid"
+      end
+
+      it "should fail with a STATUS == 2" do
+        subject.should be_unprocessed
+        subject.process_payment_response({
+          "PAYID" => "123",
+          "ACCEPTANCE" => "321",
+          "STATUS" => "2",
+          "ECI" => "7",
+          "NCERROR" => "0",
+          "NCERRORPLUS" => "!"
+        })
+        subject.should be_failed
+        subject.error_key.should == "refused"
+      end
+
+      it "should fail with a STATUS == 51" do
+        subject.should be_unprocessed
+        subject.d3d_html.should be_nil
+        subject.process_payment_response({
+          "PAYID" => "123",
+          "ACCEPTANCE" => "321",
+          "STATUS" => "51",
+          "ECI" => "7",
+          "NCERROR" => "0",
+          "NCERRORPLUS" => "!"
+        })
+        subject.should be_unprocessed
+        subject.error_key.should == "waiting"
+      end
+
+      it "should fail with a STATUS == 52" do
+        subject.should be_unprocessed
+        subject.d3d_html.should be_nil
+        Notify.should_receive(:send)
+        subject.process_payment_response({
+          "PAYID" => "123",
+          "ACCEPTANCE" => "321",
+          "STATUS" => "52",
+          "ECI" => "7",
+          "NCERROR" => "0",
+          "NCERRORPLUS" => "!"
+        })
+        subject.should be_unprocessed
+        subject.error_key.should == "unknown"
+      end
+
+      it "should fail with a STATUS == 92" do
+        subject.should be_unprocessed
+        subject.d3d_html.should be_nil
+        Notify.should_receive(:send)
+        subject.process_payment_response({
+          "PAYID" => "123",
+          "ACCEPTANCE" => "321",
+          "STATUS" => "92",
+          "ECI" => "7",
+          "NCERROR" => "0",
+          "NCERRORPLUS" => "!"
+        })
+        subject.should be_unprocessed
+        subject.error_key.should == "unknown"
+      end
+    end
 
   end # Class Methods
 

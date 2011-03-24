@@ -52,7 +52,7 @@ describe TransactionsController do
           }
         end
         before(:each) do
-          Transaction.should_receive(:find).with(2).and_return(mock_transaction)
+          Transaction.should_receive(:find_by_id).with(2).and_return(mock_transaction)
           mock_transaction.should_receive(:process_payment_response).with(@sha_params)
         end
 
