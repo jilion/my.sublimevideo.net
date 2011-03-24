@@ -120,7 +120,7 @@ describe Site do
         Timecop.travel(2.months.ago) { @site_to_be_renewed = Factory(:site) }
         @site_not_to_be_renewed1 = Factory(:site)
         @site_not_to_be_renewed2 = Factory(:site, plan_started_at: 3.months.ago, plan_cycle_ended_at: 2.months.from_now)
-        VCR.use_cassette('ogone/visa_payment_10') { @site_not_to_be_renewed2.update_attribute(:plan_id, @paid_plan.id) }
+        VCR.use_cassette('ogone/visa_payment_generic') { @site_not_to_be_renewed2.update_attribute(:plan_id, @paid_plan.id) }
       end
 
       specify { Site.to_be_renewed.all.should == [@site_to_be_renewed] }
@@ -231,7 +231,7 @@ describe Site do
           subject.errors[:base].should be_empty
         end
         it "should not validate current_password when modifying plan" do
-          VCR.use_cassette('ogone/visa_payment_10') { subject.update_attributes(plan_id: @paid_plan.id).should be_true }
+          VCR.use_cassette('ogone/visa_payment_generic') { subject.update_attributes(plan_id: @paid_plan.id).should be_true }
           subject.errors[:base].should be_empty
         end
       end
@@ -791,7 +791,7 @@ describe Site do
         context "when pending_plan_id has changed" do
           it "should call #pend_plan_changes" do
             subject.plan_id = @paid_plan.id
-            VCR.use_cassette('ogone/visa_payment_10') { subject.save_without_password_validation }
+            VCR.use_cassette('ogone/visa_payment_generic') { subject.save_without_password_validation }
             subject.pending_plan_id.should == @paid_plan.id
           end
         end
@@ -816,7 +816,7 @@ describe Site do
           subject.user.current_password = '123456'
           new_paid_plan = Factory(:plan)
           subject.plan_id = new_paid_plan.id
-          VCR.use_cassette('ogone/visa_payment_10') { subject.save! }
+          VCR.use_cassette('ogone/visa_payment_generic') { subject.save! }
           subject.pending_plan_id.should == new_paid_plan.id
         end
       end

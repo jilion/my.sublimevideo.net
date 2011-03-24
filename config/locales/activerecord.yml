@@ -54,5 +54,8 @@ en:
               at_least_one_option: "Please check at least one option"
             company_url:
               invalid: "is invalid"
+            cc_type:
+              invalid: "is invalid"
             cc_number:
-              invalid: "is invalid" # not used because credit_card errors are not localized
+              invalid: "is invalid"
+              

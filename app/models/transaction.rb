@@ -34,6 +34,7 @@ class Transaction < ActiveRecord::Base
 
     before_transition :on => [:succeed, :fail], :do => :set_fields_from_ogone_response
     after_transition  :on => [:succeed, :fail], :do => :update_invoices
+    
     after_transition :on => :fail, :do => :send_charging_failed_email
   end
 
@@ -111,7 +112,6 @@ class Transaction < ActiveRecord::Base
 
     when "46" # Waiting for identification (3-D Secure)
               # We return the HTML to render. This HTML will redirect the user to the 3-D Secure form.
-      @ogone_response_infos = nil # we will not store infos returned by Ogone yet since the user has to identify himself first
       @d3d_html = Base64.decode64(payment_params["HTML_ANSWER"])
       self.wait_d3d
 

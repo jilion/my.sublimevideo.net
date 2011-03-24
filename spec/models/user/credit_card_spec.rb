@@ -33,7 +33,7 @@ describe User::CreditCard do
     it "should validates cc_type" do
       user.attributes = valid_cc_attributes.merge(:cc_type => 'master')
       user.should_not be_valid
-      user.errors[:cc_type].should be_present
+      user.errors[:cc_type].should == ["is invalid"]
     end
     it "should validates cc_type if not matching cc_number" do
       user.attributes = valid_cc_attributes.merge(:cc_number => '5399999999999999')
@@ -49,12 +49,12 @@ describe User::CreditCard do
     it "should validates cc_number presence" do
       user.attributes = valid_cc_attributes.merge(:cc_number => nil)
       user.should_not be_valid
-      user.errors[:cc_number].should be_present
+      user.errors[:cc_number].should == ["is invalid"]
     end
     it "should validates cc_number" do
       user.attributes = valid_cc_attributes.merge(:cc_number => '33')
       user.should_not be_valid
-      user.errors[:cc_number].should be_present
+      user.errors[:cc_number].should == ["is invalid"]
     end
     it "should validates cc_expire_on" do
       user.attributes = valid_cc_attributes.merge(:cc_expire_on => 50.years.ago)
@@ -225,7 +225,7 @@ describe User::CreditCard do
 
         it "should return the HTML_ANSWER returned by Ogone" do
           subject.check_credit_card.should == "d3d"
-          subject.d3d_html.should be_an_instance_of(String)
+          subject.d3d_html.should be_present
         end
       end
 
