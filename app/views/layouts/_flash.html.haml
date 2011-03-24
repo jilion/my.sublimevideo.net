@@ -1,5 +1,5 @@
 #flash
-  - if flash[:notice]
+  - if flash[:notice].present?
     .notice= flash[:notice]
-  - if flash[:alert]
+  - if flash[:alert].present?
     .alert= flash[:alert]
