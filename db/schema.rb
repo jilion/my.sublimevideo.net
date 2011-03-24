@@ -192,10 +192,11 @@ ActiveRecord::Schema.define(:version => 20110223160948) do
     t.string   "error_key"
     t.string   "pay_id"
     t.string   "acceptance"
+    t.string   "nc_status"
     t.string   "status"
     t.string   "eci"
-    t.string   "error_code"
-    t.text     "error"
+    t.string   "nc_error"
+    t.text     "nc_error_plus"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

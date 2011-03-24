@@ -127,36 +127,63 @@ module User::CreditCard
   # Called from User::CreditCard#check_credit_card and from TransactionsController#callback
   def process_cc_authorization_response(authorize_params, authorize_authorization)
     response = ""
-    case authorize_params["STATUS"]
-    when "5" # Authorized
-      response = "authorized"
-      void_authorization(authorize_authorization)
-      self.save
 
-    when "46" # Waiting for identification (3-D Secure)
-              # We return the HTML to render. This HTML will redirect the user to the 3-D Secure form.
+    # Waiting for identification (3-D Secure)
+    # We return the HTML to render. This HTML will redirect the user to the 3-D Secure form.
+    if authorize_params["STATUS"] == "46"
       response = "d3d"
       @d3d_html = Base64.decode64(authorize_params["HTML_ANSWER"])
       self.save
 
-    when "0" # Credit card information invalid or incomplete
-      response = "invalid"
-      self.errors.add(:base, I18n.t("credit_card.errors.#{response}"))
-      reset_credit_card_info
+    else
+      case authorize_params["NCSTATUS"]
+      when "0"
+        # STATUS == 5, Authorized:
+        #   The authorization has been accepted.
+        #   An authorization code is available in the field "ACCEPTANCE".
+        case authorize_params["STATUS"]
+        when "5"
+          response = "authorized"
+          void_authorization(authorize_authorization)
+          self.save
 
-    when "2" # Authorization refused
-      response = "refused"
-      self.errors.add(:base, I18n.t("credit_card.errors.#{response}"))
-      reset_credit_card_info
+        # STATUS == 51, Authorization waiting:
+        #   The authorization will be processed offline.
+        #   This is the standard response if the merchant has chosen offline processing in his account configuration
+        when "51"
+          response = "waiting"
+          self.save
+        end
 
-    when "51" # Authorization waiting (authorization will be processed offline), should never receive this status
-      response = "waiting"
-      self.save
+      # STATUS == 0, Invalid or incomplete:
+      #   At least one of the payment data fields is invalid or missing.
+      #   The NC ERROR  and NC ERRORPLUS  fields contains an explanation of the error
+      #   (list available at https://secure.ogone.com/ncol/paymentinfos1.asp).
+      #   After correcting the error, the customer can retry the authorization process.
+      when "5"
+        response = "invalid"
+        self.errors.add(:base, I18n.t("credit_card.errors.#{response}"))
+        reset_credit_card_info
 
-    when "52" # Authorization not known
-      response = "unknown"
-      Notify.send("Credit card authorization for user ##{self.id} (PAYID: #{authorize_params["PAYID"]}) has an uncertain state, please investigate quickly!")
-      self.save
+      # STATUS == 2, Authorization refused:
+      #   The authorization has been declined by the financial institution.
+      #   The customer can retry the authorization process after selecting a different payment method (or card brand).
+      # STATUS == 93, Payment refused:
+      #   A technical problem arose.
+      when "3"
+        response = "refused"
+        self.errors.add(:base, I18n.t("credit_card.errors.#{response}"))
+        reset_credit_card_info
+
+      # STATUS == 52, Authorization not known; STATUS == 92, Payment uncertain:
+      #   A technical problem arose during the authorization/ payment process, giving an unpredictable result.
+      #   The merchant can contact the acquirer helpdesk to know the exact status of the payment or can wait until we have updated the status in our system.
+      #   The customer should not retry the authorization process since the authorization/payment might already have been accepted.
+      when "2"
+        response = "unknown"
+        Notify.send("Credit card authorization for user ##{self.id} (PAYID: #{authorize_params["PAYID"]}) has an uncertain state, please investigate quickly!")
+        self.save
+      end
     end
 
     response

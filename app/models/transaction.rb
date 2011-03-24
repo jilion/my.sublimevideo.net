@@ -106,31 +106,57 @@ class Transaction < ActiveRecord::Base
   def process_payment_response(payment_params)
     @ogone_response_infos = payment_params
 
-    case payment_params["STATUS"]
-    when "9" # Payment requested (and accepted)
-      self.succeed
-
-    when "46" # Waiting for identification (3-D Secure)
-              # We return the HTML to render. This HTML will redirect the user to the 3-D Secure form.
+    # Waiting for identification (3-D Secure)
+    # We return the HTML to render. This HTML will redirect the user to the 3-D Secure form.
+    if payment_params["STATUS"] == "46"
       @d3d_html = Base64.decode64(payment_params["HTML_ANSWER"])
       self.wait_d3d
 
-    when "0" # Credit card information invalid or incomplete
-      self.error_key = "invalid"
-      self.fail
+    else
+      case payment_params["NCSTATUS"]
+      when "0"
+        # STATUS == 9, Payment requested:
+        #   The payment has been accepted.
+        #   An authorization code is available in the field "ACCEPTANCE".
+        case payment_params["STATUS"]
+        when "9"
+          self.succeed
 
-    when "2" # Authorization refused
-      self.error_key = "refused"
-      self.fail
+        # STATUS == 51, Authorization waiting:
+        #   The authorization will be processed offline.
+        #   This is the standard response if the merchant has chosen offline processing in his account configuration
+        when "51"
+          self.error_key = "waiting"
+          self.save
+        end
 
-    when "51" # Authorization waiting (authorization will be processed offline), should never receive this status
-      self.error_key = "waiting"
-      self.save
+      # STATUS == 0, Invalid or incomplete:
+      #   At least one of the payment data fields is invalid or missing.
+      #   The NC ERROR  and NC ERRORPLUS  fields contains an explanation of the error
+      #   (list available at https://secure.ogone.com/ncol/paymentinfos1.asp).
+      #   After correcting the error, the customer can retry the authorization process.
+      when "5"
+        self.error_key = "invalid"
+        self.fail
 
-    when "52", "92" # Authorization not known, Payment uncertain
-      self.error_key = "unknown"
-      self.save
-      Notify.send("Transaction ##{self.id} (PAYID: #{payment_params["PAYID"]}) has an uncertain state, please investigate quickly!")
+      # STATUS == 2, Authorization refused:
+      #   The authorization has been declined by the financial institution.
+      #   The customer can retry the authorization process after selecting a different payment method (or card brand).
+      # STATUS == 93, Payment refused:
+      #   A technical problem arose.
+      when "3"
+        self.error_key = "refused"
+        self.fail
+
+      # STATUS == 52, Authorization not known; STATUS == 92, Payment uncertain:
+      #   A technical problem arose during the authorization/ payment process, giving an unpredictable result.
+      #   The merchant can contact the acquirer helpdesk to know the exact status of the payment or can wait until we have updated the status in our system.
+      #   The customer should not retry the authorization process since the authorization/payment might already have been accepted.
+      when "2"
+        self.error_key = "unknown"
+        self.save
+        Notify.send("Transaction ##{self.id} (PAYID: #{payment_params["PAYID"]}) has an uncertain state, please investigate quickly!")
+      end
     end
 
     self # return self (can be useful)
@@ -171,12 +197,13 @@ private
   # before_transition :on => [:succeed, :fail]
   def set_fields_from_ogone_response
     if @ogone_response_infos.present?
-      self.pay_id     = @ogone_response_infos["PAYID"]
-      self.acceptance = @ogone_response_infos["ACCEPTANCE"]
-      self.status     = @ogone_response_infos["STATUS"]
-      self.eci        = @ogone_response_infos["ECI"]
-      self.error_code = @ogone_response_infos["NCERROR"]
-      self.error      = @ogone_response_infos["NCERRORPLUS"]
+      self.pay_id        = @ogone_response_infos["PAYID"]
+      self.acceptance    = @ogone_response_infos["ACCEPTANCE"]
+      self.nc_status     = @ogone_response_infos["NCSTATUS"]
+      self.status        = @ogone_response_infos["STATUS"]
+      self.eci           = @ogone_response_infos["ECI"]
+      self.nc_error      = @ogone_response_infos["NCERROR"]
+      self.nc_error_plus = @ogone_response_infos["NCERRORPLUS"]
     end
   end
 
@@ -208,10 +235,11 @@ end
 #  error_key      :string(255)
 #  pay_id         :string(255)
 #  acceptance     :string(255)
+#  nc_status      :string(255)
 #  status         :string(255)
 #  eci            :string(255)
-#  error_code     :string(255)
-#  error          :text
+#  nc_error       :string(255)
+#  nc_error_plus  :text
 #  created_at     :datetime
 #  updated_at     :datetime
 #

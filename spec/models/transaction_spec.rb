@@ -15,7 +15,13 @@ describe Transaction do
     its(:cc_last_digits) { should == @transaction.user.cc_last_digits }
     its(:cc_expire_on)   { should == @transaction.user.cc_expire_on }
     its(:amount)         { should == 1000 }
-    its(:error)          { should be_nil }
+    its(:pay_id)         { should be_nil }
+    its(:acceptance)     { should be_nil }
+    its(:nc_status)      { should be_nil }
+    its(:status)         { should be_nil }
+    its(:eci)            { should be_nil }
+    its(:nc_error)       { should be_nil }
+    its(:nc_error_plus)  { should be_nil }
 
     it { should be_unprocessed } # initial state
     it { should be_valid }
@@ -199,8 +205,8 @@ describe Transaction do
               subject.acceptance.should be_nil
               subject.status.should be_nil
               subject.eci.should be_nil
-              subject.error_code.should be_nil
-              subject.error.should be_nil
+              subject.nc_error.should be_nil
+              subject.nc_error_plus.should be_nil
             end
           end
         end
@@ -210,6 +216,7 @@ describe Transaction do
             subject.reload.instance_variable_set(:@ogone_response_infos, {
               "PAYID" => "123",
               "ACCEPTANCE" => "321",
+              "NCSTATUS" => "0",
               "STATUS" => "9",
               "ECI" => "7",
               "NCERROR" => "0",
@@ -224,8 +231,8 @@ describe Transaction do
               subject.acceptance.should == "321"
               subject.status.should == "9"
               subject.eci.should == "7"
-              subject.error_code.should == "0"
-              subject.error.should == "!"
+              subject.nc_error.should == "0"
+              subject.nc_error_plus.should == "!"
             end
           end
         end
@@ -444,7 +451,7 @@ describe Transaction do
         end
 
         context "with a failing purchase due to an invalid credit card" do
-          before(:each) { Ogone.stub(:purchase) { mock('response', :params => { "STATUS" => "0" }) } }
+          before(:each) { Ogone.stub(:purchase) { mock('response', :params => { "NCSTATUS" => "5" }) } }
           it "should set transaction and invoices to failed state" do
             @invoice1.should be_open
             transaction = Transaction.charge_by_invoice_ids([@invoice1.id], { user: @user, order_id: rand(10000000) })
@@ -455,7 +462,7 @@ describe Transaction do
         end
 
         context "with a failing purchase due to a refused purchase" do
-          before(:each) { Ogone.stub(:purchase) { mock('response', :params => { "STATUS" => "2" }) } }
+          before(:each) { Ogone.stub(:purchase) { mock('response', :params => { "NCSTATUS" => "3" }) } }
           it "should set transaction and invoices to failed state" do
             @invoice1.should be_open
             transaction = Transaction.charge_by_invoice_ids([@invoice1.id], { user: @user, order_id: rand(10000000) })
@@ -466,7 +473,7 @@ describe Transaction do
         end
 
         context "with a failing purchase due to a waiting authorization" do
-          before(:each) { Ogone.stub(:purchase) { mock('response', :params => { "STATUS" => "51" }) } }
+          before(:each) { Ogone.stub(:purchase) { mock('response', :params => { "NCSTATUS" => "0", "STATUS" => "51" }) } }
           it "should not succeed nor fail transaction nor invoices" do
             @invoice1.should be_open
             transaction = Transaction.charge_by_invoice_ids([@invoice1.id], { user: @user, order_id: rand(10000000) })
@@ -477,15 +484,13 @@ describe Transaction do
         end
 
         context "with a failing purchase due to a uncertain result" do
-          %w[52 92].each do |status|
-            before(:each) { Ogone.stub(:purchase) { mock('response', :params => { "STATUS" => status }) } }
-            it "should not succeed nor fail transaction nor invoices, with status #{status}" do
-              @invoice1.should be_open
-              transaction = Transaction.charge_by_invoice_ids([@invoice1.id], { user: @user, order_id: rand(10000000) })
-              transaction.reload.should be_unprocessed
-              transaction.error_key.should == "unknown"
-              @invoice1.reload.should be_open
-            end
+          before(:each) { Ogone.stub(:purchase) { mock('response', :params => { "NCSTATUS" => "2" }) } }
+          it "should not succeed nor fail transaction nor invoices, with status 2" do
+            @invoice1.should be_open
+            transaction = Transaction.charge_by_invoice_ids([@invoice1.id], { user: @user, order_id: rand(10000000) })
+            transaction.reload.should be_unprocessed
+            transaction.error_key.should == "unknown"
+            @invoice1.reload.should be_open
           end
         end
 
@@ -502,11 +507,12 @@ describe Transaction do
       end
       subject { Factory(:transaction, invoices: [@invoice1.reload, @invoice2.reload]) }
 
-      it "should succeed with a STATUS == 9" do
+      it "should succeed with a NCSTATUS == 0 && STATUS == 9" do
         subject.should be_unprocessed
         subject.process_payment_response({
           "PAYID" => "123",
           "ACCEPTANCE" => "321",
+          "NCSTATUS" => "0",
           "STATUS" => "9",
           "ECI" => "7",
           "NCERROR" => "0",
@@ -531,12 +537,12 @@ describe Transaction do
         subject.reload.d3d_html.should be_present
       end
 
-      it "should fail with a STATUS == 0" do
+      it "should fail with a NCSTATUS == 5" do
         subject.should be_unprocessed
         subject.process_payment_response({
           "PAYID" => "123",
           "ACCEPTANCE" => "321",
-          "STATUS" => "0",
+          "NCSTATUS" => "5",
           "ECI" => "7",
           "NCERROR" => "0",
           "NCERRORPLUS" => "!"
@@ -545,12 +551,12 @@ describe Transaction do
         subject.error_key.should == "invalid"
       end
 
-      it "should fail with a STATUS == 2" do
+      it "should fail with a NCSTATUS == 3" do
         subject.should be_unprocessed
         subject.process_payment_response({
           "PAYID" => "123",
           "ACCEPTANCE" => "321",
-          "STATUS" => "2",
+          "NCSTATUS" => "3",
           "ECI" => "7",
           "NCERROR" => "0",
           "NCERRORPLUS" => "!"
@@ -559,12 +565,13 @@ describe Transaction do
         subject.error_key.should == "refused"
       end
 
-      it "should fail with a STATUS == 51" do
+      it "should fail with a NCSTATUS == 0 && STATUS == 51" do
         subject.should be_unprocessed
         subject.d3d_html.should be_nil
         subject.process_payment_response({
           "PAYID" => "123",
           "ACCEPTANCE" => "321",
+          "NCSTATUS" => "0",
           "STATUS" => "51",
           "ECI" => "7",
           "NCERROR" => "0",
@@ -574,22 +581,20 @@ describe Transaction do
         subject.error_key.should == "waiting"
       end
 
-      %w[52 92].each do |status|
-        it "should fail with a STATUS == #{status}" do
-          subject.should be_unprocessed
-          subject.d3d_html.should be_nil
-          Notify.should_receive(:send)
-          subject.process_payment_response({
-            "PAYID" => "123",
-            "ACCEPTANCE" => "321",
-            "STATUS" => status,
-            "ECI" => "7",
-            "NCERROR" => "0",
-            "NCERRORPLUS" => "!"
-          })
-          subject.reload.should be_unprocessed
-          subject.error_key.should == "unknown"
-        end
+      it "should fail with a STATUS == 2" do
+        subject.should be_unprocessed
+        subject.d3d_html.should be_nil
+        Notify.should_receive(:send)
+        subject.process_payment_response({
+          "PAYID" => "123",
+          "ACCEPTANCE" => "321",
+          "NCSTATUS" => "2",
+          "ECI" => "7",
+          "NCERROR" => "0",
+          "NCERRORPLUS" => "!"
+        })
+        subject.reload.should be_unprocessed
+        subject.error_key.should == "unknown"
       end
 
       describe "waiting once, and then succeed" do
@@ -599,6 +604,7 @@ describe Transaction do
           subject.process_payment_response({
             "PAYID" => "123",
             "ACCEPTANCE" => "321",
+            "NCSTATUS" => "0",
             "STATUS" => "51",
             "ECI" => "7",
             "NCERROR" => "0",
@@ -610,6 +616,7 @@ describe Transaction do
           subject.process_payment_response({
             "PAYID" => "123",
             "ACCEPTANCE" => "321",
+            "NCSTATUS" => "0",
             "STATUS" => "9",
             "ECI" => "7",
             "NCERROR" => "0",
@@ -619,33 +626,32 @@ describe Transaction do
         end
       end
 
-      %w[52 92].each do |status|
-        describe "unknown (#{status}) once, and then succeed" do
-          it "should save the transaction and then succeed it" do
-            subject.should be_unprocessed
-            subject.d3d_html.should be_nil
-            Notify.should_receive(:send)
-            subject.process_payment_response({
-              "PAYID" => "123",
-              "ACCEPTANCE" => "321",
-              "STATUS" => status,
-              "ECI" => "7",
-              "NCERROR" => "0",
-              "NCERRORPLUS" => "!"
-            })
-            subject.reload.should be_unprocessed
-            subject.error_key.should == "unknown"
-            
-            subject.process_payment_response({
-              "PAYID" => "123",
-              "ACCEPTANCE" => "321",
-              "STATUS" => "9",
-              "ECI" => "7",
-              "NCERROR" => "0",
-              "NCERRORPLUS" => "!"
-            })
-            subject.should be_paid
-          end
+      describe "unknown (2) once, and then succeed" do
+        it "should save the transaction and then succeed it" do
+          subject.should be_unprocessed
+          subject.d3d_html.should be_nil
+          Notify.should_receive(:send)
+          subject.process_payment_response({
+            "PAYID" => "123",
+            "ACCEPTANCE" => "321",
+            "NCSTATUS" => "2",
+            "ECI" => "7",
+            "NCERROR" => "0",
+            "NCERRORPLUS" => "!"
+          })
+          subject.reload.should be_unprocessed
+          subject.error_key.should == "unknown"
+          
+          subject.process_payment_response({
+            "PAYID" => "123",
+            "ACCEPTANCE" => "321",
+            "NCSTATUS" => "0",
+            "STATUS" => "9",
+            "ECI" => "7",
+            "NCERROR" => "0",
+            "NCERRORPLUS" => "!"
+          })
+          subject.should be_paid
         end
       end
 
@@ -674,6 +680,7 @@ describe Transaction do
 end
 
 
+
 # == Schema Information
 #
 # Table name: transactions
@@ -688,10 +695,11 @@ end
 #  error_key      :string(255)
 #  pay_id         :string(255)
 #  acceptance     :string(255)
+#  nc_status      :string(255)
 #  status         :string(255)
 #  eci            :string(255)
-#  error_code     :string(255)
-#  error          :text
+#  nc_error       :string(255)
+#  nc_error_plus  :text
 #  created_at     :datetime
 #  updated_at     :datetime
 #

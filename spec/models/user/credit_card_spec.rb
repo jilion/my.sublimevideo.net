@@ -81,19 +81,19 @@ describe User::CreditCard do
 
     describe ".send_credit_card_expiration" do
       it "should send 'cc will expire' email when user's credit card will expire at the end of the current month" do
-        user.update_attribute(:cc_expire_on, Time.now.utc)
+        user.update_attributes(valid_cc_attributes.merge(cc_expire_on: 1.day.ago))
         lambda { User::CreditCard.send_credit_card_expiration }.should change(ActionMailer::Base.deliveries, :size).by(1)
       end
       it "should not send 'cc is expired' email when user's credit card is expired 1 month ago" do
-        user.update_attribute(:cc_expire_on, 1.month.ago)
+        user.update_attributes(valid_cc_attributes.merge(cc_expire_on: 1.month.ago))
         lambda { User::CreditCard.send_credit_card_expiration }.should_not change(ActionMailer::Base.deliveries, :size)
       end
       it "should not send 'cc is expired' email when user's credit card is expired 1 year ago" do
-        user.update_attribute(:cc_expire_on, 1.year.ago)
+        user.update_attributes(valid_cc_attributes.merge(cc_expire_on: 1.year.ago))
         lambda { User::CreditCard.send_credit_card_expiration }.should_not change(ActionMailer::Base.deliveries, :size)
       end
       it "should not send expiration email when user's credit card will not expire at the end of the current month" do
-        user.update_attribute(:cc_expire_on, 1.month.from_now)
+        user.update_attributes(valid_cc_attributes.merge(cc_expire_on: 1.month.from_now))
         lambda { User::CreditCard.send_credit_card_expiration }.should_not change(ActionMailer::Base.deliveries, :size)
       end
     end
@@ -244,9 +244,9 @@ describe User::CreditCard do
       before(:each) { user.update_attributes(valid_cc_attributes) }
       subject { user }
 
-      context "Authorized (status == 5)" do
+      context "Authorized (NCSTATUS == 0 && STATUS == 5)" do
         before(:each) { subject.should_receive(:void_authorization).with("1234;RES") }
-        let(:params) { [{ "STATUS" => "5" }, "1234;RES"]}
+        let(:params) { [{ "NCSTATUS" => "0", "STATUS" => "5" }, "1234;RES"]}
 
         it "should return a hash with infos" do
           subject.process_cc_authorization_response(*params).should == "authorized"
@@ -258,7 +258,7 @@ describe User::CreditCard do
         end
       end
 
-      context "Waiting for identification (status == 46)" do
+      context "Waiting for identification (STATUS == 46)" do
         let(:params) { [{ "STATUS" => "46", "HTML_ANSWER" => Base64.encode64("<html>No HTML.</html>") }, "1234;RES"] }
 
         it "should return the html to inject" do
@@ -266,8 +266,8 @@ describe User::CreditCard do
         end
       end
 
-      context "Authorization invalid or incomplete (status == 0)" do
-        let(:params) { [{ "STATUS" => "0" }, "1234;RES"] }
+      context "Authorization invalid or incomplete (NCSTATUS == 5)" do
+        let(:params) { [{ "NCSTATUS" => "5" }, "1234;RES"] }
 
         it "should return a hash with infos" do
           subject.process_cc_authorization_response(*params).should == "invalid"
@@ -279,8 +279,8 @@ describe User::CreditCard do
         end
       end
 
-      context "Authorization refused (status == 2)" do
-        let(:params) { [{ "STATUS" => "2" }, "1234;RES"] }
+      context "Authorization refused (NCSTATUS == 3)" do
+        let(:params) { [{ "NCSTATUS" => "3" }, "1234;RES"] }
 
         it "should return a hash with infos" do
           subject.process_cc_authorization_response(*params).should == "refused"
@@ -292,8 +292,8 @@ describe User::CreditCard do
         end
       end
 
-      context "Authorization waiting (status == 51)" do
-        let(:params) { [{ "STATUS" => "51" }, "1234;RES"] }
+      context "Authorization waiting (NCSTATUS == 0 && STATUS == 51)" do
+        let(:params) { [{ "NCSTATUS" => "0", "STATUS" => "51" }, "1234;RES"] }
 
         it "should return a hash with infos" do
           subject.process_cc_authorization_response(*params).should == "waiting"
@@ -305,8 +305,8 @@ describe User::CreditCard do
         end
       end
 
-      context "Authorization not known (status == 52)" do
-        let(:params) { [{ "STATUS" => "52" }, "1234;RES"] }
+      context "Authorization not known (NCSTATUS == 2)" do
+        let(:params) { [{ "NCSTATUS" => "2" }, "1234;RES"] }
 
         it "should return a hash with infos" do
           subject.process_cc_authorization_response(*params).should == "unknown"

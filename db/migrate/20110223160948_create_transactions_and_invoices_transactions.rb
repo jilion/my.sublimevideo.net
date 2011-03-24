@@ -10,12 +10,13 @@ class CreateTransactionsAndInvoicesTransactions < ActiveRecord::Migration
       t.string  :error_key # used for I18n translation
 
       # untouched params from Ogone
-      t.string :pay_id     # PAYID field
-      t.string :acceptance # ACCEPTANCE field
-      t.string :status     # STATUS field
-      t.string :eci        # ECI field
-      t.string :error_code # NCERROR field
-      t.text   :error      # NCERRORPLUS field
+      t.string :pay_id        # PAYID field
+      t.string :acceptance    # ACCEPTANCE field
+      t.string :nc_status     # NCSTATUS field
+      t.string :status        # STATUS field
+      t.string :eci           # ECI field
+      t.string :nc_error      # NCERROR field
+      t.text   :nc_error_plus # NCERRORPLUS field
 
       t.timestamps
     end
