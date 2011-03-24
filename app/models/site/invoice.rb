@@ -44,9 +44,15 @@ module Site::Invoice
   def instant_charging?
     @instant_charging
   end
-  
+
   def in_or_will_be_in_paid_plan?
     in_paid_plan? || (pending_plan_id && Plan.find(pending_plan_id).paid_plan?)
+  end
+
+  def will_be_in_dev_plan?
+    if id = (pending_plan_id || next_cycle_plan_id)
+      Plan.find(id).dev_plan?
+    end
   end
 
   # before_save :if => :pending_plan_id_changed? / also called from Site::Invoice.renew_active_sites!

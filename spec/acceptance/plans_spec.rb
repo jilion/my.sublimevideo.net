@@ -15,8 +15,12 @@ feature "Plans" do
       choose "plan_dev"
       click_button "Update plan"
 
+      has_checked_field?("plan_dev").should be_true
+      has_unchecked_field?("plan_comet_month").should be_true
+
       fill_in "Password", :with => "123456"
       click_button "Done"
+
       site.reload
 
       current_url.should =~ %r(http://[^/]+/sites$)
@@ -120,13 +124,15 @@ feature "Plans" do
       page.should have_content(@custom_plan.title)
     end
 
-    scenario "upgarde site" do
+    scenario "upgrade site" do
       site = Factory(:site, user: @current_user, plan_id: @paid_plan.id)
 
       visit edit_site_plan_path(site, custom_plan: @custom_plan.token)
 
       choose "plan_custom"
       click_button "Update plan"
+
+      has_checked_field?("plan_custom").should be_true
 
       VCR.use_cassette('ogone/visa_payment_10') do
         fill_in "Password", :with => "123456"

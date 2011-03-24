@@ -177,16 +177,22 @@ describe Site do
 
     describe "credit card" do
       context "with the free plan" do
-        subject { Factory.build(:new_site, user: Factory(:user, cc_type: nil, cc_last_digits: nil), plan: @dev_plan) }
+        subject { Factory.build(:site, user: Factory(:user, cc_type: nil, cc_last_digits: nil), plan_id: @dev_plan.id) }
         it { should be_valid }
       end
-      
+
       context "with any paid plan" do
-        subject { Factory.build(:new_site, user: Factory(:user, cc_type: nil, cc_last_digits: nil), plan: @paid_plan) }
+        subject do
+          site = Factory.build(:new_site, user: Factory(:user, cc_type: nil, cc_last_digits: nil), plan_id: @paid_plan.id)
+          site.save
+          site
+        end
         it { should_not be_valid }
         it { should have(1).error_on(:base) }
+        its(:plan_id) { should be_nil }
+        its(:pending_plan_id) { should == @paid_plan.id }
       end
-      
+
       context "with any paid plan" do
         user_attributes = {
           cc_type: 'visa',
@@ -195,8 +201,8 @@ describe Site do
           cc_verification_value: "111",
           cc_expire_on: 2.years.from_now
         }
-        
-        subject { Factory.build(:new_site, user_attributes: user_attributes, plan: @paid_plan) }
+
+        subject { Factory.build(:site, user_attributes: user_attributes, plan_id: @paid_plan.id) }
         it { should be_valid }
       end
     end
@@ -233,21 +239,20 @@ describe Site do
       context "on a paid plan" do
         subject { Factory(:site, plan_id: @paid_plan.id) }
 
-        describe "when creating a site in paid plan" do
+        describe "when updating a site in paid plan" do
+
           it "needs current_password" do
-            site = Factory.build(:new_site, plan_id: @paid_plan.id)
-            VCR.use_cassette('ogone/visa_payment_10') { site.save.should be_true }
-            subject.errors[:base].should be_empty
+            subject.update_attributes(plan_id: @custom_plan.token).should be_false
+            subject.errors[:base].should include I18n.t('activerecord.errors.models.site.attributes.base.current_password_needed')
+            subject.plan_id.should == @paid_plan.id
+            subject.pending_plan_id.should == @custom_plan.id
           end
 
           it "needs right current_password" do
-            subject.update_attributes(hostname: "newone.com", user_attributes: { current_password: "wrong" }).should be_false
+            subject.update_attributes(plan_id: @custom_plan.token, user_attributes: { current_password: "wrong" }).should be_false
             subject.errors[:base].should include I18n.t('activerecord.errors.models.site.attributes.base.current_password_needed')
-          end
-
-          it "don't need current_password with other errors" do
-            subject.update_attributes(hostname: "", email: "").should be_false
-            subject.errors[:base].should be_empty
+            subject.plan_id.should == @paid_plan.id
+            subject.pending_plan_id.should == @custom_plan.id
           end
         end
 
@@ -272,11 +277,17 @@ describe Site do
           it "needs current_password" do
             subject.update_attributes(plan_id: @dev_plan.id).should be_false
             subject.errors[:base].should include I18n.t('activerecord.errors.models.site.attributes.base.current_password_needed')
+            subject.plan_id.should == @paid_plan.id
+            subject.pending_plan_id.should be_nil
+            subject.next_cycle_plan_id.should == @dev_plan.id
           end
 
           it "needs right current_password" do
             subject.update_attributes(plan_id: @dev_plan.id, user_attributes: { :current_password => "wrong" }).should be_false
             subject.errors[:base].should include I18n.t('activerecord.errors.models.site.attributes.base.current_password_needed')
+            subject.plan_id.should == @paid_plan.id
+            subject.pending_plan_id.should be_nil
+            subject.next_cycle_plan_id.should == @dev_plan.id
           end
         end
 
@@ -715,20 +726,45 @@ describe Site do
     describe "before_validation" do
       subject { Factory.build(:new_site, dev_hostnames: nil) }
 
-      describe "#set_user_attributes" do
+      describe "#set_user_attributes"  do
         subject { Factory(:user, first_name: "Bob") }
 
         it "should set user_attributes before validate" do
           subject.first_name.should == "Bob"
-          site = Factory.build(:new_site, user: subject, plan: @paid_plan, user_attributes: { first_name: "John" })
+          site = Factory.build(:new_site, user: subject, plan_id: @paid_plan.id, user_attributes: { first_name: "John" })
           site.should be_valid
-          subject.first_name.should == "John"
+          site.user.first_name.should == "John"
         end
 
         it "should set user_attributes and save the user when the site is saved" do
           subject.first_name.should == "Bob"
-          site = Factory(:new_site, user: subject, plan: @paid_plan, user_attributes: { first_name: "John" })
-          subject.reload.first_name.should == "John"
+          site = Factory(:site, user: subject, plan_id: @paid_plan.id, user_attributes: { first_name: "John" })
+          site.user.first_name.should == "John"
+        end
+
+        it "should not set user_attributes with dev_plan" do
+          subject.first_name.should == "Bob"
+          site = Factory(:site, user: subject, plan_id: @dev_plan.id, user_attributes: { first_name: "John" })
+          site.user.first_name.should == "Bob"
+        end
+
+        it "should not set user_attributes with downgrade a paid site to dev plan" do
+          subject.first_name.should == "Bob"
+          site = Factory(:site, user: subject, plan_id: @paid_plan.id)
+          puts site.update_attributes(plan_id: @dev_plan.id, user_attributes: { first_name: "John" })
+          site.user.first_name.should == "Bob"
+          site.plan_id.should == @paid_plan.id
+          site.next_cycle_plan_id.should == @dev_plan.id
+        end
+
+        it "should not set user_attributes with downgrade a paid site to dev plan but set current_password", :focus => true do
+          subject.first_name.should == "Bob"
+          site = Factory(:site, user: subject, plan_id: @paid_plan.id)
+          site.update_attributes(plan_id: @dev_plan.id, user_attributes: { first_name: "John", "current_password" => '123456' })
+          site.user.first_name.should == "Bob"
+          site.user.current_password.should == "123456"
+          site.plan_id.should == @paid_plan.id
+          site.next_cycle_plan_id.should == @dev_plan.id
         end
       end
 
@@ -901,7 +937,7 @@ describe Site do
       context "sponsor a dev plan without next plan" do
         before(:all) { Timecop.travel(1.day.ago) { @site = Factory(:site, plan_id: @dev_plan.id) } }
         subject { @site.reload }
-        
+
         it "should change plan to sponsored plan" do
           subject.next_cycle_plan_id.should be_nil
           subject.pending_plan_id.should be_nil
@@ -922,11 +958,11 @@ describe Site do
           subject.plan_cycle_ended_at.should be_nil
         end
       end
-      
+
       context "sponsor a paid plan without next plan" do
         before(:all) { Timecop.travel(1.day.ago) { @site = Factory(:site) } }
         subject { @site.reload }
-        
+
         it "should change plan to sponsored plan" do
           subject.next_cycle_plan_id.should be_nil
           subject.pending_plan_id.should be_nil
@@ -947,11 +983,11 @@ describe Site do
           subject.plan_cycle_ended_at.should be_nil
         end
       end
-      
+
       context "sponsor a paid plan with a next plan" do
         before(:all) { Timecop.travel(1.day.ago) { @site = Factory(:site) } }
         subject { @site.reload; @site.next_cycle_plan_id = @dev_plan.id; @site }
-        
+
         it "should change plan to sponsored plan" do
           subject.next_cycle_plan_id.should be_present
           subject.pending_plan_id.should be_nil

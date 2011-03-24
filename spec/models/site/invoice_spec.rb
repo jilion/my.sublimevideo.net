@@ -119,6 +119,37 @@ describe Site::Invoice do
       end
     end # #in_or_will_be_in_paid_plan?
 
+    describe "#will_be_in_dev_plan?" do
+
+      context "site in dev plan" do
+        subject { Factory(:site, plan_id: @dev_plan.id) }
+
+        it { should_not be_will_be_in_dev_plan }
+      end
+
+      context "site in paid plan" do
+        subject { Factory(:site, plan_id: @paid_plan.id) }
+
+        it { should_not be_will_be_in_dev_plan }
+      end
+
+      context "site in build dev plan" do
+        subject { Factory.build(:new_site, plan_id: @dev_plan.id) }
+
+        it { should be_will_be_in_dev_plan }
+      end
+
+      context "site is paid and updated to dev" do
+        before(:each) do
+          @site = Factory(:site, plan_id: @paid_plan.id)
+          @site.plan_id = @dev_plan.id
+        end
+        subject { @site }
+
+        it { should be_will_be_in_dev_plan }
+      end
+    end # #will_be_in_dev_plan?
+
     describe "#pend_plan_changes" do
       before(:all) do
         @paid_plan         = Factory(:plan, cycle: "month", price: 1000)

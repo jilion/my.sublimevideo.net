@@ -51,7 +51,9 @@ module User::CreditCard
   end
 
   def cc_expire_on=(attribute)
-    write_attribute(:cc_expire_on, attribute.respond_to?(:end_of_month) ? attribute.end_of_month.to_date : attribute)
+    if credit_card_attributes_present?
+      write_attribute(:cc_expire_on, attribute.respond_to?(:end_of_month) ? attribute.end_of_month.to_date : attribute)
+    end
   end
 
   def credit_card_attributes_present?
@@ -104,7 +106,7 @@ module User::CreditCard
 
   # Called from CreditCardsController#update
   def check_credit_card(options={})
-    if self.valid?
+    if credit_card.present? && self.valid?
       options = options.merge({
         store: cc_alias,
         email: email,

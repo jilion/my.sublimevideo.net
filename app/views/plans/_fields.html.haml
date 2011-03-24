@@ -1,5 +1,8 @@
 - site = f.object
-- current_plan = site.plan(true) || site.pending_plan(true)  # avoid association cache with (true)
+- plan = site.plan
+- pending_plan = site.pending_plan
+- next_cycle_plan = site.next_cycle_plan
+- current_plan = pending_plan || next_cycle_plan || plan # current plan for the view (could be in case of rendering view with errors)
 
 - if site.errors.key?(:plan)
   .inline_errors.plan
@@ -17,55 +20,55 @@
       .select_box{ :class => current_plan && custom_plan == current_plan ? 'active' : '' }
         = f.label :plan_id, raw(plan_label_content(custom_plan)), :for => "plan_custom"
         .radio_wrap
-          = f.radio_button :plan_id, custom_plan.token, radio_button_options(site, custom_plan, current_plan, :id => "plan_custom", :checked => current_plan && custom_plan == current_plan)
+          = f.radio_button :plan_id, custom_plan.token, radio_button_options(site, custom_plan, current_plan, :id => "plan_custom", :checked => current_plan && current_plan == custom_plan)
           %span.bg
-        - if current_plan && custom_plan == current_plan
+        - if site.persisted? && plan && plan == custom_plan
           %span.current_label= "Current"
-
-    %p= link_to "see standard plan", :custom_plan => nil
+    - if params[:custom_plan]
+      %p= link_to "see standard plan", :custom_plan => nil
 
   - else
     - standard_plans = Plan.standard_plans.order(:player_hits.asc, :price.asc)
-    - dev_plan       = Plan.dev_plan
     %ul
       - i = 0
-      - standard_plans.each do |plan|
-        - next if plan.yearly?
+      - standard_plans.each do |standard_plan|
+        - next if standard_plan.yearly?
         - i += 1
         %li{ :class => "#{plan.name} box_#{i}" }
           .wrapper
             .header
-              %h3.title= content_tag(:strong, plan.name.titleize)
-              %h4.number= number_with_delimiter(plan.player_hits)
+              %h3.title= content_tag(:strong, standard_plan.name.titleize)
+              %h4.number= number_with_delimiter(standard_plan.player_hits)
               %h5.label= "Video pageviews per month"
               %ul.features
-                %li= plan_support(plan)
+                %li= plan_support(standard_plan)
                 %li.last
                   %strong= "SSL"
                   = "Serving"
-            .monthly.select_box{ :class => current_plan && plan == current_plan ? 'active' : '' }
-              = f.label :plan_id, raw(plan_label_content(plan)), :for => "plan_#{plan.name}_#{plan.cycle}"
+            .monthly.select_box{ :class => current_plan && current_plan == standard_plan ? 'active' : '' }
+              = f.label :plan_id, raw(plan_label_content(standard_plan)), :for => "plan_#{standard_plan.name}_#{standard_plan.cycle}"
               .radio_wrap
-                = f.radio_button :plan_id, plan.id, radio_button_options(site, plan, current_plan, :checked => current_plan && plan == current_plan)
+                = f.radio_button :plan_id, standard_plan.id, radio_button_options(site, standard_plan, current_plan, :checked => current_plan && current_plan == standard_plan)
                 %span.bg
-              - if current_plan && plan == current_plan
+              - if site.persisted? && plan && plan == standard_plan
                 %span.current_label= "Current"
-            - if yearly_plan = standard_plans.find { |p| p.name == plan.name && p.yearly? }
-              .yearly.select_box{ :class => current_plan && yearly_plan == current_plan ? 'active' : '' }
-                = f.label :plan_id, raw(plan_label_content(yearly_plan)), :for => "plan_#{yearly_plan.name}_#{yearly_plan.cycle}"
+            - if standard_yearly_plan = standard_plans.find { |p| p.name == standard_plan.name && p.yearly? }
+              .yearly.select_box{ :class => current_plan && current_plan == standard_yearly_plan ? 'active' : '' }
+                = f.label :plan_id, raw(plan_label_content(standard_yearly_plan)), :for => "plan_#{standard_yearly_plan.name}_#{standard_yearly_plan.cycle}"
                 .radio_wrap
-                  = f.radio_button :plan_id, yearly_plan.id, radio_button_options(site, yearly_plan, current_plan, :checked => current_plan && yearly_plan == current_plan)
+                  = f.radio_button :plan_id, standard_yearly_plan.id, radio_button_options(site, standard_yearly_plan, current_plan, :checked => current_plan && current_plan == standard_yearly_plan)
                   %span.bg
-                - if current_plan && yearly_plan == current_plan
+                - if site.persisted? && plan && plan == standard_yearly_plan
                   %span.current_label= "Current"
           %span.save_label= "2 months free"
     .spacer
 
-    #dev_plan{ :class => current_plan && dev_plan == current_plan ? 'active' : '' }
+    - dev_plan = Plan.dev_plan
+    #dev_plan{ :class => current_plan && current_plan == dev_plan ? 'active' : '' }
       .radio_wrap
         -#= f.label :plan_id, raw("We also offer an #{content_tag(:strong, 'unlimited free sandbox plan')} that allows you to test SublimeVideo in your local development domain for free."), :for => "plan_#{dev_plan.name}", :class => "title"
-        = f.label :plan_id, raw("#{content_tag(:strong, 'Free Sandbox plan')}: Unlimited usage on your local development domain. #{current_plan && dev_plan == current_plan ? content_tag(:span, 'Current', :class => 'current_label') : ''}"), :for => "plan_#{dev_plan.name}", :class => "title"
-        = f.radio_button :plan_id, dev_plan.id, radio_button_options(site, dev_plan, current_plan)
+        = f.label :plan_id, raw("#{content_tag(:strong, 'Free Sandbox plan')}: Unlimited usage on your local development domain. #{site.persisted? && plan && plan == dev_plan ? content_tag(:span, 'Current', :class => 'current_label') : ''}"), :for => "plan_#{dev_plan.name}", :class => "title"
+        = f.radio_button :plan_id, dev_plan.id, radio_button_options(site, dev_plan, current_plan, :checked => current_plan && current_plan == dev_plan)
         %span.bg
 
   #need_more
