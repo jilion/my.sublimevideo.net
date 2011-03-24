@@ -757,7 +757,7 @@ describe Site do
           site.next_cycle_plan_id.should == @dev_plan.id
         end
 
-        it "should not set user_attributes with downgrade a paid site to dev plan but set current_password", :focus => true do
+        it "should not set user_attributes with downgrade a paid site to dev plan but set current_password" do
           subject.first_name.should == "Bob"
           site = Factory(:site, user: subject, plan_id: @paid_plan.id)
           site.update_attributes(plan_id: @dev_plan.id, user_attributes: { first_name: "John", "current_password" => '123456' })
