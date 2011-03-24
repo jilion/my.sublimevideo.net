@@ -161,15 +161,21 @@ describe Site do
 
     describe "hostname" do
       context "with the dev plan" do
-        subject { Factory.build(:new_site, hostname: nil, plan_id: @dev_plan.id) }
+        subject { site = Factory(:site, plan_id: @dev_plan.id); site.hostname = ''; site }
         it { should be_valid }
       end
       context "with the beta plan" do
-        subject { Factory.build(:new_site, hostname: nil, plan_id: @beta_plan.id) }
-        it { should be_valid }
+        subject { site = Factory(:site, plan_id: @beta_plan.id); site.hostname = ''; site }
+        it { should_not be_valid }
+        it { should have(1).error_on(:hostname) }
       end
-      context "with any other plan than the dev plan" do
-        subject { Factory.build(:new_site, hostname: nil, plan_id: @paid_plan.id) }
+      context "with a paid plan" do
+        subject { site = Factory(:site, plan_id: @paid_plan.id); site.hostname = ''; site }
+        it { should_not be_valid }
+        it { should have(1).error_on(:hostname) }
+      end
+      context "with a pending paid plan" do
+        subject { site = Factory(:site_pending, plan_id: @paid_plan.id); site.hostname = ''; site }
         it { should_not be_valid }
         it { should have(1).error_on(:hostname) }
       end
