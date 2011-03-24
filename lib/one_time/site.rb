@@ -44,7 +44,7 @@ module OneTime
           site.dev_hostnames   = Hostname.clean(new_dev_hostnames.sort.join(', '))
           site.extra_hostnames = Hostname.clean(extra_hostnames.sort.join(', ')) if extra_hostnames.present?
           site.cdn_up_to_date  = site.valid? # will reload the site's license if site is valid
-          repaired_sites += 1 if site.save!
+          repaired_sites += 1 if site.save!(validate: false)
 
           result << "##{site.id} (#{'still in' unless site.valid?}valid)"
           result << "MAIN : #{site.hostname.inspect} (#{'in' unless Hostname.valid?(site.hostname)}valid)"
