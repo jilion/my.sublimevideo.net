@@ -112,19 +112,75 @@ describe Transaction do
 
     describe "Events" do
 
-      describe "#succeed" do
-        context "from unprocessed state" do
-          before(:each) { subject.reload.succeed }
+      describe "#wait_d3d" do
+        before(:each) { subject.wait_d3d }
 
+        context "from unprocessed state" do
+          subject { @transaction.reload.update_attribute(:state, 'unprocessed'); @transaction }
+          it { should be_waiting_d3d }
+        end
+        
+        context "from waiting_d3d state" do
+          subject { @transaction.reload.update_attribute(:state, 'waiting_d3d'); @transaction }
+          it { should be_waiting_d3d }
+        end
+      
+        context "from failed state" do
+          subject { @transaction.reload.update_attribute(:state, 'failed'); @transaction }
+          it { should be_failed }
+        end
+      
+        context "from paid state" do
+          subject { @transaction.reload.update_attribute(:state, 'paid'); @transaction }
+          it { should be_paid }
+        end
+      end
+
+      describe "#succeed" do
+        before(:each) { subject.succeed }
+
+        context "from unprocessed state" do
+          subject { @transaction.reload.update_attribute(:state, 'unprocessed'); @transaction }
+          it { should be_paid }
+        end
+        
+        context "from waiting_d3d state" do
+          subject { @transaction.reload.update_attribute(:state, 'waiting_d3d'); @transaction }
+          it { should be_paid }
+        end
+      
+        context "from failed state" do
+          subject { @transaction.reload.update_attribute(:state, 'failed'); @transaction }
+          it { should be_failed }
+        end
+      
+        context "from paid state" do
+          subject { @transaction.reload.update_attribute(:state, 'paid'); @transaction }
           it { should be_paid }
         end
       end
 
       describe "#fail" do
-        context "from unprocessed state" do
-          before(:each) { subject.reload.fail }
+        before(:each) { subject.fail }
 
+        context "from unprocessed state" do
+          subject { @transaction.reload.update_attribute(:state, 'unprocessed'); @transaction }
           it { should be_failed }
+        end
+        
+        context "from waiting_d3d state" do
+          subject { @transaction.reload.update_attribute(:state, 'waiting_d3d'); @transaction }
+          it { should be_failed }
+        end
+      
+        context "from failed state" do
+          subject { @transaction.reload.update_attribute(:state, 'failed'); @transaction }
+          it { should be_failed }
+        end
+      
+        context "from paid state" do
+          subject { @transaction.reload.update_attribute(:state, 'paid'); @transaction }
+          it { should be_paid }
         end
       end
 

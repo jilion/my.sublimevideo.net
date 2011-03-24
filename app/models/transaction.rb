@@ -28,9 +28,9 @@ class Transaction < ActiveRecord::Base
   # =================
 
   state_machine :initial => :unprocessed do
-    event(:succeed)  { transition :unprocessed => :paid }
-    event(:fail)     { transition :unprocessed => :failed }
     event(:wait_d3d) { transition :unprocessed => :waiting_d3d }
+    event(:succeed)  { transition [:unprocessed, :waiting_d3d] => :paid }
+    event(:fail)     { transition [:unprocessed, :waiting_d3d] => :failed }
 
     before_transition :on => [:succeed, :fail], :do => :set_fields_from_ogone_response
     after_transition  :on => [:succeed, :fail], :do => :update_invoices
