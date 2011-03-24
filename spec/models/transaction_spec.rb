@@ -456,7 +456,7 @@ describe Transaction do
           "NCERROR" => "0",
           "NCERRORPLUS" => "!"
         })
-        subject.should be_paid
+        subject.reload.should be_paid
       end
 
       it "should wait_d3d with a STATUS == 46" do
@@ -471,8 +471,7 @@ describe Transaction do
           "NCERRORPLUS" => "!",
           "HTML_ANSWER" => Base64.encode64("foo")
         })
-        subject.should be_waiting_d3d
-        puts subject.d3d_html
+        subject.reload.should be_waiting_d3d
         subject.reload.d3d_html.should be_present
       end
 
@@ -486,7 +485,7 @@ describe Transaction do
           "NCERROR" => "0",
           "NCERRORPLUS" => "!"
         })
-        subject.should be_failed
+        subject.reload.should be_failed
         subject.error_key.should == "invalid"
       end
 
@@ -500,7 +499,7 @@ describe Transaction do
           "NCERROR" => "0",
           "NCERRORPLUS" => "!"
         })
-        subject.should be_failed
+        subject.reload.should be_failed
         subject.error_key.should == "refused"
       end
 
@@ -515,41 +514,85 @@ describe Transaction do
           "NCERROR" => "0",
           "NCERRORPLUS" => "!"
         })
-        subject.should be_unprocessed
+        subject.reload.should be_unprocessed
         subject.error_key.should == "waiting"
       end
 
-      it "should fail with a STATUS == 52" do
-        subject.should be_unprocessed
-        subject.d3d_html.should be_nil
-        Notify.should_receive(:send)
-        subject.process_payment_response({
-          "PAYID" => "123",
-          "ACCEPTANCE" => "321",
-          "STATUS" => "52",
-          "ECI" => "7",
-          "NCERROR" => "0",
-          "NCERRORPLUS" => "!"
-        })
-        subject.should be_unprocessed
-        subject.error_key.should == "unknown"
+      %w[52 92].each do |status|
+        it "should fail with a STATUS == #{status}" do
+          subject.should be_unprocessed
+          subject.d3d_html.should be_nil
+          Notify.should_receive(:send)
+          subject.process_payment_response({
+            "PAYID" => "123",
+            "ACCEPTANCE" => "321",
+            "STATUS" => status,
+            "ECI" => "7",
+            "NCERROR" => "0",
+            "NCERRORPLUS" => "!"
+          })
+          subject.reload.should be_unprocessed
+          subject.error_key.should == "unknown"
+        end
       end
 
-      it "should fail with a STATUS == 92" do
-        subject.should be_unprocessed
-        subject.d3d_html.should be_nil
-        Notify.should_receive(:send)
-        subject.process_payment_response({
-          "PAYID" => "123",
-          "ACCEPTANCE" => "321",
-          "STATUS" => "92",
-          "ECI" => "7",
-          "NCERROR" => "0",
-          "NCERRORPLUS" => "!"
-        })
-        subject.should be_unprocessed
-        subject.error_key.should == "unknown"
+      describe "waiting once, and then succeed" do
+        it "should save the transaction and then succeed it" do
+          subject.should be_unprocessed
+          subject.d3d_html.should be_nil
+          subject.process_payment_response({
+            "PAYID" => "123",
+            "ACCEPTANCE" => "321",
+            "STATUS" => "51",
+            "ECI" => "7",
+            "NCERROR" => "0",
+            "NCERRORPLUS" => "!"
+          })
+          subject.reload.should be_unprocessed
+          subject.error_key.should == "waiting"
+          
+          subject.process_payment_response({
+            "PAYID" => "123",
+            "ACCEPTANCE" => "321",
+            "STATUS" => "9",
+            "ECI" => "7",
+            "NCERROR" => "0",
+            "NCERRORPLUS" => "!"
+          })
+          subject.should be_paid
+        end
       end
+
+      %w[52 92].each do |status|
+        describe "unknown (#{status}) once, and then succeed" do
+          it "should save the transaction and then succeed it" do
+            subject.should be_unprocessed
+            subject.d3d_html.should be_nil
+            Notify.should_receive(:send)
+            subject.process_payment_response({
+              "PAYID" => "123",
+              "ACCEPTANCE" => "321",
+              "STATUS" => status,
+              "ECI" => "7",
+              "NCERROR" => "0",
+              "NCERRORPLUS" => "!"
+            })
+            subject.reload.should be_unprocessed
+            subject.error_key.should == "unknown"
+            
+            subject.process_payment_response({
+              "PAYID" => "123",
+              "ACCEPTANCE" => "321",
+              "STATUS" => "9",
+              "ECI" => "7",
+              "NCERROR" => "0",
+              "NCERRORPLUS" => "!"
+            })
+            subject.should be_paid
+          end
+        end
+      end
+
     end
 
   end # Class Methods

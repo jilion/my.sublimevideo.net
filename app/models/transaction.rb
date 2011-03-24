@@ -34,7 +34,7 @@ class Transaction < ActiveRecord::Base
 
     before_transition :on => [:succeed, :fail], :do => :set_fields_from_ogone_response
     after_transition  :on => [:succeed, :fail], :do => :update_invoices
-    
+
     after_transition :on => :fail, :do => :send_charging_failed_email
   end
 
@@ -94,7 +94,7 @@ class Transaction < ActiveRecord::Base
       transaction.fail
       nil
     end
-    
+
     payment ? transaction.process_payment_response(payment.params) : transaction
   end
 
@@ -132,7 +132,7 @@ class Transaction < ActiveRecord::Base
       self.save
       Notify.send("Transaction ##{self.id} (PAYID: #{payment_params["PAYID"]}) has an uncertain state, please investigate quickly!")
     end
-    
+
     self # return self (can be useful)
   end
 
@@ -184,7 +184,7 @@ private
   def update_invoices
     Invoice.where(id: invoice_ids).each { |invoice| invoice.send(paid? ? :succeed : :fail) }
   end
-  
+
   # after_transition :on => :fail
   def send_charging_failed_email
     TransactionMailer.charging_failed(self).deliver!

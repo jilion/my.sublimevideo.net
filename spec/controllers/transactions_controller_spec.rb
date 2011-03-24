@@ -53,30 +53,49 @@ describe TransactionsController do
         end
         before(:each) do
           Transaction.should_receive(:find_by_id).with(2).and_return(mock_transaction)
-          mock_transaction.should_receive(:process_payment_response).with(@sha_params)
         end
 
-        context "that succeeds" do
-          it "should add a notice and redirect to /account/edit" do
-            mock_transaction.should_receive(:succeed?) { true }
-
-            post :callback, @params.merge(@sha_params)
-            flash[:notice].should be_present
-            flash[:alert].should be_nil
-            response.should redirect_to(sites_url)
-          end
-        end
-
-        context "that fails" do
-          it "should add an alert and redirect to /account/edit" do
-            mock_transaction.should_receive(:succeed?)   { false }
-            mock_transaction.should_receive(:failed?)    { true }
-            mock_transaction.should_receive(:error_code) { "refused" }
+        context "transaction is already paid" do
+          it "should return" do
+            mock_transaction.should_receive(:paid?) { true }
+            mock_transaction.should_not_receive(:process_payment_response)
 
             post :callback, @params.merge(@sha_params)
             flash[:notice].should be_nil
-            flash[:alert].should be_present
-            response.should redirect_to(sites_url)
+            flash[:alert].should be_nil
+            response.body.should be_blank
+            response.status.should == 204
+          end
+        end
+
+        context "transaction not already paid" do
+          before(:each) do
+            mock_transaction.should_receive(:process_payment_response).with(@sha_params)
+          end
+
+          context "that succeeds" do
+            it "should add a notice and redirect to /account/edit" do
+              mock_transaction.should_receive(:paid?).ordered { false }
+              mock_transaction.should_receive(:paid?).ordered { true }
+
+              post :callback, @params.merge(@sha_params)
+              flash[:notice].should be_present
+              flash[:alert].should be_nil
+              response.should redirect_to(sites_url)
+            end
+          end
+
+          context "that fails" do
+            it "should add an alert and redirect to /account/edit" do
+              mock_transaction.should_receive(:paid?).twice { false }
+              mock_transaction.should_receive(:failed?)     { true }
+              mock_transaction.should_receive(:error_code)  { "refused" }
+
+              post :callback, @params.merge(@sha_params)
+              flash[:notice].should be_nil
+              flash[:alert].should be_present
+              response.should redirect_to(sites_url)
+            end
           end
         end
       end
@@ -97,8 +116,8 @@ describe TransactionsController do
       it "should void authorization" do
         post :callback, @params.merge(@sha_params)
 
-        response.body.should == "Tampered request!"
-        response.status.should == 400
+        response.body.should be_blank
+        response.status.should == 204
       end
     end
 
