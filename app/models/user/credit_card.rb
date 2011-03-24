@@ -72,6 +72,8 @@ module User::CreditCard
             errors.each do |error|
               self.errors.add(:cc_expire_on, error)
             end
+          when 'type'
+            self.errors.add(:cc_type, :invalid)
           when 'number'
             self.errors.add(:cc_number, :invalid)
           when 'first_name', 'last_name'
