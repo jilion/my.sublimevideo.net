@@ -51,6 +51,19 @@ module Spec
         end
       end
 
+      def set_credit_card(options={})
+        choose "#{options[:expire_on_prefix] || "user"}_cc_type_#{options[:type] || 'visa'}"
+        fill_in "Name on card", :with => 'Jime'
+        fill_in "Card number", :with => options[:d3d] ? "4000000000000002" : (options[:type] == 'master' ? "5399999999999999" : "4111111111111111")
+        select "#{options[:expire_on_month] || "6"}", :from => "#{options[:expire_on_prefix] || "user"}_cc_expire_on_2i"
+        select "#{options[:expire_on_year] || Time.now.year + 1}", :from => "#{options[:expire_on_prefix] || "user"}_cc_expire_on_1i"
+        fill_in "Security Code", :with => '111'
+      end
+
+      def set_credit_card_in_site_form(options={})
+        set_credit_card(options.merge(:expire_on_prefix => "site_user_attributes"))
+      end
+
       def sign_in_as(resource_name, options={})
         options = { resource_name => options }
         resource = case resource_name

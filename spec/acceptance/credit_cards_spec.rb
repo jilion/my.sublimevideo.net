@@ -18,7 +18,6 @@ feature "Credit cards update:" do
 
       current_url.should =~ %r(^http://[^/]+/account/edit$)
     end
-
   end
 
   context "user already has a credit card" do
@@ -35,6 +34,8 @@ feature "Credit cards update:" do
       current_url.should =~ %r(^http://[^/]+/card/edit$)
 
       set_credit_card
+      VCR.use_cassette('ogone/credit_card_visa_validation') { click_button "Update" }
+
       should_save_credit_card_successfully
     end
 
@@ -44,8 +45,7 @@ feature "Credit cards update:" do
 
       click_link("Update credit card")
       current_url.should =~ %r(^http://[^/]+/card/edit$)
-
-      set_credit_card(false)
+      click_button "Update"
 
       current_url.should =~ %r(^http://[^/]+/card$)
       page.should have_content("Name on card can't be blank")
@@ -53,22 +53,10 @@ feature "Credit cards update:" do
       page.should have_content("CSC is required")
 
       set_credit_card
+      VCR.use_cassette('ogone/credit_card_visa_validation') { click_button "Update" }
+
       should_save_credit_card_successfully
     end
-  end
-end
-
-def set_credit_card(valid=true)
-  if valid
-    choose 'user_cc_type_visa'
-    fill_in 'Name on card', :with => 'Jime'
-    fill_in 'Card number', :with => '4111111111111111'
-    select "3", :from => 'user_cc_expire_on_2i'
-    select "2011", :from => 'user_cc_expire_on_1i'
-    fill_in 'Security Code', :with => '111'
-  end
-  VCR.use_cassette('ogone/credit_card_visa_validation') do
-    click_button "Update"
   end
 end
 
