@@ -57,7 +57,7 @@ describe Ticket do
       @user_with_standard_support = Factory(:user)
       Factory(:site, user: @user_with_standard_support, plan_id: @dev_plan.id)
       @user_with_priority_support = Factory(:user)
-      Factory(:site, user: @user_with_priority_support, plan_id: @custom_plan.id)
+      Factory(:site, user: @user_with_priority_support, plan_id: @custom_plan.token)
     end
 
     describe "#save" do

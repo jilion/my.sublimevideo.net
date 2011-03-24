@@ -25,9 +25,9 @@ describe SitesStat do
       user = Factory(:user)
       @plan1 = Factory(:plan)
       @plan2 = Factory(:plan)
-      Factory(:site, user: user, state: 'active', plan: @plan1)
-      Factory(:site, user: user, state: 'archived', plan: @plan1)
-      Factory(:site, user: user, state: 'suspended', plan: @plan2)
+      Factory(:site, user: user, state: 'active', plan_id: @plan1.id)
+      Factory(:site, user: user, state: 'archived', plan_id: @plan1.id)
+      Factory(:site, user: user, state: 'suspended', plan_id: @plan2.id)
     end
 
     describe ".create_sites_stats" do

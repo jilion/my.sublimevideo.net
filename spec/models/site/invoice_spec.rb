@@ -47,7 +47,7 @@ describe Site::Invoice do
   describe "Instance Methods" do
 
     describe "#in_beta_plan?" do
-      subject { Factory(:site, plan: @beta_plan) }
+      subject { Factory(:site, plan_id: @beta_plan.id) }
 
       it { should be_in_beta_plan }
     end # #in_beta_plan?
@@ -59,19 +59,19 @@ describe Site::Invoice do
     end # #in_dev_plan?
 
     describe "#in_sponsored_plan?" do
-      subject { Factory(:site, plan: @sponsored_plan) }
+      subject { site = Factory(:site); site.sponsor!; site.reload }
 
       it { should be_in_sponsored_plan }
     end # #in_sponsored_plan?
 
     describe "#in_paid_plan?" do
       context "standard plan" do
-        subject { Factory(:site, plan: @paid_plan) }
+        subject { Factory(:site, plan_id: @paid_plan.id) }
         it { should be_in_paid_plan }
       end
 
       context "custom plan" do
-        subject { Factory(:site, plan: @custom_plan) }
+        subject { Factory(:site, plan_id: @custom_plan.token) }
         it { should be_in_paid_plan }
       end
     end # #in_paid_plan?

@@ -49,7 +49,6 @@ feature "Plans" do
     end
 
     scenario "cancel next plan automatic update" do
-      @paid_plan.reload.update_attribute(:name, 'small')
       site = Factory(:site, user: @current_user, plan_id: @paid_plan.id)
 
       site.update_attribute(:next_cycle_plan_id, @dev_plan.id)

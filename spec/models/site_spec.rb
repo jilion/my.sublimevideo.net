@@ -838,7 +838,7 @@ describe Site do
   describe "Instance Methods" do
 
     describe "#clear_alerts_sent_at" do
-      subject { Factory(:site, plan: @paid_plan) }
+      subject { Factory(:site, plan_id: @paid_plan.id) }
 
       pending "should clear *_alert_sent_at dates" do
         subject.touch(:plan_player_hits_reached_notification_sent_at)

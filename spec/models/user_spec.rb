@@ -551,7 +551,7 @@ describe User do
         before(:all) do
           @user = Factory(:user)
           Factory(:site, user: @user, plan_id: @dev_plan.id)
-          Factory(:site, user: @user, plan_id: @custom_plan.id)
+          Factory(:site, user: @user, plan_id: @custom_plan.token)
         end
         subject { @user.reload }
 
