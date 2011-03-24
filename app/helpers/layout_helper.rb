@@ -1,6 +1,6 @@
 module LayoutHelper
 
-  def title_and_content_header(text, options = {})
+  def title_and_content_header(text, options={})
     title(text)
     content_header(text, options)
   end
@@ -11,18 +11,20 @@ module LayoutHelper
     end
   end
 
-  def content_header(text, options = {})
+  def content_header(text, options={})
     options.reverse_merge!(:header_size => 2)
 
     content_tag(:"h#{options.delete(:header_size)}", text.html_safe, options)
   end
 
-  def activable_content_tag(tag, options = {})
+  def activable_content_tag(tag, options={})
     options.reverse_merge!(:active_class => 'active')
 
+    active = options[:urls].any? do |u|
+      controller.request.url =~ Regexp.new("^https?://[^/]+#{options[:namespace].join('/') + '/' if options[:namespace]}#{u}")
+    end
     classes = options[:class] ? options[:class].split(" ") : []
-    classes << options[:active_class] if options[:urls].any? { |u| controller.request.url.include?("#{options[:namespace].join('/') + '/' if options[:namespace]}#{u}") }
-    options[:class] = classes.join(" ")
+    classes << options[:active_class] if active
     
     tag_options = { :class => classes.join(" ") }
     tag_options[:onclick] = options[:onclick]
@@ -32,10 +34,10 @@ module LayoutHelper
     end
   end
 
-  def activable_menu_item(tag, resources, options = {})
+  def activable_menu_item(tag, resources, options={})
     options.reverse_merge!(:namespace => [], :urls => [resources], :link_text => resources.to_s.titleize, :class => resources.to_s)
     options[:namespace] = [options[:namespace]] unless options[:namespace].is_a?(Array)
-    link = send("#{options[:namespace].join('_')}#{'_' if options[:namespace].present?}#{resources}_path")
+    link = send("#{options[:namespace].join('_')}#{'_' if options[:namespace].present?}#{resources}_path", options[:resource])
 
     activable_content_tag(tag, options) do
       if block_given?

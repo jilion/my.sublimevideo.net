@@ -1,11 +1,7 @@
 = title_and_content_header(truncate_middle(@site.hostname.present? ? @site.hostname : "Edit site", :length => 23))
 
 #site.edit
-  %ul.segmented_menu
-    %li.first= link_to "Settings", edit_site_path(@site), :onclick => "MySublimeVideo.makeSticky(this, '.segmented_menu')"
-    %li= link_to @site.in_beta_plan? ? "Choose plan" : "Change plan", edit_site_plan_path(@site), :onclick => "MySublimeVideo.makeSticky(this, '.segmented_menu')"
-    %li.last.active= link_to "Invoices", site_invoices_path(@site), :onclick => "MySublimeVideo.makeSticky(this, '.segmented_menu')"
-
+  = render '/layouts/segmented_menu'
   #invoices
     - if @site.in_paid_plan? || (@site.next_cycle_plan_id? && @site.next_cycle_plan.paid_plan?)
       %h3.section_title= "Next invoice"

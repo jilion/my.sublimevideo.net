@@ -1,0 +1,7 @@
+- sites_item = [:edit_site, { :link_text => "Settings", :class => 'first', :urls => %W[sites/#{@site.token}(/edit)?$] }]
+- plans_item = [:edit_site_plan, { :link_text => @site.in_beta_plan? ? "Choose plan" : "Change plan", :urls => %W[sites/#{@site.token}/plan(/edit)?$] }]
+- invoices_item = [:site_invoices, { :link_text => "Invoices", :class => 'last', :urls => %W[sites/#{@site.token}/invoices$] }]
+
+%ul.segmented_menu
+  - [sites_item, plans_item, invoices_item].each do |i|
+    = activable_menu_item(:li, i[0], i[1].merge(:resource => @site, :onclick => "MySublimeVideo.makeSticky(this, '.segmented_menu')"))

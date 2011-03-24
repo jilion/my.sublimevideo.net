@@ -5,9 +5,7 @@
         %span= "SublimeVideo"
     - if user_signed_in? && controller_name != 'sessions'
       %ul#main_menu
-        %li{ :class => controller_name == "sites" && action_name == "index" ? "active" : "", :onclick => "MySublimeVideo.makeSticky(this, '#header')"}
-          = link_to "Sites", sites_path
-        -#= activable_menu_item(:li, :sites, :onclick => "MySublimeVideo.makeSticky(this, '#header')")
+        = activable_menu_item(:li, :sites, :urls => %W[sites$], :onclick => "MySublimeVideo.makeSticky(this, '#header')")
     .right
       %ul.extra_links
         %li= link_to("Documentation", "http://docs.sublimevideo.net")
@@ -15,7 +13,7 @@
           %li= link_to("Support", new_ticket_path)
           %li= link_to("Logout", destroy_user_session_path)
       - if user_signed_in? && controller_name != 'sessions'
-        = link_to(edit_user_registration_path, :class => "user #{'active' if controller_name == 'registrations' || (controller_name == 'users' && action_name == 'update')}", :onclick => "MySublimeVideo.makeSticky(this, '#header')") do
+        = link_to(edit_user_registration_path, :class => "user #{'active' if controller.request.url =~ /account/}", :onclick => "MySublimeVideo.makeSticky(this, '#header')") do
           %strong
             %span.icon= current_user.full_name
           %span.corner
