@@ -9,7 +9,7 @@ gem 'pg',                    '0.10.1'
 gem 'meta_where',            '1.0.4'
 gem 'bson_ext',              '1.2.4'
 gem 'mongo',                 '1.2.4'
-gem 'mongoid',               '~> 2.0.0.rc.7'
+gem 'mongoid',               '~> 2.0.0.rc.8'
 
 # Views
 gem 'haml',                  '3.0.25'
