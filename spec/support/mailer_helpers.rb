@@ -23,7 +23,7 @@ module Spec
               @last_delivery.from.should == [options[:from]].flatten
             end
             
-            it "should send the mail to #{}" do
+            it "should send the mail to" do
               email = if options[:params].first.respond_to?(:email)
                 options[:params].first.email
               else

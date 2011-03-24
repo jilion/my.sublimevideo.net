@@ -45,7 +45,7 @@ describe User do
 
       # Not billable because his site has been archived
       @user4 = Factory(:user)
-      Factory(:site, user: @user4, state: "archived", archived_at: Time.utc(2010,2,28))
+      Factory(:site, user: @user4, state: 'archived', archived_at: Time.utc(2010,2,28))
 
       # Billable because next cycle plan is another paid plan, but not active
       @user5 = Factory(:user, state: 'suspended')
@@ -56,19 +56,19 @@ describe User do
     end
 
     describe "#billable" do
-      specify { User.billable.should == [@user1, @user2, @user5] }
+      specify { User.billable.order(:id).map(&:id).should =~ [@user1, @user2, @user5].map(&:id) }
     end
 
     describe "#not_billable" do
-      specify { User.not_billable.should == [@user3, @user4, @user6] }
+      specify { User.not_billable.order(:id).map(&:id).should == [@user3, @user4, @user6].map(&:id) }
     end
 
     describe "#active_and_billable" do
-      specify { User.active_and_billable.should == [@user1, @user2] }
+      specify { User.active_and_billable.order(:id).map(&:id).should == [@user1, @user2].map(&:id) }
     end
 
     describe "#active_and_not_billable" do
-      specify { User.active_and_not_billable.should == [@user3, @user4] }
+      specify { User.active_and_not_billable.order(:id).map(&:id).should == [@user3, @user4].map(&:id) }
     end
 
   end
@@ -222,7 +222,7 @@ describe User do
           it "should require one" do
             user = Factory.build(:user, :cc_type => nil, :cc_expire_on => 1.year.from_now, :cc_full_name => "John Doe")
             user.should_not be_valid
-            user.should have(2).errors_on(:cc_type)
+            user.should have(1).errors_on(:cc_type)
           end
 
           it "should require a valid one" do
