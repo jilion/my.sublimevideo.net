@@ -19,12 +19,12 @@ module ApplicationHelper
   end
 
   def display_amount_with_sup(amount_in_cents)
-    number = amount_in_cents / 100.0
-    if number == number.to_i
-      number_to_currency(number.to_i, :precision => 0)
+    units   = amount_in_cents / 100
+    decimal = amount_in_cents - (units * 100)
+    if decimal.zero?
+      number_to_currency(units, :precision => 0)
     else
-      decimal = (number * 100 - number.to_i * 100).to_i
-      number_to_currency(number.to_i, :precision => 0) + content_tag(:sup) { ".#{decimal}" }
+      number_to_currency(units, :precision => 0) + content_tag(:sup, ".#{decimal}")
     end
   end
   

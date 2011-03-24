@@ -11,7 +11,7 @@ module PlansHelper
   end
 
   def plan_change_type(old_plan, new_plan)
-    if old_plan == new_plan
+    if old_plan == new_plan || old_plan.beta_plan?
       nil
     elsif new_plan.dev_plan?
       "delayed_downgrade_to_dev"

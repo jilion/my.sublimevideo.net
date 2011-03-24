@@ -173,6 +173,7 @@ end
 
 
 
+
 # == Schema Information
 #
 # Table name: invoices
@@ -197,6 +198,7 @@ end
 #
 # Indexes
 #
-#  index_invoices_on_site_id  (site_id)
+#  index_invoices_on_reference  (reference) UNIQUE
+#  index_invoices_on_site_id    (site_id)
 #
 

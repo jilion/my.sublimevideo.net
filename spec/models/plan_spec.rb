@@ -253,6 +253,7 @@ end
 #  index_plans_on_name_and_cycle  (name,cycle) UNIQUE
 #
 
+
 # == Schema Information
 #
 # Table name: plans
@@ -269,5 +270,6 @@ end
 # Indexes
 #
 #  index_plans_on_name_and_cycle  (name,cycle) UNIQUE
+#  index_plans_on_token           (token) UNIQUE
 #
 

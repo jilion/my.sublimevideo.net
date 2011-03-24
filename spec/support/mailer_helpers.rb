@@ -35,6 +35,10 @@ module Spec
             it "should set content_type to #{options[:content_type]} (set by default by the Mail gem)" do
               @last_delivery.content_type.should =~ options[:content_type]
             end
+            
+            it "should set a body that contain the link to edit the credit card" do
+              @last_delivery.body.encoded.should include signature
+            end
           end
         end
       end

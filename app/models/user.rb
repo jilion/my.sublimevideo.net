@@ -282,6 +282,7 @@ end
 
 
 
+
 # == Schema Information
 #
 # Table name: users
@@ -334,6 +335,7 @@ end
 #
 # Indexes
 #
+#  index_users_on_cc_alias               (cc_alias) UNIQUE
 #  index_users_on_confirmation_token     (confirmation_token) UNIQUE
 #  index_users_on_created_at             (created_at)
 #  index_users_on_current_sign_in_at     (current_sign_in_at)

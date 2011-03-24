@@ -87,6 +87,7 @@ ActiveRecord::Schema.define(:version => 20110223160948) do
     t.datetime "failed_at"
   end
 
+  add_index "invoices", ["reference"], :name => "index_invoices_on_reference", :unique => true
   add_index "invoices", ["site_id"], :name => "index_invoices_on_site_id"
 
   create_table "invoices_transactions", :id => false, :force => true do |t|
@@ -125,6 +126,7 @@ ActiveRecord::Schema.define(:version => 20110223160948) do
   end
 
   add_index "plans", ["name", "cycle"], :name => "index_plans_on_name_and_cycle", :unique => true
+  add_index "plans", ["token"], :name => "index_plans_on_token", :unique => true
 
   create_table "releases", :force => true do |t|
     t.string   "token"
@@ -245,6 +247,7 @@ ActiveRecord::Schema.define(:version => 20110223160948) do
     t.integer  "total_invoiced_amount",                :default => 0
   end
 
+  add_index "users", ["cc_alias"], :name => "index_users_on_cc_alias", :unique => true
   add_index "users", ["confirmation_token"], :name => "index_users_on_confirmation_token", :unique => true
   add_index "users", ["created_at"], :name => "index_users_on_created_at"
   add_index "users", ["current_sign_in_at"], :name => "index_users_on_current_sign_in_at"

@@ -1,6 +1,6 @@
-Hi <%= @transaction.user.full_name %>,
+<%= intro(@transaction.user.full_name) %>
 
-we couldn't charge the following invoices: <%= @transaction.invoices.map { |i| "##{i.reference}" }.join(", ") %>.
+We couldn't charge the following invoices: <%= @transaction.invoices.map { |i| "##{i.reference}" }.join(", ") %>.
 
 <% if @transaction.user.cc_expired? %>
   Please update your credit card information here: https://my.sublimevideo.net/card/edit and retry the charging.
@@ -18,7 +18,6 @@ Invoices:
   Amount: #<%= invoice.amount %>
 <% end %>
 
-If you have any question, please use our support form: https://my.sublimevideo.net/support
+If you have any questions, please use our support form: https://my.sublimevideo.net/support
 
-
-The SublimeVideo team
+<%= signature %>
