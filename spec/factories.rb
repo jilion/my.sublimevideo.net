@@ -86,8 +86,8 @@ end
 
 Factory.define :mail_template, :class => MailTemplate do |f|
   f.sequence(:title) { |n| "Pricing survey #{n}" }
-  f.subject          "{{user.full_name}} ({{user.email}}), help us shaping the right pricing\r\nThe SublimeVideo Team"
-  f.body             "Hi {{user.full_name}} ({{user.email}}), please respond to the survey, by clicking on the following url: http://survey.com\r\nThe SublimeVideo Team"
+  f.subject          "{{user.full_name}} ({{user.email}}), help us shaping the right pricing - The SublimeVideo Team"
+  f.body             "Hi {{user.full_name}} ({{user.email}}), please respond to the survey, by clicking on the following url: http://survey.com - The SublimeVideo Team"
 end
 
 Factory.define :mail_log, :class => MailLog do |f|
