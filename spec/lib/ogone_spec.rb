@@ -34,7 +34,7 @@ describe Ogone do
     
     describe ".purchase" do
       describe "payment of $10" do
-        use_vcr_cassette "ogone/visa_payment_10"
+        use_vcr_cassette "ogone/visa_payment_generic"
         subject { Ogone.purchase(1000, @cc, :currency => 'USD') }
         
         it { should be_success }

@@ -59,7 +59,7 @@ private
   end
 
   def process_payment
-    transaction = Transaction.find(params["ORDERID"].to_i)
+    transaction = Transaction.find_by_id(params["ORDERID"].to_i)
     transaction.process_payment_response(@sha_params)
 
     respond_with do |format|

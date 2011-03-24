@@ -74,9 +74,11 @@ document.observe("dom:loaded", function() {
   // Reproduce checkbox behavior for radio buttons for plans selection
   if ($('plans')) {
     var planUpgradeInfoDiv = $('plan_upgrade_info');
+    var ccInfoDiv = $('credit_card');
     $$('#plans input[type=radio]').each(function(element){
       element.on('click', function(event){
         if (planUpgradeInfoDiv) MySublimeVideo.showPlanUpdateInfo(element);
+        if (ccInfoDiv) MySublimeVideo.showOrHideCcInfo(element);
         var select_box = element.up('.select_box');
         $$('#plans ul .select_box').invoke('removeClassName','active');
         if (select_box) select_box.addClassName('active');
@@ -117,8 +119,42 @@ MySublimeVideo.openPopup = function(itemId, idPrefix, url, class_name) { // item
 // = Plan functions =
 // ==================
 
+MySublimeVideo.showOrHideCcInfo = function(radioButton) {
+  var plan_price = radioButton.readAttribute('data-plan_price');
+  var ccInfoDiv  = $('credit_card');
+  if (plan_price == "$0") {
+    ccInfoDiv.hide();
+    $('site_user_attributes_cc_update').disable();
+    $('user_cc_type_visa').disable();
+    $('user_cc_type_master').disable();
+    $('user_cc_full_name').disable();
+    $('user_cc_full_name').required = false;
+    $('user_cc_number').disable();
+    $('user_cc_number').required = false;
+    $('user_cc_verification_value').disable();
+    $('user_cc_verification_value').required = false;
+    $('site_user_attributes_cc_expire_on_1i').disable();
+    $('site_user_attributes_cc_expire_on_2i').disable();
+    $('site_user_attributes_cc_expire_on_3i').disable();
+  }
+  else {
+    $('site_user_attributes_cc_update').enable();
+    $('user_cc_type_visa').enable();
+    $('user_cc_type_master').enable();
+    $('user_cc_full_name').enable();
+    $('user_cc_full_name').required = true;
+    $('user_cc_number').enable();
+    $('user_cc_number').required = true;
+    $('user_cc_verification_value').enable();
+    $('user_cc_verification_value').required = true;
+    $('site_user_attributes_cc_expire_on_1i').enable();
+    $('site_user_attributes_cc_expire_on_2i').enable();
+    $('site_user_attributes_cc_expire_on_3i').enable();
+    ccInfoDiv.show();
+  }
+};
+
 MySublimeVideo.updatePlanInfo_ = function(infoDiv, radioButton) {
-  console.log(infoDiv)
   infoDiv.select('.plan_title').invoke("update", radioButton.readAttribute('data-plan_title'));
   infoDiv.select('.plan_price').invoke("update", radioButton.readAttribute('data-plan_price'));
   infoDiv.select('.plan_update_price').invoke("update", radioButton.readAttribute('data-plan_update_price'));

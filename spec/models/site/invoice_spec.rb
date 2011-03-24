@@ -22,7 +22,7 @@ describe Site::Invoice do
         end
         @site_not_to_be_renewed1 = Factory(:site)
         @site_not_to_be_renewed2 = Factory(:site, plan_started_at: 3.months.ago, plan_cycle_ended_at: 2.months.from_now)
-        VCR.use_cassette('ogone/visa_payment_10') { @site_not_to_be_renewed2.update_attribute(:plan_id, @paid_plan.id) }
+        VCR.use_cassette('ogone/visa_payment_generic') { @site_not_to_be_renewed2.update_attribute(:plan_id, @paid_plan.id) }
       end
       before(:each) do
         Delayed::Job.delete_all
@@ -119,6 +119,37 @@ describe Site::Invoice do
       end
     end # #in_or_will_be_in_paid_plan?
 
+    describe "#will_be_in_dev_plan?" do
+
+      context "site in dev plan" do
+        subject { Factory(:site, plan_id: @dev_plan.id) }
+
+        it { should_not be_will_be_in_dev_plan }
+      end
+
+      context "site in paid plan" do
+        subject { Factory(:site, plan_id: @paid_plan.id) }
+
+        it { should_not be_will_be_in_dev_plan }
+      end
+
+      context "site in build dev plan" do
+        subject { Factory.build(:new_site, plan_id: @dev_plan.id) }
+
+        it { should be_will_be_in_dev_plan }
+      end
+
+      context "site is paid and updated to dev" do
+        before(:each) do
+          @site = Factory(:site, plan_id: @paid_plan.id)
+          @site.plan_id = @dev_plan.id
+        end
+        subject { @site }
+
+        it { should be_will_be_in_dev_plan }
+      end
+    end # #will_be_in_dev_plan?
+
     describe "#pend_plan_changes" do
       before(:all) do
         @paid_plan         = Factory(:plan, cycle: "month", price: 1000)
@@ -182,7 +213,7 @@ describe Site::Invoice do
           before(:all) do
             Timecop.travel(Time.utc(2011,1,30)) { @site = Factory(:site, plan_id: @dev_plan.id) }
             @site.apply_pending_plan_changes
-            VCR.use_cassette('ogone/visa_payment_10') do
+            VCR.use_cassette('ogone/visa_payment_generic') do
               @site.reload.plan_id = @paid_plan.id # upgrade
               Timecop.travel(Time.utc(2011,2,25)) { @site.pend_plan_changes }
             end
@@ -202,7 +233,7 @@ describe Site::Invoice do
           before(:all) do
             Timecop.travel(Time.utc(2011,1,30)) { @site = Factory(:site, plan_id: @dev_plan.id) }
             @site.apply_pending_plan_changes
-            VCR.use_cassette('ogone/visa_payment_10') do
+            VCR.use_cassette('ogone/visa_payment_generic') do
               @site.reload.plan_id = @paid_plan_yearly.id # upgrade
               Timecop.travel(Time.utc(2011,2,25)) { @site.pend_plan_changes }
             end
@@ -220,7 +251,7 @@ describe Site::Invoice do
 
         context "from monthly paid plan to monthly paid plan" do
           before(:all) do
-            VCR.use_cassette('ogone/visa_payment_10') do
+            VCR.use_cassette('ogone/visa_payment_generic') do
               @site = Factory.build(:new_site, plan_id: @paid_plan.id)
               Timecop.travel(Time.utc(2011,1,30)) { @site.pend_plan_changes }
               @site.apply_pending_plan_changes
@@ -241,7 +272,7 @@ describe Site::Invoice do
 
         context "from monthly paid plan to yearly paid plan" do
           before(:all) do
-            VCR.use_cassette('ogone/visa_payment_10') do
+            VCR.use_cassette('ogone/visa_payment_generic') do
               @site = Factory.build(:new_site, plan_id: @paid_plan.id)
               Timecop.travel(Time.utc(2011,1,30)) { @site.pend_plan_changes }
               @site.apply_pending_plan_changes
@@ -262,7 +293,7 @@ describe Site::Invoice do
 
         context "from yearly paid plan to yearly paid plan" do
           before(:all) do
-            VCR.use_cassette('ogone/visa_payment_10') do
+            VCR.use_cassette('ogone/visa_payment_generic') do
               @site = Factory.build(:new_site, plan_id: @paid_plan_yearly.id)
               Timecop.travel(Time.utc(2011,1,30)) { @site.pend_plan_changes }
               @site.apply_pending_plan_changes
@@ -285,7 +316,7 @@ describe Site::Invoice do
       describe "renew/downgrade site" do
         context "without downgrade" do
           before(:all) do
-            VCR.use_cassette('ogone/visa_payment_10') do
+            VCR.use_cassette('ogone/visa_payment_generic') do
               @site = Factory.build(:new_site, plan_id: @paid_plan.id)
               Timecop.travel(Time.utc(2011,1,30)) { @site.pend_plan_changes }
               @site.apply_pending_plan_changes
@@ -306,7 +337,7 @@ describe Site::Invoice do
         context "with downgrade" do
           context "from monthly paid plan to dev plan" do
             before(:all) do
-              VCR.use_cassette('ogone/visa_payment_10') do
+              VCR.use_cassette('ogone/visa_payment_generic') do
                 @site = Factory.build(:new_site, plan_id: @paid_plan.id)
                 Timecop.travel(Time.utc(2011,1,30)) { @site.pend_plan_changes }
                 @site.apply_pending_plan_changes
@@ -327,7 +358,7 @@ describe Site::Invoice do
 
           context "from yearly paid plan to dev plan" do
             before(:all) do
-              VCR.use_cassette('ogone/visa_payment_10') do
+              VCR.use_cassette('ogone/visa_payment_generic') do
                 @site = Factory.build(:new_site, plan_id: @paid_plan_yearly.id)
                 Timecop.travel(Time.utc(2011,1,30)) { @site.pend_plan_changes }
                 @site.apply_pending_plan_changes
@@ -348,7 +379,7 @@ describe Site::Invoice do
 
           context "from monthly paid plan to monthly paid plan" do
             before(:all) do
-              VCR.use_cassette('ogone/visa_payment_10') do
+              VCR.use_cassette('ogone/visa_payment_generic') do
                 @site = Factory.build(:new_site, plan_id: @paid_plan2.id)
                 Timecop.travel(Time.utc(2011,1,30)) { @site.pend_plan_changes }
                 @site.apply_pending_plan_changes
@@ -369,7 +400,7 @@ describe Site::Invoice do
 
           context "from yearly paid plan to yearly paid plan" do
             before(:all) do
-              VCR.use_cassette('ogone/visa_payment_10') do
+              VCR.use_cassette('ogone/visa_payment_generic') do
                 @site = Factory.build(:new_site, plan_id: @paid_plan_yearly2.id)
                 Timecop.travel(Time.utc(2011,1,30)) { @site.pend_plan_changes }
                 @site.apply_pending_plan_changes
@@ -390,7 +421,7 @@ describe Site::Invoice do
 
           context "from yearly paid plan to monthly paid plan" do
             before(:all) do
-              VCR.use_cassette('ogone/visa_payment_10') do
+              VCR.use_cassette('ogone/visa_payment_generic') do
                 @site = Factory.build(:new_site, plan_id: @paid_plan_yearly.id)
                 Timecop.travel(Time.utc(2011,1,30)) { @site.pend_plan_changes }
                 @site.apply_pending_plan_changes
@@ -570,7 +601,7 @@ describe Site::Invoice do
           end
 
           describe "when upgrade to monthly paid plan" do
-            use_vcr_cassette "ogone/visa_payment_10"
+            use_vcr_cassette "ogone/visa_payment_generic"
             subject { @site.reload }
 
             it "should create and try to charge the invoice" do
@@ -583,7 +614,7 @@ describe Site::Invoice do
           end
 
           describe "when upgrade to yearly paid plan" do
-            use_vcr_cassette "ogone/visa_payment_10"
+            use_vcr_cassette "ogone/visa_payment_generic"
             before(:each) { @site.reload.plan_id = @paid_plan_yearly.id }
             subject { @site }
 
@@ -641,7 +672,7 @@ describe Site::Invoice do
           end
 
           describe "when upgrade to monthly paid plan" do
-            use_vcr_cassette "ogone/visa_payment_10"
+            use_vcr_cassette "ogone/visa_payment_generic"
             before(:each) { @site.reload.plan_id = @paid_plan.id }
             subject { @site }
 
@@ -654,7 +685,7 @@ describe Site::Invoice do
           end
 
           describe "when upgrade to yearly paid plan" do
-            use_vcr_cassette "ogone/visa_payment_10"
+            use_vcr_cassette "ogone/visa_payment_generic"
             before(:each) { @site.reload.plan_id = @paid_plan_yearly.id }
             subject { @site }
 
@@ -690,7 +721,7 @@ describe Site::Invoice do
 
       context "site in monthly paid plan" do
         context "on creation" do
-          use_vcr_cassette "ogone/visa_payment_10"
+          use_vcr_cassette "ogone/visa_payment_generic"
           before(:each) { Timecop.travel(Time.utc(2011,1,30)) { @site = Factory.build(:new_site, plan_id: @paid_plan.id) } }
           subject { @site }
 
@@ -719,7 +750,7 @@ describe Site::Invoice do
           end
 
           describe "when save with no changes during the second cycle" do
-            use_vcr_cassette "ogone/visa_payment_10"
+            use_vcr_cassette "ogone/visa_payment_generic"
             subject { @site }
 
             it "should create and try to charge the invoice" do
@@ -732,7 +763,7 @@ describe Site::Invoice do
           end
 
           describe "when upgrade to monthly paid plan" do
-            use_vcr_cassette "ogone/visa_payment_10"
+            use_vcr_cassette "ogone/visa_payment_generic"
             subject { @site.reload }
 
             it "should create and try to charge the invoice" do
@@ -745,7 +776,7 @@ describe Site::Invoice do
           end
 
           describe "when upgrade to yearly paid plan" do
-            use_vcr_cassette "ogone/visa_payment_10"
+            use_vcr_cassette "ogone/visa_payment_generic"
             subject { @site.reload }
 
             it "should create and try to charge the invoice" do
@@ -792,7 +823,7 @@ describe Site::Invoice do
 
       context "site in yearly paid plan" do
         context "on creation" do
-          use_vcr_cassette "ogone/visa_payment_10"
+          use_vcr_cassette "ogone/visa_payment_generic"
           before(:each) { Timecop.travel(Time.utc(2011,1,30)) { @site = Factory.build(:new_site, plan_id: @paid_plan_yearly.id) } }
           subject { @site }
 
@@ -833,7 +864,7 @@ describe Site::Invoice do
           end
 
           describe "when upgrade to yearly paid plan" do
-            use_vcr_cassette "ogone/visa_payment_10"
+            use_vcr_cassette "ogone/visa_payment_generic"
             subject { @site.reload }
 
             it "should create and try to charge the invoice" do
@@ -965,7 +996,7 @@ describe Site::Invoice do
         site.first_paid_plan_started_at.should be_nil
         site.reload.plan_id = @paid_plan.id
         site.user_attributes = { current_password: "123456" }
-        VCR.use_cassette('ogone/visa_payment_10') { site.save! }
+        VCR.use_cassette('ogone/visa_payment_generic') { site.save! }
         site.save!
         site.reload.first_paid_plan_started_at.should be_present
       end

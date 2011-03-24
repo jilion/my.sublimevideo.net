@@ -238,7 +238,13 @@ class Site < ActiveRecord::Base
   end
 
   def set_user_attributes
-    self.user.attributes = user_attributes if user && user_attributes.present? && in_or_will_be_in_paid_plan?
+    if user && user_attributes.present?
+      if in_or_will_be_in_paid_plan? && !will_be_in_dev_plan?
+        self.user.attributes = user_attributes
+      elsif user_attributes.has_key?("current_password")
+        self.user.attributes = user_attributes.select { |k,v| k == "current_password" }
+      end
+    end
   end
 
   def without_password_validation
@@ -330,12 +336,9 @@ private
   # validate
   def validates_current_password
     return if @skip_password_validation
-
     if !new_record? && in_paid_plan? && errors.empty? &&
       ((state_changed? && archived?) || (changes.keys & (Array(self.class.accessible_attributes) - ['plan_id'] + %w[pending_plan_id next_cycle_plan_id])).present?)
       if user.current_password.blank? || !user.valid_password?(user.current_password)
-        write_attribute(:plan_id, next_cycle_plan_id) if next_cycle_plan_id_changed? # For non-js plan update view
-        write_attribute(:plan_id, pending_plan_id) if pending_plan_id_changed? # For non-js plan update view
         self.errors.add(:base, :current_password_needed)
       end
     end

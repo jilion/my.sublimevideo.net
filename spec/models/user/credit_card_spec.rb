@@ -114,6 +114,11 @@ describe User::CreditCard do
         user.update_attributes(valid_cc_attributes.merge(:cc_expire_on => Time.utc(2010,1,15)))
         user.cc_expire_on.should == Time.utc(2010,1,15).end_of_month.to_date
       end
+
+      it "should not set cc_expire_on to the end of month if other credit card attribute not present" do
+        user.update_attributes(:cc_expire_on => Time.utc(2010,1,15))
+        user.cc_expire_on.should_not == Time.utc(2010,1,15).end_of_month.to_date
+      end
     end
 
     describe "#cc_type" do
@@ -220,7 +225,7 @@ describe User::CreditCard do
 
         it "should return the HTML_ANSWER returned by Ogone" do
           subject.check_credit_card.should == "d3d"
-          subject.d3d_html.should be_an_instance_of(String)
+          subject.d3d_html.should be_present
         end
       end
 
