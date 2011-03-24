@@ -1,4 +1,4 @@
-<%= intro %>
+<%= t("mailer.intro_generic") %>
 
 <% if @user.credit_card_expired? %>
   Your credit card will expire at the end of this month, your account will then be suspended.
@@ -12,4 +12,4 @@
 
 https://<%= ActionMailer::Base.default_url_options[:host] %>/card/edit
 
-<%= signature %>
+<%= t("mailer.signature") %>

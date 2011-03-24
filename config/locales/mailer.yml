@@ -1,0 +1,5 @@
+en:
+  mailer:
+    intro_generic: "Dear SublimeVideo user,"
+    intro_name:    "Dear %{name},"
+    signature:     "The SublimeVideo Team"

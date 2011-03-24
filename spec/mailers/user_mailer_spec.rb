@@ -17,7 +17,7 @@ describe UserMailer do
       end
       
       it "should set a body that contain infos" do
-        @last_delivery.body.encoded.should include "your account has been suspended!"
+        @last_delivery.body.encoded.should include "Your account has been suspended."
       end
     end
   end
@@ -33,7 +33,7 @@ describe UserMailer do
     end
     
     it "should set a body that contain infos" do
-      @last_delivery.body.encoded.should include "your account has been un-suspended!"
+      @last_delivery.body.encoded.should include "Your account has been reactivated."
     end
   end
   
@@ -48,7 +48,7 @@ describe UserMailer do
     end
     
     it "should set a body that contain infos" do
-      @last_delivery.body.encoded.should include "your account has been deleted!"
+      @last_delivery.body.encoded.should include "Your account has been deleted."
     end
   end
   

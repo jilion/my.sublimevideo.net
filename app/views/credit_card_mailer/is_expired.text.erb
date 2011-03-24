@@ -1,4 +1,4 @@
-<%= intro %>
+<%= t("mailer.intro_generic") %>
 
 Your credit card is expired, your account is then suspended.
 
@@ -6,4 +6,4 @@ Please update your credit card information by clicking on the link below:
 
 https://<%= ActionMailer::Base.default_url_options[:host] %>/card/edit
 
-<%= signature %>
+<%= t("mailer.signature") %>

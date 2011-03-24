@@ -1,4 +1,4 @@
-<%= intro(@transaction.user.full_name) %>
+<%= t("mailer.intro_name", name: @transaction.user.full_name) %>
 
 We couldn't charge the following invoices: <%= @transaction.invoices.map { |i| "##{i.reference}" }.join(", ") %>.
 
@@ -20,4 +20,4 @@ Invoices:
 
 If you have any questions, please use our support form: https://my.sublimevideo.net/support
 
-<%= signature %>
+<%= t("mailer.signature") %>

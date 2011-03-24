@@ -31,7 +31,7 @@ describe TransactionMailer do
     specify do
       @last_delivery.subject.should == "Charging for \"SublimeVideo Invoices: ##{@invoice.reference}\" has failed."
       @last_delivery.body.encoded.should include subject.user.full_name
-      @last_delivery.body.encoded.should include "we couldn't charge the following invoices"
+      @last_delivery.body.encoded.should include "We couldn't charge the following invoices: ##{@invoice.reference}"
       @last_delivery.body.encoded.should include "Transaction information:"
       @last_delivery.body.encoded.should include "https://my.sublimevideo.net/support"
     end
