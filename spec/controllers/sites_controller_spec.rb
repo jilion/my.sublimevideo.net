@@ -117,9 +117,9 @@ describe SitesController do
           end
 
           it "should redirect to /sites when payment is ok without 3-d secure" do
-            @mock_transaction.should_receive(:waiting_d3d?)   { false }
-            @mock_transaction.should_receive(:failed?)        { false }
-            @mock_transaction.should_receive(:paid?)          { true }
+            @mock_transaction.should_receive(:waiting_d3d?) { false }
+            @mock_transaction.should_receive(:failed?)      { false }
+            @mock_transaction.should_receive(:unprocessed?) { false }
 
             post :create, :site => {}
             flash[:notice].should be_present
@@ -127,11 +127,10 @@ describe SitesController do
           end
 
           it "should redirect to /sites when payment is ok without 3-d secure" do
-            @mock_transaction.should_receive(:waiting_d3d?)    { false }
-            @mock_transaction.should_receive(:failed?)         { false }
-            @mock_transaction.should_receive(:paid?)           { false }
-            @mock_transaction.should_receive(:unprocessed?)    { true }
-            @mock_transaction.should_receive(:error_key)       { "unknown" }
+            @mock_transaction.should_receive(:waiting_d3d?) { false }
+            @mock_transaction.should_receive(:failed?)      { false }
+            @mock_transaction.should_receive(:unprocessed?) { true }
+            @mock_transaction.should_receive(:error_key)    { "unknown" }
 
             post :create, :site => {}
             flash[:notice].should == I18n.t("transaction.errors.unknown")

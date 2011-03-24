@@ -40,27 +40,12 @@ class SitesController < ApplicationController
 
     respond_with(@site) do |format|
       if @site.save # will create invoice and charge...
-
-        if @site.in_or_will_be_in_paid_plan?
-          transaction = @site.last_invoice.last_transaction
-
-          if transaction.waiting_d3d?
-            format.html { render :text => transaction.d3d_html }
-
-          elsif transaction.failed?
-            format.html { redirect_to :sites, :notice => "", :alert => t("transaction.errors.#{transaction.error_key}") }
-
-          elsif transaction.paid?
-            format.html { redirect_to :sites }
-
-          elsif transaction.unprocessed?
-            format.html { redirect_to :sites, :notice => t("transaction.errors.#{transaction.error_key}") }
-          end
-
+        transaction = @site.in_or_will_be_in_paid_plan? ? @site.last_invoice.last_transaction : nil
+        if transaction && transaction.waiting_d3d?
+          format.html { render :text => transaction.d3d_html }
         else
-          format.html { redirect_to :sites }
+          format.html { redirect_to :sites, notice_and_alert_from_transaction(transaction) }
         end
-
       else
         format.html { render :new }
       end
@@ -115,6 +100,16 @@ private
 
   def find_by_token
     @site = current_user.sites.find_by_token(params[:id])
+  end
+  
+  def notice_and_alert_from_transaction(transaction)
+    if transaction && transaction.failed?
+      { notice: "", alert: t("transaction.errors.#{transaction.error_key}") }
+    elsif transaction && transaction.unprocessed?
+      { notice: t("transaction.errors.#{transaction.error_key}"), alert: nil }
+    else
+      { notice: nil, alert: nil }
+    end
   end
 
 end
