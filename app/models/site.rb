@@ -201,7 +201,7 @@ class Site < ActiveRecord::Base
   end
 
   def path=(attribute)
-    write_attribute :path, attribute.sub('/', '')
+    write_attribute :path, attribute.downcase.gsub(/^\/|\/$/, '')
   end
 
   def plan_id=(attribute)

@@ -39,7 +39,7 @@ feature "Sites" do
           site = @current_user.sites.last
           site.hostname.should == ""
           site.loader.read.should include(site.token)
-          site.license.read.should include(site.license_json)
+          site.license.read.should include(site.license_hash)
 
           current_url.should =~ %r(http://[^/]+/sites)
           page.should have_content('add a hostname')
@@ -54,7 +54,7 @@ feature "Sites" do
           site = @current_user.sites.last
           site.hostname.should == "rymai.com"
           site.loader.read.should include(site.token)
-          site.license.read.should include(site.license_json)
+          site.license.read.should include(site.license_hash)
 
           current_url.should =~ %r(http://[^/]+/sites)
           page.should have_content('rymai.com')
@@ -116,7 +116,7 @@ feature "Sites" do
             site.last_invoice.reload.should be_paid
             site.hostname.should == "rymai.com"
             site.loader.read.should include(site.token)
-            site.license.read.should include(site.license_json)
+            site.license.read.should include(site.license_hash)
             site.plan_id.should == Plan.find_by_name_and_cycle("comet", "year").id
             site.pending_plan_id.should be_nil
             site.first_paid_plan_started_at.should be_present
@@ -143,7 +143,7 @@ feature "Sites" do
             site.last_invoice.should be_paid
             site.hostname.should == "rymai.com"
             site.loader.read.should include(site.token)
-            site.license.read.should include(site.license_json)
+            site.license.read.should include(site.license_hash)
             site.plan_id.should == Plan.find_by_name_and_cycle("comet", "year").id
             site.pending_plan_id.should be_nil
             site.first_paid_plan_started_at.should be_present
@@ -210,7 +210,7 @@ feature "Sites" do
             site.reload.last_invoice.should be_paid
             site.hostname.should == "rymai.com"
             site.loader.read.should include(site.token)
-            site.license.read.should include(site.license_json)
+            site.license.read.should include(site.license_hash)
             site.plan_id.should == Plan.find_by_name_and_cycle("comet", "year").id
             site.pending_plan_id.should be_nil
             site.first_paid_plan_started_at.should be_present
@@ -283,7 +283,7 @@ feature "Sites" do
             site.last_invoice.should be_paid
             site.hostname.should == "rymai.com"
             site.loader.read.should include(site.token)
-            site.license.read.should include(site.license_json)
+            site.license.read.should include(site.license_hash)
             site.plan_id.should == Plan.find_by_name_and_cycle("custom1", "year").id
             site.pending_plan_id.should be_nil
             site.first_paid_plan_started_at.should be_present
@@ -323,7 +323,7 @@ feature "Sites" do
         site = @current_user.sites.last
         site.hostname.should == "google.com"
         site.loader.read.should include(site.token)
-        site.license.read.should include(site.license_json)
+        site.license.read.should include(site.license_hash)
 
         current_url.should =~ %r(http://[^/]+/sites)
         page.should have_content('google.com')
@@ -344,7 +344,7 @@ feature "Sites" do
         site = @current_user.sites.last
         site.hostname.should == "google.com"
         site.loader.read.should include(site.token)
-        site.license.read.should include(site.license_json)
+        site.license.read.should include(site.license_hash)
 
         current_url.should =~ %r(http://[^/]+/sites)
         page.should have_content('google.com')
