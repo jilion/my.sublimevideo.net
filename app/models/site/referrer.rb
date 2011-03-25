@@ -40,6 +40,7 @@ private
 
   def self.referrer_match_hostname?(referrer, hostname, path = '', wildcard = false)
     referrer = URI.parse(referrer)
+    hostname = hostname.gsub('.', '\.')
     if path || wildcard
       (referrer.host =~ /^(#{wildcard ? '.*' : 'www'}\.)?#{hostname}$/i) && (path.blank? || referrer.path =~ /^\/#{path}($|\/.*$)/i)
     else

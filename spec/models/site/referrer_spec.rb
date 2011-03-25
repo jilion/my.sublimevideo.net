@@ -62,6 +62,25 @@ describe Site::Referrer do
       end
     end
 
+    context "with hostname with subdomain" do
+      before(:all) do
+        @site = Factory(:site, hostname: "blog.jilion.com")
+      end
+      subject { @site }
+
+      it { subject.referrer_type("http://blog.jilion.com").should == "main" }
+      it { subject.referrer_type("http://www.blog.jilion.com").should == "main" }
+      it { subject.referrer_type("http://blog.jilion.com:80/demo").should == "main" }
+      it { subject.referrer_type("https://blog.jilion.com").should == "main" }
+
+      it { subject.referrer_type("http://blog-jilion.com").should == "invalid" }
+      it { subject.referrer_type("http://blog.jilion.local").should == "invalid" }
+      it { subject.referrer_type("http://google.com").should == "invalid" }
+      it { subject.referrer_type("google.com").should == "invalid" }
+      it { subject.referrer_type("jilion.com").should == "invalid" }
+      it { subject.referrer_type("-").should == "invalid" }
+    end
+
     context "with wildcard" do
       before(:all) do
         @site = Factory(:site, hostname: "jilion.com", extra_hostnames: 'jilion.org, jilion.net', dev_hostnames: "jilion.local, localhost, 127.0.0.1", wildcard: true)

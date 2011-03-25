@@ -148,53 +148,216 @@ describe Site::Templates do
   describe "Instance Methods" do
 
     describe "#prepare_cdn_update" do
-      before(:all) do
-        @site = Factory(:site, plan_id: @paid_plan.id).tap { |s| s.update_attribute(:cdn_up_to_date, true) }
-      end
 
-      context "new record" do
-        subject do
-          site = Factory.build(:new_site, plan_id: @paid_plan.id)
-          site.send :prepare_cdn_update
-          site
-        end
-
-        its(:cdn_up_to_date) { should be_false }
-      end
-
-      context "player_mode changed" do
-        subject do
-          @site.reload.player_mode = "beta"
+      context "new record with dev plan" do
+        before(:all) do
+          @site = Factory.build(:new_site, plan_id: @dev_plan.id)
           @site.send :prepare_cdn_update
-          @site
         end
+        subject { @site }
 
-        its(:cdn_up_to_date) { should be_false }
+        its(:plan_id)              { should be_nil }
+        its(:pending_plan_id)      { should == @dev_plan.id }
+        its(:cdn_up_to_date)       { should be_true }
+        its(:loader_needs_update)  { should be_false }
+        its(:license_needs_update) { should be_false }
       end
 
-      context "state changed" do
-        subject do
-          @site.reload.plan = @dev_plan
+      context "new record with paid plan" do
+        before(:all) do
+          @site = Factory.build(:new_site, plan_id: @paid_plan.id)
           @site.send :prepare_cdn_update
-          @site
         end
+        subject { @site }
 
-        its(:cdn_up_to_date) { should be_false }
+        its(:plan_id)              { should be_nil }
+        its(:pending_plan_id)      { should == @paid_plan.id }
+        its(:cdn_up_to_date)       { should be_true }
+        its(:loader_needs_update)  { should be_false }
+        its(:license_needs_update) { should be_false }
       end
 
-      { hostname: "test.com", extra_hostnames: "test.staging.com", dev_hostnames: "test.local", path: "yu", wildcard: true }.each do |attribute, value|
-        describe "#{attribute} has changed" do
-          subject do
-            @site.reload.send("#{attribute}=", value)
+      context "new record with dev plan (apply_pending_plan_changes called)" do
+        before(:all) do
+          @site = Factory.build(:new_site, plan_id: @dev_plan.id)
+          @site.save
+        end
+        subject { @site }
+
+        its(:plan_id)              { should == @dev_plan.id  }
+        its(:pending_plan_id)      { should be_nil }
+        its(:cdn_up_to_date)       { should be_false }
+        its(:loader_needs_update)  { should be_true }
+        its(:license_needs_update) { should be_true }
+
+        describe "when change player_mode" do
+          before(:all) do
+            @site.reload.player_mode = "beta"
             @site.send :prepare_cdn_update
-            @site
           end
+          subject { @site }
 
-          its(:cdn_up_to_date) { should be_false }
+          its(:cdn_up_to_date)       { should be_false }
+          its(:loader_needs_update)  { should be_true }
+          its(:license_needs_update) { should be_false }
+        end
+
+        { hostname: "test.com", extra_hostnames: "test.staging.com", dev_hostnames: "test.local", path: "yu", wildcard: true }.each do |attribute, value|
+          describe "when #{attribute} has changed" do
+            before(:all) do
+              @site.reload.send("#{attribute}=", value)
+              @site.send :prepare_cdn_update
+            end
+            subject { @site }
+
+            its(:cdn_up_to_date)       { should be_false }
+            its(:loader_needs_update)  { should be_false }
+            its(:license_needs_update) { should be_true }
+          end
+        end
+
+        describe "when upgrade" do
+          before(:all) do
+            @site = Factory(:site, plan_id: @dev_plan.id)
+            @site.plan_id = @paid_plan.id
+            @site.send :prepare_cdn_update
+          end
+          subject { @site }
+
+          its(:plan_id)              { should == @dev_plan.id }
+          its(:pending_plan_id)      { should == @paid_plan.id }
+          its(:cdn_up_to_date)       { should be_true }
+          its(:loader_needs_update)  { should be_false }
+          its(:license_needs_update) { should be_false }
+        end
+
+        describe "when upgrade (apply_pending_plan_changes called)" do
+          before(:all) do
+            @site = Factory(:site, plan_id: @dev_plan.id)
+            @site.plan_id = @paid_plan.id
+            VCR.use_cassette('ogone/visa_payment_generic') do
+              @site.pend_plan_changes
+              @site.apply_pending_plan_changes
+            end
+          end
+          subject { @site }
+
+          its(:plan_id)              { should == @paid_plan.id  }
+          its(:pending_plan_id)      { should be_nil }
+          its(:cdn_up_to_date)       { should be_false }
+          its(:loader_needs_update)  { should be_false }
+          its(:license_needs_update) { should be_true }
         end
       end
 
-    end
+      context "new record with paid plan (apply_pending_plan_changes called)" do
+        before(:all) do
+          @site = Factory.build(:new_site, plan_id: @paid_plan.id)
+          VCR.use_cassette('ogone/visa_payment_generic') do
+            @site.pend_plan_changes
+            @site.apply_pending_plan_changes
+          end
+        end
+        subject { @site }
+
+        its(:plan_id)              { should == @paid_plan.id  }
+        its(:pending_plan_id)      { should be_nil }
+        its(:cdn_up_to_date)       { should be_false }
+        its(:loader_needs_update)  { should be_true }
+        its(:license_needs_update) { should be_true }
+
+        describe "when change player_mode" do
+          before(:all) do
+            @site.reload.player_mode = "beta"
+            @site.send :prepare_cdn_update
+          end
+          subject { @site }
+
+          its(:cdn_up_to_date)       { should be_false }
+          its(:loader_needs_update)  { should be_true }
+          its(:license_needs_update) { should be_false }
+        end
+
+        { hostname: "test.com", extra_hostnames: "test.staging.com", dev_hostnames: "test.local", path: "yu", wildcard: true }.each do |attribute, value|
+          describe "when #{attribute} has changed" do
+            before(:all) do
+              @site.reload.send("#{attribute}=", value)
+              @site.send :prepare_cdn_update
+            end
+            subject { @site }
+
+            its(:cdn_up_to_date)       { should be_false }
+            its(:loader_needs_update)  { should be_false }
+            its(:license_needs_update) { should be_true }
+          end
+        end
+
+        describe "when downgrade" do
+          before(:all) do
+            @site = Factory(:site, plan_id: @paid_plan.id)
+            @site.plan_id = @dev_plan.id
+            @site.send :prepare_cdn_update
+          end
+          subject { @site }
+
+          its(:plan_id)              { should == @paid_plan.id  }
+          its(:pending_plan_id)      { should be_nil }
+          its(:next_cycle_plan_id)   { should == @dev_plan.id }
+          its(:cdn_up_to_date)       { should be_true }
+          its(:loader_needs_update)  { should be_false }
+          its(:license_needs_update) { should be_false }
+        end
+
+        describe "when upgrade" do
+          before(:all) do
+            @site = Factory(:site, plan_id: @paid_plan.id)
+            @site.plan_id = @custom_plan.token
+            @site.send :prepare_cdn_update
+          end
+          subject { @site }
+
+          its(:plan_id)              { should == @paid_plan.id }
+          its(:pending_plan_id)      { should == @custom_plan.id }
+          its(:cdn_up_to_date)       { should be_true }
+          its(:loader_needs_update)  { should be_false }
+          its(:license_needs_update) { should be_false }
+        end
+
+        describe "when unsuspend" do
+          before(:all) do
+            @site = Factory(:site, plan_id: @paid_plan.id)
+            @site.suspend
+            @site.reload
+            @site.unsuspend
+          end
+          subject { @site }
+
+          its(:plan_id)              { should == @paid_plan.id }
+          its(:pending_plan_id)      { should be_nil }
+          its(:cdn_up_to_date)       { should be_false }
+          its(:loader_needs_update)  { should be_true }
+          its(:license_needs_update) { should be_true }
+        end
+
+        describe "when upgrade (apply_pending_plan_changes called)" do
+          before(:all) do
+            @site = Factory(:site, plan_id: @paid_plan.id)
+            @site.plan_id = @custom_plan.token
+            VCR.use_cassette('ogone/visa_payment_generic') do
+              @site.pend_plan_changes
+              @site.apply_pending_plan_changes
+            end
+          end
+          subject { @site }
+
+          its(:plan_id)              { should == @custom_plan.id }
+          its(:pending_plan_id)      { should be_nil }
+          its(:cdn_up_to_date)       { should be_true }
+          its(:loader_needs_update)  { should be_false }
+          its(:license_needs_update) { should be_false }
+        end
+      end
+    end # #prepare_cdn_update
 
     describe "#settings_changed?" do
       subject { Factory(:site) }

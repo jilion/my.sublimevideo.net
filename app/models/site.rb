@@ -10,6 +10,7 @@ class Site < ActiveRecord::Base
   # Versioning
   has_paper_trail
 
+  attr_accessor :loader_needs_update, :license_needs_update
   attr_accessor :user_attributes, :d3d_options
 
   attr_accessible :hostname, :dev_hostnames, :extra_hostnames, :path, :wildcard, :plan_id, :user_attributes
