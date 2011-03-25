@@ -48,14 +48,16 @@ module Site::Templates
   # = Instance Methods =
   # ====================
 
-  def license_json
-    hash = { h: [], w: wildcard }
+  def license_hash
+    hash = {}
     unless in_dev_plan?
-      hash[:h] << [hostname, path].compact.join('/')
-      hash[:h] += extra_hostnames.split(', ').map { |hostname| [hostname, path].compact.join('/') } if extra_hostnames?
+      hash[:h] = [hostname]
+      hash[:h] += extra_hostnames.split(', ') if extra_hostnames?
+      hash[:p] = path if path.present?
     end
-    hash[:h] += dev_hostnames.split(', ')
-    hash.to_json
+    hash[:d] = dev_hostnames.split(', ') if dev_hostnames?
+    hash[:w] = wildcard if wildcard?
+      hash
   end
 
   def set_template(name)

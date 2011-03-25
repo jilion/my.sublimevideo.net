@@ -395,9 +395,25 @@ describe Site do
     end
 
     describe "path=" do
-      it "should remove first /" do
-        site = Factory(:site, path: '/users/thibaud')
-        site.path.should == 'users/thibaud'
+      describe "should remove first /" do
+        subject { Factory(:site, path: '/users/thibaud') }
+
+        its(:path) { should == 'users/thibaud' }
+      end
+      describe "should downcase path" do
+        subject { Factory(:site, path: '/Users/thibaud') }
+
+        its(:path) { should == 'users/thibaud' }
+      end
+      describe "should last first /" do
+        subject { Factory(:site, path: 'users/thibaud/') }
+
+        its(:path) { should == 'users/thibaud' }
+      end
+      describe "should both /" do
+        subject { Factory(:site, path: '/users/') }
+
+        its(:path) { should == 'users' }
       end
     end
 
@@ -757,7 +773,7 @@ describe Site do
         it "should not set user_attributes with downgrade a paid site to dev plan" do
           subject.first_name.should == "Bob"
           site = Factory(:site, user: subject, plan_id: @paid_plan.id)
-          puts site.update_attributes(plan_id: @dev_plan.id, user_attributes: { first_name: "John" })
+          site.update_attributes(plan_id: @dev_plan.id, user_attributes: { first_name: "John" })
           site.user.first_name.should == "Bob"
           site.plan_id.should == @paid_plan.id
           site.next_cycle_plan_id.should == @dev_plan.id

@@ -35,6 +35,7 @@ describe Site::Referrer do
       end
       subject { @site }
 
+      it { subject.referrer_type("http://Jilion.com").should == "main" }
       it { subject.referrer_type("http://jilion.com").should == "main" }
       it { subject.referrer_type("http://jilion.com/test/cool").should == "main" }
       it { subject.referrer_type("https://jilion.com").should == "main" }
@@ -102,20 +103,23 @@ describe Site::Referrer do
 
     context "with path" do
       before(:all) do
-        @site = Factory(:site, hostname: "jilion.com", extra_hostnames: 'jilion.org, staging.jilion.com', dev_hostnames: "jilion.local, localhost, 127.0.0.1", path: "demo")
+        @site = Factory(:site, hostname: "jilion.com", extra_hostnames: 'jilion.org, staging.jilion.com', dev_hostnames: "jilion.local, localhost, 127.0.0.1", path: "demo/boo")
       end
       subject { @site }
 
-      it { subject.referrer_type("http://jilion.com/demo").should == "main" }
-      it { subject.referrer_type("https://jilion.com/demo").should == "main" }
-      it { subject.referrer_type("http://jilion.com:80/demo").should == "main" }
-      it { subject.referrer_type("https://jilion.com:443/demo").should == "main" }
-      it { subject.referrer_type("http://jilion.com/demo/cool").should == "main" }
+      it { subject.referrer_type("http://jilion.com/Demo/boo").should == "main" }
+      it { subject.referrer_type("http://jilion.com/demo/boo").should == "main" }
+      it { subject.referrer_type("http://jilion.com/demo/boo/cool").should == "main" }
+      it { subject.referrer_type("https://jilion.com/demo/boo/").should == "main" }
+      it { subject.referrer_type("http://jilion.com:80/demo/boo").should == "main" }
+      it { subject.referrer_type("https://jilion.com:443/demo/boo").should == "main" }
+      it { subject.referrer_type("http://jilion.com/demo/boo/cool").should == "main" }
 
-      it { subject.referrer_type("http://jilion.org/demo").should == "extra" }
-      it { subject.referrer_type("http://jilion.org:80/demo").should == "extra" }
-      it { subject.referrer_type("http://jilion.org/demo/cool").should == "extra" }
-      it { subject.referrer_type("http://staging.jilion.com/demo/cool").should == "extra" }
+      it { subject.referrer_type("http://jilion.org/demo/boo").should == "extra" }
+      it { subject.referrer_type("http://jilion.org:80/demo/boo").should == "extra" }
+      it { subject.referrer_type("http://jilion.org:80/demo/boo/").should == "extra" }
+      it { subject.referrer_type("http://jilion.org/demo/boo/cool").should == "extra" }
+      it { subject.referrer_type("http://staging.jilion.com/demo/boo/cool").should == "extra" }
 
       it { subject.referrer_type("http://jilion.local").should == "dev" }
       it { subject.referrer_type("http://127.0.0.1:3000/demo/super.html").should == "dev" }
@@ -126,13 +130,15 @@ describe Site::Referrer do
       it { subject.referrer_type("http://cool.jilion.local").should == "invalid" }
       it { subject.referrer_type("http://cool.jilion.local/demo").should == "invalid" }
       # wrong path
+      it { subject.referrer_type("http://jilion.com/demoo").should == "invalid" }
+      it { subject.referrer_type("http://jilion.com/demo/booo").should == "invalid" }
       it { subject.referrer_type("http://jilion.com/test/cool").should == "invalid" }
       it { subject.referrer_type("http://jilion.com:80/test").should == "invalid" }
       it { subject.referrer_type("https://jilion.com:443/test").should == "invalid" }
       # right path, but not registered main or extra domain but containing main or extra domain in it
-      it { subject.referrer_type("http://superjilion.com/demo").should == "invalid" }
-      it { subject.referrer_type("http://superjilion.org/demo").should == "invalid" }
-      it { subject.referrer_type("http://topstaging.jilion.com/demo").should == "invalid" }
+      it { subject.referrer_type("http://superjilion.com/demo/boo").should == "invalid" }
+      it { subject.referrer_type("http://superjilion.org/demo/boo").should == "invalid" }
+      it { subject.referrer_type("http://topstaging.jilion.com/demo/boo").should == "invalid" }
       # not allowed without path
       it { subject.referrer_type("http://jilion.com").should == "invalid" }
       it { subject.referrer_type("http://jilion.org").should == "invalid" }
@@ -158,8 +164,12 @@ describe Site::Referrer do
       subject { @site }
 
       it { subject.referrer_type("http://jilion.com/demo").should == "main" }
+      it { subject.referrer_type("http://jilion.com/Demo").should == "main" }
       it { subject.referrer_type("https://jilion.com/demo").should == "main" }
+      it { subject.referrer_type("https://jilion.com/demo/").should == "main" }
+      it { subject.referrer_type("https://Jilion.com/demo").should == "main" }
       it { subject.referrer_type("http://staging.jilion.com/demo").should == "main" }
+      it { subject.referrer_type("http://staging.jilion.com/demo/bob").should == "main" }
       it { subject.referrer_type("http://staging.jilion.com:80/demo").should == "main" }
       it { subject.referrer_type("http://jilion.com/demo/cool").should == "main" }
       it { subject.referrer_type("http://jilion.com:80/demo").should == "main" }
@@ -182,6 +192,7 @@ describe Site::Referrer do
       it { subject.referrer_type("http://superjilion.org/demo").should == "invalid" }
       # not allowed without path
       it { subject.referrer_type("http://blog.jilion.com").should == "invalid" }
+      it { subject.referrer_type("http://blog.jilion.com/demoo").should == "invalid" }
       it { subject.referrer_type("http://jilion.com").should == "invalid" }
       it { subject.referrer_type("http://jilion.com/test/cool").should == "invalid" }
       it { subject.referrer_type("https://jilion.com").should == "invalid" }

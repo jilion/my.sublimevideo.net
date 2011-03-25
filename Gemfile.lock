@@ -5,10 +5,12 @@ GIT
     useragent (0.2.3)
 
 GIT
-  remote: git://github.com/irohiroki/spork.git
-  revision: 285a57813f5390fed1b3ab869f36aaae35baef4e
+  remote: git://github.com/guard/guard-spork.git
+  revision: 0c8ba01c8604dac44ea43fa9bc6dd94f28fc612e
   specs:
-    spork (0.9.0.rc4)
+    guard-spork (0.1.6)
+      guard (>= 0.2.2)
+      spork (>= 0.8.4)
 
 GIT
   remote: git://github.com/jnicklas/capybara.git
@@ -173,10 +175,6 @@ GEM
       guard (~> 0.3)
     guard-rspec (0.2.0)
       guard (>= 0.2.2)
-    guard-spork (0.1.6)
-      guard (>= 0.2.2)
-      sfl (= 1.2)
-      spork (>= 0.8.4)
     haml (3.0.25)
     hashie (0.4.0)
     heroku (1.18.3)
@@ -292,11 +290,11 @@ GEM
       rubyzip
     sequel (3.20.0)
     settingslogic (2.0.6)
-    sfl (1.2)
     shoulda (2.11.3)
     silent-postgres (0.0.7)
     sinatra (1.0)
       rack (>= 1.0)
+    spork (0.9.0.rc4)
     spruz (0.2.5)
     sqlite3 (1.3.3)
     sqlite3-ruby (1.3.3)
@@ -360,7 +358,7 @@ DEPENDENCIES
   guard-livereload
   guard-passenger
   guard-rspec
-  guard-spork
+  guard-spork!
   haml (= 3.0.25)
   has_scope!
   heroku
@@ -393,7 +391,7 @@ DEPENDENCIES
   settingslogic (= 2.0.6)
   shoulda
   silent-postgres
-  spork!
+  spork (~> 0.9.0.rc4)
   state_machine (= 0.10.1)
   taps
   timecop

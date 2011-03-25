@@ -211,7 +211,7 @@ describe Site::Templates do
       end
     end
 
-    describe "#license_json" do
+    describe "#license_hash" do
       before(:all) do
         @site_with_all = Factory(:site, plan_id: @dev_plan.id, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', path: 'foo', wildcard: true)
         @site_without_wildcard = Factory(:site, plan_id: @dev_plan.id, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', path: 'foo', wildcard: false)
@@ -223,14 +223,14 @@ describe Site::Templates do
         context "site with all settings" do
           subject { @site_with_all }
           it "should include only dev hostnames without path" do
-            subject.reload.license_json.should == { h: ['127.0.0.1', 'localhost'], w: true }.to_json
+            subject.reload.license_hash.should == { d: ['127.0.0.1', 'localhost'], w: true }
           end
         end
 
         context "site without wildcard" do
           subject { @site_without_wildcard }
           it "should include only dev hostnames without path and wildcard" do
-            subject.license_json.should == { h: ['127.0.0.1', 'localhost'], w: false }.to_json
+            subject.license_hash.should == { d: ['127.0.0.1', 'localhost'] }
           end
         end
 
@@ -238,7 +238,7 @@ describe Site::Templates do
         context "site without path" do
           subject { @site_without_path.reload }
           it "should include only dev hostnames without path" do
-            subject.reload.license_json.should == { h: ['127.0.0.1', 'localhost'], w: true }.to_json
+            subject.reload.license_hash.should == { d: ['127.0.0.1', 'localhost'], w: true }
           end
         end
       end
@@ -249,7 +249,7 @@ describe Site::Templates do
             subject { @site_with_all.reload }
             it "should include hostname, extra_hostnames, path, wildcard & dev_hostnames" do
               subject.plan = instance_variable_get(:"@#{plan_name}_plan")
-              subject.license_json.should == { h: ['jilion.com/foo', 'jilion.net/foo', 'jilion.org/foo', '127.0.0.1', 'localhost'], w: true }.to_json
+              subject.license_hash.should == { h: ['jilion.com', 'jilion.net', 'jilion.org'], p: "foo", d: ['127.0.0.1', 'localhost'], w: true }
             end
           end
 
@@ -257,7 +257,7 @@ describe Site::Templates do
             subject { @site_without_wildcard.reload }
             it "should include hostname, extra_hostnames, path, no wildcard & dev_hostnames" do
               subject.plan = instance_variable_get(:"@#{plan_name}_plan")
-              subject.license_json.should == { h: ['jilion.com/foo', 'jilion.net/foo', 'jilion.org/foo', '127.0.0.1', 'localhost'], w: false }.to_json
+              subject.license_hash.should == { h: ['jilion.com', 'jilion.net', 'jilion.org'], p: "foo", d: ['127.0.0.1', 'localhost'] }
             end
           end
 
@@ -265,7 +265,7 @@ describe Site::Templates do
             subject { @site_without_path.reload }
             it "should include hostname, extra_hostnames, no path, wildcard & dev_hostnames" do
               subject.plan = instance_variable_get(:"@#{plan_name}_plan")
-              subject.license_json.should == { h: ['jilion.com', 'jilion.net', 'jilion.org', '127.0.0.1', 'localhost'], w: true }.to_json
+              subject.license_hash.should == { h: ['jilion.com', 'jilion.net', 'jilion.org'], d: ['127.0.0.1', 'localhost'], w: true }
             end
           end
 
@@ -273,7 +273,7 @@ describe Site::Templates do
             subject { @site_without_extra_hostnames.reload }
             it "should include hostname, no extra_hostnames, path, wildcard & dev_hostnames" do
               subject.plan = instance_variable_get(:"@#{plan_name}_plan")
-              subject.license_json.should == { h: ['jilion.com', '127.0.0.1', 'localhost'], w: true }.to_json
+              subject.license_hash.should == { h: ['jilion.com'], d: ['127.0.0.1', 'localhost'], w: true }
             end
           end
 
@@ -284,12 +284,13 @@ describe Site::Templates do
     describe "#set_template" do
       context "license" do
         before(:all) do
-          @site = Factory(:site).tap { |s| s.set_template("license") }
+          @site = Factory(:site, plan_id: @paid_plan.id, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', path: 'foo', wildcard: true)
+          @site.tap { |s| s.set_template("license") }
         end
         subject { @site }
 
-        it "should set license file with license_json" do
-          subject.license.read.should include(subject.license_json)
+        it "should set license file with license_hash" do
+          subject.license.read.should == "jilion.sublime.video.sites({h:[\"jilion.com\",\"jilion.net\",\"jilion.org\"],p:\"foo\",d:[\"127.0.0.1\",\"localhost\"],w:true});"
         end
       end
 
