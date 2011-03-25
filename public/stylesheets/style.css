@@ -644,6 +644,7 @@ form p.note, #content form label.note {
 }
 
 #content form .entry.select select {
+  max-width:300px;
   margin-right:6px;
   font-size:13px;
   background:#fefefe;
@@ -2011,12 +2012,29 @@ ul#addons .checkbox_wrap input:focus:checked + label {background-position:0 -102
 #credit_card .right {
   width:390px;
   float:left;
-  padding:80px 0 0 20px;
+  padding:50px 0 0 20px;
 }
 
 #credit_card .right .billing_info {
-  color:#666d7a;
-  line-height:20px;
+  color:#545e75;
+  font-size:13px;
+  line-height:18px;
+  width:265px;
+  padding:13px 10px 10px 60px;
+  background-color:#a4acb8;
+  background:rgba(0,0,0,0.1) url(/images/embed/credit_cards/secure_icon.png) no-repeat 15px 15px;
+  text-shadow:rgba(255,255,255,0.4) 0 1px 0;
+  -moz-border-radius:6px;
+  -webkit-border-radius:6px;
+  border-radius:6px;
+  -moz-box-shadow: inset rgba(0,0,0,0.5) 0 1px 3px, rgba(255,255,255,0.4) 0 1px 0;
+  -webkit-box-shadow: inset rgba(0,0,0,0.5) 0 1px 3px, rgba(255,255,255,0.4) 0 1px 0;
+  box-shadow: inset rgba(0,0,0,0.5) 0 1px 3px, rgba(255,255,255,0.4) 0 1px 0;
+}
+
+#credit_card .right .billing_info a {
+  color:#1c263b;
+  border-bottom:1px solid #888;
 }
 
 #site .actions.center {
