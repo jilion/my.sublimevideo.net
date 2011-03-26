@@ -143,7 +143,7 @@ Factory.define :custom_plan, :class => Plan do |f|
 end
 
 Factory.define :invoice do |f|
-  f.association :site
+  f.association          :site
   f.invoice_items_amount 10000
   f.amount               10000
   f.vat_rate             0.08

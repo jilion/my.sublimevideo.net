@@ -60,7 +60,6 @@ ActiveRecord::Schema.define(:version => 20110223160948) do
     t.datetime "ended_at"
     t.integer  "price"
     t.integer  "amount"
-    t.text     "info"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -72,19 +71,22 @@ ActiveRecord::Schema.define(:version => 20110223160948) do
     t.integer  "site_id"
     t.string   "reference"
     t.string   "state"
+    t.string   "customer_full_name"
+    t.string   "customer_email"
+    t.string   "customer_country"
+    t.string   "customer_company_name"
     t.integer  "amount"
     t.float    "vat_rate"
     t.integer  "vat_amount"
     t.float    "discount_rate"
     t.integer  "discount_amount"
     t.integer  "invoice_items_amount"
-    t.integer  "charging_delayed_job_id"
-    t.integer  "invoice_items_count",     :default => 0
-    t.integer  "transactions_count",      :default => 0
+    t.integer  "invoice_items_count",   :default => 0
+    t.integer  "transactions_count",    :default => 0
     t.datetime "created_at"
     t.datetime "updated_at"
     t.datetime "paid_at"
-    t.datetime "failed_at"
+    t.datetime "last_failed_at"
   end
 
   add_index "invoices", ["reference"], :name => "index_invoices_on_reference", :unique => true

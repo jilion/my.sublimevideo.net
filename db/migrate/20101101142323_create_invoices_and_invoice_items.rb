@@ -6,38 +6,40 @@ class CreateInvoicesAndInvoiceItems < ActiveRecord::Migration
       t.string   :reference
       t.string   :state
 
+      t.string   :customer_full_name
+      t.string   :customer_email
+      t.string   :customer_country
+      t.string   :customer_company_name
+
       t.integer :amount
       t.float   :vat_rate
       t.integer :vat_amount
       t.float   :discount_rate
       t.integer :discount_amount
       t.integer :invoice_items_amount
-      t.integer :charging_delayed_job_id
 
       t.integer :invoice_items_count, :default => 0
       t.integer :transactions_count, :default => 0
 
       t.timestamps
       t.datetime :paid_at
-      t.datetime :failed_at
+      t.datetime :last_failed_at
     end
     add_index :invoices, :site_id
     add_index :invoices, :reference, :unique => true
 
     create_table :invoice_items do |t|
-      t.string   :type
+      t.string   :type       # STI
       t.integer  :invoice_id
 
-      t.string   :item_type
+      t.string   :item_type  # Polymorphic (e.g Plan)
       t.integer  :item_id
 
       t.datetime  :started_at
       t.datetime  :ended_at
 
-      t.integer   :price
-      t.integer   :amount
-
-      t.text     :info # serialized
+      t.integer   :price  # always positive
+      t.integer   :amount # can be negative (refund)
 
       t.timestamps
     end

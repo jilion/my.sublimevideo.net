@@ -16,11 +16,6 @@
 %hr
 %br
 
-- if zeno? && @invoice.charging_delayed_job_id?
-  %h3 Cancel delayed charging
-  = form_for [:cancel_charging, :admin, @invoice] do |f|
-    = f.submit "Cancel delayed charging"
-
 - if zeno? && @invoice.failed?
   %h3 Retry charging
   = form_for [:retry_charging, :admin, @invoice] do |f|

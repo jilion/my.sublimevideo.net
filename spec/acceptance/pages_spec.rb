@@ -32,7 +32,7 @@ describe "Pages" do
           @current_user.cc_expire_on = 1.month.ago
           @current_user.save(validate: false)
           @current_user.should be_cc_expired
-          @invoice     = Factory(:invoice, site: @site, state: 'failed', failed_at: Time.utc(2010,2,10), amount: 1990)
+          @invoice     = Factory(:invoice, site: @site, state: 'failed', last_failed_at: Time.utc(2010,2,10), amount: 1990)
           @transaction = Factory(:transaction, invoices: [@invoice], state: 'failed', error: "Credit Card expired")
           @current_user.suspend
           visit "/suspended"
@@ -47,7 +47,7 @@ describe "Pages" do
           page.should have_content("Update credit card")
           page.should have_content("You have to pay the following invoice(s) in order to see your account re-activated:")
           page.should have_content("$19.90 on #{I18n.l(@invoice.created_at, :format => :d_b_Y)}.")
-          page.should have_content("Charging failed on #{I18n.l(@invoice.failed_at, :format => :minutes_timezone)} with the following error:")
+          page.should have_content("Charging failed on #{I18n.l(@invoice.last_failed_at, :format => :minutes_timezone)} with the following error:")
           page.should have_content("\"#{@invoice.last_failed_transaction.error}\"")
         end
 
@@ -79,7 +79,7 @@ describe "Pages" do
         # FIXME Re-implement the "retry" charging method called from #charge_failed_invoices in user.rb
         pending "updating credit card and paying first failed invoice, then the second failed invoice" do
           @site2        = Factory(:site, user: @current_user)
-          @invoice2     = Factory(:invoice, site: @site, state: 'failed', failed_at: Time.utc(2010,2,10))
+          @invoice2     = Factory(:invoice, site: @site, state: 'failed', last_failed_at: Time.utc(2010,2,10))
           @transaction2 = Factory(:transaction, invoices: [@invoice2], state: 'failed', error: "Credit Card invalid")
           @worker.work_off
 
@@ -87,11 +87,11 @@ describe "Pages" do
 
           # FIXME
           # page.should have_content("$100.00 on January 2010")
-          page.should have_content("Charging failed on #{I18n.l(@invoice.failed_at, :format => :minutes_timezone)} with the following error:")
+          page.should have_content("Charging failed on #{I18n.l(@invoice.last_failed_at, :format => :minutes_timezone)} with the following error:")
           # FIXME
           # page.should have_content("\"#{@invoice.transactions.failed.last.error}\"")
           # page.should have_content("$100.00 on February 2010")
-          page.should have_content("Charging failed on #{I18n.l(@invoice2.failed_at, :format => :minutes_timezone)} with the following error:")
+          page.should have_content("Charging failed on #{I18n.l(@invoice2.last_failed_at, :format => :minutes_timezone)} with the following error:")
           # FIXME
           # page.should have_content("\"#{@invoice2.transactions.failed.last.error}\"")
 

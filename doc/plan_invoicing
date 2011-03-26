@@ -7,7 +7,7 @@ Every day at midnight:
     - Charging of all 'open' and 'failed' invoices (grouped by user)
       -> When a transaction:
         - succeed: included invoices are updated to 'paid' (and their paid_at is set)
-        - fail: included invoices are updated to 'fail' (and their failed_at is set)
+        - fail: included invoices are updated to 'fail' (and their last_failed_at is set)
 
 
 Commit message:
