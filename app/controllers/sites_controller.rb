@@ -3,7 +3,7 @@ class SitesController < ApplicationController
   respond_to :js, :only => [:index, :code]
 
   before_filter :redirect_suspended_user
-  before_filter :find_by_token, :only => [:code, :edit, :update, :destroy, :usage]
+  before_filter :find_by_token!, :only => [:code, :edit, :update, :destroy, :usage]
 
   has_scope :by_hostname
   has_scope :by_date
@@ -98,8 +98,8 @@ class SitesController < ApplicationController
 
 private
 
-  def find_by_token
-    @site = current_user.sites.find_by_token(params[:id])
+  def find_by_token!
+    @site = current_user.sites.find_by_token!(params[:id])
   end
   
   def notice_and_alert_from_transaction(transaction)

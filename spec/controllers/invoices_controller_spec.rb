@@ -9,7 +9,7 @@ describe InvoicesController do
 
     describe "GET :index" do
       it "should render :index with 'application' layout" do
-        authenticated_user.stub_chain(:sites, :find_by_token).and_return(mock_site)
+        authenticated_user.stub_chain(:sites, :find_by_token!).and_return(mock_site)
         mock_site.should_receive(:invoices).and_return([mock_invoice])
         get :index, :site_id => '1'
         assigns(:site).should == mock_site
@@ -21,7 +21,7 @@ describe InvoicesController do
 
     describe "GET :show" do
       it "should render :show" do
-        authenticated_user.stub_chain(:invoices, :find_by_reference).with('QWE123TYU').and_return(mock_invoice)
+        authenticated_user.stub_chain(:invoices, :find_by_reference!).with('QWE123TYU').and_return(mock_invoice)
 
         get :show, :id => 'QWE123TYU'
         assigns(:invoice).should == mock_invoice
@@ -32,7 +32,7 @@ describe InvoicesController do
 
     describe "PUT :pay" do
       it "should respond with redirect" do
-        authenticated_user.stub_chain(:invoices, :failed, :find_by_reference).with('QWE123TYU') { mock_invoice }
+        authenticated_user.stub_chain(:invoices, :failed, :find_by_reference!).with('QWE123TYU') { mock_invoice }
         mock_invoice.should_receive(:retry)
         post :pay, :id => 'QWE123TYU'
         assigns(:invoice).should == mock_invoice

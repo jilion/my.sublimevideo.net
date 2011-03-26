@@ -51,7 +51,7 @@ module SitesHelper
     if site.in_paid_plan?
       if site.first_plan_upgrade_required_alert_sent_at?
         "required_upgrade"
-      elsif site.plan_player_hits_reached_notification_sent_at? || site.current_monthly_billable_usage > site.plan.player_hits
+      elsif site.current_monthly_billable_usage > site.plan.player_hits
         "peak_insurance"
       end
     end

@@ -5,7 +5,7 @@ describe SitesController do
   context "with logged in user" do
     before :each do
       sign_in :user, authenticated_user
-      authenticated_user.stub_chain(:sites, :find_by_token).with('a1b2c3') { @mock_site = mock_site }
+      authenticated_user.stub_chain(:sites, :find_by_token!).with('a1b2c3') { @mock_site = mock_site }
       authenticated_user.stub_chain(:sites, :find).with('1') { @mock_site }
     end
 
