@@ -46,6 +46,17 @@ describe Site::Invoice do
 
   describe "Instance Methods" do
 
+    describe "invoices_failed?" do
+      subject do
+        site = Factory(:site)
+        Factory(:invoice, site: site , state: 'failed')
+        site
+      end
+
+      its(:invoices_failed?) { should be_true }
+    end
+
+
     describe "#in_beta_plan?" do
       subject { Factory(:site, plan_id: @beta_plan.id) }
 

@@ -48,10 +48,12 @@ module SitesHelper
   end
   
   def td_usage_class(site)
-    if site.in_paid_plan? && (site.plan_player_hits_reached_notification_sent_at? || site.current_billable_usage > site.plan.player_hits)
-      "peaks_insurance"
-    elsif site.first_plan_upgrade_required_alert_sent_at?
-      "required_upgrade"
+    if site.in_paid_plan?
+      if site.first_plan_upgrade_required_alert_sent_at?
+        "required_upgrade"
+      elsif site.plan_player_hits_reached_notification_sent_at? || site.current_monthly_billable_usage > site.plan.player_hits
+        "peaks_insurance"
+      end
     end
   end
 

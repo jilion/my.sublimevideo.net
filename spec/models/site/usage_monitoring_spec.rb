@@ -42,11 +42,11 @@ describe Site::UsageMonitoring do
         @site.reload.first_plan_upgrade_required_alert_sent_at.should be_present
       end
 
-      it "should just send alert" do
+      it "should not send alert" do
         @site.touch(:first_plan_upgrade_required_alert_sent_at)
         first_plan_upgrade_required_alert_sent_at = @site.first_plan_upgrade_required_alert_sent_at
 
-        UsageMonitoringMailer.should_receive(:plan_upgrade_required).with(@site).and_return ( mock(:deliver! => true) )
+        UsageMonitoringMailer.should_not_receive(:plan_upgrade_required).with(@site)
         Timecop.travel(Time.utc(2011,1,22)) { Site::UsageMonitoring.monitor_sites_usages }
         @site.reload.first_plan_upgrade_required_alert_sent_at.should == first_plan_upgrade_required_alert_sent_at # no change
       end

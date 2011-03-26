@@ -13,15 +13,15 @@ module Site::Templates
           if options[:loader]
             purge_loader = site.loader.present?
             site.set_template("loader")
-            site.purge_template("loader") if purge_loader
           end
           if options[:license]
             purge_license = site.license.present?
             site.set_template("license")
-            site.purge_template("license") if purge_license
           end
           site.cdn_up_to_date = true
           site.save!
+          site.purge_template("loader") if purge_loader
+          site.purge_template("license") if purge_license
         rescue => ex
           Notify.send(ex.message, :exception => ex)
         end
@@ -48,6 +48,11 @@ module Site::Templates
   # = Instance Methods =
   # ====================
 
+  # def cdn_up_to_date=(attribute)
+  #   puts "cdn_up_to_date= #{attribute}"
+  #   self
+  # end
+
   def license_hash
     hash = {}
     unless in_dev_plan?
@@ -57,7 +62,11 @@ module Site::Templates
     end
     hash[:d] = dev_hostnames.split(', ') if dev_hostnames?
     hash[:w] = wildcard if wildcard?
-      hash
+    hash
+  end
+
+  def license_js_hash
+    license_hash.to_s.gsub(/:|\s/, '').gsub(/\=\>/, ':')
   end
 
   def set_template(name)
@@ -102,7 +111,8 @@ private
       @license_needs_update = pending_plan_id.nil? && (settings_changed? || (plan_id_changed? && (plan_id_was.nil? || in_dev_plan? || Plan.find(plan_id_was).dev_plan?)))
     end
 
-    self.cdn_up_to_date = !(@loader_needs_update || @license_needs_update)
+    self.cdn_up_to_date = !(@loader_needs_update || @license_needs_update) if persisted?
+
     true
   end
 

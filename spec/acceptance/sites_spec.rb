@@ -39,7 +39,7 @@ feature "Sites" do
           site = @current_user.sites.last
           site.hostname.should == ""
           site.loader.read.should include(site.token)
-          site.license.read.should include(site.license_hash)
+          site.license.read.should include(site.license_js_hash)
 
           current_url.should =~ %r(http://[^/]+/sites)
           page.should have_content('add a hostname')
@@ -54,7 +54,7 @@ feature "Sites" do
           site = @current_user.sites.last
           site.hostname.should == "rymai.com"
           site.loader.read.should include(site.token)
-          site.license.read.should include(site.license_hash)
+          site.license.read.should include(site.license_js_hash)
 
           current_url.should =~ %r(http://[^/]+/sites)
           page.should have_content('rymai.com')
@@ -116,7 +116,7 @@ feature "Sites" do
             site.last_invoice.reload.should be_paid
             site.hostname.should == "rymai.com"
             site.loader.read.should include(site.token)
-            site.license.read.should include(site.license_hash)
+            site.license.read.should include(site.license_js_hash)
             site.plan_id.should == Plan.find_by_name_and_cycle("comet", "year").id
             site.pending_plan_id.should be_nil
             site.first_paid_plan_started_at.should be_present
@@ -143,7 +143,7 @@ feature "Sites" do
             site.last_invoice.should be_paid
             site.hostname.should == "rymai.com"
             site.loader.read.should include(site.token)
-            site.license.read.should include(site.license_hash)
+            site.license.read.should include(site.license_js_hash)
             site.plan_id.should == Plan.find_by_name_and_cycle("comet", "year").id
             site.pending_plan_id.should be_nil
             site.first_paid_plan_started_at.should be_present
@@ -173,7 +173,8 @@ feature "Sites" do
             # fake payment succeeded callback (and thus skip the d3d redirection)
             transaction.process_payment_response("PAYID" => "1234", "NCSTATUS" => "3", "STATUS" => "2", "ORDERID" => transaction.id.to_s)
             transaction.reload.should be_failed
-            site.reload.last_invoice.reload.should be_failed
+            site.reload.last_invoice.should be_failed
+            site.invoices_failed?.should be_true
             site.plan_id.should be_nil
             site.pending_plan_id.should == Plan.find_by_name_and_cycle("comet", "year").id
             site.first_paid_plan_started_at.should be_nil
@@ -184,14 +185,21 @@ feature "Sites" do
             site.pending_plan_cycle_started_at.should be_present
             site.pending_plan_cycle_ended_at.should be_present
 
+            site.cdn_up_to_date.should be_false
+            site.license.should be_blank
+            site.loader.should be_blank
+
             visit "/sites"
-            
+
             current_url.should =~ %r(http://[^/]+/sites)
             page.should have_content("Site was successfully created.")
             page.should have_content('rymai.com')
-            page.should have_content('Comet (yearly)')
+            page.should_not have_content('Comet (yearly)')
             page.should have_no_selector('.usage_bar')
-          end
+            page.should have_no_selector('.embed_code')
+            page.should have_content(I18n.t('site.status.payment_issue'))
+            page.should_not have_content(I18n.t('site.status.ok'))
+            end
 
           scenario "entering a 3-D Secure credit card with a succeeding identification" do
             fill_in "Domain", :with => "rymai.com"
@@ -206,11 +214,14 @@ feature "Sites" do
             # fake payment succeeded callback (and thus skip the d3d redirection)
             transaction.process_payment_response("PAYID" => "1234", "NCSTATUS" => "0", "STATUS" => "9", "ORDERID" => transaction.id.to_s)
             transaction.reload.should be_paid
-            
-            site.reload.last_invoice.should be_paid
+
+            @worker.work_off
+            site = @current_user.sites.last
+
+            site.last_invoice.should be_paid
             site.hostname.should == "rymai.com"
             site.loader.read.should include(site.token)
-            site.license.read.should include(site.license_hash)
+            site.license.read.should include(site.license_js_hash)
             site.plan_id.should == Plan.find_by_name_and_cycle("comet", "year").id
             site.pending_plan_id.should be_nil
             site.first_paid_plan_started_at.should be_present
@@ -222,12 +233,13 @@ feature "Sites" do
             site.pending_plan_cycle_ended_at.should be_nil
 
             visit "/sites"
-            
+
             current_url.should =~ %r(http://[^/]+/sites)
             page.should have_content("Site was successfully created.")
             page.should have_content('rymai.com')
             page.should have_content('Comet (yearly)')
             page.should have_selector('.usage_bar')
+            page.should have_content(I18n.t('site.status.ok'))
           end
         end # paid plan entering a credit card
       end
@@ -283,7 +295,7 @@ feature "Sites" do
             site.last_invoice.should be_paid
             site.hostname.should == "rymai.com"
             site.loader.read.should include(site.token)
-            site.license.read.should include(site.license_hash)
+            site.license.read.should include(site.license_js_hash)
             site.plan_id.should == Plan.find_by_name_and_cycle("custom1", "year").id
             site.pending_plan_id.should be_nil
             site.first_paid_plan_started_at.should be_present
@@ -323,7 +335,7 @@ feature "Sites" do
         site = @current_user.sites.last
         site.hostname.should == "google.com"
         site.loader.read.should include(site.token)
-        site.license.read.should include(site.license_hash)
+        site.license.read.should include(site.license_js_hash)
 
         current_url.should =~ %r(http://[^/]+/sites)
         page.should have_content('google.com')
@@ -344,7 +356,7 @@ feature "Sites" do
         site = @current_user.sites.last
         site.hostname.should == "google.com"
         site.loader.read.should include(site.token)
-        site.license.read.should include(site.license_hash)
+        site.license.read.should include(site.license_js_hash)
 
         current_url.should =~ %r(http://[^/]+/sites)
         page.should have_content('google.com')

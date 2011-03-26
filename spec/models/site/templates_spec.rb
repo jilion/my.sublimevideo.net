@@ -158,7 +158,7 @@ describe Site::Templates do
 
         its(:plan_id)              { should be_nil }
         its(:pending_plan_id)      { should == @dev_plan.id }
-        its(:cdn_up_to_date)       { should be_true }
+        its(:cdn_up_to_date)       { should be_false }
         its(:loader_needs_update)  { should be_false }
         its(:license_needs_update) { should be_false }
       end
@@ -172,7 +172,7 @@ describe Site::Templates do
 
         its(:plan_id)              { should be_nil }
         its(:pending_plan_id)      { should == @paid_plan.id }
-        its(:cdn_up_to_date)       { should be_true }
+        its(:cdn_up_to_date)       { should be_false }
         its(:loader_needs_update)  { should be_false }
         its(:license_needs_update) { should be_false }
       end
@@ -442,6 +442,12 @@ describe Site::Templates do
 
         end
       end
+    end
+
+    describe "#license_js_hash" do
+      subject{ Factory(:site, plan_id: @paid_plan.id, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', path: 'foo', wildcard: true) }
+
+      its(:license_js_hash) { should == "{h:[\"jilion.com\",\"jilion.net\",\"jilion.org\"],p:\"foo\",d:[\"127.0.0.1\",\"localhost\"],w:true}" }
     end
 
     describe "#set_template" do
