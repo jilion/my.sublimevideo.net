@@ -9,7 +9,6 @@
       = render 'fields', :f => f
       .actions.center
         = f.submit 'Update settings', :class => "submit big"
-
   .break_line
   .spacer
   = form_for @site, :html => { :method => :delete, "data-password-protected" => true } do |f|

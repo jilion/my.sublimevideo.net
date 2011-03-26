@@ -46,8 +46,8 @@
             %p.info= "It will be also added to extra and development domains."
       .spacer
       - if site.in_dev_plan?
-        .more_settings_desc
-          = "More settings like alias and staging domains, custom path and wildcard option, are available on paid plans."
-          %a{ :href => "http://docs.sublimevideo.net/site-settings" }= "Read more"
-          = "."
+        .more_settings_desc><
+          = raw "More settings like alias and staging domains, custom path and wildcard option, are available on paid plans. #{link_to "Read more", "http://docs.sublimevideo.net/site-settings", :class => "hl"}."
+      = link_to "http://docs.sublimevideo.net/site-settings", :class => "help" do
+        %span= "Read more"
       .break_line
