@@ -434,6 +434,14 @@ describe Site do
         its(:plan_id)            { should be_nil }
         its(:pending_plan_id)    { should == @dev_plan.id }
         its(:next_cycle_plan_id) { should be_nil }
+
+        describe "should prevent new plan_id update while pending_plan_id is present" do
+          before(:all) { subject.plan_id = @paid_plan.id }
+
+          its(:plan_id)            { should be_nil }
+          its(:pending_plan_id)    { should == @dev_plan.id }
+          its(:next_cycle_plan_id) { should be_nil }
+        end
       end
 
       describe "when creating a with a custom plan (token)" do
