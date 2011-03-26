@@ -77,7 +77,7 @@ class Transaction < ActiveRecord::Base
 
   def self.charge_by_invoice_ids(invoice_ids, options={})
     invoices = Invoice.where(id: invoice_ids)
-    transaction = new(invoices: invoices, user: options.delete(:user))
+    transaction = new(invoices: invoices)
     transaction.save!
 
     options = options.merge({
@@ -85,12 +85,15 @@ class Transaction < ActiveRecord::Base
       description: transaction.description,
       store: transaction.user.cc_alias,
       email: transaction.user.email,
-      billing_address: { zip: transaction.user.postal_code, country: transaction.user.country },
+      billing_address: { zip: transaction.user.postal_code, country: Country[transaction.user.country].name },
       d3d: true,
-      paramplus: "PAYMENT=TRUE&ACTION=#{options.delete(:action)}" # options[:action] is used in TransactionsController for the flash notice (if applicable)
+      paramplus: "PAYMENT=TRUE" # options[:action] is used in TransactionsController for the flash notice (if applicable)
     })
+    credit_card = options.delete(:credit_card)
+    payment_method = credit_card && credit_card.valid? ? credit_card : transaction.user.cc_alias
+    
     payment = begin
-      Ogone.purchase(transaction.amount, transaction.user.credit_card || transaction.user.cc_alias, options)
+      Ogone.purchase(transaction.amount, payment_method, options)
     rescue => ex
       Notify.send("Charging failed: #{ex.message}", exception: ex)
       transaction.error = ex.message
@@ -98,7 +101,7 @@ class Transaction < ActiveRecord::Base
       nil
     end
 
-    payment ? transaction.process_payment_response(payment.params) : transaction
+    payment ? transaction.process_payment_response(payment.params) : false
   end
 
   # ====================
@@ -123,32 +126,30 @@ class Transaction < ActiveRecord::Base
         #   An authorization code is available in the field "ACCEPTANCE".
         case payment_params["STATUS"]
         when "9"
+          self.user.apply_pending_credit_card_info if self.user.pending_credit_card?
           self.succeed
 
         # STATUS == 51, Authorization waiting:
         #   The authorization will be processed offline.
         #   This is the standard response if the merchant has chosen offline processing in his account configuration
         when "51"
-          self.error_key = "waiting"
           self.save
         end
 
-      # STATUS == 0, Invalid or incomplete:
-      #   At least one of the payment data fields is invalid or missing.
-      #   The NC ERROR  and NC ERRORPLUS  fields contains an explanation of the error
-      #   (list available at https://secure.ogone.com/ncol/paymentinfos1.asp).
-      #   After correcting the error, the customer can retry the authorization process.
-      when "5"
-        self.error_key = "invalid"
-        self.fail
-
-      # STATUS == 2, Authorization refused:
-      #   The authorization has been declined by the financial institution.
-      #   The customer can retry the authorization process after selecting a different payment method (or card brand).
-      # STATUS == 93, Payment refused:
-      #   A technical problem arose.
-      when "3"
-        self.error_key = "refused"
+      # NCSTATUS == 5
+      #   STATUS == 0, Invalid or incomplete:
+      #     At least one of the payment data fields is invalid or missing.
+      #     The NCERROR  and NCERRORPLUS  fields contains an explanation of the error
+      #     (list available at https://secure.ogone.com/ncol/paymentinfos1.asp).
+      #     After correcting the error, the customer can retry the authorization process.
+      # 
+      # NCSTATUS == 3
+      #   STATUS == 2, Authorization refused:
+      #     The authorization has been declined by the financial institution.
+      #     The customer can retry the authorization process after selecting a different payment method (or card brand).
+      #   STATUS == 93, Payment refused:
+      #     A technical problem arose.
+      when "5", "3"
         self.fail
 
       # STATUS == 52, Authorization not known; STATUS == 92, Payment uncertain:
@@ -156,13 +157,32 @@ class Transaction < ActiveRecord::Base
       #   The merchant can contact the acquirer helpdesk to know the exact status of the payment or can wait until we have updated the status in our system.
       #   The customer should not retry the authorization process since the authorization/payment might already have been accepted.
       when "2"
-        self.error_key = "unknown"
         self.save
         Notify.send("Transaction ##{self.id} (PAYID: #{payment_params["PAYID"]}) has an uncertain state, please investigate quickly!")
       end
     end
 
-    self # return self (can be useful)
+    !self.failed?
+  end
+  
+  def waiting?
+    nc_status == 0 && status == 51
+  end
+
+  def invalid?
+    nc_status == 5
+  end
+
+  def refused?
+    [3,5].include?(nc_status)
+  end
+
+  def unknown?
+    nc_status == 2
+  end
+  
+  def i18n_error_key
+    %w[waiting invalid refused unknown].detect { |status| self.send("#{status}?") }
   end
 
   def description

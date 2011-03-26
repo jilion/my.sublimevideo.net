@@ -16,23 +16,24 @@ module Spec
         options[:suspend]      = options[:user].delete(:suspend) || options[:suspend]
 
         @current_user ||= begin
-          user = Factory(:user, options[:user] || {})
-          user.confirm! if !!options[:confirm]
-          if options[:without_cc] == true
-            user.reset_credit_card_info
-            user.save!
+          user = if options[:without_cc] == true
+            Factory(:user_no_cc, options[:user] || {})
           else
-            user.attributes = {
-              cc_type: options[:cc_type],
-              cc_full_name: user.full_name,
+            attrs = Factory.attributes_for(:user)
+            user = Factory(:user, (options[:user] || {}).merge({
+              cc_brand: options[:cc_type],
+              cc_full_name: "#{attrs[:first_name]} #{attrs[:last_name]}",
               cc_number: options[:cc_number],
               cc_verification_value: "111",
-              cc_expire_on: options[:cc_expire_on]
-            }
-            user.cc_last_digits = options[:cc_number][-4,4] # can't be mass-assigned
-            VCR.use_cassette('ogone/visa_authorize_1_alias') { user.check_credit_card }
+              cc_expiration_month: options[:cc_expire_on].month,
+              cc_expiration_year: options[:cc_expire_on].year
+            }))
+            # user.cc_last_digits = options[:cc_number][-4,4] # can't be mass-assigned
+            # VCR.use_cassette('ogone/visa_authorize_1_alias') { user.check_credit_card }
             user.save!(validate: (options[:cc_expire_on] < Time.now ? false : true))
+            user
           end
+          user.confirm! if !!options[:confirm]
           user.lock! if !!options[:locked]
           user
         end
@@ -52,11 +53,11 @@ module Spec
       end
 
       def set_credit_card(options={})
-        choose "user_cc_type_#{options[:type] || 'visa'}"
+        choose  "user_cc_brand_#{options[:type] || 'visa'}"
         fill_in "Name on card", :with => 'Jime'
         fill_in "Card number", :with => options[:d3d] ? "4000000000000002" : (options[:type] == 'master' ? "5399999999999999" : "4111111111111111")
-        select "#{options[:expire_on_month] || "6"}", :from => "#{options[:expire_on_prefix] || "user"}_cc_expire_on_2i"
-        select "#{options[:expire_on_year] || Time.now.year + 1}", :from => "#{options[:expire_on_prefix] || "user"}_cc_expire_on_1i"
+        select  "#{options[:expire_on_month] || "6"}", :from => "#{options[:expire_on_prefix] || "user"}_cc_expiration_month"
+        select  "#{options[:expire_on_year] || Time.now.year + 1}", :from => "#{options[:expire_on_prefix] || "user"}_cc_expiration_year"
         fill_in "Security Code", :with => '111'
       end
 

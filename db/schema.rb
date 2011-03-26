@@ -240,6 +240,10 @@ ActiveRecord::Schema.define(:version => 20110223160948) do
     t.string   "company_employees"
     t.string   "company_videos_served"
     t.string   "cc_alias"
+    t.string   "pending_cc_type"
+    t.string   "pending_cc_last_digits"
+    t.date     "pending_cc_expire_on"
+    t.datetime "pending_cc_updated_at"
     t.datetime "archived_at"
     t.boolean  "newsletter",                           :default => true
     t.integer  "last_invoiced_amount",                 :default => 0

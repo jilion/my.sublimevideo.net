@@ -11,6 +11,16 @@ Factory.define :user_no_cc, :class => User do |f|
   f.terms_and_conditions "1"
 end
 
+Factory.define :user_real_cc, :parent => :user_no_cc do |f|
+  f.cc_brand              'visa'
+  f.cc_full_name          'John Doe Huber'
+  f.cc_number             '4111111111111111'
+  f.cc_expiration_month   1.year.from_now.month
+  f.cc_expiration_year    1.year.from_now.year
+  f.cc_verification_value '111'
+  f.after_create          { |user| user.apply_pending_credit_card_info }
+end
+
 Factory.define :user, :parent => :user_no_cc do |f|
   f.cc_type               'visa'
   f.cc_last_digits        '1111'
@@ -35,6 +45,8 @@ Factory.define :site, :parent => :new_site do |f|
   f.after_build do |site|
     site.pend_plan_changes
     site.apply_pending_plan_changes
+    # puts site.valid?
+    # puts site.errors.inspect
     site.reload
   end
 end

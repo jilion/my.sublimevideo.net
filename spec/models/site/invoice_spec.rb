@@ -784,9 +784,9 @@ describe Site::Invoice do
             subject { @site.reload }
 
             it "should create and try to charge the invoice" do
-              subject.reload.plan_id = @paid_plan2.id
-              subject.user_attributes = { current_password: "123456" }
-              Timecop.travel(Time.utc(2011,2,10)) { expect { subject.save! }.to change(subject.invoices, :count).by(1) }
+              subject.reload.plan_id  = @paid_plan2.id
+              subject.user_attributes = { "current_password" => "123456" }
+              Timecop.travel(Time.utc(2011,2,10)) { expect { subject.save }.to change(subject.invoices, :count).by(1) }
               subject.reload.plan.should == @paid_plan2
               subject.last_invoice.should be_paid
             end
@@ -797,9 +797,19 @@ describe Site::Invoice do
             subject { @site.reload }
 
             it "should create and try to charge the invoice" do
-              subject.reload.plan_id = @paid_plan_yearly.id
-              subject.user_attributes = { current_password: "123456" }
-              Timecop.travel(Time.utc(2011,2,10)) { expect { subject.save! }.to change(subject.invoices, :count).by(1) }
+              subject.reload.plan_id  = @paid_plan_yearly.id
+              subject.user_attributes = { "current_password" => "123456" }
+              Timecop.travel(Time.utc(2011,2,10)) { expect { subject.save }.to change(subject.invoices, :count).by(1) }
+              subject.reload.plan.should == @paid_plan_yearly
+              subject.last_invoice.should be_paid
+            end
+
+            it "should save user credit card infos if passed through charging_options" do
+              subject.reload.plan_id   = @paid_plan_yearly.id
+              subject.user_attributes = { "current_password" => "123456" }
+              subject.charging_options = { credit_card: Factory.build(:user_no_cc, valid_cc_attributes_master).credit_card }
+              
+              Timecop.travel(Time.utc(2011,2,10)) { expect { subject.save }.to change(subject.invoices, :count).by(1) }
               subject.reload.plan.should == @paid_plan_yearly
               subject.last_invoice.should be_paid
             end
@@ -829,7 +839,7 @@ describe Site::Invoice do
             subject { @site.reload }
 
             it "should not create and not try to charge the invoice" do
-              subject.user_attributes = { current_password: "123456" }
+              subject.user_attributes = { "current_password" => "123456" }
               Timecop.travel(Time.utc(2011,2,10)) { expect { subject.archive! }.to_not change(subject.invoices, :count) }
               subject.reload.plan.should == @paid_plan
               subject.should be_archived
@@ -886,7 +896,7 @@ describe Site::Invoice do
 
             it "should create and try to charge the invoice" do
               subject.reload.plan_id = @paid_plan_yearly2.id
-              subject.user_attributes = { current_password: "123456" }
+              subject.user_attributes = { "current_password" => "123456" }
               Timecop.travel(Time.utc(2011,2,10)) { expect { subject.save! }.to change(subject.invoices, :count).by(1) }
               subject.reload.plan.should == @paid_plan_yearly2
               subject.last_invoice.should be_paid
@@ -926,7 +936,7 @@ describe Site::Invoice do
             subject { @site.reload }
 
             it "should not create and not try to charge the invoice" do
-              subject.user_attributes = { current_password: "123456" }
+              subject.user_attributes = { "current_password" => "123456" }
               Timecop.travel(Time.utc(2011,2,10)) { expect { subject.archive! }.to_not change(subject.invoices, :count) }
               subject.reload.plan.should == @paid_plan_yearly
               subject.should be_archived
