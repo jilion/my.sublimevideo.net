@@ -3,25 +3,21 @@ require 'spec_helper'
 describe Transaction do
   before(:all) do
     @user = Factory(:user)
+    @user_with_no_cc = Factory(:user_no_cc)
   end
-  context "Factory" do
 
+  context "Factory" do
     before(:all) { @transaction = Factory(:transaction, invoices: [Factory(:invoice, amount: 1000, state: 'open')]) }
     subject { @transaction }
 
-    its(:user)           { should be_present }
-    its(:invoices)       { should be_present }
-    its(:cc_type)        { should == 'visa' }
-    its(:cc_last_digits) { should == @transaction.user.cc_last_digits }
-    its(:cc_expire_on)   { should == @transaction.user.cc_expire_on }
-    its(:amount)         { should == 1000 }
-    its(:pay_id)         { should be_nil }
-    its(:acceptance)     { should be_nil }
-    its(:nc_status)      { should be_nil }
-    its(:status)         { should be_nil }
-    its(:eci)            { should be_nil }
-    its(:nc_error)       { should be_nil }
-    its(:nc_error_plus)  { should be_nil }
+    its(:user)      { should be_present }
+    its(:invoices)  { should be_present }
+    its(:order_id)  { should =~ /^[a-z0-9]{30}$/ }
+    its(:amount)    { should == 1000 }
+    its(:pay_id)    { should be_nil }
+    its(:nc_status) { should be_nil }
+    its(:status)    { should be_nil }
+    its(:error)     { should be_nil }
 
     it { should be_unprocessed } # initial state
     it { should be_valid }
@@ -62,43 +58,60 @@ describe Transaction do
       @invoice2 = Factory(:invoice, site: @site, amount: 300, state: 'paid')
       @invoice3 = Factory(:invoice, site: @site, amount: 400, state: 'failed')
     end
-    subject { @transaction }
+    subject { Factory.build(:transaction, invoices: [@invoice1, @invoice2, @invoice3]) }
 
     describe "before_create :reject_paid_invoices" do
       it "should reject any paid invoices" do
-        transaction = Factory.build(:transaction, invoices: [@invoice1, @invoice2, @invoice3])
-        transaction.invoices.should == [@invoice1, @invoice2, @invoice3]
-        transaction.save!
-        transaction.reload.invoices.should == [@invoice1, @invoice3]
+        subject.invoices.should == [@invoice1, @invoice2, @invoice3]
+        subject.save!
+        subject.reload.invoices.should == [@invoice1, @invoice3]
       end
     end
 
     describe "before_create :set_user_id" do
       it "should set user_id" do
-        transaction = Factory.build(:transaction, invoices: [@invoice1, @invoice2, @invoice3])
-        transaction.user.should be_nil
-        transaction.save!
-        transaction.reload.user.should == @invoice1.user
+        subject.user.should be_nil
+        subject.save!
+        subject.reload.user.should == @invoice1.user
       end
     end
 
-    describe "before_create :set_cc_infos" do
-      it "should set cc_type, cc_last_digits and cc_expire_on" do
-        transaction = Factory.build(:transaction, invoices: [@invoice1, @invoice2, @invoice3])
-        transaction.user.should be_nil
-        transaction.save!
-        transaction.reload.cc_type.should == @invoice1.user.cc_type
-        transaction.cc_last_digits.should == @invoice1.user.cc_last_digits
-        transaction.cc_expire_on.should == @invoice1.user.cc_expire_on
+    describe "before_save :set_fields_from_ogone_response" do
+      context "with no response from Ogone" do
+        it "should not set Ogone specific fields" do
+          subject.instance_variable_set(:@ogone_response_infos, nil)
+          subject.save
+          subject.pay_id.should be_nil
+          subject.status.should be_nil
+          subject.error.should be_nil
+        end
+      end
+
+      context "with a response from Ogone" do
+        it "should set Ogone specific fields" do
+          subject.instance_variable_set(:@ogone_response_infos, {
+            "PAYID" => "123",
+            "ACCEPTANCE" => "321",
+            "NCSTATUS" => "0",
+            "STATUS" => "9",
+            "ECI" => "7",
+            "NCERROR" => "0",
+            "NCERRORPLUS" => "!"
+          })
+          subject.save
+          subject.pay_id.should == "123"
+          subject.nc_status.should == 0
+          subject.status.should == 9
+          subject.error.should == "!"
+        end
       end
     end
 
     describe "before_create :set_amount" do
       it "should set transaction amount to the sum of all its invoices amount" do
-        transaction = Factory.build(:transaction, invoices: [@invoice1, @invoice2, @invoice3])
-        transaction.amount.should be_nil
-        transaction.save!
-        transaction.reload.amount.should == 600
+        subject.amount.should be_nil
+        subject.save!
+        subject.reload.amount.should == 600
       end
     end
   end # Callbacks
@@ -117,7 +130,6 @@ describe Transaction do
     end
 
     describe "Events" do
-
       describe "#wait_d3d" do
         before(:each) { subject.wait_d3d }
 
@@ -125,17 +137,17 @@ describe Transaction do
           subject { @transaction.reload.update_attribute(:state, 'unprocessed'); @transaction }
           it { should be_waiting_d3d }
         end
-        
+
         context "from waiting_d3d state" do
           subject { @transaction.reload.update_attribute(:state, 'waiting_d3d'); @transaction }
           it { should be_waiting_d3d }
         end
-      
+
         context "from failed state" do
           subject { @transaction.reload.update_attribute(:state, 'failed'); @transaction }
           it { should be_failed }
         end
-      
+
         context "from paid state" do
           subject { @transaction.reload.update_attribute(:state, 'paid'); @transaction }
           it { should be_paid }
@@ -149,17 +161,17 @@ describe Transaction do
           subject { @transaction.reload.update_attribute(:state, 'unprocessed'); @transaction }
           it { should be_paid }
         end
-        
+
         context "from waiting_d3d state" do
           subject { @transaction.reload.update_attribute(:state, 'waiting_d3d'); @transaction }
           it { should be_paid }
         end
-      
+
         context "from failed state" do
           subject { @transaction.reload.update_attribute(:state, 'failed'); @transaction }
           it { should be_failed }
         end
-      
+
         context "from paid state" do
           subject { @transaction.reload.update_attribute(:state, 'paid'); @transaction }
           it { should be_paid }
@@ -173,80 +185,34 @@ describe Transaction do
           subject { @transaction.reload.update_attribute(:state, 'unprocessed'); @transaction }
           it { should be_failed }
         end
-        
+
         context "from waiting_d3d state" do
           subject { @transaction.reload.update_attribute(:state, 'waiting_d3d'); @transaction }
           it { should be_failed }
         end
-      
+
         context "from failed state" do
           subject { @transaction.reload.update_attribute(:state, 'failed'); @transaction }
           it { should be_failed }
         end
-      
+
         context "from paid state" do
           subject { @transaction.reload.update_attribute(:state, 'paid'); @transaction }
           it { should be_paid }
         end
       end
-
     end # Events
 
     describe "Transitions" do
-
-      describe "before_transition :on => [:succeed, :fail], :do => :set_fields_from_ogone_response" do
-        context "with no response from Ogone" do
-          before(:each) { subject.instance_variable_set(:@ogone_response_infos, nil) }
-
-          %w[succeed fail].each do |event|
-            it "should not set Ogone specific fields on #{event}" do
-              subject.send event
-              subject.pay_id.should be_nil
-              subject.acceptance.should be_nil
-              subject.status.should be_nil
-              subject.eci.should be_nil
-              subject.nc_error.should be_nil
-              subject.nc_error_plus.should be_nil
-            end
-          end
-        end
-
-        context "with a response from Ogone" do
-          before(:each) do
-            subject.reload.instance_variable_set(:@ogone_response_infos, {
-              "PAYID" => "123",
-              "ACCEPTANCE" => "321",
-              "NCSTATUS" => "0",
-              "STATUS" => "9",
-              "ECI" => "7",
-              "NCERROR" => "0",
-              "NCERRORPLUS" => "!"
-            })
-          end
-
-          %w[succeed fail].each do |event|
-            it "should set Ogone specific fields on #{event}" do
-              subject.send event
-              subject.pay_id.should == "123"
-              subject.acceptance.should == "321"
-              subject.status.should == "9"
-              subject.eci.should == "7"
-              subject.nc_error.should == "0"
-              subject.nc_error_plus.should == "!"
-            end
-          end
-        end
-      end
-
       describe "after_transition :on => [:succeed, :fail], :do => :update_invoices" do
         describe "initial invoices state" do
           specify do
             @invoice1.should be_open
             @invoice1.paid_at.should be_nil
-            @invoice1.failed_at.should be_nil
+            @invoice1.last_failed_at.should be_nil
             @invoice2.should be_failed
             @invoice2.paid_at.should be_nil
-            @invoice2.failed_at.should be_nil
+            @invoice2.last_failed_at.should be_nil
           end
         end
 
@@ -255,11 +221,11 @@ describe Transaction do
 
           specify do
             @invoice1.reload.should be_paid
-            @invoice1.paid_at.to_i.should be_within(5).of(subject.updated_at.to_i)
-            @invoice1.failed_at.should be_nil
+            @invoice1.paid_at.to_i.should be_within(10).of(subject.updated_at.to_i)
+            @invoice1.last_failed_at.should be_nil
             @invoice2.reload.should be_paid
-            @invoice2.paid_at.to_i.should be_within(5).of(subject.updated_at.to_i)
-            @invoice2.failed_at.should be_nil
+            @invoice2.paid_at.to_i.should be_within(10).of(subject.updated_at.to_i)
+            @invoice2.last_failed_at.should be_nil
           end
         end
 
@@ -269,10 +235,10 @@ describe Transaction do
           specify do
             @invoice1.reload.should be_failed
             @invoice1.paid_at.should be_nil
-            @invoice1.failed_at.to_i.should be_within(5).of(subject.updated_at.to_i)
+            @invoice1.last_failed_at.to_i.should be_within(10).of(subject.updated_at.to_i)
             @invoice2.reload.should be_failed
             @invoice2.paid_at.should be_nil
-            @invoice2.failed_at.to_i.should be_within(5).of(subject.updated_at.to_i)
+            @invoice2.last_failed_at.to_i.should be_within(10).of(subject.updated_at.to_i)
           end
         end
       end
@@ -288,7 +254,6 @@ describe Transaction do
           end
         end
       end
-
     end # Transitions
 
   end # State Machine

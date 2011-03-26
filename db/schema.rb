@@ -184,22 +184,18 @@ ActiveRecord::Schema.define(:version => 20110223160948) do
 
   create_table "transactions", :force => true do |t|
     t.integer  "user_id"
-    t.string   "cc_type"
-    t.string   "cc_last_digits"
-    t.date     "cc_expire_on"
+    t.string   "order_id"
     t.string   "state"
     t.integer  "amount"
-    t.string   "error_key"
+    t.text     "error"
     t.string   "pay_id"
-    t.string   "acceptance"
-    t.string   "nc_status"
-    t.string   "status"
-    t.string   "eci"
-    t.string   "nc_error"
-    t.text     "nc_error_plus"
+    t.integer  "nc_status"
+    t.integer  "status"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "transactions", ["order_id"], :name => "index_transactions_on_order_id", :unique => true
 
   create_table "users", :force => true do |t|
     t.string   "state"

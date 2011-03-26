@@ -1,6 +1,6 @@
 # http://github.com/thoughtbot/factory_girl
 
-Factory.define :user do |f|
+Factory.define :user_no_cc, :class => User do |f|
   f.first_name           "John"
   f.last_name            "Doe"
   f.country              "CH"
@@ -9,8 +9,13 @@ Factory.define :user do |f|
   f.sequence(:email)     { |n| "email#{n}@user.com" }
   f.password             "123456"
   f.terms_and_conditions "1"
-  f.cc_type              "visa"
-  f.cc_last_digits       "1234"
+end
+
+Factory.define :user, :parent => :user_no_cc do |f|
+  f.cc_type               'visa'
+  f.cc_last_digits        '1111'
+  f.cc_expire_on          1.year.from_now.end_of_month.to_date
+  f.cc_updated_at         Time.now.utc
 end
 
 Factory.define :admin do |f|
@@ -110,24 +115,24 @@ Factory.define :plan do |f|
 end
 
 Factory.define :dev_plan, :class => Plan  do |f|
-  f.name          "dev"
-  f.cycle         "none"
-  f.player_hits   0
-  f.price         0
+  f.name         "dev"
+  f.cycle        "none"
+  f.player_hits  0
+  f.price        0
 end
 
 Factory.define :beta_plan, :class => Plan  do |f|
-  f.name          "beta"
-  f.cycle         "none"
-  f.player_hits   0
-  f.price         0
+  f.name        "beta"
+  f.cycle       "none"
+  f.player_hits 0
+  f.price       0
 end
 
 Factory.define :sponsored_plan, :class => Plan  do |f|
-  f.name          "sponsored"
-  f.cycle         "none"
-  f.player_hits   0
-  f.price         0
+  f.name        "sponsored"
+  f.cycle       "none"
+  f.player_hits 0
+  f.price       0
 end
 
 Factory.define :custom_plan, :class => Plan do |f|
@@ -158,9 +163,6 @@ Factory.define :plan_invoice_item, :parent => :invoice_item, :class => InvoiceIt
 end
 
 Factory.define :transaction do |f|
-  f.cc_type        "visa"
-  f.cc_last_digits 1111
-  f.cc_expire_on   1.year.from_now.end_of_month.to_date
 end
 
 Factory.define :users_stat do |f|

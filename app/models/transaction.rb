@@ -4,6 +4,8 @@ class Transaction < ActiveRecord::Base
 
   attr_accessor :d3d_html
 
+  uniquify :order_id, :chars => Array('a'..'z') + Array('0'..'9'), :length => 30
+  
   # ================
   # = Associations =
   # ================
@@ -21,7 +23,8 @@ class Transaction < ActiveRecord::Base
   # = Callbacks =
   # =============
 
-  before_create :reject_paid_invoices, :set_user, :set_cc_infos, :set_amount
+  before_save :set_fields_from_ogone_response
+  before_create :reject_paid_invoices, :set_user, :set_amount
 
   # =================
   # = State Machine =
@@ -32,7 +35,6 @@ class Transaction < ActiveRecord::Base
     event(:succeed)  { transition [:unprocessed, :waiting_d3d] => :paid }
     event(:fail)     { transition [:unprocessed, :waiting_d3d] => :failed }
 
-    before_transition :on => [:succeed, :fail], :do => :set_fields_from_ogone_response
     after_transition  :on => [:succeed, :fail], :do => :update_invoices
 
     after_transition :on => :fail, :do => :send_charging_failed_email
@@ -43,6 +45,7 @@ class Transaction < ActiveRecord::Base
   # ==========
 
   scope :failed, where(state: 'failed')
+  scope :paid, where(state: 'paid')
 
   # =================
   # = Class Methods =
@@ -78,7 +81,7 @@ class Transaction < ActiveRecord::Base
     transaction.save!
 
     options = options.merge({
-      order_id: options.delete(:order_id) || transaction.id,
+      order_id: transaction.order_id,
       description: transaction.description,
       store: transaction.user.cc_alias,
       email: transaction.user.email,
@@ -178,33 +181,29 @@ private
     self.errors.add(:base, :all_invoices_must_belong_to_the_same_user) if invoices.any? { |invoice| invoice.user != invoices.first.user }
   end
 
+  # before_save
+  def set_fields_from_ogone_response
+    if @ogone_response_infos.present?
+      self.pay_id        = @ogone_response_infos["PAYID"]
+      self.nc_status     = @ogone_response_infos["NCSTATUS"].to_i
+      self.status        = @ogone_response_infos["STATUS"].to_i
+      self.error         = @ogone_response_infos["NCERRORPLUS"]
+    end
+  end
+
   # before_create
   def reject_paid_invoices
     self.invoices.reject! { |invoice| invoice.paid? }
   end
+
+  # before_create
   def set_user
     self.user = invoices.first.user unless user_id?
   end
-  def set_cc_infos
-    self.cc_type        = user.cc_type
-    self.cc_last_digits = user.cc_last_digits
-    self.cc_expire_on   = user.cc_expire_on
-  end
+
+  # before_create
   def set_amount
     self.amount = invoices.map(&:amount).sum
-  end
-
-  # before_transition :on => [:succeed, :fail]
-  def set_fields_from_ogone_response
-    if @ogone_response_infos.present?
-      self.pay_id        = @ogone_response_infos["PAYID"]
-      self.acceptance    = @ogone_response_infos["ACCEPTANCE"]
-      self.nc_status     = @ogone_response_infos["NCSTATUS"]
-      self.status        = @ogone_response_infos["STATUS"]
-      self.eci           = @ogone_response_infos["ECI"]
-      self.nc_error      = @ogone_response_infos["NCERROR"]
-      self.nc_error_plus = @ogone_response_infos["NCERRORPLUS"]
-    end
   end
 
   # after_transition :on => [:succeed, :fail]
@@ -225,22 +224,20 @@ end
 #
 # Table name: transactions
 #
-#  id             :integer         not null, primary key
-#  user_id        :integer
-#  cc_type        :string(255)
-#  cc_last_digits :string(255)
-#  cc_expire_on   :date
-#  state          :string(255)
-#  amount         :integer
-#  error_key      :string(255)
-#  pay_id         :string(255)
-#  acceptance     :string(255)
-#  nc_status      :string(255)
-#  status         :string(255)
-#  eci            :string(255)
-#  nc_error       :string(255)
-#  nc_error_plus  :text
-#  created_at     :datetime
-#  updated_at     :datetime
+#  id         :integer         not null, primary key
+#  user_id    :integer
+#  order_id   :string(255)
+#  state      :string(255)
+#  amount     :integer
+#  error      :text
+#  pay_id     :string(255)
+#  nc_status  :integer
+#  status     :integer
+#  created_at :datetime
+#  updated_at :datetime
+#
+# Indexes
+#
+#  index_transactions_on_order_id  (order_id) UNIQUE
 #
 
