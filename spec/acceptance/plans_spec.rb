@@ -34,6 +34,30 @@ feature "Plans" do
     # TODO Rémy
     pending "update paid plan to paid plan with credit card data"
 
+    scenario "failed update" do
+      site = Factory(:site, user: @current_user, plan_id: @dev_plan.id)
+
+      visit edit_site_plan_path(site)
+
+      VCR.use_cassette('ogone/visa_payment_generic_failed') do
+        choose "plan_comet_month"
+        click_button "Update plan"
+      end
+
+      site.reload
+
+      current_url.should =~ %r(http://[^/]+/sites$)
+
+      page.should_not have_content("Choose a plan")
+      page.should have_content("#{site.plan.title}")
+      page.should have_content(I18n.t('site.status.payment_issue'))
+
+      visit edit_site_plan_path(site)
+
+      page.should_not have_content("Comet")
+      page.should have_content("There has been a transaction error. Please review")
+    end
+
     scenario "update dev plan to paid plan" do
       site = Factory(:site, user: @current_user, plan_id: @dev_plan.id)
 

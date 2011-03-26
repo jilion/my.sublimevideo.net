@@ -24,6 +24,9 @@ en:
 
   site:
     status:
-      payment_issue: "Payment issue, click to review your invoices and retry the payment."
+      payment_issue: "Payment issue, click to review your invoice and retry the payment."
       ok: "Everything runs smoothly, it's ok!"
       in_progress: "Your player is being deployed..."
+    plan:
+      upgrade_in_progress: 'Your payment is being processed.'
+      upgrade_in_progress_failed_link: 'There has been a transaction error. Please review %{link} and retry the payment.'

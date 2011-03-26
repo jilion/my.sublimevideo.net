@@ -206,6 +206,8 @@ class Site < ActiveRecord::Base
   end
 
   def plan_id=(attribute)
+    return if pending_plan_id?
+    
     if attribute.to_s == attribute.to_i.to_s # id passed
       new_plan = Plan.find_by_id(attribute.to_i)
       return unless new_plan.standard_plan? || new_plan.dev_plan? || new_plan.beta_plan?

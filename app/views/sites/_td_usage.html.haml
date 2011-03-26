@@ -1,7 +1,10 @@
 - if plan = site.plan
   - case plan.name
   - when 'dev', 'beta'
-    = link_to "Choose a plan", edit_site_plan_path(site), :class => "medium_button"
+    - if site.pending_plan_id?
+      = "–"
+    - else
+      = link_to "Choose a plan", edit_site_plan_path(site), :class => "medium_button"
   - when 'sponsored'
     .usage
       %p= pluralize(number_with_delimiter(site.current_monthly_billable_usage.to_i), "Sponsored hit").html_safe
