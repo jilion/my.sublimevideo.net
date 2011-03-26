@@ -4,7 +4,7 @@ class ModifySites < ActiveRecord::Migration
     add_column :sites, :plan_id, :integer
     add_column :sites, :pending_plan_id, :integer
     add_column :sites, :next_cycle_plan_id, :integer
-    add_column :sites, :cdn_up_to_date, :boolean
+    add_column :sites, :cdn_up_to_date, :boolean, :default => false
     add_column :sites, :first_paid_plan_started_at, :datetime
     add_column :sites, :plan_started_at, :datetime
     add_column :sites, :plan_cycle_started_at, :datetime

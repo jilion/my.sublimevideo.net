@@ -11,10 +11,8 @@ body {
   color:#4d5563;
   min-height:100%;
   background:#5d6778;
-/*  COMMENTED BECAUSE IS TOO FUCKING SLOW */
-/*  background:-webkit-gradient(linear,left top,left bottom,from(#778091),to(#5d6778));*/
-/*  background:-moz-linear-gradient(top, #778091, #5d6778);*/
-  background-attachment:fixed;
+  background:-webkit-gradient(linear,left top,left bottom,from(#778091),to(#5d6778));
+  background:-moz-linear-gradient(top, #778091, #5d6778);
   text-rendering:optimizeLegibility; /*HUGELY IMPORTANT*/
 }
 
@@ -644,6 +642,7 @@ form p.note, #content form label.note {
 }
 
 #content form .entry.select select {
+  max-width:260px;
   margin-right:6px;
   font-size:13px;
   background:#fefefe;
@@ -699,13 +698,25 @@ form p.note, #content form label.note {
   }
 }
 
+#content .optional_fields {
+  margin:20px 0 0;
+  padding:22px 0 0;
+  background:url(/images/embed/breakline.png) no-repeat -228px 0;
+}
+
+#content .optional_fields h4 {
+  font-size:15px;
+  font-weight:600;
+  padding:0 0 10px;
+}
+
 #content .entry.use {
-  padding:20px 0 0;
+  padding:10px 0 0;
 }
 
 #content label.main {
   font-weight:600;
-  font-size:16px;
+  font-size:15px;
 }
 
 #company_fields_box {
@@ -714,8 +725,8 @@ form p.note, #content form label.note {
 
 #content .entry.terms {
   background:url(/images/embed/breakline.png) no-repeat -228px 0;
-  padding:10px 0 54px;
-  margin-top:10px;
+  padding:10px 0 22px;
+  margin-top:20px;
 }
 
 #content .entry.terms label {
@@ -801,6 +812,54 @@ form .entry a.cancel {
 #content ul.session_links a {
   border-bottom:1px solid #999;
 }
+
+#signup_steps {
+  margin:-25px 0 30px;
+  background:url(/images/embed/signup/steps_breakline.png) no-repeat center bottom;
+}
+
+#signup_steps .center_wrap {
+  float:right;
+  position:relative;
+  left:-50%;
+  text-align:left;
+  padding-bottom:20px;
+}
+
+#signup_steps ul {
+  list-style-type:none;
+  position:relative;
+  left:50%;
+}
+
+#signup_steps li {
+  float:left;
+  position:relative;
+  font-size:28px;
+  font-weight:300;
+  color:#818999;
+  margin:0 20px;
+}
+
+#signup_steps li.active {
+  color:#4d5563;
+}
+
+#signup_steps li strong.number {
+  display:block;
+  float:left;
+  width:32px;
+  height:33px;
+  background:url(/images/embed/signup/steps_dot.png) no-repeat;
+  margin-right:10px;
+  text-align:center;
+  font-size:18px;
+  color:#cbd0d8;
+  line-height:32px;
+  text-shadow:rgba(0,0,0,0.5) 0 -1px 0;
+}
+
+#signup_steps li.active strong.number {background-image:url(/images/embed/signup/steps_dot_active.png)}
 
 #get_an_invitation {
   width:420px;
@@ -2011,12 +2070,29 @@ ul#addons .checkbox_wrap input:focus:checked + label {background-position:0 -102
 #credit_card .right {
   width:390px;
   float:left;
-  padding:80px 0 0 20px;
+  padding:50px 0 0 20px;
 }
 
 #credit_card .right .billing_info {
-  color:#666d7a;
-  line-height:20px;
+  color:#545e75;
+  font-size:13px;
+  line-height:18px;
+  width:265px;
+  padding:13px 10px 10px 60px;
+  background-color:#a4acb8;
+  background:rgba(0,0,0,0.1) url(/images/embed/credit_cards/secure_icon.png) no-repeat 15px 15px;
+  text-shadow:rgba(255,255,255,0.4) 0 1px 0;
+  -moz-border-radius:6px;
+  -webkit-border-radius:6px;
+  border-radius:6px;
+  -moz-box-shadow: inset rgba(0,0,0,0.5) 0 1px 3px, rgba(255,255,255,0.4) 0 1px 0;
+  -webkit-box-shadow: inset rgba(0,0,0,0.5) 0 1px 3px, rgba(255,255,255,0.4) 0 1px 0;
+  box-shadow: inset rgba(0,0,0,0.5) 0 1px 3px, rgba(255,255,255,0.4) 0 1px 0;
+}
+
+#credit_card .right .billing_info a {
+  color:#1c263b;
+  border-bottom:1px solid #888;
 }
 
 #site .actions.center {
@@ -2529,6 +2605,7 @@ nav.pagination span.gap {
 #credit_card_summary p strong {font-weight:600;}
 
 #invoices_summary {
+  width:440px;
   padding:10px 0 0;
 }
 
@@ -2538,19 +2615,6 @@ nav.pagination span.gap {
 
 #invoices_summary .right, #failed_invoices .right {
   float:right;
-}
-
-#invoices_summary .current_usage em {
-  font-size:13px;
-}
-
-#invoices_summary .current_usage strong {
-  font-size:15px;
-}
-
-p#current_usage_amount {
-  padding-left:36px;
-  background:url(/images/embed/invoice_icon.png) no-repeat 0 7px;
 }
 
 #invoices_summary .past_invoices {
@@ -2578,6 +2642,9 @@ p#current_usage_amount {
   -moz-border-radius:4px;
   -webkit-border-radius:4px;
   border-radius:4px;
+  -moz-box-shadow:inset rgba(0,0,0,0.3) 0 1px 3px, rgba(255,255,255,0.5) 0 1px 0;
+  -webkit-box-shadow:inset rgba(0,0,0,0.3) 0 1px 3px, rgba(255,255,255,0.5) 0 1px 0;
+  box-shadow:inset rgba(0,0,0,0.3) 0 1px 3px, rgba(255,255,255,0.5) 0 1px 0;
 }
 
 #invoices_summary .past_invoices ul li p.status.failed strong, #failed_invoices ul li p.status strong {
@@ -2592,6 +2659,18 @@ p#current_usage_amount {
   font-weight:600;
   font-size:12px;
   border-bottom:1px solid #929fb6;
+}
+
+#no_invoices {
+  padding:50px 0;
+  font-size:38px;
+  font-weight:500;
+  color:#8c96a6;
+  text-align:center;
+  letter-spacing:-1px;
+  -moz-border-radius: 8px;
+  -webkit-border-radius: 8px;
+  border-radius: 8px;
 }
 
 /*#past_invoices {

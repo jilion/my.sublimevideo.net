@@ -159,7 +159,7 @@ ActiveRecord::Schema.define(:version => 20110223160948) do
     t.integer  "plan_id"
     t.integer  "pending_plan_id"
     t.integer  "next_cycle_plan_id"
-    t.boolean  "cdn_up_to_date"
+    t.boolean  "cdn_up_to_date",                                :default => false
     t.datetime "first_paid_plan_started_at"
     t.datetime "plan_started_at"
     t.datetime "plan_cycle_started_at"
