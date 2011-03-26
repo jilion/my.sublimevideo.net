@@ -164,7 +164,8 @@ private
         (in_paid_plan? && ((pending_plan_cycle_started_at_changed? && pending_plan_cycle_started_at?) || (pending_plan_cycle_ended_at_changed? && pending_plan_cycle_ended_at?))) # recurrent (ensure plan_cycle dates are set, not nil!)
       invoice = Invoice.build(site: self)
       invoice.save!
-      Transaction.charge_by_invoice_ids([invoice.id], d3d_options || {}) if instant_charging?
+
+      Transaction.charge_by_invoice_ids([invoice.id], charging_options || {}) if instant_charging?
 
     elsif pending_plan_id_changed? && pending_plan_id? && pending_plan.free_plan?
       # directly update for free plans
