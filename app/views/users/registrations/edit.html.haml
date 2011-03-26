@@ -39,8 +39,9 @@
         = password_box :resource => @user, :f => f, :cancel_url => edit_user_registration_path
       %p= "Please understand that:"
       %ul
-        %li= "All your SublimeVideo licenses will be instantly removed from our servers and will never be available anymore."
-        %li= "Furthermore, there will be no refunds."
+        %li= raw "All of your #{link_to("sites", sites_path)} will be deleted."
+        %li= "All of your SublimeVideo licenses will be instantly removed from our servers and will no longer be available."
+        %li= "We do not offer refunds."
       .entry.delete
         = f.submit "Delete account", :class => "submit link_looks delete", :confirm => "Are you really sure?"
 
