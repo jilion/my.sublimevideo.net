@@ -1,15 +1,70 @@
 # coding: utf-8
 require 'spec_helper'
 
-feature "Users actions:" do
+feature "Users" do
 
-  feature "register" do
-    before(:each) do
+  feature "sign-up redirections" do
+    scenario "redirect /register to /signup" do
       visit "/register"
-      current_url.should =~ %r(^http://[^/]+/register$)
+      current_url.should =~ %r(^http://[^/]+/signup$)
     end
 
-    feature "register for personal use" do
+    scenario "redirect /sign_up to /signup" do
+      visit "/sign_up"
+      current_url.should =~ %r(^http://[^/]+/signup$)
+    end
+  end
+
+  feature "log-in redirections" do
+    scenario "redirect /log_in to /login" do
+      visit "/log_in"
+      current_url.should =~ %r(^http://[^/]+/login$)
+    end
+
+    scenario "redirect /sign_in to /login" do
+      visit "/sign_in"
+      current_url.should =~ %r(^http://[^/]+/login$)
+    end
+
+    scenario "redirect /signin to /login" do
+      visit "/signin"
+      current_url.should =~ %r(^http://[^/]+/login$)
+    end
+  end
+
+  context "logged-in user" do
+    background do
+      sign_in_as :user
+    end
+
+    feature "log-out redirections" do
+      scenario "redirect /log_out to /logout" do
+        page.should have_content @current_user.full_name
+        visit "/log_out"
+        page.should have_no_content @current_user.full_name
+      end
+
+      scenario "redirect /sign_out to /logout" do
+        page.should have_content @current_user.full_name
+        visit "/sign_out"
+        page.should have_no_content @current_user.full_name
+      end
+
+      scenario "redirect /signout to /logout" do
+        page.should have_content @current_user.full_name
+        visit "/signout"
+        page.should have_no_content @current_user.full_name
+      end
+    end
+  end
+
+  feature "signup" do
+    before(:each) do
+      visit "/signup"
+      current_url.should =~ %r(^http://[^/]+/signup$)
+    end
+
+    feature "signup for personal use" do
       scenario "with all fields needed" do
         fill_in "Email",              :with => "remy@jilion.com"
         fill_in "Password",           :with => "123456"
@@ -36,18 +91,17 @@ feature "Users actions:" do
         fill_in "Zip or Postal Code", :with => ""
         click_button "Sign Up"
 
-        current_url.should =~ %r(^http://[^/]+/register$)
+        current_url.should =~ %r(^http://[^/]+/signup$)
         page.should have_content "Email can't be blank"
         page.should have_content "Password can't be blank"
         page.should have_content "First name can't be blank"
         page.should have_content "Last name can't be blank"
         page.should have_content "Postal code can't be blank"
-        page.should have_content "Please check at least one option"
         page.should have_content "Terms & Conditions must be accepted"
       end
     end
 
-    feature "register for company use" do
+    feature "signup for company use" do
       scenario "with all fields needed" do
         fill_in "Email",              :with => "remy@jilion.com"
         fill_in "Password",           :with => "123456"
@@ -55,12 +109,9 @@ feature "Users actions:" do
         fill_in "Last name",          :with => "Coutable"
         select "Switzerland",         :from => "Country"
         fill_in "Zip or Postal Code", :with => "CH-1024"
-        check "For my company"
         fill_in "Company name",       :with => "Jilion"
         fill_in "Company website",    :with => "jilion.com"
-        fill_in "Job title",          :with => "Dev"
-        select "2-5 employees",       :from => "Company size"
-        select "1'000-10'000 videos/month", :from => "Nr. of videos served"
+        check "For my company"
         check "user_terms_and_conditions"
         click_button "Sign Up"
 
@@ -71,24 +122,19 @@ feature "Users actions:" do
         User.last.email.should == "remy@jilion.com"
       end
 
-      scenario "with errors" do
+      scenario "with optional blank fields" do
         fill_in "Email",              :with => "remy@jilion.com"
         fill_in "Password",           :with => "123456"
         fill_in "First name",         :with => "Rémy"
         fill_in "Last name",          :with => "Coutable"
         select "Switzerland",         :from => "Country"
         fill_in "Zip or Postal Code", :with => "CH-1024"
-        check "For my company"
         fill_in "Company name",       :with => ""
         fill_in "Company website",    :with => ""
-        fill_in "Job title",          :with => ""
         check "user_terms_and_conditions"
         click_button "Sign Up"
 
-        current_url.should =~ %r(^http://[^/]+/register$)
-        page.should have_content "Company name can't be blank"
-        page.should have_content "Company url can't be blank"
-        page.should have_content "Company job title can't be blank"
+        current_url.should =~ %r(^http://[^/]+/sites$)
       end
     end
 
@@ -104,15 +150,16 @@ feature "Users actions:" do
         fill_in "Last name",          :with => "Coutable"
         select "Switzerland",         :from => "Country"
         fill_in "Zip or Postal Code", :with => "CH-1024"
-        check "Personal"
         check "user_terms_and_conditions"
         click_button "Sign Up"
-
+        
+        new_user = User.last
+        new_user.should_not == archived_user
+        new_user.full_name.should == "Rémy Coutable"
+        new_user.email.should == archived_user.email
+        
         current_url.should =~ %r(^http://[^/]+/sites$)
         page.should have_content "Rémy Coutable"
-
-        User.last.full_name.should == "Rémy Coutable"
-        User.last.email.should == archived_user.email
       end
     end
 
@@ -178,9 +225,9 @@ feature "Users actions:" do
     User.last.should be_archived
   end
 
-  scenario "accept invitation should always redirect to /register" do
+  scenario "accept invitation should always redirect to /signup" do
     visit "/invitation/accept"
-    current_url.should =~ %r(^http://[^/]+/register$)
+    current_url.should =~ %r(^http://[^/]+/signup$)
   end
 
   feature "with an authenticated user" do
@@ -193,12 +240,10 @@ feature "Users actions:" do
       current_url.should =~ %r(^http://[^/]+/sites$)
     end
   end
-
 end
 
-feature "User session:" do
-
-  scenario "before login or register" do
+feature "session" do
+  scenario "before login or signup" do
     visit "/"
 
     page.should_not have_content('Feedback')
@@ -263,11 +308,9 @@ feature "User session:" do
     current_url.should =~ %r(^http://[^/]+/login$)
     page.should_not have_content "John Doe"
   end
-
 end
 
-feature "User confirmation:" do
-
+feature "confirmation" do
   scenario "confirmation" do
     user = create_user :user => { :first_name => "John", :last_name => "Doe", :email => "john@doe.com", :password => "123456" }, :confirm => false
 
@@ -275,5 +318,4 @@ feature "User confirmation:" do
 
     page.should have_content(I18n.translate('devise.confirmations.confirmed'))
   end
-
 end

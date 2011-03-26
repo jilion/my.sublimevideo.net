@@ -1,12 +1,12 @@
 <%= t("mailer.intro_generic") %>
 
-<% if @user.credit_card_expired? %>
+<% if @user.cc_expired? %>
   Your credit card will expire at the end of this month, your account will then be suspended.
-  
+
   Please update your credit card information to avoid this suspension by clicking on the link below:
 <% else %>
   Your credit card will expire at the end of this month.
-  
+
   Since you are already suspended, please update your credit card information to avoid the removal of your account by clicking on the link below:
 <% end %>
 

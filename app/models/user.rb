@@ -45,8 +45,6 @@ class User < ActiveRecord::Base
   validates :terms_and_conditions, :acceptance => { :accept => "1" }, :on => :create
 
   validate :validates_credit_card_attributes # in user/credit_card
-  validate :validates_use_presence, :on => :create
-  validate :validates_company_fields, :on => :create
   validate :validates_current_password
 
   # =============
@@ -179,24 +177,6 @@ class User < ActiveRecord::Base
   end
 
 private
-
-  # validate
-  def validates_use_presence
-    if !use_personal && !use_company && !use_clients
-      self.errors.add(:use, :at_least_one_option)
-    end
-  end
-
-  # validate
-  def validates_company_fields
-    if use_company
-      self.errors.add(:company_name, :blank) unless company_name.present?
-      self.errors.add(:company_url, :blank) unless company_url.present?
-      self.errors.add(:company_job_title, :blank) unless company_job_title.present?
-      self.errors.add(:company_employees, :blank) unless company_employees.present?
-      self.errors.add(:company_videos_served, :blank) unless company_videos_served.present?
-    end
-  end
 
   # validate
   def validates_current_password

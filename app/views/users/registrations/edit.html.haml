@@ -22,7 +22,7 @@
   .spacer
 
 .content_right
-  - if current_user.credit_card?
+  - if current_user.cc?
     #credit_card_summary
       %h3.section_title= "Billing Info"
       - if current_user.cc_expired?
