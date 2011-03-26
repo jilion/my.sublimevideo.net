@@ -24,6 +24,6 @@ en:
 
   site:
     status:
-      payment_issue: "Payment issue, click to review your invoices and retry the payment."
+      payment_issue: "Transaction error, click to review your invoice and retry the payment."
       ok: "Everything runs smoothly, it's ok!"
       in_progress: "Your player is being deployed..."

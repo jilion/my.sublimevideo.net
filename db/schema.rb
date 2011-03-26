@@ -159,7 +159,7 @@ ActiveRecord::Schema.define(:version => 20110223160948) do
     t.integer  "plan_id"
     t.integer  "pending_plan_id"
     t.integer  "next_cycle_plan_id"
-    t.boolean  "cdn_up_to_date",                                :default => false
+    t.boolean  "cdn_up_to_date"
     t.datetime "first_paid_plan_started_at"
     t.datetime "plan_started_at"
     t.datetime "plan_cycle_started_at"
@@ -192,11 +192,10 @@ ActiveRecord::Schema.define(:version => 20110223160948) do
     t.string   "error_key"
     t.string   "pay_id"
     t.string   "acceptance"
-    t.string   "nc_status"
     t.string   "status"
     t.string   "eci"
-    t.string   "nc_error"
-    t.text     "nc_error_plus"
+    t.string   "error_code"
+    t.text     "error"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
