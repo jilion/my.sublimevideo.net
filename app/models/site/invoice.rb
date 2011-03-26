@@ -98,8 +98,11 @@ module Site::Invoice
 
   # called from Site::Invoice.renew_active_sites! and from Invoice#succeed's apply_pending_site_plan_changes callback
   def apply_pending_plan_changes
-    
-    
+    # Remove upgrade required "state"
+    if plan_id? && pending_plan_id? && Plan.find(plan_id).upgrade?(Plan.find(pending_plan_id))
+      self.first_plan_upgrade_required_alert_sent_at = nil
+    end
+
     write_attribute(:plan_id, pending_plan_id) if pending_plan_id?
 
     # force update

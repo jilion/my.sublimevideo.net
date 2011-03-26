@@ -456,17 +456,22 @@ describe Site::Invoice do
 
     describe "#apply_pending_plan_changes" do
       before(:all) do
-        @site = Factory.build(:new_site)
-        @site.pending_plan_id               = @paid_plan.id
-        @site.pending_plan_started_at       = Time.utc(2012,12,21)
-        @site.pending_plan_cycle_started_at = Time.utc(2012,12,21)
-        @site.pending_plan_cycle_ended_at   = Time.utc(2013,12,20)
+        @site = Factory(:site, plan_id: @dev_plan.id)
+        @site = Site.find(@site) # hard reset to plan association cache
+        @site.pending_plan_id                           = @paid_plan.id
+        @site.pending_plan_started_at                   = Time.utc(2012,12,21)
+        @site.pending_plan_cycle_started_at             = Time.utc(2012,12,21)
+        @site.pending_plan_cycle_ended_at               = Time.utc(2013,12,20)
+        @site.first_plan_upgrade_required_alert_sent_at = Time.utc(2012,11,10)
 
         @site.apply_pending_plan_changes
       end
       subject { @site }
 
       it { should be_persisted }
+
+      its(:first_plan_upgrade_required_alert_sent_at) { should be_nil }
+
       its(:plan_id)               { should == @paid_plan.id }
       its(:plan)                  { should == @paid_plan }
       its(:plan_started_at)       { should == Time.utc(2012,12,21) }
@@ -478,6 +483,7 @@ describe Site::Invoice do
       its(:pending_plan_started_at)       { should be_nil }
       its(:pending_plan_cycle_started_at) { should be_nil }
       its(:pending_plan_cycle_ended_at)   { should be_nil }
+
     end # #apply_pending_plan_changes
 
     describe "#months_since" do
