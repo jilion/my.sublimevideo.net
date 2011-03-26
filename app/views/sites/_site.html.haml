@@ -19,32 +19,45 @@
           %span.settings_icon
           = "add a hostname"
       .plan
-        = link_to [:edit, site, :plan] do
-          = (site.plan || site.pending_plan).title
-          - if site.next_cycle_plan_id? # TODO handle the case when there is a pending_plan and a next_cycle_plan at the same time !!!
-            %span.disabled= " => #{site.next_cycle_plan.title}"
+        - if site.plan_id?
+          = link_to [:edit, site, :plan] do
+            = site.plan.title
+            - if site.next_cycle_plan_id?
+              %span.disabled= " => #{site.next_cycle_plan.title}"
       .cycle
         - if site.in_paid_plan?
           = l(site.plan_cycle_started_at, :format => :d_b_Y) + ' - ' + l(site.plan_cycle_ended_at, :format => :d_b_Y)
       .spacer
 
   %td.usage{ :class => td_usage_class(site) }
-    = render 'td_usage', site: site
+    - if site.plan_id?
+      = render 'td_usage', site: site
+    - else
+      = "—"
 
   %td.code
-    = link_to "Embed code", "", :class => "embed_code", :onclick => "return MySublimeVideo.showSiteEmbedCode('#{site.token}')"
+    - if site.plan_id?
+      = link_to "Embed code", "", :class => "embed_code", :onclick => "return MySublimeVideo.showSiteEmbedCode('#{site.token}')"
+    - else
+      = "—"
 
   %td.status.box_hovering_zone
     .wrap
-      - if !site.cdn_up_to_date?
-        %span.icon.in_progress
-        = info_box do
-          %p= "Your player is being deployed..."
-        .completed{ style: "display:none;" }
+      - if site.invoices_failed?
+        = link_to [site, :invoices] do
+          %span.icon.payment_issue
+          = info_box do
+            %p=t 'site.status.payment_issue'
+      - else
+        - if site.cdn_up_to_date?
           %span.icon.ok
           = info_box do
-            %p= "Everything runs smoothly, it's ok!"
-      - else
-        %span.icon.ok
-        = info_box do
-          %p= "Everything runs smoothly, it's ok!"
+            %p=t 'site.status.ok'
+        - else
+          %span.icon.in_progress
+          = info_box do
+            %p=t 'site.status.in_progress'
+          .completed{ style: "display:none;" }
+            %span.icon.ok
+            = info_box do
+              %p=t 'site.status.ok'

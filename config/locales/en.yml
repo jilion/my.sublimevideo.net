@@ -21,3 +21,9 @@ en:
     format:
       separator: "." # US separator
       delimiter: "," # US delimiter
+
+  site:
+    status:
+      payment_issue: "Payment issue, click to review your invoices and retry the payment."
+      ok: "Everything runs smoothly, it's ok!"
+      in_progress: "Your player is being deployed..."

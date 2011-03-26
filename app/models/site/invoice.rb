@@ -25,6 +25,10 @@ module Site::Invoice
   # = Instance Methods =
   # ====================
 
+  def invoices_failed?
+    invoices.any? { |i| i.failed? }
+  end
+
   def in_beta_plan?
     plan && plan.beta_plan?
   end
