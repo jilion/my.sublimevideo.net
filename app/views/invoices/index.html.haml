@@ -2,18 +2,20 @@
 
 #site.edit
   = render '/layouts/segmented_menu'
-  #invoices
-    - if @site.in_paid_plan? || (@site.next_cycle_plan_id? && @site.next_cycle_plan.paid_plan?)
-      %h3.section_title= "Next invoice"
-      - next_invoice = Invoice.build_next(site: @site)
-      %p= raw "#{content_tag(:strong, display_amount(next_invoice.amount))} on #{invoice_dates(next_invoice)}."
 
-    %h3.section_title= "Past invoices"
-    - if @invoices.present?
-      %ul
-        - @invoices.by_date.each do |invoice|
-          %li
-            = render 'invoice_row', :invoice => invoice
-    - else
-      %p= 'None.'
-    .spacer
+  - if @invoices.empty?
+    #no_invoices
+      %p= "No invoices"
+  - else
+    #invoices_summary
+      - if @site.in_paid_plan? || (@site.next_cycle_plan_id? && @site.next_cycle_plan.paid_plan?)
+        .next_invoice
+          %h3.section_title= "Next invoice"
+          - next_invoice = Invoice.build_next(site: @site)
+          %p= raw "#{content_tag(:strong, display_amount(next_invoice.amount))} on #{invoice_dates(next_invoice)}."
+      .past_invoices
+        %h3.section_title= "Past invoices"
+        %ul
+          - @invoices.by_date.each do |invoice|
+            %li= render 'invoice_row', :invoice => invoice
+  .spacer

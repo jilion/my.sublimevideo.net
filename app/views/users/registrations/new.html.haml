@@ -1,16 +1,27 @@
+#signup_steps
+  .center_wrap
+    %ul
+      %li.active
+        %strong.number= "1"
+        = "Sign Up"
+      %li
+        %strong.number= "2"
+        = "Choose a plan for your site"
+  .spacer
+
 = title_and_content_header("Sign Up")
-= content_for :header do
-  :javascript
-    function toggleCheckbox() {
-      $('company_fields_box').toggle();
-    }
-    document.observe("dom:loaded", function() {
-      var companyCheckbox = $('user_use_company'), companyBox = $('company_fields_box');
-      if (companyCheckbox.checked) {
-        companyBox.show();
-      }
-      $('user_use_company').on('click', toggleCheckbox);
-    });
+-# = content_for :header do
+-#   :javascript
+-#     function toggleCheckbox() {
+-#       $('company_fields_box').toggle();
+-#     }
+-#     document.observe("dom:loaded", function() {
+-#       var companyCheckbox = $('user_use_company'), companyBox = $('company_fields_box');
+-#       if (companyCheckbox.checked) {
+-#         companyBox.show();
+-#       }
+-#       $('user_use_company').on('click', toggleCheckbox);
+-#     });
     
 = form_for @resource, :as => resource_name, :url => "/register", :html => { :class => "main_form" } do |f|
   
@@ -39,42 +50,51 @@
       = f.label :postal_code, "Zip or Postal Code", :class => "icon"
       = f.text_field :postal_code, :class => "text no_icon", :placeholder => "Zip or Postal Code", :required => true
     .spacer
-    
-  .entry.use
-    %label.main= "Use of SublimeVideo:"
-    .checkbox_wrap
-      - if resource.errors.key?(:use)
-        .inline_errors
-          %span= resource.errors[:use].first
-      = f.check_box :use_personal
-      = f.label :use_personal, "Personal"
-    .checkbox_wrap
-      = f.check_box :use_company
-      = f.label :use_company, "For my company"
-    .checkbox_wrap
-      = f.check_box :use_clients
-      = f.label :use_clients, "For my clients"
-      
-  #company_fields_box{ :style => (resource.use_company ? "" : "display:none") }
-    .entry
+  .optional_fields
+    -# %h4= "Optional fields"
+    .entry.company_info
       .company_name.left_field
         = f.label :company_name, "Company name", :class => "icon"
         = f.text_field :company_name, :class => "text no_icon", :placeholder => "Company name"
       .company_url.right_field
-        = f.label :company_url, "Company website", :class => "icon"
-        = f.text_field :company_url, :class => "text no_icon", :placeholder => "Company website"
+        = f.label :company_url, "Website", :class => "icon"
+        = f.text_field :company_url, :class => "text no_icon", :placeholder => "Website"
       .spacer
-    .entry.company_job_title
-      = f.label :company_job_title, "Job title", :class => "icon"
-      = f.text_field :company_job_title, :class => "text no_icon", :placeholder => "Job title"
-    .entry.select
-      .company_job_title.left_field
-        = f.label :company_employees, "Company size", :class => "icon"
-        = f.select :company_employees, options_for_select(["Company size", "1 employee", "2-5 employees", "6-20 employees", "21-100 employees", "101-1000 employees", ">1001 employees"], :disabled => "Company size")
-      .company_videos_served.right_field
-        = f.label :company_videos_served, "Nr. of videos served", :class => "icon"
-        = f.select :company_videos_served, options_for_select(["Nr. of videos served", "0-1'000 videos/month", "1'000-10'000 videos/month", "10'000-100'000 videos/month", "100'000-1mio videos/month", ">1mio videos/month", "Don't know"], :disabled => "Nr. of videos served")
-      .spacer
+    .entry.use
+      %label.main= "Use of SublimeVideo:"
+      .checkbox_wrap
+        - if resource.errors.key?(:use)
+          .inline_errors
+            %span= resource.errors[:use].first
+        = f.check_box :use_personal
+        = f.label :use_personal, "Personal"
+      .checkbox_wrap
+        = f.check_box :use_company
+        = f.label :use_company, "For my company"
+      .checkbox_wrap
+        = f.check_box :use_clients
+        = f.label :use_clients, "For my clients"
+      
+  -# #company_fields_box{ :style => (resource.use_company ? "" : "display:none") }
+  -#   .entry
+  -#     .company_name.left_field
+  -#       = f.label :company_name, "Company name", :class => "icon"
+  -#       = f.text_field :company_name, :class => "text no_icon", :placeholder => "Company name"
+  -#     .company_url.right_field
+  -#       = f.label :company_url, "Company website", :class => "icon"
+  -#       = f.text_field :company_url, :class => "text no_icon", :placeholder => "Company website"
+  -#     .spacer
+  -#   .entry.company_job_title
+  -#     = f.label :company_job_title, "Job title", :class => "icon"
+  -#     = f.text_field :company_job_title, :class => "text no_icon", :placeholder => "Job title"
+  -#   .entry.select
+  -#     .company_job_title.left_field
+  -#       = f.label :company_employees, "Company size", :class => "icon"
+  -#       = f.select :company_employees, options_for_select(["Company size", "1 employee", "2-5 employees", "6-20 employees", "21-100 employees", "101-1000 employees", ">1001 employees"], :disabled => "Company size")
+  -#     .company_videos_served.right_field
+  -#       = f.label :company_videos_served, "Nr. of videos served", :class => "icon"
+  -#       = f.select :company_videos_served, options_for_select(["Nr. of videos served", "0-1'000 videos/month", "1'000-10'000 videos/month", "10'000-100'000 videos/month", "100'000-1mio videos/month", ">1mio videos/month", "Don't know"], :disabled => "Nr. of videos served")
+  -#     .spacer
   .entry.terms
     .checkbox_wrap
       = f.check_box :terms_and_conditions
@@ -84,10 +104,10 @@
     = f.submit "Sign Up"
     .spacer
     
-  #signup_quotes
-    %blockquote.wired
-      = "A uniform, cross-browser, multiple-codec compatible, HTML5 video-embedding solution."
-    %p.author.wired= "Webmonkey, Wired, 2010."
-    %blockquote.oreilly
-      = "Wow. Sublime Video HTML5 video player. Looks awesome."
-    %p.author.oreilly= "Tim O'Reilly, 2010."    
+  -# #signup_quotes
+  -#   %blockquote.wired
+  -#     = "A uniform, cross-browser, multiple-codec compatible, HTML5 video-embedding solution."
+  -#   %p.author.wired= "Webmonkey, Wired, 2010."
+  -#   %blockquote.oreilly
+  -#     = "Wow. Sublime Video HTML5 video player. Looks awesome."
+  -#   %p.author.oreilly= "Tim O'Reilly, 2010."    
