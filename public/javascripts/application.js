@@ -136,6 +136,7 @@ MySublimeVideo.showOrHideCcInfo = function(radioButton) {
     $('site_user_attributes_cc_expire_on_1i').disable();
     $('site_user_attributes_cc_expire_on_2i').disable();
     $('site_user_attributes_cc_expire_on_3i').disable();
+    $('site_hostname').required = false;
   }
   else {
     $('site_user_attributes_cc_update').enable();
@@ -151,6 +152,7 @@ MySublimeVideo.showOrHideCcInfo = function(radioButton) {
     $('site_user_attributes_cc_expire_on_2i').enable();
     $('site_user_attributes_cc_expire_on_3i').enable();
     ccInfoDiv.show();
+    $('site_hostname').required = true;
   }
 };
 

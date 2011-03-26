@@ -18,5 +18,5 @@
         .plan_total= number_with_delimiter(plan.player_hits)
         = info_box do
           %p= pluralize(number_with_delimiter(site.current_monthly_billable_usage.to_i), "<br /> Hit").html_safe
-    %span.peaks_insurance_label= "Peaks Insurance ON"
+    = link_to "Peak Insurance ON", "http://docs.sublimevideo.net/peak-insurance", :class => "peak_insurance_label"
     = link_to "Upgrade", edit_site_plan_path(site), :class => "upgrade_button submit_dynamic_button"

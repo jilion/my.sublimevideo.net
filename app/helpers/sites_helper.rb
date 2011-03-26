@@ -52,7 +52,7 @@ module SitesHelper
       if site.first_plan_upgrade_required_alert_sent_at?
         "required_upgrade"
       elsif site.current_monthly_billable_usage > site.plan.player_hits
-        "peaks_insurance"
+        "peak_insurance"
       end
     end
   end
