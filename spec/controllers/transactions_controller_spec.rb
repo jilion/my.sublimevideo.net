@@ -43,15 +43,15 @@ describe TransactionsController do
       describe "payment response" do
         before(:each) do
           @sha_params = {
-            "PAYID" => "1234", "STATUS" => "5", "orderID" => "2"
+            "PAYID" => "1234", "STATUS" => "5", "orderID" => "dwqdqw756w6q4d654qwd64qw"
           }
           @params = {
             "PAYMENT" => "TRUE",
-            "SHASIGN" => Digest::SHA512.hexdigest(["ORDERID=2","PAYID=1234","STATUS=5"].join(Ogone.yml[:signature_out]) + Ogone.yml[:signature_out]).upcase
+            "SHASIGN" => Digest::SHA512.hexdigest(["ORDERID=dwqdqw756w6q4d654qwd64qw","PAYID=1234","STATUS=5"].join(Ogone.yml[:signature_out]) + Ogone.yml[:signature_out]).upcase
           }
         end
         before(:each) do
-          Transaction.should_receive(:find_by_id).with(2).and_return(mock_transaction)
+          Transaction.should_receive(:find_by_order_id).with("dwqdqw756w6q4d654qwd64qw").and_return(mock_transaction)
         end
 
         context "transaction is already paid" do

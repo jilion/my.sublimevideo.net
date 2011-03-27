@@ -58,7 +58,7 @@ private
   end
 
   def process_payment
-    transaction = Transaction.find_by_id(params["orderID"].to_i)
+    transaction = Transaction.find_by_order_id(params["orderID"])
     render(nothing: true, status: 204) and return if transaction.paid? # already paid
 
     transaction.process_payment_response(@sha_params)
