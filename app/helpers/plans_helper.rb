@@ -3,20 +3,31 @@ module PlansHelper
   def plan_label_content(plan, site=nil, options={})
     discount = plan.price != plan.price(site)
     content_tag(:span, :class => "pricing") do
-      normal_price = content_tag(:strong, :class => "price") do
-        display_amount_with_sup(plan.price) + (discount ? content_tag(:span, "", :class => "strike") : '')
+
+      if discount
+        price_box = content_tag(:strong, :class => "price") do
+          display_amount_with_sup(plan.price) + (discount ? content_tag(:span, "", :class => "strike") : '')
+        end
+      else
+        price_box = content_tag(:strong, :class => "price") do
+          display_amount_with_sup(plan.price)
+        end
       end
 
-      price_box += content_tag(:span, :class => "details_label") do
-        (plan.yearly? ? "per year" : "per month")
+      if discount
+        price_box += content_tag(:span, :class => "details_label") do
+          (plan.yearly? ? "per year" : "per month")
+        end
+      else
+        price_box += (plan.yearly? ? "per year" : "per month")
       end
-      
+
       if discount
         price_box += content_tag(:strong, :class => "new_price") do
           display_amount_with_sup(plan.price(site))
         end
       end
-      
+
       price_box += content_tag(:span, :class => "name") do
         plan.name.gsub(/\d/, '').titleize
       end
@@ -64,7 +75,7 @@ module PlansHelper
     options["data-plan_price"] = display_amount(plan.price)
     unless site.new_record?
       options["data-plan_change_type"]  = plan_change_type(current_plan, plan)
-      options["data-plan_update_price"] = display_amount(current_plan.upgrade?(plan) ? plan.price - current_plan.price : plan.price)
+      options["data-plan_update_price"] = display_amount(current_plan.upgrade?(plan) ? plan.price - current_plan.price(site, true) : plan.price)
       options["data-plan_update_date"]  = l((current_plan.upgrade?(plan) ? site.plan_cycle_started_at : site.plan_cycle_ended_at && site.plan_cycle_ended_at.tomorrow.midnight) || Time.now.utc.midnight, :format => :named_date)
     end
     options

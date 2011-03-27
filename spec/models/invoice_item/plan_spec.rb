@@ -60,8 +60,8 @@ describe InvoiceItem::Plan do
         subject { InvoiceItem::Plan.build(invoice: @invoice_with_discount, item: @plan1) }
 
         its(:item)       { should == @plan1 }
-        its(:price)      { should == 800 }
-        its(:amount)     { should == 800 }
+        its(:price)      { should == 1000 }
+        its(:amount)     { should == 1000 }
         its(:started_at) { should == @site_with_discount.plan_cycle_started_at }
         its(:ended_at)   { should == @site_with_discount.plan_cycle_ended_at }
       end

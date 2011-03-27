@@ -230,7 +230,7 @@ describe Plan do
       it { Factory.build(:plan, :name => "custom1").support.should == "priority" }
     end
     
-    describe "#price" do
+    describe "#price(site, refund)" do
       before(:all) do
         @beta_user = Factory(:user, enthusiast_id: 1234)
         @non_beta_user = Factory(:user, enthusiast_id: nil)
@@ -240,8 +240,6 @@ describe Plan do
           @beta_user_dev_site1 = Factory(:site, user: @beta_user, plan_id: @dev_plan.id)
           @beta_user_beta_site1 = Factory(:site, user: @beta_user, plan_id: @beta_plan.id)
           @beta_user_paid_site1 = Factory(:site, user: @beta_user, plan_id: @paid_plan.id)
-          @beta_user_paid_site_with_pending_plan_id1 = Factory(:site, user: @beta_user, plan_id: @paid_plan.id)
-          @beta_user_paid_site_with_pending_plan_id1.pending_plan_id = @paid_plan2.id
         end
         
         Timecop.travel(PublicLaunch.beta_transition_ended_on + 1.hour) do # after beta end
@@ -263,8 +261,6 @@ describe Plan do
         @beta_user_dev_site1.first_paid_plan_started_at.should be_nil
         @beta_user_beta_site1.first_paid_plan_started_at.should be_nil
         @beta_user_paid_site1.first_paid_plan_started_at.should == PublicLaunch.beta_transition_ended_on.yesterday
-        @beta_user_paid_site_with_pending_plan_id1.first_paid_plan_started_at.should == PublicLaunch.beta_transition_ended_on.yesterday
-        @beta_user_paid_site_with_pending_plan_id1.pending_plan_id.should == @paid_plan2.id
         @beta_user_dev_site2.first_paid_plan_started_at.should be_nil
         @beta_user_beta_site2.first_paid_plan_started_at.should be_nil
         @beta_user_paid_site2.first_paid_plan_started_at.should == PublicLaunch.beta_transition_ended_on
@@ -274,30 +270,44 @@ describe Plan do
         @non_beta_user_dev_site2.first_paid_plan_started_at.should be_nil
         @non_beta_user_paid_site2.first_paid_plan_started_at.should == PublicLaunch.beta_transition_ended_on
       end
-      
-      it { @paid_plan2.price(@beta_user_dev_site1).should == 1590 }
-      it { @paid_plan2.price(@beta_user_beta_site1).should == 1590 }
-      it { @paid_plan2.price(@beta_user_paid_site1).should == 1590 }
-      
-      # should not return the discounted price anymore for plans not bought before the end of beta
-      it { Timecop.travel(PublicLaunch.beta_transition_ended_on + 1.day) { @paid_plan2.price(@beta_user_dev_site1).should == 1990 } }
-      it { Timecop.travel(PublicLaunch.beta_transition_ended_on + 1.day) { @paid_plan2.price(@beta_user_beta_site1).should == 1990 } }
-      # should still return the discounted price for plans first bought before the end of beta
-      it { Timecop.travel(PublicLaunch.beta_transition_ended_on + 1.day) { @paid_plan2.price(@beta_user_paid_site1).should == 1590 } }
-      # should still return the discounted price for plans first bought before the end of beta
-      it { Timecop.travel(PublicLaunch.beta_transition_ended_on + 1.day) { @paid_plan2.price(@beta_user_paid_site_with_pending_plan_id1).should == 1990 } }
-      
-      it { @paid_plan2.price(@beta_user_dev_site2).should == 1590 }
-      it { @paid_plan2.price(@beta_user_beta_site2).should == 1590 }
-      it { @paid_plan2.price(@beta_user_paid_site2).should == 1990 }
-      
-      it { @paid_plan2.price(@non_beta_user_dev_site1).should == 1990 }
-      it { @paid_plan2.price(@non_beta_user_paid_site1).should == 1990 }
-      
-      it { @paid_plan2.price(@non_beta_user_dev_site2).should == 1990 }
-      it { @paid_plan2.price(@non_beta_user_paid_site2).should == 1990 }
-    end
 
+      # should not return the discounted price anymore for plans not bought before the end of beta
+      context "before the end of the beta" do
+        before(:all) { Timecop.travel(PublicLaunch.beta_transition_ended_on - 1.day) }
+        after(:all) { Timecop.return }
+
+        it { @paid_plan2.price(@beta_user_dev_site1).should == 1590 }
+        it { @paid_plan2.price(@beta_user_beta_site1).should == 1590 }
+        it { @paid_plan2.price(@beta_user_paid_site1).should == 1990 }
+        it { @paid_plan2.price(@beta_user_paid_site1, true).should == 1590 }
+
+        it { @paid_plan2.price(@beta_user_dev_site2).should == 1590 }
+        it { @paid_plan2.price(@beta_user_beta_site2).should == 1590 }
+        it { @paid_plan2.price(@beta_user_paid_site2).should == 1990 }
+
+        it { @paid_plan2.price(@non_beta_user_dev_site1).should == 1990 }
+        it { @paid_plan2.price(@non_beta_user_paid_site1).should == 1990 }
+
+        it { @paid_plan2.price(@non_beta_user_dev_site2).should == 1990 }
+        it { @paid_plan2.price(@non_beta_user_paid_site2).should == 1990 }
+      end
+
+      context "after the end of the beta transition" do
+        before(:all) { Timecop.travel(PublicLaunch.beta_transition_ended_on + 1.day) }
+        after(:all) { Timecop.return }
+
+        it { @paid_plan2.price(@beta_user_dev_site1).should == 1990 }
+        it { @paid_plan2.price(@beta_user_beta_site1).should == 1990 }
+        it "should not return the discounted price" do
+          @paid_plan2.price(@beta_user_paid_site1).should == 1990
+        end
+
+        it "should return the discounted price if 'refund' param is true" do
+          # the refund param is used in the view to display the  difference paid when upgrading and in InvoiceItem::Plan for plans to refund
+          @paid_plan2.price(@beta_user_paid_site1, true).should == 1590
+        end
+      end
+    end
   end
 
 end
@@ -322,24 +332,3 @@ end
 #  index_plans_on_name_and_cycle  (name,cycle) UNIQUE
 #  index_plans_on_token           (token) UNIQUE
 #
-
-
-# == Schema Information
-#
-# Table name: plans
-#
-#  id          :integer         not null, primary key
-#  name        :string(255)
-#  token       :string(255)
-#  cycle       :string(255)
-#  player_hits :integer
-#  price       :integer
-#  created_at  :datetime
-#  updated_at  :datetime
-#
-# Indexes
-#
-#  index_plans_on_name_and_cycle  (name,cycle) UNIQUE
-#  index_plans_on_token           (token) UNIQUE
-#
-
