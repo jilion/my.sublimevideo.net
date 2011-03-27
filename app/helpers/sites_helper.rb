@@ -37,6 +37,17 @@ module SitesHelper
     condition ? "display:block" : "display:none"
   end
 
+  def style_for_usage_bar_from_usage_percentage(fraction)
+    case fraction
+    when 0
+      "display:none;"
+    when 0..0.04
+      "width:4%;"
+    else
+      "width:#{display_percentage(fraction)};"
+    end
+  end
+
   def conditions_for_show_settings(site)
     site.extra_hostnames? \
     || (site.dev_hostnames? && site.dev_hostnames != Site::DEFAULT_DEV_DOMAINS) \
