@@ -188,28 +188,30 @@ describe Site do
       end
 
       context "with any paid plan" do
-        subject do
-          site = Factory.build(:new_site, user: Factory(:user, cc_type: nil, cc_last_digits: nil), plan_id: @paid_plan.id)
-          site.save
-          site
+        context "without credit card" do
+          subject do
+            site = Factory.build(:new_site, user: Factory(:user_no_cc), plan_id: @paid_plan.id)
+            site.save
+            site
+          end
+          it { should_not be_valid }
+          it { should have(1).error_on(:base) }
+          its(:plan_id) { should be_nil }
+          its(:pending_plan_id) { should == @paid_plan.id }
         end
-        it { should_not be_valid }
-        it { should have(1).error_on(:base) }
-        its(:plan_id) { should be_nil }
-        its(:pending_plan_id) { should == @paid_plan.id }
-      end
 
-      context "with any paid plan" do
-        user_attributes = {
-          cc_type: 'visa',
-          cc_full_name: "Rémy Coutable",
-          cc_number: "4111111111111111",
-          cc_verification_value: "111",
-          cc_expire_on: 2.years.from_now
-        }
+        context "with credit card attributes given" do
+          user_attributes = {
+            cc_type: 'visa',
+            cc_full_name: "Rémy Coutable",
+            cc_number: "4111111111111111",
+            cc_verification_value: "111",
+            cc_expire_on: 2.years.from_now
+          }
 
-        subject { Factory.build(:site, user_attributes: user_attributes, plan_id: @paid_plan.id) }
-        it { should be_valid }
+          subject { Factory.build(:site, user_attributes: valid_cc_attributes, plan_id: @paid_plan.id) }
+          it { should be_valid }
+        end
       end
     end
 
@@ -759,35 +761,7 @@ describe Site do
       describe "#set_user_attributes"  do
         subject { Factory(:user, first_name: "Bob") }
 
-        it "should set user_attributes before validate" do
-          subject.first_name.should == "Bob"
-          site = Factory.build(:new_site, user: subject, plan_id: @paid_plan.id, user_attributes: { first_name: "John" })
-          site.should be_valid
-          site.user.first_name.should == "John"
-        end
-
-        it "should set user_attributes and save the user when the site is saved" do
-          subject.first_name.should == "Bob"
-          site = Factory(:site, user: subject, plan_id: @paid_plan.id, user_attributes: { first_name: "John" })
-          site.user.first_name.should == "John"
-        end
-
-        it "should not set user_attributes with dev_plan" do
-          subject.first_name.should == "Bob"
-          site = Factory(:site, user: subject, plan_id: @dev_plan.id, user_attributes: { first_name: "John" })
-          site.user.first_name.should == "Bob"
-        end
-
-        it "should not set user_attributes with downgrade a paid site to dev plan" do
-          subject.first_name.should == "Bob"
-          site = Factory(:site, user: subject, plan_id: @paid_plan.id)
-          site.update_attributes(plan_id: @dev_plan.id, user_attributes: { first_name: "John" })
-          site.user.first_name.should == "Bob"
-          site.plan_id.should == @paid_plan.id
-          site.next_cycle_plan_id.should == @dev_plan.id
-        end
-
-        it "should not set user_attributes with downgrade a paid site to dev plan but set current_password" do
+        it "should set only current_password" do
           subject.first_name.should == "Bob"
           site = Factory(:site, user: subject, plan_id: @paid_plan.id)
           site.update_attributes(plan_id: @dev_plan.id, user_attributes: { first_name: "John", "current_password" => '123456' })

@@ -74,7 +74,7 @@ describe User do
   end
 
   describe "Validations" do
-    [:first_name, :last_name, :email, :remember_me, :password, :postal_code, :country, :use_personal, :use_company, :use_clients, :company_name, :company_url, :company_job_title, :company_employees, :company_videos_served, :terms_and_conditions, :cc_update, :cc_type, :cc_full_name, :cc_number, :cc_expire_on, :cc_verification_value].each do |attr|
+    [:first_name, :last_name, :email, :remember_me, :password, :postal_code, :country, :use_personal, :use_company, :use_clients, :company_name, :company_url, :terms_and_conditions, :cc_brand, :cc_full_name, :cc_number, :cc_expiration_month, :cc_expiration_year, :cc_verification_value].each do |attr|
       it { should allow_mass_assignment_of(attr) }
     end
 
@@ -108,26 +108,13 @@ describe User do
 
     it "should validate presence of at least one usage" do
       user = Factory.build(:user, :use_personal => nil, :use_company => nil, :use_clients => nil)
-      user.should_not be_valid
-      user.should have(1).error_on(:use)
-      user.errors[:use].should == ["Please check at least one option"]
+      user.should be_valid
     end
 
-    context "when use_company is checked" do
-      it "should validate company fields if use_company is checked" do
-        fields = [:company_name, :company_url, :company_job_title, :company_employees, :company_videos_served]
-        user = Factory.build(:user, Hash[fields.map { |f| [f, nil] }].merge({ :use_personal => false, :use_company => true }))
-        user.should_not be_valid
-        fields.each do |f|
-          user.should have(1).error_on(f)
-        end
-      end
-
-      it "should validate company url" do
-        user = Factory.build(:user, :use_company => true, :company_url => "http://localhost")
-        user.should_not be_valid
-        user.should have(1).error_on(:company_url)
-      end
+    it "should validate company url" do
+      user = Factory.build(:user, :use_company => true, :company_url => "http://localhost")
+      user.should_not be_valid
+      user.should have(1).error_on(:company_url)
     end
 
     context "when update email" do
@@ -182,61 +169,6 @@ describe User do
         user.current_password = 'wrong'
         user.archive.should be_false
         user.errors[:current_password].should == ["is invalid"]
-      end
-    end
-
-    describe "user credit card when at least 1 credit card field is given" do
-      it "should be valid without any credit card field" do
-        user = Factory.build(:user, :cc_update => nil, :cc_number => nil, :cc_first_name => nil, :cc_last_name => nil, :cc_verification_value => nil, :cc_expire_on => nil)
-        user.should be_valid
-      end
-
-      context "with at least a credit card field given" do
-        it "should require first and last name" do
-          user = Factory.build(:user, :cc_expire_on => 1.year.from_now, :cc_first_name => "Bob")
-          user.should_not be_valid
-          user.should have(1).error_on(:cc_full_name)
-        end
-
-        it "should not allow expire date in the future" do
-          user = Factory.build(:user, :cc_full_name => "John Doe", :cc_expire_on => 1.year.ago)
-          user.should_not be_valid
-          user.should have(2).errors_on(:cc_expire_on)
-        end
-
-        describe "credit card number" do
-          it "should require one" do
-            user = Factory.build(:user, :cc_expire_on => 1.year.from_now, :cc_full_name => "John Doe")
-            user.should_not be_valid
-            user.should have(1).error_on(:cc_number)
-          end
-
-          it "should require a valid one" do
-            user = Factory.build(:user, :cc_expire_on => 1.year.from_now, :cc_full_name => "John Doe", :cc_number => '1234')
-            user.should_not be_valid
-            user.should have(1).error_on(:cc_number)
-          end
-        end
-
-        describe "credit card type" do
-          it "should require one" do
-            user = Factory.build(:user, :cc_type => nil, :cc_expire_on => 1.year.from_now, :cc_full_name => "John Doe")
-            user.should_not be_valid
-            user.should have(1).errors_on(:cc_type)
-          end
-
-          it "should require a valid one" do
-            user = Factory.build(:user, :cc_type => 'foo', :cc_expire_on => 1.year.from_now, :cc_full_name => "John Doe")
-            user.should_not be_valid
-            user.should have(1).error_on(:cc_type)
-          end
-        end
-
-        it "should require a credit card verification value" do
-          user = Factory.build(:user, :cc_expire_on => 1.year.from_now, :cc_full_name => "John Doe")
-          user.should_not be_valid
-          user.should have(1).error_on(:cc_verification_value)
-        end
       end
     end
   end
@@ -385,6 +317,46 @@ describe User do
   describe "Callbacks" do
     let(:user) { Factory(:user) }
 
+    describe "before_save :pend_credit_card_info" do
+
+      context "when user has no cc infos before" do
+        subject { Factory.build(:user_no_cc, valid_cc_attributes) }
+        before(:each) do
+          subject.save!
+          subject.apply_pending_credit_card_info
+          subject.reload
+        end
+
+        its(:cc_type)                { should == 'visa' }
+        its(:cc_last_digits)         { should == '1111' }
+        its(:cc_expire_on)           { should == 1.year.from_now.end_of_month.to_date }
+        its(:pending_cc_type)        { should be_nil }
+        its(:pending_cc_last_digits) { should be_nil }
+        its(:pending_cc_expire_on)   { should be_nil }
+      end
+
+      context "when user has cc infos before" do
+        subject { Factory(:user) }
+        before(:each) do
+          subject.cc_type.should == 'visa'
+          subject.cc_last_digits.should == '1111'
+          subject.cc_expire_on.should == 1.year.from_now.end_of_month.to_date
+          subject.attributes = valid_cc_attributes_master
+          subject.save!
+          subject.apply_pending_credit_card_info
+          subject.reload
+        end
+        
+        its(:cc_type)                { should == 'master' }
+        its(:cc_last_digits)         { should == '9999' }
+        its(:cc_expire_on)           { should == 2.years.from_now.end_of_month.to_date }
+        its(:pending_cc_type)        { should be_nil }
+        its(:pending_cc_last_digits) { should be_nil }
+        its(:pending_cc_expire_on)   { should be_nil }
+      end
+
+    end
+
     describe "after_save :newsletter_subscription" do
       use_vcr_cassette "campaign_monitor/user"
       let(:user) { Factory(:user, :newsletter => "1", :email => "newsletter@jilion.com") }
@@ -465,7 +437,7 @@ describe User do
 
       context "with failed invoices" do
         before(:all) do
-          @user = Factory(:user)
+          @user  = Factory(:user)
           @site1 = Factory(:site, user: @user)
           @site2 = Factory(:site, user: @user)
           Factory(:invoice, site: @site1, state: 'paid')
@@ -573,9 +545,6 @@ describe User do
       :use_company => true,
       :company_name => "bob",
       :company_url => "bob.com",
-      :company_job_title => "Boss",
-      :company_employees => "101-1'000",
-      :company_videos_served => "0-1'000",
       :terms_and_conditions => "1",
       :invitation_token => @user.invitation_token
     }
@@ -587,55 +556,60 @@ end
 
 
 
+
 # == Schema Information
 #
 # Table name: users
 #
-#  id                    :integer         not null, primary key
-#  state                 :string(255)
-#  email                 :string(255)     default(""), not null
-#  encrypted_password    :string(128)     default(""), not null
-#  password_salt         :string(255)     default(""), not null
-#  confirmation_token    :string(255)
-#  confirmed_at          :datetime
-#  confirmation_sent_at  :datetime
-#  reset_password_token  :string(255)
-#  remember_token        :string(255)
-#  remember_created_at   :datetime
-#  sign_in_count         :integer         default(0)
-#  current_sign_in_at    :datetime
-#  last_sign_in_at       :datetime
-#  current_sign_in_ip    :string(255)
-#  last_sign_in_ip       :string(255)
-#  failed_attempts       :integer         default(0)
-#  locked_at             :datetime
-#  cc_type               :string(255)
-#  cc_last_digits        :string(255)
-#  cc_expire_on          :date
-#  cc_updated_at         :datetime
-#  created_at            :datetime
-#  updated_at            :datetime
-#  invitation_token      :string(20)
-#  invitation_sent_at    :datetime
-#  zendesk_id            :integer
-#  enthusiast_id         :integer
-#  first_name            :string(255)
-#  last_name             :string(255)
-#  postal_code           :string(255)
-#  country               :string(255)
-#  use_personal          :boolean
-#  use_company           :boolean
-#  use_clients           :boolean
-#  company_name          :string(255)
-#  company_url           :string(255)
-#  company_job_title     :string(255)
-#  company_employees     :string(255)
-#  company_videos_served :string(255)
-#  cc_alias              :string(255)
-#  archived_at           :datetime
-#  newsletter            :boolean         default(TRUE)
-#  last_invoiced_amount  :integer         default(0)
-#  total_invoiced_amount :integer         default(0)
+#  id                     :integer         not null, primary key
+#  state                  :string(255)
+#  email                  :string(255)     default(""), not null
+#  encrypted_password     :string(128)     default(""), not null
+#  password_salt          :string(255)     default(""), not null
+#  confirmation_token     :string(255)
+#  confirmed_at           :datetime
+#  confirmation_sent_at   :datetime
+#  reset_password_token   :string(255)
+#  remember_token         :string(255)
+#  remember_created_at    :datetime
+#  sign_in_count          :integer         default(0)
+#  current_sign_in_at     :datetime
+#  last_sign_in_at        :datetime
+#  current_sign_in_ip     :string(255)
+#  last_sign_in_ip        :string(255)
+#  failed_attempts        :integer         default(0)
+#  locked_at              :datetime
+#  cc_type                :string(255)
+#  cc_last_digits         :string(255)
+#  cc_expire_on           :date
+#  cc_updated_at          :datetime
+#  created_at             :datetime
+#  updated_at             :datetime
+#  invitation_token       :string(20)
+#  invitation_sent_at     :datetime
+#  zendesk_id             :integer
+#  enthusiast_id          :integer
+#  first_name             :string(255)
+#  last_name              :string(255)
+#  postal_code            :string(255)
+#  country                :string(255)
+#  use_personal           :boolean
+#  use_company            :boolean
+#  use_clients            :boolean
+#  company_name           :string(255)
+#  company_url            :string(255)
+#  company_job_title      :string(255)
+#  company_employees      :string(255)
+#  company_videos_served  :string(255)
+#  cc_alias               :string(255)
+#  pending_cc_type        :string(255)
+#  pending_cc_last_digits :string(255)
+#  pending_cc_expire_on   :date
+#  pending_cc_updated_at  :datetime
+#  archived_at            :datetime
+#  newsletter             :boolean         default(TRUE)
+#  last_invoiced_amount   :integer         default(0)
+#  total_invoiced_amount  :integer         default(0)
 #
 # Indexes
 #

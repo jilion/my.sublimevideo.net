@@ -17,13 +17,11 @@ class Invoice < ActiveRecord::Base
 
   delegate :user, :to => :site
 
-  def last_transaction
-    transactions.order(:created_at.desc).first
-  end
+  # =============
+  # = Callbacks =
+  # =============
 
-  def last_failed_transaction
-    transactions.failed.order(:created_at.desc).first
-  end
+  before_create :set_customer_infos
 
   # ===============
   # = Validations =
@@ -40,14 +38,11 @@ class Invoice < ActiveRecord::Base
   # =================
 
   state_machine :initial => :open do
-    state :paid
-    state :failed
-
     event(:succeed) { transition [:open, :failed] => :paid }
     event(:fail)    { transition [:open, :failed] => :failed }
 
     before_transition :on => :succeed, :do => :set_paid_at
-    before_transition :on => :fail,    :do => :set_failed_at
+    before_transition :on => :fail,    :do => :set_last_failed_at
     after_transition  :on => :succeed, :do => [:apply_pending_site_plan_changes, :update_user_invoiced_amount, :unsuspend_user]
   end
 
@@ -114,6 +109,18 @@ class Invoice < ActiveRecord::Base
     reference
   end
 
+  def last_transaction
+    transactions.order(:created_at.desc).first
+  end
+
+  def paid_transaction
+    transactions.paid.order(:created_at.desc).first
+  end
+
+  def last_failed_transaction
+    transactions.failed.order(:created_at.desc).first
+  end
+
 private
 
   def build_invoice_items(next_invoice)
@@ -142,28 +149,36 @@ private
     self.amount = invoice_items_amount - discount_amount + vat_amount
   end
 
+  # before_create
+  def set_customer_infos
+    self.customer_full_name    = user.full_name
+    self.customer_email        = user.email
+    self.customer_country      = user.country
+    self.customer_company_name = user.company_name
+  end
+
   # before_transition :on => :succeed
   def set_paid_at
     self.paid_at = Time.now.utc
   end
 
   # before_transition :on => :fail
-  def set_failed_at
-    self.failed_at = Time.now.utc
+  def set_last_failed_at
+    self.last_failed_at = Time.now.utc
   end
 
   # after_transition :on => :succeed
   def apply_pending_site_plan_changes
     self.site.apply_pending_plan_changes
   end
-  
+
   # after_transition :on => :succeed
   def update_user_invoiced_amount
     self.user.last_invoiced_amount = amount
     self.user.total_invoiced_amount += amount
     self.user.save
   end
-  
+
   # after_transition :on => :succeed
   def unsuspend_user
     user.unsuspend if user.invoices.failed.empty?
@@ -173,28 +188,30 @@ end
 
 
 
-
 # == Schema Information
 #
 # Table name: invoices
 #
-#  id                      :integer         not null, primary key
-#  site_id                 :integer
-#  reference               :string(255)
-#  state                   :string(255)
-#  amount                  :integer
-#  vat_rate                :float
-#  vat_amount              :integer
-#  discount_rate           :float
-#  discount_amount         :integer
-#  invoice_items_amount    :integer
-#  charging_delayed_job_id :integer
-#  invoice_items_count     :integer         default(0)
-#  transactions_count      :integer         default(0)
-#  created_at              :datetime
-#  updated_at              :datetime
-#  paid_at                 :datetime
-#  failed_at               :datetime
+#  id                    :integer         not null, primary key
+#  site_id               :integer
+#  reference             :string(255)
+#  state                 :string(255)
+#  customer_full_name    :string(255)
+#  customer_email        :string(255)
+#  customer_country      :string(255)
+#  customer_company_name :string(255)
+#  amount                :integer
+#  vat_rate              :float
+#  vat_amount            :integer
+#  discount_rate         :float
+#  discount_amount       :integer
+#  invoice_items_amount  :integer
+#  invoice_items_count   :integer         default(0)
+#  transactions_count    :integer         default(0)
+#  created_at            :datetime
+#  updated_at            :datetime
+#  paid_at               :datetime
+#  last_failed_at        :datetime
 #
 # Indexes
 #

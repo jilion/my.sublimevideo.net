@@ -6,20 +6,20 @@ MySublimeVideo::Application.routes.draw do
   :controllers => { :sessions => "users/sessions" },
   :skip => [:invitations, :registrations] do
     resource :user_registration, :only => [], :controller => 'users/registrations', :path => '' do
-      get    :new,     :path => '/register', :as => 'new'
-      post   :create,  :path => '/register'
+      get    :new,     :path => '/signup', :as => 'new'
+      post   :create,  :path => '/signup'
 
       get    :edit,    :path => '/account/edit', :as => 'edit'
       put    :update,  :path => '/account/credentials'
       delete :destroy, :path => '/account'
     end
 
-    %w[sign_up signup].each                { |action| match action => redirect('/register'), :via => :get }
-    %w[log_in sign_in signin].each         { |action| match action => redirect('/login'),    :via => :get }
-    %w[log_out sign_out signout exit].each { |action| match action => redirect('/logout'),   :via => :get }
+    %w[sign_up register].each         { |action| match action => redirect('/signup'), :via => :get }
+    %w[log_in sign_in signin].each    { |action| match action => redirect('/login'),    :via => :get }
+    %w[log_out sign_out signout].each { |action| match action => redirect('/logout'),   :via => :get }
   end
   match '/password/validate' => "users/passwords#validate", :via => :post
-  match '/invitation/accept' => redirect('/register'), :via => :get
+  match '/invitation/accept' => redirect('/signup'), :via => :get
 
   resource :users, :only => :update, :path => '/account/info'
   resources :sites, :except => :show do
@@ -85,7 +85,6 @@ MySublimeVideo::Application.routes.draw do
     resources :invoices,  :only => [:index, :show, :edit] do
       member do
         put :retry_charging
-        put :cancel_charging
       end
     end
     resources :plans,     :only => [:index, :new, :create]

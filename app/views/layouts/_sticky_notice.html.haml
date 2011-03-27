@@ -7,7 +7,7 @@
           - edit_cc_link = link_to('update it', edit_credit_card_path)
           - if current_user.cc_expired?
             = t("user.credit_card.expired")
-            = raw t("user.please_link", :link => edit_cc_link)
+            = raw t("please_link", :link => edit_cc_link)
           - else
             = raw t("user.credit_card.will_expire_please_link", :link => edit_cc_link)
 

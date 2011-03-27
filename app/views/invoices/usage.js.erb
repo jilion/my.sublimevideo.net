@@ -1,9 +1,0 @@
-$('current_usage_amount').update('<%= escape_javascript(
-  "<p>Your current usage <em>(" +
-  invoice_dates(@invoice) +
-  ")</em>: </p><p>"+
-  content_tag(:strong, display_amount(@invoice.amount)) +
-  " "+
-  link_to("view details", usage_invoices_path, :onclick => "window.open(this); return false", :class => "details") + " " +
-  "</p>"
-).html_safe %>');

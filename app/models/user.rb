@@ -13,7 +13,7 @@ class User < ActiveRecord::Base
                   :company_name, :company_url, :company_job_title, :company_employees, :company_videos_served,
                   :newsletter, :terms_and_conditions
   # Credit card
-  attr_accessible :cc_update, :cc_type, :cc_full_name, :cc_number, :cc_expire_on, :cc_verification_value
+  attr_accessible :cc_brand, :cc_full_name, :cc_number, :cc_expiration_year, :cc_expiration_month, :cc_verification_value
 
   uniquify :cc_alias, :chars => Array('a'..'z') + Array('0'..'9')
 
@@ -44,9 +44,7 @@ class User < ActiveRecord::Base
   validates :company_url, :hostname => true, :allow_blank => true
   validates :terms_and_conditions, :acceptance => { :accept => "1" }, :on => :create
 
-  validate :validates_credit_card_attributes # in user/credit_card
-  validate :validates_use_presence, :on => :create
-  validate :validates_company_fields, :on => :create
+  validate :validates_credit_card_attributes, :if => :any_cc_attrs? # in user/credit_card
   validate :validates_current_password
 
   # =============
@@ -54,18 +52,20 @@ class User < ActiveRecord::Base
   # =============
 
   before_save  :set_password
-  before_save  :keep_some_credit_card_info # in user/credit_card
-  after_update :update_email_on_zendesk, :charge_failed_invoices
+  before_save  :pend_credit_card_info, :if => :any_cc_attrs? # in user/credit_card
+
   after_save   :newsletter_subscription
+
+  after_update :update_email_on_zendesk, :charge_failed_invoices
 
   # =================
   # = State Machine =
   # =================
 
   state_machine :initial => :active do
-    event(:suspend)        { transition :active => :suspended }
-    event(:unsuspend)      { transition :suspended => :active }
-    event(:archive)        { transition all => :archived }
+    event(:suspend)   { transition :active => :suspended }
+    event(:unsuspend) { transition :suspended => :active }
+    event(:archive)   { transition all => :archived }
 
     before_transition :on => :suspend, :do => :suspend_sites
     after_transition  :on => :suspend, :do => :send_account_suspended_email
@@ -179,24 +179,6 @@ class User < ActiveRecord::Base
   end
 
 private
-
-  # validate
-  def validates_use_presence
-    if !use_personal && !use_company && !use_clients
-      self.errors.add(:use, :at_least_one_option)
-    end
-  end
-
-  # validate
-  def validates_company_fields
-    if use_company
-      self.errors.add(:company_name, :blank) unless company_name.present?
-      self.errors.add(:company_url, :blank) unless company_url.present?
-      self.errors.add(:company_job_title, :blank) unless company_job_title.present?
-      self.errors.add(:company_employees, :blank) unless company_employees.present?
-      self.errors.add(:company_videos_served, :blank) unless company_videos_served.present?
-    end
-  end
 
   # validate
   def validates_current_password

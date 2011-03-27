@@ -11,7 +11,7 @@ describe TransactionsController do
             "PAYID" => "1234", "STATUS" => "5"
           }
           @params = {
-            "USER_ID" => "1", "CC_CHECK" => "TRUE",
+            "CHECK_CC_USER_ID" => "1",
             "SHASIGN" => Digest::SHA512.hexdigest(["PAYID=1234","STATUS=5"].join(Ogone.yml[:signature_out]) + Ogone.yml[:signature_out]).upcase
           }
         end
@@ -19,8 +19,7 @@ describe TransactionsController do
 
         context "that succeeds" do
           it "should add a notice and redirect to /account/edit" do
-            mock_user.should_receive(:process_cc_authorization_response).with(@sha_params, "1234;RES").and_return("authorized")
-            mock_user.should_receive(:save) { true }
+            mock_user.should_receive(:process_cc_authorize_and_save).with(@sha_params) { true }
 
             post :callback, @params.merge(@sha_params)
             flash[:notice].should be_present
@@ -31,7 +30,7 @@ describe TransactionsController do
 
         context "that fails" do
           it "should add an alert and redirect to /account/edit" do
-            mock_user.should_receive(:process_cc_authorization_response).with(@sha_params, "1234;RES").and_return("refused")
+            mock_user.should_receive(:process_cc_authorize_and_save).with(@sha_params) { false }
 
             post :callback, @params.merge(@sha_params)
             flash[:notice].should be_nil
@@ -44,15 +43,15 @@ describe TransactionsController do
       describe "payment response" do
         before(:each) do
           @sha_params = {
-            "PAYID" => "1234", "STATUS" => "5", "ORDERID" => "2"
+            "PAYID" => "1234", "STATUS" => "5", "orderID" => "dwqdqw756w6q4d654qwd64qw"
           }
           @params = {
-            "PAYMENT" => "TRUE", "ACTION" => "create",
-            "SHASIGN" => Digest::SHA512.hexdigest(["ORDERID=2","PAYID=1234","STATUS=5"].join(Ogone.yml[:signature_out]) + Ogone.yml[:signature_out]).upcase
+            "PAYMENT" => "TRUE",
+            "SHASIGN" => Digest::SHA512.hexdigest(["ORDERID=dwqdqw756w6q4d654qwd64qw","PAYID=1234","STATUS=5"].join(Ogone.yml[:signature_out]) + Ogone.yml[:signature_out]).upcase
           }
         end
         before(:each) do
-          Transaction.should_receive(:find_by_id).with(2).and_return(mock_transaction)
+          Transaction.should_receive(:find_by_order_id).with("dwqdqw756w6q4d654qwd64qw").and_return(mock_transaction)
         end
 
         context "transaction is already paid" do
@@ -87,9 +86,9 @@ describe TransactionsController do
 
           context "that fails" do
             it "should add an alert and redirect to /account/edit" do
-              mock_transaction.should_receive(:paid?).twice { false }
-              mock_transaction.should_receive(:failed?)     { true }
-              mock_transaction.should_receive(:error_key)   { "refused" }
+              mock_transaction.should_receive(:paid?).twice    { false }
+              mock_transaction.should_receive(:failed?)        { true }
+              mock_transaction.should_receive(:i18n_error_key) { "refused" }
 
               post :callback, @params.merge(@sha_params)
               flash[:notice].should be_nil
@@ -107,7 +106,7 @@ describe TransactionsController do
           "PAYID" => "1234", "STATUS" => "5"
         }
         @params = {
-          "USER_ID" => "1", "CC_CHECK" => "TRUE",
+          "CHECK_CC_USER_ID" => "1",
           "SHASIGN" => Digest::SHA512.hexdigest(["PAYID=1234","STATUS=5"].join(Ogone.yml[:signature_out]) + Ogone.yml[:signature_out]).upcase
         }
         @sha_params["STATUS"] = "9" # tempering!!!!!

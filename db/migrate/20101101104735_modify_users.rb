@@ -3,6 +3,11 @@ class ModifyUsers < ActiveRecord::Migration
     change_column :users, :cc_last_digits, :string
 
     add_column :users, :cc_alias, :string
+    add_column :users, :pending_cc_type, :string
+    add_column :users, :pending_cc_last_digits, :string
+    add_column :users, :pending_cc_expire_on, :date
+    add_column :users, :pending_cc_updated_at, :datetime
+    
     add_column :users, :archived_at, :datetime
     add_column :users, :newsletter, :boolean, :default => true
     add_column :users, :last_invoiced_amount, :integer, :default => 0
@@ -36,6 +41,10 @@ class ModifyUsers < ActiveRecord::Migration
     add_column :users, :video_settings, :text
 
     remove_column :users, :cc_alias
+    remove_column :users, :pending_cc_type
+    remove_column :users, :pending_cc_last_digits
+    remove_column :users, :pending_cc_expire_on
+    remove_column :users, :pending_cc_updated_at
     remove_column :users, :archived_at
     remove_column :users, :newsletter
     remove_column :users, :total_invoiced_amount

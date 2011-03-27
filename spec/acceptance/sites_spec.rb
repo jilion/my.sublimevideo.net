@@ -27,13 +27,10 @@ feature "Sites" do
 
     feature "new" do
       describe "dev plan" do
-        background do
-          choose "plan_dev"
-        end
-
         scenario "with no hostname" do
+          choose "plan_dev"
           fill_in "Domain", :with => ""
-          click_button "Create"
+          click_button "Create site"
 
           @worker.work_off
           site = @current_user.sites.last
@@ -47,8 +44,9 @@ feature "Sites" do
         end
 
         scenario "with a hostname" do
+          choose "plan_dev"
           fill_in "Domain", :with => "rymai.com"
-          click_button "Create"
+          click_button "Create site"
 
           @worker.work_off
           site = @current_user.sites.last
@@ -88,6 +86,7 @@ feature "Sites" do
             page.should have_content("Card type is invalid")
             page.should have_content("Name on card can't be blank")
             page.should have_content("Card number is invalid")
+            page.should have_content("Expiration date expired")
             page.should have_content("CSC is required")
           end
         end
@@ -99,7 +98,7 @@ feature "Sites" do
 
           scenario "with no hostname" do
             fill_in "Domain", :with => ""
-            set_credit_card_in_site_form
+            set_credit_card
             click_button "Create"
 
             current_url.should =~ %r(http://[^/]+/sites)
@@ -108,7 +107,7 @@ feature "Sites" do
 
           scenario "with a hostname (visa)" do
             fill_in "Domain", :with => "rymai.com"
-            set_credit_card_in_site_form
+            set_credit_card
             VCR.use_cassette('ogone/visa_payment_acceptance') { click_button "Create" }
 
             @worker.work_off
@@ -135,7 +134,7 @@ feature "Sites" do
 
           scenario "with a hostname (mastercard)" do
             fill_in "Domain", :with => "rymai.com"
-            set_credit_card_in_site_form(type: 'master')
+            set_credit_card(type: 'master')
             VCR.use_cassette('ogone/master_payment_acceptance') { click_button "Create" }
 
             @worker.work_off
@@ -162,7 +161,7 @@ feature "Sites" do
 
           scenario "entering a 3-D Secure credit card with a failing identification" do
             fill_in "Domain", :with => "rymai.com"
-            set_credit_card_in_site_form(d3d: true)
+            set_credit_card(d3d: true)
             VCR.use_cassette('ogone/visa_payment_acceptance_3ds') { click_button "Create" }
             @worker.work_off
             site = @current_user.sites.last
@@ -171,7 +170,7 @@ feature "Sites" do
             site.last_invoice.should be_open
 
             # fake payment succeeded callback (and thus skip the d3d redirection)
-            transaction.process_payment_response("PAYID" => "1234", "NCSTATUS" => "3", "STATUS" => "2", "ORDERID" => transaction.id.to_s)
+            transaction.process_payment_response("PAYID" => "1234", "NCSTATUS" => "3", "STATUS" => "2", "orderID" => transaction.id.to_s)
             transaction.reload.should be_failed
             site.reload.last_invoice.should be_failed
             site.invoices_failed?.should be_true
@@ -199,12 +198,12 @@ feature "Sites" do
             page.should have_no_selector('.embed_code')
             page.should have_content(I18n.t('site.status.payment_issue'))
             page.should_not have_content(I18n.t('site.status.ok'))
-            end
+          end
 
           scenario "entering a 3-D Secure credit card with a succeeding identification" do
             fill_in "Domain", :with => "rymai.com"
-            set_credit_card_in_site_form(d3d: true)
-            VCR.use_cassette('ogone/visa_payment_acceptance_3ds') { click_button "Create" }
+            set_credit_card(d3d: true)
+            VCR.use_cassette('ogone/visa_payment_acceptance_3ds') { click_button "Create site" }
             @worker.work_off
             site = @current_user.sites.last
             transaction = site.last_invoice.last_transaction
@@ -212,7 +211,7 @@ feature "Sites" do
             site.last_invoice.should be_open
 
             # fake payment succeeded callback (and thus skip the d3d redirection)
-            transaction.process_payment_response("PAYID" => "1234", "NCSTATUS" => "0", "STATUS" => "9", "ORDERID" => transaction.id.to_s)
+            transaction.process_payment_response("PAYID" => "1234", "NCSTATUS" => "0", "STATUS" => "9", "orderID" => transaction.id.to_s)
             transaction.reload.should be_paid
 
             @worker.work_off
@@ -278,7 +277,7 @@ feature "Sites" do
         context "entering a credit card" do
           scenario "with no hostname" do
             fill_in "Domain", :with => ""
-            set_credit_card_in_site_form
+            set_credit_card
             click_button "Create"
 
             current_url.should =~ %r(http://[^/]+/sites)
@@ -287,7 +286,7 @@ feature "Sites" do
 
           scenario "with a hostname" do
             fill_in "Domain", :with => "rymai.com"
-            set_credit_card_in_site_form
+            set_credit_card
             VCR.use_cassette('ogone/visa_payment_acceptance') { click_button "Create" }
 
             @worker.work_off
@@ -408,10 +407,23 @@ feature "Sites" do
     end
 
     feature "navigation" do
-      scenario "new" do
-        visit "/sites"
-        click_link "Add a site"
-        page.should have_content('Choose a plan for your site')
+      context "when the user has no sites" do
+        scenario "should refirect to /sites/new" do
+          visit "/sites"
+          page.should have_content('Choose a plan for your site')
+        end
+      end
+      
+      context "when user has already some sites" do
+        background do
+          Factory(:site, :user => @current_user, :hostname => 'google.com')
+        end
+        
+        scenario "when user has already some sites" do
+          visit "/sites"
+          click_link "Add a site"
+          page.should have_content('Choose a plan for your site')
+        end
       end
     end
 

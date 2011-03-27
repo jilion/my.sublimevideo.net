@@ -11,7 +11,7 @@ describe Invoice do
     its(:invoice_items_amount) { should == 10000 }
     its(:amount)               { should == 10000 }
     its(:paid_at)              { should be_nil }
-    its(:failed_at)            { should be_nil }
+    its(:last_failed_at)       { should be_nil }
 
     it { should be_open } # initial state
     it { should be_valid }
@@ -52,7 +52,6 @@ describe Invoice do
     end
 
     describe "Transitions" do
-
       describe "before_transition :on => :succeed, :do => :set_paid_at" do
         subject { @invoice.reload }
         it "should set paid_at" do
@@ -62,12 +61,12 @@ describe Invoice do
         end
       end
 
-      describe "before_transition :on => :fail, :do => :set_failed_at" do
+      describe "before_transition :on => :fail, :do => :set_last_failed_at" do
         subject { @invoice.reload }
-        it "should set failed_at" do
-          subject.failed_at.should be_nil
+        it "should set last_failed_at" do
+          subject.last_failed_at.should be_nil
           subject.fail
-          subject.failed_at.should be_present
+          subject.last_failed_at.should be_present
         end
       end
 
@@ -153,15 +152,25 @@ describe Invoice do
             end
           end
         end
-
       end
-
     end # Transitions
 
   end # State Machine
 
-  describe "Scopes" do
+  describe "Callbacks" do
+    describe "#before_create" do
+      describe "#set_customer_infos" do
+        subject { Factory(:invoice) }
 
+        it { subject.customer_full_name.should == subject.user.full_name }
+        it { subject.customer_email.should     == subject.user.email }
+        it { subject.customer_country.should   == subject.user.country }
+        it { subject.customer_company_name.should   == subject.user.company_name }
+      end
+    end
+  end
+
+  describe "Scopes" do
     before(:all) do
       Invoice.delete_all
       @site = Factory(:site, plan_id: @dev_plan.id)
@@ -217,7 +226,7 @@ describe Invoice do
         its(:vat_amount)           { should == 0 }
         its(:amount)               { should == 1000 } # paid_plan.price
         its(:paid_at)              { should be_nil }
-        its(:failed_at)            { should be_nil }
+        its(:last_failed_at)       { should be_nil }
         it { should be_open }
       end
 
@@ -248,7 +257,7 @@ describe Invoice do
           its(:vat_amount)           { should == 0 }
           its(:amount)               { should == 2000 } # paid_plan2.price - paid_plan.price
           its(:paid_at)              { should be_nil }
-          its(:failed_at)            { should be_nil }
+          its(:last_failed_at)       { should be_nil }
           it { should be_open }
         end
 
@@ -275,7 +284,7 @@ describe Invoice do
             its(:vat_amount)           { should == 0 }
             its(:amount)               { should == 3000 } # paid_plan.price
             its(:paid_at)              { should be_nil }
-            its(:failed_at)            { should be_nil }
+            its(:last_failed_at)       { should be_nil }
             it { should be_open }
           end
         end
@@ -324,15 +333,15 @@ describe Invoice do
       @paid_transaction = Factory(:transaction, invoices: [@invoice], state: 'paid', created_at: 2.days.ago)
     end
     subject { @invoice }
-    
+
     describe "#last_transaction" do
       it { subject.last_transaction.should == @paid_transaction }
     end
-    
+
     describe "#last_failed_transaction" do
       it { subject.last_failed_transaction.should == @failed_transaction2 }
     end
-    
+
   end # Instance Methods
 
 end
@@ -344,23 +353,26 @@ end
 #
 # Table name: invoices
 #
-#  id                      :integer         not null, primary key
-#  site_id                 :integer
-#  reference               :string(255)
-#  state                   :string(255)
-#  amount                  :integer
-#  vat_rate                :float
-#  vat_amount              :integer
-#  discount_rate           :float
-#  discount_amount         :integer
-#  invoice_items_amount    :integer
-#  charging_delayed_job_id :integer
-#  invoice_items_count     :integer         default(0)
-#  transactions_count      :integer         default(0)
-#  created_at              :datetime
-#  updated_at              :datetime
-#  paid_at                 :datetime
-#  failed_at               :datetime
+#  id                    :integer         not null, primary key
+#  site_id               :integer
+#  reference             :string(255)
+#  state                 :string(255)
+#  customer_full_name    :string(255)
+#  customer_email        :string(255)
+#  customer_country      :string(255)
+#  customer_company_name :string(255)
+#  amount                :integer
+#  vat_rate              :float
+#  vat_amount            :integer
+#  discount_rate         :float
+#  discount_amount       :integer
+#  invoice_items_amount  :integer
+#  invoice_items_count   :integer         default(0)
+#  transactions_count    :integer         default(0)
+#  created_at            :datetime
+#  updated_at            :datetime
+#  paid_at               :datetime
+#  last_failed_at        :datetime
 #
 # Indexes
 #

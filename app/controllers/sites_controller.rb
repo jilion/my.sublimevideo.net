@@ -3,6 +3,7 @@ class SitesController < ApplicationController
   respond_to :js, :only => [:index, :code]
 
   before_filter :redirect_suspended_user
+  before_filter :find_sites_or_redirect_to_new_site, :only => :index
   before_filter :find_by_token!, :only => [:code, :edit, :update, :destroy, :usage]
 
   has_scope :by_hostname
@@ -29,20 +30,23 @@ class SitesController < ApplicationController
   # POST /sites
   def create
     @site = current_user.sites.build(params[:site])
-    @site.d3d_options = {
-      user: @site.user,
+    
+    # setting user_attributes will set user.attributes only only before validation (so, on the save below)
+    # in order to set the credit card in the charging_options site's attribute, user.attributes have to be set before calling user.credit_card
+    @site.user.attributes = params[:site][:user_attributes] if @site.in_or_will_be_in_paid_plan? && !@site.will_be_in_dev_plan?
+    @site.charging_options = {
+      credit_card: @site.user.credit_card,
       accept_url: sites_url,
       decline_url: sites_url,
       exception_url: sites_url,
-      ip: request.try(:remote_ip),
-      action: "create"
+      ip: request.try(:remote_ip)
     }
 
     respond_with(@site) do |format|
       if @site.save # will create invoice and charge...
         transaction = @site.in_or_will_be_in_paid_plan? ? @site.last_invoice.last_transaction : nil
         if transaction && transaction.waiting_d3d?
-          format.html { render :text => transaction.d3d_html }
+          format.html { render :text => transaction.error }
         else
           format.html { redirect_to :sites, notice_and_alert_from_transaction(transaction) }
         end
@@ -64,7 +68,7 @@ class SitesController < ApplicationController
 
     respond_with(@site) do |format|
       if @site.archive
-          format.html { redirect_to :sites }
+        format.html { redirect_to :sites }
       else
         format.html { render :edit }
       end
@@ -98,15 +102,21 @@ class SitesController < ApplicationController
 
 private
 
+  def find_sites_or_redirect_to_new_site
+    @sites = current_user.sites.not_archived.includes(:plan, :next_cycle_plan)
+    @sites = apply_scopes(@sites).by_date
+    redirect_to [:new, :site] if @sites.empty?
+  end
+
   def find_by_token!
     @site = current_user.sites.find_by_token!(params[:id])
   end
   
   def notice_and_alert_from_transaction(transaction)
     if transaction && transaction.failed?
-      { notice: "", alert: t("transaction.errors.#{transaction.error_key}") }
+      { notice: "", alert: t("transaction.errors.#{transaction.i18n_error_key}") }
     elsif transaction && transaction.unprocessed?
-      { notice: t("transaction.errors.#{transaction.error_key}"), alert: nil }
+      { notice: t("transaction.errors.#{transaction.i18n_error_key}"), alert: nil }
     else
       { notice: nil, alert: nil }
     end

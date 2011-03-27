@@ -2,24 +2,19 @@ class CreateTransactionsAndInvoicesTransactions < ActiveRecord::Migration
   def self.up
     create_table :transactions do |t|
       t.integer :user_id
-      t.string  :cc_type
-      t.string  :cc_last_digits
-      t.date    :cc_expire_on
-      t.string  :state # unprocessed, failed, paid
-      t.integer :amount # in cents
-      t.string  :error_key # used for I18n translation
+      t.string  :order_id
+      t.string  :state    # unprocessed, failed, paid
+      t.integer :amount   # in cents
+      t.text    :error
 
       # untouched params from Ogone
-      t.string :pay_id        # PAYID field
-      t.string :acceptance    # ACCEPTANCE field
-      t.string :nc_status     # NCSTATUS field
-      t.string :status        # STATUS field
-      t.string :eci           # ECI field
-      t.string :nc_error      # NCERROR field
-      t.text   :nc_error_plus # NCERRORPLUS field
+      t.string  :pay_id    # PAYID field
+      t.integer :nc_status # NCSTATUS field
+      t.integer :status    # STATUS field
 
       t.timestamps
     end
+    add_index :transactions, :order_id, :unique => true
 
     create_table :invoices_transactions, :id => false do |t|
       t.integer :invoice_id

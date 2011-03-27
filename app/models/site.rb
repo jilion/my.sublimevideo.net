@@ -11,7 +11,7 @@ class Site < ActiveRecord::Base
   has_paper_trail
 
   attr_accessor :loader_needs_update, :license_needs_update
-  attr_accessor :user_attributes, :d3d_options
+  attr_accessor :user_attributes, :charging_options
 
   attr_accessible :hostname, :dev_hostnames, :extra_hostnames, :path, :wildcard, :plan_id, :user_attributes
 
@@ -242,9 +242,11 @@ class Site < ActiveRecord::Base
 
   def set_user_attributes
     if user && user_attributes.present?
-      if in_or_will_be_in_paid_plan? && !will_be_in_dev_plan?
-        self.user.attributes = user_attributes
-      elsif user_attributes.has_key?("current_password")
+      # if in_or_will_be_in_paid_plan? && !will_be_in_dev_plan?
+      #   Rails.logger.info "set user_attributes : #{user_attributes.inspect}"
+      #   self.user.attributes = user_attributes
+      # els
+      if user_attributes.has_key?("current_password")
         self.user.attributes = user_attributes.select { |k,v| k == "current_password" }
       end
     end
@@ -331,7 +333,7 @@ private
 
   # validate if in_or_will_be_in_paid_plan?
   def verify_presence_of_credit_card
-    if user && !user.credit_card? && !user.credit_card_attributes_present?
+    if user && !user.cc? && !user.any_cc_attrs?
       self.errors.add(:base, :credit_card_needed)
     end
   end
@@ -419,3 +421,4 @@ end
 #  index_sites_on_plan_id                                     (plan_id)
 #  index_sites_on_user_id                                     (user_id)
 #
+

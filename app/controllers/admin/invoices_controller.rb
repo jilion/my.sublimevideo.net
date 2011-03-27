@@ -47,13 +47,4 @@ class Admin::InvoicesController < Admin::AdminController
     respond_with(@invoice, :location => [:admin, :invoices])
   end
 
-  # PUT /admin/invoices/:id/cancel_charging
-  def cancel_charging
-    @invoice = Invoice.find_by_reference(params[:id])
-    Invoice.transaction do
-      @invoice.charging_delayed_job.destroy
-      @invoice.update_attribute(:charging_delayed_job_id, nil)
-    end
-    respond_with(@invoice, :location => [:admin, :invoices])
-  end
 end

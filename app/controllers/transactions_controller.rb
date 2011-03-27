@@ -37,39 +37,38 @@ private
   def operation_was?(operation)
     case operation
     when :cc_authorization
-      params["CC_CHECK"] && params["USER_ID"]
+      params["CHECK_CC_USER_ID"]
 
     when :payment
-      params["PAYMENT"] && params["ORDERID"]
+      params["PAYMENT"] && params["orderID"]
     end
   end
 
   def process_cc_authorization
-    user = User.find(params["USER_ID"].to_i)
-    response = user.process_cc_authorization_response(@sha_params, [params["PAYID"], 'RES'].join(';'))
+    user = User.find(params["CHECK_CC_USER_ID"].to_i)
 
     respond_with do |format|
-      if response == "authorized" && user.save
+      if user.process_cc_authorize_and_save(@sha_params)
         flash[:notice] = t("flash.credit_cards.update.notice")
       elsif
-        flash[:alert] = t("credit_card.errors.#{response}")
+        flash[:alert] = t("credit_card.errors.refused")
       end
       format.html { redirect_to [:edit, :user_registration] }
     end
   end
 
   def process_payment
-    transaction = Transaction.find_by_id(params["ORDERID"].to_i)
+    transaction = Transaction.find_by_order_id(params["orderID"])
     render(nothing: true, status: 204) and return if transaction.paid? # already paid
 
     transaction.process_payment_response(@sha_params)
 
-    respond_with do |format|
+    respond_to do |format|
       if transaction.paid?
-        format.html { redirect_to :sites, :notice => t("flash.sites.#{params["ACTION"]}.notice") }
+        format.html { redirect_to :sites, :notice => t("flash.sites.create.notice") }
 
       elsif transaction.failed?
-        format.html { redirect_to :sites, :alert => t("transaction.errors.#{transaction.error_key}") }
+        format.html { redirect_to :sites, :alert => t("transaction.errors.#{transaction.i18n_error_key}") }
       end
     end
   end

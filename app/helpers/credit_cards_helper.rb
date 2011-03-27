@@ -1,7 +1,7 @@
 module CreditCardsHelper
 
   def reset_credit_card_attributes(user)
-    unless user.credit_card_attributes_present?
+    unless user.any_cc_attrs?
       user.cc_type      = nil
       user.cc_expire_on = nil
     end

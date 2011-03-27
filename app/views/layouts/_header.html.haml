@@ -5,7 +5,8 @@
         %span= "SublimeVideo"
     - if user_signed_in? && controller_name != 'sessions'
       %ul#main_menu
-        = activable_menu_item(:li, :sites, :urls => %W[sites$], :onclick => "MySublimeVideo.makeSticky(this, '#header')")
+        %li{ :class => controller_name == "sites" && action_name == "index" ? "active" : "", :onclick => "MySublimeVideo.makeSticky(this, '#header')"}
+          = link_to "Sites", sites_path
     .right
       %ul.extra_links
         %li= link_to("Documentation", "http://docs.sublimevideo.net")

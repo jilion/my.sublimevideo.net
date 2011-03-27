@@ -29,7 +29,7 @@ describe InvoiceItem do
   end # Associations
 
   describe "Validations" do
-    [:invoice, :item, :info].each do |attr|
+    [:invoice, :item].each do |attr|
       it { should allow_mass_assignment_of(attr) }
     end
 
@@ -48,6 +48,7 @@ describe InvoiceItem do
 end
 
 
+
 # == Schema Information
 #
 # Table name: invoice_items
@@ -61,7 +62,6 @@ end
 #  ended_at   :datetime
 #  price      :integer
 #  amount     :integer
-#  info       :text
 #  created_at :datetime
 #  updated_at :datetime
 #
