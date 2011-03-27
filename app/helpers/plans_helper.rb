@@ -6,12 +6,18 @@ module PlansHelper
         display_amount_with_sup(plan.price) +
         content_tag(:span, "", :class => "strike")
       end +
+      content_tag(:span, :class => "details_label") do
+        (plan.yearly? ? "per year" : "per month")
+      end +
       content_tag(:strong, :class => "new_price") do
         display_amount_with_sup(plan.price)
       end +
       content_tag(:span, :class => "name") do
         plan.name.gsub(/\d/, '').titleize
-      end + (plan.yearly? ? "per year" : "per month")
+      end + 
+      content_tag(:span, :class => "new_details_label") do
+        raw(plan.yearly? ? "#{content_tag :strong, "first"} year" : "#{content_tag :strong, "first"} month")
+      end
     end
   end
 

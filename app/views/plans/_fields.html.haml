@@ -5,7 +5,7 @@
 - current_plan = pending_plan || next_cycle_plan || plan # current plan for the view (could be in case of rendering view with errors)
 
 
--# #beta_discount_box= raw "As a Beta user you benefit from a #{content_tag :strong, "20% discount"} on all paid plans until #{content_tag :strong, "April 15, 2011"} (11:59pm UTC)"
+#beta_discount_box= raw "As a Beta user you benefit from a #{content_tag :strong, "20% discount"} on all paid plans until #{content_tag :strong, "April 15, 2011"} (11:59pm UTC)"
 
 - if site.errors.key?(:plan)
   .inline_errors.plan
@@ -76,5 +76,5 @@
         = f.radio_button :plan_id, dev_plan.id, radio_button_options(site, dev_plan, current_plan, :checked => current_plan && current_plan == dev_plan)
         %span.bg
 
-  #need_more
-    %p= raw "Need more pageviews, custom support or have other enterprise-class requirements? Please #{mail_to "sales@sublimevideo.net", "contact us"}."
+    #need_more
+      %p= raw "Need more pageviews, custom support or have other enterprise-class requirements? Please #{mail_to "sales@sublimevideo.net", "contact us"}."

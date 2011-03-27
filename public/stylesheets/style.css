@@ -1772,7 +1772,7 @@ input.link_looks.delete {
 }
 
 #plans li.discount .select_box label {
-  height:130px;
+  height:148px;
 }
 
 #plans .select_box.active label {
@@ -1847,6 +1847,13 @@ input.link_looks.delete {
 #plans li.discount .select_box .pricing strong.price sup {font-size:11px}
 
 #plans .select_box.active .pricing strong.price sup, #plans .select_box.active .pricing strong.new_price sup {color:#c4ccdb}
+
+#plans .select_box .pricing span.details_label {
+  font-size:12px;
+}
+
+#plans .select_box .pricing span.new_details_label strong {color:#3d8ecb}
+#plans .select_box.active .pricing span.new_details_label strong {color:#cad8e2}
 
 #plans .select_box .pricing span.name {display:none}
 
