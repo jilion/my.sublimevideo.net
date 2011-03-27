@@ -2231,6 +2231,35 @@ ul#addons .checkbox_wrap input:focus:checked + label {background-position:0 -102
 #site .actions input.submit.big:focus {background-position:0 -168px;}
 #site .actions input.submit.big:active:focus {background-position:0 -252px;}
 
+#custom_plan {
+  padding-bottom:10px;
+}
+
+#custom_plan h3.title {
+  text-transform:uppercase;
+  font-weight:400;
+  font-size:18px;
+  letter-spacing:1px;
+/*  text-align:center;*/
+}
+
+#custom_plan h4.number {
+  font-size:40px;
+  font-weight:600;
+  padding:10px 0 0;
+}
+
+#custom_plan h5.label {
+  font-size:18px;
+  font-weight:400;
+}
+
+#content form #custom_plan .radio_wrap label {
+  font-size:18px;
+  font-weight:600;
+  padding-top:3px;
+}
+
 /* ============= */
 /* = Site Edit = */
 /* ============= */

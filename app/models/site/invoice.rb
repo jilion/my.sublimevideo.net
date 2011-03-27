@@ -45,6 +45,10 @@ module Site::Invoice
     plan && plan.paid_plan?
   end
 
+  def in_custom_plan?
+    plan && plan.custom_plan?
+  end
+
   def instant_charging?
     @instant_charging
   end
