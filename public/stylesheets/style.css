@@ -1483,6 +1483,24 @@ input.link_looks.delete {
   margin:5px 13px 0;
 }
 
+#content table.main td.usage .sponsored_number {
+  text-shadow:rgba(255,255,255,.5) 0 1px 0;
+}
+
+#content table.main td.usage .sponsored_number strong {
+  font-size:20px;
+  font-weight:600;
+  display:block;
+}
+
+#content table.main td.usage .sponsored_number em {
+  font-size:12px;
+  font-style:normal;
+  padding:0 10px;
+  line-height:12px;
+  display:block;
+}
+
 #content table.main td.code a.embed_code {
   display:block;
   width:146px;
@@ -2654,8 +2672,8 @@ nav.pagination span.gap {
 
 .content_right {
   float:left;
-  width:380px;
-  padding-left:38px;
+  width:320px;
+  padding-left:70px;
 }
 
 #delete_account {
@@ -2664,7 +2682,7 @@ nav.pagination span.gap {
 }
 
 #delete_account ul {
-  width:380px;
+  width:300px;
   padding:4px 0 4px 20px;
   line-height:18px;
 }
@@ -2674,7 +2692,7 @@ nav.pagination span.gap {
 }
 
 #credit_card_summary {
-  background:url(/images/embed/breakline.png) no-repeat -228px 100%;
+  background:url(/images/embed/breakline.png) no-repeat -340px 100%;
   padding:10px 0 20px;
 }
 
