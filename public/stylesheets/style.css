@@ -267,7 +267,7 @@ body {
   font-size:46px;
   letter-spacing:-1px;
   line-height:35px;
-  padding-bottom:15px;
+  padding-bottom:30px;
 }
 
 #content form.main_form {
@@ -1069,7 +1069,7 @@ input.link_looks.delete {
 }
 
 #sites_table_wrap {
-  padding:30px 0 0;
+  padding:15px 0 0;
 }
 
 #content .main_table_wrap .dark_rounded_corners {
@@ -1483,6 +1483,24 @@ input.link_looks.delete {
   margin:5px 13px 0;
 }
 
+#content table.main td.usage .sponsored_number {
+  text-shadow:rgba(255,255,255,.5) 0 1px 0;
+}
+
+#content table.main td.usage .sponsored_number strong {
+  font-size:20px;
+  font-weight:600;
+  display:block;
+}
+
+#content table.main td.usage .sponsored_number em {
+  font-size:12px;
+  font-style:normal;
+  padding:0 10px;
+  line-height:12px;
+  display:block;
+}
+
 #content table.main td.code a.embed_code {
   display:block;
   width:146px;
@@ -1585,6 +1603,23 @@ input.link_looks.delete {
 /* = Site (New) = */
 /* ============== */
 
+#beta_discount_box {
+  color:#294f7f;
+  font-size:15px;
+  text-align:center;
+  padding:10px 8px;
+  margin-bottom:10px;
+  text-shadow:rgba(255,255,255,0.3) 0 1px 0;
+  background:#97b0cc;
+  background:rgba(0,106,199,.2);
+  -moz-border-radius:4px;
+  -webkit-border-radius:4px;
+  border-radius:4px;
+  -moz-box-shadow:inset rgba(0,0,0,0.4) 0 1px 3px, rgba(255,255,255,0.4) 0 1px 0;
+  -webkit-box-shadow:inset rgba(0,0,0,0.4) 0 1px 3px, rgba(255,255,255,0.4) 0 1px 0;
+  box-shadow:inset rgba(0,0,0,0.4) 0 1px 3px, rgba(255,255,255,0.4) 0 1px 0;
+}
+
 #plans {
   position:relative;
 }
@@ -1599,14 +1634,13 @@ input.link_looks.delete {
   width:100%;
   list-style-type:none;
   float:left;
-  margin:25px 0 0;
+  margin:15px 0 0;
 }
 
 #plans li {
   display:block;
   float:left;
   width:210px;
-  height:384px;
   margin-right:6px;
   position:relative;
 }
@@ -1614,9 +1648,14 @@ input.link_looks.delete {
 #plans li .wrapper {
   background:url(/images/embed/sites/plans_box_background.png) no-repeat;
   width:210px;
-  height:384px;
   position:relative;
   z-index:3;
+}
+
+#plans li .bottom {
+  width:210px;
+  height:7px;
+  background:url(/images/embed/sites/plans_box_background_bottom.png) no-repeat;
 }
 
 #plans li, #plans li * {
@@ -1633,7 +1672,6 @@ input.link_looks.delete {
 
 #plans .header {
   padding:31px 25px 0;
-  height:246px;
 }
 
 #plans h3.title {
@@ -1667,7 +1705,7 @@ input.link_looks.delete {
 #plans li ul.features {
   list-style-type:none;
   float:none;
-  margin:26px 0 0;
+  margin:26px 0 5px;
   border-top:1px solid #d2d8e0;
 }
 
@@ -1679,8 +1717,8 @@ input.link_looks.delete {
   border-top:1px solid #fff;
   border-bottom:1px solid #d2d8e0;
   text-align:center;
-  font-size:17px;
-  padding:11px 0;
+  font-size:15px;
+  padding:9px 0;
   color:#545e75;
 }
 
@@ -1693,12 +1731,18 @@ input.link_looks.delete {
 #plans .select_box {
   float:left;
   width:100px;
-  height:100px;
   position:relative;
+  border-top:1px solid #c5cad5;
+  background:#f2f5f9;
+  background:-webkit-gradient(linear,left top,left bottom,from(#f2f5f9),to(#e9ebef));
+  background:-moz-linear-gradient(top, #f2f5f9, #e9ebef);
   -o-transition:background 0.15s;
   -moz-transition:background 0.15s;
   -webkit-transition:background 0.15s;
   transition:background 0.15s;
+  -moz-box-shadow: inset rgba(255,255,255,0.9) 0 1px 0;
+  -webkit-box-shadow: inset rgba(255,255,255,0.9) 0 1px 0;
+  box-shadow: inset rgba(255,255,255,0.9) 0 1px 0;
 }
 
 #plans .select_box * {
@@ -1710,7 +1754,36 @@ input.link_looks.delete {
 } 
 
 #plans .select_box.monthly {
+  width:99px;
   margin-left:5px;
+  border-right:1px solid #c5cad5;
+}
+
+#plans .select_box.yearly {
+  -moz-box-shadow:inset rgba(255,255,255,0.9) 0 1px 0, inset rgba(255,255,255,0.9) 1px 0 0;
+  -webkit-box-shadow:inset rgba(255,255,255,0.9) 0 1px 0, inset rgba(255,255,255,0.9) 1px 0 0;
+  box-shadow:inset rgba(255,255,255,0.9) 0 1px 0, inset rgba(255,255,255,0.9) 1px 0 0;
+}
+
+#plans .select_box label {
+  width:100px;
+  height:100px;
+  display:block;
+}
+
+#plans li.discount .select_box label {
+  height:148px;
+}
+
+#plans .select_box.active label {
+  background:#20355c;
+  background:-webkit-gradient(linear,left top,left bottom,from(#10264c),to(#31466d));
+  background:-moz-linear-gradient(top, #10264c, #31466d);
+  top:-1px;
+  text-shadow:rgba(0,0,0,0.4) 0 -1px 0;
+  -moz-box-shadow: inset rgba(0,0,0,0.9) 0 1px 10px;
+  -webkit-box-shadow: inset rgba(0,0,0,0.9) 0 1px 10px;
+  box-shadow: inset rgba(0,0,0,0.9) 0 1px 10px;
 }
 
 #plans .select_box .pricing {
@@ -1722,23 +1795,23 @@ input.link_looks.delete {
   z-index:2;
 }
 
-#plans .select_box label {
-  width:100px;
-  height:100px;
+#plans li .select_box .pricing .strike, #plans li.discount .select_box .pricing strong.new_price {display:none}
+
+#plans li.discount .select_box .pricing .strike {
   display:block;
+  width:60px;
+  height:2px;
+  background:#1783d3;
+/*  background:#bc0033;*/
   position:absolute;
-  top:0;
-  left:0;
+  top:28px;
+  left:20px;
+  -moz-transform:rotate(-23deg);
+  -webkit-transform:rotate(-23deg);
+  transform:rotate(-23deg);
 }
 
-#plans .select_box.active label {
-  background:url(/images/embed/sites/plan_active_background.png) no-repeat;
-  height:101px;
-  top:-1px;
-  text-shadow:rgba(0,0,0,0.4) 0 -1px 0;
-}
-
-#plans .select_box .pricing strong.price {
+#plans .select_box .pricing strong.price, #plans li.discount .select_box .pricing strong.new_price {
   display:block;
   color:#5d6778;
   font-size:24px;
@@ -1746,16 +1819,41 @@ input.link_looks.delete {
   padding:18px 0 0;
 }
 
-#plans .select_box.active strong.price {
+#plans li.discount .select_box .pricing strong.new_price {
+  padding-top:10px;
+  color:#1783d3;
+  color:rgba(0,125,219,.6);
+  text-shadow:#fff 0 1px 2px,rgba(0,68,119,1) 0px 0px 0px,#fff 0px 1px 2px;
+}
+
+#plans li.discount .select_box .pricing strong.price {
+  font-size:18px;
+}
+
+#plans .select_box.active strong.price, #plans li.discount .select_box.active strong.new_price {
   color:#d5ddeb;
   -webkit-font-smoothing:antialiased;
 }
 
-#plans .select_box .pricing strong.price sup {
+#plans li.discount .select_box.active strong.new_price, #plans li.discount .select_box.active strong.new_price sup {
+  text-shadow:rgb(0,125,219) 0 0 2px, rgb(0,125,219) 0 0 4px;
+  color:#fff;
+}
+
+#plans .select_box .pricing strong.price sup, #plans .select_box .pricing strong.new_price sup {
   font-size:13px;
 }
 
-#plans .select_box.active .pricing strong.price sup {color:#c4ccdb}
+#plans li.discount .select_box .pricing strong.price sup {font-size:11px}
+
+#plans .select_box.active .pricing strong.price sup, #plans .select_box.active .pricing strong.new_price sup {color:#c4ccdb}
+
+#plans .select_box .pricing span.details_label {
+  font-size:12px;
+}
+
+#plans .select_box .pricing span.new_details_label strong {color:#3d8ecb}
+#plans .select_box.active .pricing span.new_details_label strong {color:#cad8e2}
 
 #plans .select_box .pricing span.name {display:none}
 
@@ -2140,6 +2238,35 @@ ul#addons .checkbox_wrap input:focus:checked + label {background-position:0 -102
 #site .actions input.submit.big:focus {background-position:0 -168px;}
 #site .actions input.submit.big:active:focus {background-position:0 -252px;}
 
+#custom_plan {
+  padding-bottom:10px;
+}
+
+#custom_plan h3.title {
+  text-transform:uppercase;
+  font-weight:400;
+  font-size:18px;
+  letter-spacing:1px;
+/*  text-align:center;*/
+}
+
+#custom_plan h4.number {
+  font-size:40px;
+  font-weight:600;
+  padding:10px 0 0;
+}
+
+#custom_plan h5.label {
+  font-size:18px;
+  font-weight:400;
+}
+
+#content form #custom_plan .radio_wrap label {
+  font-size:18px;
+  font-weight:600;
+  padding-top:3px;
+}
+
 /* ============= */
 /* = Site Edit = */
 /* ============= */
@@ -2259,7 +2386,7 @@ ul.segmented_menu li.last a {
   margin:20px 0 0;
 }
 
-#site .update_plan_message_box {
+#site .update_plan_message_box, .info_message_box {
   margin:20px 0;
   padding:10px 13px;
   font-weight:600;
@@ -2275,6 +2402,12 @@ ul.segmented_menu li.last a {
   -webkit-box-shadow:rgba(0,0,0,0.35) 0 1px 5px, inset 0 1px 1px rgba(255,255,255,0.95);
   -moz-box-shadow:rgba(0,0,0,0.35) 0 1px 5px, inset 0 1px 1px rgba(255,255,255,0.95);
   box-shadow:rgba(0,0,0,0.35) 0 1px 5px, inset 0 1px 1px rgba(255,255,255,0.95);
+}
+
+.info_message_box a {
+  font-weight:bold;
+  color:#453513;
+  border-bottom:1px solid #c6af79;
 }
 
 #site.edit .entry.delete input.delete_site {
@@ -2575,8 +2708,8 @@ nav.pagination span.gap {
 
 .content_right {
   float:left;
-  width:380px;
-  padding-left:38px;
+  width:320px;
+  padding-left:70px;
 }
 
 #delete_account {
@@ -2585,7 +2718,7 @@ nav.pagination span.gap {
 }
 
 #delete_account ul {
-  width:380px;
+  width:300px;
   padding:4px 0 4px 20px;
   line-height:18px;
 }
@@ -2595,7 +2728,7 @@ nav.pagination span.gap {
 }
 
 #credit_card_summary {
-  background:url(/images/embed/breakline.png) no-repeat -228px 100%;
+  background:url(/images/embed/breakline.png) no-repeat -340px 100%;
   padding:10px 0 20px;
 }
 

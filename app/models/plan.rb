@@ -121,7 +121,7 @@ class Plan < ActiveRecord::Base
 
   def title(options = {})
     if dev_plan?
-      "Free Sandbox"
+      "Free LaunchPad"
     elsif sponsored_plan?
       "Sponsored"
     elsif custom_plan?

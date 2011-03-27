@@ -11,8 +11,7 @@
     %p.desc
       = "Add your domain or subdomain."
       %br
-      = "This field is optional for the Free Sandbox plan."
-      -#= "You can leave this field empty if you selected the Free Sandbox plan."
+      = "This field is optional for the Free LaunchPad plan."
     .spacer
   .break_line
   - if site.persisted?
@@ -43,7 +42,7 @@
             .checkbox_wrap
               = f.check_box :wildcard
               = f.label :wildcard, "Wildcard (*.yourdomain.com)"
-            %p.info= "It will be also added to extra and development domains."
+            %p.info= "It will also be enabled for extra and development domains."
       .spacer
       - if site.in_dev_plan?
         .more_settings_desc><

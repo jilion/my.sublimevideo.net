@@ -15,8 +15,8 @@ MySublimeVideo::Application.routes.draw do
     end
 
     %w[sign_up register].each         { |action| match action => redirect('/signup'), :via => :get }
-    %w[log_in sign_in signin].each    { |action| match action => redirect('/login'),    :via => :get }
-    %w[log_out sign_out signout].each { |action| match action => redirect('/logout'),   :via => :get }
+    %w[log_in sign_in signin].each    { |action| match action => redirect('/login'),  :via => :get }
+    %w[log_out sign_out signout].each { |action| match action => redirect('/logout'), :via => :get }
   end
   match '/password/validate' => "users/passwords#validate", :via => :post
   match '/invitation/accept' => redirect('/signup'), :via => :get
@@ -36,6 +36,8 @@ MySublimeVideo::Application.routes.draw do
   resources :invoices, :only => :show do
     put :pay, :on => :member
   end
+  match '/refund' => "refunds#index", :via => :get, :as => 'refunds'
+  match '/refund' => "refunds#create", :via => :post, :as => 'refund'
 
   match ':page', :to => 'pages#show', :via => :get, :as => :page, :page => /terms|privacy|suspended/
   match 'r/:type/:token', :to => 'referrers#redirect', :via => :get, :type => /c/, :token => /[a-z0-9]{8}/

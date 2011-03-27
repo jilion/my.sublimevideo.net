@@ -73,6 +73,31 @@ describe Ogone do
         its(:message) { should == "Card refused" }
       end
     end
+    
+    describe ".credit" do
+      describe "refund of $10 via a transaction's pay_id that succeeds" do
+        before(:each) do
+          VCR.use_cassette "ogone/visa_payment_generic" do
+            @purchase = Ogone.purchase(1000, @cc, :currency => 'USD')
+          end
+        end
+        subject { Ogone.credit(1000, @purchase.authorization) }
+        
+        it { VCR.use_cassette("ogone/visa_credit_generic") { subject.should be_success } }
+      end
+      
+      describe "refund of $10 via a transaction's pay_id that fails" do
+        before(:each) do
+          VCR.use_cassette "ogone/visa_payment_generic" do
+            @purchase = Ogone.purchase(1000, @cc, :currency => 'USD')
+          end
+          Notify.should_receive(:send).with "Refund failed for transaction with pay_id ##{@purchase.authorization} (amount: 3000)"
+        end
+        subject { Ogone.credit(3000, @purchase.authorization) } # amount bigger than the original sale
+        
+        it { VCR.use_cassette("ogone/visa_credit_failed") { subject.should_not be_success } }
+      end
+    end
   end
   
   context "with master credit card" do
