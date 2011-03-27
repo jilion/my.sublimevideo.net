@@ -30,7 +30,7 @@ describe SitesController do
 
     describe "GET :code" do
       it "should render :code" do
-        authenticated_user.stub_chain(:sites, :find_by_token).with('a1b2c3').and_return(@mock_site = mock_site)
+        authenticated_user.stub_chain(:sites, :find_by_token!).with('a1b2c3').and_return(@mock_site = mock_site)
 
         get :code, :id => 'a1b2c3', :format => :js
         assigns(:site).should == @mock_site
@@ -50,7 +50,7 @@ describe SitesController do
 
     describe "GET :edit" do
       it "should render :edit" do
-        authenticated_user.stub_chain(:sites, :find_by_token).with('a1b2c3').and_return(@mock_site = mock_site)
+        authenticated_user.stub_chain(:sites, :find_by_token!).with('a1b2c3').and_return(@mock_site = mock_site)
 
         get :edit, :id => 'a1b2c3'
         assigns(:site).should == @mock_site
@@ -79,19 +79,17 @@ describe SitesController do
     describe "POST :create" do
       before(:each) do
         authenticated_user.stub_chain(:sites, :build).with({}).and_return(@mock_site = mock_site)
-        @mock_site.should_receive(:user) { mock_user }
-        mock_user.should_receive(:attributes=)
         mock_user.should_receive(:credit_card)
         @mock_site.should_receive(:charging_options=)
-        @mock_site.should_receive(:user).and_return(mock_user)
       end
 
       context "with a valid site" do
 
         describe "dev plan" do
           before(:each) do
+            @mock_site.should_receive(:user).and_return(mock_user)
+            @mock_site.should_receive(:in_or_will_be_in_paid_plan?).twice { false }
             @mock_site.should_receive(:save) { true }
-            @mock_site.should_receive(:in_or_will_be_in_paid_plan?) { false }
           end
 
           it "should redirect to /sites" do
@@ -105,7 +103,10 @@ describe SitesController do
         describe "paid plan" do
           before(:each) do
             @mock_site.should_receive(:save) { true }
-            @mock_site.should_receive(:in_or_will_be_in_paid_plan?) { true }
+            @mock_site.should_receive(:in_or_will_be_in_paid_plan?).twice { true }
+            @mock_site.should_receive(:will_be_in_dev_plan?) { false }
+            @mock_site.should_receive(:user).twice.and_return(mock_user)
+            mock_user.should_receive(:attributes=)
             @mock_site.stub_chain(:last_invoice, :last_transaction).and_return(@mock_transaction = mock_transaction)
           end
 
@@ -170,14 +171,34 @@ describe SitesController do
 
       context "with an invalid site" do
 
-        before(:each) do
-          @mock_site.should_receive(:save) { false }
-        end
+        describe "dev plan" do
+          before(:each) do
+            @mock_site.should_receive(:user).and_return(mock_user)
+            @mock_site.should_receive(:in_or_will_be_in_paid_plan?) { false }
+            @mock_site.should_receive(:save) { false }
+          end
 
-        it "should render :new template" do
-          post :create, :site => {}
-          assigns(:site).should == @mock_site
-          response.should render_template(:new)
+          it "should redirect to /sites" do
+            post :create, :site => {}
+            assigns(:site).should == @mock_site
+            response.should render_template(:new)
+          end
+        end
+        
+        describe "paid plan" do
+          before(:each) do
+            @mock_site.should_receive(:in_or_will_be_in_paid_plan?) { true }
+            @mock_site.should_receive(:will_be_in_dev_plan?) { false }
+            @mock_site.should_receive(:save) { false }
+            @mock_site.should_receive(:user).twice.and_return(mock_user)
+            mock_user.should_receive(:attributes=)
+          end
+
+          it "should redirect to /sites" do
+            post :create, :site => {}
+            assigns(:site).should == @mock_site
+            response.should render_template(:new)
+          end
         end
 
       end
@@ -185,7 +206,7 @@ describe SitesController do
 
     describe "DELETE :destroy" do
       before(:each) do
-        authenticated_user.stub_chain(:sites, :find_by_token).with('a1b2c3').and_return(@mock_site = mock_site)
+        authenticated_user.stub_chain(:sites, :find_by_token!).with('a1b2c3').and_return(@mock_site = mock_site)
       end
       
       it "should redirect to /sites if password is sent" do
