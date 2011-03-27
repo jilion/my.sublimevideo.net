@@ -18,7 +18,12 @@ module InvoicesHelper
     elsif invoice.paid?
       "Paid on #{l(invoice.paid_at, :format => :minutes_timezone)}"
     elsif invoice.failed?
-      "#{content_tag(:strong, "Payment failed")} on #{l(invoice.last_failed_at, :format => :minutes_timezone)} with the following error: #{content_tag(:em, "\"#{invoice.last_failed_transaction.error}\"")}".html_safe
+      text = "#{content_tag(:strong, "Payment failed")} on #{l(invoice.last_failed_at, :format => :minutes_timezone)}".html_safe
+      
+      # unless invoice.last_failed_transaction.error =~ /secure.ogone/
+      #   text += "with the following error: #{content_tag(:em, "\"#{invoice.last_failed_transaction.error}\"")}".html_safe
+      # end
+      text
     end
   end
 
