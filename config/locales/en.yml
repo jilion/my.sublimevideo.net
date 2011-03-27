@@ -37,4 +37,4 @@ en:
     refund:
       refunded: "All your payments for %{hostname} will be refunded in the next few hours."
       refund_unsuccessful: "The refund you requested for %{hostname} was unsuccessful."
-      no_refund_possible: "No sites refundable."
+      no_refund_possible: "You don't have any site eligible for 30 day money back guarantee."
