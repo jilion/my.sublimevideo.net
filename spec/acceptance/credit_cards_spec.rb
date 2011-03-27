@@ -42,7 +42,7 @@ feature "Credit cards" do
         should_save_credit_card_successfully
       end
 
-      scenario "successfully (master)" do
+      pending "successfully (master)" do
         click_link(@current_user.full_name)
         current_url.should =~ %r(^http://[^/]+/account/edit$)
 
@@ -50,9 +50,58 @@ feature "Credit cards" do
         current_url.should =~ %r(^http://[^/]+/card/edit$)
 
         set_credit_card(type: 'master')
-        VCR.use_cassette('ogone/credit_card_visa_validation') { click_button "Update" }
+        VCR.use_cassette('ogone/credit_card_master_validation') { click_button "Update" }
+        
+        sign_out
+        sign_in_as :user
+        visit '/account/edit'
 
-        should_save_credit_card_successfully('master')
+        page.should have_content "MasterCard"
+        page.should have_content '9999'
+      end
+      
+      scenario "entering a 3-D Secure credit card with a succeeding identification" do
+        click_link(@current_user.full_name)
+        current_url.should =~ %r(^http://[^/]+/account/edit$)
+
+        click_link("Update credit card")
+        current_url.should =~ %r(^http://[^/]+/card/edit$)
+
+        set_credit_card(d3d: true)
+        VCR.use_cassette('ogone/3ds_authorization') { click_button "Update" }
+
+        # fake payment succeeded callback (and thus skip the d3d redirection)
+        VCR.use_cassette('ogone/void_authorization') { @current_user.process_cc_authorize_and_save("PAYID" => "1234", "STATUS" => "5") }
+        @current_user.cc_type.should == 'visa'
+        @current_user.cc_last_digits.should == '1111'
+        @current_user.cc_type.should be_present
+
+        visit '/account/edit'
+
+        page.should have_content "Visa"
+        page.should have_content '1111'
+      end
+      
+      scenario "entering a 3-D Secure credit card with a failing identification" do
+        click_link(@current_user.full_name)
+        current_url.should =~ %r(^http://[^/]+/account/edit$)
+
+        click_link("Update credit card")
+        current_url.should =~ %r(^http://[^/]+/card/edit$)
+
+        set_credit_card(d3d: true, type: 'master')
+        VCR.use_cassette('ogone/3ds_authorization') { click_button "Update" }
+
+        # fake payment succeeded callback (and thus skip the d3d redirection)
+        @current_user.process_cc_authorize_and_save("PAYID" => "1234", "STATUS" => "0")
+        
+        @current_user.reload
+        @current_user.cc_type.should == 'visa'
+        @current_user.cc_last_digits.should == '1111'
+
+        visit '/account/edit'
+        page.should have_content 'Visa'
+        page.should have_content '1111'
       end
 
       scenario "with a failed attempt first" do

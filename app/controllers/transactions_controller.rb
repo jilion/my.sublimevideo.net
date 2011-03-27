@@ -51,7 +51,7 @@ private
       if user.process_cc_authorize_and_save(@sha_params)
         flash[:notice] = t("flash.credit_cards.update.notice")
       elsif
-        flash[:alert] = t("credit_card.errors.#{response}")
+        flash[:alert] = t("credit_card.errors.refused")
       end
       format.html { redirect_to [:edit, :user_registration] }
     end
