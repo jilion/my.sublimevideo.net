@@ -102,6 +102,15 @@ class Transaction < ActiveRecord::Base
     payment ? transaction.process_payment_response(payment.params) : false
   end
 
+  def self.refund_by_site_id(site_id)
+    if site = Site.archived.where(:refunded_at.ne => nil).find_by_id(site_id)
+      Transaction.paid.joins(:invoices).where(:invoices => { :site_id => site_id }).each do |transaction|
+        Ogone.delay.credit(transaction.amount, "#{transaction.pay_id};SAL")
+      end
+    end
+
+  end
+
   # ====================
   # = Instance Methods =
   # ====================
