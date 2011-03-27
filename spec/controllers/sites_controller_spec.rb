@@ -60,7 +60,7 @@ describe SitesController do
 
     describe "GET :state" do
       before(:each) do
-        authenticated_user.stub_chain(:sites, :find).with('1') { @mock_site }
+        authenticated_user.stub_chain(:sites, :find).with('1').and_return(@mock_site = mock_site)
       end
       
       it "should respond with :ok when cdn_up_to_date? is false" do

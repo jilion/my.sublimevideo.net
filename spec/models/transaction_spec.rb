@@ -507,6 +507,111 @@ describe Transaction do
 
     end # .charge_by_invoice_ids
 
+    describe ".refund_by_site_id" do
+      context "for a non-refundable site (the site could have been refunded in the meantime...)" do
+        before(:each) do
+          @site = Factory(:site, refunded_at: nil)
+        end
+        
+        it "should do nothing!" do
+          expect { Transaction.refund_by_site_id(@site.id) }.to_not change(Delayed::Job, :count)
+        end
+      end
+
+      context "for a non-archived site (the site could have been refunded in the meantime...)" do
+        before(:each) do
+          @site = Factory(:site, state: 'archived')
+        end
+
+        it "should do nothing!" do
+          expect { Transaction.refund_by_site_id(@site.id) }.to_not change(Delayed::Job, :count)
+        end
+      end
+
+      context "for a refundable site with 1 paid transaction" do
+        before(:each) do
+          @site = Factory(:site_with_invoice, state: 'archived', refunded_at: Time.now.utc)
+          transactions = Transaction.paid.joins(:invoices).where(:invoices => { :site_id => @site.id }).order(:id)
+          transactions.count.should == 1
+          @transaction = transactions.first
+        end
+
+        it "should delay one Ogone.credit" do
+          expect { Transaction.refund_by_site_id(@site.id) }.to change(Delayed::Job, :count).by(1)
+
+          djs = Delayed::Job.where(:handler.matches => "%credit%")
+          djs.count.should == 1
+          YAML.load(djs.first.handler)['args'][0].should == @transaction.amount
+          YAML.load(djs.first.handler)['args'][1].should == "#{@transaction.pay_id};SAL"
+        end
+      end
+
+      context "for a refundable site with 1 failed transaction" do
+        before(:each) do
+          @site = Factory(:site_with_invoice, state: 'archived', refunded_at: Time.now.utc)
+          transactions = Transaction.paid.joins(:invoices).where(:invoices => { :site_id => @site.id }).order(:id)
+          transactions.count.should == 1
+          first_transaction = Transaction.find(transactions.first)
+          first_transaction.update_attribute(:state, 'failed')
+          first_transaction.should be_failed
+        end
+
+        it "should delay one Ogone.credit" do
+          expect { Transaction.refund_by_site_id(@site.id) }.to_not change(Delayed::Job, :count)
+        end
+      end
+
+      context "for a refundable site with multiple transactions all paid" do
+        before(:each) do
+          @site = Factory(:site_with_invoice, state: 'archived', refunded_at: Time.now.utc)
+          @site.plan_id = @custom_plan.token
+          VCR.use_cassette("ogone/visa_payment_generic") { @site.save_without_password_validation }
+          transactions = Transaction.paid.joins(:invoices).where(:invoices => { :site_id => @site.id }).order(:id)
+          transactions.count.should == 2
+          @transaction1 = transactions.first
+          @transaction2 = transactions.last
+        end
+
+        it "should delay one Ogone.credit" do
+          expect { Transaction.refund_by_site_id(@site.id) }.to change(Delayed::Job, :count).by(2)
+
+          djs = Delayed::Job.where(:handler.matches => "%credit%")
+          djs.count.should == 2
+          YAML.load(djs.first.handler)['args'][0].should == @transaction1.amount
+          YAML.load(djs.first.handler)['args'][1].should == "#{@transaction1.pay_id};SAL"
+          YAML.load(djs.last.handler)['args'][0].should == @transaction2.amount
+          YAML.load(djs.last.handler)['args'][1].should == "#{@transaction2.pay_id};SAL"
+        end
+      end
+
+      context "for a refundable site with multiple transactions: 1 paid and 1 failed" do
+        before(:each) do
+          @site = Factory(:site_with_invoice, state: 'archived', refunded_at: Time.now.utc)
+          @site.plan_id = @custom_plan.token
+          VCR.use_cassette("ogone/visa_payment_generic") { @site.save_without_password_validation }
+          transactions = Transaction.paid.joins(:invoices).where(:invoices => { :site_id => @site.id }).order(:id)
+          transactions.count.should == 2
+          first_transaction = Transaction.find(transactions.first)
+          first_transaction.update_attribute(:state, 'failed')
+          first_transaction.should be_failed
+          @transaction2 = transactions.last
+        end
+
+        it "should delay one Ogone.credit" do
+          expect { Transaction.refund_by_site_id(@site.id) }.to change(Delayed::Job, :count).by(1)
+
+          djs = Delayed::Job.where(:handler.matches => "%credit%")
+          djs.count.should == 1
+          YAML.load(djs.last.handler)['args'][0].should == @transaction2.amount
+          YAML.load(djs.last.handler)['args'][1].should == "#{@transaction2.pay_id};SAL"
+        end
+      end
+    end
+
+  end # Class Methods
+
+  describe "Instance Methods" do
+
     describe "#process_payment_response" do
       before(:all) do
         @site1    = Factory(:site, user: @user, plan_id: @dev_plan.id)
@@ -673,10 +778,6 @@ describe Transaction do
       end
 
     end
-
-  end # Class Methods
-
-  describe "Instance Methods" do
 
     describe "#description" do
       before(:all) do
