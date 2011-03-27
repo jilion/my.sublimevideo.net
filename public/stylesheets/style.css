@@ -1483,6 +1483,24 @@ input.link_looks.delete {
   margin:5px 13px 0;
 }
 
+#content table.main td.usage .sponsored_number {
+  text-shadow:rgba(255,255,255,.5) 0 1px 0;
+}
+
+#content table.main td.usage .sponsored_number strong {
+  font-size:20px;
+  font-weight:600;
+  display:block;
+}
+
+#content table.main td.usage .sponsored_number em {
+  font-size:12px;
+  font-style:normal;
+  padding:0 10px;
+  line-height:12px;
+  display:block;
+}
+
 #content table.main td.code a.embed_code {
   display:block;
   width:146px;
@@ -2213,6 +2231,35 @@ ul#addons .checkbox_wrap input:focus:checked + label {background-position:0 -102
 #site .actions input.submit.big:focus {background-position:0 -168px;}
 #site .actions input.submit.big:active:focus {background-position:0 -252px;}
 
+#custom_plan {
+  padding-bottom:10px;
+}
+
+#custom_plan h3.title {
+  text-transform:uppercase;
+  font-weight:400;
+  font-size:18px;
+  letter-spacing:1px;
+/*  text-align:center;*/
+}
+
+#custom_plan h4.number {
+  font-size:40px;
+  font-weight:600;
+  padding:10px 0 0;
+}
+
+#custom_plan h5.label {
+  font-size:18px;
+  font-weight:400;
+}
+
+#content form #custom_plan .radio_wrap label {
+  font-size:18px;
+  font-weight:600;
+  padding-top:3px;
+}
+
 /* ============= */
 /* = Site Edit = */
 /* ============= */
@@ -2332,7 +2379,7 @@ ul.segmented_menu li.last a {
   margin:20px 0 0;
 }
 
-#site .update_plan_message_box {
+#site .update_plan_message_box, .info_message_box {
   margin:20px 0;
   padding:10px 13px;
   font-weight:600;
@@ -2348,6 +2395,12 @@ ul.segmented_menu li.last a {
   -webkit-box-shadow:rgba(0,0,0,0.35) 0 1px 5px, inset 0 1px 1px rgba(255,255,255,0.95);
   -moz-box-shadow:rgba(0,0,0,0.35) 0 1px 5px, inset 0 1px 1px rgba(255,255,255,0.95);
   box-shadow:rgba(0,0,0,0.35) 0 1px 5px, inset 0 1px 1px rgba(255,255,255,0.95);
+}
+
+.info_message_box a {
+  font-weight:bold;
+  color:#453513;
+  border-bottom:1px solid #c6af79;
 }
 
 #site.edit .entry.delete input.delete_site {
@@ -2648,8 +2701,8 @@ nav.pagination span.gap {
 
 .content_right {
   float:left;
-  width:380px;
-  padding-left:38px;
+  width:320px;
+  padding-left:70px;
 }
 
 #delete_account {
@@ -2658,7 +2711,7 @@ nav.pagination span.gap {
 }
 
 #delete_account ul {
-  width:380px;
+  width:300px;
   padding:4px 0 4px 20px;
   line-height:18px;
 }
@@ -2668,7 +2721,7 @@ nav.pagination span.gap {
 }
 
 #credit_card_summary {
-  background:url(/images/embed/breakline.png) no-repeat -228px 100%;
+  background:url(/images/embed/breakline.png) no-repeat -340px 100%;
   padding:10px 0 20px;
 }
 

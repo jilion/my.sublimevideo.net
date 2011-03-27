@@ -117,6 +117,7 @@ describe Site do
 
     describe "#to_be_renewed" do
       before(:all) do
+        Site.delete_all
         Timecop.travel(2.months.ago) { @site_to_be_renewed = Factory(:site) }
         @site_not_to_be_renewed1 = Factory(:site)
         @site_not_to_be_renewed2 = Factory(:site, plan_started_at: 3.months.ago, plan_cycle_ended_at: 2.months.from_now)
@@ -124,6 +125,18 @@ describe Site do
       end
 
       specify { Site.to_be_renewed.all.should == [@site_to_be_renewed] }
+    end
+    
+    describe "#refundable" do
+      before(:all) do
+        Site.delete_all
+        @site_refundable1 = Factory(:site)
+        Timecop.travel(29.days.ago)  { @site_refundable2 = Factory(:site) }
+        Timecop.travel(2.months.ago) { @site_not_refundable1 = Factory(:site) }
+        @site_not_refundable2 = Factory(:site, refunded_at: Time.now.utc)
+      end
+
+      specify { Site.refundable.all.should == [@site_refundable1, @site_refundable2] }
     end
   end
 

@@ -53,6 +53,7 @@ class Site < ActiveRecord::Base
   scope :billable,      lambda { active.where({ :plan_id.not_in => Plan.where(:name => %w[beta dev]).map(&:id) }, { :next_cycle_plan_id => nil } | { :next_cycle_plan_id.ne => Plan.dev_plan.id }) }
   scope :not_billable,  lambda { where({ :state.ne => 'active' } | ({ :state => 'active' } & ({ :plan_id.in => Plan.where(:name => %w[beta dev]).map(&:id), :next_cycle_plan_id => nil } | { :next_cycle_plan_id => Plan.dev_plan }))) }
   scope :to_be_renewed, lambda { where(:plan_cycle_ended_at.lt => Time.now.utc).where(:pending_plan_id => nil) }
+  scope :refundable,    lambda { where(:first_paid_plan_started_at.gte => 30.days.ago).where(:refunded_at => nil) }
 
   scope :in_paid_plan, lambda { joins(:plan).merge(Plan.paid_plans) }
 
@@ -242,10 +243,6 @@ class Site < ActiveRecord::Base
 
   def set_user_attributes
     if user && user_attributes.present?
-      # if in_or_will_be_in_paid_plan? && !will_be_in_dev_plan?
-      #   Rails.logger.info "set user_attributes : #{user_attributes.inspect}"
-      #   self.user.attributes = user_attributes
-      # els
       if user_attributes.has_key?("current_password")
         self.user.attributes = user_attributes.select { |k,v| k == "current_password" }
       end
