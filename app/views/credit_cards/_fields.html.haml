@@ -1,6 +1,5 @@
 .left
   - reset_credit_card_attributes(f.object)
-  = f.hidden_field :cc_update, :value => true
   - if f.object.errors[:base].present?
     .global_errors
       - f.object.errors[:base].each do |error|
@@ -8,11 +7,11 @@
 
   .entry.card
     .radio_wrap
-      = f.radio_button :cc_type, "visa", :id => "user_cc_type_visa"
-      = f.label :cc_type, content_tag(:span, "Visa"), :class => "visa", :title => "Visa", :for => "user_cc_type_visa"
+      = f.radio_button :cc_brand, "visa", :id => "user_cc_brand_visa"
+      = f.label :cc_brand, content_tag(:span, "Visa"), :class => "visa", :title => "Visa", :for => "user_cc_brand_visa"
     .radio_wrap
-      = f.radio_button :cc_type, "master", :id => "user_cc_type_master"
-      = f.label :cc_type, content_tag(:span, "MasterCard"), :class => "master", :title => "MasterCard", :for => "user_cc_type_master"
+      = f.radio_button :cc_brand, "master", :id => "user_cc_brand_master"
+      = f.label :cc_brand, content_tag(:span, "MasterCard"), :class => "master", :title => "MasterCard", :for => "user_cc_brand_master"
     .spacer
 
   .entry.first_name
@@ -24,8 +23,9 @@
     = f.text_field :cc_number, :class => "text", :placeholder => "Card number", :size => 16+3, :autocomplete => :off, :id => "user_cc_number"
 
   .entry.select.float
-    = f.label :cc_expire_on, :for => "user_cc_expire_on"
-    = f.date_select :cc_expire_on, :discard_day => true, :use_month_names => %w[01 02 03 04 05 06 07 08 09 10 11 12], :start_year => Time.now.year, :end_year => Time.now.year + 20, :order => [:month, :year], :id => "user_cc_expire_on"
+    = f.label :cc_expiration_year
+    = f.select :cc_expiration_month, options_for_select([['01',1],['02',2],['03',3],['04',4],['05',5],['06',6],['07',7],['08',8],['09',9],['10',10],['11',11],['12',12]], :selected => f.object.credit_card.month), {}, { :id => "user_cc_expiration_month" }
+    = f.select :cc_expiration_year, options_for_select((Time.now.year..Time.now.year+20), :selected => f.object.credit_card.year), {}, { :id => "user_cc_expiration_year" }
 
   .entry.small_field
     = f.label :cc_verification_value, "Security Code", :for => "user_cc_verification_value"

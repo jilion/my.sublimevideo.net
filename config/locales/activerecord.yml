@@ -7,9 +7,10 @@ en:
         extra_hostnames: "Extra domains"
       user:
         terms_and_conditions: "Terms & Conditions"
-        cc_type:      "Card type"
+        cc_brand:      "Card type"
         cc_number:    "Card number"
-        cc_expire_on: "Credit card"
+        cc_expiration_month: ""
+        cc_expiration_year: "Expiration date"
         cc_full_name: "Name on card"
         cc_verification_value: "CSC"
         company_employees: "Company size"

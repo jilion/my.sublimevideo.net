@@ -9,8 +9,30 @@ class PlansController < ApplicationController
 
   # PUT /sites/:site_id/plan
   def update
-    @site.update_attributes(params[:site])
-    respond_with(@site, :location => :sites)
+    # setting user_attributes will set user.attributes only only before validation (so, on the save below)
+    # in order to set the credit card in the charging_options site's attribute, user.attributes have to be set before calling user.credit_card
+    @site.user.attributes = params[:site][:user_attributes]
+    @site.attributes = params[:site]
+    @site.charging_options = {
+      credit_card: @site.user.credit_card,
+      accept_url: sites_url,
+      decline_url: sites_url,
+      exception_url: sites_url,
+      ip: request.try(:remote_ip)
+    }
+
+    respond_with(@site) do |format|
+      if @site.save # will create invoice and charge...
+        transaction = @site.in_or_will_be_in_paid_plan? ? @site.last_invoice.last_transaction : nil
+        if transaction && transaction.waiting_d3d?
+          format.html { render :text => transaction.d3d_html }
+        else
+          format.html { redirect_to :sites, notice_and_alert_from_transaction(transaction) }
+        end
+      else
+        format.html { render :edit }
+      end
+    end
   end
 
   # Clear site.next_cycle_plan_id
@@ -24,6 +46,16 @@ private
 
   def find_site_by_token!
     @site = current_user.sites.find_by_token!(params[:site_id])
+  end
+
+  def notice_and_alert_from_transaction(transaction)
+    if transaction && transaction.failed?
+      { notice: "", alert: t("transaction.errors.#{transaction.i18n_error_key}") }
+    elsif transaction && transaction.unprocessed?
+      { notice: t("transaction.errors.#{transaction.i18n_error_key}"), alert: nil }
+    else
+      { notice: nil, alert: nil }
+    end
   end
 
 end

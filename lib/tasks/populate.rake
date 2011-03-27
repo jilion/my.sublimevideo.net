@@ -253,7 +253,7 @@ def create_sites
         hostname: hostname
       )
       Timecop.travel(created_at_array.sample) do
-        site.save! # TODO: USe VCR here to avoid calls to Ogone?!
+        site.save_without_password_validation # TODO: USe VCR here to avoid calls to Ogone?!
       end
       site.cdn_up_to_date = true if rand > 0.5
       site.apply_pending_plan_changes

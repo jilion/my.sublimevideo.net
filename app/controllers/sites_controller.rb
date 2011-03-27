@@ -29,13 +29,16 @@ class SitesController < ApplicationController
   # POST /sites
   def create
     @site = current_user.sites.build(params[:site])
-    @site.d3d_options = {
-      user: @site.user,
+    
+    # setting user_attributes will set user.attributes only only before validation (so, on the save below)
+    # in order to set the credit card in the charging_options site's attribute, user.attributes have to be set before calling user.credit_card
+    @site.user.attributes = params[:site][:user_attributes] if @site.in_or_will_be_in_paid_plan? && !@site.will_be_in_dev_plan?
+    @site.charging_options = {
+      credit_card: @site.user.credit_card,
       accept_url: sites_url,
       decline_url: sites_url,
       exception_url: sites_url,
-      ip: request.try(:remote_ip),
-      action: "create"
+      ip: request.try(:remote_ip)
     }
 
     respond_with(@site) do |format|
@@ -64,7 +67,7 @@ class SitesController < ApplicationController
 
     respond_with(@site) do |format|
       if @site.archive
-          format.html { redirect_to :sites }
+        format.html { redirect_to :sites }
       else
         format.html { render :edit }
       end
@@ -104,9 +107,9 @@ private
   
   def notice_and_alert_from_transaction(transaction)
     if transaction && transaction.failed?
-      { notice: "", alert: t("transaction.errors.#{transaction.error_key}") }
+      { notice: "", alert: t("transaction.errors.#{transaction.i18n_error_key}") }
     elsif transaction && transaction.unprocessed?
-      { notice: t("transaction.errors.#{transaction.error_key}"), alert: nil }
+      { notice: t("transaction.errors.#{transaction.i18n_error_key}"), alert: nil }
     else
       { notice: nil, alert: nil }
     end

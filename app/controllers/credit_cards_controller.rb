@@ -19,21 +19,23 @@ class CreditCardsController < ApplicationController
       ip: request.try(:remote_ip)
     }
 
-    respond_with(@user) do |format|
-      case @user.check_credit_card(options)
-      when "d3d"
-        format.html { render :text => @user.d3d_html }
-
-      when "authorized"
-        format.html { redirect_to [:edit, :user_registration] }
-
-      when "waiting", "unknown"
-        format.html { redirect_to [:edit, :user_registration], :notice => t("credit_card.errors.#{response}") }
-
-      else # response == "invalid", response == "refused" or user not valid
+    respond_with(@user, flash: false) do |format|
+      if @user.check_credit_card(options)
+        if @user.d3d_html # 3-d secure identification needed
+          format.html { render :text => @user.d3d_html }
+        else # authorized, waiting or unknown
+          format.html { redirect_to [:edit, :user_registration], notice_and_alert_from_transaction(@user) }
+        end
+      else # credit card not valid
         format.html { render :edit }
       end
     end
+  end
+
+private
+
+  def notice_and_alert_from_transaction(user)
+    user.i18n_notice_and_alert ? { notice: "", alert: "" }.merge(user.i18n_notice_and_alert) : { notice: t("flash.credit_cards.update.notice"), alert: nil }
   end
 
 end

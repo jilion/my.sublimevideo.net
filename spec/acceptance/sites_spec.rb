@@ -27,13 +27,10 @@ feature "Sites" do
 
     feature "new" do
       describe "dev plan" do
-        background do
-          choose "plan_dev"
-        end
-
         scenario "with no hostname" do
+          choose "plan_dev"
           fill_in "Domain", :with => ""
-          click_button "Create"
+          click_button "Create site"
 
           @worker.work_off
           site = @current_user.sites.last
@@ -47,8 +44,9 @@ feature "Sites" do
         end
 
         scenario "with a hostname" do
+          choose "plan_dev"
           fill_in "Domain", :with => "rymai.com"
-          click_button "Create"
+          click_button "Create site"
 
           @worker.work_off
           site = @current_user.sites.last
@@ -88,6 +86,7 @@ feature "Sites" do
             page.should have_content("Card type is invalid")
             page.should have_content("Name on card can't be blank")
             page.should have_content("Card number is invalid")
+            page.should have_content("Expiration date expired")
             page.should have_content("CSC is required")
           end
         end
@@ -204,7 +203,7 @@ feature "Sites" do
           scenario "entering a 3-D Secure credit card with a succeeding identification" do
             fill_in "Domain", :with => "rymai.com"
             set_credit_card_in_site_form(d3d: true)
-            VCR.use_cassette('ogone/visa_payment_acceptance_3ds') { click_button "Create" }
+            VCR.use_cassette('ogone/visa_payment_acceptance_3ds') { click_button "Create site" }
             @worker.work_off
             site = @current_user.sites.last
             transaction = site.last_invoice.last_transaction
