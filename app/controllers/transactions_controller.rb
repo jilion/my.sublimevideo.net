@@ -40,7 +40,7 @@ private
       params["CHECK_CC_USER_ID"]
 
     when :payment
-      params["PAYMENT"] && params["ORDERID"]
+      params["PAYMENT"] && params["orderID"]
     end
   end
 
@@ -58,7 +58,7 @@ private
   end
 
   def process_payment
-    transaction = Transaction.find_by_id(params["ORDERID"].to_i)
+    transaction = Transaction.find_by_id(params["orderID"].to_i)
     render(nothing: true, status: 204) and return if transaction.paid? # already paid
 
     transaction.process_payment_response(@sha_params)

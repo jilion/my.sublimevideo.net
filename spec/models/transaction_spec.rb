@@ -572,10 +572,10 @@ describe Transaction do
 
       it "should wait_d3d with a STATUS == 46" do
         subject.should be_unprocessed
-        subject.d3d_html.should be_nil
+        subject.error.should be_nil
         subject.process_payment_response(@d3d_params)
         subject.reload.should be_waiting_d3d
-        subject.d3d_html.should == "<html>No HTML.</html>"
+        subject.error.should == "<html>No HTML.</html>"
       end
 
       it "should succeed with a NCSTATUS == 0 && STATUS == 9" do
@@ -596,7 +596,6 @@ describe Transaction do
 
       it "should save with a NCSTATUS == 0 && STATUS == 51" do
         subject.should be_unprocessed
-        subject.d3d_html.should be_nil
         subject.process_payment_response(@waiting_params)
         subject.reload.should be_unprocessed
         subject.nc_status.should == 0
@@ -627,7 +626,6 @@ describe Transaction do
 
       it "should fail with a STATUS == 2" do
         subject.should be_unprocessed
-        subject.d3d_html.should be_nil
         Notify.should_receive(:send)
         subject.process_payment_response(@unknown_params)
         subject.reload.should be_unprocessed
@@ -640,7 +638,6 @@ describe Transaction do
       describe "waiting once, and then succeed" do
         it "should save the transaction and then succeed it" do
           subject.should be_unprocessed
-          subject.d3d_html.should be_nil
           subject.process_payment_response(@waiting_params)
           subject.reload.should be_unprocessed
           subject.nc_status.should == 0
@@ -659,7 +656,6 @@ describe Transaction do
       describe "unknown (2) once, and then succeed" do
         it "should save the transaction and then succeed it" do
           subject.should be_unprocessed
-          subject.d3d_html.should be_nil
           Notify.should_receive(:send)
           subject.process_payment_response(@unknown_params)
           subject.reload.should be_unprocessed

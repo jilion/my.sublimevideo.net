@@ -2,8 +2,6 @@ require 'base64'
 
 class Transaction < ActiveRecord::Base
 
-  attr_accessor :d3d_html
-
   uniquify :order_id, :chars => Array('a'..'z') + Array('0'..'9'), :length => 30
   
   # ================
@@ -115,7 +113,8 @@ class Transaction < ActiveRecord::Base
     # Waiting for identification (3-D Secure)
     # We return the HTML to render. This HTML will redirect the user to the 3-D Secure form.
     if payment_params["STATUS"] == "46"
-      @d3d_html = Base64.decode64(payment_params["HTML_ANSWER"])
+      @ogone_response_infos.delete("NCERRORPLUS")
+      self.error = Base64.decode64(payment_params["HTML_ANSWER"])
       self.wait_d3d
 
     else
@@ -207,7 +206,7 @@ private
       self.pay_id        = @ogone_response_infos["PAYID"]
       self.nc_status     = @ogone_response_infos["NCSTATUS"].to_i
       self.status        = @ogone_response_infos["STATUS"].to_i
-      self.error         = @ogone_response_infos["NCERRORPLUS"]
+      self.error         = @ogone_response_infos["NCERRORPLUS"] if @ogone_response_infos["NCERRORPLUS"]
     end
   end
 

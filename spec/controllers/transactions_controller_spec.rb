@@ -43,10 +43,10 @@ describe TransactionsController do
       describe "payment response" do
         before(:each) do
           @sha_params = {
-            "PAYID" => "1234", "STATUS" => "5", "ORDERID" => "2"
+            "PAYID" => "1234", "STATUS" => "5", "orderID" => "2"
           }
           @params = {
-            "PAYMENT" => "TRUE", "ACTION" => "create",
+            "PAYMENT" => "TRUE",
             "SHASIGN" => Digest::SHA512.hexdigest(["ORDERID=2","PAYID=1234","STATUS=5"].join(Ogone.yml[:signature_out]) + Ogone.yml[:signature_out]).upcase
           }
         end

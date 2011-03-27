@@ -45,7 +45,7 @@ class SitesController < ApplicationController
       if @site.save # will create invoice and charge...
         transaction = @site.in_or_will_be_in_paid_plan? ? @site.last_invoice.last_transaction : nil
         if transaction && transaction.waiting_d3d?
-          format.html { render :text => transaction.d3d_html }
+          format.html { render :text => transaction.error }
         else
           format.html { redirect_to :sites, notice_and_alert_from_transaction(transaction) }
         end

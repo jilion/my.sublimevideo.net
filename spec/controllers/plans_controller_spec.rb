@@ -53,7 +53,7 @@ describe PlansController do
           end
 
           it "should render HTML given by Aduno when authorization needs 3-d secure" do
-            @mock_transaction.should_receive(:d3d_html)     { "<html></html>" }
+            @mock_transaction.should_receive(:error)        { "<html></html>" }
             @mock_transaction.should_receive(:waiting_d3d?) { true }
 
             put :update, :site_id => 'a1b2c3', :site => {}
