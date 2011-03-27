@@ -315,7 +315,7 @@ class Site < ActiveRecord::Base
     end
   end
 
-  def percentage_of_days_over_daily_limit(max_days = 90)
+  def percentage_of_days_over_daily_limit(max_days = 60)
     if in_paid_plan?
       last_days       = [days_since(first_paid_plan_started_at), max_days].min
       over_limit_days = usages.between(last_days.days.ago.utc.midnight, Time.now.utc.midnight).to_a.count { |su| su.billable_player_hits > (plan.player_hits / 30.0) }
