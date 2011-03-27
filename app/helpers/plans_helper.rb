@@ -3,8 +3,13 @@ module PlansHelper
   def plan_label_content(plan, options={})
     pricing_div = content_tag(:span, :class => "pricing") do
       content_tag(:strong, :class => "price") do
+        display_amount_with_sup(plan.price) +
+        content_tag(:span, "", :class => "strike")
+      end +
+      content_tag(:strong, :class => "new_price") do
         display_amount_with_sup(plan.price)
-      end + content_tag(:span, :class => "name") do
+      end +
+      content_tag(:span, :class => "name") do
         plan.name.gsub(/\d/, '').titleize
       end + (plan.yearly? ? "per year" : "per month")
     end
@@ -33,7 +38,7 @@ module PlansHelper
   end
   
   def plan_support(plan)
-    "#{"Standard " if plan.support == 'standard'}#{content_tag(:strong, "#{"Priority " if plan.support == 'priority'} Support")}".html_safe
+    "#{"Standard " if plan.support == 'standard'}#{content_tag(:strong, "#{"Priority " if plan.support == 'priority'}")} Support".html_safe
   end
 
   def radio_button_options(site, plan, current_plan, options={})
