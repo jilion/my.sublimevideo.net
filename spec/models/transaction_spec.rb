@@ -423,7 +423,7 @@ describe Transaction do
 
         context "with a purchase that need a 3d secure authentication" do
           before(:each) do
-            Ogone.stub(:purchase) { mock('response', :params => { "STATUS" => "46", "HTML_ANSWER" => Base64.encode64("<html>No HTML.</html>") }) }
+            Ogone.stub(:purchase) { mock('response', :params => { "NCSTATUS" => "5", "STATUS" => "46", "HTML_ANSWER" => Base64.encode64("<html>No HTML.</html>") }) }
           end
           
           context "credit card" do
@@ -431,7 +431,7 @@ describe Transaction do
               @invoice1.should be_open
               Transaction.charge_by_invoice_ids([@invoice1.id], { credit_card: @user.credit_card }).should be_true
               @invoice1.last_transaction.should be_waiting_d3d
-              @invoice1.last_transaction.error.should be_nil
+              @invoice1.last_transaction.error.should == "<html>No HTML.</html>"
               @invoice1.reload.should be_open
             end
           end
@@ -441,7 +441,7 @@ describe Transaction do
               @invoice1.should be_open
               Transaction.charge_by_invoice_ids([@invoice1.id]).should be_true
               @invoice1.last_transaction.should be_waiting_d3d
-              @invoice1.last_transaction.error.should be_nil
+              @invoice1.last_transaction.error.should == "<html>No HTML.</html>"
               @invoice1.reload.should be_open
             end
           end
@@ -578,7 +578,7 @@ describe Transaction do
         subject.error.should == "<html>No HTML.</html>"
       end
 
-      it "should succeed with a NCSTATUS == 0 && STATUS == 9" do
+      it "should succeed with a STATUS == 9" do
         subject.should be_unprocessed
         subject.process_payment_response(@success_params)
         subject.reload.should be_paid
@@ -594,7 +594,7 @@ describe Transaction do
         subject.user.cc_expire_on.should == 1.year.from_now.end_of_month.to_date
       end
 
-      it "should save with a NCSTATUS == 0 && STATUS == 51" do
+      it "should save with a STATUS == 51" do
         subject.should be_unprocessed
         subject.process_payment_response(@waiting_params)
         subject.reload.should be_unprocessed
@@ -604,7 +604,7 @@ describe Transaction do
         subject.should be_waiting
       end
 
-      it "should fail with a NCSTATUS == 5" do
+      it "should fail with a STATUS == 0" do
         subject.should be_unprocessed
         subject.process_payment_response(@invalid_params)
         subject.reload.should be_failed
@@ -614,7 +614,7 @@ describe Transaction do
         subject.should be_invalid
       end
 
-      it "should fail with a NCSTATUS == 3" do
+      it "should fail with a STATUS == 93" do
         subject.should be_unprocessed
         subject.process_payment_response(@refused_params)
         subject.reload.should be_failed
@@ -624,7 +624,7 @@ describe Transaction do
         subject.should be_refused
       end
 
-      it "should fail with a STATUS == 2" do
+      it "should fail with a STATUS == 92" do
         subject.should be_unprocessed
         Notify.should_receive(:send)
         subject.process_payment_response(@unknown_params)

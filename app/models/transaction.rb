@@ -118,22 +118,19 @@ class Transaction < ActiveRecord::Base
       self.wait_d3d
 
     else
-      case payment_params["NCSTATUS"]
-      when "0"
-        # STATUS == 9, Payment requested:
-        #   The payment has been accepted.
-        #   An authorization code is available in the field "ACCEPTANCE".
-        case payment_params["STATUS"]
-        when "9"
-          self.user.apply_pending_credit_card_info if self.user.pending_credit_card?
-          self.succeed
+      # STATUS == 9, Payment requested:
+      #   The payment has been accepted.
+      #   An authorization code is available in the field "ACCEPTANCE".
+      case payment_params["STATUS"]
+      when "9"
+        self.user.apply_pending_credit_card_info if self.user.pending_credit_card?
+        self.succeed
 
-        # STATUS == 51, Authorization waiting:
-        #   The authorization will be processed offline.
-        #   This is the standard response if the merchant has chosen offline processing in his account configuration
-        when "51"
-          self.save
-        end
+      # STATUS == 51, Authorization waiting:
+      #   The authorization will be processed offline.
+      #   This is the standard response if the merchant has chosen offline processing in his account configuration
+      when "51"
+        self.save
 
       # NCSTATUS == 5
       #   STATUS == 0, Invalid or incomplete:
@@ -148,14 +145,14 @@ class Transaction < ActiveRecord::Base
       #     The customer can retry the authorization process after selecting a different payment method (or card brand).
       #   STATUS == 93, Payment refused:
       #     A technical problem arose.
-      when "5", "3"
+      when "0", "2", "93"
         self.fail
 
       # STATUS == 52, Authorization not known; STATUS == 92, Payment uncertain:
       #   A technical problem arose during the authorization/ payment process, giving an unpredictable result.
       #   The merchant can contact the acquirer helpdesk to know the exact status of the payment or can wait until we have updated the status in our system.
       #   The customer should not retry the authorization process since the authorization/payment might already have been accepted.
-      when "2"
+      when "52", "92"
         self.save
         Notify.send("Transaction ##{self.id} (PAYID: #{payment_params["PAYID"]}) has an uncertain state, please investigate quickly!")
       end

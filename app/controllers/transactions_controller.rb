@@ -63,7 +63,7 @@ private
 
     transaction.process_payment_response(@sha_params)
 
-    respond_with do |format|
+    respond_to do |format|
       if transaction.paid?
         format.html { redirect_to :sites, :notice => t("flash.sites.create.notice") }
 

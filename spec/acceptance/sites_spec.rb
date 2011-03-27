@@ -198,7 +198,7 @@ feature "Sites" do
             page.should have_no_selector('.embed_code')
             page.should have_content(I18n.t('site.status.payment_issue'))
             page.should_not have_content(I18n.t('site.status.ok'))
-            end
+          end
 
           scenario "entering a 3-D Secure credit card with a succeeding identification" do
             fill_in "Domain", :with => "rymai.com"
