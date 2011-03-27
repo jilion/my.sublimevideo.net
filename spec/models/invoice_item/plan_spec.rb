@@ -4,46 +4,77 @@ describe InvoiceItem::Plan do
 
   describe ".build(attributes = {})" do
     before(:all) do
-      @user    = Factory(:user)
-      @plan1   = Factory(:plan, price: 1000)
-      @plan2   = Factory(:plan, price: 1000)
-      @site1   = Factory(:site, user: @user, plan_id: @plan1.id)
-      @site2   = Factory(:site, user: @user, plan_id: @plan1.id)
+      @user       = Factory(:user)
+      @enthusiast = Factory(:user, enthusiast_id: 1234)
+
+      @plan1 = Factory(:plan, price: 1000)
+      @plan2 = Factory(:plan, price: 1000)
+
+      @site1 = Factory(:site, user: @user, plan_id: @plan1.id)
+      @site2 = Factory(:site, user: @user, plan_id: @plan1.id)
       @site2.plan_id = @plan2.id
       @site2.save_without_password_validation
+      Timecop.travel(PublicLaunch.beta_transition_ended_on - 1.hour) { @site_with_discount = Factory(:site, user: @enthusiast, plan_id: @plan1.id) }
+
       @invoice1 = Factory(:invoice, site: @site1)
       @invoice2 = Factory(:invoice, site: @site2)
+      @invoice_with_discount = Factory(:invoice, site: @site_with_discount)
     end
 
-    describe "with standard params and a site without pending plan" do # renew
-      subject { InvoiceItem::Plan.build(invoice: @invoice1, item: @site1.plan) }
+    context "with a site that doesn't have the discount" do
+      # renew
+      describe "with standard params and a site without pending plan" do
+        subject { InvoiceItem::Plan.build(invoice: @invoice1, item: @site1.plan) }
 
-      its(:item)       { should == @site1.plan }
-      its(:price)      { should == @site1.plan.price }
-      its(:amount)     { should == @site1.plan.price }
-      its(:started_at) { should == @site1.plan_cycle_started_at }
-      its(:ended_at)   { should == @site1.plan_cycle_ended_at }
+        its(:item)       { should == @site1.plan }
+        its(:price)      { should == @site1.plan.price }
+        its(:amount)     { should == @site1.plan.price }
+        its(:started_at) { should == @site1.plan_cycle_started_at }
+        its(:ended_at)   { should == @site1.plan_cycle_ended_at }
+      end
+
+      # upgrade & downgrade
+      describe "with standard params and a site with pending plan" do
+        subject { InvoiceItem::Plan.build(invoice: @invoice2, item: @site2.plan) }
+
+        its(:item)       { should == @site2.plan }
+        its(:price)      { should == @site2.plan.price }
+        its(:amount)     { should == @site2.plan.price }
+        its(:started_at) { should == @site2.pending_plan_cycle_started_at }
+        its(:ended_at)   { should == @site2.pending_plan_cycle_ended_at }
+      end
+
+      describe "with refund params" do
+        subject { InvoiceItem::Plan.build(invoice: @invoice1, item: @plan1, refund: true) }
+
+        its(:item)       { should == @plan1 }
+        its(:price)      { should == @plan1.price }
+        its(:amount)     { should == -1 * @plan1.price }
+        its(:started_at) { should == @site1.plan_cycle_started_at }
+        its(:ended_at)   { should == @site1.plan_cycle_ended_at }
+      end
     end
 
-    describe "with standard params and a site with pending plan" do # upgrade & downgrade
-      subject { InvoiceItem::Plan.build(invoice: @invoice2, item: @site2.plan) }
+    context "with a site that have the discount" do
+      describe "no refund" do
+        subject { InvoiceItem::Plan.build(invoice: @invoice_with_discount, item: @plan1) }
 
-      its(:item)       { should == @site2.plan }
-      its(:price)      { should == @site2.plan.price }
-      its(:amount)     { should == @site2.plan.price }
-      its(:started_at) { should == @site2.pending_plan_cycle_started_at }
-      its(:ended_at)   { should == @site2.pending_plan_cycle_ended_at }
-    end
+        its(:item)       { should == @plan1 }
+        its(:price)      { should == 800 }
+        its(:amount)     { should == 800 }
+        its(:started_at) { should == @site_with_discount.plan_cycle_started_at }
+        its(:ended_at)   { should == @site_with_discount.plan_cycle_ended_at }
+      end
 
-    describe "with refund params" do
-      before(:all) { @plan3 = Factory(:plan, price: 1000) }
-      subject { InvoiceItem::Plan.build(invoice: @invoice1, item: @plan3, refund: true) }
+      describe "refund" do
+        subject { InvoiceItem::Plan.build(invoice: @invoice_with_discount, item: @plan1, refund: true) }
 
-      its(:item)       { should == @plan3 }
-      its(:price)      { should == @plan3.price }
-      its(:amount)     { should == -1 * @plan3.price }
-      its(:started_at) { should == @site1.plan_cycle_started_at }
-      its(:ended_at)   { should == @site1.plan_cycle_ended_at }
+        its(:item)       { should == @plan1 }
+        its(:price)      { should == 800 }
+        its(:amount)     { should == -800 }
+        its(:started_at) { should == @site_with_discount.plan_cycle_started_at }
+        its(:ended_at)   { should == @site_with_discount.plan_cycle_ended_at }
+      end
     end
   end
 

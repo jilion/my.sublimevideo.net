@@ -42,7 +42,7 @@ feature "Credit cards" do
         should_save_credit_card_successfully
       end
 
-      pending "successfully (master)" do
+      scenario "successfully (master)" do
         click_link(@current_user.full_name)
         current_url.should =~ %r(^http://[^/]+/account/edit$)
 
@@ -51,7 +51,7 @@ feature "Credit cards" do
 
         set_credit_card(type: 'master')
         VCR.use_cassette('ogone/credit_card_master_validation') { click_button "Update" }
-        
+
         sign_out
         sign_in_as :user
         visit '/account/edit'

@@ -14,8 +14,6 @@ class CreateInvoicesAndInvoiceItems < ActiveRecord::Migration
       t.integer :amount
       t.float   :vat_rate
       t.integer :vat_amount
-      t.float   :discount_rate
-      t.integer :discount_amount
       t.integer :invoice_items_amount
 
       t.integer :invoice_items_count, :default => 0

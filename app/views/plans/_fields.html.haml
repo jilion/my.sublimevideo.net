@@ -4,6 +4,9 @@
 - next_cycle_plan = site.next_cycle_plan
 - current_plan = pending_plan || next_cycle_plan || plan # current plan for the view (could be in case of rendering view with errors)
 
+
+#beta_discount_box= raw "As a Beta user you benefit from a #{content_tag :strong, "20% discount"} on all paid plans until April 15, 2011 (11:59pm UTC)"
+
 - if site.errors.key?(:plan)
   .inline_errors.plan
     %span= site.errors[:plan].first
@@ -34,7 +37,7 @@
       - standard_plans.each do |standard_plan|
         - next if standard_plan.yearly?
         - i += 1
-        %li{ :class => "#{standard_plan.name} box_#{i}" }
+        %li.discount{ :class => "#{standard_plan.name} box_#{i}" }
           .wrapper
             .header
               %h3.title= content_tag(:strong, standard_plan.name.titleize)
@@ -42,9 +45,8 @@
               %h5.label= "Video pageviews per month"
               %ul.features
                 %li= plan_support(standard_plan)
-                %li.last
-                  %strong= "SSL"
-                  = "Serving"
+                %li= "Peak Insurance"
+                %li.last= "SSL Serving"
             .monthly.select_box{ :class => current_plan && current_plan == standard_plan ? 'active' : '' }
               = f.label :plan_id, raw(plan_label_content(standard_plan)), :for => "plan_#{standard_plan.name}_#{standard_plan.cycle}"
               .radio_wrap
@@ -60,6 +62,8 @@
                   %span.bg
                 - if site.persisted? && plan && plan == standard_yearly_plan
                   %span.current_label= "Current"
+            .spacer
+          .bottom
           %span.save_label= "2 months free"
     .spacer
 
