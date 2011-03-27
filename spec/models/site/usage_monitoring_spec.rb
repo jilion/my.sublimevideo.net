@@ -66,8 +66,19 @@ describe Site::UsageMonitoring do
         @site.first_plan_upgrade_required_alert_sent_at.should be_nil
       end
 
-      it "should not send player hits reached notification if already sent" do
-        @site.touch(:plan_player_hits_reached_notification_sent_at)
+      it "should send player hits reached notification if not sent during the site cycle" do
+        Timecop.travel(Time.utc(2010,12,20)) { @site.touch(:plan_player_hits_reached_notification_sent_at) }
+
+        UsageMonitoringMailer.should_receive(:plan_player_hits_reached).with(@site).and_return ( mock(:deliver! => true) )
+        UsageMonitoringMailer.should_not_receive(:plan_upgrade_required)
+        Timecop.travel(Time.utc(2011,1,22)) { Site::UsageMonitoring.monitor_sites_usages }
+        @site.reload
+        @site.plan_player_hits_reached_notification_sent_at.should > Time.utc(2011,1,22)
+        @site.first_plan_upgrade_required_alert_sent_at.should be_nil
+      end
+
+      it "should not send player hits reached notification if already sent during the site cycle" do
+        Timecop.travel(Time.utc(2011,1,20)) { @site.touch(:plan_player_hits_reached_notification_sent_at) }
 
         UsageMonitoringMailer.should_not_receive(:plan_player_hits_reached)
         UsageMonitoringMailer.should_not_receive(:plan_upgrade_required)
