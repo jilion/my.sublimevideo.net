@@ -4,12 +4,12 @@
   = render '/layouts/segmented_menu'
   - if @site.pending_plan_id? && !@site.pending_plan_id_changed?
     - if @site.invoices_failed?
-      %p= raw t 'site.plan.upgrade_in_progress_failed_link', :link => link_to("your invoice", [@site, :invoices])
+      .info_message_box= raw t 'site.plan.upgrade_in_progress_failed_link', :link => link_to("your invoice", [@site, :invoices])
     - else
-      %p= t 'site.plan.upgrade_in_progress'
+      .info_message_box= t 'site.plan.upgrade_in_progress'
   - elsif @site.in_sponsored_plan?
-    %p= "Your plan is currently sponsored by Jilion."
-    %p= raw "If you have any questions, please #{mail_to "info@sublimevideo.net", "contact us"}."
+    .info_message_box
+      %p= raw "Your plan is currently sponsored by Jilion. If you have any questions, please #{mail_to "info@sublimevideo.net", "contact us"}."
   - else
     - if @site.errors.empty? && !@site.in_beta_plan? && @site.next_cycle_plan_id?
       #next_cycle_plan_box
