@@ -80,7 +80,7 @@ feature "Plans" do
       choose "plan_star_year"
       set_credit_card
       has_checked_field?("plan_star_year").should be_true
-      save_and_open_page
+
       click_button "Update plan"
 
       VCR.use_cassette('ogone/visa_payment_generic') do
