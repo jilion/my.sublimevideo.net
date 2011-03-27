@@ -48,7 +48,7 @@
                 %li= "Peak Insurance"
                 %li.last= "SSL Serving"
             .monthly.select_box{ :class => current_plan && current_plan == standard_plan ? 'active' : '' }
-              = f.label :plan_id, raw(plan_label_content(standard_plan)), :for => "plan_#{standard_plan.name}_#{standard_plan.cycle}"
+              = f.label :plan_id, raw(plan_label_content(standard_plan, site)), :for => "plan_#{standard_plan.name}_#{standard_plan.cycle}"
               .radio_wrap
                 = f.radio_button :plan_id, standard_plan.id, radio_button_options(site, standard_plan, current_plan, :checked => current_plan && current_plan == standard_plan)
                 %span.bg
@@ -56,7 +56,7 @@
                 %span.current_label= "Current"
             - if standard_yearly_plan = standard_plans.find { |p| p.name == standard_plan.name && p.yearly? }
               .yearly.select_box{ :class => current_plan && current_plan == standard_yearly_plan ? 'active' : '' }
-                = f.label :plan_id, raw(plan_label_content(standard_yearly_plan)), :for => "plan_#{standard_yearly_plan.name}_#{standard_yearly_plan.cycle}"
+                = f.label :plan_id, raw(plan_label_content(standard_yearly_plan, site)), :for => "plan_#{standard_yearly_plan.name}_#{standard_yearly_plan.cycle}"
                 .radio_wrap
                   = f.radio_button :plan_id, standard_yearly_plan.id, radio_button_options(site, standard_yearly_plan, current_plan, :checked => current_plan && current_plan == standard_yearly_plan)
                   %span.bg
