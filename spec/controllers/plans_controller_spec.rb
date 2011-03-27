@@ -125,7 +125,7 @@ describe PlansController do
 
     describe "DELETE :destroy" do
       before(:each) do
-        authenticated_user.stub_chain(:sites, :find_by_token).with('a1b2c3').and_return(@mock_site = mock_site)
+        authenticated_user.stub_chain(:sites, :find_by_token!).with('a1b2c3').and_return(@mock_site = mock_site)
       end
 
       it "should redirect to /sites when update_attributes succeeds" do
