@@ -119,10 +119,13 @@ MySublimeVideo.openPopup = function(itemId, idPrefix, url, class_name) { // item
 // ==================
 
 MySublimeVideo.handlePlanChange = function(radioButton) {
-  var plan_price = radioButton.readAttribute('data-plan_price');
-  var ccInfoDiv  = $('credit_card');
+  var plan_price  = radioButton.readAttribute('data-plan_price');
+  var ccInfoDiv   = $('credit_card');
+  var hostnameDiv = $('site_hostname');
   if (plan_price == "$0") {
-    $('site_hostname').required = false;
+    if (hostnameDiv) {
+      $('site_hostname').required = false;
+    }
     if (ccInfoDiv) {
       ccInfoDiv.hide();
       $('user_cc_brand_visa').disable();
@@ -138,7 +141,9 @@ MySublimeVideo.handlePlanChange = function(radioButton) {
     }
   }
   else {
-    $('site_hostname').required = true;
+    if (hostnameDiv) {
+      $('site_hostname').required = true;
+    }
     if (ccInfoDiv) {
       $('user_cc_brand_visa').enable();
       $('user_cc_brand_master').enable();
