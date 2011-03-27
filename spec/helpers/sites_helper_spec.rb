@@ -9,4 +9,14 @@ describe SitesHelper do
     end
   end
 
+  describe "#style_for_usage_bar_from_usage_percentage" do
+    it { helper.style_for_usage_bar_from_usage_percentage(0).should == "display:none;" }
+    it { helper.style_for_usage_bar_from_usage_percentage(0.0).should == "display:none;" }
+    it { helper.style_for_usage_bar_from_usage_percentage(0.02).should == "width:4%;" }
+    it { helper.style_for_usage_bar_from_usage_percentage(0.04).should == "width:4%;" }
+    it { helper.style_for_usage_bar_from_usage_percentage(0.05).should == "width:5%;" }
+    it { helper.style_for_usage_bar_from_usage_percentage(0.12344).should == "width:12.34%;" }
+    it { helper.style_for_usage_bar_from_usage_percentage(0.783459).should == "width:78.35%;" }
+  end
+
 end

@@ -47,6 +47,6 @@
       - if site.in_dev_plan?
         .more_settings_desc><
           = raw "More settings like alias and staging domains, custom path and wildcard option, are available on paid plans. #{link_to "Read more", "http://docs.sublimevideo.net/site-settings", :class => "hl"}."
-      = link_to "http://docs.sublimevideo.net/site-settings", :class => "help" do
+      = link_to "http://docs.sublimevideo.net/site-settings", :class => "help", :onclick => "window.open(this); return false" do
         %span= "Read more"
       .break_line
