@@ -1772,7 +1772,7 @@ input.link_looks.delete {
 }
 
 #plans li.discount .select_box label {
-  height:130px;
+  height:148px;
 }
 
 #plans .select_box.active label {
@@ -1847,6 +1847,13 @@ input.link_looks.delete {
 #plans li.discount .select_box .pricing strong.price sup {font-size:11px}
 
 #plans .select_box.active .pricing strong.price sup, #plans .select_box.active .pricing strong.new_price sup {color:#c4ccdb}
+
+#plans .select_box .pricing span.details_label {
+  font-size:12px;
+}
+
+#plans .select_box .pricing span.new_details_label strong {color:#3d8ecb}
+#plans .select_box.active .pricing span.new_details_label strong {color:#cad8e2}
 
 #plans .select_box .pricing span.name {display:none}
 
@@ -2230,6 +2237,35 @@ ul#addons .checkbox_wrap input:focus:checked + label {background-position:0 -102
 #site .actions input.submit.big:active {background-position:0 -84px;}
 #site .actions input.submit.big:focus {background-position:0 -168px;}
 #site .actions input.submit.big:active:focus {background-position:0 -252px;}
+
+#custom_plan {
+  padding-bottom:10px;
+}
+
+#custom_plan h3.title {
+  text-transform:uppercase;
+  font-weight:400;
+  font-size:18px;
+  letter-spacing:1px;
+/*  text-align:center;*/
+}
+
+#custom_plan h4.number {
+  font-size:40px;
+  font-weight:600;
+  padding:10px 0 0;
+}
+
+#custom_plan h5.label {
+  font-size:18px;
+  font-weight:400;
+}
+
+#content form #custom_plan .radio_wrap label {
+  font-size:18px;
+  font-weight:600;
+  padding-top:3px;
+}
 
 /* ============= */
 /* = Site Edit = */

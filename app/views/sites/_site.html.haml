@@ -12,8 +12,7 @@
             = link_to [:edit, site], :class => "icon" do
               %span= "warning"
             = info_box do
-              %p
-                %em= "You should probably add a path to restrict the validity of the player to your site, not on the whole domain."
+              %p= raw t 'site.status.need_path'
       - else
         = link_to [:edit, site], :class => "domain" do
           %span.settings_icon

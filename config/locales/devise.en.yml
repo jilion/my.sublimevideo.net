@@ -32,14 +32,14 @@ en:
       unlocked: 'Your account was successfully unlocked. You are now signed in.'
     failure:
       admin:
-        unauthenticated: 'You need to sign in or have an invitation before continuing.'
+        unauthenticated: 'You need to login or have an invitation before continuing.'
       user:
-        unauthenticated: 'You need to sign in or sign up before continuing.'
+        unauthenticated: 'You need to login or sign up before continuing.'
         unconfirmed: 'You have to confirm your account before continuing.'
         locked: 'Your account is locked.'
         invalid: 'Invalid email or password.'
         invalid_token: 'Invalid authentication token.'
-        timeout: 'Your session expired, please sign in again to continue.'
+        timeout: 'Your session expired, please login again to continue.'
         inactive: 'Your account was not activated yet.'
     mailer:
       confirmation_instructions:

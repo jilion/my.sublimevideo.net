@@ -2,25 +2,31 @@ module PlansHelper
 
   def plan_label_content(plan, site=nil, options={})
     discount = plan.price != plan.price(site)
-    Rails.logger.info "discount : #{discount}"
-    
     content_tag(:span, :class => "pricing") do
       normal_price = content_tag(:strong, :class => "price") do
         display_amount_with_sup(plan.price) + (discount ? content_tag(:span, "", :class => "strike") : '')
       end
+
+      price_box += content_tag(:span, :class => "details_label") do
+        (plan.yearly? ? "per year" : "per month")
+      end
       
       if discount
-        normal_price += content_tag(:strong, :class => "new_price") do
+        price_box += content_tag(:strong, :class => "new_price") do
           display_amount_with_sup(plan.price(site))
         end
       end
       
-      normal_price += content_tag(:span, :class => "name") do
+      price_box += content_tag(:span, :class => "name") do
         plan.name.gsub(/\d/, '').titleize
       end
-      
-      normal_price += (plan.yearly? ? "per year" : "per month")
-      normal_price
+
+      if discount
+        price_box += content_tag(:span, :class => "new_details_label") do
+          raw(plan.yearly? ? "#{content_tag :strong, "first"} year" : "#{content_tag :strong, "first"} month")
+        end
+      end
+      price_box
     end
   end
 

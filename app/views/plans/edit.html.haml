@@ -9,7 +9,7 @@
       .info_message_box= t 'site.plan.upgrade_in_progress'
   - elsif @site.in_sponsored_plan?
     .info_message_box
-      %p= raw "Your plan is currently sponsored by Jilion. If you have any questions, please #{mail_to "info@sublimevideo.net", "contact us"}."
+      %p= raw "Your plan is currently sponsored by Jilion. If you have any questions, please #{mail_to "sales@sublimevideo.net", "contact us"}."
   - else
     - if @site.errors.empty? && !@site.in_beta_plan? && @site.next_cycle_plan_id?
       #next_cycle_plan_box
@@ -40,4 +40,4 @@
         .spacer
 
         .actions.center
-          = f.submit 'Update plan', :class => "submit big"
+          = f.submit 'Update plan', :class => "submit big" unless @site.in_custom_plan?

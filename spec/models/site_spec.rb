@@ -126,7 +126,7 @@ describe Site do
 
       specify { Site.to_be_renewed.all.should == [@site_to_be_renewed] }
     end
-    
+
     describe "#refundable" do
       before(:all) do
         Site.delete_all
@@ -1230,7 +1230,7 @@ describe Site do
       end
     end
 
-    describe "#percentage_of_days_over_daily_limit(90)" do
+    describe "#percentage_of_days_over_daily_limit(60)" do
       context "with dev_plan" do
         subject { Factory(:site, plan_id: @dev_plan.id) }
 
@@ -1285,16 +1285,16 @@ describe Site do
           after(:each) { Timecop.return }
         end
 
-        describe "with >90 historic days and 2 over limit" do
+        describe "with >60 historic days and 2 over limit" do
           before(:each) do
             Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,1,1), main_player_hits: 400)
             Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,2,1), main_player_hits: 500)
             Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,3,1), main_player_hits: 500)
-            Timecop.travel(Time.utc(2011,5,1))
+            Timecop.travel(Time.utc(2011,4,1))
           end
           subject { @site }
 
-          its(:percentage_of_days_over_daily_limit) { should == (2 / 90.0).round(2) }
+          its(:percentage_of_days_over_daily_limit) { should == (2 / 60.0).round(2) }
 
           after(:each) { Timecop.return }
         end

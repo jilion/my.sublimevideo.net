@@ -60,17 +60,6 @@ document.observe("dom:loaded", function() {
     });
   }
 
-  if (history && history.pushState) {
-    Event.observe(window, 'popstate', function(e) {
-      if (!(/\/login$/).test(location.href)) {
-        MySublimeVideo.showTableSpinner();
-        new Ajax.Request(location.href, {
-          method: 'get'
-        });
-      };
-    });
-  }
-
   // Reproduce checkbox behavior for radio buttons for plans selection
   if ($('plans')) {
     var planUpgradeInfoDiv = $('plan_upgrade_info');
@@ -227,9 +216,6 @@ MySublimeVideo.makeSticky = function(element, css_selector) {
 MySublimeVideo.remoteSortLink = function(element) {
   MySublimeVideo.makeRemoteLinkSticky(element);
   MySublimeVideo.showTableSpinner();
-  if (history && history.pushState) {
-    history.pushState(null, document.title, element.href);
-  };
 };
 
 MySublimeVideo.makeRemoteLinkSticky = function(element) {

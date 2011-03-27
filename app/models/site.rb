@@ -52,8 +52,8 @@ class Site < ActiveRecord::Base
   # billing
   scope :billable,      lambda { active.where({ :plan_id.not_in => Plan.where(:name => %w[beta dev]).map(&:id) }, { :next_cycle_plan_id => nil } | { :next_cycle_plan_id.ne => Plan.dev_plan.id }) }
   scope :not_billable,  lambda { where({ :state.ne => 'active' } | ({ :state => 'active' } & ({ :plan_id.in => Plan.where(:name => %w[beta dev]).map(&:id), :next_cycle_plan_id => nil } | { :next_cycle_plan_id => Plan.dev_plan }))) }
-  scope :to_be_renewed, lambda { where(:plan_cycle_ended_at.lt => Time.now.utc).where(:pending_plan_id => nil) }
-  scope :refundable,    lambda { where(:first_paid_plan_started_at.gte => 30.days.ago).where(:refunded_at => nil) }
+  scope :to_be_renewed, lambda { where(:plan_cycle_ended_at.lt => Time.now.utc, :pending_plan_id => nil) }
+  scope :refundable,    lambda { where(:first_paid_plan_started_at.gte => 30.days.ago, :refunded_at => nil) }
 
   scope :in_paid_plan, lambda { joins(:plan).merge(Plan.paid_plans) }
 
@@ -208,7 +208,7 @@ class Site < ActiveRecord::Base
 
   def plan_id=(attribute)
     return if pending_plan_id?
-    
+
     if attribute.to_s == attribute.to_i.to_s # id passed
       new_plan = Plan.find_by_id(attribute.to_i)
       return unless new_plan.standard_plan? || new_plan.dev_plan? || new_plan.beta_plan?
@@ -265,7 +265,7 @@ class Site < ActiveRecord::Base
   end
 
   def need_path?
-    %w[web.me.com homepage.mac.com].include?(hostname) && !path?
+    %w[web.me.com web.mac.com homepage.mac.com].include?(hostname) && !path?
   end
 
   def update_last_30_days_counters
@@ -315,7 +315,7 @@ class Site < ActiveRecord::Base
     end
   end
 
-  def percentage_of_days_over_daily_limit(max_days = 90)
+  def percentage_of_days_over_daily_limit(max_days = 60)
     if in_paid_plan?
       last_days       = [days_since(first_paid_plan_started_at), max_days].min
       over_limit_days = usages.between(last_days.days.ago.utc.midnight, Time.now.utc.midnight).to_a.count { |su| su.billable_player_hits > (plan.player_hits / 30.0) }
