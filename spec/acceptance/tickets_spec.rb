@@ -30,7 +30,7 @@ feature "Support" do
       fill_in "Message", :with => "I have a request this is a long text!"
       click_button "Send"
 
-      page.should have_content "Your message has been submitted."
+      page.should have_content I18n.t('flash.tickets.create.notice')
 
       Delayed::Job.last.name.should == 'Ticket#post_ticket'
       VCR.use_cassette("ticket/post_ticket_standard_support") { @worker.work_off }
@@ -46,7 +46,7 @@ feature "Support" do
 
       current_url.should =~ %r(http://[^/]+/support)
       page.should have_content "You must choose a category"
-      page.should have_no_content "Your message has been submitted."
+      page.should have_no_content I18n.t('flash.tickets.create.notice')
       Delayed::Job.last.should_not == 'Ticket#post_ticket'
     end
 
@@ -58,7 +58,7 @@ feature "Support" do
 
       current_url.should =~ %r(http://[^/]+/support)
       page.should have_content "Subject can't be blank"
-      page.should have_no_content "Your message has been submitted."
+      page.should have_no_content I18n.t('flash.tickets.create.notice')
       Delayed::Job.last.should_not == 'Ticket#post_ticket'
     end
 
@@ -70,7 +70,7 @@ feature "Support" do
 
       current_url.should =~ %r(http://[^/]+/support)
       page.should have_content "Message can't be blank"
-      page.should have_no_content "Your message has been submitted."
+      page.should have_no_content I18n.t('flash.tickets.create.notice')
       Delayed::Job.last.should_not == 'Ticket#post_ticket'
     end
   end
