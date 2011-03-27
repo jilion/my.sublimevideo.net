@@ -4,8 +4,8 @@
 - next_cycle_plan = site.next_cycle_plan
 - current_plan = pending_plan || next_cycle_plan || plan # current plan for the view (could be in case of rendering view with errors)
 
-
-#beta_discount_box= raw "As a Beta user you benefit from a #{content_tag :strong, "20% discount"} on all paid plans until #{content_tag :strong, "April 15, 2011"} (11:59pm UTC)"
+- if site.new_record? || plan.dev_plan? || plan.beta_plan?
+  #beta_discount_box= raw "As a Beta user you benefit from a #{content_tag :strong, "20% discount"} on all paid plans until #{content_tag :strong, "April 15, 2011"} (11:59pm UTC)"
 
 - if site.errors.key?(:plan)
   .inline_errors.plan

@@ -240,6 +240,10 @@ describe Plan do
           @beta_user_dev_site1 = Factory(:site, user: @beta_user, plan_id: @dev_plan.id)
           @beta_user_beta_site1 = Factory(:site, user: @beta_user, plan_id: @beta_plan.id)
           @beta_user_paid_site1 = Factory(:site, user: @beta_user, plan_id: @paid_plan.id)
+          @beta_user_paid_site11 = Factory(:site_with_invoice, user: @beta_user, plan_id: @paid_plan.id)
+          @beta_user_paid_site11.plan_id = Factory(:plan).id
+          VCR.use_cassette('ogone/visa_payment_generic') { @beta_user_paid_site11.save_without_password_validation }
+          @beta_user_paid_site11.invoices.count.should == 2
         end
 
         Timecop.travel(PublicLaunch.beta_transition_ended_on + 1.hour) do # after beta end
@@ -280,6 +284,8 @@ describe Plan do
         it { @paid_plan2.price(@beta_user_beta_site1).should == 1590 }
         it { @paid_plan2.price(@beta_user_paid_site1).should == 1990 }
         it { @paid_plan2.price(@beta_user_paid_site1, true).should == 1590 }
+        it { @paid_plan2.price(@beta_user_paid_site11).should == 1990 }
+        it { @paid_plan2.price(@beta_user_paid_site11, true).should == 1990 }
 
         it { @paid_plan2.price(@beta_user_dev_site2).should == 1590 }
         it { @paid_plan2.price(@beta_user_beta_site2).should == 1590 }
@@ -306,6 +312,9 @@ describe Plan do
           # the refund param is used in the view to display the  difference paid when upgrading and in InvoiceItem::Plan for plans to refund
           @paid_plan2.price(@beta_user_paid_site1, true).should == 1590
         end
+        
+        it { @paid_plan2.price(@beta_user_paid_site11).should == 1990 }
+        it { @paid_plan2.price(@beta_user_paid_site11, true).should == 1990 }
       end
     end
   end
