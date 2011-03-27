@@ -99,7 +99,6 @@ class Invoice < ActiveRecord::Base
   def build(next_invoice=false)
     build_invoice_items(next_invoice)
     set_invoice_items_amount
-    set_discount_rate_and_amount
     set_vat_rate_and_amount
     set_amount
     self
@@ -135,18 +134,13 @@ private
     self.invoice_items_amount = invoice_items.inject(0) { |sum, invoice_item| sum + invoice_item.amount }
   end
 
-  def set_discount_rate_and_amount
-    self.discount_rate   = 0 # self.user.get_discount? ? Billing.beta_discount_rate : 0.0
-    self.discount_amount = (invoice_items_amount * discount_rate).round
-  end
-
   def set_vat_rate_and_amount
     self.vat_rate   = Vat.for_country(user.country)
-    self.vat_amount = ((invoice_items_amount - discount_amount) * vat_rate).round
+    self.vat_amount = (invoice_items_amount * vat_rate).round
   end
 
   def set_amount
-    self.amount = invoice_items_amount - discount_amount + vat_amount
+    self.amount = invoice_items_amount + vat_amount
   end
 
   # before_create

@@ -161,6 +161,7 @@ def create_users(index=nil)
   disable_perform_deliveries do
     (index ? index.upto(index) : 0.upto(BASE_USERS.count - 1)).each do |i|
       user = User.new(
+        enthusiast_id: rand(1000000),
         first_name: BASE_USERS[i][0].split(' ').first,
         last_name: BASE_USERS[i][0].split(' ').second,
         country: COUNTRIES.sample,

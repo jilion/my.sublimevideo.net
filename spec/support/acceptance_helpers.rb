@@ -20,7 +20,7 @@ module Spec
             Factory(:user_no_cc, options[:user] || {})
           else
             attrs = Factory.attributes_for(:user)
-            user = Factory(:user, (options[:user] || {}).merge({
+            user = Factory(:user_real_cc, (options[:user] || {}).merge({
               cc_brand: options[:cc_type],
               cc_full_name: "#{attrs[:first_name]} #{attrs[:last_name]}",
               cc_number: options[:cc_number],
@@ -28,8 +28,6 @@ module Spec
               cc_expiration_month: options[:cc_expire_on].month,
               cc_expiration_year: options[:cc_expire_on].year
             }))
-            # user.cc_last_digits = options[:cc_number][-4,4] # can't be mass-assigned
-            # VCR.use_cassette('ogone/visa_authorize_1_alias') { user.check_credit_card }
             user.save!(validate: (options[:cc_expire_on] < Time.now ? false : true))
             user
           end
