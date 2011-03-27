@@ -91,9 +91,8 @@ class User < ActiveRecord::Base
   scope :with_cc,    where(:cc_type.ne => nil, :cc_last_digits.ne => nil)
 
   # admin
-  scope :enthusiast,        where(:enthusiast_id.ne => nil)
   scope :invited,           where(:invitation_token.ne => nil)
-  scope :beta,              where(:invitation_token => nil)
+  scope :beta,              where(:invitation_token => nil) # some beta users don't come from svs but were directly invited from msv!!
   scope :active,            where(:state => 'active')
   scope :use_personal,      where(:use_personal => true)
   scope :use_company,       where(:use_company => true)
@@ -164,6 +163,10 @@ class User < ActiveRecord::Base
 
   def have_beta_sites?
     sites.any? { |site| site.in_beta_plan? }
+  end
+  
+  def beta?
+    invitation_token.nil?
   end
 
   def full_name

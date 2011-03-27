@@ -3,13 +3,12 @@
     %th.left= "Site"
     %th.left= "Details"
     %th= "Amount (US $)"
-  - invoice_items_grouped_by_site(invoice).each do |site, invoice_items|
-    - plan_invoice_item = get_plan_invoice_item(invoice_items)
+  - invoice.invoice_items.each do |invoice_item|
     %tr
       %td.title
-        %h3= site.hostname
+        %h3= invoice.site.hostname
+      = render "/invoices/plan_invoice_item", :plan_invoice_item => invoice_item
 
-      = render "/invoices/plan_invoice_item", :plan_invoice_item => plan_invoice_item
     -# %tr.subtotal
     -#   %td.right{ :colspan => 2 }
     -#     = "Subtotal for"

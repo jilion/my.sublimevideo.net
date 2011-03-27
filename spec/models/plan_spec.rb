@@ -235,36 +235,36 @@ describe Plan do
         @beta_user = Factory(:user, enthusiast_id: 1234)
         @non_beta_user = Factory(:user, enthusiast_id: nil)
         @paid_plan2 = Factory(:plan, cycle: "month", player_hits: 50_000, price: 1990) # $19.90
-        
+
         Timecop.travel(PublicLaunch.beta_transition_ended_on - 1.hour) do # before beta end
           @beta_user_dev_site1 = Factory(:site, user: @beta_user, plan_id: @dev_plan.id)
           @beta_user_beta_site1 = Factory(:site, user: @beta_user, plan_id: @beta_plan.id)
           @beta_user_paid_site1 = Factory(:site, user: @beta_user, plan_id: @paid_plan.id)
         end
-        
+
         Timecop.travel(PublicLaunch.beta_transition_ended_on + 1.hour) do # after beta end
           @beta_user_dev_site2 = Factory(:site, user: @beta_user, plan_id: @dev_plan.id)
           @beta_user_beta_site2 = Factory(:site, user: @beta_user, plan_id: @beta_plan.id)
           @beta_user_paid_site2 = Factory(:site, user: @beta_user, plan_id: @paid_plan.id)
         end
-        
+
         Timecop.travel(PublicLaunch.beta_transition_ended_on - 1.hour) do # before beta end
           @non_beta_user_dev_site1 = Factory(:site, user: @non_beta_user, plan_id: @dev_plan.id)
           @non_beta_user_paid_site1 = Factory(:site, user: @non_beta_user, plan_id: @paid_plan.id)
         end
-        
+
         Timecop.travel(PublicLaunch.beta_transition_ended_on + 1.hour) do # after beta end
           @non_beta_user_dev_site2 = Factory(:site, user: @non_beta_user, plan_id: @dev_plan.id)
           @non_beta_user_paid_site2 = Factory(:site, user: @non_beta_user, plan_id: @paid_plan.id)
         end
-        
+
         @beta_user_dev_site1.first_paid_plan_started_at.should be_nil
         @beta_user_beta_site1.first_paid_plan_started_at.should be_nil
         @beta_user_paid_site1.first_paid_plan_started_at.should == PublicLaunch.beta_transition_ended_on.yesterday
         @beta_user_dev_site2.first_paid_plan_started_at.should be_nil
         @beta_user_beta_site2.first_paid_plan_started_at.should be_nil
         @beta_user_paid_site2.first_paid_plan_started_at.should == PublicLaunch.beta_transition_ended_on
-        
+
         @non_beta_user_dev_site1.first_paid_plan_started_at.should be_nil
         @non_beta_user_paid_site1.first_paid_plan_started_at.should == PublicLaunch.beta_transition_ended_on.yesterday
         @non_beta_user_dev_site2.first_paid_plan_started_at.should be_nil

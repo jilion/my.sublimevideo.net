@@ -5,8 +5,8 @@ describe OneTime::User do
 
   context "with 1 invited and 1 beta user" do
     before(:all) do
-      @invited_user = Factory(:user).tap { |u| u.send(:attributes=, { :invitation_token => '123', :invitation_sent_at => Time.now }, false); u.save(:validate => false) }
-      @beta_user    = Factory(:user)
+      @invited_user = Factory(:user, :invitation_token => '123', :invitation_sent_at => Time.now)
+      @beta_user    = Factory(:user, :invitation_token => nil)
     end
 
     describe ".archive_invited_not_yet_registered_users" do

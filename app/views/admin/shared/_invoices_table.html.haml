@@ -11,12 +11,3 @@
     %tr
       %td= link_to(invoice_dates(invoice), [:edit, :admin, invoice])
       %td= display_amount(invoice.amount)
-      -#%td
-      -#  %ul
-      -#    - invoice_items_grouped_by_site(invoice, site_id: (object.respond_to?(:sites) ? object.site_ids : object.id)).each do |site, invoice_items|
-      -#      - plan_invoice_item    = get_plan_invoice_item(invoice_items)
-      -#
-      -#      = link_to(site.hostname, [:edit, :admin, site])
-      -#      %p
-      -#        = "Plan - #{plan_invoice_item.item.name.humanize}:"
-      -#        = display_amount(plan_invoice_item.amount)
