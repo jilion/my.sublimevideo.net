@@ -488,8 +488,6 @@ describe User do
       end
     end
 
-    pending "#get_discount?"
-
     describe "#have_beta_sites?" do
       before(:all) { @site = Factory(:site, plan_id: @beta_plan.id) }
 

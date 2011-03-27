@@ -299,27 +299,40 @@ describe Invoice do
         subject { @invoice }
 
         its(:invoice_items_amount) { should == 1000 }
-        its(:discount_rate)        { should == 0.0 }
-        its(:discount_amount)      { should == 0.0 }
         its(:vat_rate)             { should == 0.08 }
         its(:vat_amount)           { should == (1000 * 0.08).round }
         its(:amount)               { should == 1000 + (1000 * 0.08).round }
       end
 
-      pending "with a user with a discount" do
+      describe "with a user with a discount on creation" do
         before(:all) do
-          @user    = Factory(:user, country: 'FR')
-          @site    = Factory(:site, user: @user, plan_id: @paid_plan.id).reload
+          @user    = Factory(:user, country: 'FR', enthusiast_id: 1234)
+          Timecop.travel(PublicLaunch.beta_transition_ended_on - 1.hour) { @site = Factory(:site, user: @user, plan_id: @paid_plan.id) }
           @invoice = Invoice.build(site: @site)
         end
         subject { @invoice }
 
-        its(:invoice_items_amount) { should == 1000 }
-        its(:discount_rate)        { should == Billing.beta_discount_rate }
-        its(:discount_amount)      { should == (Billing.beta_discount_rate * 1000).round }
+        its(:invoice_items_amount) { should == 800 }
         its(:vat_rate)             { should == 0.0 }
         its(:vat_amount)           { should == 0 }
-        its(:amount)               { should == 1000 - (Billing.beta_discount_rate * 1000).round }
+        its(:amount)               { should == 800 }
+      end
+
+      describe "with a user with a discount on upgrade" do
+        before(:all) do
+          @user       = Factory(:user, country: 'FR', enthusiast_id: 1234)
+          Timecop.travel(PublicLaunch.beta_transition_ended_on - 1.hour) { @site = Factory(:site, user: @user, plan_id: @paid_plan.id) }
+          @paid_plan2 = Factory(:plan, cycle: "month", price: 3000)
+          # Simulate upgrade
+          @site.plan_id = @paid_plan2.id
+          Timecop.travel(PublicLaunch.beta_transition_ended_on + 1.hour) { @invoice = Invoice.build(site: @site) }
+        end
+        subject { @invoice }
+
+        its(:invoice_items_amount) { should == 3000 - 800 }
+        its(:vat_rate)             { should == 0.0 }
+        its(:vat_amount)           { should == 0 }
+        its(:amount)               { should == 3000 - 800 }
       end
     end # .build
 
@@ -345,7 +358,6 @@ describe Invoice do
   end # Instance Methods
 
 end
-
 
 
 

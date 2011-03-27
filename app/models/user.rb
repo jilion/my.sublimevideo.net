@@ -162,10 +162,6 @@ class User < ActiveRecord::Base
     %w[active suspended].include?(state) && invitation_token.nil?
   end
 
-  def get_discount?
-    # TODO!!!!!!!!!!!!!!!!!!!!!!!!!!
-  end
-
   def have_beta_sites?
     sites.any? { |site| site.in_beta_plan? }
   end
