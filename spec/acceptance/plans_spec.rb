@@ -175,7 +175,7 @@ feature "Plans" do
       visit sites_path
 
       page.should have_content("Sponsored")
-      page.should have_content("1,000 Sponsored hits")
+      page.should have_content("1,000 sponsored video pageviews")
 
       click_link "Sponsored"
 

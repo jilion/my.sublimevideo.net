@@ -48,7 +48,7 @@ describe Site::UsageMonitoring do
 
         UsageMonitoringMailer.should_not_receive(:plan_upgrade_required).with(@site)
         Timecop.travel(Time.utc(2011,1,22)) { Site::UsageMonitoring.monitor_sites_usages }
-        @site.reload.first_plan_upgrade_required_alert_sent_at.should == first_plan_upgrade_required_alert_sent_at # no change
+        @site.reload.first_plan_upgrade_required_alert_sent_at.should be_within(5).of(first_plan_upgrade_required_alert_sent_at) # no change
       end
     end
 

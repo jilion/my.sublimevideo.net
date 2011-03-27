@@ -58,6 +58,10 @@ module Site::Invoice
       Plan.find(id).dev_plan?
     end
   end
+  
+  def refunded?
+    refunded_at?
+  end
 
   # before_save :if => :pending_plan_id_changed? / also called from Site::Invoice.renew_active_sites!
   def pend_plan_changes

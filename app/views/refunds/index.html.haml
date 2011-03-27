@@ -1,0 +1,10 @@
+= title_and_content_header("Refund")
+
+- if @sites.empty?
+  = t('site.refund.no_refund_possible')
+
+- else
+  #sites.refund
+    = form_tag refund_path, :html => { :id => "refund_form" } do |f|
+      = select_tag :site_id, options_from_collection_for_select(@sites, 'id', 'hostname')
+      = submit_tag "Refund this site"
