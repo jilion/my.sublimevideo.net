@@ -34,7 +34,7 @@ describe PlansController do
         describe "dev plan" do
           before(:each) do
             mock_site.should_receive(:save) { true }
-            mock_site.should_receive(:in_or_will_be_in_paid_plan?) { false }
+            mock_site.should_receive(:will_be_in_dev_plan?) { true }
           end
 
           it "should redirect to /sites" do
@@ -48,7 +48,7 @@ describe PlansController do
         describe "paid plan" do
           before(:each) do
             @mock_site.should_receive(:save) { true }
-            @mock_site.should_receive(:in_or_will_be_in_paid_plan?) { true }
+            @mock_site.should_receive(:will_be_in_dev_plan?) { false }
             @mock_site.stub_chain(:last_invoice, :last_transaction).and_return(@mock_transaction = mock_transaction)
           end
 

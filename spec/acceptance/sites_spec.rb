@@ -29,6 +29,8 @@ feature "Sites" do
       describe "dev plan" do
         scenario "with no hostname" do
           choose "plan_dev"
+          has_checked_field?("plan_dev").should be_true
+          
           fill_in "Domain", :with => ""
           click_button "Create site"
 
@@ -45,6 +47,7 @@ feature "Sites" do
 
         scenario "with a hostname" do
           choose "plan_dev"
+          has_checked_field?("plan_dev").should be_true
           fill_in "Domain", :with => "rymai.com"
           click_button "Create site"
 
@@ -61,12 +64,10 @@ feature "Sites" do
       end
 
       describe "paid plan" do
-        background do
-          choose "plan_comet_month"
-        end
-
         context "entering no credit card" do
           scenario "with no hostname" do
+            choose "plan_comet_month"
+            has_checked_field?("plan_comet_month").should be_true
             fill_in "Domain", :with => ""
             click_button "Create"
 
@@ -79,6 +80,8 @@ feature "Sites" do
           end
 
           scenario "with a hostname" do
+            choose "plan_comet_month"
+            has_checked_field?("plan_comet_month").should be_true
             fill_in "Domain", :with => "rymai.com"
             click_button "Create"
 
@@ -92,11 +95,9 @@ feature "Sites" do
         end
 
         context "entering a credit card" do
-          background do
-            choose "plan_comet_year"
-          end
-
           scenario "with no hostname" do
+            choose "plan_comet_year"
+            has_checked_field?("plan_comet_year").should be_true
             fill_in "Domain", :with => ""
             set_credit_card
             click_button "Create"
@@ -106,6 +107,8 @@ feature "Sites" do
           end # entering a credit card with no hostname
 
           scenario "with a hostname (visa)" do
+            choose "plan_comet_year"
+            has_checked_field?("plan_comet_year").should be_true
             fill_in "Domain", :with => "rymai.com"
             set_credit_card
             VCR.use_cassette('ogone/visa_payment_acceptance') { click_button "Create" }
@@ -133,6 +136,8 @@ feature "Sites" do
           end # entering a credit card with a hostname
 
           scenario "with a hostname (mastercard)" do
+            choose "plan_comet_year"
+            has_checked_field?("plan_comet_year").should be_true
             fill_in "Domain", :with => "rymai.com"
             set_credit_card(type: 'master')
             VCR.use_cassette('ogone/master_payment_acceptance') { click_button "Create" }
@@ -160,6 +165,8 @@ feature "Sites" do
           end # entering a credit card with a hostname
 
           scenario "entering a 3-D Secure credit card with a failing identification" do
+            choose "plan_comet_year"
+            has_checked_field?("plan_comet_year").should be_true
             fill_in "Domain", :with => "rymai.com"
             set_credit_card(d3d: true)
             VCR.use_cassette('ogone/visa_payment_acceptance_3ds') { click_button "Create" }
@@ -201,6 +208,8 @@ feature "Sites" do
           end
 
           scenario "entering a 3-D Secure credit card with a succeeding identification" do
+            choose "plan_comet_year"
+            has_checked_field?("plan_comet_year").should be_true
             fill_in "Domain", :with => "rymai.com"
             set_credit_card(d3d: true)
             VCR.use_cassette('ogone/visa_payment_acceptance_3ds') { click_button "Create site" }
@@ -246,11 +255,12 @@ feature "Sites" do
       describe "custom plan" do
         background do
           visit "/sites/new?custom_plan=#{Plan.find_by_name_and_cycle("custom1", "year").token}"
-          choose "plan_custom"
         end
 
         context "entering no credit card" do
           scenario "with no hostname" do
+            choose "plan_custom"
+            has_checked_field?("plan_custom").should be_true
             fill_in "Domain", :with => ""
             click_button "Create"
 
@@ -263,6 +273,8 @@ feature "Sites" do
           end
 
           scenario "with a hostname" do
+            choose "plan_custom"
+            has_checked_field?("plan_custom").should be_true
             fill_in "Domain", :with => "rymai.com"
             click_button "Create"
 
@@ -276,6 +288,8 @@ feature "Sites" do
 
         context "entering a credit card" do
           scenario "with no hostname" do
+            choose "plan_custom"
+            has_checked_field?("plan_custom").should be_true
             fill_in "Domain", :with => ""
             set_credit_card
             click_button "Create"
@@ -285,6 +299,8 @@ feature "Sites" do
           end
 
           scenario "with a hostname" do
+            choose "plan_custom"
+            has_checked_field?("plan_custom").should be_true
             fill_in "Domain", :with => "rymai.com"
             set_credit_card
             VCR.use_cassette('ogone/visa_payment_acceptance') { click_button "Create" }
@@ -328,6 +344,7 @@ feature "Sites" do
 
         fill_in "Domain", :with => "google.com"
         choose "plan_dev"
+        has_checked_field?("plan_dev").should be_true
         click_button "Create"
 
         @worker.work_off
@@ -349,6 +366,7 @@ feature "Sites" do
 
         fill_in "Domain", :with => "google.com"
         choose "plan_comet_month"
+        has_checked_field?("plan_comet_month").should be_true
         VCR.use_cassette('ogone/visa_payment_acceptance') { click_button "Create" }
 
         @worker.work_off
@@ -368,6 +386,7 @@ feature "Sites" do
 
         fill_in "Domain", :with => ""
         choose "plan_comet_month"
+        has_checked_field?("plan_comet_month").should be_true
         click_button "Create"
 
         current_url.should =~ %r(http://[^/]+/sites)
@@ -408,7 +427,7 @@ feature "Sites" do
 
     feature "navigation" do
       context "when the user has no sites" do
-        scenario "should refirect to /sites/new" do
+        scenario "should redirect to /sites/new" do
           visit "/sites"
           page.should have_content('Choose a plan for your site')
         end
@@ -416,13 +435,32 @@ feature "Sites" do
       
       context "when user has already some sites" do
         background do
-          Factory(:site, :user => @current_user, :hostname => 'google.com')
+          @site = Factory(:site_with_invoice, :user => @current_user, :hostname => 'rymai.com')
         end
         
         scenario "when user has already some sites" do
           visit "/sites"
           click_link "Add a site"
           page.should have_content('Choose a plan for your site')
+        end
+        
+        scenario "edit a site" do
+          visit "/sites"
+          page.should have_content('rymai.com')
+          
+          click_link "Edit rymai.com"
+          current_url.should =~ %r(http://[^/]+/sites/#{@site.token}/edit)
+          page.should have_content('rymai.com')
+          page.should have_content('If you delete your site, you will not be refunded.')
+          
+          click_link "Change plan"
+          current_url.should =~ %r(http://[^/]+/sites/#{@site.token}/plan/edit)
+          page.should have_selector('#change_plan_box.section_box')
+          
+          click_link "Invoices"
+          current_url.should =~ %r(http://[^/]+/sites/#{@site.token}/invoices)
+          page.should have_content('Next invoice')
+          page.should have_content('Past invoices')
         end
       end
     end

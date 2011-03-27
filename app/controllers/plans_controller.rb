@@ -23,7 +23,7 @@ class PlansController < ApplicationController
 
     respond_with(@site) do |format|
       if @site.save # will create invoice and charge...
-        transaction = @site.in_or_will_be_in_paid_plan? ? @site.last_invoice.last_transaction : nil
+        transaction = !@site.will_be_in_dev_plan? ? @site.last_invoice.last_transaction : nil
         if transaction && transaction.waiting_d3d?
           format.html { render :text => transaction.error }
         else

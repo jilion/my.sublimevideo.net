@@ -34,7 +34,7 @@ feature "Invoice actions:" do
     page.should have_content("on #{I18n.l(site.plan_cycle_ended_at.tomorrow, :format => :d_b_Y)}")
 
     page.should have_content('Past invoices')
-    page.should have_content("Charged on #{I18n.l(site.last_invoice.paid_at, :format => :minutes_timezone)}")
+    page.should have_content("Paid on #{I18n.l(site.last_invoice.paid_at, :format => :minutes_timezone)}")
   end
 
   pending "view invoice"

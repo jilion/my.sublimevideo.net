@@ -14,16 +14,14 @@ module InvoicesHelper
 
   def charging_status(invoice)
     if invoice.open?
-      "Not paid yet"
+      "Not paid yet."
     elsif invoice.paid?
-      "Paid on #{l(invoice.paid_at, :format => :minutes_timezone)}"
+      "Paid on #{l(invoice.paid_at, :format => :minutes_timezone)}."
     elsif invoice.failed?
-      text = "#{content_tag(:strong, "Payment failed")} on #{l(invoice.last_failed_at, :format => :minutes_timezone)}".html_safe
-      
+      "#{content_tag(:strong, "Payment failed")} on #{l(invoice.last_failed_at, :format => :minutes_timezone)}.".html_safe
       # unless invoice.last_failed_transaction.error =~ /secure.ogone/
       #   text += "with the following error: #{content_tag(:em, "\"#{invoice.last_failed_transaction.error}\"")}".html_safe
       # end
-      text
     end
   end
 

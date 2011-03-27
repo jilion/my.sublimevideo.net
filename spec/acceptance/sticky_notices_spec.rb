@@ -18,7 +18,9 @@ feature "Sticky notices" do
 
   feature "credit card will expire this month" do
     background do
-      sign_in_as :user, :cc_expire_on => Time.now.utc
+      sign_in_as :user
+      @current_user.update_attribute(:cc_expire_on, Time.now.utc.end_of_month)
+      @current_user.cc_expire_on.should == Time.now.utc.end_of_month
     end
 
     scenario "show a notice" do
@@ -32,7 +34,9 @@ feature "Sticky notices" do
 
   feature "credit card is expired" do
     background do
-      sign_in_as :user, :cc_expire_on => 2.month.ago
+      sign_in_as :user
+      @current_user.update_attribute(:cc_expire_on, 2.month.ago.end_of_month)
+      @current_user.cc_expire_on.should == 2.month.ago.end_of_month
     end
 
     scenario "show a notice" do

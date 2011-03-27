@@ -76,7 +76,7 @@ feature "Users" do
         check "user_terms_and_conditions"
         click_button "Sign Up"
 
-        current_url.should =~ %r(^http://[^/]+/sites$)
+        current_url.should =~ %r(^http://[^/]+/sites/new$)
         page.should have_content "Rémy Coutable"
 
         User.last.full_name.should == "Rémy Coutable"
@@ -110,12 +110,12 @@ feature "Users" do
         select "Switzerland",         :from => "Country"
         fill_in "Zip or Postal Code", :with => "CH-1024"
         fill_in "Company name",       :with => "Jilion"
-        fill_in "Company website",    :with => "jilion.com"
+        fill_in "Website",            :with => "jilion.com"
         check "For my company"
         check "user_terms_and_conditions"
         click_button "Sign Up"
 
-        current_url.should =~ %r(^http://[^/]+/sites$)
+        current_url.should =~ %r(^http://[^/]+/sites/new$)
         page.should have_content "Rémy Coutable"
 
         User.last.full_name.should == "Rémy Coutable"
@@ -130,11 +130,11 @@ feature "Users" do
         select "Switzerland",         :from => "Country"
         fill_in "Zip or Postal Code", :with => "CH-1024"
         fill_in "Company name",       :with => ""
-        fill_in "Company website",    :with => ""
+        fill_in "Website",            :with => ""
         check "user_terms_and_conditions"
         click_button "Sign Up"
 
-        current_url.should =~ %r(^http://[^/]+/sites$)
+        current_url.should =~ %r(^http://[^/]+/sites/new$)
       end
     end
 
@@ -158,7 +158,7 @@ feature "Users" do
         new_user.full_name.should == "Rémy Coutable"
         new_user.email.should == archived_user.email
         
-        current_url.should =~ %r(^http://[^/]+/sites$)
+        current_url.should =~ %r(^http://[^/]+/sites/new$)
         page.should have_content "Rémy Coutable"
       end
     end
@@ -235,9 +235,9 @@ feature "Users" do
       sign_in_as :user
     end
 
-    scenario "accept invitation should redirect to /sites" do
+    scenario "accept invitation should redirect to /sites/new" do
       visit "/invitation/accept"
-      current_url.should =~ %r(^http://[^/]+/sites$)
+      current_url.should =~ %r(^http://[^/]+/sites/new$)
     end
   end
 end
@@ -270,7 +270,7 @@ feature "session" do
       fill_in "Password",  :with => "123456"
       click_button "Login"
 
-      current_url.should =~ %r(^http://[^/]+/sites$)
+      current_url.should =~ %r(^http://[^/]+/sites/new$)
       page.should have_content "John Doe"
     end
 
@@ -316,6 +316,7 @@ feature "confirmation" do
 
     visit "/confirmation?confirmation_token=#{user.confirmation_token}"
 
-    page.should have_content(I18n.translate('devise.confirmations.confirmed'))
+    current_url.should =~ %r(^http://[^/]+/sites/new$)
+    page.should have_content "John Doe"
   end
 end
