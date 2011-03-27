@@ -42,7 +42,7 @@
             .checkbox_wrap
               = f.check_box :wildcard
               = f.label :wildcard, "Wildcard (*.yourdomain.com)"
-            %p.info= "It will be also added to extra and development domains."
+            %p.info= "It will also be enabled for extra and development domains."
       .spacer
       - if site.in_dev_plan?
         .more_settings_desc><

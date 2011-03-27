@@ -268,7 +268,7 @@ class Site < ActiveRecord::Base
   end
 
   def need_path?
-    %w[web.me.com homepage.mac.com].include?(hostname) && !path?
+    %w[web.me.com web.mac.com homepage.mac.com].include?(hostname) && !path?
   end
 
   def update_last_30_days_counters
