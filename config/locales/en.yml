@@ -25,12 +25,16 @@ en:
   site:
     status:
       payment_issue: "Transaction error, click to review your invoice and retry the payment."
-      ok: "Everything runs smoothly, it's ok!"
-      in_progress: "Your player is being deployed..."
+      ok: "Player successfully deployed."
+      in_progress: "Your player is being deployed."
+      need_path: "If you don't own this domain, we highly recommend you add a <em>path</em> to restrict the player to your pages only."
     plan:
-      upgrade_in_progress: 'Your payment is being processed.'
+      upgrade_in_progress: "Your payment is being processed."
       upgrade_in_progress_failed_link: 'There has been a transaction error. Please review %{link} and retry the payment.'
+    edit:
+      delete_site_info1: "Your SublimeVideo license for %{domain} will be instantly removed from our servers."
+      delete_site_info2: "This operation cannot be undone."
     refund:
       refunded: "All your payments for %{hostname} will be refunded in the next few hours."
       refund_unsuccessful: "The refund you requested for %{hostname} was unsuccessful."
-      no_refund_possible: "No sites refundable."
+      no_refund_possible: "You don't have any site eligible for 30 day money back guarantee."

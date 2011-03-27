@@ -42,7 +42,7 @@ feature "Sites" do
 
           current_url.should =~ %r(http://[^/]+/sites)
           page.should have_content('add a hostname')
-          page.should have_content('Sandbox')
+          page.should have_content('LaunchPad')
         end
 
         scenario "with a hostname" do
@@ -59,7 +59,7 @@ feature "Sites" do
 
           current_url.should =~ %r(http://[^/]+/sites)
           page.should have_content('rymai.com')
-          page.should have_content('Sandbox')
+          page.should have_content('LaunchPad')
         end
       end
 
@@ -355,7 +355,7 @@ feature "Sites" do
 
         current_url.should =~ %r(http://[^/]+/sites)
         page.should have_content('google.com')
-        page.should have_content('Sandbox')
+        page.should have_content('LaunchPad')
       end
 
       pending "in custom plan"
