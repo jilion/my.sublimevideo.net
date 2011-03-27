@@ -34,7 +34,7 @@
 
   #delete_account
     %h3.section_title= "Delete account"
-    = form_for @user, :url => "/account", :html => { :method => :delete, :class => "main_form", "data-password-protected" => true } do |f|
+    = form_for @user, :url => "/account", :html => { :method => :delete, "data-password-protected" => true } do |f|
       - if params[:action] == 'destroy' && @user.errors[:current_password].present?
         = password_box :resource => @user, :f => f, :cancel_url => edit_user_registration_path
       %p= "Please understand that:"
