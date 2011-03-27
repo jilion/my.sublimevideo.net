@@ -196,8 +196,8 @@ describe Plan do
     end
 
     describe "#title" do
-      specify { @dev_plan.title.should == "Free Sandbox" }
-      specify { @dev_plan.title(always_with_cycle: true).should == "Free Sandbox" }
+      specify { @dev_plan.title.should == "Free LaunchPad" }
+      specify { @dev_plan.title(always_with_cycle: true).should == "Free LaunchPad" }
       specify { @sponsored_plan.title.should == "Sponsored" }
       specify { @sponsored_plan.title(always_with_cycle: true).should == "Sponsored" }
       specify { Factory.build(:plan, cycle: "month", name: "comet").title.should == "Comet" }
