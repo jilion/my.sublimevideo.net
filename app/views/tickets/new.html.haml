@@ -2,9 +2,9 @@
 
 %p.title_desc
   -# = "Use this form to send us bug reports, suggestions for improvement, feature requests, billing questions or any other comments."
-  = raw "Please consult #{link_to("our documentation", "http://docs.sublimevideo.net")} first if you have a problem with integrating SublimeVideo or what seems to be a bug."
-  %br
-  = "Thank you for helping us improve SublimeVideo."
+  -#= "Thank you for helping us improve SublimeVideo."
+  -#= raw "Please consult #{link_to("our documentation", "http://docs.sublimevideo.net")} first if you have a problem with integrating SublimeVideo or what seems to be a bug."
+  = raw "Please consult our #{link_to("Documentation", "http://docs.sublimevideo.net")}, #{link_to("FAQ", "http://docs.sublimevideo.net/faq")} and #{link_to("Troubleshooting", "http://docs.sublimevideo.net/troubleshooting")} pages first. If you can't find the answer you're looking for, use the form below to submit your question or bug report and we'll personally get back to you as quickly as we can."
 
 = form_for @ticket, :url => ticket_path do |f|
   .entry.select.type
@@ -25,5 +25,3 @@
     = f.text_area :message, :class => "text", :placeholder => "Message", :required => true
   .entry.update
     = f.submit 'Send', :class => "submit small_button"
-
-%p.title_desc= "Our response time is within normal European business hours (09:00 - 18:00 CET, 4am - 1pm EDT)."

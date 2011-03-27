@@ -78,14 +78,13 @@ document.observe("dom:loaded", function() {
     $$('#plans input[type=radio]').each(function(element){
       element.on('click', function(event){
         if (planUpgradeInfoDiv) MySublimeVideo.showPlanUpdateInfo(element);
-        if (ccInfoDiv) MySublimeVideo.showOrHideCcInfo(element);
+        MySublimeVideo.handlePlanChange(element);
         var select_box = element.up('.select_box');
         $$('#plans ul .select_box').invoke('removeClassName','active');
         if (select_box) select_box.addClassName('active');
       });
     });
   }
-
 
 });
 
@@ -119,40 +118,44 @@ MySublimeVideo.openPopup = function(itemId, idPrefix, url, class_name) { // item
 // = Plan functions =
 // ==================
 
-MySublimeVideo.showOrHideCcInfo = function(radioButton) {
+MySublimeVideo.handlePlanChange = function(radioButton) {
   var plan_price = radioButton.readAttribute('data-plan_price');
   var ccInfoDiv  = $('credit_card');
   if (plan_price == "$0") {
-    ccInfoDiv.hide();
-    $('site_user_attributes_cc_update').disable();
-    $('user_cc_type_visa').disable();
-    $('user_cc_type_master').disable();
-    $('user_cc_full_name').disable();
-    $('user_cc_full_name').required = false;
-    $('user_cc_number').disable();
-    $('user_cc_number').required = false;
-    $('user_cc_verification_value').disable();
-    $('user_cc_verification_value').required = false;
-    $('site_user_attributes_cc_expire_on_1i').disable();
-    $('site_user_attributes_cc_expire_on_2i').disable();
-    $('site_user_attributes_cc_expire_on_3i').disable();
     $('site_hostname').required = false;
+    if (ccInfoDiv) {
+      ccInfoDiv.hide();
+      $('site_user_attributes_cc_update').disable();
+      $('user_cc_type_visa').disable();
+      $('user_cc_type_master').disable();
+      $('user_cc_full_name').disable();
+      $('user_cc_full_name').required = false;
+      $('user_cc_number').disable();
+      $('user_cc_number').required = false;
+      $('user_cc_verification_value').disable();
+      $('user_cc_verification_value').required = false;
+      $('site_user_attributes_cc_expire_on_1i').disable();
+      $('site_user_attributes_cc_expire_on_2i').disable();
+      $('site_user_attributes_cc_expire_on_3i').disable();
+    }
   }
   else {
-    $('site_user_attributes_cc_update').enable();
-    $('user_cc_type_visa').enable();
-    $('user_cc_type_master').enable();
-    $('user_cc_full_name').enable();
-    $('user_cc_full_name').required = true;
-    $('user_cc_number').enable();
-    $('user_cc_number').required = true;
-    $('user_cc_verification_value').enable();
-    $('user_cc_verification_value').required = true;
-    $('site_user_attributes_cc_expire_on_1i').enable();
-    $('site_user_attributes_cc_expire_on_2i').enable();
-    $('site_user_attributes_cc_expire_on_3i').enable();
-    ccInfoDiv.show();
     $('site_hostname').required = true;
+    if (ccInfoDiv) {
+      $('site_user_attributes_cc_update').enable();
+      $('user_cc_type_visa').enable();
+      $('user_cc_type_master').enable();
+      $('user_cc_full_name').enable();
+      $('user_cc_full_name').required = true;
+      $('user_cc_number').enable();
+      $('user_cc_number').required = true;
+      $('user_cc_verification_value').enable();
+      $('user_cc_verification_value').required = true;
+      $('site_user_attributes_cc_expire_on_1i').enable();
+      $('site_user_attributes_cc_expire_on_2i').enable();
+      $('site_user_attributes_cc_expire_on_3i').enable();
+      ccInfoDiv.show();
+    }
   }
 };
 
@@ -328,7 +331,7 @@ var PasswordCheckerManager = Class.create({
         passwordState = ' ' + passwordState;
       }
       else {
-        passwordState = ''
+        passwordState = '';
       }
 
       var passwordCheckerForm = new Element("form", {
