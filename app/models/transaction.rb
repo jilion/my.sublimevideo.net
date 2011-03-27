@@ -209,10 +209,10 @@ private
   # before_save
   def set_fields_from_ogone_response
     if @ogone_response_infos.present?
-      self.pay_id        = @ogone_response_infos["PAYID"]
-      self.nc_status     = @ogone_response_infos["NCSTATUS"].to_i
-      self.status        = @ogone_response_infos["STATUS"].to_i
-      self.error         = @ogone_response_infos["NCERRORPLUS"] if @ogone_response_infos["NCERRORPLUS"]
+      self.pay_id    = @ogone_response_infos["PAYID"]
+      self.nc_status = @ogone_response_infos["NCSTATUS"].to_i
+      self.status    = @ogone_response_infos["STATUS"].to_i
+      self.error     = @ogone_response_infos["NCERRORPLUS"] if @ogone_response_infos["NCERRORPLUS"]
     end
   end
 

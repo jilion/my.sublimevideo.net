@@ -232,8 +232,8 @@ describe Plan do
     
     describe "#price(site, refund)" do
       before(:all) do
-        @beta_user = Factory(:user, enthusiast_id: 1234)
-        @non_beta_user = Factory(:user, enthusiast_id: nil)
+        @beta_user = Factory(:user, invitation_token: nil)
+        @non_beta_user = Factory(:user, invitation_token: "1234asdv")
         @paid_plan2 = Factory(:plan, cycle: "month", player_hits: 50_000, price: 1990) # $19.90
 
         Timecop.travel(PublicLaunch.beta_transition_ended_on - 1.hour) do # before beta end

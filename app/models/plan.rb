@@ -146,7 +146,7 @@ class Plan < ActiveRecord::Base
   end
 
   def price(site=nil, refund=false)
-    if site && site.user.beta?
+    if site && site.user.beta? &&
       ((!site.first_paid_plan_started_at? && Time.now.utc < PublicLaunch.beta_transition_ended_on) ||
         refund && (site.first_paid_plan_started_at? && site.first_paid_plan_started_at < PublicLaunch.beta_transition_ended_on))
       if self.yearly?
