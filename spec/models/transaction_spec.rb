@@ -295,8 +295,7 @@ describe Transaction do
         expect { Transaction.charge_all_open_and_failed_invoices }.to change(Delayed::Job.where(:handler.matches => "%charge_open_and_failed_invoices_by_user_id%"), :count).by(2)
         djs = Delayed::Job.where(:handler.matches => "%charge_open_and_failed_invoices_by_user_id%")
         djs.count.should == 2
-        YAML.load(djs.first.handler)['args'][0].should == @invoice1.reload.site.user.id
-        YAML.load(djs.second.handler)['args'][0].should == @invoice2.reload.site.user.id
+        djs.map { |dj| YAML.load(dj.handler)['args'][0] }.should =~ [@invoice1.reload.site.user.id, @invoice2.reload.site.user.id]
 
         @invoice1.should be_open
         @invoice2.should be_failed
@@ -577,10 +576,8 @@ describe Transaction do
 
           djs = Delayed::Job.where(:handler.matches => "%credit%")
           djs.count.should == 2
-          YAML.load(djs.first.handler)['args'][0].should == @transaction1.amount
-          YAML.load(djs.first.handler)['args'][1].should == "#{@transaction1.pay_id};SAL"
-          YAML.load(djs.last.handler)['args'][0].should == @transaction2.amount
-          YAML.load(djs.last.handler)['args'][1].should == "#{@transaction2.pay_id};SAL"
+          djs.map { |dj| YAML.load(dj.handler)['args'][0] }.should =~ [@transaction1.amount,  @transaction2.amount]
+          djs.map { |dj| YAML.load(dj.handler)['args'][1] }.should =~ ["#{@transaction1.pay_id};SAL", "#{@transaction2.pay_id};SAL"]
         end
       end
 
