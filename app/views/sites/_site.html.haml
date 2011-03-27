@@ -46,7 +46,7 @@
       - if site.invoices_failed?
         = link_to [site, :invoices] do
           %span.icon.payment_issue
-          = info_box do
+          = info_box(:class => "payment_issue") do
             %p=t 'site.status.payment_issue'
       - else
         - if site.cdn_up_to_date?

@@ -1518,11 +1518,20 @@ input.link_looks.delete {
   background:url(/images/embed/sites/status_ok.png) no-repeat center;
 }
 
+#content table.main td.status .icon.payment_issue {
+  background:url(/images/embed/alert_icon.png) no-repeat center;
+}
+
 #content table.main td.status .info_box {
   width:100px;
   top:-55px;
   left:-22px;
   right:auto;
+}
+
+#content table.main td.status .info_box.payment_issue {
+  top:-85px;
+  left:-23px;
 }
 
 #content .info_box {
