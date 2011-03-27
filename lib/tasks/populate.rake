@@ -174,11 +174,12 @@ def create_users(index=nil)
       user.confirmed_at = user.created_at
       user.save!(validate: false)
       user.attributes = {
-        cc_type: 'visa',
+        cc_brand: 'visa',
         cc_full_name: BASE_USERS[i][0],
         cc_number: "4111111111111111",
         cc_verification_value: "111",
-        cc_expire_on: 2.years.from_now
+        cc_expiration_month: 2.years.from_now.month,
+        cc_expiration_year: 2.years.from_now.year
       }
       user.check_credit_card
       user.save!
