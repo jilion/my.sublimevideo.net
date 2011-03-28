@@ -2809,6 +2809,15 @@ nav.pagination span.gap {
   padding:10px 0 0;
 }
 
+#invoices_summary .failed_invoices {
+  padding:0 0 20px;
+}
+
+#invoices_summary .failed_invoices p.desc {
+  padding:2px 0 10px 30px;
+  background:url(/images/embed/alert_icon.png) no-repeat;
+}
+
 #invoices_summary p, #failed_invoices p {
   padding:3px 0;
 }
