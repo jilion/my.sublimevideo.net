@@ -157,7 +157,7 @@ describe Invoice do
 
   end # State Machine
 
-  describe "Callbacks", focus: true do
+  describe "Callbacks" do
     describe "#before_validation, on: create" do
       before(:all) { @invoice = Factory(:invoice) }
       subject { @invoice }
