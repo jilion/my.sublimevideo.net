@@ -183,6 +183,7 @@ end
 
 
 
+
 # == Schema Information
 #
 # Table name: invoices
@@ -198,6 +199,8 @@ end
 #  amount                :integer
 #  vat_rate              :float
 #  vat_amount            :integer
+#  discount_rate         :float
+#  discount_amount       :integer
 #  invoice_items_amount  :integer
 #  invoice_items_count   :integer         default(0)
 #  transactions_count    :integer         default(0)

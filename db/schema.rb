@@ -78,6 +78,8 @@ ActiveRecord::Schema.define(:version => 20110223160948) do
     t.integer  "amount"
     t.float    "vat_rate"
     t.integer  "vat_amount"
+    t.float    "discount_rate"
+    t.integer  "discount_amount"
     t.integer  "invoice_items_amount"
     t.integer  "invoice_items_count",   :default => 0
     t.integer  "transactions_count",    :default => 0
@@ -169,7 +171,6 @@ ActiveRecord::Schema.define(:version => 20110223160948) do
     t.datetime "pending_plan_cycle_ended_at"
     t.datetime "plan_player_hits_reached_notification_sent_at"
     t.datetime "first_plan_upgrade_required_alert_sent_at"
-    t.datetime "refunded_at"
     t.integer  "last_30_days_main_player_hits_total_count",     :default => 0
     t.integer  "last_30_days_extra_player_hits_total_count",    :default => 0
     t.integer  "last_30_days_dev_player_hits_total_count",      :default => 0
