@@ -63,4 +63,17 @@ feature "Sticky notices" do
       Timecop.return
     end
   end
+
+  feature "when inviation redirect to signup" do
+
+    scenario "show beta is finished notice" do
+      visit '/invitation/accept?invitation_token=xxx'
+      current_url.should =~ %r(http://[^/]+/signup\?beta\=over$)
+
+      page.should have_content("We have now launched publicly!")
+      page.should have_content(" The Beta period is over. Please check out our new")
+    end
+
+  end
+
 end

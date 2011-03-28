@@ -19,7 +19,7 @@ MySublimeVideo::Application.routes.draw do
     %w[log_out sign_out signout].each { |action| match action => redirect('/logout'), :via => :get }
   end
   match '/password/validate' => "users/passwords#validate", :via => :post
-  match '/invitation/accept' => redirect('/signup'), :via => :get
+  match '/invitation/accept' => redirect('/signup?beta=over'), :via => :get
 
   resource :users, :only => :update, :path => '/account/info'
   resources :sites, :except => :show do
