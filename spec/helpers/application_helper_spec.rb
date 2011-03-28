@@ -2,6 +2,7 @@
 require 'spec_helper'
 
 describe ApplicationHelper do
+  include Devise::TestHelpers
 
   describe "#display_bool" do
     it { helper.display_bool(true).should == "✓" }
@@ -39,6 +40,12 @@ describe ApplicationHelper do
     it { helper.display_amount(1990, :decimals => 1).should == "$19.9" }
     it { helper.display_amount(1900).should == "$19" }
     it { helper.display_amount(1900, :decimals => 1).should == "$19.0" }
+
+    context "with tva", focus: true do
+      before(:each) { sign_in Factory(:user, country: "CH") }
+
+      it { helper.display_amount(10000, vat: true).should == "$108" }
+    end
   end
 
   describe "#display_amount_with_sup" do

@@ -67,12 +67,23 @@ module PlansHelper
     options[:class] ||= "plan_radio"
     options["data-plan_title"] = plan.title(always_with_cycle: true)
     options["data-plan_price"] = display_amount(plan.price(site))
+    if current_user.vat?
+      options["data-plan_price_vat"] = display_amount(plan.price(site), vat: true)
+    end
     unless site.new_record?
       options["data-plan_change_type"]  = plan_change_type(current_plan, plan)
-      options["data-plan_update_price"] = display_amount(current_plan.upgrade?(plan) ? plan.price(plan_change_discounted?(site.plan, plan) ? site : nil) - current_plan.price(site) : plan.price(plan_change_discounted?(site.plan, plan) ? site : nil))
+      update_price = current_plan.upgrade?(plan) ? plan.price(plan_change_discounted?(site.plan, plan) ? site : nil) - current_plan.price(site) : plan.price(plan_change_discounted?(site.plan, plan) ? site : nil)
+      options["data-plan_update_price"] = display_amount(update_price)
+      if current_user.vat?
+        options["data-plan_update_price_vat"] = display_amount(update_price, vat: true)
+      end
       options["data-plan_update_date"]  = l((current_plan.upgrade?(plan) ? site.plan_cycle_started_at : site.plan_cycle_ended_at && site.plan_cycle_ended_at.tomorrow.midnight) || Time.now.utc.midnight, :format => :named_date)
     end
     options
+  end
+  
+  def vat_price_info(klass)
+    raw("Prices above exclude VAT, total amount charged will be #{content_tag(:strong, "?", class: klass)} (including #{display_vat_percentage} VAT).")
   end
 
 end

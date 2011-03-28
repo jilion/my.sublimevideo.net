@@ -495,26 +495,38 @@ describe User do
     end
 
     describe "#beta?" do
-
       context "with active beta user" do
-        subject {  Factory(:user, created_at: Time.utc(2010,10,10), invitation_token: nil) }
+        subject { Factory(:user, created_at: Time.utc(2010,10,10), invitation_token: nil) }
 
         its(:beta?) { should be_true }
       end
       context "with un active beta user" do
-        subject {  Factory(:user, created_at: Time.utc(2010,10,10), invitation_token: 'xxx') }
+        subject { Factory(:user, created_at: Time.utc(2010,10,10), invitation_token: 'xxx') }
 
         its(:beta?) { should be_false }
       end
       context "with a standard user (limit)" do
-        subject {  Factory(:user, created_at: Time.utc(2011,3,29).midnight, invitation_token: nil) }
+        subject { Factory(:user, created_at: Time.utc(2011,3,29).midnight, invitation_token: nil) }
 
         its(:beta?) { should be_false }
       end
       context "with a standard user" do
-        subject {  Factory(:user, created_at: Time.utc(2011,3,30), invitation_token: nil) }
+        subject { Factory(:user, created_at: Time.utc(2011,3,30), invitation_token: nil) }
 
         its(:beta?) { should be_false }
+      end
+    end
+
+    describe "#vat?" do
+      context "with Swiss user" do
+        subject { Factory(:user, country: 'CH') }
+
+        its(:vat?) { should be_true }
+      end
+      context "with USA user" do
+        subject { Factory(:user, country: 'US') }
+
+        its(:vat?) { should be_false }
       end
     end
 
