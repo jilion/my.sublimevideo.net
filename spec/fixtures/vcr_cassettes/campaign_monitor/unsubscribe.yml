@@ -347,3 +347,73 @@
       - "184"
     body: "{\"EmailAddress\":\"cm@jilion.com\",\"Name\":\"John Doe\",\"Date\":\"2011-01-05 20:48:00\",\"State\":\"Unsubscribed\",\"CustomFields\":[{\"Key\":\"segment\",\"Value\":\"test\"},{\"Key\":\"user_id\",\"Value\":\"655\"}]}"
     http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: http://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:80/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=cm2@jilion.com
+    body: 
+    headers: 
+      user-agent: 
+      - createsend-ruby-0.6.1
+      content-type: 
+      - application/json
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      cache-control: 
+      - private, s-maxage=0
+      content-type: 
+      - application/json; charset=utf-8
+      server: 
+      - CMWEB08
+      x-aspnetmvc-version: 
+      - "2.0"
+      x-aspnet-version: 
+      - 4.0.30319
+      x-powered-by: 
+      - ASP.NET
+      p3p: 
+      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
+      date: 
+      - Mon, 28 Mar 2011 13:47:18 GMT
+      content-length: 
+      - "207"
+    body: "{\"EmailAddress\":\"cm2@jilion.com\",\"Name\":\"John Doe\",\"Date\":\"2011-03-28 15:47:00\",\"State\":\"Active\",\"CustomFields\":[{\"Key\":\"segment\",\"Value\":\"test\"},{\"Key\":\"user_id\",\"Value\":\"2\"},{\"Key\":\"beta\",\"Value\":\"true\"}]}"
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: http://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:80/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=cm2@jilion.com
+    body: 
+    headers: 
+      user-agent: 
+      - createsend-ruby-0.6.1
+      content-type: 
+      - application/json
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      cache-control: 
+      - private, s-maxage=0
+      content-type: 
+      - application/json; charset=utf-8
+      server: 
+      - CMWEB08
+      x-aspnetmvc-version: 
+      - "2.0"
+      x-aspnet-version: 
+      - 4.0.30319
+      x-powered-by: 
+      - ASP.NET
+      p3p: 
+      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
+      date: 
+      - Mon, 28 Mar 2011 13:47:19 GMT
+      content-length: 
+      - "207"
+    body: "{\"EmailAddress\":\"cm2@jilion.com\",\"Name\":\"John Doe\",\"Date\":\"2011-03-28 15:47:00\",\"State\":\"Active\",\"CustomFields\":[{\"Key\":\"segment\",\"Value\":\"test\"},{\"Key\":\"user_id\",\"Value\":\"2\"},{\"Key\":\"beta\",\"Value\":\"true\"}]}"
+    http_version: "1.1"
