@@ -1,23 +1,17 @@
 <%= t("mailer.intro_name", name: @transaction.user.full_name) %>
 
-We couldn't charge the following invoices: <%= @transaction.invoices.map { |i| "##{i.reference}" }.join(", ") %>.
+There has been a problem processing your payment.
+Your credit card could not be charged.
 
 <% if @transaction.user.cc_expired? %>
-  Please update your credit card information here: https://my.sublimevideo.net/card/edit and retry the charging.
+Please update your credit card information using the following link:
+https://<%= ActionMailer::Base.default_url_options[:host] %>/card/edit
 <% else %>
-  If you think it's a problem with your bank, please do the necessary and then retry the charging manually on: https://my.sublimevideo.net/invoices
+Please use the following link to see the sites with payment errors and retry the payment:
+https://<%= ActionMailer::Base.default_url_options[:host] %>/sites
 <% end %>
 
-Transaction information:
-
-ID: #<%= @transaction.id %>
-
-Invoices:
-<% @transaction.invoices.each do |invoice| %>
-  Reference: #<%= invoice.reference %>
-  Amount: #<%= invoice.amount %>
-<% end %>
-
-If you have any questions, please use our support form: https://my.sublimevideo.net/support
+If you have any questions, please use our support form:
+https://<%= ActionMailer::Base.default_url_options[:host] %>/support#billing
 
 <%= t("mailer.signature") %>

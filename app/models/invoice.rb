@@ -21,7 +21,7 @@ class Invoice < ActiveRecord::Base
   # = Callbacks =
   # =============
 
-  before_create :set_customer_infos
+  before_validation :set_customer_infos, :set_site_infos, :on => :create
 
   # ===============
   # = Validations =
@@ -130,12 +130,17 @@ private
     self.amount = invoice_items_amount + vat_amount
   end
 
-  # before_create
+  # before_validation :on => :create
   def set_customer_infos
-    self.customer_full_name    = user.full_name
-    self.customer_email        = user.email
-    self.customer_country      = user.country
-    self.customer_company_name = user.company_name
+    self.customer_full_name    ||= user.full_name
+    self.customer_email        ||= user.email
+    self.customer_country      ||= user.country
+    self.customer_company_name ||= user.company_name
+  end
+  
+  # before_validation :on => :create
+  def set_site_infos
+    self.site_hostname ||= site.hostname
   end
 
   # before_transition :on => :succeed
@@ -169,7 +174,6 @@ end
 
 
 
-
 # == Schema Information
 #
 # Table name: invoices
@@ -182,6 +186,7 @@ end
 #  customer_email        :string(255)
 #  customer_country      :string(255)
 #  customer_company_name :string(255)
+#  site_hostname         :string(255)
 #  amount                :integer
 #  vat_rate              :float
 #  vat_amount            :integer

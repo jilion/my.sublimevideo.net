@@ -1,13 +1,15 @@
 %table#detail
   %tr
-    %th.left= "Site"
+    %th.left= "Plan"
     %th.left= "Details"
     %th= "Amount (US $)"
   - invoice.invoice_items.each do |invoice_item|
     %tr
       %td.title
-        %h3= invoice.site.hostname
-      = render "/invoices/plan_invoice_item", :plan_invoice_item => invoice_item
+        %h3= invoice_item.item.title(always_with_cycle: true)
+      %td
+        %p.period= "Period: #{invoice_item_dates(invoice_item)}"
+      %td.total= display_amount(invoice_item.amount, :decimals => 2)
 
   - if invoice.vat_amount > 0
     %tr.pre_total

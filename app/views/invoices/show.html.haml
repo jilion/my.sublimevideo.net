@@ -13,6 +13,10 @@
         %p
           %strong= "Status: "
           = charging_status(invoice)
+        %p
+          %strong= "Site hostname: "
+          = invoice.site_hostname
+          = "(token: #{invoice.site.token})"
         %span.stamp{ :class => invoice.state }= invoice.state
         %p
           %strong= "Payment info:"

@@ -1,15 +1,17 @@
 class CreateInvoicesAndInvoiceItems < ActiveRecord::Migration
   def self.up
     create_table :invoices do |t|
-      t.integer  :site_id
+      t.integer :site_id
 
-      t.string   :reference
-      t.string   :state
+      t.string  :reference
+      t.string  :state
 
-      t.string   :customer_full_name
-      t.string   :customer_email
-      t.string   :customer_country
-      t.string   :customer_company_name
+      t.string  :customer_full_name
+      t.string  :customer_email
+      t.string  :customer_country
+      t.string  :customer_company_name
+
+      t.string  :site_hostname
 
       t.integer :amount
       t.float   :vat_rate

@@ -75,6 +75,7 @@ ActiveRecord::Schema.define(:version => 20110223160948) do
     t.string   "customer_email"
     t.string   "customer_country"
     t.string   "customer_company_name"
+    t.string   "site_hostname"
     t.integer  "amount"
     t.float    "vat_rate"
     t.integer  "vat_amount"
