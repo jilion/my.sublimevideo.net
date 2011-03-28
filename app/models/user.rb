@@ -158,21 +158,29 @@ class User < ActiveRecord::Base
   # Devise overriding
   # allow suspended user to login (devise)
   def active?
-    %w[active suspended].include?(state) && invitation_token.nil?
+    %w[active suspended].include?(state)
   end
 
   def have_beta_sites?
     sites.any? { |site| site.in_beta_plan? }
   end
-  
+
   def beta?
-    invitation_token.nil?
+    invitation_token.nil? && created_at < PublicLaunch.beta_transition_started_on.midnight
+  end
+  
+  def vat?
+    Vat.for_country?(country)
+  end
+
+  def get_discount?
+    beta? && Time.now.utc < PublicLaunch.beta_transition_ended_on
   end
 
   def full_name
     first_name.to_s + ' ' + last_name.to_s
   end
-  
+
   def support
     sites.active.map { |s| s.plan.support }.include?("priority") ? "priority" : "standard"
   end

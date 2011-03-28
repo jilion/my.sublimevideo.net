@@ -1,7 +1,7 @@
 class InvoiceItem::Plan < InvoiceItem
 
-  attr_accessor   :refund
-  attr_accessible :refund
+  attr_accessor   :deduct
+  attr_accessible :deduct
 
   # =================
   # = Class Methods =
@@ -24,13 +24,13 @@ class InvoiceItem::Plan < InvoiceItem
 private
 
   def set_started_at_and_ended_at
-    self.started_at = refund ? site.plan_cycle_started_at : (site.pending_plan_cycle_started_at || site.plan_cycle_started_at)
-    self.ended_at   = refund ? site.plan_cycle_ended_at : (site.pending_plan_cycle_ended_at || site.plan_cycle_ended_at)
+    self.started_at = deduct ? site.plan_cycle_started_at : (site.pending_plan_cycle_started_at || site.plan_cycle_started_at)
+    self.ended_at   = deduct ? site.plan_cycle_ended_at : (site.pending_plan_cycle_ended_at || site.plan_cycle_ended_at)
   end
 
   def set_price_and_amount
-    self.price  = refund ? item.price(site, true) : item.price
-    self.amount = (refund ? -1 : 1) * price
+    self.price = deduct ? site.last_paid_invoice.invoice_items.detect { |invoice_item| invoice_item.amount > 0 }.price : item.price(site)
+    self.amount = (deduct ? -1 : 1) * price
   end
 
 end

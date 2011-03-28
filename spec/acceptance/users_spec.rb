@@ -107,12 +107,12 @@ feature "Users" do
         fill_in "Password",           :with => "123456"
         fill_in "First name",         :with => "Rémy"
         fill_in "Last name",          :with => "Coutable"
-        select "Switzerland",         :from => "Country"
+        select  "Switzerland",        :from => "Country"
         fill_in "Zip or Postal Code", :with => "CH-1024"
         fill_in "Company name",       :with => "Jilion"
-        fill_in "Website",            :with => "jilion.com"
-        check "For my company"
-        check "user_terms_and_conditions"
+        select  "21-100 employees",   :from => "Company size"
+        check   "For my company"
+        check   "user_terms_and_conditions"
         click_button "Sign Up"
 
         current_url.should =~ %r(^http://[^/]+/sites/new$)
@@ -127,11 +127,11 @@ feature "Users" do
         fill_in "Password",           :with => "123456"
         fill_in "First name",         :with => "Rémy"
         fill_in "Last name",          :with => "Coutable"
-        select "Switzerland",         :from => "Country"
+        select  "Switzerland",        :from => "Country"
         fill_in "Zip or Postal Code", :with => "CH-1024"
         fill_in "Company name",       :with => ""
-        fill_in "Website",            :with => ""
-        check "user_terms_and_conditions"
+        select  "Company size",       :from => "Company size"
+        check   "user_terms_and_conditions"
         click_button "Sign Up"
 
         current_url.should =~ %r(^http://[^/]+/sites/new$)
@@ -152,12 +152,12 @@ feature "Users" do
         fill_in "Zip or Postal Code", :with => "CH-1024"
         check "user_terms_and_conditions"
         click_button "Sign Up"
-        
+
         new_user = User.last
         new_user.should_not == archived_user
         new_user.full_name.should == "Rémy Coutable"
         new_user.email.should == archived_user.email
-        
+
         current_url.should =~ %r(^http://[^/]+/sites/new$)
         page.should have_content "Rémy Coutable"
       end
@@ -227,7 +227,7 @@ feature "Users" do
 
   scenario "accept invitation should always redirect to /signup" do
     visit "/invitation/accept"
-    current_url.should =~ %r(^http://[^/]+/signup$)
+    current_url.should =~ %r(^http://[^/]+/signup\?beta=over$)
   end
 
   feature "with an authenticated user" do

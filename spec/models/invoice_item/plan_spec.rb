@@ -2,84 +2,145 @@ require 'spec_helper'
 
 describe InvoiceItem::Plan do
 
-  describe ".build(attributes = {})" do
+  describe ".build(attributes={})" do
     before(:all) do
-      @user       = Factory(:user)
-      @enthusiast = Factory(:user, enthusiast_id: 1234)
+      @not_enthusiast = Factory(:user, invitation_token: "123asd")
+      @enthusiast     = Factory(:user, invitation_token: nil)
 
       @plan1 = Factory(:plan, price: 1000)
-      @plan2 = Factory(:plan, price: 1000)
+      @plan2 = Factory(:plan, price: 2000)
+      
+      Timecop.travel(PublicLaunch.beta_transition_ended_on - 1.hour) do
+        @site_without_discount1 = Factory.build(:new_site, user: @not_enthusiast, plan_id: @plan1.id)
+        # @site_without_discount1.pend_plan_changes # simulate new or renew
+        @site_without_discount2 = Factory(:site_with_invoice, user: @not_enthusiast, plan_id: @plan1.id)
+        @site_without_discount2.plan_id = @plan2.id # upgrade
+        @site_without_discount2.pend_plan_changes # simulate upgrade
+        @site_without_discount3 = Factory(:site, user: @not_enthusiast, plan_id: @plan2.id)
+        @site_without_discount3.plan_id = @plan1.id # downgrade
+        @site_without_discount3.pend_plan_changes # simulate downgrade
 
-      @site1 = Factory(:site, user: @user, plan_id: @plan1.id)
-      @site2 = Factory(:site, user: @user, plan_id: @plan1.id)
-      @site2.plan_id = @plan2.id
-      @site2.save_without_password_validation
-      Timecop.travel(PublicLaunch.beta_transition_ended_on - 1.hour) { @site_with_discount = Factory(:site, user: @enthusiast, plan_id: @plan1.id) }
+        @site_with_discount1 = Factory.build(:new_site, user: @enthusiast, plan_id: @plan1.id)
+        # @site_with_discount1.pend_plan_changes # simulate new or renew
+        @site_with_discount2 = Factory(:site_with_invoice, user: @enthusiast, plan_id: @plan1.id)
+        @site_with_discount2.plan_id = @plan2.id # upgrade
+        @site_with_discount2.pend_plan_changes # simulate upgrade
+        @site_with_discount3 = Factory(:site, user: @enthusiast, plan_id: @plan2.id)
+        @site_with_discount3.plan_id = @plan1.id # downgrade
+        @site_with_discount3.pend_plan_changes # simulate downgrade
+      end
 
-      @invoice1 = Factory(:invoice, site: @site1)
-      @invoice2 = Factory(:invoice, site: @site2)
-      @invoice_with_discount = Factory(:invoice, site: @site_with_discount)
+      @invoice_without_discount1 = Factory(:invoice, site: @site_without_discount1)
+      @invoice_without_discount2 = Factory(:invoice, site: @site_without_discount2)
+      @invoice_without_discount3 = Factory(:invoice, site: @site_without_discount3)
+      @invoice_with_discount1    = Factory(:invoice, site: @site_with_discount1)
+      @invoice_with_discount2    = Factory(:invoice, site: @site_with_discount2)
+      @invoice_with_discount3    = Factory(:invoice, site: @site_with_discount3)
     end
 
     context "with a site that doesn't have the discount" do
-      # renew
-      describe "with standard params and a site without pending plan" do
-        subject { InvoiceItem::Plan.build(invoice: @invoice1, item: @site1.plan) }
+      describe "new or renew" do
+        describe "with standard params and a site without pending plan" do
+          subject { InvoiceItem::Plan.build(invoice: @invoice_without_discount1, item: @site_without_discount1.pending_plan) }
 
-        its(:item)       { should == @site1.plan }
-        its(:price)      { should == @site1.plan.price }
-        its(:amount)     { should == @site1.plan.price }
-        its(:started_at) { should == @site1.plan_cycle_started_at }
-        its(:ended_at)   { should == @site1.plan_cycle_ended_at }
+          its(:item)       { should == @site_without_discount1.pending_plan }
+          its(:price)      { should == 1000 }
+          its(:amount)     { should == 1000 }
+          its(:started_at) { should == @site_without_discount1.pending_plan_cycle_started_at }
+          its(:ended_at)   { should == @site_without_discount1.pending_plan_cycle_ended_at }
+        end
       end
 
-      # upgrade & downgrade
-      describe "with standard params and a site with pending plan" do
-        subject { InvoiceItem::Plan.build(invoice: @invoice2, item: @site2.plan) }
+      describe "upgrade" do
+        # the new upgraded paid plan
+        describe "with standard params and a site with pending plan" do
+          subject { InvoiceItem::Plan.build(invoice: @invoice_without_discount2, item: @site_without_discount2.pending_plan) }
 
-        its(:item)       { should == @site2.plan }
-        its(:price)      { should == @site2.plan.price }
-        its(:amount)     { should == @site2.plan.price }
-        its(:started_at) { should == @site2.pending_plan_cycle_started_at }
-        its(:ended_at)   { should == @site2.pending_plan_cycle_ended_at }
+          its(:item)       { should == @site_without_discount2.pending_plan }
+          its(:price)      { should == 2000 }
+          its(:amount)     { should == 2000 }
+          its(:started_at) { should == @site_without_discount2.pending_plan_cycle_started_at }
+          its(:ended_at)   { should == @site_without_discount2.pending_plan_cycle_ended_at }
+        end
+        # the old deducted plan
+        describe "with deduct params" do
+          subject { InvoiceItem::Plan.build(invoice: @invoice_without_discount2, item: @site_without_discount2.plan, deduct: true) }
+
+          its(:item)       { should == @site_without_discount2.plan }
+          its(:price)      { should == 1000 }
+          its(:amount)     { should == -1000 }
+          its(:started_at) { should == @site_without_discount2.plan_cycle_started_at }
+          its(:ended_at)   { should == @site_without_discount2.plan_cycle_ended_at }
+        end
       end
+      
+      describe "downgrade" do
+        # the new downgraded paid plan
+        describe "with standard params and a site with pending plan" do
+          subject { InvoiceItem::Plan.build(invoice: @invoice_without_discount3, item: @site_without_discount3.pending_plan) }
 
-      describe "with refund params" do
-        subject { InvoiceItem::Plan.build(invoice: @invoice1, item: @plan1, refund: true) }
-
-        its(:item)       { should == @plan1 }
-        its(:price)      { should == @plan1.price }
-        its(:amount)     { should == -1 * @plan1.price }
-        its(:started_at) { should == @site1.plan_cycle_started_at }
-        its(:ended_at)   { should == @site1.plan_cycle_ended_at }
+          its(:item)       { should == @site_without_discount3.pending_plan }
+          its(:price)      { should == 1000 }
+          its(:amount)     { should == 1000 }
+          its(:started_at) { should == @site_without_discount3.pending_plan_cycle_started_at }
+          its(:ended_at)   { should == @site_without_discount3.pending_plan_cycle_ended_at }
+        end
       end
     end
 
     context "with a site that have the discount" do
-      describe "no refund" do
-        subject { InvoiceItem::Plan.build(invoice: @invoice_with_discount, item: @plan1) }
+      
+      describe "new or renew" do
+        describe "with standard params and a site without pending plan" do
+          subject { InvoiceItem::Plan.build(invoice: @invoice_with_discount1, item: @site_with_discount1.pending_plan) }
 
-        its(:item)       { should == @plan1 }
-        its(:price)      { should == 1000 }
-        its(:amount)     { should == 1000 }
-        its(:started_at) { should == @site_with_discount.plan_cycle_started_at }
-        its(:ended_at)   { should == @site_with_discount.plan_cycle_ended_at }
+          its(:item)       { should == @site_with_discount1.pending_plan }
+          its(:price)      { should == 800 }
+          its(:amount)     { should == 800 }
+          its(:started_at) { should == @site_with_discount1.pending_plan_cycle_started_at }
+          its(:ended_at)   { should == @site_with_discount1.pending_plan_cycle_ended_at }
+        end
       end
 
-      describe "refund" do
-        subject { InvoiceItem::Plan.build(invoice: @invoice_with_discount, item: @plan1, refund: true) }
+      describe "upgrade" do
+        # the new upgraded paid plan
+        describe "with standard params and a site with pending plan" do
+          subject { InvoiceItem::Plan.build(invoice: @invoice_with_discount2, item: @site_with_discount2.pending_plan) }
 
-        its(:item)       { should == @plan1 }
-        its(:price)      { should == 800 }
-        its(:amount)     { should == -800 }
-        its(:started_at) { should == @site_with_discount.plan_cycle_started_at }
-        its(:ended_at)   { should == @site_with_discount.plan_cycle_ended_at }
+          its(:item)       { should == @site_with_discount2.pending_plan }
+          its(:price)      { should == 1600 }
+          its(:amount)     { should == 1600 }
+          its(:started_at) { should == @site_with_discount2.pending_plan_cycle_started_at }
+          its(:ended_at)   { should == @site_with_discount2.pending_plan_cycle_ended_at }
+        end
+        # the old deducted plan
+        describe "with deduct params" do
+          subject { InvoiceItem::Plan.build(invoice: @invoice_with_discount2, item: @site_with_discount2.plan, deduct: true) }
+
+          its(:item)       { should == @site_with_discount2.plan }
+          its(:price)      { should == 800 }
+          its(:amount)     { should == -800 }
+          its(:started_at) { should == @site_with_discount2.plan_cycle_started_at }
+          its(:ended_at)   { should == @site_with_discount2.plan_cycle_ended_at }
+        end
+      end
+      
+      describe "downgrade" do
+        # the new downgraded paid plan
+        describe "with standard params and a site with pending plan" do
+          subject { InvoiceItem::Plan.build(invoice: @invoice_without_discount3, item: @site_with_discount3.pending_plan) }
+
+          its(:item)       { should == @site_with_discount3.pending_plan }
+          its(:price)      { should == 1000 }
+          its(:amount)     { should == 1000 }
+          its(:started_at) { should == @site_with_discount3.pending_plan_cycle_started_at }
+          its(:ended_at)   { should == @site_with_discount3.pending_plan_cycle_ended_at }
+        end
       end
     end
   end
 
 end
-
 
 
 

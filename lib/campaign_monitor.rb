@@ -12,7 +12,8 @@ class CampaignMonitor < Settingslogic
         user.full_name,
         [
           { :Key => 'user_id', :Value => user.id },
-          { :Key => 'segment', :Value => self.segment }
+          { :Key => 'segment', :Value => self.segment },
+          { :Key => 'beta',    :Value => user.beta?.to_s }
         ],
         true
       )
@@ -28,7 +29,8 @@ class CampaignMonitor < Settingslogic
           :Name => user.full_name,
           :CustomFields => [
             { :Key => 'user_id', :Value => user.id },
-            { :Key => 'segment', :Value => self.segment }
+            { :Key => 'segment', :Value => self.segment },
+            { :Key => 'beta',    :Value => user.beta?.to_s }
           ]
         }
       end

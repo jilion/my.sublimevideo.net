@@ -1,14 +1,14 @@
 require 'spec_helper'
 
 describe CampaignMonitor do
-  let(:user) { Factory(:user, :email => "cm@jilion.com") }
+  let(:user) { Factory(:user, email: "cm2@jilion.com", created_at: Time.utc(2010,10,10), invitation_token: nil) }
 
   specify { CampaignMonitor.api_key.should == "8844ec1803ffbe6501c3d7e9cfa23bf3" }
   specify { CampaignMonitor.list_id.should == "a064dfc4b8ccd774252a2e9c9deb9244" }
   specify { CampaignMonitor.segment.should == "test" }
 
   describe ".subscribe" do
-    use_vcr_cassette "campaign_monitor/subscribe"#, :record => :all
+    use_vcr_cassette "campaign_monitor/subscribe"
 
     it "should subscribe a user" do
       CampaignMonitor.subscribe(user).should be_true
@@ -18,6 +18,7 @@ describe CampaignMonitor do
       subscriber["State"].should        == "Active"
       subscriber["CustomFields"].detect { |h| h.values.include?("segment") }["Value"].should == CampaignMonitor.segment
       subscriber["CustomFields"].detect { |h| h.values.include?("user_id") }["Value"].should be_present
+      subscriber["CustomFields"].detect { |h| h.values.include?("beta") }["Value"].should == "true"
     end
 
     it "should subscribe an unsubscribed user" do
@@ -35,8 +36,8 @@ describe CampaignMonitor do
     use_vcr_cassette "campaign_monitor/import"
 
     it "should subscribe a list of user" do
-      user1 = Factory(:user, :email => "cm1@jilion.com")
-      user2 = Factory(:user, :email => "cm2@jilion.com")
+      user1 = Factory(:user, email: "bob1@bob.com", created_at: Time.utc(2010,10,10), invitation_token: nil)
+      user2 = Factory(:user, email: "bob2@bob.com", created_at: Time.utc(2011,10,10), invitation_token: nil)
       CampaignMonitor.import([user1, user2]).should be_true
       # user 1
       subscriber = CreateSend::Subscriber.get(CampaignMonitor.list_id, user1.email)
@@ -45,6 +46,7 @@ describe CampaignMonitor do
       subscriber["State"].should        == "Active"
       subscriber["CustomFields"].detect { |h| h.values.include?("segment") }["Value"].should == CampaignMonitor.segment
       subscriber["CustomFields"].detect { |h| h.values.include?("user_id") }["Value"].should be_present
+      subscriber["CustomFields"].detect { |h| h.values.include?("beta") }["Value"].should == "true"
       # user 2
       subscriber = CreateSend::Subscriber.get(CampaignMonitor.list_id, user2.email)
       subscriber["EmailAddress"].should == user2.email
@@ -52,6 +54,7 @@ describe CampaignMonitor do
       subscriber["State"].should        == "Active"
       subscriber["CustomFields"].detect { |h| h.values.include?("segment") }["Value"].should == CampaignMonitor.segment
       subscriber["CustomFields"].detect { |h| h.values.include?("user_id") }["Value"].should be_present
+      subscriber["CustomFields"].detect { |h| h.values.include?("beta") }["Value"].should == "false"
     end
 
   end

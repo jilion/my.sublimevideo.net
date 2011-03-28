@@ -1,0 +1,7 @@
+<%= t("mailer.intro_name", name: @transaction.user.full_name) %>
+
+We have just charged you the following invoices: <%= @transaction.invoices.map { |i| "##{i.reference}" }.join(", ") %>.
+
+If you have any questions, please use our support form: https://<%= ActionMailer::Base.default_url_options[:host] %>/support#billing
+
+<%= t("mailer.signature") %>

@@ -37,7 +37,7 @@ class CreateInvoicesAndInvoiceItems < ActiveRecord::Migration
       t.datetime  :ended_at
 
       t.integer   :price  # always positive
-      t.integer   :amount # can be negative (refund)
+      t.integer   :amount # can be negative (deduct)
 
       t.timestamps
     end

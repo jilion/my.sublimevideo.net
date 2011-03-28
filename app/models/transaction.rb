@@ -3,7 +3,7 @@ require 'base64'
 class Transaction < ActiveRecord::Base
 
   uniquify :order_id, :chars => Array('a'..'z') + Array('0'..'9'), :length => 30
-  
+
   # ================
   # = Associations =
   # ================
@@ -35,6 +35,7 @@ class Transaction < ActiveRecord::Base
 
     after_transition  :on => [:succeed, :fail], :do => :update_invoices
 
+    after_transition :on => :succeed, :do => :send_charging_succeeded_email
     after_transition :on => :fail, :do => :send_charging_failed_email
   end
 
@@ -89,6 +90,7 @@ class Transaction < ActiveRecord::Base
     })
     credit_card = options.delete(:credit_card)
     payment_method = credit_card && credit_card.valid? ? credit_card : transaction.user.cc_alias
+    transaction.store_cc_infos(payment_method)
     
     payment = begin
       Ogone.purchase(transaction.amount, payment_method, options)
@@ -169,7 +171,7 @@ class Transaction < ActiveRecord::Base
 
     !self.failed?
   end
-  
+
   def waiting?
     nc_status == 0 && status == 51
   end
@@ -185,13 +187,20 @@ class Transaction < ActiveRecord::Base
   def unknown?
     nc_status == 2
   end
-  
+
   def i18n_error_key
     %w[waiting invalid refused unknown].detect { |status| self.send("#{status}?") }
   end
 
   def description
     @description ||= "SublimeVideo Invoices: " + self.invoices.all.map { |invoice| "##{invoice.reference}" }.join(", ")
+  end
+
+  def store_cc_infos(payment_method)
+    cc = !payment_method.is_a?(String)
+    self.cc_type        = cc ? payment_method.type : (self.user.cc_type || self.user.pending_cc_type)
+    self.cc_last_digits = cc ? payment_method.last_digits : (self.user.cc_last_digits || self.user.pending_cc_last_digits)
+    self.cc_expire_on   = cc ? Time.utc(payment_method.year, payment_method.month).end_of_month.to_date : (self.user.cc_expire_on || self.user.pending_cc_expire_on)
   end
 
 private
@@ -236,6 +245,11 @@ private
     Invoice.where(id: invoice_ids).each { |invoice| invoice.send(paid? ? :succeed : :fail) }
   end
 
+  # after_transition :on => :succeed
+  def send_charging_succeeded_email
+    TransactionMailer.charging_succeeded(self).deliver!
+  end
+
   # after_transition :on => :fail
   def send_charging_failed_email
     TransactionMailer.charging_failed(self).deliver!
@@ -245,21 +259,25 @@ end
 
 
 
+
 # == Schema Information
 #
 # Table name: transactions
 #
-#  id         :integer         not null, primary key
-#  user_id    :integer
-#  order_id   :string(255)
-#  state      :string(255)
-#  amount     :integer
-#  error      :text
-#  pay_id     :string(255)
-#  nc_status  :integer
-#  status     :integer
-#  created_at :datetime
-#  updated_at :datetime
+#  id             :integer         not null, primary key
+#  user_id        :integer
+#  order_id       :string(255)
+#  state          :string(255)
+#  amount         :integer
+#  error          :text
+#  cc_type        :string(255)
+#  cc_last_digits :string(255)
+#  cc_expire_on   :date
+#  pay_id         :string(255)
+#  nc_status      :integer
+#  status         :integer
+#  created_at     :datetime
+#  updated_at     :datetime
 #
 # Indexes
 #

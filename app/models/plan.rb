@@ -145,10 +145,8 @@ class Plan < ActiveRecord::Base
     end
   end
 
-  def price(site=nil, refund=false)
-    if site && site.user.beta? &&
-      ((!site.first_paid_plan_started_at? && Time.now.utc < PublicLaunch.beta_transition_ended_on) ||
-        refund && (site.first_paid_plan_started_at? && site.first_paid_plan_started_at < PublicLaunch.beta_transition_ended_on && site.invoices.count < 2)) # deduct the first discount only for the first upgrade
+  def price(site=nil)
+    if site && site.user.beta? && Time.now.utc < PublicLaunch.beta_transition_ended_on # deduct the first discount only for the first upgrade
       if self.yearly?
         (read_attribute(:price) * 0.8 / 100).to_i * 100
       else

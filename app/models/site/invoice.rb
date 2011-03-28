@@ -67,6 +67,10 @@ module Site::Invoice
     refunded_at?
   end
 
+  def last_paid_plan_price
+    last_paid_invoice ? last_paid_invoice.invoice_items.detect { |invoice_item| invoice_item.amount > 0 }.price : 0
+  end
+
   # before_save :if => :pending_plan_id_changed? / also called from Site::Invoice.renew_active_sites!
   def pend_plan_changes
     @instant_charging = false

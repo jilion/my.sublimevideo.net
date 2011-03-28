@@ -161,6 +161,28 @@ describe Site::Invoice do
       end
     end # #will_be_in_dev_plan?
 
+    describe "#last_paid_plan_price" do
+      context "site with no invoice" do
+        subject { Factory(:site, plan_id: @dev_plan.id) }
+
+        its(:last_paid_plan_price) { should == 0 }
+      end
+
+      context "site with at least one paid invoice" do
+        before(:all) do
+          @plan1 = Factory(:plan, price: 10_000)
+          @plan2 = Factory(:plan, price: 5_000)
+          @site  = Factory(:site_with_invoice, plan_id: @plan1.id)
+          @site.plan_id = @plan2.id
+        end
+        subject { @site }
+      
+        it "should return the price of the last InvoiceItem::Plan with an price > 0" do
+          subject.last_paid_plan_price.should == @plan1.price(subject, true)
+        end
+      end
+    end
+
     describe "#pend_plan_changes" do
       before(:all) do
         @paid_plan         = Factory(:plan, cycle: "month", price: 1000)

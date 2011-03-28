@@ -1447,7 +1447,7 @@ input.link_looks.delete {
 }
 
 #content table.main td.usage .progress_bar .info_box {
-  width:70px;
+  width:90px;
   top:-60px;
 }
 
@@ -1795,6 +1795,10 @@ input.link_looks.delete {
   z-index:2;
 }
 
+#plans li.discount .select_box.no_discount .pricing {
+  padding-top:30px;
+}
+
 #plans li .select_box .pricing .strike, #plans li.discount .select_box .pricing strong.new_price {display:none}
 
 #plans li.discount .select_box .pricing .strike {
@@ -1826,9 +1830,8 @@ input.link_looks.delete {
   text-shadow:#fff 0 1px 2px,rgba(0,68,119,1) 0px 0px 0px,#fff 0px 1px 2px;
 }
 
-#plans li.discount .select_box .pricing strong.price {
-  font-size:18px;
-}
+#plans li.discount .select_box .pricing strong.price {font-size:18px}
+#plans li.discount .select_box.no_discount .pricing strong.price {font-size:24px}
 
 #plans .select_box.active strong.price, #plans li.discount .select_box.active strong.new_price {
   color:#d5ddeb;
@@ -1840,7 +1843,7 @@ input.link_looks.delete {
   color:#fff;
 }
 
-#plans .select_box .pricing strong.price sup, #plans .select_box .pricing strong.new_price sup {
+#plans .select_box .pricing strong.price sup, #plans .select_box .pricing strong.new_price sup, #plans .select_box.no_discount .pricing strong.new_price sup {
   font-size:13px;
 }
 
