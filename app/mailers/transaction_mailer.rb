@@ -13,7 +13,7 @@ class TransactionMailer < SublimeVideoMailer
     @transaction = transaction
     mail(
       :to => "\"#{@transaction.user.full_name}\" <#{@transaction.user.email}>",
-      :subject => "Charging for \"#{@transaction.description}\" has failed."
+      :subject => "Problem processing your payment"
     )
   end
 

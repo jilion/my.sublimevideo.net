@@ -4,7 +4,7 @@ class UsageMonitoringMailer < SublimeVideoMailer
     @site = site
     mail(
       :to => "\"#{@site.user.full_name}\" <#{@site.user.email}>",
-      :subject => "You have reached usage limit for your site #{@site.hostname}"
+      :subject => "Peak Insurance activated for #{@site.hostname}"
     )
   end
   
@@ -12,7 +12,7 @@ class UsageMonitoringMailer < SublimeVideoMailer
     @site = site
     mail(
       :to => "\"#{@site.user.full_name}\" <#{@site.user.email}>",
-      :subject => "You need to upgrade your plan for your site #{@site.hostname}"
+      :subject => "You need to upgrade your plan for #{@site.hostname}"
     )
   end
   
