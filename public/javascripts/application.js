@@ -63,10 +63,12 @@ document.observe("dom:loaded", function() {
   // Reproduce checkbox behavior for radio buttons for plans selection
   if ($('plans')) {
     var planUpgradeInfoDiv = $('plan_upgrade_info');
+    var planCreateInfoDiv = $('plan_create_info');
     var ccInfoDiv = $('credit_card');
     $$('#plans input[type=radio]').each(function(element){
       element.on('click', function(event){
         if (planUpgradeInfoDiv) MySublimeVideo.showPlanUpdateInfo(element);
+        if (planCreateInfoDiv) MySublimeVideo.showPlanCreateInfo(element);
         MySublimeVideo.handlePlanChange(element);
         var select_box = element.up('.select_box');
         $$('#plans ul .select_box').invoke('removeClassName','active');
@@ -152,9 +154,19 @@ MySublimeVideo.handlePlanChange = function(radioButton) {
 MySublimeVideo.updatePlanInfo_ = function(infoDiv, radioButton) {
   infoDiv.select('.plan_title').invoke("update", radioButton.readAttribute('data-plan_title'));
   infoDiv.select('.plan_price').invoke("update", radioButton.readAttribute('data-plan_price'));
+  infoDiv.select('.plan_price_vat').invoke("update", radioButton.readAttribute('data-plan_price_vat'));
   infoDiv.select('.plan_update_price').invoke("update", radioButton.readAttribute('data-plan_update_price'));
+  infoDiv.select('.plan_update_price_vat').invoke("update", radioButton.readAttribute('data-plan_update_price_vat'));
   infoDiv.select('.plan_update_date').invoke("update", radioButton.readAttribute('data-plan_update_date'));
   infoDiv.show();
+};
+
+MySublimeVideo.showPlanCreateInfo = function(radioButton) {
+  var createInfoDiv = $('plan_create_info');
+  createInfoDiv.hide();
+  if (radioButton.readAttribute('data-plan_price') != "$0") {
+    MySublimeVideo.updatePlanInfo_(createInfoDiv, radioButton);
+  }
 };
 
 MySublimeVideo.showPlanUpdateInfo = function(radioButton) {
