@@ -35,6 +35,7 @@ class Transaction < ActiveRecord::Base
 
     after_transition  :on => [:succeed, :fail], :do => :update_invoices
 
+    after_transition :on => :succeed, :do => :send_charging_succeeded_email
     after_transition :on => :fail, :do => :send_charging_failed_email
   end
 
@@ -234,6 +235,11 @@ private
   # after_transition :on => [:succeed, :fail]
   def update_invoices
     Invoice.where(id: invoice_ids).each { |invoice| invoice.send(paid? ? :succeed : :fail) }
+  end
+
+  # after_transition :on => :succeed
+  def send_charging_succeeded_email
+    TransactionMailer.charging_succeeded(self).deliver!
   end
 
   # after_transition :on => :fail
