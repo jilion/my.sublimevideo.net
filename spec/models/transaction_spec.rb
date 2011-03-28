@@ -243,6 +243,18 @@ describe Transaction do
         end
       end
 
+      describe "after_transition :on => :succeed, :do => :send_charging_succeeded_email", focus: true do
+        context "from open" do
+          subject { Factory(:transaction, invoices: [Factory(:invoice)]) }
+
+          it "should send an email to invoice.user" do
+            subject
+            lambda { subject.succeed }.should change(ActionMailer::Base.deliveries, :count).by(1)
+            ActionMailer::Base.deliveries.last.to.should == [subject.user.email]
+          end
+        end
+      end
+
       describe "after_transition :on => :fail, :do => :send_charging_failed_email" do
         context "from open" do
           subject { Factory(:transaction, invoices: [Factory(:invoice)]) }

@@ -63,6 +63,22 @@ describe Site do
     it { should belong_to :plan }
     it { should have_many :invoices }
     it { should have_many(:invoice_items).through(:invoices) }
+    
+    describe "last_invoice" do
+      subject { Factory(:site_with_invoice, plan_id: Factory(:plan, price: 123456).id) }
+
+      it "should return the last paid invoice" do
+        subject.last_invoice.should == subject.invoices.last
+      end
+    end
+    
+    describe "last_paid_invoice" do
+      subject { Factory(:site_with_invoice, plan_id: Factory(:plan, price: 123456).id) }
+
+      it "should return the last paid invoice" do
+        subject.last_paid_invoice.should == subject.invoices.paid.last
+      end
+    end
   end
 
   describe "Scopes" do

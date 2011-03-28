@@ -173,6 +173,10 @@ class User < ActiveRecord::Base
     Vat.for_country?(country)
   end
 
+  def get_discount?
+    beta? && Time.now.utc < PublicLaunch.beta_transition_ended_on
+  end
+
   def full_name
     first_name.to_s + ' ' + last_name.to_s
   end

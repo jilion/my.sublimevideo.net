@@ -30,7 +30,7 @@ feature "Invoice actions:" do
     page.should have_content('google.com')
 
     page.should have_content('Next invoice')
-    page.should have_content("$#{Invoice.build_next(site: site).amount / 100.0}")
+    page.should have_content("$#{@paid_plan.price / 100.0}")
     page.should have_content("on #{I18n.l(site.plan_cycle_ended_at.tomorrow, :format => :d_b_Y)}")
 
     page.should have_content('Past invoices')

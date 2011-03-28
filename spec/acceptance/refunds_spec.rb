@@ -21,7 +21,7 @@ feature "Refunds" do
       page.should have_content "Refund"
 
       select "rymai.com", :from => "site_id"
-      click_button "Request a refund"
+      click_button I18n.t('site.refund.request')
 
       @site.reload.should be_archived
       @site.should be_refunded
@@ -39,7 +39,7 @@ feature "Refunds" do
       @site.update_attribute(:hostname, 'rymai') # make it invalid
 
       select "rymai.com", :from => "site_id"
-      click_button "Request a refund"
+      click_button I18n.t('site.refund.request')
 
       @site.reload.should_not be_archived
       @site.should_not be_refunded

@@ -7,4 +7,4 @@
   #sites.refund
     = form_tag refund_path, :html => { :id => "refund_form" } do |f|
       = select_tag :site_id, options_from_collection_for_select(@sites, 'id', 'hostname')
-      = submit_tag "Request a refund"
+      = submit_tag t('site.refund.request')

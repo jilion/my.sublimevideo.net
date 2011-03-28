@@ -35,6 +35,7 @@ en:
       delete_site_info1: "Your SublimeVideo license for %{domain} will be instantly removed from our servers."
       delete_site_info2: "This operation cannot be undone."
     refund:
+      request: "Request a refund"
       refunded: "All your payments for %{hostname} will be refunded in the next few hours."
       refund_unsuccessful: "The refund you requested for %{hostname} was unsuccessful."
       no_refund_possible: "You don't have any site eligible for 30 day money back guarantee."

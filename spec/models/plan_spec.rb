@@ -60,6 +60,7 @@ describe Plan do
   describe "Class Methods" do
     describe ".create_custom" do
       it "should create new custom plan" do
+        Plan.delete_all
         expect { @plan = Plan.create_custom(:cycle => "month", :player_hits => 10**7, :price => 999900) }.to change(Plan.custom_plans, :count)
         @plan.name.should == "custom#{Plan.custom_plans.count}"
       end
@@ -230,7 +231,7 @@ describe Plan do
       it { Factory.build(:plan, :name => "custom1").support.should == "priority" }
     end
     
-    describe "#price(site, refund)" do
+    describe "#price(site)" do
       before(:all) do
         @beta_user = Factory(:user, invitation_token: nil)
         @non_beta_user = Factory(:user, invitation_token: "1234asdv")
@@ -282,14 +283,12 @@ describe Plan do
 
         it { @paid_plan2.price(@beta_user_dev_site1).should == 1590 }
         it { @paid_plan2.price(@beta_user_beta_site1).should == 1590 }
-        it { @paid_plan2.price(@beta_user_paid_site1).should == 1990 }
-        it { @paid_plan2.price(@beta_user_paid_site1, true).should == 1590 }
-        it { @paid_plan2.price(@beta_user_paid_site11).should == 1990 }
-        it { @paid_plan2.price(@beta_user_paid_site11, true).should == 1990 }
+        it { @paid_plan2.price(@beta_user_paid_site1).should == 1590 }
+        it { @paid_plan2.price(@beta_user_paid_site11).should == 1590 }
 
         it { @paid_plan2.price(@beta_user_dev_site2).should == 1590 }
         it { @paid_plan2.price(@beta_user_beta_site2).should == 1590 }
-        it { @paid_plan2.price(@beta_user_paid_site2).should == 1990 }
+        it { @paid_plan2.price(@beta_user_paid_site2).should == 1590 }
 
         it { @paid_plan2.price(@non_beta_user_dev_site1).should == 1990 }
         it { @paid_plan2.price(@non_beta_user_paid_site1).should == 1990 }
@@ -307,19 +306,14 @@ describe Plan do
         it "should not return the discounted price" do
           @paid_plan2.price(@beta_user_paid_site1).should == 1990
         end
-
-        it "should return the discounted price if 'refund' param is true" do
-          # the refund param is used in the view to display the  difference paid when upgrading and in InvoiceItem::Plan for plans to refund
-          @paid_plan2.price(@beta_user_paid_site1, true).should == 1590
-        end
         
         it { @paid_plan2.price(@beta_user_paid_site11).should == 1990 }
-        it { @paid_plan2.price(@beta_user_paid_site11, true).should == 1990 }
       end
     end
   end
 
 end
+
 
 
 
