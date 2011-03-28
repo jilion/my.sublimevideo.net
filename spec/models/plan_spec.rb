@@ -201,6 +201,8 @@ describe Plan do
       specify { @dev_plan.title(always_with_cycle: true).should == "Free LaunchPad" }
       specify { @sponsored_plan.title.should == "Sponsored" }
       specify { @sponsored_plan.title(always_with_cycle: true).should == "Sponsored" }
+      specify { @custom_plan.title.should == "Custom" }
+      specify { @custom_plan.title(always_with_cycle: true).should == "Custom (monthly)" }
       specify { Factory.build(:plan, cycle: "month", name: "comet").title.should == "Comet" }
       specify { Factory.build(:plan, cycle: "year", name: "comet").title.should == "Comet (yearly)" }
       specify { Factory.build(:plan, cycle: "month", name: "comet").title(always_with_cycle: true).should == "Comet (monthly)" }
@@ -230,7 +232,7 @@ describe Plan do
       it { Factory.build(:plan, :name => "custom").support.should == "priority" }
       it { Factory.build(:plan, :name => "custom1").support.should == "priority" }
     end
-    
+
     describe "#price(site)" do
       before(:all) do
         @beta_user = Factory(:user, invitation_token: nil)
@@ -306,7 +308,7 @@ describe Plan do
         it "should not return the discounted price" do
           @paid_plan2.price(@beta_user_paid_site1).should == 1990
         end
-        
+
         it { @paid_plan2.price(@beta_user_paid_site11).should == 1990 }
       end
     end

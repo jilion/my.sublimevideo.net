@@ -124,12 +124,10 @@ class Plan < ActiveRecord::Base
       "Free LaunchPad"
     elsif sponsored_plan?
       "Sponsored"
-    elsif custom_plan?
-      "Custom"
     elsif options[:always_with_cycle]
-      name.titleize + (cycle == 'year' ? ' (yearly)' : ' (monthly)')
+      name.gsub(/\d/, '').titleize + (cycle == 'year' ? ' (yearly)' : ' (monthly)')
     else
-      name.titleize + (cycle == 'year' ? ' (yearly)' : '')
+      name.gsub(/\d/, '').titleize + (cycle == 'year' ? ' (yearly)' : '')
     end
   end
 
