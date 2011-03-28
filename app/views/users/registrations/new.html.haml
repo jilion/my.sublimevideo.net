@@ -10,29 +10,17 @@
   .spacer
 
 = title_and_content_header("Sign Up")
--# = content_for :header do
--#   :javascript
--#     function toggleCheckbox() {
--#       $('company_fields_box').toggle();
--#     }
--#     document.observe("dom:loaded", function() {
--#       var companyCheckbox = $('user_use_company'), companyBox = $('company_fields_box');
--#       if (companyCheckbox.checked) {
--#         companyBox.show();
--#       }
--#       $('user_use_company').on('click', toggleCheckbox);
--#     });
-    
+
 = form_for @resource, :as => resource_name, :url => "/signup", :html => { :class => "main_form" } do |f|
-  
+
   .entry.email
     = f.label :email, "Email", :class => "icon"
     = f.text_field :email, :class => "text", :placeholder => "Email", :required => true
-    
+
   .entry.password
     = f.label :password, "", :class => "icon"
     = f.password_field :password, :class => "text show_password", :placeholder => "Password", :required => true
-    
+
   .entry
     .first_name.left_field
       = f.label :first_name, "First name", :class => "icon"
@@ -41,7 +29,7 @@
       = f.label :last_name, "Last name", :class => "icon"
       = f.text_field :last_name, :class => "text no_icon", :placeholder => "Last name", :required => true
     .spacer
-    
+
   .entry.select
     .country.left_field
       = f.label :country, "Country", :class => "icon"
@@ -52,13 +40,14 @@
     .spacer
   .optional_fields
     -# %h4= "Optional fields"
-    .entry.company_info
+    .entry.company_info.select
       .company_name.left_field
         = f.label :company_name, "Company name", :class => "icon"
         = f.text_field :company_name, :class => "text no_icon", :placeholder => "Company name"
-      .company_url.right_field
-        = f.label :company_url, "Website", :class => "icon"
-        = f.text_field :company_url, :class => "text no_icon", :placeholder => "Website"
+      .company_employees.right_field
+        = f.label :company_employees, "Company size", :class => "icon"
+        = f.select :company_employees, options_for_select(["Company size", "1 employee", "2-5 employees", "6-20 employees", "21-100 employees", "101-1000 employees", ">1001 employees"], :disabled => "Company size")
+
       .spacer
     .entry.use
       %label.main= "Use of SublimeVideo:"
@@ -74,40 +63,20 @@
       .checkbox_wrap
         = f.check_box :use_clients
         = f.label :use_clients, "For my clients"
-      
-  -# #company_fields_box{ :style => (resource.use_company ? "" : "display:none") }
-  -#   .entry
-  -#     .company_name.left_field
-  -#       = f.label :company_name, "Company name", :class => "icon"
-  -#       = f.text_field :company_name, :class => "text no_icon", :placeholder => "Company name"
-  -#     .company_url.right_field
-  -#       = f.label :company_url, "Company website", :class => "icon"
-  -#       = f.text_field :company_url, :class => "text no_icon", :placeholder => "Company website"
-  -#     .spacer
-  -#   .entry.company_job_title
-  -#     = f.label :company_job_title, "Job title", :class => "icon"
-  -#     = f.text_field :company_job_title, :class => "text no_icon", :placeholder => "Job title"
-  -#   .entry.select
-  -#     .company_job_title.left_field
-  -#       = f.label :company_employees, "Company size", :class => "icon"
-  -#       = f.select :company_employees, options_for_select(["Company size", "1 employee", "2-5 employees", "6-20 employees", "21-100 employees", "101-1000 employees", ">1001 employees"], :disabled => "Company size")
-  -#     .company_videos_served.right_field
-  -#       = f.label :company_videos_served, "Nr. of videos served", :class => "icon"
-  -#       = f.select :company_videos_served, options_for_select(["Nr. of videos served", "0-1'000 videos/month", "1'000-10'000 videos/month", "10'000-100'000 videos/month", "100'000-1mio videos/month", ">1mio videos/month", "Don't know"], :disabled => "Nr. of videos served")
-  -#     .spacer
+
   .entry.terms
     .checkbox_wrap
       = f.check_box :terms_and_conditions
       = f.label :terms_and_conditions, "I agree to the #{link_to("Terms & Conditions", page_path("terms"), :onclick => "window.open(this); return false")}.".html_safe
-      
+
   .entry.submit.signup
     = f.submit "Sign Up"
     .spacer
-    
+
   -# #signup_quotes
   -#   %blockquote.wired
   -#     = "A uniform, cross-browser, multiple-codec compatible, HTML5 video-embedding solution."
   -#   %p.author.wired= "Webmonkey, Wired, 2010."
   -#   %blockquote.oreilly
   -#     = "Wow. Sublime Video HTML5 video player. Looks awesome."
-  -#   %p.author.oreilly= "Tim O'Reilly, 2010."    
+  -#   %p.author.oreilly= "Tim O'Reilly, 2010."
