@@ -494,7 +494,7 @@ describe User do
       specify { @site.user.have_beta_sites?.should be_true }
     end
 
-    describe "#beta?", focus: true do
+    describe "#beta?" do
 
       context "with active beta user" do
         subject {  Factory(:user, created_at: Time.utc(2010,10,10), invitation_token: nil) }
