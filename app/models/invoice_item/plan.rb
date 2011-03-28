@@ -16,12 +16,17 @@ class InvoiceItem::Plan < InvoiceItem
   # ====================
 
   def build
+    set_discounted_percentage
     set_started_at_and_ended_at
     set_price_and_amount
     self
   end
 
 private
+
+  def set_discounted_percentage
+    self.discounted_percentage = item.discounted_percentage if !deduct && item.discounted?(site)
+  end
 
   def set_started_at_and_ended_at
     self.started_at = deduct ? site.plan_cycle_started_at : (site.pending_plan_cycle_started_at || site.plan_cycle_started_at)
@@ -41,17 +46,18 @@ end
 #
 # Table name: invoice_items
 #
-#  id         :integer         not null, primary key
-#  type       :string(255)
-#  invoice_id :integer
-#  item_type  :string(255)
-#  item_id    :integer
-#  started_at :datetime
-#  ended_at   :datetime
-#  price      :integer
-#  amount     :integer
-#  created_at :datetime
-#  updated_at :datetime
+#  id                    :integer         not null, primary key
+#  type                  :string(255)
+#  invoice_id            :integer
+#  item_type             :string(255)
+#  item_id               :integer
+#  started_at            :datetime
+#  ended_at              :datetime
+#  discounted_percentage :float
+#  price                 :integer
+#  amount                :integer
+#  created_at            :datetime
+#  updated_at            :datetime
 #
 # Indexes
 #

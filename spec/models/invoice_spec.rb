@@ -158,14 +158,19 @@ describe Invoice do
   end # State Machine
 
   describe "Callbacks" do
-    describe "#before_create" do
-      describe "#set_customer_infos" do
-        subject { Factory(:invoice) }
+    describe "#before_validation, on: create" do
+      before(:all) { @invoice = Factory(:invoice) }
+      subject { @invoice }
 
-        it { subject.customer_full_name.should == subject.user.full_name }
-        it { subject.customer_email.should     == subject.user.email }
-        it { subject.customer_country.should   == subject.user.country }
-        it { subject.customer_company_name.should   == subject.user.company_name }
+      describe "#set_customer_infos" do
+        its(:customer_full_name)    { should == @invoice.user.full_name }
+        its(:customer_email)        { should == @invoice.user.email }
+        its(:customer_country)      { should == @invoice.user.country }
+        its(:customer_company_name) { should == @invoice.user.company_name }
+      end
+
+      describe "#set_site_infos" do
+        its(:site_hostname)         { should == @invoice.site.hostname }
       end
     end
   end
@@ -203,7 +208,7 @@ describe Invoice do
 
   describe "Class Methods" do
 
-    describe ".build", focus: true do
+    describe ".build" do
       before(:all) do
         @paid_plan = Factory(:plan, cycle: "month", price: 1000)
       end
@@ -232,7 +237,7 @@ describe Invoice do
           its(:last_failed_at)       { should be_nil }
           it { should be_open }
         end
-        
+
         context "after beta discount end" do
           before(:all) do
             @user    = Factory(:user, country: 'FR')
@@ -399,7 +404,7 @@ describe Invoice do
           its(:vat_amount)           { should == 0 }
           its(:amount)               { should == 800 }
         end
-        
+
         context "after beta discount end" do
           before(:all) do
             @user    = Factory(:user, country: 'FR')
@@ -433,7 +438,7 @@ describe Invoice do
           its(:vat_amount)           { should == (800 * 0.08).round }
           its(:amount)               { should == 800 + (800 * 0.08).round }
         end
-        
+
         context "after beta discount end" do
           before(:all) do
             @user    = Factory(:user, country: 'CH')
@@ -467,14 +472,10 @@ describe Invoice do
     describe "#last_transaction" do
       it { subject.last_transaction.should == @paid_transaction }
     end
-
-    describe "#last_failed_transaction" do
-      it { subject.last_failed_transaction.should == @failed_transaction2 }
-    end
-
   end # Instance Methods
 
 end
+
 
 
 
@@ -492,11 +493,10 @@ end
 #  customer_email        :string(255)
 #  customer_country      :string(255)
 #  customer_company_name :string(255)
+#  site_hostname         :string(255)
 #  amount                :integer
 #  vat_rate              :float
 #  vat_amount            :integer
-#  discount_rate         :float
-#  discount_amount       :integer
 #  invoice_items_amount  :integer
 #  invoice_items_count   :integer         default(0)
 #  transactions_count    :integer         default(0)

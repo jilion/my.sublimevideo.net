@@ -124,12 +124,10 @@ class Plan < ActiveRecord::Base
       "Free LaunchPad"
     elsif sponsored_plan?
       "Sponsored"
-    elsif custom_plan?
-      "Custom"
     elsif options[:always_with_cycle]
-      name.titleize + (cycle == 'year' ? ' (yearly)' : ' (monthly)')
+      name.gsub(/\d/, '').titleize + (cycle == 'year' ? ' (yearly)' : ' (monthly)')
     else
-      name.titleize + (cycle == 'year' ? ' (yearly)' : '')
+      name.gsub(/\d/, '').titleize + (cycle == 'year' ? ' (yearly)' : '')
     end
   end
 
@@ -146,15 +144,23 @@ class Plan < ActiveRecord::Base
   end
 
   def price(site=nil)
-    if site && site.user.beta? && Time.now.utc < PublicLaunch.beta_transition_ended_on # deduct the first discount only for the first upgrade
+    if discounted?(site)
       if self.yearly?
-        (read_attribute(:price) * 0.8 / 100).to_i * 100
+        (read_attribute(:price) * (1.0 - discounted_percentage) / 100).to_i * 100
       else
-        (read_attribute(:price) * 0.8 / 10).to_i * 10
+        (read_attribute(:price) * (1.0 - discounted_percentage) / 10).to_i * 10
       end
     else
       read_attribute(:price)
     end
+  end
+
+  def discounted?(site)
+    site && site.user.beta? && Time.now.utc < PublicLaunch.beta_transition_ended_on
+  end
+
+  def discounted_percentage
+    0.2
   end
 
 end

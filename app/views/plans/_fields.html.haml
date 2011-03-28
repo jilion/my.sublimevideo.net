@@ -30,7 +30,7 @@
 - else
   - if current_user.beta?
     #beta_discount_box= raw "As a Beta user you benefit from a #{content_tag :strong, "20% discount"} on all paid plans until #{content_tag :strong, "April 15, 2011"} (11:59pm UTC)"
-  
+
   #plans
     - standard_plans = Plan.standard_plans.order(:player_hits.asc, :price.asc)
     %ul
@@ -49,7 +49,6 @@
                 %li= plan_support(standard_plan)
                 %li= "Peak Insurance"
                 %li.last= "SSL Serving"
-                
             .monthly.select_box{ :class => current_plan && current_plan == standard_plan ? 'active' : '' + (current_user.get_discount? && (site.plan.nil? || plan_change_discounted?(site.plan, standard_plan)) ? '' : ' no_discount') }
               = f.label :plan_id, raw(plan_label_content(standard_plan, site)), :for => "plan_#{standard_plan.name}_#{standard_plan.cycle}"
               .radio_wrap
@@ -57,14 +56,14 @@
                 %span.bg
               - if site.persisted? && plan && plan == standard_plan
                 %span.current_label= "Current"
-
-            .yearly.select_box{ :class => current_plan && current_plan == standard_yearly_plan ? 'active' : '' + (current_user.get_discount? && (site.plan.nil? || plan_change_discounted?(site.plan, standard_yearly_plan)) ? '' : ' no_discount') }
-              = f.label :plan_id, raw(plan_label_content(standard_yearly_plan, site)), :for => "plan_#{standard_yearly_plan.name}_#{standard_yearly_plan.cycle}"
-              .radio_wrap
-                = f.radio_button :plan_id, standard_yearly_plan.id, radio_button_options(site, standard_yearly_plan, current_plan, :checked => current_plan && current_plan == standard_yearly_plan)
-                %span.bg
-              - if site.persisted? && plan && plan == standard_yearly_plan
-                %span.current_label= "Current"
+            - if standard_yearly_plan
+              .yearly.select_box{ :class => current_plan && current_plan == standard_yearly_plan ? 'active' : '' + (current_user.get_discount? && (site.plan.nil? || plan_change_discounted?(site.plan, standard_yearly_plan)) ? '' : ' no_discount') }
+                = f.label :plan_id, raw(plan_label_content(standard_yearly_plan, site)), :for => "plan_#{standard_yearly_plan.name}_#{standard_yearly_plan.cycle}"
+                .radio_wrap
+                  = f.radio_button :plan_id, standard_yearly_plan.id, radio_button_options(site, standard_yearly_plan, current_plan, :checked => current_plan && current_plan == standard_yearly_plan)
+                  %span.bg
+                - if site.persisted? && plan && plan == standard_yearly_plan
+                  %span.current_label= "Current"
             .spacer
           .bottom
           %span.save_label= "2 months free"

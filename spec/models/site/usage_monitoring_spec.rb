@@ -27,7 +27,7 @@ describe Site::UsageMonitoring do
       @site.first_plan_upgrade_required_alert_sent_at.should be_nil
     end
 
-    context "with required upgrade site" do
+    pending "TODO BEFORE April 17 !!!!!!!!!!! with required upgrade site" do
       before(:each) do
         Timecop.travel(Time.utc(2011,1,1)) { @site = Factory(:site, plan_id: @plan.id) }
         (1..20).each do |day|

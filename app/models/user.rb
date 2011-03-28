@@ -56,7 +56,7 @@ class User < ActiveRecord::Base
 
   after_save   :newsletter_subscription
 
-  after_update :update_email_on_zendesk, :charge_failed_invoices
+  after_update :update_email_on_zendesk #, :charge_failed_invoices
 
   # =================
   # = State Machine =
@@ -256,11 +256,11 @@ private
       Zendesk.delay(:priority => 25).put("/users/#{zendesk_id}.xml", :user => { :email => email })
     end
   end
-  def charge_failed_invoices
-    if cc_updated_at_changed? && invoices.failed.present?
-      Transaction.delay(:priority => 2).charge_open_and_failed_invoices_by_user_id(id)
-    end
-  end
+  # def charge_failed_invoices
+  #   if cc_updated_at_changed? && invoices.failed.present?
+  #     Transaction.delay(:priority => 2).charge_open_and_failed_invoices_by_user_id(id)
+  #   end
+  # end
 
   # Allow User.invite to assign enthusiast_id
   def mass_assignment_authorizer

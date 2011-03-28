@@ -1,4 +1,5 @@
-= title_and_content_header(truncate_middle(@site.hostname.present? ? @site.hostname : "Edit site", :length => 23))
+= title("#{@site.in_beta_plan? ? "Choose plan" : (@site.in_custom_plan? ? "Plan" : "Change plan")} for #{truncate_middle(@site.hostname || "##{@site.token}", :length => 23)}")
+= content_header(truncate_middle(@site.hostname.present? ? @site.hostname : "Edit site", :length => 23))
 
 #site.edit
   = render '/layouts/segmented_menu'
