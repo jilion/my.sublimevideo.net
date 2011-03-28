@@ -10,7 +10,7 @@ feature "Refunds" do
 
     scenario "visit /refund with no sites refundable" do
       visit '/refund'
-      page.should have_content "Refund"
+      page.should have_content "Request a refund"
       page.should have_content I18n.t('site.refund.no_refund_possible')
     end
 
