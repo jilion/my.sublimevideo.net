@@ -164,15 +164,15 @@ class User < ActiveRecord::Base
   def have_beta_sites?
     sites.any? { |site| site.in_beta_plan? }
   end
-  
+
   def beta?
-    invitation_token.nil?
+    invitation_token.nil? && created_at < PublicLaunch.beta_transition_started_on.midnight
   end
 
   def full_name
     first_name.to_s + ' ' + last_name.to_s
   end
-  
+
   def support
     sites.active.map { |s| s.plan.support }.include?("priority") ? "priority" : "standard"
   end
