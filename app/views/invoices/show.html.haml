@@ -13,6 +13,10 @@
           %strong= "Invoice status: "
           = charging_status(invoice)
         %span.stamp{ :class => invoice.state }= invoice.state
+        %p
+          %strong= "Site hostname: "
+          = invoice.site_hostname
+          = "(token: #{invoice.site.token})"
     %td.user_info
       %h4= "Bill to:"
       = render "/invoices/customer_billing_info", :invoice => invoice

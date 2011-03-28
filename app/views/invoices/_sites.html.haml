@@ -1,17 +1,12 @@
 %table#detail
   %tr
-    %th.left= "Site"
+    %th.left= "Plan"
     %th.left= "Details"
     %th= "Amount (US $)"
   - invoice.invoice_items.each do |invoice_item|
     %tr
       %td.title
-        %h3= invoice.site.hostname
+        %h3= invoice_item.item.title(always_with_cycle: true)
       = render "/invoices/plan_invoice_item", :plan_invoice_item => invoice_item
 
-    -# %tr.subtotal
-    -#   %td.right{ :colspan => 2 }
-    -#     = "Subtotal for"
-    -#     %strong= site.hostname
-    -#   %td.total= display_amount(plan_invoice_item.amount)
   = render "/invoices/total", :invoice => invoice
