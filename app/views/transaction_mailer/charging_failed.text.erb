@@ -1,12 +1,13 @@
 <%= t("mailer.intro_name", name: @transaction.user.full_name) %>
 
-There has been a payment error, your credit card could not be charged.
+There has been a problem processing your payment.
+Your credit card could not be charged.
 
 <% if @transaction.user.cc_expired? %>
 Please update your credit card information using the following link:
 https://<%= ActionMailer::Base.default_url_options[:host] %>/card/edit
 <% else %>
-Please use the following link to see the failed transaction, review the invoice and retry the payment:
+Please use the following link to see the sites with payment errors and retry the payment:
 https://<%= ActionMailer::Base.default_url_options[:host] %>/sites
 <% end %>
 
@@ -14,4 +15,3 @@ If you have any questions, please use our support form:
 https://<%= ActionMailer::Base.default_url_options[:host] %>/support#billing
 
 <%= t("mailer.signature") %>
-
