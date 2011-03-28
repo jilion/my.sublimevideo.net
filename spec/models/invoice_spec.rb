@@ -467,11 +467,6 @@ describe Invoice do
     describe "#last_transaction" do
       it { subject.last_transaction.should == @paid_transaction }
     end
-
-    describe "#last_failed_transaction" do
-      it { subject.last_failed_transaction.should == @failed_transaction2 }
-    end
-
   end # Instance Methods
 
 end

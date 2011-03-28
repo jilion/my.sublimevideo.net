@@ -108,10 +108,6 @@ class Invoice < ActiveRecord::Base
     transactions.order(:created_at.desc).first
   end
 
-  def last_failed_transaction
-    transactions.failed.order(:created_at.desc).first
-  end
-
 private
 
   def build_invoice_items
