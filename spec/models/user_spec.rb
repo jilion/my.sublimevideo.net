@@ -426,47 +426,48 @@ describe User do
       end
     end
 
-    describe "after_update :charge_failed_invoices" do
-      context "with no failed invoices" do
-        it "should not delay Class#charge" do
-          user.cc_updated_at = Time.now.utc
-          user.save
-          Delayed::Job.count.should == 1
-        end
-      end
-
-      context "with failed invoices" do
-        before(:all) do
-          @user  = Factory(:user)
-          @site1 = Factory(:site, user: @user)
-          @site2 = Factory(:site, user: @user)
-          Factory(:invoice, site: @site1, state: 'paid')
-          Factory(:invoice, site: @site2, state: 'failed')
-        end
-        subject { @user }
-
-        it "should not delay Class#charge if cc_updated_at has not changed" do
-          subject.reload.country = 'FR'
-          lambda { subject.save }.should_not change(Delayed::Job, :count)
-        end
-
-        it "should delay Class#charge if the user has failed invoices and cc_updated_at has changed" do
-          subject.reload.cc_updated_at = Time.now.utc
-          lambda { subject.save }.should change(Delayed::Job, :count).by(1)
-          Delayed::Job.last.name.should == 'Class#charge_open_and_failed_invoices_by_user_id'
-        end
-
-        context "with a suspended user" do
-          before(:all) { subject.reload.update_attribute(:state, 'suspended') }
-
-          it "should delay Class#charge if the user has failed invoices and cc_updated_at has changed" do
-            subject.cc_updated_at = Time.now.utc
-            lambda { subject.save }.should change(Delayed::Job, :count).by(1)
-            Delayed::Job.last.name.should == 'Class#charge_open_and_failed_invoices_by_user_id'
-          end
-        end
-      end
-    end
+    # describe "after_update :charge_failed_invoices" do
+    #   context "with no failed invoices" do
+    #     it "should not delay Class#charge" do
+    #       user.cc_updated_at = Time.now.utc
+    #       user.save
+    #       Delayed::Job.count.should == 1
+    #     end
+    #   end
+    # 
+    #   context "with failed invoices" do
+    #     before(:all) do
+    #       @user  = Factory(:user)
+    #       @site1 = Factory(:site, user: @user)
+    #       @site2 = Factory(:site, user: @user)
+    #       Factory(:invoice, site: @site1, state: 'paid')
+    #       Factory(:invoice, site: @site2, state: 'failed')
+    #     end
+    #     subject { @user }
+    # 
+    #     it "should not delay Class#charge if cc_updated_at has not changed" do
+    #       subject.reload.country = 'FR'
+    #       lambda { subject.save }.should_not change(Delayed::Job, :count)
+    #     end
+    # 
+    #     it "should delay Class#charge if the user has failed invoices and cc_updated_at has changed" do
+    #       subject.reload.cc_updated_at = Time.now.utc
+    #       lambda { subject.save }.should change(Delayed::Job, :count).by(1)
+    #       Delayed::Job.last.name.should == 'Class#charge_open_and_failed_invoices_by_user_id'
+    #     end
+    # 
+    #     context "with a suspended user" do
+    #       before(:all) { subject.reload.update_attribute(:state, 'suspended') }
+    # 
+    #       it "should delay Class#charge if the user has failed invoices and cc_updated_at has changed" do
+    #         subject.cc_updated_at = Time.now.utc
+    #         lambda { subject.save }.should change(Delayed::Job, :count).by(1)
+    #         Delayed::Job.last.name.should == 'Class#charge_open_and_failed_invoices_by_user_id'
+    #       end
+    #     end
+    #   end
+    # end
+    
   end
 
   describe "attributes accessor" do
