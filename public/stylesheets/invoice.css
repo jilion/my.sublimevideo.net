@@ -74,6 +74,8 @@ table {
   position:relative;
 }
 
+.invoice_info strong.failed {color:#b6000e;}
+
 .invoice_info span.stamp {
   position:absolute;
   top:-60px;
