@@ -4,9 +4,6 @@
 - next_cycle_plan = site.next_cycle_plan
 - current_plan = pending_plan || next_cycle_plan || plan # current plan for the view (could be in case of rendering view with errors)
 
-- if site.new_record? || plan.dev_plan? || plan.beta_plan?
-  #beta_discount_box= raw "As a Beta user you benefit from a #{content_tag :strong, "20% discount"} on all paid plans until #{content_tag :strong, "April 15, 2011"} (11:59pm UTC)"
-
 - if site.errors.key?(:plan)
   .inline_errors.plan
     %span= site.errors[:plan].first
@@ -31,14 +28,18 @@
     %p
       %small= link_to "(See standard plan)", { :custom_plan => nil }, :class => "hl"
 - else
+  - if current_user.beta?
+    #beta_discount_box= raw "As a Beta user you benefit from a #{content_tag :strong, "20% discount"} on all paid plans until #{content_tag :strong, "April 15, 2011"} (11:59pm UTC)"
+  
   #plans
     - standard_plans = Plan.standard_plans.order(:player_hits.asc, :price.asc)
     %ul
       - i = 0
       - standard_plans.each do |standard_plan|
         - next if standard_plan.yearly?
+        - standard_yearly_plan = standard_plans.find { |p| p.name == standard_plan.name && p.yearly? }
         - i += 1
-        %li.discount{ :class => "#{standard_plan.name} box_#{i}" }
+        %li{ :class => "#{standard_plan.name} box_#{i}" + (current_user.get_discount? ? ' discount' : '') }
           .wrapper
             .header
               %h3.title= content_tag(:strong, standard_plan.name.titleize)
@@ -48,21 +49,22 @@
                 %li= plan_support(standard_plan)
                 %li= "Peak Insurance"
                 %li.last= "SSL Serving"
-            .monthly.select_box{ :class => current_plan && current_plan == standard_plan ? 'active' : '' }
+                
+            .monthly.select_box{ :class => current_plan && current_plan == standard_plan ? 'active' : '' + (current_user.get_discount? && (site.plan.nil? || plan_change_discounted?(site.plan, standard_plan)) ? '' : ' no_discount') }
               = f.label :plan_id, raw(plan_label_content(standard_plan, site)), :for => "plan_#{standard_plan.name}_#{standard_plan.cycle}"
               .radio_wrap
                 = f.radio_button :plan_id, standard_plan.id, radio_button_options(site, standard_plan, current_plan, :checked => current_plan && current_plan == standard_plan)
                 %span.bg
               - if site.persisted? && plan && plan == standard_plan
                 %span.current_label= "Current"
-            - if standard_yearly_plan = standard_plans.find { |p| p.name == standard_plan.name && p.yearly? }
-              .yearly.select_box{ :class => current_plan && current_plan == standard_yearly_plan ? 'active' : '' }
-                = f.label :plan_id, raw(plan_label_content(standard_yearly_plan, site)), :for => "plan_#{standard_yearly_plan.name}_#{standard_yearly_plan.cycle}"
-                .radio_wrap
-                  = f.radio_button :plan_id, standard_yearly_plan.id, radio_button_options(site, standard_yearly_plan, current_plan, :checked => current_plan && current_plan == standard_yearly_plan)
-                  %span.bg
-                - if site.persisted? && plan && plan == standard_yearly_plan
-                  %span.current_label= "Current"
+
+            .yearly.select_box{ :class => current_plan && current_plan == standard_yearly_plan ? 'active' : '' + (current_user.get_discount? && (site.plan.nil? || plan_change_discounted?(site.plan, standard_yearly_plan)) ? '' : ' no_discount') }
+              = f.label :plan_id, raw(plan_label_content(standard_yearly_plan, site)), :for => "plan_#{standard_yearly_plan.name}_#{standard_yearly_plan.cycle}"
+              .radio_wrap
+                = f.radio_button :plan_id, standard_yearly_plan.id, radio_button_options(site, standard_yearly_plan, current_plan, :checked => current_plan && current_plan == standard_yearly_plan)
+                %span.bg
+              - if site.persisted? && plan && plan == standard_yearly_plan
+                %span.current_label= "Current"
             .spacer
           .bottom
           %span.save_label= "2 months free"

@@ -33,6 +33,7 @@ class Site < ActiveRecord::Base
 
   has_many :invoices, :class_name => "::Invoice"
   has_one  :last_invoice, :class_name => "::Invoice", :order => :created_at.desc
+  has_one  :last_paid_invoice, :class_name => "::Invoice", :conditions => { :state => 'paid' }, :order => :created_at.desc
 
   has_many :invoice_items, :through => :invoices
   has_many :transactions,  :through => :invoices

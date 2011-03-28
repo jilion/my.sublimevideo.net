@@ -495,8 +495,8 @@ describe User do
     end
 
     describe "#beta?" do
-      specify { Factory.build(:user, :enthusiast_id => 1).beta?.should be_true }
-      specify { Factory.build(:user, :enthusiast_id => nil).beta?.should be_false }
+      specify { Factory.build(:user, :invitation_token => nil).beta?.should be_true }
+      specify { Factory.build(:user, :invitation_token => "123hjjad").beta?.should be_false }
     end
 
     describe "#support" do

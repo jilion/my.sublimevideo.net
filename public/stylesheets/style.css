@@ -1830,6 +1830,14 @@ input.link_looks.delete {
   font-size:18px;
 }
 
+#plans li.discount .select_box.no_discount .pricing {
+  top:28px;
+}
+
+#plans li.discount .select_box.no_discount .pricing strong.price {
+  font-size:24px;
+}
+
 #plans .select_box.active strong.price, #plans li.discount .select_box.active strong.new_price {
   color:#d5ddeb;
   -webkit-font-smoothing:antialiased;

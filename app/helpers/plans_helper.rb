@@ -1,25 +1,14 @@
 module PlansHelper
 
   def plan_label_content(plan, site=nil, options={})
-    discount = plan.price != plan.price(site)
+    discount = current_user.get_discount? && (site.plan.nil? || plan_change_discounted?(site.plan, plan))
     content_tag(:span, :class => "pricing") do
-
-      if discount
-        price_box = content_tag(:strong, :class => "price") do
-          display_amount_with_sup(plan.price) + (discount ? content_tag(:span, "", :class => "strike") : '')
-        end
-      else
-        price_box = content_tag(:strong, :class => "price") do
-          display_amount_with_sup(plan.price)
-        end
+      price_box = content_tag(:strong, :class => "price") do
+        display_amount_with_sup(plan.price) + (discount ? content_tag(:span, "", :class => "strike") : '')
       end
 
-      if discount
-        price_box += content_tag(:span, :class => "details_label") do
-          (plan.yearly? ? "per year" : "per month")
-        end
-      else
-        price_box += (plan.yearly? ? "per year" : "per month")
+      price_box += content_tag(:span, :class => "details_label") do
+        (plan.yearly? ? "per year" : "per month")
       end
 
       if discount
@@ -39,6 +28,11 @@ module PlansHelper
       end
       price_box
     end
+  end
+
+  def plan_change_discounted?(old_plan, new_plan)
+    type = plan_change_type(old_plan, new_plan)
+    type.nil? || !(type =~ /^delayed/)
   end
 
   def plan_change_type(old_plan, new_plan)
@@ -75,7 +69,7 @@ module PlansHelper
     options["data-plan_price"] = display_amount(plan.price(site))
     unless site.new_record?
       options["data-plan_change_type"]  = plan_change_type(current_plan, plan)
-      options["data-plan_update_price"] = display_amount(current_plan.upgrade?(plan) ? plan.price(site) - current_plan.price(site, true) : plan.price(site))
+      options["data-plan_update_price"] = display_amount(current_plan.upgrade?(plan) ? plan.price(plan_change_discounted?(site.plan, plan) ? site : nil) - current_plan.price(site) : plan.price(plan_change_discounted?(site.plan, plan) ? site : nil))
       options["data-plan_update_date"]  = l((current_plan.upgrade?(plan) ? site.plan_cycle_started_at : site.plan_cycle_ended_at && site.plan_cycle_ended_at.tomorrow.midnight) || Time.now.utc.midnight, :format => :named_date)
     end
     options
