@@ -1,0 +1,21 @@
+%table#detail
+  %tr
+    %th.left= "Site"
+    %th.left= "Details"
+    %th= "Amount (US $)"
+  - invoice.invoice_items.each do |invoice_item|
+    %tr
+      %td.title
+        %h3= invoice.site.hostname
+      = render "/invoices/plan_invoice_item", :plan_invoice_item => invoice_item
+
+  - if invoice.vat_amount > 0
+    %tr.pre_total
+      %td.right{ :colspan => 2 }= "VAT #{display_percentage(invoice.vat_rate)}:"
+      %td.total= display_amount(invoice.vat_amount, :decimals => 2)
+
+  %tr.final_total
+    %td.right{ :colspan => 2 }
+      %strong Total
+    %td.total
+      %strong= display_amount(invoice.amount, :decimals => 2)

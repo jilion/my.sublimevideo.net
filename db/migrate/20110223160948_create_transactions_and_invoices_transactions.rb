@@ -6,6 +6,9 @@ class CreateTransactionsAndInvoicesTransactions < ActiveRecord::Migration
       t.string  :state    # unprocessed, failed, paid
       t.integer :amount   # in cents
       t.text    :error
+      t.string  :cc_type
+      t.string  :cc_last_digits
+      t.date    :cc_expire_on
 
       # untouched params from Ogone
       t.string  :pay_id    # PAYID field
