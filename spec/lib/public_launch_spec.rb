@@ -6,8 +6,8 @@ describe PublicLaunch do
 
   describe ".days_left_before_end_of_beta_transition" do
     it "should return days to end of beta" do
-      Timecop.travel(Date.new(2011, 4, 2))
-      PublicLaunch.days_left_before_end_of_beta_transition.should == 14
+      Timecop.travel(Date.new(2011, 4, 10))
+      PublicLaunch.days_left_before_end_of_beta_transition.should == 6
       Timecop.return
     end
   end

@@ -1,17 +1,43 @@
 module PlansHelper
 
-  def plan_label_content(plan, options={})
-    pricing_div = content_tag(:span, :class => "pricing") do
-      content_tag(:strong, :class => "price") do
-        display_amount_with_sup(plan.price) +
-        content_tag(:span, "", :class => "strike")
-      end +
-      content_tag(:strong, :class => "new_price") do
-        display_amount_with_sup(plan.price)
-      end +
-      content_tag(:span, :class => "name") do
+  def plan_label_content(plan, site=nil, options={})
+    discount = plan.price != plan.price(site)
+    content_tag(:span, :class => "pricing") do
+
+      if discount
+        price_box = content_tag(:strong, :class => "price") do
+          display_amount_with_sup(plan.price) + (discount ? content_tag(:span, "", :class => "strike") : '')
+        end
+      else
+        price_box = content_tag(:strong, :class => "price") do
+          display_amount_with_sup(plan.price)
+        end
+      end
+
+      if discount
+        price_box += content_tag(:span, :class => "details_label") do
+          (plan.yearly? ? "per year" : "per month")
+        end
+      else
+        price_box += (plan.yearly? ? "per year" : "per month")
+      end
+
+      if discount
+        price_box += content_tag(:strong, :class => "new_price") do
+          display_amount_with_sup(plan.price(site))
+        end
+      end
+
+      price_box += content_tag(:span, :class => "name") do
         plan.name.gsub(/\d/, '').titleize
-      end + (plan.yearly? ? "per year" : "per month")
+      end
+
+      if discount
+        price_box += content_tag(:span, :class => "new_details_label") do
+          raw(plan.yearly? ? "#{content_tag :strong, "first"} year" : "#{content_tag :strong, "first"} month")
+        end
+      end
+      price_box
     end
   end
 
@@ -46,10 +72,10 @@ module PlansHelper
     options[:id]    ||= plan.dev_plan? ? "plan_dev" : "plan_#{plan.name}_#{plan.cycle}"
     options[:class] ||= "plan_radio"
     options["data-plan_title"] = plan.title(always_with_cycle: true)
-    options["data-plan_price"] = display_amount(plan.price)
+    options["data-plan_price"] = display_amount(plan.price(site))
     unless site.new_record?
       options["data-plan_change_type"]  = plan_change_type(current_plan, plan)
-      options["data-plan_update_price"] = display_amount(current_plan.upgrade?(plan) ? plan.price - current_plan.price : plan.price)
+      options["data-plan_update_price"] = display_amount(current_plan.upgrade?(plan) ? plan.price(site) - current_plan.price(site, true) : plan.price(site))
       options["data-plan_update_date"]  = l((current_plan.upgrade?(plan) ? site.plan_cycle_started_at : site.plan_cycle_ended_at && site.plan_cycle_ended_at.tomorrow.midnight) || Time.now.utc.midnight, :format => :named_date)
     end
     options

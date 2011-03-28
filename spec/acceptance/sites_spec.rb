@@ -451,7 +451,9 @@ feature "Sites" do
           click_link "Edit rymai.com"
           current_url.should =~ %r(http://[^/]+/sites/#{@site.token}/edit)
           page.should have_content('rymai.com')
-          page.should have_content('If you delete your site, you will not be refunded.')
+          
+          page.should have_content I18n.t('site.edit.delete_site_info1', domain: "rymai.com")
+          page.should have_content I18n.t('site.edit.delete_site_info2')
           
           click_link "Change plan"
           current_url.should =~ %r(http://[^/]+/sites/#{@site.token}/plan/edit)
@@ -475,7 +477,7 @@ feature "Sites" do
         VoxcastCDN.stub_chain(:delay, :purge).twice
 
         click_link "Edit google.com"
-        click_button "Delete my site"
+        click_button "Delete site"
 
         fill_in "Password", :with => "123456"
         click_button "Done"

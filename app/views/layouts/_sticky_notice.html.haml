@@ -13,6 +13,6 @@
 
       - if current_user.have_beta_sites?
         - if PublicLaunch.days_left_before_end_of_beta_transition >= 1
-          %li= "#{pluralize(PublicLaunch.days_left_before_end_of_beta_transition, 'day')} left to choose a plan for your beta sites."
+          %li= t('days_left_to_choose_a_plan', count: PublicLaunch.days_left_before_end_of_beta_transition)
         - elsif PublicLaunch.days_left_before_end_of_beta_transition == 0
-          %li= "Your beta sites will be rollbacked to development-only sites today!"
+          %li= t('rollbacked_to_dev_today')

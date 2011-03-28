@@ -29,7 +29,7 @@ private
   end
 
   def set_price_and_amount
-    self.price  = item.price(site)
+    self.price  = refund ? item.price(site, true) : item.price
     self.amount = (refund ? -1 : 1) * price
   end
 

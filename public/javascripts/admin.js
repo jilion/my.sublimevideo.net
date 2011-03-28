@@ -24,6 +24,25 @@ document.observe("dom:loaded", function() {
     })
   })
 
+  if (history && history.pushState) {
+    Event.observe(window, 'popstate', function(event) {
+      if (event.state.isHistory) {
+        MySublimeVideo.showTableSpinner();
+        new Ajax.Request(location.href, {
+          method: 'get'
+        });
+      };
+    });
+  }
+
+  MySublimeVideo.remoteSortLink = function(element) {
+    MySublimeVideo.makeRemoteLinkSticky(element);
+    MySublimeVideo.showTableSpinner();
+    if (history && history.pushState) {
+      history.pushState({isHistory:true}, document.title, element.href);
+    };
+  };
+
 });
 
 // ===========

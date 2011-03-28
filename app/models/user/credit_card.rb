@@ -23,14 +23,15 @@ module User::CreditCard
     end
   end
 
-  # ====================
-  # = Instance Methods =
-  # ====================
+  # TODO Remove after public launch
+  def self.uniquify_all_empty_cc_alias
+    User.where(cc_alias: nil).each { |user| user.uniquify_cc_alias }
+  end
 
   # ===============
   # = Validations =
   # ===============
-  
+
   def validates_credit_card_attributes
     return if credit_card.valid?
 
@@ -59,6 +60,10 @@ module User::CreditCard
     end
   end
 
+  # ====================
+  # = Instance Methods =
+  # ====================
+
   def credit_card
     @credit_card ||= begin
       ActiveMerchant::Billing::CreditCard.new(
@@ -72,7 +77,18 @@ module User::CreditCard
       )
     end
   end
-  
+
+  # TODO Remove after public launch
+  def uniquify_cc_alias
+    return if cc_alias?
+
+    chars = Array('A'..'Z') + Array('0'..'9')
+    begin
+      self.cc_alias = Array.new(8) { chars.to_a[rand(chars.to_a.size)] }.join
+    end while User.exists?(cc_alias: cc_alias)
+    save
+  end
+
   def reset_credit_card_attributes
     %w[cc_brand cc_number cc_expiration_month cc_expiration_year cc_full_name cc_verification_value].each { |att| self.send("#{att}=", nil) }
   end
@@ -119,22 +135,22 @@ module User::CreditCard
     self.pending_cc_updated_at  = Time.now.utc
     reset_credit_card_attributes
   end
-  
+
   def apply_pending_credit_card_info
     self.cc_type                = pending_cc_type
     self.cc_last_digits         = pending_cc_last_digits
     self.cc_expire_on           = pending_cc_expire_on
     self.cc_updated_at          = pending_cc_updated_at
-    
+
     # force update
     self.pending_cc_type_will_change!
     self.pending_cc_last_digits_will_change!
-    
+
     self.pending_cc_type        = nil
     self.pending_cc_last_digits = nil
     self.pending_cc_expire_on   = nil
     self.pending_cc_updated_at  = nil
-    
+
     self.save
   end
 
@@ -201,7 +217,7 @@ module User::CreditCard
         Notify.send("Credit card authorization for user ##{self.id} (PAYID: #{authorize_params["PAYID"]}) has an uncertain state, please investigate quickly!")
       end
     end
-    
+
     self.errors.empty? && self.save
   end
 

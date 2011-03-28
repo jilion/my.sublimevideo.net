@@ -12,7 +12,7 @@ describe User::CreditCard do
       its(:cc_last_digits) { should be_nil }
       its(:cc_expire_on)   { should be_nil }
       its(:cc_updated_at)  { should be_nil }
-      
+
       its(:cc_brand)              { should == 'visa' }
       its(:cc_full_name)          { should == 'John Doe Huber' }
       its(:cc_number)             { should == '4111111111111111' }
@@ -67,14 +67,14 @@ describe User::CreditCard do
       its(:pending_cc_last_digits) { should be_nil }
       its(:pending_cc_expire_on)   { should be_nil }
       its(:pending_cc_updated_at)  { should be_nil }
-      
+
       its(:cc_brand)              { should be_nil }
       its(:cc_full_name)          { should be_nil }
       its(:cc_number)             { should be_nil }
       its(:cc_expiration_year)    { should be_nil }
       its(:cc_expiration_month)   { should be_nil }
       its(:cc_verification_value) { should be_nil }
-      
+
       it { should be_valid }
       it { should be_credit_card }
       it { should be_cc }
@@ -163,20 +163,20 @@ describe User::CreditCard do
         user.should be_valid
       end
     end
-  
+
     describe "credit card full name" do
       it "should not allow blank" do
         user = Factory.build(:user_no_cc, valid_cc_attributes.merge(cc_full_name: nil))
         user.should_not be_valid
         user.errors[:cc_full_name].should == ["can't be blank"]
       end
-    
+
       it "should allow string" do
         user = Factory.build(:user_no_cc, valid_cc_attributes.merge(cc_full_name: "Jime"))
         user.should be_valid
       end
     end
-    
+
     describe "credit card verification value" do
       it "should not allow blank" do
         user = Factory.build(:user_no_cc, valid_cc_attributes.merge(cc_verification_value: nil))
@@ -211,6 +211,17 @@ describe User::CreditCard do
       end
     end
 
+    describe ".uniquify_all_empty_cc_alias" do
+
+      it "should set all empty cc_alias" do
+        user = Factory(:user)
+        user.update_attribute(:cc_alias, nil)
+        user.reload.cc_alias.should be_nil
+        User::CreditCard.uniquify_all_empty_cc_alias
+        user.reload.cc_alias.should =~ /^[A-Z0-9]{8}$/
+      end
+    end
+
   end
 
   describe "Instance Methods" do
@@ -222,7 +233,7 @@ describe User::CreditCard do
         it "should return a ActiveMerchant::Billing::CreditCard instance" do
           first_credit_card = subject.credit_card
           subject.credit_card.should == first_credit_card
-          
+
           subject.credit_card.should be_an_instance_of(ActiveMerchant::Billing::CreditCard)
           subject.credit_card.type.should == valid_cc_attributes[:cc_brand]
           subject.credit_card.number.should == valid_cc_attributes[:cc_number]
@@ -232,19 +243,19 @@ describe User::CreditCard do
           subject.credit_card.last_name.should == valid_cc_attributes[:cc_full_name].split(' ').drop(1).join(" ")
           subject.credit_card.verification_value.should == valid_cc_attributes[:cc_verification_value]
         end
-        
+
         it "should memoize the ActiveMerchant::Billing::CreditCard instance" do
           first_credit_card = subject.credit_card
           subject.credit_card.should == first_credit_card
         end
-        
+
         describe "when new attributes are set" do
           it "should not memoize the first ActiveMerchant::Billing::CreditCard if new attributes are given" do
             user = Factory(:user_no_cc, valid_cc_attributes)
             first_credit_card = user.credit_card
             user = User.find(user.id)
             user.attributes = valid_cc_attributes_master
-            
+
             user.credit_card.should be_an_instance_of(ActiveMerchant::Billing::CreditCard)
             user.credit_card.should_not == first_credit_card
             user.credit_card.type.should == valid_cc_attributes_master[:cc_brand]
@@ -266,6 +277,23 @@ describe User::CreditCard do
           subject.credit_card.should be_an_instance_of(ActiveMerchant::Billing::CreditCard)
         end
       end
+    end
+
+    describe "uniquify_cc_alias" do
+
+      it "should set empty cc_alias" do
+        user = Factory.build(:user, cc_alias: nil)
+        user.cc_alias.should_not be_present
+        user.uniquify_cc_alias
+        user.reload.cc_alias.should =~ /^[A-Z0-9]{8}$/
+      end
+
+      it "should not overwrite existing cc_alias" do
+        user = Factory(:user)
+        user.cc_alias.should be_present
+        expect { user.uniquify_cc_alias }.should_not change(user, :cc_alias)
+      end
+
     end
 
     describe "#cc_full_name=" do
@@ -384,7 +412,7 @@ describe User::CreditCard do
       describe "when cc attributes present" do
         subject { Factory.build(:user_no_cc, valid_cc_attributes) }
         before(:each) { subject.pend_credit_card_info; subject.save; subject.reload; }
-        
+
         its(:cc_type)        { should be_nil }
         its(:cc_last_digits) { should be_nil }
         its(:cc_expire_on)   { should be_nil }
@@ -399,7 +427,7 @@ describe User::CreditCard do
         @user = Factory(:user_no_cc, valid_cc_attributes)
       end
       subject { @user.reload.apply_pending_credit_card_info; @user }
-      
+
       its(:cc_type)                { should == 'visa' }
       its(:cc_last_digits)         { should == '1111' }
       its(:cc_expire_on)           { should == 1.year.from_now.end_of_month.to_date }
@@ -413,15 +441,15 @@ describe User::CreditCard do
     describe "#check_credit_card" do
       context "user is not valid" do
         subject { user.email = nil; user }
-        
+
         it "should not call Ogone and return false" do
           subject.should_not be_valid
           Ogone.should_not_receive(:authorize)
-          
+
           subject.check_credit_card.should be_false
         end
       end
-      
+
       context "user is valid" do
         context "with valid authorization" do
           use_vcr_cassette "ogone/void_authorization"
@@ -503,14 +531,14 @@ describe User::CreditCard do
       context "user has no registered credit card" do
         before(:each) do
           @user = Factory(:user_no_cc)
-          
+
           @user.cc_type.should be_nil
           @user.cc_last_digits.should be_nil
           @user.cc_expire_on.should be_nil
           @user.cc_updated_at.should be_nil
-          
+
           @user.attributes = valid_cc_attributes
-          
+
           @user.cc_type.should be_nil
           @user.cc_last_digits.should be_nil
           @user.cc_expire_on.should be_nil
@@ -526,7 +554,7 @@ describe User::CreditCard do
             subject.errors.should be_empty
             subject.i18n_notice_and_alert.should be_nil
             subject.d3d_html.should == "<html>No HTML.</html>"
-            
+
             subject.reload
             subject.pending_cc_type.should == 'visa'
             subject.pending_cc_last_digits.should == '1111'
@@ -542,13 +570,13 @@ describe User::CreditCard do
         context "authorized" do
           it "should not add an error on base to the user" do
             subject.should_receive(:void_authorization).with("1234;RES")
-            
+
             response = subject.process_cc_authorize_and_save(@authorized_params)
             response.should be_true
             subject.errors.should be_empty
             subject.i18n_notice_and_alert.should be_nil
             subject.d3d_html.should be_nil
-            
+
             subject.reload
             subject.pending_cc_type.should be_nil
             subject.pending_cc_last_digits.should be_nil
@@ -568,7 +596,7 @@ describe User::CreditCard do
             subject.errors.should be_empty
             subject.i18n_notice_and_alert.should == { notice: I18n.t("transaction.errors.waiting") }
             subject.d3d_html.should be_nil
-            
+
             subject.reload
             subject.pending_cc_type.should == 'visa'
             subject.pending_cc_last_digits.should == '1111'
@@ -629,7 +657,7 @@ describe User::CreditCard do
             subject.errors.should be_empty
             subject.i18n_notice_and_alert.should == { alert: I18n.t("transaction.errors.unknown") }
             subject.d3d_html.should be_nil
-            
+
             subject.reload
             subject.pending_cc_type.should == 'visa'
             subject.pending_cc_last_digits.should == '1111'
@@ -664,7 +692,7 @@ describe User::CreditCard do
             subject.errors.should be_empty
             subject.i18n_notice_and_alert.should be_nil
             subject.d3d_html.should == "<html>No HTML.</html>"
-            
+
             subject.reload
             subject.pending_cc_type.should == 'master'
             subject.pending_cc_last_digits.should == '9999'
@@ -685,7 +713,7 @@ describe User::CreditCard do
             subject.errors.should be_empty
             subject.i18n_notice_and_alert.should be_nil
             subject.d3d_html.should be_nil
-            
+
             subject.reload
             subject.pending_cc_type.should be_nil
             subject.pending_cc_last_digits.should be_nil
@@ -705,7 +733,7 @@ describe User::CreditCard do
             subject.errors.should be_empty
             subject.i18n_notice_and_alert.should == { notice: I18n.t("transaction.errors.waiting") }
             subject.d3d_html.should be_nil
-            
+
             subject.reload
             subject.pending_cc_type.should == 'master'
             subject.pending_cc_last_digits.should == '9999'

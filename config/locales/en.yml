@@ -38,3 +38,9 @@ en:
       refunded: "All your payments for %{hostname} will be refunded in the next few hours."
       refund_unsuccessful: "The refund you requested for %{hostname} was unsuccessful."
       no_refund_possible: "You don't have any site eligible for 30 day money back guarantee."
+
+  rollbacked_to_dev_today: "Your beta sites will be rollbacked to development-only sites today!"
+
+  days_left_to_choose_a_plan:
+    one:                "1 day left to choose a plan for your beta sites."
+    other:              "%{count} days left to choose a plan for your beta sites."

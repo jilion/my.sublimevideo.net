@@ -5,13 +5,13 @@ en:
         notice: "Your credit card information was successfully (and securely) saved."
     tickets:
       create:
-        notice: "Your message has been submitted."
+        notice: "Thanks for your message, we will get back to you as quickly as we can."
     sites:
       update:
         notice: "Site settings were successfully updated."
     plans:
       update:
-        notice: "Site plan were successfully updated."
+        notice: "Site plan was successfully updated."
       destroy:
         notice: "Your plan change for next cycle was successfully cancelled."
     users:

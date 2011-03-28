@@ -346,7 +346,7 @@ describe User do
           subject.apply_pending_credit_card_info
           subject.reload
         end
-        
+
         its(:cc_type)                { should == 'master' }
         its(:cc_last_digits)         { should == '9999' }
         its(:cc_expire_on)           { should == 2.years.from_now.end_of_month.to_date }
@@ -492,6 +492,11 @@ describe User do
       before(:all) { @site = Factory(:site, plan_id: @beta_plan.id) }
 
       specify { @site.user.have_beta_sites?.should be_true }
+    end
+
+    describe "#beta?" do
+      specify { Factory.build(:user, :enthusiast_id => 1).beta?.should be_true }
+      specify { Factory.build(:user, :enthusiast_id => nil).beta?.should be_false }
     end
 
     describe "#support" do
