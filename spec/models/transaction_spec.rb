@@ -243,7 +243,7 @@ describe Transaction do
         end
       end
 
-      describe "after_transition :on => :succeed, :do => :send_charging_succeeded_email", focus: true do
+      describe "after_transition :on => :succeed, :do => :send_charging_succeeded_email" do
         context "from open" do
           subject { Factory(:transaction, invoices: [Factory(:invoice)]) }
 
