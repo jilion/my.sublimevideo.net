@@ -822,6 +822,82 @@ describe Transaction do
       end
     end
 
+    describe "state methods" do
+      before(:all) do
+        @site    = Factory(:site, user: @user, plan_id: @dev_plan.id)
+        @invoice = Factory(:invoice, site: @site, state: 'open')
+      end
+
+      describe "#waiting?" do
+        subject { Factory(:transaction, invoices: [@invoice.reload], status: 51) }
+        
+        it { should be_waiting}
+      end
+
+      describe "#invalid?" do
+        subject { Factory(:transaction, invoices: [@invoice.reload], status: 0) }
+
+        it { should be_invalid }
+      end
+
+      describe "#refused?" do
+        [2, 93].each do |status|
+          subject { Factory(:transaction, invoices: [@invoice.reload], status: status) }
+
+          it { should be_refused }
+        end
+      end
+
+      describe "#unknown?" do
+        [52, 92].each do |status|
+          subject { Factory(:transaction, invoices: [@invoice.reload], status: status) }
+
+          it { should be_unknown }
+        end
+      end
+    end
+    
+    describe "#i18n_error_key" do
+      before(:all) do
+        @site    = Factory(:site, user: @user, plan_id: @dev_plan.id)
+        @invoice = Factory(:invoice, site: @site, state: 'open')
+      end
+
+      describe "waiting" do
+        subject { Factory(:transaction, invoices: [@invoice.reload], status: 51) }
+        
+        its(:i18n_error_key) { should == "waiting" }
+      end
+
+      describe "invalid" do
+        subject { Factory(:transaction, invoices: [@invoice.reload], status: 0) }
+
+        its(:i18n_error_key) { should == "invalid" }
+      end
+
+      describe "refused" do
+        [2, 93].each do |status|
+          subject { Factory(:transaction, invoices: [@invoice.reload], status: status) }
+
+          its(:i18n_error_key) { should == "refused" }
+        end
+      end
+
+      describe "unknown" do
+        [52, 92].each do |status|
+          subject { Factory(:transaction, invoices: [@invoice.reload], status: status) }
+
+          its(:i18n_error_key) { should == "unknown" }
+        end
+      end
+
+      describe "failed by default" do
+        subject { Factory(:transaction, invoices: [@invoice.reload], status: nil) }
+
+        its(:i18n_error_key) { should == "failed" }
+      end
+    end
+
   end
 
 end

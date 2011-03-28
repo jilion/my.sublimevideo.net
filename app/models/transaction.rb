@@ -174,23 +174,23 @@ class Transaction < ActiveRecord::Base
   end
 
   def waiting?
-    nc_status == 0 && status == 51
+    status == 51
   end
 
   def invalid?
-    nc_status == 5
+    status == 0
   end
 
   def refused?
-    [3,5].include?(nc_status)
+    [2, 93].include?(status)
   end
 
   def unknown?
-    nc_status == 2
+    [52, 92].include?(status)
   end
 
   def i18n_error_key
-    %w[waiting invalid refused unknown].detect { |status| self.send("#{status}?") }
+    %w[waiting invalid refused unknown].detect { |status| self.send("#{status}?") } || "failed"
   end
 
   def description

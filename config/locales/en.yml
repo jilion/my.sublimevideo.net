@@ -22,6 +22,12 @@ en:
       separator: "." # US separator
       delimiter: "," # US delimiter
 
+  rollbacked_to_dev_today: "Your beta sites will be rollbacked to development-only sites today!"
+
+  days_left_to_choose_a_plan:
+    one:                "1 day left to choose a plan for your beta sites."
+    other:              "%{count} days left to choose a plan for your beta sites."
+
   site:
     status:
       payment_issue: "Transaction error, click to review your invoice and retry the payment."
@@ -40,8 +46,17 @@ en:
       refund_unsuccessful: "The refund you requested for %{hostname} was unsuccessful."
       no_refund_possible: "You don't have any site eligible for 30 day money back guarantee."
 
-  rollbacked_to_dev_today: "Your beta sites will be rollbacked to development-only sites today!"
+  credit_card:
+    errors:
+      invalid: "Credit card information invalid or incomplete, please retry."
+      refused: "Credit card authorization refused, please retry."
+      waiting: "Credit card authorization will be processed soon."
+      unknown: "Credit card authorization is uncertain, we will get back to you shortly."
 
-  days_left_to_choose_a_plan:
-    one:                "1 day left to choose a plan for your beta sites."
-    other:              "%{count} days left to choose a plan for your beta sites."
+  transaction:
+    errors:
+      invalid: "The payment information are invalid or incomplete, please retry."
+      refused: "The payment has been refused, please retry."
+      waiting: "The payment will be processed soon."
+      unknown: "The payment is uncertain, we will get back to you shortly."
+      failed:  "Transaction error, please review your invoices and retry the payment."
