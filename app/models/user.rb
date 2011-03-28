@@ -15,7 +15,7 @@ class User < ActiveRecord::Base
   # Credit card
   attr_accessible :cc_brand, :cc_full_name, :cc_number, :cc_expiration_year, :cc_expiration_month, :cc_verification_value
 
-  uniquify :cc_alias, :chars => Array('a'..'z') + Array('0'..'9')
+  uniquify :cc_alias, :chars => Array('A'..'Z') + Array('0'..'9')
 
   # ================
   # = Associations =
