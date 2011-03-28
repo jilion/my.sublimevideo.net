@@ -58,6 +58,7 @@ ActiveRecord::Schema.define(:version => 20110223160948) do
     t.integer  "item_id"
     t.datetime "started_at"
     t.datetime "ended_at"
+    t.float    "discounted_percentage"
     t.integer  "price"
     t.integer  "amount"
     t.datetime "created_at"

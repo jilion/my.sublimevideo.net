@@ -8,7 +8,10 @@
       %td.title
         %h3= invoice_item.item.title(always_with_cycle: true)
       %td
-        %p.period= "Period: #{invoice_item_dates(invoice_item)}"
+        %p.period
+          = "Period: #{invoice_item_dates(invoice_item)}"
+          - if invoice_item.discounted_percentage?
+            = "(-#{number_to_percentage(invoice_item.discounted_percentage * 100.0, :precision => 0)} beta discount)"
       %td.total= display_amount(invoice_item.amount, :decimals => 2)
 
   - if invoice.vat_amount > 0

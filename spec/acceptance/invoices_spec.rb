@@ -137,7 +137,7 @@ feature "Invoice actions:" do
       visit "/sites/#{site.token}/invoices"
 
       page.should have_content("You have 1 failed invoices for a total of $#{@invoice.amount / 100.0}.")
-      
+
       puts "before submit : #{site.inspect}"
       VCR.use_cassette('ogone/visa_payment_acceptance') { click_button I18n.t('site.invoices.retry_failed_invoices') }
       puts "after submit : #{site.inspect}"

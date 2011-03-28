@@ -38,6 +38,8 @@ class CreateInvoicesAndInvoiceItems < ActiveRecord::Migration
       t.datetime  :started_at
       t.datetime  :ended_at
 
+      t.float     :discounted_percentage # ex. beta discount 0.2
+
       t.integer   :price  # always positive
       t.integer   :amount # can be negative (deduct)
 
