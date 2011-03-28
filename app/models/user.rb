@@ -15,7 +15,7 @@ class User < ActiveRecord::Base
   # Credit card
   attr_accessible :cc_brand, :cc_full_name, :cc_number, :cc_expiration_year, :cc_expiration_month, :cc_verification_value
 
-  uniquify :cc_alias, :chars => Array('a'..'z') + Array('0'..'9')
+  uniquify :cc_alias, :chars => Array('A'..'Z') + Array('0'..'9')
 
   # ================
   # = Associations =
@@ -158,15 +158,15 @@ class User < ActiveRecord::Base
   # Devise overriding
   # allow suspended user to login (devise)
   def active?
-    %w[active suspended].include?(state) && invitation_token.nil?
+    %w[active suspended].include?(state)
   end
 
   def have_beta_sites?
     sites.any? { |site| site.in_beta_plan? }
   end
-  
+
   def beta?
-    invitation_token.nil?
+    invitation_token.nil? && created_at < PublicLaunch.beta_transition_started_on.midnight
   end
 
   def get_discount?
@@ -176,7 +176,7 @@ class User < ActiveRecord::Base
   def full_name
     first_name.to_s + ' ' + last_name.to_s
   end
-  
+
   def support
     sites.active.map { |s| s.plan.support }.include?("priority") ? "priority" : "standard"
   end

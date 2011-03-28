@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe PublicLaunch do
 
+  its(:beta_transition_started_on) { should == Date.new(2011, 3, 29) }
   its(:beta_transition_ended_on) { should == Date.new(2011, 4, 16) }
 
   describe ".days_left_before_end_of_beta_transition" do

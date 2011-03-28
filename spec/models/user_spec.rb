@@ -495,8 +495,27 @@ describe User do
     end
 
     describe "#beta?" do
-      specify { Factory.build(:user, :invitation_token => nil).beta?.should be_true }
-      specify { Factory.build(:user, :invitation_token => "123hjjad").beta?.should be_false }
+
+      context "with active beta user" do
+        subject {  Factory(:user, created_at: Time.utc(2010,10,10), invitation_token: nil) }
+
+        its(:beta?) { should be_true }
+      end
+      context "with un active beta user" do
+        subject {  Factory(:user, created_at: Time.utc(2010,10,10), invitation_token: 'xxx') }
+
+        its(:beta?) { should be_false }
+      end
+      context "with a standard user (limit)" do
+        subject {  Factory(:user, created_at: Time.utc(2011,3,29).midnight, invitation_token: nil) }
+
+        its(:beta?) { should be_false }
+      end
+      context "with a standard user" do
+        subject {  Factory(:user, created_at: Time.utc(2011,3,30), invitation_token: nil) }
+
+        its(:beta?) { should be_false }
+      end
     end
 
     describe "#support" do
