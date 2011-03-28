@@ -19,7 +19,9 @@
     = render :partial => "devise/shared/links"
   .spacer
 
-#get_an_invitation
+#login_right
   .wrap
-    -#%h3= "Sign Up"
-    = link_to "Sign up now", new_user_registration_url, :class => "button"
+    %h4= "New to SublimeVideo?"
+    %p= link_to "Learn more", "http://sublimevideo.net"
+    %p= "or"
+    = link_to "Sign Up Now", new_user_registration_url, :class => "button"

@@ -9,16 +9,19 @@
       %p= "No invoices"
 
   - else
-    - failed_invoices = @invoices.select { |invoice| invoice.failed? }
-    - if failed_invoices.present?
-      = raw t('site.invoices.count_failed_invoices_with_total_amount', count: failed_invoices.count, total_amount: display_amount(failed_invoices.sum(&:amount)))
-      - if current_user.cc_expired?
-        = t('user.credit_card.expired')
-      - else
-        = form_for @site, :url => retry_site_invoices_path(site_id: @site.token), :html => { :method => 'put' } do |f|
-          = f.submit t('site.invoices.retry_failed_invoices')
 
     #invoices_summary
+      - failed_invoices = @invoices.select { |invoice| invoice.failed? }
+      - if failed_invoices.present?
+        .failed_invoices
+          %p.desc
+            = raw t('site.invoices.count_failed_invoices_with_total_amount', count: failed_invoices.count, total_amount: display_amount(failed_invoices.sum(&:amount)))
+            - if current_user.cc_expired?
+              = t('user.credit_card.expired')
+              = link_to t('user.credit_card.please_update'), edit_credit_card_path, :class => "hl"
+          - unless current_user.cc_expired?
+            = form_for @site, :url => retry_site_invoices_path(site_id: @site.token), :html => { :method => 'put' } do |f|
+              .entry= f.submit t('site.invoices.retry_failed_invoices'), :class => "submit_dynamic_button"
       - if @site.in_paid_plan? || (@site.next_cycle_plan_id? && @site.next_cycle_plan.paid_plan?)
         .next_invoice
           %h3.section_title= "Next invoice"
