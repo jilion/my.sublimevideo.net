@@ -63,7 +63,7 @@ describe Site do
     it { should belong_to :plan }
     it { should have_many :invoices }
     it { should have_many(:invoice_items).through(:invoices) }
-    
+
     describe "last_invoice" do
       subject { Factory(:site_with_invoice, plan_id: Factory(:plan, price: 123456).id) }
 
@@ -71,7 +71,7 @@ describe Site do
         subject.last_invoice.should == subject.invoices.last
       end
     end
-    
+
     describe "last_paid_invoice" do
       subject { Factory(:site_with_invoice, plan_id: Factory(:plan, price: 123456).id) }
 
@@ -136,7 +136,7 @@ describe Site do
         Site.delete_all
         Timecop.travel(2.months.ago) { @site_to_be_renewed = Factory(:site) }
         @site_not_to_be_renewed1 = Factory(:site)
-        @site_not_to_be_renewed2 = Factory(:site, plan_started_at: 3.months.ago, plan_cycle_ended_at: 2.months.from_now)
+        @site_not_to_be_renewed2 = Factory(:site_with_invoice, plan_started_at: 3.months.ago, plan_cycle_ended_at: 2.months.from_now)
         VCR.use_cassette('ogone/visa_payment_generic') { @site_not_to_be_renewed2.update_attribute(:plan_id, @paid_plan.id) }
       end
 
@@ -776,7 +776,7 @@ describe Site do
       with_versioning do
         site = Factory(:site)
         old_hostname = site.hostname
-        site.update_attributes hostname: "bob.com", user_attributes: { current_password: '123456' }
+        site.update_attributes hostname: "bob.com", user_attributes: { 'current_password' => '123456' }
         site.versions.last.reify.hostname.should == old_hostname
       end
     end
@@ -793,7 +793,7 @@ describe Site do
         it "should set only current_password" do
           subject.first_name.should == "Bob"
           site = Factory(:site, user: subject, plan_id: @paid_plan.id)
-          site.update_attributes(plan_id: @dev_plan.id, user_attributes: { first_name: "John", "current_password" => '123456' })
+          site.update_attributes(plan_id: @dev_plan.id, user_attributes: { first_name: "John", 'current_password' => '123456' })
           site.user.first_name.should == "Bob"
           site.user.current_password.should == "123456"
           site.plan_id.should == @paid_plan.id
@@ -811,7 +811,7 @@ describe Site do
     end
 
     describe "before_save" do
-      subject { Factory(:site) }
+      subject { Factory(:site_with_invoice) }
 
       describe "#clear_alerts_sent_at" do
         specify do
@@ -823,15 +823,18 @@ describe Site do
       describe "#pend_plan_changes" do
         context "when pending_plan_id has changed" do
           it "should call #pend_plan_changes" do
+            subject.reload
             subject.plan_id = @paid_plan.id
             VCR.use_cassette('ogone/visa_payment_generic') { subject.save_without_password_validation }
             subject.pending_plan_id.should == @paid_plan.id
+            subject.reload # apply_pending_plan_changes called
+            subject.plan_id.should == @paid_plan.id
+            subject.pending_plan_id.should be_nil
           end
         end
 
         context "when pending_plan_id doesn't change" do
           it "should not call #pend_plan_changes" do
-            subject.user.current_password = '123456'
             subject.hostname = 'test.com'
             subject.save_without_password_validation
             subject.pending_plan_id.should be_nil
