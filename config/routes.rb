@@ -29,13 +29,13 @@ MySublimeVideo::Application.routes.draw do
       # get :usage
     end
     resource :plan, :only => [:edit, :update, :destroy]
-    resources :invoices, :only => :index
+    resources :invoices, :only => :index do
+      put :retry, :on => :collection
+    end
   end
   resource :card, :controller => 'credit_cards', :as => :credit_card, :only => [:edit, :update]
   match '/transaction/callback' => "transactions#callback", :via => :post
-  resources :invoices, :only => :show do
-    put :pay, :on => :member
-  end
+  resources :invoices, :only => :show
   match '/refund' => "refunds#index", :via => :get, :as => 'refunds'
   match '/refund' => "refunds#create", :via => :post, :as => 'refund'
 

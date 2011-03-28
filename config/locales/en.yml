@@ -45,6 +45,11 @@ en:
       refunded: "All your payments for %{hostname} will be refunded in the next few hours."
       refund_unsuccessful: "The refund you requested for %{hostname} was unsuccessful."
       no_refund_possible: "You don't have any site eligible for 30 day money back guarantee."
+    invoices:
+      count_failed_invoices_with_total_amount: "You have %{count} failed invoices for a total of <strong>%{total_amount}</strong>."
+      retry_failed_invoices: "Retry the payment"
+      retry_succeed: "Invoices have been successfully paid. Thank you."
+      no_failed_invoices_to_retry: "You have no failed invoices to pay."
 
   credit_card:
     errors:
