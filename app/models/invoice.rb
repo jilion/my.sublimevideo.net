@@ -108,10 +108,6 @@ class Invoice < ActiveRecord::Base
     transactions.order(:created_at.desc).first
   end
 
-  def paid_transaction
-    transactions.paid.order(:created_at.desc).first
-  end
-
   def last_failed_transaction
     transactions.failed.order(:created_at.desc).first
   end
@@ -181,6 +177,7 @@ private
 end
 
 
+
 # == Schema Information
 #
 # Table name: invoices
@@ -193,6 +190,7 @@ end
 #  customer_email        :string(255)
 #  customer_country      :string(255)
 #  customer_company_name :string(255)
+#  site_hostname         :string(255)
 #  amount                :integer
 #  vat_rate              :float
 #  vat_amount            :integer

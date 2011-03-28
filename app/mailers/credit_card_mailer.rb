@@ -8,12 +8,4 @@ class CreditCardMailer < SublimeVideoMailer
     )
   end
 
-  def is_expired(user)
-    @user = user
-    mail(
-      :to => "\"#{@user.full_name}\" <#{@user.email}>",
-      :subject => "Your credit card is expired"
-    )
-  end
-
 end

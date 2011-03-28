@@ -1,14 +1,8 @@
-<%= t("mailer.intro_generic") %>
+<%= t("mailer.intro_name", name: @user.full_name) %>
 
-<% if @user.cc_expired? %>
-  Your credit card will expire at the end of this month, your account will then be suspended.
+Your credit card will expire at the end of this month.
 
-  Please update your credit card information to avoid this suspension by clicking on the link below:
-<% else %>
-  Your credit card will expire at the end of this month.
-
-  Since you are already suspended, please update your credit card information to avoid the removal of your account by clicking on the link below:
-<% end %>
+Please update your credit card information using the following link:
 
 https://<%= ActionMailer::Base.default_url_options[:host] %>/card/edit
 

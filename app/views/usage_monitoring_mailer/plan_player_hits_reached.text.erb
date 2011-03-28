@@ -1,9 +1,11 @@
 <%= t("mailer.intro_generic") %>
 
-You have reached the <%= @site.plan.name.humanize %> plan's monthly limit for <%= @site.hostname %>.
+Just a short email to inform you we have activated the Peak Insurance for your site <%= @site.hostname %> (<%= @site.plan.name.humanize %> plan) because you have reached your monthly limit of video pageviews.
 
-TODO
+Read more about Peak Insurance:
+http://docs.sublimevideo.net/peak-insurance
 
-https://<%= ActionMailer::Base.default_url_options[:host] %>/sites/<%= @site.to_param %>/plan/edit
+If you have any questions, please use our support form:
+https://<%= ActionMailer::Base.default_url_options[:host] %>/support
 
 <%= t("mailer.signature") %>

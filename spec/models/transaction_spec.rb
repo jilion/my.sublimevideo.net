@@ -384,6 +384,16 @@ describe Transaction do
           @user.cc_last_digits.should == '1111'
           @user.cc_expire_on.should == 1.year.from_now.end_of_month.to_date
         end
+        
+        it "should store cc infos from the credit card" do
+          VCR.use_cassette("ogone/visa_payment_2000_credit_card") do
+            Transaction.charge_by_invoice_ids([@invoice1.id], { credit_card: @credit_card }).should be_true
+          end
+          
+          @invoice1.last_transaction.cc_type.should == @credit_card.type
+          @invoice1.last_transaction.cc_last_digits.should == @credit_card.last_digits
+          @invoice1.last_transaction.cc_expire_on.should == Time.utc(@credit_card.year, @credit_card.month).end_of_month.to_date
+        end
       end
 
       context "with a credit card alias" do
@@ -404,6 +414,16 @@ describe Transaction do
             paramplus: "PAYMENT=TRUE"
           })
           Transaction.charge_by_invoice_ids([@invoice1.id, @invoice2.id, @invoice3.id])
+        end
+        
+        it "should store cc infos from the user" do
+          VCR.use_cassette("ogone/visa_payment_2000_credit_card") do
+            Transaction.charge_by_invoice_ids([@invoice1.id, @invoice2.id, @invoice3.id])
+          end
+          
+          @invoice1.last_transaction.cc_type.should == @user.cc_type
+          @invoice1.last_transaction.cc_last_digits.should == @user.cc_last_digits
+          @invoice1.last_transaction.cc_expire_on.should == @user.cc_expire_on
         end
       end
 
@@ -703,7 +723,7 @@ describe Transaction do
         
         subject.process_payment_response(@success_params)
         
-        subject.user.cc_type.should == 'visa'
+        subject.user.reload.cc_type.should == 'visa'
         subject.user.cc_last_digits.should == '1111'
         subject.user.cc_expire_on.should == 1.year.from_now.end_of_month.to_date
       end
@@ -808,21 +828,25 @@ end
 
 
 
+
 # == Schema Information
 #
 # Table name: transactions
 #
-#  id         :integer         not null, primary key
-#  user_id    :integer
-#  order_id   :string(255)
-#  state      :string(255)
-#  amount     :integer
-#  error      :text
-#  pay_id     :string(255)
-#  nc_status  :integer
-#  status     :integer
-#  created_at :datetime
-#  updated_at :datetime
+#  id             :integer         not null, primary key
+#  user_id        :integer
+#  order_id       :string(255)
+#  state          :string(255)
+#  amount         :integer
+#  error          :text
+#  cc_type        :string(255)
+#  cc_last_digits :string(255)
+#  cc_expire_on   :date
+#  pay_id         :string(255)
+#  nc_status      :integer
+#  status         :integer
+#  created_at     :datetime
+#  updated_at     :datetime
 #
 # Indexes
 #
