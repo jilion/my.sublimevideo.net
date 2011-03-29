@@ -11,7 +11,6 @@ module OneTime
       end
 
       # Method used in the 'one_time:update_invalid_sites' rake task
-      # SITES MUST BE USING THE BETA PLAN BEFORE RUNNING THIS METHOD (OTHERWISE, BLANK DOMAINS WILL NOT BE ACCEPTED)!!
       def update_hostnames
         invalid_sites = ::Site.not_archived.reject { |s| s.valid? }
 
