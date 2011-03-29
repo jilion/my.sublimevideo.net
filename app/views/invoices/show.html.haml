@@ -15,6 +15,9 @@
         %p
           %strong= "Status: "
           = charging_status(invoice)
+        %p
+          %strong= "Site token: "
+          = invoice.site.token
         %span.stamp{ :class => invoice.state }= invoice.state
         - if invoice.last_transaction.present?
           %p
