@@ -32,6 +32,6 @@ production:
   <<: *defaults
   login:         <%= ENV['OGONE_LOGIN'] %> # jilionPROD
   user:          <%= ENV['OGONE_USER'] %> # sublime_api
-  password:      <%= ENV['OGONE_PASSWORD'] %> # "F$WZe7,2>h5%6*3g"
-  signature:     <%= ENV['OGONE_SIGNATURE'] %> # "qI{No5w^R,Ee72Gi98DT#x)MV"
-  signature_out: <%= ENV['OGONE_SIGNATURE_OUT'] %> # "iQuMX'!lxe34hDW7`6#mkz1_C"
+  password:      <%= ENV['OGONE_PASSWORD'] %>
+  signature:     <%= ENV['OGONE_SIGNATURE'] %>
+  signature_out: <%= ENV['OGONE_SIGNATURE_OUT'] %>

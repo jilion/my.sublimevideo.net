@@ -1,5 +1,7 @@
 class CreateInvoicesAndInvoiceItems < ActiveRecord::Migration
   def self.up
+    drop_table :invoices
+
     create_table :invoices do |t|
       t.integer :site_id
 

@@ -36,8 +36,10 @@ module PlansHelper
   end
 
   def plan_change_type(old_plan, new_plan)
-    if old_plan == new_plan || old_plan.beta_plan?
+    if old_plan == new_plan
       nil
+    elsif old_plan.beta_plan?
+      "upgrade_from_beta"
     elsif new_plan.dev_plan?
       "delayed_downgrade_to_dev"
     elsif old_plan.dev_plan?
@@ -56,7 +58,7 @@ module PlansHelper
       "delayed_downgrade"
     end
   end
-  
+
   def plan_support(plan)
     "#{"Standard " if plan.support == 'standard'}#{content_tag(:strong, "#{"Priority " if plan.support == 'priority'}")} Support".html_safe
   end
@@ -81,7 +83,7 @@ module PlansHelper
     end
     options
   end
-  
+
   def vat_price_info(klass)
     raw("Prices above exclude VAT, total amount charged will be #{content_tag(:strong, "?", class: klass)} (including #{display_vat_percentage} VAT).")
   end
