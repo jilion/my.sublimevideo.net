@@ -172,6 +172,7 @@ MySublimeVideo.showPlanCreateInfo = function(radioButton) {
 MySublimeVideo.showPlanUpdateInfo = function(radioButton) {
   var upgradeInfoDiv = $('plan_upgrade_info'),
   upgradeFromDevInfoDiv = $('plan_upgrade_from_dev_info'),
+  upgradeFromBetaInfoDiv = $('plan_upgrade_from_beta_info'),
   delayedUpgradeInfoDiv = $('plan_delayed_upgrade_info'),
   delayedDowngradeInfoDiv = $('plan_delayed_downgrade_info'),
   delayedChangeInfoDiv = $('plan_delayed_change_info'),
@@ -179,6 +180,7 @@ MySublimeVideo.showPlanUpdateInfo = function(radioButton) {
 
   upgradeInfoDiv.hide();
   upgradeFromDevInfoDiv.hide();
+  if (upgradeFromBetaInfoDiv) upgradeFromBetaInfoDiv.hide();
   delayedUpgradeInfoDiv.hide();
   delayedDowngradeInfoDiv.hide();
   delayedChangeInfoDiv.hide();
@@ -190,6 +192,9 @@ MySublimeVideo.showPlanUpdateInfo = function(radioButton) {
       break;
     case "upgrade_from_dev":
       MySublimeVideo.updatePlanInfo_(upgradeFromDevInfoDiv, radioButton);
+      break;
+    case "upgrade_from_beta":
+      if (upgradeFromBetaInfoDiv) MySublimeVideo.updatePlanInfo_(upgradeFromBetaInfoDiv, radioButton);
       break;
     case "delayed_upgrade":
       MySublimeVideo.updatePlanInfo_(delayedUpgradeInfoDiv, radioButton);
