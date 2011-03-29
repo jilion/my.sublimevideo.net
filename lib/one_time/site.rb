@@ -10,6 +10,17 @@ module OneTime
         "#{::Site.beta.count} sites are now using the Beta plan (on #{::Site.not_archived.count} non-archived sites)."
       end
 
+      def set_plan_started_at
+        total = 0
+        ::Site.active.find_in_batches(:batch_size => 100) do |sites|
+          sites.each do |site|
+            site.update_attribute(:plan_started_at, site.created_at)
+          end
+          total += sites.count
+        end
+        "Finished: in total, #{total} sites will have their plan_started_at setted"
+      end
+
       # Method used in the 'one_time:update_invalid_sites' rake task
       def update_hostnames
         invalid_sites = ::Site.not_archived.reject { |s| s.valid? }
