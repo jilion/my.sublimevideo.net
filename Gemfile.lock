@@ -185,7 +185,7 @@ GEM
     heroku (1.19.1)
       activesupport (>= 2.1.0)
       launchy (~> 0.3.2)
-      rest-client (>= 1.4.0, < 1.7.0)
+      rest-client (< 1.7.0, >= 1.4.0)
     heroku_tasks (0.1.4)
     hoptoad_notifier (2.4.8)
       activesupport
@@ -308,7 +308,7 @@ GEM
     taps (0.3.21)
       activesupport (>= 2.1.0)
       rack (>= 1.0.1)
-      rest-client (>= 1.4.0, < 1.7.0)
+      rest-client (< 1.7.0, >= 1.4.0)
       sequel (~> 3.20.0)
       sinatra (~> 1.0.0)
       sqlite3-ruby (~> 1.2)

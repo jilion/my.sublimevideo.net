@@ -134,10 +134,13 @@ describe Site do
     describe "#to_be_renewed" do
       before(:all) do
         Site.delete_all
-        Timecop.travel(2.months.ago) { @site_to_be_renewed = Factory(:site) }
-        @site_not_to_be_renewed1 = Factory(:site)
+        Timecop.travel(2.months.ago) do
+          @site_to_be_renewed = Factory(:site)
+          @site_not_to_be_renewed1 = Factory(:site_with_invoice)
+        end
+        @site_not_to_be_renewed1.update_attribute(:plan_id, @paid_plan.id)
+        @site_not_to_be_renewed1.pending_plan_id.should be_present
         @site_not_to_be_renewed2 = Factory(:site_with_invoice, plan_started_at: 3.months.ago, plan_cycle_ended_at: 2.months.from_now)
-        VCR.use_cassette('ogone/visa_payment_generic') { @site_not_to_be_renewed2.update_attribute(:plan_id, @paid_plan.id) }
       end
 
       specify { Site.to_be_renewed.all.should == [@site_to_be_renewed] }

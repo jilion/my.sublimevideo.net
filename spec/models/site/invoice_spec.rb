@@ -17,24 +17,25 @@ describe Site::Invoice do
 
     describe ".renew_active_sites!" do
       before(:all) do
-        Timecop.travel(Time.utc(2011,1,1)) do
-          @site_to_be_renewed = Factory(:site)
+        Site.delete_all
+        VCR.use_cassette('ogone/visa_payment_generic') do
+          Timecop.travel(2.months.ago) do
+            @site_to_be_renewed = Factory.build(:site)
+          end
+          @site_not_to_be_renewed = Factory.build(:site, plan_started_at: 3.months.ago, plan_cycle_ended_at: 2.months.from_now)
         end
-        @site_not_to_be_renewed1 = Factory(:site)
-        @site_not_to_be_renewed2 = Factory(:site_with_invoice, plan_started_at: 3.months.ago, plan_cycle_ended_at: 2.months.from_now)
-        VCR.use_cassette('ogone/visa_payment_generic') { @site_not_to_be_renewed2.update_attribute(:plan_id, @paid_plan.id) }
+
+        @site_to_be_renewed.invoices.size.should == 0
+        @site_not_to_be_renewed.invoices.size.should == 0
       end
       before(:each) do
         Delayed::Job.delete_all
-        Timecop.travel(Time.utc(2011,2,15)) do
-          Site.renew_active_sites!
-        end
+        Site.renew_active_sites!
       end
 
-      it "should update site that need to be renewed" do
-        @site_to_be_renewed.reload.plan_cycle_ended_at.should == Time.utc(2011,2,28).to_datetime.end_of_day
-        @site_not_to_be_renewed1.plan_cycle_ended_at.should == (Time.now.utc + 1.month - 1.day).to_datetime.end_of_day
-        @site_not_to_be_renewed2.plan_cycle_ended_at.should == (Time.now.utc + 1.month - 1.day).to_datetime.end_of_day
+      it "should create invoices for renewable sites" do
+        Invoice.where(site_id: @site_to_be_renewed).count.should == 1
+        Invoice.where(site_id: @site_not_to_be_renewed).count.should == 0
       end
 
       it "should delay renew_active_sites!" do

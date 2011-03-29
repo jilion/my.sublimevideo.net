@@ -15,7 +15,8 @@ module Site::Invoice
     def renew_active_sites!
       Site.active.to_be_renewed.each do |site|
         site.pend_plan_changes
-        site.apply_pending_plan_changes
+        invoice = Invoice.build(site: site)
+        invoice.save!
       end
       delay_renew_active_sites!
     end
