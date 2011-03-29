@@ -83,11 +83,6 @@ class Invoice < ActiveRecord::Base
     new(attributes).build
   end
 
-  def self.complete_invoice(site_id)
-    site = Site.find(site_id)
-    build(site: site).complete if site
-  end
-
   # ====================
   # = Instance Methods =
   # ====================
