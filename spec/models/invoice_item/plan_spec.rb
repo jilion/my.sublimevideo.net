@@ -4,8 +4,8 @@ describe InvoiceItem::Plan do
 
   describe ".build(attributes={})" do
     before(:all) do
-      @not_enthusiast = Factory(:user, invitation_token: "123asd")
-      @enthusiast     = Factory(:user, invitation_token: nil)
+      @not_enthusiast = Factory(:user, invitation_token: "123asd", created_at: Time.utc(2010,10,10))
+      @enthusiast     = Factory(:user, invitation_token: nil, created_at: Time.utc(2010,10,10))
 
       @plan1 = Factory(:plan, price: 1000)
       @plan2 = Factory(:plan, price: 2000)

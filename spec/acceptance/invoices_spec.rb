@@ -125,8 +125,6 @@ feature "Invoice actions:" do
 
       visit invoice_path(invoice)
 
-      save_and_open_page
-
       page.should have_content("Jilion / Jime SA")
       page.should have_content("Invoice ID: #{invoice.reference.upcase}")
       page.should have_content("Status:")
