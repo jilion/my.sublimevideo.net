@@ -80,7 +80,7 @@
             = link_to "details", [:edit, :admin, site]
             )
 
-= render partial: '/admin/shared/usage_table', locals: { object: @user, from: @date_range_from, to: @date_range_to }
+-# = render partial: '/admin/shared/usage_table', locals: { object: @user, from: @date_range_from, to: @date_range_to }
 = render partial: '/admin/shared/invoices_table', locals: { object: @user }
 
 %br
