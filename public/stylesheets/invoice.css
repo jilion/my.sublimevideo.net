@@ -39,6 +39,11 @@ a#print {
   font-size:28px;
 }
 
+#global h3.title {
+  font-size:21px;
+  padding:10px 0 0;
+}
+
 p.notes {
   width:60%;
   font-size:14px;
