@@ -11,6 +11,15 @@ feature "Plans" do
       @star_year = Plan.create(name: "star", cycle: "year", player_hits: 200_000, price: 49900)
     end
 
+    scenario "view with a dev plan without hostname" do
+      site = Factory(:site, user: @current_user, plan_id: @dev_plan.id, :hostname => nil)
+
+      visit edit_site_plan_path(site)
+
+      current_url.should =~ %r(http://[^/]+/sites/#{site.token}/plan/edit$)
+      page.should have_content("add a hostname")
+    end
+
     scenario "update paid plan to dev plan" do
       site = Factory(:site, user: @current_user, plan_id: @paid_plan.id)
 

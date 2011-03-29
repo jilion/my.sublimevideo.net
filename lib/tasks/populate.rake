@@ -23,9 +23,9 @@ namespace :db do
       delete_all_files_in_public('uploads/s3')
       delete_all_files_in_public('uploads/tmp')
       delete_all_files_in_public('uploads/voxcast')
+      timed { create_plans }
       timed { create_admins }
       timed { create_users(argv_index) }
-      timed { create_plans }
       timed { create_sites }
       timed { create_site_usages }
       timed { create_mail_templates }
