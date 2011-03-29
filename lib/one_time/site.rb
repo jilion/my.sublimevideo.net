@@ -63,6 +63,18 @@ module OneTime
         ::Site.where(:id => beta_sites_ids).update_all(:plan_id => Plan.find_by_name("dev").id)
       end
 
+      def regenerate_all_loaders_and_licenses
+        total = 0
+        ::Site.active.find_in_batches(:batch_size => 100) do |sites|
+          sites.each do |site|
+            ::Site.delay.update_loader_and_license(site.id, { loader: true, license: true })
+          end
+          puts "#{sites.count} sites will have their loader and license re-generated"
+          total += sites.count
+        end
+        "Finished: in total, #{total} sites will have their loader and license re-generated"
+      end
+
     end
 
   end

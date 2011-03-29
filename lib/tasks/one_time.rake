@@ -70,6 +70,11 @@ namespace :one_time do
         skip += 1000
       end
     end
+
+    desc "Re-generate loader and license templates for all sites"
+    task :regenerate_all_loaders_and_licenses => :environment do
+      puts OneTime::Site.regenerate_all_loaders_and_licenses
+    end
   end
   
   namespace :plans do
