@@ -68,7 +68,6 @@ module OneTime
           sites.each do |site|
             ::Site.delay.update_loader_and_license(site.id, { loader: true, license: true })
           end
-          puts "#{sites.count} sites will have their loader and license re-generated"
           total += sites.count
         end
         "Finished: in total, #{total} sites will have their loader and license re-generated"
