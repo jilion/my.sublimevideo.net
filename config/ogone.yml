@@ -3,7 +3,6 @@ defaults: &defaults
   created_after_10_may_2010: true
   currency: USD
 
-
 development:
   <<: *defaults
   login:     jilion
@@ -30,8 +29,8 @@ staging:
 
 production:
   <<: *defaults
-  login:         heroku_env # jilionPROD
-  user:          heroku_env # sublime_api
-  password:      heroku_env
-  signature:     heroku_env
-  signature_out: heroku_env
+  login:         jilionPROD
+  user:          sublime_api
+  password:      UFFXVE11
+  signature:     av5bern9elk9iav8hybs7is5v
+  signature_out: ral2el2wab5warc3eack8mats
