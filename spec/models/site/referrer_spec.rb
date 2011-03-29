@@ -62,9 +62,9 @@ describe Site::Referrer do
       end
     end
 
-    context "with hostname with subdomain" do
+    context "with hostname with subdomain", focus: true do
       before(:all) do
-        @site = Factory(:site, hostname: "blog.jilion.com")
+        @site = Factory(:site, hostname: "blog.jilion.com", extra_hostnames: nil, dev_hostnames: nil)
       end
       subject { @site }
 

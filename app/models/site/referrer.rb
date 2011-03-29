@@ -21,15 +21,15 @@ module Site::Referrer
   end
 
   def main_referrer?(referrer)
-    Site::Referrer.referrer_match_hostname?(referrer, hostname, path, wildcard)
+    hostname.present? && Site::Referrer.referrer_match_hostname?(referrer, hostname, path, wildcard)
   end
 
   def extra_referrer?(referrer)
-    extra_hostnames.split(', ').any? { |h| Site::Referrer.referrer_match_hostname?(referrer, h, path, wildcard) }
+    extra_hostnames.present? && extra_hostnames.split(', ').any? { |h| Site::Referrer.referrer_match_hostname?(referrer, h, path, wildcard) }
   end
 
   def dev_referrer?(referrer)
-    dev_hostnames.split(', ').any? { |h| Site::Referrer.referrer_match_hostname?(referrer, h, '', wildcard) }
+    dev_hostnames.present? && dev_hostnames.split(', ').any? { |h| Site::Referrer.referrer_match_hostname?(referrer, h, '', wildcard) }
   end
 
 private
