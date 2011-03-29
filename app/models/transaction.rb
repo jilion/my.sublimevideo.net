@@ -87,7 +87,7 @@ class Transaction < ActiveRecord::Base
       email: transaction.user.email,
       billing_address: { zip: transaction.user.postal_code, country: Country[transaction.user.country].name },
       d3d: true,
-      paramplus: "PAYMENT=TRUE" # options[:action] is used in TransactionsController for the flash notice (if applicable)
+      paramplus: "PAYMENT=TRUE"
     })
     credit_card = options.delete(:credit_card)
     payment_method = credit_card && credit_card.valid? ? credit_card : transaction.user.cc_alias
