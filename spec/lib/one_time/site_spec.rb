@@ -3,7 +3,7 @@ require 'spec_helper'
 
 describe OneTime::Site do
 
-  describe ".set_beta_plan", focus: true do
+  describe ".set_beta_plan" do
     before(:all) do
       @active_invalid   = Factory.build(:new_site, plan: nil, state: 'active', hostname: 'jilion.local').tap { |s| s.save(validate: false) }
       @archived_invalid = Factory.build(:new_site, plan: nil, state: 'archived', hostname: 'jilion.local').tap { |s| s.save(validate: false) }
@@ -32,7 +32,7 @@ describe OneTime::Site do
         @duplicated_dev_hostname1 = Factory.build(:new_site, plan: @beta_plan, hostname: '127.0.0.1', dev_hostnames: 'localhost, 127.0.0.1').tap { |s| s.save(validate: false) }
         @duplicated_dev_hostname2 = Factory.build(:new_site, plan: @beta_plan, hostname: 'jilion.com', dev_hostnames: 'localhost, 127.0.0.1, 127.0.0.1, localhost').tap { |s| s.save(validate: false) }
         @mixed_invalid_site       = Factory.build(:new_site, plan: @beta_plan, hostname: 'jilion.local', dev_hostnames: 'localhost, jilion.local, 127.0.0.1, jilion.net, jilion.com').tap { |s| s.save(validate: false) }
-        @mixed_invalid_site2       = Factory.build(:new_site, plan: @beta_plan, hostname: 'jilion.local', dev_hostnames: 'localhost, jilion.local, 127.0.0.1, jilion.net').tap { |s| s.save(validate: false) }
+        @mixed_invalid_site2      = Factory.build(:new_site, plan: @beta_plan, hostname: 'jilion.local', dev_hostnames: 'localhost, jilion.local, 127.0.0.1, jilion.net').tap { |s| s.save(validate: false) }
       end
 
       it "all sites created should be invalid" do
@@ -109,6 +109,23 @@ describe OneTime::Site do
       @site_1.reload.should be_active
       @site_1.should be_in_dev_plan
       @site_2.reload.should be_archived
+    end
+  end
+
+  describe ".regenerate_all_loaders_and_licenses" do
+    before(:all) do
+      ::Site.delete_all
+      Factory(:site)
+      Factory(:site)
+      Factory(:site, state: 'archived')
+    end
+
+    it "should regenerate loader and license of all sites" do
+      Delayed::Job.delete_all
+      count_before = Delayed::Job.where(:handler.matches => "%update_loader_and_license%").count
+      lambda { described_class.regenerate_all_loaders_and_licenses }.should change(Delayed::Job, :count).by(2)
+      djs = Delayed::Job.where(:handler.matches => "%update_loader_and_license%")
+      djs.count.should == count_before + 2
     end
   end
 
