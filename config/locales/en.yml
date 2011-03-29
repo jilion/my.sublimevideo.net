@@ -41,6 +41,7 @@ en:
       delete_site_info1: "Your SublimeVideo license for %{domain} will be instantly removed from our servers."
       delete_site_info2: "This operation cannot be undone."
     refund:
+      warning: "Once you submit a refund request, the site will be deleted (unless you already delete it) and the associated SublimeVideo license will be instantly removed from our servers."
       request: "Request a refund"
       refunded: "All your payments for %{hostname} will be refunded in the next few hours."
       refund_unsuccessful: "The refund you requested for %{hostname} was unsuccessful."
