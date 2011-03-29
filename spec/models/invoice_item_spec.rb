@@ -49,21 +49,24 @@ end
 
 
 
+
+
 # == Schema Information
 #
 # Table name: invoice_items
 #
-#  id         :integer         not null, primary key
-#  type       :string(255)
-#  invoice_id :integer
-#  item_type  :string(255)
-#  item_id    :integer
-#  started_at :datetime
-#  ended_at   :datetime
-#  price      :integer
-#  amount     :integer
-#  created_at :datetime
-#  updated_at :datetime
+#  id                    :integer         not null, primary key
+#  type                  :string(255)
+#  invoice_id            :integer
+#  item_type             :string(255)
+#  item_id               :integer
+#  started_at            :datetime
+#  ended_at              :datetime
+#  discounted_percentage :float
+#  price                 :integer
+#  amount                :integer
+#  created_at            :datetime
+#  updated_at            :datetime
 #
 # Indexes
 #

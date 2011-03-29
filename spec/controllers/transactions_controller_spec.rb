@@ -87,7 +87,6 @@ describe TransactionsController do
           context "that fails" do
             it "should add an alert and redirect to /account/edit" do
               mock_transaction.should_receive(:paid?).twice    { false }
-              mock_transaction.should_receive(:failed?)        { true }
               mock_transaction.should_receive(:i18n_error_key) { "refused" }
 
               post :callback, @params.merge(@sha_params)

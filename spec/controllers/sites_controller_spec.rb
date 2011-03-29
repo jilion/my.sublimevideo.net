@@ -119,7 +119,7 @@ describe SitesController do
             response.body.should == "<html></html>"
           end
 
-          it "should render :edit template when payment is invalid" do
+          it "should render :edit template when payment result is invalid" do
             @mock_transaction.should_receive(:waiting_d3d?)   { false }
             @mock_transaction.should_receive(:failed?)        { true }
             @mock_transaction.should_receive(:i18n_error_key) { "invalid" }
@@ -131,7 +131,7 @@ describe SitesController do
             response.should redirect_to(sites_url)
           end
 
-          it "should render :edit template when payment is refused" do
+          it "should render :edit template when payment result is refused" do
             @mock_transaction.should_receive(:waiting_d3d?)   { false }
             @mock_transaction.should_receive(:failed?)        { true }
             @mock_transaction.should_receive(:i18n_error_key) { "refused" }
@@ -143,18 +143,7 @@ describe SitesController do
             response.should redirect_to(sites_url)
           end
 
-          it "should redirect to /sites when payment is ok without 3-d secure" do
-            @mock_transaction.should_receive(:waiting_d3d?) { false }
-            @mock_transaction.should_receive(:failed?)      { false }
-            @mock_transaction.should_receive(:unprocessed?) { false }
-
-            post :create, :site => {}
-            assigns(:site).should == @mock_site
-            flash[:notice].should be_present
-            response.should redirect_to(sites_url)
-          end
-
-          it "should redirect to /sites when payment is ok without 3-d secure" do
+          it "should redirect to /sites when payment result is unknown" do
             @mock_transaction.should_receive(:waiting_d3d?)   { false }
             @mock_transaction.should_receive(:failed?)        { false }
             @mock_transaction.should_receive(:unprocessed?)   { true }
@@ -163,6 +152,29 @@ describe SitesController do
             post :create, :site => {}
             assigns(:site).should == @mock_site
             flash[:notice].should == I18n.t("transaction.errors.unknown")
+            response.should redirect_to(sites_url)
+          end
+
+          it "should redirect to /sites when payment has failed before calling Ogone" do
+            @mock_transaction.should_receive(:waiting_d3d?)   { false }
+            @mock_transaction.should_receive(:failed?)        { false }
+            @mock_transaction.should_receive(:unprocessed?)   { true }
+            @mock_transaction.should_receive(:i18n_error_key) { "failed" }
+
+            post :create, :site => {}
+            assigns(:site).should == @mock_site
+            flash[:notice].should == I18n.t("transaction.errors.failed")
+            response.should redirect_to(sites_url)
+          end
+
+          it "should redirect to /sites when payment is ok without 3-d secure" do
+            @mock_transaction.should_receive(:waiting_d3d?) { false }
+            @mock_transaction.should_receive(:failed?)      { false }
+            @mock_transaction.should_receive(:unprocessed?) { false }
+
+            post :create, :site => {}
+            assigns(:site).should == @mock_site
+            flash[:notice].should be_present
             response.should redirect_to(sites_url)
           end
         end

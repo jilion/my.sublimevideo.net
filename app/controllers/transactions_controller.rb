@@ -66,8 +66,7 @@ private
     respond_to do |format|
       if transaction.paid?
         format.html { redirect_to :sites, :notice => t("flash.sites.create.notice") }
-
-      elsif transaction.failed?
+      else
         format.html { redirect_to :sites, :alert => t("transaction.errors.#{transaction.i18n_error_key}") }
       end
     end

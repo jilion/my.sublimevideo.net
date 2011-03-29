@@ -799,13 +799,13 @@ form .entry a.cancel {
 
 #content ul.session_links {
   list-style-type:none;
-  padding:24px 0 4px 10px;
+  padding:5px 0 4px 10px;
   line-height:20px;
   font-size:12px;
 }
 
 #content ul.session_links li.signup {
-  font-weight:bold;
+  font-weight:600;
   font-size:16px;
 }
 
@@ -861,7 +861,7 @@ form .entry a.cancel {
 
 #signup_steps li.active strong.number {background-image:url(/images/embed/signup/steps_dot_active.png)}
 
-#get_an_invitation {
+#login_right {
   width:420px;
   height:338px;
   background:url(/images/embed/vertical_breakline.png) no-repeat;
@@ -870,38 +870,78 @@ form .entry a.cancel {
   right:0;
 }
 
-#get_an_invitation .wrap {
-  width:208px;
-  margin:125px auto 0;
-}
-
-#get_an_invitation h3 {
-  font-size:20px;
-  font-weight:600;
-  padding-bottom:10px;
+#login_right .wrap {
+  width:240px;
+  margin:85px auto 0;
   text-align:center;
 }
 
-#get_an_invitation a.button {
+#login_right p a {
+  font-size:16px;
+  font-weight:600;
+  border-bottom:1px solid #999;
+}
+
+#login_right p {
+  line-height:20px;
+  padding:0 0 10px;
+}
+
+#login_right h4 {
+  font-size:22px;
+  font-weight:600;
+  padding-bottom:5px;
+}
+
+#login_right a.button {
   display:block;
   margin:0 auto;
-  width:192px;
+  width:165px;
   height:33px;
   padding:11px 0 0 14px;
-  background:url(/images/embed/get_an_invitation_button.png) no-repeat;
+  background:url(/images/embed/light_blue_button.png) no-repeat;
   color:#405f92;
   font-size:20px;
   font-weight:600;
   text-shadow:rgba(255,255,255,0.7) 0 1px 0;
+  text-align:left;
 }
 
-#get_an_invitation a.button:active {background-position:0 -44px}
+#login_right a.button:active {background-position:0 -44px}
 
-#signup_quotes {
+/*#signup_right {
+  width:371px;
+  position:absolute;
+  top:180px;
+  right:60px;
+}
+
+#signup_right .sublimevideo_headline {
+  font-family:Georgia, Times, serif;
+  font-size:22px;
+  font-style:italic;
+  line-height:30px;
+}
+
+#signup_right .sublimevideo_headline img {
+
+}
+
+#signup_right .sublimevideo_headline p {
+  padding:0 14px;
+}
+
+#signup_right .sublimevideo_headline p a {
+  color:#222;
+  font-weight:600;
+  border-bottom: 1px solid #999;
+}*/
+
+/*#signup_quotes {
   width:390px;
   position:absolute;
   right:20px;
-  top:50px;
+  top:150px;
   font-family:Georgia, Times, serif;
 }
 
@@ -910,7 +950,6 @@ form .entry a.cancel {
   font-style:italic;
   line-height:30px;
   padding:30px 70px 0 30px;
-/*  text-indent:25px;*/
 }
 
 #signup_quotes blockquote:before, #signup_quotes blockquote:after {
@@ -947,7 +986,7 @@ form .entry a.cancel {
 
 #signup_quotes p.author.oreilly {
   padding:0 85px 30px 0;
-}
+}*/
 
 #content p.title_desc {
   width:440px;
@@ -1955,7 +1994,7 @@ input.link_looks.delete {
   top:0;
   left:0;
   bottom:auto;
-  width:300px;
+  width:320px;
 }
 
 #dev_plan .radio_wrap label {
@@ -2768,6 +2807,15 @@ nav.pagination span.gap {
 #invoices_summary {
   width:440px;
   padding:10px 0 0;
+}
+
+#invoices_summary .failed_invoices {
+  padding:0 0 20px;
+}
+
+#invoices_summary .failed_invoices p.desc {
+  padding:2px 0 10px 30px;
+  background:url(/images/embed/alert_icon.png) no-repeat;
 }
 
 #invoices_summary p, #failed_invoices p {

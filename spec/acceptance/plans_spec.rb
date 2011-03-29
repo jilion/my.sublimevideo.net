@@ -10,7 +10,7 @@ feature "Plans" do
       @star_month = Plan.create(name: "star", cycle: "month", player_hits: 200_000, price: 4990)
       @star_year = Plan.create(name: "star", cycle: "year", player_hits: 200_000, price: 49900)
     end
-    
+
     scenario "update paid plan to dev plan" do
       site = Factory(:site, user: @current_user, plan_id: @paid_plan.id)
 
@@ -46,7 +46,7 @@ feature "Plans" do
       visit edit_site_plan_path(site)
 
       choose "plan_star_year"
-      
+
       has_checked_field?("plan_star_year").should be_true
       click_button "Update plan"
 
@@ -54,10 +54,10 @@ feature "Plans" do
         fill_in "Password", :with => "123456"
         click_button "Done"
       end
-      
+
       site.reload
       site.plan.should == @star_year
-      
+
       current_url.should =~ %r(http://[^/]+/sites$)
       page.should have_content("#{site.plan.title}")
 
@@ -87,10 +87,10 @@ feature "Plans" do
         fill_in "Password", :with => "123456"
         click_button "Done"
       end
-      
+
       site.reload
       site.plan.should == @star_year
-      
+
       current_url.should =~ %r(http://[^/]+/sites$)
       page.should have_content("#{site.plan.title}")
 
@@ -213,7 +213,7 @@ feature "Plans" do
     end
 
     scenario "upgrade site" do
-      site = Factory(:site, user: @current_user, plan_id: @paid_plan.id)
+      site = Factory(:site_with_invoice, user: @current_user, plan_id: @paid_plan.id)
 
       visit edit_site_plan_path(site, custom_plan: @custom_plan.token)
 
