@@ -61,7 +61,7 @@ module Ogone
 
     def gateway
       ActiveMerchant::Billing::Base.gateway_mode = Rails.env.production? ? :production : :test
-      @@gateway ||= ActiveMerchant::Billing::OgoneGateway.new(yml)
+      @@gateway ||= ActiveMerchant::Billing::OgoneGateway.new({ login: login, user: user, password: password, signature: signature, signature_out: signature_out })
     end
 
   end
