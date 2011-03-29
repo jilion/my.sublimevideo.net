@@ -910,13 +910,15 @@ describe Site do
   describe "Instance Methods" do
 
     describe "#clear_alerts_sent_at" do
-      subject { Factory(:site, plan_id: @paid_plan.id) }
+      subject { Factory(:site_with_invoice, plan_id: @paid_plan.id) }
 
-      pending "should clear *_alert_sent_at dates" do
+      it "should clear *_alert_sent_at dates" do
         subject.touch(:plan_player_hits_reached_notification_sent_at)
         subject.plan_player_hits_reached_notification_sent_at.should be_present
-        subject.plan = @dev_plan
-        subject.save
+        VCR.use_cassette('ogone/visa_payment_generic') do
+          subject.update_attributes(plan_id: @custom_plan.token, user_attributes: { 'current_password' => '123456' })
+        end
+        subject.apply_pending_plan_changes
         subject.plan_player_hits_reached_notification_sent_at.should be_nil
       end
     end
