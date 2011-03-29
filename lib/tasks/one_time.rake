@@ -71,5 +71,12 @@ namespace :one_time do
       end
     end
   end
+  
+  namespace :plans do
+    desc "Create all plans"
+    task :create_plans => :environment do
+      puts OneTime::Plan.create_plans
+    end
+  end
 
 end
