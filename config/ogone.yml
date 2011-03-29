@@ -30,8 +30,8 @@ staging:
 
 production:
   <<: *defaults
-  login:         <%= ENV['OGONE_LOGIN'] %> # jilionPROD
-  user:          <%= ENV['OGONE_USER'] %> # sublime_api
-  password:      <%= ENV['OGONE_PASSWORD'] %>
-  signature:     <%= ENV['OGONE_SIGNATURE'] %>
-  signature_out: <%= ENV['OGONE_SIGNATURE_OUT'] %>
+  login:         heroku_env # jilionPROD
+  user:          heroku_env # sublime_api
+  password:      heroku_env
+  signature:     heroku_env
+  signature_out: heroku_env
