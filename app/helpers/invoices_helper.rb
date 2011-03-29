@@ -14,7 +14,7 @@ module InvoicesHelper
 
   def charging_status(invoice)
     if invoice.open?
-      "Not paid yet."
+      "Not yet paid."
     elsif invoice.paid?
       "Paid on #{l(invoice.paid_at, :format => :minutes_timezone)}."
     elsif invoice.failed?

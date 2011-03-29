@@ -68,7 +68,7 @@ end
 
 group :production, :staging do
   gem 'rack-ssl-enforcer', '0.2.1'
-  gem 'rack-private',      '0.1.5'
+  gem 'rack-private', :path => "vendor/gems/rack-private-0.1.5.custom"
 end
 
 group :development, :test do

@@ -1,6 +1,8 @@
 - invoice ||= @invoice
 = title_and_content_header("SublimeVideo Invoice: #{invoice_dates(invoice)}")
 
+%h3.title= "For #{invoice.site_hostname}"
+
 %table#header
   %tr
     %td.our_info
@@ -14,9 +16,8 @@
           %strong= "Status: "
           = charging_status(invoice)
         %p
-          %strong= "Site hostname: "
-          = invoice.site_hostname
-          = "(token: #{invoice.site.token})"
+          %strong= "Site token: "
+          = invoice.site.token
         %span.stamp{ :class => invoice.state }= invoice.state
         - if invoice.last_transaction.present?
           %p
