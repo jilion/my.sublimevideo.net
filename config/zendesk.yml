@@ -13,6 +13,6 @@ staging:
   <<: *defaults
   
 production:
-  base_url: <%= ENV['ZENDESK_URL'] %>
-  username: <%= ENV['ZENDESK_USERNAME'] %>
-  password: <%= ENV['ZENDESK_PASSWORD'] %>
+  base_url: http://jilion.zendesk.com # <%= ENV['ZENDESK_URL'] %>
+  username: zendesk@sublimevideo.net # <%= ENV['ZENDESK_USERNAME'] %>
+  password: wrank8 # <%= ENV['ZENDESK_PASSWORD'] %>
