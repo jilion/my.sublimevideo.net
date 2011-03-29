@@ -331,7 +331,7 @@ private
 
   # validate if in_or_will_be_in_paid_plan?
   def verify_presence_of_credit_card
-    if user && !user.cc? && !user.any_cc_attrs?
+    if user && !user.cc? && !user.pending_cc? && !user.any_cc_attrs?
       self.errors.add(:base, :credit_card_needed)
     end
   end

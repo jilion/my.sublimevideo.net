@@ -11,8 +11,8 @@ class PlansController < ApplicationController
   def update
     # setting user_attributes will set user.attributes only only before validation (so, on the save below)
     # in order to set the credit card in the charging_options site's attribute, user.attributes have to be set before calling user.credit_card
-    @site.user.attributes = params[:site][:user_attributes]
     @site.attributes = params[:site]
+    @site.user.attributes = params[:site][:user_attributes]
     @site.charging_options = {
       credit_card: @site.user.credit_card,
       accept_url: sites_url,

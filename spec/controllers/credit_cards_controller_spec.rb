@@ -7,7 +7,10 @@ describe CreditCardsController do
 
     describe "GET edit" do
       context "with no credit card" do
-        before(:each) { authenticated_user.should_receive(:cc?).and_return(false) }
+        before(:each) do
+          authenticated_user.should_receive(:cc?).and_return(false)
+          authenticated_user.should_receive(:pending_cc?).and_return(false)
+        end
 
         it "should redirect to account/edit" do
           get :edit
@@ -15,8 +18,22 @@ describe CreditCardsController do
         end
       end
 
+      context "with a pending credit card" do
+        before(:each) do
+          authenticated_user.should_receive(:cc?).and_return(false)
+          authenticated_user.should_receive(:pending_cc?).and_return(true)
+        end
+
+        it "should render :edit template" do
+          get :edit
+          response.should render_template(:edit)
+        end
+      end
+
       context "with a credit card" do
-        before(:each) { authenticated_user.should_receive(:cc?).and_return(true) }
+        before(:each) do
+          authenticated_user.should_receive(:cc?).and_return(true)
+        end
 
         it "should render :edit template" do
           get :edit
