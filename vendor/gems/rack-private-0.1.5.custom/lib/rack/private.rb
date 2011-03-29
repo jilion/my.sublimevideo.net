@@ -20,7 +20,7 @@ module Rack
       elsif request.path == '/private'
         render_private_form
       else
-        location = "http://sublimevideo.net"
+        location = "http://jilion.com/sublimevideo-maintenance"
         body     = "<html><body>You are being <a href=\"#{location}\">redirected</a>.</body></html>"
         [301, { 'Content-Type' => 'text/html', 'Location' => location }, [body]]
       end
