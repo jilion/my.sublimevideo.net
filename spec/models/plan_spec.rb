@@ -165,6 +165,14 @@ describe Plan do
         @paid_plan_yearly2 = Factory.build(:plan, cycle: "year",  price: 50000)
       end
 
+      it { @beta_plan.upgrade?(@dev_plan).should be_true }
+      it { @beta_plan.upgrade?(@sponsored_plan).should be_true }
+      it { @beta_plan.upgrade?(@custom_plan).should be_true }
+      it { @beta_plan.upgrade?(@paid_plan).should be_true }
+      it { @beta_plan.upgrade?(@paid_plan2).should be_true }
+      it { @beta_plan.upgrade?(@paid_plan_yearly).should be_true }
+      it { @beta_plan.upgrade?(@paid_plan_yearly2).should be_true }
+
       it { @dev_plan.upgrade?(@dev_plan).should be_nil }
       it { @dev_plan.upgrade?(@paid_plan).should be_true }
       it { @dev_plan.upgrade?(@paid_plan2).should be_true }
