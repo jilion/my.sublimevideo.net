@@ -12,7 +12,7 @@ class UserMailer < SublimeVideoMailer
     @user = user
     mail(
       :to => "\"#{@user.full_name}\" <#{@user.email}>",
-      :subject => "Your account has been un-suspended"
+      :subject => "Your account has been reactivated"
     )
   end
 
