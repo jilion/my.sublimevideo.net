@@ -334,66 +334,181 @@ feature "Sites" do
     end
   end
 
-  pending "with a user with a credit card registered" do
+  context "with a user with a credit card registered" do
     background do
       sign_in_as :user, :without_cc => false
+      visit "/sites/new"
     end
 
     feature "new" do
-      scenario "in dev plan" do
-        visit "/sites"
-        click_link "Add a site"
+      describe "in dev plan" do
+        scenario "with no hostname" do
+          choose "plan_dev"
+          has_checked_field?("plan_dev").should be_true
 
-        fill_in "Domain", :with => "google.com"
-        choose "plan_dev"
-        has_checked_field?("plan_dev").should be_true
-        click_button "Create"
+          fill_in "Domain", :with => ""
+          click_button "Create site"
 
-        @worker.work_off
-        site = @current_user.sites.last
-        site.hostname.should == "google.com"
-        site.loader.read.should include(site.token)
-        site.license.read.should include(site.license_js_hash)
+          @worker.work_off
+          site = @current_user.sites.last
+          site.hostname.should == ""
+          site.loader.read.should include(site.token)
+          site.license.read.should include(site.license_js_hash)
 
-        current_url.should =~ %r(http://[^/]+/sites)
-        page.should have_content('google.com')
-        page.should have_content('LaunchPad')
+          current_url.should =~ %r(http://[^/]+/sites)
+          page.should have_content('add a hostname')
+          page.should_not have_content('Choose a plan')
+          page.should have_content('LaunchPad')
+        end
+
+        scenario "with a hostname" do
+          choose "plan_dev"
+          has_checked_field?("plan_dev").should be_true
+          fill_in "Domain", :with => "rymai.com"
+          click_button "Create site"
+
+          @worker.work_off
+          site = @current_user.sites.last
+          site.hostname.should == "rymai.com"
+          site.loader.read.should include(site.token)
+          site.license.read.should include(site.license_js_hash)
+
+          current_url.should =~ %r(http://[^/]+/sites)
+          page.should have_content('rymai.com')
+          page.should have_content('Choose a plan')
+          page.should have_content('LaunchPad')
+        end
       end
 
-      pending "in custom plan"
+      describe "paid plan" do
+        scenario "with no hostname" do
+          page.should have_no_selector("#credit_card")
+          choose "plan_comet_month"
+          has_checked_field?("plan_comet_month").should be_true
+          fill_in "Domain", :with => ""
+          click_button "Create"
 
-      scenario "in paid plan" do
-        visit "/sites"
-        click_link "Add a site"
+          current_url.should =~ %r(http://[^/]+/sites)
+          
+          page.should have_content("Domain can't be blank")
+          page.should have_no_selector("#credit_card")
+          page.should have_no_content("Card type is invalid")
+          page.should have_no_content("Name on card can't be blank")
+          page.should have_no_content("Card number is invalid")
+          page.should have_no_content("CSC is required")
+        end
 
-        fill_in "Domain", :with => "google.com"
-        choose "plan_comet_month"
-        has_checked_field?("plan_comet_month").should be_true
-        VCR.use_cassette('ogone/visa_payment_acceptance') { click_button "Create" }
+        scenario "with a hostname (visa)" do
+          page.should have_no_selector("#credit_card")
+          choose "plan_comet_year"
+          has_checked_field?("plan_comet_year").should be_true
+          fill_in "Domain", :with => "rymai.com"
+          page.should have_no_selector("#credit_card")
+          VCR.use_cassette('ogone/visa_payment_acceptance') { click_button "Create" }
 
-        @worker.work_off
-        site = @current_user.sites.last
-        site.hostname.should == "google.com"
-        site.loader.read.should include(site.token)
-        site.license.read.should include(site.license_js_hash)
+          @worker.work_off
+          site = @current_user.sites.last
+          site.last_invoice.reload.should be_paid
+          site.hostname.should == "rymai.com"
+          site.loader.read.should include(site.token)
+          site.license.read.should include(site.license_js_hash)
+          site.plan_id.should == Plan.find_by_name_and_cycle("comet", "year").id
+          site.pending_plan_id.should be_nil
+          site.first_paid_plan_started_at.should be_present
+          site.plan_started_at.should be_present
+          site.plan_cycle_started_at.should be_present
+          site.plan_cycle_ended_at.should be_present
+          site.pending_plan_started_at.should be_nil
+          site.pending_plan_cycle_started_at.should be_nil
+          site.pending_plan_cycle_ended_at.should be_nil
 
-        current_url.should =~ %r(http://[^/]+/sites)
-        page.should have_content('google.com')
-        page.should have_content('Comet')
+          current_url.should =~ %r(http://[^/]+/sites)
+          page.should have_content("Site was successfully created.")
+          page.should have_content('rymai.com')
+          page.should have_content('Comet (yearly)')
+        end
+
+        scenario "with a hostname (mastercard)" do
+          choose "plan_comet_year"
+          has_checked_field?("plan_comet_year").should be_true
+          fill_in "Domain", :with => "rymai.com"
+          page.should have_no_selector("#credit_card")
+          VCR.use_cassette('ogone/master_payment_acceptance') { click_button "Create" }
+
+          @worker.work_off
+          site = @current_user.sites.last
+          site.last_invoice.should be_paid
+          site.hostname.should == "rymai.com"
+          site.loader.read.should include(site.token)
+          site.license.read.should include(site.license_js_hash)
+          site.plan_id.should == Plan.find_by_name_and_cycle("comet", "year").id
+          site.pending_plan_id.should be_nil
+          site.first_paid_plan_started_at.should be_present
+          site.plan_started_at.should be_present
+          site.plan_cycle_started_at.should be_present
+          site.plan_cycle_ended_at.should be_present
+          site.pending_plan_started_at.should be_nil
+          site.pending_plan_cycle_started_at.should be_nil
+          site.pending_plan_cycle_ended_at.should be_nil
+
+          current_url.should =~ %r(http://[^/]+/sites)
+          page.should have_content("Site was successfully created.")
+          page.should have_content('rymai.com')
+          page.should have_content('Comet (yearly)')
+        end
       end
 
-      scenario "invalid in paid plan" do
-        visit "/sites"
-        click_link "Add a site"
+      describe "custom plan" do
+        background do
+          visit "/sites/new?custom_plan=#{Plan.find_by_name_and_cycle("custom1", "year").token}"
+        end
 
-        fill_in "Domain", :with => ""
-        choose "plan_comet_month"
-        has_checked_field?("plan_comet_month").should be_true
-        click_button "Create"
+        scenario "with no hostname" do
+          page.should have_no_selector("#credit_card")
+          choose "plan_custom"
+          has_checked_field?("plan_custom").should be_true
+          fill_in "Domain", :with => ""
+          click_button "Create"
 
-        current_url.should =~ %r(http://[^/]+/sites)
-        page.should have_content("Domain can't be blank")
-      end
+          current_url.should =~ %r(http://[^/]+/sites)
+          page.should have_no_selector("#credit_card")
+          page.should have_content("Domain can't be blank")
+          page.should have_no_content("Card type is invalid")
+          page.should have_no_content("Name on card can't be blank")
+          page.should have_no_content("Card number is invalid")
+          page.should have_no_content("CSC is required")
+        end
+
+        scenario "with a hostname" do
+          page.should have_no_selector("#credit_card")
+          choose "plan_custom"
+          has_checked_field?("plan_custom").should be_true
+          fill_in "Domain", :with => "rymai.com"
+          VCR.use_cassette('ogone/visa_payment_acceptance') { click_button "Create" }
+
+          @worker.work_off
+          site = @current_user.sites.last
+          site.last_invoice.should be_paid
+          site.hostname.should == "rymai.com"
+          site.loader.read.should include(site.token)
+          site.license.read.should include(site.license_js_hash)
+          site.plan_id.should == Plan.find_by_name_and_cycle("custom1", "year").id
+          site.pending_plan_id.should be_nil
+          site.first_paid_plan_started_at.should be_present
+          site.plan_started_at.should be_present
+          site.plan_cycle_started_at.should be_present
+          site.plan_cycle_ended_at.should be_present
+          site.pending_plan_started_at.should be_nil
+          site.pending_plan_cycle_started_at.should be_nil
+          site.pending_plan_cycle_ended_at.should be_nil
+
+          current_url.should =~ %r(http://[^/]+/sites)
+          page.should have_content("Site was successfully created.")
+          page.should have_content('rymai.com')
+          page.should have_content('Custom')
+          page.should have_content(I18n.l(site.plan_cycle_started_at, :format => :d_b_Y) + ' - ' + I18n.l(site.plan_cycle_ended_at, :format => :d_b_Y))
+        end
+      end # custom plan
     end
 
     feature "edit" do

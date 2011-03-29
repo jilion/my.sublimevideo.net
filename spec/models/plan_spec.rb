@@ -231,7 +231,7 @@ describe Plan do
 
     describe "#support" do
       it { Factory.build(:plan, :name => "beta").support.should == "standard" }
-      it { Factory.build(:plan, :name => "dev").support.should == "standard" }
+      it { Factory.build(:plan, :name => "dev").support.should == "launchpad" }
       it { Factory.build(:plan, :name => "sponsored").support.should == "priority" }
       it { Factory.build(:plan, :name => "comet").support.should == "standard" }
       it { Factory.build(:plan, :name => "planet").support.should == "standard" }

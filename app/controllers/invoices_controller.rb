@@ -21,18 +21,18 @@ class InvoicesController < ApplicationController
 
     if @invoices.present?
       Transaction.charge_by_invoice_ids(@invoices.map(&:id))
-      transaction = @site.last_invoice.last_transaction
-      if transaction.paid?
+      @invoices = Invoice.find(@invoices.map(&:id))
+      if @invoices.empty?
         flash[:notice] = t("site.invoices.retry_succeed")
       else
-        flash[:alert] = t("transaction.errors.#{transaction.i18n_error_key}")
+        flash[:alert] = t("transaction.errors.#{@invoices.last.last_transaction.i18n_error_key}")
       end
     else
       flash[:notice] = t("site.invoices.no_failed_invoices_to_retry")
     end
 
     respond_to do |format|
-      format.html { redirect_to site_invoices_url(site_id: @site.token) }
+      format.html { redirect_to site_invoices_url(site_id: @site.to_param) }
     end
   end
 

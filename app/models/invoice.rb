@@ -105,7 +105,7 @@ class Invoice < ActiveRecord::Base
   end
 
   def last_transaction
-    transactions.order(:created_at.desc).first
+    transactions.order(:created_at).last
   end
 
 private

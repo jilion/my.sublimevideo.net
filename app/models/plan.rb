@@ -138,6 +138,8 @@ class Plan < ActiveRecord::Base
   def support
     if STANDARD_NAMES[-2,2].include?(name) || custom_plan? || sponsored_plan?
       "priority"
+    elsif dev_plan?
+      "launchpad"
     else
       "standard"
     end

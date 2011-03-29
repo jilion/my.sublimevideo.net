@@ -4,7 +4,11 @@
   %p.title_desc= t('site.refund.no_refund_possible')
 
 - else
-  %p.title_desc= "We offer a 30 day money back guarantee on all paid plans. If for any reason you are unsatisfied with our service, you can request a refund using the form below:"
+  %p.title_desc= "We offer a 30 day money back guarantee on all paid plans. If for any reason you are unsatisfied with our service, you can request a refund using the form below."
+  %p.title_desc
+    = t 'site.refund.warning'
+    = raw t 'site.edit.delete_site_info2'
+  
   #sites.refund
     = form_tag refund_path, :html => { :id => "refund_form" } do |f|
       .entry.select

@@ -1,7 +1,7 @@
 defaults: &defaults
-  base_url: http://jilion.zendesk.com
-  username: zeno@jilion.com
-  password: wrank8
+  base_url: <%= ENV['ZENDESK_URL'] %> # http://jilion.zendesk.com
+  username: <%= ENV['ZENDESK_USERNAME'] %> # zeno@jilion.com
+  password: <%= ENV['ZENDESK_PASSWORD'] %> # wrank8
 
 development:
   <<: *defaults

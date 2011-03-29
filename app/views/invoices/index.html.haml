@@ -9,7 +9,6 @@
       %p= "No invoices"
 
   - else
-
     #invoices_summary
       - failed_invoices = @invoices.select { |invoice| invoice.failed? }
       - if failed_invoices.present?
@@ -20,8 +19,9 @@
               = t('user.credit_card.expired')
               = link_to t('user.credit_card.please_update'), edit_credit_card_path, :class => "hl"
           - unless current_user.cc_expired?
-            = form_for @site, :url => retry_site_invoices_path(site_id: @site.token), :html => { :method => 'put' } do |f|
+            = form_for @site, :url => retry_site_invoices_path(site_id: @site.to_param), :html => { :method => 'put' } do |f|
               .entry= f.submit t('site.invoices.retry_failed_invoices'), :class => "submit_dynamic_button"
+
       - if @site.in_paid_plan? || (@site.next_cycle_plan_id? && @site.next_cycle_plan.paid_plan?)
         .next_invoice
           %h3.section_title= "Next invoice"
