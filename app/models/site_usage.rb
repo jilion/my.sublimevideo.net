@@ -67,7 +67,7 @@ class SiteUsage
   # ====================
 
   def billable_player_hits
-    main_player_hits + main_player_hits_cached + extra_player_hits + extra_player_hits_cached
+    main_player_hits.to_i + main_player_hits_cached.to_i + extra_player_hits.to_i + extra_player_hits_cached.to_i
   end
 
 private
