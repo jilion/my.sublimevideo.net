@@ -4,8 +4,8 @@ module OneTime
     class << self
 
       def set_beta_plan
-        ::Site.where({ plan_id: nil }, { hostname: nil } | { hostname: '' }).update_all(:plan_id => Plan.find_by_name("dev").id)
-        ::Site.where({ plan_id: nil }, { :hostname.ne => nil } | { :hostname.ne => '' }).update_all(:plan_id => Plan.find_by_name("beta").id)
+        ::Site.where({ plan_id: nil }, { hostname: nil } | { hostname: '' }).update_all(:plan_id => ::Plan.find_by_name("dev").id)
+        ::Site.where({ plan_id: nil }, { :hostname.ne => nil } | { :hostname.ne => '' }).update_all(:plan_id => ::Plan.find_by_name("beta").id)
         "#{::Site.dev.count} sites are now using the Dev plan (on #{::Site.not_archived.count} non-archived sites)."
         "#{::Site.beta.count} sites are now using the Beta plan (on #{::Site.not_archived.count} non-archived sites)."
       end
@@ -35,15 +35,15 @@ module OneTime
 
           if !Hostname.valid?(site.hostname) && Hostname.dev_valid?(site.hostname)
             new_dev_hostnames << site.hostname
-            site.hostname = nil
+            site.hostname = ""
           end
 
-          new_dev_hostnames.uniq!
-          extra_hostnames.uniq!
+          new_dev_hostnames = new_dev_hostnames.uniq
+          extra_hostnames   = extra_hostnames.uniq
 
-          site.hostname        = site.hostname.present? ? Hostname.clean(site.hostname) : (extra_hostnames.present? ? extra_hostnames.pop : nil)
-          site.dev_hostnames   = Hostname.clean(new_dev_hostnames.sort.join(', ')) if new_dev_hostnames.present?
-          site.extra_hostnames = Hostname.clean(extra_hostnames.sort.join(', ')) if extra_hostnames.present?
+          site.hostname        = site.hostname.present? ? Hostname.clean(site.hostname) : (extra_hostnames.present? ? extra_hostnames.pop : "")
+          site.dev_hostnames   = Hostname.clean(new_dev_hostnames.sort.join(', '))
+          site.extra_hostnames = Hostname.clean(extra_hostnames.sort.join(', '))
           site.cdn_up_to_date  = site.valid? # will reload the site's license if site is valid
           repaired_sites += 1 if site.save!(validate: false)
 

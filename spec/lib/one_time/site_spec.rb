@@ -45,9 +45,9 @@ describe OneTime::Site do
         before(:all) { described_class.update_hostnames }
 
         it "should not modify site when hostname is invalid" do
-          @not_public_hostname.reload.hostname.should == nil
+          @not_public_hostname.reload.hostname.should == ""
           @not_public_hostname.dev_hostnames.should   == '127.0.0.1, jilion.local, localhost'
-          @not_public_hostname.extra_hostnames.should == nil
+          @not_public_hostname.extra_hostnames.should == ""
         end
 
         it "should move dev hostnames that belong to extra hostnames" do
@@ -63,15 +63,15 @@ describe OneTime::Site do
         end
 
         it "should remove duplicate dev domain" do
-          @duplicated_dev_hostname1.reload.hostname.should == nil
+          @duplicated_dev_hostname1.reload.hostname.should == ""
           @duplicated_dev_hostname1.dev_hostnames.should   == '127.0.0.1, localhost'
-          @duplicated_dev_hostname1.extra_hostnames.should == nil
+          @duplicated_dev_hostname1.extra_hostnames.should == ""
         end
 
         it "should remove duplicate dev domain (bis)" do
           @duplicated_dev_hostname2.reload.hostname.should == 'jilion.com'
           @duplicated_dev_hostname2.dev_hostnames.should   == '127.0.0.1, localhost'
-          @duplicated_dev_hostname2.extra_hostnames.should == nil
+          @duplicated_dev_hostname2.extra_hostnames.should == ""
         end
 
         it "should not remove hostname when hostname is invalid and move it to dev, move dev hostnames that belong to extra hostnames, remove duplicate dev domain, set hostname to first extra hostname" do
@@ -83,7 +83,7 @@ describe OneTime::Site do
         it "should not remove hostname when hostname is invalid and move it to dev, move dev hostnames that belong to extra hostnames, remove duplicate dev domain" do
           @mixed_invalid_site2.reload.hostname.should == 'jilion.net'
           @mixed_invalid_site2.dev_hostnames.should   == '127.0.0.1, jilion.local, localhost'
-          @mixed_invalid_site2.extra_hostnames.should == nil
+          @mixed_invalid_site2.extra_hostnames.should == ""
         end
 
         # all beta sites will not necessarily be valid since some will have a blank hostname while it's not valid for site in beta plan

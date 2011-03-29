@@ -2,7 +2,7 @@
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
     method: :put
-    uri: http://zeno%40jilion.com:wrank8@jilion.zendesk.com:80/users/15483194.xml
+    uri: http://zendesk%40sublimevideo.net:wrank8@jilion.zendesk.com:80/users/15483194.xml
     body: <user><email>new@email.com</email></user>
     headers: 
       accept: 

@@ -2,7 +2,7 @@
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
     method: :post
-    uri: http://zeno%40jilion.com:wrank8@jilion.zendesk.com:80/tickets.xml
+    uri: http://zendesk%40sublimevideo.net:wrank8@jilion.zendesk.com:80/tickets.xml
     body: <ticket><subject>I have a request!</subject><description>I have a request this is a long text!</description><set-tags>idea standard-support</set-tags><requester-name>John Doe</requester-name><requester-email>email7@user.com</requester-email></ticket>
     headers: 
       content-type: 
@@ -39,7 +39,7 @@
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
     method: :get
-    uri: http://zeno%40jilion.com:wrank8@jilion.zendesk.com:80/tickets/813.json
+    uri: http://zendesk%40sublimevideo.net:wrank8@jilion.zendesk.com:80/tickets/813.json
     body: 
     headers: 
   response: !ruby/struct:VCR::Response 
@@ -109,7 +109,7 @@
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
     method: :put
-    uri: http://zeno%40jilion.com:wrank8@jilion.zendesk.com:80/users/30867775.xml
+    uri: http://zendesk%40sublimevideo.net:wrank8@jilion.zendesk.com:80/users/30867775.xml
     body: <user><password>d41d8cd98f00b204e9800998ecf8427e</password><is-verified>true</is-verified></user>
     headers: 
       content-type: 

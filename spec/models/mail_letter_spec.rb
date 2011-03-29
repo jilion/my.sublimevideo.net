@@ -6,8 +6,8 @@ describe MailLetter do
 
     describe "#deliver_and_log" do
       before(:all) do
-        @user          = Factory(:user)
-        @site          = Factory(:site, :user => @user).tap { |site| site.update_attribute(:hostname, 'localhost') }
+        @user          = Factory(:user, created_at: Time.utc(2011,1,1))
+        @site          = Factory(:site, user: @user).tap { |site| site.update_attribute(:hostname, 'localhost') }
         @admin         = Factory(:admin)
         @mail_template = Factory(:mail_template)
         @attributes    = { :admin_id => @admin.id, :template_id => @mail_template.id.to_s, :criteria => "with_invalid_site" }
@@ -16,6 +16,8 @@ describe MailLetter do
       subject { @mail_letter.deliver_and_log }
 
       it "should save all the data" do
+        @user.should be_beta
+        @site.should_not be_valid
         subject.admin.should    == @admin
         subject.template.should == @mail_template
         subject.criteria.should == "with_invalid_site"
