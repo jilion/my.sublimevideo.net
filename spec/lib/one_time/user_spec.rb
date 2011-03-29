@@ -50,6 +50,17 @@ describe OneTime::User do
     #   described_class.import_all_beta_users_to_campaign_monitor
     # end
 
+
+    describe ".uniquify_all_empty_cc_alias" do
+      it "should set all empty cc_alias" do
+        user = Factory(:user)
+        user.update_attribute(:cc_alias, nil)
+        user.reload.cc_alias.should be_nil
+        described_class.uniquify_all_empty_cc_alias
+        user.reload.cc_alias.should =~ /^[A-Z0-9]{8}$/
+      end
+    end
+
   end
 
 end

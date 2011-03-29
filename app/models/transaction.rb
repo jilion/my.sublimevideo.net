@@ -66,7 +66,6 @@ class Transaction < ActiveRecord::Base
     delay_charge_all_open_and_failed_invoices
   end
 
-  # DO NOT USE THIS FOR THE MOMENT
   def self.charge_open_and_failed_invoices_by_user_id(user_id)
     user = User.find(user_id)
     if user

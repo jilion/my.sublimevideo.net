@@ -23,11 +23,6 @@ module User::CreditCard
     end
   end
 
-  # TODO Remove after public launch
-  def self.uniquify_all_empty_cc_alias
-    User.where(cc_alias: nil).each { |user| user.uniquify_cc_alias }
-  end
-
   # ===============
   # = Validations =
   # ===============

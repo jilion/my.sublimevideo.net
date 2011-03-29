@@ -35,6 +35,13 @@ namespace :one_time do
         OneTime::User.import_all_beta_users_to_campaign_monitor
       end
     end
+
+    desc "Set a unique cc_alias for all users that don't have one yet"
+    task :uniquify_all_empty_cc_alias => :environment do
+      timed do
+        OneTime::User.uniquify_all_empty_cc_alias
+      end
+    end
   end
 
   namespace :sites do

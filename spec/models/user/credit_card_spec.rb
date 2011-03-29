@@ -211,17 +211,6 @@ describe User::CreditCard do
       end
     end
 
-    describe ".uniquify_all_empty_cc_alias" do
-
-      it "should set all empty cc_alias" do
-        user = Factory(:user)
-        user.update_attribute(:cc_alias, nil)
-        user.reload.cc_alias.should be_nil
-        User::CreditCard.uniquify_all_empty_cc_alias
-        user.reload.cc_alias.should =~ /^[A-Z0-9]{8}$/
-      end
-    end
-
   end
 
   describe "Instance Methods" do
