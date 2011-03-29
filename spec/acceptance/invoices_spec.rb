@@ -3,7 +3,6 @@ require 'spec_helper'
 feature "Invoice actions:" do
 
   background do
-    create_plans
     sign_in_as :user
   end
 
@@ -164,23 +163,25 @@ feature "Invoice actions:" do
       page.should have_no_content('failed invoices for a total')
     end
 
-    pending "with 1 or more failed invoices" do # FUCK I DON'T GET IT!!!!!!
-      site = Factory(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
-      @invoice = site.last_invoice
+    feature "with 1 or more failed invoices", focus: true do # FUCK I DON'T GET IT!!!!!!
+      puts @paid_plan.inspect
+      puts @current_user.inspect
+      @site = Factory(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
+      @invoice = @site.last_invoice
       @invoice.update_attributes(state: 'failed', last_failed_at: Time.now.utc)
       @invoice.last_transaction.update_attribute(:error, "Credit card refused")
 
-      visit "/sites/#{site.token}/invoices"
+      visit "/sites/#{@site.to_param}/invoices"
 
       page.should have_content("You have 1 failed invoices for a total of $#{@invoice.amount / 100.0}.")
-
-      puts "before submit : #{site.inspect}"
+      
+      puts "before submit : #{@site.inspect}"
       VCR.use_cassette('ogone/visa_payment_acceptance') { click_button I18n.t('site.invoices.retry_failed_invoices') }
-      puts "after submit : #{site.inspect}"
+      puts "after submit : #{@site.inspect}"
       save_and_open_page
-      current_url.should =~ %r(http://[^/]+/sites/#{site.token}/invoices)
+      current_url.should =~ %r(http://[^/]+/sites/#{@site.to_param}/invoices)
 
-      page.should have_content('rymai.com')
+      page.should have_content(@site.hostname)
 
       page.should have_content('Past invoices')
       page.should have_content("Paid on #{I18n.l(@invoice.paid_at, :format => :minutes_timezone)}")

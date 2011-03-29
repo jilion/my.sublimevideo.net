@@ -1,24 +1,16 @@
 defaults: &defaults
+  signature_encryptor: sha512
+  created_after_10_may_2010: true
+  currency: USD
+
+
+development:
+  <<: *defaults
   login:     jilion
   user:      sublime
   password:  WWQMNC89
   signature: MacBook@Pro2an9All-Around7Powerhouse!
   signature_out: 7Powerhouse!MacBook@Pro2an9All-Around
-  signature_encryptor: sha512
-  created_after_10_may_2010: true
-  currency: USD
-
-development:
-  <<: *defaults
-  # PROD
-  # login:     jilionPROD
-  # user:      sublime_api
-  # password:  "F$WZe7,2>h5%6*3g"
-  # signature: "qI{No5w^R,Ee72Gi98DT#x)MV"
-  # signature_out: "iQuMX'!lxe34hDW7`6#mkz1_C"
-  # signature_encryptor: sha512
-  # created_after_10_may_2010: true
-  # currency: USD
 
 test:
   <<: *defaults
@@ -28,3 +20,14 @@ staging:
 
 production:
   <<: *defaults
+  # PROD
+  # login:     jilionPROD
+  # user:      sublime_api
+  # password:  "F$WZe7,2>h5%6*3g"
+  # signature: "qI{No5w^R,Ee72Gi98DT#x)MV"
+  # signature_out: "iQuMX'!lxe34hDW7`6#mkz1_C"
+  login:         <%= ENV['OGONE_LOGIN'] %>
+  user:          <%= ENV['OGONE_USER'] %>
+  password:      <%= ENV['OGONE_PASSWORD'] %>
+  signature:     <%= ENV['OGONE_SIGNATURE'] %>
+  signature_out: <%= ENV['OGONE_SIGNATURE_OUT'] %>
