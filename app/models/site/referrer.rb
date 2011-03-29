@@ -18,7 +18,7 @@ module Site::Referrer
       "invalid"
     end
   rescue => ex
-    Notify.send("Referrer (#{referrer}), (#{past_site.hostname} / #{past_site.extra_hostnames} / #{past_site.dev_hostnames}) type could not be guessed: #{ex.message}", :exception => ex)
+    Notify.send("Referrer (#{referrer}), (#{self.id} #{past_site.inspect}) type could not be guessed: #{ex.message}", :exception => ex)
     "invalid"
   end
 
