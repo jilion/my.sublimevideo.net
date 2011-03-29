@@ -38,11 +38,30 @@ module Ogone
     end
 
   private
+  
+    def login
+      yml[:login] == 'heroku_env' ? ENV['OGONE_LOGIN'] : yml[:login]
+    end
+  
+    def user
+      yml[:user] == 'heroku_env' ? ENV['OGONE_USER'] : yml[:user]
+    end
+  
+    def password
+      yml[:password] == 'heroku_env' ? ENV['OGONE_PASSWORD'] : yml[:password]
+    end
+  
+    def signature
+      yml[:signature] == 'heroku_env' ? ENV['OGONE_SIGNATURE'] : yml[:signature]
+    end
+  
+    def signature_out
+      yml[:signature_out] == 'heroku_env' ? ENV['OGONE_SIGNATURE_OUT'] : yml[:signature_out]
+    end
 
     def gateway
-      ActiveMerchant::Billing::Base.gateway_mode = :test
-      Rails.logger.info "Ogone.gateway_mode: #{ActiveMerchant::Billing::Base.gateway_mode}"
-      @@gateway ||= ActiveMerchant::Billing::OgoneGateway.new(yml)
+      ActiveMerchant::Billing::Base.gateway_mode = Rails.env.production? ? :production : :test
+      @@gateway ||= ActiveMerchant::Billing::OgoneGateway.new({ login: login, user: user, password: password, signature: signature, signature_out: signature_out })
     end
 
   end
