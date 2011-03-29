@@ -22,8 +22,8 @@ module OneTime
         end
       end
       
-      def self.uniquify_all_empty_cc_alias
-        User.where(cc_alias: nil).each { |user| user.uniquify_cc_alias }
+      def uniquify_all_empty_cc_alias
+        ::User.where(cc_alias: nil).each { |user| user.uniquify_cc_alias }
       end
 
     end
