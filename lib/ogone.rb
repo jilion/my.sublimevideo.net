@@ -40,8 +40,7 @@ module Ogone
   private
 
     def gateway
-      ActiveMerchant::Billing::Base.gateway_mode = :test
-      Rails.logger.info "Ogone.gateway_mode: #{ActiveMerchant::Billing::Base.gateway_mode}"
+      ActiveMerchant::Billing::Base.gateway_mode = Rails.env.production? :production : :test
       @@gateway ||= ActiveMerchant::Billing::OgoneGateway.new(yml)
     end
 
