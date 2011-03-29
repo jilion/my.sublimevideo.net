@@ -21,8 +21,7 @@ class InvoicesController < ApplicationController
 
     if @invoices.present?
       Transaction.charge_by_invoice_ids(@invoices.map(&:id))
-      @invoices = Invoice.find(@invoices.map(&:id))
-      if @invoices.empty?
+      if @site.invoices.failed.empty?
         flash[:notice] = t("site.invoices.retry_succeed")
       else
         flash[:alert] = t("transaction.errors.#{@invoices.last.last_transaction.i18n_error_key}")
