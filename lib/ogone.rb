@@ -59,7 +59,7 @@ module Ogone
     #   yml[:signature_out] == 'heroku_env' ? ENV['OGONE_SIGNATURE_OUT'] : yml[:signature_out]
     # end
 
-    def gateway_mode
+    def gateway
       ActiveMerchant::Billing::Base.gateway_mode = Rails.env.production? ? :production : :test
       @@gateway ||= ActiveMerchant::Billing::OgoneGateway.new(yml)#.merge({ login: login, user: user, password: password, signature: signature, signature_out: signature_out }))
     end
