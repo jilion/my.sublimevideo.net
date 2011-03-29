@@ -115,6 +115,7 @@ feature "Invoice actions:" do
     end
 
     scenario "upgrade paid invoice with discount" do
+      @current_user.update_attribute(:created_at, Time.utc(2010,10,10))
       @current_user.update_attribute(:country, 'US')
       site = Factory(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
       VCR.use_cassette('ogone/visa_payment_generic') do
@@ -124,8 +125,6 @@ feature "Invoice actions:" do
       invoice = site.last_invoice
 
       visit invoice_path(invoice)
-
-      save_and_open_page
 
       page.should have_content("Jilion / Jime SA")
       page.should have_content("Invoice ID: #{invoice.reference.upcase}")

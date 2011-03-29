@@ -1,6 +1,6 @@
 Welcome <%= @resource.email %>!
 
-You can confirm your account through the link below:
+Please confirm your account via the link below:
 
 <%= confirmation_url(@resource, :confirmation_token => @resource.confirmation_token) %>
 

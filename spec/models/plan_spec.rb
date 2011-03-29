@@ -235,7 +235,7 @@ describe Plan do
 
     describe "#price(site)" do
       before(:all) do
-        @beta_user = Factory(:user, invitation_token: nil)
+        @beta_user = Factory(:user, invitation_token: nil, created_at: Time.utc(2010,10,10))
         @non_beta_user = Factory(:user, invitation_token: "1234asdv")
         @paid_plan2 = Factory(:plan, cycle: "month", player_hits: 50_000, price: 1990) # $19.90
 

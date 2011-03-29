@@ -21,7 +21,7 @@ describe Site::Invoice do
           @site_to_be_renewed = Factory(:site)
         end
         @site_not_to_be_renewed1 = Factory(:site)
-        @site_not_to_be_renewed2 = Factory(:site, plan_started_at: 3.months.ago, plan_cycle_ended_at: 2.months.from_now)
+        @site_not_to_be_renewed2 = Factory(:site_with_invoice, plan_started_at: 3.months.ago, plan_cycle_ended_at: 2.months.from_now)
         VCR.use_cassette('ogone/visa_payment_generic') { @site_not_to_be_renewed2.update_attribute(:plan_id, @paid_plan.id) }
       end
       before(:each) do
@@ -168,7 +168,7 @@ describe Site::Invoice do
         its(:last_paid_plan_price) { should == 0 }
       end
 
-      context "site with at least one paid invoice" do
+        context "site with at least one paid invoice" do
         before(:all) do
           @plan1 = Factory(:plan, price: 10_000)
           @plan2 = Factory(:plan, price: 5_000)
@@ -176,9 +176,9 @@ describe Site::Invoice do
           @site.plan_id = @plan2.id
         end
         subject { @site }
-      
+
         it "should return the price of the last InvoiceItem::Plan with an price > 0" do
-          subject.last_paid_plan_price.should == @plan1.price(subject, true)
+          subject.last_paid_plan_price.should == @plan1.price(subject)
         end
       end
     end
@@ -830,7 +830,7 @@ describe Site::Invoice do
               subject.reload.plan_id   = @paid_plan_yearly.id
               subject.user_attributes = { "current_password" => "123456" }
               subject.charging_options = { credit_card: Factory.build(:user_no_cc, valid_cc_attributes_master).credit_card }
-              
+
               Timecop.travel(Time.utc(2011,2,10)) { expect { subject.save }.to change(subject.invoices, :count).by(1) }
               subject.reload.plan.should == @paid_plan_yearly
               subject.last_invoice.should be_paid

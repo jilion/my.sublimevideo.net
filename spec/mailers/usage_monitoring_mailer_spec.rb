@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe UsageMonitoringMailer do
+
   before(:all) do
     @site = Factory(:site)
     Factory(:plan, :price => @site.plan.price + 100)
@@ -16,11 +17,11 @@ describe UsageMonitoringMailer do
     end
 
     it "should set subject" do
-      @last_delivery.subject.should == "You have reached usage limit for your site #{subject.hostname}"
+      @last_delivery.subject.should == "Peak Insurance activated for #{subject.hostname}"
     end
 
-    it "should set a body that contain the link to edit the plan" do
-      @last_delivery.body.encoded.should include "https://#{ActionMailer::Base.default_url_options[:host]}/sites/#{subject.to_param}/plan/edit"
+    it "should set a body that contain the link to peak insurance docs" do
+      @last_delivery.body.encoded.should include "http://docs.sublimevideo.net/peak-insurance"
     end
   end
 
@@ -33,7 +34,7 @@ describe UsageMonitoringMailer do
     end
 
     it "should set subject" do
-      @last_delivery.subject.should == "You need to upgrade your plan for your site #{@site.hostname}"
+      @last_delivery.subject.should == "You need to upgrade your plan for #{@site.hostname}"
     end
 
     it "should set a body that contain the link to edit the plan" do

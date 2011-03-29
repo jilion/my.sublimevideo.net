@@ -4,7 +4,7 @@ There has been a problem processing your payment.
 Your credit card could not be charged.
 
 <% if @transaction.user.cc_expired? %>
-Please update your credit card information using the following link:
+Please update your credit card information via the following link:
 https://<%= ActionMailer::Base.default_url_options[:host] %>/card/edit
 <% else %>
 Please use the following link to see the sites with payment errors and retry the payment:
