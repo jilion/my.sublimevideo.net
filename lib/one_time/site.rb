@@ -42,7 +42,7 @@ module OneTime
           extra_hostnames.uniq!
 
           site.hostname        = site.hostname.present? ? Hostname.clean(site.hostname) : (extra_hostnames.present? ? extra_hostnames.pop : nil)
-          site.dev_hostnames   = Hostname.clean(new_dev_hostnames.sort.join(', ')) if new_dev_hostnames
+          site.dev_hostnames   = Hostname.clean(new_dev_hostnames.sort.join(', ')) if new_dev_hostnames.present?
           site.extra_hostnames = Hostname.clean(extra_hostnames.sort.join(', ')) if extra_hostnames.present?
           site.cdn_up_to_date  = site.valid? # will reload the site's license if site is valid
           repaired_sites += 1 if site.save!(validate: false)
