@@ -54,8 +54,10 @@ describe Ticket do
 
   describe "Instance Methods" do
     before(:all) do
+      @user_with_launchpad_support = Factory(:user)
+      Factory(:site, user: @user_with_launchpad_support, plan_id: @dev_plan.id)
       @user_with_standard_support = Factory(:user)
-      Factory(:site, user: @user_with_standard_support, plan_id: @dev_plan.id)
+      Factory(:site, user: @user_with_standard_support, plan_id: @paid_plan.id)
       @user_with_priority_support = Factory(:user)
       Factory(:site, user: @user_with_priority_support, plan_id: @custom_plan.token)
     end
@@ -108,6 +110,15 @@ describe Ticket do
         it "should delay Ticket#verify_user" do
           ticket.post_ticket
           Delayed::Job.last.name.should == 'Ticket#verify_user'
+        end
+      end
+
+      context "user has standard support" do
+        let(:ticket) { Ticket.new({ :user => @user_with_launchpad_support.reload, :type => "idea", :subject => "I have a request!", :message => "I have a request this is a long text!" }) }
+        use_vcr_cassette "ticket/post_ticket_launchpad_support"
+
+        it "should set the tags for the ticket based on its type" do
+          JSON.parse(Zendesk.get("/tickets/#{ticket.post_ticket}.json").body)["current_tags"].should == "#{ticket.type} launchpad-support"
         end
       end
 

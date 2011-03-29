@@ -182,7 +182,13 @@ class User < ActiveRecord::Base
   end
 
   def support
-    sites.active.map { |s| s.plan.support }.include?("priority") ? "priority" : "standard"
+    if sites.active.any? { |s| s.plan.support == "priority" }
+      "priority"
+    elsif sites.active.any? { |s| s.plan.support == "standard" }
+      "standard"
+    else
+      "launchpad"
+    end
   end
 
 private

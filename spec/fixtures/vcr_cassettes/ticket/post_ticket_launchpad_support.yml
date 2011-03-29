@@ -1,0 +1,108 @@
+--- 
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :post
+    uri: http://zeno%40jilion.com:wrank8@jilion.zendesk.com:80/tickets.xml
+    body: <ticket><subject>I have a request!</subject><description>I have a request this is a long text!</description><set-tags>idea launchpad-support</set-tags><requester-name>John Doe</requester-name><requester-email>email7@user.com</requester-email></ticket>
+    headers: 
+      content-type: 
+      - application/xml
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 201
+      message: Created
+    headers: 
+      server: 
+      - nginx/0.8.53
+      date: 
+      - Tue, 29 Mar 2011 09:30:42 GMT
+      content-type: 
+      - application/xml; charset=utf-8
+      connection: 
+      - keep-alive
+      status: 
+      - 201 Created
+      p3p: 
+      - CP="NOI DSP COR NID ADMa OPTa OUR NOR"
+      location: 
+      - http://jilion.zendesk.com/tickets/828.xml
+      x-runtime: 
+      - "834"
+      content-length: 
+      - "1"
+      set-cookie: 
+      - _zendesk_session=BAh7DDoPc2Vzc2lvbl9pZCIlNTg5ODczYmE3NGU5NTczOTVjYmNmZTgwYjNkM2Q0NjM6D3VwZGF0ZWRfYXRsKwfBppFNIhx3YXJkZW4udXNlci5kZWZhdWx0LmtleWkD65XpOg1hdXRoX3ZpYSISQmFzaWNTdHJhdGVneToMYWNjb3VudGkCN6kiE3dhcmRlbi5tZXNzYWdlewA6B2lkIhVlem1sajBxYTQtNnprdm5x--ffa1ffce7e573ef5ce6d3a361ddb9738a2c6bc6c; path=/; HttpOnly
+      cache-control: 
+      - no-cache
+    body: " "
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: http://zeno%40jilion.com:wrank8@jilion.zendesk.com:80/tickets/828.json
+    body: 
+    headers: 
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      server: 
+      - nginx/0.8.53
+      date: 
+      - Tue, 29 Mar 2011 09:30:43 GMT
+      content-type: 
+      - application/json; charset=utf-8
+      connection: 
+      - keep-alive
+      status: 
+      - 200 OK
+      etag: 
+      - "\"47d4ea2b5cc15e39d610ffb799ada7dd\""
+      p3p: 
+      - CP="NOI DSP COR NID ADMa OPTa OUR NOR"
+      x-runtime: 
+      - "127"
+      content-length: 
+      - "1040"
+      set-cookie: 
+      - _zendesk_session=BAh7DDoPc2Vzc2lvbl9pZCIlNzY4Y2ZmMDU0Y2IxMGVlNDg3ZmQ0YjEzMjRhMTlmZTc6D3VwZGF0ZWRfYXRsKwfDppFNIhx3YXJkZW4udXNlci5kZWZhdWx0LmtleWkD65XpOg1hdXRoX3ZpYSISQmFzaWNTdHJhdGVneToMYWNjb3VudGkCN6kiE3dhcmRlbi5tZXNzYWdlewA6B2lkIhVwMnJsamNydHctbXR3MzM2--229f463709ef72951b5a81001120d2a257aed53b; path=/; HttpOnly
+      cache-control: 
+      - private, max-age=0, must-revalidate
+    body: "{\"channel\":null,\"problem_id\":null,\"nice_id\":828,\"initially_assigned_at\":\"2011/03/29 11:30:42 +0200\",\"linkings\":[],\"entry_id\":null,\"created_at\":\"2011/03/29 11:30:42 +0200\",\"ticket_field_entries\":[],\"resolution_time\":null,\"priority_id\":0,\"current_tags\":\"idea launchpad-support\",\"assignee_id\":15308267,\"updated_at\":\"2011/03/29 11:30:42 +0200\",\"ticket_type_id\":0,\"status_updated_at\":\"2011/03/29 11:30:42 +0200\",\"solved_at\":null,\"original_recipient_address\":null,\"external_id\":null,\"assigned_at\":\"2011/03/29 11:30:42 +0200\",\"via_id\":5,\"subject\":\"I have a request!\",\"recipient\":null,\"group_id\":88332,\"submitter_id\":15308267,\"base_score\":36,\"latest_recipients\":null,\"due_date\":null,\"current_collaborators\":null,\"score\":36,\"status_id\":1,\"description\":\"I have a request this is a long text!\",\"organization_id\":null,\"comments\":[{\"attachments\":[],\"created_at\":\"2011/03/29 11:30:42 +0200\",\"via_id\":5,\"value\":\"I have a request this is a long text!\",\"type\":\"Comment\",\"is_public\":true,\"author_id\":30867775}],\"updated_by_type_id\":0,\"requester_id\":30867775}"
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: http://zeno%40jilion.com:wrank8@jilion.zendesk.com:80/tickets/828.json
+    body: 
+    headers: 
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      server: 
+      - nginx/0.8.53
+      date: 
+      - Tue, 29 Mar 2011 09:30:43 GMT
+      content-type: 
+      - application/json; charset=utf-8
+      connection: 
+      - keep-alive
+      status: 
+      - 200 OK
+      etag: 
+      - "\"09c21fdc18e0df4f34eca7d09665cf02\""
+      p3p: 
+      - CP="NOI DSP COR NID ADMa OPTa OUR NOR"
+      x-runtime: 
+      - "112"
+      content-length: 
+      - "1040"
+      set-cookie: 
+      - _zendesk_session=BAh7DDoPc2Vzc2lvbl9pZCIlNmJhMDk3NjhjMTRkY2UwZmQ1NDZhYjczMjZmNTZlMWM6DWF1dGhfdmlhIhJCYXNpY1N0cmF0ZWd5Og91cGRhdGVkX2F0bCsHw6aRTSIcd2FyZGVuLnVzZXIuZGVmYXVsdC5rZXlpA%2BuV6ToMYWNjb3VudGkCN6kiE3dhcmRlbi5tZXNzYWdlewA6B2lkIhVranZsaXg2YzgtdGxoeHh3--e09f5414aeedda82368f6dcfc5e631953d40a864; path=/; HttpOnly
+      cache-control: 
+      - private, max-age=0, must-revalidate
+    body: "{\"linkings\":[],\"nice_id\":828,\"initially_assigned_at\":\"2011/03/29 11:30:42 +0200\",\"ticket_field_entries\":[],\"entry_id\":null,\"created_at\":\"2011/03/29 11:30:42 +0200\",\"resolution_time\":null,\"priority_id\":0,\"current_tags\":\"idea launchpad-support\",\"assignee_id\":15308267,\"updated_at\":\"2011/03/29 11:30:42 +0200\",\"ticket_type_id\":0,\"status_updated_at\":\"2011/03/29 11:30:42 +0200\",\"solved_at\":null,\"original_recipient_address\":null,\"external_id\":null,\"assigned_at\":\"2011/03/29 11:30:42 +0200\",\"via_id\":5,\"subject\":\"I have a request!\",\"recipient\":null,\"group_id\":88332,\"submitter_id\":15308267,\"base_score\":36,\"latest_recipients\":null,\"due_date\":null,\"current_collaborators\":null,\"score\":36,\"status_id\":1,\"description\":\"I have a request this is a long text!\",\"organization_id\":null,\"comments\":[{\"attachments\":[],\"created_at\":\"2011/03/29 11:30:42 +0200\",\"via_id\":5,\"value\":\"I have a request this is a long text!\",\"type\":\"Comment\",\"is_public\":true,\"author_id\":30867775}],\"channel\":null,\"problem_id\":null,\"updated_by_type_id\":0,\"requester_id\":30867775}"
+    http_version: "1.1"

@@ -538,18 +538,29 @@ describe User do
         end
         subject { @user.reload }
 
-        it { subject.support.should == "standard" }
+        it { subject.support.should == "launchpad" }
+      end
+
+      context "user has only sites with launchpad support" do
+        before(:all) do
+          @user = Factory(:user)
+          Factory(:site, user: @user, plan_id: @dev_plan.id)
+        end
+        subject { @user.reload }
+
+        it { @dev_plan.support.should == "launchpad" }
+        it { subject.support.should == "launchpad" }
       end
 
       context "user has only sites with standard support" do
         before(:all) do
           @user = Factory(:user)
-          Factory(:site, user: @user, plan_id: @dev_plan.id)
+          Factory(:site, user: @user, plan_id: @paid_plan.id)
           Factory(:site, user: @user, plan_id: @beta_plan.id)
         end
         subject { @user.reload }
 
-        it { @dev_plan.support.should == "standard" }
+        it { @paid_plan.support.should == "standard" }
         it { @beta_plan.support.should == "standard" }
         it { subject.support.should == "standard" }
       end
@@ -557,12 +568,12 @@ describe User do
       context "user has at least one site with priority support" do
         before(:all) do
           @user = Factory(:user)
-          Factory(:site, user: @user, plan_id: @dev_plan.id)
+          Factory(:site, user: @user, plan_id: @paid_plan.id)
           Factory(:site, user: @user, plan_id: @custom_plan.token)
         end
         subject { @user.reload }
 
-        it { @dev_plan.support.should == "standard" }
+        it { @paid_plan.support.should == "standard" }
         it { @custom_plan.support.should == "priority" }
         it { subject.support.should == "priority" }
       end
