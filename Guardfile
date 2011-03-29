@@ -20,9 +20,9 @@ end
 
 group 'backend' do
 
-  guard 'bundler' do
-    watch('Gemfile')
-  end
+  # guard 'bundler' do
+  #   watch('Gemfile')
+  # end
 
   guard 'spork', :wait => 50 do
     watch('Gemfile')
