@@ -6,8 +6,9 @@ module OneTime
       def archive_invited_not_yet_registered_users
         ::User.invited.each do |user|
           ::User.transaction do
-            user.update_attribute(:state, 'archived')
-            user.touch(:archived_at)
+            user.state = 'archived'
+            user.archived_at = Time.now.utc
+            user.save(validate: false)
           end
         end
         ::User.invited.count.to_s

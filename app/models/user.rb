@@ -92,7 +92,7 @@ class User < ActiveRecord::Base
 
   # admin
   scope :invited,           where(:invitation_token.ne => nil)
-  scope :beta,              where(:invitation_token => nil) # some beta users don't come from svs but were directly invited from msv!!
+  scope :beta,              where(:invitation_token => nil, :created_at.lt => PublicLaunch.beta_transition_started_on.midnight) # some beta users don't come from svs but were directly invited from msv!!
   scope :active,            where(:state => 'active')
   scope :use_personal,      where(:use_personal => true)
   scope :use_company,       where(:use_company => true)

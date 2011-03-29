@@ -4,7 +4,9 @@ module OneTime
     class << self
 
       def set_beta_plan
-        ::Site.where(:plan_id => nil).update_all(:plan_id => Plan.find_by_name("beta").id)
+        ::Site.where({ plan_id: nil }, { hostname: nil } | { hostname: '' }).update_all(:plan_id => Plan.find_by_name("dev").id)
+        ::Site.where({ plan_id: nil }, { :hostname.ne => nil } | { :hostname.ne => '' }).update_all(:plan_id => Plan.find_by_name("beta").id)
+        "#{::Site.dev.count} sites are now using the Dev plan (on #{::Site.not_archived.count} non-archived sites)."
         "#{::Site.beta.count} sites are now using the Beta plan (on #{::Site.not_archived.count} non-archived sites)."
       end
 
@@ -40,7 +42,7 @@ module OneTime
           new_dev_hostnames.uniq!
           extra_hostnames.uniq!
 
-          site.hostname        = Hostname.clean(site.hostname) if site.hostname.present?
+          site.hostname        = site.hostname.present? ? Hostname.clean(site.hostname) : (extra_hostnames.present? ? extra_hostnames.pop : nil)
           site.dev_hostnames   = Hostname.clean(new_dev_hostnames.sort.join(', '))
           site.extra_hostnames = Hostname.clean(extra_hostnames.sort.join(', ')) if extra_hostnames.present?
           site.cdn_up_to_date  = site.valid? # will reload the site's license if site is valid
