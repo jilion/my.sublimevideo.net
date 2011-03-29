@@ -1,7 +1,19 @@
 <%= t("mailer.intro_name", name: @transaction.user.full_name) %>
 
-We have just charged you the following invoices: <%= @transaction.invoices.map { |i| "##{i.reference}" }.join(", ") %>.
+Your latest SublimeVideo payment has been approved.
 
-If you have any questions, please use our support form: https://<%= ActionMailer::Base.default_url_options[:host] %>/support#billing
+Total amount charged: <%= display_amount(@transaction.amount, :decimals => 2) %>
+
+<% if @transaction.invoices.count == 1 %>
+You can review the invoice via the following link:
+<% else %>
+You can review the invoices associated with this transaction via the following links:
+<% end %>
+<% @transaction.invoices.each do |invoice| %>
+https://<%= ActionMailer::Base.default_url_options[:host] %>/invoices/<%= invoice.to_param %>
+<% end %>
+
+If you have any questions, please use our support form:
+https://<%= ActionMailer::Base.default_url_options[:host] %>/support#billing
 
 <%= t("mailer.signature") %>

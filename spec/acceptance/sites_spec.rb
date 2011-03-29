@@ -30,7 +30,7 @@ feature "Sites" do
         scenario "with no hostname" do
           choose "plan_dev"
           has_checked_field?("plan_dev").should be_true
-          
+
           fill_in "Domain", :with => ""
           click_button "Create site"
 
@@ -42,6 +42,7 @@ feature "Sites" do
 
           current_url.should =~ %r(http://[^/]+/sites)
           page.should have_content('add a hostname')
+          page.should_not have_content('Choose a plan')
           page.should have_content('LaunchPad')
         end
 
@@ -59,6 +60,7 @@ feature "Sites" do
 
           current_url.should =~ %r(http://[^/]+/sites)
           page.should have_content('rymai.com')
+          page.should have_content('Choose a plan')
           page.should have_content('LaunchPad')
         end
       end
@@ -432,33 +434,33 @@ feature "Sites" do
           page.should have_content('Choose a plan for your site')
         end
       end
-      
+
       context "when user has already some sites" do
         background do
           @site = Factory(:site_with_invoice, :user => @current_user, :hostname => 'rymai.com')
         end
-        
+
         scenario "when user has already some sites" do
           visit "/sites"
           click_link "Add a site"
           page.should have_content('Choose a plan for your site')
         end
-        
+
         scenario "edit a site" do
           visit "/sites"
           page.should have_content('rymai.com')
-          
+
           click_link "Edit rymai.com"
           current_url.should =~ %r(http://[^/]+/sites/#{@site.token}/edit)
           page.should have_content('rymai.com')
-          
+
           page.should have_content I18n.t('site.edit.delete_site_info1', domain: "rymai.com")
           page.should have_content I18n.t('site.edit.delete_site_info2')
-          
+
           click_link "Change plan"
           current_url.should =~ %r(http://[^/]+/sites/#{@site.token}/plan/edit)
           page.should have_selector('#change_plan_box.section_box')
-          
+
           click_link "Invoices"
           current_url.should =~ %r(http://[^/]+/sites/#{@site.token}/invoices)
           page.should have_content('Next invoice')

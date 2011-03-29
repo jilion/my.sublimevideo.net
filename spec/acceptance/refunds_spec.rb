@@ -18,7 +18,7 @@ feature "Refunds" do
       @site = Factory(:site_with_invoice, user: @current_user, hostname: 'rymai.com')
 
       visit '/refund'
-      page.should have_content "Refund"
+      page.should have_content "Request a refund"
 
       select "rymai.com", :from => "site_id"
       click_button I18n.t('site.refund.request')
@@ -35,7 +35,7 @@ feature "Refunds" do
       @site = Factory(:site_with_invoice, user: @current_user, hostname: 'rymai.com')
 
       visit '/refund'
-      page.should have_content "Refund"
+      page.should have_content "Request a refund"
       @site.update_attribute(:hostname, 'rymai') # make it invalid
 
       select "rymai.com", :from => "site_id"

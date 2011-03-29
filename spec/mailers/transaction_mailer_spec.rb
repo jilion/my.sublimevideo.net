@@ -29,11 +29,11 @@ describe TransactionMailer do
     end
 
     specify do
-      @last_delivery.subject.should == "Charging for \"SublimeVideo Invoices: ##{@invoice.reference}\" has failed."
+      @last_delivery.subject.should == "Problem processing your payment"
       @last_delivery.body.encoded.should include subject.user.full_name
-      @last_delivery.body.encoded.should include "We couldn't charge the following invoices: ##{@invoice.reference}"
-      @last_delivery.body.encoded.should include "Transaction information:"
-      @last_delivery.body.encoded.should include "https://my.sublimevideo.net/support"
+      @last_delivery.body.encoded.should include "Your credit card could not be charged."
+      @last_delivery.body.encoded.should include "https://localhost:3000/sites"
+      @last_delivery.body.encoded.should include "https://localhost:3000/support#billing"
     end
   end
 

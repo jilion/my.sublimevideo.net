@@ -46,7 +46,7 @@
         = f.text_field :company_name, :class => "text no_icon", :placeholder => "Company name"
       .company_employees.right_field
         = f.label :company_employees, "Company size", :class => "icon"
-        = f.select :company_employees, options_for_select(["Company size", "1 employee", "2-5 employees", "6-20 employees", "21-100 employees", "101-1000 employees", ">1001 employees"], :disabled => "Company size")
+        = f.select :company_employees, options_for_select(["Company size", "1 employee", "2-5 employees", "6-20 employees", "21-100 employees", "101-1000 employees", ">1001 employees"])
 
       .spacer
     .entry.use
@@ -73,6 +73,10 @@
     = f.submit "Sign Up"
     .spacer
 
+  -# #signup_right
+  -#   .sublimevideo_headline
+  -#     -# = link_to (image_tag "/images/embed/signup/player_icon.png", :alt => "SublimeVideo Player"), "http://sublimevideo.net"
+  -#     %p= raw "#{link_to "SublimeVideo", "http://sublimevideo.net"} is a unique cloud-based HTML5 video player that gives you the power to reach your audience no matter what device or browser they are using. #{link_to "Learn more", "http://sublimevideo.net"}."
   -# #signup_quotes
   -#   %blockquote.wired
   -#     = "A uniform, cross-browser, multiple-codec compatible, HTML5 video-embedding solution."
