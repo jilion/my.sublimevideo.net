@@ -70,9 +70,9 @@ module Stat
 
     def reduce
       @labels_to_fields.keys.inject("function(doc, prev) {\n") do |js, label|
-        js += "\tprev.#{label} += doc.#{@labels_to_fields[label]}"
+        js += "\tprev.#{label} += (isNaN(doc.#{@labels_to_fields[label]}) ? 0 : doc.#{@labels_to_fields[label]})"
         if @options[:merge_cached] && [:loader_usage, :all_usage].exclude?(label)
-          js += "#{" + doc.#{@labels_to_fields[label]}_cached"}"
+          js += " + (isNaN(doc.#{@labels_to_fields[label]}_cached) ? 0 : doc.#{@labels_to_fields[label]}_cached)"
         end
         js += ";\n"
       end + "}\n"
