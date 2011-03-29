@@ -7,18 +7,20 @@ module Site::Referrer
   # ====================
 
   def referrer_type(referrer, timestamp = Time.now.utc)
-    past_site = version_at(timestamp)
-    if past_site.main_referrer?(referrer)
-      "main"
-    elsif past_site.extra_referrer?(referrer)
-      "extra"
-    elsif past_site.dev_referrer?(referrer)
-      "dev"
+    if past_site = version_at(timestamp)
+      if past_site.main_referrer?(referrer)
+        "main"
+      elsif past_site.extra_referrer?(referrer)
+        "extra"
+      elsif past_site.dev_referrer?(referrer)
+        "dev"
+      else
+        "invalid"
+      end
     else
-      "invalid"
-    end
+      Notify.send("No past site for id #{self.id}, timestamp #{timestamp}")
   rescue => ex
-    Notify.send("Referrer (#{referrer}), (#{self.id} #{past_site.inspect}) type could not be guessed: #{ex.message}", :exception => ex)
+    Notify.send("Referrer (#{referrer}), site_id (#{self.id}) type could not be guessed: #{ex.message}", :exception => ex)
     "invalid"
   end
 
