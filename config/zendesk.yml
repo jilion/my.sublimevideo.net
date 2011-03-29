@@ -1,6 +1,6 @@
 defaults: &defaults
   base_url: http://jilion.zendesk.com
-  username: zeno@jilion.com
+  username: zendesk@sublimevideo.net
   password: wrank8
 
 development:
