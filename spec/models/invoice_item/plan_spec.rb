@@ -151,6 +151,7 @@ describe InvoiceItem::Plan do
 end
 
 
+
 # == Schema Information
 #
 # Table name: invoice_items
@@ -162,7 +163,7 @@ end
 #  item_id               :integer
 #  started_at            :datetime
 #  ended_at              :datetime
-#  discounted_percentage :integer
+#  discounted_percentage :float
 #  price                 :integer
 #  amount                :integer
 #  created_at            :datetime
