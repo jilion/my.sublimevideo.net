@@ -108,11 +108,11 @@ class Invoice < ActiveRecord::Base
     transactions.order(:created_at).last
   end
 
-private
-
   def refunded?
     site.refunded_at?
   end
+
+private
 
   def build_invoice_items
     if site.pending_plan_id? && site.in_paid_plan?
