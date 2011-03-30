@@ -21,12 +21,12 @@ class CreditCardsController < ApplicationController
     }
     
     respond_with(@user) do |format|
-      if @user.credit_card.valid? 
+      if @user.valid? && @user.credit_card.valid? 
         @user.check_credit_card(options)
         if @user.d3d_html # 3-d secure identification needed
           format.html { render :text => @user.d3d_html }
         else # authorized, waiting or unknown
-          format.html { redirect_to [:edit, :user_registration], notice_and_alert_from_transaction(@user) }
+          format.html { redirect_to [:edit, :user_registration], notice_and_alert_from_cc_authorization(@user) }
         end
       else # credit card not valid
         flash[:notice] = ""
@@ -34,12 +34,6 @@ class CreditCardsController < ApplicationController
         format.html { render :edit }
       end
     end
-  end
-
-private
-
-  def notice_and_alert_from_transaction(user)
-    user.i18n_notice_and_alert ? { notice: "", alert: "" }.merge(user.i18n_notice_and_alert) : { notice: t("flash.credit_cards.update.notice"), alert: "" }
   end
 
 end
