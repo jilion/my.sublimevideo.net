@@ -31,6 +31,7 @@ en:
   site:
     status:
       payment_issue: "Transaction error, click to review your invoice and retry the payment."
+      payment_wating: "Transaction in progress, please be patient. Click to review your invoice."
       ok: "Player successfully deployed."
       in_progress: "Your player is being deployed."
       need_path: "If you don't own this domain, we highly recommend you add a <em>path</em> to restrict the player to your pages only."

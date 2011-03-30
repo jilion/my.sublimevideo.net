@@ -30,6 +30,10 @@ module Site::Invoice
     invoices.any? { |i| i.failed? }
   end
 
+  def invoices_waiting?
+    invoices.any? { |i| i.waiting? }
+  end
+
   def in_beta_plan?
     plan && plan.beta_plan?
   end
