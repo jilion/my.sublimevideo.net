@@ -176,7 +176,7 @@ feature "Sites" do
             site = @current_user.sites.last
             transaction = site.last_invoice.last_transaction
             transaction.should be_waiting_d3d
-            site.last_invoice.should be_open
+            site.last_invoice.should be_waiting
 
             # fake payment succeeded callback (and thus skip the d3d redirection)
             transaction.process_payment_response("PAYID" => "1234", "NCSTATUS" => "3", "STATUS" => "2", "orderID" => transaction.id.to_s)
@@ -219,7 +219,7 @@ feature "Sites" do
             site = @current_user.sites.last
             transaction = site.last_invoice.last_transaction
             transaction.should be_waiting_d3d
-            site.last_invoice.should be_open
+            site.last_invoice.should be_waiting
 
             # fake payment succeeded callback (and thus skip the d3d redirection)
             transaction.process_payment_response("PAYID" => "1234", "NCSTATUS" => "0", "STATUS" => "9", "orderID" => transaction.id.to_s)
