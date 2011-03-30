@@ -428,17 +428,6 @@ describe User::CreditCard do
     end
 
     describe "#check_credit_card" do
-      context "user is not valid" do
-        subject { user.email = nil; user }
-
-        it "should not call Ogone and return false" do
-          subject.should_not be_valid
-          Ogone.should_not_receive(:authorize)
-
-          subject.check_credit_card.should be_false
-        end
-      end
-
       context "user is valid" do
         context "with valid authorization" do
           use_vcr_cassette "ogone/void_authorization"
@@ -534,7 +523,7 @@ describe User::CreditCard do
           @user.cc_updated_at.should be_nil
           @user.errors.should be_empty
         end
-        subject { @user }
+        subject { @user.save; @user }
 
         context "waiting for 3-D Secure identification" do
           it "should return true and set d3d_html" do
@@ -558,6 +547,11 @@ describe User::CreditCard do
 
         context "authorized" do
           it "should not add an error on base to the user" do
+            subject.pending_cc_type.should == 'visa'
+            subject.pending_cc_last_digits.should == '1111'
+            subject.pending_cc_expire_on.should == 1.year.from_now.end_of_month.to_date
+            subject.pending_cc_updated_at.should be_present
+            
             subject.should_receive(:void_authorization).with("1234;RES")
 
             response = subject.process_cc_authorize_and_save(@authorized_params)
@@ -648,10 +642,10 @@ describe User::CreditCard do
             subject.d3d_html.should be_nil
 
             subject.reload
-            subject.pending_cc_type.should == 'visa'
-            subject.pending_cc_last_digits.should == '1111'
-            subject.pending_cc_expire_on.should == 1.year.from_now.end_of_month.to_date
-            subject.pending_cc_updated_at.should be_present
+            subject.pending_cc_type.should be_nil
+            subject.pending_cc_last_digits.should be_nil
+            subject.pending_cc_expire_on.should be_nil
+            subject.pending_cc_updated_at.should be_nil
             subject.cc_type.should be_nil
             subject.cc_last_digits.should be_nil
             subject.cc_expire_on.should be_nil
@@ -672,10 +666,15 @@ describe User::CreditCard do
 
           @user.attributes = valid_cc_attributes_master
         end
-        subject { @user }
+        subject { @user.save; @user }
 
         context "waiting for 3-D Secure identification" do
           it "should return true and set d3d_html" do
+            subject.pending_cc_type.should == 'master'
+            subject.pending_cc_last_digits.should == '9999'
+            subject.pending_cc_expire_on.should == 2.years.from_now.end_of_month.to_date
+            subject.pending_cc_updated_at.should be_present
+            
             response = subject.process_cc_authorize_and_save(@d3d_params)
             response.should be_true
             subject.errors.should be_empty
@@ -785,10 +784,10 @@ describe User::CreditCard do
             subject.d3d_html.should be_nil
 
             subject.reload
-            subject.pending_cc_type.should == 'master'
-            subject.pending_cc_last_digits.should == '9999'
-            subject.pending_cc_expire_on.should == 2.years.from_now.end_of_month.to_date
-            subject.pending_cc_updated_at.should_not == @first_cc_updated_at
+            subject.pending_cc_type.should be_nil
+            subject.pending_cc_last_digits.should be_nil
+            subject.pending_cc_expire_on.should be_nil
+            subject.pending_cc_updated_at.should be_nil
             subject.cc_type.should == 'visa'
             subject.cc_last_digits.should == '1111'
             subject.cc_expire_on.should == 1.year.from_now.end_of_month.to_date

@@ -141,7 +141,7 @@ class Transaction < ActiveRecord::Base
       #   The authorization will be processed offline.
       #   This is the standard response if the merchant has chosen offline processing in his account configuration
       when "51"
-        self.save
+        self.save # add a waiting state for invoice & transaction
 
       # NCSTATUS == 5
       #   STATUS == 0, Invalid or incomplete:
@@ -157,6 +157,7 @@ class Transaction < ActiveRecord::Base
       #   STATUS == 93, Payment refused:
       #     A technical problem arose.
       when "0", "2", "93"
+        self.user.reset_credit_card_info
         self.fail
 
       # STATUS == 52, Authorization not known; STATUS == 92, Payment uncertain:

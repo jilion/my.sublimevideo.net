@@ -641,7 +641,7 @@ describe Transaction do
 
   describe "Instance Methods" do
 
-    describe "#process_payment_response" do
+    describe "#process_payment_response", focus: true do
       before(:all) do
         @site1    = Factory(:site, user: @user, plan_id: @dev_plan.id)
         @site2    = Factory(:site, user: @user, plan_id: @paid_plan.id)
@@ -719,13 +719,16 @@ describe Transaction do
       end
 
       it "should apply pending cc infos to the user" do
-        subject.user.update_attributes(pending_cc_type: 'master', pending_cc_last_digits: '9999', pending_cc_expire_on: 2.years.from_now.end_of_month.to_date)
+        subject.user.pending_cc_type = 'master'
+        subject.user.pending_cc_last_digits = '9999'
+        subject.user.pending_cc_expire_on = 2.years.from_now.end_of_month.to_date
+        subject.save!(validate: false)
         
         subject.process_payment_response(@success_params)
         
-        subject.user.reload.cc_type.should == 'visa'
-        subject.user.cc_last_digits.should == '1111'
-        subject.user.cc_expire_on.should == 1.year.from_now.end_of_month.to_date
+        subject.user.reload.cc_type.should == 'master'
+        subject.user.cc_last_digits.should == '9999'
+        subject.user.cc_expire_on.should == 2.years.from_now.end_of_month.to_date
       end
 
       it "should save with a STATUS == 51" do
@@ -748,6 +751,28 @@ describe Transaction do
         subject.should be_invalid
       end
 
+      it "should clear pending cc infos of the user" do
+        user = User.find(subject.user)
+        user.pending_cc_type = 'master'
+        user.pending_cc_last_digits = '9999'
+        user.pending_cc_expire_on = 2.years.from_now.end_of_month.to_date
+        user.save!(validate: false)
+        
+        subject.user.reload.pending_cc_type.should == 'master'
+        subject.user.pending_cc_last_digits.should == '9999'
+        subject.user.pending_cc_expire_on.should == 2.years.from_now.end_of_month.to_date
+        
+        subject.process_payment_response(@invalid_params)
+        
+        subject.user.reload.cc_type.should == 'visa'
+        subject.user.cc_last_digits.should == '1111'
+        subject.user.cc_expire_on.should == 1.year.from_now.end_of_month.to_date
+        
+        subject.user.pending_cc_last_digits.should be_nil
+        subject.user.pending_cc_expire_on.should be_nil
+        subject.user.pending_cc_updated_at.should be_nil
+      end
+
       it "should fail with a STATUS == 93" do
         subject.should be_unprocessed
         subject.process_payment_response(@refused_params)
@@ -756,6 +781,24 @@ describe Transaction do
         subject.status.should == 93
         subject.error.should == "refused"
         subject.should be_refused
+      end
+      
+      it "should clear pending cc infos of the user" do
+        subject.user.pending_cc_type = 'master'
+        subject.user.pending_cc_last_digits = '9999'
+        subject.user.pending_cc_expire_on = 2.years.from_now.end_of_month.to_date
+        subject.save!(validate: false)
+        
+        subject.user.reload.pending_cc_type.should == 'master'
+        subject.user.pending_cc_last_digits.should == '9999'
+        subject.user.pending_cc_expire_on.should == 2.years.from_now.end_of_month.to_date
+        
+        subject.process_payment_response(@refused_params)
+        
+        subject.user.reload.cc_type.should be_nil
+        subject.user.pending_cc_last_digits.should be_nil
+        subject.user.pending_cc_expire_on.should be_nil
+        subject.user.pending_cc_updated_at.should be_nil
       end
 
       it "should fail with a STATUS == 92" do
@@ -768,9 +811,31 @@ describe Transaction do
         subject.error.should == "unknown"
         subject.should be_unknown
       end
+      
+      it "should clear pending cc infos of the user" do
+        subject.user.pending_cc_type = 'master'
+        subject.user.pending_cc_last_digits = '9999'
+        subject.user.pending_cc_expire_on = 2.years.from_now.end_of_month.to_date
+        subject.save!(validate: false)
+        
+        subject.user.reload.pending_cc_type.should == 'master'
+        subject.user.pending_cc_last_digits.should == '9999'
+        subject.user.pending_cc_expire_on.should == 2.years.from_now.end_of_month.to_date
+        
+        subject.process_payment_response(@unknown_params)
+        
+        subject.user.reload.pending_cc_type.should == 'master'
+        subject.user.pending_cc_last_digits.should == '9999'
+        subject.user.pending_cc_expire_on.should == 2.years.from_now.end_of_month.to_date
+      end
 
       describe "waiting once, and then succeed" do
         it "should save the transaction and then succeed it" do
+          subject.user.pending_cc_type = 'master'
+          subject.user.pending_cc_last_digits = '9999'
+          subject.user.pending_cc_expire_on = 2.years.from_now.end_of_month.to_date
+          subject.save!(validate: false)
+          
           subject.should be_unprocessed
           subject.process_payment_response(@waiting_params)
           subject.reload.should be_unprocessed
@@ -779,11 +844,22 @@ describe Transaction do
           subject.error.should == "waiting"
           subject.should be_waiting
 
+          subject.user.reload.pending_cc_type.should == 'master'
+          subject.user.pending_cc_last_digits.should == '9999'
+          subject.user.pending_cc_expire_on.should == 2.years.from_now.end_of_month.to_date
+
           subject.process_payment_response(@success_params)
           subject.should be_paid
           subject.nc_status.should == 0
           subject.status.should == 9
           subject.error.should == "!"
+          
+          subject.user.reload.pending_cc_type.should be_nil
+          subject.user.pending_cc_last_digits.should be_nil
+          subject.user.pending_cc_expire_on.should be_nil
+          subject.user.reload.cc_type.should == 'master'
+          subject.user.cc_last_digits.should == '9999'
+          subject.user.cc_expire_on.should == 2.years.from_now.end_of_month.to_date
         end
       end
 
@@ -798,11 +874,22 @@ describe Transaction do
           subject.error.should == "unknown"
           subject.should be_unknown
 
+          subject.user.reload.pending_cc_type.should == 'master'
+          subject.user.pending_cc_last_digits.should == '9999'
+          subject.user.pending_cc_expire_on.should == 2.years.from_now.end_of_month.to_date
+
           subject.process_payment_response(@success_params)
           subject.should be_paid
           subject.nc_status.should == 0
           subject.status.should == 9
           subject.error.should == "!"
+          
+          subject.user.reload.pending_cc_type.should be_nil
+          subject.user.pending_cc_last_digits.should be_nil
+          subject.user.pending_cc_expire_on.should be_nil
+          subject.user.reload.cc_type.should == 'master'
+          subject.user.cc_last_digits.should == '9999'
+          subject.user.cc_expire_on.should == 2.years.from_now.end_of_month.to_date
         end
       end
 

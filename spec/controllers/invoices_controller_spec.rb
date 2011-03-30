@@ -55,13 +55,13 @@ describe InvoicesController do
       context "with failed invoices, retry succeeds" do
         before(:each) do
           authenticated_user.stub_chain(:sites, :find_by_token!).and_return(mock_site)
-          mock_site.stub_chain(:invoices, :failed).and_return(@mock_invoices = [mock_invoice(:present? => true)])
+          mock_site.stub_chain(:invoices, :failed).ordered.and_return(@mock_invoices = [mock_invoice(:present? => true)])
           mock_site.should_receive(:to_param) { 'QWE123TYU' }
         end
 
         it "should create a notice and redirect" do
           Transaction.should_receive(:charge_by_invoice_ids)
-          Invoice.should_receive(:find).and_return([])
+          mock_site.stub_chain(:invoices, :failed).ordered.and_return(@mock_invoices = [mock_invoice(:empty? => true)])
           
           post :retry, :site_id => 'QWE123TYU'
           assigns(:invoices).should == []
@@ -73,13 +73,13 @@ describe InvoicesController do
       context "with failed invoices, retry fails" do
         before(:each) do
           authenticated_user.stub_chain(:sites, :find_by_token!).and_return(mock_site)
-          mock_site.stub_chain(:invoices, :failed).and_return(@mock_invoices = [mock_invoice(:present? => true)])
+          mock_site.stub_chain(:invoices, :failed).ordered.and_return(@mock_invoices = [mock_invoice(:present? => true)])
           mock_site.should_receive(:to_param) { 'QWE123TYU' }
         end
 
         it "should create a notice and redirect" do
           Transaction.should_receive(:charge_by_invoice_ids)
-          Invoice.should_receive(:find).and_return(@mock_invoices2 = [mock_invoice(:empty? => false)])
+          mock_site.stub_chain(:invoices, :failed).ordered.and_return(@mock_invoices = [mock_invoice(:empty? => false)])
           @mock_invoices2.stub_chain(:last, :last_transaction, :i18n_error_key) { "invalid" }
           
           post :retry, :site_id => 'QWE123TYU'
