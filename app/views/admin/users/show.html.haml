@@ -6,7 +6,7 @@
 %br.spacer
 
 = render partial: 'timeline_usage', locals: { user: @user }
-= render partial: 'timeline_invoices', locals: { user: @user }
+-#= render partial: 'timeline_invoices', locals: { user: @user }
 
 %p
   = "State:"
@@ -17,13 +17,13 @@
     = "| Confirmation sent at: " + display_date(@user.confirmation_sent_at)
   = "| Enthusiast ID: #{@user.enthusiast_id}"
   = "| Zendesk ID: #{@user.zendesk_id}"
-  
+
 %p
   = "Created #{time_ago_in_words(@user.created_at)} ago"
   = "| Updated #{time_ago_in_words(@user.updated_at)} ago"
   = "| Sign in count: #{@user.sign_in_count}"
   = "| Failed login attempts: #{@user.failed_attempts}"
-  
+
 %p
   = "Current sign in at: " + display_date(@user.current_sign_in_at)
   = "| Current sign in ip: #{@user.current_sign_in_ip}"
