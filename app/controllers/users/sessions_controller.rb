@@ -8,9 +8,13 @@ class Users::SessionsController < Devise::SessionsController
 
   # POST /users/sign_in
   def create
-    params[:user][:email].downcase! if params[:user] && params[:user][:email]
-    resource = warden.authenticate!(:scope => resource_name, :recall => "new")
-    sign_in_and_redirect(resource_name, resource)
+    # if params[:user] && params[:user][:email] && !params[:user][:email].include?("@jilion.com")
+    #   redirect_to 'http://sublimevideo.net'
+    # else
+      params[:user][:email].downcase! if params[:user] && params[:user][:email]
+      resource = warden.authenticate!(:scope => resource_name, :recall => "new")
+      sign_in_and_redirect(resource_name, resource)
+    # end
   end
 
   # GET /logout
