@@ -1,5 +1,5 @@
 .left
-  - reset_credit_card_attributes(f.object)
+  -# reset_credit_card_attributes(f.object)
   - if f.object.errors[:base].present?
     .global_errors
       - f.object.errors[:base].each do |error|
