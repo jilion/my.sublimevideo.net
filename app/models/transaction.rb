@@ -85,7 +85,7 @@ class Transaction < ActiveRecord::Base
       store: transaction.user.cc_alias,
       email: transaction.user.email,
       billing_address: { zip: transaction.user.postal_code, country: Country[transaction.user.country].name },
-      d3d: true
+      d3d: true,
       paramplus: "PAYMENT=TRUE"
     })
     credit_card = options.delete(:credit_card)
