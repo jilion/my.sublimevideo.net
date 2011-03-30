@@ -33,7 +33,7 @@
         %p= "Will expire on: " + l(current_user.cc_expire_on || current_user.pending_cc_expire_on, :format => :month_fullyear)
       
       - if current_user.pending_cc?
-        %p.pending= "A new credit card is being currently verified."
+        %p.pending.note.icon= "Your new credit card is currently being verified."
       - elsif current_user.cc?
         %p= link_to "Update credit card", edit_credit_card_path
 
