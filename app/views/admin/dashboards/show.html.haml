@@ -7,6 +7,8 @@
 -#   - cache 'dashboard_timeline_usage', :expires_in => 10.minutes do
 -#     = render 'timeline_usage'
 
+%h2= "Total revenue: #{display_amount(Invoice.total_revenue)}"
+
 -# #box_traffic.dashboard_box
 %h3 Traffic
 - player_hits = SiteUsage.between(Time.now.utc.beginning_of_month, Time.now.utc.end_of_month).sum(:player_hits).to_i
@@ -19,9 +21,7 @@
 -# #box_users.dashboard_box
 %h3 Users
 %p= "# of Users Signups: #{User.active.count}"
-
-- customers = User.active.includes(:sites).where(sites: { plan_id: Plan.paid_plans.map(&:id) + Plan.custom_plans.map(&:id) })
-%p= "# of Customers: #{customers.count}"
+%p= "# of billabel customers: #{User.billable.count}"
 
 -# - cache 'dashboard_box_users', :expires_in => 10.minutes do
 -#   = render 'users'
@@ -29,12 +29,9 @@
 
 -# #box_sites.dashboard_box
 %h3 Sites
-- dev_sites = Site.active.where(sites: { plan_id: Plan.where(:name => "dev").first.id })
-%p= "# of LaunchPad sites: #{dev_sites.count}"
-- beta_sites = Site.active.where(sites: { plan_id: Plan.where(:name => "beta").first.id })
-%p= "# of Beta sites: #{beta_sites.count}"
-- paid_sites = Site.active.where(sites: { plan_id: Plan.paid_plans.map(&:id) + Plan.custom_plans.map(&:id) })
-%p= "# of Paying sites: #{customers.count}"
+%p= "# of LaunchPad sites: #{Site.dev.count}"
+%p= "# of Beta sites: #{Site.beta.count}"
+%p= "# of Paying sites: #{Site.in_paid_plan.count}"
 
 -# - cache 'dashboard_box_sites', :expires_in => 10.minutes do
 -#   = render 'sites'
