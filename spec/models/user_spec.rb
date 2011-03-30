@@ -555,6 +555,19 @@ describe User do
         it { subject.support.should == "launchpad" }
       end
 
+      context "user has a site with no plan" do
+        before(:all) do
+          @user = Factory(:user)
+          @site = Factory(:site, user: @user)
+          @site.send(:write_attribute, :plan_id, nil)
+          @site.save(validate: false)
+          @site.plan_id.should be_nil
+        end
+        subject { @user.reload }
+
+        it { subject.support.should == "launchpad" }
+      end
+
       context "user has only sites with launchpad support" do
         before(:all) do
           @user = Factory(:user)

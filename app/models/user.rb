@@ -184,9 +184,9 @@ class User < ActiveRecord::Base
   end
 
   def support
-    if sites.active.any? { |s| s.plan.support == "priority" }
+    if sites.active.any? { |s| s.plan_id? && s.plan.support == "priority" }
       "priority"
-    elsif sites.active.any? { |s| s.plan.support == "standard" }
+    elsif sites.active.any? { |s| s.plan_id? && s.plan.support == "standard" }
       "standard"
     else
       "launchpad"
