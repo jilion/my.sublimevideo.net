@@ -341,20 +341,20 @@ describe Transaction do
         before(:each) do
           @user = Factory(:user_no_cc)
           @user = User.find(@user.id) # to clear the memoized credit card
-          
+
           @site1 = Factory.build(:new_site, user: @user)
           @site1.user.attributes = valid_cc_attributes
           @credit_card = @site1.user.credit_card
           @site1.charging_options = { credit_card: @credit_card }
           @site1.save_without_password_validation # fake sites_controller
-          
+
           @user.pending_cc_type.should == 'visa'
           @user.pending_cc_last_digits.should == '1111'
           @user.pending_cc_expire_on.should == 1.year.from_now.end_of_month.to_date
           @user.cc_type.should be_nil
           @user.cc_last_digits.should be_nil
           @user.cc_expire_on.should be_nil
-          
+
           @invoice1 = Factory(:invoice, site: @site1, state: 'open')
         end
 
@@ -375,7 +375,7 @@ describe Transaction do
           VCR.use_cassette("ogone/visa_payment_2000_credit_card") do
             Transaction.charge_by_invoice_ids([@invoice1.id], { credit_card: @credit_card }).should be_true
           end
-          
+
           @user.reload
           @user.pending_cc_type.should be_nil
           @user.pending_cc_last_digits.should be_nil
@@ -384,12 +384,12 @@ describe Transaction do
           @user.cc_last_digits.should == '1111'
           @user.cc_expire_on.should == 1.year.from_now.end_of_month.to_date
         end
-        
+
         it "should store cc infos from the credit card" do
           VCR.use_cassette("ogone/visa_payment_2000_credit_card") do
             Transaction.charge_by_invoice_ids([@invoice1.id], { credit_card: @credit_card }).should be_true
           end
-          
+
           @invoice1.last_transaction.cc_type.should == @credit_card.type
           @invoice1.last_transaction.cc_last_digits.should == @credit_card.last_digits
           @invoice1.last_transaction.cc_expire_on.should == Time.utc(@credit_card.year, @credit_card.month).end_of_month.to_date
@@ -415,12 +415,12 @@ describe Transaction do
           })
           Transaction.charge_by_invoice_ids([@invoice1.id, @invoice2.id, @invoice3.id])
         end
-        
+
         it "should store cc infos from the user" do
           VCR.use_cassette("ogone/visa_payment_2000_credit_card") do
             Transaction.charge_by_invoice_ids([@invoice1.id, @invoice2.id, @invoice3.id])
           end
-          
+
           @invoice1.last_transaction.cc_type.should == @user.cc_type
           @invoice1.last_transaction.cc_last_digits.should == @user.cc_last_digits
           @invoice1.last_transaction.cc_expire_on.should == @user.cc_expire_on
@@ -456,7 +456,7 @@ describe Transaction do
           before(:each) do
             Ogone.stub(:purchase) { mock('response', :params => { "NCSTATUS" => "5", "STATUS" => "46", "HTML_ANSWER" => Base64.encode64("<html>No HTML.</html>") }) }
           end
-          
+
           context "credit card" do
             it "should set transaction and invoices to waiting_d3d state" do
               @invoice1.should be_open
@@ -543,7 +543,7 @@ describe Transaction do
         before(:each) do
           @site = Factory(:site, refunded_at: nil)
         end
-        
+
         it "should do nothing!" do
           expect { Transaction.refund_by_site_id(@site.id) }.to_not change(Delayed::Job, :count)
         end
@@ -641,7 +641,7 @@ describe Transaction do
 
   describe "Instance Methods" do
 
-    describe "#process_payment_response", focus: true do
+    describe "#process_payment_response" do
       before(:all) do
         @site1    = Factory(:site, user: @user, plan_id: @dev_plan.id)
         @site2    = Factory(:site, user: @user, plan_id: @paid_plan.id)
@@ -723,9 +723,9 @@ describe Transaction do
         subject.user.pending_cc_last_digits = '9999'
         subject.user.pending_cc_expire_on = 2.years.from_now.end_of_month.to_date
         subject.save!(validate: false)
-        
+
         subject.process_payment_response(@success_params)
-        
+
         subject.user.reload.cc_type.should == 'master'
         subject.user.cc_last_digits.should == '9999'
         subject.user.cc_expire_on.should == 2.years.from_now.end_of_month.to_date
@@ -757,17 +757,17 @@ describe Transaction do
         user.pending_cc_last_digits = '9999'
         user.pending_cc_expire_on = 2.years.from_now.end_of_month.to_date
         user.save!(validate: false)
-        
+
         subject.user.reload.pending_cc_type.should == 'master'
         subject.user.pending_cc_last_digits.should == '9999'
         subject.user.pending_cc_expire_on.should == 2.years.from_now.end_of_month.to_date
-        
+
         subject.process_payment_response(@invalid_params)
-        
+
         subject.user.reload.cc_type.should == 'visa'
         subject.user.cc_last_digits.should == '1111'
         subject.user.cc_expire_on.should == 1.year.from_now.end_of_month.to_date
-        
+
         subject.user.pending_cc_last_digits.should be_nil
         subject.user.pending_cc_expire_on.should be_nil
         subject.user.pending_cc_updated_at.should be_nil
@@ -782,19 +782,19 @@ describe Transaction do
         subject.error.should == "refused"
         subject.should be_refused
       end
-      
+
       it "should clear pending cc infos of the user" do
         subject.user.pending_cc_type = 'master'
         subject.user.pending_cc_last_digits = '9999'
         subject.user.pending_cc_expire_on = 2.years.from_now.end_of_month.to_date
         subject.save!(validate: false)
-        
+
         subject.user.reload.pending_cc_type.should == 'master'
         subject.user.pending_cc_last_digits.should == '9999'
         subject.user.pending_cc_expire_on.should == 2.years.from_now.end_of_month.to_date
-        
+
         subject.process_payment_response(@refused_params)
-        
+
         subject.user.reload.cc_type.should be_nil
         subject.user.pending_cc_last_digits.should be_nil
         subject.user.pending_cc_expire_on.should be_nil
@@ -811,19 +811,19 @@ describe Transaction do
         subject.error.should == "unknown"
         subject.should be_unknown
       end
-      
+
       it "should clear pending cc infos of the user" do
         subject.user.pending_cc_type = 'master'
         subject.user.pending_cc_last_digits = '9999'
         subject.user.pending_cc_expire_on = 2.years.from_now.end_of_month.to_date
         subject.save!(validate: false)
-        
+
         subject.user.reload.pending_cc_type.should == 'master'
         subject.user.pending_cc_last_digits.should == '9999'
         subject.user.pending_cc_expire_on.should == 2.years.from_now.end_of_month.to_date
-        
+
         subject.process_payment_response(@unknown_params)
-        
+
         subject.user.reload.pending_cc_type.should == 'master'
         subject.user.pending_cc_last_digits.should == '9999'
         subject.user.pending_cc_expire_on.should == 2.years.from_now.end_of_month.to_date
@@ -835,7 +835,7 @@ describe Transaction do
           subject.user.pending_cc_last_digits = '9999'
           subject.user.pending_cc_expire_on = 2.years.from_now.end_of_month.to_date
           subject.save!(validate: false)
-          
+
           subject.should be_unprocessed
           subject.process_payment_response(@waiting_params)
           subject.reload.should be_unprocessed
@@ -853,7 +853,7 @@ describe Transaction do
           subject.nc_status.should == 0
           subject.status.should == 9
           subject.error.should == "!"
-          
+
           subject.user.reload.pending_cc_type.should be_nil
           subject.user.pending_cc_last_digits.should be_nil
           subject.user.pending_cc_expire_on.should be_nil
@@ -883,7 +883,7 @@ describe Transaction do
           subject.nc_status.should == 0
           subject.status.should == 9
           subject.error.should == "!"
-          
+
           subject.user.reload.pending_cc_type.should be_nil
           subject.user.pending_cc_last_digits.should be_nil
           subject.user.pending_cc_expire_on.should be_nil
@@ -917,7 +917,7 @@ describe Transaction do
 
       describe "#waiting?" do
         subject { Factory(:transaction, invoices: [@invoice.reload], status: 51) }
-        
+
         it { should be_waiting}
       end
 
@@ -943,7 +943,7 @@ describe Transaction do
         end
       end
     end
-    
+
     describe "#i18n_error_key" do
       before(:all) do
         @site    = Factory(:site, user: @user, plan_id: @dev_plan.id)
@@ -952,7 +952,7 @@ describe Transaction do
 
       describe "waiting" do
         subject { Factory(:transaction, invoices: [@invoice.reload], status: 51) }
-        
+
         its(:i18n_error_key) { should == "waiting" }
       end
 

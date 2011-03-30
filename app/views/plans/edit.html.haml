@@ -7,9 +7,13 @@
     .info_message_box=raw "Please #{link_to "add a hostname", [:edit, @site]} before choosing a plan."
   - elsif @site.pending_plan_id? && !@site.pending_plan_id_changed?
     - if @site.invoices_failed?
-      .info_message_box= raw t 'site.plan.upgrade_in_progress_failed_link', :link => link_to("your invoice", [@site, :invoices])
+      .info_message_box= raw t('site.plan.upgrade_in_progress_failed_link', :link => link_to("your invoice", [@site, :invoices]))
+    - elsif @site.invoices_open?
+      .info_message_box= raw t('site.plan.upgrade_in_progress_open_link', :link => link_to("your invoice", [@site, :invoices]))
+    - elsif @site.invoices_waiting?
+      .info_message_box=t 'site.plan.upgrade_in_progress_waiting_link'
     - else
-      .info_message_box= t 'site.plan.upgrade_in_progress'
+      .info_message_box=t 'site.plan.upgrade_in_progress'
   - elsif @site.in_sponsored_plan?
     .info_message_box
       %p= raw "Your plan is currently sponsored by Jilion. If you have any questions, please #{mail_to "sales@sublimevideo.net", "contact us"}."

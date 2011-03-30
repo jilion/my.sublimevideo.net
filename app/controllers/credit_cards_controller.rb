@@ -1,6 +1,6 @@
 class CreditCardsController < ApplicationController
   before_filter do |controller|
-    redirect_to([:edit, :user_registration]) unless current_user.cc?
+    redirect_to([:edit, :user_registration]) if !current_user.cc? && !current_usr.pending_cc?
   end
 
   # GET /card/edit
@@ -12,21 +12,20 @@ class CreditCardsController < ApplicationController
   def update
     @user = User.find(current_user.id)
     @user.attributes = params[:user]
-    # @user.pend_credit_card_info
     options = {
       accept_url: edit_user_registration_url,
       decline_url: edit_user_registration_url,
       exception_url: edit_user_registration_url,
       ip: request.try(:remote_ip)
     }
-    
+
     respond_with(@user) do |format|
-      if @user.credit_card.valid? 
+      if @user.valid? && @user.credit_card.valid?
         @user.check_credit_card(options)
         if @user.d3d_html # 3-d secure identification needed
-          format.html { render :text => @user.d3d_html }
+          format.html { render :text => @user.d3d_html, notice: "", alert: "" }
         else # authorized, waiting or unknown
-          format.html { redirect_to [:edit, :user_registration], notice_and_alert_from_transaction(@user) }
+          format.html { redirect_to [:edit, :user_registration], notice_and_alert_from_cc_authorization(@user) }
         end
       else # credit card not valid
         flash[:notice] = ""
@@ -34,12 +33,6 @@ class CreditCardsController < ApplicationController
         format.html { render :edit }
       end
     end
-  end
-
-private
-
-  def notice_and_alert_from_transaction(user)
-    user.i18n_notice_and_alert ? { notice: "", alert: "" }.merge(user.i18n_notice_and_alert) : { notice: t("flash.credit_cards.update.notice"), alert: "" }
   end
 
 end

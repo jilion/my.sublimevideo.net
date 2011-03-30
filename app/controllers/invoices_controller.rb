@@ -17,7 +17,7 @@ class InvoicesController < ApplicationController
   # PUT /invoices/:site_id/retry
   def retry
     @site = current_user.sites.find_by_token!(params[:site_id])
-    @invoices = @site.invoices.failed
+    @invoices = @site.invoices.open_or_failed
 
     if @invoices.present?
       transaction = Transaction.charge_by_invoice_ids(@invoices.map(&:id))
@@ -27,7 +27,7 @@ class InvoicesController < ApplicationController
         flash[:alert] = t("transaction.errors.#{transaction.i18n_error_key}")
       end
     else
-      flash[:notice] = t("site.invoices.no_failed_invoices_to_retry")
+      flash[:notice] = t("site.invoices.no_invoices_to_retry")
     end
 
     respond_to do |format|

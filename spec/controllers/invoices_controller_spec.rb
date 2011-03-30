@@ -47,7 +47,7 @@ describe InvoicesController do
           @mock_invoices.should_receive(:present?) { false }
           post :retry, :site_id => 'QWE123TYU'
           assigns(:invoices).should == []
-          flash[:notice].should == I18n.t("site.invoices.no_failed_invoices_to_retry")
+          flash[:notice].should == I18n.t("site.invoices.no_invoices_to_retry")
           response.should redirect_to(site_invoices_url(site_id: 'QWE123TYU'))
         end
       end

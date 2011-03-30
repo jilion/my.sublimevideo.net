@@ -153,6 +153,27 @@ describe Invoice do
           end
         end
       end
+
+      describe "after_transition :on => :succeed, :do => :push_new_revenue" do
+        subject { Factory(:invoice, invoice_items: [Factory(:plan_invoice_item)]) }
+        
+        it "should delay on Ding class" do
+          Ding.should_receive(:delay)
+          subject.succeed
+        end
+        
+        it "should send a ding!" do
+          expect { subject.succeed! }.to change(Delayed::Job, :count)
+          puts Delayed::Job.all.map(&:name).inspect
+          djs = Delayed::Job.where(:handler.matches => "%plan_added%")
+          djs.count.should == 1
+          djs.first.name.should == 'Class#plan_added'
+          YAML.load(djs.first.handler)['args'][0].should == subject.invoice_items.item.first.title
+          YAML.load(djs.first.handler)['args'][1].should == subject.invoice_items.item.first.cycle
+          YAML.load(djs.first.handler)['args'][2].should == subject.amount
+        end
+      end
+
     end # Transitions
 
   end # State Machine

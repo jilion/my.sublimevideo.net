@@ -42,11 +42,21 @@
 
   %td.status.box_hovering_zone
     .wrap
-      - if site.invoices_failed? # TODO: Handle case when the transaction is in the "waiting_d3d" state
+      - if site.invoices_failed?
         = link_to [site, :invoices] do
           %span.icon.payment_issue
           = info_box(:class => "payment_issue") do
             %p=t 'site.status.payment_issue'
+      - elsif site.invoices_open?
+        = link_to [site, :invoices] do
+          %span.icon.payment_waiting
+          = info_box(:class => "payment_waiting") do
+            %p=t 'site.status.payment_open'
+      - elsif site.invoices_waiting?
+        = link_to [site, :invoices] do
+          %span.icon.payment_waiting
+          = info_box(:class => "payment_waiting") do
+            %p=t 'site.status.payment_waiting'
       - else
         - if site.cdn_up_to_date?
           %span.icon.ok

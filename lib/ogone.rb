@@ -36,6 +36,10 @@ module Ogone
     rescue
       raise StandardError, "Ogone config file '#{config_path}' doesn't exist."
     end
+      
+    def signature_out
+      yml[:signature_out] == 'heroku_env' ? ENV['OGONE_SIGNATURE_OUT'] : yml[:signature_out]
+    end
 
   private
   
@@ -53,10 +57,6 @@ module Ogone
       
     def signature
       yml[:signature] == 'heroku_env' ? ENV['OGONE_SIGNATURE'] : yml[:signature]
-    end
-      
-    def signature_out
-      yml[:signature_out] == 'heroku_env' ? ENV['OGONE_SIGNATURE_OUT'] : yml[:signature_out]
     end
 
     def gateway

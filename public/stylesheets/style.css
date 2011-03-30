@@ -510,14 +510,17 @@ form .inline_errors span {
   text-shadow:rgba(0,0,0,0.3) 0 -1px 0;
 }
 
-form p.note, #content form label.note {
+form p.note, #content form label.note, #credit_card_summary p.note {
   display:block;
   padding:2px 0 2px 22px;
   margin-top:15px;
   font-size:13px;
   font-weight:600;
+  line-height:16px;
   background:url(/images/embed/note_icon.png) no-repeat;
 }
+
+#credit_card_summary p.note {margin-top:5px;}
 
 #content form label.note {
   margin:0 0 5px;
@@ -1591,13 +1594,11 @@ input.link_looks.delete {
   background:url(/images/embed/sites/status_loading_indicator.gif) no-repeat center;
 }
 
-#content table.main td.status .icon.ok {
-  background:url(/images/embed/sites/status_ok.png) no-repeat center;
-}
+#content table.main td.status .icon.ok {background:url(/images/embed/sites/status_ok.png) no-repeat center}
 
-#content table.main td.status .icon.payment_issue {
-  background:url(/images/embed/alert_icon.png) no-repeat center;
-}
+#content table.main td.status .icon.payment_issue {background:url(/images/embed/alert_icon.png) no-repeat center}
+
+#content table.main td.status .icon.payment_waiting {background:url(/images/embed/warning_small_icon.png) no-repeat center}
 
 #content table.main td.status .info_box {
   width:100px;
@@ -1606,7 +1607,7 @@ input.link_looks.delete {
   right:auto;
 }
 
-#content table.main td.status .info_box.payment_issue {
+#content table.main td.status .info_box.payment_issue, #content table.main td.status .info_box.payment_waiting {
   top:-85px;
   left:-23px;
 }
@@ -2280,6 +2281,15 @@ ul#addons .checkbox_wrap input:focus:checked + label {background-position:0 -102
   border-bottom:1px solid #888;
 }
 
+#credit_card p.note_3d_secure {
+  width:440px;
+  font-size:12px;
+  margin:30px 0 0;
+  background:url(/images/embed/breakline.png) no-repeat -228px 0;
+  padding:15px 0 0;
+  line-height:20px;
+}
+
 #site .actions.center {
   text-align:center;
 }
@@ -2808,7 +2818,7 @@ nav.pagination span.gap {
   margin-top:10px;
 }
 
-#credit_card_summary p.master {background:url(/images/embed/credit_cards/master.png) no-repeat;}
+#credit_card_summary p.master {background:url(/images/embed/credit_cards/mastercard.png) no-repeat;}
 
 #credit_card_summary p.visa {background:url(/images/embed/credit_cards/visa.png) no-repeat;}
 

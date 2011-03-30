@@ -176,7 +176,6 @@ module User::CreditCard
     @d3d_html = nil
 
     case authorize_params["STATUS"]
-    
     # Waiting for identification (3-D Secure)
     # We return the HTML to render. This HTML will redirect the user to the 3-D Secure form.
     when "46"
@@ -220,12 +219,12 @@ module User::CreditCard
     #   The customer should not retry the authorization process since the authorization/payment might already have been accepted.
     when "52"
       @i18n_notice_and_alert = { alert: I18n.t("transaction.errors.unknown") }
-      save # will apply pend_credit_card_info      
+      save # will apply pend_credit_card_info
       Notify.send("Credit card authorization for user ##{self.id} (PAYID: #{authorize_params["PAYID"]}) has an uncertain state, please investigate quickly!")
     
     else
       @i18n_notice_and_alert = { alert: I18n.t("transaction.errors.unknown") }
-      save # will apply pend_credit_card_info      
+      save # will apply pend_credit_card_info
       Notify.send("Credit card authorization unknown status: #{authorize_params["STATUS"]}")
     end
 

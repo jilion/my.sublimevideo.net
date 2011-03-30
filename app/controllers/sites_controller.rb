@@ -111,14 +111,4 @@ private
     @site = current_user.sites.find_by_token!(params[:id])
   end
 
-  def notice_and_alert_from_transaction(transaction)
-    if transaction && transaction.failed?
-      { notice: "", alert: t("transaction.errors.#{transaction.i18n_error_key}") }
-    elsif transaction && transaction.unprocessed?
-      { notice: t("transaction.errors.#{transaction.i18n_error_key}"), alert: "" }
-    else
-      { notice: nil, alert: nil }
-    end
-  end
-
 end

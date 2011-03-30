@@ -44,7 +44,7 @@ class Invoice < ActiveRecord::Base
 
     before_transition :on => :succeed, :do => :set_paid_at
     before_transition :on => :fail,    :do => :set_last_failed_at
-    after_transition  :on => :succeed, :do => [:apply_pending_site_plan_changes, :update_user_invoiced_amount, :unsuspend_user]
+    after_transition  :on => :succeed, :do => [:apply_pending_site_plan_changes, :update_user_invoiced_amount, :unsuspend_user, :push_new_revenue]
   end
 
   # ==========
@@ -164,6 +164,18 @@ private
   # after_transition :on => :succeed
   def unsuspend_user
     user.unsuspend if user.invoices.failed.empty?
+  end
+
+  # after_transition :on => :succeed
+  def push_new_revenue
+    begin
+      plan_bought = self.invoice_items.detect { |invoice_item| invoice_item.amount > 0 }
+      plan_deducted = self.invoice_items.detect { |invoice_item| invoice_item.amount < 0 }
+      Ding.delay.plan_added(plan_bought.item.title, plan_bought.item.cycle, plan_bought.amount)
+      Ding.delay.plan_removed(plan_deducted.title, plan_deducted.cycle, plan_deducted.price) if plan_deducted
+    rescue
+      # do nothing
+    end
   end
 
 end
