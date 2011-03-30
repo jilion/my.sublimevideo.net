@@ -18,9 +18,9 @@ class CreditCardsController < ApplicationController
       exception_url: edit_user_registration_url,
       ip: request.try(:remote_ip)
     }
-
+    
     respond_with(@user, flash: false) do |format|
-      if @user.check_credit_card(options)
+      if @user.save && @user.check_credit_card(options)
         if @user.d3d_html # 3-d secure identification needed
           format.html { render :text => @user.d3d_html }
         else # authorized, waiting or unknown

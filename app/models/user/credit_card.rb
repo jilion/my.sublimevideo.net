@@ -84,9 +84,9 @@ module User::CreditCard
     save
   end
 
-  def reset_credit_card_attributes
-    %w[cc_brand cc_number cc_expiration_month cc_expiration_year cc_full_name cc_verification_value].each { |att| self.send("#{att}=", nil) }
-  end
+  # def reset_credit_card_attributes
+  #   %w[cc_brand cc_number cc_expiration_month cc_expiration_year cc_full_name cc_verification_value].each { |att| self.send("#{att}=", nil) }
+  # end
 
   def cc_full_name=(attribute)
     @cc_full_name = attribute
@@ -122,13 +122,22 @@ module User::CreditCard
   end
   alias :cc_expired? :credit_card_expired?
 
-  # before_save if credit_card.valid?
+  # before_save if any_cc_attrs?
   def pend_credit_card_info
     self.pending_cc_type        = credit_card.type
     self.pending_cc_last_digits = credit_card.last_digits
     self.pending_cc_expire_on   = Time.utc(credit_card.year, credit_card.month).end_of_month.to_date
     self.pending_cc_updated_at  = Time.now.utc
-    reset_credit_card_attributes
+    # reset_credit_card_attributes
+  end
+  
+  def reset_credit_card_info
+    self.pending_cc_type        = nil
+    self.pending_cc_last_digits = nil
+    self.pending_cc_expire_on   = nil
+    self.pending_cc_updated_at  = nil
+    
+    self.save
   end
 
   def apply_pending_credit_card_info
@@ -137,22 +146,11 @@ module User::CreditCard
     self.cc_expire_on           = pending_cc_expire_on
     self.cc_updated_at          = pending_cc_updated_at
 
-    # force update
-    self.pending_cc_type_will_change!
-    self.pending_cc_last_digits_will_change!
-
-    self.pending_cc_type        = nil
-    self.pending_cc_last_digits = nil
-    self.pending_cc_expire_on   = nil
-    self.pending_cc_updated_at  = nil
-
-    self.save
+    reset_credit_card_info
   end
 
   # Called from CreditCardsController#update
   def check_credit_card(options={})
-    return false unless self.valid?
-
     options = options.merge({
       store: cc_alias,
       email: email,
@@ -180,7 +178,6 @@ module User::CreditCard
       case authorize_params["STATUS"]
       when "5"
         void_authorization([authorize_params["PAYID"], 'RES'].join(';'))
-        pend_credit_card_info unless pending_cc?
         return apply_pending_credit_card_info
 
       # STATUS == 51, Authorization waiting:
@@ -195,25 +192,28 @@ module User::CreditCard
       #   (list available at https://secure.ogone.com/ncol/paymentinfos1.asp).
       #   After correcting the error, the customer can retry the authorization process.
       when "0"
+        reset_credit_card_info
         self.errors.add(:base, I18n.t("credit_card.errors.invalid"))
-
+        
       # STATUS == 2, Authorization refused:
       #   The authorization has been declined by the financial institution.
       #   The customer can retry the authorization process after selecting a different payment method (or card brand).
       when "2"
+        reset_credit_card_info
         self.errors.add(:base, I18n.t("credit_card.errors.refused"))
-
+        
       # STATUS == 52, Authorization not known:
       #   A technical problem arose during the authorization/ payment process, giving an unpredictable result.
       #   The merchant can contact the acquirer helpdesk to know the exact status of the payment or can wait until we have updated the status in our system.
       #   The customer should not retry the authorization process since the authorization/payment might already have been accepted.
       when "52"
+        reset_credit_card_info
         @i18n_notice_and_alert = { alert: I18n.t("transaction.errors.unknown") }
         Notify.send("Credit card authorization for user ##{self.id} (PAYID: #{authorize_params["PAYID"]}) has an uncertain state, please investigate quickly!")
       end
     end
 
-    self.errors.empty? && self.save
+    self.errors.empty? #&& self.save
   end
 
 private
