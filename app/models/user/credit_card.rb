@@ -157,7 +157,6 @@ module User::CreditCard
       email: email,
       billing_address: { zip: postal_code, country: Country[country].name },
       d3d: true,
-      tp: "http://jilion.s3.amazonaws.com/ogone/payment.html",
       paramplus: "CHECK_CC_USER_ID=#{self.id}"
     })
     
