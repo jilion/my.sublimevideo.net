@@ -1,25 +1,62 @@
 = title_and_content_header("Dashboard")
 
-= render '/admin/shared/date_chooser'
+-# = render '/admin/shared/date_chooser'
 
-#timeline.dashboard_timeline
-  %h3 Usage
-  - cache 'dashboard_timeline_usage', :expires_in => 10.minutes do
-    = render 'timeline_usage'
+-# #timeline.dashboard_timeline
+-#   %h3 Usage
+-#   - cache 'dashboard_timeline_usage', :expires_in => 10.minutes do
+-#     = render 'timeline_usage'
 
-#box_users.dashboard_box
-  %h3 Users
-  - cache 'dashboard_box_users', :expires_in => 10.minutes do
-    = render 'users'
+-# #box_traffic.dashboard_box
+%h3 Traffic
+- player_hits = SiteUsage.between(Time.now.utc.beginning_of_month, Time.now.utc.end_of_month).sum(:player_hits).to_i
+%p= "Current Daily Traffic: #{number_to_human(player_hits, :significant => false, :precision => 3, :delimiter => "'")}"
 
-#box_sites.dashboard_box
-  %h3 Sites
-  - cache 'dashboard_box_sites', :expires_in => 10.minutes do
-    = render 'sites'
+-# - cache 'dashboard_box_users', :expires_in => 10.minutes do
+-#   = render 'users'
+%br
 
-#box_usage.dashboard_box
-  %h3 Usage
-  - cache 'dashboard_box_usage', :expires_in => 10.minutes do
-    = render 'usage'
+-# #box_users.dashboard_box
+%h3 Users
+%p= "# of Users Signups: #{User.active.count}"
+
+- customers = User.active.includes(:sites).where(sites: { plan_id: Plan.paid_plans.map(&:id) + Plan.custom_plans.map(&:id) })
+%p= "# of Customers: #{customers.count}"
+
+-# - cache 'dashboard_box_users', :expires_in => 10.minutes do
+-#   = render 'users'
+%br
+
+-# #box_sites.dashboard_box
+%h3 Sites
+- dev_sites = Site.active.where(sites: { plan_id: Plan.where(:name => "dev").first.id })
+%p= "# of LaunchPad sites: #{dev_sites.count}"
+- beta_sites = Site.active.where(sites: { plan_id: Plan.where(:name => "beta").first.id })
+%p= "# of Beta sites: #{beta_sites.count}"
+- paid_sites = Site.active.where(sites: { plan_id: Plan.paid_plans.map(&:id) + Plan.custom_plans.map(&:id) })
+%p= "# of Paying sites: #{customers.count}"
+
+-# - cache 'dashboard_box_sites', :expires_in => 10.minutes do
+-#   = render 'sites'
+
+-# #box_usage.dashboard_box
+-#   %h3 Usage
+-#   - cache 'dashboard_box_usage', :expires_in => 10.minutes do
+-#     = render 'usage'
 
 .spacer
+
+-# Sales : TOTAL SALES USD
+-# Sales : # OF PLANS SOLD
+
+-# Users : # of Users Signups
+-# Users : # of Customers (ie with 1+ paid plan)
+
+-# Users : Top 10 Customers' Country % and #
+
+-# Sites : # of dev sites
+-# Sites : # of paying sites
+
+-# Traffic : Current daily traffic
+-# Traffic : 30D moving average
+-# Twitter : Last 5 tweets

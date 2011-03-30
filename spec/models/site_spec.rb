@@ -1134,7 +1134,7 @@ describe Site do
         end
         subject { @site }
 
-        its(:current_monthly_billable_usage)          { should == 5 + 6 + 7 + 8 }
+        its(:current_monthly_billable_usage)  { should == 5 + 6 + 7 + 8 }
         its(:current_percentage_of_plan_used) { should == 26 / 100.0 }
       end
 
@@ -1149,7 +1149,7 @@ describe Site do
         end
         subject { @site }
 
-        its(:current_monthly_billable_usage)          { should == 9 + 10 + 11 + 12 }
+        its(:current_monthly_billable_usage)  { should == 9 + 10 + 11 + 12 }
         its(:current_percentage_of_plan_used) { should == 1 }
       end
 
@@ -1165,7 +1165,7 @@ describe Site do
         after(:all) { Timecop.return }
         subject { @site }
 
-        its(:current_monthly_billable_usage)          { should == 5 + 6 + 7 + 8 }
+        its(:current_monthly_billable_usage)  { should == 5 + 6 + 7 + 8 }
         its(:current_percentage_of_plan_used) { should == 26 / 100.0 }
       end
 
@@ -1181,7 +1181,7 @@ describe Site do
         after(:all) { Timecop.return }
         subject { @site }
 
-        its(:current_monthly_billable_usage)          { should == 1 + 2 + 3 + 4 }
+        its(:current_monthly_billable_usage)  { should == 1 + 2 + 3 + 4 }
         its(:current_percentage_of_plan_used) { should == 10 / 1000.0 }
       end
     end
