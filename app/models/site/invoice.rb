@@ -63,7 +63,7 @@ module Site::Invoice
       Plan.find(id).dev_plan?
     end
   end
-  
+
   def refunded?
     refunded_at?
   end
@@ -178,7 +178,7 @@ private
       invoice = Invoice.build(site: self)
       invoice.save!
 
-      Transaction.charge_by_invoice_ids([invoice.id], charging_options || {}) if instant_charging?
+      @transaction = Transaction.charge_by_invoice_ids([invoice.id], charging_options || {}) if instant_charging?
 
     elsif pending_plan_id_changed? && pending_plan_id? && pending_plan.free_plan?
       # directly update for free plans

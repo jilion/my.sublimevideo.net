@@ -1,7 +1,11 @@
 MySublimeVideo::Application.routes.draw do
 
+  # match '/signup' => redirect('http://sublimevideo.net'), :via => :get
+  # match '/login' => redirect('http://sublimevideo.net'), :via => :get
+
   devise_for :users,
   :path => '',
+  # :path_names => { :sign_in => 'private', :sign_out => 'logout' },
   :path_names => { :sign_in => 'login', :sign_out => 'logout' },
   :controllers => { :sessions => "users/sessions" },
   :skip => [:invitations, :registrations] do

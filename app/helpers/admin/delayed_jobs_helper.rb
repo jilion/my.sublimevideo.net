@@ -4,6 +4,18 @@ module Admin::DelayedJobsHelper
     case job.name
     when "Module#send_credit_card_expiration"
       "Credit card expiration"
+    when "Module#monitor_sites_usages"
+      "Usage monitoring"
+    when "Class#charge_all_open_and_failed_invoices"
+      "Open & failed invoices charging"
+    when "Class#update_last_30_days_counters_for_not_archived_sites"
+      "Update last 30 days hits"
+    when "Class#renew_active_sites!"
+      "Renew active sites"
+    when "Class#create_users_stats"
+      "Users stats"
+    when "Class#create_sites_stats"
+      "Sites stats"
     when "Class#fetch_download_and_create_new_logs", "Class#fetch_and_create_new_logs"
       case job.handler
       when /Log::Voxcast/
@@ -24,7 +36,13 @@ module Admin::DelayedJobsHelper
     [
       "Module#send_credit_card_expiration",
       "Class#fetch_download_and_create_new_logs",
-      "Class#fetch_and_create_new_logs"
+      "Class#fetch_and_create_new_logs",
+      "Module#monitor_sites_usages",
+      "Class#charge_all_open_and_failed_invoices",
+      "Class#update_last_30_days_counters_for_not_archived_sites",
+      "Class#renew_active_sites!",
+      "Class#create_users_stats",
+      "Class#create_sites_stats"
     ].include?(job.name)
   end
 

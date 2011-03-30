@@ -11,7 +11,7 @@ class Site < ActiveRecord::Base
   has_paper_trail
 
   attr_accessor :loader_needs_update, :license_needs_update
-  attr_accessor :user_attributes, :charging_options
+  attr_accessor :user_attributes, :charging_options, :transaction
 
   attr_accessible :hostname, :dev_hostnames, :extra_hostnames, :path, :wildcard, :plan_id, :user_attributes
 
@@ -35,8 +35,8 @@ class Site < ActiveRecord::Base
   has_one  :last_invoice, :class_name => "::Invoice", :order => :created_at.desc
   has_one  :last_paid_invoice, :class_name => "::Invoice", :conditions => { :state => 'paid' }, :order => :created_at.desc
 
-  has_many :invoice_items, :through => :invoices
-  has_many :transactions,  :through => :invoices
+  # has_many :invoice_items, :through => :invoices
+  # has_many :transactions,  :through => :invoices
 
   # Mongoid associations
   def usages

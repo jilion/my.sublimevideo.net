@@ -38,8 +38,9 @@ class Invoice < ActiveRecord::Base
   # =================
 
   state_machine :initial => :open do
-    event(:succeed) { transition [:open, :failed] => :paid }
-    event(:fail)    { transition [:open, :failed] => :failed }
+    event(:succeed) { transition [:open, :failed, :waiting] => :paid }
+    event(:fail)    { transition [:open, :failed, :waiting] => :failed }
+    event(:wait)    { transition [:open, :failed, :waiting] => :waiting }
 
     before_transition :on => :succeed, :do => :set_paid_at
     before_transition :on => :fail,    :do => :set_last_failed_at
