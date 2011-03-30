@@ -110,6 +110,10 @@ class Invoice < ActiveRecord::Base
 
 private
 
+  def refunded?
+    site.refunded_at?
+  end
+
   def build_invoice_items
     if site.pending_plan_id? && site.in_paid_plan?
       invoice_items << InvoiceItem::Plan.build(invoice: self, item: Plan.find(site.plan_id), deduct: true)

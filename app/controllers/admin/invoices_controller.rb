@@ -20,7 +20,7 @@ class Admin::InvoicesController < Admin::AdminController
 
   # GET /admin/invoices
   def index
-    @invoices = Invoice.includes(:user)
+    @invoices = Invoice.includes(:user, :site)
     @invoices = apply_scopes(@invoices)
     @invoices.by_date unless params[:by_invoice_items_count]
     respond_with(@invoices)

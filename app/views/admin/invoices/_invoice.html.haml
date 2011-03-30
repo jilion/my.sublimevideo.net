@@ -13,4 +13,4 @@
   %td.amount
     = display_amount(invoice.amount)
   %td.state
-    %small= invoice.state
+    %small= invoice.refunded? ? "refunded" : invoice.state
