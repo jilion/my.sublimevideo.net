@@ -641,7 +641,7 @@ describe Transaction do
 
   describe "Instance Methods" do
 
-g    describe "#process_payment_response" do
+    describe "#process_payment_response" do
       before(:all) do
         @site1    = Factory(:site, user: @user, plan_id: @dev_plan.id)
         @site2    = Factory(:site, user: @user, plan_id: @paid_plan.id)
