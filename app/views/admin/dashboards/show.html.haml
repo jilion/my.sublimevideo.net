@@ -21,7 +21,7 @@
 -# #box_users.dashboard_box
 %h3 Users
 %p= "# of Users Signups: #{User.active.count}"
-%p= "# of billabel customers: #{User.billable.count}"
+%p= "# of billable customers: #{User.billable.count}"
 
 -# - cache 'dashboard_box_users', :expires_in => 10.minutes do
 -#   = render 'users'
