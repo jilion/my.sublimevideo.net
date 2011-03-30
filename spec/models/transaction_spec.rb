@@ -366,6 +366,7 @@ describe Transaction do
             email: @user.email,
             billing_address: { zip: @user.postal_code, country: Country[@user.country].name },
             d3d: true,
+            tp: "http://jilion.s3.amazonaws.com/ogone/payment.html",
             paramplus: "PAYMENT=TRUE"
           })
           Transaction.charge_by_invoice_ids([@invoice1.id], { credit_card: @credit_card })
@@ -411,6 +412,7 @@ describe Transaction do
             email: @user.email,
             billing_address: { zip: @user.postal_code, country: Country[@user.country].name },
             d3d: true,
+            tp: "http://jilion.s3.amazonaws.com/ogone/payment.html",
             paramplus: "PAYMENT=TRUE"
           })
           Transaction.charge_by_invoice_ids([@invoice1.id, @invoice2.id, @invoice3.id])

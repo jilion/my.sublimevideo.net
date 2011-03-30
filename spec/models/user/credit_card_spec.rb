@@ -439,6 +439,7 @@ describe User::CreditCard do
               email: user.email,
               billing_address: { zip: user.postal_code, country: Country[user.country].name },
               d3d: true,
+              tp: "http://jilion.s3.amazonaws.com/ogone/payment.html",
               paramplus: "CHECK_CC_USER_ID=#{user.id}"
             }) { mock('authorize_response', :params => {}) }
             subject.check_credit_card

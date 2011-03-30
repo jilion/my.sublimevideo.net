@@ -2,7 +2,7 @@ en:
   flash:
     credit_cards:
       update:
-        notice: "Your credit card information was successfully (and securely) saved."
+        notice: "Your credit card information was successfully updated."
     tickets:
       create:
         notice: "Thanks for your message, we will get back to you as quickly as we can."
