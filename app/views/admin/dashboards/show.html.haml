@@ -7,6 +7,8 @@
 -#   - cache 'dashboard_timeline_usage', :expires_in => 10.minutes do
 -#     = render 'timeline_usage'
 
+%h2= "Total revenue: #{display_amount(Invoice.total_revenue)}"
+
 -# #box_traffic.dashboard_box
 %h3 Traffic
 - player_hits = SiteUsage.between(Time.now.utc.beginning_of_month, Time.now.utc.end_of_month).sum(:player_hits).to_i
