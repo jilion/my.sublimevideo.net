@@ -56,6 +56,8 @@ class User < ActiveRecord::Base
 
   after_save   :newsletter_subscription
 
+  after_create :push_new_registration
+
   after_update :update_email_on_zendesk #, :charge_failed_invoices
 
   # =================
@@ -253,6 +255,15 @@ private
     if newsletter? && email_changed?
       CampaignMonitor.delay.unsubscribe(email_was) if email_was.present?
       CampaignMonitor.delay.subscribe(self)
+    end
+  end
+
+  # after_create
+  def push_new_registration
+    begin
+      Ding.delay.signup
+    rescue
+      # do nothing
     end
   end
 
