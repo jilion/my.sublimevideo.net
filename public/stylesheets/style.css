@@ -1594,13 +1594,11 @@ input.link_looks.delete {
   background:url(/images/embed/sites/status_loading_indicator.gif) no-repeat center;
 }
 
-#content table.main td.status .icon.ok {
-  background:url(/images/embed/sites/status_ok.png) no-repeat center;
-}
+#content table.main td.status .icon.ok {background:url(/images/embed/sites/status_ok.png) no-repeat center}
 
-#content table.main td.status .icon.payment_issue {
-  background:url(/images/embed/alert_icon.png) no-repeat center;
-}
+#content table.main td.status .icon.payment_issue {background:url(/images/embed/alert_icon.png) no-repeat center}
+
+#content table.main td.status .icon.payment_waiting {background:url(/images/embed/warning_small_icon.png) no-repeat center}
 
 #content table.main td.status .info_box {
   width:100px;
@@ -1609,7 +1607,7 @@ input.link_looks.delete {
   right:auto;
 }
 
-#content table.main td.status .info_box.payment_issue {
+#content table.main td.status .info_box.payment_issue, #content table.main td.status .info_box.payment_waiting {
   top:-85px;
   left:-23px;
 }
@@ -2281,6 +2279,15 @@ ul#addons .checkbox_wrap input:focus:checked + label {background-position:0 -102
 #credit_card .right .billing_info a {
   color:#1c263b;
   border-bottom:1px solid #888;
+}
+
+#credit_card p.note_3d_secure {
+  width:440px;
+  font-size:12px;
+  margin:30px 0 0;
+  background:url(/images/embed/breakline.png) no-repeat -228px 0;
+  padding:15px 0 0;
+  line-height:20px;
 }
 
 #site .actions.center {

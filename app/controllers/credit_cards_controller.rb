@@ -1,6 +1,6 @@
 class CreditCardsController < ApplicationController
   before_filter do |controller|
-    redirect_to([:edit, :user_registration]) unless current_user.cc?
+    redirect_to([:edit, :user_registration]) if !current_user.cc? && !current_usr.pending_cc?
   end
 
   # GET /card/edit
@@ -18,9 +18,9 @@ class CreditCardsController < ApplicationController
       exception_url: edit_user_registration_url,
       ip: request.try(:remote_ip)
     }
-    
+
     respond_with(@user) do |format|
-      if @user.valid? && @user.credit_card.valid? 
+      if @user.valid? && @user.credit_card.valid?
         @user.check_credit_card(options)
         if @user.d3d_html # 3-d secure identification needed
           format.html { render :text => @user.d3d_html, notice: "", alert: "" }

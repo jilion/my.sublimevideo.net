@@ -34,6 +34,10 @@ module Site::Invoice
     invoices.any? { |i| i.waiting? }
   end
 
+  def invoices_open?
+    invoices.any? { |i| i.open? }
+  end
+
   def in_beta_plan?
     plan && plan.beta_plan?
   end
