@@ -84,6 +84,10 @@ class Invoice < ActiveRecord::Base
     new(attributes).build
   end
 
+  def self.total_revenue
+    self.joins(:site).where(:site => { :refunded_at => nil }).sum(:amount)
+  end
+
   # ====================
   # = Instance Methods =
   # ====================
@@ -133,7 +137,7 @@ private
     self.customer_country      ||= user.country
     self.customer_company_name ||= user.company_name
   end
-  
+
   # before_validation :on => :create
   def set_site_infos
     self.site_hostname ||= site.hostname
