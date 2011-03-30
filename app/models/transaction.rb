@@ -109,7 +109,7 @@ class Transaction < ActiveRecord::Base
       Transaction.paid.joins(:invoices).where(:invoices => { :site_id => site_id }).each do |transaction|
         Ogone.delay.credit(transaction.amount, "#{transaction.pay_id};SAL")
         begin
-          Ding.delay.plan_removed(site.plan.title, site.plan.cycle, transaction.amount) if Rails.env.production?
+          Ding.plan_removed(site.plan.title, site.plan.cycle, transaction.amount) if Rails.env.production?
         rescue
           # do nothing
         end

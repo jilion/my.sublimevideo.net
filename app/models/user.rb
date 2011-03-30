@@ -261,7 +261,7 @@ private
   # after_create
   def push_new_registration
     begin
-      Ding.delay.signup if Rails.env.production?
+      Ding.signup if Rails.env.production?
     rescue
       # do nothing
     end

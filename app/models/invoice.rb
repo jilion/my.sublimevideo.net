@@ -172,8 +172,8 @@ private
      if Rails.env.production?
         plan_bought = self.invoice_items.detect { |invoice_item| invoice_item.amount > 0 }
         plan_deducted = self.invoice_items.detect { |invoice_item| invoice_item.amount < 0 }
-        Ding.delay.plan_added(plan_bought.item.title, plan_bought.item.cycle, plan_bought.amount)
-        Ding.delay.plan_removed(plan_deducted.title, plan_deducted.cycle, plan_deducted.price) if plan_deducted
+        Ding.plan_added(plan_bought.item.title, plan_bought.item.cycle, plan_bought.amount)
+        Ding.plan_removed(plan_deducted.title, plan_deducted.cycle, plan_deducted.price) if plan_deducted
       end
     rescue
       # do nothing
