@@ -1,6 +1,8 @@
 = title("Invoices")
 = content_header(admin_invoices_page_title(@invoices), :id => 'invoices_title')
 
+%h1= "Total revenue: #{display_amount(Invoice.total_revenue)}"
+
 .search_form
   = form_tag admin_invoices_path, :method => :get, :id => 'search_form' do
     = text_field_tag :search, '', :value => params[:search], :id => 'search_input', :placeholder => "Search", :type => "search", :autofocus => true, :autosave => "admin_search", :results => "5"

@@ -84,6 +84,10 @@ class Invoice < ActiveRecord::Base
     new(attributes).build
   end
 
+  def self.total_revenue
+    self.joins(:site).where(:site => { :refunded_at => nil }).sum(:amount)
+  end
+
   # ====================
   # = Instance Methods =
   # ====================
@@ -102,6 +106,10 @@ class Invoice < ActiveRecord::Base
 
   def last_transaction
     transactions.order(:created_at).last
+  end
+
+  def refunded?
+    site.refunded_at?
   end
 
 private
@@ -133,7 +141,7 @@ private
     self.customer_country      ||= user.country
     self.customer_company_name ||= user.company_name
   end
-  
+
   # before_validation :on => :create
   def set_site_infos
     self.site_hostname ||= site.hostname
@@ -168,16 +176,16 @@ private
 
   # after_transition :on => :succeed
   def push_new_revenue
-    begin
-     if Rails.env.production?
-        plan_bought = self.invoice_items.detect { |invoice_item| invoice_item.amount > 0 }
-        plan_deducted = self.invoice_items.detect { |invoice_item| invoice_item.amount < 0 }
-        Ding.plan_added(plan_bought.item.title, plan_bought.item.cycle, plan_bought.amount)
-        Ding.plan_removed(plan_deducted.title, plan_deducted.cycle, plan_deducted.price) if plan_deducted
-      end
-    rescue
-      # do nothing
-    end
+    # begin
+    #  if Rails.env.production?
+    #     plan_bought = self.invoice_items.detect { |invoice_item| invoice_item.amount > 0 }
+    #     plan_deducted = self.invoice_items.detect { |invoice_item| invoice_item.amount < 0 }
+    #     Ding.plan_added(plan_bought.item.title, plan_bought.item.cycle, plan_bought.amount)
+    #     Ding.plan_removed(plan_deducted.title, plan_deducted.cycle, plan_deducted.price) if plan_deducted
+    #   end
+    # rescue
+    #   # do nothing
+    # end
   end
 
 end
