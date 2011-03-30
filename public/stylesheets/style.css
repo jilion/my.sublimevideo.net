@@ -510,14 +510,17 @@ form .inline_errors span {
   text-shadow:rgba(0,0,0,0.3) 0 -1px 0;
 }
 
-form p.note, #content form label.note {
+form p.note, #content form label.note, #credit_card_summary p.note {
   display:block;
   padding:2px 0 2px 22px;
   margin-top:15px;
   font-size:13px;
   font-weight:600;
+  line-height:16px;
   background:url(/images/embed/note_icon.png) no-repeat;
 }
+
+#credit_card_summary p.note {margin-top:5px;}
 
 #content form label.note {
   margin:0 0 5px;
