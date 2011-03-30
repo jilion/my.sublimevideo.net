@@ -164,7 +164,7 @@ describe Invoice do
         
         it "should send a ding!" do
           expect { subject.succeed! }.to change(Delayed::Job, :count)
-          puts Delayed::Job.all.map(&:name).inspect
+          # puts Delayed::Job.all.map(&:name).inspect
           djs = Delayed::Job.where(:handler.matches => "%plan_added%")
           djs.count.should == 1
           djs.first.name.should == 'Class#plan_added'

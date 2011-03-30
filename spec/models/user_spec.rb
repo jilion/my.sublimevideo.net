@@ -391,19 +391,19 @@ describe User do
       end
     end
 
-    describe "after_create :newsletter_subscription" do
-      it "should delay on Ding class" do
-        Ding.should_receive(:delay)
-        Factory(:user)
-      end
-      
-      it "should send a ding!" do
-        expect { Factory(:user) }.to change(Delayed::Job, :count)
-        djs = Delayed::Job.where(:handler.matches => "%signup%")
-        djs.count.should == 1
-        djs.first.name.should == 'Class#signup'
-      end
-    end
+    # describe "after_create :newsletter_subscription" do
+    #   it "should delay on Ding class" do
+    #     Ding.should_receive(:delay)
+    #     Factory(:user)
+    #   end
+    #   
+    #   it "should send a ding!" do
+    #     expect { Factory(:user) }.to change(Delayed::Job, :count)
+    #     djs = Delayed::Job.where(:handler.matches => "%signup%")
+    #     djs.count.should == 1
+    #     djs.first.name.should == 'Class#signup'
+    #   end
+    # end
 
     describe "after_update :update_email_on_zendesk" do
       it "should not delay Module#put if email has not changed" do
@@ -543,6 +543,39 @@ describe User do
 
         its(:vat?) { should be_false }
       end
+    end
+
+    describe "#invoices_failed?", focus: true do
+      before(:all) do
+        @user = Factory(:user)
+        @site = Factory(:site, user: @user)
+        Factory(:invoice, state: 'failed', site: @site)
+      end
+      subject { @user }
+
+      its(:invoices_failed?) { should be_true }
+    end
+
+    describe "#invoices_waiting?", focus: true do
+      before(:all) do
+        @user = Factory(:user)
+        @site = Factory(:site, user: @user)
+        Factory(:invoice, state: 'waiting', site: @site)
+      end
+      subject { @user }
+
+      its(:invoices_waiting?) { should be_true }
+    end
+
+    describe "#invoices_open?", focus: true do
+      before(:all) do
+        @user = Factory(:user)
+        @site = Factory(:site, user: @user)
+        Factory(:invoice, state: 'open', site: @site)
+      end
+      subject { @user }
+
+      its(:invoices_open?) { should be_true }
     end
 
     describe "#support" do

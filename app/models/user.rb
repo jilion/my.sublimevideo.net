@@ -179,6 +179,18 @@ class User < ActiveRecord::Base
     beta? && Time.now.utc < PublicLaunch.beta_transition_ended_on
   end
 
+  def invoices_failed?
+    invoices.any? { |i| i.failed? }
+  end
+
+  def invoices_waiting?
+    invoices.any? { |i| i.waiting? }
+  end
+
+  def invoices_open?
+    invoices.any? { |i| i.open? }
+  end
+
   def full_name
     first_name.to_s + ' ' + last_name.to_s
   end

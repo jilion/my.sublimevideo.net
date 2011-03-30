@@ -108,14 +108,14 @@ feature "Credit cards" do
         VCR.use_cassette('ogone/void_authorization') { @current_user.process_cc_authorize_and_save("PAYID" => "1234", "STATUS" => "51") }
         @current_user.reload.cc_type.should == 'visa'
         @current_user.cc_last_digits.should == '1111'
+
+        visit '/account/edit'
         @current_user.pending_cc_type.should == 'visa'
         @current_user.pending_cc_last_digits.should == '0002'
 
-        visit '/account/edit'
-
         page.should have_content "Visa"
         page.should have_content '1111'
-        page.should have_content "Your new credit card is currently being verified."
+        page.should have_content "Update credit card"
       end
       
       scenario "entering a 3-D Secure credit card with a failing identification" do
