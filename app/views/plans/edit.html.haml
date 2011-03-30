@@ -8,6 +8,10 @@
   - elsif @site.pending_plan_id? && !@site.pending_plan_id_changed?
     - if @site.invoices_failed?
       .info_message_box= raw t 'site.plan.upgrade_in_progress_failed_link', :link => link_to("your invoice", [@site, :invoices])
+    - elsif @site.invoices_open?
+      .info_message_box= raw t 'site.plan.upgrade_in_progress_open_link', :link => link_to("your invoice", [@site, :invoices])
+    - elsif @site.invoices_waiting?
+      .info_message_box= raw t 'site.plan.upgrade_in_progress_waiting_link')
     - else
       .info_message_box= t 'site.plan.upgrade_in_progress'
   - elsif @site.in_sponsored_plan?
