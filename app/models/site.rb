@@ -289,7 +289,7 @@ class Site < ActiveRecord::Base
   def current_percentage_of_plan_used
     if in_paid_plan?
       percentage = [(current_monthly_billable_usage / plan.player_hits.to_f).round(2), 1].min
-      percentage == 0.0 ? 0.1 : percentage
+      percentage == 0.0 && current_monthly_billable_usage > 0 ? 0.01 : percentage
     else
       0
     end
