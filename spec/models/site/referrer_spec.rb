@@ -64,7 +64,7 @@ describe Site::Referrer do
 
     context "with hostname with subdomain" do
       before(:all) do
-        @site = Factory(:site, hostname: "blog.jilion.com")
+        @site = Factory(:site, hostname: "blog.jilion.com", extra_hostnames: nil, dev_hostnames: nil)
       end
       subject { @site }
 
@@ -234,6 +234,15 @@ describe Site::Referrer do
         subject.referrer_type(nil).should == "invalid"
       end
     end
+
+    # context "custom", focus: true do
+    #   before(:all) do
+    #     @site = Factory(:site, hostname: "j-14.com", extra_hostnames: nil, dev_hostnames: "localhost, 127.0.0.1", path: "", wildcard: false)
+    #   end
+    #   subject { @site }
+    #
+    #   it { subject.referrer_type("http://quiz.j-14.com/newest").should == "invalid" }
+    # end
   end
 
 end

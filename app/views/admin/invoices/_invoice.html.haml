@@ -1,18 +1,16 @@
 %tr[invoice]{ :class => cycle("", "alt") }
   %td.reference
-    = link_to invoice.reference, [:edit, :admin, invoice]
+    = link_to invoice.reference, [:admin, invoice]
   %td.user
     %small
       = link_to invoice.user.full_name, [:admin, invoice.user], :title => "#{invoice.user.full_name} <#{invoice.user.email}>"
   %td.period
     %small= invoice_dates(invoice)
-  %td.sites_count
-    = invoice.plan_invoice_items.size
+  %td.site
+    = invoice.site.hostname
   %td.invoice_items_count
     = invoice.invoice_items.size
   %td.amount
     = display_amount(invoice.amount)
   %td.state
     %small= invoice.state
-  %td.attempts
-    %small= invoice.attempts

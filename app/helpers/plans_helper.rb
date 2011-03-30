@@ -36,7 +36,7 @@ module PlansHelper
   end
 
   def plan_change_type(old_plan, new_plan)
-    if old_plan == new_plan
+    if old_plan == new_plan || (old_plan.beta_plan? && new_plan.dev_plan?)
       nil
     elsif old_plan.beta_plan?
       "upgrade_from_beta"

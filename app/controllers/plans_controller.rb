@@ -23,11 +23,10 @@ class PlansController < ApplicationController
 
     respond_with(@site) do |format|
       if @site.save # will create invoice and charge...
-        transaction = !@site.will_be_in_dev_plan? ? @site.last_invoice.last_transaction : nil
-        if transaction && transaction.waiting_d3d?
-          format.html { render :text => transaction.error }
+        if @site.transaction.try(:waiting_d3d?)
+          format.html { render :text => @site.transaction.error }
         else
-          format.html { redirect_to :sites, notice_and_alert_from_transaction(transaction) }
+          format.html { redirect_to :sites, notice_and_alert_from_transaction(@site.transaction) }
         end
       else
         format.html { render :edit }
@@ -52,7 +51,7 @@ private
     if transaction && transaction.failed?
       { notice: "", alert: t("transaction.errors.#{transaction.i18n_error_key}") }
     elsif transaction && transaction.unprocessed?
-      { notice: t("transaction.errors.#{transaction.i18n_error_key}"), alert: nil }
+      { notice: t("transaction.errors.#{transaction.i18n_error_key}"), alert: "" }
     else
       { notice: nil, alert: nil }
     end

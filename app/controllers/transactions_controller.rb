@@ -18,11 +18,10 @@ class TransactionsController < ApplicationController
   def callback
     if operation_was?(:cc_authorization)
       process_cc_authorization
-
     elsif operation_was?(:payment)
       process_payment
-
     end
+    render(nothing: true, status: 200)
   end
 
 private
@@ -37,24 +36,16 @@ private
   def operation_was?(operation)
     case operation
     when :cc_authorization
-      params["CHECK_CC_USER_ID"]
-
+      params["CHECK_CC_USER_ID"].present?
     when :payment
-      params["PAYMENT"] && params["orderID"]
+      params["PAYMENT"].present? && params["orderID"].present?
     end
   end
 
   def process_cc_authorization
     user = User.find(params["CHECK_CC_USER_ID"].to_i)
-
-    respond_with do |format|
-      if user.process_cc_authorize_and_save(@sha_params)
-        flash[:notice] = t("flash.credit_cards.update.notice")
-      elsif
-        flash[:alert] = t("credit_card.errors.refused")
-      end
-      format.html { redirect_to [:edit, :user_registration] }
-    end
+    
+    user.process_cc_authorize_and_save(@sha_params)
   end
 
   def process_payment
@@ -62,14 +53,6 @@ private
     render(nothing: true, status: 204) and return if transaction.paid? # already paid
 
     transaction.process_payment_response(@sha_params)
-
-    respond_to do |format|
-      if transaction.paid?
-        format.html { redirect_to :sites, :notice => t("flash.sites.create.notice") }
-      else
-        format.html { redirect_to :sites, :alert => t("transaction.errors.#{transaction.i18n_error_key}") }
-      end
-    end
   end
 
 end

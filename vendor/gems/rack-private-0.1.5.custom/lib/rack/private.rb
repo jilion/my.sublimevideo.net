@@ -13,10 +13,14 @@ module Rack
       return @app.call(env) if already_auth?(request)
 
       # If post method check :code_param value
-      if request.post? && code_valid?(request.params["private_code"])
-        request.session[:private_code] = request.params["private_code"]
-        body = "<html><body>Secret code is valid.</body></html>"
-        [307, { 'Content-Type' => 'text/html', 'Location' => '/' }, [body]] # Redirect if code is valid
+      if request.post?
+        if request.params["private_code"] && code_valid?(request.params["private_code"])
+          request.session[:private_code] = request.params["private_code"]
+          body = "<html><body>Secret code is valid.</body></html>"
+          [307, { 'Content-Type' => 'text/html', 'Location' => '/' }, [body]] # Redirect if code is valid
+        else
+          @app.call(env)
+        end
       elsif request.path == '/private'
         render_private_form
       else
