@@ -25,6 +25,8 @@ module InvoicesHelper
         text += " with the following error: #{content_tag(:em, "\"#{truncate(invoice.last_transaction.error, :length => 50)}\"")}".html_safe
       end
       text + "."
+    elsif invoice.waiting?
+      "Waiting payment confirmation."
     end
   end
 

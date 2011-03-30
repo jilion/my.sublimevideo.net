@@ -252,14 +252,20 @@ body {
 }
 
 #sticky_notice ul li {
-  background:url(/images/embed/sticky_notice_bullet.png) no-repeat 0 50%;
-  padding:2px 0 2px 16px;
+  background:url(/images/embed/sticky_notice_bullet.png) no-repeat 0 7px;
+  padding:2px 0 6px 16px;
 }
 
 #sticky_notice a {
   font-weight:bold;
   color:#453513;
   border-bottom:1px solid #c6af79;
+}
+
+#sticky_notice ul li small {
+  display:block;
+  font-weight:400;
+  margin-top:2px;
 }
 
 #content h2 {
