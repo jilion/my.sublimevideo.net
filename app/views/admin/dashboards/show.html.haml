@@ -32,8 +32,8 @@
 %p= "# of LaunchPad sites: #{Site.active.dev.count}"
 %p= "# of Beta sites: #{Site.active.beta.count}"
 %p= "# of Sponsored sites: #{Site.active.sponsored.count}"
-%p= "# of Custom sites: #{Site.active.custom.count}"
 %p= "# of Paying sites: #{Site.active.in_paid_plan.count}"
+%p= "# of Custom sites: #{Site.active.custom.count}"
 
 -# - cache 'dashboard_box_sites', :expires_in => 10.minutes do
 -#   = render 'sites'

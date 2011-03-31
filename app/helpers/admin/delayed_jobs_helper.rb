@@ -6,8 +6,8 @@ module Admin::DelayedJobsHelper
       "Credit card expiration"
     when "Module#monitor_sites_usages"
       "Usage monitoring"
-    when "Class#charge_all_open_and_failed_invoices"
-      "Open & failed invoices charging"
+    when "Class#charge_open_invoices"
+      "Open invoices charging"
     when "Class#update_last_30_days_counters_for_not_archived_sites"
       "Update last 30 days hits"
     when "Class#renew_active_sites!"
@@ -38,7 +38,7 @@ module Admin::DelayedJobsHelper
       "Class#fetch_download_and_create_new_logs",
       "Class#fetch_and_create_new_logs",
       "Module#monitor_sites_usages",
-      "Class#charge_all_open_and_failed_invoices",
+      "Class#charge_open_invoices",
       "Class#update_last_30_days_counters_for_not_archived_sites",
       "Class#renew_active_sites!",
       "Class#create_users_stats",

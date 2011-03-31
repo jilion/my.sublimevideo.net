@@ -156,6 +156,17 @@ describe Site do
 
       specify { Site.refundable.all.should == [@site_refundable1, @site_refundable2] }
     end
+
+    describe "#refunded" do
+      before(:all) do
+        Site.delete_all
+        @site_refunded1     = Factory(:site, state: 'archived', refunded_at: Time.now.utc)
+        @site_not_refunded1 = Factory(:site, state: 'active', refunded_at: Time.now.utc)
+        @site_not_refunded2 = Factory(:site, state: 'archived', refunded_at: nil)
+      end
+
+      specify { Site.refunded.all.should == [@site_refunded1] }
+    end
   end
 
   describe "Validations" do

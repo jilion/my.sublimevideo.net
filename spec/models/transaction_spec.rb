@@ -286,7 +286,7 @@ describe Transaction do
 
   describe "Class Methods" do
 
-    describe ".charge_all_open_and_failed_invoices" do
+    describe ".charge_open_invoices" do
       before(:all) do
         Invoice.delete_all
         @user1 = Factory(:user)
@@ -304,37 +304,48 @@ describe Transaction do
       end
 
       it "should delay invoice charging for open and failed invoices by user" do
-        expect { Transaction.charge_all_open_and_failed_invoices }.to change(Delayed::Job.where(:handler.matches => "%charge_open_and_failed_invoices_by_user_id%"), :count).by(2)
-        djs = Delayed::Job.where(:handler.matches => "%charge_open_and_failed_invoices_by_user_id%")
-        djs.count.should == 2
-        djs.map { |dj| YAML.load(dj.handler)['args'][0] }.should =~ [@invoice1.reload.site.user.id, @invoice2.reload.site.user.id]
-
-        @invoice1.should be_open
-        @invoice2.should be_failed
-      end
-
-      it "should delay charge_open_and_failed_invoices for the day after" do
-        Transaction.charge_all_open_and_failed_invoices
-        djs = Delayed::Job.where(:handler.matches => "%charge_all_open_and_failed_invoices%")
+        Delayed::Job.where(:handler.matches => "%charge_open_invoices_by_user_id%").count.should == 0
+        expect { Transaction.charge_open_invoices }.to change(Delayed::Job.where(:handler.matches => "%charge_open_invoices_by_user_id%"), :count).by(1)
+        djs = Delayed::Job.where(:handler.matches => "%charge_open_invoices_by_user_id%")
         djs.count.should == 1
-        djs.first.run_at.to_i.should == Time.now.utc.tomorrow.change(:hour => 1).to_i
+        djs.map { |dj| YAML.load(dj.handler)['args'][0] }.should =~ [@invoice1.reload.site.user.id]
       end
-    end # .charge_all_open_and_failed_invoices
 
-    describe ".charge_open_and_failed_invoices_by_user_id" do
-      use_vcr_cassette "ogone/visa_payment_2000_alias"
+      it "should delay charge_open_invoices for the day after" do
+        Delayed::Job.all.select { |dj| dj.name == "Class#charge_open_invoices" }.count.should == 0
+        Transaction.charge_open_invoices
+        djs = Delayed::Job.all
+        djs.select { |dj| dj.name == "Class#charge_open_invoices" }.count.should == 1
+        djs.select { |dj| dj.name == "Class#charge_open_invoices" }.first.run_at.should == Time.now.utc.tomorrow.change(:hour => 1)
+      end
+    end # .charge_open_invoices
+
+    describe ".charge_open_invoices_by_user_id" do
+      use_vcr_cassette "ogone/visa_payment_generic"
       before(:all) do
         Invoice.delete_all
-        @invoice1 = Factory(:invoice, state: 'open')
-        @invoice2 = Factory(:invoice, state: 'failed')
+        @user     = Factory(:user)
+        @site1    = Factory(:site, user: @user)
+        @site2    = Factory(:site, user: @user)
+        @invoice1 = Factory(:invoice, site: @site1, state: 'open')
+        @invoice2 = Factory(:invoice, site: @site2, state: 'failed')
       end
 
       it "should delay invoice charging for open and failed invoices" do
         @invoice1.reload.should be_open
-        Transaction.should_receive(:charge_by_invoice_ids).with(@invoice1.user.invoices.open_or_failed.map(&:id)).and_return(an_instance_of(Transaction))
-        Transaction.charge_open_and_failed_invoices_by_user_id(@invoice1.site.user.id)
+        @invoice2.reload.should be_failed
+        Transaction.should_receive(:charge_by_invoice_ids).with([@invoice1.id]).and_return(an_instance_of(Transaction))
+        Transaction.charge_open_invoices_by_user_id(@user.id)
       end
-    end # .charge_open_and_failed_invoices_of_user
+
+      it "should delay invoice charging for open and failed invoices" do
+        @invoice1.reload.should be_open
+        @invoice2.reload.should be_failed
+        Transaction.charge_open_invoices_by_user_id(@user.id)
+        @invoice1.reload.should be_paid
+        @invoice2.reload.should be_failed
+      end
+    end # .charge_open_invoices_by_user_id
 
     describe ".charge_by_invoice_ids" do
       context "with a new credit card given through options[:credit_card]" do

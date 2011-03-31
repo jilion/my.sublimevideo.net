@@ -52,6 +52,7 @@ class Site < ActiveRecord::Base
   scope :not_billable,  lambda { where({ :state.ne => 'active' } | ({ :state => 'active' } & ({ :plan_id.in => Plan.free_plans.map(&:id), :next_cycle_plan_id => nil } | { :next_cycle_plan_id => Plan.dev_plan }))) }
   scope :to_be_renewed, lambda { where(:plan_cycle_ended_at.lt => Time.now.utc, :pending_plan_id => nil) }
   scope :refundable,    lambda { where(:first_paid_plan_started_at.gte => 30.days.ago, :refunded_at => nil) }
+  scope :refunded,      lambda { where(:state => 'archived', :refunded_at.ne => nil) }
 
   scope :in_paid_plan, lambda { joins(:plan).merge(Plan.paid_plans) }
 

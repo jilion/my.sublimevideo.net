@@ -87,7 +87,7 @@ class Invoice < ActiveRecord::Base
   end
 
   def self.total_revenue
-    self.paid.joins(:site).where(:site => { :refunded_at => nil }).sum(:amount)
+    self.paid.sum(:amount)
   end
 
   # ====================
