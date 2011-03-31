@@ -3,7 +3,7 @@ class InvoicesController < ApplicationController
 
   # GET /sites/:site_id/invoices
   def index
-    @site = current_user.sites.find_by_token!(params[:site_id])
+    @site = current_user.sites.not_archived.find_by_token!(params[:site_id])
     @invoices = @site.invoices
     render :index, :layout => 'application'
   end
@@ -16,7 +16,7 @@ class InvoicesController < ApplicationController
 
   # PUT /invoices/:site_id/retry
   def retry
-    @site = current_user.sites.find_by_token!(params[:site_id])
+    @site = current_user.sites.not_archived.find_by_token!(params[:site_id])
     @invoices = @site.invoices.open_or_failed
 
     if @invoices.present?
@@ -24,7 +24,7 @@ class InvoicesController < ApplicationController
       if transaction.paid?
         flash[:notice] = t("site.invoices.retry_succeed")
       else
-        flash[:alert] = t("transaction.errors.#{transaction.i18n_error_key}")
+        flash[:alert] = t("transaction.errors.#{transaction.state}")
       end
     else
       flash[:notice] = t("site.invoices.no_invoices_to_retry")

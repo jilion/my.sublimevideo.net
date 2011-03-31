@@ -45,11 +45,15 @@ class SitesController < ApplicationController
     respond_with(@site) do |format|
       if @site.save # will create invoice and charge...
         if @site.transaction.try(:waiting_d3d?)
+          flash[:notice] = ""
+          flash[:alert] = ""
           format.html { render :text => @site.transaction.error }
         else
           format.html { redirect_to :sites, notice_and_alert_from_transaction(@site.transaction) }
         end
       else
+        flash[:notice] = ""
+        flash[:alert] = ""
         format.html { render :new }
       end
     end
@@ -76,7 +80,7 @@ class SitesController < ApplicationController
 
   # GET /sites/:id/state
   def state
-    @site = current_user.sites.find(params[:id])
+    @site = current_user.sites.not_archived.find(params[:id])
     respond_with(@site) do |format|
       format.js
       format.html { redirect_to :sites }
@@ -108,7 +112,7 @@ private
   end
 
   def find_by_token!
-    @site = current_user.sites.find_by_token!(params[:id])
+    @site = current_user.sites.not_archived.find_by_token!(params[:id])
   end
 
 end

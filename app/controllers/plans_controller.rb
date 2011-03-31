@@ -29,6 +29,8 @@ class PlansController < ApplicationController
           format.html { redirect_to :sites, notice_and_alert_from_transaction(@site.transaction) }
         end
       else
+        flash[:notice] = ""
+        flash[:alert] = ""
         format.html { render :edit }
       end
     end
