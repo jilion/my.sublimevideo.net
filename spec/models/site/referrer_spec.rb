@@ -235,7 +235,7 @@ describe Site::Referrer do
       end
     end
 
-    # context "custom", focus: true do
+    # context "custom" do
     #   before(:all) do
     #     @site = Factory(:site, hostname: "j-14.com", extra_hostnames: nil, dev_hostnames: "localhost, 127.0.0.1", path: "", wildcard: false)
     #   end

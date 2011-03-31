@@ -545,7 +545,7 @@ describe User do
       end
     end
 
-    describe "#invoices_failed?", focus: true do
+    describe "#invoices_failed?" do
       before(:all) do
         @user = Factory(:user)
         @site = Factory(:site, user: @user)
@@ -556,7 +556,7 @@ describe User do
       its(:invoices_failed?) { should be_true }
     end
 
-    describe "#invoices_waiting?", focus: true do
+    describe "#invoices_waiting?" do
       before(:all) do
         @user = Factory(:user)
         @site = Factory(:site, user: @user)
@@ -567,7 +567,7 @@ describe User do
       its(:invoices_waiting?) { should be_true }
     end
 
-    describe "#invoices_open?", focus: true do
+    describe "#invoices_open?" do
       before(:all) do
         @user = Factory(:user)
         @site = Factory(:site, user: @user)
