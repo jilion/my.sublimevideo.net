@@ -3,12 +3,12 @@ usages = Stat::SiteUsage.timeline(@date_range_from, @date_range_to)
 
 graph = Graph.new do |g|
   g.option(chart: chart('timeline_usage'))
-  g.option(title: { text: "VPV per day, total and averages" })
+  g.option(title: { text: "Total video pageviews" })
   g.option(subtitle: usage_date_subtitle(@date_range_from, @date_range_to))
   g.option(legend: legend(width: 700))
   g.option(xAxis: x_axis(@date_range_from, @date_range_to))
   
-  g.raw_option(y_axis("Video-page views"))
+  g.raw_option(y_axis("Video pageviews"))
   g.raw_option(tooltip(formatter: %(
     var date  = "<strong>" + Highcharts.dateFormat("%B %e,  %Y", this.x) + "</strong><br/><br/>";
     var label = "<strong>" + Highcharts.numberFormat(this.y, 0) + "</strong>";
@@ -19,15 +19,17 @@ graph = Graph.new do |g|
     else if (this.series.name == "Loader")
       label += "<br/>Loader / Player: " + Highcharts.numberFormat((this.y / (this.total - this.y)), 1);
 
-    return date + this.series.name + " hits:<br/>" + label;
+    return date + this.series.name + ":<br/>" + label;
   )))
   
   g.option(series: [
     serie(usages["loader_usage"], 'Loader', '#AA0', :visible => false),
-    serie(usages["invalid_usage_cached"], 'Invalid cached', '#F80'),
-    serie(usages["invalid_usage"], 'Invalid', '#F00'),
-    serie(usages["dev_usage_cached"], 'Dev cached', '#1C1'),
-    serie(usages["dev_usage"], 'Dev', '#3F3'),
+    serie(usages["invalid_usage_cached"], 'Invalid cached', '#F80', :visible => false),
+    serie(usages["invalid_usage"], 'Invalid', '#F00', :visible => false),
+    serie(usages["dev_usage_cached"], 'Dev cached', '#1C1', :visible => false),
+    serie(usages["dev_usage"], 'Dev', '#3F3', :visible => false),
+    serie(usages["extra_usage_cached"], 'Extra cached', '#08F'),
+    serie(usages["extra_main_usage"], 'Extra', '#00F'),
     serie(usages["main_usage_cached"], 'Main cached', '#08F'),
     serie(usages["main_usage"], 'Main', '#00F'),
 

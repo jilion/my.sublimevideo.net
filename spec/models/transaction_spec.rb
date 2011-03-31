@@ -474,7 +474,7 @@ describe Transaction do
               Transaction.charge_by_invoice_ids([@invoice1.id], { credit_card: @user.credit_card }).should be_true
               @invoice1.last_transaction.should be_waiting_d3d
               @invoice1.last_transaction.error.should == "<html>No HTML.</html>"
-              @invoice1.reload.should be_open
+              @invoice1.reload.should be_waiting
             end
           end
 
@@ -484,7 +484,7 @@ describe Transaction do
               Transaction.charge_by_invoice_ids([@invoice1.id]).should be_true
               @invoice1.last_transaction.should be_waiting_d3d
               @invoice1.last_transaction.error.should == "<html>No HTML.</html>"
-              @invoice1.reload.should be_open
+              @invoice1.reload.should be_waiting
             end
           end
         end
@@ -499,7 +499,7 @@ describe Transaction do
           before(:each) { Ogone.stub(:purchase).and_raise("Purchase error!") }
           it "should set transaction and invoices to failed state" do
             @invoice1.should be_open
-            Transaction.charge_by_invoice_ids([@invoice1.id], { credit_card: @user.credit_card }).should be_false
+            Transaction.charge_by_invoice_ids([@invoice1.id], { credit_card: @user.credit_card })
             @invoice1.last_transaction.should be_failed
             @invoice1.last_transaction.error.should == "Purchase error!"
             @invoice1.reload.should be_failed
@@ -510,7 +510,7 @@ describe Transaction do
           before(:each) { Ogone.stub(:purchase) { mock('response', :params => { "NCSTATUS" => "5", "STATUS" => "0", "NCERRORPLUS" => "invalid" }) } }
           it "should set transaction and invoices to failed state" do
             @invoice1.should be_open
-            Transaction.charge_by_invoice_ids([@invoice1.id], { credit_card: @user.credit_card }).should be_false
+            Transaction.charge_by_invoice_ids([@invoice1.id], { credit_card: @user.credit_card })
             @invoice1.last_transaction.should be_failed
             @invoice1.reload.should be_failed
           end
@@ -520,7 +520,7 @@ describe Transaction do
           before(:each) { Ogone.stub(:purchase) { mock('response', :params => { "NCSTATUS" => "3", "STATUS" => "93", "NCERRORPLUS" => "refused" }) } }
           it "should set transaction and invoices to failed state" do
             @invoice1.should be_open
-            Transaction.charge_by_invoice_ids([@invoice1.id], { credit_card: @user.credit_card }).should be_false
+            Transaction.charge_by_invoice_ids([@invoice1.id], { credit_card: @user.credit_card })
             @invoice1.reload.should be_failed
           end
         end
@@ -529,9 +529,9 @@ describe Transaction do
           before(:each) { Ogone.stub(:purchase) { mock('response', :params => { "NCSTATUS" => "0", "STATUS" => "51", "NCERRORPLUS" => "waiting" }) } }
           it "should not succeed nor fail transaction nor invoices" do
             @invoice1.should be_open
-            Transaction.charge_by_invoice_ids([@invoice1.id], { credit_card: @user.credit_card }).should be_true
-            @invoice1.last_transaction.should be_unprocessed
-            @invoice1.reload.should be_open
+            Transaction.charge_by_invoice_ids([@invoice1.id], { credit_card: @user.credit_card })
+            @invoice1.last_transaction.should be_waiting
+            @invoice1.reload.should be_waiting
           end
         end
 
@@ -539,9 +539,9 @@ describe Transaction do
           before(:each) { Ogone.stub(:purchase) { mock('response', :params => { "NCSTATUS" => "2", "STATUS" => "92", "NCERRORPLUS" => "unknown" }) } }
           it "should not succeed nor fail transaction nor invoices, with status 2" do
             @invoice1.should be_open
-            Transaction.charge_by_invoice_ids([@invoice1.id], { credit_card: @user.credit_card }).should be_true
-            @invoice1.last_transaction.should be_unprocessed
-            @invoice1.reload.should be_open
+            Transaction.charge_by_invoice_ids([@invoice1.id], { credit_card: @user.credit_card })
+            @invoice1.last_transaction.should be_waiting
+            @invoice1.reload.should be_waiting
           end
         end
 
@@ -549,33 +549,42 @@ describe Transaction do
 
     end # .charge_by_invoice_ids
 
-    describe ".refund_by_site_id" do
-      context "for a non-refundable site (the site could have been refunded in the meantime...)" do
-        before(:each) do
-          @site = Factory(:site, refunded_at: nil)
+    describe ".refund_by_site_id"  do
+      context "for a non-refundable site" do
+        describe "because of a not present refunded_at" do
+          it "should do nothing!" do
+            site = Factory(:site, refunded_at: nil)
+            expect { Transaction.refund_by_site_id(site.id) }.to_not change(Delayed::Job, :count)
+          end
         end
-
-        it "should do nothing!" do
-          expect { Transaction.refund_by_site_id(@site.id) }.to_not change(Delayed::Job, :count)
+        describe "because of a too old first_paid_plan_started_at" do
+          it "should do nothing!" do
+            site = Factory(:site, first_paid_plan_started_at: 31.days.ago, refunded_at: Time.now.utc)
+            expect { Transaction.refund_by_site_id(site.id) }.to_not change(Delayed::Job, :count)
+          end
+        end
+        describe "because of a non-archived site" do
+          it "should do nothing!" do
+            site = Factory(:site, first_paid_plan_started_at: 29.days.ago, refunded_at: Time.now.utc)
+            expect { Transaction.refund_by_site_id(site.id) }.to_not change(Delayed::Job, :count)
+          end
         end
       end
 
-      context "for a non-archived site (the site could have been refunded in the meantime...)" do
-        before(:each) do
-          @site = Factory(:site, state: 'archived')
-        end
-
-        it "should do nothing!" do
-          expect { Transaction.refund_by_site_id(@site.id) }.to_not change(Delayed::Job, :count)
-        end
-      end
-
-      context "for a refundable site with 1 paid transaction" do
+      context "for a refundable site with 1 paid transaction containing 2 invoices with 2 different sites" do
         before(:each) do
           @site = Factory(:site_with_invoice, state: 'archived', refunded_at: Time.now.utc)
+          Site.refunded.should include(@site)
+          @site.invoices.where(state: 'paid').count.should == 1
           transactions = Transaction.paid.joins(:invoices).where(:invoices => { :site_id => @site.id }).order(:id)
           transactions.count.should == 1
+
           @transaction = transactions.first
+          @transaction.invoices.where(state: 'paid').count.should == 1
+          @transaction.invoices << Factory(:invoice, site: Factory(:site), state: 'paid') # the transaction is with 2 invoices for 2 different sites
+          @transaction.save
+          @transaction.reload.invoices.where(state: 'paid').count.should == 2
+          @transaction.should be_paid
         end
 
         it "should delay one Ogone.credit" do
@@ -583,7 +592,7 @@ describe Transaction do
 
           djs = Delayed::Job.where(:handler.matches => "%credit%")
           djs.count.should == 1
-          YAML.load(djs.first.handler)['args'][0].should == @transaction.amount
+          YAML.load(djs.first.handler)['args'][0].should == @site.invoices.first.amount
           YAML.load(djs.first.handler)['args'][1].should == "#{@transaction.pay_id};SAL"
         end
       end
@@ -593,9 +602,14 @@ describe Transaction do
           @site = Factory(:site_with_invoice, state: 'archived', refunded_at: Time.now.utc)
           transactions = Transaction.paid.joins(:invoices).where(:invoices => { :site_id => @site.id }).order(:id)
           transactions.count.should == 1
-          first_transaction = Transaction.find(transactions.first)
-          first_transaction.update_attribute(:state, 'failed')
-          first_transaction.should be_failed
+
+          @transaction = Transaction.find(transactions.first.id)
+          @transaction.invoices.where(state: 'paid').count.should == 1
+          @transaction.reload.update_attribute(:state, 'failed')
+          @transaction.reload.should be_failed
+          @transaction.invoices.first.update_attribute(:state, 'failed')
+          @transaction.reload.invoices.where(state: 'paid').count.should == 0
+          @transaction.invoices.first.should be_failed
         end
 
         it "should delay one Ogone.credit" do
@@ -610,8 +624,24 @@ describe Transaction do
           VCR.use_cassette("ogone/visa_payment_generic") { @site.save_without_password_validation }
           transactions = Transaction.paid.joins(:invoices).where(:invoices => { :site_id => @site.id }).order(:id)
           transactions.count.should == 2
-          @transaction1 = transactions.first
-          @transaction2 = transactions.last
+          @transaction1 = Transaction.find(transactions.first.id)
+          @transaction1.reload.update_attribute(:amount, 3209999)
+          @transaction2 = Transaction.find(transactions.last.id)
+          @transaction2.reload.update_attribute(:amount, 23213)
+          
+          @transaction1.invoices.where(state: 'paid').count.should == 1
+          @transaction2.invoices.where(state: 'paid').count.should == 1
+          @transaction1.invoices << Factory(:invoice, site: Factory(:site), state: 'paid') # the transaction is with 2 invoices for 2 different sites
+          @transaction2.invoices << Factory(:invoice, site: Factory(:site), state: 'failed') # the transaction is with 2 invoices for 2 different sites
+          @transaction1.save
+          @transaction2.save
+          @transaction1.reload.invoices.where(state: 'paid').count.should == 2
+          @transaction2.reload.invoices.where(state: 'paid').count.should == 1
+          @transaction1.should be_paid
+          @transaction2.should be_paid
+          
+          @site.invoices.first.amount.should_not == @transaction1.amount
+          @site.invoices.last.amount.should_not == @transaction2.amount
         end
 
         it "should delay one Ogone.credit" do
@@ -619,7 +649,7 @@ describe Transaction do
 
           djs = Delayed::Job.where(:handler.matches => "%credit%")
           djs.count.should == 2
-          djs.map { |dj| YAML.load(dj.handler)['args'][0] }.should =~ [@transaction1.amount,  @transaction2.amount]
+          djs.map { |dj| YAML.load(dj.handler)['args'][0] }.should =~ [@transaction1.invoices.order(:id).first.amount, @transaction2.invoices.order(:id).first.amount]
           djs.map { |dj| YAML.load(dj.handler)['args'][1] }.should =~ ["#{@transaction1.pay_id};SAL", "#{@transaction2.pay_id};SAL"]
         end
       end
@@ -631,10 +661,19 @@ describe Transaction do
           VCR.use_cassette("ogone/visa_payment_generic") { @site.save_without_password_validation }
           transactions = Transaction.paid.joins(:invoices).where(:invoices => { :site_id => @site.id }).order(:id)
           transactions.count.should == 2
-          first_transaction = Transaction.find(transactions.first)
-          first_transaction.update_attribute(:state, 'failed')
-          first_transaction.should be_failed
-          @transaction2 = transactions.last
+          @transaction1 = Transaction.find(transactions.first.id)
+          @transaction1.reload.update_attribute(:amount, 3209999)
+          @transaction1.invoices.first.update_attribute(:state, 'failed')
+          @transaction2 = Transaction.find(transactions.last.id)
+          @transaction2.reload.update_attribute(:amount, 23213)
+          
+          @transaction1.invoices << Factory(:invoice, site: Factory(:site), state: 'paid') # the transaction is with 2 invoices for 2 different sites
+          @transaction2.invoices << Factory(:invoice, site: Factory(:site), state: 'failed') # the transaction is with 2 invoices for 2 different sites
+          @transaction1.save
+          @transaction2.save
+          
+          @transaction1.invoices.first.amount.should_not == @transaction1.amount
+          @transaction2.invoices.first.amount.should_not == @transaction2.amount
         end
 
         it "should delay one Ogone.credit" do
@@ -642,7 +681,7 @@ describe Transaction do
 
           djs = Delayed::Job.where(:handler.matches => "%credit%")
           djs.count.should == 1
-          YAML.load(djs.last.handler)['args'][0].should == @transaction2.amount
+          YAML.load(djs.last.handler)['args'][0].should == @transaction2.invoices.first.amount
           YAML.load(djs.last.handler)['args'][1].should == "#{@transaction2.pay_id};SAL"
         end
       end
@@ -718,6 +757,7 @@ describe Transaction do
       it "should wait_d3d with a STATUS == 46" do
         subject.should be_unprocessed
         subject.error.should be_nil
+
         subject.process_payment_response(@d3d_params)
         subject.reload.should be_waiting_d3d
         subject.error.should == "<html>No HTML.</html>"
@@ -725,18 +765,24 @@ describe Transaction do
 
       it "should succeed with a STATUS == 9" do
         subject.should be_unprocessed
+
         subject.process_payment_response(@success_params)
         subject.reload.should be_paid
       end
 
       it "should apply pending cc infos to the user" do
-        subject.user.pending_cc_type = 'master'
-        subject.user.pending_cc_last_digits = '9999'
-        subject.user.pending_cc_expire_on = 2.years.from_now.end_of_month.to_date
-        subject.save!(validate: false)
+        subject.user.cc_brand = 'master'
+        subject.user.cc_full_name = 'Remy Coutable'
+        subject.user.cc_number = '5399999999999999'
+        subject.user.cc_expiration_month = 2.years.from_now.month
+        subject.user.cc_expiration_year = 2.years.from_now.year
+        subject.user.cc_verification_value = 999
+        subject.user.save!
+        subject.user.reload.pending_cc_type.should == 'master'
+        subject.user.pending_cc_last_digits.should == '9999'
+        subject.user.pending_cc_expire_on.should == 2.years.from_now.end_of_month.to_date
 
         subject.process_payment_response(@success_params)
-
         subject.user.reload.cc_type.should == 'master'
         subject.user.cc_last_digits.should == '9999'
         subject.user.cc_expire_on.should == 2.years.from_now.end_of_month.to_date
@@ -744,41 +790,40 @@ describe Transaction do
 
       it "should save with a STATUS == 51" do
         subject.should be_unprocessed
+
         subject.process_payment_response(@waiting_params)
-        subject.reload.should be_unprocessed
+        subject.reload.should be_waiting
         subject.nc_status.should == 0
         subject.status.should == 51
         subject.error.should == "waiting"
-        subject.should be_waiting
       end
 
       it "should fail with a STATUS == 0" do
         subject.should be_unprocessed
+
         subject.process_payment_response(@invalid_params)
         subject.reload.should be_failed
         subject.nc_status.should == 5
         subject.status.should == 0
         subject.error.should == "invalid"
-        subject.should be_invalid
       end
 
       it "should clear pending cc infos of the user" do
-        user = User.find(subject.user)
-        user.pending_cc_type = 'master'
-        user.pending_cc_last_digits = '9999'
-        user.pending_cc_expire_on = 2.years.from_now.end_of_month.to_date
-        user.save!(validate: false)
-
+        subject.user.cc_brand = 'master'
+        subject.user.cc_full_name = 'Remy Coutable'
+        subject.user.cc_number = '5399999999999999'
+        subject.user.cc_expiration_month = 2.years.from_now.month
+        subject.user.cc_expiration_year = 2.years.from_now.year
+        subject.user.cc_verification_value = 999
+        subject.user.save!
         subject.user.reload.pending_cc_type.should == 'master'
         subject.user.pending_cc_last_digits.should == '9999'
         subject.user.pending_cc_expire_on.should == 2.years.from_now.end_of_month.to_date
 
         subject.process_payment_response(@invalid_params)
-
         subject.user.reload.cc_type.should == 'visa'
         subject.user.cc_last_digits.should == '1111'
         subject.user.cc_expire_on.should == 1.year.from_now.end_of_month.to_date
-
         subject.user.pending_cc_last_digits.should be_nil
         subject.user.pending_cc_expire_on.should be_nil
         subject.user.pending_cc_updated_at.should be_nil
@@ -786,6 +831,7 @@ describe Transaction do
 
       it "should fail with a STATUS == 93" do
         subject.should be_unprocessed
+
         subject.process_payment_response(@refused_params)
         subject.reload.should be_failed
         subject.nc_status.should == 3
@@ -795,18 +841,21 @@ describe Transaction do
       end
 
       it "should clear pending cc infos of the user" do
-        subject.user.pending_cc_type = 'master'
-        subject.user.pending_cc_last_digits = '9999'
-        subject.user.pending_cc_expire_on = 2.years.from_now.end_of_month.to_date
-        subject.save!(validate: false)
-
+        subject.user.cc_brand = 'master'
+        subject.user.cc_full_name = 'Remy Coutable'
+        subject.user.cc_number = '5399999999999999'
+        subject.user.cc_expiration_month = 2.years.from_now.month
+        subject.user.cc_expiration_year = 2.years.from_now.year
+        subject.user.cc_verification_value = 999
+        subject.user.save!
         subject.user.reload.pending_cc_type.should == 'master'
         subject.user.pending_cc_last_digits.should == '9999'
         subject.user.pending_cc_expire_on.should == 2.years.from_now.end_of_month.to_date
 
         subject.process_payment_response(@refused_params)
-
-        subject.user.reload.cc_type.should be_nil
+        subject.user.reload.cc_type.should == 'visa'
+        subject.user.cc_last_digits.should == '1111'
+        subject.user.cc_expire_on.should == 1.year.from_now.end_of_month.to_date
         subject.user.pending_cc_last_digits.should be_nil
         subject.user.pending_cc_expire_on.should be_nil
         subject.user.pending_cc_updated_at.should be_nil
@@ -815,26 +864,28 @@ describe Transaction do
       it "should fail with a STATUS == 92" do
         subject.should be_unprocessed
         Notify.should_receive(:send)
+
         subject.process_payment_response(@unknown_params)
-        subject.reload.should be_unprocessed
+        subject.reload.should be_waiting
         subject.nc_status.should == 2
         subject.status.should == 92
         subject.error.should == "unknown"
         subject.should be_unknown
       end
 
-      it "should clear pending cc infos of the user" do
-        subject.user.pending_cc_type = 'master'
-        subject.user.pending_cc_last_digits = '9999'
-        subject.user.pending_cc_expire_on = 2.years.from_now.end_of_month.to_date
-        subject.save!(validate: false)
-
+      it "should not clear pending cc infos of the user" do
+        subject.user.cc_brand = 'master'
+        subject.user.cc_full_name = 'Remy Coutable'
+        subject.user.cc_number = '5399999999999999'
+        subject.user.cc_expiration_month = 2.years.from_now.month
+        subject.user.cc_expiration_year = 2.years.from_now.year
+        subject.user.cc_verification_value = 999
+        subject.user.save!
         subject.user.reload.pending_cc_type.should == 'master'
         subject.user.pending_cc_last_digits.should == '9999'
         subject.user.pending_cc_expire_on.should == 2.years.from_now.end_of_month.to_date
 
         subject.process_payment_response(@unknown_params)
-
         subject.user.reload.pending_cc_type.should == 'master'
         subject.user.pending_cc_last_digits.should == '9999'
         subject.user.pending_cc_expire_on.should == 2.years.from_now.end_of_month.to_date
@@ -842,25 +893,30 @@ describe Transaction do
 
       describe "waiting once, and then succeed" do
         it "should save the transaction and then succeed it" do
-          subject.user.pending_cc_type = 'master'
-          subject.user.pending_cc_last_digits = '9999'
-          subject.user.pending_cc_expire_on = 2.years.from_now.end_of_month.to_date
-          subject.save!(validate: false)
-
+          subject.user.cc_brand = 'master'
+          subject.user.cc_full_name = 'Remy Coutable'
+          subject.user.cc_number = '5399999999999999'
+          subject.user.cc_expiration_month = 2.years.from_now.month
+          subject.user.cc_expiration_year = 2.years.from_now.year
+          subject.user.cc_verification_value = 999
+          subject.user.save!
+          subject.user.reload.pending_cc_type.should == 'master'
+          subject.user.pending_cc_last_digits.should == '9999'
+          subject.user.pending_cc_expire_on.should == 2.years.from_now.end_of_month.to_date
           subject.should be_unprocessed
+
           subject.process_payment_response(@waiting_params)
-          subject.reload.should be_unprocessed
+          subject.reload.should be_waiting
           subject.nc_status.should == 0
           subject.status.should == 51
           subject.error.should == "waiting"
           subject.should be_waiting
-
           subject.user.reload.pending_cc_type.should == 'master'
           subject.user.pending_cc_last_digits.should == '9999'
           subject.user.pending_cc_expire_on.should == 2.years.from_now.end_of_month.to_date
 
           subject.process_payment_response(@success_params)
-          subject.should be_paid
+          subject.reload.should be_paid
           subject.nc_status.should == 0
           subject.status.should == 9
           subject.error.should == "!"
@@ -876,25 +932,34 @@ describe Transaction do
 
       describe "unknown (2) once, and then succeed" do
         it "should save the transaction and then succeed it" do
+          subject.user.cc_brand = 'master'
+          subject.user.cc_full_name = 'Remy Coutable'
+          subject.user.cc_number = '5399999999999999'
+          subject.user.cc_expiration_month = 2.years.from_now.month
+          subject.user.cc_expiration_year = 2.years.from_now.year
+          subject.user.cc_verification_value = 999
+          subject.user.save!
+          subject.user.reload.pending_cc_type.should == 'master'
+          subject.user.pending_cc_last_digits.should == '9999'
+          subject.user.pending_cc_expire_on.should == 2.years.from_now.end_of_month.to_date
           subject.should be_unprocessed
           Notify.should_receive(:send)
+
           subject.process_payment_response(@unknown_params)
-          subject.reload.should be_unprocessed
+          subject.reload.should be_waiting
           subject.nc_status.should == 2
           subject.status.should == 92
           subject.error.should == "unknown"
           subject.should be_unknown
-
           subject.user.reload.pending_cc_type.should == 'master'
           subject.user.pending_cc_last_digits.should == '9999'
           subject.user.pending_cc_expire_on.should == 2.years.from_now.end_of_month.to_date
 
           subject.process_payment_response(@success_params)
-          subject.should be_paid
+          subject.reload.should be_paid
           subject.nc_status.should == 0
           subject.status.should == 9
           subject.error.should == "!"
-
           subject.user.reload.pending_cc_type.should be_nil
           subject.user.pending_cc_last_digits.should be_nil
           subject.user.pending_cc_expire_on.should be_nil
@@ -903,7 +968,6 @@ describe Transaction do
           subject.user.cc_expire_on.should == 2.years.from_now.end_of_month.to_date
         end
       end
-
     end
 
     describe "#description" do
@@ -924,12 +988,6 @@ describe Transaction do
       before(:all) do
         @site    = Factory(:site, user: @user, plan_id: @dev_plan.id)
         @invoice = Factory(:invoice, site: @site, state: 'open')
-      end
-
-      describe "#waiting?" do
-        subject { Factory(:transaction, invoices: [@invoice.reload], status: 51) }
-
-        it { should be_waiting}
       end
 
       describe "#invalid?" do
@@ -962,7 +1020,7 @@ describe Transaction do
       end
 
       describe "waiting" do
-        subject { Factory(:transaction, invoices: [@invoice.reload], status: 51) }
+        subject { Factory(:transaction, invoices: [@invoice.reload], state: 'waiting') }
 
         its(:i18n_error_key) { should == "waiting" }
       end

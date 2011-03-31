@@ -11,7 +11,7 @@ class Admin::AdminController < ApplicationController
       Time.utc(params[:date_range_from][:year].to_i, params[:date_range_from][:month].to_i, params[:date_range_from][:day].to_i)
     else
       # Time.utc(2010,9,14)
-      Time.utc(3.months.ago.to_i)
+      3.months.ago.utc
     end.midnight
 
     @date_range_to = if params[:date_range_to]

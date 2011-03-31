@@ -13,12 +13,8 @@ module Ogone
       gateway.purchase(*args)
     end
 
-    def credit(money, identification_or_credit_card, options = {})
-      refund = gateway.credit(money, identification_or_credit_card, options)
-      unless refund.success?
-        Notify.send("Refund failed for transaction with pay_id ##{identification_or_credit_card} (amount: #{money})")
-      end
-      refund
+    def credit(*args)
+      gateway.credit(*args)
     end
 
     def sha_out_keys

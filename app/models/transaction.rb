@@ -32,10 +32,10 @@ class Transaction < ActiveRecord::Base
   state_machine :initial => :unprocessed do
     event(:wait_d3d) { transition :unprocessed => :waiting_d3d }
     event(:wait)     { transition :unprocessed => :waiting }
-    event(:succeed)  { transition [:unprocessed, :waiting_d3d] => :paid }
-    event(:fail)     { transition [:unprocessed, :waiting_d3d] => :failed }
+    event(:succeed)  { transition [:unprocessed, :waiting_d3d, :waiting] => :paid }
+    event(:fail)     { transition [:unprocessed, :waiting_d3d, :waiting] => :failed }
 
-    after_transition :on => [:succeed, :fail, :wait, :wait_d3d], :do => :update_invoices
+    after_transition :on => [:succeed, :fail, :wait_d3d, :wait], :do => :update_invoices
 
     after_transition :on => :succeed, :do => :send_charging_succeeded_email
     after_transition :on => :fail, :do => :send_charging_failed_email
@@ -105,14 +105,16 @@ class Transaction < ActiveRecord::Base
   end
 
   def self.refund_by_site_id(site_id)
-    if site = Site.archived.where(:refunded_at.ne => nil).find_by_id(site_id)
-      Transaction.paid.joins(:invoices).where(:invoices => { :site_id => site_id }).each do |transaction|
-        Ogone.delay.credit(transaction.amount, "#{transaction.pay_id};SAL")
-        # begin
-        #   Ding.plan_removed(site.plan.title, site.plan.cycle, transaction.amount) if Rails.env.production?
-        # rescue
-        #   # do nothing
-        # end
+    if site = Site.refunded.find_by_id(site_id)
+      site.invoices.where(state: 'paid').each do |invoice| # use where(state: 'paid') so we get the invoices for sites with refunded_at present
+        begin
+          refund = Ogone.delay.credit(invoice.amount, "#{invoice.transactions.paid.first.pay_id};SAL")
+          unless refund.success?
+            Notify.send("Refund failed for invoice ##{invoice.reference} (amount: #{invoice.amount}, transaction order_id:##{invoice.transactions.paid.first.order_id})")
+          end
+        rescue => ex
+          Notify.send("Refund failed for invoice ##{invoice.reference} (amount: #{invoice.amount}, transaction order_id: ##{invoice.transactions.paid.first.order_id}", exception: ex)
+        end
       end
     end
   end
@@ -130,6 +132,7 @@ class Transaction < ActiveRecord::Base
     # Waiting for identification (3-D Secure)
     # We return the HTML to render. This HTML will redirect the user to the 3-D Secure form.
     when "46"
+      @ogone_response_infos.delete("NCERRORPLUS")
       self.error = Base64.decode64(payment_params["HTML_ANSWER"])
       self.wait_d3d
 
@@ -179,10 +182,6 @@ class Transaction < ActiveRecord::Base
     self
   end
 
-  def waiting?
-    status == 51
-  end
-
   def invalid?
     status == 0
   end
@@ -228,7 +227,7 @@ private
       self.pay_id    = @ogone_response_infos["PAYID"]
       self.nc_status = @ogone_response_infos["NCSTATUS"].to_i
       self.status    = @ogone_response_infos["STATUS"].to_i
-      self.error   ||= @ogone_response_infos["NCERRORPLUS"]
+      self.error     = @ogone_response_infos["NCERRORPLUS"] if @ogone_response_infos["NCERRORPLUS"] # use a specific field to store the 3dsecure code
     end
   end
 
