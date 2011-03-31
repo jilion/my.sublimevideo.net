@@ -154,7 +154,7 @@ describe Invoice do
         end
       end
 
-      describe "after_transition :on => :succeed, :do => :push_new_revenue" do
+      pending "after_transition :on => :succeed, :do => :push_new_revenue" do
         subject { Factory(:invoice, invoice_items: [Factory(:plan_invoice_item)]) }
         
         it "should delay on Ding class" do

@@ -56,7 +56,7 @@ class User < ActiveRecord::Base
 
   after_save   :newsletter_subscription
 
-  after_create :push_new_registration
+  # after_create :push_new_registration
 
   after_update :update_email_on_zendesk #, :charge_failed_invoices
 

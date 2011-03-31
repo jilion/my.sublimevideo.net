@@ -22,6 +22,7 @@ class Transaction < ActiveRecord::Base
   # =============
 
   before_save :set_fields_from_ogone_response
+  
   before_create :reject_paid_invoices, :set_user, :set_amount
 
   # =================
@@ -45,7 +46,7 @@ class Transaction < ActiveRecord::Base
   # ==========
 
   scope :failed, where(state: 'failed')
-  scope :paid, where(state: 'paid')
+  scope :paid,   where(state: 'paid')
 
   # =================
   # = Class Methods =
@@ -204,7 +205,7 @@ class Transaction < ActiveRecord::Base
   end
 
   def store_cc_infos(payment_method)
-    is_cc_alias = payment_method.is_a?(String) # not cc_alias
+    is_cc_alias = payment_method.is_a?(String) # it's a cc_alias
     self.cc_type        = is_cc_alias ? self.user.cc_type : payment_method.type
     self.cc_last_digits = is_cc_alias ? self.user.cc_last_digits : payment_method.last_digits
     self.cc_expire_on   = is_cc_alias ? self.user.cc_expire_on : Time.utc(payment_method.year, payment_method.month).end_of_month.to_date

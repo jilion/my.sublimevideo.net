@@ -1,11 +1,11 @@
 = title_and_content_header("Dashboard")
 
--# = render '/admin/shared/date_chooser'
+= render '/admin/shared/date_chooser'
 
--# #timeline.dashboard_timeline
--#   %h3 Usage
--#   - cache 'dashboard_timeline_usage', :expires_in => 10.minutes do
--#     = render 'timeline_usage'
+#timeline.dashboard_timeline
+  %h3 Usage
+  - cache 'dashboard_timeline_usage', :expires_in => 10.minutes do
+    = render 'timeline_usage'
 
 %h2= "Total revenue: #{display_amount(Invoice.total_revenue)}"
 
@@ -20,7 +20,7 @@
 
 -# #box_users.dashboard_box
 %h3 Users
-%p= "# of Users Signups: #{User.active.count}"
+%p= "# of users signups: #{User.active.count}"
 %p= "# of billable customers: #{User.billable.count}"
 
 -# - cache 'dashboard_box_users', :expires_in => 10.minutes do
@@ -29,9 +29,11 @@
 
 -# #box_sites.dashboard_box
 %h3 Sites
-%p= "# of LaunchPad sites: #{Site.dev.count}"
-%p= "# of Beta sites: #{Site.beta.count}"
-%p= "# of Paying sites: #{Site.in_paid_plan.count}"
+%p= "# of LaunchPad sites: #{Site.active.dev.count}"
+%p= "# of Beta sites: #{Site.active.beta.count}"
+%p= "# of Sponsored sites: #{Site.active.sponsored.count}"
+%p= "# of Custom sites: #{Site.active.custom.count}"
+%p= "# of Paying sites: #{Site.active.in_paid_plan.count}"
 
 -# - cache 'dashboard_box_sites', :expires_in => 10.minutes do
 -#   = render 'sites'

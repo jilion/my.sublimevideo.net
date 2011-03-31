@@ -44,7 +44,7 @@ class Invoice < ActiveRecord::Base
 
     before_transition :on => :succeed, :do => :set_paid_at
     before_transition :on => :fail,    :do => :set_last_failed_at
-    after_transition  :on => :succeed, :do => [:apply_pending_site_plan_changes, :update_user_invoiced_amount, :unsuspend_user, :push_new_revenue]
+    after_transition  :on => :succeed, :do => [:apply_pending_site_plan_changes, :update_user_invoiced_amount, :unsuspend_user]#, :push_new_revenue]
   end
 
   # ==========
@@ -54,9 +54,11 @@ class Invoice < ActiveRecord::Base
   scope :between, lambda { |started_at, ended_at| where(:created_at.gte => started_at, :created_at.lte => ended_at) }
 
   scope :open,           where(state: 'open')
+  scope :paid,           where(state: 'paid').joins(:site).where(:site => { :refunded_at => nil })
+  scope :refunded,       where(state: 'paid').joins(:site).where(:site => { :refunded_at.ne => nil })
   scope :failed,         where(state: 'failed')
+  scope :waiting,        where(state: 'waiting')
   scope :open_or_failed, where(state: %w[open failed])
-  scope :paid,           where(state: 'paid')
   scope :site_id,        lambda { |site_id| where(site_id: site_id) }
   scope :user_id,        lambda { |user_id| where(site_id: Site.where(user_id: user_id).map(&:id)) }
 
@@ -64,8 +66,8 @@ class Invoice < ActiveRecord::Base
   scope :by_amount,              lambda { |way='desc'| order(:amount.send(way)) }
   scope :by_invoice_items_count, lambda { |way='desc'| order(:invoice_items_count.send(way)) }
 
-  scope :by_state,    lambda { |way='desc'| order(:state.send(way)) }
-  scope :by_date,     lambda { |way='desc'| order(:created_at.send(way)) }
+  scope :by_state, lambda { |way='desc'| order(:state.send(way)) }
+  scope :by_date,  lambda { |way='desc'| order(:created_at.send(way)) }
 
   # search
   def self.search(q)

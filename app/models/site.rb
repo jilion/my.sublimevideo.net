@@ -35,9 +35,6 @@ class Site < ActiveRecord::Base
   has_one  :last_invoice, :class_name => "::Invoice", :order => :created_at.desc
   has_one  :last_paid_invoice, :class_name => "::Invoice", :conditions => { :state => 'paid' }, :order => :created_at.desc
 
-  # has_many :invoice_items, :through => :invoices
-  # has_many :transactions,  :through => :invoices
-
   # Mongoid associations
   def usages
     SiteUsage.where(:site_id => id)
@@ -51,8 +48,8 @@ class Site < ActiveRecord::Base
   # ==========
 
   # billing
-  scope :billable,      lambda { active.where({ :plan_id.not_in => Plan.where(:name => %w[beta dev]).map(&:id) }, { :next_cycle_plan_id => nil } | { :next_cycle_plan_id.ne => Plan.dev_plan.id }) }
-  scope :not_billable,  lambda { where({ :state.ne => 'active' } | ({ :state => 'active' } & ({ :plan_id.in => Plan.where(:name => %w[beta dev]).map(&:id), :next_cycle_plan_id => nil } | { :next_cycle_plan_id => Plan.dev_plan }))) }
+  scope :billable,      lambda { active.where({ :plan_id.in => Plan.paid_plans.map(&:id) }, { :next_cycle_plan_id => nil } | { :next_cycle_plan_id.ne => Plan.dev_plan.id }) }
+  scope :not_billable,  lambda { where({ :state.ne => 'active' } | ({ :state => 'active' } & ({ :plan_id.in => Plan.free_plans.map(&:id), :next_cycle_plan_id => nil } | { :next_cycle_plan_id => Plan.dev_plan }))) }
   scope :to_be_renewed, lambda { where(:plan_cycle_ended_at.lt => Time.now.utc, :pending_plan_id => nil) }
   scope :refundable,    lambda { where(:first_paid_plan_started_at.gte => 30.days.ago, :refunded_at => nil) }
 
@@ -65,6 +62,7 @@ class Site < ActiveRecord::Base
   scope :beta,                 joins(:plan).where(:plan => { :name => "beta" })
   scope :dev,                  joins(:plan).where(:plan => { :name => "dev" })
   scope :sponsored,            joins(:plan).where(:plan => { :name => "sponsored" })
+  scope :custom,               joins(:plan).where(:plan => { :name.matches => "custom%" })
   scope :active,               where(:state => 'active')
   scope :suspended,            where(:state => 'suspended')
   scope :archived,             where(:state => 'archived')
@@ -154,7 +152,7 @@ class Site < ActiveRecord::Base
     event(:suspend)   { transition :active => :suspended }
     event(:unsuspend) { transition :suspended => :active }
 
-    before_transition :on => :archive, :do => :set_archived_at
+    before_transition :on => :archive, :do => :set_archived_at # TODO: Cancel invoices that are not paid if site plan has not been activated yet
     # before_transition :on => :unsuspend, :do => :pend_plan_changes # TODO!!
 
     after_transition  :to => [:suspended, :archived], :do => :delay_remove_loader_and_license  # in site/templates
@@ -170,7 +168,7 @@ class Site < ActiveRecord::Base
     ranks = PageRankr.ranks(site.hostname)
     site.google_rank = ranks[:google]
     site.alexa_rank  = ranks[:alexa][:global] # [:us] if also returned
-    site.save!
+    site.save(validate: false) # don't validate for sites that are in_or_will_be_in_paid_plan? but when the user has no credit card (yet)
   end
 
   # Recurring task

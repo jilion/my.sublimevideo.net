@@ -13,8 +13,8 @@ class RefundsController < ApplicationController
     respond_to do |format|
       if @site.archived? || @site.without_password_validation { @site.archive }
         Site.transaction do
-          Transaction.delay.refund_by_site_id(@site.id)
           @site.touch(:refunded_at)
+          Transaction.delay.refund_by_site_id(@site.id)
         end
         format.html { redirect_to refunds_url, :notice => t('site.refund.refunded', hostname: @site.hostname) }
       else
