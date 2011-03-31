@@ -12,8 +12,8 @@
 -# #box_traffic.dashboard_box
 %h3 Traffic
 - player_hits = SiteUsage.between(31.days.ago.utc, Time.now.utc.yesterday).sum(:player_hits).to_i
-%p= "Last 30 days traffic: #{number_to_human(player_hits / 30, :significant => false, :precision => 3, :delimiter => "'")} video pageviews"
-%p= "Last 30 days average daily traffic: #{number_to_human(player_hits, :significant => false, :precision => 3, :delimiter => "'")} video pageviews"
+%p= "Last 30 days traffic: #{number_to_human(player_hits, :significant => false, :precision => 2, :delimiter => "'")} video pageviews"
+%p= "Last 30 days average daily traffic: #{number_to_human(player_hits / 30, :significant => false, :precision => 2, :delimiter => "'")} video pageviews"
 
 -# - cache 'dashboard_box_users', :expires_in => 10.minutes do
 -#   = render 'users'
