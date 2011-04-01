@@ -1,5 +1,5 @@
 <%
-usages = Stat::SiteUsage.timeline(@date_range_from, @date_range_to)
+usages = Stat::SiteUsage.timeline(@date_range_from, @date_range_to, { merge_cached: true })
 
 graph = Graph.new do |g|
   g.option(chart: chart('timeline_usage'))
@@ -24,19 +24,19 @@ graph = Graph.new do |g|
   
   g.option(series: [
     serie(usages["loader_usage"], 'Loader', '#AA0', :visible => false),
-    serie(usages["invalid_usage_cached"], 'Invalid cached', '#F80', :visible => false),
+    # serie(usages["invalid_usage_cached"], 'Invalid cached', '#F80', :visible => false),
     serie(usages["invalid_usage"], 'Invalid', '#F00', :visible => false),
-    serie(usages["dev_usage_cached"], 'Dev cached', '#1C1', :visible => false),
+    # serie(usages["dev_usage_cached"], 'Dev cached', '#1C1', :visible => false),
     serie(usages["dev_usage"], 'Dev', '#3F3', :visible => false),
-    serie(usages["extra_usage_cached"], 'Extra cached', '#08F'),
+    # serie(usages["extra_usage_cached"], 'Extra cached', '#08F'),
     serie(usages["extra_main_usage"], 'Extra', '#00F'),
-    serie(usages["main_usage_cached"], 'Main cached', '#08F'),
+    # serie(usages["main_usage_cached"], 'Main cached', '#08F'),
     serie(usages["main_usage"], 'Main', '#00F'),
 
     serie(evolutive_average_array(usages["total_loader_usage"]), 'AVG Loader', '#FF0', :type => 'line', :visible => false),
     serie(evolutive_average_array(usages["total_invalid_usage"]), 'AVG Invalid', '#FC3', :type => 'line', :visible => false),
     serie(evolutive_average_array(usages["total_dev_usage"]), 'AVG Dev', '#6F6', :type => 'line', :visible => false),
-    serie(evolutive_average_array(usages["total_main_usage"].zip(usages["main_usage_cached"]).map { |item| item.reduce(:+) }), 'AVG Main', '#0FF', :type => 'line'),
+    # serie(evolutive_average_array(usages["total_main_usage"].zip(usages["main_usage_cached"]).map { |item| item.reduce(:+) }), 'AVG Main', '#0FF', :type => 'line'),
 
     serie(usages["total_main_usage"], 'TOT Main', '', :type => 'line', :visible => false),
     serie(usages["total_all_usage"], 'TOT All', '', :type => 'line', :visible => false)

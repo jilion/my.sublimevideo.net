@@ -6,8 +6,7 @@
 = render '/admin/shared/date_chooser'
 %br.spacer
 
-- if @site.active?
-  = render partial: 'timeline_usage', locals: { site: @site }
+= render partial: 'timeline_usage', locals: { site: @site }
 
 %p
   = "State:"
