@@ -5,6 +5,9 @@ class Admin::InvoicesController < Admin::AdminController
 
   # filter
   has_scope :paid
+  has_scope :open
+  has_scope :waiting
+  has_scope :refunded
   has_scope :failed
   has_scope :user_id
   # sort
