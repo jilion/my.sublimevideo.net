@@ -588,12 +588,8 @@ describe Transaction do
         end
 
         it "should delay one Ogone.credit" do
-          expect { Transaction.refund_by_site_id(@site.id) }.to change(Delayed::Job, :count).by(1)
-
-          djs = Delayed::Job.where(:handler.matches => "%credit%")
-          djs.count.should == 1
-          YAML.load(djs.first.handler)['args'][0].should == @site.invoices.first.amount
-          YAML.load(djs.first.handler)['args'][1].should == "#{@transaction.pay_id};SAL"
+          Ogone.should_receive(:credit).with(@site.invoices.first.amount, "#{@transaction.pay_id};SAL")
+          Transaction.refund_by_site_id(@site.id)
         end
       end
 
@@ -613,7 +609,8 @@ describe Transaction do
         end
 
         it "should delay one Ogone.credit" do
-          expect { Transaction.refund_by_site_id(@site.id) }.to_not change(Delayed::Job, :count)
+          Ogone.should_not_receive(:credit)
+          Transaction.refund_by_site_id(@site.id)
         end
       end
 
@@ -645,12 +642,10 @@ describe Transaction do
         end
 
         it "should delay one Ogone.credit" do
-          expect { Transaction.refund_by_site_id(@site.id) }.to change(Delayed::Job, :count).by(2)
-
-          djs = Delayed::Job.where(:handler.matches => "%credit%")
-          djs.count.should == 2
-          djs.map { |dj| YAML.load(dj.handler)['args'][0] }.should =~ [@transaction1.invoices.order(:id).first.amount, @transaction2.invoices.order(:id).first.amount]
-          djs.map { |dj| YAML.load(dj.handler)['args'][1] }.should =~ ["#{@transaction1.pay_id};SAL", "#{@transaction2.pay_id};SAL"]
+          Ogone.should_receive(:credit).ordered.with(@transaction1.invoices.order(:id).first.amount, "#{@transaction1.pay_id};SAL")
+          Ogone.should_receive(:credit).ordered.with(@transaction2.invoices.order(:id).first.amount, "#{@transaction2.pay_id};SAL")
+          
+          Transaction.refund_by_site_id(@site.id)
         end
       end
 
@@ -677,12 +672,9 @@ describe Transaction do
         end
 
         it "should delay one Ogone.credit" do
-          expect { Transaction.refund_by_site_id(@site.id) }.to change(Delayed::Job, :count).by(1)
+          Ogone.should_receive(:credit).ordered.with(@transaction2.invoices.order(:id).first.amount, "#{@transaction2.pay_id};SAL")
 
-          djs = Delayed::Job.where(:handler.matches => "%credit%")
-          djs.count.should == 1
-          YAML.load(djs.last.handler)['args'][0].should == @transaction2.invoices.first.amount
-          YAML.load(djs.last.handler)['args'][1].should == "#{@transaction2.pay_id};SAL"
+          Transaction.refund_by_site_id(@site.id)
         end
       end
     end

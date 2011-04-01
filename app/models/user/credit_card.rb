@@ -218,16 +218,15 @@ module User::CreditCard
     #   The merchant can contact the acquirer helpdesk to know the exact status of the payment or can wait until we have updated the status in our system.
     #   The customer should not retry the authorization process since the authorization/payment might already have been accepted.
     when "52"
-      @i18n_notice_and_alert = { alert: I18n.t("transaction.errors.unknown") }
+      @i18n_notice_and_alert = { alert: I18n.t("credit_card.errors.unknown") }
       save # will apply pend_credit_card_info
       Notify.send("Credit card authorization for user ##{self.id} (PAYID: #{authorize_params["PAYID"]}) has an uncertain state, please investigate quickly!")
     
     else
-      @i18n_notice_and_alert = { alert: I18n.t("transaction.errors.unknown") }
+      @i18n_notice_and_alert = { alert: I18n.t("credit_card.errors.unknown") }
       save # will apply pend_credit_card_info
       Notify.send("Credit card authorization unknown status: #{authorize_params["STATUS"]}")
     end
-
   end
 
 private
