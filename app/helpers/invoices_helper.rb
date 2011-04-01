@@ -3,7 +3,7 @@ module InvoicesHelper
   def invoice_dates(invoice)
     if invoice.persisted?
       l(invoice.created_at, :format => :d_b_Y)
-    else#if invoice.site.plan_cycle_ended_at?
+    else
       l(invoice.site.plan_cycle_ended_at.tomorrow, :format => :d_b_Y)
     end
   end

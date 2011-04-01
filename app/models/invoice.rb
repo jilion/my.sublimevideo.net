@@ -60,21 +60,21 @@ class Invoice < ActiveRecord::Base
   scope :waiting,        where(state: 'waiting')
   scope :open_or_failed, where(state: %w[open failed])
   scope :site_id,        lambda { |site_id| where(site_id: site_id) }
-  scope :user_id,        lambda { |user_id| where(site_id: Site.where(user_id: user_id).map(&:id)) }
+  scope :user_id,        lambda { |user_id| joins(:user).where(:users => { :id => user_id }) }
 
   # sort
+  scope :by_date,                lambda { |way='desc'| order(:created_at.send(way)) }
   scope :by_amount,              lambda { |way='desc'| order(:amount.send(way)) }
+  scope :by_user,                lambda { |way='desc'| joins(:user).order(:"users.first_name".send(way), :"users.email".send(way)) }
   scope :by_invoice_items_count, lambda { |way='desc'| order(:invoice_items_count.send(way)) }
-
-  scope :by_state, lambda { |way='desc'| order(:state.send(way)) }
-  scope :by_date,  lambda { |way='desc'| order(:created_at.send(way)) }
 
   # search
   def self.search(q)
-    joins(:users).
+    joins(:site, :user).
     where(:lower.func(:email).matches % :lower.func("%#{q}%") |
           :lower.func(:first_name).matches % :lower.func("%#{q}%") |
           :lower.func(:last_name).matches % :lower.func("%#{q}%") |
+          :lower.func(:"sites.hostname").matches % :lower.func("%#{q}%") |
           :lower.func(:reference).matches % :lower.func("%#{q}%"))
   end
 
