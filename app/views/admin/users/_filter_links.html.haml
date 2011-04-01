@@ -1,8 +1,8 @@
 %p
   - users = User.scoped
-  = link_to "#{content_tag(:strong, User.active_and_billable.count)} Active & billable".html_safe, admin_users_path
+  = link_to "#{content_tag(:strong, User.select("DISTINCT users.id").active_and_billable.count)} Active & billable".html_safe, admin_users_path
   |
-  = link_to "#{content_tag(:strong, User.active_and_not_billable.count)} Active & not billable".html_safe, admin_users_path(:active_and_not_billable => true)
+  = link_to "#{content_tag(:strong, User.select("DISTINCT users.id").active_and_not_billable.count)} Active & not billable".html_safe, admin_users_path(:active_and_not_billable => true)
   |
   = link_to "#{content_tag(:strong, User.with_state(:suspended).count)} Suspended".html_safe, admin_users_path(:with_state => "suspended")
   |

@@ -20,7 +20,7 @@ class Admin::UsersController < Admin::AdminController
 
   # GET /admin/users
   def index
-    @users = User.select("DISTINCT(\"users\".*)").includes(:sites, :invoices)
+    @users = User.select("DISTINCT users.*").includes(:sites, :invoices)
     if params.keys.all? { |k| k =~ /^by_/ || %w[action controller search].include?(k) }
       @users = @users.active_and_billable
     end

@@ -118,8 +118,8 @@ class User < ActiveRecord::Base
     where(:lower.func(:email).matches % :lower.func("%#{q}%") |
           :lower.func(:first_name).matches % :lower.func("%#{q}%") |
           :lower.func(:last_name).matches % :lower.func("%#{q}%") |
-          :lower.func(:hostname).matches % :lower.func("%#{q}%") |
-          :lower.func(:dev_hostnames).matches % :lower.func("%#{q}%")).select("DISTINCT users.id, users.*")
+          :lower.func(:"sites.hostname").matches % :lower.func("%#{q}%") |
+          :lower.func(:"sites.dev_hostnames").matches % :lower.func("%#{q}%"))
   end
 
   # =================
