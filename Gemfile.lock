@@ -340,7 +340,7 @@ DEPENDENCIES
   array_stats (= 0.6.0)
   aws (= 2.3.34)
   bson_ext (= 1.2.4)
-  bundler (= 1.0.10)
+  bundler (= 1.0.11)
   capybara!
   carrierwave (= 0.5.3)
   configuration (= 1.2.0)
