@@ -34,7 +34,7 @@ module VoxcastCDN
         end
       end
       logs_names
-    rescue VoxelHAPI, EOFError, ParseException, Excon, Errno, OpenSSL
+    rescue VoxelHAPI, VoxelHAPIConnection, EOFError, ParseException, Excon, Errno, OpenSSL, IOError
       raise Error
     end
 
