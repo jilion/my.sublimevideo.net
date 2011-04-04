@@ -27,7 +27,7 @@ class CreditCardsController < ApplicationController
         if @user.d3d_html # 3-d secure identification needed
           format.html { render :text => @user.d3d_html, notice: "", alert: "" }
         else # authorized, waiting or unknown
-          format.html { redirect_to [:edit, :user_registration], notice_and_alert_from_cc_authorization(@user) }
+          format.html { redirect_to [:edit, :user_registration], notice_and_alert_from_user(@user) }
         end
       else # credit card not valid
         flash[:notice] = ""

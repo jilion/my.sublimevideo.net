@@ -174,8 +174,8 @@ private
 
   # before_save
   def set_first_paid_plan_started_at
-    if (plan_id_changed? || plan_started_at_changed?) && in_paid_plan?
-      self.first_paid_plan_started_at ||= plan_started_at
+    if first_paid_plan_started_at.blank? && (plan_id_changed? || plan_started_at_changed?) && in_paid_plan?
+      self.first_paid_plan_started_at = plan_started_at
     end
   end
 

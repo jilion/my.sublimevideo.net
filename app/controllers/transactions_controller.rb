@@ -45,7 +45,7 @@ private
     user = User.find(params["CHECK_CC_USER_ID"].to_i)
     
     user.process_cc_authorize_and_save(@sha_params)
-    redirect_to [:edit, :user_registration], notice_and_alert_from_cc_authorization(user)
+    redirect_to [:edit, :user_registration], notice_and_alert_from_user(user)
   end
 
   def process_payment

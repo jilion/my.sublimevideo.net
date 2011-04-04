@@ -55,7 +55,7 @@ private
     end
   end
 
-  def notice_and_alert_from_cc_authorization(user)
+  def notice_and_alert_from_user(user)
     user.i18n_notice_and_alert.present? ? { notice: "", alert: "" }.merge(user.i18n_notice_and_alert) : { notice: t('flash.credit_cards.update.notice'), alert: nil }
   end
 

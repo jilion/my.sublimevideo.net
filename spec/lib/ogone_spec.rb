@@ -91,7 +91,6 @@ describe Ogone do
           VCR.use_cassette "ogone/visa_payment_generic" do
             @purchase = Ogone.purchase(1000, @cc, :currency => 'USD')
           end
-          Notify.should_receive(:send).with "Refund failed for transaction with pay_id ##{@purchase.authorization} (amount: 3000)"
         end
         subject { Ogone.credit(3000, @purchase.authorization) } # amount bigger than the original sale
         
