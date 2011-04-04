@@ -235,14 +235,14 @@ describe Site::Referrer do
       end
     end
 
-    # context "custom" do
-    #   before(:all) do
-    #     @site = Factory(:site, hostname: "j-14.com", extra_hostnames: nil, dev_hostnames: "localhost, 127.0.0.1", path: "", wildcard: false)
-    #   end
-    #   subject { @site }
-    #
-    #   it { subject.referrer_type("http://quiz.j-14.com/newest").should == "invalid" }
-    # end
+    context "custom" do
+      before(:all) { @site = Factory(:site, hostname: "capped.tv", path: "lft-turbulence|mq") }
+      before(:each) { Notify.should_not_receive(:send) }
+      subject { @site }
+
+      it { subject.referrer_type("http://capped.tv/lft-turbulence|mq").should == "main" }
+      it { subject.referrer_type("http://www.optik-muncke.de/l%xc3%xb6sungen-sehen.html").should == "invalid" }
+    end
   end
 
 end
