@@ -15,6 +15,8 @@ Spork.prefork do
 
   require File.dirname(__FILE__) + "/../config/environment"
   require 'rspec/rails'
+  require 'capybara/rspec'
+  require 'capybara/rails'
   require 'vcr'
 
   VCR.config do |config|
@@ -77,7 +79,6 @@ Spork.each_run do
 
   # Factory need to be required each launch to prevent loading of all models
   require 'factory_girl'
-  require 'capybara/rspec'
   require Rails.root.join("spec/factories")
 
   Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }

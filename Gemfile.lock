@@ -5,16 +5,9 @@ GIT
     useragent (0.2.3)
 
 GIT
-  remote: git://github.com/guard/guard-spork.git
-  revision: 0c8ba01c8604dac44ea43fa9bc6dd94f28fc612e
-  specs:
-    guard-spork (0.1.6)
-      guard (>= 0.2.2)
-      spork (>= 0.8.4)
-
-GIT
   remote: git://github.com/jnicklas/capybara.git
-  revision: 97af9bd1c66fe54d1cb8c65b88518f1695331f5a
+  revision: 218510e64f2fa8c2a2ccd3a709897be5dbfd1b93
+  ref: 218510e64f2fa8c2a2ccd3a709897be5dbfd1b93
   specs:
     capybara (0.4.1.1)
       mime-types (>= 1.16)
@@ -177,6 +170,9 @@ GEM
       guard (~> 0.3)
     guard-rspec (0.2.0)
       guard (>= 0.2.2)
+    guard-spork (0.1.4)
+      guard (>= 0.2.2)
+      spork (>= 0.8.4)
     haml (3.0.25)
     hashie (0.4.0)
     heroku (1.19.1)
@@ -362,7 +358,7 @@ DEPENDENCIES
   guard-livereload
   guard-passenger
   guard-rspec
-  guard-spork!
+  guard-spork (= 0.1.4)
   haml (= 3.0.25)
   has_scope!
   heroku

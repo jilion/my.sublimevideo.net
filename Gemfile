@@ -96,14 +96,14 @@ group :test do
   gem 'guard'
   gem 'guard-bundler'
   gem 'guard-passenger'
-  gem 'guard-spork', :git => 'git://github.com/guard/guard-spork.git'
   gem 'guard-rspec'
+  gem 'guard-spork', '0.1.4'
   gem 'rspec-instafail'
   gem 'livereload'
   gem 'guard-livereload'
 
   gem 'shoulda'
-  gem 'capybara', :git => 'git://github.com/jnicklas/capybara.git'
+  gem 'capybara', :git => 'git://github.com/jnicklas/capybara.git', :ref => "218510e64f2fa8c2a2ccd3a709897be5dbfd1b93"
   gem 'webmock'
   gem 'vcr'
 
