@@ -34,7 +34,7 @@ module VoxcastCDN
         end
       end
       logs_names
-    rescue VoxelHAPI, VoxelHAPIConnection, EOFError, ParseException, Excon, Errno, OpenSSL, IOError
+    rescue VoxelHAPI, VoxelHAPIConnection, EOFError, REXML, Excon, Errno, OpenSSL, IOError
       raise Error
     end
 
@@ -44,7 +44,7 @@ module VoxcastCDN
       tempfile.write(Base64.decode64(xml['data']['content']))
       tempfile.flush
       tempfile
-    rescue VoxelHAPI, VoxelHAPIConnection, EOFError, ParseException, Excon, Errno, OpenSSL, IOError
+    rescue VoxelHAPI, VoxelHAPIConnection, EOFError, REXML, Excon, Errno, OpenSSL, IOError
       raise Error
     end
 
