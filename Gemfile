@@ -9,17 +9,17 @@ gem 'pg',                    '0.10.1'
 gem 'meta_where',            '1.0.4'
 gem 'bson_ext',              '1.2.4'
 gem 'mongo',                 '1.2.4'
-gem 'mongoid',               '~> 2.0.0.rc.8'
+gem 'mongoid',               '2.0.0'
 
 # Views
 gem 'haml',                  '3.0.25'
-gem 'kaminari',              '~> 0.10.4' # need to be before delayed_job
+gem 'kaminari',              '0.10.4'
 gem 'jammit',                '0.6.0'
 gem 'liquid',                '2.2.2'
 gem 'RedCloth',              '4.2.3'
 
 # Auth / invitations
-gem 'devise',                '1.1.8'
+gem 'devise',                '1.1.9'
 gem 'devise_invitable',      :git => 'git://github.com/rymai/devise_invitable.git'
 
 # Internals
@@ -28,8 +28,8 @@ gem 'rescue_me',             '0.1.0'
 gem 'configuration',         '1.2.0'
 gem 'libxml-ruby',           '1.1.3', :require => 'libxml'
 
-gem 'state_machine',         '0.10.1'
-gem 'paper_trail',           '2.0.0'
+gem 'state_machine',         '0.10.2'
+gem 'paper_trail',           '2.1.1'
 gem 'uniquify',              '0.1.0'
 
 gem 'responders',            '0.6.2'
@@ -56,7 +56,7 @@ gem 'settingslogic',         '2.0.6'
 gem 'array_stats',           '0.6.0'
 gem 'createsend',            '0.2.1' # Campaign Monitor
 
-gem 'hoptoad_notifier',      '2.4.8'
+gem 'hoptoad_notifier',      '2.4.9'
 gem 'prowl',                 '0.1.3'
 
 # Perf
