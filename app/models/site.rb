@@ -269,27 +269,29 @@ class Site < ActiveRecord::Base
   end
 
   def recommended_plan_name
-    usages = current_monthly_billable_usages(:drop_first_zeros => true)
-    if usages.size >= 5
-      name = if usages.sum < Plan.comet_player_hits && usages.mean < Plan.comet_daily_player_hits
-        "comet"
-      elsif usages.sum < Plan.planet_player_hits && usages.mean < Plan.planet_daily_player_hits
-        "planet"
-      elsif usages.sum < Plan.star_player_hits && usages.mean < Plan.star_daily_player_hits
-        "star"
-      elsif usages.sum < Plan.galaxy_player_hits && usages.mean < Plan.galaxy_daily_player_hits
-        "galaxy"
+    if in_beta_plan? || in_paid_plan?
+      usages = current_monthly_billable_usages(:drop_first_zeros => true)
+      if usages.size >= 5
+        name = if usages.sum < Plan.comet_player_hits && usages.mean < Plan.comet_daily_player_hits
+          "comet"
+        elsif usages.sum < Plan.planet_player_hits && usages.mean < Plan.planet_daily_player_hits
+          "planet"
+        elsif usages.sum < Plan.star_player_hits && usages.mean < Plan.star_daily_player_hits
+          "star"
+        elsif usages.sum < Plan.galaxy_player_hits && usages.mean < Plan.galaxy_daily_player_hits
+          "galaxy"
+        else
+          "custom"
+        end
+        # Don't recommend smaller plan
+        if plan.player_hits != 0 && plan.player_hits >= Plan.send("#{name}_player_hits")
+          nil
+        else
+          name
+        end
       else
-        "custom"
-      end
-      # Don't recommend smaller plan
-      if plan.player_hits != 0 && plan.player_hits >= Plan.send("#{name}_player_hits")
         nil
-      else
-        name
       end
-    else
-      nil
     end
   end
 
