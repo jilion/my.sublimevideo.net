@@ -182,22 +182,6 @@ class Transaction < ActiveRecord::Base
     self
   end
 
-  def invalid?
-    status == 0
-  end
-
-  def refused?
-    [2, 93].include?(status)
-  end
-
-  def unknown?
-    [52, 92].include?(status)
-  end
-
-  def i18n_error_key
-    %w[waiting invalid refused unknown].detect { |status| self.send("#{status}?") } || "failed"
-  end
-
   def description
     @description ||= "SublimeVideo Invoices: " + self.invoices.all.map { |invoice| "##{invoice.reference}" }.join(", ")
   end
@@ -254,7 +238,9 @@ private
         invoice.succeed
       when "failed"
         invoice.fail
-      when "waiting", "waiting_d3d"
+      when "waiting_d3d"
+        # do nothing and let the invoice in the open state (allowing the user to retry the payment after entering a valid credit card)
+      when "waiting"
         invoice.wait
       end
     end

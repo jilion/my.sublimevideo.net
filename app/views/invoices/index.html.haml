@@ -16,21 +16,29 @@
             - failed_invoices = @invoices.select { |invoice| invoice.failed? }
             %p.desc
               = raw t('site.invoices.count_failed_invoices_with_total_amount', count: failed_invoices.count, total_amount: display_amount(failed_invoices.sum(&:amount)))
+
           - if @site.invoices_open?
             - open_invoices = @invoices.select { |invoice| invoice.open? }
             %p.desc
               = raw t('site.invoices.count_open_invoices_with_total_amount', count: open_invoices.count, total_amount: display_amount(open_invoices.sum(&:amount)))
-          - if current_user.cc_expired?
+
+          - if !current_user.cc?
+            %p
+              = "Please"
+              = link_to "add a valid credit card", edit_credit_card_path, :class => "hl"
+              = "and then retry the payment here."
+          - elsif current_user.cc_expired?
             %p
               = t('user.credit_card.expired')
               = "Please"
               = link_to "update your credit card", edit_credit_card_path, :class => "hl"
-              = "and then come back here to retry the payment."
+              = "and then retry the payment here."
           - else
             %p
               = "If necessary"
               = link_to "update your credit card", edit_credit_card_path, :class => "hl"
               = "and then retry the payment via the button below."
+
             = form_for @site, :url => retry_site_invoices_path(site_id: @site.to_param), :html => { :method => 'put' } do |f|
               .entry= f.submit t('site.invoices.retry_invoices'), :class => "submit_dynamic_button"
 

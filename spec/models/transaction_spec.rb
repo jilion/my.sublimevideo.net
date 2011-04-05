@@ -474,7 +474,7 @@ describe Transaction do
               Transaction.charge_by_invoice_ids([@invoice1.id], { credit_card: @user.credit_card }).should be_true
               @invoice1.last_transaction.should be_waiting_d3d
               @invoice1.last_transaction.error.should == "<html>No HTML.</html>"
-              @invoice1.reload.should be_waiting
+              @invoice1.reload.should be_open
             end
           end
 
@@ -484,7 +484,7 @@ describe Transaction do
               Transaction.charge_by_invoice_ids([@invoice1.id]).should be_true
               @invoice1.last_transaction.should be_waiting_d3d
               @invoice1.last_transaction.error.should == "<html>No HTML.</html>"
-              @invoice1.reload.should be_waiting
+              @invoice1.reload.should be_open
             end
           end
         end
@@ -753,6 +753,8 @@ describe Transaction do
         subject.process_payment_response(@d3d_params)
         subject.reload.should be_waiting_d3d
         subject.error.should == "<html>No HTML.</html>"
+        @invoice1.reload.should be_open
+        @invoice2.reload.should be_failed
       end
 
       it "should succeed with a STATUS == 9" do
@@ -760,6 +762,8 @@ describe Transaction do
 
         subject.process_payment_response(@success_params)
         subject.reload.should be_paid
+        @invoice1.reload.should be_paid
+        @invoice2.reload.should be_paid
       end
 
       it "should apply pending cc infos to the user" do
@@ -788,6 +792,8 @@ describe Transaction do
         subject.nc_status.should == 0
         subject.status.should == 51
         subject.error.should == "waiting"
+        @invoice1.reload.should be_waiting
+        @invoice2.reload.should be_waiting
       end
 
       it "should fail with a STATUS == 0" do
@@ -798,6 +804,8 @@ describe Transaction do
         subject.nc_status.should == 5
         subject.status.should == 0
         subject.error.should == "invalid"
+        @invoice1.reload.should be_failed
+        @invoice2.reload.should be_failed
       end
 
       it "should clear pending cc infos of the user" do
@@ -829,7 +837,8 @@ describe Transaction do
         subject.nc_status.should == 3
         subject.status.should == 93
         subject.error.should == "refused"
-        subject.should be_refused
+        @invoice1.reload.should be_failed
+        @invoice2.reload.should be_failed
       end
 
       it "should clear pending cc infos of the user" do
@@ -862,7 +871,8 @@ describe Transaction do
         subject.nc_status.should == 2
         subject.status.should == 92
         subject.error.should == "unknown"
-        subject.should be_unknown
+        @invoice1.reload.should be_waiting
+        @invoice2.reload.should be_waiting
       end
 
       it "should not clear pending cc infos of the user" do
@@ -906,6 +916,8 @@ describe Transaction do
           subject.user.reload.pending_cc_type.should == 'master'
           subject.user.pending_cc_last_digits.should == '9999'
           subject.user.pending_cc_expire_on.should == 2.years.from_now.end_of_month.to_date
+          @invoice1.reload.should be_waiting
+          @invoice2.reload.should be_waiting
 
           subject.process_payment_response(@success_params)
           subject.reload.should be_paid
@@ -919,6 +931,8 @@ describe Transaction do
           subject.user.reload.cc_type.should == 'master'
           subject.user.cc_last_digits.should == '9999'
           subject.user.cc_expire_on.should == 2.years.from_now.end_of_month.to_date
+          @invoice1.reload.should be_paid
+          @invoice2.reload.should be_paid
         end
       end
 
@@ -942,10 +956,11 @@ describe Transaction do
           subject.nc_status.should == 2
           subject.status.should == 92
           subject.error.should == "unknown"
-          subject.should be_unknown
           subject.user.reload.pending_cc_type.should == 'master'
           subject.user.pending_cc_last_digits.should == '9999'
           subject.user.pending_cc_expire_on.should == 2.years.from_now.end_of_month.to_date
+          @invoice1.reload.should be_waiting
+          @invoice2.reload.should be_waiting
 
           subject.process_payment_response(@success_params)
           subject.reload.should be_paid
@@ -958,6 +973,8 @@ describe Transaction do
           subject.user.reload.cc_type.should == 'master'
           subject.user.cc_last_digits.should == '9999'
           subject.user.cc_expire_on.should == 2.years.from_now.end_of_month.to_date
+          @invoice1.reload.should be_paid
+          @invoice2.reload.should be_paid
         end
       end
     end
@@ -973,76 +990,6 @@ describe Transaction do
 
       it "should create a description with invoices references" do
         subject.description.should == "SublimeVideo Invoices: ##{@invoice1.reference}, ##{@invoice2.reference}"
-      end
-    end
-
-    describe "state methods" do
-      before(:all) do
-        @site    = Factory(:site, user: @user, plan_id: @dev_plan.id)
-        @invoice = Factory(:invoice, site: @site, state: 'open')
-      end
-
-      describe "#invalid?" do
-        subject { Factory(:transaction, invoices: [@invoice.reload], status: 0) }
-
-        it { should be_invalid }
-      end
-
-      describe "#refused?" do
-        [2, 93].each do |status|
-          subject { Factory(:transaction, invoices: [@invoice.reload], status: status) }
-
-          it { should be_refused }
-        end
-      end
-
-      describe "#unknown?" do
-        [52, 92].each do |status|
-          subject { Factory(:transaction, invoices: [@invoice.reload], status: status) }
-
-          it { should be_unknown }
-        end
-      end
-    end
-
-    describe "#i18n_error_key" do
-      before(:all) do
-        @site    = Factory(:site, user: @user, plan_id: @dev_plan.id)
-        @invoice = Factory(:invoice, site: @site, state: 'open')
-      end
-
-      describe "waiting" do
-        subject { Factory(:transaction, invoices: [@invoice.reload], state: 'waiting') }
-
-        its(:i18n_error_key) { should == "waiting" }
-      end
-
-      describe "invalid" do
-        subject { Factory(:transaction, invoices: [@invoice.reload], status: 0) }
-
-        its(:i18n_error_key) { should == "invalid" }
-      end
-
-      describe "refused" do
-        [2, 93].each do |status|
-          subject { Factory(:transaction, invoices: [@invoice.reload], status: status) }
-
-          its(:i18n_error_key) { should == "refused" }
-        end
-      end
-
-      describe "unknown" do
-        [52, 92].each do |status|
-          subject { Factory(:transaction, invoices: [@invoice.reload], status: status) }
-
-          its(:i18n_error_key) { should == "unknown" }
-        end
-      end
-
-      describe "failed by default" do
-        subject { Factory(:transaction, invoices: [@invoice.reload], status: nil) }
-
-        its(:i18n_error_key) { should == "failed" }
       end
     end
 

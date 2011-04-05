@@ -25,8 +25,8 @@ en:
   rollbacked_to_dev_today: "Your beta sites will be rollbacked to development-only sites today!"
 
   days_left_to_choose_a_plan:
-    one:                "1 day left to choose a plan for your beta sites and take advantage of your beta tester discount. <small>(If you don't upgrade your plan it will automatically be downgraded to the free LaunchPad plan and your player will only continue to work on local development domains.)</small>"
-    other:              "%{count} days left to choose a plan for your beta sites and take advantage of your beta tester discount. <small>(If you don't upgrade your plan it will automatically be downgraded to the free LaunchPad plan and your player will only continue to work on local development domains.)</small>"
+    one: "1 day left to choose a plan for your beta sites and take advantage of your beta tester discount. <small>(If you don't upgrade your plan it will automatically be downgraded to the free LaunchPad plan and your player will only continue to work on local development domains.)</small>"
+    other: "%{count} days left to choose a plan for your beta sites and take advantage of your beta tester discount. <small>(If you don't upgrade your plan it will automatically be downgraded to the free LaunchPad plan and your player will only continue to work on local development domains.)</small>"
   site:
     status:
       payment_issue: "Transaction error, click to review your invoice and retry the payment."
@@ -50,23 +50,24 @@ en:
       refund_unsuccessful: "The refund you requested for %{hostname} was unsuccessful."
       no_refund_possible: "You don't have any site eligible for 30 day money back guarantee."
     invoices:
-      count_failed_invoices_with_total_amount: "You have %{count} failed invoices for a total of <strong>%{total_amount}</strong>."
-      count_open_invoices_with_total_amount: "You have %{count} open invoices for a total of <strong>%{total_amount}</strong>."
+      count_failed_invoices_with_total_amount:
+        one: "You have 1 failed invoice for a total of <strong>%{total_amount}</strong>."
+        other: "You have %{count} failed invoices for a total of <strong>%{total_amount}</strong>."
+      count_open_invoices_with_total_amount:
+        one: "You have 1 open invoice for a total of <strong>%{total_amount}</strong>."
+        other: "You have %{count} open invoices for a total of <strong>%{total_amount}</strong>."
       retry_invoices: "Retry the payment"
       retry_succeed: "Invoices have been successfully paid. Thank you."
       no_invoices_to_retry: "You have no open or failed invoices to pay."
 
   credit_card:
     errors:
-      invalid: "Credit card information invalid or incomplete, please retry."
-      refused: "Credit card authorization refused, please retry."
-      waiting: "Credit card authorization will be processed soon."
-      unknown: "Credit card authorization is uncertain, we will get back to you shortly."
+      invalid: "The credit card information are invalid or incomplete, please retry."
+      refused: "The credit card has been refused, please retry."
+      waiting: "The credit card authorization will be processed soon."
+      unknown: "The credit card authorization is uncertain, we will get back to you shortly."
 
   transaction:
     errors:
-      invalid: "The payment information are invalid or incomplete, please retry."
-      refused: "The payment has been refused, please retry."
       waiting: "The payment will be processed soon."
-      unknown: "The payment is uncertain, we will get back to you shortly."
       failed:  "Transaction error, please review your invoices and retry the payment."

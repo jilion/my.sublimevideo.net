@@ -38,7 +38,7 @@ module Spec
             Factory(:user_no_cc, options[:user] || {})
           else
             attrs = Factory.attributes_for(:user)
-            user = Factory(:user_real_cc, (options[:user] || {}).merge({
+            user = Factory.build(:user_real_cc, (options[:user] || {}).merge({
               cc_brand: options[:cc_type],
               cc_full_name: "#{attrs[:first_name]} #{attrs[:last_name]}",
               cc_number: options[:cc_number],
@@ -47,6 +47,7 @@ module Spec
               cc_expiration_year: options[:cc_expire_on].year
             }))
             user.save!(validate: (options[:cc_expire_on] < Time.now ? false : true))
+            user.apply_pending_credit_card_info
             user
           end
           user.confirm! if !!options[:confirm]

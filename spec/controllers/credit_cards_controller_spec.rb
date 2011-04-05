@@ -102,20 +102,20 @@ describe CreditCardsController do
           end
 
           it "should redirect to /account/edit when authorization is waiting" do
-            authenticated_user.should_receive(:i18n_notice_and_alert).twice { { notice: I18n.t("transaction.errors.waiting") } }
+            authenticated_user.should_receive(:i18n_notice_and_alert).twice { { notice: I18n.t("credit_card.errors.waiting") } }
 
             put :update, :user => {}
-            flash[:notice].should == I18n.t("transaction.errors.waiting")
+            flash[:notice].should == I18n.t("credit_card.errors.waiting")
             flash[:alert].should == ""
             response.should redirect_to(edit_user_registration_path)
           end
 
           it "should render :edit template when authorization is unknown" do
-            authenticated_user.should_receive(:i18n_notice_and_alert).twice { { alert: I18n.t("transaction.errors.unknown") } }
+            authenticated_user.should_receive(:i18n_notice_and_alert).twice { { alert: I18n.t("credit_card.errors.unknown") } }
 
             put :update, :user => {}
             flash[:notice].should == ""
-            flash[:alert].should == I18n.t("transaction.errors.unknown")
+            flash[:alert].should == I18n.t("credit_card.errors.unknown")
             response.should redirect_to(edit_user_registration_path)
           end
         end
@@ -127,11 +127,26 @@ describe CreditCardsController do
         end
 
         it "should render :edit template when authorization is invalid" do
-          authenticated_user.should_receive(:i18n_notice_and_alert).twice { { alert: I18n.t("transaction.errors.invalid") } }
+          authenticated_user.should_receive(:i18n_notice_and_alert).twice { { alert: I18n.t("credit_card.errors.invalid") } }
 
           put :update, :user => {}
           flash[:notice].should == ""
-          flash[:alert].should == I18n.t("transaction.errors.invalid")
+          flash[:alert].should == I18n.t("credit_card.errors.invalid")
+          response.should redirect_to(edit_user_registration_path)
+        end
+      end
+
+      context "with a refused credit card" do
+        before(:each) do
+          authenticated_user.should_receive(:d3d_html) { nil }
+        end
+
+        it "should render :edit template when authorization is invalid" do
+          authenticated_user.should_receive(:i18n_notice_and_alert).twice { { alert: I18n.t("credit_card.errors.refused") } }
+
+          put :update, :user => {}
+          flash[:notice].should == ""
+          flash[:alert].should == I18n.t("credit_card.errors.refused")
           response.should redirect_to(edit_user_registration_path)
         end
       end
