@@ -1341,8 +1341,8 @@ describe Site do
         Factory(:plan, name: "comet",  player_hits: 3_000)
         Factory(:plan, name: "planet", player_hits: 50_000)
         Factory(:plan, name: "star",   player_hits: 200_000)
-        Factory(:plan, name: "galaxy", player_hits: 1_000_000)
-        Timecop.travel(1.month.ago) { @site = Factory(:site) }
+        @galaxy_plan = Factory(:plan, name: "galaxy", player_hits: 1_000_000)
+        Timecop.travel(15.days.ago) { @site = Factory(:site, plan_id: Factory(:beta_plan).id) }
       end
       subject { @site }
 
@@ -1417,6 +1417,20 @@ describe Site do
         end
 
         its(:recommended_plan_name) { should == "custom" }
+      end
+
+      context "with recommended plan lower than actual plan" do
+        before(:each) do
+          @site.unmemoize_all
+          @site.plan = @galaxy_plan
+          Factory(:site_usage, site_id: @site.id, day: 1.day.ago,  main_player_hits: 500)
+          Factory(:site_usage, site_id: @site.id, day: 2.days.ago, main_player_hits: 500)
+          Factory(:site_usage, site_id: @site.id, day: 3.days.ago, main_player_hits: 500)
+          Factory(:site_usage, site_id: @site.id, day: 4.days.ago, main_player_hits: 500)
+          Factory(:site_usage, site_id: @site.id, day: 5.days.ago, main_player_hits: 500)
+        end
+
+        its(:recommended_plan_name) { should be_nil }
       end
 
     end

@@ -271,7 +271,7 @@ class Site < ActiveRecord::Base
   def recommended_plan_name
     usages = current_monthly_billable_usages.select { |u| u > 0 }
     if usages.size >= 5
-      if usages.sum < Plan.comet_player_hits && usages.mean < Plan.comet_daily_player_hits
+      name = if usages.sum < Plan.comet_player_hits && usages.mean < Plan.comet_daily_player_hits
         "comet"
       elsif usages.sum < Plan.planet_player_hits && usages.mean < Plan.planet_daily_player_hits
         "planet"
@@ -281,6 +281,12 @@ class Site < ActiveRecord::Base
         "galaxy"
       else
         "custom"
+      end
+      # Don't recommend smaller plan
+      if plan.player_hits != 0 && plan.player_hits >= Plan.send("#{name}_player_hits")
+        nil
+      else
+        name
       end
     else
       nil
