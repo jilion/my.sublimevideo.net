@@ -1111,10 +1111,32 @@ describe Site do
       end
     end
 
-    describe "#current_monthly_billable_usages_sum & #current_percentage_of_plan_used" do
-      before(:all) do
-        @site = Factory(:site)
+    describe "#current_monthly_billable_usages" do
+      before(:all) { Timecop.travel(15.days.ago) { @site = Factory(:site) } }
+      before(:each) do
+        @site.unmemoize_all
+        Factory(:site_usage, site_id: @site.id, day: 1.day.ago,  main_player_hits: 4)
+        Factory(:site_usage, site_id: @site.id, day: 2.days.ago, main_player_hits: 3)
+        Factory(:site_usage, site_id: @site.id, day: 3.days.ago, main_player_hits: 2)
+        Factory(:site_usage, site_id: @site.id, day: 4.days.ago, main_player_hits: 0)
+        Factory(:site_usage, site_id: @site.id, day: 5.days.ago, main_player_hits: 1)
+        Factory(:site_usage, site_id: @site.id, day: 6.days.ago, main_player_hits: 0)
+        Factory(:site_usage, site_id: @site.id, day: 7.days.ago, main_player_hits: 0)
       end
+
+      it "should return all monthly usages by default" do
+        @site.current_monthly_billable_usages.should == [0, 0, 1, 0, 2, 3, 4]
+      end
+
+      it "should skip first zeros" do
+        @site.current_monthly_billable_usages(:drop_first_zeros => true).should == [1, 0, 2, 3, 4]
+      end
+
+    end
+
+
+    describe "#current_monthly_billable_usages_sum & #current_percentage_of_plan_used"do
+      before(:all) { @site = Factory(:site) }
       before(:each) do
         Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,1,30),
           main_player_hits:  1, main_player_hits_cached:  2,
@@ -1363,6 +1385,20 @@ describe Site do
         end
 
         its(:recommended_plan_name) { should be_nil }
+      end
+
+      context "with less than 5 days of usage (but with 0 between)" do
+        before(:each) do
+          @site.unmemoize_all
+          Factory(:site_usage, site_id: @site.id, day: 1.day.ago,  main_player_hits: 1000)
+          Factory(:site_usage, site_id: @site.id, day: 2.days.ago, main_player_hits: 1000)
+          Factory(:site_usage, site_id: @site.id, day: 3.days.ago, main_player_hits: 0)
+          Factory(:site_usage, site_id: @site.id, day: 4.days.ago, main_player_hits: 1000)
+          Factory(:site_usage, site_id: @site.id, day: 5.days.ago, main_player_hits: 1000)
+          Factory(:site_usage, site_id: @site.id, day: 6.days.ago, main_player_hits: 0)
+        end
+
+        its(:recommended_plan_name) { should == "planet" }
       end
 
       context "with regular usage and player_hits smaller than comet" do

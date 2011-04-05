@@ -269,7 +269,7 @@ class Site < ActiveRecord::Base
   end
 
   def recommended_plan_name
-    usages = current_monthly_billable_usages.select { |u| u > 0 }
+    usages = current_monthly_billable_usages(:drop_first_zeros => true)
     if usages.size >= 5
       name = if usages.sum < Plan.comet_player_hits && usages.mean < Plan.comet_daily_player_hits
         "comet"
@@ -305,8 +305,13 @@ class Site < ActiveRecord::Base
     self.save
   end
 
-  def current_monthly_billable_usages
-    usages.between(plan_month_cycle_started_at, plan_month_cycle_ended_at).map(&:billable_player_hits)
+  def current_monthly_billable_usages(options = {})
+    monthly_usages = usages.between(plan_month_cycle_started_at, plan_month_cycle_ended_at).asc(:day).map(&:billable_player_hits)
+    if options[:drop_first_zeros]
+      monthly_usages.drop_while { |usage| usage == 0 }
+    else
+      monthly_usages
+    end
   end
   memoize :current_monthly_billable_usages
 
