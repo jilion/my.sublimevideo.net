@@ -4,14 +4,21 @@
   %td.user
     %small
       = link_to invoice.user.full_name, [:admin, invoice.user], :title => "#{invoice.user.full_name} <#{invoice.user.email}>"
+      = "(beta)" if invoice.user.beta?
   %td.period
     %small
       = l(invoice.created_at, :format => :d_b_Y)
       = ", Refund. #{l(invoice.site.refunded_at, :format => :d_b_Y)}" if invoice.refunded?
   %td.site
     = link_to invoice.site.hostname, [:edit, :admin, invoice.site]
+    = "(#{invoice.site.state})" unless invoice.site.active?
   %td.invoice_items_count
-    = invoice.invoice_items.size
+    - if invoice.invoice_items_count > 1
+      = "upgrade"
+    - elsif invoice.invoice_items.first.started_at == invoice.site.first_paid_plan_started_at
+      = "creation"
+    - else
+      = "renewing"
   %td.amount
     = display_amount(invoice.amount)
   %td.state

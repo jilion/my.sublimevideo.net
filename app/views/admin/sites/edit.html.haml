@@ -3,10 +3,10 @@
 - else
   = title_and_content_header("#{@site.token}")
 
-= render '/admin/shared/date_chooser'
-%br.spacer
-
-= render partial: 'timeline_usage', locals: { site: @site }
+- if @site.plan_id?
+  = render '/admin/shared/date_chooser'
+  %br.spacer
+  = render partial: 'timeline_usage', locals: { site: @site }
 
 %p
   = "State:"
