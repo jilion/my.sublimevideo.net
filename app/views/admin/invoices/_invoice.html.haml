@@ -7,7 +7,7 @@
       = "(beta)" if invoice.user.beta?
   %td.period
     %small
-      = l(invoice.created_at, :format => :d_b_Y)
+      = l(invoice.paid_at || invoice.paid_at || invoice.created_at, :format => :d_b_Y)
       = ", Refund. #{l(invoice.site.refunded_at, :format => :d_b_Y)}" if invoice.refunded?
   %td.site
     = link_to invoice.site.hostname, [:edit, :admin, invoice.site]
