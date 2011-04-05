@@ -1,6 +1,8 @@
 require 'carrierwave/orm/mongoid'
 
 class Log
+  class Error < StandardError; end
+
   include Mongoid::Document
   include Mongoid::Timestamps
 
@@ -86,7 +88,7 @@ private
 
   # after_create
   def delay_parse
-    self.class.delay(:priority => 20).parse_log(id)
+    self.class.delay(:priority => 20, :run_at => 5.seconds.from_now).parse_log(id) # lets finish the upload
   end
 
   # Don't forget to delete this logs_file after using it, thx!
@@ -95,6 +97,8 @@ private
     logs_file = File.new(Rails.root.join("tmp/#{name}"), 'w', :encoding => 'ASCII-8BIT')
     logs_file.write(file.read)
     logs_file.flush
+  rescue Excon::Errors::NotFound
+    raise Error
   end
 
   def self.yml

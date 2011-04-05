@@ -15,10 +15,14 @@ module VoxcastCDN
 
     def purge(paths)
       client.voxel_voxcast_ondemand_content_purge_file(:device_id => yml[:device_id], :paths => parse_paths(paths))
+    rescue VoxelHAPI::Backend, VoxelHAPIConnection, EOFError, REXML, Excon, Errno::EPIPE, OpenSSL, IOError
+      raise Error
     end
 
     def purge_dir(paths)
       client.voxel_voxcast_ondemand_content_purge_directory(:device_id => yml[:device_id], :paths => parse_paths(paths))
+    rescue VoxelHAPI::Backend, VoxelHAPIConnection, EOFError, REXML, Excon, Errno::EPIPE, OpenSSL, IOError
+      raise Error
     end
 
     def verify(path)
@@ -34,7 +38,7 @@ module VoxcastCDN
         end
       end
       logs_names
-    rescue VoxelHAPI, VoxelHAPIConnection, EOFError, REXML, Excon, Errno, OpenSSL, IOError
+    rescue VoxelHAPI::Backend, VoxelHAPIConnection, EOFError, REXML, Excon, Errno::EPIPE, OpenSSL, IOError
       raise Error
     end
 
@@ -44,7 +48,7 @@ module VoxcastCDN
       tempfile.write(Base64.decode64(xml['data']['content']))
       tempfile.flush
       tempfile
-    rescue VoxelHAPI, VoxelHAPIConnection, EOFError, REXML, Excon, Errno, OpenSSL, IOError
+    rescue VoxelHAPI::Backend, VoxelHAPIConnection, EOFError, REXML, Excon, Errno::EPIPE, OpenSSL, IOError
       raise Error
     end
 
