@@ -289,21 +289,16 @@ describe Transaction do
     describe ".charge_open_invoices" do
       before(:all) do
         Invoice.delete_all
-        @user1 = Factory(:user)
-        @user2 = Factory(:user)
-        @user3 = Factory(:user)
-        @site1 = Factory(:site, user: @user1)
-        @site2 = Factory(:site, user: @user2)
-        @site3 = Factory(:site, user: @user3)
-        @invoice1 = Factory(:invoice, state: 'open', site: @site1)
-        @invoice2 = Factory(:invoice, state: 'failed', site: @site2)
-        @invoice3 = Factory(:invoice, state: 'paid', site: @site3)
+        @user     = Factory(:user)
+        @site     = Factory(:site, user: @user)
+        @invoice1 = Factory(:invoice, state: 'open', site: @site, renew: true)
+        @invoice2 = Factory(:invoice, state: 'open', site: @site, renew: false)
+        @invoice3 = Factory(:invoice, state: 'failed', site: @site)
+        @invoice4 = Factory(:invoice, state: 'paid', site: @site)
       end
-      before(:each) do
-        Delayed::Job.delete_all
-      end
+      before(:each) { Delayed::Job.delete_all }
 
-      it "should delay invoice charging for open and failed invoices by user" do
+      it "should delay invoice charging for open invoices which have the renew flag == true by user" do
         Delayed::Job.where(:handler.matches => "%charge_open_invoices_by_user_id%").count.should == 0
         expect { Transaction.charge_open_invoices }.to change(Delayed::Job.where(:handler.matches => "%charge_open_invoices_by_user_id%"), :count).by(1)
         djs = Delayed::Job.where(:handler.matches => "%charge_open_invoices_by_user_id%")
@@ -325,25 +320,29 @@ describe Transaction do
       before(:all) do
         Invoice.delete_all
         @user     = Factory(:user)
-        @site1    = Factory(:site, user: @user)
-        @site2    = Factory(:site, user: @user)
-        @invoice1 = Factory(:invoice, site: @site1, state: 'open')
-        @invoice2 = Factory(:invoice, site: @site2, state: 'failed')
+        @site     = Factory(:site, user: @user)
+        @invoice1 = Factory(:invoice, site: @site, state: 'open', renew: true)
+        @invoice2 = Factory(:invoice, site: @site, state: 'open', renew: false)
+        @invoice3 = Factory(:invoice, site: @site, state: 'failed')
       end
+      before(:each) { Delayed::Job.delete_all }
 
-      it "should delay invoice charging for open and failed invoices" do
+      it "should delay invoice charging for open invoices which have the renew flag == true" do
         @invoice1.reload.should be_open
-        @invoice2.reload.should be_failed
+        @invoice2.reload.should be_open
+        @invoice3.reload.should be_failed
         Transaction.should_receive(:charge_by_invoice_ids).with([@invoice1.id]).and_return(an_instance_of(Transaction))
         Transaction.charge_open_invoices_by_user_id(@user.id)
       end
 
-      it "should delay invoice charging for open and failed invoices" do
+      it "should set open invoices with renew flag == true to paid" do
         @invoice1.reload.should be_open
-        @invoice2.reload.should be_failed
+        @invoice2.reload.should be_open
+        @invoice3.reload.should be_failed
         Transaction.charge_open_invoices_by_user_id(@user.id)
         @invoice1.reload.should be_paid
-        @invoice2.reload.should be_failed
+        @invoice2.reload.should be_open
+        @invoice3.reload.should be_failed
       end
     end # .charge_open_invoices_by_user_id
 

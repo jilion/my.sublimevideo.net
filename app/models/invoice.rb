@@ -59,6 +59,7 @@ class Invoice < ActiveRecord::Base
   scope :failed,         where(state: 'failed')
   scope :waiting,        where(state: 'waiting')
   scope :open_or_failed, where(state: %w[open failed])
+  scope :not_paid,       where(:state.ne => 'paid')
   scope :site_id,        lambda { |site_id| where(site_id: site_id) }
   scope :user_id,        lambda { |user_id| joins(:user).where(:users => { :id => user_id }) }
 
@@ -88,6 +89,30 @@ class Invoice < ActiveRecord::Base
 
   def self.total_revenue
     self.paid.sum(:amount)
+  end
+
+  def self.delay_update_pending_dates_for_non_renew_and_not_paid_invoices
+    unless Delayed::Job.already_delayed?('%Invoice%update_pending_dates_for_non_renew_and_not_paid_invoices%')
+      delay(:priority => 2, :run_at => Time.now.utc.tomorrow.midnight).update_pending_dates_for_non_renew_and_not_paid_invoices
+    end
+  end
+
+  def self.update_pending_dates_for_non_renew_and_not_paid_invoices
+    Invoice.not_paid.where(renew: false).each do |invoice|
+      plan_invoice_item = invoice.invoice_items.first
+      new_started_at    = Time.now.utc.midnight
+      new_ended_at      = (new_started_at + invoice.site.advance_for_next_cycle_end(plan_invoice_item.item, new_started_at)).to_datetime.end_of_day
+
+      plan_invoice_item.started_at = new_started_at
+      plan_invoice_item.ended_at   = new_ended_at
+      plan_invoice_item.save
+
+      invoice.site.pending_plan_started_at       = new_started_at
+      invoice.site.pending_plan_cycle_started_at = new_started_at
+      invoice.site.pending_plan_cycle_ended_at   = new_ended_at
+      invoice.site.save
+    end
+    delay_update_pending_dates_for_non_renew_and_not_paid_invoices
   end
 
   # ====================
@@ -194,6 +219,7 @@ end
 
 
 
+
 # == Schema Information
 #
 # Table name: invoices
@@ -217,6 +243,7 @@ end
 #  updated_at            :datetime
 #  paid_at               :datetime
 #  last_failed_at        :datetime
+#  renew                 :boolean         default(FALSE)
 #
 # Indexes
 #

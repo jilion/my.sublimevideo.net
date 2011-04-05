@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110223160948) do
+ActiveRecord::Schema.define(:version => 20110405125244) do
 
   create_table "admins", :force => true do |t|
     t.string   "email",                               :default => "", :null => false
@@ -87,6 +87,7 @@ ActiveRecord::Schema.define(:version => 20110223160948) do
     t.datetime "updated_at"
     t.datetime "paid_at"
     t.datetime "last_failed_at"
+    t.boolean  "renew",                 :default => false
   end
 
   add_index "invoices", ["reference"], :name => "index_invoices_on_reference", :unique => true

@@ -187,8 +187,10 @@ class User < ActiveRecord::Base
     invoices.any? { |i| i.waiting? }
   end
 
-  def invoices_open?
-    invoices.any? { |i| i.open? }
+  def invoices_open?(options={})
+    scope = invoices
+    scope = scope.where(renew: options[:renew]) if options.key?(:renew)
+    scope.any? { |i| i.open? }
   end
 
   def full_name

@@ -63,14 +63,14 @@ class Transaction < ActiveRecord::Base
 
   def self.charge_open_invoices
     User.all.each do |user|
-      delay(:priority => 2).charge_open_invoices_by_user_id(user.id) if user.invoices_open?
+      delay(:priority => 2).charge_open_invoices_by_user_id(user.id) if user.invoices_open?(renew: true)
     end
     delay_charge_open_invoices
   end
 
   def self.charge_open_invoices_by_user_id(user_id)
     if user = User.find(user_id)
-      charge_by_invoice_ids(user.invoices.open.map(&:id)) if user.invoices_open?
+      charge_by_invoice_ids(user.invoices.open.where(renew: true).map(&:id)) if user.invoices_open?(renew: true)
     end
   end
 

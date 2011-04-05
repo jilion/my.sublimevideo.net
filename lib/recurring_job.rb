@@ -13,6 +13,7 @@ module RecurringJob
   ]
 
   billing_tasks = [
+    '%Invoice%update_pending_dates_for_non_renew_and_not_paid_invoices%',
     '%Site%renew_active_sites!%',
     '%Transaction%charge_open_invoices%'
   ]
@@ -30,6 +31,7 @@ module RecurringJob
       Log.delay_fetch_and_create_new_logs
 
       # Billing
+      Invoice.delay_update_pending_dates_for_non_renew_and_not_paid_invoices
       Site.delay_renew_active_sites!
       Transaction.delay_charge_open_invoices
 
