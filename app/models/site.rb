@@ -268,6 +268,25 @@ class Site < ActiveRecord::Base
     %w[web.me.com web.mac.com homepage.mac.com].include?(hostname) && !path?
   end
 
+  def recommended_plan_name
+    usages = current_monthly_billable_usages.select { |u| u > 0 }
+    if usages.size >= 5
+      if usages.sum < Plan.comet_player_hits && usages.mean < Plan.comet_daily_player_hits
+        "comet"
+      elsif usages.sum < Plan.planet_player_hits && usages.mean < Plan.planet_daily_player_hits
+        "planet"
+      elsif usages.sum < Plan.star_player_hits && usages.mean < Plan.star_daily_player_hits
+        "star"
+      elsif usages.sum < Plan.galaxy_player_hits && usages.mean < Plan.galaxy_daily_player_hits
+        "galaxy"
+      else
+        "custom"
+      end
+    else
+      nil
+    end
+  end
+
   def update_last_30_days_counters
     self.last_30_days_main_player_hits_total_count  = 0
     self.last_30_days_extra_player_hits_total_count = 0
@@ -280,15 +299,20 @@ class Site < ActiveRecord::Base
     self.save
   end
 
-  def current_monthly_billable_usage
-    usages.between(plan_month_cycle_started_at, plan_month_cycle_ended_at).to_a.sum { |su| su.billable_player_hits }
+  def current_monthly_billable_usages
+    usages.between(plan_month_cycle_started_at, plan_month_cycle_ended_at).map(&:billable_player_hits)
   end
-  memoize :current_monthly_billable_usage
+  memoize :current_monthly_billable_usages
+
+  def current_monthly_billable_usages_sum
+    current_monthly_billable_usages.sum
+  end
+  memoize :current_monthly_billable_usages_sum
 
   def current_percentage_of_plan_used
     if in_paid_plan?
-      percentage = [(current_monthly_billable_usage / plan.player_hits.to_f).round(2), 1].min
-      percentage == 0.0 && current_monthly_billable_usage > 0 ? 0.01 : percentage
+      percentage = [(current_monthly_billable_usages_sum / plan.player_hits.to_f).round(2), 1].min
+      percentage == 0.0 && current_monthly_billable_usages_sum > 0 ? 0.01 : percentage
     else
       0
     end

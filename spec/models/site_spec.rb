@@ -1111,7 +1111,7 @@ describe Site do
       end
     end
 
-    describe "#current_monthly_billable_usage & #current_percentage_of_plan_used" do
+    describe "#current_monthly_billable_usages_sum & #current_percentage_of_plan_used" do
       before(:all) do
         @site = Factory(:site)
       end
@@ -1144,8 +1144,8 @@ describe Site do
         end
         subject { @site }
 
-        its(:current_monthly_billable_usage)  { should == 5 + 6 + 7 + 8 }
-        its(:current_percentage_of_plan_used) { should == 26 / 100.0 }
+        its(:current_monthly_billable_usages_sum) { should == 5 + 6 + 7 + 8 }
+        its(:current_percentage_of_plan_used)     { should == 26 / 100.0 }
       end
 
       context "with monthly plan and overage" do
@@ -1159,8 +1159,8 @@ describe Site do
         end
         subject { @site }
 
-        its(:current_monthly_billable_usage)  { should == 9 + 10 + 11 + 12 }
-        its(:current_percentage_of_plan_used) { should == 1 }
+        its(:current_monthly_billable_usages_sum) { should == 9 + 10 + 11 + 12 }
+        its(:current_percentage_of_plan_used)     { should == 1 }
       end
 
       context "with yearly plan" do
@@ -1175,8 +1175,8 @@ describe Site do
         after(:all) { Timecop.return }
         subject { @site }
 
-        its(:current_monthly_billable_usage)  { should == 5 + 6 + 7 + 8 }
-        its(:current_percentage_of_plan_used) { should == 26 / 100.0 }
+        its(:current_monthly_billable_usages_sum) { should == 5 + 6 + 7 + 8 }
+        its(:current_percentage_of_plan_used)     { should == 26 / 100.0 }
       end
 
       context "with yearly plan (other date)" do
@@ -1191,8 +1191,8 @@ describe Site do
         after(:all) { Timecop.return }
         subject { @site }
 
-        its(:current_monthly_billable_usage)  { should == 1 + 2 + 3 + 4 }
-        its(:current_percentage_of_plan_used) { should == 10 / 1000.0 }
+        its(:current_monthly_billable_usages_sum) { should == 1 + 2 + 3 + 4 }
+        its(:current_percentage_of_plan_used)     { should == 10 / 1000.0 }
       end
     end
 
@@ -1335,6 +1335,92 @@ describe Site do
       end
     end
 
+    describe "#recommended_plan" do
+      before(:all) do
+        Plan.delete_all
+        Factory(:plan, name: "comet",  player_hits: 3_000)
+        Factory(:plan, name: "planet", player_hits: 50_000)
+        Factory(:plan, name: "star",   player_hits: 200_000)
+        Factory(:plan, name: "galaxy", player_hits: 1_000_000)
+        Timecop.travel(1.month.ago) { @site = Factory(:site) }
+      end
+      subject { @site }
+
+      context "with no usage" do
+
+        its(:recommended_plan_name) { should be_nil }
+      end
+
+      context "with less than 5 days of usage" do
+        before(:each) do
+          @site.unmemoize_all
+          Factory(:site_usage, site_id: @site.id, day: 1.day.ago,  main_player_hits: 1000)
+          Factory(:site_usage, site_id: @site.id, day: 2.days.ago, main_player_hits: 1000)
+          Factory(:site_usage, site_id: @site.id, day: 3.days.ago, main_player_hits: 1000)
+          Factory(:site_usage, site_id: @site.id, day: 4.days.ago, main_player_hits: 1000)
+          Factory(:site_usage, site_id: @site.id, day: 5.days.ago, main_player_hits: 0)
+          Factory(:site_usage, site_id: @site.id, day: 6.days.ago, main_player_hits: 0)
+        end
+
+        its(:recommended_plan_name) { should be_nil }
+      end
+
+      context "with regular usage and player_hits smaller than comet" do
+        before(:each) do
+          @site.unmemoize_all
+          Factory(:site_usage, site_id: @site.id, day: 1.day.ago,  main_player_hits: 50)
+          Factory(:site_usage, site_id: @site.id, day: 2.days.ago, main_player_hits: 50)
+          Factory(:site_usage, site_id: @site.id, day: 3.days.ago, main_player_hits: 50)
+          Factory(:site_usage, site_id: @site.id, day: 4.days.ago, main_player_hits: 50)
+          Factory(:site_usage, site_id: @site.id, day: 5.days.ago, main_player_hits: 50)
+          Factory(:site_usage, site_id: @site.id, day: 6.days.ago, main_player_hits: 50)
+        end
+
+        its(:recommended_plan_name) { should == "comet" }
+      end
+
+      context "with regular usage and player_hits greather than comet" do
+        before(:each) do
+          @site.unmemoize_all
+          Factory(:site_usage, site_id: @site.id, day: 1.day.ago,  main_player_hits: 1_000)
+          Factory(:site_usage, site_id: @site.id, day: 2.days.ago, main_player_hits: 1_000)
+          Factory(:site_usage, site_id: @site.id, day: 3.days.ago, main_player_hits: 1_000)
+          Factory(:site_usage, site_id: @site.id, day: 4.days.ago, main_player_hits: 1_000)
+          Factory(:site_usage, site_id: @site.id, day: 5.days.ago, main_player_hits: 1_000)
+          Factory(:site_usage, site_id: @site.id, day: 6.days.ago, main_player_hits: 1_000)
+        end
+
+        its(:recommended_plan_name) { should == "planet" }
+      end
+
+      context "with non regular usage and lower than player_hits but greather than average player_hits" do
+        before(:each) do
+          @site.unmemoize_all
+          Factory(:site_usage, site_id: @site.id, day: 1.day.ago,  main_player_hits: 12_000)
+          Factory(:site_usage, site_id: @site.id, day: 2.days.ago, main_player_hits: 12_000)
+          Factory(:site_usage, site_id: @site.id, day: 3.days.ago, main_player_hits: 12_000)
+          Factory(:site_usage, site_id: @site.id, day: 4.days.ago, main_player_hits: 12_000)
+          Factory(:site_usage, site_id: @site.id, day: 5.days.ago, main_player_hits: 1_000)
+        end
+
+        its(:recommended_plan_name) { should == "galaxy" }
+      end
+
+      context "with too much player_hits" do
+        before(:each) do
+          @site.unmemoize_all
+          Factory(:site_usage, site_id: @site.id, day: 1.day.ago,  main_player_hits: 100_000)
+          Factory(:site_usage, site_id: @site.id, day: 2.days.ago, main_player_hits: 100_000)
+          Factory(:site_usage, site_id: @site.id, day: 3.days.ago, main_player_hits: 100_000)
+          Factory(:site_usage, site_id: @site.id, day: 4.days.ago, main_player_hits: 100_000)
+          Factory(:site_usage, site_id: @site.id, day: 5.days.ago, main_player_hits: 100_000)
+        end
+
+        its(:recommended_plan_name) { should == "custom" }
+      end
+
+    end
+
   end # Instance Methods
 
 end
@@ -1389,4 +1475,3 @@ end
 #  index_sites_on_plan_id                                     (plan_id)
 #  index_sites_on_user_id                                     (user_id)
 #
-
