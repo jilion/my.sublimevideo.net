@@ -35,20 +35,44 @@ class Plan < ActiveRecord::Base
   # = Class Methods =
   # =================
 
-  def self.dev_plan
-    where(:name => "dev").first
-  end
+  class << self
+    extend ActiveSupport::Memoizable
 
-  def self.beta_plan
-    where(:name => "beta").first
-  end
+    def dev_plan
+      where(:name => "dev").first
+    end
+    memoize :dev_plan
 
-  def self.sponsored_plan
-    where(:name => "sponsored").first
-  end
+    def beta_plan
+      where(:name => "beta").first
+    end
+    memoize :beta_plan
 
-  def self.create_custom(attributes)
-    create(attributes.merge(:name => "custom#{custom_plans.count + 1}"))
+    def sponsored_plan
+      where(:name => "sponsored").first
+    end
+    memoize :sponsored_plan
+
+    def create_custom(attributes)
+      create(attributes.merge(:name => "custom#{custom_plans.count + 1}"))
+    end
+
+    STANDARD_NAMES.each do |name|
+      name_method = "#{name}_player_hits"
+      define_method(name_method) do
+        where(:name => name).first.player_hits
+      end
+      memoize name_method.to_sym
+    end
+
+    STANDARD_NAMES.each do |name|
+      name_method = "#{name}_daily_player_hits"
+      define_method(name_method) do
+        where(:name => name).first.daily_player_hits
+      end
+      memoize name_method.to_sym
+    end
+
   end
 
   # ====================

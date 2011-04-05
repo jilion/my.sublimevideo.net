@@ -15,7 +15,7 @@ module Site::UsageMonitoring
     delay_monitor_sites_usages
 
     Site.active.in_paid_plan.where(:first_plan_upgrade_required_alert_sent_at => nil).each do |site|
-      if site.current_monthly_billable_usage > site.plan.player_hits
+      if site.current_monthly_billable_usages_sum > site.plan.player_hits
         if site.days_since(site.first_paid_plan_started_at) >= 20 && site.percentage_of_days_over_daily_limit(60) > 0.5
           site.touch(:first_plan_upgrade_required_alert_sent_at)
           # UsageMonitoringMailer.plan_upgrade_required(site).deliver! # TODO BEFORE April 17
