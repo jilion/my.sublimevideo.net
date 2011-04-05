@@ -5,24 +5,23 @@ class Admin::InvoicesController < Admin::AdminController
 
   # filter
   has_scope :paid
+  has_scope :open
+  has_scope :waiting
+  has_scope :refunded
   has_scope :failed
   has_scope :user_id
+  has_scope :site_id
   # sort
-  has_scope :by_user
-  has_scope :by_date, :default_way
-  # has_scope :by_sites_count
-  has_scope :by_invoice_items_count
+  has_scope :by_date
   has_scope :by_amount
-  has_scope :by_state
-  has_scope :by_attempts
+  has_scope :by_user
+  has_scope :by_invoice_items_count
   # search
   has_scope :search
 
   # GET /admin/invoices
   def index
-    @invoices = Invoice.includes(:user)
-    @invoices = apply_scopes(@invoices)
-    @invoices.by_date unless params[:by_invoice_items_count]
+    @invoices = apply_scopes(Invoice.includes(:site, :user)).by_date
     respond_with(@invoices)
   end
 

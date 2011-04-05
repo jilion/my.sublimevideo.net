@@ -391,6 +391,20 @@ describe User do
       end
     end
 
+    pending "after_create :push_new_registration" do
+      it "should delay on Ding class" do
+        Ding.should_receive(:delay)
+        Factory(:user)
+      end
+      
+      it "should send a ding!" do
+        expect { Factory(:user) }.to change(Delayed::Job, :count)
+        djs = Delayed::Job.where(:handler.matches => "%signup%")
+        djs.count.should == 1
+        djs.first.name.should == 'Class#signup'
+      end
+    end
+
     describe "after_update :update_email_on_zendesk" do
       it "should not delay Module#put if email has not changed" do
         user.zendesk_id = 15483194
@@ -531,10 +545,56 @@ describe User do
       end
     end
 
+    describe "#invoices_failed?" do
+      before(:all) do
+        @user = Factory(:user)
+        @site = Factory(:site, user: @user)
+        Factory(:invoice, state: 'failed', site: @site)
+      end
+      subject { @user }
+
+      its(:invoices_failed?) { should be_true }
+    end
+
+    describe "#invoices_waiting?" do
+      before(:all) do
+        @user = Factory(:user)
+        @site = Factory(:site, user: @user)
+        Factory(:invoice, state: 'waiting', site: @site)
+      end
+      subject { @user }
+
+      its(:invoices_waiting?) { should be_true }
+    end
+
+    describe "#invoices_open?" do
+      before(:all) do
+        @user = Factory(:user)
+        @site = Factory(:site, user: @user)
+        Factory(:invoice, state: 'open', site: @site)
+      end
+      subject { @user }
+
+      its(:invoices_open?) { should be_true }
+    end
+
     describe "#support" do
       context "user has no site" do
         before(:all) do
           @user = Factory(:user)
+        end
+        subject { @user.reload }
+
+        it { subject.support.should == "launchpad" }
+      end
+
+      context "user has a site with no plan" do
+        before(:all) do
+          @user = Factory(:user)
+          @site = Factory(:site, user: @user)
+          @site.send(:write_attribute, :plan_id, nil)
+          @site.save(validate: false)
+          @site.plan_id.should be_nil
         end
         subject { @user.reload }
 

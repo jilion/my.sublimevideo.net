@@ -1,7 +1,7 @@
 <%
-usages = Stat::SiteUsage.timeline(@date_range_from, @date_range_to, { :site_ids => [site.id] })
+usages = Stat::SiteUsage.timeline(@date_range_from, @date_range_to, { :site_ids => [site.id], merge_cached: true })
 plans  = Plan.all
-chart_title = "VPV per day, total and averages for #{hostname_with_path_and_wildcard(site)}"
+chart_title = "Video pageviews for #{hostname_with_path_and_wildcard(site)}"
 
 graph = Graph.new do |g|
   g.option(chart: chart('timeline_usage'))
@@ -9,7 +9,7 @@ graph = Graph.new do |g|
   g.option(subtitle: usage_date_subtitle(@date_range_from, @date_range_to))
   g.option(legend: legend)
   g.option(xAxis: x_axis(@date_range_from, @date_range_to))
-  g.raw_option(y_axis("Video-page views"))
+  g.raw_option(y_axis("Video pageviews"))
   g.raw_option(tooltip(formatter: %(
     var date  = "<strong>" + Highcharts.dateFormat("%B %e,  %Y", this.x) + "</strong><br/><br/>";
     var label = "<strong>" + Highcharts.numberFormat(this.y, 0) + "</strong>";
@@ -20,35 +20,30 @@ graph = Graph.new do |g|
     else if (this.series.name == "Loader")
       label += "<br/>Loader / Player: " + Highcharts.numberFormat((this.y / (this.total - this.y)), 1);
 
-    return date + this.series.name + " hits:<br/>" + label;
+    return date + this.series.name + ":<br/>" + label;
   )))
   
   g.option(series: [
-    serie(usages["loader_usage"], 'Loader', '#AAAA00', visible: false),
-    serie(usages["invalid_usage_cached"], 'Invalid cached', '#FF8800', visible: false),
-    serie(usages["invalid_usage"], 'Invalid', '#FF0000', visible: false),
-    serie(usages["dev_usage_cached"], 'Dev cached', '#11CC11', visible: false),
-    serie(usages["dev_usage"], 'Dev', '#33FF33', visible: false),
-    serie(usages["extra_usage_cached"], 'Extra cached', '#11CC11', visible: false),
-    serie(usages["extra_usage"], 'Extra', '#33FF33', visible: false),
-    serie(usages["main_usage_cached"], 'Main cached', '#0088FF'),
-    serie(usages["main_usage"], 'Main', '#0000FF'),
+    serie(usages["loader_usage"], 'Loader', '#AA0', visible: false),
+    # serie(usages["invalid_usage_cached"], 'Invalid cached', '#F80', visible: false),
+    serie(usages["invalid_usage"], 'Invalid', '#F00', visible: false),
+    # serie(usages["dev_usage_cached"], 'Dev cached', '#1C1', visible: false),
+    serie(usages["dev_usage"], 'Dev', '#3F3', visible: false),
+    # serie(usages["extra_usage_cached"], 'Extra cached', '#1C1', visible: false),
+    serie(usages["extra_usage"], 'Extra', '#3F3', visible: false),
+    # serie(usages["main_usage_cached"], 'Main cached', '#08F'),
+    serie(usages["main_usage"], 'Main', '#00F'),
 
     serie(evolutive_average_array(usages["total_loader_usage"]), 'AVG Loader', '#FFFF00', type: 'line', visible: false),
     serie(evolutive_average_array(usages["total_invalid_usage"]), 'AVG Invalid', '#FFCC33', type: 'line', visible: false),
     serie(evolutive_average_array(usages["total_dev_usage"]), 'AVG Dev', '#66FF66', type: 'line', visible: false),
-    serie(evolutive_average_array(usages["total_main_usage"].zip(usages["main_usage_cached"]).map { |item| item.reduce(:+) }), 'AVG Main', '#00FFFF', :type => 'line'),
+    # serie(evolutive_average_array(usages["total_main_usage"].zip(usages["main_usage_cached"]).map { |item| item.reduce(:+) }), 'AVG Main', '#00FFFF', :type => 'line'),
 
     serie(usages["total_main_usage"], 'TOT Main', '', type: 'line', visible: false),
     serie(usages["total_all_usage"], 'TOT All', '', type: 'line', visible: false),
 
-    plans.inject([]) do |memo, plan|
-      memo << serie(Array.new(usages["main_usage"].size, plan.player_hits / 30), "AVG #{plan.name.humanize}", '', type: 'line', visible: false); memo
-    end,
-
-    plans.inject([]) do |memo, plan|
-      memo << serie(Array.new(usages["main_usage"].size, plan.player_hits), "LIM #{plan.name.humanize}", '', type: 'line', visible: false); memo
-    end
+    serie(Array.new(usages["main_usage"].size, site.plan.player_hits / 30), "AVG #{site.plan.title}", '', type: 'line', visible: false),
+    serie(Array.new(usages["main_usage"].size, site.plan.player_hits), "LIM #{site.plan.title}", '', type: 'line', visible: false)
   ].flatten)
   g.option(plotOptions: plot_options(@date_range_from))
   g.option(credits: credits)

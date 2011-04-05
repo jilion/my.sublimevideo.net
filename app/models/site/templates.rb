@@ -69,16 +69,6 @@ module Site::Templates
     license_hash.to_s.gsub(/:|\s/, '').gsub(/\=\>/, ':')
   end
 
-  def set_template(name)
-    template = ERB.new(File.new(Rails.root.join("app/templates/sites/#{name}.js.erb")).read)
-
-    tempfile = Tempfile.new(name, "#{Rails.root}/tmp")
-    tempfile.print template.result(binding)
-    tempfile.flush
-
-    self.send("#{name}=", tempfile)
-  end
-
   def purge_template(name)
     mapping = { loader: 'js', license: 'l' }
     raise "Unknown template name!" unless mapping.keys.include?(name.to_sym)

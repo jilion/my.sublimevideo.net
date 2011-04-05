@@ -3,10 +3,9 @@
 - else
   = title_and_content_header("#{@site.token}")
 
-= render '/admin/shared/date_chooser'
-%br.spacer
-
-- if @site.active?
+- if @site.plan_id?
+  = render '/admin/shared/date_chooser'
+  %br.spacer
   = render partial: 'timeline_usage', locals: { site: @site }
 
 %p
@@ -19,8 +18,7 @@
   = "| Updated #{time_ago_in_words(@site.updated_at)} ago"
 
 %p
-  = "Plan: "
-  %strong= @site.plan.title
+  %strong= @site.plan ? @site.plan.title : "–"
   - if @site.in_paid_plan?
     = "(" + l(@site.plan_cycle_started_at, :format => :d_b_Y) + ' - ' + l(@site.plan_cycle_ended_at, :format => :d_b_Y) + ")"
 
@@ -64,7 +62,7 @@
   = form_for [:admin, @site] do |f|
     = f.select :player_mode, Site::PLAYER_MODES
     = f.submit "Update player mode", :confirm => "Are you sure?"
-    
+
 - if (zeno? || mehdi?) && !@site.in_sponsored_plan?
   %h3 Sponsoring
   = form_for [:sponsor, :admin, @site] do |f|

@@ -30,6 +30,14 @@ module Site::Invoice
     invoices.any? { |i| i.failed? }
   end
 
+  def invoices_waiting?
+    invoices.any? { |i| i.waiting? }
+  end
+
+  def invoices_open?
+    invoices.any? { |i| i.open? }
+  end
+
   def in_beta_plan?
     plan && plan.beta_plan?
   end
@@ -63,7 +71,7 @@ module Site::Invoice
       Plan.find(id).dev_plan?
     end
   end
-  
+
   def refunded?
     refunded_at?
   end
@@ -166,8 +174,8 @@ private
 
   # before_save
   def set_first_paid_plan_started_at
-    if (plan_id_changed? || plan_started_at_changed?) && in_paid_plan?
-      self.first_paid_plan_started_at ||= plan_started_at
+    if first_paid_plan_started_at.blank? && (plan_id_changed? || plan_started_at_changed?) && in_paid_plan?
+      self.first_paid_plan_started_at = plan_started_at
     end
   end
 
@@ -178,7 +186,7 @@ private
       invoice = Invoice.build(site: self)
       invoice.save!
 
-      Transaction.charge_by_invoice_ids([invoice.id], charging_options || {}) if instant_charging?
+      @transaction = Transaction.charge_by_invoice_ids([invoice.id], charging_options || {}) if instant_charging?
 
     elsif pending_plan_id_changed? && pending_plan_id? && pending_plan.free_plan?
       # directly update for free plans

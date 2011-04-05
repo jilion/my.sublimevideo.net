@@ -1,7 +1,7 @@
 <%
 usages = Stat::SiteUsage.timeline(@date_range_from, @date_range_to, { site_ids: user.site_ids, merge_cached: true })
 plans  = Plan.all
-chart_title = "VPV per day, total and averages for #{user.full_name}"
+chart_title = "Video pageviews for #{user.full_name}"
 
 graph = Graph.new do |g|
   g.option(chart: chart('timeline_usage'))
@@ -9,17 +9,17 @@ graph = Graph.new do |g|
   g.option(subtitle: usage_date_subtitle(@date_range_from, @date_range_to))
   g.option(legend: legend(width: 600))
   g.option(xAxis: x_axis(@date_range_from, @date_range_to))
-  g.raw_option(y_axis("Video-page views"))
+  g.raw_option(y_axis("Video pageviews"))
   g.raw_option(tooltip(formatter: %(
     var date  = "<strong>" + Highcharts.dateFormat("%B %e,  %Y", this.x) + "</strong><br/><br/>";
     var label = "<strong>" + Highcharts.numberFormat(this.y, 0) + "</strong>";
-    
+
     if (["Invalid", "Dev", "Extra", "Main"].indexOf(this.series.name) != -1)
       label += " of " + Highcharts.numberFormat(this.total, 0) + " (" + Highcharts.numberFormat(this.percentage, 1) + "%)";
     else if (this.series.name == "Loader")
       label += "<br/>Loader / Player: " + Highcharts.numberFormat((this.y / (this.total - this.y)), 1);
-  
-    return date + this.series.name + " hits:<br/>" + label;
+
+    return date + this.series.name + ":<br/>" + label;
   )))
 
   g.option(series: [

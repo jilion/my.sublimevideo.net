@@ -157,7 +157,7 @@ def create_admins
 end
 
 def create_users(index=nil)
-  created_at_array = (Date.new(2010,9,14)..100.days.ago.to_date).to_a
+  created_at_array = (Date.new(2011,1,1)..100.days.ago.to_date).to_a
   disable_perform_deliveries do
     (index ? index.upto(index) : 0.upto(BASE_USERS.count - 1)).each do |i|
       user = User.new(
@@ -244,7 +244,7 @@ def create_sites
   custom_plans   = Plan.custom_plans.all
 
   subdomains = %w[www blog my git sv ji geek yin yang chi cho chu foo bar rem]
-  created_at_array = (Date.new(2010,9,14)..(1.month.ago - 2.days).to_date).to_a
+  created_at_array = (Date.new(2010,1,1)..(1.month.ago - 2.days).to_date).to_a
 
   require 'invoice_item/plan' # FIXME WHY OH WHY !??!!!
 
@@ -266,32 +266,34 @@ def create_sites
 end
 
 def create_site_usages
-  start_date = Date.new(2010,9,14)
+  start_date = Date.new(2011,1,1)
   end_date   = Date.today
   player_hits_total = 0
   Site.active.each do |site|
     p = (case rand(4)
     when 0
-      site.plan.player_hits/30.0 - (site.plan.player_hits/30.0 / 2)
-    when 1
       site.plan.player_hits/30.0 - (site.plan.player_hits/30.0 / 4)
+    when 1
+      site.plan.player_hits/30.0 - (site.plan.player_hits/30.0 / 8)
     when 2
-      site.plan.player_hits/30.0 + (site.plan.player_hits/30.0 / 4)
+      site.plan.player_hits/30.0 + (site.plan.player_hits/30.0 / 8)
     when 3
-      site.plan.player_hits/30.0 + (site.plan.player_hits/30.0 / 2)
+      site.plan.player_hits/30.0 + (site.plan.player_hits/30.0 / 4)
     end).to_i
 
     (start_date..end_date).each do |day|
       Timecop.travel(day) do
         loader_hits                = p * rand(100)
-        main_player_hits           = p * 0.6
-        main_player_hits_cached    = p * 0.4
+        main_player_hits           = p * rand # 0.6
+        main_player_hits_cached    = p * rand # 0.4
+        extra_player_hits           = p * rand # 0.6
+        extra_player_hits_cached    = p * rand # 0.4
         dev_player_hits            = rand(100)
         dev_player_hits_cached     = (dev_player_hits * rand).to_i
         invalid_player_hits        = rand(500)
         invalid_player_hits_cached = (invalid_player_hits * rand).to_i
-        player_hits = main_player_hits + main_player_hits_cached + dev_player_hits + dev_player_hits_cached + invalid_player_hits + invalid_player_hits_cached
-        requests_s3 = player_hits - (main_player_hits_cached + dev_player_hits_cached + invalid_player_hits_cached)
+        player_hits = main_player_hits + main_player_hits_cached + extra_player_hits + extra_player_hits_cached + dev_player_hits + dev_player_hits_cached + invalid_player_hits + invalid_player_hits_cached
+        requests_s3 = player_hits - (main_player_hits_cached + extra_player_hits_cached + dev_player_hits_cached + invalid_player_hits_cached)
 
         site_usage = SiteUsage.new(
           day: day.to_time.utc.midnight,
@@ -299,6 +301,8 @@ def create_site_usages
           loader_hits: loader_hits,
           main_player_hits: main_player_hits,
           main_player_hits_cached: main_player_hits_cached,
+          extra_player_hits: extra_player_hits,
+          extra_player_hits_cached: extra_player_hits_cached,
           dev_player_hits: dev_player_hits,
           dev_player_hits_cached: dev_player_hits_cached,
           invalid_player_hits: invalid_player_hits,

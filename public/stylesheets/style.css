@@ -252,14 +252,20 @@ body {
 }
 
 #sticky_notice ul li {
-  background:url(/images/embed/sticky_notice_bullet.png) no-repeat 0 50%;
-  padding:2px 0 2px 16px;
+  background:url(/images/embed/sticky_notice_bullet.png) no-repeat 0 7px;
+  padding:2px 0 6px 16px;
 }
 
 #sticky_notice a {
   font-weight:bold;
   color:#453513;
   border-bottom:1px solid #c6af79;
+}
+
+#sticky_notice ul li small {
+  display:block;
+  font-weight:400;
+  margin-top:2px;
 }
 
 #content h2 {
@@ -504,14 +510,17 @@ form .inline_errors span {
   text-shadow:rgba(0,0,0,0.3) 0 -1px 0;
 }
 
-form p.note, #content form label.note {
+form p.note, #content form label.note, #credit_card_summary p.note {
   display:block;
   padding:2px 0 2px 22px;
   margin-top:15px;
   font-size:13px;
   font-weight:600;
+  line-height:16px;
   background:url(/images/embed/note_icon.png) no-repeat;
 }
+
+#credit_card_summary p.note {margin-top:5px;}
 
 #content form label.note {
   margin:0 0 5px;
@@ -1153,6 +1162,13 @@ input.link_looks.delete {
   box-shadow:inset rgba(0,0,0,0.5) 1px 1px 0, inset #5b4564 1px 2px 0;
 }
 
+@-moz-document url-prefix() {
+  #content table.main th:first-child {
+    -moz-border-radius-topleft:0;
+    border-top-left-radius:0;
+  }
+}
+
 #content table.main th.status {
   width:18px;
   -webkit-border-top-right-radius:10px;
@@ -1161,6 +1177,13 @@ input.link_looks.delete {
   -webkit-box-shadow:inset rgba(0,0,0,0.5) -1px 1px 0, inset #5b4564 -1px 2px 0;
   -moz-box-shadow:inset rgba(0,0,0,0.5) -1px 1px 0, inset #5b4564 -1px 2px 0;
   box-shadow:inset rgba(0,0,0,0.5) -1px 1px 0, inset #5b4564 -1px 2px 0;
+}
+
+@-moz-document url-prefix() {
+  #content table.main th.status {
+    -moz-border-radius-topright:0;
+    border-top-right-radius:0;
+  }
 }
 
 #content table.main th.site {
@@ -1571,13 +1594,11 @@ input.link_looks.delete {
   background:url(/images/embed/sites/status_loading_indicator.gif) no-repeat center;
 }
 
-#content table.main td.status .icon.ok {
-  background:url(/images/embed/sites/status_ok.png) no-repeat center;
-}
+#content table.main td.status .icon.ok {background:url(/images/embed/sites/status_ok.png) no-repeat center}
 
-#content table.main td.status .icon.payment_issue {
-  background:url(/images/embed/alert_icon.png) no-repeat center;
-}
+#content table.main td.status .icon.payment_issue {background:url(/images/embed/alert_icon.png) no-repeat center}
+
+#content table.main td.status .icon.payment_waiting {background:url(/images/embed/warning_small_icon.png) no-repeat center}
 
 #content table.main td.status .info_box {
   width:100px;
@@ -1586,7 +1607,7 @@ input.link_looks.delete {
   right:auto;
 }
 
-#content table.main td.status .info_box.payment_issue {
+#content table.main td.status .info_box.payment_issue, #content table.main td.status .info_box.payment_waiting {
   top:-85px;
   left:-23px;
 }
@@ -2260,6 +2281,15 @@ ul#addons .checkbox_wrap input:focus:checked + label {background-position:0 -102
   border-bottom:1px solid #888;
 }
 
+#credit_card p.note_3d_secure {
+  width:440px;
+  font-size:12px;
+  margin:30px 0 0;
+  background:url(/images/embed/breakline.png) no-repeat -228px 0;
+  padding:15px 0 0;
+  line-height:20px;
+}
+
 #site .actions.center {
   text-align:center;
 }
@@ -2356,7 +2386,7 @@ ul.segmented_menu li.active a, ul.segmented_menu li a:active {
   background:-moz-linear-gradient(top, rgba(85,94,109,0.8), rgba(93,103,120,0.6));
   -moz-box-shadow: inset rgba(0,0,0,0.6) 0 1px 2px, rgba(255,255,255,0.5) 0 1px 0;
   -webkit-box-shadow: inset rgba(0,0,0,0.7) 0 1px 5px, rgba(255,255,255,0.5) 0 1px 0;
-  box-shadow: inset rgba(255,255,255,0.6) 0 1px 2px, rgba(255,255,255,0.5) 0 1px 0;
+  box-shadow: inset rgba(0,0,0,0.7) 0 1px 2px, rgba(255,255,255,0.5) 0 1px 0;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -2788,7 +2818,7 @@ nav.pagination span.gap {
   margin-top:10px;
 }
 
-#credit_card_summary p.master {background:url(/images/embed/credit_cards/master.png) no-repeat;}
+#credit_card_summary p.master {background:url(/images/embed/credit_cards/mastercard.png) no-repeat;}
 
 #credit_card_summary p.visa {background:url(/images/embed/credit_cards/visa.png) no-repeat;}
 

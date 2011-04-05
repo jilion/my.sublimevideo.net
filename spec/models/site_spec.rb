@@ -62,7 +62,6 @@ describe Site do
     it { should belong_to :user }
     it { should belong_to :plan }
     it { should have_many :invoices }
-    it { should have_many(:invoice_items).through(:invoices) }
 
     describe "last_invoice" do
       subject { Factory(:site_with_invoice, plan_id: Factory(:plan, price: 123456).id) }
@@ -156,6 +155,17 @@ describe Site do
       end
 
       specify { Site.refundable.all.should == [@site_refundable1, @site_refundable2] }
+    end
+
+    describe "#refunded" do
+      before(:all) do
+        Site.delete_all
+        @site_refunded1     = Factory(:site, state: 'archived', refunded_at: Time.now.utc)
+        @site_not_refunded1 = Factory(:site, state: 'active', refunded_at: Time.now.utc)
+        @site_not_refunded2 = Factory(:site, state: 'archived', refunded_at: nil)
+      end
+
+      specify { Site.refunded.all.should == [@site_refunded1] }
     end
   end
 

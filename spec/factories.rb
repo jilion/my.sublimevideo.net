@@ -45,8 +45,6 @@ Factory.define :site, :parent => :new_site do |f|
   f.after_build do |site|
     site.pend_plan_changes
     site.apply_pending_plan_changes
-    # puts site.valid?
-    # puts site.errors.inspect
     site.reload
   end
 end

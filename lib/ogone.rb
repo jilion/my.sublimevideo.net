@@ -13,12 +13,8 @@ module Ogone
       gateway.purchase(*args)
     end
 
-    def credit(money, identification_or_credit_card, options = {})
-      refund = gateway.credit(money, identification_or_credit_card, options)
-      unless refund.success?
-        Notify.send("Refund failed for transaction with pay_id ##{identification_or_credit_card} (amount: #{money})")
-      end
-      refund
+    def credit(*args)
+      gateway.credit(*args)
     end
 
     def sha_out_keys
@@ -35,6 +31,10 @@ module Ogone
       @default_storage.to_options
     rescue
       raise StandardError, "Ogone config file '#{config_path}' doesn't exist."
+    end
+      
+    def signature_out
+      yml[:signature_out] == 'heroku_env' ? ENV['OGONE_SIGNATURE_OUT'] : yml[:signature_out]
     end
 
   private
@@ -53,10 +53,6 @@ module Ogone
       
     def signature
       yml[:signature] == 'heroku_env' ? ENV['OGONE_SIGNATURE'] : yml[:signature]
-    end
-      
-    def signature_out
-      yml[:signature_out] == 'heroku_env' ? ENV['OGONE_SIGNATURE_OUT'] : yml[:signature_out]
     end
 
     def gateway

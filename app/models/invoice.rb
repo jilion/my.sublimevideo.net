@@ -38,12 +38,13 @@ class Invoice < ActiveRecord::Base
   # =================
 
   state_machine :initial => :open do
-    event(:succeed) { transition [:open, :failed] => :paid }
-    event(:fail)    { transition [:open, :failed] => :failed }
+    event(:succeed) { transition [:open, :failed, :waiting] => :paid }
+    event(:fail)    { transition [:open, :failed, :waiting] => :failed }
+    event(:wait)    { transition [:open, :failed, :waiting] => :waiting }
 
     before_transition :on => :succeed, :do => :set_paid_at
     before_transition :on => :fail,    :do => :set_last_failed_at
-    after_transition  :on => :succeed, :do => [:apply_pending_site_plan_changes, :update_user_invoiced_amount, :unsuspend_user]
+    after_transition  :on => :succeed, :do => [:apply_pending_site_plan_changes, :update_user_invoiced_amount, :unsuspend_user]#, :push_new_revenue]
   end
 
   # ==========
@@ -53,25 +54,27 @@ class Invoice < ActiveRecord::Base
   scope :between, lambda { |started_at, ended_at| where(:created_at.gte => started_at, :created_at.lte => ended_at) }
 
   scope :open,           where(state: 'open')
+  scope :paid,           where(state: 'paid').joins(:site).where(:site => { :refunded_at => nil })
+  scope :refunded,       where(state: 'paid').joins(:site).where(:site => { :refunded_at.ne => nil })
   scope :failed,         where(state: 'failed')
+  scope :waiting,        where(state: 'waiting')
   scope :open_or_failed, where(state: %w[open failed])
-  scope :paid,           where(state: 'paid')
   scope :site_id,        lambda { |site_id| where(site_id: site_id) }
-  scope :user_id,        lambda { |user_id| where(site_id: Site.where(user_id: user_id).map(&:id)) }
+  scope :user_id,        lambda { |user_id| joins(:user).where(:users => { :id => user_id }) }
 
   # sort
+  scope :by_date,                lambda { |way='desc'| order(:created_at.send(way)) }
   scope :by_amount,              lambda { |way='desc'| order(:amount.send(way)) }
+  scope :by_user,                lambda { |way='desc'| joins(:user).order(:"users.first_name".send(way), :"users.email".send(way)) }
   scope :by_invoice_items_count, lambda { |way='desc'| order(:invoice_items_count.send(way)) }
-
-  scope :by_state,    lambda { |way='desc'| order(:state.send(way)) }
-  scope :by_date,     lambda { |way='desc'| order(:created_at.send(way)) }
 
   # search
   def self.search(q)
-    joins(:users).
+    joins(:site, :user).
     where(:lower.func(:email).matches % :lower.func("%#{q}%") |
           :lower.func(:first_name).matches % :lower.func("%#{q}%") |
           :lower.func(:last_name).matches % :lower.func("%#{q}%") |
+          :lower.func(:"sites.hostname").matches % :lower.func("%#{q}%") |
           :lower.func(:reference).matches % :lower.func("%#{q}%"))
   end
 
@@ -81,6 +84,10 @@ class Invoice < ActiveRecord::Base
 
   def self.build(attributes={})
     new(attributes).build
+  end
+
+  def self.total_revenue
+    self.paid.sum(:amount)
   end
 
   # ====================
@@ -101,6 +108,10 @@ class Invoice < ActiveRecord::Base
 
   def last_transaction
     transactions.order(:created_at).last
+  end
+
+  def refunded?
+    site.refunded_at?
   end
 
 private
@@ -132,7 +143,7 @@ private
     self.customer_country      ||= user.country
     self.customer_company_name ||= user.company_name
   end
-  
+
   # before_validation :on => :create
   def set_site_infos
     self.site_hostname ||= site.hostname
@@ -163,6 +174,20 @@ private
   # after_transition :on => :succeed
   def unsuspend_user
     user.unsuspend if user.invoices.failed.empty?
+  end
+
+  # after_transition :on => :succeed
+  def push_new_revenue
+    # begin
+    #  if Rails.env.production?
+    #     plan_bought = self.invoice_items.detect { |invoice_item| invoice_item.amount > 0 }
+    #     plan_deducted = self.invoice_items.detect { |invoice_item| invoice_item.amount < 0 }
+    #     Ding.plan_added(plan_bought.item.title, plan_bought.item.cycle, plan_bought.amount)
+    #     Ding.plan_removed(plan_deducted.title, plan_deducted.cycle, plan_deducted.price) if plan_deducted
+    #   end
+    # rescue
+    #   # do nothing
+    # end
   end
 
 end

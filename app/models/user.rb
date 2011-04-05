@@ -56,6 +56,8 @@ class User < ActiveRecord::Base
 
   after_save   :newsletter_subscription
 
+  # after_create :push_new_registration
+
   after_update :update_email_on_zendesk #, :charge_failed_invoices
 
   # =================
@@ -101,14 +103,14 @@ class User < ActiveRecord::Base
   scope :signed_in_between, lambda { |start_date, end_date| where(:current_sign_in_at.gte => start_date, :current_sign_in_at.lt => end_date) }
 
   # sort
-  scope :by_name_or_email,   lambda { |way = 'asc'| order(:first_name.send(way), :email.send(way)) }
+  scope :by_name_or_email,   lambda { |way='asc'| order(:first_name.send(way), :email.send(way)) }
   scope :by_sites_last_30_days_billable_player_hits_total_count,  lambda { |way = 'desc'|
     joins(:sites).group(User.column_names.map { |c| "\"users\".\"#{c}\"" }.join(', ')).order("SUM(sites.last_30_days_main_player_hits_total_count) + SUM(sites.last_30_days_extra_player_hits_total_count) #{way}")
   }
-  scope :by_last_invoiced_amount,  lambda { |way = 'desc'| order(:last_invoiced_amount.send(way)) }
-  scope :by_total_invoiced_amount, lambda { |way = 'desc'| order(:total_invoiced_amount.send(way)) }
-  scope :by_beta,                  lambda { |way = 'desc'| order(:invitation_token.send(way)) }
-  scope :by_date,                  lambda { |way = 'desc'| order(:created_at.send(way)) }
+  scope :by_last_invoiced_amount,  lambda { |way='desc'| order(:last_invoiced_amount.send(way)) }
+  scope :by_total_invoiced_amount, lambda { |way='desc'| order(:total_invoiced_amount.send(way)) }
+  scope :by_beta,                  lambda { |way='desc'| order(:invitation_token.send(way)) }
+  scope :by_date,                  lambda { |way='desc'| order(:created_at.send(way)) }
 
   # search
   def self.search(q)
@@ -116,8 +118,8 @@ class User < ActiveRecord::Base
     where(:lower.func(:email).matches % :lower.func("%#{q}%") |
           :lower.func(:first_name).matches % :lower.func("%#{q}%") |
           :lower.func(:last_name).matches % :lower.func("%#{q}%") |
-          :lower.func(:hostname).matches % :lower.func("%#{q}%") |
-          :lower.func(:dev_hostnames).matches % :lower.func("%#{q}%")).select("DISTINCT users.id, users.*")
+          :lower.func(:"sites.hostname").matches % :lower.func("%#{q}%") |
+          :lower.func(:"sites.dev_hostnames").matches % :lower.func("%#{q}%"))
   end
 
   # =================
@@ -177,14 +179,26 @@ class User < ActiveRecord::Base
     beta? && Time.now.utc < PublicLaunch.beta_transition_ended_on
   end
 
+  def invoices_failed?
+    invoices.any? { |i| i.failed? }
+  end
+
+  def invoices_waiting?
+    invoices.any? { |i| i.waiting? }
+  end
+
+  def invoices_open?
+    invoices.any? { |i| i.open? }
+  end
+
   def full_name
     first_name.to_s + ' ' + last_name.to_s
   end
 
   def support
-    if sites.active.any? { |s| s.plan.support == "priority" }
+    if sites.active.any? { |s| s.plan_id? && s.plan.support == "priority" }
       "priority"
-    elsif sites.active.any? { |s| s.plan.support == "standard" }
+    elsif sites.active.any? { |s| s.plan_id? && s.plan.support == "standard" }
       "standard"
     else
       "launchpad"
@@ -254,6 +268,15 @@ private
       CampaignMonitor.delay.unsubscribe(email_was) if email_was.present?
       CampaignMonitor.delay.subscribe(self)
     end
+  end
+
+  # after_create
+  def push_new_registration
+    # begin
+    #   Ding.signup if Rails.env.production?
+    # rescue
+    #   # do nothing
+    # end
   end
 
   # after_update

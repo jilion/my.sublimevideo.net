@@ -64,7 +64,7 @@ describe Site::Referrer do
 
     context "with hostname with subdomain" do
       before(:all) do
-        @site = Factory(:site, hostname: "blog.jilion.com")
+        @site = Factory(:site, hostname: "blog.jilion.com", extra_hostnames: nil, dev_hostnames: nil)
       end
       subject { @site }
 
@@ -233,6 +233,15 @@ describe Site::Referrer do
         Notify.should_receive(:send)
         subject.referrer_type(nil).should == "invalid"
       end
+    end
+
+    context "custom" do
+      before(:all) { @site = Factory(:site, hostname: "capped.tv", path: "lft-turbulence|mq") }
+      before(:each) { Notify.should_not_receive(:send) }
+      subject { @site }
+
+      it { subject.referrer_type("http://capped.tv/lft-turbulence|mq").should == "main" }
+      it { subject.referrer_type("http://www.optik-muncke.de/l%xc3%xb6sungen-sehen.html").should == "invalid" }
     end
   end
 

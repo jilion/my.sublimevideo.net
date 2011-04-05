@@ -50,6 +50,11 @@ namespace :one_time do
       puts OneTime::Site.set_beta_plan
     end
 
+    desc "Set plan_started_at"
+    task :set_plan_started_at => :environment do
+      puts OneTime::Site.set_plan_started_at
+    end
+
     desc "Update invalid sites move invalid dev hostnames into the extra_hostnames and remove dev hostnames that are duplication of main hostname"
     task :update_invalid_hostnames => :environment do
       timed do
@@ -61,7 +66,7 @@ namespace :one_time do
     task :rollback_beta_sites => :environment do
       puts OneTime::Site.rollback_beta_sites_to_dev
     end
-    
+
     desc "Reset sites caches"
     task :reset_caches => :environment do
       Site.all.each { |site| site.delay(:priority => 400).reset_caches! }
@@ -83,7 +88,7 @@ namespace :one_time do
       puts OneTime::Site.regenerate_all_loaders_and_licenses
     end
   end
-  
+
   namespace :plans do
     desc "Create all plans"
     task :create_plans => :environment do

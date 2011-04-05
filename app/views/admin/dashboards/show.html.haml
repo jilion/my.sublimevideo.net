@@ -7,19 +7,58 @@
   - cache 'dashboard_timeline_usage', :expires_in => 10.minutes do
     = render 'timeline_usage'
 
-#box_users.dashboard_box
-  %h3 Users
-  - cache 'dashboard_box_users', :expires_in => 10.minutes do
-    = render 'users'
+%h2= "Total revenue: #{display_amount(Invoice.total_revenue)}"
 
-#box_sites.dashboard_box
-  %h3 Sites
-  - cache 'dashboard_box_sites', :expires_in => 10.minutes do
-    = render 'sites'
+-# #box_traffic.dashboard_box
+%h3 Traffic
+- player_hits = SiteUsage.between(31.days.ago.utc, Time.now.utc.yesterday).sum(:player_hits).to_i
+%p= "Last 30 days traffic: #{number_to_human(player_hits, :significant => false, :precision => 2, :delimiter => "'")} video pageviews"
+%p= "Last 30 days average daily traffic: #{number_to_human(player_hits / 30, :significant => false, :precision => 2, :delimiter => "'")} video pageviews"
 
-#box_usage.dashboard_box
-  %h3 Usage
-  - cache 'dashboard_box_usage', :expires_in => 10.minutes do
-    = render 'usage'
+-# - cache 'dashboard_box_users', :expires_in => 10.minutes do
+-#   = render 'users'
+%br
+
+-# #box_users.dashboard_box
+%h3 Users
+- today_signups = User.active.where(:created_at.gte => Time.now.utc.midnight, :created_at.lt => Time.now.utc.tomorrow.midnight)
+- yesterday_signups = User.active.where(:created_at.gte => Time.now.utc.yesterday.midnight, :created_at.lt => Time.now.utc.midnight)
+%p= "Users signups: #{User.active.count} (#{today_signups.count} today, #{yesterday_signups.count} yesterday)"
+%p= "Billable customers: #{User.billable.count}"
+
+-# - cache 'dashboard_box_users', :expires_in => 10.minutes do
+-#   = render 'users'
+%br
+
+-# #box_sites.dashboard_box
+%h3 Sites
+%p= "LaunchPad sites: #{Site.active.dev.count}"
+%p= "Beta sites: #{Site.active.beta.count}"
+%p= "Sponsored sites: #{Site.active.sponsored.count}"
+%p= "Paying sites: #{Site.active.in_paid_plan.count}"
+%p= "Custom sites: #{Site.active.custom.count}"
+
+-# - cache 'dashboard_box_sites', :expires_in => 10.minutes do
+-#   = render 'sites'
+
+-# #box_usage.dashboard_box
+-#   %h3 Usage
+-#   - cache 'dashboard_box_usage', :expires_in => 10.minutes do
+-#     = render 'usage'
 
 .spacer
+
+-# Sales : TOTAL SALES USD
+-# Sales : # OF PLANS SOLD
+
+-# Users : # of Users Signups
+-# Users : # of Customers (ie with 1+ paid plan)
+
+-# Users : Top 10 Customers' Country % and #
+
+-# Sites : # of dev sites
+-# Sites : # of paying sites
+
+-# Traffic : Current daily traffic
+-# Traffic : 30D moving average
+-# Twitter : Last 5 tweets

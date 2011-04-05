@@ -2,12 +2,18 @@
 
 %h3 Last 12 invoices
 
-%table.crado.center
-  %tr
-    %th Month Year
-    %th Amount
-    %th Invoice Items
+%ul
   - invoices.each do |invoice|
-    %tr
-      %td= link_to(invoice_dates(invoice), [:edit, :admin, invoice])
-      %td= display_amount(invoice.amount)
+    %li
+      = link_to(invoice_dates(invoice), [:edit, :admin, invoice])
+      = " / "
+      = display_amount(invoice.amount)
+      = " ( #{invoice.state} on "
+      - case invoice.state
+      - when 'paid'
+        = l(invoice.paid_at, :format => :d_b_Y)
+      - when 'failed'
+        = l(invoice.last_failed_at, :format => :d_b_Y)
+      - if invoice.refunded?
+        = ", refunded on #{l(invoice.site.refunded_at, :format => :d_b_Y)}"
+      = ")"

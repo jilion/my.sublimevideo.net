@@ -176,7 +176,7 @@ feature "Sites" do
             site = @current_user.sites.last
             transaction = site.last_invoice.last_transaction
             transaction.should be_waiting_d3d
-            site.last_invoice.should be_open
+            site.last_invoice.should be_waiting
 
             # fake payment succeeded callback (and thus skip the d3d redirection)
             transaction.process_payment_response("PAYID" => "1234", "NCSTATUS" => "3", "STATUS" => "2", "orderID" => transaction.id.to_s)
@@ -200,13 +200,13 @@ feature "Sites" do
             visit "/sites"
 
             current_url.should =~ %r(http://[^/]+/sites)
-            page.should have_content("Site was successfully created.")
+            page.should have_no_content("Site was successfully created.")
             page.should have_content('rymai.com')
-            page.should_not have_content('Comet (yearly)')
+            page.should have_no_content('Comet (yearly)')
             page.should have_no_selector('.usage_bar')
             page.should have_no_selector('.embed_code')
+            page.should have_no_content(I18n.t('site.status.ok'))
             page.should have_content(I18n.t('site.status.payment_issue'))
-            page.should_not have_content(I18n.t('site.status.ok'))
           end
 
           scenario "entering a 3-D Secure credit card with a succeeding identification" do
@@ -219,7 +219,7 @@ feature "Sites" do
             site = @current_user.sites.last
             transaction = site.last_invoice.last_transaction
             transaction.should be_waiting_d3d
-            site.last_invoice.should be_open
+            site.last_invoice.should be_waiting
 
             # fake payment succeeded callback (and thus skip the d3d redirection)
             transaction.process_payment_response("PAYID" => "1234", "NCSTATUS" => "0", "STATUS" => "9", "orderID" => transaction.id.to_s)
@@ -245,7 +245,6 @@ feature "Sites" do
             visit "/sites"
 
             current_url.should =~ %r(http://[^/]+/sites)
-            page.should have_content("Site was successfully created.")
             page.should have_content('rymai.com')
             page.should have_content('Comet (yearly)')
             page.should have_selector('.usage_bar')

@@ -153,6 +153,27 @@ describe Invoice do
           end
         end
       end
+
+      pending "after_transition :on => :succeed, :do => :push_new_revenue" do
+        subject { Factory(:invoice, invoice_items: [Factory(:plan_invoice_item)]) }
+        
+        it "should delay on Ding class" do
+          Ding.should_receive(:delay)
+          subject.succeed
+        end
+        
+        it "should send a ding!" do
+          expect { subject.succeed! }.to change(Delayed::Job, :count)
+          # puts Delayed::Job.all.map(&:name).inspect
+          djs = Delayed::Job.where(:handler.matches => "%plan_added%")
+          djs.count.should == 1
+          djs.first.name.should == 'Class#plan_added'
+          YAML.load(djs.first.handler)['args'][0].should == subject.invoice_items.item.first.title
+          YAML.load(djs.first.handler)['args'][1].should == subject.invoice_items.item.first.cycle
+          YAML.load(djs.first.handler)['args'][2].should == subject.amount
+        end
+      end
+
     end # Transitions
 
   end # State Machine
@@ -178,14 +199,17 @@ describe Invoice do
   describe "Scopes" do
     before(:all) do
       Invoice.delete_all
-      @site = Factory(:site, plan_id: @dev_plan.id)
-      @open_invoice   = Factory(:invoice, site: @site, state: 'open', created_at: 48.hours.ago)
-      @failed_invoice = Factory(:invoice, site: @site, state: 'failed', created_at: 25.hours.ago)
-      @paid_invoice   = Factory(:invoice, site: @site, state: 'paid', created_at: 18.hours.ago)
+      @site             = Factory(:site, plan_id: @paid_plan.id, refunded_at: nil)
+      @refunded_site    = Factory(:site, plan_id: @paid_plan.id, refunded_at: Time.now.utc)
+      @open_invoice     = Factory(:invoice, site: @site, state: 'open', created_at: 48.hours.ago)
+      @failed_invoice   = Factory(:invoice, site: @site, state: 'failed', created_at: 25.hours.ago)
+      @waiting_invoice  = Factory(:invoice, site: @site, state: 'waiting', created_at: 18.hours.ago)
+      @paid_invoice     = Factory(:invoice, site: @site, state: 'paid', created_at: 16.hours.ago)
+      @refunded_invoice = Factory(:invoice, site: @refunded_site, state: 'paid', created_at: 14.hours.ago)
     end
 
     describe "#between" do
-      specify { Invoice.between(24.hours.ago, 12.hours.ago).all.should == [@paid_invoice] }
+      specify { Invoice.between(24.hours.ago, 15.hours.ago).all.should == [@waiting_invoice, @paid_invoice] }
     end
 
     describe "#open" do
@@ -196,12 +220,20 @@ describe Invoice do
       specify { Invoice.failed.all.should == [@failed_invoice] }
     end
 
+    describe "#waiting" do
+      specify { Invoice.waiting.all.should == [@waiting_invoice] }
+    end
+
     describe "#open_or_failed" do
       specify { Invoice.open_or_failed.all.should == [@open_invoice, @failed_invoice] }
     end
 
     describe "#paid" do
       specify { Invoice.paid.all.should == [@paid_invoice] }
+    end
+
+    describe "#refunded" do
+      specify { Invoice.refunded.all.should == [@refunded_invoice] }
     end
 
   end # Scopes

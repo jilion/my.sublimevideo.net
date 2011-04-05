@@ -3,7 +3,7 @@ module InvoicesHelper
   def invoice_dates(invoice)
     if invoice.persisted?
       l(invoice.created_at, :format => :d_b_Y)
-    else#if invoice.site.plan_cycle_ended_at?
+    else
       l(invoice.site.plan_cycle_ended_at.tomorrow, :format => :d_b_Y)
     end
   end
@@ -17,6 +17,8 @@ module InvoicesHelper
       "Not yet paid."
     elsif invoice.paid?
       "Paid on #{l(invoice.paid_at, :format => :minutes_timezone)}."
+    elsif invoice.refunded?
+      "Paid on #{l(invoice.paid_at, :format => :minutes_timezone)}, refunded on #{l(invoice.site.refunded_at, :format => :minutes_timezone)}."
     elsif invoice.failed?
       text = "#{content_tag(:strong, "Payment failed", :class => "failed")} on #{l(invoice.last_failed_at, :format => :minutes_timezone)}".html_safe
       unless invoice.last_transaction.error =~ /secure.ogone/ # FIXME we store the 3d secure html in this field,
@@ -25,6 +27,8 @@ module InvoicesHelper
         text += " with the following error: #{content_tag(:em, "\"#{truncate(invoice.last_transaction.error, :length => 50)}\"")}".html_safe
       end
       text + "."
+    elsif invoice.waiting?
+      "Waiting payment confirmation."
     end
   end
 

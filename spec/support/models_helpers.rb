@@ -18,7 +18,7 @@ module Spec
           :cc_brand              => 'visa',
           :cc_full_name          => 'John Doe Huber',
           :cc_number             => '4111111111111111',
-          :cc_expiration_month   => 3,
+          :cc_expiration_month   => 1.year.from_now.month,
           :cc_expiration_year    => 1.year.from_now.year,
           :cc_verification_value => '111'
         }
@@ -29,7 +29,7 @@ module Spec
           :cc_brand              => 'master',
           :cc_full_name          => 'Bob Doe Hicks',
           :cc_number             => '5399999999999999',
-          :cc_expiration_month   => 3,
+          :cc_expiration_month   => 2.years.from_now.month,
           :cc_expiration_year    => 2.years.from_now.year,
           :cc_verification_value => '111'
         }
@@ -40,7 +40,7 @@ module Spec
           :cc_brand              => 'visa',
           :cc_full_name          => 'John Doe Huber',
           :cc_number             => '4000000000000002',
-          :cc_expiration_month   => 3,
+          :cc_expiration_month   => 1.year.from_now.month,
           :cc_expiration_year    => 1.year.from_now.year,
           :cc_verification_value => '111'
         }
@@ -51,7 +51,7 @@ module Spec
           :cc_brand              => 'visa',
           :cc_full_name          => 'John Doe Huber',
           :cc_number             => '4111113333333333',
-          :cc_expiration_month   => 3,
+          :cc_expiration_month   => 1.year.from_now.month,
           :cc_expiration_year    => 1.year.from_now.year,
           :cc_verification_value => '111'
         }
@@ -62,7 +62,7 @@ module Spec
           :cc_brand              => 'visa',
           :cc_full_name          => 'John Doe Huber',
           :cc_number             => '4111116666666666',
-          :cc_expiration_month   => 3,
+          :cc_expiration_month   => 1.year.from_now.month,
           :cc_expiration_year    => 1.year.from_now.year,
           :cc_verification_value => '111'
         }

@@ -1,6 +1,8 @@
 # coding: utf-8
 
 module VoxcastCDN
+  class Error < StandardError; end
+
   class << self
 
     def devices_list
@@ -32,6 +34,8 @@ module VoxcastCDN
         end
       end
       logs_names
+    rescue VoxelHAPI, VoxelHAPIConnection, EOFError, REXML, Excon, Errno, OpenSSL, IOError
+      raise Error
     end
 
     def logs_download(filename)
@@ -40,6 +44,8 @@ module VoxcastCDN
       tempfile.write(Base64.decode64(xml['data']['content']))
       tempfile.flush
       tempfile
+    rescue VoxelHAPI, VoxelHAPIConnection, EOFError, REXML, Excon, Errno, OpenSSL, IOError
+      raise Error
     end
 
   private
