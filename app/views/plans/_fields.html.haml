@@ -34,11 +34,12 @@
   - if site.recommended_plan_name
     #recommanded_plan_box
       - usages = site.current_monthly_billable_usages(:drop_first_zeros => true)
-      %p=raw "Your usage in the last #{usages.size} days: #{number_with_delimiter(usages.sum)} video pageviews"
-      - if site.recommended_plan_name == 'custom'
-        %p=raw "Recommended plan: <strong>Custom</strong> (please #{mail_to "sales@sublimevideo.net", "contact us"})"
-      - else
-        %p=raw "Recommended plan: <strong>#{site.recommended_plan_name.titleize}</strong>"
+      %p.note
+        =raw "Your usage in the last #{usages.size} days: #{content_tag :strong, number_with_delimiter(usages.sum)} video pageviews =>"
+        - if site.recommended_plan_name == 'custom'
+          =raw "Recommended plan: <strong>Custom</strong> (please #{mail_to "sales@sublimevideo.net", "contact us"})"
+        - else
+          =raw "Recommended plan: <strong>#{site.recommended_plan_name.titleize}</strong>"
 
   #plans
     - standard_plans = Plan.standard_plans.order(:player_hits.asc, :price.asc)
@@ -58,6 +59,7 @@
                 %li= plan_support(standard_plan)
                 %li= "Peak Insurance"
                 %li.last= "SSL Serving"
+              %span.recommended_label= "Recommended"
             .monthly.select_box{ :class => current_plan && current_plan == standard_plan ? 'active' : '' + (current_user.get_discount? && (site.plan.nil? || plan_change_discounted?(site.plan, standard_plan)) ? '' : ' no_discount') }
               = f.label :plan_id, raw(plan_label_content(standard_plan, site)), :for => "plan_#{standard_plan.name}_#{standard_plan.cycle}"
               .radio_wrap
