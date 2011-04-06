@@ -1364,7 +1364,7 @@ describe Site do
         Factory(:plan, name: "planet", player_hits: 50_000)
         Factory(:plan, name: "star",   player_hits: 200_000)
         @galaxy_plan = Factory(:plan, name: "galaxy", player_hits: 1_000_000)
-        Timecop.travel(15.days.ago) { @site = Factory(:site, plan_id: Factory(:beta_plan).id) }
+        Timecop.travel(15.days.ago) { @site = Factory(:beta_site) }
       end
       subject { @site }
 
