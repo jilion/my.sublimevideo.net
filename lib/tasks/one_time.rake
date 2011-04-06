@@ -5,18 +5,13 @@ namespace :one_time do
     desc "Reparse logs for site usages per day"
     task :reparse => :environment do
       timed do
-        mixed_logs = Log.where(:started_at => { "$gte" => Date.new(2010, 10, 21).midnight, "$lte" => Time.parse("2010-10-21T08:09:00Z") })
-        mixed_log_ids = mixed_logs.map(&:id)
-        puts OneTime::Log.delay(:priority => 299).parse_logs(mixed_log_ids)
-        puts "Delayed logs parsing for #{Date.new(2010, 10, 21).midnight} to #{Time.parse("2010-10-21T08:09:00Z")}."
+        beginning_of_month = Time.now.utc.beginning_of_month
+        SiteUsage.where(:day => { "$gte" => beginning_of_month }).delete_all
 
-        (Date.new(2010, 6, 30)..Date.new(2010, 10, 20)).each do |day|
-          # comme ça on a les logs de S3 qui ont started_at => x et ended_at => x + 1.day
-          full_days_logs = Log.where(:started_at => { "$gte" => day.midnight }, :ended_at => { "$lte" => (day + 1.day).midnight })
-          log_ids = full_days_logs.map(&:id)
-          puts OneTime::Log.delay(:priority => 300).parse_logs(log_ids)
-          puts "Delayed reparsing of a batch of #{log_ids.size} logs collected on #{day}."
-        end
+        months_logs = Log.where(:started_at => { "$gte" => beginning_of_month })
+        months_logs_ids = mixed_logs.map(&:id)
+        puts OneTime::Log.delay(:priority => 299).parse_logs(months_logs_ids)
+        puts "Delayed logs parsing from #{beginning_of_month}"
       end
     end
   end
