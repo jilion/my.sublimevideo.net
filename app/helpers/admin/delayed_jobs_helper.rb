@@ -42,6 +42,7 @@ module Admin::DelayedJobsHelper
       "Module#monitor_sites_usages",
       "Class#charge_open_invoices",
       "Class#update_last_30_days_counters_for_not_archived_sites",
+      "Class#update_pending_dates_for_first_not_paid_invoices",
       "Class#renew_active_sites!",
       "Class#create_users_stats",
       "Class#create_sites_stats"
