@@ -65,7 +65,7 @@ describe MailLetter do
           end
         end
 
-        context "with the 'beta_with_recommended_plan' filter", focus: true do
+        context "with the 'beta_with_recommended_plan' filter" do
           before(:all) do
             Plan.delete_all
             Factory(:plan, name: "comet",  player_hits: 3_000)
