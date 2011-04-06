@@ -18,9 +18,24 @@
   = "| Updated #{time_ago_in_words(@site.updated_at)} ago"
 
 %p
+  = "Plan:"
   %strong= @site.plan ? @site.plan.title : "–"
   - if @site.in_paid_plan?
     = "(" + l(@site.plan_cycle_started_at, :format => :d_b_Y) + ' - ' + l(@site.plan_cycle_ended_at, :format => :d_b_Y) + ")"
+%p
+  = "Recommended plan:"
+  = @site.recommended_plan_name ? @site.recommended_plan_name.titleize : "–"
+
+- if @site.plan_id?
+  %p
+    = "Plan started at:"
+    = l(@site.plan_started_at, :format => :d_b_Y)
+  %p
+    = "Plan month cycle started at:"
+    = l(@site.plan_month_cycle_started_at, :format => :d_b_Y)
+  %p
+    = "Plan month cycle ended at:"
+    = l(@site.plan_month_cycle_ended_at, :format => :d_b_Y)
 
 %p
   = "Extra hostnames:"
