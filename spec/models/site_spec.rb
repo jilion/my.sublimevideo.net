@@ -1239,8 +1239,8 @@ describe Site do
         after(:all) { Timecop.return }
         subject { @site }
 
-        its(:plan_month_cycle_started_at) { should == Time.utc(2011,3,10).midnight }
-        its(:plan_month_cycle_ended_at)   { should == Time.utc(2011,4,9).end_of_day }
+        its(:plan_month_cycle_started_at) { should == Time.utc(2011,3,1).midnight }
+        its(:plan_month_cycle_ended_at)   { should == Time.utc(2011,4,1).end_of_day }
       end
 
       context "with monthly plan" do

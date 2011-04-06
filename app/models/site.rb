@@ -340,7 +340,7 @@ class Site < ActiveRecord::Base
     when 'year'
       plan_cycle_started_at + months_since(plan_cycle_started_at).months
     when 'none'
-      plan_started_at + months_since(plan_started_at).months
+      1.month.ago.midnight
     end
   end
 
@@ -351,7 +351,7 @@ class Site < ActiveRecord::Base
     when 'year'
       (plan_cycle_started_at + (months_since(plan_cycle_started_at) + 1).months - 1.day).end_of_day
     when 'none'
-      (plan_started_at + (months_since(plan_started_at) + 1).months - 1.day).end_of_day
+      Time.now.utc.end_of_day
     end
   end
 
