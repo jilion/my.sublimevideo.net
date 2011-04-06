@@ -97,7 +97,7 @@ private
     logs_file = File.new(Rails.root.join("tmp/#{name}"), 'w', :encoding => 'ASCII-8BIT')
     logs_file.write(file.read)
     logs_file.flush
-  rescue Excon::Errors::NotFound
+  rescue Excon::Errors::NotFound, Excon::Errors::SocketError
     raise DownloadError
   end
 
