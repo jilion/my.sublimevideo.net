@@ -35,6 +35,7 @@ describe UsrAgent do
       it "should have valid attributes" do
         subject.token.should == site.token
         subject.site_id.should == site.id
+        subject.month.should == Time.utc(2010,9,15).beginning_of_month
         subject.platforms.should == { "Windows" => { "Windows 7" => 4 } }
         subject.browsers.should == { "Safari" =>{ "versions" => { "5::0::2" => 4 }, "platforms" => {"Windows" => 4 } } }
       end
