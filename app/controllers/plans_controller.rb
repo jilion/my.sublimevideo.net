@@ -24,7 +24,7 @@ class PlansController < ApplicationController
     respond_with(@site) do |format|
       if @site.save # will create invoice and charge...
         if @site.transaction.try(:waiting_d3d?)
-          format.html { render :text => @site.transaction.error }
+          format.html { render :text => d3d_html_inject(@site.transaction.error) }
         else
           format.html { redirect_to :sites, notice_and_alert_from_transaction(@site.transaction) }
         end

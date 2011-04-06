@@ -49,11 +49,11 @@ describe PlansController do
 
         describe "paid plan" do
           it "should render HTML given by Aduno when authorization needs 3-d secure" do
-            mock_site.should_receive(:transaction).twice.and_return(mock_transaction(:waiting_d3d? => true, :error => "<html></html>"))
+            mock_site.should_receive(:transaction).twice.and_return(mock_transaction(:waiting_d3d? => true, :error => "<form></form>"))
 
             put :update, :site_id => 'a1b2c3', :site => {}
             assigns(:site).should == mock_site
-            response.body.should == "<html></html>"
+            response.body.should == "<!DOCTYPE html><html><head><title>3DS Redirection</title></head><body><form></form></body></html>"
           end
 
           it "should render :edit template when payment is failed" do

@@ -81,10 +81,10 @@ describe CreditCardsController do
 
       context "with a valid site and 3d secure / authorized / waiting" do
         it "should render HTML given by Aduno when authorization needs 3-d secure" do
-          authenticated_user.should_receive(:d3d_html).twice { "<html></html>" }
+          authenticated_user.should_receive(:d3d_html).twice { "<form></form>" }
 
           put :update, :user => {}
-          response.body.should == "<html></html>"
+          response.body.should == "<!DOCTYPE html><html><head><title>3DS Redirection</title></head><body><form></form></body></html>"
         end
 
         context "not 3d secure (yay!)" do

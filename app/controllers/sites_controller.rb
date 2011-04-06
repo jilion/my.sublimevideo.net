@@ -47,7 +47,7 @@ class SitesController < ApplicationController
         if @site.transaction.try(:waiting_d3d?)
           flash[:notice] = ""
           flash[:alert] = ""
-          format.html { render :text => @site.transaction.error }
+          format.html { render :text => d3d_html_inject(@site.transaction.error) }
         else
           format.html { redirect_to :sites, notice_and_alert_from_transaction(@site.transaction) }
         end
