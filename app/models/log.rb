@@ -1,7 +1,7 @@
 require 'carrierwave/orm/mongoid'
 
 class Log
-  class Error < StandardError; end
+  class DownloadError < StandardError; end
 
   include Mongoid::Document
   include Mongoid::Timestamps
@@ -98,7 +98,7 @@ private
     logs_file.write(file.read)
     logs_file.flush
   rescue Excon::Errors::NotFound
-    raise Error
+    raise DownloadError
   end
 
   def self.yml
