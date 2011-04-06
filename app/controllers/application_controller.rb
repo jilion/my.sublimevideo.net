@@ -42,6 +42,10 @@ private
     end
   end
 
+  def d3d_html_inject(text)
+    "<!DOCTYPE html><html><head><title>3DS Redirection</title></head><body>#{text}</body></html>"
+  end
+
   # =============================
   # = transaction flash message =
   # =============================
