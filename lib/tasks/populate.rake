@@ -251,34 +251,41 @@ def create_sites
   User.all.each do |user|
     BASE_SITES.each do |hostname|
       site = user.sites.build(
-        plan_id: rand > 0.5 ? (rand > 0.5 ? custom_plans.sample.token : standard_plans.sample.id) : free_plans.sample.id,
+        plan_id: rand > 0.4 ? (rand > 0.8 ? custom_plans.sample.token : standard_plans.sample.id) : free_plans.sample.id,
         hostname: hostname
       )
       Timecop.travel(created_at_array.sample) do
         site.save_without_password_validation # TODO: USe VCR here to avoid calls to Ogone?!
       end
-      site.cdn_up_to_date = true if rand > 0.5
-      site.apply_pending_plan_changes
-      site.sponsor! if rand > 0.75
+      if rand > 0.5
+        site.cdn_up_to_date = true
+        site.save_without_password_validation
+      end
+      site.sponsor! if rand > 0.85
     end
   end
+  # Set plan_started_at for all beta plans
+
+
+
   puts "#{BASE_SITES.size} beautiful sites created for each user!"
 end
 
 def create_site_usages
-  start_date = Date.new(2011,1,1)
-  end_date   = Date.today
+  end_date = Date.today
   player_hits_total = 0
   Site.active.each do |site|
+    start_date = site.plan_month_cycle_started_at.to_date
+    plan_player_hits = (site.in_beta_plan? || site.in_sponsored_plan?) ? Plan.standard_plans.all.sample.player_hits : site.plan.player_hits
     p = (case rand(4)
     when 0
-      site.plan.player_hits/30.0 - (site.plan.player_hits/30.0 / 4)
+      plan_player_hits/30.0 - (plan_player_hits/30.0 / 4)
     when 1
-      site.plan.player_hits/30.0 - (site.plan.player_hits/30.0 / 8)
+      plan_player_hits/30.0 - (plan_player_hits/30.0 / 8)
     when 2
-      site.plan.player_hits/30.0 + (site.plan.player_hits/30.0 / 8)
+      plan_player_hits/30.0 + (plan_player_hits/30.0 / 4)
     when 3
-      site.plan.player_hits/30.0 + (site.plan.player_hits/30.0 / 4)
+      plan_player_hits/30.0 + (plan_player_hits/30.0 / 8)
     end).to_i
 
     (start_date..end_date).each do |day|
@@ -318,7 +325,7 @@ def create_site_usages
       end
     end
   end
-  puts "#{player_hits_total} video-page views total created between #{start_date} and #{end_date}!"
+  puts "#{player_hits_total} video-page views total!"
 end
 
 def create_plans
