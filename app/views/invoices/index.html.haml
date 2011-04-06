@@ -10,14 +10,14 @@
 
   - else
     #invoices_summary
-      - if @site.invoices_failed? || @site.invoices_open?(renew: false)
+      - if @site.invoices_failed? || @site.invoices_open?
         .failed_invoices
           - if @site.invoices_failed?
             - failed_invoices = @invoices.select { |invoice| invoice.failed? }
             %p.desc
               = raw t('site.invoices.count_failed_invoices_with_total_amount', count: failed_invoices.count, total_amount: display_amount(failed_invoices.sum(&:amount)))
 
-          - if @site.invoices_open?(renew: false)
+          - if @site.invoices_open?
             - open_invoices = @invoices.select { |invoice| invoice.open? }
             %p.desc
               = raw t('site.invoices.count_open_invoices_with_total_amount', count: open_invoices.count, total_amount: display_amount(open_invoices.sum(&:amount)))

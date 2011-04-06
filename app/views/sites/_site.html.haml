@@ -47,7 +47,7 @@
           %span.icon.payment_issue
           = info_box(:class => "payment_issue") do
             %p=t 'site.status.payment_issue'
-      - elsif site.invoices_open?(renew: false)
+      - elsif site.invoices_open?
         = link_to [site, :invoices] do
           %span.icon.payment_waiting
           = info_box(:class => "payment_waiting") do

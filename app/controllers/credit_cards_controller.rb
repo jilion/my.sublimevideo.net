@@ -1,6 +1,6 @@
 class CreditCardsController < ApplicationController
   before_filter do |controller|
-    if !current_user.cc? && !current_user.pending_cc? && !current_user.invoices_failed? && !current_user.invoices_open?(renew: false)
+    if !current_user.cc? && !current_user.pending_cc? && !current_user.invoices_failed? && !current_user.invoices_open?
       redirect_to [:edit, :user_registration]
     end
   end

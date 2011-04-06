@@ -240,44 +240,34 @@ describe Invoice do
 
   describe "Class Methods" do
 
-    describe ".update_pending_dates_for_non_renew_and_not_paid_invoices" do
+    describe ".update_pending_dates_for_first_not_paid_invoices" do
       before(:all) do
-        Timecop.travel(Time.utc(2011, 4, 4)) do
+        Timecop.travel(Time.utc(2011, 4, 4, 6)) do
           @user = Factory(:user)
           @site1 = Factory(:site, user: @user)
 
           @site1 = Factory.build(:new_site, plan_id: @paid_plan.id, user: @user)
           @site1.pend_plan_changes
           @site1.save!
-          @site2 = Factory.build(:new_site, plan_id: @paid_plan.id, user: @user)
-          @site2.pend_plan_changes
-          @site2.save!
-          @site3 = Factory.build(:new_site, plan_id: @paid_plan.id, user: @user)
-          @site3.pend_plan_changes
-          @site3.save!
-          @site4 = Factory.build(:new_site, plan_id: @paid_plan.id, user: @user)
-          @site4.pend_plan_changes
-          @site4.save!
-          @site5 = Factory.build(:new_site, plan_id: @paid_plan.id, user: @user)
-          @site5.pend_plan_changes
-          @site5.save!
 
           Invoice.delete_all
-          @invoice1 = Factory(:invoice, state: 'open', site: @site1, renew: true)
+          @invoice1 = Factory(:invoice, state: 'open', site: @site1, renew: false, created_at: 5.hours.ago)
           @invoice1.invoice_items << Factory(:plan_invoice_item, invoice: @invoice1, started_at: Time.utc(2011, 4, 4), ended_at: Time.utc(2011, 5, 3).end_of_day)
           @invoice1.save!
-          @invoice2 = Factory(:invoice, state: 'open', site: @site2, renew: false)
+          @invoice2 = Factory(:invoice, state: 'open', site: @site1, renew: false, created_at: 4.hours.ago) # fake an upgrade, should not update pending dates
           @invoice2.invoice_items << Factory(:plan_invoice_item, invoice: @invoice2, started_at: Time.utc(2011, 4, 4), ended_at: Time.utc(2011, 5, 3).end_of_day)
           @invoice2.save!
-          @invoice3 = Factory(:invoice, state: 'failed', site: @site3, renew: true)
+          @invoice3 = Factory(:invoice, state: 'failed', site: @site1, renew: true, created_at: 3.hours.ago) # renew failed
           @invoice3.invoice_items << Factory(:plan_invoice_item, invoice: @invoice3, started_at: Time.utc(2011, 4, 4), ended_at: Time.utc(2011, 5, 3).end_of_day)
           @invoice3.save!
-          @invoice4 = Factory(:invoice, state: 'failed', site: @site4, renew: false)
+          @invoice4 = Factory(:invoice, state: 'failed', site: @site1, renew: false, created_at: 2.hours.ago) # upgrade failed
           @invoice4.invoice_items << Factory(:plan_invoice_item, invoice: @invoice4, started_at: Time.utc(2011, 4, 4), ended_at: Time.utc(2011, 5, 3).end_of_day)
           @invoice4.save!
-          @invoice5 = Factory(:invoice, state: 'paid', site: @site5)
+          @invoice5 = Factory(:invoice, state: 'paid', site: @site1, created_at: 1.hour.ago) # already paid
           @invoice5.invoice_items << Factory(:plan_invoice_item, invoice: @invoice5, started_at: Time.utc(2011, 4, 4), ended_at: Time.utc(2011, 5, 3).end_of_day)
           @invoice5.save!
+          
+          @invoice1.should == @site1.invoices.by_date('asc').first
         end
       end
       before(:each) do
@@ -286,46 +276,31 @@ describe Invoice do
 
       it "should update pending dates in the site and the plan invoice item of the invoices where renew flag == false by user" do
         Timecop.travel(Time.utc(2011, 4, 8)) do
-          Invoice.update_pending_dates_for_non_renew_and_not_paid_invoices
+          Invoice.update_pending_dates_for_first_not_paid_invoices
         end
 
-        @invoice1.reload.invoice_items.first.started_at.should == Time.utc(2011, 4, 4)
-        @invoice1.invoice_items.first.ended_at.to_i.should == Time.utc(2011, 5, 3).end_of_day.to_i
-        @site1.reload.pending_plan_started_at.should == Time.utc(2011, 4, 4)
-        @site1.pending_plan_cycle_started_at.should == Time.utc(2011, 4, 4)
-        @site1.pending_plan_cycle_ended_at.to_i.should == Time.utc(2011, 5, 3).to_datetime.end_of_day.to_i
-
-        @invoice2.reload.invoice_items.first.started_at.should == Time.utc(2011, 4, 8)
-        @invoice2.invoice_items.first.ended_at.to_i.should == Time.utc(2011, 5, 7).end_of_day.to_i
-        @site2.reload.pending_plan_started_at.should == Time.utc(2011, 4, 8)
-        @site2.pending_plan_cycle_started_at.should == Time.utc(2011, 4, 8)
-        @site2.pending_plan_cycle_ended_at.to_i.should == Time.utc(2011, 5, 7).to_datetime.end_of_day.to_i
-
+        @invoice1.reload.invoice_items.first.started_at.should == Time.utc(2011, 4, 8)
+        @invoice1.invoice_items.first.ended_at.to_i.should == Time.utc(2011, 5, 7).end_of_day.to_i
+        @invoice2.reload.invoice_items.first.started_at.should == Time.utc(2011, 4, 4)
+        @invoice2.invoice_items.first.ended_at.to_i.should == Time.utc(2011, 5, 3).end_of_day.to_i
         @invoice3.reload.invoice_items.first.started_at.should == Time.utc(2011, 4, 4)
         @invoice3.invoice_items.first.ended_at.to_i.should == Time.utc(2011, 5, 3).end_of_day.to_i
-        @site3.reload.pending_plan_started_at.should == Time.utc(2011, 4, 4)
-        @site3.pending_plan_cycle_started_at.should == Time.utc(2011, 4, 4)
-        @site3.pending_plan_cycle_ended_at.to_i.should == Time.utc(2011, 5, 3).to_datetime.end_of_day.to_i
-
-        @invoice4.reload.invoice_items.first.started_at.should == Time.utc(2011, 4, 8)
-        @invoice4.invoice_items.first.ended_at.to_i.should == Time.utc(2011, 5, 7).end_of_day.to_i
-        @site4.reload.pending_plan_started_at.should == Time.utc(2011, 4, 8)
-        @site4.pending_plan_cycle_started_at.should == Time.utc(2011, 4, 8)
-        @site4.pending_plan_cycle_ended_at.to_i.should == Time.utc(2011, 5, 7).to_datetime.end_of_day.to_i
-
+        @invoice4.reload.invoice_items.first.started_at.should == Time.utc(2011, 4, 4)
+        @invoice4.invoice_items.first.ended_at.to_i.should == Time.utc(2011, 5, 3).end_of_day.to_i
         @invoice5.reload.invoice_items.first.started_at.should == Time.utc(2011, 4, 4)
         @invoice5.invoice_items.first.ended_at.to_i.should == Time.utc(2011, 5, 3).end_of_day.to_i
-        @site5.reload.pending_plan_started_at.should == Time.utc(2011, 4, 4)
-        @site5.pending_plan_cycle_started_at.should == Time.utc(2011, 4, 4)
-        @site5.pending_plan_cycle_ended_at.to_i.should == Time.utc(2011, 5, 3).to_datetime.end_of_day.to_i
+        
+        @site1.reload.pending_plan_started_at.should == Time.utc(2011, 4, 8)
+        @site1.pending_plan_cycle_started_at.should == Time.utc(2011, 4, 8)
+        @site1.pending_plan_cycle_ended_at.to_i.should == Time.utc(2011, 5, 7).to_datetime.end_of_day.to_i
       end
 
       it "should delay update_pending_dates_for_non_renew_open_or_failed_invoices for the day after" do
-        Delayed::Job.all.select { |dj| dj.name == "Class#update_pending_dates_for_non_renew_and_not_paid_invoices" }.count.should == 0
-        Invoice.update_pending_dates_for_non_renew_and_not_paid_invoices
+        Delayed::Job.all.select { |dj| dj.name == "Class#update_pending_dates_for_first_not_paid_invoices" }.count.should == 0
+        Invoice.update_pending_dates_for_first_not_paid_invoices
         djs = Delayed::Job.all
-        djs.select { |dj| dj.name == "Class#update_pending_dates_for_non_renew_and_not_paid_invoices" }.count.should == 1
-        djs.select { |dj| dj.name == "Class#update_pending_dates_for_non_renew_and_not_paid_invoices" }.first.run_at.should == Time.now.utc.tomorrow.midnight
+        djs.select { |dj| dj.name == "Class#update_pending_dates_for_first_not_paid_invoices" }.count.should == 1
+        djs.select { |dj| dj.name == "Class#update_pending_dates_for_first_not_paid_invoices" }.first.run_at.should == Time.now.utc.tomorrow.midnight
       end
     end
 

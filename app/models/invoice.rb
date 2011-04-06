@@ -91,28 +91,30 @@ class Invoice < ActiveRecord::Base
     self.paid.sum(:amount)
   end
 
-  def self.delay_update_pending_dates_for_non_renew_and_not_paid_invoices
-    unless Delayed::Job.already_delayed?('%Invoice%update_pending_dates_for_non_renew_and_not_paid_invoices%')
-      delay(:priority => 2, :run_at => Time.now.utc.tomorrow.midnight).update_pending_dates_for_non_renew_and_not_paid_invoices
+  def self.delay_update_pending_dates_for_first_not_paid_invoices
+    unless Delayed::Job.already_delayed?('%Invoice%update_pending_dates_for_first_not_paid_invoices%')
+      delay(:priority => 2, :run_at => Time.now.utc.tomorrow.midnight).update_pending_dates_for_first_not_paid_invoices
     end
   end
 
-  def self.update_pending_dates_for_non_renew_and_not_paid_invoices
-    Invoice.not_paid.where(renew: false).each do |invoice|
-      plan_invoice_item = invoice.invoice_items.first
-      new_started_at    = Time.now.utc.midnight
-      new_ended_at      = (new_started_at + invoice.site.advance_for_next_cycle_end(plan_invoice_item.item, new_started_at)).to_datetime.end_of_day
+  def self.update_pending_dates_for_first_not_paid_invoices
+    Invoice.not_paid.where(renew: false).each do |invoice| # it returns first and upgrade invoices not already paid (never recurrent invoices)
+      if invoice == invoice.site.invoices.by_date('asc').first # update only the first invoice (first paid plan)
+        plan_invoice_item = invoice.invoice_items.first
+        new_started_at    = Time.now.utc.midnight
+        new_ended_at      = (new_started_at + invoice.site.advance_for_next_cycle_end(plan_invoice_item.item, new_started_at)).to_datetime.end_of_day
 
-      plan_invoice_item.started_at = new_started_at
-      plan_invoice_item.ended_at   = new_ended_at
-      plan_invoice_item.save
+        plan_invoice_item.started_at = new_started_at
+        plan_invoice_item.ended_at   = new_ended_at
+        plan_invoice_item.save
 
-      invoice.site.pending_plan_started_at       = new_started_at
-      invoice.site.pending_plan_cycle_started_at = new_started_at
-      invoice.site.pending_plan_cycle_ended_at   = new_ended_at
-      invoice.site.save
+        invoice.site.pending_plan_started_at       = new_started_at
+        invoice.site.pending_plan_cycle_started_at = new_started_at
+        invoice.site.pending_plan_cycle_ended_at   = new_ended_at
+        invoice.site.save
+      end
     end
-    delay_update_pending_dates_for_non_renew_and_not_paid_invoices
+    delay_update_pending_dates_for_first_not_paid_invoices
   end
 
   # ====================
