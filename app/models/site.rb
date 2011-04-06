@@ -280,11 +280,13 @@ class Site < ActiveRecord::Base
           "star"
         elsif usages.sum < Plan.galaxy_player_hits && usages.mean < Plan.galaxy_daily_player_hits
           "galaxy"
-        else
+        elsif !in_custom_plan?
           "custom"
+        else
+          nil
         end
         # Don't recommend smaller plan
-        if plan.player_hits != 0 && plan.player_hits >= Plan.send("#{name}_player_hits")
+        if plan.player_hits != 0 && name != 'custom' && plan.player_hits >= Plan.send("#{name}_player_hits")
           nil
         else
           name

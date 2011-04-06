@@ -48,7 +48,7 @@
         - next if standard_plan.yearly?
         - standard_yearly_plan = standard_plans.find { |p| p.name == standard_plan.name && p.yearly? }
         - i += 1
-        %li{ :class => "#{standard_plan.name} box_#{i}" + (current_user.get_discount? ? ' discount' : '') }
+        %li{ :class => "#{standard_plan.name} box_#{i}" + (current_user.get_discount? ? ' discount' : '') + (standard_plan.name == site.recommended_plan_name ? ' recommended' : '') }
           .wrapper
             .header
               %h3.title= content_tag(:strong, standard_plan.name.titleize)
@@ -85,5 +85,5 @@
         = f.radio_button :plan_id, dev_plan.id, radio_button_options(site, dev_plan, current_plan, :checked => current_plan && current_plan == dev_plan)
         %span.bg
 
-    #need_more
+    #need_more{ :class => (site.recommended_plan_name == 'custom' ? 'recommended' : '') }
       %p= raw "Need more pageviews, custom support or have other enterprise-class requirements? Please #{mail_to "sales@sublimevideo.net", "contact us"}."
