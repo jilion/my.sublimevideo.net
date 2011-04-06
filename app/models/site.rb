@@ -340,7 +340,7 @@ class Site < ActiveRecord::Base
     when 'year'
       plan_cycle_started_at + months_since(plan_cycle_started_at).months
     when 'none'
-      1.month.ago.midnight
+      (1.month - 1.day).ago.midnight
     end
   end
 
