@@ -9,7 +9,7 @@ namespace :one_time do
         SiteUsage.where(:day => { "$gte" => beginning_of_month }).delete_all
 
         months_logs = Log.where(:started_at => { "$gte" => beginning_of_month })
-        months_logs_ids = mixed_logs.map(&:id)
+        months_logs_ids = months_logs.map(&:id)
         puts OneTime::Log.delay(:priority => 299).parse_logs(months_logs_ids)
         puts "Delayed logs parsing from #{beginning_of_month}"
       end
