@@ -65,12 +65,24 @@ describe MailLetter do
           end
         end
 
-        context "with the 'with_invalid_site' filter" do
+        context "with the 'beta_with_recommended_plan' filter" do
           before(:all) do
-            @user2 = Factory(:user, :invitation_token => nil)
-            Factory(:site, :user => @user2, :state => 'archived').tap { |site| site.update_attribute(:hostname, 'localhost') }
+            Plan.delete_all
+            Factory(:plan, name: "comet",  player_hits: 3_000)
+            Factory(:plan, name: "planet", player_hits: 50_000)
+            Factory(:plan, name: "star",   player_hits: 200_000)
+            Factory(:plan, name: "galaxy", player_hits: 1_000_000)
+            Timecop.travel(15.days.ago) { @site = Factory(:beta_site, user: @user) }
           end
-          subject { MailLetter.new(@attributes.merge(:criteria => 'with_invalid_site')).deliver_and_log }
+          before(:each) do
+            @site.unmemoize_all
+            Factory(:site_usage, site_id: @site.id, day: 1.day.ago,  main_player_hits: 1000)
+            Factory(:site_usage, site_id: @site.id, day: 2.days.ago, main_player_hits: 1000)
+            Factory(:site_usage, site_id: @site.id, day: 3.days.ago, main_player_hits: 1000)
+            Factory(:site_usage, site_id: @site.id, day: 4.days.ago, main_player_hits: 1000)
+            Factory(:site_usage, site_id: @site.id, day: 5.days.ago, main_player_hits: 1000)
+          end
+          subject { MailLetter.new(@attributes.merge(:criteria => 'beta_with_recommended_plan')).deliver_and_log }
 
           it "should delay delivery of mails" do
             lambda { subject }.should change(Delayed::Job.where(:handler.matches => "%deliver%"), :count).by(1)

@@ -49,6 +49,17 @@ Factory.define :site, :parent => :new_site do |f|
   end
 end
 
+# Don't create invoice nor try to charge
+Factory.define :beta_site, :parent => :new_site do |f|
+  f.plan_id             nil
+  f.pending_plan_id     { Factory(:beta_plan).id }
+  f.after_build do |site|
+    site.pend_plan_changes
+    site.apply_pending_plan_changes
+    site.reload
+  end
+end
+
 Factory.define :site_with_invoice, :parent => :new_site do |f|
   f.after_build  { |site| VCR.insert_cassette('ogone/visa_payment_generic') }
   f.after_create do |site|
