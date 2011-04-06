@@ -1680,6 +1680,10 @@ input.link_looks.delete {
   box-shadow:inset rgba(0,0,0,0.4) 0 1px 3px, rgba(255,255,255,0.4) 0 1px 0;
 }
 
+#recommanded_plan_box {
+  padding:0 0 2px;
+}
+
 #plans {
   position:relative;
 }
@@ -1735,6 +1739,8 @@ input.link_looks.delete {
 
 #plans .header {
   padding:31px 25px 0;
+  position:relative;
+  z-index:4;
 }
 
 #plans h3.title {
@@ -1789,6 +1795,26 @@ input.link_looks.delete {
 
 #plans li ul.features li strong {
   font-weight:600;
+}
+
+#plans li span.recommended_label {display:none}
+
+#plans li.recommended span.recommended_label {
+  display:block;
+  width:218px;
+  height:22px;
+  padding-top:8px;
+  background:url(/images/embed/sites/recommended_label.png) no-repeat;
+  position:absolute;
+  z-index:4;
+  bottom:-21px;
+  left:-4px;
+  font-size:10px;
+  text-transform:uppercase;
+  text-shadow:rgba(0,0,0,0.6) 0 -1px 0;
+  color:#ebf8ff;
+  letter-spacing:2px;
+  text-align:center;
 }
 
 #plans .select_box {
