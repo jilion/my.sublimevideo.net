@@ -2,7 +2,7 @@ source :rubygems
 
 gem 'bundler',               '1.0.11'
 
-gem 'rails',                 '3.0.5'
+gem 'rails',                 '3.0.6'
 
 # Databases
 gem 'pg',                    '0.10.1'
