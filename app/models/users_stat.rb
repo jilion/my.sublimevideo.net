@@ -20,8 +20,8 @@ class UsersStat
   def self.create_users_stats
     delay_create_users_stats
     self.create(:states_count => {
-      :active_and_billable_count     => User.active_and_billable.count,
-      :active_and_not_billable_count => User.active_and_not_billable.count,
+      :active_and_billable_count     => User.active_and_billable.select("DISTINCT users.id").count,
+      :active_and_not_billable_count => User.active_and_not_billable.select("DISTINCT users.id").count,
       :suspended_count               => User.with_state(:suspended).count,
       :archived_count                => User.with_state(:archived).count
     })

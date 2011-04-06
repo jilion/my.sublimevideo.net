@@ -27,6 +27,7 @@ describe UsersStat do
     it "should create users stats for states" do
       user1 = Factory(:user)
       Factory(:site, user: user1, plan_id: @paid_plan.id)
+      Factory(:site, user: user1, plan_id: @paid_plan.id)
       user2 = Factory(:user)
       Factory(:site, user: user1, plan_id: @paid_plan.id).update_attribute(:next_cycle_plan_id, @dev_plan.id)
       user3 = Factory(:user)

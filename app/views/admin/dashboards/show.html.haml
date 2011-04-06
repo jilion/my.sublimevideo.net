@@ -9,6 +9,14 @@
 
 %h2= "Total revenue: #{display_amount(Invoice.total_revenue)}"
 
+%h3 Sites
+%p= "LaunchPad sites: #{Site.active.dev.count}"
+%p= "Beta sites: #{Site.active.beta.count}"
+%p= "Sponsored sites: #{Site.active.sponsored.count}"
+%p= "Paying sites: #{Site.active.in_paid_plan.count}"
+%p= "Custom sites: #{Site.active.custom.count}"
+%br
+
 -# #box_traffic.dashboard_box
 %h3 Traffic
 - player_hits = SiteUsage.between(31.days.ago.utc, Time.now.utc.yesterday).sum(:player_hits).to_i
@@ -24,19 +32,13 @@
 - today_signups = User.active.where(:created_at.gte => Time.now.utc.midnight, :created_at.lt => Time.now.utc.tomorrow.midnight)
 - yesterday_signups = User.active.where(:created_at.gte => Time.now.utc.yesterday.midnight, :created_at.lt => Time.now.utc.midnight)
 %p= "Users signups: #{User.active.count} (#{today_signups.count} today, #{yesterday_signups.count} yesterday)"
-%p= "Billable customers: #{User.billable.count}"
+%p= "Billable customers: #{User.select("DISTINCT users.id").billable.count}"
 
 -# - cache 'dashboard_box_users', :expires_in => 10.minutes do
 -#   = render 'users'
 %br
 
 -# #box_sites.dashboard_box
-%h3 Sites
-%p= "LaunchPad sites: #{Site.active.dev.count}"
-%p= "Beta sites: #{Site.active.beta.count}"
-%p= "Sponsored sites: #{Site.active.sponsored.count}"
-%p= "Paying sites: #{Site.active.in_paid_plan.count}"
-%p= "Custom sites: #{Site.active.custom.count}"
 
 -# - cache 'dashboard_box_sites', :expires_in => 10.minutes do
 -#   = render 'sites'
