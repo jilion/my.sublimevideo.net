@@ -38,6 +38,10 @@ describe Site::Invoice do
         Invoice.where(site_id: @site_not_to_be_renewed).count.should == 0
       end
 
+      it "should set the renew flag to true" do
+        Invoice.where(site_id: @site_to_be_renewed).last.renew.should be_true
+      end
+
       it "should delay renew_active_sites!" do
         Delayed::Job.where(:handler.matches => '%Site%renew_active_sites!%').count.should == 1
       end
@@ -57,6 +61,65 @@ describe Site::Invoice do
       its(:invoices_failed?) { should be_true }
     end
 
+    describe "invoices_waiting?" do
+      subject do
+        site = Factory(:site)
+        Factory(:invoice, site: site , state: 'waiting')
+        site
+      end
+
+      its(:invoices_waiting?) { should be_true }
+    end
+
+    describe "#invoices_open?" do
+      before(:all) do
+        @site = Factory(:site)
+      end
+      before(:each) { Invoice.delete_all }
+      subject { @site }
+
+      context "with no options" do
+        it "should be true if invoice have the renew flag == false" do
+          invoice = Factory(:invoice, state: 'open', site: @site, renew: false)
+          invoice.renew.should be_false
+          subject.invoices_open?.should be_true
+        end
+
+        it "should be true if invoice have the renew flag == true" do
+          invoice = Factory(:invoice, state: 'open', site: @site, renew: true)
+          invoice.renew.should be_true
+          subject.invoices_open?.should be_true
+        end
+      end
+
+      context "with options[:renew] == true" do
+        it "should be false if no invoice with the renew flag == true" do
+          invoice = Factory(:invoice, state: 'open', site: @site, renew: false)
+          invoice.renew.should be_false
+          subject.invoices_open?(renew: true).should be_false
+        end
+
+        it "should be true if invoice with the renew flag == true" do
+          invoice = Factory(:invoice, state: 'open', site: @site, renew: true)
+          invoice.renew.should be_true
+          subject.invoices_open?(renew: true).should be_true
+        end
+      end
+
+      context "with options[:renew] == false" do
+        it "should be false if no invoice with the renew flag == true" do
+          invoice = Factory(:invoice, state: 'open', site: @site, renew: false)
+          invoice.renew.should be_false
+          subject.invoices_open?(renew: false).should be_true
+        end
+
+        it "should be true if invoice with the renew flag == true" do
+          invoice = Factory(:invoice, state: 'open', site: @site, renew: true)
+          invoice.renew.should be_true
+          subject.invoices_open?(renew: false).should be_false
+        end
+      end
+    end
 
     describe "#in_beta_plan?" do
       subject { Factory(:site, plan_id: @beta_plan.id) }

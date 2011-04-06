@@ -7,7 +7,7 @@
       = "(beta)" if invoice.user.beta?
   %td.period
     %small
-      = l(invoice.created_at, :format => :d_b_Y)
+      = l(invoice.paid_at || invoice.last_failed_at || invoice.created_at, :format => :d_b_Y)
       = ", Refund. #{l(invoice.site.refunded_at, :format => :d_b_Y)}" if invoice.refunded?
   %td.site
     = link_to invoice.site.hostname, [:edit, :admin, invoice.site]
@@ -15,10 +15,10 @@
   %td.invoice_items_count
     - if invoice.invoice_items_count > 1
       = "upgrade"
-    - elsif invoice.invoice_items.first.started_at == invoice.site.first_paid_plan_started_at
-      = "creation"
-    - else
+    - elsif invoice.renew
       = "renewing"
+    - else
+      = "creation"
   %td.amount
     = display_amount(invoice.amount)
   %td.state

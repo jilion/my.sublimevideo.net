@@ -15,7 +15,7 @@ module Site::Invoice
     def renew_active_sites!
       Site.active.to_be_renewed.each do |site|
         site.pend_plan_changes
-        invoice = Invoice.build(site: site)
+        invoice = Invoice.build(site: site, renew: true)
         invoice.save!
       end
       delay_renew_active_sites!
@@ -34,8 +34,10 @@ module Site::Invoice
     invoices.any? { |i| i.waiting? }
   end
 
-  def invoices_open?
-    invoices.any? { |i| i.open? }
+  def invoices_open?(options={})
+    scope = invoices
+    scope = scope.where(renew: options[:renew]) if options.key?(:renew)
+    scope.any? { |i| i.open? }
   end
 
   def in_beta_plan?
@@ -167,8 +169,6 @@ module Site::Invoice
     time ? ((Time.now.utc.midnight.to_i - time.midnight.to_i) / 1.day) : 0
   end
 
-private
-
   def advance_for_next_cycle_end(plan, start_time=plan_started_at)
     if plan.yearly?
       (months_since(start_time) + 12).months
@@ -176,6 +176,8 @@ private
       (months_since(start_time) + 1).months
     end - 1.day
   end
+
+private
 
   # before_save
   def set_first_paid_plan_started_at

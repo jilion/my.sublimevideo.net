@@ -104,7 +104,7 @@ class User < ActiveRecord::Base
 
   # sort
   scope :by_name_or_email,   lambda { |way='asc'| order(:first_name.send(way), :email.send(way)) }
-  scope :by_sites_last_30_days_billable_player_hits_total_count,  lambda { |way = 'desc'|
+  scope :by_sites_last_30_days_billable_player_hits_total_count,  lambda { |way='desc'|
     joins(:sites).group(User.column_names.map { |c| "\"users\".\"#{c}\"" }.join(', ')).order("SUM(sites.last_30_days_main_player_hits_total_count) + SUM(sites.last_30_days_extra_player_hits_total_count) #{way}")
   }
   scope :by_last_invoiced_amount,  lambda { |way='desc'| order(:last_invoiced_amount.send(way)) }
@@ -187,8 +187,10 @@ class User < ActiveRecord::Base
     invoices.any? { |i| i.waiting? }
   end
 
-  def invoices_open?
-    invoices.any? { |i| i.open? }
+  def invoices_open?(options={})
+    scope = invoices
+    scope = scope.where(renew: options[:renew]) if options.key?(:renew)
+    scope.any? { |i| i.open? }
   end
 
   def full_name

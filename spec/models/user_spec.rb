@@ -571,11 +571,53 @@ describe User do
       before(:all) do
         @user = Factory(:user)
         @site = Factory(:site, user: @user)
-        Factory(:invoice, state: 'open', site: @site)
+      end
+      before(:each) do
+        Invoice.delete_all
       end
       subject { @user }
 
-      its(:invoices_open?) { should be_true }
+      context "with no options" do
+        it "should be true if invoice have the renew flag == false" do
+          invoice = Factory(:invoice, state: 'open', site: @site, renew: false)
+          invoice.renew.should be_false
+          subject.invoices_open?.should be_true
+        end
+
+        it "should be true if invoice have the renew flag == true" do
+          invoice = Factory(:invoice, state: 'open', site: @site, renew: true)
+          invoice.renew.should be_true
+          subject.invoices_open?.should be_true
+        end
+      end
+
+      context "with options[:renew] == true" do
+        it "should be false if no invoice with the renew flag == true" do
+          invoice = Factory(:invoice, state: 'open', site: @site, renew: false)
+          invoice.renew.should be_false
+          subject.invoices_open?(renew: true).should be_false
+        end
+
+        it "should be true if invoice with the renew flag == true" do
+          invoice = Factory(:invoice, state: 'open', site: @site, renew: true)
+          invoice.renew.should be_true
+          subject.invoices_open?(renew: true).should be_true
+        end
+      end
+
+      context "with options[:renew] == false" do
+        it "should be false if no invoice with the renew flag == true" do
+          invoice = Factory(:invoice, state: 'open', site: @site, renew: false)
+          invoice.renew.should be_false
+          subject.invoices_open?(renew: false).should be_true
+        end
+
+        it "should be true if invoice with the renew flag == true" do
+          invoice = Factory(:invoice, state: 'open', site: @site, renew: true)
+          invoice.renew.should be_true
+          subject.invoices_open?(renew: false).should be_false
+        end
+      end
     end
 
     describe "#support" do

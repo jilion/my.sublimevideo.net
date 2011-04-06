@@ -12,7 +12,6 @@ describe InvoiceItem::Plan do
 
       Timecop.travel(PublicLaunch.beta_transition_ended_on - 1.hour) do
         @site_without_discount1 = Factory.build(:new_site, user: @not_enthusiast, plan_id: @plan1.id)
-        # @site_without_discount1.pend_plan_changes # simulate new or renew
         @site_without_discount2 = Factory(:site_with_invoice, user: @not_enthusiast, plan_id: @plan1.id)
         @site_without_discount2.plan_id = @plan2.id # upgrade
         @site_without_discount2.pend_plan_changes # simulate upgrade
@@ -21,7 +20,6 @@ describe InvoiceItem::Plan do
         @site_without_discount3.pend_plan_changes # simulate downgrade
 
         @site_with_discount1 = Factory.build(:new_site, user: @enthusiast, plan_id: @plan1.id)
-        # @site_with_discount1.pend_plan_changes # simulate new or renew
         @site_with_discount2 = Factory(:site_with_invoice, user: @enthusiast, plan_id: @plan1.id)
         @site_with_discount2.plan_id = @plan2.id # upgrade
         @site_with_discount2.pend_plan_changes # simulate upgrade

@@ -20,10 +20,9 @@ class Admin::UsersController < Admin::AdminController
 
   # GET /admin/users
   def index
-    @users = User.select("DISTINCT users.*").includes(:sites, :invoices)
-    if params.keys.all? { |k| k =~ /^by_/ || %w[action controller search].include?(k) }
-      @users = @users.active_and_billable
-    end
+    params[:active_and_billable] = true if !params.key?(:active_and_not_billable) && !params.key?(:with_state)
+    @users = User.includes(:sites, :invoices)
+    @users = @users.select("DISTINCT users.*") unless params.key? :by_sites_last_30_days_billable_player_hits_total_count
     @users = apply_scopes(@users).by_date
     respond_with(@users, :per_page => 50)
   end
