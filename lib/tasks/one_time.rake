@@ -16,7 +16,7 @@ namespace :one_time do
     end
 
     desc "Reparse voxcast logs for user agent"
-    task :reparse => :environment do
+    task :reparse_user_agent => :environment do
       timed do
         beginning_of_month = Time.now.utc.beginning_of_month
         UsrAgent.where(:month => { "$gte" => beginning_of_month }).delete_all
