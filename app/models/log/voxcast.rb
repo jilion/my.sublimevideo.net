@@ -76,14 +76,14 @@ class Log::Voxcast < Log
   end
 
   def parse_and_create_user_agents!
-    # unless user_agents_parsed?
+    unless user_agents_parsed?
       logs_file = copy_logs_file_to_tmp
       trackers = LogAnalyzer.parse(logs_file, 'LogsFileFormat::VoxcastUserAgents')
       UsrAgent.create_or_update_from_trackers!(self, trackers)
       File.delete(logs_file.path)
       self.user_agents_parsed_at = Time.now.utc
       self.save
-    # end
+    end
   end
 
   def user_agents_parsed?
