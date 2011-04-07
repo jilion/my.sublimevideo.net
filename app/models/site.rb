@@ -48,13 +48,13 @@ class Site < ActiveRecord::Base
   # ==========
 
   # billing
-  scope :billable,      where({ :plan_id.in => Plan.paid_plans.map(&:id) }, { :next_cycle_plan_id => nil } | { :next_cycle_plan_id.ne => Plan.dev_plan.id }).where(:state => 'active')
-  scope :not_billable,  where({ :state.ne => 'active' } | ({ :state => 'active' } & ({ :plan_id.in => Plan.free_plans.map(&:id), :next_cycle_plan_id => nil } | { :next_cycle_plan_id => Plan.dev_plan })))
-  scope :to_be_renewed, where(:plan_cycle_ended_at.lt => Time.now.utc, :pending_plan_id => nil)
-  scope :refundable,    where(:first_paid_plan_started_at.gte => 30.days.ago, :refunded_at => nil)
-  scope :refunded,      where(:state => 'archived', :refunded_at.ne => nil)
+  scope :billable,      lambda { active.where({ :plan_id.in => Plan.paid_plans.map(&:id) }, { :next_cycle_plan_id => nil } | { :next_cycle_plan_id.ne => Plan.dev_plan.id }) }
+  scope :not_billable,  lambda { where({ :state.ne => 'active' } | ({ :state => 'active' } & ({ :plan_id.in => Plan.free_plans.map(&:id), :next_cycle_plan_id => nil } | { :next_cycle_plan_id => Plan.dev_plan }))) }
+  scope :to_be_renewed, lambda { where(:plan_cycle_ended_at.lt => Time.now.utc, :pending_plan_id => nil) }
+  scope :refundable,    lambda { where(:first_paid_plan_started_at.gte => 30.days.ago, :refunded_at => nil) }
+  scope :refunded,      lambda { where(:state => 'archived', :refunded_at.ne => nil) }
 
-  scope :in_paid_plan, joins(:plan).merge(Plan.paid_plans)
+  scope :in_paid_plan, lambda { joins(:plan).merge(Plan.paid_plans) }
 
   # usage_monitoring scopes
   scope :plan_player_hits_reached_notified, where(:plan_player_hits_reached_notification_sent_at.ne => nil)
