@@ -154,7 +154,7 @@ describe Site do
         @site_not_refundable2 = Factory(:site, refunded_at: Time.now.utc)
       end
 
-      specify { Site.refundable.all.should == [@site_refundable1, @site_refundable2] }
+      specify { Site.refundable.all.should =~ [@site_refundable1, @site_refundable2] }
     end
 
     describe "#refunded" do
@@ -1111,7 +1111,7 @@ describe Site do
       end
     end
 
-    describe "#current_monthly_billable_usages" do
+    describe "#billable_usages" do
       before(:all) { Timecop.travel(15.days.ago) { @site = Factory(:site) } }
       before(:each) do
         @site.unmemoize_all
@@ -1124,18 +1124,18 @@ describe Site do
         Factory(:site_usage, site_id: @site.id, day: 7.days.ago, main_player_hits: 0)
       end
 
-      it "should return all monthly usages by default" do
-        @site.current_monthly_billable_usages.should == [0, 0, 1, 0, 2, 3, 4]
+      describe "#current_monthly_billable_usages" do
+        specify { @site.current_monthly_billable_usages.should == [0, 0, 1, 0, 2, 3, 4] }
       end
 
-      it "should skip first zeros" do
-        @site.current_monthly_billable_usages(:drop_first_zeros => true).should == [1, 0, 2, 3, 4]
+      it "last_30_days_billable_usages should skip first zeros" do
+        @site.last_30_days_billable_usages.should == [1, 0, 2, 3, 4]
       end
 
     end
 
 
-    describe "#current_monthly_billable_usages_sum & #current_percentage_of_plan_used"do
+    describe "#current_monthly_billable_usages.sum & #current_percentage_of_plan_used" do
       before(:all) { @site = Factory(:site) }
       before(:each) do
         Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,1,30),
@@ -1166,7 +1166,7 @@ describe Site do
         end
         subject { @site }
 
-        its(:current_monthly_billable_usages_sum) { should == 5 + 6 + 7 + 8 }
+        its("current_monthly_billable_usages.sum") { should == 5 + 6 + 7 + 8 }
         its(:current_percentage_of_plan_used)     { should == 26 / 100.0 }
       end
 
@@ -1181,7 +1181,7 @@ describe Site do
         end
         subject { @site }
 
-        its(:current_monthly_billable_usages_sum) { should == 9 + 10 + 11 + 12 }
+        its("current_monthly_billable_usages.sum") { should == 9 + 10 + 11 + 12 }
         its(:current_percentage_of_plan_used)     { should == 1 }
       end
 
@@ -1197,7 +1197,7 @@ describe Site do
         after(:all) { Timecop.return }
         subject { @site }
 
-        its(:current_monthly_billable_usages_sum) { should == 5 + 6 + 7 + 8 }
+        its("current_monthly_billable_usages.sum") { should == 5 + 6 + 7 + 8 }
         its(:current_percentage_of_plan_used)     { should == 26 / 100.0 }
       end
 
@@ -1213,7 +1213,7 @@ describe Site do
         after(:all) { Timecop.return }
         subject { @site }
 
-        its(:current_monthly_billable_usages_sum) { should == 1 + 2 + 3 + 4 }
+        its("current_monthly_billable_usages.sum") { should == 1 + 2 + 3 + 4 }
         its(:current_percentage_of_plan_used)     { should == 10 / 1000.0 }
       end
     end
@@ -1364,7 +1364,7 @@ describe Site do
         Factory(:plan, name: "planet", player_hits: 50_000)
         Factory(:plan, name: "star",   player_hits: 200_000)
         @galaxy_plan = Factory(:plan, name: "galaxy", player_hits: 1_000_000)
-        Timecop.travel(15.days.ago) { @site = Factory(:beta_site) }
+        @site = Factory(:beta_site)
       end
       subject { @site }
 

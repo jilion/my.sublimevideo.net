@@ -14,6 +14,7 @@ class Referrer
   index :hits
   index :contextual_hits
   index :created_at
+  index :updated_at
 
   attr_accessible :token, :url, :hits, :contextual_hits
 

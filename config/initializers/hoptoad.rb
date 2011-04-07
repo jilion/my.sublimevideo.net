@@ -3,4 +3,5 @@ HoptoadNotifier.configure do |config|
   config.ignore  << ActionController::UnknownHttpMethod
   config.ignore  << VoxcastCDN::Error
   config.ignore  << Log::DownloadError
+  config.ignore  << Errno::EPIPE
 end

@@ -33,9 +33,8 @@
 
   - if site.recommended_plan_name
     #recommanded_plan_box
-      - usages = site.current_monthly_billable_usages(:drop_first_zeros => true)
       %p.note
-        =raw "Your usage in the last #{usages.size} days: #{content_tag :strong, number_with_delimiter(usages.sum)} video pageviews =>"
+        =raw "Your usage in the last 30 days: #{content_tag :strong, number_with_delimiter(site.last_30_days_billable_usages.sum)} video pageviews =>"
         - if site.recommended_plan_name == 'custom'
           =raw "Recommended plan: <strong>Custom</strong> (please #{mail_to "sales@sublimevideo.net", "contact us"})"
         - else
