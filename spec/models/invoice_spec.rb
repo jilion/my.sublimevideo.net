@@ -56,7 +56,7 @@ describe Invoice do
         subject { @invoice.reload }
         it "should set paid_at" do
           subject.paid_at.should be_nil
-          subject.succeed
+          subject.succeed!
           subject.paid_at.should be_present
         end
       end
@@ -65,7 +65,7 @@ describe Invoice do
         subject { @invoice.reload }
         it "should set last_failed_at" do
           subject.last_failed_at.should be_nil
-          subject.fail
+          subject.fail!
           subject.last_failed_at.should be_present
         end
       end
@@ -74,7 +74,7 @@ describe Invoice do
         it "should call #apply_pending_plan_changes on the site" do
           site = Factory(:site)
           site.should_receive(:apply_pending_plan_changes)
-          Factory(:invoice, site: site).succeed
+          Factory(:invoice, site: site).succeed!
         end
       end
 
@@ -83,12 +83,12 @@ describe Invoice do
 
         it "should update user.last_invoiced_amount" do
           subject.user.update_attribute(:last_invoiced_amount, 500)
-          expect { subject.succeed }.should change(subject.user.reload, :last_invoiced_amount).from(500).to(10000)
+          expect { subject.succeed! }.should change(subject.user.reload, :last_invoiced_amount).from(500).to(10000)
         end
 
         it "should increment user.total_invoiced_amount" do
           subject.user.update_attribute(:total_invoiced_amount, 500)
-          expect { subject.succeed }.should change(subject.user.reload, :total_invoiced_amount).from(500).to(10500)
+          expect { subject.succeed! }.should change(subject.user.reload, :total_invoiced_amount).from(500).to(10500)
         end
 
         it "should save user" do
@@ -113,7 +113,7 @@ describe Invoice do
               end
 
               it "should not un-suspend_user" do
-                subject.succeed
+                subject.succeed!
                 subject.should be_paid
                 subject.user.should be_active
               end
@@ -132,7 +132,7 @@ describe Invoice do
 
               context "with no more open invoice" do
                 it "should un-suspend_user" do
-                  subject.succeed
+                  subject.succeed!
                   subject.should be_paid
                   subject.user.should be_active
                 end
@@ -144,7 +144,7 @@ describe Invoice do
                 end
 
                 it "should not delay un-suspend_user" do
-                  subject.succeed
+                  subject.succeed!
                   subject.should be_paid
                   subject.user.should be_suspended
                 end
@@ -159,12 +159,11 @@ describe Invoice do
         
         it "should delay on Ding class" do
           Ding.should_receive(:delay)
-          subject.succeed
+          subject.succeed!
         end
         
         it "should send a ding!" do
           expect { subject.succeed! }.to change(Delayed::Job, :count)
-          # puts Delayed::Job.all.map(&:name).inspect
           djs = Delayed::Job.where(:handler.matches => "%plan_added%")
           djs.count.should == 1
           djs.first.name.should == 'Class#plan_added'
