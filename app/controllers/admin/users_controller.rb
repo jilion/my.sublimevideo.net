@@ -32,5 +32,11 @@ class Admin::UsersController < Admin::AdminController
     @user = User.find(params[:id])
     respond_with(@user)
   end
+  
+  # GET /admin/users/:id/become
+  def become
+    sign_in(:user, User.find(params[:id]))
+    redirect_to root_path
+  end
 
 end

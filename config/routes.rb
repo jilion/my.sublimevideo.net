@@ -77,7 +77,11 @@ MySublimeVideo::Application.routes.draw do
 
   namespace "admin" do
     resource  :dashboard, :only => :show
-    resources :users,     :only => [:index, :show]
+    resources :users,     :only => [:index, :show] do
+      member do
+        get :become
+      end
+    end
     resources :sites,     :only => [:index, :show, :edit, :update] do
       member do
         put :sponsor

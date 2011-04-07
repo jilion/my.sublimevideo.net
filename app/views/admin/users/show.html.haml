@@ -8,6 +8,8 @@
 = render partial: 'timeline_usage', locals: { user: @user }
 -#= render partial: 'timeline_invoices', locals: { user: @user }
 
+%p= link_to "Signin as #{@user.full_name}", become_admin_user_path(@user)
+
 %p
   = "State:"
   %strong= @user.state.humanize
