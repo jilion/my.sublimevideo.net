@@ -270,7 +270,7 @@ class Site < ActiveRecord::Base
 
   def recommended_plan_name
     if in_beta_plan? || in_paid_plan?
-      usages = current_monthly_billable_usages(:drop_first_zeros => true)
+      usages = last_30_days_billable_usages
       if usages.size >= 5
         name = if usages.sum < Plan.comet_player_hits && usages.mean < Plan.comet_daily_player_hits
           "comet"
@@ -296,6 +296,7 @@ class Site < ActiveRecord::Base
       end
     end
   end
+  memoize :recommended_plan_name
 
   def update_last_30_days_counters
     self.last_30_days_main_player_hits_total_count  = 0
@@ -309,25 +310,30 @@ class Site < ActiveRecord::Base
     self.save
   end
 
-  def current_monthly_billable_usages(options = {})
-    monthly_usages = usages.between(plan_month_cycle_started_at, plan_month_cycle_ended_at).asc(:day).map(&:billable_player_hits)
+  def billable_usages(options = {})
+    monthly_usages = usages.between(options[:from], options[:to]).asc(:day).map(&:billable_player_hits)
     if options[:drop_first_zeros]
       monthly_usages.drop_while { |usage| usage == 0 }
     else
       monthly_usages
     end
   end
-  memoize :current_monthly_billable_usages
 
-  def current_monthly_billable_usages_sum
-    current_monthly_billable_usages.sum
+  def last_30_days_billable_usages
+    billable_usages(from: (30.days - 1.day).ago.midnight, to: Time.now.utc.end_of_day, drop_first_zeros: true)
   end
-  memoize :current_monthly_billable_usages_sum
+  memoize :last_30_days_billable_usages
+
+
+  def current_monthly_billable_usages
+    billable_usages(from: plan_month_cycle_started_at, to: plan_month_cycle_ended_at)
+  end
+  memoize :current_monthly_billable_usages
 
   def current_percentage_of_plan_used
     if in_paid_plan?
-      percentage = [(current_monthly_billable_usages_sum / plan.player_hits.to_f).round(2), 1].min
-      percentage == 0.0 && current_monthly_billable_usages_sum > 0 ? 0.01 : percentage
+      percentage = [(current_monthly_billable_usages.sum / plan.player_hits.to_f).round(2), 1].min
+      percentage == 0.0 && current_monthly_billable_usages.sum > 0 ? 0.01 : percentage
     else
       0
     end
