@@ -2,7 +2,7 @@
 namespace :one_time do
 
   namespace :logs do
-    desc "Reparse logs for site usages per day"
+    desc "Reparse logs for site usages"
     task :reparse => :environment do
       timed do
         beginning_of_month = Time.now.utc.beginning_of_month
@@ -12,6 +12,19 @@ namespace :one_time do
         months_logs_ids = months_logs.map(&:id)
         puts OneTime::Log.delay(:priority => 299).parse_logs(months_logs_ids)
         puts "Delayed logs parsing from #{beginning_of_month}"
+      end
+    end
+
+    desc "Reparse voxcast logs for user agent"
+    task :reparse => :environment do
+      timed do
+        beginning_of_month = Time.now.utc.beginning_of_month
+        UsrAgent.where(:month => { "$gte" => beginning_of_month }).delete_all
+
+        months_logs = Log::Voxcast.where(:started_at => { "$gte" => beginning_of_month })
+        months_logs_ids = months_logs.map(&:id)
+        puts OneTime::Log.delay(:priority => 299).parse_logs_for_user_agents(months_logs_ids)
+        puts "Delayed Voxcast logs parsing for user agent from #{beginning_of_month}"
       end
     end
   end
