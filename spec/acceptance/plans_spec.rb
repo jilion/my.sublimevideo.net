@@ -161,7 +161,7 @@ feature "Plans" do
       click_link "#{site.plan.title} => #{site.next_cycle_plan.title}"
 
       current_url.should =~ %r(http://[^/]+/sites/#{site.token}/plan/edit$)
-      
+
       page.should have_content("Your new plan #{site.next_cycle_plan.title} will automatically start on #{I18n.l(site.plan_cycle_ended_at.tomorrow.midnight, :format => :named_date).squeeze(' ')}.")
 
       click_button "Cancel"

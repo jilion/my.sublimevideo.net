@@ -1135,7 +1135,7 @@ describe Site do
     end
 
 
-    describe "#current_monthly_billable_usages.sum & #current_percentage_of_plan_used"do
+    describe "#current_monthly_billable_usages.sum & #current_percentage_of_plan_used" do
       before(:all) { @site = Factory(:site) }
       before(:each) do
         Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,1,30),
@@ -1166,7 +1166,7 @@ describe Site do
         end
         subject { @site }
 
-        its(:current_monthly_billable_usages.sum) { should == 5 + 6 + 7 + 8 }
+        its("current_monthly_billable_usages.sum") { should == 5 + 6 + 7 + 8 }
         its(:current_percentage_of_plan_used)     { should == 26 / 100.0 }
       end
 
@@ -1181,7 +1181,7 @@ describe Site do
         end
         subject { @site }
 
-        its(:current_monthly_billable_usages.sum) { should == 9 + 10 + 11 + 12 }
+        its("current_monthly_billable_usages.sum") { should == 9 + 10 + 11 + 12 }
         its(:current_percentage_of_plan_used)     { should == 1 }
       end
 
@@ -1197,7 +1197,7 @@ describe Site do
         after(:all) { Timecop.return }
         subject { @site }
 
-        its(:current_monthly_billable_usages.sum) { should == 5 + 6 + 7 + 8 }
+        its("current_monthly_billable_usages.sum") { should == 5 + 6 + 7 + 8 }
         its(:current_percentage_of_plan_used)     { should == 26 / 100.0 }
       end
 
@@ -1213,7 +1213,7 @@ describe Site do
         after(:all) { Timecop.return }
         subject { @site }
 
-        its(:current_monthly_billable_usages.sum) { should == 1 + 2 + 3 + 4 }
+        its("current_monthly_billable_usages.sum") { should == 1 + 2 + 3 + 4 }
         its(:current_percentage_of_plan_used)     { should == 10 / 1000.0 }
       end
     end
