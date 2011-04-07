@@ -20,7 +20,7 @@ class Admin::UsersController < Admin::AdminController
 
   # GET /admin/users
   def index
-    params[:active_and_billable] = true if !params.key?(:active_and_not_billable) && !params.key?(:with_state)
+    params[:active_and_billable] = true if !params.key?(:active_and_not_billable) && !params.key?(:with_state) && !params.key?(:search)
     @users = User.includes(:sites, :invoices)
     @users = @users.select("DISTINCT users.*") unless params.key? :by_sites_last_30_days_billable_player_hits_total_count
     @users = apply_scopes(@users).by_date
