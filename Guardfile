@@ -8,8 +8,8 @@ group 'frontend' do
     watch('Gemfile.lock')
     watch('config/application.rb')
     watch('config/environment.rb')
-    watch(%r{^config/environments/.*\.rb$})
-    watch(%r{^config/initializers/.*\.rb$})
+    watch(%r{^config/environments/.+\.rb$})
+    watch(%r{^config/initializers/.+\.rb$})
   end
 
   guard 'livereload' do
