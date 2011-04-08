@@ -7,9 +7,9 @@ gem 'rails',                 '3.0.6'
 # Databases
 gem 'pg',                    '0.10.1'
 gem 'meta_where',            '1.0.4'
-gem 'bson_ext',              '1.2.4'
-gem 'mongo',                 '1.2.4'
-gem 'mongoid',               '2.0.0'
+gem 'bson_ext',              '1.3.0'
+gem 'mongo',                 '1.3.0'
+gem 'mongoid',               '2.0.1'
 
 # Views
 gem 'haml',                  '3.0.25'
@@ -28,15 +28,15 @@ gem 'rescue_me',             '0.1.0'
 gem 'configuration',         '1.2.0'
 gem 'libxml-ruby',           '1.1.3', :require => 'libxml'
 
-gem 'state_machine',         '0.10.2'
-gem 'paper_trail',           '2.1.1'
+gem 'state_machine',         '0.10.3'
+gem 'paper_trail',           '2.2.2'
 gem 'uniquify',              '0.1.0'
 
 gem 'responders',            '0.6.2'
 gem 'has_scope',             :git => 'git://github.com/rymai/has_scope.git'
 
 gem 'aws',                   '2.3.34' # bugs in 2.4.2
-gem 'fog',                   '0.7.1'
+gem 'fog',                   '0.7.2'
 gem 'carrierwave',           '0.5.3'
 gem 'voxel_hapi',            :git => 'git://github.com/thibaudgg/voxel_hapi.git', :branch => '1.9.2' # VoxCast CDN
 gem 'request-log-analyzer',  '1.9.10', :require => 'request_log_analyzer'
@@ -73,7 +73,6 @@ end
 
 group :development, :test do
   gem 'rspec-rails'
-  gem 'passenger'
   gem 'timecop'
 end
 
@@ -95,7 +94,7 @@ group :test do
   gem 'growl'
   gem 'guard'
   gem 'guard-bundler'
-  gem 'guard-passenger'
+  gem 'guard-pow'
   gem 'guard-rspec'
   gem 'guard-spork', '0.1.4'
   gem 'rspec-instafail'

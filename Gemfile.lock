@@ -102,8 +102,8 @@ GEM
     bcrypt-ruby (2.1.4)
     braintree (2.9.1)
       builder
-    bson (1.2.4)
-    bson_ext (1.2.4)
+    bson (1.3.0)
+    bson_ext (1.3.0)
     builder (2.1.2)
     carrierwave (0.5.3)
       activesupport (~> 3.0)
@@ -119,7 +119,6 @@ GEM
       httparty (~> 0.6.1)
       json
     currencies (0.4.0)
-    daemon_controller (0.2.6)
     daemons (1.1.2)
     dalli (1.0.3)
     database_cleaner (0.6.6)
@@ -137,22 +136,21 @@ GEM
     erubis (2.6.6)
       abstract (>= 1.0.0)
     eventmachine (0.12.10)
-    excon (0.6.0)
+    excon (0.6.1)
     factory_girl (1.3.3)
     factory_girl_rails (1.0.1)
       factory_girl (~> 1.3)
       railties (>= 3.0.0)
-    fastthread (1.0.7)
     ffaker (1.5.0)
     ffi (1.0.7)
       rake (>= 0.8.7)
-    fog (0.7.1)
+    fog (0.7.2)
       builder
-      excon (>= 0.5.7)
-      formatador (>= 0.1.2)
+      excon (>= 0.6.1)
+      formatador (>= 0.1.3)
       json
       mime-types
-      net-ssh (>= 2.0.23)
+      net-ssh (>= 2.1.3)
       nokogiri (>= 1.4.4)
       ruby-hmac
     formatador (0.1.3)
@@ -166,8 +164,8 @@ GEM
       em-websocket (~> 0.2.0)
       guard (>= 0.2.2)
       json (~> 1.4.6)
-    guard-passenger (0.3.0)
-      guard (~> 0.3)
+    guard-pow (0.1.0)
+      guard (>= 0.3.0)
     guard-rspec (0.2.0)
       guard (>= 0.2.2)
     guard-spork (0.1.4)
@@ -213,11 +211,11 @@ GEM
       activesupport (~> 3.0.0)
       arel (~> 2.0.7)
     mime-types (1.16)
-    mongo (1.2.4)
-      bson (>= 1.2.4)
-    mongoid (2.0.0)
+    mongo (1.3.0)
+      bson (>= 1.3.0)
+    mongoid (2.0.1)
       activemodel (~> 3.0)
-      mongo (~> 1.2)
+      mongo (~> 1.3)
       tzinfo (~> 0.3.22)
       will_paginate (~> 3.0.pre)
     net-ssh (2.1.4)
@@ -225,13 +223,8 @@ GEM
     open4 (1.0.1)
     open_gem (1.4.2)
       launchy (~> 0.3.5)
-    paper_trail (2.1.1)
+    paper_trail (2.2.2)
       rails (~> 3)
-    passenger (3.0.6)
-      daemon_controller (>= 0.2.5)
-      fastthread (>= 1.0.1)
-      rack
-      rake (>= 0.8.1)
     pg (0.10.1)
     polyglot (0.3.1)
     prowl (0.1.3)
@@ -297,7 +290,7 @@ GEM
     sqlite3 (1.3.3)
     sqlite3-ruby (1.3.3)
       sqlite3 (>= 1.3.3)
-    state_machine (0.10.2)
+    state_machine (0.10.3)
     taps (0.3.21)
       activesupport (>= 2.1.0)
       rack (>= 1.0.1)
@@ -337,7 +330,7 @@ DEPENDENCIES
   annotate
   array_stats (= 0.6.0)
   aws (= 2.3.34)
-  bson_ext (= 1.2.4)
+  bson_ext (= 1.3.0)
   bundler (= 1.0.11)
   capybara!
   carrierwave (= 0.5.3)
@@ -351,12 +344,12 @@ DEPENDENCIES
   devise_invitable!
   factory_girl_rails
   ffaker
-  fog (= 0.7.1)
+  fog (= 0.7.2)
   growl
   guard
   guard-bundler
   guard-livereload
-  guard-passenger
+  guard-pow
   guard-rspec
   guard-spork (= 0.1.4)
   haml (= 3.0.25)
@@ -370,10 +363,9 @@ DEPENDENCIES
   liquid (= 2.2.2)
   livereload
   meta_where (= 1.0.4)
-  mongo (= 1.2.4)
-  mongoid (= 2.0.0)
-  paper_trail (= 2.1.1)
-  passenger
+  mongo (= 1.3.0)
+  mongoid (= 2.0.1)
+  paper_trail (= 2.2.2)
   pg (= 0.10.1)
   prowl (= 0.1.3)
   public_suffix_service (= 0.8.1)
@@ -392,7 +384,7 @@ DEPENDENCIES
   shoulda
   silent-postgres
   spork (~> 0.9.0.rc4)
-  state_machine (= 0.10.2)
+  state_machine (= 0.10.3)
   taps
   timecop
   uniquify (= 0.1.0)
