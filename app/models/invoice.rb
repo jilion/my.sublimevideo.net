@@ -187,12 +187,12 @@ private
     self.last_failed_at = Time.now.utc
   end
 
-  # after_transition :on => :succeed
+  # before_transition :on => :succeed
   def apply_pending_site_plan_changes
     self.site.apply_pending_plan_changes
   end
 
-  # after_transition :on => :succeed
+  # before_transition :on => :succeed
   def update_user_invoiced_amount
     self.user.last_invoiced_amount = amount
     self.user.total_invoiced_amount += amount
