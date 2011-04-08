@@ -73,7 +73,6 @@ end
 
 group :development, :test do
   gem 'rspec-rails'
-  gem 'passenger'
   gem 'timecop'
 end
 
@@ -95,7 +94,7 @@ group :test do
   gem 'growl'
   gem 'guard'
   gem 'guard-bundler'
-  gem 'guard-passenger'
+  gem 'guard-pow'
   gem 'guard-rspec'
   gem 'guard-spork', '0.1.4'
   gem 'rspec-instafail'
