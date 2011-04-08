@@ -164,13 +164,13 @@ class User < ActiveRecord::Base
   end
 
   def have_beta_sites?
-    sites.any? { |site| site.in_beta_plan? }
+    sites.active.any? { |site| site.in_beta_plan? }
   end
 
   def beta?
     invitation_token.nil? && created_at < PublicLaunch.beta_transition_started_on.midnight
   end
-  
+
   def vat?
     Vat.for_country?(country)
   end
