@@ -13,8 +13,12 @@ class Admin::SitesController < Admin::AdminController
   has_scope :with_wildcard
   has_scope :with_path
   has_scope :with_extra_hostnames
-  has_scope :billable
-  has_scope :not_billable
+  has_scope :billable do |controller, scope|
+    scope.billable
+  end
+  has_scope :not_billable do |controller, scope|
+    scope.not_billable
+  end
   has_scope :plan_player_hits_reached_notified
   has_scope :user_id
 
