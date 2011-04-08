@@ -59,7 +59,7 @@ feature "Sticky notices" do
       visit '/sites'
 
       current_url.should =~ %r(http://[^/]+/sites)
-      page.should have_content("12 days left to choose a plan for your beta sites")
+      page.should have_content("12 days left to choose a plan for your sites")
       Timecop.return
     end
   end
