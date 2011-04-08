@@ -68,11 +68,15 @@ describe MailLetter do
         context "with the 'beta_with_recommended_plan' filter" do
           before(:all) do
             Plan.delete_all
+            beta_plan = Factory(:plan, name: "beta", player_hits: 0, cycle: "none")
             Factory(:plan, name: "comet",  player_hits: 3_000)
             Factory(:plan, name: "planet", player_hits: 50_000)
             Factory(:plan, name: "star",   player_hits: 200_000)
             Factory(:plan, name: "galaxy", player_hits: 1_000_000)
-            Timecop.travel(15.days.ago) { @site = Factory(:beta_site, user: @user) }
+            Timecop.travel(15.days.ago) do
+              @site = Factory(:beta_site, pending_plan_id: beta_plan.id, user: @user)
+              Factory(:beta_site, pending_plan_id: beta_plan.id, user: Factory(:user))
+            end
           end
           before(:each) do
             @site.unmemoize_all
