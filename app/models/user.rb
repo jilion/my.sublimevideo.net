@@ -212,11 +212,11 @@ private
   # validate
   def validates_current_password
     if !new_record? &&
-      ((state_changed? && archived?) || @password.present? || email_changed?)
-      && errors.empty?
+      ((state_changed? && archived?) || @password.present? || email_changed?) &&
+      errors.empty? &&
       # handle Devise password reset!!
       # at first, Devise call valid? and then reset_password_token is not nil so no problem, but then it clear reset_password_token so it's nil so the second check !reset_password_token_changed? is necessary!!!!!!
-      && (reset_password_token.nil? && !reset_password_token_changed?)
+      (reset_password_token.nil? && !reset_password_token_changed?)
       if current_password.blank?
         self.errors.add(:current_password, :blank)
       elsif !valid_password?(current_password)
