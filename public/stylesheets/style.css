@@ -918,33 +918,73 @@ form .entry a.cancel {
 
 #login_right a.button:active {background-position:0 -44px}
 
-/*#signup_right {
-  width:371px;
+
+
+#signup_right {
+  width:381px;
   position:absolute;
-  top:180px;
-  right:60px;
+  top:130px;
+  right:50px;
 }
 
-#signup_right .sublimevideo_headline {
-  font-family:Georgia, Times, serif;
-  font-size:22px;
+#signup_right h3.title {
+  font-size:24px;
+  font-weight:500;
+  padding:0 0 33px;
+}
+
+ul#twitter_quotes {
+  font-family:"chaparral-pro-1","chaparral-pro-2",Georgia,Times,serif;
+  list-style-type:none;
+}
+
+ul#twitter_quotes li {
+  padding:0 0 40px;
+  width:380px;
+}
+
+ul#twitter_quotes li .left {
+  width:73px;
+  float:left;
+  line-height:0;
+  position:relative;
+  margin-top:4px;
+}
+
+ul#twitter_quotes li .left span.avatar_overlay {
+  display:block;
+  width:73px;
+  height:73px;
+  background:url(/images/embed/signup/avatar_overlay.png) no-repeat;
+  position:absolute;
+  top:-6px;
+  left:-6px;
+  z-index:2;
+}
+
+ul#twitter_quotes li .right {
+  width:299px;
+  padding:0 0 0 8px;
+  float:left;
+}
+
+ul#twitter_quotes li .right blockquote {
+  font-size:19px;
   font-style:italic;
-  line-height:30px;
+  line-height:24px;
 }
 
-#signup_right .sublimevideo_headline img {
-
+ul#twitter_quotes li p.quote_info {
+  font-size:14px;
+  color:#707b8d;
+  text-align:right;
+  padding:5px 0 0;
 }
 
-#signup_right .sublimevideo_headline p {
-  padding:0 14px;
+ul#twitter_quotes li p.quote_info a {
+  color:#707b8d;
+  border-bottom:1px solid #969fad;
 }
-
-#signup_right .sublimevideo_headline p a {
-  color:#222;
-  font-weight:600;
-  border-bottom: 1px solid #999;
-}*/
 
 /*#signup_quotes {
   width:390px;
