@@ -2347,7 +2347,7 @@ ul#addons .checkbox_wrap input:focus:checked + label {background-position:0 -102
   border-bottom:1px solid #888;
 }
 
-#credit_card p.note_3d_secure {
+#content p.small_note {
   width:440px;
   font-size:12px;
   margin:30px 0 0;
@@ -2355,6 +2355,8 @@ ul#addons .checkbox_wrap input:focus:checked + label {background-position:0 -102
   padding:15px 0 0;
   line-height:20px;
 }
+
+#content p.small_note.over_widthed {width:450px}
 
 #site .actions.center {
   text-align:center;

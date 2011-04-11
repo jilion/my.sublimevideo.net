@@ -5,4 +5,4 @@
     = render 'fields', :f => f
     .entry.update
       = f.submit "Update", :id => 'user_submit', :class => "submit small_button"
-  %p.note_3d_secure= raw "If you have a #{link_to "3-D Secure VISA", "http://www.visa.com/3-dsecure", :onclick => "window.open(this); return false", :class => "hl"} or #{link_to "3-D Secure MasterCard", "http://www.mastercard.com/securecode/", :onclick => "window.open(this); return false", :class => "hl"} we will charge your credit card with a small amount ($1.00) that we will refund immediately in order to authorize your new credit card."
+  %p.small_note= raw "If you have a #{link_to "3-D Secure VISA", "http://www.visa.com/3-dsecure", :onclick => "window.open(this); return false", :class => "hl"} or #{link_to "3-D Secure MasterCard", "http://www.mastercard.com/securecode/", :onclick => "window.open(this); return false", :class => "hl"} we will charge your credit card with a small amount ($1.00) that we will refund immediately in order to authorize your new credit card."
