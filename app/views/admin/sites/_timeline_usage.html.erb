@@ -1,7 +1,9 @@
 <%
-usages = Stat::SiteUsage.timeline(@date_range_from, @date_range_to, { :site_ids => [site.id], merge_cached: true })
+usages = Stat::SiteUsage.timeline(@date_range_from, @date_range_to, { site_ids: [site.id], labels: [:main_usage, :extra_usage, :all_usage], merge_cached: true, dont_add_total_usages_before_start_time: true })
 plans  = Plan.all
 chart_title = "Video pageviews for #{hostname_with_path_and_wildcard(site)}"
+# billable_usage = usages["main_usage"].zip(usages["extra_usage"]).map { |item| item.reduce(:+) }
+total_billable_usage = usages["total_main_usage"].zip(usages["total_extra_usage"]).map { |item| item.reduce(:+) }
 
 graph = Graph.new do |g|
   g.option(chart: chart('timeline_usage'))
@@ -24,25 +26,29 @@ graph = Graph.new do |g|
   )))
   
   g.option(series: [
-    serie(usages["loader_usage"], 'Loader', '#AA0', visible: false),
+    # serie(usages["loader_usage"], 'Loader', '#AA0', visible: false),
     # serie(usages["invalid_usage_cached"], 'Invalid cached', '#F80', visible: false),
     serie(usages["invalid_usage"], 'Invalid', '#F00', visible: false),
     # serie(usages["dev_usage_cached"], 'Dev cached', '#1C1', visible: false),
     serie(usages["dev_usage"], 'Dev', '#3F3', visible: false),
     # serie(usages["extra_usage_cached"], 'Extra cached', '#1C1', visible: false),
-    serie(usages["extra_usage"], 'Extra', '#3F3', visible: false),
+    serie(usages["extra_usage"], 'Extra', '#3F3'),
     # serie(usages["main_usage_cached"], 'Main cached', '#08F'),
     serie(usages["main_usage"], 'Main', '#00F'),
+    # serie(billable_usage, 'Billable', '#00F'),
 
-    serie(evolutive_average_array(usages["total_loader_usage"]), 'AVG Loader', '#FFFF00', type: 'line', visible: false),
-    serie(evolutive_average_array(usages["total_invalid_usage"]), 'AVG Invalid', '#FFCC33', type: 'line', visible: false),
-    serie(evolutive_average_array(usages["total_dev_usage"]), 'AVG Dev', '#66FF66', type: 'line', visible: false),
+    # serie(evolutive_average_array(usages["total_loader_usage"]), 'AVG Loader', '#FFFF00', type: 'line', visible: false),
+    # serie(evolutive_average_array(usages["total_invalid_usage"]), 'AVG Invalid', '#FFCC33', type: 'line', visible: false),
+    # serie(evolutive_average_array(usages["total_dev_usage"]), 'AVG Dev', '#66FF66', type: 'line', visible: false),
+    serie(evolutive_average_array(total_billable_usage), 'AVG Billable', '#00FFFF', type: 'line'),
     # serie(evolutive_average_array(usages["total_main_usage"].zip(usages["main_usage_cached"]).map { |item| item.reduce(:+) }), 'AVG Main', '#00FFFF', :type => 'line'),
+    
 
-    serie(usages["total_main_usage"], 'TOT Main', '', type: 'line', visible: false),
-    serie(usages["total_all_usage"], 'TOT All', '', type: 'line', visible: false),
+    # serie(usages["total_main_usage"], 'TOT Main', '', type: 'line', visible: false),
+    serie(total_billable_usage, 'TOT Billable', '', type: 'line', visible: false),
+    # serie(usages["total_all_usage"], 'TOT All', '', type: 'line', visible: false),
 
-    serie(Array.new(usages["main_usage"].size, site.plan.player_hits / 30), "AVG #{site.plan.title}", '', type: 'line', visible: false),
+    serie(Array.new(usages["main_usage"].size, site.plan.player_hits / 30), "AVG #{site.plan.title}", '', type: 'line'),
     serie(Array.new(usages["main_usage"].size, site.plan.player_hits), "LIM #{site.plan.title}", '', type: 'line', visible: false)
   ].flatten)
   g.option(plotOptions: plot_options(@date_range_from))

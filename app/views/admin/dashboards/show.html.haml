@@ -22,10 +22,11 @@
 - player_hits = SiteUsage.between(31.days.ago.utc, Time.now.utc.yesterday).sum(:player_hits).to_i
 %p= "Last 30 days traffic: #{number_to_human(player_hits, :significant => false, :precision => 2, :delimiter => "'")} video pageviews"
 %p= "Last 30 days average daily traffic: #{number_to_human(player_hits / 30, :significant => false, :precision => 2, :delimiter => "'")} video pageviews"
+%p= "All time traffic: #{number_to_human(SiteUsage.sum(:player_hits).to_i, :significant => false, :precision => 2, :delimiter => "'")} video pageviews"
+%br
 
 -# - cache 'dashboard_box_users', :expires_in => 10.minutes do
 -#   = render 'users'
-%br
 
 -# #box_users.dashboard_box
 %h3 Users
@@ -33,10 +34,18 @@
 - yesterday_signups = User.active.where(:created_at.gte => Time.now.utc.yesterday.midnight, :created_at.lt => Time.now.utc.midnight)
 %p= "Users signups: #{User.active.count} (#{today_signups.count} today, #{yesterday_signups.count} yesterday)"
 %p= "Billable customers: #{User.select("DISTINCT users.id").billable.count}"
+%br
+
+- top_10_countries = User.active.select("country, COUNT(country) as country_count").group(:country).order("country_count DESC")
+- total_active_user = User.active.count
+%h3= "Top 10 countries (by customers #):"
+%ul
+  - top_10_countries.each do |country_infos|
+    %li= "#{Country[country_infos.country].name} (#{country_infos.country_count} - #{display_percentage(country_infos.country_count.to_f / total_active_user)})"
+%br
 
 -# - cache 'dashboard_box_users', :expires_in => 10.minutes do
 -#   = render 'users'
-%br
 
 -# #box_sites.dashboard_box
 

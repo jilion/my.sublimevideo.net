@@ -1,7 +1,8 @@
 <%
-usages = Stat::SiteUsage.timeline(@date_range_from, @date_range_to, { site_ids: user.site_ids, merge_cached: true })
+usages = Stat::SiteUsage.timeline(@date_range_from, @date_range_to, { site_ids: user.site_ids, labels: [:main_usage, :extra_usage, :all_usage], merge_cached: true, dont_add_total_usages_before_start_time: true })
 plans  = Plan.all
 chart_title = "Video pageviews for #{user.full_name}"
+total_billable_usage = usages["total_main_usage"].zip(usages["total_extra_usage"]).map { |item| item.reduce(:+) }
 
 graph = Graph.new do |g|
   g.option(chart: chart('timeline_usage'))
@@ -23,15 +24,17 @@ graph = Graph.new do |g|
   )))
 
   g.option(series: [
-    serie(usages["loader_usage"], 'Loader', '#AAAA00', visible: false),
+    # serie(usages["loader_usage"], 'Loader', '#AAAA00', visible: false),
     serie(usages["invalid_usage"], 'Invalid', '#FF0000', visible: false),
     serie(usages["dev_usage"], 'Dev', '#33FF33', visible: false),
-    serie(usages["extra_usage"], 'Extra', '#33FF33', visible: false),
+    serie(usages["extra_usage"], 'Extra', '#33FF33'),
     serie(usages["main_usage"], 'Main', '#0000FF'),
 
-    serie(evolutive_average_array(usages["total_main_usage"]), 'AVG Main', '#00FFFF', type: 'line'),
+    # serie(evolutive_average_array(usages["total_main_usage"]), 'AVG Main', '#00FFFF', type: 'line'),
+    serie(evolutive_average_array(total_billable_usage), 'AVG Billable', '#00FFFF', type: 'line'),
 
-    serie(usages["total_main_usage"], 'TOT Main', '', type: 'line', visible: false)
+    # serie(usages["total_main_usage"], 'TOT Main', '', type: 'line', visible: false)
+    serie(total_billable_usage, 'TOT Billable', '', type: 'line', visible: false),
   ].flatten)
   g.option(plotOptions: plot_options(@date_range_from))
   g.option(credits: credits)
