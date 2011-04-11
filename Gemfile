@@ -1,6 +1,6 @@
 source :rubygems
 
-gem 'bundler',               '1.0.11'
+gem 'bundler',               '1.0.12'
 
 gem 'rails',                 '3.0.6'
 
@@ -51,10 +51,11 @@ gem 'useragent', :git => 'git://github.com/Jilion/useragent.git'
 gem 'zip',                   '2.0.2', :require => 'zip/zip'
 gem 'countries',             '0.3.0'
 gem 'PageRankr',             '1.6.0', :require => 'page_rankr'
-
+gem 'twitter',               '1.3.0'
 gem 'settingslogic',         '2.0.6'
 gem 'array_stats',           '0.6.0'
-gem 'createsend',            '0.2.1' # Campaign Monitor
+# gem 'createsend',            '0.2.1' # Campaign Monitor
+gem 'createsend',            :git => 'git://github.com/rymai/createsend-ruby.git' # update dependencies for hashie (was conflicting with the Twitter gem)
 
 gem 'hoptoad_notifier',      '2.4.9'
 gem 'prowl',                 '0.1.3'

@@ -5,4 +5,17 @@ brew install postgresql
 gem install bundler
 
 # Run bundle install
-bi (jime alias for bundle install)
+bi # jime alias for bundle install
+
+# Install powder gem (wrapper around Pow)
+msv
+gem install pow # be sure to install it with the same current Ruby as you will use the pow command later
+
+# Actually install Pow
+pow install # will actually install Pow
+pow link # will add the current app to the "powed" apps
+pow list # to check the list of "powed" apps
+
+!! You probably need to restart your computer to enjoy the Power of Pow !!
+
+pow open # to directly open your app in your browser
