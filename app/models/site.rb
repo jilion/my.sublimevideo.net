@@ -286,7 +286,7 @@ class Site < ActiveRecord::Base
           nil
         end
         # Don't recommend smaller plan
-        if plan.player_hits != 0 && name != 'custom' && plan.player_hits >= Plan.send("#{name}_player_hits")
+        if name && plan.player_hits != 0 && name != 'custom' && plan.player_hits >= Plan.send("#{name}_player_hits")
           nil
         else
           name
