@@ -20,10 +20,12 @@ class MailLetter
               User.all
             # when 'invited_after_2010_12_23'
             #   User.where(:created_at.gt => Time.utc(2010,12,23))
-            when 'with_invalid_site'
-              User.beta.joins(:sites).where(:sites => { :state.ne => 'archived' }).all.uniq.select { |u| u.sites.any? { |s| !s.valid? } }
+            # when 'with_invalid_site'
+            #   User.beta.includes(:sites).where(:sites => { :state.ne => 'archived' }).all.select { |u| u.sites.any? { |s| !s.valid? } }
+            when 'beta_with_beta_sites'
+              User.beta.includes(:sites).all.select { |u| u.have_beta_sites? }
             when 'beta_with_recommended_plan'
-              User.beta.joins(:sites).where(:sites => { :state.ne => 'archived' }).all.uniq.select { |u| u.sites.any? { |s| s.recommended_plan_name.present? } }
+              User.beta.includes(:sites).where(:sites => { :state.ne => 'archived' }).all.select { |u| u.sites.any? { |s| s.recommended_plan_name.present? } }
             else
               User.send(@criteria)
             end

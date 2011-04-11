@@ -119,7 +119,7 @@ end
 Factory.define :mail_log, :class => MailLog do |f|
   f.association :template, :factory => :mail_template
   f.association :admin
-  f.criteria    ["with_invalid_site"]
+  f.criteria    ["all"]
   f.user_ids    [1,2,3,4,5]
   f.snapshot    Hash.new.tap { |h|
                   h[:title]   = "Blabla"
