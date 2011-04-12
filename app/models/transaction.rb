@@ -84,7 +84,7 @@ class Transaction < ActiveRecord::Base
       description: transaction.description,
       store: transaction.user.cc_alias,
       email: transaction.user.email,
-      billing_address: { zip: transaction.user.postal_code, country: Country[transaction.user.country].name },
+      billing_address: { zip: transaction.user.postal_code, country: transaction.user.country },
       d3d: true,
       paramplus: "PAYMENT=TRUE"
     })
