@@ -437,7 +437,7 @@ describe User::CreditCard do
         Ogone.should_receive(:authorize).with(100, user.credit_card, {
           store: user.cc_alias,
           email: user.email,
-          billing_address: { zip: user.postal_code, country: Country[user.country].name },
+          billing_address: { zip: user.postal_code, country: user.country },
           d3d: true,
           paramplus: "CHECK_CC_USER_ID=#{user.id}"
         }) { mock('authorize_response', :params => {}) }

@@ -374,7 +374,7 @@ describe Transaction do
             description: an_instance_of(String),
             store: @user.cc_alias,
             email: @user.email,
-            billing_address: { zip: @user.postal_code, country: Country[@user.country].name },
+            billing_address: { zip: @user.postal_code, country: @user.country },
             d3d: true,
             paramplus: "PAYMENT=TRUE"
           })
@@ -419,7 +419,7 @@ describe Transaction do
             description: an_instance_of(String),
             store: @user.cc_alias,
             email: @user.email,
-            billing_address: { zip: @user.postal_code, country: Country[@user.country].name },
+            billing_address: { zip: @user.postal_code, country: @user.country },
             d3d: true,
             paramplus: "PAYMENT=TRUE"
           })

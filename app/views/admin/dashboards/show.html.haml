@@ -4,7 +4,7 @@
 
 #timeline.dashboard_timeline
   %h3 Usage
-  - cache 'dashboard_timeline_usage', :expires_in => 10.minutes do
+  - cache 'dashboard_timeline_usage', :expires_in => 1.hour do
     = render 'timeline_usage'
 
 %h2= "Total revenue: #{display_amount(Invoice.total_revenue)}"
@@ -36,12 +36,12 @@
 %p= "Billable customers: #{User.select("DISTINCT users.id").billable.count}"
 %br
 
-- top_10_countries = User.active.select("country, COUNT(country) as country_count").group(:country).order("country_count DESC")
+- top_10_countries = User.active.select("country, COUNT(country) as country_count").group(:country).order("country_count DESC").all
 - total_active_user = User.active.count
 %h3= "Top 10 countries (by customers #):"
 %ul
-  - top_10_countries.each do |country_infos|
-    %li= "#{Country[country_infos.country].name} (#{country_infos.country_count} - #{display_percentage(country_infos.country_count.to_f / total_active_user)})"
+  - (0...[top_10_countries.size, 10].min).each do |i|
+    %li= "#{Country[top_10_countries[i].country].name} (#{top_10_countries[i].country_count} - #{display_percentage(top_10_countries[i].country_count.to_f / total_active_user)})"
 %br
 
 -# - cache 'dashboard_box_users', :expires_in => 10.minutes do
