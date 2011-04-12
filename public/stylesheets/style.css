@@ -2356,8 +2356,6 @@ ul#addons .checkbox_wrap input:focus:checked + label {background-position:0 -102
   line-height:20px;
 }
 
-#content p.small_note.over_widthed {width:450px}
-
 #site .actions.center {
   text-align:center;
 }
