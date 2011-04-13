@@ -73,20 +73,18 @@
     = f.submit "Sign Up"
     .spacer
 
-  - cache("what_people_say", :expires_in => 1.hour) do
-    #signup_right
-      %h3.title= "What people say"
-      %ul#twitter_quotes
-        - favorite_tweets_options = { user_doublon: false, count: 4, random: true, since_date: Time.utc(2011,3,29), include_entities: true }
-        - Tweet.favorites_tweets(favorite_tweets_options).each do |tweet|
-          %li
-            .left
-              = image_tag tweet.user.profile_image_url, :alt => clean_tweet_from_user(tweet), :size => "60x60"
-              %span.avatar_overlay
-            .right
-              %blockquote= clean_tweet_text(tweet, strip_cc: true, strip_urls: true)
-            .spacer
-            %p.quote_info= raw "—#{clean_tweet_from_user(tweet)}, #{link_to l(tweet.created_at, :format => :tweet, :ordinal_day => tweet.created_at.day.ordinalize), "https://twitter.com/#{tweet.user.screen_name}/status/#{tweet.id}"}"
+  #signup_right
+    %h3.title= "What people say"
+    %ul#twitter_quotes
+      - random_favorite_tweets.each do |tweet|
+        %li
+          .left
+            = image_tag tweet.user.profile_image_url, :alt => clean_tweet_from_user(tweet), :size => "60x60"
+            %span.avatar_overlay
+          .right
+            %blockquote= clean_tweet_text(tweet, strip_cc: true, strip_urls: true)
+          .spacer
+          %p.quote_info= raw "—#{clean_tweet_from_user(tweet)}, #{link_to l(tweet.created_at, :format => :tweet, :ordinal_day => tweet.created_at.day.ordinalize), "https://twitter.com/#{tweet.user.screen_name}/status/#{tweet.id}"}"
 
   -#   .sublimevideo_headline
   -#     -# = link_to (image_tag "/images/embed/signup/player_icon.png", :alt => "SublimeVideo Player"), "http://sublimevideo.net"
