@@ -5,12 +5,12 @@ feature "Users" do
 
   feature "sign-up redirections" do
     scenario "redirect /register to /signup" do
-      visit "/register"
+      VCR.use_cassette("twitter/signup") { visit "/register" }
       current_url.should =~ %r(^http://[^/]+/signup$)
     end
 
     scenario "redirect /sign_up to /signup" do
-      visit "/sign_up"
+      VCR.use_cassette("twitter/signup") { visit "/sign_up" }
       current_url.should =~ %r(^http://[^/]+/signup$)
     end
   end
@@ -60,7 +60,7 @@ feature "Users" do
 
   feature "signup" do
     before(:each) do
-      visit "/signup"
+      VCR.use_cassette("twitter/signup") { visit "/signup" }
       current_url.should =~ %r(^http://[^/]+/signup$)
     end
 
@@ -89,7 +89,7 @@ feature "Users" do
         fill_in "First name",         :with => ""
         fill_in "Last name",          :with => ""
         fill_in "Zip or Postal Code", :with => ""
-        click_button "Sign Up"
+        VCR.use_cassette("twitter/signup") { click_button "Sign Up" }
 
         current_url.should =~ %r(^http://[^/]+/signup$)
         page.should have_content "Email can't be blank"
@@ -226,7 +226,7 @@ feature "Users" do
   end
 
   scenario "accept invitation should always redirect to /signup" do
-    visit "/invitation/accept"
+    VCR.use_cassette("twitter/signup") { visit "/invitation/accept" }
     current_url.should =~ %r(^http://[^/]+/signup\?beta=over$)
   end
 
