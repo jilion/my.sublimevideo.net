@@ -918,10 +918,8 @@ form .entry a.cancel {
 
 #login_right a.button:active {background-position:0 -44px}
 
-
-
 #signup_right {
-  width:381px;
+  width:361px;
   position:absolute;
   top:130px;
   right:50px;
@@ -940,7 +938,7 @@ ul#twitter_quotes {
 
 ul#twitter_quotes li {
   padding:0 0 40px;
-  width:380px;
+  width:360px;
 }
 
 ul#twitter_quotes li .left {
@@ -951,25 +949,21 @@ ul#twitter_quotes li .left {
   margin-top:4px;
 }
 
-ul#twitter_quotes li .left span.avatar_overlay {
-  display:block;
-  width:73px;
-  height:73px;
-  background:url(/images/embed/signup/avatar_overlay.png) no-repeat;
-  position:absolute;
-  top:-6px;
-  left:-6px;
-  z-index:2;
+ul#twitter_quotes li .left img {
+  border: 1px solid rgba(0,0,0,0.8);
+  -moz-box-shadow:rgba(0,0,0,0.8) 0 1px 6px;
+  -webkit-box-shadow:rgba(0,0,0,0.8) 0 1px 6px;
+  box-shadow: rgba(0,0,0,0.8) 0 1px 6px;
 }
 
 ul#twitter_quotes li .right {
-  width:299px;
+  width:279px;
   padding:0 0 0 8px;
   float:left;
 }
 
 ul#twitter_quotes li .right blockquote {
-  font-size:19px;
+  font-size:18px;
   font-style:italic;
   line-height:24px;
 }
