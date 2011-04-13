@@ -2,7 +2,7 @@
 = content_header(admin_sites_page_title(@sites), :id => 'sites_title')
 
 .search_form
-  = form_tag admin_sites_path, :method => :get, :id => 'search_form' do
+  = form_tag [:admin, :sites], :method => :get, :id => 'search_form' do
     = text_field_tag :search, '', :value => params[:search], :id => 'search_input', :placeholder => "Search", :type => "search", :autofocus => true, :autosave => "admin_search", :results => "5"
 
 .spacer

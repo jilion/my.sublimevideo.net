@@ -21,7 +21,8 @@ module RecurringJob
   NAMES = [
     '%User::CreditCard%send_credit_card_expiration%',
     '%Site::UsageMonitoring%monitor_sites_usages%',
-    '%Site%update_last_30_days_counters_for_not_archived_sites%'
+    '%Site%update_last_30_days_counters_for_not_archived_sites%',
+    '%Tweet%save_new_tweets_and_sync_favorite_tweets%'
   ] + logs_tasks + billing_tasks + stats_tasks
 
   class << self
@@ -43,6 +44,7 @@ module RecurringJob
       User::CreditCard.delay_send_credit_card_expiration
       Site::UsageMonitoring.delay_monitor_sites_usages
       Site.delay_update_last_30_days_counters_for_not_archived_sites
+      Tweet.delay_save_new_tweets_and_sync_favorite_tweets
     end
 
     def supervise

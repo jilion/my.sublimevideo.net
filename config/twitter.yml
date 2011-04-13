@@ -1,0 +1,25 @@
+# rymai's credentials
+defaults_dev_test: &defaults_dev_test
+  consumer_key:       'KTWk4ZrufEHjncLCsNwhw'
+  consumer_secret:    'XC2emZ9ndEv4njqmRlvw4YPaNEwpumNEtd5pTgRjhU'
+  oauth_token:        '6797462-Sz009rpFmcLGIBANAyJRsKoUlHtf2Rl5YuufnZeiI'
+  oauth_token_secret: 'NqxQyUaFLqvoMvHviKITbcigf6JLLQ3dBHWjC9040'
+
+# sublimevideo's credentials
+defaults_stage_prod: &defaults_stage_prod
+  consumer_key:       heroku_env
+  consumer_secret:    heroku_env
+  oauth_token:        heroku_env
+  oauth_token_secret: heroku_env
+
+development:
+  <<: *defaults_dev_test
+
+test:
+  <<: *defaults_dev_test
+
+staging:
+  <<: *defaults_stage_prod
+
+production:
+  <<: *defaults_stage_prod

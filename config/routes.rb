@@ -34,10 +34,12 @@ MySublimeVideo::Application.routes.draw do
     end
   end
   resource :card, :controller => 'credit_cards', :as => :credit_card, :only => [:edit, :update]
-  match '/transaction/callback' => "transactions#callback", :via => :post
   resources :invoices, :only => :show
-  match '/refund' => "refunds#index", :via => :get, :as => 'refunds'
+
+  match '/refund' => "refunds#index",  :via => :get, :as => 'refunds'
   match '/refund' => "refunds#create", :via => :post, :as => 'refund'
+
+  match '/transaction/callback' => "transactions#callback", :via => :post
 
   match ':page', :to => 'pages#show', :via => :get, :as => :page, :page => /terms|privacy|suspended/
   match 'r/:type/:token', :to => 'referrers#redirect', :via => :get, :type => /c/, :token => /[a-z0-9]{8}/
@@ -77,12 +79,12 @@ MySublimeVideo::Application.routes.draw do
 
   namespace "admin" do
     resource  :dashboard, :only => :show
-    resources :users,     :only => [:index, :show] do
+    resources :users, :only => [:index, :show] do
       member do
         get :become
       end
     end
-    resources :sites,     :only => [:index, :show, :edit, :update] do
+    resources :sites, :only => [:index, :show, :edit, :update] do
       member do
         put :sponsor
       end
@@ -93,14 +95,19 @@ MySublimeVideo::Application.routes.draw do
         put :retry_charging
       end
     end
-    resources :plans,     :only => [:index, :new, :create]
-    resources :admins,    :only => [:index, :destroy]
-    resources :mails,     :only => [:index, :new, :create]
+    resources :plans,  :only => [:index, :new, :create]
+    resources :admins, :only => [:index, :destroy]
+    resources :mails,  :only => [:index, :new, :create]
     scope "mails" do
       resources :mail_templates, :only => [:new, :create, :edit, :update], :path => "templates"
       resources :mail_logs,      :only => :show,                           :path => "logs"
     end
-    resources :releases,     :only => [:index, :create, :update]
+    resources :releases, :only => [:index, :create, :update]
+    resources :tweets,   :only => :index do
+      member do
+        put :favorite
+      end
+    end
     resources :delayed_jobs, :only => [:index, :show, :update, :destroy], :path => "djs"
   end
 

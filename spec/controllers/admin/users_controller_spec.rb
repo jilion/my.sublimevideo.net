@@ -12,7 +12,7 @@ describe Admin::UsersController do
     end
 
     it "should respond with success to GET :show" do
-      User.stub(:find).with('1') { mock_user }
+      User.should_receive(:find).with('1') { mock_user }
 
       get :show, :id => '1'
       response.should be_success
@@ -20,7 +20,7 @@ describe Admin::UsersController do
     end
 
     it "should respond with success to GET :become" do
-      User.stub(:find).with('1') { mock_user }
+      User.should_receive(:find).with('1') { mock_user }
       controller.should_receive(:sign_in).with(:user, mock_user)
 
       get :become, :id => '1'

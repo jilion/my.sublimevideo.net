@@ -5,25 +5,26 @@ document.observe("dom:loaded", function() {
   // ====================
   // = Live Search form =
   // ====================
-
-  new Form.Element.Observer('search_input', 1, function(element, value) {
-    form = element.form;
-    method = form.readAttribute('method') || 'post';
-    url    = form.readAttribute('action');
-    params = form.serialize();
-    new Ajax.Request(url, {
-      method: method,
-      parameters: params,
-      onComplete: function(request) {
-        $('table_spinner').hide();
-        if (history && history.pushState) {
-          history.replaceState(null, document.title, url + "?" + params);
-        }
-      },
-      onLoading:  function(request) { $('table_spinner').show(); }
-    })
-  })
-
+  if ($('search_input')) {
+    new Form.Element.Observer('search_input', 1, function(element, value) {
+      form   = element.form;
+      method = form.readAttribute('method') || 'post';
+      url    = form.readAttribute('action');
+      params = form.serialize();
+      new Ajax.Request(url, {
+        method: method,
+        parameters: params,
+        onComplete: function(request) {
+          $('table_spinner').hide();
+          if (history && history.pushState) {
+            history.replaceState(null, document.title, url + "?" + params);
+          }
+        },
+        onLoading:  function(request) { $('table_spinner').show(); }
+      });
+    });
+  }
+  
   if (history && history.pushState) {
     Event.observe(window, 'popstate', function(event) {
       if (event.state.isHistory) {
@@ -31,7 +32,7 @@ document.observe("dom:loaded", function() {
         new Ajax.Request(location.href, {
           method: 'get'
         });
-      };
+      }
     });
   }
 

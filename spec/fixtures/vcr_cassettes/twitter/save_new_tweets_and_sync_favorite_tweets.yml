@@ -1,0 +1,766 @@
+--- 
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: https://api.twitter.com:443/1/account/rate_limit_status.json
+    body: 
+    headers: 
+      accept: 
+      - application/json
+      user-agent: 
+      - Twitter Ruby Gem 1.3.0
+      authorization: 
+      - OAuth oauth_consumer_key="KTWk4ZrufEHjncLCsNwhw", oauth_nonce="23d14c29dbe71f4612288930fbc0a004", oauth_signature="IaP6EIMBRiqXT8Fx26VnujhVdmk%3D", oauth_signature_method="HMAC-SHA1", oauth_timestamp="1302690349", oauth_token="6797462-Sz009rpFmcLGIBANAyJRsKoUlHtf2Rl5YuufnZeiI", oauth_version="1.0"
+      accept-encoding: 
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      date: 
+      - Wed, 13 Apr 2011 10:25:50 GMT
+      server: 
+      - hi
+      status: 
+      - 200 OK
+      x-transaction: 
+      - 1302690350-32175-33180
+      etag: 
+      - "\"80887a00fe5d35c2730309976ba541ad\"-gzip"
+      last-modified: 
+      - Wed, 13 Apr 2011 10:25:50 GMT
+      x-runtime: 
+      - "0.01670"
+      x-transaction-mask: 
+      - a6183ffa5f8ca943ff1b53b5644ef114
+      content-type: 
+      - application/json; charset=utf-8
+      pragma: 
+      - no-cache
+      x-revision: 
+      - DEV
+      expires: 
+      - Tue, 31 Mar 1981 05:00:00 GMT
+      cache-control: 
+      - no-cache, no-store, must-revalidate, pre-check=0, post-check=0
+      set-cookie: 
+      - _twitter_sess=BAh7CDoPY3JlYXRlZF9hdGwrCD1HZU4vAToHaWQiJTA3MTM0NTA2MzA0NDA2%250ANjY4NTA1YzY1MDNlMDIxNGIyIgpmbGFzaElDOidBY3Rpb25Db250cm9sbGVy%250AOjpGbGFzaDo6Rmxhc2hIYXNoewAGOgpAdXNlZHsA--2759a3e2d1049ffdaa475c2169fecc61daf12cef; domain=.twitter.com; path=/; HttpOnly
+      - guest_id=130269035090153639; path=/; expires=Fri, 13 May 2011 10:25:50 GMT
+      - k=128.179.67.94.1302690350898189; path=/; expires=Wed, 20-Apr-11 10:25:50 GMT; domain=.twitter.com
+      - lang=en; path=/
+      vary: 
+      - Accept-Encoding
+      content-encoding: 
+      - gzip
+      content-length: 
+      - "122"
+    body: !binary |
+      H4sIAAAAAAAAA02MMQrDMAwAvyK0toNk40K89RUdRYlFI4idYrtDCP17kk69
+      8Thuw6pNu3TLKlak6biU1DCyJ3cb/BDo+pdgxIcmuL8rsAfm6EIMBBc6AEfM
+      eNb5acXKSybrx8mfi2n51HmV2bL1n/ruBQkU/noAAAA=
+
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: https://search.twitter.com:443/search.json?q=jilion&rpp=100
+    body: 
+    headers: 
+      accept: 
+      - application/json
+      user-agent: 
+      - Twitter Ruby Gem 1.3.0
+      authorization: 
+      - OAuth oauth_consumer_key="KTWk4ZrufEHjncLCsNwhw", oauth_nonce="7d95992f01ffcb0ee3c97d2df755f862", oauth_signature="xYF5XmJWqKKA625cYrdL1D%2FmkCw%3D", oauth_signature_method="HMAC-SHA1", oauth_timestamp="1302690351", oauth_token="6797462-Sz009rpFmcLGIBANAyJRsKoUlHtf2Rl5YuufnZeiI", oauth_version="1.0"
+      accept-encoding: 
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      date: 
+      - Wed, 13 Apr 2011 10:25:52 GMT
+      server: 
+      - hi
+      status: 
+      - 200 OK
+      x-served-from: 
+      - smf1-aei-03-sr1
+      x-runtime: 
+      - "0.24313"
+      content-type: 
+      - application/json; charset=utf-8
+      x-timeline-cache-hit: 
+      - Miss
+      x-served-by: 
+      - smf1-ada-31-sr1.prod.twitter.com
+      cache-control: 
+      - max-age=15, must-revalidate, max-age=300
+      expires: 
+      - Wed, 13 Apr 2011 10:30:52 GMT
+      vary: 
+      - Accept-Encoding
+      x-varnish: 
+      - "2153262121"
+      age: 
+      - "0"
+      via: 
+      - 1.1 varnish
+      x-cache-svr: 
+      - smf1-ada-31-sr1.prod.twitter.com
+      x-cache: 
+      - MISS
+      content-encoding: 
+      - gzip
+      content-length: 
+      - "1440"
+    body: !binary |
+      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
+
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: https://search.twitter.com:443/search.json?q=sublimevideo&rpp=100
+    body: 
+    headers: 
+      accept: 
+      - application/json
+      user-agent: 
+      - Twitter Ruby Gem 1.3.0
+      authorization: 
+      - OAuth oauth_consumer_key="KTWk4ZrufEHjncLCsNwhw", oauth_nonce="3cf3cf7fcbef3efaee13562ff8cd13a1", oauth_signature="bwuQhFHqkn0B%2Fxqr%2FxMf%2F%2FQOQow%3D", oauth_signature_method="HMAC-SHA1", oauth_timestamp="1302690352", oauth_token="6797462-Sz009rpFmcLGIBANAyJRsKoUlHtf2Rl5YuufnZeiI", oauth_version="1.0"
+      accept-encoding: 
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      date: 
+      - Wed, 13 Apr 2011 10:25:54 GMT
+      server: 
+      - hi
+      status: 
+      - 200 OK
+      x-served-from: 
+      - smf1-aep-35-sr2
+      x-runtime: 
+      - "0.27667"
+      content-type: 
+      - application/json; charset=utf-8
+      x-timeline-cache-hit: 
+      - Miss
+      x-served-by: 
+      - smf1-aaq-15-sr3.prod.twitter.com
+      cache-control: 
+      - max-age=15, must-revalidate, max-age=300
+      expires: 
+      - Wed, 13 Apr 2011 10:30:54 GMT
+      vary: 
+      - Accept-Encoding
+      x-varnish: 
+      - "1843484543"
+      age: 
+      - "0"
+      via: 
+      - 1.1 varnish
+      x-cache-svr: 
+      - smf1-aaq-15-sr3.prod.twitter.com
+      x-cache: 
+      - MISS
+      content-encoding: 
+      - gzip
+      content-length: 
+      - "2075"
+    body: !binary |
+      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
+      bhQfAAA=
+
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: https://search.twitter.com:443/search.json?q=videojs&rpp=100
+    body: 
+    headers: 
+      accept: 
+      - application/json
+      user-agent: 
+      - Twitter Ruby Gem 1.3.0
+      authorization: 
+      - OAuth oauth_consumer_key="KTWk4ZrufEHjncLCsNwhw", oauth_nonce="81ebc0ef65cb4158ab49ed560c062a41", oauth_signature="L1AukJSIiHj3eRz2enUkKyN7exA%3D", oauth_signature_method="HMAC-SHA1", oauth_timestamp="1302690355", oauth_token="6797462-Sz009rpFmcLGIBANAyJRsKoUlHtf2Rl5YuufnZeiI", oauth_version="1.0"
+      accept-encoding: 
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      date: 
+      - Wed, 13 Apr 2011 10:25:56 GMT
+      server: 
+      - hi
+      status: 
+      - 200 OK
+      x-served-from: 
+      - smf1-ael-31-sr2
+      x-runtime: 
+      - "0.21185"
+      content-type: 
+      - application/json; charset=utf-8
+      x-timeline-cache-hit: 
+      - Miss
+      x-served-by: 
+      - smf1-aaq-07-sr1.prod.twitter.com
+      cache-control: 
+      - max-age=15, must-revalidate, max-age=300
+      expires: 
+      - Wed, 13 Apr 2011 10:30:56 GMT
+      vary: 
+      - Accept-Encoding
+      x-varnish: 
+      - "1299824023"
+      age: 
+      - "0"
+      via: 
+      - 1.1 varnish
+      x-cache-svr: 
+      - smf1-aaq-07-sr1.prod.twitter.com
+      x-cache: 
+      - MISS
+      content-encoding: 
+      - gzip
+      content-length: 
+      - "2477"
+    body: !binary |
+      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
+      AAA=
+
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: https://api.twitter.com:443/1/favorites/sublimevideo.json?include_entities=false&page=1
+    body: 
+    headers: 
+      accept: 
+      - application/json
+      user-agent: 
+      - Twitter Ruby Gem 1.3.0
+      authorization: 
+      - OAuth oauth_consumer_key="KTWk4ZrufEHjncLCsNwhw", oauth_nonce="71fcf2d8b9383aaeff93fc2ae31b01f8", oauth_signature="g%2B8gc9ebCgGk2KKAjfktQdrJ6Ow%3D", oauth_signature_method="HMAC-SHA1", oauth_timestamp="1302690356", oauth_token="6797462-Sz009rpFmcLGIBANAyJRsKoUlHtf2Rl5YuufnZeiI", oauth_version="1.0"
+      accept-encoding: 
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      date: 
+      - Wed, 13 Apr 2011 10:25:58 GMT
+      server: 
+      - hi
+      status: 
+      - 200 OK
+      x-transaction: 
+      - 1302690358-42187-1229
+      x-ratelimit-limit: 
+      - "350"
+      etag: 
+      - "\"b1b25aa4a504686685a5ffd86ea333e5\"-gzip"
+      last-modified: 
+      - Wed, 13 Apr 2011 10:25:58 GMT
+      x-ratelimit-remaining: 
+      - "349"
+      x-runtime: 
+      - "0.04387"
+      x-transaction-mask: 
+      - a6183ffa5f8ca943ff1b53b5644ef114
+      content-type: 
+      - application/json; charset=utf-8
+      pragma: 
+      - no-cache
+      x-ratelimit-class: 
+      - api_identified
+      x-revision: 
+      - DEV
+      expires: 
+      - Tue, 31 Mar 1981 05:00:00 GMT
+      cache-control: 
+      - no-cache, no-store, must-revalidate, pre-check=0, post-check=0
+      x-ratelimit-reset: 
+      - "1302693958"
+      set-cookie: 
+      - _twitter_sess=BAh7CDoPY3JlYXRlZF9hdGwrCJFjZU4vAToHaWQiJTA1M2JlNDk1ZWM3OTQ4%250ANGE2OWJjZTE3MmU5ZjQxZjMxIgpmbGFzaElDOidBY3Rpb25Db250cm9sbGVy%250AOjpGbGFzaDo6Rmxhc2hIYXNoewAGOgpAdXNlZHsA--88301eacca605e20b8102f96ddb906853948ddfe; domain=.twitter.com; path=/; HttpOnly
+      - guest_id=13026903581511232; path=/; expires=Fri, 13 May 2011 10:25:58 GMT
+      - k=128.179.67.94.1302690358148327; path=/; expires=Wed, 20-Apr-11 10:25:58 GMT; domain=.twitter.com
+      - lang=en; path=/
+      vary: 
+      - Accept-Encoding
+      content-encoding: 
+      - gzip
+      content-length: 
+      - "2723"
+    body: !binary |
+      H4sIAAAAAAAAA+2ae4/buBHAvwqjP5oWdWxRbwk4NPtM9/JA2s0lKOpCoCXK
+      ZiyRPpJan3O4796hZHv9XjvZpCkQL5L1SnwOZ+bHGfLfv1ua/qatxLqtByWr
+      6HuWU4FKIcYKlWxMEUGcEo0kVaKWGUWFkEhRecf4EP393etXPrprqjAORadk
+      hvSI6KcKkRL+UKieIC1QTjS0xHNopmRkUFI00nqS9Hv93oDpbjnr91g0fv9S
+      Wx1Ly5pnUD63koKUinasSUkyaiW8LsuOVZA7Idnqa5anSkuYgh+4Po5dGwdB
+      7Pq+70BrmRAyZxzaU4sWJNVTSnWaiZrDzO2O1U4NWujXtu1eEDSStPipby0H
+      OZ1Ou02lnGbjbiaqvmWmAkW4KERZimm/rXv1zpS6hFJtU/0eaZ/DUBhPJZ2U
+      s1SLVGWSUp5yUi0ntvZaE12rdDGztsCQioNlFy+haSO+lJhlvZYMnU0ksiOE
+      3cTzEwejv9rwQY6NcSMgriUb1FrITQmtynilwxqWf2No5pGV/G5NpChYSdMB
+      ycZDCfLNU1aRIU1rWcJglvIkNoiTVcNGlL19tVS/59vYD8K434PiWkO/g2H3
+      42QI495o0awQGVGSN7Nnd9Q0DcXWBA0i1GlO7ujGvFPKjVLeTzenUI9NNBMc
+      an2gAwRP2JBTCUbRqL5R5qmQY/MdVP+c6FEXXS4KiQJdM56/puezm7fzkTCV
+      akm4Kgl0uexJjcQ0JWWZMl4yTtOK5ows35aED2EAlFvN8m+NU4PFpp8EN3N7
+      JXguTMGFOI1hg5KXpjfLvfI87MPbUoBxtfMyg+6gX15aZsIFqUudzuveD4Ap
+      o0pzU3Hi+9YVWP2AyBT+KJe9xPHFhetaKzaJAxz5sWOvjGtlmfVqX8aya2Pa
+      atGfG8BTySjPl4+wGUOr8vflnMjGULIxRCrvqztg23dUsoKtyGzNPF4Ljm7p
+      pDEPP3Fx4sVL87CjlUHD4oyX07y0nXPf3xZbq7b3E2oGxMwSzp9woWEw7QKo
+      e/+2IdIBuCxQ9UVvkRNf+lftWDTNVs1yrtaXBHwwuq2YHq0MGSS0ZVJWAu51
+      pcvd1unuss6FSYZB4EY4Cv1+ryKOLcZ3YcqFrEg5t0zjiRbLvhACeI9fa6p0
+      qqhZmfnwa52loigUbd3wDgVZyMBuPtYfbetbjn6ng2qd0x+dJeKe/8xKZhZ8
+      BXVAqpZib0syA8tlClWksepqBrZeUKQEqupshChRjMonCL2ncoaAK2W3273n
+      mGobbWDY5VT3eyexrF2We5S5MD8c2A7IOvDcxn5OQ9mUDg4xx2plYX0t7nyg
+      OXpNJHKNJSWuC8b4qNyxAt8N7dA2TZ1MH2dVv0m/h0GVPCPoEPYhczXXI1ot
+      f2MPNirD7pAVu8lTwKIOYM/UtviPGpw54ReimhA+24JQkWeO55+GoBsO8COZ
+      ARtQ5o6WYgLK+ny9pw46K6AYuioKcBMKnUkN7ruD2j3dVc6gow4yNLtv4k/o
+      XIopV+ia8G8AqSsCPJEcvYNn6M+/3EL/F4STnPxlL7iazwa46gLaFh305l9H
+      s8t7AF20MD+r6IoiJ4qxEx5CV2u22+TCeJtc2N8mlxu4O8DlhQ9x6xa25G/E
+      HbJD5DiJGyaefc+teB+34tgLbftbcYs2n0PcugZVG6MLwT9SUNWvjy4MAnJt
+      N7Zxv9f0Dbawza7Fuh/Prmc4gpYPAgy72MfBEmCb7n0PwBZObgViL4SCTdvz
+      j437BnqtxW2TFmJt+Ka04IZk5QwNhQTLrFUX3aCPtdJoytQIvo9IDlEbdNeE
+      dUw/+bL4C+YYu64febaLQ8+zHy3+YrrmVHXJZFLSdmlrWE74cxkYQJncs+Mw
+      iuM4+lulf8LOgRitqdLM+TXJvpNIbYWYOEpwnIBtfweRmruDlUGEvcjdw8r4
+      MCrlxwEZj6nMZ0K1jW4BUgoxUOREQLbZCi0QTKsC3QdEdE8FWutg9vKsfX18
+      zBU0nw10SVGVFFD90jiTx4KX4zueE6/FXX5ogxOLPi/u2oZXGO6Al+3vohfs
+      /R/EV83RWT1EtguRV+JHwMEjwi7n+sK5uv5W+MIRPsMHw65/0npATexv9PnZ
+      JSj0oyDMOYgwYJPrA+Ptfu/m9YvUd+I4helKWJbtKGyuBI8VhYFAzvH1CsTW
+      3f1xUdgNmhKujaUOaGu0i7hsOgJp3iDodIrqSRe9G1Em5+nFOdlGQmkTnDUZ
+      yIzOSUcq8gmedtHLOhfqCer3UJah558oF9kXE80Btnt+gMM4xI+bUaTZCMjE
+      24XeS6urttR3SKkQVCCx4++UUg7G2HHC0ylFxkJVZA+b2pensemSSfAfokkL
+      tvWREoWeEkk7JtvQJgzZ2xFApQO/zabMpBchUIMtjnry2HHZNsfOISbbR7F5
+      6mWNYu1YE+QFXR/DfsDpBN0ALCWKjkYaxsEDUCuazyrUwgi2zU1a/3Sm+Tjc
+      ppq7I5kIcVoc7MKaY2K1h9OJP9dlYx1u4kWJfZ9tt8N9XFtK+Dvh2lkuGeHo
+      pdHU7BOdqvHDsdlG3ydk/Rfm6cLWHcjmQWxGmgGkajzbZtpcB45Hmhs8EJrN
+      9WyFamsu/8jcooYYlpfQLhBMj2B54X86Q2DjKBtRMukgkukajHW2ABsMKa8z
+      bVKOBZMQlGUlURCizem1TNB9Gb6w4wWwX8DYdt3g/wJf1lKUh7OTZnpe7IUx
+      tiMvgoli6xiobdU6SDgvSPzHJZwFrsCLgyi2fnDuB+d+cO4H5/5nnFtjwx7O
+      LbzVCuvWUo5ALw7xGky1ojJjBnCI3BFWGiPsog+0SS8yjUBlnldUj0QORp9J
+      UujG+slAibLWFKqV4s6UfNLnfb4UpgYpgm/7tchFhM2bfs/Q8eOj0NH1QjAC
+      x3FwGDa5kh/pys8JBIPEw4kTfcVAcJ+vPWQcX5TijH0Mjn7fcWAD1QnfcQ+F
+      qkFNuehyQUZKizFVOy+iVAIakgUIh1ubGH1LpDaXSIhG56LMzX6wvVjSfmtO
+      7qo2e3gYjAfRfcqp3VuSGf97wqndLpjegq81py4ZU5nooIuzvbx/AJc0j71V
+      XPpeGHmeweU6el07/ByC4m1WRlHgbFPV93ed3TU3VA7j811Nm0tZjoccnPh2
+      gu0j8OkSl3hmT/xIgCz8fBD6OwF5GNBzHX4DKo5uGx3/BtjE4Kx9L4pwaG6F
+      2b/Bv21ozjVh43QO9msPoNEZOIUXraBxHQzHhYCvqEZgH2p+B/KBMzrgJrgA
+      VAkI/GhJhyYn2pDQZEJvnt413MwXlycXMSMBEvCmiHlBNXDWtFTzimgIM/Pu
+      lxHRCR3swNbEDYPYxZH3g4gnENFYtSGiE5tNMY6+k9TosVctIRyInMhz8HJJ
+      nu2DHOzbJJ0OwfpKOtvJt5zIMWxuzVXJE8/xnlawn4StIVITBmraQVANmTOD
+      cowGjbC4uXhZ5qr79ePF06+rkMD8rIPv7Qh2wzktJyNGjo8b7Qc4CIG/j9fP
+      /DzPh0/0ORdWfOMhNwDnmOO9TRQGgR3vumuJ7aMO/Qz1bHNnBTuJ6x9x6JcT
+      r/C+2V3LpVD3B42N7qMXrfI/yoEfPnzgZ4Nb9mJzCRoYcKvB+Hac9M2X/lHv
+      rNiBm61QcRMOh6j4n/8CayUbNlkwAAA=
+
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: https://api.twitter.com:443/1/favorites/sublimevideo.json?include_entities=false&page=2
+    body: 
+    headers: 
+      accept: 
+      - application/json
+      user-agent: 
+      - Twitter Ruby Gem 1.3.0
+      authorization: 
+      - OAuth oauth_consumer_key="KTWk4ZrufEHjncLCsNwhw", oauth_nonce="1a6f71158710231e559ae0774b5b6b1b", oauth_signature="s%2F8okAdbRSdkRtajytnc669Ovkc%3D", oauth_signature_method="HMAC-SHA1", oauth_timestamp="1302690358", oauth_token="6797462-Sz009rpFmcLGIBANAyJRsKoUlHtf2Rl5YuufnZeiI", oauth_version="1.0"
+      accept-encoding: 
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      date: 
+      - Wed, 13 Apr 2011 10:26:00 GMT
+      server: 
+      - hi
+      status: 
+      - 200 OK
+      x-transaction: 
+      - 1302690359-4960-55082
+      x-ratelimit-limit: 
+      - "350"
+      etag: 
+      - "\"d751713988987e9331980363e24189ce\"-gzip"
+      last-modified: 
+      - Wed, 13 Apr 2011 10:25:59 GMT
+      x-ratelimit-remaining: 
+      - "348"
+      x-runtime: 
+      - "0.24146"
+      x-transaction-mask: 
+      - a6183ffa5f8ca943ff1b53b5644ef114
+      content-type: 
+      - application/json; charset=utf-8
+      pragma: 
+      - no-cache
+      x-ratelimit-class: 
+      - api_identified
+      x-revision: 
+      - DEV
+      expires: 
+      - Tue, 31 Mar 1981 05:00:00 GMT
+      cache-control: 
+      - no-cache, no-store, must-revalidate, pre-check=0, post-check=0
+      x-ratelimit-reset: 
+      - "1302693958"
+      set-cookie: 
+      - _twitter_sess=BAh7CDoPY3JlYXRlZF9hdGwrCKxqZU4vAToHaWQiJWI2MzEwOTYzZmM0YTJh%250AODY4OGFlY2E2YmRiMWNhNzc0IgpmbGFzaElDOidBY3Rpb25Db250cm9sbGVy%250AOjpGbGFzaDo6Rmxhc2hIYXNoewAGOgpAdXNlZHsA--2cfc5cce205ed84b550375fdad3a1d4844866f26; domain=.twitter.com; path=/; HttpOnly
+      - guest_id=130269035997055758; path=/; expires=Fri, 13 May 2011 10:25:59 GMT
+      - k=128.179.67.94.1302690359966861; path=/; expires=Wed, 20-Apr-11 10:25:59 GMT; domain=.twitter.com
+      - lang=en; path=/
+      vary: 
+      - Accept-Encoding
+      content-encoding: 
+      - gzip
+      content-length: 
+      - "22"
+    body: !binary |
+      H4sIAAAAAAAAA4uOBQApu0wNAgAAAA==
+
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: https://search.twitter.com:443/search.json?q=jilion&rpp=100&since_id=57915946093907968
+    body: 
+    headers: 
+      accept: 
+      - application/json
+      user-agent: 
+      - Twitter Ruby Gem 1.3.0
+      authorization: 
+      - OAuth oauth_consumer_key="KTWk4ZrufEHjncLCsNwhw", oauth_nonce="0b568aa340719f9c5f323a2c88c552d7", oauth_signature="%2BjzQtUrM3jt2Uf4gu2K9ixT%2Fs%2Fc%3D", oauth_signature_method="HMAC-SHA1", oauth_timestamp="1302694267", oauth_token="6797462-Sz009rpFmcLGIBANAyJRsKoUlHtf2Rl5YuufnZeiI", oauth_version="1.0"
+      accept-encoding: 
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      date: 
+      - Wed, 13 Apr 2011 11:31:09 GMT
+      server: 
+      - hi
+      status: 
+      - 200 OK
+      x-served-from: 
+      - smf1-aem-31-sr3
+      x-runtime: 
+      - "0.01550"
+      content-type: 
+      - application/json; charset=utf-8
+      x-timeline-cache-hit: 
+      - Miss
+      x-served-by: 
+      - smf1-aaq-23-sr4.prod.twitter.com
+      cache-control: 
+      - max-age=15, must-revalidate, max-age=300
+      expires: 
+      - Wed, 13 Apr 2011 11:36:09 GMT
+      vary: 
+      - Accept-Encoding
+      x-varnish: 
+      - "1755441029"
+      age: 
+      - "0"
+      via: 
+      - 1.1 varnish
+      x-cache-svr: 
+      - smf1-aaq-23-sr4.prod.twitter.com
+      x-cache: 
+      - MISS
+      content-encoding: 
+      - gzip
+      content-length: 
+      - "177"
+    body: !binary |
+      H4sIAAAAAAAAA2WPywrCMBBF/2UWroJMTNM8oPghIqG0USPpK2lBEf/dgA2C
+      3Q3cy7lnXhBsXPwcQZ/OBLr6YVwLmkuKgnKOBaNSCiYIRNc39hsKRbkqSlRM
+      oVClJAlySZybWYIHDcfcrTac3VTdnXdDDyQvm9EGM9ZXC5oiElhPAs3Qjd7O
+      tjWuB417pMjU4Wdi4hzS2kYH8h+58C+RCtNiwzNlq8z7A6zuQQEIAQAA
+
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: https://search.twitter.com:443/search.json?q=sublimevideo&rpp=100&since_id=57915946093907968
+    body: 
+    headers: 
+      accept: 
+      - application/json
+      user-agent: 
+      - Twitter Ruby Gem 1.3.0
+      authorization: 
+      - OAuth oauth_consumer_key="KTWk4ZrufEHjncLCsNwhw", oauth_nonce="a57abcc46244e5d6222b8592fb392d85", oauth_signature="9N53aYxpypo9Hgjzc1H72pGyD%2FE%3D", oauth_signature_method="HMAC-SHA1", oauth_timestamp="1302694269", oauth_token="6797462-Sz009rpFmcLGIBANAyJRsKoUlHtf2Rl5YuufnZeiI", oauth_version="1.0"
+      accept-encoding: 
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      date: 
+      - Wed, 13 Apr 2011 11:31:10 GMT
+      server: 
+      - hi
+      status: 
+      - 200 OK
+      x-served-from: 
+      - smf1-aep-15-sr2
+      x-runtime: 
+      - "0.10745"
+      content-type: 
+      - application/json; charset=utf-8
+      x-timeline-cache-hit: 
+      - Miss
+      x-served-by: 
+      - smf1-aau-31-sr4.prod.twitter.com
+      cache-control: 
+      - max-age=15, must-revalidate, max-age=300
+      expires: 
+      - Wed, 13 Apr 2011 11:36:10 GMT
+      vary: 
+      - Accept-Encoding
+      x-varnish: 
+      - "830742618"
+      age: 
+      - "0"
+      via: 
+      - 1.1 varnish
+      x-cache-svr: 
+      - smf1-aau-31-sr4.prod.twitter.com
+      x-cache: 
+      - MISS
+      content-encoding: 
+      - gzip
+      content-length: 
+      - "181"
+    body: !binary |
+      H4sIAAAAAAAAA2WPywrCMBBF/2UWroIktGkeUPwQkVDbUQPpK2lEEf/dgAbR
+      7gbu5dwzD/AYolsC6P2BQN/cjO1Ac8moYJzTsmBSikIQCHZo8R0KxbgqK6oK
+      RYWqJEmQU+JcTPQONOxyt15xNnMd4tHZHq+2wxFI3jcTejM1ZwTNKCXwOQm0
+      Yz85XLAzdgBNt4wyVVRfHxMWnzZXUpC/yYV/lVSYI/p7yn6Uni/6P4RyFAEA
+      AA==
+
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: https://search.twitter.com:443/search.json?q=videojs&rpp=100&since_id=57853315639279616
+    body: 
+    headers: 
+      accept: 
+      - application/json
+      user-agent: 
+      - Twitter Ruby Gem 1.3.0
+      authorization: 
+      - OAuth oauth_consumer_key="KTWk4ZrufEHjncLCsNwhw", oauth_nonce="aed8d93e044436bf5e4a5e32a0d58be6", oauth_signature="QbSci8fwfRfPrao4ycqC%2FssJA5s%3D", oauth_signature_method="HMAC-SHA1", oauth_timestamp="1302694270", oauth_token="6797462-Sz009rpFmcLGIBANAyJRsKoUlHtf2Rl5YuufnZeiI", oauth_version="1.0"
+      accept-encoding: 
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      date: 
+      - Wed, 13 Apr 2011 11:31:12 GMT
+      server: 
+      - hi
+      status: 
+      - 200 OK
+      x-served-from: 
+      - smf1-aem-11-sr3
+      x-runtime: 
+      - "0.02397"
+      content-type: 
+      - application/json; charset=utf-8
+      x-timeline-cache-hit: 
+      - Miss
+      x-served-by: 
+      - smf1-aav-19-sr4.prod.twitter.com
+      cache-control: 
+      - max-age=15, must-revalidate, max-age=300
+      expires: 
+      - Wed, 13 Apr 2011 11:36:12 GMT
+      vary: 
+      - Accept-Encoding
+      x-varnish: 
+      - "786786127"
+      age: 
+      - "0"
+      via: 
+      - 1.1 varnish
+      x-cache-svr: 
+      - smf1-aav-19-sr4.prod.twitter.com
+      x-cache: 
+      - MISS
+      content-encoding: 
+      - gzip
+      content-length: 
+      - "661"
+    body: !binary |
+      H4sIAAAAAAAAA6WUWW+cMBSF/4plVXnpFMxmliiq+tRFbZWqUSt1EXLgDjgF
+      mxiTySjNf+8lwCSZROo2TzP2Gfuc48++ogb6obE9zb5e0bXRbT70YHJZ5r01
+      NKMhD4OIJ3RFO6PXsoFctqKCfDANztbWdpnrCubYjWwrp9Cte0/XuynnUZhG
+      ntvoSudKm1Y0zvH7l7hiYUBYKHNhcanPUK6IF5AXnSE+8zzC0syLMuaTpww/
+      KN+5Q3UhdG9r0GaLEzuzUcLSKAmZx70oZonHcbIFK0phBc2u5qy53XaAagMF
+      KEuvV9TqJTXN1NA0OAKXo6kvoApdglkR3Ixguk6oLTmFWqryZkh3oEivB1MA
+      +SRL0G8+kgsJm/EvteiJEbKHkjzxWyIVWQ+qlKpyyNxbu1HgbHq33rxWH9qb
+      JDR7EGJ171xoNh/JilagF7+y13kjVDWMZzNaRvOg6N1oU0eTfHKMmoPGHgpS
+      G1gfHZwP2h7OzjCKstIpxDRKDDSzQOm1bhq9mX4dVPZw0qIU13LFOIKdPgoT
+      T7kf8ND/C5p6XPnH1i1hLcaj24NrfzhYAOtUtQ/YyQAImH8LmM+ygGde/Dhg
+      wynugh3dxStOWZikQcrDkDMWhP+L1xzYSrXFBm7yRhsennWKfFOvTt69jSao
+      yHEjtmDIz4WxBZV9Q/uoLIX/npX+31mB6lkPwhS1o8C6fwBMUWtslkh7l5jv
+      2KW4zKcb4LHYiyIWBl6SxEGMJqQqYJqMkygIvIgHqR+nfLwe6Airr2eKni/a
+      owfrHJwfXYwFno1p54cv7zBxh1XQzGMMwZy+Ijx42xsY8ZGKZsxhXozb3lrZ
+      QbHnhy5Bdo/SngsUnA+AL1dGFzfXvwApgswgiAUAAA==
+
+    http_version: "1.1"

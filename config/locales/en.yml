@@ -1,8 +1,12 @@
 en:
   time:
+    am: AM # fundamental !!!!!!!!
+    pm: PM # fundamental !!!!!!!!
     formats:
+      tweet: "%l:%M %p %b %{ordinal_day} %Y"
       date: "%B %e, %Y"
       named_date: "%a, %e %b %Y"
+      minutes: "%d %b %Y, %R"
       minutes_timezone: "%d %b %Y, %R %Z"
       seconds_timezone: "%d %b %Y, %R:%S %Z"
       seconds_timezone_y: "%d %b %y, %R:%S %Z"
