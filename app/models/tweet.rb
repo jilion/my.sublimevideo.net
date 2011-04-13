@@ -22,7 +22,7 @@ class Tweet
   belongs_to :retweeted_tweet, :class_name => "Tweet", :inverse_of => :retweets
   has_many   :retweets, :class_name => "Tweet", :inverse_of => :retweeted_tweet
 
-  KEYWORDS = %w[jilion sublimevideo videojs]
+  KEYWORDS = ["jilion", "sublimevideo", "videojs", "jw player"]
 
   attr_accessible :tweet_id, :keywords, :from_user_id, :from_user, :to_user_id, :to_user, :iso_language_code, :profile_image_url, :source, :content, :tweeted_at, :retweets_count
 
@@ -56,13 +56,13 @@ class Tweet
     KEYWORDS.each do |keyword|
       max_id = self.where(keywords: keyword).max(:tweet_id)
       search.clear
-      search.q(keyword).per_page(100)
+      search.q("\"#{keyword}\"").per_page(100)
       search = search.since_id(max_id) if max_id
       i = 1
 
       loop do
         Rails.logger.info("Searching for #{keyword}#{", since ID #{max_id}" if max_id}, with 100 results per page (page #{i})")
-        search.fetch(true).each do |tweet|
+        search.fetch.each do |tweet|
           begin
             if t = self.where(tweet_id: tweet.id).first
               t.add_to_set(:keywords, keyword) unless t.keywords.include?(keyword)
@@ -84,7 +84,7 @@ class Tweet
   def self.create_from_twitter_tweet!(tweet)
     self.create!(
       tweet_id:          tweet.id,
-      keywords:          KEYWORDS.select { |k| tweet.text.include? k },
+      keywords:          KEYWORDS.select { |k| tweet.text.downcase.include?(k.downcase) },
       from_user_id:      tweet.from_user_id || tweet.user.id,
       from_user:         tweet.from_user,
       to_user_id:        tweet.to_user_id,
