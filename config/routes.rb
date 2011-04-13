@@ -53,7 +53,7 @@ MySublimeVideo::Application.routes.draw do
   # = Admin =
   # =========
 
-  match 'admin', :to => redirect('/admin/dashboard'), :as => 'admin'
+  match 'admin', :to => redirect('/admin/djs'), :as => 'admin'
 
   devise_for :admins,
   :path => 'admin',
