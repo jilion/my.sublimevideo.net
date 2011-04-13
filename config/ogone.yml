@@ -29,8 +29,8 @@ staging:
 
 production:
   <<: *defaults
-  login:         heroku_env # jilionPROD
-  user:          heroku_env # sublime_api
-  password:      heroku_env # UFFXVE11
-  signature:     heroku_env # av5bern9elk9iav8hybs7is5v
-  signature_out: heroku_env # ral2el2wab5warc3eack8mats
+  login:         heroku_env
+  user:          heroku_env
+  password:      heroku_env
+  signature:     heroku_env
+  signature_out: heroku_env

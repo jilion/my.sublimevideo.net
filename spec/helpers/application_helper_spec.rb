@@ -16,7 +16,7 @@ describe ApplicationHelper do
 
   describe "#display_date" do
     let(:date) { Time.now.utc }
-    it { helper.display_date(date).should == I18n.l(date, :format => :minutes_timezone) }
+    it { helper.display_date(date).should == I18n.l(date, :format => :minutes) }
     it { helper.display_date(nil).should == "-" }
   end
 

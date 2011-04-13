@@ -1,0 +1,5 @@
+%p
+  - Tweet::KEYWORDS.each do |keyword|
+    = link_to content_tag(:strong, Tweet.keywords(keyword).count) + " #{keyword}".html_safe, admin_tweets_path(keywords: keyword)
+    = "|"
+  = link_to content_tag(:strong, Tweet.favorites.count) + " Favorites".html_safe, admin_tweets_path(favorites: true)

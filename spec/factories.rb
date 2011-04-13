@@ -194,3 +194,17 @@ Factory.define :sites_stat do |f|
   f.states_count  { {} }
   f.plans_count   { {} }
 end
+
+Factory.define :tweet do |f|
+  f.sequence(:tweet_id) { |n| n }
+  f.keywords            %w[sublimevideo jilion]
+  f.from_user_id        1
+  f.from_user           'toto'
+  f.to_user_id          2
+  f.to_user             'tata'
+  f.iso_language_code   'en'
+  f.profile_image_url   'http://yourimage.com/img.jpg'
+  f.content             "This is my first tweet!"
+  f.tweeted_at          Time.now.utc
+  f.favorited           false
+end

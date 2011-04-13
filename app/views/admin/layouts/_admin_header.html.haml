@@ -7,7 +7,7 @@
     .popup_menu
       %h3= link_to "Menu", "", :onclick => "return false"
       %ul
-        - [:plans, :referrers, :mails, :admins].each do |name|
+        - [:plans, :referrers, :tweets, :mails, :admins].each do |name|
           = activable_menu_item(:li, name, {}.reverse_merge!(:namespace => 'admin'))
     %ul#favorite_links
       - [:sites, :users, :invoices, [:releases, { :link_text => "Player" }], [:delayed_jobs, { :urls => %w[djs], :link_text => "DJs" }]].each do |r|

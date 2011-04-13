@@ -6,7 +6,7 @@ module ApplicationHelper
   end
 
   def display_date(date)
-    date ? l(date, :format => :minutes_timezone) : "-"
+    date ? l(date, :format => :minutes) : "-"
   end
 
   def display_percentage(fraction)

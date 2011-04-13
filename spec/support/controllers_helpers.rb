@@ -96,7 +96,11 @@ module Spec
         mock_model(Transaction, stubs)
       end
 
-      memoize :authenticated_admin, :authenticated_user, :mock_site, :mock_user, :mock_admin, :mock_release, :mock_mail_template, :mock_mail_letter, :mock_mail_log, :mock_delayed_job, :mock_ticket, :mock_plan, :mock_invoice, :mock_transaction
+      def mock_tweet(stubs={})
+        mock_model(Tweet, stubs)
+      end
+
+      memoize :authenticated_admin, :authenticated_user, :mock_site, :mock_user, :mock_admin, :mock_release, :mock_mail_template, :mock_mail_letter, :mock_mail_log, :mock_delayed_job, :mock_ticket, :mock_plan, :mock_invoice, :mock_transaction, :mock_tweet
 
     end
   end
