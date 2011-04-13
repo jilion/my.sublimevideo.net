@@ -43,7 +43,7 @@ class Tweet
   # =================
   def self.delay_save_new_tweets_and_sync_favorite_tweets
     unless Delayed::Job.already_delayed?('%Tweet%save_new_tweets_and_sync_favorite_tweets%')
-      delay(run_at: 20.minutes.from_now).save_new_tweets_and_sync_favorite_tweets
+      delay(priority: 200, run_at: 20.minutes.from_now).save_new_tweets_and_sync_favorite_tweets
     end
   end
 
