@@ -25,6 +25,9 @@
 %p
   = "Recommended plan:"
   = @site.recommended_plan_name ? @site.recommended_plan_name.titleize : "–"
+%p
+  = "Next plan:"
+  = @site.next_cycle_plan ? @site.next_cycle_plan.title : "–"
 
 - if @site.plan_id?
   %p
