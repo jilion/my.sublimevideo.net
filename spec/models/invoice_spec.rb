@@ -312,7 +312,7 @@ describe Invoice do
         context "before beta discount end" do
           before(:all) do
             @user    = Factory(:user, country: 'FR', created_at: Time.utc(2010,10,10))
-            Timecop.travel(PublicLaunch.beta_transition_ended_on - 1.hour) do
+            Timecop.travel(PublicLaunch.beta_transition_ended_on - 1.day) do
               @site    = Factory(:site, user: @user, plan_id: @paid_plan.id)
               @invoice = Invoice.build(site: @site)
             end
@@ -336,7 +336,7 @@ describe Invoice do
         context "after beta discount end" do
           before(:all) do
             @user    = Factory(:user, country: 'FR', created_at: Time.utc(2011,3,30))
-            Timecop.travel(PublicLaunch.beta_transition_ended_on + 1.hour) do
+            Timecop.travel(PublicLaunch.beta_transition_ended_on + 1.day) do
               @site    = Factory(:site, user: @user, plan_id: @paid_plan.id)
               @invoice = Invoice.build(site: @site)
             end
@@ -362,7 +362,7 @@ describe Invoice do
         context "from a paid plan before beta discount end" do
           before(:all) do
             @user       = Factory(:user, country: 'FR', created_at: Time.utc(2010,10,10))
-            Timecop.travel(PublicLaunch.beta_transition_ended_on - 1.hour) do
+            Timecop.travel(PublicLaunch.beta_transition_ended_on - 1.day) do
               @site       = Factory(:site_with_invoice, user: @user, plan_id: @paid_plan.id)
               @paid_plan2 = Factory(:plan, cycle: "month", price: 3000)
               # Simulate upgrade
@@ -393,7 +393,7 @@ describe Invoice do
         context "from a paid plan after beta discount end" do
           before(:all) do
             @user       = Factory(:user, country: 'FR', created_at: Time.utc(2011,3,30))
-            Timecop.travel(PublicLaunch.beta_transition_ended_on + 1.hour) do
+            Timecop.travel(PublicLaunch.beta_transition_ended_on + 1.day) do
               @site       = Factory(:site_with_invoice, user: @user, plan_id: @paid_plan.id)
               @paid_plan2 = Factory(:plan, cycle: "month", price: 3000)
               # Simulate upgrade
@@ -426,7 +426,7 @@ describe Invoice do
           context "from a #{plan} plan before beta discount end" do
             before(:all) do
               @user      = Factory(:user, country: 'FR', created_at: Time.utc(2010,10,10))
-              Timecop.travel(PublicLaunch.beta_transition_ended_on - 1.hour) do
+              Timecop.travel(PublicLaunch.beta_transition_ended_on - 1.day) do
                 @site      = Factory(:site, user: @user, plan_id: instance_variable_get("@#{plan}_plan").id)
                 @paid_plan = Factory(:plan, cycle: "month", price: 3000)
                 # Simulate upgrade
@@ -456,7 +456,7 @@ describe Invoice do
           context "from a #{plan} plan after beta discount end" do
             before(:all) do
               @user      = Factory(:user, country: 'FR', created_at: Time.utc(2011,3,30))
-              Timecop.travel(PublicLaunch.beta_transition_ended_on + 1.hour) do
+              Timecop.travel(PublicLaunch.beta_transition_ended_on + 1.day) do
                 @site      = Factory(:site, user: @user, plan_id: instance_variable_get("@#{plan}_plan").id)
                 @paid_plan = Factory(:plan, cycle: "month", price: 3000)
                 # Simulate upgrade
@@ -487,7 +487,7 @@ describe Invoice do
         context "before beta discount end" do
           before(:all) do
             @user    = Factory(:user, country: 'FR', created_at: Time.utc(2010,10,10))
-            Timecop.travel(PublicLaunch.beta_transition_ended_on - 1.hour) do
+            Timecop.travel(PublicLaunch.beta_transition_ended_on - 1.day) do
               @site = Factory.build(:new_site, user: @user, plan_id: @paid_plan.id)
               @invoice = Invoice.build(site: @site)
             end
@@ -503,7 +503,7 @@ describe Invoice do
         context "after beta discount end" do
           before(:all) do
             @user    = Factory(:user, country: 'FR', created_at: Time.utc(2011,3,30))
-            Timecop.travel(PublicLaunch.beta_transition_ended_on + 1.hour) do
+            Timecop.travel(PublicLaunch.beta_transition_ended_on + 1.day) do
               @site = Factory.build(:new_site, user: @user, plan_id: @paid_plan.id)
               @invoice = Invoice.build(site: @site)
             end
@@ -521,7 +521,7 @@ describe Invoice do
         context "before beta discount end" do
           before(:all) do
             @user    = Factory(:user, country: 'CH', created_at: Time.utc(2010,10,10))
-            Timecop.travel(PublicLaunch.beta_transition_ended_on - 1.hour) do
+            Timecop.travel(PublicLaunch.beta_transition_ended_on - 1.day) do
               @site = Factory.build(:new_site, user: @user, plan_id: @paid_plan.id)
               @invoice = Invoice.build(site: @site)
             end
@@ -537,7 +537,7 @@ describe Invoice do
         context "after beta discount end" do
           before(:all) do
             @user    = Factory(:user, country: 'CH')
-            Timecop.travel(PublicLaunch.beta_transition_ended_on + 1.hour) do
+            Timecop.travel(PublicLaunch.beta_transition_ended_on + 1.day) do
               @site = Factory.build(:new_site, user: @user, plan_id: @paid_plan.id)
               @invoice = Invoice.build(site: @site)
             end

@@ -48,30 +48,47 @@ feature "Sticky notices" do
   end
 
   feature "user have beta sites" do
-    background do
-      sign_in_as :user
-      Timecop.travel(2010,2,1)
+    context "more than 2 days before the end of the beta" do
+      background do
+        sign_in_as :user
+        Timecop.travel(PublicLaunch.beta_transition_ended_on - 12.days + 1.hour)
+      end
+
+      scenario "show a notice" do
+        Factory(:site, user: @current_user, plan_id: @beta_plan.id)
+        visit '/sites'
+
+        current_url.should =~ %r(http://[^/]+/sites)
+        page.should have_content("11 days left to choose a plan for your sites")
+        Timecop.return
+      end
     end
 
-    scenario "show a notice" do
-      Factory(:site, user: @current_user, plan_id: @beta_plan.id)
-      PublicLaunch.stub(:beta_transition_ended_on) { Date.new(2010,2,13) }
-      visit '/sites'
+    context "less than 2 days before the end of the beta" do
+      background do
+        sign_in_as :user
+        Timecop.travel(PublicLaunch.beta_transition_ended_on - 2.days + 1.hour)
+      end
 
-      current_url.should =~ %r(http://[^/]+/sites)
-      page.should have_content("12 days left to choose a plan for your sites")
-      Timecop.return
+      scenario "show a notice" do
+        Factory(:site, user: @current_user, plan_id: @beta_plan.id)
+        visit '/sites'
+
+        current_url.should =~ %r(http://[^/]+/sites)
+        page.should have_content("46 hours left to choose a plan for your sites")
+        Timecop.return
+      end
     end
   end
 
-  feature "when inviation redirect to signup" do
+  feature "when invitation redirect to signup" do
 
     scenario "show beta is finished notice" do
       VCR.use_cassette("twitter/signup") { visit '/invitation/accept?invitation_token=xxx' }
       current_url.should =~ %r(http://[^/]+/signup\?beta=over$)
 
       page.should have_content("We have now launched publicly!")
-      page.should have_content(" The Beta period is over. Please check out our new")
+      page.should have_content("The Beta period is over. Please check out our new")
     end
 
   end
