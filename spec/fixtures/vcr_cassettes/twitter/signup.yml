@@ -202,3 +202,414 @@
       H4sIAAAAAAAAA4uOBQApu0wNAgAAAA==
 
     http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: https://api.twitter.com:443/1/users/profile_image/88289127.json?size=bigger
+    body: 
+    headers: 
+      accept: 
+      - application/json
+      user-agent: 
+      - Twitter Ruby Gem 1.3.0
+      authorization: 
+      - OAuth oauth_consumer_key="KTWk4ZrufEHjncLCsNwhw", oauth_nonce="0c5e081867eb4034d48161be23d3f5e4", oauth_signature="oOMK6icM42N%2BdvFVjD8FEu79Uuc%3D", oauth_signature_method="HMAC-SHA1", oauth_timestamp="1302787981", oauth_token="6797462-Sz009rpFmcLGIBANAyJRsKoUlHtf2Rl5YuufnZeiI", oauth_version="1.0"
+      accept-encoding: 
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 302
+      message: Found
+    headers: 
+      date: 
+      - Thu, 14 Apr 2011 13:33:03 GMT
+      server: 
+      - hi
+      status: 
+      - 302 Found
+      x-transaction: 
+      - 1302787983-23122-27701
+      x-ratelimit-limit: 
+      - "350"
+      last-modified: 
+      - Wed, 30 Mar 2011 20:30:32 GMT
+      location: 
+      - http://a2.twimg.com/profile_images/1000303901/FrankWeb_bigger.jpg
+      x-ratelimit-remaining: 
+      - "345"
+      x-runtime: 
+      - "0.02095"
+      x-transaction-mask: 
+      - a6183ffa5f8ca943ff1b53b5644ef114
+      content-type: 
+      - text/html; charset=utf-8
+      x-ratelimit-class: 
+      - api_identified
+      x-revision: 
+      - DEV
+      x-ratelimit-reset: 
+      - "1302788983"
+      set-cookie: 
+      - _twitter_sess=BAh7CDoPY3JlYXRlZF9hdGwrCGYHN1QvAToHaWQiJTA3YjFlMWY2ODU5NTkz%250AM2JiODg1MmIyYzE4MTcxMGQzIgpmbGFzaElDOidBY3Rpb25Db250cm9sbGVy%250AOjpGbGFzaDo6Rmxhc2hIYXNoewAGOgpAdXNlZHsA--91dec1232601c0f7d11431cfc0356abf7b811a00; domain=.twitter.com; path=/; HttpOnly
+      - guest_id=130278798319672855; path=/; expires=Sat, 14 May 2011 13:33:03 GMT
+      - k=128.179.67.94.1302787983191915; path=/; expires=Thu, 21-Apr-11 13:33:03 GMT; domain=.twitter.com
+      - lang=en; path=/
+      cache-control: 
+      - max-age=300
+      expires: 
+      - Thu, 14 Apr 2011 13:38:03 GMT
+      vary: 
+      - Accept-Encoding
+      content-encoding: 
+      - gzip
+      transfer-encoding: 
+      - chunked
+    body: !binary |
+      H4sIAAAAAAAAAwIAAAD//x3NUQ7CIAwA0KuQHYAy96WpfHoF49dSRlfQMUjF
+      GG9vsneBh6mXzWOo8ecf9WNI2QTOuxgkk5TX65B6bxcAOtn+zUXsUgs0rWve
+      eM6FhN8wOucmN53dCDel/XXnMIcswmqfTQavHLPy0jkikLcIx4dw5H8fmsQt
+      gwAAAA==
+
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: https://api.twitter.com:443/1/users/profile_image/16185920.json?size=bigger
+    body: 
+    headers: 
+      accept: 
+      - application/json
+      user-agent: 
+      - Twitter Ruby Gem 1.3.0
+      authorization: 
+      - OAuth oauth_consumer_key="KTWk4ZrufEHjncLCsNwhw", oauth_nonce="dc2b3b032a0998abbb30df3e04c30826", oauth_signature="xJPPwHchhoG2HV3zTfRUqetyU%2B4%3D", oauth_signature_method="HMAC-SHA1", oauth_timestamp="1302788153", oauth_token="6797462-Sz009rpFmcLGIBANAyJRsKoUlHtf2Rl5YuufnZeiI", oauth_version="1.0"
+      accept-encoding: 
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 302
+      message: Found
+    headers: 
+      date: 
+      - Thu, 14 Apr 2011 13:35:55 GMT
+      server: 
+      - hi
+      status: 
+      - 302 Found
+      x-transaction: 
+      - 1302788155-34944-14517
+      x-ratelimit-limit: 
+      - "350"
+      last-modified: 
+      - Mon, 17 Jan 2011 12:29:33 GMT
+      location: 
+      - http://a3.twimg.com/profile_images/766381875/ma20okv7_bigger.jpg
+      x-ratelimit-remaining: 
+      - "343"
+      x-runtime: 
+      - "0.28621"
+      x-transaction-mask: 
+      - a6183ffa5f8ca943ff1b53b5644ef114
+      content-type: 
+      - text/html; charset=utf-8
+      x-ratelimit-class: 
+      - api_identified
+      x-revision: 
+      - DEV
+      x-ratelimit-reset: 
+      - "1302788983"
+      set-cookie: 
+      - _twitter_sess=BAh7CDoPY3JlYXRlZF9hdGwrCJ6nOVQvAToHaWQiJTQzZjlmY2Y4M2IxZTEw%250AYWQ3Mjc2YzVkOTEzZjgyNDI2IgpmbGFzaElDOidBY3Rpb25Db250cm9sbGVy%250AOjpGbGFzaDo6Rmxhc2hIYXNoewAGOgpAdXNlZHsA--e22eae4369bd2fe9762f2ed67278c774ce26eeb5; domain=.twitter.com; path=/; HttpOnly
+      - guest_id=130278815528244133; path=/; expires=Sat, 14 May 2011 13:35:55 GMT
+      - k=128.179.67.94.1302788155276862; path=/; expires=Thu, 21-Apr-11 13:35:55 GMT; domain=.twitter.com
+      - lang=en; path=/
+      cache-control: 
+      - max-age=300
+      expires: 
+      - Thu, 14 Apr 2011 13:40:55 GMT
+      vary: 
+      - Accept-Encoding
+      content-encoding: 
+      - gzip
+      transfer-encoding: 
+      - chunked
+    body: !binary |
+      H4sIAAAAAAAAAwIAAAD//x3NUQ7CIAwA0KuQHYCqi2MxlXv4tXSjK9UhBFHj
+      7U32LvAwtrR5nHP4+Vt+G6psZtanGCQTK6/XLrZWLgDU2/bVJHbJCUrNq248
+      aSLhF7hh6Mfj6M6Q6HTIj4+bZhXhau9FOl85aOWlcUAgbxH2DmG//9kHt6yC
+      AAAA
+
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: https://api.twitter.com:443/1/users/profile_image/14455558.json?size=bigger
+    body: 
+    headers: 
+      accept: 
+      - application/json
+      user-agent: 
+      - Twitter Ruby Gem 1.3.0
+      authorization: 
+      - OAuth oauth_consumer_key="KTWk4ZrufEHjncLCsNwhw", oauth_nonce="3619c801c0234fb66c67b77f1b2c8fdc", oauth_signature="C7%2BkBCuN%2B%2F2FYwfTIrdi5%2FBRhgU%3D", oauth_signature_method="HMAC-SHA1", oauth_timestamp="1302788155", oauth_token="6797462-Sz009rpFmcLGIBANAyJRsKoUlHtf2Rl5YuufnZeiI", oauth_version="1.0"
+      accept-encoding: 
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 302
+      message: Found
+    headers: 
+      date: 
+      - Thu, 14 Apr 2011 13:35:57 GMT
+      server: 
+      - hi
+      status: 
+      - 302 Found
+      x-transaction: 
+      - 1302788157-84847-33368
+      x-ratelimit-limit: 
+      - "350"
+      last-modified: 
+      - Fri, 11 Mar 2011 19:20:18 GMT
+      location: 
+      - http://a1.twimg.com/profile_images/1205274979/TheStand_bigger.jpg
+      x-ratelimit-remaining: 
+      - "342"
+      x-runtime: 
+      - "0.02255"
+      x-transaction-mask: 
+      - a6183ffa5f8ca943ff1b53b5644ef114
+      content-type: 
+      - text/html; charset=utf-8
+      x-ratelimit-class: 
+      - api_identified
+      x-revision: 
+      - DEV
+      x-ratelimit-reset: 
+      - "1302788983"
+      set-cookie: 
+      - _twitter_sess=BAh7CDoPY3JlYXRlZF9hdGwrCGGuOVQvAToHaWQiJTg1YjY4NWI5YzU4NWJm%250AYzlhOWQ2Y2QwYTQ2OGE1MGE2IgpmbGFzaElDOidBY3Rpb25Db250cm9sbGVy%250AOjpGbGFzaDo6Rmxhc2hIYXNoewAGOgpAdXNlZHsA--46d02781000ba0492fe05a29b590a5d9d3144366; domain=.twitter.com; path=/; HttpOnly
+      - guest_id=130278815701575608; path=/; expires=Sat, 14 May 2011 13:35:57 GMT
+      - k=128.179.67.94.1302788157009639; path=/; expires=Thu, 21-Apr-11 13:35:57 GMT; domain=.twitter.com
+      - lang=en; path=/
+      cache-control: 
+      - max-age=300
+      expires: 
+      - Thu, 14 Apr 2011 13:40:57 GMT
+      vary: 
+      - Accept-Encoding
+      content-encoding: 
+      - gzip
+      content-length: 
+      - "134"
+    body: !binary |
+      H4sIAAAAAAAAAx3NUQrCMAwA0KuUHaBxQxmT2kvoj18jXbO0sq4lRsTbC3sX
+      eC5p2bwLNf78s34MCplAeWfj0CSh9dYl1XYFwN7qNxe2Sy3QpK55ozkXZHpD
+      P5wuw3iexgkeie6Ke5xDZiaxr8adF4pZaFGKDtBbB8fn4Mj/xWXmV4MAAAA=
+
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: https://api.twitter.com:443/1/users/profile_image/5478442.json?size=bigger
+    body: 
+    headers: 
+      accept: 
+      - application/json
+      user-agent: 
+      - Twitter Ruby Gem 1.3.0
+      authorization: 
+      - OAuth oauth_consumer_key="KTWk4ZrufEHjncLCsNwhw", oauth_nonce="d50fd6ead3a0dcb78d00684c25c5ce9a", oauth_signature="U9qfEtYw%2B%2Frw7tjhm%2Buj%2FKq4IBs%3D", oauth_signature_method="HMAC-SHA1", oauth_timestamp="1302788157", oauth_token="6797462-Sz009rpFmcLGIBANAyJRsKoUlHtf2Rl5YuufnZeiI", oauth_version="1.0"
+      accept-encoding: 
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 302
+      message: Found
+    headers: 
+      date: 
+      - Thu, 14 Apr 2011 13:35:58 GMT
+      server: 
+      - hi
+      status: 
+      - 302 Found
+      x-transaction: 
+      - 1302788158-8581-55453
+      x-ratelimit-limit: 
+      - "350"
+      last-modified: 
+      - Sat, 15 Jan 2011 00:23:11 GMT
+      location: 
+      - http://a3.twimg.com/profile_images/1134548817/500x500_bigger.jpg
+      x-ratelimit-remaining: 
+      - "341"
+      x-runtime: 
+      - "0.28108"
+      x-transaction-mask: 
+      - a6183ffa5f8ca943ff1b53b5644ef114
+      content-type: 
+      - text/html; charset=utf-8
+      x-ratelimit-class: 
+      - api_identified
+      x-revision: 
+      - DEV
+      x-ratelimit-reset: 
+      - "1302788983"
+      set-cookie: 
+      - _twitter_sess=BAh7CDoPY3JlYXRlZF9hdGwrCC60OVQvAToHaWQiJWViZGQ0NmYxYThmZmM5%250AY2UxNTk1YzE5ODRiNGZiYzFmIgpmbGFzaElDOidBY3Rpb25Db250cm9sbGVy%250AOjpGbGFzaDo6Rmxhc2hIYXNoewAGOgpAdXNlZHsA--b368e8abd846b50a37f91c969aa7275419b6a92f; domain=.twitter.com; path=/; HttpOnly
+      - guest_id=130278815850076834; path=/; expires=Sat, 14 May 2011 13:35:58 GMT
+      - k=128.179.67.94.1302788158496377; path=/; expires=Thu, 21-Apr-11 13:35:58 GMT; domain=.twitter.com
+      - lang=en; path=/
+      cache-control: 
+      - max-age=300
+      expires: 
+      - Thu, 14 Apr 2011 13:40:58 GMT
+      vary: 
+      - Accept-Encoding
+      content-encoding: 
+      - gzip
+      content-length: 
+      - "132"
+    body: !binary |
+      H4sIAAAAAAAAAx3NQQ6DIBAAwK8QH8BK1NQ0W/7hyYCsC40UsqVp+/s2HuY8
+      GFs+LPoSvnYpL+WElKf0YIVORaH91sXW6hXADbq9U2a9lQxVyp4OWlN2TE8w
+      ZhincZ7NBaa+//ytPjGT6HvlzgqFJLQ1CgjOaoSzQzjvHw/XDSyCAAAA
+
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: https://api.twitter.com:443/1/users/profile_image/15709128.json?size=bigger
+    body: 
+    headers: 
+      accept: 
+      - application/json
+      user-agent: 
+      - Twitter Ruby Gem 1.3.0
+      authorization: 
+      - OAuth oauth_consumer_key="KTWk4ZrufEHjncLCsNwhw", oauth_nonce="5b96b1fe9af0770b25a7fee7661b7129", oauth_signature="T%2B0GPpxv3GY5AUrrrjA%2FyEq4U2I%3D", oauth_signature_method="HMAC-SHA1", oauth_timestamp="1302788158", oauth_token="6797462-Sz009rpFmcLGIBANAyJRsKoUlHtf2Rl5YuufnZeiI", oauth_version="1.0"
+      accept-encoding: 
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 302
+      message: Found
+    headers: 
+      date: 
+      - Thu, 14 Apr 2011 13:36:00 GMT
+      server: 
+      - hi
+      status: 
+      - 302 Found
+      x-transaction: 
+      - 1302788160-90297-4793
+      x-ratelimit-limit: 
+      - "350"
+      last-modified: 
+      - Sat, 02 Apr 2011 22:01:32 GMT
+      location: 
+      - http://a2.twimg.com/profile_images/1289350090/IMG_5299_lowres_bigger.jpg
+      x-ratelimit-remaining: 
+      - "340"
+      x-runtime: 
+      - "0.27319"
+      x-transaction-mask: 
+      - a6183ffa5f8ca943ff1b53b5644ef114
+      content-type: 
+      - text/html; charset=utf-8
+      x-ratelimit-class: 
+      - api_identified
+      x-revision: 
+      - DEV
+      x-ratelimit-reset: 
+      - "1302788983"
+      set-cookie: 
+      - _twitter_sess=BAh7CDoPY3JlYXRlZF9hdGwrCKC6OVQvAToHaWQiJWM4NjU4ZDdkZDVjNzMy%250AZjc2MGM4Y2NiNDBjNGVlM2U2IgpmbGFzaElDOidBY3Rpb25Db250cm9sbGVy%250AOjpGbGFzaDo6Rmxhc2hIYXNoewAGOgpAdXNlZHsA--23321fcf7a2e54adc458f60752fbc075d00756c4; domain=.twitter.com; path=/; HttpOnly
+      - guest_id=130278816015163409; path=/; expires=Sat, 14 May 2011 13:36:00 GMT
+      - k=128.179.67.94.1302788160137783; path=/; expires=Thu, 21-Apr-11 13:36:00 GMT; domain=.twitter.com
+      - lang=en; path=/
+      cache-control: 
+      - max-age=300
+      expires: 
+      - Thu, 14 Apr 2011 13:41:00 GMT
+      vary: 
+      - Accept-Encoding
+      content-encoding: 
+      - gzip
+      content-length: 
+      - "141"
+    body: !binary |
+      H4sIAAAAAAAAAx3OQQoCIRQA0KvIHMBvxkCGuY0WHaCV6PhHDU35YwzdPpgT
+      vKfTqMVo38LPvNqXOULmMX8i044lwvU2pTH6FcBJPvZcI19ahU5tzQVtri7i
+      Bid5UedZCCXg8bzbWSplS9sJN+tzjEj83eNkCEMmXAYGDc5wDQer4Tj8ATVc
+      K/iKAAAA
+
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: https://api.twitter.com:443/1/users/profile_image/7819352.json?size=bigger
+    body: 
+    headers: 
+      accept: 
+      - application/json
+      user-agent: 
+      - Twitter Ruby Gem 1.3.0
+      authorization: 
+      - OAuth oauth_consumer_key="KTWk4ZrufEHjncLCsNwhw", oauth_nonce="ae6919320a4a20fe1ce7aabb63a3534b", oauth_signature="nPtq3XDQqSrjxQWfa%2BeFpi9Y%2FuU%3D", oauth_signature_method="HMAC-SHA1", oauth_timestamp="1302788160", oauth_token="6797462-Sz009rpFmcLGIBANAyJRsKoUlHtf2Rl5YuufnZeiI", oauth_version="1.0"
+      accept-encoding: 
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 302
+      message: Found
+    headers: 
+      date: 
+      - Thu, 14 Apr 2011 13:36:02 GMT
+      server: 
+      - hi
+      status: 
+      - 302 Found
+      x-transaction: 
+      - 1302788161-4886-50610
+      x-ratelimit-limit: 
+      - "350"
+      last-modified: 
+      - Wed, 06 Apr 2011 21:31:48 GMT
+      location: 
+      - http://a3.twimg.com/profile_images/389935041/adrian_sky_bigger.jpg
+      x-ratelimit-remaining: 
+      - "339"
+      x-runtime: 
+      - "0.61546"
+      x-transaction-mask: 
+      - a6183ffa5f8ca943ff1b53b5644ef114
+      content-type: 
+      - text/html; charset=utf-8
+      x-ratelimit-class: 
+      - api_identified
+      x-revision: 
+      - DEV
+      x-ratelimit-reset: 
+      - "1302788983"
+      set-cookie: 
+      - _twitter_sess=BAh7CDoPY3JlYXRlZF9hdGwrCLPBOVQvAToHaWQiJWFlNDA5Y2U2YWM1Njkz%250ANDNiYzJhMTJjYzY0OTU4YTA2IgpmbGFzaElDOidBY3Rpb25Db250cm9sbGVy%250AOjpGbGFzaDo6Rmxhc2hIYXNoewAGOgpAdXNlZHsA--e271b8a9763420ed3821b7636cd304786f29641e; domain=.twitter.com; path=/; HttpOnly
+      - guest_id=130278816196194580; path=/; expires=Sat, 14 May 2011 13:36:01 GMT
+      - k=128.179.67.94.1302788161789192; path=/; expires=Thu, 21-Apr-11 13:36:01 GMT; domain=.twitter.com
+      - lang=en; path=/
+      cache-control: 
+      - max-age=300
+      expires: 
+      - Thu, 14 Apr 2011 13:41:01 GMT
+      vary: 
+      - Accept-Encoding
+      content-encoding: 
+      - gzip
+      content-length: 
+      - "133"
+    body: !binary |
+      H4sIAAAAAAAAAx3N0Q3CIBAA0FVIB+A0aGINske/yFGucFoKuWJMtzfpW+DZ
+      3MvqbKjxcFP9KhRSgXhLyqLKQstryL23JwAa3X9ckp5rgSZ14ZU8F0y0g3mM
+      o7lfblfAKIyb3z+HD5wSiX63NDihyEJzp2gBnbZwhhbO/Q+TkjfahAAAAA==
+
+    http_version: "1.1"
