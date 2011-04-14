@@ -56,14 +56,12 @@ class Tweet
     search = TwitterApi.search.new
 
     KEYWORDS.each do |keyword|
-      max_id = self.where(keywords: keyword).max(:tweet_id)
       search.clear
       search.q("\"#{keyword}\"").per_page(100)
-      search = search.since_id(max_id) if max_id
       i = 1
 
       loop do
-        Rails.logger.info("Searching for #{keyword}#{", since ID #{max_id}" if max_id}, with 100 results per page (page #{i})")
+        Rails.logger.info("Searching for #{keyword}, with 100 results per page (page #{i})")
         search.fetch.each do |tweet|
           begin
             if t = self.where(tweet_id: tweet.id).first
@@ -97,38 +95,6 @@ class Tweet
       content:           tweet.text,
       tweeted_at:        Time.zone.parse(tweet.created_at)
     )
-  end
-
-  # Use this method with caution!! (should be used one time only!)
-  def self.import_tweets
-    if Rails.env.development? || Tweet.count == 0
-      Tweet.delete_all
-      KEYWORDS.each do |keyword|
-        if File.file?(Rails.root.join("#{keyword}_tweets_array"))
-          tweets_array = eval(File.read(Rails.root.join("#{keyword}_tweets_array")))
-
-          tweets_array.each do |tweet|
-            if t = self.where(tweet_id: tweet[0]).first
-              t.add_to_set(:keywords, keyword) unless t.keywords.include?(keyword)
-            else # new tweet
-              t = self.create!(
-                tweet_id:          tweet[0],                 # id
-                keywords:          [keyword],
-                from_user_id:      tweet[2],                 # from_user_id
-                from_user:         tweet[3],                 # from_user
-                to_user_id:        tweet[4],                 # to_user_id
-                to_user:           tweet[5],                 # to_user
-                iso_language_code: tweet[6],                 # iso_language_code
-                profile_image_url: tweet[7],                 # profile_image_url
-                source:            tweet[8],                 # source
-                content:           tweet[10],                # tweet
-                tweeted_at:        Time.zone.parse(tweet[1]) # created_at
-              )
-            end
-          end
-        end
-      end
-    end
   end
 
   # This method synchronize the locals favorites tweets with the favorites tweets of @sublimevideo on Twitter
