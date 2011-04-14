@@ -60,10 +60,10 @@ class Site < ActiveRecord::Base
   scope :plan_player_hits_reached_notified, where(:plan_player_hits_reached_notification_sent_at.ne => nil)
 
   # filter
-  scope :beta,                 joins(:plan).where(:plan => { :name => "beta" })
-  scope :dev,                  joins(:plan).where(:plan => { :name => "dev" })
-  scope :sponsored,            joins(:plan).where(:plan => { :name => "sponsored" })
-  scope :custom,               joins(:plan).where(:plan => { :name.matches => "custom%" })
+  scope :beta,                 includes(:plan).where(:plans => { :name => "beta" })
+  scope :dev,                  includes(:plan).where(:plans => { :name => "dev" })
+  scope :sponsored,            includes(:plan).where(:plans => { :name => "sponsored" })
+  scope :custom,               includes(:plan).where(:plans => { :name.matches => "custom%" })
   scope :active,               where(:state => 'active')
   scope :suspended,            where(:state => 'suspended')
   scope :archived,             where(:state => 'archived')
