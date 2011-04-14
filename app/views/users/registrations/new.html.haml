@@ -79,7 +79,7 @@
       - random_favorite_tweets.each do |tweet|
         %li
           .left
-            = image_tag tweet.user.profile_image_url, :alt => clean_tweet_from_user(tweet), :size => "60x60"
+            = image_tag tweet.bigger_profile_image, :alt => clean_tweet_from_user(tweet), :size => "60x60"
           .right
             %blockquote= clean_tweet_text(tweet, strip_cc: true, strip_urls: true)
           .spacer

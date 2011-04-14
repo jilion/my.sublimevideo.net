@@ -24,6 +24,8 @@ class Tweet
 
   KEYWORDS = ["jilion", "sublimevideo", "videojs", "jw player"]
 
+  attr_accessor :bigger_profile_image
+
   attr_accessible :tweet_id, :keywords, :from_user_id, :from_user, :to_user_id, :to_user, :iso_language_code, :profile_image_url, :source, :content, :tweeted_at, :retweets_count
 
   scope :keywords,  lambda { |keywords| where(keywords: keywords) }
@@ -204,7 +206,8 @@ class Tweet
         selected_tweets << t if options[:user_doublon] || selected_tweets.map { |tweet| tweet.user.id }.exclude?(t.user.id)
       end
     end
-
+    
+    selected_tweets.each { |tweet| tweet.bigger_profile_image = Twitter.profile_image(tweet.user.id, size: 'bigger') }
     selected_tweets.sort { |a, b| b.created_at <=> a.created_at }[0...count]
   end
 
