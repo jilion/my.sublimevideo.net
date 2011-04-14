@@ -69,8 +69,8 @@ module OneTime
       end
 
       def rollback_beta_sites_to_dev
-        beta_sites_ids = ::Site.beta.all.map(&:id)
-        ::Site.where(:id => beta_sites_ids).update_all(:plan_id => ::Plan.find_by_name("dev").id)
+        beta_sites_ids = ::Site.beta.where(pending_plan_id: nil).select("sites.id").map(&:id)
+        ::Site.where(id: beta_sites_ids).update_all(plan_id: ::Plan.dev_plan.id)
       end
 
       def regenerate_all_loaders_and_licenses
