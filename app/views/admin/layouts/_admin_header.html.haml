@@ -1,7 +1,11 @@
 #header
   %h1
-    = link_to admin_path do
-      = "#{"DEV" if Rails.env.development?} MySublimeVideo"
+    - if admin_signed_in?
+      = link_to [:admin, :dashboard] do
+        = "#{"DEV" if Rails.env.development?} MySublimeVideo"
+        %em= "Admin"
+    - else
+      = "MySublimeVideo"
       %em= "Admin"
   - if admin_signed_in?
     .popup_menu
