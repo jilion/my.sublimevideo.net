@@ -17,9 +17,9 @@ describe OneTime::Site do
       @old_license1 = @site1.reload.license.read
       @old_license2 = @site2.reload.license.read
       @old_license3 = @site3.reload.license.read
-      puts "@site1.license.read : #{@site1.license.read}"
-      puts "@site2.license.read : #{@site2.license.read}"
-      puts "@site3.license.read : #{@site3.license.read}\n"
+      # puts "@site1.license.read : #{@site1.license.read}"
+      # puts "@site2.license.read : #{@site2.license.read}"
+      # puts "@site3.license.read : #{@site3.license.read}\n"
 
       described_class.rollback_beta_sites_to_dev
 
@@ -30,17 +30,17 @@ describe OneTime::Site do
       @site1.reload.should be_active
       @site1.should be_in_dev_plan
       @site1.license.read.should_not == @old_license1
-      puts "@site1.license.read : #{@site1.license.read}"
+      # puts "@site1.license.read : #{@site1.license.read}"
 
       @site2.reload.should be_in_beta_plan
       @site2.pending_plan_id.should == @paid_plan.id
       @site2.license.read.should == @old_license2
-      puts "@site2.license.read : #{@site2.license.read}"
+      # puts "@site2.license.read : #{@site2.license.read}"
 
       @site3.reload.should be_archived
       @site3.should be_in_dev_plan
       @site3.license.read.should_not == @old_license3
-      puts "@site3.license.read : #{@site3.license.read}"
+      # puts "@site3.license.read : #{@site3.license.read}"
     end
   end
 
