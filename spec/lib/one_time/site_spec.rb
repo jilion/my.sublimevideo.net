@@ -3,7 +3,7 @@ require 'spec_helper'
 
 describe OneTime::Site do
 
-  describe ".rollback_beta_sites_to_dev", :focus => true do
+  describe ".rollback_beta_sites_to_dev" do
     before(:all) do
       @site1 = Factory(:site, plan_id: @beta_plan.id)
       @site2 = Factory(:site, plan_id: @beta_plan.id)
