@@ -3,73 +3,8 @@ module OneTime
 
     class << self
 
-      def set_beta_plan
-        ::Site.where({ plan_id: nil }, { hostname: nil } | { hostname: '' }).update_all(:plan_id => ::Plan.find_by_name("dev").id)
-        ::Site.where({ plan_id: nil }, { :hostname.ne => nil } | { :hostname.ne => '' }).update_all(:plan_id => ::Plan.find_by_name("beta").id)
-        "#{::Site.dev.count} sites are now using the Dev plan (on #{::Site.not_archived.count} non-archived sites)."
-        "#{::Site.beta.count} sites are now using the Beta plan (on #{::Site.not_archived.count} non-archived sites)."
-      end
-
-      def set_plan_started_at
-        total = 0
-        ::Site.active.find_in_batches(:batch_size => 100) do |sites|
-          sites.each do |site|
-            site.update_attribute(:plan_started_at, site.created_at)
-          end
-          total += sites.count
-        end
-        "Finished: in total, #{total} sites will have their plan_started_at setted"
-      end
-
-      # Method used in the 'one_time:update_invalid_sites' rake task
-      def update_hostnames
-        invalid_sites = ::Site.not_archived.reject { |s| s.valid? }
-
-        result = []
-        repaired_sites = 0
-        result << "[Before] #{invalid_sites.size} invalid sites, let's try to repair them!\n\n"
-
-        invalid_sites.each do |site|
-          old_dev_hostnames = site.dev_hostnames.split(', ')
-          new_dev_hostnames = []
-          extra_hostnames   = []
-
-          old_dev_hostnames.each do |dev_hostname|
-            next if Hostname.duplicate?([site.hostname, dev_hostname].join(', '))
-
-            if Hostname.dev_valid?(dev_hostname)
-              new_dev_hostnames << dev_hostname
-            elsif Hostname.extra_valid?(dev_hostname)
-              extra_hostnames << dev_hostname
-            end
-          end
-
-          if !Hostname.valid?(site.hostname) && Hostname.dev_valid?(site.hostname)
-            new_dev_hostnames << site.hostname
-            site.hostname = ""
-          end
-
-          new_dev_hostnames = new_dev_hostnames.uniq
-          extra_hostnames   = extra_hostnames.uniq
-
-          site.hostname        = site.hostname.present? ? Hostname.clean(site.hostname) : (extra_hostnames.present? ? extra_hostnames.pop : "")
-          site.dev_hostnames   = Hostname.clean(new_dev_hostnames.sort.join(', '))
-          site.extra_hostnames = Hostname.clean(extra_hostnames.sort.join(', '))
-          site.cdn_up_to_date  = site.valid? # will reload the site's license if site is valid
-          repaired_sites += 1 if site.save!(validate: false)
-
-          result << "##{site.id} (#{'still in' unless site.valid?}valid)"
-          result << "MAIN : #{site.hostname.inspect} (#{'in' unless Hostname.valid?(site.hostname)}valid)"
-          result << "DEV  : #{old_dev_hostnames.join(", ").inspect} => #{site.dev_hostnames.inspect}"
-          result << "EXTRA: #{site.extra_hostnames.inspect}\n\n"
-        end
-
-        result << "[After] #{invalid_sites.size - repaired_sites} invalid sites remaining!!"
-        result
-      end
-
       def rollback_beta_sites_to_dev
-        beta_sites_ids = ::Site.beta.select("sites.id").map(&:id)
+        beta_sites_ids = ::Site.beta.where(pending_plan_id: nil).select("sites.id").map(&:id)
         ::Site.where(id: beta_sites_ids).update_all(plan_id: ::Plan.dev_plan.id)
       end
 
@@ -77,7 +12,7 @@ module OneTime
         total = 0
         ::Site.active.find_in_batches(:batch_size => 100) do |sites|
           sites.each do |site|
-            ::Site.delay.update_loader_and_license(site.id, { loader: true, license: true })
+            ::Site.delay.update_loader_and_license(site.id, { loader: false, license: true })
           end
           total += sites.count
         end

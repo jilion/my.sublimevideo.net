@@ -30,46 +30,9 @@ namespace :one_time do
   end
 
   namespace :users do
-    desc "Archive users that are invited but not yet registered, please check User.invited before !!!"
-    task :archive_invited_not_yet_registered => :environment do
-      timed do
-        puts OneTime::User.archive_invited_not_yet_registered_users + " invited users deleted"
-      end
-    end
-
-    desc "Import all beta users to campaign monitor "
-    task :import_all_beta_users_to_campaign_monitor => :environment do
-      timed do
-        OneTime::User.import_all_beta_users_to_campaign_monitor
-      end
-    end
-
-    desc "Set a unique cc_alias for all users that don't have one yet"
-    task :uniquify_all_empty_cc_alias => :environment do
-      timed do
-        OneTime::User.uniquify_all_empty_cc_alias
-      end
-    end
   end
 
   namespace :sites do
-    desc "Set all sites plan to the Beta plan"
-    task :set_beta_plan => :environment do
-      puts OneTime::Site.set_beta_plan
-    end
-
-    desc "Set plan_started_at"
-    task :set_plan_started_at => :environment do
-      puts OneTime::Site.set_plan_started_at
-    end
-
-    desc "Update invalid sites move invalid dev hostnames into the extra_hostnames and remove dev hostnames that are duplication of main hostname"
-    task :update_invalid_hostnames => :environment do
-      timed do
-        puts OneTime::Site.update_hostnames.join("\n")
-      end
-    end
-
     desc "Rollback all sites with the Beta plan to the Dev plan"
     task :rollback_beta_sites => :environment do
       puts OneTime::Site.rollback_beta_sites_to_dev
@@ -94,13 +57,6 @@ namespace :one_time do
     desc "Re-generate loader and license templates for all sites"
     task :regenerate_all_loaders_and_licenses => :environment do
       puts OneTime::Site.regenerate_all_loaders_and_licenses
-    end
-  end
-
-  namespace :plans do
-    desc "Create all plans"
-    task :create_plans => :environment do
-      puts OneTime::Plan.create_plans
     end
   end
 
