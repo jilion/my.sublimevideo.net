@@ -69,7 +69,7 @@ module OneTime
       end
 
       def rollback_beta_sites_to_dev
-        beta_sites_ids = ::Site.beta.where(pending_plan_id: nil).select("sites.id").map(&:id)
+        beta_sites_ids = ::Site.beta.select("sites.id").map(&:id)
         ::Site.where(id: beta_sites_ids).update_all(plan_id: ::Plan.dev_plan.id)
       end
 

@@ -95,16 +95,17 @@ describe OneTime::Site do
       @site_1 = Factory(:site, plan_id: @beta_plan.id)
       @site_11 = Factory(:site, plan_id: @beta_plan.id)
       @site_11.update_attribute(:pending_plan_id, @paid_plan.id)
-      @site_2 = Factory(:site, state: 'archived')
+      @site_2 = Factory(:site, state: 'archived', plan_id: @beta_plan.id)
       described_class.rollback_beta_sites_to_dev
     end
 
     it "should rollback beta site to active state with dev plan" do
-      @site_11.pending_plan_id.should be_present
       @site_1.reload.should be_active
       @site_1.should be_in_dev_plan
-      @site_11.reload.should be_in_beta_plan
+      @site_11.reload.should be_in_dev_plan
+      @site_11.pending_plan_id.should == @paid_plan.id
       @site_2.reload.should be_archived
+      @site_2.should be_in_dev_plan
     end
   end
 
