@@ -111,7 +111,7 @@ feature "Invoice actions:" do
 
         page.should have_content("You have 1 failed invoice for a total of $#{@invoice.amount / 100.0}")
         page.should have_content("If necessary update your credit card and then retry the payment via the button below.")
-      
+
         page.should have_content('Next invoice')
         page.should have_content("$#{@paid_plan.price / 100}")
         page.should have_content("on #{I18n.l(site.plan_cycle_ended_at.tomorrow, :format => :d_b_Y)}")
@@ -152,7 +152,8 @@ feature "Invoice actions:" do
       end
 
       scenario "upgrade paid invoice with discount" do
-        @current_user.update_attribute(:created_at, Time.utc(2010,10,10))
+        Timecop.travel(Time.utc(2010,10,10))
+        @current_user.update_attribute(:created_at, Time.now.utc)
         @current_user.update_attribute(:country, 'US')
         site = Factory(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
         VCR.use_cassette('ogone/visa_payment_generic') do
@@ -182,6 +183,7 @@ feature "Invoice actions:" do
         page.should have_content("$160")
         page.should have_content("-$8.0")
         page.should have_content("$#{invoice.amount / 100.0}")
+        Timecop.return
       end
     end
 

@@ -47,40 +47,6 @@ feature "Sticky notices" do
     end
   end
 
-  feature "user have beta sites" do
-    context "more than 2 days before the end of the beta" do
-      background do
-        sign_in_as :user
-        Timecop.travel(PublicLaunch.beta_transition_ended_on - 12.days + 1.hour)
-      end
-
-      scenario "show a notice" do
-        Factory(:site, user: @current_user, plan_id: @beta_plan.id)
-        visit '/sites'
-
-        current_url.should =~ %r(http://[^/]+/sites)
-        page.should have_content("11 days left to choose a plan for your sites")
-        Timecop.return
-      end
-    end
-
-    context "less than 2 days before the end of the beta" do
-      background do
-        sign_in_as :user
-        Timecop.travel(PublicLaunch.beta_transition_ended_on - 2.days + 1.hour)
-      end
-
-      scenario "show a notice" do
-        Factory(:site, user: @current_user, plan_id: @beta_plan.id)
-        visit '/sites'
-
-        current_url.should =~ %r(http://[^/]+/sites)
-        page.should have_content("46 hours left to choose a plan for your sites")
-        Timecop.return
-      end
-    end
-  end
-
   feature "when invitation redirect to signup" do
 
     scenario "show beta is finished notice" do

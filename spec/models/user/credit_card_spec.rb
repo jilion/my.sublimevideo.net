@@ -523,7 +523,7 @@ describe User::CreditCard do
             subject.pending_cc_last_digits.should == '1111'
             subject.pending_cc_expire_on.should == 1.year.from_now.end_of_month.to_date
             subject.pending_cc_updated_at.should be_present
-            
+
             subject.should_receive(:void_authorization).with("1234;RES")
 
             subject.process_cc_authorize_and_save(@authorized_params)
@@ -637,7 +637,7 @@ describe User::CreditCard do
             subject.pending_cc_last_digits.should == '9999'
             subject.pending_cc_expire_on.should == 2.years.from_now.end_of_month.to_date
             subject.pending_cc_updated_at.should be_present
-            
+
             response = subject.process_cc_authorize_and_save(@d3d_params)
             response.should be_true
             subject.errors.should be_empty
