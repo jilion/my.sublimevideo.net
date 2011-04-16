@@ -10,7 +10,7 @@ describe InvoiceItem::Plan do
       @plan1 = Factory(:plan, price: 1000)
       @plan2 = Factory(:plan, price: 2000)
 
-      Timecop.travel(PublicLaunch.beta_transition_ended_on - 1.hour) do
+      Timecop.travel(PublicLaunch.beta_transition_ended_on - 1.day) do
         @site_without_discount1 = Factory.build(:new_site, user: @not_enthusiast, plan_id: @plan1.id)
         @site_without_discount2 = Factory(:site_with_invoice, user: @not_enthusiast, plan_id: @plan1.id)
         @site_without_discount2.plan_id = @plan2.id # upgrade
@@ -94,7 +94,7 @@ describe InvoiceItem::Plan do
 
       describe "new or renew" do
         describe "with standard params and a site without pending plan" do
-          subject { InvoiceItem::Plan.build(invoice: @invoice_with_discount1, item: @site_with_discount1.pending_plan) }
+          subject { Timecop.travel(PublicLaunch.beta_transition_ended_on - 1.day) { @ii = InvoiceItem::Plan.build(invoice: @invoice_with_discount1, item: @site_with_discount1.pending_plan)  }; @ii }
 
           its(:item)                  { should == @site_with_discount1.pending_plan }
           its(:price)                 { should == 800 }
@@ -108,7 +108,7 @@ describe InvoiceItem::Plan do
       describe "upgrade" do
         # the new upgraded paid plan
         describe "with standard params and a site with pending plan" do
-          subject { InvoiceItem::Plan.build(invoice: @invoice_with_discount2, item: @site_with_discount2.pending_plan) }
+          subject { Timecop.travel(PublicLaunch.beta_transition_ended_on - 1.day) { @ii = InvoiceItem::Plan.build(invoice: @invoice_with_discount2, item: @site_with_discount2.pending_plan) }; @ii }
 
           its(:item)                  { should == @site_with_discount2.pending_plan }
           its(:price)                 { should == 1600 }
@@ -119,7 +119,7 @@ describe InvoiceItem::Plan do
         end
         # the old deducted plan
         describe "with deduct params" do
-          subject { InvoiceItem::Plan.build(invoice: @invoice_with_discount2, item: @site_with_discount2.plan, deduct: true) }
+          subject { Timecop.travel(PublicLaunch.beta_transition_ended_on - 1.day) { @ii = InvoiceItem::Plan.build(invoice: @invoice_with_discount2, item: @site_with_discount2.plan, deduct: true) }; @ii }
 
           its(:item)                  { should == @site_with_discount2.plan }
           its(:price)                 { should == 800 }
