@@ -22,14 +22,5 @@
           - else
             = raw t("user.credit_card.will_expire_please_link", :link => edit_cc_link)
 
-      - if current_user.have_beta_sites?
-        - if PublicLaunch.hours_left_before_end_of_beta_transition >= 0
-          - if PublicLaunch.hours_left_before_end_of_beta_transition <= 48
-            %li= raw t('hours_left_to_choose_a_plan', count: PublicLaunch.hours_left_before_end_of_beta_transition)
-          - elsif PublicLaunch.days_left_before_end_of_beta_transition >= 1
-            %li= raw t('days_left_to_choose_a_plan', count: PublicLaunch.days_left_before_end_of_beta_transition)
-          -# - elsif PublicLaunch.days_left_before_end_of_beta_transition == 0
-          -#   %li= t('rollbacked_to_dev_today')
-
-        - if current_user.sites.active.count > 1
-          %li=raw "If you have multiple sites showing or pointing to the same content, or if you have multiple sites with the same domain but a different subdomain, then <strong>you don't need to purchase a separate plan for each of these sites</strong>! <small>You can share the same plan thanks to the Alias domains and Wildcard option. <a href='http://docs.sublimevideo.net/site-settings'>Read more</a>.</small>"
+      - if current_user.sites.active.count > 1
+        %li=raw "If you have multiple sites showing or pointing to the same content, or if you have multiple sites with the same domain but a different subdomain, then <strong>you don't need to purchase a separate plan for each of these sites</strong>! <small>You can share the same plan thanks to the Alias domains and Wildcard option. <a href='http://docs.sublimevideo.net/site-settings'>Read more</a>.</small>"

@@ -20,13 +20,12 @@ describe OneTime::Site do
       # puts "@site1.license.read : #{@site1.license.read}"
       # puts "@site2.license.read : #{@site2.license.read}"
       # puts "@site3.license.read : #{@site3.license.read}\n"
-
-      described_class.rollback_beta_sites_to_dev
-
-      @worker.work_off
     end
 
     it "should rollback beta site to active state with dev plan" do
+      expect { described_class.rollback_beta_sites_to_dev }.to change(Delayed::Job, :count).by(2)
+      @worker.work_off
+      
       @site1.reload.should be_active
       @site1.should be_in_dev_plan
       @site1.license.read.should_not == @old_license1
