@@ -22,7 +22,7 @@ class Transaction < ActiveRecord::Base
   # =============
 
   before_save :set_fields_from_ogone_response
-  
+
   before_create :reject_paid_invoices, :set_user, :set_amount
 
   # =================
