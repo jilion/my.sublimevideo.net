@@ -46,7 +46,11 @@
         .next_invoice
           %h3.section_title= "Next invoice"
           - next_plan = @site.next_cycle_plan || @site.pending_plan || @site.plan
-          %p= raw "#{content_tag(:strong, display_amount(next_plan.price))} on #{l(@site.plan_cycle_ended_at.tomorrow, :format => :d_b_Y)}."
+          %p
+            =raw "#{content_tag(:strong, display_amount(next_plan.price))}"
+            - if current_user.vat?
+              = "(excl. VAT)"
+            = " on #{l(@site.plan_cycle_ended_at.tomorrow, :format => :d_b_Y)}."
       .past_invoices
         %h3.section_title= "Past invoices"
         %ul
