@@ -28,7 +28,7 @@ gem 'rescue_me',             '0.1.0'
 gem 'configuration',         '1.2.0'
 gem 'libxml-ruby',           '1.1.3', :require => 'libxml'
 
-gem 'state_machine',         '0.10.3'
+gem 'state_machine',         '0.10.4'
 gem 'paper_trail',           '2.2.2'
 gem 'uniquify',              '0.1.0'
 
@@ -97,7 +97,7 @@ group :test do
   gem 'guard-bundler'
   gem 'guard-pow'
   gem 'guard-rspec'
-  gem 'guard-spork', '0.1.4'
+  gem 'guard-spork'
   gem 'rspec-instafail'
   gem 'livereload'
   gem 'guard-livereload'
