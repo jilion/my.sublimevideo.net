@@ -84,6 +84,8 @@ describe User do
     it { should validate_presence_of(:first_name) }
     it { should validate_presence_of(:last_name) }
     it { should validate_presence_of(:postal_code) }
+    it { should ensure_length_of(:postal_code).is_at_most(11) }
+    it { should validate_numericality_of(:postal_code) }
     it { should validate_presence_of(:country) }
     it { should validate_acceptance_of(:terms_and_conditions) }
 
