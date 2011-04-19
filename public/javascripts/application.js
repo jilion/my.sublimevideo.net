@@ -64,7 +64,6 @@ document.observe("dom:loaded", function() {
   if ($('plans')) {
     var planUpgradeInfoDiv = $('plan_upgrade_info');
     var planCreateInfoDiv = $('plan_create_info');
-    var ccInfoDiv = $('credit_card');
     $$('#plans input[type=radio]').each(function(element){
       element.on('click', function(event){
         if (planUpgradeInfoDiv) MySublimeVideo.showPlanUpdateInfo(element);
@@ -111,14 +110,16 @@ MySublimeVideo.openPopup = function(itemId, idPrefix, url, class_name) { // item
 
 MySublimeVideo.handlePlanChange = function(radioButton) {
   var plan_price  = radioButton.readAttribute('data-plan_price');
-  var ccInfoDiv   = $('credit_card');
+  var ccDiv       = $('credit_card');
+  var ccInfoDiv   = $('credit_card_summary');
   var hostnameDiv = $('site_hostname');
   if (plan_price == "$0") {
     if (hostnameDiv) {
       $('site_hostname').required = false;
     }
-    if (ccInfoDiv) {
-      ccInfoDiv.hide();
+    if (ccInfoDiv) ccInfoDiv.hide();
+    if (ccDiv) {
+      ccDiv.hide();
       $('user_cc_brand_visa').disable();
       $('user_cc_brand_master').disable();
       $('user_cc_full_name').disable();
@@ -135,7 +136,8 @@ MySublimeVideo.handlePlanChange = function(radioButton) {
     if (hostnameDiv) {
       $('site_hostname').required = true;
     }
-    if (ccInfoDiv) {
+    if (ccInfoDiv) ccInfoDiv.show();
+    if (ccDiv) {
       $('user_cc_brand_visa').enable();
       $('user_cc_brand_master').enable();
       $('user_cc_full_name').enable();
@@ -146,7 +148,7 @@ MySublimeVideo.handlePlanChange = function(radioButton) {
       $('user_cc_verification_value').required = true;
       $('user_cc_expiration_month').enable();
       $('user_cc_expiration_year').enable();
-      ccInfoDiv.show();
+      ccDiv.show();
     }
   }
 };

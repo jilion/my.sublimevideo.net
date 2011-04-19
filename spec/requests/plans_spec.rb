@@ -44,7 +44,7 @@ feature "Plans" do
       page.should have_content("Your new plan #{site.next_cycle_plan.title} will automatically start on #{I18n.l(site.plan_cycle_ended_at.tomorrow.midnight, :format => :named_date).squeeze(' ')}.")
     end
 
-    scenario "update paid plan to paid plan without credit card data" do
+    scenario "update paid plan to paid plan with credit card data" do
       site = Factory(:site_with_invoice, user: @current_user, plan_id: @star_month.id)
       site.plan.should == @star_month
       site.first_paid_plan_started_at.should be_present
@@ -53,6 +53,9 @@ feature "Plans" do
       site.plan_cycle_ended_at.should be_present
 
       visit edit_site_plan_path(site)
+
+      page.should have_no_selector("#credit_card")
+      page.should have_selector("#credit_card_summary")
 
       choose "plan_star_year"
 
@@ -74,7 +77,7 @@ feature "Plans" do
       has_checked_field?("plan_star_year").should be_true
     end
 
-    scenario "update paid plan to paid plan with credit card data" do
+    scenario "update paid plan to paid plan without credit card data" do
       site = Factory(:site_with_invoice, user: @current_user, plan_id: @star_month.id)
       site.plan.should == @star_month
       site.first_paid_plan_started_at.should be_present
@@ -85,6 +88,9 @@ feature "Plans" do
       @current_user.cc_expire_on.should == 2.month.ago.end_of_month
 
       visit edit_site_plan_path(site)
+
+      page.should have_selector("#credit_card")
+      page.should have_no_selector("#credit_card_summary")
 
       choose "plan_star_year"
       set_credit_card
