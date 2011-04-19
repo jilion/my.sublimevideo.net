@@ -30,7 +30,7 @@ group 'backend' do
   # end
 
   guard 'spork', :wait => 50 do
-    watch('Gemfile')
+    # watch('Gemfile')
     watch('config/application.rb')
     watch('config/environment.rb')
     watch(%r{^config/environments/.+\.rb})
