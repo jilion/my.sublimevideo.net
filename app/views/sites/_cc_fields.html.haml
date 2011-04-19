@@ -1,5 +1,5 @@
 - if current_user.cc? && !current_user.cc_expired?
-  #credit_card_summary{ :style => site.in_dev_plan? ? "display:none;" : "" }
+  #credit_card_summary.site{ :style => site.in_dev_plan? ? "display:none;" : "" }
     %h3.title= "Credit Card used:"
     %p.card{ :class => current_user.cc_type }<
       = raw "#{t("user.credit_card.type.#{current_user.cc_type}")} ending in #{content_tag(:strong, current_user.cc_last_digits)}"
