@@ -624,7 +624,7 @@ describe Transaction do
           @transaction1.reload.update_attribute(:amount, 3209999)
           @transaction2 = Transaction.find(transactions.last.id)
           @transaction2.reload.update_attribute(:amount, 23213)
-          
+
           @transaction1.invoices.where(state: 'paid').count.should == 1
           @transaction2.invoices.where(state: 'paid').count.should == 1
           @transaction1.invoices << Factory(:invoice, site: Factory(:site), state: 'paid') # the transaction is with 2 invoices for 2 different sites
@@ -635,7 +635,7 @@ describe Transaction do
           @transaction2.reload.invoices.where(state: 'paid').count.should == 1
           @transaction1.should be_paid
           @transaction2.should be_paid
-          
+
           @site.invoices.first.amount.should_not == @transaction1.amount
           @site.invoices.last.amount.should_not == @transaction2.amount
         end
@@ -643,7 +643,7 @@ describe Transaction do
         it "should delay one Ogone.credit" do
           Ogone.should_receive(:credit).ordered.with(@transaction1.invoices.order(:id).first.amount, "#{@transaction1.pay_id};SAL")
           Ogone.should_receive(:credit).ordered.with(@transaction2.invoices.order(:id).first.amount, "#{@transaction2.pay_id};SAL")
-          
+
           Transaction.refund_by_site_id(@site.id)
         end
       end
@@ -660,12 +660,12 @@ describe Transaction do
           @transaction1.invoices.first.update_attribute(:state, 'failed')
           @transaction2 = Transaction.find(transactions.last.id)
           @transaction2.reload.update_attribute(:amount, 23213)
-          
+
           @transaction1.invoices << Factory(:invoice, site: Factory(:site), state: 'paid') # the transaction is with 2 invoices for 2 different sites
           @transaction2.invoices << Factory(:invoice, site: Factory(:site), state: 'failed') # the transaction is with 2 invoices for 2 different sites
           @transaction1.save
           @transaction2.save
-          
+
           @transaction1.invoices.first.amount.should_not == @transaction1.amount
           @transaction2.invoices.first.amount.should_not == @transaction2.amount
         end
@@ -890,6 +890,49 @@ describe Transaction do
         subject.user.reload.pending_cc_type.should == 'master'
         subject.user.pending_cc_last_digits.should == '9999'
         subject.user.pending_cc_expire_on.should == 2.years.from_now.end_of_month.to_date
+      end
+
+      describe "waiting d3d once, and then succeed" do
+        it "should save the transaction and then succeed it" do
+          subject.user.cc_brand = 'master'
+          subject.user.cc_full_name = 'Remy Coutable'
+          subject.user.cc_number = '5399999999999999'
+          subject.user.cc_expiration_month = 2.years.from_now.month
+          subject.user.cc_expiration_year = 2.years.from_now.year
+          subject.user.cc_verification_value = 999
+          subject.user.save!
+          subject.user.reload.pending_cc_type.should == 'master'
+          subject.user.pending_cc_last_digits.should == '9999'
+          subject.user.pending_cc_expire_on.should == 2.years.from_now.end_of_month.to_date
+          subject.should be_unprocessed
+
+          subject.process_payment_response(@d3d_params)
+          subject.reload.should be_waiting_d3d
+          subject.nc_status.should == 0
+          subject.status.should == 46
+          subject.error.should == "<html>No HTML.</html>"
+          subject.should be_waiting_d3d
+          subject.user.reload.pending_cc_type.should == 'master'
+          subject.user.pending_cc_last_digits.should == '9999'
+          subject.user.pending_cc_expire_on.should == 2.years.from_now.end_of_month.to_date
+          @invoice1.reload.should be_open
+          @invoice2.reload.should be_failed
+
+          subject.process_payment_response(@success_params)
+          subject.reload.should be_paid
+          subject.nc_status.should == 0
+          subject.status.should == 9
+          subject.error.should == "!"
+
+          subject.user.reload.pending_cc_type.should be_nil
+          subject.user.pending_cc_last_digits.should be_nil
+          subject.user.pending_cc_expire_on.should be_nil
+          subject.user.reload.cc_type.should == 'master'
+          subject.user.cc_last_digits.should == '9999'
+          subject.user.cc_expire_on.should == 2.years.from_now.end_of_month.to_date
+          @invoice1.reload.should be_paid
+          @invoice2.reload.should be_paid
+        end
       end
 
       describe "waiting once, and then succeed" do
