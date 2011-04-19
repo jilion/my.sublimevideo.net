@@ -57,7 +57,7 @@ private
     if @user.zendesk_id.present?
       { :requester_id => @user.zendesk_id }
     else
-      { :requester_name => @user.full_name, :requester_email => @user.email }
+      { :requester_name => h(@user.full_name), :requester_email => h(@user.email) }
     end
   end
 
