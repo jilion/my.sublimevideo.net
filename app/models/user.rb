@@ -39,7 +39,7 @@ class User < ActiveRecord::Base
 
   validates :first_name,  :presence => true
   validates :last_name,   :presence => true
-  validates :postal_code, :presence => true, :numericality => true, :length => { :maximum => 11 }
+  validates :postal_code, :presence => true, :length => { :maximum => 10 }
   validates :country,     :presence => true
   validates :company_url, :hostname => true, :allow_blank => true
   validates :terms_and_conditions, :acceptance => { :accept => "1" }, :on => :create
