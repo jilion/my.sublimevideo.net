@@ -342,6 +342,9 @@ feature "Sites" do
     feature "new" do
       describe "in dev plan" do
         scenario "with no hostname" do
+          page.should have_no_selector("#credit_card")
+          page.should have_selector("#credit_card_summary")
+
           choose "plan_dev"
           has_checked_field?("plan_dev").should be_true
 
@@ -382,13 +385,16 @@ feature "Sites" do
       describe "paid plan" do
         scenario "with no hostname" do
           page.should have_no_selector("#credit_card")
+          page.should have_selector("#credit_card_summary")
+
           choose "plan_comet_month"
           has_checked_field?("plan_comet_month").should be_true
           fill_in "Domain", :with => ""
+
           click_button "Create"
 
           current_url.should =~ %r(http://[^/]+/sites)
-          
+
           page.should have_content("Domain can't be blank")
           page.should have_no_selector("#credit_card")
           page.should have_no_content("Card type is invalid")
@@ -432,6 +438,7 @@ feature "Sites" do
           has_checked_field?("plan_comet_year").should be_true
           fill_in "Domain", :with => "rymai.com"
           page.should have_no_selector("#credit_card")
+          page.should have_selector("#credit_card_summary")
           VCR.use_cassette('ogone/master_payment_acceptance') { click_button "Create" }
 
           @worker.work_off
@@ -464,6 +471,7 @@ feature "Sites" do
 
         scenario "with no hostname" do
           page.should have_no_selector("#credit_card")
+          page.should have_selector("#credit_card_summary")
           choose "plan_custom"
           has_checked_field?("plan_custom").should be_true
           fill_in "Domain", :with => ""

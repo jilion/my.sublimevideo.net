@@ -2,7 +2,7 @@ source :rubygems
 
 gem 'bundler',               '1.0.12'
 
-gem 'rails',                 '3.0.6'
+gem 'rails',                 '3.0.7'
 
 # Databases
 gem 'pg',                    '0.10.1'
@@ -73,7 +73,11 @@ group :production, :staging do
 end
 
 group :development, :test do
-  gem 'rspec-rails'
+  gem "rspec-rails",        :git => "git://github.com/rspec/rspec-rails.git"
+  gem "rspec",              :git => "git://github.com/rspec/rspec.git"
+  gem "rspec-core",         :git => "git://github.com/rspec/rspec-core.git"
+  gem "rspec-expectations", :git => "git://github.com/rspec/rspec-expectations.git"
+  gem "rspec-mocks",        :git => "git://github.com/rspec/rspec-mocks.git"
   gem 'timecop'
 end
 
@@ -90,11 +94,10 @@ end
 
 group :test do
   gem 'spork', '0.9.0.rc4'
-  # gem 'spork', :git => 'git://github.com/irohiroki/spork.git'
   gem 'rb-fsevent'
   gem 'growl'
   gem 'guard'
-  gem 'guard-bundler'
+  # gem 'guard-bundler'
   gem 'guard-pow'
   gem 'guard-rspec'
   gem 'guard-spork'
@@ -103,7 +106,7 @@ group :test do
   gem 'guard-livereload'
 
   gem 'shoulda'
-  gem 'capybara', :git => 'git://github.com/jnicklas/capybara.git', :ref => "218510e64f2fa8c2a2ccd3a709897be5dbfd1b93"
+  gem 'capybara', :git => 'git://github.com/thibaudgg/capybara.git'
   gem 'webmock'
   gem 'vcr'
 

@@ -2867,6 +2867,8 @@ nav.pagination span.gap {
   padding:10px 0 20px;
 }
 
+#credit_card_summary.site {background:none}
+
 #credit_card_summary p {
   padding:5px 0;
   line-height:20px;

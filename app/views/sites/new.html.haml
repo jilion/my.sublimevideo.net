@@ -1,7 +1,7 @@
 = title_and_content_header("Choose a plan for your site")
 
 #site.new
-  = form_for @site, :html => { :class => "full" } do |f|
+  = form_for @site, :html => { :class => "full", :onsubmit => "$('site_submit').disable();" } do |f|
 
     = render 'plans/fields', :f => f
     - if current_user.vat?
@@ -18,4 +18,4 @@
     = render 'cc_fields', :f => f, :site => @site
 
     .actions.center
-      = f.submit(@site.persisted? ? "Update site" : "Create site", :class => "submit big")
+      = f.submit (@site.persisted? ? "Update site" : "Create site"), :class => "submit big"

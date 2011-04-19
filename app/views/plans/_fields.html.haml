@@ -28,9 +28,6 @@
     %p
       %small= link_to "(See standard plans)", { :custom_plan => nil }, :class => "hl"
 - else
-  - if current_user.beta?
-    #beta_discount_box= raw "As a Beta user you benefit from a #{content_tag :strong, "20% discount"} on all paid plans until #{content_tag :strong, "April 15, 2011"} (11:59pm UTC)"
-
   - if site.recommended_plan_name
     #recommanded_plan_box
       %p.note

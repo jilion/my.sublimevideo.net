@@ -1,5 +1,6 @@
 require 'rubygems'
 require 'spork'
+
 ENV["RAILS_ENV"] ||= 'test'
 
 Spork.prefork do
@@ -18,6 +19,8 @@ Spork.prefork do
   require 'capybara/rspec'
   require 'capybara/rails'
   require 'vcr'
+
+  Capybara.javascript_driver = :webkit
 
   VCR.config do |config|
     config.stub_with :webmock # or :fakeweb
@@ -77,6 +80,7 @@ end
 Spork.each_run do
   # This code will be run each time you run your specs.
 
+
   # Factory need to be required each launch to prevent loading of all models
   require 'factory_girl'
   require Rails.root.join("spec/factories")
@@ -85,7 +89,6 @@ Spork.each_run do
 
   RSpec.configure do |config|
     config.include Shoulda::ActionController::Matchers
-    config.include Capybara, :type => :request
     config.include Devise::TestHelpers, :type => :controller
   end
 end

@@ -11,7 +11,7 @@
 require 'spec_helper'
 
 describe Ticket do
-  let(:user) { Factory(:user) }
+  let(:user) { Factory(:user, first_name: "Rem & My") }
 
   describe "Factory" do
     let(:ticket) { Ticket.new({ :user => user, :type => "bug", :subject => "Subject", :message => "Message" }) }
