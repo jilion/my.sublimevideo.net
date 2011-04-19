@@ -1670,3 +1670,127 @@
       P5wuw3iexgkeie6Ke5xDZiaxr8adF4pZaFGKDtBbB8fn4Mj/xWXmV4MAAAA=
 
     http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: https://search.twitter.com:443/search.json?q=%22sublimevideo%22&rpp=100
+    body: 
+    headers: 
+      accept: 
+      - application/json
+      user-agent: 
+      - Twitter Ruby Gem 1.3.0
+      authorization: 
+      - OAuth oauth_consumer_key="KTWk4ZrufEHjncLCsNwhw", oauth_nonce="6b92e13361193f02474709bfcbff4dea", oauth_signature="0o3HchqtpygQrvZqVSqEAW2rW%2FY%3D", oauth_signature_method="HMAC-SHA1", oauth_timestamp="1303210133", oauth_token="6797462-Sz009rpFmcLGIBANAyJRsKoUlHtf2Rl5YuufnZeiI", oauth_version="1.0"
+      accept-encoding: 
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      date: 
+      - Tue, 19 Apr 2011 10:48:55 GMT
+      server: 
+      - hi
+      status: 
+      - 200 OK
+      x-served-from: 
+      - smf1-aen-27-sr2
+      x-runtime: 
+      - "0.08535"
+      content-type: 
+      - application/json; charset=utf-8
+      x-timeline-cache-hit: 
+      - Miss
+      x-served-by: 
+      - smf1-aba-07-sr2.prod.twitter.com
+      cache-control: 
+      - max-age=15, must-revalidate, max-age=300
+      expires: 
+      - Tue, 19 Apr 2011 10:53:54 GMT
+      vary: 
+      - Accept-Encoding
+      x-varnish: 
+      - "1719954313"
+      age: 
+      - "0"
+      via: 
+      - 1.1 varnish
+      x-cache-svr: 
+      - smf1-aba-07-sr2.prod.twitter.com
+      x-cache: 
+      - MISS
+      content-encoding: 
+      - gzip
+      content-length: 
+      - "2941"
+    body: !binary |
+      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
+      Z7BvhyC//x9SOfo/sEMAAA==
+
+    http_version: "1.1"
