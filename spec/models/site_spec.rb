@@ -64,18 +64,10 @@ describe Site do
     it { should have_many :invoices }
 
     describe "last_invoice" do
-      subject { Factory(:site_with_invoice, plan_id: Factory(:plan, price: 123456).id) }
+      subject { Factory(:site_with_invoice, plan_id: @paid_plan.id) }
 
       it "should return the last paid invoice" do
         subject.last_invoice.should == subject.invoices.last
-      end
-    end
-
-    describe "last_paid_invoice" do
-      subject { Factory(:site_with_invoice, plan_id: Factory(:plan, price: 123456).id) }
-
-      it "should return the last paid invoice" do
-        subject.last_paid_invoice.should == subject.invoices.paid.last
       end
     end
   end
@@ -870,10 +862,10 @@ describe Site do
           subject.license.should_not be_present
           subject.archived_at.should be_present
         end
-        
+
         context "first invoice" do
           subject { @site.reload; @site.user.current_password = '123456'; @site }
-          
+
           before(:all) do
             @site = Factory(:new_site, first_paid_plan_started_at: nil)
             Invoice.delete_all
@@ -961,7 +953,7 @@ describe Site do
             end
           end
         end
-        
+
       end
     end
 
