@@ -548,22 +548,22 @@ describe Transaction do
 
     end # .charge_by_invoice_ids
 
-    describe ".refund_by_site_id"  do
+    describe ".refund_by_site_id" do
       context "for a non-refundable site" do
         describe "because of a not present refunded_at" do
-          it "should do nothing!" do
+          it "does nothing!" do
             site = Factory(:site, refunded_at: nil)
             expect { Transaction.refund_by_site_id(site.id) }.to_not change(Delayed::Job, :count)
           end
         end
         describe "because of a too old first_paid_plan_started_at" do
-          it "should do nothing!" do
+          it "does nothing!" do
             site = Factory(:site, first_paid_plan_started_at: 31.days.ago, refunded_at: Time.now.utc)
             expect { Transaction.refund_by_site_id(site.id) }.to_not change(Delayed::Job, :count)
           end
         end
         describe "because of a non-archived site" do
-          it "should do nothing!" do
+          it "does nothing!" do
             site = Factory(:site, first_paid_plan_started_at: 29.days.ago, refunded_at: Time.now.utc)
             expect { Transaction.refund_by_site_id(site.id) }.to_not change(Delayed::Job, :count)
           end
@@ -586,9 +586,18 @@ describe Transaction do
           @transaction.should be_paid
         end
 
-        it "should delay one Ogone.credit" do
+        it "delays one Ogone.credit" do
           Ogone.should_receive(:credit).with(@site.invoices.first.amount, "#{@transaction.pay_id};SAL")
           Transaction.refund_by_site_id(@site.id)
+        end
+
+        it "deducts refunded invoices from the user's total_invoiced_amount and update the last_invoiced_amount" do
+          @site.user.last_invoiced_amount.should == @site.invoices.where(state: 'paid').order(:paid_at.desc).first.amount
+          @site.user.total_invoiced_amount.should == @site.invoices.where(state: 'paid').order(:paid_at.desc).first.amount
+          Ogone.should_receive(:credit).with(@site.invoices.first.amount, "#{@transaction.pay_id};SAL")
+          Transaction.refund_by_site_id(@site.id)
+          @site.user.reload.last_invoiced_amount.should == 0
+          @site.user.total_invoiced_amount.should == 0
         end
       end
 
@@ -615,9 +624,12 @@ describe Transaction do
 
       context "for a refundable site with multiple transactions all paid" do
         before(:each) do
-          @site = Factory(:site_with_invoice, state: 'archived', refunded_at: Time.now.utc)
+          @site = Factory(:site_with_invoice)
+          @site2 = Factory(:site_with_invoice, user: @site.user)
           @site.plan_id = @custom_plan.token
           VCR.use_cassette("ogone/visa_payment_generic") { @site.save_without_password_validation }
+          @site.without_password_validation { @site.archive }
+          @site.refund
           transactions = Transaction.paid.joins(:invoices).where(:invoices => { :site_id => @site.id }).order(:id)
           transactions.count.should == 2
           @transaction1 = Transaction.find(transactions.first.id)
@@ -627,11 +639,8 @@ describe Transaction do
 
           @transaction1.invoices.where(state: 'paid').count.should == 1
           @transaction2.invoices.where(state: 'paid').count.should == 1
-          @transaction1.invoices << Factory(:invoice, site: Factory(:site), state: 'paid') # the transaction is with 2 invoices for 2 different sites
           @transaction2.invoices << Factory(:invoice, site: Factory(:site), state: 'failed') # the transaction is with 2 invoices for 2 different sites
-          @transaction1.save
           @transaction2.save
-          @transaction1.reload.invoices.where(state: 'paid').count.should == 2
           @transaction2.reload.invoices.where(state: 'paid').count.should == 1
           @transaction1.should be_paid
           @transaction2.should be_paid
@@ -646,13 +655,29 @@ describe Transaction do
 
           Transaction.refund_by_site_id(@site.id)
         end
+
+        it "deducts refunded invoices from the user's total_invoiced_amount and update the last_invoiced_amount" do
+          @site.user.update_attribute(:last_invoiced_amount, 20000)
+          @site.user.update_attribute(:total_invoiced_amount, 100000)
+          @site.reload.user.last_invoiced_amount.should == 20000
+          @site.user.total_invoiced_amount.should == 100000
+          Ogone.should_receive(:credit).ordered.with(@transaction1.invoices.order(:id).first.amount, "#{@transaction1.pay_id};SAL")
+          Ogone.should_receive(:credit).ordered.with(@transaction2.invoices.order(:id).first.amount, "#{@transaction2.pay_id};SAL")
+
+          Transaction.refund_by_site_id(@site.id)
+          @site.user.reload.last_invoiced_amount.should == @site2.last_paid_invoice.amount
+          @site.user.total_invoiced_amount.should == @site2.last_paid_invoice.amount
+        end
       end
 
       context "for a refundable site with multiple transactions: 1 paid and 1 failed" do
         before(:each) do
-          @site = Factory(:site_with_invoice, state: 'archived', refunded_at: Time.now.utc)
+          @site = Factory(:site_with_invoice)
+          @site2 = Factory(:site_with_invoice, user: @site.user)
           @site.plan_id = @custom_plan.token
           VCR.use_cassette("ogone/visa_payment_generic") { @site.save_without_password_validation }
+          @site.without_password_validation { @site.archive }
+          @site.refund
           transactions = Transaction.paid.joins(:invoices).where(:invoices => { :site_id => @site.id }).order(:id)
           transactions.count.should == 2
           @transaction1 = Transaction.find(transactions.first.id)
@@ -671,9 +696,21 @@ describe Transaction do
         end
 
         it "should delay one Ogone.credit" do
-          Ogone.should_receive(:credit).ordered.with(@transaction2.invoices.order(:id).first.amount, "#{@transaction2.pay_id};SAL")
+          Ogone.should_receive(:credit).with(@transaction2.invoices.order(:id).first.amount, "#{@transaction2.pay_id};SAL")
 
           Transaction.refund_by_site_id(@site.id)
+        end
+
+        it "deducts refunded invoices from the user's total_invoiced_amount and update the last_invoiced_amount" do
+          @site.user.update_attribute(:last_invoiced_amount, 20000)
+          @site.user.update_attribute(:total_invoiced_amount, 100000)
+          @site.reload.user.last_invoiced_amount.should == 20000
+          @site.user.total_invoiced_amount.should == 100000
+          Ogone.should_receive(:credit).with(@transaction2.invoices.order(:id).first.amount, "#{@transaction2.pay_id};SAL")
+
+          Transaction.refund_by_site_id(@site.id)
+          @site.user.reload.last_invoiced_amount.should == @site2.last_paid_invoice.amount
+          @site.user.total_invoiced_amount.should == @site2.last_paid_invoice.amount
         end
       end
     end
