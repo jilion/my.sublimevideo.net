@@ -225,6 +225,29 @@ describe Site::Invoice do
       end
     end # #will_be_in_dev_plan?
 
+    describe "#last_paid_invoice" do
+      context "with the last paid invoice not refunded" do
+        subject { Factory(:site_with_invoice, plan_id: @paid_plan.id) }
+      
+        it "should return the last paid invoice" do
+          subject.last_paid_invoice.should == subject.invoices.paid.last
+        end
+      end
+      
+      context "with the last paid invoice refunded" do
+        before(:all) do
+          @site = Factory(:site_with_invoice, plan_id: @paid_plan.id)
+          @site.refund
+        end
+        subject { @site.reload }
+        
+        it "returns nil" do
+          subject.refunded_at.should be_present
+          subject.last_paid_invoice.should be_nil
+        end
+      end
+    end # #last_paid_invoice
+
     describe "#last_paid_plan_price" do
       context "site with no invoice" do
         subject { Factory(:site, plan_id: @dev_plan.id) }
@@ -232,7 +255,7 @@ describe Site::Invoice do
         its(:last_paid_plan_price) { should == 0 }
       end
 
-        context "site with at least one paid invoice" do
+      context "site with at least one paid invoice" do
         before(:all) do
           @plan1 = Factory(:plan, price: 10_000)
           @plan2 = Factory(:plan, price: 5_000)
@@ -245,7 +268,23 @@ describe Site::Invoice do
           subject.last_paid_plan_price.should == @plan1.price(subject)
         end
       end
-    end
+    end # #last_paid_plan_price
+
+    describe "#refund" do
+      before(:all) do
+        @site = Factory(:new_site, first_paid_plan_started_at: nil)
+      end
+
+      it "touches refunded_at" do
+        @site.refunded_at.should be_nil
+        @site.refund
+        @site.reload.refunded_at.should be_present
+      end
+
+      it "delays Transactions.refund_by_site_id" do
+        expect { @site.refund }.to change(Delayed::Job.where(:handler.matches => "%refund_by_site_id%"), :count).by(1)
+      end
+    end # #refund
 
     describe "#pend_plan_changes" do
       before(:all) do

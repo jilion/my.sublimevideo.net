@@ -67,7 +67,11 @@ class User < ActiveRecord::Base
   state_machine :initial => :active do
     event(:suspend)   { transition :active => :suspended }
     event(:unsuspend) { transition :suspended => :active }
-    event(:archive)   { transition all => :archived }
+    event(:archive)   { transition [:active, :suspended] => :archived }
+
+    state :archived do
+      validate :prevent_archive_with_non_paid_invoices
+    end
 
     before_transition :on => :suspend, :do => :suspend_sites
     after_transition  :on => :suspend, :do => :send_account_suspended_email
@@ -207,6 +211,10 @@ class User < ActiveRecord::Base
     end
   end
 
+  def archivable?
+    sites.active.all? { |site| site.archivable? }
+  end
+
 private
 
   # validate
@@ -222,6 +230,13 @@ private
       elsif !valid_password?(current_password)
         self.errors.add(:current_password, :invalid)
       end
+    end
+  end
+
+  # validate (archived state)
+  def prevent_archive_with_non_paid_invoices
+    unless archivable?
+      self.errors.add(:base, :not_paid_invoices_prevent_archive, :count => invoices.open_or_failed_or_waiting.count)
     end
   end
 

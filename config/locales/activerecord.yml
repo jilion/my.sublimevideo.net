@@ -56,6 +56,10 @@ en:
 
         user:
           attributes:
+            base:
+              not_paid_invoices_prevent_archive:
+                one: "You have 1 invoice not paid preventing you from deleting your account"
+                other: "You have %{count} invoices not paid preventing you from deleting your account"
             use:
               at_least_one_option: "Please check at least one option"
             company_url:
