@@ -10,14 +10,16 @@
       = render 'fields', :f => f
       .actions.center
         = f.submit 'Update settings', :class => "submit big"
-  .break_line
-  .spacer
-  = form_for @site, :html => { :method => :delete, "data-password-protected" => true } do |f|
-    - if params[:action] == 'destroy' && @site.errors[:base] && @site.errors[:base].include?(t('activerecord.errors.models.site.attributes.base.current_password_needed'))
-      = password_box :resource => @site, :f => f, :cancel_url => [:edit, @site]
-    .entry.delete
-      = f.submit "Delete site", :class => "delete_site", :confirm => "Are you really sure?"
-      %p.desc
-        - if @site.hostname.present?
-          = raw t 'site.edit.delete_site_info1', :domain => "<em>#{truncate_middle(@site.hostname, :length => 20)}</em>"
-        = raw t 'site.edit.delete_site_info2'
+
+  - if @site.archivable?
+    .break_line
+    .spacer
+      = form_for @site, :html => { :method => :delete, "data-password-protected" => true } do |f|
+        - if params[:action] == 'destroy' && @site.errors[:base] && @site.errors[:base].include?(t('activerecord.errors.models.site.attributes.base.current_password_needed'))
+          = password_box :resource => @site, :f => f, :cancel_url => [:edit, @site]
+        .entry.delete
+          = f.submit "Delete site", :class => "delete_site", :confirm => "Are you really sure?"
+          %p.desc
+            - if @site.hostname.present?
+              = raw t 'site.edit.delete_site_info1', :domain => "<em>#{truncate_middle(@site.hostname, :length => 20)}</em>"
+            = raw t 'site.edit.delete_site_info2'

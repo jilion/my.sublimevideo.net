@@ -363,6 +363,96 @@ describe Site do
       end
     end # validates_current_password
 
+    describe "prevent_archive_with_non_paid_invoices" do
+      subject { @site.reload; @site.user.current_password = '123456'; @site }
+
+      context "first invoice" do
+        before(:all) do
+          @site = Factory(:new_site, first_paid_plan_started_at: nil)
+          @site.first_paid_plan_started_at.should be_nil
+        end
+
+        context "with an open invoice" do
+          before(:all) do
+            Invoice.delete_all
+            @open_invoice = Factory(:invoice, site: @site, state: 'open')
+          end
+
+          it "archives the site" do
+            subject.archive!.should be_true
+            subject.errors[:base].should be_empty
+          end
+        end
+
+        context "with a failed invoice" do
+          before(:all) do
+            Invoice.delete_all
+            @failed_invoice = Factory(:invoice, site: @site, state: 'failed')
+          end
+
+          it "archives the site" do
+            subject.archive!.should be_true
+            subject.errors[:base].should be_empty
+          end
+        end
+
+        context "with a waiting invoice" do
+          before(:all) do
+            Invoice.delete_all
+            @waiting_invoice = Factory(:invoice, site: @site, state: 'waiting')
+          end
+
+          it "archives the site" do
+            subject.archive.should be_false
+            subject.errors[:base].should include I18n.t('activerecord.errors.models.site.attributes.base.not_paid_invoices_prevent_archive', :count => 1)
+          end
+        end
+      end
+
+      context "not first invoice" do
+        before(:all) do
+          @site = Factory(:new_site, first_paid_plan_started_at: Time.now.utc)
+          @site.first_paid_plan_started_at.should be_present
+        end
+
+        context "with an open invoice" do
+          before(:all) do
+            Invoice.delete_all
+            @open_invoice = Factory(:invoice, site: @site, state: 'open')
+          end
+
+          it "doesn't archive the site" do
+            subject.archive.should be_false
+            subject.errors[:base].should include I18n.t('activerecord.errors.models.site.attributes.base.not_paid_invoices_prevent_archive', :count => 1)
+          end
+        end
+
+        context "with a failed invoice" do
+          before(:all) do
+            Invoice.delete_all
+            @failed_invoice = Factory(:invoice, site: @site, state: 'failed')
+          end
+
+          it "doesn't archive the site" do
+            subject.archive.should be_false
+            subject.errors[:base].should include I18n.t('activerecord.errors.models.site.attributes.base.not_paid_invoices_prevent_archive', :count => 1)
+          end
+        end
+
+        context "with a waiting invoice" do
+          before(:all) do
+            Invoice.delete_all
+            @waiting_invoice = Factory(:invoice, site: @site, state: 'waiting')
+          end
+
+          it "doesn't archive the site" do
+            subject.archive.should be_false
+            subject.errors[:base].should include I18n.t('activerecord.errors.models.site.attributes.base.not_paid_invoices_prevent_archive', :count => 1)
+          end
+        end
+      end
+    end
+
   end # Validations
 
   describe "Attributes Accessors" do
@@ -773,15 +863,108 @@ describe Site do
           VoxcastCDN.should_receive(:purge).with("/js/#{subject.token}.js")
           VoxcastCDN.should_receive(:purge).with("/l/#{subject.token}.js")
           subject.user.current_password = '123456'
-          lambda { subject.archive }.should change(Delayed::Job, :count).by(1)
+          lambda { subject.archive! }.should change(Delayed::Job, :count).by(1)
           subject.reload.should be_archived
           lambda { @worker.work_off }.should change(Delayed::Job, :count).by(-1)
           subject.reload.loader.should_not be_present
           subject.license.should_not be_present
           subject.archived_at.should be_present
         end
+        
+        context "first invoice" do
+          subject { @site.reload; @site.user.current_password = '123456'; @site }
+          
+          before(:all) do
+            @site = Factory(:new_site, first_paid_plan_started_at: nil)
+            Invoice.delete_all
+            @site.first_paid_plan_started_at.should be_nil
+          end
+
+          context "with an open invoice" do
+            before(:all) do
+              @open_invoice = Factory(:invoice, site: @site, state: 'open')
+            end
+
+            it "archives the site" do
+              subject.archive!.should be_true
+              subject.should be_archived
+              @open_invoice.reload.should be_canceled
+            end
+          end
+
+          context "with a failed invoice" do
+            before(:all) do
+              @failed_invoice = Factory(:invoice, site: @site, state: 'failed')
+            end
+
+            it "archives the site" do
+              subject.archive!.should be_true
+              subject.should be_archived
+              @failed_invoice.reload.should be_canceled
+            end
+          end
+
+          context "with a waiting invoice" do
+            before(:all) do
+              @waiting_invoice = Factory(:invoice, site: @site, state: 'waiting')
+            end
+
+            it "archives the site" do
+              subject.archive.should be_false
+              subject.should_not be_archived
+              @waiting_invoice.reload.should be_waiting
+            end
+          end
+        end
+
+        context "not first invoice" do
+          subject { @site.reload; @site.user.current_password = '123456'; @site }
+          before(:all) do
+            @site = Factory(:new_site, first_paid_plan_started_at: Time.now.utc)
+            Invoice.delete_all
+            @site.first_paid_plan_started_at.should be_present
+          end
+
+          context "with an open invoice" do
+            before(:all) do
+              @open_invoice = Factory(:invoice, site: @site, state: 'open')
+            end
+
+            it "doesn't archive the site" do
+              subject.archive.should be_false
+              subject.should_not be_archived
+              @open_invoice.reload.should be_open
+            end
+          end
+
+          context "with a failed invoice" do
+            before(:all) do
+              @failed_invoice = Factory(:invoice, site: @site, state: 'failed')
+            end
+
+            it "doesn't archive the site" do
+              subject.archive.should be_false
+              subject.should_not be_archived
+              @failed_invoice.reload.should be_failed
+            end
+          end
+
+          context "with a waiting invoice" do
+            before(:all) do
+              @waiting_invoice = Factory(:invoice, site: @site, state: 'waiting')
+            end
+
+            it "doesn't archive the site" do
+              subject.archive.should be_false
+              subject.should_not be_archived
+              @waiting_invoice.reload.should be_waiting
+            end
+          end
+        end
+        
       end
     end
+
   end
 
   describe "Versioning" do
@@ -1134,7 +1317,6 @@ describe Site do
 
     end
 
-
     describe "#current_monthly_billable_usages.sum & #current_percentage_of_plan_used" do
       before(:all) { @site = Factory(:site) }
       before(:each) do
@@ -1469,6 +1651,74 @@ describe Site do
         its(:recommended_plan_name) { should be_nil }
       end
 
+    end
+
+    describe "#archivable?" do
+      subject { @site.reload; @site.user.current_password = '123456'; @site }
+
+      context "first invoice" do
+        before(:all) do
+          Invoice.delete_all
+          @site = Factory(:new_site, first_paid_plan_started_at: nil)
+          @site.first_paid_plan_started_at.should be_nil
+        end
+
+        context "with an open invoice" do
+          before(:all) do
+            @open_invoice = Factory(:invoice, site: @site, state: 'open')
+          end
+
+          it { should be_archivable }
+        end
+
+        context "with a failed invoice" do
+          before(:all) do
+            @failed_invoice = Factory(:invoice, site: @site, state: 'failed')
+          end
+
+          it { should be_archivable }
+        end
+
+        context "with a waiting invoice" do
+          before(:all) do
+            @waiting_invoice = Factory(:invoice, site: @site, state: 'waiting')
+          end
+
+          it { should_not be_archivable }
+        end
+      end
+
+      context "not first invoice" do
+        before(:all) do
+          Invoice.delete_all
+          @site = Factory(:new_site, first_paid_plan_started_at: Time.now.utc)
+          @site.first_paid_plan_started_at.should be_present
+        end
+
+        context "with an open invoice" do
+          before(:all) do
+            @open_invoice = Factory(:invoice, site: @site, state: 'open')
+          end
+
+          it { should_not be_archivable }
+        end
+
+        context "with a failed invoice" do
+          before(:all) do
+            @failed_invoice = Factory(:invoice, site: @site, state: 'failed')
+          end
+
+          it { should_not be_archivable }
+        end
+
+        context "with a waiting invoice" do
+          before(:all) do
+            @waiting_invoice = Factory(:invoice, site: @site, state: 'waiting')
+          end
+
+          it { should_not be_archivable }
+        end
+      end
     end
 
   end # Instance Methods

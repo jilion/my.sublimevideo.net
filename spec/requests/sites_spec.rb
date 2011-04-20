@@ -592,7 +592,7 @@ feature "Sites" do
     end
 
     feature "archive" do
-      scenario "a dev site" do
+      scenario "a paid site with no not paid invoices" do
         site = Factory(:site, :user => @current_user, :hostname => 'google.com')
 
         visit "/sites"
@@ -608,6 +608,85 @@ feature "Sites" do
 
         page.should_not have_content('google.com')
         @current_user.sites.not_archived.should be_empty
+      end
+
+      scenario "a paid site with an open invoices" do
+        site = Factory(:site, :user => @current_user, :hostname => 'google.com')
+        Factory(:invoice, site: site, state: 'open')
+
+        visit "/sites"
+        page.should have_content('google.com')
+        @current_user.sites.last.hostname.should == "google.com"
+
+        page.should have_no_content('Delete site')
+      end
+
+      scenario "a paid site with an failed invoices" do
+        site = Factory(:site, :user => @current_user, :hostname => 'google.com')
+        Factory(:invoice, site: site, state: 'failed')
+
+        visit "/sites"
+        page.should have_content('google.com')
+        @current_user.sites.last.hostname.should == "google.com"
+
+        page.should have_no_content('Delete site')
+      end
+
+      scenario "a paid site with an waiting invoices" do
+        site = Factory(:site, :user => @current_user, :hostname => 'google.com')
+        Factory(:invoice, site: site, state: 'waiting')
+
+        visit "/sites"
+        page.should have_content('google.com')
+        @current_user.sites.last.hostname.should == "google.com"
+
+        page.should have_no_content('Delete site')
+      end
+
+      scenario "a pending paid site with an open invoice" do
+        site = Factory(:new_site, :user => @current_user, :hostname => 'google.com', first_paid_plan_started_at: nil)
+        site.first_paid_plan_started_at.should be_nil
+        Factory(:invoice, site: site, state: 'open')
+
+        visit "/sites"
+        page.should have_content('google.com')
+        @current_user.sites.last.hostname.should == "google.com"
+        VoxcastCDN.stub_chain(:delay, :purge).twice
+
+        click_link "Edit google.com"
+        click_button "Delete site"
+
+        page.should_not have_content('google.com')
+        @current_user.sites.not_archived.should be_empty
+      end
+
+      scenario "a pending paid site with a failed invoice" do
+        site = Factory(:new_site, :user => @current_user, :hostname => 'google.com', first_paid_plan_started_at: nil)
+        site.first_paid_plan_started_at.should be_nil
+        Factory(:invoice, site: site, state: 'failed')
+
+        visit "/sites"
+        page.should have_content('google.com')
+        @current_user.sites.last.hostname.should == "google.com"
+        VoxcastCDN.stub_chain(:delay, :purge).twice
+
+        click_link "Edit google.com"
+        click_button "Delete site"
+
+        page.should_not have_content('google.com')
+        @current_user.sites.not_archived.should be_empty
+      end
+
+      scenario "a pending paid site with a waiting invoice" do
+        site = Factory(:new_site, :user => @current_user, :hostname => 'google.com', first_paid_plan_started_at: nil)
+        site.first_paid_plan_started_at.should be_nil
+        Factory(:invoice, site: site, state: 'open')
+
+        visit "/sites"
+        page.should have_content('google.com')
+        @current_user.sites.last.hostname.should == "google.com"
+
+        page.should have_no_content('Delete site')
       end
     end
 
