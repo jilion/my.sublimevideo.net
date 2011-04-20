@@ -10,7 +10,7 @@ describe InvoicesController do
     describe "GET :index" do
       before(:each) do
         authenticated_user.stub_chain(:sites, :not_archived, :find_by_token!).with('QWE123TYU').and_return(mock_site)
-        mock_site.should_receive(:invoices).and_return([mock_invoice])
+        mock_site.stub_chain(:invoices, :not_canceled).and_return([mock_invoice])
       end
 
       it "should render :index with 'application' layout" do
@@ -24,7 +24,7 @@ describe InvoicesController do
 
     describe "GET :show" do
       before(:each) do
-        authenticated_user.stub_chain(:invoices, :find_by_reference!).with('QWE123TYU').and_return(mock_invoice)
+        authenticated_user.stub_chain(:invoices, :not_canceled, :find_by_reference!).with('QWE123TYU').and_return(mock_invoice)
       end
 
       it "should render :show" do
