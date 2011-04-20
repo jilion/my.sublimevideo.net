@@ -148,16 +148,18 @@ class Site < ActiveRecord::Base
   # =================
 
   state_machine :initial => :active do
-    state :pending # Temporary, used in the master branch
-
     event(:archive)   { transition [:active, :suspended] => :archived }
     event(:suspend)   { transition :active => :suspended }
     event(:unsuspend) { transition :suspended => :active }
 
-    before_transition :on => :archive, :do => :set_archived_at # TODO: Cancel invoices that are not paid if site plan has not been activated yet
+    state :archived do
+      validate :prevent_archive_with_non_paid_invoices
+    end
+
+    before_transition :on => :archive, :do => [:set_archived_at, :cancel_open_or_failed_invoices]
     # before_transition :on => :unsuspend, :do => :pend_plan_changes # TODO!!
 
-    after_transition  :to => [:suspended, :archived], :do => :delay_remove_loader_and_license  # in site/templates
+    after_transition  :to => [:suspended, :archived], :do => :delay_remove_loader_and_license # in site/templates
   end
 
   # =================
@@ -373,6 +375,11 @@ class Site < ActiveRecord::Base
     end
   end
 
+  def archivable?
+    invoices.waiting.empty? &&
+    (!first_paid_plan_started_at? || (first_paid_plan_started_at? && invoices.open_or_failed.empty?))
+  end
+
 private
 
   # validate if in_or_will_be_in_paid_plan?
@@ -385,11 +392,19 @@ private
   # validate
   def validates_current_password
     return if @skip_password_validation
+
     if !new_record? && in_paid_plan? && errors.empty? &&
       ((state_changed? && archived?) || (changes.keys & (Array(self.class.accessible_attributes) - ['plan_id'] + %w[pending_plan_id next_cycle_plan_id])).present?)
       if user.current_password.blank? || !user.valid_password?(user.current_password)
         self.errors.add(:base, :current_password_needed)
       end
+    end
+  end
+
+  # validate (archived state)
+  def prevent_archive_with_non_paid_invoices
+    unless archivable?
+      self.errors.add(:base, :not_paid_invoices_prevent_archive, :count => invoices.open_or_failed_or_waiting.count)
     end
   end
 
@@ -411,6 +426,13 @@ private
   # before_transition :on => :archive
   def set_archived_at
     self.archived_at = Time.now.utc
+  end
+
+  # before_transition :on => :archive
+  def cancel_open_or_failed_invoices
+    invoices.open_or_failed.each do |invoice|
+      invoice.cancel
+    end
   end
 
 end
