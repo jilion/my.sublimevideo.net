@@ -36,18 +36,19 @@
 
       %p= link_to "Update credit card", edit_credit_card_path
 
-  #delete_account
-    %h3.section_title= "Delete account"
-    = form_for @user, :url => "/account", :html => { :method => :delete, "data-password-protected" => true } do |f|
-      - if params[:action] == 'destroy' && @user.errors[:current_password].present?
-        = password_box :resource => @user, :f => f, :cancel_url => edit_user_registration_path
-      %p= "Please understand that:"
-      %ul
-        %li= raw "All your #{link_to "sites", sites_path, :class => "hl"} will be deleted."
-        %li= "All of your SublimeVideo licenses will be instantly removed from our servers and will no longer be available."
-        %li= "We do not offer refunds."
-      .entry.delete
-        = f.submit "Delete account", :class => "submit link_looks delete", :confirm => "Are you really sure?"
+  - if current_user.archivable?
+    #delete_account
+      %h3.section_title= "Delete account"
+      = form_for @user, :url => "/account", :html => { :method => :delete, "data-password-protected" => true } do |f|
+        - if params[:action] == 'destroy' && @user.errors[:current_password].present?
+          = password_box :resource => @user, :f => f, :cancel_url => edit_user_registration_path
+        %p= "Please understand that:"
+        %ul
+          %li= raw "All your #{link_to "sites", sites_path, :class => "hl"} will be deleted."
+          %li= "All of your SublimeVideo licenses will be instantly removed from our servers and will no longer be available."
+          %li= "We do not offer refunds."
+        .entry.delete
+          = f.submit "Delete account", :class => "submit link_looks delete", :confirm => "Are you really sure?"
 
   .spacer
 .spacer

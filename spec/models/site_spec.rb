@@ -1646,7 +1646,7 @@ describe Site do
     end
 
     describe "#archivable?" do
-      subject { @site.reload; @site.user.current_password = '123456'; @site }
+      subject { @site.reload }
 
       context "first invoice" do
         before(:all) do
@@ -1711,7 +1711,7 @@ describe Site do
           it { should_not be_archivable }
         end
       end
-    end
+    end # #archivable?
 
   end # Instance Methods
 
