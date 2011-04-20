@@ -23,5 +23,7 @@
   = link_to "#{content_tag(:strong, Site.billable.count)} Billable".html_safe, admin_sites_path(:billable => true)
   |
   = link_to "#{content_tag(:strong, Site.not_billable.count)} Not Billable".html_safe, admin_sites_path(:not_billable => true)
-
+  |
   = link_to "#{content_tag(:strong, Site.plan_player_hits_reached_notified.count)} Notified limit reached".html_safe, admin_sites_path(:plan_player_hits_reached_notified => true)
+  |
+  = link_to "#{content_tag(:strong, Site.with_next_cycle_plan.count)} With next plan (downgrade)".html_safe, admin_sites_path(:with_next_cycle_plan => true)

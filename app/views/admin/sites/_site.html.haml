@@ -12,6 +12,11 @@
       %small= link_to site.plan.name, admin_plans_path
     - else
       %small= '-'
+  %td.next_cycle_plan
+    - if site.next_cycle_plan
+      %small= link_to site.next_cycle_plan.name, admin_plans_path
+    - else
+      %small= '-'
   %td.number
     %small= number_with_delimiter(last_30_days_billable_player_hits_total_count)
   %td.percentage

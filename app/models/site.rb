@@ -69,8 +69,9 @@ class Site < ActiveRecord::Base
   scope :archived,             where(:state => 'archived')
   scope :not_archived,         where(:state.ne => 'archived')
   scope :with_wildcard,        where(:wildcard => true)
-  scope :with_path,            where({ :path.ne => nil } & { :path.ne => '' })
+  scope :with_path,            where({ :path.ne => nil } & { :path.ne => '' } & { :path.ne => ' '} )
   scope :with_extra_hostnames, where({ :extra_hostnames.ne => nil } & { :extra_hostnames.ne => '' })
+  scope :with_next_cycle_plan, where(:next_cycle_plan_id.ne => nil)
 
   # admin
   scope :user_id,         lambda { |user_id| where(user_id: user_id) }

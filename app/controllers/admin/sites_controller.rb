@@ -21,6 +21,7 @@ class Admin::SitesController < Admin::AdminController
   end
   has_scope :plan_player_hits_reached_notified
   has_scope :user_id
+  has_scope :with_next_cycle_plan
 
   # sort
   has_scope :by_hostname
