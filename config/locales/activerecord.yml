@@ -40,6 +40,8 @@ en:
 
         invoice:
           attributes:
+            base:
+              not_first_invoice: "This invoice can't be canceled"
             state:
               uniqueness: "'open' should be unique per user"
 

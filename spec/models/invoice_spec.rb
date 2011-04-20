@@ -41,6 +41,93 @@ describe Invoice do
     it { should validate_numericality_of(:vat_rate) }
     it { should validate_numericality_of(:vat_amount) }
     it { should validate_numericality_of(:amount) }
+
+    describe "ensure_first_invoice_of_site" do
+      subject { @invoice }
+
+      context "first invoice" do
+        before(:all) do
+          Invoice.delete_all
+          @site = Factory(:new_site, first_paid_plan_started_at: nil)
+          @site.first_paid_plan_started_at.should be_nil
+        end
+
+        context "with an open invoice" do
+          before(:all) do
+            @invoice = Factory(:invoice, site: @site, state: 'open')
+          end
+
+          it "cancels the invoice" do
+            subject.cancel!.should be_true
+            subject.should be_canceled
+          end
+        end
+
+        context "with a failed invoice" do
+          before(:all) do
+            @invoice = Factory(:invoice, site: @site, state: 'failed')
+          end
+
+          it "cancels the invoice" do
+            subject.cancel!.should be_true
+            subject.should be_canceled
+          end
+        end
+
+        context "with a waiting invoice" do
+          before(:all) do
+            @invoice = Factory(:invoice, site: @site, state: 'waiting')
+          end
+
+          it "cancels the invoice" do
+            subject.cancel.should be_false
+            subject.should be_waiting
+          end
+        end
+      end
+
+      context "not first invoice" do
+        before(:all) do
+          Invoice.delete_all
+          @site = Factory(:new_site, first_paid_plan_started_at: Time.now.utc)
+          @site.first_paid_plan_started_at.should be_present
+        end
+
+        context "with an open invoice" do
+          before(:all) do
+            @invoice = Factory(:invoice, site: @site, state: 'open')
+          end
+
+          it "doesn't cancel the invoice" do
+            subject.cancel.should be_false
+            subject.should be_open
+          end
+        end
+
+        context "with a failed invoice" do
+          before(:all) do
+            @invoice = Factory(:invoice, site: @site, state: 'failed')
+          end
+
+          it "doesn't cancel the invoice" do
+            subject.cancel.should be_false
+            subject.should be_failed
+          end
+        end
+
+        context "with a waiting invoice" do
+          before(:all) do
+            @invoice = Factory(:invoice, site: @site, state: 'waiting')
+          end
+
+          it "doesn't cancel the invoice" do
+            subject.cancel.should be_false
+            subject.should be_waiting
+          end
+        end
+      end
+    end
+
   end # Validations
 
   describe "State Machine" do
@@ -156,12 +243,12 @@ describe Invoice do
 
       pending "after_transition :on => :succeed, :do => :push_new_revenue" do
         subject { Factory(:invoice, invoice_items: [Factory(:plan_invoice_item)]) }
-        
+
         it "should delay on Ding class" do
           Ding.should_receive(:delay)
           subject.succeed!
         end
-        
+
         it "should send a ding!" do
           expect { subject.succeed! }.to change(Delayed::Job, :count)
           djs = Delayed::Job.where(:handler.matches => "%plan_added%")
@@ -197,42 +284,64 @@ describe Invoice do
 
   describe "Scopes" do
     before(:all) do
+      @site             = Factory(:new_site, plan_id: @paid_plan.id, refunded_at: nil)
+      @site2            = Factory(:new_site)
+
       Invoice.delete_all
-      @site             = Factory(:site, plan_id: @paid_plan.id, refunded_at: nil)
       @refunded_site    = Factory(:site, plan_id: @paid_plan.id, refunded_at: Time.now.utc)
       @open_invoice     = Factory(:invoice, site: @site, state: 'open', created_at: 48.hours.ago)
       @failed_invoice   = Factory(:invoice, site: @site, state: 'failed', created_at: 25.hours.ago)
       @waiting_invoice  = Factory(:invoice, site: @site, state: 'waiting', created_at: 18.hours.ago)
       @paid_invoice     = Factory(:invoice, site: @site, state: 'paid', created_at: 16.hours.ago)
+      @canceled_invoice = Factory(:invoice, site: @site2, state: 'canceled', created_at: 14.hours.ago)
       @refunded_invoice = Factory(:invoice, site: @refunded_site, state: 'paid', created_at: 14.hours.ago)
+
+      @open_invoice.should be_open
+      @failed_invoice.should be_failed
+      @waiting_invoice.should be_waiting
+      @paid_invoice.should be_paid
+      @canceled_invoice.should be_canceled
+      @refunded_invoice.should be_refunded
     end
 
     describe "#between" do
-      specify { Invoice.between(24.hours.ago, 15.hours.ago).all.should == [@waiting_invoice, @paid_invoice] }
+      specify { Invoice.between(24.hours.ago, 15.hours.ago).should == [@waiting_invoice, @paid_invoice] }
     end
 
     describe "#open" do
-      specify { Invoice.open.all.should == [@open_invoice] }
-    end
-
-    describe "#failed" do
-      specify { Invoice.failed.all.should == [@failed_invoice] }
-    end
-
-    describe "#waiting" do
-      specify { Invoice.waiting.all.should == [@waiting_invoice] }
-    end
-
-    describe "#open_or_failed" do
-      specify { Invoice.open_or_failed.all.should == [@open_invoice, @failed_invoice] }
+      specify { Invoice.open.should == [@open_invoice] }
     end
 
     describe "#paid" do
-      specify { Invoice.paid.all.should == [@paid_invoice] }
+      specify { Invoice.paid.should == [@paid_invoice] }
     end
 
     describe "#refunded" do
-      specify { Invoice.refunded.all.should == [@refunded_invoice] }
+      specify { Invoice.refunded.should == [@refunded_invoice] }
+    end
+
+    describe "#failed" do
+      specify { Invoice.failed.should == [@failed_invoice] }
+    end
+
+    describe "#waiting" do
+      specify { Invoice.waiting.should == [@waiting_invoice] }
+    end
+
+    describe "#open_or_failed" do
+      specify { Invoice.open_or_failed.should == [@open_invoice, @failed_invoice] }
+    end
+
+    describe "#open_or_failed_or_waiting" do
+      specify { Invoice.open_or_failed_or_waiting.should == [@open_invoice, @failed_invoice, @waiting_invoice] }
+    end
+
+    describe "#not_canceled" do
+      specify { Invoice.not_canceled.should == [@open_invoice, @failed_invoice, @waiting_invoice, @paid_invoice, @refunded_invoice] }
+    end
+
+    describe "#not_paid" do
+      specify { Invoice.not_paid.should == [@open_invoice, @failed_invoice, @waiting_invoice] }
     end
 
   end # Scopes
@@ -265,7 +374,7 @@ describe Invoice do
           @invoice5 = Factory(:invoice, state: 'paid', site: @site1, created_at: 1.hour.ago) # already paid
           @invoice5.invoice_items << Factory(:plan_invoice_item, invoice: @invoice5, started_at: Time.utc(2011, 4, 4), ended_at: Time.utc(2011, 5, 3).end_of_day)
           @invoice5.save!
-          
+
           @invoice1.should == @site1.invoices.by_date('asc').first
         end
       end
@@ -288,7 +397,7 @@ describe Invoice do
         @invoice4.invoice_items.first.ended_at.to_i.should == Time.utc(2011, 5, 3).end_of_day.to_i
         @invoice5.reload.invoice_items.first.started_at.should == Time.utc(2011, 4, 4)
         @invoice5.invoice_items.first.ended_at.to_i.should == Time.utc(2011, 5, 3).end_of_day.to_i
-        
+
         @site1.reload.pending_plan_started_at.should == Time.utc(2011, 4, 8)
         @site1.pending_plan_cycle_started_at.should == Time.utc(2011, 4, 8)
         @site1.pending_plan_cycle_ended_at.to_i.should == Time.utc(2011, 5, 7).to_datetime.end_of_day.to_i

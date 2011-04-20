@@ -41,6 +41,11 @@ class Invoice < ActiveRecord::Base
     event(:succeed) { transition [:open, :failed, :waiting] => :paid }
     event(:fail)    { transition [:open, :failed, :waiting] => :failed }
     event(:wait)    { transition [:open, :failed, :waiting] => :waiting }
+    event(:cancel)  { transition [:open, :failed] => :canceled }
+
+    state :canceled do
+      validate :ensure_first_invoice_of_site
+    end
 
     before_transition :on => :succeed, :do => [:set_paid_at, :apply_pending_site_plan_changes, :update_user_invoiced_amount]
     after_transition  :on => :succeed, :do => [:unsuspend_user]#, :push_new_revenue]
@@ -54,20 +59,22 @@ class Invoice < ActiveRecord::Base
 
   scope :between, lambda { |started_at, ended_at| where(:created_at.gte => started_at, :created_at.lte => ended_at) }
 
-  scope :open,           where(state: 'open')
-  scope :paid,           where(state: 'paid').joins(:site).where(:site => { :refunded_at => nil })
-  scope :refunded,       where(state: 'paid').joins(:site).where(:site => { :refunded_at.ne => nil })
-  scope :failed,         where(state: 'failed')
-  scope :waiting,        where(state: 'waiting')
-  scope :open_or_failed, where(state: %w[open failed])
-  scope :not_paid,       where(:state.ne => 'paid')
-  scope :site_id,        lambda { |site_id| where(site_id: site_id) }
-  scope :user_id,        lambda { |user_id| joins(:user).where(:users => { :id => user_id }) }
+  scope :open,                      where(state: 'open')
+  scope :paid,                      where(state: 'paid').includes(:site).where(:sites => { :refunded_at => nil })
+  scope :refunded,                  where(state: 'paid').includes(:site).where(:sites => { :refunded_at.ne => nil })
+  scope :failed,                    where(state: 'failed')
+  scope :waiting,                   where(state: 'waiting')
+  scope :open_or_failed,            where(state: %w[open failed])
+  scope :open_or_failed_or_waiting, where(state: %w[open failed waiting])
+  scope :not_canceled,              where(:state.ne => 'canceled')
+  scope :not_paid,                  where(:state.not_in => %w[paid canceled])
+  scope :site_id,                   lambda { |site_id| where(site_id: site_id) }
+  scope :user_id,                   lambda { |user_id| includes(:user).where(:users => { :id => user_id }) }
 
   # sort
   scope :by_date,                lambda { |way='desc'| order(:created_at.send(way)) }
   scope :by_amount,              lambda { |way='desc'| order(:amount.send(way)) }
-  scope :by_user,                lambda { |way='desc'| joins(:user).order(:"users.first_name".send(way), :"users.email".send(way)) }
+  scope :by_user,                lambda { |way='desc'| includes(:user).order(:first_name.send(way), :"users.email".send(way)) }
   scope :by_invoice_items_count, lambda { |way='desc'| order(:invoice_items_count.send(way)) }
 
   # search
@@ -162,6 +169,13 @@ private
 
   def set_amount
     self.amount = invoice_items_amount + vat_amount
+  end
+  
+  # validate (canceled state)
+  def ensure_first_invoice_of_site
+    if site.first_paid_plan_started_at?
+      self.errors.add(:base, :not_first_invoice)
+    end
   end
 
   # before_validation :on => :create
