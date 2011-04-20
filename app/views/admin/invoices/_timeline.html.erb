@@ -5,6 +5,7 @@ monthly_paid_invoices = Stat::Invoice.timeline(invoices.includes(:plan_invoice_i
 yearly_paid_invoices  = Stat::Invoice.timeline(invoices.includes(:plan_invoice_items).paid.select { |i| i.paid_plan.yearly? }, @date_range_from, @date_range_to)
 open_invoices         = Stat::Invoice.timeline(invoices.open, @date_range_from, @date_range_to)
 failed_invoices       = Stat::Invoice.timeline(invoices.failed, @date_range_from, @date_range_to)
+canceled_invoices     = Stat::Invoice.timeline(invoices.canceled, @date_range_from, @date_range_to)
 refunded_invoices     = Stat::Invoice.timeline(invoices.refunded, @date_range_from, @date_range_to)
 waiting_invoices      = Stat::Invoice.timeline(invoices.waiting, @date_range_from, @date_range_to)
 
@@ -15,7 +16,7 @@ unless invoices.empty?
     g.option(chart: chart('timeline_invoices', margin_top: 100))
     g.option(title: { text: "Invoices" })
     g.option(subtitle: usage_date_subtitle(invoices.first.created_at, invoices.last.created_at, date_format: :month_fullyear))
-    g.option(legend: legend(y: 40))
+    g.option(legend: legend(y: 40, width: 1050))
     g.option(xAxis: x_axis(@date_range_from, @date_range_to))
 
     g.raw_option(%(yAxis: {
@@ -49,6 +50,7 @@ unless invoices.empty?
       serie(monthly_paid_invoices, 'Paid invoices (monthly)', '#0000FF', :type => 'area', :color => '#7941ff'),
       serie(refunded_invoices, 'Refunded invoices', '#1C1', :type => 'area', :color => '#ff8000'),
       serie(failed_invoices, 'Failed invoices', '#89A54E', :type => 'area', :color => '#fe2617'),
+      serie(canceled_invoices, 'Canceled invoices', '#89A54E', :type => 'area', :color => '#b00000'),
       serie(open_invoices, 'Open invoices', '#A1A', :type => 'area', :color => '#EEE'),
       serie(waiting_invoices, 'Waiting invoices', '#00FF00', :type => 'area', :color => '#AAA')
     ].flatten)

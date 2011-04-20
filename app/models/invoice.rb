@@ -64,6 +64,7 @@ class Invoice < ActiveRecord::Base
   scope :refunded,                  where(state: 'paid').includes(:site).where(:sites => { :refunded_at.ne => nil })
   scope :failed,                    where(state: 'failed')
   scope :waiting,                   where(state: 'waiting')
+  scope :canceled,                  where(state: 'canceled')
   scope :open_or_failed,            where(state: %w[open failed])
   scope :open_or_failed_or_waiting, where(state: %w[open failed waiting])
   scope :not_canceled,              where(:state.ne => 'canceled')
