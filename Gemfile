@@ -13,7 +13,7 @@ gem 'mongoid',               '2.0.1'
 
 # Views
 gem 'haml',                  '3.0.25'
-gem 'kaminari',              '0.10.4'
+gem 'kaminari',              '0.11.0'
 gem 'jammit',                '0.6.0'
 gem 'liquid',                '2.2.2'
 gem 'RedCloth',              '4.2.3'
