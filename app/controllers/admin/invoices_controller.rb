@@ -1,7 +1,7 @@
 class Admin::InvoicesController < Admin::AdminController
   respond_to :js, :html
 
-  before_filter :compute_date_range, :only => :edit
+  before_filter :compute_date_range, :only => [:index, :edit]
 
   # filter
   has_scope :paid

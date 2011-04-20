@@ -97,6 +97,7 @@ module Admin::StatsHelper
       type: options[:type] || :areaspline,
       name: title,
       visible: options[:visible].nil? ? true : options[:visible],
+      color: options[:color],
       # color: color, # automatic colors
       data: data
     }

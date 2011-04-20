@@ -3,6 +3,12 @@
 
 %h1= "Total revenue: #{display_amount(Invoice.total_revenue)}"
 
+= render '/admin/shared/date_chooser', skip_moving_avg: true
+
+#timeline.dashboard_timeline
+  = render 'timeline'
+
+
 .search_form
   = form_tag [:admin, :invoices], :method => :get, :id => 'search_form' do
     = text_field_tag :search, '', :value => params[:search], :id => 'search_input', :placeholder => "Search", :type => "search", :autofocus => true, :autosave => "admin_search", :results => "5"

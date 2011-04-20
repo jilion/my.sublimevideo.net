@@ -141,6 +141,11 @@ class Invoice < ActiveRecord::Base
   def refunded?
     site.refunded_at?
   end
+  
+  # used in amdin/invoices/timeline
+  def paid_plan
+    plan_invoice_items.detect { |p| p.amount > 0 }.item
+  end
 
 private
 
