@@ -9,16 +9,13 @@ class RefundsController < ApplicationController
   # POST /refund/:id
   def create
     @site = current_user.sites.refundable.find(params[:site_id])
-    
+
     respond_to do |format|
       if @site.archived? || @site.without_password_validation { @site.archive }
-        Site.transaction do
-          @site.touch(:refunded_at)
-          Transaction.delay.refund_by_site_id(@site.id)
-        end
-        format.html { redirect_to refunds_url, :notice => t('site.refund.refunded', hostname: @site.hostname) }
+        @site.refund
+        format.html { redirect_to [:refunds], :notice => t('site.refund.refunded', hostname: @site.hostname) }
       else
-        format.html { redirect_to refunds_url, :alert => t('site.refund.refund_unsuccessful', hostname: @site.hostname) }
+        format.html { redirect_to [:refunds], :alert => t('site.refund.refund_unsuccessful', hostname: @site.hostname) }
       end
     end
   end
