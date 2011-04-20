@@ -355,6 +355,9 @@ form label.icon {
   position:absolute;
   left:50%;
 }
+#timeline {
+  margin-bottom:15px;
+}
 
 /* =================== */
 /* = Player Releases = */

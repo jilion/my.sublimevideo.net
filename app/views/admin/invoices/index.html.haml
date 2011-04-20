@@ -5,9 +5,8 @@
 
 = render '/admin/shared/date_chooser', skip_moving_avg: true
 
-#timeline.dashboard_timeline
+#timeline
   = render 'timeline'
-
 
 .search_form
   = form_tag [:admin, :invoices], :method => :get, :id => 'search_form' do
