@@ -1,6 +1,7 @@
 <%
 invoices = ::Invoice.between(@date_range_from, @date_range_to).order(:created_at.asc)
 
+paid_invoices         = Stat::Invoice.timeline(invoices.paid, @date_range_from, @date_range_to)
 monthly_paid_invoices = Stat::Invoice.timeline(invoices.includes(:plan_invoice_items).paid.select { |i| i.paid_plan.monthly? }, @date_range_from, @date_range_to)
 yearly_paid_invoices  = Stat::Invoice.timeline(invoices.includes(:plan_invoice_items).paid.select { |i| i.paid_plan.yearly? }, @date_range_from, @date_range_to)
 open_invoices         = Stat::Invoice.timeline(invoices.open, @date_range_from, @date_range_to)
@@ -44,6 +45,7 @@ unless invoices.empty?
     }))
     
     g.option(series: [
+      serie(paid_invoices, 'Paid', '#0000FF', :type => 'line', :color => '#600fff'),
       serie(yearly_paid_invoices, 'Paid (yearly)', '#0000FF', :type => 'area', :color => '#5e33c8'),
       serie(monthly_paid_invoices, 'Paid (monthly)', '#0000FF', :type => 'area', :color => '#7941ff'),
       serie(refunded_invoices, 'Refunded', '#1C1', :type => 'area', :color => '#ff8000'),
