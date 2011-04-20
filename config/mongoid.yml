@@ -1,16 +1,10 @@
-<%
-  # http://mislav.uniqpath.com/rails/branching-the-database-along-with-your-code/
-  branch = `git symbolic-ref HEAD 2>/dev/null`.chomp.sub('refs/heads/', '')
-  suffix = `git config --bool branch.#{branch}.database`.chomp == 'true' ? "_#{branch}" : ""
-%>
-
 development:
   host: localhost
-  database: mysublime<%= suffix %>
+  database: mysublime
 
 test:
   host: localhost
-  database: msv_test<%= suffix %>
+  database: msv_test
 
 staging:
   uri: <%= ENV['MONGOHQ_URL'] %>
