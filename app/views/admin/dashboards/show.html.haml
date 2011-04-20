@@ -4,7 +4,7 @@
 
 #timeline.dashboard_timeline
   %h3 Usage
-  - cache 'dashboard_timeline_usage', :expires_in => 1.hour do
+  - cache 'dashboard_timeline_usage', :expires_in => (Time.now.utc.end_of_day - Time.now.utc) do
     = render 'timeline_usage'
 
 %h2= "Total revenue: #{display_amount(Invoice.total_revenue)}"

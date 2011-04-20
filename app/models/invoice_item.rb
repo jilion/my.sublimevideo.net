@@ -28,9 +28,6 @@ end
 
 
 
-
-
-
 # == Schema Information
 #
 # Table name: invoice_items

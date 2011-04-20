@@ -5,6 +5,12 @@ class UsersStat
   field :states_count, :type => Hash
 
   index :created_at
+  
+  # ==========
+  # = Scopes =
+  # ==========
+  
+  scope :between, lambda { |start_date, end_date| where(:created_at => { "$gte" => start_date, "$lt" => end_date }) }
 
   # =================
   # = Class Methods =

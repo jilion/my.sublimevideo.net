@@ -15,7 +15,7 @@ unless invoices.empty?
     g.option(chart: chart('timeline_invoices', margin_top: 100))
     g.option(title: { text: "Invoices" })
     g.option(subtitle: usage_date_subtitle(invoices.first.created_at, invoices.last.created_at, date_format: :month_fullyear))
-    g.option(legend: legend(y: 40, width: 660))
+    g.option(legend: legend(y: 40, width: 730))
     g.option(xAxis: x_axis(@date_range_from, @date_range_to))
 
     g.raw_option(%(yAxis: {

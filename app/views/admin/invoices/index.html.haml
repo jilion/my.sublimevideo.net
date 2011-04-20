@@ -6,7 +6,8 @@
 = render '/admin/shared/date_chooser', skip_moving_avg: true
 
 #timeline
-  = render 'timeline'
+  - cache 'invoives_timeline', :expires_in => (Time.now.utc.end_of_day - Time.now.utc) do
+    = render 'timeline'
 
 .search_form
   = form_tag [:admin, :invoices], :method => :get, :id => 'search_form' do

@@ -103,20 +103,32 @@ module Stat
 
   class Invoice
 
-    # Used to display an invoices chart
-    #
-    # Params:
-    # * start_time: invoices must be >= this date
-    # * end_time: invoices must be <= this date
-    # * options: Hash
-    #   - user_id: id of a user to restrict the selected invoices
-    #
-    # Return an ActiveRecord::Relation.
     def self.timeline(invoices, start_time, end_time, options={})
       invoices = invoices.group_by { |i| i.created_at.to_date }
-      
+
       (start_time.to_date..end_time.to_date).inject([]) do |amounts, day|
         amounts << (invoices[day] ? invoices[day].sum { |i| i.amount } : 0)
+      end
+    end
+
+  end
+
+  class UsersStat
+
+    def initialize(start_time, end_time, options={})
+      @start_time = start_time
+      @end_time   = end_time
+      @collection = ::UsersStat.between(@start_time.midnight, @end_time.end_of_day).cache
+      @collection.map(&:created_at) # HACK to actually cache query results
+    end
+
+    def timeline(attribute)
+      (@start_time.to_date..@end_time.to_date).inject([]) do |memo, day|
+        if users_stat = @collection.detect { |u| u.created_at >= day.midnight && u.created_at < day.end_of_day }
+          memo << users_stat.states_count[attribute.to_s]
+        else
+          memo << 0
+        end
       end
     end
 
