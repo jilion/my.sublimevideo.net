@@ -10,6 +10,7 @@ feature "Users pagination:" do
     Factory(:site)
     User.count.should == 1
     visit "/admin/users"
+
     page.should have_no_css('nav.pagination')
     page.should have_no_css('span.prev')
     page.should have_no_css('em.current')

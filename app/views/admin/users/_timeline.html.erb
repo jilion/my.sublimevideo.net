@@ -1,8 +1,7 @@
 <%
 users_stats = Stat::UsersStat.new(@date_range_from, @date_range_to)
 
-Rails.logger.debug users_stats.timeline(:active_and_billable_count)
-
+unless users_stats.empty?
   graph = Graph.new do |g|
     g.option(chart: chart('timeline_users_stats', margin_top: 100))
     g.option(title: { text: "Users Stats" })
@@ -22,7 +21,7 @@ Rails.logger.debug users_stats.timeline(:active_and_billable_count)
       },
       borderWidth: 1
     }))
-    
+
     g.option(series: [
       serie(users_stats.timeline(:active_and_not_billable_count), 'Active & NOT Billable', '#00ff00', :type => 'area', :color => '#00b600', :visible => false),
       serie(users_stats.timeline(:active_and_billable_count), 'Active & Billable', '#00ff00', :type => 'area', :color => '#00ff00'),
@@ -32,7 +31,10 @@ Rails.logger.debug users_stats.timeline(:active_and_billable_count)
     g.option(plotOptions: plot_options(@date_range_from))
     g.option(credits: credits)
   end
+end
 
+if graph
 %>
 
 <div id="timeline_users_stats" style="width: 100%; height: 400px;"><%= raw graph.draw %></div>
+<% end %>

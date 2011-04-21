@@ -121,6 +121,10 @@ module Stat
       @collection = ::UsersStat.between(@start_time.midnight, @end_time.end_of_day).cache
       @collection.map(&:created_at) # HACK to actually cache query results
     end
+    
+    def empty?
+      @collection.count == 0
+    end
 
     def timeline(attribute)
       (@start_time.to_date..@end_time.to_date).inject([]) do |memo, day|
