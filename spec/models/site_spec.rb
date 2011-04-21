@@ -1236,7 +1236,7 @@ describe Site do
       end
     end
 
-    describe "#need_path?", focus: true do
+    describe "#need_path?" do
       context "with web.me.com hostname" do
         subject { Factory.build(:site, hostname: 'web.me.com') }
         its(:need_path?)                { should be_true }
@@ -1259,7 +1259,7 @@ describe Site do
       end
     end
 
-    describe "#hostname_with_suddomain_needed", focus: true do
+    describe "#hostname_with_suddomain_needed" do
       context "with tumblr.com hostname" do
         subject { Factory.build(:site, wildcard: true, hostname: 'tumblr.com') }
         its(:need_suddomain?)      { should be_true }
