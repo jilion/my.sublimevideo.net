@@ -267,7 +267,23 @@ class Site < ActiveRecord::Base
   end
 
   def need_path?
-    %w[web.me.com web.mac.com homepage.mac.com].include?(hostname) && !path?
+    hostname_with_path_needed.present?
+  end
+
+  def hostname_with_path_needed
+    return nil if path?
+    list = %w[web.me.com web.mac.com homepage.mac.com cargocollective.com]
+    list.detect { |h| h == hostname || (extra_hostnames.present? && extra_hostnames.split(', ').include?(h)) }
+  end
+
+  def need_suddomain?
+    hostname_with_suddomain_needed.present?
+  end
+
+  def hostname_with_suddomain_needed
+    return nil unless wildcard?
+    list = %w[tumblr.com squarespace.com posterous.com blogspot.com typepad.com]
+    list.detect { |h| h == hostname || (extra_hostnames.present? && extra_hostnames.split(', ').include?(h)) }
   end
 
   def recommended_plan_name

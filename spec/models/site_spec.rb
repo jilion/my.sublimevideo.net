@@ -1236,18 +1236,49 @@ describe Site do
       end
     end
 
-    describe "#need_path?" do
-      it "should be true" do
-        site = Factory(:site, hostname: 'web.me.com')
-        site.need_path?.should be_true
+    describe "#need_path?", focus: true do
+      context "with web.me.com hostname" do
+        subject { Factory.build(:site, hostname: 'web.me.com') }
+        its(:need_path?)                { should be_true }
+        its(:hostname_with_path_needed) { should == 'web.me.com' }
       end
-      it "should be false when path present" do
-        site = Factory(:site, hostname: 'web.me.com', path: 'users/thibaud')
-        site.need_path?.should be_false
+      context "with homepage.mac.com, web.me.com extra hostnames" do
+        subject { Factory.build(:site, extra_hostnames: 'homepage.mac.com, web.me.com') }
+        its(:need_path?)                { should be_true }
+        its(:hostname_with_path_needed) { should == 'web.me.com' }
       end
-      it "should be false" do
-        site = Factory(:site, hostname: 'jilion.com')
-        site.need_path?.should be_false
+      context "with web.me.com hostname & path" do
+        subject { Factory.build(:site, hostname: 'web.me.com', path: 'users/thibaud') }
+        its(:need_path?)                { should be_false }
+        its(:hostname_with_path_needed) { should be_nil }
+      end
+      context "with nothing special" do
+        subject { Factory.build(:site) }
+        its(:need_path?)                { should be_false }
+        its(:hostname_with_path_needed) { should be_nil }
+      end
+    end
+
+    describe "#hostname_with_suddomain_needed", focus: true do
+      context "with tumblr.com hostname" do
+        subject { Factory.build(:site, wildcard: true, hostname: 'tumblr.com') }
+        its(:need_suddomain?)      { should be_true }
+        its(:hostname_with_suddomain_needed) { should == 'tumblr.com' }
+      end
+      context "with tumblr.com extra hostnames" do
+        subject { Factory.build(:site, wildcard: true, extra_hostnames: 'web.mac.com, tumblr.com') }
+        its(:need_suddomain?)      { should be_true }
+        its(:hostname_with_suddomain_needed) { should == 'tumblr.com' }
+      end
+      context "with wildcard only" do
+        subject { Factory.build(:site, wildcard: true) }
+        its(:need_suddomain?)      { should be_false }
+        its(:hostname_with_suddomain_needed) { should be_nil }
+      end
+      context "without wildcard" do
+        subject { Factory.build(:site, hostname: 'tumblr.com') }
+        its(:need_suddomain?)      { should be_false }
+        its(:hostname_with_suddomain_needed) { should be_nil }
       end
     end
 

@@ -7,12 +7,16 @@
           %span.settings_icon
           = image_tag "https://getfavicon.appspot.com/http://#{hostname_with_path(site)}?defaulticon=http://#{hostname_with_path(site)}/favicon.ico", :onerror => "this.src='/images/embed/sites/default_favicon.png';", :alt => "Favicon", :size => "16x16", :id => "site_favicon_#{site.id}"
           = truncate_middle(site.hostname, :length => 35)
-        - if site.need_path?
+        - if site.in_paid_plan? && (site.need_path? || site.need_suddomain?)
           .warning.box_hovering_zone
             = link_to [:edit, site], :class => "icon" do
               %span= "warning"
-            = info_box do
-              %p= raw t 'site.status.need_path'
+            - if site.need_path? 
+              = info_box do
+                %p= raw t 'site.status.need_path', hostname: site.hostname_with_path_needed
+            - if site.need_suddomain? 
+              = info_box do
+                %p= raw t 'site.status.need_suddomain', hostname: site.hostname_with_suddomain_needed
       - else
         = link_to [:edit, site], :class => "domain" do
           %span.settings_icon
