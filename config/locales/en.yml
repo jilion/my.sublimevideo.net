@@ -41,8 +41,8 @@ en:
       payment_open: "Invoice still open. Click to review your invoice and retry the payment."
       ok: "Player successfully deployed."
       in_progress: "Your player is being deployed."
-      need_path: "If you don't own %{hostname}, we highly recommend you add a <em>path</em> to restrict the player to your pages only."
-      need_suddomain: "If you don't own %{hostname}, we highly recommend adding it as a <em>subdomain</em> (or disable wildcard option) to restrict the player to your pages only."
+      need_path: "If you don't own %{hostname}, we highly recommend you set a <em>path</em> to restrict the player to your pages only."
+      need_suddomain: "If you don't own %{hostname}, we highly recommend you add a <em>subdomain</em> to it (or disable the wildcard option) to restrict the player to your pages only."
     plan:
       upgrade_in_progress: "Your payment is being processed."
       upgrade_in_progress_failed_link: 'There has been a transaction error. Please review %{link} and retry the payment.'
