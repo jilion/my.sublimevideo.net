@@ -61,7 +61,7 @@ class Tweet
       i = 1
 
       loop do
-        Rails.logger.info("Searching for #{keyword}, with 100 results per page (page #{i})")
+        # Rails.logger.info("Searching for #{keyword}, with 100 results per page (page #{i})")
         search.fetch.each do |tweet|
           begin
             if t = self.where(tweet_id: tweet.id).first

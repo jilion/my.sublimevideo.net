@@ -25,7 +25,7 @@ feature "Sites" do
       visit "/sites/new"
     end
 
-    feature "new" do
+    describe "new" do
       describe "dev plan" do
         scenario "with no hostname" do
           choose "plan_dev"
@@ -339,7 +339,7 @@ feature "Sites" do
       visit "/sites/new"
     end
 
-    feature "new" do
+    describe "new" do
       describe "in dev plan" do
         scenario "with no hostname" do
           page.should have_no_selector("#credit_card")
@@ -518,7 +518,7 @@ feature "Sites" do
       end # custom plan
     end
 
-    feature "edit" do
+    describe "edit" do
       scenario "edit a site" do
         site = Factory(:site, user: @current_user, plan_id: @dev_plan.id, hostname: 'rymai.com')
 
@@ -549,7 +549,7 @@ feature "Sites" do
       current_url.should =~ %r(http://[^/]+/suspended)
     end
 
-    feature "navigation" do
+    describe "navigation" do
       context "when the user has no sites" do
         scenario "should redirect to /sites/new" do
           visit "/sites"
@@ -591,7 +591,7 @@ feature "Sites" do
       end
     end
 
-    feature "archive" do
+    describe "archive" do
       scenario "a paid site with no not paid invoices" do
         site = Factory(:site, :user => @current_user, :hostname => 'google.com')
 
@@ -690,7 +690,7 @@ feature "Sites" do
       end
     end
 
-    feature "index" do
+    describe "index" do
       scenario "sort buttons displayed only if count of sites > 1" do
         Factory(:site, :user => @current_user, :hostname => 'google.com')
         visit "/sites"

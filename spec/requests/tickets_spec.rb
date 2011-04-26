@@ -22,9 +22,9 @@ feature "Support" do
     current_url.should =~ %r(http://[^/]+/support)
   end
 
-  feature "new" do
+  describe "new" do
     scenario "submit a valid ticket" do
-      
+
       select "Bug report", :from => "ticket_type"
       fill_in "Subject", :with => "I have a request!"
       fill_in "Message", :with => "I have a request this is a long text!"

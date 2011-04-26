@@ -3,7 +3,7 @@ require 'spec_helper'
 
 feature "Users" do
 
-  feature "sign-up redirections" do
+  describe "sign-up redirections" do
     scenario "redirect /register to /signup" do
       VCR.use_cassette("twitter/signup") { visit "/register" }
       current_url.should =~ %r(^http://[^/]+/signup$)
@@ -15,7 +15,7 @@ feature "Users" do
     end
   end
 
-  feature "log-in redirections" do
+  describe "log-in redirections" do
     scenario "redirect /log_in to /login" do
       visit "/log_in"
       current_url.should =~ %r(^http://[^/]+/login$)
@@ -37,7 +37,7 @@ feature "Users" do
       sign_in_as :user
     end
 
-    feature "log-out redirections" do
+    describe "log-out redirections" do
       scenario "redirect /log_out to /logout" do
         page.should have_content @current_user.full_name
         visit "/log_out"
@@ -58,13 +58,13 @@ feature "Users" do
     end
   end
 
-  feature "signup" do
+  describe "signup" do
     before(:each) do
       VCR.use_cassette("twitter/signup") { visit "/signup" }
       current_url.should =~ %r(^http://[^/]+/signup$)
     end
 
-    feature "signup for personal use" do
+    describe "signup for personal use" do
       scenario "with all fields needed" do
         fill_in "Email",              :with => "remy@jilion.com"
         fill_in "Password",           :with => "123456"
@@ -101,7 +101,7 @@ feature "Users" do
       end
     end
 
-    feature "signup for company use" do
+    describe "signup for company use" do
       scenario "with all fields needed" do
         fill_in "Email",              :with => "remy@jilion.com"
         fill_in "Password",           :with => "123456"
@@ -138,7 +138,7 @@ feature "Users" do
       end
     end
 
-    feature "with the email of an archived user" do
+    describe "with the email of an archived user" do
       scenario "archived user" do
         archived_user = Factory(:user)
         archived_user.current_password = '123456'
@@ -230,7 +230,7 @@ feature "Users" do
     current_url.should =~ %r(^http://[^/]+/signup\?beta=over$)
   end
 
-  feature "with an authenticated user" do
+  context "with an authenticated user" do
     background do
       sign_in_as :user
     end
@@ -253,7 +253,7 @@ feature "session" do
     page.should have_content('Documentation')
   end
 
-  feature "login" do
+  describe "login" do
     background do
       create_user :user => {
         :first_name => "John",

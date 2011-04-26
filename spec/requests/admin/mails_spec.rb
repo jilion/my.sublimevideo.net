@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "Mails" do
+# feature "Mails" do
 
   feature "Mails index with no logs and no templates" do
     background do
@@ -128,4 +128,4 @@ describe "Mails" do
     #   end
     # end
   end
-end
+# end
