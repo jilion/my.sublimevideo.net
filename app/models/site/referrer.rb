@@ -8,6 +8,7 @@ module Site::Referrer
 
   def referrer_type(referrer, timestamp = Time.now.utc)
     if past_site = version_at(timestamp)
+      referrer.gsub! /\[|\]/, ''
       if past_site.main_referrer?(referrer)
         "main"
       elsif past_site.extra_referrer?(referrer)

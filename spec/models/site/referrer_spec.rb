@@ -235,13 +235,14 @@ describe Site::Referrer do
       end
     end
 
-    context "custom" do
+    context "custom", focus: true do
       before(:all) { @site = Factory(:site, hostname: "capped.tv", path: "lft-turbulence|mq") }
       before(:each) { Notify.should_not_receive(:send) }
       subject { @site }
 
       it { subject.referrer_type("http://capped.tv/lft-turbulence|mq").should == "main" }
       it { subject.referrer_type("http://www.optik-muncke.de/l%xc3%xb6sungen-sehen.html").should == "invalid" }
+      it { subject.referrer_type("http://www.joyce.com/40th/opening.swf/[[DYNAMIC]]/3").should == "invalid" }
     end
   end
 
