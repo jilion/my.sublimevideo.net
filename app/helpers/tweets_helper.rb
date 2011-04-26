@@ -9,7 +9,7 @@ module TweetsHelper
   def cached_last_favorite_tweets(count)
     favorite_tweets_options = { user_doublon: false, count: count, random: true, since_date: Time.utc(2011,3,29), include_entities: true }
     Rails.cache.fetch("what_people_say_#{count}", :expires_in => 1.hour) do
-      Rails.logger.debug("CACHED #{count} last favorites tweets!")
+      # Rails.logger.debug("CACHED #{count} last favorites tweets!")
       Tweet.favorites_tweets(favorite_tweets_options)
     end
   end

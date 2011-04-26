@@ -20,8 +20,6 @@ Spork.prefork do
   require 'capybara/rails'
   require 'vcr'
 
-  Capybara.javascript_driver = :webkit
-
   VCR.config do |config|
     config.stub_with :webmock # or :fakeweb
     config.cassette_library_dir     = 'spec/fixtures/vcr_cassettes'

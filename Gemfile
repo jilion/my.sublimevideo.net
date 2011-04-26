@@ -5,15 +5,15 @@ gem 'bundler',               '1.0.12'
 gem 'rails',                 '3.0.7'
 
 # Databases
-gem 'pg',                    '0.10.1'
+gem 'pg',                    '0.11.0'
 gem 'meta_where',            '1.0.4'
 gem 'bson_ext',              '1.3.0'
 gem 'mongo',                 '1.3.0'
 gem 'mongoid',               '2.0.1'
 
 # Views
-gem 'haml',                  '3.0.25'
-gem 'kaminari',              '0.10.4'
+gem 'haml',                  '3.0.25' # '3.1.0' conflict with kaminari 0.12.1
+gem 'kaminari',              '0.12.1'
 gem 'jammit',                '0.6.0'
 gem 'liquid',                '2.2.2'
 gem 'RedCloth',              '4.2.3'
@@ -73,11 +73,7 @@ group :production, :staging do
 end
 
 group :development, :test do
-  gem "rspec-rails",        :git => "git://github.com/rspec/rspec-rails.git"
-  gem "rspec",              :git => "git://github.com/rspec/rspec.git"
-  gem "rspec-core",         :git => "git://github.com/rspec/rspec-core.git"
-  gem "rspec-expectations", :git => "git://github.com/rspec/rspec-expectations.git"
-  gem "rspec-mocks",        :git => "git://github.com/rspec/rspec-mocks.git"
+  gem 'rspec-rails', '2.6.0.rc2'
   gem 'timecop'
 end
 
@@ -93,7 +89,7 @@ group :development do
 end
 
 group :test do
-  gem 'spork', '0.9.0.rc4'
+  gem 'spork', '0.9.0.rc5'
   gem 'rb-fsevent'
   gem 'growl'
   gem 'guard'
@@ -106,7 +102,7 @@ group :test do
   gem 'guard-livereload'
 
   gem 'shoulda'
-  gem 'capybara', :git => 'git://github.com/thibaudgg/capybara.git'
+  gem 'capybara', '1.0.0.beta1 '
   gem 'webmock'
   gem 'vcr'
 

@@ -1,6 +1,6 @@
 module Spec
   module Support
-    module AcceptanceHelpers
+    module RequestsHelpers
 
       def warden
         request.env['warden']
@@ -118,4 +118,4 @@ module Spec
   end
 end
 
-RSpec.configuration.include(Spec::Support::AcceptanceHelpers, :type => :request)
+RSpec.configuration.include(Spec::Support::RequestsHelpers, :type => :request)
