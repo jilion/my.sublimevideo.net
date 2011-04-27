@@ -8,7 +8,7 @@ unless users_stats.empty?
     # g.option(subtitle: usage_date_subtitle(@date_range_from, @date_range_to, date_format: :month_fullyear))
     g.option(legend: legend(y: 40, width: 510))
     g.option(xAxis: x_axis(@date_range_from, @date_range_to))
-    g.raw_option(y_axis("Users"))
+    g.raw_option(y_axis("Users", tick_interval: [users_stats.timeline(:active_and_not_billable_count).max / 100, 1].max))
     g.raw_option(%(tooltip: {
       borderWidth: 0,
       backgroundColor: "rgba(0, 0, 0, .70)",
@@ -18,8 +18,7 @@ unless users_stats.empty?
       },
       formatter: function() {
         return "<strong>" + Highcharts.dateFormat("%B %e,  %Y", this.x) + "</strong><br/>" + this.series.name + ": <strong>" + Highcharts.numberFormat(this.y,0) + " of " + Highcharts.numberFormat(this.total, 0) + " (" + Highcharts.numberFormat(this.percentage, 1) + "%)</strong>";
-      },
-      borderWidth: 1
+      }
     }))
 
     g.option(series: [
@@ -31,10 +30,6 @@ unless users_stats.empty?
     g.option(plotOptions: plot_options(@date_range_from))
     g.option(credits: credits)
   end
-end
-
-if graph
 %>
-
 <div id="timeline_users_stats" style="width: 100%; height: 400px;"><%= raw graph.draw %></div>
 <% end %>

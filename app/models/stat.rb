@@ -114,24 +114,21 @@ module Stat
   end
 
   class UsersStat
+    attr_accessor :collection
+
+    delegate :empty?, :to => :collection
 
     def initialize(start_time, end_time, options={})
-      @start_time = start_time
-      @end_time   = end_time
-      @collection = ::UsersStat.between(@start_time.midnight, @end_time.end_of_day).cache
-      @collection.map(&:created_at) # HACK to actually cache query results
-    end
-    
-    def empty?
-      @collection.count == 0
+      @start_time, @end_time = start_time, end_time
+      @collection = ::UsersStat.between(@start_time.midnight, @end_time.end_of_day)
     end
 
     def timeline(attribute)
-      (@start_time.to_date..@end_time.to_date).inject([]) do |memo, day|
+      (@start_time.to_date..@end_time.to_date).each_with_object([]) do |day, array|
         if users_stat = @collection.detect { |u| u.created_at >= day.midnight && u.created_at < day.end_of_day }
-          memo << users_stat.states_count[attribute.to_s]
+          array << users_stat.states_count[attribute.to_s]
         else
-          memo << 0
+          array << 0
         end
       end
     end

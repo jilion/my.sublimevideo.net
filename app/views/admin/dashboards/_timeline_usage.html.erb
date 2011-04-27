@@ -1,5 +1,5 @@
 <%
-usages = Stat::SiteUsage.timeline(@date_range_from, @date_range_to, { labels: [:main_usage, :extra_usage, :all_usage], merge_cached: true, dont_add_total_usages_before_start_time: true })
+usages = Stat::SiteUsage.timeline(@date_range_from - (@moving_avg-1).days, @date_range_to, { labels: [:main_usage, :extra_usage, :all_usage], merge_cached: true, dont_add_total_usages_before_start_time: true })
 billable_usage = usages["main_usage"].zip(usages["extra_usage"]).map { |item| item.reduce(:+) }
 total_billable_usage = usages["total_main_usage"].zip(usages["total_extra_usage"]).map { |item| item.reduce(:+) }
 
@@ -34,17 +34,17 @@ graph = Graph.new do |g|
     # serie(usages["extra_usage"], 'Extra', '#00F'),
     # serie(usages["main_usage_cached"], 'Main cached', '#08F'),
     # serie(usages["main_usage"], 'Main', '#00F'),
-    serie(billable_usage, 'Billable', '#00F'),
+    serie(billable_usage[@moving_avg-1..-1], 'Billable', '#00F'),
 
     # serie(evolutive_average_array(usages["total_loader_usage"]), 'AVG Loader', '#FF0', :type => 'line', :visible => false),
     # serie(evolutive_average_array(usages["total_invalid_usage"]), 'AVG Invalid', '#FC3', :type => 'line', :visible => false),
     # serie(evolutive_average_array(usages["total_dev_usage"]), 'AVG Dev', '#6F6', :type => 'line', :visible => false),
     # serie(evolutive_average_array(usages["total_main_usage"].zip(usages["main_usage_cached"]).map { |item| item.reduce(:+) }), 'AVG Main', '#0FF', :type => 'line'),
-    serie(evolutive_average_array(total_billable_usage), 'AVG Billable', '#00FFFF', type: 'line'),
+    serie(moving_average(billable_usage, @moving_avg), 'AVG Billable', '#00FFFF', type: 'line'),
 
     # serie(usages["total_main_usage"], 'TOT Main', '', :type => 'line', :visible => false),
     # serie(usages["total_all_usage"], 'TOT All', '', :type => 'line', :visible => false)
-    serie(total_billable_usage, 'TOT Billable', '', type: 'line', visible: false),
+    serie(total_billable_usage[@moving_avg-1..-1], 'TOT Billable', '', type: 'line', visible: false),
   ])
   g.option(plotOptions: plot_options(@date_range_from))
   g.option(credits: credits)

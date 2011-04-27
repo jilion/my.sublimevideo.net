@@ -31,7 +31,7 @@ module Admin::StatsHelper
       borderColor: options[:border_color] || '#CCC'
     }
   end
-  
+
   def x_axis(start_at, end_at, interval=1.day, options={})
     {
       type: 'datetime',
@@ -42,8 +42,8 @@ module Admin::StatsHelper
         y: 15
       },
       dateTimeLabelFormats: {
-      	day: '%e %b',
-      	week: '%e %b'
+        day: '%e %b',
+        week: '%e %b'
       },
       plotBands: [{
         color: '#FFFFD9',
@@ -54,18 +54,21 @@ module Admin::StatsHelper
   end
 
   def y_axis(title, options={})
+    options.reverse_merge!(margin: 70, min: 0, tick_interval: 'null')
+
     %(yAxis: {
       title: {
         text: '#{title}',
-        margin: #{options[:margin] || 70}
+        margin: #{options[:margin]}
       },
-      min: #{options[:min] || 0},
+      min: #{options[:min]},
+      tickInterval: #{options[:tick_interval]},
       labels: {
         formatter: function() { return Highcharts.numberFormat(this.value, 0); }
       }
     })
   end
-  
+
   def tooltip(options={})
     default_formatter = %(function() {
       var date  = "<strong>" + Highcharts.dateFormat("%B %e,  %Y", this.x) + "</strong><br/><br/>";
@@ -80,7 +83,7 @@ module Admin::StatsHelper
 
       return date + this.series.name + " hits:<br/>" + label;
     })
-    
+
     %(tooltip: {
       borderWidth: 0,
       backgroundColor: "rgba(0, 0, 0, .70)",
@@ -94,7 +97,7 @@ module Admin::StatsHelper
 
   def serie(data, title, color, options={})
     {
-      type: options[:type] || :areaspline,
+      type: options[:type] || :area,
       name: title,
       visible: options[:visible].nil? ? true : options[:visible],
       color: options[:color],
@@ -107,7 +110,7 @@ module Admin::StatsHelper
     zeros_days = array.select { |value| value.zero? }.size
     Array.new.tap { |arr| array.each_with_index { |item, index| arr << (item.to_f / [(index + 1 - zeros_days), 1].max).round(2) } }
   end
-  
+
   def moving_average(array, range)
     Array.new.tap do |arr|
       (0..(array.size - range)).each do |index|
@@ -133,6 +136,7 @@ module Admin::StatsHelper
         }
       }),
       line: { lineWidth: 1 },
+      area: { lineWidth: 1 },
       areaspline: { lineWidth: 1 }
     }
   end
