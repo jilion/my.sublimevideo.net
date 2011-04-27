@@ -96,7 +96,7 @@ GEM
       uuidtools
       xml-simple
     bcrypt-ruby (2.1.4)
-    braintree (2.9.1)
+    braintree (2.10.0)
       builder
     bson (1.3.0)
     bson_ext (1.3.0)
@@ -143,7 +143,7 @@ GEM
     faraday (0.6.1)
       addressable (~> 2.2.4)
       multipart-post (~> 1.1.0)
-      rack (>= 1.1.0, < 2)
+      rack (< 2, >= 1.1.0)
     faraday_middleware (0.6.3)
       faraday (~> 0.6.0)
     ffaker (1.5.0)
@@ -177,7 +177,7 @@ GEM
     hashie (1.0.0)
     heroku (1.20.1)
       launchy (~> 0.3.2)
-      rest-client (>= 1.4.0, < 1.7.0)
+      rest-client (< 1.7.0, >= 1.4.0)
     heroku_tasks (0.1.4)
     hoptoad_notifier (2.4.9)
       activesupport
@@ -191,7 +191,7 @@ GEM
       yui-compressor (>= 0.9.1)
     json (1.5.1)
     json_pure (1.5.1)
-    kaminari (0.12.1)
+    kaminari (0.12.2)
       rails (>= 3.0.0)
     launchy (0.3.7)
       configuration (>= 0.0.5)
@@ -298,7 +298,7 @@ GEM
     state_machine (0.10.4)
     taps (0.3.23)
       rack (>= 1.0.1)
-      rest-client (>= 1.4.0, < 1.7.0)
+      rest-client (< 1.7.0, >= 1.4.0)
       sequel (~> 3.20.0)
       sinatra (~> 1.0.0)
       sqlite3-ruby (~> 1.2)
@@ -314,7 +314,7 @@ GEM
       multi_xml (~> 0.2.0)
       rash (~> 0.3.0)
       simple_oauth (~> 0.1.4)
-    tzinfo (0.3.26)
+    tzinfo (0.3.27)
     uniquify (0.1.0)
     uuidtools (2.1.2)
     vcr (1.9.0)
@@ -369,7 +369,7 @@ DEPENDENCIES
   heroku_tasks
   hoptoad_notifier (= 2.4.9)
   jammit (= 0.6.0)
-  kaminari (= 0.12.1)
+  kaminari (= 0.12.2)
   libxml-ruby (= 1.1.3)
   liquid (= 2.2.2)
   livereload
