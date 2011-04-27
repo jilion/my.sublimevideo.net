@@ -7,7 +7,7 @@
 
 .spacer
 
-= render 'filter_links'
-
+- cache 'sites_filter_links', :expires_in => 15.minutes do
+  = render 'filter_links'
 
 #sites_table_wrap= render 'sites'
