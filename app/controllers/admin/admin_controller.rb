@@ -18,18 +18,11 @@ class Admin::AdminController < ApplicationController
     else
       Time.now.utc.yesterday
     end.end_of_day
-    
+
     @moving_avg = if params[:moving_avg]
       params[:moving_avg].to_i
     else
       30
-    end
-
-    if params[:date_range_from] || params[:date_range_to] || params[:moving_avg]
-      expire_fragment('dashboard_timeline_usage')
-      expire_fragment('dashboard_box_users')
-      expire_fragment('dashboard_box_sites')
-      expire_fragment('dashboard_box_usage')
     end
   end
 
