@@ -6,7 +6,7 @@
 = render '/admin/shared/date_chooser', skip_moving_avg: true
 
 #timeline
-  - cache 'invoives_timeline', :expires_in => (Time.now.utc.end_of_day - Time.now.utc) do
+  - cache "invoices_timeline_#{@date_range_from.to_i}_#{@date_range_to.to_i}", :expires_in => (Time.now.utc.end_of_day - Time.now.utc) do
     = render 'timeline'
 
 .search_form
@@ -15,6 +15,7 @@
 
 .spacer
 
-= render 'filter_links'
+- cache 'invoices_filter_links', :expires_in => 15.minutes do
+  = render 'filter_links'
 
 #invoices_table_wrap= render 'invoices'

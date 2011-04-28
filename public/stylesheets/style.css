@@ -1526,7 +1526,7 @@ input.link_looks.delete {
   from {
     -webkit-box-shadow:red 0 0 1px;
   }
-  
+
   to {
     -webkit-box-shadow:red 0 0 10px;
   }
@@ -1874,7 +1874,7 @@ input.link_looks.delete {
 
 #plans .select_box:hover {
   background:rgba(255,255,255,0.4);
-} 
+}
 
 #plans .select_box.monthly {
   width:99px;
@@ -2451,7 +2451,7 @@ ul.segmented_menu li.active a, ul.segmented_menu li a:active {
 }
 
 ul.segmented_menu li.first a {
-  border-left:1px solid #5d6778;  
+  border-left:1px solid #5d6778;
   -moz-border-radius: 8px 0 0 8px;
   -webkit-border-radius: 8px 0 0 8px;
   border-radius: 8px 0 0 8px;
@@ -2585,7 +2585,7 @@ ul.segmented_menu li.last a {
 
 #failed_invoices form {
   margin:10px 0;
-} 
+}
 
 .popup {
   width:450px;

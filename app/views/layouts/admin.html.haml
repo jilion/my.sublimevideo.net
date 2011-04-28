@@ -10,7 +10,7 @@
     %link{ :rel => "shortcut icon", :href => "/favicon.ico", :type => "image/x-icon" }
 
     = yield :header
-    = include_javascripts(:default, :admin)
+    = include_javascripts(:default, :admin, :chart)
     = yield :js
     = csrf_meta_tag
     = javascript_include_tag "#{request.protocol}use.typekit.com/zwt2duv.js"

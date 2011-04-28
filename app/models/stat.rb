@@ -7,7 +7,7 @@ module Stat
       @end_time         = end_time
       @options          = options
       @labels_to_fields = options[:labels] ? labels_to_fields.select { |k, v| @options[:labels].include?(k) } : labels_to_fields
-      @base_conditions = @options[:site_ids] ? { site_id: { "$in" => [@options[:site_ids]].flatten } } : {}
+      @base_conditions  = @options[:site_ids] ? { site_id: { "$in" => [@options[:site_ids]].flatten } } : {}
     end
 
     def self.timeline(start_time, end_time, options={})
@@ -33,14 +33,14 @@ module Stat
         :cond => @base_conditions.merge({
           :day => {
             "$gte" => @start_time.midnight,
-            "$lt"  => @end_time.end_of_day
+            "$lte" => @end_time.end_of_day
           }
         }),
         :initial => @labels_to_fields.keys.inject({}) { |hash, k| hash[k] = 0; hash },
         :reduce => reduce
       )
 
-      total = total_usages_before_start_time
+      total = @options[:dont_add_total_usages_before_start_time] ? [] : total_usages_before_start_time
 
       # insert empty hash for days without usage
       usages = (@start_time.to_date..@end_time.to_date).inject([]) do |memo, day|
@@ -58,9 +58,7 @@ module Stat
     private
 
     def total_usages_before_start_time
-      return [] if @options[:dont_add_total_usages_before_start_time]
-
-      usages = ::SiteUsage.collection.group(
+      ::SiteUsage.collection.group(
         :key => nil,
         :cond => @base_conditions.merge({ :day => { "$lt" => @start_time.to_date.to_time.midnight } }),
         :initial => @labels_to_fields.keys.inject({}) { |hash, k| hash[k] = 0; hash },
@@ -114,24 +112,21 @@ module Stat
   end
 
   class UsersStat
+    attr_accessor :collection
+
+    delegate :empty?, :to => :collection
 
     def initialize(start_time, end_time, options={})
-      @start_time = start_time
-      @end_time   = end_time
-      @collection = ::UsersStat.between(@start_time.midnight, @end_time.end_of_day).cache
-      @collection.map(&:created_at) # HACK to actually cache query results
-    end
-    
-    def empty?
-      @collection.count == 0
+      @start_time, @end_time = start_time, end_time
+      @collection = ::UsersStat.between(@start_time.midnight, @end_time.end_of_day)
     end
 
     def timeline(attribute)
-      (@start_time.to_date..@end_time.to_date).inject([]) do |memo, day|
+      (@start_time.to_date..@end_time.to_date).each_with_object([]) do |day, array|
         if users_stat = @collection.detect { |u| u.created_at >= day.midnight && u.created_at < day.end_of_day }
-          memo << users_stat.states_count[attribute.to_s]
+          array << users_stat.states_count[attribute.to_s]
         else
-          memo << 0
+          array << 0
         end
       end
     end

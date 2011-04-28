@@ -1,8 +1,9 @@
+- sites = user.sites.reject { |s| s.archived? }
+- last_invoice = user.invoices.last
 %tr[user]{ :class => cycle("", "alt") }
   %td.full_name
-    = link_to_user(user)
+    = link_to user.full_name, [:admin, user], :title => "#{user.full_name} <#{user.email}>"
   %td.sites
-    - sites = user.sites.select { |s| !s.archived? }
     - if sites.present?
       %small
         %ul.no_bullet
@@ -13,9 +14,8 @@
     - else
       %small= '-'
   %td.number
-    %small= number_with_delimiter(user.sites.all.sum { |s| s.last_30_days_main_player_hits_total_count.to_i + s.last_30_days_extra_player_hits_total_count.to_i })
+    %small= number_with_delimiter(sites.sum { |s| s.last_30_days_main_player_hits_total_count.to_i + s.last_30_days_extra_player_hits_total_count.to_i })
   %td.number
-    - last_invoice = user.invoices.last
     - if last_invoice.present?
       %small= link_to display_amount(user.last_invoiced_amount), [:admin, last_invoice], :title => "Invoice page"
     - else

@@ -264,9 +264,6 @@ def create_sites
       site.sponsor! if rand > 0.85
     end
   end
-  # Set plan_started_at for all beta plans
-
-
 
   puts "#{BASE_SITES.size} beautiful sites created for each user!"
 end
