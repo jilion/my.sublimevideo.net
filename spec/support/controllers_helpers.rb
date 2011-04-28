@@ -12,7 +12,7 @@ module Spec
           else
             [role, {}]
           end
-          context "as a #{role_name}" do
+          context "a #{role_name}" do
             verb_actions.each do |verb, actions|
 
               actions = [actions] unless actions.is_a?(Array)
@@ -37,14 +37,20 @@ module Spec
       end
 
       def authenticated_admin(stubs={})
-        admin = mock_admin(stubs.reverse_merge(:confirmed? => true))
+        # Factory(:admin)
+        admin = mock_admin(stubs.reverse_merge(:confirmed? => true, :authenticatable_salt => "x"))
+        # request.env['warden'] = mock(Warden, :authenticate => admin, :authenticate! => admin)
         Admin.stub(:find) { admin }
+        Admin.stub(:find_first) { admin }
         admin
       end
 
       def authenticated_user(stubs={})
-        user = mock_user(stubs.reverse_merge(:active? => true, :confirmed? => true, :suspended? => false))
+        # Factory(:user)
+        user = mock_user(stubs.reverse_merge(:active? => true, :confirmed? => true, :suspended? => false, :authenticatable_salt => "x"))
+        # request.env['warden'] = mock(Warden, :authenticate => user, :authenticate! => user, :user => user)
         User.stub(:find) { user }
+        User.stub(:find_first) { user }
         user
       end
 

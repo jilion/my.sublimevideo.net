@@ -1,11 +1,4 @@
 module CustomDevisePaths
-  def after_update_path_for(resource)
-    if resource == :user || resource.is_a?(User)
-      edit_user_registration_url
-    elsif resource == :admin || resource.is_a?(Admin)
-      edit_admin_registration_url
-    end
-  end
   
   def after_sign_in_path_for(resource)
     if resource == :user || resource.is_a?(User)

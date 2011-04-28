@@ -19,8 +19,8 @@ gem 'liquid',                '2.2.2'
 gem 'RedCloth',              '4.2.3'
 
 # Auth / invitations
-gem 'devise',                '1.1.9'
-gem 'devise_invitable',      :git => 'git://github.com/rymai/devise_invitable.git'
+gem 'devise',                '1.3.3'
+gem 'devise_invitable',      :git => 'git://github.com/scambra/devise_invitable.git'
 
 # Internals
 gem 'delayed_job',           '2.1.4'

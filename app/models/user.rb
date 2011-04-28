@@ -167,7 +167,7 @@ class User < ActiveRecord::Base
 
   # Devise overriding
   # allow suspended user to login (devise)
-  def active?
+  def active_for_authentication?
     %w[active suspended].include?(state)
   end
 
@@ -282,7 +282,6 @@ private
   # before_save
   def set_password
     if @password.present?
-      self.password_salt = self.class.password_salt
       self.encrypted_password = password_digest(@password)
       @password = nil
     end
@@ -320,6 +319,17 @@ private
   # Allow User.invite to assign enthusiast_id
   def mass_assignment_authorizer
     new_record? ? (self.class.active_authorizer + ["enthusiast_id"]) : super
+  end
+
+  # ===========================
+  # = From Devise Validatable =
+  # ===========================
+
+  # Checks whether a password is needed or not. For validations only.
+  # Passwords are always required if it's a new record, or if the password
+  # or confirmation are being set somewhere.
+  def password_required?
+    !persisted? || !password.nil? || !password_confirmation.nil?
   end
 
 end

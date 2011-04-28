@@ -712,7 +712,7 @@ describe User do
   describe "Instance Methods" do
     let(:user) { Factory(:user) }
 
-    describe "#active?" do
+    describe "#active_for_authentication?" do
       it "should be active when suspended in order to allow login" do
         user.suspend
         user.should be_active

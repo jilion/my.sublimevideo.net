@@ -8,11 +8,20 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
     respond_with(@user) do |format|
       if @user.archive
-        format.html { sign_out_and_redirect(@user) }
+        format.html do
+          sign_out(@user)
+          redirect_to new_user_session_path, :notice => I18n.t("devise.registrations.destroyed")
+        end
       else
         format.html { render 'users/registrations/edit' }
       end
     end
+  end
+
+protected
+
+  def after_update_path_for(resource)
+    edit_user_registration_url
   end
 
 end

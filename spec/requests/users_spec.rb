@@ -221,8 +221,8 @@ feature "Users" do
 
     current_url.should =~ %r(^http://[^/]+/login$)
     page.should_not have_content "John Doe"
-    page.should have_content "User was successfully destroyed."
     User.last.should be_archived
+    page.should have_content 'Bye! Your account was successfully cancelled. We hope to see you again soon.'
   end
 
   scenario "accept invitation should always redirect to /signup" do
@@ -268,6 +268,7 @@ feature "session" do
       page.should_not have_content('John Doe')
       fill_in "Email",     :with => "John@doe.com"
       fill_in "Password",  :with => "123456"
+
       click_button "Login"
 
       current_url.should =~ %r(^http://[^/]+/sites/new$)
