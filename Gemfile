@@ -12,8 +12,8 @@ gem 'mongo',                 '1.3.0'
 gem 'mongoid',               '2.0.1'
 
 # Views
-gem 'haml',                  '3.0.25' # '3.1.0' conflict with kaminari 0.12.1
-gem 'kaminari',              '0.12.1'
+gem 'haml',                  '3.1.1'
+gem 'kaminari',              '0.12.3'
 gem 'jammit',                '0.6.0'
 gem 'liquid',                '2.2.2'
 gem 'RedCloth',              '4.2.3'
@@ -39,7 +39,7 @@ gem 'aws',                   '2.3.34' # bugs in 2.4.2
 gem 'fog',                   '0.7.2'
 gem 'carrierwave',           '0.5.3'
 gem 'voxel_hapi',            :git => 'git://github.com/thibaudgg/voxel_hapi.git', :branch => '1.9.2' # VoxCast CDN
-gem 'request-log-analyzer',  '1.9.10', :require => 'request_log_analyzer'
+gem 'request-log-analyzer',  '1.11.0', :require => 'request_log_analyzer'
 
 # gem 'activemerchant',        '~> 1.9.1'
 # Pull request: https://github.com/Shopify/active_merchant/pull/85
@@ -73,7 +73,7 @@ group :production, :staging do
 end
 
 group :development, :test do
-  gem 'rspec-rails', '2.6.0.rc2'
+  gem 'rspec-rails'
   gem 'timecop'
 end
 
@@ -96,7 +96,7 @@ group :test do
   # gem 'guard-bundler'
   gem 'guard-pow'
   gem 'guard-rspec'
-  gem 'guard-spork'
+  gem 'guard-spork', '0.1.4'
   gem 'rspec-instafail'
   gem 'livereload'
   gem 'guard-livereload'
