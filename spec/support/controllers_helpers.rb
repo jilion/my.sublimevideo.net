@@ -28,6 +28,7 @@ module Spec
                   params_to_pass = params
                   params_to_pass = (params_to_pass.nil? || [:index, :new].include?(verb.to_sym)) ? {} : params_to_pass.reverse_merge({ :id => '1' })
                   send(verb, action, params_to_pass)
+
                   response.should redirect_to(url)
                 end
               end
@@ -37,21 +38,26 @@ module Spec
       end
 
       def authenticated_admin(stubs={})
-        # Factory(:admin)
-        admin = mock_admin(stubs.reverse_merge(:confirmed? => true, :authenticatable_salt => "x"))
-        # request.env['warden'] = mock(Warden, :authenticate => admin, :authenticate! => admin)
-        Admin.stub(:find) { admin }
-        Admin.stub(:find_first) { admin }
-        admin
+        # admin = mock_admin(stubs.reverse_merge(:confirmed? => true, :authenticatable_salt => "x"))
+        # Admin.stub(:find) { admin }
+        # Admin.stub(:find_first) { admin }
+        # Admin.stub(:find_for_database_authentication) { admin }
+        # request.env['warden'] = mock(Warden, :authenticate => admin, :authenticate! => admin, :admin => admin, :user => nil)
+        # admin
+        mock_admin(stubs)
       end
 
       def authenticated_user(stubs={})
-        # Factory(:user)
-        user = mock_user(stubs.reverse_merge(:active? => true, :confirmed? => true, :suspended? => false, :authenticatable_salt => "x"))
-        # request.env['warden'] = mock(Warden, :authenticate => user, :authenticate! => user, :user => user)
-        User.stub(:find) { user }
-        User.stub(:find_first) { user }
-        user
+        # user = mock_user(stubs.reverse_merge(:active? => true, :confirmed? => true, :suspended? => false, :authenticatable_salt => "x"))
+        # User.stub(:find) { user }
+        # User.stub(:find_first) { user }
+        # User.stub(:find_for_database_authentication) { user }
+        # Admin.stub(:find) { nil }
+        # Admin.stub(:find_first) { nil }
+        # Admin.stub(:find_for_database_authentication) { nil }
+        # request.env['warden'] = mock(Warden, :authenticate => user, :authenticate! => user, :user => user, :admin => nil)
+        # user
+        mock_user(stubs)
       end
 
       def mock_site(stubs={})
@@ -59,11 +65,11 @@ module Spec
       end
 
       def mock_user(stubs={})
-        mock_model(User, stubs)
+        Factory(:user, stubs)
       end
 
       def mock_admin(stubs={})
-        mock_model(Admin, stubs)
+        Factory(:admin, stubs)
       end
 
       def mock_release(stubs={})

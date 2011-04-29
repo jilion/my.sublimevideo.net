@@ -1,5 +1,10 @@
 class Admin::Admins::InvitationsController < Devise::InvitationsController
   layout 'admin'
+  skip_before_filter :authenticate_user!
+
+  def devise_controller?
+    false
+  end
 
   # POST /resources/invitation
   def create

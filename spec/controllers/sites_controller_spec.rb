@@ -19,10 +19,10 @@ describe SitesController do
 
       context "user has at least one non-archived site" do
         it "should render :index" do
-          authenticated_user.stub_chain(:sites, :not_archived, :includes, :by_date).and_return(mock_sites = [mock_site])
+          site = Factory(:site, :user => authenticated_user)
 
           get :index
-          assigns(:sites).should == mock_sites
+          assigns(:sites).should == [site]
           response.should render_template(:index)
         end
       end
@@ -30,30 +30,28 @@ describe SitesController do
 
     describe "GET :code" do
       it "should render :code" do
-        authenticated_user.stub_chain(:sites, :not_archived, :find_by_token!).with('a1b2c3').and_return(mock_site)
+        site = Factory(:site, :user => authenticated_user, :token => 'a1b2c3')
 
         get :code, :id => 'a1b2c3', :format => :js
-        assigns(:site).should == mock_site
+        assigns(:site).should == site
         response.should render_template(:code)
       end
     end
 
     describe "GET :new" do
       it "should render :new" do
-        authenticated_user.stub_chain(:sites, :build).and_return(mock_site)
-
         get :new
-        assigns(:site).should == mock_site
+
         response.should render_template(:new)
       end
     end
 
     describe "GET :edit" do
       it "should render :edit" do
-        authenticated_user.stub_chain(:sites, :not_archived, :find_by_token!).with('a1b2c3').and_return(mock_site)
+        site = Factory(:site, :user => authenticated_user, :token => 'a1b2c3')
 
         get :edit, :id => 'a1b2c3'
-        assigns(:site).should == mock_site
+        assigns(:site).should == site
         response.should render_template(:edit)
       end
     end
@@ -216,7 +214,7 @@ describe SitesController do
   end
 
   verb_and_actions = { :get => [:index, :code, :new, :edit, :state], :post => :create, :put => :update, :delete => :destroy }
-  it_should_behave_like "redirect when connected as", '/suspended', [[:user, { :suspended? => true }]], verb_and_actions
+  it_should_behave_like "redirect when connected as", '/suspended', [[:user, { :state => 'suspended' }]], verb_and_actions
   it_should_behave_like "redirect when connected as", '/login', [:guest], verb_and_actions
 
 end

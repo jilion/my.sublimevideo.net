@@ -5,6 +5,44 @@ GIT
     useragent (0.2.3)
 
 GIT
+  remote: git://github.com/rspec/rspec-core.git
+  revision: 4909f5ff33db7ec3ddefd58d9e413a7ae902b77a
+  specs:
+    rspec-core (2.6.0.rc2)
+
+GIT
+  remote: git://github.com/rspec/rspec-expectations.git
+  revision: a4ebe07641dab82bb30b854cd3adfce536cd4a97
+  specs:
+    rspec-expectations (2.6.0.rc2)
+      diff-lcs (~> 1.1.2)
+
+GIT
+  remote: git://github.com/rspec/rspec-mocks.git
+  revision: a4961049e3588e69794cd18b9f79285ba1b4ce91
+  specs:
+    rspec-mocks (2.6.0.rc2)
+
+GIT
+  remote: git://github.com/rspec/rspec-rails.git
+  revision: e77d2240a396e448e0638287a11198c7a0cd6b9f
+  specs:
+    rspec-rails (2.6.0.rc2)
+      actionpack (~> 3.0)
+      activesupport (~> 3.0)
+      railties (~> 3.0)
+      rspec (= 2.6.0.rc2)
+
+GIT
+  remote: git://github.com/rspec/rspec.git
+  revision: aef21542dd8ca76ca52cab33399ca98d7f3243e8
+  specs:
+    rspec (2.6.0.rc2)
+      rspec-core (= 2.6.0.rc2)
+      rspec-expectations (= 2.6.0.rc2)
+      rspec-mocks (= 2.6.0.rc2)
+
+GIT
   remote: git://github.com/rymai/active_merchant.git
   revision: 2f35b9f1c685b25d3f06f092684c2c7b581d4a9d
   branch: 3ds_from_ZenCocoon
@@ -171,7 +209,7 @@ GEM
       guard (>= 0.3.0)
     guard-rspec (0.3.0)
       guard (>= 0.2.2)
-    guard-spork (0.1.4)
+    guard-spork (0.1.10)
       guard (>= 0.2.2)
       spork (>= 0.8.4)
     haml (3.1.1)
@@ -264,20 +302,7 @@ GEM
     responders (0.6.2)
     rest-client (1.6.1)
       mime-types (>= 1.16)
-    rspec (2.5.0)
-      rspec-core (~> 2.5.0)
-      rspec-expectations (~> 2.5.0)
-      rspec-mocks (~> 2.5.0)
-    rspec-core (2.5.1)
-    rspec-expectations (2.5.0)
-      diff-lcs (~> 1.1.2)
     rspec-instafail (0.1.7)
-    rspec-mocks (2.5.0)
-    rspec-rails (2.5.0)
-      actionpack (~> 3.0)
-      activesupport (~> 3.0)
-      railties (~> 3.0)
-      rspec (~> 2.5.0)
     ruby-graphviz (0.9.21)
     ruby-hmac (0.4.0)
     ruby-json (1.1.2)
@@ -366,7 +391,7 @@ DEPENDENCIES
   guard-livereload
   guard-pow
   guard-rspec
-  guard-spork (= 0.1.4)
+  guard-spork
   haml (= 3.1.1)
   has_scope!
   heroku
@@ -392,8 +417,12 @@ DEPENDENCIES
   request-log-analyzer (= 1.11.0)
   rescue_me (= 0.1.0)
   responders (= 0.6.2)
+  rspec!
+  rspec-core!
+  rspec-expectations!
   rspec-instafail
-  rspec-rails
+  rspec-mocks!
+  rspec-rails!
   ruby-graphviz
   settingslogic (= 2.0.6)
   shoulda
