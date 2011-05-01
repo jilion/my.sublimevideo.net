@@ -15,8 +15,7 @@ module Site::Invoice
     def renew_active_sites!
       Site.active.to_be_renewed.each do |site|
         site.pend_plan_changes
-        invoice = Invoice.build(site: site, renew: true)
-        invoice.save!
+        site.save_without_password_validation
       end
       delay_renew_active_sites!
     end

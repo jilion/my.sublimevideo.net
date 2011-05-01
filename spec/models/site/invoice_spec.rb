@@ -18,28 +18,60 @@ describe Site::Invoice do
     describe ".renew_active_sites!" do
       before(:all) do
         Site.delete_all
-        VCR.use_cassette('ogone/visa_payment_generic') do
-          Timecop.travel(2.months.ago) do
-            @site_to_be_renewed = Factory.build(:site)
-          end
-          @site_not_to_be_renewed = Factory.build(:site, plan_started_at: 3.months.ago, plan_cycle_ended_at: 2.months.from_now)
+        Timecop.travel(2.months.ago) do
+          @site_to_be_renewed = Factory(:site_with_invoice)
+          @site_to_be_renewed_with_downgrade_to_dev_plan = Factory(:site_with_invoice)
+          @site_to_be_renewed_with_downgrade_to_dev_plan.update_attribute(:next_cycle_plan_id, @dev_plan.id)
+          @site_to_be_renewed_with_downgrade_to_paid_plan = Factory(:site_with_invoice)
+          @site_to_be_renewed_with_downgrade_to_paid_plan.update_attribute(:next_cycle_plan_id, @custom_plan.id)
         end
+        @site_not_to_be_renewed = Factory(:site_with_invoice, plan_started_at: 3.months.ago, plan_cycle_ended_at: 2.months.from_now)
 
-        @site_to_be_renewed.invoices.size.should == 0
-        @site_not_to_be_renewed.invoices.size.should == 0
+        @site_to_be_renewed.invoices.size.should == 1
+        @site_to_be_renewed_with_downgrade_to_dev_plan.invoices.size.should == 1
+        @site_to_be_renewed_with_downgrade_to_paid_plan.invoices.size.should == 1
+        @site_not_to_be_renewed.invoices.size.should == 1
       end
+
       before(:each) do
+        @site_to_be_renewed.reload
+        @site_to_be_renewed_with_downgrade_to_dev_plan.reload
+        @site_to_be_renewed_with_downgrade_to_paid_plan.reload
+        @site_not_to_be_renewed.reload
+
+        @site_to_be_renewed.pending_plan_cycle_started_at.should be_nil
+        @site_to_be_renewed.pending_plan_cycle_ended_at.should be_nil
+
+        Transaction.should_not_receive(:charge_by_invoice_ids)
+
         Delayed::Job.delete_all
         Site.renew_active_sites!
       end
 
       it "should create invoices for renewable sites" do
-        Invoice.where(site_id: @site_to_be_renewed).count.should == 1
-        Invoice.where(site_id: @site_not_to_be_renewed).count.should == 0
+        @site_to_be_renewed.reload.invoices.count.should == 2
+        @site_to_be_renewed_with_downgrade_to_dev_plan.reload.invoices.count.should == 1
+        @site_to_be_renewed_with_downgrade_to_paid_plan.reload.invoices.count.should == 2
+        @site_not_to_be_renewed.reload.invoices.count.should == 1
+      end
+
+      it "should update plan cycle dates" do
+        @site_to_be_renewed.reload.pending_plan_cycle_started_at.should be_present
+        @site_to_be_renewed.reload.pending_plan_cycle_ended_at.should be_present
+      end
+
+      it "should update plan of downgraded sites" do
+        @site_to_be_renewed_with_downgrade_to_dev_plan.reload.next_cycle_plan_id.should be_nil
+        @site_to_be_renewed_with_downgrade_to_dev_plan.reload.plan_id.should == @dev_plan.id
+        @site_to_be_renewed_with_downgrade_to_paid_plan.reload.next_cycle_plan_id.should be_nil
+        @site_to_be_renewed_with_downgrade_to_paid_plan.reload.pending_plan_id.should == @custom_plan.id
       end
 
       it "should set the renew flag to true" do
-        Invoice.where(site_id: @site_to_be_renewed).last.renew.should be_true
+        @site_to_be_renewed.reload.invoices.by_date('asc').last.should be_renew
+        @site_to_be_renewed_with_downgrade_to_dev_plan.reload.invoices.by_date('asc').last.should_not be_renew
+        @site_to_be_renewed_with_downgrade_to_paid_plan.reload.invoices.by_date('asc').last.should be_renew
+        @site_not_to_be_renewed.reload.invoices.by_date('asc').last.should_not be_renew
       end
 
       it "should delay renew_active_sites!" do
@@ -744,7 +776,8 @@ describe Site::Invoice do
 
     # recurrent
       # site.pend_plan_changes
-      # site.apply_pending_plan_changes
+      # site.save
+      # apply_pending_plan_changes => will create invoice without charging it
 
     # upfront
       # plan_id = ... (set pending_plan_id, pending dates and pend_plan_changes)

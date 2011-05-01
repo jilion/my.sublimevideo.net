@@ -129,8 +129,8 @@ describe Site do
           @site_to_be_renewed = Factory(:site)
           @site_not_to_be_renewed1 = Factory(:site_with_invoice)
         end
-        @site_not_to_be_renewed1.update_attribute(:plan_id, @paid_plan.id)
-        @site_not_to_be_renewed1.pending_plan_id.should be_present
+        @site_not_to_be_renewed1.update_attribute(:pending_plan_id, @paid_plan.id)
+        @site_not_to_be_renewed1.pending_plan_id.should == @paid_plan.id
         @site_not_to_be_renewed2 = Factory(:site_with_invoice, plan_started_at: 3.months.ago, plan_cycle_ended_at: 2.months.from_now)
       end
 
