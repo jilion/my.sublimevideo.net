@@ -8,7 +8,7 @@ module Site::Invoice
     # Recurring task
     def delay_renew_active_sites!
       unless Delayed::Job.already_delayed?('%Site%renew_active_sites!%')
-        delay(:priority => 3, :run_at => Time.now.utc.tomorrow.midnight).renew_active_sites!
+        delay(:priority => 3, :run_at => Time.now.utc.tomorrow.midnight + 10.seconds).renew_active_sites!
       end
     end
 
