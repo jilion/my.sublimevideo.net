@@ -147,11 +147,11 @@ module Site::Invoice
     self.plan_cycle_started_at_will_change!
     self.plan_cycle_ended_at_will_change!
     self.pending_plan_id_will_change!
-    self.pending_plan_started_at_will_change!
+    self.pending_plan_started_at_will_change! if pending_plan_started_at
     self.pending_plan_cycle_started_at_will_change!
     self.pending_plan_cycle_ended_at_will_change!
 
-    self.plan_started_at               = pending_plan_started_at
+    self.plan_started_at               = pending_plan_started_at if pending_plan_started_at
     self.plan_cycle_started_at         = pending_plan_cycle_started_at
     self.plan_cycle_ended_at           = pending_plan_cycle_ended_at
     self.pending_plan_id               = nil
