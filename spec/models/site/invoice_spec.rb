@@ -166,7 +166,6 @@ describe Site::Invoice do
     end # #instant_charging?
 
     describe "#in_or_will_be_in_paid_plan?" do
-
       context "site in paid plan" do
         subject { Factory(:site, plan_id: @paid_plan.id) }
 
@@ -225,22 +224,62 @@ describe Site::Invoice do
       end
     end # #will_be_in_dev_plan?
 
+    describe "#will_be_in_paid_plan?" do
+      context "site in paid plan" do
+        subject { Factory(:site, plan_id: @paid_plan.id) }
+
+        it { should_not be_will_be_in_paid_plan }
+      end
+
+      context "site is dev and updated to paid" do
+        before(:each) do
+          @site = Factory(:site, plan_id: @dev_plan.id)
+          @site.plan_id = @paid_plan.id
+        end
+        subject { @site }
+
+        it { should be_will_be_in_paid_plan }
+      end
+
+      context "site is paid and updated to paid" do
+        before(:each) do
+          @site = Factory(:site, plan_id: @paid_plan.id)
+          @new_plan = Factory(:plan, price: @paid_plan.price + 1000)
+          @site.plan_id = @new_plan.id
+        end
+        subject { @site }
+
+        its(:pending_plan_id) { should == @new_plan.id }
+        it { should be_will_be_in_paid_plan }
+      end
+
+      context "site is paid and updated to dev" do
+        before(:each) do
+          @site = Factory(:site, plan_id: @paid_plan.id)
+          @site.plan_id = @dev_plan.id
+        end
+        subject { @site }
+
+        it { should_not be_will_be_in_paid_plan }
+      end
+    end # #will_be_in_paid_plan?
+
     describe "#last_paid_invoice" do
       context "with the last paid invoice not refunded" do
         subject { Factory(:site_with_invoice, plan_id: @paid_plan.id) }
-      
+
         it "should return the last paid invoice" do
           subject.last_paid_invoice.should == subject.invoices.paid.last
         end
       end
-      
+
       context "with the last paid invoice refunded" do
         before(:all) do
           @site = Factory(:site_with_invoice, plan_id: @paid_plan.id)
           @site.refund
         end
         subject { @site.reload }
-        
+
         it "returns nil" do
           subject.refunded_at.should be_present
           subject.last_paid_invoice.should be_nil

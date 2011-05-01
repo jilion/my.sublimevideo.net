@@ -65,13 +65,17 @@ module Site::Invoice
   end
 
   def in_or_will_be_in_paid_plan?
-    in_paid_plan? || (pending_plan_id && Plan.find(pending_plan_id).paid_plan?)
+    in_paid_plan? || will_be_in_paid_plan?
   end
 
   def will_be_in_dev_plan?
     if id = (pending_plan_id || next_cycle_plan_id)
       Plan.find(id).dev_plan?
     end
+  end
+
+  def will_be_in_paid_plan?
+    pending_plan_id? && pending_plan.paid_plan?
   end
 
   def refunded?
@@ -104,7 +108,7 @@ module Site::Invoice
     end
 
     # Update pending_plan_started_at
-    if pending_plan_id_changed? && pending_plan_id? # either because of an creation, an upgrade or a downgrade (just changed above)
+    if pending_plan_id_changed? && pending_plan_id? # either because of a creation, an upgrade or a downgrade (just changed above)
 
       # Downgrade
       if plan_cycle_ended_at && plan_cycle_ended_at < Time.now.utc
