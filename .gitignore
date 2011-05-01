@@ -21,3 +21,4 @@ vendor/ruby
 !Gemfile.lock
 !.bundle
 !.bundle/*
+!public/assets/*.gz
