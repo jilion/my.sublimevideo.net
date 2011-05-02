@@ -11,7 +11,7 @@
   graph = Graph.new do |g|
     g.option(chart: chart('new_sites_per_day'))
     g.option(title: { text: "New sites per day" })
-    g.option(subtitle: usage_date_subtitle(stats_from, { :date_format => :seconds_timezone }))
+    g.option(subtitle: usage_date_subtitle(start_at: stats_from, end_at: Time.now.utc, date_format: :seconds_timezone))
     g.option(legend: legend(width: 350))
     g.option(xAxis: { type: 'datetime', showFirstLabel: true, showLastLabel: true })
     g.raw_option(%(yAxis: {
