@@ -17,7 +17,7 @@ describe TransactionsController do
             }
             User.should_receive(:find).with(1).and_return(@m = mock_user(:i18n_notice_and_alert => nil))
           end
-          
+
           it "should add a notice and redirect to /account/edit" do
             @m.should_receive(:process_cc_authorize_and_save).with(@sha_params)
 
@@ -39,7 +39,7 @@ describe TransactionsController do
             }
             User.should_receive(:find).with(1).and_return(@m = mock_user(:i18n_notice_and_alert => { alert: I18n.t("credit_card.errors.waiting") }))
           end
-          
+
           it "should add an alert and redirect to /account/edit" do
             @m.should_receive(:process_cc_authorize_and_save).with(@sha_params)
 
@@ -61,7 +61,7 @@ describe TransactionsController do
             }
             User.should_receive(:find).with(1).and_return(@m = mock_user(:i18n_notice_and_alert => { alert: I18n.t("credit_card.errors.invalid") }))
           end
-          
+
           it "should add an alert and redirect to /account/edit" do
             @m.should_receive(:process_cc_authorize_and_save).with(@sha_params)
 
@@ -83,7 +83,7 @@ describe TransactionsController do
             }
             User.should_receive(:find).with(1).and_return(@m = mock_user(:i18n_notice_and_alert => { alert: I18n.t("credit_card.errors.refused") }))
           end
-          
+
           it "should add an alert and redirect to /account/edit" do
             @m.should_receive(:process_cc_authorize_and_save).with(@sha_params)
 
@@ -105,7 +105,7 @@ describe TransactionsController do
             }
             User.should_receive(:find).with(1).and_return(@m = mock_user(:i18n_notice_and_alert => { alert: I18n.t("credit_card.errors.unknown") }))
           end
-          
+
           it "should add an alert and redirect to /account/edit" do
             @m.should_receive(:process_cc_authorize_and_save).with(@sha_params)
 
@@ -127,7 +127,7 @@ describe TransactionsController do
             }
             User.should_receive(:find).with(1).and_return(@m = mock_user(:i18n_notice_and_alert => { alert: I18n.t("credit_card.errors.unknown") }))
           end
-          
+
           it "should add an alert and redirect to /account/edit" do
             @m.should_receive(:process_cc_authorize_and_save).with(@sha_params)
 

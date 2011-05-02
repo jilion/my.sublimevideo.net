@@ -19,7 +19,7 @@ feature "Refunds" do
       @site.user_attributes = { "current_password" => "123456" }
       @site.archive!
       @site.reload.should be_archived
-      
+
       visit '/refund'
       page.should have_content "Request a refund"
 

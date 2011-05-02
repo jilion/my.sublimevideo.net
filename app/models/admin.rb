@@ -14,7 +14,7 @@ class Admin < ActiveRecord::Base
   # ==========
   # = Scopes =
   # ==========
-  
+
   scope :by_date, lambda { |way = 'desc'| order(:created_at.send(way)) }
 
 end

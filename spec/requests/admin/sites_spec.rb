@@ -13,10 +13,10 @@ feature "Sites pagination:" do
     page.should have_no_css('span.prev')
     page.should have_no_css('em.current')
     page.should have_no_css('a.next')
-    
+
     Factory(:site)
     visit "/admin/sites"
-    
+
     page.should have_css('nav.pagination')
     page.should have_css('span.prev')
     page.should have_css('em.current')

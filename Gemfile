@@ -19,7 +19,7 @@ gem 'liquid',                '2.2.2'
 gem 'RedCloth',              '4.2.3'
 
 # Auth / invitations
-gem 'devise',                '1.3.3'
+gem 'devise',                '1.3.4'
 gem 'devise_invitable',      :git => 'git://github.com/scambra/devise_invitable.git'
 
 # Internals
@@ -73,12 +73,7 @@ group :production, :staging do
 end
 
 group :development, :test do
-  # gem 'rspec-rails'
-  gem "rspec-rails",        :git => "git://github.com/rspec/rspec-rails.git"
-  gem "rspec",              :git => "git://github.com/rspec/rspec.git"
-  gem "rspec-core",         :git => "git://github.com/rspec/rspec-core.git"
-  gem "rspec-expectations", :git => "git://github.com/rspec/rspec-expectations.git"
-  gem "rspec-mocks",        :git => "git://github.com/rspec/rspec-mocks.git"
+  gem 'rspec-rails', '2.6.0.rc4'
 
   gem 'timecop'
 end
@@ -108,7 +103,7 @@ group :test do
   gem 'guard-livereload'
 
   gem 'shoulda'
-  gem 'capybara', '1.0.0.beta1 '
+  gem 'capybara', '1.0.0.beta1'
   gem 'webmock'
   gem 'vcr'
 

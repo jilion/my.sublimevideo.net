@@ -9,7 +9,7 @@ feature "Mail templates index:" do
   scenario "should be possible to edit mail template" do
     mail_template = Factory(:mail_template)
     MailTemplate.all.size.should == 1
-    
+
     visit "/admin/mails/templates/#{mail_template.id}/edit"
 
     page.should have_content(mail_template.title)
@@ -20,7 +20,7 @@ feature "Mail templates index:" do
     fill_in "Subject", :with => "This is a subject"
     fill_in "Body",    :with => "This is a body"
     click_button "Update mail template"
-    
+
     page.should have_content "Mail template was successfully updated."
     page.should have_content "This is a title"
     page.should have_content "This is a subject"

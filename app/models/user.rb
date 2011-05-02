@@ -4,9 +4,9 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable, :confirmable,
          :recoverable, :rememberable, :trackable, :lockable, :invitable
 
-  # def self.cookie_domain
-  #   ".sublimevideo.net"
-  # end
+  def self.cookie_domain
+    ".sublimevideo.net"
+  end
 
   # Mail template
   liquid_methods :email, :first_name, :last_name, :full_name

@@ -713,9 +713,18 @@ describe User do
     let(:user) { Factory(:user) }
 
     describe "#active_for_authentication?" do
-      it "should be active when suspended in order to allow login" do
+      it "should be active for authentication when active" do
+        user.should be_active_for_authentication
+      end
+
+      it "should be active for authentication when suspended in order to allow login" do
         user.suspend
-        user.should be_active
+        user.should be_active_for_authentication
+      end
+
+      it "should not be active for authentication when archived" do
+        user.archive
+        user.should be_active_for_authentication
       end
     end
 
