@@ -1,14 +1,14 @@
 <%
-invoices = ::Invoice.between(@date_range_from, @date_range_to).order(:created_at.asc)
+invoices = ::Invoice.between(@date_range_from - (@moving_avg-1).days, @date_range_to).order(:created_at.asc)
 
-paid_invoices         = Stat::Invoice.timeline(invoices.paid, @date_range_from, @date_range_to)
-monthly_paid_invoices = Stat::Invoice.timeline(invoices.includes(:plan_invoice_items).paid.select { |i| i.paid_plan.monthly? }, @date_range_from, @date_range_to)
-yearly_paid_invoices  = Stat::Invoice.timeline(invoices.includes(:plan_invoice_items).paid.select { |i| i.paid_plan.yearly? }, @date_range_from, @date_range_to)
-open_invoices         = Stat::Invoice.timeline(invoices.open, @date_range_from, @date_range_to)
-failed_invoices       = Stat::Invoice.timeline(invoices.failed, @date_range_from, @date_range_to)
-canceled_invoices     = Stat::Invoice.timeline(invoices.canceled, @date_range_from, @date_range_to)
-refunded_invoices     = Stat::Invoice.timeline(invoices.refunded, @date_range_from, @date_range_to)
-waiting_invoices      = Stat::Invoice.timeline(invoices.waiting, @date_range_from, @date_range_to)
+paid_invoices         = Stat::Invoice.timeline(invoices.paid, @date_range_from - (@moving_avg-1).days, @date_range_to)
+monthly_paid_invoices = Stat::Invoice.timeline(invoices.includes(:plan_invoice_items).paid.select { |i| i.paid_plan.monthly? }, @date_range_from - (@moving_avg-1).days, @date_range_to)
+yearly_paid_invoices  = Stat::Invoice.timeline(invoices.includes(:plan_invoice_items).paid.select { |i| i.paid_plan.yearly? }, @date_range_from - (@moving_avg-1).days, @date_range_to)
+open_invoices         = Stat::Invoice.timeline(invoices.open, @date_range_from - (@moving_avg-1).days, @date_range_to)
+failed_invoices       = Stat::Invoice.timeline(invoices.failed, @date_range_from - (@moving_avg-1).days, @date_range_to)
+canceled_invoices     = Stat::Invoice.timeline(invoices.canceled, @date_range_from - (@moving_avg-1).days, @date_range_to)
+refunded_invoices     = Stat::Invoice.timeline(invoices.refunded, @date_range_from - (@moving_avg-1).days, @date_range_to)
+waiting_invoices      = Stat::Invoice.timeline(invoices.waiting, @date_range_from - (@moving_avg-1).days, @date_range_to)
 
 graph = Graph.new do |g|
   g.option(chart: chart('timeline_invoices', margin_top: 100))
@@ -39,19 +39,19 @@ graph = Graph.new do |g|
     },
     formatter: function() {
       return "<strong>" + Highcharts.dateFormat("%B %e,  %Y", this.x) + "</strong><br/>" + this.series.name + ": <strong>$" + Highcharts.numberFormat(this.y / 100, 2) + " of $" + Highcharts.numberFormat(this.total / 100, 2) + " (" + Highcharts.numberFormat(this.percentage, 1) + "%)</strong>";
-    },
-    borderWidth: 1
+    }
   }))
   
   g.option(series: [
     serie(paid_invoices, 'Paid', '#0000FF', :type => 'line', :color => '#600fff'),
-    serie(yearly_paid_invoices, 'Paid (yearly)', '#0000FF', :type => 'area', :color => '#5e33c8'),
-    serie(monthly_paid_invoices, 'Paid (monthly)', '#0000FF', :type => 'area', :color => '#7941ff'),
-    serie(refunded_invoices, 'Refunded', '#1C1', :type => 'area', :color => '#ff8000'),
-    serie(failed_invoices, 'Failed', '#89A54E', :type => 'area', :color => '#fe2617'),
-    serie(canceled_invoices, 'Canceled', '#89A54E', :type => 'area', :color => '#b00000'),
-    serie(open_invoices, 'Open', '#A1A', :type => 'area', :color => '#EEE'),
-    serie(waiting_invoices, 'Waiting', '#00FF00', :type => 'area', :color => '#AAA')
+    serie(moving_average(paid_invoices, @moving_avg), 'AVG Paid', '#00FFFF', type: 'line'),
+    serie(yearly_paid_invoices[@moving_avg-1..-1], 'Paid (yearly)', '#0000FF', :type => 'column', :color => '#5e33c8'),
+    serie(monthly_paid_invoices[@moving_avg-1..-1], 'Paid (monthly)', '#0000FF', :type => 'column', :color => '#7941ff'),
+    serie(refunded_invoices[@moving_avg-1..-1], 'Refunded', '#1C1', :type => 'column', :color => '#ff8000'),
+    serie(failed_invoices[@moving_avg-1..-1], 'Failed', '#89A54E', :type => 'column', :color => '#fe2617'),
+    serie(canceled_invoices[@moving_avg-1..-1], 'Canceled', '#89A54E', :type => 'column', :color => '#b00000'),
+    serie(open_invoices[@moving_avg-1..-1], 'Open', '#A1A', :type => 'column', :color => '#EEE'),
+    serie(waiting_invoices[@moving_avg-1..-1], 'Waiting', '#00FF00', :type => 'column', :color => '#AAA')
   ].flatten)
   # g.option(plotOptions: plot_options(@date_range_from.end_of_month, 1.month, marker: true, linear: true))
   g.option(plotOptions: plot_options(@date_range_from))
