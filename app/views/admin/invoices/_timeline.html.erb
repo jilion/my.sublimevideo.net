@@ -43,7 +43,7 @@ graph = Graph.new do |g|
   }))
   
   g.option(series: [
-    serie(paid_invoices, 'Paid', '#0000FF', :type => 'line', :color => '#600fff'),
+    serie(paid_invoices[@moving_avg-1..-1], 'Paid', '#0000FF', :type => 'line', :color => '#600fff', :visible => false),
     serie(moving_average(paid_invoices, @moving_avg), 'AVG Paid', '#00FFFF', type: 'line'),
     serie(yearly_paid_invoices[@moving_avg-1..-1], 'Paid (yearly)', '#0000FF', :type => 'column', :color => '#5e33c8'),
     serie(monthly_paid_invoices[@moving_avg-1..-1], 'Paid (monthly)', '#0000FF', :type => 'column', :color => '#7941ff'),
