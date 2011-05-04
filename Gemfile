@@ -1,6 +1,6 @@
 source :rubygems
 
-gem 'bundler',               '1.0.12'
+gem 'bundler',               '1.0.13'
 
 gem 'rails',                 '3.0.7'
 
