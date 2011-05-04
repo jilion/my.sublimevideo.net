@@ -14,8 +14,8 @@ en:
         send_instructions: 'An email with instructions about how to set the password has been sent.'
         updated: 'Your account was created successfully. You are now signed in.'
     sessions:
-      signed_in: ''
-      signed_out: ''
+      signed_in: 'no_message' # hack to display no flash for certain Devise's controller actions (if flash is blank, the FlashResponder will set a default flash message...)
+      signed_out: 'no_message'
     passwords:
       send_instructions: 'You will receive an email with instructions to reset your password in a few minutes.'
       updated: 'Your password was changed successfully. You are now signed in.'
