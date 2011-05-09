@@ -3,6 +3,12 @@ defaults: &defaults
   username: zendesk@sublimevideo.net
   password: wrank8
 
+# sublimevideo's credentials
+defaults_stage_prod: &defaults_stage_prod
+  base_url: heroku_env
+  username: heroku_env
+  password: heroku_env
+
 development:
   <<: *defaults
   
@@ -10,9 +16,7 @@ test:
   <<: *defaults
   
 staging:
-  <<: *defaults
+  <<: *defaults_stage_prod
   
 production:
-  base_url: http://jilion.zendesk.com # <%= ENV['ZENDESK_URL'] %>
-  username: zendesk@sublimevideo.net # <%= ENV['ZENDESK_USERNAME'] %>
-  password: wrank8 # <%= ENV['ZENDESK_PASSWORD'] %>
+  <<: *defaults_stage_prod

@@ -3,6 +3,11 @@ require 'net/http'
 module Zendesk
 
   class << self
+    
+    [:base_url, :username, :password].each do |method_name|
+      define_method(method_name) { yml[method_name] == 'heroku_env' ? ENV["ZENDESK_#{method_name.to_s.upcase}"] : yml[method_name] }
+    end
+    
     def get(url)
       Zendesk::Request.new(url, :get).execute
     end
