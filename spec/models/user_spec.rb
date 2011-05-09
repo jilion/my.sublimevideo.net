@@ -25,6 +25,7 @@ describe User do
 
     it { should have_many :sites }
     it { should have_many(:invoices).through(:sites) }
+    it { should have_one(:api_token) }
   end
 
   describe "Scopes" do

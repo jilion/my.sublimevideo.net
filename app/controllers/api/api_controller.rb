@@ -1,15 +1,13 @@
 class Api::ApiController < ApplicationController
-  respond_to :xml
+  respond_to :json
 
   skip_before_filter :authenticate_user!
-  before_filter :authenticate_api!
+  before_filter :authenticate_api_token!
 
-private
+  protected
 
-  def authenticate_api!
-    unless request.headers["TOKEN"] == (ENV['API_TOKEN'] || "MGq3Y4PcPQ9nr8G6xuVF")
-      render :nothing => true, :status => :unauthorized
-    end
+  def current_api_user
+    current_api_token.user
   end
 
 end
