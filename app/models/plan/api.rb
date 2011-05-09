@@ -8,7 +8,7 @@ module Plan::Api
   end
 
   module InstanceMethods
-    def to_api(options={})
+    def to_api
       {
         name: name,
         title: title,

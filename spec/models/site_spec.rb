@@ -1564,17 +1564,11 @@ describe Site do
 
     describe "#recommended_plan" do
       before(:all) do
-        Plan.delete_all
-        Factory(:plan, name: "comet",  player_hits: 3_000)
-        Factory(:plan, name: "planet", player_hits: 50_000)
-        Factory(:plan, name: "star",   player_hits: 200_000)
-        @galaxy_plan = Factory(:plan, name: "galaxy", player_hits: 1_000_000)
         @site = Factory(:beta_site)
       end
       subject { @site }
 
       context "with no usage" do
-
         its(:recommended_plan_name) { should be_nil }
       end
 
