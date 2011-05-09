@@ -23,13 +23,13 @@ class UsersStat
     end
   end
 
-  def self.create_users_stats(timestamp=Time.now.utc)
+  def self.create_users_stats
     delay_create_users_stats
     self.create(:states_count => {
-      :active_and_billable_count     => User.active_and_billable.select("DISTINCT(users.id)").where(:created_at.gte => timestamp.midnight, :created_at.lte => timestamp.end_of_day).count,
-      :active_and_not_billable_count => User.active_and_not_billable.where(:created_at.gte => timestamp.midnight, :created_at.lte => timestamp.end_of_day).count,
-      :suspended_count               => User.with_state(:suspended).where(:created_at.gte => timestamp.midnight, :created_at.lte => timestamp.end_of_day).count,
-      :archived_count                => User.with_state(:archived).where(:created_at.gte => timestamp.midnight, :created_at.lte => timestamp.end_of_day).count
+      :active_and_billable_count     => User.active_and_billable.select("DISTINCT(users.id)").count,
+      :active_and_not_billable_count => User.active_and_not_billable.count,
+      :suspended_count               => User.with_state(:suspended).count,
+      :archived_count                => User.with_state(:archived).count
     })
   end
 

@@ -28,12 +28,6 @@ describe UsersStat do
 
       Factory(:user, state: 'suspended') # suspended
       Factory(:user, state: 'archived') # archived
-
-
-      # USERS CREATED 1 DAY AGO
-      Factory(:user, created_at: 1.day.ago) # active & not billable
-
-      Factory(:user, state: 'archived', created_at: 1.day.ago) # archived
     end
 
     it "should delay itself" do
@@ -52,21 +46,6 @@ describe UsersStat do
         "suspended_count"               => 1,
         "archived_count"                => 1
       }
-    end
-
-    context "giving it a timestamp" do
-      it "should create users stats for states" do
-        UsersStat.create_users_stats(1.day.ago)
-
-        UsersStat.count.should == 1
-        users_stat = UsersStat.last
-        users_stat.states_count.should == {
-          "active_and_billable_count"     => 0,
-          "active_and_not_billable_count" => 1,
-          "suspended_count"               => 0,
-          "archived_count"                => 1
-        }
-      end
     end
   end
 
