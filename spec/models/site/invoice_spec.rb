@@ -296,6 +296,36 @@ describe Site::Invoice do
       end
     end # #will_be_in_paid_plan?
 
+    describe "#refundable?" do
+      before(:all) do
+        Site.delete_all
+        @site_refundable1 = Factory(:site)
+        Timecop.travel(29.days.ago)  { @site_refundable2 = Factory(:site) }
+        Timecop.travel(29.days.ago)  { @site_not_refundable0 = Factory(:site, plan_id: @dev_plan.id) }
+        Timecop.travel(2.months.ago) { @site_not_refundable1 = Factory(:site) }
+        @site_not_refundable2 = Factory(:site, refunded_at: Time.now.utc)
+      end
+
+      specify { @site_refundable1.should be_refundable }
+      specify { @site_refundable2.should be_refundable }
+      specify { @site_not_refundable0.should_not be_refundable }
+      specify { @site_not_refundable1.should_not be_refundable }
+      specify { @site_not_refundable2.should_not be_refundable }
+    end
+
+    describe "#refunded?" do
+      before(:all) do
+        Site.delete_all
+        @site_refunded1     = Factory(:site, state: 'archived', refunded_at: Time.now.utc)
+        @site_not_refunded1 = Factory(:site, state: 'active', refunded_at: Time.now.utc)
+        @site_not_refunded2 = Factory(:site, state: 'archived', refunded_at: nil)
+      end
+
+      specify { @site_refunded1.should be_refunded }
+      specify { @site_not_refunded1.should_not be_refunded }
+      specify { @site_not_refunded2.should_not be_refunded }
+    end
+
     describe "#last_paid_invoice" do
       context "with the last paid invoice not refunded" do
         subject { Factory(:site_with_invoice, plan_id: @paid_plan.id) }

@@ -1,5 +1,6 @@
 class Site < ActiveRecord::Base
   extend ActiveSupport::Memoizable
+  include Site::Api
   require 'site/invoice'
   require 'site/referrer'
   require 'site/templates'

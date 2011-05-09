@@ -1,9 +1,9 @@
 MySublimeVideo::Application.routes.draw do
 
   devise_for :users,
-  :path => '',
-  :path_names => { :sign_in => 'login', :sign_out => 'logout' },
-  :skip => [:invitations, :registrations] do
+             :path => '',
+             :path_names => { :sign_in => 'login', :sign_out => 'logout' },
+             :skip => [:invitations, :registrations] do
     resource :user_registration, :only => [], :controller => 'users/registrations', :path => '' do
       get    :new,     :path => '/signup', :as => 'new'
       post   :create,  :path => '/signup'
@@ -12,15 +12,16 @@ MySublimeVideo::Application.routes.draw do
       put    :update,  :path => '/account/credentials'
       delete :destroy, :path => '/account'
     end
-
-    %w[sign_up register].each         { |action| match action => redirect('/signup'), :via => :get }
-    %w[log_in sign_in signin].each    { |action| match action => redirect('/login'),  :via => :get }
-    %w[log_out sign_out signout].each { |action| match action => redirect('/logout'), :via => :get }
   end
-  match '/password/validate' => "users/passwords#validate", :via => :post
+  %w[sign_up register].each         { |action| match action => redirect('/signup'), :via => :get }
+  %w[log_in sign_in signin].each    { |action| match action => redirect('/login'),  :via => :get }
+  %w[log_out sign_out signout].each { |action| match action => redirect('/logout'), :via => :get }
   match '/invitation/accept' => redirect('/signup?beta=over'), :via => :get
+  match '/password/validate' => "users/passwords#validate", :via => :post
+  match '/api_tokens' => "users/api_tokens#create", :via => :post
 
   resource :users, :only => :update, :path => '/account/info'
+
   resources :sites, :except => :show do
     member do
       get :state
@@ -32,33 +33,55 @@ MySublimeVideo::Application.routes.draw do
       put :retry, :on => :collection
     end
   end
+
   resource :card, :controller => 'credit_cards', :as => :credit_card, :only => [:edit, :update]
+
   resources :invoices, :only => :show
+
+  match '/transaction/callback' => "transactions#callback", :via => :post
 
   match '/refund' => "refunds#index",  :via => :get, :as => 'refunds'
   match '/refund' => "refunds#create", :via => :post, :as => 'refund'
 
-  match '/transaction/callback' => "transactions#callback", :via => :post
+  resource :ticket, :only => [:new, :create], :path => '/support', :path_names => { :new =>  '' }
+  match '/feedback' => redirect('/support'), :via => :get
 
   match ':page', :to => 'pages#show', :via => :get, :as => :page, :page => /terms|privacy|suspended/
   match 'r/:type/:token', :to => 'referrers#redirect', :via => :get, :type => /c/, :token => /[a-z0-9]{8}/
 
-  resource :ticket, :only => [:new, :create], :path => '/support', :path_names => { :new =>  '' }
-  match '/feedback' => redirect('/support'), :via => :get
+  authenticate(:user) do
+    root :to => redirect("/sites")
+  end
 
-  root :to => redirect("/sites")
+  # =======
+  # = API =
+  # =======
+
+  devise_for :api_tokens
+
+  namespace "api" do
+    constraints :format => :json do
+
+      namespace "v1" do
+        resources :sites
+      end
+
+    end
+  end
 
   # =========
   # = Admin =
   # =========
 
-  match 'admin', :to => redirect('/admin/djs'), :as => 'admin'
+  authenticate(:admin) do
+    match 'admin', :to => redirect('/admin/djs'), :as => 'admin'
+  end
 
   devise_for :admins,
-  :path => 'admin',
-  :module => 'admin/admins',
-  :path_names => { :sign_in => 'login', :sign_out => 'logout' },
-  :skip => [:invitations, :registrations] do
+             :path => 'admin',
+             :module => 'admin/admins',
+             :path_names => { :sign_in => 'login', :sign_out => 'logout' },
+             :skip => [:invitations, :registrations] do
     resource :admin_invitation, :only => [], :controller => 'admin/admins/invitations', :path => "" do
       get  :new,    :path => '/admin/admins/invitation/new', :as => 'new'
       post :create, :path => '/admin/admins/invitation'
@@ -71,50 +94,52 @@ MySublimeVideo::Application.routes.draw do
       put    :update,  :path => '/admin/account'
       delete :destroy, :path => '/admin/account'
     end
-
-    %w[log_in sign_in signin].each         { |action| match "admin/#{action}" => redirect('/admin/login'),  :via => :get }
-    %w[log_out sign_out signout exit].each { |action| match "admin/#{action}" => redirect('/admin/logout'), :via => :get }
   end
+  %w[log_in sign_in signin].each         { |action| match "admin/#{action}" => redirect('/admin/login'),  :via => :get }
+  %w[log_out sign_out signout exit].each { |action| match "admin/#{action}" => redirect('/admin/logout'), :via => :get }
 
   namespace "admin" do
     resource  :dashboard, :only => :show
+
     resources :users, :only => [:index, :show] do
       member do
         get :become
       end
     end
+
     resources :sites, :only => [:index, :show, :edit, :update] do
       member do
         put :sponsor
       end
     end
-    resources :referrers, :only => :index
+
     resources :invoices,  :only => [:index, :show, :edit] do
       member do
         put :retry_charging
       end
     end
+
+    resources :referrers, :only => :index
+
     resources :plans,  :only => [:index, :new, :create]
+
     resources :admins, :only => [:index, :destroy]
+
     resources :mails,  :only => [:index, :new, :create]
-    scope "mails" do
+    scope :mails do
       resources :mail_templates, :only => [:new, :create, :edit, :update], :path => "templates"
       resources :mail_logs,      :only => :show,                           :path => "logs"
     end
+
     resources :releases, :only => [:index, :create, :update]
+
     resources :tweets,   :only => :index do
       member do
         put :favorite
       end
     end
+
     resources :delayed_jobs, :only => [:index, :show, :update, :destroy], :path => "djs"
-  end
-
-  # =======
-  # = API =
-  # =======
-
-  namespace "api" do
   end
 
 end

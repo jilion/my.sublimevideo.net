@@ -1,4 +1,5 @@
 class Plan < ActiveRecord::Base
+  include Plan::Api
 
   CYCLES         = %w[month year none]
   STANDARD_NAMES = %w[comet planet star galaxy]

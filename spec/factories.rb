@@ -28,6 +28,10 @@ Factory.define :user, :parent => :user_no_cc do |f|
   f.cc_updated_at         Time.now.utc
 end
 
+Factory.define :api_token do |f|
+  f.association :user
+end
+
 Factory.define :admin do |f|
   f.sequence(:email) { |n| "email#{n}@admin.com" }
   f.password         "123456"

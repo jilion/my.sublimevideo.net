@@ -103,7 +103,7 @@ class SitesController < ApplicationController
   #   end
   # end
 
-private
+  private
 
   def find_sites_or_redirect_to_new_site
     @sites = current_user.sites.not_archived.includes(:plan, :next_cycle_plan)
