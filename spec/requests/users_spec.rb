@@ -210,6 +210,35 @@ feature "Users" do
     User.last.full_name.should == "John Doe"
   end
 
+  describe "API token" do
+    scenario "create an API token", :focus => true do
+      sign_in_as :user
+      @current_user.api_token.should be_nil
+      click_link('John Doe')
+      click_button "user_api_tokens_submit"
+
+      current_url.should =~ %r(^http://[^/]+/account/edit$)
+      @current_user.api_token.should be_present
+      @current_user.api_token.authentication_token.should be_present
+    end
+
+    scenario "reset an API token", :focus => true do
+      sign_in_as :user
+      @current_user.api_token.should be_nil
+      click_link('John Doe')
+      click_button "user_api_tokens_submit"
+
+      first_api_token = @current_user.api_token.should be_present
+      first_auth_token = @current_user.api_token.authentication_token.should be_present
+      click_button "user_api_tokens_submit"
+
+      current_url.should =~ %r(^http://[^/]+/account/edit$)
+      @current_user.api_token.should == first_api_token
+      @current_user.api_token.authentication_token.should be_present
+      @current_user.api_token.authentication_token.should_not == first_auth_token
+    end
+  end
+
   scenario "delete his account (with current password confirmation)" do
     sign_in_as :user
     click_link('John Doe')

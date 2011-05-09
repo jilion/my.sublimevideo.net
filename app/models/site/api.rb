@@ -5,19 +5,16 @@ module Site::Api
   end
 
   module ClassMethods
-    def self.fields_for_api
-      [:token, :hostname, :dev_hostnames, :extra_hostnames]
-    end
   end
 
   module InstanceMethods
-    def to_api(options={})
+    def to_api
       {
         token: token,
         main_domain: hostname,
-        dev_domains: dev_hostnames,
-        extra_domains: extra_hostnames,
-        wildcard: wildcard,
+        dev_domains: dev_hostnames.split(', '),
+        extra_domains: extra_hostnames.split(', '),
+        wildcard: wildcard?,
         path: path,
         plan: plan.to_api,
         next_plan: next_cycle_plan.try(:to_api) || {},

@@ -45,17 +45,22 @@ Spork.prefork do
       DatabaseCleaner[:active_record].strategy = :transaction
       DatabaseCleaner[:mongoid].strategy       = :truncation
       DatabaseCleaner.clean_with(:truncation) # clean all the databases
-    end
-
-    config.before(:all) do
       PaperTrail.enabled = false
-      @worker         = Delayed::Worker.new(:quiet => true)
+
+      @worker = Delayed::Worker.new(:quiet => true)
+
       # Plans
       @dev_plan       = Factory(:dev_plan)
       @beta_plan      = Factory(:beta_plan)
-      @paid_plan      = Factory(:plan, :name => 'comet')
+      @paid_plan      = Factory(:plan, name: "comet",  player_hits: 3_000)
+      @planet_plan    = Factory(:plan, name: "planet", player_hits: 50_000)
+      @star_plan      = Factory(:plan, name: "star",   player_hits: 200_000)
+      @galaxy_plan    = Factory(:plan, name: "galaxy", player_hits: 1_000_000)
       @sponsored_plan = Factory(:sponsored_plan)
       @custom_plan    = Factory(:custom_plan)
+    end
+
+    config.before(:all) do
     end
 
     config.before(:each) do
