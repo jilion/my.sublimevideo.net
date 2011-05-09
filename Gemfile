@@ -93,7 +93,7 @@ group :test do
   gem 'spork', '0.9.0.rc5'
   gem 'rb-fsevent'
   gem 'growl'
-  gem 'guard'
+  gem 'guard', :git => 'git://github.com/guard/guard.git'
   # gem 'guard-bundler'
   gem 'guard-pow'
   gem 'guard-rspec'
