@@ -23,8 +23,8 @@
 
   %h3.section_title= "API token"
   Your token:
-  %strong= @user.api_token.authentication_token if @user.api_token
-  
+  %strong= @user.api_token ? @user.api_token.authentication_token : "No token yet"
+
   = form_for @user, :url => api_tokens_path, :html => { :method => :post, :class => "main_form", :id => "edit_api_tokens" } do |f|
     .entry.update
       = f.submit @user.api_token ? "Reset" : "Generate", :class => "submit small_button", :id => "user_api_tokens_submit"
