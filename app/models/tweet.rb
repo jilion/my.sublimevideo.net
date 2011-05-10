@@ -22,7 +22,7 @@ class Tweet
   belongs_to :retweeted_tweet, :class_name => "Tweet", :inverse_of => :retweets
   has_many   :retweets, :class_name => "Tweet", :inverse_of => :retweeted_tweet
 
-  KEYWORDS = ["jilion", "sublimevideo", "videojs", "jw player"]
+  KEYWORDS = ["jilion", "sublimevideo", "aelios", "aeliosapp", "videojs", "jw player"]
 
   attr_accessor :bigger_profile_image
 
