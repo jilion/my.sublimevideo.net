@@ -1,7 +1,6 @@
 source :rubygems
 
 gem 'bundler',               '1.0.13'
-
 gem 'rails',                 '3.0.7'
 
 # Databases
@@ -74,7 +73,6 @@ end
 
 group :development, :test do
   gem 'rspec-rails', '2.6.0.rc4'
-
   gem 'timecop'
 end
 
@@ -92,8 +90,9 @@ end
 group :test do
   gem 'spork', '0.9.0.rc7'
   gem 'rb-fsevent'
-  gem 'growl'
-  gem 'guard', :git => 'git://github.com/guard/guard.git'
+  # gem 'growl'
+  gem 'guard', :path => '/Users/remy/Development/Ruby/Gems/guard/guard'
+  # gem 'guard', :git => 'git://github.com/guard/guard.git'
   # gem 'guard-bundler'
   gem 'guard-pow'
   gem 'guard-rspec'

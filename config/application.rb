@@ -18,14 +18,6 @@ module MySublimeVideo
       dir = File.expand_path(File.dirname(f))
       config.autoload_paths += [dir] if config.autoload_paths.exclude?(dir)
     end
-    # Dir["#{config.root}/app/models/{site,user}/*.rb"].each do |f|
-    #   dir = File.expand_path(File.dirname(f))
-    #   config.autoload_paths += [dir] if config.autoload_paths.exclude?(dir)
-    # end
-
-    # Only load the plugins named here, in the order given (default is alphabetical).
-    # :all can be used as a placeholder for all plugins not explicitly named
-    # config.plugins = [ :exception_notification, :ssl_requirement, :all ]
 
     # Activate observers that should always be running
     # config.active_record.observers = :site_observer

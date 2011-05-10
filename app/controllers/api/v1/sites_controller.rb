@@ -14,7 +14,7 @@ class Api::V1::SitesController < Api::ApiController
   # GET /api/v1/sites/:id
   def show
     respond_with(@site) do |format|
-      format.json { render @site.to_api.to_json }
+      format.json { render :text => @site.to_api.to_json }
     end
   end
 

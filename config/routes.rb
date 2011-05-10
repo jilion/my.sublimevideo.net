@@ -62,7 +62,7 @@ MySublimeVideo::Application.routes.draw do
   namespace "api" do
     constraints :format => :json do
 
-      namespace "v1" do
+      namespace :v1, :path => "1" do
         resources :sites
       end
 
