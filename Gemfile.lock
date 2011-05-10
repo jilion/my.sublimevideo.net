@@ -47,6 +47,12 @@ GIT
       rescue_me (~> 0.1.0)
       xml-simple (~> 1.0.12)
 
+PATH
+  remote: /Users/remy/Development/Ruby/Gems/guard/guard
+  specs:
+    guard (0.3.4)
+      thor (~> 0.14.6)
+
 GEM
   remote: http://rubygems.org/
   specs:

@@ -1,40 +1,32 @@
 require 'spec_helper'
 
 describe Site::Api do
-  
+
   describe "#to_api" do
     before(:all) do
       @site = Factory(:site, hostname: 'rymai.me', dev_hostnames: 'rymai.local', extra_hostnames: 'rymai.com', last_30_days_main_player_hits_total_count: 10, last_30_days_extra_player_hits_total_count: 20)
     end
     subject { @site }
-    
-    it "should select a subset of fields" do
-      puts "puts!!!!!!!!!!!!!!"
-      puts Time.now.utc.midnight
-      puts Time.now.utc.midnight.to_datetime
-      puts Time.now.utc.midnight.to_datetime.utc
-      
-      puts subject.to_api[:plan].inspect
-      subject.to_api[:plan].should == an_instance_of(Hash)
-      
-      subject.to_api.should == {
-        token: subject.token,
-        main_domain: 'rymai.me',
-        dev_domains: ['rymai.local'],
-        extra_domains: ['rymai.com'],
-        wildcard: false,
-        path: nil,
-        plan: an_instance_of(Hash),
-        next_plan: {},
-        started_at: Time.now.utc.to_datetime.midnight,
-        cycle_started_at: Time.now.utc.to_datetime.midnight,
-        cycle_ended_at: 1.month.from_now.end_of_day - 1.day,
-        refundable: true,
-        peak_insurance_activated: false,
-        upgrade_required: false,
-        last_30_days_video_pageviews: 30
-      }
+
+    it "selects a subset of fields, as a hash" do
+      hash = subject.to_api
+
+      hash.should be_a(Hash)
+      hash[:token].should == subject.token
+      hash[:main_domain].should == 'rymai.me'
+      hash[:dev_domains].should == ['rymai.local']
+      hash[:extra_domains].should == ['rymai.com']
+      hash[:wildcard].should == false
+      hash[:path].should == nil
+      hash[:plan].should == subject.plan.to_api
+      hash[:next_plan].should == {}
+      hash[:started_at].to_i.should == Time.now.utc.midnight.to_i
+      hash[:cycle_started_at].to_i.should == Time.now.utc.midnight.to_i
+      hash[:cycle_ended_at].to_i.should == (1.month.from_now.end_of_day - 1.day).to_i
+      hash[:refundable].should == true
+      hash[:peak_insurance_activated].should == false
+      hash[:upgrade_required].should == false
     end
   end
-  
+
 end
