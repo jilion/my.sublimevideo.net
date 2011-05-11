@@ -21,6 +21,9 @@ gem 'RedCloth',              '4.2.3'
 gem 'devise',                '1.3.4'
 gem 'devise_invitable',      :git => 'git://github.com/scambra/devise_invitable.git'
 
+# API
+gem 'rack-throttle', :require => 'rack/throttle'
+
 # Internals
 gem 'delayed_job',           '2.1.4'
 gem 'rescue_me',             '0.1.0'
@@ -90,9 +93,8 @@ end
 group :test do
   gem 'spork', '0.9.0.rc7'
   gem 'rb-fsevent'
-  # gem 'growl'
-  gem 'guard', :path => '/Users/remy/Development/Ruby/Gems/guard/guard'
-  # gem 'guard', :git => 'git://github.com/guard/guard.git'
+  gem 'growl'
+  gem 'guard', :git => 'git://github.com/guard/guard.git'
   # gem 'guard-bundler'
   gem 'guard-pow'
   gem 'guard-rspec'

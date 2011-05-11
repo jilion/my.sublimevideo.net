@@ -11,7 +11,6 @@ module Plan::Api
     def to_api
       {
         name: name,
-        title: title,
         cycle: cycle,
         video_pageviews: player_hits
       }

@@ -55,12 +55,6 @@ GIT
       rescue_me (~> 0.1.0)
       xml-simple (~> 1.0.12)
 
-PATH
-  remote: /Users/remy/Development/Ruby/Gems/guard/guard
-  specs:
-    guard (0.3.4)
-      thor (~> 0.14.6)
-
 GEM
   remote: http://rubygems.org/
   specs:
@@ -248,6 +242,8 @@ GEM
     rack-ssl-enforcer (0.2.1)
     rack-test (0.5.7)
       rack (>= 1.0)
+    rack-throttle (0.3.0)
+      rack (>= 1.0.0)
     rails (3.0.7)
       actionmailer (= 3.0.7)
       actionpack (= 3.0.7)
@@ -366,6 +362,7 @@ DEPENDENCIES
   factory_girl_rails
   ffaker
   fog (= 0.7.2)
+  growl
   guard!
   guard-livereload
   guard-pow
@@ -390,6 +387,7 @@ DEPENDENCIES
   rack-google-analytics (= 0.9.2)
   rack-private
   rack-ssl-enforcer (= 0.2.1)
+  rack-throttle
   rails (= 3.0.7)
   rb-fsevent
   request-log-analyzer (= 1.11.0)

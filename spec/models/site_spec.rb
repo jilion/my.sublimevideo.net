@@ -521,6 +521,11 @@ describe Site do
     end
 
     describe "path=" do
+      describe "should set to '' if nil is given" do
+        subject { Factory(:site, path: nil) }
+
+        its(:path) { should == '' }
+      end
       describe "should remove first /" do
         subject { Factory(:site, path: '/users/thibaud') }
 

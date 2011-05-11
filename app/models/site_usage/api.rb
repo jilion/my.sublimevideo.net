@@ -13,10 +13,5 @@ module SiteUsage::Api
   end
 
   module InstanceMethods
-    def to_api
-      {
-        day.strftime("%Y-%m-%d") => billable_player_hits
-      }
-    end
   end
 end
