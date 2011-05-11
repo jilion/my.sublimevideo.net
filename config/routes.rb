@@ -64,7 +64,11 @@ MySublimeVideo::Application.routes.draw do
     constraints :format => :json do
 
       namespace :v1, :path => "1" do
-        resources :sites
+        resources :sites do
+          member do
+            get :usage
+          end
+        end
       end
     end
   end

@@ -37,10 +37,10 @@ class Site < ActiveRecord::Base
 
   # Mongoid associations
   def usages
-    SiteUsage.where(:site_id => id)
+    SiteUsage.where(site_id: id)
   end
   def referrers
-    ::Referrer.where(:site_id => id)
+    ::Referrer.where(site_id: id)
   end
 
   # ==========
