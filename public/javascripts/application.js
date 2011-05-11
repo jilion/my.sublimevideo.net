@@ -343,6 +343,7 @@ var PasswordCheckerManager = Class.create({
       var passwordCheckerForm = new Element("form", {
         id:"password_checker",
         action:"/password/validate",
+        method:"post",
         "data-remote":"true"
       }).update(
       "<p class='desc'>Your" + passwordState + " password is needed to perform this action:</p>"+
