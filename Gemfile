@@ -90,7 +90,7 @@ group :development do
 end
 
 group :test do
-  gem 'spork', '0.9.0.rc5'
+  gem 'spork', '0.9.0.rc7'
   gem 'rb-fsevent'
   gem 'growl'
   gem 'guard', :git => 'git://github.com/guard/guard.git'
