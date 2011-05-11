@@ -235,7 +235,7 @@ describe Site::Referrer do
       end
     end
 
-    context "custom", focus: true do
+    context "custom" do
       before(:all) { @site = Factory(:site, hostname: "capped.tv", path: "lft-turbulence|mq") }
       before(:each) { Notify.should_not_receive(:send) }
       subject { @site }
