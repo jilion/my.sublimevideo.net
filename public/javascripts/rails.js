@@ -1,17 +1,18 @@
+function isEventSupported(eventName) {
+  var el = document.createElement('div');
+  eventName = 'on' + eventName;
+  var isSupported = (eventName in el);
+  if (!isSupported) {
+    el.setAttribute(eventName, 'return;');
+    isSupported = typeof el[eventName] == 'function';
+  }
+  el = null;
+  return isSupported;
+}
+
 (function() {
   // Technique from Juriy Zaytsev
   // http://thinkweb2.com/projects/prototype/detecting-event-support-without-browser-sniffing/
-  function isEventSupported(eventName) {
-    var el = document.createElement('div');
-    eventName = 'on' + eventName;
-    var isSupported = (eventName in el);
-    if (!isSupported) {
-      el.setAttribute(eventName, 'return;');
-      isSupported = typeof el[eventName] == 'function';
-    }
-    el = null;
-    return isSupported;
-  }
 
   function isForm(element) {
     return Object.isElement(element) && element.nodeName.toUpperCase() == 'FORM'

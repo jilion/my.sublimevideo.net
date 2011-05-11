@@ -284,7 +284,7 @@ FormManager manages:
 */
 var FormManager = Class.create({
   initialize: function(form) {
-    var submitEvent = Prototype.Browser.IE ? "emulated:submit" : "submit";
+    var submitEvent = !isEventSupported('submit') ? "emulated:submit" : "submit";
     form.on(submitEvent, function(event) {
       // Disable submit button for ajax forms to prevent double submissions (quickly click muliple times the form submit button)
       //
@@ -570,7 +570,9 @@ var PopupHandler = Class.create({
   }
 });
 
-
+/*
+SitesPoller make poll requests for the retrieving the up-to-dateness state of the assets of sites that don't have their assets up-to-date n the CDN
+*/
 var SitesPoller = Class.create({
   initialize: function() {
     this.pollingDelay  = 1000;
@@ -620,27 +622,6 @@ var SitesPoller = Class.create({
     this.checkForSiteInProgress();
   }
 });
-
-// var CurrentPasswordHandler = Class.create({
-//   initialize: function() {
-//     this.emailField          = $("user_email");
-//     this.passwordField       = $("user_password");
-//     this.currentPasswordWrap = $("current_password_wrap");
-//
-//     [this.emailField, this.passwordField].each(function(field){
-//       this.setupField(field);
-//     }.bind(this));
-//   },
-//   setupField: function(field) {
-//     field.on("focus", function(e){
-//       this.showCurrentPassword();
-//     }.bind(this));
-//   },
-//   showCurrentPassword: function() {
-//     this.currentPasswordWrap.show();
-//   }
-// });
-
 
 function supportsHtml5InputOfType(inputType) { // e.g. "email"
   var i = document.createElement("input");

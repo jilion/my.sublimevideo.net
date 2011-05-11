@@ -99,7 +99,6 @@ group :test do
   gem 'guard-rspec'
   gem 'guard-spork'#, '0.1.4'
   gem 'rspec-instafail'
-  gem 'livereload'
   gem 'guard-livereload'
 
   gem 'shoulda'
