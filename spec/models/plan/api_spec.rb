@@ -11,7 +11,6 @@ describe Plan::Api do
 
     hash.should be_a(Hash)
     hash[:name].should == 'huge_plan'
-    hash[:title].should == 'Huge Plan'
     hash[:cycle].should == 'month'
     hash[:video_pageviews].should == 1_000_000
   end

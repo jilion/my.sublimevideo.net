@@ -205,7 +205,7 @@ class Site < ActiveRecord::Base
   end
 
   def path=(attribute)
-    write_attribute :path, attribute.downcase.gsub(/^\/|\/$/, '')
+    write_attribute :path, attribute.respond_to?(:to_s) ? attribute.to_s.downcase.gsub(/^\/|\/$/, '') : ''
   end
 
   def plan_id=(attribute)
