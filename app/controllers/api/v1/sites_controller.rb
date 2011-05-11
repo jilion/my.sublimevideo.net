@@ -1,7 +1,7 @@
 class Api::V1::SitesController < Api::ApiController
   respond_to :json
 
-  before_filter :find_by_token!, :only => [:show]
+  before_filter :find_by_token!, :only => [:show, :usage]
 
   # GET /api/v1/sites
   def index
@@ -15,6 +15,14 @@ class Api::V1::SitesController < Api::ApiController
   def show
     respond_with(@site) do |format|
       format.json { render :text => @site.to_api.to_json }
+    end
+  end
+
+  # GET /api/v1/sites/:id/usage
+  def usage
+    @site_usages = @site.usage_to_api
+    respond_with(@site_usages) do |format|
+      format.json { render :text => @site_usages.to_json }
     end
   end
 

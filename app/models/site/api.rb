@@ -26,5 +26,12 @@ module Site::Api
         upgrade_required: first_plan_upgrade_required_alert_sent_at?
       }
     end
+    
+    def usage_to_api
+      {
+        token: token,
+        usage: usages.to_api
+      }
+    end
   end
 end

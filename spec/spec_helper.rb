@@ -83,7 +83,6 @@ end
 Spork.each_run do
   # This code will be run each time you run your specs.
 
-
   # Factory need to be required each launch to prevent loading of all models
   require 'factory_girl'
   require Rails.root.join("spec/factories")
