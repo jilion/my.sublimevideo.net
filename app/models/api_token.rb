@@ -1,6 +1,6 @@
 class ApiToken < ActiveRecord::Base
 
-  devise :token_authenticatable, :trackable
+  devise :token_authenticatable
 
   # ================
   # = Associations =

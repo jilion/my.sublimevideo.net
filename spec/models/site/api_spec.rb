@@ -61,8 +61,11 @@ describe Site::Api do
 
   describe "#usage_to_api" do
     context "with no usage" do
-      before(:all) do
+      before(:each) do
         @site = Factory(:site, hostname: 'rymai.me', dev_hostnames: 'rymai.local', extra_hostnames: 'rymai.com', wildcard: true, path: 'test')
+        @site_usage1 = Factory(:site_usage, site_id: @site.id, day: 61.days.ago.midnight, main_player_hits: 1000, main_player_hits_cached: 800, extra_player_hits: 500, extra_player_hits_cached: 400)
+        @site_usage2 = Factory(:site_usage, site_id: @site.id, day: 59.days.ago.midnight, main_player_hits: 1000, main_player_hits_cached: 800, extra_player_hits: 500, extra_player_hits_cached: 400)
+        @site_usage3 = Factory(:site_usage, site_id: @site.id, day: Time.now.utc.midnight, main_player_hits: 1000, main_player_hits_cached: 800, extra_player_hits: 500, extra_player_hits_cached: 400)
       end
       subject { @site }
 
@@ -71,7 +74,20 @@ describe Site::Api do
 
         hash.should be_a(Hash)
         hash[:token].should == subject.token
-        hash[:usage].should == {}
+        hash[:usage].should == {
+          @site_usage2.day.strftime("%Y-%m-%d") => @site_usage2.billable_player_hits,
+          @site_usage3.day.strftime("%Y-%m-%d") => @site_usage3.billable_player_hits
+        }
+      end
+
+      it "with dates given, selects a subset of fields, as a hash" do
+        hash = subject.usage_to_api(15.days.ago, Time.now.utc.end_of_day)
+
+        hash.should be_a(Hash)
+        hash[:token].should == subject.token
+        hash[:usage].should == {
+          @site_usage3.day.strftime("%Y-%m-%d") => @site_usage3.billable_player_hits
+        }
       end
     end
   end

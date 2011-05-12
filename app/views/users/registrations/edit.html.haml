@@ -27,7 +27,7 @@
 
   = form_for @user, :url => api_tokens_path, :html => { :method => :post, :class => "main_form", :id => "edit_api_tokens" } do |f|
     .entry.update
-      = f.submit @user.api_token ? "Reset" : "Generate", :class => "submit small_button", :id => "user_api_tokens_submit"
+      = f.submit @user.api_token ? "Reset" : "Generate", :class => "submit small_button", :id => "user_api_tokens_submit", :confirm => @user.api_token ? "Are you really sure?" : nil
   .spacer
 
 .content_right

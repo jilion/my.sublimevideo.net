@@ -24,7 +24,7 @@ gem 'devise',                '1.4.2'
 gem 'devise_invitable',      '0.5.1'
 
 # API
-gem 'rack-throttle', :require => 'rack/throttle'
+gem 'rack-throttle',         :git => 'git://github.com/rymai/rack-throttle.git', :require => 'rack/throttle'
 
 # Internals
 gem 'delayed_job',           '2.1.4'

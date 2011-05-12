@@ -1620,3 +1620,224 @@
       AA==
 
     http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: https://search.twitter.com:443/search.json?q=%22aelios%22&rpp=100
+    body: 
+    headers: 
+      accept: 
+      - application/json
+      user-agent: 
+      - Twitter Ruby Gem 1.3.0
+      authorization: 
+      - OAuth oauth_consumer_key="KTWk4ZrufEHjncLCsNwhw", oauth_nonce="e3830d343f53acc08132331c49bd2ed9", oauth_signature="MCgXfxiJAExdvCIS%2FRJf5Y3CA8U%3D", oauth_signature_method="HMAC-SHA1", oauth_timestamp="1305194376", oauth_token="6797462-Sz009rpFmcLGIBANAyJRsKoUlHtf2Rl5YuufnZeiI", oauth_version="1.0"
+      accept-encoding: 
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      date: 
+      - Thu, 12 May 2011 09:59:38 GMT
+      server: 
+      - hi
+      status: 
+      - 200 OK
+      x-served-from: 
+      - smf1-aek-03-sr3
+      x-runtime: 
+      - "0.26282"
+      content-type: 
+      - application/json; charset=utf-8
+      x-timeline-cache-hit: 
+      - Miss
+      x-served-by: 
+      - smf1-aba-35-sr2.prod.twitter.com
+      cache-control: 
+      - max-age=15, must-revalidate, max-age=300
+      expires: 
+      - Thu, 12 May 2011 10:04:38 GMT
+      vary: 
+      - Accept-Encoding
+      x-varnish: 
+      - "1004105721"
+      age: 
+      - "0"
+      via: 
+      - 1.1 varnish
+      x-cache-svr: 
+      - smf1-aba-35-sr2.prod.twitter.com
+      x-cache: 
+      - MISS
+      content-encoding: 
+      - gzip
+      content-length: 
+      - "2163"
+    body: !binary |
+      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
+      NwAA
+
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: https://search.twitter.com:443/search.json?q=%22aeliosapp%22&rpp=100
+    body: 
+    headers: 
+      accept: 
+      - application/json
+      user-agent: 
+      - Twitter Ruby Gem 1.3.0
+      authorization: 
+      - OAuth oauth_consumer_key="KTWk4ZrufEHjncLCsNwhw", oauth_nonce="6c029f8ff7cc73cf5a4bf1b74ea63f3d", oauth_signature="bWtzzx%2FzPXBXmeVBwti9dBI%2BQkM%3D", oauth_signature_method="HMAC-SHA1", oauth_timestamp="1305194378", oauth_token="6797462-Sz009rpFmcLGIBANAyJRsKoUlHtf2Rl5YuufnZeiI", oauth_version="1.0"
+      accept-encoding: 
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      date: 
+      - Thu, 12 May 2011 09:59:40 GMT
+      server: 
+      - hi
+      status: 
+      - 200 OK
+      x-served-from: 
+      - smf1-aei-19-sr2
+      x-runtime: 
+      - "0.32032"
+      content-type: 
+      - application/json; charset=utf-8
+      x-timeline-cache-hit: 
+      - Miss
+      x-served-by: 
+      - smf1-aav-03-sr2.prod.twitter.com
+      cache-control: 
+      - max-age=15, must-revalidate, max-age=300
+      expires: 
+      - Thu, 12 May 2011 10:04:39 GMT
+      vary: 
+      - Accept-Encoding
+      x-varnish: 
+      - "656677968"
+      age: 
+      - "0"
+      via: 
+      - 1.1 varnish
+      x-cache-svr: 
+      - smf1-aav-03-sr2.prod.twitter.com
+      x-cache: 
+      - MISS
+      content-encoding: 
+      - gzip
+      content-length: 
+      - "2506"
+    body: !binary |
+      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
+
+    http_version: "1.1"

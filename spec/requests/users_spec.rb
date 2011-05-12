@@ -236,7 +236,7 @@ feature "Users" do
       click_button "user_api_tokens_submit"
 
       current_url.should =~ %r(^http://[^/]+/account/edit$)
-      @current_user.api_token.should == first_api_token
+      @current_user.reload.api_token.should == first_api_token
       @current_user.api_token.authentication_token.should be_present
       @current_user.api_token.authentication_token.should_not == first_auth_token
       page.should have_content(@current_user.api_token.authentication_token)

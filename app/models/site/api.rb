@@ -27,11 +27,12 @@ module Site::Api
       }
     end
 
-    def usage_to_api
+    def usage_to_api(start_date=60.days.ago.midnight, end_date=Time.now.utc.end_of_day)
       {
         token: token,
-        usage: usages.try(:to_api) || {}
+        usage: SiteUsage.to_api(usages.between(start_date, end_date))
       }
     end
+
   end
 end
