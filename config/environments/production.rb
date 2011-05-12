@@ -2,7 +2,9 @@ MySublimeVideo::Application.configure do
   # Settings specified here will take precedence over those in config/environment.rb
   config.middleware.use(Rack::SslEnforcer, :except => /^\/r\// )
   config.middleware.use(Rack::GoogleAnalytics, :tracker => 'UA-10280941-8')
-  config.middleware.use(Rack::Throttle::Hourly, :max => 3600, :cache => Rails.cache, :key_prefix => :throttle)
+  
+  require 'rack/throttle/custom_hourly'
+  config.middleware.use(Rack::Throttle::CustomHourly, :max => 3600, :cache => Rails.cache, :key_prefix => :throttle)
 
   # The production environment is meant for finished, "live" apps.
   # Code is not reloaded between requests
