@@ -1,0 +1,89 @@
+MSV REST API
+
+- Authentication is always needed
+- You can request an API Token by visiting https://my.sublimevideo.net/account/edit and click on "Generate" under the "API Token" section.
+- You can reset your API Token (in case you think someone else uses it for example).
+
+Authentication:
+- Should be given for each requests.
+- You can authenticate by giving your API Token through query string using the "auth_token" key and your API Token as the value.
+  Example: https://my.sublimevideo.net/api/version/sites.format?auth_token=aBCd1234
+- You can authenticate through HTTP Basic Authentication by giving your API Token as username and "" or "X" as password.
+
+Current version:
+
+The current version is version 1.
+
+Available resources:
+
+For resources that need a site "token", you can find this token by clicking on the "Embed Code" button on https://my.sublimevideo.net/sites and taking the 8 alphanumerical sequence just before the ".js"
+
+GET sites
+
+Return the detailed list of your sites.
+
+URL
+https://my.sublimevideo.net/api/version/sites.format
+
+Supported format
+json
+
+Supported request methods
+GET
+
+Requires Authentication
+true
+
+Rate Limited
+3600 / hour
+
+Parameters
+  Nothing
+
+
+GET sites/:token
+
+Return the details of one site.
+
+URL
+https://my.sublimevideo.net/api/version/sites/:token.format
+
+Supported format
+json
+
+Supported request methods
+GET
+
+Requires Authentication
+true
+
+Rate Limited
+3600 / hour
+
+Parameters
+  Required
+  - token : The token of the desired site. Ex: https://my.sublimevideo.net/api/1/sites/abc123.json
+
+
+GET sites/:token/usage
+
+Return the usage of your site's video player during the last 60 days.
+
+URL
+https://my.sublimevideo.net/api/version/sites/:token/usage.format
+
+Supported format
+json
+
+Supported request methods
+GET
+
+Requires Authentication
+true
+
+Rate Limited
+3600 / hour
+
+Parameters
+  Required
+  - token : The token of the desired site. Ex: https://my.sublimevideo.net/api/1/sites/abc123/usage.json
