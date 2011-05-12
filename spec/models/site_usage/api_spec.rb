@@ -10,7 +10,7 @@ describe SiteUsage::Api do
   subject { SiteUsage }
 
   it "selects a subset of fields, as a hash" do
-    hash = subject.to_api(60.days.ago.midnight, Time.now.utc.end_of_day)
+    hash = SiteUsage.to_api(@site.usages.between(60.days.ago.midnight, Time.now.utc.end_of_day))
 
     hash.should be_a(Hash)
     hash[@site_usage1.day.strftime("%Y-%m-%d")].should be_nil

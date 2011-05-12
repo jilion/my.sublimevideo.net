@@ -22,7 +22,7 @@ gem 'devise',                '1.3.4'
 gem 'devise_invitable',      :git => 'git://github.com/scambra/devise_invitable.git'
 
 # API
-gem 'rack-throttle', :require => 'rack/throttle'
+gem 'rack-throttle',         :git => 'git://github.com/rymai/rack-throttle.git', :require => 'rack/throttle'
 
 # Internals
 gem 'delayed_job',           '2.1.4'
