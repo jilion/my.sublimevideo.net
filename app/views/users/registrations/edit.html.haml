@@ -21,7 +21,7 @@
       = f.submit "Update", :class => "submit small_button", :id => "user_credentials_submit"
   .spacer
 
-  %h3.section_title= "API token"
+  %h3.section_title= "API Token"
   Your token:
   %strong= @user.api_token ? @user.api_token.authentication_token : "No token yet"
 
