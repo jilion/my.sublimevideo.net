@@ -107,7 +107,7 @@ class Invoice < ActiveRecord::Base
   end
 
   def self.update_pending_dates_for_first_not_paid_invoices
-    Invoice.not_paid.where(renew: false).each do |invoice| # it returns first and upgrade invoices not already paid (never recurrent invoices)
+    Invoice.not_paid.where(renew: [nil, false]).each do |invoice| # it returns first and upgrade invoices not already paid (never recurrent invoices)
       if invoice == invoice.site.invoices.by_date('asc').first # update only the first invoice (first paid plan)
         plan_invoice_item = invoice.invoice_items.first
         new_started_at    = Time.now.utc.midnight

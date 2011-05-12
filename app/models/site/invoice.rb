@@ -198,7 +198,7 @@ private
   # after_save BEFORE_SAVE TRIGGER AN INFINITE LOOP SINCE invoice.save also saves self
   def create_and_charge_invoice
     if being_changed_to_paid_plan? || being_renewed?
-      invoice = Invoice.build(site: self, renew: being_renewed?)
+      invoice = Invoice.build(site: self, renew: !!being_renewed?)
       invoice.save!
       @transaction = Transaction.charge_by_invoice_ids([invoice.id], charging_options || {}) if instant_charging?
 
@@ -214,11 +214,8 @@ private
   end
 
   def being_renewed?
-    (in_paid_plan? &&
-      # ensure plan_cycle dates are set, not nil!
-      ((pending_plan_cycle_started_at_changed? && pending_plan_cycle_started_at?) ||
-       (pending_plan_cycle_ended_at_changed? && pending_plan_cycle_ended_at?))
-    )
+    # ensure plan_cycle dates are set, not nil!
+    in_paid_plan? && ((pending_plan_cycle_started_at_changed? && pending_plan_cycle_started_at?) || (pending_plan_cycle_ended_at_changed? && pending_plan_cycle_ended_at?))
   end
 
 end

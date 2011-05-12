@@ -31,6 +31,10 @@ describe Invoice do
     before(:all) { @invoice = Factory(:invoice) }
     subject { @invoice }
 
+    [:site, :renew].each do |attr|
+      it { should allow_mass_assignment_of(attr) }
+    end
+
     it { should validate_presence_of(:site) }
     it { should validate_presence_of(:invoice_items_amount) }
     it { should validate_presence_of(:vat_rate) }

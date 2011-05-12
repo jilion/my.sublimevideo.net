@@ -942,6 +942,7 @@ describe Site::Invoice do
           it "should create and try to charge the invoice" do
             expect { subject.save }.to change(subject.invoices, :count).by(1)
             subject.reload.plan.should == @paid_plan
+            subject.last_invoice.should_not be_renew
             subject.last_invoice.should be_paid
           end
         end
