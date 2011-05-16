@@ -2,37 +2,34 @@ module Site::Api
   extend ActiveSupport::Concern
 
   included do
+    acts_as_api
+
+    api_accessible :v1_private do |template|
+      template.add :token
+      template.add :hostname, :as => :main_domain
+      template.add lambda { |site| site.dev_hostnames.try(:split, ', ') || [] }, :as => :dev_domains
+      template.add lambda { |site| site.extra_hostnames.try(:split, ', ') || [] }, :as => :extra_domains
+      template.add lambda { |site| site.wildcard? }, :as => :wildcard
+      template.add lambda { |site| site.path || '' }, :as => :path
+      template.add :plan
+      template.add :next_plan
+      template.add lambda { |site| site.plan_started_at.try(:to_datetime) }, :as => :started_at
+      template.add lambda { |site| site.plan_cycle_started_at.try(:to_datetime) }, :as => :cycle_started_at
+      template.add lambda { |site| site.plan_cycle_ended_at.try(:to_datetime) }, :as => :cycle_ended_at
+      template.add lambda { |site| site.refundable?  }, :as => :refundable
+      template.add lambda { |site| site.plan_player_hits_reached_notification_sent_at? }, :as => :peak_insurance_activated
+      template.add lambda { |site| site.first_plan_upgrade_required_alert_sent_at?  }, :as => :upgrade_required
+    end
+
+    api_accessible :v1_usage do |template|
+      template.add :token
+      template.add lambda { |site| site.usages.between(60.days.ago.midnight, Time.now.utc.end_of_day) }, :as => :usage, :template => :v1_private
+    end
   end
 
   module ClassMethods
   end
 
   module InstanceMethods
-    def to_api
-      {
-        token: token,
-        main_domain: hostname,
-        dev_domains: dev_hostnames.try(:split, ', ') || [],
-        extra_domains: extra_hostnames.try(:split, ', ') || [],
-        wildcard: wildcard?,
-        path: path || '',
-        plan: plan.try(:to_api) || {},
-        next_plan: next_cycle_plan.try(:to_api) || {},
-        started_at: plan_started_at.try(:to_datetime),
-        cycle_started_at: plan_cycle_started_at.try(:to_datetime),
-        cycle_ended_at: plan_cycle_ended_at.try(:to_datetime),
-        refundable: refundable?,
-        peak_insurance_activated: plan_player_hits_reached_notification_sent_at?,
-        upgrade_required: first_plan_upgrade_required_alert_sent_at?
-      }
-    end
-
-    def usage_to_api(start_date=60.days.ago.midnight, end_date=Time.now.utc.end_of_day)
-      {
-        token: token,
-        usage: SiteUsage.to_api(usages.between(start_date, end_date))
-      }
-    end
-
   end
 end
