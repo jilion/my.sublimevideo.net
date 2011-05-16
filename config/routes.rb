@@ -62,8 +62,8 @@ MySublimeVideo::Application.routes.draw do
 
   namespace "api" do
     constraints :format => :json do
-
-      namespace :v1, :path => "1" do
+      
+      scope ":version" do
         resources :sites do
           member do
             get :usage
@@ -141,7 +141,7 @@ MySublimeVideo::Application.routes.draw do
     resources :admins, :only => [:index, :destroy]
 
     resources :mails,  :only => [:index, :new, :create]
-    scope :mails do
+    scope "mails" do
       resources :mail_templates, :only => [:new, :create, :edit, :update], :path => "templates"
       resources :mail_logs,      :only => :show,                           :path => "logs"
     end

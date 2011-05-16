@@ -45,8 +45,9 @@ feature "API /sites" do
       scenario do
         visit "/api/1/sites.json?auth_token=#{@user.api_token.authentication_token}"
 
-        parsed_body.should be_instance_of(Array)
-        parsed_body[0].should be_instance_of(Hash)
+        parsed_body.should be_kind_of(Hash)
+        parsed_body["sites"].should be_kind_of(Array)
+        parsed_body["sites"][0].should be_kind_of(Hash)
       end
     end
   end
@@ -66,7 +67,9 @@ feature "API /sites" do
       scenario do
         visit "/api/1/sites/#{@site.token}.json?auth_token=#{@user.api_token.authentication_token}"
 
-        parsed_body.should be_instance_of(Hash)
+        parsed_body.should be_kind_of(Hash)
+        parsed_body["site"].should be_kind_of(Hash)
+        parsed_body["site"]["token"].should == @site.token
       end
     end
   end
@@ -92,10 +95,14 @@ feature "API /sites" do
       scenario do
         visit "/api/1/sites/#{@site.token}/usage.json?auth_token=#{@user.api_token.authentication_token}"
 
-        parsed_body.should be_instance_of(Hash)
-        parsed_body["token"].should == @site.token
-        parsed_body["usage"][@site_usage2.day.strftime("%Y-%m-%d")].should == @site_usage2.billable_player_hits
-        parsed_body["usage"][@site_usage3.day.strftime("%Y-%m-%d")].should == @site_usage3.billable_player_hits
+        parsed_body.should be_kind_of(Hash)
+        parsed_body["site"].should be_kind_of(Hash)
+        parsed_body["site"]["token"].should == @site.token
+        parsed_body["site"]["usage"].should be_kind_of(Array)
+        parsed_body["site"]["usage"][0]["day"].should == @site_usage2.day.strftime("%Y-%m-%d")
+        parsed_body["site"]["usage"][0]["video_pageviews"].should == @site_usage2.billable_player_hits
+        parsed_body["site"]["usage"][1]["day"].should == @site_usage3.day.strftime("%Y-%m-%d")
+        parsed_body["site"]["usage"][1]["video_pageviews"].should == @site_usage3.billable_player_hits
       end
     end
   end

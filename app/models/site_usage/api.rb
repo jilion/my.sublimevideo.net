@@ -2,14 +2,15 @@ module SiteUsage::Api
   extend ActiveSupport::Concern
 
   included do
+    acts_as_api
+
+    api_accessible :v1_private do |template|
+      template.add lambda { |usage| usage.day.strftime("%Y-%m-%d") }, :as => :day
+      template.add lambda { |usage| usage.billable_player_hits }, :as => :video_pageviews
+    end
   end
 
   module ClassMethods
-    def to_api(usages)
-      usages.each_with_object({}) do |usage, hash|
-        hash[usage.day.strftime("%Y-%m-%d")] = usage.billable_player_hits
-      end
-    end
   end
 
   module InstanceMethods

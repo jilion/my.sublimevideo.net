@@ -2,18 +2,18 @@ module Plan::Api
   extend ActiveSupport::Concern
 
   included do
+    acts_as_api
+
+    api_accessible :v1_private do |template|
+      template.add :name
+      template.add :cycle
+      template.add :player_hits, :as => :video_pageviews
+    end
   end
 
   module ClassMethods
   end
 
   module InstanceMethods
-    def to_api
-      {
-        name: name,
-        cycle: cycle,
-        video_pageviews: player_hits
-      }
-    end
   end
 end

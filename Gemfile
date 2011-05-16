@@ -24,6 +24,7 @@ gem 'devise',                '1.4.2'
 gem 'devise_invitable',      '0.5.1'
 
 # API
+gem 'acts_as_api',           '0.3.6'
 gem 'rack-throttle',         :git => 'git://github.com/rymai/rack-throttle.git', :require => 'rack/throttle'
 
 # Internals
@@ -50,7 +51,7 @@ gem 'request-log-analyzer',  '1.11.0', :require => 'request_log_analyzer'
 # gem 'activemerchant',        :git => 'git://github.com/ZenCocoon/active_merchant.git' # with the fix for Ogone#parse and more
 gem 'activemerchant',        :git => 'git://github.com/rymai/active_merchant.git', :branch => '3ds_from_ZenCocoon'
 gem 'public_suffix_service', '0.8.1'
-gem 'useragent', :git => 'git://github.com/Jilion/useragent.git'
+gem 'useragent',             :git => 'git://github.com/Jilion/useragent.git'
 
 gem 'zip',                   '2.0.2', :require => 'zip/zip'
 gem 'countries',             '0.3.0'
