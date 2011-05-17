@@ -16,7 +16,7 @@ describe TransactionMailer do
 
     specify do
       ActionMailer::Base.deliveries.size.should == 1
-      @last_delivery.from.should == ["noreply@sublimevideo.net"]
+      @last_delivery.from.should == ["billing@sublimevideo.net"]
       @last_delivery.to.should == [subject.user.email]
       @last_delivery.content_type.should == "text/plain; charset=UTF-8"
     end

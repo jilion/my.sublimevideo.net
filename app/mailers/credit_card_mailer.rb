@@ -1,4 +1,5 @@
 class CreditCardMailer < SublimeVideoMailer
+  default :from => "SublimeVideo <billing@sublimevideo.net>"
 
   def will_expire(user)
     @user = user

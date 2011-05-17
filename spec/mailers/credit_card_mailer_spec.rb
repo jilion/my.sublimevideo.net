@@ -6,7 +6,7 @@ describe CreditCardMailer do
   end
   subject { @user }
 
-  it_should_behave_like "common mailer checks", %w[will_expire], :params => [Factory(:user, :cc_expire_on => 1.day.from_now)]
+  it_should_behave_like "common mailer checks", %w[will_expire], :from => ["billing@sublimevideo.net"], :params => [Factory(:user, :cc_expire_on => 1.day.from_now)]
 
   describe "#will_expire" do
     before(:each) do

@@ -1,4 +1,5 @@
 class TransactionMailer < SublimeVideoMailer
+  default :from => "SublimeVideo <billing@sublimevideo.net>"
   helper :application, :invoices
 
   def charging_succeeded(transaction)
