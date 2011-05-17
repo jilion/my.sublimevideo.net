@@ -21,45 +21,56 @@ class Ticket
   end
 
   def save
-    valid? && delay(:priority => 25).post_ticket
+    valid? && delay(priority: 25).post_ticket
   end
 
   def post_ticket
-    response = Zendesk.post("/tickets.xml", {
-      :ticket => {
-        :subject     => @subject,
-        :description => @message,
-        :set_tags    => "#{@type} #{@user.support}-support"
-      }.merge(user_params)
-    })
+    response = Zendesk.post("/tickets.xml", self.to_xml)
     ticket_id = response['location'].match(%r(#{Zendesk.base_url}/tickets/(\d+)\.xml))[1].to_i
     raise "Can't find ticket at: #{response['location']}!" if ticket_id.blank?
 
-    if @user.zendesk_id.blank? && zendesk_requester_id = JSON.parse(Zendesk.get("/tickets/#{ticket_id}.json").body)["requester_id"].to_i
+    if !@user.zendesk_id? && zendesk_requester_id = JSON[Zendesk.get("/tickets/#{ticket_id}.json").body]["requester_id"].to_i
       @user.update_attribute(:zendesk_id, zendesk_requester_id)
-      delay(:priority => 25).verify_user
+      Ticket.delay(:priority => 25).verify_user(@user.id)
     end
 
     ticket_id
   end
 
-  def verify_user
-    Zendesk.put("/users/#{@user.zendesk_id}.xml", :user => { :password => Digest::MD5.new(Time.now.to_s).to_s, :is_verified => true })
+  def self.verify_user(user_id)
+    if user = User.find(user_id)
+      Zendesk.put("/users/#{user.zendesk_id}.xml", "<user><password>#{Digest::MD5.new(Time.now.to_s)}</password><is-verified>true</is-verified></user>")
+    end
   end
 
   def to_key
     nil
   end
 
-private
-
-  def user_params
-    if @user.zendesk_id.present?
-      { :requester_id => @user.zendesk_id }
-    else
-      { :requester_name => h(@user.full_name), :requester_email => h(@user.email) }
+  def to_xml(options={})
+    xml = Builder::XmlMarkup.new(indent: 2)
+    xml.ticket do
+      xml.tag!(:subject, @subject)
+      xml.tag!(:description, @message)
+      xml.tag!(:"set-tags", "#{@type} #{@user.support}-support")
+      if @user.zendesk_id?
+        xml.tag!(:"requester-id", @user.zendesk_id)
+      else
+        xml.tag!(:"requester-name", h(@user.full_name))
+        xml.tag!(:"requester-email", h(@user.email))
+      end
     end
   end
+#
+# private
+#
+#   def user_params
+#     if @user.zendesk_id?
+#       { :requester_id => @user.zendesk_id }
+#     else
+#       { :requester_name => h(@user.full_name), :requester_email => h(@user.email) }
+#     end
+#   end
 
 end
 

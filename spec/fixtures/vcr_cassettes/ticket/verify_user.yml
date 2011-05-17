@@ -2,91 +2,7 @@
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
     method: :put
-    uri: http://zendesk%40sublimevideo.net:wrank8@jilion.zendesk.com:80/users/16282300.xml
-    body: 
-    headers: 
-      accept: 
-      - "*/*"
-      content-type: 
-      - application/xml
-      authorization: 
-      - Basic emVub0BqaWxpb24uY29tOndyYW5rOA==
-  response: !ruby/struct:VCR::Response 
-    status: !ruby/struct:VCR::ResponseStatus 
-      code: 200
-      message: OK
-    headers: 
-      p3p: 
-      - CP="NOI DSP COR NID ADMa OPTa OUR NOR"
-      connection: 
-      - keep-alive
-      - close
-      content-type: 
-      - application/xml; charset=utf-8
-      x-runtime: 
-      - "73"
-      date: 
-      - Mon, 30 Aug 2010 16:11:59 GMT
-      server: 
-      - nginx/0.6.35
-      content-length: 
-      - "1"
-      set-cookie: 
-      - zendesk_user_version=users%2F15308267-20100805220019; path=/
-      - _zendesk_session=BAh7CyIcd2FyZGVuLnVzZXIuZGVmYXVsdC5rZXlpA%2BuV6ToNYXV0aF92aWEiEkJhc2ljU3RyYXRlZ3k6DGFjY291bnRpAjepIhN3YXJkZW4ubWVzc2FnZXsAOgdpZCIVYThybDducHV5LW9zYXRmejoPc2Vzc2lvbl9pZCIlNDQ0ZWQzNjlmYWJiY2EzNjZhMjRiMzFkYjNhOWI1ZGM%3D--e5d4377f611294185adfd130ce5500d76efe9fcb; path=/; HttpOnly
-      - zendesk_user_version=users%2F15308267-20100805220019; path=/
-      cache-control: 
-      - no-cache
-      status: 
-      - 200 OK
-    body: " "
-    http_version: "1.1"
-- !ruby/struct:VCR::HTTPInteraction 
-  request: !ruby/struct:VCR::Request 
-    method: :get
-    uri: http://zendesk%40sublimevideo.net:wrank8@jilion.zendesk.com:80/users/16282300.json
-    body: 
-    headers: 
-      accept: 
-      - "*/*"
-      authorization: 
-      - Basic emVub0BqaWxpb24uY29tOndyYW5rOA==
-  response: !ruby/struct:VCR::Response 
-    status: !ruby/struct:VCR::ResponseStatus 
-      code: 200
-      message: OK
-    headers: 
-      etag: 
-      - "\"f60f48531c91fd83a7e283b582b7c282\""
-      p3p: 
-      - CP="NOI DSP COR NID ADMa OPTa OUR NOR"
-      connection: 
-      - keep-alive
-      - close
-      content-type: 
-      - application/json; charset=utf-8
-      x-runtime: 
-      - "23"
-      date: 
-      - Mon, 30 Aug 2010 16:12:00 GMT
-      server: 
-      - nginx/0.6.35
-      content-length: 
-      - "406"
-      set-cookie: 
-      - zendesk_user_version=users%2F15308267-20100805220019; path=/
-      - _zendesk_session=BAh7CyIcd2FyZGVuLnVzZXIuZGVmYXVsdC5rZXlpA%2BuV6ToNYXV0aF92aWEiEkJhc2ljU3RyYXRlZ3k6DGFjY291bnRpAjepIhN3YXJkZW4ubWVzc2FnZXsAOgdpZCIUN2ZpbDd4c2NrcnI5dWhwOg9zZXNzaW9uX2lkIiU4MTExZjdjNzExZmVlMTJiYjBjZGYyNzYzN2QzNjAwNw%3D%3D--07afe707537af01ff9ae0af12c4c0febfe595ea6; path=/; HttpOnly
-      - zendesk_user_version=users%2F15308267-20100805220019; path=/
-      cache-control: 
-      - private, max-age=0, must-revalidate
-      status: 
-      - 200 OK
-    body: "{\"name\":\"Joe Blow\",\"locale_id\":null,\"openid_url\":null,\"created_at\":\"2010/08/30 17:57:24 +0200\",\"last_login\":null,\"details\":null,\"updated_at\":\"2010/08/30 18:11:59 +0200\",\"notes\":null,\"external_id\":null,\"restriction_id\":4,\"id\":16282300,\"is_verified\":true,\"phone\":null,\"is_active\":true,\"groups\":[],\"time_zone\":\"Amsterdam\",\"roles\":0,\"organization_id\":null,\"email\":\"email11@user.com\",\"uses_12_hour_clock\":false}"
-    http_version: "1.1"
-- !ruby/struct:VCR::HTTPInteraction 
-  request: !ruby/struct:VCR::Request 
-    method: :put
-    uri: http://zendesk%40sublimevideo.net:wrank8@jilion.zendesk.com:80/users/30867775.xml
+    uri: http://zendesk%40sublimevideo.net%2Ftoken:oxVzosGyu7DaZrQ0fhmKngHATvd78UhEqTzMszZy@sublimevideo.zendesk.com:80/users/59438671.xml
     body: <user><password>d41d8cd98f00b204e9800998ecf8427e</password><is-verified>true</is-verified></user>
     headers: 
       content-type: 
@@ -99,7 +15,7 @@
       server: 
       - nginx/0.8.53
       date: 
-      - Wed, 23 Mar 2011 15:52:35 GMT
+      - Tue, 17 May 2011 12:24:24 GMT
       content-type: 
       - application/xml; charset=utf-8
       connection: 
@@ -109,11 +25,12 @@
       p3p: 
       - CP="NOI DSP COR NID ADMa OPTa OUR NOR"
       x-runtime: 
-      - "191"
+      - "195"
       content-length: 
       - "1"
       set-cookie: 
-      - _zendesk_session=BAh7DCIcd2FyZGVuLnVzZXIuZGVmYXVsdC5rZXlpA%2BuV6ToMYWNjb3VudGkCN6k6DWF1dGhfdmlhIhJCYXNpY1N0cmF0ZWd5Og91cGRhdGVkX2F0bCsHQxeKTToPc2Vzc2lvbl9pZCIlNzQ4NTlmMzk5MjhiNzQyZjYzMTQ5OTI4NTg1NDVmYWIiE3dhcmRlbi5tZXNzYWdlewA6B2lkIhQxNjhsaTZhb2oteTE4ZWU%3D--9bf6634cb79fa63331319f9590b3a3c6758172dd; path=/; HttpOnly
+      - _zendesk_session=BAh7DToMYWNjb3VudGkCN6kiHHdhcmRlbi51c2VyLmRlZmF1bHQua2V5aQPrlek6D3VwZGF0ZWRfYXRsKwf4aNJNOg1hdXRoX3ZpYSISQmFzaWNTdHJhdGVneToVYXV0aGVudGljYXRlZF9hdGwrB%2Fho0k06D3Nlc3Npb25faWQiJWQ5ODAyMWRiNTQ5YjI4NDZkMGY4ZTM2MmI3MzdjMzJmIhN3YXJkZW4ubWVzc2FnZXsAOgdpZCIVN3JnbGxlNXpjLXB2cnRlYw%3D%3D--3d1f9a49ce72e3fba11fd9f6d41e0d15589e76a9; path=/; HttpOnly
+      - oid_user=; path=/; expires=Thu, 01-Jan-1970 00:00:00 GMT
       cache-control: 
       - no-cache
     body: " "
@@ -121,7 +38,7 @@
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
     method: :get
-    uri: http://zendesk%40sublimevideo.net:wrank8@jilion.zendesk.com:80/users/30867775.json
+    uri: http://zendesk%40sublimevideo.net%2Ftoken:oxVzosGyu7DaZrQ0fhmKngHATvd78UhEqTzMszZy@sublimevideo.zendesk.com:80/users/59438671.json
     body: 
     headers: 
   response: !ruby/struct:VCR::Response 
@@ -132,7 +49,7 @@
       server: 
       - nginx/0.8.53
       date: 
-      - Wed, 23 Mar 2011 15:52:36 GMT
+      - Tue, 17 May 2011 12:24:24 GMT
       content-type: 
       - application/json; charset=utf-8
       connection: 
@@ -140,86 +57,17 @@
       status: 
       - 200 OK
       etag: 
-      - "\"fd573800e7e65cb12f78785daaa5f752\""
+      - "\"e745a0f74f77fb37cdc82c382dcc30a9\""
       p3p: 
       - CP="NOI DSP COR NID ADMa OPTa OUR NOR"
       x-runtime: 
-      - "70"
+      - "82"
       content-length: 
-      - "465"
+      - "471"
       set-cookie: 
-      - _zendesk_session=BAh7DCIcd2FyZGVuLnVzZXIuZGVmYXVsdC5rZXlpA%2BuV6ToMYWNjb3VudGkCN6k6DWF1dGhfdmlhIhJCYXNpY1N0cmF0ZWd5Og91cGRhdGVkX2F0bCsHRBeKTToPc2Vzc2lvbl9pZCIlYmFiYmQyZDgzY2U1ZTg3ZGFlYTg5YTUzOGEyMWM5YmMiE3dhcmRlbi5tZXNzYWdlewA6B2lkIhVtOG9saTRrZXMtZzJhbm02--a592f11703143912ec6f5d16b4f45c56416a54da; path=/; HttpOnly
+      - _zendesk_session=BAh7DToMYWNjb3VudGkCN6kiHHdhcmRlbi51c2VyLmRlZmF1bHQua2V5aQPrlek6D3VwZGF0ZWRfYXRsKwf4aNJNOg1hdXRoX3ZpYSISQmFzaWNTdHJhdGVneToVYXV0aGVudGljYXRlZF9hdGwrB%2Fho0k06D3Nlc3Npb25faWQiJTU1NTk3NGQ5OGFiOTBhZTMxMmMxYTNiOTU2Mjk3YjU4IhN3YXJkZW4ubWVzc2FnZXsAOgdpZCIVaDEzbGxrOTJoLW8yOGx2Mg%3D%3D--ad932774d2882405576dc9fc77fc226e359d30ad; path=/; HttpOnly
+      - oid_user=; path=/; expires=Thu, 01-Jan-1970 00:00:00 GMT
       cache-control: 
       - private, max-age=0, must-revalidate
-    body: "{\"name\":\"John Doe\",\"locale_id\":null,\"openid_url\":null,\"created_at\":\"2011/03/23 16:52:34 +0100\",\"is_verified\":true,\"last_login\":null,\"details\":null,\"updated_at\":\"2011/03/23 16:52:35 +0100\",\"notes\":null,\"email\":\"email7@user.com\",\"external_id\":null,\"restriction_id\":4,\"id\":30867775,\"photo_url\":\"http://jilion.zendesk.com/images/types/user_sm.png\",\"phone\":null,\"is_active\":true,\"time_zone\":\"Bern\",\"roles\":0,\"organization_id\":null,\"groups\":[],\"uses_12_hour_clock\":false}"
-    http_version: "1.1"
-- !ruby/struct:VCR::HTTPInteraction 
-  request: !ruby/struct:VCR::Request 
-    method: :put
-    uri: http://zendesk%40sublimevideo.net:wrank8@jilion.zendesk.com:80/users/30868608.xml
-    body: <user><password>d41d8cd98f00b204e9800998ecf8427e</password><is-verified>true</is-verified></user>
-    headers: 
-      content-type: 
-      - application/xml
-  response: !ruby/struct:VCR::Response 
-    status: !ruby/struct:VCR::ResponseStatus 
-      code: 200
-      message: OK
-    headers: 
-      server: 
-      - nginx/0.8.53
-      date: 
-      - Wed, 23 Mar 2011 16:00:21 GMT
-      content-type: 
-      - application/xml; charset=utf-8
-      connection: 
-      - keep-alive
-      status: 
-      - 200 OK
-      p3p: 
-      - CP="NOI DSP COR NID ADMa OPTa OUR NOR"
-      x-runtime: 
-      - "266"
-      content-length: 
-      - "1"
-      set-cookie: 
-      - _zendesk_session=BAh7DCIcd2FyZGVuLnVzZXIuZGVmYXVsdC5rZXlpA%2BuV6ToMYWNjb3VudGkCN6k6DWF1dGhfdmlhIhJCYXNpY1N0cmF0ZWd5Og91cGRhdGVkX2F0bCsHFRmKTToPc2Vzc2lvbl9pZCIlNjYzMDIzNDczZDg2ZjNjNzJiMmQyZTJjZGE3YzNkYTEiE3dhcmRlbi5tZXNzYWdlewA6B2lkIhUyaWxsaW1ub3Mtd3l1bnpj--90c476c74c6eeff512faccfc4d64126c3181f63a; path=/; HttpOnly
-      cache-control: 
-      - no-cache
-    body: " "
-    http_version: "1.1"
-- !ruby/struct:VCR::HTTPInteraction 
-  request: !ruby/struct:VCR::Request 
-    method: :get
-    uri: http://zendesk%40sublimevideo.net:wrank8@jilion.zendesk.com:80/users/30868608.json
-    body: 
-    headers: 
-  response: !ruby/struct:VCR::Response 
-    status: !ruby/struct:VCR::ResponseStatus 
-      code: 200
-      message: OK
-    headers: 
-      server: 
-      - nginx/0.8.53
-      date: 
-      - Wed, 23 Mar 2011 16:00:22 GMT
-      content-type: 
-      - application/json; charset=utf-8
-      connection: 
-      - keep-alive
-      status: 
-      - 200 OK
-      etag: 
-      - "\"7c24faa8c9f2c795e78d75942e381dbc\""
-      p3p: 
-      - CP="NOI DSP COR NID ADMa OPTa OUR NOR"
-      x-runtime: 
-      - "70"
-      content-length: 
-      - "465"
-      set-cookie: 
-      - _zendesk_session=BAh7DCIcd2FyZGVuLnVzZXIuZGVmYXVsdC5rZXlpA%2BuV6ToMYWNjb3VudGkCN6k6DWF1dGhfdmlhIhJCYXNpY1N0cmF0ZWd5Og91cGRhdGVkX2F0bCsHFhmKTToPc2Vzc2lvbl9pZCIlMjViZGY0ZDMzMTYzY2VlOTliY2I0YWUyNWEzZjc5MzEiE3dhcmRlbi5tZXNzYWdlewA6B2lkIhVubGZsaXA2b3MtdnNsZWZh--9fca9156b40e7ca47dac69d090c83eae41824828; path=/; HttpOnly
-      cache-control: 
-      - private, max-age=0, must-revalidate
-    body: "{\"name\":\"John Doe\",\"locale_id\":null,\"openid_url\":null,\"created_at\":\"2011/03/23 17:00:03 +0100\",\"last_login\":null,\"details\":null,\"is_verified\":true,\"updated_at\":\"2011/03/23 17:00:21 +0100\",\"notes\":null,\"email\":\"email2@user.com\",\"external_id\":null,\"restriction_id\":4,\"id\":30868608,\"phone\":null,\"is_active\":true,\"photo_url\":\"http://jilion.zendesk.com/images/types/user_sm.png\",\"time_zone\":\"Bern\",\"roles\":0,\"organization_id\":null,\"groups\":[],\"uses_12_hour_clock\":false}"
+    body: "{\"photo_url\":\"http://sublimevideo.zendesk.com/images/types/user_sm.png\",\"name\":\"John Doe\",\"locale_id\":null,\"openid_url\":null,\"created_at\":\"2011/05/17 13:54:12 +0200\",\"last_login\":null,\"details\":null,\"updated_at\":\"2011/05/17 14:24:24 +0200\",\"notes\":null,\"external_id\":null,\"restriction_id\":4,\"id\":59438671,\"email\":\"email3@user.com\",\"phone\":null,\"is_active\":true,\"time_zone\":\"Bern\",\"is_verified\":true,\"roles\":0,\"organization_id\":null,\"groups\":[],\"uses_12_hour_clock\":false}"
     http_version: "1.1"

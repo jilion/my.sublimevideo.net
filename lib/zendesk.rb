@@ -3,32 +3,21 @@ require 'net/http'
 module Zendesk
 
   class << self
-    
-    [:base_url, :username, :password].each do |method_name|
+
+    [:base_url, :username, :password, :api_token].each do |method_name|
       define_method(method_name) { yml[method_name] == 'heroku_env' ? ENV["ZENDESK_#{method_name.to_s.upcase}"] : yml[method_name] }
     end
-    
+
     def get(url)
       Zendesk::Request.new(url, :get).execute
     end
 
-    def post(url, params = {})
+    def post(url, params={})
       Zendesk::Request.new(url, :post, params).execute
     end
 
-    def put(url, params = {})
+    def put(url, params={})
       Zendesk::Request.new(url, :put, params).execute
-    end
-
-    def parse_url(url)
-      URI.parse("#{base_url}#{url}")
-    end
-
-    def params_to_xml(hash)
-      hash.inject("") do |memo, h|
-        key = h[0].to_s.dasherize
-        memo += "<#{key}>#{h[1].is_a?(Hash) ? params_to_xml(h[1]) : h[1]}</#{key}>"
-      end
     end
 
     def method_missing(name)
@@ -44,21 +33,22 @@ module Zendesk
     rescue
       raise StandardError, "Zendesk config file '#{config_path}' doesn't exist."
     end
+
   end
 
   class Request
-    def initialize(url, verb = :get, params = {})
-      @verb    = verb.to_sym
-      @url     = Zendesk.parse_url(url.to_s)
-      @params  = Zendesk.params_to_xml(params)
-      @headers = "Net::HTTP::#{@verb.to_s.camelize}".constantize.new(@url.path)
-      @headers.basic_auth(Zendesk.username, Zendesk.password)
+    def initialize(url, verb, params={})
+      @verb    = verb.to_s
+      @url     = URI.parse("#{Zendesk.base_url}#{url}")
+      @params  = params
+      @headers = "Net::HTTP::#{@verb.classify}".constantize.new(@url.path)
+      @headers.basic_auth("#{Zendesk.username}/token", Zendesk.api_token)
     end
 
     def execute
       rescue_and_retry(5, Net::HTTPServerException) do
         response = Net::HTTP.start(@url.host, @url.port) do |http|
-          if params_required?
+          if @params.present?
             @headers.content_type = "application/xml"
             http.request(@headers, @params)
           else
@@ -73,10 +63,6 @@ module Zendesk
           response.error!
         end
       end
-    end
-
-    def params_required?
-      [:post, :put].include?(@verb)
     end
   end
 

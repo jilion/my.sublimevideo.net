@@ -2,8 +2,16 @@
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
     method: :post
-    uri: http://zendesk%40sublimevideo.net:wrank8@jilion.zendesk.com:80/tickets.xml
-    body: <ticket><subject>I have a request!</subject><description>I have a request this is a long text!</description><set-tags>idea priority-support</set-tags><requester-name>John Doe</requester-name><requester-email>email8@user.com</requester-email></ticket>
+    uri: http://zendesk%40sublimevideo.net%2Ftoken:oxVzosGyu7DaZrQ0fhmKngHATvd78UhEqTzMszZy@sublimevideo.zendesk.com:80/tickets.xml
+    body: |
+      <ticket>
+        <subject>I have a request!</subject>
+        <description>I have a request this is a long text!</description>
+        <set-tags>idea priority-support</set-tags>
+        <requester-name>John Doe</requester-name>
+        <requester-email>email4@user.com</requester-email>
+      </ticket>
+
     headers: 
       content-type: 
       - application/xml
@@ -15,7 +23,7 @@
       server: 
       - nginx/0.8.53
       date: 
-      - Wed, 23 Mar 2011 16:48:13 GMT
+      - Tue, 17 May 2011 12:24:22 GMT
       content-type: 
       - application/xml; charset=utf-8
       connection: 
@@ -25,13 +33,14 @@
       p3p: 
       - CP="NOI DSP COR NID ADMa OPTa OUR NOR"
       location: 
-      - http://jilion.zendesk.com/tickets/815.xml
+      - http://sublimevideo.zendesk.com/tickets/1202.xml
       x-runtime: 
-      - "663"
+      - "571"
       content-length: 
       - "1"
       set-cookie: 
-      - _zendesk_session=BAh7DCIcd2FyZGVuLnVzZXIuZGVmYXVsdC5rZXlpA%2BuV6ToMYWNjb3VudGkCN6k6DWF1dGhfdmlhIhJCYXNpY1N0cmF0ZWd5Og91cGRhdGVkX2F0bCsHTCSKTToPc2Vzc2lvbl9pZCIlZmU2MzkwYzViNDY3ZDVmNjE1MTliODY4MWJmMjAyYTIiE3dhcmRlbi5tZXNzYWdlewA6B2lkIhVnc2psaW16dHItcHk4bzhh--ee0552dc99852fc5f039e7546900a943f1927b47; path=/; HttpOnly
+      - _zendesk_session=BAh7DToMYWNjb3VudGkCN6kiHHdhcmRlbi51c2VyLmRlZmF1bHQua2V5aQPrlek6DWF1dGhfdmlhIhJCYXNpY1N0cmF0ZWd5Og91cGRhdGVkX2F0bCsH9WjSTToVYXV0aGVudGljYXRlZF9hdGwrB%2FVo0k06D3Nlc3Npb25faWQiJTY1NTA4NjYxYmUyNjZmZmZlY2U2NTBmZjJkMzFiNWI1IhN3YXJkZW4ubWVzc2FnZXsAOgdpZCIVbmNtbGxsN2ZoLTR1NnR1Yw%3D%3D--fa581ab01f94d3b575233b69450ffab5b9927889; path=/; HttpOnly
+      - oid_user=; path=/; expires=Thu, 01-Jan-1970 00:00:00 GMT
       cache-control: 
       - no-cache
     body: " "
@@ -39,7 +48,7 @@
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
     method: :get
-    uri: http://zendesk%40sublimevideo.net:wrank8@jilion.zendesk.com:80/tickets/815.json
+    uri: http://zendesk%40sublimevideo.net%2Ftoken:oxVzosGyu7DaZrQ0fhmKngHATvd78UhEqTzMszZy@sublimevideo.zendesk.com:80/tickets/1202.json
     body: 
     headers: 
   response: !ruby/struct:VCR::Response 
@@ -50,7 +59,7 @@
       server: 
       - nginx/0.8.53
       date: 
-      - Wed, 23 Mar 2011 16:48:13 GMT
+      - Tue, 17 May 2011 12:24:22 GMT
       content-type: 
       - application/json; charset=utf-8
       connection: 
@@ -58,23 +67,24 @@
       status: 
       - 200 OK
       etag: 
-      - "\"bb570ee66e0b65897a68fb2b9a0247fb\""
+      - "\"39bef34653db76f8522a2930e60cb927\""
       p3p: 
       - CP="NOI DSP COR NID ADMa OPTa OUR NOR"
       x-runtime: 
-      - "159"
+      - "103"
       content-length: 
-      - "1045"
+      - "1040"
       set-cookie: 
-      - _zendesk_session=BAh7DCIcd2FyZGVuLnVzZXIuZGVmYXVsdC5rZXlpA%2BuV6ToMYWNjb3VudGkCN6k6DWF1dGhfdmlhIhJCYXNpY1N0cmF0ZWd5Og91cGRhdGVkX2F0bCsHTSSKTToPc2Vzc2lvbl9pZCIlZjg4YTdiYjZmOTlhY2M5YmEyYzk1YzZmZGE4MDM4OWYiE3dhcmRlbi5tZXNzYWdlewA6B2lkIhRoZmJsaW5qZ2IzZGp1dTg%3D--4f52399ba3b04f8cfc58ed06ed9151d77c646c6a; path=/; HttpOnly
+      - _zendesk_session=BAh7DToMYWNjb3VudGkCN6kiHHdhcmRlbi51c2VyLmRlZmF1bHQua2V5aQPrlek6DWF1dGhfdmlhIhJCYXNpY1N0cmF0ZWd5Og91cGRhdGVkX2F0bCsH9mjSTToVYXV0aGVudGljYXRlZF9hdGwrB%2FZo0k06D3Nlc3Npb25faWQiJTk3MWQyYzQ0ZGNmNTA4ZGE0YjdmN2JjYmZmN2NhMzIyIhN3YXJkZW4ubWVzc2FnZXsAOgdpZCIUOHRmbGxtYnFtZGRzaHV3--d8b398d38aa37040b995ae33a9d27fb2572c1964; path=/; HttpOnly
+      - oid_user=; path=/; expires=Thu, 01-Jan-1970 00:00:00 GMT
       cache-control: 
       - private, max-age=0, must-revalidate
-    body: "{\"ticket_field_entries\":[],\"nice_id\":815,\"initially_assigned_at\":\"2011/03/23 17:48:12 +0100\",\"entry_id\":null,\"created_at\":\"2011/03/23 17:48:12 +0100\",\"resolution_time\":null,\"priority_id\":0,\"current_tags\":\"idea priority-support\",\"assignee_id\":15308267,\"linkings\":[],\"updated_at\":\"2011/03/23 17:48:12 +0100\",\"ticket_type_id\":0,\"status_updated_at\":\"2011/03/23 17:48:12 +0100\",\"solved_at\":null,\"original_recipient_address\":null,\"external_id\":null,\"assigned_at\":\"2011/03/23 17:48:12 +0100\",\"channel\":null,\"via_id\":5,\"subject\":\"I have a request!\",\"recipient\":null,\"group_id\":88332,\"score\":36,\"submitter_id\":15308267,\"base_score\":36,\"comments\":[{\"attachments\":[],\"created_at\":\"2011/03/23 17:48:12 +0100\",\"via_id\":5,\"value\":\"I have a request this is a long text!\",\"type\":\"Comment\",\"is_public\":true,\"author_id\":30873742}],\"latest_recipients\":null,\"due_date\":null,\"current_collaborators\":null,\"status_id\":1,\"description\":\"I have a request this is a long text!\",\"problem_id\":null,\"organization_id\":null,\"updated_by_type_id\":0,\"requester_id\":30873742}"
+    body: "{\"nice_id\":1202,\"initially_assigned_at\":\"2011/05/17 14:24:22 +0200\",\"problem_id\":null,\"entry_id\":null,\"created_at\":\"2011/05/17 14:24:22 +0200\",\"linkings\":[],\"resolution_time\":null,\"priority_id\":0,\"current_tags\":\"idea priority-support\",\"assignee_id\":15308267,\"updated_at\":\"2011/05/17 14:24:22 +0200\",\"score\":36,\"ticket_type_id\":0,\"status_updated_at\":\"2011/05/17 14:24:22 +0200\",\"solved_at\":null,\"original_recipient_address\":null,\"external_id\":null,\"assigned_at\":\"2011/05/17 14:24:22 +0200\",\"via_id\":5,\"subject\":\"I have a request!\",\"recipient\":null,\"group_id\":88332,\"comments\":[{\"created_at\":\"2011/05/17 14:24:22 +0200\",\"via_id\":5,\"value\":\"I have a request this is a long text!\",\"type\":\"Comment\",\"attachments\":[],\"is_public\":true,\"author_id\":59095722}],\"ticket_field_entries\":[],\"submitter_id\":15308267,\"base_score\":36,\"latest_recipients\":null,\"due_date\":null,\"current_collaborators\":null,\"status_id\":1,\"description\":\"I have a request this is a long text!\",\"organization_id\":null,\"channel\":null,\"updated_by_type_id\":0,\"requester_id\":59095722}"
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
     method: :get
-    uri: http://zeno%40jilion.com:wrank8@jilion.zendesk.com:80/tickets/815.json
+    uri: http://zendesk%40sublimevideo.net%2Ftoken:oxVzosGyu7DaZrQ0fhmKngHATvd78UhEqTzMszZy@sublimevideo.zendesk.com:80/tickets/1202.json
     body: 
     headers: 
   response: !ruby/struct:VCR::Response 
@@ -85,7 +95,7 @@
       server: 
       - nginx/0.8.53
       date: 
-      - Wed, 23 Mar 2011 16:48:14 GMT
+      - Tue, 17 May 2011 12:24:23 GMT
       content-type: 
       - application/json; charset=utf-8
       connection: 
@@ -93,16 +103,17 @@
       status: 
       - 200 OK
       etag: 
-      - "\"0487ba549ad6df76b65c0d220f7e93ce\""
+      - "\"39bef34653db76f8522a2930e60cb927\""
       p3p: 
       - CP="NOI DSP COR NID ADMa OPTa OUR NOR"
       x-runtime: 
-      - "140"
+      - "124"
       content-length: 
-      - "1045"
+      - "1040"
       set-cookie: 
-      - _zendesk_session=BAh7DCIcd2FyZGVuLnVzZXIuZGVmYXVsdC5rZXlpA%2BuV6ToMYWNjb3VudGkCN6k6DWF1dGhfdmlhIhJCYXNpY1N0cmF0ZWd5Og91cGRhdGVkX2F0bCsHTiSKTToPc2Vzc2lvbl9pZCIlYjZiOWRiZDliMzIwZTk4MWEyY2M3MjBiNWZmYjg3ZTgiE3dhcmRlbi5tZXNzYWdlewA6B2lkIhRubGVsaWtsZTVqaDN2MzI%3D--d5c2da702e2e1eade6956cdc73cac57a149e3c8f; path=/; HttpOnly
+      - _zendesk_session=BAh7DToMYWNjb3VudGkCN6kiHHdhcmRlbi51c2VyLmRlZmF1bHQua2V5aQPrlek6DWF1dGhfdmlhIhJCYXNpY1N0cmF0ZWd5Og91cGRhdGVkX2F0bCsH92jSTToVYXV0aGVudGljYXRlZF9hdGwrB%2Fdo0k06D3Nlc3Npb25faWQiJTA2NDAxNWE0OWQ5ZWE5YTFmMzBmOWRkNDcxNmY2OTc5IhN3YXJkZW4ubWVzc2FnZXsAOgdpZCIUbDU5bGxiZGVlY3pqd2E2--46c7decc295d74dfb4f64d1fff4d3cd8aaf22c37; path=/; HttpOnly
+      - oid_user=; path=/; expires=Thu, 01-Jan-1970 00:00:00 GMT
       cache-control: 
       - private, max-age=0, must-revalidate
-    body: "{\"nice_id\":815,\"initially_assigned_at\":\"2011/03/23 17:48:12 +0100\",\"ticket_field_entries\":[],\"entry_id\":null,\"created_at\":\"2011/03/23 17:48:12 +0100\",\"resolution_time\":null,\"priority_id\":0,\"current_tags\":\"idea priority-support\",\"assignee_id\":15308267,\"updated_at\":\"2011/03/23 17:48:12 +0100\",\"linkings\":[],\"ticket_type_id\":0,\"status_updated_at\":\"2011/03/23 17:48:12 +0100\",\"solved_at\":null,\"original_recipient_address\":null,\"external_id\":null,\"assigned_at\":\"2011/03/23 17:48:12 +0100\",\"via_id\":5,\"subject\":\"I have a request!\",\"recipient\":null,\"group_id\":88332,\"channel\":null,\"score\":36,\"submitter_id\":15308267,\"base_score\":36,\"comments\":[{\"attachments\":[],\"created_at\":\"2011/03/23 17:48:12 +0100\",\"via_id\":5,\"value\":\"I have a request this is a long text!\",\"type\":\"Comment\",\"is_public\":true,\"author_id\":30873742}],\"latest_recipients\":null,\"due_date\":null,\"current_collaborators\":null,\"status_id\":1,\"description\":\"I have a request this is a long text!\",\"organization_id\":null,\"problem_id\":null,\"updated_by_type_id\":0,\"requester_id\":30873742}"
+    body: "{\"nice_id\":1202,\"initially_assigned_at\":\"2011/05/17 14:24:22 +0200\",\"problem_id\":null,\"entry_id\":null,\"created_at\":\"2011/05/17 14:24:22 +0200\",\"linkings\":[],\"resolution_time\":null,\"priority_id\":0,\"current_tags\":\"idea priority-support\",\"assignee_id\":15308267,\"updated_at\":\"2011/05/17 14:24:22 +0200\",\"score\":36,\"ticket_type_id\":0,\"status_updated_at\":\"2011/05/17 14:24:22 +0200\",\"solved_at\":null,\"original_recipient_address\":null,\"external_id\":null,\"assigned_at\":\"2011/05/17 14:24:22 +0200\",\"via_id\":5,\"subject\":\"I have a request!\",\"recipient\":null,\"group_id\":88332,\"comments\":[{\"created_at\":\"2011/05/17 14:24:22 +0200\",\"via_id\":5,\"value\":\"I have a request this is a long text!\",\"type\":\"Comment\",\"attachments\":[],\"is_public\":true,\"author_id\":59095722}],\"ticket_field_entries\":[],\"submitter_id\":15308267,\"base_score\":36,\"latest_recipients\":null,\"due_date\":null,\"current_collaborators\":null,\"status_id\":1,\"description\":\"I have a request this is a long text!\",\"organization_id\":null,\"channel\":null,\"updated_by_type_id\":0,\"requester_id\":59095722}"
     http_version: "1.1"
