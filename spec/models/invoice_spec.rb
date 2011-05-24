@@ -162,10 +162,35 @@ describe Invoice do
       end
 
       describe "after_transition :on => :succeed, :do => :apply_pending_site_plan_changes" do
-        it "should call #apply_pending_plan_changes on the site" do
-          site = Factory(:site)
-          site.should_receive(:apply_pending_plan_changes)
-          Factory(:invoice, site: site).succeed!
+        context "with a site with no more non-paid invoices" do
+          it "should call #apply_pending_plan_changes on the site" do
+            site = Factory(:site)
+
+            site.should_receive(:apply_pending_plan_changes)
+            Factory(:invoice, site: site).succeed!
+          end
+        end
+
+        %w[open waiting failed].each do |state|
+          context "with a site with an #{state} invoice present" do
+            let(:site) { Factory(:site) }
+            let(:non_paid_invoice) { Factory(:invoice, state: state, site: site) }
+            
+            it "should not call #apply_pending_plan_changes on the site only if there are still non-paid invoices" do
+              non_paid_invoice.state.should == state
+
+              site.should_not_receive(:apply_pending_plan_changes)
+              Factory(:invoice, site: site).succeed!
+            end
+            
+            it "should call #apply_pending_plan_changes on the site if there are no more non-paid invoices" do
+              non_paid_invoice.state.should == state
+
+              site.should_receive(:apply_pending_plan_changes).once
+              Factory(:invoice, site: site).succeed!
+              non_paid_invoice.succeed!
+            end
+          end
         end
       end
 
@@ -245,25 +270,6 @@ describe Invoice do
         end
       end
 
-      pending "after_transition :on => :succeed, :do => :push_new_revenue" do
-        subject { Factory(:invoice, invoice_items: [Factory(:plan_invoice_item)]) }
-
-        it "should delay on Ding class" do
-          Ding.should_receive(:delay)
-          subject.succeed!
-        end
-
-        it "should send a ding!" do
-          expect { subject.succeed! }.to change(Delayed::Job, :count)
-          djs = Delayed::Job.where(:handler.matches => "%plan_added%")
-          djs.count.should == 1
-          djs.first.name.should == 'Class#plan_added'
-          YAML.load(djs.first.handler)['args'][0].should == subject.invoice_items.item.first.title
-          YAML.load(djs.first.handler)['args'][1].should == subject.invoice_items.item.first.cycle
-          YAML.load(djs.first.handler)['args'][2].should == subject.amount
-        end
-      end
-
     end # Transitions
 
   end # State Machine
@@ -334,10 +340,6 @@ describe Invoice do
 
     describe "#open_or_failed" do
       specify { Invoice.open_or_failed.should == [@open_invoice, @failed_invoice] }
-    end
-
-    describe "#open_or_failed_or_waiting" do
-      specify { Invoice.open_or_failed_or_waiting.should == [@open_invoice, @failed_invoice, @waiting_invoice] }
     end
 
     describe "#not_canceled" do

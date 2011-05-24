@@ -27,7 +27,7 @@ class Invoice < ActiveRecord::Base
   # = Validations =
   # ===============
 
-  validates :site,                 :presence => true # will change to :site
+  validates :site,                 :presence => true
   validates :invoice_items_amount, :presence => true, :numericality => true
   validates :vat_rate,             :presence => true, :numericality => true
   validates :vat_amount,           :presence => true, :numericality => true
@@ -47,8 +47,9 @@ class Invoice < ActiveRecord::Base
       validate :ensure_first_invoice_of_site
     end
 
-    before_transition :on => :succeed, :do => [:set_paid_at, :apply_pending_site_plan_changes, :update_user_invoiced_amount]
-    after_transition  :on => :succeed, :do => [:unsuspend_user]#, :push_new_revenue]
+    before_transition :on => :succeed, :do => :set_paid_at
+    after_transition  :on => :succeed, :do => :apply_pending_site_plan_changes, :if => proc { |invoice| invoice.user.invoices.not_paid.empty? }
+    after_transition  :on => :succeed, :do => [:update_user_invoiced_amount, :unsuspend_user]
 
     before_transition :on => :fail,    :do => :set_last_failed_at
   end
@@ -66,9 +67,8 @@ class Invoice < ActiveRecord::Base
   scope :waiting,                   where(state: 'waiting')
   scope :canceled,                  where(state: 'canceled')
   scope :open_or_failed,            where(state: %w[open failed])
-  scope :open_or_failed_or_waiting, where(state: %w[open failed waiting])
   scope :not_canceled,              where(:state.ne => 'canceled')
-  scope :not_paid,                  where(:state.not_in => %w[paid canceled])
+  scope :not_paid,                  where(:state => %w[open waiting failed])
   scope :site_id,                   lambda { |site_id| where(site_id: site_id) }
   scope :user_id,                   lambda { |user_id| joins(:user).where(:users => { :id => user_id }) }
 
@@ -149,7 +149,7 @@ class Invoice < ActiveRecord::Base
   def refunded?
     site.refunded_at?
   end
-  
+
   # used in amdin/invoices/timeline
   def paid_plan
     plan_invoice_items.detect { |p| p.amount > 0 }.item
@@ -176,7 +176,7 @@ private
   def set_amount
     self.amount = invoice_items_amount + vat_amount
   end
-  
+
   # validate (canceled state)
   def ensure_first_invoice_of_site
     if site.first_paid_plan_started_at?
@@ -197,49 +197,39 @@ private
     self.site_hostname ||= site.hostname
   end
 
-  # before_transition :on => :succeed
-  def set_paid_at
-    self.paid_at = Time.now.utc
-  end
-
   # before_transition :on => :fail
   def set_last_failed_at
     self.last_failed_at = Time.now.utc
   end
 
   # before_transition :on => :succeed
-  def apply_pending_site_plan_changes
-    self.site.apply_pending_plan_changes
+  def set_paid_at
+    self.paid_at = Time.now.utc
   end
 
-  # before_transition :on => :succeed
+  # after_transition :on => :succeed, :if => proc { |invoice| invoice.user.invoices.not_paid.empty? }
+  def apply_pending_site_plan_changes
+    if user.invoices.not_paid.empty?
+      self.site.apply_pending_plan_changes
+    else
+      true # don't apply pending dates if not-paid invoices are still present
+    end
+  end
+
+  # after_transition :on => :succeed
   def update_user_invoiced_amount
-    self.user.last_invoiced_amount = amount
+    self.user.last_invoiced_amount   = amount
     self.user.total_invoiced_amount += amount
     self.user.save
   end
 
   # after_transition :on => :succeed
   def unsuspend_user
-    if user.suspended? && !user.invoices_open? && !user.invoices_failed? && !user.invoices_failed?
+    if user.suspended? && user.invoices.not_paid.empty?
       user.unsuspend
     else
       true
     end
-  end
-
-  # after_transition :on => :succeed
-  def push_new_revenue
-    # begin
-    #  if Rails.env.production?
-    #     plan_bought = self.invoice_items.detect { |invoice_item| invoice_item.amount > 0 }
-    #     plan_deducted = self.invoice_items.detect { |invoice_item| invoice_item.amount < 0 }
-    #     Ding.plan_added(plan_bought.item.title, plan_bought.item.cycle, plan_bought.amount)
-    #     Ding.plan_removed(plan_deducted.title, plan_deducted.cycle, plan_deducted.price) if plan_deducted
-    #   end
-    # rescue
-    #   # do nothing
-    # end
   end
 
 end

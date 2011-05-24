@@ -238,7 +238,7 @@ private
   # validate (archived state)
   def prevent_archive_with_non_paid_invoices
     unless archivable?
-      self.errors.add(:base, :not_paid_invoices_prevent_archive, :count => invoices.open_or_failed_or_waiting.count)
+      self.errors.add(:base, :not_paid_invoices_prevent_archive, :count => invoices.not_paid.count)
     end
   end
 

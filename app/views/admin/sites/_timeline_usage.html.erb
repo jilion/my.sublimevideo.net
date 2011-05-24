@@ -23,15 +23,15 @@ graph = Graph.new do |g|
   )))
 
   plan_limits = site.plan.player_hits > 0 ? [
-    serie(Array.new(usages["main_usage"][@moving_avg-1..-1].size, site.plan.daily_player_hits), "AVG #{site.plan.title}", '', type: 'line'),
-    serie(Array.new(usages["main_usage"][@moving_avg-1..-1].size, site.plan.player_hits), "LIM #{site.plan.title}", '', type: 'line', visible: false)
+    serie(Array.new(usages["main_usage"][@moving_avg-1..-1].size, site.plan.daily_player_hits), "AVG #{site.plan.title}", '', type: 'line', stack: 0),
+    serie(Array.new(usages["main_usage"][@moving_avg-1..-1].size, site.plan.player_hits), "LIM #{site.plan.title}", '', type: 'line', visible: false, stack: 1)
   ] : []
   g.option(series: [
-    serie(usages["invalid_usage"][@moving_avg-1..-1], 'Invalid', '#F00', visible: false),
-    serie(usages["dev_usage"][@moving_avg-1..-1], 'Dev', '#3F3', visible: false),
-    serie(usages["extra_usage"][@moving_avg-1..-1], 'Extra', '#3F3'),
-    serie(usages["main_usage"][@moving_avg-1..-1], 'Main', '#00F'),
-    serie(moving_average(billable_usage, @moving_avg), 'AVG Billable', '#00FFFF', type: 'line')
+    serie(usages["invalid_usage"][@moving_avg-1..-1], 'Invalid', '#F00', visible: false, stack: 2),
+    serie(usages["dev_usage"][@moving_avg-1..-1], 'Dev', '#3F3', visible: false, stack: 2),
+    serie(usages["extra_usage"][@moving_avg-1..-1], 'Extra', '#3F3', stack: 2),
+    serie(usages["main_usage"][@moving_avg-1..-1], 'Main', '#00F', stack: 2),
+    serie(moving_average(billable_usage, @moving_avg), 'AVG Billable', '#00FFFF', type: 'line', stack: 3)
     ] + plan_limits)
   g.option(plotOptions: plot_options(@date_range_from))
   g.option(credits: credits)

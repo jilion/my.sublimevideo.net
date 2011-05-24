@@ -123,10 +123,11 @@ module Admin::GraphsHelper
   end
 
   def serie(data, title, color, options={})
-    options.reverse_merge!(type: 'area', visible: true)
+    options.reverse_merge!(type: 'area', visible: true, stack: nil)
 
     {
       type: options[:type],
+      stack: options[:stack],
       name: title,
       visible: options[:visible],
       color: options[:color],
@@ -136,12 +137,12 @@ module Admin::GraphsHelper
   end
 
   def plot_options(start_at, interval=1.day, options={})
-    options.reverse_merge!(marker: false, visible: true)
+    options.reverse_merge!(marker: false, visible: true, stacking: 'normal')
     points = options[:linear] ? {} : { pointStart: start_at.to_i * 1000, pointInterval: interval * 1000 }
 
     {
       series: points.merge({
-        stacking: 'normal', shadow: false, fillOpacity: 0.4,
+        stacking: options[:stacking], shadow: false, fillOpacity: 0.4,
         marker: {
           enabled: options[:marker],
           radius: 3,
