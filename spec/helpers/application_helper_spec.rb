@@ -14,10 +14,10 @@ describe ApplicationHelper do
     it { helper.display_bool("").should == "-" }
   end
 
-  describe "#display_date" do
+  describe "#display_time" do
     let(:date) { Time.now.utc }
-    it { helper.display_date(date).should == I18n.l(date, :format => :minutes) }
-    it { helper.display_date(nil).should == "-" }
+    it { helper.display_time(date).should == I18n.l(date, :format => :minutes) }
+    it { helper.display_time(nil).should == "-" }
   end
 
   describe "#display_percentage" do

@@ -8,4 +8,4 @@
     %small
       = link_to mail_log.user_ids.size, admin_mail_log_path(mail_log)
   %td
-    %small= link_to display_date(mail_log.created_at), admin_mail_log_path(mail_log)
+    %small= link_to display_time(mail_log.created_at), admin_mail_log_path(mail_log)
