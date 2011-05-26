@@ -19,7 +19,7 @@ module User::CreditCard
   def self.send_credit_card_expiration
     delay_send_credit_card_expiration
     User.where(:cc_expire_on => Time.now.utc.end_of_month.to_date).each do |user|
-      CreditCardMailer.will_expire(user).deliver!
+      BillingMailer.credit_card_will_expire(user).deliver!
     end
   end
 

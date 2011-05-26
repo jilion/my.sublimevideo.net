@@ -1,4 +1,4 @@
-class UsageMonitoringMailer < SublimeVideoMailer
+class UsageMonitoringMailer < NoreplyMailer
 
   def plan_player_hits_reached(site)
     @site = site
@@ -7,7 +7,7 @@ class UsageMonitoringMailer < SublimeVideoMailer
       :subject => "Peak Insurance activated for #{@site.hostname}"
     )
   end
-  
+
   def plan_upgrade_required(site)
     @site = site
     mail(
@@ -15,5 +15,5 @@ class UsageMonitoringMailer < SublimeVideoMailer
       :subject => "You need to upgrade your plan for #{@site.hostname}"
     )
   end
-  
+
 end
