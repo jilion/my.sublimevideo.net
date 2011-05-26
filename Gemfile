@@ -71,7 +71,7 @@ group :production do
 end
 
 group :production, :staging do
-  gem 'rack-ssl-enforcer', '0.2.1'
+  gem 'rack-ssl-enforcer', '0.2.2'
   gem 'rack-private'
 end
 
