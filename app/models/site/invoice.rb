@@ -86,7 +86,7 @@ module Site::Invoice
   end
 
   def last_paid_plan_price
-    last_paid_invoice ? last_paid_invoice.invoice_items.detect { |invoice_item| invoice_item.amount > 0 }.price : 0
+    last_paid_invoice ? last_paid_invoice.plan_invoice_items.detect { |pii| pii.amount > 0 }.price : 0
   end
 
   def refund

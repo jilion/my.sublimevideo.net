@@ -673,11 +673,22 @@ describe Invoice do
   describe "Instance Methods" do
     before(:all) do
       @invoice = Factory(:invoice)
+      @paid_plan_invoice_item = Factory(:plan_invoice_item, invoice: @invoice, item: @paid_plan, started_at: Time.utc(2011, 4, 4), ended_at: Time.utc(2011, 5, 3).end_of_day)
+      @invoice.invoice_items << @paid_plan_invoice_item
+      
       Factory(:transaction, invoices: [@invoice], state: 'failed', created_at: 4.days.ago)
       @failed_transaction2 = Factory(:transaction, invoices: [@invoice], state: 'failed', created_at: 3.days.ago)
       @paid_transaction = Factory(:transaction, invoices: [@invoice], state: 'paid', created_at: 2.days.ago)
     end
     subject { @invoice }
+
+    describe "#paid_plan_invoice_item" do
+      it { subject.paid_plan_invoice_item.should == @paid_plan_invoice_item }
+    end
+
+    describe "#paid_plan" do
+      it { subject.paid_plan.should == @paid_plan }
+    end
 
     describe "#last_transaction" do
       it { subject.last_transaction.should == @paid_transaction }

@@ -150,9 +150,13 @@ class Invoice < ActiveRecord::Base
     site.refunded_at?
   end
 
-  # used in amdin/invoices/timeline
+  def paid_plan_invoice_item
+    plan_invoice_items.detect { |pii| pii.amount > 0 }
+  end
+
+  # used in admin/invoices/timeline
   def paid_plan
-    plan_invoice_items.detect { |p| p.amount > 0 }.item
+    paid_plan_invoice_item.try(:item)
   end
 
 private
