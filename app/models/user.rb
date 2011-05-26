@@ -296,7 +296,7 @@ private
   # after_update
   def update_email_on_zendesk
     if zendesk_id.present? && email_changed?
-      Zendesk.delay(:priority => 25).put("/users/#{zendesk_id}.xml", "<user><email>#{email}</email><is-verified>true</is-verified></user>")
+      Zendesk.delay(priority: 25).put("/users/#{zendesk_id}.xml", "<user><email>#{email}</email><is-verified>true</is-verified></user>")
     end
   end
 

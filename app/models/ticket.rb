@@ -61,16 +61,6 @@ class Ticket
       end
     end
   end
-#
-# private
-#
-#   def user_params
-#     if @user.zendesk_id?
-#       { :requester_id => @user.zendesk_id }
-#     else
-#       { :requester_name => h(@user.full_name), :requester_email => h(@user.email) }
-#     end
-#   end
 
 end
 
