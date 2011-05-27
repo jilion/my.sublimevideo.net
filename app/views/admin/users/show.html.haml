@@ -100,7 +100,7 @@
       %ul
         - @user.sites.not_archived.each do |site|
           %li
-            = link_to site.hostname || "no hostname", "http://#{site.hostname}"
+            = site.hostname? ? link_to(site.hostname, "http://#{site.hostname}") : "no hostname"
             (
             = link_to "details", [:edit, :admin, site]
             )

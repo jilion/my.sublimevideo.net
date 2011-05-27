@@ -1,7 +1,4 @@
-- if @site.hostname.present?
-  = title_and_content_header("(#{@site.token}) #{link_to(hostname_with_path_and_wildcard(@site), "http://#{@site.hostname}/#{@site.path}")}")
-- else
-  = title_and_content_header("#{@site.token}")
+= title_and_content_header("(#{@site.token}) #{@site.hostname? ? link_to(hostname_with_path_and_wildcard(@site), "http://#{@site.hostname}/#{@site.path}") : "no hostname"}")
 
 - if @site.plan_id?
   = render '/admin/shared/date_chooser'
