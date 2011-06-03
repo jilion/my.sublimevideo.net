@@ -53,6 +53,6 @@
       .past_invoices
         %h3.section_title= "Past invoices"
         %ul
-          - @invoices.by_date.each do |invoice|
+          - @invoices.each do |invoice|
             %li= render 'invoice_row', :invoice => invoice
   .spacer

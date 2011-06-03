@@ -4,7 +4,7 @@ class InvoicesController < ApplicationController
   # GET /sites/:site_id/invoices
   def index
     @site     = current_user.sites.not_archived.find_by_token!(params[:site_id])
-    @invoices = @site.invoices.not_canceled
+    @invoices = @site.invoices.not_canceled.by_date
 
     render :index, :layout => 'application'
   end
