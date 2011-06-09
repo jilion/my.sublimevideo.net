@@ -44,7 +44,7 @@ class UsrAgent # fucking name conflict with UserAgent gem
       useragent_string, token = useragent_and_token[0],  useragent_and_token[1]
       if useragent_string.present?
         if useragent_hash = useragent_hash(useragent_string)
-          month = log.started_at.beginning_of_month
+          month = log.started_at.beginning_of_month.to_time
           if usr_agent = UsrAgent.where(:month => month, :token => token).first
             usr_agent.update_hashes(hits, useragent_hash)
           else
