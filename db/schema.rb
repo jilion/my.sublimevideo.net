@@ -13,21 +13,23 @@
 ActiveRecord::Schema.define(:version => 20110405125244) do
 
   create_table "admins", :force => true do |t|
-    t.string   "email",                               :default => "", :null => false
-    t.string   "encrypted_password",   :limit => 128, :default => "", :null => false
-    t.string   "password_salt",                       :default => "", :null => false
+    t.string   "email",                                 :default => "", :null => false
+    t.string   "encrypted_password",     :limit => 128, :default => "", :null => false
     t.string   "reset_password_token"
-    t.string   "remember_token"
+    t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
-    t.integer  "sign_in_count",                       :default => 0
+    t.integer  "sign_in_count",                         :default => 0
     t.datetime "current_sign_in_at"
     t.datetime "last_sign_in_at"
     t.string   "current_sign_in_ip"
     t.string   "last_sign_in_ip"
-    t.integer  "failed_attempts",                     :default => 0
+    t.integer  "failed_attempts",                       :default => 0
     t.datetime "locked_at"
-    t.string   "invitation_token",     :limit => 20
+    t.string   "invitation_token",       :limit => 60
     t.datetime "invitation_sent_at"
+    t.integer  "invitation_limit"
+    t.integer  "invited_by_id"
+    t.string   "invited_by_type"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -208,12 +210,11 @@ ActiveRecord::Schema.define(:version => 20110405125244) do
     t.string   "state"
     t.string   "email",                                 :default => "",   :null => false
     t.string   "encrypted_password",     :limit => 128, :default => "",   :null => false
-    t.string   "password_salt",                         :default => "",   :null => false
     t.string   "confirmation_token"
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
     t.string   "reset_password_token"
-    t.string   "remember_token"
+    t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
     t.integer  "sign_in_count",                         :default => 0
     t.datetime "current_sign_in_at"

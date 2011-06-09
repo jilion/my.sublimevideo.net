@@ -1,8 +1,8 @@
 source :rubygems
 
-gem 'bundler',               '1.0.14'
+gem 'bundler',               '1.0.15'
 
-gem 'rails',                 '3.0.8'
+gem 'rails',                 '3.0.9.rc1'
 
 # Databases
 gem 'pg',                    '0.11.0'
@@ -28,7 +28,7 @@ gem 'rescue_me',             '0.1.0'
 gem 'configuration',         '1.2.0'
 gem 'libxml-ruby',           '1.1.3', :require => 'libxml'
 
-gem 'state_machine',         '1.0.1'
+gem 'state_machine',         '0.10.4'
 gem 'paper_trail',           '2.2.2'
 gem 'uniquify',              '0.1.0'
 
