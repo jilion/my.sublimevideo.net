@@ -5,19 +5,11 @@ module Site::Invoice
   end
 
   module ClassMethods
-    # Recurring task
-    def delay_renew_active_sites!
-      unless Delayed::Job.already_delayed?('%Site%renew_active_sites!%')
-        delay(:priority => 3, :run_at => Time.now.utc.tomorrow.midnight + 10.seconds).renew_active_sites!
-      end
-    end
-
-    def renew_active_sites!
+    def renew_active_sites
       Site.active.to_be_renewed.each do |site|
         site.pend_plan_changes
         site.save_without_password_validation
       end
-      delay_renew_active_sites!
     end
   end
 
@@ -96,7 +88,7 @@ module Site::Invoice
     end
   end
 
-  # before_save :if => :pending_plan_id_changed? / also called from Site::Invoice.renew_active_sites!
+  # before_save :if => :pending_plan_id_changed? / also called from Site::Invoice.renew_active_sites
   def pend_plan_changes
     @instant_charging = false
 
@@ -133,7 +125,7 @@ module Site::Invoice
     true # don't block the callbacks chain
   end
 
-  # called from Site::Invoice.renew_active_sites! and from Invoice#succeed's apply_pending_site_plan_changes callback
+  # called from Site::Invoice.renew_active_sites and from Invoice#succeed's apply_pending_site_plan_changes callback
   def apply_pending_plan_changes
     # Remove upgrade required "state"
     if plan_id? && pending_plan_id? && Plan.find(plan_id).upgrade?(Plan.find(pending_plan_id))

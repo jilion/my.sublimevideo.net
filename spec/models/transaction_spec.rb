@@ -305,14 +305,6 @@ describe Transaction do
         djs.count.should == 1
         djs.map { |dj| YAML.load(dj.handler)['args'][0] }.should =~ [@invoice1.reload.site.user.id]
       end
-
-      it "should delay charge_invoices for the day after" do
-        Delayed::Job.all.select { |dj| dj.name == "Class#charge_invoices" }.count.should == 0
-        Transaction.charge_invoices
-        djs = Delayed::Job.all
-        djs.select { |dj| dj.name == "Class#charge_invoices" }.count.should == 1
-        djs.select { |dj| dj.name == "Class#charge_invoices" }.first.run_at.should == Time.now.utc.tomorrow.change(:hour => 1)
-      end
     end # .charge_invoices
 
     describe ".charge_invoices_by_user_id" do
@@ -331,7 +323,7 @@ describe Transaction do
         @invoice1.reload.should be_open
         @invoice2.reload.should be_open
         @invoice3.reload.should be_failed
-        Transaction.should_receive(:charge_by_invoice_ids).with([@invoice3.id, @invoice2.id, @invoice1.id]).and_return(an_instance_of(Transaction))
+        Transaction.should_receive(:charge_by_invoice_ids).with([@invoice1.id, @invoice2.id, @invoice3.id]).and_return(an_instance_of(Transaction))
         Transaction.charge_invoices_by_user_id(@user.id)
       end
 

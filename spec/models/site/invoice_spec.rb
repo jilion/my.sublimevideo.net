@@ -4,18 +4,7 @@ describe Site::Invoice do
 
   describe "Class Methods" do
 
-    describe ".delay_renew_active_sites!" do
-      it "should delay renew_active_sites! if not already delayed" do
-        expect { Site.delay_renew_active_sites! }.should change(Delayed::Job.where(:handler.matches => '%Site%renew_active_sites!%'), :count).by(1)
-      end
-
-      it "should not delay renew_active_sites! if already delayed" do
-        Site.delay_renew_active_sites!
-        expect { Site.delay_renew_active_sites! }.should change(Delayed::Job.where(:handler.matches => '%Site%renew_active_sites!%'), :count).by(0)
-      end
-    end # .delay_renew_active_sites!
-
-    describe ".renew_active_sites!" do
+    describe ".renew_active_sites" do
       before(:all) do
         Site.delete_all
         Timecop.travel(2.months.ago) do
@@ -45,7 +34,7 @@ describe Site::Invoice do
         Transaction.should_not_receive(:charge_by_invoice_ids)
 
         Delayed::Job.delete_all
-        Site.renew_active_sites!
+        Site.renew_active_sites
       end
 
       it "should create invoices for renewable sites" do
@@ -73,11 +62,7 @@ describe Site::Invoice do
         @site_to_be_renewed_with_downgrade_to_paid_plan.reload.invoices.by_date('asc').last.should be_renew
         @site_not_to_be_renewed.reload.invoices.by_date('asc').last.should_not be_renew
       end
-
-      it "should delay renew_active_sites!" do
-        Delayed::Job.where(:handler.matches => '%Site%renew_active_sites!%').count.should == 1
-      end
-    end # .renew_active_sites!
+    end # .renew_active_sites
 
   end # Class Methods
 

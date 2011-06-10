@@ -408,14 +408,6 @@ describe Invoice do
         @site1.pending_plan_cycle_started_at.should == Time.utc(2011, 4, 8)
         @site1.pending_plan_cycle_ended_at.to_i.should == Time.utc(2011, 5, 7).to_datetime.end_of_day.to_i
       end
-
-      it "should delay update_pending_dates_for_non_renew_open_or_failed_invoices for the day after" do
-        Delayed::Job.all.select { |dj| dj.name == "Class#update_pending_dates_for_first_not_paid_invoices" }.count.should == 0
-        Invoice.update_pending_dates_for_first_not_paid_invoices
-        djs = Delayed::Job.all
-        djs.select { |dj| dj.name == "Class#update_pending_dates_for_first_not_paid_invoices" }.count.should == 1
-        djs.select { |dj| dj.name == "Class#update_pending_dates_for_first_not_paid_invoices" }.first.run_at.should == Time.now.utc.tomorrow.midnight
-      end
     end
 
     describe ".build" do

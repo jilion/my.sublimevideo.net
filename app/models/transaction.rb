@@ -52,20 +52,10 @@ class Transaction < ActiveRecord::Base
   # = Class Methods =
   # =================
 
-  # Recurring task
-  def self.delay_charge_invoices
-    unless Delayed::Job.already_delayed?('%Transaction%charge_invoices%')
-      # Invoice.renew_active_sites! is delayed at Time.now.utc.tomorrow.midnight
-      # So we delay this task 1 hour after (to be sure all invoices of the day are created)
-      delay(:priority => 4, :run_at => Time.now.utc.tomorrow.change(:hour => 1)).charge_invoices
-    end
-  end
-
   def self.charge_invoices
     User.includes(:invoices).where(invoices: { state: %w[open failed] }).each do |user|
       delay(:priority => 2).charge_invoices_by_user_id(user.id)
     end
-    delay_charge_invoices
   end
 
   def self.charge_invoices_by_user_id(user_id)
@@ -82,7 +72,7 @@ class Transaction < ActiveRecord::Base
           end
         end
 
-        charge_by_invoice_ids(invoices.map(&:id))
+        charge_by_invoice_ids(invoices.map(&:id).sort)
       end
     end
   end

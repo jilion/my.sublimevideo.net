@@ -12,33 +12,39 @@ module RecurringJob
     '%SitesStat%create_sites_stats%'
   ]
 
-  billing_tasks = [
-    '%Invoice%update_pending_dates_for_first_not_paid_invoices%',
-    '%Site%renew_active_sites!%',
-    '%Transaction%charge_invoices%'
-  ]
-
   NAMES = [
     '%User::CreditCard%send_credit_card_expiration%',
+    '%RecurringJob%invoices_processing%',
     '%Site::UsageMonitoring%monitor_sites_usages%',
     '%Site%update_last_30_days_counters_for_not_archived_sites%',
     '%Tweet%save_new_tweets_and_sync_favorite_tweets%'
-  ] + logs_tasks + billing_tasks + stats_tasks
+  ] + logs_tasks + stats_tasks
 
   class << self
+
+    def delay_invoices_processing
+      unless Delayed::Job.already_delayed?('%RecurringJob%invoices_processing%')
+        delay(:priority => 2, :run_at => Time.now.utc.tomorrow.midnight).invoices_processing
+      end
+    end
+    
+    def invoices_processing
+      Invoice.update_pending_dates_for_first_not_paid_invoices
+      Site.renew_active_sites
+      Transaction.charge_invoices
+      delay_invoices_processing
+    end
 
     def launch_all
       # Logs
       Log.delay_fetch_and_create_new_logs
 
-      # Billing
-      Invoice.delay_update_pending_dates_for_first_not_paid_invoices
-      Site.delay_renew_active_sites!
-      Transaction.delay_charge_invoices
-
       # Stats
       UsersStat.delay_create_users_stats
       SitesStat.delay_create_sites_stats
+
+      # Billing
+      RecurringJob.delay_invoices_processing
 
       # Others
       User::CreditCard.delay_send_credit_card_expiration
