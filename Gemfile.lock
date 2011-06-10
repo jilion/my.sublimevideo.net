@@ -1,4 +1,11 @@
 GIT
+  remote: git://github.com/Jilion/url_signer.git
+  revision: 9e5aaaf49cd569544823303732e5c3762e7efb7d
+  specs:
+    url_signer (0.0.1)
+      ruby-hmac (>= 0.4.0)
+
+GIT
   remote: git://github.com/Jilion/useragent.git
   revision: ffe2c71e336be8acf5b133e14dbcfad4b79bbcd8
   specs:
@@ -409,6 +416,7 @@ DEPENDENCIES
   timecop
   twitter (= 1.3.0)
   uniquify (= 0.1.0)
+  url_signer!
   useragent!
   vcr
   voxel_hapi!

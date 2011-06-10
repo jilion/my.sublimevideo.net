@@ -61,13 +61,11 @@ MySublimeVideo::Application.routes.draw do
   devise_for :api_tokens
 
   namespace "api" do
-    constraints :format => :json do
+    constraints :format => /json|xml/ do
       
-      scope ":version" do
-        resources :sites do
-          member do
-            get :usage
-          end
+      resources :sites do
+        member do
+          get :usage
         end
       end
     end

@@ -1,6 +1,7 @@
 class ApiToken < ActiveRecord::Base
 
-  devise :token_authenticatable
+  uniquify :public_key, :chars => Array('A'..'Z') + Array('0'..'9'), :length => 20
+  uniquify :secret_key, :length => 40
 
   # ================
   # = Associations =
@@ -11,8 +12,6 @@ class ApiToken < ActiveRecord::Base
   # =============
   # = Callbacks =
   # =============
-
-  before_save :ensure_authentication_token
 
   # ===============
   # = Validations =

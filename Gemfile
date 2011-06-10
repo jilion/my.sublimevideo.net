@@ -65,6 +65,9 @@ gem 'createsend',            :git => 'git://github.com/rymai/createsend-ruby.git
 gem 'hoptoad_notifier',      '2.4.11'
 gem 'prowl',                 '0.1.3'
 
+gem 'url_signer',            :git => 'git://github.com/Jilion/url_signer.git'
+# gem 'url_signer',            :path => '/Users/remy/Development/Ruby/Gems/Jilion/url_signer'
+
 # Perf
 gem 'dalli',                 '1.0.5'
 
@@ -81,6 +84,7 @@ group :development, :test do
   gem 'rspec-rails', '~> 2.6.0'
   gem 'passenger'
   gem 'timecop'
+  gem 'passenger'
 end
 
 group :development do

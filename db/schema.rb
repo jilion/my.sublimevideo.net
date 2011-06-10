@@ -40,17 +40,14 @@ ActiveRecord::Schema.define(:version => 20110505135230) do
 
   create_table "api_tokens", :force => true do |t|
     t.integer  "user_id"
-    t.integer  "sign_in_count",        :default => 0
-    t.datetime "current_sign_in_at"
-    t.datetime "last_sign_in_at"
-    t.string   "current_sign_in_ip"
-    t.string   "last_sign_in_ip"
-    t.string   "authentication_token"
+    t.string   "public_key"
+    t.string   "secret_key"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "api_tokens", ["authentication_token"], :name => "index_api_tokens_on_authentication_token", :unique => true
+  add_index "api_tokens", ["public_key"], :name => "index_api_tokens_on_public_key", :unique => true
+  add_index "api_tokens", ["secret_key"], :name => "index_api_tokens_on_secret_key", :unique => true
 
   create_table "delayed_jobs", :force => true do |t|
     t.integer  "priority",   :default => 0
