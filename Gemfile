@@ -1,6 +1,6 @@
 source :rubygems
 
-gem 'bundler',               '1.0.13'
+gem 'bundler',               '1.0.14'
 gem 'rails',                 '3.0.7'
 
 # Databases
@@ -63,6 +63,9 @@ gem 'createsend',            :git => 'git://github.com/rymai/createsend-ruby.git
 gem 'hoptoad_notifier',      '2.4.9'
 gem 'prowl',                 '0.1.3'
 
+gem 'url_signer',            :git => 'git://github.com/Jilion/url_signer.git'
+# gem 'url_signer',            :path => '/Users/remy/Development/Ruby/Gems/Jilion/url_signer'
+
 # Perf
 gem 'dalli',                 '1.0.3'
 
@@ -78,6 +81,7 @@ end
 group :development, :test do
   gem 'rspec-rails', '2.6.0.rc4'
   gem 'timecop'
+  gem 'passenger'
 end
 
 group :development do
@@ -92,19 +96,20 @@ group :development do
 end
 
 group :test do
-  gem 'spork', '0.9.0.rc7'
+  gem 'spork', '0.9.0.rc8'
   gem 'rb-fsevent'
   gem 'growl'
   gem 'guard', :git => 'git://github.com/guard/guard.git'
   # gem 'guard-bundler'
   gem 'guard-pow'
+  gem 'guard-passenger'
   gem 'guard-rspec'
   gem 'guard-spork'#, '0.1.4'
   gem 'rspec-instafail'
   gem 'guard-livereload'
 
   gem 'shoulda'
-  gem 'capybara', '1.0.0.beta1'
+  gem 'capybara', '1.0.0.rc1'
   gem 'webmock'
   gem 'vcr'
 

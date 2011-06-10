@@ -2,13 +2,14 @@ class DeviseCreateApiTokens < ActiveRecord::Migration
   def self.up
     create_table(:api_tokens) do |t|
       t.integer :user_id
-      t.trackable
-      t.token_authenticatable
+      t.string :public_key
+      t.string :secret_key
 
       t.timestamps
     end
 
-    add_index :api_tokens, :authentication_token, :unique => true
+    add_index :api_tokens, :public_key, :unique => true
+    add_index :api_tokens, :secret_key, :unique => true
   end
 
   def self.down
