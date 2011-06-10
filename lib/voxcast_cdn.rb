@@ -38,8 +38,8 @@ module VoxcastCDN
         end
       end
       logs_names
-    rescue VoxelHAPI::Backend, VoxelHAPIConnection, EOFError, REXML, Excon, Errno::EPIPE, OpenSSL, IOError
-      raise Error
+    # rescue VoxelHAPI::Backend, VoxelHAPIConnection, EOFError, REXML, Excon, Errno::EPIPE, OpenSSL, IOError
+    #   raise Error
     end
 
     def logs_download(filename)
@@ -48,8 +48,8 @@ module VoxcastCDN
       tempfile.write(Base64.decode64(xml['data']['content']))
       tempfile.flush
       tempfile
-    rescue VoxelHAPI::Backend, VoxelHAPIConnection, EOFError, REXML, Excon, Errno::EPIPE, OpenSSL, IOError
-      raise Error
+    # rescue VoxelHAPI::Backend, VoxelHAPIConnection, EOFError, REXML, Excon, Errno::EPIPE, OpenSSL, IOError
+    #   raise Error
     end
 
   private
