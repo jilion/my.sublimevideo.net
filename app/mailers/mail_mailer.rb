@@ -1,4 +1,4 @@
-class MailMailer < SublimeVideoMailer
+class MailMailer < NoreplyMailer
 
   def send_mail_with_template(user, template)
     mail(

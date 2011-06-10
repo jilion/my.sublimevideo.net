@@ -1,21 +1,22 @@
-source :rubygems
+source "http://rubygems.org"
 
-gem 'bundler',               '1.0.14'
-gem 'rails',                 '3.0.7'
+gem 'bundler',               '1.0.15'
+
+gem 'rails',                 '3.0.9.rc3'
 
 # Databases
 gem 'pg',                    '0.11.0'
 gem 'meta_where',            '1.0.4'
-gem 'bson_ext',              '1.3.0'
-gem 'mongo',                 '1.3.0'
-gem 'mongoid',               '2.0.1'
+gem 'bson_ext',              '1.3.1'
+gem 'mongo',                 '1.3.1'
+gem 'mongoid',               '2.0.2'
 
 # Views
-gem 'haml',                  '3.1.1'
-gem 'kaminari',              '0.12.3'
+gem 'haml',                  '3.1.2'
+gem 'kaminari',              '0.12.4'
 gem 'jammit',                '0.6.0'
 gem 'liquid',                '2.2.2'
-gem 'RedCloth',              '4.2.3'
+gem 'RedCloth',              '4.2.7'
 
 # Auth / invitations
 gem 'devise',                '1.3.4'
@@ -39,8 +40,8 @@ gem 'responders',            '0.6.2'
 gem 'has_scope',             :git => 'git://github.com/rymai/has_scope.git'
 
 gem 'aws',                   '2.3.34' # bugs in 2.4.2
-gem 'fog',                   '0.7.2'
-gem 'carrierwave',           '0.5.3'
+gem 'fog',                   '0.8.2'
+gem 'carrierwave',           '0.5.4'
 gem 'voxel_hapi',            :git => 'git://github.com/thibaudgg/voxel_hapi.git', :branch => '1.9.2' # VoxCast CDN
 gem 'request-log-analyzer',  '1.11.0', :require => 'request_log_analyzer'
 
@@ -60,14 +61,14 @@ gem 'array_stats',           '0.6.0'
 # gem 'createsend',            '0.2.1' # Campaign Monitor
 gem 'createsend',            :git => 'git://github.com/rymai/createsend-ruby.git' # update dependencies for hashie (was conflicting with the Twitter gem)
 
-gem 'hoptoad_notifier',      '2.4.9'
+gem 'hoptoad_notifier',      '2.4.11'
 gem 'prowl',                 '0.1.3'
 
 gem 'url_signer',            :git => 'git://github.com/Jilion/url_signer.git'
 # gem 'url_signer',            :path => '/Users/remy/Development/Ruby/Gems/Jilion/url_signer'
 
 # Perf
-gem 'dalli',                 '1.0.3'
+gem 'dalli',                 '1.0.5'
 
 group :production do
   gem 'rack-google-analytics', '0.9.2', :require => 'rack/google-analytics'
@@ -79,7 +80,8 @@ group :production, :staging do
 end
 
 group :development, :test do
-  gem 'rspec-rails', '2.6.0.rc4'
+  gem 'rspec-rails', '~> 2.6.0'
+
   gem 'timecop'
   gem 'passenger'
 end
@@ -100,7 +102,7 @@ group :test do
   gem 'rb-fsevent'
   gem 'growl'
   gem 'guard', :git => 'git://github.com/guard/guard.git'
-  # gem 'guard-bundler'
+  gem 'guard-bundler'
   gem 'guard-pow'
   gem 'guard-passenger'
   gem 'guard-rspec'

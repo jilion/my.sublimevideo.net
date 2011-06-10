@@ -1,58 +1,12 @@
 --- 
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
-    method: :put
-    uri: http://zendesk%40sublimevideo.net:wrank8@jilion.zendesk.com:80/users/15483194.xml
-    body: <user><email>new@email.com</email></user>
-    headers: 
-      accept: 
-      - "*/*"
-      content-type: 
-      - application/xml
-      authorization: 
-      - Basic emVub0BqaWxpb24uY29tOndyYW5rOA==
-      content-length: 
-      - "41"
-      host: 
-      - jilion.zendesk.com
-  response: !ruby/struct:VCR::Response 
-    status: !ruby/struct:VCR::ResponseStatus 
-      code: 200
-      message: OK
-    headers: 
-      p3p: 
-      - CP="NOI DSP COR NID ADMa OPTa OUR NOR"
-      connection: 
-      - keep-alive
-      - close
-      content-type: 
-      - application/xml; charset=utf-8
-      x-runtime: 
-      - "84"
-      date: 
-      - Wed, 11 Aug 2010 13:18:42 GMT
-      server: 
-      - nginx/0.6.35
-      content-length: 
-      - "1"
-      set-cookie: 
-      - zendesk_user_version=users%2F15308267-20100805220019; path=/
-      - _zendesk_session=BAh7CyIcd2FyZGVuLnVzZXIuZGVmYXVsdC5rZXlpA%2BuV6ToPc2Vzc2lvbl9pZCIlYTY2MTNhZTUwYmE0ZjNiOTgwYjJhZTYxMTVjOGMwOWEiIHdhcmRlbi51c2VyLmRlZmF1bHQuc2Vzc2lvbnsGOg1hdXRoX3ZpYSISQmFzaWNTdHJhdGVneToMYWNjb3VudGkCN6kiE3dhcmRlbi5tZXNzYWdlewA6B2lkIhNsZGw3OTlsNWg0M3QweA%3D%3D--ff2d1c089b61ffa4ea046bea7bfdc68161f04952; path=/; HttpOnly
-      - zendesk_user_version=users%2F15308267-20100805220019; path=/
-      cache-control: 
-      - private, max-age=0, must-revalidate
-      status: 
-      - 200 OK
-    body: " "
-    http_version: "1.1"
-- !ruby/struct:VCR::HTTPInteraction 
-  request: !ruby/struct:VCR::Request 
     method: :post
     uri: http://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:80/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json
-    body: "{\"EmailAddress\":\"new@email.com\",\"Name\":\"John Doe\",\"CustomFields\":[{\"Key\":\"user_id\",\"Value\":150},{\"Key\":\"segment\",\"Value\":\"test\"}],\"Resubscribe\":true}"
+    body: "{\"EmailAddress\":\"new@email.com\",\"Name\":\"John Doe\",\"CustomFields\":[{\"Key\":\"user_id\",\"Value\":4},{\"Key\":\"segment\",\"Value\":\"test\"},{\"Key\":\"beta\",\"Value\":\"false\"}],\"Resubscribe\":true}"
     headers: 
       user-agent: 
-      - createsend-ruby-0.6.1
+      - createsend-ruby-0.7.7
       content-type: 
       - application/json
   response: !ruby/struct:VCR::Response 
@@ -60,22 +14,22 @@
       code: 201
       message: Created
     headers: 
-      date: 
-      - Wed, 05 Jan 2011 16:51:07 GMT
-      server: 
-      - Microsoft-IIS/6.0
-      p3p: 
-      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
-      x-powered-by: 
-      - ASP.NET
-      x-aspnet-version: 
-      - 4.0.30319
-      x-aspnetmvc-version: 
-      - "2.0"
       cache-control: 
       - private, s-maxage=0
       content-type: 
       - application/json; charset=utf-8
+      server: 
+      - CMWEB06
+      x-aspnetmvc-version: 
+      - "2.0"
+      x-aspnet-version: 
+      - 4.0.30319
+      x-powered-by: 
+      - ASP.NET
+      p3p: 
+      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
+      date: 
+      - Tue, 17 May 2011 12:21:46 GMT
       content-length: 
       - "15"
     body: "\"new@email.com\""
@@ -84,10 +38,10 @@
   request: !ruby/struct:VCR::Request 
     method: :post
     uri: http://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:80/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244/unsubscribe.json
-    body: "{\"EmailAddress\":\"email27@user.com\"}"
+    body: "{\"EmailAddress\":\"email4@user.com\"}"
     headers: 
       user-agent: 
-      - createsend-ruby-0.6.1
+      - createsend-ruby-0.7.7
       content-type: 
       - application/json
   response: !ruby/struct:VCR::Response 
@@ -95,22 +49,22 @@
       code: 400
       message: Bad Request
     headers: 
-      date: 
-      - Wed, 05 Jan 2011 16:51:08 GMT
-      server: 
-      - Microsoft-IIS/6.0
-      p3p: 
-      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
-      x-powered-by: 
-      - ASP.NET
-      x-aspnet-version: 
-      - 4.0.30319
-      x-aspnetmvc-version: 
-      - "2.0"
       cache-control: 
       - private, s-maxage=0
       content-type: 
       - application/json; charset=utf-8
+      server: 
+      - CMWEB06
+      x-aspnetmvc-version: 
+      - "2.0"
+      x-aspnet-version: 
+      - 4.0.30319
+      x-powered-by: 
+      - ASP.NET
+      p3p: 
+      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
+      date: 
+      - Tue, 17 May 2011 12:21:47 GMT
       content-length: 
       - "75"
     body: "{\"Code\":202,\"Message\":\"Subscriber not in list or has already been removed\"}"
@@ -119,10 +73,10 @@
   request: !ruby/struct:VCR::Request 
     method: :post
     uri: http://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:80/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json
-    body: "{\"EmailAddress\":\"new@email.com\",\"Name\":\"John Doe\",\"CustomFields\":[{\"Key\":\"user_id\",\"Value\":150},{\"Key\":\"segment\",\"Value\":\"test\"}],\"Resubscribe\":true}"
+    body: "{\"EmailAddress\":\"new@email.com\",\"Name\":\"John Doe\",\"CustomFields\":[{\"Key\":\"user_id\",\"Value\":4},{\"Key\":\"segment\",\"Value\":\"test\"},{\"Key\":\"beta\",\"Value\":\"false\"}],\"Resubscribe\":true}"
     headers: 
       user-agent: 
-      - createsend-ruby-0.6.1
+      - createsend-ruby-0.7.7
       content-type: 
       - application/json
   response: !ruby/struct:VCR::Response 
@@ -130,23 +84,95 @@
       code: 201
       message: Created
     headers: 
-      date: 
-      - Wed, 05 Jan 2011 16:51:09 GMT
-      server: 
-      - Microsoft-IIS/6.0
-      p3p: 
-      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
-      x-powered-by: 
-      - ASP.NET
-      x-aspnet-version: 
-      - 4.0.30319
-      x-aspnetmvc-version: 
-      - "2.0"
       cache-control: 
       - private, s-maxage=0
       content-type: 
       - application/json; charset=utf-8
+      server: 
+      - CMWEB06
+      x-aspnetmvc-version: 
+      - "2.0"
+      x-aspnet-version: 
+      - 4.0.30319
+      x-powered-by: 
+      - ASP.NET
+      p3p: 
+      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
+      date: 
+      - Tue, 17 May 2011 12:21:49 GMT
       content-length: 
       - "15"
     body: "\"new@email.com\""
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :put
+    uri: http://zendesk%40sublimevideo.net%2Ftoken:oxVzosGyu7DaZrQ0fhmKngHATvd78UhEqTzMszZy@sublimevideo.zendesk.com:80/users/59438671.xml
+    body: <user><email>new@email.com</email><is-verified>true</is-verified></user>
+    headers: 
+      content-type: 
+      - application/xml
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      server: 
+      - nginx/0.8.53
+      date: 
+      - Tue, 17 May 2011 12:21:50 GMT
+      content-type: 
+      - application/xml; charset=utf-8
+      connection: 
+      - keep-alive
+      status: 
+      - 200 OK
+      p3p: 
+      - CP="NOI DSP COR NID ADMa OPTa OUR NOR"
+      x-runtime: 
+      - "149"
+      content-length: 
+      - "1"
+      set-cookie: 
+      - _zendesk_session=BAh7DToMYWNjb3VudGkCN6kiHHdhcmRlbi51c2VyLmRlZmF1bHQua2V5aQPrlek6DWF1dGhfdmlhIhJCYXNpY1N0cmF0ZWd5Og91cGRhdGVkX2F0bCsHXmjSTToVYXV0aGVudGljYXRlZF9hdGwrB15o0k06D3Nlc3Npb25faWQiJWY4ZmUyMTBiNWQ3NzBkZmUzZThmMTEyOTE4NmY2MjVkIhN3YXJkZW4ubWVzc2FnZXsAOgdpZCIUZjJsbGd0ZjUtdGRlMWFh--436c03ea09160f570dbf224fa5ca13ca2a08ccab; path=/; HttpOnly
+      - oid_user=; path=/; expires=Thu, 01-Jan-1970 00:00:00 GMT
+      cache-control: 
+      - no-cache
+    body: " "
+    http_version: "1.1"
+- !ruby/struct:VCR::HTTPInteraction 
+  request: !ruby/struct:VCR::Request 
+    method: :get
+    uri: http://zendesk%40sublimevideo.net%2Ftoken:oxVzosGyu7DaZrQ0fhmKngHATvd78UhEqTzMszZy@sublimevideo.zendesk.com:80/users/59438671/user_identities.json
+    body: 
+    headers: 
+  response: !ruby/struct:VCR::Response 
+    status: !ruby/struct:VCR::ResponseStatus 
+      code: 200
+      message: OK
+    headers: 
+      server: 
+      - nginx/0.8.53
+      date: 
+      - Tue, 17 May 2011 12:21:51 GMT
+      content-type: 
+      - application/json; charset=utf-8
+      connection: 
+      - keep-alive
+      status: 
+      - 200 OK
+      etag: 
+      - "\"6a8899013b59de7c096262059e7d90f8\""
+      p3p: 
+      - CP="NOI DSP COR NID ADMa OPTa OUR NOR"
+      x-runtime: 
+      - "69"
+      content-length: 
+      - "410"
+      set-cookie: 
+      - _zendesk_session=BAh7DToMYWNjb3VudGkCN6kiHHdhcmRlbi51c2VyLmRlZmF1bHQua2V5aQPrlek6DWF1dGhfdmlhIhJCYXNpY1N0cmF0ZWd5Og91cGRhdGVkX2F0bCsHX2jSTToVYXV0aGVudGljYXRlZF9hdGwrB19o0k06D3Nlc3Npb25faWQiJTJlZDUyYjRhMTU1ZDc2YjRhN2IzNTliY2EyYjFkNjFiIhN3YXJkZW4ubWVzc2FnZXsAOgdpZCIUa2t1bGxjb2c5MmM2YXpv--372bf88510a760492326e1d07d90410f5ecd0eab; path=/; HttpOnly
+      - oid_user=; path=/; expires=Thu, 01-Jan-1970 00:00:00 GMT
+      cache-control: 
+      - private, max-age=0, must-revalidate
+    body: "[{\"created_at\":\"2011/05/17 13:54:12 +0200\",\"updated_at\":\"2011/05/17 13:57:28 +0200\",\"account_id\":43319,\"id\":59469711,\"identity_type\":\"email\",\"value\":\"email3@user.com\",\"user_id\":59438671,\"is_verified\":true},{\"created_at\":\"2011/05/17 14:20:15 +0200\",\"updated_at\":\"2011/05/17 14:20:15 +0200\",\"account_id\":43319,\"id\":59473136,\"identity_type\":\"email\",\"value\":\"new@email.com\",\"user_id\":59438671,\"is_verified\":false}]"
     http_version: "1.1"

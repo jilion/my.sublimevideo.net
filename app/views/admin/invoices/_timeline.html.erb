@@ -43,16 +43,16 @@ graph = Graph.new do |g|
   }))
   
   g.option(series: [
-    serie(paid_invoices[@moving_avg-1..-1], 'Paid', '#0000FF', :type => 'line', :color => '#600fff', :visible => false),
-    serie(moving_average(paid_invoices, @moving_avg), 'AVG Paid', '#00FFFF', type: 'line'),
-    serie(yearly_paid_invoices[@moving_avg-1..-1], 'Paid (yearly)', '#0000FF', :type => 'column', :color => '#5e33c8'),
-    serie(monthly_paid_invoices[@moving_avg-1..-1], 'Paid (monthly)', '#0000FF', :type => 'column', :color => '#7941ff'),
-    serie(refunded_invoices[@moving_avg-1..-1], 'Refunded', '#1C1', :type => 'column', :color => '#ff8000'),
-    serie(failed_invoices[@moving_avg-1..-1], 'Failed', '#89A54E', :type => 'column', :color => '#fe2617'),
-    serie(canceled_invoices[@moving_avg-1..-1], 'Canceled', '#89A54E', :type => 'column', :color => '#b00000'),
-    serie(open_invoices[@moving_avg-1..-1], 'Open', '#A1A', :type => 'column', :color => '#EEE'),
-    serie(waiting_invoices[@moving_avg-1..-1], 'Waiting', '#00FF00', :type => 'column', :color => '#AAA')
-  ].flatten)
+    serie(paid_invoices[@moving_avg-1..-1], 'Paid', '#0000FF', type: 'line', color: '#600fff', visible: false, stack: 0),
+    serie(moving_average(paid_invoices, @moving_avg), 'AVG Paid', '#00FFFF', type: 'line', stack: 1),
+    serie(yearly_paid_invoices[@moving_avg-1..-1], 'Paid (yearly)', '#0000FF', type: 'column', color: '#5e33c8', stack: 2),
+    serie(monthly_paid_invoices[@moving_avg-1..-1], 'Paid (monthly)', '#0000FF', type: 'column', color: '#7941ff', stack: 2),
+    serie(failed_invoices[@moving_avg-1..-1], 'Failed', '#89A54E', type: 'column', color: '#fe2617', stack: 2),
+    serie(open_invoices[@moving_avg-1..-1], 'Open', '#A1A', type: 'column', color: '#EEE', stack: 2),
+    serie(waiting_invoices[@moving_avg-1..-1], 'Waiting', '#00FF00', type: 'column', color: '#AAA', stack: 2),
+    serie(canceled_invoices[@moving_avg-1..-1], 'Canceled', '#89A54E', type: 'column', color: '#b00000', stack: 3),
+    serie(refunded_invoices[@moving_avg-1..-1], 'Refunded', '#1C1', type: 'column', color: '#ff8000', stack: 3)
+  ])
   # g.option(plotOptions: plot_options(@date_range_from.end_of_month, 1.month, marker: true, linear: true))
   g.option(plotOptions: plot_options(@date_range_from))
   g.option(credits: credits)

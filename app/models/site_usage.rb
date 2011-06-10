@@ -50,7 +50,7 @@ class SiteUsage
       Site.where(:token => tokens.pop(100)).each do |site|
         begin
           hbr_token = hits_traffic_and_requests_for_token(hbrs, site.token)
-          day = log.started_at.midnight
+          day = log.started_at.midnight.to_time
           self.collection.update(
             { :site_id => site.id, :day => day },
             { "$inc" => hbr_token },

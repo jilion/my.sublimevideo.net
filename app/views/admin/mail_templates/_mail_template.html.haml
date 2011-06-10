@@ -7,4 +7,4 @@
   %td.body
     %small= link_to truncate(mail_template.body), edit_admin_mail_template_path(mail_template), :title => mail_template.body
   %td
-    %small= display_date(mail_template.created_at)
+    %small= display_time(mail_template.created_at)

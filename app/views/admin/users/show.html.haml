@@ -14,11 +14,12 @@
   = "State:"
   %strong= @user.state.humanize
   - if @user.confirmed?
-    = "since " + display_date(@user.confirmed_at)
+    = "since " + display_time(@user.confirmed_at)
   - unless @user.confirmed?
-    = "| Confirmation sent at: " + display_date(@user.confirmation_sent_at)
+    = "| Confirmation sent at: " + display_time(@user.confirmation_sent_at)
   = "| Enthusiast ID: #{@user.enthusiast_id}"
-  = "| Zendesk ID: #{@user.zendesk_id}"
+  = "| Zendesk ID: #{@user.zendesk_id? ? link_to(@user.zendesk_id, Zendesk.base_url + "/users/#{@user.zendesk_id}") : "-"}".html_safe
+  = "| Newsletter: " + display_bool(@user.newsletter)
 
 %p
   = "Created #{time_ago_in_words(@user.created_at)} ago"
@@ -27,8 +28,8 @@
   = "| Failed login attempts: #{@user.failed_attempts}"
 
 %p
-  = "Current sign in at: " + display_date(@user.current_sign_in_at)
-  = "| Last sign in at: " + display_date(@user.last_sign_in_at)
+  = "Current sign in at: " + display_time(@user.current_sign_in_at)
+  = "| Last sign in at: " + display_time(@user.last_sign_in_at)
   = "| Current sign in ip: #{@user.current_sign_in_ip}"
   = "| Last sign in ip: #{@user.last_sign_in_ip}"
 
@@ -41,6 +42,19 @@
 
 - if @user.use_company
   %p= "#{@user.company_job_title} at #{@user.company_name} (#{link_to(@user.company_url, url_with_protocol(@user.company_url))}); #{pluralize(@user.company_employees, 'employee')}; #{pluralize(number_with_delimiter(@user.company_videos_served), 'video')} served".html_safe
+
+%p
+  = "Credit Card (#{content_tag(:strong, @user.cc_alias)}): ".html_safe
+  - if @user.cc?
+    = "#{content_tag(:strong, @user.cc_type.try(:titleize))} ending in #{content_tag(:strong, @user.cc_last_digits)}, ".html_safe
+    = "expire on #{content_tag(:strong, display_time(@user.cc_expire_on, format: :month_fullyear))}".html_safe
+    = "| Last update: #{display_time(@user.cc_updated_at)}"
+
+- if @user.pending_cc?
+  %p
+    = "Pending Credit Card: #{content_tag(:strong, @user.pending_cc_type.try(:titleize))} ending in #{content_tag(:strong, @user.pending_cc_last_digits)}, ".html_safe
+    = "expire on #{content_tag(:strong, display_time(@user.pending_cc_expire_on, format: :month_fullyear))}".html_safe
+    = "| Last update: #{display_time(@user.pending_cc_updated_at)}"
 
 %br
 %hr
@@ -86,7 +100,7 @@
       %ul
         - @user.sites.not_archived.each do |site|
           %li
-            = link_to site.hostname || "no hostname", "http://#{site.hostname}"
+            = site.hostname? ? link_to(site.hostname, "http://#{site.hostname}") : "no hostname"
             (
             = link_to "details", [:edit, :admin, site]
             )

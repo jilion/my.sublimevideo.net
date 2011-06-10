@@ -49,5 +49,18 @@ module Admin::SitesHelper
     html += ", #{hostnames.size} more" unless hostnames.empty?
     html
   end
+  
+  # always with span here
+  def hostname_with_path_and_wildcard(site, options = {})
+    site_hostname = site.hostname || "no hostname"
+    length = options[:truncate] || 1000
+    h_trunc_length = length * 2/3
+    p_trunc_length = (site_hostname.length < h_trunc_length) ? (h_trunc_length - site_hostname.length + (length * 1/3)) : (length * 1/3)
+    uri = ''
+    uri += "<span class='wildcard'>(*.)</span>" if site.wildcard?
+    uri += truncate_middle(site_hostname, :length => h_trunc_length)
+    uri += "<span class='path'>/#{site.path.truncate(p_trunc_length)}</span>" if site.path.present?
+    uri.html_safe
+  end
 
 end

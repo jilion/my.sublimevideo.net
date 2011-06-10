@@ -7,7 +7,8 @@
   - cache 'dashboard_timeline_usage', :expires_in => (Time.now.utc.end_of_day - Time.now.utc) do
     = render 'timeline_usage'
 
-%h2= "Total revenue: #{display_amount(Invoice.total_revenue)}"
+%h2.revenue= "Total revenue: #{display_amount(Invoice.total_revenue)}"
+%h3.revenue= "Date range revenue: #{display_amount(Invoice.between(@date_range_from, @date_range_to).total_revenue)}"
 
 %h3 Sites
 %p= "LaunchPad sites: #{Site.active.dev.count}"

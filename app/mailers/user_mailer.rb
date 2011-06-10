@@ -1,4 +1,4 @@
-class UserMailer < SublimeVideoMailer
+class UserMailer < NoreplyMailer
 
   def account_suspended(user)
     @user = user

@@ -92,12 +92,13 @@ describe Tweet do
 
   describe "Class Methods" do
     describe ".save_new_tweets_and_sync_favorite_tweets" do
+      before(:each) { described_class::KEYWORDS = %w[rymai] } # fake keywords to not fill the cassette...
       use_vcr_cassette "twitter/save_new_tweets_and_sync_favorite_tweets"
       subject { described_class.save_new_tweets_and_sync_favorite_tweets }
 
       it "should delay itself" do
         expect { subject }.to change(Delayed::Job, :count).by(1)
-        Delayed::Job.last.run_at.should be_within(30).of(20.minutes.from_now)
+        Delayed::Job.last.run_at.should be_within(60).of(20.minutes.from_now)
       end
 
       it "should create new tweets" do

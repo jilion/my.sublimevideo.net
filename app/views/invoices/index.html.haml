@@ -42,18 +42,17 @@
             = form_for @site, :url => retry_site_invoices_path(site_id: @site.to_param), :html => { :method => 'put' } do |f|
               .entry= f.submit t('site.invoices.retry_invoices'), :class => "submit_dynamic_button"
 
-      - if @site.in_paid_plan? || (@site.next_cycle_plan_id? && @site.next_cycle_plan.paid_plan?)
+      - if @site.in_paid_plan? && (!@site.next_cycle_plan_id? || @site.next_cycle_plan.paid_plan?)
         .next_invoice
           %h3.section_title= "Next invoice"
-          - next_plan = @site.next_cycle_plan || @site.pending_plan || @site.plan
+          - next_plan = @site.next_cycle_plan || @site.plan
           %p
-            =raw "#{content_tag(:strong, display_amount(next_plan.price))}"
-            - if current_user.vat?
-              = "(excl. VAT)"
-            = " on #{l(@site.plan_cycle_ended_at.tomorrow, :format => :d_b_Y)}."
+            = raw "#{content_tag(:strong, display_amount(next_plan.price))}"
+            = "(excl. VAT)" if current_user.vat?
+            = " on #{l(@invoices.first.paid_plan_invoice_item.ended_at.tomorrow, :format => :d_b_Y)}."
       .past_invoices
         %h3.section_title= "Past invoices"
         %ul
-          - @invoices.by_date.each do |invoice|
+          - @invoices.each do |invoice|
             %li= render 'invoice_row', :invoice => invoice
   .spacer

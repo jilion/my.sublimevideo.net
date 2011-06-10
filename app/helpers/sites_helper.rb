@@ -13,18 +13,6 @@ module SitesHelper
     site.path.present? ? "#{site.hostname}/#{site.path}" : site.hostname
   end
 
-  # always with span here
-  def hostname_with_path_and_wildcard(site, options = {})
-    length = options[:truncate] || 1000
-    h_trunc_length = length * 2/3
-    p_trunc_length = (site.hostname.length < h_trunc_length) ? (h_trunc_length - site.hostname.length + (length * 1/3)) : (length * 1/3)
-    uri = ''
-    uri += "<span class='wildcard'>(*.)</span>" if site.wildcard?
-    uri += truncate_middle(site.hostname, :length => h_trunc_length)
-    uri += "<span class='path'>/#{site.path.truncate(p_trunc_length)}</span>" if site.path.present?
-    uri.html_safe
-  end
-
   def display_none_if(condition, value=nil)
     value || "display:none;" unless condition
   end

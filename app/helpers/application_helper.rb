@@ -5,8 +5,8 @@ module ApplicationHelper
     boolean == 0 || boolean.blank? || !boolean ? "-" : "✓"
   end
 
-  def display_date(date)
-    date ? l(date, :format => :minutes) : "-"
+  def display_time(date, options={ :format => :minutes })
+    date ? l(date, :format => options[:format]) : "-"
   end
 
   def display_percentage(fraction)

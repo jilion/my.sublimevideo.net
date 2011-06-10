@@ -254,12 +254,12 @@ private
 
   # after_transition :on => :succeed
   def send_charging_succeeded_email
-    TransactionMailer.charging_succeeded(self).deliver!
+    BillingMailer.transaction_succeeded(self).deliver!
   end
 
   # after_transition :on => :fail
   def send_charging_failed_email
-    TransactionMailer.charging_failed(self).deliver!
+    BillingMailer.transaction_failed(self).deliver!
   end
 
 end

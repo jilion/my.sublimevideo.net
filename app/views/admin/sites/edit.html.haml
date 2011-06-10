@@ -1,7 +1,4 @@
-- if @site.hostname.present?
-  = title_and_content_header("(#{@site.token}) #{link_to(hostname_with_path_and_wildcard(@site), "http://#{@site.hostname}/#{@site.path}")}")
-- else
-  = title_and_content_header("#{@site.token}")
+= title_and_content_header("(#{@site.token}) #{@site.hostname? ? link_to(hostname_with_path_and_wildcard(@site), "http://#{@site.hostname}/#{@site.path}") : "no hostname"}")
 
 - if @site.plan_id?
   = render '/admin/shared/date_chooser'
@@ -12,7 +9,7 @@
   = "State:"
   %strong= @site.state.humanize
   - if @site.archived?
-    = "since " + display_date(@site.archived_at)
+    = "since " + display_time(@site.archived_at)
   = "| User: #{content_tag(:strong, link_to(@site.user.full_name, [:admin, @site.user]))}".html_safe
   = "| Created #{time_ago_in_words(@site.created_at)} ago"
   = "| Updated #{time_ago_in_words(@site.updated_at)} ago"
@@ -66,9 +63,9 @@
 
 %ul
   %li= "State: " + @site.state
-  %li= "Created at: " + display_date(@site.created_at)
-  %li= "Updated at: " + display_date(@site.updated_at)
-  %li= "Archived at: " + display_date(@site.archived_at)
+  %li= "Created at: " + display_time(@site.created_at)
+  %li= "Updated at: " + display_time(@site.updated_at)
+  %li= "Archived at: " + display_time(@site.archived_at)
 
 %br
 %hr

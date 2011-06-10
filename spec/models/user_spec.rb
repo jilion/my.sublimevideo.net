@@ -624,35 +624,36 @@ describe User do
 
     describe "after_update :update_email_on_zendesk" do
       it "should not delay Module#put if email has not changed" do
-        user.zendesk_id = 15483194
+        user.zendesk_id = 59438671
         Delayed::Job.count.should == 1
       end
 
       it "should not delay Module#put if user has no zendesk_id" do
         user.email            = "new@email.com"
         user.current_password = '123456'
-        user.save
+        user.save!
         user.email.should == "new@email.com"
         Delayed::Job.count.should == 3
       end
 
       it "should delay Module#put if the user has a zendesk_id and his email has changed" do
-        user.zendesk_id       = 15483194
+        user.zendesk_id       = 59438671
         user.email            = "new@email.com"
         user.current_password = '123456'
-        user.save
+        user.save!
         user.email.should == "new@email.com"
         Delayed::Job.all.any? { |dj| dj.name == 'Module#put' }.should be_true
       end
 
       it "should update user's email on Zendesk if this user has a zendesk_id and his email has changed" do
-        user.zendesk_id = 15483194
+        user.zendesk_id = 59438671
         user.email      = "new@email.com"
-        user.save
-        VCR.use_cassette("user/update_email_on_zendesk") { @worker.work_off }
-        Delayed::Job.last.should be_nil
-        VCR.use_cassette("user/email_on_zendesk_after_update") do
-          JSON.parse(Zendesk.get("/users/15483194/user_identities.json").body).select { |h| h["identity_type"] == "email" }.map { |h| h["value"] }.should include("new@email.com")
+        user.current_password = '123456'
+        user.save!
+        VCR.use_cassette("user/update_email_on_zendesk") do
+          @worker.work_off
+          Delayed::Job.last.should be_nil
+          JSON[Zendesk.get("/users/59438671/user_identities.json").body].select { |h| h["identity_type"] == "email" }.map { |h| h["value"] }.should include("new@email.com")
         end
       end
     end

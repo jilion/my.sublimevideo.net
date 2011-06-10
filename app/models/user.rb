@@ -61,9 +61,7 @@ class User < ActiveRecord::Base
 
   after_save   :newsletter_subscription
 
-  # after_create :push_new_registration
-
-  after_update :update_email_on_zendesk #, :charge_failed_invoices
+  after_update :update_email_on_zendesk
 
   # =================
   # = State Machine =
@@ -241,7 +239,7 @@ private
   # validate (archived state)
   def prevent_archive_with_non_paid_invoices
     unless archivable?
-      self.errors.add(:base, :not_paid_invoices_prevent_archive, :count => invoices.open_or_failed_or_waiting.count)
+      self.errors.add(:base, :not_paid_invoices_prevent_archive, :count => invoices.not_paid.count)
     end
   end
 
@@ -296,26 +294,12 @@ private
     end
   end
 
-  # after_create
-  def push_new_registration
-    # begin
-    #   Ding.signup if Rails.env.production?
-    # rescue
-    #   # do nothing
-    # end
-  end
-
   # after_update
   def update_email_on_zendesk
     if zendesk_id.present? && email_changed?
-      Zendesk.delay(:priority => 25).put("/users/#{zendesk_id}.xml", :user => { :email => email })
+      Zendesk.delay(priority: 25).put("/users/#{zendesk_id}.xml", "<user><email>#{email}</email><is-verified>true</is-verified></user>")
     end
   end
-  # def charge_failed_invoices
-  #   if cc_updated_at_changed? && invoices.failed.present?
-  #     Transaction.delay(:priority => 2).charge_open_and_failed_invoices_by_user_id(id)
-  #   end
-  # end
 
   # Allow User.invite to assign enthusiast_id
   def mass_assignment_authorizer
