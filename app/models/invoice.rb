@@ -162,7 +162,7 @@ class Invoice < ActiveRecord::Base
 private
 
   def build_invoice_items
-    if site.pending_plan_id? && site.in_paid_plan?
+    if site.pending_plan_id? && site.in_paid_plan? && site.plan.upgrade?(site.pending_plan)
       invoice_items << InvoiceItem::Plan.build(invoice: self, item: Plan.find(site.plan_id), deduct: true)
     end
     invoice_items << InvoiceItem::Plan.build(invoice: self, item: site.pending_plan || site.plan)

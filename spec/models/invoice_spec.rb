@@ -424,90 +424,33 @@ describe Invoice do
       end
 
       describe "standard invoice" do
-        context "before beta discount end" do
-          before(:all) do
-            @user    = Factory(:user, country: 'FR', created_at: Time.utc(2010,10,10))
-            Timecop.travel(PublicLaunch.beta_transition_ended_on - 1.day) do
-              @site    = Factory(:site, user: @user, plan_id: @paid_plan.id)
-              @invoice = Invoice.build(site: @site)
-            end
+        before(:all) do
+          @user = Factory(:user, country: 'FR', created_at: Time.utc(2011,3,30))
+          Timecop.travel(PublicLaunch.beta_transition_ended_on + 1.day) do
+            @site    = Factory(:site, user: @user, plan_id: @paid_plan.id)
+            @invoice = Invoice.build(site: @site)
           end
-          subject { @invoice }
-
-          specify { subject.invoice_items.size.should == 1 } # 1 plan
-          specify { subject.invoice_items.all? { |ii| ii.item == @paid_plan }.should be_true }
-          specify { subject.invoice_items.all? { |ii| ii.site == @site }.should be_true }
-          specify { subject.invoice_items.all? { |ii| ii.invoice == subject }.should be_true }
-
-          its(:invoice_items_amount) { should == 800 } # paid_plan.price
-          its(:vat_rate)             { should == 0.0 }
-          its(:vat_amount)           { should == 0 }
-          its(:amount)               { should == 800 } # paid_plan.price
-          its(:paid_at)              { should be_nil }
-          its(:last_failed_at)       { should be_nil }
-          it { should be_open }
         end
+        subject { @invoice }
 
-        context "after beta discount end" do
-          before(:all) do
-            @user    = Factory(:user, country: 'FR', created_at: Time.utc(2011,3,30))
-            Timecop.travel(PublicLaunch.beta_transition_ended_on + 1.day) do
-              @site    = Factory(:site, user: @user, plan_id: @paid_plan.id)
-              @invoice = Invoice.build(site: @site)
-            end
-          end
-          subject { @invoice }
+        specify { subject.invoice_items.size.should == 1 } # 1 plan
+        specify { subject.invoice_items.all? { |ii| ii.item == @paid_plan }.should be_true }
+        specify { subject.invoice_items.all? { |ii| ii.site == @site }.should be_true }
+        specify { subject.invoice_items.all? { |ii| ii.invoice == subject }.should be_true }
 
-          specify { subject.invoice_items.size.should == 1 } # 1 plan
-          specify { subject.invoice_items.all? { |ii| ii.item == @paid_plan }.should be_true }
-          specify { subject.invoice_items.all? { |ii| ii.site == @site }.should be_true }
-          specify { subject.invoice_items.all? { |ii| ii.invoice == subject }.should be_true }
-
-          its(:invoice_items_amount) { should == 1000 } # paid_plan.price
-          its(:vat_rate)             { should == 0.0 }
-          its(:vat_amount)           { should == 0 }
-          its(:amount)               { should == 1000 } # paid_plan.price
-          its(:paid_at)              { should be_nil }
-          its(:last_failed_at)       { should be_nil }
-          it { should be_open }
-        end
+        its(:invoice_items_amount) { should == 1000 } # paid_plan.price
+        its(:vat_rate)             { should == 0.0 }
+        its(:vat_amount)           { should == 0 }
+        its(:amount)               { should == 1000 } # paid_plan.price
+        its(:paid_at)              { should be_nil }
+        its(:last_failed_at)       { should be_nil }
+        it { should be_open }
       end
 
       describe "with a site upgraded" do
-        context "from a paid plan before beta discount end" do
+        context "from a paid plan" do
           before(:all) do
-            @user       = Factory(:user, country: 'FR', created_at: Time.utc(2010,10,10))
-            Timecop.travel(PublicLaunch.beta_transition_ended_on - 1.day) do
-              @site       = Factory(:site_with_invoice, user: @user, plan_id: @paid_plan.id)
-              @paid_plan2 = Factory(:plan, cycle: "month", price: 3000)
-              # Simulate upgrade
-              @site.plan_id = @paid_plan2.id
-              @invoice = Invoice.build(site: @site)
-            end
-          end
-          subject { @invoice }
-
-          it { subject.invoice_items.size.should == 2 }
-          it { subject.invoice_items.all? { |ii| ii.site == @site }.should be_true }
-          it { subject.invoice_items.all? { |ii| ii.invoice == subject }.should be_true }
-          it { subject.invoice_items.first.item.should == @paid_plan }
-          it { subject.invoice_items.first.price.should == 800 }
-          it { subject.invoice_items.first.amount.should == -800 }
-          it { subject.invoice_items.second.item.should == @paid_plan2 }
-          it { subject.invoice_items.second.price.should == 2400 }
-          it { subject.invoice_items.second.amount.should == 2400 }
-
-          its(:invoice_items_amount) { should == 1600 } # paid_plan2.price - paid_plan.price
-          its(:vat_rate)             { should == 0.0 }
-          its(:vat_amount)           { should == 0 }
-          its(:amount)               { should == 1600 } # paid_plan2.price - paid_plan.price
-          its(:paid_at)              { should be_nil }
-          its(:last_failed_at)       { should be_nil }
-          it { should be_open }
-        end
-        context "from a paid plan after beta discount end" do
-          before(:all) do
-            @user       = Factory(:user, country: 'FR', created_at: Time.utc(2011,3,30))
+            @user = Factory(:user, country: 'FR', created_at: Time.utc(2011,3,30))
             Timecop.travel(PublicLaunch.beta_transition_ended_on + 1.day) do
               @site       = Factory(:site_with_invoice, user: @user, plan_id: @paid_plan.id)
               @paid_plan2 = Factory(:plan, cycle: "month", price: 3000)
@@ -538,39 +481,9 @@ describe Invoice do
         end
 
         %w[dev beta].each do |plan|
-          context "from a #{plan} plan before beta discount end" do
+          context "from a #{plan} plan" do
             before(:all) do
-              @user      = Factory(:user, country: 'FR', created_at: Time.utc(2010,10,10))
-              Timecop.travel(PublicLaunch.beta_transition_ended_on - 1.day) do
-                @site      = Factory(:site, user: @user, plan_id: instance_variable_get("@#{plan}_plan").id)
-                @paid_plan = Factory(:plan, cycle: "month", price: 3000)
-                # Simulate upgrade
-                @site.plan_id = @paid_plan.id
-                @invoice = Invoice.build(site: @site)
-              end
-            end
-            subject { @invoice }
-
-            it { subject.invoice_items.size.should == 1 }
-            it { subject.invoice_items.all? { |ii| ii.site == @site }.should be_true }
-            it { subject.invoice_items.all? { |ii| ii.invoice == subject }.should be_true }
-            it { subject.invoice_items.first.item.should == @paid_plan }
-            it { subject.invoice_items.first.price.should == 2400 }
-
-            its(:invoice_items_amount) { should == 2400 } # paid_plan.price
-            its(:vat_rate)             { should == 0.0 }
-            its(:vat_amount)           { should == 0 }
-            its(:amount)               { should == 2400 } # paid_plan.price
-            its(:paid_at)              { should be_nil }
-            its(:last_failed_at)       { should be_nil }
-            it { should be_open }
-          end
-        end
-
-        %w[dev beta].each do |plan|
-          context "from a #{plan} plan after beta discount end" do
-            before(:all) do
-              @user      = Factory(:user, country: 'FR', created_at: Time.utc(2011,3,30))
+              @user = Factory(:user, country: 'FR', created_at: Time.utc(2011,3,30))
               Timecop.travel(PublicLaunch.beta_transition_ended_on + 1.day) do
                 @site      = Factory(:site, user: @user, plan_id: instance_variable_get("@#{plan}_plan").id)
                 @paid_plan = Factory(:plan, cycle: "month", price: 3000)
@@ -598,72 +511,69 @@ describe Invoice do
         end
       end
 
-      describe "with a site created" do
-        context "before beta discount end" do
+      describe "with a site downgraded" do
+        context "from a paid plan" do
           before(:all) do
-            @user    = Factory(:user, country: 'FR', created_at: Time.utc(2010,10,10))
-            Timecop.travel(PublicLaunch.beta_transition_ended_on - 1.day) do
-              @site = Factory.build(:new_site, user: @user, plan_id: @paid_plan.id)
-              @invoice = Invoice.build(site: @site)
-            end
-          end
-          subject { @invoice }
-
-          its(:invoice_items_amount) { should == 800 }
-          its(:vat_rate)             { should == 0.0 }
-          its(:vat_amount)           { should == 0 }
-          its(:amount)               { should == 800 }
-        end
-
-        context "after beta discount end" do
-          before(:all) do
-            @user    = Factory(:user, country: 'FR', created_at: Time.utc(2011,3,30))
+            @user = Factory(:user, country: 'FR', created_at: Time.utc(2011,3,30))
             Timecop.travel(PublicLaunch.beta_transition_ended_on + 1.day) do
-              @site = Factory.build(:new_site, user: @user, plan_id: @paid_plan.id)
+              @site       = Factory(:site_with_invoice, user: @user, plan_id: @paid_plan.id)
+              @paid_plan2 = Factory(:plan, cycle: "month", price: 500)
+              # Simulate downgrade
+              @site.plan_id = @paid_plan2.id
+              @site.pend_plan_changes
+              @site.save_without_password_validation
               @invoice = Invoice.build(site: @site)
             end
           end
           subject { @invoice }
 
-          its(:invoice_items_amount) { should == 1000 }
+          it { subject.invoice_items.size.should == 1 }
+          it { subject.invoice_items.first.site.should == @site }
+          it { subject.invoice_items.first.invoice.should == subject }
+          it { subject.invoice_items.first.item.should == @paid_plan2 }
+          it { subject.invoice_items.first.price.should == 500 }
+          it { subject.invoice_items.first.amount.should == 500 }
+
+          its(:invoice_items_amount) { should == 500 } # paid_plan2.price
           its(:vat_rate)             { should == 0.0 }
           its(:vat_amount)           { should == 0 }
-          its(:amount)               { should == 1000 }
+          its(:amount)               { should == 500 } # paid_plan2.price
+          its(:paid_at)              { should be_nil }
+          its(:last_failed_at)       { should be_nil }
+          it { should be_open }
         end
       end
 
+      describe "with a site created" do
+        before(:all) do
+          @user    = Factory(:user, country: 'FR', created_at: Time.utc(2011,3,30))
+          Timecop.travel(PublicLaunch.beta_transition_ended_on + 1.day) do
+            @site = Factory.build(:new_site, user: @user, plan_id: @paid_plan.id)
+            @invoice = Invoice.build(site: @site)
+          end
+        end
+        subject { @invoice }
+
+        its(:invoice_items_amount) { should == 1000 }
+        its(:vat_rate)             { should == 0.0 }
+        its(:vat_amount)           { should == 0 }
+        its(:amount)               { should == 1000 }
+      end
+
       describe "with a Swiss user" do
-        context "before beta discount end" do
-          before(:all) do
-            @user    = Factory(:user, country: 'CH', created_at: Time.utc(2010,10,10))
-            Timecop.travel(PublicLaunch.beta_transition_ended_on - 1.day) do
-              @site = Factory.build(:new_site, user: @user, plan_id: @paid_plan.id)
-              @invoice = Invoice.build(site: @site)
-            end
+        before(:all) do
+          @user    = Factory(:user, country: 'CH')
+          Timecop.travel(PublicLaunch.beta_transition_ended_on + 1.day) do
+            @site = Factory.build(:new_site, user: @user, plan_id: @paid_plan.id)
+            @invoice = Invoice.build(site: @site)
           end
-          subject { @invoice }
-
-          its(:invoice_items_amount) { should == 800 }
-          its(:vat_rate)             { should == 0.08 }
-          its(:vat_amount)           { should == (800 * 0.08).round }
-          its(:amount)               { should == 800 + (800 * 0.08).round }
         end
+        subject { @invoice }
 
-        context "after beta discount end" do
-          before(:all) do
-            @user    = Factory(:user, country: 'CH')
-            Timecop.travel(PublicLaunch.beta_transition_ended_on + 1.day) do
-              @site = Factory.build(:new_site, user: @user, plan_id: @paid_plan.id)
-              @invoice = Invoice.build(site: @site)
-            end
-          end
-          subject { @invoice }
-
-          its(:invoice_items_amount) { should == 1000 }
-          its(:vat_rate)             { should == 0.08 }
-          its(:vat_amount)           { should == (1000 * 0.08).round }
-          its(:amount)               { should == 1000 + (1000 * 0.08).round }
-        end
+        its(:invoice_items_amount) { should == 1000 }
+        its(:vat_rate)             { should == 0.08 }
+        its(:vat_amount)           { should == (1000 * 0.08).round }
+        its(:amount)               { should == 1000 + (1000 * 0.08).round }
       end
 
     end # .build
