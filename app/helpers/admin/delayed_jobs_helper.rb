@@ -10,8 +10,8 @@ module Admin::DelayedJobsHelper
       "Update first non-paid invoices & sites dates"
     when "Class#renew_active_sites!"
       "Renew active sites"
-    when "Class#charge_open_invoices"
-      "Open invoices charging"
+    when "Class#charge_invoices"
+      "Invoices charging"
     when "Class#update_last_30_days_counters_for_not_archived_sites"
       "Update last 30 days hits"
     when "Class#create_users_stats"
@@ -42,7 +42,7 @@ module Admin::DelayedJobsHelper
       Class#fetch_download_and_create_new_logs
       Class#fetch_and_create_new_logs
       Module#monitor_sites_usages
-      Class#charge_open_invoices
+      Class#charge_invoices
       Class#update_last_30_days_counters_for_not_archived_sites
       Class#update_pending_dates_for_first_not_paid_invoices
       Class#renew_active_sites!

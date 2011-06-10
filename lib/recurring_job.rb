@@ -15,7 +15,7 @@ module RecurringJob
   billing_tasks = [
     '%Invoice%update_pending_dates_for_first_not_paid_invoices%',
     '%Site%renew_active_sites!%',
-    '%Transaction%charge_open_invoices%'
+    '%Transaction%charge_invoices%'
   ]
 
   NAMES = [
@@ -34,7 +34,7 @@ module RecurringJob
       # Billing
       Invoice.delay_update_pending_dates_for_first_not_paid_invoices
       Site.delay_renew_active_sites!
-      Transaction.delay_charge_open_invoices
+      Transaction.delay_charge_invoices
 
       # Stats
       UsersStat.delay_create_users_stats
