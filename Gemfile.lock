@@ -257,7 +257,7 @@ GEM
       rake (>= 0.8.7)
       rdoc (~> 3.4)
       thor (~> 0.14.4)
-    rake (0.9.2)
+    rake (0.8.7)
     rash (0.3.0)
       hashie (~> 1.0.0)
     rb-fsevent (0.4.0)
@@ -389,6 +389,7 @@ DEPENDENCIES
   rack-private
   rack-ssl-enforcer (= 0.2.2)
   rails (= 3.0.9.rc3)
+  rake (= 0.8.7)
   rb-fsevent
   request-log-analyzer (= 1.11.0)
   rescue_me (= 0.1.0)
