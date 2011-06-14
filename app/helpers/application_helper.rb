@@ -12,7 +12,7 @@ module ApplicationHelper
   def display_percentage(fraction)
     number_to_percentage(fraction * 100.0, :precision => 2, :strip_insignificant_zeros => true)
   end
-  
+
   def display_vat_percentage
     number_to_percentage(Vat.for_country(current_user.country) * 100, :precision => 0, :strip_insignificant_zeros => true)
   end
@@ -34,7 +34,7 @@ module ApplicationHelper
 
   def info_box(options={}, &block)
     content_tag(:div, :class => "info_box" + (options[:class] ? " #{options[:class]}" : "")) do
-      capture_haml(&block).chomp + content_tag(:span, nil, :class => "arrow")
+      capture_haml(&block).chomp.html_safe + content_tag(:span, nil, :class => "arrow")
     end
   end
 
