@@ -5,6 +5,7 @@ class SiteUsage
   field :day,             :type => DateTime
 
   field :loader_hits,                :type => Integer, :default => 0
+  field :ssl_loader_hits,            :type => Integer, :default => 0
   field :player_hits,                :type => Integer, :default => 0
   field :main_player_hits,           :type => Integer, :default => 0
   field :main_player_hits_cached,    :type => Integer, :default => 0
@@ -76,8 +77,16 @@ private
   def self.hits_traffic_and_requests_from(log, trackers)
     trackers.inject({}) do |trackers, tracker|
       case tracker.options[:title]
-      when :loader_hits, :flash_hits, :requests_s3
+      when :flash_hits, :requests_s3
         trackers[tracker.options[:title]] = tracker.categories
+      when :loader_hits
+        tracker.categories.each do |array, hits|
+          token, referrer = array[0], array[1]
+          if referrer =~ /^https.*/
+            trackers[:ssl_loader_hits] = set_hits_tracker(trackers, :ssl_loader_hits, token, hits)
+          end
+          trackers[:loader_hits] = set_hits_tracker(trackers, :loader_hits, token, hits)
+        end
       when :player_hits
         tracker.categories.each do |array, hits|
           token, status, referrer = array[0], array[1], array[2]
@@ -85,12 +94,12 @@ private
             referrer_type = site.referrer_type(referrer, log.started_at)
             if status == 200
               player_hits_type = "#{referrer_type}_player_hits".to_sym
-              trackers[player_hits_type] = player_hits_tracker(trackers, player_hits_type, token, hits)
+              trackers[player_hits_type] = set_hits_tracker(trackers, player_hits_type, token, hits)
             else # cached
               player_hits_type = "#{referrer_type}_player_hits_cached".to_sym
-              trackers[player_hits_type] = player_hits_tracker(trackers, player_hits_type, token, hits)
+              trackers[player_hits_type] = set_hits_tracker(trackers, player_hits_type, token, hits)
             end
-            trackers[:player_hits] = player_hits_tracker(trackers, :player_hits, token, hits)
+            trackers[:player_hits] = set_hits_tracker(trackers, :player_hits, token, hits)
           end
         end
       when :traffic_s3, :traffic_voxcast
@@ -105,7 +114,7 @@ private
 
   def self.hits_traffic_and_requests_for_token(hbrs, token)
     hbr_attributes = [
-     :loader_hits, :player_hits,
+     :loader_hits, :ssl_loader_hits, :player_hits,
      :main_player_hits, :main_player_hits_cached,
      :extra_player_hits, :extra_player_hits_cached,
      :dev_player_hits, :dev_player_hits_cached,
@@ -119,7 +128,7 @@ private
     end
   end
 
-  def self.player_hits_tracker(trackers, type, token, hits)
+  def self.set_hits_tracker(trackers, type, token, hits)
     trackers[type] ||= {}
     if trackers[type][token]
       trackers[type][token] += hits

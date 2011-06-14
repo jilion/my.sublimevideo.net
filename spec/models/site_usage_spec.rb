@@ -84,6 +84,62 @@ describe SiteUsage do
 
   end
 
+  describe "with 4076.voxcdn.com.log.1308045840-1308045900.gz logs file" do
+    before(:each) do
+      logs_file = File.new(Rails.root.join('spec/fixtures/logs/voxcast/4076.voxcdn.com.log.1308045840-1308045900.gz'))
+      VoxcastCDN.stub(:logs_download).with('4076.voxcdn.com.log.1308045840-1308045900.gz').and_return(logs_file)
+      @log = Factory(:log_voxcast, :name => '4076.voxcdn.com.log.1308045840-1308045900.gz')
+      @trackers = LogAnalyzer.parse(@log.file, 'LogsFileFormat::VoxcastSites')
+
+      @site1 = Factory(:site, :hostname => 'customerhub.net', wildcard: true).tap { |s| s.token = '9pfe3uop'; s.save }
+      @site2 = Factory(:site, :user => @site1.user, :hostname => 'farmerswifeplay.com').tap { |s| s.token = '87r9xy5e'; s.save }
+    end
+
+    it "should clean trackers" do
+      SiteUsage.hits_traffic_and_requests_from(@log, @trackers).should == {
+        :traffic_voxcast         => { "9pfe3uop" => 143474, "87r9xy5e" => 5050 },
+        :loader_hits             => { "9pfe3uop" => 2, "87r9xy5e" => 1 },
+        :main_player_hits_cached => { "9pfe3uop" => 2 },
+        :player_hits             => { "9pfe3uop" => 3 },
+        :main_player_hits        => { "9pfe3uop" => 1 },
+        :flash_hits              => {},
+        :ssl_loader_hits         => { "9pfe3uop" => 2, "87r9xy5e" => 1 }
+      }
+    end
+
+    it "should get tokens from trackers" do
+      hbrs = SiteUsage.hits_traffic_and_requests_from(@log, @trackers)
+      SiteUsage.tokens_from(hbrs).should include("9pfe3uop")
+      SiteUsage.tokens_from(hbrs).should include("87r9xy5e")
+    end
+
+    it "should create usages from trackers" do
+      SiteUsage.create_usages_from_trackers!(@log, @trackers)
+      usages = SiteUsage.all
+      usages.map(&:site).should include(@site1)
+      usages.map(&:site).should include(@site2)
+      usage = usages.select { |u| u.site == @site1 }.first
+      usage.site.should                       == @site1
+      usage.day.should                        == Time.utc(2011,6,14)
+      usage.loader_hits.should                == 2
+      usage.ssl_loader_hits.should            == 2
+      usage.player_hits.should                == 3
+      usage.main_player_hits.should           == 1
+      usage.main_player_hits_cached.should    == 2
+      usage.extra_player_hits.should          == 0
+      usage.extra_player_hits_cached.should   == 0
+      usage.dev_player_hits.should            == 0
+      usage.dev_player_hits_cached.should     == 0
+      usage.invalid_player_hits.should        == 0
+      usage.invalid_player_hits_cached.should == 0
+      usage.flash_hits.should                 == 0
+      usage.requests_s3.should                == 0
+      usage.traffic_s3.should                 == 0
+      usage.traffic_voxcast.should            == 143474
+    end
+
+  end
+
   describe "Trackers parsing with voxcast cdn.sublimevideo.net.log.1275002700-1275002760.gz logs file" do
     before(:each) do
       VoxcastCDN.stub(:logs_download).with('cdn.sublimevideo.net.log.1275002700-1275002760.gz').and_return(

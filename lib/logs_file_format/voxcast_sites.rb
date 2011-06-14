@@ -1,7 +1,7 @@
 module LogsFileFormat
   class VoxcastSites < RequestLogAnalyzer::FileFormat::Base
     extend LogsFileFormat::Voxcast
-    
+
     def self.report_trackers
       analyze = RequestLogAnalyzer::Aggregator::Summarizer::Definer.new
       analyze.traffic(:response_bytes, :title => :traffic_voxcast,
@@ -9,7 +9,7 @@ module LogsFileFormat
         :if       => lambda { |r| token?(r[:path]) }
       )
       analyze.frequency(:path, :title => :loader_hits,
-        :category => lambda { |r| loader_token_from(r[:path]) },
+        :category => lambda { |r| [loader_token_from(r[:path]), r[:referrer]] },
         :if       => lambda { |r| loader_token?(r[:path]) && countable_hit?(r) }
       )
       analyze.frequency(:path, :title => :player_hits,
@@ -22,6 +22,6 @@ module LogsFileFormat
       )
       analyze.trackers
     end
-    
+
   end
 end
