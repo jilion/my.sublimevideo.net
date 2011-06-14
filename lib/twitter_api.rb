@@ -21,8 +21,16 @@ module TwitterApi
       Twitter::Search
     end
 
-    def method_missing(name, *args)
-      Twitter.send(name.to_sym, *args)
+    def method_missing(method_name, *args)
+      if Twitter.respond_to?(method_name)
+        Twitter.send(method_name.to_sym, *args)
+      else
+        super
+      end
+    end
+
+    def respond_to?(method_name)
+      Twitter.respond_to?(method_name) || super
     end
 
   private
