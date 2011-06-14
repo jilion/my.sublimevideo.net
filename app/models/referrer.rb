@@ -32,7 +32,7 @@ class Referrer
 
   validates :token,   :presence => true
   validates :site_id, :presence => true
-  validates :url,     :presence => true, :format => { :with => /^http\:\/\/.*/ }
+  validates :url,     :presence => true, :format => { :with => /^https?\:\/\/.*/ }
 
   # ==========
   # = Scopes =
