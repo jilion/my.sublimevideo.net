@@ -93,12 +93,14 @@ module Site::Invoice
     @instant_charging = false
 
     # Downgrade
-    if next_cycle_plan_id?
-      self.pending_plan_id = next_cycle_plan_id
+    # Test with the pending_plan_cycle_ended_at first in the case where a failed invoice is present
+    # so the current plan_cycle_ended_at is not up-to-date, but pending_plan_cycle_ended_at is!
+    if next_cycle_plan_id? && ((pending_plan_cycle_ended_at || plan_cycle_ended_at) < Time.now.utc)
+      self.pending_plan_id    = next_cycle_plan_id
       self.next_cycle_plan_id = nil
     end
 
-    # Update pending_plan_started_at
+    # new paid plan (creation, upgrade or downgrade)
     if pending_plan_id_changed? && pending_plan_id? # either because of a creation, an upgrade or a downgrade (just changed above)
 
       # Downgrade
@@ -110,12 +112,9 @@ module Site::Invoice
         @instant_charging = true
         self.pending_plan_started_at = plan_cycle_started_at || Time.now.utc.midnight
       end
-    end
 
-    # update pending_plan_cycle_started_at & pending_plan_cycle_ended_at
-    if pending_plan_id_changed? && pending_plan_id? # new paid plan (creation, upgrade or downgrade)
-      self.pending_plan_cycle_started_at = !pending_plan.paid_plan? ? nil : (pending_plan_started_at + months_since(pending_plan_started_at).months).midnight
-      self.pending_plan_cycle_ended_at   = !pending_plan.paid_plan? ? nil : (pending_plan_started_at + advance_for_next_cycle_end(pending_plan, pending_plan_started_at)).to_datetime.end_of_day
+      self.pending_plan_cycle_started_at = pending_plan.paid_plan? ? (pending_plan_started_at + months_since(pending_plan_started_at).months).midnight : nil
+      self.pending_plan_cycle_ended_at   = pending_plan.paid_plan? ? (pending_plan_started_at + advance_for_next_cycle_end(pending_plan, pending_plan_started_at)).to_datetime.end_of_day : nil
 
     elsif plan_cycle_ended_at? && plan_cycle_ended_at < Time.now.utc # normal renew
       self.pending_plan_cycle_started_at = (plan_started_at + months_since(plan_started_at).months).midnight

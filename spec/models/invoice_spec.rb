@@ -507,11 +507,14 @@ describe Invoice do
         context "from a paid plan" do
           before(:all) do
             @user = Factory(:user, country: 'FR', created_at: Time.utc(2011,3,30))
-            Timecop.travel(PublicLaunch.beta_transition_ended_on + 1.day) do
+            Timecop.travel(Time.utc(2011,5,1)) do
               @site       = Factory(:site_with_invoice, user: @user, plan_id: @paid_plan.id)
               @paid_plan2 = Factory(:plan, cycle: "month", price: 500)
               # Simulate downgrade
               @site.plan_id = @paid_plan2.id
+            end
+            
+            Timecop.travel(Time.utc(2011,6,1)) do
               @site.pend_plan_changes
               @site.save_without_password_validation
               @invoice = Invoice.build(site: @site)
