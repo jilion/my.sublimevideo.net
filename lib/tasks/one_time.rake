@@ -27,6 +27,16 @@ namespace :one_time do
         puts "Delayed Voxcast logs parsing for user agent from #{beginning_of_month}"
       end
     end
+
+    task :parse_unparsed_logs => :environment do
+      count = Log::Voxcast.where(:parsed_at => nil).count
+      skip  = 0
+      while skip < count
+        ids = Log::Voxcast.where(:parsed_at => nil).only(:id).limit(1000).skip(skip).map(&:id)
+        ids.each { |id| Log.delay(:priority => 100).parse_log(id) }
+        skip += 1000
+      end
+    end
   end
 
   namespace :users do
