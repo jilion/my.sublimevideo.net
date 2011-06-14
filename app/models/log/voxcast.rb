@@ -98,11 +98,6 @@ private
   end
 
   # after_create
-  def delay_parse
-    super if hostname == 'cdn.sublimevideo.net'
-  end
-
-  # after_create
   def delay_parse_referrers
     self.class.delay(:priority => 90, :run_at => 1.minute.from_now).parse_log_for_referrers(id)
   end
