@@ -93,6 +93,7 @@ describe Site::Referrer do
       it { subject.referrer_type("https://jilion.com").should == "main" }
       it { subject.referrer_type("http://www.jilion.com").should == "main" }
       it { subject.referrer_type("http://staging.jilion.com").should == "main" }
+      it { subject.referrer_type("https://staging.jilion.com").should == "main" }
       it { subject.referrer_type("http://jilion.com:80/demo").should == "main" }
       it { subject.referrer_type("https://jilion.com:443/demo").should == "main" }
 
