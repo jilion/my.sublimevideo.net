@@ -12,6 +12,16 @@ group 'frontend' do
     watch(%r{^config/initializers/.+\.rb$})
   end
 
+  guard 'passenger' do
+    watch('.rvmrc')
+    watch('Gemfile')
+    watch('Gemfile.lock')
+    watch('config/application.rb')
+    watch('config/environment.rb')
+    watch(%r{^config/environments/.+\.rb$})
+    watch(%r{^config/initializers/.+\.rb$})
+  end
+
   guard 'livereload' do
     watch(%r{^app/.+\.(erb|haml)})
     watch(%r{^app/helpers/.+\.rb})

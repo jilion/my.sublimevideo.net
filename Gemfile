@@ -75,7 +75,7 @@ end
 
 group :development, :test do
   gem 'rspec-rails', '~> 2.6.0'
-
+  gem 'passenger'
   gem 'timecop'
 end
 
@@ -96,6 +96,7 @@ group :test do
   gem 'guard', :git => 'git://github.com/guard/guard.git'
   gem 'guard-bundler'
   gem 'guard-pow'
+  gem 'guard-passenger'
   gem 'guard-rspec'
   gem 'guard-spork'#, '0.1.4'
   gem 'rspec-instafail'
