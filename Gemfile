@@ -85,7 +85,6 @@ group :development do
   gem 'wirble'
   gem 'ruby-graphviz', :require => 'graphviz'
   gem 'heroku'
-  gem 'heroku_tasks'
   gem 'taps'
   gem 'silent-postgres'
 end

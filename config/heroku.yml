@@ -1,4 +1,0 @@
-staging: mysublime-staging
-production: mysublime
-production_url: https://my.sublimevideo.net # for jammit assets
-git_repo: git@jime1.epfl.ch:my.sublimevideo.net.git # for git tag

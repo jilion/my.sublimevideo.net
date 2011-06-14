@@ -1,1 +1,3 @@
-http://github.com/thibaudgg/heroku_tasks#readme
+bundle exec rake jammit
+
+git push staging / production
