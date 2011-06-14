@@ -1,4 +1,10 @@
-= title_and_content_header("(#{@site.token}) #{@site.hostname? ? link_to(hostname_with_path_and_wildcard(@site), "http://#{@site.hostname}/#{@site.path}") : "no hostname"}")
+= title_and_content_header("##{@site.id} (#{@site.token}) #{@site.hostname? ? link_to(hostname_with_path_and_wildcard(@site), "http://#{@site.hostname}/#{@site.path}") : "no hostname"}")
+
+%p
+  %strong
+    = "User: "
+    = link_to(@site.user.full_name, [:admin, @site.user]).html_safe
+    = "(beta)" if @site.user.beta?
 
 - if @site.plan_id?
   = render '/admin/shared/date_chooser'
@@ -10,10 +16,25 @@
   %strong= @site.state.humanize
   - if @site.archived?
     = "since " + display_time(@site.archived_at)
-  = "| User: #{content_tag(:strong, link_to(@site.user.full_name, [:admin, @site.user]))}".html_safe
-  = "| Created #{time_ago_in_words(@site.created_at)} ago"
-  = "| Updated #{time_ago_in_words(@site.updated_at)} ago"
+  = "| Created at: " + l(@site.created_at, :format => :seconds_timezone)
+  = "| Updated at: " + l(@site.updated_at, :format => :seconds_timezone)
+%p
+  = "Mode: #{content_tag(:strong, @site.player_mode)}".html_safe
+  = "| CDN #{@site.cdn_up_to_date ? 'is' : content_tag(:strong, 'IS NOT')} up-to-date".html_safe
 
+%br
+%p
+  = "Main hostname:"
+  = @site.hostname? ? link_to(hostname_with_path_and_wildcard(@site), "http://#{@site.hostname}/#{@site.path}") : "no hostname"
+%p
+  = "Extra hostnames:"
+  - extra_hostnames = @site.extra_hostnames.to_s.split(", ").map { |h| content_tag(:strong, link_to(h, "http://#{h}")) }
+  = extra_hostnames.present? ? raw(extra_hostnames.join(", ")) : "–"
+%p
+  = "Dev hostnames:"
+  = content_tag(:strong, @site.dev_hostnames)
+
+%br
 %p
   = "Plan:"
   %strong= @site.plan ? @site.plan.title : "–"
@@ -26,46 +47,29 @@
   = "Next plan:"
   = @site.next_cycle_plan ? @site.next_cycle_plan.title : "–"
 
-- if @site.plan_id?
-  %p
-    = "Plan started at:"
-    = l(@site.plan_started_at, :format => :d_b_Y)
-  %p
-    = "Plan month cycle started at:"
-    = l(@site.plan_month_cycle_started_at, :format => :d_b_Y)
-  %p
-    = "Plan month cycle ended at:"
-    = l(@site.plan_month_cycle_ended_at, :format => :d_b_Y)
-
 %p
-  = "Extra hostnames:"
-  - extra_hostnames = @site.extra_hostnames.to_s.split(", ").map { |h| content_tag(:strong, link_to(h, "http://#{h}")) }
-  = raw extra_hostnames.join(", ")
-
+  = "Plan started at:"
+  = @site.plan_started_at ? content_tag(:strong, l(@site.plan_started_at, :format => :d_b_Y)) : "–"
+  = "| Pending plan started at:"
+  = @site.pending_plan_started_at ? content_tag(:strong, l(@site.pending_plan_started_at, :format => :d_b_Y)) : "–"
+  
 %p
-  = "Dev hostnames:"
-  = content_tag(:strong, @site.dev_hostnames)
-
+  = "Current cycle:"
+  = @site.plan_cycle_started_at? ? content_tag(:strong, l(@site.plan_cycle_started_at, :format => :d_b_Y)) : "–"
+  = "–"
+  = @site.plan_cycle_ended_at? ? content_tag(:strong, l(@site.plan_cycle_ended_at, :format => :d_b_Y)) : "–"
 %p
-  = "Token: #{content_tag(:strong, @site.token)}".html_safe
-  = "| Mode: #{content_tag(:strong, @site.player_mode)}".html_safe
-  = "| CDN #{@site.cdn_up_to_date ? 'is' : content_tag(:strong, 'IS NOT')} up-to-date".html_safe
+  = "Pending cycle:"
+  = @site.pending_plan_cycle_started_at? ? content_tag(:strong, l(@site.pending_plan_cycle_started_at, :format => :d_b_Y)) : "–"
+  = "–"
+  = @site.pending_plan_cycle_ended_at? ? content_tag(:strong, l(@site.pending_plan_cycle_ended_at, :format => :d_b_Y)) : "–"
 
 -# = render partial: '/admin/shared/usage_table', locals: { object: @site, from: @date_range_from, to: @date_range_to }
+%br
 = render partial: '/admin/shared/invoices_table', locals: { object: @site }
+
+%br
 = render partial: 'referrers_table', locals: { site: @site }
-
-%br
-%hr
-%br
-
-%h3 Details
-
-%ul
-  %li= "State: " + @site.state
-  %li= "Created at: " + display_time(@site.created_at)
-  %li= "Updated at: " + display_time(@site.updated_at)
-  %li= "Archived at: " + display_time(@site.archived_at)
 
 %br
 %hr
@@ -77,6 +81,8 @@
   = form_for [:admin, @site] do |f|
     = f.select :player_mode, Site::PLAYER_MODES
     = f.submit "Update player mode", :confirm => "Are you sure?"
+
+%br
 
 - if (zeno? || mehdi?) && !@site.in_sponsored_plan?
   %h3 Sponsoring

@@ -7,56 +7,78 @@
   - cache 'dashboard_timeline_usage', :expires_in => (Time.now.utc.end_of_day - Time.now.utc) do
     = render 'timeline_usage'
 
-%h2.revenue= "Total revenue: #{display_amount(Invoice.total_revenue)}"
-%h3.revenue= "Date range revenue: #{display_amount(Invoice.between(@date_range_from, @date_range_to).total_revenue)}"
+-# %h2.revenue= "Total revenue: #{display_amount(Invoice.total_revenue)}"
+-# %h3.revenue= "Date range revenue: #{display_amount(Invoice.between(@date_range_from, @date_range_to).total_revenue)}"
 
 %h3 Sites
-%p= "LaunchPad sites: #{Site.active.dev.count}"
-%p= "Beta sites: #{Site.active.beta.count}"
-%p= "Sponsored sites: #{Site.active.sponsored.count}"
-%p= "Paying sites: #{Site.active.in_paid_plan.count}"
-%p= "Custom sites: #{Site.active.custom.count}"
+- active_sites    = Site.active.count
+- beta_sites      = Site.active.beta.count
+- dev_sites       = Site.active.dev.count
+- sponsored_sites = Site.active.sponsored.count
+- paying_sites    = Site.active.in_paid_plan.count
+- custom_sites    = Site.active.custom.count
+%table{ style: "width:300px;padding:0" }
+  %tr
+    %td Beta
+    %td= beta_sites
+    %td= display_percentage(beta_sites.to_f / active_sites)
+  %tr
+    %td LaunchPad
+    %td= dev_sites
+    %td= display_percentage(dev_sites.to_f / active_sites)
+  %tr
+    %td Sponsored
+    %td= sponsored_sites
+    %td= display_percentage(sponsored_sites.to_f / active_sites)
+  %tr
+    %td Paying
+    %td= paying_sites
+    %td= display_percentage(paying_sites.to_f / active_sites)
+  %tr
+    %td Custom
+    %td= custom_sites
+    %td= display_percentage(custom_sites.to_f / active_sites)
 %br
 
--# #box_traffic.dashboard_box
-%h3 Traffic
-- player_hits = SiteUsage.between(31.days.ago.utc, Time.now.utc.yesterday).sum(:player_hits).to_i
-%p= "Last 30 days traffic: #{number_to_human(player_hits, :significant => false, :precision => 2, :delimiter => "'")} video pageviews"
-%p= "Last 30 days average daily traffic: #{number_to_human(player_hits / 30, :significant => false, :precision => 2, :delimiter => "'")} video pageviews"
-%p= "All time traffic: #{number_to_human(SiteUsage.sum(:player_hits).to_i, :significant => false, :precision => 2, :delimiter => "'")} video pageviews"
-%br
-
--# - cache 'dashboard_box_users', :expires_in => 10.minutes do
--#   = render 'users'
-
--# #box_users.dashboard_box
 %h3 Users
+
+- cache "users_timeline_#{@date_range_from.to_i}_#{@date_range_to.to_i}", :expires_in => (Time.now.utc.end_of_day - Time.now.utc) do
+  = render 'admin/users/timeline'
+
+- total_users = User.active.count
 - today_signups = User.active.where(:created_at.gte => Time.now.utc.midnight, :created_at.lt => Time.now.utc.tomorrow.midnight)
 - yesterday_signups = User.active.where(:created_at.gte => Time.now.utc.yesterday.midnight, :created_at.lt => Time.now.utc.midnight)
-%p= "Users signups: #{User.active.count} (#{today_signups.count} today, #{yesterday_signups.count} yesterday)"
-%p= "Billable customers: #{User.select("DISTINCT users.id").billable.count}"
+- billable_customers = User.select("DISTINCT(users.id)").active_and_billable.count
+%table{ style: "width:300px;" }
+  %tr
+    %td Users
+    %td= total_users
+    %td= "(#{today_signups.count} today, #{yesterday_signups.count} yesterday)"
+  %tr
+    %td Customers
+    %td= billable_customers
+    %td= display_percentage(billable_customers.to_f / total_users)
 %br
 
-- top_10_countries = User.active.select("country, COUNT(country) as country_count").group(:country).order("country_count DESC").all
-- total_active_user = User.active.count
-%h3= "Top 10 countries (by customers #):"
+- top_10_countries = User.select("country, COUNT(country) as country_count").where(id: User.select("DISTINCT(users.id)").active_and_billable.map(&:id)).group(:country).order("country_count DESC").map { |u| [u.country, u.country_count] }
+%h3= "Top 10 countries (by billable customers #):"
 %ul
   - (0...[top_10_countries.size, 10].min).each do |i|
-    %li= "#{Country[top_10_countries[i].country].name} (#{top_10_countries[i].country_count} - #{display_percentage(top_10_countries[i].country_count.to_f / total_active_user)})"
+    %li= "#{Country[top_10_countries[i][0]].name} (#{top_10_countries[i][1]} - #{display_percentage(top_10_countries[i][1].to_f / billable_customers)})"
 %br
 
--# - cache 'dashboard_box_users', :expires_in => 10.minutes do
--#   = render 'users'
-
--# #box_sites.dashboard_box
-
--# - cache 'dashboard_box_sites', :expires_in => 10.minutes do
--#   = render 'sites'
-
--# #box_usage.dashboard_box
--#   %h3 Usage
--#   - cache 'dashboard_box_usage', :expires_in => 10.minutes do
--#     = render 'usage'
+%h3 Traffic
+- player_hits = SiteUsage.between(31.days.ago.utc, Time.now.utc.yesterday).sum(:player_hits).to_i
+%p
+  Last 30 days traffic:&nbsp;&nbsp;&nbsp;
+  = "#{number_with_delimiter(player_hits, :significant => false, :precision => 2, :delimiter => "'")} video pageviews"
+%p
+  Last 30 days avg/day:
+  = "#{number_with_delimiter(player_hits / 30, :significant => false, :precision => 2, :delimiter => "'")} video pageviews"
+%p
+  All time traffic:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  = "#{number_with_delimiter(SiteUsage.sum(:player_hits).to_i, :significant => false, :precision => 2, :delimiter => "'")} video pageviews"
+%br
 
 .spacer
 

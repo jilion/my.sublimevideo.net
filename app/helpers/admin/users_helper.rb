@@ -1,18 +1,16 @@
 module Admin::UsersHelper
 
   def admin_users_page_title(users)
-    pluralized_users = pluralize(users.size, 'user')
+    pluralized_users = pluralize(users.group_by(&:id).count, 'user')
 
-    state = if params.keys.all? { |k| k =~ /^by_/ || %w[action controller search].include?(k) }
-      " active & billable"
-    elsif params[:active_and_not_billable]
+    state = if params[:active_and_not_billable]
       " active & not billable"
     elsif params[:with_state]
-      " with #{params[:with_state]} state"
+      " #{params[:with_state]}"
     elsif params[:search].present?
-      " that contains '#{params[:search]}'"
+      " matching '#{params[:search]}'"
     else
-      ""
+      " active & billable"
     end
     "#{pluralized_users.titleize}#{state}"
   end
