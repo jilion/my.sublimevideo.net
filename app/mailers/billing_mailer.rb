@@ -25,5 +25,13 @@ class BillingMailer < ActionMailer::Base
       :subject => "Problem processing your payment"
     )
   end
+  
+  def too_many_failed_charging_attempts(invoice)
+    @invoice = invoice
+    mail(
+      :to => ["thibaud@jilion.com", "remy@jilion.com", "zeno@jilion.com"],
+      :subject => "15 failed charging attempt for Invoice ##{@invoice.reference}"
+    )
+  end
 
 end

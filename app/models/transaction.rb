@@ -52,25 +52,28 @@ class Transaction < ActiveRecord::Base
   # = Class Methods =
   # =================
 
-  # Recurring task
-  def self.delay_charge_open_invoices
-    unless Delayed::Job.already_delayed?('%Transaction%charge_open_invoices%')
-      # Invoice.renew_active_sites! is delayed at Time.now.utc.tomorrow.midnight
-      # So we delay this task 1 hour after (to be sure all invoices of the day are created)
-      delay(:priority => 4, :run_at => Time.now.utc.tomorrow.change(:hour => 1)).charge_open_invoices
+  def self.charge_invoices
+    User.includes(:invoices).where(invoices: { state: %w[open failed] }).each do |user|
+      delay(:priority => 2).charge_invoices_by_user_id(user.id)
     end
   end
 
-  def self.charge_open_invoices
-    User.all.each do |user|
-      delay(:priority => 2).charge_open_invoices_by_user_id(user.id) if user.invoices_open?(renew: true)
-    end
-    delay_charge_open_invoices
-  end
-
-  def self.charge_open_invoices_by_user_id(user_id)
+  def self.charge_invoices_by_user_id(user_id)
     if user = User.find(user_id)
-      charge_by_invoice_ids(user.invoices.open.where(renew: true).map(&:id)) if user.invoices_open?(renew: true)
+      invoices = user.invoices.open_or_failed.all
+
+      if invoices.present?
+        invoices.each do |invoice|
+          failed_transactions_count = invoice.transactions.failed.count
+          
+          if failed_transactions_count >= 15
+            BillingMailer.too_many_failed_charging_attempts(invoice).deliver if failed_transactions_count == 15
+            invoices.delete(invoice)
+          end
+        end
+
+        charge_by_invoice_ids(invoices.map(&:id).sort)
+      end
     end
   end
 

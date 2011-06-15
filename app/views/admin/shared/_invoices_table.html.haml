@@ -14,6 +14,8 @@
         = l(invoice.paid_at, :format => :d_b_Y)
       - when 'failed'
         = l(invoice.last_failed_at, :format => :d_b_Y)
+      - else
+        = l(invoice.created_at, :format => :d_b_Y)
       - if invoice.refunded?
         = ", refunded on #{l(invoice.site.refunded_at, :format => :d_b_Y)}"
       = ")"

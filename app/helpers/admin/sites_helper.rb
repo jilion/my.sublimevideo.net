@@ -2,10 +2,8 @@ module Admin::SitesHelper
 
   def admin_sites_page_title(sites)
     pluralized_sites = pluralize(sites.total_count, 'site')
-    state = if params.keys.all? { |k| k =~ /^by_/ || %w[action controller search].include?(k) }
-      " not archived"
-    elsif params[:with_state]
-      " with #{params[:with_state]} state"
+    state = if params[:with_state]
+      " #{params[:with_state]}"
     elsif params[:with_wildcard]
       " with wildcard"
     elsif params[:with_path]
@@ -15,14 +13,14 @@ module Admin::SitesHelper
     elsif params[:with_ssl]
       " with ssl"
     elsif params[:plan_player_hits_reached_notified]
-      " notified limit reached this month"
+      " with peak insurance"
     elsif params[:user_id]
       user = User.find(params[:user_id])
       " for #{user.full_name.titleize}" if user
     elsif params[:search].present?
-      " that contains '#{params[:search]}'"
+      " matching '#{params[:search]}'"
     else
-      ""
+      " active"
     end
     "#{pluralized_sites.titleize}#{state}"
   end

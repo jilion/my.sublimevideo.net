@@ -5,7 +5,7 @@ module Spec
       # it_should_behave_like "common mailer checks", %w[is_expired will_expire], :params => [Factory(:user, :cc_expire_on => 1.day.from_now)]
       shared_examples_for "common mailer checks" do |methods=[], *args|
         options = args.extract_options!
-        options.reverse_merge!(:from => ["noreply@sublimevideo.net"], :to => [], :content_type => %r{text/plain; charset=UTF-8})
+        options.reverse_merge!(:from => ["noreply@sublimevideo.net"], :to => nil, :content_type => %r{text/plain; charset=UTF-8})
 
         methods.each do |method|
           describe "common checks for #{mailer_class}.#{method}" do
@@ -29,7 +29,7 @@ module Spec
               else
                 options[:params].first.user.email
               end
-              @last_delivery.to.should == [email || options[:to]].flatten
+              @last_delivery.to.should == [options[:to] || email].flatten
             end
 
             it "should set content_type to #{options[:content_type]} (set by default by the Mail gem)" do

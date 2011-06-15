@@ -39,7 +39,7 @@ class Admin::SitesController < Admin::AdminController
   def index
     @sites = Site.includes(:user, :plan)
     if params.keys.all? { |k| k =~ /^by_/ || %w[action controller search].include?(k) }
-      @sites = @sites.not_archived
+      @sites = @sites.active
     end
     @sites = apply_scopes(@sites).by_date
     respond_with(@sites, :per_page => 50)

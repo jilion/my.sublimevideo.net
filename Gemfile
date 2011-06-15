@@ -1,8 +1,9 @@
 source "http://rubygems.org"
 
+gem 'rake',                  '0.8.7'
 gem 'bundler',               '1.0.15'
 
-gem 'rails',                 '3.0.9.rc3'
+gem 'rails',                 '3.0.9.rc5'
 
 # Databases
 gem 'pg',                    '0.11.0'
@@ -14,7 +15,7 @@ gem 'mongoid',               '2.0.2'
 # Views
 gem 'haml',                  '3.1.2'
 gem 'kaminari',              '0.12.4'
-gem 'jammit',                '0.6.0'
+gem 'jammit',                '0.6.3'
 gem 'liquid',                '2.2.2'
 gem 'RedCloth',              '4.2.7'
 
@@ -81,7 +82,7 @@ end
 
 group :development, :test do
   gem 'rspec-rails', '~> 2.6.0'
-
+  gem 'passenger'
   gem 'timecop'
   gem 'passenger'
 end
@@ -92,7 +93,6 @@ group :development do
   gem 'wirble'
   gem 'ruby-graphviz', :require => 'graphviz'
   gem 'heroku'
-  gem 'heroku_tasks'
   gem 'taps'
   gem 'silent-postgres'
 end

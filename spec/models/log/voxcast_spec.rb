@@ -101,9 +101,9 @@ describe Log::Voxcast do
       subject.reload.parsed_at.should >= subject.created_at
     end
 
-    it "should not delay parse_log after create" do
+    it "should delay parse_log after create" do
       subject # trigger log creation
-      Delayed::Job.all.should have(2).job
+      Delayed::Job.all.should have(3).job
     end
   end
 

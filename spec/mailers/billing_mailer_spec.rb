@@ -9,6 +9,7 @@ describe BillingMailer do
 
   it_should_behave_like "common mailer checks", %w[credit_card_will_expire], :from => ["billing@sublimevideo.net"], :params => [Factory(:user, :cc_expire_on => 1.day.from_now)]
   it_should_behave_like "common mailer checks", %w[transaction_succeeded transaction_failed], :from => ["billing@sublimevideo.net"], :params => [Factory(:transaction, invoices: [Factory(:invoice)])]
+  it_should_behave_like "common mailer checks", %w[too_many_failed_charging_attempts], :from => ["billing@sublimevideo.net"], :to => ["thibaud@jilion.com", "remy@jilion.com", "zeno@jilion.com"], :params => [Factory(:invoice)]
 
   describe "#credit_card_will_expire" do
     before(:each) do
@@ -50,6 +51,20 @@ describe BillingMailer do
       @last_delivery.body.encoded.should include "Your credit card could not be charged."
       @last_delivery.body.encoded.should include "https://localhost:3000/sites"
       @last_delivery.body.encoded.should include "https://localhost:3000/support#billing"
+    end
+  end
+
+  describe "#too_many_failed_charging_attempts" do
+    before(:all) do
+      described_class.too_many_failed_charging_attempts(@invoice).deliver
+      @last_delivery = ActionMailer::Base.deliveries.last
+    end
+
+    specify do
+      @last_delivery.subject.should == "15 failed charging attempt for Invoice ##{@invoice.reference}"
+      @last_delivery.body.encoded.should include "Automatic charging retry has been disabled."
+      @last_delivery.body.encoded.should include "Please investigate quickly!"
+      @last_delivery.body.encoded.should include "https://localhost:3000/admin/invoices/#{@invoice.reference}"
     end
   end
 

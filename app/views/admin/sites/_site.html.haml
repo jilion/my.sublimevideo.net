@@ -1,15 +1,21 @@
 - last_30_days_billable_player_hits_total_count = site.last_30_days_main_player_hits_total_count.to_i + site.last_30_days_extra_player_hits_total_count.to_i
 %tr[site]{ :class => cycle("", "alt") }
+  %td.id
+    = link_to "##{site.id}", [:edit, :admin, site]
+  %td.id
+    = link_to site.token, [:edit, :admin, site]
   %td.hostname
     = links_to_hostnames(site)
   %td.user
     %small
       = link_to site.user.full_name, [:admin, site.user], :title => "#{site.user.full_name} <#{site.user.email}>"
   %td.state
-    %small= site.state
+    %small= site.state.humanize
   %td.plan
     - if site.plan
-      %small= link_to site.plan.name, admin_plans_path
+      %small
+        = site.plan.name.humanize
+        = " (#{site.plan.cycle})" if site.plan.standard_plan?
     - else
       %small= '-'
   %td.next_cycle_plan

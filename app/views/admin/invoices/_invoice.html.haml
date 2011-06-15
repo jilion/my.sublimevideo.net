@@ -1,25 +1,39 @@
 %tr[invoice]{ :class => cycle("", "alt") }
+  %td.id
+    = link_to "##{invoice.id}", [:admin, invoice]
   %td.reference
     = link_to invoice.reference, [:admin, invoice]
   %td.user
     %small
       = link_to invoice.user.full_name, [:admin, invoice.user], :title => "#{invoice.user.full_name} <#{invoice.user.email}>"
       = "(beta)" if invoice.user.beta?
+  %td.site
+    = links_to_hostnames(invoice.site)
+    = "(#{invoice.site.state})" unless invoice.site.active?
   %td.period
     %small
       = l(invoice.paid_at || invoice.last_failed_at || invoice.created_at, :format => :minutes)
       = ", Refund. #{l(invoice.site.refunded_at, :format => :minutes)}" if invoice.refunded?
-  %td.site
-    = link_to invoice.site.hostname, [:edit, :admin, invoice.site]
-    = "(#{invoice.site.state})" unless invoice.site.active?
   %td.invoice_items_count
-    - if invoice.invoice_items_count > 1
-      = "upgrade"
-    - elsif invoice.renew
-      = "renewing"
-    - else
-      = "creation"
+    %strong
+      - if invoice.invoice_items_count > 1
+        = "Upgrade"
+      - elsif invoice.renew
+        = "Renew"
+      - else
+        = "New"
+    = "/ #{invoice.paid_plan.cycle}"
   %td.amount
     = display_amount(invoice.amount)
   %td.state
-    %small= invoice.refunded? ? "refunded" : invoice.state
+    %small
+      - if invoice.refunded?
+        = "refunded"
+      - else
+        - case invoice.state
+        - when "open", "waiting", "canceled"
+          %span{ style: "color:orange" }= invoice.state
+        - when "failed"
+          %strong{ style: "color:red" }= invoice.state
+        - when "paid"
+          %span{ style: "color:green" }= invoice.state

@@ -8,7 +8,7 @@ module Admin::InvoicesHelper
     elsif state = %w[paid open waiting refunded failed].detect { |state| params.key?(state) }
       " #{state}"
     elsif params[:search].present?
-      " that contains '#{params[:search]}'"
+      " matching '#{params[:search]}'"
     else
       ""
     end

@@ -172,8 +172,14 @@ class Tweet
         selected_tweets << t if options[:user_doublon] || selected_tweets.map { |tweet| tweet.user.id }.exclude?(t.user.id)
       end
     end
-    
-    selected_tweets.each { |tweet| tweet.bigger_profile_image = Twitter.profile_image(tweet.user.id, size: 'bigger') }
+
+    selected_tweets.each do |tweet|
+      begin
+        tweet.bigger_profile_image = TwitterApi.profile_image(tweet.user.id, size: 'bigger')
+      rescue => ex
+        selected_tweets.delete(tweet)
+      end
+    end
     selected_tweets.sort { |a, b| b.created_at <=> a.created_at }[0...count]
   end
 

@@ -249,7 +249,7 @@ describe Transaction do
 
           it "should send an email to invoice.user" do
             subject
-            lambda { subject.succeed }.should change(ActionMailer::Base.deliveries, :count).by(1)
+            expect { subject.succeed }.to change(ActionMailer::Base.deliveries, :count).by(1)
             ActionMailer::Base.deliveries.last.to.should == [subject.user.email]
           end
         end
@@ -261,7 +261,7 @@ describe Transaction do
 
           it "should send an email to invoice.user" do
             subject
-            lambda { subject.fail }.should change(ActionMailer::Base.deliveries, :count).by(1)
+            expect { subject.fail }.to change(ActionMailer::Base.deliveries, :count).by(1)
             ActionMailer::Base.deliveries.last.to.should == [subject.user.email]
           end
         end
@@ -286,7 +286,7 @@ describe Transaction do
 
   describe "Class Methods" do
 
-    describe ".charge_open_invoices" do
+    describe ".charge_invoices" do
       before(:all) do
         Invoice.delete_all
         @user     = Factory(:user)
@@ -299,23 +299,15 @@ describe Transaction do
       before(:each) { Delayed::Job.delete_all }
 
       it "should delay invoice charging for open invoices which have the renew flag == true by user" do
-        Delayed::Job.where(:handler.matches => "%charge_open_invoices_by_user_id%").count.should == 0
-        expect { Transaction.charge_open_invoices }.to change(Delayed::Job.where(:handler.matches => "%charge_open_invoices_by_user_id%"), :count).by(1)
-        djs = Delayed::Job.where(:handler.matches => "%charge_open_invoices_by_user_id%")
+        Delayed::Job.where(:handler.matches => "%charge_invoices_by_user_id%").count.should == 0
+        expect { Transaction.charge_invoices }.to change(Delayed::Job.where(:handler.matches => "%charge_invoices_by_user_id%"), :count).by(1)
+        djs = Delayed::Job.where(:handler.matches => "%charge_invoices_by_user_id%")
         djs.count.should == 1
         djs.map { |dj| YAML.load(dj.handler)['args'][0] }.should =~ [@invoice1.reload.site.user.id]
       end
+    end # .charge_invoices
 
-      it "should delay charge_open_invoices for the day after" do
-        Delayed::Job.all.select { |dj| dj.name == "Class#charge_open_invoices" }.count.should == 0
-        Transaction.charge_open_invoices
-        djs = Delayed::Job.all
-        djs.select { |dj| dj.name == "Class#charge_open_invoices" }.count.should == 1
-        djs.select { |dj| dj.name == "Class#charge_open_invoices" }.first.run_at.should == Time.now.utc.tomorrow.change(:hour => 1)
-      end
-    end # .charge_open_invoices
-
-    describe ".charge_open_invoices_by_user_id" do
+    describe ".charge_invoices_by_user_id" do
       use_vcr_cassette "ogone/visa_payment_generic"
       before(:all) do
         Invoice.delete_all
@@ -331,20 +323,36 @@ describe Transaction do
         @invoice1.reload.should be_open
         @invoice2.reload.should be_open
         @invoice3.reload.should be_failed
-        Transaction.should_receive(:charge_by_invoice_ids).with([@invoice1.id]).and_return(an_instance_of(Transaction))
-        Transaction.charge_open_invoices_by_user_id(@user.id)
+        Transaction.should_receive(:charge_by_invoice_ids).with([@invoice1.id, @invoice2.id, @invoice3.id]).and_return(an_instance_of(Transaction))
+        Transaction.charge_invoices_by_user_id(@user.id)
       end
 
       it "should set open invoices with renew flag == true to paid" do
         @invoice1.reload.should be_open
         @invoice2.reload.should be_open
         @invoice3.reload.should be_failed
-        Transaction.charge_open_invoices_by_user_id(@user.id)
+        Transaction.charge_invoices_by_user_id(@user.id)
         @invoice1.reload.should be_paid
-        @invoice2.reload.should be_open
-        @invoice3.reload.should be_failed
+        @invoice2.reload.should be_paid
+        @invoice3.reload.should be_paid
       end
-    end # .charge_open_invoices_by_user_id
+
+      it "doesn't try to charge an invoice which has 15 failed transactions or more" do
+        @invoice1.reload
+        15.times { Factory(:transaction, invoices: [@invoice1.reload], state: 'failed') }
+        Transaction.charge_invoices_by_user_id(@user.id)
+        @invoice1.reload.should be_open
+      end
+
+      it "send a mail to admins when an invoice has exactly 15 failed transactions" do
+        ActionMailer::Base.deliveries.clear
+        @invoice1.reload
+        15.times { Factory(:transaction, invoices: [@invoice1.reload], state: 'failed') }
+        expect { Transaction.charge_invoices_by_user_id(@user.id) }.to change(ActionMailer::Base.deliveries, :count).by(2)
+        ActionMailer::Base.deliveries.first.to.should == ["thibaud@jilion.com", "remy@jilion.com", "zeno@jilion.com"]
+        ActionMailer::Base.deliveries.last.to.should == [@invoice1.user.email]
+      end
+    end # .charge_invoices_by_user_id
 
     describe ".charge_by_invoice_ids" do
       context "with a new credit card given through options[:credit_card]" do

@@ -11,6 +11,7 @@ describe Referrer do
     it { should validate_presence_of(:token) }
 
     it { should allow_value("http://rymai.com").for(:url) }
+    it { should allow_value("https://rymai.com").for(:url) }
     it { should_not allow_value("-").for(:url) }
   end
 

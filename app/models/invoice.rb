@@ -100,12 +100,6 @@ class Invoice < ActiveRecord::Base
     self.paid.sum(:amount)
   end
 
-  def self.delay_update_pending_dates_for_first_not_paid_invoices
-    unless Delayed::Job.already_delayed?('%Invoice%update_pending_dates_for_first_not_paid_invoices%')
-      delay(:priority => 2, :run_at => Time.now.utc.tomorrow.midnight).update_pending_dates_for_first_not_paid_invoices
-    end
-  end
-
   def self.update_pending_dates_for_first_not_paid_invoices
     Invoice.not_paid.where(renew: [nil, false]).each do |invoice| # it returns first and upgrade invoices not already paid (never recurrent invoices)
       if invoice == invoice.site.invoices.by_date('asc').first # update only the first invoice (first paid plan)
@@ -123,7 +117,6 @@ class Invoice < ActiveRecord::Base
         invoice.site.save
       end
     end
-    delay_update_pending_dates_for_first_not_paid_invoices
   end
 
   # ====================
@@ -162,7 +155,7 @@ class Invoice < ActiveRecord::Base
 private
 
   def build_invoice_items
-    if site.pending_plan_id? && site.in_paid_plan?
+    if site.pending_plan_id? && site.in_paid_plan? && site.plan.upgrade?(site.pending_plan)
       invoice_items << InvoiceItem::Plan.build(invoice: self, item: Plan.find(site.plan_id), deduct: true)
     end
     invoice_items << InvoiceItem::Plan.build(invoice: self, item: site.pending_plan || site.plan)

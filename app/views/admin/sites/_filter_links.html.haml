@@ -1,29 +1,27 @@
 %p
-  = link_to "#{content_tag(:strong, Site.not_archived.count)} All (not archived)".html_safe, admin_sites_path
+  = link_to "#{content_tag(:strong, Site.with_state(:active).count)} Active".html_safe, admin_sites_path(with_state: 'active')
   |
-  = link_to "#{content_tag(:strong, Site.beta.count)} Beta".html_safe, admin_sites_path(:beta => true)
+  = link_to "#{content_tag(:strong, Site.with_state(:suspended).count)} Suspended".html_safe, admin_sites_path(with_state: 'suspended')
   |
-  = link_to "#{content_tag(:strong, Site.dev.count)} Dev".html_safe, admin_sites_path(:dev => true)
+  = link_to "#{content_tag(:strong, Site.with_state(:archived).count)} Archived".html_safe, admin_sites_path(with_state: 'archived')
+  –
+  = link_to "#{content_tag(:strong, Site.with_wildcard.count)} With wildcard".html_safe, admin_sites_path(with_wildcard: true)
   |
-  = link_to "#{content_tag(:strong, Site.sponsored.count)} Sponsored".html_safe, admin_sites_path(:sponsored => true)
+  = link_to "#{content_tag(:strong, Site.with_path.count)} With path".html_safe, admin_sites_path(with_path: true)
   |
-  = link_to "#{content_tag(:strong, Site.with_state(:active).count)} Active".html_safe, admin_sites_path(:with_state => 'active')
-  |
-  = link_to "#{content_tag(:strong, Site.with_state(:suspended).count)} Suspended".html_safe, admin_sites_path(:with_state => 'suspended')
-  |
-  = link_to "#{content_tag(:strong, Site.with_state(:archived).count)} Archived".html_safe, admin_sites_path(:with_state => 'archived')
-  |
-  = link_to "#{content_tag(:strong, Site.with_wildcard.count)} With wildcard".html_safe, admin_sites_path(:with_wildcard => true)
-  |
-  = link_to "#{content_tag(:strong, Site.with_path.count)} With path".html_safe, admin_sites_path(:with_path => true)
-  |
-  = link_to "#{content_tag(:strong, Site.with_extra_hostnames.count)} With extra hostnames".html_safe, admin_sites_path(:with_extra_hostnames => true)
+  = link_to "#{content_tag(:strong, Site.with_extra_hostnames.count)} With extra hostnames".html_safe, admin_sites_path(with_extra_hostnames: true)
   %br/
+  = link_to "#{content_tag(:strong, Site.billable.count)} Billable".html_safe, admin_sites_path(billable: true)
   |
-  = link_to "#{content_tag(:strong, Site.billable.count)} Billable".html_safe, admin_sites_path(:billable => true)
+  = link_to "#{content_tag(:strong, Site.not_billable.count)} Not Billable".html_safe, admin_sites_path(not_billable: true)
+  (
+  = link_to "#{content_tag(:strong, Site.beta.count)} Beta".html_safe, admin_sites_path(beta: true)
   |
-  = link_to "#{content_tag(:strong, Site.not_billable.count)} Not Billable".html_safe, admin_sites_path(:not_billable => true)
+  = link_to "#{content_tag(:strong, Site.dev.count)} Dev".html_safe, admin_sites_path(dev: true)
   |
-  = link_to "#{content_tag(:strong, Site.plan_player_hits_reached_notified.count)} Notified limit reached".html_safe, admin_sites_path(:plan_player_hits_reached_notified => true)
+  = link_to "#{content_tag(:strong, Site.sponsored.count)} Sponsored".html_safe, admin_sites_path(sponsored: true)
+  )
+  –
+  = link_to "#{content_tag(:strong, Site.plan_player_hits_reached_notified.count)} With Peak Insurance".html_safe, admin_sites_path(plan_player_hits_reached_notified: true)
   |
-  = link_to "#{content_tag(:strong, Site.with_next_cycle_plan.count)} With next plan (downgrade)".html_safe, admin_sites_path(:with_next_cycle_plan => true)
+  = link_to "#{content_tag(:strong, Site.with_next_cycle_plan.count)} Will downgrade".html_safe, admin_sites_path(with_next_cycle_plan: true)
