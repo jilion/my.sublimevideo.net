@@ -8,9 +8,8 @@
       = link_to invoice.user.full_name, [:admin, invoice.user], :title => "#{invoice.user.full_name} <#{invoice.user.email}>"
       = "(beta)" if invoice.user.beta?
   %td.site
-    = link_to invoice.site.hostname, [:edit, :admin, invoice.site]
+    = links_to_hostnames(invoice.site)
     = "(#{invoice.site.state})" unless invoice.site.active?
-    = "(#{link_to("details", [:edit, :admin, invoice.site], :title => "EXTRA: #{invoice.site.extra_hostnames}; DEV: #{invoice.site.dev_hostnames}")})".html_safe
   %td.period
     %small
       = l(invoice.paid_at || invoice.last_failed_at || invoice.created_at, :format => :minutes)
