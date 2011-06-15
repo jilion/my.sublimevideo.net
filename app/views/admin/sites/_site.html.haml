@@ -15,7 +15,8 @@
     - if site.plan
       %small
         = site.plan.name.humanize
-        = " (#{site.plan.cycle})" if site.plan.standard_plan?
+        - if site.plan.standard_plan?
+          = " (" + site.plan.read_attribute(:cycle) + "})"  # conflict with cycle method?
     - else
       %small= '-'
   %td.next_cycle_plan
