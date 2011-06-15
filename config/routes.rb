@@ -93,6 +93,9 @@ MySublimeVideo::Application.routes.draw do
       member do
         put :retry_charging
       end
+      collection do
+        get :monthly
+      end
     end
     resources :plans,  :only => [:index, :new, :create]
     resources :admins, :only => [:index, :destroy]

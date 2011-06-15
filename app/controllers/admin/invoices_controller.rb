@@ -47,5 +47,9 @@ class Admin::InvoicesController < Admin::AdminController
     @invoice.retry
     respond_with(@invoice, :location => [:admin, :invoices])
   end
-
+  
+  def monthly
+    
+  end
+  
 end
