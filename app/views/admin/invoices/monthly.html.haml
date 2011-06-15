@@ -1,9 +1,9 @@
 %table
   %tr
     %th Month
-    %th Revenues - CH (incl. TVA)
-    %th Revenues - not CH
-    %th Revenues - Total
+    %th Invoiced (CH, VAT incl)
+    %th Invoiced (not CH)
+    %th Invoiced (Total)
   - from = DateTime.new(2011,3).utc
   - to   = Time.now.utc.end_of_month
   - while from <= to do
