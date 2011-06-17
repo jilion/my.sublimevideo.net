@@ -206,11 +206,7 @@ private
 
   # after_transition :on => :succeed, :if => proc { |invoice| invoice.user.invoices.not_paid.empty? }
   def apply_pending_site_plan_changes
-    if user.invoices.not_paid.empty?
-      self.site.apply_pending_plan_changes
-    else
-      true # don't apply pending dates if not-paid invoices are still present
-    end
+    self.site.apply_pending_plan_changes
   end
 
   # after_transition :on => :succeed

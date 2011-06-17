@@ -175,14 +175,14 @@ describe Invoice do
           context "with a site with an #{state} invoice present" do
             let(:site) { Factory(:site) }
             let(:non_paid_invoice) { Factory(:invoice, state: state, site: site) }
-            
+
             it "should not call #apply_pending_plan_changes on the site only if there are still non-paid invoices" do
               non_paid_invoice.state.should == state
 
               site.should_not_receive(:apply_pending_plan_changes)
               Factory(:invoice, site: site).succeed!
             end
-            
+
             it "should call #apply_pending_plan_changes on the site if there are no more non-paid invoices" do
               non_paid_invoice.state.should == state
 
@@ -389,6 +389,10 @@ describe Invoice do
       end
 
       it "should update pending dates in the site and the plan invoice item of the invoices where renew flag == false by user" do
+        @site1.pending_plan_started_at.should == Time.utc(2011, 4, 4)
+        @site1.pending_plan_cycle_started_at.should == Time.utc(2011, 4, 4)
+        @site1.pending_plan_cycle_ended_at.to_i.should == Time.utc(2011, 5, 3).to_datetime.end_of_day.to_i
+
         Timecop.travel(Time.utc(2011, 4, 8)) do
           Invoice.update_pending_dates_for_first_not_paid_invoices
         end
@@ -513,7 +517,7 @@ describe Invoice do
               # Simulate downgrade
               @site.plan_id = @paid_plan2.id
             end
-            
+
             Timecop.travel(Time.utc(2011,6,1)) do
               @site.pend_plan_changes
               @site.save_without_password_validation
@@ -580,7 +584,7 @@ describe Invoice do
       @invoice = Factory(:invoice)
       @paid_plan_invoice_item = Factory(:plan_invoice_item, invoice: @invoice, item: @paid_plan, started_at: Time.utc(2011, 4, 4), ended_at: Time.utc(2011, 5, 3).end_of_day)
       @invoice.invoice_items << @paid_plan_invoice_item
-      
+
       Factory(:transaction, invoices: [@invoice], state: 'failed', created_at: 4.days.ago)
       @failed_transaction2 = Factory(:transaction, invoices: [@invoice], state: 'failed', created_at: 3.days.ago)
       @paid_transaction = Factory(:transaction, invoices: [@invoice], state: 'paid', created_at: 2.days.ago)
