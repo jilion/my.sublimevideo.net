@@ -74,17 +74,6 @@ module User::CreditCard
     end
   end
 
-  # TODO Remove after public launch
-  def uniquify_cc_alias
-    return if cc_alias?
-
-    chars = Array('A'..'Z') + Array('0'..'9')
-    begin
-      self.cc_alias = Array.new(8) { chars.to_a[rand(chars.to_a.size)] }.join
-    end while User.exists?(cc_alias: cc_alias)
-    save
-  end
-
   def reset_credit_card_attributes
     %w[cc_brand cc_number cc_expiration_month cc_expiration_year cc_full_name cc_verification_value].each { |att| self.send("#{att}=", nil) }
   end

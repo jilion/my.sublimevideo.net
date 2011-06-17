@@ -268,23 +268,6 @@ describe User::CreditCard do
       end
     end
 
-    describe "uniquify_cc_alias" do
-
-      it "should set empty cc_alias" do
-        user = Factory.build(:user, cc_alias: nil)
-        user.cc_alias.should_not be_present
-        user.uniquify_cc_alias
-        user.reload.cc_alias.should =~ /^[A-Z0-9]{8}$/
-      end
-
-      it "should not overwrite existing cc_alias" do
-        user = Factory(:user)
-        user.cc_alias.should be_present
-        expect { user.uniquify_cc_alias }.should_not change(user, :cc_alias)
-      end
-
-    end
-
     describe "#cc_full_name=" do
       describe "on-word full name" do
         subject { Factory.build(:user_no_cc, cc_full_name: "John") }
