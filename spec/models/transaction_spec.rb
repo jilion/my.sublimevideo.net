@@ -868,9 +868,9 @@ describe Transaction do
         subject.user.reload.cc_type.should == 'visa'
         subject.user.cc_last_digits.should == '1111'
         subject.user.cc_expire_on.should == 1.year.from_now.end_of_month.to_date
-        subject.user.pending_cc_last_digits.should be_nil
-        subject.user.pending_cc_expire_on.should be_nil
-        subject.user.pending_cc_updated_at.should be_nil
+        subject.user.pending_cc_last_digits.should == '9999'
+        subject.user.pending_cc_expire_on.should == 2.years.from_now.end_of_month.to_date
+        subject.user.pending_cc_updated_at.should be_present
       end
 
       it "should fail with a STATUS == 93" do
@@ -901,9 +901,9 @@ describe Transaction do
         subject.user.reload.cc_type.should == 'visa'
         subject.user.cc_last_digits.should == '1111'
         subject.user.cc_expire_on.should == 1.year.from_now.end_of_month.to_date
-        subject.user.pending_cc_last_digits.should be_nil
-        subject.user.pending_cc_expire_on.should be_nil
-        subject.user.pending_cc_updated_at.should be_nil
+        subject.user.pending_cc_last_digits.should == '9999'
+        subject.user.pending_cc_expire_on.should == 2.years.from_now.end_of_month.to_date
+        subject.user.pending_cc_updated_at.should be_present
       end
 
       it "should fail with a STATUS == 92" do

@@ -172,7 +172,6 @@ class Transaction < ActiveRecord::Base
     #   STATUS == 93, Payment refused:
     #     A technical problem arose.
     when "0", "2", "93"
-      self.user.reset_pending_credit_card_info
       self.fail
 
     # STATUS == 52, Authorization not known; STATUS == 92, Payment uncertain:
@@ -197,9 +196,9 @@ class Transaction < ActiveRecord::Base
 
   def store_cc_infos(payment_method)
     is_cc_alias = payment_method.is_a?(String) # it's a cc_alias
-    self.cc_type        = is_cc_alias ? self.user.cc_type : payment_method.type
-    self.cc_last_digits = is_cc_alias ? self.user.cc_last_digits : payment_method.last_digits
-    self.cc_expire_on   = is_cc_alias ? self.user.cc_expire_on : Time.utc(payment_method.year, payment_method.month).end_of_month.to_date
+    self.cc_type        = is_cc_alias ? (self.user.cc_type || self.user.pending_cc_type) : payment_method.type
+    self.cc_last_digits = is_cc_alias ? (self.user.cc_last_digits || self.user.pending_cc_last_digits) : payment_method.last_digits
+    self.cc_expire_on   = is_cc_alias ? (self.user.cc_expire_on || self.user.pending_cc_expire_on) : Time.utc(payment_method.year, payment_method.month).end_of_month.to_date
   end
 
 private
