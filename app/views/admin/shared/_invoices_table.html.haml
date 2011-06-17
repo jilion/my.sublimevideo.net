@@ -5,7 +5,7 @@
 %ul
   - invoices.each do |invoice|
     %li
-      = link_to(invoice_dates(invoice), [:edit, :admin, invoice])
+      = link_to(invoice_dates(invoice), [:admin, invoice])
       = " / "
       = display_amount(invoice.amount)
       = " ( #{invoice.state} on "
