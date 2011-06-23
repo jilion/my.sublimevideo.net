@@ -98,11 +98,7 @@ module Hostname
       ssp = PublicSuffixService.parse(hostname)
       PSEUDO_TLD.include?(ssp.tld)
     rescue
-      if ipv4?(hostname)
-        ipv4_local?(hostname)
-      else
-        true
-      end
+      !ipv4?(hostname) || ipv4_local?(hostname)
     end
     
     def ipv4?(hostname)
@@ -116,7 +112,8 @@ module Hostname
     
     def ipv4_local?(hostname)
       begin
-        hostname == "0.0.0.0" || Addrinfo.tcp(hostname, 80).ipv4_loopback?
+        addr = Addrinfo.tcp(hostname, 80)
+        hostname == "0.0.0.0" || addr.ipv4_private? || addr.ipv4_loopback?
       rescue
         false
       end
