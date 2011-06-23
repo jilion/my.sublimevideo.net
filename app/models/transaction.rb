@@ -72,7 +72,7 @@ class Transaction < ActiveRecord::Base
           end
         end
 
-        charge_by_invoice_ids(invoices.map(&:id).sort)
+        charge_by_invoice_ids(invoices.map(&:id).sort) if invoices.present?
       end
     end
   end

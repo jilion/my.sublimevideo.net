@@ -344,6 +344,15 @@ describe Transaction do
         @invoice1.reload.should be_open
       end
 
+      it "doesn't try to charge at all if the only invoice has 15 failed transactions or more" do
+        user = Factory(:user)
+        site = Factory(:site, user: user)
+        invoice = Factory(:invoice, site: site, state: 'failed')
+        15.times { Factory(:transaction, invoices: [invoice], state: 'failed') }
+        Transaction.charge_invoices_by_user_id(user.id)
+        invoice.reload.should be_failed
+      end
+
       it "send a mail to admins when an invoice has exactly 15 failed transactions" do
         ActionMailer::Base.deliveries.clear
         @invoice1.reload
