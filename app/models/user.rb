@@ -166,7 +166,7 @@ class User < ActiveRecord::Base
   # Devise overriding
   # allow suspended user to login (devise)
   def active_for_authentication?
-    %w[active suspended].include?(state)
+    super && %w[active suspended].include?(state)
   end
 
   def have_beta_sites?
