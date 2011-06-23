@@ -20,8 +20,8 @@ gem 'liquid',                '2.2.2'
 gem 'RedCloth',              '4.2.7'
 
 # Auth / invitations
-gem 'devise',                '1.3.4'
-gem 'devise_invitable',      :git => 'git://github.com/scambra/devise_invitable.git'
+gem 'devise',                '1.4.0'
+gem 'devise_invitable',      :git => 'git://github.com/rymai/devise_invitable.git', :branch => 'patch-1'
 
 # Internals
 gem 'delayed_job',           '2.1.4'
