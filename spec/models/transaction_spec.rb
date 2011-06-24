@@ -352,15 +352,6 @@ describe Transaction do
         Transaction.charge_invoices_by_user_id(user.id)
         invoice.reload.should be_failed
       end
-
-      it "send a mail to admins when an invoice has exactly 15 failed transactions" do
-        ActionMailer::Base.deliveries.clear
-        @invoice1.reload
-        15.times { Factory(:transaction, invoices: [@invoice1.reload], state: 'failed') }
-        expect { Transaction.charge_invoices_by_user_id(@user.id) }.to change(ActionMailer::Base.deliveries, :count).by(2)
-        ActionMailer::Base.deliveries.first.to.should == ["thibaud@jilion.com", "remy@jilion.com", "zeno@jilion.com"]
-        ActionMailer::Base.deliveries.last.to.should == [@invoice1.user.email]
-      end
     end # .charge_invoices_by_user_id
 
     describe ".charge_by_invoice_ids" do

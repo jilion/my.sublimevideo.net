@@ -64,12 +64,7 @@ class Transaction < ActiveRecord::Base
 
       if invoices.present?
         invoices.each do |invoice|
-          failed_transactions_count = invoice.transactions.failed.count
-          
-          if failed_transactions_count >= 15
-            BillingMailer.too_many_failed_charging_attempts(invoice).deliver if failed_transactions_count == 15
-            invoices.delete(invoice)
-          end
+          invoices.delete(invoice) if invoice.transactions.failed.count >= 15
         end
 
         charge_by_invoice_ids(invoices.map(&:id).sort) if invoices.present?
