@@ -309,7 +309,7 @@ describe User do
 
       describe "Callbacks" do
         describe "before_transition :on => :suspend, :do => :suspend_sites" do
-          it "should suspend each user' active site" do
+          it "should suspend all user' sites that have failed invoices" do
             @paid_site.reload.should be_active
             @dev_site.reload.should be_active
             subject.reload.suspend
@@ -319,7 +319,7 @@ describe User do
         end
 
         describe "after_transition  :on => :suspend, :do => :send_account_suspended_email" do
-          it "should send an email to invoice.user" do
+          it "should send an email to the user" do
             lambda { subject.reload.suspend }.should change(ActionMailer::Base.deliveries, :count).by(1)
             ActionMailer::Base.deliveries.last.to.should == [subject.email]
           end
@@ -341,7 +341,7 @@ describe User do
 
       describe "Callbacks" do
         describe "before_transition :on => :unsuspend, :do => :unsuspend_sites" do
-          it "should suspend each user' site" do
+          it "should suspend all user' sites that are suspended" do
             @suspended_site.reload.should be_suspended
             @dev_site.reload.should be_active
             subject.reload.unsuspend
@@ -351,7 +351,7 @@ describe User do
         end
 
         describe "after_transition  :on => :unsuspend, :do => :send_account_unsuspended_email" do
-          it "should send an email to user" do
+          it "should send an email to the user" do
             lambda { subject.unsuspend }.should change(ActionMailer::Base.deliveries, :count).by(1)
             ActionMailer::Base.deliveries.last.to.should == [subject.email]
           end
