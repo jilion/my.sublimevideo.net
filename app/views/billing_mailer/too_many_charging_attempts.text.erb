@@ -1,0 +1,13 @@
+<%= t("mailer.intro_name", name: @invoice.user.full_name) %>
+
+Too many unsuccessful charging attempts have been made for <%= @invoice.site.hostname %>, we have now cancelled the automatic charging retry.
+
+You can retry purchasing a plan for <%= @invoice.site.hostname %> on the following page:
+
+https://<%= ActionMailer::Base.default_url_options[:host] %>/sites/<%= @invoice.to_param %>/plan/edit
+
+Note that if the charging attempts failed due to a credit card problem, you should probably update your credit card information via the following link:
+
+https://<%= ActionMailer::Base.default_url_options[:host] %>/card/edit
+
+<%= t("mailer.signature") %>

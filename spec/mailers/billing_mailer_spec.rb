@@ -9,7 +9,7 @@ describe BillingMailer do
 
   it_should_behave_like "common mailer checks", %w[credit_card_will_expire], :from => ["billing@sublimevideo.net"], :params => [Factory(:user, :cc_expire_on => 1.day.from_now)]
   it_should_behave_like "common mailer checks", %w[transaction_succeeded transaction_failed], :from => ["billing@sublimevideo.net"], :params => [Factory(:transaction, invoices: [Factory(:invoice)])]
-  it_should_behave_like "common mailer checks", %w[too_many_failed_charging_attempts], :from => ["billing@sublimevideo.net"], :to => ["thibaud@jilion.com", "remy@jilion.com", "zeno@jilion.com"], :params => [Factory(:invoice)]
+  it_should_behave_like "common mailer checks", %w[too_many_charging_attempts], :from => ["billing@sublimevideo.net"], :params => [Factory(:invoice)]
 
   describe "#credit_card_will_expire" do
     before(:each) do
@@ -54,17 +54,21 @@ describe BillingMailer do
     end
   end
 
-  describe "#too_many_failed_charging_attempts" do
+  describe "#too_many_charging_attempts" do
     before(:all) do
-      described_class.too_many_failed_charging_attempts(@invoice).deliver
+      described_class.too_many_charging_attempts(@invoice).deliver
       @last_delivery = ActionMailer::Base.deliveries.last
     end
 
     specify do
-      @last_delivery.subject.should == "15 failed charging attempt for Invoice ##{@invoice.reference}"
-      @last_delivery.body.encoded.should include "Automatic charging retry has been disabled."
-      @last_delivery.body.encoded.should include "Please investigate quickly!"
-      @last_delivery.body.encoded.should include "https://localhost:3000/admin/invoices/#{@invoice.reference}"
+      @last_delivery.subject.should == "Too many unsuccessful charging attempts for #{@invoice.site.hostname}"
+      @last_delivery.body.encoded.should include "Too many unsuccessful charging attempts have been made for #{@invoice.site.hostname}"
+      @last_delivery.body.encoded.should include "we have now cancelled the automatic charging retry."
+      @last_delivery.body.encoded.should include "You can retry purchasing a plan for #{@invoice.site.hostname} on the following page:"
+      @last_delivery.body.encoded.should include "https://localhost:3000/sites/#{@invoice.to_param}/plan/edit"
+      @last_delivery.body.encoded.should include "Note that if the charging attempts failed due to a credit card problem"
+      @last_delivery.body.encoded.should include "you should probably update your credit card information via the following link:"
+      @last_delivery.body.encoded.should include "https://localhost:3000/card/edit"
     end
   end
 

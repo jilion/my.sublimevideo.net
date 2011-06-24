@@ -607,20 +607,6 @@ describe User do
       end
     end
 
-    pending "after_create :push_new_registration" do
-      it "should delay on Ding class" do
-        Ding.should_receive(:delay)
-        Factory(:user)
-      end
-
-      it "should send a ding!" do
-        expect { Factory(:user) }.to change(Delayed::Job, :count)
-        djs = Delayed::Job.where(:handler.matches => "%signup%")
-        djs.count.should == 1
-        djs.first.name.should == 'Class#signup'
-      end
-    end
-
     describe "after_update :update_email_on_zendesk" do
       it "should not delay Module#put if email has not changed" do
         user.zendesk_id = 59438671

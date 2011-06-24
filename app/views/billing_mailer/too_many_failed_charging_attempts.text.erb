@@ -1,9 +1,0 @@
-15 charging attempts have failed for the invoice #<%= @invoice.reference %>
-
-Automatic charging retry has been disabled.
-
-Please investigate quickly!
-
-https://<%= ActionMailer::Base.default_url_options[:host] %>/admin/invoices/<%= @invoice.reference %>
-
-<%= t("mailer.signature") %>

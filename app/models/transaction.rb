@@ -53,7 +53,7 @@ class Transaction < ActiveRecord::Base
   # =================
 
   def self.charge_invoices
-    User.includes(:invoices).where(invoices: { state: %w[open failed] }).each do |user|
+    User.where(:state.ne => 'suspended').includes(:invoices).where(invoices: { state: %w[open failed] }).each do |user|
       delay(:priority => 2).charge_invoices_by_user_id(user.id)
     end
   end
@@ -64,7 +64,18 @@ class Transaction < ActiveRecord::Base
 
       if invoices.present?
         invoices.each do |invoice|
-          invoices.delete(invoice) if invoice.transactions.failed.count >= 15
+          failed_transactions_count = invoice.transactions.failed.count
+
+          if failed_transactions_count >= 15
+            invoices.delete(invoice)
+
+            if invoice.site.first_paid_plan_started_at?
+              invoice.user.suspend! and return
+            else
+              invoice.cancel!
+              BillingMailer.too_many_charging_attempts(invoice).deliver!
+            end
+          end
         end
 
         charge_by_invoice_ids(invoices.map(&:id).sort) if invoices.present?
