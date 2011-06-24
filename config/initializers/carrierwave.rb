@@ -1,3 +1,5 @@
+require 'carrierwave/processing/mime_types'
+
 CarrierWave.configure do |config|
   case Rails.env
   when 'production', 'staging', 'development'
