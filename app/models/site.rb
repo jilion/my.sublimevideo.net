@@ -156,7 +156,6 @@ class Site < ActiveRecord::Base
     end
 
     before_transition :on => :archive, :do => [:set_archived_at, :cancel_open_or_failed_invoices]
-    # before_transition :on => :unsuspend, :do => :pend_plan_changes # TODO!!
 
     after_transition  :to => [:suspended, :archived], :do => :delay_remove_loader_and_license # in site/templates
   end

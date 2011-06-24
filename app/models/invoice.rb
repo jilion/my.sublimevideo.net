@@ -49,7 +49,8 @@ class Invoice < ActiveRecord::Base
 
     before_transition :on => :succeed, :do => :set_paid_at
     after_transition  :on => :succeed, :do => :apply_pending_site_plan_changes, :if => proc { |invoice| invoice.user.invoices.not_paid.empty? }
-    after_transition  :on => :succeed, :do => [:update_user_invoiced_amount, :unsuspend_user]
+    after_transition  :on => :succeed, :do => :update_user_invoiced_amount
+    after_transition  :on => :succeed, :do => :unsuspend_user, :if => proc { |invoice| invoice.user.suspended? && invoice.user.invoices.not_paid.empty? }
 
     before_transition :on => :fail,    :do => :set_last_failed_at
   end
@@ -218,11 +219,7 @@ private
 
   # after_transition :on => :succeed
   def unsuspend_user
-    if user.suspended? && user.invoices.not_paid.empty?
-      user.unsuspend
-    else
-      true
-    end
+    self.user.unsuspend
   end
 
 end
