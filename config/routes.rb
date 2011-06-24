@@ -33,7 +33,9 @@ MySublimeVideo::Application.routes.draw do
     end
   end
   resource :card, :controller => 'credit_cards', :as => :credit_card, :only => [:edit, :update]
-  resources :invoices, :only => :show
+  resources :invoices, :only => :show do
+    put :retry_all, :on => :collection
+  end
 
   match '/refund' => "refunds#index",  :via => :get, :as => 'refunds'
   match '/refund' => "refunds#create", :via => :post, :as => 'refund'
