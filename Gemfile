@@ -21,7 +21,7 @@ gem 'RedCloth',              '4.2.7'
 
 # Auth / invitations
 gem 'devise',                '1.4.0'
-gem 'devise_invitable',      :git => 'git://github.com/rymai/devise_invitable.git', :branch => 'patch-1'
+gem 'devise_invitable',      '0.5.1'
 
 # Internals
 gem 'delayed_job',           '2.1.4'
