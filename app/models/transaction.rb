@@ -59,7 +59,7 @@ class Transaction < ActiveRecord::Base
   end
 
   def self.charge_invoices_by_user_id(user_id)
-    if user = User.find(user_id)
+    if user = User.active.find(user_id)
       invoices = user.invoices.open_or_failed.all
 
       invoices.each do |invoice|
