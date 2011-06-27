@@ -1,4 +1,4 @@
-defaults: &defaults
+defaults: &defaults_dev_test
   base_url:  http://sublimevideo.zendesk.com
   username:  zendesk@sublimevideo.net
   password:  wrank8
@@ -12,10 +12,10 @@ defaults_stage_prod: &defaults_stage_prod
   api_token: heroku_env
 
 development:
-  <<: *defaults
+  <<: *defaults_dev_test
 
 test:
-  <<: *defaults
+  <<: *defaults_dev_test
 
 staging:
   <<: *defaults_stage_prod
