@@ -61,12 +61,10 @@ describe BillingMailer do
     end
 
     specify do
-      @last_delivery.subject.should == "Too many unsuccessful charging attempts for #{@invoice.site.hostname}"
-      @last_delivery.body.encoded.should include "Too many unsuccessful charging attempts have been made for #{@invoice.site.hostname}"
-      @last_delivery.body.encoded.should include "we have now cancelled the automatic charging retry."
-      @last_delivery.body.encoded.should include "You can retry purchasing a plan for #{@invoice.site.hostname} on the following page:"
-      @last_delivery.body.encoded.should include "https://localhost:3000/sites/#{@invoice.to_param}/plan/edit"
-      @last_delivery.body.encoded.should include "Note that if the charging attempts failed due to a credit card problem"
+      @last_delivery.subject.should == "Payment for #{@invoice.site.hostname} has failed multiple times"
+      @last_delivery.body.encoded.should include "The payment for #{@invoice.site.hostname} has failed multiple times, no further charging attempt will be made."
+      @last_delivery.body.encoded.should include "https://localhost:3000/sites/#{@invoice.site.to_param}/plan/edit"
+      @last_delivery.body.encoded.should include "Note that if the payment failed due to a problem with your credit card"
       @last_delivery.body.encoded.should include "you should probably update your credit card information via the following link:"
       @last_delivery.body.encoded.should include "https://localhost:3000/card/edit"
     end

@@ -30,7 +30,7 @@ class BillingMailer < ActionMailer::Base
     @invoice = invoice
     mail(
       :to => "\"#{@invoice.user.full_name}\" <#{@invoice.user.email}>",
-      :subject => "Too many unsuccessful charging attempts for #{@invoice.site.hostname}"
+      :subject => "Payment for #{@invoice.site.hostname} has failed multiple times"
     )
   end
 
