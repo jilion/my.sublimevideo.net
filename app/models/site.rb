@@ -1,8 +1,11 @@
 class Site < ActiveRecord::Base
   extend ActiveSupport::Memoizable
+  require 'site/templates'
   require 'site/invoice'
   require 'site/referrer'
-  require 'site/templates'
+  include Site::Templates
+  include Site::Invoice
+  include Site::Referrer
 
   DEFAULT_DEV_DOMAINS = '127.0.0.1, localhost'
   PLAYER_MODES = %w[dev beta stable]

@@ -222,13 +222,8 @@ private
 
   # Called from User::CreditCard#process_cc_authorize_and_save and TransactionsController#callback
   def void_authorization(authorization)
-    void = begin
-      Ogone.void(authorization)
-    rescue => ex
-      Notify.send("SUPER WARNING! Credit card void for user #{self.id} failed: #{ex.message}", exception: ex)
-      nil
-    end
-    Notify.send("SUPER WARNING! Credit card void for user #{self.id} failed: #{void.message}") if void && !void.success?
+    void = Ogone.void(authorization)
+    Notify.send("SUPER WARNING! Credit card authorization void for user #{self.id} failed: #{void.message}") unless void.success?
   end
 
 end
