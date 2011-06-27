@@ -309,12 +309,15 @@ describe User do
 
       describe "Callbacks" do
         describe "before_transition :on => :suspend, :do => :suspend_sites" do
-          it "should suspend all user' sites that have failed invoices" do
+          it "should suspend all user' active sites that have failed invoices" do
+            @archived_site  = Factory(:site, user: @user, hostname: "rymai.tv", state: 'archived')
             @paid_site.reload.should be_active
             @dev_site.reload.should be_active
+            @archived_site.reload.should be_archived
             subject.reload.suspend
             @paid_site.reload.should be_suspended
             @dev_site.reload.should be_active
+            @archived_site.reload.should be_archived
           end
         end
 

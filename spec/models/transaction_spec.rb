@@ -369,6 +369,7 @@ describe Transaction do
           it "suspend the user" do
             @invoice2.reload
             15.times { Factory(:transaction, invoices: [@invoice2], state: 'failed') }
+            Transaction.should_not_receive(:charge_by_invoice_ids)
             Transaction.charge_invoices_by_user_id(@user1.id)
             @invoice2.reload.should be_failed
             @user1.reload.should be_suspended

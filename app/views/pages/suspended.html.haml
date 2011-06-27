@@ -11,11 +11,10 @@
 
     %h3.section_title= "Your failed invoices"
     #failed_invoices
-      = t("user.have_to_pay_following_invoices")
+      = t("user.have_to_pay_following_invoices", count: failed_invoices.size)
       %ul
         - failed_invoices.each do |invoice|
-          %li
-            = render '/invoices/invoice_row', :invoice => invoice
+          %li= render '/invoices/invoice_row', :invoice => invoice
       - if !current_user.cc_expired?
         = form_tag retry_all_invoices_path, method: 'put' do
           .entry= submit_tag t('site.invoices.retry_invoices'), :class => "submit_dynamic_button"
