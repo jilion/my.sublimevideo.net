@@ -23,7 +23,7 @@ class Admin::InvoicesController < Admin::AdminController
 
   # GET /admin/invoices
   def index
-    @invoices = apply_scopes(Invoice.includes(:site, :user)).by_date
+    @invoices = apply_scopes(Invoice.includes(:site, :user)).by_id
     respond_with(@invoices, :per_page => 50)
   end
 

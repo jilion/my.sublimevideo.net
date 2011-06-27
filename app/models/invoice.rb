@@ -74,6 +74,7 @@ class Invoice < ActiveRecord::Base
   scope :user_id,                   lambda { |user_id| joins(:user).where(:users => { :id => user_id }) }
 
   # sort
+  scope :by_id,                  lambda { |way='desc'| order(:id.send(way)) }
   scope :by_date,                lambda { |way='desc'| order(:created_at.send(way)) }
   scope :by_amount,              lambda { |way='desc'| order(:amount.send(way)) }
   scope :by_user,                lambda { |way='desc'| joins(:user).order(:first_name.send(way), :"users.email".send(way)) }
