@@ -22,6 +22,8 @@ gem 'RedCloth',              '4.2.7'
 # Auth / invitations
 gem 'devise',                '1.4.2'
 gem 'devise_invitable',      '0.5.1'
+gem 'oauth',                 '0.4.5'
+gem 'oauth-plugin',          '0.4.0.pre6'
 
 # API
 gem 'acts_as_api',           '0.3.6'
@@ -101,7 +103,9 @@ group :test do
   gem 'spork', '0.9.0.rc8'
   gem 'rb-fsevent'
   gem 'growl'
+  # gem 'growl_notify'
   gem 'guard', :git => 'git://github.com/guard/guard.git'
+  # gem 'guard', :path => '~/Development/Ruby/Gems/guard/guard'
   gem 'guard-bundler'
   gem 'guard-pow'
   gem 'guard-passenger'

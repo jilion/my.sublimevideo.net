@@ -12,6 +12,9 @@ module MySublimeVideo
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
 
+    require 'oauth/rack/oauth_filter'
+    config.middleware.use OAuth::Rack::OAuthFilter
+    
     # Add additional load paths for your own custom dirs
     config.autoload_paths += %W[#{config.root}/lib]
     Dir["#{config.root}/lib/{logs_file_format,responders,validators}/**/*.rb"].each do |f|

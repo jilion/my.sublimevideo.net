@@ -27,9 +27,23 @@ class User < ActiveRecord::Base
 
   has_many :sites
   has_many :invoices, :through => :sites
-
   has_one :last_invoice, :through => :sites, :source => :invoices, :order => :created_at.desc
   has_one :api_token
+
+  has_many :client_applications
+  has_many :tokens, :class_name => "OauthToken", :order => "authorized_at desc", :include => [:client_application]
+
+  has_many :client_applications
+  has_many :tokens, :class_name => "OauthToken", :order => "authorized_at desc", :include => [:client_application]
+
+  has_many :client_applications
+  has_many :tokens, :class_name => "OauthToken", :order => "authorized_at desc", :include => [:client_application]
+
+  has_many :client_applications
+  has_many :tokens, :class_name => "OauthToken", :order => "authorized_at desc", :include => [:client_application]
+
+  has_many :client_applications
+  has_many :tokens, :class_name => "OauthToken", :order => "authorized_at desc", :include => [:client_application]
 
   # ===============
   # = Validations =
