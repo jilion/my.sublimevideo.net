@@ -44,6 +44,13 @@ GIT
     has_scope (0.5.0)
 
 GIT
+  remote: git://github.com/rymai/rack-throttle.git
+  revision: fa846a9dfede017e3325a5aadcfbd74a7f32099d
+  specs:
+    rack-throttle (0.3.0)
+      rack (>= 1.0.0)
+
+GIT
   remote: git://github.com/thibaudgg/voxel_hapi.git
   revision: 63cfc384020f4286904f91ea18a9fc4faf0aa562
   branch: 1.9.2
@@ -92,6 +99,10 @@ GEM
       activemodel (= 3.0.9.rc5)
       activesupport (= 3.0.9.rc5)
     activesupport (3.0.9.rc5)
+    acts_as_api (0.3.6)
+      activemodel (>= 3.0.0)
+      activesupport (>= 3.0.0)
+      rack (>= 1.1.0)
     addressable (2.2.6)
     annotate (2.4.0)
     arel (2.0.10)
@@ -409,6 +420,7 @@ DEPENDENCIES
   rack-google-analytics (= 0.9.2)
   rack-private
   rack-ssl-enforcer (= 0.2.2)
+  rack-throttle!
   rails (= 3.0.9.rc5)
   rake (= 0.8.7)
   rb-fsevent

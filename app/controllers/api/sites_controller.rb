@@ -5,7 +5,7 @@ class Api::SitesController < Api::ApiController
 
   # GET /api/v1/sites
   def index
-    @sites = current_api_user.sites.not_archived.includes(:plan, :next_cycle_plan)
+    @sites = current_user.sites.not_archived.includes(:plan, :next_cycle_plan)
     respond_with(@sites) do |format|
       format.json { render_for_api api_template, :json => @sites, :root => :sites }
       format.xml  { render_for_api api_template, :xml => @sites, :root => :sites }
@@ -31,7 +31,7 @@ class Api::SitesController < Api::ApiController
   private
 
   def find_by_token!
-    @site = current_api_user.sites.not_archived.find_by_token!(params[:id])
+    @site = current_user.sites.not_archived.find_by_token!(params[:id])
   end
 
 end
