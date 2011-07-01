@@ -20,7 +20,7 @@ gem 'liquid',                '2.2.2'
 gem 'RedCloth',              '4.2.7'
 
 # Auth / invitations
-gem 'devise',                '1.4.0'
+gem 'devise',                '1.4.2'
 gem 'devise_invitable',      '0.5.1'
 
 # Internals

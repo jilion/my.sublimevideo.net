@@ -123,7 +123,7 @@ GEM
     delayed_job (2.1.4)
       activesupport (~> 3.0)
       daemons
-    devise (1.4.0)
+    devise (1.4.2)
       bcrypt-ruby (~> 2.1.2)
       orm_adapter (~> 0.0.3)
       warden (~> 1.0.3)
@@ -358,7 +358,7 @@ DEPENDENCIES
   dalli (= 1.0.5)
   database_cleaner
   delayed_job (= 2.1.4)
-  devise (= 1.4.0)
+  devise (= 1.4.2)
   devise_invitable (= 0.5.1)
   factory_girl_rails
   ffaker
