@@ -75,4 +75,20 @@ class Api::ApiController < ActionController::Metal
     "v#{@version}_#{template}".to_sym
   end
 
+  protected
+
+  def current_api_user
+    @api_token.user
+  end
+
+  def choose_version
+    version_and_content_type = request.headers['Accept'].match(%r{^application/vnd\.jilion\.sublimevideo(-v(\d+))?\+(\w+)$})
+    @version      = version_and_content_type.try(:[], 2) || 1
+    @content_type = version_and_content_type.try(:[], 3) || 'json'
+  end
+
+  def api_template(template=:private)
+    "v#{@version}_#{template}".to_sym
+  end
+
 end

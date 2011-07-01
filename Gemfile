@@ -29,6 +29,10 @@ gem 'oauth-plugin',          '0.4.0.pre6'
 gem 'acts_as_api',           '0.3.6'
 gem 'rack-throttle',         :git => 'git://github.com/rymai/rack-throttle.git', :require => 'rack/throttle'
 
+# API
+gem 'acts_as_api',           '0.3.6'
+gem 'rack-throttle',         :git => 'git://github.com/rymai/rack-throttle.git', :require => 'rack/throttle'
+
 # Internals
 gem 'delayed_job',           '2.1.4'
 gem 'rescue_me',             '0.1.0'

@@ -55,6 +55,8 @@ MySublimeVideo::Application.routes.draw do
 
   match '/transaction/callback' => "transactions#callback", :via => :post
 
+  match '/transaction/callback' => "transactions#callback", :via => :post
+
   match '/refund' => "refunds#index",  :via => :get, :as => 'refunds'
   match '/refund' => "refunds#create", :via => :post, :as => 'refund'
 
@@ -71,8 +73,8 @@ MySublimeVideo::Application.routes.draw do
   # =======
   # = API =
   # =======
-
-  devise_for :api_tokens
+  # 
+  # devise_for :api_tokens
 
   namespace "api" do
     constraints :format => /json|xml/ do
