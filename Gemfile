@@ -1,7 +1,6 @@
 source "http://rubygems.org"
 
 gem 'rake',                  '0.8.7'
-gem 'bundler',               '1.0.15'
 
 gem 'rails',                 '3.0.9.rc5'
 
@@ -21,7 +20,7 @@ gem 'RedCloth',              '4.2.7'
 
 # Auth / invitations
 gem 'devise',                '1.4.2'
-gem 'devise_invitable',      '0.5.1'
+gem 'devise_invitable',      '0.5.2'
 
 # Internals
 gem 'delayed_job',           '2.1.4'
@@ -98,7 +97,7 @@ group :test do
   gem 'guard-pow'
   gem 'guard-passenger'
   gem 'guard-rspec'
-  gem 'guard-spork'#, '0.1.4'
+  gem 'guard-spork'
   gem 'rspec-instafail'
   gem 'guard-livereload'
 
