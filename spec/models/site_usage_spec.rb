@@ -5,7 +5,7 @@ describe SiteUsage do
   describe "with cdn.sublimevideo.net.log.1286528280-1286528340.gz logs file" do
     before(:each) do
       logs_file = File.new(Rails.root.join('spec/fixtures/logs/voxcast/cdn.sublimevideo.net.log.1286528280-1286528340.gz'))
-      VoxcastCDN.stub(:logs_download).with('cdn.sublimevideo.net.log.1286528280-1286528340.gz').and_return(logs_file)
+      VoxcastCDN.stub(:download_log).with('cdn.sublimevideo.net.log.1286528280-1286528340.gz').and_return(logs_file)
       @log = Factory(:log_voxcast, :name => 'cdn.sublimevideo.net.log.1286528280-1286528340.gz')
       @trackers = LogAnalyzer.parse(@log.file, 'LogsFileFormat::VoxcastSites')
 
@@ -87,7 +87,7 @@ describe SiteUsage do
   describe "with 4076.voxcdn.com.log.1308045840-1308045900.gz logs file" do
     before(:each) do
       logs_file = File.new(Rails.root.join('spec/fixtures/logs/voxcast/4076.voxcdn.com.log.1308045840-1308045900.gz'))
-      VoxcastCDN.stub(:logs_download).with('4076.voxcdn.com.log.1308045840-1308045900.gz').and_return(logs_file)
+      VoxcastCDN.stub(:download_log).with('4076.voxcdn.com.log.1308045840-1308045900.gz').and_return(logs_file)
       @log = Factory(:log_voxcast, :name => '4076.voxcdn.com.log.1308045840-1308045900.gz')
       @trackers = LogAnalyzer.parse(@log.file, 'LogsFileFormat::VoxcastSites')
 
@@ -142,7 +142,7 @@ describe SiteUsage do
 
   describe "Trackers parsing with voxcast cdn.sublimevideo.net.log.1275002700-1275002760.gz logs file" do
     before(:each) do
-      VoxcastCDN.stub(:logs_download).with('cdn.sublimevideo.net.log.1275002700-1275002760.gz').and_return(
+      VoxcastCDN.stub(:download_log).with('cdn.sublimevideo.net.log.1275002700-1275002760.gz').and_return(
         File.new(Rails.root.join('spec/fixtures/logs/voxcast/cdn.sublimevideo.net.log.1275002700-1275002760.gz'))
       )
 

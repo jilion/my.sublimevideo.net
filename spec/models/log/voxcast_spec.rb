@@ -72,7 +72,7 @@ describe Log::Voxcast do
 
   context "Factory from 4076.voxcdn.com" do
     before(:each) do
-      VoxcastCDN.stub(:logs_download).with('4076.voxcdn.com.log.1279103340-1279103400.gz') {
+      VoxcastCDN.stub(:download_log).with('4076.voxcdn.com.log.1279103340-1279103400.gz') {
         File.new(Rails.root.join('spec/fixtures/logs/voxcast/4076.voxcdn.com.log.1279103340-1279103400.gz'))
       }
     end
@@ -124,14 +124,14 @@ describe Log::Voxcast do
       end
     end
 
-    describe ".delay_fetch_download_and_create_new_logs" do
+    describe ".delay_download_and_create_new_logs" do
       it "should launch delayed fetch_download_and_create_new_logs" do
-        lambda { Log::Voxcast.delay_fetch_download_and_create_new_logs }.should change(Delayed::Job, :count).by(1)
+        lambda { Log::Voxcast.delay_download_and_create_new_logs }.should change(Delayed::Job, :count).by(1)
       end
 
       it "should not launch delayed fetch_download_and_create_new_logs if one pending already present" do
-        Log::Voxcast.delay_fetch_download_and_create_new_logs
-        lambda { Log::Voxcast.delay_fetch_download_and_create_new_logs }.should_not change(Delayed::Job, :count)
+        Log::Voxcast.delay_download_and_create_new_logs
+        lambda { Log::Voxcast.delay_download_and_create_new_logs }.should_not change(Delayed::Job, :count)
       end
     end
 
@@ -146,7 +146,7 @@ describe Log::Voxcast do
   describe "Instance Methods" do
     before(:each) do
       log_file = File.new(Rails.root.join('spec/fixtures/logs/voxcast/cdn.sublimevideo.net.log.1284549900-1284549960.gz'))
-      VoxcastCDN.stub(:logs_download).with('cdn.sublimevideo.net.log.1284549900-1284549960.gz') { log_file }
+      VoxcastCDN.stub(:download_log).with('cdn.sublimevideo.net.log.1284549900-1284549960.gz') { log_file }
       @log = Factory(:log_voxcast, :name => 'cdn.sublimevideo.net.log.1284549900-1284549960.gz')
     end
 
@@ -154,7 +154,7 @@ describe Log::Voxcast do
       before(:each) do
         LogAnalyzer.should_receive(:parse)
         Referrer.should_receive(:create_or_update_from_trackers!)
-        VoxcastCDN.should_not_receive(:logs_download)
+        VoxcastCDN.should_not_receive(:download_log)
         subject.parse_and_create_referrers!
       end
 
@@ -174,7 +174,7 @@ describe Log::Voxcast do
       before(:each) do
         LogAnalyzer.should_receive(:parse)
         UsrAgent.should_receive(:create_or_update_from_trackers!)
-        VoxcastCDN.should_not_receive(:logs_download)
+        VoxcastCDN.should_not_receive(:download_log)
         subject.parse_and_create_user_agents!
       end
 

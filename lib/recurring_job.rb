@@ -1,7 +1,8 @@
 module RecurringJob
 
   logs_tasks = [
-    '%Log::Voxcast%fetch_download_and_create_new_logs%',
+    '%Log::Voxcast%download_and_create_new_non_ssl_logs%',
+    '%Log::Voxcast%download_and_create_new_ssl_logs%',
     '%Log::Amazon::S3::Player%fetch_and_create_new_logs%',
     '%Log::Amazon::S3::Loaders%fetch_and_create_new_logs%',
     '%Log::Amazon::S3::Licenses%fetch_and_create_new_logs%'
@@ -27,7 +28,7 @@ module RecurringJob
         delay(:priority => 2, :run_at => Time.now.utc.tomorrow.midnight).invoices_processing
       end
     end
-    
+
     def invoices_processing
       Invoice.update_pending_dates_for_first_not_paid_invoices
       Site.renew_active_sites
@@ -37,7 +38,7 @@ module RecurringJob
 
     def launch_all
       # Logs
-      Log.delay_fetch_and_create_new_logs
+      Log.delay_download_or_fetch_and_create_new_logs
 
       # Stats
       UsersStat.delay_create_users_stats

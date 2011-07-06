@@ -1,4 +1,5 @@
 key: 7d5c59e94f37c463401f996cce0510cd
 secret: fcf3a678a2d78c4b7ea47d29048ad9b7
 device_id: 48182
-hostnames: 'cdn.sublimevideo.net, 4076.voxcdn.com'
+ssl_hostname: 4076.voxcdn.com
+non_ssl_hostname: cdn.sublimevideo.net

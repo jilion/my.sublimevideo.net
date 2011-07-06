@@ -43,9 +43,9 @@ class Log
   # =================
 
   # Recurring task
-  def self.delay_fetch_and_create_new_logs
+  def self.delay_download_or_fetch_and_create_new_logs
     # Sites
-    Log::Voxcast.delay_fetch_download_and_create_new_logs
+    Log::Voxcast.delay_download_and_create_new_logs
     Log::Amazon::S3::Player.delay_fetch_and_create_new_logs
     Log::Amazon::S3::Loaders.delay_fetch_and_create_new_logs
     Log::Amazon::S3::Licenses.delay_fetch_and_create_new_logs
@@ -60,8 +60,6 @@ class Log
     (new_logs_names - existings_logs_names).each do |name|
       delay(:priority => 20).create(:name => name)
     end
-  rescue => ex
-    HoptoadNotifier.notify(ex)
   end
 
   def self.parse_log(id)
@@ -88,7 +86,8 @@ private
 
   # after_create
   def delay_parse
-    self.class.delay(:priority => 20, :run_at => 5.seconds.from_now).parse_log(id) # lets finish the upload
+    # self.class.delay(:priority => 20, :run_at => 5.seconds.from_now).parse_log(id) # lets finish the upload
+    self.class.delay(:priority => 0).parse_log(id) # lets finish the upload
   end
 
   # Don't forget to delete this logs_file after using it, thx!

@@ -296,7 +296,7 @@ GEM
     simple_oauth (0.1.5)
     sinatra (1.0)
       rack (>= 1.0)
-    spork (0.9.0.rc8)
+    spork (0.9.0.rc9)
     sqlite3 (1.3.3)
     sqlite3-ruby (1.3.3)
       sqlite3 (>= 1.3.3)
@@ -401,7 +401,7 @@ DEPENDENCIES
   settingslogic (= 2.0.6)
   shoulda
   silent-postgres
-  spork (= 0.9.0.rc8)
+  spork (= 0.9.0.rc9)
   state_machine (= 0.10.4)
   taps
   timecop
