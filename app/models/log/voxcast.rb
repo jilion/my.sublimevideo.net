@@ -58,7 +58,7 @@ class Log::Voxcast < Log
   def self.next_log_ended_at(hostname, last_log_ended_at = nil)
     last_ended_at = last_log_ended_at ||
       where(hostname: hostname).order_by([:ended_at, :desc]).first.try(:ended_at) ||
-      Time.now.utc.change(sec: 0)
+      1.minute.ago.change(sec: 0)
     last_ended_at + 60.seconds
   end
 
