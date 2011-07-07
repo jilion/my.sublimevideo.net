@@ -5,6 +5,8 @@ describe Log do
   describe "Class Methods" do
 
     describe "delay_download_or_fetch_and_create_new_logs" do
+      use_vcr_cassette "log/delay_download_or_fetch_and_create_new_logs"
+
       it "should call Log::Voxcast download_and_create_new_logs" do
         Log::Voxcast.should_receive(:download_and_create_new_logs)
         Log.delay_download_or_fetch_and_create_new_logs

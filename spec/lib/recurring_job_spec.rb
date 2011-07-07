@@ -27,6 +27,8 @@ describe RecurringJob do
   end
 
   describe ".launch_all" do
+    use_vcr_cassette "recurring_job/launch_all"
+
     RecurringJob::NAMES.each do |name|
       it "should launch #{name} recurring job" do
         Delayed::Job.already_delayed?(name).should be_false
@@ -37,6 +39,8 @@ describe RecurringJob do
   end
 
   describe ".supervise" do
+    use_vcr_cassette "recurring_job/supervise"
+
     it "should do nothing all recurring jobs are delayed" do
       subject.launch_all
       Notify.should_not_receive(:send)
