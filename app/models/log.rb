@@ -45,7 +45,7 @@ class Log
   # Recurring task
   def self.delay_download_or_fetch_and_create_new_logs
     # Sites
-    Log::Voxcast.delay_download_and_create_new_logs
+    Log::Voxcast.download_and_create_new_logs
     Log::Amazon::S3::Player.delay_fetch_and_create_new_logs
     Log::Amazon::S3::Loaders.delay_fetch_and_create_new_logs
     Log::Amazon::S3::Licenses.delay_fetch_and_create_new_logs
@@ -86,8 +86,7 @@ private
 
   # after_create
   def delay_parse
-    # self.class.delay(:priority => 20, :run_at => 5.seconds.from_now).parse_log(id) # lets finish the upload
-    self.class.delay(:priority => 0).parse_log(id) # lets finish the upload
+    self.class.delay(:priority => 20, :run_at => 5.seconds.from_now).parse_log(id) # lets finish the upload
   end
 
   # Don't forget to delete this logs_file after using it, thx!
