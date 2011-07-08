@@ -1,8 +1,6 @@
 require 'carrierwave/orm/mongoid'
 
 class Log
-  class DownloadError < StandardError; end
-
   include Mongoid::Document
   include Mongoid::Timestamps
 
@@ -92,11 +90,11 @@ private
   # Don't forget to delete this logs_file after using it, thx!
   def copy_logs_file_to_tmp
     Notify.send("Log File ##{id} not present at copy") unless file.present?
-    logs_file = File.new(Rails.root.join("tmp/#{name}"), 'w', :encoding => 'ASCII-8BIT')
-    logs_file.write(file.read)
-    logs_file.flush
-  rescue Excon::Errors::NotFound, Excon::Errors::SocketError
-    raise DownloadError
+    rescue_and_retry(7, Excon::Errors::NotFound, Excon::Errors::SocketError) do
+      logs_file = File.new(Rails.root.join("tmp/#{name}"), 'w', :encoding => 'ASCII-8BIT')
+      logs_file.write(file.read)
+      logs_file.flush
+    end
   end
 
   def self.yml
