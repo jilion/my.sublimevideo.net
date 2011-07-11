@@ -21,7 +21,7 @@ gem 'RedCloth',              '4.2.7'
 
 # Auth / invitations
 gem 'devise',                '1.4.0'
-gem 'devise_invitable',      :git => 'git://github.com/rymai/devise_invitable.git', :branch => 'patch-1'
+gem 'devise_invitable',      '0.5.2'
 
 # Internals
 gem 'delayed_job',           '2.1.4'
@@ -38,7 +38,7 @@ gem 'has_scope',             :git => 'git://github.com/rymai/has_scope.git'
 
 gem 'aws',                   '2.3.34' # bugs in 2.4.2
 gem 'fog',                   '0.8.2'
-gem 'carrierwave',           :git => 'git://github.com/jnicklas/carrierwave.git'
+gem 'carrierwave',           '0.5.5'
 gem 'voxel_hapi',            :git => 'git://github.com/thibaudgg/voxel_hapi.git', :branch => '1.9.2' # VoxCast CDN
 gem 'request-log-analyzer',  '1.11.0', :require => 'request_log_analyzer'
 

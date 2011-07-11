@@ -1,4 +1,7 @@
 class LogUploader < CarrierWave::Uploader::Base
+  include CarrierWave::MimeTypes
+
+  process :set_content_type
 
   def s3_bucket
     S3Bucket.logs
