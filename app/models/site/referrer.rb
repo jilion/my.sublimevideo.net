@@ -1,5 +1,3 @@
-require 'syck'
-
 module Site::Referrer
 
   # ====================

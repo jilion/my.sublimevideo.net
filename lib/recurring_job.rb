@@ -1,7 +1,8 @@
 module RecurringJob
 
   logs_tasks = [
-    '%Log::Voxcast%fetch_download_and_create_new_logs%',
+    '%Log::Voxcast%download_and_create_new_non_ssl_logs%',
+    '%Log::Voxcast%download_and_create_new_ssl_logs%',
     '%Log::Amazon::S3::Player%fetch_and_create_new_logs%',
     '%Log::Amazon::S3::Loaders%fetch_and_create_new_logs%',
     '%Log::Amazon::S3::Licenses%fetch_and_create_new_logs%'
@@ -27,7 +28,7 @@ module RecurringJob
         delay(:priority => 2, :run_at => Time.now.utc.tomorrow.midnight).invoices_processing
       end
     end
-    
+
     def invoices_processing
       Invoice.update_pending_dates_for_first_not_paid_invoices
       Site.renew_active_sites
@@ -37,7 +38,7 @@ module RecurringJob
 
     def launch_all
       # Logs
-      Log.delay_fetch_and_create_new_logs
+      Log.delay_download_or_fetch_and_create_new_logs
 
       # Stats
       UsersStat.delay_create_users_stats
@@ -59,11 +60,11 @@ module RecurringJob
       if too_much_jobs?(max_jobs_allowed)
         Notify.send("WARNING!!! There is more than #{max_jobs_allowed} delayed jobs, please investigate quickly!")
       end
-      # check if recurring jobs are all delayed twice
-      unless all_delayed?
+      # check if recurring jobs are all delayed
+      if not_delayed.any?
         sleep 20
-        unless all_delayed?
-          Notify.send("WARNING!!! All recurring jobs are not delayed, please investigate quickly!")
+        if not_delayed.any?
+          Notify.send("WARNING!!! The following jobs are not delayed: #{not_delayed.join(", ")}; please investigate quickly!")
         end
       end
     end
@@ -74,8 +75,8 @@ module RecurringJob
 
   private
 
-    def all_delayed?
-      NAMES.all? { |name| Delayed::Job.already_delayed?(name) }
+    def not_delayed
+      NAMES.reject { |name| Delayed::Job.already_delayed?(name) }
     end
 
     def too_much_jobs?(max)

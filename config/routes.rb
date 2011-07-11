@@ -33,7 +33,9 @@ MySublimeVideo::Application.routes.draw do
     end
   end
   resource :card, :controller => 'credit_cards', :as => :credit_card, :only => [:edit, :update]
-  resources :invoices, :only => :show
+  resources :invoices, :only => :show do
+    put :retry_all, :on => :collection
+  end
 
   match '/refund' => "refunds#index",  :via => :get, :as => 'refunds'
   match '/refund' => "refunds#create", :via => :post, :as => 'refund'
@@ -46,13 +48,19 @@ MySublimeVideo::Application.routes.draw do
   resource :ticket, :only => [:new, :create], :path => '/support', :path_names => { :new =>  '' }
   match '/feedback' => redirect('/support'), :via => :get
 
-  root :to => redirect("/sites")
+  unauthenticated do
+    root :to => redirect('/login')
+  end
+
+  authenticated :user do
+    root :to => redirect('/sites')
+  end
 
   # =========
   # = Admin =
   # =========
 
-  match 'admin', :to => redirect('/admin/djs'), :as => 'admin'
+  match 'admin', :to => redirect('/admin/sites'), :as => 'admin'
 
   devise_for :admins,
   :path => 'admin',

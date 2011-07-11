@@ -66,13 +66,13 @@ describe Log::Voxcast do
       job.priority.should == 90
       job = jobs.pop
       job.name.should == 'Class#parse_log'
-      job.priority.should == 20
+      job.priority.should == 0
     end
   end
 
   context "Factory from 4076.voxcdn.com" do
     before(:each) do
-      VoxcastCDN.stub(:logs_download).with('4076.voxcdn.com.log.1279103340-1279103400.gz') {
+      VoxcastCDN.stub(:download_log).with('4076.voxcdn.com.log.1279103340-1279103400.gz') {
         File.new(Rails.root.join('spec/fixtures/logs/voxcast/4076.voxcdn.com.log.1279103340-1279103400.gz'))
       }
     end
@@ -108,30 +108,105 @@ describe Log::Voxcast do
   end
 
   describe "Class Methods" do
-    describe ".fetch_download_and_create_new_logs" do
-      it "should download and save new logs & launch delayed job" do
-        VCR.use_cassette('multi_logs_fix') do
-          lambda { Log::Voxcast.fetch_download_and_create_new_logs }.should change(Delayed::Job, :count).by(9)
-          Delayed::Job.order(:created_at.asc).first.name.should == 'Class#fetch_download_and_create_new_logs'
-        end
+
+    describe ".download_and_create_new_logs" do
+      it "launches download_and_create_new_non_ssl_logs && download_and_create_new_ssl_logs if not already launched" do
+        Log::Voxcast.should_receive(:download_and_create_new_non_ssl_logs)
+        Log::Voxcast.should_receive(:download_and_create_new_ssl_logs)
+        Log::Voxcast.download_and_create_new_logs
       end
 
-      it "should download and only save news logs" do
-        VCR.use_cassette('multi_logs_with_already_existing_log_fix') do
-          Factory(:log_voxcast, :name => 'cdn.sublimevideo.net.log.1274348520-1274348580.gz')
-          lambda { Log::Voxcast.fetch_download_and_create_new_logs; @worker.work_off }.should change(Log::Voxcast, :count).by(3)
+      it "not launches download_and_create_new_non_ssl_logs && download_and_create_new_ssl_logs if already launched" do
+        VCR.use_cassette("voxcast/download_and_create_new_logs") do
+          Log::Voxcast.download_and_create_new_logs
         end
+        Log::Voxcast.should_not_receive(:download_and_create_new_non_ssl_logs)
+        Log::Voxcast.should_not_receive(:download_and_create_new_ssl_logs)
+        Log::Voxcast.download_and_create_new_logs
       end
     end
 
-    describe ".delay_fetch_download_and_create_new_logs" do
-      it "should launch delayed fetch_download_and_create_new_logs" do
-        lambda { Log::Voxcast.delay_fetch_download_and_create_new_logs }.should change(Delayed::Job, :count).by(1)
+    describe ".download_and_create_new_non_ssl_logs" do
+      it "calls download_and_create_new_logs methods with the non ssl voxcast hostname" do
+        Log::Voxcast.should_receive(:download_and_create_new_logs_and_redelay).with("cdn.sublimevideo.net", :download_and_create_new_non_ssl_logs)
+        Log::Voxcast.download_and_create_new_non_ssl_logs
+      end
+    end
+    describe ".download_and_create_new_ssl_logs" do
+      it "calls download_and_create_new_logs methods with the ssl voxcast hostname" do
+        Log::Voxcast.should_receive(:download_and_create_new_logs_and_redelay).with("4076.voxcdn.com", :download_and_create_new_ssl_logs)
+        Log::Voxcast.download_and_create_new_ssl_logs
+      end
+    end
+
+    describe ".download_and_create_new_logs_and_redelay" do
+      context "with no log saved" do
+        use_vcr_cassette "voxcast/download_and_create_new_logs_and_redelay 0 logs"
+
+        it "creates 0 log" do
+          expect { Log::Voxcast.download_and_create_new_logs_and_redelay("cdn.sublimevideo.net", :download_and_create_new_non_ssl_logs) }.should change(Log::Voxcast, :count).by(1)
+        end
+        it "delays method to run in 1 min" do
+          Log::Voxcast.download_and_create_new_logs_and_redelay("cdn.sublimevideo.net", :download_and_create_new_non_ssl_logs)
+          Delayed::Job.last.run_at.should eq 1.minute.from_now.change(sec: 0)
+        end
       end
 
-      it "should not launch delayed fetch_download_and_create_new_logs if one pending already present" do
-        Log::Voxcast.delay_fetch_download_and_create_new_logs
-        lambda { Log::Voxcast.delay_fetch_download_and_create_new_logs }.should_not change(Delayed::Job, :count)
+      context "with log saved 1min ago" do
+        use_vcr_cassette "voxcast/download_and_create_new_logs_and_redelay 1 min ago"
+        before(:each) do
+          Factory(:log_voxcast, :name => Log::Voxcast.log_name("cdn.sublimevideo.net", 1.minute.ago.change(sec: 0)))
+        end
+
+        it "creates 1 log" do
+          expect { Log::Voxcast.download_and_create_new_logs_and_redelay("cdn.sublimevideo.net", :download_and_create_new_non_ssl_logs) }.should change(Log::Voxcast, :count).by(1)
+        end
+        it "delays method to run in 1 min" do
+          Log::Voxcast.download_and_create_new_logs_and_redelay("cdn.sublimevideo.net", :download_and_create_new_non_ssl_logs)
+          Delayed::Job.last.run_at.should eq 1.minute.from_now.change(sec: 0)
+        end
+      end
+
+      context "with log saved 5min ago" do
+        use_vcr_cassette "voxcast/download_and_create_new_logs_and_redelay 5 min ago"
+        before(:each) do
+          Factory(:log_voxcast, :name => Log::Voxcast.log_name("cdn.sublimevideo.net", 5.minutes.ago.change(sec: 0)))
+        end
+
+        it "creates 5 logs" do
+          expect { Log::Voxcast.download_and_create_new_logs_and_redelay("cdn.sublimevideo.net", :download_and_create_new_non_ssl_logs) }.should change(Log::Voxcast, :count).by(5)
+        end
+        it "delays method" do
+          Log::Voxcast.download_and_create_new_logs_and_redelay("cdn.sublimevideo.net", :download_and_create_new_non_ssl_logs)
+          Delayed::Job.last.handler.should match "download_and_create_new_non_ssl_logs"
+        end
+      end
+
+    end
+
+    describe ".log_name" do
+      specify { Log::Voxcast.log_name('cdn.sublimevideo.net', Time.utc(2011,7,7,11,37)).should eq 'cdn.sublimevideo.net.log.1310038560-1310038620.gz' }
+    end
+
+    describe ".next_log_ended_at" do
+      context "with no logs saved" do
+        specify { Log::Voxcast.next_log_ended_at('cdn.sublimevideo.net').should eq Time.now.utc.change(sec: 0) }
+      end
+
+      context "with already a log saved" do
+        use_vcr_cassette "voxcast/next_log_ended_at"
+        before(:each) do
+          Factory(:log_voxcast, :name => "cdn.sublimevideo.net.log.#{Time.utc(2011,7,7,9,29).to_i}-#{Time.utc(2011,7,7,9,30).to_i}.gz")
+          Factory(:log_voxcast, :name => "cdn.sublimevideo.net.log.#{Time.utc(2011,7,7,9,37).to_i}-#{Time.utc(2011,7,7,9,38).to_i}.gz")
+        end
+
+        it "should check the last log created if no last_log_ended_at is given" do
+          Log::Voxcast.next_log_ended_at('cdn.sublimevideo.net').should eq Time.utc(2011,7,7,9,39)
+        end
+
+        it "should just add 60 seconds when last_log_ended_at is given" do
+          Log::Voxcast.next_log_ended_at('cdn.sublimevideo.net', Time.utc(2011,7,7,11,0)).should eq Time.utc(2011,7,7,11,1)
+        end
       end
     end
 
@@ -146,7 +221,7 @@ describe Log::Voxcast do
   describe "Instance Methods" do
     before(:each) do
       log_file = File.new(Rails.root.join('spec/fixtures/logs/voxcast/cdn.sublimevideo.net.log.1284549900-1284549960.gz'))
-      VoxcastCDN.stub(:logs_download).with('cdn.sublimevideo.net.log.1284549900-1284549960.gz') { log_file }
+      VoxcastCDN.stub(:download_log).with('cdn.sublimevideo.net.log.1284549900-1284549960.gz') { log_file }
       @log = Factory(:log_voxcast, :name => 'cdn.sublimevideo.net.log.1284549900-1284549960.gz')
     end
 
@@ -154,7 +229,7 @@ describe Log::Voxcast do
       before(:each) do
         LogAnalyzer.should_receive(:parse)
         Referrer.should_receive(:create_or_update_from_trackers!)
-        VoxcastCDN.should_not_receive(:logs_download)
+        VoxcastCDN.should_not_receive(:download_log)
         subject.parse_and_create_referrers!
       end
 
@@ -174,7 +249,7 @@ describe Log::Voxcast do
       before(:each) do
         LogAnalyzer.should_receive(:parse)
         UsrAgent.should_receive(:create_or_update_from_trackers!)
-        VoxcastCDN.should_not_receive(:logs_download)
+        VoxcastCDN.should_not_receive(:download_log)
         subject.parse_and_create_user_agents!
       end
 

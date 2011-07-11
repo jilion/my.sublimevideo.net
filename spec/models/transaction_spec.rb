@@ -289,12 +289,15 @@ describe Transaction do
     describe ".charge_invoices" do
       before(:all) do
         Invoice.delete_all
-        @user     = Factory(:user)
-        @site     = Factory(:site, user: @user)
-        @invoice1 = Factory(:invoice, state: 'open', site: @site, renew: true)
-        @invoice2 = Factory(:invoice, state: 'open', site: @site, renew: false)
-        @invoice3 = Factory(:invoice, state: 'failed', site: @site)
-        @invoice4 = Factory(:invoice, state: 'paid', site: @site)
+        @user1    = Factory(:user)
+        @user2    = Factory(:user, state: 'suspended')
+        @site1    = Factory(:site, user: @user1)
+        @site2    = Factory(:site, user: @user2)
+        @invoice1 = Factory(:invoice, state: 'open', site: @site1, renew: true)
+        @invoice2 = Factory(:invoice, state: 'open', site: @site1, renew: false)
+        @invoice3 = Factory(:invoice, state: 'failed', site: @site1)
+        @invoice4 = Factory(:invoice, state: 'failed', site: @site2)
+        @invoice5 = Factory(:invoice, state: 'paid', site: @site1)
       end
       before(:each) { Delayed::Job.delete_all }
 
@@ -311,55 +314,83 @@ describe Transaction do
       use_vcr_cassette "ogone/visa_payment_generic"
       before(:all) do
         Invoice.delete_all
-        @user     = Factory(:user)
-        @site     = Factory(:site, user: @user)
-        @invoice1 = Factory(:invoice, site: @site, state: 'open', renew: true)
-        @invoice2 = Factory(:invoice, site: @site, state: 'open', renew: false)
-        @invoice3 = Factory(:invoice, site: @site, state: 'failed')
+        @user1    = Factory(:user)
+        @user2    = Factory(:user)
+        @site1    = Factory(:site, user: @user1)
+        @site2    = Factory(:new_site, user: @user2)
+        @site1.invoices.delete_all
+        @site2.invoices.delete_all
+        @invoice1 = Factory(:invoice, site: @site1, state: 'paid', renew: false) # first invoice
+        @invoice2 = Factory(:invoice, site: @site1, state: 'failed', renew: true)
+        @invoice3 = Factory(:invoice, site: @site1, state: 'open', renew: true)
+        @invoice4 = Factory(:invoice, site: @site2, state: 'failed', renew: false) # first invoice
       end
-      before(:each) { Delayed::Job.delete_all }
+      before(:each) do
+        @user1.reload
+        @user2.reload
+        Delayed::Job.delete_all
+      end
 
       it "should delay invoice charging for open invoices which have the renew flag == true" do
-        @invoice1.reload.should be_open
-        @invoice2.reload.should be_open
-        @invoice3.reload.should be_failed
-        Transaction.should_receive(:charge_by_invoice_ids).with([@invoice1.id, @invoice2.id, @invoice3.id]).and_return(an_instance_of(Transaction))
-        Transaction.charge_invoices_by_user_id(@user.id)
+        @invoice1.reload.should be_paid
+        @invoice2.reload.should be_failed
+        @invoice3.reload.should be_open
+        Transaction.should_receive(:charge_by_invoice_ids).with([@invoice2.id, @invoice3.id]).and_return(an_instance_of(Transaction))
+        Transaction.charge_invoices_by_user_id(@user1.id)
       end
 
-      it "should set open invoices with renew flag == true to paid" do
-        @invoice1.reload.should be_open
-        @invoice2.reload.should be_open
-        @invoice3.reload.should be_failed
-        Transaction.charge_invoices_by_user_id(@user.id)
+      it "should charge invoices" do
+        @invoice1.reload.should be_paid
+        @invoice2.reload.should be_failed
+        @invoice3.reload.should be_open
+        Transaction.charge_invoices_by_user_id(@user1.id)
         @invoice1.reload.should be_paid
         @invoice2.reload.should be_paid
         @invoice3.reload.should be_paid
       end
 
-      it "doesn't try to charge an invoice which has 15 failed transactions or more" do
-        @invoice1.reload
-        15.times { Factory(:transaction, invoices: [@invoice1.reload], state: 'failed') }
-        Transaction.charge_invoices_by_user_id(@user.id)
-        @invoice1.reload.should be_open
-      end
+      context "invoice with 15 failed transactions or more" do
+        it "doesn't try to charge the invoice" do
+          @invoice2.reload
+          15.times { Factory(:transaction, invoices: [@invoice2], state: 'failed') }
+          Transaction.should_not_receive(:charge_by_invoice_ids)
+          Transaction.charge_invoices_by_user_id(@user1.id)
+          @invoice2.reload.should be_failed
+        end
 
-      it "doesn't try to charge at all if the only invoice has 15 failed transactions or more" do
-        user = Factory(:user)
-        site = Factory(:site, user: user)
-        invoice = Factory(:invoice, site: site, state: 'failed')
-        15.times { Factory(:transaction, invoices: [invoice], state: 'failed') }
-        Transaction.charge_invoices_by_user_id(user.id)
-        invoice.reload.should be_failed
-      end
+        it "doesn't try to charge at all if it's the only invoice" do
+          @invoice4.reload
+          15.times { Factory(:transaction, invoices: [@invoice4], state: 'failed') }
+          Transaction.should_not_receive(:charge_by_invoice_ids)
+          Transaction.charge_invoices_by_user_id(@user2.id)
+        end
 
-      it "send a mail to admins when an invoice has exactly 15 failed transactions" do
-        ActionMailer::Base.deliveries.clear
-        @invoice1.reload
-        15.times { Factory(:transaction, invoices: [@invoice1.reload], state: 'failed') }
-        expect { Transaction.charge_invoices_by_user_id(@user.id) }.to change(ActionMailer::Base.deliveries, :count).by(2)
-        ActionMailer::Base.deliveries.first.to.should == ["thibaud@jilion.com", "remy@jilion.com", "zeno@jilion.com"]
-        ActionMailer::Base.deliveries.last.to.should == [@invoice1.user.email]
+        context "invoice is not the first one" do
+          it "suspend the user" do
+            @invoice2.reload
+            15.times { Factory(:transaction, invoices: [@invoice2], state: 'failed') }
+            Transaction.should_not_receive(:charge_by_invoice_ids)
+            Transaction.charge_invoices_by_user_id(@user1.id)
+            @invoice2.reload.should be_failed
+            @user1.reload.should be_suspended
+          end
+        end
+
+        context "invoice is the first one" do
+          it "cancels the invoice" do
+            @invoice4.reload
+            15.times { Factory(:transaction, invoices: [@invoice4], state: 'failed') }
+            Transaction.charge_invoices_by_user_id(@user2.id)
+            @invoice4.reload.should be_canceled
+          end
+
+          it "sends an email to the user" do
+            @invoice4.reload
+            15.times { Factory(:transaction, invoices: [@invoice4], state: 'failed') }
+            expect { Transaction.charge_invoices_by_user_id(@user2.id) }.to change(ActionMailer::Base.deliveries, :count).by(1)
+            ActionMailer::Base.deliveries.last.to.should == [@user2.email]
+          end
+        end
       end
     end # .charge_invoices_by_user_id
 

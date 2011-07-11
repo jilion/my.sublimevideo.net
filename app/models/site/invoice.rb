@@ -5,12 +5,14 @@ module Site::Invoice
   end
 
   module ClassMethods
+
     def renew_active_sites
       Site.active.to_be_renewed.each do |site|
         site.pend_plan_changes
         site.save_without_password_validation
       end
     end
+
   end
 
   # ====================

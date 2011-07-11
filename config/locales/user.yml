@@ -9,4 +9,8 @@ en:
       
     will_be_reactivated: "Your account should be re-activated in a few minutes, you will receive an email when it will be done."
     failed_invoices_are_being_processed: "Failed invoices are being processed. You will receive an email when your account will be re-activated."
-    have_to_pay_following_invoices: "You have to pay the following invoice(s) in order to see your account re-activated:"
+    have_to_pay_following_invoices:
+      one: "Please pay the following invoice in order to reactivate your account:"
+      other: "Please pay the following invoices in order to reactivate your account:"
+      
+      

@@ -244,7 +244,7 @@ private
 
   # before_transition :on => :suspend
   def suspend_sites
-    sites.billable.map(&:suspend)
+    sites.includes(:invoices).where(invoices: { state: 'failed' }).map(&:suspend)
   end
 
   # after_transition :on => :suspend
@@ -254,7 +254,7 @@ private
 
   # before_transition :on => :unsuspend
   def unsuspend_sites
-    sites.map(&:unsuspend)
+    sites.where(state: 'suspended').map(&:unsuspend)
   end
 
   # after_transition :on => :unsuspend

@@ -5,26 +5,23 @@ module Site::Templates
   end
 
   module ClassMethods
+
     # delayed method
     def update_loader_and_license(site_id, options = {})
       site = Site.find(site_id)
       transaction do
-        begin
-          if options[:loader]
-            purge_loader = site.loader.present?
-            site.set_template("loader")
-          end
-          if options[:license]
-            purge_license = site.license.present?
-            site.set_template("license")
-          end
-          site.cdn_up_to_date = true
-          site.save!
-          site.purge_template("loader") if purge_loader
-          site.purge_template("license") if purge_license
-        rescue => ex
-          Notify.send(ex.message, :exception => ex)
+        if options[:loader]
+          purge_loader = site.loader.present?
+          site.set_template(:loader)
         end
+        if options[:license]
+          purge_license = site.license.present?
+          site.set_template(:license)
+        end
+        site.cdn_up_to_date = true
+        site.save!
+        site.purge_template(:loader) if purge_loader
+        site.purge_template(:license) if purge_license
       end
     end
 
@@ -32,26 +29,18 @@ module Site::Templates
     def remove_loader_and_license(site_id)
       site = Site.find(site_id)
       transaction do
-        begin
-          site.remove_loader, site.remove_license = true, true
-          site.cdn_up_to_date = false
-          %w[loader license].each { |template| site.purge_template(template) }
-          site.save!
-        rescue => ex
-          Notify.send(ex.message, :exception => ex)
-        end
+        site.remove_loader, site.remove_license = true, true
+        site.cdn_up_to_date = false
+        %w[loader license].each { |template| site.purge_template(template) }
+        site.save!
       end
     end
+
   end
 
   # ====================
   # = Instance Methods =
   # ====================
-
-  # def cdn_up_to_date=(attribute)
-  #   puts "cdn_up_to_date= #{attribute}"
-  #   self
-  # end
 
   def license_hash
     hash = {}
@@ -76,9 +65,9 @@ module Site::Templates
   end
 
   def set_template(name)
-    template = ERB.new(File.new(Rails.root.join("app/templates/sites/#{name}.js.erb")).read)
+    template = ERB.new(File.new(Rails.root.join("app/templates/sites/#{name.to_s}.js.erb")).read)
 
-    tempfile = Tempfile.new(name, "#{Rails.root}/tmp")
+    tempfile = Tempfile.new(name.to_s, "#{Rails.root}/tmp")
     tempfile.print template.result(binding)
     tempfile.flush
 

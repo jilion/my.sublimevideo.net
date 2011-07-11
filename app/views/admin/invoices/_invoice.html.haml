@@ -12,7 +12,12 @@
     = "(#{invoice.site.state})" unless invoice.site.active?
   %td.period
     %small
-      = l(invoice.paid_at || invoice.last_failed_at || invoice.created_at, :format => :minutes)
+      - if invoice.paid_at
+        = "Paid: #{l(invoice.paid_at, :format => :minutes)}"
+      - elsif invoice.last_failed_at
+        = "Failed: #{l(invoice.last_failed_at, :format => :minutes)}"
+      - else
+        = "Created: #{l(invoice.created_at, :format => :minutes)}"
       = ", Refund. #{l(invoice.site.refunded_at, :format => :minutes)}" if invoice.refunded?
   %td.invoice_items_count
     %strong

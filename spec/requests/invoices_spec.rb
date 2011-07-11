@@ -196,8 +196,7 @@ feature "user has a credit card" do
       page.should have_no_content('failed invoices for a total')
     end
 
-    # pending because site.plan_cycle_ended_at is nil even after the redirection ... :(
-    pending "with 1 or more failed invoices" do
+    scenario "with 1 or more failed invoices" do
       @current_user.update_attribute(:created_at, Time.utc(2010,10,10))
       @site = Factory(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'google.com')
       @invoice = @site.last_invoice
@@ -212,7 +211,7 @@ feature "user has a credit card" do
 
       visit "/sites/#{@site.to_param}/invoices"
 
-      page.should have_content("You have 1 failed invoices for a total of $#{@invoice.amount / 100.0}.")
+      page.should have_content("You have 1 failed invoice for a total of $#{@invoice.amount / 100.0}")
 
       VCR.use_cassette('ogone/visa_payment_acceptance') { click_button I18n.t('site.invoices.retry_invoices') }
 
@@ -283,6 +282,7 @@ feature "user has an expired credit card" do
 
     page.should have_content("You have 1 failed invoice for a total of $#{@invoice.amount / 100.0}")
     page.should have_content("Please update your credit card and then retry the payment here.")
+    page.should have_content("Your credit card is expired")
 
     page.should have_no_content('Next invoice')
 

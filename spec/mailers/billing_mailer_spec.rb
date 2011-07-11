@@ -9,7 +9,7 @@ describe BillingMailer do
 
   it_should_behave_like "common mailer checks", %w[credit_card_will_expire], :from => ["billing@sublimevideo.net"], :params => [Factory(:user, :cc_expire_on => 1.day.from_now)]
   it_should_behave_like "common mailer checks", %w[transaction_succeeded transaction_failed], :from => ["billing@sublimevideo.net"], :params => [Factory(:transaction, invoices: [Factory(:invoice)])]
-  it_should_behave_like "common mailer checks", %w[too_many_failed_charging_attempts], :from => ["billing@sublimevideo.net"], :to => ["thibaud@jilion.com", "remy@jilion.com", "zeno@jilion.com"], :params => [Factory(:invoice)]
+  it_should_behave_like "common mailer checks", %w[too_many_charging_attempts], :from => ["billing@sublimevideo.net"], :params => [Factory(:invoice)]
 
   describe "#credit_card_will_expire" do
     before(:each) do
@@ -54,17 +54,19 @@ describe BillingMailer do
     end
   end
 
-  describe "#too_many_failed_charging_attempts" do
+  describe "#too_many_charging_attempts" do
     before(:all) do
-      described_class.too_many_failed_charging_attempts(@invoice).deliver
+      described_class.too_many_charging_attempts(@invoice).deliver
       @last_delivery = ActionMailer::Base.deliveries.last
     end
 
     specify do
-      @last_delivery.subject.should == "15 failed charging attempt for Invoice ##{@invoice.reference}"
-      @last_delivery.body.encoded.should include "Automatic charging retry has been disabled."
-      @last_delivery.body.encoded.should include "Please investigate quickly!"
-      @last_delivery.body.encoded.should include "https://localhost:3000/admin/invoices/#{@invoice.reference}"
+      @last_delivery.subject.should == "Payment for #{@invoice.site.hostname} has failed multiple times"
+      @last_delivery.body.encoded.should include "The payment for #{@invoice.site.hostname} has failed multiple times, no further charging attempt will be made."
+      @last_delivery.body.encoded.should include "https://localhost:3000/sites/#{@invoice.site.to_param}/plan/edit"
+      @last_delivery.body.encoded.should include "Note that if the payment failed due to a problem with your credit card"
+      @last_delivery.body.encoded.should include "you should probably update your credit card information via the following link:"
+      @last_delivery.body.encoded.should include "https://localhost:3000/card/edit"
     end
   end
 

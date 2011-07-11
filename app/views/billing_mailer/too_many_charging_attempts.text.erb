@@ -1,0 +1,13 @@
+<%= t("mailer.intro_name", name: @invoice.user.full_name) %>
+
+The payment for <%= @invoice.site.hostname %> has failed multiple times, no further charging attempt will be made.
+
+You can retry purchasing a plan for <%= @invoice.site.hostname %> on the following page:
+
+https://<%= ActionMailer::Base.default_url_options[:host] %>/sites/<%= @invoice.site.to_param %>/plan/edit
+
+Note that if the payment failed due to a problem with your credit card, you should probably update your credit card information via the following link:
+
+https://<%= ActionMailer::Base.default_url_options[:host] %>/card/edit
+
+<%= t("mailer.signature") %>

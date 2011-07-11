@@ -1,7 +1,6 @@
 source "http://rubygems.org"
 
 gem 'rake',                  '0.8.7'
-gem 'bundler',               '1.0.15'
 
 gem 'rails',                 '3.0.9.rc5'
 
@@ -20,7 +19,7 @@ gem 'liquid',                '2.2.2'
 gem 'RedCloth',              '4.2.7'
 
 # Auth / invitations
-gem 'devise',                '1.4.0'
+gem 'devise',                '1.4.2'
 gem 'devise_invitable',      '0.5.2'
 
 # Internals
@@ -55,8 +54,7 @@ gem 'PageRankr',             '1.6.0', :require => 'page_rankr'
 gem 'twitter',               '1.3.0'
 gem 'settingslogic',         '2.0.6'
 gem 'array_stats',           '0.6.0'
-# gem 'createsend',            '0.2.1' # Campaign Monitor
-gem 'createsend',            :git => 'git://github.com/rymai/createsend-ruby.git' # update dependencies for hashie (was conflicting with the Twitter gem)
+gem 'createsend',            '0.3.2' # Campaign Monitor
 
 gem 'hoptoad_notifier',      '2.4.11'
 gem 'prowl',                 '0.1.3'
@@ -90,15 +88,15 @@ group :development do
 end
 
 group :test do
-  gem 'spork', '0.9.0.rc8'
+  gem 'spork', '0.9.0.rc9'
   gem 'rb-fsevent'
-  gem 'growl'
+  gem 'growl_notify'
   gem 'guard', :git => 'git://github.com/guard/guard.git'
   gem 'guard-bundler'
   gem 'guard-pow'
   gem 'guard-passenger'
   gem 'guard-rspec'
-  gem 'guard-spork'#, '0.1.4'
+  gem 'guard-spork'
   gem 'rspec-instafail'
   gem 'guard-livereload'
 

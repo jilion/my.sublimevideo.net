@@ -309,17 +309,20 @@ describe User do
 
       describe "Callbacks" do
         describe "before_transition :on => :suspend, :do => :suspend_sites" do
-          it "should suspend each user' active site" do
+          it "should suspend all user' active sites that have failed invoices" do
+            @archived_site  = Factory(:site, user: @user, hostname: "rymai.tv", state: 'archived')
             @paid_site.reload.should be_active
             @dev_site.reload.should be_active
+            @archived_site.reload.should be_archived
             subject.reload.suspend
             @paid_site.reload.should be_suspended
             @dev_site.reload.should be_active
+            @archived_site.reload.should be_archived
           end
         end
 
         describe "after_transition  :on => :suspend, :do => :send_account_suspended_email" do
-          it "should send an email to invoice.user" do
+          it "should send an email to the user" do
             lambda { subject.reload.suspend }.should change(ActionMailer::Base.deliveries, :count).by(1)
             ActionMailer::Base.deliveries.last.to.should == [subject.email]
           end
@@ -341,7 +344,7 @@ describe User do
 
       describe "Callbacks" do
         describe "before_transition :on => :unsuspend, :do => :unsuspend_sites" do
-          it "should suspend each user' site" do
+          it "should suspend all user' sites that are suspended" do
             @suspended_site.reload.should be_suspended
             @dev_site.reload.should be_active
             subject.reload.unsuspend
@@ -351,7 +354,7 @@ describe User do
         end
 
         describe "after_transition  :on => :unsuspend, :do => :send_account_unsuspended_email" do
-          it "should send an email to user" do
+          it "should send an email to the user" do
             lambda { subject.unsuspend }.should change(ActionMailer::Base.deliveries, :count).by(1)
             ActionMailer::Base.deliveries.last.to.should == [subject.email]
           end
@@ -604,20 +607,6 @@ describe User do
         @worker.work_off
         user.update_attributes(:first_name => "bob")
         Delayed::Job.count.should == 0
-      end
-    end
-
-    pending "after_create :push_new_registration" do
-      it "should delay on Ding class" do
-        Ding.should_receive(:delay)
-        Factory(:user)
-      end
-
-      it "should send a ding!" do
-        expect { Factory(:user) }.to change(Delayed::Job, :count)
-        djs = Delayed::Job.where(:handler.matches => "%signup%")
-        djs.count.should == 1
-        djs.first.name.should == 'Class#signup'
       end
     end
 

@@ -37,4 +37,24 @@ class InvoicesController < ApplicationController
     end
   end
 
+  # PUT /invoices/retry_all
+  def retry_all
+    @invoices = current_user.invoices.open_or_failed
+
+    if @invoices.present?
+      transaction = Transaction.charge_by_invoice_ids(@invoices.map(&:id))
+      if transaction.paid?
+        flash[:notice] = t("site.invoices.retry_succeed")
+      else
+        flash[:alert] = t("transaction.errors.#{transaction.state}")
+      end
+    else
+      flash[:notice] = t("site.invoices.no_invoices_to_retry")
+    end
+
+    respond_with(@invoices) do |format|
+      format.html { redirect_to sites_url }
+    end
+  end
+
 end

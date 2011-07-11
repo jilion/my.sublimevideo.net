@@ -6,17 +6,10 @@ GIT
 
 GIT
   remote: git://github.com/guard/guard.git
-  revision: 8f7034b8a0286ad88bf843d4422e3a572f3ffbf7
+  revision: 649920b7f0c88ed1e161826f75eda204d5f3ad83
   specs:
-    guard (0.4.2)
+    guard (0.5.0)
       thor (~> 0.14.6)
-
-GIT
-  remote: git://github.com/jnicklas/carrierwave.git
-  revision: 8e25fc3df95bc4f2f7576e958b71aa870f4fee73
-  specs:
-    carrierwave (0.5.4)
-      activesupport (~> 3.0)
 
 GIT
   remote: git://github.com/rymai/active_merchant.git
@@ -29,24 +22,6 @@ GIT
       builder (>= 2.0.0)
 
 GIT
-  remote: git://github.com/rymai/createsend-ruby.git
-  revision: 02a93852d054ad27480a0f4d9ef6c439d4293fe5
-  specs:
-    createsend (0.2.1)
-      hashie (~> 1.0)
-      httparty (~> 0.7)
-      json
-
-GIT
-  remote: git://github.com/rymai/devise_invitable.git
-  revision: 43b64536a4ac2afbf2900b57cf4282d905e8b905
-  branch: patch-1
-  specs:
-    devise_invitable (0.5.0)
-      devise (~> 1.3)
-      rails (>= 3.0.0, <= 3.2)
-
-GIT
   remote: git://github.com/rymai/has_scope.git
   revision: 905797803aa5d3da24505d4b9b07c647cbdd8e6d
   specs:
@@ -54,11 +29,10 @@ GIT
 
 GIT
   remote: git://github.com/thibaudgg/voxel_hapi.git
-  revision: 63cfc384020f4286904f91ea18a9fc4faf0aa562
+  revision: c603f2f3a17c71dcd7a44071e2f585f9afd37bef
   branch: 1.9.2
   specs:
     voxel_hapi (1.1.1)
-      bundler (~> 1.0.0)
       libxml-ruby (~> 1.1.3)
       rescue_me (~> 0.1.0)
       xml-simple (~> 1.0.12)
@@ -123,24 +97,33 @@ GEM
       rack-test (>= 0.5.4)
       selenium-webdriver (~> 0.2.0)
       xpath (~> 0.1.4)
+    carrierwave (0.5.5)
+      activesupport (~> 3.0)
     childprocess (0.1.9)
       ffi (~> 1.0.6)
     configuration (1.2.0)
     countries (0.3.0)
       currencies (>= 0.2.0)
     crack (0.1.8)
+    createsend (0.3.2)
+      hashie (~> 1.0)
+      httparty (~> 0.7)
+      json
     currencies (0.4.0)
     daemon_controller (0.2.6)
-    daemons (1.1.3)
+    daemons (1.1.4)
     dalli (1.0.5)
     database_cleaner (0.6.7)
     delayed_job (2.1.4)
       activesupport (~> 3.0)
       daemons
-    devise (1.4.0)
+    devise (1.4.2)
       bcrypt-ruby (~> 2.1.2)
       orm_adapter (~> 0.0.3)
       warden (~> 1.0.3)
+    devise_invitable (0.5.2)
+      devise (~> 1.4.1)
+      rails (>= 3.0.0, < 3.2)
     diff-lcs (1.1.2)
     em-websocket (0.3.0)
       addressable (>= 2.1.1)
@@ -148,7 +131,7 @@ GEM
     erubis (2.6.6)
       abstract (>= 1.0.0)
     eventmachine (0.12.10)
-    excon (0.6.3)
+    excon (0.6.4)
     factory_girl (1.3.3)
     factory_girl_rails (1.0.1)
       factory_girl (~> 1.3)
@@ -157,7 +140,7 @@ GEM
       addressable (~> 2.2.4)
       multipart-post (~> 1.1.0)
       rack (< 2, >= 1.1.0)
-    faraday_middleware (0.6.3)
+    faraday_middleware (0.6.5)
       faraday (~> 0.6.0)
     fastthread (1.0.7)
     ffaker (1.8.0)
@@ -171,8 +154,9 @@ GEM
       net-ssh (>= 2.1.3)
       nokogiri (>= 1.4.4)
       ruby-hmac
-    formatador (0.1.4)
-    growl (1.0.3)
+    formatador (0.1.5)
+    growl_notify (0.0.1)
+      rb-appscript
     guard-bundler (0.1.3)
       bundler (>= 1.0.0)
       guard (>= 0.2.2)
@@ -186,12 +170,12 @@ GEM
       guard (>= 0.3.0)
     guard-rspec (0.4.0)
       guard (>= 0.4.0)
-    guard-spork (0.2.0)
+    guard-spork (0.2.1)
       guard (>= 0.2.2)
       spork (>= 0.8.4)
     haml (3.1.2)
     hashie (1.0.0)
-    heroku (2.2.9)
+    heroku (2.3.6)
       launchy (>= 0.3.2)
       rest-client (~> 1.6.1)
       term-ansicolor (~> 1.0.5)
@@ -204,8 +188,8 @@ GEM
     i18n (0.5.0)
     jammit (0.6.3)
       yui-compressor (>= 0.9.3)
-    json (1.5.2)
-    json_pure (1.5.2)
+    json (1.5.3)
+    json_pure (1.5.3)
     kaminari (0.12.4)
       rails (>= 3.0.0)
     launchy (0.4.0)
@@ -233,8 +217,8 @@ GEM
     multi_xml (0.2.2)
     multipart-post (1.1.2)
     net-ssh (2.1.4)
-    nokogiri (1.4.4)
-    open4 (1.0.1)
+    nokogiri (1.5.0)
+    open4 (1.1.0)
     orm_adapter (0.0.5)
     paper_trail (2.2.2)
       rails (~> 3)
@@ -272,8 +256,9 @@ GEM
     rake (0.8.7)
     rash (0.3.0)
       hashie (~> 1.0.0)
-    rb-fsevent (0.4.0)
-    rdoc (3.6.1)
+    rb-appscript (0.6.1)
+    rb-fsevent (0.4.1)
+    rdoc (3.8)
     request-log-analyzer (1.11.0)
     rescue_me (0.1.0)
     responders (0.6.2)
@@ -296,8 +281,8 @@ GEM
     ruby-graphviz (1.0.0)
     ruby-hmac (0.4.0)
     rubyzip (0.9.4)
-    selenium-webdriver (0.2.1)
-      childprocess (>= 0.1.7)
+    selenium-webdriver (0.2.2)
+      childprocess (>= 0.1.9)
       ffi (>= 1.0.7)
       json_pure
       rubyzip
@@ -308,7 +293,7 @@ GEM
     simple_oauth (0.1.5)
     sinatra (1.0)
       rack (>= 1.0)
-    spork (0.9.0.rc8)
+    spork (0.9.0.rc9)
     sqlite3 (1.3.3)
     sqlite3-ruby (1.3.3)
       sqlite3 (>= 1.3.3)
@@ -332,7 +317,7 @@ GEM
       multi_xml (~> 0.2.0)
       rash (~> 0.3.0)
       simple_oauth (~> 0.1.4)
-    tzinfo (0.3.28)
+    tzinfo (0.3.29)
     uniquify (0.1.0)
     uuidtools (2.1.2)
     vcr (1.10.0)
@@ -360,21 +345,20 @@ DEPENDENCIES
   array_stats (= 0.6.0)
   aws (= 2.3.34)
   bson_ext (= 1.3.1)
-  bundler (= 1.0.15)
   capybara (= 1.0.0.rc1)
-  carrierwave!
+  carrierwave (= 0.5.5)
   configuration (= 1.2.0)
   countries (= 0.3.0)
-  createsend!
+  createsend (= 0.3.2)
   dalli (= 1.0.5)
   database_cleaner
   delayed_job (= 2.1.4)
-  devise (= 1.4.0)
-  devise_invitable!
+  devise (= 1.4.2)
+  devise_invitable (= 0.5.2)
   factory_girl_rails
   ffaker
   fog (= 0.8.2)
-  growl
+  growl_notify
   guard!
   guard-bundler
   guard-livereload
@@ -413,7 +397,7 @@ DEPENDENCIES
   settingslogic (= 2.0.6)
   shoulda
   silent-postgres
-  spork (= 0.9.0.rc8)
+  spork (= 0.9.0.rc9)
   state_machine (= 0.10.4)
   taps
   timecop

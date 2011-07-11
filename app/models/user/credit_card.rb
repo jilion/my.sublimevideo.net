@@ -26,8 +26,8 @@ module User::CreditCard
   # ===============
   # = Validations =
   # ===============
-  
-  # validate :if => :any_cc_attrs? 
+
+  # validate :if => :any_cc_attrs?
   def validates_credit_card_attributes
     return if credit_card.valid?
 
@@ -120,13 +120,13 @@ module User::CreditCard
     self.pending_cc_updated_at  = Time.now.utc
     reset_credit_card_attributes
   end
-  
+
   def reset_pending_credit_card_info
     self.pending_cc_type        = nil
     self.pending_cc_last_digits = nil
     self.pending_cc_expire_on   = nil
     self.pending_cc_updated_at  = nil
-    
+
     self.save
   end
 
@@ -148,7 +148,7 @@ module User::CreditCard
       d3d: true,
       paramplus: "CHECK_CC_USER_ID=#{self.id}"
     })
-    
+
     authorize = begin
       Ogone.authorize(100, credit_card, options)
     rescue => ex
@@ -170,7 +170,7 @@ module User::CreditCard
     when "46"
       @d3d_html = Base64.decode64(authorize_params["HTML_ANSWER"])
       save # will apply pend_credit_card_info
-    
+
     # STATUS == 5, Authorized:
     #   The authorization has been accepted.
     #   An authorization code is available in the field "ACCEPTANCE".
@@ -194,14 +194,14 @@ module User::CreditCard
     when "0"
       @i18n_notice_and_alert = { alert: I18n.t("credit_card.errors.invalid") }
       reset_pending_credit_card_info # save
-      
+
     # STATUS == 2, Authorization refused:
     #   The authorization has been declined by the financial institution.
     #   The customer can retry the authorization process after selecting a different payment method (or card brand).
     when "2"
       @i18n_notice_and_alert = { alert: I18n.t("credit_card.errors.refused") }
       reset_pending_credit_card_info # save
-      
+
     # STATUS == 52, Authorization not known:
     #   A technical problem arose during the authorization/ payment process, giving an unpredictable result.
     #   The merchant can contact the acquirer helpdesk to know the exact status of the payment or can wait until we have updated the status in our system.
@@ -210,7 +210,7 @@ module User::CreditCard
       @i18n_notice_and_alert = { alert: I18n.t("credit_card.errors.unknown") }
       save # will apply pend_credit_card_info
       Notify.send("Credit card authorization for user ##{self.id} (PAYID: #{authorize_params["PAYID"]}) has an uncertain state, please investigate quickly!")
-    
+
     else
       @i18n_notice_and_alert = { alert: I18n.t("credit_card.errors.unknown") }
       save # will apply pend_credit_card_info
@@ -222,14 +222,10 @@ private
 
   # Called from User::CreditCard#process_cc_authorize_and_save and TransactionsController#callback
   def void_authorization(authorization)
-    void = begin
-      Ogone.void(authorization)
-    rescue => ex
-      Notify.send("SUPER WARNING! Credit card void for user #{self.id} failed: #{ex.message}", exception: ex) 
-      nil
-    end
-    Notify.send("SUPER WARNING! Credit card void for user #{self.id} failed: #{void.message}") if void && !void.success?
+    void = Ogone.void(authorization)
+    Notify.send("SUPER WARNING! Credit card authorization void for user #{self.id} failed: #{void.message}") unless void.success?
   end
+
 end
 
 User.send :include, User::CreditCard

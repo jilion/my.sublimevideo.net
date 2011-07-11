@@ -22,8 +22,8 @@ module InvoicesHelper
     elsif invoice.failed?
       text = "#{content_tag(:strong, "Payment failed", :class => "failed")} on #{l(invoice.last_failed_at, :format => :minutes_timezone)}".html_safe
       unless invoice.last_transaction.error =~ /secure.ogone/ # FIXME we store the 3d secure html in this field,
-                                                                     # so if the 3d secure transaction fail, we don't want to show this ugly field
-                                                                     # we should clear this field after use (or something similar...)
+                                                              # so if the 3d secure transaction fail, we don't want to show this ugly field
+                                                              # we should clear this field after use (or something similar...)
         text += " with the following error: #{content_tag(:em, "\"#{truncate(invoice.last_transaction.error, :length => 50)}\"")}".html_safe
       end
       text + "."
