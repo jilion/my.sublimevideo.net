@@ -1,27 +1,9 @@
 group :frontend do
 
-  # guard :pow do
-  #   watch('.powrc')
-  #   watch('.powenv')
-  #   watch('.rvmrc')
-  #   watch('Gemfile')
-  #   watch('Gemfile.lock')
-  #   watch('config/application.rb')
-  #   watch('config/environment.rb')
-  #   watch(%r{^config/environments/.+\.rb$})
-  #   watch(%r{^config/initializers/.+\.rb$})
-  # end
-
-  guard :passenger do
-    watch('Gemfile')
-    watch('Gemfile.lock')
-    watch('config/application.rb')
-    watch('config/environment.rb')
-    watch(%r{^config/environments/.+\.rb$})
-    watch(%r{^config/initializers/.+\.rb$})
-  end
-
-  guard :passenger do
+  guard :pow do
+    watch('.powrc')
+    watch('.powenv')
+    watch('.rvmrc')
     watch('Gemfile')
     watch('Gemfile.lock')
     watch('config/application.rb')
@@ -42,10 +24,6 @@ group :frontend do
 end
 
 group :backend do
-
-  # guard 'bundler' do
-  #   watch('Gemfile')
-  # end
 
   guard :spork, :wait => 50 do
     # watch('Gemfile')

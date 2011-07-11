@@ -16,10 +16,15 @@ module Admin::DelayedJobsHelper
       "Tweets processing"
     when "Class#update_last_30_days_counters_for_not_archived_sites"
       "Update last 30 days hits"
-    when "Class#fetch_download_and_create_new_logs", "Class#fetch_and_create_new_logs"
+    when "Class#send"
       case job.handler
-      when /Log::Voxcast/
+      when /download_and_create_new_non_ssl_logs/
         "Voxcast logs"
+      when /download_and_create_new_ssl_logs/
+        "Voxcast SSL logs"
+      end
+    when "Class#fetch_and_create_new_logs"
+      case job.handler
       when /Log::Amazon::S3::Player/
         "S3 player logs"
       when /Log::Amazon::S3::Loaders/
@@ -41,8 +46,8 @@ module Admin::DelayedJobsHelper
       Class#create_sites_stats
       Class#save_new_tweets_and_sync_favorite_tweets
       Class#update_last_30_days_counters_for_not_archived_sites
-      Class#fetch_download_and_create_new_logs
       Class#fetch_and_create_new_logs
+      Class#send
     ].include?(job.name)
   end
 

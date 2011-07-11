@@ -1,8 +1,6 @@
 require 'carrierwave/orm/mongoid'
 
 class Log
-  class DownloadError < StandardError; end
-
   include Mongoid::Document
   include Mongoid::Timestamps
 
@@ -43,9 +41,9 @@ class Log
   # =================
 
   # Recurring task
-  def self.delay_fetch_and_create_new_logs
+  def self.delay_download_or_fetch_and_create_new_logs
     # Sites
-    Log::Voxcast.delay_fetch_download_and_create_new_logs
+    Log::Voxcast.download_and_create_new_logs
     Log::Amazon::S3::Player.delay_fetch_and_create_new_logs
     Log::Amazon::S3::Loaders.delay_fetch_and_create_new_logs
     Log::Amazon::S3::Licenses.delay_fetch_and_create_new_logs
@@ -60,8 +58,6 @@ class Log
     (new_logs_names - existings_logs_names).each do |name|
       delay(:priority => 20).create(:name => name)
     end
-  rescue => ex
-    HoptoadNotifier.notify(ex)
   end
 
   def self.parse_log(id)
@@ -94,11 +90,11 @@ private
   # Don't forget to delete this logs_file after using it, thx!
   def copy_logs_file_to_tmp
     Notify.send("Log File ##{id} not present at copy") unless file.present?
-    logs_file = File.new(Rails.root.join("tmp/#{name}"), 'w', :encoding => 'ASCII-8BIT')
-    logs_file.write(file.read)
-    logs_file.flush
-  rescue Excon::Errors::NotFound, Excon::Errors::SocketError
-    raise DownloadError
+    rescue_and_retry(7, Excon::Errors::NotFound, Excon::Errors::SocketError) do
+      logs_file = File.new(Rails.root.join("tmp/#{name}"), 'w', :encoding => 'ASCII-8BIT')
+      logs_file.write(file.read)
+      logs_file.flush
+    end
   end
 
   def self.yml

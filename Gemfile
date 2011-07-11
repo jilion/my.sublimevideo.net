@@ -1,7 +1,6 @@
 source "http://rubygems.org"
 
 gem 'rake',                  '0.8.7'
-gem 'bundler',               '1.0.15'
 
 gem 'rails',                 '3.0.9.rc5'
 
@@ -21,7 +20,7 @@ gem 'RedCloth',              '4.2.7'
 
 # Auth / invitations
 gem 'devise',                '1.4.2'
-gem 'devise_invitable',      '0.5.1'
+gem 'devise_invitable',      '0.5.2'
 gem 'oauth',                 '0.4.5'
 gem 'oauth-plugin',          '0.4.0.pre6'
 
@@ -48,7 +47,7 @@ gem 'has_scope',             :git => 'git://github.com/rymai/has_scope.git'
 
 gem 'aws',                   '2.3.34' # bugs in 2.4.2
 gem 'fog',                   '0.8.2'
-gem 'carrierwave',           '0.5.4'
+gem 'carrierwave',           '0.5.5'
 gem 'voxel_hapi',            :git => 'git://github.com/thibaudgg/voxel_hapi.git', :branch => '1.9.2' # VoxCast CDN
 gem 'request-log-analyzer',  '1.11.0', :require => 'request_log_analyzer'
 
@@ -65,8 +64,7 @@ gem 'PageRankr',             '1.6.0', :require => 'page_rankr'
 gem 'twitter',               '1.3.0'
 gem 'settingslogic',         '2.0.6'
 gem 'array_stats',           '0.6.0'
-# gem 'createsend',            '0.2.1' # Campaign Monitor
-gem 'createsend',            :git => 'git://github.com/rymai/createsend-ruby.git' # update dependencies for hashie (was conflicting with the Twitter gem)
+gem 'createsend',            '0.3.2' # Campaign Monitor
 
 gem 'hoptoad_notifier',      '2.4.11'
 gem 'prowl',                 '0.1.3'
@@ -104,17 +102,15 @@ group :development do
 end
 
 group :test do
-  gem 'spork', '0.9.0.rc8'
+  gem 'spork', '0.9.0.rc9'
   gem 'rb-fsevent'
-  gem 'growl'
-  # gem 'growl_notify'
+  gem 'growl_notify'
   gem 'guard', :git => 'git://github.com/guard/guard.git'
-  # gem 'guard', :path => '~/Development/Ruby/Gems/guard/guard'
   gem 'guard-bundler'
   gem 'guard-pow'
   gem 'guard-passenger'
   gem 'guard-rspec'
-  gem 'guard-spork'#, '0.1.4'
+  gem 'guard-spork'
   gem 'rspec-instafail'
   gem 'guard-livereload'
 

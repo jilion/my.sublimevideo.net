@@ -1,7 +1,7 @@
 # coding: utf-8
 
 module VoxcastCDN
-  class Error < StandardError; end
+  # class DownloadError < StandardError; end
 
   class << self
 
@@ -9,20 +9,12 @@ module VoxcastCDN
       client.voxel_devices_list
     end
 
-    # def populate(paths)
-    #   client.voxel_voxcast_ondemand_content_populate(:device_id => yml[:device_id], :paths => parse_paths(paths))
-    # end
-
     def purge(paths)
       client.voxel_voxcast_ondemand_content_purge_file(:device_id => yml[:device_id], :paths => parse_paths(paths))
-    rescue VoxelHAPI::Backend, VoxelHAPIConnection, EOFError, REXML, Excon, Errno::EPIPE, OpenSSL, IOError
-      raise Error
     end
 
     def purge_dir(paths)
       client.voxel_voxcast_ondemand_content_purge_directory(:device_id => yml[:device_id], :paths => parse_paths(paths))
-    rescue VoxelHAPI::Backend, VoxelHAPIConnection, EOFError, REXML, Excon, Errno::EPIPE, OpenSSL, IOError
-      raise Error
     end
 
     def verify(path)
@@ -38,18 +30,23 @@ module VoxcastCDN
         end
       end
       logs_names
-    # rescue VoxelHAPI::Backend, VoxelHAPIConnection, EOFError, REXML, Excon, Errno::EPIPE, OpenSSL, IOError
-    #   raise Error
     end
 
-    def logs_download(filename)
+    def download_log(filename)
       xml = client.voxel_voxcast_ondemand_logs_download(:filename => filename)
       tempfile = Tempfile.new('log', "#{Rails.root}/tmp", :encoding => 'ASCII-8BIT')
       tempfile.write(Base64.decode64(xml['data']['content']))
       tempfile.flush
       tempfile
-    # rescue VoxelHAPI::Backend, VoxelHAPIConnection, EOFError, REXML, Excon, Errno::EPIPE, OpenSSL, IOError
-    #   raise Error
+    rescue VoxelHAPI::Backend => ex
+      ex.to_s =~ /log file not found/ ? false : raise(ex)
+    end
+    
+    def non_ssl_hostname
+      yml[:non_ssl_hostname]
+    end
+    def ssl_hostname
+      yml[:ssl_hostname]
     end
 
   private
