@@ -12,7 +12,7 @@ describe VoxcastCDN do
     context "when log available" do
       use_vcr_cassette "voxcast/download_log_available"
 
-      specify { VoxcastCDN.download_log("cdn.sublimevideo.net.log.1309836000-1309836060.gz").should be_kind_of(File) }
+      specify { VoxcastCDN.download_log("cdn.sublimevideo.net.log.1309836000-1309836060.gz").class.should eq Tempfile }
     end
   end
 
