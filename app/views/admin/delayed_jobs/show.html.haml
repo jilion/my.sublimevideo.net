@@ -17,10 +17,10 @@
   = @delayed_job.attempts
 .handler
   %strong= "Handler: "
-  = @delayed_job.handler
+  %pre= @delayed_job.handler
 .last_error
   %strong= "Last error: "
-  = @delayed_job.last_error
+  %pre= @delayed_job.last_error
 .locked_at
   %strong= "Locked at: "
   = @delayed_job.locked_at? ? l(@delayed_job.locked_at, :format => :seconds_timezone) : "Not yet"
