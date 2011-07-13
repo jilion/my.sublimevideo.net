@@ -61,18 +61,21 @@ class Tweet
       i = 1
 
       loop do
-        rescue_and_retry(10, Twitter::BadGateway, Twitter::ServiceUnavailable) do
-          search.fetch.each do |tweet|
+        # Rails.logger.info("Searching for #{keyword}, with 100 results per page (page #{i})")
+        search.fetch.each do |tweet|
+          begin
             if t = self.where(tweet_id: tweet.id).first
               t.add_to_set(:keywords, keyword) unless t.keywords.include?(keyword)
             else
               self.create_from_twitter_tweet!(tweet)
             end
+          rescue => ex
+            Notify.send("Tweet (tweet_id: #{tweet.id} could not be saved?!", exception: ex)
           end
-          break unless search.next_page?
-          i += 1
-          search.fetch_next_page
         end
+        break unless search.next_page?
+        i += 1
+        search.fetch_next_page
       end
     end
     self.sync_favorite_tweets
