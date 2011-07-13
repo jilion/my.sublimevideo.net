@@ -20,7 +20,7 @@
   %pre= @delayed_job.handler
 .last_error
   %strong= "Last error: "
-  %pre= @delayed_job.last_error.gsub(/\\n/, "\n")
+  %pre= @delayed_job.last_error.try(:gsub, /\\n/, "\n")
 .locked_at
   %strong= "Locked at: "
   = @delayed_job.locked_at? ? l(@delayed_job.locked_at, :format => :seconds_timezone) : "Not yet"
