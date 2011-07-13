@@ -1,9 +1,7 @@
 .flash= flash[:notice]
 %h1 OAuth Client Applications
 - unless @tokens.empty?
-
-  %p
-    The following tokens have been issued to applications in your name
+  %p The following tokens have been issued to applications in your name
 
   %table
     %tr
@@ -11,7 +9,7 @@
       %th Issued
       %th &nbsp;
     - @tokens.each do |token|
-      - content_tag_for :tr, token do
+      = content_tag_for :tr, token do
         %td= link_to token.client_application.name, token.client_application.url
         %td= token.authorized_at
         / %td
@@ -29,11 +27,11 @@
   %p
     You have the following client applications registered:
 
-  - @client_applications.each do |client|
-    - div_for client do
-      = link_to client.name, :action => :show, :id => client.id
-      = link_to 'Edit', edit_oauth_client_path(client)
-      = link_to 'Delete', oauth_client_path(client), :confirm => "Are you sure?", :method => :delete
+  - @client_applications.each do |application|
+    = div_for application do
+      = link_to application.name, :action => :show, :id => application.id
+      = link_to 'Edit', edit_application_path(application)
+      = link_to 'Delete', application_path(application), :confirm => "Are you sure?", :method => :delete
 %br
 %h3
   = link_to "Register your application", :action => :new

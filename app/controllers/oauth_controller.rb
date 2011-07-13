@@ -3,16 +3,6 @@ class OauthController < ApplicationController
   include OAuth::Controllers::ProviderController
   skip_before_filter :authenticate_user!
 
-  def request_token
-    puts "FUCKKKKKKKKKKKKKKKKKKKKK"
-    super
-  end
-
-  def access_token
-    puts "FUCKKKKKKKKKKKKKKKKKKKKK BIS"
-    super
-  end
-
   protected
 
   def login_required

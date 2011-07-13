@@ -1,12 +1,22 @@
 %h1
-  OAuth details for
-  =@client_application.name
+  = "Details for '#{@client_application.name}'"
+
+%p
+  %strong Main Application URL:
+  %code= @client_application.url
+%p
+  %strong Support URL:
+  %code= @client_application.support_url
+%p
+  %strong Callback URL:
+  %code= @client_application.callback_url
+
 %p
   %strong Consumer Key:
-  %code=@client_application.key
+  %code= @client_application.key
 %p
   %strong Consumer Secret:
-  %code=@client_application.secret
+  %code= @client_application.secret
 
 %p
   %strong Request Token URL
@@ -23,8 +33,9 @@
   %code
     ="http#{'s' if request.ssl?}://#{request.host_with_port}#{@client_application.oauth_server.authorize_path}"
 
-%p
-  We support hmac-sha1 (recommended) as well as plain text in ssl mode.
+-# %p
+-#   We support hmac-sha1 (recommended) as well as plain text in ssl mode.
 
-= link_to 'Edit', edit_oauth_client_path(@client_application)
-= link_to 'Back', oauth_clients_path
+= link_to 'Edit', edit_application_path(@client_application)
+= " | "
+= link_to 'Back', application_path

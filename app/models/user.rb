@@ -28,10 +28,10 @@ class User < ActiveRecord::Base
   has_many :sites
   has_many :invoices, :through => :sites
   has_one :last_invoice, :through => :sites, :source => :invoices, :order => :created_at.desc
-  has_one :api_token
 
+  # API
   has_many :client_applications
-  has_many :tokens, :class_name => "OauthToken", :order => "authorized_at desc", :include => [:client_application]
+  has_many :tokens, :class_name => "OauthToken", :order => :authorized_at.desc, :include => [:client_application]
 
   # ===============
   # = Validations =
@@ -140,6 +140,10 @@ class User < ActiveRecord::Base
   def self.find_for_authentication(conditions={})
     conditions[:state.ne] = 'archived'
     super
+  end
+
+  def update_tracked_fields!(request)
+    super(request) unless request.params.key?(:oauth_token)
   end
 
   def self.suspend(user_id)

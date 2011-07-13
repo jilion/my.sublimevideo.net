@@ -1,9 +1,8 @@
-require File.dirname(__FILE__) + '/../spec_helper'
+require 'spec_helper'
 
 describe Oauth2Verifier do
-  fixtures :client_applications, :users, :oauth_tokens
-  before(:each) do
-    @verifier = Oauth2Verifier.create :client_application => client_applications(:one), :user=>users(:aaron)
+  before(:all) do
+    @verifier = Factory(:oauth2_verifier)
   end
 
   it "should be valid" do
@@ -27,8 +26,8 @@ describe Oauth2Verifier do
   end
 
   describe "exchange for oauth2 token" do
-    before(:each) do
-      @token = @verifier.exchange!
+    before(:all) do
+      @token = @verifier.reload.exchange!
     end
 
     it "should invalidate verifier" do
@@ -36,7 +35,7 @@ describe Oauth2Verifier do
     end
 
     it "should set user on token" do
-      @token.user.should==@verifier.user
+      @token.user.should == @verifier.user
     end
 
     it "should set client application on token" do

@@ -1,19 +1,40 @@
 require 'oauth'
+
 class ClientApplication < ActiveRecord::Base
+
+  attr_accessor :token_callback_url
+
+  # ================
+  # = Associations =
+  # ================
+
   belongs_to :user
+
   has_many :tokens, :class_name => "OauthToken"
   has_many :access_tokens
   has_many :oauth2_verifiers
   has_many :oauth_tokens
-  validates_presence_of :name, :url, :key, :secret
-  validates_uniqueness_of :key
+
+  # =============
+  # = Callbacks =
+  # =============
+
   before_validation :generate_keys, :on => :create
 
-  validates_format_of :url, :with => /\Ahttp(s?):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/i
-  validates_format_of :support_url, :with => /\Ahttp(s?):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/i, :allow_blank=>true
-  validates_format_of :callback_url, :with => /\Ahttp(s?):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/i, :allow_blank=>true
+  # ===============
+  # = Validations =
+  # ===============
 
-  attr_accessor :token_callback_url
+  validates :name, :url, :key, :secret, :presence => true
+  validates :key, :uniqueness => true
+
+  validates :url, :format => { :with => /\Ahttp(s?):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/i }
+  validates :support_url, :format => { :with => /\Ahttp(s?):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/i, :allow_blank => true }
+  validates :callback_url, :format => { :with => /\Ahttp(s?):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/i, :allow_blank => true }
+
+  # =================
+  # = Class Methods =
+  # =================
 
   def self.find_token(token_key)
     token = OauthToken.find_by_token(token_key, :include => :client_application)
@@ -34,6 +55,10 @@ class ClientApplication < ActiveRecord::Base
       false
     end
   end
+
+  # ====================
+  # = Instance Methods =
+  # ====================
 
   def oauth_server
     @oauth_server ||= OAuth::Server.new("http://your.site")

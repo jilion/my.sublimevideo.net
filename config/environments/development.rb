@@ -1,7 +1,4 @@
 MySublimeVideo::Application.configure do
-  # require 'rack/throttle/custom_hourly'
-  # config.middleware.use(Rack::Throttle::Hourly, :max => 2, :cache => Hash.new, :key_prefix => :throttle)
-
   # Settings specified here will take precedence over those in config/environment.rb
 
   # In the development environment your application's code is reloaded on

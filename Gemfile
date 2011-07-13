@@ -21,16 +21,12 @@ gem 'RedCloth',              '4.2.7'
 # Auth / invitations
 gem 'devise',                '1.4.2'
 gem 'devise_invitable',      '0.5.2'
+
+# API
 gem 'oauth',                 '0.4.5'
 gem 'oauth-plugin',          '0.4.0.pre6'
-
-# API
 gem 'acts_as_api',           '0.3.6'
-gem 'rack-throttle',         :git => 'git://github.com/rymai/rack-throttle.git', :require => 'rack/throttle'
-
-# API
-gem 'acts_as_api',           '0.3.6'
-gem 'rack-throttle',         :git => 'git://github.com/rymai/rack-throttle.git', :require => 'rack/throttle'
+# gem 'rack-throttle',         :git => 'git://github.com/rymai/rack-throttle.git', :require => 'rack/throttle'
 
 # Internals
 gem 'delayed_job',           '2.1.4'
@@ -43,7 +39,8 @@ gem 'paper_trail',           '2.2.2'
 gem 'uniquify',              '0.1.0'
 
 gem 'responders',            '0.6.2'
-gem 'has_scope',             :git => 'git://github.com/rymai/has_scope.git'
+gem 'has_scope',             '0.5.0'
+# gem 'has_scope',             :git => 'git://github.com/rymai/has_scope.git'
 
 gem 'aws',                   '2.3.34' # bugs in 2.4.2
 gem 'fog',                   '0.8.2'

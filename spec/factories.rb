@@ -28,10 +28,6 @@ Factory.define :user, :parent => :user_no_cc do |f|
   f.cc_updated_at         Time.now.utc
 end
 
-Factory.define :api_token do |f|
-  f.association :user
-end
-
 Factory.define :admin do |f|
   f.sequence(:email) { |n| "email#{n}@admin.com" }
   f.password         "123456"
@@ -211,4 +207,40 @@ Factory.define :tweet do |f|
   f.content             "This is my first tweet!"
   f.tweeted_at          Time.now.utc
   f.favorited           false
+end
+
+Factory.define :client_application do |f|
+  f.association :user
+  f.name         "Agree2"
+  f.url          "http://test.com"
+  f.support_url  "http://test.com/support"
+  f.callback_url "http://test.com/callback"
+  f.key          "one_key"
+  f.secret       "MyString"
+end
+
+Factory.define :oauth_token do |f|
+  f.association  :client_application
+  f.association  :user
+  f.token        "1234"
+  f.secret       "4321"
+  f.callback_url "http://test.com/callback"
+end
+
+Factory.define :oauth2_token, :parent => :oauth_token do |f|
+  f.association :client_application
+  f.association :user
+end
+
+Factory.define :oauth2_verifier do |f|
+  f.association  :client_application
+  f.association  :user
+  f.token        "1234"
+  f.secret       "4321"
+  f.callback_url "http://test.com/callback"
+end
+
+Factory.define :request_token do |f|
+  f.association  :client_application
+  f.callback_url "http://test.com/callback"
 end

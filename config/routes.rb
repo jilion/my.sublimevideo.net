@@ -1,18 +1,14 @@
 MySublimeVideo::Application.routes.draw do
 
-  resources :oauth_clients
+  resources :applications, :controller => 'oauth_clients'
 
-  match '/oauth/test_request',  :to => 'oauth#test_request',  :as => :test_request
-
-  match '/oauth/token',         :to => 'oauth#token',         :as => :token
-
-  match '/oauth/access_token',  :to => 'oauth#access_token',  :as => :access_token
-
-  match '/oauth/request_token', :to => 'oauth#request_token', :as => :request_token
-
-  match '/oauth/authorize',     :to => 'oauth#authorize',     :as => :authorize
-
-  match '/oauth',               :to => 'oauth#index',         :as => :oauth
+  match '/oauth/test_request'  => 'oauth#test_request',  :as => :test_request
+  match '/oauth/token'         => 'oauth#token',         :as => :token
+  match '/oauth/access_token'  => 'oauth#access_token',  :as => :access_token
+  match '/oauth/request_token' => 'oauth#request_token', :as => :request_token
+  match '/oauth/authorize'     => 'oauth#authorize',     :as => :authorize
+  match '/oauth/revoke/:token' => 'oauth#revoke',        :as => :revoke, :via => :post
+  # match '/oauth'               => 'oauth#index',         :as => :oauth
 
   devise_for :users,
              :path => '',
@@ -32,7 +28,6 @@ MySublimeVideo::Application.routes.draw do
   %w[log_out sign_out signout].each { |action| match action => redirect('/logout'), :via => :get }
   match '/invitation/accept' => redirect('/signup?beta=over'), :via => :get
   match '/password/validate' => "users/passwords#validate", :via => :post
-  match '/api_tokens' => "users/api_tokens#create", :via => :post
 
   resource :users, :only => :update, :path => '/account/info'
 
@@ -73,12 +68,8 @@ MySublimeVideo::Application.routes.draw do
   # =======
   # = API =
   # =======
-  # 
-  # devise_for :api_tokens
-
   namespace "api" do
     constraints :format => /json|xml/ do
-      
       resources :sites do
         member do
           get :usage
@@ -86,7 +77,7 @@ MySublimeVideo::Application.routes.draw do
       end
     end
   end
-  
+
   unauthenticated do
     root :to => redirect('/login')
   end

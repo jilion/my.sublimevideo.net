@@ -1,6 +1,20 @@
 class AccessToken < OauthToken
-  validates_presence_of :user, :secret
+  
+  # =============
+  # = Callbacks =
+  # =============
+  
   before_create :set_authorized_at
+  
+  # ===============
+  # = Validations =
+  # ===============
+  
+  validates_presence_of :user, :secret
+
+  # ====================
+  # = Instance Methods =
+  # ====================
 
   # Implement this to return a hash or array of the capabilities the access token has
   # This is particularly useful if you have implemented user defined permissions.
@@ -13,6 +27,7 @@ class AccessToken < OauthToken
   def set_authorized_at
     self.authorized_at = Time.now
   end
+  
 end
 
 # == Schema Information
