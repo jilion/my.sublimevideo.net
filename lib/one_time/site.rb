@@ -21,7 +21,7 @@ module OneTime
         total = 0
         ::Site.active.find_in_batches(:batch_size => 100) do |sites|
           sites.each do |site|
-            ::Site.delay.update_loader_and_license(site.id, { loader: false, license: true })
+            ::Site.delay.update_loader_and_license(site.id, { loader: true, license: true })
           end
           total += sites.count
         end
