@@ -60,7 +60,7 @@ describe OneTime::Site do
     end
   end
 
-  describe ".move_local_ip_in_extra_domains_to_dev_domains" do
+  describe ".move_local_ip_from_hostname_and_extra_domains_to_dev_domains" do
     before(:all) do
       ::Site.delete_all
       @invalid1 = Factory(:site, dev_hostnames: "localhost")
@@ -78,7 +78,7 @@ describe OneTime::Site do
     end
 
     it "moves local domains present in extra domains into dev domains" do
-      described_class.move_local_ip_in_extra_domains_to_dev_domains
+      described_class.move_local_ip_from_hostname_and_extra_domains_to_dev_domains
 
       @invalid1.reload.dev_hostnames.should == "172.16.4.165, localhost"
       @invalid1.extra_hostnames.should == "google.com"

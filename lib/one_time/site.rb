@@ -28,7 +28,7 @@ module OneTime
         "Finished: in total, #{total} sites will have their loader and license re-generated"
       end
 
-      def move_local_ip_in_extra_domains_to_dev_domains
+      def move_local_ip_from_hostname_and_extra_domains_to_dev_domains
         total = 0
         ::Site.active.find_in_batches(batch_size: 100) do |sites|
           sites.each do |site|
