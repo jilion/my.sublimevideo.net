@@ -30,12 +30,18 @@ module OneTime
 
       def move_local_ip_in_extra_domains_to_dev_domains
         total = 0
-        ::Site.active.where(:extra_hostnames.ne => nil).where(:extra_hostnames.ne => '').find_in_batches(batch_size: 100) do |sites|
+        ::Site.active.find_in_batches(batch_size: 100) do |sites|
           sites.each do |site|
-            old_dev_hostnames   = site.dev_hostnames.try(:split, ', ') || []
-            new_dev_hostnames   = []
-            new_extra_hostnames = site.extra_hostnames.split(', ')
-            Hostname.clean(site.extra_hostnames).split(', ').each do |extra_hostname|
+            old_dev_hostnames = site.dev_hostnames.try(:split, ', ') || []
+            new_dev_hostnames = []
+
+            if Hostname.send(:dev_valid_one?, site.hostname)
+              new_dev_hostnames << site.hostname
+              site.hostname = ''
+            end
+
+            new_extra_hostnames = site.extra_hostnames.try(:split, ', ') || []
+            (site.extra_hostnames.try(:split, ', ') || []).each do |extra_hostname|
               if Hostname.send(:dev_valid_one?, extra_hostname)
                 new_dev_hostnames << extra_hostname
                 new_extra_hostnames.delete(extra_hostname)
@@ -49,6 +55,7 @@ module OneTime
               total += 1
             end
           end
+          puts "500 more..." if total % 500 == 0
         end
         "Finished: in total, #{total} sites were fixed"
       end

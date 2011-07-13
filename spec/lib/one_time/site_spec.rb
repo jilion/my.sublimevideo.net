@@ -67,6 +67,8 @@ describe OneTime::Site do
       @invalid1.update_attribute(:extra_hostnames, "google.com, 172.16.4.165")
       @invalid2 = Factory(:site, dev_hostnames: "127.0.0.1")
       @invalid2.update_attribute(:extra_hostnames, "172.16.4.165")
+      @invalid3 = Factory(:site, plan_id: @dev_plan.id, dev_hostnames: "127.0.0.1")
+      @invalid3.update_attribute(:hostname, "172.16.4.165")
 
       @valid1 = Factory(:site, dev_hostnames: "localhost", extra_hostnames: "google.com")
       @valid2 = Factory(:site, dev_hostnames: "127.0.0.1", extra_hostnames: "google.com")
@@ -82,6 +84,9 @@ describe OneTime::Site do
       @invalid1.extra_hostnames.should == "google.com"
       @invalid2.reload.dev_hostnames.should == "127.0.0.1, 172.16.4.165"
       @invalid2.extra_hostnames.should == ""
+      @invalid3.reload.dev_hostnames.should == "127.0.0.1, 172.16.4.165"
+      @invalid3.extra_hostnames.should == ""
+      @invalid3.hostname.should == ""
 
       @valid1.reload.dev_hostnames.should == "localhost"
       @valid1.extra_hostnames.should == "google.com"
