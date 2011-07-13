@@ -2,7 +2,7 @@ source "http://rubygems.org"
 
 gem 'rake',                  '0.8.7'
 
-gem 'rails',                 '3.0.9.rc5'
+gem 'rails',                 '3.0.9'
 
 # Databases
 gem 'pg',                    '0.11.0'
@@ -29,7 +29,7 @@ gem 'configuration',         '1.2.0'
 gem 'libxml-ruby',           '1.1.3', :require => 'libxml'
 
 gem 'state_machine',         '0.10.4'
-gem 'paper_trail',           '2.2.2'
+gem 'paper_trail',           '2.2.7'
 gem 'uniquify',              '0.1.0'
 
 gem 'responders',            '0.6.2'
