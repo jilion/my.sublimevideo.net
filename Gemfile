@@ -54,8 +54,7 @@ gem 'PageRankr',             '1.6.0', :require => 'page_rankr'
 gem 'twitter',               '1.3.0'
 gem 'settingslogic',         '2.0.6'
 gem 'array_stats',           '0.6.0'
-# gem 'createsend',            '0.2.1' # Campaign Monitor
-gem 'createsend',            :git => 'git://github.com/rymai/createsend-ruby.git' # update dependencies for hashie (was conflicting with the Twitter gem)
+gem 'createsend',            '0.3.2' # Campaign Monitor
 
 gem 'hoptoad_notifier',      '2.4.11'
 gem 'prowl',                 '0.1.3'
@@ -91,7 +90,7 @@ end
 group :test do
   gem 'spork', '0.9.0.rc9'
   gem 'rb-fsevent'
-  gem 'growl'
+  gem 'growl_notify'
   gem 'guard', :git => 'git://github.com/guard/guard.git'
   gem 'guard-bundler'
   gem 'guard-pow'
