@@ -58,25 +58,18 @@ class Tweet
     KEYWORDS.each do |keyword|
       search.clear
       search.q("\"#{keyword}\"").per_page(100)
-      i = 1
 
-      loop do
-        # Rails.logger.info("Searching for #{keyword}, with 100 results per page (page #{i})")
+      begin
+        results = rescue_and_retry(5, Errno::ETIMEDOUT, Errno::ECONNRESET, Twitter::BadGateway, Twitter::ServiceUnavailable) { search.fetch }
+        
         search.fetch.each do |tweet|
-          begin
-            if t = self.where(tweet_id: tweet.id).first
-              t.add_to_set(:keywords, keyword) unless t.keywords.include?(keyword)
-            else
-              self.create_from_twitter_tweet!(tweet)
-            end
-          rescue => ex
-            Notify.send("Tweet (tweet_id: #{tweet.id} could not be saved?!", exception: ex)
+          if t = self.where(tweet_id: tweet.id).first
+            t.add_to_set(:keywords, keyword) unless t.keywords.include?(keyword)
+          else
+            self.create_from_twitter_tweet!(tweet)
           end
         end
-        break unless search.next_page?
-        i += 1
-        search.fetch_next_page
-      end
+      end while rescue_and_retry(5, Errno::ETIMEDOUT, Errno::ECONNRESET, Twitter::BadGateway, Twitter::ServiceUnavailable) { search.fetch_next_page }
     end
     self.sync_favorite_tweets
   end
@@ -176,7 +169,7 @@ class Tweet
     selected_tweets.each do |tweet|
       begin
         tweet.bigger_profile_image = TwitterApi.profile_image(tweet.user.id, size: 'bigger')
-      rescue => ex
+      rescue Twitter::Error
         selected_tweets.delete(tweet)
       end
     end
