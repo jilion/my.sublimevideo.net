@@ -57,11 +57,11 @@ class Tweet
 
     KEYWORDS.each do |keyword|
       search.clear
-      search.q("\"#{keyword}\"").per_page(100)
+      search.containing("\"#{keyword}\"").result_type("recent").per_page(100)
 
       begin
         results = rescue_and_retry(5, Errno::ETIMEDOUT, Errno::ECONNRESET, Twitter::BadGateway, Twitter::ServiceUnavailable) { search.fetch }
-        
+
         search.fetch.each do |tweet|
           if t = self.where(tweet_id: tweet.id).first
             t.add_to_set(:keywords, keyword) unless t.keywords.include?(keyword)
