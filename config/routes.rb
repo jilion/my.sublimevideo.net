@@ -56,15 +56,16 @@ MySublimeVideo::Application.routes.draw do
   # =======
   # = API =
   # =======
+
+  match '/oauth/test_request'  => 'oauth#test_request',  :as => :oauth_test_request
+  match '/oauth/token'         => 'oauth#token',         :as => :oauth_token
+  match '/oauth/access_token'  => 'oauth#access_token',  :as => :oauth_access_token
+  match '/oauth/request_token' => 'oauth#request_token', :as => :oauth_request_token
+  match '/oauth/authorize'     => 'oauth#authorize',     :as => :oauth_authorize
+  match '/oauth/revoke'        => 'oauth#revoke',        :as => :oauth_revoke, :via => :delete
+
   scope "account" do
     resources :applications, :controller => 'oauth_clients'
-
-    match '/oauth/test_request'  => 'oauth#test_request',  :as => :oauth_test_request
-    match '/oauth/token'         => 'oauth#token',         :as => :oauth_token
-    match '/oauth/access_token'  => 'oauth#access_token',  :as => :oauth_access_token
-    match '/oauth/request_token' => 'oauth#request_token', :as => :oauth_request_token
-    match '/oauth/authorize'     => 'oauth#authorize',     :as => :oauth_authorize
-    match '/oauth/revoke'        => 'oauth#revoke',        :as => :oauth_revoke, :via => :delete
   end
 
   namespace "api" do

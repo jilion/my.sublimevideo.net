@@ -29,6 +29,16 @@ GIT
       builder (>= 2.0.0)
 
 GIT
+  remote: git://github.com/rymai/oauth-plugin.git
+  revision: 108c13f50173c29618a219565543b20076070df1
+  specs:
+    oauth-plugin (0.4.0.pre6)
+      multi_json
+      oauth (~> 0.4.4)
+      oauth2
+      rack
+
+GIT
   remote: git://github.com/thibaudgg/voxel_hapi.git
   revision: c603f2f3a17c71dcd7a44071e2f585f9afd37bef
   branch: 1.9.2
@@ -225,11 +235,6 @@ GEM
     net-ssh (2.1.4)
     nokogiri (1.5.0)
     oauth (0.4.5)
-    oauth-plugin (0.4.0.pre6)
-      multi_json
-      oauth (~> 0.4.4)
-      oauth2
-      rack
     oauth2 (0.4.1)
       faraday (~> 0.6.1)
       multi_json (>= 0.0.5)
@@ -394,7 +399,7 @@ DEPENDENCIES
   mongo (= 1.3.1)
   mongoid (= 2.0.2)
   oauth (= 0.4.5)
-  oauth-plugin (= 0.4.0.pre6)
+  oauth-plugin!
   paper_trail (= 2.2.2)
   passenger
   pg (= 0.11.0)

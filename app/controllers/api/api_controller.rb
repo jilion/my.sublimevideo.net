@@ -1,10 +1,10 @@
-class Api::ApiController < ActionController::Metal
-  include AbstractController::Callbacks
-  include ActionController::Helpers
-  include ActionController::MimeResponds
-  include ActionController::Rendering
-  include ActionController::Renderers::All
-  include ActionController::Instrumentation
+class Api::ApiController < ActionController::Base
+  # include AbstractController::Callbacks
+  # include ActionController::Helpers
+  # include ActionController::MimeResponds
+  # include ActionController::Rendering
+  # include ActionController::Renderers::All
+  # include ActionController::Instrumentation
   include Devise::Controllers::Helpers
   include ActsAsApi::Rendering
   include OAuth::Controllers::ApplicationControllerMethods
@@ -24,16 +24,6 @@ class Api::ApiController < ActionController::Metal
   
   def current_user=(user)
     sign_in(user)
-  end
-
-  def choose_version
-    version_and_content_type = request.headers['Accept'].match(%r{^application/vnd\.jilion\.sublimevideo(-v(\d+))?\+(\w+)$})
-    @version      = version_and_content_type.try(:[], 2) || 1
-    @content_type = version_and_content_type.try(:[], 3) || 'json'
-  end
-
-  def api_template(template=:private)
-    "v#{@version}_#{template}".to_sym
   end
 
   protected
