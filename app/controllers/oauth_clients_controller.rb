@@ -3,7 +3,7 @@ class OauthClientsController < ApplicationController
 
   def index
     @client_applications = current_user.client_applications
-    @tokens = current_user.tokens.where({ :invalidated_at => nil } & { :authorized_at.ne => nil })
+    @authorizations = current_user.tokens.where({ :invalidated_at => nil } & { :authorized_at.ne => nil })
   end
 
   def new
@@ -12,7 +12,6 @@ class OauthClientsController < ApplicationController
 
   def create
     @client_application = current_user.client_applications.build(params[:client_application])
-    
     respond_with(@client_application) do |format|
       if @client_application.save
         format.html { redirect_to :show, :id => @client_application.id, :notice => "Registered the information successfully" }

@@ -3,6 +3,15 @@ class OauthController < ApplicationController
   include OAuth::Controllers::ProviderController
   skip_before_filter :authenticate_user!
 
+  def revoke
+    @token = current_user.tokens.find_by_token!(params[:token])
+    @token.invalidate!
+
+    respond_with(@token) do |format|
+      format.html { redirect_to(applications_url, notice: "You've revoked the authorization for the application '#{@token.client_application.name}'.") }
+    end
+  end
+
   protected
 
   def login_required

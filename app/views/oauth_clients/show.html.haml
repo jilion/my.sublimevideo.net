@@ -1,5 +1,4 @@
-%h1
-  = "Details for '#{@client_application.name}'"
+= title_and_content_header("Details for '#{@client_application.name}'")
 
 %p
   %strong Main Application URL:
@@ -19,17 +18,17 @@
   %code= @client_application.secret
 
 %p
-  %strong Request Token URL
+  %strong Request Token URL:
   %code
     ="http#{'s' if request.ssl?}://#{request.host_with_port}#{@client_application.oauth_server.request_token_path}"
 
 %p
-  %strong Access Token URL
+  %strong Access Token URL:
   %code
     ="http#{'s' if request.ssl?}://#{request.host_with_port}#{@client_application.oauth_server.access_token_path}"
 
 %p
-  %strong Authorize URL
+  %strong Authorize URL:
   %code
     ="http#{'s' if request.ssl?}://#{request.host_with_port}#{@client_application.oauth_server.authorize_path}"
 
@@ -38,4 +37,4 @@
 
 = link_to 'Edit', edit_application_path(@client_application)
 = " | "
-= link_to 'Back', application_path
+= link_to 'Back', applications_path

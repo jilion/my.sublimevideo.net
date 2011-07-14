@@ -1,23 +1,23 @@
-.flash= flash[:notice]
-%h1 OAuth Client Applications
-- unless @tokens.empty?
-  %p The following tokens have been issued to applications in your name
+= title_and_content_header("API authorizations and applications")
+
+- unless @authorizations.empty?
+  %p The following applications have been authorized to access your datas in your behalf
 
   %table
     %tr
-      %th Application
-      %th Issued
+      %th Application Name
+      %th Issued at
       %th &nbsp;
-    - @tokens.each do |token|
-      = content_tag_for :tr, token do
-        %td= link_to token.client_application.name, token.client_application.url
-        %td= token.authorized_at
-        / %td
-        /   = form_tag :controller => 'oauth', :action => 'revoke' do
-        /     = hidden_field_tag 'token', token.token
-        /     = submit_tag "Revoke!"
+    - @authorizations.each do |authorization|
+      = content_tag_for :tr, authorization do
+        %td= link_to authorization.client_application.name, authorization.client_application.url
+        %td= authorization.authorized_at
+        %td
+          = form_tag oauth_revoke_path, method: 'delete' do
+            = hidden_field_tag 'token', authorization.token
+            = submit_tag "Revoke!"
 
-%h3 Application Developers
+%h2 Your applications
 
 - if @client_applications.empty?
   %p
@@ -27,11 +27,16 @@
   %p
     You have the following client applications registered:
 
-  - @client_applications.each do |application|
-    = div_for application do
-      = link_to application.name, :action => :show, :id => application.id
-      = link_to 'Edit', edit_application_path(application)
-      = link_to 'Delete', application_path(application), :confirm => "Are you sure?", :method => :delete
+  %ul
+    - @client_applications.each do |application|
+      = div_for application do
+        %li
+          = link_to application.name, :action => :show, :id => application.id
+          = "("
+          = link_to 'Edit', edit_application_path(application)
+          = " | "
+          = link_to 'Delete', application_path(application), :confirm => "Are you sure?", :method => :delete
+          = ")"
 %br
 %h3
-  = link_to "Register your application", :action => :new
+  = link_to "Register a new application", new_application_path
