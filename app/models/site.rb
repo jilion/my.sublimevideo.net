@@ -8,7 +8,7 @@ class Site < ActiveRecord::Base
   PLAYER_MODES = %w[dev beta stable]
 
   # Versioning
-  has_paper_trail
+  has_paper_trail :ignore => [:license, :loader]
 
   attr_accessor :loader_needs_update, :license_needs_update
   attr_accessor :user_attributes, :charging_options, :transaction
