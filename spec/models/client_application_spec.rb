@@ -11,7 +11,7 @@ describe ClientApplication do
   end
 
   it "should not have errors" do
-    @application.errors.full_messages.should == []
+    @application.errors.full_messages.should be_empty
   end
 
   it "should have key and secret" do
@@ -21,8 +21,8 @@ describe ClientApplication do
 
   it "should have credentials" do
     @application.credentials.should_not be_nil
-    @application.credentials.key.should == @application.key
-    @application.credentials.secret.should == @application.secret
+    @application.credentials.key.should eql @application.key
+    @application.credentials.secret.should eql @application.secret
   end
 
 end

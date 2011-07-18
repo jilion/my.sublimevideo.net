@@ -14,7 +14,7 @@ class Api::ApiController < ActionController::Base
   respond_to :json, :xml
 
   oauthenticate
-  before_filter :choose_version
+  before_filter :set_version_and_content_type
 
   protected
 
@@ -28,10 +28,10 @@ class Api::ApiController < ActionController::Base
 
   protected
 
-  def choose_version
-    version_and_content_type = request.headers['Accept'].match(%r{^application/vnd\.jilion\.sublimevideo(-v(\d+))?\+(\w+)$})
-    @version      = version_and_content_type.try(:[], 2) || 1
-    @content_type = version_and_content_type.try(:[], 3) || 'json'
+  def set_version_and_content_type
+    version_and_content_type = (request.headers['Accept'] || '').match(%r{^application/vnd\.jilion\.sublimevideo(-v(\d+))?\+(\w+)$})
+    @version      = version_and_content_type.try(:[], 2) || Api.current_version
+    @content_type = version_and_content_type.try(:[], 3) || Api.default_content_type
   end
 
   def api_template(template=:private)

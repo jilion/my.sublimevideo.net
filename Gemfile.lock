@@ -1,11 +1,4 @@
 GIT
-  remote: git://github.com/Jilion/url_signer.git
-  revision: 9e5aaaf49cd569544823303732e5c3762e7efb7d
-  specs:
-    url_signer (0.0.1)
-      ruby-hmac (>= 0.4.0)
-
-GIT
   remote: git://github.com/Jilion/useragent.git
   revision: ffe2c71e336be8acf5b133e14dbcfad4b79bbcd8
   specs:
@@ -13,9 +6,9 @@ GIT
 
 GIT
   remote: git://github.com/guard/guard.git
-  revision: 649920b7f0c88ed1e161826f75eda204d5f3ad83
+  revision: 76c2977b6737bf685e13aa7202474259e034b6c3
   specs:
-    guard (0.5.0)
+    guard (0.5.1)
       thor (~> 0.14.6)
 
 GIT
@@ -60,12 +53,12 @@ GEM
     Platform (0.4.0)
     RedCloth (4.2.7)
     abstract (1.0.0)
-    actionmailer (3.0.9.rc5)
-      actionpack (= 3.0.9.rc5)
+    actionmailer (3.0.9)
+      actionpack (= 3.0.9)
       mail (~> 2.2.19)
-    actionpack (3.0.9.rc5)
-      activemodel (= 3.0.9.rc5)
-      activesupport (= 3.0.9.rc5)
+    actionpack (3.0.9)
+      activemodel (= 3.0.9)
+      activesupport (= 3.0.9)
       builder (~> 2.1.2)
       erubis (~> 2.6.6)
       i18n (~> 0.5.0)
@@ -73,19 +66,19 @@ GEM
       rack-mount (~> 0.6.14)
       rack-test (~> 0.5.7)
       tzinfo (~> 0.3.23)
-    activemodel (3.0.9.rc5)
-      activesupport (= 3.0.9.rc5)
+    activemodel (3.0.9)
+      activesupport (= 3.0.9)
       builder (~> 2.1.2)
       i18n (~> 0.5.0)
-    activerecord (3.0.9.rc5)
-      activemodel (= 3.0.9.rc5)
-      activesupport (= 3.0.9.rc5)
+    activerecord (3.0.9)
+      activemodel (= 3.0.9)
+      activesupport (= 3.0.9)
       arel (~> 2.0.10)
       tzinfo (~> 0.3.23)
-    activeresource (3.0.9.rc5)
-      activemodel (= 3.0.9.rc5)
-      activesupport (= 3.0.9.rc5)
-    activesupport (3.0.9.rc5)
+    activeresource (3.0.9)
+      activemodel (= 3.0.9)
+      activesupport (= 3.0.9)
+    activesupport (3.0.9)
     acts_as_api (0.3.6)
       activemodel (>= 3.0.0)
       activesupport (>= 3.0.0)
@@ -146,7 +139,7 @@ GEM
     erubis (2.6.6)
       abstract (>= 1.0.0)
     eventmachine (0.12.10)
-    excon (0.6.4)
+    excon (0.6.5)
     factory_girl (1.3.3)
     factory_girl_rails (1.0.1)
       factory_girl (~> 1.3)
@@ -169,7 +162,7 @@ GEM
       net-ssh (>= 2.1.3)
       nokogiri (>= 1.4.4)
       ruby-hmac
-    formatador (0.1.5)
+    formatador (0.2.0)
     growl_notify (0.0.1)
       rb-appscript
     guard-bundler (0.1.3)
@@ -259,17 +252,17 @@ GEM
     rack-ssl-enforcer (0.2.2)
     rack-test (0.5.7)
       rack (>= 1.0)
-    rails (3.0.9.rc5)
-      actionmailer (= 3.0.9.rc5)
-      actionpack (= 3.0.9.rc5)
-      activerecord (= 3.0.9.rc5)
-      activeresource (= 3.0.9.rc5)
-      activesupport (= 3.0.9.rc5)
+    rails (3.0.9)
+      actionmailer (= 3.0.9)
+      actionpack (= 3.0.9)
+      activerecord (= 3.0.9)
+      activeresource (= 3.0.9)
+      activesupport (= 3.0.9)
       bundler (~> 1.0)
-      railties (= 3.0.9.rc5)
-    railties (3.0.9.rc5)
-      actionpack (= 3.0.9.rc5)
-      activesupport (= 3.0.9.rc5)
+      railties (= 3.0.9)
+    railties (3.0.9)
+      actionpack (= 3.0.9)
+      activesupport (= 3.0.9)
       rake (>= 0.8.7)
       rdoc (~> 3.4)
       thor (~> 0.14.4)
@@ -408,7 +401,7 @@ DEPENDENCIES
   rack-google-analytics (= 0.9.2)
   rack-private
   rack-ssl-enforcer (= 0.2.2)
-  rails (= 3.0.9.rc5)
+  rails (= 3.0.9)
   rake (= 0.8.7)
   rb-fsevent
   request-log-analyzer (= 1.11.0)
@@ -426,7 +419,6 @@ DEPENDENCIES
   timecop
   twitter (= 1.3.0)
   uniquify (= 0.1.0)
-  url_signer!
   useragent!
   vcr
   voxel_hapi!

@@ -35,11 +35,11 @@ describe Oauth2Verifier do
     end
 
     it "should set user on token" do
-      @token.user.should == @verifier.user
+      @token.user.should eql @verifier.user
     end
 
     it "should set client application on token" do
-      @token.client_application.should == @verifier.client_application
+      @token.client_application.should eql @verifier.client_application
     end
 
     it "should be authorized" do

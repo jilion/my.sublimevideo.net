@@ -227,9 +227,12 @@ Factory.define :oauth_token do |f|
   f.callback_url "http://test.com/callback"
 end
 
-Factory.define :oauth2_token, :parent => :oauth_token do |f|
-  f.association :client_application
-  f.association :user
+Factory.define :oauth2_token do |f|
+  f.association  :client_application
+  f.association  :user
+  f.token        "1234"
+  f.secret       "4321"
+  f.callback_url "http://test.com/callback"
 end
 
 Factory.define :oauth2_verifier do |f|
