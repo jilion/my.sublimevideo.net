@@ -24,7 +24,7 @@ module LogsFileFormat
       { :regexp => "(#{timestamp('%H:%M:%S')})", :captures => [{:name => :time,              :type => :timestamp}] },
       { :regexp => '(\d+|-)',                    :captures => [{:name => :duration,          :type => :duration, :unit => :musec}] },
       { :regexp => '\"(.*)\"',                   :captures => [{:name => :useragent,         :type => :string}] },
-      { :regexp => '(\d+|-)',                     :captures => [{:name => :user_id,           :type => :string}] },
+      { :regexp => '(\d+|-)',                    :captures => [{:name => :user_id,           :type => :string}] },
       # include " " inside () or it'll failed with old log without edge_location
       { :regexp => '(.*)',                       :captures => [{:name => :edge_location,     :type => :string}] }
     ]
