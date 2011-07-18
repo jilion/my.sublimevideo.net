@@ -654,7 +654,7 @@ describe User::CreditCard do
             subject.cc_type.should == 'master'
             subject.cc_last_digits.should == '9999'
             subject.cc_expire_on.should == 2.years.from_now.end_of_month.to_date
-            subject.cc_updated_at.should_not == @first_cc_updated_at
+            subject.cc_updated_at.should_not eql @first_cc_updated_at
           end
         end
 
