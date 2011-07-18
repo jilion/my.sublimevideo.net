@@ -59,6 +59,8 @@ gem 'createsend',            '0.3.2' # Campaign Monitor
 gem 'hoptoad_notifier',      '2.4.11'
 gem 'prowl',                 '0.1.3'
 
+gem 'addressable',           '2.2.6'
+
 # Perf
 gem 'dalli',                 '1.0.5'
 

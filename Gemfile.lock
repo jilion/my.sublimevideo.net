@@ -339,6 +339,7 @@ DEPENDENCIES
   PageRankr (= 1.6.0)
   RedCloth (= 4.2.7)
   activemerchant!
+  addressable (= 2.2.6)
   annotate
   array_stats (= 0.6.0)
   aws (= 2.3.34)

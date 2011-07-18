@@ -55,11 +55,9 @@ describe Site::Referrer do
       it { subject.referrer_type("http://google.com").should == "invalid" }
       it { subject.referrer_type("google.com").should == "invalid" }
       it { subject.referrer_type("jilion.com").should == "invalid" }
+      it { subject.referrer_type("junomsg://04E76D88/").should == "invalid" }
       it { subject.referrer_type("-").should == "invalid" }
-      it "should send a notify" do
-        Notify.should_receive(:send)
-        subject.referrer_type(nil).should == "invalid"
-      end
+      it { subject.referrer_type(nil).should == "invalid" }
     end
 
     context "with hostname with subdomain" do
@@ -115,10 +113,7 @@ describe Site::Referrer do
       it { subject.referrer_type("google.com").should == "invalid" }
       it { subject.referrer_type("jilion.com").should == "invalid" }
       it { subject.referrer_type("-").should == "invalid" }
-      it "should send a notify" do
-        Notify.should_receive(:send)
-        subject.referrer_type(nil).should == "invalid"
-      end
+      it { subject.referrer_type(nil).should == "invalid" }
     end
 
     context "with path" do
@@ -171,10 +166,7 @@ describe Site::Referrer do
       it { subject.referrer_type("google.com").should == "invalid" }
       it { subject.referrer_type("jilion.com").should == "invalid" }
       it { subject.referrer_type("-").should == "invalid" }
-      it "should send a notify" do
-        Notify.should_receive(:send)
-        subject.referrer_type(nil).should == "invalid"
-      end
+      it { subject.referrer_type(nil).should == "invalid" }
     end
 
     context "with wildcard and path" do
@@ -230,10 +222,7 @@ describe Site::Referrer do
       it { subject.referrer_type("google.com").should == "invalid" }
       it { subject.referrer_type("jilion.com").should == "invalid" }
       it { subject.referrer_type("-").should == "invalid" }
-      it "should send a notify" do
-        Notify.should_receive(:send)
-        subject.referrer_type(nil).should == "invalid"
-      end
+      it { subject.referrer_type(nil).should == "invalid" }
     end
 
     context "custom" do
