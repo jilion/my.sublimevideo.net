@@ -21,19 +21,19 @@ module VoxcastCDN
       client.voxel_voxcast_ondemand_testing_get_url_per_pop(:device_id => yml[:device_id], :path => path)
     end
 
-    def fetch_logs_names(hostnames = yml[:hostnames].split(', '))
-      logs_names = []
-      hostnames.each do |hostname_to_retrieve_logs|
-        logs_hash = client.voxel_voxcast_ondemand_logs_list(:hostname => hostname_to_retrieve_logs, :device_id => yml[:device_id])
-        if logs_hash['log_files']['sites']['hostname']['log_file'].present?
-          logs_names += logs_hash['log_files']['sites']['hostname']['log_file'].map { |l| l['content'] }
-        end
-      end
-      logs_names
-    end
+    # def fetch_logs_names(hostnames = yml[:hostnames].split(', '))
+    #   logs_names = []
+    #   hostnames.each do |hostname_to_retrieve_logs|
+    #     logs_hash = client.voxel_voxcast_ondemand_logs_list(:hostname => hostname_to_retrieve_logs, :device_id => yml[:device_id])
+    #     if logs_hash['log_files']['sites']['hostname']['log_file'].present?
+    #       logs_names += logs_hash['log_files']['sites']['hostname']['log_file'].map { |l| l['content'] }
+    #     end
+    #   end
+    #   logs_names
+    # end
 
     def download_log(filename)
-      xml = client.voxel_voxcast_ondemand_logs_download(:filename => filename)
+      xml = rescue_and_retry(7, Errno::ETIMEDOUT) { client.voxel_voxcast_ondemand_logs_download(:filename => filename) }
       tempfile = Tempfile.new('log', "#{Rails.root}/tmp", :encoding => 'ASCII-8BIT')
       tempfile.write(Base64.decode64(xml['data']['content']))
       tempfile.flush
@@ -41,7 +41,7 @@ module VoxcastCDN
     rescue VoxelHAPI::Backend => ex
       ex.to_s =~ /log file not found/ ? false : raise(ex)
     end
-    
+
     def non_ssl_hostname
       yml[:non_ssl_hostname]
     end
