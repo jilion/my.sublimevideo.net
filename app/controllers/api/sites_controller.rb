@@ -6,32 +6,26 @@ class Api::SitesController < Api::ApiController
   # GET /api/v1/sites
   def index
     @sites = current_user.sites.not_archived.includes(:plan, :next_cycle_plan)
-    respond_with(@sites) do |format|
-      format.json { render_for_api api_template, :json => @sites, :root => :sites }
-      format.xml  { render_for_api api_template, :xml => @sites, :root => :sites }
-    end
+    render_for_api api_template, :"#{@content_type}" => @sites, :root => :sites
   end
 
   # GET /api/v1/sites/:id
   def show
-    respond_with(@site) do |format|
-      format.json { render_for_api api_template, :json => @site }
-      format.xml  { render_for_api api_template, :xml => @site }
-    end
+    render_for_api api_template, :"#{@content_type}" => @site
   end
 
   # GET /api/v1/sites/:id/usage
   def usage
-    respond_with(@site) do |format|
-      format.json { render_for_api api_template(:usage), :json => @site }
-      format.xml  { render_for_api api_template, :xml => @site }
-    end
+    render_for_api api_template(:usage), :"#{@content_type}" => @site
   end
 
   private
 
   def find_by_token!
     @site = current_user.sites.not_archived.find_by_token!(params[:id])
+  rescue ActiveRecord::RecordNotFound
+    error = { status: 404, message: "Site with token '#{params[:id]}' could not be found" }
+    render(@content_type.to_sym => error.send("to_#{@content_type}"), status: 404)
   end
 
 end

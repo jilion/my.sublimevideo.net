@@ -19,7 +19,7 @@
 
 %h2 Your applications
 
-- if @client_applications.empty?
+- if @applications.empty?
   %p
     Do you have an application you would like to register for use with us using the <a href="http://oauth.net">OAuth</a> standard?
     You must register your web application before it can make OAuth requests to this service
@@ -28,7 +28,7 @@
     You have the following client applications registered:
 
   %ul
-    - @client_applications.each do |application|
+    - @applications.each do |application|
       = div_for application do
         %li
           = link_to application.name, :action => :show, :id => application.id

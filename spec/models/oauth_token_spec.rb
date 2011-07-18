@@ -68,7 +68,7 @@ describe RequestToken do
         end
 
         it "should have user set" do
-          @token.user.should == @user
+          @token.user.should eql @user
         end
 
         it "should have verifier" do
@@ -95,7 +95,7 @@ describe RequestToken do
           end
 
           it "should set user on access token" do
-            @access.user.should == @user
+            @access.user.should eql @user
           end
 
           it "should authorize accesstoken" do
@@ -136,7 +136,7 @@ describe RequestToken do
       end
 
       it "should return 1.0a style to_query" do
-        @token.to_query.should == "oauth_token=#{@token.token}&oauth_token_secret=#{@token.secret}&oauth_callback_confirmed=true"
+        @token.to_query.should eql "oauth_token=#{@token.token}&oauth_token_secret=#{@token.secret}&oauth_callback_confirmed=true"
       end
 
     end
@@ -168,7 +168,7 @@ describe RequestToken do
         end
 
         it "should have user set" do
-          @token.user.should == @user
+          @token.user.should eql @user
         end
 
         it "should have verifier" do
@@ -187,7 +187,7 @@ describe RequestToken do
           end
 
           it "should set user on access token" do
-            @access.user.should == @user
+            @access.user.should eql @user
           end
 
           it "should authorize accesstoken" do
@@ -228,85 +228,85 @@ describe RequestToken do
       end
 
       it "should return 1.0 style to_query" do
-        @token.to_query.should == "oauth_token=#{@token.token}&oauth_token_secret=#{@token.secret}&oauth_callback_confirmed=true"
+        @token.to_query.should eql "oauth_token=#{@token.token}&oauth_token_secret=#{@token.secret}&oauth_callback_confirmed=true"
       end
     end
   end
 
-  # if defined? OAUTH_10_SUPPORT && OAUTH_10_SUPPORT
-  #   describe "OAuth 1.0" do
-  # 
-  #     it "should be oauth10" do
-  #       @token.should be_oauth10
-  #     end
-  # 
-  #     it "should not be oob" do
-  #       @token.should_not be_oob
-  #     end
-  # 
-  #     describe "authorize request" do
-  #       before(:each) do
-  #         @token.authorize!(@user)
-  #       end
-  # 
-  #       it "should be authorized" do
-  #         @token.should be_authorized
-  #       end
-  # 
-  #       it "should have authorized at" do
-  #         @token.authorized_at.should_not be_nil
-  #       end
-  # 
-  #       it "should have user set" do
-  #         @token.user.should == @user
-  #       end
-  # 
-  #       it "should not have verifier" do
-  #         @token.verifier.should be_nil
-  #       end
-  # 
-  #       describe "exchange for access token" do
-  # 
-  #         before(:each) do
-  #           @access = @token.exchange!
-  #         end
-  # 
-  #         it "should invalidate request token" do
-  #           @token.should be_invalidated
-  #         end
-  # 
-  #         it "should set user on access token" do
-  #           @access.user.should == @user
-  #         end
-  # 
-  #         it "should authorize accesstoken" do
-  #           @access.should be_authorized
-  #         end
-  #       end
-  # 
-  #     end
-  # 
-  #     describe "attempt exchange with out authorization" do
-  # 
-  #       before(:each) do
-  #         @value = @token.exchange!
-  #       end
-  # 
-  #       it "should return false" do
-  #         @value.should be_false
-  #       end
-  # 
-  #       it "should not invalidate request token" do
-  #         @token.should_not be_invalidated
-  #       end
-  #     end
-  # 
-  #     it "should return 1.0 style to_query" do
-  #       @token.to_query.should == "oauth_token=#{@token.token}&oauth_token_secret=#{@token.secret}"
-  #     end
-  # 
-  #   end
-  # end
+  if defined? OAUTH_10_SUPPORT && OAUTH_10_SUPPORT
+    describe "OAuth 1.0" do
+  
+      it "should be oauth10" do
+        @token.should be_oauth10
+      end
+  
+      it "should not be oob" do
+        @token.should_not be_oob
+      end
+  
+      describe "authorize request" do
+        before(:each) do
+          @token.authorize!(@user)
+        end
+  
+        it "should be authorized" do
+          @token.should be_authorized
+        end
+  
+        it "should have authorized at" do
+          @token.authorized_at.should_not be_nil
+        end
+  
+        it "should have user set" do
+          @token.user.should eql @user
+        end
+  
+        it "should not have verifier" do
+          @token.verifier.should be_nil
+        end
+  
+        describe "exchange for access token" do
+  
+          before(:each) do
+            @access = @token.exchange!
+          end
+  
+          it "should invalidate request token" do
+            @token.should be_invalidated
+          end
+  
+          it "should set user on access token" do
+            @access.user.should eql @user
+          end
+  
+          it "should authorize accesstoken" do
+            @access.should be_authorized
+          end
+        end
+  
+      end
+  
+      describe "attempt exchange with out authorization" do
+  
+        before(:each) do
+          @value = @token.exchange!
+        end
+  
+        it "should return false" do
+          @value.should be_false
+        end
+  
+        it "should not invalidate request token" do
+          @token.should_not be_invalidated
+        end
+      end
+  
+      it "should return 1.0 style to_query" do
+        @token.to_query.should eql "oauth_token=#{@token.token}&oauth_token_secret=#{@token.secret}"
+      end
+  
+    end
+  end
 end
 
 # == Schema Information
