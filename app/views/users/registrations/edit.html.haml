@@ -20,7 +20,8 @@
     .entry.update
       = f.submit "Update", :class => "submit small_button", :id => "user_credentials_submit"
 
-  %h3.section_title= link_to "API authorizations and applications", applications_path
+  - if current_user.email =~ /@jilion.com$/
+    %h3.section_title= link_to "API authorizations and applications (alpha)", applications_path
 
   .spacer
 
@@ -39,7 +40,7 @@
           %li= "All of your SublimeVideo licenses will be instantly removed from our servers and will no longer be available."
           %li= "We do not offer refunds."
         .entry.delete
-          = f.submit "Delete account", :class => "submit link_looks delete", :confirm => "Are you really sure?"
+          = f.submit "Delete account", :class => "submit link_looks delete"
 
   .spacer
 .spacer

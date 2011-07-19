@@ -33,10 +33,12 @@
         %li
           = link_to application.name, :action => :show, :id => application.id
           = "("
-          = link_to 'Edit', edit_application_path(application)
+          = link_to 'Edit', edit_client_application_path(application)
           = " | "
-          = link_to 'Delete', application_path(application), :confirm => "Are you sure?", :method => :delete
+          = form_for application, :html => { :method => :delete, "data-password-protected" => true } do |f|
+            .entry.delete
+              = f.submit "Delete", :class => "submit link_looks delete"
           = ")"
 %br
 %h3
-  = link_to "Register a new application", new_application_path
+  = link_to "Register a new application", new_client_application_path

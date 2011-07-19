@@ -17,8 +17,8 @@ class OauthToken < ActiveRecord::Base
   # = Validations =
   # ===============
 
-  validates_uniqueness_of :token
-  validates_presence_of :client_application, :token
+  validates :client_application, :token, :presence => true
+  validates :token, :uniqueness => true
 
   # ====================
   # = Instance Methods =

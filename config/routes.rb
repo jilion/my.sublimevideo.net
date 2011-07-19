@@ -65,7 +65,7 @@ MySublimeVideo::Application.routes.draw do
   match '/oauth/revoke'        => 'oauth#revoke',        :as => :oauth_revoke, :via => :delete
 
   scope "account" do
-    resources :applications, :controller => 'oauth_clients'
+    resources :applications, :controller => 'client_applications', :as => :client_applications
   end
 
   namespace "api" do

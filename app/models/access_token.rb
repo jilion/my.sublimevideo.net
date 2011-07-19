@@ -1,16 +1,16 @@
 class AccessToken < OauthToken
-  
+
   # =============
   # = Callbacks =
   # =============
-  
+
   before_create :set_authorized_at
-  
+
   # ===============
   # = Validations =
   # ===============
-  
-  validates_presence_of :user, :secret
+
+  validates :user, :secret, :presence => true
 
   # ====================
   # = Instance Methods =
@@ -27,7 +27,7 @@ class AccessToken < OauthToken
   def set_authorized_at
     self.authorized_at = Time.now
   end
-  
+
 end
 
 # == Schema Information
