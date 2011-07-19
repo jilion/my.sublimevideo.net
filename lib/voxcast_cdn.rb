@@ -33,13 +33,13 @@ module VoxcastCDN
     # end
 
     def download_log(filename)
-      xml = rescue_and_retry(7, Errno::ETIMEDOUT) { client.voxel_voxcast_ondemand_logs_download(:filename => filename) }
-      tempfile = Tempfile.new('log', "#{Rails.root}/tmp", :encoding => 'ASCII-8BIT')
-      tempfile.write(Base64.decode64(xml['data']['content']))
-      tempfile.flush
-      tempfile
-    rescue VoxelHAPI::Backend => ex
-      ex.to_s =~ /log file not found/ ? false : raise(ex)
+      rescue_and_retry(7) do
+        xml = client.voxel_voxcast_ondemand_logs_download(:filename => filename)
+        tempfile = Tempfile.new('log', "#{Rails.root}/tmp", :encoding => 'ASCII-8BIT')
+        tempfile.write(Base64.decode64(xml['data']['content']))
+        tempfile.flush
+        tempfile
+      end
     end
 
     def non_ssl_hostname
