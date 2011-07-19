@@ -68,6 +68,11 @@ namespace :one_time do
     task :regenerate_all_loaders_and_licenses => :environment do
       puts OneTime::Site.regenerate_all_loaders_and_licenses
     end
+
+    desc "Move local ip from hostname and extra hostnames to dev domains for all sites"
+    task :move_local_ip_from_hostname_and_extra_domains_to_dev_domains => :environment do
+      puts OneTime::Site.move_local_ip_from_hostname_and_extra_domains_to_dev_domains
+    end
   end
 
 end

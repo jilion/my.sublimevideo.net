@@ -62,9 +62,11 @@ class Log
 
   def self.parse_log(id)
     log = find(id)
-    log.parse_and_create_usages!
-    log.parsed_at = Time.now.utc
-    log.save
+    unless log.parsed?
+      log.parse_and_create_usages!
+      log.parsed_at = Time.now.utc
+      log.save
+    end
   end
 
   # ====================

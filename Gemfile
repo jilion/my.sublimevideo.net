@@ -36,7 +36,7 @@ gem 'configuration',         '1.2.0'
 gem 'libxml-ruby',           '1.1.3', :require => 'libxml'
 
 gem 'state_machine',         '0.10.4'
-gem 'paper_trail',           '2.2.2'
+gem 'paper_trail',           '2.2.7'
 gem 'uniquify',              '0.1.0'
 
 gem 'responders',            '0.6.2'
@@ -45,7 +45,7 @@ gem 'has_scope',             '0.5.0'
 
 gem 'aws',                   '2.3.34' # bugs in 2.4.2
 gem 'fog',                   '0.8.2'
-gem 'carrierwave',           '0.5.5'
+gem 'carrierwave',           '0.5.6'
 gem 'voxel_hapi',            :git => 'git://github.com/thibaudgg/voxel_hapi.git', :branch => '1.9.2' # VoxCast CDN
 gem 'request-log-analyzer',  '1.11.0', :require => 'request_log_analyzer'
 
@@ -66,6 +66,8 @@ gem 'createsend',            '0.3.2' # Campaign Monitor
 
 gem 'hoptoad_notifier',      '2.4.11'
 gem 'prowl',                 '0.1.3'
+
+gem 'addressable',           '2.2.6'
 
 # Perf
 gem 'dalli',                 '1.0.5'
@@ -99,7 +101,7 @@ end
 group :test do
   gem 'spork', '0.9.0.rc9'
   gem 'rb-fsevent'
-  gem 'growl_notify'
+  gem 'growl'
   gem 'guard', :git => 'git://github.com/guard/guard.git'
   gem 'guard-bundler'
   gem 'guard-pow'

@@ -23,7 +23,9 @@ module TwitterApi
 
     def method_missing(method_name, *args)
       if Twitter.respond_to?(method_name)
-        Twitter.send(method_name.to_sym, *args)
+        rescue_and_retry(5, Errno::ETIMEDOUT, Errno::ECONNRESET, Twitter::BadGateway, Twitter::ServiceUnavailable) do
+          Twitter.send(method_name.to_sym, *args)
+        end
       else
         super
       end
