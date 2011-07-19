@@ -6,9 +6,9 @@ GIT
 
 GIT
   remote: git://github.com/guard/guard.git
-  revision: 649920b7f0c88ed1e161826f75eda204d5f3ad83
+  revision: 76c2977b6737bf685e13aa7202474259e034b6c3
   specs:
-    guard (0.5.0)
+    guard (0.5.1)
       thor (~> 0.14.6)
 
 GIT
@@ -155,8 +155,7 @@ GEM
       nokogiri (>= 1.4.4)
       ruby-hmac
     formatador (0.1.5)
-    growl_notify (0.0.1)
-      rb-appscript
+    growl (1.0.3)
     guard-bundler (0.1.3)
       bundler (>= 1.0.0)
       guard (>= 0.2.2)
@@ -257,7 +256,6 @@ GEM
     rake (0.8.7)
     rash (0.3.0)
       hashie (~> 1.0.0)
-    rb-appscript (0.6.1)
     rb-fsevent (0.4.1)
     rdoc (3.8)
     request-log-analyzer (1.11.0)
@@ -359,7 +357,7 @@ DEPENDENCIES
   factory_girl_rails
   ffaker
   fog (= 0.8.2)
-  growl_notify
+  growl
   guard!
   guard-bundler
   guard-livereload

@@ -1,7 +1,6 @@
 source "http://rubygems.org"
 
 gem 'rake',                  '0.8.7'
-gem 'psych',                 '1.2.0'
 
 gem 'rails',                 '3.0.9'
 
@@ -91,7 +90,7 @@ end
 group :test do
   gem 'spork', '0.9.0.rc9'
   gem 'rb-fsevent'
-  gem 'growl_notify'
+  gem 'growl'
   gem 'guard', :git => 'git://github.com/guard/guard.git'
   gem 'guard-bundler'
   gem 'guard-pow'
