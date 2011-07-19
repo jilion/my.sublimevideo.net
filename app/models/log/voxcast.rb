@@ -114,6 +114,15 @@ class Log::Voxcast < Log
     user_agents_parsed_at.present?
   end
 
+  def minute
+    started_at.change(sec: 0, usec: 0).to_time
+  end
+  memoize :minute
+  def hour
+    started_at.change(min: 0, sec: 0, usec: 0).to_time
+  end
+  memoize :hour
+
 private
 
   # after_create

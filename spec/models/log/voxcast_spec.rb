@@ -225,7 +225,7 @@ describe Log::Voxcast do
       @log = Factory(:log_voxcast, :name => 'cdn.sublimevideo.net.log.1284549900-1284549960.gz')
     end
 
-    describe "parse_and_create_referrers!" do
+    describe "#parse_and_create_referrers!" do
       before(:each) do
         LogAnalyzer.should_receive(:parse)
         Referrer.should_receive(:create_or_update_from_trackers!)
@@ -245,7 +245,7 @@ describe Log::Voxcast do
       end
     end
 
-    describe "parse_and_create_user_agents!" do
+    describe "#parse_and_create_user_agents!" do
       before(:each) do
         LogAnalyzer.should_receive(:parse)
         UsrAgent.should_receive(:create_or_update_from_trackers!)
@@ -264,6 +264,16 @@ describe Log::Voxcast do
         subject.parse_and_create_user_agents!
       end
     end
+
+    describe "minute / hour / day / month" do
+      subject { Factory.build(:log_voxcast, :name => 'cdn.sublimevideo.net.log.1284549900-1284549960.gz') }
+
+      its(:minute) { should eql Time.utc(2010, 9, 15, 11, 25) }
+      its(:hour)   { should eql Time.utc(2010, 9, 15, 11) }
+      its(:day)    { should eql Time.utc(2010, 9, 15) }
+      its(:month)  { should eql Time.utc(2010, 9, 1) }
+    end
+
   end
 
 end

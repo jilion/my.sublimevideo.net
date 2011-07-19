@@ -1,6 +1,8 @@
 require 'carrierwave/orm/mongoid'
 
 class Log
+  extend ActiveSupport::Memoizable
+
   include Mongoid::Document
   include Mongoid::Timestamps
 
@@ -81,6 +83,15 @@ class Log
   def parsed?
     parsed_at.present?
   end
+  
+  def day
+    started_at.change(hour: 0, min: 0, sec: 0, usec: 0).to_time
+  end
+  memoize :day
+  def month
+    started_at.change(day: 1, hour: 0, min: 0, sec: 0, usec: 0).to_time
+  end
+  memoize :month
 
 private
 

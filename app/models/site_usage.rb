@@ -50,14 +50,13 @@ class SiteUsage
       Site.where(:token => tokens.pop(100)).each do |site|
         begin
           hbr_token = hits_traffic_and_requests_for_token(hbrs, site.token)
-          day = log.started_at.midnight.to_time
           self.collection.update(
-            { :site_id => site.id, :day => day },
+            { :site_id => site.id, :day => log.day },
             { "$inc" => hbr_token },
             :upsert => true
           )
         rescue => ex
-          Notify.send("Error on site_usage (#{site.id}, #{day}) update (from log #{log.hostname}, #{log.name}. Data: #{hbr_token}", :exception => ex)
+          Notify.send("Error on site_usage (#{site.id}, #{log.day}) update (from log #{log.hostname}, #{log.name}. Data: #{hbr_token}", :exception => ex)
         end
       end
     end
