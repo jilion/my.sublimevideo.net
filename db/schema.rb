@@ -38,17 +38,6 @@ ActiveRecord::Schema.define(:version => 20110701131602) do
   add_index "admins", ["invitation_token"], :name => "index_admins_on_invitation_token"
   add_index "admins", ["reset_password_token"], :name => "index_admins_on_reset_password_token", :unique => true
 
-  create_table "api_tokens", :force => true do |t|
-    t.integer  "user_id"
-    t.string   "public_key"
-    t.string   "secret_key"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "api_tokens", ["public_key"], :name => "index_api_tokens_on_public_key", :unique => true
-  add_index "api_tokens", ["secret_key"], :name => "index_api_tokens_on_secret_key", :unique => true
-
   create_table "client_applications", :force => true do |t|
     t.string   "name"
     t.string   "url"
