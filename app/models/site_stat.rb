@@ -40,8 +40,8 @@ class SiteStat
   # =================
 
   def self.create_stats_from_trackers!(log, trackers)
-    inc_by_token = analyze_trackers(trackers)
-    inc_by_token.each do |token, inc|
+    incs = incs_from_trackers(trackers)
+    incs.each do |token, inc|
       self.collection.update({ t: token, m: log.minute }, { "$inc" => inc }, upsert: true)
       self.collection.update({ t: token, h: log.hour },   { "$inc" => inc }, upsert: true)
       self.collection.update({ t: token, d: log.day },    { "$inc" => inc }, upsert: true)
@@ -50,9 +50,22 @@ class SiteStat
 
 private
 
-  def self.analyze_trackers(trackers)
-    p trackers
+  def self.incs_from_trackers(trackers)
+    trackers = trackers.detect { |t| t.options[:title] == :stats }.categories
+    incs     = Hash.new { |h,k| h[k] = Hash.new(0) }
+    trackers.each do |tracker, hits|
+      token, params, user_agent = tracker
+      incs_from_params_and_user_agent(params, user_agent).each do |inc|
+        incs[token][inc] += hits
+      end
+    end
+    incs
   end
+
+  def self.incs_from_params_and_user_agent(params, user_agent)
+    [params]
+  end
+
 
   SUPPORTED_BROWSER = {
     "Firefox"           => "fir",

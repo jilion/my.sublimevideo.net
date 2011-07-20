@@ -9,10 +9,10 @@ describe SiteStat do
       @trackers = LogAnalyzer.parse(@log.file, 'LogsFileFormat::VoxcastStats')
     end
 
-    describe ".analyze_trackers" do
+    describe ".incs_from_trackers" do
 
-      it "does something" do
-        SiteStat.analyze_trackers(@trackers)
+      it "does something", focus: true do
+        puts SiteStat.incs_from_trackers(@trackers)
       end
 
     end
