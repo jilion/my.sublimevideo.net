@@ -18,15 +18,17 @@
 %p
   %strong Authorize URL:
   %code
-    ="http#{'s' if request.ssl?}://#{request.host_with_port}#{@application.oauth_server.authorize_path}"
+    = oauth_authorize_url
+    -# ="http#{'s' if request.ssl?}://#{request.host_with_port}#{@application.oauth_server.authorize_path}"
 %p
   %strong Access Token URL:
   %code
-    ="http#{'s' if request.ssl?}://#{request.host_with_port}#{@application.oauth_server.access_token_path}"
+    = oauth_token_url
+    -# ="http#{'s' if request.ssl?}://#{request.host_with_port}#{@application.oauth_server.token_path}"
 
 -# %p
 -#   We support hmac-sha1 (recommended) as well as plain text in ssl mode.
 
-= link_to 'Edit', [:edit, :client_application, @application]
+= link_to 'Edit', edit_client_application_path(@application)
 = " | "
 = link_to 'Back', [:client_applications]

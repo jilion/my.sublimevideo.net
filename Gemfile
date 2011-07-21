@@ -98,8 +98,7 @@ group :development do
   gem 'silent-postgres'
 end
 
-group :test do
-  gem 'spork', '0.9.0.rc9'
+group :guard do
   gem 'rb-fsevent'
   gem 'growl'
   gem 'guard', :git => 'git://github.com/guard/guard.git'
@@ -108,9 +107,12 @@ group :test do
   gem 'guard-passenger'
   gem 'guard-rspec'
   gem 'guard-spork'
-  gem 'rspec-instafail'
   gem 'guard-livereload'
+end
 
+group :test do
+  gem 'spork', '0.9.0.rc9'
+  gem 'rspec-instafail'
   gem 'shoulda'
   gem 'capybara', '1.0.0.rc1'
   gem 'webmock'
