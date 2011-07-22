@@ -48,6 +48,18 @@ class SiteStat
     end
   end
 
+  def self.delay_clear_old_minutes_and_days_stats
+    unless Delayed::Job.already_delayed?('%SiteStat%clear_old_minutes_and_days_stats%')
+      delay(priority: 100, run_at: 15.minutes.from_now).clear_old_minutes_and_days_stats
+    end
+  end
+
+  def self.clear_old_minutes_and_days_stats
+    delay_clear_old_minutes_and_days_stats
+    self.m_before(180.minutes.ago).delete_all
+    self.h_before(72.hours.ago).delete_all
+  end
+
 private
 
   def self.incs_from_trackers(trackers)

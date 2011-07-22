@@ -9,6 +9,38 @@ describe SiteStat do
       @trackers = @log.trackers('LogsFileFormat::VoxcastStats')
     end
 
+    describe ".delay_clear_old_minutes_and_days_stats" do
+      it "delays clear_old_minutes_and_days_stats if not already delayed" do
+        expect { SiteStat.delay_clear_old_minutes_and_days_stats }.to change(Delayed::Job, :count).by(1)
+        Delayed::Job.last.run_at.should be_within(60).of(15.minutes.from_now)
+      end
+
+      it "delays nothing if already delayed" do
+        SiteStat.delay_clear_old_minutes_and_days_stats
+        expect { SiteStat.delay_clear_old_minutes_and_days_stats }.to change(Delayed::Job, :count).by(0)
+      end
+    end
+
+    describe ".clear_old_minutes_and_days_stats" do
+      it "delete old minutes and days site stats, but keep all stats" do
+        SiteStat.create_stats_from_trackers!(@log, @trackers)
+        log = Factory.build(:log_voxcast, :name => "cdn.sublimevideo.net.log.#{1.minute.ago.change(sec: 0).to_i}-#{Time.now.utc.change(sec: 0).to_i}.gz", file: @log_file)
+        SiteStat.create_stats_from_trackers!(log, @trackers)
+        SiteStat.count.should eql(12)
+        SiteStat.m_before(180.minutes.ago).count.should eql(2)
+        SiteStat.h_before(72.hours.ago).count.should eql(2)
+        SiteStat.clear_old_minutes_and_days_stats
+        SiteStat.count.should eql(8)
+        SiteStat.m_before(180.minutes.ago).count.should eql(0)
+        SiteStat.h_before(72.hours.ago).count.should eql(0)
+      end
+
+      it "delays itself" do
+        expect { SiteStat.clear_old_minutes_and_days_stats }.to change(Delayed::Job, :count).by(1)
+        Delayed::Job.last.run_at.should be_within(60).of(15.minutes.from_now)
+      end
+    end
+
     describe ".create_stats_from_trackers!" do
       it "create three stats m/h/d for each token" do
         SiteStat.create_stats_from_trackers!(@log, @trackers)
