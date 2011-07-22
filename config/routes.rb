@@ -59,11 +59,11 @@ MySublimeVideo::Application.routes.draw do
 
   scope "oauth" do
     # match 'test_request'  => 'oauth#test_request',  :as => :oauth_test_request
-  
+
     # OAuth 1
     match 'access_token'  => 'oauth#access_token',  :as => :oauth_access_token
     match 'request_token' => 'oauth#request_token', :as => :oauth_request_token
-  
+
     # OAuth 2
     match 'token'         => 'oauth#token', :as => :oauth_token
 
@@ -71,9 +71,9 @@ MySublimeVideo::Application.routes.draw do
     match 'authorize'     => 'oauth#authorize', :as => :oauth_authorize
     match 'revoke'        => 'oauth#revoke',    :as => :oauth_revoke, :via => :delete
   end
-  
+
   scope "account" do
-    resources :applications, :controller => 'client_applications', :as => :client_applications
+    resources :apps, :controller => 'client_applications', :as => :client_applications # don't change this, used by oauth-plugin
   end
 
   namespace "api" do
