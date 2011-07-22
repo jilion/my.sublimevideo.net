@@ -17,8 +17,8 @@ describe Referrer do
 
   describe ".create_or_update_from_trackers!" do
     before(:all) do
-      logs_file = File.new(Rails.root.join('spec/fixtures/logs/voxcast/cdn.sublimevideo.net.log.1284549900-1284549960.gz'))
-      @trackers = LogAnalyzer.parse(logs_file, 'LogsFileFormat::VoxcastReferrers')
+      log_file = File.new(Rails.root.join('spec/fixtures/logs/voxcast/cdn.sublimevideo.net.log.1284549900-1284549960.gz'))
+      @trackers = LogAnalyzer.parse(log_file, 'LogsFileFormat::VoxcastReferrers')
       %w[0w1o1q3c k8qaaj1l ibvjcopp hp1lepyq].each do |token|
         Factory(:site).update_attribute(:token, token)
       end

@@ -63,9 +63,27 @@ private
   end
 
   def self.incs_from_params_and_user_agent(params, user_agent)
-    [params]
+    incs   = []
+    params = Addressable::URI.parse(params).query_values || {}
+    if params.key?("e") && params.key?("h")
+      case params["e"]
+      when 'l' # Player load
+        # Page Visits
+        incs << 'pv.' + params["h"]
+        # Browser + Plateform
+        incs << 'bp.' + browser_and_platform_key(user_agent)
+      when 'p' # Video prepare
+        # Player Mode + Device hash
+        if params.key?("pm") && params.key?("pd")
+          incs << 'md.' + params["pm"] + '.' + params["pd"]
+        end
+      when 's' # Video start (play)
+        # Video Views
+        incs << 'vv.' + params["h"]
+      end
+    end
+    incs
   end
-
 
   SUPPORTED_BROWSER = {
     "Firefox"           => "fir",

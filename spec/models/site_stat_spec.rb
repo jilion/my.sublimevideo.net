@@ -4,19 +4,42 @@ describe SiteStat do
 
   context "with cdn.sublimevideo.net.log.1310993640-1310993700.gz logs file" do
     before(:each) do
-      log_file = File.new(Rails.root.join('spec/fixtures/logs/voxcast/cdn.sublimevideo.net.log.1310993640-1310993700.gz'))
-      @log = Factory.build(:log_voxcast, :name => 'cdn.sublimevideo.net.log.1310993640-1310993700.gz', file: log_file)
-      @trackers = LogAnalyzer.parse(@log.file, 'LogsFileFormat::VoxcastStats')
+      @log_file = File.new(Rails.root.join('spec/fixtures/logs/voxcast/cdn.sublimevideo.net.log.1310993640-1310993700.gz'))
+      @log      = Factory.build(:log_voxcast, :name => 'cdn.sublimevideo.net.log.1310993640-1310993700.gz', file: @log_file)
+      @trackers = @log.trackers('LogsFileFormat::VoxcastStats')
+    end
+
+    describe ".create_stats_from_trackers!" do
+      it "create three stats m/h/d for each token" do
+        SiteStat.create_stats_from_trackers!(@log, @trackers)
+        SiteStat.count.should eql(6)
+        SiteStat.where(t: '12345678', m: @log.minute).should be_present
+        SiteStat.where(t: '12345678', h: @log.hour).should be_present
+        SiteStat.where(t: '12345678', d: @log.day).should be_present
+        SiteStat.where(t: 'ibvjcopp', m: @log.minute).should be_present
+        SiteStat.where(t: 'ibvjcopp', h: @log.hour).should be_present
+        SiteStat.where(t: 'ibvjcopp', d: @log.day).should be_present
+      end
+
+      it "update existing h/d stats" do
+        SiteStat.create_stats_from_trackers!(@log, @trackers)
+        log = Factory.build(:log_voxcast, :name => 'cdn.sublimevideo.net.log.1310993700-1310993760.gz', file: @log_file)
+        SiteStat.create_stats_from_trackers!(log, @trackers)
+        SiteStat.count.should eql(8)
+        SiteStat.where(t: '12345678').m_before(Time.now).count.should eql(2)
+        SiteStat.where(t: '12345678', h: log.hour).first.vv.should eql({ "d" => 2 })
+        SiteStat.where(t: 'ibvjcopp', d: log.day).first.bp.should eql({ "saf-osx" => 2 })
+      end
     end
 
     describe ".incs_from_trackers" do
-
-      it "does something", focus: true do
-        puts SiteStat.incs_from_trackers(@trackers)
+      it "returns incs for each token" do
+        SiteStat.incs_from_trackers(@trackers).should eql({
+          "12345678" => { "md.f.d" => 1, "md.h.m" => 1, "pv.e" => 1, "bp.saf-osx" => 1, "vv.d" =>1 },
+          "ibvjcopp" => { "vv.m" => 1, "md.h.d" => 1, "pv.m" => 1, "bp.saf-osx" => 1 }
+        })
       end
-
     end
-
   end
 
   describe ".browser_and_platform_key" do
@@ -38,6 +61,7 @@ describe SiteStat do
     specify { SiteStat.browser_and_platform_key("Mozilla/5.0(iPad; U; CPU iPhone OS 3_2 like Mac OS X; en-us) AppleWebKit/531.21.10 (KHTML, like Gecko) Version/4.0.4 Mobile/7B314 Safari/531.21.10").should eql("saf-ipa") }
     specify { SiteStat.browser_and_platform_key("Mozila/5.0 (iPod; U; CPU like Mac OS X; en) AppleWebKit/420.1 (KHTML, like Geckto) Version/3.0 Mobile/3A101a Safari/419.3").should eql("saf-ipo") }
     specify { SiteStat.browser_and_platform_key("HotJava/1.1.2 FCS").should eql("oth-otd") }
+    specify { SiteStat.browser_and_platform_key("").should eql("oth-otd") }
   end
 
 end

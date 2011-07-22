@@ -10,8 +10,8 @@ describe Log::Amazon::S3::Player do
     its(:hostname)   { should == 'sublimevideo.player' }
     its(:started_at) { should == Time.zone.parse('2010-07-16-05-22-13').utc }
     its(:ended_at)   { should == (Time.zone.parse('2010-07-16-05-22-13') + 1.day).utc }
+    its(:parsed_at)  { should be_nil}
 
-    it { should_not be_parsed }
     it { should be_valid }
   end
 

@@ -4,8 +4,8 @@ describe LogsFileFormat::VoxcastStats do
 
   describe "with cdn.sublimevideo.net.log.1310993640-1310993700.gz logs file" do
     before(:each) do
-      logs_file = File.new(Rails.root.join('spec/fixtures/logs/voxcast/cdn.sublimevideo.net.log.1310993640-1310993700.gz'))
-      @trackers = LogAnalyzer.parse(logs_file, 'LogsFileFormat::VoxcastStats')
+      log_file = File.new(Rails.root.join('spec/fixtures/logs/voxcast/cdn.sublimevideo.net.log.1310993640-1310993700.gz'))
+      @trackers = LogAnalyzer.parse(log_file, 'LogsFileFormat::VoxcastStats')
     end
 
     it "should parse and return loader tracker" do
@@ -24,8 +24,8 @@ describe LogsFileFormat::VoxcastStats do
 
   describe "with 4076.voxcdn.com.log.1310993640-1310993700.gz logs file" do
     before(:each) do
-      logs_file = File.new(Rails.root.join('spec/fixtures/logs/voxcast/4076.voxcdn.com.log.1310993640-1310993700.gz'))
-      @trackers = LogAnalyzer.parse(logs_file, 'LogsFileFormat::VoxcastStats')
+      log_file = File.new(Rails.root.join('spec/fixtures/logs/voxcast/4076.voxcdn.com.log.1310993640-1310993700.gz'))
+      @trackers = LogAnalyzer.parse(log_file, 'LogsFileFormat::VoxcastStats')
     end
 
     it "should parse and return loader tracker" do

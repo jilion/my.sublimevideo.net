@@ -6,7 +6,7 @@ GIT
 
 GIT
   remote: git://github.com/guard/guard.git
-  revision: 76c2977b6737bf685e13aa7202474259e034b6c3
+  revision: baa1817b3a4ed063fa43803ca2f704464edc9a2f
   specs:
     guard (0.5.1)
       thor (~> 0.14.6)
@@ -99,7 +99,7 @@ GEM
       xpath (~> 0.1.4)
     carrierwave (0.5.6)
       activesupport (~> 3.0)
-    childprocess (0.1.9)
+    childprocess (0.2.0)
       ffi (~> 1.0.6)
     configuration (1.2.0)
     countries (0.3.0)
@@ -123,7 +123,7 @@ GEM
       warden (~> 1.0.3)
     devise_invitable (0.5.2)
       devise (~> 1.4.1)
-      rails (>= 3.0.0, < 3.2)
+      rails (< 3.2, >= 3.0.0)
     diff-lcs (1.1.2)
     em-websocket (0.3.0)
       addressable (>= 2.1.1)
@@ -131,7 +131,7 @@ GEM
     erubis (2.6.6)
       abstract (>= 1.0.0)
     eventmachine (0.12.10)
-    excon (0.6.4)
+    excon (0.6.5)
     factory_girl (1.3.3)
     factory_girl_rails (1.0.1)
       factory_girl (~> 1.3)
@@ -154,7 +154,7 @@ GEM
       net-ssh (>= 2.1.3)
       nokogiri (>= 1.4.4)
       ruby-hmac
-    formatador (0.1.5)
+    formatador (0.2.0)
     growl (1.0.3)
     guard-bundler (0.1.3)
       bundler (>= 1.0.0)
@@ -191,9 +191,7 @@ GEM
     json_pure (1.5.3)
     kaminari (0.12.4)
       rails (>= 3.0.0)
-    launchy (0.4.0)
-      configuration (>= 0.0.5)
-      rake (>= 0.8.1)
+    launchy (2.0.3)
     libxml-ruby (1.1.3)
     liquid (2.2.2)
     mail (2.2.19)
@@ -318,7 +316,7 @@ GEM
     tzinfo (0.3.29)
     uniquify (0.1.0)
     uuidtools (2.1.2)
-    vcr (1.10.0)
+    vcr (1.10.2)
     warden (1.0.4)
       rack (>= 1.0)
     webmock (1.6.4)

@@ -64,10 +64,9 @@ class Log
 
   def self.parse_log(id)
     log = find(id)
-    unless log.parsed?
+    unless log.parsed_at?
       log.parse_and_create_usages!
-      log.parsed_at = Time.now.utc
-      log.save
+      log.update_attribute(:parsed_at, Time.now.utc)
     end
   end
 
@@ -80,10 +79,6 @@ class Log
     set_dates_and_hostname_from_name
   end
 
-  def parsed?
-    parsed_at.present?
-  end
-  
   def day
     started_at.change(hour: 0, min: 0, sec: 0, usec: 0).to_time
   end
@@ -93,6 +88,10 @@ class Log
   end
   memoize :month
 
+  def trackers(log_format)
+    with_log_file_in_tmp { |file| LogAnalyzer.parse(file, log_format) }
+  end
+
 private
 
   # after_create
@@ -100,14 +99,16 @@ private
     self.class.delay(:priority => 20, :run_at => 5.seconds.from_now).parse_log(id) # lets finish the upload
   end
 
-  # Don't forget to delete this logs_file after using it, thx!
-  def copy_logs_file_to_tmp
+  def with_log_file_in_tmp(&block)
     Notify.send("Log File ##{id} not present at copy") unless file.present?
-    rescue_and_retry(7, Excon::Errors::NotFound, Excon::Errors::SocketError) do
-      logs_file = File.new(Rails.root.join("tmp/#{name}"), 'w', :encoding => 'ASCII-8BIT')
-      logs_file.write(file.read)
-      logs_file.flush
+    log_file = rescue_and_retry(7, Excon::Errors::NotFound, Excon::Errors::SocketError) do
+      log_file = File.new(Rails.root.join("tmp/#{name}"), 'w', :encoding => 'ASCII-8BIT')
+      log_file.write(file.read)
+      log_file.flush
     end
+    result = yield(log_file)
+    File.delete(log_file.path)
+    result
   end
 
   def self.yml
