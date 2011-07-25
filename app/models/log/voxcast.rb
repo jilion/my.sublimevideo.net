@@ -85,7 +85,7 @@ class Log::Voxcast < Log
   end
 
   def parse_and_create_referrers!
-    unless referrers_parsed?
+    unless referrers_parsed_at?
       logs_file = copy_logs_file_to_tmp
       trackers = LogAnalyzer.parse(logs_file, 'LogsFileFormat::VoxcastReferrers')
       Referrer.create_or_update_from_trackers!(trackers)
@@ -95,12 +95,8 @@ class Log::Voxcast < Log
     end
   end
 
-  def referrers_parsed?
-    referrers_parsed_at.present?
-  end
-
   def parse_and_create_user_agents!
-    unless user_agents_parsed?
+    unless user_agents_parsed_at?
       logs_file = copy_logs_file_to_tmp
       trackers = LogAnalyzer.parse(logs_file, 'LogsFileFormat::VoxcastUserAgents')
       UsrAgent.create_or_update_from_trackers!(self, trackers)
@@ -108,10 +104,6 @@ class Log::Voxcast < Log
       self.user_agents_parsed_at = Time.now.utc
       self.save
     end
-  end
-
-  def user_agents_parsed?
-    user_agents_parsed_at.present?
   end
 
 private
