@@ -3,9 +3,17 @@ require 'spec_helper'
 describe VoxcastCDN do
 
   describe ".download_log" do
-    use_vcr_cassette "voxcast/download_log_available"
+    context "when log not available" do
+      use_vcr_cassette "voxcast/download_log_not_available"
 
-    specify { VoxcastCDN.download_log("cdn.sublimevideo.net.log.1309836000-1309836060.gz").class.should eq Tempfile }
+      specify { VoxcastCDN.download_log("cdn.sublimevideo.net.log.9999999900-9999999960.gz").should be_false }
+    end
+
+    context "when log available" do
+      use_vcr_cassette "voxcast/download_log_available"
+
+      specify { VoxcastCDN.download_log("cdn.sublimevideo.net.log.1309836000-1309836060.gz").class.should eq Tempfile }
+    end
   end
 
   describe ".ssl_hostname" do
