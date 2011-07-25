@@ -45,8 +45,10 @@ class Log::Voxcast < Log
     new_log_ended_at = nil
     while (new_log_ended_at = next_log_ended_at(hostname, new_log_ended_at)) < Time.now.utc do
       new_log_name = log_name(hostname, new_log_ended_at)
-      new_log_file = VoxcastCDN.download_log(new_log_name)
-      rescue_and_retry(6) { create!(name: new_log_name, file: new_log_file) } if new_log_file
+      unless self.exists?(conditions: { name: new_log_name })
+        new_log_file = VoxcastCDN.download_log(new_log_name)
+        rescue_and_retry(6) { create!(name: new_log_name, file: new_log_file) } if new_log_file
+      end
     end
     delay(priority: 0, run_at: new_log_ended_at).send(method)
   end

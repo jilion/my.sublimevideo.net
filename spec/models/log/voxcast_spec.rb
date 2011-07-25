@@ -143,8 +143,23 @@ describe Log::Voxcast do
       context "with no log saved" do
         use_vcr_cassette "voxcast/download_and_create_new_logs_and_redelay 0 logs"
 
-        it "creates 0 log" do
-          expect { Log::Voxcast.download_and_create_new_logs_and_redelay("cdn.sublimevideo.net", :download_and_create_new_non_ssl_logs) }.should change(Log::Voxcast, :count).by(1)
+        it "creates 1 log" do
+          expect { Log::Voxcast.download_and_create_new_logs_and_redelay("cdn.sublimevideo.net", :download_and_create_new_non_ssl_logs) }.to change(Log::Voxcast, :count).by(1)
+        end
+        it "delays method to run in 1 min" do
+          Log::Voxcast.download_and_create_new_logs_and_redelay("cdn.sublimevideo.net", :download_and_create_new_non_ssl_logs)
+          Delayed::Job.last.run_at.should eq 1.minute.from_now.change(sec: 0)
+        end
+      end
+
+      context "with a log saved" do
+        use_vcr_cassette "voxcast/download_and_create_new_logs_and_redelay 1 min ago"
+        before(:each) do
+          Factory(:log_voxcast, :name => Log::Voxcast.log_name("cdn.sublimevideo.net", Time.now.change(sec: 0)))
+        end
+
+        it "creates 0 log (no duplicates)" do
+          expect { Log::Voxcast.download_and_create_new_logs_and_redelay("cdn.sublimevideo.net", :download_and_create_new_non_ssl_logs) }.to_not change(Log::Voxcast, :count)
         end
         it "delays method to run in 1 min" do
           Log::Voxcast.download_and_create_new_logs_and_redelay("cdn.sublimevideo.net", :download_and_create_new_non_ssl_logs)
