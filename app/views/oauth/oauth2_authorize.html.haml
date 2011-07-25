@@ -1,11 +1,24 @@
 = title_and_content_header("Authorize access to your account")
 
-%p
-  Would you like to authorize the application
-  = link_to "'#{@client_application.name}'", @client_application.url
-  (
-  = link_to @client_application.url, @client_application.url
-  ) to access your account?
+.text
+  %p.desc= raw "Would you like to authorize the application #{link_to content_tag(:strong, @client_application.name), @client_application.url} to access your account?"
+
+  %p.desc><
+    = "This application"
+    %strong{ :style => "color:#2c8a14" }= "will be able to"
+    = ":"
+  %ul.desc
+    %li Read your sites information and usage.
+
+  %p.desc><
+    = "This application"
+    %strong{ :style => "color:#891619" }= "will not be able to"
+    = ":"
+  %ul.desc
+    %li Edit your account.
+    %li Create new sites.
+    %li Update sites information.
+    %li Get your user and credit card information.
   
 = form_tag(oauth_authorize_url) do
   = hidden_field_tag "response_type", params[:response_type]
@@ -15,7 +28,7 @@
   = hidden_field_tag "scope",         params[:scope]
   = hidden_field_tag("authorize", "1")
 
-  %p
-    = submit_tag "Authorize"
-    = " | "
-    = link_to "Cancel", params[:redirect_uri]
+  .entry
+    = submit_tag "Authorize", :class => "submit_dynamic_button blue float"
+  
+    = link_to "Cancel", params[:redirect_uri], :class => "submit_dynamic_button float"
