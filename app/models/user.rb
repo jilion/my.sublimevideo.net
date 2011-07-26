@@ -143,7 +143,10 @@ class User < ActiveRecord::Base
   end
 
   def update_tracked_fields!(request)
-    super(request) unless request.params.key?(:oauth_token)
+    # Don't update user when he's accessing the API
+    if !request.params.key?(:oauth_token) && !request.headers['HTTP_AUTHORIZATION'] =~ /OAuth/
+      super(request)
+    end
   end
 
   def self.suspend(user_id)
