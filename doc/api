@@ -1,14 +1,16 @@
 MSV REST API
 
-- Authentication is always needed
-- You can request an API Token by visiting https://my.sublimevideo.net/account/edit and click on "Generate" under the "API Token" section.
-- You can reset your API Token (in case you think someone else uses it for example).
+- For the moment, authentication is always needed
+- You can create an application by visiting https://my.sublimevideo.net/account/applications/new
+- You can revoke an application authorization by visiting https://my.sublimevideo.net/account/applications
 
 Authentication:
-- Should be given for each requests.
-- You can authenticate by giving your API Token through query string using the "auth_token" key and your API Token as the value.
-  Example: https://my.sublimevideo.net/api/version/sites.format?auth_token=aBCd1234
-- You can authenticate through HTTP Basic Authentication by giving your API Token as username and "" or "X" as password.
+Authenticate through SublimeVideo API v1 is done with an OAuth token:
+OAuth2 Token (sent in a header):
+$ curl -H "Authorization: OAuth OAUTH-TOKEN" https://my.sublimevideo.net/api
+OAuth2 Token (sent as a parameter):
+$ curl https://my.sublimevideo.net/api?oauth_token=OAUTH-TOKEN
+Read more about OAuth2.
 
 Current version:
 
@@ -18,15 +20,15 @@ Available resources:
 
 For resources that need a site "token", you can find this token by clicking on the "Embed Code" button on https://my.sublimevideo.net/sites and taking the 8 alphanumerical sequence just before the ".js"
 
-GET sites
+GET /sites
 
 Return the detailed list of your sites.
 
 URL
-https://my.sublimevideo.net/api/version/sites.format
+https://my.sublimevideo.net/api/sites
 
 Supported format
-json
+json, xml
 
 Supported request methods
 GET
@@ -41,15 +43,15 @@ Parameters
   Nothing
 
 
-GET sites/:token
+GET /sites/:token
 
 Return the details of one site.
 
 URL
-https://my.sublimevideo.net/api/version/sites/:token.format
+https://my.sublimevideo.net/api/sites/:token
 
 Supported format
-json
+json, xml
 
 Supported request methods
 GET
@@ -62,18 +64,18 @@ Rate Limited
 
 Parameters
   Required
-  - token : The token of the desired site. Ex: https://my.sublimevideo.net/api/1/sites/abc123.json
+  - token : The token of the desired site. Ex: https://my.sublimevideo.net/api/sites/abc123
 
 
-GET sites/:token/usage
+GET /sites/:token/usage
 
 Return the usage of your site's video player during the last 60 days.
 
 URL
-https://my.sublimevideo.net/api/version/sites/:token/usage.format
+https://my.sublimevideo.net/api/sites/:token/usage
 
 Supported format
-json
+json, xml
 
 Supported request methods
 GET
@@ -86,4 +88,4 @@ Rate Limited
 
 Parameters
   Required
-  - token : The token of the desired site. Ex: https://my.sublimevideo.net/api/1/sites/abc123/usage.json
+  - token : The token of the desired site. Ex: https://my.sublimevideo.net/api/sites/abc123/usage
