@@ -25,7 +25,7 @@ feature "Sites API" do
 
       describe "with the right Accept header" do
         scenario do
-          page.driver.header 'Accept', 'application/vnd.jilion.sublimevideo-v1+json'
+          page.driver.header 'Accept', 'application/vnd.sublimevideo-v1+json'
           visit '/api/sites?oauth_token=' + @token.token
 
           page.driver.status_code.should eql 200
@@ -46,7 +46,7 @@ feature "Sites API" do
 
       describe "with the right Accept header" do
         scenario do
-          page.driver.header 'Accept', 'application/vnd.jilion.sublimevideo-v1+xml'
+          page.driver.header 'Accept', 'application/vnd.sublimevideo-v1+xml'
           visit '/api/sites?oauth_token=' + @token.token
 
           page.driver.status_code.should eql 200

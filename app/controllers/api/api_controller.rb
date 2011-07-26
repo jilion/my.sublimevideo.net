@@ -26,10 +26,8 @@ class Api::ApiController < ActionController::Metal
     sign_in(user)
   end
 
-  protected
-
   def set_version_and_content_type
-    version_and_content_type = (request.headers['Accept'] || '').match(%r{^application/vnd\.jilion\.sublimevideo(-v(\d+))?\+(\w+)$})
+    version_and_content_type = (request.headers['Accept'] || '').match(%r{^application/vnd\.sublimevideo(-v(\d+))?\+(\w+)$})
     @version = version_and_content_type.try(:[], 2) || Api.current_version
     @content_type = version_and_content_type.try(:[], 3) || params[:format] || Api.default_content_type
   end
