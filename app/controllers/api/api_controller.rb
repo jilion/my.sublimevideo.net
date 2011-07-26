@@ -1,10 +1,10 @@
-class Api::ApiController < ActionController::Base
-  # include AbstractController::Callbacks
-  # include ActionController::Helpers
-  # include ActionController::MimeResponds
-  # include ActionController::Rendering
-  # include ActionController::Renderers::All
-  # include ActionController::Instrumentation
+class Api::ApiController < ActionController::Metal
+  include AbstractController::Callbacks
+  include ActionController::Helpers
+  include ActionController::MimeResponds
+  include ActionController::Rendering
+  include ActionController::Renderers::All
+  include ActionController::Instrumentation
   include Devise::Controllers::Helpers
   include ActsAsApi::Rendering
   include OAuth::Controllers::ApplicationControllerMethods
