@@ -10,7 +10,7 @@ describe Oauth2Verifier do
   end
 
   it "should have a code" do
-    @verifier.code.should_not be_nil
+    @verifier.code.should be_present
   end
 
   it "should not have a secret" do

@@ -31,7 +31,7 @@ class Oauth2Verifier < OauthToken
   def generate_keys
     self.token         = OAuth::Helper.generate_key(20)[0,20]
     self.valid_to      = 10.minutes.from_now
-    self.authorized_at = Time.now
+    self.authorized_at = Time.now.utc
   end
 
 end
