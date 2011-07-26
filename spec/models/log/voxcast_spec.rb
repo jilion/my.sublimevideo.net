@@ -10,8 +10,8 @@ describe Log::Voxcast do
     its(:started_at) { should == Time.zone.at(1274773200).utc }
     its(:ended_at)   { should == Time.zone.at(1274773260).utc }
 
-    it { should_not be_parsed }
-    it { should_not be_referrers_parsed }
+    it { should_not be_parsed_at }
+    it { should_not be_referrers_parsed_at }
     it { should be_valid }
   end
 
@@ -143,8 +143,8 @@ describe Log::Voxcast do
       context "with no log saved" do
         use_vcr_cassette "voxcast/download_and_create_new_logs_and_redelay 0 logs"
 
-        it "creates 0 log" do
-          expect { Log::Voxcast.download_and_create_new_logs_and_redelay("cdn.sublimevideo.net", :download_and_create_new_non_ssl_logs) }.should change(Log::Voxcast, :count).by(1)
+        it "creates 1 log" do
+          expect { Log::Voxcast.download_and_create_new_logs_and_redelay("cdn.sublimevideo.net", :download_and_create_new_non_ssl_logs) }.to change(Log::Voxcast, :count).by(1)
         end
         it "delays method to run in 1 min" do
           Log::Voxcast.download_and_create_new_logs_and_redelay("cdn.sublimevideo.net", :download_and_create_new_non_ssl_logs)
@@ -152,14 +152,29 @@ describe Log::Voxcast do
         end
       end
 
-      context "with log saved 1min ago" do
+      context "with a log saved" do
+        use_vcr_cassette "voxcast/download_and_create_new_logs_and_redelay 1 min ago"
+        before(:each) do
+          Factory(:log_voxcast, :name => Log::Voxcast.log_name("cdn.sublimevideo.net", Time.now.change(sec: 0)))
+        end
+
+        it "creates 0 log (no duplicates)" do
+          expect { Log::Voxcast.download_and_create_new_logs_and_redelay("cdn.sublimevideo.net", :download_and_create_new_non_ssl_logs) }.to_not change(Log::Voxcast, :count)
+        end
+        it "delays method to run in 1 min" do
+          Log::Voxcast.download_and_create_new_logs_and_redelay("cdn.sublimevideo.net", :download_and_create_new_non_ssl_logs)
+          Delayed::Job.last.run_at.should eq 1.minute.from_now.change(sec: 0)
+        end
+      end
+
+      context "with log saved 1 min ago" do
         use_vcr_cassette "voxcast/download_and_create_new_logs_and_redelay 1 min ago"
         before(:each) do
           Factory(:log_voxcast, :name => Log::Voxcast.log_name("cdn.sublimevideo.net", 1.minute.ago.change(sec: 0)))
         end
 
         it "creates 1 log" do
-          expect { Log::Voxcast.download_and_create_new_logs_and_redelay("cdn.sublimevideo.net", :download_and_create_new_non_ssl_logs) }.should change(Log::Voxcast, :count).by(1)
+          expect { Log::Voxcast.download_and_create_new_logs_and_redelay("cdn.sublimevideo.net", :download_and_create_new_non_ssl_logs) }.to change(Log::Voxcast, :count).by(1)
         end
         it "delays method to run in 1 min" do
           Log::Voxcast.download_and_create_new_logs_and_redelay("cdn.sublimevideo.net", :download_and_create_new_non_ssl_logs)
@@ -167,14 +182,14 @@ describe Log::Voxcast do
         end
       end
 
-      context "with log saved 5min ago" do
+      context "with log saved 5 min ago" do
         use_vcr_cassette "voxcast/download_and_create_new_logs_and_redelay 5 min ago"
         before(:each) do
           Factory(:log_voxcast, :name => Log::Voxcast.log_name("cdn.sublimevideo.net", 5.minutes.ago.change(sec: 0)))
         end
 
         it "creates 5 logs" do
-          expect { Log::Voxcast.download_and_create_new_logs_and_redelay("cdn.sublimevideo.net", :download_and_create_new_non_ssl_logs) }.should change(Log::Voxcast, :count).by(5)
+          expect { Log::Voxcast.download_and_create_new_logs_and_redelay("cdn.sublimevideo.net", :download_and_create_new_non_ssl_logs) }.to change(Log::Voxcast, :count).by(5)
         end
         it "delays method" do
           Log::Voxcast.download_and_create_new_logs_and_redelay("cdn.sublimevideo.net", :download_and_create_new_non_ssl_logs)
@@ -237,7 +252,7 @@ describe Log::Voxcast do
 
       its(:referrers_parsed_at) { should be_present }
 
-      it { should be_referrers_parsed }
+      it { should be_referrers_parsed_at }
 
       it "should not reparse if already done" do
         Referrer.should_not_receive(:create_or_update_from_trackers!)
@@ -257,7 +272,7 @@ describe Log::Voxcast do
 
       its(:user_agents_parsed_at) { should be_present }
 
-      it { should be_user_agents_parsed }
+      it { should be_user_agents_parsed_at }
 
       it "should not reparse if already done" do
         UsrAgent.should_not_receive(:create_or_update_from_trackers!)

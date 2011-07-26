@@ -62,7 +62,7 @@ class Log
 
   def self.parse_log(id)
     log = find(id)
-    unless log.parsed?
+    unless log.parsed_at?
       log.parse_and_create_usages!
       log.parsed_at = Time.now.utc
       log.save
@@ -76,10 +76,6 @@ class Log
   def name=(attribute)
     write_attribute :name, attribute
     set_dates_and_hostname_from_name
-  end
-
-  def parsed?
-    parsed_at.present?
   end
 
 private

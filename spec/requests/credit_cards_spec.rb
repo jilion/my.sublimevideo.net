@@ -8,16 +8,28 @@ feature "Credit cards update" do
       @current_user.should_not be_credit_card
     end
 
-    scenario "new credit card" do
+    scenario "successfully" do
       click_link(@current_user.full_name)
       current_url.should =~ %r(^http://[^/]+/account/edit$)
 
-      page.should_not have_content("Add a credit card")
-      page.should_not have_content("Update credit card")
+      page.should have_content("Register credit card")
 
-      visit "/card/edit"
+      @current_user.cc_type.should be_nil
+      @current_user.cc_last_digits.should be_nil
 
-      current_url.should =~ %r(^http://[^/]+/account/edit$)
+      click_link("Register credit card")
+      current_url.should =~ %r(^http://[^/]+/card/edit$)
+
+      set_credit_card(type: 'master')
+      VCR.use_cassette('ogone/credit_card_visa_validation') { click_button "Register" }
+
+      @current_user.reload.cc_type.should eql 'master'
+      @current_user.cc_last_digits.should eql '9999'
+      should_save_credit_card_successfully(type: 'master')
+
+      page.should have_content I18n.t('flash.credit_cards.update.notice')
+      page.should have_content "MasterCard"
+      page.should have_content '9999'
     end
   end
 
