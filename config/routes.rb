@@ -73,7 +73,7 @@ MySublimeVideo::Application.routes.draw do
   end
 
   scope "account" do
-    resources :apps, :controller => 'client_applications', :as => :client_applications # don't change this, used by oauth-plugin
+    resources :applications, :controller => 'client_applications', :as => :client_applications # don't change this, used by oauth-plugin
   end
 
   namespace "api" do
