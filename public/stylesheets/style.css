@@ -657,7 +657,7 @@ form p.note, #content form label.note, #credit_card_summary p.note {
   background:#fefefe;
   background:-moz-linear-gradient(top, #fff, #ced3da);
   border:1px solid #8a92a0;
-  font-family:"proxima-nova-1","proxima-nova-2", Helvetica, Arial, sans-serif;
+/*  font-family:"proxima-nova-1","proxima-nova-2", Helvetica, Arial, sans-serif;*/
   font-size:18px;
   color:#4d5563;
   text-shadow:#fff 0 1px 0;
@@ -689,7 +689,7 @@ form p.note, #content form label.note, #credit_card_summary p.note {
     padding:2px 22px 0 10px;
     background:url(/images/embed/custom_select.png) no-repeat right center;
     border:1px solid #8a92a0;
-    font-family:"proxima-nova-1","proxima-nova-2", Helvetica, Arial, sans-serif;
+/*    font-family:"proxima-nova-1","proxima-nova-2", Helvetica, Arial, sans-serif;*/
     font-size:18px;
     color:#4d5563;
     text-shadow:#fff 0 1px 0;
