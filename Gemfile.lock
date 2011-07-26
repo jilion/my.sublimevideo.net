@@ -6,7 +6,7 @@ GIT
 
 GIT
   remote: git://github.com/guard/guard.git
-  revision: e376acc05a9ba8ddce4549522e4769b6dfed311c
+  revision: 0176a0c5cca617c809992002e8fa1aa63ceb8655
   specs:
     guard (0.5.1)
       thor (~> 0.14.6)
