@@ -8,7 +8,7 @@ class OauthController < ApplicationController
     @token.invalidate!
 
     respond_with(@token) do |format|
-      format.html { redirect_to(applications_url, notice: "You've revoked the authorization for the application '#{@token.client_application.name}'.") }
+      format.html { redirect_to([:client_applications], notice: "You've revoked the authorization for the application '#{@token.client_application.name}'.") }
     end
   end
 
