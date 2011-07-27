@@ -1,5 +1,6 @@
 class SiteUsage
   include Mongoid::Document
+  include SiteUsage::Api
 
   field :site_id,         :type => Integer
   field :day,             :type => DateTime
@@ -91,7 +92,8 @@ private
         tracker.categories.each do |array, hits|
           token, status, referrer = array[0], array[1], array[2]
           if site = Site.find_by_token(token)
-            referrer_type = site.referrer_type(referrer, log.started_at)
+            # Don't use log.started_at to prevent error with new site created during the log creation
+            referrer_type = site.referrer_type(referrer, log.ended_at)
             if status == 200
               player_hits_type = "#{referrer_type}_player_hits".to_sym
               trackers[player_hits_type] = set_hits_tracker(trackers, player_hits_type, token, hits)

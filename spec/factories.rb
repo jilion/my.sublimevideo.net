@@ -208,3 +208,31 @@ Factory.define :tweet do |f|
   f.tweeted_at          Time.now.utc
   f.favorited           false
 end
+
+Factory.define :client_application do |f|
+  f.association :user
+  f.name         "Agree2"
+  f.url          "http://test.com"
+  f.support_url  "http://test.com/support"
+  f.callback_url "http://test.com/callback"
+  f.key          "one_key"
+  f.secret       "MyString"
+end
+
+Factory.define :oauth_token do |f|
+  f.association  :client_application
+  f.association  :user
+  f.callback_url "http://test.com/callback"
+end
+
+Factory.define :oauth2_token do |f|
+  f.association  :client_application
+  f.association  :user
+  f.callback_url "http://test.com/callback"
+end
+
+Factory.define :oauth2_verifier do |f|
+  f.association  :client_application
+  f.association  :user
+  f.callback_url "http://test.com/callback"
+end

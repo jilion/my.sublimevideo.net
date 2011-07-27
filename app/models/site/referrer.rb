@@ -5,8 +5,9 @@ module Site::Referrer
   # ====================
 
   def referrer_type(referrer, timestamp = Time.now.utc)
+    return "invalid" if referrer.nil?
     if past_site = version_at(timestamp)
-      referrer.gsub! /\[|\]/, ''
+      referrer.gsub!(/\[|\]/, '')
       if past_site.main_referrer?(referrer)
         "main"
       elsif past_site.extra_referrer?(referrer)
@@ -43,21 +44,14 @@ private
   # =================
 
   def self.referrer_match_hostname?(referrer, hostname, path = '', wildcard = false)
-    referrer = parse_uri(referrer)
+    uri      = Addressable::URI.parse(referrer)
     hostname = hostname.gsub('.', '\.')
     if path || wildcard
-      (referrer.host =~ /^(#{wildcard ? '.*' : 'www'}\.)?#{hostname}$/i) && (path.blank? || referrer.path =~ /^\/#{URI.encode(path)}($|\/.*$)/i)
+      path     = Addressable::URI.encode(path)
+      uri_path = Addressable::URI.encode(uri.path)
+      (uri.host =~ /^(#{wildcard ? '.*' : 'www'}\.)?#{hostname}$/i) && (path.blank? || uri_path =~ /^\/#{path}($|\/.*$)/i)
     else
-      referrer.host =~ /^(www\.)?#{hostname}$/i
-    end
-  end
-
-  def self.parse_uri(uri)
-    uri = URI.encode(uri)
-    begin
-      URI.parse(uri)
-    rescue
-      FakeURI.parse(uri)
+      uri.host =~ /^(www\.)?#{hostname}$/i
     end
   end
 

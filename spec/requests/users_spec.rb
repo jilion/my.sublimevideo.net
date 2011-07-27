@@ -210,6 +210,26 @@ feature "Users" do
     User.last.full_name.should == "John Doe"
   end
 
+  describe "API" do
+    scenario "API pages are not accessible" do
+      sign_in_as :user
+      click_link('John Doe')
+      page.should have_no_content("API")
+
+      visit "/account/applications"
+      current_url.should =~ %r(^http://[^/]+/account/edit$)
+    end
+
+    scenario "API pages are accessible to @jilion.com emails" do
+      sign_in_as :user, email: "remy@jilion.com"
+      click_link('John Doe')
+      page.should have_content("API")
+
+      visit "/account/applications"
+      current_url.should =~ %r(^http://[^/]+/account/applications$)
+    end
+  end
+
   scenario "delete his account (with current password confirmation)" do
     sign_in_as :user
     click_link('John Doe')

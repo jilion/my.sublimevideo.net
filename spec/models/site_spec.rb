@@ -521,6 +521,11 @@ describe Site do
     end
 
     describe "path=" do
+      describe "should set to '' if nil is given" do
+        subject { Factory(:site, path: nil) }
+
+        its(:path) { should == '' }
+      end
       describe "should remove first /" do
         subject { Factory(:site, path: '/users/thibaud') }
 
@@ -1569,12 +1574,11 @@ describe Site do
         Factory(:plan, name: "planet", player_hits: 50_000)
         Factory(:plan, name: "star",   player_hits: 200_000)
         @galaxy_plan = Factory(:plan, name: "galaxy", player_hits: 1_000_000)
-        @site = Factory(:beta_site)
+        @site        = Factory(:beta_site)
       end
       subject { @site }
 
       context "with no usage" do
-
         its(:recommended_plan_name) { should be_nil }
       end
 
@@ -1660,7 +1664,7 @@ describe Site do
         its(:recommended_plan_name) { should == "custom" }
       end
 
-      context "with recommended plan lower than actual plan" do
+      context "with recommended plan lower than current plan" do
         before(:each) do
           @site.unmemoize_all
           @site.plan = @galaxy_plan

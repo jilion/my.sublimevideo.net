@@ -1,5 +1,6 @@
 class Site < ActiveRecord::Base
   extend ActiveSupport::Memoizable
+  include Site::Api
   require 'site/invoice'
   require 'site/referrer'
   require 'site/templates'
@@ -36,10 +37,10 @@ class Site < ActiveRecord::Base
 
   # Mongoid associations
   def usages
-    SiteUsage.where(:site_id => id)
+    SiteUsage.where(site_id: id)
   end
   def referrers
-    ::Referrer.where(:site_id => id)
+    ::Referrer.where(site_id: id)
   end
 
   # ==========
@@ -204,7 +205,7 @@ class Site < ActiveRecord::Base
   end
 
   def path=(attribute)
-    write_attribute :path, attribute.downcase.gsub(/^\/|\/$/, '')
+    write_attribute :path, attribute.respond_to?(:to_s) ? attribute.to_s.downcase.gsub(/^\/|\/$/, '') : ''
   end
 
   def plan_id=(attribute)
