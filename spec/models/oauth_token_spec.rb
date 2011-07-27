@@ -1,53 +1,66 @@
 require 'spec_helper'
 
-describe RequestToken do
+describe OauthToken do
 
-  before(:each) do
-    @token = Factory(:request_token)
-    @user  = Factory(:user)
+  context "Factory" do
+    before(:all) { @token = Factory(:oauth_token) }
+    subject { @token }
+
+    its(:user)               { should be_present }
+    its(:client_application) { should be_present }
+    its(:token)              { should be_present }
+    its(:secret)             { should be_present }
+    its(:verifier)           { should be_nil }
+
+    it { should be_valid }
+    it { should_not be_authorized }
+    it { should_not be_invalidated }
   end
 
-  it "should be valid" do
-    @token.should be_valid
+  describe "Associations" do
+    before(:all) { @token = Factory(:oauth_token) }
+    subject { @token }
+
+    it { should belong_to :user }
+    it { should belong_to :client_application }
   end
 
-  it "should not have errors" do
-    @token.errors.should be_empty
+  describe "Validations" do
+    before(:all) { @token = Factory(:oauth_token) }
+    subject { @token.reload }
+
+    [].each do |attr|
+      it { should allow_mass_assignment_of(attr) }
+    end
+
+    it { should validate_presence_of(:client_application) }
+    it { should validate_presence_of(:token) }
   end
 
-  it "should have a token" do
-    @token.token.should_not be_nil
-  end
+  describe "Scopes" do
+    before(:all) do
+      User.delete_all
+      @user = Factory(:user)
+      @new_token         = Factory(:oauth_token, user: @user, authorized_at: nil, invalidated_at: nil)
+      @authorized_token  = Factory(:oauth_token, user: @user, authorized_at: Time.now.utc, invalidated_at: nil)
+      @invalidated_token = Factory(:oauth_token, user: @user, authorized_at: Time.now.utc, invalidated_at: Time.now.utc)
+    end
 
-  it "should have a secret" do
-    @token.secret.should_not be_nil
-  end
-
-  it "should not be authorized" do
-    @token.should_not be_authorized
-  end
-
-  it "should not be invalidated" do
-    @token.should_not be_invalidated
-  end
-
-  it "should not have a verifier" do
-    @token.verifier.should be_nil
-  end
-
-  it "should not be oob" do
-    @token.should_not be_oob
+    describe ".valid" do
+      specify { OauthToken.valid.map(&:id).should eql [@authorized_token.id] }
+    end
   end
 
 end
+
 
 # == Schema Information
 #
 # Table name: oauth_tokens
 #
 #  id                    :integer         not null, primary key
-#  user_id               :integer
 #  type                  :string(20)
+#  user_id               :integer
 #  client_application_id :integer
 #  token                 :string(40)
 #  secret                :string(40)

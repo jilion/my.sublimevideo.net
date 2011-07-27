@@ -58,18 +58,14 @@ MySublimeVideo::Application.routes.draw do
   # =======
 
   scope "oauth" do
-    # match 'test_request'  => 'oauth#test_request',  :as => :oauth_test_request
-
-    # OAuth 1
-    match 'access_token'  => 'oauth#access_token',  :as => :oauth_access_token
-    match 'request_token' => 'oauth#request_token', :as => :oauth_request_token
+    match 'test_request'  => 'oauth#test_request',  :as => :oauth_test_request
 
     # OAuth 2
-    match 'token'         => 'oauth#token', :as => :oauth_token
+    match 'token' => 'oauth#token', :as => :oauth_token
 
     # OAuth 1 & 2
-    match 'authorize'     => 'oauth#authorize', :as => :oauth_authorize
-    match 'revoke'        => 'oauth#revoke',    :as => :oauth_revoke, :via => :delete
+    match 'authorize' => 'oauth#authorize', :as => :oauth_authorize
+    match 'revoke'    => 'oauth#revoke',    :as => :oauth_revoke, :via => :delete
   end
 
   scope "account" do

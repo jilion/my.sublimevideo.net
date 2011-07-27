@@ -36,13 +36,14 @@ class Oauth2Verifier < OauthToken
 
 end
 
+
 # == Schema Information
 #
 # Table name: oauth_tokens
 #
 #  id                    :integer         not null, primary key
-#  user_id               :integer
 #  type                  :string(20)
+#  user_id               :integer
 #  client_application_id :integer
 #  token                 :string(40)
 #  secret                :string(40)

@@ -4,14 +4,8 @@ class OauthToken < ActiveRecord::Base
   # = Associations =
   # ================
 
-  belongs_to :client_application
   belongs_to :user
-
-  # =============
-  # = Callbacks =
-  # =============
-
-  before_validation :generate_keys, :on => :create
+  belongs_to :client_application
 
   # ===============
   # = Validations =
@@ -19,6 +13,18 @@ class OauthToken < ActiveRecord::Base
 
   validates :client_application, :token, :presence => true
   validates :token, :uniqueness => true
+
+  # =============
+  # = Callbacks =
+  # =============
+
+  before_validation :generate_keys, :on => :create
+
+  # ==========
+  # = Scopes =
+  # ==========
+
+  scope :valid, where({ :invalidated_at => nil } & { :authorized_at.ne => nil })
 
   # ====================
   # = Instance Methods =
@@ -48,13 +54,14 @@ class OauthToken < ActiveRecord::Base
   end
 end
 
+
 # == Schema Information
 #
 # Table name: oauth_tokens
 #
 #  id                    :integer         not null, primary key
-#  user_id               :integer
 #  type                  :string(20)
+#  user_id               :integer
 #  client_application_id :integer
 #  token                 :string(40)
 #  secret                :string(40)

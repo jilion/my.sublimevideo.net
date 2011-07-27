@@ -39,13 +39,13 @@ ActiveRecord::Schema.define(:version => 20110701131602) do
   add_index "admins", ["reset_password_token"], :name => "index_admins_on_reset_password_token", :unique => true
 
   create_table "client_applications", :force => true do |t|
+    t.integer  "user_id"
     t.string   "name"
     t.string   "url"
     t.string   "support_url"
     t.string   "callback_url"
     t.string   "key",          :limit => 40
     t.string   "secret",       :limit => 40
-    t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -134,18 +134,9 @@ ActiveRecord::Schema.define(:version => 20110701131602) do
     t.datetime "updated_at"
   end
 
-  create_table "oauth_nonces", :force => true do |t|
-    t.string   "nonce"
-    t.integer  "timestamp"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "oauth_nonces", ["nonce", "timestamp"], :name => "index_oauth_nonces_on_nonce_and_timestamp", :unique => true
-
   create_table "oauth_tokens", :force => true do |t|
-    t.integer  "user_id"
     t.string   "type",                  :limit => 20
+    t.integer  "user_id"
     t.integer  "client_application_id"
     t.string   "token",                 :limit => 40
     t.string   "secret",                :limit => 40

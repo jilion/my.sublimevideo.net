@@ -56,19 +56,19 @@ describe User do
       @user6 = Factory(:user, state: 'archived')
     end
 
-    describe "#billable" do
+    describe ".billable" do
       specify { User.billable.select("DISTINCT users.id").order(:id).map(&:id).should =~ [@user1, @user2, @user5].map(&:id) }
     end
 
-    describe "#not_billable" do
+    describe ".not_billable" do
       specify { User.not_billable.select("DISTINCT users.id").order(:id).map(&:id).should == [@user3, @user4, @user6].map(&:id) }
     end
 
-    describe "#active_and_billable" do
+    describe ".active_and_billable" do
       specify { User.active_and_billable.select("DISTINCT users.id").order(:id).map(&:id).should == [@user1, @user2].map(&:id) }
     end
 
-    describe "#active_and_not_billable" do
+    describe ".active_and_not_billable" do
       specify { User.active_and_not_billable.select("DISTINCT users.id").order(:id).map(&:id).should == [@user3, @user4].map(&:id) }
     end
 

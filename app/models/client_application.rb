@@ -15,12 +15,6 @@ class ClientApplication < ActiveRecord::Base
   has_many :oauth2_verifiers, :dependent => :delete_all
   has_many :oauth_tokens, :dependent => :delete_all
 
-  # =============
-  # = Callbacks =
-  # =============
-
-  before_validation :generate_keys, :on => :create
-
   # ===============
   # = Validations =
   # ===============
@@ -32,6 +26,12 @@ class ClientApplication < ActiveRecord::Base
   validates :support_url, :format => { :with => /\Ahttp(s?):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/i, :allow_blank => true }
   validates :callback_url, :format => { :with => /\Ahttp(s?):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/i, :allow_blank => true }
 
+  # =============
+  # = Callbacks =
+  # =============
+
+  before_validation :generate_keys, :on => :create
+
   # =================
   # = Class Methods =
   # =================
@@ -42,17 +42,6 @@ class ClientApplication < ActiveRecord::Base
       token
     else
       nil
-    end
-  end
-
-  def self.verify_request(request, options = {}, &block)
-    begin
-      signature = OAuth::Signature.build(request, options, &block)
-      return false unless OauthNonce.remember(signature.request.nonce, signature.request.timestamp)
-      value = signature.verify
-      value
-    rescue OAuth::Signature::UnknownSignatureMethod => e
-      false
     end
   end
 
@@ -68,11 +57,6 @@ class ClientApplication < ActiveRecord::Base
     @oauth_client ||= OAuth::Consumer.new(key, secret)
   end
 
-  # If your application requires passing in extra parameters handle it here
-  def create_request_token(params={})
-    RequestToken.create(client_application: self, callback_url: self.token_callback_url)
-  end
-
 protected
 
   def generate_keys
@@ -81,18 +65,19 @@ protected
   end
 end
 
+
 # == Schema Information
 #
 # Table name: client_applications
 #
 #  id           :integer         not null, primary key
+#  user_id      :integer
 #  name         :string(255)
 #  url          :string(255)
 #  support_url  :string(255)
 #  callback_url :string(255)
 #  key          :string(40)
 #  secret       :string(40)
-#  user_id      :integer
 #  created_at   :datetime
 #  updated_at   :datetime
 #

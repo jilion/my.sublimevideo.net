@@ -27,21 +27,11 @@ class CreateOauthTables < ActiveRecord::Migration
       t.timestamps
     end
     add_index :oauth_tokens, :token, :unique => true
-
-    create_table :oauth_nonces do |t|
-      t.integer :timestamp
-      t.string  :nonce
-
-      t.timestamps
-    end
-    add_index :oauth_nonces, [:nonce, :timestamp], :unique => true
-
   end
 
   def self.down
     drop_table :client_applications
     drop_table :oauth_tokens
-    drop_table :oauth_nonces
   end
 
 end

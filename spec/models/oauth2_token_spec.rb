@@ -1,39 +1,31 @@
 require 'spec_helper'
 
 describe Oauth2Token do
-  before(:all) do
-    @token = Factory(:oauth2_token)
-  end
+  
+  context "Factory" do
+    before(:all) { @token = Factory(:oauth2_token) }
+    subject { @token }
 
-  it "should be valid" do
-    @token.should be_valid
-  end
+    its(:user)               { should be_present }
+    its(:client_application) { should be_present }
+    its(:token)              { should be_present }
+    its(:secret)             { should be_present }
 
-  it "should have a token" do
-    @token.token.should_not be_nil
+    it { should be_valid }
+    it { should be_authorized }
+    it { should_not be_invalidated }
   end
-
-  it "should have a secret" do
-    @token.secret.should_not be_nil
-  end
-
-  it "should be authorized" do
-    @token.should be_authorized
-  end
-
-  it "should not be invalidated" do
-    @token.should_not be_invalidated
-  end
-
+  
 end
+
 
 # == Schema Information
 #
 # Table name: oauth_tokens
 #
 #  id                    :integer         not null, primary key
-#  user_id               :integer
 #  type                  :string(20)
+#  user_id               :integer
 #  client_application_id :integer
 #  token                 :string(40)
 #  secret                :string(40)

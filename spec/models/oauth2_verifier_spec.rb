@@ -1,34 +1,28 @@
 require 'spec_helper'
 
 describe Oauth2Verifier do
-  before(:all) do
-    @verifier = Factory(:oauth2_verifier)
-  end
 
-  it "should be valid" do
-    @verifier.should be_valid
-  end
+  context "Factory" do
+    before(:all) { @verifier = Factory(:oauth2_verifier) }
+    subject { @verifier }
 
-  it "should have a code" do
-    @verifier.code.should be_present
-  end
+    its(:user)               { should be_present }
+    its(:client_application) { should be_present }
+    its(:code)               { should be_present }
+    its(:token)              { should be_present }
+    its(:valid_to)           { should be_present }
 
-  it "should not have a secret" do
-    @verifier.secret.should be_nil
-  end
-
-  it "should be authorized" do
-    @verifier.should be_authorized
-  end
-
-  it "should not be invalidated" do
-    @verifier.should_not be_invalidated
+    it { should be_valid }
+    it { should be_authorized }
+    it { should_not be_invalidated }
   end
 
   describe "exchange for oauth2 token" do
     before(:all) do
-      @token = @verifier.reload.exchange!
+      @verifier = Factory(:oauth2_verifier)
+      @token    = @verifier.exchange!
     end
+    subject { @token.reload }
 
     it "should invalidate verifier" do
       @verifier.should be_invalidated
@@ -50,15 +44,17 @@ describe Oauth2Verifier do
       @token.should_not be_invalidated
     end
   end
+
 end
+
 
 # == Schema Information
 #
 # Table name: oauth_tokens
 #
 #  id                    :integer         not null, primary key
-#  user_id               :integer
 #  type                  :string(20)
+#  user_id               :integer
 #  client_application_id :integer
 #  token                 :string(40)
 #  secret                :string(40)

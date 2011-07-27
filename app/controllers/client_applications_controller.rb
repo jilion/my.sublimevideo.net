@@ -3,8 +3,8 @@ class ClientApplicationsController < ApplicationController
   before_filter :get_client_application, :only => [:show, :edit, :update, :destroy]
 
   def index
-    @applications = current_user.client_applications
-    @authorizations = current_user.tokens.where({ :invalidated_at => nil } & { :authorized_at.ne => nil })
+    @applications   = current_user.client_applications
+    @authorizations = current_user.tokens.valid
   end
 
   def new
