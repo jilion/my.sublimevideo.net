@@ -25,7 +25,7 @@ gem 'devise_invitable',      '0.5.2'
 # API
 gem 'oauth',                 '0.4.5'
 # gem 'oauth-plugin',          '0.4.0.pre6'
-gem 'oauth-plugin',          :git => 'git://github.com/rymai/oauth-plugin.git'
+gem 'oauth-plugin',          :git => 'git://github.com/rymai/oauth-plugin.git', :branch => 'accept_access_token_param'
 gem 'acts_as_api',           '0.3.6'
 # gem 'rack-throttle',         :git => 'git://github.com/rymai/rack-throttle.git', :require => 'rack/throttle'
 

@@ -4,12 +4,55 @@ MSV REST API
 - You can create an application by visiting https://my.sublimevideo.net/account/applications/new
 - You can revoke an application authorization by visiting https://my.sublimevideo.net/account/applications
 
+Web Application Flow
+
+This is a description of the OAuth flow from 3rd party web sites.
+
+1. Redirect users to request SublimeVideo access
+
+GET https://my.sublimevideo.net/oauth/authorize
+Parameters
+
+client_id
+Required string - The client ID you received from SublimeVideo when you registered.
+redirect_uri
+Optional string - URL in your app where user’s will be sent after authorization. See details below about redirect urls.
+scope
+Optional string - Comma separated list of scopes.
+
+2. GitHub redirects back to your site
+
+If the user accepts your request, SublimeVideo redirects back to your site with a temporary code in a code parameter. Exchange this for an access token:
+
+POST https://my.sublimevideo.net/oauth/access_token
+Parameters
+
+client_id
+Required string - The client ID you received from SublimeVideo when you registered.
+redirect_uri
+Optional string
+client_secret
+Required string - The client secret you received from SublimeVideo when you registered.
+code
+Required string - The code you received as a response to Step 1.
+Response
+
+access_token
+Required string - OAuth access token.
+
+3. Use the access token to access the API
+
+The access token allows you to make requests to the API on a behalf of a user.
+
+GET https://my.sublimevideo.net/api/sites?access_token=...
+
+
 Authentication:
 Authenticate through SublimeVideo API v1 is done with an OAuth token:
 OAuth2 Token (sent in a header):
-$ curl -H "Authorization: OAuth OAUTH-TOKEN" https://my.sublimevideo.net/api
+$ curl -H "Authorization: OAuth OAUTH-TOKEN" https://my.sublimevideo.net/api/sites
 OAuth2 Token (sent as a parameter):
-$ curl https://my.sublimevideo.net/api?oauth_token=OAUTH-TOKEN
+$ curl https://my.sublimevideo.net/api/sites?access_token=OAUTH-TOKEN
 Read more about OAuth2.
 
 Current version:

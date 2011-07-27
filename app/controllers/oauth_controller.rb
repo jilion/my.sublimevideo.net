@@ -3,6 +3,11 @@ class OauthController < ApplicationController
   include OAuth::Controllers::ProviderController
   skip_before_filter :authenticate_user! # skip this since authentication is handled by OAuth::Controllers::ProviderController
 
+  def authorize
+    params[:access_token] = params[:oauth_token]
+    super
+  end
+
   def revoke
     @token = current_user.tokens.find_by_token!(params[:token])
     @token.invalidate!
