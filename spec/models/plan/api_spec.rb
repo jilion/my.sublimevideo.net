@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Plan::Api do
   before(:all) do
     @plan     = Factory(:plan, name: 'huge_plan', cycle: 'month', player_hits: 1_000_000)
-    @response = @plan.as_api_response(:v1_private)
+    @response = @plan.as_api_response(:v1_private_self)
   end
 
   it "selects a subset of fields, as a hash" do

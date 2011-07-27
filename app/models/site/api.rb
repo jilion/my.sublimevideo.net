@@ -4,7 +4,7 @@ module Site::Api
   included do
     acts_as_api
 
-    api_accessible :v1_private do |template|
+    api_accessible :v1_private_self do |template|
       template.add :token
       template.add :hostname, :as => :main_domain
       template.add lambda { |site| site.dev_hostnames.try(:split, ', ') || [] }, :as => :dev_domains
@@ -16,14 +16,13 @@ module Site::Api
       template.add lambda { |site| site.plan_started_at.try(:to_datetime) }, :as => :started_at
       template.add lambda { |site| site.plan_cycle_started_at.try(:to_datetime) }, :as => :cycle_started_at
       template.add lambda { |site| site.plan_cycle_ended_at.try(:to_datetime) }, :as => :cycle_ended_at
-      template.add lambda { |site| site.refundable?  }, :as => :refundable
       template.add lambda { |site| site.plan_player_hits_reached_notification_sent_at? }, :as => :peak_insurance_activated
-      template.add lambda { |site| site.first_plan_upgrade_required_alert_sent_at?  }, :as => :upgrade_required
+      template.add lambda { |site| site.first_plan_upgrade_required_alert_sent_at? }, :as => :upgrade_required
     end
 
-    api_accessible :v1_usage do |template|
+    api_accessible :v1_private_usage do |template|
       template.add :token
-      template.add lambda { |site| site.usages.between(60.days.ago.midnight, Time.now.utc.end_of_day) }, :as => :usage, :template => :v1_private
+      template.add lambda { |site| site.usages.between(60.days.ago.midnight, Time.now.utc.end_of_day) }, :as => :usage, :template => :v1_private_self
     end
   end
 

@@ -37,8 +37,8 @@ class Api::ApiController < ActionController::Metal
     @content_type = version_and_content_type.try(:[], 3) || params[:format] || Api.default_content_type
   end
 
-  def api_template(template=:private)
-    "v#{@version}_#{template}".to_sym
+  def api_template(access=:private, template=:self)
+    "v#{@version}_#{access}_#{template}".to_sym
   end
   
   def access_denied

@@ -16,7 +16,7 @@ class Api::SitesController < Api::ApiController
 
   # GET /api/v1/sites/:id/usage
   def usage
-    render_for_api api_template(:usage), :"#{@content_type}" => @site
+    render_for_api api_template(:private, :usage), :"#{@content_type}" => @site
   end
 
   private

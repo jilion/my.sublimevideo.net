@@ -4,7 +4,7 @@ describe SiteUsage::Api do
   before(:all) do
     @site       = Factory(:site)
     @site_usage = Factory(:site_usage, site_id: @site.id, day: 61.days.ago.midnight, main_player_hits: 1000, main_player_hits_cached: 800, extra_player_hits: 500, extra_player_hits_cached: 400)
-    @response   = @site_usage.as_api_response(:v1_private)
+    @response   = @site_usage.as_api_response(:v1_private_self)
   end
   subject { @site_usage }
 
