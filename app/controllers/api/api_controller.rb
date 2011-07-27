@@ -18,7 +18,7 @@ class Api::ApiController < ActionController::Metal
   oauthenticate
 
   def test_request
-    response = { current_api_version: Api.current_version, api_version_used: @version, token: current_token.token, authorized_at: current_token.authorized_at }
+    response = { current_api_version: Api.current_version, api_version_used: @version, token: current_token.try(:token), authorized_at: current_token.try(:authorized_at) }
     render(request.format.ref => response, status: 200)
   end
 

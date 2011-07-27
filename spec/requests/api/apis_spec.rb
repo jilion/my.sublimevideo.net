@@ -12,6 +12,14 @@ feature "API" do
     @parsed_body = nil
   end
 
+  describe "Not passing token" do
+    it "is possible to pass OAuth token with the access_token param" do
+      visit '/api/test_request'
+      page.driver.status_code.should eql 401
+      parsed_body['error'].should eql "Unauthorized!"
+    end
+  end
+
   describe "Passing token" do
 
     context "Authorized token" do
