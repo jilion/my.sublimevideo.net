@@ -60,11 +60,74 @@ feature "API" do
   end
 
   context "Authorized token" do
+    background do
+      page.driver.header 'Authorization', 'OAuth ' + @token.token
+    end
 
     describe "Default format" do
-      describe "with no extension" do
+      scenario do
+        visit '/api/test_request'
+
+        page.driver.status_code.should eql 200
+        page.driver.response_headers['Content-Type'].should eql "application/json; charset=utf-8"
+      end
+    end
+
+    describe "Wrong format" do
+      describe "with extension" do
         scenario do
-          visit '/api/test_request?oauth_token=' + @token.token
+          expect { visit '/api/test_request.foo' }.to raise_error
+        end
+      end
+
+      describe "with complete Accept header" do
+        scenario do
+          page.driver.header 'Accept', 'application/vnd.sublimevideo-v1+foo'
+          visit '/api/test_request'
+
+          page.driver.status_code.should eql 200
+          page.driver.response_headers['Content-Type'].should eql "application/json; charset=utf-8"
+        end
+      end
+
+      describe "Extensions has precedence over Accept header" do
+        scenario do
+          page.driver.header 'Accept', 'application/vnd.sublimevideo-v1+json'
+          visit '/api/test_request.xml'
+
+          page.driver.status_code.should eql 200
+          page.driver.response_headers['Content-Type'].should eql "application/xml; charset=utf-8"
+        end
+
+        scenario do
+          page.driver.header 'Accept', 'application/vnd.sublimevideo-v1+xml'
+          visit '/api/test_request.json'
+
+          page.driver.status_code.should eql 200
+          page.driver.response_headers['Content-Type'].should eql "application/json; charset=utf-8"
+        end
+      end
+
+      describe "with incomplete Accept header" do
+        scenario do
+          page.driver.header 'Accept', 'application/vnd.sublimevideo-v1'
+          visit '/api/test_request'
+
+          page.driver.status_code.should eql 200
+          page.driver.response_headers['Content-Type'].should eql "application/json; charset=utf-8"
+        end
+
+        scenario do
+          page.driver.header 'Accept', 'application/vnd.sublimevideo'
+          visit '/api/test_request'
+
+          page.driver.status_code.should eql 200
+          page.driver.response_headers['Content-Type'].should eql "application/json; charset=utf-8"
+        end
+
+        scenario do
+          page.driver.header 'Accept', 'application/vnd.sublime'
+          visit '/api/test_request'
 
           page.driver.status_code.should eql 200
           page.driver.response_headers['Content-Type'].should eql "application/json; charset=utf-8"

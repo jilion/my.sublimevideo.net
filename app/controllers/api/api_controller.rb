@@ -1,10 +1,11 @@
 class Api::ApiController < ActionController::Metal
   include AbstractController::Callbacks
-  include ActionController::Helpers
+  include ActionController::Head
   include ActionController::MimeResponds
   include ActionController::Rendering
-  include ActionController::Renderers::All
+  include ActionController::Helpers
   include ActionController::Instrumentation
+  include ActionController::Renderers::All
   include Devise::Controllers::Helpers
   include ActsAsApi::Rendering
   include OAuth::Controllers::ApplicationControllerMethods
@@ -17,8 +18,8 @@ class Api::ApiController < ActionController::Metal
   oauthenticate
 
   def test_request
-    response = { token: current_token.token, authorized_at: current_token.authorized_at }
-    render(@content_type.to_sym => response.send("to_#{@content_type}"), status: 200)
+    response = { api_verson_used: Api.current_version, api_verson_used: @version, token: current_token.token, authorized_at: current_token.authorized_at }
+    render(request.format.ref => response, status: 200)
   end
 
   protected
@@ -32,18 +33,21 @@ class Api::ApiController < ActionController::Metal
   end
 
   def set_version_and_content_type
-    version_and_content_type = (request.headers['Accept'] || '').match(%r{^application/vnd\.sublimevideo(-v(\d+))?\+(\w+)$})
-    @version = version_and_content_type.try(:[], 2) || Api.current_version
-    @content_type = version_and_content_type.try(:[], 3) || params[:format] || Api.default_content_type
+    version_and_format = request.format.ref.to_s.match(%r{^application/vnd\.sublimevideo(-v(\d+))?\+(\w+)$})
+
+    @version = version_and_format.try(:[], 2) || Api.current_version
+
+    request.format = params[:format] || version_and_format.try(:[], 3)
+    request.format = Api.default_content_type unless request.format # unknown format could lead to request.format == nil
   end
 
   def api_template(access=:private, template=:self)
     "v#{@version}_#{access}_#{template}".to_sym
   end
-  
+
   def access_denied
-    error = { error: "Unauthorized!" }
-    render(@content_type.to_sym => error.send("to_#{@content_type}"), status: 401)
+    response = { error: "Unauthorized!" }
+    render(request.format.ref => response, status: 401)
   end
 
 end

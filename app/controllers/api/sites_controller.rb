@@ -6,17 +6,17 @@ class Api::SitesController < Api::ApiController
   # GET /api/v1/sites
   def index
     @sites = current_user.sites.not_archived.includes(:plan, :next_cycle_plan)
-    render_for_api api_template, :"#{@content_type}" => @sites, :root => :sites
+    render_for_api api_template, request.format.ref => @sites, :root => :sites
   end
 
   # GET /api/v1/sites/:id
   def show
-    render_for_api api_template, :"#{@content_type}" => @site
+    render_for_api api_template, request.format.ref => @site
   end
 
   # GET /api/v1/sites/:id/usage
   def usage
-    render_for_api api_template(:private, :usage), :"#{@content_type}" => @site
+    render_for_api api_template(:private, :usage), request.format.ref => @site
   end
 
   private
@@ -24,8 +24,8 @@ class Api::SitesController < Api::ApiController
   def find_by_token!
     @site = current_user.sites.not_archived.find_by_token!(params[:id])
   rescue ActiveRecord::RecordNotFound
-    error = { error: "Site with token '#{params[:id]}' could not be found." }
-    render(@content_type.to_sym => error.send("to_#{@content_type}"), status: 404)
+    response = { error: "Site with token '#{params[:id]}' could not be found." }
+    render(request.format.ref => response, status: 404)
   end
 
 end
