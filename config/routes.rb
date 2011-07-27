@@ -73,6 +73,7 @@ MySublimeVideo::Application.routes.draw do
 
   namespace "api" do
     constraints :format => /json|xml/ do
+      match 'test_request' => 'api#test_request'
       resources :sites do
         member do
           get :usage
@@ -94,7 +95,7 @@ MySublimeVideo::Application.routes.draw do
   # =========
 
   authenticate(:admin) do
-    match 'admin', :to => redirect('/admin/sites'), :as => 'admin'
+    match 'admin' => redirect('/admin/sites'), :as => 'admin'
   end
 
   devise_for :admins,

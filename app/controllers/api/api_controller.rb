@@ -16,6 +16,11 @@ class Api::ApiController < ActionController::Metal
   before_filter :set_version_and_content_type
   oauthenticate
 
+  def test_request
+    response = { token: current_token.token, authorized_at: current_token.authorized_at }
+    render(@content_type.to_sym => response.send("to_#{@content_type}"), status: 200)
+  end
+
   protected
 
   def logged_in?
