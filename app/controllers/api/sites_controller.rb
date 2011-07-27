@@ -24,7 +24,7 @@ class Api::SitesController < Api::ApiController
   def find_by_token!
     @site = current_user.sites.not_archived.find_by_token!(params[:id])
   rescue ActiveRecord::RecordNotFound
-    error = { status: 404, message: "Site with token '#{params[:id]}' could not be found" }
+    error = { error: "Site with token '#{params[:id]}' could not be found." }
     render(@content_type.to_sym => error.send("to_#{@content_type}"), status: 404)
   end
 

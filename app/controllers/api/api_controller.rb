@@ -42,7 +42,7 @@ class Api::ApiController < ActionController::Metal
   end
   
   def access_denied
-    error = { status: 401, message: "Unauthorized!" }
+    error = { error: "Unauthorized!" }
     render(@content_type.to_sym => error.send("to_#{@content_type}"), status: 401)
   end
 
