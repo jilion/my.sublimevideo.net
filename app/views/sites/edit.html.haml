@@ -1,5 +1,5 @@
-= title("Settings for #{truncate_middle(@site.hostname || "##{@site.token}", :length => 23)}")
-= content_header(truncate_middle(@site.hostname.present? ? @site.hostname : "Edit site", :length => 23))
+= title(@site.hostname? ? "Settings for #{truncate_middle(@site.hostname, :length => 23)}" : "Site settings")
+= content_header(truncate_middle(@site.hostname? ? @site.hostname : "Site settings", :length => 23))
 
 #site.edit
   = render '/layouts/segmented_menu'

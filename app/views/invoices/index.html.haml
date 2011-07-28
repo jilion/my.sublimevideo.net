@@ -1,5 +1,5 @@
-= title("Invoices for #{truncate_middle(@site.hostname || "##{@site.token}", :length => 23)}")
-= content_header(truncate_middle(@site.hostname.present? ? @site.hostname : "Edit site", :length => 23))
+= title(@site.hostname? ? "Invoices for #{truncate_middle(@site.hostname || "##{@site.token}", :length => 23)}" : "Site invoices")
+= content_header(truncate_middle(@site.hostname? ? @site.hostname : "Site invoices", :length => 23))
 
 #site.edit
   = render '/layouts/segmented_menu'
