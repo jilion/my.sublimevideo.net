@@ -39,7 +39,7 @@ private
     if last_log = self.desc(:name).first
       options['marker'] = config[:store_dir] + marker(last_log)
     end
-    ::S3.logs_name_list(options)
+    rescue_and_retry(7, Aws::AwsError) { ::S3.logs_name_list(options) }
   end
 
   # ====================

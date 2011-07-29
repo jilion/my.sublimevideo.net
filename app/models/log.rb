@@ -54,9 +54,9 @@ class Log
   end
 
   def self.create_new_logs(new_logs_names)
-    existings_logs_names = only(:name).any_in(:name => new_logs_names).map(&:name)
+    existings_logs_names = only(:name).any_in(name: new_logs_names).map(&:name)
     (new_logs_names - existings_logs_names).each do |name|
-      delay(:priority => 20).create(:name => name)
+      delay(:priority => 20).create(name: name)
     end
   end
 
@@ -82,14 +82,14 @@ private
 
   # after_create
   def delay_parse
-    self.class.delay(:priority => 20, :run_at => 5.seconds.from_now).parse_log(id) # lets finish the upload
+    self.class.delay(priority: 20, run_at: 5.seconds.from_now).parse_log(id) # lets finish the upload
   end
 
   # Don't forget to delete this logs_file after using it, thx!
   def copy_logs_file_to_tmp
     Notify.send("Log File ##{id} not present at copy") unless file.present?
     rescue_and_retry(7, Excon::Errors::NotFound, Excon::Errors::SocketError) do
-      logs_file = File.new(Rails.root.join("tmp/#{name}"), 'w', :encoding => 'ASCII-8BIT')
+      logs_file = File.new(Rails.root.join("tmp/#{name}"), 'w', encoding: 'ASCII-8BIT')
       logs_file.write(file.read)
       logs_file.flush
     end
