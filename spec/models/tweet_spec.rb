@@ -98,7 +98,7 @@ describe Tweet do
 
       it "should delay itself" do
         expect { subject }.to change(Delayed::Job, :count).by(1)
-        Delayed::Job.last.run_at.should be_within(60).of(20.minutes.from_now)
+        Delayed::Job.last.run_at.should be_within(60).of(30.minutes.from_now)
       end
 
       it "should create new tweets" do
