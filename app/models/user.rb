@@ -281,7 +281,7 @@ private
       site.without_password_validation { site.archive }
     end
   end
-  
+
   # after_transition :on => :archive
   def invalidate_tokens
     tokens.update_all(invalidated_at: Time.now.utc)
