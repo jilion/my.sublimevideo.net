@@ -1,10 +1,10 @@
 require 'spec_helper'
 
 describe Release do
-  let(:archived_release) { Factory(:release).tap { |r| r.archive } }
-  let(:dev_release)      { Factory(:release) }
-  let(:beta_release)     { Factory(:release).tap { |r| r.flag } }
-  let(:stable_release)   { Factory(:release).tap { |r| 2.times { r.flag } } }
+  let(:archived_release) { FactoryGirl.create(:release).tap { |r| r.archive } }
+  let(:dev_release)      { FactoryGirl.create(:release) }
+  let(:beta_release)     { FactoryGirl.create(:release).tap { |r| r.flag } }
+  let(:stable_release)   { FactoryGirl.create(:release).tap { |r| 2.times { r.flag } } }
 
   before(:each) { VoxcastCDN.stub(:purge_dir) }
 
@@ -23,7 +23,7 @@ describe Release do
     it { should validate_presence_of(:zip) }
 
     it "should only allow zip file" do
-      release = Factory.build(:release, :zip => File.new(Rails.root.join('spec/fixtures/railscast_intro.mov')))
+      release = FactoryGirl.build(:release, :zip => File.new(Rails.root.join('spec/fixtures/railscast_intro.mov')))
       release.should_not be_valid
       release.errors[:zip].should include("is not an allowed file type")
     end

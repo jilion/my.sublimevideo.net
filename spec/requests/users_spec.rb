@@ -140,7 +140,7 @@ feature "Users" do
 
     describe "with the email of an archived user" do
       scenario "archived user" do
-        archived_user = Factory(:user)
+        archived_user = FactoryGirl.create(:user)
         archived_user.current_password = '123456'
         archived_user.archive
 

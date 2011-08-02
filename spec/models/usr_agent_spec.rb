@@ -17,10 +17,10 @@ describe UsrAgent do
     before(:each) do
       logs_file = File.new(Rails.root.join('spec/fixtures/logs/voxcast/cdn.sublimevideo.net.log.1284549900-1284549960.gz'))
       VoxcastCDN.stub(:download_log).with('cdn.sublimevideo.net.log.1284549900-1284549960.gz').and_return(logs_file)
-      @log = Factory(:log_voxcast, :name => 'cdn.sublimevideo.net.log.1284549900-1284549960.gz')
+      @log = FactoryGirl.create(:log_voxcast, :name => 'cdn.sublimevideo.net.log.1284549900-1284549960.gz')
       @trackers = LogAnalyzer.parse(logs_file, 'LogsFileFormat::VoxcastUserAgents')
       %w[0w1o1q3c k8qaaj1l ibvjcopp hp1lepyq].each do |token|
-        Factory(:site).update_attribute(:token, token)
+        FactoryGirl.create(:site).update_attribute(:token, token)
       end
       UsrAgent.create_or_update_from_trackers!(@log, @trackers)
     end

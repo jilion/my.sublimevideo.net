@@ -14,10 +14,10 @@ describe Site::UsageMonitoring do
   end
 
   describe ".monitor_sites_usages" do
-    before(:all) { @plan = Factory(:plan, player_hits: 30 * 100) }
+    before(:all) { @plan = FactoryGirl.create(:plan, player_hits: 30 * 100) }
 
     it "should do nothing" do
-      Timecop.travel(Time.utc(2011,1,1)) { @site = Factory(:site, plan_id: @plan.id) }
+      Timecop.travel(Time.utc(2011,1,1)) { @site = FactoryGirl.create(:site, plan_id: @plan.id) }
 
       UsageMonitoringMailer.should_not_receive(:plan_player_hits_reached)
       UsageMonitoringMailer.should_not_receive(:plan_upgrade_required)
@@ -29,9 +29,9 @@ describe Site::UsageMonitoring do
 
     pending "TODO BEFORE April 17 !!!!!!!!!!! with required upgrade site" do
       before(:each) do
-        Timecop.travel(Time.utc(2011,1,1)) { @site = Factory(:site, plan_id: @plan.id) }
+        Timecop.travel(Time.utc(2011,1,1)) { @site = FactoryGirl.create(:site, plan_id: @plan.id) }
         (1..20).each do |day|
-          Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,1,day), main_player_hits: 200)
+          FactoryGirl.create(:site_usage, site_id: @site.id, day: Time.utc(2011,1,day), main_player_hits: 200)
         end
       end
 
@@ -54,8 +54,8 @@ describe Site::UsageMonitoring do
 
     context "with reached player hits site" do
       before(:each) do
-        Timecop.travel(Time.utc(2011,1,1)) { @site = Factory(:site, plan_id: @plan.id) }
-        Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,1,1), main_player_hits: 3001)
+        Timecop.travel(Time.utc(2011,1,1)) { @site = FactoryGirl.create(:site, plan_id: @plan.id) }
+        FactoryGirl.create(:site_usage, site_id: @site.id, day: Time.utc(2011,1,1), main_player_hits: 3001)
       end
 
       it "should send player hits reached notification" do

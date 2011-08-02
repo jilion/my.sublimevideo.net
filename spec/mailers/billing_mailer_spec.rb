@@ -2,14 +2,14 @@ require 'spec_helper'
 
 describe BillingMailer do
   before(:all) do
-    @user        = Factory(:user, :cc_expire_on => 1.day.from_now)
-    @invoice     = Factory(:invoice)
-    @transaction = Factory(:transaction, invoices: [@invoice])
+    @user        = FactoryGirl.create(:user, :cc_expire_on => 1.day.from_now)
+    @invoice     = FactoryGirl.create(:invoice)
+    @transaction = FactoryGirl.create(:transaction, invoices: [@invoice])
   end
 
-  it_should_behave_like "common mailer checks", %w[credit_card_will_expire], :from => ["billing@sublimevideo.net"], :params => [Factory(:user, :cc_expire_on => 1.day.from_now)]
-  it_should_behave_like "common mailer checks", %w[transaction_succeeded transaction_failed], :from => ["billing@sublimevideo.net"], :params => [Factory(:transaction, invoices: [Factory(:invoice)])]
-  it_should_behave_like "common mailer checks", %w[too_many_charging_attempts], :from => ["billing@sublimevideo.net"], :params => [Factory(:invoice)]
+  it_should_behave_like "common mailer checks", %w[credit_card_will_expire], :from => ["billing@sublimevideo.net"], :params => [FactoryGirl.create(:user, :cc_expire_on => 1.day.from_now)]
+  it_should_behave_like "common mailer checks", %w[transaction_succeeded transaction_failed], :from => ["billing@sublimevideo.net"], :params => [FactoryGirl.create(:transaction, invoices: [FactoryGirl.create(:invoice)])]
+  it_should_behave_like "common mailer checks", %w[too_many_charging_attempts], :from => ["billing@sublimevideo.net"], :params => [FactoryGirl.create(:invoice)]
 
   describe "#credit_card_will_expire" do
     before(:each) do

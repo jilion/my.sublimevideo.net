@@ -5,10 +5,10 @@ describe OneTime::Site do
 
   describe ".rollback_beta_sites_to_dev" do
     before(:all) do
-      @site1 = Factory(:site, plan_id: @beta_plan.id)
-      @site2 = Factory(:site, plan_id: @beta_plan.id)
+      @site1 = FactoryGirl.create(:site, plan_id: @beta_plan.id)
+      @site2 = FactoryGirl.create(:site, plan_id: @beta_plan.id)
       @site2.update_attribute(:pending_plan_id, @paid_plan.id)
-      @site3 = Factory(:site, state: 'archived', plan_id: @beta_plan.id)
+      @site3 = FactoryGirl.create(:site, state: 'archived', plan_id: @beta_plan.id)
 
       Site.update_loader_and_license(@site1.id, { loader: false, license: true })
       Site.update_loader_and_license(@site2.id, { loader: false, license: true })
@@ -46,9 +46,9 @@ describe OneTime::Site do
   describe ".regenerate_all_loaders_and_licenses" do
     before(:all) do
       ::Site.delete_all
-      Factory(:site)
-      Factory(:site)
-      Factory(:site, state: 'archived')
+      FactoryGirl.create(:site)
+      FactoryGirl.create(:site)
+      FactoryGirl.create(:site, state: 'archived')
     end
 
     it "regenerates loader and license of all sites" do
@@ -63,17 +63,17 @@ describe OneTime::Site do
   describe ".move_local_ip_from_hostname_and_extra_domains_to_dev_domains" do
     before(:all) do
       ::Site.delete_all
-      @invalid1 = Factory(:site, dev_hostnames: "localhost")
+      @invalid1 = FactoryGirl.create(:site, dev_hostnames: "localhost")
       @invalid1.update_attribute(:extra_hostnames, "google.com, 172.16.4.165")
-      @invalid2 = Factory(:site, dev_hostnames: "127.0.0.1")
+      @invalid2 = FactoryGirl.create(:site, dev_hostnames: "127.0.0.1")
       @invalid2.update_attribute(:extra_hostnames, "172.16.4.165")
-      @invalid3 = Factory(:site, plan_id: @dev_plan.id, dev_hostnames: "127.0.0.1")
+      @invalid3 = FactoryGirl.create(:site, plan_id: @dev_plan.id, dev_hostnames: "127.0.0.1")
       @invalid3.update_attribute(:hostname, "172.16.4.165")
 
-      @valid1 = Factory(:site, dev_hostnames: "localhost", extra_hostnames: "google.com")
-      @valid2 = Factory(:site, dev_hostnames: "127.0.0.1", extra_hostnames: "google.com")
+      @valid1 = FactoryGirl.create(:site, dev_hostnames: "localhost", extra_hostnames: "google.com")
+      @valid2 = FactoryGirl.create(:site, dev_hostnames: "127.0.0.1", extra_hostnames: "google.com")
 
-      @archived = Factory(:site, state: 'archived', dev_hostnames: nil)
+      @archived = FactoryGirl.create(:site, state: 'archived', dev_hostnames: nil)
       @archived.update_attribute(:extra_hostnames, "172.16.4.165")
     end
 

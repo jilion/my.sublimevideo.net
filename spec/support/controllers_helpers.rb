@@ -65,11 +65,11 @@ module Spec
       end
 
       def mock_user(stubs={})
-        Factory(:user, stubs)
+        FactoryGirl.create(:user, stubs)
       end
 
       def mock_admin(stubs={})
-        Factory(:admin, stubs)
+        FactoryGirl.create(:admin, stubs)
       end
 
       def mock_release(stubs={})

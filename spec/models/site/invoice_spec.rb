@@ -8,13 +8,13 @@ describe Site::Invoice do
       before(:all) do
         Site.delete_all
         Timecop.travel(2.months.ago) do
-          @site_to_be_renewed = Factory(:site_with_invoice)
-          @site_to_be_renewed_with_downgrade_to_dev_plan = Factory(:site_with_invoice)
+          @site_to_be_renewed = FactoryGirl.create(:site_with_invoice)
+          @site_to_be_renewed_with_downgrade_to_dev_plan = FactoryGirl.create(:site_with_invoice)
           @site_to_be_renewed_with_downgrade_to_dev_plan.update_attribute(:next_cycle_plan_id, @dev_plan.id)
-          @site_to_be_renewed_with_downgrade_to_paid_plan = Factory(:site_with_invoice)
+          @site_to_be_renewed_with_downgrade_to_paid_plan = FactoryGirl.create(:site_with_invoice)
           @site_to_be_renewed_with_downgrade_to_paid_plan.update_attribute(:next_cycle_plan_id, @custom_plan.id)
         end
-        @site_not_to_be_renewed = Factory(:site_with_invoice, plan_started_at: 3.months.ago, plan_cycle_ended_at: 2.months.from_now)
+        @site_not_to_be_renewed = FactoryGirl.create(:site_with_invoice, plan_started_at: 3.months.ago, plan_cycle_ended_at: 2.months.from_now)
 
         @site_to_be_renewed.invoices.size.should == 1
         @site_to_be_renewed_with_downgrade_to_dev_plan.invoices.size.should == 1
@@ -70,8 +70,8 @@ describe Site::Invoice do
 
     describe "invoices_failed?" do
       subject do
-        site = Factory(:site)
-        Factory(:invoice, site: site , state: 'failed')
+        site = FactoryGirl.create(:site)
+        FactoryGirl.create(:invoice, site: site , state: 'failed')
         site
       end
 
@@ -80,8 +80,8 @@ describe Site::Invoice do
 
     describe "invoices_waiting?" do
       subject do
-        site = Factory(:site)
-        Factory(:invoice, site: site , state: 'waiting')
+        site = FactoryGirl.create(:site)
+        FactoryGirl.create(:invoice, site: site , state: 'waiting')
         site
       end
 
@@ -90,20 +90,20 @@ describe Site::Invoice do
 
     describe "#invoices_open?" do
       before(:all) do
-        @site = Factory(:site)
+        @site = FactoryGirl.create(:site)
       end
       before(:each) { Invoice.delete_all }
       subject { @site }
 
       context "with no options" do
         it "should be true if invoice have the renew flag == false" do
-          invoice = Factory(:invoice, state: 'open', site: @site, renew: false)
+          invoice = FactoryGirl.create(:invoice, state: 'open', site: @site, renew: false)
           invoice.renew.should be_false
           subject.invoices_open?.should be_true
         end
 
         it "should be true if invoice have the renew flag == true" do
-          invoice = Factory(:invoice, state: 'open', site: @site, renew: true)
+          invoice = FactoryGirl.create(:invoice, state: 'open', site: @site, renew: true)
           invoice.renew.should be_true
           subject.invoices_open?.should be_true
         end
@@ -111,13 +111,13 @@ describe Site::Invoice do
 
       context "with options[:renew] == true" do
         it "should be false if no invoice with the renew flag == true" do
-          invoice = Factory(:invoice, state: 'open', site: @site, renew: false)
+          invoice = FactoryGirl.create(:invoice, state: 'open', site: @site, renew: false)
           invoice.renew.should be_false
           subject.invoices_open?(renew: true).should be_false
         end
 
         it "should be true if invoice with the renew flag == true" do
-          invoice = Factory(:invoice, state: 'open', site: @site, renew: true)
+          invoice = FactoryGirl.create(:invoice, state: 'open', site: @site, renew: true)
           invoice.renew.should be_true
           subject.invoices_open?(renew: true).should be_true
         end
@@ -125,13 +125,13 @@ describe Site::Invoice do
 
       context "with options[:renew] == false" do
         it "should be false if no invoice with the renew flag == true" do
-          invoice = Factory(:invoice, state: 'open', site: @site, renew: false)
+          invoice = FactoryGirl.create(:invoice, state: 'open', site: @site, renew: false)
           invoice.renew.should be_false
           subject.invoices_open?(renew: false).should be_true
         end
 
         it "should be true if invoice with the renew flag == true" do
-          invoice = Factory(:invoice, state: 'open', site: @site, renew: true)
+          invoice = FactoryGirl.create(:invoice, state: 'open', site: @site, renew: true)
           invoice.renew.should be_true
           subject.invoices_open?(renew: false).should be_false
         end
@@ -139,37 +139,37 @@ describe Site::Invoice do
     end
 
     describe "#in_beta_plan?" do
-      subject { Factory(:site, plan_id: @beta_plan.id) }
+      subject { FactoryGirl.create(:site, plan_id: @beta_plan.id) }
 
       it { should be_in_beta_plan }
     end # #in_beta_plan?
 
     describe "#in_dev_plan?" do
-      subject { Factory(:site, plan_id: @dev_plan.id) }
+      subject { FactoryGirl.create(:site, plan_id: @dev_plan.id) }
 
       it { should be_in_dev_plan }
     end # #in_dev_plan?
 
     describe "#in_sponsored_plan?" do
-      subject { site = Factory(:site); site.sponsor!; site.reload }
+      subject { site = FactoryGirl.create(:site); site.sponsor!; site.reload }
 
       it { should be_in_sponsored_plan }
     end # #in_sponsored_plan?
 
     describe "#in_paid_plan?" do
       context "standard plan" do
-        subject { Factory(:site, plan_id: @paid_plan.id) }
+        subject { FactoryGirl.create(:site, plan_id: @paid_plan.id) }
         it { should be_in_paid_plan }
       end
 
       context "custom plan" do
-        subject { Factory(:site, plan_id: @custom_plan.token) }
+        subject { FactoryGirl.create(:site, plan_id: @custom_plan.token) }
         it { should be_in_paid_plan }
       end
     end # #in_paid_plan?
 
     describe "#instant_charging?" do
-      subject { Factory(:site) }
+      subject { FactoryGirl.create(:site) }
 
       specify do
         subject.instance_variable_set("@instant_charging", false)
@@ -184,14 +184,14 @@ describe Site::Invoice do
 
     describe "#in_or_will_be_in_paid_plan?" do
       context "site in paid plan" do
-        subject { Factory(:site, plan_id: @paid_plan.id) }
+        subject { FactoryGirl.create(:site, plan_id: @paid_plan.id) }
 
         it { should be_in_or_will_be_in_paid_plan }
       end
 
       context "site is dev and updated to paid" do
         before(:each) do
-          @site = Factory(:site, plan_id: @dev_plan.id)
+          @site = FactoryGirl.create(:site, plan_id: @dev_plan.id)
           @site.plan_id = @paid_plan.id
         end
         subject { @site }
@@ -201,7 +201,7 @@ describe Site::Invoice do
 
       context "site is paid is now paid" do
         before(:each) do
-          @site = Factory(:site, plan_id: @paid_plan.id)
+          @site = FactoryGirl.create(:site, plan_id: @paid_plan.id)
           @site.plan_id = @dev_plan.id
         end
         subject { @site }
@@ -213,26 +213,26 @@ describe Site::Invoice do
     describe "#will_be_in_dev_plan?" do
 
       context "site in dev plan" do
-        subject { Factory(:site, plan_id: @dev_plan.id) }
+        subject { FactoryGirl.create(:site, plan_id: @dev_plan.id) }
 
         it { should_not be_will_be_in_dev_plan }
       end
 
       context "site in paid plan" do
-        subject { Factory(:site, plan_id: @paid_plan.id) }
+        subject { FactoryGirl.create(:site, plan_id: @paid_plan.id) }
 
         it { should_not be_will_be_in_dev_plan }
       end
 
       context "site in build dev plan" do
-        subject { Factory.build(:new_site, plan_id: @dev_plan.id) }
+        subject { FactoryGirl.build(:new_site, plan_id: @dev_plan.id) }
 
         it { should be_will_be_in_dev_plan }
       end
 
       context "site is paid and updated to dev" do
         before(:each) do
-          @site = Factory(:site, plan_id: @paid_plan.id)
+          @site = FactoryGirl.create(:site, plan_id: @paid_plan.id)
           @site.plan_id = @dev_plan.id
         end
         subject { @site }
@@ -243,14 +243,14 @@ describe Site::Invoice do
 
     describe "#will_be_in_paid_plan?" do
       context "site in paid plan" do
-        subject { Factory(:site, plan_id: @paid_plan.id) }
+        subject { FactoryGirl.create(:site, plan_id: @paid_plan.id) }
 
         it { should_not be_will_be_in_paid_plan }
       end
 
       context "site is dev and updated to paid" do
         before(:each) do
-          @site = Factory(:site, plan_id: @dev_plan.id)
+          @site = FactoryGirl.create(:site, plan_id: @dev_plan.id)
           @site.plan_id = @paid_plan.id
         end
         subject { @site }
@@ -260,8 +260,8 @@ describe Site::Invoice do
 
       context "site is paid and updated to paid" do
         before(:each) do
-          @site = Factory(:site, plan_id: @paid_plan.id)
-          @new_plan = Factory(:plan, price: @paid_plan.price + 1000)
+          @site = FactoryGirl.create(:site, plan_id: @paid_plan.id)
+          @new_plan = FactoryGirl.create(:plan, price: @paid_plan.price + 1000)
           @site.plan_id = @new_plan.id
         end
         subject { @site }
@@ -272,7 +272,7 @@ describe Site::Invoice do
 
       context "site is paid and updated to dev" do
         before(:each) do
-          @site = Factory(:site, plan_id: @paid_plan.id)
+          @site = FactoryGirl.create(:site, plan_id: @paid_plan.id)
           @site.plan_id = @dev_plan.id
         end
         subject { @site }
@@ -284,11 +284,11 @@ describe Site::Invoice do
     describe "#refundable?" do
       before(:all) do
         Site.delete_all
-        @site_refundable1 = Factory(:site)
-        Timecop.travel(29.days.ago)  { @site_refundable2 = Factory(:site) }
-        Timecop.travel(29.days.ago)  { @site_not_refundable0 = Factory(:site, plan_id: @dev_plan.id) }
-        Timecop.travel(2.months.ago) { @site_not_refundable1 = Factory(:site) }
-        @site_not_refundable2 = Factory(:site, refunded_at: Time.now.utc)
+        @site_refundable1 = FactoryGirl.create(:site)
+        Timecop.travel(29.days.ago)  { @site_refundable2 = FactoryGirl.create(:site) }
+        Timecop.travel(29.days.ago)  { @site_not_refundable0 = FactoryGirl.create(:site, plan_id: @dev_plan.id) }
+        Timecop.travel(2.months.ago) { @site_not_refundable1 = FactoryGirl.create(:site) }
+        @site_not_refundable2 = FactoryGirl.create(:site, refunded_at: Time.now.utc)
       end
 
       specify { @site_refundable1.should be_refundable }
@@ -301,9 +301,9 @@ describe Site::Invoice do
     describe "#refunded?" do
       before(:all) do
         Site.delete_all
-        @site_refunded1     = Factory(:site, state: 'archived', refunded_at: Time.now.utc)
-        @site_not_refunded1 = Factory(:site, state: 'active', refunded_at: Time.now.utc)
-        @site_not_refunded2 = Factory(:site, state: 'archived', refunded_at: nil)
+        @site_refunded1     = FactoryGirl.create(:site, state: 'archived', refunded_at: Time.now.utc)
+        @site_not_refunded1 = FactoryGirl.create(:site, state: 'active', refunded_at: Time.now.utc)
+        @site_not_refunded2 = FactoryGirl.create(:site, state: 'archived', refunded_at: nil)
       end
 
       specify { @site_refunded1.should be_refunded }
@@ -313,7 +313,7 @@ describe Site::Invoice do
 
     describe "#last_paid_invoice" do
       context "with the last paid invoice not refunded" do
-        subject { Factory(:site_with_invoice, plan_id: @paid_plan.id) }
+        subject { FactoryGirl.create(:site_with_invoice, plan_id: @paid_plan.id) }
 
         it "should return the last paid invoice" do
           subject.last_paid_invoice.should == subject.invoices.paid.last
@@ -322,7 +322,7 @@ describe Site::Invoice do
 
       context "with the last paid invoice refunded" do
         before(:all) do
-          @site = Factory(:site_with_invoice, plan_id: @paid_plan.id)
+          @site = FactoryGirl.create(:site_with_invoice, plan_id: @paid_plan.id)
           @site.refund
         end
         subject { @site.reload }
@@ -336,16 +336,16 @@ describe Site::Invoice do
 
     describe "#last_paid_plan_price" do
       context "site with no invoice" do
-        subject { Factory(:site, plan_id: @dev_plan.id) }
+        subject { FactoryGirl.create(:site, plan_id: @dev_plan.id) }
 
         its(:last_paid_plan_price) { should == 0 }
       end
 
       context "site with at least one paid invoice" do
         before(:all) do
-          @plan1 = Factory(:plan, price: 10_000)
-          @plan2 = Factory(:plan, price: 5_000)
-          @site  = Factory(:site_with_invoice, plan_id: @plan1.id)
+          @plan1 = FactoryGirl.create(:plan, price: 10_000)
+          @plan2 = FactoryGirl.create(:plan, price: 5_000)
+          @site  = FactoryGirl.create(:site_with_invoice, plan_id: @plan1.id)
           @site.plan_id = @plan2.id
         end
         subject { @site }
@@ -358,7 +358,7 @@ describe Site::Invoice do
 
     describe "#refund" do
       before(:all) do
-        @site = Factory(:new_site, first_paid_plan_started_at: nil)
+        @site = FactoryGirl.create(:new_site, first_paid_plan_started_at: nil)
       end
 
       it "touches refunded_at" do
@@ -374,17 +374,17 @@ describe Site::Invoice do
 
     describe "#pend_plan_changes" do
       before(:all) do
-        @paid_plan         = Factory(:plan, cycle: "month", price: 1000)
-        @paid_plan2        = Factory(:plan, cycle: "month", price: 5000)
-        @paid_plan_yearly  = Factory(:plan, cycle: "year",  price: 10000)
-        @paid_plan_yearly2 = Factory(:plan, cycle: "year",  price: 50000)
+        @paid_plan         = FactoryGirl.create(:plan, cycle: "month", price: 1000)
+        @paid_plan2        = FactoryGirl.create(:plan, cycle: "month", price: 5000)
+        @paid_plan_yearly  = FactoryGirl.create(:plan, cycle: "year",  price: 10000)
+        @paid_plan_yearly2 = FactoryGirl.create(:plan, cycle: "year",  price: 50000)
       end
 
       describe "new site" do
         context "with dev plan" do
           before(:all) do
             Timecop.travel(Time.utc(2011,1,30)) do
-              @site = Factory.build(:new_site, plan_id: @dev_plan.id)
+              @site = FactoryGirl.build(:new_site, plan_id: @dev_plan.id)
               @site.pend_plan_changes
             end
           end
@@ -401,7 +401,7 @@ describe Site::Invoice do
 
         context "with monthly paid plan" do
           before(:all) do
-            Timecop.travel(Time.utc(2011,1,30)) { @site = Factory(:site_pending, plan_id: @paid_plan.id) }
+            Timecop.travel(Time.utc(2011,1,30)) { @site = FactoryGirl.create(:site_pending, plan_id: @paid_plan.id) }
           end
           subject { @site }
 
@@ -416,7 +416,7 @@ describe Site::Invoice do
 
         context "with yearly paid plan" do
           before(:all) do
-            Timecop.travel(Time.utc(2011,1,30)) { @site = Factory(:site_pending, plan_id: @paid_plan_yearly.id) }
+            Timecop.travel(Time.utc(2011,1,30)) { @site = FactoryGirl.create(:site_pending, plan_id: @paid_plan_yearly.id) }
           end
           subject { @site }
 
@@ -433,7 +433,7 @@ describe Site::Invoice do
       describe "upgrade site" do
         context "from dev plan to monthly paid plan" do
           before(:all) do
-            Timecop.travel(Time.utc(2011,1,30)) { @site = Factory(:site, plan_id: @dev_plan.id) }
+            Timecop.travel(Time.utc(2011,1,30)) { @site = FactoryGirl.create(:site, plan_id: @dev_plan.id) }
             @site.apply_pending_plan_changes
             @site.reload.plan_id = @paid_plan.id # upgrade
             Timecop.travel(Time.utc(2011,2,25)) { @site.pend_plan_changes }
@@ -451,7 +451,7 @@ describe Site::Invoice do
 
         context "from dev plan to yearly paid plan" do
           before(:all) do
-            Timecop.travel(Time.utc(2011,1,30)) { @site = Factory(:site, plan_id: @dev_plan.id) }
+            Timecop.travel(Time.utc(2011,1,30)) { @site = FactoryGirl.create(:site, plan_id: @dev_plan.id) }
             @site.apply_pending_plan_changes
             @site.reload.plan_id = @paid_plan_yearly.id # upgrade
             Timecop.travel(Time.utc(2011,2,25)) { @site.pend_plan_changes }
@@ -469,7 +469,7 @@ describe Site::Invoice do
 
         context "from monthly paid plan to monthly paid plan" do
           before(:all) do
-            @site = Factory.build(:new_site, plan_id: @paid_plan.id)
+            @site = FactoryGirl.build(:new_site, plan_id: @paid_plan.id)
             Timecop.travel(Time.utc(2011,1,30)) { @site.pend_plan_changes }
             @site.apply_pending_plan_changes
             @site.reload.plan_id = @paid_plan2.id # upgrade
@@ -488,7 +488,7 @@ describe Site::Invoice do
 
         context "from monthly paid plan to yearly paid plan" do
           before(:all) do
-            @site = Factory.build(:new_site, plan_id: @paid_plan.id)
+            @site = FactoryGirl.build(:new_site, plan_id: @paid_plan.id)
             Timecop.travel(Time.utc(2011,1,30)) { @site.pend_plan_changes }
             @site.apply_pending_plan_changes
             @site.reload.plan_id = @paid_plan_yearly.id # upgrade
@@ -507,7 +507,7 @@ describe Site::Invoice do
 
         context "from yearly paid plan to yearly paid plan" do
           before(:all) do
-            @site = Factory.build(:new_site, plan_id: @paid_plan_yearly.id)
+            @site = FactoryGirl.build(:new_site, plan_id: @paid_plan_yearly.id)
             Timecop.travel(Time.utc(2011,1,30)) { @site.pend_plan_changes }
             @site.apply_pending_plan_changes
             @site.reload.plan_id = @paid_plan_yearly2.id # upgrade
@@ -528,7 +528,7 @@ describe Site::Invoice do
       describe "renew/downgrade site" do
         context "without downgrade" do
           before(:all) do
-            @site = Factory.build(:new_site, plan_id: @paid_plan.id)
+            @site = FactoryGirl.build(:new_site, plan_id: @paid_plan.id)
             Timecop.travel(Time.utc(2011,1,30)) { @site.pend_plan_changes }
             @site.apply_pending_plan_changes
             Timecop.travel(Time.utc(2011,3,3)) { @site.pend_plan_changes }
@@ -547,7 +547,7 @@ describe Site::Invoice do
         context "with downgrade" do
           context "from monthly paid plan to dev plan but during the pending cycle" do
             before(:all) do
-              Timecop.travel(Time.utc(2011,1,1)) { @site = Factory(:site_with_invoice, plan_id: @paid_plan.id) }
+              Timecop.travel(Time.utc(2011,1,1)) { @site = FactoryGirl.create(:site_with_invoice, plan_id: @paid_plan.id) }
 
               Timecop.travel(Time.utc(2011,2,1)) do
                 @site.pend_plan_changes
@@ -572,7 +572,7 @@ describe Site::Invoice do
 
           context "from monthly paid plan to dev plan" do
             before(:all) do
-              @site = Factory.build(:new_site, plan_id: @paid_plan.id)
+              @site = FactoryGirl.build(:new_site, plan_id: @paid_plan.id)
               Timecop.travel(Time.utc(2011,1,30)) do
                 @site.pend_plan_changes
                 @site.apply_pending_plan_changes
@@ -594,7 +594,7 @@ describe Site::Invoice do
 
           context "from yearly paid plan to dev plan" do
             before(:all) do
-              @site = Factory.build(:new_site, plan_id: @paid_plan_yearly.id)
+              @site = FactoryGirl.build(:new_site, plan_id: @paid_plan_yearly.id)
               Timecop.travel(Time.utc(2011,1,30)) do
                 @site.pend_plan_changes
                 @site.apply_pending_plan_changes
@@ -615,7 +615,7 @@ describe Site::Invoice do
 
           context "from monthly paid plan to monthly paid plan" do
             before(:all) do
-              @site = Factory.build(:new_site, plan_id: @paid_plan2.id)
+              @site = FactoryGirl.build(:new_site, plan_id: @paid_plan2.id)
               Timecop.travel(Time.utc(2011,1,30)) do
                 @site.pend_plan_changes
                 @site.apply_pending_plan_changes
@@ -636,7 +636,7 @@ describe Site::Invoice do
 
           context "from yearly paid plan to yearly paid plan" do
             before(:all) do
-              @site = Factory.build(:new_site, plan_id: @paid_plan_yearly2.id)
+              @site = FactoryGirl.build(:new_site, plan_id: @paid_plan_yearly2.id)
               Timecop.travel(Time.utc(2011,1,30)) do
                 @site.pend_plan_changes
                 @site.apply_pending_plan_changes
@@ -657,7 +657,7 @@ describe Site::Invoice do
 
           context "from yearly paid plan to monthly paid plan" do
             before(:all) do
-              @site = Factory.build(:new_site, plan_id: @paid_plan_yearly.id)
+              @site = FactoryGirl.build(:new_site, plan_id: @paid_plan_yearly.id)
               Timecop.travel(Time.utc(2011,1,30)) do
                 @site.pend_plan_changes
                 @site.apply_pending_plan_changes
@@ -681,7 +681,7 @@ describe Site::Invoice do
 
     describe "#apply_pending_plan_changes" do
       before(:all) do
-        @site = Factory(:site, plan_id: @dev_plan.id)
+        @site = FactoryGirl.create(:site, plan_id: @dev_plan.id)
         @site = Site.find(@site) # hard reset to plan association cache
         @site.pending_plan_id                           = @paid_plan.id
         @site.pending_plan_started_at                   = Time.utc(2012,12,21)
@@ -712,7 +712,7 @@ describe Site::Invoice do
     end # #apply_pending_plan_changes
 
     describe "#months_since" do
-      before(:all) { @site = Factory.build(:new_site) }
+      before(:all) { @site = FactoryGirl.build(:new_site) }
 
       context "with plan_started_at 2011,1,1" do
         before(:all) { @start_time = Time.utc(2011,1,1) }
@@ -745,13 +745,13 @@ describe Site::Invoice do
 
     describe "#advance_for_next_cycle_end" do
       before(:all) do
-        @site = Factory.build(:new_site, plan_id: @paid_plan.id)
+        @site = FactoryGirl.build(:new_site, plan_id: @paid_plan.id)
         @site.pend_plan_changes
         @site.apply_pending_plan_changes
       end
 
       context "with a monthly plan" do
-        before(:all) { @plan = Factory(:plan, cycle: "month") }
+        before(:all) { @plan = FactoryGirl.create(:plan, cycle: "month") }
 
         context "when now is less than 1 month after site.plan_started_at" do
           it "should return 0 year + 1 month in advance - 1 day" do
@@ -781,7 +781,7 @@ describe Site::Invoice do
       end
 
       context "with a yearly plan" do
-        before(:all) { @plan = Factory(:plan, cycle: "year") }
+        before(:all) { @plan = FactoryGirl.create(:plan, cycle: "year") }
 
         context "when now is less than 1 yearly after site.plan_started_at" do
           it "should return 12 months in advance - 1 day" do
@@ -814,15 +814,15 @@ describe Site::Invoice do
       # apply_pending_plan_changes when transaction is ok
     describe "#create_and_charge_invoice" do
       before(:all) do
-        @paid_plan         = Factory(:plan, cycle: "month", price: 1000)
-        @paid_plan2        = Factory(:plan, cycle: "month", price: 5000)
-        @paid_plan_yearly  = Factory(:plan, cycle: "year",  price: 10000)
-        @paid_plan_yearly2 = Factory(:plan, cycle: "year",  price: 50000)
+        @paid_plan         = FactoryGirl.create(:plan, cycle: "month", price: 1000)
+        @paid_plan2        = FactoryGirl.create(:plan, cycle: "month", price: 5000)
+        @paid_plan_yearly  = FactoryGirl.create(:plan, cycle: "year",  price: 10000)
+        @paid_plan_yearly2 = FactoryGirl.create(:plan, cycle: "year",  price: 50000)
       end
 
       context "site in dev plan" do
         context "on creation" do
-          before(:each) { @site = Factory.build(:new_site, plan_id: @dev_plan.id) }
+          before(:each) { @site = FactoryGirl.build(:new_site, plan_id: @dev_plan.id) }
           subject { @site }
 
           it "should not create and not try to charge the invoice" do
@@ -832,7 +832,7 @@ describe Site::Invoice do
         end
 
         context "on a saved record" do
-          before(:all) { Timecop.travel(Time.utc(2011,1,30)) { @site = Factory(:site_with_invoice, plan_id: @dev_plan.id) } }
+          before(:all) { Timecop.travel(Time.utc(2011,1,30)) { @site = FactoryGirl.create(:site_with_invoice, plan_id: @dev_plan.id) } }
 
           describe "when save with no changes" do
             subject { @site }
@@ -893,7 +893,7 @@ describe Site::Invoice do
 
       context "site in beta plan" do
         context "on creation" do
-          before(:each) { Timecop.travel(Time.utc(2011,1,30)) { @site = Factory.build(:new_site, plan_id: @beta_plan.id) } }
+          before(:each) { Timecop.travel(Time.utc(2011,1,30)) { @site = FactoryGirl.build(:new_site, plan_id: @beta_plan.id) } }
           subject { @site }
 
           it "should not create and not try to charge the invoice" do
@@ -903,7 +903,7 @@ describe Site::Invoice do
         end
 
         context "on a saved record" do
-          before(:all) { Timecop.travel(Time.utc(2011,1,30)) { @site = Factory(:site_with_invoice, plan_id: @beta_plan.id) } }
+          before(:all) { Timecop.travel(Time.utc(2011,1,30)) { @site = FactoryGirl.create(:site_with_invoice, plan_id: @beta_plan.id) } }
 
           describe "when save with no changes" do
             subject { @site.reload }
@@ -965,7 +965,7 @@ describe Site::Invoice do
       context "site in monthly paid plan" do
         context "on creation" do
           use_vcr_cassette "ogone/visa_payment_generic"
-          before(:each) { Timecop.travel(Time.utc(2011,1,30)) { @site = Factory.build(:new_site, plan_id: @paid_plan.id) } }
+          before(:each) { Timecop.travel(Time.utc(2011,1,30)) { @site = FactoryGirl.build(:new_site, plan_id: @paid_plan.id) } }
           subject { @site }
 
           it "should create and try to charge the invoice" do
@@ -978,7 +978,7 @@ describe Site::Invoice do
 
         context "on a saved record" do
           before(:all) do
-            Timecop.travel(Time.utc(2011,1,30)) { @site = Factory(:site_with_invoice, plan_id: @paid_plan.id) }
+            Timecop.travel(Time.utc(2011,1,30)) { @site = FactoryGirl.create(:site_with_invoice, plan_id: @paid_plan.id) }
           end
 
           describe "when save with no changes during the first cycle" do
@@ -1034,7 +1034,7 @@ describe Site::Invoice do
             it "should save user credit card infos if passed through charging_options" do
               subject.reload.plan_id   = @paid_plan_yearly.id
               subject.user_attributes = { "current_password" => "123456" }
-              subject.charging_options = { credit_card: Factory.build(:user_no_cc, valid_cc_attributes_master).credit_card }
+              subject.charging_options = { credit_card: FactoryGirl.build(:user_no_cc, valid_cc_attributes_master).credit_card }
 
               Timecop.travel(Time.utc(2011,2,10)) { expect { subject.save }.to change(subject.invoices, :count).by(1) }
               subject.reload.plan.should == @paid_plan_yearly
@@ -1078,7 +1078,7 @@ describe Site::Invoice do
       context "site in yearly paid plan" do
         context "on creation" do
           use_vcr_cassette "ogone/visa_payment_generic"
-          before(:each) { Timecop.travel(Time.utc(2011,1,30)) { @site = Factory.build(:new_site, plan_id: @paid_plan_yearly.id) } }
+          before(:each) { Timecop.travel(Time.utc(2011,1,30)) { @site = FactoryGirl.build(:new_site, plan_id: @paid_plan_yearly.id) } }
           subject { @site }
 
           it "should create and try to charge the invoice" do
@@ -1090,7 +1090,7 @@ describe Site::Invoice do
 
         context "on a saved record" do
           before(:all) do
-            Timecop.travel(Time.utc(2011,1,30)) { @site = Factory(:site_with_invoice, plan_id: @paid_plan_yearly.id) }
+            Timecop.travel(Time.utc(2011,1,30)) { @site = FactoryGirl.create(:site_with_invoice, plan_id: @paid_plan_yearly.id) }
           end
 
           describe "when save with no changes during the first cycle" do
@@ -1175,7 +1175,7 @@ describe Site::Invoice do
     end # #create_and_charge_invoice
 
     describe "#months_since" do
-      before(:all) { @site = Factory(:site) }
+      before(:all) { @site = FactoryGirl.create(:site) }
 
       context "with plan_started_at 2011,1,1" do
         before(:all) { @site.plan_started_at = Time.utc(2011,1,1) }
@@ -1207,7 +1207,7 @@ describe Site::Invoice do
     end
 
     describe "#days_since" do
-      before(:all) { @site = Factory(:site) }
+      before(:all) { @site = FactoryGirl.create(:site) }
 
       context "with first_paid_plan_started_at 2011,1,1" do
         before(:all) { @site.first_paid_plan_started_at = Time.utc(2011,1,1) }
@@ -1227,8 +1227,8 @@ describe Site::Invoice do
     describe "#advance_for_next_cycle_end" do
       context "with a monthly plan" do
         before(:all) do
-          @plan = Factory(:plan, cycle: "month")
-          @site = Factory(:site)
+          @plan = FactoryGirl.create(:plan, cycle: "month")
+          @site = FactoryGirl.create(:site)
           @site.plan_started_at.should == Time.now.utc.midnight
         end
       end
@@ -1236,17 +1236,17 @@ describe Site::Invoice do
 
     describe "#set_first_paid_plan_started_at" do
       it "should be set if site created with paid plan" do
-        site = Factory(:site, plan_id: @paid_plan.id)
+        site = FactoryGirl.create(:site, plan_id: @paid_plan.id)
         site.first_paid_plan_started_at.should be_present
       end
 
       it "should not be set if site created with dev plan" do
-        site = Factory(:site, plan_id: @dev_plan.id)
+        site = FactoryGirl.create(:site, plan_id: @dev_plan.id)
         site.first_paid_plan_started_at.should be_nil
       end
 
       it "should be set when first upgrade to paid plan" do
-        site = Factory(:site, plan_id: @dev_plan.id)
+        site = FactoryGirl.create(:site, plan_id: @dev_plan.id)
         site.first_paid_plan_started_at.should be_nil
         site.reload.plan_id = @paid_plan.id
         site.user_attributes = { current_password: "123456" }

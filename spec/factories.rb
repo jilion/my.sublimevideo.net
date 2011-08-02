@@ -1,238 +1,232 @@
-# http://github.com/thoughtbot/factory_girl
-
-Factory.define :user_no_cc, :class => User do |f|
-  f.first_name           "John"
-  f.last_name            "Doe"
-  f.country              "CH"
-  f.postal_code          "2000"
-  f.use_personal         true
-  f.sequence(:email)     { |n| "email#{n}@user.com" }
-  f.password             "123456"
-  f.terms_and_conditions "1"
-end
-
-Factory.define :user_real_cc, :parent => :user_no_cc do |f|
-  f.cc_brand              'visa'
-  f.cc_full_name          'John Doe Huber'
-  f.cc_number             '4111111111111111'
-  f.cc_expiration_month   1.year.from_now.month
-  f.cc_expiration_year    1.year.from_now.year
-  f.cc_verification_value '111'
-  f.after_create          { |user| user.apply_pending_credit_card_info }
-end
-
-Factory.define :user, :parent => :user_no_cc do |f|
-  f.cc_type               'visa'
-  f.cc_last_digits        '1111'
-  f.cc_expire_on          1.year.from_now.end_of_month.to_date
-  f.cc_updated_at         Time.now.utc
-end
-
-Factory.define :admin do |f|
-  f.sequence(:email) { |n| "email#{n}@admin.com" }
-  f.password         "123456"
-end
-
-Factory.define :new_site, :class => Site do |f|
-  f.sequence(:hostname) { |n| "jilion#{n}.com" }
-  f.dev_hostnames       '127.0.0.1, localhost'
-  f.association         :user
-  f.plan_id             { Factory(:plan).id }
-end
-
-# Don't create invoice nor try to charge
-Factory.define :site, :parent => :new_site do |f|
-  f.after_build do |site|
-    site.pend_plan_changes
-    site.apply_pending_plan_changes
-    site.reload
+FactoryGirl.define do
+  factory :user_no_cc, :class => User do
+    first_name           "John"
+    last_name            "Doe"
+    country              "CH"
+    postal_code          "2000"
+    use_personal         true
+    sequence(:email)     { |n| "email#{n}@user.com" }
+    password             "123456"
+    terms_and_conditions "1"
   end
-end
 
-# Don't create invoice nor try to charge
-Factory.define :beta_site, :parent => :new_site do |f|
-  f.plan_id             nil
-  f.pending_plan_id     { Factory(:beta_plan).id }
-  f.after_build do |site|
-    site.pend_plan_changes
-    site.apply_pending_plan_changes
-    site.reload
+  factory :user_real_cc, :parent => :user_no_cc do
+    cc_brand              'visa'
+    cc_full_name          'John Doe Huber'
+    cc_number             '4111111111111111'
+    cc_expiration_month   1.year.from_now.month
+    cc_expiration_year    1.year.from_now.year
+    cc_verification_value '111'
+    after_create          { |user| user.apply_pending_credit_card_info }
   end
-end
 
-Factory.define :site_with_invoice, :parent => :new_site do |f|
-  f.after_build  { |site| VCR.insert_cassette('ogone/visa_payment_generic') }
-  f.after_create do |site|
-    VCR.eject_cassette
-    site.apply_pending_plan_changes
-    site.reload
+  factory :user, :parent => :user_no_cc do
+    cc_type        'visa'
+    cc_last_digits '1111'
+    cc_expire_on   1.year.from_now.end_of_month.to_date
+    cc_updated_at  Time.now.utc
   end
-end
 
-# Old
-# Factory.define :site, :parent => :new_site do |f|
-#   f.after_build  { |site| VCR.insert_cassette('ogone/visa_payment_generic') }
-#   f.after_create { |site| VCR.eject_cassette; site.apply_pending_plan_changes }
-# end
+  factory :admin do
+    sequence(:email) { |n| "email#{n}@admin.com" }
+    password         "123456"
+  end
 
-Factory.define :site_pending, :parent => :new_site do |f|
-  f.after_build  { |site| VCR.insert_cassette('ogone/visa_payment_generic') }
-  f.after_create { |site| VCR.eject_cassette }
-end
+  factory :new_site, :class => Site do
+    sequence(:hostname) { |n| "jilion#{n}.com" }
+    dev_hostnames       '127.0.0.1, localhost'
+    association         :user
+    plan_id             { FactoryGirl.create(:plan).id }
+  end
 
-Factory.define :log_voxcast, :class => Log::Voxcast do |f|
-  f.name "cdn.sublimevideo.net.log.1275002700-1275002760.gz"
-end
+  # Don't create invoice nor try to charge
+  factory :site, :parent => :new_site do
+    after_build do |site|
+      site.pend_plan_changes
+      site.apply_pending_plan_changes
+      site.reload
+    end
+  end
 
-Factory.define :log_s3_player, :class => Log::Amazon::S3::Player do |f|
-  f.name "2010-07-16-05-22-13-8C4ECFE09170CCD5"
-end
+  # Don't create invoice nor try to charge
+  factory :beta_site, :parent => :new_site do
+    plan_id             nil
+    pending_plan_id     { FactoryGirl.create(:beta_plan).id }
+    after_build do |site|
+      site.pend_plan_changes
+      site.apply_pending_plan_changes
+      site.reload
+    end
+  end
 
-Factory.define :log_s3_loaders, :class => Log::Amazon::S3::Loaders do |f|
-  f.name "2010-07-14-09-22-26-63B226D3944909C8"
-end
+  factory :site_with_invoice, :parent => :new_site do
+    after_build  { |site| VCR.insert_cassette('ogone/visa_payment_generic') }
+    after_create do |site|
+      VCR.eject_cassette
+      site.apply_pending_plan_changes
+      site.reload
+    end
+  end
 
-Factory.define :log_s3_licenses, :class => Log::Amazon::S3::Licenses do |f|
-  f.name "2010-07-14-11-29-03-BDECA2599C0ADB7D"
-end
+  factory :site_pending, :parent => :new_site do
+    after_build  { |site| VCR.insert_cassette('ogone/visa_payment_generic') }
+    after_create { |site| VCR.eject_cassette }
+  end
 
-Factory.define :site_usage do |f|
-  f.site_id { Factory(:site).id }
-end
+  factory :log_voxcast, :class => Log::Voxcast do
+    name "cdn.sublimevideo.net.log.1275002700-1275002760.gz"
+  end
 
-Factory.define :release do |f|
-  f.zip { File.new(Rails.root.join('spec/fixtures/release.zip')) }
-end
+  factory :log_s3_player, :class => Log::Amazon::S3::Player do
+    name "2010-07-16-05-22-13-8C4ECFE09170CCD5"
+  end
 
-Factory.define :referrer do |f|
-  f.url   "http://bob.com"
-  f.token { Factory(:site).token }
-  f.hits  12
-end
+  factory :log_s3_loaders, :class => Log::Amazon::S3::Loaders do
+    name "2010-07-14-09-22-26-63B226D3944909C8"
+  end
 
-Factory.define :mail_template, :class => MailTemplate do |f|
-  f.sequence(:title) { |n| "Pricing survey #{n}" }
-  f.subject          "{{user.full_name}} ({{user.email}}), help us shaping the right pricing - The SublimeVideo Team"
-  f.body             "Hi {{user.full_name}} ({{user.email}}), please respond to the survey, by clicking on the following url: http://survey.com - The SublimeVideo Team"
-end
+  factory :log_s3_licenses, :class => Log::Amazon::S3::Licenses do
+    name "2010-07-14-11-29-03-BDECA2599C0ADB7D"
+  end
 
-Factory.define :mail_log, :class => MailLog do |f|
-  f.association :template, :factory => :mail_template
-  f.association :admin
-  f.criteria    ["all"]
-  f.user_ids    [1,2,3,4,5]
-  f.snapshot    Hash.new.tap { |h|
+  factory :site_usage do
+    site_id { FactoryGirl.create(:site).id }
+  end
+
+  factory :release do
+    zip { File.new(Rails.root.join('spec/fixtures/release.zip')) }
+  end
+
+  factory :referrer do
+    url   "http://bob.com"
+    token { FactoryGirl.create(:site).token }
+    hits  12
+  end
+
+  factory :mail_template, :class => MailTemplate do
+    sequence(:title) { |n| "Pricing survey #{n}" }
+    subject          "{{user.full_name}} ({{user.email}}), help us shaping the right pricing - The SublimeVideo Team"
+    body             "Hi {{user.full_name}} ({{user.email}}), please respond to the survey, by clicking on the following url: http://survey.com - The SublimeVideo Team"
+  end
+
+  factory :mail_log, :class => MailLog do
+    association :template, :factory => :mail_template
+    association :admin
+    criteria    ["all"]
+    user_ids    [1,2,3,4,5]
+    snapshot    Hash.new.tap { |h|
                   h[:title]   = "Blabla"
                   h[:subject] = "Blibli"
                   h[:body]    = "Blublu"
                 }
-end
+  end
 
-Factory.define :plan do |f|
-  f.sequence(:name) { |n| "comet#{n}" }
-  f.cycle           "month"
-  f.player_hits     10_000
-  f.price           1000
-end
+  factory :plan do
+    sequence(:name) { |n| "comet#{n}" }
+    cycle           "month"
+    player_hits     10_000
+    price           1000
+  end
 
-Factory.define :dev_plan, :class => Plan  do |f|
-  f.name         "dev"
-  f.cycle        "none"
-  f.player_hits  0
-  f.price        0
-end
+  factory :dev_plan, :class => Plan  do
+    name         "dev"
+    cycle        "none"
+    player_hits  0
+    price        0
+  end
 
-Factory.define :beta_plan, :class => Plan  do |f|
-  f.name        "beta"
-  f.cycle       "none"
-  f.player_hits 0
-  f.price       0
-end
+  factory :beta_plan, :class => Plan  do
+    name        "beta"
+    cycle       "none"
+    player_hits 0
+    price       0
+  end
 
-Factory.define :sponsored_plan, :class => Plan  do |f|
-  f.name        "sponsored"
-  f.cycle       "none"
-  f.player_hits 0
-  f.price       0
-end
+  factory :sponsored_plan, :class => Plan  do
+    name        "sponsored"
+    cycle       "none"
+    player_hits 0
+    price       0
+  end
 
-Factory.define :custom_plan, :class => Plan do |f|
-  f.sequence(:name) { |n| "custom#{n}" }
-  f.cycle           "month"
-  f.player_hits     10_000_000
-  f.price           20_000
-end
+  factory :custom_plan, :class => Plan do
+    sequence(:name) { |n| "custom#{n}" }
+    cycle           "month"
+    player_hits     10_000_000
+    price           20_000
+  end
 
-Factory.define :invoice do |f|
-  f.association          :site
-  f.invoice_items_amount 10000
-  f.amount               10000
-  f.vat_rate             0.08
-  f.vat_amount           800
-end
+  factory :invoice do
+    association          :site
+    invoice_items_amount 10000
+    amount               10000
+    vat_rate             0.08
+    vat_amount           800
+  end
 
-Factory.define :invoice_item do |f|
-  f.association :invoice
-  f.started_at  { Time.now.utc.beginning_of_month }
-  f.ended_at    { Time.now.utc.end_of_month }
-end
+  factory :invoice_item do
+    association :invoice
+    started_at  { Time.now.utc.beginning_of_month }
+    ended_at    { Time.now.utc.end_of_month }
+  end
 
-Factory.define :plan_invoice_item, :parent => :invoice_item, :class => InvoiceItem::Plan do |f|
-  f.item   { Factory(:plan) }
-  f.price  1000
-  f.amount 1000
-end
+  factory :plan_invoice_item, :parent => :invoice_item, :class => ::InvoiceItem::Plan do
+    item   { FactoryGirl.create(:plan) }
+    price  1000
+    amount 1000
+  end
 
-Factory.define :transaction do |f|
-end
+  factory :transaction do
+  end
 
-Factory.define :users_stat do |f|
-  f.states_count  { {} }
-end
+  factory :users_stat do
+    states_count  { {} }
+  end
 
-Factory.define :sites_stat do |f|
-  f.states_count  { {} }
-  f.plans_count   { {} }
-end
+  factory :sites_stat do
+    states_count  { {} }
+    plans_count   { {} }
+  end
 
-Factory.define :tweet do |f|
-  f.sequence(:tweet_id) { |n| n }
-  f.keywords            %w[sublimevideo jilion]
-  f.from_user_id        1
-  f.from_user           'toto'
-  f.to_user_id          2
-  f.to_user             'tata'
-  f.iso_language_code   'en'
-  f.profile_image_url   'http://yourimage.com/img.jpg'
-  f.content             "This is my first tweet!"
-  f.tweeted_at          Time.now.utc
-  f.favorited           false
-end
+  factory :tweet do
+    sequence(:tweet_id) { |n| n }
+    keywords            %w[sublimevideo jilion]
+    from_user_id        1
+    from_user           'toto'
+    to_user_id          2
+    to_user             'tata'
+    iso_language_code   'en'
+    profile_image_url   'http://yourimage.com/img.jpg'
+    content             "This is my first tweet!"
+    tweeted_at          Time.now.utc
+    favorited           false
+  end
 
-Factory.define :client_application do |f|
-  f.association :user
-  f.name         "Agree2"
-  f.url          "http://test.com"
-  f.support_url  "http://test.com/support"
-  f.callback_url "http://test.com/callback"
-  f.key          "one_key"
-  f.secret       "MyString"
-end
+  factory :client_application do
+    association :user
+    name         "Agree2"
+    url          "http://test.com"
+    support_url  "http://test.com/support"
+    callback_url "http://test.com/callback"
+    key          "one_key"
+    secret       "MyString"
+  end
 
-Factory.define :oauth_token do |f|
-  f.association  :client_application
-  f.association  :user
-  f.callback_url "http://test.com/callback"
-end
+  factory :oauth_token do
+    association  :client_application
+    association  :user
+    callback_url "http://test.com/callback"
+  end
 
-Factory.define :oauth2_token do |f|
-  f.association  :client_application
-  f.association  :user
-  f.callback_url "http://test.com/callback"
-end
+  factory :oauth2_token do
+    association  :client_application
+    association  :user
+    callback_url "http://test.com/callback"
+  end
 
-Factory.define :oauth2_verifier do |f|
-  f.association  :client_application
-  f.association  :user
-  f.callback_url "http://test.com/callback"
+  factory :oauth2_verifier do
+    association  :client_application
+    association  :user
+    callback_url "http://test.com/callback"
+  end
 end

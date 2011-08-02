@@ -3,10 +3,10 @@ require 'spec_helper'
 
 feature "Sites API" do
   before(:all) do
-    @user        = Factory(:user)
-    @site        = Factory(:site, user: @user)
-    @application = Factory(:client_application, user: @user)
-    @token       = Factory(:oauth2_token, user: @user, client_application: @application)
+    @user        = FactoryGirl.create(:user)
+    @site        = FactoryGirl.create(:site, user: @user)
+    @application = FactoryGirl.create(:client_application, user: @user)
+    @token       = FactoryGirl.create(:oauth2_token, user: @user, client_application: @application)
   end
   before(:each) do
     @parsed_body = nil
@@ -42,9 +42,9 @@ feature "Sites API" do
 
   describe "/api/1/sites/:token/usage" do
     background do
-      @site_usage1 = Factory(:site_usage, site_id: @site.id, day: 61.days.ago.midnight, main_player_hits: 1000, main_player_hits_cached: 800, extra_player_hits: 500, extra_player_hits_cached: 400)
-      @site_usage2 = Factory(:site_usage, site_id: @site.id, day: 59.days.ago.midnight, main_player_hits: 1000, main_player_hits_cached: 800, extra_player_hits: 500, extra_player_hits_cached: 400)
-      @site_usage3 = Factory(:site_usage, site_id: @site.id, day: Time.now.midnight, main_player_hits: 1000, main_player_hits_cached: 800, extra_player_hits: 500, extra_player_hits_cached: 400)
+      @site_usage1 = FactoryGirl.create(:site_usage, site_id: @site.id, day: 61.days.ago.midnight, main_player_hits: 1000, main_player_hits_cached: 800, extra_player_hits: 500, extra_player_hits_cached: 400)
+      @site_usage2 = FactoryGirl.create(:site_usage, site_id: @site.id, day: 59.days.ago.midnight, main_player_hits: 1000, main_player_hits_cached: 800, extra_player_hits: 500, extra_player_hits_cached: 400)
+      @site_usage3 = FactoryGirl.create(:site_usage, site_id: @site.id, day: Time.now.midnight, main_player_hits: 1000, main_player_hits_cached: 800, extra_player_hits: 500, extra_player_hits_cached: 400)
     end
 
     scenario do

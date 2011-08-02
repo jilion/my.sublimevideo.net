@@ -42,7 +42,7 @@ describe ApplicationHelper do
     it { helper.display_amount(1900, :decimals => 1).should == "$19.0" }
 
     context "with tva" do
-      before(:each) { sign_in Factory(:user, country: "CH") }
+      before(:each) { sign_in FactoryGirl.create(:user, country: "CH") }
 
       it { helper.display_amount(10000, vat: true).should == "$108" }
     end

@@ -4,18 +4,18 @@ describe InvoiceItem::Plan do
 
   describe ".build(attributes={})" do
     before(:all) do
-      @not_enthusiast = Factory(:user, invitation_token: "123asd", created_at: Time.utc(2010,10,10))
-      @enthusiast     = Factory(:user, invitation_token: nil, created_at: Time.utc(2010,10,10))
+      @not_enthusiast = FactoryGirl.create(:user, invitation_token: "123asd", created_at: Time.utc(2010,10,10))
+      @enthusiast     = FactoryGirl.create(:user, invitation_token: nil, created_at: Time.utc(2010,10,10))
 
-      @plan1 = Factory(:plan, price: 1000)
-      @plan2 = Factory(:plan, price: 2000)
+      @plan1 = FactoryGirl.create(:plan, price: 1000)
+      @plan2 = FactoryGirl.create(:plan, price: 2000)
 
       Timecop.travel(Time.utc(2011,5,1)) do
-        @site1 = Factory.build(:new_site, user: @not_enthusiast, plan_id: @plan1.id)
-        @site2 = Factory(:site_with_invoice, user: @not_enthusiast, plan_id: @plan1.id)
+        @site1 = FactoryGirl.build(:new_site, user: @not_enthusiast, plan_id: @plan1.id)
+        @site2 = FactoryGirl.create(:site_with_invoice, user: @not_enthusiast, plan_id: @plan1.id)
         @site2.plan_id = @plan2.id # upgrade
         @site2.pend_plan_changes # simulate upgrade
-        @site3 = Factory(:site, user: @not_enthusiast, plan_id: @plan2.id)
+        @site3 = FactoryGirl.create(:site, user: @not_enthusiast, plan_id: @plan2.id)
         @site3.plan_id = @plan1.id # downgrade
       end
 
@@ -23,9 +23,9 @@ describe InvoiceItem::Plan do
         @site3.pend_plan_changes # simulate downgrade
       end
 
-      @invoice1 = Factory(:invoice, site: @site1)
-      @invoice2 = Factory(:invoice, site: @site2)
-      @invoice3 = Factory(:invoice, site: @site3)
+      @invoice1 = FactoryGirl.create(:invoice, site: @site1)
+      @invoice2 = FactoryGirl.create(:invoice, site: @site2)
+      @invoice3 = FactoryGirl.create(:invoice, site: @site3)
     end
 
     describe "new or renew" do

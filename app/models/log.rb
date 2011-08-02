@@ -16,7 +16,7 @@ class Log
 
   # ensure there is no confusion about S3 Class
   autoload :Amazon, 'log/amazon'
-  autoload :S3,     'log/amazon/s3'
+  # autoload :S3,     'log/amazon/s3'
 
   attr_accessible :name
 

@@ -4,7 +4,7 @@ feature "Sites pagination:" do
   background do
     sign_in_as :admin
     Responders::PaginatedResponder.stub(:per_page).and_return(1)
-    Factory(:site)
+    FactoryGirl.create(:site)
   end
 
   scenario "pagination links displayed only if count of sites > Site.per_page" do
@@ -14,7 +14,7 @@ feature "Sites pagination:" do
     page.should have_no_css('em.current')
     page.should have_no_css('a.next')
 
-    Factory(:site)
+    FactoryGirl.create(:site)
     visit "/admin/sites"
 
     page.should have_css('nav.pagination')

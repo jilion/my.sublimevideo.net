@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Tweet do
 
   context "Factory" do
-    before(:all) { @tweet = Factory.build(:tweet) }
+    before(:all) { @tweet = FactoryGirl.build(:tweet) }
     subject { @tweet }
 
     its(:tweet_id)          { should be_present }
@@ -22,12 +22,12 @@ describe Tweet do
   end
 
   describe "Associations" do
-    before(:all) { @tweet = Factory(:user) }
+    before(:all) { @tweet = FactoryGirl.create(:user) }
     subject { @tweet }
 
     it "should belongs to retweeted_tweet" do
-      tweet1 = Factory(:tweet, tweet_id: 1)
-      tweet2 = Factory(:tweet, tweet_id: 2)
+      tweet1 = FactoryGirl.create(:tweet, tweet_id: 1)
+      tweet2 = FactoryGirl.create(:tweet, tweet_id: 2)
       tweet2.retweeted_tweet = tweet1
       tweet2.save
 
@@ -35,8 +35,8 @@ describe Tweet do
     end
 
     it "retweets should be the inverse of retweeted_tweet" do
-      tweet1 = Factory(:tweet, tweet_id: 1)
-      tweet2 = Factory(:tweet, tweet_id: 2)
+      tweet1 = FactoryGirl.create(:tweet, tweet_id: 1)
+      tweet2 = FactoryGirl.create(:tweet, tweet_id: 2)
       tweet2.retweeted_tweet = tweet1
       tweet2.save
 
@@ -44,9 +44,9 @@ describe Tweet do
     end
 
     it "should have many retweets" do
-      tweet1 = Factory(:tweet, tweet_id: 1)
-      tweet2 = Factory(:tweet, tweet_id: 2)
-      tweet3 = Factory(:tweet, tweet_id: 3)
+      tweet1 = FactoryGirl.create(:tweet, tweet_id: 1)
+      tweet2 = FactoryGirl.create(:tweet, tweet_id: 2)
+      tweet3 = FactoryGirl.create(:tweet, tweet_id: 3)
 
       tweet1.retweets << tweet2
       tweet1.retweets << tweet3
@@ -56,9 +56,9 @@ describe Tweet do
     end
 
     it "retweeted_tweet should be the inverse of retweets" do
-      tweet1 = Factory(:tweet, tweet_id: 1)
-      tweet2 = Factory(:tweet, tweet_id: 2)
-      tweet3 = Factory(:tweet, tweet_id: 3)
+      tweet1 = FactoryGirl.create(:tweet, tweet_id: 1)
+      tweet2 = FactoryGirl.create(:tweet, tweet_id: 2)
+      tweet3 = FactoryGirl.create(:tweet, tweet_id: 3)
 
       tweet1.retweets << tweet2
       tweet1.retweets << tweet3
@@ -83,8 +83,8 @@ describe Tweet do
     it { should validate_presence_of(:content) }
     it { should validate_presence_of(:tweeted_at) }
     it "should validate uniqueness of tweet_id" do
-      Factory(:tweet, tweet_id: 1)
-      tweet = Factory.build(:tweet, tweet_id: 1)
+      FactoryGirl.create(:tweet, tweet_id: 1)
+      tweet = FactoryGirl.build(:tweet, tweet_id: 1)
       tweet.should_not be_valid
       tweet.should have(1).error_on(:tweet_id)
     end
@@ -145,7 +145,7 @@ describe Tweet do
 
   describe "Instance Methods" do
     describe "#favorite!" do
-      subject { Factory(:tweet, tweet_id: 56351930166935552) }
+      subject { FactoryGirl.create(:tweet, tweet_id: 56351930166935552) }
 
       describe "favorite" do
         use_vcr_cassette "twitter/favorite"
