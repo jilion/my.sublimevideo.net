@@ -522,7 +522,15 @@ describe User do
           end
         end
 
-        describe "after_transition :on => :archive, :do => :send_account_archived_email" do
+        describe "after_transition :on => :archive, :do => [:invalidate_tokens, :send_account_archived_email]" do
+          it "invalidate all user's tokens" do
+            Factory(:oauth2_token, user: subject)
+            subject.reload.tokens.first.should_not be_invalidated_at
+            subject.current_password = "123456"
+            subject.archive
+            subject.reload.tokens.all? { |token| token.invalidated_at? }.should be_true
+          end
+          
           it "should send an email to user" do
             lambda { subject.current_password = "123456"; subject.archive }.should change(ActionMailer::Base.deliveries, :count).by(1)
             ActionMailer::Base.deliveries.last.to.should == [subject.email]

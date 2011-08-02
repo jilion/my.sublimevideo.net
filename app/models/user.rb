@@ -85,7 +85,7 @@ class User < ActiveRecord::Base
     after_transition  :on => :unsuspend, :do => :send_account_unsuspended_email
 
     before_transition :on => :archive, :do => [:set_archived_at, :archive_sites]
-    after_transition  :on => :archive, :do => :send_account_archived_email
+    after_transition  :on => :archive, :do => [:invalidate_tokens, :send_account_archived_email]
   end
 
   # ==========
@@ -280,6 +280,11 @@ private
     sites.each do |site|
       site.without_password_validation { site.archive }
     end
+  end
+  
+  # after_transition :on => :archive
+  def invalidate_tokens
+    tokens.update_all(invalidated_at: Time.now.utc)
   end
 
   # after_transition :on => :archive
