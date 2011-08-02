@@ -6,10 +6,7 @@ class CampaignMonitor < Settingslogic
 
     def subscribe(user)
       set_api_key
-      CreateSend::Subscriber.add(
-        self.list_id,
-        user.email,
-        user.full_name,
+      CreateSend::Subscriber.add(self.list_id, user.email, user.full_name,
         [
           { :Key => 'user_id', :Value => user.id },
           { :Key => 'segment', :Value => self.segment },
@@ -17,11 +14,11 @@ class CampaignMonitor < Settingslogic
         ],
         true
       )
-    rescue CreateSend::BadRequest => br
-      log_bad_request(br)
+    rescue CreateSend::BadRequest => ex
+      log_bad_request(ex)
     end
 
-    def import(users = [])
+    def import(users=[])
       set_api_key
       subscribers = users.collect do |user|
         {
@@ -34,24 +31,17 @@ class CampaignMonitor < Settingslogic
           ]
         }
       end
-      CreateSend::Subscriber.import(
-        self.list_id,
-        subscribers,
-        false
-      )
-    rescue CreateSend::BadRequest => br
-      log_bad_request(br)
+      CreateSend::Subscriber.import(self.list_id, subscribers, false)
+    rescue CreateSend::BadRequest => ex
+      log_bad_request(ex)
     end
 
     def unsubscribe(email)
-      subscriber = CreateSend::Subscriber.new(
-        self.list_id,
-        email
-      )
-      subscriber.unsubscribe
+      set_api_key
+      CreateSend::Subscriber.new(self.list_id, email).unsubscribe
       true
-    rescue CreateSend::BadRequest => br
-      log_bad_request(br)
+    rescue CreateSend::BadRequest => ex
+      log_bad_request(ex)
       false
     end
 
@@ -69,10 +59,10 @@ class CampaignMonitor < Settingslogic
       CreateSend.api_key self.api_key
     end
 
-    def log_bad_request(br)
-      Rails.logger.error "Campaign Monitor Bad request error: #{br}"
-      Rails.logger.error "Error Code:    #{br.data.Code}"
-      Rails.logger.error "Error Message: #{br.data.Message}"
+    def log_bad_request(ex)
+      Rails.logger.error "Campaign Monitor Bad request error: #{ex}"
+      Rails.logger.error "Error Code:    #{ex.data.Code}"
+      Rails.logger.error "Error Message: #{ex.data.Message}"
     end
 
   end

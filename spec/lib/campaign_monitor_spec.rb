@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe CampaignMonitor do
-  let(:user) { Factory(:user, email: "cm2@jilion.com", created_at: Time.utc(2010,10,10), invitation_token: nil) }
+  let(:user) { FactoryGirl.create(:user, email: "cm2@jilion.com", created_at: Time.utc(2010,10,10), invitation_token: nil) }
 
   specify { CampaignMonitor.api_key.should == "8844ec1803ffbe6501c3d7e9cfa23bf3" }
   specify { CampaignMonitor.list_id.should == "a064dfc4b8ccd774252a2e9c9deb9244" }
@@ -36,8 +36,8 @@ describe CampaignMonitor do
     use_vcr_cassette "campaign_monitor/import"
 
     it "should subscribe a list of user" do
-      user1 = Factory(:user, email: "bob1@bob.com", created_at: Time.utc(2010,10,10), invitation_token: nil)
-      user2 = Factory(:user, email: "bob2@bob.com", created_at: Time.utc(2011,10,10), invitation_token: nil)
+      user1 = FactoryGirl.create(:user, email: "bob1@bob.com", created_at: Time.utc(2010,10,10), invitation_token: nil)
+      user2 = FactoryGirl.create(:user, email: "bob2@bob.com", created_at: Time.utc(2011,10,10), invitation_token: nil)
       CampaignMonitor.import([user1, user2]).should be_true
       # user 1
       subscriber = CreateSend::Subscriber.get(CampaignMonitor.list_id, user1.email)
@@ -66,6 +66,7 @@ describe CampaignMonitor do
     it "should unsubscribe an existing subscribed user" do
       CampaignMonitor.subscribe(user).should be_true
       CampaignMonitor.state(user.email) == "Active"
+      CreateSend.api_key('invalid') # simulate a call to unsubscribe from a context where api_key is not set (here, not valid since when set to nil it takes the current value...), from within a delayed job for example
       CampaignMonitor.unsubscribe(user.email).should be_true
       CampaignMonitor.state(user.email) == "Unsubscribed"
     end
