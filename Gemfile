@@ -10,6 +10,7 @@ gem 'meta_where',            '1.0.4'
 gem 'bson_ext',              '1.3.1'
 gem 'mongo',                 '1.3.1'
 gem 'mongoid',               '2.0.2'
+# gem 'mongoid',               '2.1.2' # break so many specs (why OH why ?!!)
 
 # Views
 gem 'haml',                  '3.1.2'
@@ -42,9 +43,13 @@ gem 'uniquify',              '0.1.0'
 gem 'responders',            '0.6.2'
 gem 'has_scope',             '0.5.1'
 
-gem 'aws',                   '2.3.34' # bugs in 2.4.2
-gem 'fog',                   '0.8.2'
+# gem 'aws',                   '2.3.34' # bugs in 2.4.2
+gem 'aws',                   '2.5.6'
+gem 'fog',                   '0.10.0'
 gem 'carrierwave',           '0.5.6'
+# For mongoid 2.1.x support, Until my patch is merged or mongoid support is extracted from carrierwave
+# BUT since mongoid 2.1.x break so many specs, it's currently useless
+# gem 'carrierwave',           :git => 'git://github.com/rymai/carrierwave.git'
 gem 'voxel_hapi',            :git => 'git://github.com/thibaudgg/voxel_hapi.git', :branch => '1.9.2' # VoxCast CDN
 gem 'request-log-analyzer',  '1.11.0', :require => 'request_log_analyzer'
 
@@ -58,7 +63,7 @@ gem 'useragent',             :git => 'git://github.com/Jilion/useragent.git'
 gem 'zip',                   '2.0.2', :require => 'zip/zip'
 gem 'countries',             '0.3.0'
 gem 'PageRankr',             '1.6.0', :require => 'page_rankr'
-gem 'twitter',               '1.3.0'
+gem 'twitter',               '1.6.1'
 gem 'settingslogic',         '2.0.6'
 gem 'array_stats',           '0.6.0'
 gem 'createsend',            '0.3.2' # Campaign Monitor
