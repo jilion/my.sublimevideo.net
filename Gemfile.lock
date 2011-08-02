@@ -6,7 +6,7 @@ GIT
 
 GIT
   remote: git://github.com/guard/guard.git
-  revision: a6d0dab45c7ea0c9c49527b585792dd74d891b1b
+  revision: b34cd1acfb4aee0d735b317697780edc9e8c42b3
   specs:
     guard (0.5.1)
       thor (~> 0.14.6)
@@ -267,7 +267,7 @@ GEM
     rake (0.8.7)
     rash (0.3.0)
       hashie (~> 1.0.0)
-    rb-fsevent (0.4.1)
+    rb-fsevent (0.4.2)
     rdoc (3.8)
     request-log-analyzer (1.11.0)
     rescue_me (0.1.0)
