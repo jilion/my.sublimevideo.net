@@ -965,12 +965,23 @@ describe Site do
   end
 
   describe "Versioning" do
-    it "should work!" do
+    subject { with_versioning { FactoryGirl.create(:site) } }
+    
+    it "works!" do
       with_versioning do
-        site = FactoryGirl.create(:site)
-        old_hostname = site.hostname
-        site.update_attributes hostname: "bob.com", user_attributes: { 'current_password' => '123456' }
-        site.versions.last.reify.hostname.should == old_hostname
+        old_hostname = subject.hostname
+        subject.update_attributes(hostname: "bob.com", user_attributes: { 'current_password' => '123456' })
+        subject.versions.last.reify.hostname.should eql old_hostname
+      end
+    end
+    
+    [:cdn_up_to_date, :license, :loader].each do |attr|
+      it "doesn't version when :#{attr} changes" do
+        with_versioning do
+          expect do
+            subject.update_attributes(attr => "bob.com", user_attributes: { 'current_password' => '123456' })
+          end.to_not change(subject.versions, :count)
+        end
       end
     end
   end # Versioning
