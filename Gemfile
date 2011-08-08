@@ -25,8 +25,7 @@ gem 'devise_invitable',      '0.5.4'
 
 # API
 gem 'oauth',                 '0.4.5'
-# gem 'oauth-plugin',          '0.4.0.pre6'
-gem 'oauth-plugin',          :git => 'git://github.com/rymai/oauth-plugin.git', :branch => 'accept_access_token_param'
+gem 'oauth-plugin',          '0.4.0.pre7'
 gem 'acts_as_api',           '0.3.6'
 # gem 'rack-throttle',         :git => 'git://github.com/rymai/rack-throttle.git', :require => 'rack/throttle'
 
@@ -43,7 +42,6 @@ gem 'uniquify',              '0.1.0'
 gem 'responders',            '0.6.2'
 gem 'has_scope',             '0.5.1'
 
-# gem 'aws',                   '2.3.34' # bugs in 2.4.2
 gem 'aws',                   '2.5.6'
 gem 'fog',                   '0.10.0'
 gem 'carrierwave',           '0.5.6'
