@@ -85,6 +85,7 @@ end
 
 group :development, :test do
   gem 'timecop'
+  gem 'rspec-rails', '~> 2.6.0'
 end
 
 group :development do
@@ -112,7 +113,6 @@ end
 
 group :test do
   gem 'spork', '0.9.0.rc9'
-  gem 'rspec-rails', '~> 2.6.0'
   gem 'rspec-instafail'
   gem 'shoulda'
   gem 'capybara', '1.0.0.rc1'
