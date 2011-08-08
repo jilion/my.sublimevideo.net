@@ -61,7 +61,7 @@ gem 'useragent',             :git => 'git://github.com/Jilion/useragent.git'
 gem 'zip',                   '2.0.2', :require => 'zip/zip'
 gem 'countries',             '0.3.0'
 gem 'PageRankr',             '1.6.0', :require => 'page_rankr'
-gem 'twitter',               '1.6.1'
+gem 'twitter',               '1.6.2'
 gem 'settingslogic',         '2.0.6'
 gem 'array_stats',           '0.6.0'
 gem 'createsend',            '0.3.2' # Campaign Monitor
