@@ -13,7 +13,7 @@ feature "API" do
   end
 
   describe "Not passing token" do
-    it "is possible to pass OAuth token with the access_token param" do
+    it "returns an '401 Unauthorized' response" do
       visit '/api/test_request'
       page.driver.status_code.should eql 401
       parsed_body['error'].should eql "Unauthorized!"
@@ -24,11 +24,6 @@ feature "API" do
 
     context "Authorized token" do
       describe "2 ways to pass OAuth token" do
-        it "is possible to pass OAuth token with the access_token param" do
-          visit '/api/test_request?access_token=' + @token.token
-          page.driver.status_code.should eql 200
-        end
-
         it "is possible to pass OAuth token with the oauth_token param" do
           visit '/api/test_request?oauth_token=' + @token.token
           page.driver.status_code.should eql 200
@@ -44,12 +39,6 @@ feature "API" do
 
     context "Non-Authorized token" do
       describe "2 ways to pass OAuth token" do
-        it "is possible to pass OAuth token with the access_token param" do
-          visit '/api/test_request?access_token=foo'
-          page.driver.status_code.should eql 401
-          parsed_body['error'].should eql "Unauthorized!"
-        end
-
         it "is possible to pass OAuth token with the oauth_token param" do
           visit '/api/test_request?oauth_token=foo'
           page.driver.status_code.should eql 401
