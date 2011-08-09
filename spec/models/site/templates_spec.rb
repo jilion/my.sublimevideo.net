@@ -5,7 +5,7 @@ describe Site::Templates do
   describe "Callbacks" do
 
     describe "before_save" do
-      subject { Factory(:site, plan_id: @paid_plan.id) }
+      subject { FactoryGirl.create(:site, plan_id: @paid_plan.id) }
 
       specify do
         subject.should_receive(:prepare_cdn_update)
@@ -17,7 +17,7 @@ describe Site::Templates do
       before(:each) { VoxcastCDN.stub(:purge) }
 
       context "on create" do
-        subject { Factory(:site_pending) }
+        subject { FactoryGirl.create(:site_pending) }
 
         it "should delay update_loader_and_license once" do
           subject
@@ -62,7 +62,7 @@ describe Site::Templates do
           { hostname: "test.com", extra_hostnames: "test.staging.com", dev_hostnames: "test.local", path: "yu", wildcard: true }.each do |attribute, value|
             describe "#{attribute} has changed" do
               subject do
-                site = Factory(:site, plan_id: @dev_plan.id, hostname: "jilion.com", extra_hostnames: "staging.jilion.com", dev_hostnames: "jilion.local", path: "yo", wildcard: false)
+                site = FactoryGirl.create(:site, plan_id: @dev_plan.id, hostname: "jilion.com", extra_hostnames: "staging.jilion.com", dev_hostnames: "jilion.local", path: "yo", wildcard: false)
                 @worker.work_off
                 site.reload
               end
@@ -114,7 +114,7 @@ describe Site::Templates do
         describe "attributes that appears in the loader" do
           describe "player_mode has changed" do
             subject do
-              site = Factory(:site, player_mode: 'dev')
+              site = FactoryGirl.create(:site, player_mode: 'dev')
               @worker.work_off
               site.reload
             end
@@ -151,7 +151,7 @@ describe Site::Templates do
 
       context "new record with dev plan" do
         before(:all) do
-          @site = Factory.build(:new_site, plan_id: @dev_plan.id)
+          @site = FactoryGirl.build(:new_site, plan_id: @dev_plan.id)
           @site.send :prepare_cdn_update
         end
         subject { @site }
@@ -165,7 +165,7 @@ describe Site::Templates do
 
       context "new record with paid plan" do
         before(:all) do
-          @site = Factory.build(:new_site, plan_id: @paid_plan.id)
+          @site = FactoryGirl.build(:new_site, plan_id: @paid_plan.id)
           @site.send :prepare_cdn_update
         end
         subject { @site }
@@ -179,7 +179,7 @@ describe Site::Templates do
 
       context "new record with dev plan (apply_pending_plan_changes called)" do
         before(:all) do
-          @site = Factory.build(:new_site, plan_id: @dev_plan.id)
+          @site = FactoryGirl.build(:new_site, plan_id: @dev_plan.id)
           @site.save
         end
         subject { @site }
@@ -218,7 +218,7 @@ describe Site::Templates do
 
         describe "when upgrade" do
           before(:all) do
-            @site = Factory(:site, plan_id: @dev_plan.id)
+            @site = FactoryGirl.create(:site, plan_id: @dev_plan.id)
             @site.plan_id = @paid_plan.id
             @site.send :prepare_cdn_update
           end
@@ -233,7 +233,7 @@ describe Site::Templates do
 
         describe "when upgrade (apply_pending_plan_changes called)" do
           before(:all) do
-            @site = Factory(:site, plan_id: @dev_plan.id)
+            @site = FactoryGirl.create(:site, plan_id: @dev_plan.id)
             @site.plan_id = @paid_plan.id
             VCR.use_cassette('ogone/visa_payment_generic') do
               @site.pend_plan_changes
@@ -252,7 +252,7 @@ describe Site::Templates do
 
       context "new record with paid plan (apply_pending_plan_changes called)" do
         before(:all) do
-          @site = Factory.build(:new_site, plan_id: @paid_plan.id)
+          @site = FactoryGirl.build(:new_site, plan_id: @paid_plan.id)
           VCR.use_cassette('ogone/visa_payment_generic') do
             @site.pend_plan_changes
             @site.apply_pending_plan_changes
@@ -294,7 +294,7 @@ describe Site::Templates do
 
         describe "when downgrade" do
           before(:all) do
-            @site = Factory(:site, plan_id: @paid_plan.id)
+            @site = FactoryGirl.create(:site, plan_id: @paid_plan.id)
             @site.plan_id = @dev_plan.id
             @site.send :prepare_cdn_update
           end
@@ -310,7 +310,7 @@ describe Site::Templates do
 
         describe "when upgrade" do
           before(:all) do
-            @site = Factory(:site, plan_id: @paid_plan.id)
+            @site = FactoryGirl.create(:site, plan_id: @paid_plan.id)
             @site.plan_id = @custom_plan.token
             @site.send :prepare_cdn_update
           end
@@ -325,7 +325,7 @@ describe Site::Templates do
 
         describe "when unsuspend" do
           before(:all) do
-            @site = Factory(:site, plan_id: @paid_plan.id)
+            @site = FactoryGirl.create(:site, plan_id: @paid_plan.id)
             @site.suspend
             @site.reload
             @site.unsuspend
@@ -341,7 +341,7 @@ describe Site::Templates do
 
         describe "when upgrade (apply_pending_plan_changes called)" do
           before(:all) do
-            @site = Factory(:site, plan_id: @paid_plan.id)
+            @site = FactoryGirl.create(:site, plan_id: @paid_plan.id)
             @site.plan_id = @custom_plan.token
             VCR.use_cassette('ogone/visa_payment_generic') do
               @site.pend_plan_changes
@@ -360,7 +360,7 @@ describe Site::Templates do
     end # #prepare_cdn_update
 
     describe "#settings_changed?" do
-      subject { Factory(:site) }
+      subject { FactoryGirl.create(:site) }
 
       it "should return false if no attribute has changed" do
         subject.should_not be_settings_changed
@@ -376,10 +376,10 @@ describe Site::Templates do
 
     describe "#license_hash" do
       before(:all) do
-        @site_with_all = Factory(:site, plan_id: @dev_plan.id, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', path: 'foo', wildcard: true)
-        @site_without_wildcard = Factory(:site, plan_id: @dev_plan.id, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', path: 'foo', wildcard: false)
-        @site_without_path = Factory(:site, plan_id: @dev_plan.id, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', wildcard: true)
-        @site_without_extra_hostnames = Factory(:site, plan_id: @dev_plan.id, hostname: "jilion.com", dev_hostnames: '127.0.0.1,localhost', wildcard: true)
+        @site_with_all = FactoryGirl.create(:site, plan_id: @dev_plan.id, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', path: 'foo', wildcard: true)
+        @site_without_wildcard = FactoryGirl.create(:site, plan_id: @dev_plan.id, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', path: 'foo', wildcard: false)
+        @site_without_path = FactoryGirl.create(:site, plan_id: @dev_plan.id, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', wildcard: true)
+        @site_without_extra_hostnames = FactoryGirl.create(:site, plan_id: @dev_plan.id, hostname: "jilion.com", dev_hostnames: '127.0.0.1,localhost', wildcard: true)
       end
 
       context "site with dev plan" do
@@ -445,7 +445,7 @@ describe Site::Templates do
     end
 
     describe "#license_js_hash" do
-      subject{ Factory(:site, plan_id: @paid_plan.id, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', path: 'foo', wildcard: true) }
+      subject{ FactoryGirl.create(:site, plan_id: @paid_plan.id, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', path: 'foo', wildcard: true) }
 
       its(:license_js_hash) { should == "{h:[\"jilion.com\",\"jilion.net\",\"jilion.org\"],p:\"foo\",d:[\"127.0.0.1\",\"localhost\"],w:true}" }
     end
@@ -453,7 +453,7 @@ describe Site::Templates do
     describe "#set_template" do
       context "license" do
         before(:all) do
-          @site = Factory(:site, plan_id: @paid_plan.id, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', path: 'foo', wildcard: true)
+          @site = FactoryGirl.create(:site, plan_id: @paid_plan.id, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', path: 'foo', wildcard: true)
           @site.tap { |s| s.set_template("license") }
         end
         subject { @site }
@@ -465,7 +465,7 @@ describe Site::Templates do
 
       context "loader" do
         before(:all) do
-          @site = Factory(:site).tap { |s| s.set_template("loader") }
+          @site = FactoryGirl.create(:site).tap { |s| s.set_template("loader") }
         end
         subject { @site }
 

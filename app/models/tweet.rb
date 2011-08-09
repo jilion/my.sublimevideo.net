@@ -45,7 +45,7 @@ class Tweet
   # =================
   def self.delay_save_new_tweets_and_sync_favorite_tweets
     unless Delayed::Job.already_delayed?('%Tweet%save_new_tweets_and_sync_favorite_tweets%')
-      delay(priority: 200, run_at: 20.minutes.from_now).save_new_tweets_and_sync_favorite_tweets
+      delay(priority: 200, run_at: 30.minutes.from_now).save_new_tweets_and_sync_favorite_tweets
     end
   end
 
@@ -60,7 +60,7 @@ class Tweet
       search.containing("\"#{keyword}\"").result_type("recent").per_page(100)
 
       begin
-        results = rescue_and_retry(5, Errno::ETIMEDOUT, Errno::ECONNRESET, Twitter::BadGateway, Twitter::ServiceUnavailable) { search.fetch }
+        results = TwitterApi.with_rescue_and_retry(5) { search.fetch }
 
         search.fetch.each do |tweet|
           if t = self.where(tweet_id: tweet.id).first
@@ -69,7 +69,7 @@ class Tweet
             self.create_from_twitter_tweet!(tweet)
           end
         end
-      end while rescue_and_retry(5, Errno::ETIMEDOUT, Errno::ECONNRESET, Twitter::BadGateway, Twitter::ServiceUnavailable) { search.fetch_next_page }
+      end while TwitterApi.with_rescue_and_retry(5) { search.fetch_next_page }
     end
     self.sync_favorite_tweets
   end

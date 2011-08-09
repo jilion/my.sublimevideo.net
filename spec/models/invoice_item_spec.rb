@@ -3,7 +3,7 @@ require 'spec_helper'
 describe InvoiceItem do
 
   context "Factory" do
-    before(:all) { @invoice_item = Factory(:plan_invoice_item) }
+    before(:all) { @invoice_item = FactoryGirl.create(:plan_invoice_item) }
     subject { @invoice_item }
 
     its(:invoice)   { should be_present }
@@ -21,7 +21,7 @@ describe InvoiceItem do
   end # Factory
 
   describe "Associations" do
-    before(:all) { @invoice_item = Factory(:plan_invoice_item) }
+    before(:all) { @invoice_item = FactoryGirl.create(:plan_invoice_item) }
     subject { @invoice_item }
 
     it { should belong_to :invoice }
@@ -46,8 +46,6 @@ describe InvoiceItem do
   end # Validations
 
 end
-
-
 
 
 

@@ -4,9 +4,9 @@
   = render 'users/form'
   .spacer
 
-  = form_for @user, :url => users_path, :html => { :method => :put, :class => "main_form", :id => "edit_credentials", "data-password-protected" => true, "data-password-state" => 'current' } do |f|
+  = form_for @user, :url => [:users], :html => { :method => :put, :class => "main_form section", :id => "edit_credentials", "data-password-protected" => true, "data-password-state" => 'current' } do |f|
     - if params[:action] == 'update' && @user.errors[:current_password].present?
-      = password_box :resource => @user, :f => f, :cancel_url => edit_user_registration_path, :password_state => "current"
+      = password_box :resource => @user, :f => f, :cancel_url => [:edit, :user_registration], :password_state => "current"
 
     %h3.section_title= "Email & Password"
     .entry.email
@@ -19,6 +19,10 @@
 
     .entry.update
       = f.submit "Update", :class => "submit small_button", :id => "user_credentials_submit"
+
+  - if current_user.email =~ /@jilion.com$/
+    %h3.section_title= link_to "API authorizations and applications (alpha)", [:client_applications]
+
   .spacer
 
 .content_right
@@ -29,14 +33,14 @@
       %h3.section_title= "Delete account"
       = form_for @user, :url => "/account", :html => { :method => :delete, "data-password-protected" => true } do |f|
         - if params[:action] == 'destroy' && @user.errors[:current_password].present?
-          = password_box :resource => @user, :f => f, :cancel_url => edit_user_registration_path
+          = password_box :resource => @user, :f => f, :cancel_url => [:edit, :user_registration]
         %p= "Please understand that:"
         %ul
           %li= raw "All your #{link_to "sites", sites_path, :class => "hl"} will be deleted."
           %li= "All of your SublimeVideo licenses will be instantly removed from our servers and will no longer be available."
           %li= "We do not offer refunds."
         .entry.delete
-          = f.submit "Delete account", :class => "submit link_looks delete", :confirm => "Are you really sure?"
+          = f.submit "Delete account", :class => "submit link_looks delete"
 
   .spacer
 .spacer

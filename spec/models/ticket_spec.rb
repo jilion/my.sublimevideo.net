@@ -12,7 +12,7 @@ require 'spec_helper'
 
 describe Ticket do
   before(:all) do
-    @user = Factory(:user, first_name: "Rem & My")
+    @user = FactoryGirl.create(:user, first_name: "Rem & My")
   end
 
   describe "Factory" do
@@ -58,12 +58,12 @@ describe Ticket do
 
   describe "Instance Methods" do
     before(:all) do
-      @user_with_launchpad_support = Factory(:user)
-      Factory(:site, user: @user_with_launchpad_support, plan_id: @dev_plan.id)
-      @user_with_standard_support = Factory(:user)
-      Factory(:site, user: @user_with_standard_support, plan_id: @paid_plan.id)
-      @user_with_priority_support = Factory(:user)
-      Factory(:site, user: @user_with_priority_support, plan_id: @custom_plan.token)
+      @user_with_launchpad_support = FactoryGirl.create(:user)
+      FactoryGirl.create(:site, user: @user_with_launchpad_support, plan_id: @dev_plan.id)
+      @user_with_standard_support = FactoryGirl.create(:user)
+      FactoryGirl.create(:site, user: @user_with_standard_support, plan_id: @paid_plan.id)
+      @user_with_priority_support = FactoryGirl.create(:user)
+      FactoryGirl.create(:site, user: @user_with_priority_support, plan_id: @custom_plan.token)
     end
 
     describe "#save" do

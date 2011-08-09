@@ -520,7 +520,7 @@ feature "Sites" do
 
     describe "edit" do
       scenario "edit a site" do
-        site = Factory(:site, user: @current_user, plan_id: @dev_plan.id, hostname: 'rymai.com')
+        site = FactoryGirl.create(:site, user: @current_user, plan_id: @dev_plan.id, hostname: 'rymai.com')
 
         visit "/sites"
         page.should have_content('rymai.com')
@@ -559,7 +559,7 @@ feature "Sites" do
 
       context "when user has already some sites" do
         background do
-          @site = Factory(:site_with_invoice, :user => @current_user, :hostname => 'rymai.com')
+          @site = FactoryGirl.create(:site_with_invoice, :user => @current_user, :hostname => 'rymai.com')
         end
 
         scenario "when user has already some sites" do
@@ -593,7 +593,7 @@ feature "Sites" do
 
     describe "archive" do
       scenario "a paid site with no not paid invoices" do
-        site = Factory(:site, :user => @current_user, :hostname => 'google.com')
+        site = FactoryGirl.create(:site, :user => @current_user, :hostname => 'google.com')
 
         visit "/sites"
         page.should have_content('google.com')
@@ -611,8 +611,8 @@ feature "Sites" do
       end
 
       scenario "a paid site with an open invoices" do
-        site = Factory(:site, :user => @current_user, :hostname => 'google.com')
-        Factory(:invoice, site: site, state: 'open')
+        site = FactoryGirl.create(:site, :user => @current_user, :hostname => 'google.com')
+        FactoryGirl.create(:invoice, site: site, state: 'open')
 
         visit "/sites"
         page.should have_content('google.com')
@@ -622,8 +622,8 @@ feature "Sites" do
       end
 
       scenario "a paid site with an failed invoices" do
-        site = Factory(:site, :user => @current_user, :hostname => 'google.com')
-        Factory(:invoice, site: site, state: 'failed')
+        site = FactoryGirl.create(:site, :user => @current_user, :hostname => 'google.com')
+        FactoryGirl.create(:invoice, site: site, state: 'failed')
 
         visit "/sites"
         page.should have_content('google.com')
@@ -633,8 +633,8 @@ feature "Sites" do
       end
 
       scenario "a paid site with an waiting invoices" do
-        site = Factory(:site, :user => @current_user, :hostname => 'google.com')
-        Factory(:invoice, site: site, state: 'waiting')
+        site = FactoryGirl.create(:site, :user => @current_user, :hostname => 'google.com')
+        FactoryGirl.create(:invoice, site: site, state: 'waiting')
 
         visit "/sites"
         page.should have_content('google.com')
@@ -644,9 +644,9 @@ feature "Sites" do
       end
 
       scenario "a pending paid site with an open invoice" do
-        site = Factory(:new_site, :user => @current_user, :hostname => 'google.com', first_paid_plan_started_at: nil)
+        site = FactoryGirl.create(:new_site, :user => @current_user, :hostname => 'google.com', first_paid_plan_started_at: nil)
         site.first_paid_plan_started_at.should be_nil
-        Factory(:invoice, site: site, state: 'open')
+        FactoryGirl.create(:invoice, site: site, state: 'open')
 
         visit "/sites"
         page.should have_content('google.com')
@@ -661,9 +661,9 @@ feature "Sites" do
       end
 
       scenario "a pending paid site with a failed invoice" do
-        site = Factory(:new_site, :user => @current_user, :hostname => 'google.com', first_paid_plan_started_at: nil)
+        site = FactoryGirl.create(:new_site, :user => @current_user, :hostname => 'google.com', first_paid_plan_started_at: nil)
         site.first_paid_plan_started_at.should be_nil
-        Factory(:invoice, site: site, state: 'failed')
+        FactoryGirl.create(:invoice, site: site, state: 'failed')
 
         visit "/sites"
         page.should have_content('google.com')
@@ -678,9 +678,9 @@ feature "Sites" do
       end
 
       scenario "a pending paid site with a waiting invoice" do
-        site = Factory(:new_site, :user => @current_user, :hostname => 'google.com', first_paid_plan_started_at: nil)
+        site = FactoryGirl.create(:new_site, :user => @current_user, :hostname => 'google.com', first_paid_plan_started_at: nil)
         site.first_paid_plan_started_at.should be_nil
-        Factory(:invoice, site: site, state: 'open')
+        FactoryGirl.create(:invoice, site: site, state: 'open')
 
         visit "/sites"
         page.should have_content('google.com')
@@ -692,14 +692,14 @@ feature "Sites" do
 
     describe "index" do
       scenario "sort buttons displayed only if count of sites > 1" do
-        Factory(:site, :user => @current_user, :hostname => 'google.com')
+        FactoryGirl.create(:site, :user => @current_user, :hostname => 'google.com')
         visit "/sites"
 
         page.should have_content('google.com')
         page.should have_no_css('div.sorting')
         page.should have_no_css('a.sort')
 
-        Factory(:site, :user => @current_user, :hostname => 'google2.com')
+        FactoryGirl.create(:site, :user => @current_user, :hostname => 'google2.com')
         visit "/sites"
 
         page.should have_content('google.com')
@@ -711,14 +711,14 @@ feature "Sites" do
 
       scenario "pagination links displayed only if count of sites > Site.per_page" do
         Responders::PaginatedResponder.stub(:per_page).and_return(1)
-        Factory(:site, :user => @current_user, :hostname => 'google.com')
+        FactoryGirl.create(:site, :user => @current_user, :hostname => 'google.com')
         visit "/sites"
 
         page.should have_no_content('Next')
         page.should have_no_css('nav.pagination')
         page.should have_no_css('span.next')
 
-        Factory(:site, :user => @current_user, :hostname => 'google2.com')
+        FactoryGirl.create(:site, :user => @current_user, :hostname => 'google2.com')
         visit "/sites"
 
         page.should have_css('nav.pagination')

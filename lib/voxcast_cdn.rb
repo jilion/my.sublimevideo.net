@@ -40,6 +40,8 @@ module VoxcastCDN
         tempfile.flush
         tempfile
       end
+    rescue VoxelHAPI::Backend => ex
+      ex.to_s =~ /log file not found/ ? false : raise(ex)
     end
 
     def non_ssl_hostname

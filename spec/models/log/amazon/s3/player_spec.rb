@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Log::Amazon::S3::Player do
   use_vcr_cassette "s3/player/logs_list"
-  let(:log_s3_player) { Factory(:log_s3_player) }
+  let(:log_s3_player) { FactoryGirl.create(:log_s3_player) }
 
   context "Factory" do
     subject { log_s3_player }
@@ -12,6 +12,7 @@ describe Log::Amazon::S3::Player do
     its(:ended_at)   { should == (Time.zone.parse('2010-07-16-05-22-13') + 1.day).utc }
     its(:parsed_at)  { should be_nil}
 
+    it { should_not be_parsed_at }
     it { should be_valid }
   end
 

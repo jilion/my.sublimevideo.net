@@ -12,20 +12,15 @@ module MySublimeVideo
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
 
+    require 'oauth/rack/oauth_filter'
+    config.middleware.use OAuth::Rack::OAuthFilter
+    
     # Add additional load paths for your own custom dirs
     config.autoload_paths += %W[#{config.root}/lib]
     Dir["#{config.root}/lib/{log_file_format,responders,validators}/**/*.rb"].each do |f|
       dir = File.expand_path(File.dirname(f))
       config.autoload_paths += [dir] if config.autoload_paths.exclude?(dir)
     end
-    # Dir["#{config.root}/app/models/{site,user}/*.rb"].each do |f|
-    #   dir = File.expand_path(File.dirname(f))
-    #   config.autoload_paths += [dir] if config.autoload_paths.exclude?(dir)
-    # end
-
-    # Only load the plugins named here, in the order given (default is alphabetical).
-    # :all can be used as a placeholder for all plugins not explicitly named
-    # config.plugins = [ :exception_notification, :ssl_requirement, :all ]
 
     # Activate observers that should always be running
     # config.active_record.observers = :site_observer

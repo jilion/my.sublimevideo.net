@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Log::Amazon::S3::Licenses do
   use_vcr_cassette "s3/licenses/logs_list"
-  let(:log_s3_licenses) { Factory(:log_s3_licenses) }
+  let(:log_s3_licenses) { FactoryGirl.create(:log_s3_licenses) }
 
   context "Factory" do
     subject { log_s3_licenses }

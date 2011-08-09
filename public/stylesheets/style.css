@@ -657,7 +657,7 @@ form p.note, #content form label.note, #credit_card_summary p.note {
   background:#fefefe;
   background:-moz-linear-gradient(top, #fff, #ced3da);
   border:1px solid #8a92a0;
-  font-family:"proxima-nova-1","proxima-nova-2", Helvetica, Arial, sans-serif;
+/*  font-family:"proxima-nova-1","proxima-nova-2", Helvetica, Arial, sans-serif;*/
   font-size:18px;
   color:#4d5563;
   text-shadow:#fff 0 1px 0;
@@ -689,7 +689,7 @@ form p.note, #content form label.note, #credit_card_summary p.note {
     padding:2px 22px 0 10px;
     background:url(/images/embed/custom_select.png) no-repeat right center;
     border:1px solid #8a92a0;
-    font-family:"proxima-nova-1","proxima-nova-2", Helvetica, Arial, sans-serif;
+/*    font-family:"proxima-nova-1","proxima-nova-2", Helvetica, Arial, sans-serif;*/
     font-size:18px;
     color:#4d5563;
     text-shadow:#fff 0 1px 0;
@@ -1112,6 +1112,49 @@ input.small_button, input.medium_button {
 input.submit_dynamic_button {
   height:40px;
   padding-top:0;
+}
+
+.submit_dynamic_button.blue {
+  font-weight:500;
+  color:#fff;
+  text-shadow:rgba(0,0,0,0.8) 0 -1px 0;
+  border:1px solid #0b439e;
+  background: #1ba2eb;
+  background: -moz-linear-gradient(top, #1ba2eb 0%, #0a3ec9 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#1ba2eb), color-stop(100%,#0a3ec9));
+  background: -webkit-linear-gradient(top, #1ba2eb 0%,#0a3ec9 100%);
+  background: -o-linear-gradient(top, #1ba2eb 0%,#0a3ec9 100%);
+  background: -ms-linear-gradient(top, #1ba2eb 0%,#0a3ec9 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#1ba2eb', endColorstr='#0a3ec9',GradientType=0 );
+  background: linear-gradient(top, #1ba2eb 0%,#0a3ec9 100%);
+  -moz-box-shadow: inset rgba(255,255,255,0.3) 0 1px 0, rgba(0,0,0,0.4) 0 1px 4px;
+  -webkit-box-shadow: inset rgba(255,255,255,0.3) 0 1px 0, rgba(0,0,0,0.4) 0 1px 4px;
+  box-shadow: inset rgba(255,255,255,0.3) 0 1px 0, rgba(0,0,0,0.4) 0 1px 4px;
+}
+
+.submit_dynamic_button.blue:active {
+  background: #1ba2eb;
+  background: -moz-linear-gradient(top, #0a3ec9 0%, #1ba2eb 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#0a3ec9), color-stop(100%,#1ba2eb));
+  background: -webkit-linear-gradient(top, #0a3ec9 0%,#1ba2eb 100%);
+  background: -o-linear-gradient(top, #0a3ec9 0%,#1ba2eb 100%);
+  background: -ms-linear-gradient(top, #0a3ec9 0%,#1ba2eb 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#0a3ec9', endColorstr='#1ba2eb',GradientType=0 );
+  background: linear-gradient(top, #0a3ec9 0%,#1ba2eb 100%);
+}
+
+.submit_dynamic_button.float {
+  display:inline-block;
+  margin-right:10px;
+}
+
+a.submit_dynamic_button.float {
+  height:31px;
+}
+
+input.submit_dynamic_button.float {
+  position:relative;
+  top:1px;
 }
 
 input.link_looks, button.link_looks {
@@ -3068,6 +3111,10 @@ div.text ol ol li span.number {
 div.text ol ol ol li, div.text ol ol ol ol li {
   padding-left:0;
   position:static;
+}
+
+div.text ul {
+  padding:5px 20px 10px;
 }
 
 div.text a {

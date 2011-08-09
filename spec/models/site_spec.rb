@@ -6,7 +6,7 @@ describe Site do
   # describe "Test site with and without invoice" do
   #
   #   context "WITH INVOICE" do
-  #     subject { Factory(:site_with_invoice) }
+  #     subject { FactoryGirl.create(:site_with_invoice) }
   #     it "should be slow" do
   #       start_time = Time.now
   #       subject.plan_id.should be_present
@@ -16,7 +16,7 @@ describe Site do
   #   end
   #
   #   context "WITHOUT INVOICE" do
-  #     subject { Factory(:site) }
+  #     subject { FactoryGirl.create(:site) }
   #     it "should be quick" do
   #       start_time = Time.now
   #       subject.plan_id.should be_present
@@ -28,7 +28,7 @@ describe Site do
   # end
 
   context "Factory" do
-    before(:all) { @site = Factory(:site) }
+    before(:all) { @site = FactoryGirl.create(:site) }
     subject { @site.reload }
 
     its(:user)                          { should be_present }
@@ -56,7 +56,7 @@ describe Site do
   end
 
   describe "Associations" do
-    before(:all) { @site = Factory(:site) }
+    before(:all) { @site = FactoryGirl.create(:site) }
     subject { @site }
 
     it { should belong_to :user }
@@ -64,7 +64,7 @@ describe Site do
     it { should have_many :invoices }
 
     describe "last_invoice" do
-      subject { Factory(:site_with_invoice, plan_id: @paid_plan.id) }
+      subject { FactoryGirl.create(:site_with_invoice, plan_id: @paid_plan.id) }
 
       it "should return the last paid invoice" do
         subject.last_invoice.should == subject.invoices.last
@@ -76,21 +76,21 @@ describe Site do
     context "common objects" do
       before(:all) do
         Site.delete_all
-        user = Factory(:user)
+        user = FactoryGirl.create(:user)
         # billable
-        @site_billable_1 = Factory(:site, user: user, plan_id: @paid_plan.id)
-        @site_billable_2 = Factory(:site, user: user, plan_id: @paid_plan.id)
-        @site_billable_2.update_attribute(:next_cycle_plan_id, Factory(:plan).id)
+        @site_billable_1 = FactoryGirl.create(:site, user: user, plan_id: @paid_plan.id)
+        @site_billable_2 = FactoryGirl.create(:site, user: user, plan_id: @paid_plan.id)
+        @site_billable_2.update_attribute(:next_cycle_plan_id, FactoryGirl.create(:plan).id)
         # not billable
-        @site_not_billable_1 = Factory(:site, user: user, plan_id: @dev_plan.id)
-        @site_not_billable_2 = Factory(:site, user: user, plan_id: @beta_plan.id)
-        @site_not_billable_3 = Factory(:site, user: user, plan_id: @paid_plan.id)
+        @site_not_billable_1 = FactoryGirl.create(:site, user: user, plan_id: @dev_plan.id)
+        @site_not_billable_2 = FactoryGirl.create(:site, user: user, plan_id: @beta_plan.id)
+        @site_not_billable_3 = FactoryGirl.create(:site, user: user, plan_id: @paid_plan.id)
         @site_not_billable_3.update_attribute(:next_cycle_plan_id, @dev_plan.id)
-        @site_not_billable_4 = Factory(:site, user: user, state: "archived", archived_at: Time.utc(2010,2,28))
+        @site_not_billable_4 = FactoryGirl.create(:site, user: user, state: "archived", archived_at: Time.utc(2010,2,28))
         # with path
-        @site_with_path = Factory(:site, path: "foo", plan_id: @dev_plan.id)
+        @site_with_path = FactoryGirl.create(:site, path: "foo", plan_id: @dev_plan.id)
         # with extra_hostnames
-        @site_with_extra_hostnames = Factory(:site, extra_hostnames: "foo.com", plan_id: @paid_plan.id)
+        @site_with_extra_hostnames = FactoryGirl.create(:site, extra_hostnames: "foo.com", plan_id: @paid_plan.id)
       end
 
       describe "#beta" do
@@ -126,12 +126,12 @@ describe Site do
       before(:all) do
         Site.delete_all
         Timecop.travel(2.months.ago) do
-          @site_to_be_renewed = Factory(:site)
-          @site_not_to_be_renewed1 = Factory(:site_with_invoice)
+          @site_to_be_renewed = FactoryGirl.create(:site)
+          @site_not_to_be_renewed1 = FactoryGirl.create(:site_with_invoice)
         end
         @site_not_to_be_renewed1.update_attribute(:pending_plan_id, @paid_plan.id)
         @site_not_to_be_renewed1.pending_plan_id.should == @paid_plan.id
-        @site_not_to_be_renewed2 = Factory(:site_with_invoice, plan_started_at: 3.months.ago, plan_cycle_ended_at: 2.months.from_now)
+        @site_not_to_be_renewed2 = FactoryGirl.create(:site_with_invoice, plan_started_at: 3.months.ago, plan_cycle_ended_at: 2.months.from_now)
       end
 
       specify { Site.to_be_renewed.all.should == [@site_to_be_renewed] }
@@ -140,10 +140,10 @@ describe Site do
     describe "#refundable" do
       before(:all) do
         Site.delete_all
-        @site_refundable1 = Factory(:site)
-        Timecop.travel(29.days.ago)  { @site_refundable2 = Factory(:site) }
-        Timecop.travel(2.months.ago) { @site_not_refundable1 = Factory(:site) }
-        @site_not_refundable2 = Factory(:site, refunded_at: Time.now.utc)
+        @site_refundable1 = FactoryGirl.create(:site)
+        Timecop.travel(29.days.ago)  { @site_refundable2 = FactoryGirl.create(:site) }
+        Timecop.travel(2.months.ago) { @site_not_refundable1 = FactoryGirl.create(:site) }
+        @site_not_refundable2 = FactoryGirl.create(:site, refunded_at: Time.now.utc)
       end
 
       specify { Site.refundable.all.should =~ [@site_refundable1, @site_refundable2] }
@@ -152,9 +152,9 @@ describe Site do
     describe "#refunded" do
       before(:all) do
         Site.delete_all
-        @site_refunded1     = Factory(:site, state: 'archived', refunded_at: Time.now.utc)
-        @site_not_refunded1 = Factory(:site, state: 'active', refunded_at: Time.now.utc)
-        @site_not_refunded2 = Factory(:site, state: 'archived', refunded_at: nil)
+        @site_refunded1     = FactoryGirl.create(:site, state: 'archived', refunded_at: Time.now.utc)
+        @site_not_refunded1 = FactoryGirl.create(:site, state: 'active', refunded_at: Time.now.utc)
+        @site_not_refunded2 = FactoryGirl.create(:site, state: 'archived', refunded_at: nil)
       end
 
       specify { Site.refunded.all.should == [@site_refunded1] }
@@ -162,7 +162,7 @@ describe Site do
   end
 
   describe "Validations" do
-    subject { Factory(:site) }
+    subject { FactoryGirl.create(:site) }
 
     [:hostname, :dev_hostnames, :extra_hostnames, :path, :wildcard, :plan_id, :user_attributes].each do |attribute|
       it { should allow_mass_assignment_of(attribute) }
@@ -181,13 +181,13 @@ describe Site do
 
     describe "plan" do
       context "with no plan" do
-        subject { Factory.build(:new_site, plan: nil) }
+        subject { FactoryGirl.build(:new_site, plan: nil) }
         it { should_not be_valid }
         it { should have(1).error_on(:plan) }
       end
 
       context "with no plan but a pending_plan" do
-        subject { Factory.build(:new_site, plan: nil, plan_id: @paid_plan.id) }
+        subject { FactoryGirl.build(:new_site, plan: nil, plan_id: @paid_plan.id) }
         its(:pending_plan) { should == @paid_plan }
         it { should be_valid }
       end
@@ -195,21 +195,21 @@ describe Site do
 
     describe "hostname" do
       context "with the dev plan" do
-        subject { site = Factory(:site, plan_id: @dev_plan.id); site.hostname = ''; site }
+        subject { site = FactoryGirl.create(:site, plan_id: @dev_plan.id); site.hostname = ''; site }
         it { should be_valid }
       end
       context "with the beta plan" do
-        subject { site = Factory(:site, plan_id: @beta_plan.id); site.hostname = ''; site }
+        subject { site = FactoryGirl.create(:site, plan_id: @beta_plan.id); site.hostname = ''; site }
         it { should_not be_valid }
         it { should have(1).error_on(:hostname) }
       end
       context "with a paid plan" do
-        subject { site = Factory(:site, plan_id: @paid_plan.id); site.hostname = ''; site }
+        subject { site = FactoryGirl.create(:site, plan_id: @paid_plan.id); site.hostname = ''; site }
         it { should_not be_valid }
         it { should have(1).error_on(:hostname) }
       end
       context "with a pending paid plan" do
-        subject { site = Factory(:site_pending, plan_id: @paid_plan.id); site.hostname = ''; site }
+        subject { site = FactoryGirl.create(:site_pending, plan_id: @paid_plan.id); site.hostname = ''; site }
         it { should_not be_valid }
         it { should have(1).error_on(:hostname) }
       end
@@ -217,14 +217,14 @@ describe Site do
 
     describe "credit card" do
       context "with the free plan" do
-        subject { Factory.build(:site, user: Factory(:user, cc_type: nil, cc_last_digits: nil), plan_id: @dev_plan.id) }
+        subject { FactoryGirl.build(:site, user: FactoryGirl.create(:user, cc_type: nil, cc_last_digits: nil), plan_id: @dev_plan.id) }
         it { should be_valid }
       end
 
       context "with any paid plan" do
         context "without credit card" do
           subject do
-            site = Factory.build(:new_site, user: Factory(:user_no_cc), plan_id: @paid_plan.id)
+            site = FactoryGirl.build(:new_site, user: FactoryGirl.create(:user_no_cc), plan_id: @paid_plan.id)
             site.save
             site
           end
@@ -243,7 +243,7 @@ describe Site do
             cc_expire_on: 2.years.from_now
           }
 
-          subject { Factory.build(:site, user_attributes: valid_cc_attributes, plan_id: @paid_plan.id) }
+          subject { FactoryGirl.build(:site, user_attributes: valid_cc_attributes, plan_id: @paid_plan.id) }
           it { should be_valid }
         end
       end
@@ -251,13 +251,13 @@ describe Site do
 
     describe "no hostnames at all" do
       context "hostnames are blank & plan is dev plan" do
-        subject { Factory.build(:new_site, hostname: nil, extra_hostnames: nil, dev_hostnames: nil, plan: @dev_plan) }
+        subject { FactoryGirl.build(:new_site, hostname: nil, extra_hostnames: nil, dev_hostnames: nil, plan: @dev_plan) }
         it { should be_valid } # dev hostnames are set before validation
         it { should have(0).error_on(:base) }
       end
 
       context "hostnames are blank & plan is not dev plan" do
-        subject { Factory.build(:new_site, hostname: nil, extra_hostnames: nil, dev_hostnames: nil, plan: @paid_plan) }
+        subject { FactoryGirl.build(:new_site, hostname: nil, extra_hostnames: nil, dev_hostnames: nil, plan: @paid_plan) }
         it { should_not be_valid }
         it { should have(1).error_on(:hostname) }
         it { should have(0).error_on(:base) }
@@ -266,7 +266,7 @@ describe Site do
 
     describe "validates_current_password" do
       context "on a dev plan" do
-        subject { Factory(:site, plan_id: @dev_plan.id) }
+        subject { FactoryGirl.create(:site, plan_id: @dev_plan.id) }
 
         it "should not validate current_password when modifying settings" do
           subject.update_attributes(hostname: "newone.com").should be_true
@@ -279,7 +279,7 @@ describe Site do
       end
 
       context "on a paid plan" do
-        subject { Factory(:site, plan_id: @paid_plan.id) }
+        subject { FactoryGirl.create(:site, plan_id: @paid_plan.id) }
 
         describe "when updating a site in paid plan" do
 
@@ -360,14 +360,14 @@ describe Site do
 
       context "first invoice" do
         before(:all) do
-          @site = Factory(:new_site, first_paid_plan_started_at: nil)
+          @site = FactoryGirl.create(:new_site, first_paid_plan_started_at: nil)
           @site.first_paid_plan_started_at.should be_nil
         end
 
         context "with an open invoice" do
           before(:all) do
             Invoice.delete_all
-            @open_invoice = Factory(:invoice, site: @site, state: 'open')
+            @open_invoice = FactoryGirl.create(:invoice, site: @site, state: 'open')
           end
 
           it "archives the site" do
@@ -379,7 +379,7 @@ describe Site do
         context "with a failed invoice" do
           before(:all) do
             Invoice.delete_all
-            @failed_invoice = Factory(:invoice, site: @site, state: 'failed')
+            @failed_invoice = FactoryGirl.create(:invoice, site: @site, state: 'failed')
           end
 
           it "archives the site" do
@@ -391,7 +391,7 @@ describe Site do
         context "with a waiting invoice" do
           before(:all) do
             Invoice.delete_all
-            @waiting_invoice = Factory(:invoice, site: @site, state: 'waiting')
+            @waiting_invoice = FactoryGirl.create(:invoice, site: @site, state: 'waiting')
           end
 
           it "archives the site" do
@@ -403,14 +403,14 @@ describe Site do
 
       context "not first invoice" do
         before(:all) do
-          @site = Factory(:new_site, first_paid_plan_started_at: Time.now.utc)
+          @site = FactoryGirl.create(:new_site, first_paid_plan_started_at: Time.now.utc)
           @site.first_paid_plan_started_at.should be_present
         end
 
         context "with an open invoice" do
           before(:all) do
             Invoice.delete_all
-            @open_invoice = Factory(:invoice, site: @site, state: 'open')
+            @open_invoice = FactoryGirl.create(:invoice, site: @site, state: 'open')
           end
 
           it "doesn't archive the site" do
@@ -422,7 +422,7 @@ describe Site do
         context "with a failed invoice" do
           before(:all) do
             Invoice.delete_all
-            @failed_invoice = Factory(:invoice, site: @site, state: 'failed')
+            @failed_invoice = FactoryGirl.create(:invoice, site: @site, state: 'failed')
           end
 
           it "doesn't archive the site" do
@@ -434,7 +434,7 @@ describe Site do
         context "with a waiting invoice" do
           before(:all) do
             Invoice.delete_all
-            @waiting_invoice = Factory(:invoice, site: @site, state: 'waiting')
+            @waiting_invoice = FactoryGirl.create(:invoice, site: @site, state: 'waiting')
           end
 
           it "doesn't archive the site" do
@@ -451,26 +451,26 @@ describe Site do
     describe "hostname=" do
       %w[ÉCOLE ÉCOLE.fr ÜPPER.de ASDASD.COM 124.123.151.123 mIx3Dd0M4iN.CoM].each do |host|
         it "should downcase hostname: #{host}" do
-          site = Factory.build(:new_site, hostname: host)
+          site = FactoryGirl.build(:new_site, hostname: host)
           site.hostname.should == host.downcase
         end
       end
 
       it "should clean valid hostname (hostname should never contain /.+://(www.)?/)" do
-        site = Factory(:site, hostname: 'http://www.youtube.com?v=31231')
+        site = FactoryGirl.create(:site, hostname: 'http://www.youtube.com?v=31231')
         site.hostname.should == 'youtube.com'
       end
 
       %w[http://www.youtube.com?v=31231 www.youtube.com?v=31231 youtube.com?v=31231].each do |host|
         it "should clean invalid hostname #{host} (hostname should never contain /.+://(www.)?/)" do
-          site = Factory.build(:new_site, hostname: host)
+          site = FactoryGirl.build(:new_site, hostname: host)
           site.hostname.should == "youtube.com"
         end
       end
 
       %w[http://www.test,joke;foo test,joke;foo].each do |host|
         it "should clean invalid hostname #{host} (hostname should never contain /.+://(www.)?/)" do
-          site = Factory.build(:new_site, hostname: host)
+          site = FactoryGirl.build(:new_site, hostname: host)
           site.hostname.should_not =~ %r(.+://(www.)?)
         end
       end
@@ -479,25 +479,25 @@ describe Site do
     describe "extra_hostnames=" do
       %w[ÉCOLE ÉCOLE.fr ÜPPER.de ASDASD.COM 124.123.151.123 mIx3Dd0M4iN.CoM].each do |host|
         it "should downcase extra_hostnames: #{host}" do
-          site = Factory.build(:new_site, extra_hostnames: host)
+          site = FactoryGirl.build(:new_site, extra_hostnames: host)
           site.extra_hostnames.should == host.downcase
         end
       end
 
       it "should clean valid extra_hostnames (hostname should never contain /.+://(www.)?/)" do
-        site = Factory(:site, extra_hostnames: 'http://www.youtube.com?v=31231')
+        site = FactoryGirl.create(:site, extra_hostnames: 'http://www.youtube.com?v=31231')
         site.extra_hostnames.should == 'youtube.com'
       end
 
       %w[http://www.youtube.com?v=31231 www.youtube.com?v=31231 youtube.com?v=31231].each do |host|
         it "should clean invalid extra_hostnames #{host} (extra_hostnames should never contain /.+://(www.)?/)" do
-          site = Factory.build(:new_site, extra_hostnames: host)
+          site = FactoryGirl.build(:new_site, extra_hostnames: host)
           site.extra_hostnames.should == "youtube.com"
         end
       end
 
       it "should clean valid extra_hostnames (dev_hostnames should never contain /.+://(www.)?/)" do
-        site = Factory(:site, extra_hostnames: 'http://www.jime.org:3000, 33.123.0.1:3000')
+        site = FactoryGirl.create(:site, extra_hostnames: 'http://www.jime.org:3000, 33.123.0.1:3000')
         site.extra_hostnames.should == '33.123.0.1, jime.org'
       end
     end
@@ -505,39 +505,44 @@ describe Site do
     describe "dev_hostnames=" do
       it "should downcase dev_hostnames" do
         dev_host = "127.]BOO[, JOKE;foo, LOCALHOST, test;ERR"
-        site = Factory.build(:new_site, dev_hostnames: dev_host)
+        site = FactoryGirl.build(:new_site, dev_hostnames: dev_host)
         site.dev_hostnames.should == dev_host.downcase
       end
 
       it "should clean valid dev_hostnames (dev_hostnames should never contain /.+://(www.)?/)" do
-        site = Factory(:site, dev_hostnames: 'http://www.localhost:3000, 127.0.0.1:3000')
+        site = FactoryGirl.create(:site, dev_hostnames: 'http://www.localhost:3000, 127.0.0.1:3000')
         site.dev_hostnames.should == '127.0.0.1, localhost'
       end
 
       it "should clean invalid dev_hostnames (dev_hostnames should never contain /.+://(www.)?/)" do
-        site = Factory.build(:new_site, dev_hostnames: 'http://www.test;err, ftp://127.]boo[:3000, www.joke;foo')
+        site = FactoryGirl.build(:new_site, dev_hostnames: 'http://www.test;err, ftp://127.]boo[:3000, www.joke;foo')
         site.dev_hostnames.should == '127.]boo[, joke;foo, test;err'
       end
     end
 
     describe "path=" do
+      describe "should set to '' if nil is given" do
+        subject { FactoryGirl.create(:site, path: nil) }
+
+        its(:path) { should == '' }
+      end
       describe "should remove first /" do
-        subject { Factory(:site, path: '/users/thibaud') }
+        subject { FactoryGirl.create(:site, path: '/users/thibaud') }
 
         its(:path) { should == 'users/thibaud' }
       end
       describe "should downcase path" do
-        subject { Factory(:site, path: '/Users/thibaud') }
+        subject { FactoryGirl.create(:site, path: '/Users/thibaud') }
 
         its(:path) { should == 'users/thibaud' }
       end
       describe "should last first /" do
-        subject { Factory(:site, path: 'users/thibaud/') }
+        subject { FactoryGirl.create(:site, path: 'users/thibaud/') }
 
         its(:path) { should == 'users/thibaud' }
       end
       describe "should both /" do
-        subject { Factory(:site, path: '/users/') }
+        subject { FactoryGirl.create(:site, path: '/users/') }
 
         its(:path) { should == 'users' }
       end
@@ -545,15 +550,15 @@ describe Site do
 
     describe "plan_id=" do
       before(:all) do
-        @paid_plan         = Factory(:plan, name: "planet", cycle: "month", price: 1000)
-        @paid_plan2        = Factory(:plan, name: "star",   cycle: "month", price: 5000)
-        @paid_plan_yearly  = Factory(:plan, name: "planet", cycle: "year",  price: 10000)
-        @paid_plan_yearly2 = Factory(:plan, name: "star",   cycle: "year",  price: 50000)
+        @paid_plan         = FactoryGirl.create(:plan, name: "planet", cycle: "month", price: 1000)
+        @paid_plan2        = FactoryGirl.create(:plan, name: "star",   cycle: "month", price: 5000)
+        @paid_plan_yearly  = FactoryGirl.create(:plan, name: "planet", cycle: "year",  price: 10000)
+        @paid_plan_yearly2 = FactoryGirl.create(:plan, name: "star",   cycle: "year",  price: 50000)
       end
 
       describe "when creating with a dev plan" do
         before(:all) do
-          @site = Factory.build(:new_site, plan_id: @dev_plan.id)
+          @site = FactoryGirl.build(:new_site, plan_id: @dev_plan.id)
         end
         subject { @site }
 
@@ -572,7 +577,7 @@ describe Site do
 
       describe "when creating a with a custom plan (token)" do
         before(:all) do
-          @site = Factory.build(:new_site, plan_id: @custom_plan.token)
+          @site = FactoryGirl.build(:new_site, plan_id: @custom_plan.token)
         end
         subject { @site }
 
@@ -583,7 +588,7 @@ describe Site do
 
       describe "when creating a with a custom plan (id)" do
         before(:all) do
-          @site = Factory.build(:new_site, plan_id: @custom_plan.id)
+          @site = FactoryGirl.build(:new_site, plan_id: @custom_plan.id)
         end
         subject { @site }
 
@@ -594,7 +599,7 @@ describe Site do
 
       describe "when upgrade from dev plan to monthly plan" do
         before(:all) do
-          @site = Factory.build(:new_site, plan: @dev_plan)
+          @site = FactoryGirl.build(:new_site, plan: @dev_plan)
           @site.plan_id = @paid_plan.id
         end
         subject { @site }
@@ -606,7 +611,7 @@ describe Site do
 
       describe "when upgrade from dev plan to sponsored" do
         before(:all) do
-          @site = Factory.build(:new_site, plan: @dev_plan)
+          @site = FactoryGirl.build(:new_site, plan: @dev_plan)
           @site.plan_id = @sponsored_plan.id
         end
         subject { @site }
@@ -618,7 +623,7 @@ describe Site do
 
       describe "when upgrade from dev plan to yearly plan" do
         before(:all) do
-          @site = Factory.build(:new_site, plan: @dev_plan)
+          @site = FactoryGirl.build(:new_site, plan: @dev_plan)
           @site.plan_id = @paid_plan_yearly.id
         end
         subject { @site }
@@ -630,7 +635,7 @@ describe Site do
 
       describe "when upgrade from monthly plan to monthly plan" do
         before(:all) do
-          @site = Factory.build(:new_site, plan: @paid_plan)
+          @site = FactoryGirl.build(:new_site, plan: @paid_plan)
           @site.plan_id = @paid_plan2.id
         end
         subject { @site }
@@ -642,7 +647,7 @@ describe Site do
 
       describe "when upgrade from monthly plan to custom plan (token)" do
         before(:all) do
-          @site = Factory.build(:new_site, plan: @paid_plan)
+          @site = FactoryGirl.build(:new_site, plan: @paid_plan)
           @site.plan_id = @custom_plan.token
         end
         subject { @site }
@@ -654,7 +659,7 @@ describe Site do
 
       describe "when upgrade from monthly plan to custom plan (id)" do
         before(:all) do
-          @site = Factory.build(:new_site, plan: @paid_plan)
+          @site = FactoryGirl.build(:new_site, plan: @paid_plan)
           @site.plan_id = @custom_plan.id
         end
         subject { @site }
@@ -666,7 +671,7 @@ describe Site do
 
       describe "when upgrade from monthly plan to monthly plan with a next_cycle_plan" do
         before(:all) do
-          @site = Factory.build(:new_site, plan: @paid_plan, next_cycle_plan: @paid_plan_yearly)
+          @site = FactoryGirl.build(:new_site, plan: @paid_plan, next_cycle_plan: @paid_plan_yearly)
           @site.plan_id = @paid_plan2.id
         end
         subject { @site }
@@ -678,7 +683,7 @@ describe Site do
 
       describe "when update to the same monthly plan" do
         before(:all) do
-          @site = Factory.build(:new_site, plan: @paid_plan, next_cycle_plan: @paid_plan2)
+          @site = FactoryGirl.build(:new_site, plan: @paid_plan, next_cycle_plan: @paid_plan2)
           @site.plan_id = @paid_plan.id
         end
         subject { @site }
@@ -690,7 +695,7 @@ describe Site do
 
       describe "when upgrade from monthly plan to yearly plan" do
         before(:all) do
-          @site = Factory.build(:new_site, plan: @paid_plan)
+          @site = FactoryGirl.build(:new_site, plan: @paid_plan)
           @site.plan_id = @paid_plan_yearly.id
         end
         subject { @site }
@@ -702,7 +707,7 @@ describe Site do
 
       describe "when upgrade from paid plan to sponsored" do
         before(:all) do
-          @site = Factory.build(:new_site, plan: @paid_plan)
+          @site = FactoryGirl.build(:new_site, plan: @paid_plan)
           @site.plan_id = @sponsored_plan.id
         end
         subject { @site }
@@ -714,7 +719,7 @@ describe Site do
 
       describe "when downgrade from monthly plan to dev plan" do
         before(:all) do
-          @site = Factory.build(:new_site, plan: @paid_plan)
+          @site = FactoryGirl.build(:new_site, plan: @paid_plan)
           @site.plan_id = @dev_plan.id
         end
         subject { @site }
@@ -726,7 +731,7 @@ describe Site do
 
       describe "when downgrade from monthly plan to monthly plan" do
         before(:all) do
-          @site = Factory.build(:new_site, plan: @paid_plan2)
+          @site = FactoryGirl.build(:new_site, plan: @paid_plan2)
           @site.plan_id = @paid_plan.id
         end
         subject { @site }
@@ -738,7 +743,7 @@ describe Site do
 
       describe "when downgrade from monthly plan to yearly plan" do
         before(:all) do
-          @site = Factory.build(:new_site, plan: @paid_plan2)
+          @site = FactoryGirl.build(:new_site, plan: @paid_plan2)
           @site.plan_id = @paid_plan_yearly.id
         end
         subject { @site }
@@ -750,7 +755,7 @@ describe Site do
 
       describe "when upgrade from yearly plan to yearly plan" do
         before(:all) do
-          @site = Factory.build(:new_site, plan: @paid_plan_yearly)
+          @site = FactoryGirl.build(:new_site, plan: @paid_plan_yearly)
           @site.plan_id = @paid_plan_yearly2.id
         end
         subject { @site }
@@ -762,7 +767,7 @@ describe Site do
 
       describe "when downgrade from yearly plan to dev plan" do
         before(:all) do
-          @site = Factory.build(:new_site, plan: @paid_plan_yearly)
+          @site = FactoryGirl.build(:new_site, plan: @paid_plan_yearly)
           @site.plan_id = @dev_plan.id
         end
         subject { @site }
@@ -774,7 +779,7 @@ describe Site do
 
       describe "when downgrade from yearly plan to monthly plan" do
         before(:all) do
-          @site = Factory.build(:new_site, plan: @paid_plan_yearly)
+          @site = FactoryGirl.build(:new_site, plan: @paid_plan_yearly)
           @site.plan_id = @paid_plan.id
         end
         subject { @site }
@@ -786,7 +791,7 @@ describe Site do
 
       describe "when downgrade from yearly plan to yearly plan" do
         before(:all) do
-          @site = Factory.build(:new_site, plan: @paid_plan_yearly2)
+          @site = FactoryGirl.build(:new_site, plan: @paid_plan_yearly2)
           @site.plan_id = @paid_plan_yearly.id
         end
         subject { @site }
@@ -804,7 +809,7 @@ describe Site do
 
     describe "#suspend" do
       subject do
-        site = Factory.build(:new_site)
+        site = FactoryGirl.build(:new_site)
         site.apply_pending_plan_changes
         @worker.work_off
         site
@@ -822,7 +827,7 @@ describe Site do
 
     describe "#unsuspend" do
       subject do
-        site = Factory.build(:new_site)
+        site = FactoryGirl.build(:new_site)
         site.apply_pending_plan_changes
         @worker.work_off
         site
@@ -846,7 +851,7 @@ describe Site do
     describe "#archive" do
       context "from active state" do
         subject do
-          site = Factory(:site)
+          site = FactoryGirl.create(:site)
           @worker.work_off
           site
         end
@@ -867,14 +872,14 @@ describe Site do
           subject { @site.reload; @site.user.current_password = '123456'; @site }
 
           before(:all) do
-            @site = Factory(:new_site, first_paid_plan_started_at: nil)
+            @site = FactoryGirl.create(:new_site, first_paid_plan_started_at: nil)
             Invoice.delete_all
             @site.first_paid_plan_started_at.should be_nil
           end
 
           context "with an open invoice" do
             before(:all) do
-              @open_invoice = Factory(:invoice, site: @site, state: 'open')
+              @open_invoice = FactoryGirl.create(:invoice, site: @site, state: 'open')
             end
 
             it "archives the site" do
@@ -886,7 +891,7 @@ describe Site do
 
           context "with a failed invoice" do
             before(:all) do
-              @failed_invoice = Factory(:invoice, site: @site, state: 'failed')
+              @failed_invoice = FactoryGirl.create(:invoice, site: @site, state: 'failed')
             end
 
             it "archives the site" do
@@ -898,7 +903,7 @@ describe Site do
 
           context "with a waiting invoice" do
             before(:all) do
-              @waiting_invoice = Factory(:invoice, site: @site, state: 'waiting')
+              @waiting_invoice = FactoryGirl.create(:invoice, site: @site, state: 'waiting')
             end
 
             it "archives the site" do
@@ -912,14 +917,14 @@ describe Site do
         context "not first invoice" do
           subject { @site.reload; @site.user.current_password = '123456'; @site }
           before(:all) do
-            @site = Factory(:new_site, first_paid_plan_started_at: Time.now.utc)
+            @site = FactoryGirl.create(:new_site, first_paid_plan_started_at: Time.now.utc)
             Invoice.delete_all
             @site.first_paid_plan_started_at.should be_present
           end
 
           context "with an open invoice" do
             before(:all) do
-              @open_invoice = Factory(:invoice, site: @site, state: 'open')
+              @open_invoice = FactoryGirl.create(:invoice, site: @site, state: 'open')
             end
 
             it "doesn't archive the site" do
@@ -931,7 +936,7 @@ describe Site do
 
           context "with a failed invoice" do
             before(:all) do
-              @failed_invoice = Factory(:invoice, site: @site, state: 'failed')
+              @failed_invoice = FactoryGirl.create(:invoice, site: @site, state: 'failed')
             end
 
             it "doesn't archive the site" do
@@ -943,7 +948,7 @@ describe Site do
 
           context "with a waiting invoice" do
             before(:all) do
-              @waiting_invoice = Factory(:invoice, site: @site, state: 'waiting')
+              @waiting_invoice = FactoryGirl.create(:invoice, site: @site, state: 'waiting')
             end
 
             it "doesn't archive the site" do
@@ -960,12 +965,23 @@ describe Site do
   end
 
   describe "Versioning" do
-    it "should work!" do
+    subject { with_versioning { FactoryGirl.create(:site) } }
+    
+    it "works!" do
       with_versioning do
-        site = Factory(:site)
-        old_hostname = site.hostname
-        site.update_attributes hostname: "bob.com", user_attributes: { 'current_password' => '123456' }
-        site.versions.last.reify.hostname.should == old_hostname
+        old_hostname = subject.hostname
+        subject.update_attributes(hostname: "bob.com", user_attributes: { 'current_password' => '123456' })
+        subject.versions.last.reify.hostname.should eql old_hostname
+      end
+    end
+    
+    [:cdn_up_to_date, :license, :loader].each do |attr|
+      it "doesn't version when :#{attr} changes" do
+        with_versioning do
+          expect do
+            subject.update_attributes(attr => "bob.com", user_attributes: { 'current_password' => '123456' })
+          end.to_not change(subject.versions, :count)
+        end
       end
     end
   end # Versioning
@@ -973,14 +989,14 @@ describe Site do
   describe "Callbacks" do
 
     describe "before_validation" do
-      subject { Factory.build(:new_site, dev_hostnames: nil) }
+      subject { FactoryGirl.build(:new_site, dev_hostnames: nil) }
 
       describe "#set_user_attributes"  do
-        subject { Factory(:user, first_name: "Bob") }
+        subject { FactoryGirl.create(:user, first_name: "Bob") }
 
         it "should set only current_password" do
           subject.first_name.should == "Bob"
-          site = Factory(:site, user: subject, plan_id: @paid_plan.id)
+          site = FactoryGirl.create(:site, user: subject, plan_id: @paid_plan.id)
           site.update_attributes(plan_id: @dev_plan.id, user_attributes: { first_name: "John", 'current_password' => '123456' })
           site.user.first_name.should == "Bob"
           site.user.current_password.should == "123456"
@@ -999,7 +1015,7 @@ describe Site do
     end
 
     describe "before_save" do
-      subject { Factory(:site_with_invoice) }
+      subject { FactoryGirl.create(:site_with_invoice) }
 
       describe "#clear_alerts_sent_at" do
         specify do
@@ -1032,13 +1048,13 @@ describe Site do
     end # before_save
 
     describe "after_save" do
-      subject { Factory(:site) }
+      subject { FactoryGirl.create(:site) }
 
       describe "#create_and_charge_invoice" do
         it "should call #create_and_charge_invoice" do
           subject.should_receive(:create_and_charge_invoice)
           subject.user.current_password = '123456'
-          new_paid_plan = Factory(:plan)
+          new_paid_plan = FactoryGirl.create(:plan)
           subject.plan_id = new_paid_plan.id
           VCR.use_cassette('ogone/visa_payment_generic') { subject.save! }
           subject.pending_plan_id.should == new_paid_plan.id
@@ -1048,11 +1064,11 @@ describe Site do
 
     describe "after_create" do
       it "should delay update_ranks" do
-        lambda { Factory(:site) }.should change(Delayed::Job.where(:handler.matches => "%update_ranks%"), :count).by(1)
+        lambda { FactoryGirl.create(:site) }.should change(Delayed::Job.where(:handler.matches => "%update_ranks%"), :count).by(1)
       end
 
       it "should update ranks" do
-        Timecop.travel(10.minutes.ago) { @site = Factory(:site, hostname: 'sublimevideo.net') }
+        Timecop.travel(10.minutes.ago) { @site = FactoryGirl.create(:site, hostname: 'sublimevideo.net') }
         VCR.use_cassette('sites/ranks') { @worker.work_off }
         @site.reload.google_rank.should == 0
         @site.alexa_rank.should == 100573
@@ -1081,10 +1097,10 @@ describe Site do
       end
 
       it "should call update_last_30_days_counters on each non-archived sites" do
-        @active_site = Factory(:site, state: 'active')
-        Factory(:site_usage, site_id: @active_site.id, day: Time.utc(2011,1,15).midnight, main_player_hits: 6)
-        @archived_site = Factory(:site, state: 'archived')
-        Factory(:site_usage, site_id: @archived_site.id, day: Time.utc(2011,1,15).midnight, main_player_hits: 6)
+        @active_site = FactoryGirl.create(:site, state: 'active')
+        FactoryGirl.create(:site_usage, site_id: @active_site.id, day: Time.utc(2011,1,15).midnight, main_player_hits: 6)
+        @archived_site = FactoryGirl.create(:site, state: 'archived')
+        FactoryGirl.create(:site_usage, site_id: @archived_site.id, day: Time.utc(2011,1,15).midnight, main_player_hits: 6)
         Timecop.travel(Time.utc(2011,1,31, 12)) do
           Site.update_last_30_days_counters_for_not_archived_sites
           @active_site.reload.last_30_days_main_player_hits_total_count.should == 6
@@ -1098,7 +1114,7 @@ describe Site do
   describe "Instance Methods" do
 
     describe "#clear_alerts_sent_at" do
-      subject { Factory(:site_with_invoice, plan_id: @paid_plan.id) }
+      subject { FactoryGirl.create(:site_with_invoice, plan_id: @paid_plan.id) }
 
       it "should clear *_alert_sent_at dates" do
         subject.touch(:plan_player_hits_reached_notification_sent_at)
@@ -1112,7 +1128,7 @@ describe Site do
     end
 
     describe "#without_password_validation" do
-      subject { Factory(:site, hostname: "rymai.com") }
+      subject { FactoryGirl.create(:site, hostname: "rymai.com") }
 
       it "should ask password when not calling this method" do
         subject.hostname.should == "rymai.com"
@@ -1136,7 +1152,7 @@ describe Site do
     end
 
     describe "#save_without_password_validation" do
-      subject { Factory(:site, hostname: "rymai.com") }
+      subject { FactoryGirl.create(:site, hostname: "rymai.com") }
 
       it "should ask password when not calling this method" do
         subject.hostname.should == "rymai.com"
@@ -1161,7 +1177,7 @@ describe Site do
 
     describe "#sponsor!" do
       context "sponsor a dev plan without next plan" do
-        before(:all) { Timecop.travel(1.day.ago) { @site = Factory(:site, plan_id: @dev_plan.id) } }
+        before(:all) { Timecop.travel(1.day.ago) { @site = FactoryGirl.create(:site, plan_id: @dev_plan.id) } }
         subject { @site.reload }
 
         it "should change plan to sponsored plan" do
@@ -1186,7 +1202,7 @@ describe Site do
       end
 
       context "sponsor a paid plan without next plan" do
-        before(:all) { Timecop.travel(1.day.ago) { @site = Factory(:site) } }
+        before(:all) { Timecop.travel(1.day.ago) { @site = FactoryGirl.create(:site) } }
         subject { @site.reload }
 
         it "should change plan to sponsored plan" do
@@ -1211,7 +1227,7 @@ describe Site do
       end
 
       context "sponsor a paid plan with a next plan" do
-        before(:all) { Timecop.travel(1.day.ago) { @site = Factory(:site) } }
+        before(:all) { Timecop.travel(1.day.ago) { @site = FactoryGirl.create(:site) } }
         subject { @site.reload; @site.next_cycle_plan_id = @dev_plan.id; @site }
 
         it "should change plan to sponsored plan" do
@@ -1238,22 +1254,22 @@ describe Site do
 
     describe "#need_path?" do
       context "with web.me.com hostname" do
-        subject { Factory.build(:site, hostname: 'web.me.com') }
+        subject { FactoryGirl.build(:site, hostname: 'web.me.com') }
         its(:need_path?)                { should be_true }
         its(:hostname_with_path_needed) { should == 'web.me.com' }
       end
       context "with homepage.mac.com, web.me.com extra hostnames" do
-        subject { Factory.build(:site, extra_hostnames: 'homepage.mac.com, web.me.com') }
+        subject { FactoryGirl.build(:site, extra_hostnames: 'homepage.mac.com, web.me.com') }
         its(:need_path?)                { should be_true }
         its(:hostname_with_path_needed) { should == 'web.me.com' }
       end
       context "with web.me.com hostname & path" do
-        subject { Factory.build(:site, hostname: 'web.me.com', path: 'users/thibaud') }
+        subject { FactoryGirl.build(:site, hostname: 'web.me.com', path: 'users/thibaud') }
         its(:need_path?)                { should be_false }
         its(:hostname_with_path_needed) { should be_nil }
       end
       context "with nothing special" do
-        subject { Factory.build(:site) }
+        subject { FactoryGirl.build(:site) }
         its(:need_path?)                { should be_false }
         its(:hostname_with_path_needed) { should be_nil }
       end
@@ -1261,22 +1277,22 @@ describe Site do
 
     describe "#hostname_with_suddomain_needed" do
       context "with tumblr.com hostname" do
-        subject { Factory.build(:site, wildcard: true, hostname: 'tumblr.com') }
+        subject { FactoryGirl.build(:site, wildcard: true, hostname: 'tumblr.com') }
         its(:need_suddomain?)      { should be_true }
         its(:hostname_with_suddomain_needed) { should == 'tumblr.com' }
       end
       context "with tumblr.com extra hostnames" do
-        subject { Factory.build(:site, wildcard: true, extra_hostnames: 'web.mac.com, tumblr.com') }
+        subject { FactoryGirl.build(:site, wildcard: true, extra_hostnames: 'web.mac.com, tumblr.com') }
         its(:need_suddomain?)      { should be_true }
         its(:hostname_with_suddomain_needed) { should == 'tumblr.com' }
       end
       context "with wildcard only" do
-        subject { Factory.build(:site, wildcard: true) }
+        subject { FactoryGirl.build(:site, wildcard: true) }
         its(:need_suddomain?)      { should be_false }
         its(:hostname_with_suddomain_needed) { should be_nil }
       end
       context "without wildcard" do
-        subject { Factory.build(:site, hostname: 'tumblr.com') }
+        subject { FactoryGirl.build(:site, hostname: 'tumblr.com') }
         its(:need_suddomain?)      { should be_false }
         its(:hostname_with_suddomain_needed) { should be_nil }
       end
@@ -1284,23 +1300,23 @@ describe Site do
 
     describe "#update_last_30_days_counters" do
       before(:all) do
-        @site = Factory(:site, last_30_days_main_player_hits_total_count: 1)
-        Factory(:site_usage, site_id: @site.id, day: Time.utc(2010,12,31).midnight,
+        @site = FactoryGirl.create(:site, last_30_days_main_player_hits_total_count: 1)
+        FactoryGirl.create(:site_usage, site_id: @site.id, day: Time.utc(2010,12,31).midnight,
           main_player_hits:  6,   main_player_hits_cached:  4,
           extra_player_hits: 5,   extra_player_hits_cached: 5,
           dev_player_hits:   4,   dev_player_hits_cached:   6
         )
-        Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,1,1).midnight,
+        FactoryGirl.create(:site_usage, site_id: @site.id, day: Time.utc(2011,1,1).midnight,
           main_player_hits:  6,   main_player_hits_cached:  4,
           extra_player_hits: 5,   extra_player_hits_cached: 5,
           dev_player_hits:   4,   dev_player_hits_cached:   6
         )
-        Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,1,30).midnight,
+        FactoryGirl.create(:site_usage, site_id: @site.id, day: Time.utc(2011,1,30).midnight,
           main_player_hits:  6,   main_player_hits_cached:  4,
           extra_player_hits: 5,   extra_player_hits_cached: 5,
           dev_player_hits:   4,   dev_player_hits_cached:   6
         )
-        Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,1,31).midnight,
+        FactoryGirl.create(:site_usage, site_id: @site.id, day: Time.utc(2011,1,31).midnight,
           main_player_hits:  6,   main_player_hits_cached:  4,
           extra_player_hits: 5,   extra_player_hits_cached: 5,
           dev_player_hits:   4,   dev_player_hits_cached:   6
@@ -1318,16 +1334,16 @@ describe Site do
     end
 
     describe "#billable_usages" do
-      before(:all) { Timecop.travel(15.days.ago) { @site = Factory(:site) } }
+      before(:all) { Timecop.travel(15.days.ago) { @site = FactoryGirl.create(:site) } }
       before(:each) do
         @site.unmemoize_all
-        Factory(:site_usage, site_id: @site.id, day: 1.day.ago,  main_player_hits: 4)
-        Factory(:site_usage, site_id: @site.id, day: 2.days.ago, main_player_hits: 3)
-        Factory(:site_usage, site_id: @site.id, day: 3.days.ago, main_player_hits: 2)
-        Factory(:site_usage, site_id: @site.id, day: 4.days.ago, main_player_hits: 0)
-        Factory(:site_usage, site_id: @site.id, day: 5.days.ago, main_player_hits: 1)
-        Factory(:site_usage, site_id: @site.id, day: 6.days.ago, main_player_hits: 0)
-        Factory(:site_usage, site_id: @site.id, day: 7.days.ago, main_player_hits: 0)
+        FactoryGirl.create(:site_usage, site_id: @site.id, day: 1.day.ago,  main_player_hits: 4)
+        FactoryGirl.create(:site_usage, site_id: @site.id, day: 2.days.ago, main_player_hits: 3)
+        FactoryGirl.create(:site_usage, site_id: @site.id, day: 3.days.ago, main_player_hits: 2)
+        FactoryGirl.create(:site_usage, site_id: @site.id, day: 4.days.ago, main_player_hits: 0)
+        FactoryGirl.create(:site_usage, site_id: @site.id, day: 5.days.ago, main_player_hits: 1)
+        FactoryGirl.create(:site_usage, site_id: @site.id, day: 6.days.ago, main_player_hits: 0)
+        FactoryGirl.create(:site_usage, site_id: @site.id, day: 7.days.ago, main_player_hits: 0)
       end
 
       describe "#current_monthly_billable_usages" do
@@ -1341,19 +1357,19 @@ describe Site do
     end
 
     describe "#current_monthly_billable_usages.sum & #current_percentage_of_plan_used" do
-      before(:all) { @site = Factory(:site) }
+      before(:all) { @site = FactoryGirl.create(:site) }
       before(:each) do
-        Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,1,30),
+        FactoryGirl.create(:site_usage, site_id: @site.id, day: Time.utc(2011,1,30),
           main_player_hits:  1, main_player_hits_cached:  2,
           extra_player_hits: 3, extra_player_hits_cached: 4,
           dev_player_hits:   4, dev_player_hits_cached:   6
         )
-        Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,3,30),
+        FactoryGirl.create(:site_usage, site_id: @site.id, day: Time.utc(2011,3,30),
           main_player_hits:  5, main_player_hits_cached:  6,
           extra_player_hits: 7, extra_player_hits_cached: 8,
           dev_player_hits:   4, dev_player_hits_cached:   6
         )
-        Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,4,30),
+        FactoryGirl.create(:site_usage, site_id: @site.id, day: Time.utc(2011,4,30),
         main_player_hits:   9, main_player_hits_cached:  10,
         extra_player_hits: 11, extra_player_hits_cached: 12,
         dev_player_hits:    4, dev_player_hits_cached:    6
@@ -1425,13 +1441,13 @@ describe Site do
 
     describe "#current_percentage_of_plan_used" do
       it "should return 0 if plan player_hits is 0" do
-        site = Factory(:site, plan_id: @dev_plan.id)
+        site = FactoryGirl.create(:site, plan_id: @dev_plan.id)
         site.current_percentage_of_plan_used.should == 0
       end
     end
 
     describe "#plan_month_cycle_started_at & #plan_month_cycle_ended_at" do
-      before(:all) { @site = Factory(:site) }
+      before(:all) { @site = FactoryGirl.create(:site) }
 
       context "with free plan" do
         before(:all) do
@@ -1493,19 +1509,19 @@ describe Site do
 
     describe "#percentage_of_days_over_daily_limit(60)" do
       context "with dev_plan" do
-        subject { Factory(:site, plan_id: @dev_plan.id) }
+        subject { FactoryGirl.create(:site, plan_id: @dev_plan.id) }
 
         its(:percentage_of_days_over_daily_limit) { should == 0 }
       end
 
       context "with paid plan" do
         before(:all) do
-          @site = Factory(:site, plan_id: Factory(:plan, player_hits: 30 * 300).id, first_paid_plan_started_at: Time.utc(2011,1,1))
+          @site = FactoryGirl.create(:site, plan_id: FactoryGirl.create(:plan, player_hits: 30 * 300).id, first_paid_plan_started_at: Time.utc(2011,1,1))
         end
 
         describe "with 1 historic day and 1 over limit" do
           before(:each) do
-            Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,1,1),
+            FactoryGirl.create(:site_usage, site_id: @site.id, day: Time.utc(2011,1,1),
               main_player_hits:  100, main_player_hits_cached:  100,
               extra_player_hits: 100, extra_player_hits_cached: 100,
               dev_player_hits:   100, dev_player_hits_cached:   100
@@ -1521,8 +1537,8 @@ describe Site do
 
         describe "with 2 historic days and 1 over limit" do
           before(:each) do
-            Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,1,1), main_player_hits: 400)
-            Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,1,2), main_player_hits: 300)
+            FactoryGirl.create(:site_usage, site_id: @site.id, day: Time.utc(2011,1,1), main_player_hits: 400)
+            FactoryGirl.create(:site_usage, site_id: @site.id, day: Time.utc(2011,1,2), main_player_hits: 300)
             Timecop.travel(Time.utc(2011,1,3))
           end
           subject { @site }
@@ -1534,9 +1550,9 @@ describe Site do
 
         describe "with 5 historic days and 2 over limit" do
           before(:each) do
-            Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,1,1), main_player_hits: 400)
-            Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,1,2), main_player_hits: 300)
-            Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,1,3), main_player_hits: 500)
+            FactoryGirl.create(:site_usage, site_id: @site.id, day: Time.utc(2011,1,1), main_player_hits: 400)
+            FactoryGirl.create(:site_usage, site_id: @site.id, day: Time.utc(2011,1,2), main_player_hits: 300)
+            FactoryGirl.create(:site_usage, site_id: @site.id, day: Time.utc(2011,1,3), main_player_hits: 500)
             Timecop.travel(Time.utc(2011,1,6))
           end
           subject { @site }
@@ -1548,9 +1564,9 @@ describe Site do
 
         describe "with >60 historic days and 2 over limit" do
           before(:each) do
-            Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,1,1), main_player_hits: 400)
-            Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,2,1), main_player_hits: 500)
-            Factory(:site_usage, site_id: @site.id, day: Time.utc(2011,3,1), main_player_hits: 500)
+            FactoryGirl.create(:site_usage, site_id: @site.id, day: Time.utc(2011,1,1), main_player_hits: 400)
+            FactoryGirl.create(:site_usage, site_id: @site.id, day: Time.utc(2011,2,1), main_player_hits: 500)
+            FactoryGirl.create(:site_usage, site_id: @site.id, day: Time.utc(2011,3,1), main_player_hits: 500)
             Timecop.travel(Time.utc(2011,4,1))
           end
           subject { @site }
@@ -1565,28 +1581,27 @@ describe Site do
     describe "#recommended_plan" do
       before(:all) do
         Plan.delete_all
-        Factory(:plan, name: "comet",  player_hits: 3_000)
-        Factory(:plan, name: "planet", player_hits: 50_000)
-        Factory(:plan, name: "star",   player_hits: 200_000)
-        @galaxy_plan = Factory(:plan, name: "galaxy", player_hits: 1_000_000)
-        @site = Factory(:beta_site)
+        FactoryGirl.create(:plan, name: "comet",  player_hits: 3_000)
+        FactoryGirl.create(:plan, name: "planet", player_hits: 50_000)
+        FactoryGirl.create(:plan, name: "star",   player_hits: 200_000)
+        @galaxy_plan = FactoryGirl.create(:plan, name: "galaxy", player_hits: 1_000_000)
+        @site        = FactoryGirl.create(:beta_site)
       end
       subject { @site }
 
       context "with no usage" do
-
         its(:recommended_plan_name) { should be_nil }
       end
 
       context "with less than 5 days of usage" do
         before(:each) do
           @site.unmemoize_all
-          Factory(:site_usage, site_id: @site.id, day: 1.day.ago,  main_player_hits: 1000)
-          Factory(:site_usage, site_id: @site.id, day: 2.days.ago, main_player_hits: 1000)
-          Factory(:site_usage, site_id: @site.id, day: 3.days.ago, main_player_hits: 1000)
-          Factory(:site_usage, site_id: @site.id, day: 4.days.ago, main_player_hits: 1000)
-          Factory(:site_usage, site_id: @site.id, day: 5.days.ago, main_player_hits: 0)
-          Factory(:site_usage, site_id: @site.id, day: 6.days.ago, main_player_hits: 0)
+          FactoryGirl.create(:site_usage, site_id: @site.id, day: 1.day.ago,  main_player_hits: 1000)
+          FactoryGirl.create(:site_usage, site_id: @site.id, day: 2.days.ago, main_player_hits: 1000)
+          FactoryGirl.create(:site_usage, site_id: @site.id, day: 3.days.ago, main_player_hits: 1000)
+          FactoryGirl.create(:site_usage, site_id: @site.id, day: 4.days.ago, main_player_hits: 1000)
+          FactoryGirl.create(:site_usage, site_id: @site.id, day: 5.days.ago, main_player_hits: 0)
+          FactoryGirl.create(:site_usage, site_id: @site.id, day: 6.days.ago, main_player_hits: 0)
         end
 
         its(:recommended_plan_name) { should be_nil }
@@ -1595,12 +1610,12 @@ describe Site do
       context "with less than 5 days of usage (but with 0 between)" do
         before(:each) do
           @site.unmemoize_all
-          Factory(:site_usage, site_id: @site.id, day: 1.day.ago,  main_player_hits: 1000)
-          Factory(:site_usage, site_id: @site.id, day: 2.days.ago, main_player_hits: 1000)
-          Factory(:site_usage, site_id: @site.id, day: 3.days.ago, main_player_hits: 0)
-          Factory(:site_usage, site_id: @site.id, day: 4.days.ago, main_player_hits: 1000)
-          Factory(:site_usage, site_id: @site.id, day: 5.days.ago, main_player_hits: 1000)
-          Factory(:site_usage, site_id: @site.id, day: 6.days.ago, main_player_hits: 0)
+          FactoryGirl.create(:site_usage, site_id: @site.id, day: 1.day.ago,  main_player_hits: 1000)
+          FactoryGirl.create(:site_usage, site_id: @site.id, day: 2.days.ago, main_player_hits: 1000)
+          FactoryGirl.create(:site_usage, site_id: @site.id, day: 3.days.ago, main_player_hits: 0)
+          FactoryGirl.create(:site_usage, site_id: @site.id, day: 4.days.ago, main_player_hits: 1000)
+          FactoryGirl.create(:site_usage, site_id: @site.id, day: 5.days.ago, main_player_hits: 1000)
+          FactoryGirl.create(:site_usage, site_id: @site.id, day: 6.days.ago, main_player_hits: 0)
         end
 
         its(:recommended_plan_name) { should == "planet" }
@@ -1609,12 +1624,12 @@ describe Site do
       context "with regular usage and player_hits smaller than comet" do
         before(:each) do
           @site.unmemoize_all
-          Factory(:site_usage, site_id: @site.id, day: 1.day.ago,  main_player_hits: 50)
-          Factory(:site_usage, site_id: @site.id, day: 2.days.ago, main_player_hits: 50)
-          Factory(:site_usage, site_id: @site.id, day: 3.days.ago, main_player_hits: 50)
-          Factory(:site_usage, site_id: @site.id, day: 4.days.ago, main_player_hits: 50)
-          Factory(:site_usage, site_id: @site.id, day: 5.days.ago, main_player_hits: 50)
-          Factory(:site_usage, site_id: @site.id, day: 6.days.ago, main_player_hits: 50)
+          FactoryGirl.create(:site_usage, site_id: @site.id, day: 1.day.ago,  main_player_hits: 50)
+          FactoryGirl.create(:site_usage, site_id: @site.id, day: 2.days.ago, main_player_hits: 50)
+          FactoryGirl.create(:site_usage, site_id: @site.id, day: 3.days.ago, main_player_hits: 50)
+          FactoryGirl.create(:site_usage, site_id: @site.id, day: 4.days.ago, main_player_hits: 50)
+          FactoryGirl.create(:site_usage, site_id: @site.id, day: 5.days.ago, main_player_hits: 50)
+          FactoryGirl.create(:site_usage, site_id: @site.id, day: 6.days.ago, main_player_hits: 50)
         end
 
         its(:recommended_plan_name) { should == "comet" }
@@ -1623,12 +1638,12 @@ describe Site do
       context "with regular usage and player_hits greather than comet" do
         before(:each) do
           @site.unmemoize_all
-          Factory(:site_usage, site_id: @site.id, day: 1.day.ago,  main_player_hits: 1_000)
-          Factory(:site_usage, site_id: @site.id, day: 2.days.ago, main_player_hits: 1_000)
-          Factory(:site_usage, site_id: @site.id, day: 3.days.ago, main_player_hits: 1_000)
-          Factory(:site_usage, site_id: @site.id, day: 4.days.ago, main_player_hits: 1_000)
-          Factory(:site_usage, site_id: @site.id, day: 5.days.ago, main_player_hits: 1_000)
-          Factory(:site_usage, site_id: @site.id, day: 6.days.ago, main_player_hits: 1_000)
+          FactoryGirl.create(:site_usage, site_id: @site.id, day: 1.day.ago,  main_player_hits: 1_000)
+          FactoryGirl.create(:site_usage, site_id: @site.id, day: 2.days.ago, main_player_hits: 1_000)
+          FactoryGirl.create(:site_usage, site_id: @site.id, day: 3.days.ago, main_player_hits: 1_000)
+          FactoryGirl.create(:site_usage, site_id: @site.id, day: 4.days.ago, main_player_hits: 1_000)
+          FactoryGirl.create(:site_usage, site_id: @site.id, day: 5.days.ago, main_player_hits: 1_000)
+          FactoryGirl.create(:site_usage, site_id: @site.id, day: 6.days.ago, main_player_hits: 1_000)
         end
 
         its(:recommended_plan_name) { should == "planet" }
@@ -1637,11 +1652,11 @@ describe Site do
       context "with non regular usage and lower than player_hits but greather than average player_hits" do
         before(:each) do
           @site.unmemoize_all
-          Factory(:site_usage, site_id: @site.id, day: 1.day.ago,  main_player_hits: 12_000)
-          Factory(:site_usage, site_id: @site.id, day: 2.days.ago, main_player_hits: 12_000)
-          Factory(:site_usage, site_id: @site.id, day: 3.days.ago, main_player_hits: 12_000)
-          Factory(:site_usage, site_id: @site.id, day: 4.days.ago, main_player_hits: 12_000)
-          Factory(:site_usage, site_id: @site.id, day: 5.days.ago, main_player_hits: 1_000)
+          FactoryGirl.create(:site_usage, site_id: @site.id, day: 1.day.ago,  main_player_hits: 12_000)
+          FactoryGirl.create(:site_usage, site_id: @site.id, day: 2.days.ago, main_player_hits: 12_000)
+          FactoryGirl.create(:site_usage, site_id: @site.id, day: 3.days.ago, main_player_hits: 12_000)
+          FactoryGirl.create(:site_usage, site_id: @site.id, day: 4.days.ago, main_player_hits: 12_000)
+          FactoryGirl.create(:site_usage, site_id: @site.id, day: 5.days.ago, main_player_hits: 1_000)
         end
 
         its(:recommended_plan_name) { should == "galaxy" }
@@ -1650,25 +1665,25 @@ describe Site do
       context "with too much player_hits" do
         before(:each) do
           @site.unmemoize_all
-          Factory(:site_usage, site_id: @site.id, day: 1.day.ago,  main_player_hits: 100_000)
-          Factory(:site_usage, site_id: @site.id, day: 2.days.ago, main_player_hits: 100_000)
-          Factory(:site_usage, site_id: @site.id, day: 3.days.ago, main_player_hits: 100_000)
-          Factory(:site_usage, site_id: @site.id, day: 4.days.ago, main_player_hits: 100_000)
-          Factory(:site_usage, site_id: @site.id, day: 5.days.ago, main_player_hits: 100_000)
+          FactoryGirl.create(:site_usage, site_id: @site.id, day: 1.day.ago,  main_player_hits: 100_000)
+          FactoryGirl.create(:site_usage, site_id: @site.id, day: 2.days.ago, main_player_hits: 100_000)
+          FactoryGirl.create(:site_usage, site_id: @site.id, day: 3.days.ago, main_player_hits: 100_000)
+          FactoryGirl.create(:site_usage, site_id: @site.id, day: 4.days.ago, main_player_hits: 100_000)
+          FactoryGirl.create(:site_usage, site_id: @site.id, day: 5.days.ago, main_player_hits: 100_000)
         end
 
         its(:recommended_plan_name) { should == "custom" }
       end
 
-      context "with recommended plan lower than actual plan" do
+      context "with recommended plan lower than current plan" do
         before(:each) do
           @site.unmemoize_all
           @site.plan = @galaxy_plan
-          Factory(:site_usage, site_id: @site.id, day: 1.day.ago,  main_player_hits: 500)
-          Factory(:site_usage, site_id: @site.id, day: 2.days.ago, main_player_hits: 500)
-          Factory(:site_usage, site_id: @site.id, day: 3.days.ago, main_player_hits: 500)
-          Factory(:site_usage, site_id: @site.id, day: 4.days.ago, main_player_hits: 500)
-          Factory(:site_usage, site_id: @site.id, day: 5.days.ago, main_player_hits: 500)
+          FactoryGirl.create(:site_usage, site_id: @site.id, day: 1.day.ago,  main_player_hits: 500)
+          FactoryGirl.create(:site_usage, site_id: @site.id, day: 2.days.ago, main_player_hits: 500)
+          FactoryGirl.create(:site_usage, site_id: @site.id, day: 3.days.ago, main_player_hits: 500)
+          FactoryGirl.create(:site_usage, site_id: @site.id, day: 4.days.ago, main_player_hits: 500)
+          FactoryGirl.create(:site_usage, site_id: @site.id, day: 5.days.ago, main_player_hits: 500)
         end
 
         its(:recommended_plan_name) { should be_nil }
@@ -1682,13 +1697,13 @@ describe Site do
       context "first invoice" do
         before(:all) do
           Invoice.delete_all
-          @site = Factory(:new_site, first_paid_plan_started_at: nil)
+          @site = FactoryGirl.create(:new_site, first_paid_plan_started_at: nil)
           @site.first_paid_plan_started_at.should be_nil
         end
 
         context "with an open invoice" do
           before(:all) do
-            @open_invoice = Factory(:invoice, site: @site, state: 'open')
+            @open_invoice = FactoryGirl.create(:invoice, site: @site, state: 'open')
           end
 
           it { should be_archivable }
@@ -1696,7 +1711,7 @@ describe Site do
 
         context "with a failed invoice" do
           before(:all) do
-            @failed_invoice = Factory(:invoice, site: @site, state: 'failed')
+            @failed_invoice = FactoryGirl.create(:invoice, site: @site, state: 'failed')
           end
 
           it { should be_archivable }
@@ -1704,7 +1719,7 @@ describe Site do
 
         context "with a waiting invoice" do
           before(:all) do
-            @waiting_invoice = Factory(:invoice, site: @site, state: 'waiting')
+            @waiting_invoice = FactoryGirl.create(:invoice, site: @site, state: 'waiting')
           end
 
           it { should_not be_archivable }
@@ -1714,13 +1729,13 @@ describe Site do
       context "not first invoice" do
         before(:all) do
           Invoice.delete_all
-          @site = Factory(:new_site, first_paid_plan_started_at: Time.now.utc)
+          @site = FactoryGirl.create(:new_site, first_paid_plan_started_at: Time.now.utc)
           @site.first_paid_plan_started_at.should be_present
         end
 
         context "with an open invoice" do
           before(:all) do
-            @open_invoice = Factory(:invoice, site: @site, state: 'open')
+            @open_invoice = FactoryGirl.create(:invoice, site: @site, state: 'open')
           end
 
           it { should_not be_archivable }
@@ -1728,7 +1743,7 @@ describe Site do
 
         context "with a failed invoice" do
           before(:all) do
-            @failed_invoice = Factory(:invoice, site: @site, state: 'failed')
+            @failed_invoice = FactoryGirl.create(:invoice, site: @site, state: 'failed')
           end
 
           it { should_not be_archivable }
@@ -1736,7 +1751,7 @@ describe Site do
 
         context "with a waiting invoice" do
           before(:all) do
-            @waiting_invoice = Factory(:invoice, site: @site, state: 'waiting')
+            @waiting_invoice = FactoryGirl.create(:invoice, site: @site, state: 'waiting')
           end
 
           it { should_not be_archivable }

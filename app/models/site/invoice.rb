@@ -71,8 +71,12 @@ module Site::Invoice
     pending_plan_id? && pending_plan.paid_plan?
   end
 
+  def refundable?
+    first_paid_plan_started_at? && first_paid_plan_started_at > 30.days.ago && !refunded_at?
+  end
+
   def refunded?
-    refunded_at?
+    archived? && refunded_at?
   end
 
   def last_paid_invoice

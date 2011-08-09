@@ -6,7 +6,7 @@ feature "user has a credit card" do
   end
 
   scenario "views site invoices (with 0 past invoices)" do
-    site = Factory(:site, plan_id: @dev_plan.id, user: @current_user, hostname: 'rymai.com')
+    site = FactoryGirl.create(:site, plan_id: @dev_plan.id, user: @current_user, hostname: 'rymai.com')
 
     visit "/sites"
     click_link "Edit rymai.com"
@@ -19,7 +19,7 @@ feature "user has a credit card" do
   end
 
   scenario "views site invoices (with 1 invoice and 1 next invoice)" do
-    site = Factory(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
+    site = FactoryGirl.create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
 
     visit "/sites"
     click_link "Edit rymai.com"
@@ -37,7 +37,7 @@ feature "user has a credit card" do
   end
 
   scenario "views site invoices with 1 failed invoice" do
-    site = Factory(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
+    site = FactoryGirl.create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
     @invoice = site.last_invoice
     @invoice.update_attributes(state: 'failed', last_failed_at: Time.now.utc)
     @invoice.last_transaction.update_attribute(:error, "Credit card refused")
@@ -63,8 +63,8 @@ feature "user has a credit card" do
   end
 
   scenario "views site invoices with 2 failed invoices" do
-    site1 = Factory(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
-    site2 = Factory(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user)
+    site1 = FactoryGirl.create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
+    site2 = FactoryGirl.create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user)
     @invoice1 = site1.last_invoice
     @invoice2 = site2.last_invoice
 
@@ -94,7 +94,7 @@ feature "user has a credit card" do
   end
 
   scenario "views site invoices with 1 failed invoice having the 3d secure html as the error" do
-    site = Factory(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
+    site = FactoryGirl.create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
     @invoice = site.last_invoice
     @invoice.update_attributes(state: 'failed', last_failed_at: Time.now.utc)
     @invoice.last_transaction.update_attribute(:error, "<html>secure.ogone...</html>")
@@ -120,7 +120,7 @@ feature "user has a credit card" do
 
   scenario "paid invoice with VAT" do
     @current_user.update_attribute(:country, 'CH')
-    site = Factory(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
+    site = FactoryGirl.create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
     @invoice = site.last_invoice
 
     visit invoice_path(@invoice)
@@ -150,7 +150,7 @@ feature "user has a credit card" do
     Timecop.travel(Time.utc(2010,10,10))
     @current_user.update_attribute(:created_at, Time.now.utc)
     @current_user.update_attribute(:country, 'US')
-    site = Factory(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
+    site = FactoryGirl.create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
     VCR.use_cassette('ogone/visa_payment_generic') do
       site.update_attributes(plan_id: @custom_plan.token, user_attributes: { 'current_password' => '123456' })
     end
@@ -184,7 +184,7 @@ feature "user has a credit card" do
   context "retry failed invoice" do
     scenario "with 0 failed invoices" do
       @current_user.update_attribute(:created_at, Time.utc(2010,10,10))
-      @site = Factory(:site_with_invoice, plan_id: @dev_plan.id, user: @current_user, hostname: 'rymai.com')
+      @site = FactoryGirl.create(:site_with_invoice, plan_id: @dev_plan.id, user: @current_user, hostname: 'rymai.com')
 
       visit "/sites"
       click_link "Edit rymai.com"
@@ -198,7 +198,7 @@ feature "user has a credit card" do
 
     scenario "with 1 or more failed invoices" do
       @current_user.update_attribute(:created_at, Time.utc(2010,10,10))
-      @site = Factory(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'google.com')
+      @site = FactoryGirl.create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'google.com')
       @invoice = @site.last_invoice
       @site.pending_plan_started_at = Time.now.utc
       @site.pending_plan_cycle_started_at = Time.now.utc
@@ -234,7 +234,7 @@ feature "user has no credit card" do
   end
 
   scenario "views site invoices with 1 failed invoice with no credit card" do
-    site = Factory.build(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
+    site = FactoryGirl.build(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
     VCR.eject_cassette
     site.save(validate: false)
     @invoice = site.last_invoice
@@ -266,7 +266,7 @@ feature "user has an expired credit card" do
   end
 
   scenario "views site invoices with 1 failed invoice with no credit card" do
-    site = Factory.build(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
+    site = FactoryGirl.build(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
     VCR.eject_cassette
     site.save(validate: false)
     @invoice = site.last_invoice

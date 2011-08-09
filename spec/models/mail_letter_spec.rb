@@ -6,9 +6,9 @@ describe MailLetter do
 
     describe "#deliver_and_log" do
       before(:all) do
-        @user          = Factory(:user, created_at: Time.utc(2011,1,1))
-        @admin         = Factory(:admin)
-        @mail_template = Factory(:mail_template)
+        @user          = FactoryGirl.create(:user, created_at: Time.utc(2011,1,1))
+        @admin         = FactoryGirl.create(:admin)
+        @mail_template = FactoryGirl.create(:mail_template)
         @attributes    = { :admin_id => @admin.id, :template_id => @mail_template.id.to_s, :criteria => "all" }
         @mail_letter   = MailLetter.new(@attributes)
       end

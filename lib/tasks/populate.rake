@@ -288,10 +288,10 @@ def create_site_usages
     (start_date..end_date).each do |day|
       Timecop.travel(day) do
         loader_hits                = p * rand(100)
-        main_player_hits           = p * rand # 0.6
-        main_player_hits_cached    = p * rand # 0.4
-        extra_player_hits           = p * rand # 0.6
-        extra_player_hits_cached    = p * rand # 0.4
+        main_player_hits           = (p * rand).to_i # 0.6
+        main_player_hits_cached    = (p * rand).to_i # 0.4
+        extra_player_hits          = (p * rand).to_i # 0.6
+        extra_player_hits_cached   = (p * rand).to_i # 0.4
         dev_player_hits            = rand(100)
         dev_player_hits_cached     = (dev_player_hits * rand).to_i
         invalid_player_hits        = rand(500)

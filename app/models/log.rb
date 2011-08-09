@@ -18,7 +18,7 @@ class Log
 
   # ensure there is no confusion about S3 Class
   autoload :Amazon, 'log/amazon'
-  autoload :S3,     'log/amazon/s3'
+  # autoload :S3,     'log/amazon/s3'
 
   attr_accessible :name
 
@@ -56,9 +56,9 @@ class Log
   end
 
   def self.create_new_logs(new_logs_names)
-    existings_logs_names = only(:name).any_in(:name => new_logs_names).map(&:name)
+    existings_logs_names = only(:name).any_in(name: new_logs_names).map(&:name)
     (new_logs_names - existings_logs_names).each do |name|
-      delay(:priority => 20).create(:name => name)
+      delay(:priority => 20).create(name: name)
     end
   end
 
@@ -96,7 +96,7 @@ private
 
   # after_create
   def delay_parse
-    self.class.delay(:priority => 20, :run_at => 5.seconds.from_now).parse_log(id) # lets finish the upload
+    self.class.delay(priority: 20, run_at: 5.seconds.from_now).parse_log(id) # lets finish the upload
   end
 
   def with_log_file_in_tmp(&block)

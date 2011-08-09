@@ -1,5 +1,6 @@
 class Site < ActiveRecord::Base
   extend ActiveSupport::Memoizable
+  include Site::Api
   require 'site/invoice'
   require 'site/referrer'
   require 'site/templates'
@@ -8,7 +9,7 @@ class Site < ActiveRecord::Base
   PLAYER_MODES = %w[dev beta stable]
 
   # Versioning
-  has_paper_trail :ignore => [:license, :loader]
+  has_paper_trail :ignore => [:cdn_up_to_date, :license, :loader]
 
   attr_accessor :loader_needs_update, :license_needs_update
   attr_accessor :user_attributes, :charging_options, :transaction
@@ -36,10 +37,10 @@ class Site < ActiveRecord::Base
 
   # Mongoid associations
   def usages
-    SiteUsage.where(:site_id => id)
+    SiteUsage.where(site_id: id)
   end
   def referrers
-    ::Referrer.where(:site_id => id)
+    ::Referrer.where(site_id: id)
   end
 
   # ==========
@@ -204,7 +205,7 @@ class Site < ActiveRecord::Base
   end
 
   def path=(attribute)
-    write_attribute :path, attribute.downcase.gsub(/^\/|\/$/, '')
+    write_attribute :path, attribute.respond_to?(:to_s) ? attribute.to_s.downcase.gsub(/^\/|\/$/, '') : ''
   end
 
   def plan_id=(attribute)

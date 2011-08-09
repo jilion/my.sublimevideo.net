@@ -15,7 +15,7 @@ feature "Refunds" do
     end
 
     scenario "visit /refund with 1 site already deleted refundable" do
-      @site = Factory(:site_with_invoice, user: @current_user, hostname: 'rymai.com')
+      @site = FactoryGirl.create(:site_with_invoice, user: @current_user, hostname: 'rymai.com')
       @site.user_attributes = { "current_password" => "123456" }
       @site.archive!
       @site.reload.should be_archived
@@ -34,7 +34,7 @@ feature "Refunds" do
     end
 
     scenario "visit /refund with 1 site refundable" do
-      @site = Factory(:site_with_invoice, user: @current_user, hostname: 'rymai.com')
+      @site = FactoryGirl.create(:site_with_invoice, user: @current_user, hostname: 'rymai.com')
 
       visit '/refund'
       page.should have_content "Request a refund"
@@ -51,7 +51,7 @@ feature "Refunds" do
     end
 
     scenario "visit /refund with 1 site refundable failing" do
-      @site = Factory(:site_with_invoice, user: @current_user, hostname: 'rymai.com')
+      @site = FactoryGirl.create(:site_with_invoice, user: @current_user, hostname: 'rymai.com')
 
       visit '/refund'
       page.should have_content "Request a refund"

@@ -49,13 +49,13 @@ Spork.prefork do
 
     config.before(:all) do
       PaperTrail.enabled = false
-      @worker         = Delayed::Worker.new(:quiet => true)
+      @worker = Delayed::Worker.new(:quiet => true)
       # Plans
-      @dev_plan       = Factory(:dev_plan)
-      @beta_plan      = Factory(:beta_plan)
-      @paid_plan      = Factory(:plan, :name => 'comet')
-      @sponsored_plan = Factory(:sponsored_plan)
-      @custom_plan    = Factory(:custom_plan)
+      @dev_plan       = FactoryGirl.create(:dev_plan)
+      @beta_plan      = FactoryGirl.create(:beta_plan)
+      @paid_plan      = FactoryGirl.create(:plan, name: "comet",  player_hits: 3_000)
+      @sponsored_plan = FactoryGirl.create(:sponsored_plan)
+      @custom_plan    = FactoryGirl.create(:custom_plan)
     end
 
     config.before(:each) do
@@ -77,7 +77,6 @@ end
 
 Spork.each_run do
   # This code will be run each time you run your specs.
-
 
   # Factory need to be required each launch to prevent loading of all models
   require 'factory_girl'

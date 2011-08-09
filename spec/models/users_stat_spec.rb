@@ -20,14 +20,14 @@ describe UsersStat do
 
   describe ".create_users_stats" do
     before(:all) do
-      Factory(:site, plan_id: @paid_plan.id) # active & billable
+      FactoryGirl.create(:site, plan_id: @paid_plan.id) # active & billable
 
-      Factory(:user) # active & not billable
-      Factory(:site, plan_id: @dev_plan.id) # active & not billable
-      Factory(:site, plan_id: @paid_plan.id).update_attribute(:next_cycle_plan_id, @dev_plan.id) # active & not billable
+      FactoryGirl.create(:user) # active & not billable
+      FactoryGirl.create(:site, plan_id: @dev_plan.id) # active & not billable
+      FactoryGirl.create(:site, plan_id: @paid_plan.id).update_attribute(:next_cycle_plan_id, @dev_plan.id) # active & not billable
 
-      Factory(:user, state: 'suspended') # suspended
-      Factory(:user, state: 'archived') # archived
+      FactoryGirl.create(:user, state: 'suspended') # suspended
+      FactoryGirl.create(:user, state: 'archived') # archived
     end
 
     it "should delay itself" do

@@ -27,8 +27,11 @@ class User < ActiveRecord::Base
 
   has_many :sites
   has_many :invoices, :through => :sites
-
   has_one :last_invoice, :through => :sites, :source => :invoices, :order => :created_at.desc
+
+  # API
+  has_many :client_applications
+  has_many :tokens, :class_name => "OauthToken", :order => :authorized_at.desc, :include => [:client_application]
 
   # ===============
   # = Validations =
@@ -82,7 +85,7 @@ class User < ActiveRecord::Base
     after_transition  :on => :unsuspend, :do => :send_account_unsuspended_email
 
     before_transition :on => :archive, :do => [:set_archived_at, :archive_sites]
-    after_transition  :on => :archive, :do => :send_account_archived_email
+    after_transition  :on => :archive, :do => [:invalidate_tokens, :send_account_archived_email]
   end
 
   # ==========
@@ -137,6 +140,13 @@ class User < ActiveRecord::Base
   def self.find_for_authentication(conditions={})
     conditions[:state.ne] = 'archived'
     super
+  end
+
+  def update_tracked_fields!(request)
+    # Don't update user when he's accessing the API
+    if !request.params.key?(:oauth_token) && !request.headers['HTTP_AUTHORIZATION'] =~ /OAuth/
+      super(request)
+    end
   end
 
   def self.suspend(user_id)
@@ -270,6 +280,11 @@ private
     sites.each do |site|
       site.without_password_validation { site.archive }
     end
+  end
+
+  # after_transition :on => :archive
+  def invalidate_tokens
+    tokens.update_all(invalidated_at: Time.now.utc)
   end
 
   # after_transition :on => :archive
