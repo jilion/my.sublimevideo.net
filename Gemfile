@@ -101,7 +101,7 @@ end
 
 group :guard do
   gem 'rb-fsevent'
-  gem 'growl'
+  gem 'growl_notify'
   gem 'guard', :git => 'git://github.com/guard/guard.git'
   gem 'guard-bundler'
   gem 'guard-pow'
