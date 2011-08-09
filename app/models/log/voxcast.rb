@@ -93,12 +93,12 @@ class Log::Voxcast < Log
 
   def parse_and_create_referrers!
     trackers = trackers('LogsFileFormat::VoxcastReferrers')
-    Referrer.create_or_update_from_trackers!(self, trackers)
+    Referrer.create_or_update_from_trackers!(trackers)
   end
 
   def parse_and_create_user_agents!
     trackers = trackers('LogsFileFormat::VoxcastUserAgents')
-    UsrAgent.create_or_update_from_trackers!(trackers)
+    UsrAgent.create_or_update_from_trackers!(self, trackers)
   end
 
   def minute
