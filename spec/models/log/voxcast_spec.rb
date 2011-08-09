@@ -200,28 +200,28 @@ describe Log::Voxcast do
         end
       end
 
-      context "with a log that is not uploaded to S3" do
-        use_vcr_cassette "voxcast/download_and_create_new_logs_and_redelay 0 logs"
-        before(:each) do
-          Log::Voxcast.stub(:create!) { raise Aws::AwsError }
-        end
-
-        it "doesn't save the record" do
-          logs_count = Log::Voxcast.count
-          expect { Log::Voxcast.download_and_create_new_logs_and_redelay("cdn.sublimevideo.net", :download_and_create_new_non_ssl_logs) }.to raise_error(Aws::AwsError)
-          Log::Voxcast.count.should eql logs_count
-        end
-
-        it "raises exception" do
-          expect { Log::Voxcast.download_and_create_new_logs_and_redelay("cdn.sublimevideo.net", :download_and_create_new_non_ssl_logs) }.to raise_error(Aws::AwsError)
-        end
-
-        # it "delays method to run now anyway" do
-        #   expect { Log::Voxcast.download_and_create_new_logs_and_redelay("cdn.sublimevideo.net", :download_and_create_new_non_ssl_logs) }.to raise_error(Aws::AwsError)
-        #   Delayed::Job.last.handler.should match "download_and_create_new_non_ssl_logs"
-        #   Delayed::Job.last.run_at.should eq Time.now.utc.change(sec: 0)
-        # end
-      end
+      # context "with a log that is not uploaded to S3" do
+      #   use_vcr_cassette "voxcast/download_and_create_new_logs_and_redelay 0 logs"
+      #   before(:each) do
+      #     Log::Voxcast.stub(:create!) { raise Aws::AwsError }
+      #   end
+      #
+      #   it "doesn't save the record" do
+      #     logs_count = Log::Voxcast.count
+      #     expect { Log::Voxcast.download_and_create_new_logs_and_redelay("cdn.sublimevideo.net", :download_and_create_new_non_ssl_logs) }.to raise_error(Aws::AwsError)
+      #     Log::Voxcast.count.should eql logs_count
+      #   end
+      #
+      #   it "raises exception" do
+      #     expect { Log::Voxcast.download_and_create_new_logs_and_redelay("cdn.sublimevideo.net", :download_and_create_new_non_ssl_logs) }.to raise_error(Aws::AwsError)
+      #   end
+      #
+      #   # it "delays method to run now anyway" do
+      #   #   expect { Log::Voxcast.download_and_create_new_logs_and_redelay("cdn.sublimevideo.net", :download_and_create_new_non_ssl_logs) }.to raise_error(Aws::AwsError)
+      #   #   Delayed::Job.last.handler.should match "download_and_create_new_non_ssl_logs"
+      #   #   Delayed::Job.last.run_at.should eq Time.now.utc.change(sec: 0)
+      #   # end
+      # end
     end
 
     describe ".log_name" do

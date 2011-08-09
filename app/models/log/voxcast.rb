@@ -48,7 +48,9 @@ class Log::Voxcast < Log
       new_log_file = VoxcastCDN.download_log(new_log_name)
       rescue_and_retry(7) { create!(name: new_log_name, file: new_log_file) } if new_log_file
     end
-    delay(priority: 0, run_at: new_log_ended_at).send(method)
+    unless Delayed::Job.already_delayed?("%Log::Voxcast%#{method}%")
+      delay(priority: 0, run_at: new_log_ended_at).send(method)
+    end
   end
 
   def self.log_name(hostname, ended_at)
