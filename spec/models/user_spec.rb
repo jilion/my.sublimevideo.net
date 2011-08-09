@@ -522,7 +522,7 @@ describe User do
           end
         end
 
-        describe "after_transition :on => :archive, :do => [:invalidate_tokens, :send_account_archived_email]" do
+        describe "after_transition :on => :archive, :do => [:invalidate_tokens, :newsletter_unsubscribe, :send_account_archived_email]" do
           it "invalidate all user's tokens" do
             FactoryGirl.create(:oauth2_token, user: subject)
             subject.reload.tokens.first.should_not be_invalidated_at
@@ -530,12 +530,27 @@ describe User do
             subject.archive
             subject.reload.tokens.all? { |token| token.invalidated_at? }.should be_true
           end
-          
+
           it "should send an email to user" do
-            lambda { subject.current_password = "123456"; subject.archive }.should change(ActionMailer::Base.deliveries, :count).by(1)
+            expect { subject.current_password = "123456"; subject.archive }.to change(ActionMailer::Base.deliveries, :count).by(1)
             ActionMailer::Base.deliveries.last.to.should == [subject.email]
           end
+          
+          describe ":newsletter_unsubscribe" do
+            use_vcr_cassette "user/newsletter_unsubscribe"
+            let(:user) { FactoryGirl.create(:user, :newsletter => "1", :email => "newsletter@jilion.com") }
+
+            it "should subscribe new email and unsubscribe old email on user destroy" do
+              @worker.work_off
+              CampaignMonitor.state(user.email).should == "Active"
+
+              expect { user.current_password = "123456"; user.archive }.to change(Delayed::Job, :count).by(1)
+              @worker.work_off
+              CampaignMonitor.state(user.email).should == "Unsubscribed"
+            end
+          end
         end
+        
       end
     end
 
@@ -546,7 +561,7 @@ describe User do
 
     describe "before_save :pend_credit_card_info" do
 
-      context "when user has no cc infos before" do
+      context "when user had no cc infos before" do
         subject { FactoryGirl.build(:user_no_cc, valid_cc_attributes) }
         before(:each) do
           subject.save!
@@ -581,15 +596,14 @@ describe User do
         its(:pending_cc_last_digits) { should be_nil }
         its(:pending_cc_expire_on)   { should be_nil }
       end
-
     end
 
-    describe "after_save :newsletter_subscription" do
+    describe "after_save :newsletter_update" do
       use_vcr_cassette "campaign_monitor/user"
       let(:user) { FactoryGirl.create(:user, :newsletter => "1", :email => "newsletter@jilion.com") }
 
       it "should subscribe on user creation" do
-        user
+        expect { user }.to change(Delayed::Job, :count).by(1)
         @worker.work_off
         CampaignMonitor.state(user.email).should == "Active"
       end
@@ -604,17 +618,16 @@ describe User do
         old_email = user.email
         @worker.work_off
         CampaignMonitor.state(user.email).should == "Active"
-        user.update_attributes(:email => "new@jilion.com")
+        expect { user.update_attribute(:email, "new@jilion.com") }.to change(Delayed::Job, :count).by(1)
         @worker.work_off
         CampaignMonitor.state(old_email).should == "Unsubscribed"
         CampaignMonitor.state(user.email).should == "Active"
       end
 
-      it "should do nothing if user just change is name" do
+      it "should update infos in Campaign Monitor if user just change his name" do
         user
         @worker.work_off
-        user.update_attributes(:first_name => "bob")
-        Delayed::Job.count.should == 0
+        expect { user.update_attribute(:first_name, "bob") }.to change(Delayed::Job, :count).by(1)
       end
     end
 
@@ -653,48 +666,6 @@ describe User do
         end
       end
     end
-
-    # describe "after_update :charge_failed_invoices" do
-    #   context "with no failed invoices" do
-    #     it "should not delay Class#charge" do
-    #       user.cc_updated_at = Time.now.utc
-    #       user.save
-    #       Delayed::Job.count.should == 1
-    #     end
-    #   end
-    #
-    #   context "with failed invoices" do
-    #     before(:all) do
-    #       @user  = FactoryGirl.create(:user)
-    #       @site1 = FactoryGirl.create(:site, user: @user)
-    #       @site2 = FactoryGirl.create(:site, user: @user)
-    #       FactoryGirl.create(:invoice, site: @site1, state: 'paid')
-    #       FactoryGirl.create(:invoice, site: @site2, state: 'failed')
-    #     end
-    #     subject { @user }
-    #
-    #     it "should not delay Class#charge if cc_updated_at has not changed" do
-    #       subject.reload.country = 'FR'
-    #       lambda { subject.save }.should_not change(Delayed::Job, :count)
-    #     end
-    #
-    #     it "should delay Class#charge if the user has failed invoices and cc_updated_at has changed" do
-    #       subject.reload.cc_updated_at = Time.now.utc
-    #       lambda { subject.save }.should change(Delayed::Job, :count).by(1)
-    #       Delayed::Job.last.name.should == 'Class#charge_open_and_failed_invoices_by_user_id'
-    #     end
-    #
-    #     context "with a suspended user" do
-    #       before(:all) { subject.reload.update_attribute(:state, 'suspended') }
-    #
-    #       it "should delay Class#charge if the user has failed invoices and cc_updated_at has changed" do
-    #         subject.cc_updated_at = Time.now.utc
-    #         lambda { subject.save }.should change(Delayed::Job, :count).by(1)
-    #         Delayed::Job.last.name.should == 'Class#charge_open_and_failed_invoices_by_user_id'
-    #       end
-    #     end
-    #   end
-    # end
 
   end
 

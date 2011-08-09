@@ -36,17 +36,28 @@ class CampaignMonitor < Settingslogic
       log_bad_request(ex)
     end
 
-    def unsubscribe(email)
+    def unsubscribe(user)
       set_api_key
-      CreateSend::Subscriber.new(self.list_id, email).unsubscribe
+      CreateSend::Subscriber.new(self.list_id, user.email).unsubscribe
       true
     rescue CreateSend::BadRequest => ex
       log_bad_request(ex)
       false
     end
 
+    def update(user)
+      set_api_key
+      if subscriber = CreateSend::Subscriber.new(self.list_id, user.email)
+        subscriber.update(user.email, user.full_name, [], user.newsletter?)
+      end
+    rescue CreateSend::BadRequest => ex
+      log_bad_request(ex)
+      false
+    end
+
     def state(email)
-      if subscriber = CreateSend::Subscriber.get(CampaignMonitor.list_id, email)
+      set_api_key
+      if subscriber = CreateSend::Subscriber.get(self.list_id, email)
         subscriber["State"]
       end
     rescue

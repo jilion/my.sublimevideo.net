@@ -1,0 +1,164 @@
+---
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :get
+    uri: http://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:80/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=newsletter@jilion.com
+    body: !!null 
+    headers:
+      user-agent:
+      - createsend-ruby-0.7.8
+      content-type:
+      - application/json; charset=utf-8
+      accept-encoding:
+      - gzip, deflate
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      cache-control:
+      - private, s-maxage=0
+      content-type:
+      - application/json; charset=utf-8
+      content-encoding:
+      - gzip
+      vary:
+      - Accept-Encoding
+      server:
+      - CMWEB03
+      x-aspnetmvc-version:
+      - '2.0'
+      x-aspnet-version:
+      - 4.0.30319
+      x-powered-by:
+      - ASP.NET
+      p3p:
+      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
+      date:
+      - Tue, 09 Aug 2011 16:58:37 GMT
+      content-length:
+      - '170'
+    body: !binary |-
+      H4sIAAAAAAAEAEzNzarCMBCG4Vsps24laSpIV5ZTXSi4EdyISGgGjeQHOlNF
+      Su/dFBHO9nveYUbYeG1dY0yPRFBDwBc5ZMZ+/bDOxrDoooccDtpj4l28h6yN
+      mJZW87yUQspCqKJcZXJZV6oWIuGRv9p0bJ9z/TcQR7+16Ex6cx5hj+/khDeP
+      gVNw0m6YLxiJYcp/wUDYX635F6hKwXSZPgMAsBoo0boAAAA=
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: http://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:80/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json
+    body: ! '{"EmailAddress":"newsletter@jilion.com","Name":"John Doe","CustomFields":[{"Key":"user_id","Value":27},{"Key":"segment","Value":"test"},{"Key":"beta","Value":"false"}],"Resubscribe":true}'
+    headers:
+      user-agent:
+      - createsend-ruby-0.7.8
+      content-type:
+      - application/json; charset=utf-8
+      accept-encoding:
+      - gzip, deflate
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 201
+      message: Created
+    headers:
+      cache-control:
+      - private, s-maxage=0
+      content-type:
+      - application/json; charset=utf-8
+      server:
+      - CMWEB03
+      x-aspnetmvc-version:
+      - '2.0'
+      x-aspnet-version:
+      - 4.0.30319
+      x-powered-by:
+      - ASP.NET
+      p3p:
+      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
+      date:
+      - Tue, 09 Aug 2011 16:58:38 GMT
+      content-length:
+      - '23'
+    body: ! '"newsletter@jilion.com"'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: http://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:80/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244/unsubscribe.json
+    body: ! '{"EmailAddress":"newsletter@jilion.com"}'
+    headers:
+      user-agent:
+      - createsend-ruby-0.7.8
+      content-type:
+      - application/json; charset=utf-8
+      accept-encoding:
+      - gzip, deflate
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      cache-control:
+      - private, s-maxage=0
+      server:
+      - CMWEB03
+      x-aspnetmvc-version:
+      - '2.0'
+      x-aspnet-version:
+      - 4.0.30319
+      x-powered-by:
+      - ASP.NET
+      p3p:
+      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
+      date:
+      - Tue, 09 Aug 2011 16:58:39 GMT
+      content-length:
+      - '0'
+    body: !!null 
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :get
+    uri: http://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:80/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=newsletter@jilion.com
+    body: !!null 
+    headers:
+      user-agent:
+      - createsend-ruby-0.7.8
+      content-type:
+      - application/json; charset=utf-8
+      accept-encoding:
+      - gzip, deflate
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      cache-control:
+      - private, s-maxage=0
+      content-type:
+      - application/json; charset=utf-8
+      content-encoding:
+      - gzip
+      vary:
+      - Accept-Encoding
+      server:
+      - CMWEB03
+      x-aspnetmvc-version:
+      - '2.0'
+      x-aspnet-version:
+      - 4.0.30319
+      x-powered-by:
+      - ASP.NET
+      p3p:
+      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
+      date:
+      - Tue, 09 Aug 2011 16:58:39 GMT
+      content-length:
+      - '183'
+    body: !binary |-
+      H4sIAAAAAAAEAEzNzarCMBCG4VuRWbeSCmLblXKqCwU3ohsRSZs5x0h+IDNB
+      pPTeTZED3X7PO0wPWyu12SgVkAhqcPgig8wY1k9ttHfzzlvI4CgtJt77h5s1
+      HtPSSB6XhSiKXJS5qGZFWS+rWoiEJ/7q2VFsqQu6RZXmn0js7U6jUenZtYcD
+      vlNF+GfRcQou0sTxjpEYhuw/iIThrtUkWKwm3CLLif1KQwjDbfgMAIBIMCDe
+      AAAA
+    http_version: '1.1'

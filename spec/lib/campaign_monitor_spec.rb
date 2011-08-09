@@ -24,7 +24,7 @@ describe CampaignMonitor do
     it "should subscribe an unsubscribed user" do
       CampaignMonitor.subscribe(user).should be_true
       CampaignMonitor.state(user.email) == "Active"
-      CampaignMonitor.unsubscribe(user.email).should be_true
+      CampaignMonitor.unsubscribe(user).should be_true
       CampaignMonitor.state(user.email) == "Unsubscribed"
       CampaignMonitor.subscribe(user).should be_true
       CampaignMonitor.state(user.email) == "Active"
@@ -67,7 +67,7 @@ describe CampaignMonitor do
       CampaignMonitor.subscribe(user).should be_true
       CampaignMonitor.state(user.email) == "Active"
       CreateSend.api_key('invalid') # simulate a call to unsubscribe from a context where api_key is not set (here, not valid since when set to nil it takes the current value...), from within a delayed job for example
-      CampaignMonitor.unsubscribe(user.email).should be_true
+      CampaignMonitor.unsubscribe(user).should be_true
       CampaignMonitor.state(user.email) == "Unsubscribed"
     end
 

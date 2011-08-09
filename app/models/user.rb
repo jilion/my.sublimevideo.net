@@ -58,12 +58,12 @@ class User < ActiveRecord::Base
   # = Callbacks =
   # =============
 
-  before_save  :set_password
-  before_save  :pend_credit_card_info, :if => :any_cc_attrs? # in user/credit_card
+  before_save :set_password
+  before_save :pend_credit_card_info, :if => :any_cc_attrs? # in user/credit_card
 
-  after_save   :newsletter_subscription
+  after_save :newsletter_update
 
-  after_update :update_email_on_zendesk
+  after_update :zendesk_update
 
   # =================
   # = State Machine =
@@ -85,7 +85,7 @@ class User < ActiveRecord::Base
     after_transition  :on => :unsuspend, :do => :send_account_unsuspended_email
 
     before_transition :on => :archive, :do => [:set_archived_at, :archive_sites]
-    after_transition  :on => :archive, :do => [:invalidate_tokens, :send_account_archived_email]
+    after_transition  :on => :archive, :do => [:invalidate_tokens, :newsletter_unsubscribe, :send_account_archived_email]
   end
 
   # ==========
@@ -288,6 +288,11 @@ private
   end
 
   # after_transition :on => :archive
+  def newsletter_unsubscribe
+    CampaignMonitor.delay.unsubscribe(self)
+  end
+
+  # after_transition :on => :archive
   def send_account_archived_email
     UserMailer.account_archived(self).deliver!
   end
@@ -301,17 +306,22 @@ private
   end
 
   # after_save
-  def newsletter_subscription
-    if newsletter? && email_changed?
-      CampaignMonitor.delay.unsubscribe(email_was) if email_was.present?
-      CampaignMonitor.delay.subscribe(self)
+  def newsletter_update
+    if newsletter_changed? || email_changed? || first_name_changed? || last_name_changed?
+      if email_was.present?
+        CampaignMonitor.delay.update(self)
+        newsletter_unsubscribe unless newsletter?
+      else
+        CampaignMonitor.delay.subscribe(self) if newsletter?
+      end
     end
   end
 
   # after_update
-  def update_email_on_zendesk
-    if zendesk_id.present? && email_changed?
-      Zendesk.delay(priority: 25).put("/users/#{zendesk_id}.xml", "<user><email>#{email}</email><is-verified>true</is-verified></user>")
+  def zendesk_update
+    if zendesk_id.present? && (email_changed? || first_name_changed? || last_name_changed?)
+      body = email_changed? ? "<email>#{email}</email>" : "<name>#{full_name}</name>"
+      Zendesk.delay(priority: 25).put("/users/#{zendesk_id}.xml", "<user>#{body}<is-verified>true</is-verified></user>")
     end
   end
 
