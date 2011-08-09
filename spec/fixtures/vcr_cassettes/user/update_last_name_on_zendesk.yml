@@ -3,7 +3,7 @@
   request: !ruby/struct:VCR::Request
     method: :post
     uri: http://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:80/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json
-    body: ! '{"EmailAddress":"new@jilion.com","Name":"John Doe","CustomFields":[{"Key":"user_id","Value":3},{"Key":"segment","Value":"test"},{"Key":"beta","Value":"false"}],"Resubscribe":true}'
+    body: ! '{"EmailAddress":"email5@user.com","Name":"John Coutable","CustomFields":[{"Key":"user_id","Value":5},{"Key":"segment","Value":"test"},{"Key":"beta","Value":"false"}],"Resubscribe":true}'
     headers:
       user-agent:
       - createsend-ruby-0.7.8
@@ -31,16 +31,16 @@
       p3p:
       - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
       date:
-      - Tue, 09 Aug 2011 16:19:37 GMT
+      - Tue, 09 Aug 2011 16:38:44 GMT
       content-length:
-      - '16'
-    body: ! '"new@jilion.com"'
+      - '17'
+    body: ! '"email5@user.com"'
     http_version: '1.1'
 - !ruby/struct:VCR::HTTPInteraction
   request: !ruby/struct:VCR::Request
     method: :put
-    uri: http://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:80/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=new@jilion.com
-    body: ! '{"EmailAddress":"new@jilion.com","Name":"John Doe","CustomFields":{},"Resubscribe":true}'
+    uri: http://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:80/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=email5@user.com
+    body: ! '{"EmailAddress":"email5@user.com","Name":"John Coutable","CustomFields":{},"Resubscribe":true}'
     headers:
       user-agent:
       - createsend-ruby-0.7.8
@@ -68,7 +68,7 @@
       p3p:
       - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
       date:
-      - Tue, 09 Aug 2011 16:19:38 GMT
+      - Tue, 09 Aug 2011 16:38:45 GMT
       content-length:
       - '141'
     body: ! '{"Code":400,"Message":"Failed to deserialize your request. \r\nPlease
@@ -78,7 +78,7 @@
   request: !ruby/struct:VCR::Request
     method: :put
     uri: http://zendesk%40sublimevideo.net%2Ftoken:oxVzosGyu7DaZrQ0fhmKngHATvd78UhEqTzMszZy@sublimevideo.zendesk.com:80/users/59438671.xml
-    body: <user><email>new@jilion.com</email><is-verified>true</is-verified></user>
+    body: <user><name>John Coutable</name><is-verified>true</is-verified></user>
     headers:
       content-type:
       - application/xml
@@ -90,7 +90,7 @@
       server:
       - nginx/0.8.53
       date:
-      - Tue, 09 Aug 2011 16:19:39 GMT
+      - Tue, 09 Aug 2011 16:38:46 GMT
       content-type:
       - application/xml; charset=utf-8
       connection:
@@ -100,11 +100,11 @@
       p3p:
       - CP="NOI DSP COR NID ADMa OPTa OUR NOR"
       x-runtime:
-      - '88'
+      - '101'
       content-length:
       - '1'
       set-cookie:
-      - _zendesk_session=BAh7DiIOaXNfbW9iaWxlRjoPc2Vzc2lvbl9pZCIlNzY3NWRjYzQ3ZGUyZTMzMjA5YTE2NDEwZjBmYzM4NjciHHdhcmRlbi51c2VyLmRlZmF1bHQua2V5aQPrlek6D3VwZGF0ZWRfYXRsKwcbXkFOOg1hdXRoX3ZpYSISQmFzaWNTdHJhdGVneSITd2FyZGVuLm1lc3NhZ2V7ADoHaWQiFDd1c2xwdnFhcjc1dGJybToMYWNjb3VudGkCN6k6FWF1dGhlbnRpY2F0ZWRfYXRsKwcbXkFO--f6482e125bf506f27a9dfbb08f3eb3888291938a;
+      - _zendesk_session=BAh7DiIOaXNfbW9iaWxlRjoPc2Vzc2lvbl9pZCIlMjk5NjE3ODVkYjg0MGJjNDI3OGVkNTk1OGMxNTg3M2QiHHdhcmRlbi51c2VyLmRlZmF1bHQua2V5aQPrlek6D3VwZGF0ZWRfYXRsKweWYkFOOg1hdXRoX3ZpYSISQmFzaWNTdHJhdGVneSITd2FyZGVuLm1lc3NhZ2V7ADoHaWQiFWYxMmxwcmpudC0zZDczbzY6DGFjY291bnRpAjepOhVhdXRoZW50aWNhdGVkX2F0bCsHlmJBTg%3D%3D--60b1de10f70cbd5da4a9b1d7bd78e2b4ba1695b4;
         path=/; HttpOnly
       - oid_user=; path=/; expires=Thu, 01-Jan-1970 00:00:00 GMT
       cache-control:
@@ -114,7 +114,7 @@
 - !ruby/struct:VCR::HTTPInteraction
   request: !ruby/struct:VCR::Request
     method: :get
-    uri: http://zendesk%40sublimevideo.net%2Ftoken:oxVzosGyu7DaZrQ0fhmKngHATvd78UhEqTzMszZy@sublimevideo.zendesk.com:80/users/59438671/user_identities.json
+    uri: http://zendesk%40sublimevideo.net%2Ftoken:oxVzosGyu7DaZrQ0fhmKngHATvd78UhEqTzMszZy@sublimevideo.zendesk.com:80/users/59438671.json
     body: !!null 
     headers: !!null 
   response: !ruby/struct:VCR::Response
@@ -125,7 +125,7 @@
       server:
       - nginx/0.8.53
       date:
-      - Tue, 09 Aug 2011 16:19:39 GMT
+      - Tue, 09 Aug 2011 16:40:54 GMT
       content-type:
       - application/json; charset=utf-8
       connection:
@@ -133,21 +133,58 @@
       status:
       - 200 OK
       etag:
-      - ! '"abcba5760bc817e7787ffa0b21e0b7f7"'
+      - ! '"ef053d4e0556edd42da6b7a6033fd6e7"'
       p3p:
       - CP="NOI DSP COR NID ADMa OPTa OUR NOR"
       x-runtime:
-      - '27'
+      - '35'
       content-length:
-      - '615'
+      - '494'
       set-cookie:
-      - _zendesk_session=BAh7DiIOaXNfbW9iaWxlRjoPc2Vzc2lvbl9pZCIlZWQ3YzY0YjkyMmFlZGZjYWI0ZGJkMjgyZmM4MTIzNTEiHHdhcmRlbi51c2VyLmRlZmF1bHQua2V5aQPrlek6D3VwZGF0ZWRfYXRsKwcbXkFOOg1hdXRoX3ZpYSISQmFzaWNTdHJhdGVneSITd2FyZGVuLm1lc3NhZ2V7ADoHaWQiFWNudGxxOGVxNC02eDIwMnM6DGFjY291bnRpAjepOhVhdXRoZW50aWNhdGVkX2F0bCsHG15BTg%3D%3D--de276cee09e75a0034fdfc2ecd9d4b0ab3e8fd6f;
+      - _zendesk_session=BAh7DiIOaXNfbW9iaWxlRjoPc2Vzc2lvbl9pZCIlNjFhZjZhYTIyZDU1YTBmZmJjMTc1NTFiOTlmYWJkOTMiHHdhcmRlbi51c2VyLmRlZmF1bHQua2V5aQPrlek6D3VwZGF0ZWRfYXRsKwcWY0FOOg1hdXRoX3ZpYSISQmFzaWNTdHJhdGVneSITd2FyZGVuLm1lc3NhZ2V7ADoHaWQiFDd1c2xweGFta2d5OHE5NjoMYWNjb3VudGkCN6k6FWF1dGhlbnRpY2F0ZWRfYXRsKwcWY0FO--459ca4039e9ee2f7bc90e6b393429561b097afef;
         path=/; HttpOnly
       - oid_user=; path=/; expires=Thu, 01-Jan-1970 00:00:00 GMT
       cache-control:
       - private, max-age=0, must-revalidate
-    body: ! '[{"created_at":"2011/05/17 13:54:12 +0200","updated_at":"2011/05/17 13:57:28
-      +0200","identity_type":"email","account_id":43319,"id":59469711,"value":"email3@user.com","user_id":59438671,"is_verified":true},{"created_at":"2011/05/17
-      14:20:15 +0200","updated_at":"2011/05/17 14:20:15 +0200","identity_type":"email","account_id":43319,"id":59473136,"value":"new@email.com","user_id":59438671,"is_verified":false},{"created_at":"2011/08/09
-      18:19:39 +0200","updated_at":"2011/08/09 18:19:39 +0200","identity_type":"email","account_id":43319,"id":75664373,"value":"new@jilion.com","user_id":59438671,"is_verified":false}]'
+    body: ! '{"name":"John Coutable","locale_id":null,"openid_url":null,"created_at":"2011/05/17
+      13:54:12 +0200","last_login":null,"details":null,"photo_url":"http://sublimevideo.zendesk.com/images/types/user_sm.png","updated_at":"2011/08/09
+      18:38:46 +0200","notes":null,"external_id":null,"current_tags":"","restriction_id":4,"id":59438671,"email":"email3@user.com","is_verified":true,"phone":null,"is_active":true,"time_zone":"Bern","roles":0,"organization_id":null,"groups":[],"uses_12_hour_clock":false}'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :put
+    uri: http://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:80/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=email43@user.com
+    body: ! '{"EmailAddress":"email43@user.com","Name":"John Coutable","CustomFields":{},"Resubscribe":true}'
+    headers:
+      user-agent:
+      - createsend-ruby-0.7.8
+      content-type:
+      - application/json; charset=utf-8
+      accept-encoding:
+      - gzip, deflate
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 400
+      message: Bad Request
+    headers:
+      cache-control:
+      - private, s-maxage=0
+      content-type:
+      - application/json; charset=utf-8
+      server:
+      - CMWEB03
+      x-aspnetmvc-version:
+      - '2.0'
+      x-aspnet-version:
+      - 4.0.30319
+      x-powered-by:
+      - ASP.NET
+      p3p:
+      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
+      date:
+      - Tue, 09 Aug 2011 16:44:30 GMT
+      content-length:
+      - '141'
+    body: ! '{"Code":400,"Message":"Failed to deserialize your request. \r\nPlease
+      check the documentation and try again.\r\nFields in error: subscriber"}'
     http_version: '1.1'

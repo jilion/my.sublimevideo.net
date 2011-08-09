@@ -20,6 +20,10 @@ module Zendesk
       Zendesk::Request.new(url, :put, params).execute
     end
 
+    def delete(url)
+      Zendesk::Request.new(url, :delete).execute
+    end
+
     def method_missing(name)
       yml[name.to_sym]
     end
