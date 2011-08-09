@@ -16,7 +16,7 @@ class Tweet
   field :retweets_count,    :type => Integer, :default => 0 # can be retrieved with http://api.twitter.com/version/statuses/show/:id.format
   field :favorited,         :type => Boolean, :default => false # can be retrieved with http://api.twitter.com/version/statuses/show/:id.format
 
-  index [:tweeted_at, Mongo::ASCENDING]
+  index :tweeted_at
   index :keywords
 
   belongs_to :retweeted_tweet, :class_name => "Tweet", :inverse_of => :retweets

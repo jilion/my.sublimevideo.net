@@ -50,10 +50,8 @@ public
 
   # Used in Log#parse_log
   def parse_and_create_usages!
-    logs_file = copy_logs_file_to_tmp
-    trackers = LogAnalyzer.parse(logs_file, self.class.config[:file_format_class_name])
+    trackers = trackers(self.class.config[:file_format_class_name])
     SiteUsage.create_usages_from_trackers!(self, trackers)
-    File.delete(logs_file.path)
   end
 
 private

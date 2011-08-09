@@ -4,8 +4,8 @@ describe LogsFileFormat::S3Loaders do
   
   describe "with 2010-07-14-09-22-26-63B226D3944909C8 logs file" do
     before(:each) do
-      logs_file = File.new(Rails.root.join('spec/fixtures/logs/s3_loaders/2010-07-14-09-22-26-63B226D3944909C8'))
-      @trackers = LogAnalyzer.parse(logs_file, 'LogsFileFormat::S3Loaders')
+      log_file = File.new(Rails.root.join('spec/fixtures/logs/s3_loaders/2010-07-14-09-22-26-63B226D3944909C8'))
+      @trackers = LogAnalyzer.parse(log_file, 'LogsFileFormat::S3Loaders')
     end
     
     it "should parse and return bandwith_s3 tracker" do

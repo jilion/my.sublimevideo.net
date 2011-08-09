@@ -51,14 +51,13 @@ class SiteUsage
       Site.where(:token => tokens.pop(100)).each do |site|
         begin
           hbr_token = hits_traffic_and_requests_for_token(hbrs, site.token)
-          day = log.started_at.midnight.to_time
           self.collection.update(
-            { :site_id => site.id, :day => day },
+            { :site_id => site.id, :day => log.day },
             { "$inc" => hbr_token },
             :upsert => true
           )
         rescue => ex
-          Notify.send("Error on site_usage (#{site.id}, #{day}) update (from log #{log.hostname}, #{log.name}. Data: #{hbr_token}", :exception => ex)
+          Notify.send("Error on site_usage (#{site.id}, #{log.day}) update (from log #{log.hostname}, #{log.name}. Data: #{hbr_token}", :exception => ex)
         end
       end
     end
@@ -82,7 +81,7 @@ private
         trackers[tracker.options[:title]] = tracker.categories
       when :loader_hits
         tracker.categories.each do |array, hits|
-          token, referrer = array[0], array[1]
+          token, referrer = array
           if referrer =~ /^https.*/
             trackers[:ssl_loader_hits] = set_hits_tracker(trackers, :ssl_loader_hits, token, hits)
           end
@@ -90,7 +89,7 @@ private
         end
       when :player_hits
         tracker.categories.each do |array, hits|
-          token, status, referrer = array[0], array[1], array[2]
+          token, status, referrer = array
           if site = Site.find_by_token(token)
             # Don't use log.started_at to prevent error with new site created during the log creation
             referrer_type = site.referrer_type(referrer, log.ended_at)

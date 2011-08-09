@@ -10,8 +10,10 @@ describe Log::Voxcast do
     its(:started_at) { should == Time.zone.at(1274773200).utc }
     its(:ended_at)   { should == Time.zone.at(1274773260).utc }
 
-    it { should_not be_parsed_at }
-    it { should_not be_referrers_parsed_at }
+    its(:parsed_at)             { should be_nil}
+    its(:stats_parsed_at)       { should be_nil}
+    its(:referrers_parsed_at)   { should be_nil}
+    its(:user_agents_parsed_at) { should be_nil}
     it { should be_valid }
   end
 
@@ -57,16 +59,11 @@ describe Log::Voxcast do
 
     it "should delay parse_log && parse_log_referrer after create" do
       subject # trigger log creation
-      jobs = Delayed::Job.all.sort_by { |j| j.name }
-      job = jobs.pop
-      job.name.should == 'Class#parse_log_for_user_agents'
-      job.priority.should == 95
-      job = jobs.pop
-      job.name.should == 'Class#parse_log_for_referrers'
-      job.priority.should == 90
-      job = jobs.pop
-      job.name.should == 'Class#parse_log'
-      job.priority.should == 0
+      jobs = Delayed::Job.all.sort_by { |j| j.priority }
+      jobs[0].name.should == 'Class#parse_log_for_stats'
+      jobs[1].name.should == 'Class#parse_log'
+      jobs[2].name.should == 'Class#parse_log_for_referrers'
+      jobs[3].name.should == 'Class#parse_log_for_user_agents'
     end
   end
 
@@ -103,7 +100,7 @@ describe Log::Voxcast do
 
     it "should delay parse_log after create" do
       subject # trigger log creation
-      Delayed::Job.all.should have(3).job
+      Delayed::Job.all.should have(4).job
     end
   end
 
@@ -256,6 +253,28 @@ describe Log::Voxcast do
         :store_dir => "voxcast"
       }
     end
+
+    describe ".parse_log_for_stats" do
+      before(:each) do
+        log_file = File.new(Rails.root.join('spec/fixtures/logs/voxcast/cdn.sublimevideo.net.log.1284549900-1284549960.gz'))
+        VoxcastCDN.stub(:download_log).with('cdn.sublimevideo.net.log.1284549900-1284549960.gz') { log_file }
+        @log = Factory(:log_voxcast, :name => 'cdn.sublimevideo.net.log.1284549900-1284549960.gz')
+      end
+
+      it "call parse_and_create_stats! and set stats_parsed_at" do
+        Log::Voxcast.stub(:find) { @log }
+        @log.should_receive(:parse_and_create_stats!)
+        Log::Voxcast.parse_log_for_stats(@log.id)
+        @log.reload.stats_parsed_at.should be_present
+      end
+
+      it "does nothing if stats_parsed_at already set" do
+        @log.update_attribute(:stats_parsed_at, Time.now.utc)
+        Log::Voxcast.stub(:find) { @log }
+        @log.should_not_receive(:parse_and_referrers_stats!)
+        Log::Voxcast.parse_log_for_stats(@log.id)
+      end
+    end
   end
 
   describe "Instance Methods" do
@@ -265,45 +284,40 @@ describe Log::Voxcast do
       @log = FactoryGirl.create(:log_voxcast, :name => 'cdn.sublimevideo.net.log.1284549900-1284549960.gz')
     end
 
-    describe "parse_and_create_referrers!" do
-      before(:each) do
-        LogAnalyzer.should_receive(:parse)
+    describe "#parse_and_create_stats!" do
+      it "analyzes logs" do
+        VoxcastCDN.should_not_receive(:download_log)
+        LogAnalyzer.should_receive(:parse).with(an_instance_of(File), 'LogsFileFormat::VoxcastStats')
+        SiteStat.should_receive(:create_stats_from_trackers!)
+        @log.parse_and_create_stats!
+      end
+    end
+    describe "#parse_and_create_referrers!" do
+      it "analyzes logs" do
+        VoxcastCDN.should_not_receive(:download_log)
+        LogAnalyzer.should_receive(:parse).with(an_instance_of(File), 'LogsFileFormat::VoxcastReferrers')
         Referrer.should_receive(:create_or_update_from_trackers!)
-        VoxcastCDN.should_not_receive(:download_log)
-        subject.parse_and_create_referrers!
-      end
-
-      subject { @log }
-
-      its(:referrers_parsed_at) { should be_present }
-
-      it { should be_referrers_parsed_at }
-
-      it "should not reparse if already done" do
-        Referrer.should_not_receive(:create_or_update_from_trackers!)
-        subject.parse_and_create_referrers!
+        @log.parse_and_create_referrers!
       end
     end
-
-    describe "parse_and_create_user_agents!" do
-      before(:each) do
-        LogAnalyzer.should_receive(:parse)
+    describe "#parse_and_create_referrers!" do
+      it "analyzes logs" do
+        VoxcastCDN.should_not_receive(:download_log)
+        LogAnalyzer.should_receive(:parse).with(an_instance_of(File), 'LogsFileFormat::VoxcastUserAgents')
         UsrAgent.should_receive(:create_or_update_from_trackers!)
-        VoxcastCDN.should_not_receive(:download_log)
-        subject.parse_and_create_user_agents!
-      end
-
-      subject { @log }
-
-      its(:user_agents_parsed_at) { should be_present }
-
-      it { should be_user_agents_parsed_at }
-
-      it "should not reparse if already done" do
-        UsrAgent.should_not_receive(:create_or_update_from_trackers!)
-        subject.parse_and_create_user_agents!
+        @log.parse_and_create_user_agents!
       end
     end
+
+    describe "minute / hour / day / month" do
+      subject { Factory.build(:log_voxcast, :name => 'cdn.sublimevideo.net.log.1284549900-1284549960.gz') }
+
+      its(:minute) { should eql Time.utc(2010, 9, 15, 11, 25) }
+      its(:hour)   { should eql Time.utc(2010, 9, 15, 11) }
+      its(:day)    { should eql Time.utc(2010, 9, 15) }
+      its(:month)  { should eql Time.utc(2010, 9, 1) }
+    end
+
   end
 
 end
