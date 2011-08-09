@@ -261,9 +261,9 @@ describe Log::Voxcast do
         @log = Factory(:log_voxcast, :name => 'cdn.sublimevideo.net.log.1284549900-1284549960.gz')
       end
 
-      it "call parse_and_create_referrers_stats! and set stats_parsed_at" do
+      it "call parse_and_create_stats! and set stats_parsed_at" do
         Log::Voxcast.stub(:find) { @log }
-        @log.should_receive(:parse_and_create_referrers_stats!)
+        @log.should_receive(:parse_and_create_stats!)
         Log::Voxcast.parse_log_for_stats(@log.id)
         @log.reload.stats_parsed_at.should be_present
       end
@@ -271,7 +271,7 @@ describe Log::Voxcast do
       it "does nothing if stats_parsed_at already set" do
         @log.update_attribute(:stats_parsed_at, Time.now.utc)
         Log::Voxcast.stub(:find) { @log }
-        @log.should_not_receive(:parse_and_create_referrers_stats!)
+        @log.should_not_receive(:parse_and_referrers_stats!)
         Log::Voxcast.parse_log_for_stats(@log.id)
       end
     end
