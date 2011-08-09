@@ -49,6 +49,7 @@ module Admin::DelayedJobsHelper
       Class#save_new_tweets_and_sync_favorite_tweets
       Class#update_last_30_days_counters_for_not_archived_sites
       Class#fetch_and_create_new_logs
+      Class#clear_old_minutes_and_days_stats
       Class#send
     ].include?(job.name)
   end
