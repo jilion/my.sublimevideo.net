@@ -1,7 +1,7 @@
 class Log::Voxcast < Log
 
-  field :referrers_parsed_at,  :type => DateTime
-  field :user_agents_parsed_at,  :type => DateTime
+  field :referrers_parsed_at,   :type => DateTime
+  field :user_agents_parsed_at, :type => DateTime
 
   attr_accessible :file
 
@@ -45,19 +45,9 @@ class Log::Voxcast < Log
     new_log_ended_at = nil
     while (new_log_ended_at = next_log_ended_at(hostname, new_log_ended_at)) < Time.now.utc do
       new_log_name = log_name(hostname, new_log_ended_at)
-      unless self.exists?(conditions: { name: new_log_name })
-        # this is done by before_validation :download_and_set_log_file
-        # new_log_file = VoxcastCDN.download_log(new_log_name)
-
-        # When S3 (for uploading is unavailable), a timeout error is raised (Aws::AwsError: sublimevideo.logs.s3.amazonaws.com temporarily unavailable: (execution expired)),
-        # but the record seems to be saved save
-        # catched by the rescue_and_retry which retry to create the record,
-        # but it already exists (Validation failed - Name is already taken) so it fails 6 times and raise the exception
-        create!(name: new_log_name)
-      end
+      new_log_file = VoxcastCDN.download_log(new_log_name)
+      rescue_and_retry(7) { create!(name: new_log_name, file: new_log_file) } if new_log_file
     end
-  # if create! raised an error, ensure that we still delay the next log parsing
-  ensure
     delay(priority: 0, run_at: new_log_ended_at).send(method)
   end
 
@@ -125,11 +115,7 @@ private
 
   # before_validation
   def download_and_set_log_file
-    unless file.present?
-      # When S3 is down, an Aws::AwsError: sublimevideo.logs.s3.amazonaws.com temporarily unavailable: (execution expired)
-      # should be raised here, so retry to save the file first
-      rescue_and_retry(4) { self.file = VoxcastCDN.download_log(name) }
-    end
+    self.file = VoxcastCDN.download_log(name) unless file.present?
   end
 
   # after_create
