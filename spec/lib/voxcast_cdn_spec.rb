@@ -3,11 +3,11 @@ require 'spec_helper'
 describe VoxcastCDN do
 
   describe ".download_log" do
-    context "when log not available" do
-      use_vcr_cassette "voxcast/download_log_not_available"
-
-      specify { VoxcastCDN.download_log("cdn.sublimevideo.net.log.9999999900-9999999960.gz").should be_false }
-    end
+    # context "when log not available" do
+    #   use_vcr_cassette "voxcast/download_log_not_available"
+    #
+    #   specify { VoxcastCDN.download_log("cdn.sublimevideo.net.log.9999999900-9999999960.gz").should be_false }
+    # end
 
     context "when log available" do
       use_vcr_cassette "voxcast/download_log_available"
