@@ -246,7 +246,7 @@ def create_sites
   subdomains = %w[www blog my git sv ji geek yin yang chi cho chu foo bar rem]
   created_at_array = (Date.new(2010,1,1)..(1.month.ago - 2.days).to_date).to_a
 
-  require 'invoice_item/plan' # FIXME WHY OH WHY !??!!!
+  require 'invoice_item/plan'
 
   User.all.each do |user|
     BASE_SITES.each do |hostname|
@@ -255,7 +255,7 @@ def create_sites
         hostname: hostname
       )
       Timecop.travel(created_at_array.sample) do
-        site.save_without_password_validation # TODO: Use VCR here to avoid calls to Ogone?!
+        site.save_without_password_validation
       end
       if rand > 0.5
         site.cdn_up_to_date = true
