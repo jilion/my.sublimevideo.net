@@ -225,3 +225,40 @@
       - '47'
     body: ! '{"Code":203,"Message":"Subscriber not in list"}'
     http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :put
+    uri: http://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:80/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=email679@user.com
+    body: ! '{"EmailAddress":"email679@user.com","Name":"John Coutable","CustomFields":[],"Resubscribe":true}'
+    headers:
+      user-agent:
+      - createsend-ruby-0.7.8
+      content-type:
+      - application/json; charset=utf-8
+      accept-encoding:
+      - gzip, deflate
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 400
+      message: Bad Request
+    headers:
+      cache-control:
+      - private, s-maxage=0
+      content-type:
+      - application/json; charset=utf-8
+      server:
+      - CMWEB05
+      x-aspnetmvc-version:
+      - '2.0'
+      x-aspnet-version:
+      - 4.0.30319
+      x-powered-by:
+      - ASP.NET
+      p3p:
+      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
+      date:
+      - Wed, 10 Aug 2011 08:38:01 GMT
+      content-length:
+      - '47'
+    body: ! '{"Code":203,"Message":"Subscriber not in list"}'
+    http_version: '1.1'
