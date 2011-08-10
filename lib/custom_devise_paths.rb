@@ -13,8 +13,4 @@ module CustomDevisePaths
     [:new, :"#{Devise::Mapping.find_scope!(resource_or_scope)}_session"]
   end
 
-  def after_update_path_for(resource_or_scope)
-    [:edit, :"#{Devise::Mapping.find_scope!(resource_or_scope)}_registration"]
-  end
-
 end
