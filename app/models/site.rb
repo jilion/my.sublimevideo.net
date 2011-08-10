@@ -48,16 +48,16 @@ class Site < ActiveRecord::Base
   # ==========
 
   # billing
-  scope :billable,      lambda { active.where({ :plan_id.in => Plan.paid_plans.map(&:id) }, { :next_cycle_plan_id => nil } | { :next_cycle_plan_id.ne => Plan.dev_plan.id }) }
-  scope :not_billable,  lambda { where({ :state.ne => 'active' } | ({ :state => 'active' } & ({ :plan_id.in => Plan.free_plans.map(&:id), :next_cycle_plan_id => nil } | { :next_cycle_plan_id => Plan.dev_plan }))) }
+  scope :billable,      lambda { active.where({ :plan_id.in => Plan.paid_plans.map(&:id) }, { :next_cycle_plan_id => nil } | { :next_cycle_plan_id.not_eq => Plan.dev_plan.id }) }
+  scope :not_billable,  lambda { where({ :state.not_eq => 'active' } | ({ :state => 'active' } & ({ :plan_id.in => Plan.free_plans.map(&:id), :next_cycle_plan_id => nil } | { :next_cycle_plan_id => Plan.dev_plan }))) }
   scope :to_be_renewed, where(:plan_cycle_ended_at.lt => Time.now.utc, :pending_plan_id => nil)
   scope :refundable,    where(:first_paid_plan_started_at.gte => 30.days.ago, :refunded_at => nil)
-  scope :refunded,      where(:state => 'archived', :refunded_at.ne => nil)
+  scope :refunded,      where(:state => 'archived', :refunded_at.not_eq => nil)
 
   scope :in_paid_plan, lambda { joins(:plan).merge(Plan.paid_plans) }
 
   # usage_monitoring scopes
-  scope :plan_player_hits_reached_notified, where(:plan_player_hits_reached_notification_sent_at.ne => nil)
+  scope :plan_player_hits_reached_notified, where(:plan_player_hits_reached_notification_sent_at.not_eq => nil)
 
   # filter
   scope :beta,                 includes(:plan).where(:plans => { :name => "beta" })
@@ -67,11 +67,11 @@ class Site < ActiveRecord::Base
   scope :active,               where(:state => 'active')
   scope :suspended,            where(:state => 'suspended')
   scope :archived,             where(:state => 'archived')
-  scope :not_archived,         where(:state.ne => 'archived')
+  scope :not_archived,         where(:state.not_eq => 'archived')
   scope :with_wildcard,        where(:wildcard => true)
-  scope :with_path,            where({ :path.ne => nil } & { :path.ne => '' } & { :path.ne => ' '} )
-  scope :with_extra_hostnames, where({ :extra_hostnames.ne => nil } & { :extra_hostnames.ne => '' })
-  scope :with_next_cycle_plan, where(:next_cycle_plan_id.ne => nil)
+  scope :with_path,            where(:path.not_eq => nil, :path.not_eq => '', :path.not_eq => ' ')
+  scope :with_extra_hostnames, where(:extra_hostnames.not_eq => nil, :extra_hostnames.not_eq => '')
+  scope :with_next_cycle_plan, where(:next_cycle_plan_id.not_eq => nil)
 
   # admin
   scope :user_id,         lambda { |user_id| where(user_id: user_id) }

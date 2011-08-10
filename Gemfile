@@ -2,14 +2,28 @@ source "http://rubygems.org"
 
 gem 'rake',                  '0.8.7'
 
-gem 'rails',                 '3.0.9'
+# gem 'rails',                 '3.1.0.rc5'
+# Bundle edge Rails instead:
+gem 'rails',     :git => 'git://github.com/rails/rails.git'
+
+# Gems used only for assets and not required
+# in production environments by default.
+group :assets do
+  gem 'sass-rails', "~> 3.1.0.rc.5"
+  gem 'coffee-rails', "~> 3.1.0.rc.4"
+  gem 'uglifier'
+end
+
+gem 'prototype-rails', :git => 'git://github.com/rubychan/prototype-rails.git'
 
 # Databases
 gem 'pg',                    '0.11.0'
-gem 'meta_where',            '1.0.4'
+# gem 'meta_where',            '1.0.4'
+# gem 'arel',                  '2.2.0'
+gem 'squeel', :git => 'git://github.com/ernie/squeel.git'
+
 gem 'bson_ext',              '1.3.1'
 gem 'mongo',                 '1.3.1'
-# gem 'mongoid',               '2.0.2'
 gem 'mongoid',               '2.1.7'
 
 # Views
@@ -35,7 +49,7 @@ gem 'rescue_me',             '0.1.0'
 gem 'configuration',         '1.2.0'
 gem 'libxml-ruby',           '1.1.3', :require => 'libxml'
 
-gem 'state_machine',         '0.10.4'
+gem 'state_machine',         '1.0.2'
 gem 'paper_trail',           '2.2.9'
 gem 'uniquify',              '0.1.0'
 

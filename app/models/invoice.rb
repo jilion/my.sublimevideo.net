@@ -1,3 +1,5 @@
+StateMachine::Machine.ignore_method_conflicts = true
+
 class Invoice < ActiveRecord::Base
 
   uniquify :reference, :chars => Array('a'..'z') - ['o'] + Array('1'..'9')
@@ -61,17 +63,17 @@ class Invoice < ActiveRecord::Base
 
   scope :between, lambda { |started_at, ended_at| where(:created_at.gte => started_at, :created_at.lte => ended_at) }
 
-  scope :open,                      where(state: 'open')
-  scope :paid,                      where(state: 'paid').joins(:site).where(:sites => { :refunded_at => nil })
-  scope :refunded,                  where(state: 'paid').joins(:site).where(:sites => { :refunded_at.ne => nil })
-  scope :failed,                    where(state: 'failed')
-  scope :waiting,                   where(state: 'waiting')
-  scope :canceled,                  where(state: 'canceled')
-  scope :open_or_failed,            where(state: %w[open failed])
-  scope :not_canceled,              where(:state.ne => 'canceled')
-  scope :not_paid,                  where(:state => %w[open waiting failed])
-  scope :site_id,                   lambda { |site_id| where(site_id: site_id) }
-  scope :user_id,                   lambda { |user_id| joins(:user).where(:users => { :id => user_id }) }
+  scope :open,           where(state: 'open')
+  scope :paid,           where(state: 'paid').joins(:site).where(:sites => { :refunded_at => nil })
+  scope :refunded,       where(state: 'paid').joins(:site).where(:sites => { :refunded_at.not_eq => nil })
+  scope :failed,         where(state: 'failed')
+  scope :waiting,        where(state: 'waiting')
+  scope :canceled,       where(state: 'canceled')
+  scope :open_or_failed, where(state: %w[open failed])
+  scope :not_canceled,   where(:state.not_eq => 'canceled')
+  scope :not_paid,       where(:state => %w[open waiting failed])
+  scope :site_id,        lambda { |site_id| where(site_id: site_id) }
+  scope :user_id,        lambda { |user_id| joins(:user).where(:users => { :id => user_id }) }
 
   # sort
   scope :by_id,                  lambda { |way='desc'| order(:id.send(way)) }
