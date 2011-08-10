@@ -27,7 +27,7 @@ module Site::UsageMonitoring
     end
 
     # Sent daily "plan upgrade required" alert
-    # Site.active.in_paid_plan.where(:first_plan_upgrade_required_alert_sent_at.ne => nil).each do |site|
+    # Site.active.in_paid_plan.where(:first_plan_upgrade_required_alert_sent_at.not_eq => nil).each do |site|
     #   UsageMonitoringMailer.plan_upgrade_required(site).deliver!
     # end
   end

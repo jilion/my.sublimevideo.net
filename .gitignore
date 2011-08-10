@@ -13,8 +13,10 @@ public/js
 public/v
 public/logs
 logfile
-log
-tmp
+db/*.sqlite3
+log/
+tmp/
+.sass-cache/
 vendor/ruby
 !Guardfile
 !Gemfile

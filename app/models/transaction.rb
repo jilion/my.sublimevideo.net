@@ -1,4 +1,5 @@
 require 'base64'
+StateMachine::Machine.ignore_method_conflicts = true
 
 class Transaction < ActiveRecord::Base
 

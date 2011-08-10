@@ -99,10 +99,10 @@ class User < ActiveRecord::Base
 
   # credit_card scopes
   scope :without_cc, where(:cc_type => nil, :cc_last_digits => nil)
-  scope :with_cc,    where(:cc_type.ne => nil, :cc_last_digits.ne => nil)
+  scope :with_cc,    where(:cc_type.not_eq => nil, :cc_last_digits.not_eq => nil)
 
   # admin
-  scope :invited,           where(:invitation_token.ne => nil)
+  scope :invited,           where(:invitation_token.not_eq => nil)
   scope :beta,              where(:invitation_token => nil, :created_at.lt => PublicLaunch.beta_transition_started_on.midnight) # some beta users don't come from svs but were directly invited from msv!!
   scope :active,            where(:state => 'active')
   scope :use_personal,      where(:use_personal => true)

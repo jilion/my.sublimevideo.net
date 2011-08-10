@@ -239,7 +239,7 @@ def create_sites
   create_users if User.all.empty?
   create_plans if Plan.all.empty?
 
-  free_plans     = Plan.free_plans.where(:name.ne => "sponsored").all
+  free_plans     = Plan.free_plans.where(:name.not_eq => "sponsored").all
   standard_plans = Plan.standard_plans.all
   custom_plans   = Plan.custom_plans.all
 
