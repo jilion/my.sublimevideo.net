@@ -4,17 +4,19 @@ gem 'rake',                  '0.8.7'
 
 # gem 'rails',                 '3.1.0.rc5'
 # Bundle edge Rails instead:
-gem 'rails',     :git => 'git://github.com/rails/rails.git'
+gem 'rails',     :git => 'git://github.com/rails/rails.git', :branch => '3-1-stable'
 
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
-  gem 'sass-rails', "~> 3.1.0.rc.5"
-  gem 'coffee-rails', "~> 3.1.0.rc.4"
+  # gem 'sass-rails', "~> 3.1.0.rc.5"
+  # gem 'sass-rails',   :git => 'git://github.com/rails/sass-rails.git', :branch => '3-1-stable'
+  # gem 'coffee-rails', "~> 3.1.0.rc.5"
+  # gem 'coffee-rails', :git => 'git://github.com/rails/coffee-rails.git', :branch => '3-1-stable'
   gem 'uglifier'
 end
 
-gem 'prototype-rails', :git => 'git://github.com/rubychan/prototype-rails.git'
+gem 'prototype-rails', :git => 'git://github.com/rymai/prototype-rails.git'
 
 # Databases
 gem 'pg',                    '0.11.0'
