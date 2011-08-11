@@ -73,52 +73,122 @@ describe Site do
   end
 
   describe "Scopes" do
-    context "common objects" do
+    before(:all) do
+      @user = FactoryGirl.create(:user)
+    end
+
+    describe "state" do
       before(:all) do
         Site.delete_all
-        user = FactoryGirl.create(:user)
-        # billable
-        @site_billable_1 = FactoryGirl.create(:site, user: user, plan_id: @paid_plan.id)
-        @site_billable_2 = FactoryGirl.create(:site, user: user, plan_id: @paid_plan.id)
-        @site_billable_2.update_attribute(:next_cycle_plan_id, FactoryGirl.create(:plan).id)
-        # not billable
-        @site_not_billable_1 = FactoryGirl.create(:site, user: user, plan_id: @dev_plan.id)
-        @site_not_billable_2 = FactoryGirl.create(:site, user: user, plan_id: @beta_plan.id)
-        @site_not_billable_3 = FactoryGirl.create(:site, user: user, plan_id: @paid_plan.id)
-        @site_not_billable_3.update_attribute(:next_cycle_plan_id, @dev_plan.id)
-        @site_not_billable_4 = FactoryGirl.create(:site, user: user, state: "archived", archived_at: Time.utc(2010,2,28))
-        # with path
-        @site_with_path = FactoryGirl.create(:site, path: "foo", plan_id: @dev_plan.id)
-        # with extra_hostnames
-        @site_with_extra_hostnames = FactoryGirl.create(:site, extra_hostnames: "foo.com", plan_id: @paid_plan.id)
+        @site_active    = FactoryGirl.create(:site, user: @user)
+        @site_archived  = FactoryGirl.create(:site, user: @user, state: "archived", archived_at: Time.utc(2010,2,28))
+        @site_suspended = FactoryGirl.create(:site, user: @user, state: "suspended")
+      end
+
+      describe "#active" do
+        specify { Site.active.all.should =~ [@site_active] }
+      end
+
+      describe "#inactive" do
+        specify { Site.inactive.all.should =~ [@site_archived, @site_suspended] }
+      end
+
+      describe "#suspended" do
+        specify { Site.suspended.all.should =~ [@site_suspended] }
+      end
+
+      describe "#archived" do
+        specify { Site.archived.all.should =~ [@site_archived] }
+      end
+
+      describe "#not_archived" do
+        specify { Site.not_archived.all.should =~ [@site_active, @site_suspended] }
+      end
+    end
+
+    describe "plan" do
+      before(:all) do
+        Site.delete_all
+        @site_beta      = FactoryGirl.create(:site, user: @user, plan_id: @beta_plan.id)
+        @site_dev       = FactoryGirl.create(:site, user: @user, plan_id: @dev_plan.id)
+        @site_sponsored = FactoryGirl.create(:site, user: @user, plan_id: @paid_plan.id)
+        @site_sponsored.sponsor!
+        @site_custom    = FactoryGirl.create(:site, user: @user, plan_id: @custom_plan.token)
+        @site_paid      = FactoryGirl.create(:site, user: @user, plan_id: @paid_plan.id)
       end
 
       describe "#beta" do
-        specify { Site.beta.all.should == [@site_not_billable_2] }
+        specify { Site.beta.all.should =~ [@site_beta] }
       end
 
       describe "#dev" do
-        specify { Site.dev.order("sites.id").all.should =~ [@site_not_billable_1, @site_with_path] }
+        specify { Site.dev.all.should =~ [@site_dev] }
       end
 
-      describe "#billable" do
-        specify { Site.billable.all.should =~ [@site_billable_1, @site_billable_2, @site_with_extra_hostnames] }
+      describe "#sponsored" do
+        specify { Site.sponsored.all.should =~ [@site_sponsored] }
       end
 
-      describe "#not_billable" do
-        specify { Site.not_billable.all.should =~ [@site_not_billable_1, @site_not_billable_2, @site_not_billable_3, @site_not_billable_4, @site_with_path] }
+      describe "#custom" do
+        specify { Site.custom.all.should =~ [@site_custom] }
+      end
+    
+      describe "#in_paid_plan" do
+        specify { Site.in_paid_plan.all.should =~ [@site_custom, @site_paid] }
+      end
+    end
+
+    describe "attributes queries" do
+      before(:all) do
+        Site.delete_all
+        @site_wildcard        = FactoryGirl.create(:site, user: @user, wildcard: true)
+        @site_path            = FactoryGirl.create(:site, user: @user, path: "foo", path: 'foo')
+        @site_extra_hostnames = FactoryGirl.create(:site, user: @user, extra_hostnames: "foo.com")
+        @site_next_cycle_plan = FactoryGirl.create(:site, user: @user)
+        @site_next_cycle_plan.update_attribute(:next_cycle_plan_id, @dev_plan.id)
+      end
+
+      describe "#with_wildcard" do
+        specify { Site.with_wildcard.all.should =~ [@site_wildcard] }
       end
 
       describe "#with_path" do
-        specify { Site.with_path.all.should == [@site_with_path] }
+        specify { Site.with_path.all.should =~ [@site_path] }
       end
 
       describe "#with_extra_hostnames" do
-        specify { Site.with_extra_hostnames.all.should == [@site_with_extra_hostnames] }
+        specify { Site.with_extra_hostnames.all.should =~ [@site_extra_hostnames] }
       end
 
-      describe "#in_paid_plan" do
-        specify { Site.in_paid_plan.all.should =~ [@site_billable_1, @site_billable_2, @site_not_billable_3, @site_not_billable_4, @site_with_extra_hostnames] }
+      describe "#with_next_cycle_plan" do
+        specify { Site.with_next_cycle_plan.all.should =~ [@site_next_cycle_plan] }
+      end
+    end
+
+    describe "billing" do
+      before(:all) do
+        Site.delete_all
+        # billable
+        @site_billable     = FactoryGirl.create(:site, user: @user, plan_id: @paid_plan.id)
+        @site_will_be_paid = FactoryGirl.create(:site, user: @user, plan_id: @paid_plan.id)
+        @site_will_be_paid.update_attribute(:next_cycle_plan_id, FactoryGirl.create(:plan).id)
+
+        # not billable
+        @site_dev         = FactoryGirl.create(:site, user: @user, plan_id: @dev_plan.id)
+        @site_beta        = FactoryGirl.create(:site, user: @user, plan_id: @beta_plan.id)
+        @site_will_be_dev = FactoryGirl.create(:site, user: @user, plan_id: @paid_plan.id)
+        @site_will_be_dev.update_attribute(:next_cycle_plan_id, @dev_plan.id)
+        @site_archived    = FactoryGirl.create(:site, user: @user, state: "archived", archived_at: Time.utc(2010,2,28))
+        @site_suspended   = FactoryGirl.create(:site, user: @user, state: "suspended")
+      end
+
+      describe "#billable" do
+        specify { Site.billable.all.should =~ [@site_billable, @site_will_be_paid] }
+      end
+
+      describe "#not_billable" do
+        specify { Site.not_billable.count.should == [@site_dev, @site_beta, @site_will_be_dev, @site_archived, @site_suspended].size }
+        specify { Site.not_billable.all.should =~ [@site_dev, @site_beta, @site_will_be_dev, @site_archived, @site_suspended] }
       end
     end
 
@@ -126,24 +196,24 @@ describe Site do
       before(:all) do
         Site.delete_all
         Timecop.travel(2.months.ago) do
-          @site_to_be_renewed = FactoryGirl.create(:site)
-          @site_not_to_be_renewed1 = FactoryGirl.create(:site_with_invoice)
+          @site_to_be_renewed      = FactoryGirl.create(:site, user: @user)
+          @site_not_to_be_renewed1 = FactoryGirl.create(:site_with_invoice, user: @user)
         end
         @site_not_to_be_renewed1.update_attribute(:pending_plan_id, @paid_plan.id)
         @site_not_to_be_renewed1.pending_plan_id.should == @paid_plan.id
-        @site_not_to_be_renewed2 = FactoryGirl.create(:site_with_invoice, plan_started_at: 3.months.ago, plan_cycle_ended_at: 2.months.from_now)
+        @site_not_to_be_renewed2 = FactoryGirl.create(:site_with_invoice, user: @user, plan_started_at: 3.months.ago, plan_cycle_ended_at: 2.months.from_now)
       end
 
-      specify { Site.to_be_renewed.all.should == [@site_to_be_renewed] }
+      specify { Site.to_be_renewed.all.should =~ [@site_to_be_renewed] }
     end
 
     describe "#refundable" do
       before(:all) do
         Site.delete_all
-        @site_refundable1 = FactoryGirl.create(:site)
-        Timecop.travel(29.days.ago)  { @site_refundable2 = FactoryGirl.create(:site) }
-        Timecop.travel(2.months.ago) { @site_not_refundable1 = FactoryGirl.create(:site) }
-        @site_not_refundable2 = FactoryGirl.create(:site, refunded_at: Time.now.utc)
+        @site_refundable1 = FactoryGirl.create(:site, user: @user)
+        Timecop.travel(29.days.ago)  { @site_refundable2 = FactoryGirl.create(:site, user: @user) }
+        Timecop.travel(2.months.ago) { @site_not_refundable1 = FactoryGirl.create(:site, user: @user) }
+        @site_not_refundable2 = FactoryGirl.create(:site, user: @user, refunded_at: Time.now.utc)
       end
 
       specify { Site.refundable.all.should =~ [@site_refundable1, @site_refundable2] }
@@ -152,12 +222,12 @@ describe Site do
     describe "#refunded" do
       before(:all) do
         Site.delete_all
-        @site_refunded1     = FactoryGirl.create(:site, state: 'archived', refunded_at: Time.now.utc)
-        @site_not_refunded1 = FactoryGirl.create(:site, state: 'active', refunded_at: Time.now.utc)
-        @site_not_refunded2 = FactoryGirl.create(:site, state: 'archived', refunded_at: nil)
+        @site_refunded_1     = FactoryGirl.create(:site, user: @user, state: 'archived', refunded_at: Time.now.utc)
+        @site_not_refunded_1 = FactoryGirl.create(:site, user: @user, state: 'active', refunded_at: Time.now.utc)
+        @site_not_refunded_2 = FactoryGirl.create(:site, user: @user, state: 'archived', refunded_at: nil)
       end
 
-      specify { Site.refunded.all.should == [@site_refunded1] }
+      specify { Site.refunded.all.should =~ [@site_refunded_1] }
     end
   end
 
@@ -966,7 +1036,7 @@ describe Site do
 
   describe "Versioning" do
     subject { with_versioning { FactoryGirl.create(:site) } }
-    
+
     it "works!" do
       with_versioning do
         old_hostname = subject.hostname
@@ -974,7 +1044,7 @@ describe Site do
         subject.versions.last.reify.hostname.should eql old_hostname
       end
     end
-    
+
     [:cdn_up_to_date, :license, :loader].each do |attr|
       it "doesn't version when :#{attr} changes" do
         with_versioning do
@@ -1064,7 +1134,7 @@ describe Site do
 
     describe "after_create" do
       it "should delay update_ranks" do
-        lambda { FactoryGirl.create(:site) }.should change(Delayed::Job.where(:handler.matches => "%update_ranks%"), :count).by(1)
+        expect { FactoryGirl.create(:site) }.to change(Delayed::Job.where { handler =~ "%update_ranks%" }, :count).by(1)
       end
 
       it "should update ranks" do

@@ -47,31 +47,39 @@ class Site < ActiveRecord::Base
   # = Scopes =
   # ==========
 
-  # billing
-  scope :billable,      lambda { active.where({ :plan_id.in => Plan.paid_plans.map(&:id) }, { :next_cycle_plan_id => nil } | { :next_cycle_plan_id.not_eq => Plan.dev_plan.id }) }
-  scope :not_billable,  lambda { where({ :state.not_eq => 'active' } | ({ :state => 'active' } & ({ :plan_id.in => Plan.free_plans.map(&:id), :next_cycle_plan_id => nil } | { :next_cycle_plan_id => Plan.dev_plan }))) }
-  scope :to_be_renewed, where(:plan_cycle_ended_at.lt => Time.now.utc, :pending_plan_id => nil)
-  scope :refundable,    where(:first_paid_plan_started_at.gte => 30.days.ago, :refunded_at => nil)
-  scope :refunded,      where(:state => 'archived', :refunded_at.not_eq => nil)
+  # usage_monitoring scopes
+  scope :plan_player_hits_reached_notified, where { plan_player_hits_reached_notification_sent_at != nil }
 
+  # state
+  scope :active,       where { state  == 'active' }
+  scope :inactive,     where { state != 'active' }
+  scope :suspended,    where { state == 'suspended' }
+  scope :archived,     where { state == 'archived' }
+  scope :not_archived, where { state != 'archived' }
+
+  # plans
+  scope :beta,         includes(:plan).where { plans.name == "beta" }
+  scope :dev,          includes(:plan).where { plans.name == "dev" }
+  scope :sponsored,    includes(:plan).where { plans.name == "sponsored" }
+  scope :custom,       includes(:plan).where { plans.name =~ "custom%" }
   scope :in_paid_plan, lambda { joins(:plan).merge(Plan.paid_plans) }
 
-  # usage_monitoring scopes
-  scope :plan_player_hits_reached_notified, where(:plan_player_hits_reached_notification_sent_at.not_eq => nil)
+  # attributes queries
+  scope :with_wildcard,        where { wildcard == true }
+  scope :with_path,            where { (path != nil) & (path != '') & (path != ' ') }
+  scope :with_extra_hostnames, where { (extra_hostnames != nil) & (extra_hostnames != '') }
+  scope :with_next_cycle_plan, where { next_cycle_plan_id != nil }
 
-  # filter
-  scope :beta,                 includes(:plan).where(:plans => { :name => "beta" })
-  scope :dev,                  includes(:plan).where(:plans => { :name => "dev" })
-  scope :sponsored,            includes(:plan).where(:plans => { :name => "sponsored" })
-  scope :custom,               includes(:plan).where(:plans => { :name.matches => "custom%" })
-  scope :active,               where(:state => 'active')
-  scope :suspended,            where(:state => 'suspended')
-  scope :archived,             where(:state => 'archived')
-  scope :not_archived,         where(:state.not_eq => 'archived')
-  scope :with_wildcard,        where(:wildcard => true)
-  scope :with_path,            where(:path.not_eq => nil, :path.not_eq => '', :path.not_eq => ' ')
-  scope :with_extra_hostnames, where(:extra_hostnames.not_eq => nil, :extra_hostnames.not_eq => '')
-  scope :with_next_cycle_plan, where(:next_cycle_plan_id.not_eq => nil)
+  # billing
+  scope :billable, lambda {
+    active.where { plan_id >> Plan.paid_plans.map(&:id) & next_cycle_plan_id >> (Plan.paid_plans.map(&:id) + [nil]) }
+  }
+  scope :not_billable, lambda {
+    where { (state != 'active') | ((plan_id >> Plan.free_plans.map(&:id) & (next_cycle_plan_id == nil)) | (next_cycle_plan_id >> Plan.free_plans.map(&:id))) }
+  }
+  scope :to_be_renewed, where { (plan_cycle_ended_at < Time.now.utc) & (pending_plan_id == nil) }
+  scope :refundable,    where { (first_paid_plan_started_at >= 30.days.ago) & (refunded_at == nil) }
+  scope :refunded,      where { (state == 'archived') & (refunded_at != nil) }
 
   # admin
   scope :user_id,         lambda { |user_id| where(user_id: user_id) }
@@ -168,9 +176,9 @@ class Site < ActiveRecord::Base
   # delayed method
   def self.update_ranks(site_id)
     site  = Site.find(site_id)
-    ranks = PageRankr.ranks(site.hostname)
-    site.google_rank = ranks[:google]
-    site.alexa_rank  = ranks[:alexa][:global] # [:us] if also returned
+    ranks = PageRankr.ranks(site.hostname, :alexa_global, :google)
+    site.google_rank = ranks[:google] || 0
+    site.alexa_rank  = ranks[:alexa_global]
     site.save(validate: false) # don't validate for sites that are in_or_will_be_in_paid_plan? but when the user has no credit card (yet)
   end
 
