@@ -113,6 +113,12 @@ GIT
       rescue_me (~> 0.1.0)
       xml-simple (~> 1.0.12)
 
+GIT
+  remote: git://github.com/thoughtbot/shoulda-matchers.git
+  revision: f1baf025d64389d4d1e90262d415c9ad55c5ba1a
+  specs:
+    shoulda-matchers (1.0.0.beta3)
+
 GEM
   remote: http://rubygems.org/
   specs:
@@ -333,7 +339,6 @@ GEM
       rubyzip
     sequel (3.20.0)
     settingslogic (2.0.6)
-    shoulda (2.11.3)
     silent-postgres (0.0.8)
     simple_oauth (0.1.5)
     sinatra (1.0)
@@ -455,7 +460,7 @@ DEPENDENCIES
   rspec-rails (~> 2.6.1)
   ruby-graphviz
   settingslogic (~> 2.0.6)
-  shoulda
+  shoulda-matchers!
   silent-postgres
   spork (~> 0.9.0.rc9)
   squeel!

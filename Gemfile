@@ -132,7 +132,7 @@ end
 group :test do
   gem 'spork', '~> 0.9.0.rc9'
   gem 'rspec-instafail'
-  gem 'shoulda'
+  gem 'shoulda-matchers', :git => 'git://github.com/thoughtbot/shoulda-matchers.git'
   gem 'capybara'
   gem 'webmock'
   gem 'vcr'

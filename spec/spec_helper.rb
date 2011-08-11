@@ -85,19 +85,19 @@ Spork.each_run do
   Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
 
   RSpec.configure do |config|
-    config.include Shoulda::ActionController::Matchers
+    # config.include Shoulda::ActionController::Matchers
     config.include Devise::TestHelpers, :type => :controller
   end
 end
 
 # Thanks to Jonas Pfenniger for this!
 # http://gist.github.com/487157
-def dev_null(&block)
-  begin
-    orig_stdout = $stdout.dup # does a dup2() internally
-    $stdout.reopen('/dev/null', 'w')
-    yield
-  ensure
-    $stdout.reopen(orig_stdout)
-  end
-end
+# def dev_null(&block)
+#   begin
+#     orig_stdout = $stdout.dup # does a dup2() internally
+#     $stdout.reopen('/dev/null', 'w')
+#     yield
+#   ensure
+#     $stdout.reopen(orig_stdout)
+#   end
+# end
