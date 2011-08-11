@@ -325,11 +325,6 @@ private
     end
   end
 
-  # Allow User.invite to assign enthusiast_id
-  def mass_assignment_authorizer
-    new_record? ? (self.class.active_authorizer + ["enthusiast_id"]) : super
-  end
-
   # ===========================
   # = From Devise Validatable =
   # ===========================
