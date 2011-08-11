@@ -10,9 +10,9 @@ gem 'rails',     :git => 'git://github.com/rails/rails.git', :branch => '3-1-sta
 # in production environments by default.
 group :assets do
   # gem 'sass-rails', "~> 3.1.0.rc.5"
-  # gem 'sass-rails',   :git => 'git://github.com/rails/sass-rails.git', :branch => '3-1-stable'
+  gem 'sass-rails',   :git => 'git://github.com/rails/sass-rails.git', :branch => '3-1-stable'
   # gem 'coffee-rails', "~> 3.1.0.rc.5"
-  # gem 'coffee-rails', :git => 'git://github.com/rails/coffee-rails.git', :branch => '3-1-stable'
+  gem 'coffee-rails', :git => 'git://github.com/rails/coffee-rails.git', :branch => '3-1-stable'
   gem 'uglifier'
 end
 
