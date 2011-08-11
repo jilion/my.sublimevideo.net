@@ -34,7 +34,7 @@ module MySublimeVideo
     # config.i18n.default_locale = :de
 
     # Configure generators values. Many other options are available, be sure to check the documentation.
-    config.generators do |g|
+    config.app_generators do |g|
       g.orm                 :active_record
       g.template_engine     :haml
       g.integration_tool    :rspec
