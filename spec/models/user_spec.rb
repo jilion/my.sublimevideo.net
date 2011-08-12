@@ -267,7 +267,7 @@ describe User do
   end
 
   context "invited" do
-    subject { FactoryGirl.create(:user).tap { |u| u.send(:attributes=, { :invitation_token => '123', :invitation_sent_at => Time.now, :email => "bob@bob.com", :enthusiast_id => 12 }, false); u.save(:validate => false) } }
+    subject { FactoryGirl.create(:user).tap { |u| u.assign_attributes({ invitation_token: '123', invitation_sent_at: Time.now, email: "bob@bob.com", enthusiast_id: 12 }, without_protection: true); u.save(:validate => false) } }
 
     it "should set enthusiast_id" do
       subject.should be_invited
