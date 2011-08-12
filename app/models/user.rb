@@ -27,7 +27,7 @@ class User < ActiveRecord::Base
 
   has_many :sites
   has_many :invoices, :through => :sites
-  has_one :last_invoice, :through => :sites, :source => :invoices, :order => :created_at.desc
+  has_one  :last_invoice, :through => :sites, :source => :invoices, :order => :created_at.desc
 
   # API
   has_many :client_applications
@@ -92,24 +92,27 @@ class User < ActiveRecord::Base
   # = Scopes =
   # ==========
 
-  scope :billable,                lambda { scoped.merge(Site.billable) }
+  # billing
+  scope :billable,                lambda { includes(:sites).merge(Site.billable) }
   scope :not_billable,            lambda { includes(:sites).where("(#{Site.billable.select("COUNT(sites.id)").where("sites.user_id = users.id").to_sql}) = 0") }
   scope :active_and_billable,     lambda { active.billable }
   scope :active_and_not_billable, lambda { active.not_billable }
 
-  # credit_card scopes
-  scope :without_cc, where(:cc_type => nil, :cc_last_digits => nil)
-  scope :with_cc,    where(:cc_type.not_eq => nil, :cc_last_digits.not_eq => nil)
+  # credit card
+  scope :without_cc, where(cc_type: nil, cc_last_digits: nil)
+  scope :with_cc,    where { (cc_type != nil) & (cc_last_digits != nil) }
 
-  # admin
-  scope :invited,           where(:invitation_token.not_eq => nil)
-  scope :beta,              where(:invitation_token => nil, :created_at.lt => PublicLaunch.beta_transition_started_on.midnight) # some beta users don't come from svs but were directly invited from msv!!
-  scope :active,            where(:state => 'active')
-  scope :use_personal,      where(:use_personal => true)
-  scope :use_company,       where(:use_company => true)
-  scope :use_clients,       where(:use_clients => true)
-  scope :created_between,   lambda { |start_date, end_date| where(:created_at.gte => start_date, :created_at.lt => end_date) }
-  scope :signed_in_between, lambda { |start_date, end_date| where(:current_sign_in_at.gte => start_date, :current_sign_in_at.lt => end_date) }
+  # state
+  scope :invited,           where { invitation_token != nil }
+  scope :beta,              where { (invitation_token == nil) & (created_at < PublicLaunch.beta_transition_started_on.midnight) } # some beta users don't come from svs but were directly invited from msv!!
+  scope :active,            where(state: 'active')
+
+  # attributes queries
+  scope :use_personal,      where(use_personal: true)
+  scope :use_company,       where(use_company: true)
+  scope :use_clients,       where(use_clients: true)
+  scope :created_between,   lambda { |start_date, end_date| where { (created_at >= start_date) & (created_at < end_date) } }
+  scope :signed_in_between, lambda { |start_date, end_date| where { (current_sign_in_at >= start_date) & (current_sign_in_at < end_date) } }
 
   # sort
   scope :by_name_or_email,   lambda { |way='asc'| order(:first_name.send(way), :email.send(way)) }
@@ -123,12 +126,13 @@ class User < ActiveRecord::Base
 
   # search
   def self.search(q)
-    joins(:sites).
-    where(:lower.func(:email).matches % :lower.func("%#{q}%") |
-          :lower.func(:first_name).matches % :lower.func("%#{q}%") |
-          :lower.func(:last_name).matches % :lower.func("%#{q}%") |
-          :lower.func(:"sites.hostname").matches % :lower.func("%#{q}%") |
-          :lower.func(:"sites.dev_hostnames").matches % :lower.func("%#{q}%"))
+    joins(:sites).where {
+      (:lower.func(:email) =~ :lower.func("%#{q}%")) |
+      (:lower.func(:first_name) =~ :lower.func("%#{q}%")) |
+      (:lower.func(:last_name) =~ :lower.func("%#{q}%")) |
+      (:lower.func(:"sites.hostname") =~ :lower.func("%#{q}%")) |
+      (:lower.func(:"sites.dev_hostnames") =~ :lower.func("%#{q}%"))
+    }
   end
 
   # =================
