@@ -542,11 +542,11 @@ describe User do
 
             it "should subscribe new email and unsubscribe old email on user destroy" do
               @worker.work_off
-              CampaignMonitor.state(user.email).should == "Active"
+              CampaignMonitor.subscriber(user.email)["State"].should == "Active"
 
               expect { user.current_password = "123456"; user.archive }.to change(Delayed::Job, :count).by(1)
               @worker.work_off
-              CampaignMonitor.state(user.email).should == "Unsubscribed"
+              CampaignMonitor.subscriber(user.email)["State"].should == "Unsubscribed"
             end
           end
         end
@@ -599,46 +599,60 @@ describe User do
     end
 
     describe "after_save :newsletter_update" do
-      use_vcr_cassette "campaign_monitor/user"
-      let(:user) { FactoryGirl.create(:user, :newsletter => "1", :email => "newsletter@jilion.com") }
+      context "user sign-up" do
+        context "user subscribes on sign-up" do
+          subject { FactoryGirl.create(:user, newsletter: "1", email: "newsletter_sign_up@jilion.com") }
 
-      it "should subscribe on user creation" do
-        expect { user }.to change(Delayed::Job, :count).by(1)
-        @worker.work_off
-        CampaignMonitor.state(user.email).should == "Active"
+          it "registers user's email on Campaign Monitor" do
+            expect { subject }.to change(Delayed::Job, :count).by(1)
+            Delayed::Job.last.name.should eql "Class#subscribe"
+          end
+        end
+
+        context "user doesn't subscribe on sign-up" do
+          subject { FactoryGirl.create(:user, newsletter: "0", email: "no_newsletter_sign_up@jilion.com") }
+
+          it "doesn't register user's email on Campaign Monitor" do
+            expect { subject }.to_not change(Delayed::Job, :count)
+          end
+        end
       end
 
-      it "should not subscribe on user creation if newsletter is false" do
-        user = FactoryGirl.create(:user, :newsletter => "0", :email => "no_newsletter@jilion.com")
-        @worker.work_off
-        CampaignMonitor.state(user.email).should == "Unknown"
-      end
+      context "user update" do
+        subject { FactoryGirl.create(:user, newsletter: "1", email: "newsletter_update@jilion.com") }
 
-      it "should subscribe new email and unsubscribe old email on user email update" do
-        old_email = user.email
-        @worker.work_off
-        CampaignMonitor.state(user.email).should == "Active"
-        expect { user.update_attribute(:email, "new@jilion.com") }.to change(Delayed::Job, :count).by(1)
-        @worker.work_off
-        CampaignMonitor.state(old_email).should == "Unsubscribed"
-        CampaignMonitor.state(user.email).should == "Active"
-      end
+        it "registers user's new email on Campaign Monitor and remove old email when user update his email" do
+          subject
+          expect { subject.update_attribute(:email, "newsletter_update2@jilion.com") }.to change(Delayed::Job, :count).by(1)
+          Delayed::Job.last.name.should eql "Class#update"
+        end
 
-      it "should update infos in Campaign Monitor if user just change his name" do
-        user
-        @worker.work_off
-        expect { user.update_attribute(:first_name, "bob") }.to change(Delayed::Job, :count).by(1)
+        it "updates infos in Campaign Monitor if user change his name" do
+          subject
+          expect { subject.update_attribute(:first_name, "bob") }.to change(Delayed::Job, :count).by(1)
+          Delayed::Job.last.name.should eql "Class#update"
+        end
+
+        it "updates subscribing state in Campaign Monitor if user change his newsletter state" do
+          subject
+          expect { subject.update_attribute(:newsletter, false) }.to change(Delayed::Job, :count).by(2)
+          djs = Delayed::Job.limit(2).order(:created_at.desc).all
+          djs[0].name.should eql "Class#unsubscribe"
+          djs[1].name.should eql "Class#update"
+        end
       end
     end
 
     describe "after_update :zendesk_update" do
+      before(:each) do
+        double('CampaignMonitor').as_null_object
+      end
+      
       context "user has no zendesk_id" do
-
         it "should not delay Module#put" do
           expect { user.update_attribute(:email, "new@jilion.com") }.to change(Delayed::Job, :count).by(2)
           Delayed::Job.all.any? { |dj| dj.name == 'Module#put' }.should be_false
         end
-
       end
 
       context "user has a zendesk_id" do
@@ -648,33 +662,33 @@ describe User do
 
         it "should delay Module#put if the user has a zendesk_id and his email has changed" do
           expect { user.update_attribute(:email, "new@jilion.com") }.to change(Delayed::Job, :count).by(2)
-          Delayed::Job.all.any? { |dj| dj.name == 'Module#put' }.should be_true
+          Delayed::Job.all.select { |dj| dj.name == 'Module#put' }.should have(1).item
         end
 
         it "should update user's email on Zendesk if this user has a zendesk_id and his email has changed" do
           expect { user.update_attribute(:email, "new@jilion.com") }.to change(Delayed::Job, :count).by(2)
 
-          VCR.use_cassette("user/update_email_on_zendesk") do
+          VCR.use_cassette("zendesk/update_email") do
             @worker.work_off
             Delayed::Job.last.should be_nil
             JSON[Zendesk.get("/users/59438671/user_identities.json").body].select { |h| h["identity_type"] == "email" }.map { |h| h["value"] }.should include("new@jilion.com")
           end
         end
 
-        it "should update user's email on Zendesk if this user has a zendesk_id and his first name has changed" do
+        it "should update user's first name on Zendesk if this user has a zendesk_id and his first name has changed" do
           expect { user.update_attribute(:first_name, "Remy") }.to change(Delayed::Job, :count).by(2)
 
-          VCR.use_cassette("user/update_first_name_on_zendesk") do
+          VCR.use_cassette("zendesk/update_first_name") do
             @worker.work_off
             Delayed::Job.last.should be_nil
             JSON[Zendesk.get("/users/59438671.json").body]['name'].should include("Remy")
           end
         end
 
-        it "should update user's email on Zendesk if this user has a zendesk_id and his last name has changed" do
+        it "should update user's last name on Zendesk if this user has a zendesk_id and his last name has changed" do
           expect { user.update_attribute(:last_name, "Coutable") }.to change(Delayed::Job, :count).by(2)
 
-          VCR.use_cassette("user/update_last_name_on_zendesk") do
+          VCR.use_cassette("zendesk/update_last_name") do
             @worker.work_off
             Delayed::Job.last.should be_nil
             JSON[Zendesk.get("/users/59438671.json").body]['name'].should include("Coutable")

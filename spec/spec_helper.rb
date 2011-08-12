@@ -13,6 +13,7 @@ Spork.prefork do
   Spork.trap_class_method(Rails::Mongoid, :load_models)
   require "rails/application"
   Spork.trap_method(Rails::Application, :reload_routes!)
+  Spork.trap_method(Rails::Application::RoutesReloader, :reload!)
 
   require File.dirname(__FILE__) + "/../config/environment"
   require 'rspec/rails'

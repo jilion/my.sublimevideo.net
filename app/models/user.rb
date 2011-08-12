@@ -289,7 +289,7 @@ private
 
   # after_transition :on => :archive
   def newsletter_unsubscribe
-    CampaignMonitor.delay.unsubscribe(self)
+    CampaignMonitor.delay.unsubscribe(self.email)
   end
 
   # after_transition :on => :archive
@@ -310,9 +310,9 @@ private
     if newsletter_changed? || email_changed? || first_name_changed? || last_name_changed?
       if email_was.present?
         CampaignMonitor.delay.update(self)
-        newsletter_unsubscribe unless newsletter?
-      else
-        CampaignMonitor.delay.subscribe(self) if newsletter?
+        CampaignMonitor.delay(run_at: 30.seconds.from_now).unsubscribe(email) unless newsletter?
+      elsif newsletter? # on sign-up
+        CampaignMonitor.delay.subscribe(self)
       end
     end
   end

@@ -1,0 +1,186 @@
+---
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: http://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:80/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json
+    body: ! '{"EmailAddress":"email4@user.com","Name":"Remy Doe","CustomFields":[{"Key":"user_id","Value":4},{"Key":"segment","Value":"test"},{"Key":"beta","Value":"false"}],"Resubscribe":true}'
+    headers:
+      user-agent:
+      - createsend-ruby-0.7.8
+      content-type:
+      - application/json; charset=utf-8
+      accept-encoding:
+      - gzip, deflate
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 201
+      message: Created
+    headers:
+      cache-control:
+      - private, s-maxage=0
+      content-type:
+      - application/json; charset=utf-8
+      server:
+      - CMWEB04
+      x-aspnetmvc-version:
+      - '2.0'
+      x-aspnet-version:
+      - 4.0.30319
+      x-powered-by:
+      - ASP.NET
+      p3p:
+      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
+      date:
+      - Fri, 12 Aug 2011 13:05:35 GMT
+      content-length:
+      - '17'
+    body: ! '"email4@user.com"'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :put
+    uri: http://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:80/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=email4@user.com
+    body: ! '{"EmailAddress":"email4@user.com","Name":"Remy Doe","CustomFields":[],"Resubscribe":true}'
+    headers:
+      user-agent:
+      - createsend-ruby-0.7.8
+      content-type:
+      - application/json; charset=utf-8
+      accept-encoding:
+      - gzip, deflate
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      cache-control:
+      - private, s-maxage=0
+      server:
+      - CMWEB04
+      x-aspnetmvc-version:
+      - '2.0'
+      x-aspnet-version:
+      - 4.0.30319
+      x-powered-by:
+      - ASP.NET
+      p3p:
+      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
+      date:
+      - Fri, 12 Aug 2011 13:05:36 GMT
+      content-length:
+      - '0'
+    body: !!null 
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :put
+    uri: http://zendesk%40sublimevideo.net%2Ftoken:oxVzosGyu7DaZrQ0fhmKngHATvd78UhEqTzMszZy@sublimevideo.zendesk.com:80/users/59438671.xml
+    body: <user><name>Remy Doe</name><is-verified>true</is-verified></user>
+    headers:
+      content-type:
+      - application/xml
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      server:
+      - nginx/0.8.53
+      date:
+      - Fri, 12 Aug 2011 13:05:37 GMT
+      content-type:
+      - application/xml; charset=utf-8
+      connection:
+      - keep-alive
+      status:
+      - 200 OK
+      p3p:
+      - CP="NOI DSP COR NID ADMa OPTa OUR NOR"
+      x-runtime:
+      - '363'
+      content-length:
+      - '1'
+      set-cookie:
+      - _zendesk_session=BAh7DiIOaXNfbW9iaWxlRjoPc2Vzc2lvbl9pZCIlZjJhNzA2MTNhOTIzNTU4NTQxMWVlOGFhNzBmOGM0ZGUiHHdhcmRlbi51c2VyLmRlZmF1bHQua2V5aQPrlek6DWF1dGhfdmlhIhJCYXNpY1N0cmF0ZWd5Og91cGRhdGVkX2F0bCsHISVFTjoVYXV0aGVudGljYXRlZF9hdGwrByElRU4iE3dhcmRlbi5tZXNzYWdlewA6B2lkIhRueWVscHN5dDRxZjRobG86DGFjY291bnRpAjep--927090f8ac181bb79e3f4c4c9921e4b97fc3f9a0;
+        path=/; HttpOnly
+      - oid_user=; path=/; expires=Thu, 01-Jan-1970 00:00:00 GMT
+      cache-control:
+      - no-cache
+    body: ! ' '
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :get
+    uri: http://zendesk%40sublimevideo.net%2Ftoken:oxVzosGyu7DaZrQ0fhmKngHATvd78UhEqTzMszZy@sublimevideo.zendesk.com:80/users/59438671.json
+    body: !!null 
+    headers: !!null 
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      server:
+      - nginx/0.8.53
+      date:
+      - Fri, 12 Aug 2011 13:05:38 GMT
+      content-type:
+      - application/json; charset=utf-8
+      connection:
+      - keep-alive
+      status:
+      - 200 OK
+      etag:
+      - ! '"089061de31c147b2bb3c691e4d779c7c"'
+      p3p:
+      - CP="NOI DSP COR NID ADMa OPTa OUR NOR"
+      x-runtime:
+      - '42'
+      content-length:
+      - '489'
+      set-cookie:
+      - _zendesk_session=BAh7DiIOaXNfbW9iaWxlRjoPc2Vzc2lvbl9pZCIlNTBmYmVjMDVhZmQ1N2Q3MDgyMzI1ZDk5M2FjZWMyOTUiHHdhcmRlbi51c2VyLmRlZmF1bHQua2V5aQPrlek6DWF1dGhfdmlhIhJCYXNpY1N0cmF0ZWd5Og91cGRhdGVkX2F0bCsHIiVFTjoVYXV0aGVudGljYXRlZF9hdGwrByIlRU4iE3dhcmRlbi5tZXNzYWdlewA6B2lkIhQ2OTRscHU3bGUydzYwb3E6DGFjY291bnRpAjep--74b3fc41d8f9cd1b8b8675f3d02c938f94fd9e89;
+        path=/; HttpOnly
+      - oid_user=; path=/; expires=Thu, 01-Jan-1970 00:00:00 GMT
+      cache-control:
+      - private, max-age=0, must-revalidate
+    body: ! '{"name":"Remy Doe","locale_id":null,"openid_url":null,"created_at":"2011/05/17
+      13:54:12 +0200","current_tags":"","last_login":null,"details":null,"photo_url":"http://sublimevideo.zendesk.com/images/types/user_sm.png","updated_at":"2011/08/12
+      15:05:37 +0200","notes":null,"external_id":null,"is_verified":true,"restriction_id":4,"id":59438671,"email":"email3@user.com","phone":null,"is_active":true,"time_zone":"Bern","roles":0,"organization_id":null,"groups":[],"uses_12_hour_clock":false}'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :put
+    uri: http://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:80/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=email42@user.com
+    body: ! '{"EmailAddress":"email42@user.com","Name":"Remy Doe","CustomFields":[],"Resubscribe":true}'
+    headers:
+      user-agent:
+      - createsend-ruby-0.7.8
+      content-type:
+      - application/json; charset=utf-8
+      accept-encoding:
+      - gzip, deflate
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 400
+      message: Bad Request
+    headers:
+      cache-control:
+      - private, s-maxage=0
+      content-type:
+      - application/json; charset=utf-8
+      server:
+      - CMWEB04
+      x-aspnetmvc-version:
+      - '2.0'
+      x-aspnet-version:
+      - 4.0.30319
+      x-powered-by:
+      - ASP.NET
+      p3p:
+      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
+      date:
+      - Fri, 12 Aug 2011 13:07:04 GMT
+      content-length:
+      - '47'
+    body: ! '{"Code":203,"Message":"Subscriber not in list"}'
+    http_version: '1.1'
