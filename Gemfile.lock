@@ -21,7 +21,7 @@ GIT
 
 GIT
   remote: git://github.com/rails/coffee-rails.git
-  revision: 5037201ce7a5b44bbbedf1194503171d6b09890d
+  revision: 90a5f104eb05384c8bf09e4d848b8d02f0c83055
   branch: 3-1-stable
   specs:
     coffee-rails (3.1.0.rc.5)
@@ -30,7 +30,7 @@ GIT
 
 GIT
   remote: git://github.com/rails/rails.git
-  revision: 83d9398ec049e414ce5797b6bd00fda384705109
+  revision: d9d78d4165d14184be771cd071c1d554fe368b41
   branch: 3-1-stable
   specs:
     actionmailer (3.1.0.rc5)
@@ -332,7 +332,7 @@ GEM
       rack (>= 1.0)
     rake (0.8.7)
     rb-appscript (0.6.1)
-    rb-fsevent (0.4.2)
+    rb-fsevent (0.4.3)
     rdoc (3.9.2)
     request-log-analyzer (1.11.0)
     rescue_me (0.1.0)
