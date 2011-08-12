@@ -21,7 +21,7 @@
       content-type:
       - application/json; charset=utf-8
       server:
-      - CMWEB04
+      - CMWEB02
       x-aspnetmvc-version:
       - '2.0'
       x-aspnet-version:
@@ -31,7 +31,7 @@
       p3p:
       - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
       date:
-      - Fri, 12 Aug 2011 12:42:58 GMT
+      - Fri, 12 Aug 2011 15:25:42 GMT
       content-length:
       - '16'
     body: ! '"cm2@jilion.com"'
@@ -62,7 +62,7 @@
       vary:
       - Accept-Encoding
       server:
-      - CMWEB04
+      - CMWEB02
       x-aspnetmvc-version:
       - '2.0'
       x-aspnet-version:
@@ -72,20 +72,20 @@
       p3p:
       - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
       date:
-      - Fri, 12 Aug 2011 12:42:59 GMT
+      - Fri, 12 Aug 2011 15:25:42 GMT
       content-length:
       - '170'
     body: !binary |-
-      H4sIAAAAAAAEAEyMQQuCQBBG/4rMWWPXJMJTknUo6BJ0iYjNHWpjxwV3DCL8
-      741E4GngvffNBzZknK+s7TBGKKGhfPV03oV21gSCFA6GUPguPNqkDiikNjyS
-      XGmdqWWm80QXZTEvlRJ55J+tGnavsV73kQNtHXor/88f2ONbfMQ7YcsSnIzv
-      xwVjZBjSf9BH7K7OToLFxN6QzXTbyRkuw3cAvLFDu88AAAA=
+      H4sIAAAAAAAEAEyMMQvCMBBG/0q5uZUkQ5VOFquDgovgIiKxOTSSNNBcBCn9
+      714RodPBe++7AbZeW1cb02OMUEHr1fplnQ3dog0ecjhqj8z34dllTUAmjaaJ
+      KCFlIVaFVJlcVqqshGB5op+tW7Lvqd6kSMHvLDrD/y8DHPDDPuLDY0ccnLVL
+      04IwEoz5P0gR+5s1s6Cc2TuSnm97PuN1/A4A41Ce4c8AAAA=
     http_version: '1.1'
 - !ruby/struct:VCR::HTTPInteraction
   request: !ruby/struct:VCR::Request
     method: :put
     uri: http://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:80/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=cm2@jilion.com
-    body: ! '{"EmailAddress":"cm1313152979@jilion.com","Name":"John Doe","CustomFields":[],"Resubscribe":true}'
+    body: ! '{"EmailAddress":"cm_update_email@jilion.com","Name":"John Doe","CustomFields":[],"Resubscribe":true}'
     headers:
       user-agent:
       - createsend-ruby-0.7.8
@@ -101,7 +101,7 @@
       cache-control:
       - private, s-maxage=0
       server:
-      - CMWEB04
+      - CMWEB02
       x-aspnetmvc-version:
       - '2.0'
       x-aspnet-version:
@@ -111,7 +111,7 @@
       p3p:
       - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
       date:
-      - Fri, 12 Aug 2011 12:42:59 GMT
+      - Fri, 12 Aug 2011 15:25:43 GMT
       content-length:
       - '0'
     body: !!null 
@@ -119,7 +119,7 @@
 - !ruby/struct:VCR::HTTPInteraction
   request: !ruby/struct:VCR::Request
     method: :get
-    uri: http://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:80/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=cm1313152979@jilion.com
+    uri: http://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:80/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=cm_update_email@jilion.com
     body: !!null 
     headers:
       user-agent:
@@ -142,7 +142,7 @@
       vary:
       - Accept-Encoding
       server:
-      - CMWEB04
+      - CMWEB02
       x-aspnetmvc-version:
       - '2.0'
       x-aspnet-version:
@@ -152,19 +152,19 @@
       p3p:
       - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
       date:
-      - Fri, 12 Aug 2011 12:43:00 GMT
+      - Fri, 12 Aug 2011 15:25:43 GMT
       content-length:
-      - '179'
+      - '178'
     body: !binary |-
-      H4sIAAAAAAAEAEyNzQrCMBCEX0X2XCVp6097slg9KHgRvIhIbBaNJA00W0FK
-      390tIpQ9LMz3DdPB1iljC60bDAFyqJxM+OZxtszWL2ONr2eVdxDBUTlkYe+f
-      9aT0yEmpaEhiIeVUrKYynsg0T5NcCIYn+tGiIvMe7E0byLudQat56NLBAT/M
-      Az4c1sTCWdl2aBAGgj76C23A5mb0SFiM6B1JjbsNv/7afwcA84iZ9tgAAAA=
+      H4sIAAAAAAAEAEzNMQvCMBCG4b9Sbm4l6VClk8XqoOAiuIiU2BwaSRppLoKU
+      /neviNAp8L3PkQG2Thlbad1jCFBC65r40oqwwSmsn8Ya3y1a7yCFo3LIZu8f
+      XVJ75KVmyUsupMzEKpN5IpdlXpRCcDzRr1YtmfekNzGQdzuDVvNflwEO+OEe
+      8O6wIwZnZeN0QRgIxvQPYsC+MXoGilm9Ian5bc/PeB2/AwBXD4jh2wAAAA==
     http_version: '1.1'
 - !ruby/struct:VCR::HTTPInteraction
   request: !ruby/struct:VCR::Request
     method: :get
-    uri: http://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:80/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=cm1313152979@jilion.com
+    uri: http://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:80/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=cm_update_email@jilion.com
     body: !!null 
     headers:
       user-agent:
@@ -187,7 +187,7 @@
       vary:
       - Accept-Encoding
       server:
-      - CMWEB04
+      - CMWEB02
       x-aspnetmvc-version:
       - '2.0'
       x-aspnet-version:
@@ -197,12 +197,12 @@
       p3p:
       - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
       date:
-      - Fri, 12 Aug 2011 12:43:00 GMT
+      - Fri, 12 Aug 2011 15:25:44 GMT
       content-length:
-      - '179'
+      - '178'
     body: !binary |-
-      H4sIAAAAAAAEAEyNzQrCMBCEX0X2XCVp6097slg9KHgRvIhIbBaNJA00W0FK
-      390tIpQ9LMz3DdPB1iljC60bDAFyqJxM+OZxtszWL2ONr2eVdxDBUTlkYe+f
-      9aT0yEmpaEhiIeVUrKYynsg0T5NcCIYn+tGiIvMe7E0byLudQat56NLBAT/M
-      Az4c1sTCWdl2aBAGgj76C23A5mb0SFiM6B1JjbsNv/7afwcA84iZ9tgAAAA=
+      H4sIAAAAAAAEAEzNMQvCMBCG4b9Sbm4l6VClk8XqoOAiuIiU2BwaSRppLoKU
+      /neviNAp8L3PkQG2Thlbad1jCFBC65r40oqwwSmsn8Ya3y1a7yCFo3LIZu8f
+      XVJ75KVmyUsupMzEKpN5IpdlXpRCcDzRr1YtmfekNzGQdzuDVvNflwEO+OEe
+      8O6wIwZnZeN0QRgIxvQPYsC+MXoGilm9Ian5bc/PeB2/AwBXD4jh2wAAAA==
     http_version: '1.1'

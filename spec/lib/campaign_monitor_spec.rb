@@ -63,7 +63,9 @@ describe CampaignMonitor do
     it "should unsubscribe an existing subscribed user" do
       CampaignMonitor.subscribe(user)
       CampaignMonitor.subscriber(user.email)["State"] == "Active"
+
       CreateSend.api_key('invalid') # simulate a call to unsubscribe from a context where api_key is not set (here, not valid since when set to nil it takes the current value...), from within a delayed job for example
+
       CampaignMonitor.unsubscribe(user.email).should be_true
       CampaignMonitor.subscriber(user.email)["State"].should eql "Unsubscribed"
     end
@@ -74,17 +76,16 @@ describe CampaignMonitor do
       use_vcr_cassette "campaign_monitor/update_email"
 
       it "works" do
-        timestamp = Time.now.utc.to_i
         CampaignMonitor.subscribe(user)
         CampaignMonitor.subscriber(user.email)["State"].should eql "Active"
 
         CreateSend.api_key('invalid') # simulate a call to unsubscribe from a context where api_key is not set (here, not valid since when set to nil it takes the current value...), from within a delayed job for example
-        user.email = "cm#{timestamp + 1}@jilion.com"
+        user.email = "cm_update_email@jilion.com"
 
         CampaignMonitor.update(user).should be_true
         user.current_password = '123456'
         user.save!
-        CampaignMonitor.subscriber(user.email)["EmailAddress"].should eql "cm#{timestamp + 1}@jilion.com"
+        CampaignMonitor.subscriber(user.email)["EmailAddress"].should eql "cm_update_email@jilion.com"
         CampaignMonitor.subscriber(user.email)["State"].should eql "Active"
       end
     end

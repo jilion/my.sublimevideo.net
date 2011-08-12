@@ -3,7 +3,7 @@
   request: !ruby/struct:VCR::Request
     method: :post
     uri: http://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:80/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json
-    body: ! '{"EmailAddress":"email4@user.com","Name":"Remy Doe","CustomFields":[{"Key":"user_id","Value":4},{"Key":"segment","Value":"test"},{"Key":"beta","Value":"false"}],"Resubscribe":true}'
+    body: ! '{"EmailAddress":"email47@user.com","Name":"Remy Doe","CustomFields":[{"Key":"user_id","Value":53},{"Key":"segment","Value":"test"},{"Key":"beta","Value":"false"}],"Resubscribe":true}'
     headers:
       user-agent:
       - createsend-ruby-0.7.8
@@ -21,7 +21,7 @@
       content-type:
       - application/json; charset=utf-8
       server:
-      - CMWEB04
+      - CMWEB02
       x-aspnetmvc-version:
       - '2.0'
       x-aspnet-version:
@@ -31,16 +31,16 @@
       p3p:
       - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
       date:
-      - Fri, 12 Aug 2011 13:05:35 GMT
+      - Fri, 12 Aug 2011 16:20:56 GMT
       content-length:
-      - '17'
-    body: ! '"email4@user.com"'
+      - '18'
+    body: ! '"email47@user.com"'
     http_version: '1.1'
 - !ruby/struct:VCR::HTTPInteraction
   request: !ruby/struct:VCR::Request
     method: :put
-    uri: http://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:80/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=email4@user.com
-    body: ! '{"EmailAddress":"email4@user.com","Name":"Remy Doe","CustomFields":[],"Resubscribe":true}'
+    uri: http://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:80/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=email47@user.com
+    body: ! '{"EmailAddress":"email47@user.com","Name":"Remy Doe","CustomFields":[],"Resubscribe":true}'
     headers:
       user-agent:
       - createsend-ruby-0.7.8
@@ -56,7 +56,7 @@
       cache-control:
       - private, s-maxage=0
       server:
-      - CMWEB04
+      - CMWEB02
       x-aspnetmvc-version:
       - '2.0'
       x-aspnet-version:
@@ -66,7 +66,7 @@
       p3p:
       - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
       date:
-      - Fri, 12 Aug 2011 13:05:36 GMT
+      - Fri, 12 Aug 2011 16:20:56 GMT
       content-length:
       - '0'
     body: !!null 
@@ -87,7 +87,7 @@
       server:
       - nginx/0.8.53
       date:
-      - Fri, 12 Aug 2011 13:05:37 GMT
+      - Fri, 12 Aug 2011 16:20:57 GMT
       content-type:
       - application/xml; charset=utf-8
       connection:
@@ -97,11 +97,11 @@
       p3p:
       - CP="NOI DSP COR NID ADMa OPTa OUR NOR"
       x-runtime:
-      - '363'
+      - '425'
       content-length:
       - '1'
       set-cookie:
-      - _zendesk_session=BAh7DiIOaXNfbW9iaWxlRjoPc2Vzc2lvbl9pZCIlZjJhNzA2MTNhOTIzNTU4NTQxMWVlOGFhNzBmOGM0ZGUiHHdhcmRlbi51c2VyLmRlZmF1bHQua2V5aQPrlek6DWF1dGhfdmlhIhJCYXNpY1N0cmF0ZWd5Og91cGRhdGVkX2F0bCsHISVFTjoVYXV0aGVudGljYXRlZF9hdGwrByElRU4iE3dhcmRlbi5tZXNzYWdlewA6B2lkIhRueWVscHN5dDRxZjRobG86DGFjY291bnRpAjep--927090f8ac181bb79e3f4c4c9921e4b97fc3f9a0;
+      - _zendesk_session=BAh7DiIOaXNfbW9iaWxlRjoPc2Vzc2lvbl9pZCIlMmNkNzk2NWQ3NjE3MTQ5NGZiNTAzMGNkMGY2YmFmYzkiHHdhcmRlbi51c2VyLmRlZmF1bHQua2V5aQPrlek6DWF1dGhfdmlhIhJCYXNpY1N0cmF0ZWd5Og91cGRhdGVkX2F0bCsH6VJFTjoVYXV0aGVudGljYXRlZF9hdGwrB%2BlSRU4iE3dhcmRlbi5tZXNzYWdlewA6B2lkIhVieGJscHA2c3ctcm51MWU4OgxhY2NvdW50aQI3qQ%3D%3D--12fa03b0fdfc0c7ea6dd30d629fc02dddfc03e1b;
         path=/; HttpOnly
       - oid_user=; path=/; expires=Thu, 01-Jan-1970 00:00:00 GMT
       cache-control:
@@ -122,7 +122,7 @@
       server:
       - nginx/0.8.53
       date:
-      - Fri, 12 Aug 2011 13:05:38 GMT
+      - Fri, 12 Aug 2011 16:20:58 GMT
       content-type:
       - application/json; charset=utf-8
       connection:
@@ -130,57 +130,20 @@
       status:
       - 200 OK
       etag:
-      - ! '"089061de31c147b2bb3c691e4d779c7c"'
+      - ! '"b5757d30c87e1940811fd4d8fbda0faa"'
       p3p:
       - CP="NOI DSP COR NID ADMa OPTa OUR NOR"
       x-runtime:
-      - '42'
+      - '350'
       content-length:
       - '489'
       set-cookie:
-      - _zendesk_session=BAh7DiIOaXNfbW9iaWxlRjoPc2Vzc2lvbl9pZCIlNTBmYmVjMDVhZmQ1N2Q3MDgyMzI1ZDk5M2FjZWMyOTUiHHdhcmRlbi51c2VyLmRlZmF1bHQua2V5aQPrlek6DWF1dGhfdmlhIhJCYXNpY1N0cmF0ZWd5Og91cGRhdGVkX2F0bCsHIiVFTjoVYXV0aGVudGljYXRlZF9hdGwrByIlRU4iE3dhcmRlbi5tZXNzYWdlewA6B2lkIhQ2OTRscHU3bGUydzYwb3E6DGFjY291bnRpAjep--74b3fc41d8f9cd1b8b8675f3d02c938f94fd9e89;
+      - _zendesk_session=BAh7DiIOaXNfbW9iaWxlRjoPc2Vzc2lvbl9pZCIlMzI2YzUwODVhNTlmNzFmYjRjMzg5OWIzNzEzNmIyN2MiHHdhcmRlbi51c2VyLmRlZmF1bHQua2V5aQPrlek6DWF1dGhfdmlhIhJCYXNpY1N0cmF0ZWd5Og91cGRhdGVkX2F0bCsH6lJFTjoVYXV0aGVudGljYXRlZF9hdGwrB%2BpSRU4iE3dhcmRlbi5tZXNzYWdlewA6B2lkIhVlaDNscG1nM2ktejJmcWQwOgxhY2NvdW50aQI3qQ%3D%3D--cdc31e73fdb8a259b19747bca4eb27d75fc7e723;
         path=/; HttpOnly
       - oid_user=; path=/; expires=Thu, 01-Jan-1970 00:00:00 GMT
       cache-control:
       - private, max-age=0, must-revalidate
     body: ! '{"name":"Remy Doe","locale_id":null,"openid_url":null,"created_at":"2011/05/17
       13:54:12 +0200","current_tags":"","last_login":null,"details":null,"photo_url":"http://sublimevideo.zendesk.com/images/types/user_sm.png","updated_at":"2011/08/12
-      15:05:37 +0200","notes":null,"external_id":null,"is_verified":true,"restriction_id":4,"id":59438671,"email":"email3@user.com","phone":null,"is_active":true,"time_zone":"Bern","roles":0,"organization_id":null,"groups":[],"uses_12_hour_clock":false}'
-    http_version: '1.1'
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :put
-    uri: http://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:80/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json?email=email42@user.com
-    body: ! '{"EmailAddress":"email42@user.com","Name":"Remy Doe","CustomFields":[],"Resubscribe":true}'
-    headers:
-      user-agent:
-      - createsend-ruby-0.7.8
-      content-type:
-      - application/json; charset=utf-8
-      accept-encoding:
-      - gzip, deflate
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
-      code: 400
-      message: Bad Request
-    headers:
-      cache-control:
-      - private, s-maxage=0
-      content-type:
-      - application/json; charset=utf-8
-      server:
-      - CMWEB04
-      x-aspnetmvc-version:
-      - '2.0'
-      x-aspnet-version:
-      - 4.0.30319
-      x-powered-by:
-      - ASP.NET
-      p3p:
-      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
-      date:
-      - Fri, 12 Aug 2011 13:07:04 GMT
-      content-length:
-      - '47'
-    body: ! '{"Code":203,"Message":"Subscriber not in list"}'
+      18:20:57 +0200","notes":null,"external_id":null,"is_verified":true,"restriction_id":4,"id":59438671,"email":"email3@user.com","phone":null,"is_active":true,"time_zone":"Bern","roles":0,"organization_id":null,"groups":[],"uses_12_hour_clock":false}'
     http_version: '1.1'

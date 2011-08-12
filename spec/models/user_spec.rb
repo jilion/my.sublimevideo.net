@@ -645,9 +645,9 @@ describe User do
 
     describe "after_update :zendesk_update" do
       before(:each) do
-        double('CampaignMonitor').as_null_object
+        CampaignMonitor.stub(:all)
       end
-      
+
       context "user has no zendesk_id" do
         it "should not delay Module#put" do
           expect { user.update_attribute(:email, "new@jilion.com") }.to change(Delayed::Job, :count).by(2)
