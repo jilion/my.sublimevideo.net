@@ -2,6 +2,6 @@ require 'spec_helper'
 
 describe TransactionsController do
 
-  it { should route(:post, "transaction/callback").to(:action => :callback) }
+  it { { post: 'transaction/callback' }.should route_to(controller: 'transactions', action: 'callback') }
 
 end

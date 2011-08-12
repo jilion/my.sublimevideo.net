@@ -2,6 +2,6 @@ require 'spec_helper'
 
 describe Admin::MailLogsController do
 
-  it { should route(:get, "admin/mails/logs/1").to(:action => :show, :id => "1") }
+  it { { get: 'admin/mails/logs/1' }.should route_to(controller: 'admin/mail_logs', action: 'show', id: '1') }
 
 end

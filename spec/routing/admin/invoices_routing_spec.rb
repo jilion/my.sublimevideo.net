@@ -2,8 +2,8 @@ require 'spec_helper'
 
 describe Admin::InvoicesController do
 
-  it { should route(:get, "admin/invoices").to(:action => :index) }
-  it { should route(:get, "admin/invoices/1/edit").to(:action => :edit, :id => "1") }
-  it { should route(:put, "admin/invoices/1/retry_charging").to(:action => :retry_charging, :id => "1") }
+  it { { get: 'admin/invoices' }.should                  route_to(controller: 'admin/invoices', action: 'index') }
+  it { { get: 'admin/invoices/1/edit' }.should           route_to(controller: 'admin/invoices', action: 'edit', id: '1') }
+  it { { put: 'admin/invoices/1/retry_charging' }.should route_to(controller: 'admin/invoices', action: 'retry_charging', id: '1') }
 
 end

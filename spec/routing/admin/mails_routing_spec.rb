@@ -2,8 +2,8 @@ require 'spec_helper'
 
 describe Admin::MailsController do
 
-  it { should route(:get,  "admin/mails").to(:action => :index) }
-  it { should route(:get,  "admin/mails/new").to(:action => :new) }
-  it { should route(:post, "admin/mails").to(:action => :create) }
+  it { { get:  'admin/mails' }.should     route_to(controller: 'admin/mails', action: 'index') }
+  it { { get:  'admin/mails/new' }.should route_to(controller: 'admin/mails', action: 'new') }
+  it { { post: 'admin/mails' }.should     route_to(controller: 'admin/mails', action: 'create') }
 
 end

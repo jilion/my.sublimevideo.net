@@ -1,10 +1,10 @@
-require "spec_helper"
+require 'spec_helper'
 
 describe TicketsController do
 
-  it { should route(:get, "/support").to(:action => "new") }
-  it { should route(:post, "/support").to(:action => "create") }
-  # it { { :put => "/support/1" }.should_not be_routable }
-  # it { { :delete => "/support/1" }.should_not be_routable }
+  it { { get: '/support' }.should  route_to(controller: 'tickets', action: 'new') }
+  it { { post: '/support' }.should route_to(controller: 'tickets', action: 'create') }
+  it { { put: '/support/1' }.should_not    be_routable }
+  it { { delete: '/support/1' }.should_not be_routable }
 
 end

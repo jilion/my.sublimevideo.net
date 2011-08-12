@@ -2,8 +2,8 @@ require 'spec_helper'
 
 describe Admin::ReleasesController do
 
-  it { should route(:get,  "admin/releases").to(:action => :index) }
-  it { should route(:post, "admin/releases").to(:action => :create) }
-  it { should route(:put,  "admin/releases/1").to(:action => :update, :id => "1") }
+  it { { get:  'admin/releases' }.should   route_to(controller: 'admin/releases', action: 'index') }
+  it { { post: 'admin/releases' }.should   route_to(controller: 'admin/releases', action: 'create') }
+  it { { put:  'admin/releases/1' }.should route_to(controller: 'admin/releases', action: 'update', id: '1') }
 
 end

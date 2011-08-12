@@ -2,6 +2,6 @@ require 'spec_helper'
 
 describe Admin::ReferrersController do
 
-  it { should route(:get, "admin/referrers").to(:action => :index, :controller => "admin/referrers") }
+  it { { get: 'admin/referrers' }.should route_to(controller: 'admin/referrers', action: 'index') }
 
 end

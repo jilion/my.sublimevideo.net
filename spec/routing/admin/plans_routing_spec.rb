@@ -2,8 +2,8 @@ require 'spec_helper'
 
 describe Admin::PlansController do
 
-  it { should route(:get,  "admin/plans/new").to(:action => :new) }
-  it { should route(:get,  "admin/plans").to(:action => :index) }
-  it { should route(:post, "admin/plans").to(:action => :create) }
+  it { { get:  'admin/plans/new' }.should route_to(controller: 'admin/plans', action: 'new') }
+  it { { get:  'admin/plans' }.should     route_to(controller: 'admin/plans', action: 'index') }
+  it { { post: 'admin/plans' }.should     route_to(controller: 'admin/plans', action: 'create') }
 
 end

@@ -2,21 +2,21 @@ require 'spec_helper'
 
 describe UsersController do
 
-  it { should route(:get,    "/signup").to(:controller => "users/registrations", :action => :new) }
-  it { should route(:post,   "/signup").to(:controller => "users/registrations", :action => :create) }
+  it { { get:    '/signup' }.should              route_to(controller: 'users/registrations', action: 'new') }
+  it { { post:   '/signup' }.should              route_to(controller: 'users/registrations', action: 'create') }
 
-  it { should route(:get,    "/account/edit").to(:controller => "users/registrations", :action => :edit) }
-  it { should route(:put,    "/account/credentials").to(:controller => "users/registrations", :action => :update) }
-  it { should route(:delete, "/account").to(:controller => "users/registrations", :action => :destroy) }
+  it { { get:    '/account/edit' }.should        route_to(controller: 'users/registrations', action: 'edit') }
+  it { { put:    '/account/credentials' }.should route_to(controller: 'users/registrations', action: 'update') }
+  it { { delete: '/account' }.should             route_to(controller: 'users/registrations', action: 'destroy') }
 
-  it { should route(:put,    "/account/info").to(:controller => "users", :action => :update) }
+  it { { put:    '/account/info' }.should        route_to(controller: 'users', action: 'update') }
 
-  it { should route(:get,    "/login").to(:controller => "devise/sessions", :action => :new) }
-  it { should route(:post,   "/login").to(:controller => "devise/sessions", :action => :create) }
-  it { should route(:get,    "/logout").to(:controller => "devise/sessions", :action => :destroy) }
+  it { { get:    '/login' }.should               route_to(controller: 'devise/sessions', action: 'new') }
+  it { { post:   '/login' }.should               route_to(controller: 'devise/sessions', action: 'create') }
+  it { { get:    '/logout' }.should              route_to(controller: 'devise/sessions', action: 'destroy') }
 
-  it { should route(:get,    "/confirmation").to(:controller => "devise/confirmations", :action => :show) }
-  it { should route(:get,    "/confirmation/new").to(:controller => "devise/confirmations", :action => :new) }
-  it { should route(:post,   "/confirmation").to(:controller => "devise/confirmations", :action => :create) }
+  it { { get:    '/confirmation' }.should        route_to(controller: 'devise/confirmations', action: 'show') }
+  it { { get:    '/confirmation/new' }.should    route_to(controller: 'devise/confirmations', action: 'new') }
+  it { { post:   '/confirmation' }.should        route_to(controller: 'devise/confirmations', action: 'create') }
 
 end
