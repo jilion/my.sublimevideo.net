@@ -706,7 +706,8 @@ describe User do
 
     describe "after_update :zendesk_update" do
       before(:each) do
-        CampaignMonitor = double("CampaignMonitor")
+        CampaignMonitor.stub(:subscribe)
+        CampaignMonitor.stub(:update)
       end
 
       context "user has no zendesk_id" do
