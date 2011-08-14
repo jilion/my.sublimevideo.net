@@ -114,14 +114,23 @@ describe User do
       end
     end
 
-    pending ".search" do
+    describe ".search" do
       before(:all) do
         User.delete_all
-        @user = FactoryGirl.create(:user, email: "remy@jilion.com")
+        Site.delete_all
+        @user1 = FactoryGirl.create(:user, email: "remy@jilion.com")
+        @user2 = FactoryGirl.create(:user, first_name: "Marcel")
+        @user3 = FactoryGirl.create(:user, last_name: "Jacques")
+        @site1 = FactoryGirl.create(:site, user: @user1, hostname: "bob.com", plan_id: @dev_plan.id)
+        @site2 = FactoryGirl.create(:site, user: @user1, dev_hostnames: "foo.dev, bar.dev", plan_id: @dev_plan.id)
       end
 
       describe "on email" do
-        specify { User.search("remy").all.should =~ [@user] }
+        specify { User.search("remy").all.should =~ [@user1] }
+        specify { User.search("bob").all.should =~ [@user1] }
+        specify { User.search("foo").all.should =~ [@user1] }
+        specify { User.search("marcel").all.should =~ [@user2] }
+        specify { User.search("jacques").all.should =~ [@user3] }
       end
     end
   end
@@ -697,7 +706,7 @@ describe User do
 
     describe "after_update :zendesk_update" do
       before(:each) do
-        CampaignMonitor.stub(:all)
+        CampaignMonitor = double("CampaignMonitor")
       end
 
       context "user has no zendesk_id" do

@@ -119,6 +119,10 @@ class User < ActiveRecord::Base
   scope :by_sites_last_30_days_billable_player_hits_total_count,  lambda { |way='desc'|
     joins(:sites).group(User.column_names.map { |c| "\"users\".\"#{c}\"" }.join(', ')).order("SUM(sites.last_30_days_main_player_hits_total_count) + SUM(sites.last_30_days_extra_player_hits_total_count) #{way}")
   }
+  # TODO: To test
+  # scope :by_sites_last_30_days_billable_player_hits_total_count,  lambda { |way='desc'|
+  #   joins(:sites).group(User.column_names.map { |c| "\"users\".\"#{c}\"" }.join(', ')).order { [sum(sites.last_30_days_main_player_hits_total_count) + sum(sites.last_30_days_extra_player_hits_total_count), way] }
+  # }
   scope :by_last_invoiced_amount,  lambda { |way='desc'| order(:last_invoiced_amount.send(way)) }
   scope :by_total_invoiced_amount, lambda { |way='desc'| order(:total_invoiced_amount.send(way)) }
   scope :by_beta,                  lambda { |way='desc'| order(:invitation_token.send(way)) }
@@ -126,12 +130,12 @@ class User < ActiveRecord::Base
 
   # search
   def self.search(q)
-    joins(:sites).where {
-      (:lower.func(:email) =~ :lower.func("%#{q}%")) |
-      (:lower.func(:first_name) =~ :lower.func("%#{q}%")) |
-      (:lower.func(:last_name) =~ :lower.func("%#{q}%")) |
-      (:lower.func(:"sites.hostname") =~ :lower.func("%#{q}%")) |
-      (:lower.func(:"sites.dev_hostnames") =~ :lower.func("%#{q}%"))
+    includes(:sites).where {
+      (lower(:email) =~ lower("%#{q}%")) |
+      (lower(:first_name) =~ lower("%#{q}%")) |
+      (lower(:last_name) =~ lower("%#{q}%")) |
+      (lower(sites.hostname) =~ lower("%#{q}%")) |
+      (lower(sites.dev_hostnames) =~ lower("%#{q}%"))
     }
   end
 

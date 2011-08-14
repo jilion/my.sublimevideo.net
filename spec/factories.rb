@@ -44,6 +44,7 @@ FactoryGirl.define do
     after_build do |site|
       site.pend_plan_changes
       site.apply_pending_plan_changes
+      # site.send(:puts, site.errors.inspect) unless site.valid?
       site.reload
     end
   end
