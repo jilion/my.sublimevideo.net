@@ -77,8 +77,8 @@ gem 'useragent',             :git => 'git://github.com/Jilion/useragent.git'
 gem 'zip',                   '~> 2.0.2', :require => 'zip/zip'
 gem 'countries',             '~> 0.5.3'
 # gem 'PageRankr',             '~> 2.0.1', :require => 'page_rankr'
-# until https://github.com/blatyo/page_rankr/pull/6 is accepted
-gem 'PageRankr',             :git => 'git://github.com/rymai/page_rankr.git', :require => 'page_rankr'
+# until v2.0.2
+gem 'PageRankr',             :git => 'git://github.com/blatyo/page_rankr.git', :require => 'page_rankr'
 gem 'twitter',               '~> 1.6.2'
 gem 'settingslogic',         '~> 2.0.6'
 gem 'array_stats',           '~> 0.6.0'
