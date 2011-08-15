@@ -1,8 +1,8 @@
 class User < ActiveRecord::Base
   require 'user/credit_card'
 
-  devise :database_authenticatable, :registerable, :confirmable,
-         :recoverable, :rememberable, :trackable, :lockable, :invitable
+  devise :database_authenticatable, :invitable, :registerable, :confirmable,
+         :recoverable, :rememberable, :trackable, :lockable
 
   def self.cookie_domain
     ".sublimevideo.net"
@@ -146,8 +146,7 @@ class User < ActiveRecord::Base
   # Devise overriding
   # avoid the "not active yet" flash message to be displayed for archived users!
   def self.find_for_authentication(conditions={})
-    conditions[:state.ne] = 'archived'
-    super
+    where(conditions).where{state != 'archived'}.first
   end
 
   def update_tracked_fields!(request)
@@ -184,7 +183,7 @@ class User < ActiveRecord::Base
   # Devise overriding
   # allow suspended user to login (devise)
   def active_for_authentication?
-    super && %w[active suspended].include?(state)
+    %w[active suspended].include?(state)
   end
 
   def have_beta_sites?

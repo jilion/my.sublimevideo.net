@@ -30,15 +30,6 @@ GIT
       thor (~> 0.14.6)
 
 GIT
-  remote: git://github.com/plataformatec/devise.git
-  revision: fb1220af97d67d3d5a11f5e4e5d67428873a346f
-  specs:
-    devise (1.4.2)
-      bcrypt-ruby (~> 2.1.2)
-      orm_adapter (~> 0.0.3)
-      warden (~> 1.0.3)
-
-GIT
   remote: git://github.com/rails/coffee-rails.git
   revision: 90a5f104eb05384c8bf09e4d848b8d02f0c83055
   branch: 3-1-stable
@@ -204,6 +195,10 @@ GEM
     delayed_job (2.1.4)
       activesupport (~> 3.0)
       daemons
+    devise (1.4.2)
+      bcrypt-ruby (~> 2.1.2)
+      orm_adapter (~> 0.0.3)
+      warden (~> 1.0.3)
     devise_invitable (0.5.4)
       devise (~> 1.4.1)
       rails (< 3.2, >= 3.0.0)
@@ -458,7 +453,7 @@ DEPENDENCIES
   dalli (~> 1.0.5)
   database_cleaner
   delayed_job (~> 2.1.4)
-  devise!
+  devise (~> 1.4.2)
   devise_invitable (~> 0.5.4)
   factory_girl_rails
   ffaker

@@ -4,7 +4,7 @@ MySublimeVideo::Application.routes.draw do
              :path => '',
              :path_names => { :sign_in => 'login', :sign_out => 'logout' },
              :skip => [:invitations, :registrations] do
-    resource :user_registration, :controller => 'users/registrations', :path => '' do
+    resource :user_registration, :only => [], :controller => 'users/registrations', :path => '' do
       get    :new,     :path => '/signup', :as => 'new'
       post   :create,  :path => '/signup'
 
