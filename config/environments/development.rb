@@ -23,7 +23,16 @@ MySublimeVideo::Application.configure do
 
   # Only use best-standards-support built into browsers
   config.action_dispatch.best_standards_support = :builtin
-  
+
   # Do not compress assets
   config.assets.compress = false
+end
+
+unless $rails_rake_task
+  require 'ruby-debug'
+
+  Debugger.settings[:autoeval] = true
+  Debugger.settings[:autolist] = 1
+  Debugger.settings[:reload_source_on_change] = true
+  Debugger.start_remote
 end

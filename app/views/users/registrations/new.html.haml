@@ -52,7 +52,7 @@
     .entry.use
       %label.main= "Use of SublimeVideo:"
       .checkbox_wrap
-        - if resource.errors.key?(:use)
+        - if resource.errors.include?(:use)
           .inline_errors
             %span= resource.errors[:use].first
         = f.check_box :use_personal

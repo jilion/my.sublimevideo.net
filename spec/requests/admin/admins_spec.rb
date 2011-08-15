@@ -38,7 +38,7 @@ feature "Admins actions:" do
 
     fill_in "Email",            :with => "new@jilion.com"
     fill_in "Current password", :with => "123456"
-    click_button "admin_submit"
+    click_button "Update"
 
     Admin.last.email.should == "new@jilion.com"
   end
