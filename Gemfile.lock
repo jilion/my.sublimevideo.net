@@ -242,8 +242,6 @@ GEM
       em-websocket (>= 0.2.0)
       guard (>= 0.4.0)
       multi_json (~> 1.0.3)
-    guard-passenger (0.3.0)
-      guard (~> 0.3)
     guard-pow (0.1.0)
       guard (>= 0.3.0)
     guard-rspec (0.4.2)
@@ -450,7 +448,6 @@ DEPENDENCIES
   guard!
   guard-bundler
   guard-livereload
-  guard-passenger
   guard-pow
   guard-rspec
   guard-spork
