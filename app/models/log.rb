@@ -1,5 +1,3 @@
-require 'carrierwave/orm/mongoid'
-
 class Log
   extend ActiveSupport::Memoizable
 
@@ -22,7 +20,7 @@ class Log
 
   attr_accessible :name
 
-  mount_uploader :file, LogUploader # on file_filename field!
+  mount_uploader :file, LogUploader, mount_on: :file_filename
 
   # ===============
   # = Validations =

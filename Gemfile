@@ -63,7 +63,8 @@ gem 'fog',                   '~> 0.10.0'
 # gem 'carrierwave',           '0.5.6'
 # For mongoid 2.1.x support, Until my patch is merged or mongoid support is extracted from carrierwave
 # BUT since mongoid 2.1.x break so many specs, it's currently useless
-gem 'carrierwave',           :git => 'git://github.com/rymai/carrierwave.git'
+gem 'carrierwave',           '~> 0.5.7'#,  :git => 'git://github.com/rymai/carrierwave.git'
+gem 'carrierwave-mongoid',   '~> 0.1.1', :require => 'carrierwave/mongoid'# :git => 'git://github.com/jnicklas/carrierwave-mongoid.git'
 gem 'voxel_hapi',            :git => 'git://github.com/thibaudgg/voxel_hapi.git', :branch => '1.9.2' # VoxCast CDN
 gem 'request-log-analyzer',  '~> 1.11.0', :require => 'request_log_analyzer'
 
