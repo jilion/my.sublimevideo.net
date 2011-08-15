@@ -347,9 +347,6 @@ private
 end
 
 
-
-
-
 # == Schema Information
 #
 # Table name: users

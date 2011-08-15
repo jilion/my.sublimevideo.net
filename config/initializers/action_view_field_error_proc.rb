@@ -10,7 +10,7 @@ ActionView::Base.field_error_proc = Proc.new do |html_tag, instance|
   end
   
   if instance.object.present? && html_tag =~ /<(input|textarea|select)/
-    if errors = instance.object.errors.delete(instance.method_name.to_sym)
+    if errors = instance.object.errors.messages.delete(instance.method_name.to_sym)
       if errors.length > 1
         last_error = " and #{errors.pop}"
         first_errors = errors.join(", ")

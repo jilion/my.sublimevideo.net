@@ -4,7 +4,7 @@
 - next_cycle_plan = site.next_cycle_plan
 - current_plan = pending_plan || next_cycle_plan || plan # current plan for the view (could be in case of rendering view with errors)
 
-- if site.errors.key?(:plan)
+- if site.errors.include?(:plan)
   .inline_errors.plan
     %span= site.errors[:plan].first
 
