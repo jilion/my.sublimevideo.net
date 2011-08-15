@@ -539,7 +539,7 @@ describe Site::Invoice do
           its(:pending_plan_cycle_started_at) { should == Time.utc(2011,2,28).midnight }
           its(:pending_plan_cycle_ended_at)   { should == Time.utc(2011,3,29).to_datetime.end_of_day }
           its(:plan)                          { should == @paid_plan }
-          its(:pending_plan)                  { should == @paid_plan }
+          its(:pending_plan)                  { should be_nil }
           its(:next_cycle_plan)               { should be_nil }
           it { should_not be_instant_charging }
         end
