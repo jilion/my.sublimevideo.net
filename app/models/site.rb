@@ -251,14 +251,6 @@ class Site < ActiveRecord::Base
     save_without_password_validation
   end
 
-  def set_user_attributes
-    if user && user_attributes.present?
-      if user_attributes.has_key?("current_password")
-        self.user.attributes = user_attributes.select { |k,v| k == "current_password" }
-      end
-    end
-  end
-
   def without_password_validation
     @skip_password_validation = true
     result = yield
@@ -405,6 +397,20 @@ class Site < ActiveRecord::Base
 
 private
 
+  # before_validation
+  def set_user_attributes
+    if user && user_attributes.present?
+      if user_attributes.has_key?("current_password")
+        self.user.assign_attributes(user_attributes.select { |k,v| k == "current_password" })
+      end
+    end
+  end
+
+  # before_validation
+  def set_default_dev_hostnames
+    self.dev_hostnames = DEFAULT_DEV_DOMAINS
+  end
+
   # validate if in_or_will_be_in_paid_plan?
   def verify_presence_of_credit_card
     if user && !user.cc? && !user.pending_cc? && !user.any_cc_attrs?
@@ -429,11 +435,6 @@ private
     unless archivable?
       self.errors.add(:base, :not_paid_invoices_prevent_archive, :count => invoices.not_paid.count)
     end
-  end
-
-  # before_validation
-  def set_default_dev_hostnames
-    self.dev_hostnames = DEFAULT_DEV_DOMAINS
   end
 
   # before_save
