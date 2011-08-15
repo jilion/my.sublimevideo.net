@@ -36,7 +36,8 @@ gem 'liquid',                '~> 2.2.2'
 gem 'RedCloth',              '~> 4.2.7'
 
 # Auth / invitations
-gem 'devise',                '~> 1.4.2'
+# gem 'devise',                '~> 1.4.2'
+gem 'devise', :git => 'git://github.com/plataformatec/devise.git'
 gem 'devise_invitable',      '~> 0.5.4'
 
 # API
@@ -105,6 +106,7 @@ end
 group :development, :test do
   gem 'timecop'
   gem 'rspec-rails', '~> 2.6.1'
+  gem 'ruby-debug19'
 end
 
 group :development do
