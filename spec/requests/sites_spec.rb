@@ -75,7 +75,6 @@ feature "Sites" do
 
             current_url.should =~ %r(http://[^/]+/sites)
             page.should have_content("Domain can't be blank")
-            page.should have_content("Card type is invalid")
             page.should have_content("Name on card can't be blank")
             page.should have_content("Card number is invalid")
             page.should have_content("CSC is required")
@@ -88,7 +87,6 @@ feature "Sites" do
             click_button "Create"
 
             current_url.should =~ %r(http://[^/]+/sites)
-            page.should have_content("Card type is invalid")
             page.should have_content("Name on card can't be blank")
             page.should have_content("Card number is invalid")
             page.should have_content("Expiration date expired")
@@ -267,7 +265,6 @@ feature "Sites" do
 
             current_url.should =~ %r(http://[^/]+/sites)
             page.should have_content("Domain can't be blank")
-            page.should have_content("Card type is invalid")
             page.should have_content("Name on card can't be blank")
             page.should have_content("Card number is invalid")
             page.should have_content("CSC is required")
@@ -280,7 +277,6 @@ feature "Sites" do
             click_button "Create"
 
             current_url.should =~ %r(http://[^/]+/sites)
-            page.should have_content("Card type is invalid")
             page.should have_content("Name on card can't be blank")
             page.should have_content("Card number is invalid")
             page.should have_content("CSC is required")
@@ -397,7 +393,6 @@ feature "Sites" do
 
           page.should have_content("Domain can't be blank")
           page.should have_no_selector("#credit_card")
-          page.should have_no_content("Card type is invalid")
           page.should have_no_content("Name on card can't be blank")
           page.should have_no_content("Card number is invalid")
           page.should have_no_content("CSC is required")
@@ -480,7 +475,6 @@ feature "Sites" do
           current_url.should =~ %r(http://[^/]+/sites)
           page.should have_no_selector("#credit_card")
           page.should have_content("Domain can't be blank")
-          page.should have_no_content("Card type is invalid")
           page.should have_no_content("Name on card can't be blank")
           page.should have_no_content("Card number is invalid")
           page.should have_no_content("CSC is required")
