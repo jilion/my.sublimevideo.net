@@ -123,10 +123,9 @@ group :guard do
   gem 'guard', :git => 'git://github.com/guard/guard.git'
   gem 'guard-bundler'
   gem 'guard-pow'
-  gem 'guard-passenger'
-  gem 'guard-rspec'
-  gem 'guard-spork'
   gem 'guard-livereload'
+  gem 'guard-spork'
+  gem 'guard-rspec'
 end
 
 group :test do
