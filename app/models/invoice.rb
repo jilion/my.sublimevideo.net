@@ -64,8 +64,8 @@ class Invoice < ActiveRecord::Base
   scope :between, lambda { |started_at, ended_at| where(:created_at.gte => started_at, :created_at.lte => ended_at) }
 
   scope :open,           where(state: 'open')
-  scope :paid,           where(state: 'paid').joins(:site).where(:sites => { :refunded_at => nil })
-  scope :refunded,       where(state: 'paid').joins(:site).where(:sites => { :refunded_at.not_eq => nil })
+  scope :paid,           where(state: 'paid').includes(:site).where { sites.refunded_at == nil }
+  scope :refunded,       where(state: 'paid').includes(:site).where { sites.refunded_at != nil }
   scope :failed,         where(state: 'failed')
   scope :waiting,        where(state: 'waiting')
   scope :canceled,       where(state: 'canceled')
