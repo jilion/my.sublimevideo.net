@@ -40,12 +40,12 @@ class Release < ActiveRecord::Base
   end
 
   def self.beta_release
-     releases = where({ :state => "beta" } | { :state => "stable" }).all
+     releases = where{(state == "beta") | (state == "stable")}.all
      releases.detect { |r| r.state == "beta" } || releases.detect { |r| r.state == "stable" }
   end
 
   def self.dev_release
-     releases = where({ :state => "dev" } | { :state => "beta" } | { :state => "stable" })
+     releases = where{(state == "dev") | (state == "beta") | (state == "stable")}
      releases.detect { |r| r.state == "dev" } || releases.detect { |r| r.state == "beta" } || releases.detect { |r| r.state == "stable" }
   end
 

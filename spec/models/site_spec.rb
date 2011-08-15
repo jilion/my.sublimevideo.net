@@ -132,7 +132,7 @@ describe Site do
       describe "#custom" do
         specify { Site.custom.all.should =~ [@site_custom] }
       end
-    
+
       describe "#in_paid_plan" do
         specify { Site.in_paid_plan.all.should =~ [@site_custom, @site_paid] }
       end
@@ -1140,8 +1140,8 @@ describe Site do
       it "should update ranks" do
         Timecop.travel(10.minutes.ago) { @site = FactoryGirl.create(:site, hostname: 'sublimevideo.net') }
         VCR.use_cassette('sites/ranks') { @worker.work_off }
-        @site.reload.google_rank.should == 0
-        @site.alexa_rank.should == 100573
+        @site.reload.google_rank.should == 6
+        @site.alexa_rank.should == 126091
       end
     end # after_create
 
