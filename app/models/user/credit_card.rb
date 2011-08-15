@@ -29,25 +29,23 @@ module User::CreditCard
 
   # validate :if => :any_cc_attrs?
   def validates_credit_card_attributes
+    @credit_card = new_credit_card # reset the current credit card
+
     return if credit_card.valid?
 
-    self.errors.add(:cc_full_name, :blank) if @cc_first_name.blank? && @cc_last_name.blank?
+    self.errors.add(:cc_full_name, :blank) unless credit_card.name?
 
     # I18n Warning: credit_card errors are not localized
-    credit_card.errors.each do |attribute, errors|
+    credit_card.errors.reject{ |k,v| v.empty? }.each do |attribute, errors|
       attribute = case attribute
-      when 'month'
+      when 'month', 'first_name', 'last_name'
         # do nothing
       when 'year'
-        errors.each do |error|
-          self.errors.add(:cc_expiration_year, error)
-        end
+        self.errors.add(:cc_expiration_year, credit_card.errors.on(:year))
       when 'type'
         self.errors.add(:cc_brand, :invalid)
       when 'number'
         self.errors.add(:cc_number, :invalid)
-      when 'first_name', 'last_name'
-        # do nothing
       else
         errors.each do |error|
           self.errors.add(:"cc_#{attribute}", error)
@@ -60,22 +58,20 @@ module User::CreditCard
   # = Instance Methods =
   # ====================
 
-  def credit_card
-    @credit_card ||= begin
-      ActiveMerchant::Billing::CreditCard.new(
-        :type               => cc_brand,
-        :number             => cc_number,
-        :month              => cc_expiration_month,
-        :year               => cc_expiration_year,
-        :first_name         => @cc_first_name,
-        :last_name          => @cc_last_name,
-        :verification_value => cc_verification_value
-      )
-    end
+  def new_credit_card
+    ActiveMerchant::Billing::CreditCard.new(
+      :type               => cc_brand,
+      :number             => cc_number,
+      :month              => cc_expiration_month,
+      :year               => cc_expiration_year,
+      :first_name         => @cc_first_name,
+      :last_name          => @cc_last_name,
+      :verification_value => cc_verification_value
+    )
   end
 
-  def reset_credit_card_attributes
-    %w[cc_brand cc_number cc_expiration_month cc_expiration_year cc_full_name cc_verification_value].each { |att| self.send("#{att}=", nil) }
+  def credit_card
+    @credit_card ||= new_credit_card
   end
 
   def cc_full_name=(attribute)
@@ -121,6 +117,10 @@ module User::CreditCard
     reset_credit_card_attributes
   end
 
+  def reset_credit_card_attributes
+    %w[cc_brand cc_number cc_expiration_month cc_expiration_year cc_full_name cc_verification_value].each { |att| self.send("#{att}=", nil) }
+  end
+
   def reset_pending_credit_card_info
     self.pending_cc_type        = nil
     self.pending_cc_last_digits = nil
@@ -131,10 +131,10 @@ module User::CreditCard
   end
 
   def apply_pending_credit_card_info
-    self.cc_type                = pending_cc_type
-    self.cc_last_digits         = pending_cc_last_digits
-    self.cc_expire_on           = pending_cc_expire_on
-    self.cc_updated_at          = pending_cc_updated_at
+    self.cc_type        = pending_cc_type
+    self.cc_last_digits = pending_cc_last_digits
+    self.cc_expire_on   = pending_cc_expire_on
+    self.cc_updated_at  = pending_cc_updated_at
 
     reset_pending_credit_card_info
   end

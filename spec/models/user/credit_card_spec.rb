@@ -155,7 +155,7 @@ describe User::CreditCard do
         user = FactoryGirl.build(:user_no_cc, valid_cc_attributes.merge(cc_expiration_month: 13, cc_expiration_year: 2010))
         user.should_not be_valid
         user.errors[:cc_expiration_month].should be_empty
-        user.errors[:cc_expiration_year].should == ["expired", "is not a valid year"]
+        user.errors[:cc_expiration_year].should == ["expired"]
       end
 
       it "should allow expire date in the future" do

@@ -58,7 +58,11 @@ class User < ActiveRecord::Base
   # = Callbacks =
   # =============
 
+  # hack to explicitely declare changes on cc fields (needed when we save from an association. e.g. site.save)
+  before_validation :force_update_of_credit_card, :if => :any_cc_attrs?
+
   before_save :set_password
+
   before_save :pend_credit_card_info, :if => :any_cc_attrs? # in user/credit_card
 
   after_save :newsletter_update
@@ -237,6 +241,11 @@ class User < ActiveRecord::Base
 
 private
 
+  # before_validation
+  def force_update_of_credit_card
+    pending_cc_type_will_change!
+  end
+
   # validate
   def validates_current_password
     if !new_record? &&
@@ -345,8 +354,6 @@ private
   end
 
 end
-
-
 
 
 
