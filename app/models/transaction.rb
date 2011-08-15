@@ -46,6 +46,7 @@ class Transaction < ActiveRecord::Base
   # = Scopes =
   # ==========
 
+  # state
   scope :failed, where(state: 'failed')
   scope :paid,   where(state: 'paid')
 
@@ -123,11 +124,12 @@ class Transaction < ActiveRecord::Base
           Notify.send("Refund failed for invoice ##{invoice.reference} (amount: #{invoice.amount}, transaction order_id: ##{invoice.transactions.paid.first.order_id}", exception: ex)
         end
       end
-
-      paid_invoices = site.user.invoices.paid.order(:paid_at)
-      site.user.last_invoiced_amount  = paid_invoices.present? ? paid_invoices.last.amount : 0
-      site.user.total_invoiced_amount = paid_invoices.all.sum(&:amount)
-      site.user.save
+      
+      user = site.user
+      paid_invoices = user.invoices.paid.order(:paid_at.asc).all
+      user.last_invoiced_amount  = paid_invoices.present? ? paid_invoices.last.amount : 0
+      user.total_invoiced_amount = paid_invoices.sum(&:amount)
+      user.save
     end
   end
 
