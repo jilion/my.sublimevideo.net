@@ -24,7 +24,6 @@ feature "Support" do
 
   describe "new" do
     scenario "submit a valid ticket" do
-
       select "Bug report", :from => "ticket_type"
       fill_in "Subject", :with => "I have a request!"
       fill_in "Message", :with => "I have a request this is a long text!"
@@ -32,7 +31,7 @@ feature "Support" do
 
       page.should have_content I18n.t('flash.tickets.create.notice')
 
-      Delayed::Job.last.name.should == 'Ticket#post_ticket'
+      Delayed::Job.last.name.should == 'Class#post_ticket'
       VCR.use_cassette("ticket/post_ticket_standard_support") { @worker.work_off }
       Delayed::Job.last.should be_nil
       @current_user.reload.zendesk_id.should be_present
@@ -47,7 +46,7 @@ feature "Support" do
       current_url.should =~ %r(http://[^/]+/support)
       page.should have_content "You must choose a category"
       page.should have_no_content I18n.t('flash.tickets.create.notice')
-      Delayed::Job.last.should_not == 'Ticket#post_ticket'
+      Delayed::Job.last.should_not == 'Class#post_ticket'
     end
 
     scenario "submit a ticket with an invalid subject" do
@@ -59,7 +58,7 @@ feature "Support" do
       current_url.should =~ %r(http://[^/]+/support)
       page.should have_content "Subject can't be blank"
       page.should have_no_content I18n.t('flash.tickets.create.notice')
-      Delayed::Job.last.should_not == 'Ticket#post_ticket'
+      Delayed::Job.last.should_not == 'Class#post_ticket'
     end
 
     scenario "submit a ticket with an invalid message" do
@@ -71,7 +70,7 @@ feature "Support" do
       current_url.should =~ %r(http://[^/]+/support)
       page.should have_content "Message can't be blank"
       page.should have_no_content I18n.t('flash.tickets.create.notice')
-      Delayed::Job.last.should_not == 'Ticket#post_ticket'
+      Delayed::Job.last.should_not == 'Class#post_ticket'
     end
   end
 

@@ -13,25 +13,16 @@ class Ticket
   validates :subject, :presence => true
   validates :message, :presence => true
 
-  def initialize(params = {})
-    @user    = params.delete(:user)
-    @type    = params.delete(:type)
-    @subject = h(params.delete(:subject).try(:to_s))
-    @message = h(params.delete(:message).try(:to_s))
-  end
-
-  def save
-    valid? && delay(priority: 25).post_ticket
-  end
-
-  def post_ticket
-    response = Zendesk.post("/tickets.xml", self.to_xml)
-    ticket_id = response['location'].match(%r(#{Zendesk.base_url}/tickets/(\d+)\.xml))[1].to_i
+  def self.post_ticket(data={})
+    ticket    = Ticket.new(data)
+    response  = Zendesk.post("/tickets.xml", ticket.to_xml)
+    ticket_id = response['location'][%r{#{Zendesk.base_url}/tickets/(\d+)\.xml}, 1].to_i
     raise "Can't find ticket at: #{response['location']}!" if ticket_id.blank?
 
-    if !@user.zendesk_id? && zendesk_requester_id = JSON[Zendesk.get("/tickets/#{ticket_id}.json").body]["requester_id"].to_i
-      @user.update_attribute(:zendesk_id, zendesk_requester_id)
-      Ticket.delay(:priority => 25).verify_user(@user.id)
+    if !ticket.user.zendesk_id? &&
+      zendesk_requester_id = JSON[Zendesk.get("/tickets/#{ticket_id}.json").body]["requester_id"].to_i
+      ticket.user.update_attribute(:zendesk_id, zendesk_requester_id)
+      Ticket.delay(:priority => 25).verify_user(ticket.user.id)
     end
 
     ticket_id
@@ -43,8 +34,23 @@ class Ticket
     end
   end
 
+  def initialize(params={})
+    @user    = User.where(id: params.delete(:user_id)).first || nil if params.key?(:user_id)
+    @type    = params.delete(:type)
+    @subject = h(params.delete(:subject).try(:to_s))
+    @message = h(params.delete(:message).try(:to_s))
+  end
+
+  def save
+    valid? && Ticket.delay(priority: 25).post_ticket(self.to_hash)
+  end
+
   def to_key
     nil
+  end
+
+  def to_hash
+    { user_id: @user.id, type: @type, subject: @subject, message: @message }
   end
 
   def to_xml(options={})

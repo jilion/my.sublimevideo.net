@@ -1,73 +1,77 @@
---- 
-- !ruby/struct:VCR::HTTPInteraction 
-  request: !ruby/struct:VCR::Request 
+---
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
     method: :put
     uri: http://zendesk%40sublimevideo.net%2Ftoken:oxVzosGyu7DaZrQ0fhmKngHATvd78UhEqTzMszZy@sublimevideo.zendesk.com:80/users/59438671.xml
     body: <user><password>d41d8cd98f00b204e9800998ecf8427e</password><is-verified>true</is-verified></user>
-    headers: 
-      content-type: 
+    headers:
+      content-type:
       - application/xml
-  response: !ruby/struct:VCR::Response 
-    status: !ruby/struct:VCR::ResponseStatus 
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
       code: 200
       message: OK
-    headers: 
-      server: 
+    headers:
+      server:
       - nginx/0.8.53
-      date: 
+      date:
       - Tue, 17 May 2011 12:24:24 GMT
-      content-type: 
+      content-type:
       - application/xml; charset=utf-8
-      connection: 
+      connection:
       - keep-alive
-      status: 
+      status:
       - 200 OK
-      p3p: 
+      p3p:
       - CP="NOI DSP COR NID ADMa OPTa OUR NOR"
-      x-runtime: 
-      - "195"
-      content-length: 
-      - "1"
-      set-cookie: 
-      - _zendesk_session=BAh7DToMYWNjb3VudGkCN6kiHHdhcmRlbi51c2VyLmRlZmF1bHQua2V5aQPrlek6D3VwZGF0ZWRfYXRsKwf4aNJNOg1hdXRoX3ZpYSISQmFzaWNTdHJhdGVneToVYXV0aGVudGljYXRlZF9hdGwrB%2Fho0k06D3Nlc3Npb25faWQiJWQ5ODAyMWRiNTQ5YjI4NDZkMGY4ZTM2MmI3MzdjMzJmIhN3YXJkZW4ubWVzc2FnZXsAOgdpZCIVN3JnbGxlNXpjLXB2cnRlYw%3D%3D--3d1f9a49ce72e3fba11fd9f6d41e0d15589e76a9; path=/; HttpOnly
+      x-runtime:
+      - '195'
+      content-length:
+      - '1'
+      set-cookie:
+      - _zendesk_session=BAh7DToMYWNjb3VudGkCN6kiHHdhcmRlbi51c2VyLmRlZmF1bHQua2V5aQPrlek6D3VwZGF0ZWRfYXRsKwf4aNJNOg1hdXRoX3ZpYSISQmFzaWNTdHJhdGVneToVYXV0aGVudGljYXRlZF9hdGwrB%2Fho0k06D3Nlc3Npb25faWQiJWQ5ODAyMWRiNTQ5YjI4NDZkMGY4ZTM2MmI3MzdjMzJmIhN3YXJkZW4ubWVzc2FnZXsAOgdpZCIVN3JnbGxlNXpjLXB2cnRlYw%3D%3D--3d1f9a49ce72e3fba11fd9f6d41e0d15589e76a9;
+        path=/; HttpOnly
       - oid_user=; path=/; expires=Thu, 01-Jan-1970 00:00:00 GMT
-      cache-control: 
+      cache-control:
       - no-cache
-    body: " "
-    http_version: "1.1"
-- !ruby/struct:VCR::HTTPInteraction 
-  request: !ruby/struct:VCR::Request 
+    body: ! ' '
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
     method: :get
     uri: http://zendesk%40sublimevideo.net%2Ftoken:oxVzosGyu7DaZrQ0fhmKngHATvd78UhEqTzMszZy@sublimevideo.zendesk.com:80/users/59438671.json
-    body: 
-    headers: 
-  response: !ruby/struct:VCR::Response 
-    status: !ruby/struct:VCR::ResponseStatus 
+    body: !!null 
+    headers: !!null 
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
       code: 200
       message: OK
-    headers: 
-      server: 
+    headers:
+      server:
       - nginx/0.8.53
-      date: 
+      date:
       - Tue, 17 May 2011 12:24:24 GMT
-      content-type: 
+      content-type:
       - application/json; charset=utf-8
-      connection: 
+      connection:
       - keep-alive
-      status: 
+      status:
       - 200 OK
-      etag: 
-      - "\"e745a0f74f77fb37cdc82c382dcc30a9\""
-      p3p: 
+      etag:
+      - ! '"e745a0f74f77fb37cdc82c382dcc30a9"'
+      p3p:
       - CP="NOI DSP COR NID ADMa OPTa OUR NOR"
-      x-runtime: 
-      - "82"
-      content-length: 
-      - "471"
-      set-cookie: 
-      - _zendesk_session=BAh7DToMYWNjb3VudGkCN6kiHHdhcmRlbi51c2VyLmRlZmF1bHQua2V5aQPrlek6D3VwZGF0ZWRfYXRsKwf4aNJNOg1hdXRoX3ZpYSISQmFzaWNTdHJhdGVneToVYXV0aGVudGljYXRlZF9hdGwrB%2Fho0k06D3Nlc3Npb25faWQiJTU1NTk3NGQ5OGFiOTBhZTMxMmMxYTNiOTU2Mjk3YjU4IhN3YXJkZW4ubWVzc2FnZXsAOgdpZCIVaDEzbGxrOTJoLW8yOGx2Mg%3D%3D--ad932774d2882405576dc9fc77fc226e359d30ad; path=/; HttpOnly
+      x-runtime:
+      - '82'
+      content-length:
+      - '471'
+      set-cookie:
+      - _zendesk_session=BAh7DToMYWNjb3VudGkCN6kiHHdhcmRlbi51c2VyLmRlZmF1bHQua2V5aQPrlek6D3VwZGF0ZWRfYXRsKwf4aNJNOg1hdXRoX3ZpYSISQmFzaWNTdHJhdGVneToVYXV0aGVudGljYXRlZF9hdGwrB%2Fho0k06D3Nlc3Npb25faWQiJTU1NTk3NGQ5OGFiOTBhZTMxMmMxYTNiOTU2Mjk3YjU4IhN3YXJkZW4ubWVzc2FnZXsAOgdpZCIVaDEzbGxrOTJoLW8yOGx2Mg%3D%3D--ad932774d2882405576dc9fc77fc226e359d30ad;
+        path=/; HttpOnly
       - oid_user=; path=/; expires=Thu, 01-Jan-1970 00:00:00 GMT
-      cache-control: 
+      cache-control:
       - private, max-age=0, must-revalidate
-    body: "{\"photo_url\":\"http://sublimevideo.zendesk.com/images/types/user_sm.png\",\"name\":\"John Doe\",\"locale_id\":null,\"openid_url\":null,\"created_at\":\"2011/05/17 13:54:12 +0200\",\"last_login\":null,\"details\":null,\"updated_at\":\"2011/05/17 14:24:24 +0200\",\"notes\":null,\"external_id\":null,\"restriction_id\":4,\"id\":59438671,\"email\":\"email3@user.com\",\"phone\":null,\"is_active\":true,\"time_zone\":\"Bern\",\"is_verified\":true,\"roles\":0,\"organization_id\":null,\"groups\":[],\"uses_12_hour_clock\":false}"
-    http_version: "1.1"
+    body: ! '{"photo_url":"http://sublimevideo.zendesk.com/images/types/user_sm.png","name":"John
+      Doe","locale_id":null,"openid_url":null,"created_at":"2011/05/17 13:54:12 +0200","last_login":null,"details":null,"updated_at":"2011/05/17
+      14:24:24 +0200","notes":null,"external_id":null,"restriction_id":4,"id":59438671,"email":"email3@user.com","phone":null,"is_active":true,"time_zone":"Bern","is_verified":true,"roles":0,"organization_id":null,"groups":[],"uses_12_hour_clock":false}'
+    http_version: '1.1'
