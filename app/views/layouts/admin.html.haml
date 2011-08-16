@@ -4,17 +4,13 @@
     %title= "MySublimeVideo Admin - #{yield :title}"
     %meta{ "http-equiv" => "X-UA-Compatible", :content => "chrome=1" }
     %meta{ "http-equiv" => "Content-Type", :content => "text/html;charset=UTF-8" }
-
-    = stylesheet_link_tag "admin"
-
+    = stylesheet_link_tag 'admin'
     %link{ :rel => "shortcut icon", :href => "/favicon.ico", :type => "image/x-icon" }
-
-    = yield :header
-    = include_javascripts(:default, :admin, :chart)
-    = yield :js
+    = javascript_include_tag 'admin'
     = csrf_meta_tag
     = javascript_include_tag "#{request.protocol}use.typekit.com/zwt2duv.js"
-    == <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
+    :javascript
+      try { Typekit.load(); } catch(e) { }
   %body
     #global
       = render 'admin/layouts/admin_header'

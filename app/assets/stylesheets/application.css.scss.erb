@@ -19,7 +19,7 @@ body {
 #header {
   min-width:1000px;
   height:61px;
-  background:url(/images/embed/header_background.png) repeat-x;
+  background:url(<%= asset_data_uri 'header_background.png' %>) repeat-x;
 }
 
 #header_wrap {
@@ -34,7 +34,7 @@ body {
   float:left;
   width:239px;
   height:32px;
-  background:url(/images/embed/sublimevideo.png) no-repeat;
+  background:url(<%= asset_data_uri 'sublimevideo.png' %>) no-repeat;
   position:relative;
   top:12px;
 }
@@ -57,7 +57,7 @@ body {
   width:85px;
   height:24px;
   padding-top:5px;
-  background:url(/images/embed/main_menu_background.png) no-repeat;
+  background:url(<%= asset_data_uri 'main_menu_background.png' %>) no-repeat;
   color:#e9ddef;
   font-size:15px;
   letter-spacing:1px;
@@ -116,14 +116,14 @@ body {
 }
 
 #header .right a.user strong {
-  background:url(/images/embed/header_btn_back_left.png) no-repeat;
+  background:url(<%= asset_data_uri 'header_btn_back_left.png' %>) no-repeat;
   height:22px;
   padding:7px 4px 0 6px;
   display:block;
 }
 
 #header .right a.user span.icon {
-  background:url(/images/embed/user_btn_icon.png) no-repeat 0 0;
+  background:url(<%= asset_data_uri 'user_btn_icon.png' %>) no-repeat 0 0;
   padding:0 0 1px 22px;
 }
 
@@ -131,7 +131,7 @@ body {
   display:block;
   width:6px;
   height:29px;
-  background:url(/images/embed/header_btn_back_right.png) no-repeat;
+  background:url(<%= asset_data_uri 'header_btn_back_right.png' %>) no-repeat;
   position:absolute;
   top:0;
   right:0;
@@ -148,7 +148,7 @@ body {
 }
 
 #main {
-  background:url(/images/embed/textured_background.jpg);
+  background:url(<%= asset_data_uri 'textured_background.jpg' %>);
   border:1px solid #313741;
   -webkit-border-radius:10px;
   -moz-border-radius:10px;
@@ -175,7 +175,7 @@ body {
 }
 
 #white_halo {
-  background:url(/images/embed/white_halo.png) center -300px no-repeat;
+  background:url(<%= asset_data_uri 'white_halo.png' %>) center -300px no-repeat;
 }
 
 #content {
@@ -252,7 +252,7 @@ body {
 }
 
 #sticky_notice ul li {
-  background:url(/images/embed/sticky_notice_bullet.png) no-repeat 0 7px;
+  background:url(<%= asset_data_uri 'sticky_notice_bullet.png' %>) no-repeat 0 7px;
   padding:2px 0 6px 16px;
 }
 
@@ -286,7 +286,7 @@ body {
 }
 
 #content form.section {
-  background:url(/images/embed/breakline.png) no-repeat -228px 100%;
+  background:url(<%= asset_data_uri 'breakline.png' %>) no-repeat -228px 100%;
   padding-bottom:20px;
 }
 
@@ -298,7 +298,7 @@ h3.section_title {
 
 #content form .break {
   height:2px;
-  background:url(/images/embed/breakline.png) no-repeat -228px 100%;
+  background:url(<%= asset_data_uri 'breakline.png' %>) no-repeat -228px 100%;
   margin:15px 0;
 }
 
@@ -320,7 +320,7 @@ form label.icon {
 form .first_name label.icon {
   width:17px;
   height:17px;
-  background:url(/images/embed/fullname_field_icon.png) no-repeat;
+  background:url(<%= asset_data_uri 'fullname_field_icon.png' %>) no-repeat;
   top:16px;
   left:10px;
 }
@@ -328,7 +328,7 @@ form .first_name label.icon {
 form .email label.icon {
   width:17px;
   height:18px;
-  background:url(/images/embed/email_field_icon.png) no-repeat;
+  background:url(<%= asset_data_uri 'email_field_icon.png' %>) no-repeat;
   top:16px;
   left:10px;
 }
@@ -336,7 +336,7 @@ form .email label.icon {
 form .password label.icon {
   width:13px;
   height:17px;
-  background:url(/images/embed/password_field_icon.png) no-repeat;
+  background:url(<%= asset_data_uri 'password_field_icon.png' %>) no-repeat;
   top:16px;
   left:12px;
 }
@@ -344,7 +344,7 @@ form .password label.icon {
 form .site label.icon {
   width:16px;
   height:17px;
-  background:url(/images/embed/site_field_icon.png) no-repeat;
+  background:url(<%= asset_data_uri 'site_field_icon.png' %>) no-repeat;
   top:17px;
   left:10px;
 }
@@ -352,7 +352,7 @@ form .site label.icon {
 form .card_number label.icon {
   width:20px;
   height:16px;
-  background:url(/images/embed/card_field_icon.png) no-repeat;
+  background:url(<%= asset_data_uri 'card_field_icon.png' %>) no-repeat;
   top:17px;
   left:10px;
 }
@@ -360,7 +360,7 @@ form .card_number label.icon {
 form .feedback_subject label.icon {
   width:20px;
   height:16px;
-  background:url(/images/embed/feedback_field_icon.png) no-repeat;
+  background:url(<%= asset_data_uri 'feedback_field_icon.png' %>) no-repeat;
   top:17px;
   left:10px;
 }
@@ -368,7 +368,7 @@ form .feedback_subject label.icon {
 form .path label.icon {
   width:7px;
   height:15px;
-  background:url(/images/embed/path_field_icon.png) no-repeat;
+  background:url(<%= asset_data_uri 'path_field_icon.png' %>) no-repeat;
   top:18px;
   left:10px;
 }
@@ -503,7 +503,7 @@ form .inline_errors span {
 }
 
 .global_errors p {
-  background:url(/images/embed/warning_icon.png) no-repeat 0 0;
+  background:url(<%= asset_data_uri 'warning_icon.png' %>) no-repeat 0 0;
   padding:2px 0 2px 35px;
   color:#fff;
   font-size:18px;
@@ -517,7 +517,7 @@ form p.note, #content form label.note, #credit_card_summary p.note {
   font-size:13px;
   font-weight:600;
   line-height:16px;
-  background:url(/images/embed/note_icon.png) no-repeat;
+  background:url(<%= asset_data_uri 'note_icon.png' %>) no-repeat;
 }
 
 #credit_card_summary p.note {margin-top:5px;}
@@ -555,7 +555,7 @@ form p.note, #content form label.note, #credit_card_summary p.note {
   display:block;
   height:20px;
   padding:6px 0 0 27px;
-  background:url(/images/embed/custom_checkbox.png) no-repeat;
+  background:url(<%= asset_data_uri 'custom_checkbox.png' %>) no-repeat;
 }
 
 /* Original concept by http://www.thecssninja.com/css/custom-inputs-using-css */
@@ -584,7 +584,7 @@ form p.note, #content form label.note, #credit_card_summary p.note {
   display:block;
   height:20px;
   padding:6px 0 0 27px;
-  background:url(/images/embed/custom_radio.png) no-repeat;
+  background:url(<%= asset_data_uri 'custom_radio.png' %>) no-repeat;
 }
 
 /* Original concept by http://www.thecssninja.com/css/custom-inputs-using-css */
@@ -625,8 +625,8 @@ form p.note, #content form label.note, #credit_card_summary p.note {
   top:-6px;
 }
 
-#content form .entry.card label.visa span {background:url(/images/embed/credit_cards/visa.png) no-repeat;}
-#content form .entry.card label.master span {background:url(/images/embed/credit_cards/mastercard.png) no-repeat;}
+#content form .entry.card label.visa span {background:url(<%= asset_data_uri 'credit_cards/visa.png' %>) no-repeat;}
+#content form .entry.card label.master span {background:url(<%= asset_data_uri 'credit_cards/mastercard.png' %>) no-repeat;}
 
 #content form .entry.small_field input.text {
   width:90px;
@@ -687,7 +687,7 @@ form p.note, #content form label.note, #credit_card_summary p.note {
     margin-right:6px;
     height:36px;
     padding:2px 22px 0 10px;
-    background:url(/images/embed/custom_select.png) no-repeat right center;
+    background:url(<%= asset_data_uri 'custom_select.png' %>) no-repeat right center;
     border:1px solid #8a92a0;
 /*    font-family:"proxima-nova-1","proxima-nova-2", Helvetica, Arial, sans-serif;*/
     font-size:18px;
@@ -710,7 +710,7 @@ form p.note, #content form label.note, #credit_card_summary p.note {
 #content .optional_fields {
   margin:20px 0 0;
   padding:22px 0 0;
-  background:url(/images/embed/breakline.png) no-repeat -228px 0;
+  background:url(<%= asset_data_uri 'breakline.png' %>) no-repeat -228px 0;
 }
 
 #content .optional_fields h4 {
@@ -733,7 +733,7 @@ form p.note, #content form label.note, #credit_card_summary p.note {
 }
 
 #content .entry.terms {
-  background:url(/images/embed/breakline.png) no-repeat -228px 0;
+  background:url(<%= asset_data_uri 'breakline.png' %>) no-repeat -228px 0;
   padding:10px 0 22px;
   margin-top:20px;
 }
@@ -748,7 +748,7 @@ form p.note, #content form label.note, #credit_card_summary p.note {
 }
 
 #content .entry.submit {
-  background:url(/images/embed/breakline.png) no-repeat -228px 0;
+  background:url(<%= asset_data_uri 'breakline.png' %>) no-repeat -228px 0;
   padding:25px 0 0;
   margin-bottom:0;
 }
@@ -756,7 +756,7 @@ form p.note, #content form label.note, #credit_card_summary p.note {
 #content .entry.submit input {
   width:144px;
   height:76px;
-  background:url(/images/embed/submit_btn.png) no-repeat;
+  background:url(<%= asset_data_uri 'submit_btn.png' %>) no-repeat;
   border:none;
   font-family:"proxima-nova-1","proxima-nova-2", Helvetica, Arial, sans-serif;
   font-size:22px;
@@ -773,7 +773,7 @@ form p.note, #content form label.note, #credit_card_summary p.note {
 }
 
 #content .entry.submit.signup input {
-  background:url(/images/embed/signup_btn.png) no-repeat;
+  background:url(<%= asset_data_uri 'signup_btn.png' %>) no-repeat;
   color:#fff;
   text-shadow:rgba(0,0,0,0.9) 0 -1px 1px;
   font-weight:400;
@@ -824,7 +824,7 @@ form .entry a.cancel {
 
 #signup_steps {
   margin:-25px 0 30px;
-  background:url(/images/embed/signup/steps_breakline.png) no-repeat center bottom;
+  background:url(<%= asset_data_uri 'signup/steps_breakline.png' %>) no-repeat center bottom;
 }
 
 #signup_steps .center_wrap {
@@ -859,7 +859,7 @@ form .entry a.cancel {
   float:left;
   width:32px;
   height:33px;
-  background:url(/images/embed/signup/steps_dot.png) no-repeat;
+  background:url(<%= asset_data_uri 'signup/steps_dot.png' %>) no-repeat;
   margin-right:10px;
   text-align:center;
   font-size:18px;
@@ -868,12 +868,12 @@ form .entry a.cancel {
   text-shadow:rgba(0,0,0,0.5) 0 -1px 0;
 }
 
-#signup_steps li.active strong.number {background-image:url(/images/embed/signup/steps_dot_active.png)}
+#signup_steps li.active strong.number {background-image:url(<%= asset_data_uri 'signup/steps_dot_active.png' %>)}
 
 #login_right {
   width:420px;
   height:338px;
-  background:url(/images/embed/vertical_breakline.png) no-repeat;
+  background:url(<%= asset_data_uri 'vertical_breakline.png' %>) no-repeat;
   position:absolute;
   top:40px;
   right:0;
@@ -908,7 +908,7 @@ form .entry a.cancel {
   width:165px;
   height:33px;
   padding:11px 0 0 14px;
-  background:url(/images/embed/light_blue_button.png) no-repeat;
+  background:url(<%= asset_data_uri 'light_blue_button.png' %>) no-repeat;
   color:#405f92;
   font-size:20px;
   font-weight:600;
@@ -1045,7 +1045,7 @@ ul#twitter_quotes li p.quote_info a {
 
 .small_button, .medium_button {
   display:block;
-  background:url(/images/embed/small_link_btn.png) no-repeat;
+  background:url(<%= asset_data_uri 'small_link_btn.png' %>) no-repeat;
   width:109px;
   height:33px;
   padding:7px 0 0;
@@ -1061,7 +1061,7 @@ ul#twitter_quotes li p.quote_info a {
 
 .medium_button {
   width:141px;
-  background:url(/images/embed/medium_link_btn.png) no-repeat;
+  background:url(<%= asset_data_uri 'medium_link_btn.png' %>) no-repeat;
 }
 
 input.small_button, input.medium_button {
@@ -1170,7 +1170,7 @@ input.link_looks, button.link_looks {
 }
 
 input.link_looks.delete {
-  background:url(/images/embed/sites/delete_small_icon.png) no-repeat 0 50%;
+  background:url(<%= asset_data_uri 'sites/delete_small_icon.png' %>) no-repeat 0 50%;
   padding:5px 6px 4px 20px;
   color:#852626;
   text-shadow:rgba(255,255,255,0.75) 0 1px 0;
@@ -1309,27 +1309,27 @@ input.link_looks.delete {
 }
 
 #content table.main th a.sort strong {
-  background:url(/images/embed/sort_btn_background.png) no-repeat;
+  background:url(<%= asset_data_uri 'sort_btn_background.png' %>) no-repeat;
   height:18px;
   padding:6px 4px 0 3px;
   display:block;
 }
 
 #content table.main th a.sort span.arrow {
-  background:url(/images/embed/sort_btn_arrow_down.png) no-repeat 100% 2px;
+  background:url(<%= asset_data_uri 'sort_btn_arrow_down.png' %>) no-repeat 100% 2px;
   padding:0 15px 0 0;
   position:relative;
   right:-8px;
   z-index:2;
 }
 
-#content table.main th a.sort.up span.arrow {background-image:url(/images/embed/sort_btn_arrow_up.png);}
+#content table.main th a.sort.up span.arrow {background-image:url(<%= asset_data_uri 'sort_btn_arrow_up.png' %>);}
 
 #content table.main th a.sort span.corner {
   display:block;
   width:12px;
   height:24px;
-  background:url(/images/embed/sort_btn_background_corner.png) no-repeat;
+  background:url(<%= asset_data_uri 'sort_btn_background_corner.png' %>) no-repeat;
   position:absolute;
   top:0;
   right:0;
@@ -1417,7 +1417,7 @@ input.link_looks.delete {
 
 #content table.main td.site a.domain span.settings_icon {
   display:none;
-  background:url(/images/embed/settings_btn.png) no-repeat;
+  background:url(<%= asset_data_uri 'settings_btn.png' %>) no-repeat;
   width:24px;
   height:24px;
   position:absolute;
@@ -1435,7 +1435,7 @@ input.link_looks.delete {
 
 #content table.main td.site .warning a.icon {
   display:block;
-  background:url(/images/embed/warning_icon.png) no-repeat;
+  background:url(<%= asset_data_uri 'warning_icon.png' %>) no-repeat;
   width:24px;
   height:23px;
 }
@@ -1468,7 +1468,7 @@ input.link_looks.delete {
   right:-9px;
   font-size:12px;
   color:#6a7486;
-  background:url(/images/embed/sites/cycle_icon.png) no-repeat 0 1px;
+  background:url(<%= asset_data_uri 'sites/cycle_icon.png' %>) no-repeat 0 1px;
   padding-left:16px;
 }
 
@@ -1509,7 +1509,7 @@ input.link_looks.delete {
   display:block;
   width:18px;
   height:17px;
-  background:url(/images/embed/alert_icon.png) no-repeat;
+  background:url(<%= asset_data_uri 'alert_icon.png' %>) no-repeat;
 }
 
 #content table.main td.usage .alert_icon a.icon span {display:none}
@@ -1644,7 +1644,7 @@ input.link_looks.delete {
   display:block;
   width:146px;
   height:30px;
-  background:url(/images/embed/embed_btn.png) no-repeat;
+  background:url(<%= asset_data_uri 'embed_btn.png' %>) no-repeat;
   padding-top:9px;
   margin:0 auto;
   font-size:16px;
@@ -1668,14 +1668,14 @@ input.link_looks.delete {
 }
 
 #content table.main td.status .icon.in_progress {
-  background:url(/images/embed/sites/status_loading_indicator.gif) no-repeat center;
+  background:url(<%= asset_data_uri 'sites/status_loading_indicator.gif' %>) no-repeat center;
 }
 
-#content table.main td.status .icon.ok {background:url(/images/embed/sites/status_ok.png) no-repeat center}
+#content table.main td.status .icon.ok {background:url(<%= asset_data_uri 'sites/status_ok.png' %>) no-repeat center}
 
-#content table.main td.status .icon.payment_issue {background:url(/images/embed/alert_icon.png) no-repeat center}
+#content table.main td.status .icon.payment_issue {background:url(<%= asset_data_uri 'alert_icon.png' %>) no-repeat center}
 
-#content table.main td.status .icon.payment_waiting {background:url(/images/embed/warning_small_icon.png) no-repeat center}
+#content table.main td.status .icon.payment_waiting {background:url(<%= asset_data_uri 'warning_small_icon.png' %>) no-repeat center}
 
 #content table.main td.status .info_box {
   width:100px;
@@ -1724,7 +1724,7 @@ input.link_looks.delete {
   display:block;
   width:9px;
   height:7px;
-  background:url(/images/embed/info_box_arrow_down.png) no-repeat;
+  background:url(<%= asset_data_uri 'info_box_arrow_down.png' %>) no-repeat;
   position:absolute;
   bottom:-7px;
   left:0;
@@ -1790,7 +1790,7 @@ input.link_looks.delete {
 }
 
 #plans li .wrapper {
-  background:url(/images/embed/sites/plans_box_background.png) no-repeat;
+  background:url(<%= asset_data_uri 'sites/plans_box_background.png' %>) no-repeat;
   width:210px;
   position:relative;
   z-index:3;
@@ -1799,7 +1799,7 @@ input.link_looks.delete {
 #plans li .bottom {
   width:210px;
   height:7px;
-  background:url(/images/embed/sites/plans_box_background_bottom.png) no-repeat;
+  background:url(<%= asset_data_uri 'sites/plans_box_background_bottom.png' %>) no-repeat;
 }
 
 #plans li, #plans li * {
@@ -1881,7 +1881,7 @@ input.link_looks.delete {
   width:218px;
   height:22px;
   padding-top:8px;
-  background:url(/images/embed/sites/recommended_label.png) no-repeat;
+  background:url(<%= asset_data_uri 'sites/recommended_label.png' %>) no-repeat;
   position:absolute;
   z-index:4;
   bottom:-21px;
@@ -2031,7 +2031,7 @@ input.link_looks.delete {
   width:97px;
   height:16px;
   padding:2px 0 0;
-  background:url(/images/embed/sites/plans_2_months_free.png) no-repeat;
+  background:url(<%= asset_data_uri 'sites/plans_2_months_free.png' %>) no-repeat;
   color:#e6daec;
   font-size:9px;
   font-weight:600;
@@ -2099,7 +2099,7 @@ input.link_looks.delete {
   display:block;
   width:27px;
   height:27px;
-  background:url(/images/embed/sites/plans_radiobutton.png) no-repeat;
+  background:url(<%= asset_data_uri 'sites/plans_radiobutton.png' %>) no-repeat;
 }
 
 /* Original concept by http://www.thecssninja.com/css/custom-inputs-using-css */
@@ -2199,7 +2199,7 @@ ul#addons .checkbox_wrap label {
   display:block;
   height:27px;
   padding:7px 0 0 40px;
-  background:url(/images/embed/sites/addons_checkbox.png) no-repeat;
+  background:url(<%= asset_data_uri 'sites/addons_checkbox.png' %>) no-repeat;
   color:#5d636f;
 }
 
@@ -2251,7 +2251,7 @@ ul#addons .checkbox_wrap input:focus:checked + label {background-position:0 -102
   width:92px;
   height:30px;
   padding:10px 0 0 14px;
-  background:url(/images/embed/sites/box_toggler_button.png) no-repeat;
+  background:url(<%= asset_data_uri 'sites/box_toggler_button.png' %>) no-repeat;
   color:#4d5563;
   font-size:15px;
   font-weight:600;
@@ -2273,7 +2273,7 @@ ul#addons .checkbox_wrap input:focus:checked + label {background-position:0 -102
   float:left;
   margin:0 0 0 22px;
   padding:0 0 0 25px;
-  background:url(/images/embed/sites/small_horizontal_breakline.png) no-repeat 0 0;
+  background:url(<%= asset_data_uri 'sites/small_horizontal_breakline.png' %>) no-repeat 0 0;
 }
 
 #site_setup .settings h4.title {
@@ -2290,7 +2290,7 @@ ul#addons .checkbox_wrap input:focus:checked + label {background-position:0 -102
   height:35px;
   padding:13px 0 0 20px;
   margin:14px 0 3px;
-  background:url(/images/embed/sites/add_domains_box_button.png) no-repeat;
+  background:url(<%= asset_data_uri 'sites/add_domains_box_button.png' %>) no-repeat;
   color:#4d5563;
   font-size:17px;
   font-weight:600;
@@ -2369,7 +2369,7 @@ ul#addons .checkbox_wrap input:focus:checked + label {background-position:0 -102
   width:265px;
   padding:13px 10px 10px 60px;
   background-color:#a4acb8;
-  background:rgba(0,0,0,0.1) url(/images/embed/credit_cards/secure_icon.png) no-repeat 15px 15px;
+  background:rgba(0,0,0,0.1) url(<%= asset_data_uri 'credit_cards/secure_icon.png' %>) no-repeat 15px 15px;
   text-shadow:rgba(255,255,255,0.4) 0 1px 0;
   -moz-border-radius:6px;
   -webkit-border-radius:6px;
@@ -2388,7 +2388,7 @@ ul#addons .checkbox_wrap input:focus:checked + label {background-position:0 -102
   width:440px;
   font-size:12px;
   margin:30px 0 0;
-  background:url(/images/embed/breakline.png) no-repeat -228px 0;
+  background:url(<%= asset_data_uri 'breakline.png' %>) no-repeat -228px 0;
   padding:15px 0 0;
   line-height:20px;
 }
@@ -2402,7 +2402,7 @@ ul#addons .checkbox_wrap input:focus:checked + label {background-position:0 -102
 #site .actions input.submit.big {
   width:210px;
   height:84px;
-  background:url(/images/embed/big_submit_button.png) no-repeat;
+  background:url(<%= asset_data_uri 'big_submit_button.png' %>) no-repeat;
   border:none;
   font-family:"proxima-nova-1","proxima-nova-2", Helvetica, Arial, sans-serif;
   font-size:22px;
@@ -2589,7 +2589,7 @@ ul.segmented_menu li.last a {
 }
 
 #site.edit .entry.delete input.delete_site {
-  background:url(/images/embed/sites/delete_small_icon.png) no-repeat 0 50%;
+  background:url(<%= asset_data_uri 'sites/delete_small_icon.png' %>) no-repeat 0 50%;
   float:left;
   padding:5px 6px 4px 20px;
   border:none;
@@ -2674,7 +2674,7 @@ ul.segmented_menu li.last a {
 
 .popup.loading .content {
   height:130px;
-  background:url(/images/embed/big_spinner.gif) no-repeat center;
+  background:url(<%= asset_data_uri 'big_spinner.gif' %>) no-repeat center;
 }
 
 .popup .content h3 {
@@ -2787,7 +2787,7 @@ ul.segmented_menu li.last a {
   display:block;
   height:20px;
   padding:6px 0 0 27px;
-  background:url(/images/embed/custom_checkbox.png) no-repeat;
+  background:url(<%= asset_data_uri 'custom_checkbox.png' %>) no-repeat;
 }
 
 /* Original concept by http://www.thecssninja.com/css/custom-inputs-using-css */
@@ -2799,7 +2799,7 @@ ul.segmented_menu li.last a {
   display:block;
   width:32px;
   height:32px;
-  background:url(/images/embed/close_btn.png) no-repeat;
+  background:url(<%= asset_data_uri 'close_btn.png' %>) no-repeat;
   position:absolute;
   top:-16px;
   left:-16px;
@@ -2821,7 +2821,7 @@ nav.pagination {
 nav.pagination .prev {
   display:block;
   text-indent:-9999px;
-  background:url(/images/embed/paginate_arrow_left.png) no-repeat;
+  background:url(<%= asset_data_uri 'paginate_arrow_left.png' %>) no-repeat;
   width:17px;
   height:18px;
   margin-right:10px;
@@ -2833,7 +2833,7 @@ nav.pagination span.prev {opacity:0.3;}
 nav.pagination .next {
   display:block;
   text-indent:-9999px;
-  background:url(/images/embed/paginate_arrow_right.png) no-repeat;
+  background:url(<%= asset_data_uri 'paginate_arrow_right.png' %>) no-repeat;
   width:17px;
   height:18px;
   margin-left:10px;
@@ -2906,7 +2906,7 @@ nav.pagination span.gap {
 }
 
 #credit_card_summary {
-  background:url(/images/embed/breakline.png) no-repeat -340px 100%;
+  background:url(<%= asset_data_uri 'breakline.png' %>) no-repeat -340px 100%;
   padding:10px 0 20px;
 }
 
@@ -2923,9 +2923,9 @@ nav.pagination span.gap {
   margin-top:10px;
 }
 
-#credit_card_summary p.master {background:url(/images/embed/credit_cards/mastercard.png) no-repeat;}
+#credit_card_summary p.master {background:url(<%= asset_data_uri 'credit_cards/mastercard.png' %>) no-repeat;}
 
-#credit_card_summary p.visa {background:url(/images/embed/credit_cards/visa.png) no-repeat;}
+#credit_card_summary p.visa {background:url(<%= asset_data_uri 'credit_cards/visa.png' %>) no-repeat;}
 
 #credit_card_summary p.alert {
   color:#a50015;
@@ -2950,7 +2950,7 @@ nav.pagination span.gap {
 
 #invoices_summary .failed_invoices p.desc {
   padding:2px 0 10px 30px;
-  background:url(/images/embed/alert_icon.png) no-repeat;
+  background:url(<%= asset_data_uri 'alert_icon.png' %>) no-repeat;
 }
 
 #invoices_summary p, #failed_invoices p {
@@ -2962,7 +2962,7 @@ nav.pagination span.gap {
 }
 
 #invoices_summary .past_invoices {
-  background:url(/images/embed/breakline.png) no-repeat -228px 0;
+  background:url(<%= asset_data_uri 'breakline.png' %>) no-repeat -228px 0;
   padding:10px 0 0;
   margin-top:15px;
 }
@@ -2974,7 +2974,7 @@ nav.pagination span.gap {
 #invoices_summary .past_invoices ul li, #failed_invoices ul li {
   padding:6px 0 6px 36px;
   font-size:15px;
-  background:url(/images/embed/invoice_icon.png) no-repeat 0 11px;
+  background:url(<%= asset_data_uri 'invoice_icon.png' %>) no-repeat 0 11px;
 }
 
 #invoices_summary .past_invoices ul li p.status, #failed_invoices ul li p.status {
@@ -3018,7 +3018,7 @@ nav.pagination span.gap {
 }
 
 /*#past_invoices {
-  background:url(/images/embed/breakline.png) no-repeat -228px 100%;
+  background:url(<%= asset_data_uri 'breakline.png' %>) no-repeat -228px 100%;
   padding:10px 0 20px;
 }
 
@@ -3151,7 +3151,7 @@ div.text a {
 .spacer {clear:both;}
 .spacer_border {
   height:2px;
-  background:url(/images/embed/breakline.png) no-repeat 0 100%;
+  background:url(<%= asset_data_uri 'breakline.png' %>) no-repeat 0 100%;
 }
 
 a {
@@ -3169,7 +3169,7 @@ a.help {
   display:block;
   width:32px;
   height:33px;
-  background:url(/images/embed/help_icon_alt.png) no-repeat;
+  background:url(<%= asset_data_uri 'help_icon_alt.png' %>) no-repeat;
 }
 
 a.help span {display:none;}

@@ -31,7 +31,6 @@ gem 'mongoid',               '~> 2.1.7'
 # Views
 gem 'haml',                  '~> 3.1.2'
 gem 'kaminari',              '~> 0.12.4'
-gem 'jammit',                '~> 0.6.3'
 gem 'liquid',                '~> 2.2.2'
 gem 'RedCloth',              '~> 4.2.7'
 
@@ -121,9 +120,9 @@ group :development do
 end
 
 group :guard do
-  gem 'rb-fsevent'
+  gem 'rb-fsevent', :git => 'git://github.com/ttilley/rb-fsevent.git', :branch => 'pre-compiled-gem-one-off'
   gem 'growl_notify'
-  gem 'guard', :git => 'git://github.com/guard/guard.git'
+  gem 'guard', :git => 'git://github.com/guard/guard.git', :branch => 'stdin'
   gem 'guard-bundler'
   gem 'guard-pow'
   gem 'guard-livereload'
