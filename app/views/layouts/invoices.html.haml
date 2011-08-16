@@ -5,17 +5,8 @@
     %meta{ "http-equiv" => "X-UA-Compatible", :content => "chrome=1" }
     %meta{ "http-equiv" => "Content-Type", :content => "text/html;charset=UTF-8" }
     %link{ :rel => "shortcut icon", :href => "/favicon.ico", :type => "image/x-icon" }
-    
-    = include_stylesheets :invoice, :media => :all
-    %style{ :type => "text/css", :media => "print" }
-      == body {
-      ==   background:none;
-      == }
-      == #global {
-      ==   margin-top:0;
-      == }
-      == a#print {display:none}
-    
+    = stylesheet_link_tag 'invoices'
+    = stylesheet_link_tag "invoices_print", :media => "print"
   %body
     #global
       %a#print{ :href => "", :onclick => "window.print(); return false" }= "Print"

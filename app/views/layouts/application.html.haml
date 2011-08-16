@@ -4,23 +4,19 @@
     %title= "MySublimeVideo - #{yield :title}"
     %meta{ "http-equiv" => "X-UA-Compatible", :content => "chrome=1" }
     %meta{ "http-equiv" => "Content-Type", :content => "text/html;charset=UTF-8" }
-
-    = include_stylesheets :style
-
+    = stylesheet_link_tag 'application'
     %link{ :rel => "shortcut icon", :href => "/favicon.ico", :type => "image/x-icon" }
-
     /[if lte IE 6]
       %meta{ "http-equiv" => "Refresh", :content => "0;url=http://jilion.com/ie" }
       %style{ :type => "text/css", :media => "screen" }
         == body {background:#fff;display:none;}
     /[if lte IE 8]
-      = include_stylesheets(:style_ie, :embed_assets => false)
-
-    = include_javascripts(:default)
-    = yield :header
+      = stylesheet_link_tag 'application_ie'
+    = javascript_include_tag 'application'
     = csrf_meta_tag
     = javascript_include_tag "#{request.protocol}use.typekit.com/zwt2duv.js"
-    == <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
+    :javascript
+      try { Typekit.load(); } catch(e) { }
   %body
     #global
       = render 'layouts/header'
@@ -41,4 +37,3 @@
 
     = yield :bottom
     = render 'layouts/gosquared' if Rails.env.production?
-  
