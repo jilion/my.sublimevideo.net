@@ -67,31 +67,33 @@ private
     incs     = Hash.new { |h,k| h[k] = Hash.new(0) }
     trackers.each do |tracker, hits|
       token, params, user_agent = tracker
-      incs_from_params_and_user_agent(params, user_agent).each do |inc|
-        incs[token][inc] += hits
+      incs_from_params_and_user_agent(params, user_agent, hits).each do |inc, value|
+        incs[token][inc] += value
       end
     end
     incs
   end
 
-  def self.incs_from_params_and_user_agent(params, user_agent)
-    incs   = []
+  def self.incs_from_params_and_user_agent(params, user_agent, hits)
+    incs   = {}
     params = Addressable::URI.parse(params).query_values || {}
     if params.key?("e") && params.key?("h")
       case params["e"]
       when 'l' # Player load
         # Page Visits
-        incs << 'pv.' + params["h"]
+        incs['pv.' + params["h"]] = hits
         # Browser + Plateform
-        incs << 'bp.' + browser_and_platform_key(user_agent)
+        incs['bp.' + browser_and_platform_key(user_agent)] = hits
       when 'p' # Video prepare
         # Player Mode + Device hash
         if params.key?("pm") && params.key?("pd")
-          incs << 'md.' + params["pm"] + '.' + params["pd"]
+          params["pm"].uniq.each do |pm|
+            incs['md.' + pm + '.' + params["pd"]] = params['pm'].count(pm) * hits
+          end
         end
       when 's' # Video start (play)
         # Video Views
-        incs << 'vv.' + params["h"]
+        incs['vv.' + params["h"]] = hits
       end
     end
     incs
