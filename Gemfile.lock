@@ -24,9 +24,10 @@ GIT
 
 GIT
   remote: git://github.com/guard/guard.git
-  revision: 52cf5702459c01752dc81aa4b0f3884eb2485e10
+  revision: d268f236bf0f859a0c8729b44e605612e7031851
+  branch: master
   specs:
-    guard (0.6.0)
+    guard (0.6.1)
       thor (~> 0.14.6)
 
 GIT
