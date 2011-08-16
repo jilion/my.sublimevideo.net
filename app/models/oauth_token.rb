@@ -24,7 +24,7 @@ class OauthToken < ActiveRecord::Base
   # = Scopes =
   # ==========
 
-  scope :valid, where(:invalidated_at => nil, :authorized_at.not_eq => nil)
+  scope :valid, where { (invalidated_at == nil) & (authorized_at != nil) }
 
   # ====================
   # = Instance Methods =
@@ -35,7 +35,7 @@ class OauthToken < ActiveRecord::Base
   end
 
   def invalidate!
-    update_attribute(:invalidated_at, Time.now)
+    update_attribute(:invalidated_at, Time.now.utc)
   end
 
   def authorized?
