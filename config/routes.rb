@@ -31,6 +31,8 @@ MySublimeVideo::Application.routes.draw do
     resources :invoices, :only => :index do
       put :retry, :on => :collection
     end
+    resources :stats, :only => :index do
+    end
   end
 
   resource :card, :controller => 'credit_cards', :as => :credit_card, :only => [:edit, :update]

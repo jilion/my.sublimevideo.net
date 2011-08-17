@@ -17,6 +17,8 @@ group :assets do
 end
 
 gem 'prototype-rails', :git => 'git://github.com/rymai/prototype-rails.git'
+gem 'jquery-rails'
+gem 'rails-backbone'
 
 # Databases
 gem 'pg',                    '~> 0.11.0'
