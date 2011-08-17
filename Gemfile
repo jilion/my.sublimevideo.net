@@ -77,9 +77,7 @@ gem 'useragent',             :git => 'git://github.com/Jilion/useragent.git'
 
 gem 'zip',                   '~> 2.0.2', :require => 'zip/zip'
 gem 'countries',             '~> 0.5.3'
-# gem 'PageRankr',             '~> 2.0.1', :require => 'page_rankr'
-# until v2.0.2
-gem 'PageRankr',             :git => 'git://github.com/blatyo/page_rankr.git', :require => 'page_rankr'
+gem 'PageRankr',             '~> 2.0.2', :require => 'page_rankr'
 gem 'twitter',               '~> 1.6.2'
 gem 'settingslogic',         '~> 2.0.6'
 gem 'array_stats',           '~> 0.6.0'
@@ -122,7 +120,7 @@ end
 group :guard do
   gem 'rb-fsevent', :git => 'git://github.com/ttilley/rb-fsevent.git', :branch => 'pre-compiled-gem-one-off'
   gem 'growl_notify'
-  gem 'guard', :git => 'git://github.com/guard/guard.git', :branch => 'stdin'
+  gem 'guard', :git => 'git://github.com/guard/guard.git'
   gem 'guard-bundler'
   gem 'guard-pow'
   gem 'guard-livereload'
@@ -132,7 +130,7 @@ end
 
 group :test do
   gem 'spork', '~> 0.9.0.rc9'
-  gem 'rspec-instafail'
+  gem 'fuubar'
   gem 'shoulda-matchers', :git => 'git://github.com/thoughtbot/shoulda-matchers.git'
   gem 'capybara'
   gem 'webmock'

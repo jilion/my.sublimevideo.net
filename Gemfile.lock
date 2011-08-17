@@ -5,16 +5,6 @@ GIT
     useragent (0.2.3)
 
 GIT
-  remote: git://github.com/blatyo/page_rankr.git
-  revision: 68b2ddeb0cbcdeae6e0485f0086a9bfc5cdc0ac5
-  specs:
-    PageRankr (2.0.1)
-      json (>= 1.4.6)
-      nokogiri (>= 1.4.1)
-      public_suffix_service (~> 0.9.0)
-      typhoeus (~> 0.2.1)
-
-GIT
   remote: git://github.com/ernie/squeel.git
   revision: 3b120a30d9ab39e50507742b3467dfa9a0b24c64
   specs:
@@ -24,32 +14,31 @@ GIT
 
 GIT
   remote: git://github.com/guard/guard.git
-  revision: d6e27fe3344d02cad85c0e89743ad9d76657c444
-  branch: stdin
+  revision: dc2ab97d234a5cf85a8cdcdd61614e645addc2ca
   specs:
     guard (0.6.1)
       thor (~> 0.14.6)
 
 GIT
   remote: git://github.com/rails/coffee-rails.git
-  revision: 90a5f104eb05384c8bf09e4d848b8d02f0c83055
+  revision: 3f7ae2d79f82f8fa0a0cbcbf64eeeea9f9d13565
   branch: 3-1-stable
   specs:
-    coffee-rails (3.1.0.rc.5)
+    coffee-rails (3.1.0.rc.6)
       coffee-script (>= 2.2.0)
       railties (~> 3.1.0.rc1)
 
 GIT
   remote: git://github.com/rails/rails.git
-  revision: 0e19c7c414bbd57e514b32bc7c536dacc87f42d0
+  revision: 633a5693a7c304ec242488dc5aa11c8956b3b294
   branch: 3-1-stable
   specs:
-    actionmailer (3.1.0.rc5)
-      actionpack (= 3.1.0.rc5)
+    actionmailer (3.1.0.rc6)
+      actionpack (= 3.1.0.rc6)
       mail (~> 2.3.0)
-    actionpack (3.1.0.rc5)
-      activemodel (= 3.1.0.rc5)
-      activesupport (= 3.1.0.rc5)
+    actionpack (3.1.0.rc6)
+      activemodel (= 3.1.0.rc6)
+      activesupport (= 3.1.0.rc6)
       builder (~> 3.0.0)
       erubis (~> 2.7.0)
       i18n (~> 0.6)
@@ -58,32 +47,32 @@ GIT
       rack-mount (~> 0.8.1)
       rack-test (~> 0.6.0)
       sprockets (~> 2.0.0.beta.12)
-    activemodel (3.1.0.rc5)
-      activesupport (= 3.1.0.rc5)
+    activemodel (3.1.0.rc6)
+      activesupport (= 3.1.0.rc6)
       bcrypt-ruby (~> 2.1.4)
       builder (~> 3.0.0)
       i18n (~> 0.6)
-    activerecord (3.1.0.rc5)
-      activemodel (= 3.1.0.rc5)
-      activesupport (= 3.1.0.rc5)
-      arel (~> 2.2.0)
+    activerecord (3.1.0.rc6)
+      activemodel (= 3.1.0.rc6)
+      activesupport (= 3.1.0.rc6)
+      arel (~> 2.2.1)
       tzinfo (~> 0.3.29)
-    activeresource (3.1.0.rc5)
-      activemodel (= 3.1.0.rc5)
-      activesupport (= 3.1.0.rc5)
-    activesupport (3.1.0.rc5)
+    activeresource (3.1.0.rc6)
+      activemodel (= 3.1.0.rc6)
+      activesupport (= 3.1.0.rc6)
+    activesupport (3.1.0.rc6)
       multi_json (~> 1.0)
-    rails (3.1.0.rc5)
-      actionmailer (= 3.1.0.rc5)
-      actionpack (= 3.1.0.rc5)
-      activerecord (= 3.1.0.rc5)
-      activeresource (= 3.1.0.rc5)
-      activesupport (= 3.1.0.rc5)
+    rails (3.1.0.rc6)
+      actionmailer (= 3.1.0.rc6)
+      actionpack (= 3.1.0.rc6)
+      activerecord (= 3.1.0.rc6)
+      activeresource (= 3.1.0.rc6)
+      activesupport (= 3.1.0.rc6)
       bundler (~> 1.0)
-      railties (= 3.1.0.rc5)
-    railties (3.1.0.rc5)
-      actionpack (= 3.1.0.rc5)
-      activesupport (= 3.1.0.rc5)
+      railties (= 3.1.0.rc6)
+    railties (3.1.0.rc6)
+      actionpack (= 3.1.0.rc6)
+      activesupport (= 3.1.0.rc6)
       rack-ssl (~> 1.3.2)
       rake (>= 0.8.7)
       rdoc (~> 3.4)
@@ -91,14 +80,13 @@ GIT
 
 GIT
   remote: git://github.com/rails/sass-rails.git
-  revision: 890273d7eebd2a1c6b285327ca0bee6239b17e2e
+  revision: f1d9c7fbb33071a10c89377862a7d898bcb3b2f3
   branch: 3-1-stable
   specs:
-    sass-rails (3.1.0.rc.5)
-      actionpack (~> 3.1.0.rc1)
-      railties (~> 3.1.0.rc1)
+    sass-rails (3.1.0.rc.6)
+      actionpack (~> 3.1.0.rc6)
+      railties (~> 3.1.0.rc6)
       sass (>= 3.1.4)
-      sprockets (>= 2.0.0.beta.9)
 
 GIT
   remote: git://github.com/rymai/active_merchant.git
@@ -143,6 +131,11 @@ GIT
 GEM
   remote: http://rubygems.org/
   specs:
+    PageRankr (2.0.2)
+      json (>= 1.4.6)
+      nokogiri (>= 1.4.1)
+      public_suffix_service (~> 0.9.0)
+      typhoeus (~> 0.2.1)
     RedCloth (4.2.7)
     acts_as_api (0.3.8)
       activemodel (>= 3.0.0)
@@ -151,7 +144,7 @@ GEM
     addressable (2.2.6)
     annotate (2.4.0)
     archive-tar-minitar (0.5.2)
-    arel (2.2.0)
+    arel (2.2.1)
     array_stats (0.6.0)
     aws (2.5.6)
       http_connection
@@ -172,7 +165,7 @@ GEM
       xpath (~> 0.1.4)
     carrierwave (0.5.7)
       activesupport (~> 3.0)
-    carrierwave-mongoid (0.1.1)
+    carrierwave-mongoid (0.1.2)
       carrierwave (>= 0.5.6)
       mongoid (~> 2.1)
     childprocess (0.2.1)
@@ -239,6 +232,10 @@ GEM
       nokogiri (~> 1.5.0)
       ruby-hmac
     formatador (0.2.0)
+    fuubar (0.0.6)
+      rspec (~> 2.0)
+      rspec-instafail (~> 0.1.8)
+      ruby-progressbar (~> 0.0.10)
     growl_notify (0.0.1)
       rb-appscript
     guard-bundler (0.1.3)
@@ -258,7 +255,7 @@ GEM
     haml (3.1.2)
     has_scope (0.5.1)
     hashie (1.1.0)
-    heroku (2.4.1)
+    heroku (2.4.2)
       launchy (>= 0.3.2)
       rest-client (~> 1.6.1)
       term-ansicolor (~> 1.0.5)
@@ -287,7 +284,7 @@ GEM
     mime-types (1.16)
     mongo (1.3.1)
       bson (>= 1.3.1)
-    mongoid (2.1.7)
+    mongoid (2.1.8)
       activemodel (~> 3.0)
       mongo (~> 1.3)
       tzinfo (~> 0.3.22)
@@ -363,6 +360,7 @@ GEM
       ruby-debug-base19 (>= 0.11.19)
     ruby-graphviz (1.0.0)
     ruby-hmac (0.4.0)
+    ruby-progressbar (0.0.10)
     ruby_core_source (0.1.5)
       archive-tar-minitar (>= 0.5.2)
     rubyzip (0.9.4)
@@ -411,7 +409,7 @@ GEM
       mime-types
       mime-types
     tzinfo (0.3.29)
-    uglifier (1.0.0)
+    uglifier (1.0.1)
       execjs (>= 0.3.0)
       multi_json (>= 1.0.2)
     uniquify (0.1.0)
@@ -419,8 +417,8 @@ GEM
     vcr (1.10.3)
     warden (1.0.5)
       rack (>= 1.0)
-    webmock (1.6.4)
-      addressable (> 2.2.5, ~> 2.2)
+    webmock (1.7.2)
+      addressable (~> 2.2, > 2.2.5)
       crack (>= 0.1.7)
     wirble (0.1.3)
     xml-simple (1.0.16)
@@ -432,7 +430,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  PageRankr!
+  PageRankr (~> 2.0.2)
   RedCloth (~> 4.2.7)
   activemerchant!
   acts_as_api (~> 0.3.8)
@@ -456,6 +454,7 @@ DEPENDENCIES
   factory_girl_rails
   ffaker
   fog (~> 0.10.0)
+  fuubar
   growl_notify
   guard!
   guard-bundler
@@ -489,7 +488,6 @@ DEPENDENCIES
   request-log-analyzer (~> 1.11.0)
   rescue_me (~> 0.1.0)
   responders (~> 0.6.4)
-  rspec-instafail
   rspec-rails (~> 2.6.1)
   ruby-debug19
   ruby-graphviz
