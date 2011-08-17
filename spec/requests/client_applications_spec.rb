@@ -73,8 +73,15 @@ feature "OAuth applications" do
         click_link "Edit"
 
         current_url.should =~ %r(^http://[^/]+/account/applications/#{@application.id}/edit$)
-        page.should have_content('Edit the application')
-        page.should have_content('Agree2')
+        page.should have_content("Edit the application 'Agree2'")
+
+        fill_in "Name", :with => "Agree3"
+        fill_in "Callback url", :with => "http://test.fr"
+        click_button "Update"
+
+        page.should have_content('Agree3')
+        page.should have_content('http://test.com')
+        page.should have_content('http://test.fr')
       end
     end
 

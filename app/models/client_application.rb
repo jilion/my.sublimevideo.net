@@ -11,9 +11,7 @@ class ClientApplication < ActiveRecord::Base
   belongs_to :user
 
   has_many :tokens, :class_name => "OauthToken", :dependent => :delete_all
-  has_many :access_tokens, :dependent => :delete_all
   has_many :oauth2_verifiers, :dependent => :delete_all
-  has_many :oauth_tokens, :dependent => :delete_all
 
   # ===============
   # = Validations =
@@ -37,7 +35,7 @@ class ClientApplication < ActiveRecord::Base
   # =================
 
   def self.find_token(token_key)
-    token = OauthToken.find_by_token(token_key, :include => :client_application)
+    token = OauthToken.includes(:client_application).find_by_token(token_key)
     if token && token.authorized?
       token
     else
