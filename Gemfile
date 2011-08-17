@@ -2,15 +2,14 @@ source "http://rubygems.org"
 
 gem 'rake',                  '0.8.7'
 
-gem 'rails',                 '3.0.9'
+gem 'rails',                 '3.0.10'
 
 # Databases
 gem 'pg',                    '0.11.0'
 gem 'meta_where',            '1.0.4'
 gem 'bson_ext',              '1.3.1'
 gem 'mongo',                 '1.3.1'
-# gem 'mongoid',               '2.0.2'
-gem 'mongoid',               '2.1.7'
+gem 'mongoid',               '2.1.8'
 
 # Views
 gem 'haml',                  '3.1.2'
@@ -33,7 +32,7 @@ gem 'acts_as_api',           '0.3.6'
 gem 'delayed_job',           '2.1.4'
 gem 'rescue_me',             '0.1.0'
 gem 'configuration',         '1.2.0'
-gem 'libxml-ruby',           '1.1.3', :require => 'libxml'
+gem 'libxml-ruby',           '2.2.0', :require => 'libxml'
 
 gem 'state_machine',         '0.10.4'
 gem 'paper_trail',           '2.2.9'
@@ -54,7 +53,7 @@ gem 'request-log-analyzer',  '1.11.0', :require => 'request_log_analyzer'
 # gem 'activemerchant',        '~> 1.9.1'
 # Pull request: https://github.com/Shopify/active_merchant/pull/85
 # gem 'activemerchant',        :git => 'git://github.com/ZenCocoon/active_merchant.git' # with the fix for Ogone#parse and more
-gem 'activemerchant',        :git => 'git://github.com/rymai/active_merchant.git', :branch => '3ds_from_ZenCocoon'
+gem 'activemerchant',        :git => 'git://github.com/rymai/active_merchant.git', :branch => '3ds_from_ZenCocoon', :ref => '2f35b9f1c685b25d3f06f092684c2c7b581d4a9d'
 gem 'public_suffix_service', '0.8.1'
 gem 'useragent',             :git => 'git://github.com/Jilion/useragent.git'
 
@@ -102,7 +101,7 @@ end
 group :guard do
   gem 'rb-fsevent'
   gem 'growl_notify'
-  gem 'guard', :git => 'git://github.com/guard/guard.git'
+  gem 'guard'#, :git => 'git://github.com/guard/guard.git'
   gem 'guard-bundler'
   gem 'guard-pow'
   gem 'guard-passenger'
@@ -116,7 +115,7 @@ group :test do
   gem 'rspec-instafail'
   gem 'shoulda'
   gem 'capybara', '1.0.0.rc1'
-  gem 'webmock'
+  gem 'webmock', '1.6.4'
   gem 'vcr'
 
   gem 'database_cleaner'

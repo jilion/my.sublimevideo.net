@@ -966,7 +966,7 @@ describe Site do
 
   describe "Versioning" do
     subject { with_versioning { FactoryGirl.create(:site) } }
-    
+
     it "works!" do
       with_versioning do
         old_hostname = subject.hostname
@@ -974,7 +974,7 @@ describe Site do
         subject.versions.last.reify.hostname.should eql old_hostname
       end
     end
-    
+
     [:cdn_up_to_date, :license, :loader].each do |attr|
       it "doesn't version when :#{attr} changes" do
         with_versioning do
