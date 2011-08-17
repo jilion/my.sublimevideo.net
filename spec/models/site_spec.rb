@@ -1141,7 +1141,7 @@ describe Site do
         Timecop.travel(10.minutes.ago) { @site = FactoryGirl.create(:site, hostname: 'sublimevideo.net') }
         VCR.use_cassette('sites/ranks') { @worker.work_off }
         @site.reload.google_rank.should == 6
-        @site.alexa_rank.should == 126483
+        @site.alexa_rank.should == 127725
       end
     end # after_create
 

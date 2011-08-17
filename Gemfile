@@ -133,7 +133,7 @@ group :test do
   gem 'fuubar'
   gem 'shoulda-matchers', :git => 'git://github.com/thoughtbot/shoulda-matchers.git'
   gem 'capybara'
-  gem 'webmock'
+  gem 'webmock', '~> 1.6.4'
   gem 'vcr'
 
   gem 'database_cleaner'
