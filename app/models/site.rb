@@ -42,6 +42,9 @@ class Site < ActiveRecord::Base
   def referrers
     ::Referrer.where(site_id: id)
   end
+  def stats
+    SiteStat.where(t: token)
+  end
 
   # ==========
   # = Scopes =

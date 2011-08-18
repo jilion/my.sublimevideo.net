@@ -32,6 +32,7 @@ gem 'mongoid',               '~> 2.1.7'
 
 # Views
 gem 'haml',                  '~> 3.1.2'
+gem 'coffee-filter',         '~> 0.1.1'
 gem 'kaminari',              '~> 0.12.4'
 gem 'liquid',                '~> 2.2.2'
 gem 'RedCloth',              '~> 4.2.7'
