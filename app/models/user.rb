@@ -144,7 +144,8 @@ class User < ActiveRecord::Base
 
   def update_tracked_fields!(request)
     # Don't update user when he's accessing the API
-    if !request.params.key?(:oauth_token) && !request.headers['HTTP_AUTHORIZATION'] =~ /OAuth/
+    if !request.params.key?(:oauth_token) &&
+       (!request.headers.key?('HTTP_AUTHORIZATION') || !request.headers['HTTP_AUTHORIZATION'] =~ /OAuth/)
       super(request)
     end
   end
