@@ -7,4 +7,4 @@ class MySublimeVideo.Models.Stat extends Backbone.Model
   
 class MySublimeVideo.Collections.StatsCollection extends Backbone.Collection
   model: MySublimeVideo.Models.Stat
-  url: '/stats'
+  url: '/sites/' + + '/stats'

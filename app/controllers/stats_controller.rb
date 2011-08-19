@@ -3,6 +3,11 @@ class StatsController < ApplicationController
 
   def index
     @site = Site.find_by_token(params[:site_id])
+
+    respond_to do |format|
+      format.html
+      format.json { render json: @site.stats.last_data }
+    end
   end
 
 end

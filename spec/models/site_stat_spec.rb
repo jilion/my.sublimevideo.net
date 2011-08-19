@@ -96,4 +96,35 @@ describe SiteStat do
     specify { SiteStat.browser_and_platform_key("").should eql("oth-otd") }
   end
 
+  describe "Scopes:" do
+
+    describe "last_data", focus: true do
+      let(:site) { Factory.create(:site) }
+
+      before(:each) do
+        Factory.create(:site_stat, t: site.token, m: 61.minutes.ago.change(sec: 0))
+        Factory.create(:site_stat, t: site.token, m: 60.minutes.ago.change(sec: 0))
+        Factory.create(:site_stat, t: site.token, m: 1.minute.ago.change(sec: 0))
+        Factory.create(:site_stat, t: site.token, m: Time.now.utc.change(sec: 0))
+
+        Factory.create(:site_stat, t: site.token, h: 48.hours.ago.change(min: 0, sec: 0))
+        Factory.create(:site_stat, t: site.token, h: 24.hours.ago.change(min: 0, sec: 0))
+        Factory.create(:site_stat, t: site.token, h: 2.hours.ago.change(min: 0, sec: 0))
+        Factory.create(:site_stat, t: site.token, h: Time.now.utc.change(min: 0, sec: 0))
+
+        Factory.create(:site_stat, t: site.token, d: 900.days.ago.change(hour: 0, min: 0, sec: 0))
+        Factory.create(:site_stat, t: site.token, d: 3.days.ago.change(hour: 0, min: 0, sec: 0))
+        Factory.create(:site_stat, t: site.token, d: 1.day.ago.change(hour: 0, min: 0, sec: 0))
+        Factory.create(:site_stat, t: site.token, d: Time.now.utc.change(hour: 0, min: 0, sec: 0))
+      end
+
+      it { SiteStat.count.should eql(12) }
+      it { SiteStat.last_data.count.should eql(10) }
+      it { SiteStat.last_data.where(:d.ne => nil).count.should eql(4) }
+
+
+    end
+
+  end
+
 end
