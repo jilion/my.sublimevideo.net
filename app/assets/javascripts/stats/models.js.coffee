@@ -1,12 +1,25 @@
-class MSVStats.Models.Stat extends Backbone.Model
+class MSVStats.Models.Site extends Backbone.Model
   defaults:
-    m: null
-    pv: {}
-    vv: {}
-    md: {}
-    bp: {}
+    token: null
+    hostname: null
+    selected: false
 
-class MSVStats.Collections.Stats extends Backbone.Collection
-  model: MSVStats.Models.Stat
-  url: ->
-    "/sites/#{MSVStats.site_token}/stats"
+class MSVStats.Collections.Sites extends Backbone.Collection
+ model: MSVStats.Models.Site
+ url: '/sites'
+
+#class MSVStats.Models.Stat extends Backbone.Model
+#  defaults:
+#    t: null
+#    m: null
+#    h: null
+#    d: null
+#    pv: {}
+#    vv: {}
+#    md: {}
+#    bp: {}
+#
+#class MSVStats.Collections.Stats extends Backbone.Collection
+#  model: MSVStats.Models.Stat
+#  url: ->
+#    "/sites//stats"

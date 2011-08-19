@@ -1,6 +1,7 @@
 class SitesController < ApplicationController
   respond_to :html
   respond_to :js, :only => [:index, :code]
+  respond_to :json, :only => :index
 
   before_filter :redirect_suspended_user
   before_filter :find_sites_or_redirect_to_new_site, :only => :index
@@ -13,7 +14,11 @@ class SitesController < ApplicationController
   def index
     @sites = current_user.sites.not_archived.includes(:plan, :next_cycle_plan, :invoices)
     @sites = apply_scopes(@sites).by_date
-    respond_with(@sites, :per_page => 10)
+    respond_with(@sites, :per_page => 10) do |format|
+      format.js
+      format.html
+      format.json { render json: @sites.to_json(:only => [:token, :hostname]) }
+    end
   end
 
   # GET /sites/new

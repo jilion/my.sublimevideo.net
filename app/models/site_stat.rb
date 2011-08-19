@@ -3,6 +3,7 @@ class SiteStat
 
   field :t,  :type => String # Site token
 
+  # DateTime periods
   field :m,  :type => DateTime  # Minute
   field :h,  :type => DateTime  # Hour
   field :d,  :type => DateTime  # Day
@@ -34,6 +35,14 @@ class SiteStat
     scope "#{period}_before".to_sym,  lambda { |date| where(period => { "$lt" => date }) }
     scope "#{period}_between".to_sym, lambda { |start_date, end_date| where(period => { "$gte" => start_date, "$lt" => end_date }) }
   end
+
+  scope :last_data, lambda {
+    where("$or" => [
+      { m: { "$gte" => 60.minutes.ago.change(sec: 0).utc } },
+      { h: { "$gte" => 24.hours.ago.change(min: 0, sec: 0).utc } },
+      { d: { "$ne"  => nil } }
+    ])
+  }
 
   # =================
   # = Class Methods =

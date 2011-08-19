@@ -7,7 +7,6 @@
 #= require ./stats/models
 
 window.MSVStats =
-  site_token: null
   Models: {}
   Collections: {}
   Routers: {}
