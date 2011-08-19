@@ -43,11 +43,6 @@ namespace :one_time do
   end
 
   namespace :sites do
-    desc "Rollback all sites with the Beta plan to the Dev plan"
-    task :rollback_beta_sites => :environment do
-      puts OneTime::Site.rollback_beta_sites_to_dev
-    end
-
     desc "Reset sites caches"
     task :reset_caches => :environment do
       Site.all.each { |site| site.delay(:priority => 400).reset_caches! }
