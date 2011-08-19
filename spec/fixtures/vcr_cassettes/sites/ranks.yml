@@ -120,37 +120,6 @@
     http_version: "1.1"
 - !ruby/struct:VCR::HTTPInteraction 
   request: !ruby/struct:VCR::Request 
-    method: :get
-    uri: http://data.alexa.com:80/data?cli=10&dat=snbamz&url=sublimevideo.net
-    body: 
-    headers: 
-  response: !ruby/struct:VCR::Response 
-    status: !ruby/struct:VCR::ResponseStatus 
-      code: 200
-      message: OK
-    headers: 
-      content-length: 
-      - "341"
-      content-type: 
-      - text/xml
-    body: |-
-      <?xml version="1.0" encoding="UTF-8"?>
-      
-      <ALEXA VER="0.9" URL="sublimevideo.net/" HOME="0" AID="=">
-      <RLS PREFIX="http://" more="0">
-      </RLS>
-      <SD TITLE="A" FLAGS="" HOST="sublimevideo.net">
-      <SPEED TEXT="997" PCT="72"/>
-      </SD>
-      <SD>
-      <POPULARITY URL="sublimevideo.net/" TEXT="100573"/>
-      <REACH RANK="90406"/>
-      <RANK DELTA="-412362"/>
-      </SD>
-      </ALEXA>
-    http_version: "1.1"
-- !ruby/struct:VCR::HTTPInteraction 
-  request: !ruby/struct:VCR::Request 
     method: :post
     uri: http://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:80/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json
     body: "{\"EmailAddress\":\"email260@user.com\",\"Name\":\"John Doe\",\"CustomFields\":[{\"Key\":\"user_id\",\"Value\":272},{\"Key\":\"segment\",\"Value\":\"test\"}],\"Resubscribe\":true}"

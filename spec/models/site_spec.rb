@@ -110,7 +110,7 @@ describe Site do
       before(:all) do
         Site.delete_all
         @site_beta      = FactoryGirl.create(:site, user: @user, plan_id: @beta_plan.id)
-        @site_dev       = FactoryGirl.create(:site, user: @user, plan_id: @dev_plan.id)
+        @site_free       = FactoryGirl.create(:site, user: @user, plan_id: @free_plan.id)
         @site_sponsored = FactoryGirl.create(:site, user: @user, plan_id: @paid_plan.id)
         @site_sponsored.sponsor!
         @site_custom    = FactoryGirl.create(:site, user: @user, plan_id: @custom_plan.token)
@@ -121,8 +121,8 @@ describe Site do
         specify { Site.beta.all.should =~ [@site_beta] }
       end
 
-      describe "#dev" do
-        specify { Site.dev.all.should =~ [@site_dev] }
+      describe "#free" do
+        specify { Site.free.all.should =~ [@site_free] }
       end
 
       describe "#sponsored" do
@@ -145,7 +145,7 @@ describe Site do
         @site_path            = FactoryGirl.create(:site, user: @user, path: "foo", path: 'foo')
         @site_extra_hostnames = FactoryGirl.create(:site, user: @user, extra_hostnames: "foo.com")
         @site_next_cycle_plan = FactoryGirl.create(:site, user: @user)
-        @site_next_cycle_plan.update_attribute(:next_cycle_plan_id, @dev_plan.id)
+        @site_next_cycle_plan.update_attribute(:next_cycle_plan_id, @free_plan.id)
       end
 
       describe "#with_wildcard" do
@@ -174,10 +174,10 @@ describe Site do
         @site_will_be_paid.update_attribute(:next_cycle_plan_id, FactoryGirl.create(:plan).id)
 
         # not billable
-        @site_dev         = FactoryGirl.create(:site, user: @user, plan_id: @dev_plan.id)
+        @site_free         = FactoryGirl.create(:site, user: @user, plan_id: @free_plan.id)
         @site_beta        = FactoryGirl.create(:site, user: @user, plan_id: @beta_plan.id)
-        @site_will_be_dev = FactoryGirl.create(:site, user: @user, plan_id: @paid_plan.id)
-        @site_will_be_dev.update_attribute(:next_cycle_plan_id, @dev_plan.id)
+        @site_will_be_free = FactoryGirl.create(:site, user: @user, plan_id: @paid_plan.id)
+        @site_will_be_free.update_attribute(:next_cycle_plan_id, @free_plan.id)
         @site_archived    = FactoryGirl.create(:site, user: @user, state: "archived", archived_at: Time.utc(2010,2,28))
         @site_suspended   = FactoryGirl.create(:site, user: @user, state: "suspended")
       end
@@ -187,8 +187,8 @@ describe Site do
       end
 
       describe "#not_billable" do
-        specify { Site.not_billable.count.should == [@site_dev, @site_beta, @site_will_be_dev, @site_archived, @site_suspended].size }
-        specify { Site.not_billable.all.should =~ [@site_dev, @site_beta, @site_will_be_dev, @site_archived, @site_suspended] }
+        specify { Site.not_billable.count.should == [@site_free, @site_beta, @site_will_be_free, @site_archived, @site_suspended].size }
+        specify { Site.not_billable.all.should =~ [@site_free, @site_beta, @site_will_be_free, @site_archived, @site_suspended] }
       end
     end
 
@@ -264,8 +264,8 @@ describe Site do
     end
 
     describe "hostname" do
-      context "with the dev plan" do
-        subject { site = FactoryGirl.create(:site, plan_id: @dev_plan.id); site.hostname = ''; site }
+      context "with the free plan" do
+        subject { site = FactoryGirl.create(:site, plan_id: @free_plan.id); site.hostname = ''; site }
         it { should be_valid }
       end
       context "with the beta plan" do
@@ -287,7 +287,7 @@ describe Site do
 
     describe "credit card" do
       context "with the free plan" do
-        subject { FactoryGirl.build(:site, user: FactoryGirl.create(:user, cc_type: nil, cc_last_digits: nil), plan_id: @dev_plan.id) }
+        subject { FactoryGirl.build(:site, user: FactoryGirl.create(:user, cc_type: nil, cc_last_digits: nil), plan_id: @free_plan.id) }
         it { should be_valid }
       end
 
@@ -320,13 +320,13 @@ describe Site do
     end
 
     describe "no hostnames at all" do
-      context "hostnames are blank & plan is dev plan" do
-        subject { FactoryGirl.build(:new_site, hostname: nil, extra_hostnames: nil, dev_hostnames: nil, plan: @dev_plan) }
+      context "hostnames are blank & plan is free plan" do
+        subject { FactoryGirl.build(:new_site, hostname: nil, extra_hostnames: nil, dev_hostnames: nil, plan: @free_plan) }
         it { should be_valid } # dev hostnames are set before validation
         it { should have(0).error_on(:base) }
       end
 
-      context "hostnames are blank & plan is not dev plan" do
+      context "hostnames are blank & plan is not free plan" do
         subject { FactoryGirl.build(:new_site, hostname: nil, extra_hostnames: nil, dev_hostnames: nil, plan: @paid_plan) }
         it { should_not be_valid }
         it { should have(1).error_on(:hostname) }
@@ -335,8 +335,8 @@ describe Site do
     end
 
     describe "validates_current_password" do
-      context "on a dev plan" do
-        subject { FactoryGirl.create(:site, plan_id: @dev_plan.id) }
+      context "on a free plan" do
+        subject { FactoryGirl.create(:site, plan_id: @free_plan.id) }
 
         it "should not validate current_password when modifying settings" do
           subject.update_attributes(hostname: "newone.com").should be_true
@@ -385,21 +385,21 @@ describe Site do
           end
         end
 
-        describe "when downgrade to dev plan" do
+        describe "when downgrade to free plan" do
           it "needs current_password" do
-            subject.update_attributes(plan_id: @dev_plan.id).should be_false
+            subject.update_attributes(plan_id: @free_plan.id).should be_false
             subject.errors[:base].should include I18n.t('activerecord.errors.models.site.attributes.base.current_password_needed')
             subject.plan_id.should == @paid_plan.id
             subject.pending_plan_id.should be_nil
-            subject.next_cycle_plan_id.should == @dev_plan.id
+            subject.next_cycle_plan_id.should == @free_plan.id
           end
 
           it "needs right current_password" do
-            subject.update_attributes(plan_id: @dev_plan.id, user_attributes: { :current_password => "wrong" }).should be_false
+            subject.update_attributes(plan_id: @free_plan.id, user_attributes: { :current_password => "wrong" }).should be_false
             subject.errors[:base].should include I18n.t('activerecord.errors.models.site.attributes.base.current_password_needed')
             subject.plan_id.should == @paid_plan.id
             subject.pending_plan_id.should be_nil
-            subject.next_cycle_plan_id.should == @dev_plan.id
+            subject.next_cycle_plan_id.should == @free_plan.id
           end
         end
 
@@ -626,21 +626,21 @@ describe Site do
         @paid_plan_yearly2 = FactoryGirl.create(:plan, name: "star",   cycle: "year",  price: 50000)
       end
 
-      describe "when creating with a dev plan" do
+      describe "when creating with a free plan" do
         before(:all) do
-          @site = FactoryGirl.build(:new_site, plan_id: @dev_plan.id)
+          @site = FactoryGirl.build(:new_site, plan_id: @free_plan.id)
         end
         subject { @site }
 
         its(:plan_id)            { should be_nil }
-        its(:pending_plan_id)    { should == @dev_plan.id }
+        its(:pending_plan_id)    { should == @free_plan.id }
         its(:next_cycle_plan_id) { should be_nil }
 
         describe "should prevent new plan_id update while pending_plan_id is present" do
           before(:all) { subject.plan_id = @paid_plan.id }
 
           its(:plan_id)            { should be_nil }
-          its(:pending_plan_id)    { should == @dev_plan.id }
+          its(:pending_plan_id)    { should == @free_plan.id }
           its(:next_cycle_plan_id) { should be_nil }
         end
       end
@@ -667,38 +667,38 @@ describe Site do
         its(:next_cycle_plan_id) { should be_nil }
       end
 
-      describe "when upgrade from dev plan to monthly plan" do
+      describe "when upgrade from free plan to monthly plan" do
         before(:all) do
-          @site = FactoryGirl.build(:new_site, plan: @dev_plan)
+          @site = FactoryGirl.build(:new_site, plan: @free_plan)
           @site.plan_id = @paid_plan.id
         end
         subject { @site }
 
-        its(:plan_id)            { should == @dev_plan.id }
+        its(:plan_id)            { should == @free_plan.id }
         its(:pending_plan_id)    { should == @paid_plan.id }
         its(:next_cycle_plan_id) { should be_nil }
       end
 
-      describe "when upgrade from dev plan to sponsored" do
+      describe "when upgrade from free plan to sponsored" do
         before(:all) do
-          @site = FactoryGirl.build(:new_site, plan: @dev_plan)
+          @site = FactoryGirl.build(:new_site, plan: @free_plan)
           @site.plan_id = @sponsored_plan.id
         end
         subject { @site }
 
-        its(:plan_id)            { should == @dev_plan.id }
+        its(:plan_id)            { should == @free_plan.id }
         its(:pending_plan_id)    { should be_nil }
         its(:next_cycle_plan_id) { should be_nil }
       end
 
-      describe "when upgrade from dev plan to yearly plan" do
+      describe "when upgrade from free plan to yearly plan" do
         before(:all) do
-          @site = FactoryGirl.build(:new_site, plan: @dev_plan)
+          @site = FactoryGirl.build(:new_site, plan: @free_plan)
           @site.plan_id = @paid_plan_yearly.id
         end
         subject { @site }
 
-        its(:plan_id)            { should == @dev_plan.id }
+        its(:plan_id)            { should == @free_plan.id }
         its(:pending_plan_id)    { should == @paid_plan_yearly.id }
         its(:next_cycle_plan_id) { should be_nil }
       end
@@ -787,16 +787,16 @@ describe Site do
         its(:next_cycle_plan_id) { should be_nil }
       end
 
-      describe "when downgrade from monthly plan to dev plan" do
+      describe "when downgrade from monthly plan to free plan" do
         before(:all) do
           @site = FactoryGirl.build(:new_site, plan: @paid_plan)
-          @site.plan_id = @dev_plan.id
+          @site.plan_id = @free_plan.id
         end
         subject { @site }
 
         its(:plan_id)            { should == @paid_plan.id }
         its(:pending_plan_id)    { should be_nil }
-        its(:next_cycle_plan_id) { should == @dev_plan.id }
+        its(:next_cycle_plan_id) { should == @free_plan.id }
       end
 
       describe "when downgrade from monthly plan to monthly plan" do
@@ -835,16 +835,16 @@ describe Site do
         its(:next_cycle_plan_id) { should be_nil }
       end
 
-      describe "when downgrade from yearly plan to dev plan" do
+      describe "when downgrade from yearly plan to free plan" do
         before(:all) do
           @site = FactoryGirl.build(:new_site, plan: @paid_plan_yearly)
-          @site.plan_id = @dev_plan.id
+          @site.plan_id = @free_plan.id
         end
         subject { @site }
 
         its(:plan_id)            { should == @paid_plan_yearly.id }
         its(:pending_plan_id)    { should be_nil }
-        its(:next_cycle_plan_id) { should == @dev_plan.id }
+        its(:next_cycle_plan_id) { should == @free_plan.id }
       end
 
       describe "when downgrade from yearly plan to monthly plan" do
@@ -1067,11 +1067,11 @@ describe Site do
         it "should set only current_password" do
           subject.first_name.should == "Bob"
           site = FactoryGirl.create(:site, user: subject, plan_id: @paid_plan.id)
-          site.update_attributes(plan_id: @dev_plan.id, user_attributes: { first_name: "John", 'current_password' => '123456' })
+          site.update_attributes(plan_id: @free_plan.id, user_attributes: { first_name: "John", 'current_password' => '123456' })
           site.user.first_name.should == "Bob"
           site.user.current_password.should == "123456"
           site.plan_id.should == @paid_plan.id
-          site.next_cycle_plan_id.should == @dev_plan.id
+          site.next_cycle_plan_id.should == @free_plan.id
         end
       end
 
@@ -1141,7 +1141,7 @@ describe Site do
         Timecop.travel(10.minutes.ago) { @site = FactoryGirl.create(:site, hostname: 'sublimevideo.net') }
         VCR.use_cassette('sites/ranks') { @worker.work_off }
         @site.reload.google_rank.should == 6
-        @site.alexa_rank.should == 127725
+        @site.alexa_rank.should == 126558
       end
     end # after_create
 
@@ -1246,8 +1246,8 @@ describe Site do
     end
 
     describe "#sponsor!" do
-      context "sponsor a dev plan without next plan" do
-        before(:all) { Timecop.travel(1.day.ago) { @site = FactoryGirl.create(:site, plan_id: @dev_plan.id) } }
+      context "sponsor a free plan without next plan" do
+        before(:all) { Timecop.travel(1.day.ago) { @site = FactoryGirl.create(:site, plan_id: @free_plan.id) } }
         subject { @site.reload }
 
         it "should change plan to sponsored plan" do
@@ -1298,7 +1298,7 @@ describe Site do
 
       context "sponsor a paid plan with a next plan" do
         before(:all) { Timecop.travel(1.day.ago) { @site = FactoryGirl.create(:site) } }
-        subject { @site.reload; @site.next_cycle_plan_id = @dev_plan.id; @site }
+        subject { @site.reload; @site.next_cycle_plan_id = @free_plan.id; @site }
 
         it "should change plan to sponsored plan" do
           subject.next_cycle_plan_id.should be_present
@@ -1511,7 +1511,7 @@ describe Site do
 
     describe "#current_percentage_of_plan_used" do
       it "should return 0 if plan player_hits is 0" do
-        site = FactoryGirl.create(:site, plan_id: @dev_plan.id)
+        site = FactoryGirl.create(:site, plan_id: @free_plan.id)
         site.current_percentage_of_plan_used.should == 0
       end
     end
@@ -1578,8 +1578,8 @@ describe Site do
     end
 
     describe "#percentage_of_days_over_daily_limit(60)" do
-      context "with dev_plan" do
-        subject { FactoryGirl.create(:site, plan_id: @dev_plan.id) }
+      context "with free_plan" do
+        subject { FactoryGirl.create(:site, plan_id: @free_plan.id) }
 
         its(:percentage_of_days_over_daily_limit) { should == 0 }
       end

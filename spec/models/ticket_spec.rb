@@ -14,7 +14,7 @@ describe Ticket do
   before(:all) do
     @user = FactoryGirl.create(:user, first_name: "Rem & My")
     @user_with_launchpad_support = FactoryGirl.create(:user)
-    FactoryGirl.create(:site, user: @user_with_launchpad_support, plan_id: @dev_plan.id)
+    FactoryGirl.create(:site, user: @user_with_launchpad_support, plan_id: @free_plan.id)
     @user_with_standard_support = FactoryGirl.create(:user)
     FactoryGirl.create(:site, user: @user_with_standard_support, plan_id: @paid_plan.id)
     @user_with_priority_support = FactoryGirl.create(:user)

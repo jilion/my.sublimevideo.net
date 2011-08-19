@@ -7,8 +7,8 @@ feature "edit" do
     @star_year = Plan.create(name: "star", cycle: "year", player_hits: 200_000, price: 49900)
   end
 
-  scenario "view with a dev plan without hostname" do
-    site = FactoryGirl.create(:site, user: @current_user, plan_id: @dev_plan.id, :hostname => nil)
+  scenario "view with a free plan without hostname" do
+    site = FactoryGirl.create(:site, user: @current_user, plan_id: @free_plan.id, :hostname => nil)
 
     visit edit_site_plan_path(site)
 
@@ -16,15 +16,15 @@ feature "edit" do
     page.should have_content("add a hostname")
   end
 
-  scenario "update paid plan to dev plan" do
+  scenario "update paid plan to free plan" do
     site = FactoryGirl.create(:site, user: @current_user, plan_id: @paid_plan.id)
 
     visit edit_site_plan_path(site)
 
-    choose "plan_dev"
+    choose "plan_free"
     click_button "Update plan"
 
-    has_checked_field?("plan_dev").should be_true
+    has_checked_field?("plan_free").should be_true
     has_unchecked_field?("plan_comet_month").should be_true
 
     fill_in "Password", :with => "123456"
@@ -110,7 +110,7 @@ feature "edit" do
   end
 
   scenario "failed update" do
-    site = FactoryGirl.create(:site, user: @current_user, plan_id: @dev_plan.id)
+    site = FactoryGirl.create(:site, user: @current_user, plan_id: @free_plan.id)
 
     visit edit_site_plan_path(site)
 
@@ -133,8 +133,8 @@ feature "edit" do
     page.should have_content("There has been a transaction error. Please review")
   end
 
-  scenario "update dev plan to paid plan" do
-    site = FactoryGirl.create(:site, user: @current_user, plan_id: @dev_plan.id)
+  scenario "update free plan to paid plan" do
+    site = FactoryGirl.create(:site, user: @current_user, plan_id: @free_plan.id)
 
     visit edit_site_plan_path(site)
 
@@ -154,7 +154,7 @@ feature "edit" do
   scenario "cancel next plan automatic update" do
     site = FactoryGirl.create(:site, user: @current_user, plan_id: @paid_plan.id)
 
-    site.update_attribute(:next_cycle_plan_id, @dev_plan.id)
+    site.update_attribute(:next_cycle_plan_id, @free_plan.id)
 
     visit sites_path
 

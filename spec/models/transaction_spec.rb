@@ -767,7 +767,7 @@ describe Transaction do
 
     describe "#process_payment_response" do
       before(:all) do
-        @site1    = FactoryGirl.create(:site, user: @user, plan_id: @dev_plan.id)
+        @site1    = FactoryGirl.create(:site, user: @user, plan_id: @free_plan.id)
         @site2    = FactoryGirl.create(:site, user: @user, plan_id: @paid_plan.id)
         @invoice1 = FactoryGirl.create(:invoice, site: @site1, state: 'open')
         @invoice2 = FactoryGirl.create(:invoice, site: @site2, state: 'failed')
@@ -1106,7 +1106,7 @@ describe Transaction do
 
     describe "#description" do
       before(:all) do
-        @site1    = FactoryGirl.create(:site, user: @user, plan_id: @dev_plan.id)
+        @site1    = FactoryGirl.create(:site, user: @user, plan_id: @free_plan.id)
         @site2    = FactoryGirl.create(:site, user: @user, plan_id: @paid_plan.id)
         @invoice1 = FactoryGirl.create(:invoice, site: @site1, state: 'open')
         @invoice2 = FactoryGirl.create(:invoice, site: @site2, state: 'failed')

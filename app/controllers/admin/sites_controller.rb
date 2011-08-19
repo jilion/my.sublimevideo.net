@@ -4,7 +4,7 @@ class Admin::SitesController < Admin::AdminController
   before_filter :compute_date_range, :only => :edit
 
   #filter
-  has_scope :dev
+  has_scope :free
   has_scope :beta
   has_scope :sponsored
   has_scope :with_state do |controller, scope, value|

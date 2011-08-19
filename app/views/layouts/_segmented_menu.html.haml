@@ -1,5 +1,5 @@
 - sites_item = [:edit_site, { :link_text => "Settings", :class => 'first', :urls => %W[sites/#{@site.token}(/edit)?$] }]
-- plans_item = [:edit_site_plan, { :link_text => @site.in_beta_plan? || @site.in_dev_plan? ? "Choose plan" : (@site.in_custom_plan? ? "Plan" : "Change plan"), :urls => %W[sites/#{@site.token}/plan(/edit)?$] }]
+- plans_item = [:edit_site_plan, { :link_text => @site.in_beta_plan? || @site.in_free_plan? ? "Choose plan" : (@site.in_custom_plan? ? "Plan" : "Change plan"), :urls => %W[sites/#{@site.token}/plan(/edit)?$] }]
 - invoices_item = [:site_invoices, { :link_text => "Invoices", :class => 'last', :urls => %W[sites/#{@site.token}/invoices$] }]
 
 %ul.segmented_menu

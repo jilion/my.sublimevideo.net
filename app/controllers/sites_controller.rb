@@ -33,7 +33,7 @@ class SitesController < ApplicationController
 
     # setting user_attributes will set user.attributes only before validation (so, on the save below)
     # in order to set the credit card in the charging_options site's attribute, user.attributes have to be set before calling user.credit_card
-    @site.user.assign_attributes(params[:site][:user_attributes]) if @site.in_or_will_be_in_paid_plan? && !@site.will_be_in_dev_plan?
+    @site.user.assign_attributes(params[:site][:user_attributes]) if @site.in_or_will_be_in_paid_plan? && !@site.will_be_in_free_plan?
     @site.charging_options = {
       credit_card: @site.user.credit_card,
       accept_url: sites_url,

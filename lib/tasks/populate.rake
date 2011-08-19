@@ -239,7 +239,7 @@ def create_sites
   create_users if User.all.empty?
   create_plans if Plan.all.empty?
 
-  free_plans     = Plan.free_plans.where(:name.not_eq => "sponsored").all
+  unpaid_plans   = Plan.unpaid_plans.where { name != "sponsored" }.all
   standard_plans = Plan.standard_plans.all
   custom_plans   = Plan.custom_plans.all
 
@@ -251,7 +251,7 @@ def create_sites
   User.all.each do |user|
     BASE_SITES.each do |hostname|
       site = user.sites.build(
-        plan_id: rand > 0.4 ? (rand > 0.8 ? custom_plans.sample.token : standard_plans.sample.id) : free_plans.sample.id,
+        plan_id: rand > 0.4 ? (rand > 0.8 ? custom_plans.sample.token : standard_plans.sample.id) : unpaid_plans.sample.id,
         hostname: hostname
       )
       Timecop.travel(created_at_array.sample) do
@@ -327,7 +327,7 @@ end
 
 def create_plans
   plans_attributes = [
-    { name: "dev",        cycle: "none",  player_hits: 0,          price: 0 },
+    { name: "free",       cycle: "none",  player_hits: 0,          price: 0 },
     { name: "sponsored",  cycle: "none",  player_hits: 0,          price: 0 },
     { name: "beta",       cycle: "none",  player_hits: 0,          price: 0 },
     { name: "comet",      cycle: "month", player_hits: 3_000,      price: 990 },

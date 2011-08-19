@@ -59,7 +59,7 @@ class Site < ActiveRecord::Base
 
   # plans
   scope :beta,         includes(:plan).where { plans.name == "beta" }
-  scope :dev,          includes(:plan).where { plans.name == "dev" }
+  scope :free,         includes(:plan).where { plans.name == "free" }
   scope :sponsored,    includes(:plan).where { plans.name == "sponsored" }
   scope :custom,       includes(:plan).where { plans.name =~ "custom%" }
   scope :in_paid_plan, lambda { joins(:plan).merge(Plan.paid_plans) }
@@ -75,7 +75,7 @@ class Site < ActiveRecord::Base
     active.where { plan_id >> Plan.paid_plans.map(&:id) & next_cycle_plan_id >> (Plan.paid_plans.map(&:id) + [nil]) }
   }
   scope :not_billable, lambda {
-    where { (state != 'active') | ((plan_id >> Plan.free_plans.map(&:id) & (next_cycle_plan_id == nil)) | (next_cycle_plan_id >> Plan.free_plans.map(&:id))) }
+    where { (state != 'active') | ((plan_id >> Plan.unpaid_plans.map(&:id) & (next_cycle_plan_id == nil)) | (next_cycle_plan_id >> Plan.unpaid_plans.map(&:id))) }
   }
   scope :to_be_renewed, where { (plan_cycle_ended_at < Time.now.utc) & (pending_plan_id == nil) }
   scope :refundable,    where { (first_paid_plan_started_at >= 30.days.ago) & (refunded_at == nil) }
@@ -221,7 +221,7 @@ class Site < ActiveRecord::Base
 
     if attribute.to_s == attribute.to_i.to_s # id passed
       new_plan = Plan.find_by_id(attribute.to_i)
-      return unless new_plan.standard_plan? || new_plan.dev_plan? || new_plan.beta_plan?
+      return unless new_plan.standard_plan? || new_plan.free_plan? || new_plan.beta_plan?
     else # token passed
       new_plan = Plan.find_by_token(attribute)
     end
@@ -229,7 +229,7 @@ class Site < ActiveRecord::Base
     if new_plan.present?
       if plan_id?
         case plan.upgrade?(new_plan)
-        when true  # Upgrade
+        when true # Upgrade
           write_attribute(:pending_plan_id, new_plan.id)
           write_attribute(:next_cycle_plan_id, nil)
         when false # Downgrade

@@ -8,7 +8,7 @@ module Spec
 
       def create_plans
         plans_attributes = [
-          { name: "dev",        cycle: "none",  player_hits: 0,          price: 0 },
+          { name: "free",        cycle: "none",  player_hits: 0,          price: 0 },
           { name: "sponsored",  cycle: "none",  player_hits: 0,          price: 0 },
           { name: "beta",       cycle: "none",  player_hits: 0,          price: 0 },
           { name: "comet",      cycle: "month", player_hits: 3_000,      price: 990 },

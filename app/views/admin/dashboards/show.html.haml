@@ -13,7 +13,7 @@
 %h3 Sites
 - active_sites    = Site.active.count
 - beta_sites      = Site.active.beta.count
-- dev_sites       = Site.active.dev.count
+- free_sites      = Site.active.free.count
 - sponsored_sites = Site.active.sponsored.count
 - paying_sites    = Site.active.in_paid_plan.count
 - custom_sites    = Site.active.custom.count
@@ -24,8 +24,8 @@
     %td= display_percentage(beta_sites.to_f / active_sites)
   %tr
     %td LaunchPad
-    %td= dev_sites
-    %td= display_percentage(dev_sites.to_f / active_sites)
+    %td= free_sites
+    %td= display_percentage(free_sites.to_f / active_sites)
   %tr
     %td Sponsored
     %td= sponsored_sites
@@ -90,7 +90,7 @@
 
 -# Users : Top 10 Customers' Country % and #
 
--# Sites : # of dev sites
+-# Sites : # of free sites
 -# Sites : # of paying sites
 
 -# Traffic : Current daily traffic

@@ -37,8 +37,8 @@ module Site::Invoice
     plan && plan.beta_plan?
   end
 
-  def in_dev_plan?
-    plan && plan.dev_plan?
+  def in_free_plan?
+    plan && plan.free_plan?
   end
 
   def in_sponsored_plan?
@@ -61,9 +61,9 @@ module Site::Invoice
     in_paid_plan? || will_be_in_paid_plan?
   end
 
-  def will_be_in_dev_plan?
+  def will_be_in_free_plan?
     if id = (pending_plan_id || next_cycle_plan_id)
-      Plan.find(id).dev_plan?
+      Plan.find(id).free_plan?
     end
   end
 
@@ -199,8 +199,8 @@ private
       invoice.save!
       @transaction = Transaction.charge_by_invoice_ids([invoice.id], charging_options || {}) if instant_charging?
 
-    elsif pending_plan_id_changed? && pending_plan_id? && pending_plan.free_plan?
-      # directly update for free plans
+    elsif pending_plan_id_changed? && pending_plan_id? && pending_plan.unpaid_plan?
+      # directly update for unpaid plans
       self.apply_pending_plan_changes
     end
     true

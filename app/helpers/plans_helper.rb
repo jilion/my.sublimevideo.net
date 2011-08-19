@@ -3,7 +3,7 @@ module PlansHelper
   def plan_page_title
     if !@site.hostname?
       "Site plan"
-    elsif @site.in_beta_plan? || @site.in_dev_plan?
+    elsif @site.in_beta_plan? || @site.in_free_plan?
       "Choose a plan"
     else
       if @site.in_custom_plan? || @site.in_sponsored_plan?
@@ -50,14 +50,14 @@ module PlansHelper
   end
 
   def plan_change_type(old_plan, new_plan)
-    if old_plan == new_plan || (old_plan.beta_plan? && new_plan.dev_plan?)
+    if old_plan == new_plan || (old_plan.beta_plan? && new_plan.free_plan?)
       nil
     elsif old_plan.beta_plan?
       "upgrade_from_beta"
-    elsif new_plan.dev_plan?
-      "delayed_downgrade_to_dev"
-    elsif old_plan.dev_plan?
-      "upgrade_from_dev"
+    elsif new_plan.free_plan?
+      "delayed_downgrade_to_free"
+    elsif old_plan.free_plan?
+      "upgrade_from_free"
     elsif old_plan.yearly? && new_plan.monthly?
       if old_plan.month_price(10) < new_plan.month_price(10)
         "delayed_upgrade"
@@ -79,7 +79,7 @@ module PlansHelper
 
   def radio_button_options(site, plan, current_plan, options={})
     options = options
-    options[:id]    ||= plan.dev_plan? ? "plan_dev" : "plan_#{plan.name}_#{plan.cycle}"
+    options[:id]    ||= plan.free_plan? ? "plan_free" : "plan_#{plan.name}_#{plan.cycle}"
     options[:class] ||= "plan_radio"
     options["data-plan_title"] = plan.title(always_with_cycle: true)
     options["data-plan_price"] = display_amount(plan.price(site))

@@ -67,7 +67,7 @@ describe OneTime::Site do
       @invalid1.update_attribute(:extra_hostnames, "google.com, 172.16.4.165")
       @invalid2 = FactoryGirl.create(:site, dev_hostnames: "127.0.0.1")
       @invalid2.update_attribute(:extra_hostnames, "172.16.4.165")
-      @invalid3 = FactoryGirl.create(:site, plan_id: @dev_plan.id, dev_hostnames: "127.0.0.1")
+      @invalid3 = FactoryGirl.create(:site, plan_id: @free_plan.id, dev_hostnames: "127.0.0.1")
       @invalid3.update_attribute(:hostname, "172.16.4.165")
 
       @valid1 = FactoryGirl.create(:site, dev_hostnames: "localhost", extra_hostnames: "google.com")

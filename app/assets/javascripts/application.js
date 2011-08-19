@@ -196,12 +196,12 @@ MySublimeVideo.showPlanCreateInfo = function(radioButton) {
 
 MySublimeVideo.showPlanUpdateInfo = function(radioButton) {
   var upgradeInfoDiv = $('plan_upgrade_info'),
-  upgradeFromDevInfoDiv = $('plan_upgrade_from_dev_info'),
+  upgradeFromDevInfoDiv = $('plan_upgrade_from_free_info'),
   upgradeFromBetaInfoDiv = $('plan_upgrade_from_beta_info'),
   delayedUpgradeInfoDiv = $('plan_delayed_upgrade_info'),
   delayedDowngradeInfoDiv = $('plan_delayed_downgrade_info'),
   delayedChangeInfoDiv = $('plan_delayed_change_info'),
-  delayedDowngradeTo_dev_info = $('plan_delayed_downgrade_to_dev_info');
+  delayedDowngradeToFreeInfo = $('plan_delayed_downgrade_to_free_info');
 
   upgradeInfoDiv.hide();
   upgradeFromDevInfoDiv.hide();
@@ -209,13 +209,13 @@ MySublimeVideo.showPlanUpdateInfo = function(radioButton) {
   delayedUpgradeInfoDiv.hide();
   delayedDowngradeInfoDiv.hide();
   delayedChangeInfoDiv.hide();
-  delayedDowngradeTo_dev_info.hide();
+  delayedDowngradeToFreeInfo.hide();
 
   switch (radioButton.readAttribute('data-plan_change_type')) {
     case "upgrade":
       MySublimeVideo.updatePlanInfo_(upgradeInfoDiv, radioButton);
       break;
-    case "upgrade_from_dev":
+    case "upgrade_from_free":
       MySublimeVideo.updatePlanInfo_(upgradeFromDevInfoDiv, radioButton);
       break;
     case "upgrade_from_beta":
@@ -230,8 +230,8 @@ MySublimeVideo.showPlanUpdateInfo = function(radioButton) {
     case "delayed_change":
       MySublimeVideo.updatePlanInfo_(delayedChangeInfoDiv, radioButton);
       break;
-    case "delayed_downgrade_to_dev":
-      MySublimeVideo.updatePlanInfo_(delayedDowngradeTo_dev_info, radioButton);
+    case "delayed_downgrade_to_free":
+      MySublimeVideo.updatePlanInfo_(delayedDowngradeToFreeInfo, radioButton);
       break;
   }
 };

@@ -75,15 +75,15 @@ describe User do
         @user1 = FactoryGirl.create(:user)
         FactoryGirl.create(:site, user: @user1, plan_id: @paid_plan.id)
         FactoryGirl.create(:site, user: @user1, plan_id: @paid_plan.id)
-        FactoryGirl.create(:site, user: @user1, plan_id: @dev_plan.id)
+        FactoryGirl.create(:site, user: @user1, plan_id: @free_plan.id)
 
         # Billable because next cycle plan is another paid plan
         @user2 = FactoryGirl.create(:user)
         FactoryGirl.create(:site, user: @user2, plan_id: @paid_plan.id).update_attribute(:next_cycle_plan_id, FactoryGirl.create(:plan).id)
 
-        # Not billable because next cycle plan is the dev plan
+        # Not billable because next cycle plan is the free plan
         @user3 = FactoryGirl.create(:user)
-        FactoryGirl.create(:site, user: @user3, plan_id: @paid_plan.id).update_attribute(:next_cycle_plan_id, @dev_plan.id)
+        FactoryGirl.create(:site, user: @user3, plan_id: @paid_plan.id).update_attribute(:next_cycle_plan_id, @free_plan.id)
 
         # Not billable because his site has been archived
         @user4 = FactoryGirl.create(:user)
@@ -121,8 +121,8 @@ describe User do
         @user1 = FactoryGirl.create(:user, email: "remy@jilion.com")
         @user2 = FactoryGirl.create(:user, first_name: "Marcel")
         @user3 = FactoryGirl.create(:user, last_name: "Jacques")
-        @site1 = FactoryGirl.create(:site, user: @user1, hostname: "bob.com", plan_id: @dev_plan.id)
-        @site2 = FactoryGirl.create(:site, user: @user1, dev_hostnames: "foo.dev, bar.dev", plan_id: @dev_plan.id)
+        @site1 = FactoryGirl.create(:site, user: @user1, hostname: "bob.com", plan_id: @free_plan.id)
+        @site2 = FactoryGirl.create(:site, user: @user1, dev_hostnames: "foo.dev, bar.dev", plan_id: @free_plan.id)
       end
 
       describe "on email" do
@@ -344,7 +344,7 @@ describe User do
   describe "State Machine" do
     before(:all) do
       @user           = FactoryGirl.create(:user)
-      @dev_site       = FactoryGirl.create(:site, user: @user, plan_id: @dev_plan.id, hostname: "octavez.com")
+      @free_site       = FactoryGirl.create(:site, user: @user, plan_id: @free_plan.id, hostname: "octavez.com")
       @paid_site      = FactoryGirl.create(:site, user: @user, hostname: "rymai.com")
       @suspended_site = FactoryGirl.create(:site, user: @user, hostname: "rymai.me", state: 'suspended')
       FactoryGirl.create(:invoice, site: @paid_site, state: 'failed')
@@ -373,11 +373,11 @@ describe User do
           it "should suspend all user' active sites that have failed invoices" do
             @archived_site  = FactoryGirl.create(:site, user: @user, hostname: "rymai.tv", state: 'archived')
             @paid_site.reload.should be_active
-            @dev_site.reload.should be_active
+            @free_site.reload.should be_active
             @archived_site.reload.should be_archived
             subject.reload.suspend
             @paid_site.reload.should be_suspended
-            @dev_site.reload.should be_active
+            @free_site.reload.should be_active
             @archived_site.reload.should be_archived
           end
         end
@@ -407,10 +407,10 @@ describe User do
         describe "before_transition :on => :unsuspend, :do => :unsuspend_sites" do
           it "should suspend all user' sites that are suspended" do
             @suspended_site.reload.should be_suspended
-            @dev_site.reload.should be_active
+            @free_site.reload.should be_active
             subject.reload.unsuspend
             @suspended_site.reload.should be_active
-            @dev_site.reload.should be_active
+            @free_site.reload.should be_active
           end
         end
 
@@ -942,11 +942,11 @@ describe User do
       context "user has only sites with launchpad support" do
         before(:all) do
           @user = FactoryGirl.create(:user)
-          FactoryGirl.create(:site, user: @user, plan_id: @dev_plan.id)
+          FactoryGirl.create(:site, user: @user, plan_id: @free_plan.id)
         end
         subject { @user.reload }
 
-        it { @dev_plan.support.should == "launchpad" }
+        it { @free_plan.support.should == "launchpad" }
         it { subject.support.should == "launchpad" }
       end
 

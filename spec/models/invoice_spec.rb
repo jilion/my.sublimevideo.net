@@ -476,7 +476,7 @@ describe Invoice do
           it { should be_open }
         end
 
-        %w[dev beta].each do |plan|
+        %w[free beta].each do |plan|
           context "from a #{plan} plan" do
             before(:all) do
               @user = FactoryGirl.create(:user, country: 'FR', created_at: Time.utc(2011,3,30))

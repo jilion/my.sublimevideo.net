@@ -1,11 +1,11 @@
 - if current_user.cc? && !current_user.cc_expired?
-  #credit_card_summary.site{ :style => site.in_dev_plan? ? "display:none;" : "" }
+  #credit_card_summary.site{ :style => site.in_free_plan? ? "display:none;" : "" }
     %h3.title= "Credit Card used:"
     %p.card{ :class => current_user.cc_type }<
       = raw "#{t("user.credit_card.type.#{current_user.cc_type}")} ending in #{content_tag(:strong, current_user.cc_last_digits)}"
     %p= link_to "Update credit card", edit_credit_card_path
 - else
-  #credit_card{ :style => site.in_dev_plan? ? "display:none;" : "" }
+  #credit_card{ :style => site.in_free_plan? ? "display:none;" : "" }
     - if error = site.errors[:base].detect { |error| error == t('activerecord.errors.models.site.attributes.base.credit_card_needed') }
       .inline_errors
         %span= error

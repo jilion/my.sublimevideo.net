@@ -76,11 +76,11 @@
           %span.save_label= "2 months free"
     .spacer
 
-    - dev_plan = Plan.dev_plan
-    #dev_plan{ :class => current_plan && current_plan == dev_plan ? 'active' : '' }
+    - free_plan = Plan.free_plan
+    #free_plan{ :class => current_plan && current_plan == free_plan ? 'active' : '' }
       .radio_wrap
-        = f.label :plan_id, raw("#{content_tag(:strong, "#{dev_plan.title} plan")}: Unlimited usage on your local development domain. #{site.persisted? && plan && plan == dev_plan ? content_tag(:span, 'Current', :class => 'current_label') : ''}"), :for => "plan_#{dev_plan.name}", :class => "title"
-        = f.radio_button :plan_id, dev_plan.id, radio_button_options(site, dev_plan, current_plan, :checked => current_plan && current_plan == dev_plan)
+        = f.label :plan_id, raw("#{content_tag(:strong, "#{free_plan.title} plan")}: Unlimited usage on your local development domain. #{site.persisted? && plan && plan == free_plan ? content_tag(:span, 'Current', :class => 'current_label') : ''}"), :for => "plan_#{free_plan.name}", :class => "title"
+        = f.radio_button :plan_id, free_plan.id, radio_button_options(site, free_plan, current_plan, :checked => current_plan && current_plan == free_plan)
         %span.bg
 
     #need_more{ :class => (site.recommended_plan_name == 'custom' ? 'recommended' : '') }

@@ -52,7 +52,7 @@ describe Site::Templates do
         end
       end
 
-      context "on update of settings or state (to dev or active)" do
+      context "on update of settings or state" do
         describe "attributes that appears in the license" do
 
           before(:each) do
@@ -62,7 +62,7 @@ describe Site::Templates do
           { hostname: "test.com", extra_hostnames: "test.staging.com", dev_hostnames: "test.local", path: "yu", wildcard: true }.each do |attribute, value|
             describe "#{attribute} has changed" do
               subject do
-                site = FactoryGirl.create(:site, plan_id: @dev_plan.id, hostname: "jilion.com", extra_hostnames: "staging.jilion.com", dev_hostnames: "jilion.local", path: "yo", wildcard: false)
+                site = FactoryGirl.create(:site, plan_id: @free_plan.id, hostname: "jilion.com", extra_hostnames: "staging.jilion.com", dev_hostnames: "jilion.local", path: "yo", wildcard: false)
                 @worker.work_off
                 site.reload
               end
@@ -73,7 +73,7 @@ describe Site::Templates do
                 Delayed::Job.where(:handler.matches => "%update_loader_and_license%").count.should == 1
               end
 
-              it "should update license content with #{attribute} only when site have a dev plan" do
+              it "should update license content with #{attribute} only when site have a free plan" do
                 old_license_content = subject.license.read
                 subject.send("#{attribute}=", value)
                 subject.save
@@ -149,15 +149,15 @@ describe Site::Templates do
 
     describe "#prepare_cdn_update" do
 
-      context "new record with dev plan" do
+      context "new record with free plan" do
         before(:all) do
-          @site = FactoryGirl.build(:new_site, plan_id: @dev_plan.id)
+          @site = FactoryGirl.build(:new_site, plan_id: @free_plan.id)
           @site.send :prepare_cdn_update
         end
         subject { @site }
 
         its(:plan_id)              { should be_nil }
-        its(:pending_plan_id)      { should == @dev_plan.id }
+        its(:pending_plan_id)      { should == @free_plan.id }
         its(:cdn_up_to_date)       { should be_false }
         its(:loader_needs_update)  { should be_false }
         its(:license_needs_update) { should be_false }
@@ -177,14 +177,14 @@ describe Site::Templates do
         its(:license_needs_update) { should be_false }
       end
 
-      context "new record with dev plan (apply_pending_plan_changes called)" do
+      context "new record with free plan (apply_pending_plan_changes called)" do
         before(:all) do
-          @site = FactoryGirl.build(:new_site, plan_id: @dev_plan.id)
+          @site = FactoryGirl.build(:new_site, plan_id: @free_plan.id)
           @site.save
         end
         subject { @site }
 
-        its(:plan_id)              { should == @dev_plan.id  }
+        its(:plan_id)              { should == @free_plan.id  }
         its(:pending_plan_id)      { should be_nil }
         its(:cdn_up_to_date)       { should be_false }
         its(:loader_needs_update)  { should be_true }
@@ -218,13 +218,13 @@ describe Site::Templates do
 
         describe "when upgrade" do
           before(:all) do
-            @site = FactoryGirl.create(:site, plan_id: @dev_plan.id)
+            @site = FactoryGirl.create(:site, plan_id: @free_plan.id)
             @site.plan_id = @paid_plan.id
             @site.send :prepare_cdn_update
           end
           subject { @site }
 
-          its(:plan_id)              { should == @dev_plan.id }
+          its(:plan_id)              { should == @free_plan.id }
           its(:pending_plan_id)      { should == @paid_plan.id }
           its(:cdn_up_to_date)       { should be_true }
           its(:loader_needs_update)  { should be_false }
@@ -233,7 +233,7 @@ describe Site::Templates do
 
         describe "when upgrade (apply_pending_plan_changes called)" do
           before(:all) do
-            @site = FactoryGirl.create(:site, plan_id: @dev_plan.id)
+            @site = FactoryGirl.create(:site, plan_id: @free_plan.id)
             @site.plan_id = @paid_plan.id
             VCR.use_cassette('ogone/visa_payment_generic') do
               @site.pend_plan_changes
@@ -295,14 +295,14 @@ describe Site::Templates do
         describe "when downgrade" do
           before(:all) do
             @site = FactoryGirl.create(:site, plan_id: @paid_plan.id)
-            @site.plan_id = @dev_plan.id
+            @site.plan_id = @free_plan.id
             @site.send :prepare_cdn_update
           end
           subject { @site }
 
           its(:plan_id)              { should == @paid_plan.id  }
           its(:pending_plan_id)      { should be_nil }
-          its(:next_cycle_plan_id)   { should == @dev_plan.id }
+          its(:next_cycle_plan_id)   { should == @free_plan.id }
           its(:cdn_up_to_date)       { should be_true }
           its(:loader_needs_update)  { should be_false }
           its(:license_needs_update) { should be_false }
@@ -376,23 +376,23 @@ describe Site::Templates do
 
     describe "#license_hash" do
       before(:all) do
-        @site_with_all = FactoryGirl.create(:site, plan_id: @dev_plan.id, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', path: 'foo', wildcard: true)
-        @site_without_wildcard = FactoryGirl.create(:site, plan_id: @dev_plan.id, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', path: 'foo', wildcard: false)
-        @site_without_path = FactoryGirl.create(:site, plan_id: @dev_plan.id, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', wildcard: true)
-        @site_without_extra_hostnames = FactoryGirl.create(:site, plan_id: @dev_plan.id, hostname: "jilion.com", dev_hostnames: '127.0.0.1,localhost', wildcard: true)
+        @site_with_all = FactoryGirl.create(:site, plan_id: @free_plan.id, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', path: 'foo', wildcard: true)
+        @site_without_wildcard = FactoryGirl.create(:site, plan_id: @free_plan.id, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', path: 'foo', wildcard: false)
+        @site_without_path = FactoryGirl.create(:site, plan_id: @free_plan.id, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', wildcard: true)
+        @site_without_extra_hostnames = FactoryGirl.create(:site, plan_id: @free_plan.id, hostname: "jilion.com", dev_hostnames: '127.0.0.1,localhost', wildcard: true)
       end
 
-      context "site with dev plan" do
+      context "site with free plan" do
         context "site with all settings" do
           subject { @site_with_all }
-          it "should include only dev hostnames without path" do
+          it "should include only free hostnames without path" do
             subject.reload.license_hash.should == { d: ['127.0.0.1', 'localhost'], w: true }
           end
         end
 
         context "site without wildcard" do
           subject { @site_without_wildcard }
-          it "should include only dev hostnames without path and wildcard" do
+          it "should include only free hostnames without path and wildcard" do
             subject.license_hash.should == { d: ['127.0.0.1', 'localhost'] }
           end
         end
@@ -400,7 +400,7 @@ describe Site::Templates do
 
         context "site without path" do
           subject { @site_without_path.reload }
-          it "should include only dev hostnames without path" do
+          it "should include only free hostnames without path" do
             subject.reload.license_hash.should == { d: ['127.0.0.1', 'localhost'], w: true }
           end
         end

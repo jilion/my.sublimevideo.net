@@ -129,8 +129,8 @@ FactoryGirl.define do
     price           1000
   end
 
-  factory :dev_plan, :class => Plan  do
-    name         "dev"
+  factory :free_plan, :class => Plan  do
+    name         "free"
     cycle        "none"
     player_hits  0
     price        0

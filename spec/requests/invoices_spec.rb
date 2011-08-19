@@ -6,7 +6,7 @@ feature "user has a credit card" do
   end
 
   scenario "views site invoices (with 0 past invoices)" do
-    site = FactoryGirl.create(:site, plan_id: @dev_plan.id, user: @current_user, hostname: 'rymai.com')
+    site = FactoryGirl.create(:site, plan_id: @free_plan.id, user: @current_user, hostname: 'rymai.com')
 
     visit "/sites"
     click_link "Edit rymai.com"
@@ -184,7 +184,7 @@ feature "user has a credit card" do
   context "retry failed invoice" do
     scenario "with 0 failed invoices" do
       @current_user.update_attribute(:created_at, Time.utc(2010,10,10))
-      @site = FactoryGirl.create(:site_with_invoice, plan_id: @dev_plan.id, user: @current_user, hostname: 'rymai.com')
+      @site = FactoryGirl.create(:site_with_invoice, plan_id: @free_plan.id, user: @current_user, hostname: 'rymai.com')
 
       visit "/sites"
       click_link "Edit rymai.com"

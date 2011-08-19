@@ -3,7 +3,7 @@ require 'spec_helper'
 feature "Sites" do
   before(:all) do
     plans_attributes = [
-      { name: "dev",        cycle: "none",  player_hits: 0,          price: 0 },
+      { name: "free",        cycle: "none",  player_hits: 0,          price: 0 },
       { name: "sponsored",  cycle: "none",  player_hits: 0,          price: 0 },
       { name: "beta",       cycle: "none",  player_hits: 0,          price: 0 },
       { name: "comet",      cycle: "month", player_hits: 3_000,      price: 990 },
@@ -26,10 +26,10 @@ feature "Sites" do
     end
 
     describe "new" do
-      describe "dev plan" do
+      describe "free plan" do
         scenario "with no hostname" do
-          choose "plan_dev"
-          has_checked_field?("plan_dev").should be_true
+          choose "plan_free"
+          has_checked_field?("plan_free").should be_true
 
           fill_in "Domain", :with => ""
           click_button "Create site"
@@ -47,8 +47,8 @@ feature "Sites" do
         end
 
         scenario "with a hostname" do
-          choose "plan_dev"
-          has_checked_field?("plan_dev").should be_true
+          choose "plan_free"
+          has_checked_field?("plan_free").should be_true
           fill_in "Domain", :with => "rymai.com"
           click_button "Create site"
 
@@ -336,13 +336,13 @@ feature "Sites" do
     end
 
     describe "new" do
-      describe "in dev plan" do
+      describe "in free plan" do
         scenario "with no hostname" do
           page.should have_no_selector("#credit_card")
           page.should have_selector("#credit_card_summary")
 
-          choose "plan_dev"
-          has_checked_field?("plan_dev").should be_true
+          choose "plan_free"
+          has_checked_field?("plan_free").should be_true
 
           fill_in "Domain", :with => ""
           click_button "Create site"
@@ -360,8 +360,8 @@ feature "Sites" do
         end
 
         scenario "with a hostname" do
-          choose "plan_dev"
-          has_checked_field?("plan_dev").should be_true
+          choose "plan_free"
+          has_checked_field?("plan_free").should be_true
           fill_in "Domain", :with => "rymai.com"
           click_button "Create site"
 
@@ -514,7 +514,7 @@ feature "Sites" do
 
     describe "edit" do
       scenario "edit a site" do
-        site = FactoryGirl.create(:site, user: @current_user, plan_id: @dev_plan.id, hostname: 'rymai.com')
+        site = FactoryGirl.create(:site, user: @current_user, plan_id: @free_plan.id, hostname: 'rymai.com')
 
         visit "/sites"
         page.should have_content('rymai.com')

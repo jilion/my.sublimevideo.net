@@ -17,7 +17,7 @@
   - if site.persisted?
     #site_setup_settings.settings
       .left
-        - unless site.in_dev_plan?
+        - unless site.in_free_plan?
           %h4.title= "Extra and development domains"
           %a.add{ :href => "", :onclick => "$('site_setup_extra_hostnames').toggle(); this.toggleClassName('up'); return false", :class => display_text_if("up", site.extra_hostnames?) }= "Add staging or alias domains"
           .entry.site#site_setup_extra_hostnames{ :style => display_block_if_or_none_otherwise(site.extra_hostnames?) }
@@ -29,7 +29,7 @@
           = f.label :dev_hostnames, "", :class => "icon"
           = f.text_field :dev_hostnames, :class => "text", :placeholder => "127.0.0.1, localhost", :autocomplete => :off
           %p.info= "Add (local only) development domains separated by commas."
-      - unless site.in_dev_plan?
+      - unless site.in_free_plan?
         .right
           %h4.title= "Advanced settings"
           %p.label_info= "Restrict your player to a specific path"
@@ -44,7 +44,7 @@
               = f.label :wildcard, "Wildcard (*.yourdomain.com)"
             %p.info= "It will also be enabled for extra and development domains."
       .spacer
-      - if site.in_dev_plan?
+      - if site.in_free_plan?
         .more_settings_desc><
           = raw "More settings like alias and staging domains, custom path and wildcard option, are available on paid plans. #{link_to "Read more", "http://docs.sublimevideo.net/site-settings", :class => "hl"}."
       = link_to "http://docs.sublimevideo.net/site-settings", :class => "help", :onclick => "window.open(this); return false" do

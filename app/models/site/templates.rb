@@ -44,7 +44,7 @@ module Site::Templates
 
   def license_hash
     hash = {}
-    unless in_dev_plan?
+    unless in_free_plan?
       hash[:h] = [hostname]
       hash[:h] += extra_hostnames.split(', ') if extra_hostnames?
       hash[:p] = path if path.present?
@@ -87,7 +87,7 @@ private
       @license_needs_update = true
     else
       @loader_needs_update  = (player_mode_changed? && persisted?) || (plan_id_changed? && plan_id_was.nil?)
-      @license_needs_update = pending_plan_id.nil? && (settings_changed? || (plan_id_changed? && (plan_id_was.nil? || in_dev_plan? || Plan.find(plan_id_was).dev_plan?)))
+      @license_needs_update = pending_plan_id.nil? && (settings_changed? || (plan_id_changed? && (plan_id_was.nil? || in_free_plan? || Plan.find(plan_id_was).free_plan?)))
     end
 
     self.cdn_up_to_date = !(@loader_needs_update || @license_needs_update) if persisted?

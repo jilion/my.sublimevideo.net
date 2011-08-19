@@ -27,10 +27,10 @@ class Plan < ActiveRecord::Base
   # = Scopes =
   # ==========
 
-  scope :free_plans,     where(:name => ["dev", "beta", "sponsored"])
-  scope :paid_plans,     where(:name.not_in => ["dev", "beta", "sponsored"])
-  scope :standard_plans, where(:name.in => STANDARD_NAMES)
-  scope :custom_plans,   where(:name.matches => "custom%")
+  scope :unpaid_plans,   where { name >> ["free", "beta", "sponsored"] }
+  scope :paid_plans,     where { name << ["free", "beta", "sponsored"] }
+  scope :standard_plans, where { name >> STANDARD_NAMES }
+  scope :custom_plans,   where { name =~ "custom%" }
 
   # =================
   # = Class Methods =
@@ -39,10 +39,10 @@ class Plan < ActiveRecord::Base
   class << self
     extend ActiveSupport::Memoizable
 
-    def dev_plan
-      where(:name => "dev").first
+    def free_plan
+      where(:name => "free").first
     end
-    memoize :dev_plan
+    memoize :free_plan
 
     def beta_plan
       where(:name => "beta").first
@@ -105,23 +105,19 @@ class Plan < ActiveRecord::Base
     end
   end
 
-  # free plan
+  # unpaid plan
+  def free_plan?
+    name == "free"
+  end
+
+  # unpaid plan
   def beta_plan?
     name == "beta"
   end
 
-  # free plan
-  def dev_plan?
-    name == "dev"
-  end
-
-  # free plan
+  # unpaid plan
   def sponsored_plan?
     name == "sponsored"
-  end
-
-  def free_plan?
-    beta_plan? || dev_plan? || sponsored_plan?
   end
 
   # paid plan
@@ -134,8 +130,12 @@ class Plan < ActiveRecord::Base
     name =~ /^custom.*/
   end
 
+  def unpaid_plan?
+    free_plan? || beta_plan? || sponsored_plan?
+  end
+
   def paid_plan?
-    !free_plan?
+    !unpaid_plan?
   end
 
   CYCLES.each do |c|
@@ -145,7 +145,7 @@ class Plan < ActiveRecord::Base
   end
 
   def title(options = {})
-    if dev_plan?
+    if free_plan?
       "Free LaunchPad"
     elsif sponsored_plan?
       "Sponsored"
@@ -163,7 +163,7 @@ class Plan < ActiveRecord::Base
   def support
     if STANDARD_NAMES[-2,2].include?(name) || custom_plan? || sponsored_plan?
       "priority"
-    elsif dev_plan?
+    elsif free_plan?
       "launchpad"
     else
       "standard"
