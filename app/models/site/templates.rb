@@ -20,6 +20,7 @@ module Site::Templates
         end
         site.cdn_up_to_date = true
         site.save!
+
         site.purge_template(:loader) if purge_loader
         site.purge_template(:license) if purge_license
       end
@@ -43,14 +44,12 @@ module Site::Templates
   # ====================
 
   def license_hash
-    hash = {}
-    unless in_free_plan?
-      hash[:h] = [hostname]
-      hash[:h] += extra_hostnames.split(', ') if extra_hostnames?
-      hash[:p] = path if path.present?
-    end
+    hash = { h: [hostname] }
+    # hash[:b] = in_free_plan? || brand? # FOR THE BRAND OPT-IN
+    hash[:h] += extra_hostnames.split(', ') if extra_hostnames?
     hash[:d] = dev_hostnames.split(', ') if dev_hostnames?
     hash[:w] = wildcard if wildcard?
+    hash[:p] = path if path?
     hash
   end
 
@@ -60,7 +59,6 @@ module Site::Templates
 
   def purge_template(name)
     mapping = { loader: 'js', license: 'l' }
-    raise "Unknown template name!" unless mapping.keys.include?(name.to_sym)
     VoxcastCDN.purge("/#{mapping[name.to_sym]}/#{token}.js")
   end
 
@@ -78,18 +76,18 @@ private
 
   def settings_changed?
     (changed & %w[hostname extra_hostnames dev_hostnames path wildcard]).present?
+    # add logic for brand & ssl
   end
 
   # before_save
   def prepare_cdn_update
-    if state_changed? && active? && state_was == 'suspended'
-      @loader_needs_update = true
+    if state_change == ['suspended', 'active']
+      @loader_needs_update  = true
       @license_needs_update = true
     else
       @loader_needs_update  = (player_mode_changed? && persisted?) || (plan_id_changed? && plan_id_was.nil?)
-      @license_needs_update = pending_plan_id.nil? && (settings_changed? || (plan_id_changed? && (plan_id_was.nil? || in_free_plan? || Plan.find(plan_id_was).free_plan?)))
+      @license_needs_update = plan_id_changed? || settings_changed?
     end
-
     self.cdn_up_to_date = !(@loader_needs_update || @license_needs_update) if persisted?
 
     true

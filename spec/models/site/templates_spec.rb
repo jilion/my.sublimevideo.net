@@ -54,58 +54,60 @@ describe Site::Templates do
 
       context "on update of settings or state" do
         describe "attributes that appears in the license" do
+          before { PageRankr.stub(:ranks) }
 
-          before(:each) do
-            PageRankr.stub(:ranks)
-          end
+          %w[free sponsored beta paid custom].each do |plan_name|
+            context "with a site in #{plan_name} plan" do
+              [ [:hostname, :h, "test.com"],
+                [:extra_hostnames, :h, "test.staging.com"],
+                [:dev_hostnames, :d, "test.local"],
+                [:wildcard, :w, false],
+                [:path, :p, "yu"]
+              ].each do |attr, key, value|
+                describe "and #{attr} setting has changed" do
+                  before do
+                    plan = instance_variable_get(:"@#{plan_name == 'sponsored' ? 'paid' : plan_name}_plan")
+                    @site = FactoryGirl.create(:site, plan_id: plan.send(plan_name == 'custom' ? :token : :id), hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', path: 'foo', wildcard: true)
+                    @site.sponsor! if plan_name == 'sponsored'
+                    @worker.work_off
+                    @site.reload
+                  end
+                  subject { @site }
+                  
+                  it "delays update_loader_and_license once" do
+                    subject.send("#{attr}=", value)
+                    subject.user.current_password = '123456'
+                    lambda { subject.save }.should change(Delayed::Job, :count).by(1)
+                    Delayed::Job.where(:handler.matches => "%update_loader_and_license%").count.should == 1
+                  end
 
-          { hostname: "test.com", extra_hostnames: "test.staging.com", dev_hostnames: "test.local", path: "yu", wildcard: true }.each do |attribute, value|
-            describe "#{attribute} has changed" do
-              subject do
-                site = FactoryGirl.create(:site, plan_id: @free_plan.id, hostname: "jilion.com", extra_hostnames: "staging.jilion.com", dev_hostnames: "jilion.local", path: "yo", wildcard: false)
-                @worker.work_off
-                site.reload
-              end
+                  it "updates license content with #{attr} only when site is in a #{plan_name} plan" do
+                    old_license_content = subject.license.read
+                    subject.send("#{attr}=", value)
+                    subject.user.current_password = '123456'
+                    subject.apply_pending_plan_changes
+                    @worker.work_off
 
-              it "should delay update_loader_and_license once" do
-                subject
-                lambda { subject.update_attribute(attribute, value) }.should change(Delayed::Job, :count).by(1)
-                Delayed::Job.where(:handler.matches => "%update_loader_and_license%").count.should == 1
-              end
+                    subject.reload
+                    subject.license.read.should_not == old_license_content
+                    if value === false
+                      subject.license.read.should_not include("#{key}:")
+                      subject.license.read.should_not include(value.to_s)
+                    else
+                      subject.license.read.should include("#{key}:")
+                      subject.license.read.should include(value.to_s)
+                    end
+                  end
 
-              it "should update license content with #{attribute} only when site have a free plan" do
-                old_license_content = subject.license.read
-                subject.send("#{attribute}=", value)
-                subject.save
-                @worker.work_off
+                  it "purges license on CDN" do
+                    VoxcastCDN.should_receive(:purge).with("/l/#{subject.token}.js")
 
-                subject.reload
-                if [:dev_hostnames, :wildcard].include?(attribute)
-                  subject.license.read.should_not == old_license_content
-                  subject.license.read.should include(value.to_s)
-                else
-                  subject.license.read.should == old_license_content
-                  subject.license.read.should_not include(value.to_s)
+                    subject.send("#{attr}=", value)
+                    subject.user.current_password = '123456'
+                    subject.save!
+                    @worker.work_off
+                  end
                 end
-              end
-
-              it "should update license content with #{attribute} value when site have a paid plan" do
-                old_license_content = subject.license.read
-                subject.send("#{attribute}=", value)
-                subject.user.current_password = '123456'
-                subject.plan_id = @paid_plan.id
-                subject.apply_pending_plan_changes
-                @worker.work_off
-
-                subject.reload
-                subject.license.read.should_not == old_license_content
-                subject.license.read.should include(value.to_s)
-              end
-
-              it "should purge license on CDN" do
-                VoxcastCDN.should_receive(:purge).with("/l/#{subject.token}.js")
-                subject.update_attribute(attribute, value)
-                @worker.work_off
               end
             end
           end
@@ -160,7 +162,7 @@ describe Site::Templates do
         its(:pending_plan_id)      { should == @free_plan.id }
         its(:cdn_up_to_date)       { should be_false }
         its(:loader_needs_update)  { should be_false }
-        its(:license_needs_update) { should be_false }
+        its(:license_needs_update) { should be_true }
       end
 
       context "new record with paid plan" do
@@ -174,7 +176,7 @@ describe Site::Templates do
         its(:pending_plan_id)      { should == @paid_plan.id }
         its(:cdn_up_to_date)       { should be_false }
         its(:loader_needs_update)  { should be_false }
-        its(:license_needs_update) { should be_false }
+        its(:license_needs_update) { should be_true }
       end
 
       context "new record with free plan (apply_pending_plan_changes called)" do
@@ -352,9 +354,9 @@ describe Site::Templates do
 
           its(:plan_id)              { should == @custom_plan.id }
           its(:pending_plan_id)      { should be_nil }
-          its(:cdn_up_to_date)       { should be_true }
+          its(:cdn_up_to_date)       { should be_false }
           its(:loader_needs_update)  { should be_false }
-          its(:license_needs_update) { should be_false }
+          its(:license_needs_update) { should be_true }
         end
       end
     end # #prepare_cdn_update
@@ -376,78 +378,58 @@ describe Site::Templates do
 
     describe "#license_hash" do
       before(:all) do
-        @site_with_all = FactoryGirl.create(:site, plan_id: @free_plan.id, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', path: 'foo', wildcard: true)
-        @site_without_wildcard = FactoryGirl.create(:site, plan_id: @free_plan.id, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', path: 'foo', wildcard: false)
-        @site_without_path = FactoryGirl.create(:site, plan_id: @free_plan.id, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', wildcard: true)
-        @site_without_extra_hostnames = FactoryGirl.create(:site, plan_id: @free_plan.id, hostname: "jilion.com", dev_hostnames: '127.0.0.1,localhost', wildcard: true)
+        @site = FactoryGirl.create(:site, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', path: 'foo', wildcard: true)
       end
 
-      context "site with free plan" do
-        context "site with all settings" do
-          subject { @site_with_all }
-          it "should include only free hostnames without path" do
-            subject.reload.license_hash.should == { d: ['127.0.0.1', 'localhost'], w: true }
-          end
-        end
+      describe "common settings" do
+        %w[free sponsored beta paid].each do |plan_name|
+          context "site in #{plan_name} plan" do
+            subject { @site.reload }
+            before { subject.plan = instance_variable_get(:"@#{plan_name}_plan") }
 
-        context "site without wildcard" do
-          subject { @site_without_wildcard }
-          it "should include only free hostnames without path and wildcard" do
-            subject.license_hash.should == { d: ['127.0.0.1', 'localhost'] }
-          end
-        end
+            it "includes everything" do
+              subject.license_hash.should == { h: ['jilion.com', 'jilion.net', 'jilion.org'], d: ['127.0.0.1', 'localhost'], w: true, p: "foo" }
+            end
 
+            context "without extra_hostnames" do
+              before { subject.extra_hostnames = '' }
 
-        context "site without path" do
-          subject { @site_without_path.reload }
-          it "should include only free hostnames without path" do
-            subject.reload.license_hash.should == { d: ['127.0.0.1', 'localhost'], w: true }
-          end
-        end
-      end
+              it "should include hostname, no extra_hostnames, path, wildcard & dev_hostnames" do
+                subject.license_hash.should == { h: ['jilion.com'], d: ['127.0.0.1', 'localhost'], w: true, p: "foo" }
+              end
+            end
 
-      %w[sponsored beta paid].each do |plan_name|
-        context "site with #{plan_name} plan" do
-          context "site with all settings" do
-            subject { @site_with_all.reload }
-            it "should include hostname, extra_hostnames, path, wildcard & dev_hostnames" do
-              subject.plan = instance_variable_get(:"@#{plan_name}_plan")
-              subject.license_hash.should == { h: ['jilion.com', 'jilion.net', 'jilion.org'], p: "foo", d: ['127.0.0.1', 'localhost'], w: true }
+            context "without wildcard" do
+              before { subject.wildcard = false }
+
+              it "should include hostname, extra_hostnames, path, no wildcard & dev_hostnames" do
+                subject.license_hash.should == { h: ['jilion.com', 'jilion.net', 'jilion.org'], d: ['127.0.0.1', 'localhost'], p: "foo" }
+              end
+            end
+
+            context "without path" do
+              before { subject.path = '' }
+
+              it "should include hostname, extra_hostnames, no path, wildcard & dev_hostnames" do
+                subject.license_hash.should == { h: ['jilion.com', 'jilion.net', 'jilion.org'], d: ['127.0.0.1', 'localhost'], w: true }
+              end
             end
           end
-
-          context "site without wildcard" do
-            subject { @site_without_wildcard.reload }
-            it "should include hostname, extra_hostnames, path, no wildcard & dev_hostnames" do
-              subject.plan = instance_variable_get(:"@#{plan_name}_plan")
-              subject.license_hash.should == { h: ['jilion.com', 'jilion.net', 'jilion.org'], p: "foo", d: ['127.0.0.1', 'localhost'] }
-            end
-          end
-
-          context "site without path" do
-            subject { @site_without_path.reload }
-            it "should include hostname, extra_hostnames, no path, wildcard & dev_hostnames" do
-              subject.plan = instance_variable_get(:"@#{plan_name}_plan")
-              subject.license_hash.should == { h: ['jilion.com', 'jilion.net', 'jilion.org'], d: ['127.0.0.1', 'localhost'], w: true }
-            end
-          end
-
-          context "site without extra_hostnames" do
-            subject { @site_without_extra_hostnames.reload }
-            it "should include hostname, no extra_hostnames, path, wildcard & dev_hostnames" do
-              subject.plan = instance_variable_get(:"@#{plan_name}_plan")
-              subject.license_hash.should == { h: ['jilion.com'], d: ['127.0.0.1', 'localhost'], w: true }
-            end
-          end
-
         end
       end
+
+      describe "brand" do
+      end
+
+      describe "ssl" do
+      end
+
     end
 
     describe "#license_js_hash" do
       subject{ FactoryGirl.create(:site, plan_id: @paid_plan.id, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', path: 'foo', wildcard: true) }
 
-      its(:license_js_hash) { should == "{h:[\"jilion.com\",\"jilion.net\",\"jilion.org\"],p:\"foo\",d:[\"127.0.0.1\",\"localhost\"],w:true}" }
+      its(:license_js_hash) { should == "{h:[\"jilion.com\",\"jilion.net\",\"jilion.org\"],d:[\"127.0.0.1\",\"localhost\"],w:true,p:\"foo\"}" }
     end
 
     describe "#set_template" do
@@ -459,7 +441,7 @@ describe Site::Templates do
         subject { @site }
 
         it "should set license file with license_hash" do
-          subject.license.read.should == "jilion.sublime.video.sites({h:[\"jilion.com\",\"jilion.net\",\"jilion.org\"],p:\"foo\",d:[\"127.0.0.1\",\"localhost\"],w:true});"
+          subject.license.read.should == "jilion.sublime.video.sites({h:[\"jilion.com\",\"jilion.net\",\"jilion.org\"],d:[\"127.0.0.1\",\"localhost\"],w:true,p:\"foo\"});"
         end
       end
 
