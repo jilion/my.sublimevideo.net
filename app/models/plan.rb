@@ -40,28 +40,28 @@ class Plan < ActiveRecord::Base
     extend ActiveSupport::Memoizable
 
     def free_plan
-      where(:name => "free").first
+      where(name: "free").first
     end
     memoize :free_plan
 
     def beta_plan
-      where(:name => "beta").first
+      where(name: "beta").first
     end
     memoize :beta_plan
 
     def sponsored_plan
-      where(:name => "sponsored").first
+      where(name: "sponsored").first
     end
     memoize :sponsored_plan
 
     def create_custom(attributes)
-      create(attributes.merge(:name => "custom#{custom_plans.count + 1}"))
+      create(attributes.merge(name: "custom#{custom_plans.count + 1}"))
     end
 
     STANDARD_NAMES.each do |name|
       name_method = "#{name}_player_hits"
       define_method(name_method) do
-        where(:name => name).first.player_hits
+        where(name: name).first.player_hits
       end
       memoize name_method.to_sym
     end
@@ -69,7 +69,7 @@ class Plan < ActiveRecord::Base
     STANDARD_NAMES.each do |name|
       name_method = "#{name}_daily_player_hits"
       define_method(name_method) do
-        where(:name => name).first.daily_player_hits
+        where(name: name).first.daily_player_hits
       end
       memoize name_method.to_sym
     end
@@ -91,7 +91,7 @@ class Plan < ActiveRecord::Base
   end
 
   def next_plan
-    Plan.where(:price.gt => price).order(:price).first
+    Plan.where { price > my{price} }.order(:price.asc).first
   end
 
   def month_price(months = 12)
@@ -146,7 +146,7 @@ class Plan < ActiveRecord::Base
 
   def title(options = {})
     if free_plan?
-      "Free LaunchPad"
+      "Free"
     elsif sponsored_plan?
       "Sponsored"
     elsif options[:always_with_cycle]

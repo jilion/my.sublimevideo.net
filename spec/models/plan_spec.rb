@@ -70,13 +70,13 @@ describe Plan do
   describe "Instance Methods" do
     describe "#next_plan" do
       it "should return the next plan with a bigger price" do
-        plan2 = FactoryGirl.create(:plan, :price => subject.price + 100)
-        plan3 = FactoryGirl.create(:plan, :price => subject.price + 2000)
+        plan2 = FactoryGirl.create(:plan, price: subject.price + 100)
+        plan3 = FactoryGirl.create(:plan, price: subject.price + 2000)
         @paid_plan.next_plan.should == plan2
       end
 
       it "should be_nil if none bigger plan exist" do
-        plan2 = FactoryGirl.create(:plan, :price => 10**9)
+        plan2 = FactoryGirl.create(:plan, price: 10**9)
         plan2.next_plan.should be_nil
       end
     end
@@ -205,8 +205,8 @@ describe Plan do
     end
 
     describe "#title" do
-      specify { @free_plan.title.should == "Free LaunchPad" }
-      specify { @free_plan.title(always_with_cycle: true).should == "Free LaunchPad" }
+      specify { @free_plan.title.should == "Free" }
+      specify { @free_plan.title(always_with_cycle: true).should == "Free" }
       specify { @sponsored_plan.title.should == "Sponsored" }
       specify { @sponsored_plan.title(always_with_cycle: true).should == "Sponsored" }
       specify { @custom_plan.title.should == "Custom" }
