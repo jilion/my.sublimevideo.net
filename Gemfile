@@ -28,7 +28,7 @@ gem 'squeel', :git => 'git://github.com/ernie/squeel.git'
 
 gem 'bson_ext',              '~> 1.3.1'
 gem 'mongo',                 '~> 1.3.1'
-gem 'mongoid',               '~> 2.1.7'
+gem 'mongoid',               '~> 2.1.9'
 
 # Views
 gem 'haml',                  '~> 3.1.2'
@@ -137,7 +137,8 @@ group :test do
   gem 'shoulda-matchers', :git => 'git://github.com/thoughtbot/shoulda-matchers.git'
   gem 'capybara'
   gem 'webmock', '~> 1.6.4'
-  gem 'vcr'
+  gem 'typhoeus'
+  gem 'vcr',     '~> 1.10.3'
 
   gem 'database_cleaner'
   gem 'factory_girl_rails', :require => false # loaded in spec_helper Spork.each_run
