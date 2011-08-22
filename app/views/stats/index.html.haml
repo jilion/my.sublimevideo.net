@@ -2,6 +2,8 @@
 
 :coffeescript
   $ ->
-    # Backbone.history.start()
-    # s = new MSVStats.Collections.Stats
-    # s.fetch()
+    statsRouter = new  MSVStats.Routers.StatsRouter()
+    # Backbone.history.start({ pushState: true, root: "/sites/#{@site.token}/stats" })
+    Backbone.history.start({ pushState: true })
+
+#sites_select

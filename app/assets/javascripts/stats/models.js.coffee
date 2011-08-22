@@ -3,7 +3,7 @@ class MSVStats.Models.Site extends Backbone.Model
     token: null
     hostname: null
     selected: false
-
+    
 class MSVStats.Collections.Sites extends Backbone.Collection
  model: MSVStats.Models.Site
  url: '/sites'

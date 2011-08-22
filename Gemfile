@@ -13,8 +13,10 @@ group :assets do
   gem 'sass-rails',   :git => 'git://github.com/rails/sass-rails.git', :branch => '3-1-stable'
   # gem 'coffee-rails', "~> 3.1.0.rc.5"
   gem 'coffee-rails', :git => 'git://github.com/rails/coffee-rails.git', :branch => '3-1-stable'
+  gem 'eco'
   gem 'uglifier'
 end
+
 
 gem 'prototype-rails', :git => 'git://github.com/rymai/prototype-rails.git'
 gem 'jquery-rails'

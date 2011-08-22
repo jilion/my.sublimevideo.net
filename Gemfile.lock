@@ -203,6 +203,11 @@ GEM
       devise (~> 1.4.1)
       rails (< 3.2, >= 3.0.0)
     diff-lcs (1.1.2)
+    eco (1.0.0)
+      coffee-script
+      eco-source
+      execjs
+    eco-source (1.1.0.rc.1)
     ejs (1.0.0)
     em-websocket (0.3.1)
       addressable (>= 2.1.1)
@@ -463,6 +468,7 @@ DEPENDENCIES
   delayed_job (~> 2.1.4)
   devise (~> 1.4.2)
   devise_invitable (~> 0.5.4)
+  eco
   factory_girl_rails
   ffaker
   fog (~> 0.10.0)
