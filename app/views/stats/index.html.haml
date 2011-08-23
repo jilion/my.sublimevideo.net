@@ -2,7 +2,9 @@
 
 :coffeescript
   $ ->
-    statsRouter = new  MSVStats.Routers.StatsRouter()
+    window.MSVStats.sites = new MSVStats.Collections.Sites()
+    window.MSVStats.sites.reset(#{current_user.sites.to_json(only: [:token, :hostname])})
+    window.MSVStats.statsRouter = new MSVStats.Routers.StatsRouter()
     # Backbone.history.start({ pushState: true, root: "/sites/#{@site.token}/stats" })
     Backbone.history.start({ pushState: true })
 

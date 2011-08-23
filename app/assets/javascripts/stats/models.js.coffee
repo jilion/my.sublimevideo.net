@@ -5,8 +5,14 @@ class MSVStats.Models.Site extends Backbone.Model
     selected: false
     
 class MSVStats.Collections.Sites extends Backbone.Collection
- model: MSVStats.Models.Site
- url: '/sites'
+  model: MSVStats.Models.Site
+  url: '/sites'
+  
+  select: (token) ->
+    sites.each (site) ->
+      site.set(selected: (site.get('token') == token))
+        
+        
 
 #class MSVStats.Models.Stat extends Backbone.Model
 #  defaults:

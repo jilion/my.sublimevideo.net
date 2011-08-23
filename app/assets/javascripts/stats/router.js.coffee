@@ -1,15 +1,9 @@
 class MSVStats.Routers.StatsRouter extends Backbone.Router
   initialize: (options) ->
-    @sites = new MSVStats.Collections.Sites()
-    @sites.fetch()
-    # this.navigate('', true)
+    @sitesSelectView = new MSVStats.Views.SitesSelectView(collection: window.MSVStats.sites)
 
   routes:
-    '': 'test'
     'sites/:token/stats': 'home'
 
   home: (token) ->
-    alert(token)
-    
-  test:  ->
-    alert('bob')
+    $('#sites_select').html(@sitesSelectView.render().el)

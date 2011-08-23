@@ -1,5 +1,5 @@
 <select>
   <% for site in @sites: %>
-    <option value='<%= site.token %>'><%= site.hostname %></option>
+    <option <%= "selected='selected'" if site.selected %> value='<%= site.token %>'><%= site.hostname %></option>
   <% end %>
 </select>
