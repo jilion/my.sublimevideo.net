@@ -32,6 +32,13 @@ GIT
       rescue_me (~> 0.1.0)
       xml-simple (~> 1.0.12)
 
+GIT
+  remote: git://github.com/ttilley/rb-fsevent.git
+  revision: f36a8cd01b49a6ce2a26d9e1083b5f6e6722c470
+  branch: pre-compiled-gem-one-off
+  specs:
+    rb-fsevent (0.4.3.1pre1)
+
 GEM
   remote: http://rubygems.org/
   specs:
@@ -265,7 +272,6 @@ GEM
       thor (~> 0.14.4)
     rake (0.8.7)
     rb-appscript (0.6.1)
-    rb-fsevent (0.4.3)
     rdoc (3.9.2)
     request-log-analyzer (1.11.0)
     rescue_me (0.1.0)
@@ -399,7 +405,7 @@ DEPENDENCIES
   rack-ssl-enforcer (= 0.2.2)
   rails (= 3.0.10)
   rake (= 0.8.7)
-  rb-fsevent
+  rb-fsevent!
   request-log-analyzer (= 1.11.0)
   rescue_me (= 0.1.0)
   responders (= 0.6.2)
