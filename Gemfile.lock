@@ -5,6 +5,13 @@ GIT
     useragent (0.2.3)
 
 GIT
+  remote: git://github.com/amatsuda/kaminari.git
+  revision: f534a63b63cb8635123d3cc3719deb831c9dd999
+  specs:
+    kaminari (0.12.4)
+      rails (>= 3.0.0)
+
+GIT
   remote: git://github.com/ernie/squeel.git
   revision: 37640288e5b1d2ff6c9119b6fe0c0edc9a43546e
   specs:
@@ -281,8 +288,6 @@ GEM
       thor (~> 0.14)
     json (1.5.3)
     json_pure (1.5.3)
-    kaminari (0.12.4)
-      rails (>= 3.0.0)
     launchy (2.0.5)
       addressable (~> 2.2.6)
     libxml-ruby (2.2.1)
@@ -485,7 +490,7 @@ DEPENDENCIES
   heroku
   hoptoad_notifier (~> 2.4.11)
   jquery-rails
-  kaminari (~> 0.12.4)
+  kaminari!
   libxml-ruby (~> 2.2.0)
   liquid (~> 2.2.2)
   mongo (~> 1.3.1)

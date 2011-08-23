@@ -35,7 +35,8 @@ gem 'mongoid',               '~> 2.1.9'
 # Views
 gem 'haml',                  '~> 3.1.2'
 gem 'coffee-filter',         '~> 0.1.1'
-gem 'kaminari',              '~> 0.12.4'
+# gem 'kaminari',              '~> 0.12.4'
+gem 'kaminari', :git => 'git://github.com/amatsuda/kaminari.git'
 gem 'liquid',                '~> 2.2.2'
 gem 'RedCloth',              '~> 4.2.7'
 
