@@ -132,6 +132,7 @@ group :guard do
   gem 'guard-livereload'
   gem 'guard-spork'
   gem 'guard-rspec'
+  gem 'guard-jasmine-headless-webkit'
 end
 
 group :test do
@@ -145,4 +146,8 @@ group :test do
 
   gem 'database_cleaner'
   gem 'factory_girl_rails', :require => false # loaded in spec_helper Spork.each_run
+
+  # Js test
+  gem 'jasmine', '~> 1.1.0.rc'
+  gem 'jasmine-headless-webkit'
 end
