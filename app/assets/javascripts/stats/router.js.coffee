@@ -1,9 +1,15 @@
 class MSVStats.Routers.StatsRouter extends Backbone.Router
   initialize: (options) ->
-    @sitesSelectView = new MSVStats.Views.SitesSelectView(collection: window.MSVStats.sites)
+    pageTitleView = new MSVStats.Views.PageTitleView(collection: window.MSVStats.sites)
+    pageTitleView.render()
+    sitesSelectView = new MSVStats.Views.SitesSelectView(collection: window.MSVStats.sites)
+    $('#sites_select').html(sitesSelectView.render().el)
+    periodsSelectView = new MSVStats.Views.PeriodsSelectView(period: window.MSVStats.period)
+    $('#periods_select').html(periodsSelectView.render().el)
+
 
   routes:
     'sites/:token/stats': 'home'
 
   home: (token) ->
-    $('#sites_select').html(@sitesSelectView.render().el)
+    window.MSVStats.sites.select(token)

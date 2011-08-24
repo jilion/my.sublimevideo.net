@@ -8,10 +8,8 @@ group :frontend do
   end
 
   guard :livereload do
-    watch(%r{^app/.+\.(erb|haml)})
+    watch(%r{^app/.+\.(erb|haml|js|css|scss|coffee|eco|png|gif|jpg)})
     watch(%r{^app/helpers/.+\.rb})
-    watch(%r{^public/javascripts/.+\.js})
-    watch(%r{^public/stylesheets/.+\.css})
     watch(%r{^public/.+\.html})
     watch(%r{^config/locales/.+\.yml})
   end

@@ -4,8 +4,13 @@
   $ ->
     window.MSVStats.sites = new MSVStats.Collections.Sites()
     window.MSVStats.sites.reset(#{current_user.sites.to_json(only: [:token, :hostname])})
+    window.MSVStats.sites.select('#{@site.token}')
+    window.MSVStats.period = new MSVStats.Models.Period()
+    window.MSVStats.period.setPeriod('60 minute')
     window.MSVStats.statsRouter = new MSVStats.Routers.StatsRouter()
-    # Backbone.history.start({ pushState: true, root: "/sites/#{@site.token}/stats" })
     Backbone.history.start({ pushState: true })
 
 #sites_select
+
+#periods_select
+
