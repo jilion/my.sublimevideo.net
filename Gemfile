@@ -113,7 +113,7 @@ group :development, :test do
 end
 
 group :development do
-  gem 'passenger'
+  gem 'rails-dev-tweaks', '~> 0.4.0'
   gem 'ffaker'
   gem 'annotate'
   gem 'wirble'
