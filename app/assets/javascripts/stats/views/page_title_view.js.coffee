@@ -6,7 +6,7 @@ class MSVStats.Views.PageTitleView extends Backbone.View
     this.collection.bind('reset', this.render);
 
   render: ->
-    selectedSite   = window.MSVStats.sites.selectedSite()
+    selectedSite   = MSVStats.sites.selectedSite()
     pageTitle      = "Stats for #{selectedSite.title()}"
     document.title = "MySublimeVideo - #{pageTitle}"
     $('h2').text(pageTitle)

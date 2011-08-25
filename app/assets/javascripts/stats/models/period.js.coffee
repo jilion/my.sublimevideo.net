@@ -1,7 +1,7 @@
 class MSVStats.Models.Period extends Backbone.Model
   defaults:
-    last: 30
-    type: 'day'
+    last: 30     # number or 'all'
+    type: 'day'  # minute / hour / day
 
   value: ->
     "#{this.get('last')} #{this.get('type')}"

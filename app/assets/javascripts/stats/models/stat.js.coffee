@@ -1,22 +1,53 @@
-class MSVStats.Models.Site extends Backbone.Model
+class MSVStats.Models.Stat extends Backbone.Model
   defaults:
-    token: null
-    hostname: null
-    selected: false
+    t: null
+    m: null
+    h: null
+    d: null
+    pv: {}
+    vv: {}
+    md: {}
+    bp: {}
 
-  title: ->
-    this.get('hostname') || this.get('token')
+  isPeriodType: (type) ->
+    switch type
+      when 'minute'
+        this.get('m') != null
+      when 'hour'
+        this.get('h') != null
+      when 'day'
+        this.get('d') != null
+
+  date: ->
+    dateString = this.get('m') || this.get('h') || this.get('d')
+    new Date(dateString)
+
+class MSVStats.Collections.Stats extends Backbone.Collection
+  model: MSVStats.Models.Stat
+
+  url: ->
+    "/sites/#{MSVStats.sites.selectedSite().get('token')}/stats"
+
+  bpData: ->
+    this.forCurrentPeriod().reduce((memo, stat) ->
+      _.each(stat.get('bp'), (hits, bp) -> memo.set(bp, hits))
+      memo
+    new bpData)
+
+  forCurrentPeriod: ->
+    stats = MSVStats.stats.reduce((memo, stat) ->
+      memo.push(stat) if stat.isPeriodType(MSVStats.period.get('type'))
+      memo
+    [])
+    stats = _.sortBy(stats, (stat) -> stat.date().getTime()).reverse()
+    _.first(stats, MSVStats.period.get('last')).reverse()
 
 
-class MSVStats.Collections.Sites extends Backbone.Collection
-  model: MSVStats.Models.Site
-  url: '/sites'
+class bpData
 
-  select: (token) ->
-    window.MSVStats.sites.each (site) ->
-      site.set(selected: (site.get('token') == token), { silent: true })
-    window.MSVStats.sites.trigger('change')
-
-  selectedSite: ->
-    window.MSVStats.sites.find (site) ->
-      site.get('selected')
+  set: (bp, hits) ->
+    if _.isUndefined(this[bp])
+      this[bp] = hits
+    else
+      this[bp] += hits
+  

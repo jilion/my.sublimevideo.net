@@ -6,7 +6,7 @@
     window.MSVStats.sites.reset(#{current_user.sites.to_json(only: [:token, :hostname])})
     window.MSVStats.sites.select('#{@site.token}')
     window.MSVStats.period = new MSVStats.Models.Period()
-    window.MSVStats.period.setPeriod('60 minute')
+    window.MSVStats.period.setPeriod('30 day')
     window.MSVStats.statsRouter = new MSVStats.Routers.StatsRouter()
     Backbone.history.start({ pushState: true })
 
@@ -14,3 +14,4 @@
 
 #periods_select
 
+#bp_pie_chart

@@ -15,4 +15,4 @@ class MSVStats.Views.SitesSelectView extends Backbone.View
 
   updatePage: ->
     selectedToken = this.$('select').val()
-    window.MSVStats.statsRouter.navigate("sites/#{selectedToken}/stats", true)
+    MSVStats.statsRouter.navigate("sites/#{selectedToken}/stats", true)
