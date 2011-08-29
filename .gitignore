@@ -2,16 +2,11 @@
 coverage
 rdoc
 *.dat
-public/javascripts/all.js
-public/stylesheets/all.css
-public/rcov
+public/assets
 config/database.yml
 tmp/restart.txt
 backup.db
 public/uploads
-public/js
-public/v
-public/logs
 logfile
 db/*.sqlite3
 log/

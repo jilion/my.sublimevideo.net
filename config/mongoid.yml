@@ -8,8 +8,15 @@ test:
 
 staging:
   uri: <%= ENV['MONGOHQ_URL'] %>
+  host: localhost
   persist_in_safe_mode: true
 
 production:
+<% if ENV['MONGOHQ_URL'] %>
   uri: <%= ENV['MONGOHQ_URL'] %>
+<% else %>
+  host: localhost
+  database: mysublime
+<% end %>
   persist_in_safe_mode: true
+  logger: false
