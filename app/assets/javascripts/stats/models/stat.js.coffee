@@ -34,7 +34,15 @@ class MSVStats.Collections.Stats extends Backbone.Collection
       memo
     new BPData)
 
+  mdData: ->
+    this.forCurrentPeriod().reduce((memo, stat) ->
+      if md = stat.get('md')
+         memo.set(md)
+      memo
+    new MDData)
+
   forCurrentPeriod: ->
+    return unless MSVStats.stats
     stats = MSVStats.stats.reduce((memo, stat) ->
       memo.push(stat) if stat.isPeriodType(MSVStats.period.get('type'))
       memo
@@ -49,13 +57,11 @@ class MSVStats.Collections.Stats extends Backbone.Collection
 
 
 class BPData
-
   set: (bp, hits) ->
     if _.isUndefined(this[bp])
       this[bp] = hits
     else
       this[bp] += hits
-
 
   toArray: ->
     datas = _.reduce(this, (memo, hits, bp) ->
@@ -84,3 +90,38 @@ class BPData
         when 'wip' then 'Windows Phone'
         else name
     ).join(' - ')
+
+class MDData
+  constructor: ->
+    @m =
+      'HTML5':0
+      'Flash':0
+    @d =
+      'HTML5 - Desktop': 0
+      'HTML5 - Mobile': 0
+      'HTML5 - Tablet': 0
+      'Flash - Desktop': 0
+      'Flash - Mobile': 0
+      'Flash - Tablet': 0
+
+  set: (md) ->
+    _.each(md.h, (hits, d) ->
+      this.m['HTML5'] += hits
+      switch d
+        when 'd' then this.d['HTML5 - Desktop'] += hits
+        when 'm' then this.d['HTML5 - Mobile'] += hits
+        when 't' then this.d['HTML5 - Tablet'] += hits
+    , this)
+    _.each(md.f, (hits, d) ->
+      this.m['Flash'] += hits
+      switch d
+        when 'd' then this.d['Flash - Desktop'] += hits
+        when 'm' then this.d['Flash - Mobile'] += hits
+        when 't' then this.d['Flash - Tablet'] += hits
+    , this)
+
+  toArray: (field) ->
+    _.reduce(this[field], (memo, hits, key) ->
+      memo.push([key, hits]) if hits > 0
+      memo
+    [])

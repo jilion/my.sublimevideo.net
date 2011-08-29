@@ -10,6 +10,8 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
     $('#periods_select').html(periodsSelectView.render().el)
     bPView = new MSVStats.Views.BPView(collection: MSVStats.stats, sites: MSVStats.sites, period: MSVStats.period)
     bPView.render()
+    mDView = new MSVStats.Views.MDView(collection: MSVStats.stats, sites: MSVStats.sites, period: MSVStats.period)
+    mDView.render()
 
   routes:
     'sites/:token/stats': 'home'

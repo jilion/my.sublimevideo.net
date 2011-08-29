@@ -374,16 +374,16 @@ def random_stats_inc(i)
     "pv.i" => i * rand(2),
     # field :vv, :type => Hash # Video Views: { m (main) => 1, e (extra) => 3, d (dev) => 11, i (invalid) => 1 }
     "vv.m" => i * rand(10),
-    "vv.e" => i * rand(2),
-    "vv.d" => i * rand(1),
-    "vv.i" => i * rand(1),
+    "vv.e" => i * rand(3),
+    "vv.d" => i * rand(2),
+    "vv.i" => i * rand(2),
     # field :md, :type => Hash # Player Mode + Device hash { h (html5) => { d (desktop) => 2, m (mobile) => 1 }, f (flash) => ... }
     "md.h.d" => i * rand(12),
     "md.h.m" => i * rand(5),
     "md.h.t" => i * rand(3),
     "md.f.d" => i * rand(6),
-    "md.f.m" => i * rand(0),
-    "md.f.t" => i * rand(0),
+    "md.f.m" => i * rand(2),
+    "md.f.t" => i * rand(2),
     # field :bp, :type => Hash # Browser + Plateform hash { "saf-win" => 2, "saf-osx" => 4, ...}
     "bp.iex-win" => i * rand(30),
     "bp.fir-win" => i * rand(30),
@@ -392,7 +392,7 @@ def random_stats_inc(i)
     "bp.saf-osx" => i * rand(9),
     "bp.chr-osx" => i * rand(12),
     "bp.fir-osx" => i * rand(5),
-    "bp.saf-ipo" => i * rand(1),
+    "bp.saf-ipo" => i * rand(2),
     "bp.saf-iph" => i * rand(8),
     "bp.saf-ipa" => i * rand(5),
     "bp.and-and" => i * rand(6)

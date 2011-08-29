@@ -6,8 +6,22 @@
   float:right;
 }
 
+#content #views_and_plays {
+  display:block;
+  height:300px;
+  width:900px;
+  float:left;
+}
+
 #content #bp {
   display:block;
-  height:500px;
+  height:250px;
+  width:420px;
   float:left;
+}
+#content #md {
+  display:block;
+  height:250px;
+  width:420px;
+  float:right;
 }

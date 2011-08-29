@@ -1,17 +1,18 @@
-class MSVStats.Views.BPView extends Backbone.View
+class MSVStats.Views.MDView extends Backbone.View
 
   initialize: () ->
     _.bindAll(this, 'render')
     this.collection.bind('change', this.render);
     this.collection.bind('reset', this.render);
-    # this.options.sites.bind('change', this.render);
     this.options.period.bind('change', this.render);
 
   render: ->
     if MSVStats.stats.size() > 0
+      console.log MSVStats.stats.mdData().m
+
       new Highcharts.Chart
         chart:
-          renderTo: 'bp_pie_chart'
+          renderTo: 'md_pie_chart'
           backgroundColor: null
           plotBackgroundColor: null
           # plotBorderColor: 'black'
@@ -41,15 +42,21 @@ class MSVStats.Views.BPView extends Backbone.View
           pie:
             animation: true
             showInLegend: true
-            size: '85%'
             allowPointSelect: false
             dataLabels:
               enabled: false
-        series: [
+        series: [{
           type: 'pie'
-          name: 'Browser + OS'
-          data: MSVStats.stats.bpData().toArray()
-        ]
+          name: 'Player Mode'
+          size: '85%'
+          innerSize: '45%'
+          data: MSVStats.stats.mdData().toArray('m')
+          },{
+          type: 'pie'
+          name: 'Device'
+          size: '45%'
+          data: MSVStats.stats.mdData().toArray('d')
+        }]
         legend:
           layout: 'vertical'
           margin: 0
@@ -57,7 +64,7 @@ class MSVStats.Views.BPView extends Backbone.View
           verticalAlign: 'middle'
           x: 15
           y: -5
-          lineHeight: 17
+          lineHeight: 20
           borderWidth: 0
           width: 200
           # labelFormatter: ->
