@@ -2,9 +2,7 @@ source "http://rubygems.org"
 
 gem 'rake',                  '~> 0.8.7'
 
-# gem 'rails',                 '3.1.0.rc5'
-# Bundle edge Rails instead:
-gem 'rails',     :git => 'git://github.com/rails/rails.git', :branch => '3-1-stable'
+gem 'rails',                 '3.1.0.rc8'
 
 # Gems used only for assets and not required
 # in production environments by default.
@@ -30,7 +28,7 @@ gem 'squeel', :git => 'git://github.com/ernie/squeel.git'
 
 gem 'bson_ext',              '~> 1.3.1'
 gem 'mongo',                 '~> 1.3.1'
-gem 'mongoid',               '~> 2.1.9'
+gem 'mongoid',               '~> 2.2.0'
 
 # Views
 gem 'haml',                  '~> 3.1.2'
@@ -41,8 +39,8 @@ gem 'liquid',                '~> 2.2.2'
 gem 'RedCloth',              '~> 4.2.7'
 
 # Auth / invitations
-gem 'devise',                '~> 1.4.2'
-# gem 'devise', :git => 'git://github.com/plataformatec/devise.git'
+# gem 'devise',                '~> 1.4.2'
+gem 'devise', :git => 'git://github.com/plataformatec/devise.git'
 gem 'devise_invitable',      '~> 0.5.4'
 
 # API
@@ -150,5 +148,5 @@ group :test do
 
   # Js test
   gem 'jasmine', '~> 1.1.0.rc'
-  # gem 'jasmine-headless-webkit', :git => 'git://github.com/johnbintz/jasmine-headless-webkit.git'
+  gem 'jasmine-headless-webkit', :git => 'git://github.com/johnbintz/jasmine-headless-webkit.git'
 end
