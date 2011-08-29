@@ -45,6 +45,16 @@ end
 
 group :jasmine do
 
+  guard 'rails-assets' do
+    watch(%r{^app/assets/.+$})
+    watch('config/application.rb')
+  end
 
+  guard 'jasmine-headless-webkit', :valid_extensions => ['coffee'] do
+    watch(%r{^public/assets/.*\.js})
+    watch(%r{^spec/javascripts/helpers/*})
+    watch(%r{^spec/javascripts/support/*})
+    watch(%r{^spec/javascripts/(.*)_spec.coffe})
+  end
 
 end

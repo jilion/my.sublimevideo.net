@@ -1,7 +1,5 @@
 source "http://rubygems.org"
 
-gem 'rake',                  '~> 0.8.7'
-
 gem 'rails',                 '3.1.0.rc8'
 
 # Gems used only for assets and not required
@@ -130,8 +128,8 @@ group :guard do
   gem 'guard-livereload'
   gem 'guard-spork'
   gem 'guard-rspec'
-  gem 'guard-rails-assets'
-  # gem 'guard-jasmine-headless-webkit'
+  gem 'guard-rails-assets', :git => 'git://github.com/mcolyer/guard-rails-assets.git', :branch => 'patch-1'
+  gem 'guard-jasmine-headless-webkit'
 end
 
 group :test do

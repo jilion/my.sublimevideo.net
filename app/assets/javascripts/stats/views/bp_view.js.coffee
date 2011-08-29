@@ -4,6 +4,7 @@ class MSVStats.Views.BPView extends Backbone.View
     _.bindAll(this, 'render')
     this.collection.bind('change', this.render);
     this.collection.bind('reset', this.render);
+    # this.options.sites.bind('change', this.render);
     this.options.period.bind('change', this.render);
 
   render: ->
@@ -63,7 +64,7 @@ class MSVStats.Views.BPView extends Backbone.View
           verticalAlign: 'middle'
           x: 15
           y: -5
-          lineHeight: 20  
+          lineHeight: 20
           borderWidth: 0
           width: 200
           # labelFormatter: ->

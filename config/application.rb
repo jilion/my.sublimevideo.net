@@ -15,13 +15,16 @@ module MySublimeVideo
 
     require 'oauth/rack/oauth_filter'
     config.middleware.use OAuth::Rack::OAuthFilter
-    
+
     # Add additional load paths for your own custom dirs
     config.autoload_paths += %W[#{config.root}/lib]
     Dir["#{config.root}/lib/{log_file_format,responders,validators}/**/*.rb"].each do |f|
       dir = File.expand_path(File.dirname(f))
       config.autoload_paths += [dir] if config.autoload_paths.exclude?(dir)
     end
+
+    # Precompile additional assets (application.js, application.css, and all non-JS/CSS are already added)
+    config.assets.precompile += %w( invoices.css admin.css admin.js stats.js  )
 
     # Activate observers that should always be running
     # config.active_record.observers = :site_observer

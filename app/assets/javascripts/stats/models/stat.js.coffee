@@ -39,7 +39,7 @@ class MSVStats.Collections.Stats extends Backbone.Collection
       memo.push(stat) if stat.isPeriodType(MSVStats.period.get('type'))
       memo
     [])
-    
+
     periodLast = MSVStats.period.get('last')
     if periodLast == 'all'
       stats = _.sortBy(stats, (stat) -> stat.date().getTime())
@@ -55,8 +55,8 @@ class BPData
       this[bp] = hits
     else
       this[bp] += hits
-    
-  
+
+
   toArray: ->
     datas = _.reduce(this, (memo, hits, bp) ->
       memo.push([BPData.bpName(bp), hits]) if hits > 0
@@ -84,4 +84,3 @@ class BPData
         when 'wip' then 'Windows Phone'
         else name
     ).join(' - ')
-  

@@ -9,4 +9,3 @@ class MSVStats.Models.Period extends Backbone.Model
   setPeriod: (value) ->
     [last, type] = value.split(' ')
     this.set(last: last, type: type)
-    

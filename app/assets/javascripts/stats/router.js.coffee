@@ -8,7 +8,7 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
     $('#sites_select').html(sitesSelectView.render().el)
     periodsSelectView = new MSVStats.Views.PeriodsSelectView(period: MSVStats.period)
     $('#periods_select').html(periodsSelectView.render().el)
-    bPView = new MSVStats.Views.BPView(collection: MSVStats.stats, period: MSVStats.period)
+    bPView = new MSVStats.Views.BPView(collection: MSVStats.stats, sites: MSVStats.sites, period: MSVStats.period)
     bPView.render()
 
   routes:
