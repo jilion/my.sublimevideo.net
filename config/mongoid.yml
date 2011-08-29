@@ -15,6 +15,7 @@ production:
 <% if ENV['MONGOHQ_URL'] %>
   uri: <%= ENV['MONGOHQ_URL'] %>
 <% else %>
+  # make rake asset:precompile work
   host: localhost
   database: mysublime
 <% end %>
