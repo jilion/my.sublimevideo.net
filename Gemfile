@@ -1,20 +1,20 @@
-source "http://rubygems.org"
+source 'http://rubygems.org'
 
 gem 'rails',                 '3.1.0.rc8'
 
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
-  # gem 'sass-rails', "~> 3.1.0.rc.5"
-  gem 'sass-rails',   :git => 'git://github.com/rails/sass-rails.git', :branch => '3-1-stable'
-  # gem 'coffee-rails', "~> 3.1.0.rc.5"
-  gem 'coffee-rails', :git => 'git://github.com/rails/coffee-rails.git', :branch => '3-1-stable'
+  # gem 'sass-rails',          '~> 3.1.0.rc.5'
+  gem 'sass-rails',          :git => 'git://github.com/rails/sass-rails.git', :branch => '3-1-stable'
+  # gem 'coffee-rails',        '~> 3.1.0.rc.5'
+  gem 'coffee-rails',        :git => 'git://github.com/rails/coffee-rails.git', :branch => '3-1-stable'
   gem 'eco'
   gem 'uglifier'
 end
 
 
-gem 'prototype-rails', :git => 'git://github.com/rymai/prototype-rails.git'
+gem 'prototype-rails',       :git => 'git://github.com/rymai/prototype-rails.git'
 gem 'jquery-rails'
 gem 'rails-backbone'
 
@@ -22,7 +22,7 @@ gem 'rails-backbone'
 gem 'pg',                    '~> 0.11.0'
 # gem 'meta_where',            '1.0.4'
 # gem 'arel',                  '2.2.0'
-gem 'squeel', :git => 'git://github.com/ernie/squeel.git'
+gem 'squeel',                :git => 'git://github.com/ernie/squeel.git'
 
 gem 'bson_ext',              '~> 1.3.1'
 gem 'mongo',                 '~> 1.3.1'
@@ -32,13 +32,12 @@ gem 'mongoid',               '~> 2.2.0'
 gem 'haml',                  '~> 3.1.2'
 gem 'coffee-filter',         '~> 0.1.1'
 # gem 'kaminari',              '~> 0.12.4'
-gem 'kaminari', :git => 'git://github.com/amatsuda/kaminari.git'
+gem 'kaminari',              :git => 'git://github.com/amatsuda/kaminari.git'
 gem 'liquid',                '~> 2.2.2'
 gem 'RedCloth',              '~> 4.2.7'
 
 # Auth / invitations
-# gem 'devise',                '~> 1.4.2'
-gem 'devise', :git => 'git://github.com/plataformatec/devise.git'
+gem 'devise',                '~> 1.4.3'
 gem 'devise_invitable',      '~> 0.5.4'
 
 # API
@@ -62,11 +61,8 @@ gem 'has_scope',             '~> 0.5.1'
 
 gem 'aws',                   '~> 2.5.6'
 gem 'fog',                   '~> 0.10.0'
-# gem 'carrierwave',           '0.5.6'
-# For mongoid 2.1.x support, Until my patch is merged or mongoid support is extracted from carrierwave
-# BUT since mongoid 2.1.x break so many specs, it's currently useless
-gem 'carrierwave',           '~> 0.5.7'#,  :git => 'git://github.com/rymai/carrierwave.git'
-gem 'carrierwave-mongoid',   '~> 0.1.1', :require => 'carrierwave/mongoid'# :git => 'git://github.com/jnicklas/carrierwave-mongoid.git'
+gem 'carrierwave',           '~> 0.5.7'
+gem 'carrierwave-mongoid',   '~> 0.1.1', :require => 'carrierwave/mongoid'
 gem 'voxel_hapi',            :git => 'git://github.com/thibaudgg/voxel_hapi.git', :branch => '1.9.2' # VoxCast CDN
 gem 'request-log-analyzer',  '~> 1.11.0', :require => 'request_log_analyzer'
 
