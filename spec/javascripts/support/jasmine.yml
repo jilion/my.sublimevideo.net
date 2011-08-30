@@ -1,0 +1,14 @@
+# Return an array of filepaths relative to src_dir to include before jasmine specs.
+src_files:
+  - public/assets/stats-*.js
+
+# Spec directory path. Your spec_files must be returned relative to this path.
+spec_dir: spec/javascripts
+
+# Return an array of filepaths relative to spec_dir to include before jasmine specs.
+helpers:
+  - helpers/**/*.coffee
+
+# Return an array of filepaths relative to spec_dir to include.
+spec_files:
+  - '**/*_spec.coffee'

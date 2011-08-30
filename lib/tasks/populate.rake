@@ -28,6 +28,7 @@ namespace :db do
       timed { create_users(argv_index) }
       timed { create_sites }
       timed { create_site_usages }
+      timed { create_site_stats(argv_user) }
       timed { create_mail_templates }
     end
 
@@ -61,6 +62,12 @@ namespace :db do
     task :site_usages => :environment do
       timed { empty_tables(SiteUsage) }
       timed { create_site_usages }
+    end
+
+    desc "Create fake site stats"
+    task :site_stats => :environment do
+      timed { empty_tables(SiteStat) }
+      timed { create_site_stats(argv_user) }
     end
 
     desc "Create fake plans"
@@ -325,6 +332,74 @@ def create_site_usages
   puts "#{player_hits_total} video-page views total!"
 end
 
+def create_site_stats(user_id=nil)
+  users = user_id ? [User.find(user_id)] : User.all
+  users.each do |user|
+    user.sites.each do |site|
+      # Minutes
+      60.times.each do |i|
+        SiteStat.collection.update(
+          { t: site.token, m: i.minutes.ago.change(sec: 0, usec: 0).to_time },
+          { "$inc" => random_stats_inc(1) },
+          upsert: true
+        )
+      end
+      # Hours
+      24.times.each do |i|
+        SiteStat.collection.update(
+          { t: site.token, h: i.hours.ago.change(min: 0, sec: 0, usec: 0).to_time },
+          { "$inc" => random_stats_inc(60) },
+          upsert: true
+        )
+      end
+      # Days
+      90.times.each do |i|
+        SiteStat.collection.update(
+          { t: site.token, d: i.days.ago.change(hour: 0, min: 0, sec: 0, usec: 0).to_time },
+          { "$inc" => random_stats_inc(24 * 60) },
+          upsert: true
+        )
+      end
+    end
+  end
+  puts "Fake site(s) stats generated"
+end
+
+def random_stats_inc(i)
+  {
+    # field :pv, :type => Hash # Page Visits: { m (main) => 2, e (extra) => 10, d (dev) => 43, i (invalid) => 2 }
+    "pv.m" => i * rand(20),
+    "pv.e" => i * rand(4),
+    "pv.d" => i * rand(2),
+    "pv.i" => i * rand(2),
+    # field :vv, :type => Hash # Video Views: { m (main) => 1, e (extra) => 3, d (dev) => 11, i (invalid) => 1 }
+    "vv.m" => i * rand(10),
+    "vv.e" => i * rand(3),
+    "vv.d" => i * rand(2),
+    "vv.i" => i * rand(2),
+    # field :md, :type => Hash # Player Mode + Device hash { h (html5) => { d (desktop) => 2, m (mobile) => 1 }, f (flash) => ... }
+    "md.h.d" => i * rand(12),
+    "md.h.m" => i * rand(5),
+    "md.h.t" => i * rand(3),
+    "md.f.d" => i * rand(6),
+    "md.f.m" => i * rand(2),
+    "md.f.t" => i * rand(2),
+    # field :bp, :type => Hash # Browser + Plateform hash { "saf-win" => 2, "saf-osx" => 4, ...}
+    "bp.iex-win" => i * rand(30),
+    "bp.fir-win" => i * rand(30),
+    "bp.chr-win" => i * rand(40),
+    "bp.saf-win" => i * rand(2),
+    "bp.saf-osx" => i * rand(9),
+    "bp.chr-osx" => i * rand(12),
+    "bp.fir-osx" => i * rand(5),
+    "bp.saf-ipo" => i * rand(2),
+    "bp.saf-iph" => i * rand(8),
+    "bp.saf-ipa" => i * rand(5),
+    "bp.and-and" => i * rand(6)
+  }
+end
+
+
 def create_plans
   plans_attributes = [
     { name: "free",       cycle: "none",  player_hits: 0,          price: 0 },
@@ -378,3 +453,12 @@ def argv_count(var_name='count', default_count=5)
     default_count
   end
 end
+
+def argv_user(var_name='user', default_index=nil)
+  if var = ARGV.detect { |arg| arg =~ /(#{var_name}=)/i }
+    var.sub($1, '').to_i
+  else
+    default_index
+  end
+end
+

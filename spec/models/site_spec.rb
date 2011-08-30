@@ -1129,8 +1129,9 @@ describe Site do
       it "should update ranks" do
         Timecop.travel(10.minutes.ago) { @site = FactoryGirl.create(:site, hostname: 'sublimevideo.net') }
         VCR.use_cassette('sites/ranks') { @worker.work_off }
-        @site.reload.google_rank.should == 6
-        @site.alexa_rank.should == 126558
+        @site.reload
+        @site.google_rank.should == 6
+        @site.alexa_rank.should == 127373
       end
     end # after_create
 

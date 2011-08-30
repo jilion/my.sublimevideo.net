@@ -8,10 +8,8 @@ group :frontend do
   end
 
   guard :livereload do
-    watch(%r{^app/.+\.(erb|haml)})
+    watch(%r{^app/.+\.(erb|haml|js|css|scss|coffee|eco|png|gif|jpg)})
     watch(%r{^app/helpers/.+\.rb})
-    watch(%r{^public/javascripts/.+\.js})
-    watch(%r{^public/stylesheets/.+\.css})
     watch(%r{^public/.+\.html})
     watch(%r{^config/locales/.+\.yml})
   end
@@ -41,6 +39,22 @@ group :backend do
 
     watch(%r{^app/(.+)\.rb})                                                   { |m| "spec/#{m[1]}_spec.rb" }
     watch(%r{^lib/(.+)\.rb})                                                   { |m| "spec/lib/#{m[1]}_spec.rb" }
+  end
+
+end
+
+group :jasmine do
+
+  guard 'rails-assets' do
+    watch(%r{^app/assets/.+$})
+    watch('config/application.rb')
+  end
+
+  guard 'jasmine-headless-webkit', :valid_extensions => ['coffee'] do
+    watch(%r{^public/assets/.*\.js})
+    watch(%r{^spec/javascripts/helpers/*})
+    watch(%r{^spec/javascripts/support/*})
+    watch(%r{^spec/javascripts/(.*)_spec.coffe})
   end
 
 end

@@ -1,0 +1,7 @@
+<select>
+  <option <%= "selected='selected'" if @value == '60 minute' %> value='60 minute'>last 60 minutes</option>
+  <option <%= "selected='selected'" if @value == '24 hour' %> value='24 hour'>last 24 hours</option>
+  <option <%= "selected='selected'" if @value == '7 day' %> value='7 day'>last 7 days</option>
+  <option <%= "selected='selected'" if @value == '30 day' %> value='30 day'>last 30 days</option>
+  <option <%= "selected='selected'" if @value == 'all day' %> value='all day'>all time</option>
+</select>

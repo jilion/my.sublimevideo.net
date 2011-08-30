@@ -1,155 +1,215 @@
---- 
-- !ruby/struct:VCR::HTTPInteraction 
-  request: !ruby/struct:VCR::Request 
+---
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
     method: :post
     uri: https://api.voxel.net:443/version/1.0/
     body: device_id=48182&paths=%2fjs%2fhtp0urw7.js&verbosity=compact&method=voxel.voxcast.ondemand.content.purge_file&timestamp=2010-11-08T10%3a17%3a48%2b01%3a00&key=f0bdf4e54d590835e7100c926c2d1a47&api_sig=9d2f779d649eb26760640f71fb302d30
-    headers: 
-      accept: 
-      - "*/*"
-      user-agent: 
+    headers:
+      accept:
+      - ! '*/*'
+      user-agent:
       - Ruby
       - Voxel hAPI ruby Client; 1.0
-      content-type: 
+      content-type:
       - application/x-www-form-urlencoded
-      connection: 
+      connection:
       - close
-  response: !ruby/struct:VCR::Response 
-    status: !ruby/struct:VCR::ResponseStatus 
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
       code: 200
       message: OK
-    headers: 
-      date: 
+    headers:
+      date:
       - Mon, 08 Nov 2010 09:17:48 GMT
-      server: 
+      server:
       - Apache
-      x-powered-by: 
+      x-powered-by:
       - PHP/5.2.14
-      access-control-allow-origin: 
-      - "*"
-      vary: 
+      access-control-allow-origin:
+      - ! '*'
+      vary:
       - Accept-Encoding
-      content-length: 
-      - "201"
-      connection: 
+      content-length:
+      - '201'
+      connection:
       - close
-      content-type: 
+      content-type:
       - application/xml; charset=utf-8
-    body: |
-      <?xml version="1.0"?>
+    body: ! '<?xml version="1.0"?>
+
       <rsp stat="ok"><transaction><type>remove-url</type><id>626e96d1-3116-4c5d-923c-79ef1db5228f</id><expiration>1289208769</expiration><status>inprogress</status></transaction></rsp>
 
-    http_version: "1.1"
-- !ruby/struct:VCR::HTTPInteraction 
-  request: !ruby/struct:VCR::Request 
+'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
     method: :post
     uri: https://api.voxel.net:443/version/1.0/
     body: device_id=48182&paths=%2fl%2fhtp0urw7.js&verbosity=compact&method=voxel.voxcast.ondemand.content.purge_file&timestamp=2010-11-08T10%3a17%3a49%2b01%3a00&key=f0bdf4e54d590835e7100c926c2d1a47&api_sig=6f837358b6343e70f893a19804c19a9c
-    headers: 
-      accept: 
-      - "*/*"
-      user-agent: 
+    headers:
+      accept:
+      - ! '*/*'
+      user-agent:
       - Ruby
       - Voxel hAPI ruby Client; 1.0
-      content-type: 
+      content-type:
       - application/x-www-form-urlencoded
-      connection: 
+      connection:
       - close
-  response: !ruby/struct:VCR::Response 
-    status: !ruby/struct:VCR::ResponseStatus 
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
       code: 200
       message: OK
-    headers: 
-      date: 
+    headers:
+      date:
       - Mon, 08 Nov 2010 09:17:49 GMT
-      server: 
+      server:
       - Apache
-      x-powered-by: 
+      x-powered-by:
       - PHP/5.2.14
-      access-control-allow-origin: 
-      - "*"
-      vary: 
+      access-control-allow-origin:
+      - ! '*'
+      vary:
       - Accept-Encoding
-      content-length: 
-      - "201"
-      connection: 
+      content-length:
+      - '201'
+      connection:
       - close
-      content-type: 
+      content-type:
       - application/xml; charset=utf-8
-    body: |
-      <?xml version="1.0"?>
+    body: ! '<?xml version="1.0"?>
+
       <rsp stat="ok"><transaction><type>remove-url</type><id>fb1c66d2-0de1-48ef-913a-24336c9a1af9</id><expiration>1289208770</expiration><status>inprogress</status></transaction></rsp>
 
-    http_version: "1.1"
-- !ruby/struct:VCR::HTTPInteraction 
-  request: !ruby/struct:VCR::Request 
+'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
     method: :get
     uri: http://toolbarqueries.google.com:80/search?ch=63148545275&client=navclient-auto&features=Rank&q=info:sublimevideo.net
-    body: 
-    headers: 
-      accept: 
-      - "*/*"
-      user-agent: 
+    body: !!null 
+    headers:
+      accept:
+      - ! '*/*'
+      user-agent:
       - Ruby
-  response: !ruby/struct:VCR::Response 
-    status: !ruby/struct:VCR::ResponseStatus 
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
       code: 200
       message: OK
-    headers: 
-      date: 
+    headers:
+      date:
       - Mon, 08 Nov 2010 09:21:47 GMT
-      pragma: 
+      pragma:
       - no-cache
-      expires: 
+      expires:
       - Fri, 01 Jan 1990 00:00:00 GMT
-      cache-control: 
+      cache-control:
       - no-cache, must-revalidate
-      content-type: 
+      content-type:
       - text/html; charset=ISO-8859-1
-      set-cookie: 
-      - PREF=ID=b79122ee6632866e:FF=0:TM=1289208107:LM=1289208107:S=oCRJ5jtib2Hj40Mr; expires=Wed, 07-Nov-2012 09:21:47 GMT; path=/; domain=.google.com
-      server: 
+      set-cookie:
+      - PREF=ID=b79122ee6632866e:FF=0:TM=1289208107:LM=1289208107:S=oCRJ5jtib2Hj40Mr;
+        expires=Wed, 07-Nov-2012 09:21:47 GMT; path=/; domain=.google.com
+      server:
       - gws
-      x-xss-protection: 
+      x-xss-protection:
       - 1; mode=block
-      transfer-encoding: 
+      transfer-encoding:
       - chunked
-    body: |
-      Rank_1:1:0
+    body: ! 'Rank_1:1:0
 
-    http_version: "1.1"
-- !ruby/struct:VCR::HTTPInteraction 
-  request: !ruby/struct:VCR::Request 
+'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
     method: :post
     uri: http://8844ec1803ffbe6501c3d7e9cfa23bf3:x@api.createsend.com:80/api/v3/subscribers/a064dfc4b8ccd774252a2e9c9deb9244.json
-    body: "{\"EmailAddress\":\"email260@user.com\",\"Name\":\"John Doe\",\"CustomFields\":[{\"Key\":\"user_id\",\"Value\":272},{\"Key\":\"segment\",\"Value\":\"test\"}],\"Resubscribe\":true}"
-    headers: 
-      user-agent: 
-      - createsend-ruby-0.6.1
-      content-type: 
-      - application/json
-  response: !ruby/struct:VCR::Response 
-    status: !ruby/struct:VCR::ResponseStatus 
+    body: ! '{"EmailAddress":"email1@user.com","Name":"John Doe","CustomFields":[{"Key":"user_id","Value":1},{"Key":"segment","Value":"test"},{"Key":"beta","Value":"false"}],"Resubscribe":true}'
+    headers:
+      user-agent:
+      - createsend-ruby-0.7.8
+      content-type:
+      - application/json; charset=utf-8
+      accept-encoding:
+      - gzip, deflate
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
       code: 201
       message: Created
-    headers: 
-      date: 
-      - Wed, 05 Jan 2011 17:43:24 GMT
-      server: 
-      - Microsoft-IIS/6.0
-      p3p: 
-      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
-      x-powered-by: 
-      - ASP.NET
-      x-aspnet-version: 
-      - 4.0.30319
-      x-aspnetmvc-version: 
-      - "2.0"
-      cache-control: 
+    headers:
+      cache-control:
       - private, s-maxage=0
-      content-type: 
+      content-type:
       - application/json; charset=utf-8
-      content-length: 
-      - "19"
-    body: "\"email260@user.com\""
-    http_version: "1.1"
+      server:
+      - CMWEB03
+      x-aspnetmvc-version:
+      - '2.0'
+      x-aspnet-version:
+      - 4.0.30319
+      x-powered-by:
+      - ASP.NET
+      p3p:
+      - CP="OTI DSP COR CUR IVD CONi OTPi OUR IND UNI STA PRE"
+      date:
+      - Mon, 22 Aug 2011 09:51:34 GMT
+      content-length:
+      - '17'
+    body: ! '"email1@user.com"'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :get
+    uri: http://toolbarqueries.google.com:80/search?ch=63148545275&client=navclient-auto&features=Rank&q=info%3Asublimevideo.net
+    body: !!null 
+    headers: !!null 
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      date:
+      - Mon, 22 Aug 2011 09:51:35 GMT
+      pragma:
+      - no-cache
+      expires:
+      - Fri, 01 Jan 1990 00:00:00 GMT
+      cache-control:
+      - no-cache, must-revalidate
+      content-type:
+      - text/html; charset=ISO-8859-1
+      set-cookie:
+      - PREF=ID=8fd6be85636d6589:FF=0:TM=1314006695:LM=1314006695:S=3CVD29HX0VDCqAO9;
+        expires=Wed, 21-Aug-2013 09:51:35 GMT; path=/; domain=.google.com
+      server:
+      - gws
+      x-xss-protection:
+      - 1; mode=block
+      transfer-encoding:
+      - chunked
+    body: ! 'Rank_1:1:6
+
+'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :get
+    uri: http://data.alexa.com:80/data?cli=10&dat=snbamz&url=sublimevideo.net
+    body: !!null 
+    headers: !!null 
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      content-length:
+      - '362'
+      content-type:
+      - text/xml
+    body: ! "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n\r\n<ALEXA VER=\"0.9\"
+      URL=\"sublimevideo.net/\" HOME=\"0\" AID=\"=\">\r\n<RLS PREFIX=\"http://\" more=\"0\">\n</RLS>\n<SD
+      TITLE=\"A\" FLAGS=\"\" HOST=\"sublimevideo.net\">\n<LINKSIN NUM=\"124\"/>\n<SPEED
+      TEXT=\"858\" PCT=\"77\"/>\n</SD>\n<SD>\n<POPULARITY URL=\"sublimevideo.net/\"
+      TEXT=\"127373\"/>\n<REACH RANK=\"120002\"/>\n<RANK DELTA=\"+32818\"/>\n</SD>\n</ALEXA>"
+    http_version: '1.1'

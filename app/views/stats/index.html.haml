@@ -2,6 +2,28 @@
 
 :coffeescript
   $ ->
-    # Backbone.history.start()
-    # s = new MSVStats.Collections.Stats
-    # s.fetch()
+    window.MSVStats.sites = new MSVStats.Collections.Sites()
+    window.MSVStats.sites.reset(#{current_user.sites.to_json(only: [:token, :hostname])})
+    window.MSVStats.sites.select('#{@site.token}')
+    window.MSVStats.period = new MSVStats.Models.Period()
+    window.MSVStats.period.setPeriod('30 day')
+    window.MSVStats.statsRouter = new MSVStats.Routers.StatsRouter()
+    Backbone.history.start({ pushState: true })
+
+#sites_select
+
+#periods_select
+
+.spacer
+
+#views_and_plays
+
+#bp
+  %h3 Browser + OS
+  #bp_pie_chart
+  
+#md
+  %h3 HTML5 vs Flash
+  #md_pie_chart
+  
+.spacer

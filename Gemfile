@@ -1,10 +1,6 @@
 source "http://rubygems.org"
 
-gem 'rake',                  '~> 0.8.7'
-
-# gem 'rails',                 '3.1.0.rc5'
-# Bundle edge Rails instead:
-gem 'rails',     :git => 'git://github.com/rails/rails.git', :branch => '3-1-stable'
+gem 'rails',                 '3.1.0.rc8'
 
 # Gems used only for assets and not required
 # in production environments by default.
@@ -13,8 +9,10 @@ group :assets do
   gem 'sass-rails',   :git => 'git://github.com/rails/sass-rails.git', :branch => '3-1-stable'
   # gem 'coffee-rails', "~> 3.1.0.rc.5"
   gem 'coffee-rails', :git => 'git://github.com/rails/coffee-rails.git', :branch => '3-1-stable'
+  gem 'eco'
   gem 'uglifier'
 end
+
 
 gem 'prototype-rails', :git => 'git://github.com/rymai/prototype-rails.git'
 gem 'jquery-rails'
@@ -28,18 +26,19 @@ gem 'squeel', :git => 'git://github.com/ernie/squeel.git'
 
 gem 'bson_ext',              '~> 1.3.1'
 gem 'mongo',                 '~> 1.3.1'
-gem 'mongoid',               '~> 2.1.7'
+gem 'mongoid',               '~> 2.2.0'
 
 # Views
 gem 'haml',                  '~> 3.1.2'
 gem 'coffee-filter',         '~> 0.1.1'
-gem 'kaminari',              '~> 0.12.4'
+# gem 'kaminari',              '~> 0.12.4'
+gem 'kaminari', :git => 'git://github.com/amatsuda/kaminari.git'
 gem 'liquid',                '~> 2.2.2'
 gem 'RedCloth',              '~> 4.2.7'
 
 # Auth / invitations
-gem 'devise',                '~> 1.4.2'
-# gem 'devise', :git => 'git://github.com/plataformatec/devise.git'
+# gem 'devise',                '~> 1.4.2'
+gem 'devise', :git => 'git://github.com/plataformatec/devise.git'
 gem 'devise_invitable',      '~> 0.5.4'
 
 # API
@@ -110,7 +109,7 @@ group :development, :test do
 end
 
 group :development do
-  gem 'passenger'
+  gem 'rails-dev-tweaks', '~> 0.4.0'
   gem 'ffaker'
   gem 'annotate'
   gem 'wirble'
@@ -129,6 +128,8 @@ group :guard do
   gem 'guard-livereload'
   gem 'guard-spork'
   gem 'guard-rspec'
+  gem 'guard-rails-assets', :git => 'git://github.com/mcolyer/guard-rails-assets.git', :branch => 'patch-1'
+  gem 'guard-jasmine-headless-webkit'
 end
 
 group :test do
@@ -137,8 +138,13 @@ group :test do
   gem 'shoulda-matchers', :git => 'git://github.com/thoughtbot/shoulda-matchers.git'
   gem 'capybara'
   gem 'webmock', '~> 1.6.4'
-  gem 'vcr'
+  gem 'typhoeus'
+  gem 'vcr',     '~> 1.10.3'
 
   gem 'database_cleaner'
   gem 'factory_girl_rails', :require => false # loaded in spec_helper Spork.each_run
+
+  # Js test
+  gem 'jasmine', '~> 1.1.0.rc'
+  gem 'jasmine-headless-webkit', :git => 'git://github.com/johnbintz/jasmine-headless-webkit.git'
 end
