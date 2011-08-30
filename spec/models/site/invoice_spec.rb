@@ -138,12 +138,6 @@ describe Site::Invoice do
       end
     end
 
-    describe "#in_beta_plan?" do
-      subject { FactoryGirl.create(:site, plan_id: @beta_plan.id) }
-
-      it { should be_in_beta_plan }
-    end # #in_beta_plan?
-
     describe "#in_free_plan?" do
       subject { FactoryGirl.create(:site, plan_id: @free_plan.id) }
 
@@ -890,77 +884,6 @@ describe Site::Invoice do
           end
         end
       end # context "site in free plan"
-
-      context "site in beta plan" do
-        context "on creation" do
-          before(:each) { Timecop.travel(Time.utc(2011,1,30)) { @site = FactoryGirl.build(:new_site, plan_id: @beta_plan.id) } }
-          subject { @site }
-
-          it "should not create and not try to charge the invoice" do
-            expect { subject.save }.to_not change(subject.invoices, :count)
-            subject.reload.plan.should == @beta_plan
-          end
-        end
-
-        context "on a saved record" do
-          before(:all) { Timecop.travel(Time.utc(2011,1,30)) { @site = FactoryGirl.create(:site_with_invoice, plan_id: @beta_plan.id) } }
-
-          describe "when save with no changes" do
-            subject { @site.reload }
-
-            it "should not create and not try to charge the invoice" do
-              expect { Timecop.travel(Time.utc(2011,3,3)) { subject.save! } }.to_not change(subject.invoices, :count)
-              subject.reload.plan.should == @beta_plan
-            end
-          end
-
-          describe "when upgrade to monthly paid plan" do
-            use_vcr_cassette "ogone/visa_payment_generic"
-            before(:each) { @site.reload.plan_id = @paid_plan.id }
-            subject { @site }
-
-            it "should create and try to charge the invoice" do
-              subject.user_attributes = { current_password: "123456" }
-              Timecop.travel(Time.utc(2011,2,10)) { expect { subject.save! }.to change(subject.invoices, :count).by(1) }
-              subject.reload.plan.should == @paid_plan
-              subject.last_invoice.should be_paid
-            end
-          end
-
-          describe "when upgrade to yearly paid plan" do
-            use_vcr_cassette "ogone/visa_payment_generic"
-            before(:each) { @site.reload.plan_id = @paid_plan_yearly.id }
-            subject { @site }
-
-            it "should create and try to charge the invoice" do
-              subject.user_attributes = { current_password: "123456" }
-              Timecop.travel(Time.utc(2011,2,10)) { expect { subject.save! }.to change(subject.invoices, :count).by(1) }
-              subject.reload.plan.should == @paid_plan_yearly
-              subject.last_invoice.should be_paid
-            end
-          end
-
-          describe "when suspend" do
-            subject { @site.reload }
-
-            it "should not create and not try to charge the invoice" do
-              Timecop.travel(Time.utc(2011,2,10)) { expect { subject.suspend! }.to_not change(subject.invoices, :count) }
-              subject.reload.plan.should == @beta_plan
-              subject.should be_suspended
-            end
-          end
-
-          describe "when archive" do
-            subject { @site.reload }
-
-            it "should not create and not try to charge the invoice" do
-              Timecop.travel(Time.utc(2011,2,10)) { expect { subject.archive! }.to_not change(subject.invoices, :count) }
-              subject.reload.plan.should == @beta_plan
-              subject.should be_archived
-            end
-          end
-        end
-      end # context "site in beta plan"
 
       context "site in monthly paid plan" do
         context "on creation" do

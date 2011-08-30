@@ -476,34 +476,32 @@ describe Invoice do
           it { should be_open }
         end
 
-        %w[free beta].each do |plan|
-          context "from a #{plan} plan" do
-            before(:all) do
-              @user = FactoryGirl.create(:user, country: 'FR', created_at: Time.utc(2011,3,30))
-              Timecop.travel(PublicLaunch.beta_transition_ended_on + 1.day) do
-                @site      = FactoryGirl.create(:site, user: @user, plan_id: instance_variable_get("@#{plan}_plan").id)
-                @paid_plan = FactoryGirl.create(:plan, cycle: "month", price: 3000)
-                # Simulate upgrade
-                @site.plan_id = @paid_plan.id
-                @invoice = Invoice.build(site: @site)
-              end
+        context "from a free plan" do
+          before(:all) do
+            @user = FactoryGirl.create(:user, country: 'FR', created_at: Time.utc(2011,3,30))
+            Timecop.travel(PublicLaunch.beta_transition_ended_on + 1.day) do
+              @site      = FactoryGirl.create(:site, user: @user, plan_id: @free_plan.id)
+              @paid_plan = FactoryGirl.create(:plan, cycle: "month", price: 3000)
+              # Simulate upgrade
+              @site.plan_id = @paid_plan.id
+              @invoice = Invoice.build(site: @site)
             end
-            subject { @invoice }
-
-            specify { subject.invoice_items.size.should == 1 }
-            specify { subject.invoice_items.all? { |ii| ii.site == @site }.should be_true }
-            specify { subject.invoice_items.all? { |ii| ii.invoice == subject }.should be_true }
-            specify { subject.invoice_items.first.item.should == @paid_plan }
-            specify { subject.invoice_items.first.price.should == 3000 }
-
-            its(:invoice_items_amount) { should == 3000 } # paid_plan.price
-            its(:vat_rate)             { should == 0.0 }
-            its(:vat_amount)           { should == 0 }
-            its(:amount)               { should == 3000 } # paid_plan.price
-            its(:paid_at)              { should be_nil }
-            its(:last_failed_at)       { should be_nil }
-            it { should be_open }
           end
+          subject { @invoice }
+
+          specify { subject.invoice_items.size.should == 1 }
+          specify { subject.invoice_items.all? { |ii| ii.site == @site }.should be_true }
+          specify { subject.invoice_items.all? { |ii| ii.invoice == subject }.should be_true }
+          specify { subject.invoice_items.first.item.should == @paid_plan }
+          specify { subject.invoice_items.first.price.should == 3000 }
+
+          its(:invoice_items_amount) { should == 3000 } # paid_plan.price
+          its(:vat_rate)             { should == 0.0 }
+          its(:vat_amount)           { should == 0 }
+          its(:amount)               { should == 3000 } # paid_plan.price
+          its(:paid_at)              { should be_nil }
+          its(:last_failed_at)       { should be_nil }
+          it { should be_open }
         end
       end
 

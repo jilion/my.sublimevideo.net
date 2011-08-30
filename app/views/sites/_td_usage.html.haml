@@ -1,6 +1,6 @@
 - if plan = site.plan
   - case plan.name
-  - when 'free', 'beta'
+  - when 'free'
     - if site.pending_plan_id? || site.hostname.blank?
       = "–"
     - else

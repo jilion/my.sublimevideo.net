@@ -52,8 +52,7 @@ Spork.prefork do
       PaperTrail.enabled = false
       @worker = Delayed::Worker.new(:quiet => true)
       # Plans
-      @free_plan       = FactoryGirl.create(:free_plan)
-      @beta_plan      = FactoryGirl.create(:beta_plan)
+      @free_plan      = FactoryGirl.create(:free_plan)
       @paid_plan      = FactoryGirl.create(:plan, name: "comet",  player_hits: 3_000)
       @sponsored_plan = FactoryGirl.create(:sponsored_plan)
       @custom_plan    = FactoryGirl.create(:custom_plan)

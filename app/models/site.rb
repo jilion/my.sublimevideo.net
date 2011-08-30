@@ -61,7 +61,6 @@ class Site < ActiveRecord::Base
   scope :not_archived, where { state != 'archived' }
 
   # plans
-  scope :beta,         includes(:plan).where { plans.name == "beta" }
   scope :free,         includes(:plan).where { plans.name == "free" }
   scope :sponsored,    includes(:plan).where { plans.name == "sponsored" }
   scope :custom,       includes(:plan).where { plans.name =~ "custom%" }
@@ -130,7 +129,7 @@ class Site < ActiveRecord::Base
   validates :plan,        :presence => { :message => "Please choose a plan" }, :unless => :pending_plan_id?
   validates :player_mode, :inclusion => { :in => PLAYER_MODES }
 
-  validates :hostname,        :presence => { :if => proc { |s| s.in_beta_plan? || s.in_or_will_be_in_paid_plan? } }, :hostname => true, :hostname_uniqueness => true
+  validates :hostname,        :presence => { :if => proc { |s| s.in_or_will_be_in_paid_plan? } }, :hostname => true, :hostname_uniqueness => true
   validates :extra_hostnames, :extra_hostnames => true
   validates :dev_hostnames,   :dev_hostnames => true
 
@@ -224,7 +223,7 @@ class Site < ActiveRecord::Base
 
     if attribute.to_s == attribute.to_i.to_s # id passed
       new_plan = Plan.find_by_id(attribute.to_i)
-      return unless new_plan.standard_plan? || new_plan.free_plan? || new_plan.beta_plan?
+      return unless new_plan.standard_plan? || new_plan.free_plan?
     else # token passed
       new_plan = Plan.find_by_token(attribute)
     end
@@ -290,7 +289,7 @@ class Site < ActiveRecord::Base
   end
 
   def recommended_plan_name
-    if in_beta_plan? || in_paid_plan?
+    if in_paid_plan?
       usages = last_30_days_billable_usages
       if usages.size >= 5
         name = if usages.sum < Plan.comet_player_hits && usages.mean < Plan.comet_daily_player_hits

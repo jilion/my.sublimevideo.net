@@ -33,10 +33,6 @@ module Site::Invoice
     scope.any? { |i| i.open? }
   end
 
-  def in_beta_plan?
-    plan && plan.beta_plan?
-  end
-
   def in_free_plan?
     plan && plan.free_plan?
   end

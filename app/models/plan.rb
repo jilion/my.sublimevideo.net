@@ -27,8 +27,8 @@ class Plan < ActiveRecord::Base
   # = Scopes =
   # ==========
 
-  scope :unpaid_plans,   where { name >> ["free", "beta", "sponsored"] }
-  scope :paid_plans,     where { name << ["free", "beta", "sponsored"] }
+  scope :unpaid_plans,   where { name >> ["free", "sponsored"] }
+  scope :paid_plans,     where { name << ["free", "sponsored"] }
   scope :standard_plans, where { name >> STANDARD_NAMES }
   scope :custom_plans,   where { name =~ "custom%" }
 
@@ -43,11 +43,6 @@ class Plan < ActiveRecord::Base
       where(name: "free").first
     end
     memoize :free_plan
-
-    def beta_plan
-      where(name: "beta").first
-    end
-    memoize :beta_plan
 
     def sponsored_plan
       where(name: "sponsored").first
@@ -111,11 +106,6 @@ class Plan < ActiveRecord::Base
   end
 
   # unpaid plan
-  def beta_plan?
-    name == "beta"
-  end
-
-  # unpaid plan
   def sponsored_plan?
     name == "sponsored"
   end
@@ -131,7 +121,7 @@ class Plan < ActiveRecord::Base
   end
 
   def unpaid_plan?
-    free_plan? || beta_plan? || sponsored_plan?
+    free_plan? || sponsored_plan?
   end
 
   def paid_plan?

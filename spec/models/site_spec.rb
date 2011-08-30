@@ -109,16 +109,11 @@ describe Site do
     describe "plan" do
       before(:all) do
         Site.delete_all
-        @site_beta      = FactoryGirl.create(:site, user: @user, plan_id: @beta_plan.id)
         @site_free       = FactoryGirl.create(:site, user: @user, plan_id: @free_plan.id)
         @site_sponsored = FactoryGirl.create(:site, user: @user, plan_id: @paid_plan.id)
         @site_sponsored.sponsor!
         @site_custom    = FactoryGirl.create(:site, user: @user, plan_id: @custom_plan.token)
         @site_paid      = FactoryGirl.create(:site, user: @user, plan_id: @paid_plan.id)
-      end
-
-      describe "#beta" do
-        specify { Site.beta.all.should =~ [@site_beta] }
       end
 
       describe "#free" do
@@ -175,7 +170,6 @@ describe Site do
 
         # not billable
         @site_free         = FactoryGirl.create(:site, user: @user, plan_id: @free_plan.id)
-        @site_beta        = FactoryGirl.create(:site, user: @user, plan_id: @beta_plan.id)
         @site_will_be_free = FactoryGirl.create(:site, user: @user, plan_id: @paid_plan.id)
         @site_will_be_free.update_attribute(:next_cycle_plan_id, @free_plan.id)
         @site_archived    = FactoryGirl.create(:site, user: @user, state: "archived", archived_at: Time.utc(2010,2,28))
@@ -187,8 +181,8 @@ describe Site do
       end
 
       describe "#not_billable" do
-        specify { Site.not_billable.count.should == [@site_free, @site_beta, @site_will_be_free, @site_archived, @site_suspended].size }
-        specify { Site.not_billable.all.should =~ [@site_free, @site_beta, @site_will_be_free, @site_archived, @site_suspended] }
+        specify { Site.not_billable.count.should == [@site_free, @site_will_be_free, @site_archived, @site_suspended].size }
+        specify { Site.not_billable.all.should =~ [@site_free, @site_will_be_free, @site_archived, @site_suspended] }
       end
     end
 
@@ -267,11 +261,6 @@ describe Site do
       context "with the free plan" do
         subject { site = FactoryGirl.create(:site, plan_id: @free_plan.id); site.hostname = ''; site }
         it { should be_valid }
-      end
-      context "with the beta plan" do
-        subject { site = FactoryGirl.create(:site, plan_id: @beta_plan.id); site.hostname = ''; site }
-        it { should_not be_valid }
-        it { should have(1).error_on(:hostname) }
       end
       context "with a paid plan" do
         subject { site = FactoryGirl.create(:site, plan_id: @paid_plan.id); site.hostname = ''; site }
@@ -1651,11 +1640,11 @@ describe Site do
     describe "#recommended_plan" do
       before(:all) do
         Plan.delete_all
-        FactoryGirl.create(:plan, name: "comet",  player_hits: 3_000)
+        comet = FactoryGirl.create(:plan, name: "comet",  player_hits: 3_000)
         FactoryGirl.create(:plan, name: "planet", player_hits: 50_000)
         FactoryGirl.create(:plan, name: "star",   player_hits: 200_000)
         @galaxy_plan = FactoryGirl.create(:plan, name: "galaxy", player_hits: 1_000_000)
-        @site        = FactoryGirl.create(:beta_site)
+        @site = FactoryGirl.create(:site, plan_id: comet.id)
       end
       subject { @site }
 
@@ -1702,7 +1691,7 @@ describe Site do
           FactoryGirl.create(:site_usage, site_id: @site.id, day: 6.days.ago, main_player_hits: 50)
         end
 
-        its(:recommended_plan_name) { should == "comet" }
+        its(:recommended_plan_name) { should be_nil }
       end
 
       context "with regular usage and player_hits greather than comet" do

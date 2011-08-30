@@ -10,7 +10,6 @@ module Spec
         plans_attributes = [
           { name: "free",        cycle: "none",  player_hits: 0,          price: 0 },
           { name: "sponsored",  cycle: "none",  player_hits: 0,          price: 0 },
-          { name: "beta",       cycle: "none",  player_hits: 0,          price: 0 },
           { name: "comet",      cycle: "month", player_hits: 3_000,      price: 990 },
           { name: "planet",     cycle: "month", player_hits: 50_000,     price: 1990 },
           { name: "star",       cycle: "month", player_hits: 200_000,    price: 4990 },

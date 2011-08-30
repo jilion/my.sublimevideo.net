@@ -56,7 +56,7 @@ describe Site::Templates do
         describe "attributes that appears in the license" do
           before { PageRankr.stub(:ranks) }
 
-          %w[free sponsored beta paid custom].each do |plan_name|
+          %w[free sponsored paid custom].each do |plan_name|
             context "with a site in #{plan_name} plan" do
               [ [:hostname, :h, "test.com"],
                 [:extra_hostnames, :h, "test.staging.com"],
@@ -382,7 +382,7 @@ describe Site::Templates do
       end
 
       describe "common settings" do
-        %w[free sponsored beta paid].each do |plan_name|
+        %w[free sponsored paid].each do |plan_name|
           context "site in #{plan_name} plan" do
             subject { @site.reload }
             before { subject.plan = instance_variable_get(:"@#{plan_name}_plan") }

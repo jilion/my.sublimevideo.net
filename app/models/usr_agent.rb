@@ -2,10 +2,10 @@ class UsrAgent # fucking name conflict with UserAgent gem
   include Mongoid::Document
 
   field :token
-  field :month,           :type => DateTime
+  field :month,     :type => DateTime
 
-  field :platforms,       :type => Hash # { "iPad" => { "iOS 3.2" => 32, "iOS 4.2" => 31, "Unknown" => 12 }, "Unknown" => 123 }
-  field :browsers,        :type => Hash # { "Safari" => { "versions" => { "4.0.4" => 123, "5.0" => 12, "Unknown" => 123 }, "platforms" => { "iPad" => 12, "Windows" => 12, "Unknown" => 123 } }, "Unknown" => 123 }
+  field :platforms, :type => Hash # { "iPad" => { "iOS 3.2" => 32, "iOS 4.2" => 31, "Unknown" => 12 }, "Unknown" => 123 }
+  field :browsers,  :type => Hash # { "Safari" => { "versions" => { "4.0.4" => 123, "5.0" => 12, "Unknown" => 123 }, "platforms" => { "iPad" => 12, "Windows" => 12, "Unknown" => 123 } }, "Unknown" => 123 }
 
   index :token
   index :month
@@ -24,8 +24,8 @@ class UsrAgent # fucking name conflict with UserAgent gem
   # = Validations =
   # ===============
 
-  validates :token,   :presence => true
-  validates :month,   :presence => true
+  validates :token, :presence => true
+  validates :month, :presence => true
 
   # =================
   # = Class Methods =
@@ -59,7 +59,7 @@ private
     begin
       useragent = UserAgent.parse(useragent_string) # gem here
     rescue => ex
-      Notify.send("UserAgent (gem) parsing problem with: #{useragent_string}", :exception => ex)
+      Notify.send("UserAgent (gem) parsing problem with: #{useragent_string}", exception: ex)
     end
     if useragent.present?
       hash = %w[browser version platform os].inject({}) do |hash, attr|
@@ -68,8 +68,8 @@ private
       end
       if hash[:browser] == "unknown" || hash[:version] == "unknown"
         unknowns = hash.select { |k, v| v == "unknown" }.keys
-        unless UsrAgentUnknown.where(:user_agent => useragent_string).exists?
-          UsrAgentUnknown.create(:user_agent => useragent_string, :unknowns => unknowns )
+        unless UsrAgentUnknown.where(user_agent: useragent_string).exists?
+          UsrAgentUnknown.create(user_agent: useragent_string, unknowns: unknowns)
         end
       end
       hash

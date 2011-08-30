@@ -12,16 +12,11 @@
 
 %h3 Sites
 - active_sites    = Site.active.count
-- beta_sites      = Site.active.beta.count
 - free_sites      = Site.active.free.count
 - sponsored_sites = Site.active.sponsored.count
 - paying_sites    = Site.active.in_paid_plan.count
 - custom_sites    = Site.active.custom.count
 %table{ style: "width:300px;padding:0" }
-  %tr
-    %td Beta
-    %td= beta_sites
-    %td= display_percentage(beta_sites.to_f / active_sites)
   %tr
     %td LaunchPad
     %td= free_sites

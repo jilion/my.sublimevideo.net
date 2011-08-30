@@ -49,17 +49,6 @@ FactoryGirl.define do
     end
   end
 
-  # Don't create invoice nor try to charge
-  factory :beta_site, :parent => :new_site do
-    plan_id             nil
-    pending_plan_id     { FactoryGirl.create(:beta_plan).id }
-    after_build do |site|
-      site.pend_plan_changes
-      site.apply_pending_plan_changes
-      site.reload
-    end
-  end
-
   factory :site_with_invoice, :parent => :new_site do
     after_build  { |site| VCR.insert_cassette('ogone/visa_payment_generic') }
     after_create do |site|
@@ -134,13 +123,6 @@ FactoryGirl.define do
     cycle        "none"
     player_hits  0
     price        0
-  end
-
-  factory :beta_plan, :class => Plan  do
-    name        "beta"
-    cycle       "none"
-    player_hits 0
-    price       0
   end
 
   factory :sponsored_plan, :class => Plan  do

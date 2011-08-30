@@ -96,7 +96,7 @@ private
   # after_save
   def execute_cdn_update
     if @loader_needs_update || @license_needs_update
-      Site.delay.update_loader_and_license(self.id, :loader => @loader_needs_update, :license => @license_needs_update)
+      Site.delay.update_loader_and_license(self.id, loader: @loader_needs_update, license: @license_needs_update)
     end
   end
 

@@ -790,21 +790,6 @@ describe User do
       end
     end
 
-    describe "#have_beta_sites?" do
-      before(:all) { @site = FactoryGirl.create(:site, plan_id: @beta_plan.id) }
-
-      specify { @site.user.have_beta_sites?.should be_true }
-
-      context "with archived beta site" do
-        before(:all) do
-          @site = FactoryGirl.create(:site, plan_id: @beta_plan.id)
-          @site.archive
-        end
-
-        specify { @site.user.have_beta_sites?.should be_false }
-      end
-    end
-
     describe "#beta?" do
       context "with active beta user" do
         subject { FactoryGirl.create(:user, created_at: Time.utc(2010,10,10), invitation_token: nil) }
@@ -954,12 +939,11 @@ describe User do
         before(:all) do
           @user = FactoryGirl.create(:user)
           FactoryGirl.create(:site, user: @user, plan_id: @paid_plan.id)
-          FactoryGirl.create(:site, user: @user, plan_id: @beta_plan.id)
+          FactoryGirl.create(:site, user: @user, plan_id: @free_plan.id)
         end
         subject { @user.reload }
 
         it { @paid_plan.support.should == "standard" }
-        it { @beta_plan.support.should == "standard" }
         it { subject.support.should == "standard" }
       end
 

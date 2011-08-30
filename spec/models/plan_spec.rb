@@ -18,7 +18,7 @@ describe Plan do
   end
 
   describe "Scopes" do
-    specify { Plan.unpaid_plans.all.should =~ [@beta_plan, @free_plan, @sponsored_plan] }
+    specify { Plan.unpaid_plans.all.should =~ [@free_plan, @sponsored_plan] }
     specify { Plan.paid_plans.all.should =~ [@paid_plan, @custom_plan] }
     specify { Plan.standard_plans.all.should =~ [@paid_plan] }
     specify { Plan.custom_plans.all.should =~ [@custom_plan] }
@@ -106,14 +106,8 @@ describe Plan do
       it { FactoryGirl.build(:plan, :name => "sponsored").should be_sponsored_plan }
     end
 
-    describe "#beta_plan?" do
-      it { FactoryGirl.build(:plan, :name => "beta").should be_beta_plan }
-      it { FactoryGirl.build(:plan, :name => "free").should_not be_beta_plan }
-    end
-
     describe "#standard_plan?" do
       it { FactoryGirl.build(:plan, :name => "free").should_not be_standard_plan }
-      it { FactoryGirl.build(:plan, :name => "beta").should_not be_standard_plan }
       it { FactoryGirl.build(:plan, :name => "sponsored").should_not be_standard_plan }
 
       Plan::STANDARD_NAMES.each do |name|
@@ -122,7 +116,6 @@ describe Plan do
     end
 
     describe "#custom_plan?" do
-      it { FactoryGirl.build(:plan, :name => "beta").should_not be_custom_plan }
       it { FactoryGirl.build(:plan, :name => "free").should_not be_custom_plan }
       it { FactoryGirl.build(:plan, :name => "sponsored").should_not be_custom_plan }
       it { FactoryGirl.build(:plan, :name => "comet").should_not be_custom_plan }
@@ -132,7 +125,6 @@ describe Plan do
     end
 
     describe "#unpaid_plan?" do
-      it { FactoryGirl.build(:plan, :name => "beta").should be_unpaid_plan }
       it { FactoryGirl.build(:plan, :name => "free").should be_unpaid_plan }
       it { FactoryGirl.build(:plan, :name => "sponsored").should be_unpaid_plan }
       it { FactoryGirl.build(:plan, :name => "comet").should_not be_unpaid_plan }
@@ -142,7 +134,6 @@ describe Plan do
     end
 
     describe "#paid_plan?" do
-      it { FactoryGirl.build(:plan, :name => "beta").should_not be_paid_plan }
       it { FactoryGirl.build(:plan, :name => "free").should_not be_paid_plan }
       it { FactoryGirl.build(:plan, :name => "sponsored").should_not be_paid_plan }
       it { FactoryGirl.build(:plan, :name => "comet").should be_paid_plan }
@@ -164,14 +155,6 @@ describe Plan do
         @paid_plan_yearly  = FactoryGirl.build(:plan, cycle: "year",  price: 10000)
         @paid_plan_yearly2 = FactoryGirl.build(:plan, cycle: "year",  price: 50000)
       end
-
-      it { @beta_plan.upgrade?(@free_plan).should be_true }
-      it { @beta_plan.upgrade?(@sponsored_plan).should be_true }
-      it { @beta_plan.upgrade?(@custom_plan).should be_true }
-      it { @beta_plan.upgrade?(@paid_plan).should be_true }
-      it { @beta_plan.upgrade?(@paid_plan2).should be_true }
-      it { @beta_plan.upgrade?(@paid_plan_yearly).should be_true }
-      it { @beta_plan.upgrade?(@paid_plan_yearly2).should be_true }
 
       it { @free_plan.upgrade?(@free_plan).should be_nil }
       it { @free_plan.upgrade?(@paid_plan).should be_true }
@@ -230,7 +213,6 @@ describe Plan do
     end
 
     describe "#support" do
-      it { FactoryGirl.build(:plan, :name => "beta").support.should == "standard" }
       it { FactoryGirl.build(:plan, :name => "free").support.should == "launchpad" }
       it { FactoryGirl.build(:plan, :name => "sponsored").support.should == "priority" }
       it { FactoryGirl.build(:plan, :name => "comet").support.should == "standard" }
@@ -249,7 +231,6 @@ describe Plan do
 
         Timecop.travel(PublicLaunch.beta_transition_ended_on - 1.day) do # before beta end
           @beta_user_free_site1 = FactoryGirl.create(:site, user: @beta_user, plan_id: @free_plan.id)
-          @beta_user_beta_site1 = FactoryGirl.create(:site, user: @beta_user, plan_id: @beta_plan.id)
           @beta_user_paid_site1 = FactoryGirl.create(:site, user: @beta_user, plan_id: @paid_plan.id)
           @beta_user_paid_site11 = FactoryGirl.create(:site_with_invoice, user: @beta_user, plan_id: @paid_plan.id)
           @beta_user_paid_site11.plan_id = FactoryGirl.create(:plan).id
@@ -259,7 +240,6 @@ describe Plan do
 
         Timecop.travel(PublicLaunch.beta_transition_ended_on + 1.day) do # after beta end
           @beta_user_free_site2 = FactoryGirl.create(:site, user: @beta_user, plan_id: @free_plan.id)
-          @beta_user_beta_site2 = FactoryGirl.create(:site, user: @beta_user, plan_id: @beta_plan.id)
           @beta_user_paid_site2 = FactoryGirl.create(:site, user: @beta_user, plan_id: @paid_plan.id)
         end
 
@@ -274,10 +254,8 @@ describe Plan do
         end
 
         @beta_user_free_site1.first_paid_plan_started_at.should be_nil
-        @beta_user_beta_site1.first_paid_plan_started_at.should be_nil
         @beta_user_paid_site1.first_paid_plan_started_at.should == PublicLaunch.beta_transition_ended_on.yesterday.midnight
         @beta_user_free_site2.first_paid_plan_started_at.should be_nil
-        @beta_user_beta_site2.first_paid_plan_started_at.should be_nil
         @beta_user_paid_site2.first_paid_plan_started_at.should == PublicLaunch.beta_transition_ended_on.tomorrow.midnight
 
         @non_beta_user_free_site1.first_paid_plan_started_at.should be_nil
@@ -292,12 +270,10 @@ describe Plan do
         after(:all) { Timecop.return }
 
         it { @paid_plan2.price(@beta_user_free_site1).should == 1590 }
-        it { @paid_plan2.price(@beta_user_beta_site1).should == 1590 }
         it { @paid_plan2.price(@beta_user_paid_site1).should == 1590 }
         it { @paid_plan2.price(@beta_user_paid_site11).should == 1590 }
 
         it { @paid_plan2.price(@beta_user_free_site2).should == 1590 }
-        it { @paid_plan2.price(@beta_user_beta_site2).should == 1590 }
         it { @paid_plan2.price(@beta_user_paid_site2).should == 1590 }
 
         it { @paid_plan2.price(@non_beta_user_free_site1).should == 1990 }
@@ -312,7 +288,6 @@ describe Plan do
         after(:all) { Timecop.return }
 
         it { @paid_plan2.price(@beta_user_free_site1).should == 1990 }
-        it { @paid_plan2.price(@beta_user_beta_site1).should == 1990 }
         it "should not return the discounted price" do
           @paid_plan2.price(@beta_user_paid_site1).should == 1990
         end

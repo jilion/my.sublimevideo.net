@@ -18,7 +18,7 @@
     .info_message_box
       %p= raw "Your plan is currently sponsored by Jilion. If you have any questions, please #{mail_to "sales@sublimevideo.net", "contact us"}."
   - else
-    - if @site.errors.empty? && !@site.in_beta_plan? && @site.next_cycle_plan_id?
+    - if @site.errors.empty? && @site.next_cycle_plan_id?
       #next_cycle_plan_box
         %p= raw "Your new plan #{content_tag :strong, @site.next_cycle_plan.title(always_with_cycle: true)} will automatically start on #{l(@site.plan_cycle_ended_at.tomorrow.midnight, :format => :named_date)}."
         = button_to "Cancel", [@site, :plan], :method => :delete, :class => "cancel_button submit_dynamic_button"
@@ -37,10 +37,6 @@
           %p= raw "You will be immediately upgraded to the #{content_tag(:strong, "?", class: "plan_title")} plan. We will charge you #{content_tag(:strong, "?", class: "plan_update_price")}."
           - if current_user.vat?
             %p= vat_price_info("plan_update_price_vat")
-
-        - if current_user.vat?
-          #plan_upgrade_from_beta_info.update_plan_message_box{ style: "display:none;" }
-            %p= vat_price_info("plan_price_vat")
 
         #plan_delayed_downgrade_info.update_plan_message_box{ style: "display:none;" }
           %p= raw "You will be downgraded to the #{content_tag(:strong, "?", class: "plan_title")} plan on #{content_tag(:span, "?", class: "plan_update_date")}. On the same day, we will charge you #{content_tag(:strong, "?", class: "plan_update_price")}."

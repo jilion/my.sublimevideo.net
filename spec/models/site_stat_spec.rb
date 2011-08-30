@@ -98,7 +98,7 @@ describe SiteStat do
 
   describe "Scopes:" do
 
-    describe "last_data", focus: true do
+    describe "last_data" do
       let(:site) { Factory.create(:site) }
 
       before(:each) do

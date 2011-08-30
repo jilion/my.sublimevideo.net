@@ -3,7 +3,7 @@ module PlansHelper
   def plan_page_title
     if !@site.hostname?
       "Site plan"
-    elsif @site.in_beta_plan? || @site.in_free_plan?
+    elsif @site.in_free_plan?
       "Choose a plan"
     else
       if @site.in_custom_plan? || @site.in_sponsored_plan?
@@ -50,10 +50,8 @@ module PlansHelper
   end
 
   def plan_change_type(old_plan, new_plan)
-    if old_plan == new_plan || (old_plan.beta_plan? && new_plan.free_plan?)
+    if old_plan == new_plan
       nil
-    elsif old_plan.beta_plan?
-      "upgrade_from_beta"
     elsif new_plan.free_plan?
       "delayed_downgrade_to_free"
     elsif old_plan.free_plan?

@@ -273,7 +273,7 @@ def create_site_usages
   player_hits_total = 0
   Site.active.each do |site|
     start_date = site.plan_month_cycle_started_at.to_date
-    plan_player_hits = (site.in_beta_plan? || site.in_sponsored_plan?) ? Plan.standard_plans.all.sample.player_hits : site.plan.player_hits
+    plan_player_hits = (site.in_sponsored_plan?) ? Plan.standard_plans.all.sample.player_hits : site.plan.player_hits
     p = (case rand(4)
     when 0
       plan_player_hits/30.0 - (plan_player_hits/30.0 / 4)
@@ -329,7 +329,6 @@ def create_plans
   plans_attributes = [
     { name: "free",       cycle: "none",  player_hits: 0,          price: 0 },
     { name: "sponsored",  cycle: "none",  player_hits: 0,          price: 0 },
-    { name: "beta",       cycle: "none",  player_hits: 0,          price: 0 },
     { name: "comet",      cycle: "month", player_hits: 3_000,      price: 990 },
     { name: "planet",     cycle: "month", player_hits: 50_000,     price: 1990 },
     { name: "star",       cycle: "month", player_hits: 200_000,    price: 4990 },
