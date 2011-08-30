@@ -8,14 +8,17 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
     $('#sites_select').html(sitesSelectView.render().el)
     periodsSelectView = new MSVStats.Views.PeriodsSelectView(period: MSVStats.period)
     $('#periods_select').html(periodsSelectView.render().el)
-    bPView = new MSVStats.Views.BPView(collection: MSVStats.stats, sites: MSVStats.sites, period: MSVStats.period)
-    bPView.render()
-    mDView = new MSVStats.Views.MDView(collection: MSVStats.stats, sites: MSVStats.sites, period: MSVStats.period)
-    mDView.render()
+    vvView = new MSVStats.Views.VVView(collection: MSVStats.stats, sites: MSVStats.sites, period: MSVStats.period)
+    $('#vv').html(vvView.render().el)
+    bpView = new MSVStats.Views.BPView(collection: MSVStats.stats, sites: MSVStats.sites, period: MSVStats.period)
+    $('#bp').html(bpView.render().el)
+    mdView = new MSVStats.Views.MDView(collection: MSVStats.stats, sites: MSVStats.sites, period: MSVStats.period)
+    $('#md').html(mdView.render().el)
 
   routes:
     'sites/:token/stats': 'home'
 
   home: (token) ->
     MSVStats.sites.select(token)
+    MSVStats.stats.reset()
     MSVStats.stats.fetch()

@@ -28,6 +28,15 @@ class MSVStats.Collections.Stats extends Backbone.Collection
   url: ->
     "/sites/#{MSVStats.sites.selectedSite().get('token')}/stats"
 
+  vvData: ->
+    this.forCurrentPeriod().reduce((memo, stat) ->
+      if pv = stat.get('pv')
+         memo.pv.push(parseInt(pv.m ? 0) + parseInt(pv.e ? 0))  # only main & extra hostname
+      if vv = stat.get('vv')
+         memo.vv.push(parseInt(vv.m ? 0) + parseInt(vv.e ? 0))  # only main & extra hostname
+      memo
+    new VVData)
+  
   bpData: ->
     this.forCurrentPeriod().reduce((memo, stat) ->
       _.each(stat.get('bp'), (hits, bp) -> memo.set(bp, hits))
@@ -55,6 +64,16 @@ class MSVStats.Collections.Stats extends Backbone.Collection
       stats = _.sortBy(stats, (stat) -> stat.date().getTime()).reverse()
       _.first(stats, periodLast).reverse()
 
+class VVData
+  constructor: ->
+    @pv = []
+    @vv = []
+  
+  pvTotal: ->
+    _.reduce(@pv, ((memo, num) -> memo + num), 0)
+  
+  vvTotal: ->
+    _.reduce(@vv, ((memo, num) -> memo + num), 0)
 
 class BPData
   set: (bp, hits) ->

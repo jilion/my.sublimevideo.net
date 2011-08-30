@@ -125,7 +125,7 @@ group :guard do
   gem 'guard-spork'
   gem 'guard-rspec'
   gem 'guard-rails-assets', :git => 'git://github.com/mcolyer/guard-rails-assets.git', :branch => 'patch-1'
-  gem 'guard-jasmine-headless-webkit'
+  # gem 'guard-jasmine-headless-webkit'
 end
 
 group :test do
@@ -142,5 +142,5 @@ group :test do
 
   # Js test
   gem 'jasmine', '~> 1.1.0.rc'
-  gem 'jasmine-headless-webkit', :git => 'git://github.com/johnbintz/jasmine-headless-webkit.git'
+  # gem 'jasmine-headless-webkit', :git => 'git://github.com/johnbintz/jasmine-headless-webkit.git'
 end

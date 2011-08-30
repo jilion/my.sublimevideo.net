@@ -1,4 +1,5 @@
 class MSVStats.Views.MDView extends Backbone.View
+  template: JST['stats/templates/_md_pie_chart']
 
   initialize: () ->
     _.bindAll(this, 'render')
@@ -7,9 +8,9 @@ class MSVStats.Views.MDView extends Backbone.View
     this.options.period.bind('change', this.render);
 
   render: ->
-    if MSVStats.stats.size() > 0
-      console.log MSVStats.stats.mdData().m
-
+    mdData = this.collection.mdData()
+    $(this.el).html(this.template())
+    if this.collection.size() > 0
       new Highcharts.Chart
         chart:
           renderTo: 'md_pie_chart'
@@ -31,6 +32,13 @@ class MSVStats.Views.MDView extends Backbone.View
           spacingLeft: 0
           height: 200
           width: 400
+        colors: [
+        	'#edc950'
+        	'#65384a'
+        	'#eb6840'
+        	'#06a0b0'
+        	'#cc343e'
+        ]
         credits:
           enabled: false
         title:
@@ -40,23 +48,20 @@ class MSVStats.Views.MDView extends Backbone.View
             "<b>#{@point.name}</b><br/> #{Highcharts.numberFormat(@y, 0)} hits (#{Highcharts.numberFormat(@percentage, 1)} %)"
         plotOptions:
           pie:
-            animation: true
+            shadow: false
+            borderWidth: 0
+            animation: false
             showInLegend: true
             allowPointSelect: false
             dataLabels:
               enabled: false
-        series: [{
+        series: [
           type: 'pie'
           name: 'Player Mode'
           size: '85%'
-          innerSize: '45%'
-          data: MSVStats.stats.mdData().toArray('m')
-          },{
-          type: 'pie'
-          name: 'Device'
-          size: '45%'
-          data: MSVStats.stats.mdData().toArray('d')
-        }]
+          # innerSize: '75%'
+          data: mdData.toArray('d')
+        ]
         legend:
           layout: 'vertical'
           margin: 0
