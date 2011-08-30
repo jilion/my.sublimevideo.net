@@ -1,14 +1,16 @@
 class MSVStats.Views.BPView extends Backbone.View
+  template: JST['stats/templates/_bp_pie_chart']
 
   initialize: () ->
     _.bindAll(this, 'render')
     this.collection.bind('change', this.render);
     this.collection.bind('reset', this.render);
-    # this.options.sites.bind('change', this.render);
     this.options.period.bind('change', this.render);
 
   render: ->
-    if MSVStats.stats.size() > 0
+    bpData = this.collection.bpData()
+    $(this.el).html(this.template())
+    if this.collection.size() > 0
       new Highcharts.Chart
         chart:
           renderTo: 'bp_pie_chart'
@@ -30,6 +32,13 @@ class MSVStats.Views.BPView extends Backbone.View
           spacingLeft: 0
           height: 200
           width: 400
+        colors: [
+        	'#edc950'
+        	'#65384a'
+        	'#eb6840'
+        	'#06a0b0'
+        	'#cc343e'
+        ]
         credits:
           enabled: false
         title:
@@ -39,7 +48,9 @@ class MSVStats.Views.BPView extends Backbone.View
             "<b>#{@point.name}</b><br/> #{Highcharts.numberFormat(@y, 0)} hits (#{Highcharts.numberFormat(@percentage, 1)} %)"
         plotOptions:
           pie:
-            animation: true
+            shadow: false
+            borderWidth: 0
+            animation: false
             showInLegend: true
             size: '85%'
             allowPointSelect: false
@@ -48,7 +59,7 @@ class MSVStats.Views.BPView extends Backbone.View
         series: [
           type: 'pie'
           name: 'Browser + OS'
-          data: MSVStats.stats.bpData().toArray()
+          data: bpData.toArray()
         ]
         legend:
           layout: 'vertical'

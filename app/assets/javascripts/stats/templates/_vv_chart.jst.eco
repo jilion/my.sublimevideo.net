@@ -1,0 +1,12 @@
+<ul>
+  <li>
+    <%= @vvData.pvTotal() %>
+    <span>page visits</span>
+  </li>
+  <li>
+    <%= @vvData.vvTotal() %>
+    <span>video views</span>
+  </li>
+</ul>
+
+<div id='vv_chart'></div>

@@ -382,8 +382,8 @@ def random_stats_inc(i)
     "md.h.m" => i * rand(5),
     "md.h.t" => i * rand(3),
     "md.f.d" => i * rand(6),
-    "md.f.m" => i * rand(2),
-    "md.f.t" => i * rand(2),
+    "md.f.m" => 0, #i * rand(2),
+    "md.f.t" => 0, #i * rand(2),
     # field :bp, :type => Hash # Browser + Plateform hash { "saf-win" => 2, "saf-osx" => 4, ...}
     "bp.iex-win" => i * rand(30),
     "bp.fir-win" => i * rand(30),
