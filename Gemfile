@@ -123,7 +123,7 @@ end
 group :guard do
   gem 'rb-fsevent', :git => 'git://github.com/ttilley/rb-fsevent.git', :branch => 'pre-compiled-gem-one-off'
   gem 'growl_notify'
-  gem 'guard', :git => 'git://github.com/guard/guard.git'
+  gem 'guard', :git => 'git://github.com/guard/guard.git', :branch => 'stdin'
   gem 'guard-bundler'
   gem 'guard-pow'
   gem 'guard-livereload'
