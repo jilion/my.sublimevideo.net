@@ -21,7 +21,8 @@ GIT
 
 GIT
   remote: git://github.com/mcolyer/guard-rails-assets.git
-  revision: 4096407a7a27711011bba1e6cc833d27af8ee9ce
+  revision: 73d35d98de3b4c1f510ed666f9a16c869c2567c6
+  ref: 73d35d98de3b4c1f510ed666f9a16c869c2567c6
   branch: patch-1
   specs:
     guard-rails-assets (0.0.6)
