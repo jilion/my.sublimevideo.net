@@ -1,14 +1,12 @@
 source 'http://rubygems.org'
 
-gem 'rails',                 '3.1.0.rc8'
+gem 'rails',                 '3.1.0'
 
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
-  # gem 'sass-rails',          '~> 3.1.0.rc.5'
-  gem 'sass-rails',          :git => 'git://github.com/rails/sass-rails.git', :branch => '3-1-stable'
-  # gem 'coffee-rails',        '~> 3.1.0.rc.5'
-  gem 'coffee-rails',        :git => 'git://github.com/rails/coffee-rails.git', :branch => '3-1-stable'
+  gem 'sass-rails',          '~> 3.1.0'
+  gem 'coffee-rails',        '~> 3.1.0'
   gem 'eco'
   gem 'uglifier'
 end
@@ -20,9 +18,7 @@ gem 'rails-backbone'
 
 # Databases
 gem 'pg',                    '~> 0.11.0'
-# gem 'meta_where',            '1.0.4'
-# gem 'arel',                  '2.2.0'
-gem 'squeel',                :git => 'git://github.com/ernie/squeel.git'
+gem 'squeel',                '~> 0.8.9'
 
 gem 'bson_ext',              '~> 1.3.1'
 gem 'mongo',                 '~> 1.3.1'
@@ -31,7 +27,6 @@ gem 'mongoid',               '~> 2.2.0'
 # Views
 gem 'haml',                  '~> 3.1.2'
 gem 'coffee-filter',         '~> 0.1.1'
-# gem 'kaminari',              '~> 0.12.4'
 gem 'kaminari',              :git => 'git://github.com/amatsuda/kaminari.git'
 gem 'liquid',                '~> 2.2.2'
 gem 'RedCloth',              '~> 4.2.7'
@@ -64,7 +59,7 @@ gem 'fog',                   '~> 0.10.0'
 gem 'carrierwave',           '~> 0.5.7'
 gem 'carrierwave-mongoid',   '~> 0.1.1', :require => 'carrierwave/mongoid'
 gem 'voxel_hapi',            :git => 'git://github.com/thibaudgg/voxel_hapi.git', :branch => '1.9.2' # VoxCast CDN
-gem 'request-log-analyzer',  '~> 1.11.0', :require => 'request_log_analyzer'
+gem 'request-log-analyzer',  '~> 1.11.1', :require => 'request_log_analyzer'
 
 # gem 'activemerchant',        '~> 1.9.1'
 # Pull request: https://github.com/Shopify/active_merchant/pull/85
@@ -87,7 +82,7 @@ gem 'prowl',                 '~> 0.1.3'
 gem 'addressable',           '~> 2.2.6'
 
 # Perf
-gem 'dalli',                 '~> 1.0.5'
+gem 'dalli',                 '~> 1.1.1'
 
 group :production do
   gem 'rack-google-analytics', '~> 0.9.2', :require => 'rack/google-analytics'
@@ -125,7 +120,7 @@ group :guard do
   gem 'guard-spork'
   gem 'guard-rspec'
   gem 'guard-rails-assets', :git => 'git://github.com/mcolyer/guard-rails-assets.git', :branch => 'patch-1'
-  # gem 'guard-jasmine-headless-webkit'
+  gem 'guard-jasmine-headless-webkit'
 end
 
 group :test do
@@ -142,5 +137,5 @@ group :test do
 
   # Js test
   gem 'jasmine', '~> 1.1.0.rc'
-  # gem 'jasmine-headless-webkit', :git => 'git://github.com/johnbintz/jasmine-headless-webkit.git'
+  gem 'jasmine-headless-webkit' #, :git => 'git://github.com/johnbintz/jasmine-headless-webkit.git'
 end
