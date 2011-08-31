@@ -1,9 +1,9 @@
 class MSVStats.Models.Stat extends Backbone.Model
   defaults:
     t: null
-    m: null
-    h: null
-    d: null
+    mi: null
+    hi: null
+    di: null
     pv: {}
     vv: {}
     md: {}
@@ -11,16 +11,15 @@ class MSVStats.Models.Stat extends Backbone.Model
 
   isPeriodType: (type) ->
     switch type
-      when 'minute'
-        this.get('m') != null
-      when 'hour'
-        this.get('h') != null
-      when 'day'
-        this.get('d') != null
+      when 'minutes'
+        this.get('mi') != null
+      when 'hours'
+        this.get('hi') != null
+      when 'days'
+        this.get('di') != null
 
-  date: ->
-    dateString = this.get('m') || this.get('h') || this.get('d')
-    new Date(dateString)
+  time: ->
+    parseInt(this.get('mi') || this.get('hi') || this.get('di')) * 1000
 
 class MSVStats.Collections.Stats extends Backbone.Collection
   model: MSVStats.Models.Stat
@@ -36,7 +35,7 @@ class MSVStats.Collections.Stats extends Backbone.Collection
          memo.vv.push(parseInt(vv.m ? 0) + parseInt(vv.e ? 0))  # only main & extra hostname
       memo
     new VVData)
-  
+
   bpData: ->
     this.forCurrentPeriod().reduce((memo, stat) ->
       _.each(stat.get('bp'), (hits, bp) -> memo.set(bp, hits))
@@ -52,26 +51,67 @@ class MSVStats.Collections.Stats extends Backbone.Collection
 
   forCurrentPeriod: ->
     return unless MSVStats.stats
-    stats = MSVStats.stats.reduce((memo, stat) ->
+    periodStats = MSVStats.stats.reduce((memo, stat) ->
       memo.push(stat) if stat.isPeriodType(MSVStats.period.get('type'))
       memo
     [])
+    return [] if _.isEmpty(periodStats)
 
     periodLast = MSVStats.period.get('last')
-    if periodLast == 'all'
-      stats = _.sortBy(stats, (stat) -> stat.date().getTime())
-    else # number
-      stats = _.sortBy(stats, (stat) -> stat.date().getTime()).reverse()
-      _.first(stats, periodLast).reverse()
+    stats = []
+    switch MSVStats.period.get('type')
+      when 'minutes'
+        currentMinute = new Date().set(second: 0, millisecond: 0)
+        for step in [0..(periodLast)]
+          do (step) ->
+            stepTime = currentMinute.clone().add(minutes: step * -1).getTime()
+            periodStat = _.detect(periodStats, ((periodStat) -> periodStat.time() == stepTime))
+            stats.push(periodStat || new MSVStats.Models.Stat(mi: String(stepTime)))
+        # remove current minute if null (wait for the right data)
+        if _.first(stats).get('t') == null
+          stats.shift()
+        # remove last minute if current minute is real
+        else
+          stats.pop()
+      when 'hours'
+        currentHour = new Date().set(minute: 0, second: 0, millisecond: 0)
+        for step in [0..(parseInt(periodLast) - 1)]
+          do (step) ->
+            stepTime = currentHour.clone().add(hours: step * -1).getTime()
+            periodStat = _.detect(periodStats, ((periodStat) -> periodStat.time() == stepTime))
+            stats.push(periodStat || new MSVStats.Models.Stat(hi: String(stepTime)))
+      when 'days'
+        currentDay = new Date().set(hour: 0, minute: 0, second: 0, millisecond: 0)
+        if periodLast == 'all'
+          lastTime = _.last(periodStats).time()
+          stepTime = currentDay.clone().add(days: 1)
+          while stepTime.add(days: -1).getTime() >= lastTime
+            periodStat = _.detect(periodStats, ((periodStat) -> periodStat.time() == stepTime.getTime()))
+            stats.push(periodStat || new MSVStats.Models.Stat(di: String(stepTime.getTime())))
+        else # number
+          for step in [0..(parseInt(periodLast) - 1)]
+            do (step) ->
+              console.log step
+              stepTime = currentDay.clone().add(days: step * -1).getTime()
+              console.log stepTime
+              # console.log periodStats
+              # console.log _.first(periodStats)
+              # console.log periodStats
+              # console.log _.first(periodStats)
+              console.log _.first(periodStats).time()
+              periodStat = _.detect(periodStats, ((periodStat) -> periodStat.time() == stepTime))
+              stats.push(periodStat || new MSVStats.Models.Stat(di: String(stepTime)))
+              console.log periodStat
+    stats.reverse()
 
 class VVData
   constructor: ->
     @pv = []
     @vv = []
-  
+
   pvTotal: ->
     _.reduce(@pv, ((memo, num) -> memo + num), 0)
-  
+
   vvTotal: ->
     _.reduce(@vv, ((memo, num) -> memo + num), 0)
 

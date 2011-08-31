@@ -44,6 +44,16 @@ class SiteStat
     ])
   }
 
+  # ====================
+  # = Instance Methods =
+  # ====================
+
+  %w[m h d].each do |period|
+    define_method "#{period}i" do
+      send(period).nil? ? nil : send(period).to_i
+    end
+  end
+
   # =================
   # = Class Methods =
   # =================
