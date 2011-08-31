@@ -18,7 +18,7 @@ en:
       signed_out: 'no_message'
     passwords:
       send_instructions: 'You will receive an email with instructions to reset your password in a few minutes.'
-      updated: 'Your password was changed successfully. You are now signed in.'
+      updated: 'Your password was changed successfully.'
     confirmations:
       user:
         send_instructions: 'You will receive an email with instructions to confirm your account in a few minutes.'
