@@ -66,9 +66,14 @@ module Site::Invoice
   def will_be_in_paid_plan?
     pending_plan_id? && pending_plan.paid_plan?
   end
+  
+  def in_trial?
+    trial_started_at && trial_started_at > BusinessModel.days_for_trial.days.ago
+  end
 
+  # DEPRECATED, TO BE REMOVED 30 DAYS AFTER NEW BUSINESS MODEL DEPLOYMENT
   def refundable?
-    first_paid_plan_started_at? && first_paid_plan_started_at > 30.days.ago && !refunded_at?
+    first_paid_plan_started_at? && first_paid_plan_started_at > BusinessModel.days_for_refund.days.ago && !refunded_at?
   end
 
   def refunded?
@@ -115,8 +120,13 @@ module Site::Invoice
         self.pending_plan_started_at = plan_cycle_started_at || Time.now.utc.midnight
       end
 
-      self.pending_plan_cycle_started_at = pending_plan.paid_plan? ? (pending_plan_started_at + months_since(pending_plan_started_at).months).midnight : nil
-      self.pending_plan_cycle_ended_at   = pending_plan.paid_plan? ? (pending_plan_started_at + advance_for_next_cycle_end(pending_plan, pending_plan_started_at)).to_datetime.end_of_day : nil
+      if pending_plan.paid_plan? && !in_trial?
+        self.pending_plan_cycle_started_at = (pending_plan_started_at + months_since(pending_plan_started_at).months).midnight
+        self.pending_plan_cycle_ended_at   = (pending_plan_started_at + advance_for_next_cycle_end(pending_plan, pending_plan_started_at)).to_datetime.end_of_day
+      else
+        self.pending_plan_cycle_started_at = nil
+        self.pending_plan_cycle_ended_at   = nil
+      end
 
     elsif plan_cycle_ended_at? && plan_cycle_ended_at < Time.now.utc # normal renew
       self.pending_plan_cycle_started_at = (plan_started_at + months_since(plan_started_at).months).midnight
@@ -182,8 +192,15 @@ module Site::Invoice
 private
 
   # before_save
+  def set_trial_started_at
+    if !trial_started_at? && in_paid_plan?
+      self.trial_started_at = Time.now.utc
+    end
+  end
+
+  # before_save
   def set_first_paid_plan_started_at
-    if first_paid_plan_started_at.blank? && (plan_id_changed? || plan_started_at_changed?) && in_paid_plan?
+    if !first_paid_plan_started_at? && in_paid_plan? && !in_trial?
       self.first_paid_plan_started_at = plan_started_at
     end
   end

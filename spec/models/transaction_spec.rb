@@ -316,8 +316,8 @@ describe Transaction do
         Invoice.delete_all
         @user1    = FactoryGirl.create(:user)
         @user2    = FactoryGirl.create(:user)
-        @site1    = FactoryGirl.create(:site, user: @user1)
-        @site2    = FactoryGirl.create(:new_site, user: @user2)
+        @site1    = FactoryGirl.create(:site, user: @user1, first_paid_plan_started_at: (BusinessModel.days_for_refund+1).days.ago)
+        @site2    = FactoryGirl.create(:site, user: @user2)
         @site1.invoices.delete_all
         @site2.invoices.delete_all
         @invoice1 = FactoryGirl.create(:invoice, site: @site1, state: 'paid', renew: false) # first invoice

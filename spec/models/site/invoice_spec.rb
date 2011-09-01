@@ -275,18 +275,31 @@ describe Site::Invoice do
       end
     end # #will_be_in_paid_plan?
 
+    describe "#in_trial?" do
+      before(:all) do
+        Site.delete_all
+        @site_in_trial1 = FactoryGirl.create(:site)
+        Timecop.travel((BusinessModel.days_for_trial-1).days.ago) { @site_in_trial2 = FactoryGirl.create(:site) }
+        Timecop.travel((BusinessModel.days_for_trial-1).days.ago) { @site_in_trial3 = FactoryGirl.create(:site, plan_id: @free_plan.id) }
+        Timecop.travel((BusinessModel.days_for_trial+1).days.ago) { @site_not_in_trial = FactoryGirl.create(:site) }
+      end
+
+      specify { @site_in_trial1.should be_in_trial }
+      specify { @site_in_trial2.should be_in_trial }
+      specify { @site_in_trial3.should_not be_in_trial }
+      specify { @site_not_in_trial.should_not be_in_trial }
+    end
+
     describe "#refundable?" do
       before(:all) do
         Site.delete_all
-        @site_refundable1 = FactoryGirl.create(:site)
-        Timecop.travel(29.days.ago)  { @site_refundable2 = FactoryGirl.create(:site) }
-        Timecop.travel(29.days.ago)  { @site_not_refundable0 = FactoryGirl.create(:site, plan_id: @free_plan.id) }
-        Timecop.travel(2.months.ago) { @site_not_refundable1 = FactoryGirl.create(:site) }
-        @site_not_refundable2 = FactoryGirl.create(:site, refunded_at: Time.now.utc)
+        @site_refundable = FactoryGirl.create(:site, first_paid_plan_started_at: (BusinessModel.days_for_refund-1).days.ago)
+        @site_not_refundable0 = FactoryGirl.create(:site, plan_id: @free_plan.id)
+        @site_not_refundable1 = FactoryGirl.create(:site, first_paid_plan_started_at: (BusinessModel.days_for_refund+1).days.ago)
+        @site_not_refundable2 = FactoryGirl.create(:site, first_paid_plan_started_at: (BusinessModel.days_for_refund-1).days.ago, refunded_at: Time.now.utc)
       end
 
-      specify { @site_refundable1.should be_refundable }
-      specify { @site_refundable2.should be_refundable }
+      specify { @site_refundable.should be_refundable }
       specify { @site_not_refundable0.should_not be_refundable }
       specify { @site_not_refundable1.should_not be_refundable }
       specify { @site_not_refundable2.should_not be_refundable }
@@ -345,7 +358,7 @@ describe Site::Invoice do
         subject { @site }
 
         it "should return the price of the last InvoiceItem::Plan with an price > 0" do
-          subject.last_paid_plan_price.should == @plan1.price(subject)
+          subject.last_paid_plan_price.should == @plan1.price
         end
       end
     end # #last_paid_plan_price
@@ -463,9 +476,7 @@ describe Site::Invoice do
 
         context "from monthly paid plan to monthly paid plan" do
           before(:all) do
-            @site = FactoryGirl.build(:new_site, plan_id: @paid_plan.id)
-            Timecop.travel(Time.utc(2011,1,30)) { @site.pend_plan_changes }
-            @site.apply_pending_plan_changes
+            Timecop.travel(Time.utc(2011,1,30)) { @site = FactoryGirl.build(:site, plan_id: @paid_plan.id) }
             @site.reload.plan_id = @paid_plan2.id # upgrade
             Timecop.travel(Time.utc(2011,2,25)) { @site.pend_plan_changes }
           end
@@ -482,9 +493,7 @@ describe Site::Invoice do
 
         context "from monthly paid plan to yearly paid plan" do
           before(:all) do
-            @site = FactoryGirl.build(:new_site, plan_id: @paid_plan.id)
-            Timecop.travel(Time.utc(2011,1,30)) { @site.pend_plan_changes }
-            @site.apply_pending_plan_changes
+            Timecop.travel(Time.utc(2011,1,30)) { @site = FactoryGirl.build(:site, plan_id: @paid_plan.id) }
             @site.reload.plan_id = @paid_plan_yearly.id # upgrade
             Timecop.travel(Time.utc(2011,2,25)) { @site.pend_plan_changes }
           end
@@ -501,9 +510,7 @@ describe Site::Invoice do
 
         context "from yearly paid plan to yearly paid plan" do
           before(:all) do
-            @site = FactoryGirl.build(:new_site, plan_id: @paid_plan_yearly.id)
-            Timecop.travel(Time.utc(2011,1,30)) { @site.pend_plan_changes }
-            @site.apply_pending_plan_changes
+            Timecop.travel(Time.utc(2011,1,30)) { @site = FactoryGirl.build(:site, plan_id: @paid_plan_yearly.id) }
             @site.reload.plan_id = @paid_plan_yearly2.id # upgrade
             Timecop.travel(Time.utc(2011,2,25)) { @site.pend_plan_changes }
           end
@@ -702,40 +709,7 @@ describe Site::Invoice do
       its(:pending_plan_started_at)       { should be_nil }
       its(:pending_plan_cycle_started_at) { should be_nil }
       its(:pending_plan_cycle_ended_at)   { should be_nil }
-
     end # #apply_pending_plan_changes
-
-    describe "#months_since" do
-      before(:all) { @site = FactoryGirl.build(:new_site) }
-
-      context "with plan_started_at 2011,1,1" do
-        before(:all) { @start_time = Time.utc(2011,1,1) }
-
-        specify { Timecop.travel(Time.utc(2011,1,1))  { @site.months_since(nil).should == 0 } }
-        specify { Timecop.travel(Time.utc(2011,1,1))  { @site.months_since(@start_time).should == 0 } }
-        specify { Timecop.travel(Time.utc(2011,1,31)) { @site.months_since(@start_time).should == 0 } }
-        specify { Timecop.travel(Time.utc(2011,2,1))  { @site.months_since(@start_time).should == 1 } }
-        specify { Timecop.travel(Time.utc(2011,2,15)) { @site.months_since(@start_time).should == 1 } }
-        specify { Timecop.travel(Time.utc(2011,2,28)) { @site.months_since(@start_time).should == 1 } }
-        specify { Timecop.travel(Time.utc(2012,1,1))  { @site.months_since(@start_time).should == 12 } }
-        specify { Timecop.travel(Time.utc(2013,1,15)) { @site.months_since(@start_time).should == 24 } }
-      end
-
-      context "with plan_started_at 2011,6,15" do
-        before(:all) { @start_time = Time.utc(2011,6,15) }
-
-        specify { Timecop.travel(Time.utc(2011,6,20)) { @site.months_since(nil).should == 0 } }
-        specify { Timecop.travel(Time.utc(2011,6,20)) { @site.months_since(@start_time).should == 0 } }
-        specify { Timecop.travel(Time.utc(2011,6,31)) { @site.months_since(@start_time).should == 0 } }
-        specify { Timecop.travel(Time.utc(2011,7,10)) { @site.months_since(@start_time).should == 0 } }
-        specify { Timecop.travel(Time.utc(2011,7,15)) { @site.months_since(@start_time).should == 1 } }
-        specify { Timecop.travel(Time.utc(2011,7,25)) { @site.months_since(@start_time).should == 1 } }
-        specify { Timecop.travel(Time.utc(2012,6,10)) { @site.months_since(@start_time).should == 11 } }
-        specify { Timecop.travel(Time.utc(2012,6,15)) { @site.months_since(@start_time).should == 12 } }
-        specify { Timecop.travel(Time.utc(2012,6,20)) { @site.months_since(@start_time).should == 12 } }
-        specify { Timecop.travel(Time.utc(2012,6,25)) { @site.months_since(@start_time).should == 12 } }
-      end
-    end # #months_since
 
     describe "#advance_for_next_cycle_end" do
       before(:all) do
@@ -1147,35 +1121,89 @@ describe Site::Invoice do
       end
     end
 
-    describe "#advance_for_next_cycle_end" do
-      context "with a monthly plan" do
-        before(:all) do
-          @plan = FactoryGirl.create(:plan, cycle: "month")
-          @site = FactoryGirl.create(:site)
-          @site.plan_started_at.should == Time.now.utc.midnight
-        end
+    describe "#set_trial_started_at" do
+      before(:all) do
+        @foo_plan = FactoryGirl.create(:plan, name: "galaxy",  player_hits: 1_000_000)
+      end
+
+      it "set if site created with free plan" do
+        site = FactoryGirl.create(:site, plan_id: @free_plan.id)
+        site.trial_started_at.should be_nil
+      end
+
+      it "set if site created with paid plan" do
+        site = FactoryGirl.create(:site, plan_id: @paid_plan.id)
+        site.trial_started_at.should be_present
+      end
+
+      it "not reset on downgrade" do
+        site = FactoryGirl.create(:site, plan_id: @paid_plan.id)
+        site.trial_started_at.should be_present
+
+        first_trial_started_at = site.trial_started_at
+        site.update_attribute(:plan_id, @free_plan.id)
+        site.reload.trial_started_at.should eql first_trial_started_at
+      end
+
+      it "not reset on upgrade" do
+        site = FactoryGirl.create(:site_with_invoice, plan_id: @paid_plan.id)
+        site.trial_started_at.should be_present
+
+        first_trial_started_at = site.trial_started_at
+        site.update_attribute(:plan_id, @foo_plan.id)
+        site.reload.trial_started_at.should eql first_trial_started_at
+      end
+
+      it "not reset if site created with paid plan and downgraded to free plan and reupgraded to paid plan" do
+        site = FactoryGirl.create(:site, plan_id: @paid_plan.id)
+        site.trial_started_at.should be_present
+
+        first_trial_started_at = site.trial_started_at
+        site.update_attribute(:plan_id, @free_plan.id)
+        site.reload.trial_started_at.should eql first_trial_started_at
+
+        site.update_attribute(:plan_id, @paid_plan.id)
+        site.reload.trial_started_at.should eql first_trial_started_at
       end
     end
 
     describe "#set_first_paid_plan_started_at" do
-      it "should be set if site created with paid plan" do
-        site = FactoryGirl.create(:site, plan_id: @paid_plan.id)
-        site.first_paid_plan_started_at.should be_present
+      before(:all) do
+        @foo_plan = FactoryGirl.create(:plan, name: "foo",  player_hits: 1_000_000)
       end
 
-      it "should not be set if site created with free plan" do
-        site = FactoryGirl.create(:site, plan_id: @free_plan.id)
-        site.first_paid_plan_started_at.should be_nil
+      context "before trial end" do
+        it "not set if site created with free plan" do
+          site = FactoryGirl.create(:site, plan_id: @free_plan.id)
+          site.first_paid_plan_started_at.should be_nil
+        end
+
+        it "not set if site created with paid plan" do
+          site = FactoryGirl.create(:site, plan_id: @paid_plan.id)
+          site.first_paid_plan_started_at.should be_nil
+        end
+
+        it "not set on upgrade" do
+          site = FactoryGirl.create(:site, plan_id: @paid_plan.id)
+          site.first_paid_plan_started_at.should be_nil
+
+          site.update_attribute(:plan_id, @foo_plan.id)
+          site.reload.first_paid_plan_started_at.should be_nil
+        end
       end
 
-      it "should be set when first upgrade to paid plan" do
-        site = FactoryGirl.create(:site, plan_id: @free_plan.id)
-        site.first_paid_plan_started_at.should be_nil
-        site.reload.plan_id = @paid_plan.id
-        site.user_attributes = { current_password: "123456" }
-        VCR.use_cassette('ogone/visa_payment_generic') { site.save! }
-        site.save!
-        site.reload.first_paid_plan_started_at.should be_present
+      context "after trial end" do
+        subject { FactoryGirl.create(:site, plan_id: @paid_plan.id) }
+
+        it "set if site created with paid plan" do
+          subject.first_paid_plan_started_at.should be_nil
+          subject.trial_started_at.should be_present
+          Timecop.travel(BusinessModel.days_for_trial.days.from_now) do
+            subject.pend_plan_changes
+            subject.apply_pending_plan_changes
+            subject.reload.first_paid_plan_started_at.should be_present
+          end
+        end
       end
     end
 

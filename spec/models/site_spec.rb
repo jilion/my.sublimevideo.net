@@ -204,13 +204,12 @@ describe Site do
     describe "#refundable" do
       before(:all) do
         Site.delete_all
-        @site_refundable1 = FactoryGirl.create(:site, user: @user)
-        Timecop.travel(29.days.ago)  { @site_refundable2 = FactoryGirl.create(:site, user: @user) }
-        Timecop.travel(2.months.ago) { @site_not_refundable1 = FactoryGirl.create(:site, user: @user) }
+        @site_refundable = FactoryGirl.create(:site, user: @user, first_paid_plan_started_at: (BusinessModel.days_for_refund-1).days.ago)
+        @site_not_refundable1 = FactoryGirl.create(:site, user: @user, first_paid_plan_started_at: (BusinessModel.days_for_refund+1).days.ago)
         @site_not_refundable2 = FactoryGirl.create(:site, user: @user, refunded_at: Time.now.utc)
       end
 
-      specify { Site.refundable.all.should =~ [@site_refundable1, @site_refundable2] }
+      specify { Site.refundable.all.should =~ [@site_refundable] }
     end
 
     describe "#refunded" do

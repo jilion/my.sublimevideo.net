@@ -146,7 +146,7 @@ class Site < ActiveRecord::Base
   before_save :prepare_cdn_update # in site/templates
   before_save :clear_alerts_sent_at
   before_save :pend_plan_changes, :if => :pending_plan_id_changed? # in site/invoice
-  before_save :set_first_paid_plan_started_at # in site/invoice
+  before_save :set_trial_started_at, :set_first_paid_plan_started_at # in site/invoice
 
   after_save :create_and_charge_invoice # in site/invoice
   after_save :execute_cdn_update # in site/templates

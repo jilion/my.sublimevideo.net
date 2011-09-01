@@ -28,7 +28,10 @@
               %span.disabled= " => #{site.next_cycle_plan.title}"
       .cycle
         - if site.in_paid_plan?
-          = l(site.plan_cycle_started_at, :format => :d_b_Y) + ' - ' + l(site.plan_cycle_ended_at, :format => :d_b_Y)
+          - if site.in_trial?
+            = "Your trial will end on #{l(site.trial_started_at + BusinessModel.days_for_trial.days, :format => :d_b_Y)}."
+          - else
+            = l(site.plan_cycle_started_at, :format => :d_b_Y) + ' - ' + l(site.plan_cycle_ended_at, :format => :d_b_Y)
       .spacer
 
   %td.usage{ :class => td_usage_class(site) }
