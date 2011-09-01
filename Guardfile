@@ -3,7 +3,7 @@ group :frontend do
   guard :pow do
     watch('.rvmrc')
     watch(%r{^\.pow(rc|env)$})
-    watch('Gemfile.lock')
+    # watch('Gemfile.lock')
     watch(%r{^config/.+\.rb$})
   end
 
@@ -54,7 +54,7 @@ group :jasmine do
     watch(%r{^public/assets/.*\.js})
     watch(%r{^spec/javascripts/helpers/*})
     watch(%r{^spec/javascripts/support/*})
-    watch(%r{^spec/javascripts/(.*)_spec.coffe})
+    watch(%r{^spec/javascripts/(.*)_spec.coffee})
   end
 
 end

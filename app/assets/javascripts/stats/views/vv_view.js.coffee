@@ -22,16 +22,16 @@ class MSVStats.Views.VVView extends Backbone.View
           # borderColor: 'black'
           # borderWidth: 1
           plotShadow: false
-          marginTop: 20
-          marginRight: 20
-          marginBottom: 20
-          marginLeft: 100
+          marginTop: 10
+          marginRight: 10
+          marginBottom: 100
+          marginLeft: 50
           spacingTop: 0
           spacingRight: 0
           spacingBottom: 0
           spacingLeft: 0
-          height: 200
-          width: 650
+          height: 300
+          width: 800
         colors: [
           '#edc950'
           '#65384a'
@@ -46,7 +46,7 @@ class MSVStats.Views.VVView extends Backbone.View
           shadow: false
           shared: true
           formatter: ->
-            _.map(@points, (point) -> 
+            _.map(@points, (point) ->
               "<b>#{point.series.name}<br/> #{Highcharts.numberFormat(point.y, 0)} hits"
             ).join("<br/>")
         plotOptions:
@@ -78,9 +78,13 @@ class MSVStats.Views.VVView extends Backbone.View
           name: 'Video views'
           data: vvData.vv
         }]
-        # xAxis:
-        #   # offset: 20
-        #   # lineWidth: 0
+        xAxis:
+          # lineWidth: 0
+          # startOnTick: true
+          # title:
+          #   text: null
+          tickInterval: 24 * 3600 * 1000
+          type: 'datetime'
         yAxis:
           # endOnTick: false
           # min: 0
@@ -90,7 +94,7 @@ class MSVStats.Views.VVView extends Backbone.View
           # tickInterval: 3
           # maxPadding: 0.2
           # minPadding: 0.2
-          
+
         # legend:
         #   layout: 'vertical'
         #   margin: 0

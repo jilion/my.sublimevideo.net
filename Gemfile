@@ -32,7 +32,7 @@ gem 'liquid',                '~> 2.2.2'
 gem 'RedCloth',              '~> 4.2.7'
 
 # Auth / invitations
-gem 'devise',                '~> 1.4.3'
+gem 'devise',                '~> 1.4.4'
 gem 'devise_invitable',      '~> 0.5.4'
 
 # API
@@ -96,7 +96,7 @@ end
 group :development, :test do
   gem 'timecop'
   gem 'rspec-rails', '~> 2.6.1'
-  gem 'ruby-debug19'
+  # gem 'ruby-debug19'
 end
 
 group :development do
@@ -119,7 +119,8 @@ group :guard do
   gem 'guard-livereload'
   gem 'guard-spork'
   gem 'guard-rspec'
-  gem 'guard-rails-assets', :git => 'git://github.com/mcolyer/guard-rails-assets.git', :branch => 'patch-1'
+  gem 'guard-rails-assets', :git => 'git://github.com/mcolyer/guard-rails-assets.git', :branch => 'patch-1', :ref => '73d35d98de3b4c1f510ed666f9a16c869c2567c6'
+  # gem 'guard-rails-assets', :git => 'git://github.com/dnagir/guard-rails-assets.git'
   gem 'guard-jasmine-headless-webkit'
 end
 

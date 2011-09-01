@@ -6,7 +6,12 @@ class StatsController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.json { render json: @site.stats.last_data }
+      format.json {
+        render json: @site.stats.last_data.to_json({
+          except: [ :_id, :m, :h, :d ],
+          methods: [ :mi, :hi, :di ]
+        })
+      }
     end
   end
 

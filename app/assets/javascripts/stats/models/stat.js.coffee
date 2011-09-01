@@ -1,9 +1,9 @@
 class MSVStats.Models.Stat extends Backbone.Model
   defaults:
     t: null
-    m: null
-    h: null
-    d: null
+    mi: null
+    hi: null
+    di: null
     pv: {}
     vv: {}
     md: {}
@@ -11,16 +11,18 @@ class MSVStats.Models.Stat extends Backbone.Model
 
   isPeriodType: (type) ->
     switch type
-      when 'minute'
-        this.get('m') != null
-      when 'hour'
-        this.get('h') != null
-      when 'day'
-        this.get('d') != null
+      when 'minutes'
+        this.get('mi') != null
+      when 'hours'
+        this.get('hi') != null
+      when 'days'
+        this.get('di') != null
+
+  time: ->
+    parseInt(this.get('mi') || this.get('hi') || this.get('di'))
 
   date: ->
-    dateString = this.get('m') || this.get('h') || this.get('d')
-    new Date(dateString)
+    new Date(this.time())
 
 class MSVStats.Collections.Stats extends Backbone.Collection
   model: MSVStats.Models.Stat
@@ -36,7 +38,7 @@ class MSVStats.Collections.Stats extends Backbone.Collection
          memo.vv.push(parseInt(vv.m ? 0) + parseInt(vv.e ? 0))  # only main & extra hostname
       memo
     new VVData)
-  
+
   bpData: ->
     this.forCurrentPeriod().reduce((memo, stat) ->
       _.each(stat.get('bp'), (hits, bp) -> memo.set(bp, hits))
@@ -52,26 +54,63 @@ class MSVStats.Collections.Stats extends Backbone.Collection
 
   forCurrentPeriod: ->
     return unless MSVStats.stats
-    stats = MSVStats.stats.reduce((memo, stat) ->
+    periodStats = MSVStats.stats.reduce((memo, stat) ->
       memo.push(stat) if stat.isPeriodType(MSVStats.period.get('type'))
       memo
     [])
+    return [] if _.isEmpty(periodStats)
 
     periodLast = MSVStats.period.get('last')
-    if periodLast == 'all'
-      stats = _.sortBy(stats, (stat) -> stat.date().getTime())
-    else # number
-      stats = _.sortBy(stats, (stat) -> stat.date().getTime()).reverse()
-      _.first(stats, periodLast).reverse()
+    stats = []
+    switch MSVStats.period.get('type')
+      when 'minutes'
+        currentMinute = MSVStats.Models.Period.today()
+        periodLast = parseInt(periodLast)
+        while (periodLast -= 1) >= -1
+          stepTime = currentMinute.date.getTime()
+          periodStat = _.detect(periodStats, ((periodStat) -> periodStat.time() == stepTime))
+          stats.push(periodStat || new MSVStats.Models.Stat(mi: String(stepTime)))
+          currentMinute.subtract(m: 1)
+        # remove current minute if null (wait for the right data)
+        if _.first(stats).get('t') == null
+          stats.shift()
+        # remove last minute if current minute is real
+        else
+          stats.pop()
+      when 'hours'
+        currentHour = MSVStats.Models.Period.today(m: 0)
+        periodLast = parseInt(periodLast)
+        while (periodLast -= 1) >= 0
+          stepTime = currentHour.date.getTime()
+          periodStat = _.detect(periodStats, ((periodStat) -> periodStat.time() == stepTime))
+          stats.push(periodStat || new MSVStats.Models.Stat(hi: String(stepTime)))
+          currentHour.subtract(h: 1)
+      when 'days'
+        currentDay = MSVStats.Models.Period.today(h: 0)
+        if periodLast == 'all'
+          lastTime = _.last(periodStats).time()
+          stepTime = currentDay.add(d: 1)
+          while stepTime.subtract(d: 1).date.getTime() >= lastTime
+            periodStat = _.detect(periodStats, ((periodStat) -> periodStat.time() == stepTime.date.getTime()))
+            stats.push(periodStat || new MSVStats.Models.Stat(di: String(stepTime.date.getTime())))
+        else # number
+          periodLast = parseInt(periodLast)
+          while (periodLast -= 1) >= 0
+            stepTime = currentDay.date.getTime()
+            periodStat = _.detect(periodStats, ((periodStat) -> periodStat.time() == stepTime))
+            stats.push(periodStat || new MSVStats.Models.Stat(di: String(stepTime)))
+            currentDay.subtract(d: 1)
+    stats.reverse()
+
 
 class VVData
   constructor: ->
     @pv = []
     @vv = []
-  
+
   pvTotal: ->
     _.reduce(@pv, ((memo, num) -> memo + num), 0)
-  
+
   vvTotal: ->
     _.reduce(@vv, ((memo, num) -> memo + num), 0)
 
