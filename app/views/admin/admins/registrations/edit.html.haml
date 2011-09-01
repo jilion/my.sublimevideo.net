@@ -1,6 +1,6 @@
 = title_and_content_header("Edit information")
 
-= form_for resource, :as => resource_name, :url => registration_path(resource_name), :html => { :method => :put, :class => "main_form section" } do |f|
+= form_for resource, :as => resource_name, :url => admin_registration_path, :html => { :method => :put, :class => "main_form section" } do |f|
   %h3.section_title= "Email & Password"
   .entry.email
     = f.label :email, "", :class => "icon"
