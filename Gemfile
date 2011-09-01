@@ -94,6 +94,7 @@ group :production, :staging do
 end
 
 group :development, :test do
+  gem 'log_buddy'
   gem 'timecop'
   gem 'rspec-rails', '~> 2.6.1'
   # gem 'ruby-debug19'
