@@ -19,7 +19,10 @@ class MSVStats.Models.Stat extends Backbone.Model
         this.get('di') != null
 
   time: ->
-    parseInt(this.get('mi') || this.get('hi') || this.get('di')) * 1000
+    parseInt(this.get('mi') || this.get('hi') || this.get('di'))
+
+  date: ->
+    new Date(this.time())
 
 class MSVStats.Collections.Stats extends Backbone.Collection
   model: MSVStats.Models.Stat
@@ -61,12 +64,13 @@ class MSVStats.Collections.Stats extends Backbone.Collection
     stats = []
     switch MSVStats.period.get('type')
       when 'minutes'
-        currentMinute = new Date().set(second: 0, millisecond: 0)
-        for step in [0..(periodLast)]
-          do (step) ->
-            stepTime = currentMinute.clone().add(minutes: step * -1).getTime()
-            periodStat = _.detect(periodStats, ((periodStat) -> periodStat.time() == stepTime))
-            stats.push(periodStat || new MSVStats.Models.Stat(mi: String(stepTime)))
+        currentMinute = MSVStats.Models.Period.today()
+        periodLast = parseInt(periodLast)
+        while (periodLast -= 1) >= -1
+          stepTime = currentMinute.date.getTime()
+          periodStat = _.detect(periodStats, ((periodStat) -> periodStat.time() == stepTime))
+          stats.push(periodStat || new MSVStats.Models.Stat(mi: String(stepTime)))
+          currentMinute.subtract(m: 1)
         # remove current minute if null (wait for the right data)
         if _.first(stats).get('t') == null
           stats.shift()
@@ -74,35 +78,30 @@ class MSVStats.Collections.Stats extends Backbone.Collection
         else
           stats.pop()
       when 'hours'
-        currentHour = new Date().set(minute: 0, second: 0, millisecond: 0)
-        for step in [0..(parseInt(periodLast) - 1)]
-          do (step) ->
-            stepTime = currentHour.clone().add(hours: step * -1).getTime()
-            periodStat = _.detect(periodStats, ((periodStat) -> periodStat.time() == stepTime))
-            stats.push(periodStat || new MSVStats.Models.Stat(hi: String(stepTime)))
+        currentHour = MSVStats.Models.Period.today(m: 0)
+        periodLast = parseInt(periodLast)
+        while (periodLast -= 1) >= 0
+          stepTime = currentHour.date.getTime()
+          periodStat = _.detect(periodStats, ((periodStat) -> periodStat.time() == stepTime))
+          stats.push(periodStat || new MSVStats.Models.Stat(hi: String(stepTime)))
+          currentHour.subtract(h: 1)
       when 'days'
-        currentDay = new Date().set(hour: 0, minute: 0, second: 0, millisecond: 0)
+        currentDay = MSVStats.Models.Period.today(h: 0)
         if periodLast == 'all'
           lastTime = _.last(periodStats).time()
-          stepTime = currentDay.clone().add(days: 1)
-          while stepTime.add(days: -1).getTime() >= lastTime
-            periodStat = _.detect(periodStats, ((periodStat) -> periodStat.time() == stepTime.getTime()))
-            stats.push(periodStat || new MSVStats.Models.Stat(di: String(stepTime.getTime())))
+          stepTime = currentDay.add(d: 1)
+          while stepTime.subtract(d: 1).date.getTime() >= lastTime
+            periodStat = _.detect(periodStats, ((periodStat) -> periodStat.time() == stepTime.date.getTime()))
+            stats.push(periodStat || new MSVStats.Models.Stat(di: String(stepTime.date.getTime())))
         else # number
-          for step in [0..(parseInt(periodLast) - 1)]
-            do (step) ->
-              console.log step
-              stepTime = currentDay.clone().add(days: step * -1).getTime()
-              console.log stepTime
-              # console.log periodStats
-              # console.log _.first(periodStats)
-              # console.log periodStats
-              # console.log _.first(periodStats)
-              console.log _.first(periodStats).time()
-              periodStat = _.detect(periodStats, ((periodStat) -> periodStat.time() == stepTime))
-              stats.push(periodStat || new MSVStats.Models.Stat(di: String(stepTime)))
-              console.log periodStat
+          periodLast = parseInt(periodLast)
+          while (periodLast -= 1) >= 0
+            stepTime = currentDay.date.getTime()
+            periodStat = _.detect(periodStats, ((periodStat) -> periodStat.time() == stepTime))
+            stats.push(periodStat || new MSVStats.Models.Stat(di: String(stepTime)))
+            currentDay.subtract(d: 1)
     stats.reverse()
+
 
 class VVData
   constructor: ->

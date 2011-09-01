@@ -3,7 +3,8 @@
 #= require highcharts/highcharts
 #= require underscore
 #= require backbone
-#= require datejs/date
+# https://github.com/timrwood/underscore.date
+#= require underscore.date/underscore.date
 
 #= require_self
 #= require_tree ./stats/models

@@ -3,7 +3,7 @@ group :frontend do
   guard :pow do
     watch('.rvmrc')
     watch(%r{^\.pow(rc|env)$})
-    watch('Gemfile.lock')
+    # watch('Gemfile.lock')
     watch(%r{^config/.+\.rb$})
   end
 
