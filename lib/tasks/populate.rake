@@ -25,10 +25,10 @@ namespace :db do
       delete_all_files_in_public('uploads/voxcast')
       timed { create_plans }
       timed { create_admins }
-      timed { create_users(argv_index) }
+      timed { create_users(argv_user) }
       timed { create_sites }
       timed { create_site_usages }
-      timed { create_site_stats(argv_user) }
+      timed { create_site_stats }
       timed { create_mail_templates }
     end
 
@@ -41,7 +41,7 @@ namespace :db do
     desc "Load User development fixtures."
     task :users => :environment do
       timed { empty_tables("invoices_transactions", InvoiceItem, Invoice, Transaction, Site, User) }
-      timed { create_users(argv_index) }
+      timed { create_users(argv_user) }
       empty_tables("delayed_jobs")
     end
 
@@ -163,10 +163,10 @@ def create_admins
   end
 end
 
-def create_users(index=nil)
+def create_users(user_id=nil)
   created_at_array = (Date.new(2011,1,1)..100.days.ago.to_date).to_a
   disable_perform_deliveries do
-    (index ? index.upto(index) : 0.upto(BASE_USERS.count - 1)).each do |i|
+    (user_id ? [user_id] : 0.upto(BASE_USERS.count - 1)).each do |i|
       user = User.new(
         enthusiast_id: rand(1000000),
         first_name: BASE_USERS[i][0].split(' ').first,
@@ -435,14 +435,6 @@ def argv(var_name)
     var.sub($1, '')
   else
     nil
-  end
-end
-
-def argv_index(var_name='index', default_index=nil)
-  if var = ARGV.detect { |arg| arg =~ /(#{var_name}=)/i }
-    var.sub($1, '').to_i
-  else
-    default_index
   end
 end
 
