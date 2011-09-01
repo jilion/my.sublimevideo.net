@@ -198,10 +198,6 @@ class User < ActiveRecord::Base
     Vat.for_country?(country)
   end
 
-  def get_discount?
-    beta? && Time.now.utc < PublicLaunch.beta_transition_ended_on
-  end
-
   def invoices_failed?
     invoices.any? { |i| i.failed? }
   end

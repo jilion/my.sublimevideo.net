@@ -31,11 +31,11 @@
   - if site.recommended_plan_name
     #recommanded_plan_box
       %p.note
-        =raw "Your usage in the last 30 days: #{content_tag :strong, number_with_delimiter(site.last_30_days_billable_usages.sum)} video pageviews =>"
+        = raw "Your usage in the last 30 days: #{content_tag :strong, number_with_delimiter(site.last_30_days_billable_usages.sum)} video pageviews =>"
         - if site.recommended_plan_name == 'custom'
-          =raw "Recommended plan: <strong>Custom</strong> (please #{mail_to "sales@sublimevideo.net", "contact us"})"
+          = raw "Recommended plan: <strong>Custom</strong> (please #{mail_to "sales@sublimevideo.net", "contact us"})"
         - else
-          =raw "Recommended plan: <strong>#{site.recommended_plan_name.titleize}</strong>"
+          = raw "Recommended plan: <strong>#{site.recommended_plan_name.titleize}</strong>"
 
   #plans
     - standard_plans = Plan.standard_plans.order(:player_hits.asc, :price.asc)
@@ -45,7 +45,7 @@
         - next if standard_plan.yearly?
         - standard_yearly_plan = standard_plans.find { |p| p.name == standard_plan.name && p.yearly? }
         - i += 1
-        %li{ :class => "#{standard_plan.name} box_#{i}" + (current_user.get_discount? ? ' discount' : '') + (standard_plan.name == site.recommended_plan_name ? ' recommended' : '') }
+        %li{ :class => "#{standard_plan.name} box_#{i}" + (standard_plan.name == site.recommended_plan_name ? ' recommended' : '') }
           .wrapper
             .header
               %h3.title= content_tag(:strong, standard_plan.name.titleize)
@@ -56,7 +56,7 @@
                 %li= "Peak Insurance"
                 %li.last= "SSL Serving"
               %span.recommended_label= "Recommended"
-            .monthly.select_box{ :class => current_plan && current_plan == standard_plan ? 'active' : '' + (current_user.get_discount? && (site.plan.nil? || plan_change_discounted?(site.plan, standard_plan)) ? '' : ' no_discount') }
+            .monthly.select_box{ :class => current_plan && current_plan == standard_plan ? 'active' : '' + ' no_discount' }
               = f.label :plan_id, raw(plan_label_content(standard_plan, site)), :for => "plan_#{standard_plan.name}_#{standard_plan.cycle}"
               .radio_wrap
                 = f.radio_button :plan_id, standard_plan.id, radio_button_options(site, standard_plan, current_plan, :checked => current_plan && current_plan == standard_plan)
@@ -64,7 +64,7 @@
               - if site.persisted? && plan && plan == standard_plan
                 %span.current_label= "Current"
             - if standard_yearly_plan
-              .yearly.select_box{ :class => current_plan && current_plan == standard_yearly_plan ? 'active' : '' + (current_user.get_discount? && (site.plan.nil? || plan_change_discounted?(site.plan, standard_yearly_plan)) ? '' : ' no_discount') }
+              .yearly.select_box{ :class => current_plan && current_plan == standard_yearly_plan ? 'active' : '' + ' no_discount' }
                 = f.label :plan_id, raw(plan_label_content(standard_yearly_plan, site)), :for => "plan_#{standard_yearly_plan.name}_#{standard_yearly_plan.cycle}"
                 .radio_wrap
                   = f.radio_button :plan_id, standard_yearly_plan.id, radio_button_options(site, standard_yearly_plan, current_plan, :checked => current_plan && current_plan == standard_yearly_plan)
@@ -79,7 +79,7 @@
     - free_plan = Plan.free_plan
     #free_plan{ :class => current_plan && current_plan == free_plan ? 'active' : '' }
       .radio_wrap
-        = f.label :plan_id, raw("#{content_tag(:strong, "#{free_plan.title} plan")}: Unlimited usage on your local development domain. #{site.persisted? && plan && plan == free_plan ? content_tag(:span, 'Current', :class => 'current_label') : ''}"), :for => "plan_#{free_plan.name}", :class => "title"
+        = f.label :plan_id, raw("#{content_tag(:strong, "#{free_plan.title} plan")}: Unlimited usage, branded player. #{site.persisted? && plan && plan == free_plan ? content_tag(:span, 'Current', :class => 'current_label') : ''}"), :for => "plan_#{free_plan.name}", :class => "title"
         = f.radio_button :plan_id, free_plan.id, radio_button_options(site, free_plan, current_plan, :checked => current_plan && current_plan == free_plan)
         %span.bg
 

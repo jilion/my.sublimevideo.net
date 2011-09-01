@@ -34,7 +34,7 @@ private
   end
 
   def set_price_and_amount
-    self.price = deduct ? site.last_paid_invoice.plan_invoice_items.detect { |pii| pii.amount > 0 }.price : item.price(site)
+    self.price  = deduct ? site.last_paid_invoice.plan_invoice_items.detect { |pii| pii.amount > 0 }.price : item.price
     self.amount = (deduct ? -1 : 1) * price
   end
 
