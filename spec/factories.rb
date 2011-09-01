@@ -14,8 +14,8 @@ FactoryGirl.define do
     cc_brand              'visa'
     cc_full_name          'John Doe Huber'
     cc_number             '4111111111111111'
-    cc_expiration_month   1.year.from_now.month
-    cc_expiration_year    1.year.from_now.year
+    cc_expiration_month   { 1.year.from_now.month }
+    cc_expiration_year    { 1.year.from_now.year }
     cc_verification_value '111'
     after_create          { |user| user.apply_pending_credit_card_info }
   end
@@ -23,8 +23,8 @@ FactoryGirl.define do
   factory :user, :parent => :user_no_cc do
     cc_type        'visa'
     cc_last_digits '1111'
-    cc_expire_on   1.year.from_now.end_of_month.to_date
-    cc_updated_at  Time.now.utc
+    cc_expire_on   { 1.year.from_now.end_of_month.to_date }
+    cc_updated_at  { Time.now.utc }
   end
 
   factory :admin do
@@ -35,12 +35,14 @@ FactoryGirl.define do
   factory :new_site, :class => Site do
     sequence(:hostname) { |n| "jilion#{n}.com" }
     dev_hostnames       '127.0.0.1, localhost'
-    association         :user
     plan_id             { FactoryGirl.create(:plan).id }
+    user
   end
 
   # Don't create invoice nor try to charge
   factory :site, :parent => :new_site do
+    # trial_started_at           { (BusinessModel.days_for_trial+1).days.ago } # site is not in trial
+    # first_paid_plan_started_at { Time.now.utc }
     after_build do |site|
       site.pend_plan_changes
       site.apply_pending_plan_changes
@@ -50,6 +52,7 @@ FactoryGirl.define do
   end
 
   factory :site_with_invoice, :parent => :new_site do
+    trial_started_at { (BusinessModel.days_for_trial+1).days.ago } # site is not in trial
     after_build  { |site| VCR.insert_cassette('ogone/visa_payment_generic') }
     after_create do |site|
       VCR.eject_cassette
@@ -101,7 +104,7 @@ FactoryGirl.define do
 
   factory :mail_log, :class => MailLog do
     association :template, :factory => :mail_template
-    association :admin
+    admin
     criteria    ["all"]
     user_ids    [1,2,3,4,5]
     snapshot    Hash.new.tap { |h|
@@ -140,7 +143,7 @@ FactoryGirl.define do
   end
 
   factory :invoice do
-    association          :site
+    site
     invoice_items_amount 10000
     amount               10000
     vat_rate             0.08
@@ -148,7 +151,7 @@ FactoryGirl.define do
   end
 
   factory :invoice_item do
-    association :invoice
+    invoice
     started_at  { Time.now.utc.beginning_of_month }
     ended_at    { Time.now.utc.end_of_month }
   end
@@ -185,12 +188,12 @@ FactoryGirl.define do
     iso_language_code   'en'
     profile_image_url   'http://yourimage.com/img.jpg'
     content             "This is my first tweet!"
-    tweeted_at          Time.now.utc
+    tweeted_at          { Time.now.utc }
     favorited           false
   end
 
   factory :client_application do
-    association :user
+    user
     name         "Agree2"
     url          "http://test.com"
     support_url  "http://test.com/support"
@@ -200,20 +203,20 @@ FactoryGirl.define do
   end
 
   factory :oauth_token do
-    association  :client_application
-    association  :user
+    client_application
+    user
     callback_url "http://test.com/callback"
   end
 
   factory :oauth2_token do
-    association  :client_application
-    association  :user
+    client_application
+    user
     callback_url "http://test.com/callback"
   end
 
   factory :oauth2_verifier do
-    association  :client_application
-    association  :user
+    client_application
+    user
     callback_url "http://test.com/callback"
   end
 end
