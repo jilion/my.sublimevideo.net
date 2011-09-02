@@ -33,9 +33,9 @@ class MSVStats.Collections.Stats extends Backbone.Collection
   vvData: ->
     this.forCurrentPeriod().reduce((memo, stat) ->
       if pv = stat.get('pv')
-         memo.pv.push(parseInt(pv.m ? 0) + parseInt(pv.e ? 0))  # only main & extra hostname
+         memo.pv.push([stat.time(), parseInt(pv.m ? 0) + parseInt(pv.e ? 0)])  # only main & extra hostname
       if vv = stat.get('vv')
-         memo.vv.push(parseInt(vv.m ? 0) + parseInt(vv.e ? 0))  # only main & extra hostname
+         memo.vv.push([stat.time(), parseInt(vv.m ? 0) + parseInt(vv.e ? 0)])  # only main & extra hostname
       memo
     new VVData)
 
@@ -109,10 +109,10 @@ class VVData
     @vv = []
 
   pvTotal: ->
-    _.reduce(@pv, ((memo, num) -> memo + num), 0)
+    _.reduce(@pv, ((memo, num) -> memo + num[1]), 0)
 
   vvTotal: ->
-    _.reduce(@vv, ((memo, num) -> memo + num), 0)
+    _.reduce(@vv, ((memo, num) -> memo + num[1]), 0)
 
 class BPData
   set: (bp, hits) ->

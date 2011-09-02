@@ -10,13 +10,18 @@ class MSVStats.Views.VVView extends Backbone.View
   render: ->
     vvData = this.collection.vvData()
     $(this.el).html(this.template(vvData: vvData))
+    console.log vvData.vv
     if this.collection.size() > 0
       a = 0
+      Highcharts.setOptions
+        global:
+          useUTC: false
       new Highcharts.Chart
         chart:
           renderTo: 'vv_chart'
           backgroundColor: null
           plotBackgroundColor: null
+          animation: false
           # plotBorderColor: 'black'
           # plotBorderWidth: 1
           # borderColor: 'black'
@@ -46,20 +51,30 @@ class MSVStats.Views.VVView extends Backbone.View
           shadow: false
           shared: true
           formatter: ->
-            _.map(@points, (point) ->
-              "<b>#{point.series.name}<br/> #{Highcharts.numberFormat(point.y, 0)} hits"
+            title = ["<b>#{Highcharts.dateFormat('%e %B %Y, %H:%M', @x)}</b><br/><br/>"]
+            title += _.map(@points, (point) ->
+              "<b>#{point.series.name}</b><br/>#{Highcharts.numberFormat(point.y, 0)} hits"
             ).join("<br/>")
         plotOptions:
           spline:
+            animation: false
             shadow: false
             borderWidth: 0
-            animation: false
             showInLegend: false
             allowPointSelect: false
             stickyTracking: false
             lineWidth: 3
-            marker:
-              enabled: false
+            # marker:
+            #   enabled: false
+            #   states:
+            #     hover:
+            #       enabled: true
+            #       lineWidth: 5
+            #       radius: 5
+            #     select:
+            #       enabled: false
+            #       lineWidth: 5
+            #       radius: 5
             dataLabels:
               enabled: false
             states:
@@ -68,7 +83,6 @@ class MSVStats.Views.VVView extends Backbone.View
                 lineWidth: 3
                 marker:
                   enabled: false
-            zIndex: 10
         series: [{
           type: 'spline'
           name: 'Page visits'
@@ -79,11 +93,17 @@ class MSVStats.Views.VVView extends Backbone.View
           data: vvData.vv
         }]
         xAxis:
-          # lineWidth: 0
+          lineWidth: 0
+          # tickColor: 'black'
           # startOnTick: true
           # title:
           #   text: null
-          tickInterval: 24 * 3600 * 1000
+          tickInterval: MSVStats.period.periodTickInterval()  
+          # tickmarkPlacement: 'on'
+          # tickPosition: ''
+          # tickLength: 0
+          tickWidth: 0
+          gridLineWidth: 1
           type: 'datetime'
         yAxis:
           # endOnTick: false
@@ -91,6 +111,10 @@ class MSVStats.Views.VVView extends Backbone.View
           startOnTick: false
           title:
             text: null
+          # tickmarkPlacement: 'on'
+          # tickPosition: 'inside'
+          # tickLength: 300
+          # tickWidth: 1
           # tickInterval: 3
           # maxPadding: 0.2
           # minPadding: 0.2

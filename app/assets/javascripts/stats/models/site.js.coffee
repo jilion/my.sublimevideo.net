@@ -7,7 +7,6 @@ class MSVStats.Models.Site extends Backbone.Model
   title: ->
     this.get('hostname') || this.get('token')
 
-
 class MSVStats.Collections.Sites extends Backbone.Collection
   model: MSVStats.Models.Site
   url: '/sites'

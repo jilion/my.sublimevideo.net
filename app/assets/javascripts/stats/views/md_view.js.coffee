@@ -11,7 +11,6 @@ class MSVStats.Views.MDView extends Backbone.View
     mdData = this.collection.mdData()
     $(this.el).html(this.template())
     if this.collection.size() > 0
-      console.log mdData.toArray('d')
       new Highcharts.Chart
         chart:
           renderTo: 'md_pie_chart'

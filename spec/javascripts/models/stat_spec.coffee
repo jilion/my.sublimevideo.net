@@ -61,6 +61,28 @@ describe 'Stats', ->
       expect(_.first(periodStats).get('di')).toEqual(@day43.get('di'))
       expect(_.last(periodStats).get('di')).toEqual(@day0.get('di'))
 
+  describe 'VVData', ->
+    beforeEach ->
+      @vvData = @stats.vvData()
+
+    describe 'vv', ->
+      it 'return well formed array with time for spline chart', ->
+        expect(@vvData.vv.length).toEqual(30)
+        expect(_.first(@vvData.vv)).toEqual([1312416000000, 7])
+
+    describe 'pv', ->
+      it 'return well formed array with time for spline chart', ->
+        expect(@vvData.pv.length).toEqual(30)
+        expect(_.last(@vvData.pv)).toEqual([1314921600000, 0])
+
+    describe 'pvTotal()', ->
+      it 'return total number of pv for the period', ->
+        expect(@vvData.pvTotal()).toEqual(21)
+
+    describe 'vvTotal()', ->
+      it 'return total number of vv for the period', ->
+        expect(@vvData.vvTotal()).toEqual(21)
+
   describe 'BPData', ->
     describe 'toArray()', ->
       it 'return well formed array for pie chart', ->
