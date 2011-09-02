@@ -235,7 +235,7 @@ class Site < ActiveRecord::Base
           write_attribute(:pending_plan_id, new_plan.id)
           write_attribute(:next_cycle_plan_id, nil)
         when false # Downgrade
-          write_attribute(:next_cycle_plan_id, new_plan.id)
+          in_trial? ? write_attribute(:pending_plan_id, new_plan.id) : write_attribute(:next_cycle_plan_id, new_plan.id)
         when nil # Same plan, reset next_cycle_plan
           write_attribute(:next_cycle_plan_id, nil)
         end

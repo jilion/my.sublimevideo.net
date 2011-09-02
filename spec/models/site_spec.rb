@@ -345,15 +345,11 @@ describe Site do
           it "needs current_password" do
             subject.update_attributes(plan_id: @custom_plan.token).should be_false
             subject.errors[:base].should include I18n.t('activerecord.errors.models.site.attributes.base.current_password_needed')
-            subject.plan_id.should == @paid_plan.id
-            subject.pending_plan_id.should == @custom_plan.id
           end
 
           it "needs right current_password" do
             subject.update_attributes(plan_id: @custom_plan.token, user_attributes: { current_password: "wrong" }).should be_false
             subject.errors[:base].should include I18n.t('activerecord.errors.models.site.attributes.base.current_password_needed')
-            subject.plan_id.should == @paid_plan.id
-            subject.pending_plan_id.should == @custom_plan.id
           end
         end
 
@@ -378,17 +374,11 @@ describe Site do
           it "needs current_password" do
             subject.update_attributes(plan_id: @free_plan.id).should be_false
             subject.errors[:base].should include I18n.t('activerecord.errors.models.site.attributes.base.current_password_needed')
-            subject.plan_id.should == @paid_plan.id
-            subject.pending_plan_id.should be_nil
-            subject.next_cycle_plan_id.should == @free_plan.id
           end
 
           it "needs right current_password" do
             subject.update_attributes(plan_id: @free_plan.id, user_attributes: { :current_password => "wrong" }).should be_false
             subject.errors[:base].should include I18n.t('activerecord.errors.models.site.attributes.base.current_password_needed')
-            subject.plan_id.should == @paid_plan.id
-            subject.pending_plan_id.should be_nil
-            subject.next_cycle_plan_id.should == @free_plan.id
           end
         end
 
@@ -656,163 +646,111 @@ describe Site do
         its(:next_cycle_plan_id) { should be_nil }
       end
 
-      describe "when upgrade from free plan to monthly plan" do
-        before(:all) do
-          @site = FactoryGirl.build(:new_site, plan: @free_plan)
-          @site.plan_id = @paid_plan.id
-        end
-        subject { @site }
+      describe "upgrade" do
+        describe "free =>" do
+          before(:all) do
+            @site = FactoryGirl.create(:new_site, plan: @free_plan)
+          end
 
-        its(:plan_id)            { should == @free_plan.id }
-        its(:pending_plan_id)    { should == @paid_plan.id }
-        its(:next_cycle_plan_id) { should be_nil }
+          describe "monthly" do
+            before(:each) { @site.reload.plan_id = @paid_plan.id }
+            subject { @site }
+
+            its(:plan_id)            { should == @free_plan.id }
+            its(:pending_plan_id)    { should == @paid_plan.id }
+            its(:next_cycle_plan_id) { should be_nil }
+          end
+
+          describe "yearly" do
+            before(:each) { @site.reload.plan_id = @paid_plan_yearly.id }
+            subject { @site }
+
+            its(:plan_id)            { should == @free_plan.id }
+            its(:pending_plan_id)    { should == @paid_plan_yearly.id }
+            its(:next_cycle_plan_id) { should be_nil }
+          end
+
+          describe "sponsored" do
+            before(:each) { @site.reload.plan_id = @sponsored_plan.id }
+            subject { @site }
+
+            its(:plan_id)            { should == @free_plan.id }
+            its(:pending_plan_id)    { should be_nil }
+            its(:next_cycle_plan_id) { should be_nil }
+          end
+        end
+
+        describe "monthly =>" do
+          before(:all) do
+            @site = FactoryGirl.create(:new_site, plan: @paid_plan)
+          end
+
+          describe "monthly" do
+            before(:each) { @site.reload.plan_id = @paid_plan2.id }
+            subject { @site }
+
+            its(:plan_id)            { should == @paid_plan.id }
+            its(:pending_plan_id)    { should == @paid_plan2.id }
+            its(:next_cycle_plan_id) { should be_nil }
+          end
+
+          describe "monthly (with a next_cycle_plan)" do
+            before(:each) { @site.reload.next_cycle_plan_id = @paid_plan_yearly.id; @site.plan_id = @paid_plan2.id }
+            subject { @site }
+
+            its(:plan_id)            { should == @paid_plan.id }
+            its(:pending_plan_id)    { should == @paid_plan2.id }
+            its(:next_cycle_plan_id) { should be_nil }
+          end
+
+          describe "same monthly plan" do
+            before(:each) { @site.reload.plan_id = @paid_plan.id }
+            subject { @site }
+
+            its(:plan_id)            { should == @paid_plan.id }
+            its(:pending_plan_id)    { should be_nil }
+            its(:next_cycle_plan_id) { should be_nil }
+          end
+
+          describe "yearly" do
+            before(:each) { @site.reload.plan_id = @paid_plan_yearly.id }
+            subject { @site }
+
+            its(:plan_id)            { should == @paid_plan.id }
+            its(:pending_plan_id)    { should == @paid_plan_yearly.id }
+            its(:next_cycle_plan_id) { should be_nil }
+          end
+
+          describe "custom plan (token)" do
+            before(:each) { @site.reload.plan_id = @custom_plan.token }
+            subject { @site }
+
+            its(:plan_id)            { should == @paid_plan.id }
+            its(:pending_plan_id)    { should == @custom_plan.id }
+            its(:next_cycle_plan_id) { should be_nil }
+          end
+
+          describe "custom plan (id)" do
+            before(:each) { @site.reload.plan_id = @custom_plan.id }
+            subject { @site }
+
+            its(:plan_id)            { should == @paid_plan.id }
+            its(:pending_plan_id)    { should be_nil }
+            its(:next_cycle_plan_id) { should be_nil }
+          end
+
+          describe "sponsored" do
+            before(:each) { @site.reload.plan_id = @sponsored_plan.id }
+            subject { @site }
+
+            its(:plan_id)            { should == @paid_plan.id }
+            its(:pending_plan_id)    { should be_nil }
+            its(:next_cycle_plan_id) { should be_nil }
+          end
+        end
       end
 
-      describe "when upgrade from free plan to sponsored" do
-        before(:all) do
-          @site = FactoryGirl.build(:new_site, plan: @free_plan)
-          @site.plan_id = @sponsored_plan.id
-        end
-        subject { @site }
-
-        its(:plan_id)            { should == @free_plan.id }
-        its(:pending_plan_id)    { should be_nil }
-        its(:next_cycle_plan_id) { should be_nil }
-      end
-
-      describe "when upgrade from free plan to yearly plan" do
-        before(:all) do
-          @site = FactoryGirl.build(:new_site, plan: @free_plan)
-          @site.plan_id = @paid_plan_yearly.id
-        end
-        subject { @site }
-
-        its(:plan_id)            { should == @free_plan.id }
-        its(:pending_plan_id)    { should == @paid_plan_yearly.id }
-        its(:next_cycle_plan_id) { should be_nil }
-      end
-
-      describe "when upgrade from monthly plan to monthly plan" do
-        before(:all) do
-          @site = FactoryGirl.build(:new_site, plan: @paid_plan)
-          @site.plan_id = @paid_plan2.id
-        end
-        subject { @site }
-
-        its(:plan_id)            { should == @paid_plan.id }
-        its(:pending_plan_id)    { should == @paid_plan2.id }
-        its(:next_cycle_plan_id) { should be_nil }
-      end
-
-      describe "when upgrade from monthly plan to custom plan (token)" do
-        before(:all) do
-          @site = FactoryGirl.build(:new_site, plan: @paid_plan)
-          @site.plan_id = @custom_plan.token
-        end
-        subject { @site }
-
-        its(:plan_id)            { should == @paid_plan.id }
-        its(:pending_plan_id)    { should == @custom_plan.id }
-        its(:next_cycle_plan_id) { should be_nil }
-      end
-
-      describe "when upgrade from monthly plan to custom plan (id)" do
-        before(:all) do
-          @site = FactoryGirl.build(:new_site, plan: @paid_plan)
-          @site.plan_id = @custom_plan.id
-        end
-        subject { @site }
-
-        its(:plan_id)            { should == @paid_plan.id }
-        its(:pending_plan_id)    { should be_nil }
-        its(:next_cycle_plan_id) { should be_nil }
-      end
-
-      describe "when upgrade from monthly plan to monthly plan with a next_cycle_plan" do
-        before(:all) do
-          @site = FactoryGirl.build(:new_site, plan: @paid_plan, next_cycle_plan: @paid_plan_yearly)
-          @site.plan_id = @paid_plan2.id
-        end
-        subject { @site }
-
-        its(:plan_id)            { should == @paid_plan.id }
-        its(:pending_plan_id)    { should == @paid_plan2.id }
-        its(:next_cycle_plan_id) { should be_nil }
-      end
-
-      describe "when update to the same monthly plan" do
-        before(:all) do
-          @site = FactoryGirl.build(:new_site, plan: @paid_plan, next_cycle_plan: @paid_plan2)
-          @site.plan_id = @paid_plan.id
-        end
-        subject { @site }
-
-        its(:plan_id)            { should == @paid_plan.id }
-        its(:pending_plan_id)    { should be_nil }
-        its(:next_cycle_plan_id) { should be_nil }
-      end
-
-      describe "when upgrade from monthly plan to yearly plan" do
-        before(:all) do
-          @site = FactoryGirl.build(:new_site, plan: @paid_plan)
-          @site.plan_id = @paid_plan_yearly.id
-        end
-        subject { @site }
-
-        its(:plan_id)            { should == @paid_plan.id }
-        its(:pending_plan_id)    { should == @paid_plan_yearly.id }
-        its(:next_cycle_plan_id) { should be_nil }
-      end
-
-      describe "when upgrade from paid plan to sponsored" do
-        before(:all) do
-          @site = FactoryGirl.build(:new_site, plan: @paid_plan)
-          @site.plan_id = @sponsored_plan.id
-        end
-        subject { @site }
-
-        its(:plan_id)            { should == @paid_plan.id }
-        its(:pending_plan_id)    { should be_nil }
-        its(:next_cycle_plan_id) { should be_nil }
-      end
-
-      describe "when downgrade from monthly plan to free plan" do
-        before(:all) do
-          @site = FactoryGirl.build(:new_site, plan: @paid_plan)
-          @site.plan_id = @free_plan.id
-        end
-        subject { @site }
-
-        its(:plan_id)            { should == @paid_plan.id }
-        its(:pending_plan_id)    { should be_nil }
-        its(:next_cycle_plan_id) { should == @free_plan.id }
-      end
-
-      describe "when downgrade from monthly plan to monthly plan" do
-        before(:all) do
-          @site = FactoryGirl.build(:new_site, plan: @paid_plan2)
-          @site.plan_id = @paid_plan.id
-        end
-        subject { @site }
-
-        its(:plan_id)            { should == @paid_plan2.id }
-        its(:pending_plan_id)    { should be_nil }
-        its(:next_cycle_plan_id) { should == @paid_plan.id }
-      end
-
-      describe "when downgrade from monthly plan to yearly plan" do
-        before(:all) do
-          @site = FactoryGirl.build(:new_site, plan: @paid_plan2)
-          @site.plan_id = @paid_plan_yearly.id
-        end
-        subject { @site }
-
-        its(:plan_id)            { should == @paid_plan2.id }
-        its(:pending_plan_id)    { should be_nil }
-        its(:next_cycle_plan_id) { should == @paid_plan_yearly.id }
-      end
-
-      describe "when upgrade from yearly plan to yearly plan" do
+      describe "upgrade yearly => yearly" do
         before(:all) do
           @site = FactoryGirl.build(:new_site, plan: @paid_plan_yearly)
           @site.plan_id = @paid_plan_yearly2.id
@@ -824,40 +762,146 @@ describe Site do
         its(:next_cycle_plan_id) { should be_nil }
       end
 
-      describe "when downgrade from yearly plan to free plan" do
-        before(:all) do
-          @site = FactoryGirl.build(:new_site, plan: @paid_plan_yearly)
-          @site.plan_id = @free_plan.id
+      describe "downgrade" do
+        context "during trial" do
+          describe "monthly =>" do
+            before(:all) do
+              @site = FactoryGirl.create(:new_site, plan: @paid_plan2)
+              @site.should be_in_trial
+            end
+
+            describe "free" do
+              before(:each) { @site.reload.plan_id = @free_plan.id }
+              subject { @site }
+
+              its(:plan_id)            { should == @paid_plan2.id }
+              its(:pending_plan_id)    { should == @free_plan.id }
+              its(:next_cycle_plan_id) { should be_nil }
+            end
+
+            describe "monthly" do
+              before(:each) { @site.reload.plan_id = @paid_plan.id }
+              subject { @site }
+
+              its(:plan_id)            { should == @paid_plan2.id }
+              its(:pending_plan_id)    { should == @paid_plan.id }
+              its(:next_cycle_plan_id) { should be_nil }
+            end
+
+            describe "yearly" do
+              before(:each) { @site.reload.plan_id = @paid_plan_yearly.id }
+              subject { @site }
+
+              its(:plan_id)            { should == @paid_plan2.id }
+              its(:pending_plan_id)    { should == @paid_plan_yearly.id }
+              its(:next_cycle_plan_id) { should be_nil }
+            end
+          end
+
+          describe "yearly =>" do
+            before(:all) do
+              @site = FactoryGirl.create(:new_site, plan: @paid_plan_yearly2)
+              @site.should be_in_trial
+            end
+
+            describe "free" do
+              before(:each) { @site.reload.plan_id = @free_plan.id }
+              subject { @site }
+
+              its(:plan_id)            { should == @paid_plan_yearly2.id }
+              its(:pending_plan_id)    { should == @free_plan.id }
+              its(:next_cycle_plan_id) { should be_nil }
+            end
+
+            describe "monthly" do
+              before(:each) { @site.reload.plan_id = @paid_plan.id }
+              subject { @site }
+
+              its(:plan_id)            { should == @paid_plan_yearly2.id }
+              its(:pending_plan_id)    { should == @paid_plan.id }
+              its(:next_cycle_plan_id) { should be_nil }
+            end
+
+            describe "yearly" do
+              before(:each) { @site.reload.plan_id = @paid_plan_yearly.id }
+              subject { @site }
+
+              its(:plan_id)            { should == @paid_plan_yearly2.id }
+              its(:pending_plan_id)    { should == @paid_plan_yearly.id }
+              its(:next_cycle_plan_id) { should be_nil }
+            end
+          end
         end
-        subject { @site }
 
-        its(:plan_id)            { should == @paid_plan_yearly.id }
-        its(:pending_plan_id)    { should be_nil }
-        its(:next_cycle_plan_id) { should == @free_plan.id }
-      end
+        context "after trial" do
+          describe "monthly =>" do
+            before(:all) do
+              @site = FactoryGirl.create(:new_site, plan: @paid_plan2, trial_started_at: BusinessModel.days_for_trial.days.ago)
+              @site.should_not be_in_trial
+            end
 
-      describe "when downgrade from yearly plan to monthly plan" do
-        before(:all) do
-          @site = FactoryGirl.build(:new_site, plan: @paid_plan_yearly)
-          @site.plan_id = @paid_plan.id
+            describe "free" do
+              before(:each) { @site.reload.plan_id = @free_plan.id }
+              subject { @site }
+
+              its(:plan_id)            { should == @paid_plan2.id }
+              its(:pending_plan_id)    { should be_nil }
+              its(:next_cycle_plan_id) { should == @free_plan.id }
+            end
+
+            describe "monthly" do
+              before(:each) { @site.reload.plan_id = @paid_plan.id }
+              subject { @site }
+
+              its(:plan_id)            { should == @paid_plan2.id }
+              its(:pending_plan_id)    { should be_nil }
+              its(:next_cycle_plan_id) { should == @paid_plan.id }
+            end
+
+            describe "yearly" do
+              before(:each) { @site.reload.plan_id = @paid_plan_yearly.id }
+              subject { @site }
+
+              its(:plan_id)            { should == @paid_plan2.id }
+              its(:pending_plan_id)    { should be_nil }
+              its(:next_cycle_plan_id) { should == @paid_plan_yearly.id }
+            end
+          end
+
+          describe "yearly =>" do
+            before(:all) do
+              @site = FactoryGirl.create(:new_site, plan: @paid_plan_yearly2, trial_started_at: BusinessModel.days_for_trial.days.ago)
+              @site.should_not be_in_trial
+            end
+
+            describe "free" do
+              before(:each) { @site.reload.plan_id = @free_plan.id }
+              subject { @site }
+
+              its(:plan_id)            { should == @paid_plan_yearly2.id }
+              its(:pending_plan_id)    { should be_nil }
+              its(:next_cycle_plan_id) { should == @free_plan.id }
+            end
+
+            describe "monthly" do
+              before(:each) { @site.reload.plan_id = @paid_plan.id }
+              subject { @site }
+
+              its(:plan_id)            { should == @paid_plan_yearly2.id }
+              its(:pending_plan_id)    { should be_nil }
+              its(:next_cycle_plan_id) { should == @paid_plan.id }
+            end
+
+            describe "yearly" do
+              before(:each) { @site.reload.plan_id = @paid_plan_yearly.id }
+              subject { @site }
+
+              its(:plan_id)            { should == @paid_plan_yearly2.id }
+              its(:pending_plan_id)    { should be_nil }
+              its(:next_cycle_plan_id) { should == @paid_plan_yearly.id }
+            end
+          end
         end
-        subject { @site }
-
-        its(:plan_id)            { should == @paid_plan_yearly.id }
-        its(:pending_plan_id)    { should be_nil }
-        its(:next_cycle_plan_id) { should == @paid_plan.id }
-      end
-
-      describe "when downgrade from yearly plan to yearly plan" do
-        before(:all) do
-          @site = FactoryGirl.build(:new_site, plan: @paid_plan_yearly2)
-          @site.plan_id = @paid_plan_yearly.id
-        end
-        subject { @site }
-
-        its(:plan_id)            { should == @paid_plan_yearly2.id }
-        its(:pending_plan_id)    { should be_nil }
-        its(:next_cycle_plan_id) { should == @paid_plan_yearly.id }
       end
     end
 
@@ -1056,11 +1100,9 @@ describe Site do
         it "should set only current_password" do
           subject.first_name.should == "Bob"
           site = FactoryGirl.create(:site, user: subject, plan_id: @paid_plan.id)
-          site.update_attributes(plan_id: @free_plan.id, user_attributes: { first_name: "John", 'current_password' => '123456' })
+          site.update_attributes(user_attributes: { first_name: "John", 'current_password' => '123456' })
           site.user.first_name.should == "Bob"
           site.user.current_password.should == "123456"
-          site.plan_id.should == @paid_plan.id
-          site.next_cycle_plan_id.should == @free_plan.id
         end
       end
 
