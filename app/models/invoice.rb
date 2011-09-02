@@ -106,7 +106,7 @@ class Invoice < ActiveRecord::Base
 
   def self.update_pending_dates_for_first_not_paid_invoices
     Invoice.not_paid.where(renew: [nil, false]).each do |invoice| # it returns first and upgrade invoices not already paid (never recurrent invoices)
-      if invoice == invoice.site.invoices.by_date('asc').first # update only the first invoice (first paid plan)
+      if invoice.first_site_invoice? # update only the first invoice (first paid plan)
         plan_invoice_item = invoice.invoice_items.first
         new_started_at    = Time.now.utc.midnight
         new_ended_at      = (new_started_at + invoice.site.advance_for_next_cycle_end(plan_invoice_item.item, new_started_at)).to_datetime.end_of_day
@@ -126,7 +126,7 @@ class Invoice < ActiveRecord::Base
   # ====================
   # = Instance Methods =
   # ====================
-
+  
   def build
     build_invoice_items
     set_invoice_items_amount
@@ -154,6 +154,11 @@ class Invoice < ActiveRecord::Base
   # used in admin/invoices/timeline
   def paid_plan
     paid_plan_invoice_item.try(:item)
+  end
+
+  def first_site_invoice?
+    first_site_invoice = site.invoices.not_canceled.by_date('asc').first
+    first_site_invoice.nil? || self == first_site_invoice
   end
 
 private
