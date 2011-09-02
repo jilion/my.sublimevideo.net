@@ -6,6 +6,21 @@ class MSVStats.Models.Period extends Backbone.Model
   value: ->
     "#{this.get('last')} #{this.get('type')}"
 
+  periodInterval: ->
+    switch this.get('type')
+      when 'minutes'
+        60 * 1000
+      when 'hours'
+        60 * 60 * 1000
+      when 'days'
+        24 * 60 * 60 * 1000
+
+  periodTickInterval: ->
+    if this.get('last') < 10
+      this.periodInterval()
+    else
+      5 * this.periodInterval()
+
   setPeriod: (value) ->
     [last, type] = value.split(' ')
     this.set(last: last, type: type)
