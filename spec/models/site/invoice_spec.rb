@@ -8,28 +8,28 @@ describe Site::Invoice do
       before(:all) do
         Site.delete_all
         Timecop.travel(2.months.ago) do
-          @site_to_be_renewed = FactoryGirl.create(:site_with_invoice)
-          @site_to_be_renewed_with_downgrade_to_free_plan = FactoryGirl.create(:site_with_invoice)
-          @site_to_be_renewed_with_downgrade_to_free_plan.update_attribute(:next_cycle_plan_id, @free_plan.id)
-          @site_to_be_renewed_with_downgrade_to_paid_plan = FactoryGirl.create(:site_with_invoice)
-          @site_to_be_renewed_with_downgrade_to_paid_plan.update_attribute(:next_cycle_plan_id, @custom_plan.id)
+          @site_renewable = FactoryGirl.create(:site_with_invoice)
+          @site_renewable_with_downgrade_to_free_plan = FactoryGirl.create(:site_with_invoice)
+          @site_renewable_with_downgrade_to_free_plan.update_attribute(:next_cycle_plan_id, @free_plan.id)
+          @site_renewable_with_downgrade_to_paid_plan = FactoryGirl.create(:site_with_invoice)
+          @site_renewable_with_downgrade_to_paid_plan.update_attribute(:next_cycle_plan_id, @custom_plan.id)
         end
-        @site_not_to_be_renewed = FactoryGirl.create(:site_with_invoice, plan_started_at: 3.months.ago, plan_cycle_ended_at: 2.months.from_now)
+        @site_not_renewable = FactoryGirl.create(:site_with_invoice, plan_started_at: 3.months.ago, plan_cycle_ended_at: 2.months.from_now)
 
-        @site_to_be_renewed.invoices.size.should == 1
-        @site_to_be_renewed_with_downgrade_to_free_plan.invoices.size.should == 1
-        @site_to_be_renewed_with_downgrade_to_paid_plan.invoices.size.should == 1
-        @site_not_to_be_renewed.invoices.size.should == 1
+        @site_renewable.invoices.size.should == 1
+        @site_renewable_with_downgrade_to_free_plan.invoices.size.should == 1
+        @site_renewable_with_downgrade_to_paid_plan.invoices.size.should == 1
+        @site_not_renewable.invoices.size.should == 1
       end
 
       before(:each) do
-        @site_to_be_renewed.reload
-        @site_to_be_renewed_with_downgrade_to_free_plan.reload
-        @site_to_be_renewed_with_downgrade_to_paid_plan.reload
-        @site_not_to_be_renewed.reload
+        @site_renewable.reload
+        @site_renewable_with_downgrade_to_free_plan.reload
+        @site_renewable_with_downgrade_to_paid_plan.reload
+        @site_not_renewable.reload
 
-        @site_to_be_renewed.pending_plan_cycle_started_at.should be_nil
-        @site_to_be_renewed.pending_plan_cycle_ended_at.should be_nil
+        @site_renewable.pending_plan_cycle_started_at.should be_nil
+        @site_renewable.pending_plan_cycle_ended_at.should be_nil
 
         Transaction.should_not_receive(:charge_by_invoice_ids)
 
@@ -38,29 +38,29 @@ describe Site::Invoice do
       end
 
       it "should create invoices for renewable sites" do
-        @site_to_be_renewed.reload.invoices.count.should == 2
-        @site_to_be_renewed_with_downgrade_to_free_plan.reload.invoices.count.should == 1
-        @site_to_be_renewed_with_downgrade_to_paid_plan.reload.invoices.count.should == 2
-        @site_not_to_be_renewed.reload.invoices.count.should == 1
+        @site_renewable.reload.invoices.count.should == 2
+        @site_renewable_with_downgrade_to_free_plan.reload.invoices.count.should == 1
+        @site_renewable_with_downgrade_to_paid_plan.reload.invoices.count.should == 2
+        @site_not_renewable.reload.invoices.count.should == 1
       end
 
       it "should update plan cycle dates" do
-        @site_to_be_renewed.reload.pending_plan_cycle_started_at.should be_present
-        @site_to_be_renewed.reload.pending_plan_cycle_ended_at.should be_present
+        @site_renewable.reload.pending_plan_cycle_started_at.should be_present
+        @site_renewable.reload.pending_plan_cycle_ended_at.should be_present
       end
 
       it "should update plan of downgraded sites" do
-        @site_to_be_renewed_with_downgrade_to_free_plan.reload.next_cycle_plan_id.should be_nil
-        @site_to_be_renewed_with_downgrade_to_free_plan.reload.plan_id.should == @free_plan.id
-        @site_to_be_renewed_with_downgrade_to_paid_plan.reload.next_cycle_plan_id.should be_nil
-        @site_to_be_renewed_with_downgrade_to_paid_plan.reload.pending_plan_id.should == @custom_plan.id
+        @site_renewable_with_downgrade_to_free_plan.reload.next_cycle_plan_id.should be_nil
+        @site_renewable_with_downgrade_to_free_plan.reload.plan_id.should == @free_plan.id
+        @site_renewable_with_downgrade_to_paid_plan.reload.next_cycle_plan_id.should be_nil
+        @site_renewable_with_downgrade_to_paid_plan.reload.pending_plan_id.should == @custom_plan.id
       end
 
       it "should set the renew flag to true" do
-        @site_to_be_renewed.reload.invoices.by_date('asc').last.should be_renew
-        @site_to_be_renewed_with_downgrade_to_free_plan.reload.invoices.by_date('asc').last.should_not be_renew
-        @site_to_be_renewed_with_downgrade_to_paid_plan.reload.invoices.by_date('asc').last.should be_renew
-        @site_not_to_be_renewed.reload.invoices.by_date('asc').last.should_not be_renew
+        @site_renewable.reload.invoices.by_date('asc').last.should be_renew
+        @site_renewable_with_downgrade_to_free_plan.reload.invoices.by_date('asc').last.should_not be_renew
+        @site_renewable_with_downgrade_to_paid_plan.reload.invoices.by_date('asc').last.should be_renew
+        @site_not_renewable.reload.invoices.by_date('asc').last.should_not be_renew
       end
     end # .renew_active_sites
 

@@ -79,9 +79,9 @@ class Site < ActiveRecord::Base
   scope :not_billable, lambda {
     where { (state != 'active') | ((plan_id >> Plan.unpaid_plans.map(&:id) & (next_cycle_plan_id == nil)) | (next_cycle_plan_id >> Plan.unpaid_plans.map(&:id))) }
   }
-  scope :to_be_renewed, where { (plan_cycle_ended_at < Time.now.utc) & (pending_plan_id == nil) }
-  scope :refundable,    where { (first_paid_plan_started_at >= 30.days.ago) & (refunded_at == nil) }
-  scope :refunded,      where { (state == 'archived') & (refunded_at != nil) }
+  scope :renewable,  active.where { (plan_cycle_ended_at < Time.now.utc) & (pending_plan_id == nil) }
+  scope :refundable, where { (first_paid_plan_started_at >= 30.days.ago) & (refunded_at == nil) }
+  scope :refunded,   where { (state == 'archived') & (refunded_at != nil) }
 
   # admin
   scope :user_id,         lambda { |user_id| where(user_id: user_id) }

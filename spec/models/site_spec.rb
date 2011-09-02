@@ -186,19 +186,20 @@ describe Site do
       end
     end
 
-    describe "#to_be_renewed" do
+    describe "#renewable" do
       before(:all) do
         Site.delete_all
         Timecop.travel(2.months.ago) do
-          @site_to_be_renewed      = FactoryGirl.create(:site, user: @user)
-          @site_not_to_be_renewed1 = FactoryGirl.create(:site_with_invoice, user: @user)
+          @site_renewable      = FactoryGirl.create(:site, user: @user)
+          @site_not_renewable1 = FactoryGirl.create(:site, user: @user, state: 'suspended')
+          @site_not_renewable2 = FactoryGirl.create(:site, user: @user, state: 'archived')
+          @site_not_renewable3 = FactoryGirl.build(:new_site, user: @user, plan_id: @paid_plan.id, first_paid_plan_started_at: Time.now.utc)
         end
-        @site_not_to_be_renewed1.update_attribute(:pending_plan_id, @paid_plan.id)
-        @site_not_to_be_renewed1.pending_plan_id.should == @paid_plan.id
-        @site_not_to_be_renewed2 = FactoryGirl.create(:site_with_invoice, user: @user, plan_started_at: 3.months.ago, plan_cycle_ended_at: 2.months.from_now)
+        @site_not_renewable3.pending_plan_id.should == @paid_plan.id
+        @site_not_renewable4 = FactoryGirl.create(:site_with_invoice, user: @user, plan_started_at: 3.months.ago, plan_cycle_ended_at: 2.months.from_now)
       end
 
-      specify { Site.to_be_renewed.all.should =~ [@site_to_be_renewed] }
+      specify { Site.renewable.all.should =~ [@site_renewable] }
     end
 
     describe "#refundable" do
