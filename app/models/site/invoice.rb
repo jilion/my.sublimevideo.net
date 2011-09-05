@@ -192,16 +192,10 @@ module Site::Invoice
 private
 
   # before_save
-  def set_trial_started_at
-    if !trial_started_at? && in_or_will_be_in_paid_plan?
-      self.trial_started_at = Time.now.utc
-    end
-  end
-
-  # before_save
-  def set_first_paid_plan_started_at
-    if !first_paid_plan_started_at? && in_or_will_be_in_paid_plan? && !in_trial?
-      self.first_paid_plan_started_at = plan_started_at
+  def set_trial_and_first_paid_plan_started_at
+    if in_or_will_be_in_paid_plan?
+      self.trial_started_at           = Time.now.utc if !trial_started_at?
+      self.first_paid_plan_started_at = plan_started_at if !first_paid_plan_started_at? && !in_trial?
     end
   end
 
