@@ -8,28 +8,28 @@ describe Site::Invoice do
       before(:all) do
         Site.delete_all
         Timecop.travel(2.months.ago) do
-          @site_to_be_renewed = FactoryGirl.create(:site_with_invoice)
-          @site_to_be_renewed_with_downgrade_to_free_plan = FactoryGirl.create(:site_with_invoice)
-          @site_to_be_renewed_with_downgrade_to_free_plan.update_attribute(:next_cycle_plan_id, @free_plan.id)
-          @site_to_be_renewed_with_downgrade_to_paid_plan = FactoryGirl.create(:site_with_invoice)
-          @site_to_be_renewed_with_downgrade_to_paid_plan.update_attribute(:next_cycle_plan_id, @custom_plan.id)
+          @site_renewable = FactoryGirl.create(:site_with_invoice)
+          @site_renewable_with_downgrade_to_free_plan = FactoryGirl.create(:site_with_invoice)
+          @site_renewable_with_downgrade_to_free_plan.update_attribute(:next_cycle_plan_id, @free_plan.id)
+          @site_renewable_with_downgrade_to_paid_plan = FactoryGirl.create(:site_with_invoice)
+          @site_renewable_with_downgrade_to_paid_plan.update_attribute(:next_cycle_plan_id, @custom_plan.id)
         end
-        @site_not_to_be_renewed = FactoryGirl.create(:site_with_invoice, plan_started_at: 3.months.ago, plan_cycle_ended_at: 2.months.from_now)
+        @site_not_renewable = FactoryGirl.create(:site_with_invoice, plan_started_at: 3.months.ago, plan_cycle_ended_at: 2.months.from_now)
 
-        @site_to_be_renewed.invoices.size.should == 1
-        @site_to_be_renewed_with_downgrade_to_free_plan.invoices.size.should == 1
-        @site_to_be_renewed_with_downgrade_to_paid_plan.invoices.size.should == 1
-        @site_not_to_be_renewed.invoices.size.should == 1
+        @site_renewable.invoices.size.should == 1
+        @site_renewable_with_downgrade_to_free_plan.invoices.size.should == 1
+        @site_renewable_with_downgrade_to_paid_plan.invoices.size.should == 1
+        @site_not_renewable.invoices.size.should == 1
       end
 
       before(:each) do
-        @site_to_be_renewed.reload
-        @site_to_be_renewed_with_downgrade_to_free_plan.reload
-        @site_to_be_renewed_with_downgrade_to_paid_plan.reload
-        @site_not_to_be_renewed.reload
+        @site_renewable.reload
+        @site_renewable_with_downgrade_to_free_plan.reload
+        @site_renewable_with_downgrade_to_paid_plan.reload
+        @site_not_renewable.reload
 
-        @site_to_be_renewed.pending_plan_cycle_started_at.should be_nil
-        @site_to_be_renewed.pending_plan_cycle_ended_at.should be_nil
+        @site_renewable.pending_plan_cycle_started_at.should be_nil
+        @site_renewable.pending_plan_cycle_ended_at.should be_nil
 
         Transaction.should_not_receive(:charge_by_invoice_ids)
 
@@ -38,29 +38,29 @@ describe Site::Invoice do
       end
 
       it "should create invoices for renewable sites" do
-        @site_to_be_renewed.reload.invoices.count.should == 2
-        @site_to_be_renewed_with_downgrade_to_free_plan.reload.invoices.count.should == 1
-        @site_to_be_renewed_with_downgrade_to_paid_plan.reload.invoices.count.should == 2
-        @site_not_to_be_renewed.reload.invoices.count.should == 1
+        @site_renewable.reload.invoices.count.should == 2
+        @site_renewable_with_downgrade_to_free_plan.reload.invoices.count.should == 1
+        @site_renewable_with_downgrade_to_paid_plan.reload.invoices.count.should == 2
+        @site_not_renewable.reload.invoices.count.should == 1
       end
 
       it "should update plan cycle dates" do
-        @site_to_be_renewed.reload.pending_plan_cycle_started_at.should be_present
-        @site_to_be_renewed.reload.pending_plan_cycle_ended_at.should be_present
+        @site_renewable.reload.pending_plan_cycle_started_at.should be_present
+        @site_renewable.reload.pending_plan_cycle_ended_at.should be_present
       end
 
       it "should update plan of downgraded sites" do
-        @site_to_be_renewed_with_downgrade_to_free_plan.reload.next_cycle_plan_id.should be_nil
-        @site_to_be_renewed_with_downgrade_to_free_plan.reload.plan_id.should == @free_plan.id
-        @site_to_be_renewed_with_downgrade_to_paid_plan.reload.next_cycle_plan_id.should be_nil
-        @site_to_be_renewed_with_downgrade_to_paid_plan.reload.pending_plan_id.should == @custom_plan.id
+        @site_renewable_with_downgrade_to_free_plan.reload.next_cycle_plan_id.should be_nil
+        @site_renewable_with_downgrade_to_free_plan.reload.plan_id.should == @free_plan.id
+        @site_renewable_with_downgrade_to_paid_plan.reload.next_cycle_plan_id.should be_nil
+        @site_renewable_with_downgrade_to_paid_plan.reload.pending_plan_id.should == @custom_plan.id
       end
 
       it "should set the renew flag to true" do
-        @site_to_be_renewed.reload.invoices.by_date('asc').last.should be_renew
-        @site_to_be_renewed_with_downgrade_to_free_plan.reload.invoices.by_date('asc').last.should_not be_renew
-        @site_to_be_renewed_with_downgrade_to_paid_plan.reload.invoices.by_date('asc').last.should be_renew
-        @site_not_to_be_renewed.reload.invoices.by_date('asc').last.should_not be_renew
+        @site_renewable.reload.invoices.by_date('asc').last.should be_renew
+        @site_renewable_with_downgrade_to_free_plan.reload.invoices.by_date('asc').last.should_not be_renew
+        @site_renewable_with_downgrade_to_paid_plan.reload.invoices.by_date('asc').last.should be_renew
+        @site_not_renewable.reload.invoices.by_date('asc').last.should_not be_renew
       end
     end # .renew_active_sites
 
@@ -407,33 +407,67 @@ describe Site::Invoice do
         end
 
         context "with monthly paid plan" do
-          before(:all) do
-            Timecop.travel(Time.utc(2011,1,30)) { @site = FactoryGirl.create(:site_pending, plan_id: @paid_plan.id) }
-          end
-          subject { @site }
+          context "in trial" do
+            before(:all) do
+              @site = FactoryGirl.create(:new_site, plan_id: @paid_plan.id)
+            end
+            subject { @site }
 
-          its(:pending_plan_started_at)       { should == Time.utc(2011,1,30).midnight }
-          its(:pending_plan_cycle_started_at) { should == Time.utc(2011,1,30).midnight }
-          its(:pending_plan_cycle_ended_at)   { should == Time.utc(2011,2,27).to_datetime.end_of_day }
-          its(:plan)                          { should be_nil }
-          its(:pending_plan)                  { should == @paid_plan }
-          its(:next_cycle_plan)               { should be_nil }
-          it { should be_instant_charging }
+            its(:pending_plan_started_at)       { should be_nil }
+            its(:pending_plan_cycle_started_at) { should be_nil }
+            its(:pending_plan_cycle_ended_at)   { should be_nil }
+            its(:plan)                          { should == @paid_plan }
+            its(:pending_plan)                  { should be_nil }
+            its(:next_cycle_plan)               { should be_nil }
+            it { should_not be_instant_charging }
+          end
+
+          context "not in trial" do
+            before(:all) do
+              Timecop.travel(Time.utc(2011,1,30)) { @site = FactoryGirl.create(:new_site, plan_id: @paid_plan.id, trial_started_at: BusinessModel.days_for_trial.days.ago) }
+            end
+            subject { @site }
+
+            its(:pending_plan_started_at)       { should == Time.utc(2011,1,30).midnight }
+            its(:pending_plan_cycle_started_at) { should == Time.utc(2011,1,30).midnight }
+            its(:pending_plan_cycle_ended_at)   { should == Time.utc(2011,2,27).to_datetime.end_of_day }
+            its(:plan)                          { should be_nil }
+            its(:pending_plan)                  { should == @paid_plan }
+            its(:next_cycle_plan)               { should be_nil }
+            it { should be_instant_charging }
+          end
         end
 
         context "with yearly paid plan" do
-          before(:all) do
-            Timecop.travel(Time.utc(2011,1,30)) { @site = FactoryGirl.create(:site_pending, plan_id: @paid_plan_yearly.id) }
-          end
-          subject { @site }
+          context "in trial" do
+            before(:all) do
+              @site = FactoryGirl.create(:site_pending, plan_id: @paid_plan_yearly.id)
+            end
+            subject { @site }
 
-          its(:pending_plan_started_at)       { should == Time.utc(2011,1,30).midnight }
-          its(:pending_plan_cycle_started_at) { should == Time.utc(2011,1,30).midnight }
-          its(:pending_plan_cycle_ended_at)   { should == Time.utc(2012,1,29).to_datetime.end_of_day }
-          its(:plan)                          { should be_nil }
-          its(:pending_plan)                  { should == @paid_plan_yearly }
-          its(:next_cycle_plan)               { should be_nil }
-          it { should be_instant_charging }
+            its(:pending_plan_started_at)       { should be_nil }
+            its(:pending_plan_cycle_started_at) { should be_nil }
+            its(:pending_plan_cycle_ended_at)   { should be_nil }
+            its(:plan)                          { should == @paid_plan_yearly }
+            its(:pending_plan)                  { should be_nil }
+            its(:next_cycle_plan)               { should be_nil }
+            it { should_not be_instant_charging }
+          end
+
+          context "not in trial" do
+            before(:all) do
+              Timecop.travel(Time.utc(2011,1,30)) { @site = FactoryGirl.create(:site_pending, plan_id: @paid_plan_yearly.id, trial_started_at: BusinessModel.days_for_trial.days.ago) }
+            end
+            subject { @site }
+
+            its(:pending_plan_started_at)       { should == Time.utc(2011,1,30).midnight }
+            its(:pending_plan_cycle_started_at) { should == Time.utc(2011,1,30).midnight }
+            its(:pending_plan_cycle_ended_at)   { should == Time.utc(2012,1,29).to_datetime.end_of_day }
+            its(:plan)                          { should be_nil }
+            its(:pending_plan)                  { should == @paid_plan_yearly }
+            its(:next_cycle_plan)               { should be_nil }
+            it { should be_instant_charging }
+          end
         end
       end
 
@@ -771,15 +805,6 @@ describe Site::Invoice do
       end
     end # #advance_for_next_cycle_end
 
-    # recurrent
-      # site.pend_plan_changes
-      # site.save
-      # apply_pending_plan_changes => will create invoice without charging it
-
-    # upfront
-      # plan_id = ... (set pending_plan_id, pending dates and pend_plan_changes)
-      # save (create the invoice and charge it)
-      # apply_pending_plan_changes when transaction is ok
     describe "#create_and_charge_invoice" do
       before(:all) do
         @paid_plan         = FactoryGirl.create(:plan, cycle: "month", price: 1000)
@@ -793,281 +818,177 @@ describe Site::Invoice do
           before(:each) { @site = FactoryGirl.build(:new_site, plan_id: @free_plan.id) }
           subject { @site }
 
-          it "should not create and not try to charge the invoice" do
+          it "doesn't create an invoice" do
             expect { subject.save! }.to_not change(subject.invoices, :count)
             subject.reload.plan.should == @free_plan
           end
         end
 
         context "on a saved record" do
-          before(:all) { Timecop.travel(Time.utc(2011,1,30)) { @site = FactoryGirl.create(:site_with_invoice, plan_id: @free_plan.id) } }
+          before(:all) { @site = FactoryGirl.create(:site, plan_id: @free_plan.id) }
 
-          describe "when save with no changes" do
-            subject { @site }
-
-            it "should not create and not try to charge the invoice" do
-              expect { Timecop.travel(Time.utc(2011,3,3)) { subject.save! } }.to_not change(subject.invoices, :count)
-              subject.reload.plan.should == @free_plan
-            end
-          end
-
-          describe "when upgrade to monthly paid plan" do
-            use_vcr_cassette "ogone/visa_payment_generic"
+          describe "save with no changes" do
             subject { @site.reload }
 
-            it "should create and try to charge the invoice" do
+            it "doesn't create an invoice" do
+              expect { Timecop.travel(3.months.from_now) { subject.save! } }.to_not change(subject.invoices, :count)
+              subject.reload.plan.should == @free_plan
+            end
+          end
+
+          describe "upgrade" do
+            subject { @site.reload }
+
+            it "doesn't create an invoice" do
               subject.plan_id = @paid_plan.id
               subject.user_attributes = { current_password: "123456" }
-              Timecop.travel(Time.utc(2011,2,10)) { expect { subject.save! }.to change(subject.invoices, :count).by(1) }
+              expect { Timecop.travel(3.months.from_now) { subject.save! } }.to_not change(subject.invoices, :count)
               subject.reload.plan.should == @paid_plan
-              subject.last_invoice.should be_paid
             end
           end
 
-          describe "when upgrade to yearly paid plan" do
-            use_vcr_cassette "ogone/visa_payment_generic"
-            before(:each) { @site.reload.plan_id = @paid_plan_yearly.id }
-            subject { @site }
+          describe "suspend" do
+            subject { @site.reload }
 
-            it "should create and try to charge the invoice" do
-              subject.user_attributes = { current_password: "123456" }
-              Timecop.travel(Time.utc(2011,2,10)) { expect { subject.save! }.to change(subject.invoices, :count).by(1) }
-              subject.reload.plan.should == @paid_plan_yearly
-              subject.last_invoice.should be_paid
-            end
-          end
-
-          describe "when suspend" do
-            subject { @site }
-
-            it "should not create and not try to charge the invoice" do
+            it "doesn't create and not try to charge the invoice" do
               Timecop.travel(Time.utc(2011,2,10)) { expect { subject.suspend! }.to_not change(subject.invoices, :count) }
-              subject.reload.plan.should == @free_plan
               subject.should be_suspended
             end
           end
 
-          describe "when archive" do
-            subject { @site }
+          describe "archive" do
+            subject { @site.reload }
 
-            it "should not create and not try to charge the invoice" do
+            it "doesn't create an invoice" do
               Timecop.travel(Time.utc(2011,2,10)) { expect { subject.archive! }.to_not change(subject.invoices, :count) }
-              subject.reload.plan.should == @free_plan
               subject.should be_archived
             end
           end
         end
       end # context "site in free plan"
 
-      context "site in monthly paid plan" do
+      context "site in paid plan" do
         context "on creation" do
-          use_vcr_cassette "ogone/visa_payment_generic"
-          before(:each) { Timecop.travel(Time.utc(2011,1,30)) { @site = FactoryGirl.build(:new_site, plan_id: @paid_plan.id) } }
+          before(:each) { @site = FactoryGirl.build(:site, plan_id: @paid_plan2.id) }
           subject { @site }
 
-          it "should create and try to charge the invoice" do
-            expect { subject.save }.to change(subject.invoices, :count).by(1)
-            subject.reload.plan.should == @paid_plan
-            subject.last_invoice.should_not be_renew
-            subject.last_invoice.should be_paid
+          it "doesn't create an invoice" do
+            expect { subject.save! }.to_not change(subject.invoices, :count).by(1)
           end
         end
 
         context "on a saved record" do
           before(:all) do
-            Timecop.travel(Time.utc(2011,1,30)) { @site = FactoryGirl.create(:site_with_invoice, plan_id: @paid_plan.id) }
+            @site = FactoryGirl.create(:site, plan_id: @paid_plan2.id)
+          end
+          subject do
+            @site.reload
+            @site.user_attributes = { "current_password" => "123456" }
+            @site
           end
 
-          describe "when save with no changes during the first cycle" do
-            subject { @site }
+          context "in trial" do
+            before(:each) { subject.should be_in_trial }
 
-            it "should not create and not try to charge the invoice" do
-              Timecop.travel(Time.utc(2011,2,3)) do
+            describe "upgrade" do
+              it "doesn't create an invoice" do
+                subject.plan_id = @paid_plan_yearly.id
+                expect { subject.save! }.to_not change(subject.invoices, :count)
+              end
+            end
+
+            describe "downgrade" do
+              it "doesn't create an invoice" do
+                subject.plan_id = @free_plan.id
+                expect { subject.save! }.to_not change(subject.invoices, :count)
+              end
+            end
+
+            %w[save suspend archive].each do |action|
+              describe "#{action}" do
+                it "doesn't create an invoice" do
+                  expect { subject.send "#{action}!" }.to_not change(subject.invoices, :count)
+                end
+              end
+            end
+          end
+
+          context "not in trial, during first cycle" do
+            before(:each) do
+              subject.update_attribute(:trial_started_at, BusinessModel.days_for_trial.days.ago)
+              subject.reload.should_not be_in_trial
+            end
+
+            describe "save with no changes" do
+              it "doesn't create an invoice" do
                 subject.pend_plan_changes
                 expect { subject.save! }.to_not change(subject.invoices, :count)
               end
-              subject.reload.plan.should == @paid_plan
             end
           end
 
-          describe "when save with no changes during the second cycle" do
-            use_vcr_cassette "ogone/visa_payment_generic"
-            subject { @site }
+          context "not in trial, during second cycle" do
+            before(:each) do
+              subject.update_attribute(:trial_started_at, BusinessModel.days_for_trial.days.ago)
+              subject.reload.should_not be_in_trial
+              Timecop.travel(45.days.from_now)
+            end
+            after(:each) { Timecop.return }
 
-            it "should create and try to charge the invoice" do
-              Timecop.travel(Time.utc(2011,3,3)) do
+            describe "renew" do
+              it "creates an invoice" do
                 subject.pend_plan_changes
                 expect { subject.save! }.to change(subject.invoices, :count).by(1)
               end
-              subject.reload.plan.should == @paid_plan
-            end
-          end
-
-          describe "when upgrade to monthly paid plan" do
-            use_vcr_cassette "ogone/visa_payment_generic"
-            subject { @site.reload }
-
-            it "should create and try to charge the invoice" do
-              subject.reload.plan_id  = @paid_plan2.id
-              subject.user_attributes = { "current_password" => "123456" }
-              Timecop.travel(Time.utc(2011,2,10)) { expect { subject.save }.to change(subject.invoices, :count).by(1) }
-              subject.reload.plan.should == @paid_plan2
-              subject.last_invoice.should be_paid
-            end
-          end
-
-          describe "when upgrade to yearly paid plan" do
-            use_vcr_cassette "ogone/visa_payment_generic"
-            subject { @site.reload }
-
-            it "should create and try to charge the invoice" do
-              subject.reload.plan_id  = @paid_plan_yearly.id
-              subject.user_attributes = { "current_password" => "123456" }
-              Timecop.travel(Time.utc(2011,2,10)) { expect { subject.save }.to change(subject.invoices, :count).by(1) }
-              subject.reload.plan.should == @paid_plan_yearly
-              subject.last_invoice.should be_paid
             end
 
-            it "should save user credit card infos if passed through charging_options" do
-              subject.reload.plan_id   = @paid_plan_yearly.id
-              subject.user_attributes = { "current_password" => "123456" }
-              subject.charging_options = { credit_card: FactoryGirl.build(:user_no_cc, valid_cc_attributes_master).credit_card }
+            describe "upgrade" do
+              before(:all) do
+                @site = FactoryGirl.create(:site_with_invoice, plan_id: @paid_plan2.id)
+              end
+              subject do
+                @site.reload
+                @site.user_attributes = { "current_password" => "123456" }
+                @site
+              end
 
-              Timecop.travel(Time.utc(2011,2,10)) { expect { subject.save }.to change(subject.invoices, :count).by(1) }
-              subject.reload.plan.should == @paid_plan_yearly
-              subject.last_invoice.should be_paid
+              it "creates an invoice" do
+                subject.plan_id = @paid_plan_yearly2.id
+                expect { subject.save! }.to change(subject.invoices, :count).by(1)
+              end
             end
-          end
 
-          describe "when downgrade" do
-            subject { @site.reload }
-
-            it "should not create and not try to charge the invoice" do
-              subject.reload.plan_id = @free_plan.id
-              Timecop.travel(Time.utc(2011,2,10)) { expect { subject.save_without_password_validation }.to_not change(subject.invoices, :count) }
-              subject.reload.plan.should == @paid_plan
-            end
-          end
-
-          describe "when suspend" do
-            subject { @site }
-
-            it "should not create and not try to charge the invoice" do
-              Timecop.travel(Time.utc(2011,2,10)) { expect { subject.suspend! }.to_not change(subject.invoices, :count) }
-              subject.reload.plan.should == @paid_plan
-              subject.should be_suspended
-            end
-          end
-
-          describe "when archive" do
-            subject { @site.reload }
-
-            it "should not create and not try to charge the invoice" do
-              subject.user_attributes = { "current_password" => "123456" }
-              Timecop.travel(Time.utc(2011,2,10)) { expect { subject.archive! }.to_not change(subject.invoices, :count) }
-              subject.reload.plan.should == @paid_plan
-              subject.should be_archived
-            end
-          end
-        end
-      end # context "site in monthly paid plan"
-
-      context "site in yearly paid plan" do
-        context "on creation" do
-          use_vcr_cassette "ogone/visa_payment_generic"
-          before(:each) { Timecop.travel(Time.utc(2011,1,30)) { @site = FactoryGirl.build(:new_site, plan_id: @paid_plan_yearly.id) } }
-          subject { @site }
-
-          it "should create and try to charge the invoice" do
-            expect { subject.save }.to change(subject.invoices, :count).by(1)
-            subject.reload.plan.should == @paid_plan_yearly
-            subject.last_invoice.should be_paid
-          end
-        end
-
-        context "on a saved record" do
-          before(:all) do
-            Timecop.travel(Time.utc(2011,1,30)) { @site = FactoryGirl.create(:site_with_invoice, plan_id: @paid_plan_yearly.id) }
-          end
-
-          describe "when save with no changes during the first cycle" do
-            subject { @site.reload }
-
-            it "should not create and not try to charge the invoice" do
-              Timecop.travel(Time.utc(2011,2,3)) do
-                subject.pend_plan_changes
+            describe "downgrade" do
+              it "to free plan, doesn't create an invoice" do
+                subject.plan_id = @free_plan.id
                 expect { subject.save! }.to_not change(subject.invoices, :count)
               end
-              subject.reload.plan.should == @paid_plan_yearly
-            end
-          end
 
-          describe "when save with no changes during the second cycle" do
-            subject { @site.reload }
+              it "to paid plan, doesn't create an invoice" do
+                subject.plan_id = @paid_plan.id
+                expect { subject.save! }.to_not change(subject.invoices, :count)
+              end
 
-            it "should create and try to charge the invoice" do
-              Timecop.travel(Time.utc(2012,3,3)) do
-                subject.pend_plan_changes
+              it "to paid plan, create an invoice once cycle ends" do
+                subject.plan_id = @paid_plan.id
+                subject.save!
+                Timecop.return
+                Timecop.travel(30.days.from_now)
+                subject.pend_plan_changes # simulate renew
                 expect { subject.save! }.to change(subject.invoices, :count).by(1)
               end
-              subject.reload.plan.should == @paid_plan_yearly
             end
-          end
 
-          describe "when upgrade to yearly paid plan" do
-            use_vcr_cassette "ogone/visa_payment_generic"
-            subject { @site.reload }
-
-            it "should create and try to charge the invoice" do
-              subject.reload.plan_id = @paid_plan_yearly2.id
-              subject.user_attributes = { "current_password" => "123456" }
-              Timecop.travel(Time.utc(2011,2,10)) { expect { subject.save! }.to change(subject.invoices, :count).by(1) }
-              subject.reload.plan.should == @paid_plan_yearly2
-              subject.last_invoice.should be_paid
-            end
-          end
-
-          describe "when downgrade to free plan" do
-            subject { @site.reload }
-
-            it "should not create and not try to charge the invoice" do
-              subject.reload.plan_id = @free_plan.id
-              Timecop.travel(Time.utc(2011,2,10)) { expect { subject.save_without_password_validation }.to_not change(subject.invoices, :count) }
-              subject.reload.plan.should == @paid_plan_yearly
-            end
-          end
-
-          describe "when downgrade to paid plan" do
-            subject { @site.reload }
-
-            it "should not create and not try to charge the invoice" do
-              subject.plan_id = @paid_plan.id
-              Timecop.travel(Time.utc(2011,2,10)) { expect { subject.save_without_password_validation }.to_not change(subject.invoices, :count) }
-              subject.reload.plan.should == @paid_plan_yearly
-            end
-          end
-
-          describe "when suspend" do
-            subject { @site.reload }
-
-            it "should not create and not try to charge the invoice" do
-              Timecop.travel(Time.utc(2011,2,10)) { expect { subject.suspend! }.to_not change(subject.invoices, :count) }
-              subject.reload.plan.should == @paid_plan_yearly
-            end
-          end
-
-          describe "when archive" do
-            subject { @site.reload }
-
-            it "should not create and not try to charge the invoice" do
-              subject.user_attributes = { "current_password" => "123456" }
-              Timecop.travel(Time.utc(2011,2,10)) { expect { subject.archive! }.to_not change(subject.invoices, :count) }
-              subject.reload.plan.should == @paid_plan_yearly
-              subject.should be_archived
+            %w[suspend archive].each do |action|
+              describe "#{action}" do
+                it "doesn't create an invoice" do
+                  expect { subject.send "#{action}!" }.to_not change(subject.invoices, :count)
+                end
+              end
             end
           end
         end
-      end # context "site in yearly paid plan"
+      end # context "site in paid plan"
 
     end # #create_and_charge_invoice
 
@@ -1195,15 +1116,44 @@ describe Site::Invoice do
       context "after trial end" do
         subject { FactoryGirl.create(:site, plan_id: @paid_plan.id) }
 
-        it "set if site created with paid plan" do
+        it "set if site upgraded to paid plan" do
           subject.first_paid_plan_started_at.should be_nil
           subject.trial_started_at.should be_present
           Timecop.travel(BusinessModel.days_for_trial.days.from_now) do
-            subject.pend_plan_changes
-            subject.apply_pending_plan_changes
+            subject.save
             subject.reload.first_paid_plan_started_at.should be_present
           end
         end
+      end
+
+      it "not reset on downgrade" do
+        site = FactoryGirl.create(:site, plan_id: @paid_plan.id, trial_started_at: BusinessModel.days_for_trial.days.ago)
+        site.first_paid_plan_started_at.should be_present
+
+        first_first_paid_plan_started_at = site.first_paid_plan_started_at
+        site.update_attribute(:plan_id, @free_plan.id)
+        site.reload.first_paid_plan_started_at.should eql first_first_paid_plan_started_at
+      end
+
+      it "not reset on upgrade" do
+        site = FactoryGirl.create(:site_with_invoice, plan_id: @paid_plan.id, trial_started_at: BusinessModel.days_for_trial.days.ago)
+        site.first_paid_plan_started_at.should be_present
+
+        first_first_paid_plan_started_at = site.first_paid_plan_started_at
+        site.update_attribute(:plan_id, @foo_plan.id)
+        site.reload.first_paid_plan_started_at.should eql first_first_paid_plan_started_at
+      end
+
+      it "not reset if site created with paid plan and downgraded to free plan and reupgraded to paid plan" do
+        site = FactoryGirl.create(:site, plan_id: @paid_plan.id, trial_started_at: BusinessModel.days_for_trial.days.ago)
+        site.first_paid_plan_started_at.should be_present
+
+        first_first_paid_plan_started_at = site.first_paid_plan_started_at
+        site.update_attribute(:plan_id, @free_plan.id)
+        site.reload.first_paid_plan_started_at.should eql first_first_paid_plan_started_at
+
+        site.update_attribute(:plan_id, @paid_plan.id)
+        site.reload.first_paid_plan_started_at.should eql first_first_paid_plan_started_at
       end
     end
 

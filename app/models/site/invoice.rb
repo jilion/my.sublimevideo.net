@@ -7,7 +7,7 @@ module Site::Invoice
   module ClassMethods
 
     def renew_active_sites
-      Site.active.to_be_renewed.each do |site|
+      Site.renewable.each do |site|
         site.pend_plan_changes
         site.save_without_password_validation
       end
@@ -66,7 +66,7 @@ module Site::Invoice
   def will_be_in_paid_plan?
     pending_plan_id? && pending_plan.paid_plan?
   end
-  
+
   def in_trial?
     trial_started_at && trial_started_at > BusinessModel.days_for_trial.days.ago
   end
@@ -111,7 +111,7 @@ module Site::Invoice
     if pending_plan_id_changed? && pending_plan_id? # either because of a creation, an upgrade or a downgrade (just changed above)
 
       # Downgrade
-      if plan_cycle_ended_at && plan_cycle_ended_at < Time.now.utc
+      if plan_cycle_ended_at? && plan_cycle_ended_at < Time.now.utc
         self.pending_plan_started_at = plan_cycle_ended_at.tomorrow.midnight
 
       # Upgrade or creation
@@ -193,39 +193,40 @@ private
 
   # before_save
   def set_trial_started_at
-    if !trial_started_at? && in_paid_plan?
+    if !trial_started_at? && in_or_will_be_in_paid_plan?
       self.trial_started_at = Time.now.utc
     end
   end
 
   # before_save
   def set_first_paid_plan_started_at
-    if !first_paid_plan_started_at? && in_paid_plan? && !in_trial?
+    if !first_paid_plan_started_at? && in_or_will_be_in_paid_plan? && !in_trial?
       self.first_paid_plan_started_at = plan_started_at
     end
   end
 
-  # after_save BEFORE_SAVE TRIGGER AN INFINITE LOOP SINCE invoice.save also saves self
+  # after_save (BEFORE_SAVE TRIGGER AN INFINITE LOOP SINCE invoice.save also saves self)
   def create_and_charge_invoice
-    if being_changed_to_paid_plan? || being_renewed?
-      invoice = Invoice.build(site: self, renew: !!being_renewed?)
+    if !in_trial? && (changed_to_paid_plan? || renewed?)
+      invoice = Invoice.build(site: self, renew: renewed?)
       invoice.save!
       @transaction = Transaction.charge_by_invoice_ids([invoice.id], charging_options || {}) if instant_charging?
 
-    elsif pending_plan_id_changed? && pending_plan_id? && pending_plan.unpaid_plan?
-      # directly update for unpaid plans
+    elsif pending_plan_id_changed? && pending_plan_id? && (pending_plan.unpaid_plan? || in_trial?)
+      # directly update for unpaid plans or any plans during trial
       self.apply_pending_plan_changes
     end
     true
   end
 
-  def being_changed_to_paid_plan?
+  def changed_to_paid_plan?
     pending_plan_id_changed? && will_be_in_paid_plan?
   end
 
-  def being_renewed?
-    # ensure plan_cycle dates are set, not nil!
-    in_paid_plan? && ((pending_plan_cycle_started_at_changed? && pending_plan_cycle_started_at?) || (pending_plan_cycle_ended_at_changed? && pending_plan_cycle_ended_at?))
+  def renewed?
+    in_paid_plan? &&
+    plan_cycle_started_at_was.present? &&
+    pending_plan_cycle_started_at_changed? && pending_plan_cycle_started_at?
   end
 
 end

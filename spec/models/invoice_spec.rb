@@ -600,6 +600,33 @@ describe Invoice do
     describe "#last_transaction" do
       it { subject.last_transaction.should == @paid_transaction }
     end
+
+    describe "#first_site_invoice?" do
+      before(:all) { @site = FactoryGirl.create(:site) }
+
+      it { FactoryGirl.build(:invoice).should be_first_site_invoice }
+      it { subject.should be_first_site_invoice }
+
+      context "first invoice was canceled" do
+        before(:each) do
+          @canceled_invoice   = FactoryGirl.create(:invoice, site: @site, state: 'canceled')
+          @first_site_invoice = FactoryGirl.create(:invoice, site: @site)
+        end
+
+        it { @canceled_invoice.should_not be_first_site_invoice }
+        it { @first_site_invoice.should be_first_site_invoice }
+      end
+
+      context "already one non-canceled invoice" do
+        before(:each) do
+          @first_site_invoice  = FactoryGirl.create(:invoice, site: @site)
+          @second_site_invoice = FactoryGirl.create(:invoice, site: @site)
+        end
+
+        it { @first_site_invoice.should be_first_site_invoice }
+        it { @second_site_invoice.should_not be_first_site_invoice }
+      end
+    end
   end # Instance Methods
 
 end

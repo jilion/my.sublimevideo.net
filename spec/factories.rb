@@ -39,7 +39,7 @@ FactoryGirl.define do
     user
   end
 
-  # Don't create invoice nor try to charge
+  # Site in trial
   factory :site, :parent => :new_site do
     # trial_started_at           { (BusinessModel.days_for_trial+1).days.ago } # site is not in trial
     # first_paid_plan_started_at { Time.now.utc }
@@ -51,6 +51,7 @@ FactoryGirl.define do
     end
   end
 
+  # Site not anymore in trial
   factory :site_with_invoice, :parent => :new_site do
     trial_started_at { (BusinessModel.days_for_trial+1).days.ago } # site is not in trial
     after_build  { |site| VCR.insert_cassette('ogone/visa_payment_generic') }
