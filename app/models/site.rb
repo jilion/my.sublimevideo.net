@@ -133,7 +133,6 @@ class Site < ActiveRecord::Base
   validates :extra_hostnames, :extra_hostnames => true
   validates :dev_hostnames,   :dev_hostnames => true
 
-  validate  :verify_presence_of_credit_card, :if => :in_or_will_be_in_paid_plan?
   validate  :validates_current_password
 
   # =============
@@ -146,7 +145,7 @@ class Site < ActiveRecord::Base
   before_save :prepare_cdn_update # in site/templates
   before_save :clear_alerts_sent_at
   before_save :pend_plan_changes, :if => :pending_plan_id_changed? # in site/invoice
-  before_save :set_trial_started_at, :set_first_paid_plan_started_at # in site/invoice
+  before_save :set_trial_and_first_paid_plan_started_at # in site/invoice
 
   after_save :create_and_charge_invoice # in site/invoice
   after_save :execute_cdn_update # in site/templates
@@ -411,13 +410,6 @@ private
   # before_validation
   def set_default_dev_hostnames
     self.dev_hostnames = DEFAULT_DEV_DOMAINS
-  end
-
-  # validate if in_or_will_be_in_paid_plan?
-  def verify_presence_of_credit_card
-    if user && !user.cc? && !user.pending_cc? && !user.any_cc_attrs?
-      self.errors.add(:base, :credit_card_needed)
-    end
   end
 
   # validate

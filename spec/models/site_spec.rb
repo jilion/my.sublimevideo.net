@@ -287,21 +287,10 @@ describe Site do
             site.save
             site
           end
-          it { should_not be_valid }
-          it { should have(1).error_on(:base) }
-          its(:plan_id) { should be_nil }
-          its(:pending_plan_id) { should == @paid_plan.id }
+          it { should be_valid }
         end
 
         context "with credit card attributes given" do
-          user_attributes = {
-            cc_type: 'visa',
-            cc_full_name: "Rémy Coutable",
-            cc_number: "4111111111111111",
-            cc_verification_value: "111",
-            cc_expire_on: 2.years.from_now
-          }
-
           subject { FactoryGirl.build(:site, user_attributes: valid_cc_attributes, plan_id: @paid_plan.id) }
           it { should be_valid }
         end
