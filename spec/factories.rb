@@ -41,8 +41,6 @@ FactoryGirl.define do
 
   # Site in trial
   factory :site, :parent => :new_site do
-    # trial_started_at           { (BusinessModel.days_for_trial+1).days.ago } # site is not in trial
-    # first_paid_plan_started_at { Time.now.utc }
     after_build do |site|
       site.pend_plan_changes
       site.apply_pending_plan_changes
@@ -104,7 +102,7 @@ FactoryGirl.define do
   end
 
   factory :mail_log, :class => MailLog do
-    association :template, :factory => :mail_template
+    template :factory => :mail_template
     admin
     criteria    ["all"]
     user_ids    [1,2,3,4,5]
