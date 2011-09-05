@@ -12,7 +12,7 @@ group :assets do
 end
 
 
-gem 'prototype-rails',       :git => 'git://github.com/rymai/prototype-rails.git'
+gem 'prototype-rails' #,       :git => 'git://github.com/rymai/prototype-rails.git'
 gem 'jquery-rails'
 gem 'rails-backbone'
 
@@ -114,14 +114,14 @@ end
 group :guard do
   gem 'rb-fsevent', :git => 'git://github.com/ttilley/rb-fsevent.git', :branch => 'pre-compiled-gem-one-off'
   gem 'growl_notify'
-  gem 'guard', :git => 'git://github.com/guard/guard.git', :branch => 'stdin'
+  gem 'guard', :git => 'git://github.com/guard/guard.git'
   gem 'guard-bundler'
   gem 'guard-pow'
   gem 'guard-livereload'
   gem 'guard-spork'
   gem 'guard-rspec'
-  gem 'guard-rails-assets', :git => 'git://github.com/mcolyer/guard-rails-assets.git', :branch => 'patch-1', :ref => '73d35d98de3b4c1f510ed666f9a16c869c2567c6'
-  # gem 'guard-rails-assets', :git => 'git://github.com/dnagir/guard-rails-assets.git'
+  gem 'guard-coffeescript'
+  gem 'guard-rails-assets'
   gem 'guard-jasmine-headless-webkit'
 end
 

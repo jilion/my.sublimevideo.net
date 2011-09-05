@@ -7,6 +7,8 @@ group :frontend do
     watch(%r{^config/.+\.rb$})
   end
 
+  guard 'coffeescript', :input => 'app/assets/javascripts', :noop => true, :hide_success => true
+
   guard :livereload do
     watch(%r{^app/.+\.(erb|haml|js|css|scss|coffee|eco|png|gif|jpg)})
     watch(%r{^app/helpers/.+\.rb})
