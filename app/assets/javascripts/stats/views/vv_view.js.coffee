@@ -10,7 +10,6 @@ class MSVStats.Views.VVView extends Backbone.View
   render: ->
     vvData = this.collection.vvData()
     $(this.el).html(this.template(vvData: vvData))
-    console.log vvData.vv
     if this.collection.size() > 0
       a = 0
       Highcharts.setOptions
@@ -51,12 +50,12 @@ class MSVStats.Views.VVView extends Backbone.View
           shadow: false
           shared: true
           formatter: ->
-            title = ["<b>#{Highcharts.dateFormat('%e %B %Y, %H:%M', @x)}</b><br/><br/>"]
+            title = ["<b>#{Highcharts.dateFormat('%e %B %Y, %H:%M', @x)} - #{Highcharts.dateFormat('%e %B %Y, %H:%M', @x + MSVStats.period.periodInterval())}</b><br/><br/>"]
             title += _.map(@points, (point) ->
               "<b>#{point.series.name}</b><br/>#{Highcharts.numberFormat(point.y, 0)} hits"
             ).join("<br/>")
         plotOptions:
-          spline:
+          column:
             animation: false
             shadow: false
             borderWidth: 0
@@ -83,12 +82,30 @@ class MSVStats.Views.VVView extends Backbone.View
                 lineWidth: 3
                 marker:
                   enabled: false
+          spline:
+            animation: false
+            shadow: false
+            borderWidth: 0
+            showInLegend: false
+            allowPointSelect: false
+            stickyTracking: false
+            lineWidth: 3
+            marker:
+              enabled: false
+            dataLabels:
+              enabled: false
+            states:
+              hover:
+                enabled: false
+                lineWidth: 3
+                marker:
+                  enabled: false
         series: [{
-          type: 'spline'
+          type: MSVStats.period.periodChartType()
           name: 'Page visits'
           data: vvData.pv
           },{
-          type: 'spline'
+          type: MSVStats.period.periodChartType()
           name: 'Video views'
           data: vvData.vv
         }]
@@ -98,13 +115,16 @@ class MSVStats.Views.VVView extends Backbone.View
           # startOnTick: true
           # title:
           #   text: null
-          tickInterval: MSVStats.period.periodTickInterval()  
+          tickInterval: MSVStats.period.periodTickInterval()
           # tickmarkPlacement: 'on'
           # tickPosition: ''
           # tickLength: 0
           tickWidth: 0
+          # endOnTick: true
           gridLineWidth: 1
           type: 'datetime'
+          # maxPadding: 0.001
+          # endOnTick: false
         yAxis:
           # endOnTick: false
           # min: 0
