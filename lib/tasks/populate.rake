@@ -70,6 +70,13 @@ namespace :db do
       timed { create_site_stats(argv_user) }
     end
 
+    desc "Create fake site stats"
+    task :recurring_site_stats => :environment do
+      timed { empty_tables(SiteStat) }
+      timed { create_site_stats(argv_user) }
+      timed { recurring_site_stats_update(argv_user) }
+    end
+
     desc "Create fake plans"
     task :plans => :environment do
       timed { empty_tables(Plan) }
@@ -363,6 +370,25 @@ def create_site_stats(user_id=nil)
     end
   end
   puts "Fake site(s) stats generated"
+end
+
+def recurring_site_stats_update(user_id)
+  sites = User.find(user_id).sites
+  puts "Begin recurring fake site(s) stats genaration (each minute)"
+  loop do
+    now = Time.now.utc
+    if now.change(usec: 0) == now.change(sec: 0, usec: 0)
+      sites.each do |site|
+        inc = random_stats_inc(1)
+        SiteStat.collection.update({ t: site.token, m: now.change(sec: 0, usec: 0).to_time },                  { "$inc" => inc }, upsert: true)
+        SiteStat.collection.update({ t: site.token, h: now.change(min: 0, sec: 0, usec: 0).to_time },          { "$inc" => inc }, upsert: true)
+        SiteStat.collection.update({ t: site.token, d: now.change(hour: 0, min: 0, sec: 0, usec: 0).to_time }, { "$inc" => inc }, upsert: true)
+      end
+      puts "Site(s) stats updated at #{now.change(sec: 0, usec: 0)}"
+      sleep 40
+    end
+    sleep 0.9
+  end
 end
 
 def random_stats_inc(i)

@@ -15,9 +15,21 @@ class MSVStats.Models.Period extends Backbone.Model
       when 'days'
         24 * 60 * 60 * 1000
 
+  periodChartType: ->
+    switch this.get('type')
+      when 'minutes'
+        'spline'
+      when 'hours'
+        'spline'
+      when 'days'
+        'column'
+
   periodTickInterval: ->
-    if this.get('last') < 10
+    last = this.get('last')
+    if last < 10
       this.periodInterval()
+    else if last < 25
+      2 * this.periodInterval()
     else
       5 * this.periodInterval()
 
