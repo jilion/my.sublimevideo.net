@@ -50,7 +50,7 @@ class MSVStats.Views.VVView extends Backbone.View
           shadow: false
           shared: true
           formatter: ->
-            title = ["<b>#{Highcharts.dateFormat('%e %B %Y, %H:%M', @x)} - #{Highcharts.dateFormat('%e %B %Y, %H:%M', @x + MSVStats.period.periodInterval())}</b><br/><br/>"]
+            title = ["<b>#{MSVStats.period.periodChartTitle(@x)}</b><br/><br/>"]
             title += _.map(@points, (point) ->
               "<b>#{point.series.name}</b><br/>#{Highcharts.numberFormat(point.y, 0)} hits"
             ).join("<br/>")

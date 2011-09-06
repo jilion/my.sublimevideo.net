@@ -4,10 +4,14 @@ group :frontend do
     watch('.rvmrc')
     watch(%r{^\.pow(rc|env)$})
     # watch('Gemfile.lock')
-    watch(%r{^config/.+\.rb$})
+    watch('config/boot.rb')
+    watch('config/application.rb')
+    watch('config/environment.rb')
+    watch(%r{^config/environments/.+\.rb})
+    watch(%r{^config/initializers/.+\.rb})
   end
 
-  guard 'coffeescript', :input => 'app/assets/javascripts', :noop => true, :hide_success => true
+  # guard 'coffeescript', :input => 'app/assets/javascripts', :noop => true, :hide_success => true
 
   guard :livereload do
     watch(%r{^app/.+\.(erb|haml|js|css|scss|coffee|eco|png|gif|jpg)})
@@ -23,6 +27,7 @@ group :backend do
   guard 'spork', :wait => 50 do
     watch('Gemfile')
     watch('Gemfile.lock')
+    watch('config/boot.rb')
     watch('config/application.rb')
     watch('config/environment.rb')
     watch(%r{^config/environments/.+\.rb})

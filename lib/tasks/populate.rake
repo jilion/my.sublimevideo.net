@@ -383,6 +383,7 @@ def recurring_site_stats_update(user_id)
         SiteStat.collection.update({ t: site.token, m: now.change(sec: 0, usec: 0).to_time },                  { "$inc" => inc }, upsert: true)
         SiteStat.collection.update({ t: site.token, h: now.change(min: 0, sec: 0, usec: 0).to_time },          { "$inc" => inc }, upsert: true)
         SiteStat.collection.update({ t: site.token, d: now.change(hour: 0, min: 0, sec: 0, usec: 0).to_time }, { "$inc" => inc }, upsert: true)
+        Pusher["private-#{site.token}"].trigger('stats-fetch', {})
       end
       puts "Site(s) stats updated at #{now.change(sec: 0, usec: 0)}"
       sleep 40

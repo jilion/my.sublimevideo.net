@@ -84,6 +84,9 @@ gem 'addressable',           '~> 2.2.6'
 # Perf
 gem 'dalli',                 '~> 1.1.1'
 
+# Stats
+gem 'pusher'
+
 group :production do
   gem 'rack-google-analytics', '~> 0.9.2', :require => 'rack/google-analytics'
 end
@@ -117,7 +120,7 @@ group :guard do
   gem 'guard', :git => 'git://github.com/guard/guard.git'
   gem 'guard-bundler'
   gem 'guard-pow'
-  gem 'guard-livereload'
+  gem 'guard-livereload', :path => '/Users/Thibaud/Codes/guard-livereload'
   gem 'guard-spork'
   gem 'guard-rspec'
   gem 'guard-coffeescript'
