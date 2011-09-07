@@ -7,9 +7,12 @@ class MSVStats.Views.PeriodsSelectView extends Backbone.View
   initialize: () ->
     _.bindAll(this, 'render')
     this.options.period.bind('change', this.render);
+    this.collection.bind('change', this.render);
+    this.collection.bind('reset', this.render);
 
   render: ->
-    $(this.el).html(this.template(value: this.options.period.value()))
+    MSVStats.stats.clearcurrentPeriodStatsCache()
+    $(this.el).html(this.template(period: this.options.period))
     return this
 
   updatePeriod: ->

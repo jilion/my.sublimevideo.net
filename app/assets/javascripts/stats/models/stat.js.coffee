@@ -52,25 +52,32 @@ class MSVStats.Collections.Stats extends Backbone.Collection
       memo
     new MDData)
 
-  forCurrentPeriod: ->
-    return unless MSVStats.stats
-    periodStats = MSVStats.stats.reduce((memo, stat) ->
-      memo.push(stat) if stat.isPeriodType(MSVStats.period.get('type'))
+  forCurrentPeriodType: (type = MSVStats.period.get('type'), afterTime = null) ->
+    return [] unless MSVStats.stats
+    MSVStats.stats.reduce((memo, stat) ->
+      memo.push(stat) if stat.isPeriodType(type) && (if afterTime? then (stat.time() >= afterTime) else true)
       memo
     [])
+
+  clearcurrentPeriodStatsCache: ->
+    @currentPeriodStatsCache = null
+
+  forCurrentPeriod: ->
+    return @currentPeriodStatsCache if @currentPeriodStatsCache?
+    return unless MSVStats.stats
+    periodStats = this.forCurrentPeriodType()
     return [] if _.isEmpty(periodStats)
 
     periodLast = MSVStats.period.get('last')
     stats = []
     switch MSVStats.period.get('type')
       when 'minutes'
-        currentMinute = MSVStats.Models.Period.today()
+        currentMinuteTime = MSVStats.Models.Period.today(s: 0).date.getTime()
         periodLast = parseInt(periodLast)
         while (periodLast -= 1) >= -1
-          stepTime = currentMinute.date.getTime()
-          periodStat = _.detect(periodStats, ((periodStat) -> periodStat.time() == stepTime))
-          stats.push(periodStat || new MSVStats.Models.Stat(mi: String(stepTime)))
-          currentMinute.subtract(m: 1)
+          periodStat = _.detect(periodStats, ((periodStat) -> periodStat.time() == currentMinuteTime))
+          stats.push(periodStat || new MSVStats.Models.Stat(mi: String(currentMinuteTime)))
+          currentMinuteTime -= 60 * 1000
         # remove current minute if null (wait for the right data)
         if _.first(stats).get('t') == null
           stats.shift()
@@ -78,29 +85,28 @@ class MSVStats.Collections.Stats extends Backbone.Collection
         else
           stats.pop()
       when 'hours'
-        currentHour = MSVStats.Models.Period.today(m: 0)
+        currentHourTime = MSVStats.Models.Period.today(m: 0).date.getTime()
         periodLast = parseInt(periodLast)
         while (periodLast -= 1) >= 0
-          stepTime = currentHour.date.getTime()
-          periodStat = _.detect(periodStats, ((periodStat) -> periodStat.time() == stepTime))
-          stats.push(periodStat || new MSVStats.Models.Stat(hi: String(stepTime)))
-          currentHour.subtract(h: 1)
+          periodStat = _.detect(periodStats, ((periodStat) -> periodStat.time() == currentHourTime))
+          stats.push(periodStat || new MSVStats.Models.Stat(hi: String(currentHourTime)))
+          currentHourTime -= 3600 * 1000
       when 'days'
-        currentDay = MSVStats.Models.Period.today(h: 0)
+        currentDayTime = MSVStats.Models.Period.today(h: 0).date.getTime()
         if periodLast == 'all'
           lastTime = _.last(periodStats).time()
-          stepTime = currentDay.add(d: 1)
-          while stepTime.subtract(d: 1).date.getTime() >= lastTime
-            periodStat = _.detect(periodStats, ((periodStat) -> periodStat.time() == stepTime.date.getTime()))
-            stats.push(periodStat || new MSVStats.Models.Stat(di: String(stepTime.date.getTime())))
+          stepTime = currentDayTime += 24 * 3600 * 1000
+          while (stepTime -= 24 * 3600 * 1000) >= lastTime
+            periodStat = _.detect(periodStats, ((periodStat) -> periodStat.time() == stepTime))
+            stats.push(periodStat || new MSVStats.Models.Stat(di: String(stepTime)))
         else # number
           periodLast = parseInt(periodLast)
           while (periodLast -= 1) >= 0
-            stepTime = currentDay.date.getTime()
-            periodStat = _.detect(periodStats, ((periodStat) -> periodStat.time() == stepTime))
-            stats.push(periodStat || new MSVStats.Models.Stat(di: String(stepTime)))
-            currentDay.subtract(d: 1)
+            periodStat = _.detect(periodStats, ((periodStat) -> periodStat.time() == currentDayTime))
+            stats.push(periodStat || new MSVStats.Models.Stat(di: String(currentDayTime)))
+            currentDayTime -= 24 * 3600 * 1000
     stats.reverse()
+    @currentPeriodStatsCache = stats
 
 
 class VVData

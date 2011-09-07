@@ -52,7 +52,7 @@ end
 
 group :jasmine do
 
-  guard 'rails-assets' do
+  guard 'rails-assets', :run_on => [:start, :change, :reload], :runner => :rails, :rails_env => 'test' do
     watch(%r{^app/assets/.+$})
     watch('config/application.rb')
   end
