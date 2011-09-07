@@ -26,7 +26,7 @@ module RecurringJob
 
     def delay_invoices_processing
       unless Delayed::Job.already_delayed?('%RecurringJob%invoices_processing%')
-        delay(:priority => 2, :run_at => Time.now.utc.tomorrow.midnight).invoices_processing
+        delay(priority: 2, run_at: Time.now.utc.tomorrow.midnight).invoices_processing
       end
     end
 
@@ -42,19 +42,19 @@ module RecurringJob
       # Logs
       Log.delay_download_or_fetch_and_create_new_logs
 
+      # Billing
+      RecurringJob.delay_invoices_processing
+      User::CreditCard.delay_send_credit_card_expiration
+
       # Stats
       UsersStat.delay_create_users_stats
       SitesStat.delay_create_sites_stats
-
-      # Billing
-      RecurringJob.delay_invoices_processing
+      SiteStat.delay_clear_old_minutes_and_days_stats
 
       # Others
-      User::CreditCard.delay_send_credit_card_expiration
       Site::UsageMonitoring.delay_monitor_sites_usages
       Site.delay_update_last_30_days_counters_for_not_archived_sites
       Tweet.delay_save_new_tweets_and_sync_favorite_tweets
-      SiteStat.delay_clear_old_minutes_and_days_stats
     end
 
     def supervise
