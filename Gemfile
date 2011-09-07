@@ -120,7 +120,7 @@ group :guard do
   gem 'guard', :git => 'git://github.com/guard/guard.git'
   gem 'guard-bundler'
   gem 'guard-pow'
-  gem 'guard-livereload', :path => '/Users/Thibaud/Codes/guard-livereload'
+  gem 'guard-livereload'
   gem 'guard-spork'
   gem 'guard-rspec'
   gem 'guard-coffeescript'

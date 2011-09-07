@@ -57,14 +57,6 @@ GIT
   specs:
     rb-fsevent (0.4.3.1pre1)
 
-PATH
-  remote: /Users/Thibaud/Codes/guard-livereload
-  specs:
-    guard-livereload (0.3.1)
-      em-websocket (>= 0.2.0)
-      guard (>= 0.4.0)
-      multi_json (~> 1.0.3)
-
 GEM
   remote: http://rubygems.org/
   specs:
@@ -220,6 +212,10 @@ GEM
     guard-jasmine-headless-webkit (0.2.0)
       guard (>= 0.4.0)
       jasmine-headless-webkit (>= 0.3.0)
+    guard-livereload (0.3.1)
+      em-websocket (>= 0.2.0)
+      guard (>= 0.4.0)
+      multi_json (~> 1.0.3)
     guard-pow (0.2.1)
       guard (>= 0.3.0)
     guard-rails-assets (0.0.7)
@@ -481,7 +477,7 @@ DEPENDENCIES
   guard-bundler
   guard-coffeescript
   guard-jasmine-headless-webkit
-  guard-livereload!
+  guard-livereload
   guard-pow
   guard-rails-assets
   guard-rspec
