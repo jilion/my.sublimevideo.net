@@ -213,7 +213,7 @@ private
   # before_save
   def set_trial_started_at
     if !trial_started_at? && in_or_will_be_in_paid_plan?
-      self.trial_started_at = Time.now.utc
+      self.trial_started_at = Time.now.utc.midnight
     end
   end
 
@@ -230,7 +230,7 @@ private
     end
     true
   end
-  
+
   def activated?
     first_paid_plan_started_at_changed?
   end
