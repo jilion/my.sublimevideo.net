@@ -152,3 +152,13 @@ class MSVStats.Views.VVView extends Backbone.View
           # labelFormatter: ->
           #   '<b>' + @name + '</b>: ' + @y + 'hits'
     return this
+
+  periodicRender: ->
+    # call each minute (0 seconds)
+    if MSVStats.Models.Period.today().date.getTime() == MSVStats.Models.Period.today({s: 0}).date.getTime()
+      MSVStats.vvView.render()
+      window.setTimeout(( -> MSVStats.vvView.periodicRender()), 57000)
+    else
+      window.setTimeout(( -> MSVStats.vvView.periodicRender()), 1000)
+
+

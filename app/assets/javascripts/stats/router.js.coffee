@@ -6,10 +6,11 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
     pageTitleView.render()
     sitesSelectView = new MSVStats.Views.SitesSelectView(collection: MSVStats.sites)
     $('#sites_select').html(sitesSelectView.render().el)
-    periodsSelectView = new MSVStats.Views.PeriodsSelectView(period: MSVStats.period)
+    periodsSelectView = new MSVStats.Views.PeriodsSelectView(collection: MSVStats.stats, period: MSVStats.period)
     $('#periods_select').html(periodsSelectView.render().el)
     MSVStats.vvView = new MSVStats.Views.VVView(collection: MSVStats.stats, sites: MSVStats.sites, period: MSVStats.period)
     $('#vv').html(MSVStats.vvView.render().el)
+    window.setTimeout(( -> MSVStats.vvView.periodicRender()), 30000)
     bpView = new MSVStats.Views.BPView(collection: MSVStats.stats, sites: MSVStats.sites, period: MSVStats.period)
     $('#bp').html(bpView.render().el)
     mdView = new MSVStats.Views.MDView(collection: MSVStats.stats, sites: MSVStats.sites, period: MSVStats.period)
@@ -21,10 +22,15 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
   home: (token) ->
     MSVStats.sites.select(token)
     MSVStats.stats.reset()
-    MSVStats.stats.fetch()
+    MSVStats.stats.fetch(silent: true, success: ->
+      MSVStats.period.autosetPeriod(silent: true)
+      MSVStats.stats.trigger('reset')
+    )
 
     MSVStats.pusherChannel = MSVStats.pusher.subscribe("private-#{token}")
-    MSVStats.pusherChannel.bind('stats-fetch', (data) -> MSVStats.stats.fetch())
-
-  periodicVvViewRender: ->
-    MSVStats.vvView.render()
+    MSVStats.pusherChannel.bind('stats-fetch', (data) -> 
+      MSVStats.stats.fetch(silent: true, success: ->
+        MSVStats.period.set({ minValue: '60 minutes' }, silent: true)
+        MSVStats.stats.trigger('reset')
+      )
+    )
