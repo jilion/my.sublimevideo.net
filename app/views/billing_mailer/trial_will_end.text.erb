@@ -1,0 +1,25 @@
+<%= t("mailer.intro_name", name: @user.full_name) %>
+
+Thank you for taking the time to evaluate SublimeVideo! We hope you're enjoying your trial.
+
+This is a reminder that your <%= BusinessModel.days_for_trial %>-day free trial for <%= @site.hostname %> expires in <%= pluralize(full_days_until_trial_end(@site), 'day') %> (on <%= l(@site.trial_end, format: :named_date) %>).
+
+To activate your <%= @site.plan.title %> plan, please click here:
+
+https://<%= ActionMailer::Base.default_url_options[:host] %>/sites/<%= @site.token %>/plan
+
+Need Some Help?
+
+Be sure to checkout our documentation here: http://docs.sublimevideo.net
+
+as well as our forum: ...
+
+Don't want to receive these reminders?
+
+If you don't want activate your paid plan, you can downgrade your site to the Free plan here:
+
+https://<%= ActionMailer::Base.default_url_options[:host] %>/sites/<%= @site.token %>/plan
+
+Thanks again for continuing to evaluate SublimeVideo.
+
+<%= t("mailer.signature") %>

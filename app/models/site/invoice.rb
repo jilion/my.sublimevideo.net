@@ -32,9 +32,9 @@ module Site::Invoice
       end
     end
 
-    %w[free sponsored paid custom].each do |plan_type|
-      define_method :"in_#{plan_type}_plan?" do
-        plan && plan.send("#{plan_type}_plan?")
+    %w[free sponsored paid custom].each do |plan_name|
+      define_method :"in_#{plan_name}_plan?" do
+        plan && plan.send("#{plan_name}_plan?")
       end
     end
 
@@ -67,6 +67,10 @@ module Site::Invoice
 
     def refunded?
       archived? && refunded_at?
+    end
+
+    def trial_end
+      trial_started_at? ? trial_started_at + BusinessModel.days_for_trial.days : nil
     end
 
     def last_paid_invoice

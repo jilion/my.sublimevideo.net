@@ -31,8 +31,8 @@ module Site::Scope
     scope :not_in_trial, lambda {
       where { (trial_started_at.presence || BusinessModel.days_for_trial.days.ago) <= BusinessModel.days_for_trial.days.ago }
     }
-    scope :trial_ended_in, lambda { |period|
-      where { (trial_started_at != nil) & (trial_started_at <= (period.from_now - BusinessModel.days_for_trial.days)) }
+    scope :trial_expires_on, lambda { |timestamp|
+      where { date_trunc('day', trial_started_at) == (timestamp - BusinessModel.days_for_trial.days).midnight }
     }
     scope :billable, lambda {
       active.where { plan_id >> Plan.paid_plans.map(&:id) & next_cycle_plan_id >> (Plan.paid_plans.map(&:id) + [nil]) }

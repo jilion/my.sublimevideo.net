@@ -1,5 +1,13 @@
 module SitesHelper
 
+  def full_days_until_trial_end(site)
+    if site.in_trial?
+      ((site.trial_started_at.midnight + BusinessModel.days_for_trial.days - Time.now.utc.midnight) / (3600 * 24)).to_i
+    else
+      0
+    end
+  end
+
   def sublimevideo_script_tag_for(site)
     %{<script type="text/javascript" src="http://cdn.sublimevideo.net/js/%s.js"></script>} % [site.token]
   end
@@ -45,7 +53,7 @@ module SitesHelper
   def conditions_for_show_dev_hostnames_div(site)
     site.dev_hostnames? && site.dev_hostnames != Site::DEFAULT_DEV_DOMAINS
   end
-  
+
   def td_usage_class(site)
     if site.in_paid_plan?
       if site.first_plan_upgrade_required_alert_sent_at?

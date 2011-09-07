@@ -1,2 +1,5 @@
 days_for_trial: 14
+days_before_trial_end:
+  - 5
+  - 1
 days_for_refund: 30

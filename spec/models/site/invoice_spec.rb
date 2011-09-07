@@ -378,6 +378,17 @@ describe Site::Invoice do
       specify { @site_not_refunded2.should_not be_refunded }
     end
 
+    describe "#trial_end" do
+      before(:all) do
+        Site.delete_all
+        @site_not_in_trial = FactoryGirl.create(:site, plan_id: @free_plan.id)
+        @site_in_trial = FactoryGirl.create(:site, trial_started_at: 1.day.ago.midnight)
+      end
+
+      specify { @site_not_in_trial.trial_end.should be_nil }
+      specify { @site_in_trial.trial_end.should eql (BusinessModel.days_for_trial-1).days.from_now.midnight }
+    end
+
     describe "#last_paid_invoice" do
       context "with the last paid invoice not refunded" do
         subject { FactoryGirl.create(:site_with_invoice, plan_id: @paid_plan.id) }

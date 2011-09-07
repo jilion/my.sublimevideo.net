@@ -101,13 +101,10 @@ class Plan < ActiveRecord::Base
   end
 
   # unpaid plan
-  def free_plan?
-    name == "free"
-  end
-
-  # unpaid plan
-  def sponsored_plan?
-    name == "sponsored"
+  %w[free sponsored].each do |plan_name|
+    define_method :"#{plan_name}_plan?" do
+      name == plan_name
+    end
   end
 
   # paid plan
@@ -129,7 +126,7 @@ class Plan < ActiveRecord::Base
   end
 
   CYCLES.each do |c|
-    define_method("#{c}ly?") do
+    define_method :"#{c}ly?" do
       cycle == c
     end
   end

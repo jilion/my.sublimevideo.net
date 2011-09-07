@@ -117,24 +117,21 @@ describe Site::Scope do
   describe "trial" do
     before(:all) do
       Site.delete_all
-      @site_not_in_trial = FactoryGirl.create(:site, user: @user, trial_started_at: BusinessModel.days_for_trial.days.ago)
-      @site_trial_ends_in_8_days = FactoryGirl.create(:site, user: @user, trial_started_at: (BusinessModel.days_for_trial - 8).days.ago)
-      @site_trial_ends_in_3_days = FactoryGirl.create(:site, user: @user, trial_started_at: (BusinessModel.days_for_trial - 3).days.ago)
-      @site_trial_ends_in_1_day  = FactoryGirl.create(:site, user: @user, trial_started_at: (BusinessModel.days_for_trial - 1).days.ago)
+      @site_not_in_trial = FactoryGirl.create(:site, user: @user, trial_started_at: BusinessModel.days_for_trial.days.ago.midnight)
+      @site_trial_ends_in_1_day = FactoryGirl.create(:site, user: @user, trial_started_at: (BusinessModel.days_for_trial - 1).days.ago.midnight)
     end
 
     describe "#in_trial" do
-      specify { Site.in_trial.all.should =~ [@site_trial_ends_in_8_days, @site_trial_ends_in_3_days, @site_trial_ends_in_1_day] }
+      specify { Site.in_trial.all.should =~ [@site_trial_ends_in_1_day] }
     end
 
     describe "#not_in_trial" do
       specify { Site.not_in_trial.all.should =~ [@site_not_in_trial] }
     end
 
-    describe "#trial_ended_in" do
-      specify { Site.trial_ended_in(5.days).all.should =~ [@site_not_in_trial, @site_trial_ends_in_3_days, @site_trial_ends_in_1_day] }
-      specify { Site.trial_ended_in(2.days).all.should =~ [@site_not_in_trial, @site_trial_ends_in_1_day] }
-      specify { Site.trial_ended_in(1.day - 1.minute).all.should =~ [@site_not_in_trial] }
+    describe "#trial_expires_on" do
+      specify { Site.trial_expires_on(2.days.from_now).all.should be_empty }
+      specify { Site.trial_expires_on(1.day.from_now).all.should =~ [@site_trial_ends_in_1_day] }
     end
   end
 

@@ -10,7 +10,7 @@ module Site::Recurring
     end
 
     def delay_send_trial_will_end
-      unless Delayed::Job.already_delayed?('%Site%delay_send_trial_will_end%')
+      unless Delayed::Job.already_delayed?('%Site%send_trial_will_end%')
         delay(run_at: Time.now.utc.tomorrow.midnight).send_trial_will_end
       end
     end
@@ -24,7 +24,15 @@ module Site::Recurring
 
     def send_trial_will_end
       delay_send_trial_will_end
-      # in_trial.trial_ended_in()
+
+      sites_to_email = []
+      BusinessModel.days_before_trial_end.each do |days_before_trial_end|
+        in_trial.trial_expires_on(days_before_trial_end.days.from_now).each do |site|
+          sites_to_email << site unless sites_to_email.include?(site)
+        end
+      end
+
+      sites_to_email.each { |site| BillingMailer.trial_will_end(site).deliver! }
     end
 
   end

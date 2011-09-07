@@ -1,6 +1,17 @@
 class BillingMailer < ActionMailer::Base
   default :from => "SublimeVideo Billing <billing@sublimevideo.net>"
-  helper :application, :invoices
+  helper :application, :invoices, :sites
+  include SitesHelper # the only way to include view helpers in here
+                      # I don't feel dirty doing this since the email's subject IS a view so...
+
+  def trial_will_end(site)
+    @site = site
+    @user = @site.user
+    mail(
+      :to => "\"#{@user.full_name}\" <#{@user.email}>",
+      :subject => "Your trial for #{@site.hostname} will expire in #{full_days_until_trial_end(@site)} days"
+    )
+  end
 
   def credit_card_will_expire(user)
     @user = user

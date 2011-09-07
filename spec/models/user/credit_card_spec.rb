@@ -192,22 +192,22 @@ describe User::CreditCard do
       it "should send 'cc will expire' email when user's credit card will expire at the end of the current month" do
         @user = FactoryGirl.create(:user_real_cc, valid_cc_attributes.merge(cc_expiration_month: Time.now.utc.month, cc_expiration_year: Time.now.utc.year))
         @user.cc_expire_on.should == Time.now.utc.end_of_month.to_date
-        lambda { User::CreditCard.send_credit_card_expiration }.should change(ActionMailer::Base.deliveries, :size).by(1)
+        expect { User::CreditCard.send_credit_card_expiration }.to change(ActionMailer::Base.deliveries, :size).by(1)
       end
       it "should not send 'cc is expired' email when user's credit card is expired 1 month ago" do
         Timecop.travel(1.month.ago) { @user = FactoryGirl.create(:user_real_cc, valid_cc_attributes.merge(cc_expiration_month: Time.now.utc.month, cc_expiration_year: Time.now.utc.year)) }
         @user.cc_expire_on.should == 1.month.ago.end_of_month.to_date
-        lambda { User::CreditCard.send_credit_card_expiration }.should_not change(ActionMailer::Base.deliveries, :size)
+        expect { User::CreditCard.send_credit_card_expiration }.to_not change(ActionMailer::Base.deliveries, :size)
       end
       it "should not send 'cc is expired' email when user's credit card is expired 1 year ago" do
         Timecop.travel(1.year.ago) { @user = FactoryGirl.create(:user_real_cc, valid_cc_attributes.merge(cc_expiration_month: Time.now.utc.month, cc_expiration_year: Time.now.utc.year)) }
         @user.cc_expire_on.should == 1.year.ago.end_of_month.to_date
-        lambda { User::CreditCard.send_credit_card_expiration }.should_not change(ActionMailer::Base.deliveries, :size)
+        expect { User::CreditCard.send_credit_card_expiration }.to_not change(ActionMailer::Base.deliveries, :size)
       end
       it "should not send expiration email when user's credit card will not expire at the end of the current month" do
         Timecop.travel(1.month.from_now) { @user = FactoryGirl.create(:user_real_cc, valid_cc_attributes.merge(cc_expiration_month: Time.now.utc.month, cc_expiration_year: Time.now.utc.year)) }
         @user.cc_expire_on.should == 1.month.from_now.end_of_month.to_date
-        lambda { User::CreditCard.send_credit_card_expiration }.should_not change(ActionMailer::Base.deliveries, :size)
+        expect { User::CreditCard.send_credit_card_expiration }.to_not change(ActionMailer::Base.deliveries, :size)
       end
     end
 

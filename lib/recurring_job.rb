@@ -44,6 +44,7 @@ module RecurringJob
 
       # Billing
       RecurringJob.delay_invoices_processing
+      Site.delay_send_trial_will_end
       User::CreditCard.delay_send_credit_card_expiration
 
       # Stats

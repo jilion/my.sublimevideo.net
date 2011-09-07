@@ -2,6 +2,13 @@ require 'spec_helper'
 
 describe SitesHelper do
 
+  describe "#full_days_until_trial_end" do
+    it { helper.full_days_until_trial_end(FactoryGirl.build(:new_site, trial_started_at: 1.day.ago.midnight)).should eql BusinessModel.days_for_trial-1 }
+    it { helper.full_days_until_trial_end(FactoryGirl.build(:new_site, trial_started_at: BusinessModel.days_for_trial.days.ago.midnight + 25.hours)).should eql 1 }
+    it { helper.full_days_until_trial_end(FactoryGirl.build(:new_site, trial_started_at: BusinessModel.days_for_trial.days.ago.midnight + 1.minute)).should eql 0 }
+    it { helper.full_days_until_trial_end(FactoryGirl.build(:new_site, trial_started_at: BusinessModel.days_for_trial.days.ago.midnight - 1.minute)).should eql 0 }
+  end
+
   describe "#sublimevideo_script_tag_for" do
     it "is should generate sublimevideo script_tag" do
       site =  FactoryGirl.create(:site)
