@@ -194,34 +194,6 @@ describe Site::Invoice do
           subject.invoices_open?.should be_true
         end
       end
-
-      context "with options[:renew] == true" do
-        it "should be false if no invoice with the renew flag == true" do
-          invoice = FactoryGirl.create(:invoice, state: 'open', site: @site, renew: false)
-          invoice.renew.should be_false
-          subject.invoices_open?(renew: true).should be_false
-        end
-
-        it "should be true if invoice with the renew flag == true" do
-          invoice = FactoryGirl.create(:invoice, state: 'open', site: @site, renew: true)
-          invoice.renew.should be_true
-          subject.invoices_open?(renew: true).should be_true
-        end
-      end
-
-      context "with options[:renew] == false" do
-        it "should be false if no invoice with the renew flag == true" do
-          invoice = FactoryGirl.create(:invoice, state: 'open', site: @site, renew: false)
-          invoice.renew.should be_false
-          subject.invoices_open?(renew: false).should be_true
-        end
-
-        it "should be true if invoice with the renew flag == true" do
-          invoice = FactoryGirl.create(:invoice, state: 'open', site: @site, renew: true)
-          invoice.renew.should be_true
-          subject.invoices_open?(renew: false).should be_false
-        end
-      end
     end
 
     describe "#in_free_plan?" do

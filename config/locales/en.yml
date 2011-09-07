@@ -34,7 +34,7 @@ en:
       ok: "Player successfully deployed."
       in_progress: "Your player is being deployed."
       need_path: "If you don't own %{hostname}, we highly recommend you set a <em>path</em> to restrict the player to your pages only."
-      need_suddomain: "If you don't own %{hostname}, we highly recommend you add a <em>subdomain</em> to it (or disable the wildcard option) to restrict the player to your pages only."
+      need_subdomain: "If you don't own %{hostname}, we highly recommend you add a <em>subdomain</em> to it (or disable the wildcard option) to restrict the player to your pages only."
     plan:
       upgrade_in_progress: "Your payment is being processed."
       upgrade_in_progress_failed_link: 'There has been a transaction error. Please review %{link} and retry the payment.'

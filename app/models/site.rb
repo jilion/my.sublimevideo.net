@@ -2,8 +2,12 @@ class Site < ActiveRecord::Base
   extend ActiveSupport::Memoizable
   include Site::Api
   require 'site/invoice'
+  include Site::Invoice
+  include Site::Recurring
   require 'site/referrer'
+  include Site::Scope
   require 'site/templates'
+  include Site::Usage
 
   DEFAULT_DEV_DOMAINS = '127.0.0.1, localhost'
   PLAYER_MODES = %w[dev beta stable]
@@ -44,82 +48,6 @@ class Site < ActiveRecord::Base
   end
   def stats
     SiteStat.where(t: token)
-  end
-
-  # ==========
-  # = Scopes =
-  # ==========
-
-  # usage_monitoring scopes
-  scope :plan_player_hits_reached_notified, where { plan_player_hits_reached_notification_sent_at != nil }
-
-  # state
-  scope :active,       where { state  == 'active' }
-  scope :inactive,     where { state != 'active' }
-  scope :suspended,    where { state == 'suspended' }
-  scope :archived,     where { state == 'archived' }
-  scope :not_archived, where { state != 'archived' }
-
-  # plans
-  scope :free,         includes(:plan).where { plans.name == "free" }
-  scope :sponsored,    includes(:plan).where { plans.name == "sponsored" }
-  scope :custom,       includes(:plan).where { plans.name =~ "custom%" }
-  scope :in_paid_plan, lambda { joins(:plan).merge(Plan.paid_plans) }
-
-  # attributes queries
-  scope :with_wildcard,        where { wildcard == true }
-  scope :with_path,            where { (path != nil) & (path != '') & (path != ' ') }
-  scope :with_extra_hostnames, where { (extra_hostnames != nil) & (extra_hostnames != '') }
-  scope :with_next_cycle_plan, where { next_cycle_plan_id != nil }
-
-  # billing
-  scope :not_in_trial, lambda { where { trial_started_at < BusinessModel.days_for_trial.days.ago } }
-  scope :billable, lambda {
-    active.where { plan_id >> Plan.paid_plans.map(&:id) & next_cycle_plan_id >> (Plan.paid_plans.map(&:id) + [nil]) }
-  }
-  scope :not_billable, lambda {
-    where { (state != 'active') | ((plan_id >> Plan.unpaid_plans.map(&:id) & (next_cycle_plan_id == nil)) | (next_cycle_plan_id >> Plan.unpaid_plans.map(&:id))) }
-  }
-  scope :renewable,  active.where { (plan_cycle_ended_at < Time.now.utc) & (pending_plan_id == nil) }
-  scope :refundable, lambda { where { (first_paid_plan_started_at >= BusinessModel.days_for_refund.days.ago) & (refunded_at == nil) } }
-  scope :refunded,   where { (state == 'archived') & (refunded_at != nil) }
-
-  # admin
-  scope :user_id,         lambda { |user_id| where(user_id: user_id) }
-  scope :created_between, lambda { |start_date, end_date| where { (created_at >= start_date) & (created_at < end_date) } }
-
-  # sort
-  scope :by_hostname,    lambda { |way = 'asc'| order(:hostname.send(way)) }
-  scope :by_user,        lambda { |way = 'desc'| includes(:user).order(:users => [:first_name.send(way), :email.send(way)]) }
-  scope :by_state,       lambda { |way = 'desc'| order(:state.send(way)) }
-  scope :by_plan_price,  lambda { |way = 'desc'| includes(:plan).order(:plans => :price.send(way)) }
-  scope :by_google_rank, lambda { |way = 'desc'| where { google_rank >= 0 }.order(:google_rank.send(way)) }
-  scope :by_alexa_rank,  lambda { |way = 'desc'| where { alexa_rank >= 1 }.order(:alexa_rank.send(way)) }
-  scope :by_date,        lambda { |way = 'desc'| order(:created_at.send(way)) }
-  scope :by_last_30_days_billable_player_hits_total_count, lambda { |way = 'desc'|
-    order("(sites.last_30_days_main_player_hits_total_count + sites.last_30_days_extra_player_hits_total_count) #{way}")
-  }
-  scope :by_last_30_days_extra_player_hits_total_percentage, lambda { |way = 'desc'|
-    order("CASE WHEN (sites.last_30_days_main_player_hits_total_count + sites.last_30_days_extra_player_hits_total_count) > 0
-    THEN (sites.last_30_days_extra_player_hits_total_count / CAST(sites.last_30_days_main_player_hits_total_count + sites.last_30_days_extra_player_hits_total_count AS DECIMAL))
-    ELSE -1 END #{way}")
-  }
-  scope :by_last_30_days_plan_usage_persentage, lambda { |way = 'desc'|
-    includes(:plan).
-    order("CASE WHEN (sites.plan_id IS NOT NULL AND plans.player_hits > 0)
-    THEN ((sites.last_30_days_main_player_hits_total_count + sites.last_30_days_extra_player_hits_total_count) / CAST(plans.player_hits AS DECIMAL))
-    ELSE -1 END #{way}")
-  }
-
-  # search
-  def self.search(q)
-    joins(:user).
-    where(:lower.func(:email).matches % :lower.func("%#{q}%") |
-          :lower.func(:first_name).matches % :lower.func("%#{q}%") |
-          :lower.func(:last_name).matches % :lower.func("%#{q}%") |
-          :lower.func(:hostname).matches % :lower.func("%#{q}%") |
-          :lower.func(:dev_hostnames).matches % :lower.func("%#{q}%") |
-          :lower.func(:extra_hostnames).matches % :lower.func("%#{q}%"))
   end
 
   # ===============
@@ -169,33 +97,6 @@ class Site < ActiveRecord::Base
     before_transition :on => :archive, :do => [:set_archived_at, :cancel_open_or_failed_invoices]
 
     after_transition  :to => [:suspended, :archived], :do => :delay_remove_loader_and_license # in site/templates
-  end
-
-  # =================
-  # = Class Methods =
-  # =================
-
-  # delayed method
-  def self.update_ranks(site_id)
-    site  = Site.find(site_id)
-    ranks = PageRankr.ranks(site.hostname, :alexa_global, :google)
-    site.google_rank = ranks[:google] || 0
-    site.alexa_rank  = ranks[:alexa_global]
-    site.save(validate: false) # don't validate for sites that are in_or_will_be_in_paid_plan? but when the user has no credit card (yet)
-  end
-
-  # Recurring task
-  def self.delay_update_last_30_days_counters_for_not_archived_sites
-    unless Delayed::Job.already_delayed?('%Site%update_last_30_days_counters_for_not_archived_sites%')
-      delay(:run_at => Time.new.utc.tomorrow.midnight + 1.hour).update_last_30_days_counters_for_not_archived_sites
-    end
-  end
-
-  def self.update_last_30_days_counters_for_not_archived_sites
-    delay_update_last_30_days_counters_for_not_archived_sites
-    not_archived.find_each(:batch_size => 100) do |site|
-      site.update_last_30_days_counters
-    end
   end
 
   # ====================
@@ -272,24 +173,29 @@ class Site < ActiveRecord::Base
     token
   end
 
-  def need_path?
-    hostname_with_path_needed.present?
-  end
-
   def hostname_with_path_needed
     return nil if path?
     list = %w[web.me.com web.mac.com homepage.mac.com cargocollective.com]
     list.detect { |h| h == hostname || (extra_hostnames.present? && extra_hostnames.split(', ').include?(h)) }
   end
 
-  def need_suddomain?
-    hostname_with_suddomain_needed.present?
-  end
-
-  def hostname_with_suddomain_needed
+  def hostname_with_subdomain_needed
     return nil unless wildcard?
     list = %w[tumblr.com squarespace.com posterous.com blogspot.com typepad.com]
     list.detect { |h| h == hostname || (extra_hostnames.present? && extra_hostnames.split(', ').include?(h)) }
+  end
+
+  # Boolean helpers
+  def need_path?
+    hostname_with_path_needed.present?
+  end
+
+  def need_subdomain?
+    hostname_with_subdomain_needed.present?
+  end
+
+  def archivable?
+    invoices.waiting.empty? && (!first_paid_plan_started_at? || invoices.open_or_failed.empty?)
   end
 
   def recommended_plan_name
@@ -322,47 +228,6 @@ class Site < ActiveRecord::Base
   end
   memoize :recommended_plan_name
 
-  def update_last_30_days_counters
-    self.last_30_days_main_player_hits_total_count  = 0
-    self.last_30_days_extra_player_hits_total_count = 0
-    self.last_30_days_dev_player_hits_total_count   = 0
-    usages.between(Time.now.utc.midnight - 30.days, Time.now.utc.midnight).all.each do |usage|
-      self.last_30_days_main_player_hits_total_count  += usage.main_player_hits + usage.main_player_hits_cached
-      self.last_30_days_extra_player_hits_total_count += usage.extra_player_hits + usage.extra_player_hits_cached
-      self.last_30_days_dev_player_hits_total_count   += usage.dev_player_hits + usage.dev_player_hits_cached
-    end
-    self.save
-  end
-
-  def billable_usages(options = {})
-    monthly_usages = usages.between(options[:from], options[:to]).asc(:day).map(&:billable_player_hits)
-    if options[:drop_first_zeros]
-      monthly_usages.drop_while { |usage| usage == 0 }
-    else
-      monthly_usages
-    end
-  end
-
-  def last_30_days_billable_usages
-    billable_usages(from: (30.days - 1.day).ago.midnight, to: Time.now.utc.end_of_day, drop_first_zeros: true)
-  end
-  memoize :last_30_days_billable_usages
-
-
-  def current_monthly_billable_usages
-    billable_usages(from: plan_month_cycle_started_at, to: plan_month_cycle_ended_at)
-  end
-  memoize :current_monthly_billable_usages
-
-  def current_percentage_of_plan_used
-    if in_paid_plan?
-      percentage = [(current_monthly_billable_usages.sum / plan.player_hits.to_f).round(2), 1].min
-      percentage == 0.0 && current_monthly_billable_usages.sum > 0 ? 0.01 : percentage
-    else
-      0
-    end
-  end
-
   def plan_month_cycle_started_at
     case plan.read_attribute(:cycle) # strange error in specs when using .cycle
     when 'month'
@@ -385,22 +250,15 @@ class Site < ActiveRecord::Base
     end
   end
 
-  def percentage_of_days_over_daily_limit(max_days = 60)
-    if in_paid_plan?
-      last_days       = [days_since(first_paid_plan_started_at), max_days].min
-      over_limit_days = usages.between(last_days.days.ago.utc.midnight, Time.now.utc.midnight).to_a.count { |su| su.billable_player_hits > (plan.player_hits / 30.0) }
-
-      [(over_limit_days / last_days.to_f).round(2), 1].min
-    else
-      0
-    end
-  end
-
-  def archivable?
-    invoices.waiting.empty? && (!first_paid_plan_started_at? || invoices.open_or_failed.empty?)
-  end
-
 private
+
+  def self.update_ranks(site_id)
+    site  = Site.find(site_id)
+    ranks = PageRankr.ranks(site.hostname, :alexa_global, :google)
+    site.google_rank = ranks[:google] || 0
+    site.alexa_rank  = ranks[:alexa_global]
+    site.save(validate: false) # don't validate for sites that are in_or_will_be_in_paid_plan? but when the user has no credit card (yet)
+  end
 
   # before_validation
   def set_user_attributes

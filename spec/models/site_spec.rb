@@ -72,162 +72,6 @@ describe Site do
     end
   end
 
-  describe "Scopes" do
-    before(:all) do
-      @user = FactoryGirl.create(:user)
-    end
-
-    describe "state" do
-      before(:all) do
-        Site.delete_all
-        @site_active    = FactoryGirl.create(:site, user: @user)
-        @site_archived  = FactoryGirl.create(:site, user: @user, state: "archived", archived_at: Time.utc(2010,2,28))
-        @site_suspended = FactoryGirl.create(:site, user: @user, state: "suspended")
-      end
-
-      describe "#active" do
-        specify { Site.active.all.should =~ [@site_active] }
-      end
-
-      describe "#inactive" do
-        specify { Site.inactive.all.should =~ [@site_archived, @site_suspended] }
-      end
-
-      describe "#suspended" do
-        specify { Site.suspended.all.should =~ [@site_suspended] }
-      end
-
-      describe "#archived" do
-        specify { Site.archived.all.should =~ [@site_archived] }
-      end
-
-      describe "#not_archived" do
-        specify { Site.not_archived.all.should =~ [@site_active, @site_suspended] }
-      end
-    end
-
-    describe "plan" do
-      before(:all) do
-        Site.delete_all
-        @site_free       = FactoryGirl.create(:site, user: @user, plan_id: @free_plan.id)
-        @site_sponsored = FactoryGirl.create(:site, user: @user, plan_id: @paid_plan.id)
-        @site_sponsored.sponsor!
-        @site_custom    = FactoryGirl.create(:site, user: @user, plan_id: @custom_plan.token)
-        @site_paid      = FactoryGirl.create(:site, user: @user, plan_id: @paid_plan.id)
-      end
-
-      describe "#free" do
-        specify { Site.free.all.should =~ [@site_free] }
-      end
-
-      describe "#sponsored" do
-        specify { Site.sponsored.all.should =~ [@site_sponsored] }
-      end
-
-      describe "#custom" do
-        specify { Site.custom.all.should =~ [@site_custom] }
-      end
-
-      describe "#in_paid_plan" do
-        specify { Site.in_paid_plan.all.should =~ [@site_custom, @site_paid] }
-      end
-    end
-
-    describe "attributes queries" do
-      before(:all) do
-        Site.delete_all
-        @site_wildcard        = FactoryGirl.create(:site, user: @user, wildcard: true)
-        @site_path            = FactoryGirl.create(:site, user: @user, path: "foo", path: 'foo')
-        @site_extra_hostnames = FactoryGirl.create(:site, user: @user, extra_hostnames: "foo.com")
-        @site_next_cycle_plan = FactoryGirl.create(:site, user: @user)
-        @site_next_cycle_plan.update_attribute(:next_cycle_plan_id, @free_plan.id)
-      end
-
-      describe "#with_wildcard" do
-        specify { Site.with_wildcard.all.should =~ [@site_wildcard] }
-      end
-
-      describe "#with_path" do
-        specify { Site.with_path.all.should =~ [@site_path] }
-      end
-
-      describe "#with_extra_hostnames" do
-        specify { Site.with_extra_hostnames.all.should =~ [@site_extra_hostnames] }
-      end
-
-      describe "#with_next_cycle_plan" do
-        specify { Site.with_next_cycle_plan.all.should =~ [@site_next_cycle_plan] }
-      end
-    end
-
-    describe "billing" do
-      before(:all) do
-        Site.delete_all
-        # billable
-        @site_billable     = FactoryGirl.create(:site, user: @user, plan_id: @paid_plan.id)
-        @site_will_be_paid = FactoryGirl.create(:site, user: @user, plan_id: @paid_plan.id)
-        @site_will_be_paid.update_attribute(:next_cycle_plan_id, FactoryGirl.create(:plan).id)
-
-        # not billable
-        @site_free         = FactoryGirl.create(:site, user: @user, plan_id: @free_plan.id)
-        @site_will_be_free = FactoryGirl.create(:site, user: @user, plan_id: @paid_plan.id)
-        @site_will_be_free.update_attribute(:next_cycle_plan_id, @free_plan.id)
-        @site_archived    = FactoryGirl.create(:site, user: @user, state: "archived", archived_at: Time.utc(2010,2,28))
-        @site_suspended   = FactoryGirl.create(:site, user: @user, state: "suspended")
-      end
-
-      describe "#billable" do
-        specify { Site.billable.all.should =~ [@site_billable, @site_will_be_paid] }
-      end
-
-      describe "#not_billable" do
-        specify { Site.not_billable.count.should == [@site_free, @site_will_be_free, @site_archived, @site_suspended].size }
-        specify { Site.not_billable.all.should =~ [@site_free, @site_will_be_free, @site_archived, @site_suspended] }
-      end
-    end
-
-    describe "#renewable" do
-      before(:all) do
-        Site.delete_all
-        Timecop.travel(2.months.ago) do
-          @site_renewable      = FactoryGirl.create(:site_not_in_trial, user: @user, first_paid_plan_started_at: Time.now.utc)
-          @site_suspended      = FactoryGirl.create(:site_not_in_trial, user: @user, state: 'suspended', first_paid_plan_started_at: Time.now.utc)
-          @site_archived       = FactoryGirl.create(:site_with_invoice, user: @user, first_paid_plan_started_at: Time.now.utc)
-          @site_archived.user.current_password = '123456'
-          @site_archived.archive!
-          @site_archived.should be_archived
-          @site_not_renewable3 = FactoryGirl.build(:new_site, user: @user, plan_id: @paid_plan.id, first_paid_plan_started_at: Time.now.utc)
-        end
-        @site_not_renewable3.pending_plan_id.should eql @paid_plan.id
-        @site_not_renewable4 = FactoryGirl.create(:site_with_invoice, user: @user, plan_started_at: 3.months.ago, plan_cycle_ended_at: 2.months.from_now)
-      end
-
-      specify { Site.renewable.all.should =~ [@site_renewable] }
-    end
-
-    describe "#refundable" do
-      before(:all) do
-        Site.delete_all
-        @site_refundable = FactoryGirl.create(:site, user: @user, first_paid_plan_started_at: (BusinessModel.days_for_refund-1).days.ago)
-        @site_not_refundable1 = FactoryGirl.create(:site, user: @user, first_paid_plan_started_at: (BusinessModel.days_for_refund+1).days.ago)
-        @site_not_refundable2 = FactoryGirl.create(:site, user: @user, refunded_at: Time.now.utc)
-      end
-
-      specify { Site.refundable.all.should =~ [@site_refundable] }
-    end
-
-    describe "#refunded" do
-      before(:all) do
-        Site.delete_all
-        @site_refunded_1     = FactoryGirl.create(:site, user: @user, state: 'archived', refunded_at: Time.now.utc)
-        @site_not_refunded_1 = FactoryGirl.create(:site, user: @user, state: 'active', refunded_at: Time.now.utc)
-        @site_not_refunded_2 = FactoryGirl.create(:site, user: @user, state: 'archived', refunded_at: nil)
-      end
-
-      specify { Site.refunded.all.should =~ [@site_refunded_1] }
-    end
-  end
-
   describe "Validations" do
     subject { FactoryGirl.create(:site) }
 
@@ -278,25 +122,18 @@ describe Site do
     end
 
     describe "credit card" do
-      context "with the free plan" do
-        subject { FactoryGirl.build(:site, user: FactoryGirl.create(:user, cc_type: nil, cc_last_digits: nil), plan_id: @free_plan.id) }
+      context "without credit card" do
+        subject do
+          site = FactoryGirl.build(:new_site, user: FactoryGirl.create(:user_no_cc), plan_id: @paid_plan.id)
+          site.save
+          site
+        end
         it { should be_valid }
       end
 
-      context "with any paid plan" do
-        context "without credit card" do
-          subject do
-            site = FactoryGirl.build(:new_site, user: FactoryGirl.create(:user_no_cc), plan_id: @paid_plan.id)
-            site.save
-            site
-          end
-          it { should be_valid }
-        end
-
-        context "with credit card attributes given" do
-          subject { FactoryGirl.build(:site, user_attributes: valid_cc_attributes, plan_id: @paid_plan.id) }
-          it { should be_valid }
-        end
+      context "with credit card attributes given" do
+        subject { FactoryGirl.build(:site, user_attributes: valid_cc_attributes, plan_id: @paid_plan.id) }
+        it { should be_valid }
       end
     end
 
@@ -333,7 +170,6 @@ describe Site do
         subject { FactoryGirl.create(:site, plan_id: @paid_plan.id) }
 
         describe "when updating a site in paid plan" do
-
           it "needs current_password" do
             subject.update_attributes(plan_id: @custom_plan.token).should be_false
             subject.errors[:base].should include I18n.t('activerecord.errors.models.site.attributes.base.current_password_needed')
@@ -489,103 +325,32 @@ describe Site do
   end # Validations
 
   describe "Attributes Accessors" do
-    describe "hostname=" do
-      %w[ÉCOLE ÉCOLE.fr ÜPPER.de ASDASD.COM 124.123.151.123 mIx3Dd0M4iN.CoM].each do |host|
-        it "should downcase hostname: #{host}" do
-          site = FactoryGirl.build(:new_site, hostname: host)
-          site.hostname.should == host.downcase
+    %w[hostname extra_hostnames dev_hostnames].each do |attr|
+      describe "#{attr}=" do
+        it "calls Hostname.clean" do
+          site = FactoryGirl.build(:new_site)
+          Hostname.should_receive(:clean).with("foo.com")
+
+          site.send("#{attr}=", "foo.com")
         end
-      end
-
-      it "should clean valid hostname (hostname should never contain /.+://(www.)?/)" do
-        site = FactoryGirl.create(:site, hostname: 'http://www.youtube.com?v=31231')
-        site.hostname.should == 'youtube.com'
-      end
-
-      %w[http://www.youtube.com?v=31231 www.youtube.com?v=31231 youtube.com?v=31231].each do |host|
-        it "should clean invalid hostname #{host} (hostname should never contain /.+://(www.)?/)" do
-          site = FactoryGirl.build(:new_site, hostname: host)
-          site.hostname.should == "youtube.com"
-        end
-      end
-
-      %w[http://www.test,joke;foo test,joke;foo].each do |host|
-        it "should clean invalid hostname #{host} (hostname should never contain /.+://(www.)?/)" do
-          site = FactoryGirl.build(:new_site, hostname: host)
-          site.hostname.should_not =~ %r(.+://(www.)?)
-        end
-      end
-    end
-
-    describe "extra_hostnames=" do
-      %w[ÉCOLE ÉCOLE.fr ÜPPER.de ASDASD.COM 124.123.151.123 mIx3Dd0M4iN.CoM].each do |host|
-        it "should downcase extra_hostnames: #{host}" do
-          site = FactoryGirl.build(:new_site, extra_hostnames: host)
-          site.extra_hostnames.should == host.downcase
-        end
-      end
-
-      it "should clean valid extra_hostnames (hostname should never contain /.+://(www.)?/)" do
-        site = FactoryGirl.create(:site, extra_hostnames: 'http://www.youtube.com?v=31231')
-        site.extra_hostnames.should == 'youtube.com'
-      end
-
-      %w[http://www.youtube.com?v=31231 www.youtube.com?v=31231 youtube.com?v=31231].each do |host|
-        it "should clean invalid extra_hostnames #{host} (extra_hostnames should never contain /.+://(www.)?/)" do
-          site = FactoryGirl.build(:new_site, extra_hostnames: host)
-          site.extra_hostnames.should == "youtube.com"
-        end
-      end
-
-      it "should clean valid extra_hostnames (dev_hostnames should never contain /.+://(www.)?/)" do
-        site = FactoryGirl.create(:site, extra_hostnames: 'http://www.jime.org:3000, 33.123.0.1:3000')
-        site.extra_hostnames.should == '33.123.0.1, jime.org'
-      end
-    end
-
-    describe "dev_hostnames=" do
-      it "should downcase dev_hostnames" do
-        dev_host = "127.]BOO[, JOKE;foo, LOCALHOST, test;ERR"
-        site = FactoryGirl.build(:new_site, dev_hostnames: dev_host)
-        site.dev_hostnames.should == dev_host.downcase
-      end
-
-      it "should clean valid dev_hostnames (dev_hostnames should never contain /.+://(www.)?/)" do
-        site = FactoryGirl.create(:site, dev_hostnames: 'http://www.localhost:3000, 127.0.0.1:3000')
-        site.dev_hostnames.should == '127.0.0.1, localhost'
-      end
-
-      it "should clean invalid dev_hostnames (dev_hostnames should never contain /.+://(www.)?/)" do
-        site = FactoryGirl.build(:new_site, dev_hostnames: 'http://www.test;err, ftp://127.]boo[:3000, www.joke;foo')
-        site.dev_hostnames.should == '127.]boo[, joke;foo, test;err'
       end
     end
 
     describe "path=" do
-      describe "should set to '' if nil is given" do
+      describe "sets to '' if nil is given" do
         subject { FactoryGirl.create(:site, path: nil) }
 
         its(:path) { should == '' }
       end
-      describe "should remove first /" do
-        subject { FactoryGirl.create(:site, path: '/users/thibaud') }
+      describe "removes first and last /" do
+        subject { FactoryGirl.create(:site, path: '/users/thibaud/') }
 
         its(:path) { should == 'users/thibaud' }
       end
-      describe "should downcase path" do
+      describe "downcases path" do
         subject { FactoryGirl.create(:site, path: '/Users/thibaud') }
 
         its(:path) { should == 'users/thibaud' }
-      end
-      describe "should last first /" do
-        subject { FactoryGirl.create(:site, path: 'users/thibaud/') }
-
-        its(:path) { should == 'users/thibaud' }
-      end
-      describe "should both /" do
-        subject { FactoryGirl.create(:site, path: '/users/') }
-
-        its(:path) { should == 'users' }
       end
     end
 
@@ -937,39 +702,17 @@ describe Site do
             @site.first_paid_plan_started_at.should be_present
           end
 
-          context "with an open invoice" do
-            before(:all) do
-              @open_invoice = FactoryGirl.create(:invoice, site: @site, state: 'open')
-            end
+          %w[open failed waiting].each do |invoice_state|
+            context "with a #{invoice_state} invoice" do
+              before(:all) do
+                @invoice = FactoryGirl.create(:invoice, site: @site, state: invoice_state)
+              end
 
-            it "doesn't archive the site" do
-              subject.archive.should be_false
-              subject.should_not be_archived
-              @open_invoice.reload.should be_open
-            end
-          end
-
-          context "with a failed invoice" do
-            before(:all) do
-              @failed_invoice = FactoryGirl.create(:invoice, site: @site, state: 'failed')
-            end
-
-            it "doesn't archive the site" do
-              subject.archive.should be_false
-              subject.should_not be_archived
-              @failed_invoice.reload.should be_failed
-            end
-          end
-
-          context "with a waiting invoice" do
-            before(:all) do
-              @waiting_invoice = FactoryGirl.create(:invoice, site: @site, state: 'waiting')
-            end
-
-            it "doesn't archive the site" do
-              subject.archive.should be_false
-              subject.should_not be_archived
-              @waiting_invoice.reload.should be_waiting
+              it "doesn't archive the site" do
+                subject.archive.should be_false
+                subject.should_not be_archived
+                @invoice.reload.state.should eql invoice_state
+              end
             end
           end
         end
@@ -1010,11 +753,11 @@ describe Site do
         subject { FactoryGirl.create(:user, first_name: "Bob") }
 
         it "should set only current_password" do
-          subject.first_name.should == "Bob"
+          subject.first_name.should eql "Bob"
           site = FactoryGirl.create(:site, user: subject, plan_id: @paid_plan.id)
           site.update_attributes(user_attributes: { first_name: "John", 'current_password' => '123456' })
-          site.user.first_name.should == "Bob"
-          site.user.current_password.should == "123456"
+          site.user.first_name.should eql "Bob"
+          site.user.current_password.should eql "123456"
         end
       end
 
@@ -1022,7 +765,7 @@ describe Site do
         specify do
           subject.dev_hostnames.should be_nil
           subject.should be_valid
-          subject.dev_hostnames.should == Site::DEFAULT_DEV_DOMAINS
+          subject.dev_hostnames.should eql Site::DEFAULT_DEV_DOMAINS
         end
       end
     end
@@ -1066,11 +809,7 @@ describe Site do
       describe "#create_and_charge_invoice" do
         it "should call #create_and_charge_invoice" do
           subject.should_receive(:create_and_charge_invoice)
-          subject.user.current_password = '123456'
-          new_paid_plan = FactoryGirl.create(:plan)
-          subject.plan_id = new_paid_plan.id
-          VCR.use_cassette('ogone/visa_payment_generic') { subject.save! }
-          subject.pending_plan_id.should == new_paid_plan.id
+          subject.save!
         end
       end
     end
@@ -1090,40 +829,6 @@ describe Site do
     end # after_create
 
   end # Callbacks
-
-  describe "Class Methods" do
-
-    describe ".delay_update_last_30_days_counters_for_not_archived_sites" do
-      it "should delay update_last_30_days_counters_for_not_archived_sites if not already delayed" do
-        expect { Site.delay_update_last_30_days_counters_for_not_archived_sites }.should change(Delayed::Job.where(:handler.matches => '%Site%update_last_30_days_counters_for_not_archived_sites%'), :count).by(1)
-      end
-
-      it "should not delay update_last_30_days_counters_for_not_archived_sites if already delayed" do
-        Site.delay_update_last_30_days_counters_for_not_archived_sites
-        expect { Site.delay_update_last_30_days_counters_for_not_archived_sites }.should change(Delayed::Job.where(:handler.matches => '%Site%update_last_30_days_counters_for_not_archived_sites%'), :count).by(0)
-      end
-    end # .delay_update_last_30_days_counters_for_not_archived_sites
-
-    describe ".update_last_30_days_counters_for_not_archived_sites" do
-      it "should delay itself" do
-        Site.should_receive(:delay_update_last_30_days_counters_for_not_archived_sites)
-        Site.update_last_30_days_counters_for_not_archived_sites
-      end
-
-      it "should call update_last_30_days_counters on each non-archived sites" do
-        @active_site = FactoryGirl.create(:site, state: 'active')
-        FactoryGirl.create(:site_usage, site_id: @active_site.id, day: Time.utc(2011,1,15).midnight, main_player_hits: 6)
-        @archived_site = FactoryGirl.create(:site, state: 'archived')
-        FactoryGirl.create(:site_usage, site_id: @archived_site.id, day: Time.utc(2011,1,15).midnight, main_player_hits: 6)
-        Timecop.travel(Time.utc(2011,1,31, 12)) do
-          Site.update_last_30_days_counters_for_not_archived_sites
-          @active_site.reload.last_30_days_main_player_hits_total_count.should == 6
-          @archived_site.reload.last_30_days_main_player_hits_total_count.should == 0
-        end
-      end
-    end # .update_last_30_days_counters_for_not_archived_sites
-
-  end # Class Methods
 
   describe "Instance Methods" do
 
@@ -1190,57 +895,7 @@ describe Site do
     end
 
     describe "#sponsor!" do
-      context "sponsor a free plan without next plan" do
-        before(:all) { Timecop.travel(1.day.ago) { @site = FactoryGirl.create(:site, plan_id: @free_plan.id) } }
-        subject { @site.reload }
-
-        it "should change plan to sponsored plan" do
-          subject.next_cycle_plan_id.should be_nil
-          subject.pending_plan_id.should be_nil
-          subject.plan_started_at.should be_present
-          initial_plan_started_at = subject.plan_started_at
-          subject.plan_cycle_started_at.should be_nil
-          subject.plan_cycle_ended_at.should be_nil
-
-          subject.sponsor!
-          subject.reload
-
-          subject.should be_in_sponsored_plan
-          subject.next_cycle_plan_id.should be_nil
-          subject.pending_plan_id.should be_nil
-          subject.plan_started_at.should be_present
-          subject.plan_started_at.should_not == initial_plan_started_at
-          subject.plan_cycle_started_at.should be_nil
-          subject.plan_cycle_ended_at.should be_nil
-        end
-      end
-
-      context "sponsor a paid plan without next plan" do
-        before(:all) { Timecop.travel(1.day.ago) { @site = FactoryGirl.create(:site_not_in_trial) } }
-        subject { @site.reload }
-
-        it "changes the plan to sponsored plan" do
-          subject.next_cycle_plan_id.should be_nil
-          subject.pending_plan_id.should be_nil
-          subject.plan_started_at.should be_present
-          initial_plan_started_at = subject.plan_started_at
-          subject.plan_cycle_started_at.should be_present
-          subject.plan_cycle_ended_at.should be_present
-
-          subject.sponsor!
-          subject.reload
-
-          subject.should be_in_sponsored_plan
-          subject.next_cycle_plan_id.should be_nil
-          subject.pending_plan_id.should be_nil
-          subject.plan_started_at.should be_present
-          subject.plan_started_at.should == initial_plan_started_at # same as an upgrade
-          subject.plan_cycle_started_at.should be_nil
-          subject.plan_cycle_ended_at.should be_nil
-        end
-      end
-
-      context "sponsor a paid plan with a next plan" do
+      describe "sponsor a site with a next plan" do
         before(:all) { Timecop.travel(1.day.ago) { @site = FactoryGirl.create(:site_not_in_trial) } }
         subject { @site.reload; @site.next_cycle_plan_id = @free_plan.id; @site }
 
@@ -1266,7 +921,7 @@ describe Site do
       end
     end
 
-    describe "#need_path?" do
+    describe "#hostname_with_path_needed & #need_path?" do
       context "with web.me.com hostname" do
         subject { FactoryGirl.build(:site, hostname: 'web.me.com') }
         its(:need_path?)                { should be_true }
@@ -1289,176 +944,26 @@ describe Site do
       end
     end
 
-    describe "#hostname_with_suddomain_needed" do
+    describe "#hostname_with_subdomain_needed & #need_subdomain?" do
       context "with tumblr.com hostname" do
         subject { FactoryGirl.build(:site, wildcard: true, hostname: 'tumblr.com') }
-        its(:need_suddomain?)      { should be_true }
-        its(:hostname_with_suddomain_needed) { should == 'tumblr.com' }
+        its(:need_subdomain?)                { should be_true }
+        its(:hostname_with_subdomain_needed) { should == 'tumblr.com' }
       end
       context "with tumblr.com extra hostnames" do
         subject { FactoryGirl.build(:site, wildcard: true, extra_hostnames: 'web.mac.com, tumblr.com') }
-        its(:need_suddomain?)      { should be_true }
-        its(:hostname_with_suddomain_needed) { should == 'tumblr.com' }
+        its(:need_subdomain?)                { should be_true }
+        its(:hostname_with_subdomain_needed) { should == 'tumblr.com' }
       end
       context "with wildcard only" do
         subject { FactoryGirl.build(:site, wildcard: true) }
-        its(:need_suddomain?)      { should be_false }
-        its(:hostname_with_suddomain_needed) { should be_nil }
+        its(:need_subdomain?)                { should be_false }
+        its(:hostname_with_subdomain_needed) { should be_nil }
       end
       context "without wildcard" do
         subject { FactoryGirl.build(:site, hostname: 'tumblr.com') }
-        its(:need_suddomain?)      { should be_false }
-        its(:hostname_with_suddomain_needed) { should be_nil }
-      end
-    end
-
-    describe "#update_last_30_days_counters" do
-      before(:all) do
-        @site = FactoryGirl.create(:site, last_30_days_main_player_hits_total_count: 1)
-        FactoryGirl.create(:site_usage, site_id: @site.id, day: Time.utc(2010,12,31).midnight,
-          main_player_hits:  6,   main_player_hits_cached:  4,
-          extra_player_hits: 5,   extra_player_hits_cached: 5,
-          dev_player_hits:   4,   dev_player_hits_cached:   6
-        )
-        FactoryGirl.create(:site_usage, site_id: @site.id, day: Time.utc(2011,1,1).midnight,
-          main_player_hits:  6,   main_player_hits_cached:  4,
-          extra_player_hits: 5,   extra_player_hits_cached: 5,
-          dev_player_hits:   4,   dev_player_hits_cached:   6
-        )
-        FactoryGirl.create(:site_usage, site_id: @site.id, day: Time.utc(2011,1,30).midnight,
-          main_player_hits:  6,   main_player_hits_cached:  4,
-          extra_player_hits: 5,   extra_player_hits_cached: 5,
-          dev_player_hits:   4,   dev_player_hits_cached:   6
-        )
-        FactoryGirl.create(:site_usage, site_id: @site.id, day: Time.utc(2011,1,31).midnight,
-          main_player_hits:  6,   main_player_hits_cached:  4,
-          extra_player_hits: 5,   extra_player_hits_cached: 5,
-          dev_player_hits:   4,   dev_player_hits_cached:   6
-        )
-      end
-
-      it "should update counters of non-archived sites from last 30 days site_usages" do
-        Timecop.travel(Time.utc(2011,1,31, 12)) do
-          @site.update_last_30_days_counters
-          @site.last_30_days_main_player_hits_total_count.should  == 20
-          @site.last_30_days_extra_player_hits_total_count.should == 20
-          @site.last_30_days_dev_player_hits_total_count.should   == 20
-        end
-      end
-    end
-
-    describe "#billable_usages" do
-      before(:all) { Timecop.travel(15.days.ago) { @site = FactoryGirl.create(:site_not_in_trial) } }
-      before(:each) do
-        @site.unmemoize_all
-        FactoryGirl.create(:site_usage, site_id: @site.id, day: 1.day.ago,  main_player_hits: 4)
-        FactoryGirl.create(:site_usage, site_id: @site.id, day: 2.days.ago, main_player_hits: 3)
-        FactoryGirl.create(:site_usage, site_id: @site.id, day: 3.days.ago, main_player_hits: 2)
-        FactoryGirl.create(:site_usage, site_id: @site.id, day: 4.days.ago, main_player_hits: 0)
-        FactoryGirl.create(:site_usage, site_id: @site.id, day: 5.days.ago, main_player_hits: 1)
-        FactoryGirl.create(:site_usage, site_id: @site.id, day: 6.days.ago, main_player_hits: 0)
-        FactoryGirl.create(:site_usage, site_id: @site.id, day: 7.days.ago, main_player_hits: 0)
-      end
-
-      describe "#current_monthly_billable_usages" do
-        specify { @site.current_monthly_billable_usages.should == [0, 0, 1, 0, 2, 3, 4] }
-      end
-
-      it "last_30_days_billable_usages should skip first zeros" do
-        @site.last_30_days_billable_usages.should == [1, 0, 2, 3, 4]
-      end
-
-    end
-
-    describe "#current_monthly_billable_usages.sum & #current_percentage_of_plan_used" do
-      before(:all) { @site = FactoryGirl.create(:site) }
-      before(:each) do
-        FactoryGirl.create(:site_usage, site_id: @site.id, day: Time.utc(2011,1,30),
-          main_player_hits:  1, main_player_hits_cached:  2,
-          extra_player_hits: 3, extra_player_hits_cached: 4,
-          dev_player_hits:   4, dev_player_hits_cached:   6
-        )
-        FactoryGirl.create(:site_usage, site_id: @site.id, day: Time.utc(2011,3,30),
-          main_player_hits:  5, main_player_hits_cached:  6,
-          extra_player_hits: 7, extra_player_hits_cached: 8,
-          dev_player_hits:   4, dev_player_hits_cached:   6
-        )
-        FactoryGirl.create(:site_usage, site_id: @site.id, day: Time.utc(2011,4,30),
-        main_player_hits:   9, main_player_hits_cached:  10,
-        extra_player_hits: 11, extra_player_hits_cached: 12,
-        dev_player_hits:    4, dev_player_hits_cached:    6
-        )
-      end
-
-      context "with monthly plan" do
-        before(:all) do
-          @site.unmemoize_all
-          @site.plan.cycle            = "month"
-          @site.plan.player_hits      = 100
-          @site.plan_cycle_started_at = Time.utc(2011,3,20)
-          @site.plan_cycle_ended_at   = Time.utc(2011,4,20)
-          Timecop.travel(Time.utc(2011,3,25))
-        end
-        after(:all) { Timecop.return }
-        subject { @site }
-
-        its("current_monthly_billable_usages.sum") { should == 5 + 6 + 7 + 8 }
-        its(:current_percentage_of_plan_used)     { should == 26 / 100.0 }
-      end
-
-      context "with monthly plan and overage" do
-        before(:all) do
-          @site.unmemoize_all
-          @site.plan.cycle            = "month"
-          @site.plan.player_hits      = 10
-          @site.plan_cycle_started_at = Time.utc(2011,4,20)
-          @site.plan_cycle_ended_at   = Time.utc(2011,5,20)
-          Timecop.travel(Time.utc(2011,4,25))
-        end
-        after(:all) { Timecop.return }
-        subject { @site }
-
-        its("current_monthly_billable_usages.sum") { should == 9 + 10 + 11 + 12 }
-        its(:current_percentage_of_plan_used)     { should == 1 }
-      end
-
-      context "with yearly plan" do
-        before(:all) do
-          @site.unmemoize_all
-          @site.plan.cycle            = "year"
-          @site.plan.player_hits      = 100
-          @site.plan_cycle_started_at = Time.utc(2011,1,20)
-          @site.plan_cycle_ended_at   = Time.utc(2012,1,20)
-          Timecop.travel(Time.utc(2011,3,25))
-        end
-        after(:all) { Timecop.return }
-        subject { @site }
-
-        its("current_monthly_billable_usages.sum") { should == 5 + 6 + 7 + 8 }
-        its(:current_percentage_of_plan_used)     { should == 26 / 100.0 }
-      end
-
-      context "with yearly plan (other date)" do
-        before(:all) do
-          @site.unmemoize_all
-          @site.plan.cycle            = "year"
-          @site.plan.player_hits      = 1000
-          @site.plan_cycle_started_at = Time.utc(2011,1,20)
-          @site.plan_cycle_ended_at   = Time.utc(2012,1,20)
-          Timecop.travel(Time.utc(2011,1,31))
-        end
-        after(:all) { Timecop.return }
-        subject { @site }
-
-        its("current_monthly_billable_usages.sum") { should == 1 + 2 + 3 + 4 }
-        its(:current_percentage_of_plan_used)     { should == 10 / 1000.0 }
-      end
-    end
-
-    describe "#current_percentage_of_plan_used" do
-      it "should return 0 if plan player_hits is 0" do
-        site = FactoryGirl.create(:site, plan_id: @free_plan.id)
-        site.current_percentage_of_plan_used.should == 0
+        its(:need_subdomain?)                { should be_false }
+        its(:hostname_with_subdomain_needed) { should be_nil }
       end
     end
 
@@ -1518,73 +1023,6 @@ describe Site do
 
         its(:plan_month_cycle_started_at) { should == Time.utc(2012,1,28).midnight }
         its(:plan_month_cycle_ended_at)   { should == Time.utc(2012,2,27).end_of_day }
-      end
-    end
-
-    describe "#percentage_of_days_over_daily_limit(60)" do
-      context "with free_plan" do
-        subject { FactoryGirl.create(:site, plan_id: @free_plan.id) }
-
-        its(:percentage_of_days_over_daily_limit) { should == 0 }
-      end
-
-      context "with paid plan" do
-        before(:all) do
-          @site = FactoryGirl.create(:site, plan_id: FactoryGirl.create(:plan, player_hits: 30 * 300).id, first_paid_plan_started_at: Time.utc(2011,1,1))
-        end
-
-        describe "with 1 historic day and 1 over limit" do
-          before(:each) do
-            FactoryGirl.create(:site_usage, site_id: @site.id, day: Time.utc(2011,1,1),
-              main_player_hits:  100, main_player_hits_cached:  100,
-              extra_player_hits: 100, extra_player_hits_cached: 100,
-              dev_player_hits:   100, dev_player_hits_cached:   100
-            )
-            Timecop.travel(Time.utc(2011,1,2))
-          end
-          after(:each) { Timecop.return }
-          subject { @site }
-
-          its(:percentage_of_days_over_daily_limit) { should == 1.0 }
-        end
-
-        describe "with 2 historic days and 1 over limit" do
-          before(:each) do
-            FactoryGirl.create(:site_usage, site_id: @site.id, day: Time.utc(2011,1,1), main_player_hits: 400)
-            FactoryGirl.create(:site_usage, site_id: @site.id, day: Time.utc(2011,1,2), main_player_hits: 300)
-            Timecop.travel(Time.utc(2011,1,3))
-          end
-          after(:each) { Timecop.return }
-          subject { @site }
-
-          its(:percentage_of_days_over_daily_limit) { should == 0.5 }
-        end
-
-        describe "with 5 historic days and 2 over limit" do
-          before(:each) do
-            FactoryGirl.create(:site_usage, site_id: @site.id, day: Time.utc(2011,1,1), main_player_hits: 400)
-            FactoryGirl.create(:site_usage, site_id: @site.id, day: Time.utc(2011,1,2), main_player_hits: 300)
-            FactoryGirl.create(:site_usage, site_id: @site.id, day: Time.utc(2011,1,3), main_player_hits: 500)
-            Timecop.travel(Time.utc(2011,1,6))
-          end
-          after(:each) { Timecop.return }
-          subject { @site }
-
-          its(:percentage_of_days_over_daily_limit) { should == 2 / 5.0 }
-        end
-
-        describe "with >60 historic days and 2 over limit" do
-          before(:each) do
-            FactoryGirl.create(:site_usage, site_id: @site.id, day: Time.utc(2011,1,1), main_player_hits: 400)
-            FactoryGirl.create(:site_usage, site_id: @site.id, day: Time.utc(2011,2,1), main_player_hits: 500)
-            FactoryGirl.create(:site_usage, site_id: @site.id, day: Time.utc(2011,3,1), main_player_hits: 500)
-            Timecop.travel(Time.utc(2011,4,1))
-          end
-          after(:each) { Timecop.return }
-          subject { @site }
-
-          its(:percentage_of_days_over_daily_limit) { should == (2 / 60.0).round(2) }
-        end
       end
     end
 
