@@ -1,6 +1,7 @@
 source 'http://rubygems.org'
 
-gem 'rails',                 '3.1.0'
+gem 'rails', :git => 'git://github.com/rails/rails.git', :branch => '3-1-stable'
+# gem 'rails',                 '3.1.0'
 
 # Gems used only for assets and not required
 # in production environments by default.
@@ -100,6 +101,7 @@ group :development, :test do
   gem 'log_buddy'
   gem 'timecop'
   gem 'rspec-rails', '~> 2.6.1'
+  gem 'jasmine-headless-webkit'
   # gem 'ruby-debug19'
 end
 
@@ -118,6 +120,7 @@ group :guard do
   gem 'rb-fsevent', :git => 'git://github.com/ttilley/rb-fsevent.git', :branch => 'pre-compiled-gem-one-off'
   gem 'growl_notify'
   gem 'guard', :git => 'git://github.com/guard/guard.git'
+  # gem 'guard', :path => '/Users/Thibaud/Codes/guard'
   gem 'guard-bundler'
   gem 'guard-pow'
   gem 'guard-livereload'
@@ -142,5 +145,4 @@ group :test do
 
   # Js test
   gem 'jasmine', '~> 1.1.0.rc'
-  gem 'jasmine-headless-webkit' #, :git => 'git://github.com/johnbintz/jasmine-headless-webkit.git'
 end
