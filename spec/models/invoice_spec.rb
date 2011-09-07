@@ -360,7 +360,7 @@ describe Invoice do
           @user = FactoryGirl.create(:user)
           @site1 = FactoryGirl.create(:site, user: @user)
 
-          @site1 = FactoryGirl.build(:new_site, plan_id: @paid_plan.id, user: @user)
+          @site1 = FactoryGirl.build(:site_not_in_trial, plan_id: @paid_plan.id, user: @user, first_paid_plan_started_at: Time.now.utc)
           @site1.pend_plan_changes
           @site1.save!
 

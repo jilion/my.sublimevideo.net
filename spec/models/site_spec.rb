@@ -35,17 +35,17 @@ describe Site do
     its(:plan)                          { should be_present }
     its(:pending_plan)                  { should be_nil }
     its(:hostname)                      { should =~ /jilion[0-9]+\.com/ }
-    its(:dev_hostnames)                 { should == "127.0.0.1, localhost" }
+    its(:dev_hostnames)                 { should eql "127.0.0.1, localhost" }
     its(:extra_hostnames)               { should be_nil }
     its(:path)                          { should be_nil }
     its(:wildcard)                      { should be_false }
     its(:token)                         { should =~ /^[a-z0-9]{8}$/ }
     its(:license)                       { should_not be_present }
     its(:loader)                        { should_not be_present }
-    its(:player_mode)                   { should == "stable" }
-    its(:plan_started_at)               { should == Time.now.utc.midnight }
-    its(:plan_cycle_started_at)         { should == Time.now.utc.midnight }
-    its(:plan_cycle_ended_at)           { should == (Time.now.utc.midnight + 1.month - 1.day).to_datetime.end_of_day }
+    its(:player_mode)                   { should eql "stable" }
+    its(:plan_started_at)               { should eql Time.now.utc.midnight }
+    its(:plan_cycle_started_at)         { should be_nil }
+    its(:plan_cycle_ended_at)           { should be_nil }
     its(:pending_plan_started_at)       { should be_nil }
     its(:pending_plan_cycle_started_at) { should be_nil }
     its(:pending_plan_cycle_ended_at)   { should be_nil }
@@ -190,12 +190,15 @@ describe Site do
       before(:all) do
         Site.delete_all
         Timecop.travel(2.months.ago) do
-          @site_renewable      = FactoryGirl.create(:site, user: @user)
-          @site_not_renewable1 = FactoryGirl.create(:site, user: @user, state: 'suspended')
-          @site_not_renewable2 = FactoryGirl.create(:site, user: @user, state: 'archived')
+          @site_renewable      = FactoryGirl.create(:site_not_in_trial, user: @user, first_paid_plan_started_at: Time.now.utc)
+          @site_suspended      = FactoryGirl.create(:site_not_in_trial, user: @user, state: 'suspended', first_paid_plan_started_at: Time.now.utc)
+          @site_archived       = FactoryGirl.create(:site_with_invoice, user: @user, first_paid_plan_started_at: Time.now.utc)
+          @site_archived.user.current_password = '123456'
+          @site_archived.archive!
+          @site_archived.should be_archived
           @site_not_renewable3 = FactoryGirl.build(:new_site, user: @user, plan_id: @paid_plan.id, first_paid_plan_started_at: Time.now.utc)
         end
-        @site_not_renewable3.pending_plan_id.should == @paid_plan.id
+        @site_not_renewable3.pending_plan_id.should eql @paid_plan.id
         @site_not_renewable4 = FactoryGirl.create(:site_with_invoice, user: @user, plan_started_at: 3.months.ago, plan_cycle_ended_at: 2.months.from_now)
       end
 
@@ -601,14 +604,14 @@ describe Site do
         subject { @site }
 
         its(:plan_id)            { should be_nil }
-        its(:pending_plan_id)    { should == @free_plan.id }
+        its(:pending_plan_id)    { should eql @free_plan.id }
         its(:next_cycle_plan_id) { should be_nil }
 
         describe "should prevent new plan_id update while pending_plan_id is present" do
           before(:all) { subject.plan_id = @paid_plan.id }
 
           its(:plan_id)            { should be_nil }
-          its(:pending_plan_id)    { should == @free_plan.id }
+          its(:pending_plan_id)    { should eql @free_plan.id }
           its(:next_cycle_plan_id) { should be_nil }
         end
       end
@@ -620,7 +623,7 @@ describe Site do
         subject { @site }
 
         its(:plan_id)            { should be_nil }
-        its(:pending_plan_id)    { should == @custom_plan.id }
+        its(:pending_plan_id)    { should eql @custom_plan.id }
         its(:next_cycle_plan_id) { should be_nil }
       end
 
@@ -645,8 +648,8 @@ describe Site do
             before(:each) { @site.reload.plan_id = @paid_plan.id }
             subject { @site }
 
-            its(:plan_id)            { should == @free_plan.id }
-            its(:pending_plan_id)    { should == @paid_plan.id }
+            its(:plan_id)            { should eql @free_plan.id }
+            its(:pending_plan_id)    { should eql @paid_plan.id }
             its(:next_cycle_plan_id) { should be_nil }
           end
 
@@ -654,8 +657,8 @@ describe Site do
             before(:each) { @site.reload.plan_id = @paid_plan_yearly.id }
             subject { @site }
 
-            its(:plan_id)            { should == @free_plan.id }
-            its(:pending_plan_id)    { should == @paid_plan_yearly.id }
+            its(:plan_id)            { should eql @free_plan.id }
+            its(:pending_plan_id)    { should eql @paid_plan_yearly.id }
             its(:next_cycle_plan_id) { should be_nil }
           end
 
@@ -663,7 +666,7 @@ describe Site do
             before(:each) { @site.reload.plan_id = @sponsored_plan.id }
             subject { @site }
 
-            its(:plan_id)            { should == @free_plan.id }
+            its(:plan_id)            { should eql @free_plan.id }
             its(:pending_plan_id)    { should be_nil }
             its(:next_cycle_plan_id) { should be_nil }
           end
@@ -678,8 +681,8 @@ describe Site do
             before(:each) { @site.reload.plan_id = @paid_plan2.id }
             subject { @site }
 
-            its(:plan_id)            { should == @paid_plan.id }
-            its(:pending_plan_id)    { should == @paid_plan2.id }
+            its(:plan_id)            { should eql @paid_plan.id }
+            its(:pending_plan_id)    { should eql @paid_plan2.id }
             its(:next_cycle_plan_id) { should be_nil }
           end
 
@@ -687,8 +690,8 @@ describe Site do
             before(:each) { @site.reload.next_cycle_plan_id = @paid_plan_yearly.id; @site.plan_id = @paid_plan2.id }
             subject { @site }
 
-            its(:plan_id)            { should == @paid_plan.id }
-            its(:pending_plan_id)    { should == @paid_plan2.id }
+            its(:plan_id)            { should eql @paid_plan.id }
+            its(:pending_plan_id)    { should eql @paid_plan2.id }
             its(:next_cycle_plan_id) { should be_nil }
           end
 
@@ -696,7 +699,7 @@ describe Site do
             before(:each) { @site.reload.plan_id = @paid_plan.id }
             subject { @site }
 
-            its(:plan_id)            { should == @paid_plan.id }
+            its(:plan_id)            { should eql @paid_plan.id }
             its(:pending_plan_id)    { should be_nil }
             its(:next_cycle_plan_id) { should be_nil }
           end
@@ -705,8 +708,8 @@ describe Site do
             before(:each) { @site.reload.plan_id = @paid_plan_yearly.id }
             subject { @site }
 
-            its(:plan_id)            { should == @paid_plan.id }
-            its(:pending_plan_id)    { should == @paid_plan_yearly.id }
+            its(:plan_id)            { should eql @paid_plan.id }
+            its(:pending_plan_id)    { should eql @paid_plan_yearly.id }
             its(:next_cycle_plan_id) { should be_nil }
           end
 
@@ -714,8 +717,8 @@ describe Site do
             before(:each) { @site.reload.plan_id = @custom_plan.token }
             subject { @site }
 
-            its(:plan_id)            { should == @paid_plan.id }
-            its(:pending_plan_id)    { should == @custom_plan.id }
+            its(:plan_id)            { should eql @paid_plan.id }
+            its(:pending_plan_id)    { should eql @custom_plan.id }
             its(:next_cycle_plan_id) { should be_nil }
           end
 
@@ -723,7 +726,7 @@ describe Site do
             before(:each) { @site.reload.plan_id = @custom_plan.id }
             subject { @site }
 
-            its(:plan_id)            { should == @paid_plan.id }
+            its(:plan_id)            { should eql @paid_plan.id }
             its(:pending_plan_id)    { should be_nil }
             its(:next_cycle_plan_id) { should be_nil }
           end
@@ -732,7 +735,7 @@ describe Site do
             before(:each) { @site.reload.plan_id = @sponsored_plan.id }
             subject { @site }
 
-            its(:plan_id)            { should == @paid_plan.id }
+            its(:plan_id)            { should eql @paid_plan.id }
             its(:pending_plan_id)    { should be_nil }
             its(:next_cycle_plan_id) { should be_nil }
           end
@@ -746,8 +749,8 @@ describe Site do
         end
         subject { @site }
 
-        its(:plan_id)            { should == @paid_plan_yearly.id }
-        its(:pending_plan_id)    { should == @paid_plan_yearly2.id }
+        its(:plan_id)            { should eql @paid_plan_yearly.id }
+        its(:pending_plan_id)    { should eql @paid_plan_yearly2.id }
         its(:next_cycle_plan_id) { should be_nil }
       end
 
@@ -759,135 +762,55 @@ describe Site do
               @site.should be_in_trial
             end
 
-            describe "free" do
-              before(:each) { @site.reload.plan_id = @free_plan.id }
-              subject { @site }
+            { free: :free_plan, monthly: :paid_plan, yearly: :paid_plan_yearly }.each do |plan_name, plan|
+              describe plan_name do
+                before(:each) { @site.reload.plan_id = instance_variable_get("@#{plan}").id }
+                subject { @site }
 
-              its(:plan_id)            { should == @paid_plan2.id }
-              its(:pending_plan_id)    { should == @free_plan.id }
-              its(:next_cycle_plan_id) { should be_nil }
-            end
-
-            describe "monthly" do
-              before(:each) { @site.reload.plan_id = @paid_plan.id }
-              subject { @site }
-
-              its(:plan_id)            { should == @paid_plan2.id }
-              its(:pending_plan_id)    { should == @paid_plan.id }
-              its(:next_cycle_plan_id) { should be_nil }
-            end
-
-            describe "yearly" do
-              before(:each) { @site.reload.plan_id = @paid_plan_yearly.id }
-              subject { @site }
-
-              its(:plan_id)            { should == @paid_plan2.id }
-              its(:pending_plan_id)    { should == @paid_plan_yearly.id }
-              its(:next_cycle_plan_id) { should be_nil }
-            end
-          end
-
-          describe "yearly =>" do
-            before(:all) do
-              @site = FactoryGirl.create(:new_site, plan: @paid_plan_yearly2)
-              @site.should be_in_trial
-            end
-
-            describe "free" do
-              before(:each) { @site.reload.plan_id = @free_plan.id }
-              subject { @site }
-
-              its(:plan_id)            { should == @paid_plan_yearly2.id }
-              its(:pending_plan_id)    { should == @free_plan.id }
-              its(:next_cycle_plan_id) { should be_nil }
-            end
-
-            describe "monthly" do
-              before(:each) { @site.reload.plan_id = @paid_plan.id }
-              subject { @site }
-
-              its(:plan_id)            { should == @paid_plan_yearly2.id }
-              its(:pending_plan_id)    { should == @paid_plan.id }
-              its(:next_cycle_plan_id) { should be_nil }
-            end
-
-            describe "yearly" do
-              before(:each) { @site.reload.plan_id = @paid_plan_yearly.id }
-              subject { @site }
-
-              its(:plan_id)            { should == @paid_plan_yearly2.id }
-              its(:pending_plan_id)    { should == @paid_plan_yearly.id }
-              its(:next_cycle_plan_id) { should be_nil }
+                its(:plan_id)            { should eql @paid_plan2.id }
+                its(:pending_plan_id)    { should eql instance_variable_get("@#{plan}").id }
+                its(:next_cycle_plan_id) { should be_nil }
+              end
             end
           end
         end
 
         context "after trial" do
-          describe "monthly =>" do
+          context "first_paid_plan_started_at is nil" do
             before(:all) do
-              @site = FactoryGirl.create(:new_site, plan: @paid_plan2, trial_started_at: BusinessModel.days_for_trial.days.ago)
+              @site = FactoryGirl.create(:site_not_in_trial, plan: @paid_plan2, first_paid_plan_started_at: nil)
+              @site.first_paid_plan_started_at.should be_nil
               @site.should_not be_in_trial
             end
 
-            describe "free" do
-              before(:each) { @site.reload.plan_id = @free_plan.id }
-              subject { @site }
+            { free: :free_plan, monthly: :paid_plan, yearly: :paid_plan_yearly }.each do |plan_name, plan|
+              describe plan_name do
+                before(:each) { @site.reload.plan_id = instance_variable_get("@#{plan}").id }
+                subject { @site }
 
-              its(:plan_id)            { should == @paid_plan2.id }
-              its(:pending_plan_id)    { should be_nil }
-              its(:next_cycle_plan_id) { should == @free_plan.id }
-            end
-
-            describe "monthly" do
-              before(:each) { @site.reload.plan_id = @paid_plan.id }
-              subject { @site }
-
-              its(:plan_id)            { should == @paid_plan2.id }
-              its(:pending_plan_id)    { should be_nil }
-              its(:next_cycle_plan_id) { should == @paid_plan.id }
-            end
-
-            describe "yearly" do
-              before(:each) { @site.reload.plan_id = @paid_plan_yearly.id }
-              subject { @site }
-
-              its(:plan_id)            { should == @paid_plan2.id }
-              its(:pending_plan_id)    { should be_nil }
-              its(:next_cycle_plan_id) { should == @paid_plan_yearly.id }
+                its(:plan_id)            { should eql @paid_plan2.id }
+                its(:pending_plan_id)    { should eql instance_variable_get("@#{plan}").id }
+                its(:next_cycle_plan_id) { should be_nil }
+              end
             end
           end
 
-          describe "yearly =>" do
+          context "first_paid_plan_started_at is not nil" do
             before(:all) do
-              @site = FactoryGirl.create(:new_site, plan: @paid_plan_yearly2, trial_started_at: BusinessModel.days_for_trial.days.ago)
+              @site = FactoryGirl.create(:site_with_invoice, plan_id: @paid_plan2.id, first_paid_plan_started_at: Time.now.utc)
+              @site.first_paid_plan_started_at.should be_present
               @site.should_not be_in_trial
             end
 
-            describe "free" do
-              before(:each) { @site.reload.plan_id = @free_plan.id }
-              subject { @site }
+            { free: :free_plan, monthly: :paid_plan, yearly: :paid_plan_yearly }.each do |plan_name, plan|
+              describe plan_name do
+                before(:each) { @site.reload.plan_id = instance_variable_get("@#{plan}").id }
+                subject { @site }
 
-              its(:plan_id)            { should == @paid_plan_yearly2.id }
-              its(:pending_plan_id)    { should be_nil }
-              its(:next_cycle_plan_id) { should == @free_plan.id }
-            end
-
-            describe "monthly" do
-              before(:each) { @site.reload.plan_id = @paid_plan.id }
-              subject { @site }
-
-              its(:plan_id)            { should == @paid_plan_yearly2.id }
-              its(:pending_plan_id)    { should be_nil }
-              its(:next_cycle_plan_id) { should == @paid_plan.id }
-            end
-
-            describe "yearly" do
-              before(:each) { @site.reload.plan_id = @paid_plan_yearly.id }
-              subject { @site }
-
-              its(:plan_id)            { should == @paid_plan_yearly2.id }
-              its(:pending_plan_id)    { should be_nil }
-              its(:next_cycle_plan_id) { should == @paid_plan_yearly.id }
+                its(:plan_id)            { should eql @paid_plan2.id }
+                its(:pending_plan_id)    { should be_nil }
+                its(:next_cycle_plan_id) { should eql instance_variable_get("@#{plan}").id }
+              end
             end
           end
         end
@@ -1105,7 +1028,7 @@ describe Site do
     end
 
     describe "before_save" do
-      subject { FactoryGirl.create(:site_with_invoice) }
+      subject { FactoryGirl.create(:site_with_invoice, first_paid_plan_started_at: Time.now.utc) }
 
       describe "#clear_alerts_sent_at" do
         specify do
@@ -1293,10 +1216,10 @@ describe Site do
       end
 
       context "sponsor a paid plan without next plan" do
-        before(:all) { Timecop.travel(1.day.ago) { @site = FactoryGirl.create(:site) } }
+        before(:all) { Timecop.travel(1.day.ago) { @site = FactoryGirl.create(:site_not_in_trial) } }
         subject { @site.reload }
 
-        it "should change plan to sponsored plan" do
+        it "changes the plan to sponsored plan" do
           subject.next_cycle_plan_id.should be_nil
           subject.pending_plan_id.should be_nil
           subject.plan_started_at.should be_present
@@ -1318,10 +1241,10 @@ describe Site do
       end
 
       context "sponsor a paid plan with a next plan" do
-        before(:all) { Timecop.travel(1.day.ago) { @site = FactoryGirl.create(:site) } }
+        before(:all) { Timecop.travel(1.day.ago) { @site = FactoryGirl.create(:site_not_in_trial) } }
         subject { @site.reload; @site.next_cycle_plan_id = @free_plan.id; @site }
 
-        it "should change plan to sponsored plan" do
+        it "changes the plan to sponsored plan" do
           subject.next_cycle_plan_id.should be_present
           subject.pending_plan_id.should be_nil
           subject.plan_started_at.should be_present
@@ -1425,7 +1348,7 @@ describe Site do
     end
 
     describe "#billable_usages" do
-      before(:all) { Timecop.travel(15.days.ago) { @site = FactoryGirl.create(:site) } }
+      before(:all) { Timecop.travel(15.days.ago) { @site = FactoryGirl.create(:site_not_in_trial) } }
       before(:each) do
         @site.unmemoize_all
         FactoryGirl.create(:site_usage, site_id: @site.id, day: 1.day.ago,  main_player_hits: 4)
@@ -1476,6 +1399,7 @@ describe Site do
           @site.plan_cycle_ended_at   = Time.utc(2011,4,20)
           Timecop.travel(Time.utc(2011,3,25))
         end
+        after(:all) { Timecop.return }
         subject { @site }
 
         its("current_monthly_billable_usages.sum") { should == 5 + 6 + 7 + 8 }
@@ -1491,6 +1415,7 @@ describe Site do
           @site.plan_cycle_ended_at   = Time.utc(2011,5,20)
           Timecop.travel(Time.utc(2011,4,25))
         end
+        after(:all) { Timecop.return }
         subject { @site }
 
         its("current_monthly_billable_usages.sum") { should == 9 + 10 + 11 + 12 }
@@ -1574,12 +1499,11 @@ describe Site do
           @site.plan_cycle_ended_at   = Time.utc(2011,12,31).end_of_day
           Timecop.travel(Time.utc(2011,6,10))
         end
+        after(:all) { Timecop.return }
         subject { @site }
 
         its(:plan_month_cycle_started_at) { should == Time.utc(2011,6,1).midnight }
         its(:plan_month_cycle_ended_at)   { should == Time.utc(2011,6,30).end_of_day }
-
-        after(:all) { Timecop.return }
       end
 
       context "with yearly plan (other date)" do
@@ -1589,12 +1513,11 @@ describe Site do
           @site.plan_cycle_ended_at   = Time.utc(2012,2,27).end_of_day
           Timecop.travel(Time.utc(2012,2,10))
         end
+        after(:all) { Timecop.return }
         subject { @site }
 
         its(:plan_month_cycle_started_at) { should == Time.utc(2012,1,28).midnight }
         its(:plan_month_cycle_ended_at)   { should == Time.utc(2012,2,27).end_of_day }
-
-        after(:all) { Timecop.return }
       end
     end
 
@@ -1619,11 +1542,10 @@ describe Site do
             )
             Timecop.travel(Time.utc(2011,1,2))
           end
+          after(:each) { Timecop.return }
           subject { @site }
 
           its(:percentage_of_days_over_daily_limit) { should == 1.0 }
-
-          after(:each) { Timecop.return }
         end
 
         describe "with 2 historic days and 1 over limit" do
@@ -1632,11 +1554,10 @@ describe Site do
             FactoryGirl.create(:site_usage, site_id: @site.id, day: Time.utc(2011,1,2), main_player_hits: 300)
             Timecop.travel(Time.utc(2011,1,3))
           end
+          after(:each) { Timecop.return }
           subject { @site }
 
           its(:percentage_of_days_over_daily_limit) { should == 0.5 }
-
-          after(:each) { Timecop.return }
         end
 
         describe "with 5 historic days and 2 over limit" do
@@ -1646,11 +1567,10 @@ describe Site do
             FactoryGirl.create(:site_usage, site_id: @site.id, day: Time.utc(2011,1,3), main_player_hits: 500)
             Timecop.travel(Time.utc(2011,1,6))
           end
+          after(:each) { Timecop.return }
           subject { @site }
 
           its(:percentage_of_days_over_daily_limit) { should == 2 / 5.0 }
-
-          after(:each) { Timecop.return }
         end
 
         describe "with >60 historic days and 2 over limit" do
@@ -1660,11 +1580,10 @@ describe Site do
             FactoryGirl.create(:site_usage, site_id: @site.id, day: Time.utc(2011,3,1), main_player_hits: 500)
             Timecop.travel(Time.utc(2011,4,1))
           end
+          after(:each) { Timecop.return }
           subject { @site }
 
           its(:percentage_of_days_over_daily_limit) { should == (2 / 60.0).round(2) }
-
-          after(:each) { Timecop.return }
         end
       end
     end

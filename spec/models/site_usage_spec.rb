@@ -10,9 +10,9 @@ describe SiteUsage do
       @trackers = LogAnalyzer.parse(@log.file, 'LogsFileFormat::VoxcastSites')
 
       with_versioning do
-        Timecop.travel(@log.started_at - 1.minute)
-        @site1 = FactoryGirl.create(:site, :hostname => 'artofthetitle.com').tap { |s| s.token = 'ktfcm2l7'; s.save }
-        Timecop.return
+        Timecop.travel(@log.started_at - 1.minute) do
+          @site1 = FactoryGirl.create(:site, :hostname => 'artofthetitle.com').tap { |s| s.token = 'ktfcm2l7'; s.save }
+        end
         VoxcastCDN.stub(:purge)
         @site1.update_attributes(:hostname => 'bob.com')
       end

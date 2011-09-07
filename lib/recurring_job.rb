@@ -32,6 +32,7 @@ module RecurringJob
 
     def invoices_processing
       Invoice.update_pending_dates_for_first_not_paid_invoices
+      Site.activate_or_downgrade_sites_leaving_trial
       Site.renew_active_sites
       Transaction.charge_invoices
       delay_invoices_processing

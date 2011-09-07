@@ -126,7 +126,7 @@ class Invoice < ActiveRecord::Base
   # ====================
   # = Instance Methods =
   # ====================
-  
+
   def build
     build_invoice_items
     set_invoice_items_amount

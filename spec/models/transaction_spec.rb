@@ -670,8 +670,8 @@ describe Transaction do
 
       context "for a refundable site with multiple transactions all paid" do
         before(:each) do
-          @site = FactoryGirl.create(:site_with_invoice)
-          @site2 = FactoryGirl.create(:site_with_invoice, user: @site.user)
+          @site = FactoryGirl.create(:site_with_invoice, first_paid_plan_started_at: Time.now.utc)
+          @site2 = FactoryGirl.create(:site_with_invoice, user: @site.user, first_paid_plan_started_at: Time.now.utc)
           @site.plan_id = @custom_plan.token
           VCR.use_cassette("ogone/visa_payment_generic") { @site.save_without_password_validation }
           @site.without_password_validation { @site.archive }
@@ -718,8 +718,8 @@ describe Transaction do
 
       context "for a refundable site with multiple transactions: 1 paid and 1 failed" do
         before(:each) do
-          @site = FactoryGirl.create(:site_with_invoice)
-          @site2 = FactoryGirl.create(:site_with_invoice, user: @site.user)
+          @site = FactoryGirl.create(:site_with_invoice, first_paid_plan_started_at: Time.now.utc)
+          @site2 = FactoryGirl.create(:site_with_invoice, user: @site.user, first_paid_plan_started_at: Time.now.utc)
           @site.plan_id = @custom_plan.token
           VCR.use_cassette("ogone/visa_payment_generic") { @site.save_without_password_validation }
           @site.without_password_validation { @site.archive }

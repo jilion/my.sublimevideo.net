@@ -4,6 +4,84 @@ describe Site::Invoice do
 
   describe "Class Methods" do
 
+    describe ".activate_or_downgrade_sites_leaving_trial" do
+      before(:all) do
+        Site.delete_all
+        @site_in_trial                = FactoryGirl.create(:site, trial_started_at: Time.now.tomorrow)
+        @site_not_in_trial_without_cc = FactoryGirl.create(:site, user: FactoryGirl.create(:user_no_cc))
+        @site_not_in_trial_with_cc    = FactoryGirl.create(:site)
+
+        [@site_in_trial, @site_not_in_trial_without_cc, @site_not_in_trial_with_cc].each { |site| site.invoices.should be_empty }
+      end
+      before(:each) do
+        [@site_in_trial, @site_not_in_trial_without_cc, @site_not_in_trial_with_cc].each { |site| site.reload }
+
+        %w[pending_plan_cycle_started_at pending_plan_cycle_ended_at first_paid_plan_started_at].each do |attr|
+          @site_in_trial.send(attr).should be_nil
+          @site_not_in_trial_without_cc.send(attr).should be_nil
+          @site_not_in_trial_with_cc.send(attr).should be_nil
+        end
+        Delayed::Job.delete_all
+      end
+
+      shared_examples "don't charge invoice" do
+        it { Transaction.should_not_receive(:charge_by_invoice_ids) }
+      end
+
+      shared_examples "site that can't be activated" do
+        it "doesn't create invoice" do
+          site.reload.invoices.should be_empty
+        end
+
+        it "doesn't update plan cycle dates" do
+          %w[pending_plan_cycle_started_at pending_plan_cycle_ended_at first_paid_plan_started_at].each do |attr|
+            site.send(attr).should be_nil
+          end
+        end
+      end
+
+      describe "non-activatable sites" do
+        it_behaves_like "don't charge invoice"
+
+        it_behaves_like "site that can't be activated" do
+          let(:site) { @site_in_trial.reload }
+        end
+      end
+
+      describe "activatable sites belonging to a user without credit card" do
+        before(:each) { Timecop.travel(BusinessModel.days_for_trial.days.from_now) { Site.activate_or_downgrade_sites_leaving_trial } }
+        subject { @site_not_in_trial_without_cc.reload }
+
+        it_behaves_like "don't charge invoice"
+
+        it_behaves_like "site that can't be activated" do
+          let(:site) { @site_not_in_trial_without_cc.reload }
+        end
+
+        it "downgrade to free plan" do
+          subject.plan_id.should eql @free_plan.id
+        end
+      end
+
+      describe "activatable sites belonging to a user with credit card" do
+        before(:each) { Timecop.travel(BusinessModel.days_for_trial.days.from_now) { Site.activate_or_downgrade_sites_leaving_trial } }
+        subject { @site_not_in_trial_with_cc.reload }
+
+        it_behaves_like "don't charge invoice"
+
+        it "creates a non-renew invoice" do
+          subject.invoices.should have(1).item
+          subject.invoices.by_date('asc').last.should_not be_renew
+        end
+
+        it "updates plan cycle dates" do
+          %w[pending_plan_cycle_started_at pending_plan_cycle_ended_at first_paid_plan_started_at].each do |attr|
+            subject.send(attr).should be_present
+          end
+        end
+      end
+    end # .activate_or_downgrade_sites_leaving_trial
+
     describe ".renew_active_sites" do
       before(:all) do
         Site.delete_all
@@ -16,12 +94,11 @@ describe Site::Invoice do
         end
         @site_not_renewable = FactoryGirl.create(:site_with_invoice, plan_started_at: 3.months.ago, plan_cycle_ended_at: 2.months.from_now)
 
-        @site_renewable.invoices.size.should == 1
-        @site_renewable_with_downgrade_to_free_plan.invoices.size.should == 1
-        @site_renewable_with_downgrade_to_paid_plan.invoices.size.should == 1
-        @site_not_renewable.invoices.size.should == 1
+        @site_renewable.invoices.paid.should have(1).item
+        @site_renewable_with_downgrade_to_free_plan.invoices.paid.should have(1).item
+        @site_renewable_with_downgrade_to_paid_plan.invoices.paid.should have(1).item
+        @site_not_renewable.invoices.paid.should have(1).item
       end
-
       before(:each) do
         @site_renewable.reload
         @site_renewable_with_downgrade_to_free_plan.reload
@@ -37,30 +114,39 @@ describe Site::Invoice do
         Site.renew_active_sites
       end
 
-      it "should create invoices for renewable sites" do
-        @site_renewable.reload.invoices.count.should == 2
-        @site_renewable_with_downgrade_to_free_plan.reload.invoices.count.should == 1
-        @site_renewable_with_downgrade_to_paid_plan.reload.invoices.count.should == 2
-        @site_not_renewable.reload.invoices.count.should == 1
+      it "creates invoices for renewable sites only" do
+        @site_not_renewable.reload.invoices.should have(1).items
+        @site_renewable_with_downgrade_to_free_plan.reload.invoices.should have(1).items
+
+        @site_renewable.reload.invoices.should have(2).items
+        @site_renewable_with_downgrade_to_paid_plan.reload.invoices.should have(2).items
       end
 
-      it "should update plan cycle dates" do
-        @site_renewable.reload.pending_plan_cycle_started_at.should be_present
-        @site_renewable.reload.pending_plan_cycle_ended_at.should be_present
+      it "updates plan cycle dates for renewable sites only" do
+        [@site_not_renewable, @site_renewable_with_downgrade_to_free_plan].each do |site|
+          site.reload.pending_plan_cycle_started_at.should be_nil
+          site.reload.pending_plan_cycle_ended_at.should be_nil
+        end
+
+        [@site_renewable, @site_renewable_with_downgrade_to_paid_plan].each do |site|
+          site.reload.pending_plan_cycle_started_at.should be_present
+          site.reload.pending_plan_cycle_ended_at.should be_present
+        end
       end
 
-      it "should update plan of downgraded sites" do
+      it "updates plan of downgraded sites" do
         @site_renewable_with_downgrade_to_free_plan.reload.next_cycle_plan_id.should be_nil
-        @site_renewable_with_downgrade_to_free_plan.reload.plan_id.should == @free_plan.id
+        @site_renewable_with_downgrade_to_free_plan.reload.plan_id.should eql @free_plan.id
+
         @site_renewable_with_downgrade_to_paid_plan.reload.next_cycle_plan_id.should be_nil
-        @site_renewable_with_downgrade_to_paid_plan.reload.pending_plan_id.should == @custom_plan.id
+        @site_renewable_with_downgrade_to_paid_plan.reload.pending_plan_id.should eql @custom_plan.id
       end
 
-      it "should set the renew flag to true" do
+      it "sets the renew flag to true" do
+        @site_not_renewable.reload.invoices.by_date('asc').last.should_not be_renew
         @site_renewable.reload.invoices.by_date('asc').last.should be_renew
         @site_renewable_with_downgrade_to_free_plan.reload.invoices.by_date('asc').last.should_not be_renew
         @site_renewable_with_downgrade_to_paid_plan.reload.invoices.by_date('asc').last.should be_renew
-        @site_not_renewable.reload.invoices.by_date('asc').last.should_not be_renew
       end
     end # .renew_active_sites
 
@@ -278,15 +364,17 @@ describe Site::Invoice do
     describe "#in_trial?" do
       before(:all) do
         Site.delete_all
-        @site_in_trial1 = FactoryGirl.create(:site)
-        Timecop.travel((BusinessModel.days_for_trial-1).days.ago) { @site_in_trial2 = FactoryGirl.create(:site) }
-        Timecop.travel((BusinessModel.days_for_trial-1).days.ago) { @site_in_trial3 = FactoryGirl.create(:site, plan_id: @free_plan.id) }
+        @site_in_trial1 = FactoryGirl.build(:site)
+        @site_in_trial2 = FactoryGirl.create(:site)
+        Timecop.travel((BusinessModel.days_for_trial-1).days.ago) { @site_in_trial3 = FactoryGirl.create(:site) }
+        Timecop.travel((BusinessModel.days_for_trial-1).days.ago) { @site_in_trial4 = FactoryGirl.create(:site, plan_id: @free_plan.id) }
         Timecop.travel((BusinessModel.days_for_trial+1).days.ago) { @site_not_in_trial = FactoryGirl.create(:site) }
       end
 
       specify { @site_in_trial1.should be_in_trial }
       specify { @site_in_trial2.should be_in_trial }
-      specify { @site_in_trial3.should_not be_in_trial }
+      specify { @site_in_trial3.should be_in_trial }
+      specify { @site_in_trial4.should be_in_trial }
       specify { @site_not_in_trial.should_not be_in_trial }
     end
 
@@ -397,13 +485,13 @@ describe Site::Invoice do
           end
           subject { @site }
 
-          its(:pending_plan_started_at)       { should == Time.utc(2011,1,30).midnight }
+          its(:pending_plan_started_at)       { should eql Time.utc(2011,1,30).midnight }
           its(:pending_plan_cycle_started_at) { should be_nil }
           its(:pending_plan_cycle_ended_at)   { should be_nil }
           its(:plan)                          { should be_nil }
-          its(:pending_plan)                  { should == @free_plan }
+          its(:pending_plan)                  { should eql @free_plan }
           its(:next_cycle_plan)               { should be_nil }
-          it { should be_instant_charging }
+          it { should_not be_instant_charging }
         end
 
         context "with monthly paid plan" do
@@ -416,7 +504,7 @@ describe Site::Invoice do
             its(:pending_plan_started_at)       { should be_nil }
             its(:pending_plan_cycle_started_at) { should be_nil }
             its(:pending_plan_cycle_ended_at)   { should be_nil }
-            its(:plan)                          { should == @paid_plan }
+            its(:plan)                          { should eql @paid_plan }
             its(:pending_plan)                  { should be_nil }
             its(:next_cycle_plan)               { should be_nil }
             it { should_not be_instant_charging }
@@ -428,13 +516,13 @@ describe Site::Invoice do
             end
             subject { @site }
 
-            its(:pending_plan_started_at)       { should == Time.utc(2011,1,30).midnight }
-            its(:pending_plan_cycle_started_at) { should == Time.utc(2011,1,30).midnight }
-            its(:pending_plan_cycle_ended_at)   { should == Time.utc(2011,2,27).to_datetime.end_of_day }
+            its(:pending_plan_started_at)       { should eql Time.utc(2011,1,30).midnight }
+            its(:pending_plan_cycle_started_at) { should eql Time.utc(2011,1,30).midnight }
+            its(:pending_plan_cycle_ended_at)   { should eql Time.utc(2011,2,27).to_datetime.end_of_day }
             its(:plan)                          { should be_nil }
-            its(:pending_plan)                  { should == @paid_plan }
+            its(:pending_plan)                  { should eql @paid_plan }
             its(:next_cycle_plan)               { should be_nil }
-            it { should be_instant_charging }
+            it { should_not be_instant_charging }
           end
         end
 
@@ -448,7 +536,7 @@ describe Site::Invoice do
             its(:pending_plan_started_at)       { should be_nil }
             its(:pending_plan_cycle_started_at) { should be_nil }
             its(:pending_plan_cycle_ended_at)   { should be_nil }
-            its(:plan)                          { should == @paid_plan_yearly }
+            its(:plan)                          { should eql @paid_plan_yearly }
             its(:pending_plan)                  { should be_nil }
             its(:next_cycle_plan)               { should be_nil }
             it { should_not be_instant_charging }
@@ -460,254 +548,178 @@ describe Site::Invoice do
             end
             subject { @site }
 
-            its(:pending_plan_started_at)       { should == Time.utc(2011,1,30).midnight }
-            its(:pending_plan_cycle_started_at) { should == Time.utc(2011,1,30).midnight }
-            its(:pending_plan_cycle_ended_at)   { should == Time.utc(2012,1,29).to_datetime.end_of_day }
+            its(:pending_plan_started_at)       { should eql Time.utc(2011,1,30).midnight }
+            its(:pending_plan_cycle_started_at) { should eql Time.utc(2011,1,30).midnight }
+            its(:pending_plan_cycle_ended_at)   { should eql Time.utc(2012,1,29).to_datetime.end_of_day }
             its(:plan)                          { should be_nil }
-            its(:pending_plan)                  { should == @paid_plan_yearly }
+            its(:pending_plan)                  { should eql @paid_plan_yearly }
             its(:next_cycle_plan)               { should be_nil }
-            it { should be_instant_charging }
+            it { should_not be_instant_charging }
           end
         end
       end
 
       describe "upgrade site" do
-        context "from free plan to monthly paid plan" do
-          before(:all) do
-            Timecop.travel(Time.utc(2011,1,30)) { @site = FactoryGirl.create(:site, plan_id: @free_plan.id) }
-            @site.apply_pending_plan_changes
-            @site.reload.plan_id = @paid_plan.id # upgrade
-            Timecop.travel(Time.utc(2011,2,25)) { @site.pend_plan_changes }
-          end
-          subject { @site }
+        context "from free plan to paid plan" do
+          context "in trial" do
+            before(:all) do
+              @site = FactoryGirl.create(:site, plan_id: @free_plan.id)
+              @site.apply_pending_plan_changes
+              @site.reload.plan_id = @paid_plan.id # upgrade
+              Timecop.travel((BusinessModel.days_for_trial-1).days.from_now) { @site.pend_plan_changes }
+            end
+            subject { @site }
 
-          its(:pending_plan_started_at)       { should == Time.utc(2011,2,25).midnight }
-          its(:pending_plan_cycle_started_at) { should == Time.utc(2011,2,25).midnight }
-          its(:pending_plan_cycle_ended_at)   { should == Time.utc(2011,3,24).to_datetime.end_of_day }
-          its(:plan)                          { should == @free_plan }
-          its(:pending_plan)                  { should == @paid_plan }
-          its(:next_cycle_plan)               { should be_nil }
-          it { should be_instant_charging }
+            its(:pending_plan_started_at)       { should eql (BusinessModel.days_for_trial-1).days.from_now.midnight }
+            its(:pending_plan_cycle_started_at) { should be_nil }
+            its(:pending_plan_cycle_ended_at)   { should be_nil }
+            its(:plan)                          { should eql @free_plan }
+            its(:pending_plan)                  { should eql @paid_plan }
+            its(:next_cycle_plan)               { should be_nil }
+            it { should be_in_trial }
+            it { should_not be_instant_charging }
+          end
+
+          context "not in trial" do
+            before(:all) do
+              @site = FactoryGirl.create(:site_not_in_trial, plan_id: @free_plan.id, first_paid_plan_started_at: Time.now.utc)
+              @site.apply_pending_plan_changes
+              @site.reload.plan_id = @paid_plan.id # upgrade
+              Timecop.travel(BusinessModel.days_for_trial.days.from_now) { @site.pend_plan_changes }
+            end
+            subject { @site }
+
+            it { subject.pending_plan_started_at.should eql subject.plan_started_at }
+            it { subject.pending_plan_cycle_started_at.should eql subject.plan_cycle_started_at }
+            it { subject.pending_plan_cycle_ended_at.should eql subject.plan_cycle_ended_at }
+            its(:plan)                          { should eql @free_plan }
+            its(:pending_plan)                  { should eql @paid_plan }
+            its(:next_cycle_plan)               { should be_nil }
+            it { should_not be_in_trial }
+            it { should be_instant_charging }
+          end
         end
 
-        context "from free plan to yearly paid plan" do
-          before(:all) do
-            Timecop.travel(Time.utc(2011,1,30)) { @site = FactoryGirl.create(:site, plan_id: @free_plan.id) }
-            @site.apply_pending_plan_changes
-            @site.reload.plan_id = @paid_plan_yearly.id # upgrade
-            Timecop.travel(Time.utc(2011,2,25)) { @site.pend_plan_changes }
+        context "from paid plan to paid plan" do
+          context "in trial" do
+            before(:all) do
+              @site = FactoryGirl.create(:site, plan_id: @paid_plan.id)
+              @site.reload.plan_id = @paid_plan2.id # upgrade
+              Timecop.travel((BusinessModel.days_for_trial-1).days.from_now) { @site.pend_plan_changes }
+            end
+            subject { @site }
+
+            its(:pending_plan_started_at)       { should eql (BusinessModel.days_for_trial-1).days.from_now.midnight }
+            its(:pending_plan_cycle_started_at) { should be_nil }
+            its(:pending_plan_cycle_ended_at)   { should be_nil }
+            its(:plan)                          { should eql @paid_plan }
+            its(:pending_plan)                  { should eql @paid_plan2 }
+            its(:next_cycle_plan)               { should be_nil }
+            it { should be_in_trial }
+            it { should_not be_instant_charging }
           end
-          subject { @site }
 
-          its(:pending_plan_started_at)       { should == Time.utc(2011,2,25).midnight }
-          its(:pending_plan_cycle_started_at) { should == Time.utc(2011,2,25).midnight }
-          its(:pending_plan_cycle_ended_at)   { should == Time.utc(2012,2,24).to_datetime.end_of_day }
-          its(:plan)                          { should == @free_plan }
-          its(:pending_plan)                  { should == @paid_plan_yearly }
-          its(:next_cycle_plan)               { should be_nil }
-          it { should be_instant_charging }
-        end
+          context "not in trial" do
+            before(:all) do
+              @site = FactoryGirl.create(:site_not_in_trial, plan_id: @paid_plan.id, first_paid_plan_started_at: Time.now.utc)
+              @site.plan_id = @paid_plan2.id # upgrade
+              Timecop.travel(BusinessModel.days_for_trial.days.from_now) { @site.pend_plan_changes }
+            end
+            subject { @site }
 
-        context "from monthly paid plan to monthly paid plan" do
-          before(:all) do
-            Timecop.travel(Time.utc(2011,1,30)) { @site = FactoryGirl.build(:site, plan_id: @paid_plan.id) }
-            @site.reload.plan_id = @paid_plan2.id # upgrade
-            Timecop.travel(Time.utc(2011,2,25)) { @site.pend_plan_changes }
+            it { subject.pending_plan_started_at.should eql subject.plan_started_at }
+            it { subject.pending_plan_cycle_started_at.should eql subject.plan_cycle_started_at }
+            it { subject.pending_plan_cycle_ended_at.should eql subject.plan_cycle_ended_at }
+            its(:plan)                          { should eql @paid_plan }
+            its(:pending_plan)                  { should eql @paid_plan2 }
+            its(:next_cycle_plan)               { should be_nil }
+            it { should_not be_in_trial }
+            it { should be_instant_charging }
           end
-          subject { @site }
-
-          its(:pending_plan_started_at)       { should == Time.utc(2011,1,30).midnight }
-          its(:pending_plan_cycle_started_at) { should == Time.utc(2011,1,30).midnight }
-          its(:pending_plan_cycle_ended_at)   { should == Time.utc(2011,2,27).to_datetime.end_of_day }
-          its(:plan)                          { should == @paid_plan }
-          its(:pending_plan)                  { should == @paid_plan2 }
-          its(:next_cycle_plan)               { should be_nil }
-          it { should be_instant_charging }
-        end
-
-        context "from monthly paid plan to yearly paid plan" do
-          before(:all) do
-            Timecop.travel(Time.utc(2011,1,30)) { @site = FactoryGirl.build(:site, plan_id: @paid_plan.id) }
-            @site.reload.plan_id = @paid_plan_yearly.id # upgrade
-            Timecop.travel(Time.utc(2011,2,25)) { @site.pend_plan_changes }
-          end
-          subject { @site }
-
-          its(:pending_plan_started_at)       { should == Time.utc(2011,1,30).midnight }
-          its(:pending_plan_cycle_started_at) { should == Time.utc(2011,1,30).midnight }
-          its(:pending_plan_cycle_ended_at)   { should == Time.utc(2012,1,29).to_datetime.end_of_day }
-          its(:plan)                          { should == @paid_plan }
-          its(:pending_plan)                  { should == @paid_plan_yearly }
-          its(:next_cycle_plan)               { should be_nil }
-          it { should be_instant_charging }
-        end
-
-        context "from yearly paid plan to yearly paid plan" do
-          before(:all) do
-            Timecop.travel(Time.utc(2011,1,30)) { @site = FactoryGirl.build(:site, plan_id: @paid_plan_yearly.id) }
-            @site.reload.plan_id = @paid_plan_yearly2.id # upgrade
-            Timecop.travel(Time.utc(2011,2,25)) { @site.pend_plan_changes }
-          end
-          subject { @site }
-
-          its(:pending_plan_started_at)       { should == Time.utc(2011,1,30).midnight }
-          its(:pending_plan_cycle_started_at) { should == Time.utc(2011,1,30).midnight }
-          its(:pending_plan_cycle_ended_at)   { should == Time.utc(2012,1,29).to_datetime.end_of_day }
-          its(:plan)                          { should == @paid_plan_yearly }
-          its(:pending_plan)                  { should == @paid_plan_yearly2 }
-          its(:next_cycle_plan)               { should be_nil }
-          it { should be_instant_charging }
         end
       end
 
-      describe "renew/downgrade site" do
+      describe "renew site" do
         context "without downgrade" do
           before(:all) do
-            @site = FactoryGirl.build(:new_site, plan_id: @paid_plan.id)
-            Timecop.travel(Time.utc(2011,1,30)) { @site.pend_plan_changes }
+            @site = FactoryGirl.create(:site_not_in_trial, plan_id: @paid_plan.id, first_paid_plan_started_at: Time.now.utc)
             @site.apply_pending_plan_changes
-            Timecop.travel(Time.utc(2011,3,3)) { @site.pend_plan_changes }
+            Timecop.travel(1.month.from_now) { @site.pend_plan_changes }
           end
           subject { @site }
 
           its(:pending_plan_started_at)       { should be_nil }
-          its(:pending_plan_cycle_started_at) { should == Time.utc(2011,2,28).midnight }
-          its(:pending_plan_cycle_ended_at)   { should == Time.utc(2011,3,29).to_datetime.end_of_day }
-          its(:plan)                          { should == @paid_plan }
+          its(:pending_plan_cycle_started_at) { should eql 1.month.from_now.midnight }
+          its(:pending_plan_cycle_ended_at)   { should eql (2.months - 1.day).from_now.to_datetime.end_of_day }
+          its(:plan)                          { should eql @paid_plan }
           its(:pending_plan)                  { should be_nil }
           its(:next_cycle_plan)               { should be_nil }
+          it { should_not be_in_trial }
           it { should_not be_instant_charging }
         end
 
         context "with downgrade" do
-          context "from monthly paid plan to free plan but during the pending cycle" do
+          context "from paid plan to free plan but during the pending cycle" do
             before(:all) do
-              Timecop.travel(Time.utc(2011,1,1)) { @site = FactoryGirl.create(:site_with_invoice, plan_id: @paid_plan.id) }
-
-              Timecop.travel(Time.utc(2011,2,1)) do
+              @site = FactoryGirl.create(:site_not_in_trial, plan_id: @paid_plan.id, first_paid_plan_started_at: Time.now.utc)
+              @site.apply_pending_plan_changes
+              Timecop.travel(1.month.from_now) do
                 @site.pend_plan_changes
-                @site.save_without_password_validation
-                @site.invoices.last.update_attribute(:state, 'failed')
+                @site.apply_pending_plan_changes
               end
-              Timecop.travel(Time.utc(2011,2,15)) { @site.reload.plan_id = @free_plan.id } # downgrade
-              Timecop.travel(Time.utc(2011,2,16)) { @site.pend_plan_changes }
+              @site.plan_id = @free_plan.id
+
+              Timecop.travel((1.month + 15.days).from_now) { @site.pend_plan_changes }
             end
             subject { @site }
 
-            its("invoices.size")                { should == 2 }
-            its("invoices.failed.size")         { should == 1 }
             its(:pending_plan_started_at)       { should be_nil }
-            its(:pending_plan_cycle_started_at) { should == Time.utc(2011,2,1).midnight }
-            its(:pending_plan_cycle_ended_at)   { should == Time.utc(2011,2,28).to_datetime.end_of_day }
-            its(:plan)                          { should == @paid_plan }
+            its(:pending_plan_cycle_started_at) { should be_nil }
+            its(:pending_plan_cycle_ended_at)   { should be_nil }
+            its(:plan)                          { should eql @paid_plan }
             its(:pending_plan)                  { should be_nil }
-            its(:next_cycle_plan)               { should == @free_plan }
+            its(:next_cycle_plan)               { should eql @free_plan }
+            it { should_not be_in_trial }
             it { should_not be_instant_charging }
           end
 
-          context "from monthly paid plan to free plan" do
+          context "from paid plan to free plan" do
             before(:all) do
-              @site = FactoryGirl.build(:new_site, plan_id: @paid_plan.id)
-              Timecop.travel(Time.utc(2011,1,30)) do
-                @site.pend_plan_changes
-                @site.apply_pending_plan_changes
-              end
+              @site = FactoryGirl.create(:site_not_in_trial, plan_id: @paid_plan.id, first_paid_plan_started_at: Time.now.utc)
+              @site.apply_pending_plan_changes
+              @site.plan_id = @free_plan.id
 
-              @site.reload.plan_id = @free_plan.id # downgrade
-              Timecop.travel(Time.utc(2011,3,3)) { @site.pend_plan_changes }
+              Timecop.travel(1.month.from_now) { @site.pend_plan_changes }
             end
             subject { @site }
 
-            its(:pending_plan_started_at)       { should == Time.utc(2011,2,28).midnight }
+            its(:pending_plan_started_at)       { should eql 1.month.from_now.midnight }
             its(:pending_plan_cycle_started_at) { should be_nil }
             its(:pending_plan_cycle_ended_at)   { should be_nil }
-            its(:plan)                          { should == @paid_plan }
-            its(:pending_plan)                  { should == @free_plan }
+            its(:plan)                          { should eql @paid_plan }
+            its(:pending_plan)                  { should eql @free_plan }
             its(:next_cycle_plan)               { should be_nil }
+            it { should_not be_in_trial }
             it { should_not be_instant_charging }
           end
 
-          context "from yearly paid plan to free plan" do
+          context "from paid plan to paid plan" do
             before(:all) do
-              @site = FactoryGirl.build(:new_site, plan_id: @paid_plan_yearly.id)
-              Timecop.travel(Time.utc(2011,1,30)) do
-                @site.pend_plan_changes
-                @site.apply_pending_plan_changes
-              end
-              @site.reload.plan_id = @free_plan.id # downgrade
-              Timecop.travel(Time.utc(2012,3,3)) { @site.pend_plan_changes }
+              @site = FactoryGirl.create(:site_not_in_trial, plan_id: @paid_plan2.id, first_paid_plan_started_at: Time.now.utc)
+              @site.apply_pending_plan_changes
+              @site.plan_id = @paid_plan.id
+
+              Timecop.travel(1.month.from_now) { @site.pend_plan_changes }
             end
             subject { @site }
 
-            its(:pending_plan_started_at)       { should == Time.utc(2012,1,30).midnight }
-            its(:pending_plan_cycle_started_at) { should be_nil }
-            its(:pending_plan_cycle_ended_at)   { should be_nil }
-            its(:plan)                          { should == @paid_plan_yearly }
-            its(:pending_plan)                  { should == @free_plan }
+            its(:pending_plan_started_at)       { should eql 1.month.from_now.midnight }
+            its(:pending_plan_cycle_started_at) { should eql 1.month.from_now.midnight }
+            its(:pending_plan_cycle_ended_at)   { should eql (2.months.from_now - 1.day).to_datetime.end_of_day }
+            its(:plan)                          { should eql @paid_plan2 }
+            its(:pending_plan)                  { should eql @paid_plan }
             its(:next_cycle_plan)               { should be_nil }
-            it { should_not be_instant_charging }
-          end
-
-          context "from monthly paid plan to monthly paid plan" do
-            before(:all) do
-              @site = FactoryGirl.build(:new_site, plan_id: @paid_plan2.id)
-              Timecop.travel(Time.utc(2011,1,30)) do
-                @site.pend_plan_changes
-                @site.apply_pending_plan_changes
-              end
-              @site.reload.plan_id = @paid_plan.id # downgrade
-              Timecop.travel(Time.utc(2011,3,3)) { @site.pend_plan_changes }
-            end
-            subject { @site }
-
-            its(:pending_plan_started_at)       { should == Time.utc(2011,2,28).midnight }
-            its(:pending_plan_cycle_started_at) { should == Time.utc(2011,2,28).midnight }
-            its(:pending_plan_cycle_ended_at)   { should == Time.utc(2011,3,27).to_datetime.end_of_day }
-            its(:plan)                          { should == @paid_plan2 }
-            its(:pending_plan)                  { should == @paid_plan }
-            its(:next_cycle_plan)               { should be_nil }
-            it { should_not be_instant_charging }
-          end
-
-          context "from yearly paid plan to yearly paid plan" do
-            before(:all) do
-              @site = FactoryGirl.build(:new_site, plan_id: @paid_plan_yearly2.id)
-              Timecop.travel(Time.utc(2011,1,30)) do
-                @site.pend_plan_changes
-                @site.apply_pending_plan_changes
-              end
-              @site.reload.plan_id = @paid_plan_yearly.id # downgrade
-              Timecop.travel(Time.utc(2012,2,15)) { @site.pend_plan_changes }
-            end
-            subject { @site }
-
-            its(:pending_plan_started_at)       { should == Time.utc(2012,1,30).midnight }
-            its(:pending_plan_cycle_started_at) { should == Time.utc(2012,1,30).midnight }
-            its(:pending_plan_cycle_ended_at)   { should == Time.utc(2013,1,29).to_datetime.end_of_day }
-            its(:plan)                          { should == @paid_plan_yearly2 }
-            its(:pending_plan)                  { should == @paid_plan_yearly }
-            its(:next_cycle_plan)               { should be_nil }
-            it { should_not be_instant_charging }
-          end
-
-          context "from yearly paid plan to monthly paid plan" do
-            before(:all) do
-              @site = FactoryGirl.build(:new_site, plan_id: @paid_plan_yearly.id)
-              Timecop.travel(Time.utc(2011,1,30)) do
-                @site.pend_plan_changes
-                @site.apply_pending_plan_changes
-              end
-              @site.reload.plan_id = @paid_plan.id # downgrade
-              Timecop.travel(Time.utc(2012,2,25)) { @site.pend_plan_changes }
-            end
-            subject { @site }
-
-            its(:pending_plan_started_at)       { should == Time.utc(2012,1,30).midnight }
-            its(:pending_plan_cycle_started_at) { should == Time.utc(2012,1,30).midnight }
-            its(:pending_plan_cycle_ended_at)   { should == Time.utc(2012,2,28).to_datetime.end_of_day }
-            its(:plan)                          { should == @paid_plan_yearly }
-            its(:pending_plan)                  { should == @paid_plan }
-            its(:next_cycle_plan)               { should be_nil }
+            it { should_not be_in_trial }
             it { should_not be_instant_charging }
           end
         end
@@ -878,9 +890,6 @@ describe Site::Invoice do
         end
 
         context "on a saved record" do
-          before(:all) do
-            @site = FactoryGirl.create(:site, plan_id: @paid_plan2.id)
-          end
           subject do
             @site.reload
             @site.user_attributes = { "current_password" => "123456" }
@@ -888,6 +897,9 @@ describe Site::Invoice do
           end
 
           context "in trial" do
+            before(:all) do
+              @site = FactoryGirl.create(:site, plan_id: @paid_plan2.id)
+            end
             before(:each) { subject.should be_in_trial }
 
             describe "upgrade" do
@@ -914,9 +926,8 @@ describe Site::Invoice do
           end
 
           context "not in trial, during first cycle" do
-            before(:each) do
-              subject.update_attribute(:trial_started_at, BusinessModel.days_for_trial.days.ago)
-              subject.reload.should_not be_in_trial
+            before(:all) do
+              @site = FactoryGirl.create(:site_with_invoice, plan_id: @paid_plan2.id)
             end
 
             describe "save with no changes" do
@@ -928,9 +939,10 @@ describe Site::Invoice do
           end
 
           context "not in trial, during second cycle" do
+            before(:all) do
+              @site = FactoryGirl.create(:site_with_invoice, plan_id: @paid_plan2.id, first_paid_plan_started_at: Time.now.utc)
+            end
             before(:each) do
-              subject.update_attribute(:trial_started_at, BusinessModel.days_for_trial.days.ago)
-              subject.reload.should_not be_in_trial
               Timecop.travel(45.days.from_now)
             end
             after(:each) { Timecop.return }
@@ -1085,75 +1097,6 @@ describe Site::Invoice do
 
         site.update_attribute(:plan_id, @paid_plan.id)
         site.reload.trial_started_at.should eql first_trial_started_at
-      end
-    end
-
-    describe "#set_first_paid_plan_started_at" do
-      before(:all) do
-        @foo_plan = FactoryGirl.create(:plan, name: "foo",  player_hits: 1_000_000)
-      end
-
-      context "before trial end" do
-        it "not set if site created with free plan" do
-          site = FactoryGirl.create(:site, plan_id: @free_plan.id)
-          site.first_paid_plan_started_at.should be_nil
-        end
-
-        it "not set if site created with paid plan" do
-          site = FactoryGirl.create(:site, plan_id: @paid_plan.id)
-          site.first_paid_plan_started_at.should be_nil
-        end
-
-        it "not set on upgrade" do
-          site = FactoryGirl.create(:site, plan_id: @paid_plan.id)
-          site.first_paid_plan_started_at.should be_nil
-
-          site.update_attribute(:plan_id, @foo_plan.id)
-          site.reload.first_paid_plan_started_at.should be_nil
-        end
-      end
-
-      context "after trial end" do
-        subject { FactoryGirl.create(:site, plan_id: @paid_plan.id) }
-
-        it "set if site upgraded to paid plan" do
-          subject.first_paid_plan_started_at.should be_nil
-          subject.trial_started_at.should be_present
-          Timecop.travel(BusinessModel.days_for_trial.days.from_now) do
-            subject.save
-            subject.reload.first_paid_plan_started_at.should be_present
-          end
-        end
-      end
-
-      it "not reset on downgrade" do
-        site = FactoryGirl.create(:site, plan_id: @paid_plan.id, trial_started_at: BusinessModel.days_for_trial.days.ago)
-        site.first_paid_plan_started_at.should be_present
-
-        first_first_paid_plan_started_at = site.first_paid_plan_started_at
-        site.update_attribute(:plan_id, @free_plan.id)
-        site.reload.first_paid_plan_started_at.should eql first_first_paid_plan_started_at
-      end
-
-      it "not reset on upgrade" do
-        site = FactoryGirl.create(:site_with_invoice, plan_id: @paid_plan.id, trial_started_at: BusinessModel.days_for_trial.days.ago)
-        site.first_paid_plan_started_at.should be_present
-
-        first_first_paid_plan_started_at = site.first_paid_plan_started_at
-        site.update_attribute(:plan_id, @foo_plan.id)
-        site.reload.first_paid_plan_started_at.should eql first_first_paid_plan_started_at
-      end
-
-      it "not reset if site created with paid plan and downgraded to free plan and reupgraded to paid plan" do
-        site = FactoryGirl.create(:site, plan_id: @paid_plan.id, trial_started_at: BusinessModel.days_for_trial.days.ago)
-        site.first_paid_plan_started_at.should be_present
-
-        first_first_paid_plan_started_at = site.first_paid_plan_started_at
-        site.update_attribute(:plan_id, @free_plan.id)
-        site.reload.first_paid_plan_started_at.should eql first_first_paid_plan_started_at
-
-        site.update_attribute(:plan_id, @paid_plan.id)
-        site.reload.first_paid_plan_started_at.should eql first_first_paid_plan_started_at
       end
     end
 

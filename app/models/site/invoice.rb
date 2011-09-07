@@ -6,6 +6,18 @@ module Site::Invoice
 
   module ClassMethods
 
+    def activate_or_downgrade_sites_leaving_trial
+      Site.not_in_trial.where(first_paid_plan_started_at: nil).each do |site|
+        if site.user.credit_card?
+          site.first_paid_plan_started_at = Time.now.utc
+          site.pend_plan_changes
+        else
+          site.plan_id = Plan.free_plan.id
+        end
+        site.save_without_password_validation
+      end
+    end
+
     def renew_active_sites
       Site.renewable.each do |site|
         site.pend_plan_changes
@@ -68,7 +80,7 @@ module Site::Invoice
   end
 
   def in_trial?
-    trial_started_at && trial_started_at > BusinessModel.days_for_trial.days.ago
+    !trial_started_at? || trial_started_at > BusinessModel.days_for_trial.days.ago
   end
 
   # DEPRECATED, TO BE REMOVED 30 DAYS AFTER NEW BUSINESS MODEL DEPLOYMENT
@@ -108,27 +120,34 @@ module Site::Invoice
     end
 
     # new paid plan (creation, upgrade or downgrade)
-    if pending_plan_id_changed? && pending_plan_id? # either because of a creation, an upgrade or a downgrade (just changed above)
+    if (pending_plan_id_changed? && pending_plan_id?) ||
+       first_paid_plan_started_at_changed? # site goes out of trial
 
       # Downgrade
       if plan_cycle_ended_at? && plan_cycle_ended_at < Time.now.utc
         self.pending_plan_started_at = plan_cycle_ended_at.tomorrow.midnight
 
-      # Upgrade or creation
+      # Upgrade or activation after trial ends
       else
-        @instant_charging = true
+        @instant_charging = !in_trial? && !first_paid_plan_started_at_changed? && first_paid_plan_started_at? # upgrade
         self.pending_plan_started_at = plan_cycle_started_at || Time.now.utc.midnight
       end
 
-      if pending_plan.paid_plan? && !in_trial?
+      if (
+          (pending_plan_id? && pending_plan.paid_plan?) ||
+          # (plan_id? && plan.paid_plan? && first_paid_plan_started_at_changed?) # site goes out of trial
+          first_paid_plan_started_at_changed? # site goes out of trial
+         ) && !in_trial?
         self.pending_plan_cycle_started_at = (pending_plan_started_at + months_since(pending_plan_started_at).months).midnight
-        self.pending_plan_cycle_ended_at   = (pending_plan_started_at + advance_for_next_cycle_end(pending_plan, pending_plan_started_at)).to_datetime.end_of_day
+        self.pending_plan_cycle_ended_at   = (pending_plan_started_at +
+                                              advance_for_next_cycle_end(pending_plan || plan, pending_plan_started_at)).to_datetime.end_of_day
       else
         self.pending_plan_cycle_started_at = nil
         self.pending_plan_cycle_ended_at   = nil
       end
 
-    elsif plan_cycle_ended_at? && plan_cycle_ended_at < Time.now.utc # normal renew
+    # normal renew
+    elsif plan_cycle_ended_at? && plan_cycle_ended_at < Time.now.utc
       self.pending_plan_cycle_started_at = (plan_started_at + months_since(plan_started_at).months).midnight
       self.pending_plan_cycle_ended_at   = (plan_started_at + advance_for_next_cycle_end(plan, plan_started_at)).to_datetime.end_of_day
     end
@@ -150,11 +169,11 @@ module Site::Invoice
     self.plan_cycle_started_at_will_change!
     self.plan_cycle_ended_at_will_change!
     self.pending_plan_id_will_change!
-    self.pending_plan_started_at_will_change! if pending_plan_started_at
+    self.pending_plan_started_at_will_change! if pending_plan_started_at?
     self.pending_plan_cycle_started_at_will_change!
     self.pending_plan_cycle_ended_at_will_change!
 
-    self.plan_started_at               = pending_plan_started_at if pending_plan_started_at
+    self.plan_started_at               = pending_plan_started_at if pending_plan_started_at?
     self.plan_cycle_started_at         = pending_plan_cycle_started_at
     self.plan_cycle_ended_at           = pending_plan_cycle_ended_at
     self.pending_plan_id               = nil
@@ -192,16 +211,15 @@ module Site::Invoice
 private
 
   # before_save
-  def set_trial_and_first_paid_plan_started_at
-    if in_or_will_be_in_paid_plan?
-      self.trial_started_at           = Time.now.utc if !trial_started_at?
-      self.first_paid_plan_started_at = plan_started_at if !first_paid_plan_started_at? && !in_trial?
+  def set_trial_started_at
+    if !trial_started_at? && in_or_will_be_in_paid_plan?
+      self.trial_started_at = Time.now.utc
     end
   end
 
   # after_save (BEFORE_SAVE TRIGGER AN INFINITE LOOP SINCE invoice.save also saves self)
   def create_and_charge_invoice
-    if !in_trial? && (changed_to_paid_plan? || renewed?)
+    if !in_trial? && (activated? || changed_to_paid_plan? || renewed?)
       invoice = Invoice.build(site: self, renew: renewed?)
       invoice.save!
       @transaction = Transaction.charge_by_invoice_ids([invoice.id], charging_options || {}) if instant_charging?
@@ -212,6 +230,10 @@ private
     end
     true
   end
+  
+  def activated?
+    first_paid_plan_started_at_changed?
+  end
 
   def changed_to_paid_plan?
     pending_plan_id_changed? && will_be_in_paid_plan?
@@ -219,6 +241,7 @@ private
 
   def renewed?
     in_paid_plan? &&
+    (!pending_plan_id? || pending_plan.paid_plan?) &&
     plan_cycle_started_at_was.present? &&
     pending_plan_cycle_started_at_changed? && pending_plan_cycle_started_at?
   end

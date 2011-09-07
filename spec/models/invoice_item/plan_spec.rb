@@ -15,7 +15,7 @@ describe InvoiceItem::Plan do
         @site2 = FactoryGirl.create(:site_with_invoice, user: @not_enthusiast, plan_id: @plan1.id)
         @site2.plan_id = @plan2.id # upgrade
         @site2.pend_plan_changes # simulate upgrade
-        @site3 = FactoryGirl.create(:site, user: @not_enthusiast, plan_id: @plan2.id)
+        @site3 = FactoryGirl.create(:site_not_in_trial, user: @not_enthusiast, plan_id: @plan2.id)
         @site3.plan_id = @plan1.id # downgrade
       end
 
@@ -30,9 +30,9 @@ describe InvoiceItem::Plan do
 
     describe "new or renew" do
       describe "with standard params and a site without pending plan" do
-        subject { InvoiceItem::Plan.build(invoice: @invoice1, item: @site1.pending_plan) }
+        subject { InvoiceItem::Plan.build(invoice: @invoice1, item: @site1.plan) }
 
-        its(:item)                  { should == @site1.pending_plan }
+        its(:item)                  { should == @site1.plan }
         its(:price)                 { should == 1000 }
         its(:amount)                { should == 1000 }
         its(:started_at)            { should == @site1.pending_plan_cycle_started_at }

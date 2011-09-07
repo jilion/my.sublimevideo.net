@@ -81,14 +81,14 @@ private
 
   # before_save
   def prepare_cdn_update
+    @loader_needs_update = @license_needs_update = false
     if state_change == ['suspended', 'active']
-      @loader_needs_update  = true
-      @license_needs_update = true
+      @loader_needs_update = @license_needs_update = true
     else
-      @loader_needs_update  = (player_mode_changed? && persisted?) || (plan_id_changed? && plan_id_was.nil?)
+      @loader_needs_update  = plan_id_changed? || player_mode_changed?
       @license_needs_update = plan_id_changed? || settings_changed?
     end
-    self.cdn_up_to_date = !(@loader_needs_update || @license_needs_update) if persisted?
+    self.cdn_up_to_date = !(@loader_needs_update || @license_needs_update)
 
     true
   end
@@ -98,6 +98,7 @@ private
     if @loader_needs_update || @license_needs_update
       Site.delay.update_loader_and_license(self.id, loader: @loader_needs_update, license: @license_needs_update)
     end
+    @loader_needs_update = @license_needs_update = false
   end
 
   # after_transition :to => [:suspended, :archived]

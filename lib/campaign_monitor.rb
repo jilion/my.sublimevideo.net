@@ -47,7 +47,7 @@ class CampaignMonitor < Settingslogic
 
     def update(user)
       set_api_key
-      if subscriber = CreateSend::Subscriber.new(self.list_id, user.email_was.present? ? user.email_was : user.email)
+      if subscriber = CreateSend::Subscriber.new(self.list_id, user.email_was.presence || user.email)
         subscriber.update(user.email, user.full_name, [], user.newsletter?)
       end
     rescue CreateSend::BadRequest => ex

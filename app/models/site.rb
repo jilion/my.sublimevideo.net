@@ -73,6 +73,7 @@ class Site < ActiveRecord::Base
   scope :with_next_cycle_plan, where { next_cycle_plan_id != nil }
 
   # billing
+  scope :not_in_trial, lambda { where { trial_started_at < BusinessModel.days_for_trial.days.ago } }
   scope :billable, lambda {
     active.where { plan_id >> Plan.paid_plans.map(&:id) & next_cycle_plan_id >> (Plan.paid_plans.map(&:id) + [nil]) }
   }
@@ -80,20 +81,20 @@ class Site < ActiveRecord::Base
     where { (state != 'active') | ((plan_id >> Plan.unpaid_plans.map(&:id) & (next_cycle_plan_id == nil)) | (next_cycle_plan_id >> Plan.unpaid_plans.map(&:id))) }
   }
   scope :renewable,  active.where { (plan_cycle_ended_at < Time.now.utc) & (pending_plan_id == nil) }
-  scope :refundable, where { (first_paid_plan_started_at >= 30.days.ago) & (refunded_at == nil) }
+  scope :refundable, lambda { where { (first_paid_plan_started_at >= BusinessModel.days_for_refund.days.ago) & (refunded_at == nil) } }
   scope :refunded,   where { (state == 'archived') & (refunded_at != nil) }
 
   # admin
   scope :user_id,         lambda { |user_id| where(user_id: user_id) }
-  scope :created_between, lambda { |start_date, end_date| where(:created_at.gte => start_date, :created_at.lt => end_date) }
+  scope :created_between, lambda { |start_date, end_date| where { (created_at >= start_date) & (created_at < end_date) } }
 
   # sort
   scope :by_hostname,    lambda { |way = 'asc'| order(:hostname.send(way)) }
   scope :by_user,        lambda { |way = 'desc'| includes(:user).order(:users => [:first_name.send(way), :email.send(way)]) }
   scope :by_state,       lambda { |way = 'desc'| order(:state.send(way)) }
   scope :by_plan_price,  lambda { |way = 'desc'| includes(:plan).order(:plans => :price.send(way)) }
-  scope :by_google_rank, lambda { |way = 'desc'| where(:google_rank.gte => 0).order(:google_rank.send(way)) }
-  scope :by_alexa_rank,  lambda { |way = 'desc'| where(:alexa_rank.gte => 1).order(:alexa_rank.send(way)) }
+  scope :by_google_rank, lambda { |way = 'desc'| where { google_rank >= 0 }.order(:google_rank.send(way)) }
+  scope :by_alexa_rank,  lambda { |way = 'desc'| where { alexa_rank >= 1 }.order(:alexa_rank.send(way)) }
   scope :by_date,        lambda { |way = 'desc'| order(:created_at.send(way)) }
   scope :by_last_30_days_billable_player_hits_total_count, lambda { |way = 'desc'|
     order("(sites.last_30_days_main_player_hits_total_count + sites.last_30_days_extra_player_hits_total_count) #{way}")
@@ -145,12 +146,12 @@ class Site < ActiveRecord::Base
   before_save :prepare_cdn_update # in site/templates
   before_save :clear_alerts_sent_at
   before_save :pend_plan_changes, :if => :pending_plan_id_changed? # in site/invoice
-  before_save :set_trial_and_first_paid_plan_started_at # in site/invoice
+  before_save :set_trial_started_at # in site/invoice
+
+  after_create :delay_ranks_update # in site/templates
 
   after_save :create_and_charge_invoice # in site/invoice
   after_save :execute_cdn_update # in site/templates
-
-  after_create :delay_ranks_update # in site/templates
 
   # =================
   # = State Machine =
@@ -234,7 +235,11 @@ class Site < ActiveRecord::Base
           write_attribute(:pending_plan_id, new_plan.id)
           write_attribute(:next_cycle_plan_id, nil)
         when false # Downgrade
-          in_trial? ? write_attribute(:pending_plan_id, new_plan.id) : write_attribute(:next_cycle_plan_id, new_plan.id)
+          if in_trial? || !first_paid_plan_started_at?
+            write_attribute(:pending_plan_id, new_plan.id)
+          else
+            write_attribute(:next_cycle_plan_id, new_plan.id)
+          end
         when nil # Same plan, reset next_cycle_plan
           write_attribute(:next_cycle_plan_id, nil)
         end
@@ -392,8 +397,7 @@ class Site < ActiveRecord::Base
   end
 
   def archivable?
-    invoices.waiting.empty? &&
-    (!first_paid_plan_started_at? || (first_paid_plan_started_at? && invoices.open_or_failed.empty?))
+    invoices.waiting.empty? && (!first_paid_plan_started_at? || invoices.open_or_failed.empty?)
   end
 
 private

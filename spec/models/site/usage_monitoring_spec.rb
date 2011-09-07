@@ -54,7 +54,7 @@ describe Site::UsageMonitoring do
 
     context "with reached player hits site" do
       before(:each) do
-        Timecop.travel(Time.utc(2011,1,1)) { @site = FactoryGirl.create(:site, plan_id: @plan.id) }
+        Timecop.travel(Time.utc(2011,1,1)) { @site = FactoryGirl.create(:site_not_in_trial, plan_id: @plan.id) }
         FactoryGirl.create(:site_usage, site_id: @site.id, day: Time.utc(2011,1,1), main_player_hits: 3001)
       end
 

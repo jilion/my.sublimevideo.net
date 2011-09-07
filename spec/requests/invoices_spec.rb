@@ -147,38 +147,38 @@ feature "user has a credit card" do
   end
 
   scenario "upgrade paid invoice with discount" do
-    Timecop.travel(Time.utc(2010,10,10))
-    @current_user.update_attribute(:created_at, Time.now.utc)
-    @current_user.update_attribute(:country, 'US')
-    site = FactoryGirl.create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
-    VCR.use_cassette('ogone/visa_payment_generic') do
-      site.update_attributes(plan_id: @custom_plan.token, user_attributes: { 'current_password' => '123456' })
+    Timecop.travel(Time.utc(2010,10,10)) do
+      @current_user.update_attribute(:created_at, Time.now.utc)
+      @current_user.update_attribute(:country, 'US')
+      site = FactoryGirl.create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
+      VCR.use_cassette('ogone/visa_payment_generic') do
+        site.update_attributes(plan_id: @custom_plan.token, user_attributes: { 'current_password' => '123456' })
+      end
+      site.apply_pending_plan_changes
+      invoice = site.last_invoice
+
+      visit invoice_path(invoice)
+
+      page.should have_content("Jilion / Jime SA")
+      page.should have_content("Invoice ID: #{invoice.reference.upcase}")
+      page.should have_content("Status:")
+      page.should have_content("Paid on #{I18n.l(invoice.paid_at, :format => :minutes_timezone)}")
+
+      page.should have_content(site.hostname)
+      page.should have_content(site.token)
+      page.should have_content("Payment info:")
+      page.should have_content("Card type: Visa")
+      page.should have_content("Card no.: XXXXXXXXXXXX-1111")
+
+      page.should have_content("Bill to:")
+      page.should have_content("#{invoice.customer_full_name} (#{invoice.customer_email})")
+
+      page.should have_content("Period: #{I18n.l(site.plan_cycle_started_at, :format => :d_b_Y)} - #{I18n.l(site.plan_cycle_ended_at, :format => :d_b_Y)}")
+      page.should have_content("(-20% beta discount)")
+      page.should have_content("$160")
+      page.should have_content("-$8.0")
+      page.should have_content("$#{invoice.amount / 100.0}")
     end
-    site.apply_pending_plan_changes
-    invoice = site.last_invoice
-
-    visit invoice_path(invoice)
-
-    page.should have_content("Jilion / Jime SA")
-    page.should have_content("Invoice ID: #{invoice.reference.upcase}")
-    page.should have_content("Status:")
-    page.should have_content("Paid on #{I18n.l(invoice.paid_at, :format => :minutes_timezone)}")
-
-    page.should have_content(site.hostname)
-    page.should have_content(site.token)
-    page.should have_content("Payment info:")
-    page.should have_content("Card type: Visa")
-    page.should have_content("Card no.: XXXXXXXXXXXX-1111")
-
-    page.should have_content("Bill to:")
-    page.should have_content("#{invoice.customer_full_name} (#{invoice.customer_email})")
-
-    page.should have_content("Period: #{I18n.l(site.plan_cycle_started_at, :format => :d_b_Y)} - #{I18n.l(site.plan_cycle_ended_at, :format => :d_b_Y)}")
-    page.should have_content("(-20% beta discount)")
-    page.should have_content("$160")
-    page.should have_content("-$8.0")
-    page.should have_content("$#{invoice.amount / 100.0}")
-    Timecop.return
   end
 
   context "retry failed invoice" do

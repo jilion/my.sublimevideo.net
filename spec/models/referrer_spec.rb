@@ -50,11 +50,10 @@ describe Referrer do
 
       it "should update updated_at on hits incrementation" do
         old_update_at = subject.updated_at
-        Timecop.travel(Time.now + 1.minute)
-
-        Referrer.create_or_update_from_trackers!(@trackers)
-
-        subject.reload.updated_at.should_not <= old_update_at
+        Timecop.travel(Time.now + 1.minute) do
+          Referrer.create_or_update_from_trackers!(@trackers)
+          subject.reload.updated_at.should_not <= old_update_at
+        end
       end
     end
   end

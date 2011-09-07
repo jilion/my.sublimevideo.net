@@ -5,7 +5,7 @@ describe Site::Api do
   describe "#to_api" do
     context "normal site" do
       before(:all) do
-        @site     = FactoryGirl.create(:site, hostname: 'rymai.me', dev_hostnames: 'rymai.local', extra_hostnames: 'rymai.com', wildcard: true, path: 'test')
+        @site     = FactoryGirl.create(:site_not_in_trial, hostname: 'rymai.me', dev_hostnames: 'rymai.local', extra_hostnames: 'rymai.com', wildcard: true, path: 'test')
         @response = @site.as_api_response(:v1_private_self)
       end
       subject { @site }
@@ -44,9 +44,9 @@ describe Site::Api do
         @response[:extra_domains].should == []
         @response[:wildcard].should == false
         @response[:path].should == ''
-        @response[:plan].should == nil
+        @response[:plan].should == subject.plan.as_api_response(:v1_private_self)
         @response[:next_plan].should == nil
-        @response[:started_at].should == nil
+        @response[:started_at].to_i.should == Time.now.utc.midnight.to_i
         @response[:cycle_started_at].should == nil
         @response[:cycle_ended_at].should == nil
         @response[:peak_insurance_activated].should == false

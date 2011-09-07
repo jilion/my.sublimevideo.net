@@ -6,12 +6,12 @@ describe Site::Referrer do
     context "with versioning" do
       before(:all) do
         @site = with_versioning do
-          Timecop.travel(1.day.ago)
-          site = FactoryGirl.create(:site, hostname: "jilion.com", extra_hostnames: 'jilion.org, jilion.net', dev_hostnames: "localhost, 127.0.0.1")
-          Timecop.return
-          site.user.current_password = '123456'
-          site.update_attributes(hostname: "jilion.net", extra_hostnames: 'jilion.org, jilion.com', dev_hostnames: "jilion.local, localhost, 127.0.0.1")
-          site
+          Timecop.travel(1.day.ago) do
+            @site2 = FactoryGirl.create(:site, hostname: "jilion.com", extra_hostnames: 'jilion.org, jilion.net', dev_hostnames: "localhost, 127.0.0.1")
+          end
+          @site2.user.current_password = '123456'
+          @site2.update_attributes(hostname: "jilion.net", extra_hostnames: 'jilion.org, jilion.com', dev_hostnames: "jilion.local, localhost, 127.0.0.1")
+          @site2
         end
       end
       subject { @site }
