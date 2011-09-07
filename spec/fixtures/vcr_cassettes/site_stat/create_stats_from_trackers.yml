@@ -1,0 +1,415 @@
+---
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: http://api.pusherapp.com:80/apps/8211/channels/private-12345678/events?auth_key=c76b85222fbec28c8508&auth_signature=25f6b9e875ae33888831186d4689c07e502ac25634831e0157f01f3426c63326&auth_timestamp=1315315884&auth_version=1.0&body_md5=99914b932bd37a50b983c5e7c90ae93b&name=stats-fetch
+    body: ! '{}'
+    headers:
+      content-type:
+      - application/json
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 202
+      message: Accepted
+    headers:
+      server:
+      - thin 1.2.11 codename Bat-Shit Crazy
+      content-length:
+      - '13'
+      connection:
+      - Close
+    body: ! '202 ACCEPTED
+
+'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: http://api.pusherapp.com:80/apps/8211/channels/private-ibvjcopp/events?auth_key=c76b85222fbec28c8508&auth_signature=99ccdfda776bbca3ef8bb0d3baaaec03927effca970342bc9f4233a5a6444e14&auth_timestamp=1315315885&auth_version=1.0&body_md5=99914b932bd37a50b983c5e7c90ae93b&name=stats-fetch
+    body: ! '{}'
+    headers:
+      content-type:
+      - application/json
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 202
+      message: Accepted
+    headers:
+      server:
+      - thin 1.2.11 codename Bat-Shit Crazy
+      content-length:
+      - '13'
+      connection:
+      - Close
+    body: ! '202 ACCEPTED
+
+'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: http://api.pusherapp.com:80/apps/8211/channels/private-12345678/events?auth_key=c76b85222fbec28c8508&auth_signature=c190eaa0505c6c07cd6af0e8e641f6c64647916f0870c45e9bf6355e01ebfdef&auth_timestamp=1315315886&auth_version=1.0&body_md5=99914b932bd37a50b983c5e7c90ae93b&name=stats-fetch
+    body: ! '{}'
+    headers:
+      content-type:
+      - application/json
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 202
+      message: Accepted
+    headers:
+      server:
+      - thin 1.2.11 codename Bat-Shit Crazy
+      content-length:
+      - '13'
+      connection:
+      - Close
+    body: ! '202 ACCEPTED
+
+'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: http://api.pusherapp.com:80/apps/8211/channels/private-ibvjcopp/events?auth_key=c76b85222fbec28c8508&auth_signature=a70203f20046e64a9eab361ae2e84ef05ddd23d25bb0e1050429e844265c9ab7&auth_timestamp=1315315887&auth_version=1.0&body_md5=99914b932bd37a50b983c5e7c90ae93b&name=stats-fetch
+    body: ! '{}'
+    headers:
+      content-type:
+      - application/json
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 202
+      message: Accepted
+    headers:
+      server:
+      - thin 1.2.11 codename Bat-Shit Crazy
+      content-length:
+      - '13'
+      connection:
+      - Close
+    body: ! '202 ACCEPTED
+
+'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: http://api.pusherapp.com:80/apps/8211/channels/private-12345678/events?auth_key=c76b85222fbec28c8508&auth_signature=c64075681e01f0f49f858c49e72f6929e446cadc1784ce017c11d3f4f2b910b5&auth_timestamp=1315315887&auth_version=1.0&body_md5=99914b932bd37a50b983c5e7c90ae93b&name=stats-fetch
+    body: ! '{}'
+    headers:
+      content-type:
+      - application/json
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 202
+      message: Accepted
+    headers:
+      server:
+      - thin 1.2.11 codename Bat-Shit Crazy
+      content-length:
+      - '13'
+      connection:
+      - Close
+    body: ! '202 ACCEPTED
+
+'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: http://api.pusherapp.com:80/apps/8211/channels/private-ibvjcopp/events?auth_key=c76b85222fbec28c8508&auth_signature=a70203f20046e64a9eab361ae2e84ef05ddd23d25bb0e1050429e844265c9ab7&auth_timestamp=1315315887&auth_version=1.0&body_md5=99914b932bd37a50b983c5e7c90ae93b&name=stats-fetch
+    body: ! '{}'
+    headers:
+      content-type:
+      - application/json
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 202
+      message: Accepted
+    headers:
+      server:
+      - thin 1.2.11 codename Bat-Shit Crazy
+      content-length:
+      - '13'
+      connection:
+      - Close
+    body: ! '202 ACCEPTED
+
+'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: http://api.pusherapp.com:80/apps/8211/channels/private-12345678/events?auth_key=c76b85222fbec28c8508&auth_signature=a4e3ff06446647d3951f69b2d6b8dee8c55c550a754fcd102686fbd50aae9248&auth_timestamp=1315315913&auth_version=1.0&body_md5=99914b932bd37a50b983c5e7c90ae93b&name=stats-fetch
+    body: ! '{}'
+    headers:
+      content-type:
+      - application/json
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 202
+      message: Accepted
+    headers:
+      server:
+      - thin 1.2.11 codename Bat-Shit Crazy
+      content-length:
+      - '13'
+      connection:
+      - Close
+    body: ! '202 ACCEPTED
+
+'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: http://api.pusherapp.com:80/apps/8211/channels/private-ibvjcopp/events?auth_key=c76b85222fbec28c8508&auth_signature=03ef1e38416c9db9893adba8955d35ead2a75111986d194445c95a2064687261&auth_timestamp=1315315914&auth_version=1.0&body_md5=99914b932bd37a50b983c5e7c90ae93b&name=stats-fetch
+    body: ! '{}'
+    headers:
+      content-type:
+      - application/json
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 202
+      message: Accepted
+    headers:
+      server:
+      - thin 1.2.11 codename Bat-Shit Crazy
+      content-length:
+      - '13'
+      connection:
+      - Close
+    body: ! '202 ACCEPTED
+
+'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: http://api.pusherapp.com:80/apps/8211/channels/private-12345678/events?auth_key=c76b85222fbec28c8508&auth_signature=6ab2848f588049692de7fb9b8ff731c4499bb1edd95e54db9334c29d22b3977a&auth_timestamp=1315315915&auth_version=1.0&body_md5=99914b932bd37a50b983c5e7c90ae93b&name=stats-fetch
+    body: ! '{}'
+    headers:
+      content-type:
+      - application/json
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 202
+      message: Accepted
+    headers:
+      server:
+      - thin 1.2.11 codename Bat-Shit Crazy
+      content-length:
+      - '13'
+      connection:
+      - Close
+    body: ! '202 ACCEPTED
+
+'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: http://api.pusherapp.com:80/apps/8211/channels/private-ibvjcopp/events?auth_key=c76b85222fbec28c8508&auth_signature=3ea1dd291d9d3e857ff7b684fa0fad3f75bb21ac0415dccc0330d1696d266d0c&auth_timestamp=1315315916&auth_version=1.0&body_md5=99914b932bd37a50b983c5e7c90ae93b&name=stats-fetch
+    body: ! '{}'
+    headers:
+      content-type:
+      - application/json
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 202
+      message: Accepted
+    headers:
+      server:
+      - thin 1.2.11 codename Bat-Shit Crazy
+      content-length:
+      - '13'
+      connection:
+      - Close
+    body: ! '202 ACCEPTED
+
+'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: http://api.pusherapp.com:80/apps/8211/channels/private-12345678/events?auth_key=c76b85222fbec28c8508&auth_signature=da71fd0886592b6c1f20289ef064d5ca5e28b88c878ac7666c7d4f3bcd226836&auth_timestamp=1315315916&auth_version=1.0&body_md5=99914b932bd37a50b983c5e7c90ae93b&name=stats-fetch
+    body: ! '{}'
+    headers:
+      content-type:
+      - application/json
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 202
+      message: Accepted
+    headers:
+      server:
+      - thin 1.2.11 codename Bat-Shit Crazy
+      content-length:
+      - '13'
+      connection:
+      - Close
+    body: ! '202 ACCEPTED
+
+'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: http://api.pusherapp.com:80/apps/8211/channels/private-ibvjcopp/events?auth_key=c76b85222fbec28c8508&auth_signature=3ea1dd291d9d3e857ff7b684fa0fad3f75bb21ac0415dccc0330d1696d266d0c&auth_timestamp=1315315916&auth_version=1.0&body_md5=99914b932bd37a50b983c5e7c90ae93b&name=stats-fetch
+    body: ! '{}'
+    headers:
+      content-type:
+      - application/json
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 202
+      message: Accepted
+    headers:
+      server:
+      - thin 1.2.11 codename Bat-Shit Crazy
+      content-length:
+      - '13'
+      connection:
+      - Close
+    body: ! '202 ACCEPTED
+
+'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: http://api.pusherapp.com:80/apps/8211/channels/private-12345678/events?auth_key=c76b85222fbec28c8508&auth_signature=9664e1adf5db8917d3df6171541813dc00ae3252d580183d7db5bc821e96b7a8&auth_timestamp=1315316408&auth_version=1.0&body_md5=99914b932bd37a50b983c5e7c90ae93b&name=stats-fetch
+    body: ! '{}'
+    headers:
+      content-type:
+      - application/json
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 202
+      message: Accepted
+    headers:
+      server:
+      - thin 1.2.11 codename Bat-Shit Crazy
+      content-length:
+      - '13'
+      connection:
+      - Close
+    body: ! '202 ACCEPTED
+
+'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: http://api.pusherapp.com:80/apps/8211/channels/private-ibvjcopp/events?auth_key=c76b85222fbec28c8508&auth_signature=d7d5a8548068e8741b166fba575aa0135febe3e19a49f796aff90a7ced44f791&auth_timestamp=1315316409&auth_version=1.0&body_md5=99914b932bd37a50b983c5e7c90ae93b&name=stats-fetch
+    body: ! '{}'
+    headers:
+      content-type:
+      - application/json
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 202
+      message: Accepted
+    headers:
+      server:
+      - thin 1.2.11 codename Bat-Shit Crazy
+      content-length:
+      - '13'
+      connection:
+      - Close
+    body: ! '202 ACCEPTED
+
+'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: http://api.pusherapp.com:80/apps/8211/channels/private-12345678/events?auth_key=c76b85222fbec28c8508&auth_signature=95dcdc84fbfa1df5de2ecc7eb84e998faa5b743d84a0efb096064353612b9c1a&auth_timestamp=1315316411&auth_version=1.0&body_md5=99914b932bd37a50b983c5e7c90ae93b&name=stats-fetch
+    body: ! '{}'
+    headers:
+      content-type:
+      - application/json
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 202
+      message: Accepted
+    headers:
+      server:
+      - thin 1.2.11 codename Bat-Shit Crazy
+      content-length:
+      - '13'
+      connection:
+      - Close
+    body: ! '202 ACCEPTED
+
+'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: http://api.pusherapp.com:80/apps/8211/channels/private-ibvjcopp/events?auth_key=c76b85222fbec28c8508&auth_signature=50bde25f0f861ae491b5ce7df2edf4878ca7bb57ded5e8bc43255a03a7c7bd56&auth_timestamp=1315316411&auth_version=1.0&body_md5=99914b932bd37a50b983c5e7c90ae93b&name=stats-fetch
+    body: ! '{}'
+    headers:
+      content-type:
+      - application/json
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 202
+      message: Accepted
+    headers:
+      server:
+      - thin 1.2.11 codename Bat-Shit Crazy
+      content-length:
+      - '13'
+      connection:
+      - Close
+    body: ! '202 ACCEPTED
+
+'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: http://api.pusherapp.com:80/apps/8211/channels/private-12345678/events?auth_key=c76b85222fbec28c8508&auth_signature=43305ebcc5c2d0f8ab018f37e1f0f492c8e6be0b2d9a5c09335a9ee139422936&auth_timestamp=1315316412&auth_version=1.0&body_md5=99914b932bd37a50b983c5e7c90ae93b&name=stats-fetch
+    body: ! '{}'
+    headers:
+      content-type:
+      - application/json
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 202
+      message: Accepted
+    headers:
+      server:
+      - thin 1.2.11 codename Bat-Shit Crazy
+      content-length:
+      - '13'
+      connection:
+      - Close
+    body: ! '202 ACCEPTED
+
+'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: http://api.pusherapp.com:80/apps/8211/channels/private-ibvjcopp/events?auth_key=c76b85222fbec28c8508&auth_signature=f62c26b52a858c1a467c9afc300a98e9cbedbc08c5f84f3b4c2119d3cd1df372&auth_timestamp=1315316412&auth_version=1.0&body_md5=99914b932bd37a50b983c5e7c90ae93b&name=stats-fetch
+    body: ! '{}'
+    headers:
+      content-type:
+      - application/json
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 202
+      message: Accepted
+    headers:
+      server:
+      - thin 1.2.11 codename Bat-Shit Crazy
+      content-length:
+      - '13'
+      connection:
+      - Close
+    body: ! '202 ACCEPTED
+
+'
+    http_version: '1.1'

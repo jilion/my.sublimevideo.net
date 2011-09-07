@@ -55,6 +55,8 @@ MySublimeVideo::Application.routes.draw do
     root :to => redirect("/sites")
   end
 
+  match '/pusher/auth' => "pusher#auth", :via => :post
+
   # =======
   # = API =
   # =======

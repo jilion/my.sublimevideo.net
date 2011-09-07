@@ -2,6 +2,14 @@
 
 :coffeescript
   $ ->
+    # Enable pusher logging - don't include this in production
+    # Pusher.log = (message) ->
+    # window.console.log(message) if (window.console && window.console.log)
+    # Flash fallback logging - don't include this in production
+    # WEB_SOCKET_DEBUG = true
+
+
+    window.MSVStats.pusher = new Pusher('#{PusherConfig.key}', encrypted: true)
     window.MSVStats.sites = new MSVStats.Collections.Sites()
     window.MSVStats.sites.reset(#{current_user.sites.to_json(only: [:token, :hostname])})
     window.MSVStats.sites.select('#{@site.token}')
@@ -19,7 +27,7 @@
 #vv
 
 #bp
-  
+
 #md
-  
+
 .spacer

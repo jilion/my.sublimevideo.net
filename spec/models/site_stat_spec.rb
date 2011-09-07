@@ -22,6 +22,8 @@ describe SiteStat do
     end
 
     describe ".clear_old_minutes_and_days_stats" do
+      use_vcr_cassette "site_stat/clear_old_minutes_and_days_stats"
+
       it "delete old minutes and days site stats, but keep all stats" do
         SiteStat.create_stats_from_trackers!(@log, @trackers)
         log = Factory.build(:log_voxcast, :name => "cdn.sublimevideo.net.log.#{1.minute.ago.change(sec: 0).to_i}-#{Time.now.utc.change(sec: 0).to_i}.gz", file: @log_file)
@@ -42,6 +44,8 @@ describe SiteStat do
     end
 
     describe ".create_stats_from_trackers!" do
+      use_vcr_cassette "site_stat/create_stats_from_trackers"
+
       it "create three stats m/h/d for each token" do
         SiteStat.create_stats_from_trackers!(@log, @trackers)
         SiteStat.count.should eql(6)
@@ -61,6 +65,14 @@ describe SiteStat do
         SiteStat.where(t: '12345678').m_before(Time.now).count.should eql(2)
         SiteStat.where(t: '12345678', h: log.hour).first.vv.should eql({ "d" => 2 })
         SiteStat.where(t: 'ibvjcopp', d: log.day).first.bp.should eql({ "saf-osx" => 2 })
+      end
+
+      it "triggers Pusher on the right private channel for each site" do
+        mock_channel = mock('channel')
+        mock_channel.should_receive(:trigger).twice.with('stats-fetch', {})
+        Pusher.stub(:[]).with("private-ibvjcopp") { mock_channel }
+        Pusher.stub(:[]).with("private-12345678") { mock_channel }
+        SiteStat.create_stats_from_trackers!(@log, @trackers)
       end
     end
 

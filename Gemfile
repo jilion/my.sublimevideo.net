@@ -84,6 +84,9 @@ gem 'addressable',           '~> 2.2.6'
 # Perf
 gem 'dalli',                 '~> 1.1.1'
 
+# Stats
+gem 'pusher'
+
 group :production do
   gem 'rack-google-analytics', '~> 0.9.2', :require => 'rack/google-analytics'
 end

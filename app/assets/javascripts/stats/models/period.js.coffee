@@ -15,14 +15,19 @@ class MSVStats.Models.Period extends Backbone.Model
       when 'days'
         24 * 60 * 60 * 1000
 
-  periodChartType: ->
+  periodChartTitle: (x) ->
     switch this.get('type')
       when 'minutes'
-        'spline'
-      when 'hours'
-        'spline'
+        "#{Highcharts.dateFormat('%e %B %Y, %H:%M', x - MSVStats.period.periodInterval())} - #{Highcharts.dateFormat('%e %B %Y, %H:%M', x)}"
+      else 
+        "#{Highcharts.dateFormat('%e %B %Y, %H:%M', x)} - #{Highcharts.dateFormat('%e %B %Y, %H:%M', x + MSVStats.period.periodInterval())}"
+
+  periodChartType: ->
+    switch this.get('type')
       when 'days'
         'column'
+      else
+        'spline'
 
   periodTickInterval: ->
     last = this.get('last')

@@ -64,6 +64,11 @@ class SiteStat
       self.collection.update({ t: token, m: log.minute }, { "$inc" => inc }, upsert: true)
       self.collection.update({ t: token, h: log.hour },   { "$inc" => inc }, upsert: true)
       self.collection.update({ t: token, d: log.day },    { "$inc" => inc }, upsert: true)
+      begin
+        Pusher["private-#{token}"].trigger('stats-fetch', {})
+      rescue Pusher::Error => ex
+        Notify.send("Pusher trigger failed", exception: ex)
+      end
     end
   end
 

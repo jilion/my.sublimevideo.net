@@ -1,0 +1,19 @@
+# thibaud@jilion.com credentials
+defaults: &defaults
+  app_id: '8211'
+  key:    'c76b85222fbec28c8508'
+  secret: '7ab0d643924b2bcc23d2'
+
+development:
+  <<: *defaults
+
+test:
+  <<: *defaults
+
+staging:
+  <<: *defaults
+
+production:
+  app_id: <%= ENV['PUSHER_APP_ID'] %>
+  key:    <%= ENV['PUSHER_KEY'] %>
+  secret: <%= ENV['PUSHER_SECRET'] %>
