@@ -6,9 +6,8 @@ class BillingMailer < ActionMailer::Base
 
   def trial_will_end(site)
     @site = site
-    @user = @site.user
     mail(
-      :to => "\"#{@user.full_name}\" <#{@user.email}>",
+      :to => "\"#{@site.user.full_name}\" <#{@site.user.email}>",
       :subject => "Your trial for #{@site.hostname} will expire in #{full_days_until_trial_end(@site)} days"
     )
   end

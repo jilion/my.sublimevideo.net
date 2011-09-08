@@ -2,7 +2,7 @@
 
 Your latest SublimeVideo payment has been approved.
 
-Total amount charged: <%= display_amount(@transaction.amount, :decimals => 2) %>
+Total amount charged: <%= display_amount(@transaction.amount) %>
 
 <% if @transaction.invoices.count == 1 %>
 You can review the invoice via the following link:

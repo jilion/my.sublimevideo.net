@@ -1,24 +1,30 @@
-<%= t("mailer.intro_name", name: @user.full_name) %>
+<%= t("mailer.intro_name", name: @site.user.full_name) %>
 
 Thank you for taking the time to evaluate SublimeVideo! We hope you're enjoying your trial.
 
 This is a reminder that your <%= BusinessModel.days_for_trial %>-day free trial for <%= @site.hostname %> expires in <%= pluralize(full_days_until_trial_end(@site), 'day') %> (on <%= l(@site.trial_end, format: :named_date) %>).
 
-To activate your <%= @site.plan.title %> plan, please click here:
+<% if @site.user.cc? %>
+  Once the trial ends, we will automatically charge your credit card <%= display_amount(@site.plan.price) %> for your <%= @site.plan.title %> plan.
 
-https://<%= ActionMailer::Base.default_url_options[:host] %>/sites/<%= @site.token %>/plan
+  If you don't want to activate your paid plan, you can downgrade your site to the Free plan here:
+
+  https://<%= ActionMailer::Base.default_url_options[:host] %>/sites/<%= @site.token %>/plan
+<% else %>
+  Since automatic charging will start at the end of this trial, please be sure to register a credit card to prevent any charging issue. You can do it on this page:
+
+  https://<%= ActionMailer::Base.default_url_options[:host] %>/account/card/edit
+<% end %>
 
 Need Some Help?
 
-Be sure to checkout our documentation here: http://docs.sublimevideo.net
+Be sure to checkout our documentation:
 
-as well as our forum: ...
+http://docs.sublimevideo.net
 
-Don't want to receive these reminders?
+as well as our forum:
 
-If you don't want activate your paid plan, you can downgrade your site to the Free plan here:
-
-https://<%= ActionMailer::Base.default_url_options[:host] %>/sites/<%= @site.token %>/plan
+...
 
 Thanks again for continuing to evaluate SublimeVideo.
 

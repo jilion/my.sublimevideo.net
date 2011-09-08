@@ -17,6 +17,7 @@ module Site::Recurring
 
     def update_last_30_days_counters_for_not_archived_sites
       delay_update_last_30_days_counters_for_not_archived_sites
+
       not_archived.find_each(:batch_size => 100) do |site|
         site.update_last_30_days_counters
       end
@@ -25,14 +26,11 @@ module Site::Recurring
     def send_trial_will_end
       delay_send_trial_will_end
 
-      sites_to_email = []
       BusinessModel.days_before_trial_end.each do |days_before_trial_end|
         in_trial.trial_expires_on(days_before_trial_end.days.from_now).each do |site|
-          sites_to_email << site unless sites_to_email.include?(site)
+          BillingMailer.trial_will_end(site).deliver!
         end
       end
-
-      sites_to_email.each { |site| BillingMailer.trial_will_end(site).deliver! }
     end
 
   end
