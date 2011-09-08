@@ -55,7 +55,7 @@ module SitesHelper
   end
 
   def td_usage_class(site)
-    if site.in_paid_plan?
+    if site.in_paid_plan? && !site.in_trial?
       if site.first_plan_upgrade_required_alert_sent_at?
         "required_upgrade"
       elsif site.current_monthly_billable_usages.sum > site.plan.player_hits

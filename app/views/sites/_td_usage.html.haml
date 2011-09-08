@@ -1,11 +1,10 @@
 - if plan = site.plan
-  - case plan.name
-  - when 'free'
-    - if site.pending_plan_id? || site.hostname.blank?
-      = "–"
-    - else
+  - if site.in_trial? || site.in_free_plan?
+    - if site.in_free_plan? && !site.pending_plan_id? && site.hostname?
       = link_to "Choose a plan", edit_site_plan_path(site), :class => "medium_button"
-  - when 'sponsored'
+    - else
+      = "–"
+  - elsif site.in_sponsored_plan?
     .sponsored_number
       %p
         %strong= number_with_delimiter(site.current_monthly_billable_usages.sum.to_i)
