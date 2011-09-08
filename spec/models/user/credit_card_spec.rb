@@ -188,7 +188,7 @@ describe User::CreditCard do
 
   describe "Class Methods" do
 
-    describe ".send_credit_card_expiration", :focus => true do
+    describe ".send_credit_card_expiration" do
       context "archived user" do
         it "doesn't send 'cc is expired' email when user's credit card will expire at the end of the current month" do
           @user = FactoryGirl.create(:user_real_cc, valid_cc_attributes.merge(cc_expiration_month: Time.now.utc.month, cc_expiration_year: Time.now.utc.year, state: 'archived'))
@@ -201,7 +201,7 @@ describe User::CreditCard do
       context "not billable user" do
         it "doesn't send 'cc is expired' email when user's credit card will expire at the end of the current month" do
           @user = FactoryGirl.create(:user_real_cc, valid_cc_attributes.merge(cc_expiration_month: Time.now.utc.month, cc_expiration_year: Time.now.utc.year))
-          @site = FactoryGirl.create(:site, user: @user, plan_id: @free_plan.id)
+          @site = FactoryGirl.create(:site, user: @user, plan_id: @dev_plan.id)
           @user.cc_expire_on.should eql Time.now.utc.end_of_month.to_date
           expect { User::CreditCard.send_credit_card_expiration }.to_not change(ActionMailer::Base.deliveries, :size)
         end
