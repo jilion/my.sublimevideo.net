@@ -50,7 +50,7 @@ class Plan < ActiveRecord::Base
     memoize :sponsored_plan
 
     def create_custom(attributes)
-      create(attributes.merge(name: "custom#{custom_plans.count + 1}"))
+      create(attributes.merge(:name => "custom - #{attributes[:name]}"))
     end
 
     STANDARD_NAMES.each do |name|

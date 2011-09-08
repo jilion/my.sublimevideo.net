@@ -13,7 +13,7 @@ group :assets do
 end
 
 
-gem 'prototype-rails' #,       :git => 'git://github.com/rymai/prototype-rails.git'
+gem 'prototype-rails'
 gem 'jquery-rails'
 gem 'rails-backbone'
 
