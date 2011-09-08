@@ -2,17 +2,23 @@
 
 = form_for [:admin, @plan] do |f|
   .entry.cycle
+    = f.label :name
+    %span
+      custom -
+      = f.text_field :name, size: 19
+
+  .entry.cycle
     = f.label :cycle
     = f.select :cycle, %w[month year]
-    
+
   .entry.player_hits
     = f.label :player_hits
     = f.text_field :player_hits
-    
+
   .entry.price
     = f.label :price, "Price per cycle (in cents)"
     = f.text_field :price
-  
+
   .spacer
   .entry.submit.send
     = f.submit "Create", :confirm => 'Are you sure?'

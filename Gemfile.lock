@@ -19,14 +19,14 @@ GIT
 
 GIT
   remote: git://github.com/guard/guard.git
-  revision: 2bb33c8bb2d4b4edb985a0f74cfb782fef252edc
+  revision: 9ad866079f712f09f210fe88f9e2cff622019d44
   specs:
     guard (0.7.0.rc1)
       thor (~> 0.14.6)
 
 GIT
   remote: git://github.com/rails/rails.git
-  revision: 4a2e619a1a4193c698a656e7f6ca80ef1e0e4b3c
+  revision: b92a025022254b0c7d7b5e5150000a53d2c8b718
   branch: 3-1-stable
   specs:
     actionmailer (3.1.0)

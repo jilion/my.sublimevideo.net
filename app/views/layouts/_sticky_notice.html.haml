@@ -9,7 +9,7 @@
         = link_to "Plans & Pricing", "http://sublimevideo.net/plans"
         page.
 
-- elsif !current_user.suspended? && (current_user.cc_expire_this_month? || current_user.cc_expired?)
+- elsif !current_user.suspended? && ((current_user.cc_expire_this_month? || current_user.cc_expired?) && current_user.sites.billable.present?)
   #sticky_notice
     %h3 Warning
     %ul
