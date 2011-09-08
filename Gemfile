@@ -19,7 +19,7 @@ gem 'rails-backbone'
 
 # Databases
 gem 'pg',                    '~> 0.11.0'
-gem 'squeel',                '~> 0.8.9'
+gem 'squeel',                '~> 0.9.0'
 
 gem 'bson_ext',              '~> 1.3.1'
 gem 'mongo',                 '~> 1.3.1'
