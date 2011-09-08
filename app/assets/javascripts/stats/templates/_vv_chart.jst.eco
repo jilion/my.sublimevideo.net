@@ -1,12 +1,10 @@
 <ul>
   <li>
-    <%= @vvData.pvTotal() %>
-    <span>page visits</span>
+    <div id='pv_number'><span><%= Highcharts.numberFormat(@vvData.pvTotal(), 0) %></span></div>
+    <span class='title'>page visits</span>
   </li>
   <li>
-    <%= @vvData.vvTotal() %>
-    <span>video views</span>
+    <div id='vv_number'><span><%= Highcharts.numberFormat(@vvData.vvTotal(), 0) %></span></div>
+    <span class='title'>video views</span>
   </li>
 </ul>
-
-<div id='vv_chart'></div>

@@ -1,7 +1,7 @@
 <select>
-  <option <%= "selected='selected'" if @period.value() == '60 minutes' %> <%= "disabled='disabled'" unless @period.periodIsAvailabe('60 minutes') %> value='60 minutes'>last 60 minutes</option>
-  <option <%= "selected='selected'" if @period.value() == '24 hours' %> <%= "disabled='disabled'" unless @period.periodIsAvailabe('24 hours') %> value='24 hours'>last 24 hours</option>
-  <option <%= "selected='selected'" if @period.value() == '7 days' %> <%= "disabled='disabled'" unless @period.periodIsAvailabe('7 days') %> value='7 days'>last 7 days</option>
-  <option <%= "selected='selected'" if @period.value() == '30 days' %> <%= "disabled='disabled'" unless @period.periodIsAvailabe('30 days') %> value='30 days'>last 30 days</option>
-  <option <%= "selected='selected'" if @period.value() == 'all days' %> <%= "disabled='disabled'" unless @period.periodIsAvailabe('all days') %> value='all days'>all time</option>
+  <option <%= "selected='selected'" if @period.value() == '60 minutes' %> value='60 minutes'>last 60 minutes <%= "(no data)" unless @period.periodIsAvailabe('60 minutes') %></option>
+  <option <%= "selected='selected'" if @period.value() == '24 hours' %> value='24 hours'>last 24 hours <%= "(no data)" unless @period.periodIsAvailabe('24 hours') %></option>
+  <option <%= "selected='selected'" if @period.value() == '7 days' %> value='7 days'>last 7 days <%= "(no data)" unless @period.periodIsAvailabe('7 days') %> </option>
+  <option <%= "selected='selected'" if @period.value() == '30 days' %> value='30 days'>last 30 days <%= "(no data)" unless @period.periodIsAvailabe('30 days') %></option>
+  <option <%= "selected='selected'" if @period.value() == 'all days' %> value='all days'>all time</option>
 </select>

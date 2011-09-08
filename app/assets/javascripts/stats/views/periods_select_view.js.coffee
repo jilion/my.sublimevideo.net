@@ -11,7 +11,6 @@ class MSVStats.Views.PeriodsSelectView extends Backbone.View
     this.collection.bind('reset', this.render);
 
   render: ->
-    MSVStats.stats.clearcurrentPeriodStatsCache()
     $(this.el).html(this.template(period: this.options.period))
     return this
 

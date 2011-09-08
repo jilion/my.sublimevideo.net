@@ -53,7 +53,7 @@ class MSVStats.Collections.Stats extends Backbone.Collection
     new MDData)
 
   forCurrentPeriodType: (type = MSVStats.period.get('type'), afterTime = null) ->
-    return [] unless MSVStats.stats
+    # return [] unless MSVStats.stats
     MSVStats.stats.reduce((memo, stat) ->
       memo.push(stat) if stat.isPeriodType(type) && (if afterTime? then (stat.time() >= afterTime) else true)
       memo
@@ -64,9 +64,10 @@ class MSVStats.Collections.Stats extends Backbone.Collection
 
   forCurrentPeriod: ->
     return @currentPeriodStatsCache if @currentPeriodStatsCache?
-    return unless MSVStats.stats
     periodStats = this.forCurrentPeriodType()
-    return [] if _.isEmpty(periodStats)
+
+    console.log periodStats
+    # return [] if _.isEmpty(periodStats)
 
     periodLast = MSVStats.period.get('last')
     stats = []
@@ -94,8 +95,10 @@ class MSVStats.Collections.Stats extends Backbone.Collection
       when 'days'
         currentDayTime = MSVStats.Models.Period.today(h: 0).date.getTime()
         if periodLast == 'all'
-          lastTime = _.last(periodStats).time()
-          stepTime = currentDayTime += 24 * 3600 * 1000
+          lastPeriodStat = _.last(periodStats)
+          minlastTime    = MSVStats.Models.Period.today(h: 0).subtract(d: 29).date.getTime()
+          lastTime       = if lastPeriodStat? && lastPeriodStat.time() <= minlastTime then lastPeriodStat.time() else minlastTime
+          stepTime       = currentDayTime += 24 * 3600 * 1000
           while (stepTime -= 24 * 3600 * 1000) >= lastTime
             periodStat = _.detect(periodStats, ((periodStat) -> periodStat.time() == stepTime))
             stats.push(periodStat || new MSVStats.Models.Stat(di: String(stepTime)))

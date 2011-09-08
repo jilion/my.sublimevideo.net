@@ -1,8 +1,7 @@
 class Site < ActiveRecord::Base
   extend ActiveSupport::Memoizable
   include Site::Api
-  require 'site/invoice'
-  include Site::Invoice
+  include Site::Invoicing
   include Site::Recurring
   require 'site/referrer'
   include Site::Scope

@@ -1,6 +1,12 @@
 class MSVStats.Routers.StatsRouter extends Backbone.Router
   initialize: (options) ->
+    Highcharts.setOptions
+      global:
+        useUTC: false
+    
     MSVStats.stats = new MSVStats.Collections.Stats()
+    MSVStats.stats.bind('reset', -> MSVStats.stats.clearcurrentPeriodStatsCache())
+    MSVStats.period.bind('change', -> MSVStats.stats.clearcurrentPeriodStatsCache())
 
     pageTitleView = new MSVStats.Views.PageTitleView(collection: MSVStats.sites)
     pageTitleView.render()
@@ -9,7 +15,7 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
     periodsSelectView = new MSVStats.Views.PeriodsSelectView(collection: MSVStats.stats, period: MSVStats.period)
     $('#periods_select').html(periodsSelectView.render().el)
     MSVStats.vvView = new MSVStats.Views.VVView(collection: MSVStats.stats, sites: MSVStats.sites, period: MSVStats.period)
-    $('#vv').html(MSVStats.vvView.render().el)
+    $('#vv_numbers').html(MSVStats.vvView.render().el)
     window.setTimeout(( -> MSVStats.vvView.periodicRender()), 30000)
     bpView = new MSVStats.Views.BPView(collection: MSVStats.stats, sites: MSVStats.sites, period: MSVStats.period)
     $('#bp').html(bpView.render().el)
@@ -28,7 +34,7 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
     )
 
     MSVStats.pusherChannel = MSVStats.pusher.subscribe("private-#{token}")
-    MSVStats.pusherChannel.bind('stats-fetch', (data) -> 
+    MSVStats.pusherChannel.bind('stats-fetch', (data) ->
       MSVStats.stats.fetch(silent: true, success: ->
         MSVStats.period.set({ minValue: '60 minutes' }, silent: true)
         MSVStats.stats.trigger('reset')
