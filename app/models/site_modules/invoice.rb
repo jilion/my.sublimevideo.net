@@ -1,4 +1,4 @@
-module Site::Invoice
+module SiteModules::Invoice
   extend ActiveSupport::Concern
 
   module ClassMethods
@@ -89,7 +89,7 @@ module Site::Invoice
       end
     end
 
-    # before_save :if => :pending_plan_id_changed? / also called from Site::Invoice.renew_active_sites
+    # before_save :if => :pending_plan_id_changed? / also called from SiteModules::Invoice.renew_active_sites
     def pend_plan_changes
       @instant_charging = false
 
@@ -137,7 +137,7 @@ module Site::Invoice
       true # don't block the callbacks chain
     end
 
-    # called from Site::Invoice.renew_active_sites and from Invoice#succeed's apply_pending_site_plan_changes callback
+    # called from SiteModules::Invoice.renew_active_sites and from Invoice#succeed's apply_pending_site_plan_changes callback
     def apply_pending_plan_changes
       # Remove upgrade required "state"
       if plan_id? && pending_plan_id? && Plan.find(plan_id).upgrade?(Plan.find(pending_plan_id))
@@ -231,8 +231,6 @@ module Site::Invoice
   end
 
 end
-
-
 
 # == Schema Information
 #

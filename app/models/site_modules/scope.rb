@@ -1,7 +1,8 @@
-module Site::Scope
+module SiteModules::Scope
   extend ActiveSupport::Concern
 
   included do
+
     # usage_monitoring scopes
     scope :plan_player_hits_reached_notified, where { plan_player_hits_reached_notification_sent_at != nil }
 
@@ -79,8 +80,11 @@ module Site::Scope
       ELSE -1 END #{way}")
     }
 
-    # search
-    def self.search(q)
+  end
+
+  module ClassMethods
+
+    def search(q)
       joins(:user).
       where(:lower.func(:email).matches % :lower.func("%#{q}%") |
             :lower.func(:first_name).matches % :lower.func("%#{q}%") |
@@ -89,6 +93,7 @@ module Site::Scope
             :lower.func(:dev_hostnames).matches % :lower.func("%#{q}%") |
             :lower.func(:extra_hostnames).matches % :lower.func("%#{q}%"))
     end
+
   end
 
 end

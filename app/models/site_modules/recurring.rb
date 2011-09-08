@@ -1,4 +1,4 @@
-module Site::Recurring
+module SiteModules::Recurring
   extend ActiveSupport::Concern
 
   module ClassMethods

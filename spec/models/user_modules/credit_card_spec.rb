@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'base64'
 
-describe User::CreditCard do
+describe UserModules::CreditCard do
   let(:user) { FactoryGirl.create(:user_real_cc) }
 
   describe "Factory" do
@@ -194,7 +194,7 @@ describe User::CreditCard do
           @user = FactoryGirl.create(:user_real_cc, valid_cc_attributes.merge(cc_expiration_month: Time.now.utc.month, cc_expiration_year: Time.now.utc.year, state: 'archived'))
           @site = FactoryGirl.create(:site, user: @user)
           @user.cc_expire_on.should eql Time.now.utc.end_of_month.to_date
-          expect { User::CreditCard.send_credit_card_expiration }.to_not change(ActionMailer::Base.deliveries, :size)
+          expect { User.send_credit_card_expiration }.to_not change(ActionMailer::Base.deliveries, :size)
         end
       end
 
@@ -203,7 +203,7 @@ describe User::CreditCard do
           @user = FactoryGirl.create(:user_real_cc, valid_cc_attributes.merge(cc_expiration_month: Time.now.utc.month, cc_expiration_year: Time.now.utc.year))
           @site = FactoryGirl.create(:site, user: @user, plan_id: @free_plan.id)
           @user.cc_expire_on.should eql Time.now.utc.end_of_month.to_date
-          expect { User::CreditCard.send_credit_card_expiration }.to_not change(ActionMailer::Base.deliveries, :size)
+          expect { User.send_credit_card_expiration }.to_not change(ActionMailer::Base.deliveries, :size)
         end
       end
 
@@ -213,7 +213,7 @@ describe User::CreditCard do
           @site = FactoryGirl.create(:site, user: @user)
 
           @user.cc_expire_on.should eql Time.now.utc.end_of_month.to_date
-          expect { User::CreditCard.send_credit_card_expiration }.to change(ActionMailer::Base.deliveries, :size).by(1)
+          expect { User.send_credit_card_expiration }.to change(ActionMailer::Base.deliveries, :size).by(1)
         end
 
         it "doesn't send 'cc is expired' email when user's credit card is expired 1 month ago" do
@@ -221,7 +221,7 @@ describe User::CreditCard do
           @site = FactoryGirl.create(:site, user: @user)
 
           @user.cc_expire_on.should eql 1.month.ago.end_of_month.to_date
-          expect { User::CreditCard.send_credit_card_expiration }.to_not change(ActionMailer::Base.deliveries, :size)
+          expect { User.send_credit_card_expiration }.to_not change(ActionMailer::Base.deliveries, :size)
         end
 
         it "doesn't send 'cc is expired' email when user's credit card is expired 1 year ago" do
@@ -229,7 +229,7 @@ describe User::CreditCard do
           @site = FactoryGirl.create(:site, user: @user)
 
           @user.cc_expire_on.should eql 1.year.ago.end_of_month.to_date
-          expect { User::CreditCard.send_credit_card_expiration }.to_not change(ActionMailer::Base.deliveries, :size)
+          expect { User.send_credit_card_expiration }.to_not change(ActionMailer::Base.deliveries, :size)
         end
 
         it "doesn't send expiration email when user's credit card will not expire at the end of the current month" do
@@ -237,7 +237,7 @@ describe User::CreditCard do
           @site = FactoryGirl.create(:site, user: @user)
 
           @user.cc_expire_on.should eql 1.month.from_now.end_of_month.to_date
-          expect { User::CreditCard.send_credit_card_expiration }.to_not change(ActionMailer::Base.deliveries, :size)
+          expect { User.send_credit_card_expiration }.to_not change(ActionMailer::Base.deliveries, :size)
         end
       end
     end

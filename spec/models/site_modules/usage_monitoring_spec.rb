@@ -1,15 +1,15 @@
 require 'spec_helper'
 
-describe Site::UsageMonitoring do
+describe SiteModules::UsageMonitoring do
 
   describe ".delay_monitor_sites_usages" do
     it "should delay monitor_sites_usage if not already delayed" do
-      expect { Site::UsageMonitoring.delay_monitor_sites_usages }.should change(Delayed::Job.where(:handler.matches => '%Site::UsageMonitoring%monitor_sites_usage%'), :count).by(1)
+      expect { SiteModules::UsageMonitoring.delay_monitor_sites_usages }.should change(Delayed::Job.where(:handler.matches => '%SiteModules::UsageMonitoring%monitor_sites_usage%'), :count).by(1)
     end
 
     it "should not delay monitor_sites_usage if already delayed" do
-      Site::UsageMonitoring.delay_monitor_sites_usages
-      expect { Site::UsageMonitoring.delay_monitor_sites_usages }.should change(Delayed::Job.where(:handler.matches => '%Site::UsageMonitoring%monitor_sites_usage%'), :count).by(0)
+      SiteModules::UsageMonitoring.delay_monitor_sites_usages
+      expect { SiteModules::UsageMonitoring.delay_monitor_sites_usages }.should change(Delayed::Job.where(:handler.matches => '%SiteModules::UsageMonitoring%monitor_sites_usage%'), :count).by(0)
     end
   end
 
@@ -21,7 +21,7 @@ describe Site::UsageMonitoring do
 
       UsageMonitoringMailer.should_not_receive(:plan_player_hits_reached)
       UsageMonitoringMailer.should_not_receive(:plan_upgrade_required)
-      Site::UsageMonitoring.monitor_sites_usages
+      SiteModules::UsageMonitoring.monitor_sites_usages
       @site.reload
       @site.plan_player_hits_reached_notification_sent_at.should be_nil
       @site.first_plan_upgrade_required_alert_sent_at.should be_nil
@@ -38,7 +38,7 @@ describe Site::UsageMonitoring do
       it "should required upgrade and send alert" do
         @site.first_plan_upgrade_required_alert_sent_at.should be_nil
         UsageMonitoringMailer.should_receive(:plan_upgrade_required).with(@site).and_return ( mock(:deliver! => true) )
-        Timecop.travel(Time.utc(2011,1,22)) { Site::UsageMonitoring.monitor_sites_usages }
+        Timecop.travel(Time.utc(2011,1,22)) { SiteModules::UsageMonitoring.monitor_sites_usages }
         @site.reload.first_plan_upgrade_required_alert_sent_at.should be_present
       end
 
@@ -47,7 +47,7 @@ describe Site::UsageMonitoring do
         first_plan_upgrade_required_alert_sent_at = @site.first_plan_upgrade_required_alert_sent_at
 
         UsageMonitoringMailer.should_not_receive(:plan_upgrade_required).with(@site)
-        Timecop.travel(Time.utc(2011,1,22)) { Site::UsageMonitoring.monitor_sites_usages }
+        Timecop.travel(Time.utc(2011,1,22)) { SiteModules::UsageMonitoring.monitor_sites_usages }
         @site.reload.first_plan_upgrade_required_alert_sent_at.should be_within(5).of(first_plan_upgrade_required_alert_sent_at) # no change
       end
     end
@@ -61,7 +61,7 @@ describe Site::UsageMonitoring do
       it "should send player hits reached notification" do
         @site.plan_player_hits_reached_notification_sent_at.should be_nil
         UsageMonitoringMailer.should_receive(:plan_player_hits_reached).with(@site).and_return ( mock(:deliver! => true) )
-        Timecop.travel(Time.utc(2011,1,22)) { Site::UsageMonitoring.monitor_sites_usages }
+        Timecop.travel(Time.utc(2011,1,22)) { SiteModules::UsageMonitoring.monitor_sites_usages }
         @site.reload.plan_player_hits_reached_notification_sent_at.should be_present
         @site.first_plan_upgrade_required_alert_sent_at.should be_nil
       end
@@ -71,7 +71,7 @@ describe Site::UsageMonitoring do
 
         UsageMonitoringMailer.should_receive(:plan_player_hits_reached).with(@site).and_return ( mock(:deliver! => true) )
         UsageMonitoringMailer.should_not_receive(:plan_upgrade_required)
-        Timecop.travel(Time.utc(2011,1,22)) { Site::UsageMonitoring.monitor_sites_usages }
+        Timecop.travel(Time.utc(2011,1,22)) { SiteModules::UsageMonitoring.monitor_sites_usages }
         @site.reload
         @site.plan_player_hits_reached_notification_sent_at.should > Time.utc(2011,1,22)
         @site.first_plan_upgrade_required_alert_sent_at.should be_nil
@@ -82,7 +82,7 @@ describe Site::UsageMonitoring do
 
         UsageMonitoringMailer.should_not_receive(:plan_player_hits_reached)
         UsageMonitoringMailer.should_not_receive(:plan_upgrade_required)
-        Timecop.travel(Time.utc(2011,1,22)) { Site::UsageMonitoring.monitor_sites_usages }
+        Timecop.travel(Time.utc(2011,1,22)) { SiteModules::UsageMonitoring.monitor_sites_usages }
         @site.reload
         @site.plan_player_hits_reached_notification_sent_at.should_not be_nil
         @site.first_plan_upgrade_required_alert_sent_at.should be_nil

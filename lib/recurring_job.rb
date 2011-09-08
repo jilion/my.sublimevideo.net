@@ -14,9 +14,9 @@ module RecurringJob
   ]
 
   NAMES = [
-    '%User::CreditCard%send_credit_card_expiration%',
+    '%UserModules::CreditCard%send_credit_card_expiration%',
     '%RecurringJob%invoices_processing%',
-    '%Site::UsageMonitoring%monitor_sites_usages%',
+    '%SiteModules::UsageMonitoring%monitor_sites_usages%',
     '%Site%update_last_30_days_counters_for_not_archived_sites%',
     '%Tweet%save_new_tweets_and_sync_favorite_tweets%',
     '%SiteStat%clear_old_minutes_and_days_stats%'
@@ -45,7 +45,7 @@ module RecurringJob
       # Billing
       RecurringJob.delay_invoices_processing
       Site.delay_send_trial_will_end
-      User::CreditCard.delay_send_credit_card_expiration
+      UserModules::CreditCard.delay_send_credit_card_expiration
 
       # Stats
       UsersStat.delay_create_users_stats
@@ -53,7 +53,7 @@ module RecurringJob
       SiteStat.delay_clear_old_minutes_and_days_stats
 
       # Others
-      Site::UsageMonitoring.delay_monitor_sites_usages
+      SiteModules::UsageMonitoring.delay_monitor_sites_usages
       Site.delay_update_last_30_days_counters_for_not_archived_sites
       Tweet.delay_save_new_tweets_and_sync_favorite_tweets
     end

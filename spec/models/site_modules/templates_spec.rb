@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Site::Templates do
+describe SiteModules::Templates do
 
   describe "Callbacks" do
 

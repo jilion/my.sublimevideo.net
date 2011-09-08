@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Site::Invoice do
+describe SiteModules::Invoice do
 
   describe "Class Methods" do
 

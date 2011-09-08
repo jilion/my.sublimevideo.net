@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Site::Referrer do
+describe SiteModules::Referrer do
 
   describe "#referrer_type" do
     context "with versioning" do

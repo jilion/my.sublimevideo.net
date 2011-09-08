@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Site::Scope do
+describe SiteModules::Scope do
 
   before(:all) do
     @user = FactoryGirl.create(:user)

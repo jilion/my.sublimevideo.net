@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Site::Usage do
+describe SiteModules::Usage do
 
   describe "#update_last_30_days_counters" do
     before(:all) do

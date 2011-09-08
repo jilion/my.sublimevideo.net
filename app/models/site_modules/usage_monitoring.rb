@@ -1,4 +1,4 @@
-module Site::UsageMonitoring
+module SiteModules::UsageMonitoring
 
   # ================================
   # = Site class methods extension =
@@ -6,7 +6,7 @@ module Site::UsageMonitoring
 
   # Recurring task
   def self.delay_monitor_sites_usages(interval = 1.day)
-    unless Delayed::Job.already_delayed?('%Site::UsageMonitoring%monitor_sites_usages%')
+    unless Delayed::Job.already_delayed?('%SiteModules::UsageMonitoring%monitor_sites_usages%')
       delay(:priority => 50, :run_at => (Time.now.utc.tomorrow.midnight + 1.hour)).monitor_sites_usages
     end
   end

@@ -1,7 +1,8 @@
-module Site::Api
+module SiteModules::Api
   extend ActiveSupport::Concern
 
   included do
+
     acts_as_api
 
     api_accessible :v1_private_self do |template|
@@ -24,11 +25,7 @@ module Site::Api
       template.add :token
       template.add lambda { |site| site.usages.between(60.days.ago.midnight, Time.now.utc.end_of_day) }, :as => :usage, :template => :v1_private_self
     end
+
   end
 
-  module ClassMethods
-  end
-
-  module InstanceMethods
-  end
 end

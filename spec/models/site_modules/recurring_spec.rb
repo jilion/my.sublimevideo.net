@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Site::Recurring do
+describe SiteModules::Recurring do
 
   describe ".delay_update_last_30_days_counters_for_not_archived_sites" do
     it "delays update_last_30_days_counters_for_not_archived_sites if not already delayed" do

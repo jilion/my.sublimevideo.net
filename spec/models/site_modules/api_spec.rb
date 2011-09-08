@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Site::Api do
+describe SiteModules::Api do
 
   describe "#to_api" do
     context "normal site" do

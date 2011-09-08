@@ -1,4 +1,4 @@
-module Site::Usage
+module SiteModules::Usage
   extend ActiveSupport::Concern
 
   module InstanceMethods
@@ -43,7 +43,7 @@ module Site::Usage
         0
       end
     end
-    
+
     def percentage_of_days_over_daily_limit(max_days = 60)
       if in_paid_plan?
         last_days       = [days_since(first_paid_plan_started_at), max_days].min
