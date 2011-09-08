@@ -1,4 +1,4 @@
-module Site::Invoice
+module Site::Invoicing
   extend ActiveSupport::Concern
 
   module ClassMethods
