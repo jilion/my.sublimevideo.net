@@ -39,34 +39,30 @@ class Plan < ActiveRecord::Base
   class << self
     extend ActiveSupport::Memoizable
 
-    def free_plan
-      where(name: "free").first
-    end
-    memoize :free_plan
-
-    def sponsored_plan
-      where(name: "sponsored").first
-    end
-    memoize :sponsored_plan
-
     def create_custom(attributes)
       create(attributes.merge(:name => "custom - #{attributes[:name]}"))
     end
 
-    STANDARD_NAMES.each do |name|
-      name_method = "#{name}_player_hits"
-      define_method(name_method) do
-        where(name: name).first.player_hits
+    %w[free sponsored].each do |plan_name|
+      method_name = "#{plan_name}_plan"
+      define_method(method_name) do
+        where(name: plan_name).first
       end
-      memoize name_method.to_sym
+      memoize method_name.to_sym
     end
 
-    STANDARD_NAMES.each do |name|
-      name_method = "#{name}_daily_player_hits"
-      define_method(name_method) do
-        where(name: name).first.daily_player_hits
+    STANDARD_NAMES.each do |plan_name|
+      method_name = "#{plan_name}_player_hits"
+      define_method(method_name) do
+        where(name: plan_name).first.player_hits
       end
-      memoize name_method.to_sym
+      memoize method_name.to_sym
+
+      method_name = "#{plan_name}_daily_player_hits"
+      define_method(method_name) do
+        where(name: plan_name).first.daily_player_hits
+      end
+      memoize method_name.to_sym
     end
 
   end
@@ -102,7 +98,7 @@ class Plan < ActiveRecord::Base
 
   # unpaid plan
   %w[free sponsored].each do |plan_name|
-    define_method :"#{plan_name}_plan?" do
+    define_method "#{plan_name}_plan?" do
       name == plan_name
     end
   end
@@ -125,9 +121,9 @@ class Plan < ActiveRecord::Base
     !unpaid_plan?
   end
 
-  CYCLES.each do |c|
-    define_method :"#{c}ly?" do
-      cycle == c
+  CYCLES.each do |cycle_name|
+    define_method "#{cycle_name}ly?" do
+      cycle == cycle_name
     end
   end
 
