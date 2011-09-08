@@ -1,5 +1,9 @@
 MySublimeVideo::Application.routes.draw do
 
+  if ["development", "test"].include? Rails.env
+      mount Jasminerice::Engine => "/jasmine"
+  end
+
   devise_for :users,
              :path => '',
              :path_names => { :sign_in => 'login', :sign_out => 'logout' },

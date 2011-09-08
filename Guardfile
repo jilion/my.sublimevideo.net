@@ -20,6 +20,12 @@ group :frontend do
     watch(%r{^config/locales/.+\.yml})
   end
 
+  guard 'jasmine', :jasmine_url => 'http://my.sublimevideo.net.dev/jasmine', :all_on_start => false do
+    watch(%r{app/assets/javascripts/(.+)\.(js\.coffee|js)}) { |m| "spec/javascripts/#{m[1]}_spec.#{m[2]}" }
+    watch(%r{spec/javascripts/(.+)_spec\.(js\.coffee|js)})  { |m| "spec/javascripts/#{m[1]}_spec.#{m[2]}" }
+    watch(%r{spec/javascripts/spec\.(js\.coffee|js)})       { "spec/javascripts" }
+  end
+
 end
 
 group :backend do
@@ -46,22 +52,6 @@ group :backend do
 
     watch(%r{^app/(.+)\.rb})                                                   { |m| "spec/#{m[1]}_spec.rb" }
     watch(%r{^lib/(.+)\.rb})                                                   { |m| "spec/lib/#{m[1]}_spec.rb" }
-  end
-
-end
-
-group :jasmine do
-
-  guard 'rails-assets', :run_on => [:start, :change, :reload], :runner => :rails, :rails_env => 'test' do
-    watch(%r{^app/assets/.+$})
-    watch('config/application.rb')
-  end
-
-  guard 'jasmine-headless-webkit', :valid_extensions => ['coffee'] do
-    watch(%r{^public/assets/.*\.js})
-    watch(%r{^spec/javascripts/helpers/*})
-    watch(%r{^spec/javascripts/support/*})
-    watch(%r{^spec/javascripts/(.*)_spec.coffee})
   end
 
 end

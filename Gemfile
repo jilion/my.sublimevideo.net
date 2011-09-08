@@ -88,6 +88,9 @@ gem 'dalli',                 '~> 1.1.1'
 # Stats
 gem 'pusher'
 
+# Javascript test
+gem "jasminerice"
+
 group :production do
   gem 'rack-google-analytics', '~> 0.9.2', :require => 'rack/google-analytics'
 end
@@ -101,7 +104,6 @@ group :development, :test do
   gem 'log_buddy'
   gem 'timecop'
   gem 'rspec-rails', '~> 2.6.1'
-  gem 'jasmine-headless-webkit'
   # gem 'ruby-debug19'
 end
 
@@ -119,7 +121,7 @@ end
 group :guard do
   gem 'rb-fsevent', :git => 'git://github.com/ttilley/rb-fsevent.git', :branch => 'pre-compiled-gem-one-off'
   gem 'growl_notify'
-  gem 'guard', :git => 'git://github.com/guard/guard.git'
+  gem 'guard', '~> 0.7.0.rc1' #, :git => 'git://github.com/guard/guard.git'
   # gem 'guard', :path => '/Users/Thibaud/Codes/guard'
   gem 'guard-bundler'
   gem 'guard-pow'
@@ -127,8 +129,7 @@ group :guard do
   gem 'guard-spork'
   gem 'guard-rspec'
   gem 'guard-coffeescript'
-  gem 'guard-rails-assets'
-  gem 'guard-jasmine-headless-webkit'
+  gem 'guard-jasmine'
 end
 
 group :test do
@@ -142,7 +143,4 @@ group :test do
 
   gem 'database_cleaner'
   gem 'factory_girl_rails', :require => false # loaded in spec_helper Spork.each_run
-
-  # Js test
-  gem 'jasmine', '~> 1.1.0.rc'
 end
