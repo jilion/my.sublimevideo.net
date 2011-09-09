@@ -13,6 +13,8 @@ class Ticket
   validates :subject, :presence => true
   validates :message, :presence => true
 
+  validate :user_can_send_ticket
+
   def self.post_ticket(data={})
     ticket    = Ticket.new(data)
     response  = Zendesk.post("/tickets.xml", ticket.to_xml)
@@ -58,13 +60,21 @@ class Ticket
     xml.ticket do
       xml.tag!(:subject, @subject)
       xml.tag!(:description, @message)
-      xml.tag!(:"set-tags", "#{@type} #{@user.support}-support")
+      xml.tag!(:"set-tags", @type)
       if @user.zendesk_id?
         xml.tag!(:"requester-id", @user.zendesk_id)
       else
         xml.tag!(:"requester-name", h(@user.full_name))
         xml.tag!(:"requester-email", h(@user.email))
       end
+    end
+  end
+
+  private
+
+  def user_can_send_ticket
+    if @user && @type && @user.support != 'email' && %w[idea bug billing].exclude?(@type)
+      self.errors.add(:base, "You can't send this type of ticket!")
     end
   end
 

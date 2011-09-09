@@ -150,32 +150,17 @@ class User < ActiveRecord::Base
     Vat.for_country?(country)
   end
 
-  def invoices_failed?
-    invoices.any? { |i| i.failed? }
-  end
-
-  def invoices_waiting?
-    invoices.any? { |i| i.waiting? }
-  end
-
-  def invoices_open?(options={})
-    scope = invoices
-    scope = scope.where(renew: options[:renew]) if options.key?(:renew)
-    scope.any? { |i| i.open? }
-  end
-
   def full_name
     first_name.to_s + ' ' + last_name.to_s
   end
 
   def support
-    if sites.active.any? { |s| s.plan_id? && s.plan.support == "priority" }
-      "priority"
-    elsif sites.active.any? { |s| s.plan_id? && s.plan.support == "standard" }
-      "standard"
-    else
-      "launchpad"
+    eligible_for_email_support = sites.active.any? do |s|
+      (s.first_paid_plan_started_at? && s.first_paid_plan_started_at < PublicLaunch.v2_started_on) ||
+      s.plan.support == "email"
     end
+
+    eligible_for_email_support ? 'email' : 'forum'
   end
 
   def archivable?

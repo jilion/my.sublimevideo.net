@@ -448,7 +448,7 @@ def create_plans
     { name: "galaxy",     cycle: "year",  player_hits: 1_000_000,  price: 99900 },
     { name: "custom1",    cycle: "year",  player_hits: 10_000_000, price: 999900 }
   ]
-  plans_attributes.each { |attributes| Plan.create(attributes) }
+  plans_attributes.each { |attributes| Plan.create!(attributes) }
   puts "#{plans_attributes.size} plans created!"
 end
 

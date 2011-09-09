@@ -12,13 +12,10 @@ require 'spec_helper'
 
 describe Ticket do
   before(:all) do
-    @user = FactoryGirl.create(:user, first_name: "Rem & My")
-    @user_with_launchpad_support = FactoryGirl.create(:user)
-    FactoryGirl.create(:site, user: @user_with_launchpad_support, plan_id: @free_plan.id)
-    @user_with_standard_support = FactoryGirl.create(:user)
-    FactoryGirl.create(:site, user: @user_with_standard_support, plan_id: @paid_plan.id)
-    @user_with_priority_support = FactoryGirl.create(:user)
-    FactoryGirl.create(:site, user: @user_with_priority_support, plan_id: @custom_plan.token)
+    @user = FactoryGirl.create(:user, first_name: "Remy")
+    FactoryGirl.create(:site, user: @user, plan_id: @paid_plan.id)
+    @loser = FactoryGirl.create(:user)
+    FactoryGirl.create(:site, user: @loser, plan_id: @free_plan.id)
   end
 
   describe "Factory" do
@@ -43,22 +40,28 @@ describe Ticket do
       it { should_not allow_value(type).for(:type) }
     end
 
-    it "should validate presence of user" do
+    it "validates presence of user" do
       ticket = Ticket.new({ user_id: nil, type: "integration", subject: nil, message: "Message" })
       ticket.should_not be_valid
-      ticket.errors[:user].should be_present
+      ticket.should have(1).error_on(:user)
     end
 
-    it "should validate presence of subject" do
+    it "validates presence of subject" do
       ticket = Ticket.new({ user_id: @user.id, type: "idea", subject: nil, message: "Message" })
       ticket.should_not be_valid
-      ticket.errors[:subject].should be_present
+      ticket.should have(1).error_on(:subject)
     end
 
-    it "should validate presence of message" do
+    it "validates presence of message" do
       ticket = Ticket.new({ user_id: @user.id, type: "billing", subject: "Subject", message: nil })
       ticket.should_not be_valid
-      ticket.errors[:message].should be_present
+      ticket.should have(1).error_on(:message)
+    end
+
+    it "validates ticket type submission allowed" do
+      ticket = Ticket.new({ user_id: @loser.id, type: "integration", subject: "Subject", message: "Message" })
+      ticket.should_not be_valid
+      ticket.should have(1).error_on(:base)
     end
   end
 
@@ -66,8 +69,8 @@ describe Ticket do
 
     describe ".post_ticket" do
       describe "common behavior" do
-         let(:ticket) { Ticket.new({ user_id: @user_with_standard_support.reload.id, type: "idea", subject: "I have a request!", message: "I have a request this is a long text!" }) }
-        use_vcr_cassette "ticket/post_ticket_standard_support"
+         let(:ticket) { Ticket.new({ user_id: @user.reload.id, type: "idea", subject: "I have a request!", message: "I have a request this is a long text!" }) }
+        use_vcr_cassette "ticket/post_ticket"
 
         it "should create the ticket on Zendesk" do
           zendesk_tickets_count_before_post = VCR.use_cassette("ticket/zendesk_tickets_before_post") do
@@ -98,42 +101,15 @@ describe Ticket do
           Delayed::Job.last.name.should == 'Class#verify_user'
         end
       end
-
-      context "user has launchpad support" do
-        let(:ticket) { Ticket.new({ user_id: @user_with_launchpad_support.reload.id, type: "idea", subject: "I have a request!", message: "I have a request this is a long text!" }) }
-        use_vcr_cassette "ticket/post_ticket_launchpad_support"
-
-        it "should set the tags for the ticket based on its type" do
-          JSON[Zendesk.get("/tickets/#{Ticket.post_ticket(ticket.to_hash)}.json").body]["current_tags"].should == "#{ticket.type} launchpad-support"
-        end
-      end
-
-      context "user has standard support" do
-        let(:ticket) { Ticket.new({ user_id: @user_with_standard_support.reload.id, type: "idea", subject: "I have a request!", message: "I have a request this is a long text!" }) }
-        use_vcr_cassette "ticket/post_ticket_standard_support"
-
-        it "should set the tags for the ticket based on its type" do
-          JSON[Zendesk.get("/tickets/#{Ticket.post_ticket(ticket.to_hash)}.json").body]["current_tags"].should == "#{ticket.type} standard-support"
-        end
-      end
-
-      context "user has priority support" do
-        let(:ticket) { Ticket.new({ user_id: @user_with_priority_support.reload.id, type: "idea", subject: "I have a request!", message: "I have a request this is a long text!" }) }
-        use_vcr_cassette "ticket/post_ticket_priority_support"
-
-        it "should set the tags for the ticket based on its type" do
-          JSON[Zendesk.get("/tickets/#{Ticket.post_ticket(ticket.to_hash)}.json").body]["current_tags"].should == "#{ticket.type} priority-support"
-        end
-      end
     end
 
     describe ".verify_user" do
-      let(:ticket) { Ticket.new({ user_id: @user_with_standard_support.reload.id, type: "idea", subject: "I have a request!", message: "I have a request this is a long text!" }) }
+      let(:ticket) { Ticket.new({ user_id: @user.reload.id, type: "idea", subject: "I have a request!", message: "I have a request this is a long text!" }) }
 
       it "should set the user as verified on zendesk" do
-        VCR.use_cassette("ticket/post_ticket_standard_support") { Ticket.post_ticket(ticket.to_hash) }
+        VCR.use_cassette("ticket/post_ticket") { Ticket.post_ticket(ticket.to_hash) }
         VCR.use_cassette("ticket/verify_user") do
-          Ticket.verify_user(@user_with_standard_support.id)
+          Ticket.verify_user(@user.id)
           JSON[Zendesk.get("/users/#{ticket.user.reload.zendesk_id}.json").body]["is_verified"].should be_true
         end
       end
@@ -141,7 +117,7 @@ describe Ticket do
   end
 
   describe "Instance Methods" do
-    let(:ticket) { Ticket.new({ user_id: @user_with_standard_support.reload.id, type: "other", subject: "I have a request!", message: "I have a request this is a long text!" }) }
+    let(:ticket) { Ticket.new({ user_id: @user.reload.id, type: "other", subject: "I have a request!", message: "I have a request this is a long text!" }) }
 
     describe "#save" do
       it "should delay Ticket.post_ticket" do
@@ -163,9 +139,9 @@ describe Ticket do
 <ticket>
   <subject>I have a request!</subject>
   <description>I have a request this is a long text!</description>
-  <set-tags>other standard-support</set-tags>
-  <requester-name>#{@user_with_standard_support.full_name}</requester-name>
-  <requester-email>#{@user_with_standard_support.email}</requester-email>
+  <set-tags>other</set-tags>
+  <requester-name>#{@user.full_name}</requester-name>
+  <requester-email>#{@user.email}</requester-email>
 </ticket>
         EOF
       end

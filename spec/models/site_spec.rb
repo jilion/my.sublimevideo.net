@@ -39,7 +39,7 @@ describe Site do
     its(:extra_hostnames)               { should be_nil }
     its(:path)                          { should be_nil }
     its(:wildcard)                      { should be_false }
-    its(:badged)                        { should be_false }
+    its(:badged)                        { should be_true }
     its(:token)                         { should =~ /^[a-z0-9]{8}$/ }
     its(:license)                       { should_not be_present }
     its(:loader)                        { should_not be_present }
@@ -1282,7 +1282,7 @@ end
 #  last_30_days_extra_player_hits_total_count    :integer         default(0)
 #  last_30_days_dev_player_hits_total_count      :integer         default(0)
 #  trial_started_at                              :datetime
-#  badged                                        :boolean
+#  badged                                        :boolean         default(TRUE)
 #
 # Indexes
 #
@@ -1294,3 +1294,4 @@ end
 #  index_sites_on_plan_id                                     (plan_id)
 #  index_sites_on_user_id                                     (user_id)
 #
+

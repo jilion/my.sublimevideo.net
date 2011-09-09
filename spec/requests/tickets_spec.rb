@@ -32,7 +32,7 @@ feature "Support" do
       page.should have_content I18n.t('flash.tickets.create.notice')
 
       Delayed::Job.last.name.should == 'Class#post_ticket'
-      VCR.use_cassette("ticket/post_ticket_standard_support") { @worker.work_off }
+      VCR.use_cassette("ticket/post_ticket") { @worker.work_off }
       Delayed::Job.last.should be_nil
       @current_user.reload.zendesk_id.should be_present
     end

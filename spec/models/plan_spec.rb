@@ -30,7 +30,7 @@ describe Plan do
   end
 
   describe "Validations" do
-    [:name, :cycle, :player_hits, :price].each do |attr|
+    [:name, :cycle, :player_hits, :price, :support_level].each do |attr|
       it { should allow_mass_assignment_of(attr) }
     end
 
@@ -38,6 +38,7 @@ describe Plan do
     it { should validate_presence_of(:player_hits) }
     it { should validate_presence_of(:price) }
     it { should validate_presence_of(:cycle) }
+    it { should validate_presence_of(:support_level) }
 
     describe "uniqueness of name scoped by cycle" do
       before(:each) do
@@ -213,20 +214,13 @@ describe Plan do
     end
 
     describe "#support" do
-      it { FactoryGirl.build(:plan, :name => "free").support.should == "launchpad" }
-      it { FactoryGirl.build(:plan, :name => "sponsored").support.should == "priority" }
-      it { FactoryGirl.build(:plan, :name => "comet").support.should == "standard" }
-      it { FactoryGirl.build(:plan, :name => "planet").support.should == "standard" }
-      it { FactoryGirl.build(:plan, :name => "star").support.should == "priority" }
-      it { FactoryGirl.build(:plan, :name => "galaxy").support.should == "priority" }
-      it { FactoryGirl.build(:plan, :name => "custom").support.should == "priority" }
-      it { FactoryGirl.build(:plan, :name => "custom1").support.should == "priority" }
+      it { FactoryGirl.build(:plan, name: "free", support_level: 0).support.should == "forum" }
+      it { FactoryGirl.build(:plan, name: "galaxy", support_level: 1).support.should == "email" }
     end
 
   end
 
 end
-
 
 
 

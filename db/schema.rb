@@ -161,6 +161,7 @@ ActiveRecord::Schema.define(:version => 20110831124847) do
     t.integer  "price"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "support_level", :default => 0
   end
 
   add_index "plans", ["name", "cycle"], :name => "index_plans_on_name_and_cycle", :unique => true
@@ -212,7 +213,7 @@ ActiveRecord::Schema.define(:version => 20110831124847) do
     t.integer  "last_30_days_extra_player_hits_total_count",    :default => 0
     t.integer  "last_30_days_dev_player_hits_total_count",      :default => 0
     t.datetime "trial_started_at"
-    t.boolean  "badged"
+    t.boolean  "badged",                                        :default => true
   end
 
   add_index "sites", ["created_at"], :name => "index_sites_on_created_at"

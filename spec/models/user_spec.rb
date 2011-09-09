@@ -721,53 +721,6 @@ describe User do
       end
     end
 
-    describe "#invoices_failed?" do
-      before(:all) do
-        @user = FactoryGirl.create(:user)
-        @site = FactoryGirl.create(:site, user: @user)
-        FactoryGirl.create(:invoice, state: 'failed', site: @site)
-      end
-      subject { @user }
-
-      its(:invoices_failed?) { should be_true }
-    end
-
-    describe "#invoices_waiting?" do
-      before(:all) do
-        @user = FactoryGirl.create(:user)
-        @site = FactoryGirl.create(:site, user: @user)
-        FactoryGirl.create(:invoice, state: 'waiting', site: @site)
-      end
-      subject { @user }
-
-      its(:invoices_waiting?) { should be_true }
-    end
-
-    describe "#invoices_open?" do
-      before(:all) do
-        @user = FactoryGirl.create(:user)
-        @site = FactoryGirl.create(:site, user: @user)
-      end
-      before(:each) do
-        Invoice.delete_all
-      end
-      subject { @user }
-
-      context "with no options" do
-        it "should be true if invoice have the renew flag == false" do
-          invoice = FactoryGirl.create(:invoice, state: 'open', site: @site, renew: false)
-          invoice.renew.should be_false
-          subject.invoices_open?.should be_true
-        end
-
-        it "should be true if invoice have the renew flag == true" do
-          invoice = FactoryGirl.create(:invoice, state: 'open', site: @site, renew: true)
-          invoice.renew.should be_true
-          subject.invoices_open?.should be_true
-        end
-      end
-    end
-
     describe "#support" do
       context "user has no site" do
         before(:all) do
@@ -775,56 +728,42 @@ describe User do
         end
         subject { @user.reload }
 
-        it { subject.support.should == "launchpad" }
+        it { subject.support.should eql "forum" }
       end
 
-      context "user has a site with no plan" do
+      context "user has a site with first_paid_plan_started_at < PublicLaunch.v2_started_on" do
         before(:all) do
           @user = FactoryGirl.create(:user)
-          @site = FactoryGirl.create(:site, user: @user)
-          @site.send(:write_attribute, :plan_id, nil)
-          @site.save(validate: false)
-          @site.plan_id.should be_nil
+          @site = FactoryGirl.create(:site, user: @user, first_paid_plan_started_at: PublicLaunch.v2_started_on - 1.day)
         end
         subject { @user.reload }
 
-        it { subject.support.should == "launchpad" }
+        it { subject.support.should eql "email" }
       end
 
-      context "user has only sites with launchpad support" do
-        before(:all) do
-          @user = FactoryGirl.create(:user)
-          FactoryGirl.create(:site, user: @user, plan_id: @free_plan.id)
+      context "user has a site with first_paid_plan_started_at >= PublicLaunch.v2_started_on" do
+        context "user has only sites with forum support" do
+          before(:all) do
+            @user = FactoryGirl.create(:user)
+            FactoryGirl.create(:site, user: @user, plan_id: @free_plan.id)
+          end
+          subject { @user.reload }
+          it { @free_plan.support.should eql "forum" }
+          it { subject.support.should eql "forum" }
         end
-        subject { @user.reload }
 
-        it { @free_plan.support.should == "launchpad" }
-        it { subject.support.should == "launchpad" }
-      end
+        context "user has at least one site with email support" do
+          before(:all) do
+            @user = FactoryGirl.create(:user)
+            FactoryGirl.create(:site, user: @user, plan_id: @paid_plan.id, first_paid_plan_started_at: PublicLaunch.v2_started_on)
+            FactoryGirl.create(:site, user: @user, plan_id: @free_plan.id, first_paid_plan_started_at: PublicLaunch.v2_started_on)
+          end
+          subject { @user.reload }
 
-      context "user has only sites with standard support" do
-        before(:all) do
-          @user = FactoryGirl.create(:user)
-          FactoryGirl.create(:site, user: @user, plan_id: @paid_plan.id)
-          FactoryGirl.create(:site, user: @user, plan_id: @free_plan.id)
+          it { @free_plan.support.should eql "forum" }
+          it { @paid_plan.support.should eql "email" }
+          its(:support) { should eql "email" }
         end
-        subject { @user.reload }
-
-        it { @paid_plan.support.should == "standard" }
-        it { subject.support.should == "standard" }
-      end
-
-      context "user has at least one site with priority support" do
-        before(:all) do
-          @user = FactoryGirl.create(:user)
-          FactoryGirl.create(:site, user: @user, plan_id: @paid_plan.id)
-          FactoryGirl.create(:site, user: @user, plan_id: @custom_plan.token)
-        end
-        subject { @user.reload }
-
-        it { @paid_plan.support.should == "standard" }
-        it { @custom_plan.support.should == "priority" }
-        it { subject.support.should == "priority" }
       end
     end
 

@@ -50,12 +50,12 @@ Spork.prefork do
 
     config.before(:all) do
       PaperTrail.enabled = false
-      @worker = Delayed::Worker.new(:quiet => true)
+      @worker = Delayed::Worker.new(quiet: true)
       # Plans
-      @free_plan      = FactoryGirl.create(:free_plan)
-      @paid_plan      = FactoryGirl.create(:plan, name: "comet",  player_hits: 3_000)
-      @sponsored_plan = FactoryGirl.create(:sponsored_plan)
-      @custom_plan    = FactoryGirl.create(:custom_plan)
+      @free_plan      = FactoryGirl.create(:free_plan, support_level: 0)
+      @paid_plan      = FactoryGirl.create(:plan, name: "comet",  player_hits: 3_000, support_level: 1)
+      @sponsored_plan = FactoryGirl.create(:sponsored_plan, support_level: 1)
+      @custom_plan    = FactoryGirl.create(:custom_plan, support_level: 1)
     end
 
     config.before(:each) do

@@ -3,8 +3,9 @@ class Plan < ActiveRecord::Base
 
   CYCLES         = %w[month year none]
   STANDARD_NAMES = %w[comet planet star galaxy]
+  SUPPORT_LEVELS = %w[forum email]
 
-  attr_accessible :name, :cycle, :player_hits, :price
+  attr_accessible :name, :cycle, :player_hits, :price, :support_level
   uniquify :token, :chars => Array('a'..'z') + Array('0'..'9'), :length => 12
 
   # ================
@@ -18,10 +19,11 @@ class Plan < ActiveRecord::Base
   # = Validations =
   # ===============
 
-  validates :name,        :presence => true, :uniqueness => { :scope => :cycle }
-  validates :player_hits, :presence => true, :numericality => true
-  validates :price,       :presence => true, :numericality => true
-  validates :cycle,       :presence => true, :inclusion => { :in => CYCLES }
+  validates :name,          :presence => true, :uniqueness => { :scope => :cycle }
+  validates :player_hits,   :presence => true, :numericality => true
+  validates :price,         :presence => true, :numericality => true
+  validates :cycle,         :presence => true, :inclusion => CYCLES
+  validates :support_level, :presence => true, :inclusion => (0...SUPPORT_LEVELS.size)
 
   # ==========
   # = Scopes =
@@ -144,13 +146,7 @@ class Plan < ActiveRecord::Base
   end
 
   def support
-    if STANDARD_NAMES[-2,2].include?(name) || custom_plan? || sponsored_plan?
-      "priority"
-    elsif free_plan?
-      "launchpad"
-    else
-      "standard"
-    end
+    SUPPORT_LEVELS[support_level]
   end
 
   def discounted?(site)
