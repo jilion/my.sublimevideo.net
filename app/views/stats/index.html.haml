@@ -7,7 +7,12 @@
     # window.console.log(message) if (window.console && window.console.log)
     # Flash fallback logging - don't include this in production
     # WEB_SOCKET_DEBUG = true
-    
+
+    # Initialize spinners
+    $('#vv').spin()
+    $('#bp').spin()
+    $('#md').spin()
+
     window.MSVStats.pusher = new Pusher('#{PusherConfig.key}', encrypted: true)
     window.MSVStats.sites = new MSVStats.Collections.Sites()
     window.MSVStats.sites.reset(#{current_user.sites.to_json(only: [:token, :hostname])})
@@ -23,11 +28,22 @@
 .spacer
 
 #vv
-  #vv_numbers
-  #vv_chart
- 
+  #vv_content
+    #vv_numbers
+    #vv_chart
+
 #bp
+  %h3 Browser + OS
+  #bp_content
+    #bp_legend
+    #bp_pie_chart
 
 #md
+  %h3 HTML5 vs Flash
+  #md_content
+    #md_legend
+    #md_pie_chart
 
 .spacer
+
+#update_date

@@ -18,8 +18,8 @@ describe 'Stats', ->
     @day31    = new MSVStats.Models.Stat("di":"#{MSVStats.Models.Period.today(h: 0).subtract(d: 31).date.getTime()}","bp":{"and-and":0,"chr-osx":5,"chr-win":14,"fir-osx":1,"fir-win":19,"iex-win":26,"saf-ipa":1,"saf-iph":0,"saf-ipo":1,"saf-osx":5,"saf-win":1},"md":{"f":{"d":5,"m":0,"t":0},"h":{"d":7, "m":3,"t":0}},"pv":{"d":0,"e":2,"i":1,"m":5}, "t":"i626g0au","vv":{"d":0,"e":0,"i":0,"m":7})
     @day43    = new MSVStats.Models.Stat("di":"#{MSVStats.Models.Period.today(h: 0).subtract(d: 43).date.getTime()}","bp":{"and-and":0,"chr-osx":5,"chr-win":14,"fir-osx":1,"fir-win":19,"iex-win":26,"saf-ipa":1,"saf-iph":0,"saf-ipo":1,"saf-osx":5,"saf-win":1},"md":{"f":{"d":5,"m":0,"t":0},"h":{"d":7, "m":3,"t":0}},"pv":{"d":0,"e":2,"i":1,"m":5}, "t":"i626g0au","vv":{"d":0,"e":0,"i":0,"m":7})
     MSVStats.stats = new MSVStats.Collections.Stats([
-      @minute1, @minute5, @minute59, @minute60, @minute61
-      @hour1, @hour4, @hour23, @hour24, @hour25
+      @minute1, @minute5, @minute59, @minute60
+      @hour1, @hour4, @hour23, @hour24
       @day1, @day6, @day29, @day30, @day31, @day43
     ])
     @period = MSVStats.period
@@ -68,6 +68,13 @@ describe 'Stats', ->
       expect(_.first(periodStats).get('di')).toEqual(@day43.get('di'))
       expect(_.last(periodStats).get('di')).toEqual(@day0.get('di'))
 
+  describe 'mostRecentStatDate', ->
+    it 'return most recent stat date', ->
+      expect(@stats.mostRecentStatDate()).toEqual(@minute1.date())
+    it 'return null when no stats', ->
+      stats = new MSVStats.Collections.Stats()
+      expect(stats.mostRecentStatDate()).toEqual(null)
+
   describe 'VVData', ->
     beforeEach ->
       @vvData = @stats.vvData()
@@ -106,6 +113,14 @@ describe 'Stats', ->
           ['Firefox - Macintosh', 3]
         ])
 
+    describe 'isEmpty', ->
+      it 'returns true when all values == 0', ->
+        MSVStats.stats = new MSVStats.Collections.Stats()
+        expect(MSVStats.stats.bpData().isEmpty()).toEqual(true)
+
+      it 'returns false when all values != 0', ->
+        expect(@stats.bpData().isEmpty()).toEqual(false)
+
   describe 'MDData', ->
     beforeEach ->
       @mdData = @stats.mdData()
@@ -133,3 +148,11 @@ describe 'Stats', ->
           ['HTML5 - Mobile', 9]
           ['Flash - Desktop', 15]
         ])
+
+    describe 'isEmpty', ->
+      it 'returns true when all values == 0', ->
+        MSVStats.stats = new MSVStats.Collections.Stats()
+        expect(MSVStats.stats.mdData().isEmpty()).toEqual(true)
+
+      it 'returns false when all values != 0', ->
+        expect(@stats.mdData().isEmpty()).toEqual(false)

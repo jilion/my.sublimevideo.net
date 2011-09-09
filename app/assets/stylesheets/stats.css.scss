@@ -13,6 +13,10 @@
   width:100%;
   float:left;
 
+  #vv_content {
+    display:none;
+  }
+
   #vv_numbers {
     float: left;
     height:280px;
@@ -59,10 +63,23 @@
   height:250px;
   width:420px;
   float:left;
+  
+  #bp_content {
+    display:none;
+  }
 }
 #content #md {
   display:block;
   height:250px;
   width:420px;
   float:right;
+  
+  #md_content {
+    display:none;
+  }
+}
+
+#md_content p, #bp_content p {
+  font-size: 30px;
+  margin: 25% 25%;
 }

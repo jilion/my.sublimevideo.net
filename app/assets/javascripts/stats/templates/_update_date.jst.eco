@@ -1,0 +1,3 @@
+<% if @updateDate?: %>
+  <p>last activity at: <%= Highcharts.dateFormat('%e %B %Y, %H:%M', @updateDate) %></p>
+<% end %>
