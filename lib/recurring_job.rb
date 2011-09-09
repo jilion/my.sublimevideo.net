@@ -10,16 +10,17 @@ module RecurringJob
 
   stats_tasks = [
     '%UsersStat%create_users_stats%',
-    '%SitesStat%create_sites_stats%'
+    '%SitesStat%create_sites_stats%',
+    '%SiteStat%clear_old_minutes_and_days_stats%'
   ]
 
   NAMES = [
-    '%UserModules::CreditCard%send_credit_card_expiration%',
+    '%Site%send_trial_will_end%',
+    '%User%send_credit_card_expiration%',
     '%RecurringJob%invoices_processing%',
     '%SiteModules::UsageMonitoring%monitor_sites_usages%',
     '%Site%update_last_30_days_counters_for_not_archived_sites%',
-    '%Tweet%save_new_tweets_and_sync_favorite_tweets%',
-    '%SiteStat%clear_old_minutes_and_days_stats%'
+    '%Tweet%save_new_tweets_and_sync_favorite_tweets%'
   ] + logs_tasks + stats_tasks
 
   class << self
@@ -45,7 +46,7 @@ module RecurringJob
       # Billing
       RecurringJob.delay_invoices_processing
       Site.delay_send_trial_will_end
-      UserModules::CreditCard.delay_send_credit_card_expiration
+      User.delay_send_credit_card_expiration
 
       # Stats
       UsersStat.delay_create_users_stats
