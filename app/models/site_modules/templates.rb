@@ -44,11 +44,11 @@ module SiteModules::Templates
 
     def license_hash
       hash = { h: [hostname] }
-      # hash[:b] = in_free_plan? || brand? # FOR THE BRAND OPT-IN
       hash[:h] += extra_hostnames.split(', ') if extra_hostnames?
       hash[:d] = dev_hostnames.split(', ') if dev_hostnames?
       hash[:w] = wildcard if wildcard?
       hash[:p] = path if path?
+      hash[:b] = badged unless badged?
       hash
     end
 
@@ -74,8 +74,7 @@ module SiteModules::Templates
   private
 
     def settings_changed?
-      (changed & %w[hostname extra_hostnames dev_hostnames path wildcard]).present?
-      # add logic for brand & ssl
+      (changed & %w[hostname extra_hostnames dev_hostnames path wildcard badged]).present?
     end
 
     # before_save

@@ -64,11 +64,12 @@ describe SiteModules::Templates do
         [:extra_hostnames, :h, "test.staging.com"],
         [:dev_hostnames, :d, "test.local"],
         [:wildcard, :w, false],
-        [:path, :p, "yu"]
+        [:path, :p, "yu"],
+        [:badged, :b, true]
       ].each do |attr, key, value|
         describe "and #{attr} setting has changed" do
           before(:all) do
-            @site = FactoryGirl.create(:site, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', path: 'foo', wildcard: true)
+            @site = FactoryGirl.create(:site, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', path: 'foo', wildcard: true, badged: false)
             @worker.work_off
           end
           subject { @site.reload }
@@ -88,13 +89,6 @@ describe SiteModules::Templates do
 
             subject.reload
             subject.license.read.should_not == old_license_content
-            if value === false
-              subject.license.read.should_not include("#{key}:")
-              subject.license.read.should_not include(value.to_s)
-            else
-              subject.license.read.should include("#{key}:")
-              subject.license.read.should include(value.to_s)
-            end
           end
 
           it "purges license on CDN" do
@@ -148,7 +142,7 @@ describe SiteModules::Templates do
         subject.should_not be_settings_changed
       end
 
-      { hostname: "jilion.com", extra_hostnames: "test.staging.com", dev_hostnames: "test.local", path: "yu", wildcard: true }.each do |attribute, value|
+      { hostname: "jilion.com", extra_hostnames: "test.staging.com", dev_hostnames: "test.local", path: "yu", wildcard: true, badged: true }.each do |attribute, value|
         it "should return true if #{attribute} has changed" do
           subject.send("#{attribute}=", value)
           subject.should be_settings_changed
@@ -158,7 +152,7 @@ describe SiteModules::Templates do
 
     describe "#license_hash" do
       before(:all) do
-        @site = FactoryGirl.create(:site, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', path: 'foo', wildcard: true)
+        @site = FactoryGirl.create(:site, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', path: 'foo', wildcard: true, badged: true)
       end
 
       describe "common settings" do
@@ -176,6 +170,14 @@ describe SiteModules::Templates do
           end
         end
 
+        context "without path" do
+          before { subject.path = '' }
+
+          it "should include hostname, extra_hostnames, no path, wildcard & dev_hostnames" do
+            subject.license_hash.should == { h: ['jilion.com', 'jilion.net', 'jilion.org'], d: ['127.0.0.1', 'localhost'], w: true }
+          end
+        end
+
         context "without wildcard" do
           before { subject.wildcard = false }
 
@@ -184,11 +186,11 @@ describe SiteModules::Templates do
           end
         end
 
-        context "without path" do
-          before { subject.path = '' }
+        context "without badged" do
+          before { subject.badged = false }
 
           it "should include hostname, extra_hostnames, no path, wildcard & dev_hostnames" do
-            subject.license_hash.should == { h: ['jilion.com', 'jilion.net', 'jilion.org'], d: ['127.0.0.1', 'localhost'], w: true }
+            subject.license_hash.should == { h: ['jilion.com', 'jilion.net', 'jilion.org'], d: ['127.0.0.1', 'localhost'], w: true, p: "foo", b: false }
           end
         end
       end
@@ -204,7 +206,7 @@ describe SiteModules::Templates do
     describe "#license_js_hash" do
       subject{ FactoryGirl.create(:site, plan_id: @paid_plan.id, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', path: 'foo', wildcard: true) }
 
-      its(:license_js_hash) { should == "{h:[\"jilion.com\",\"jilion.net\",\"jilion.org\"],d:[\"127.0.0.1\",\"localhost\"],w:true,p:\"foo\"}" }
+      its(:license_js_hash) { should == "{h:[\"jilion.com\",\"jilion.net\",\"jilion.org\"],d:[\"127.0.0.1\",\"localhost\"],w:true,p:\"foo\",b:false}" }
     end
 
     describe "#set_template" do
@@ -216,7 +218,7 @@ describe SiteModules::Templates do
         subject { @site }
 
         it "should set license file with license_hash" do
-          subject.license.read.should == "jilion.sublime.video.sites({h:[\"jilion.com\",\"jilion.net\",\"jilion.org\"],d:[\"127.0.0.1\",\"localhost\"],w:true,p:\"foo\"});"
+          subject.license.read.should == "jilion.sublime.video.sites({h:[\"jilion.com\",\"jilion.net\",\"jilion.org\"],d:[\"127.0.0.1\",\"localhost\"],w:true,p:\"foo\",b:false});"
         end
       end
 
