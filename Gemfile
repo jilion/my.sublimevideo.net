@@ -26,14 +26,14 @@ gem 'mongo',                 '~> 1.3.1'
 gem 'mongoid',               '~> 2.2.0'
 
 # Views
-gem 'haml',                  '~> 3.1.2'
+gem 'haml',                  '~> 3.1.3'
 gem 'coffee-filter',         '~> 0.1.1'
 gem 'kaminari',              :git => 'git://github.com/amatsuda/kaminari.git'
 gem 'liquid',                '~> 2.2.2'
 gem 'RedCloth',              '~> 4.2.7'
 
 # Auth / invitations
-gem 'devise',                '~> 1.4.4'
+gem 'devise',                '~> 1.4.5'
 gem 'devise_invitable',      '~> 0.5.4'
 
 # API
