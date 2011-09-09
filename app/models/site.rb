@@ -17,7 +17,7 @@ class Site < ActiveRecord::Base
   attr_accessor :loader_needs_update, :license_needs_update
   attr_accessor :user_attributes, :charging_options, :transaction
 
-  attr_accessible :hostname, :dev_hostnames, :extra_hostnames, :path, :wildcard, :plan_id, :user_attributes
+  attr_accessible :hostname, :dev_hostnames, :extra_hostnames, :path, :wildcard, :badged, :plan_id, :user_attributes
 
   uniquify :token, :chars => Array('a'..'z') + Array('0'..'9')
 
@@ -55,11 +55,12 @@ class Site < ActiveRecord::Base
 
   validates :user,        :presence => true
   validates :plan,        :presence => { :message => "Please choose a plan" }, :unless => :pending_plan_id?
-  validates :player_mode, :inclusion => { :in => PLAYER_MODES }
+  validates :player_mode, :inclusion => PLAYER_MODES
 
   validates :hostname,        :presence => { :if => proc { |s| s.in_or_will_be_in_paid_plan? } }, :hostname => true, :hostname_uniqueness => true
-  validates :extra_hostnames, :extra_hostnames => true
   validates :dev_hostnames,   :dev_hostnames => true
+  validates :extra_hostnames, :extra_hostnames => true
+  validates :badged,          :inclusion => [true], :if => :in_free_plan?
 
   validate  :validates_current_password
 
@@ -69,16 +70,17 @@ class Site < ActiveRecord::Base
 
   before_validation :set_user_attributes
   before_validation :set_default_dev_hostnames, :unless => :dev_hostnames?
+  before_validation :set_default_badged, :if => proc { |s| s.badged.nil? }
 
-  before_save :prepare_cdn_update # in site/templates
+  before_save :prepare_cdn_update # in site_modules/templates
   before_save :clear_alerts_sent_at
-  before_save :pend_plan_changes, :if => :pending_plan_id_changed? # in site/invoice
-  before_save :set_trial_started_at # in site/invoice
+  before_save :pend_plan_changes, :if => :pending_plan_id_changed? # in site_modules/invoice
+  before_save :set_trial_started_at # in site_modules/invoice
 
-  after_create :delay_ranks_update # in site/templates
+  after_create :delay_ranks_update # in site_modules/templates
 
-  after_save :create_and_charge_invoice # in site/invoice
-  after_save :execute_cdn_update # in site/templates
+  after_save :create_and_charge_invoice # in site_modules/invoice
+  after_save :execute_cdn_update # in site_modules/templates
 
   # =================
   # = State Machine =
@@ -273,6 +275,12 @@ private
     self.dev_hostnames = DEFAULT_DEV_DOMAINS
   end
 
+  # before_validation
+  def set_default_badged
+    self.badged = in_free_plan?
+    true # don't halt the callback chain
+  end
+
   # validate
   def validates_current_password
     return if @skip_password_validation
@@ -342,7 +350,7 @@ end
 #  plan_id                                       :integer
 #  pending_plan_id                               :integer
 #  next_cycle_plan_id                            :integer
-#  cdn_up_to_date                                :boolean
+#  cdn_up_to_date                                :boolean         default(FALSE)
 #  first_paid_plan_started_at                    :datetime
 #  plan_started_at                               :datetime
 #  plan_cycle_started_at                         :datetime
@@ -352,9 +360,12 @@ end
 #  pending_plan_cycle_ended_at                   :datetime
 #  plan_player_hits_reached_notification_sent_at :datetime
 #  first_plan_upgrade_required_alert_sent_at     :datetime
+#  refunded_at                                   :datetime
 #  last_30_days_main_player_hits_total_count     :integer         default(0)
 #  last_30_days_extra_player_hits_total_count    :integer         default(0)
 #  last_30_days_dev_player_hits_total_count      :integer         default(0)
+#  trial_started_at                              :datetime
+#  badged                                        :boolean
 #
 # Indexes
 #

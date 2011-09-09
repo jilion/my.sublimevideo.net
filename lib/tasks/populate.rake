@@ -271,6 +271,14 @@ def create_sites
       Timecop.travel(created_at_array.sample) do
         site.save_without_password_validation
       end
+
+      if site.in_paid_plan?
+        site.trial_started_at = site.created_at
+        site.first_paid_plan_started_at = site.created_at + BusinessModel.days_for_trial.days
+        site.pend_plan_changes
+      end
+      site.apply_pending_plan_changes
+
       if rand > 0.5
         site.cdn_up_to_date = true
         site.save_without_password_validation
@@ -285,27 +293,27 @@ end
 def create_site_usages
   end_date = Date.today
   player_hits_total = 0
-  Site.active.each do |site|
+  Site.not_in_trial.active.each do |site|
     start_date = site.plan_month_cycle_started_at.to_date
     plan_player_hits = (site.in_sponsored_plan?) ? Plan.standard_plans.all.sample.player_hits : site.plan.player_hits
     p = (case rand(4)
     when 0
-      plan_player_hits/30.0 - (plan_player_hits/30.0 / 4)
+      plan_player_hits/30.0 - (plan_player_hits/30.0/4)
     when 1
-      plan_player_hits/30.0 - (plan_player_hits/30.0 / 8)
+      plan_player_hits/30.0 - (plan_player_hits/30.0/8)
     when 2
-      plan_player_hits/30.0 + (plan_player_hits/30.0 / 4)
+      plan_player_hits/30.0 + (plan_player_hits/30.0/4)
     when 3
-      plan_player_hits/30.0 + (plan_player_hits/30.0 / 8)
+      plan_player_hits/30.0 + (plan_player_hits/30.0/8)
     end).to_i
 
     (start_date..end_date).each do |day|
       Timecop.travel(day) do
         loader_hits                = p * rand(100)
-        main_player_hits           = (p * rand).to_i # 0.6
-        main_player_hits_cached    = (p * rand).to_i # 0.4
-        extra_player_hits          = (p * rand).to_i # 0.6
-        extra_player_hits_cached   = (p * rand).to_i # 0.4
+        main_player_hits           = (p * rand).to_i
+        main_player_hits_cached    = (p * rand).to_i
+        extra_player_hits          = (p * rand).to_i
+        extra_player_hits_cached   = (p * rand).to_i
         dev_player_hits            = rand(100)
         dev_player_hits_cached     = (dev_player_hits * rand).to_i
         invalid_player_hits        = rand(500)
@@ -425,7 +433,6 @@ def random_stats_inc(i)
     "bp.and-and" => i * rand(6)
   }
 end
-
 
 def create_plans
   plans_attributes = [

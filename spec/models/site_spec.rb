@@ -39,6 +39,7 @@ describe Site do
     its(:extra_hostnames)               { should be_nil }
     its(:path)                          { should be_nil }
     its(:wildcard)                      { should be_false }
+    its(:badged)                        { should be_false }
     its(:token)                         { should =~ /^[a-z0-9]{8}$/ }
     its(:license)                       { should_not be_present }
     its(:loader)                        { should_not be_present }
@@ -75,7 +76,7 @@ describe Site do
   describe "Validations" do
     subject { FactoryGirl.create(:site) }
 
-    [:hostname, :dev_hostnames, :extra_hostnames, :path, :wildcard, :plan_id, :user_attributes].each do |attribute|
+    [:hostname, :dev_hostnames, :extra_hostnames, :path, :wildcard, :badged, :plan_id, :user_attributes].each do |attribute|
       it { should allow_mass_assignment_of(attribute) }
     end
 
@@ -318,6 +319,34 @@ describe Site do
             subject.archive.should be_false
             subject.errors[:base].should include I18n.t('activerecord.errors.models.site.attributes.base.not_paid_invoices_prevent_archive', :count => 1)
           end
+        end
+      end
+    end
+
+    describe "set_default_badged" do
+      context "with the free plan" do
+        describe "badge on" do
+          subject { FactoryGirl.build(:site, plan_id: @free_plan.id, badged: true) }
+          its(:badged) { should be_true }
+          it { should be_valid }
+        end
+        describe "badge off" do
+          subject { FactoryGirl.build(:site, plan_id: @free_plan.id, badged: false) }
+          its(:badged) { should be_false }
+          it { should_not be_valid }
+          it { should have(1).error_on(:badged) }
+        end
+      end
+      context "with a paid plan" do
+        describe "badge on" do
+          subject { FactoryGirl.build(:site, plan_id: @paid_plan.id, badged: true) }
+          its(:badged) { should be_true }
+          it { should be_valid }
+        end
+        describe "badge off" do
+          subject { FactoryGirl.build(:site, plan_id: @paid_plan.id, badged: false) }
+          its(:badged) { should be_false }
+          it { should be_valid }
         end
       end
     end
@@ -768,6 +797,7 @@ describe Site do
           subject.dev_hostnames.should eql Site::DEFAULT_DEV_DOMAINS
         end
       end
+
     end
 
     describe "before_save" do
@@ -1237,7 +1267,7 @@ end
 #  plan_id                                       :integer
 #  pending_plan_id                               :integer
 #  next_cycle_plan_id                            :integer
-#  cdn_up_to_date                                :boolean
+#  cdn_up_to_date                                :boolean         default(FALSE)
 #  first_paid_plan_started_at                    :datetime
 #  plan_started_at                               :datetime
 #  plan_cycle_started_at                         :datetime
@@ -1247,9 +1277,12 @@ end
 #  pending_plan_cycle_ended_at                   :datetime
 #  plan_player_hits_reached_notification_sent_at :datetime
 #  first_plan_upgrade_required_alert_sent_at     :datetime
+#  refunded_at                                   :datetime
 #  last_30_days_main_player_hits_total_count     :integer         default(0)
 #  last_30_days_extra_player_hits_total_count    :integer         default(0)
 #  last_30_days_dev_player_hits_total_count      :integer         default(0)
+#  trial_started_at                              :datetime
+#  badged                                        :boolean
 #
 # Indexes
 #
