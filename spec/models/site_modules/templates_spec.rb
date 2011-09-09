@@ -40,7 +40,6 @@ describe SiteModules::Templates do
 
     describe "on save" do
       before do
-        # PageRankr.stub(:ranks)
         VoxcastCDN.stub(:purge)
       end
 
@@ -159,46 +158,49 @@ describe SiteModules::Templates do
         subject { @site.reload }
 
         it "includes everything" do
-          subject.license_hash.should == { h: ['jilion.com', 'jilion.net', 'jilion.org'], d: ['127.0.0.1', 'localhost'], w: true, p: "foo" }
+          subject.license_hash.should == { h: ['jilion.com', 'jilion.net', 'jilion.org'], d: ['127.0.0.1', 'localhost'], w: true, p: "foo", s: true }
         end
 
         context "without extra_hostnames" do
           before { subject.extra_hostnames = '' }
 
-          it "should include hostname, no extra_hostnames, path, wildcard & dev_hostnames" do
-            subject.license_hash.should == { h: ['jilion.com'], d: ['127.0.0.1', 'localhost'], w: true, p: "foo" }
+          it "removes extra_hostnames from h: []" do
+            subject.license_hash.should == { h: ['jilion.com'], d: ['127.0.0.1', 'localhost'], w: true, p: "foo", s: true }
           end
         end
 
         context "without path" do
           before { subject.path = '' }
 
-          it "should include hostname, extra_hostnames, no path, wildcard & dev_hostnames" do
-            subject.license_hash.should == { h: ['jilion.com', 'jilion.net', 'jilion.org'], d: ['127.0.0.1', 'localhost'], w: true }
+          it "doesn't include path key/value" do
+            subject.license_hash.should == { h: ['jilion.com', 'jilion.net', 'jilion.org'], d: ['127.0.0.1', 'localhost'], w: true, s: true }
           end
         end
 
         context "without wildcard" do
           before { subject.wildcard = false }
 
-          it "should include hostname, extra_hostnames, path, no wildcard & dev_hostnames" do
-            subject.license_hash.should == { h: ['jilion.com', 'jilion.net', 'jilion.org'], d: ['127.0.0.1', 'localhost'], p: "foo" }
+          it "doesn't include wildcard key/value" do
+            subject.license_hash.should == { h: ['jilion.com', 'jilion.net', 'jilion.org'], d: ['127.0.0.1', 'localhost'], p: "foo", s: true }
           end
         end
 
         context "without badged" do
           before { subject.badged = false }
 
-          it "should include hostname, extra_hostnames, no path, wildcard & dev_hostnames" do
-            subject.license_hash.should == { h: ['jilion.com', 'jilion.net', 'jilion.org'], d: ['127.0.0.1', 'localhost'], w: true, p: "foo", b: false }
+          it "includes b: false" do
+            subject.license_hash.should == { h: ['jilion.com', 'jilion.net', 'jilion.org'], d: ['127.0.0.1', 'localhost'], w: true, p: "foo", b: false, s: true }
           end
         end
-      end
 
-      describe "brand" do
-      end
+        context "without ssl (free plan)" do
+          before { subject.plan_id = @free_plan.id; subject.apply_pending_plan_changes }
 
-      describe "ssl" do
+          it "includes ssl: false" do
+            subject.should be_in_free_plan
+            subject.license_hash.should == { h: ['jilion.com', 'jilion.net', 'jilion.org'], d: ['127.0.0.1', 'localhost'], w: true, p: "foo", s: false }
+          end
+        end
       end
 
     end
@@ -206,7 +208,7 @@ describe SiteModules::Templates do
     describe "#license_js_hash" do
       subject{ FactoryGirl.create(:site, plan_id: @paid_plan.id, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', path: 'foo', wildcard: true) }
 
-      its(:license_js_hash) { should == "{h:[\"jilion.com\",\"jilion.net\",\"jilion.org\"],d:[\"127.0.0.1\",\"localhost\"],w:true,p:\"foo\",b:false}" }
+      its(:license_js_hash) { should == "{h:[\"jilion.com\",\"jilion.net\",\"jilion.org\"],d:[\"127.0.0.1\",\"localhost\"],w:true,p:\"foo\",b:false,s:true}" }
     end
 
     describe "#set_template" do
@@ -218,7 +220,7 @@ describe SiteModules::Templates do
         subject { @site }
 
         it "should set license file with license_hash" do
-          subject.license.read.should == "jilion.sublime.video.sites({h:[\"jilion.com\",\"jilion.net\",\"jilion.org\"],d:[\"127.0.0.1\",\"localhost\"],w:true,p:\"foo\",b:false});"
+          subject.license.read.should == "jilion.sublime.video.sites({h:[\"jilion.com\",\"jilion.net\",\"jilion.org\"],d:[\"127.0.0.1\",\"localhost\"],w:true,p:\"foo\",b:false,s:true});"
         end
       end
 

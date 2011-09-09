@@ -49,6 +49,7 @@ module SiteModules::Templates
       hash[:w] = wildcard if wildcard?
       hash[:p] = path if path?
       hash[:b] = badged unless badged?
+      hash[:s] = !in_free_plan? # SSL
       hash
     end
 
