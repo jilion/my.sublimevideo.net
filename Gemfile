@@ -26,14 +26,14 @@ gem 'mongo',                 '~> 1.3.1'
 gem 'mongoid',               '~> 2.2.0'
 
 # Views
-gem 'haml',                  '~> 3.1.2'
+gem 'haml',                  '~> 3.1.3'
 gem 'coffee-filter',         '~> 0.1.1'
 gem 'kaminari',              :git => 'git://github.com/amatsuda/kaminari.git'
 gem 'liquid',                '~> 2.2.2'
 gem 'RedCloth',              '~> 4.2.7'
 
 # Auth / invitations
-gem 'devise',                '~> 1.4.4'
+gem 'devise',                '~> 1.4.5'
 gem 'devise_invitable',      '~> 0.5.4'
 
 # API
@@ -72,7 +72,7 @@ gem 'useragent',             :git => 'git://github.com/Jilion/useragent.git'
 gem 'zip',                   '~> 2.0.2', :require => 'zip/zip'
 gem 'countries',             '~> 0.5.3'
 gem 'PageRankr',             '~> 2.0.2', :require => 'page_rankr'
-gem 'twitter',               '~> 1.6.2'
+gem 'twitter',               '~> 1.7.1'
 gem 'settingslogic',         '~> 2.0.6'
 gem 'array_stats',           '~> 0.6.0'
 gem 'createsend',            '~> 0.3.2' # Campaign Monitor
