@@ -53,7 +53,6 @@ class MSVStats.Collections.Stats extends Backbone.Collection
     new MDData)
 
   forCurrentPeriodType: (type = MSVStats.period.get('type'), afterTime = null) ->
-    # return [] unless MSVStats.stats
     MSVStats.stats.reduce((memo, stat) ->
       memo.push(stat) if stat.isPeriodType(type) && (if afterTime? then (stat.time() >= afterTime) else true)
       memo
@@ -65,9 +64,6 @@ class MSVStats.Collections.Stats extends Backbone.Collection
   forCurrentPeriod: ->
     return @currentPeriodStatsCache if @currentPeriodStatsCache?
     periodStats = this.forCurrentPeriodType()
-
-    console.log periodStats
-    # return [] if _.isEmpty(periodStats)
 
     periodLast = MSVStats.period.get('last')
     stats = []
@@ -111,6 +107,10 @@ class MSVStats.Collections.Stats extends Backbone.Collection
     stats.reverse()
     @currentPeriodStatsCache = stats
 
+  mostRecentStatDate: ->
+    stats = _.sortBy(this.models,((stat) -> stat.time()))
+    stat = _.last(stats)
+    if stat? then stat.date() else null
 
 class VVData
   constructor: ->
@@ -136,6 +136,9 @@ class BPData
       memo
     [])
     _.sortBy(datas, (data) -> data[1]).reverse()
+
+  isEmpty: ->
+    _.all(this, ((hits) -> hits == 0))
 
   @bpName: (bp) ->
     bp.split('-').map( (name) ->
@@ -192,3 +195,6 @@ class MDData
       memo.push([key, hits]) if hits > 0
       memo
     [])
+
+  isEmpty: ->
+    _.all(@m, ((hits) -> hits == 0)) && _.all(@d, ((hits) -> hits == 0))

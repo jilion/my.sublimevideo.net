@@ -1,2 +1,3 @@
-<h3>Browser + OS</h3>
-<div id='bp_pie_chart'></div>
+<% if @bpData.isEmpty(): %>
+  <p>No data</p>
+<% end %>

@@ -12,6 +12,10 @@ class MSVStats.Views.VVView extends Backbone.View
   render: ->
     @vvData = this.collection.vvData()
     $(this.el).html(this.template(vvData: @vvData))
+    
+    $('#vv_content').show()
+    $('#vv').data().spinner.stop()
+    
     $('#pv_number').textfill(maxFontPixels: 70 )
     $('#vv_number').textfill(maxFontPixels: 70 )
     this.renderChart()

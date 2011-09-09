@@ -5,6 +5,7 @@
 #= require backbone
 # https://github.com/timrwood/underscore.date
 #= require underscore.date/underscore.date
+#= require spin/jquery.spin
 
 #= require_self
 #= require_tree ./stats/models
