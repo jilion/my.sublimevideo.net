@@ -85,7 +85,7 @@ describe UserModules::Scope do
     end
   end
 
-  describe ".search", :focus => true do
+  describe ".search" do
     before(:all) do
       User.delete_all
       Site.delete_all
