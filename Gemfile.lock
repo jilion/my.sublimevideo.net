@@ -19,7 +19,7 @@ GIT
 
 GIT
   remote: git://github.com/rails/rails.git
-  revision: 562277bcf0adcd6a3331c79883666ba03c6c2cde
+  revision: 90cd0242ffd535dac0759808714f7bb563cb1105
   branch: 3-1-stable
   specs:
     actionmailer (3.1.0)
@@ -224,7 +224,7 @@ GEM
     guard-coffeescript (0.4.1)
       coffee-script (>= 2.2.0)
       guard (>= 0.4)
-    guard-jasmine (0.3.0)
+    guard-jasmine (0.3.2)
       guard (>= 0.4)
       multi_json (~> 1.0.3)
     guard-livereload (0.3.1)
@@ -233,7 +233,7 @@ GEM
       multi_json (~> 1.0.3)
     guard-pow (0.2.1)
       guard (>= 0.3.0)
-    guard-rspec (0.4.4)
+    guard-rspec (0.4.5)
       guard (>= 0.4.0)
     guard-spork (0.2.1)
       guard (>= 0.2.2)
