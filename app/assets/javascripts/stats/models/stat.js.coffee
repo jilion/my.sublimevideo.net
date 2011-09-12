@@ -1,6 +1,6 @@
 class MSVStats.Models.Stat extends Backbone.Model
   defaults:
-    t: null
+    t:  null
     mi: null
     hi: null
     di: null
@@ -94,16 +94,24 @@ class MSVStats.Collections.Stats extends Backbone.Collection
           lastPeriodStat = _.last(periodStats)
           minlastTime    = MSVStats.Models.Period.today(h: 0).subtract(d: 29).date.getTime()
           lastTime       = if lastPeriodStat? && lastPeriodStat.time() <= minlastTime then lastPeriodStat.time() else minlastTime
-          stepTime       = currentDayTime += 24 * 3600 * 1000
-          while (stepTime -= 24 * 3600 * 1000) >= lastTime
-            periodStat = _.detect(periodStats, ((periodStat) -> periodStat.time() == stepTime))
-            stats.push(periodStat || new MSVStats.Models.Stat(di: String(stepTime)))
+          while currentDayTime >= lastTime
+            periodStat = _.detect(periodStats, ((periodStat) -> periodStat.time() == currentDayTime))
+            stats.push(periodStat || new MSVStats.Models.Stat(di: String(currentDayTime)))
+            currentDayTime -= 24 * 3600 * 1000
+        else if periodLast == null # custom days
+          startTime = MSVStats.period.get('startTime')
+          endTime   = MSVStats.period.get('endTime')
+          while endTime >= startTime
+            periodStat = _.detect(periodStats, ((periodStat) -> periodStat.time() == endTime))
+            stats.push(periodStat || new MSVStats.Models.Stat(di: String(endTime)))
+            endTime -= 24 * 3600 * 1000
         else # number
           periodLast = parseInt(periodLast)
           while (periodLast -= 1) >= 0
             periodStat = _.detect(periodStats, ((periodStat) -> periodStat.time() == currentDayTime))
             stats.push(periodStat || new MSVStats.Models.Stat(di: String(currentDayTime)))
             currentDayTime -= 24 * 3600 * 1000
+
     stats.reverse()
     @currentPeriodStatsCache = stats
 

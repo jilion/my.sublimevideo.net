@@ -1,8 +1,12 @@
 class MSVStats.Models.Period extends Backbone.Model
   defaults:
-    last: '30'    # number or 'all'
-    type: 'days'  # minutes / hours / days
-    minValue: '60 minutes'
+    last:      '30'    # number or 'all'
+    type:      'days'  # minutes / hours / days
+    minValue:  '60 minutes'
+    # Custom Period
+    startTime: null
+    endTime:   null
+
 
   value: ->
     "#{this.get('last')} #{this.get('type')}"
@@ -31,14 +35,14 @@ class MSVStats.Models.Period extends Backbone.Model
       else
         'spline'
 
-  periodTickInterval: ->
-    last = this.get('last')
-    if last < 10
-      this.periodInterval()
-    else if last < 25
-      2 * this.periodInterval()
-    else
-      5 * this.periodInterval()
+  # periodTickInterval: ->
+  #   last = this.get('last')
+  #   if last < 10
+  #     this.periodInterval()
+  #   else if last < 25
+  #     2 * this.periodInterval()
+  #   else
+  #     7 * this.periodInterval()
 
   periodIsAvailabe: (value) ->
     minValueInt = MSVStats.Models.Period.periodValueToInt(this.get('minValue'))
@@ -47,9 +51,12 @@ class MSVStats.Models.Period extends Backbone.Model
 
   setPeriod: (value, options = {}) ->
     [last, type] = value.split(' ')
-    attributes = last: last, type: type
+    attributes = last: last, type: type, startTime: null, endTime: null
     _.extend(attributes, minValue: value) if options.isMinValue
     this.set(attributes, options)
+
+  setCustomPeriod: (startTime, endTime, options = {}) ->
+    this.set(startTime: Math.min(startTime, endTime), endTime: Math.max(startTime, endTime), last: null, type: 'days', options)
 
   autosetPeriod: (options = {}) ->
     _.extend(options, isMinValue: true)
@@ -63,6 +70,9 @@ class MSVStats.Models.Period extends Backbone.Model
       this.setPeriod('30 days', options)
     else
       this.setPeriod('all days', options)
+
+  isCustom: ->
+    this.get('startTime') != null && this.get('endTime') != null
 
   @periodValueToInt: (value) ->
     [last, type] = value.split(' ')

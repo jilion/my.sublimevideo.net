@@ -17,6 +17,28 @@ describe 'Period', ->
       @period.setPeriod('24 hours', isMinValue: true)
       expect(@period.get('minValue')).toEqual('24 hours')
 
+    it "resets custom start/end times", ->
+      @period.setCustomPeriod(1000, 2000)
+      @period.setPeriod('24 hours')
+      expect(@period.get('startTime')).toEqual(null)
+      expect(@period.get('endTime')).toEqual(null)
+
+  describe '#setCustomPeriod', ->
+    it "sets custom start/end times", ->
+      @period.setCustomPeriod(1000, 2000)
+      expect(@period.get('startTime')).toEqual(1000)
+      expect(@period.get('endTime')).toEqual(2000)
+
+    it "sets custom start/end times with good value order", ->
+      @period.setCustomPeriod(2000, 1000)
+      expect(@period.get('startTime')).toEqual(1000)
+      expect(@period.get('endTime')).toEqual(2000)
+
+    it 'clears type and last', ->
+      @period.setCustomPeriod(1000, 2000)
+      expect(@period.get('type')).toEqual('days')
+      expect(@period.get('last')).toEqual(null)
+
   describe '#autosetPeriod', ->
     beforeEach ->
       @minute5  = new MSVStats.Models.Stat("mi":"#{MSVStats.Models.Period.today(s: 0).subtract(m: 5).date.getTime()}", "t":"i626g0au")
@@ -62,6 +84,16 @@ describe 'Period', ->
   describe '#value', ->
     it 'joins last and type', ->
       expect(@period.value()).toEqual('30 days')
+
+  describe '#isCustom', ->
+    it 'returns true with start/end times', ->
+      @period.setCustomPeriod(1000, 2000)
+      expect(@period.isCustom()).toEqual(true)
+
+    it 'returns true with no start/end times', ->
+      @period.setPeriod('24 hours')
+      expect(@period.isCustom()).toEqual(false)
+
 
   describe '#periodIsAvailabe', ->
     describe "with period minValue of 60 minutes", ->

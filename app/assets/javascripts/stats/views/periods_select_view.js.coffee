@@ -16,4 +16,4 @@ class MSVStats.Views.PeriodsSelectView extends Backbone.View
 
   updatePeriod: ->
     selectedPeriodValue = this.$('select').val()
-    this.options.period.setPeriod(selectedPeriodValue)
+    this.options.period.setPeriod(selectedPeriodValue) if selectedPeriodValue != 'custom'
