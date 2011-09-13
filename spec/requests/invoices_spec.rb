@@ -156,6 +156,7 @@ feature "user has a credit card" do
       end
       site.apply_pending_plan_changes
       invoice = site.last_invoice
+      invoice.plan_invoice_items.order(:id).first.update_attribute(:discounted_percentage, 0.2)
 
       visit invoice_path(invoice)
 
@@ -175,8 +176,8 @@ feature "user has a credit card" do
 
       page.should have_content("Period: #{I18n.l(site.plan_cycle_started_at, :format => :d_b_Y)} - #{I18n.l(site.plan_cycle_ended_at, :format => :d_b_Y)}")
       page.should have_content("(-20% beta discount)")
-      page.should have_content("$160")
-      page.should have_content("-$8.0")
+      page.should have_content("$#{@custom_plan.price / 100.0}")
+      page.should have_content("-$#{@paid_plan.price / 100.0}")
       page.should have_content("$#{invoice.amount / 100.0}")
     end
   end
@@ -234,12 +235,10 @@ feature "user has no credit card" do
   end
 
   scenario "views site invoices with 1 failed invoice with no credit card" do
-    site = FactoryGirl.build(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
-    VCR.eject_cassette
-    site.save(validate: false)
+    site = FactoryGirl.create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
     @invoice = site.last_invoice
     @invoice.update_attributes(state: 'failed', last_failed_at: Time.now.utc)
-    @invoice.last_transaction.update_attribute(:error, "Credit card refused")
+    @invoice.last_transaction.update_attributes(state: 'failed', error: "Credit card refused")
 
     visit "/sites"
     click_link "Edit rymai.com"
@@ -250,8 +249,6 @@ feature "user has no credit card" do
 
     page.should have_content("You have 1 failed invoice for a total of $#{@invoice.amount / 100.0}")
     page.should have_content("Please add a valid credit card and then retry the payment here.")
-
-    page.should have_no_content('Next invoice')
 
     page.should have_content('Past invoices')
     page.should have_content("Payment failed on #{I18n.l(@invoice.last_failed_at, :format => :minutes_timezone)}")
@@ -266,12 +263,10 @@ feature "user has an expired credit card" do
   end
 
   scenario "views site invoices with 1 failed invoice with no credit card" do
-    site = FactoryGirl.build(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
-    VCR.eject_cassette
-    site.save(validate: false)
+    site = FactoryGirl.create(:site_with_invoice, plan_id: @paid_plan.id, user: @current_user, hostname: 'rymai.com')
     @invoice = site.last_invoice
     @invoice.update_attributes(state: 'failed', last_failed_at: Time.now.utc)
-    @invoice.last_transaction.update_attribute(:error, "Credit card refused")
+    @invoice.last_transaction.update_attributes(state: 'failed', error: "Credit card refused")
 
     visit "/sites"
     click_link "Edit rymai.com"
@@ -283,8 +278,6 @@ feature "user has an expired credit card" do
     page.should have_content("You have 1 failed invoice for a total of $#{@invoice.amount / 100.0}")
     page.should have_content("Please update your credit card and then retry the payment here.")
     page.should have_content("Your credit card is expired")
-
-    page.should have_no_content('Next invoice')
 
     page.should have_content('Past invoices')
     page.should have_content("Payment failed on #{I18n.l(@invoice.last_failed_at, :format => :minutes_timezone)}")

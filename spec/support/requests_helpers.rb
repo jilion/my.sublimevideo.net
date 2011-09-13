@@ -66,15 +66,15 @@ module Spec
 
       def set_credit_card(options={})
         choose  "user_cc_brand_#{options[:type] || 'visa'}"
-        fill_in "Name on card", :with => 'Jime'
-        fill_in "Card number", :with => options[:d3d] ? "4000000000000002" : (options[:type] == 'master' ? "5399999999999999" : "4111111111111111")
+        fill_in "Name on card", with: 'Jime'
+        fill_in "Card number", with: options[:d3d] ? "4000000000000002" : (options[:type] == 'master' ? "5399999999999999" : "4111111111111111")
         select  "#{options[:expire_on_month] || "6"}", :from => "#{options[:expire_on_prefix] || "user"}_cc_expiration_month"
-        select  "#{options[:expire_on_year] || Time.now.year + 1}", :from => "#{options[:expire_on_prefix] || "user"}_cc_expiration_year"
-        fill_in "Security Code", :with => '111'
+        select  "#{options[:expire_on_year] || Time.now.year + 1}", from: "#{options[:expire_on_prefix] || "user"}_cc_expiration_year"
+        fill_in "Security Code", with: '111'
       end
 
       def set_credit_card_in_site_form(options={})
-        set_credit_card(options.merge(:expire_on_prefix => "site_user_attributes"))
+        set_credit_card(options.merge(expire_on_prefix: "site_user_attributes"))
       end
 
       def sign_in_as(resource_name, options={})
@@ -87,8 +87,8 @@ module Spec
           visit "/admin/login"
           create_admin(options)
         end
-        fill_in 'Email',    :with => resource.email
-        fill_in 'Password', :with => '123456'
+        fill_in 'Email',    with: resource.email
+        fill_in 'Password', with: '123456'
         check   'Remember me' if options[:remember_me] == true
         yield if block_given?
         click_button 'Login'
@@ -98,7 +98,7 @@ module Spec
       def send_invite_to(resource_name, email = "invited@invited.com")
         sign_in_as :admin
         visit "/admin/#{resource_name.to_s.pluralize}/invitation/new"
-        fill_in 'Email', :with => email
+        fill_in 'Email', with: email
         yield if block_given?
         click_button 'Send'
         sign_out
