@@ -29,7 +29,7 @@
       .cycle
         - if site.in_paid_plan?
           - if site.in_trial?
-            = "Your trial will end on #{l(site.trial_started_at + BusinessModel.days_for_trial.days, :format => :d_b_Y)}."
+            = "Your 14 days free will end on #{l(site.trial_started_at + BusinessModel.days_for_trial.days, :format => :d_b_Y)}."
           - else
             = l(site.plan_cycle_started_at, :format => :d_b_Y) + ' - ' + l(site.plan_cycle_ended_at, :format => :d_b_Y)
       .spacer
