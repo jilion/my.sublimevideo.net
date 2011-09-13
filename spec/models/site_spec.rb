@@ -39,7 +39,7 @@ describe Site do
     its(:extra_hostnames)               { should be_nil }
     its(:path)                          { should be_nil }
     its(:wildcard)                      { should be_false }
-    its(:badged)                        { should be_true }
+    its(:badged)                        { should be_false }
     its(:token)                         { should =~ /^[a-z0-9]{8}$/ }
     its(:license)                       { should_not be_present }
     its(:loader)                        { should_not be_present }
@@ -333,9 +333,9 @@ describe Site do
         end
         describe "badge off" do
           subject { FactoryGirl.build(:site, plan_id: @free_plan.id, badged: false) }
-          its(:badged) { should be_false }
-          it { should_not be_valid }
-          it { should have(1).error_on(:badged) }
+          its(:badged) { should be_true }
+          it { should be_valid }
+          it { should be_valid }
         end
       end
       context "with a paid plan" do

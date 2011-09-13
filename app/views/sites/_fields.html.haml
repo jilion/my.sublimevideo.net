@@ -14,6 +14,7 @@
       = "This field is optional for the Free plan."
     .spacer
   .break_line
+
   - if site.persisted?
     #site_setup_settings.settings
       .left
@@ -29,6 +30,7 @@
           = f.label :dev_hostnames, "", :class => "icon"
           = f.text_field :dev_hostnames, :class => "text", :placeholder => "127.0.0.1, localhost", :autocomplete => :off
           %p.info= "Add (local only) development domains separated by commas."
+
       - unless site.in_free_plan?
         .right
           %h4.title= "Advanced settings"
@@ -43,7 +45,13 @@
               = f.check_box :wildcard
               = f.label :wildcard, "Wildcard (*.yourdomain.com)"
             %p.info= "It will also be enabled for extra and development domains."
+          .entry.badged
+            .checkbox_wrap
+              = f.check_box :badged
+              = f.label :badged, "SublimeVideo badge"
+            %p.info= "It will display a \"Powered by SublimeVideo\" badge on the initial state of your videos."
       .spacer
+
       - if site.in_free_plan?
         .more_settings_desc><
           = raw "More settings like alias and staging domains, custom path and wildcard option, are available on paid plans. #{link_to "Read more", "http://docs.sublimevideo.net/site-settings", :class => "hl"}."
