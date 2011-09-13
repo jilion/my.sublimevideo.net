@@ -124,20 +124,23 @@ FactoryGirl.define do
     cycle           "month"
     player_hits     10_000
     price           1000
+    support_level   0
   end
 
   factory :free_plan, :class => Plan  do
-    name         "free"
-    cycle        "none"
-    player_hits  0
-    price        0
+    name          "free"
+    cycle         "none"
+    player_hits   0
+    price         0
+    support_level 0
   end
 
   factory :sponsored_plan, :class => Plan  do
-    name        "sponsored"
-    cycle       "none"
-    player_hits 0
-    price       0
+    name          "sponsored"
+    cycle         "none"
+    player_hits   0
+    price         0
+    support_level 1
   end
 
   factory :custom_plan, :class => Plan do
@@ -145,6 +148,7 @@ FactoryGirl.define do
     cycle           "month"
     player_hits     10_000_000
     price           20_000
+    support_level   1
   end
 
   factory :invoice do

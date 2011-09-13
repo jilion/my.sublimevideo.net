@@ -55,7 +55,13 @@ module PlansHelper
   end
 
   def plan_support(plan)
-    "#{"Standard " if plan.support == 'standard'}#{content_tag(:strong, "#{"Priority " if plan.support == 'priority'}")} Support".html_safe
+    text = case plan.support
+           when 'forum'
+             "Forum"
+           when 'email'
+             content_tag(:strong, "Email ")
+           end
+    "#{text} Support".html_safe
   end
 
   def radio_button_options(site, plan, current_plan, options={})

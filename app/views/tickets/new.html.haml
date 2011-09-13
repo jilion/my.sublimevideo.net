@@ -1,20 +1,34 @@
 = title_and_content_header("Support")
 
-%p.title_desc
-  - if current_user.support == 'email'
-    = raw "For bug reports and feature requests, please use our #{link_to "Community Forum", "http://getsatisfaction.com/sublimevideo", :class => "hl"}."
-  %br
-  = raw "For billing questions, please #{mail_to("billing@sublimevideo.net", "email us", :encode => "hex", :class => "hl")}."
-  %br
+%h3 Documentation
+%p.title_desc= raw "We recommend that you start by reading our documentation to understand how to implement and make full use of SublimeVideo Player. Check out the #{link_to "Getting Started", "http://docs.sublimevideo.net", :class => "hl"} and #{link_to "FAQ", "http://docs.sublimevideo.net/faq", :class => "hl"} pages to start with, and if you have any problems take a look at our #{link_to "Troubleshooting page", "http://docs.sublimevideo.net/troubleshooting", :class => "hl"}."
 
-  - if current_user.support == 'email'
-    = raw "For any other question, please consult our #{link_to "Documentation", "http://docs.sublimevideo.net", :class => "hl"} and #{link_to "Community Forum", "http://getsatisfaction.com/sublimevideo", :class => "hl"} first."
-  - else
-    = raw "For bug reports, feature requests and any other questions, please use our #{link_to "Community Forum", "http://getsatisfaction.com/sublimevideo", :class => "hl"}."
+%h3 Community Forum
+%p.title_desc= raw "If your issue isn’t covered in our documentation then head over to our #{link_to "community forum", "http://getsatisfaction.com/sublimevideo", :class => "hl"} and post a question. Before posting a new topic, try searching for your issue in the search box below - in most cases your question may have already been answered.."
 
-  -# = "Use this form to send us bug reports, suggestions for improvement, feature requests, billing questions or any other comments."
-  %br
-  -#= raw "For any other question, please consult our #{link_to "Documentation", "http://docs.sublimevideo.net", :class => "hl"}, #{link_to "Community Forum", "http://getsatisfaction.com/sublimevideo", :class => "hl"}, #{link_to "FAQ", "http://docs.sublimevideo.net/faq", :class => "hl"} and #{link_to "Troubleshooting", "http://docs.sublimevideo.net/troubleshooting", :class => "hl"} pages first."
+= "Search field here..."
+
+%p.title_desc= raw "Couldn't find a solution to your problem? Then create a thread in the #{link_to "Community Forum", "http://getsatisfaction.com/sublimevideo", :class => "hl"}."
+
+
+%h3 Dedicated Email Support
+
+-#%p.title_desc
+-#  - if current_user.support == 'email'
+-#    = raw "For bug reports and feature requests, please use our #{link_to "Community Forum", "http://getsatisfaction.com/sublimevideo", :class => "hl"}."
+-#  %br
+-#  = raw "For billing questions, please #{mail_to("billing@sublimevideo.net", "email us", :encode => "hex", :class => "hl")}."
+-#  %br
+-#
+-#  - if current_user.support == 'email'
+-#    = raw "For any other question, please consult our #{link_to "Documentation", "http://docs.sublimevideo.net", :class => "hl"} and #{link_to "Community Forum", "http://getsatisfaction.com/sublimevideo", :class => "hl"} first."
+-#  - else
+-#    = raw "For bug reports, feature requests and any other questions, please use our #{link_to "Community Forum", "http://getsatisfaction.com/sublimevideo", :class => "hl"}."
+-#
+-#  -# = "Use this form to send us bug reports, suggestions for improvement, feature requests, billing questions or any other comments."
+-#  %br
+-#  -#= raw "For any other question, please consult our #{link_to "Documentation", "http://docs.sublimevideo.net", :class => "hl"}, #{link_to "Community Forum", "http://getsatisfaction.com/sublimevideo", :class => "hl"}, #{link_to "FAQ", "http://docs.sublimevideo.net/faq", :class => "hl"} and #{link_to "Troubleshooting", "http://docs.sublimevideo.net/troubleshooting", :class => "hl"} pages first."
+-#
 
 %p.title_desc
   - if current_user.support == 'email'
