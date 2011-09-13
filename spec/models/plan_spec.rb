@@ -8,7 +8,7 @@ describe Plan do
     after(:all) { @plan.delete }
     subject { @plan }
 
-    its(:name)          { should =~ /comet\d+/ }
+    its(:name)          { should =~ /silver\d+/ }
     its(:cycle)         { should == "month" }
     its(:player_hits)   { should == 10_000 }
     its(:price)         { should == 1000 }
@@ -215,7 +215,7 @@ describe Plan do
 
     describe "#support" do
       it { FactoryGirl.build(:plan, name: "free", support_level: 0).support.should == "forum" }
-      it { FactoryGirl.build(:plan, name: "galaxy", support_level: 1).support.should == "email" }
+      it { FactoryGirl.build(:plan, name: "gold", support_level: 1).support.should == "email" }
     end
 
   end

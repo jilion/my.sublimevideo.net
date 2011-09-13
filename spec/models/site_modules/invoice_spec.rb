@@ -49,7 +49,9 @@ describe SiteModules::Invoice do
       end
 
       describe "activatable sites belonging to a user without credit card" do
-        before(:each) { Timecop.travel(BusinessModel.days_for_trial.days.from_now) { Site.activate_or_downgrade_sites_leaving_trial } }
+        before(:each) do
+          Timecop.travel(BusinessModel.days_for_trial.days.from_now) { Site.activate_or_downgrade_sites_leaving_trial }
+        end
         subject { @site_not_in_trial_without_cc.reload }
 
         it_behaves_like "don't charge invoice"
@@ -64,7 +66,9 @@ describe SiteModules::Invoice do
       end
 
       describe "activatable sites belonging to a user with credit card" do
-        before(:each) { Timecop.travel(BusinessModel.days_for_trial.days.from_now) { Site.activate_or_downgrade_sites_leaving_trial } }
+        before(:each) do
+          Timecop.travel(BusinessModel.days_for_trial.days.from_now) { Site.activate_or_downgrade_sites_leaving_trial }
+        end
         subject { @site_not_in_trial_with_cc.reload }
 
         it_behaves_like "don't charge invoice"
@@ -1039,7 +1043,7 @@ describe SiteModules::Invoice do
 
     describe "#set_trial_started_at" do
       before(:all) do
-        @foo_plan = FactoryGirl.create(:plan, name: "galaxy",  player_hits: 1_000_000)
+        @foo_plan = FactoryGirl.create(:plan, name: "gold",  player_hits: 1_000_000)
       end
 
       it "set if site created with free plan" do

@@ -1,23 +1,20 @@
 - if plan = site.plan
-  - if site.in_trial? || site.in_free_plan?
-    - if site.in_free_plan? && !site.pending_plan_id? && site.hostname?
-      = link_to "Choose a plan", edit_site_plan_path(site), :class => "medium_button"
-    - else
-      = "–"
-  - elsif site.in_sponsored_plan?
+  - if site.pending_plan_id?
+    = "–"
+  - else
     .sponsored_number
       %p
-        %strong= number_with_delimiter(site.current_monthly_billable_usages.sum.to_i)
-        %em= "sponsored video pageviews"
-  - else
-    .progress_bar.box_hovering_zone
-      - if site.first_plan_upgrade_required_alert_sent_at?
-        .usage_bar{ :style => "width:100%"}
-        .plan_total= number_with_delimiter(plan.player_hits)
-      - else
-        .usage_bar{ :style => style_for_usage_bar_from_usage_percentage(site.current_percentage_of_plan_used) }
-        .plan_total= number_with_delimiter(plan.player_hits)
-        = info_box do
-          %p= pluralize(number_with_delimiter(site.current_monthly_billable_usages.sum.to_i), "<br /> video pageview").html_safe
-    = link_to "Peak Insurance ON", "http://docs.sublimevideo.net/peak-insurance", :class => "peak_insurance_label"
-    = link_to "Upgrade", edit_site_plan_path(site), :class => "upgrade_button submit_dynamic_button"
+        = link_to site_stats_url(site) do
+          %strong= number_with_delimiter(site.in_sponsored_plan? ? site.current_monthly_billable_usages.sum : site.last_30_days_billable_usages.sum)
+          %em= (site.in_sponsored_plan? ? "sponsored" : "") + " video pageviews"
+      = link_to "Peak Insurance ON", "http://docs.sublimevideo.net/peak-insurance", :class => "peak_insurance_label"
+      = link_to "Upgrade", edit_site_plan_path(site), :class => "upgrade_button submit_dynamic_button"
+-#  - else
+-#    .progress_bar.box_hovering_zone
+-#      .plan_total= number_with_delimiter(site.last_30_days_billable_usages.sum)
+-#      -#- if site.first_plan_upgrade_required_alert_sent_at?
+-#      -#  .usage_bar{ :style => "width:100%"}
+-#      -#  .plan_total= number_with_delimiter(plan.player_hits)
+-#      -#- else
+-#      -#  -#.usage_bar{ :style => style_for_usage_bar_from_usage_percentage(site.current_percentage_of_plan_used) }
+-#      -#  .plan_total= number_with_delimiter(plan.player_hits)

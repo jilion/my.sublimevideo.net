@@ -56,6 +56,7 @@ FactoryGirl.define do
   # Site not anymore in trial
   factory :site_with_invoice, :parent => :new_site do
     trial_started_at { BusinessModel.days_for_trial.days.ago }
+    first_paid_plan_started_at { Time.now.utc }
     after_build  { |site| VCR.insert_cassette('ogone/visa_payment_generic') }
     after_create do |site|
       # this is needed since "instant charging" is now only done on upgrade (not on post-trial activation)
@@ -120,24 +121,27 @@ FactoryGirl.define do
   end
 
   factory :plan do
-    sequence(:name) { |n| "comet#{n}" }
+    sequence(:name) { |n| "silver#{n}" }
     cycle           "month"
     player_hits     10_000
     price           1000
+    support_level   0
   end
 
   factory :free_plan, :class => Plan  do
-    name         "free"
-    cycle        "none"
-    player_hits  0
-    price        0
+    name          "free"
+    cycle         "none"
+    player_hits   0
+    price         0
+    support_level 0
   end
 
   factory :sponsored_plan, :class => Plan  do
-    name        "sponsored"
-    cycle       "none"
-    player_hits 0
-    price       0
+    name          "sponsored"
+    cycle         "none"
+    player_hits   0
+    price         0
+    support_level 1
   end
 
   factory :custom_plan, :class => Plan do
@@ -145,6 +149,7 @@ FactoryGirl.define do
     cycle           "month"
     player_hits     10_000_000
     price           20_000
+    support_level   1
   end
 
   factory :invoice do

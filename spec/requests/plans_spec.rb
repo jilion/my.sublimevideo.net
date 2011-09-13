@@ -3,178 +3,228 @@ require 'spec_helper'
 feature "edit" do
   background do
     sign_in_as :user
-    @star_month = Plan.create(name: "star", cycle: "month", player_hits: 200_000, price: 4990)
-    @star_year = Plan.create(name: "star", cycle: "year", player_hits: 200_000, price: 49900)
+    @gold_month = Plan.create(name: "gold", cycle: "month", player_hits: 200_000, price: 4990)
+    @gold_year = Plan.create(name: "gold", cycle: "year", player_hits: 200_000, price: 49900)
   end
 
-  scenario "view with a free plan without hostname" do
-    site = FactoryGirl.create(:site, user: @current_user, plan_id: @free_plan.id, :hostname => nil)
+  context "site in trial" do
+    scenario "view with a free plan without hostname" do
+      site = FactoryGirl.create(:site, user: @current_user, plan_id: @free_plan.id, :hostname => nil)
 
-    visit edit_site_plan_path(site)
+      visit edit_site_plan_path(site)
 
-    current_url.should =~ %r(http://[^/]+/sites/#{site.token}/plan/edit$)
-    page.should have_content("add a hostname")
-  end
+      current_url.should =~ %r(http://[^/]+/sites/#{site.token}/plan/edit$)
+      page.should have_content("add a hostname")
+    end
 
-  scenario "update paid plan to free plan" do
-    site = FactoryGirl.create(:site, user: @current_user, plan_id: @paid_plan.id)
+    scenario "update paid plan to free plan" do
+      site = FactoryGirl.create(:site, user: @current_user, plan_id: @paid_plan.id)
 
-    visit edit_site_plan_path(site)
+      visit edit_site_plan_path(site)
 
-    choose "plan_free"
-    click_button "Update plan"
+      choose "plan_free"
+      click_button "Update plan"
 
-    has_checked_field?("plan_free").should be_true
-    has_unchecked_field?("plan_comet_month").should be_true
+      has_checked_field?("plan_free").should be_true
+      has_unchecked_field?("plan_silver_month").should be_true
 
-    fill_in "Password", :with => "123456"
-    click_button "Done"
-
-    site.reload
-
-    current_url.should =~ %r(http://[^/]+/sites$)
-    page.should have_content("#{site.plan.title} => #{site.next_cycle_plan.title}")
-
-    click_link "#{site.plan.title} => #{site.next_cycle_plan.title}"
-
-    page.should have_content("Your new plan #{site.next_cycle_plan.title} will automatically start on #{I18n.l(site.plan_cycle_ended_at.tomorrow.midnight, :format => :named_date).squeeze(' ')}.")
-  end
-
-  scenario "update paid plan to paid plan with credit card data" do
-    site = FactoryGirl.create(:site_with_invoice, user: @current_user, plan_id: @star_month.id)
-    site.plan.should == @star_month
-    site.first_paid_plan_started_at.should be_present
-    site.plan_started_at.should be_present
-    site.plan_cycle_started_at.should be_present
-    site.plan_cycle_ended_at.should be_present
-
-    visit edit_site_plan_path(site)
-
-    page.should have_no_selector("#credit_card")
-    page.should have_selector("#credit_card_summary")
-
-    choose "plan_star_year"
-
-    has_checked_field?("plan_star_year").should be_true
-    click_button "Update plan"
-
-    VCR.use_cassette('ogone/visa_payment_generic') do
       fill_in "Password", :with => "123456"
       click_button "Done"
+
+      site.reload
+      site.plan.should eql @free_plan
+
+      current_url.should =~ %r(http://[^/]+/sites$)
+      page.should have_content(site.plan.title)
     end
+    
+    scenario "update free plan to paid plan" do
+      site = FactoryGirl.create(:site, user: @current_user, plan_id: @free_plan.id)
 
-    site.reload
-    site.plan.should == @star_year
+      visit edit_site_plan_path(site)
 
-    current_url.should =~ %r(http://[^/]+/sites$)
-    page.should have_content("#{site.plan.title}")
+      choose "plan_silver_month"
+      click_button "Update plan"
 
-    click_link "#{site.plan.title}"
-    has_checked_field?("plan_star_year").should be_true
+      site.reload
+      site.plan.should eql @paid_plan
+
+      current_url.should =~ %r(http://[^/]+/sites$)
+      page.should have_content(site.plan.title)
+    end
   end
 
-  scenario "update paid plan to paid plan without credit card data" do
-    site = FactoryGirl.create(:site_with_invoice, user: @current_user, plan_id: @star_month.id)
-    site.plan.should == @star_month
-    site.first_paid_plan_started_at.should be_present
-    site.plan_started_at.should be_present
-    site.plan_cycle_started_at.should be_present
-    site.plan_cycle_ended_at.should be_present
-    @current_user.update_attribute(:cc_expire_on, 2.month.ago.end_of_month)
-    @current_user.cc_expire_on.should == 2.month.ago.end_of_month
+  context "site not in trial" do
+    scenario "view with a free plan without hostname" do
+      site = FactoryGirl.create(:site_not_in_trial, user: @current_user, plan_id: @free_plan.id, :hostname => nil)
 
-    visit edit_site_plan_path(site)
+      visit edit_site_plan_path(site)
 
-    page.should have_selector("#credit_card")
-    page.should have_no_selector("#credit_card_summary")
+      current_url.should =~ %r(http://[^/]+/sites/#{site.token}/plan/edit$)
+      page.should have_content("add a hostname")
+    end
 
-    choose "plan_star_year"
-    set_credit_card
-    has_checked_field?("plan_star_year").should be_true
+    scenario "update paid plan to free plan" do
+      site = FactoryGirl.create(:site_with_invoice, user: @current_user, plan_id: @paid_plan.id)
 
-    click_button "Update plan"
+      visit edit_site_plan_path(site)
 
-    VCR.use_cassette('ogone/visa_payment_generic') do
+      choose "plan_free"
+      click_button "Update plan"
+
+      has_checked_field?("plan_free").should be_true
+      has_unchecked_field?("plan_silver_month").should be_true
+
       fill_in "Password", :with => "123456"
       click_button "Done"
+
+      site.reload
+
+      current_url.should =~ %r(http://[^/]+/sites$)
+      page.should have_content("#{site.plan.title} => #{site.next_cycle_plan.title}")
+
+      click_link "#{site.plan.title} => #{site.next_cycle_plan.title}"
+
+      page.should have_content("Your new plan #{site.next_cycle_plan.title} will automatically start on #{I18n.l(site.plan_cycle_ended_at.tomorrow.midnight, :format => :named_date).squeeze(' ')}.")
     end
 
-    site.reload
-    site.plan.should == @star_year
+    scenario "update free plan to paid plan" do
+      site = FactoryGirl.create(:site_with_invoice, user: @current_user, plan_id: @gold_month.id)
+      site.plan_id = @free_plan.id
+      site.save_without_password_validation
+      Timecop.travel(2.months.from_now) { site.pend_plan_changes; site.apply_pending_plan_changes }
+      site.reload.plan.should eql @free_plan
 
-    current_url.should =~ %r(http://[^/]+/sites$)
-    page.should have_content("#{site.plan.title}")
+      visit edit_site_plan_path(site)
 
-    click_link "#{site.plan.title}"
-    has_checked_field?("plan_star_year").should be_true
-  end
+      VCR.use_cassette('ogone/visa_payment_generic') do
+        choose "plan_silver_month"
+        click_button "Update plan"
+      end
 
-  scenario "failed update" do
-    site = FactoryGirl.create(:site, user: @current_user, plan_id: @free_plan.id)
+      site.reload.plan.should eql @paid_plan
 
-    visit edit_site_plan_path(site)
+      current_url.should =~ %r(http://[^/]+/sites$)
+      page.should have_content(site.plan.title)
 
-    VCR.use_cassette('ogone/visa_payment_generic_failed') do
-      choose "plan_comet_month"
+      click_link site.plan.title
+    end
+
+    scenario "update paid plan to paid plan with credit card data" do
+      site = FactoryGirl.create(:site_with_invoice, user: @current_user, plan_id: @gold_month.id)
+      site.plan.should eql @gold_month
+      site.first_paid_plan_started_at.should be_present
+      site.plan_started_at.should be_present
+      site.plan_cycle_started_at.should be_present
+      site.plan_cycle_ended_at.should be_present
+
+      visit edit_site_plan_path(site)
+
+      page.should have_no_selector("#credit_card")
+      page.should have_selector("#credit_card_summary")
+
+      choose "plan_gold_year"
+
+      has_checked_field?("plan_gold_year").should be_true
       click_button "Update plan"
+
+      VCR.use_cassette('ogone/visa_payment_generic') do
+        fill_in "Password", :with => "123456"
+        click_button "Done"
+      end
+
+      site.reload.plan.should eql @gold_year
+
+      current_url.should =~ %r(http://[^/]+/sites$)
+      page.should have_content("#{site.plan.title}")
+
+      click_link "#{site.plan.title}"
+      has_checked_field?("plan_gold_year").should be_true
     end
 
-    site.reload
+    scenario "update paid plan to paid plan without credit card data" do
+      site = FactoryGirl.create(:site_with_invoice, user: @current_user, plan_id: @gold_month.id)
+      site.plan.should eql @gold_month
+      site.first_paid_plan_started_at.should be_present
+      site.plan_started_at.should be_present
+      site.plan_cycle_started_at.should be_present
+      site.plan_cycle_ended_at.should be_present
+      @current_user.update_attribute(:cc_expire_on, 2.month.ago.end_of_month)
+      @current_user.cc_expire_on.should eql 2.month.ago.end_of_month
 
-    current_url.should =~ %r(http://[^/]+/sites$)
+      visit edit_site_plan_path(site)
 
-    page.should_not have_content("Choose a plan")
-    page.should have_content("#{site.plan.title}")
-    page.should have_content(I18n.t('site.status.payment_issue'))
+      page.should have_selector("#credit_card")
+      page.should have_no_selector("#credit_card_summary")
 
-    visit edit_site_plan_path(site)
+      choose "plan_gold_year"
+      set_credit_card
+      has_checked_field?("plan_gold_year").should be_true
 
-    page.should_not have_content("Comet")
-    page.should have_content("There has been a transaction error. Please review")
-  end
-
-  scenario "update free plan to paid plan" do
-    site = FactoryGirl.create(:site, user: @current_user, plan_id: @free_plan.id)
-
-    visit edit_site_plan_path(site)
-
-    VCR.use_cassette('ogone/visa_payment_generic') do
-      choose "plan_comet_month"
       click_button "Update plan"
+
+      VCR.use_cassette('ogone/visa_payment_generic') do
+        fill_in "Password", :with => "123456"
+        click_button "Done"
+      end
+
+      site.reload.plan.should eql @gold_year
+
+      current_url.should =~ %r(http://[^/]+/sites$)
+      page.should have_content(site.plan.title)
+
+      click_link site.plan.title
+      has_checked_field?("plan_gold_year").should be_true
     end
 
-    site.reload
+    scenario "failed update" do
+      site = FactoryGirl.create(:site_with_invoice, user: @current_user, plan_id: @free_plan.id)
 
-    current_url.should =~ %r(http://[^/]+/sites$)
-    page.should have_content("#{site.plan.title}")
+      visit edit_site_plan_path(site)
 
-    click_link site.plan.title
+      VCR.use_cassette('ogone/visa_payment_generic_failed') do
+        choose "plan_silver_month"
+        click_button "Update plan"
+      end
+
+      site.reload
+
+      current_url.should =~ %r(http://[^/]+/sites$)
+
+      page.should_not have_content("Choose a plan")
+      page.should have_content(site.plan.title)
+      page.should have_content(I18n.t('site.status.payment_issue'))
+
+      visit edit_site_plan_path(site)
+
+      page.should_not have_content(site.plan.title)
+      page.should have_content("There has been a transaction error. Please review")
+    end
+    
+    scenario "cancel next plan automatic update" do
+      site = FactoryGirl.create(:site_with_invoice, user: @current_user, plan_id: @paid_plan.id)
+
+      site.update_attribute(:next_cycle_plan_id, @free_plan.id)
+
+      visit sites_path
+
+      page.should have_content("#{site.plan.title} => #{site.next_cycle_plan.title}")
+
+      click_link "#{site.plan.title} => #{site.next_cycle_plan.title}"
+
+      current_url.should =~ %r(http://[^/]+/sites/#{site.token}/plan/edit$)
+
+      page.should have_content("Your new plan #{site.next_cycle_plan.title} will automatically start on #{I18n.l(site.plan_cycle_ended_at.tomorrow.midnight, :format => :named_date).squeeze(' ')}.")
+
+      click_button "Cancel"
+
+      current_url.should =~ %r(http://[^/]+/sites$)
+      page.should_not have_content("#{site.plan.title} => ")
+      page.should have_content(site.plan.title)
+
+      click_link site.plan.title
+    end
   end
-
-  scenario "cancel next plan automatic update" do
-    site = FactoryGirl.create(:site, user: @current_user, plan_id: @paid_plan.id)
-
-    site.update_attribute(:next_cycle_plan_id, @free_plan.id)
-
-    visit sites_path
-
-    page.should have_content("#{site.plan.title} => #{site.next_cycle_plan.title}")
-
-    click_link "#{site.plan.title} => #{site.next_cycle_plan.title}"
-
-    current_url.should =~ %r(http://[^/]+/sites/#{site.token}/plan/edit$)
-
-    page.should have_content("Your new plan #{site.next_cycle_plan.title} will automatically start on #{I18n.l(site.plan_cycle_ended_at.tomorrow.midnight, :format => :named_date).squeeze(' ')}.")
-
-    click_button "Cancel"
-
-    current_url.should =~ %r(http://[^/]+/sites$)
-    page.should_not have_content("#{site.plan.title} => ")
-    page.should have_content(site.plan.title)
-
-    click_link site.plan.title
-  end
-
 end
 
 feature "sponsored plan" do
@@ -235,9 +285,8 @@ feature "custom plan" do
     visit edit_site_plan_path(site, custom_plan: @custom_plan.token)
 
     choose "plan_custom"
-    click_button "Update plan"
-
     has_checked_field?("plan_custom").should be_true
+    click_button "Update plan"
 
     VCR.use_cassette('ogone/visa_payment_generic') do
       fill_in "Password", :with => "123456"

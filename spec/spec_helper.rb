@@ -32,6 +32,7 @@ Spork.prefork do
     config.extend VCR::RSpec::Macros
 
     config.filter_run :focus => true
+    config.treat_symbols_as_metadata_keys_with_true_values = true
     config.run_all_when_everything_filtered = true
 
     config.mock_with :rspec
@@ -52,10 +53,10 @@ Spork.prefork do
       PaperTrail.enabled = false
       @worker = Delayed::Worker.new(quiet: true)
       # Plans
-      @free_plan      = FactoryGirl.create(:free_plan, support_level: 0)
-      @paid_plan      = FactoryGirl.create(:plan, name: "comet",  player_hits: 3_000, support_level: 1)
-      @sponsored_plan = FactoryGirl.create(:sponsored_plan, support_level: 1)
-      @custom_plan    = FactoryGirl.create(:custom_plan, support_level: 1)
+      @free_plan      = FactoryGirl.create(:free_plan)
+      @paid_plan      = FactoryGirl.create(:plan, name: "silver", player_hits: 3_000, support_level: 1)
+      @sponsored_plan = FactoryGirl.create(:sponsored_plan)
+      @custom_plan    = FactoryGirl.create(:custom_plan)
     end
 
     config.before(:each) do

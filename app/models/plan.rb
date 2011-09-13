@@ -2,7 +2,7 @@ class Plan < ActiveRecord::Base
   include Plan::Api
 
   CYCLES         = %w[month year none]
-  STANDARD_NAMES = %w[comet planet star galaxy]
+  STANDARD_NAMES = %w[silver gold]
   SUPPORT_LEVELS = %w[forum email]
 
   attr_accessible :name, :cycle, :player_hits, :price, :support_level

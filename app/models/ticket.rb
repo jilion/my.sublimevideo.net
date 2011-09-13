@@ -4,12 +4,12 @@ require 'digest/md5'
 class Ticket
   include ActiveModel::Validations
 
-  attr_accessor :user, :type, :subject, :message
+  attr_accessor :user, :type, :site_token, :subject, :message
 
-  TYPES = %w[integration idea bug billing other]
+  # EMAIL_SUPPORT_ALLOWED_TYPES = %w[integration other]
 
   validates :user,    :presence => true
-  validates :type,    :inclusion => { :in => Ticket::TYPES, :message => "You must choose a category" }
+  # validates :type,    :inclusion => { :in => Ticket::EMAIL_SUPPORT_ALLOWED_TYPES, :message => "You must choose a category" }
   validates :subject, :presence => true
   validates :message, :presence => true
 
@@ -38,9 +38,10 @@ class Ticket
 
   def initialize(params={})
     @user    = User.where(id: params.delete(:user_id)).first || nil if params.key?(:user_id)
-    @type    = params.delete(:type)
+    # @type    = params.delete(:type)
+    @site    = Site.where(token: params.delete(:site_token)).first || nil if params.key?(:site_token)
     @subject = h(params.delete(:subject).try(:to_s))
-    @message = h(params.delete(:message).try(:to_s))
+    @message = message_with_site(params.delete(:message))
   end
 
   def save
@@ -52,7 +53,7 @@ class Ticket
   end
 
   def to_hash
-    { user_id: @user.id, type: @type, subject: @subject, message: @message }
+    { user_id: @user.id, type: @type, site: @site ? @site.hostname : 'no site', subject: @subject, message: @message }
   end
 
   def to_xml(options={})
@@ -60,7 +61,7 @@ class Ticket
     xml.ticket do
       xml.tag!(:subject, @subject)
       xml.tag!(:description, @message)
-      xml.tag!(:"set-tags", @type)
+      # xml.tag!(:"set-tags", @type)
       if @user.zendesk_id?
         xml.tag!(:"requester-id", @user.zendesk_id)
       else
@@ -73,9 +74,15 @@ class Ticket
   private
 
   def user_can_send_ticket
-    if @user && @type && @user.support != 'email' && %w[idea bug billing].exclude?(@type)
-      self.errors.add(:base, "You can't send this type of ticket!")
+    # if @user && @type && @user.support != 'email'
+    if @user && @user.support != 'email'
+      self.errors.add(:base, "You can't send new tickets!")
     end
+  end
+  
+  def message_with_site(message)
+    @message = @site ? "Request for site: (#{@site.token}) #{@site.hostname}\n\n" : ''
+    @message += h(message.try(:to_s))
   end
 
 end

@@ -11,7 +11,7 @@
         %span= error
 
     %h3.title= "Credit Card Information"
-    
+
     - if current_user.cc_expired?
       %p.warning= "Your credit card is expired. Please update it."
     = f.fields_for :user_attributes, site.user do |ff|

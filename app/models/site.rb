@@ -70,7 +70,7 @@ class Site < ActiveRecord::Base
 
   before_validation :set_user_attributes
   before_validation :set_default_dev_hostnames, :unless => :dev_hostnames?
-  before_validation :set_default_badged, :if => proc { |s| s.badged.nil? }
+  before_validation :set_default_badged, :if => proc { |s| s.badged.nil? || s.in_free_plan? }
 
   before_save :prepare_cdn_update # in site_modules/templates
   before_save :clear_alerts_sent_at
@@ -202,29 +202,20 @@ class Site < ActiveRecord::Base
   def recommended_plan_name
     if in_paid_plan?
       usages = last_30_days_billable_usages
+      name = nil
       if usages.size >= 5
-        name = if usages.sum < Plan.comet_player_hits && usages.mean < Plan.comet_daily_player_hits
-          "comet"
-        elsif usages.sum < Plan.planet_player_hits && usages.mean < Plan.planet_daily_player_hits
-          "planet"
-        elsif usages.sum < Plan.star_player_hits && usages.mean < Plan.star_daily_player_hits
-          "star"
-        elsif usages.sum < Plan.galaxy_player_hits && usages.mean < Plan.galaxy_daily_player_hits
-          "galaxy"
-        elsif !in_custom_plan?
-          "custom"
-        else
-          nil
+        Plan.standard_plans.order(:player_hits.desc).each do |tested_plan|
+          if usages.sum < tested_plan.player_hits && usages.mean < tested_plan.daily_player_hits
+            name = plan.player_hits < tested_plan.player_hits ? tested_plan.name : nil
+          end
         end
-        # Don't recommend smaller plan
-        if name && plan.player_hits != 0 && name != 'custom' && plan.player_hits >= Plan.send("#{name}_player_hits")
-          nil
-        else
-          name
+
+        if name.nil? && !in_custom_plan?
+          biggest_standard_plan = Plan.standard_plans.order(:player_hits.desc).first
+          name = "custom" if usages.sum >= biggest_standard_plan.player_hits || usages.mean >= biggest_standard_plan.daily_player_hits
         end
-      else
-        nil
       end
+      name
     end
   end
   memoize :recommended_plan_name
@@ -258,15 +249,13 @@ private
     ranks = PageRankr.ranks(site.hostname, :alexa_global, :google)
     site.google_rank = ranks[:google] || 0
     site.alexa_rank  = ranks[:alexa_global]
-    site.save(validate: false) # don't validate for sites that are in_or_will_be_in_paid_plan? but when the user has no credit card (yet)
+    site.save
   end
 
   # before_validation
   def set_user_attributes
-    if user && user_attributes.present?
-      if user_attributes.has_key?("current_password")
-        self.user.assign_attributes(user_attributes.select { |k,v| k == "current_password" })
-      end
+    if user && user_attributes.present? && user_attributes.has_key?("current_password")
+      self.user.assign_attributes(user_attributes.select { |k,v| k == "current_password" })
     end
   end
 

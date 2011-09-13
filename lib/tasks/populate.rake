@@ -293,9 +293,9 @@ end
 def create_site_usages
   end_date = Date.today
   player_hits_total = 0
-  Site.not_in_trial.active.each do |site|
-    start_date = site.plan_month_cycle_started_at.to_date
-    plan_player_hits = (site.in_sponsored_plan?) ? Plan.standard_plans.all.sample.player_hits : site.plan.player_hits
+  Site.active.each do |site|
+    start_date = site.plan_month_cycle_started_at ? site.plan_month_cycle_started_at.to_date : (1.month - 1.day).ago.midnight
+    plan_player_hits = site.in_sponsored_plan? || site.in_free_plan? ? Plan.standard_plans.all.sample.player_hits : site.plan.player_hits
     p = (case rand(4)
     when 0
       plan_player_hits/30.0 - (plan_player_hits/30.0/4)
@@ -436,17 +436,13 @@ end
 
 def create_plans
   plans_attributes = [
-    { name: "free",       cycle: "none",  player_hits: 0,          price: 0 },
-    { name: "sponsored",  cycle: "none",  player_hits: 0,          price: 0 },
-    { name: "comet",      cycle: "month", player_hits: 3_000,      price: 990 },
-    { name: "planet",     cycle: "month", player_hits: 50_000,     price: 1990 },
-    { name: "star",       cycle: "month", player_hits: 200_000,    price: 4990 },
-    { name: "galaxy",     cycle: "month", player_hits: 1_000_000,  price: 9990 },
-    { name: "comet",      cycle: "year",  player_hits: 3_000,      price: 9900 },
-    { name: "planet",     cycle: "year",  player_hits: 50_000,     price: 19900 },
-    { name: "star",       cycle: "year",  player_hits: 200_000,    price: 49900 },
-    { name: "galaxy",     cycle: "year",  player_hits: 1_000_000,  price: 99900 },
-    { name: "custom1",    cycle: "year",  player_hits: 10_000_000, price: 999900 }
+    { name: "free",       cycle: "none",  player_hits: 0,          price: 0, support_level: 0 },
+    { name: "sponsored",  cycle: "none",  player_hits: 0,          price: 0, support_level: 0 },
+    { name: "silver",     cycle: "month", player_hits: 200_000,    price: 990, support_level: 0 },
+    { name: "gold",       cycle: "month", player_hits: 1_000_000,  price: 4990, support_level: 1 },
+    { name: "silver",     cycle: "year",  player_hits: 200_000,    price: 9900, support_level: 0 },
+    { name: "gold",       cycle: "year",  player_hits: 1_000_000,  price: 49900, support_level: 1 },
+    { name: "custom1",    cycle: "year",  player_hits: 10_000_000, price: 99900, support_level: 1 }
   ]
   plans_attributes.each { |attributes| Plan.create!(attributes) }
   puts "#{plans_attributes.size} plans created!"

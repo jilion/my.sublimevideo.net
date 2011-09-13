@@ -13,32 +13,45 @@ require 'spec_helper'
 describe Ticket do
   before(:all) do
     @user = FactoryGirl.create(:user, first_name: "Remy")
-    FactoryGirl.create(:site, user: @user, plan_id: @paid_plan.id)
+    @site = FactoryGirl.create(:site, user: @user, plan_id: @paid_plan.id)
     @loser = FactoryGirl.create(:user)
     FactoryGirl.create(:site, user: @loser, plan_id: @free_plan.id)
   end
 
   describe "Factory" do
-    before(:all) do
-      @ticket = Ticket.new({ user_id: @user.id, type: "bug", subject: "Subject", message: "Message" })
+    context "without site" do
+      before(:all) do
+        @ticket = Ticket.new({ user_id: @user.id, subject: "Subject", message: "Message" })
+      end
+      subject { @ticket }
+
+      its(:subject) { should eql "Subject" }
+      its(:message) { should eql "Message" }
+
+      it { should be_valid }
     end
-    subject { @ticket }
 
-    its(:type)    { should == "bug" }
-    its(:subject) { should == "Subject" }
-    its(:message) { should == "Message" }
+    context "with site" do
+      before(:all) do
+        @ticket = Ticket.new({ user_id: @user.id, site_token: @site.token, subject: "Subject", message: "Message" })
+      end
+      subject { @ticket }
 
-    it { should be_valid }
+      its(:subject) { should eql "Subject" }
+      its(:message) { should eql "Request for site: (#{@site.token}) #{@site.hostname}\n\nMessage" }
+
+      it { should be_valid }
+    end
   end
 
   describe "Validations" do
-    Ticket::TYPES.each do |type|
-      it { should allow_value(type).for(:type) }
-    end
+    # Ticket::EMAIL_SUPPORT_ALLOWED_TYPES.each do |type|
+    #   it { should allow_value(type).for(:type) }
+    # end
 
-    %w[foo bar test].each do |type|
-      it { should_not allow_value(type).for(:type) }
-    end
+    # %w[foo bar test].each do |type|
+    #   it { should_not allow_value(type).for(:type) }
+    # end
 
     it "validates presence of user" do
       ticket = Ticket.new({ user_id: nil, type: "integration", subject: nil, message: "Message" })
@@ -139,7 +152,6 @@ describe Ticket do
 <ticket>
   <subject>I have a request!</subject>
   <description>I have a request this is a long text!</description>
-  <set-tags>other</set-tags>
   <requester-name>#{@user.full_name}</requester-name>
   <requester-email>#{@user.email}</requester-email>
 </ticket>

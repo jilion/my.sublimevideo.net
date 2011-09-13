@@ -8,8 +8,9 @@
 %form
   .embed_code
     %textarea{ :readonly => true, :onclick => "this.focus();this.select();" }= sublimevideo_script_tag_for(@site)
-    .checkbox_wrap
-      %input#toggle_embed_with_ssl{ :type => "checkbox", :onclick => "MySublimeVideo.showSiteEmbedCodeWithSSL(this);" }
-      %label{ :for => "toggle_embed_with_ssl"}= "Deliver with SSL for secure pages."
+    - unless @site.in_free_plan?
+      .checkbox_wrap
+        %input#toggle_embed_with_ssl{ :type => "checkbox", :onclick => "MySublimeVideo.showSiteEmbedCodeWithSSL(this);" }
+        %label{ :for => "toggle_embed_with_ssl"}= "Deliver with SSL for secure pages."
 %p.note= raw "Please consult the #{link_to "documentation", "http://docs.sublimevideo.net"} to learn how to add videos to your page."
 -#%p.desc= raw "If you're using a plugin or service that asks for a SublimeVideo Site ID, use this: <code>#{@site.token}</code>"

@@ -21,7 +21,7 @@ module PlansHelper
       end
 
       price_box += content_tag(:span, :class => "details_label") do
-        (plan.yearly? ? "per year" : "per month")
+        (plan.yearly? ? "per site/year" : "per site/month")
       end
 
       price_box += content_tag(:span, :class => "name") do
@@ -55,7 +55,13 @@ module PlansHelper
   end
 
   def plan_support(plan)
-    "#{"Standard " if plan.support == 'standard'}#{content_tag(:strong, "#{"Priority " if plan.support == 'priority'}")} Support".html_safe
+    text = case plan.support
+           when 'forum'
+             "Forum"
+           when 'email'
+             content_tag(:strong, "Email ")
+           end
+    "#{text} Support".html_safe
   end
 
   def radio_button_options(site, plan, current_plan, options={})
