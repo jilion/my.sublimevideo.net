@@ -4,13 +4,27 @@
 */
 
 
-#content #sites_select {
-  float:left;
+#content {
+  #sites_select {
+    float:left;
+  }
+  #periods_select {
+    float:right;
+  }
+
+  #custom_dates_pickers {
+    display: none;
+    position: absolute;
+    top: 135px;
+    right: 50px;
+    z-index: 10;
+
+    #start_time, #end_time {
+      float: left;
+    }
+  }
 }
 
-#content #periods_select {
-  float:right;
-}
 
 #content #vv {
   display:block;

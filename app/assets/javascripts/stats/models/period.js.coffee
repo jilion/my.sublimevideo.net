@@ -29,11 +29,8 @@ class MSVStats.Models.Period extends Backbone.Model
 
   periodChartType: ->
     switch this.get('type')
-      when 'days'
-        # 'column'
-        'spline'
-      else
-        'spline'
+      when 'days' then 'spline'
+      else 'spline'
 
   # periodTickInterval: ->
   #   last = this.get('last')

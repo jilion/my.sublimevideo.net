@@ -12,10 +12,10 @@ class MSVStats.Views.VVView extends Backbone.View
   render: ->
     @vvData = this.collection.vvData()
     $(this.el).html(this.template(vvData: @vvData))
-    
+
     $('#vv_content').show()
     $('#vv').data().spinner.stop()
-    
+
     $('#pv_number').textfill(maxFontPixels: 70 )
     $('#vv_number').textfill(maxFontPixels: 70 )
     this.renderChart()
@@ -57,48 +57,57 @@ class MSVStats.Views.VVView extends Backbone.View
       title:
         text: null
       tooltip:
-        crosshairs: true
-        borderWidth: 0
-        shadow: false
         shared: true
-        formatter: ->
-          title = ["<b>#{MSVStats.period.periodChartTitle(@x)}</b><br/><br/>"]
-          title += _.map(@points, (point) ->
-            "<b>#{point.series.name}</b><br/>#{Highcharts.numberFormat(point.y, 0)} hits"
-          ).join("<br/>")
+        # enabled: false
+        crosshairs: true
+        # borderWidth: 0
+        # shadow: false
+        # shared: true
+        # formatter: ->
+        #   MSVStats.period.periodChartTitle(@x)
+        #   title = [""] #["<b>#{MSVStats.period.periodChartTitle(@x)}</b><br/><br/>"]
+        #   title += _.map(@points, (point) ->
+        #     "<b>#{point.series.name}</b><br/>#{Highcharts.numberFormat(point.y, 0)} hits"
+        #   ).join("<br/>")
       plotOptions:
-        column:
-          animation: false
-          shadow: false
-          borderWidth: 0
-          showInLegend: false
-          allowPointSelect: false
-          stickyTracking: false
-          lineWidth: 3
-          dataLabels:
-            enabled: false
-          states:
-            hover:
-              enabled: false
-              lineWidth: 3
-              marker:
-                enabled: false
+        # column:
+        #   animation: false
+        #   shadow: false
+        #   borderWidth: 0
+        #   showInLegend: false
+        #   allowPointSelect: false
+        #   stickyTracking: false
+        #   lineWidth: 2
+        #   dataLabels:
+        #     enabled: false
+        #   states:
+        #     hover:
+        #       enabled: false
+        #       lineWidth: 2
+        #       marker:
+        #         enabled: false
         spline:
           animation: false
           shadow: false
           borderWidth: 0
           showInLegend: false
-          allowPointSelect: false
+          # allowPointSelect: false
           stickyTracking: false
-          lineWidth: 3
+          lineWidth: 2
+          point:
+            events:
+              mouseOver: ->
+                this.select()
+              # select: ->
+              #   alert 'select'
           marker:
-            enabled: false
+            enabled: true
           dataLabels:
             enabled: false
           states:
             hover:
               enabled: false
-              lineWidth: 3
+              # lineWidth: 2
               marker:
                 enabled: false
       series: [{

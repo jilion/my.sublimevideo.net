@@ -76,12 +76,19 @@ describe 'Stats', ->
       expect(_.first(periodStats).get('di')).toEqual(@day31.get('di'))
       expect(_.last(periodStats).get('di')).toEqual(@day6.get('di'))
 
-  describe 'mostRecentStatDate', ->
+  describe 'lastStatsDate', ->
     it 'return most recent stat date', ->
-      expect(@stats.mostRecentStatDate()).toEqual(@minute1.date())
+      expect(@stats.lastStatsDate()).toEqual(@minute1.date())
     it 'return null when no stats', ->
       stats = new MSVStats.Collections.Stats()
-      expect(stats.mostRecentStatDate()).toEqual(null)
+      expect(stats.lastStatsDate()).toEqual(null)
+
+  describe 'firstStatsDate', ->
+    it 'return first exsiting stat date', ->
+      expect(@stats.firstStatsDate()).toEqual(@day43.date())
+    it 'return null when no stats', ->
+      stats = new MSVStats.Collections.Stats()
+      expect(stats.firstStatsDate()).toEqual(null)
 
   describe 'VVData', ->
     beforeEach ->

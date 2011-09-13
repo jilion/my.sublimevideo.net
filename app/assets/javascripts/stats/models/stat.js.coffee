@@ -115,7 +115,12 @@ class MSVStats.Collections.Stats extends Backbone.Collection
     stats.reverse()
     @currentPeriodStatsCache = stats
 
-  mostRecentStatDate: ->
+  firstStatsDate: ->
+    stats = _.sortBy(this.models,((stat) -> stat.time()))
+    stat = _.first(stats)
+    if stat? then stat.date() else null
+
+  lastStatsDate: ->
     stats = _.sortBy(this.models,((stat) -> stat.time()))
     stat = _.last(stats)
     if stat? then stat.date() else null

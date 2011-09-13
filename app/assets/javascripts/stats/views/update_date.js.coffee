@@ -7,6 +7,6 @@ class MSVStats.Views.UpdateDateView extends Backbone.View
     this.collection.bind('reset', this.render);
 
   render: ->
-    updateDate = this.collection.mostRecentStatDate()
+    updateDate = this.collection.lastStatsDate()
     $(this.el).html(this.template(updateDate: updateDate))
     return this
