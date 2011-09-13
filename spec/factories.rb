@@ -120,7 +120,7 @@ FactoryGirl.define do
   end
 
   factory :plan do
-    sequence(:name) { |n| "comet#{n}" }
+    sequence(:name) { |n| "silver#{n}" }
     cycle           "month"
     player_hits     10_000
     price           1000

@@ -53,6 +53,7 @@ describe Site do
     its(:next_cycle_plan_id)            { should be_nil }
 
     it { should be_active } # initial state
+    it { should_not be_in_free_plan }
     it { should be_valid }
   end
 
@@ -385,10 +386,9 @@ describe Site do
 
     describe "plan_id=" do
       before(:all) do
-        @paid_plan         = FactoryGirl.create(:plan, name: "planet", cycle: "month", price: 1000)
-        @paid_plan2        = FactoryGirl.create(:plan, name: "star",   cycle: "month", price: 5000)
-        @paid_plan_yearly  = FactoryGirl.create(:plan, name: "planet", cycle: "year",  price: 10000)
-        @paid_plan_yearly2 = FactoryGirl.create(:plan, name: "star",   cycle: "year",  price: 50000)
+        @paid_plan2        = FactoryGirl.create(:plan, name: "gold",   cycle: "month", price: 5000)
+        @paid_plan_yearly  = FactoryGirl.create(:plan, name: "silver", cycle: "year",  price: 10000)
+        @paid_plan_yearly2 = FactoryGirl.create(:plan, name: "gold",   cycle: "year",  price: 50000)
       end
 
       describe "when creating with a free plan" do
@@ -1059,11 +1059,9 @@ describe Site do
     describe "#recommended_plan" do
       before(:all) do
         Plan.delete_all
-        comet = FactoryGirl.create(:plan, name: "comet",  player_hits: 3_000)
-        FactoryGirl.create(:plan, name: "planet", player_hits: 50_000)
-        FactoryGirl.create(:plan, name: "star",   player_hits: 200_000)
-        @galaxy_plan = FactoryGirl.create(:plan, name: "galaxy", player_hits: 1_000_000)
-        @site = FactoryGirl.create(:site, plan_id: comet.id)
+        silver = FactoryGirl.create(:plan, name: "silver", player_hits: 200_000)
+        @gold_plan = FactoryGirl.create(:plan, name: "gold", player_hits: 1_000_000)
+        @site = FactoryGirl.create(:site, plan_id: silver.id)
       end
       subject { @site }
 

@@ -21,7 +21,7 @@ module PlansHelper
       end
 
       price_box += content_tag(:span, :class => "details_label") do
-        (plan.yearly? ? "per year" : "per month")
+        (plan.yearly? ? "per site/year" : "per site/month")
       end
 
       price_box += content_tag(:span, :class => "name") do
