@@ -29,7 +29,6 @@ MySublimeVideo::Application.routes.draw do
     member do
       get :state
       get :code
-      # get :usage
     end
     resource :plan, :only => [:edit, :update, :destroy]
     resources :invoices, :only => :index do

@@ -56,6 +56,7 @@ FactoryGirl.define do
   # Site not anymore in trial
   factory :site_with_invoice, :parent => :new_site do
     trial_started_at { BusinessModel.days_for_trial.days.ago }
+    first_paid_plan_started_at { Time.now.utc }
     after_build  { |site| VCR.insert_cassette('ogone/visa_payment_generic') }
     after_create do |site|
       # this is needed since "instant charging" is now only done on upgrade (not on post-trial activation)

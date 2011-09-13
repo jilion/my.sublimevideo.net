@@ -15,7 +15,5 @@
 
     = render 'fields', :f => f
 
-    = render 'cc_fields', :f => f, :site => @site
-
     .actions.center
       = f.submit (@site.persisted? ? "Update site" : "Create site"), :class => "submit big"

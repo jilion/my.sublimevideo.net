@@ -249,15 +249,13 @@ private
     ranks = PageRankr.ranks(site.hostname, :alexa_global, :google)
     site.google_rank = ranks[:google] || 0
     site.alexa_rank  = ranks[:alexa_global]
-    site.save(validate: false) # don't validate for sites that are in_or_will_be_in_paid_plan? but when the user has no credit card (yet)
+    site.save
   end
 
   # before_validation
   def set_user_attributes
-    if user && user_attributes.present?
-      if user_attributes.has_key?("current_password")
-        self.user.assign_attributes(user_attributes.select { |k,v| k == "current_password" })
-      end
+    if user && user_attributes.present? && user_attributes.has_key?("current_password")
+      self.user.assign_attributes(user_attributes.select { |k,v| k == "current_password" })
     end
   end
 

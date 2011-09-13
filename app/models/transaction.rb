@@ -124,7 +124,7 @@ class Transaction < ActiveRecord::Base
           Notify.send("Refund failed for invoice ##{invoice.reference} (amount: #{invoice.amount}, transaction order_id: ##{invoice.transactions.paid.first.order_id}", exception: ex)
         end
       end
-      
+
       user = site.user
       paid_invoices = user.invoices.paid.order(:paid_at.asc).all
       user.last_invoiced_amount  = paid_invoices.present? ? paid_invoices.last.amount : 0
