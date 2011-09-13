@@ -1086,18 +1086,18 @@ describe Site do
       context "with less than 5 days of usage (but with 0 between)" do
         before(:each) do
           @site.unmemoize_all
-          FactoryGirl.create(:site_usage, site_id: @site.id, day: 1.day.ago,  main_player_hits: 1000)
-          FactoryGirl.create(:site_usage, site_id: @site.id, day: 2.days.ago, main_player_hits: 1000)
+          FactoryGirl.create(:site_usage, site_id: @site.id, day: 1.day.ago,  main_player_hits: 30_000)
+          FactoryGirl.create(:site_usage, site_id: @site.id, day: 2.days.ago, main_player_hits: 30_000)
           FactoryGirl.create(:site_usage, site_id: @site.id, day: 3.days.ago, main_player_hits: 0)
-          FactoryGirl.create(:site_usage, site_id: @site.id, day: 4.days.ago, main_player_hits: 1000)
-          FactoryGirl.create(:site_usage, site_id: @site.id, day: 5.days.ago, main_player_hits: 1000)
+          FactoryGirl.create(:site_usage, site_id: @site.id, day: 4.days.ago, main_player_hits: 30_000)
+          FactoryGirl.create(:site_usage, site_id: @site.id, day: 5.days.ago, main_player_hits: 30_000)
           FactoryGirl.create(:site_usage, site_id: @site.id, day: 6.days.ago, main_player_hits: 0)
         end
 
-        its(:recommended_plan_name) { should == "planet" }
+        its(:recommended_plan_name) { should eql "gold" }
       end
 
-      context "with regular usage and player_hits smaller than comet" do
+      context "with regular usage and player_hits smaller than silver" do
         before(:each) do
           @site.unmemoize_all
           FactoryGirl.create(:site_usage, site_id: @site.id, day: 1.day.ago,  main_player_hits: 50)
@@ -1111,18 +1111,18 @@ describe Site do
         its(:recommended_plan_name) { should be_nil }
       end
 
-      context "with regular usage and player_hits greather than comet" do
+      context "with regular usage and player_hits between silver and gold" do
         before(:each) do
           @site.unmemoize_all
-          FactoryGirl.create(:site_usage, site_id: @site.id, day: 1.day.ago,  main_player_hits: 1_000)
-          FactoryGirl.create(:site_usage, site_id: @site.id, day: 2.days.ago, main_player_hits: 1_000)
-          FactoryGirl.create(:site_usage, site_id: @site.id, day: 3.days.ago, main_player_hits: 1_000)
-          FactoryGirl.create(:site_usage, site_id: @site.id, day: 4.days.ago, main_player_hits: 1_000)
-          FactoryGirl.create(:site_usage, site_id: @site.id, day: 5.days.ago, main_player_hits: 1_000)
-          FactoryGirl.create(:site_usage, site_id: @site.id, day: 6.days.ago, main_player_hits: 1_000)
+          FactoryGirl.create(:site_usage, site_id: @site.id, day: 1.day.ago,  main_player_hits: 10_000)
+          FactoryGirl.create(:site_usage, site_id: @site.id, day: 2.days.ago, main_player_hits: 10_000)
+          FactoryGirl.create(:site_usage, site_id: @site.id, day: 3.days.ago, main_player_hits: 10_000)
+          FactoryGirl.create(:site_usage, site_id: @site.id, day: 4.days.ago, main_player_hits: 10_000)
+          FactoryGirl.create(:site_usage, site_id: @site.id, day: 5.days.ago, main_player_hits: 10_000)
+          FactoryGirl.create(:site_usage, site_id: @site.id, day: 6.days.ago, main_player_hits: 10_000)
         end
 
-        its(:recommended_plan_name) { should == "planet" }
+        its(:recommended_plan_name) { should eql "gold" }
       end
 
       context "with non regular usage and lower than player_hits but greather than average player_hits" do
@@ -1135,26 +1135,26 @@ describe Site do
           FactoryGirl.create(:site_usage, site_id: @site.id, day: 5.days.ago, main_player_hits: 1_000)
         end
 
-        its(:recommended_plan_name) { should == "galaxy" }
+        its(:recommended_plan_name) { should eql "gold" }
       end
 
       context "with too much player_hits" do
         before(:each) do
           @site.unmemoize_all
-          FactoryGirl.create(:site_usage, site_id: @site.id, day: 1.day.ago,  main_player_hits: 100_000)
-          FactoryGirl.create(:site_usage, site_id: @site.id, day: 2.days.ago, main_player_hits: 100_000)
-          FactoryGirl.create(:site_usage, site_id: @site.id, day: 3.days.ago, main_player_hits: 100_000)
-          FactoryGirl.create(:site_usage, site_id: @site.id, day: 4.days.ago, main_player_hits: 100_000)
-          FactoryGirl.create(:site_usage, site_id: @site.id, day: 5.days.ago, main_player_hits: 100_000)
+          FactoryGirl.create(:site_usage, site_id: @site.id, day: 1.day.ago,  main_player_hits: 500_000)
+          FactoryGirl.create(:site_usage, site_id: @site.id, day: 2.days.ago, main_player_hits: 500_000)
+          FactoryGirl.create(:site_usage, site_id: @site.id, day: 3.days.ago, main_player_hits: 500_000)
+          FactoryGirl.create(:site_usage, site_id: @site.id, day: 4.days.ago, main_player_hits: 500_000)
+          FactoryGirl.create(:site_usage, site_id: @site.id, day: 5.days.ago, main_player_hits: 500_000)
         end
 
-        its(:recommended_plan_name) { should == "custom" }
+        its(:recommended_plan_name) { should eql "custom" }
       end
 
       context "with recommended plan lower than current plan" do
         before(:each) do
           @site.unmemoize_all
-          @site.plan = @galaxy_plan
+          @site.plan = @gold_plan
           FactoryGirl.create(:site_usage, site_id: @site.id, day: 1.day.ago,  main_player_hits: 500)
           FactoryGirl.create(:site_usage, site_id: @site.id, day: 2.days.ago, main_player_hits: 500)
           FactoryGirl.create(:site_usage, site_id: @site.id, day: 3.days.ago, main_player_hits: 500)
@@ -1164,7 +1164,6 @@ describe Site do
 
         its(:recommended_plan_name) { should be_nil }
       end
-
     end
 
     describe "#archivable?" do

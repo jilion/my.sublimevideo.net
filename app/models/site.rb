@@ -202,29 +202,20 @@ class Site < ActiveRecord::Base
   def recommended_plan_name
     if in_paid_plan?
       usages = last_30_days_billable_usages
+      name = nil
       if usages.size >= 5
-        name = if usages.sum < Plan.comet_player_hits && usages.mean < Plan.comet_daily_player_hits
-          "comet"
-        elsif usages.sum < Plan.planet_player_hits && usages.mean < Plan.planet_daily_player_hits
-          "planet"
-        elsif usages.sum < Plan.star_player_hits && usages.mean < Plan.star_daily_player_hits
-          "star"
-        elsif usages.sum < Plan.galaxy_player_hits && usages.mean < Plan.galaxy_daily_player_hits
-          "galaxy"
-        elsif !in_custom_plan?
-          "custom"
-        else
-          nil
+        Plan.standard_plans.order(:player_hits.desc).each do |tested_plan|
+          if usages.sum < tested_plan.player_hits && usages.mean < tested_plan.daily_player_hits
+            name = plan.player_hits < tested_plan.player_hits ? tested_plan.name : nil
+          end
         end
-        # Don't recommend smaller plan
-        if name && plan.player_hits != 0 && name != 'custom' && plan.player_hits >= Plan.send("#{name}_player_hits")
-          nil
-        else
-          name
+
+        if name.nil? && !in_custom_plan?
+          biggest_standard_plan = Plan.standard_plans.order(:player_hits.desc).first
+          name = "custom" if usages.sum >= biggest_standard_plan.player_hits || usages.mean >= biggest_standard_plan.daily_player_hits
         end
-      else
-        nil
       end
+      name
     end
   end
   memoize :recommended_plan_name
