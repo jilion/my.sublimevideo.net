@@ -295,7 +295,7 @@ def create_site_usages
   player_hits_total = 0
   Site.active.each do |site|
     start_date = site.plan_month_cycle_started_at ? site.plan_month_cycle_started_at.to_date : (1.month - 1.day).ago.midnight
-    plan_player_hits = site.in_sponsored_plan? ? Plan.standard_plans.all.sample.player_hits : site.plan.player_hits
+    plan_player_hits = site.in_sponsored_plan? || site.in_free_plan? ? Plan.standard_plans.all.sample.player_hits : site.plan.player_hits
     p = (case rand(4)
     when 0
       plan_player_hits/30.0 - (plan_player_hits/30.0/4)
