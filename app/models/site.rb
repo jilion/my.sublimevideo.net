@@ -70,7 +70,7 @@ class Site < ActiveRecord::Base
 
   before_validation :set_user_attributes
   before_validation :set_default_dev_hostnames, :unless => :dev_hostnames?
-  before_validation :set_default_badged, :if => proc { |s| s.badged.nil? }
+  before_validation :set_default_badged, :if => proc { |s| s.badged.nil? || s.in_free_plan? }
 
   before_save :prepare_cdn_update # in site_modules/templates
   before_save :clear_alerts_sent_at
