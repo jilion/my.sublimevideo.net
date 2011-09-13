@@ -1,3 +1,9 @@
+/*
+ *= require_self
+ *= require jquery.ui.datepicker.cupertino
+*/
+
+
 #content #sites_select {
   float:left;
 }
@@ -63,7 +69,7 @@
   height:250px;
   width:420px;
   float:left;
-  
+
   #bp_content {
     display:none;
   }
@@ -73,7 +79,7 @@
   height:250px;
   width:420px;
   float:right;
-  
+
   #md_content {
     display:none;
   }

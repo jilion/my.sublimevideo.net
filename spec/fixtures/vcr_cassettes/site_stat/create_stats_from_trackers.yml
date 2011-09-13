@@ -416,7 +416,7 @@
 - !ruby/struct:VCR::HTTPInteraction
   request: !ruby/struct:VCR::Request
     method: :post
-    uri: http://api.pusherapp.com:80/apps/8211/channels/private-ovjigy83/events?auth_key=c76b85222fbec28c8508&auth_signature=54671301c06e2e9b77b5d3b6035abef36b85c2f26b0352a4c021f46315dfcb61&auth_timestamp=1315900567&auth_version=1.0&body_md5=99914b932bd37a50b983c5e7c90ae93b&name=stats-fetch
+    uri: http://api.pusherapp.com:80/apps/8211/channels/private-ovjigy83/events?auth_key=c76b85222fbec28c8508&auth_signature=2c1dc6fe9466b96c150f36d59c45acb00d08219de477bb539294f3d18480b049&auth_timestamp=1315810619&auth_version=1.0&body_md5=99914b932bd37a50b983c5e7c90ae93b&name=stats-fetch
     body: ! '{}'
     headers:
       content-type:
@@ -439,7 +439,7 @@
 - !ruby/struct:VCR::HTTPInteraction
   request: !ruby/struct:VCR::Request
     method: :post
-    uri: http://api.pusherapp.com:80/apps/8211/channels/private-ovjigy83/events?auth_key=c76b85222fbec28c8508&auth_signature=d2fbaf0e8843da1e46c261eff2657cc5f4a8b62009cc210b4aa239b453e37f40&auth_timestamp=1315900569&auth_version=1.0&body_md5=99914b932bd37a50b983c5e7c90ae93b&name=stats-fetch
+    uri: http://api.pusherapp.com:80/apps/8211/channels/private-ovjigy83/events?auth_key=c76b85222fbec28c8508&auth_signature=376829067e1538bf7aa36eacc41179c2a37109b580be0062fbf20a0621b0bcaa&auth_timestamp=1315810621&auth_version=1.0&body_md5=99914b932bd37a50b983c5e7c90ae93b&name=stats-fetch
     body: ! '{}'
     headers:
       content-type:
@@ -462,76 +462,7 @@
 - !ruby/struct:VCR::HTTPInteraction
   request: !ruby/struct:VCR::Request
     method: :post
-    uri: http://api.pusherapp.com:80/apps/8211/channels/private-ovjigy83/events?auth_key=c76b85222fbec28c8508&auth_signature=474437c11db43afcc42e567af6ddbdf86e9df617047a020cf8f791734644e117&auth_timestamp=1315900570&auth_version=1.0&body_md5=99914b932bd37a50b983c5e7c90ae93b&name=stats-fetch
-    body: ! '{}'
-    headers:
-      content-type:
-      - application/json
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
-      code: 202
-      message: Accepted
-    headers:
-      server:
-      - thin 1.2.11 codename Bat-Shit Crazy
-      content-length:
-      - '13'
-      connection:
-      - Close
-    body: ! '202 ACCEPTED
-
-'
-    http_version: '1.1'
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :post
-    uri: http://api.pusherapp.com:80/apps/8211/channels/private-ovjigy83/events?auth_key=c76b85222fbec28c8508&auth_signature=22ec9bc13ac05416277491899df889b3abb8a5eae6ed37b03c7d271fccb3aff1&auth_timestamp=1315919862&auth_version=1.0&body_md5=99914b932bd37a50b983c5e7c90ae93b&name=stats-fetch
-    body: ! '{}'
-    headers:
-      content-type:
-      - application/json
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
-      code: 202
-      message: Accepted
-    headers:
-      server:
-      - thin 1.2.11 codename Bat-Shit Crazy
-      content-length:
-      - '13'
-      connection:
-      - Close
-    body: ! '202 ACCEPTED
-
-'
-    http_version: '1.1'
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :post
-    uri: http://api.pusherapp.com:80/apps/8211/channels/private-ovjigy83/events?auth_key=c76b85222fbec28c8508&auth_signature=ff9860678cfc1bf8d8ee9b6a769866d76b9bdec922272e6d45ce92add1cfdff3&auth_timestamp=1315919864&auth_version=1.0&body_md5=99914b932bd37a50b983c5e7c90ae93b&name=stats-fetch
-    body: ! '{}'
-    headers:
-      content-type:
-      - application/json
-  response: !ruby/struct:VCR::Response
-    status: !ruby/struct:VCR::ResponseStatus
-      code: 202
-      message: Accepted
-    headers:
-      server:
-      - thin 1.2.11 codename Bat-Shit Crazy
-      content-length:
-      - '13'
-      connection:
-      - Close
-    body: ! '202 ACCEPTED
-
-'
-    http_version: '1.1'
-- !ruby/struct:VCR::HTTPInteraction
-  request: !ruby/struct:VCR::Request
-    method: :post
-    uri: http://api.pusherapp.com:80/apps/8211/channels/private-ovjigy83/events?auth_key=c76b85222fbec28c8508&auth_signature=895fc15901abd4c8b849fcdae527d035d3dcfc7049b266c4f8af8a36fc40372b&auth_timestamp=1315919865&auth_version=1.0&body_md5=99914b932bd37a50b983c5e7c90ae93b&name=stats-fetch
+    uri: http://api.pusherapp.com:80/apps/8211/channels/private-ovjigy83/events?auth_key=c76b85222fbec28c8508&auth_signature=376829067e1538bf7aa36eacc41179c2a37109b580be0062fbf20a0621b0bcaa&auth_timestamp=1315810621&auth_version=1.0&body_md5=99914b932bd37a50b983c5e7c90ae93b&name=stats-fetch
     body: ! '{}'
     headers:
       content-type:

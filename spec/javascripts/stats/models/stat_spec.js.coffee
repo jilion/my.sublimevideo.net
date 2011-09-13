@@ -68,6 +68,14 @@ describe 'Stats', ->
       expect(_.first(periodStats).get('di')).toEqual(@day43.get('di'))
       expect(_.last(periodStats).get('di')).toEqual(@day0.get('di'))
 
+    it 'return custom days', ->
+      @period.setCustomPeriod(@day6.get('di'), @day31.get('di'))
+      console.log @stats.forCurrentPeriodType()
+      periodStats = @stats.forCurrentPeriod()
+      expect(periodStats.length).toEqual(31 - 6 + 1)
+      expect(_.first(periodStats).get('di')).toEqual(@day31.get('di'))
+      expect(_.last(periodStats).get('di')).toEqual(@day6.get('di'))
+
   describe 'mostRecentStatDate', ->
     it 'return most recent stat date', ->
       expect(@stats.mostRecentStatDate()).toEqual(@minute1.date())

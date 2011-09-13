@@ -112,7 +112,7 @@ class MSVStats.Views.VVView extends Backbone.View
       }]
       xAxis:
         lineWidth: 0
-        tickInterval: MSVStats.period.periodTickInterval()
+        tickInterval: null # MSVStats.period.periodTickInterval()
         tickWidth: 0
         gridLineWidth: 1
         type: 'datetime'
