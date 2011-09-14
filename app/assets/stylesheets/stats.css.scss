@@ -76,6 +76,14 @@
     float: left;
     width: 700px;
   }
+  
+  #vv_chart_legend {
+    text-align: left;
+    position: absolute;
+    top: 185px;
+    left: 260px;
+    z-index: 10;
+  }
 }
 
 #content #bp {

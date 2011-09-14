@@ -31,11 +31,13 @@ class MSVStats.Collections.Stats extends Backbone.Collection
     "/sites/#{MSVStats.sites.selectedSite().get('token')}/stats"
 
   vvData: ->
-    this.forCurrentPeriod().reduce((memo, stat) ->
+    return @vvDataCache if @vvDataCache?
+
+    @vvDataCache = this.forCurrentPeriod().reduce((memo, stat) ->
       if pv = stat.get('pv')
-         memo.pv.push([stat.time(), parseInt(pv.m ? 0) + parseInt(pv.e ? 0)])  # only main & extra hostname
+         memo.pv.push(parseInt(pv.m ? 0) + parseInt(pv.e ? 0))  # only main & extra hostname
       if vv = stat.get('vv')
-         memo.vv.push([stat.time(), parseInt(vv.m ? 0) + parseInt(vv.e ? 0)])  # only main & extra hostname
+         memo.vv.push(parseInt(vv.m ? 0) + parseInt(vv.e ? 0))  # only main & extra hostname
       memo
     new VVData)
 
@@ -58,8 +60,9 @@ class MSVStats.Collections.Stats extends Backbone.Collection
       memo
     [])
 
-  clearcurrentPeriodStatsCache: ->
+  clearCache: ->
     @currentPeriodStatsCache = null
+    @vvDataCache             = null
 
   forCurrentPeriod: ->
     return @currentPeriodStatsCache if @currentPeriodStatsCache?
@@ -115,6 +118,9 @@ class MSVStats.Collections.Stats extends Backbone.Collection
     stats.reverse()
     @currentPeriodStatsCache = stats
 
+  currentPeriodStartDate: ->
+    _.first(this.forCurrentPeriod()).time()
+
   firstStatsDate: ->
     stats = _.sortBy(this.models,((stat) -> stat.time()))
     stat = _.first(stats)
@@ -131,10 +137,21 @@ class VVData
     @vv = []
 
   pvTotal: ->
-    _.reduce(@pv, ((memo, num) -> memo + num[1]), 0)
+    _.reduce(@pv, ((memo, num) -> memo + num), 0)
 
   vvTotal: ->
-    _.reduce(@vv, ((memo, num) -> memo + num[1]), 0)
+    _.reduce(@vv, ((memo, num) -> memo + num), 0)
+    
+class MSVStats.Models.VVChartLegend extends Backbone.Model
+  defaults:
+    index: null
+    
+  setIndex: (index) ->
+    this.set(index: index)
+    
+  clearIndex: ->
+    this.set(index: null)
+
 
 class BPData
   set: (bp, hits) ->
