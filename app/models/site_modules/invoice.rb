@@ -4,7 +4,7 @@ module SiteModules::Invoice
   module ClassMethods
 
     def activate_or_downgrade_sites_leaving_trial
-      Site.not_in_trial.where(first_paid_plan_started_at: nil).each do |site|
+      Site.not_in_trial.billable.where(first_paid_plan_started_at: nil).each do |site|
         if site.user.credit_card?
           site.first_paid_plan_started_at = Time.now.utc
           site.pend_plan_changes
@@ -78,7 +78,7 @@ module SiteModules::Invoice
     end
 
     def last_paid_plan_price
-      last_paid_invoice ? last_paid_invoice.plan_invoice_items.detect { |pii| pii.amount > 0 }.price : 0
+      last_paid_invoice ? last_paid_invoice.plan_invoice_items.find { |pii| pii.amount > 0 }.price : 0
     end
 
     # DEPRECATED, TO BE REMOVED 30 DAYS AFTER NEW BUSINESS MODEL DEPLOYMENT
