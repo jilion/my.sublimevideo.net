@@ -10,12 +10,12 @@
 
 
 function isEventSupported(eventName) {
-  var el = document.createElement('div');
   eventName = 'on' + eventName;
+  var el = document.createElement('div');
   var isSupported = (eventName in el);
   if (!isSupported) {
     el.setAttribute(eventName, 'return;');
-    isSupported = typeof el[eventName] == 'function';
+    isSupported = typeof el[eventName] === 'function';
   }
   el = null;
   return isSupported;
@@ -31,20 +31,20 @@ document.observe("dom:loaded", function() {
   // = Password fields, selects and placeholders and forms managers =
   // ================================================================
 
-  $$('input[type=password]').each(function(input, index){
+  $$('input[type=password]').each(function(input, index) {
     new ShowPasswordFieldManager(input, index);
   });
 
   if (!supportsHtml5InputAttribute("placeholder")) {
-    $$("input[placeholder]").each(function(input){
+    $$("input[placeholder]").each(function(input) {
       new PlaceholderManager(input);
     });
-    $$("textarea[placeholder]").each(function(textarea){
+    $$("textarea[placeholder]").each(function(textarea) {
       new PlaceholderManager(textarea);
     });
   }
 
-  $$("form").each(function(form){
+  $$("form").each(function(form) {
     new FormManager(form);
   });
 
@@ -52,7 +52,7 @@ document.observe("dom:loaded", function() {
   // = Flash notices =
   // =================
 
-  $$('#flash .notice').each(function(element){
+  $$('#flash .notice').each(function(element) {
     MySublimeVideo.hideFlashMessageDelayed(element);
   });
 
@@ -85,18 +85,7 @@ document.observe("dom:loaded", function() {
 
   // Reproduce checkbox behavior for radio buttons for plans selection
   if ($('plans')) {
-    var planUpgradeInfoDiv = $('plan_upgrade_info');
-    var planCreateInfoDiv = $('plan_create_info');
-    $$('#plans input[type=radio]').each(function(element){
-      element.on('click', function(event){
-        if (planUpgradeInfoDiv) MySublimeVideo.showPlanUpdateInfo(element);
-        if (planCreateInfoDiv) MySublimeVideo.showPlanCreateInfo(element);
-        MySublimeVideo.handlePlanChange(element);
-        var select_box = element.up('.select_box');
-        $$('#plans ul .select_box').invoke('removeClassName','active');
-        if (select_box) select_box.addClassName('active');
-      });
-    });
+    new PlanUpdateManager();
   }
 
 });
@@ -125,110 +114,6 @@ MySublimeVideo.hideFlashMessageDelayed = function(flashEl) {
 MySublimeVideo.openPopup = function(itemId, idPrefix, url, class_name) { // item can be site
   if (!MySublimeVideo.popupHandler) MySublimeVideo.popupHandler = new PopupHandler();
   MySublimeVideo.popupHandler.open(itemId, idPrefix, url, class_name);
-};
-
-// ==================
-// = Plan functions =
-// ==================
-
-MySublimeVideo.handlePlanChange = function(radioButton) {
-  var plan_price  = radioButton.readAttribute('data-plan_price');
-  var ccDiv       = $('credit_card');
-  var ccInfoDiv   = $('credit_card_summary');
-  var hostnameDiv = $('site_hostname');
-  if (plan_price == "$0") {
-    if (hostnameDiv) {
-      $('site_hostname').required = false;
-    }
-    if (ccInfoDiv) ccInfoDiv.hide();
-    if (ccDiv) {
-      ccDiv.hide();
-      $('user_cc_brand_visa').disable();
-      $('user_cc_brand_master').disable();
-      $('user_cc_full_name').disable();
-      $('user_cc_full_name').required = false;
-      $('user_cc_number').disable();
-      $('user_cc_number').required = false;
-      $('user_cc_verification_value').disable();
-      $('user_cc_verification_value').required = false;
-      $('user_cc_expiration_month').disable();
-      $('user_cc_expiration_year').disable();
-    }
-  }
-  else {
-    if (hostnameDiv) {
-      $('site_hostname').required = true;
-    }
-    if (ccInfoDiv) ccInfoDiv.show();
-    if (ccDiv) {
-      $('user_cc_brand_visa').enable();
-      $('user_cc_brand_master').enable();
-      $('user_cc_full_name').enable();
-      $('user_cc_full_name').required = true;
-      $('user_cc_number').enable();
-      $('user_cc_number').required = true;
-      $('user_cc_verification_value').enable();
-      $('user_cc_verification_value').required = true;
-      $('user_cc_expiration_month').enable();
-      $('user_cc_expiration_year').enable();
-      ccDiv.show();
-    }
-  }
-};
-
-MySublimeVideo.updatePlanInfo_ = function(infoDiv, radioButton) {
-  infoDiv.select('.plan_title').invoke("update", radioButton.readAttribute('data-plan_title'));
-  infoDiv.select('.plan_price').invoke("update", radioButton.readAttribute('data-plan_price'));
-  infoDiv.select('.plan_price_vat').invoke("update", radioButton.readAttribute('data-plan_price_vat'));
-  infoDiv.select('.plan_update_price').invoke("update", radioButton.readAttribute('data-plan_update_price'));
-  infoDiv.select('.plan_update_price_vat').invoke("update", radioButton.readAttribute('data-plan_update_price_vat'));
-  infoDiv.select('.plan_update_date').invoke("update", radioButton.readAttribute('data-plan_update_date'));
-  infoDiv.show();
-};
-
-MySublimeVideo.showPlanCreateInfo = function(radioButton) {
-  var createInfoDiv = $('plan_create_info');
-  createInfoDiv.hide();
-  if (radioButton.readAttribute('data-plan_price') != "$0") {
-    MySublimeVideo.updatePlanInfo_(createInfoDiv, radioButton);
-  }
-};
-
-MySublimeVideo.showPlanUpdateInfo = function(radioButton) {
-  var upgradeInfoDiv = $('plan_upgrade_info'),
-  upgradeFromDevInfoDiv = $('plan_upgrade_from_free_info'),
-  delayedUpgradeInfoDiv = $('plan_delayed_upgrade_info'),
-  delayedDowngradeInfoDiv = $('plan_delayed_downgrade_info'),
-  delayedChangeInfoDiv = $('plan_delayed_change_info'),
-  delayedDowngradeToFreeInfo = $('plan_delayed_downgrade_to_free_info');
-
-  upgradeInfoDiv.hide();
-  upgradeFromDevInfoDiv.hide();
-  delayedUpgradeInfoDiv.hide();
-  delayedDowngradeInfoDiv.hide();
-  delayedChangeInfoDiv.hide();
-  delayedDowngradeToFreeInfo.hide();
-
-  switch (radioButton.readAttribute('data-plan_change_type')) {
-    case "upgrade":
-      MySublimeVideo.updatePlanInfo_(upgradeInfoDiv, radioButton);
-      break;
-    case "upgrade_from_free":
-      MySublimeVideo.updatePlanInfo_(upgradeFromDevInfoDiv, radioButton);
-      break;
-    case "delayed_upgrade":
-      MySublimeVideo.updatePlanInfo_(delayedUpgradeInfoDiv, radioButton);
-      break;
-    case "delayed_downgrade":
-      MySublimeVideo.updatePlanInfo_(delayedDowngradeInfoDiv, radioButton);
-      break;
-    case "delayed_change":
-      MySublimeVideo.updatePlanInfo_(delayedChangeInfoDiv, radioButton);
-      break;
-    case "delayed_downgrade_to_free":
-      MySublimeVideo.updatePlanInfo_(delayedDowngradeToFreeInfo, radioButton);
-      break;
-  }
 };
 
 // ====================
@@ -291,6 +176,106 @@ MySublimeVideo.showSiteUsage = function(siteId) {
 // ===========
 // = Classes =
 // ===========
+
+var PlanUpdateManager = Class.create({
+  initialize: function() {
+    this.planUpgradeInfoDiv = $('plan_upgrade_info');
+    this.planCreateInfoDiv  = $('plan_create_info');
+    this.ccDiv              = $('credit_card');
+    this.ccInfoDiv          = $('credit_card_summary');
+    this.hostnameDiv        = $('site_hostname');
+    this.messages = $H();
+    ['plan_in_trial_update_info', 'plan_in_trial_update_to_free_info',
+     'plan_upgrade_info', 'plan_upgrade_from_free_info', 'plan_delayed_upgrade_info',
+     'plan_delayed_downgrade_info', 'plan_delayed_change_info', 'plan_delayed_downgrade_to_free_info'].each(function(divName) {
+      this.messages.set(divName, $(divName));
+    }.bind(this));
+    
+    $$('#plans input[type=radio]').each(function(element){
+      element.on('click', function(event){
+        if (this.planUpgradeInfoDiv) this.showPlanUpdateInfo(element);
+        if (this.planCreateInfoDiv) this.showPlanCreateInfo(element);
+        this.handlePlanChange(element);
+        var select_box = element.up('.select_box');
+        $$('#plans ul .select_box').invoke('removeClassName', 'active');
+        if (select_box) select_box.addClassName('active');
+      }.bind(this));
+    }.bind(this));
+  },
+  handlePlanChange: function(radioButton) {
+    var plan_price  = radioButton.readAttribute('data-plan_price');
+    
+    var price_is_zero = plan_price === "$0";
+    
+    if (this.hostnameDiv) this.hostnameDiv.required = !price_is_zero;
+    if (this.ccInfoDiv) price_is_zero ? this.ccInfoDiv.hide() : this.ccInfoDiv.show();
+
+    // if (plan_price === "$0") {
+      if (this.ccDiv) {
+        price_is_zero ? this.ccDiv.hide() : this.ccDiv.show();
+        $$('#credit_card input, #credit_card select').each(function(element) {
+          price_is_zero ? element.disable() : element.enable();
+          element.required = !price_is_zero;
+        });
+        // 
+        // $('user_cc_brand_visa').disable();
+        // $('user_cc_brand_master').disable();
+        // $('user_cc_full_name').disable();
+        // $('user_cc_full_name').required = false;
+        // $('user_cc_number').disable();
+        // $('user_cc_number').required = false;
+        // $('user_cc_verification_value').disable();
+        // $('user_cc_verification_value').required = false;
+        // $('user_cc_expiration_month').disable();
+        // $('user_cc_expiration_year').disable();
+      }
+    // }
+    // else {
+    //   if (this.hostnameDiv) {
+    //     this.hostnameDiv.required = true;
+    //   }
+    //   if (this.ccInfoDiv) this.ccInfoDiv.show();
+    //   if (this.ccDiv) {
+    //     $('user_cc_brand_visa').enable();
+    //     $('user_cc_brand_master').enable();
+    //     $('user_cc_full_name').enable();
+    //     $('user_cc_full_name').required = true;
+    //     $('user_cc_number').enable();
+    //     $('user_cc_number').required = true;
+    //     $('user_cc_verification_value').enable();
+    //     $('user_cc_verification_value').required = true;
+    //     $('user_cc_expiration_month').enable();
+    //     $('user_cc_expiration_year').enable();
+    //     this.ccDiv.show();
+    //   }
+    // }
+  },
+  updatePlanInfo_: function(infoDiv, radioButton) {
+    ['plan_title', 'plan_price', 'plan_price_vat', 'plan_update_price', 'plan_update_price_vat', 'plan_update_date'].each(function(className) {
+      infoDiv.select('.'+className).invoke("update", radioButton.readAttribute('data-'+className));
+    });
+    infoDiv.show();
+  },
+  showPlanCreateInfo: function(radioButton) {
+    this.planCreateInfoDiv.hide();
+    if (radioButton.readAttribute('data-plan_price') !== "$0") {
+      MySublimeVideo.updatePlanInfo_(this.planCreateInfoDiv, radioButton);
+    }
+  },
+  showPlanUpdateInfo: function(radioButton) {
+    this.messages.each(function(pair) {
+      pair.value.hide();
+    });
+
+    var planChangeType = radioButton.readAttribute('data-plan_change_type');
+    this.messages.each(function(pair) {
+      if ('plan_' + planChangeType + '_info' === pair.key) {
+        this.updatePlanInfo_(pair.value, radioButton);
+        return;
+      }
+    }.bind(this));
+  }
+});
 
 /*
 FormManager manages:

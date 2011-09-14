@@ -10,10 +10,10 @@
           .warning.box_hovering_zone
             = link_to [:edit, site], :class => "icon" do
               %span= "warning"
-            - if site.need_path? 
+            - if site.need_path?
               = info_box do
                 %p= raw t 'site.status.need_path', hostname: site.hostname_with_path_needed
-            - if site.need_subdomain? 
+            - if site.need_subdomain?
               = info_box do
                 %p= raw t 'site.status.need_subdomain', hostname: site.hostname_with_subdomain_needed
       - else
@@ -29,7 +29,7 @@
       .cycle
         - if site.in_paid_plan?
           - if site.in_trial?
-            = "Your 14 days free will end on #{l(site.trial_started_at + BusinessModel.days_for_trial.days, :format => :d_b_Y)}."
+            = "Your #{BusinessModel.days_for_trial}-day free period will end on #{l(site.trial_started_at + BusinessModel.days_for_trial.days, :format => :d_b_Y)}."
           - else
             = l(site.plan_cycle_started_at, :format => :d_b_Y) + ' - ' + l(site.plan_cycle_ended_at, :format => :d_b_Y)
       .spacer

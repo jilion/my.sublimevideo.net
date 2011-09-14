@@ -21,7 +21,7 @@
       %h5.label= "Video pageviews per month"
     .entry
       .radio_wrap
-        = f.radio_button :plan_id, custom_plan.token, radio_button_options(site, custom_plan, current_plan, :id => "plan_custom", :checked => current_plan && current_plan == custom_plan)
+        = f.radio_button :plan_id, custom_plan.token, radio_button_options(site, current_plan, custom_plan, :id => "plan_custom", :checked => current_plan && current_plan == custom_plan)
         = f.label :plan_id, raw("#{display_amount_with_sup(custom_plan.price)} (#{custom_plan.yearly? ? "per year" : "per month"})"), :for => "plan_custom"
     .spacer
   - if params[:custom_plan]
@@ -53,7 +53,7 @@
           .select_box{ :class => current_plan && current_plan == free_plan ? 'active' : '' + ' no_discount' }
             = f.label :plan_id, "FREE", :for => "plan_#{free_plan.name}"
             .radio_wrap
-              = f.radio_button :plan_id, free_plan.id, radio_button_options(site, free_plan, current_plan, :checked => current_plan && current_plan == free_plan)
+              = f.radio_button :plan_id, free_plan.id, radio_button_options(site, current_plan, free_plan, :checked => current_plan && current_plan == free_plan)
               %span.bg
             - if site.persisted? && plan && plan == free_plan
               %span.current_label= "Current"
@@ -79,7 +79,7 @@
             .monthly.select_box{ :class => current_plan && current_plan == standard_plan ? 'active' : '' + ' no_discount' }
               = f.label :plan_id, raw(plan_label_content(standard_plan, site)), :for => "plan_#{standard_plan.name}_#{standard_plan.cycle}"
               .radio_wrap
-                = f.radio_button :plan_id, standard_plan.id, radio_button_options(site, standard_plan, current_plan, :checked => current_plan && current_plan == standard_plan)
+                = f.radio_button :plan_id, standard_plan.id, radio_button_options(site, current_plan, standard_plan, :checked => current_plan && current_plan == standard_plan)
                 %span.bg
               - if site.persisted? && plan && plan == standard_plan
                 %span.current_label= "Current"
@@ -87,7 +87,7 @@
               .yearly.select_box{ :class => current_plan && current_plan == standard_yearly_plan ? 'active' : '' + ' no_discount' }
                 = f.label :plan_id, raw(plan_label_content(standard_yearly_plan, site)), :for => "plan_#{standard_yearly_plan.name}_#{standard_yearly_plan.cycle}"
                 .radio_wrap
-                  = f.radio_button :plan_id, standard_yearly_plan.id, radio_button_options(site, standard_yearly_plan, current_plan, :checked => current_plan && current_plan == standard_yearly_plan)
+                  = f.radio_button :plan_id, standard_yearly_plan.id, radio_button_options(site, current_plan, standard_yearly_plan, :checked => current_plan && current_plan == standard_yearly_plan)
                   %span.bg
                 - if site.persisted? && plan && plan == standard_yearly_plan
                   %span.current_label= "Current"

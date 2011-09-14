@@ -1,4 +1,3 @@
-- site = f.object
 #site_setup
   - if site.errors[:base].present? && site.errors[:base].exclude?(t('activerecord.errors.models.site.attributes.base.current_password_needed')) && site.errors[:base].exclude?(t('activerecord.errors.models.site.attributes.base.credit_card_needed'))
     .inline_errors
@@ -6,55 +5,14 @@
 
   .entry.site
     .left
-      = f.label :hostname, "", :class => "icon"
-      = f.text_field :hostname, :class => "text", :placeholder => "yourdomain.com", :autocomplete => :off
+      = f.label :hostname, '', class: "icon"
+      = f.text_field :hostname, class: "text", placeholder: "yourdomain.com", autocomplete: :off
     %p.desc
-      = "Add your domain or subdomain."
-      %br
-      = "This field is optional for the Free plan."
+      Add your domain or subdomain.
+      - if site.in_free_plan?
+        %br
+        This field is optional.
     .spacer
   .break_line
 
-  - if site.persisted?
-    #site_setup_settings.settings
-      .left
-        - unless site.in_free_plan?
-          %h4.title= "Extra and development domains"
-          %a.add{ :href => "", :onclick => "$('site_setup_extra_hostnames').toggle(); this.toggleClassName('up'); return false", :class => display_text_if("up", site.extra_hostnames?) }= "Add staging or alias domains"
-          .entry.site#site_setup_extra_hostnames{ :style => display_block_if_or_none_otherwise(site.extra_hostnames?) }
-            = f.label :extra_hostnames, "", :class => "icon"
-            = f.text_field :extra_hostnames, :class => "text", :placeholder => "yourdomain.ch", :autocomplete => :off
-            %p.info= raw "Add extra domains separated by commas. Extra domains are meant to be used #{content_tag(:strong, "exclusively")} for staging domains and alias domains (multiple domain names that point to the #{content_tag(:strong, "same content")})."
-        %a.add{ :href => "", :onclick => "$('site_setup_dev_hostnames').toggle(); this.toggleClassName('up'); return false", :class => display_text_if("up", conditions_for_show_dev_hostnames_div(site)) }= "Add development domains"
-        .entry.site#site_setup_dev_hostnames{ :style => display_block_if_or_none_otherwise(conditions_for_show_dev_hostnames_div(site)) }
-          = f.label :dev_hostnames, "", :class => "icon"
-          = f.text_field :dev_hostnames, :class => "text", :placeholder => "127.0.0.1, localhost", :autocomplete => :off
-          %p.info= "Add (local only) development domains separated by commas."
-
-      - unless site.in_free_plan?
-        .right
-          %h4.title= "Advanced settings"
-          %p.label_info= "Restrict your player to a specific path"
-          .entry.path
-            %p
-              = f.label :path, "", :class => "icon"
-              = f.text_field :path, :class => "text small_icon", :placeholder => "path", :autocomplete => :off
-            %p.info= "The path will also be added to extra domains (not to development domains)."
-          .entry.wildcard
-            .checkbox_wrap
-              = f.check_box :wildcard
-              = f.label :wildcard, "Wildcard (*.yourdomain.com)"
-            %p.info= "It will also be enabled for extra and development domains."
-          .entry.badged
-            .checkbox_wrap
-              = f.check_box :badged
-              = f.label :badged, "SublimeVideo badge"
-            %p.info= "It will display a \"Powered by SublimeVideo\" badge on the initial state of your videos."
-      .spacer
-
-      - if site.in_free_plan?
-        .more_settings_desc><
-          = raw "More settings like alias and staging domains, custom path and wildcard option, are available on paid plans. #{link_to "Read more", "http://docs.sublimevideo.net/site-settings", :class => "hl"}."
-      = link_to "http://docs.sublimevideo.net/site-settings", :class => "help", :onclick => "window.open(this); return false" do
-        %span= "Read more"
-      .break_line
+  = render('site_setup_settings', site: site, f: f) if site.persisted?

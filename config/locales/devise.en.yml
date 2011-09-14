@@ -4,7 +4,7 @@ en:
       not_found: "not found"
       already_confirmed: "was already confirmed"
       not_locked: "was not locked"
-      
+
   devise:
     invitations:
       admin:
@@ -18,7 +18,9 @@ en:
       signed_out: 'no_message'
     passwords:
       send_instructions: 'You will receive an email with instructions to reset your password in a few minutes.'
-      updated: 'Your password was changed successfully.'
+      updated: 'Your password was changed successfully. You are now signed in.'
+      updated_not_active: 'Your password was changed successfully.'
+      send_paranoid_instructions: "If your e-mail exists on our database, you will receive a password recovery link on your e-mail"
     confirmations:
       user:
         send_instructions: 'You will receive an email with instructions to confirm your account in a few minutes.'

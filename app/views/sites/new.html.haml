@@ -1,9 +1,10 @@
 = title_and_content_header("Choose a plan for your site")
 
 #site.new
-  = form_for @site, :html => { :class => "full", :onsubmit => "$('site_submit').disable();" } do |f|
+  = form_for @site, html: { class: "full", onsubmit: "$('site_submit').disable();" } do |f|
 
-    = render 'plans/fields', :f => f
+    = render 'plans/fields', site: @site, f: f
+
     - if current_user.vat?
       #plan_create_info.update_plan_message_box{ style: "display:none;" }
         %p= vat_price_info("plan_price_vat")
@@ -13,7 +14,7 @@
     .spacer
     .break_line
 
-    = render 'fields', :f => f
+    = render 'fields', site: @site, f: f
 
     .actions.center
-      = f.submit (@site.persisted? ? "Update site" : "Create site"), :class => "submit big"
+      = f.submit (@site.persisted? ? "Update site" : "Create site"), class: "submit big"

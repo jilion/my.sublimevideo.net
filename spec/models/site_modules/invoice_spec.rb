@@ -9,17 +9,18 @@ describe SiteModules::Invoice do
         Site.delete_all
         @site_in_trial                = FactoryGirl.create(:site, trial_started_at: Time.now.tomorrow)
         @site_not_in_trial_without_cc = FactoryGirl.create(:site, user: FactoryGirl.create(:user_no_cc))
-        @site_not_in_trial_with_cc    = FactoryGirl.create(:site)
+        @site_not_in_trial_with_cc_1  = FactoryGirl.create(:site)
+        @site_not_in_trial_with_cc_2  = FactoryGirl.create(:site)
+        @site_not_in_trial_with_cc_2.update_attribute(:plan_id, @free_plan.id)
+        @site_not_in_trial_with_cc_2.should be_in_free_plan
 
-        [@site_in_trial, @site_not_in_trial_without_cc, @site_not_in_trial_with_cc].each { |site| site.invoices.should be_empty }
+        [@site_in_trial, @site_not_in_trial_without_cc, @site_not_in_trial_with_cc_1, @site_not_in_trial_with_cc_2].each { |site| site.invoices.should be_empty }
       end
       before(:each) do
-        [@site_in_trial, @site_not_in_trial_without_cc, @site_not_in_trial_with_cc].each { |site| site.reload }
+        [@site_in_trial, @site_not_in_trial_without_cc, @site_not_in_trial_with_cc_1, @site_not_in_trial_with_cc_2].each { |site| site.reload }
 
         %w[pending_plan_cycle_started_at pending_plan_cycle_ended_at first_paid_plan_started_at].each do |attr|
-          @site_in_trial.send(attr).should be_nil
-          @site_not_in_trial_without_cc.send(attr).should be_nil
-          @site_not_in_trial_with_cc.send(attr).should be_nil
+          [@site_in_trial, @site_not_in_trial_without_cc, @site_not_in_trial_with_cc_1, @site_not_in_trial_with_cc_2].each { |site| site.send(attr).should be_nil }
         end
         Delayed::Job.delete_all
       end
@@ -40,11 +41,24 @@ describe SiteModules::Invoice do
         end
       end
 
-      describe "non-activatable sites" do
+      describe "non-activatable sites (1)" do
         it_behaves_like "don't charge invoice"
 
         it_behaves_like "site that can't be activated" do
           let(:site) { @site_in_trial.reload }
+        end
+      end
+
+      describe "non-activatable sites (2)" do
+        before(:each) do
+          Timecop.travel(BusinessModel.days_for_trial.days.from_now) { Site.activate_or_downgrade_sites_leaving_trial }
+        end
+        subject { @site_not_in_trial_with_cc_2.reload }
+
+        it_behaves_like "don't charge invoice"
+
+        it_behaves_like "site that can't be activated" do
+          let(:site) { @site_not_in_trial_with_cc_2.reload }
         end
       end
 
@@ -69,7 +83,7 @@ describe SiteModules::Invoice do
         before(:each) do
           Timecop.travel(BusinessModel.days_for_trial.days.from_now) { Site.activate_or_downgrade_sites_leaving_trial }
         end
-        subject { @site_not_in_trial_with_cc.reload }
+        subject { @site_not_in_trial_with_cc_1.reload }
 
         it_behaves_like "don't charge invoice"
 

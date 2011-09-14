@@ -1,5 +1,9 @@
 module SitesHelper
 
+  def current_password_needed_error?(site)
+    site.errors[:base] && site.errors[:base].include?(t('activerecord.errors.models.site.attributes.base.current_password_needed'))
+  end
+
   def full_days_until_trial_end(site)
     if site.in_trial?
       ((site.trial_started_at.midnight + BusinessModel.days_for_trial.days - Time.now.utc.midnight) / (3600 * 24)).to_i
@@ -45,9 +49,9 @@ module SitesHelper
   end
 
   def conditions_for_show_settings(site)
-    site.extra_hostnames? \
-    || (site.dev_hostnames? && site.dev_hostnames != Site::DEFAULT_DEV_DOMAINS) \
-    || site.path? || site.wildcard?
+    site.extra_hostnames? ||
+    (site.dev_hostnames? && site.dev_hostnames != Site::DEFAULT_DEV_DOMAINS) ||
+    site.path? || site.wildcard?
   end
 
   def conditions_for_show_dev_hostnames_div(site)
