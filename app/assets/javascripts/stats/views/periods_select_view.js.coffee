@@ -3,6 +3,7 @@ class MSVStats.Views.PeriodsSelectView extends Backbone.View
 
   events:
     'click select': 'updatePeriod'
+    'change select': 'updatePeriod'
 
   initialize: () ->
     _.bindAll(this, 'render')
@@ -16,11 +17,12 @@ class MSVStats.Views.PeriodsSelectView extends Backbone.View
 
   updatePeriod: ->
     selectedPeriodValue = this.$('select').val()
-    switch selectedPeriodValue
-      when 'custom' then this.showDatePickers()
-      else
-        this.hideDatePickers()
-        this.options.period.setPeriod(selectedPeriodValue)
+    if MSVStats.period.value() != selectedPeriodValue
+      switch selectedPeriodValue
+        when 'custom' then this.showDatePickers()
+        else
+          this.hideDatePickers()
+          this.options.period.setPeriod(selectedPeriodValue)
 
   hideDatePickers: ->
     $('#custom_dates_pickers').hide()

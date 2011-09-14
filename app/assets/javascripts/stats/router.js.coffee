@@ -3,10 +3,12 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
     Highcharts.setOptions
       global:
         useUTC: false
-    
+
     MSVStats.stats = new MSVStats.Collections.Stats()
-    MSVStats.stats.bind('reset', -> MSVStats.stats.clearcurrentPeriodStatsCache())
-    MSVStats.period.bind('change', -> MSVStats.stats.clearcurrentPeriodStatsCache())
+    MSVStats.stats.bind('reset', -> MSVStats.stats.clearCache())
+    MSVStats.period.bind('change', -> MSVStats.stats.clearCache())
+
+    MSVStats.vvChartLegend  = new MSVStats.Models.VVChartLegend()
 
     pageTitleView = new MSVStats.Views.PageTitleView(collection: MSVStats.sites)
     pageTitleView.render()
@@ -16,12 +18,14 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
     $('#periods_select').html(periodsSelectView.render().el)
     MSVStats.vvView = new MSVStats.Views.VVView(collection: MSVStats.stats, sites: MSVStats.sites, period: MSVStats.period)
     $('#vv_numbers').html(MSVStats.vvView.render().el)
+    MSVStats.vvChartLegendView = new MSVStats.Views.VVChartLegendView(stats: MSVStats.stats, index: MSVStats.vvChartLegend)
+    $('#vv_chart_legend').html(MSVStats.vvChartLegendView.render().el)
     window.setTimeout(( -> MSVStats.vvView.periodicRender()), 30000)
     bpView = new MSVStats.Views.BPView(collection: MSVStats.stats, sites: MSVStats.sites, period: MSVStats.period)
     $('#bp_legend').html(bpView.render().el)
     mdView = new MSVStats.Views.MDView(collection: MSVStats.stats, sites: MSVStats.sites, period: MSVStats.period)
     $('#md_legend').html(mdView.render().el)
-    
+
     updateDateView = new MSVStats.Views.UpdateDateView(collection: MSVStats.stats)
     $('#update_date').html(updateDateView.render().el)
 

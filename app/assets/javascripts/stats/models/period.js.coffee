@@ -23,9 +23,9 @@ class MSVStats.Models.Period extends Backbone.Model
   periodChartTitle: (x) ->
     switch this.get('type')
       when 'minutes'
-        "#{Highcharts.dateFormat('%e %B %Y, %H:%M', x - MSVStats.period.periodInterval())} - #{Highcharts.dateFormat('%e %B %Y, %H:%M', x)}"
+        "#{Highcharts.dateFormat('%e %b %Y, %H:%M', x - MSVStats.period.periodInterval())} - #{Highcharts.dateFormat('%e %b %Y, %H:%M', x)}"
       else
-        "#{Highcharts.dateFormat('%e %B %Y, %H:%M', x)} - #{Highcharts.dateFormat('%e %B %Y, %H:%M', x + MSVStats.period.periodInterval())}"
+        "#{Highcharts.dateFormat('%e %b %Y, %H:%M', x)} - #{Highcharts.dateFormat('%e %b %Y, %H:%M', x + MSVStats.period.periodInterval())}"
 
   periodChartType: ->
     switch this.get('type')
@@ -53,7 +53,7 @@ class MSVStats.Models.Period extends Backbone.Model
     this.set(attributes, options)
 
   setCustomPeriod: (startTime, endTime, options = {}) ->
-    this.set(startTime: Math.min(startTime, endTime), endTime: Math.max(startTime, endTime), last: null, type: 'days', options)
+    this.set(startTime: _.min([startTime, endTime]), endTime: _.max([startTime, endTime]), last: null, type: 'days', options)
 
   autosetPeriod: (options = {}) ->
     _.extend(options, isMinValue: true)

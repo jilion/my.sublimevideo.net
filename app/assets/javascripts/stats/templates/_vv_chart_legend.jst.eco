@@ -1,0 +1,10 @@
+<% if @index?: %>
+<p>
+  <% time = MSVStats.stats.currentPeriodStartDate() + (@index) * MSVStats.period.periodInterval() %>
+  <%= MSVStats.period.periodChartTitle(time) %>
+  <br/>
+  Page visits: <%= @vvData.pv[@index] %>
+  /
+  Video views: <%= @vvData.vv[@index] %>
+</p>
+<% end %>

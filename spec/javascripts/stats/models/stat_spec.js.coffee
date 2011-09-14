@@ -97,12 +97,12 @@ describe 'Stats', ->
     describe 'vv', ->
       it 'return well formed array with time for spline chart', ->
         expect(@vvData.vv.length).toEqual(30)
-        expect(_.first(@vvData.vv)).toEqual([parseInt(@day29.get('di')), 7])
+        expect(_.first(@vvData.vv)).toEqual(7)
 
     describe 'pv', ->
       it 'return well formed array with time for spline chart', ->
         expect(@vvData.pv.length).toEqual(30)
-        expect(_.last(@vvData.pv)).toEqual([parseInt(@day0.get('di')), 0])
+        expect(_.last(@vvData.pv)).toEqual(0)
 
     describe 'pvTotal()', ->
       it 'return total number of pv for the period', ->
