@@ -1,18 +1,21 @@
 if (MySublimeVideo.passwordCheckerManager) {
   <% if @valid_password %>
-    var password_input = "";
-    var form_action = MySublimeVideo.passwordCheckerManager.originForm.action;
-    if (/\/account/.test(form_action)) {
-      password_input = "<input type='password' name='user[current_password]' style='display:none;' value='<%= params[:password] %>' />";
+    var password_input = new Element('input', {
+                                                type:  'password',
+                                                name:  'user[current_password]',
+                                                value: "<%= params[:password] %>",
+                                                style: "display:none"
+                                              });
+    if (/\/sites/.test(MySublimeVideo.passwordCheckerManager.originForm.action)) {
+      password_input.name = "site[user_attributes][current_password]";
     }
-    else if (/\/sites/.test(form_action)) {
-      password_input = "<input type='password' name='site[user_attributes][current_password]' style='display:none;' value='<%= params[:password] %>' />";
-    }
+
     MySublimeVideo.passwordCheckerManager.originForm.insert({
       bottom: password_input
     });
     MySublimeVideo.popupHandler.close();
     MySublimeVideo.passwordCheckerManager.originForm.submit();
+
   <% else %>
     MySublimeVideo.passwordCheckerManager.popup.setStyle({
       background: '#f00'

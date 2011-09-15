@@ -165,6 +165,18 @@ feature "Users" do
 
   end
 
+  scenario "current password confirmation accept password with HTML special characters" do
+    sign_in_as :user, { :email => "old@jilion.com", :password => "abc'def" }
+    click_link('John Doe')
+    fill_in "Email",            :with => "New@jilion.com"
+    click_button "user_credentials_submit"
+
+    fill_in "Current password", :with => "abc'def"
+    click_button "Done"
+
+    User.last.email.should == "new@jilion.com"
+  end
+
   scenario "update email (with current password confirmation)" do
     sign_in_as :user, { :email => "old@jilion.com" }
     click_link('John Doe')
