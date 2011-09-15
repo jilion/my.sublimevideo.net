@@ -10,21 +10,21 @@ module PlansHelper
         "Plan"
       else
         "Change plan"
-      end + " for #{truncate_middle(@site.hostname, :length => 23)}"
+      end + " for #{truncate_middle(@site.hostname, length: 23)}"
     end
   end
 
   def plan_label_content(plan, site=nil, options={})
-    content_tag(:span, :class => "pricing") do
-      price_box = content_tag(:strong, :class => "price") do
+    content_tag(:span, class: "pricing") do
+      price_box = content_tag(:strong, class: "price") do
         display_amount_with_sup(plan.price)
       end
 
-      price_box += content_tag(:span, :class => "details_label") do
+      price_box += content_tag(:span, class: "details_label") do
         (plan.yearly? ? "per site/year" : "per site/month")
       end
 
-      price_box += content_tag(:span, :class => "name") do
+      price_box += content_tag(:span, class: "name") do
         plan.name.gsub(/\d/, '').titleize
       end
 
@@ -84,9 +84,9 @@ module PlansHelper
       options["data-plan_update_price_vat"] = display_amount(update_price, vat: true) if current_user.vat?
 
       options["data-plan_update_date"] = l(if site.in_trial?
-        site.trial_end.tomorrow.midnight
+        (site.trial_end || BusinessModel.days_for_trial.days.from_now).tomorrow.midnight
       elsif current_plan.upgrade?(new_plan)
-        site.plan_cycle_started_at
+        site.plan_cycle_started_at || Time.now.utc.midnight
       else
         (site.plan_cycle_ended_at && site.plan_cycle_ended_at.tomorrow.midnight) || Time.now.utc.midnight
       end, format: :named_date)

@@ -40,7 +40,7 @@ en:
       upgrade_in_progress_failed_link: "There has been a transaction error. Please review %{link} and retry the payment."
       upgrade_in_progress_open_link: "There is still an open invoice. Please review %{link} and retry the payment."
       upgrade_in_progress_waiting_link: "There is a transaction in progress, please be patient."
-      next_cycle_will_start_on: "Your new plan <strong>%{plan_title}</strong> will automatically start on %{date}."
+      next_cycle_will_start_on: "Your new <strong>%{plan_title}</strong> plan will automatically start on %{date}."
     edit:
       delete_site_info1: "Your SublimeVideo license for <em>%{domain}</em> will be instantly removed from our servers."
       delete_site_info2: "This operation cannot be undone."

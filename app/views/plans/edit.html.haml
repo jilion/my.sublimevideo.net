@@ -22,7 +22,6 @@
     - if @site.errors.empty? && @site.next_cycle_plan_id?
       #next_cycle_plan_box
         %p= t 'site.plan.next_cycle_will_start_on', plan_title: @site.next_cycle_plan.title(always_with_cycle: true), date: l(@site.plan_cycle_ended_at.tomorrow.midnight, format: :named_date)
-        -#%p= raw "Your new plan #{content_tag :strong, @site.next_cycle_plan.title(always_with_cycle: true)} will automatically start on #{l(@site.plan_cycle_ended_at.tomorrow.midnight, format: :named_date)}."
         = button_to "Cancel", [@site, :plan], method: 'delete', class: "cancel_button submit_dynamic_button"
 
     #change_plan_box.section_box

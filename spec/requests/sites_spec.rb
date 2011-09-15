@@ -1,11 +1,12 @@
 require 'spec_helper'
+include ActionView::Helpers::SanitizeHelper
 
 feature "Sites" do
   before(:all) { create_plans }
 
   context "with a user with no credit card registered" do
     background do
-      sign_in_as :user, :without_cc => true
+      sign_in_as :user, without_cc: true
       visit "/sites/new"
     end
 
@@ -15,7 +16,7 @@ feature "Sites" do
           choose "plan_free"
           has_checked_field?("plan_free").should be_true
 
-          fill_in "Domain", :with => ""
+          fill_in "Domain", with: ""
           click_button "Create site"
 
           @worker.work_off
@@ -32,7 +33,7 @@ feature "Sites" do
         scenario "with a hostname" do
           choose "plan_free"
           has_checked_field?("plan_free").should be_true
-          fill_in "Domain", :with => "rymai.com"
+          fill_in "Domain", with: "rymai.com"
           click_button "Create site"
 
           @worker.work_off
@@ -51,7 +52,7 @@ feature "Sites" do
         scenario "with no hostname" do
           choose "plan_silver_month"
           has_checked_field?("plan_silver_month").should be_true
-          fill_in "Domain", :with => ""
+          fill_in "Domain", with: ""
           expect { click_button "Create" }.to_not change(@current_user.invoices, :count)
 
           current_url.should =~ %r(http://[^/]+/sites)
@@ -61,7 +62,7 @@ feature "Sites" do
         scenario "with a hostname" do
           choose "plan_silver_month"
           has_checked_field?("plan_silver_month").should be_true
-          fill_in "Domain", :with => "rymai.com"
+          fill_in "Domain", with: "rymai.com"
           expect { click_button "Create" }.to_not change(@current_user.invoices, :count)
 
           @worker.work_off
@@ -89,7 +90,7 @@ feature "Sites" do
         # pending "entering a 3-D Secure credit card with a failing identification" do
         #   choose "plan_silver_year"
         #   has_checked_field?("plan_silver_year").should be_true
-        #   fill_in "Domain", :with => "rymai.com"
+        #   fill_in "Domain", with: "rymai.com"
         #   set_credit_card(d3d: true)
         #   VCR.use_cassette('ogone/visa_payment_acceptance_3ds') { click_button "Create" }
         #   @worker.work_off
@@ -133,7 +134,7 @@ feature "Sites" do
         # pending "entering a 3-D Secure credit card with a succeeding identification" do
         #   choose "plan_silver_year"
         #   has_checked_field?("plan_silver_year").should be_true
-        #   fill_in "Domain", :with => "rymai.com"
+        #   fill_in "Domain", with: "rymai.com"
         #   set_credit_card(d3d: true)
         #   VCR.use_cassette('ogone/visa_payment_acceptance_3ds') { click_button "Create site" }
         #   @worker.work_off
@@ -181,7 +182,7 @@ feature "Sites" do
         scenario "with no hostname" do
           choose "plan_custom"
           has_checked_field?("plan_custom").should be_true
-          fill_in "Domain", :with => ""
+          fill_in "Domain", with: ""
           expect { click_button "Create" }.to_not change(@current_user.invoices, :count)
 
           current_url.should =~ %r(http://[^/]+/sites)
@@ -191,7 +192,7 @@ feature "Sites" do
         scenario "with a hostname" do
           choose "plan_custom"
           has_checked_field?("plan_custom").should be_true
-          fill_in "Domain", :with => "rymai.com"
+          fill_in "Domain", with: "rymai.com"
           expect { click_button "Create" }.to_not change(@current_user.invoices, :count)
 
           @worker.work_off
@@ -214,7 +215,7 @@ feature "Sites" do
           page.should have_content("Site was successfully created.")
           page.should have_content('rymai.com')
           page.should have_content('Custom')
-          page.should have_content(I18n.l(site.trial_started_at + BusinessModel.days_for_trial.days, :format => :d_b_Y))
+          page.should have_content(I18n.l(site.trial_started_at + BusinessModel.days_for_trial.days, format: :d_b_Y))
         end
       end # custom plan
     end
@@ -223,7 +224,7 @@ feature "Sites" do
 
   context "with a user with a credit card registered" do
     background do
-      sign_in_as :user, :without_cc => false
+      sign_in_as :user, without_cc: false
       visit "/sites/new"
     end
 
@@ -268,7 +269,7 @@ feature "Sites" do
           current_url.should =~ %r(http://[^/]+/sites/#{@site.token}/edit)
           page.should have_content('rymai.com')
 
-          page.should have_content I18n.t('site.edit.delete_site_info1', domain: "rymai.com")
+          page.should have_content strip_tags(I18n.t('site.edit.delete_site_info1', domain: "rymai.com"))
           page.should have_content I18n.t('site.edit.delete_site_info2')
 
           click_link "Change plan"
@@ -292,11 +293,11 @@ feature "Sites" do
         click_link "Edit rymai.com"
 
         page.should have_selector("#site_dev_hostnames")
-        page.should_not have_selector("#site_extra_hostnames")
-        page.should_not have_selector("#site_path")
-        page.should_not have_selector("#site_wildcard")
-        page.should_not have_selector("#site_badged")
-        fill_in "site_dev_hostnames", :with => "rymai.local"
+        page.should have_selector("#site_extra_hostnames")
+        page.should have_selector("#site_path")
+        page.should have_selector("#site_wildcard")
+        page.should have_selector("#site_badged")
+        fill_in "site_dev_hostnames", with: "rymai.local"
         click_button "Update settings"
 
         current_url.should =~ %r(http://[^/]+/sites)
@@ -319,12 +320,12 @@ feature "Sites" do
         page.should have_selector("#site_wildcard")
         page.should have_selector("#site_badged")
         has_checked_field?("site_badged").should be_false
-        fill_in "site_extra_hostnames", :with => "rymai.me"
-        fill_in "site_dev_hostnames", :with => "rymai.local"
+        fill_in "site_extra_hostnames", with: "rymai.me"
+        fill_in "site_dev_hostnames", with: "rymai.local"
         check "site_badged"
         click_button "Update settings"
 
-        fill_in "Password", :with => "123456"
+        fill_in "Password", with: "123456"
         click_button "Done"
 
         current_url.should =~ %r(http://[^/]+/sites)
@@ -348,12 +349,12 @@ feature "Sites" do
         page.should have_selector("#site_wildcard")
         page.should have_selector("#site_badged")
         has_checked_field?("site_badged").should be_false
-        fill_in "site_extra_hostnames", :with => "rymai.me"
-        fill_in "site_dev_hostnames", :with => "rymai.local"
+        fill_in "site_extra_hostnames", with: "rymai.me"
+        fill_in "site_dev_hostnames", with: "rymai.local"
         check "site_badged"
         click_button "Update settings"
 
-        fill_in "Password", :with => "123456"
+        fill_in "Password", with: "123456"
         click_button "Done"
 
         current_url.should =~ %r(http://[^/]+/sites)
@@ -367,7 +368,7 @@ feature "Sites" do
 
     describe "archive" do
       scenario "a paid site with no not paid invoices" do
-        site = FactoryGirl.create(:site, :user => @current_user, :hostname => 'google.com')
+        site = FactoryGirl.create(:site, user: @current_user, hostname: 'google.com')
 
         visit "/sites"
         page.should have_content('google.com')
@@ -377,7 +378,7 @@ feature "Sites" do
         click_link "Edit google.com"
         click_button "Delete site"
 
-        fill_in "Password", :with => "123456"
+        fill_in "Password", with: "123456"
         click_button "Done"
 
         page.should_not have_content('google.com')
@@ -420,14 +421,14 @@ feature "Sites" do
 
     describe "index" do
       scenario "sort buttons displayed only if count of sites > 1" do
-        FactoryGirl.create(:site, :user => @current_user, :hostname => 'google.com')
+        FactoryGirl.create(:site, user: @current_user, hostname: 'google.com')
         visit "/sites"
 
         page.should have_content('google.com')
         page.should have_no_css('div.sorting')
         page.should have_no_css('a.sort')
 
-        FactoryGirl.create(:site, :user => @current_user, :hostname => 'google2.com')
+        FactoryGirl.create(:site, user: @current_user, hostname: 'google2.com')
         visit "/sites"
 
         page.should have_content('google.com')
@@ -439,14 +440,14 @@ feature "Sites" do
 
       scenario "pagination links displayed only if count of sites > Site.per_page" do
         Responders::PaginatedResponder.stub(:per_page).and_return(1)
-        FactoryGirl.create(:site, :user => @current_user, :hostname => 'google.com')
+        FactoryGirl.create(:site, user: @current_user, hostname: 'google.com')
         visit "/sites"
 
         page.should have_no_content('Next')
         page.should have_no_css('nav.pagination')
         page.should have_no_css('span.next')
 
-        FactoryGirl.create(:site, :user => @current_user, :hostname => 'google2.com')
+        FactoryGirl.create(:site, user: @current_user, hostname: 'google2.com')
         visit "/sites"
 
         page.should have_css('nav.pagination')

@@ -78,7 +78,7 @@ module SiteModules::Invoice
     end
 
     def last_paid_plan_price
-      last_paid_invoice ? last_paid_invoice.plan_invoice_items.find { |pii| pii.amount > 0 }.price : 0
+      last_paid_invoice ? last_paid_invoice.plan_invoice_items.find { |pii| pii.amount > 0 }.try(:price) || 0 : 0
     end
 
     # DEPRECATED, TO BE REMOVED 30 DAYS AFTER NEW BUSINESS MODEL DEPLOYMENT

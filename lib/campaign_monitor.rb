@@ -8,9 +8,9 @@ class CampaignMonitor < Settingslogic
       set_api_key
       CreateSend::Subscriber.add(self.list_id, user.email, user.full_name,
         [
-          { :Key => 'user_id', :Value => user.id },
-          { :Key => 'segment', :Value => self.segment },
-          { :Key => 'beta',    :Value => user.beta?.to_s }
+          { Key: 'user_id', Value: user.id },
+          { Key: 'segment', Value: self.segment },
+          { Key: 'beta',    Value: user.beta?.to_s }
         ],
         true
       )
@@ -22,12 +22,12 @@ class CampaignMonitor < Settingslogic
       set_api_key
       subscribers = users.collect do |user|
         {
-          :EmailAddress => user.email,
-          :Name => user.full_name,
-          :CustomFields => [
-            { :Key => 'user_id', :Value => user.id },
-            { :Key => 'segment', :Value => self.segment },
-            { :Key => 'beta',    :Value => user.beta?.to_s }
+          EmailAddress: user.email,
+          Name: user.full_name,
+          CustomFields: [
+            { Key: 'user_id', Value: user.id },
+            { Key: 'segment', Value: self.segment },
+            { Key: 'beta',    Value: user.beta?.to_s }
           ]
         }
       end

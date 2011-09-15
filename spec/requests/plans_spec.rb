@@ -9,7 +9,7 @@ feature "edit" do
 
   context "site in trial" do
     scenario "view with a free plan without hostname" do
-      site = FactoryGirl.create(:site, user: @current_user, plan_id: @free_plan.id, :hostname => nil)
+      site = FactoryGirl.create(:site, user: @current_user, plan_id: @free_plan.id, hostname: nil)
 
       visit edit_site_plan_path(site)
 
@@ -28,7 +28,7 @@ feature "edit" do
       has_checked_field?("plan_free").should be_true
       has_unchecked_field?("plan_silver_month").should be_true
 
-      fill_in "Password", :with => "123456"
+      fill_in "Password", with: "123456"
       click_button "Done"
 
       site.reload
@@ -37,7 +37,7 @@ feature "edit" do
       current_url.should =~ %r(http://[^/]+/sites$)
       page.should have_content(site.plan.title)
     end
-    
+
     scenario "update free plan to paid plan" do
       site = FactoryGirl.create(:site, user: @current_user, plan_id: @free_plan.id)
 
@@ -56,7 +56,7 @@ feature "edit" do
 
   context "site not in trial" do
     scenario "view with a free plan without hostname" do
-      site = FactoryGirl.create(:site_not_in_trial, user: @current_user, plan_id: @free_plan.id, :hostname => nil)
+      site = FactoryGirl.create(:site_not_in_trial, user: @current_user, plan_id: @free_plan.id, hostname: nil)
 
       visit edit_site_plan_path(site)
 
@@ -75,7 +75,7 @@ feature "edit" do
       has_checked_field?("plan_free").should be_true
       has_unchecked_field?("plan_silver_month").should be_true
 
-      fill_in "Password", :with => "123456"
+      fill_in "Password", with: "123456"
       click_button "Done"
 
       site.reload
@@ -85,7 +85,7 @@ feature "edit" do
 
       click_link "#{site.plan.title} => #{site.next_cycle_plan.title}"
 
-      page.should have_content("Your new plan #{site.next_cycle_plan.title} will automatically start on #{I18n.l(site.plan_cycle_ended_at.tomorrow.midnight, :format => :named_date).squeeze(' ')}.")
+      page.should have_content("Your new <strong>#{site.next_cycle_plan.title}</strong> plan will automatically start on #{I18n.l(site.plan_cycle_ended_at.tomorrow.midnight, format: :named_date).squeeze(' ')}.")
     end
 
     scenario "update free plan to paid plan" do
@@ -129,7 +129,7 @@ feature "edit" do
       click_button "Update plan"
 
       VCR.use_cassette('ogone/visa_payment_generic') do
-        fill_in "Password", :with => "123456"
+        fill_in "Password", with: "123456"
         click_button "Done"
       end
 
@@ -164,7 +164,7 @@ feature "edit" do
       click_button "Update plan"
 
       VCR.use_cassette('ogone/visa_payment_generic') do
-        fill_in "Password", :with => "123456"
+        fill_in "Password", with: "123456"
         click_button "Done"
       end
 
@@ -200,7 +200,7 @@ feature "edit" do
       page.should_not have_content(site.plan.title)
       page.should have_content("There has been a transaction error. Please review")
     end
-    
+
     scenario "cancel next plan automatic update" do
       site = FactoryGirl.create(:site_with_invoice, user: @current_user, plan_id: @paid_plan.id)
 
@@ -214,7 +214,7 @@ feature "edit" do
 
       current_url.should =~ %r(http://[^/]+/sites/#{site.token}/plan/edit$)
 
-      page.should have_content("Your new plan #{site.next_cycle_plan.title} will automatically start on #{I18n.l(site.plan_cycle_ended_at.tomorrow.midnight, :format => :named_date).squeeze(' ')}.")
+      page.should have_content("Your new <strong>#{site.next_cycle_plan.title}</strong> plan will automatically start on #{I18n.l(site.plan_cycle_ended_at.tomorrow.midnight, format: :named_date).squeeze(' ')}.")
 
       click_button "Cancel"
 
@@ -259,7 +259,7 @@ feature "custom plan" do
 
     VCR.use_cassette('ogone/visa_payment_generic') do
       choose "plan_custom"
-      fill_in "Domain", :with => "google.com"
+      fill_in "Domain", with: "google.com"
       click_button "Create"
     end
 
@@ -289,7 +289,7 @@ feature "custom plan" do
     click_button "Update plan"
 
     VCR.use_cassette('ogone/visa_payment_generic') do
-      fill_in "Password", :with => "123456"
+      fill_in "Password", with: "123456"
       click_button "Done"
     end
 
