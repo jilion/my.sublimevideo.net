@@ -1,5 +1,5 @@
 class Plan < ActiveRecord::Base
-  include Plan::Api
+  include PlanModules::Api
 
   CYCLES         = %w[month year none]
   STANDARD_NAMES = %w[silver gold]

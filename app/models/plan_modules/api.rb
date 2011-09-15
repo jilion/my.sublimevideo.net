@@ -1,4 +1,4 @@
-module Plan::Api
+module PlanModules::Api
   extend ActiveSupport::Concern
 
   included do

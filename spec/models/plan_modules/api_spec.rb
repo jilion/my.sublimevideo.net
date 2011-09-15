@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Plan::Api do
+describe PlanModules::Api do
   before(:all) do
     @plan     = FactoryGirl.create(:plan, name: 'huge_plan', cycle: 'month', player_hits: 1_000_000)
     @response = @plan.as_api_response(:v1_private_self)
