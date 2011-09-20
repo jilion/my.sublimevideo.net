@@ -10,8 +10,8 @@
 
     # Initialize spinners
     $('#vv').spin()
-    $('#bp').spin()
-    $('#md').spin()
+    # $('#bp').spin()
+    # $('#md').spin()
 
     window.MSVStats.pusher = new Pusher('#{PusherConfig.key}', encrypted: true)
     window.MSVStats.sites = new MSVStats.Collections.Sites()
@@ -36,9 +36,10 @@
 
 #vv
   #vv_content
-    #vv_numbers
     #vv_chart
     #vv_chart_legend
+
+.spacer
 
 #bp
   %h3 Browser + OS

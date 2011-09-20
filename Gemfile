@@ -1,7 +1,7 @@
 source 'http://rubygems.org'
 
-gem 'rails', :git => 'git://github.com/rails/rails.git', :branch => '3-1-stable'
-# gem 'rails',                 '3.1.0'
+# gem 'rails', :git => 'git://github.com/rails/rails.git', :branch => '3-1-stable'
+gem 'rails',                 '3.1.1.rc1'
 
 # Gems used only for assets and not required
 # in production environments by default.
@@ -86,7 +86,8 @@ gem 'addressable',           '~> 2.2.6'
 gem 'dalli',                 '~> 1.1.1'
 
 # Stats
-gem 'pusher'
+gem 'crack',                 '~> 0.1.8'
+gem 'pusher',                '~> 0.8.3'
 
 # Javascript test
 gem "jasminerice"

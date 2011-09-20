@@ -48,15 +48,53 @@ class SiteStat
   # = Instance Methods =
   # ====================
 
-  %w[m h d].each do |period|
-    define_method "#{period}i" do
-      send(period).nil? ? nil : send(period).to_i * 1000
-    end
+  def token
+    read_attribute(:t)
+  end
+
+  # time for backbonejs model
+  def t
+    m.to_i || h.to_i || d.to_i
+  end
+
+  # only main & extra hostname are counted in charts
+  def pv
+    pv = read_attribute(:pv)
+    pv['m'].to_i + pv['e'].to_i
+  end
+  def vv
+    vv = read_attribute(:vv)
+    vv['m'].to_i + vv['e'].to_i
   end
 
   # =================
   # = Class Methods =
   # =================
+
+  def self.json(token, period_type = 'days')
+    stats      = SiteStat.where(t: token)
+    json_stats = []
+    case period_type
+    when 'minutes'
+      to   = SiteStat.where(m: { "$ne"  => nil }).last.m
+      from = to - 60.minutes
+      stats = stats.m_after(from).where(h: nil, d: nil)
+      stat  = stats.pop
+      while from <= to
+        if stat.m == from
+          json_stats << stat
+          stat  = stats.pop
+        else
+          json_stats << SiteStat.new(m: from)
+        end
+        from += 1.minute
+      end
+    when 'hours'
+    when 'days'
+    end
+
+    json_stats.to_json({ except: [:_id, :m, :h, :d] })
+  end
 
   def self.create_stats_from_trackers!(log, trackers)
     incs = incs_from_trackers(trackers)

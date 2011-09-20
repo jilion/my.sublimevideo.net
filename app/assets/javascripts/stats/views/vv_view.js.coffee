@@ -1,16 +1,13 @@
 #= require jquery.textfill/jquery.textfill
 
 class MSVStats.Views.VVView extends Backbone.View
-  template: JST['stats/templates/_vv_chart']
+  template: JST['stats/templates/_vv_chart_legend']
 
   initialize: () ->
     _.bindAll(this, 'render')
     this.collection.bind('change', this.render);
     this.collection.bind('reset', this.render);
     this.options.period.bind('change', this.render);
-
-    $('#vv_chart').bind 'mouseleave', ->
-      MSVStats.vvChartLegend.clearIndex()
 
   render: ->
     @vvData = this.collection.vvData()
@@ -24,14 +21,14 @@ class MSVStats.Views.VVView extends Backbone.View
     this.renderChart()
     return this
 
-  periodicRender: ->
-    # call each minute (0 seconds)
-    if MSVStats.Models.Period.today().date.getTime() == MSVStats.Models.Period.today({s: 0}).date.getTime()
-      MSVStats.stats.clearCache()
-      MSVStats.vvView.render()
-      window.setTimeout(( -> MSVStats.vvView.periodicRender()), 57000)
-    else
-      window.setTimeout(( -> MSVStats.vvView.periodicRender()), 1000)
+  # periodicRender: ->
+  #   # call each minute (0 seconds)
+  #   if MSVStats.Models.Period.today().date.getTime() == MSVStats.Models.Period.today({s: 0}).date.getTime()
+  #     MSVStats.stats.clearCache()
+  #     MSVStats.vvView.render()
+  #     window.setTimeout(( -> MSVStats.vvView.periodicRender()), 57000)
+  #   else
+  #     window.setTimeout(( -> MSVStats.vvView.periodicRender()), 1000)
 
   renderChart: ->
     MSVStats.vvChart = new Highcharts.Chart
@@ -50,7 +47,7 @@ class MSVStats.Views.VVView extends Backbone.View
         spacingBottom: 0
         spacingLeft: 0
         height: 300
-        width: 700
+        width: 858
       colors: [
         '#edc950'
         '#65384a'
@@ -61,44 +58,27 @@ class MSVStats.Views.VVView extends Backbone.View
         text: null
       tooltip:
         backgroundColor: null
-        snap: 300
+        snap: 50
         shared: true
         borderWidth: 0
         borderRadius: 0
         shadow: false
-        # crosshairs: true
-        formatter: () ->
-
-        # shared: true
-        # enabled: false
-        # crosshairs: true
-        # borderWidth: 0
-        # shadow: false
-        # shared: true
-        # formatter: ->
-        #   MSVStats.period.periodChartTitle(@x)
-        #   title = [""] #["<b>#{MSVStats.period.periodChartTitle(@x)}</b><br/><br/>"]
-        #   title += _.map(@points, (point) ->
-        #     "<b>#{point.series.name}</b><br/>#{Highcharts.numberFormat(point.y, 0)} hits"
-        #   ).join("<br/>")
+        crosshairs: true
+        formatter: ->
+          MSVStats.period.periodChartTitle(@x)
+          title = ["<b>#{Highcharts.dateFormat('%e %b %Y, %H:%M', @x)}</b><br/>"]
+          title += _.map(@points, (point) ->
+            "<b>#{point.series.name}</b><br/>#{Highcharts.numberFormat(point.y, 0)} hits"
+          ).join("<br/>")
       plotOptions:
         spline:
           animation: false
           shadow: false
           borderWidth: 0
           showInLegend: false
-          # allowPointSelect: false
+          allowPointSelect: false
           stickyTracking: false
           lineWidth: 2
-          point:
-            events:
-              mouseOver: ->
-                # clear selected points
-                console.log 'mouseOver'
-                MSVStats.vvChart.series[0].data[0].select(false, false)
-                index = _.indexOf(xChartValues, this.x)
-                MSVStats.vvChartLegend.setIndex(index)
-                console.log MSVStats.vvChartLegend.get('index')
           marker:
             radius: 2
             fillColor: null
@@ -108,13 +88,8 @@ class MSVStats.Views.VVView extends Backbone.View
               hover:
                 radius: 4
                 fillColor: null
-                lineColor: "#FFFFFF"
-                lineWidth: 2
-              select:
-                radius: 4
-                fillColor: null
-                lineColor: "#FFFFFF"
-                lineWidth: 2
+                lineColor: null
+                lineWidth: 0
           states:
             hover:
               lineWidth: 2
@@ -137,18 +112,18 @@ class MSVStats.Views.VVView extends Backbone.View
         tickWidth: 0
         gridLineWidth: 1
         type: 'datetime'
-        plotBands: [
-          color: '#1fedff'
-          from: MSVStats.stats.currentPeriodStartDate() + (@vvData.pv.length - 2) * MSVStats.period.periodInterval()
-          to: MSVStats.stats.currentPeriodStartDate() + (@vvData.pv.length - 0.5) * MSVStats.period.periodInterval()
-          zIndex: 2
-          label:
-            text: 'Curremt'
-            rotation: 90
-            textAlign: 'left'
-            x: -5
-            y: 5
-        ]
+        # plotBands: [
+        #   color: '#1fedff'
+        #   from: MSVStats.stats.currentPeriodStartDate() + (@vvData.pv.length - 2) * MSVStats.period.periodInterval()
+        #   to: MSVStats.stats.currentPeriodStartDate() + (@vvData.pv.length - 0.5) * MSVStats.period.periodInterval()
+        #   zIndex: 2
+        #   label:
+        #     text: 'Curremt'
+        #     rotation: 90
+        #     textAlign: 'left'
+        #     x: -5
+        #     y: 5
+        # ]
       yAxis:
         min: 0
         allowDecimals: false
@@ -156,7 +131,7 @@ class MSVStats.Views.VVView extends Backbone.View
         title:
           text: null
 
-    xChartValues = _.map(MSVStats.vvChart.series[0].data, ((o) -> o.x))
-    if selectedIndex = MSVStats.vvChartLegend.get('index')
-      MSVStats.vvChart.series[0].data[selectedIndex].select(true, false)
-      MSVStats.vvChart.series[1].data[selectedIndex].select(true, true)
+    # xChartValues = _.map(MSVStats.vvChart.series[0].data, ((o) -> o.x))
+    # if selectedIndex = MSVStats.vvChartLegend.get('index')
+    #   MSVStats.vvChart.series[0].data[selectedIndex].select(true, false)
+    #   MSVStats.vvChart.series[1].data[selectedIndex].select(true, true)

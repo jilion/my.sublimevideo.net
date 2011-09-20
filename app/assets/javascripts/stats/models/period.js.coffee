@@ -61,8 +61,6 @@ class MSVStats.Models.Period extends Backbone.Model
       this.setPeriod('60 minutes', options)
     else if MSVStats.stats.forCurrentPeriodType('hours').length > 0
       this.setPeriod('24 hours', options)
-    else if MSVStats.stats.forCurrentPeriodType('days', MSVStats.Models.Period.today(h: 0).subtract(d: 6).date.getTime()).length > 0
-      this.setPeriod('7 days', options)
     else if MSVStats.stats.forCurrentPeriodType('days', MSVStats.Models.Period.today(h: 0).subtract(d: 29).date.getTime()).length > 0
       this.setPeriod('30 days', options)
     else

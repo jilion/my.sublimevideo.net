@@ -1,10 +1,8 @@
-<% if @index?: %>
-<p>
-  <% time = MSVStats.stats.currentPeriodStartDate() + (@index) * MSVStats.period.periodInterval() %>
-  <%= MSVStats.period.periodChartTitle(time) %>
-  <br/>
-  Page visits: <%= @vvData.pv[@index] %>
-  /
-  Video views: <%= @vvData.vv[@index] %>
-</p>
-<% end %>
+<ul>
+  <li>
+    <%= Highcharts.numberFormat(@vvData.pvTotal(), 0) %> <span class='title'>page visits</span>
+  </li>
+  <li>
+    <%= Highcharts.numberFormat(@vvData.vvTotal(), 0) %> <span class='title'>video views</span>
+  </li>
+</ul>
