@@ -33,8 +33,8 @@ gem 'liquid',                '~> 2.2.2'
 gem 'RedCloth',              '~> 4.2.7'
 
 # Auth / invitations
-gem 'devise',                '~> 1.4.5'
-gem 'devise_invitable',      '~> 0.5.4'
+gem 'devise',                '~> 1.4.6'
+gem 'devise_invitable',      '~> 0.5.5'
 
 # API
 gem 'oauth',                 '~> 0.4.5'
