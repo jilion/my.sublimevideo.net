@@ -50,7 +50,7 @@ class Invoice < ActiveRecord::Base
     end
 
     before_transition :on => :succeed, :do => :set_paid_at
-    after_transition  :on => :succeed, :do => :apply_pending_site_plan_changes, :if => proc { |invoice| invoice.user.invoices.not_paid.empty? }
+    after_transition  :on => :succeed, :do => :apply_pending_site_plan_changes, :if => proc { |invoice| invoice.site.invoices.not_paid.empty? }
     after_transition  :on => :succeed, :do => :update_user_invoiced_amount
     after_transition  :on => :succeed, :do => :unsuspend_user, :if => proc { |invoice| invoice.user.suspended? && invoice.user.invoices.not_paid.empty? }
 
@@ -213,7 +213,7 @@ private
     self.paid_at = Time.now.utc
   end
 
-  # after_transition :on => :succeed, :if => proc { |invoice| invoice.user.invoices.not_paid.empty? }
+  # after_transition :on => :succeed, :if => proc { |invoice| invoice.site.invoices.not_paid.empty? }
   def apply_pending_site_plan_changes
     self.site.apply_pending_plan_changes
   end
