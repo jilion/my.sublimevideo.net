@@ -8,13 +8,13 @@ module Spec
 
       def create_plans
         plans_attributes = [
-          { name: "free",       cycle: "none",  player_hits: 0,          price: 0 },
-          { name: "sponsored",  cycle: "none",  player_hits: 0,          price: 0 },
-          { name: "silver",     cycle: "month", player_hits: 200_000,    price: 4990 },
-          { name: "gold",       cycle: "month", player_hits: 1_000_000,  price: 9990 },
-          { name: "silver",     cycle: "year",  player_hits: 200_000,    price: 49900 },
-          { name: "gold",       cycle: "year",  player_hits: 1_000_000,  price: 99900 },
-          { name: "custom1",    cycle: "year",  player_hits: 10_000_000, price: 999900 }
+          { name: "free",       cycle: "none",  player_hits: 0,          price: 0, support_level: 0 },
+          { name: "sponsored",  cycle: "none",  player_hits: 0,          price: 0, support_level: 0 },
+          { name: "silver",     cycle: "month", player_hits: 200_000,    price: 990, support_level: 0 },
+          { name: "gold",       cycle: "month", player_hits: 1_000_000,  price: 4990, support_level: 1 },
+          { name: "silver",     cycle: "year",  player_hits: 200_000,    price: 9900, support_level: 0 },
+          { name: "gold",       cycle: "year",  player_hits: 1_000_000,  price: 49900, support_level: 1 },
+          { name: "custom1",    cycle: "year",  player_hits: 10_000_000, price: 99900, support_level: 1 }
         ]
         plans_attributes.each { |attributes| Plan.create(attributes) }
       end

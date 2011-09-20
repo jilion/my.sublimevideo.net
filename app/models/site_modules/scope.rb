@@ -7,7 +7,7 @@ module SiteModules::Scope
     scope :plan_player_hits_reached_notified, where { plan_player_hits_reached_notification_sent_at != nil }
 
     # state
-    scope :active,       where { state  == 'active' }
+    scope :active,       where { state == 'active' }
     scope :inactive,     where { state != 'active' }
     scope :suspended,    where { state == 'suspended' }
     scope :archived,     where { state == 'archived' }

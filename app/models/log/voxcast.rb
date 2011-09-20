@@ -65,7 +65,7 @@ class Log::Voxcast < Log
   end
 
   class << self
-    %w[ stats referrers user_agents].each do |type|
+    %w[stats referrers user_agents].each do |type|
       define_method("parse_log_for_#{type}") do |id|
         log = find(id)
         unless log.send "#{type}_parsed_at?"

@@ -2,7 +2,10 @@ class Plan < ActiveRecord::Base
   include PlanModules::Api
 
   CYCLES         = %w[month year none]
+  UNPAID_NAMES = %w[free sponsored]
+  LEGACY_UNPAID_NAMES = %w[dev]
   STANDARD_NAMES = %w[silver gold]
+  LEGACY_STANDARD_NAMES = %w[comet planet star galaxy]
   SUPPORT_LEVELS = %w[forum email]
 
   attr_accessible :name, :cycle, :player_hits, :price, :support_level
@@ -99,7 +102,7 @@ class Plan < ActiveRecord::Base
   end
 
   # unpaid plan
-  %w[free sponsored].each do |plan_name|
+  (UNPAID_NAMES + LEGACY_UNPAID_NAMES).each do |plan_name|
     define_method "#{plan_name}_plan?" do
       name == plan_name
     end
@@ -107,7 +110,7 @@ class Plan < ActiveRecord::Base
 
   # paid plan
   def standard_plan?
-    STANDARD_NAMES.include?(name.gsub(/\d/, ''))
+    (STANDARD_NAMES + LEGACY_STANDARD_NAMES).include?(name.gsub(/\d/, ''))
   end
 
   # paid plan
@@ -165,14 +168,15 @@ end
 #
 # Table name: plans
 #
-#  id          :integer         not null, primary key
-#  name        :string(255)
-#  token       :string(255)
-#  cycle       :string(255)
-#  player_hits :integer
-#  price       :integer
-#  created_at  :datetime
-#  updated_at  :datetime
+#  id            :integer         not null, primary key
+#  name          :string(255)
+#  token         :string(255)
+#  cycle         :string(255)
+#  player_hits   :integer
+#  price         :integer
+#  created_at    :datetime
+#  updated_at    :datetime
+#  support_level :integer         default(0)
 #
 # Indexes
 #

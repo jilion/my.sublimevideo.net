@@ -228,14 +228,15 @@ end
 #
 # Table name: plans
 #
-#  id          :integer         not null, primary key
-#  name        :string(255)
-#  token       :string(255)
-#  cycle       :string(255)
-#  player_hits :integer
-#  price       :integer
-#  created_at  :datetime
-#  updated_at  :datetime
+#  id            :integer         not null, primary key
+#  name          :string(255)
+#  token         :string(255)
+#  cycle         :string(255)
+#  player_hits   :integer
+#  price         :integer
+#  created_at    :datetime
+#  updated_at    :datetime
+#  support_level :integer         default(0)
 #
 # Indexes
 #

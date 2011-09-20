@@ -64,9 +64,14 @@ namespace :one_time do
       puts OneTime::Site.regenerate_all_loaders_and_licenses
     end
 
-    desc "Move local ip from hostname and extra hostnames to dev domains for all sites"
-    task :move_local_ip_from_hostname_and_extra_domains_to_dev_domains => :environment do
-      puts OneTime::Site.move_local_ip_from_hostname_and_extra_domains_to_dev_domains
+    desc "Set trial_started_at for sites created before v2"
+    task :set_trial_started_at_for_sites_created_before_v2 => :environment do
+      puts OneTime::Site.set_trial_started_at_for_sites_created_before_v2
+    end
+
+    desc "Migrate current sites' plans to new business model plans"
+    task :current_sites_plans_migration => :environment do
+      puts OneTime::Site.current_sites_plans_migration
     end
   end
 
