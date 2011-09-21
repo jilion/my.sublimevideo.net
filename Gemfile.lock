@@ -6,7 +6,7 @@ GIT
 
 GIT
   remote: git://github.com/amatsuda/kaminari.git
-  revision: fe01a41046d127239343a4380dd18e456f270f82
+  revision: f41de10abb1079bfccefbcbef691c8a5388901f3
   specs:
     kaminari (0.12.4)
       railties (>= 3.0.0)
@@ -53,7 +53,7 @@ GIT
 GEM
   remote: http://rubygems.org/
   specs:
-    PageRankr (2.0.2)
+    PageRankr (2.0.3)
       json (>= 1.4.6)
       nokogiri (>= 1.4.1)
       public_suffix_service (~> 0.9.0)
@@ -101,8 +101,8 @@ GEM
     bcrypt-ruby (3.0.1)
     braintree (2.11.0)
       builder (>= 2.0.0)
-    bson (1.3.1)
-    bson_ext (1.3.1)
+    bson (1.4.0)
+    bson_ext (1.4.0)
     builder (3.0.0)
     capybara (1.1.1)
       mime-types (>= 1.16)
@@ -164,7 +164,7 @@ GEM
     erubis (2.7.0)
     eventmachine (0.12.10)
     excon (0.6.6)
-    execjs (1.2.7)
+    execjs (1.2.8)
       multi_json (~> 1.0)
     factory_girl (2.1.0)
     factory_girl_rails (1.2.0)
@@ -251,8 +251,8 @@ GEM
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
     mime-types (1.16)
-    mongo (1.3.1)
-      bson (>= 1.3.1)
+    mongo (1.4.0)
+      bson (= 1.4.0)
     mongoid (2.2.0)
       activemodel (~> 3.0)
       mongo (~> 1.3)
@@ -434,7 +434,7 @@ DEPENDENCIES
   annotate!
   array_stats (~> 0.6.0)
   aws (~> 2.5.6)
-  bson_ext (~> 1.3.1)
+  bson_ext (~> 1.4.0)
   capybara
   carrierwave (~> 0.5.7)
   carrierwave-mongoid (~> 0.1.1)
@@ -473,7 +473,7 @@ DEPENDENCIES
   libxml-ruby (~> 2.2.0)
   liquid (~> 2.2.2)
   log_buddy
-  mongo (~> 1.3.1)
+  mongo (~> 1.4.0)
   mongoid (~> 2.2.0)
   oauth (~> 0.4.5)
   oauth-plugin (~> 0.4.0.pre7)

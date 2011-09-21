@@ -21,8 +21,8 @@ gem 'rails-backbone'
 gem 'pg',                    '~> 0.11.0'
 gem 'squeel',                '~> 0.9.0'
 
-gem 'bson_ext',              '~> 1.3.1'
-gem 'mongo',                 '~> 1.3.1'
+gem 'bson_ext',              '~> 1.4.0'
+gem 'mongo',                 '~> 1.4.0'
 gem 'mongoid',               '~> 2.2.0'
 
 # Views
