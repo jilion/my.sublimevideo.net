@@ -6,7 +6,7 @@ class StatsController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.json { render json: SiteStat.json(@site.token, params[:period] || 'days') }
+      format.json { render json: SiteStat.json(@site.token, params[:period] || 'minutes') }
     end
   end
 

@@ -455,7 +455,7 @@ DEPENDENCIES
   fog (~> 0.10.0)
   fuubar
   growl_notify
-  guard (~> 0.7.0.rc1)
+  guard (~> 0.7.0)
   guard-bundler
   guard-coffeescript
   guard-jasmine

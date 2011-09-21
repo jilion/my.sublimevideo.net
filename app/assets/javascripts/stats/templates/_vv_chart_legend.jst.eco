@@ -1,8 +1,8 @@
 <ul>
   <li>
-    <%= Highcharts.numberFormat(@vvData.pvTotal(), 0) %> <span class='title'>page visits</span>
+    <%= Highcharts.numberFormat(@stats.pvTotal(), 0) %> <span class='title'>page visits</span>
   </li>
   <li>
-    <%= Highcharts.numberFormat(@vvData.vvTotal(), 0) %> <span class='title'>video views</span>
+    <%= Highcharts.numberFormat(@stats.vvTotal(), 0) %> <span class='title'>video views</span>
   </li>
 </ul>

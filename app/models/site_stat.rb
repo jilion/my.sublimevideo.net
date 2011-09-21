@@ -31,18 +31,18 @@ class SiteStat
   # ==========
 
   %w[m h d].each do |period|
-    scope "#{period}_after".to_sym, lambda { |date| where(period => { "$gte" => date }) }
-    scope "#{period}_before".to_sym,  lambda { |date| where(period => { "$lt" => date }) }
-    scope "#{period}_between".to_sym, lambda { |start_date, end_date| where(period => { "$gte" => start_date, "$lt" => end_date }) }
+    scope "#{period}_after".to_sym, lambda { |date| where(period => { "$gte" => date.to_i }).order_by([period.to_sym, :asc]) }
+    scope "#{period}_before".to_sym,  lambda { |date| where(period => { "$lt" => date.to_i }).order_by([period.to_sym, :asc]) }
+    scope "#{period}_between".to_sym, lambda { |start_date, end_date| where(period => { "$gte" => start_date.to_i, "$lt" => end_date.to_i }).order_by([period.to_sym, :asc]) }
   end
 
-  scope :last_data, lambda {
-    where("$or" => [
-      { m: { "$gte" => 60.minutes.ago.change(sec: 0).utc } },
-      { h: { "$gte" => 24.hours.ago.change(min: 0, sec: 0).utc } },
-      { d: { "$ne"  => nil } }
-    ])
-  }
+  # scope :last_data, lambda {
+  #   where("$or" => [
+  #     { m: { "$gte" => 60.minutes.ago.change(sec: 0).utc } },
+  #     { h: { "$gte" => 24.hours.ago.change(min: 0, sec: 0).utc } },
+  #     { d: { "$ne"  => nil } }
+  #   ])
+  # }
 
   # ====================
   # = Instance Methods =
@@ -54,7 +54,7 @@ class SiteStat
 
   # time for backbonejs model
   def t
-    m.to_i || h.to_i || d.to_i
+    (m || h || d).to_i
   end
 
   # only main & extra hostname are counted in charts
@@ -76,24 +76,44 @@ class SiteStat
     json_stats = []
     case period_type
     when 'minutes'
-      to   = SiteStat.where(m: { "$ne"  => nil }).last.m
-      from = to - 60.minutes
-      stats = stats.m_after(from).where(h: nil, d: nil)
-      stat  = stats.pop
+      to    = SiteStat.where(m: { "$ne"  => nil }).order_by([:m, :asc]).last.m
+      from  = to - 59.minutes
+      stats = stats.m_after(from).entries
       while from <= to
-        if stat.m == from
-          json_stats << stat
-          stat  = stats.pop
+        if stats.first.m == from
+          json_stats << stats.shift
         else
-          json_stats << SiteStat.new(m: from)
+          json_stats << SiteStat.new(m: from.to_time)
         end
         from += 1.minute
       end
     when 'hours'
+      to    = 1.hour.ago.change(min: 0, sec: 0).utc
+      from  = to - 23.hours
+      stats = stats.h_after(from).entries
+      while from <= to
+        if stats.first.h == from
+          json_stats << stats.shift
+        else
+          json_stats << SiteStat.new(h: from.to_time)
+        end
+        from += 1.hour
+      end
     when 'days'
+      stats = stats.where(d: { "$ne" => nil }).order_by([:d, :asc]).entries
+      to    = 1.day.ago.change(hour: 0, min: 0, sec: 0).utc
+      from  = stats.first.d
+      while from <= to
+        if stats.first.d == from
+          json_stats << stats.shift
+        else
+          json_stats << SiteStat.new(d: from.to_time)
+        end
+        from += 1.day
+      end
     end
 
-    json_stats.to_json({ except: [:_id, :m, :h, :d] })
+    json_stats.to_json({ except: [:_id, :t, :m, :h, :d], :methods => [:t] })
   end
 
   def self.create_stats_from_trackers!(log, trackers)
@@ -102,11 +122,14 @@ class SiteStat
       self.collection.update({ t: token, m: log.minute }, { "$inc" => inc }, upsert: true)
       self.collection.update({ t: token, h: log.hour },   { "$inc" => inc }, upsert: true)
       self.collection.update({ t: token, d: log.day },    { "$inc" => inc }, upsert: true)
-      begin
-        Pusher["private-#{token}"].trigger('stats-fetch', {})
-      rescue Pusher::Error => ex
-        Notify.send("Pusher trigger failed", exception: ex)
-      end
+    end
+    begin
+      json = {}
+      json[:h] = true if log.hour == log.minute
+      json[:d] = true if log.day == log.hour
+      Pusher["stats"].trigger('tick', json)
+    rescue Pusher::Error => ex
+      Notify.send("Pusher trigger failed", exception: ex)
     end
   end
 

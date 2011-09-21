@@ -66,9 +66,8 @@ describe SiteStat do
 
       it "triggers Pusher on the right private channel for each site" do
         mock_channel = mock('channel')
-        mock_channel.should_receive(:trigger).twice.with('stats-fetch', {})
-        Pusher.stub(:[]).with("private-ibvjcopp") { mock_channel }
-        Pusher.stub(:[]).with("private-12345678") { mock_channel }
+        mock_channel.should_receive(:trigger).once.with('tick', {})
+        Pusher.stub(:[]).with("stats") { mock_channel }
         SiteStat.create_stats_from_trackers!(@log, @trackers)
       end
     end
@@ -106,31 +105,66 @@ describe SiteStat do
 
   describe "Scopes:" do
 
-    describe "last_data" do
+    describe ".json" do
       let(:site) { Factory.create(:site) }
 
       before(:each) do
-        Factory.create(:site_stat, t: site.token, m: 61.minutes.ago.change(sec: 0))
-        Factory.create(:site_stat, t: site.token, m: 60.minutes.ago.change(sec: 0))
-        Factory.create(:site_stat, t: site.token, m: 1.minute.ago.change(sec: 0))
-        Factory.create(:site_stat, t: site.token, m: Time.now.utc.change(sec: 0))
+        Factory.create(:site_stat, t: site.token, m: 60.minutes.ago.change(sec: 0), pv: {e: 2})
+        Factory.create(:site_stat, t: site.token, m: 59.minutes.ago.change(sec: 0), pv: {e: 3})
+        Factory.create(:site_stat, t: site.token, m: 1.minute.ago.change(sec: 0), pv: {e: 4})
+        Factory.create(:site_stat, t: site.token, m: Time.now.utc.change(sec: 0), pv: {e: 5})
 
-        Factory.create(:site_stat, t: site.token, h: 48.hours.ago.change(min: 0, sec: 0))
-        Factory.create(:site_stat, t: site.token, h: 24.hours.ago.change(min: 0, sec: 0))
-        Factory.create(:site_stat, t: site.token, h: 2.hours.ago.change(min: 0, sec: 0))
-        Factory.create(:site_stat, t: site.token, h: Time.now.utc.change(min: 0, sec: 0))
+        Factory.create(:site_stat, t: site.token, h: 24.hours.ago.change(min: 0, sec: 0), pv: {e: 47})
+        Factory.create(:site_stat, t: site.token, h: 23.hours.ago.change(min: 0, sec: 0), pv: {e: 48})
+        Factory.create(:site_stat, t: site.token, h: 1.hours.ago.change(min: 0, sec: 0), pv: {e: 49})
+        Factory.create(:site_stat, t: site.token, h: Time.now.utc.change(min: 0, sec: 0), pv: {e: 50})
 
-        Factory.create(:site_stat, t: site.token, d: 900.days.ago.change(hour: 0, min: 0, sec: 0))
-        Factory.create(:site_stat, t: site.token, d: 3.days.ago.change(hour: 0, min: 0, sec: 0))
-        Factory.create(:site_stat, t: site.token, d: 1.day.ago.change(hour: 0, min: 0, sec: 0))
-        Factory.create(:site_stat, t: site.token, d: Time.now.utc.change(hour: 0, min: 0, sec: 0))
+        Factory.create(:site_stat, t: site.token, d: 81.days.ago.change(hour: 0, min: 0, sec: 0), pv: {e: 100})
+        Factory.create(:site_stat, t: site.token, d: 3.days.ago.change(hour: 0, min: 0, sec: 0), pv: {e: 101})
+        Factory.create(:site_stat, t: site.token, d: 1.day.ago.change(hour: 0, min: 0, sec: 0), pv: {e: 102})
+        Factory.create(:site_stat, t: site.token, d: Time.now.utc.change(hour: 0, min: 0, sec: 0), pv: {e: 103})
       end
 
-      it { SiteStat.count.should eql(12) }
-      it { SiteStat.last_data.count.should eql(10) }
-      it { SiteStat.last_data.where(:d.ne => nil).count.should eql(4) }
+      describe "with minutes period", :focus do
+        subject { JSON.parse(SiteStat.json(site.token, 'minutes')) }
 
+        its(:size) { should eql(60) }
+        it { subject[0]['pv'].should eql(3) }
+        it { subject[1]['pv'].should eql(nil) }
+        it { subject[58]['pv'].should eql(4) }
+        it { subject[59]['pv'].should eql(5) }
 
+        it { subject[0]['t'].should eql(59.minutes.ago.change(sec: 0).to_i) }
+        it { subject[1]['t'].should eql(58.minutes.ago.change(sec: 0).to_i) }
+        it { subject[59]['t'].should eql(Time.now.utc.change(sec: 0).to_i) }
+      end
+
+      describe "with hours period", :focus do
+        subject { JSON.parse(SiteStat.json(site.token, 'hours')) }
+
+        its(:size) { should eql(24) }
+        it { subject[0]['pv'].should eql(47) }
+        it { subject[1]['pv'].should eql(48) }
+        it { subject[2]['pv'].should eql(nil) }
+        it { subject[23]['pv'].should eql(49) }
+
+        it { subject[0]['t'].should eql(24.hours.ago.change(min: 0, sec: 0).to_i) }
+        it { subject[2]['t'].should eql(22.hours.ago.change(min: 0, sec: 0).to_i) }
+        it { subject[23]['t'].should eql(1.hours.ago.change(min: 0, sec: 0).to_i) }
+      end
+
+      describe "with days period", :focus do
+        subject { JSON.parse(SiteStat.json(site.token, 'days')) }
+
+        its(:size) { should eql(81) }
+        it { subject[0]['pv'].should eql(100) }
+        it { subject[1]['pv'].should eql(nil) }
+        it { subject[78]['pv'].should eql(101) }
+        it { subject[80]['pv'].should eql(102) }
+        it { subject[0]['t'].should eql(81.day.ago.change(hour: 0, min: 0, sec: 0).to_i) }
+        it { subject[1]['t'].should eql(80.day.ago.change(hour: 0, min: 0, sec: 0).to_i) }
+        it { subject[80]['t'].should eql(1.day.ago.change(hour: 0, min: 0, sec: 0).to_i) }
+      end
     end
 
   end

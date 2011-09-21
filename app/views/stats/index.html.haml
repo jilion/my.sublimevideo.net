@@ -8,29 +8,34 @@
     # Flash fallback logging - don't include this in production
     # WEB_SOCKET_DEBUG = true
 
-    # Initialize spinners
-    $('#vv').spin()
-    # $('#bp').spin()
-    # $('#md').spin()
-
     window.MSVStats.pusher = new Pusher('#{PusherConfig.key}', encrypted: true)
-    window.MSVStats.sites = new MSVStats.Collections.Sites()
-    window.MSVStats.sites.reset(#{current_user.sites.to_json(only: [:token, :hostname])})
+    window.MSVStats.sites = new MSVStats.Collections.Sites(#{current_user.sites.to_json(only: [:token, :hostname])})
     window.MSVStats.sites.select('#{@site.token}')
-    window.MSVStats.period = new MSVStats.Models.Period()
     window.MSVStats.statsRouter = new MSVStats.Routers.StatsRouter()
     Backbone.history.start({ pushState: true })
 
 #sites_select
 
-#periods_select
-#custom_dates_pickers
-  #start_time
-    From:
-    #start_time_picker
-  #end_time
-    To:
-    #end_time_picker
+#period_selectors
+  %ul
+    %li
+      .minutes
+        %span#minutes_period_vv_total.total
+        #minutes_period_sparkline
+        %span.title 60 minutes
+    %li
+      .hours
+        %span#hours_period_vv_total.total
+        #hours_period_sparkline
+        %span.title 24 hours
+    %li
+      .days
+        %span#days_period_vv_total.total
+        #days_period_sparkline
+        %span.title 30 days
+    %li
+      .custom
+        #custom_period_selector
 
 .spacer
 

@@ -5,33 +5,28 @@ class MSVStats.Views.VVView extends Backbone.View
 
   initialize: () ->
     _.bindAll(this, 'render')
-    this.collection.bind('change', this.render);
-    this.collection.bind('reset', this.render);
     this.options.period.bind('change', this.render);
+    this.options.statsMinutes.bind('reset', this.render);
+    this.options.statsHours.bind('reset', this.render);
+    this.options.statsDays.bind('reset', this.render);
 
   render: ->
-    @vvData = this.collection.vvData()
-    $(this.el).html(this.template(vvData: @vvData))
+    if MSVStats.period.isClear()
+      $('#vv_content').hide()
+      $('#vv').spin()
+      return this
+    else
+      $('#vv_content').show()
+      $('#vv').data().spinner.stop()
 
-    $('#vv_content').show()
-    $('#vv').data().spinner.stop()
+      @stats = MSVStats.period.stats()
+      $(this.el).html(this.template(stats: @stats))
+      this.renderChart()
 
-    $('#pv_number').textfill(maxFontPixels: 70 )
-    $('#vv_number').textfill(maxFontPixels: 70 )
-    this.renderChart()
-    return this
-
-  # periodicRender: ->
-  #   # call each minute (0 seconds)
-  #   if MSVStats.Models.Period.today().date.getTime() == MSVStats.Models.Period.today({s: 0}).date.getTime()
-  #     MSVStats.stats.clearCache()
-  #     MSVStats.vvView.render()
-  #     window.setTimeout(( -> MSVStats.vvView.periodicRender()), 57000)
-  #   else
-  #     window.setTimeout(( -> MSVStats.vvView.periodicRender()), 1000)
+      return this
 
   renderChart: ->
-    MSVStats.vvChart = new Highcharts.Chart
+    MSVStats.vvChart = new Highcharts.StockChart
       chart:
         renderTo: 'vv_chart'
         backgroundColor: null
@@ -57,19 +52,26 @@ class MSVStats.Views.VVView extends Backbone.View
       title:
         text: null
       tooltip:
-        backgroundColor: null
-        snap: 50
+        # backgroundColor: null
+        # snap: 50
         shared: true
+        # borderColor: "#fff"
         borderWidth: 0
         borderRadius: 0
         shadow: false
         crosshairs: true
         formatter: ->
-          MSVStats.period.periodChartTitle(@x)
           title = ["<b>#{Highcharts.dateFormat('%e %b %Y, %H:%M', @x)}</b><br/>"]
           title += _.map(@points, (point) ->
             "<b>#{point.series.name}</b><br/>#{Highcharts.numberFormat(point.y, 0)} hits"
           ).join("<br/>")
+      navigator:
+        enabled: false
+      scrollbar:
+        enabled: false
+      rangeSelector:
+        buttons: []
+        enabled: MSVStats.period.get('type') == 'days'
       plotOptions:
         spline:
           animation: false
@@ -94,17 +96,17 @@ class MSVStats.Views.VVView extends Backbone.View
             hover:
               lineWidth: 2
       series: [{
-        type: MSVStats.period.periodChartType()
+        type: 'spline'
         name: 'Page visits'
-        data: @vvData.pv
-        pointInterval: MSVStats.period.periodInterval()
-        pointStart: MSVStats.stats.currentPeriodStartDate()
+        data: @stats.pluck('pv')
+        pointInterval: MSVStats.period.typeInterval()
+        pointStart: @stats.first().time()
         },{
-        type: MSVStats.period.periodChartType()
+        type: 'spline'
         name: 'Video views'
-        data: @vvData.vv
-        pointInterval: MSVStats.period.periodInterval()
-        pointStart: MSVStats.stats.currentPeriodStartDate()
+        data: @stats.pluck('vv')
+        pointInterval: MSVStats.period.typeInterval()
+        pointStart: @stats.first().time()
       }]
       xAxis:
         lineWidth: 0
@@ -112,18 +114,6 @@ class MSVStats.Views.VVView extends Backbone.View
         tickWidth: 0
         gridLineWidth: 1
         type: 'datetime'
-        # plotBands: [
-        #   color: '#1fedff'
-        #   from: MSVStats.stats.currentPeriodStartDate() + (@vvData.pv.length - 2) * MSVStats.period.periodInterval()
-        #   to: MSVStats.stats.currentPeriodStartDate() + (@vvData.pv.length - 0.5) * MSVStats.period.periodInterval()
-        #   zIndex: 2
-        #   label:
-        #     text: 'Curremt'
-        #     rotation: 90
-        #     textAlign: 'left'
-        #     x: -5
-        #     y: 5
-        # ]
       yAxis:
         min: 0
         allowDecimals: false

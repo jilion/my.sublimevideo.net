@@ -1,6 +1,6 @@
 #= require jquery
 #= require jquery_ujs
-#= require highcharts/highcharts
+#= require highcharts/highstock
 #= require underscore
 #= require backbone
 # https://github.com/timrwood/underscore.date
