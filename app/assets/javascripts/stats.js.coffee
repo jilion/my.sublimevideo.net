@@ -4,9 +4,10 @@
 #= require underscore
 #= require backbone
 # https://github.com/timrwood/underscore.date
-#= require underscore.date/underscore.date
+#= require underscore.date
 #= require spin/jquery.spin
-#= require jquery.ui.datepicker/jquery.ui.datepicker.min
+#= require jquery.sparkline
+#= require jquery.ui.datepicker.min
 
 #= require_self
 #= require_tree ./stats/models

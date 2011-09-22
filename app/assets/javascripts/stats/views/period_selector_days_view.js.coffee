@@ -1,26 +1,28 @@
-class MSVStats.Views.MinutesPeriodSelectorView extends Backbone.View
+class MSVStats.Views.PeriodSelectorDaysView extends Backbone.View
 
-  events:
-    'click': 'onClick'
+  # events:
+  #   'click': 'onClick'
 
   initialize: () ->
     _.bindAll(this, 'render')
-    this.options.period.bind('change', this.render);
-    this.options.statsMinutes.bind('reset', this.render);
+    this.options.period.bind('change', this.render)
+    this.options.statsDays.bind('reset', this.render)
+    $('#period_selectors .days').bind 'click', ->
+      MSVStats.period.setPeriod(type: 'days')
 
   render: ->
-    $('#minutes_period_vv_total').html(MSVStats.statsMinutes.vvTotal())
+    $('#period_days_vv_total').html(this.options.statsDays.vvTotal())
     return this
 
-  onClick: ->
-    alert 'onClick'
-    this.options.period.setPeriod(type: 'minutes')
-    # selectedPeriodValue = this.$('select').val()
-    # if MSVStats.period.value() != selectedPeriodValue
-    #   switch selectedPeriodValue
-    #     # when 'custom' then this.showDatePickers()
-    #     else
-    #       # this.hideDatePickers()
+  # onClick: ->
+  #   alert 'onClick'
+  #   this.options.period.setPeriod(type: 'minutes')
+  # selectedPeriodValue = this.$('select').val()
+  # if MSVStats.period.value() != selectedPeriodValue
+  #   switch selectedPeriodValue
+  #     # when 'custom' then this.showDatePickers()
+  #     else
+  #       # this.hideDatePickers()
 
   # hideDatePickers: ->
   #   $('#custom_dates_pickers').hide()

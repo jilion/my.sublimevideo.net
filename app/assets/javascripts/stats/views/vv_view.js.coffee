@@ -1,14 +1,15 @@
-#= require jquery.textfill/jquery.textfill
-
 class MSVStats.Views.VVView extends Backbone.View
   template: JST['stats/templates/_vv_chart_legend']
 
   initialize: () ->
     _.bindAll(this, 'render')
-    this.options.period.bind('change', this.render);
-    this.options.statsMinutes.bind('reset', this.render);
-    this.options.statsHours.bind('reset', this.render);
-    this.options.statsDays.bind('reset', this.render);
+    @options.period.bind('change', this.render)
+    @options.statsMinutes.bind 'reset', ->
+      this.render() if MSVStats.period.isSelected('minutes')
+    @options.statsHours.bind 'reset', ->
+      this.render() if MSVStats.period.isSelected('hours')
+    @options.statsDays.bind 'reset', ->
+      this.render() if MSVStats.period.isSelected('days')
 
   render: ->
     if MSVStats.period.isClear()
@@ -45,7 +46,7 @@ class MSVStats.Views.VVView extends Backbone.View
         width: 858
       colors: [
         '#edc950'
-        '#65384a'
+        '#0046ff'
       ]
       credits:
         enabled: false
@@ -95,6 +96,9 @@ class MSVStats.Views.VVView extends Backbone.View
           states:
             hover:
               lineWidth: 2
+          dataGrouping:
+            groupPixelWidth: 5
+            smoothed: true
       series: [{
         type: 'spline'
         name: 'Page visits'
@@ -110,17 +114,23 @@ class MSVStats.Views.VVView extends Backbone.View
       }]
       xAxis:
         lineWidth: 0
-        tickInterval: null # MSVStats.period.periodTickInterval()
         tickWidth: 0
         gridLineWidth: 1
         type: 'datetime'
+        # min: 1235001600000
+        # max: 1317425472000
       yAxis:
+        lineWidth: 0
+        offset: 10
         min: 0
         allowDecimals: false
         startOnTick: false
+        labels:
+          align: 'right'
         title:
           text: null
-
+          
+    # MSVStats.vvChart.xAxis[0].setExtremes(1235001600000, 1317425472000)
     # xChartValues = _.map(MSVStats.vvChart.series[0].data, ((o) -> o.x))
     # if selectedIndex = MSVStats.vvChartLegend.get('index')
     #   MSVStats.vvChart.series[0].data[selectedIndex].select(true, false)

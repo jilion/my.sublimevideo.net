@@ -102,7 +102,7 @@ class SiteStat
     when 'days'
       stats = stats.where(d: { "$ne" => nil }).order_by([:d, :asc]).entries
       to    = 1.day.ago.change(hour: 0, min: 0, sec: 0).utc
-      from  = stats.first.d
+      from  = [stats.first.d, to - 29.days].min
       while from <= to
         if stats.first.d == from
           json_stats << stats.shift
