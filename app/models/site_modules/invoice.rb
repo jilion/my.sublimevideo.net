@@ -204,13 +204,15 @@ module SiteModules::Invoice
       if !in_trial? && (activated? || changed_to_paid_plan? || renewed?)
         invoice = ::Invoice.build(site: self, renew: renewed?)
         invoice.save!
-        @transaction = Transaction.charge_by_invoice_ids([invoice.id], charging_options || {}) if instant_charging?
+
+        if instant_charging? && !invoice.paid?
+          @transaction = Transaction.charge_by_invoice_ids([invoice.id], charging_options || {})
+        end
 
       elsif pending_plan_id_changed? && pending_plan_id? && (pending_plan.unpaid_plan? || in_trial?)
         # directly update for unpaid plans or any plans during trial
         self.apply_pending_plan_changes
       end
-      true
     end
 
     def activated?

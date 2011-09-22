@@ -912,6 +912,7 @@ end
 #  newsletter             :boolean         default(TRUE)
 #  last_invoiced_amount   :integer         default(0)
 #  total_invoiced_amount  :integer         default(0)
+#  balance                :integer         default(0)
 #
 # Indexes
 #

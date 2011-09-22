@@ -212,38 +212,6 @@ def create_users(user_id=nil)
     when 0.7..1
       use_clients = true
     end
-
-    # count.times do |i|
-    #   user = User.new(
-    #     first_name: Faker::Name.first_name,
-    #     last_name: Faker::Name.last_name,
-    #     country: COUNTRIES.sample,
-    #     postal_code: Faker::Address.zip_code,
-    #     email: Faker::Internet.email,
-    #     use_personal: use_personal,
-    #     use_company: use_company,
-    #     use_clients: use_clients,
-    #     password: '123456',
-    #     terms_and_conditions: "1",
-    #     company_name: Faker::Company.name,
-    #     company_url: "#{rand > 0.5 ? "http://" : "www."}#{Faker::Internet.domain_name.sub(/(\.co)?\.uk/, '.be')}",
-    #     company_job_title: Faker::Company.bs,
-    #     company_employees: ["1 employee", "2-5 employees", "6-20 employees", "21-100 employees", "101-1000 employees", ">1001 employees"].sample,
-    #     company_videos_served: ["0-1'000 videos/month", "1'000-10'000 videos/month", "10'000-100'000 videos/month", "100'000-1mio videos/month", ">1mio videos/month", "Don't know"].sample
-    #   )
-    #
-    #   if rand > 0.3
-    #     user.cc_type = 'visa'
-    #     user.cc_full_name = user.full_name
-    #     user.cc_number = "4111111111111111"
-    #     user.cc_verification_value = "111"
-    #     user.cc_expire_on = 2.years.from_now
-    #   end
-    #   user.created_at   = created_at_array.sample
-    #   user.confirmed_at = user.created_at
-    #   user.save!(validate: false)
-    # end
-    # puts "+ #{count} random users created!"
   end
 end
 
@@ -272,13 +240,6 @@ def create_sites
         site.save_without_password_validation
       end
 
-      if site.in_paid_plan?
-        site.trial_started_at = site.created_at
-        site.first_paid_plan_started_at = site.created_at + BusinessModel.days_for_trial.days
-        site.pend_plan_changes
-      end
-      site.apply_pending_plan_changes
-
       if rand > 0.5
         site.cdn_up_to_date = true
         site.save_without_password_validation
@@ -287,6 +248,9 @@ def create_sites
     end
   end
 
+  Site.activate_or_downgrade_sites_leaving_trial
+  Invoice.open.all.each { |invoice| invoice.succeed! }
+
   puts "#{BASE_SITES.size} beautiful sites created for each user!"
 end
 
@@ -294,7 +258,7 @@ def create_site_usages
   end_date = Date.today
   player_hits_total = 0
   Site.active.each do |site|
-    start_date = site.plan_month_cycle_started_at ? site.plan_month_cycle_started_at.to_date : (1.month - 1.day).ago.midnight
+    start_date = (site.plan_cycle_started_at? ? site.plan_month_cycle_started_at : (1.month - 1.day).ago.midnight).to_date
     plan_player_hits = site.in_sponsored_plan? || site.in_free_plan? ? Plan.standard_plans.all.sample.player_hits : site.plan.player_hits
     p = (case rand(4)
     when 0

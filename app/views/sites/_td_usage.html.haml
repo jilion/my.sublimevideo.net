@@ -5,7 +5,7 @@
     .sponsored_number
       %p
         = link_to site_stats_url(site) do
-          %strong= number_with_delimiter(site.in_sponsored_plan? ? site.current_monthly_billable_usages.sum : site.last_30_days_billable_usages.sum)
+          %strong= number_with_delimiter(site.last_30_days_billable_usages.sum)
           %em= (site.in_sponsored_plan? ? "sponsored" : "") + " video pageviews"
       = link_to "Peak Insurance ON", "http://docs.sublimevideo.net/peak-insurance", :class => "peak_insurance_label"
       = link_to "Upgrade", edit_site_plan_path(site), :class => "upgrade_button submit_dynamic_button"

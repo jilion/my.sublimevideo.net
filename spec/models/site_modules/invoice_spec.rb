@@ -90,10 +90,11 @@ describe SiteModules::Invoice do
         it "creates a non-renew invoice" do
           subject.invoices.should have(1).item
           subject.invoices.by_date('asc').last.should_not be_renew
+          subject.invoices.by_date('asc').last.amount.should > 0
         end
 
-        it "updates plan cycle dates" do
-          %w[pending_plan_cycle_started_at pending_plan_cycle_ended_at first_paid_plan_started_at].each do |attr|
+        %w[pending_plan_cycle_started_at pending_plan_cycle_ended_at first_paid_plan_started_at].each do |attr|
+          it "updates #{attr}" do
             subject.send(attr).should be_present
           end
         end
@@ -143,12 +144,12 @@ describe SiteModules::Invoice do
       it "updates plan cycle dates for renewable sites only" do
         [@site_not_renewable, @site_renewable_with_downgrade_to_free_plan].each do |site|
           site.reload.pending_plan_cycle_started_at.should be_nil
-          site.reload.pending_plan_cycle_ended_at.should be_nil
+          site.pending_plan_cycle_ended_at.should be_nil
         end
 
         [@site_renewable, @site_renewable_with_downgrade_to_paid_plan].each do |site|
           site.reload.pending_plan_cycle_started_at.should be_present
-          site.reload.pending_plan_cycle_ended_at.should be_present
+          site.pending_plan_cycle_ended_at.should be_present
         end
       end
 

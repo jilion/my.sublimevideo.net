@@ -2,7 +2,7 @@ StateMachine::Machine.ignore_method_conflicts = true
 
 class Invoice < ActiveRecord::Base
 
-  uniquify :reference, :chars => Array('a'..'z') - ['o'] + Array('1'..'9')
+  uniquify :reference, chars: Array('a'..'z') - ['o'] + Array('1'..'9')
 
   # ================
   # = Associations =
@@ -10,10 +10,10 @@ class Invoice < ActiveRecord::Base
 
   belongs_to :site
 
-  has_one :user, :through => :site
+  has_one :user, through: :site
 
   has_many :invoice_items
-  has_many :plan_invoice_items, conditions: { type: "InvoiceItem::Plan" }, :class_name => "InvoiceItem"
+  has_many :plan_invoice_items, conditions: { type: "InvoiceItem::Plan" }, class_name: "InvoiceItem"
 
   has_and_belongs_to_many :transactions
 
@@ -25,15 +25,21 @@ class Invoice < ActiveRecord::Base
 
   before_validation :set_customer_infos, :set_site_infos, :on => :create
 
+  after_create :decrement_user_balance
+  after_create do |record|
+    record.succeed! if record.amount.zero?
+  end
+
   # ===============
   # = Validations =
   # ===============
 
-  validates :site,                 :presence => true
-  validates :invoice_items_amount, :presence => true, :numericality => true
-  validates :vat_rate,             :presence => true, :numericality => true
-  validates :vat_amount,           :presence => true, :numericality => true
-  validates :amount,               :presence => true, :numericality => true
+  validates :site,                     presence: true
+  validates :invoice_items_amount,     presence: true, numericality: true
+  validates :vat_rate,                 presence: true, numericality: true
+  validates :vat_amount,               presence: true, numericality: true
+  validates :balance_deduction_amount, presence: true, numericality: true
+  validates :amount,                   presence: true, numericality: true
 
   # =================
   # = State Machine =
@@ -54,7 +60,9 @@ class Invoice < ActiveRecord::Base
     after_transition  :on => :succeed, :do => :update_user_invoiced_amount
     after_transition  :on => :succeed, :do => :unsuspend_user, :if => proc { |invoice| invoice.user.suspended? && invoice.user.invoices.not_paid.empty? }
 
-    before_transition :on => :fail,    :do => :set_last_failed_at
+    after_transition  :on => :cancel, :do => :increment_user_balance
+
+    before_transition :on => :fail, :do => :set_last_failed_at
   end
 
   # ==========
@@ -131,6 +139,7 @@ class Invoice < ActiveRecord::Base
     build_invoice_items
     set_invoice_items_amount
     set_vat_rate_and_amount
+    set_balance_deduction_amount
     set_amount
     self
   end
@@ -148,7 +157,7 @@ class Invoice < ActiveRecord::Base
   end
 
   def paid_plan_invoice_item
-    plan_invoice_items.detect { |pii| pii.amount > 0 }
+    plan_invoice_items.find { |pii| pii.amount > 0 }
   end
 
   # used in admin/invoices/timeline
@@ -179,15 +188,17 @@ private
     self.vat_amount = (invoice_items_amount * vat_rate).round
   end
 
+  def set_balance_deduction_amount
+    self.balance_deduction_amount = user.balance > 0 ? [user.balance, invoice_items_amount].min : 0
+  end
+
   def set_amount
-    self.amount = invoice_items_amount + vat_amount
+    self.amount = invoice_items_amount + vat_amount - balance_deduction_amount
   end
 
   # validate (canceled state)
   def ensure_first_invoice_of_site
-    if site.first_paid_plan_started_at?
-      self.errors.add(:base, :not_first_invoice)
-    end
+    self.errors.add(:base, :not_first_invoice) if site.first_paid_plan_started_at?
   end
 
   # before_validation :on => :create
@@ -201,6 +212,11 @@ private
   # before_validation :on => :create
   def set_site_infos
     self.site_hostname ||= site.hostname
+  end
+
+  # after_create
+  def decrement_user_balance
+    self.user.decrement!(:balance, balance_deduction_amount) unless self.reload.balance_deduction_amount.zero?
   end
 
   # before_transition :on => :fail
@@ -228,6 +244,11 @@ private
   # after_transition :on => :succeed
   def unsuspend_user
     self.user.unsuspend
+  end
+
+  # after_transition :on => :cancel
+  def increment_user_balance
+    self.user.increment!(:balance, balance_deduction_amount) unless balance_deduction_amount.zero?
   end
 
 end

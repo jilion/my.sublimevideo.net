@@ -28,6 +28,7 @@ ActiveRecord::Schema.define(:version => 20110831124847) do
     t.datetime "locked_at"
     t.string   "invitation_token",       :limit => 60
     t.datetime "invitation_sent_at"
+    t.datetime "invitation_accepted_at"
     t.integer  "invitation_limit"
     t.integer  "invited_by_id"
     t.string   "invited_by_type"
@@ -98,13 +99,14 @@ ActiveRecord::Schema.define(:version => 20110831124847) do
     t.float    "vat_rate"
     t.integer  "vat_amount"
     t.integer  "invoice_items_amount"
-    t.integer  "invoice_items_count",   :default => 0
-    t.integer  "transactions_count",    :default => 0
+    t.integer  "invoice_items_count",      :default => 0
+    t.integer  "transactions_count",       :default => 0
     t.datetime "created_at"
     t.datetime "updated_at"
     t.datetime "paid_at"
     t.datetime "last_failed_at"
-    t.boolean  "renew",                 :default => false
+    t.boolean  "renew",                    :default => false
+    t.integer  "balance_deduction_amount", :default => 0
   end
 
   add_index "invoices", ["reference"], :name => "index_invoices_on_reference", :unique => true
@@ -290,6 +292,7 @@ ActiveRecord::Schema.define(:version => 20110831124847) do
     t.boolean  "newsletter",                            :default => true
     t.integer  "last_invoiced_amount",                  :default => 0
     t.integer  "total_invoiced_amount",                 :default => 0
+    t.integer  "balance",                               :default => 0
   end
 
   add_index "users", ["cc_alias"], :name => "index_users_on_cc_alias", :unique => true

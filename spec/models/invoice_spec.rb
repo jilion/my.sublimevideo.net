@@ -6,12 +6,13 @@ describe Invoice do
     before(:all) { @invoice = FactoryGirl.create(:invoice) }
     subject { @invoice }
 
-    its(:site)                 { should be_present }
-    its(:reference)            { should =~ /^[a-z1-9]{8}$/ }
-    its(:invoice_items_amount) { should == 10000 }
-    its(:amount)               { should == 10000 }
-    its(:paid_at)              { should be_nil }
-    its(:last_failed_at)       { should be_nil }
+    its(:site)                     { should be_present }
+    its(:reference)                { should =~ /^[a-z1-9]{8}$/ }
+    its(:invoice_items_amount)     { should eql 10000 }
+    its(:balance_deduction_amount) { should eql 0 }
+    its(:amount)                   { should eql 10000 }
+    its(:paid_at)                  { should be_nil }
+    its(:last_failed_at)           { should be_nil }
 
     it { should be_open } # initial state
     it { should be_valid }
@@ -39,11 +40,13 @@ describe Invoice do
     it { should validate_presence_of(:invoice_items_amount) }
     it { should validate_presence_of(:vat_rate) }
     it { should validate_presence_of(:vat_amount) }
+    it { should validate_presence_of(:balance_deduction_amount) }
     it { should validate_presence_of(:amount) }
 
     it { should validate_numericality_of(:invoice_items_amount) }
     it { should validate_numericality_of(:vat_rate) }
     it { should validate_numericality_of(:vat_amount) }
+    it { should validate_numericality_of(:balance_deduction_amount) }
     it { should validate_numericality_of(:amount) }
 
     describe "ensure_first_invoice_of_site" do
@@ -166,8 +169,10 @@ describe Invoice do
           it "should call #apply_pending_plan_changes on the site" do
             site = FactoryGirl.create(:site)
 
-            site.should_receive(:apply_pending_plan_changes)
-            FactoryGirl.create(:invoice, site: site).succeed!
+            invoice = FactoryGirl.create(:invoice, site: site)
+            invoice.site.should_receive(:apply_pending_plan_changes)
+            invoice.succeed!
+            invoice.reload.should be_paid
           end
         end
 
@@ -179,14 +184,14 @@ describe Invoice do
             it "should not call #apply_pending_plan_changes on the site only if there are still non-paid invoices" do
               non_paid_invoice.state.should == state
 
-              site.should_not_receive(:apply_pending_plan_changes)
+              non_paid_invoice.site.should_not_receive(:apply_pending_plan_changes)
               FactoryGirl.create(:invoice, site: site).succeed!
             end
 
             it "should call #apply_pending_plan_changes on the site if there are no more non-paid invoices" do
               non_paid_invoice.state.should == state
 
-              site.should_receive(:apply_pending_plan_changes).once
+              non_paid_invoice.site.should_receive(:apply_pending_plan_changes).once
               FactoryGirl.create(:invoice, site: site).succeed!
               non_paid_invoice.succeed!
             end
@@ -270,6 +275,19 @@ describe Invoice do
         end
       end
 
+      describe "after_transition :on => :cancel, :do => :increment_user_balance" do
+        subject { @invoice.reload }
+
+        it "increments user balance" do
+          subject.update_attribute(:balance_deduction_amount, 2000)
+          subject.user.update_attribute(:balance, 1000)
+
+          subject.should be_open
+          expect { subject.cancel! }.should change(subject.user.reload, :balance).from(1000).to(3000)
+          subject.should be_canceled
+        end
+      end
+
     end # Transitions
 
   end # State Machine
@@ -280,14 +298,49 @@ describe Invoice do
       subject { @invoice }
 
       describe "#set_customer_infos" do
-        its(:customer_full_name)    { should == @invoice.user.full_name }
-        its(:customer_email)        { should == @invoice.user.email }
-        its(:customer_country)      { should == @invoice.user.country }
-        its(:customer_company_name) { should == @invoice.user.company_name }
+        its(:customer_full_name)    { should eql @invoice.user.full_name }
+        its(:customer_email)        { should eql @invoice.user.email }
+        its(:customer_country)      { should eql @invoice.user.country }
+        its(:customer_company_name) { should eql @invoice.user.company_name }
       end
 
       describe "#set_site_infos" do
-        its(:site_hostname)         { should == @invoice.site.hostname }
+        its(:site_hostname)         { should eql @invoice.site.hostname }
+      end
+    end
+
+    describe "#after_create" do
+      context "balance > invoice amount" do
+
+        describe "succeed invoice with amount == 0" do
+          before(:all) do
+            @user = FactoryGirl.create(:user, country: 'FR', balance: 2000)
+            @site = FactoryGirl.build(:site_not_in_trial, user: @user, plan_id: @paid_plan.id)
+            @invoice = Invoice.build(site: @site)
+            @invoice.save!
+          end
+          subject { @invoice }
+
+          its(:invoice_items_amount)     { should eql 1000 }
+          its(:balance_deduction_amount) { should eql 1000 }
+          its(:amount)                   { should eql 0 }
+          it { should be_paid }
+        end
+
+        describe "#decrement_user_balance" do
+          before(:all) do
+            @user = FactoryGirl.create(:user, country: 'FR', balance: 2000)
+            @site = FactoryGirl.build(:site_not_in_trial, user: @user, plan_id: @paid_plan.id)
+            @invoice = Invoice.build(site: @site)
+            @invoice.save!
+          end
+          subject { @invoice }
+
+          its(:balance_deduction_amount) { should eql 1000 }
+          its(:amount)                   { should eql 0 }
+          its("user.balance")            { should eql 1000 }
+        end
+
       end
     end
   end
@@ -358,7 +411,6 @@ describe Invoice do
       before(:all) do
         Timecop.travel(Time.utc(2011, 4, 4, 6)) do
           @user = FactoryGirl.create(:user)
-          @site1 = FactoryGirl.create(:site, user: @user)
 
           @site1 = FactoryGirl.build(:site_not_in_trial, plan_id: @paid_plan.id, user: @user, first_paid_plan_started_at: Time.now.utc)
           @site1.pend_plan_changes
@@ -368,20 +420,24 @@ describe Invoice do
           @invoice1 = FactoryGirl.create(:invoice, state: 'open', site: @site1, renew: false, created_at: 5.hours.ago)
           @invoice1.invoice_items << FactoryGirl.create(:plan_invoice_item, invoice: @invoice1, started_at: Time.utc(2011, 4, 4), ended_at: Time.utc(2011, 5, 3).end_of_day)
           @invoice1.save!
+
           @invoice2 = FactoryGirl.create(:invoice, state: 'open', site: @site1, renew: false, created_at: 4.hours.ago) # fake an upgrade, should not update pending dates
           @invoice2.invoice_items << FactoryGirl.create(:plan_invoice_item, invoice: @invoice2, started_at: Time.utc(2011, 4, 4), ended_at: Time.utc(2011, 5, 3).end_of_day)
           @invoice2.save!
+
           @invoice3 = FactoryGirl.create(:invoice, state: 'failed', site: @site1, renew: true, created_at: 3.hours.ago) # renew failed
           @invoice3.invoice_items << FactoryGirl.create(:plan_invoice_item, invoice: @invoice3, started_at: Time.utc(2011, 4, 4), ended_at: Time.utc(2011, 5, 3).end_of_day)
           @invoice3.save!
+
           @invoice4 = FactoryGirl.create(:invoice, state: 'failed', site: @site1, renew: false, created_at: 2.hours.ago) # upgrade failed
           @invoice4.invoice_items << FactoryGirl.create(:plan_invoice_item, invoice: @invoice4, started_at: Time.utc(2011, 4, 4), ended_at: Time.utc(2011, 5, 3).end_of_day)
           @invoice4.save!
+
           @invoice5 = FactoryGirl.create(:invoice, state: 'paid', site: @site1, created_at: 1.hour.ago) # already paid
           @invoice5.invoice_items << FactoryGirl.create(:plan_invoice_item, invoice: @invoice5, started_at: Time.utc(2011, 4, 4), ended_at: Time.utc(2011, 5, 3).end_of_day)
           @invoice5.save!
 
-          @invoice1.should == @site1.invoices.by_date('asc').first
+          @invoice1.should eql @site1.invoices.by_date('asc').first
         end
       end
       before(:each) do
@@ -560,10 +616,8 @@ describe Invoice do
       describe "with a Swiss user" do
         before(:all) do
           @user    = FactoryGirl.create(:user, country: 'CH')
-          Timecop.travel(PublicLaunch.beta_transition_ended_on + 1.day) do
-            @site = FactoryGirl.build(:new_site, user: @user, plan_id: @paid_plan.id)
-            @invoice = Invoice.build(site: @site)
-          end
+          @site = FactoryGirl.build(:new_site, user: @user, plan_id: @paid_plan.id)
+          @invoice = Invoice.build(site: @site)
         end
         subject { @invoice }
 
@@ -571,6 +625,47 @@ describe Invoice do
         its(:vat_rate)             { should == 0.08 }
         its(:vat_amount)           { should == (1000 * 0.08).round }
         its(:amount)               { should == 1000 + (1000 * 0.08).round }
+      end
+
+      describe "with a user that has a balance" do
+        context "balance < invoice amount" do
+          before(:all) do
+            @user    = FactoryGirl.create(:user, country: 'FR', balance: 100)
+            @site = FactoryGirl.build(:new_site, user: @user, plan_id: @paid_plan.id)
+            @invoice = Invoice.build(site: @site)
+          end
+          subject { @invoice }
+
+          its(:invoice_items_amount)     { should eql 1000 }
+          its(:balance_deduction_amount) { should eql 100 }
+          its(:amount)                   { should eql 900 }
+        end
+
+        context "balance == invoice amount" do
+          before(:all) do
+            @user    = FactoryGirl.create(:user, country: 'FR', balance: 1000)
+            @site = FactoryGirl.build(:new_site, user: @user, plan_id: @paid_plan.id)
+            @invoice = Invoice.build(site: @site)
+          end
+          subject { @invoice }
+
+          its(:invoice_items_amount)     { should eql 1000 }
+          its(:balance_deduction_amount) { should eql 1000 }
+          its(:amount)                   { should eql 0 }
+        end
+
+        context "balance > invoice amount" do
+          before(:all) do
+            @user = FactoryGirl.create(:user, country: 'FR', balance: 2000)
+            @site = FactoryGirl.build(:new_site, user: @user, plan_id: @paid_plan.id)
+            @invoice = Invoice.build(site: @site)
+          end
+          subject { @invoice }
+
+          its(:invoice_items_amount)     { should eql 1000 }
+          its(:balance_deduction_amount) { should eql 1000 }
+          its(:amount)                   { should eql 0 }
+        end
       end
 
     end # .build
