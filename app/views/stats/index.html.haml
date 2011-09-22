@@ -19,23 +19,23 @@
 #period_selectors
   %ul
     %li
-      .minutes
-        %span#minutes_period_vv_total.total
-        #minutes_period_sparkline
-        %span.title 60 minutes
-    %li
-      .hours
-        %span#hours_period_vv_total.total
-        #hours_period_sparkline
-        %span.title 24 hours
+      .custom
+        %span.title ALL
     %li
       .days
-        %span#days_period_vv_total.total
-        #days_period_sparkline
+        %span#period_days_vv_total.total
+        #period_days_sparkline.sparkline
         %span.title 30 days
     %li
-      .custom
-        #custom_period_selector
+      .hours
+        %span#period_hours_vv_total.total
+        #period_hours_sparkline.sparkline
+        %span.title 24 hours
+    %li
+      .minutes
+        %span#period_minutes_vv_total.total
+        #period_minutes_sparkline.sparkline
+        %span.title 60 minutes
 
 .spacer
 

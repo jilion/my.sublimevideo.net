@@ -44,10 +44,13 @@ describe 'Period', ->
       @period.autosetPeriod()
       expect(@period.get('type')).toEqual('hours')
 
-    # it "sets '30 days' when days stats are present in the count 30 days", ->
-    #   MSVStats.stats = new MSVStats.Collections.Stats([@day7])
-    #   @period.autosetPeriod()
-    #   expect(@period.value()).toEqual('30 days')
+    it "sets '30 days' when days stats are present in the count 30 days", ->
+      MSVStats.statsDays = new MSVStats.Collections.Stats(daysStats)
+      @period.autosetPeriod()
+      expect(@period.get('type')).toEqual('days')
+      expect(@period.get('startTime')).toEqual(MSVStats.statsDays.at(MSVStats.statsDays.length - 30).time())
+      expect(@period.get('endTime')).toEqual(MSVStats.statsDays.last().time())
+
     #
     # it "sets 'all days' when days stats are present but not in the count 30 days", ->
     #   MSVStats.stats = new MSVStats.Collections.Stats([@day30])

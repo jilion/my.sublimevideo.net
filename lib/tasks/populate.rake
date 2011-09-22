@@ -332,7 +332,7 @@ def create_site_stats(user_id=nil)
         )
       end
       # Days
-      60.times.each do |i|
+      40.times.each do |i|
         SiteStat.collection.update(
           { t: site.token, d: i.days.ago.change(hour: 0, min: 0, sec: 0, usec: 0).to_time },
           { "$inc" => random_stats_inc(24 * 60) },
