@@ -15,6 +15,8 @@ module InvoicesHelper
   def charging_status(invoice)
     if invoice.open?
       "Not yet paid."
+    elsif invoice.canceled?
+      "Canceled."
     elsif invoice.failed?
       text = "#{content_tag(:strong, "Payment failed", :class => "failed")} on #{l(invoice.last_failed_at, :format => :minutes_timezone)}".html_safe
       unless invoice.last_transaction.error =~ /secure.ogone/ # FIXME we store the 3d secure html in this field,
