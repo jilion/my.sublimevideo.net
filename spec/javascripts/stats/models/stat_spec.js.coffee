@@ -26,6 +26,39 @@ describe 'Stats', ->
     it 'returns sum of all vv', ->
       expect(@stats.vvTotal()).toEqual(309)
 
+describe 'StatsDays', ->
+  beforeEach ->
+    MSVStats.period = new MSVStats.Models.Period()
+    @stats = new MSVStats.Collections.StatsDays()
+    @stats.reset(daysStats)
+
+  describe 'vvTotal(dateRange)', ->
+    it 'returns period dateRange vv sum', ->
+      MSVStats.period.setPeriod
+        type:      'days'
+        startTime: @stats.first().time()
+        endTime:   @stats.last().time()
+      expect(@stats.vvTotal()).toEqual(332640)
+
+    it 'returns custom period dateRange vv sum', ->
+      console.log @stats.length
+      dateRange = [
+        @stats.at(@stats.length - 30).time()
+        @stats.last().time()
+      ]
+      expect(@stats.vvTotal(dateRange)).toEqual(259200)
+
+  describe 'customPluck(attr, firstIndex)', ->
+    it 'returns [] when no stats', ->
+      @stats.reset()
+      expect(@stats.customPluck('vv', -30)).toEqual([])
+
+    it 'returns only last 30 vv when no stats', ->
+      expect(@stats.customPluck('vv', -30).length).toEqual(30)
+
+
+
+
   # describe 'forCurrentPeriod()', ->
   #   it 'return last 60 minutes with a null last minute ', ->
   #     @period.setPeriod('60 minutes')

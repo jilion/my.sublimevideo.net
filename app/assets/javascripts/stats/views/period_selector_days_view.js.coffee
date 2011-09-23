@@ -1,56 +1,37 @@
 class MSVStats.Views.PeriodSelectorDaysView extends Backbone.View
 
-  # events:
-  #   'click': 'onClick'
-
   initialize: () ->
+    @el = $('#period_selectors .days')
     _.bindAll(this, 'render')
-    this.options.period.bind('change', this.render)
-    this.options.statsDays.bind('reset', this.render)
-    $('#period_selectors .days').bind 'click', ->
-      MSVStats.period.setPeriod(type: 'days')
+    @options.period.bind('change', this.render)
+    @options.statsDays.bind('reset', this.render)
+    @el.bind('click', _.bind(this.select, this))
 
   render: ->
-    $('#period_days_vv_total').html(this.options.statsDays.vvTotal())
+    if this.isSelected() then @el.addClass('selected') else @el.removeClass('selected')
+    $('#period_days_vv_total').html(@options.statsDays.vvTotal(this.dateRange()))
+    this.renderSparkline()
     return this
 
-  # onClick: ->
-  #   alert 'onClick'
-  #   this.options.period.setPeriod(type: 'minutes')
-  # selectedPeriodValue = this.$('select').val()
-  # if MSVStats.period.value() != selectedPeriodValue
-  #   switch selectedPeriodValue
-  #     # when 'custom' then this.showDatePickers()
-  #     else
-  #       # this.hideDatePickers()
+  renderSparkline: ->
+    $('#period_days_sparkline').sparkline @options.statsDays.customPluck('vv', -30),
+      width: '100%'
+      height: '50px'
+      lineColor: if this.isSelected() then '#0046ff' else '#00b1ff'
+      fillColor: if this.isSelected() then '#0046ff' else '#00b1ff'
 
-  # hideDatePickers: ->
-  #   $('#custom_dates_pickers').hide()
-  #   $('#start_time_picker, #end_time_picker').datepicker('destroy')
-  #
-  # showDatePickers: ->
-  #   $('#custom_dates_pickers').show()
-  #   periodsSelectView = this
-  #   startTime         = null
-  #   endTime           = null
-  #   dates = $('#start_time_picker, #end_time_picker').datepicker
-  #     changeMonth: true
-  #     changeYear:  true
-  #     dateFormat:  'yy-m-d'
-  #     minDate:     MSVStats.stats.firstStatsDate()
-  #     maxDate:     MSVStats.Models.Period.today(h: 0).date
-  #     onSelect: (selectedDate) ->
-  #       if (this.id == "start_time_picker")
-  #         option    = "minDate"
-  #         startTime = periodsSelectView.convertPickerDate(selectedDate)
-  #       else
-  #         option    = "maxDate"
-  #         endTime   = periodsSelectView.convertPickerDate(selectedDate)
-  #       dates.not(this).datepicker('option', option, selectedDate)
-  #       if startTime != null && endTime != null
-  #         periodsSelectView.hideDatePickers()
-  #         MSVStats.period.setCustomPeriod(startTime, endTime)
-  #
-  # convertPickerDate: (pickerDate) ->
-  #   [year, month, day] = pickerDate.split('-')
-  #   Date.UTC(year, parseInt(month) - 1, day)
+  select: ->
+    @options.period.setPeriod
+      type: 'days'
+      startTime: this.dateRange()[0]
+      endTime: this.dateRange()[1]
+
+  isSelected: ->
+    @options.period.isSelected('days')
+
+  dateRange: ->
+    if MSVStats.statsDays.isEmpty()
+      [null, null]
+    else
+      [MSVStats.statsDays.at(MSVStats.statsDays.length - 30).time(), MSVStats.statsDays.last().time()]
+

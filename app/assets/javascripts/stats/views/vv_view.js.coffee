@@ -4,12 +4,9 @@ class MSVStats.Views.VVView extends Backbone.View
   initialize: () ->
     _.bindAll(this, 'render')
     @options.period.bind('change', this.render)
-    @options.statsMinutes.bind 'reset', ->
-      this.render() if MSVStats.period.isSelected('minutes')
-    @options.statsHours.bind 'reset', ->
-      this.render() if MSVStats.period.isSelected('hours')
-    @options.statsDays.bind 'reset', ->
-      this.render() if MSVStats.period.isSelected('days')
+    # @options.statsMinutes.bind 'reset', (this.render if MSVStats.period.isSelected('minutes'))
+    # @options.statsHours.bind 'reset', (this.render if MSVStats.period.isSelected('hours'))
+    # @options.statsDays.bind 'reset', (this.render if MSVStats.period.isSelected('days'))
 
   render: ->
     if MSVStats.period.isClear()
@@ -38,12 +35,12 @@ class MSVStats.Views.VVView extends Backbone.View
         marginRight: 10
         marginBottom: 50
         marginLeft: 50
-        spacingTop: 0
-        spacingRight: 0
-        spacingBottom: 0
-        spacingLeft: 0
+        spacingTop: 5
+        spacingRight: 5
+        spacingBottom: 5
+        spacingLeft: 5
         height: 300
-        width: 858
+        width: 848
       colors: [
         '#edc950'
         '#0046ff'
@@ -97,7 +94,7 @@ class MSVStats.Views.VVView extends Backbone.View
             hover:
               lineWidth: 2
           dataGrouping:
-            groupPixelWidth: 5
+            groupPixelWidth: 1
             smoothed: true
       series: [{
         type: 'spline'
@@ -117,8 +114,8 @@ class MSVStats.Views.VVView extends Backbone.View
         tickWidth: 0
         gridLineWidth: 1
         type: 'datetime'
-        # min: 1235001600000
-        # max: 1317425472000
+        min: MSVStats.period.get('startTime')
+        max: MSVStats.period.get('endTime')
       yAxis:
         lineWidth: 0
         offset: 10
@@ -129,7 +126,7 @@ class MSVStats.Views.VVView extends Backbone.View
           align: 'right'
         title:
           text: null
-          
+
     # MSVStats.vvChart.xAxis[0].setExtremes(1235001600000, 1317425472000)
     # xChartValues = _.map(MSVStats.vvChart.series[0].data, ((o) -> o.x))
     # if selectedIndex = MSVStats.vvChartLegend.get('index')

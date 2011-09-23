@@ -33,6 +33,21 @@ class MSVStats.Collections.StatsDays extends MSVStats.Collections.Stats
   url: ->
     "/sites/#{MSVStats.sites.selectedSite().get('token')}/stats?period=days"
 
+  pvTotal: (datesRange = MSVStats.period.datesRange()) ->
+    _.reduce(@models, (memo, stat) ->
+      if stat.time() >= datesRange[0] && stat.time() <= datesRange[1] then memo + stat.get('pv') else memo
+    0)
+
+  vvTotal: (datesRange = MSVStats.period.datesRange()) ->
+    _.reduce(@models, (memo, stat) ->
+      if stat.time() >= datesRange[0] && stat.time() <= datesRange[1] then memo + stat.get('vv') else memo
+    0)
+
+  customPluck: (attribute, firstIndex) ->
+    stats = @models.slice(firstIndex)
+    _.map stats, ((stat) -> stat.get('vv'))
+
+
   #
   #
   # vvData: ->

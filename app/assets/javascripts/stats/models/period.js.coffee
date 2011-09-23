@@ -17,6 +17,9 @@ class MSVStats.Models.Period extends Backbone.Model
       when 'hours'   then MSVStats.statsHours
       when 'days'    then MSVStats.statsDays
 
+  datesRange: ->
+    [this.get('startTime'), this.get('endTime')]
+
   # periodTickInterval: ->
   #   count = this.get('count')
   #   if count < 10
@@ -32,8 +35,8 @@ class MSVStats.Models.Period extends Backbone.Model
   #   valueInt >= minValueInt
 
   setPeriod: (attributes, options = {}) ->
-    attributes = _.extend attributes, startTime: null, endTime: null
-    # _.extend(attributes, minValue: value) if options.isMinValue
+    attributes.startTime ||= null
+    attributes.endTime   ||= null
     this.set(attributes, options)
 
   setCustomPeriod: (startTime, endTime, options = {}) ->
@@ -45,10 +48,18 @@ class MSVStats.Models.Period extends Backbone.Model
         this.setPeriod(type: 'minutes', options)
       else if MSVStats.statsHours.vvTotal() > 0
         this.setPeriod(type: 'hours', options)
-      # else if MSVStats.statsDays.length <= 30 || MSVStats.statsDays.vvTotal() > 0
-      #   this.setPeriod('30 days', options)
+      else if MSVStats.statsDays.length <= 30 || MSVStats.statsDays.vvTotal([MSVStats.statsDays.at(MSVStats.statsDays.length - 30).time(), MSVStats.statsDays.last().time()]) > 0
+        this.setPeriod
+          type:      'days'
+          startTime: MSVStats.statsDays.at(MSVStats.statsDays.length - 30).time()
+          endTime:   MSVStats.statsDays.last().time()
+          options
       else
-        this.setPeriod(type: 'days', options)
+        this.setPeriod
+          type:      'days'
+          startTime: MSVStats.statsDays.first().time()
+          endTime:   MSVStats.statsDays.last().time()
+          options
 
   isSelected: (type) ->
     this.get('type') == type

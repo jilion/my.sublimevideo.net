@@ -51,17 +51,19 @@ describe 'Period', ->
       expect(@period.get('startTime')).toEqual(MSVStats.statsDays.at(MSVStats.statsDays.length - 30).time())
       expect(@period.get('endTime')).toEqual(MSVStats.statsDays.last().time())
 
-    #
-    # it "sets 'all days' when days stats are present but not in the count 30 days", ->
-    #   MSVStats.stats = new MSVStats.Collections.Stats([@day30])
-    #   @period.autosetPeriod()
-    #   expect(@period.value()).toEqual('all days')
-
-    it "sets 'all days' when none are present", ->
+    it "sets '30 days' when days stats are only available for 30 days (or less)", ->
+      MSVStats.statsDays = new MSVStats.Collections.Stats(emptyDaysStats)
       @period.autosetPeriod()
       expect(@period.get('type')).toEqual('days')
-      expect(@period.get('startTime')).toEqual(null)
-      expect(@period.get('endTime')).toEqual(null)
+      expect(@period.get('startTime')).toEqual(MSVStats.statsDays.at(MSVStats.statsDays.length - 30).time())
+      expect(@period.get('endTime')).toEqual(MSVStats.statsDays.last().time())
+
+    it "sets 'all days' when days stats are present but not in the count 30 days", ->
+      MSVStats.statsDays = new MSVStats.Collections.Stats(noRecentDaysStats)
+      @period.autosetPeriod()
+      expect(@period.get('type')).toEqual('days')
+      expect(@period.get('startTime')).toEqual(MSVStats.statsDays.first().time())
+      expect(@period.get('endTime')).toEqual(MSVStats.statsDays.last().time())
 
   describe 'isCustom()', ->
     it 'returns true with start/end times', ->
