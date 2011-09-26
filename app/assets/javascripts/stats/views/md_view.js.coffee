@@ -1,75 +1,28 @@
 class MSVStats.Views.MDView extends Backbone.View
-  template: JST['stats/templates/_md_pie_chart']
+  template: JST['stats/templates/_md']
 
   initialize: () ->
-    _.bindAll(this, 'render')
-    this.collection.bind('change', this.render);
-    this.collection.bind('reset', this.render);
-    this.options.period.bind('change', this.render);
+    _.bindAll this, 'render', 'renderIfSelected'
+    @options.period.bind 'change', this.render
+    @options.statsMinutes.bind 'reset', this.renderIfSelected
+    @options.statsHours.bind   'reset', this.renderIfSelected
+    @options.statsDays.bind    'reset', this.renderIfSelected
+    $('#md_content').html(this.render().el)
 
-  render: ->
-    @mdData = this.collection.mdData()
-    $(this.el).html(this.template(mdData: @mdData))
+  render: ->    
+    if MSVStats.period.get('type')?
+      $('#md_content').show()
+      $('#md').data().spinner.stop()
+      
+      @mdData = MSVStats.period.stats().mdData()
+      $(this.el).html(this.template(mdData: @mdData))
+      
+      return this
+    else
+      $('#md_content').hide()
+      $('#md').spin()
+      return this
+      
+  renderIfSelected: (stats) ->
+    this.render() if MSVStats.period.get('type') == stats.periodType()
 
-    $('#md_content').show()
-    $('#md').data().spinner.stop()
-
-    this.renderChart()
-    return this
-
-  renderChart: ->
-    new Highcharts.Chart
-      chart:
-        renderTo: 'md_pie_chart'
-        backgroundColor: null
-        plotBackgroundColor: null
-        plotShadow: false
-        marginTop: 0
-        marginRight: 200
-        marginBottom: 0
-        marginLeft: 0
-        spacingTop: 0
-        spacingRight: 0
-        spacingBottom: 0
-        spacingLeft: 0
-        height: 200
-        width: 400
-      colors: [
-      	'#edc950'
-      	'#65384a'
-      	'#eb6840'
-      	'#06a0b0'
-      	'#cc343e'
-      ]
-      credits:
-        enabled: false
-      title:
-        text: null
-      tooltip:
-        formatter: ->
-          "<b>#{@point.name}</b><br/> #{Highcharts.numberFormat(@y, 0)} hits (#{Highcharts.numberFormat(@percentage, 1)} %)"
-      plotOptions:
-        pie:
-          shadow: false
-          borderWidth: 0
-          animation: false
-          showInLegend: true
-          allowPointSelect: false
-          dataLabels:
-            enabled: false
-      series: [
-        type: 'pie'
-        name: 'Player Mode'
-        size: '85%'
-        data: @mdData.toArray('d')
-      ]
-      legend:
-        layout: 'vertical'
-        margin: 0
-        align: 'right'
-        verticalAlign: 'middle'
-        x: 15
-        y: -5
-        lineHeight: 20
-        borderWidth: 0
-        width: 200

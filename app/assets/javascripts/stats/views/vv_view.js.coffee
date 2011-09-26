@@ -1,27 +1,29 @@
 class MSVStats.Views.VVView extends Backbone.View
   template: JST['stats/templates/_vv_chart_legend']
 
-  initialize: () ->
-    _.bindAll(this, 'render')
-    @options.period.bind('change', this.render)
-    # @options.statsMinutes.bind 'reset', (this.render if MSVStats.period.isSelected('minutes'))
-    # @options.statsHours.bind 'reset', (this.render if MSVStats.period.isSelected('hours'))
-    # @options.statsDays.bind 'reset', (this.render if MSVStats.period.isSelected('days'))
+  initialize: ->
+    _.bindAll this, 'render', 'renderIfSelected'
+    @options.period.bind 'change', this.render
+    @options.statsMinutes.bind 'reset', this.renderIfSelected
+    @options.statsHours.bind   'reset', this.renderIfSelected
+    @options.statsDays.bind    'reset', this.renderIfSelected
+    $('#vv_chart_legend').html(this.render().el)
 
-  render: ->
-    if MSVStats.period.isClear()
-      $('#vv_content').hide()
-      $('#vv').spin()
-      return this
-    else
+  render: ->    
+    if MSVStats.period.get('type')?
       $('#vv_content').show()
       $('#vv').data().spinner.stop()
-
       @stats = MSVStats.period.stats()
       $(this.el).html(this.template(stats: @stats))
       this.renderChart()
-
       return this
+    else
+      $('#vv_content').hide()
+      $('#vv').spin()
+      return this
+      
+  renderIfSelected: (stats) ->
+    this.render() if MSVStats.period.get('type') == stats.periodType()
 
   renderChart: ->
     MSVStats.vvChart = new Highcharts.StockChart
@@ -114,8 +116,8 @@ class MSVStats.Views.VVView extends Backbone.View
         tickWidth: 0
         gridLineWidth: 1
         type: 'datetime'
-        min: MSVStats.period.get('startTime')
-        max: MSVStats.period.get('endTime')
+        min: MSVStats.period.startTime()
+        max: MSVStats.period.endTime()
       yAxis:
         lineWidth: 0
         offset: 10

@@ -1,0 +1,13 @@
+<% if @bpData.isEmpty(): %>
+  <p>No data</p>
+<% else: %>
+  <ul>
+  <% for bp in @bpData.toArray(): %>
+    <li class='<%= @bpData.cssClass(bp[0]) %>'>
+      <span style='width: <%= @bpData.percentage(bp[1]) %>%'/>
+      <span class='title'><%= @bpData.bpName(bp[0]) %></span>
+      <span class='value'><%= Highcharts.numberFormat(bp[1], 0) %> (<%= @bpData.percentage(bp[1]) %>%)</span>
+    </li>
+  <% end %>
+  </ul>
+<% end %>

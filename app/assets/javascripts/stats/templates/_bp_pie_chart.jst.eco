@@ -1,3 +1,0 @@
-<% if @bpData.isEmpty(): %>
-  <p>No data</p>
-<% end %>

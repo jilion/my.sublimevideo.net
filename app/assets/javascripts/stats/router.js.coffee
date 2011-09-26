@@ -6,13 +6,8 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
     this.initModels()
     this.initPusher()
 
-    # MSVStats.stats.bind('reset', -> MSVStats.stats.clearCache())
-    # MSVStats.period.bind('change', -> MSVStats.stats.clearCache())
-
     pageTitleView = new MSVStats.Views.PageTitleView(collection: MSVStats.sites)
-    pageTitleView.render()
     sitesSelectView = new MSVStats.Views.SitesSelectView(collection: MSVStats.sites)
-    $('#sites_select').html(sitesSelectView.render().el)
 
     periodSelectorMinutesView = new MSVStats.Views.PeriodSelectorMinutesView
       statsMinutes: MSVStats.statsMinutes
@@ -23,21 +18,28 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
     periodSelectorDaysView = new MSVStats.Views.PeriodSelectorDaysView
       statsDays: MSVStats.statsDays
       period: MSVStats.period
+    periodSelectorAllView = new MSVStats.Views.PeriodSelectorAllView
+      statsDays: MSVStats.statsDays
+      period: MSVStats.period
 
     MSVStats.vvView = new MSVStats.Views.VVView
       statsMinutes: MSVStats.statsMinutes
       statsHours:   MSVStats.statsHours
       statsDays:    MSVStats.statsDays
-      sites:        MSVStats.sites
       period:       MSVStats.period
-    $('#vv_chart_legend').html(MSVStats.vvView.render().el)
 
-    # window.setTimeout(( -> MSVStats.vvView.periodicRender()), 30000)
-    # bpView = new MSVStats.Views.BPView(collection: MSVStats.stats, sites: MSVStats.sites, period: MSVStats.period)
-    # $('#bp_legend').html(bpView.render().el)
-    # mdView = new MSVStats.Views.MDView(collection: MSVStats.stats, sites: MSVStats.sites, period: MSVStats.period)
-    # $('#md_legend').html(mdView.render().el)
-
+    bpView = new MSVStats.Views.BPView
+      statsMinutes: MSVStats.statsMinutes
+      statsHours:   MSVStats.statsHours
+      statsDays:    MSVStats.statsDays
+      period:       MSVStats.period
+      
+    mdView = new MSVStats.Views.MDView
+      statsMinutes: MSVStats.statsMinutes
+      statsHours:   MSVStats.statsHours
+      statsDays:    MSVStats.statsDays
+      period:       MSVStats.period
+    
     # updateDateView = new MSVStats.Views.UpdateDateView(collection: MSVStats.stats)
     # $('#update_date').html(updateDateView.render().el)
 
@@ -48,7 +50,6 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
     MSVStats.period.clear()
     MSVStats.sites.select(token)
     this.resetAndFetchStats()
-
 
   initHighcharts: ->
     Highcharts.setOptions

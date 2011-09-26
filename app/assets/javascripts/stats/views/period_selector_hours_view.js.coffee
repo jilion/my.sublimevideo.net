@@ -5,12 +5,12 @@ class MSVStats.Views.PeriodSelectorHoursView extends Backbone.View
     _.bindAll(this, 'render')
     @options.period.bind('change', this.render)
     @options.statsHours.bind('reset', this.render)
-    @el.bind 'click', ->
+    @el.bind 'click', -> 
       MSVStats.period.setPeriod(type: 'hours')
 
   render: ->
     if this.isSelected() then @el.addClass('selected') else @el.removeClass('selected')
-    $('#period_hours_vv_total').html(@options.statsHours.vvTotal())
+    $('#period_hours_vv_total').html(Highcharts.numberFormat(@options.statsHours.vvTotal(), 0))
     this.renderSparkline()
     return this
 
@@ -22,4 +22,4 @@ class MSVStats.Views.PeriodSelectorHoursView extends Backbone.View
       fillColor: if this.isSelected() then '#0046ff' else '#00b1ff'
 
   isSelected: ->
-    @options.period.isSelected('hours')
+    @options.period.get('type') == 'hours'
