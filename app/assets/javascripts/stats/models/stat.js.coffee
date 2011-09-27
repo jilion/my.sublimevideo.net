@@ -47,6 +47,15 @@ class MSVStats.Collections.Stats extends Backbone.Collection
         else
           memo
       context)
+      
+  @allPresent: ->
+    !MSVStats.statsSeconds.isEmpty() && !MSVStats.statsMinutes.isEmpty() && !MSVStats.statsHours.isEmpty() && !MSVStats.statsDays.isEmpty()
+
+class MSVStats.Collections.StatsSeconds extends MSVStats.Collections.Stats
+  url: ->
+    "/sites/#{MSVStats.sites.selectedSite().get('token')}/stats?period=seconds"
+
+  periodType: -> 'seconds'
 
 class MSVStats.Collections.StatsMinutes extends MSVStats.Collections.Stats
   url: ->
