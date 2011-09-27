@@ -8,6 +8,7 @@ class MSVStats.Views.SitesSelectView extends Backbone.View
     _.bindAll(this, 'render')
     this.collection.bind('change', this.render);
     this.collection.bind('reset', this.render);
+    $('#sites_select').html(this.render().el)
 
   render: ->
     $(this.el).html(this.template(sites: this.collection.toJSON()))

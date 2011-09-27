@@ -4,6 +4,7 @@ class MSVStats.Views.PageTitleView extends Backbone.View
     _.bindAll(this, 'render')
     this.collection.bind('change', this.render);
     this.collection.bind('reset', this.render);
+    this.render()
 
   render: ->
     selectedSite   = MSVStats.sites.selectedSite()

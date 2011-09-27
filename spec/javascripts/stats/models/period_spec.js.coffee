@@ -2,31 +2,43 @@ describe 'Period', ->
   beforeEach ->
     @period = new MSVStats.Models.Period()
 
+  describe 'startTime()', ->
+    it 'returns first statsDays when startIndex is null', ->
+      MSVStats.statsDays = new MSVStats.Collections.Stats(daysStats)
+      @period.setPeriod(type: 'days')
+      expect(@period.get('startIndex')).toEqual(0)
+      expect(@period.startTime()).toEqual(MSVStats.statsDays.first().time())
+
+    it 'returns last statsDays whit index -1', ->
+      MSVStats.statsDays = new MSVStats.Collections.Stats(daysStats)
+      @period.setPeriod(type: 'days')
+      expect(@period.startTime(-1)).toEqual(MSVStats.statsDays.last().time())
+
   describe 'setPeriod()', ->
     it 'sets type', ->
       @period.setPeriod(type: 'hours')
       expect(@period.get('type')).toEqual('hours')
 
-    it "resets custom start/end times", ->
-      @period.setCustomPeriod(1000, 2000)
-      @period.setPeriod(type: 'hours')
-      expect(@period.get('startTime')).toEqual(null)
-      expect(@period.get('endTime')).toEqual(null)
+    # it "resets custom start/end times", ->
+    #   @period.setCustomPeriod(1000, 2000)
+    #   @period.setPeriod(type: 'hours')
+    #   expect(@period.get('startTime')).toEqual(null)
+    #   expect(@period.get('endTime')).toEqual(null)
 
-  describe 'setCustomPeriod()', ->
-    it "sets custom start/end times", ->
-      @period.setCustomPeriod(1000, 2000)
-      expect(@period.get('startTime')).toEqual(1000)
-      expect(@period.get('endTime')).toEqual(2000)
-
-    it "sets custom start/end times with good value order", ->
-      @period.setCustomPeriod(2000, 1000)
-      expect(@period.get('startTime')).toEqual(1000)
-      expect(@period.get('endTime')).toEqual(2000)
-
-    it 'clears type and count', ->
-      @period.setCustomPeriod(1000, 2000)
-      expect(@period.get('type')).toEqual('days')
+  # describe 'setCustomPeriod()', ->
+  #   it "sets custom start/end times", ->
+  #     @period.setCustomPeriod(1000, 2000)
+  #     expect(@period.get('startTime')).toEqual(1000)
+  #     expect(@period.get('endTime')).toEqual(2000)
+  #
+  #   it "sets custom start/end times with good value order", ->
+  #     @period.setCustomPeriod(2000, 1000)
+  #     expect(@period.get('startTime')).toEqual(1000)
+  #     expect(@period.get('endTime')).toEqual(2000)
+  #
+  #   it 'clears type and count', ->
+  #     @period.setCustomPeriod(1000, 2000)
+  #     expect(@period.get('type')).toEqual('days')
 
   describe '#autosetPeriod', ->
     beforeEach ->
@@ -45,40 +57,34 @@ describe 'Period', ->
       expect(@period.get('type')).toEqual('hours')
 
     it "sets '30 days' when days stats are present in the count 30 days", ->
-      MSVStats.statsDays = new MSVStats.Collections.Stats(daysStats)
+      MSVStats.statsDays = new MSVStats.Collections.StatsDays(daysStats)
       @period.autosetPeriod()
       expect(@period.get('type')).toEqual('days')
-      expect(@period.get('startTime')).toEqual(MSVStats.statsDays.at(MSVStats.statsDays.length - 30).time())
-      expect(@period.get('endTime')).toEqual(MSVStats.statsDays.last().time())
+      expect(@period.get('startIndex')).toEqual(-30)
+      expect(@period.get('endIndex')).toEqual(-1)
 
-    #
-    # it "sets 'all days' when days stats are present but not in the count 30 days", ->
-    #   MSVStats.stats = new MSVStats.Collections.Stats([@day30])
-    #   @period.autosetPeriod()
-    #   expect(@period.value()).toEqual('all days')
-
-    it "sets 'all days' when none are present", ->
+    it "sets '30 days' when days stats are only available for 30 days (or less)", ->
+      MSVStats.statsDays = new MSVStats.Collections.StatsDays(emptyDaysStats)
       @period.autosetPeriod()
       expect(@period.get('type')).toEqual('days')
-      expect(@period.get('startTime')).toEqual(null)
-      expect(@period.get('endTime')).toEqual(null)
+      expect(@period.get('startIndex')).toEqual(-30)
+      expect(@period.get('endIndex')).toEqual(-1)
 
-  describe 'isCustom()', ->
-    it 'returns true with start/end times', ->
-      @period.setCustomPeriod(1000, 2000)
-      expect(@period.isCustom()).toEqual(true)
+    it "sets 'all days' when days stats are present but not in the count 30 days", ->
+      MSVStats.statsDays = new MSVStats.Collections.StatsDays(noRecentDaysStats)
+      @period.autosetPeriod()
+      expect(@period.get('type')).toEqual('days')
+      expect(@period.get('startIndex')).toEqual(0)
+      expect(@period.get('endIndex')).toEqual(-1)
 
-    it 'returns true with no start/end times', ->
-      @period.setPeriod(type: 'hours')
-      expect(@period.isCustom()).toEqual(false)
-
-  describe 'isClear()', ->
-    it 'returns true when all attributes are null', ->
-      expect(@period.isClear()).toEqual(true)
-
-    it 'returns true when at least one attribute is present', ->
-      @period.setPeriod(type: 'hours')
-      expect(@period.isClear()).toEqual(false)
+  # describe 'isClear()', ->
+  #   it 'returns true when all attributes are null', ->
+  #     @period.clear()
+  #     expect(@period.isClear()).toEqual(true)
+  #
+  #   it 'returns true when at least one attribute is present', ->
+  #     @period.setPeriod(type: 'hours')
+  #     expect(@period.isClear()).toEqual(false)
 
 
   # describe '#periodIsAvailabe', ->

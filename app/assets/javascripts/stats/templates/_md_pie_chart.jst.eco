@@ -1,3 +1,0 @@
-<% if @mdData.isEmpty(): %>
-  <p>No data</p>
-<% end %>

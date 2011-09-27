@@ -26,149 +26,140 @@ describe 'Stats', ->
     it 'returns sum of all vv', ->
       expect(@stats.vvTotal()).toEqual(309)
 
-  # describe 'forCurrentPeriod()', ->
-  #   it 'return last 60 minutes with a null last minute ', ->
-  #     @period.setPeriod('60 minutes')
-  #     periodStats = @stats.forCurrentPeriod()
-  #     expect(periodStats.length).toEqual(60)
-  #     expect(_.first(periodStats).get('mi')).toEqual(@minute60.get('mi'))
-  #
-  #   it 'return last 60 minutes with an existing last minute ', ->
-  #     @period.setPeriod('60 minutes')
-  #     MSVStats.stats.add(@minute0)
-  #     periodStats = @stats.forCurrentPeriod()
-  #     expect(periodStats.length).toEqual(60)
-  #     expect(_.first(periodStats).get('mi')).toEqual(@minute59.get('mi'))
-  #     expect(_.last(periodStats).get('mi')).toEqual(@minute0.get('mi'))
-  #
-  #   it 'return last 24 hours', ->
-  #     @period.setPeriod('24 hours')
-  #     periodStats = @stats.forCurrentPeriod()
-  #     expect(periodStats.length).toEqual(24)
-  #     expect(_.first(periodStats).get('hi')).toEqual(@hour23.get('hi'))
-  #     expect(_.last(periodStats).get('t')).toEqual(null)
-  #
-  #   it 'return last 7 days', ->
-  #     @period.setPeriod('7 days')
-  #     periodStats = @stats.forCurrentPeriod()
-  #     expect(periodStats.length).toEqual(7)
-  #     expect(_.first(periodStats).get('di')).toEqual(@day6.get('di'))
-  #     expect(_.last(periodStats).get('di')).toEqual(@day0.get('di'))
-  #
-  #   it 'return last 30 days', ->
-  #     @period.setPeriod('30 days')
-  #     periodStats = @stats.forCurrentPeriod()
-  #     expect(periodStats.length).toEqual(30)
-  #     expect(_.first(periodStats).get('di')).toEqual(@day29.get('di'))
-  #     expect(_.last(periodStats).get('di')).toEqual(@day0.get('di'))
-  #
-  #   it 'return all days', ->
-  #     @period.setPeriod('all days')
-  #     periodStats = @stats.forCurrentPeriod()
-  #     expect(periodStats.length).toEqual(44)
-  #     expect(_.first(periodStats).get('di')).toEqual(@day43.get('di'))
-  #     expect(_.last(periodStats).get('di')).toEqual(@day0.get('di'))
-  #
-  #   it 'return custom days', ->
-  #     @period.setCustomPeriod(@day6.get('di'), @day31.get('di'))
-  #     console.log @stats.forCurrentPeriodType()
-  #     periodStats = @stats.forCurrentPeriod()
-  #     expect(periodStats.length).toEqual(31 - 6 + 1)
-  #     expect(_.first(periodStats).get('di')).toEqual(@day31.get('di'))
-  #     expect(_.last(periodStats).get('di')).toEqual(@day6.get('di'))
-  #
-  # describe 'lastStatsDate', ->
-  #   it 'return most recent stat date', ->
-  #     expect(@stats.lastStatsDate()).toEqual(@minute1.date())
-  #   it 'return null when no stats', ->
-  #     stats = new MSVStats.Collections.Stats()
-  #     expect(stats.lastStatsDate()).toEqual(null)
-  #
-  # describe 'firstStatsDate', ->
-  #   it 'return first exsiting stat date', ->
-  #     expect(@stats.firstStatsDate()).toEqual(@day43.date())
-  #   it 'return null when no stats', ->
-  #     stats = new MSVStats.Collections.Stats()
-  #     expect(stats.firstStatsDate()).toEqual(null)
-  #
-  # describe 'VVData', ->
-  #   beforeEach ->
-  #     @vvData = @stats.vvData()
-  #
-  #   describe 'vv', ->
-  #     it 'return well formed array with time for spline chart', ->
-  #       expect(@vvData.vv.length).toEqual(30)
-  #       expect(_.first(@vvData.vv)).toEqual(7)
-  #
-  #   describe 'pv', ->
-  #     it 'return well formed array with time for spline chart', ->
-  #       expect(@vvData.pv.length).toEqual(30)
-  #       expect(_.last(@vvData.pv)).toEqual(0)
-  #
-  #   describe 'pvTotal()', ->
-  #     it 'return total number of pv for the period', ->
-  #       expect(@vvData.pvTotal()).toEqual(21)
-  #
-  #   describe 'vvTotal()', ->
-  #     it 'return total number of vv for the period', ->
-  #       expect(@vvData.vvTotal()).toEqual(21)
-  #
-  # describe 'BPData', ->
-  #   describe 'toArray()', ->
-  #     it 'return well formed array for pie chart', ->
-  #       bpData = @stats.bpData()
-  #       expect(bpData.toArray()).toEqual([
-  #         ['IE - Windows', 78]
-  #         ['Firefox - Windows', 57]
-  #         ['Chrome - Windows', 42]
-  #         ['Safari - Macintosh', 15]
-  #         ['Chrome - Macintosh', 15]
-  #         ['Safari - Windows', 3]
-  #         ['Safari - iPod', 3]
-  #         ['Safari - iPad', 3]
-  #         ['Firefox - Macintosh', 3]
-  #       ])
-  #
-  #   describe 'isEmpty', ->
-  #     it 'returns true when all values == 0', ->
-  #       MSVStats.stats = new MSVStats.Collections.Stats()
-  #       expect(MSVStats.stats.bpData().isEmpty()).toEqual(true)
-  #
-  #     it 'returns false when all values != 0', ->
-  #       expect(@stats.bpData().isEmpty()).toEqual(false)
-  #
-  # describe 'MDData', ->
-  #   beforeEach ->
-  #     @mdData = @stats.mdData()
-  #
-  #   it 'has data for Player mode part of pie chart', ->
-  #     expect(@mdData.m).toEqual('HTML5':30, 'Flash': 15)
-  #
-  #   it 'has data for Devise part of pie chart', ->
-  #     expect(@mdData.d).toEqual(
-  #       'HTML5 - Desktop': 21
-  #       'HTML5 - Mobile': 9
-  #       'HTML5 - Tablet': 0
-  #       'Flash - Desktop': 15
-  #       'Flash - Mobile': 0
-  #       'Flash - Tablet': 0
-  #     )
-  #
-  #   describe 'toArray()', ->
-  #     it 'has array data for Player mode part of pie chart', ->
-  #       expect(@mdData.toArray('m')).toEqual([['HTML5', 30],['Flash', 15]])
-  #
-  #     it 'has array data for Devise part of pie chart', ->
-  #       expect(@mdData.toArray('d')).toEqual([
-  #         ['HTML5 - Desktop', 21]
-  #         ['HTML5 - Mobile', 9]
-  #         ['Flash - Desktop', 15]
-  #       ])
-  #
-  #   describe 'isEmpty', ->
-  #     it 'returns true when all values == 0', ->
-  #       MSVStats.stats = new MSVStats.Collections.Stats()
-  #       expect(MSVStats.stats.mdData().isEmpty()).toEqual(true)
-  #
-  #     it 'returns false when all values != 0', ->
-  #       expect(@stats.mdData().isEmpty()).toEqual(false)
+describe 'StatsDays', ->
+  beforeEach ->
+    MSVStats.period    = new MSVStats.Models.Period()
+    MSVStats.statsDays = new MSVStats.Collections.StatsDays()
+    @stats = MSVStats.statsDays
+    @stats.reset(daysStats)
+
+  describe 'vvTotal(dateRange)', ->
+    it 'returns period dateRange vv sum', ->
+      MSVStats.period.setPeriod type: 'days'
+      expect(@stats.vvTotal()).toEqual(332640)
+
+    it 'returns custom period dateRange vv sum', ->
+      dateRange = [
+        @stats.at(@stats.length - 30).time()
+        @stats.last().time()
+      ]
+      expect(@stats.vvTotal(dateRange)).toEqual(259200)
+
+  describe 'customPluck(attr, firstIndex)', ->
+    it 'returns [] when no stats', ->
+      @stats.reset()
+      expect(@stats.customPluck('vv', -30)).toEqual([])
+
+    it 'returns only last 30 vv when no stats', ->
+      expect(@stats.customPluck('vv', -30).length).toEqual(30)
+
+
+  describe 'BPData', ->
+    beforeEach ->
+      MSVStats.period.setPeriod type: 'days'
+      @bpData = @stats.bpData()
+
+    it 'returns aggregated BPData', ->
+      expect(@bpData.bp).toEqual
+       'and-and': 165600
+       'chr-osx': 299520
+       'chr-win': 1213920
+       'fir-osx': 115200
+       'fir-win': 663840
+       'iex-win': 760320
+       'saf-ipa': 128160
+       'saf-iph': 168480
+       'saf-ipo': 33120
+       'saf-osx': 227520
+       'saf-win': 21600
+
+    it 'returns aggregated with custom dates range', ->
+      MSVStats.period.setPeriod type: 'days', startIndex: -30, endIndex: -1
+      @bpData = @stats.bpData()
+      expect(@bpData.bp).toEqual
+       'and-and': 139680
+       'chr-osx': 264960
+       'chr-win': 923040
+       'fir-osx': 92160
+       'fir-win': 545760
+       'iex-win': 571680
+       'saf-ipa': 106560
+       'saf-iph': 131040
+       'saf-ipo': 23040
+       'saf-osx': 177120
+       'saf-win': 15840
+
+    it 'sets total', ->
+      expect(@bpData.total).toEqual(3797280)
+
+    describe 'toArray()', ->
+      it 'return well formed array for view', ->
+        expect(@bpData.toArray()).toEqual [
+          [ 'chr-win', 1213920 ]
+          [ 'iex-win', 760320 ]
+          [ 'fir-win', 663840 ]
+          [ 'chr-osx', 299520 ]
+          [ 'saf-osx', 227520 ]
+          [ 'saf-iph', 168480 ]
+          [ 'and-and', 165600 ]
+          [ 'saf-ipa', 128160 ]
+          [ 'fir-osx', 115200 ]
+          [ 'saf-ipo', 33120 ]
+          [ 'saf-win', 21600 ]
+        ]
+
+    describe 'percentage()', ->
+      it 'return percentage based on total', ->
+        expect(@stats.bpData().percentage(1213920)).toEqual('31.97')
+
+    describe 'isEmpty', ->
+      it 'returns true when total == 0', ->
+        MSVStats.stats = new MSVStats.Collections.Stats()
+        expect(MSVStats.stats.bpData().isEmpty()).toEqual(true)
+
+      it 'returns false when total != 0', ->
+        expect(@stats.bpData().isEmpty()).toEqual(false)
+
+  describe 'MDData', ->
+    beforeEach ->
+      MSVStats.period.setPeriod type: 'days'
+      @mdData = @stats.mdData()
+
+    it 'set media HTML5 total', ->
+      expect(@mdData.mh).toEqual(433440)
+
+    it 'set media Flash total', ->
+      expect(@mdData.mf).toEqual(141120)
+
+    it 'set HTML5 devise totals', ->
+      expect(@mdData.dh).toEqual
+        'Desktop': 257760
+        'Mobile':  115200
+        'Tablet':  60480
+
+    it 'set Flash devise totals', ->
+      expect(@mdData.df).toEqual
+        'Desktop': 141120
+        'Mobile': 0
+        'Tablet': 0
+
+    describe 'toArray()', ->
+      it 'has array data for HTML5 devise totals', ->
+        expect(@mdData.toArray('dh')).toEqual [
+          ['Desktop', 257760]
+          ['Mobile',  115200]
+          ['Tablet',   60480]
+        ]
+
+      it 'has array data for Flash devise totals', ->
+        expect(@mdData.toArray('df')).toEqual [
+          ['Desktop', 141120]
+        ]
+
+    describe 'isEmpty', ->
+      it 'returns true when total == 0', ->
+        MSVStats.stats = new MSVStats.Collections.Stats()
+        expect(MSVStats.stats.mdData().isEmpty()).toEqual(true)
+
+      it 'returns false when total != 0', ->
+        expect(@stats.mdData().isEmpty()).toEqual(false)

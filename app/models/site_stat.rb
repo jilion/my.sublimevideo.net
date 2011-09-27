@@ -80,7 +80,7 @@ class SiteStat
       from  = to - 59.minutes
       stats = stats.m_after(from).entries
       while from <= to
-        if stats.first.m == from
+        if stats.first.try(:m) == from
           json_stats << stats.shift
         else
           json_stats << SiteStat.new(m: from.to_time)
@@ -92,7 +92,7 @@ class SiteStat
       from  = to - 23.hours
       stats = stats.h_after(from).entries
       while from <= to
-        if stats.first.h == from
+        if stats.first.try(:h) == from
           json_stats << stats.shift
         else
           json_stats << SiteStat.new(h: from.to_time)
@@ -102,9 +102,9 @@ class SiteStat
     when 'days'
       stats = stats.where(d: { "$ne" => nil }).order_by([:d, :asc]).entries
       to    = 1.day.ago.change(hour: 0, min: 0, sec: 0).utc
-      from  = [stats.first.d, to - 29.days].min
+      from  = [(stats.first.try(:d) || Time.now.utc), to - 29.days].min
       while from <= to
-        if stats.first.d == from
+        if stats.first.try(:d) == from
           json_stats << stats.shift
         else
           json_stats << SiteStat.new(d: from.to_time)
