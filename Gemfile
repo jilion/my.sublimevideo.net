@@ -33,7 +33,7 @@ gem 'liquid',                '~> 2.2.2'
 gem 'RedCloth',              '~> 4.2.7'
 
 # Auth / invitations
-gem 'devise',                '~> 1.4.6'
+gem 'devise',                '~> 1.4.7'
 gem 'devise_invitable',      '~> 0.5.5'
 
 # API
@@ -70,8 +70,8 @@ gem 'public_suffix_service', '~> 0.9.0'
 gem 'useragent',             :git => 'git://github.com/Jilion/useragent.git'
 
 gem 'zip',                   '~> 2.0.2', :require => 'zip/zip'
-gem 'countries',             '~> 0.5.3'
-gem 'PageRankr',             '~> 2.0.2', :require => 'page_rankr'
+gem 'countries',             '~> 0.6.2'
+gem 'PageRankr',             '~> 2.0.3', :require => 'page_rankr'
 gem 'twitter',               '~> 1.7.1'
 gem 'settingslogic',         '~> 2.0.6'
 gem 'array_stats',           '~> 0.6.0'
