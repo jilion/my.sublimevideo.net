@@ -6,7 +6,11 @@
   %td.user
     %small
       = link_to invoice.user.full_name, [:admin, invoice.user], :title => "#{invoice.user.full_name} <#{invoice.user.email}>"
-      = "(beta)" if invoice.user.beta?
+      - if invoice.user.beta?
+        = "("
+        = "beta" if invoice.user.beta?
+        = "#{', ' if invoice.user.beta?}archived" if invoice.user.archived?
+        = ")"
   %td.site
     = links_to_hostnames(invoice.site)
     = "(#{invoice.site.state})" unless invoice.site.active?
