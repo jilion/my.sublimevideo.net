@@ -1,11 +1,5 @@
 require 'spec_helper'
 
-feature "Checks" do
-  background do
-    sign_in_as :user
-  end
-end
-
 feature "Support" do
   context "user has only the 'forum' support level" do
     background do
@@ -16,20 +10,20 @@ feature "Support" do
     scenario "navigation (1)" do
       page.should have_content('Help')
       click_link "Help"
-      current_url.should == 'http://sublimevideo.net/help'
+      current_url.should =~ %r{http://sublimevideo.net/}
     end
 
     scenario "navigation (2)" do
       page.should have_content('Help')
       visit "/support"
-      current_url.should == 'http://sublimevideo.net/help'
+      current_url.should =~ %r{http://sublimevideo.net/}
     end
 
     scenario "redirect feedback" do
       visit "/feedback"
-      current_url.should == 'http://sublimevideo.net/help'
+      current_url.should =~ %r{http://sublimevideo.net/}
     end
-end
+  end
 
   context "user has the 'email' support level" do
     background do
@@ -76,7 +70,7 @@ end
         current_url.should =~ %r(http://[^/]+/support)
         page.should have_content "Subject can't be blank"
         page.should have_no_content I18n.t('flash.tickets.create.notice')
-        Delayed::Job.last.should_not == 'Class#post_ticket'
+        Delayed::Job.last.should_not eql 'Class#post_ticket'
       end
 
       scenario "submit a ticket with an invalid message" do
@@ -87,7 +81,7 @@ end
         current_url.should =~ %r(http://[^/]+/support)
         page.should have_content "Message can't be blank"
         page.should have_no_content I18n.t('flash.tickets.create.notice')
-        Delayed::Job.last.should_not == 'Class#post_ticket'
+        Delayed::Job.last.should_not eql 'Class#post_ticket'
       end
     end
   end

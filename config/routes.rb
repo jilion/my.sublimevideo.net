@@ -49,7 +49,7 @@ MySublimeVideo::Application.routes.draw do
   match '/refund' => "refunds#create", :via => :post, :as => 'refund'
 
   resource :ticket, :only => [:new, :create], :path => '/support', :path_names => { :new =>  '' }
-  match '/feedback' => redirect('/support'), :via => :get
+  %w[help feedback].each { |action| match action => redirect('/support'), :via => :get }
 
   match ':page', :to => 'pages#show', :via => :get, :as => :page, :page => /terms|privacy|suspended/
   match 'r/:type/:token', :to => 'referrers#redirect', :via => :get, :type => /c/, :token => /[a-z0-9]{8}/

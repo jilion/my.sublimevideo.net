@@ -125,7 +125,7 @@ describe SiteStat do
         Factory.create(:site_stat, t: site.token, d: Time.now.utc.change(hour: 0, min: 0, sec: 0), pv: {e: 103})
       end
 
-      describe "with minutes period", :focus do
+      describe "with minutes period" do
         subject { JSON.parse(SiteStat.json(site.token, 'minutes')) }
 
         its(:size) { should eql(60) }
@@ -139,7 +139,7 @@ describe SiteStat do
         it { subject[59]['t'].should eql(Time.now.utc.change(sec: 0).to_i) }
       end
 
-      describe "with hours period", :focus do
+      describe "with hours period" do
         subject { JSON.parse(SiteStat.json(site.token, 'hours')) }
 
         its(:size) { should eql(24) }
@@ -153,7 +153,7 @@ describe SiteStat do
         it { subject[23]['t'].should eql(1.hours.ago.change(min: 0, sec: 0).to_i) }
       end
 
-      describe "with days period", :focus do
+      describe "with days period" do
         subject { JSON.parse(SiteStat.json(site.token, 'days')) }
 
         its(:size) { should eql(81) }
@@ -166,7 +166,7 @@ describe SiteStat do
         it { subject[80]['t'].should eql(1.day.ago.change(hour: 0, min: 0, sec: 0).to_i) }
       end
 
-      describe "with days period (less than 30 days stats)", :focus do
+      describe "with days period (less than 30 days stats)" do
         before(:each) { @day81.delete }
         subject { JSON.parse(SiteStat.json(site.token, 'days')) }
 

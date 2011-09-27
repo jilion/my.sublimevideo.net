@@ -21,6 +21,7 @@ describe InvoiceItem::Plan do
 
       Timecop.travel(Time.utc(2011,6,1)) do
         @site3.pend_plan_changes # simulate downgrade
+        @site3.save_without_password_validation
       end
 
       @invoice1 = FactoryGirl.create(:invoice, site: @site1)
@@ -32,11 +33,11 @@ describe InvoiceItem::Plan do
       describe "with standard params and a site without pending plan" do
         subject { InvoiceItem::Plan.build(invoice: @invoice1, item: @site1.plan) }
 
-        its(:item)                  { should == @site1.plan }
-        its(:price)                 { should == 1000 }
-        its(:amount)                { should == 1000 }
-        its(:started_at)            { should == @site1.pending_plan_cycle_started_at }
-        its(:ended_at)              { should == @site1.pending_plan_cycle_ended_at }
+        its(:item)                  { should eql @site1.plan }
+        its(:price)                 { should eql 1000 }
+        its(:amount)                { should eql 1000 }
+        its(:started_at)            { should eql @site1.pending_plan_cycle_started_at }
+        its(:ended_at)              { should eql @site1.pending_plan_cycle_ended_at }
         its(:discounted_percentage) { should be_nil }
       end
     end
@@ -46,22 +47,22 @@ describe InvoiceItem::Plan do
       describe "with standard params and a site with pending plan" do
         subject { InvoiceItem::Plan.build(invoice: @invoice2, item: @site2.pending_plan) }
 
-        its(:item)                  { should == @site2.pending_plan }
-        its(:price)                 { should == 2000 }
-        its(:amount)                { should == 2000 }
-        its(:started_at)            { should == @site2.pending_plan_cycle_started_at }
-        its(:ended_at)              { should == @site2.pending_plan_cycle_ended_at }
+        its(:item)                  { should eql @site2.pending_plan }
+        its(:price)                 { should eql 2000 }
+        its(:amount)                { should eql 2000 }
+        its(:started_at)            { should eql @site2.pending_plan_cycle_started_at }
+        its(:ended_at)              { should eql @site2.pending_plan_cycle_ended_at }
         its(:discounted_percentage) { should be_nil }
       end
       # the old deducted plan
       describe "with deduct params" do
         subject { InvoiceItem::Plan.build(invoice: @invoice2, item: @site2.plan, deduct: true) }
 
-        its(:item)                  { should == @site2.plan }
-        its(:price)                 { should == 1000 }
-        its(:amount)                { should == -1000 }
-        its(:started_at)            { should == @site2.plan_cycle_started_at }
-        its(:ended_at)              { should == @site2.plan_cycle_ended_at }
+        its(:item)                  { should eql @site2.plan }
+        its(:price)                 { should eql 1000 }
+        its(:amount)                { should eql -1000 }
+        its(:started_at)            { should eql @site2.plan_cycle_started_at }
+        its(:ended_at)              { should eql @site2.plan_cycle_ended_at }
         its(:discounted_percentage) { should be_nil }
       end
     end
@@ -71,11 +72,11 @@ describe InvoiceItem::Plan do
       describe "with standard params and a site with pending plan" do
         subject { InvoiceItem::Plan.build(invoice: @invoice3, item: @site3.pending_plan) }
 
-        its(:item)                  { should == @site3.pending_plan }
-        its(:price)                 { should == 1000 }
-        its(:amount)                { should == 1000 }
-        its(:started_at)            { should == @site3.pending_plan_cycle_started_at }
-        its(:ended_at)              { should == @site3.pending_plan_cycle_ended_at }
+        its(:item)                  { should eql @site3.pending_plan }
+        its(:price)                 { should eql 1000 }
+        its(:amount)                { should eql 1000 }
+        its(:started_at)            { should eql @site3.pending_plan_cycle_started_at }
+        its(:ended_at)              { should eql @site3.pending_plan_cycle_ended_at }
         its(:discounted_percentage) { should be_nil }
       end
     end

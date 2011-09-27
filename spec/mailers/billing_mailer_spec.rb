@@ -8,10 +8,10 @@ describe BillingMailer do
     @transaction = FactoryGirl.create(:transaction, invoices: [@invoice])
   end
 
-  it_should_behave_like "common mailer checks", %w[trial_will_end], from: ["billing@sublimevideo.net"], params: [FactoryGirl.create(:site)]
-  it_should_behave_like "common mailer checks", %w[credit_card_will_expire], from: ["billing@sublimevideo.net"], params: [FactoryGirl.create(:user, cc_expire_on: 1.day.from_now)]
-  it_should_behave_like "common mailer checks", %w[transaction_succeeded transaction_failed], from: ["billing@sublimevideo.net"], params: [FactoryGirl.create(:transaction, invoices: [FactoryGirl.create(:invoice)])]
-  it_should_behave_like "common mailer checks", %w[too_many_charging_attempts], from: ["billing@sublimevideo.net"], params: [FactoryGirl.create(:invoice)]
+  it_should_behave_like "common mailer checks", %w[too_many_charging_attempts], from: ["billing@sublimevideo.net"], params: FactoryGirl.create(:invoice)
+  it_should_behave_like "common mailer checks", %w[trial_will_end], from: ["billing@sublimevideo.net"], params: FactoryGirl.create(:site)
+  it_should_behave_like "common mailer checks", %w[credit_card_will_expire], from: ["billing@sublimevideo.net"], params: FactoryGirl.create(:user, cc_expire_on: 1.day.from_now)
+  it_should_behave_like "common mailer checks", %w[transaction_succeeded transaction_failed], from: ["billing@sublimevideo.net"], params: FactoryGirl.create(:transaction, invoices: [FactoryGirl.create(:invoice)])
 
   describe "#trial_will_end" do
     before(:each) do
@@ -23,7 +23,7 @@ describe BillingMailer do
       @last_delivery.subject.should == "Your trial for #{@site.hostname.presence || 'your site'} will expire in #{BusinessModel.days_for_trial-8} days"
       @last_delivery.body.encoded.should include "Dear #{@user.full_name},"
       @last_delivery.body.encoded.should include "#{BusinessModel.days_for_trial-8} days"
-      @last_delivery.body.encoded.should include "#{I18n.l(@site.trial_end, format: :named_date)}"
+      @last_delivery.body.encoded.should include I18n.l(@site.trial_end, format: :named_date)
       @last_delivery.body.encoded.should include "https://#{ActionMailer::Base.default_url_options[:host]}/sites/#{@site.token}/plan"
       @last_delivery.body.encoded.should include "http://docs.sublimevideo.net"
     end
@@ -52,8 +52,8 @@ describe BillingMailer do
       @last_delivery.subject.should == "Payment approved"
       @last_delivery.body.encoded.should include @transaction.user.full_name
       @last_delivery.body.encoded.should include "Your latest SublimeVideo payment has been approved."
-      @last_delivery.body.encoded.should include "https://localhost:3000/invoices/#{@invoice.to_param}"
-      @last_delivery.body.encoded.should include "https://localhost:3000/support#billing"
+      @last_delivery.body.encoded.should include "https://#{ActionMailer::Base.default_url_options[:host]}/invoices/#{@invoice.to_param}"
+      @last_delivery.body.encoded.should include "https://#{ActionMailer::Base.default_url_options[:host]}/support#billing"
     end
   end
 
@@ -67,8 +67,8 @@ describe BillingMailer do
       @last_delivery.subject.should == "Problem processing your payment"
       @last_delivery.body.encoded.should include @transaction.user.full_name
       @last_delivery.body.encoded.should include "Your credit card could not be charged."
-      @last_delivery.body.encoded.should include "https://localhost:3000/sites"
-      @last_delivery.body.encoded.should include "https://localhost:3000/support#billing"
+      @last_delivery.body.encoded.should include "https://#{ActionMailer::Base.default_url_options[:host]}/sites"
+      @last_delivery.body.encoded.should include "https://#{ActionMailer::Base.default_url_options[:host]}/support#billing"
     end
   end
 
@@ -81,10 +81,10 @@ describe BillingMailer do
     specify do
       @last_delivery.subject.should == "Payment for #{@invoice.site.hostname} has failed multiple times"
       @last_delivery.body.encoded.should include "The payment for #{@invoice.site.hostname} has failed multiple times, no further charging attempt will be made."
-      @last_delivery.body.encoded.should include "https://localhost:3000/sites/#{@invoice.site.to_param}/plan/edit"
+      @last_delivery.body.encoded.should include "https://#{ActionMailer::Base.default_url_options[:host]}/sites/#{@invoice.site.to_param}/plan/edit"
       @last_delivery.body.encoded.should include "Note that if the payment failed due to a problem with your credit card"
       @last_delivery.body.encoded.should include "you should probably update your credit card information via the following link:"
-      @last_delivery.body.encoded.should include "https://localhost:3000/card/edit"
+      @last_delivery.body.encoded.should include "https://#{ActionMailer::Base.default_url_options[:host]}/card/edit"
     end
   end
 
