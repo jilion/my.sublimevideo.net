@@ -4,11 +4,14 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
     this.initHighcharts()
     this.initSparkline()
     this.initModels()
-    this.initPusher()
+    this.initPusherTick()
 
     pageTitleView = new MSVStats.Views.PageTitleView(collection: MSVStats.sites)
     sitesSelectView = new MSVStats.Views.SitesSelectView(collection: MSVStats.sites)
 
+    periodSelectorSecondsView = new MSVStats.Views.PeriodSelectorSecondsView
+      statsSeconds: MSVStats.statsSeconds
+      period: MSVStats.period
     periodSelectorMinutesView = new MSVStats.Views.PeriodSelectorMinutesView
       statsMinutes: MSVStats.statsMinutes
       period: MSVStats.period
@@ -23,23 +26,26 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
       period: MSVStats.period
 
     MSVStats.vvView = new MSVStats.Views.VVView
+      statsSeconds: MSVStats.statsSeconds
       statsMinutes: MSVStats.statsMinutes
       statsHours:   MSVStats.statsHours
       statsDays:    MSVStats.statsDays
       period:       MSVStats.period
 
     bpView = new MSVStats.Views.BPView
+      statsSeconds: MSVStats.statsSeconds
       statsMinutes: MSVStats.statsMinutes
       statsHours:   MSVStats.statsHours
       statsDays:    MSVStats.statsDays
       period:       MSVStats.period
-      
+
     mdView = new MSVStats.Views.MDView
+      statsSeconds: MSVStats.statsSeconds
       statsMinutes: MSVStats.statsMinutes
       statsHours:   MSVStats.statsHours
       statsDays:    MSVStats.statsDays
       period:       MSVStats.period
-    
+
     # updateDateView = new MSVStats.Views.UpdateDateView(collection: MSVStats.stats)
     # $('#update_date').html(updateDateView.render().el)
 
@@ -47,6 +53,7 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
     'sites/:token/stats': 'home'
 
   home: (token) ->
+    MSVStats.selectedSiteToken = token
     MSVStats.period.clear()
     MSVStats.sites.select(token)
     this.resetAndFetchStats()
@@ -72,30 +79,53 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
   initModels: ->
     MSVStats.period = new MSVStats.Models.Period()
 
+    MSVStats.statsSeconds = new MSVStats.Collections.StatsSeconds()
     MSVStats.statsMinutes = new MSVStats.Collections.StatsMinutes()
     MSVStats.statsHours   = new MSVStats.Collections.StatsHours()
     MSVStats.statsDays    = new MSVStats.Collections.StatsDays()
 
-  initPusher: ->
+  initPusherTick: ->
     MSVStats.statsChannel = MSVStats.pusher.subscribe("stats")
     MSVStats.statsChannel.bind 'tick', (data) ->
       MSVStats.statsMinutes.fetch()
       MSVStats.statsHours.fetch() if data.h
       MSVStats.statsDays.fetch() if data.d
-      
+
+  initPusherStats: ->
+    console.log MSVStats.selectedSiteToken
+    MSVStats.pusherChannel = MSVStats.pusher.subscribe("private-#{MSVStats.selectedSiteToken}")
+    console.log 'connected'
+    MSVStats.pusherChannel.bind 'stats', (data) ->
+      MSVStats.statsSeconds.remove(MSVStats.statsSeconds.first(), silent: true)
+      MSVStats.statsSeconds.add(data, silent: true)
+      MSVStats.statsSeconds.trigger('change', MSVStats.statsSeconds)
+      # MSVStats.stats.fetch(silent: true, success: ->
+      #   MSVStats.period.set({ minValue: '60 minutes' }, silent: true)
+      #   MSVStats.stats.trigger('reset')
+      # )
+
   resetAndFetchStats: ->
+    MSVStats.statsSeconds.reset()
     MSVStats.statsMinutes.reset()
     MSVStats.statsHours.reset()
     MSVStats.statsDays.reset()
-    
+
+    MSVStats.statsSeconds.fetch
+      silent: true
+      success: -> MSVStats.statsRouter.syncFetchSuccess()
     MSVStats.statsMinutes.fetch
       silent: true
-      success: -> MSVStats.period.autosetPeriod()
+      success: -> MSVStats.statsRouter.syncFetchSuccess()
     MSVStats.statsHours.fetch
       silent: true
-      success: -> MSVStats.period.autosetPeriod()
+      success: -> MSVStats.statsRouter.syncFetchSuccess()
     MSVStats.statsDays.fetch
       silent: true
-      success: -> MSVStats.period.autosetPeriod()
+      success: -> MSVStats.statsRouter.syncFetchSuccess()
+      
+  syncFetchSuccess: ->
+    if MSVStats.Collections.Stats.allPresent()
+      MSVStats.period.autosetPeriod()
+      MSVStats.statsRouter.initPusherStats()
 
 

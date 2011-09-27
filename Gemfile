@@ -88,6 +88,10 @@ gem 'dalli',                 '~> 1.1.1'
 # Stats
 gem 'crack',                 '~> 0.1.8'
 gem 'pusher',                '~> 0.8.3'
+# ========
+# = TEMP =
+# ========
+gem 'em-http-request'
 
 # Javascript test
 gem "jasminerice"

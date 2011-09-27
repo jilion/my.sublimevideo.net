@@ -26,16 +26,16 @@
         margin:0;
         padding:0;
 
-        .minutes, .hours, .days {
+        .minutes, .hours, .days, .seconds {
           position: relative;
           float: left;
-          width: 30%;
+          width: 23%;
         }
         .all {
           position: relative;
           float: left;
           height: 100%;
-          width: 10%;
+          width: 8%;
         }
         
         #period_minutes_sparkline {

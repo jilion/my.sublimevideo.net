@@ -42,6 +42,7 @@ describe 'Period', ->
 
   describe '#autosetPeriod', ->
     beforeEach ->
+      MSVStats.statsSeconds = new MSVStats.Collections.StatsSeconds([{"vv":0}])
       MSVStats.statsMinutes = new MSVStats.Collections.StatsMinutes([{"vv":0}])
       MSVStats.statsHours   = new MSVStats.Collections.StatsHours([{"vv":0}])
       MSVStats.statsDays    = new MSVStats.Collections.StatsDays([{"vv":0}])

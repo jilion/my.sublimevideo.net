@@ -4,7 +4,8 @@ require 'ffaker' if Rails.env.development?
 
 BASE_USERS = [["Mehdi Aminian", "mehdi@jilion.com"], ["Zeno Crivelli", "zeno@jilion.com"], ["Thibaud Guillaume-Gentil", "thibaud@jilion.com"], ["Octave Zangs", "octave@jilion.com"], ["Rémy Coutable", "remy@jilion.com"]]
 COUNTRIES = %w[US FR CH ES DE BE GB CN SE NO FI BR CA]
-BASE_SITES = %w[vimeo.com dribbble.com jilion.com swisslegacy.com maxvoltar.com 37signals.com youtube.com zeldman.com sumagency.com deaxon.com veerle.duoh.com]
+# BASE_SITES = %w[vimeo.com dribbble.com jilion.com swisslegacy.com maxvoltar.com 37signals.com youtube.com zeldman.com sumagency.com deaxon.com veerle.duoh.com]
+BASE_SITES = %w[sublimevideo.net jilion.com swisslegacy.com]
 
 namespace :db do
 
@@ -315,11 +316,11 @@ def create_site_stats(user_id=nil)
   users = user_id ? [User.find(user_id)] : User.all
   users.each do |user|
     user.sites.each do |site|
-      # Minutes
-      60.times.each do |i|
+      # Days
+      365.times.each do |i|
         SiteStat.collection.update(
-          { t: site.token, m: i.minutes.ago.change(sec: 0, usec: 0).to_time },
-          { "$inc" => random_stats_inc(1) },
+          { t: site.token, d: i.days.ago.change(hour: 0, min: 0, sec: 0, usec: 0).to_time },
+          { "$inc" => random_stats_inc(24 * 60 * 60) },
           upsert: true
         )
       end
@@ -327,15 +328,23 @@ def create_site_stats(user_id=nil)
       25.times.each do |i|
         SiteStat.collection.update(
           { t: site.token, h: i.hours.ago.change(min: 0, sec: 0, usec: 0).to_time },
+          { "$inc" => random_stats_inc(60 * 60) },
+          upsert: true
+        )
+      end
+      # Minutes
+      60.times.each do |i|
+        SiteStat.collection.update(
+          { t: site.token, m: i.minutes.ago.change(sec: 0, usec: 0).to_time },
           { "$inc" => random_stats_inc(60) },
           upsert: true
         )
       end
-      # Days
-      300.times.each do |i|
+      # seconds
+      60.times.each do |i|
         SiteStat.collection.update(
-          { t: site.token, d: i.days.ago.change(hour: 0, min: 0, sec: 0, usec: 0).to_time },
-          { "$inc" => random_stats_inc(24 * 60) },
+          { t: site.token, s: i.seconds.ago.change(usec: 0).to_time },
+          { "$inc" => random_stats_inc(1) },
           upsert: true
         )
       end
@@ -347,41 +356,57 @@ end
 def recurring_site_stats_update(user_id)
   sites = User.find(user_id).sites
   puts "Begin recurring fake site(s) stats genaration (each minute)"
-  loop do
-    now = Time.now.utc
-    if now.change(usec: 0) == now.change(sec: 0, usec: 0)
-      sites.each do |site|
-        inc = random_stats_inc(1)
-        SiteStat.collection.update({ t: site.token, m: now.change(sec: 0, usec: 0).to_time },                  { "$inc" => inc }, upsert: true)
-        SiteStat.collection.update({ t: site.token, h: now.change(min: 0, sec: 0, usec: 0).to_time },          { "$inc" => inc }, upsert: true)
-        SiteStat.collection.update({ t: site.token, d: now.change(hour: 0, min: 0, sec: 0, usec: 0).to_time }, { "$inc" => inc }, upsert: true)
-        # Pusher["private-#{site.token}"].trigger('stats-fetch', {})
+  Thread.new do
+    loop do
+      now = Time.now.utc
+      if now.change(usec: 0) == now.change(sec: 0, usec: 0)
+        sites.each do |site|
+          inc = random_stats_inc(60)
+          SiteStat.collection.update({ t: site.token, m: now.change(sec: 0, usec: 0).to_time },                  { "$inc" => inc }, upsert: true)
+          SiteStat.collection.update({ t: site.token, h: now.change(min: 0, sec: 0, usec: 0).to_time },          { "$inc" => inc }, upsert: true)
+          SiteStat.collection.update({ t: site.token, d: now.change(hour: 0, min: 0, sec: 0, usec: 0).to_time }, { "$inc" => inc }, upsert: true)
+          # Pusher["private-#{site.token}"].trigger('stats-fetch', {})
+        end
+
+        json = {}
+        json[:h] = true if now.change(sec: 0, usec: 0) == now.change(min: 0, sec: 0, usec: 0)
+        json[:d] = true if now.change(min: 0, sec: 0, usec: 0) == now.change(hour: 0, min: 0, sec: 0, usec: 0)
+        Pusher["stats"].trigger('tick', json)
+
+        puts "Site(s) stats updated at #{now.change(sec: 0, usec: 0)}"
+        sleep 50
       end
-
-      json = {}
-      json[:h] = true if now.change(sec: 0, usec: 0) == now.change(min: 0, sec: 0, usec: 0)
-      json[:d] = true if now.change(min: 0, sec: 0, usec: 0) == now.change(hour: 0, min: 0, sec: 0, usec: 0)
-      Pusher["stats"].trigger('tick', json)
-
-      puts "Site(s) stats updated at #{now.change(sec: 0, usec: 0)}"
-      sleep 40
+      sleep 0.9
     end
-    sleep 0.9
+  end
+  EM.run do
+    EM.add_periodic_timer(0.01) do
+      second = Time.now.utc.change(usec: 0).to_time
+      if second.to_i == (Time.now.to_f * 10).to_i / 10.0
+        sites.each do |site|
+          inc = random_stats_inc(1, 5)
+          SiteStat.collection.update({ t: site.token, s: second }, { "$inc" => inc }, upsert: true)
+          json = SiteStat.last.to_json(except: [:_id, :t, :s, :m, :h, :d], methods: [:t])
+          Pusher["private-#{site.token}"].trigger_async('stats', json)
+        end
+        puts "Site(s) stats seconds updated at #{second}"
+      end
+    end
   end
 end
 
-def random_stats_inc(i)
+def random_stats_inc(i, force = nil)
   {
     # field :pv, :type => Hash # Page Visits: { m (main) => 2, e (extra) => 10, d (dev) => 43, i (invalid) => 2 }
-    "pv.m" => i * rand(20),
-    "pv.e" => i * rand(4),
-    "pv.d" => i * rand(2),
-    "pv.i" => i * rand(2),
+    "pv.m" => force || (i * rand(20)),
+    "pv.e" => force || (i * rand(4)),
+    "pv.d" => force || (i * rand(2)),
+    "pv.i" => force || (i * rand(2)),
     # field :vv, :type => Hash # Video Views: { m (main) => 1, e (extra) => 3, d (dev) => 11, i (invalid) => 1 }
-    "vv.m" => i * rand(10),
-    "vv.e" => i * rand(3),
-    "vv.d" => i * rand(2),
-    "vv.i" => i * rand(2),
+    "vv.m" => force || (i * rand(10)),
+    "vv.e" => force || (i * rand(3)),
+    "vv.d" => force || (i * rand(2)),
+    "vv.i" => force || (i * rand(2)),
     # field :md, :type => Hash # Player Mode + Device hash { h (html5) => { d (desktop) => 2, m (mobile) => 1 }, f (flash) => ... }
     "md.h.d" => i * rand(12),
     "md.h.m" => i * rand(5),

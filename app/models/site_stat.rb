@@ -4,6 +4,7 @@ class SiteStat
   field :t,  :type => String # Site token
 
   # DateTime periods
+  field :s,  :type => DateTime  # Second
   field :m,  :type => DateTime  # Minute
   field :h,  :type => DateTime  # Hour
   field :d,  :type => DateTime  # Day
@@ -14,6 +15,7 @@ class SiteStat
   field :bp, :type => Hash # Browser + Plateform hash { "saf-win" => 2, "saf-osx" => 4, ...}
 
   index :t
+  index [[:t, Mongo::ASCENDING], [:s, Mongo::ASCENDING]]#, :unique => true
   index [[:t, Mongo::ASCENDING], [:m, Mongo::ASCENDING]]#, :unique => true
   index [[:t, Mongo::ASCENDING], [:h, Mongo::ASCENDING]]#, :unique => true
   index [[:t, Mongo::ASCENDING], [:d, Mongo::ASCENDING]]#, :unique => true
@@ -30,19 +32,11 @@ class SiteStat
   # = Scopes =
   # ==========
 
-  %w[m h d].each do |period|
+  %w[s m h d].each do |period|
     scope "#{period}_after".to_sym, lambda { |date| where(period => { "$gte" => date.to_i }).order_by([period.to_sym, :asc]) }
     scope "#{period}_before".to_sym,  lambda { |date| where(period => { "$lt" => date.to_i }).order_by([period.to_sym, :asc]) }
     scope "#{period}_between".to_sym, lambda { |start_date, end_date| where(period => { "$gte" => start_date.to_i, "$lt" => end_date.to_i }).order_by([period.to_sym, :asc]) }
   end
-
-  # scope :last_data, lambda {
-  #   where("$or" => [
-  #     { m: { "$gte" => 60.minutes.ago.change(sec: 0).utc } },
-  #     { h: { "$gte" => 24.hours.ago.change(min: 0, sec: 0).utc } },
-  #     { d: { "$ne"  => nil } }
-  #   ])
-  # }
 
   # ====================
   # = Instance Methods =
@@ -54,7 +48,7 @@ class SiteStat
 
   # time for backbonejs model
   def t
-    (m || h || d).to_i
+    (s || m || h || d).to_i
   end
 
   # only main & extra hostname are counted in charts
@@ -75,6 +69,18 @@ class SiteStat
     stats      = SiteStat.where(t: token)
     json_stats = []
     case period_type
+    when 'seconds'
+      to    = 1.second.ago.change(usec: 0).utc
+      from  = to - 59.seconds
+      stats = stats.s_after(from).entries
+      while from <= to
+        if stats.first.try(:s) == from
+          json_stats << stats.shift
+        else
+          json_stats << SiteStat.new(s: from.to_time)
+        end
+        from += 1.second
+      end
     when 'minutes'
       to    = SiteStat.where(m: { "$ne"  => nil }).order_by([:m, :asc]).last.m
       from  = to - 59.minutes
@@ -113,7 +119,7 @@ class SiteStat
       end
     end
 
-    json_stats.to_json({ except: [:_id, :t, :m, :h, :d], :methods => [:t] })
+    json_stats.to_json(except: [:_id, :t, :s, :m, :h, :d], methods: [:t])
   end
 
   def self.create_stats_from_trackers!(log, trackers)
@@ -135,12 +141,13 @@ class SiteStat
 
   def self.delay_clear_old_minutes_and_days_stats
     unless Delayed::Job.already_delayed?('%SiteStat%clear_old_minutes_and_days_stats%')
-      delay(priority: 100, run_at: 15.minutes.from_now).clear_old_minutes_and_days_stats
+      delay(priority: 100, run_at: 5.minutes.from_now).clear_old_minutes_and_days_stats
     end
   end
 
   def self.clear_old_minutes_and_days_stats
     delay_clear_old_minutes_and_days_stats
+    self.s_before(90.seconds.ago).delete_all
     self.m_before(180.minutes.ago).delete_all
     self.h_before(72.hours.ago).delete_all
   end

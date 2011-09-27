@@ -4,6 +4,8 @@ class MSVStats.Views.VVView extends Backbone.View
   initialize: ->
     _.bindAll this, 'render', 'renderIfSelected'
     @options.period.bind 'change', this.render
+    @options.statsSeconds.bind 'change', this.renderIfSelected
+    @options.statsSeconds.bind 'reset', this.renderIfSelected
     @options.statsMinutes.bind 'reset', this.renderIfSelected
     @options.statsHours.bind   'reset', this.renderIfSelected
     @options.statsDays.bind    'reset', this.renderIfSelected
@@ -26,6 +28,10 @@ class MSVStats.Views.VVView extends Backbone.View
     this.render() if MSVStats.period.get('type') == stats.periodType()
 
   renderChart: ->
+    console.log MSVStats.statsSeconds.length
+    console.log MSVStats.period.startTime()
+    console.log MSVStats.period.endTime()
+    console.log MSVStats.period.endTime() - MSVStats.period.startTime()
     MSVStats.vvChart = new Highcharts.StockChart
       chart:
         renderTo: 'vv_chart'
@@ -61,7 +67,7 @@ class MSVStats.Views.VVView extends Backbone.View
         shadow: false
         crosshairs: true
         formatter: ->
-          title = ["<b>#{Highcharts.dateFormat('%e %b %Y, %H:%M', @x)}</b><br/>"]
+          title = ["<b>#{Highcharts.dateFormat('%e %b %Y, %H:%M:%S', @x)}</b><br/>"]
           title += _.map(@points, (point) ->
             "<b>#{point.series.name}</b><br/>#{Highcharts.numberFormat(point.y, 0)} hits"
           ).join("<br/>")
@@ -117,7 +123,8 @@ class MSVStats.Views.VVView extends Backbone.View
         gridLineWidth: 1
         type: 'datetime'
         min: MSVStats.period.startTime()
-        max: MSVStats.period.endTime()
+        # max: MSVStats.period.endTime()
+        max: MSVStats.period.startTime() + 59 * MSVStats.period.typeInterval()
       yAxis:
         lineWidth: 0
         offset: 10
