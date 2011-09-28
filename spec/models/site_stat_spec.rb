@@ -13,7 +13,7 @@ describe SiteStat do
     describe ".delay_clear_old_minutes_and_days_stats" do
       it "delays clear_old_minutes_and_days_stats if not already delayed" do
         expect { SiteStat.delay_clear_old_minutes_and_days_stats }.to change(Delayed::Job, :count).by(1)
-        Delayed::Job.last.run_at.should be_within(60).of(15.minutes.from_now)
+        Delayed::Job.last.run_at.should be_within(60).of(5.minutes.from_now)
       end
 
       it "delays nothing if already delayed" do
@@ -40,7 +40,7 @@ describe SiteStat do
 
       it "delays itself" do
         expect { SiteStat.clear_old_minutes_and_days_stats }.to change(Delayed::Job, :count).by(1)
-        Delayed::Job.last.run_at.should be_within(60).of(15.minutes.from_now)
+        Delayed::Job.last.run_at.should be_within(60).of(5.minutes.from_now)
       end
     end
 
