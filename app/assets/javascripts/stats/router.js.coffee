@@ -57,6 +57,7 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
     MSVStats.period.clear()
     MSVStats.sites.select(token)
     this.resetAndFetchStats()
+    MSVStats.statsRouter.initPusherStats()
 
   initHighcharts: ->
     Highcharts.setOptions
@@ -73,7 +74,7 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
     $.fn.sparkline.defaults.line.maxSpotColor    = false
     $.fn.sparkline.defaults.line.drawNormalOnTop = true
     $.fn.sparkline.defaults.line.chartRangeClip  = true
-    # $.fn.sparkline.defaults.line.chartRangeMin   = 0
+    $.fn.sparkline.defaults.line.chartRangeMin   = 0
     # $.fn.sparkline.defaults.line.chartRangeMax   = 0
 
   initModels: ->
@@ -94,15 +95,30 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
   initPusherStats: ->
     console.log MSVStats.selectedSiteToken
     MSVStats.pusherChannel = MSVStats.pusher.subscribe("private-#{MSVStats.selectedSiteToken}")
-    console.log 'connected'
+
+    # console.log MSVStats.pusherChannel.subscribed
+
+    MSVStats.pusherChannel.bind 'pusher:subscription_succeeded', ->
+      console 'channel subscribed'
+      # console.log states
+      MSVStats.statsSeconds.fetch()
+
+    # MSVStats.pusher.connection.bind "state_change", (states) ->
+      # console.log states
+      # MSVStats.statsSeconds.fetch()
+
     MSVStats.pusherChannel.bind 'stats', (data) ->
+      console.log new Date(parseInt(data.t) * 1000)
       MSVStats.statsSeconds.remove(MSVStats.statsSeconds.first(), silent: true)
       MSVStats.statsSeconds.add(data, silent: true)
       MSVStats.statsSeconds.trigger('change', MSVStats.statsSeconds)
-      # MSVStats.stats.fetch(silent: true, success: ->
-      #   MSVStats.period.set({ minValue: '60 minutes' }, silent: true)
-      #   MSVStats.stats.trigger('reset')
-      # )
+
+    # a = 0
+    # until MSVStats.pusherChannel.subscribed
+    #   a += 1
+    #   if a == 1000
+    #     a = 0
+    #     console.log('not connected')
 
   resetAndFetchStats: ->
     MSVStats.statsSeconds.reset()
@@ -110,9 +126,9 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
     MSVStats.statsHours.reset()
     MSVStats.statsDays.reset()
 
-    MSVStats.statsSeconds.fetch
-      silent: true
-      success: -> MSVStats.statsRouter.syncFetchSuccess()
+    # MSVStats.statsSeconds.fetch
+    #   silent: true
+    #   success: -> MSVStats.statsRouter.syncFetchSuccess()
     MSVStats.statsMinutes.fetch
       silent: true
       success: -> MSVStats.statsRouter.syncFetchSuccess()
@@ -122,10 +138,9 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
     MSVStats.statsDays.fetch
       silent: true
       success: -> MSVStats.statsRouter.syncFetchSuccess()
-      
+
   syncFetchSuccess: ->
     if MSVStats.Collections.Stats.allPresent()
       MSVStats.period.autosetPeriod()
-      MSVStats.statsRouter.initPusherStats()
 
 

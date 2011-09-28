@@ -47,9 +47,9 @@ class MSVStats.Collections.Stats extends Backbone.Collection
         else
           memo
       context)
-      
+
   @allPresent: ->
-    !MSVStats.statsSeconds.isEmpty() && !MSVStats.statsMinutes.isEmpty() && !MSVStats.statsHours.isEmpty() && !MSVStats.statsDays.isEmpty()
+    !MSVStats.statsMinutes.isEmpty() && !MSVStats.statsHours.isEmpty() && !MSVStats.statsDays.isEmpty()
 
 class MSVStats.Collections.StatsSeconds extends MSVStats.Collections.Stats
   url: ->

@@ -4,8 +4,8 @@ require 'ffaker' if Rails.env.development?
 
 BASE_USERS = [["Mehdi Aminian", "mehdi@jilion.com"], ["Zeno Crivelli", "zeno@jilion.com"], ["Thibaud Guillaume-Gentil", "thibaud@jilion.com"], ["Octave Zangs", "octave@jilion.com"], ["Rémy Coutable", "remy@jilion.com"]]
 COUNTRIES = %w[US FR CH ES DE BE GB CN SE NO FI BR CA]
-# BASE_SITES = %w[vimeo.com dribbble.com jilion.com swisslegacy.com maxvoltar.com 37signals.com youtube.com zeldman.com sumagency.com deaxon.com veerle.duoh.com]
-BASE_SITES = %w[sublimevideo.net jilion.com swisslegacy.com]
+BASE_SITES = %w[vimeo.com dribbble.com jilion.com swisslegacy.com maxvoltar.com 37signals.com youtube.com zeldman.com sumagency.com deaxon.com veerle.duoh.com]
+# BASE_SITES = %w[sublimevideo.net jilion.com swisslegacy.com]
 
 namespace :db do
 
@@ -358,6 +358,17 @@ def recurring_site_stats_update(user_id)
   puts "Begin recurring fake site(s) stats genaration (each minute)"
   Thread.new do
     loop do
+      second = Time.now.utc.change(usec: 0).to_time
+      sites.each do |site|
+        inc = random_stats_inc(1, 5)
+        SiteStat.collection.update({ t: site.token, s: second }, { "$inc" => inc }, upsert: true)
+      end
+      # puts "Site(s) stats seconds updated at #{second}"
+      sleep 0.9
+    end
+  end
+  Thread.new do
+    loop do
       now = Time.now.utc
       if now.change(usec: 0) == now.change(sec: 0, usec: 0)
         sites.each do |site|
@@ -365,7 +376,6 @@ def recurring_site_stats_update(user_id)
           SiteStat.collection.update({ t: site.token, m: now.change(sec: 0, usec: 0).to_time },                  { "$inc" => inc }, upsert: true)
           SiteStat.collection.update({ t: site.token, h: now.change(min: 0, sec: 0, usec: 0).to_time },          { "$inc" => inc }, upsert: true)
           SiteStat.collection.update({ t: site.token, d: now.change(hour: 0, min: 0, sec: 0, usec: 0).to_time }, { "$inc" => inc }, upsert: true)
-          # Pusher["private-#{site.token}"].trigger('stats-fetch', {})
         end
 
         json = {}
@@ -374,22 +384,20 @@ def recurring_site_stats_update(user_id)
         Pusher["stats"].trigger('tick', json)
 
         puts "Site(s) stats updated at #{now.change(sec: 0, usec: 0)}"
-        sleep 50
+        sleep 55
       end
       sleep 0.9
     end
   end
   EM.run do
-    EM.add_periodic_timer(0.01) do
-      second = Time.now.utc.change(usec: 0).to_time
-      if second.to_i == (Time.now.to_f * 10).to_i / 10.0
-        sites.each do |site|
-          inc = random_stats_inc(1, 5)
-          SiteStat.collection.update({ t: site.token, s: second }, { "$inc" => inc }, upsert: true)
-          json = SiteStat.last.to_json(except: [:_id, :t, :s, :m, :h, :d], methods: [:t])
-          Pusher["private-#{site.token}"].trigger_async('stats', json)
+    EM.add_periodic_timer(1) do
+      EM.defer do
+        second = 1.second.ago.change(usec: 0).to_time
+        SiteStat.where(s: second.to_i).all.each do |site_stat|
+          json = site_stat.to_json(except: [:_id, :t, :s, :m, :h, :d], methods: [:t])
+          Pusher["private-#{site_stat.token}"].trigger_async('stats', json)
         end
-        puts "Site(s) stats seconds updated at #{second}"
+        puts "Site(s) stats seconds pushed at #{second}"
       end
     end
   end
