@@ -8,7 +8,6 @@
 //= require prototype_ujs
 //= require scriptaculous/s2
 
-
 function isEventSupported(eventName) {
   eventName = 'on' + eventName;
   var el = document.createElement('div');
@@ -190,7 +189,7 @@ var PlanUpdateManager = Class.create({
      'plan_delayed_downgrade_info', 'plan_delayed_change_info', 'plan_delayed_downgrade_to_free_info'].each(function(divName) {
       this.messages.set(divName, $(divName));
     }.bind(this));
-    
+
     $$('#plans input[type=radio]').each(function(element){
       element.on('click', function(event){
         if (this.planUpgradeInfoDiv) this.showPlanUpdateInfo(element);
@@ -204,9 +203,9 @@ var PlanUpdateManager = Class.create({
   },
   handlePlanChange: function(radioButton) {
     var plan_price  = radioButton.readAttribute('data-plan_price');
-    
+
     var price_is_zero = plan_price === "$0";
-    
+
     if (this.hostnameDiv) this.hostnameDiv.required = !price_is_zero;
     if (this.ccInfoDiv) price_is_zero ? this.ccInfoDiv.hide() : this.ccInfoDiv.show();
 
@@ -217,7 +216,7 @@ var PlanUpdateManager = Class.create({
           price_is_zero ? element.disable() : element.enable();
           element.required = !price_is_zero;
         });
-        // 
+        //
         // $('user_cc_brand_visa').disable();
         // $('user_cc_brand_master').disable();
         // $('user_cc_full_name').disable();

@@ -1,7 +1,7 @@
 MySublimeVideo::Application.routes.draw do
 
-  if ["development", "test"].include? Rails.env
-      mount Jasminerice::Engine => "/jasmine"
+  if %w[development test].include? Rails.env
+    mount Jasminerice::Engine => "/jasmine"
   end
 
   devise_for :users,
@@ -51,7 +51,7 @@ MySublimeVideo::Application.routes.draw do
   resource :ticket, :only => [:new, :create], :path => '/support', :path_names => { :new =>  '' }
   %w[help feedback].each { |action| match action => redirect('/support'), :via => :get }
 
-  match ':page', :to => 'pages#show', :via => :get, :as => :page, :page => /terms|privacy|suspended/
+  match ':page', :to => 'pages#show', :via => :get, :as => :page, :page => /terms|privacy|suspended|video/
   match 'r/:type/:token', :to => 'referrers#redirect', :via => :get, :type => /c/, :token => /[a-z0-9]{8}/
 
   authenticate(:user) do
@@ -65,7 +65,6 @@ MySublimeVideo::Application.routes.draw do
   # =======
 
   scope "oauth" do
-
     # OAuth 2
     match 'access_token' => 'oauth#token', :as => :oauth_token
 

@@ -1,0 +1,49 @@
+= content_for :js do
+  = javascript_include_tag 'video_tag_builder'
+
+= title_and_content_header("Video tag generator")
+
+:javascript
+  document.write(unescape("%3Cscript src='" + (("https:" == document.location.protocol) ? "https://4076.voxcdn.com" : "http://cdn.sublimevideo.net") + "/js/ibvjcopp.js' type='text/javascript'%3E%3C/script%3E"));
+
+%h3 Assets
+#video_tag_builder
+  %p
+    %label{ for: 'poster' } Poster
+    %input#poster{ name: 'poster', type: 'text', size: 50 }
+
+  %p
+    %label{ for: 'mp4_normal' } MP4
+    %input#mp4_normal.video_src{ name: 'mp4_normal', type: 'text', size: 50 }
+
+  %p
+    %label{ for: 'mp4_mobile' } MP4 Mobile
+    %input#mp4_mobile.video_src{ name: 'mp4_mobile', type: 'text', size: 50 }
+
+  %p
+    %label{ for: 'webm_ogg' } WebM or Ogg
+    %input#webm_ogg.video_src{ name: 'webm_ogg', type: 'text', size: 50 }
+
+  %p#original_dimensions
+    Original dimensions
+    %input#original_width{ name: 'original_width', type: 'text', readonly: true }
+    x
+    %input#original_height{ name: 'original_height', type: 'text', readonly: true }
+
+  %p#final_dimensions
+    Final dimensions
+    %input#final_width{ name: 'final_width', type: 'text' }
+    x
+    %input#final_height{ name: 'final_height', type: 'text' }
+
+    %p#keep_ratio_box
+      %label{ for: 'keep_ratio' } Keep original ratio
+      %input#keep_ratio{ name: 'keep_ratio', type: 'checkbox', checked: true }
+
+%h3 Live preview
+#live_preview_wrap
+  .breakline
+  #live_preview_video_wrap
+
+%h3 Code to paste in your page
+%textarea#video_tag_code{ rows: 10, cols: 100, readonly: true }
