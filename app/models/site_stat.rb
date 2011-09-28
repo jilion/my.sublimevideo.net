@@ -175,10 +175,12 @@ private
         # Page Visits
         incs['pv.' + params["h"]] = hits
         # Browser + Plateform
-        incs['bp.' + browser_and_platform_key(user_agent)] = hits
+        if %w[m e].include?(params["h"])
+          incs['bp.' + browser_and_platform_key(user_agent)] = hits
+        end
       when 'p' # Video prepare
         # Player Mode + Device hash
-        if params.key?("pm") && params.key?("pd")
+        if %w[m e].include?(params["h"]) && params.key?("pm") && params.key?("pd")
           params["pm"].uniq.each do |pm|
             incs['md.' + pm + '.' + params["pd"]] = params['pm'].count(pm) * hits
           end
