@@ -4,7 +4,7 @@ class Oauth2Verifier < OauthToken
   # = Validations =
   # ===============
 
-  validates :user, :presence => true
+  validates :user, presence: true
 
   # ====================
   # = Instance Methods =

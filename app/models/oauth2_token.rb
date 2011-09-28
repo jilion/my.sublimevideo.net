@@ -4,7 +4,7 @@ class Oauth2Token < OauthToken
   # = Validations =
   # ===============
 
-  validates :user, :secret, :presence => true
+  validates :user, :secret, presence: true
 
   # =============
   # = Callbacks =

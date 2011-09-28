@@ -11,8 +11,8 @@ class OauthToken < ActiveRecord::Base
   # = Validations =
   # ===============
 
-  validates :client_application, :token, :presence => true
-  validates :token, :uniqueness => true
+  validates :client_application, :token, presence: true
+  validates :token, uniqueness: true
 
   # =============
   # = Callbacks =
@@ -52,6 +52,7 @@ class OauthToken < ActiveRecord::Base
     self.token  = OAuth::Helper.generate_key(40)[0,40]
     self.secret = OAuth::Helper.generate_key(40)[0,40]
   end
+
 end
 
 

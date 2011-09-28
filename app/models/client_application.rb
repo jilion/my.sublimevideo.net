@@ -10,19 +10,19 @@ class ClientApplication < ActiveRecord::Base
 
   belongs_to :user
 
-  has_many :tokens, :class_name => "OauthToken", :dependent => :delete_all
-  has_many :oauth2_verifiers, :dependent => :delete_all
+  has_many :tokens, class_name: "OauthToken", :dependent => :delete_all
+  has_many :oauth2_verifiers, dependent: :delete_all
 
   # ===============
   # = Validations =
   # ===============
 
-  validates :name, :url, :key, :secret, :presence => true
-  validates :key, :uniqueness => true
+  validates :name, :url, :key, :secret, presence: true
+  validates :key, uniqueness: true
 
-  validates :url, :format => { :with => /\Ahttp(s?):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/i }
-  validates :support_url, :format => { :with => /\Ahttp(s?):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/i, :allow_blank => true }
-  validates :callback_url, :format => { :with => /\Ahttp(s?):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/i, :allow_blank => true }
+  validates :url, format: { with: /\Ahttp(s?):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/i }
+  validates :support_url, format: { with: /\Ahttp(s?):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/i, allow_blank: true }
+  validates :callback_url, format: { with: /\Ahttp(s?):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/i, allow_blank: true }
 
   # =============
   # = Callbacks =
@@ -61,6 +61,7 @@ protected
     self.key    = OAuth::Helper.generate_key(40)[0,40]
     self.secret = OAuth::Helper.generate_key(40)[0,40]
   end
+
 end
 
 
