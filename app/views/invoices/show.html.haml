@@ -18,7 +18,7 @@
         %p
           %strong= "Site token: "
           = invoice.site.token
-        %span.stamp{ :class => invoice.state }= invoice.state
+        %span.stamp{ :class => stamp(invoice) }= stamp(invoice)
         - if invoice.last_transaction.present?
           %p
             %strong= "Payment info:"

@@ -8,14 +8,11 @@
       = link_to(invoice_dates(invoice), [:admin, invoice])
       = " / "
       = display_amount(invoice.amount)
-      = " ( #{invoice.state} on "
+      = " ( #{invoice.state}"
       - case invoice.state
       - when 'paid'
-        = l(invoice.paid_at, :format => :d_b_Y)
+        = " on " + l(invoice.paid_at, :format => :d_b_Y)
+        = ", refunded on #{l(invoice.site.refunded_at, :format => :d_b_Y)}" if invoice.refunded?
       - when 'failed'
-        = l(invoice.last_failed_at, :format => :d_b_Y)
-      - else
-        = l(invoice.created_at, :format => :d_b_Y)
-      - if invoice.refunded?
-        = ", refunded on #{l(invoice.site.refunded_at, :format => :d_b_Y)}"
+        = " on " + l(invoice.last_failed_at, :format => :d_b_Y)
       = ")"
