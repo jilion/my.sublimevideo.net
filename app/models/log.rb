@@ -99,9 +99,19 @@ private
 
   def with_log_file_in_tmp(&block)
     Notify.send("Log File ##{id} not present at copy") unless file.present?
-    log_file = rescue_and_retry(7, Excon::Errors::NotFound, Excon::Errors::SocketError) do
+    log_file = rescue_and_retry(7, Excon::Errors::SocketError) do
       log_file = File.new(Rails.root.join("tmp/#{name}"), 'w', :encoding => 'ASCII-8BIT')
-      log_file.write(file.read)
+      begin
+        log_file.write(file.read)
+      rescue Excon::Errors::NotFound => ex
+        if is_a?(Log::Voxcast)
+          self.file = VoxcastCDN.download_log(name)
+          self.save
+          log_file.write(file.read)
+        else
+          raise ex
+        end
+      end
       log_file.flush
     end
     result = yield(log_file)
