@@ -39,17 +39,17 @@ module OneTime
         galaxy_m_plan  = Plan.where(name: 'galaxy', cycle: 'month').first
         galaxy_y_plan  = Plan.where(name: 'galaxy', cycle: 'year').first
         custom_plan    = Plan.where(name: 'custom1').first
-        
+
         free_plan     = Plan.where(name: 'free').first
         silver_m_plan = Plan.where(name: 'silver', cycle: 'month').first
         silver_y_plan = Plan.where(name: 'silver', cycle: 'year').first
         gold_m_plan   = Plan.where(name: 'gold', cycle: 'month').first
         gold_y_plan   = Plan.where(name: 'gold', cycle: 'year').first
-        
+
         ::Site.where { (plan_id != nil) | (pending_plan_id != nil) }.find_in_batches(batch_size: 100) do |sites|
           sites.each do |site|
             new_plans = []
-            
+
             %w[plan pending_plan].each_with_index do |p, i|
               new_plans[i] = case site.send p
               when dev_plan
@@ -58,10 +58,18 @@ module OneTime
                 silver_m_plan
               when comet_y_plan
                 silver_y_plan
+              when planet_m_plan
+                silver_m_plan
+              when planet_y_plan
+                nil
               when star_m_plan
                 gold_m_plan
               when star_y_plan
                 gold_y_plan
+              when galaxy_m_plan
+                gold_m_plan
+              when galaxy_y_plan
+                nil
               end
             end
             new_attrs = {}
