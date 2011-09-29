@@ -93,28 +93,48 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
       MSVStats.statsDays.fetch() if data.d
 
   initPusherStats: ->
-    console.log MSVStats.selectedSiteToken
-    MSVStats.pusherChannel = MSVStats.pusher.subscribe("private-#{MSVStats.selectedSiteToken}")
+    MSVStats.privateChannel = MSVStats.pusher.subscribe("presence-#{MSVStats.selectedSiteToken}")
 
-    # console.log MSVStats.pusherChannel.subscribed
+    # console.log MSVStats.privateChannel.subscribed
 
-    MSVStats.pusherChannel.bind 'pusher:subscription_succeeded', ->
-      console 'channel subscribed'
-      # console.log states
+    MSVStats.privateChannel.bind 'pusher:subscription_succeeded', (members) ->
+      console.log 'channel subscribed'
+      console.log members
       MSVStats.statsSeconds.fetch()
+      # console.log 'channel subscribed'
+      # console.log states
+
+    # MSVStats.privateChannel.bind 'subscription_error', ->
+    #   console.log 'subscription_error'
+      # # console.log states
+      # MSVStats.statsSeconds.fetch()
+
+    # MSVStats.pusher.bind 'pusher:subscribe', (data) ->
+    #   console.log '***********'
+    #   console.log data
 
     # MSVStats.pusher.connection.bind "state_change", (states) ->
       # console.log states
       # MSVStats.statsSeconds.fetch()
 
-    MSVStats.pusherChannel.bind 'stats', (data) ->
-      console.log new Date(parseInt(data.t) * 1000)
+    # MSVStats.pusher.connection.bind "connected", ->
+    #   console.log 'subscribed'
+      # MSVStats.statsSeconds.fetch()
+
+    # MSVStats.privateChannel.pusher.connection.bind "state_change", (data) ->
+    #   console.log 'state_change'
+    #   console.log data
+
+
+    MSVStats.privateChannel.bind 'stats', (data) ->
+      # console.log data
+      # console.log new Date(parseInt(data.t) * 1000)
       MSVStats.statsSeconds.remove(MSVStats.statsSeconds.first(), silent: true)
       MSVStats.statsSeconds.add(data, silent: true)
       MSVStats.statsSeconds.trigger('change', MSVStats.statsSeconds)
 
     # a = 0
-    # until MSVStats.pusherChannel.subscribed
+    # until MSVStats.privateChannel.subscribed
     #   a += 1
     #   if a == 1000
     #     a = 0

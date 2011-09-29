@@ -47,7 +47,7 @@ class SiteStat
   end
 
   # time for backbonejs model
-  def t
+  def id
     (s || m || h || d).to_i
   end
 
@@ -119,7 +119,7 @@ class SiteStat
       end
     end
 
-    json_stats.to_json(except: [:_id, :t, :s, :m, :h, :d], methods: [:t])
+    json_stats.to_json(except: [:_id, :t, :s, :m, :h, :d], methods: [:id])
   end
 
   def self.create_stats_from_trackers!(log, trackers)

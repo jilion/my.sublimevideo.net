@@ -11,7 +11,7 @@ class MSVStats.Views.VVView extends Backbone.View
     @options.statsDays.bind    'reset', this.renderIfSelected
     $('#vv_chart_legend').html(this.render().el)
 
-  render: ->    
+  render: ->
     if MSVStats.period.get('type')?
       $('#vv_content').show()
       $('#vv').data().spinner.stop()
@@ -23,15 +23,11 @@ class MSVStats.Views.VVView extends Backbone.View
       $('#vv_content').hide()
       $('#vv').spin()
       return this
-      
+
   renderIfSelected: (stats) ->
     this.render() if MSVStats.period.get('type') == stats.periodType()
 
   renderChart: ->
-    console.log MSVStats.statsSeconds.length
-    console.log MSVStats.period.startTime()
-    console.log MSVStats.period.endTime()
-    console.log MSVStats.period.endTime() - MSVStats.period.startTime()
     MSVStats.vvChart = new Highcharts.StockChart
       chart:
         renderTo: 'vv_chart'
@@ -123,8 +119,8 @@ class MSVStats.Views.VVView extends Backbone.View
         gridLineWidth: 1
         type: 'datetime'
         min: MSVStats.period.startTime()
-        # max: MSVStats.period.endTime()
-        max: MSVStats.period.startTime() + 59 * MSVStats.period.typeInterval()
+        max: MSVStats.period.endTime()
+        # max: MSVStats.period.startTime() + 59 * MSVStats.period.typeInterval()
       yAxis:
         lineWidth: 0
         offset: 10
@@ -135,9 +131,3 @@ class MSVStats.Views.VVView extends Backbone.View
           align: 'right'
         title:
           text: null
-
-    # MSVStats.vvChart.xAxis[0].setExtremes(1235001600000, 1317425472000)
-    # xChartValues = _.map(MSVStats.vvChart.series[0].data, ((o) -> o.x))
-    # if selectedIndex = MSVStats.vvChartLegend.get('index')
-    #   MSVStats.vvChart.series[0].data[selectedIndex].select(true, false)
-    #   MSVStats.vvChart.series[1].data[selectedIndex].select(true, true)

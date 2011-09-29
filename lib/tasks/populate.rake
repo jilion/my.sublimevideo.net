@@ -395,7 +395,7 @@ def recurring_site_stats_update(user_id)
         second = 1.second.ago.change(usec: 0).to_time
         SiteStat.where(s: second.to_i).all.each do |site_stat|
           json = site_stat.to_json(except: [:_id, :t, :s, :m, :h, :d], methods: [:t])
-          Pusher["private-#{site_stat.token}"].trigger_async('stats', json)
+          Pusher["presence-#{site_stat.token}"].trigger_async('stats', json)
         end
         puts "Site(s) stats seconds pushed at #{second}"
       end
