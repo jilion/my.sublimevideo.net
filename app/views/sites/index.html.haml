@@ -1,3 +1,6 @@
+= content_for :js do
+  = javascript_include_tag 'highcharts/prototype-adapter', 'highcharts/highcharts'
+
 = title_and_content_header("My sites")
 
 = link_to "Add a site", new_site_path, :class => "add_site small_button"
