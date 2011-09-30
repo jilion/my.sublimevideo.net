@@ -28,19 +28,19 @@ graph = Graph.new do |g|
     }
   }))
   g.option(series: [
-    # serie(usages["dev_usage"], 'Dev vpv', '#3F3', visible: false),
-    # serie(usages["main_usage"], 'Billable vpv', '#00F'),
+    # serie(usages["dev_usage"], 'Dev vpv', visible: false),
+    # serie(usages["main_usage"], 'Billable vpv'),
 
-    # serie(evolutive_average_array(usages["total_main_usage"]), 'Your average', '#0FF', type: 'line'),
-    # serie(usages["total_dev_usage"], 'Your total dev usage', '', type: 'line'),
-    serie(usages["total_main_usage"], 'Your total usage', '', type: 'line'),
+    # serie(evolutive_average_array(usages["total_main_usage"]), 'Your average', type: 'line'),
+    # serie(usages["total_dev_usage"], 'Your total dev usage', type: 'line'),
+    serie(usages["total_main_usage"], 'Your total usage', type: 'line'),
 
-    # serie(Array.new(usages["main_usage"].size, @site.plan.player_hits / 30), "#{@site.plan.name.humanize} plan's average", '', type: 'line'),
-    serie(Array.new(usages["main_usage"].size, @site.plan.player_hits), "#{@site.plan.name.humanize} plan's limit", '', type: 'line')
+    # serie(Array.new(usages["main_usage"].size, @site.plan.player_hits / 30), "#{@site.plan.name.humanize} plan's average", type: 'line'),
+    serie(Array.new(usages["main_usage"].size, @site.plan.player_hits), "#{@site.plan.name.humanize} plan's limit", type: 'line')
   ])
   g.option(plotOptions: plot_options(stats_from))
   g.option(credits: credits)
 end
 %>
-<div id="current_usage" style="width: 100%; height: 450px;"></div>
-<%= raw graph.draw({}) %>
+
+<div id="current_usage" style="width: 100%; height: 450px;"><%= raw graph.draw %></div>

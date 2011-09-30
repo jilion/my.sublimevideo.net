@@ -24,11 +24,12 @@ graph = Graph.new do |g|
   )))
 
   g.option(series: [
-    serie(billable_usage[@moving_avg-1..-1], 'Billable', '#00F'),
-    serie(moving_average(billable_usage, @moving_avg), 'AVG Billable', '#00FFFF', type: 'line'),
+    serie(billable_usage[@moving_avg-1..-1], 'Billable'),
+    serie(moving_average(billable_usage, @moving_avg), 'AVG Billable', type: 'line'),
   ])
   g.option(plotOptions: plot_options(@date_range_from))
   g.option(credits: credits)
 end
 %>
+
 <div id="timeline_usage" style="width: 100%; height: 400px;"><%= raw graph.draw(:observe => request.xhr? ? false : "dom:loaded") %></div>
