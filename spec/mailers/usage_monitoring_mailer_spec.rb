@@ -17,7 +17,7 @@ describe UsageMonitoringMailer do
     end
 
     it "should set subject" do
-      @last_delivery.subject.should == "Peak Insurance activated for #{subject.hostname}"
+      @last_delivery.subject.should eql "Peak Insurance activated for #{subject.hostname}"
     end
 
     it "should set a body that contain the link to peak insurance docs" do
@@ -34,7 +34,7 @@ describe UsageMonitoringMailer do
     end
 
     it "should set subject" do
-      @last_delivery.subject.should == "You need to upgrade your plan for #{@site.hostname}"
+      @last_delivery.subject.should eql "You need to upgrade your plan for #{@site.hostname}"
     end
 
     it "should set a body that contain the link to edit the plan" do

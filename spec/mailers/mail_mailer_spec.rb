@@ -18,12 +18,12 @@ describe MailMailer do
     end
 
     it "should set subject to Liquidified template.subject" do
-      @last_delivery.subject.should == Liquid::Template.parse(@template.subject).render("user" => subject)
+      @last_delivery.subject.should eql Liquid::Template.parse(@template.subject).render("user" => subject)
       @last_delivery.subject.should include "John Doe (#{subject.email}), help us shaping the right pricing"
     end
 
     it "should set the body to Liquidified-simple_formated-auto_linked template.body" do
-      @last_delivery.body.encoded.should == Liquid::Template.parse(@template.body).render("user" => subject)
+      @last_delivery.body.encoded.should eql Liquid::Template.parse(@template.body).render("user" => subject)
       @last_delivery.body.encoded.should include "Hi John Doe (#{subject.email}), please respond to the survey, by clicking on the following url: http://survey.com"
     end
   end

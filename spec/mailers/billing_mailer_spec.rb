@@ -20,7 +20,7 @@ describe BillingMailer do
     end
 
     specify do
-      @last_delivery.subject.should == "Your trial for #{@site.hostname.presence || 'your site'} will expire in #{BusinessModel.days_for_trial-8} days"
+      @last_delivery.subject.should eql "Your trial for #{@site.hostname.presence || 'your site'} will expire in #{BusinessModel.days_for_trial-8} days"
       @last_delivery.body.encoded.should include "Dear #{@user.full_name},"
       @last_delivery.body.encoded.should include "#{BusinessModel.days_for_trial-8} days"
       @last_delivery.body.encoded.should include I18n.l(@site.trial_end, format: :named_date)
@@ -36,7 +36,7 @@ describe BillingMailer do
     end
 
     specify do
-      @last_delivery.subject.should == "Your credit card will expire at the end of the month"
+      @last_delivery.subject.should eql "Your credit card will expire at the end of the month"
       @last_delivery.body.encoded.should include "Dear #{@user.full_name},"
       @last_delivery.body.encoded.should include "https://#{ActionMailer::Base.default_url_options[:host]}/card/edit"
     end
@@ -49,7 +49,7 @@ describe BillingMailer do
     end
 
     specify do
-      @last_delivery.subject.should == "Payment approved"
+      @last_delivery.subject.should eql "Payment approved"
       @last_delivery.body.encoded.should include @transaction.user.full_name
       @last_delivery.body.encoded.should include "Your latest SublimeVideo payment has been approved."
       @last_delivery.body.encoded.should include "https://#{ActionMailer::Base.default_url_options[:host]}/invoices/#{@invoice.to_param}"
@@ -64,7 +64,7 @@ describe BillingMailer do
     end
 
     specify do
-      @last_delivery.subject.should == "Problem processing your payment"
+      @last_delivery.subject.should eql "Problem processing your payment"
       @last_delivery.body.encoded.should include @transaction.user.full_name
       @last_delivery.body.encoded.should include "Your credit card could not be charged."
       @last_delivery.body.encoded.should include "https://#{ActionMailer::Base.default_url_options[:host]}/sites"
@@ -79,7 +79,7 @@ describe BillingMailer do
     end
 
     specify do
-      @last_delivery.subject.should == "Payment for #{@invoice.site.hostname} has failed multiple times"
+      @last_delivery.subject.should eql "Payment for #{@invoice.site.hostname} has failed multiple times"
       @last_delivery.body.encoded.should include "The payment for #{@invoice.site.hostname} has failed multiple times, no further charging attempt will be made."
       @last_delivery.body.encoded.should include "https://#{ActionMailer::Base.default_url_options[:host]}/sites/#{@invoice.site.to_param}/plan/edit"
       @last_delivery.body.encoded.should include "Note that if the payment failed due to a problem with your credit card"

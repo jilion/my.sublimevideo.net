@@ -13,7 +13,7 @@ describe UserMailer do
       end
 
       it "should set proper subject" do
-        @last_delivery.subject.should == "Your account has been suspended"
+        @last_delivery.subject.should eql "Your account has been suspended"
       end
 
       it "should set a body that contain infos" do
@@ -29,7 +29,7 @@ describe UserMailer do
     end
 
     it "should set proper subject" do
-      @last_delivery.subject.should == "Your account has been reactivated"
+      @last_delivery.subject.should eql "Your account has been reactivated"
     end
 
     it "should set a body that contain infos" do
@@ -44,7 +44,7 @@ describe UserMailer do
     end
 
     it "should set proper subject" do
-      @last_delivery.subject.should == "Your account has been deleted"
+      @last_delivery.subject.should eql "Your account has been deleted"
     end
 
     it "should set a body that contain infos" do
