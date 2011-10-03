@@ -1,13 +1,12 @@
 class MSVStats.Models.Stat extends Backbone.Model
   defaults:
-    t:  null
     pv: 0
     vv: 0
     md: {}
     bp: {}
 
   time: ->
-    parseInt(this.get('t')) * 1000
+    parseInt(this.id) * 1000
 
   date: ->
     new Date(this.time())

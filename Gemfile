@@ -79,10 +79,6 @@ gem 'dalli',                 '~> 1.1.1'
 # Stats
 gem 'crack',                 '~> 0.1.8'
 gem 'pusher',                '~> 0.8.3'
-# ========
-# = TEMP =
-# ========
-gem 'em-http-request'
 
 # Javascript test
 gem "jasminerice"
@@ -112,6 +108,8 @@ group :development do
   gem 'heroku'
   gem 'taps'
   gem 'silent-postgres'
+
+  gem 'em-http-request' # async pusher in populate
 
   gem 'rb-fsevent', :git => 'git://github.com/ttilley/rb-fsevent.git', :branch => 'pre-compiled-gem-one-off'
   gem 'growl_notify'

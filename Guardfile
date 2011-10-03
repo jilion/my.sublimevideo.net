@@ -30,15 +30,15 @@ end
 
 group :backend do
 
-  guard :spork, :wait => 60 do
-    # watch('Gemfile')
+  guard :spork, :wait => 70 do
+    watch('Gemfile')
     # watch('Gemfile.lock')
-    # watch('config/boot.rb')
-    # watch('config/application.rb')
-    # watch('config/environment.rb')
-    # watch(%r{^config/environments/.+\.rb})
-    # watch(%r{^config/initializers/.+\.rb})
-    # watch('spec/spec_helper.rb')
+    watch('config/boot.rb')
+    watch('config/application.rb')
+    watch('config/environment.rb')
+    watch(%r{^config/environments/.+\.rb})
+    watch(%r{^config/initializers/.+\.rb})
+    watch('spec/spec_helper.rb')
   end
 
   guard :rspec, :version => 2, :cli => "--color --drb", :all_after_pass => false, :all_on_start => false, :keep_failed => false do
