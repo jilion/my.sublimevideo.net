@@ -10,7 +10,8 @@ class MSVStats.Views.PeriodSelectorMinutesView extends Backbone.View
 
   render: ->
     if this.isSelected() then @el.addClass('selected') else @el.removeClass('selected')
-    $('#period_minutes_vv_total').html(Highcharts.numberFormat(@options.statsMinutes.vvTotal(), 0))
+    vvTotal = @options.statsMinutes.vvTotal()
+    $('#period_minutes_vv_total').html(Highcharts.numberFormat(vvTotal, 0))
     this.renderSparkline()
     return this
     

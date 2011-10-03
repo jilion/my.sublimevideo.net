@@ -1,8 +1,8 @@
 <ul>
   <li>
-    <%= Highcharts.numberFormat(@stats.pvTotal(), 0) %> <span class='title'>page visits</span>
+    <%= Highcharts.numberFormat(@stats.pvTotal(MSVStats.period.get('startIndex'), MSVStats.period.get('endIndex')), 0) %> <span class='title'>page visits</span>
   </li>
   <li>
-    <%= Highcharts.numberFormat(@stats.vvTotal(), 0) %> <span class='title'>video views</span>
+    <%= Highcharts.numberFormat(@stats.vvTotal(MSVStats.period.get('startIndex'), MSVStats.period.get('endIndex')), 0) %> <span class='title'>video views</span>
   </li>
 </ul>

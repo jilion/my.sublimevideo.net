@@ -59,6 +59,51 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
     this.resetAndFetchStats()
     MSVStats.statsRouter.initPusherStats()
 
+  initModels: ->
+    MSVStats.period = new MSVStats.Models.Period()
+
+    MSVStats.statsSeconds = new MSVStats.Collections.StatsSeconds()
+    MSVStats.statsMinutes = new MSVStats.Collections.StatsMinutes()
+    MSVStats.statsHours   = new MSVStats.Collections.StatsHours()
+    MSVStats.statsDays    = new MSVStats.Collections.StatsDays()
+
+  initPusherTick: ->
+    MSVStats.statsChannel = MSVStats.pusher.subscribe("stats")
+    MSVStats.statsChannel.bind 'tick', (data) ->
+      MSVStats.statsMinutes.fetch()
+      MSVStats.statsHours.fetch() if data.h
+      MSVStats.statsDays.fetch() if data.d
+
+  initPusherStats: ->
+    MSVStats.presenceChannel = MSVStats.pusher.subscribe("presence-#{MSVStats.selectedSiteToken}")
+
+    MSVStats.presenceChannel.bind 'pusher:subscription_succeeded', ->
+      MSVStats.statsSeconds.fetch
+        success: -> setTimeout("MSVStats.statsSeconds.updateEachSeconds();", 1000)
+
+    MSVStats.presenceChannel.bind 'stats', (data) ->
+      MSVStats.statsSeconds.merge(data, silent: true)
+
+  resetAndFetchStats: ->
+    MSVStats.statsSeconds.reset()
+    MSVStats.statsMinutes.reset()
+    MSVStats.statsHours.reset()
+    MSVStats.statsDays.reset()
+
+    MSVStats.statsMinutes.fetch
+      silent: true
+      success: -> MSVStats.statsRouter.syncFetchSuccess()
+    MSVStats.statsHours.fetch
+      silent: true
+      success: -> MSVStats.statsRouter.syncFetchSuccess()
+    MSVStats.statsDays.fetch
+      silent: true
+      success: -> MSVStats.statsRouter.syncFetchSuccess()
+
+  syncFetchSuccess: ->
+    if MSVStats.Collections.Stats.allPresent()
+      MSVStats.period.autosetPeriod()
+
   initHighcharts: ->
     Highcharts.setOptions
       global:
@@ -76,91 +121,3 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
     $.fn.sparkline.defaults.line.chartRangeClip  = true
     $.fn.sparkline.defaults.line.chartRangeMin   = 0
     # $.fn.sparkline.defaults.line.chartRangeMax   = 0
-
-  initModels: ->
-    MSVStats.period = new MSVStats.Models.Period()
-
-    MSVStats.statsSeconds = new MSVStats.Collections.StatsSeconds()
-    MSVStats.statsMinutes = new MSVStats.Collections.StatsMinutes()
-    MSVStats.statsHours   = new MSVStats.Collections.StatsHours()
-    MSVStats.statsDays    = new MSVStats.Collections.StatsDays()
-
-  initPusherTick: ->
-    MSVStats.statsChannel = MSVStats.pusher.subscribe("stats")
-    MSVStats.statsChannel.bind 'tick', (data) ->
-      MSVStats.statsMinutes.fetch()
-      MSVStats.statsHours.fetch() if data.h
-      MSVStats.statsDays.fetch() if data.d
-
-  initPusherStats: ->
-    MSVStats.privateChannel = MSVStats.pusher.subscribe("presence-#{MSVStats.selectedSiteToken}")
-
-    # console.log MSVStats.privateChannel.subscribed
-
-    MSVStats.privateChannel.bind 'pusher:subscription_succeeded', (members) ->
-      console.log 'channel subscribed'
-      console.log members
-      MSVStats.statsSeconds.fetch()
-      # console.log 'channel subscribed'
-      # console.log states
-
-    # MSVStats.privateChannel.bind 'subscription_error', ->
-    #   console.log 'subscription_error'
-      # # console.log states
-      # MSVStats.statsSeconds.fetch()
-
-    # MSVStats.pusher.bind 'pusher:subscribe', (data) ->
-    #   console.log '***********'
-    #   console.log data
-
-    # MSVStats.pusher.connection.bind "state_change", (states) ->
-      # console.log states
-      # MSVStats.statsSeconds.fetch()
-
-    # MSVStats.pusher.connection.bind "connected", ->
-    #   console.log 'subscribed'
-      # MSVStats.statsSeconds.fetch()
-
-    # MSVStats.privateChannel.pusher.connection.bind "state_change", (data) ->
-    #   console.log 'state_change'
-    #   console.log data
-
-
-    MSVStats.privateChannel.bind 'stats', (data) ->
-      # console.log data
-      # console.log new Date(parseInt(data.t) * 1000)
-      MSVStats.statsSeconds.remove(MSVStats.statsSeconds.first(), silent: true)
-      MSVStats.statsSeconds.add(data, silent: true)
-      MSVStats.statsSeconds.trigger('change', MSVStats.statsSeconds)
-
-    # a = 0
-    # until MSVStats.privateChannel.subscribed
-    #   a += 1
-    #   if a == 1000
-    #     a = 0
-    #     console.log('not connected')
-
-  resetAndFetchStats: ->
-    MSVStats.statsSeconds.reset()
-    MSVStats.statsMinutes.reset()
-    MSVStats.statsHours.reset()
-    MSVStats.statsDays.reset()
-
-    # MSVStats.statsSeconds.fetch
-    #   silent: true
-    #   success: -> MSVStats.statsRouter.syncFetchSuccess()
-    MSVStats.statsMinutes.fetch
-      silent: true
-      success: -> MSVStats.statsRouter.syncFetchSuccess()
-    MSVStats.statsHours.fetch
-      silent: true
-      success: -> MSVStats.statsRouter.syncFetchSuccess()
-    MSVStats.statsDays.fetch
-      silent: true
-      success: -> MSVStats.statsRouter.syncFetchSuccess()
-
-  syncFetchSuccess: ->
-    if MSVStats.Collections.Stats.allPresent()
-      MSVStats.period.autosetPeriod()
-
-

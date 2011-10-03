@@ -70,8 +70,8 @@ class SiteStat
     json_stats = []
     case period_type
     when 'seconds'
-      to    = 1.second.ago.change(usec: 0).utc
-      from  = to - 59.seconds
+      to    = Time.now.change(usec: 0).utc
+      from  = to - 60.seconds # pass 61 seconds
       stats = stats.s_after(from).entries
       while from <= to
         if stats.first.try(:s) == from

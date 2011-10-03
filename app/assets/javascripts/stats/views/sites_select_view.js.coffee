@@ -16,7 +16,7 @@ class MSVStats.Views.SitesSelectView extends Backbone.View
 
   updatePage: ->
     currentSelectedToken = MSVStats.sites.selectedSite().get('token')
-    MSVStats.pusher.unsubscribe("private-#{currentSelectedToken}")
+    MSVStats.pusher.unsubscribe("presence-#{currentSelectedToken}")
 
     newSelectedToken = this.$('select').val()
     MSVStats.statsRouter.navigate("sites/#{newSelectedToken}/stats", true)

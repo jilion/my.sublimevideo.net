@@ -14,15 +14,29 @@ class MSVStats.Models.Stat extends Backbone.Model
 class MSVStats.Collections.Stats extends Backbone.Collection
   model: MSVStats.Models.Stat
 
-  pvTotal: ->
-    this.sum('pv')
+  pvTotal: (startIndex, endIndex) ->
+    this.customSum('pv', startIndex, endIndex)
 
-  vvTotal:->
-    this.sum('vv')
+  vvTotal: (startIndex, endIndex) ->
+    this.customSum('vv', startIndex, endIndex)
 
-  sum: (attribute) ->
-    _.reduce @models, ((memo, stat) -> memo + stat.get(attribute)), 0
-
+  customSum: (attribute, startIndex, endIndex) ->
+    if startIndex? && endIndex?
+      datesRange = this.datesRange(startIndex, endIndex)
+      _.reduce(@models, (memo, stat) ->
+        if stat.time() >= datesRange[0] && stat.time() <= datesRange[1] then memo + stat.get(attribute) else memo
+      0)
+    else
+      _.reduce @models, ((memo, stat) -> memo + stat.get(attribute)), 0
+  
+  customPluck: (attribute, startIndex, endIndex) ->
+    if startIndex? && endIndex?
+      datesRange = this.datesRange(startIndex, endIndex)
+    this.customReduce((memo, stat) ->
+      memo.push(stat.get(attribute))
+      memo
+    [], datesRange)
+    
   bpData: ->
     this.customReduce((memo, stat) ->
       _.each(stat.get('bp'), (hits, bp) -> memo.set(bp, hits))
@@ -30,22 +44,69 @@ class MSVStats.Collections.Stats extends Backbone.Collection
     new BPData)
 
   mdData: ->
+    unless MSVStats.period.isFullRange()
+      datesRange = MSVStats.period.datesRange()
     this.customReduce((memo, stat) ->
       memo.set(md) if md = stat.get('md')
       memo
     new MDData)
 
-  customReduce: (iterator, context) ->
-    if MSVStats.period.isFullRange()
-      _.reduce @models, ((memo, stat) -> iterator(memo, stat)), context
-    else
-      datesRange = MSVStats.period.datesRange()
+  customReduce: (iterator, context, datesRange) ->
+    if datesRange?
       _.reduce(@models, (memo, stat) ->
         if stat.time() >= datesRange[0] && stat.time() <= datesRange[1]
           iterator(memo, stat)
         else
           memo
       context)
+    else
+      _.reduce @models, ((memo, stat) -> iterator(memo, stat)), context
+
+  merge: (data, options) ->
+    if stat = this.get(data.id)
+      attributes = {}
+      attributes.pv = stat.get('pv') + data.pv if data.pv?
+      attributes.vv = stat.get('vv') + data.vv if data.vv?
+      if data.md?
+        attributes.md = stat.get('md')
+        if data.md.f?
+          attributes.md.f = {} if _.isUndefined(attributes.md.f)
+          _.each data.md.f, (hits, d) ->
+            if _.isUndefined(attributes.md.f[d])
+              attributes.md.f[d] = hits
+            else
+              attributes.md.f[d] += hits
+        if data.md.h?
+          attributes.md.h = {} if _.isUndefined(attributes.md.h)
+          _.each data.md.h, (hits, d) ->
+            if _.isUndefined(attributes.md.h[d])
+              attributes.md.h[d] = hits
+            else
+              attributes.md.h[d] += hits
+      if data.bp?
+        attributes.bp = stat.get('bp')
+        _.each data.bp, (hits, bp) ->
+          if _.isUndefined(attributes.bp[bp])
+            attributes.bp[bp] = hits
+          else
+            attributes.bp[bp] += hits
+      stat.set attributes, options
+    else
+      this.add data, options
+
+  datesRange: (startIndex, endIndex) ->
+    if this.isEmpty()
+      [null, null]
+    else
+      startStat = this.at(this.normalizeStatsIndex(startIndex))
+      endStat   = this.at(this.normalizeStatsIndex(endIndex))
+      if startStat? && endStat?
+        [startStat.time(), endStat.time()]
+      else
+        [null, null]
+
+  normalizeStatsIndex: (index) ->
+    if index < 0 then this.length + index else index
 
   @allPresent: ->
     !MSVStats.statsMinutes.isEmpty() && !MSVStats.statsHours.isEmpty() && !MSVStats.statsDays.isEmpty()
@@ -55,6 +116,15 @@ class MSVStats.Collections.StatsSeconds extends MSVStats.Collections.Stats
     "/sites/#{MSVStats.sites.selectedSite().get('token')}/stats?period=seconds"
 
   periodType: -> 'seconds'
+
+  updateEachSeconds: ->
+    if this.length > 60
+      setTimeout("MSVStats.statsSeconds.updateEachSeconds();", 1000)
+      if this.length == 61 # no seconds stats added
+        new_id = (this.last().time() + 1000)/1000
+        this.add({ id: new_id }, silent: true)
+      this.remove(this.first(), silent: true)
+      this.trigger('change', this)
 
 class MSVStats.Collections.StatsMinutes extends MSVStats.Collections.Stats
   url: ->
@@ -73,21 +143,6 @@ class MSVStats.Collections.StatsDays extends MSVStats.Collections.Stats
     "/sites/#{MSVStats.sites.selectedSite().get('token')}/stats?period=days"
 
   periodType: -> 'days'
-
-  pvTotal: ->
-    this.customSum('pv')
-
-  vvTotal: (datesRange) ->
-    this.customSum('vv', datesRange)
-
-  customSum: (attribute, datesRange = MSVStats.period.datesRange()) ->
-    _.reduce(@models, (memo, stat) ->
-      if stat.time() >= datesRange[0] && stat.time() <= datesRange[1] then memo + stat.get(attribute) else memo
-    0)
-
-  customPluck: (attribute, firstIndex) ->
-    stats = @models.slice(firstIndex)
-    _.map stats, ((stat) -> stat.get('vv'))
 
 class BPData
   constructor: ->
