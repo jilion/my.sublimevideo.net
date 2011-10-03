@@ -274,7 +274,7 @@ private
   def validates_current_password
     return if @skip_password_validation
 
-    if !new_record? && in_paid_plan? && errors.empty? &&
+    if !new_record? && in_paid_plan? && !in_trial? && errors.empty? &&
       ((state_changed? && archived?) || (changes.keys & (Array(self.class.accessible_attributes) - ['plan_id'] + %w[pending_plan_id next_cycle_plan_id])).present?)
       if user.current_password.blank? || !user.valid_password?(user.current_password)
         self.errors.add(:base, :current_password_needed)
