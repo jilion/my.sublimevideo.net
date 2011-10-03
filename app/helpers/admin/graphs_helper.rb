@@ -137,7 +137,7 @@ module Admin::GraphsHelper
   end
 
   def plot_options(start_at, interval = 1.day, options = {})
-    options.reverse_merge!(marker: false, visible: true, stacking: 'normal')
+    options.reverse_merge!(marker: false, marker_hover: true, visible: true, stacking: 'normal')
     points = options[:linear] ? {} : { pointStart: start_at.to_i * 1000, pointInterval: interval * 1000 }
 
     {
@@ -146,7 +146,7 @@ module Admin::GraphsHelper
         marker: {
           enabled: options[:marker],
           radius: 3,
-          states: { hover: { enabled: true } }
+          states: { hover: { enabled: options[:marker_hover] } }
         },
         states: {
           hover: {
