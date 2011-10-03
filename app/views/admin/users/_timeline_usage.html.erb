@@ -23,14 +23,15 @@ graph = Graph.new do |g|
   )))
 
   g.option(series: [
-    serie(usages["invalid_usage"][@moving_avg-1..-1], 'Invalid', '#FF0000', visible: false),
-    serie(usages["dev_usage"][@moving_avg-1..-1], 'Dev', '#33FF33', visible: false),
-    serie(usages["extra_usage"][@moving_avg-1..-1], 'Extra', '#33FF33'),
-    serie(usages["main_usage"][@moving_avg-1..-1], 'Main', '#0000FF'),
-    serie(moving_average(billable_usage, @moving_avg), 'AVG Billable', '#00FFFF', type: 'line')
+    serie(usages["invalid_usage"][@moving_avg-1..-1], 'Invalid', visible: false),
+    serie(usages["dev_usage"][@moving_avg-1..-1], 'Dev', visible: false),
+    serie(usages["extra_usage"][@moving_avg-1..-1], 'Extra'),
+    serie(usages["main_usage"][@moving_avg-1..-1], 'Main'),
+    serie(moving_average(billable_usage, @moving_avg), 'AVG Billable', type: 'line')
   ])
   g.option(plotOptions: plot_options(@date_range_from))
   g.option(credits: credits)
 end
 %>
+
 <div id="timeline_usage" style="width:100%; height:300px;"><%= raw graph.draw %></div>

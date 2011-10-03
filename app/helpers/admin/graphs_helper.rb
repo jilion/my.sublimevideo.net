@@ -1,7 +1,7 @@
 # coding: utf-8
 module Admin::GraphsHelper
 
-  def chart(id, options={})
+  def chart(id, options = {})
     options.reverse_merge!(margin_top: 110, margin_bottom: 50, margin_left: 90, background_color: '#EEEEEE')
 
     {
@@ -15,7 +15,7 @@ module Admin::GraphsHelper
     }
   end
 
-  def usage_date_subtitle(options={})
+  def usage_date_subtitle(options = {})
     options.reverse_merge!(start_at: nil, end_at: nil, text: nil, date_format: 'year_month_day')
 
     {
@@ -24,7 +24,7 @@ module Admin::GraphsHelper
     }
   end
 
-  def legend(options={})
+  def legend(options = {})
     options.reverse_merge!(enabled: true, vertical_align: 'top', y: 40, width: 970, symbol_width: 12, background_color: '#FFF', border_color: '#CCC')
 
     {
@@ -38,7 +38,7 @@ module Admin::GraphsHelper
     }
   end
 
-  def x_axis(options={})
+  def x_axis(options = {})
     options.reverse_merge!(show_first_label: true, start_at: nil, end_at: nil, steps: 12, min: 0, plot_bands: [], plot_lines: [])
 
     tick_interval = ((options[:end_at] - options[:start_at]) / options[:steps].days).floor
@@ -59,7 +59,7 @@ module Admin::GraphsHelper
     }
   end
 
-  def plot_band(options={})
+  def plot_band(options = {})
     options.reverse_merge!(color: '#FFFFD9', from: 30.days.ago.midnight, to: Time.now.utc)
 
     {
@@ -69,7 +69,7 @@ module Admin::GraphsHelper
     }
   end
 
-  def plot_line(options={})
+  def plot_line(options = {})
     options.reverse_merge!(width: 2, color: '#FFFFD9', value: 30.days.ago.midnight)
 
     {
@@ -79,7 +79,7 @@ module Admin::GraphsHelper
     }
   end
 
-  def y_axis(title, options={})
+  def y_axis(title, options = {})
     options.reverse_merge!(show_first_label: true, margin: 70, min: 0, tick_interval: 'null')
 
     %(yAxis: {
@@ -96,7 +96,7 @@ module Admin::GraphsHelper
     })
   end
 
-  def tooltip(options={})
+  def tooltip(options = {})
     options.reverse_merge!(formatter: %(function() {
       var date  = "<strong>" + Highcharts.dateFormat("%B %e,  %Y", this.x) + "</strong><br/><br/>";
       var label = "<strong>" + Highcharts.numberFormat(this.y, 0) + "</strong>";
@@ -122,7 +122,7 @@ module Admin::GraphsHelper
     })
   end
 
-  def serie(data, title, color, options={})
+  def serie(data, title, options = {})
     options.reverse_merge!(type: 'area', visible: true, stack: nil)
 
     {
@@ -131,13 +131,13 @@ module Admin::GraphsHelper
       name: title,
       visible: options[:visible],
       color: options[:color],
-      # color: color, # automatic colors
+      fillColor: options[:fill_color],
       data: data
     }
   end
 
-  def plot_options(start_at, interval=1.day, options={})
-    options.reverse_merge!(marker: false, visible: true, stacking: 'normal')
+  def plot_options(start_at, interval = 1.day, options = {})
+    options.reverse_merge!(marker: false, marker_hover: true, visible: true, stacking: 'normal')
     points = options[:linear] ? {} : { pointStart: start_at.to_i * 1000, pointInterval: interval * 1000 }
 
     {
@@ -146,7 +146,7 @@ module Admin::GraphsHelper
         marker: {
           enabled: options[:marker],
           radius: 3,
-          states: { hover: { enabled: true } }
+          states: { hover: { enabled: options[:marker_hover] } }
         },
         states: {
           hover: {
@@ -160,7 +160,7 @@ module Admin::GraphsHelper
     }
   end
 
-  def credits(options={})
+  def credits(options = {})
     options.reverse_merge!(enabled: true, visible: true)
 
     {

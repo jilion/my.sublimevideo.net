@@ -30,12 +30,12 @@ feature "Pages" do
 
     context "with a suspended user" do
       background do
-        @site        = FactoryGirl.create(:site, user: @current_user)
+        @site  = FactoryGirl.create(:site, user: @current_user)
         @site.pending_plan_started_at = Time.now.utc
         @site.pending_plan_cycle_started_at = Time.now.utc
         @site.pending_plan_cycle_ended_at = Time.now.utc
         @site.save!(validate: false)
-        @invoice     = FactoryGirl.create(:invoice, site: @site, state: 'failed', last_failed_at: Time.utc(2010,2,10), amount: 1990)
+        @invoice = FactoryGirl.create(:invoice, site: @site, state: 'failed', last_failed_at: Time.utc(2010,2,10), amount: 1990)
         @transaction = FactoryGirl.create(:transaction, invoices: [@invoice], state: 'failed', error: "Credit Card expired")
         @current_user.suspend
         @site.reload.should be_suspended
@@ -76,7 +76,8 @@ feature "Pages" do
         current_url.should =~ %r(^http://[^/]+/card/edit$)
       end
 
-      scenario "with 1 or more failed invoices" do
+      scenario "and a valid credit card with 1 or more failed invoices" do
+        ActionMailer::Base.deliveries.clear
         current_url.should =~ %r(^http://[^/]+/suspended$)
 
         VCR.use_cassette('ogone/visa_payment_acceptance') { click_button I18n.t('site.invoices.retry_invoices') }
@@ -86,6 +87,16 @@ feature "Pages" do
         @site.invoices.failed.should be_empty
         @site.reload.should be_active
         @current_user.reload.should be_active
+
+        first_delivery = ActionMailer::Base.deliveries.first
+        first_delivery.to.should eql [@current_user.email]
+        first_delivery.subject.should eql "Your account has been reactivated"
+        first_delivery.body.encoded.should include "Your account has been reactivated."
+
+        last_delivery = ActionMailer::Base.deliveries.last
+        last_delivery.to.should eql [@current_user.email]
+        last_delivery.subject.should eql "Payment approved"
+        last_delivery.body.encoded.should include "Your latest SublimeVideo payment has been approved."
 
         visit "/suspended"
         current_url.should =~ %r(http://[^/]+/sites)

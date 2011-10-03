@@ -1,18 +1,18 @@
 class SiteStat
   include Mongoid::Document
 
-  field :t,  :type => String # Site token
+  field :t,  type: String # Site token
 
   # DateTime periods
-  field :s,  :type => DateTime  # Second
-  field :m,  :type => DateTime  # Minute
-  field :h,  :type => DateTime  # Hour
-  field :d,  :type => DateTime  # Day
+  field :s,  type: DateTime  # Second
+  field :m,  type: DateTime  # Minute
+  field :h,  type: DateTime  # Hour
+  field :d,  type: DateTime  # Day
 
-  field :pv, :type => Hash # Page Visits: { m (main) => 2, e (extra) => 10, d (dev) => 43, i (invalid) => 2 }
-  field :vv, :type => Hash # Video Views: { m (main) => 1, e (extra) => 3, d (dev) => 11, i (invalid) => 1 }
-  field :md, :type => Hash # Player Mode + Device hash { h (html5) => { d (desktop) => 2, m (mobile) => 1 }, f (flash) => ... }
-  field :bp, :type => Hash # Browser + Plateform hash { "saf-win" => 2, "saf-osx" => 4, ...}
+  field :pv, type: Hash, default: {} # Page Visits: { m (main) => 2, e (extra) => 10, d (dev) => 43, i (invalid) => 2 }
+  field :vv, type: Hash, default: {} # Video Views: { m (main) => 1, e (extra) => 3, d (dev) => 11, i (invalid) => 1 }
+  field :md, type: Hash              # Player Mode + Device hash { h (html5) => { d (desktop) => 2, m (mobile) => 1 }, f (flash) => ... }
+  field :bp, type: Hash              # Browser + Plateform hash { "saf-win" => 2, "saf-osx" => 4, ...}
 
   index :t
   index [[:t, Mongo::ASCENDING], [:s, Mongo::ASCENDING]]#, :unique => true
@@ -56,6 +56,7 @@ class SiteStat
     pv = read_attribute(:pv)
     pv['m'].to_i + pv['e'].to_i
   end
+
   def vv
     vv = read_attribute(:vv)
     vv['m'].to_i + vv['e'].to_i
@@ -65,58 +66,62 @@ class SiteStat
   # = Class Methods =
   # =================
 
+  def self.last_stats(token_or_stats, from, to, period_type, options = {})
+    options.reverse_merge!(fill_missing_days: true)
+
+    token_or_stats = self.where(t: token_or_stats) if token_or_stats.is_a? String
+    stats          = token_or_stats.send("#{period_type[0]}_between", from, to + 1.send(period_type)).entries
+
+    if !!options[:fill_missing_days]
+      filled_stats = []
+      missing_days_value = options[:fill_missing_days].respond_to?(:to_i) ? options[:fill_missing_days].to_i : 0
+      while from <= to
+        filled_stats << if stats.first.try(period_type[0]) == from
+          stats.shift
+        else
+          self.new(period_type[0].to_sym => from.to_time, pv: { 'm' => missing_days_value })
+        end
+        from += 1.send(period_type)
+      end
+      filled_stats
+    else
+      stats
+    end
+  end
+
+  def self.last_days(token, options = {})
+    options.reverse_merge!(days: 30)
+
+    last_stats(token, options[:days].days.ago.midnight, 1.day.ago.midnight, 'days', options)
+  end
+
   def self.json(token, period_type = 'days')
-    stats      = SiteStat.where(t: token)
-    json_stats = []
-    case period_type
+    stats      = self.where(t: token)
+    json_stats = case period_type
     when 'seconds'
       to    = Time.now.change(usec: 0).utc
       from  = to - 60.seconds # pass 61 seconds
-      stats = stats.s_after(from).entries
-      while from <= to
-        if stats.first.try(:s) == from
-          json_stats << stats.shift
-        else
-          json_stats << SiteStat.new(s: from.to_time)
-        end
-        from += 1.second
-      end
+
+      last_stats(stats, from, to, period_type)
+
     when 'minutes'
-      to    = SiteStat.where(m: { "$ne"  => nil }).order_by([:m, :asc]).last.m
-      from  = to - 59.minutes
-      stats = stats.m_after(from).entries
-      while from <= to
-        if stats.first.try(:m) == from
-          json_stats << stats.shift
-        else
-          json_stats << SiteStat.new(m: from.to_time)
-        end
-        from += 1.minute
-      end
+      to   = self.where(m: { "$ne" => nil }).order_by([:m, :asc]).last.m
+      from = to - 59.minutes
+
+      last_stats(stats, from, to, period_type)
+
     when 'hours'
-      to    = 1.hour.ago.change(min: 0, sec: 0).utc
-      from  = to - 23.hours
-      stats = stats.h_after(from).entries
-      while from <= to
-        if stats.first.try(:h) == from
-          json_stats << stats.shift
-        else
-          json_stats << SiteStat.new(h: from.to_time)
-        end
-        from += 1.hour
-      end
+      to   = 1.hour.ago.change(min: 0, sec: 0).utc
+      from = to - 23.hours
+
+      last_stats(stats, from, to, period_type)
+
     when 'days'
-      stats = stats.where(d: { "$ne" => nil }).order_by([:d, :asc]).entries
-      to    = 1.day.ago.change(hour: 0, min: 0, sec: 0).utc
+      stats = stats.where(d: { "$ne" => nil }).order_by([:d, :asc])
+      to    = 1.day.ago.midnight
       from  = [(stats.first.try(:d) || Time.now.utc), to - 29.days].min
-      while from <= to
-        if stats.first.try(:d) == from
-          json_stats << stats.shift
-        else
-          json_stats << SiteStat.new(d: from.to_time)
-        end
-        from += 1.day
-      end
+
+      last_stats(stats, from, to, period_type)
     end
 
     json_stats.to_json(except: [:_id, :t, :s, :m, :h, :d], methods: [:id])

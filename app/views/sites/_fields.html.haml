@@ -8,7 +8,7 @@
       = f.label :hostname, '', class: "icon"
       = f.text_field :hostname, class: "text", placeholder: "yourdomain.com", autocomplete: :off
     %p.desc
-      Add your domain or subdomain.
+      Add your domain or subdomain. Special "www" subdomain will be stripped automatically.
       - if site.in_free_plan?
         %br
         This field is optional.

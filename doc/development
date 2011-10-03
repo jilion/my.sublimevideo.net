@@ -1,3 +1,6 @@
 Development rules:
-- No trailing spaces
-- The last line of data in any file must be terminated with a newline
+  - 2 Soft tabs (spaces), no trailing spaces (us the "Uber Glory" bundle)
+  - Last line must be an empty line
+  - Align "=" on successive lines
+  - Spaces inside { :a => :b }, no spaces inside [:a, :b]
+  - Spaces around "=": def foo(arg = {})

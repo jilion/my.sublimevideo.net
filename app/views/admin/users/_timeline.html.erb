@@ -21,10 +21,10 @@ unless users_stats.empty?
     }))
 
     g.option(series: [
-      serie(users_stats.timeline(:active_and_not_billable_count), 'Active & NOT Billable', '#00ff00', :type => 'area', :color => '#00b600', :visible => false),
-      serie(users_stats.timeline(:active_and_billable_count), 'Active & Billable', '#00ff00', :type => 'area', :color => '#00ff00'),
-      serie(users_stats.timeline(:archived_count), 'Archived', '#00ff00', :type => 'area', :color => '#b00000', :visible => false),
-      serie(users_stats.timeline(:suspended_count), 'Suspended', '#00ff00', :type => 'area', :color => '#fe2617', :visible => false)
+      serie(users_stats.timeline(:active_and_not_billable_count), 'Active & NOT Billable', type: 'area', color: '#00b600', visible: false),
+      serie(users_stats.timeline(:active_and_billable_count), 'Active & Billable', type: 'area', color: '#00ff00'),
+      serie(users_stats.timeline(:archived_count), 'Archived', type: 'area', color: '#b00000', visible: false),
+      serie(users_stats.timeline(:suspended_count), 'Suspended', type: 'area', color: '#fe2617', visible: false)
     ].flatten)
     g.option(plotOptions: plot_options(@date_range_from))
     g.option(credits: credits)
@@ -33,5 +33,5 @@ end
 
 if graph
 %>
-<div id="timeline_users_stats" style="width: 100%; height: 400px;"><%= raw graph.draw %></div>
+  <div id="timeline_users_stats" style="width: 100%; height: 400px;"><%= raw graph.draw %></div>
 <% end %>

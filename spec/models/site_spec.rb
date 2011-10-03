@@ -169,66 +169,79 @@ describe Site do
       end
 
       context "on a paid plan" do
-        subject { FactoryGirl.create(:site, plan_id: @paid_plan.id) }
+        context "in trial" do
+          subject { FactoryGirl.create(:site, plan_id: @paid_plan.id) }
 
-        describe "when updating a site in paid plan" do
-          it "needs current_password" do
-            subject.update_attributes(plan_id: @custom_plan.token).should be_false
-            subject.errors[:base].should include I18n.t('activerecord.errors.models.site.attributes.base.current_password_needed')
-          end
-
-          it "needs right current_password" do
-            subject.update_attributes(plan_id: @custom_plan.token, user_attributes: { current_password: "wrong" }).should be_false
-            subject.errors[:base].should include I18n.t('activerecord.errors.models.site.attributes.base.current_password_needed')
+          describe "when updating a site in paid plan" do
+            it "needs current_password" do
+              subject.update_attributes(plan_id: @custom_plan.token).should be_true
+              subject.errors.should be_empty
+            end
           end
         end
 
-        describe "when update paid plan settings" do
-          it "needs current_password" do
-            subject.update_attributes(hostname: "newone.com").should be_false
-            subject.errors[:base].should include I18n.t('activerecord.errors.models.site.attributes.base.current_password_needed')
+        context "not in trial" do
+          subject { FactoryGirl.create(:site_not_in_trial, plan_id: @paid_plan.id) }
+
+          describe "when updating a site in paid plan" do
+            it "needs current_password" do
+              subject.update_attributes(plan_id: @custom_plan.token).should be_false
+              subject.errors[:base].should include I18n.t('activerecord.errors.models.site.attributes.base.current_password_needed')
+            end
+
+            it "needs right current_password" do
+              subject.update_attributes(plan_id: @custom_plan.token, user_attributes: { current_password: "wrong" }).should be_false
+              subject.errors[:base].should include I18n.t('activerecord.errors.models.site.attributes.base.current_password_needed')
+            end
           end
 
-          it "needs right current_password" do
-            subject.update_attributes(hostname: "newone.com", user_attributes: { current_password: "wrong" }).should be_false
-            subject.errors[:base].should include I18n.t('activerecord.errors.models.site.attributes.base.current_password_needed')
+          describe "when update paid plan settings" do
+            it "needs current_password" do
+              subject.update_attributes(hostname: "newone.com").should be_false
+              subject.errors[:base].should include I18n.t('activerecord.errors.models.site.attributes.base.current_password_needed')
+            end
+
+            it "needs right current_password" do
+              subject.update_attributes(hostname: "newone.com", user_attributes: { current_password: "wrong" }).should be_false
+              subject.errors[:base].should include I18n.t('activerecord.errors.models.site.attributes.base.current_password_needed')
+            end
+
+            it "don't need current_password with other errors" do
+              subject.update_attributes(hostname: "", email: "").should be_false
+              subject.errors[:base].should be_empty
+            end
           end
 
-          it "don't need current_password with other errors" do
-            subject.update_attributes(hostname: "", email: "").should be_false
-            subject.errors[:base].should be_empty
-          end
-        end
+          describe "when downgrade to free plan" do
+            it "needs current_password" do
+              subject.update_attributes(plan_id: @free_plan.id).should be_false
+              subject.errors[:base].should include I18n.t('activerecord.errors.models.site.attributes.base.current_password_needed')
+            end
 
-        describe "when downgrade to free plan" do
-          it "needs current_password" do
-            subject.update_attributes(plan_id: @free_plan.id).should be_false
-            subject.errors[:base].should include I18n.t('activerecord.errors.models.site.attributes.base.current_password_needed')
-          end
-
-          it "needs right current_password" do
-            subject.update_attributes(plan_id: @free_plan.id, user_attributes: { :current_password => "wrong" }).should be_false
-            subject.errors[:base].should include I18n.t('activerecord.errors.models.site.attributes.base.current_password_needed')
-          end
-        end
-
-        describe "when archive" do
-          it "needs current_password" do
-            subject.archive.should be_false
-            subject.errors[:base].should include I18n.t('activerecord.errors.models.site.attributes.base.current_password_needed')
+            it "needs right current_password" do
+              subject.update_attributes(plan_id: @free_plan.id, user_attributes: { :current_password => "wrong" }).should be_false
+              subject.errors[:base].should include I18n.t('activerecord.errors.models.site.attributes.base.current_password_needed')
+            end
           end
 
-          it "needs right current_password" do
-            subject.user.current_password = 'wrong'
-            subject.archive.should be_false
-            subject.errors[:base].should include I18n.t('activerecord.errors.models.site.attributes.base.current_password_needed')
-          end
-        end
+          describe "when archive" do
+            it "needs current_password" do
+              subject.archive.should be_false
+              subject.errors[:base].should include I18n.t('activerecord.errors.models.site.attributes.base.current_password_needed')
+            end
 
-        describe "when suspend" do
-          it "don't need current_password" do
-            subject.suspend.should be_true
-            subject.errors[:base].should be_empty
+            it "needs right current_password" do
+              subject.user.current_password = 'wrong'
+              subject.archive.should be_false
+              subject.errors[:base].should include I18n.t('activerecord.errors.models.site.attributes.base.current_password_needed')
+            end
+          end
+
+          describe "when suspend" do
+            it "don't need current_password" do
+              subject.suspend.should be_true
+              subject.errors[:base].should be_empty
+            end
           end
         end
       end
@@ -877,7 +890,7 @@ describe Site do
     end
 
     describe "#without_password_validation" do
-      subject { FactoryGirl.create(:site, hostname: "rymai.com") }
+      subject { FactoryGirl.create(:site_not_in_trial, hostname: "rymai.com") }
 
       it "should ask password when not calling this method" do
         subject.hostname.should == "rymai.com"
@@ -901,7 +914,7 @@ describe Site do
     end
 
     describe "#save_without_password_validation" do
-      subject { FactoryGirl.create(:site, hostname: "rymai.com") }
+      subject { FactoryGirl.create(:site_not_in_trial, hostname: "rymai.com") }
 
       it "should ask password when not calling this method" do
         subject.hostname.should == "rymai.com"

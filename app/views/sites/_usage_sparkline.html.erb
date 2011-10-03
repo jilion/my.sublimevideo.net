@@ -1,0 +1,14 @@
+<%
+graph = Graph.new do |g|
+  g.option(chart: { renderTo: "usage_sparkline_#{site.token}", defaultSeriesType: 'area', margin: [0,0,0,0], backgroundColor: '#EEE' })
+  g.option(title: { text: "" })
+  g.option(legend: { enabled: false })
+  g.option(tooltip: { enabled: false })
+  g.option(xAxis: { labels: { enabled: false } })
+  g.option(yAxis: { maxPadding: 0, minPadding: 0, endOnTick: false, labels: { enabled: false } })
+  g.option(series: [serie(usage.map(&:pv), '', color: '#666', fill_color: 'rgba(204,204,204,.25)')])
+  g.option(plotOptions: plot_options(0, 1.day, marker_hover: false))
+  g.option(credits: { enabled: false })
+end
+%>
+<div id="<%= "usage_sparkline_#{site.token}" %>" style="width: 60px; height: 25px;"><%= raw graph.draw %></div>

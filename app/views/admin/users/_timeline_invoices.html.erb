@@ -37,8 +37,8 @@ unless invoices.empty?
       borderWidth: 0,
       backgroundColor: "rgba(0, 0, 0, .70)",
       style: {
-      	color: '#FFFFFF',
-      	padding: '5px'
+        color: '#FFFFFF',
+        padding: '5px'
       },
       formatter: function() {
         return "<strong>" + this.x + "</strong><br/><br/>" + this.series.name + ": <strong>$" + Highcharts.numberFormat(this.y / 100, 2) + "</strong>";
@@ -46,7 +46,7 @@ unless invoices.empty?
       borderWidth: 1
     }))
     g.option(series: [
-      serie(invoices.map(&:amount), 'Invoice total amount', '#0000FF', type: 'area'),
+      serie(invoices.map(&:amount), 'Invoice total amount', type: 'area'),
     ].flatten)
     g.option(plotOptions: plot_options(@date_range_from.end_of_month, 1.month, marker: true, linear: true))
     g.option(credits: credits)

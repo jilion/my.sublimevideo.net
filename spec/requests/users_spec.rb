@@ -233,7 +233,6 @@ feature "Users" do
   scenario "delete his account (with current password confirmation)" do
     sign_in_as :user
     click_link('John Doe')
-
     click_button "Delete account"
 
     fill_in "Password", :with => "123456"
@@ -241,8 +240,13 @@ feature "Users" do
 
     current_url.should =~ %r(^http://[^/]+/login$)
     page.should_not have_content "John Doe"
-    User.last.should be_archived
+    @current_user.reload.should be_archived
     page.should have_content 'Bye! Your account was successfully cancelled. We hope to see you again soon.'
+
+    last_delivery = ActionMailer::Base.deliveries.last
+    last_delivery.to.should eql [@current_user.email]
+    last_delivery.subject.should eql "Your account has been deleted"
+    last_delivery.body.encoded.should include "Your account has been deleted."
   end
 
   scenario "accept invitation should always redirect to /signup" do
