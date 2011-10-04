@@ -6,40 +6,47 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
     this.initModels()
     this.initPusherTick()
 
-    pageTitleView = new MSVStats.Views.PageTitleView(collection: MSVStats.sites)
-    sitesSelectView = new MSVStats.Views.SitesSelectView(collection: MSVStats.sites)
+    new MSVStats.Views.PageTitleView(sites: MSVStats.sites)
+    new MSVStats.Views.SitesSelectView(sites: MSVStats.sites)
 
-    periodSelectorSecondsView = new MSVStats.Views.PeriodSelectorSecondsView
+    new MSVStats.Views.PeriodSelectorSecondsView
       statsSeconds: MSVStats.statsSeconds
       period: MSVStats.period
-    periodSelectorMinutesView = new MSVStats.Views.PeriodSelectorMinutesView
+    new MSVStats.Views.PeriodSelectorMinutesView
       statsMinutes: MSVStats.statsMinutes
       period: MSVStats.period
-    periodSelectorHoursView = new MSVStats.Views.PeriodSelectorHoursView
+    new MSVStats.Views.PeriodSelectorHoursView
       statsHours: MSVStats.statsHours
       period: MSVStats.period
-    periodSelectorDaysView = new MSVStats.Views.PeriodSelectorDaysView
+    new MSVStats.Views.PeriodSelectorDays30View
       statsDays: MSVStats.statsDays
       period: MSVStats.period
-    periodSelectorAllView = new MSVStats.Views.PeriodSelectorAllView
+    new MSVStats.Views.PeriodSelectorDaysView
       statsDays: MSVStats.statsDays
       period: MSVStats.period
 
-    MSVStats.vvView = new MSVStats.Views.VVView
+    new MSVStats.Views.DatesRangeTitleView
       statsSeconds: MSVStats.statsSeconds
       statsMinutes: MSVStats.statsMinutes
       statsHours:   MSVStats.statsHours
       statsDays:    MSVStats.statsDays
       period:       MSVStats.period
 
-    bpView = new MSVStats.Views.BPView
+    new MSVStats.Views.VVView
       statsSeconds: MSVStats.statsSeconds
       statsMinutes: MSVStats.statsMinutes
       statsHours:   MSVStats.statsHours
       statsDays:    MSVStats.statsDays
       period:       MSVStats.period
 
-    mdView = new MSVStats.Views.MDView
+    new MSVStats.Views.BPView
+      statsSeconds: MSVStats.statsSeconds
+      statsMinutes: MSVStats.statsMinutes
+      statsHours:   MSVStats.statsHours
+      statsDays:    MSVStats.statsDays
+      period:       MSVStats.period
+
+    new MSVStats.Views.MDView
       statsSeconds: MSVStats.statsSeconds
       statsMinutes: MSVStats.statsMinutes
       statsHours:   MSVStats.statsHours
@@ -59,24 +66,6 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
     this.resetAndFetchStats()
     MSVStats.statsRouter.initPusherStats()
 
-  initHighcharts: ->
-    Highcharts.setOptions
-      global:
-        useUTC: false
-
-  initSparkline: ->
-    # $.fn.sparkline.defaults.line.lineColor       = '#0046ff'
-    # $.fn.sparkline.defaults.line.fillColor       = '#0046ff'
-    $.fn.sparkline.defaults.line.spotRadius      = 0
-    $.fn.sparkline.defaults.line.lineWidth       = 0
-    $.fn.sparkline.defaults.line.spotColor       = false
-    $.fn.sparkline.defaults.line.minSpotColor    = false
-    $.fn.sparkline.defaults.line.maxSpotColor    = false
-    $.fn.sparkline.defaults.line.drawNormalOnTop = true
-    $.fn.sparkline.defaults.line.chartRangeClip  = true
-    $.fn.sparkline.defaults.line.chartRangeMin   = 0
-    # $.fn.sparkline.defaults.line.chartRangeMax   = 0
-
   initModels: ->
     MSVStats.period = new MSVStats.Models.Period()
 
@@ -93,52 +82,14 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
       MSVStats.statsDays.fetch() if data.d
 
   initPusherStats: ->
-    MSVStats.privateChannel = MSVStats.pusher.subscribe("presence-#{MSVStats.selectedSiteToken}")
+    MSVStats.presenceChannel = MSVStats.pusher.subscribe("presence-#{MSVStats.selectedSiteToken}")
 
-    # console.log MSVStats.privateChannel.subscribed
+    MSVStats.presenceChannel.bind 'pusher:subscription_succeeded', ->
+      MSVStats.statsSeconds.fetch
+        success: -> setTimeout("MSVStats.statsSeconds.updateEachSeconds();", 1000)
 
-    MSVStats.privateChannel.bind 'pusher:subscription_succeeded', (members) ->
-      console.log 'channel subscribed'
-      console.log members
-      MSVStats.statsSeconds.fetch()
-      # console.log 'channel subscribed'
-      # console.log states
-
-    # MSVStats.privateChannel.bind 'subscription_error', ->
-    #   console.log 'subscription_error'
-      # # console.log states
-      # MSVStats.statsSeconds.fetch()
-
-    # MSVStats.pusher.bind 'pusher:subscribe', (data) ->
-    #   console.log '***********'
-    #   console.log data
-
-    # MSVStats.pusher.connection.bind "state_change", (states) ->
-      # console.log states
-      # MSVStats.statsSeconds.fetch()
-
-    # MSVStats.pusher.connection.bind "connected", ->
-    #   console.log 'subscribed'
-      # MSVStats.statsSeconds.fetch()
-
-    # MSVStats.privateChannel.pusher.connection.bind "state_change", (data) ->
-    #   console.log 'state_change'
-    #   console.log data
-
-
-    MSVStats.privateChannel.bind 'stats', (data) ->
-      # console.log data
-      # console.log new Date(parseInt(data.t) * 1000)
-      MSVStats.statsSeconds.remove(MSVStats.statsSeconds.first(), silent: true)
-      MSVStats.statsSeconds.add(data, silent: true)
-      MSVStats.statsSeconds.trigger('change', MSVStats.statsSeconds)
-
-    # a = 0
-    # until MSVStats.privateChannel.subscribed
-    #   a += 1
-    #   if a == 1000
-    #     a = 0
-    #     console.log('not connected')
+    MSVStats.presenceChannel.bind 'stats', (data) ->
+      MSVStats.statsSeconds.merge(data, silent: true)
 
   resetAndFetchStats: ->
     MSVStats.statsSeconds.reset()
@@ -146,9 +97,6 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
     MSVStats.statsHours.reset()
     MSVStats.statsDays.reset()
 
-    # MSVStats.statsSeconds.fetch
-    #   silent: true
-    #   success: -> MSVStats.statsRouter.syncFetchSuccess()
     MSVStats.statsMinutes.fetch
       silent: true
       success: -> MSVStats.statsRouter.syncFetchSuccess()
@@ -163,4 +111,20 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
     if MSVStats.Collections.Stats.allPresent()
       MSVStats.period.autosetPeriod()
 
+  initHighcharts: ->
+    Highcharts.setOptions
+      global:
+        useUTC: true
 
+  initSparkline: ->
+    # $.fn.sparkline.defaults.line.lineColor       = '#0046ff'
+    # $.fn.sparkline.defaults.line.fillColor       = '#0046ff'
+    $.fn.sparkline.defaults.line.spotRadius      = 0
+    $.fn.sparkline.defaults.line.lineWidth       = 0
+    $.fn.sparkline.defaults.line.spotColor       = false
+    $.fn.sparkline.defaults.line.minSpotColor    = false
+    $.fn.sparkline.defaults.line.maxSpotColor    = false
+    $.fn.sparkline.defaults.line.drawNormalOnTop = true
+    $.fn.sparkline.defaults.line.chartRangeClip  = true
+    $.fn.sparkline.defaults.line.chartRangeMin   = 0
+    # $.fn.sparkline.defaults.line.chartRangeMax   = 0

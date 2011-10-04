@@ -28,7 +28,7 @@ class MSVStats.Views.VVView extends Backbone.View
     this.render() if MSVStats.period.get('type') == stats.periodType()
 
   renderChart: ->
-    MSVStats.vvChart = new Highcharts.StockChart
+    MSVStats.vvChart = new Highcharts.Chart
       chart:
         renderTo: 'vv_chart'
         backgroundColor: null
@@ -54,6 +54,7 @@ class MSVStats.Views.VVView extends Backbone.View
       title:
         text: null
       tooltip:
+        enabled:  MSVStats.period.get('type') != 'seconds'
         # backgroundColor: null
         # snap: 50
         shared: true
@@ -71,9 +72,9 @@ class MSVStats.Views.VVView extends Backbone.View
         enabled: false
       scrollbar:
         enabled: false
-      rangeSelector:
-        buttons: []
-        enabled: MSVStats.period.get('type') == 'days'
+      # rangeSelector:
+      #   buttons: []
+      #   enabled: MSVStats.period.get('type') == 'days'
       plotOptions:
         spline:
           animation: false
@@ -84,33 +85,35 @@ class MSVStats.Views.VVView extends Backbone.View
           stickyTracking: false
           lineWidth: 2
           marker:
-            radius: 2
+            # enabled: false
+            radius: 1
             fillColor: null
             lineColor: null
             lineWidth: 2
             states:
               hover:
-                radius: 4
+                # enabled: true
+                radius: 1
                 fillColor: null
                 lineColor: null
-                lineWidth: 0
+                lineWidth: 6
           states:
             hover:
               lineWidth: 2
-          dataGrouping:
-            groupPixelWidth: 1
-            smoothed: true
+          # dataGrouping:
+          #   groupPixelWidth: 1
+          #   smoothed: true
       series: [{
         type: 'spline'
         name: 'Page visits'
-        data: @stats.pluck('pv')
-        pointInterval: MSVStats.period.typeInterval()
+        data: @stats.customPluck('pv', MSVStats.period.get('startIndex'), MSVStats.period.get('endIndex'))
+        pointInterval: MSVStats.period.pointInterval()
         pointStart: @stats.first().time()
         },{
         type: 'spline'
         name: 'Video views'
-        data: @stats.pluck('vv')
-        pointInterval: MSVStats.period.typeInterval()
+        data: @stats.customPluck('vv', MSVStats.period.get('startIndex'), MSVStats.period.get('endIndex'))
+        pointInterval: MSVStats.period.pointInterval()
         pointStart: @stats.first().time()
       }]
       xAxis:
@@ -118,9 +121,9 @@ class MSVStats.Views.VVView extends Backbone.View
         tickWidth: 0
         gridLineWidth: 1
         type: 'datetime'
-        min: MSVStats.period.startTime()
-        max: MSVStats.period.endTime()
-        # max: MSVStats.period.startTime() + 59 * MSVStats.period.typeInterval()
+        # min: MSVStats.period.startTime()
+        # max: MSVStats.period.endTime()
+        # max: MSVStats.period.startTime() + 59 * MSVStats.period.pointInterval()
       yAxis:
         lineWidth: 0
         offset: 10

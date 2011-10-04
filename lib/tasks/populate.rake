@@ -360,11 +360,11 @@ def recurring_site_stats_update(user_id)
     loop do
       second = Time.now.utc.change(usec: 0).to_time
       sites.each do |site|
-        inc = random_stats_inc(1, 5)
+        inc = random_stats_inc(1)
         SiteStat.collection.update({ t: site.token, s: second }, { "$inc" => inc }, upsert: true)
       end
       # puts "Site(s) stats seconds updated at #{second}"
-      sleep 0.9
+      sleep 1
     end
   end
   Thread.new do
@@ -384,7 +384,7 @@ def recurring_site_stats_update(user_id)
         Pusher["stats"].trigger('tick', json)
 
         puts "Site(s) stats updated at #{now.change(sec: 0, usec: 0)}"
-        sleep 55
+        sleep 50
       end
       sleep 0.9
     end
@@ -392,12 +392,14 @@ def recurring_site_stats_update(user_id)
   EM.run do
     EM.add_periodic_timer(1) do
       EM.defer do
-        second = 1.second.ago.change(usec: 0).to_time
-        SiteStat.where(s: second.to_i).all.each do |site_stat|
-          json = site_stat.to_json(except: [:_id, :t, :s, :m, :h, :d], methods: [:t])
-          Pusher["presence-#{site_stat.token}"].trigger_async('stats', json)
-        end
-        puts "Site(s) stats seconds pushed at #{second}"
+        second = Time.now.change(usec: 0).to_time
+        site = sites.order(:hostname).first()
+        json = { "pv" => 1, "bp" => { "saf-osx" => 1 } }
+        Pusher["presence-#{site.token}"].trigger_async('stats', json.merge('id' => second.to_i))
+        json = { "md" => { "f" => { "d" => 1 }, "h" => { "d" => 1 } } }
+        Pusher["presence-#{site.token}"].trigger_async('stats', json.merge('id' => second.to_i))
+        json = { "vv" => 1 }
+        Pusher["presence-#{site.token}"].trigger_async('stats', json.merge('id' => second.to_i))
       end
     end
   end

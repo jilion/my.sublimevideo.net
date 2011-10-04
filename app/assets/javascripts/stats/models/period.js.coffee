@@ -5,7 +5,7 @@ class MSVStats.Models.Period extends Backbone.Model
     startIndex: 0
     endIndex: -1
 
-  typeInterval: ->
+  pointInterval: ->
     switch this.get('type')
       when 'seconds' then 1000
       when 'minutes' then 60 * 1000
@@ -43,13 +43,11 @@ class MSVStats.Models.Period extends Backbone.Model
   #   this.set(startTime: _.min([startTime, endTime]), endTime: _.max([startTime, endTime]), type: 'days', options)
 
   autosetPeriod: (options = {}) ->
-    if MSVStats.statsSeconds.vvTotal() > 0
-      this.setPeriod type: 'seconds', options
-    else if MSVStats.statsMinutes.vvTotal() > 0
+    if MSVStats.statsMinutes.vvTotal() > 0
       this.setPeriod type: 'minutes', options
     else if MSVStats.statsHours.vvTotal() > 0
       this.setPeriod type: 'hours', options
-    else if MSVStats.statsDays.length <= 30 || MSVStats.statsDays.vvTotal([MSVStats.statsDays.at(MSVStats.statsDays.length - 30).time(), MSVStats.statsDays.last().time()]) > 0
+    else if MSVStats.statsDays.length <= 30 || MSVStats.statsDays.vvTotal(-30, -1) > 0
       this.setPeriod type: 'days', startIndex: -30, endIndex: -1, options
     else # all
       this.setPeriod type: 'days', options

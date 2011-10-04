@@ -6,6 +6,7 @@ describe 'Period', ->
     it 'returns first statsDays when startIndex is null', ->
       MSVStats.statsDays = new MSVStats.Collections.Stats(daysStats)
       @period.setPeriod(type: 'days')
+      console.log @period.stats()
       expect(@period.get('startIndex')).toEqual(0)
       expect(@period.startTime()).toEqual(MSVStats.statsDays.first().time())
 

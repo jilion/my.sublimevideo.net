@@ -9,7 +9,7 @@
     # WEB_SOCKET_DEBUG = true
 
     window.MSVStats.pusher = new Pusher('#{PusherConfig.key}', encrypted: true)
-    window.MSVStats.sites = new MSVStats.Collections.Sites(#{current_user.sites.to_json(only: [:token, :hostname])})
+    window.MSVStats.sites = new MSVStats.Collections.Sites(#{current_user.sites.order(:hostname).to_json(only: [:token, :hostname])})
     window.MSVStats.sites.select('#{@site.token}')
     window.MSVStats.statsRouter = new MSVStats.Routers.StatsRouter()
     Backbone.history.start({ pushState: true })
@@ -19,12 +19,14 @@
 #period_selectors
   %ul
     %li
-      .all
-        %span.title ALL
-    %li
       .days
         %span#period_days_vv_total.total
         #period_days_sparkline.sparkline
+        %span.title all days
+    %li
+      .days30
+        %span#period_days30_vv_total.total
+        #period_days30_sparkline.sparkline
         %span.title last 30 days
     %li
       .hours
@@ -38,11 +40,14 @@
         %span.title last 60 minutes
     %li
       .seconds
-        %span#period_seconds_vv_total.total
-        #period_seconds_sparkline.sparkline
-        %span.title last 60 seconds
+        #period_seconds_content
+          %span#period_seconds_vv_total.total
+          #period_seconds_sparkline.sparkline
+          %span.title last 60 seconds
 
 .spacer
+
+%h3#dates_range_title
 
 #vv
   #vv_content

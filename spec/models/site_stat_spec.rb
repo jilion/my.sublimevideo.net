@@ -13,7 +13,7 @@ describe SiteStat do
     describe ".delay_clear_old_minutes_and_days_stats" do
       it "delays clear_old_minutes_and_days_stats if not already delayed" do
         expect { SiteStat.delay_clear_old_minutes_and_days_stats }.to change(Delayed::Job, :count).by(1)
-        Delayed::Job.last.run_at.should be_within(60).of(5.minutes.from_now)
+        Delayed::Job.last.run_at.should be_within(60).of(1.minutes.from_now)
       end
 
       it "delays nothing if already delayed" do
@@ -40,7 +40,7 @@ describe SiteStat do
 
       it "delays itself" do
         expect { SiteStat.clear_old_minutes_and_days_stats }.to change(Delayed::Job, :count).by(1)
-        Delayed::Job.last.run_at.should be_within(60).of(5.minutes.from_now)
+        Delayed::Job.last.run_at.should be_within(60).of(1.minutes.from_now)
       end
     end
 
@@ -75,7 +75,7 @@ describe SiteStat do
     describe ".incs_from_trackers" do
       it "returns incs for each token" do
         SiteStat.incs_from_trackers(@trackers).should eql({
-          "ovjigy83" => { "pv.m" => 3, "bp.saf-osx" => 1, "md.h.d" => 3, "bp.chr-osx" => 1, "bp.fir-osx" => 1 }
+          "ovjigy83" => { "pv.m" => 3, "bp.saf-osx" => 1, "bp.chr-osx" => 1, "bp.fir-osx" => 1 }
         })
       end
     end
@@ -176,10 +176,11 @@ describe SiteStat do
       end
 
       before(:each) do
-        Factory.create(:site_stat, t: @site.token, s: 60.seconds.ago, pv: {e: 2})
-        Factory.create(:site_stat, t: @site.token, s: 59.seconds.ago, pv: {e: 3})
-        Factory.create(:site_stat, t: @site.token, s: 1.second.ago, pv: {e: 4})
-        Factory.create(:site_stat, t: @site.token, s: Time.now.utc, pv: {e: 5})
+        Factory.create(:site_stat, t: @site.token, s: 61.seconds.ago.change(usec: 0), pv: {e: 1})
+        Factory.create(:site_stat, t: @site.token, s: 60.seconds.ago.change(usec: 0), pv: {e: 2})
+        Factory.create(:site_stat, t: @site.token, s: 59.seconds.ago.change(usec: 0), pv: {e: 3})
+        Factory.create(:site_stat, t: @site.token, s: 1.second.ago.change(usec: 0), pv: {e: 4})
+        Factory.create(:site_stat, t: @site.token, s: Time.now.utc.change(usec: 0), pv: {e: 5})
 
         Factory.create(:site_stat, t: @site.token, m: 60.minutes.ago.change(sec: 0), pv: {e: 2})
         Factory.create(:site_stat, t: @site.token, m: 59.minutes.ago.change(sec: 0), pv: {e: 3})
@@ -200,15 +201,16 @@ describe SiteStat do
       describe "with seconds period" do
         subject { JSON.parse(SiteStat.json(@site.token, 'seconds')) }
 
-        its(:size) { should eql(60) }
+        its(:size) { should eql(61) }
         it { subject[0]['pv'].should eql(2) }
         it { subject[1]['pv'].should eql(3) }
         it { subject[58]['pv'].should eql(0) }
         it { subject[59]['pv'].should eql(4) }
+        it { subject[60]['pv'].should eql(5) }
 
-        it { subject[0]['t'].should eql(60.seconds.ago.change(usec: 0).to_i) }
-        it { subject[1]['t'].should eql(59.seconds.ago.change(usec: 0).to_i) }
-        it { subject[59]['t'].should eql(1.seconds.ago.change(usec: 0).to_i) }
+        it { subject[0]['id'].should eql(60.seconds.ago.change(usec: 0).to_i) }
+        it { subject[1]['id'].should eql(59.seconds.ago.change(usec: 0).to_i) }
+        it { subject[60]['id'].should eql(Time.now.utc.change(usec: 0).to_i) }
       end
 
       describe "with minutes period" do
@@ -220,9 +222,9 @@ describe SiteStat do
         it { subject[58]['pv'].should eql(4) }
         it { subject[59]['pv'].should eql(5) }
 
-        it { subject[0]['t'].should eql(59.minutes.ago.change(sec: 0).to_i) }
-        it { subject[1]['t'].should eql(58.minutes.ago.change(sec: 0).to_i) }
-        it { subject[59]['t'].should eql(Time.now.utc.change(sec: 0).to_i) }
+        it { subject[0]['id'].should eql(59.minutes.ago.change(sec: 0).to_i) }
+        it { subject[1]['id'].should eql(58.minutes.ago.change(sec: 0).to_i) }
+        it { subject[59]['id'].should eql(Time.now.utc.change(sec: 0).to_i) }
       end
 
       describe "with hours period" do
@@ -234,9 +236,9 @@ describe SiteStat do
         it { subject[2]['pv'].should eql(0) }
         it { subject[23]['pv'].should eql(49) }
 
-        it { subject[0]['t'].should eql(24.hours.ago.change(min: 0, sec: 0).to_i) }
-        it { subject[2]['t'].should eql(22.hours.ago.change(min: 0, sec: 0).to_i) }
-        it { subject[23]['t'].should eql(1.hours.ago.change(min: 0, sec: 0).to_i) }
+        it { subject[0]['id'].should eql(24.hours.ago.change(min: 0, sec: 0).to_i) }
+        it { subject[2]['id'].should eql(22.hours.ago.change(min: 0, sec: 0).to_i) }
+        it { subject[23]['id'].should eql(1.hours.ago.change(min: 0, sec: 0).to_i) }
       end
 
       describe "with days period" do
@@ -247,9 +249,9 @@ describe SiteStat do
         it { subject[1]['pv'].should eql(0) }
         it { subject[78]['pv'].should eql(101) }
         it { subject[80]['pv'].should eql(102) }
-        it { subject[0]['t'].should eql(81.days.ago.change(hour: 0, min: 0, sec: 0).to_i) }
-        it { subject[1]['t'].should eql(80.days.ago.change(hour: 0, min: 0, sec: 0).to_i) }
-        it { subject[80]['t'].should eql(1.days.ago.change(hour: 0, min: 0, sec: 0).to_i) }
+        it { subject[0]['id'].should eql(81.days.ago.change(hour: 0, min: 0, sec: 0).to_i) }
+        it { subject[1]['id'].should eql(80.days.ago.change(hour: 0, min: 0, sec: 0).to_i) }
+        it { subject[80]['id'].should eql(1.days.ago.change(hour: 0, min: 0, sec: 0).to_i) }
       end
 
       describe "with days period (less than 30 days stats)" do
@@ -260,8 +262,8 @@ describe SiteStat do
         it { subject[0]['pv'].should eql(0) }
         it { subject[1]['pv'].should eql(0) }
         it { subject[29]['pv'].should eql(102) }
-        it { subject[0]['t'].should eql(30.day.ago.change(hour: 0, min: 0, sec: 0).to_i) }
-        it { subject[29]['t'].should eql(1.day.ago.change(hour: 0, min: 0, sec: 0).to_i) }
+        it { subject[0]['id'].should eql(30.day.ago.change(hour: 0, min: 0, sec: 0).to_i) }
+        it { subject[29]['id'].should eql(1.day.ago.change(hour: 0, min: 0, sec: 0).to_i) }
       end
     end
 

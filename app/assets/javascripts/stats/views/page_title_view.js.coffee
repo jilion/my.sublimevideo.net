@@ -1,9 +1,9 @@
 class MSVStats.Views.PageTitleView extends Backbone.View
 
-  initialize: () ->
-    _.bindAll(this, 'render')
-    this.collection.bind('change', this.render);
-    this.collection.bind('reset', this.render);
+  initialize: ->
+    _.bindAll this, 'render'
+    @options.sites.bind 'change', this.render
+    @options.sites.bind 'reset', this.render
     this.render()
 
   render: ->
