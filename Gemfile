@@ -112,7 +112,7 @@ group :development do
   gem 'em-http-request' # async pusher in populate
 
   gem 'rb-fsevent', :git => 'git://github.com/ttilley/rb-fsevent.git', :branch => 'pre-compiled-gem-one-off'
-  gem 'growl_notify'
+  gem 'growl_notify', :git => 'git://github.com/agileanimal/growl_notify.git'
   gem 'guard-bundler'
   gem 'guard-pow'
   gem 'guard-livereload'
