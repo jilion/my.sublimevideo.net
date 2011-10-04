@@ -18,11 +18,13 @@
     %small
       - if invoice.paid_at
         = "Paid: #{l(invoice.paid_at, :format => :minutes)}"
+        = ", Refund. #{l(invoice.site.refunded_at, :format => :minutes)}" if invoice.refunded?
+      - elsif invoice.canceled?
+        = "Canceled"
       - elsif invoice.last_failed_at
         = "Failed: #{l(invoice.last_failed_at, :format => :minutes)}"
       - else
         = "Created: #{l(invoice.created_at, :format => :minutes)}"
-      = ", Refund. #{l(invoice.site.refunded_at, :format => :minutes)}" if invoice.refunded?
   %td.invoice_items_count
     %strong
       - if invoice.invoice_items_count > 1
@@ -36,13 +38,10 @@
     = display_amount(invoice.amount)
   %td.state
     %small
-      - if invoice.refunded?
-        = "refunded"
-      - else
-        - case invoice.state
-        - when "open", "waiting", "canceled"
-          %span{ style: "color:orange" }= invoice.state
-        - when "failed"
-          %strong{ style: "color:red" }= invoice.state
-        - when "paid"
-          %span{ style: "color:green" }= invoice.state
+      - case invoice.state
+      - when "open", "waiting", "canceled"
+        %span{ style: "color:orange" }= invoice.state
+      - when "failed"
+        %strong{ style: "color:red" }= 'failed'
+      - when "paid"
+        %span{ style: "color:green" }= invoice.refunded? ? 'refunded' : 'paid'
