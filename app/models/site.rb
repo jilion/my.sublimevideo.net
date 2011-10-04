@@ -119,11 +119,11 @@ class Site < ActiveRecord::Base
   validates :plan,        :presence => { :message => "Please choose a plan" }, :unless => :pending_plan_id?
   validates :player_mode, :inclusion => { :in => PLAYER_MODES }
 
-  validates :hostname,        :presence => { :if => proc { |s| s.in_beta_plan? || s.in_or_will_be_in_paid_plan? } }, :hostname => true, :hostname_uniqueness => true
+  validates :hostname,        :presence => { :if => proc { |s| s.in_or_will_be_in_paid_plan? } }, :hostname => true, :hostname_uniqueness => true
   validates :extra_hostnames, :extra_hostnames => true
   validates :dev_hostnames,   :dev_hostnames => true
 
-  validate  :verify_presence_of_credit_card, :if => :in_or_will_be_in_paid_plan?
+  validate  :verify_presence_of_credit_card, :if => :will_be_in_paid_plan?
   validate  :validates_current_password
 
   # =============

@@ -198,11 +198,6 @@ describe Site do
         subject { site = FactoryGirl.create(:site, plan_id: @dev_plan.id); site.hostname = ''; site }
         it { should be_valid }
       end
-      context "with the beta plan" do
-        subject { site = FactoryGirl.create(:site, plan_id: @beta_plan.id); site.hostname = ''; site }
-        it { should_not be_valid }
-        it { should have(1).error_on(:hostname) }
-      end
       context "with a paid plan" do
         subject { site = FactoryGirl.create(:site, plan_id: @paid_plan.id); site.hostname = ''; site }
         it { should_not be_valid }
