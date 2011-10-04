@@ -96,9 +96,7 @@ group :development do
   gem 'heroku'
   gem 'taps'
   gem 'silent-postgres'
-end
 
-group :guard do
   gem 'rb-fsevent', :git => 'git://github.com/ttilley/rb-fsevent.git', :branch => 'pre-compiled-gem-one-off'
   gem 'growl_notify', :git => 'git://github.com/agileanimal/growl_notify.git'
   gem 'guard-bundler'
