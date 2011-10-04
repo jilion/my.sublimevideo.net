@@ -4,14 +4,14 @@ class MSVStats.Views.SitesSelectView extends Backbone.View
   events:
     'change select': 'updatePage'
 
-  initialize: () ->
-    _.bindAll(this, 'render')
-    this.collection.bind('change', this.render);
-    this.collection.bind('reset', this.render);
+  initialize: ->
+    _.bindAll this, 'render' 
+    @options.sites.bind 'change', this.render
+    @options.sites.bind 'reset', this.render
     $('#sites_select').html(this.render().el)
 
   render: ->
-    $(this.el).html(this.template(sites: this.collection.toJSON()))
+    $(@el).html(this.template(sites: @options.sites.toJSON()))
     return this
 
   updatePage: ->

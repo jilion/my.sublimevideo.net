@@ -46,8 +46,7 @@ class SiteStat
     read_attribute(:t)
   end
 
-  # time for backbonejs model
-  def id
+  def time
     (s || m || h || d).to_i
   end
 
@@ -60,6 +59,13 @@ class SiteStat
   def vv
     vv = read_attribute(:vv)
     vv['m'].to_i + vv['e'].to_i
+  end
+
+  # send time as id for backbonejs model
+  def as_json(options = nil)
+    json = super
+    json['id'] = time
+    json
   end
 
   # =================
@@ -124,7 +130,7 @@ class SiteStat
       last_stats(stats, from, to, period_type)
     end
 
-    json_stats.to_json(except: [:_id, :t, :s, :m, :h, :d], methods: [:id])
+    json_stats.to_json(except: [:_id, :t, :s, :m, :h, :d])
   end
 
   def self.create_stats_from_trackers!(log, trackers)
@@ -146,15 +152,15 @@ class SiteStat
 
   def self.delay_clear_old_minutes_and_days_stats
     unless Delayed::Job.already_delayed?('%SiteStat%clear_old_minutes_and_days_stats%')
-      delay(priority: 100, run_at: 5.minutes.from_now).clear_old_minutes_and_days_stats
+      delay(priority: 100, run_at: 1.minutes.from_now).clear_old_minutes_and_days_stats
     end
   end
 
   def self.clear_old_minutes_and_days_stats
     delay_clear_old_minutes_and_days_stats
-    self.s_before(90.seconds.ago).delete_all
-    self.m_before(180.minutes.ago).delete_all
-    self.h_before(72.hours.ago).delete_all
+    self.s_before(62.seconds.ago).delete_all
+    self.m_before(61.minutes.ago).delete_all
+    self.h_before(25.hours.ago).delete_all
   end
 
 private
@@ -174,25 +180,31 @@ private
   def self.incs_from_params_and_user_agent(params, user_agent, hits)
     incs   = {}
     params = Addressable::URI.parse(params).query_values || {}
-    if params.key?("e") && params.key?("h")
-      case params["e"]
-      when 'l' # Player load
-        # Page Visits
-        incs['pv.' + params["h"]] = hits
-        # Browser + Plateform
-        if %w[m e].include?(params["h"])
-          incs['bp.' + browser_and_platform_key(user_agent)] = hits
+    if params.key?('e') && params.key?('h')
+      case params['e']
+      when 'l' # Player load &  Video prepare
+        unless params.key?('po') # video prepare only
+          if params.key?('em') # embed
+            # Page Visits embeds
+            incs['pv.em'] = hits
+          else
+            # Page Visits
+            incs['pv.' + params['h']] = hits
+            # Browser + Plateform
+            if %w[m e].include?(params['h'])
+              incs['bp.' + browser_and_platform_key(user_agent)] = hits
+            end
+          end
         end
-      when 'p' # Video prepare
         # Player Mode + Device hash
-        if %w[m e].include?(params["h"]) && params.key?("pm") && params.key?("pd")
-          params["pm"].uniq.each do |pm|
-            incs['md.' + pm + '.' + params["pd"]] = params['pm'].count(pm) * hits
+        if %w[m e].include?(params['h']) && params.key?('pm') && params.key?('pd')
+          params['pm'].uniq.each do |pm|
+            incs['md.' + pm + '.' + params['pd']] = params['pm'].count(pm) * hits
           end
         end
       when 's' # Video start (play)
         # Video Views
-        incs['vv.' + params["h"]] = hits
+        incs['vv.' + params['h']] = hits
       end
     end
     incs

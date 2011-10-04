@@ -6,40 +6,47 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
     this.initModels()
     this.initPusherTick()
 
-    pageTitleView = new MSVStats.Views.PageTitleView(collection: MSVStats.sites)
-    sitesSelectView = new MSVStats.Views.SitesSelectView(collection: MSVStats.sites)
+    new MSVStats.Views.PageTitleView(sites: MSVStats.sites)
+    new MSVStats.Views.SitesSelectView(sites: MSVStats.sites)
 
-    periodSelectorSecondsView = new MSVStats.Views.PeriodSelectorSecondsView
+    new MSVStats.Views.PeriodSelectorSecondsView
       statsSeconds: MSVStats.statsSeconds
       period: MSVStats.period
-    periodSelectorMinutesView = new MSVStats.Views.PeriodSelectorMinutesView
+    new MSVStats.Views.PeriodSelectorMinutesView
       statsMinutes: MSVStats.statsMinutes
       period: MSVStats.period
-    periodSelectorHoursView = new MSVStats.Views.PeriodSelectorHoursView
+    new MSVStats.Views.PeriodSelectorHoursView
       statsHours: MSVStats.statsHours
       period: MSVStats.period
-    periodSelectorDaysView = new MSVStats.Views.PeriodSelectorDaysView
+    new MSVStats.Views.PeriodSelectorDays30View
       statsDays: MSVStats.statsDays
       period: MSVStats.period
-    periodSelectorAllView = new MSVStats.Views.PeriodSelectorAllView
+    new MSVStats.Views.PeriodSelectorDaysView
       statsDays: MSVStats.statsDays
       period: MSVStats.period
 
-    MSVStats.vvView = new MSVStats.Views.VVView
+    new MSVStats.Views.DatesRangeTitleView
       statsSeconds: MSVStats.statsSeconds
       statsMinutes: MSVStats.statsMinutes
       statsHours:   MSVStats.statsHours
       statsDays:    MSVStats.statsDays
       period:       MSVStats.period
 
-    bpView = new MSVStats.Views.BPView
+    new MSVStats.Views.VVView
       statsSeconds: MSVStats.statsSeconds
       statsMinutes: MSVStats.statsMinutes
       statsHours:   MSVStats.statsHours
       statsDays:    MSVStats.statsDays
       period:       MSVStats.period
 
-    mdView = new MSVStats.Views.MDView
+    new MSVStats.Views.BPView
+      statsSeconds: MSVStats.statsSeconds
+      statsMinutes: MSVStats.statsMinutes
+      statsHours:   MSVStats.statsHours
+      statsDays:    MSVStats.statsDays
+      period:       MSVStats.period
+
+    new MSVStats.Views.MDView
       statsSeconds: MSVStats.statsSeconds
       statsMinutes: MSVStats.statsMinutes
       statsHours:   MSVStats.statsHours
@@ -107,7 +114,7 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
   initHighcharts: ->
     Highcharts.setOptions
       global:
-        useUTC: false
+        useUTC: true
 
   initSparkline: ->
     # $.fn.sparkline.defaults.line.lineColor       = '#0046ff'

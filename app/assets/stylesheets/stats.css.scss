@@ -26,22 +26,16 @@
         margin:0;
         padding:0;
 
-        .minutes, .hours, .days, .seconds {
+        .minutes, .hours, .days30, .days, .seconds {
           position: relative;
           float: left;
-          width: 23%;
+          width: 20%;
         }
-        .all {
-          position: relative;
-          float: left;
-          height: 100%;
-          width: 8%;
-        }
-        
+
         #period_minutes_sparkline {
           line-height: 50px;
         }
-        
+
         .sparkline {
           position: absolute;
           width:100%;
@@ -55,25 +49,29 @@
           font-weight:600;
           z-index: 10;
         }
-        
+
         .title {
           display: block;
           height:60px;
           padding: 50px 0 0;
           font-size: 12px;
         }
-        
+
         .selected {
           .title {
             font-weight:600;
           }
-          
         }
       }
     }
   }
 }
 
+#content h3#dates_range_title {
+  width:100%;
+  text-align: center;
+  margin: 30px 0 15px 0;
+}
 
 #content #vv {
   display:block;

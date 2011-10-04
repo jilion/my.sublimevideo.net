@@ -19,12 +19,14 @@
 #period_selectors
   %ul
     %li
-      .all
-        %span.title ALL
-    %li
       .days
         %span#period_days_vv_total.total
         #period_days_sparkline.sparkline
+        %span.title all days
+    %li
+      .days30
+        %span#period_days30_vv_total.total
+        #period_days30_sparkline.sparkline
         %span.title last 30 days
     %li
       .hours
@@ -44,6 +46,8 @@
           %span.title last 60 seconds
 
 .spacer
+
+%h3#dates_range_title
 
 #vv
   #vv_content
