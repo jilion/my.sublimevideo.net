@@ -6,6 +6,8 @@
 %h3 Community Forum
 %p.title_desc= raw "If your issue isn’t covered in our documentation then head over to our #{link_to "community forum", "http://getsatisfaction.com/sublimevideo", :class => "hl"} and post a question. Before posting a new topic, try searching for your issue in the search box below - in most cases your question may have already been answered.."
 
+= link_to_function "Our Support Community", "GSFN.goto_gsfn()"
+
 %h3 Billing Questions
 %p.title_desc= raw "For billing questions, please #{mail_to("billing@sublimevideo.net", "email us", :encode => "hex", :class => "hl")}."
 

@@ -160,9 +160,9 @@ MySublimeVideo.showSiteEmbedCode = function(siteId) {
 MySublimeVideo.showSiteEmbedCodeWithSSL = function(element) {
   var textarea = element.up().previous('textarea');
   if (element.checked) {
-    textarea.value = textarea.value.gsub('http://cdn.sublimevideo.net','https://4076.voxcdn.com');
+    textarea.value = textarea.value.gsub('http://cdn.sublimevideo.net', 'https://4076.voxcdn.com');
   } else {
-    textarea.value = textarea.value.gsub('https://4076.voxcdn.com','http://cdn.sublimevideo.net');
+    textarea.value = textarea.value.gsub('https://4076.voxcdn.com', 'http://cdn.sublimevideo.net');
   }
   return false;
 };
