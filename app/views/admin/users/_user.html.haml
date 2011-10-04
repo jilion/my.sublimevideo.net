@@ -3,6 +3,8 @@
 %tr[user]{ :class => cycle("", "alt") }
   %td.full_name
     = link_to user.full_name, [:admin, user], :title => "#{user.full_name} <#{user.email}>"
+  %td.state
+    = user.state.titleize
   %td.sites
     - if sites.present?
       %small
