@@ -170,14 +170,14 @@ module UserModules::CreditCard
       #   After correcting the error, the customer can retry the authorization process.
       when "0"
         @i18n_notice_and_alert = { alert: I18n.t("credit_card.errors.invalid") }
-        reset_pending_credit_card_info # save
+        save # will apply pend_credit_card_info
 
       # STATUS == 2, Authorization refused:
       #   The authorization has been declined by the financial institution.
       #   The customer can retry the authorization process after selecting a different payment method (or card brand).
       when "2"
         @i18n_notice_and_alert = { alert: I18n.t("credit_card.errors.refused") }
-        reset_pending_credit_card_info # save
+        save # will apply pend_credit_card_info
 
       # STATUS == 52, Authorization not known:
       #   A technical problem arose during the authorization/ payment process, giving an unpredictable result.

@@ -150,8 +150,8 @@ feature "Credit cards update" do
 
       @current_user.reload.cc_type.should == 'visa'
       @current_user.cc_last_digits.should == '1111'
-      @current_user.pending_cc_type.should be_nil
-      @current_user.pending_cc_last_digits.should be_nil
+      @current_user.pending_cc_type.should == 'visa'
+      @current_user.pending_cc_last_digits.should == '0002'
 
       visit '/account/edit'
 

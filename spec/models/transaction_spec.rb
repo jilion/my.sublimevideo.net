@@ -325,7 +325,7 @@ describe Transaction do
         @invoice3 = FactoryGirl.create(:invoice, site: @site1, state: 'open', renew: true)
         @invoice4 = FactoryGirl.create(:invoice, site: @site2, state: 'failed', renew: false) # first invoice
       end
-      before(:each) do
+      before do
         @user1.reload
         @user2.reload
         Delayed::Job.delete_all
@@ -396,7 +396,7 @@ describe Transaction do
 
     describe ".charge_by_invoice_ids" do
       context "with a new credit card given through options[:credit_card]" do
-        before(:each) do
+        before do
           @user = FactoryGirl.create(:user_no_cc)
           @site1 = FactoryGirl.build(:new_site, user: @user)
           @site1.user.assign_attributes(valid_cc_attributes)
@@ -453,13 +453,16 @@ describe Transaction do
       end
 
       context "with a credit card alias" do
-        before(:each) do
+        use_vcr_cassette "ogone/visa_payment_2000_alias"
+
+        before do
+          @user.reload
           @invoice1 = FactoryGirl.create(:invoice, site: FactoryGirl.create(:site, user: @user), state: 'open')
           @invoice2 = FactoryGirl.create(:invoice, site: FactoryGirl.create(:site, user: @user), state: 'failed')
           @invoice3 = FactoryGirl.create(:invoice, site: FactoryGirl.create(:site, user: @user), state: 'paid')
         end
 
-        it "should charge Ogone for the total amount of the open and failed invoices" do
+        it "charges Ogone for the total amount of the open and failed invoices" do
           Ogone.should_receive(:purchase).with(@invoice1.amount + @invoice2.amount, @user.cc_alias, {
             order_id: an_instance_of(String),
             description: an_instance_of(String),
@@ -472,25 +475,45 @@ describe Transaction do
           Transaction.charge_by_invoice_ids([@invoice1.id, @invoice2.id, @invoice3.id])
         end
 
-        it "should store cc infos from the user" do
-          VCR.use_cassette("ogone/visa_payment_2000_credit_card") do
-            Transaction.charge_by_invoice_ids([@invoice1.id, @invoice2.id, @invoice3.id])
+        it "stores cc infos from the user's cc infos" do
+          Transaction.charge_by_invoice_ids([@invoice1.id, @invoice2.id, @invoice3.id])
+
+          @invoice1.last_transaction.cc_type.should        eql @user.cc_type
+          @invoice1.last_transaction.cc_last_digits.should eql @user.cc_last_digits
+          @invoice1.last_transaction.cc_expire_on.should   eql @user.cc_expire_on
+        end
+
+        context "user has pending cc infos" do
+          before do
+            %w[cc_type cc_last_digits cc_expire_on cc_updated_at].each do |attr|
+              @user.send("#{attr}=", nil)
+            end
+            @user.pending_cc_type        = 'master'
+            @user.pending_cc_last_digits = '9999'
+            @user.pending_cc_expire_on   = Time.now.utc.end_of_month.to_date
+            @user.save
           end
 
-          @invoice1.last_transaction.cc_type.should == @user.cc_type
-          @invoice1.last_transaction.cc_last_digits.should == @user.cc_last_digits
-          @invoice1.last_transaction.cc_expire_on.should == @user.cc_expire_on
+          it "stores cc infos from the user's pending cc infos" do
+            Transaction.charge_by_invoice_ids([@invoice1.id, @invoice2.id, @invoice3.id])
+
+            @invoice1.last_transaction.cc_type.should        eql 'master'
+            @invoice1.last_transaction.cc_last_digits.should eql '9999'
+            @invoice1.last_transaction.cc_expire_on.should   eql Time.now.utc.end_of_month.to_date
+          end
         end
       end
 
       context "with a succeeding purchase" do
-        before(:each) do
+        before do
+          @user.reload
           @invoice1 = FactoryGirl.create(:invoice, site: FactoryGirl.create(:site, user: @user), state: 'open')
         end
 
         context "credit card" do
           use_vcr_cassette "ogone/visa_payment_2000_credit_card"
-          it "should set transaction and invoices to paid state" do
+
+          it "sets transaction and invoices to paid state" do
             @invoice1.should be_open
             Transaction.charge_by_invoice_ids([@invoice1.id], { credit_card: @user.credit_card }).should be_true
             @invoice1.last_transaction.should be_paid
@@ -500,7 +523,8 @@ describe Transaction do
 
         context "alias" do
           use_vcr_cassette "ogone/visa_payment_2000_alias"
-          it "should set transaction and invoices to paid state" do
+
+          it "sets transaction and invoices to paid state" do
             @invoice1.should be_open
             Transaction.charge_by_invoice_ids([@invoice1.id]).should be_true
             @invoice1.last_transaction.should be_paid
@@ -509,7 +533,7 @@ describe Transaction do
         end
 
         context "with a purchase that need a 3d secure authentication" do
-          before(:each) do
+          before do
             Ogone.stub(:purchase) { mock('response', :params => { "NCSTATUS" => "5", "STATUS" => "46", "HTML_ANSWER" => Base64.encode64("<html>No HTML.</html>") }) }
           end
 
@@ -536,7 +560,7 @@ describe Transaction do
       end
 
       context "with a failing purchase" do
-        before(:each) do
+        before do
           @invoice1 = FactoryGirl.create(:invoice, site: FactoryGirl.create(:site, user: @user), state: 'open')
         end
 
@@ -617,7 +641,7 @@ describe Transaction do
       end
 
       context "for a refundable site with 1 paid transaction containing 2 invoices with 2 different sites" do
-        before(:each) do
+        before do
           @site = FactoryGirl.create(:site_with_invoice, state: 'archived', refunded_at: Time.now.utc)
           Site.refunded.should include(@site)
           @site.invoices.where(state: 'paid').count.should eql 1
@@ -648,7 +672,7 @@ describe Transaction do
       end
 
       context "for a refundable site with 1 failed transaction" do
-        before(:each) do
+        before do
           @site = FactoryGirl.create(:site_with_invoice, state: 'archived', refunded_at: Time.now.utc)
           transactions = Transaction.paid.joins(:invoices).where(:invoices => { :site_id => @site.id }).order(:id)
           transactions.count.should == 1
@@ -669,7 +693,7 @@ describe Transaction do
       end
 
       context "for a refundable site with multiple transactions all paid" do
-        before(:each) do
+        before do
           @site = FactoryGirl.create(:site_with_invoice, first_paid_plan_started_at: Time.now.utc)
           @site2 = FactoryGirl.create(:site_with_invoice, user: @site.user, first_paid_plan_started_at: Time.now.utc)
           @site.plan_id = @custom_plan.token
@@ -717,7 +741,7 @@ describe Transaction do
       end
 
       context "for a refundable site with multiple transactions: 1 paid and 1 failed" do
-        before(:each) do
+        before do
           @site = FactoryGirl.create(:site_with_invoice, first_paid_plan_started_at: Time.now.utc)
           @site2 = FactoryGirl.create(:site_with_invoice, user: @site.user, first_paid_plan_started_at: Time.now.utc)
           @site.plan_id = @custom_plan.token
@@ -741,7 +765,7 @@ describe Transaction do
           @transaction2.invoices.first.amount.should_not eql @transaction2.amount
         end
 
-        it "should delay one Ogone.credit" do
+        it "delays one Ogone.credit" do
           Ogone.should_receive(:credit).with(@transaction2.invoices.order(:id.asc).first.amount, "#{@transaction2.pay_id};SAL")
 
           Transaction.refund_by_site_id(@site.id)
@@ -767,6 +791,7 @@ describe Transaction do
 
     describe "#process_payment_response" do
       before(:all) do
+        @user.reload
         @site1    = FactoryGirl.create(:site, user: @user, plan_id: @free_plan.id)
         @site2    = FactoryGirl.create(:site, user: @user, plan_id: @paid_plan.id)
         @invoice1 = FactoryGirl.create(:invoice, site: @site1, state: 'open')
@@ -828,276 +853,316 @@ describe Transaction do
       end
       subject { FactoryGirl.create(:transaction, invoices: [@invoice1.reload, @invoice2.reload]) }
 
-      it "should wait_d3d with a STATUS == 46" do
-        subject.should be_unprocessed
-        subject.error.should be_nil
-
-        subject.process_payment_response(@d3d_params)
-        subject.reload.should be_waiting_d3d
-        subject.error.should == "<html>No HTML.</html>"
-        @invoice1.reload.should be_open
-        @invoice2.reload.should be_failed
-      end
-
-      it "should succeed with a STATUS == 9" do
-        subject.should be_unprocessed
-
-        subject.process_payment_response(@success_params)
-        subject.reload.should be_paid
-        @invoice1.reload.should be_paid
-        @invoice2.reload.should be_paid
-      end
-
-      it "should apply pending cc infos to the user" do
-        subject.user.cc_brand = 'master'
-        subject.user.cc_full_name = 'Remy Coutable'
-        subject.user.cc_number = '5399999999999999'
-        subject.user.cc_expiration_month = 2.years.from_now.month
-        subject.user.cc_expiration_year = 2.years.from_now.year
-        subject.user.cc_verification_value = 999
-        subject.user.save!
-        subject.user.reload.pending_cc_type.should == 'master'
-        subject.user.pending_cc_last_digits.should == '9999'
-        subject.user.pending_cc_expire_on.should == 2.years.from_now.end_of_month.to_date
-
-        subject.process_payment_response(@success_params)
-        subject.user.reload.cc_type.should == 'master'
-        subject.user.cc_last_digits.should == '9999'
-        subject.user.cc_expire_on.should == 2.years.from_now.end_of_month.to_date
-      end
-
-      it "should save with a STATUS == 51" do
-        subject.should be_unprocessed
-
-        subject.process_payment_response(@waiting_params)
-        subject.reload.should be_waiting
-        subject.nc_status.should == 0
-        subject.status.should == 51
-        subject.error.should == "waiting"
-        @invoice1.reload.should be_waiting
-        @invoice2.reload.should be_waiting
-      end
-
-      it "should fail with a STATUS == 0" do
-        subject.should be_unprocessed
-
-        subject.process_payment_response(@invalid_params)
-        subject.reload.should be_failed
-        subject.nc_status.should == 5
-        subject.status.should == 0
-        subject.error.should == "invalid"
-        @invoice1.reload.should be_failed
-        @invoice2.reload.should be_failed
-      end
-
-      it "should clear pending cc infos of the user" do
-        subject.user.cc_brand = 'master'
-        subject.user.cc_full_name = 'Remy Coutable'
-        subject.user.cc_number = '5399999999999999'
-        subject.user.cc_expiration_month = 2.years.from_now.month
-        subject.user.cc_expiration_year = 2.years.from_now.year
-        subject.user.cc_verification_value = 999
-        subject.user.save!
-        subject.user.reload.pending_cc_type.should == 'master'
-        subject.user.pending_cc_last_digits.should == '9999'
-        subject.user.pending_cc_expire_on.should == 2.years.from_now.end_of_month.to_date
-
-        subject.process_payment_response(@invalid_params)
-        subject.user.reload.cc_type.should == 'visa'
-        subject.user.cc_last_digits.should == '1111'
-        subject.user.cc_expire_on.should == 1.year.from_now.end_of_month.to_date
-        subject.user.pending_cc_last_digits.should == '9999'
-        subject.user.pending_cc_expire_on.should == 2.years.from_now.end_of_month.to_date
-        subject.user.pending_cc_updated_at.should be_present
-      end
-
-      it "should fail with a STATUS == 93" do
-        subject.should be_unprocessed
-
-        subject.process_payment_response(@refused_params)
-        subject.reload.should be_failed
-        subject.nc_status.should == 3
-        subject.status.should == 93
-        subject.error.should == "refused"
-        @invoice1.reload.should be_failed
-        @invoice2.reload.should be_failed
-      end
-
-      it "should clear pending cc infos of the user" do
-        subject.user.cc_brand = 'master'
-        subject.user.cc_full_name = 'Remy Coutable'
-        subject.user.cc_number = '5399999999999999'
-        subject.user.cc_expiration_month = 2.years.from_now.month
-        subject.user.cc_expiration_year = 2.years.from_now.year
-        subject.user.cc_verification_value = 999
-        subject.user.save!
-        subject.user.reload.pending_cc_type.should == 'master'
-        subject.user.pending_cc_last_digits.should == '9999'
-        subject.user.pending_cc_expire_on.should == 2.years.from_now.end_of_month.to_date
-
-        subject.process_payment_response(@refused_params)
-        subject.user.reload.cc_type.should == 'visa'
-        subject.user.cc_last_digits.should == '1111'
-        subject.user.cc_expire_on.should == 1.year.from_now.end_of_month.to_date
-        subject.user.pending_cc_last_digits.should == '9999'
-        subject.user.pending_cc_expire_on.should == 2.years.from_now.end_of_month.to_date
-        subject.user.pending_cc_updated_at.should be_present
-      end
-
-      it "should fail with a STATUS == 92" do
-        subject.should be_unprocessed
-        Notify.should_receive(:send)
-
-        subject.process_payment_response(@unknown_params)
-        subject.reload.should be_waiting
-        subject.nc_status.should == 2
-        subject.status.should == 92
-        subject.error.should == "unknown"
-        @invoice1.reload.should be_waiting
-        @invoice2.reload.should be_waiting
-      end
-
-      it "should not clear pending cc infos of the user" do
-        subject.user.cc_brand = 'master'
-        subject.user.cc_full_name = 'Remy Coutable'
-        subject.user.cc_number = '5399999999999999'
-        subject.user.cc_expiration_month = 2.years.from_now.month
-        subject.user.cc_expiration_year = 2.years.from_now.year
-        subject.user.cc_verification_value = 999
-        subject.user.save!
-        subject.user.reload.pending_cc_type.should == 'master'
-        subject.user.pending_cc_last_digits.should == '9999'
-        subject.user.pending_cc_expire_on.should == 2.years.from_now.end_of_month.to_date
-
-        subject.process_payment_response(@unknown_params)
-        subject.user.reload.pending_cc_type.should == 'master'
-        subject.user.pending_cc_last_digits.should == '9999'
-        subject.user.pending_cc_expire_on.should == 2.years.from_now.end_of_month.to_date
-      end
-
-      describe "waiting d3d once, and then succeed" do
-        it "should save the transaction and then succeed it" do
-          subject.user.cc_brand = 'master'
-          subject.user.cc_full_name = 'Remy Coutable'
-          subject.user.cc_number = '5399999999999999'
-          subject.user.cc_expiration_month = 2.years.from_now.month
-          subject.user.cc_expiration_year = 2.years.from_now.year
-          subject.user.cc_verification_value = 999
-          subject.user.save!
-          subject.user.reload.pending_cc_type.should == 'master'
-          subject.user.pending_cc_last_digits.should == '9999'
-          subject.user.pending_cc_expire_on.should == 2.years.from_now.end_of_month.to_date
+      context "STATUS is 46" do
+        it "puts transaction in 'waiting_d3d' state" do
           subject.should be_unprocessed
+          subject.error.should be_nil
 
           subject.process_payment_response(@d3d_params)
-          subject.reload.should be_waiting_d3d
-          subject.nc_status.should == 0
-          subject.status.should == 46
-          subject.error.should == "<html>No HTML.</html>"
-          subject.should be_waiting_d3d
-          subject.user.reload.pending_cc_type.should == 'master'
-          subject.user.pending_cc_last_digits.should == '9999'
-          subject.user.pending_cc_expire_on.should == 2.years.from_now.end_of_month.to_date
+
+          subject.reload.should   be_waiting_d3d
+          subject.error.should    eql "<html>No HTML.</html>"
           @invoice1.reload.should be_open
           @invoice2.reload.should be_failed
-
-          subject.process_payment_response(@success_params)
-          subject.reload.should be_paid
-          subject.nc_status.should == 0
-          subject.status.should == 9
-          subject.error.should == "!"
-
-          subject.user.reload.pending_cc_type.should be_nil
-          subject.user.pending_cc_last_digits.should be_nil
-          subject.user.pending_cc_expire_on.should be_nil
-          subject.user.reload.cc_type.should == 'master'
-          subject.user.cc_last_digits.should == '9999'
-          subject.user.cc_expire_on.should == 2.years.from_now.end_of_month.to_date
-          @invoice1.reload.should be_paid
-          @invoice2.reload.should be_paid
         end
       end
 
-      describe "waiting once, and then succeed" do
-        it "should save the transaction and then succeed it" do
-          subject.user.cc_brand = 'master'
-          subject.user.cc_full_name = 'Remy Coutable'
-          subject.user.cc_number = '5399999999999999'
-          subject.user.cc_expiration_month = 2.years.from_now.month
-          subject.user.cc_expiration_year = 2.years.from_now.year
+      context "STATUS is 9" do
+        it "puts transaction in 'paid' state" do
+          subject.should be_unprocessed
+
+          subject.process_payment_response(@success_params)
+
+          subject.reload.should   be_paid
+          @invoice1.reload.should be_paid
+          @invoice2.reload.should be_paid
+        end
+
+        it "applies pending cc infos to the user" do
+          subject.user.cc_brand              = 'master'
+          subject.user.cc_full_name          = 'Remy Coutable'
+          subject.user.cc_number             = '5399999999999999'
+          subject.user.cc_expiration_month   = 2.years.from_now.month
+          subject.user.cc_expiration_year    = 2.years.from_now.year
           subject.user.cc_verification_value = 999
           subject.user.save!
-          subject.user.reload.pending_cc_type.should == 'master'
-          subject.user.pending_cc_last_digits.should == '9999'
-          subject.user.pending_cc_expire_on.should == 2.years.from_now.end_of_month.to_date
+          subject.user.reload.pending_cc_type.should eql 'master'
+          subject.user.pending_cc_last_digits.should eql '9999'
+          subject.user.pending_cc_expire_on.should   eql 2.years.from_now.end_of_month.to_date
+
+          subject.process_payment_response(@success_params)
+
+          subject.user.reload.cc_type.should eql 'master'
+          subject.user.cc_last_digits.should eql '9999'
+          subject.user.cc_expire_on.should   eql 2.years.from_now.end_of_month.to_date
+        end
+
+      end
+
+      context "STATUS is 51" do
+        it "puts transaction in 'waiting' state" do
           subject.should be_unprocessed
 
           subject.process_payment_response(@waiting_params)
-          subject.reload.should be_waiting
-          subject.nc_status.should == 0
-          subject.status.should == 51
-          subject.error.should == "waiting"
-          subject.should be_waiting
-          subject.user.reload.pending_cc_type.should == 'master'
-          subject.user.pending_cc_last_digits.should == '9999'
-          subject.user.pending_cc_expire_on.should == 2.years.from_now.end_of_month.to_date
-          @invoice1.reload.should be_waiting
-          @invoice2.reload.should be_waiting
 
-          subject.process_payment_response(@success_params)
-          subject.reload.should be_paid
-          subject.nc_status.should == 0
-          subject.status.should == 9
-          subject.error.should == "!"
-
-          subject.user.reload.pending_cc_type.should be_nil
-          subject.user.pending_cc_last_digits.should be_nil
-          subject.user.pending_cc_expire_on.should be_nil
-          subject.user.reload.cc_type.should == 'master'
-          subject.user.cc_last_digits.should == '9999'
-          subject.user.cc_expire_on.should == 2.years.from_now.end_of_month.to_date
-          @invoice1.reload.should be_paid
-          @invoice2.reload.should be_paid
+          subject.reload.should    be_waiting
+          subject.nc_status.should eql 0
+          subject.status.should    eql 51
+          subject.error.should     eql "waiting"
+          @invoice1.reload.should  be_waiting
+          @invoice2.reload.should  be_waiting
         end
       end
 
-      describe "unknown (2) once, and then succeed" do
-        it "should save the transaction and then succeed it" do
-          subject.user.cc_brand = 'master'
-          subject.user.cc_full_name = 'Remy Coutable'
-          subject.user.cc_number = '5399999999999999'
-          subject.user.cc_expiration_month = 2.years.from_now.month
-          subject.user.cc_expiration_year = 2.years.from_now.year
+      context "STATUS is 0" do
+        it "puts transaction in 'failed' state" do
+          subject.should be_unprocessed
+
+          subject.process_payment_response(@invalid_params)
+
+          subject.reload.should    be_failed
+          subject.nc_status.should eql 5
+          subject.status.should    eql 0
+          subject.error.should     eql "invalid"
+          @invoice1.reload.should  be_failed
+          @invoice2.reload.should  be_failed
+        end
+
+        it "clears pending cc infos of the user" do
+          subject.user.cc_brand              = 'master'
+          subject.user.cc_full_name          = 'Remy Coutable'
+          subject.user.cc_number             = '5399999999999999'
+          subject.user.cc_expiration_month   = 2.years.from_now.month
+          subject.user.cc_expiration_year    = 2.years.from_now.year
           subject.user.cc_verification_value = 999
           subject.user.save!
-          subject.user.reload.pending_cc_type.should == 'master'
-          subject.user.pending_cc_last_digits.should == '9999'
-          subject.user.pending_cc_expire_on.should == 2.years.from_now.end_of_month.to_date
+          subject.user.reload.pending_cc_type.should eql 'master'
+          subject.user.pending_cc_last_digits.should eql '9999'
+          subject.user.pending_cc_expire_on.should   eql 2.years.from_now.end_of_month.to_date
+
+          subject.process_payment_response(@invalid_params)
+
+          subject.user.reload.cc_type.should         eql 'visa'
+          subject.user.cc_last_digits.should         eql '1111'
+          subject.user.cc_expire_on.should           eql 1.year.from_now.end_of_month.to_date
+          subject.user.pending_cc_last_digits.should eql '9999'
+          subject.user.pending_cc_expire_on.should   eql 2.years.from_now.end_of_month.to_date
+          subject.user.pending_cc_updated_at.should  be_present
+        end
+      end
+
+      context "STATUS is 93" do
+        it "puts transaction in 'failed' state" do
+          subject.should be_unprocessed
+
+          subject.process_payment_response(@refused_params)
+
+          subject.reload.should    be_failed
+          subject.nc_status.should eql 3
+          subject.status.should    eql 93
+          subject.error.should     eql "refused"
+
+          @invoice1.reload.should be_failed
+          @invoice2.reload.should be_failed
+        end
+
+        it "clears pending cc infos of the user" do
+          subject.user.cc_brand              = 'master'
+          subject.user.cc_full_name          = 'Remy Coutable'
+          subject.user.cc_number             = '5399999999999999'
+          subject.user.cc_expiration_month   = 2.years.from_now.month
+          subject.user.cc_expiration_year    = 2.years.from_now.year
+          subject.user.cc_verification_value = 999
+          subject.user.save!
+          subject.user.reload.pending_cc_type.should eql 'master'
+          subject.user.pending_cc_last_digits.should eql '9999'
+          subject.user.pending_cc_expire_on.should   eql 2.years.from_now.end_of_month.to_date
+
+          subject.process_payment_response(@refused_params)
+
+          subject.user.reload.cc_type.should         eql 'visa'
+          subject.user.cc_last_digits.should         eql '1111'
+          subject.user.cc_expire_on.should           eql 1.year.from_now.end_of_month.to_date
+          subject.user.pending_cc_last_digits.should eql '9999'
+          subject.user.pending_cc_expire_on.should   eql 2.years.from_now.end_of_month.to_date
+          subject.user.pending_cc_updated_at.should  be_present
+        end
+      end
+
+      context "STATUS is 92" do
+        it "puts transaction in 'waiting' state" do
           subject.should be_unprocessed
           Notify.should_receive(:send)
 
           subject.process_payment_response(@unknown_params)
-          subject.reload.should be_waiting
-          subject.nc_status.should == 2
-          subject.status.should == 92
-          subject.error.should == "unknown"
-          subject.user.reload.pending_cc_type.should == 'master'
-          subject.user.pending_cc_last_digits.should == '9999'
-          subject.user.pending_cc_expire_on.should == 2.years.from_now.end_of_month.to_date
+
+          subject.reload.should    be_waiting
+          subject.nc_status.should eql 2
+          subject.status.should    eql 92
+          subject.error.should     eql "unknown"
+
+          @invoice1.reload.should be_waiting
+          @invoice2.reload.should be_waiting
+        end
+
+        it "doesn't clear pending cc infos of the user" do
+          subject.user.cc_brand              = 'master'
+          subject.user.cc_full_name          = 'Remy Coutable'
+          subject.user.cc_number             = '5399999999999999'
+          subject.user.cc_expiration_month   = 2.years.from_now.month
+          subject.user.cc_expiration_year    = 2.years.from_now.year
+          subject.user.cc_verification_value = 999
+          subject.user.save!
+          subject.user.reload.pending_cc_type.should eql 'master'
+          subject.user.pending_cc_last_digits.should eql '9999'
+          subject.user.pending_cc_expire_on.should   eql 2.years.from_now.end_of_month.to_date
+
+          subject.process_payment_response(@unknown_params)
+
+          subject.user.reload.pending_cc_type.should eql 'master'
+          subject.user.pending_cc_last_digits.should eql '9999'
+          subject.user.pending_cc_expire_on.should   eql 2.years.from_now.end_of_month.to_date
+        end
+      end
+
+      context "first STATUS is 46, second is 9" do
+        it "puts transaction in 'waiting_d3d' state, and then puts it in 'paid' state" do
+          subject.user.cc_brand              = 'master'
+          subject.user.cc_full_name          = 'Remy Coutable'
+          subject.user.cc_number             = '5399999999999999'
+          subject.user.cc_expiration_month   = 2.years.from_now.month
+          subject.user.cc_expiration_year    = 2.years.from_now.year
+          subject.user.cc_verification_value = 999
+          subject.user.save!
+          subject.user.reload.pending_cc_type.should eql 'master'
+          subject.user.pending_cc_last_digits.should eql '9999'
+          subject.user.pending_cc_expire_on.should   eql 2.years.from_now.end_of_month.to_date
+          subject.should be_unprocessed
+
+          subject.process_payment_response(@d3d_params)
+
+          subject.reload.should    be_waiting_d3d
+          subject.nc_status.should eql 0
+          subject.status.should    eql 46
+          subject.error.should     eql "<html>No HTML.</html>"
+          subject.should           be_waiting_d3d
+
+          subject.user.reload.pending_cc_type.should eql 'master'
+          subject.user.pending_cc_last_digits.should eql '9999'
+          subject.user.pending_cc_expire_on.should   eql 2.years.from_now.end_of_month.to_date
+
+          @invoice1.reload.should be_open
+          @invoice2.reload.should be_failed
+
+          subject.process_payment_response(@success_params)
+
+          subject.reload.should    be_paid
+          subject.nc_status.should eql 0
+          subject.status.should    eql 9
+          subject.error.should     eql "!"
+
+          subject.user.reload.pending_cc_type.should be_nil
+          subject.user.pending_cc_last_digits.should be_nil
+          subject.user.pending_cc_expire_on.should   be_nil
+          subject.user.reload.cc_type.should         eql 'master'
+          subject.user.cc_last_digits.should         eql '9999'
+          subject.user.cc_expire_on.should           eql 2.years.from_now.end_of_month.to_date
+
+          @invoice1.reload.should be_paid
+          @invoice2.reload.should be_paid
+        end
+      end
+
+      context "first STATUS is 51, second is 9" do
+        it "puts transaction in 'waiting' state, and then puts it in 'paid' state" do
+          subject.user.cc_brand              = 'master'
+          subject.user.cc_full_name          = 'Remy Coutable'
+          subject.user.cc_number             = '5399999999999999'
+          subject.user.cc_expiration_month   = 2.years.from_now.month
+          subject.user.cc_expiration_year    = 2.years.from_now.year
+          subject.user.cc_verification_value = 999
+          subject.user.save!
+          subject.user.reload.pending_cc_type.should eql 'master'
+          subject.user.pending_cc_last_digits.should eql '9999'
+          subject.user.pending_cc_expire_on.should   eql 2.years.from_now.end_of_month.to_date
+          subject.should be_unprocessed
+
+          subject.process_payment_response(@waiting_params)
+
+          subject.reload.should    be_waiting
+          subject.nc_status.should eql 0
+          subject.status.should    eql 51
+          subject.error.should     eql "waiting"
+          subject.should be_waiting
+          subject.user.reload.pending_cc_type.should eql 'master'
+          subject.user.pending_cc_last_digits.should eql '9999'
+          subject.user.pending_cc_expire_on.should   eql 2.years.from_now.end_of_month.to_date
+
           @invoice1.reload.should be_waiting
           @invoice2.reload.should be_waiting
 
           subject.process_payment_response(@success_params)
-          subject.reload.should be_paid
-          subject.nc_status.should == 0
-          subject.status.should == 9
-          subject.error.should == "!"
+
+          subject.reload.should    be_paid
+          subject.nc_status.should eql 0
+          subject.status.should    eql 9
+          subject.error.should     eql "!"
+
           subject.user.reload.pending_cc_type.should be_nil
           subject.user.pending_cc_last_digits.should be_nil
-          subject.user.pending_cc_expire_on.should be_nil
-          subject.user.reload.cc_type.should == 'master'
-          subject.user.cc_last_digits.should == '9999'
-          subject.user.cc_expire_on.should == 2.years.from_now.end_of_month.to_date
+          subject.user.pending_cc_expire_on.should   be_nil
+          subject.user.reload.cc_type.should         eql 'master'
+          subject.user.cc_last_digits.should         eql '9999'
+          subject.user.cc_expire_on.should           eql 2.years.from_now.end_of_month.to_date
+
+          @invoice1.reload.should be_paid
+          @invoice2.reload.should be_paid
+        end
+      end
+
+      context "first STATUS is 92, second is 9" do
+        it "puts transaction in 'waiting' state, and then puts it in 'paid' state" do
+          subject.user.cc_brand              = 'master'
+          subject.user.cc_full_name          = 'Remy Coutable'
+          subject.user.cc_number             = '5399999999999999'
+          subject.user.cc_expiration_month   = 2.years.from_now.month
+          subject.user.cc_expiration_year    = 2.years.from_now.year
+          subject.user.cc_verification_value = 999
+          subject.user.save!
+          subject.user.reload.pending_cc_type.should eql 'master'
+          subject.user.pending_cc_last_digits.should eql '9999'
+          subject.user.pending_cc_expire_on.should   eql 2.years.from_now.end_of_month.to_date
+          subject.should be_unprocessed
+          Notify.should_receive(:send)
+
+          subject.process_payment_response(@unknown_params)
+
+          subject.reload.should    be_waiting
+          subject.nc_status.should eql 2
+          subject.status.should    eql 92
+          subject.error.should     eql "unknown"
+
+          subject.user.reload.pending_cc_type.should eql 'master'
+          subject.user.pending_cc_last_digits.should eql '9999'
+          subject.user.pending_cc_expire_on.should   eql 2.years.from_now.end_of_month.to_date
+
+          @invoice1.reload.should be_waiting
+          @invoice2.reload.should be_waiting
+
+          subject.process_payment_response(@success_params)
+
+          subject.reload.should be_paid
+          subject.nc_status.should eql 0
+          subject.status.should    eql 9
+          subject.error.should     eql "!"
+
+          subject.user.reload.pending_cc_type.should be_nil
+          subject.user.pending_cc_last_digits.should be_nil
+          subject.user.pending_cc_expire_on.should   be_nil
+          subject.user.reload.cc_type.should         eql 'master'
+          subject.user.cc_last_digits.should         eql '9999'
+          subject.user.cc_expire_on.should           eql 2.years.from_now.end_of_month.to_date
+
           @invoice1.reload.should be_paid
           @invoice2.reload.should be_paid
         end
