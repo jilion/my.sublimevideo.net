@@ -198,9 +198,15 @@ class Transaction < ActiveRecord::Base
 
   def store_cc_infos(payment_method)
     is_cc_alias = payment_method.is_a?(String) # it's a cc_alias
-    self.cc_type        = is_cc_alias ? (self.user.cc_type || self.user.pending_cc_type) : payment_method.type
-    self.cc_last_digits = is_cc_alias ? (self.user.cc_last_digits || self.user.pending_cc_last_digits) : payment_method.last_digits
-    self.cc_expire_on   = is_cc_alias ? (self.user.cc_expire_on || self.user.pending_cc_expire_on) : Time.utc(payment_method.year, payment_method.month).end_of_month.to_date
+    if is_cc_alias
+      self.cc_type        = self.user.cc_type || self.user.pending_cc_type
+      self.cc_last_digits = self.user.cc_last_digits || self.user.pending_cc_last_digits
+      self.cc_expire_on   = self.user.cc_expire_on || self.user.pending_cc_expire_on
+    else
+      self.cc_type        = payment_method.type
+      self.cc_last_digits = payment_method.last_digits
+      self.cc_expire_on   = Time.utc(payment_method.year, payment_method.month).end_of_month.to_date
+    end
   end
 
 private
