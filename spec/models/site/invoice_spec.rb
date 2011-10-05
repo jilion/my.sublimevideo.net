@@ -7,12 +7,13 @@ describe Site::Invoice do
     describe ".renew_active_sites" do
       before(:all) do
         Site.delete_all
+        @plan2 = FactoryGirl.create(:plan, price: 100)
         Timecop.travel(2.months.ago) do
           @site_to_be_renewed = FactoryGirl.create(:site_with_invoice)
           @site_to_be_renewed_with_downgrade_to_dev_plan = FactoryGirl.create(:site_with_invoice)
           @site_to_be_renewed_with_downgrade_to_dev_plan.update_attribute(:next_cycle_plan_id, @dev_plan.id)
           @site_to_be_renewed_with_downgrade_to_paid_plan = FactoryGirl.create(:site_with_invoice)
-          @site_to_be_renewed_with_downgrade_to_paid_plan.update_attribute(:next_cycle_plan_id, @custom_plan.id)
+          @site_to_be_renewed_with_downgrade_to_paid_plan.update_attribute(:next_cycle_plan_id, @plan2.id)
         end
         @site_not_to_be_renewed = FactoryGirl.create(:site_with_invoice, plan_started_at: 3.months.ago, plan_cycle_ended_at: 2.months.from_now)
 
@@ -53,7 +54,7 @@ describe Site::Invoice do
         @site_to_be_renewed_with_downgrade_to_dev_plan.reload.next_cycle_plan_id.should be_nil
         @site_to_be_renewed_with_downgrade_to_dev_plan.reload.plan_id.should == @dev_plan.id
         @site_to_be_renewed_with_downgrade_to_paid_plan.reload.next_cycle_plan_id.should be_nil
-        @site_to_be_renewed_with_downgrade_to_paid_plan.reload.pending_plan_id.should == @custom_plan.id
+        @site_to_be_renewed_with_downgrade_to_paid_plan.reload.pending_plan_id.should == @plan2.id
       end
 
       it "should set the renew flag to true" do
@@ -1054,11 +1055,17 @@ describe Site::Invoice do
             subject { @site.reload }
 
             it "should create and try to charge the invoice" do
-              subject.reload.plan_id  = @paid_plan2.id
-              subject.user_attributes = { "current_password" => "123456" }
-              Timecop.travel(Time.utc(2011,2,10)) { expect { subject.save }.to change(subject.invoices, :count).by(1) }
+              Timecop.travel(Time.utc(2011,3,10)) do
+                subject.pend_plan_changes
+                subject.apply_pending_plan_changes
+
+                subject.reload.plan_id  = @paid_plan2.id
+                subject.user_attributes = { "current_password" => "123456" }
+                expect { subject.save }.to change(subject.invoices, :count).by(1)
+              end
               subject.reload.plan.should == @paid_plan2
               subject.last_invoice.should be_paid
+              subject.last_invoice.should_not be_renew
             end
           end
 
@@ -1072,6 +1079,7 @@ describe Site::Invoice do
               Timecop.travel(Time.utc(2011,2,10)) { expect { subject.save }.to change(subject.invoices, :count).by(1) }
               subject.reload.plan.should == @paid_plan_yearly
               subject.last_invoice.should be_paid
+              subject.last_invoice.should_not be_renew
             end
 
             it "should save user credit card infos if passed through charging_options" do
@@ -1177,7 +1185,7 @@ describe Site::Invoice do
             subject { @site.reload }
 
             it "should not create and not try to charge the invoice" do
-              subject.reload.plan_id = @dev_plan.id
+              subject.plan_id = @dev_plan.id
               Timecop.travel(Time.utc(2011,2,10)) { expect { subject.save_without_password_validation }.to_not change(subject.invoices, :count) }
               subject.reload.plan.should == @paid_plan_yearly
             end

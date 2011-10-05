@@ -220,7 +220,12 @@ private
 
   def being_renewed?
     # ensure plan_cycle dates are set, not nil!
-    in_paid_plan? && ((pending_plan_cycle_started_at_changed? && pending_plan_cycle_started_at?) || (pending_plan_cycle_ended_at_changed? && pending_plan_cycle_ended_at?))
+    in_paid_plan? &&
+    (!pending_plan_id? || !plan.upgrade?(pending_plan)) &&
+    (
+      (pending_plan_cycle_started_at_changed? && pending_plan_cycle_started_at?) ||
+      (pending_plan_cycle_ended_at_changed? && pending_plan_cycle_ended_at?)
+    )
   end
 
 end
