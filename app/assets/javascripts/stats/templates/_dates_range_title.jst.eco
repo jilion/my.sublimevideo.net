@@ -1,3 +1,17 @@
 <% if @period.get('type')?: %>
-  <%= Highcharts.dateFormat('%e %b %Y, %H:%M:%S', @period.startTime()) %> – <%= Highcharts.dateFormat('%e %b %Y, %H:%M:%S', @period.endTime()) %> 
+  <span class='day'>
+    <%= Highcharts.dateFormat('%e %b %Y', @period.startTime()) %> 
+  </span>
+  ,
+  <span class='time'>
+    <%= Highcharts.dateFormat('%H:%M:%S', @period.startTime()) %> 
+  </span>
+  –
+  <span class='day'>
+    <%= Highcharts.dateFormat('%e %b %Y', @period.endTime()) %> 
+  </span>
+  ,
+  <span class='time'>
+    <%= Highcharts.dateFormat('%H:%M:%S', @period.endTime()) %> 
+  </span>
 <% end %>

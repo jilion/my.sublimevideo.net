@@ -26,13 +26,18 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
       period: MSVStats.period
 
     new MSVStats.Views.DatesRangeTitleView
+      el: '#dates_range_title'
       statsSeconds: MSVStats.statsSeconds
       statsMinutes: MSVStats.statsMinutes
       statsHours:   MSVStats.statsHours
       statsDays:    MSVStats.statsDays
       period:       MSVStats.period
+      
+    MSVStats.datePickersView = new MSVStats.Views.DatePickersView
+      el: '#date_pickers'
 
     new MSVStats.Views.VVView
+      el: '#vv_chart_legend'
       statsSeconds: MSVStats.statsSeconds
       statsMinutes: MSVStats.statsMinutes
       statsHours:   MSVStats.statsHours
@@ -40,6 +45,7 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
       period:       MSVStats.period
 
     new MSVStats.Views.BPView
+      el: '#bp_content'
       statsSeconds: MSVStats.statsSeconds
       statsMinutes: MSVStats.statsMinutes
       statsHours:   MSVStats.statsHours
@@ -47,14 +53,12 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
       period:       MSVStats.period
 
     new MSVStats.Views.MDView
+      el: '#md_content'
       statsSeconds: MSVStats.statsSeconds
       statsMinutes: MSVStats.statsMinutes
       statsHours:   MSVStats.statsHours
       statsDays:    MSVStats.statsDays
       period:       MSVStats.period
-
-    # updateDateView = new MSVStats.Views.UpdateDateView(collection: MSVStats.stats)
-    # $('#update_date').html(updateDateView.render().el)
 
   routes:
     'sites/:token/stats': 'home'
@@ -68,6 +72,8 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
 
   initModels: ->
     MSVStats.period = new MSVStats.Models.Period()
+    MSVStats.period.bind 'change', ->
+      MSVStats.statsRouter.setHighchartsUTC()
 
     MSVStats.statsSeconds = new MSVStats.Collections.StatsSeconds()
     MSVStats.statsMinutes = new MSVStats.Collections.StatsMinutes()
@@ -86,7 +92,7 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
 
     MSVStats.presenceChannel.bind 'pusher:subscription_succeeded', ->
       MSVStats.statsSeconds.fetch
-        success: -> setTimeout("MSVStats.statsSeconds.updateEachSeconds();", 1000)
+        success: -> setTimeout((-> MSVStats.statsSeconds.updateEachSeconds()), 1000)
 
     MSVStats.presenceChannel.bind 'stats', (data) ->
       MSVStats.statsSeconds.merge(data, silent: true)
@@ -114,7 +120,12 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
   initHighcharts: ->
     Highcharts.setOptions
       global:
-        useUTC: true
+        useUTC: false
+        
+  setHighchartsUTC: ->
+    Highcharts.setOptions
+      global:
+        useUTC: MSVStats.period.get('type') == 'days'
 
   initSparkline: ->
     # $.fn.sparkline.defaults.line.lineColor       = '#0046ff'

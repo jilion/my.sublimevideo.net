@@ -5,13 +5,6 @@ GIT
     useragent (0.2.3)
 
 GIT
-  remote: git://github.com/agileanimal/growl_notify.git
-  revision: a6f198accd95ec0771f298edfc4224337e3b7992
-  specs:
-    growl_notify (0.0.2)
-      rb-appscript
-
-GIT
   remote: git://github.com/amatsuda/kaminari.git
   revision: f41de10abb1079bfccefbcbef691c8a5388901f3
   specs:
@@ -52,13 +45,6 @@ GIT
   revision: 3d9439030b09208517311c1583beb0fe0a6c903b
   specs:
     shoulda-matchers (1.0.0.beta3)
-
-GIT
-  remote: git://github.com/ttilley/rb-fsevent.git
-  revision: f36a8cd01b49a6ce2a26d9e1083b5f6e6722c470
-  branch: pre-compiled-gem-one-off
-  specs:
-    rb-fsevent (0.4.3.1pre1)
 
 GEM
   remote: http://rubygems.org/
@@ -163,7 +149,7 @@ GEM
       warden (~> 1.0.3)
     devise_invitable (0.5.5)
       devise (~> 1.4.1)
-      rails (>= 3.0.0, < 3.2)
+      rails (< 3.2, >= 3.0.0)
     diff-lcs (1.1.3)
     eco (1.0.0)
       coffee-script
@@ -181,7 +167,7 @@ GEM
     erubis (2.7.0)
     escape_utils (0.2.4)
     eventmachine (0.12.10)
-    excon (0.7.5)
+    excon (0.7.6)
     execjs (1.2.9)
       multi_json (~> 1.0)
     factory_girl (2.1.2)
@@ -189,9 +175,9 @@ GEM
     factory_girl_rails (1.2.0)
       factory_girl (~> 2.1.0)
       railties (>= 3.0.0)
-    faraday (0.7.4)
+    faraday (0.7.5)
       addressable (~> 2.2.6)
-      multipart-post (~> 1.1.0)
+      multipart-post (~> 1.1.3)
       rack (>= 1.1.0, < 2)
     faraday_middleware (0.7.0)
       faraday (~> 0.7.3)
@@ -212,6 +198,8 @@ GEM
       rspec (~> 2.0)
       rspec-instafail (~> 0.1.8)
       ruby-progressbar (~> 0.0.10)
+    growl_notify (0.0.1)
+      rb-appscript
     guard (0.8.4)
       thor (~> 0.14.6)
     guard-bundler (0.1.3)
@@ -343,6 +331,7 @@ GEM
       thor (~> 0.14.6)
     rake (0.9.2)
     rb-appscript (0.6.1)
+    rb-fsevent (0.9.0.pre3)
     rdoc (3.9.4)
     request-log-analyzer (1.11.1)
     rescue_me (0.1.0)
@@ -402,7 +391,7 @@ GEM
     state_machine (1.0.2)
     taps (0.3.23)
       rack (>= 1.0.1)
-      rest-client (>= 1.4.0, < 1.7.0)
+      rest-client (< 1.7.0, >= 1.4.0)
       sequel (~> 3.20.0)
       sinatra (~> 1.0.0)
       sqlite3-ruby (~> 1.2)
@@ -433,7 +422,7 @@ GEM
     warden (1.0.5)
       rack (>= 1.0)
     webmock (1.6.4)
-      addressable (~> 2.2, > 2.2.5)
+      addressable (> 2.2.5, ~> 2.2)
       crack (>= 0.1.7)
     wirble (0.1.3)
     xml-simple (1.0.16)
@@ -474,7 +463,7 @@ DEPENDENCIES
   ffaker
   fog (~> 1.0.0)
   fuubar
-  growl_notify!
+  growl_notify
   guard-bundler
   guard-coffeescript
   guard-jasmine
@@ -508,7 +497,7 @@ DEPENDENCIES
   rails (= 3.1.1.rc2)
   rails-backbone
   rails-dev-tweaks (~> 0.4.0)
-  rb-fsevent!
+  rb-fsevent (~> 0.9.0.pre3)
   request-log-analyzer (~> 1.11.1)
   rescue_me (~> 0.1.0)
   responders (~> 0.6.4)

@@ -9,14 +9,14 @@ class MSVStats.Views.VVView extends Backbone.View
     @options.statsMinutes.bind 'reset', this.renderIfSelected
     @options.statsHours.bind   'reset', this.renderIfSelected
     @options.statsDays.bind    'reset', this.renderIfSelected
-    $('#vv_chart_legend').html(this.render().el)
+    this.render()
 
   render: ->
     if MSVStats.period.get('type')?
       $('#vv_content').show()
       $('#vv').data().spinner.stop()
       @stats = MSVStats.period.stats()
-      $(this.el).html(this.template(stats: @stats))
+      $(@el).html(this.template(stats: @stats))
       this.renderChart()
       return this
     else
