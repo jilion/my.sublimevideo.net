@@ -9,19 +9,19 @@ class MSVStats.Views.MDView extends Backbone.View
     @options.statsMinutes.bind 'reset', this.renderIfSelected
     @options.statsHours.bind   'reset', this.renderIfSelected
     @options.statsDays.bind    'reset', this.renderIfSelected
-    $('#md_content').html(this.render().el)
+    this.render()
 
   render: ->    
     if MSVStats.period.get('type')?
-      $('#md_content').show()
+      $(@el).show()
       $('#md').data().spinner.stop()
       
       @mdData = MSVStats.period.stats().mdData()
-      $(this.el).html(this.template(mdData: @mdData))
+      $(@el).html(this.template(mdData: @mdData))
       
       return this
     else
-      $('#md_content').hide()
+      $(@el).hide()
       $('#md').spin()
       return this
       

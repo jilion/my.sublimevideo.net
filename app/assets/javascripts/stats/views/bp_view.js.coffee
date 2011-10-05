@@ -9,19 +9,19 @@ class MSVStats.Views.BPView extends Backbone.View
     @options.statsMinutes.bind 'reset', this.renderIfSelected
     @options.statsHours.bind   'reset', this.renderIfSelected
     @options.statsDays.bind    'reset', this.renderIfSelected
-    $('#bp_content').html(this.render().el)
+    this.render()
 
   render: ->    
     if MSVStats.period.get('type')?
-      $('#bp_content').show()
+      $(@el).show()
       $('#bp').data().spinner.stop()
       
       @bpData = MSVStats.period.stats().bpData()
-      $(this.el).html(this.template(bpData: @bpData))
+      $(@el).html(this.template(bpData: @bpData))
       
       return this
     else
-      $('#bp_content').hide()
+      $(@el).hide()
       $('#bp').spin()
       return this
       

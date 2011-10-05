@@ -7,7 +7,7 @@ class MSVStats.Views.PeriodSelectorDaysView extends Backbone.View
     @options.statsDays.bind('reset', this.render)
     @el.bind 'click', -> 
       $('#vv').spin()
-      setTimeout("MSVStats.period.setPeriod({type: 'days'});", 100)
+      setTimeout (-> MSVStats.period.setPeriod(type: 'days')), 100
 
   render: ->
     if this.isSelected() then @el.addClass('selected') else @el.removeClass('selected')
