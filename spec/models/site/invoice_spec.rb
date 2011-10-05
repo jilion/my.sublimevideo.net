@@ -433,16 +433,24 @@ describe Site::Invoice do
       describe "upgrade site" do
         context "from dev plan to monthly paid plan" do
           before(:all) do
-            Timecop.travel(Time.utc(2011,1,30)) { @site = FactoryGirl.create(:site, plan_id: @dev_plan.id) }
-            @site.apply_pending_plan_changes
-            @site.reload.plan_id = @paid_plan.id # upgrade
-            Timecop.travel(Time.utc(2011,2,25)) { @site.pend_plan_changes }
+            Timecop.travel(Time.utc(2011,1,30)) do
+              @site = FactoryGirl.create(:site, plan_id: @dev_plan.id)
+              @site.apply_pending_plan_changes
+            end
+
+            Timecop.travel(Time.utc(2011,3,25)) do
+              @site.pend_plan_changes
+              @site.apply_pending_plan_changes
+
+              @site.reload.plan_id = @paid_plan.id # upgrade
+              @site.pend_plan_changes
+            end
           end
           subject { @site }
 
-          its(:pending_plan_started_at)       { should == Time.utc(2011,2,25).midnight }
-          its(:pending_plan_cycle_started_at) { should == Time.utc(2011,2,25).midnight }
-          its(:pending_plan_cycle_ended_at)   { should == Time.utc(2011,3,24).to_datetime.end_of_day }
+          its(:pending_plan_started_at)       { should == Time.utc(2011,3,25).midnight }
+          its(:pending_plan_cycle_started_at) { should == Time.utc(2011,3,25).midnight }
+          its(:pending_plan_cycle_ended_at)   { should == Time.utc(2011,4,24).to_datetime.end_of_day }
           its(:plan)                          { should == @dev_plan }
           its(:pending_plan)                  { should == @paid_plan }
           its(:next_cycle_plan)               { should be_nil }
@@ -451,16 +459,24 @@ describe Site::Invoice do
 
         context "from dev plan to yearly paid plan" do
           before(:all) do
-            Timecop.travel(Time.utc(2011,1,30)) { @site = FactoryGirl.create(:site, plan_id: @dev_plan.id) }
-            @site.apply_pending_plan_changes
-            @site.reload.plan_id = @paid_plan_yearly.id # upgrade
-            Timecop.travel(Time.utc(2011,2,25)) { @site.pend_plan_changes }
+            Timecop.travel(Time.utc(2011,1,30)) do
+              @site = FactoryGirl.create(:site, plan_id: @dev_plan.id)
+              @site.apply_pending_plan_changes
+            end
+
+            Timecop.travel(Time.utc(2011,3,25)) do
+              @site.pend_plan_changes
+              @site.apply_pending_plan_changes
+
+              @site.reload.plan_id = @paid_plan_yearly.id # upgrade
+              @site.pend_plan_changes
+            end
           end
           subject { @site }
 
-          its(:pending_plan_started_at)       { should == Time.utc(2011,2,25).midnight }
-          its(:pending_plan_cycle_started_at) { should == Time.utc(2011,2,25).midnight }
-          its(:pending_plan_cycle_ended_at)   { should == Time.utc(2012,2,24).to_datetime.end_of_day }
+          its(:pending_plan_started_at)       { should == Time.utc(2011,3,25).midnight }
+          its(:pending_plan_cycle_started_at) { should == Time.utc(2011,3,25).midnight }
+          its(:pending_plan_cycle_ended_at)   { should == Time.utc(2012,3,24).to_datetime.end_of_day }
           its(:plan)                          { should == @dev_plan }
           its(:pending_plan)                  { should == @paid_plan_yearly }
           its(:next_cycle_plan)               { should be_nil }
@@ -470,16 +486,24 @@ describe Site::Invoice do
         context "from monthly paid plan to monthly paid plan" do
           before(:all) do
             @site = FactoryGirl.build(:new_site, plan_id: @paid_plan.id)
-            Timecop.travel(Time.utc(2011,1,30)) { @site.pend_plan_changes }
-            @site.apply_pending_plan_changes
-            @site.reload.plan_id = @paid_plan2.id # upgrade
-            Timecop.travel(Time.utc(2011,2,25)) { @site.pend_plan_changes }
+            Timecop.travel(Time.utc(2011,1,30)) do
+              @site.pend_plan_changes
+              @site.apply_pending_plan_changes
+            end
+
+            Timecop.travel(Time.utc(2011,3,25)) do
+              @site.pend_plan_changes
+              @site.apply_pending_plan_changes
+
+              @site.reload.plan_id = @paid_plan2.id # upgrade
+              @site.pend_plan_changes
+            end
           end
           subject { @site }
 
-          its(:pending_plan_started_at)       { should == Time.utc(2011,1,30).midnight }
-          its(:pending_plan_cycle_started_at) { should == Time.utc(2011,1,30).midnight }
-          its(:pending_plan_cycle_ended_at)   { should == Time.utc(2011,2,27).to_datetime.end_of_day }
+          its(:pending_plan_started_at)       { should == Time.utc(2011,2,28).midnight }
+          its(:pending_plan_cycle_started_at) { should == Time.utc(2011,2,28).midnight }
+          its(:pending_plan_cycle_ended_at)   { should == Time.utc(2011,3,27).to_datetime.end_of_day }
           its(:plan)                          { should == @paid_plan }
           its(:pending_plan)                  { should == @paid_plan2 }
           its(:next_cycle_plan)               { should be_nil }
@@ -489,16 +513,24 @@ describe Site::Invoice do
         context "from monthly paid plan to yearly paid plan" do
           before(:all) do
             @site = FactoryGirl.build(:new_site, plan_id: @paid_plan.id)
-            Timecop.travel(Time.utc(2011,1,30)) { @site.pend_plan_changes }
-            @site.apply_pending_plan_changes
-            @site.reload.plan_id = @paid_plan_yearly.id # upgrade
-            Timecop.travel(Time.utc(2011,2,25)) { @site.pend_plan_changes }
+            Timecop.travel(Time.utc(2011,1,30)) do
+              @site.pend_plan_changes
+              @site.apply_pending_plan_changes
+            end
+
+            Timecop.travel(Time.utc(2011,3,25)) do
+              @site.pend_plan_changes
+              @site.apply_pending_plan_changes
+
+              @site.reload.plan_id = @paid_plan_yearly.id # upgrade
+              @site.pend_plan_changes
+            end
           end
           subject { @site }
 
-          its(:pending_plan_started_at)       { should == Time.utc(2011,1,30).midnight }
-          its(:pending_plan_cycle_started_at) { should == Time.utc(2011,1,30).midnight }
-          its(:pending_plan_cycle_ended_at)   { should == Time.utc(2012,1,29).to_datetime.end_of_day }
+          its(:pending_plan_started_at)       { should == Time.utc(2011,2,28).midnight }
+          its(:pending_plan_cycle_started_at) { should == Time.utc(2011,2,28).midnight }
+          its(:pending_plan_cycle_ended_at)   { should == Time.utc(2012,2,27).to_datetime.end_of_day }
           its(:plan)                          { should == @paid_plan }
           its(:pending_plan)                  { should == @paid_plan_yearly }
           its(:next_cycle_plan)               { should be_nil }
@@ -508,16 +540,24 @@ describe Site::Invoice do
         context "from yearly paid plan to yearly paid plan" do
           before(:all) do
             @site = FactoryGirl.build(:new_site, plan_id: @paid_plan_yearly.id)
-            Timecop.travel(Time.utc(2011,1,30)) { @site.pend_plan_changes }
-            @site.apply_pending_plan_changes
-            @site.reload.plan_id = @paid_plan_yearly2.id # upgrade
-            Timecop.travel(Time.utc(2011,2,25)) { @site.pend_plan_changes }
+            Timecop.travel(Time.utc(2011,1,30)) do
+              @site.pend_plan_changes
+              @site.apply_pending_plan_changes
+            end
+
+            Timecop.travel(Time.utc(2012,3,25)) do
+              @site.pend_plan_changes
+              @site.apply_pending_plan_changes
+
+              @site.reload.plan_id = @paid_plan_yearly2.id # upgrade
+              @site.pend_plan_changes
+            end
           end
           subject { @site }
 
-          its(:pending_plan_started_at)       { should == Time.utc(2011,1,30).midnight }
-          its(:pending_plan_cycle_started_at) { should == Time.utc(2011,1,30).midnight }
-          its(:pending_plan_cycle_ended_at)   { should == Time.utc(2012,1,29).to_datetime.end_of_day }
+          its(:pending_plan_started_at)       { should == Time.utc(2012,1,30).midnight }
+          its(:pending_plan_cycle_started_at) { should == Time.utc(2012,1,30).midnight }
+          its(:pending_plan_cycle_ended_at)   { should == Time.utc(2013,1,29).to_datetime.end_of_day }
           its(:plan)                          { should == @paid_plan_yearly }
           its(:pending_plan)                  { should == @paid_plan_yearly2 }
           its(:next_cycle_plan)               { should be_nil }
@@ -529,8 +569,11 @@ describe Site::Invoice do
         context "without downgrade" do
           before(:all) do
             @site = FactoryGirl.build(:new_site, plan_id: @paid_plan.id)
-            Timecop.travel(Time.utc(2011,1,30)) { @site.pend_plan_changes }
-            @site.apply_pending_plan_changes
+            Timecop.travel(Time.utc(2011,1,30)) do
+              @site.pend_plan_changes
+              @site.apply_pending_plan_changes
+            end
+
             Timecop.travel(Time.utc(2011,3,3)) { @site.pend_plan_changes }
           end
           subject { @site }
