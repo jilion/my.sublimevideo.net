@@ -14,7 +14,7 @@ describe InvoiceItem::Plan do
 
         @site2 = FactoryGirl.create(:site_with_invoice, user: @user, plan_id: @plan1.id)
 
-        @site3 = FactoryGirl.create(:site_not_in_trial, user: @user, plan_id: @plan2.id)
+        @site3 = FactoryGirl.create(:site, user: @user, plan_id: @plan2.id)
 
         @site4 = FactoryGirl.create(:site_with_invoice, user: @user, plan_id: @plan1.id)
       end
@@ -38,9 +38,9 @@ describe InvoiceItem::Plan do
 
     describe "new or renew" do
       describe "with standard params and a site with pending plan" do
-        subject { InvoiceItem::Plan.build(invoice: @invoice1, item: @site1.plan) }
+        subject { InvoiceItem::Plan.build(invoice: @invoice1, item: @site1.pending_plan) }
 
-        its(:item)                  { should eql @site1.plan }
+        its(:item)                  { should eql @site1.pending_plan }
         its(:price)                 { should eql 1000 }
         its(:amount)                { should eql 1000 }
         its(:started_at)            { should eql @site1.pending_plan_cycle_started_at }
