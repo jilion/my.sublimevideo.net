@@ -192,7 +192,7 @@ describe SiteStat do
         Factory.create(:site_stat, t: @site.token, h: 1.hours.ago.change(min: 0, sec: 0), pv: {e: 49})
         Factory.create(:site_stat, t: @site.token, h: Time.now.utc.change(min: 0, sec: 0), pv: {e: 50})
 
-        @day81 = Factory.create(:site_stat, t: @site.token, d: 81.days.ago.change(hour: 0, min: 0, sec: 0), pv: {e: 100})
+        @day400 = Factory.create(:site_stat, t: @site.token, d: 400.days.ago.change(hour: 0, min: 0, sec: 0), pv: {e: 100})
         Factory.create(:site_stat, t: @site.token, d: 3.days.ago.change(hour: 0, min: 0, sec: 0), pv: {e: 101})
         Factory.create(:site_stat, t: @site.token, d: 1.day.ago.change(hour: 0, min: 0, sec: 0), pv: {e: 102})
         Factory.create(:site_stat, t: @site.token, d: Time.now.utc.change(hour: 0, min: 0, sec: 0), pv: {e: 103})
@@ -204,7 +204,7 @@ describe SiteStat do
         its(:size) { should eql(61) }
         it { subject[0]['pv'].should eql(2) }
         it { subject[1]['pv'].should eql(3) }
-        it { subject[58]['pv'].should eql(0) }
+        it { subject[58]['pv'].should eql(nil) }
         it { subject[59]['pv'].should eql(4) }
         it { subject[60]['pv'].should eql(5) }
 
@@ -218,7 +218,7 @@ describe SiteStat do
 
         its(:size) { should eql(60) }
         it { subject[0]['pv'].should eql(3) }
-        it { subject[1]['pv'].should eql(0) }
+        it { subject[1]['pv'].should eql(nil) }
         it { subject[58]['pv'].should eql(4) }
         it { subject[59]['pv'].should eql(5) }
 
@@ -233,7 +233,7 @@ describe SiteStat do
         its(:size) { should eql(24) }
         it { subject[0]['pv'].should eql(47) }
         it { subject[1]['pv'].should eql(48) }
-        it { subject[2]['pv'].should eql(0) }
+        it { subject[2]['pv'].should eql(nil) }
         it { subject[23]['pv'].should eql(49) }
 
         it { subject[0]['id'].should eql(24.hours.ago.change(min: 0, sec: 0).to_i) }
@@ -244,26 +244,26 @@ describe SiteStat do
       describe "with days period" do
         subject { JSON.parse(SiteStat.json(@site.token, 'days')) }
 
-        its(:size) { should eql(81) }
+        its(:size) { should eql(400) }
         it { subject[0]['pv'].should eql(100) }
-        it { subject[1]['pv'].should eql(0) }
-        it { subject[78]['pv'].should eql(101) }
-        it { subject[80]['pv'].should eql(102) }
-        it { subject[0]['id'].should eql(81.days.ago.change(hour: 0, min: 0, sec: 0).to_i) }
-        it { subject[1]['id'].should eql(80.days.ago.change(hour: 0, min: 0, sec: 0).to_i) }
-        it { subject[80]['id'].should eql(1.days.ago.change(hour: 0, min: 0, sec: 0).to_i) }
+        it { subject[1]['pv'].should eql(nil) }
+        it { subject[397]['pv'].should eql(101) }
+        it { subject[399]['pv'].should eql(102) }
+        it { subject[0]['id'].should eql(400.days.ago.change(hour: 0, min: 0, sec: 0).to_i) }
+        it { subject[1]['id'].should eql(399.days.ago.change(hour: 0, min: 0, sec: 0).to_i) }
+        it { subject[399]['id'].should eql(1.days.ago.change(hour: 0, min: 0, sec: 0).to_i) }
       end
 
-      describe "with days period (less than 30 days stats)" do
-        before(:each) { @day81.delete }
+      describe "with days period (less than 365 days stats)" do
+        before(:each) { @day400.delete }
         subject { JSON.parse(SiteStat.json(@site.token, 'days')) }
 
-        its(:size) { should eql(30) }
-        it { subject[0]['pv'].should eql(0) }
-        it { subject[1]['pv'].should eql(0) }
-        it { subject[29]['pv'].should eql(102) }
-        it { subject[0]['id'].should eql(30.day.ago.change(hour: 0, min: 0, sec: 0).to_i) }
-        it { subject[29]['id'].should eql(1.day.ago.change(hour: 0, min: 0, sec: 0).to_i) }
+        its(:size) { should eql(365) }
+        it { subject[0]['pv'].should eql(nil) }
+        it { subject[1]['pv'].should eql(nil) }
+        it { subject[364]['pv'].should eql(102) }
+        it { subject[0]['id'].should eql(365.day.ago.change(hour: 0, min: 0, sec: 0).to_i) }
+        it { subject[364]['id'].should eql(1.day.ago.change(hour: 0, min: 0, sec: 0).to_i) }
       end
     end
 

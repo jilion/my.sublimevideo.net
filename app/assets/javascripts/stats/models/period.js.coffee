@@ -25,6 +25,11 @@ class MSVStats.Models.Period extends Backbone.Model
   isFullRange: ->
     this.get('startIndex') == 0 && this.get('endIndex') == -1
 
+  isSelected: (type, startIndex, endIndex) ->
+    this.get('type') == type &&
+    this.normalizeStatsIndex(this.get('startIndex')) == this.normalizeStatsIndex(startIndex) &&
+    this.normalizeStatsIndex(this.get('endIndex')) == this.normalizeStatsIndex(endIndex)
+
   startTime: (index = this.get('startIndex')) ->
     this.stats().at(this.normalizeStatsIndex(index)).time() if this.stats()?
 
@@ -39,8 +44,10 @@ class MSVStats.Models.Period extends Backbone.Model
     attributes.endIndex   ||= -1
     this.set(attributes, options)
 
-  # setCustomPeriod: (startTime, endTime, options = {}) ->
-  #   this.set(startTime: _.min([startTime, endTime]), endTime: _.max([startTime, endTime]), type: 'days', options)
+  setCustomPeriod: (startTime, endTime, options = {}) ->
+    startIndex = MSVStats.statsDays.indexOf(MSVStats.statsDays.get(startTime / 1000))
+    endIndex   = MSVStats.statsDays.indexOf(MSVStats.statsDays.get(endTime / 1000))
+    this.set(type: 'days', startIndex: startIndex, endIndex: endIndex, options)
 
   autosetPeriod: (options = {}) ->
     if MSVStats.statsMinutes.vvTotal() > 0
@@ -49,7 +56,7 @@ class MSVStats.Models.Period extends Backbone.Model
       this.setPeriod type: 'hours', options
     else if MSVStats.statsDays.length <= 30 || MSVStats.statsDays.vvTotal(-30, -1) > 0
       this.setPeriod type: 'days', startIndex: -30, endIndex: -1, options
-    else # all
-      this.setPeriod type: 'days', options
+    else # last 365 days
+      this.setPeriod type: 'days', startIndex: -365, endIndex: -1, options
 
 

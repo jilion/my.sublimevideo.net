@@ -28,7 +28,7 @@ class MSVStats.Collections.Stats extends Backbone.Collection
       0)
     else
       _.reduce @models, ((memo, stat) -> memo + stat.get(attribute)), 0
-  
+
   customPluck: (attribute, startIndex, endIndex) ->
     if startIndex? && endIndex?
       datesRange = this.datesRange(startIndex, endIndex)
@@ -36,12 +36,14 @@ class MSVStats.Collections.Stats extends Backbone.Collection
       memo.push(stat.get(attribute))
       memo
     [], datesRange)
-    
+
   bpData: ->
+    unless MSVStats.period.isFullRange()
+      datesRange = MSVStats.period.datesRange()
     this.customReduce((memo, stat) ->
       _.each(stat.get('bp'), (hits, bp) -> memo.set(bp, hits))
       memo
-    new BPData)
+    new BPData, datesRange)
 
   mdData: ->
     unless MSVStats.period.isFullRange()
@@ -49,7 +51,7 @@ class MSVStats.Collections.Stats extends Backbone.Collection
     this.customReduce((memo, stat) ->
       memo.set(md) if md = stat.get('md')
       memo
-    new MDData)
+    new MDData, datesRange)
 
   customReduce: (iterator, context, datesRange) ->
     if datesRange?

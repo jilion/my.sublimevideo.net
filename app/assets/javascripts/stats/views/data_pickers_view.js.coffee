@@ -7,37 +7,30 @@ class MSVStats.Views.DatePickersView extends Backbone.View
     'click button.apply':  'apply'
 
   initialize: ->
+    $(@el).html(this.template())
     $(document).click ->
       MSVStats.datePickersView.close()
-    $(@el).html(this.template())
 
   render: ->
     if $(@el).is(":visible") then this.close() else this.show()
     return this
-    
+
   show: ->
     $(@el).show()
     this.showDatePickers()
-    
+
   close: ->
     $(@el).hide()
     $('#start_time_picker, #end_time_picker').datepicker('destroy')
-    
+
   apply: ->
-    console.log 'apply'
+    startTime = this.convertDateToUTC('#start_time_picker')
+    endTime   = this.convertDateToUTC('#end_time_picker')
+    MSVStats.period.setCustomPeriod(startTime, endTime)
     this.close()
 
   stopPropagation: (event) ->
     event.stopPropagation()
-
-  # updatePeriod: ->
-  #   selectedPeriodValue = this.$('select').val()
-  #   if MSVStats.period.value() != selectedPeriodValue
-  #     switch selectedPeriodValue
-  #       when 'custom' then this.showDatePickers()
-  #       else
-  #         this.hideDatePickers()
-  #         this.options.period.setPeriod(selectedPeriodValue)
 
   showDatePickers: ->
     datePickersView = this
@@ -57,7 +50,17 @@ class MSVStats.Views.DatePickersView extends Backbone.View
           option    = "maxDate"
           endTime   = datePickersView.convertPickerDate(selectedDate)
         dates.not(this).datepicker('option', option, selectedDate)
-  
+    if MSVStats.period.get('type') == 'days'
+      $('#start_time_picker').datepicker('setDate', new Date(MSVStats.period.startTime()))
+      $('#end_time_picker').datepicker('setDate', new Date(MSVStats.period.endTime()))
+    else
+      $('#start_time_picker').datepicker('setDate', MSVStats.statsDays.first().date())
+      $('#end_time_picker').datepicker('setDate', MSVStats.statsDays.last().date())
+
   convertPickerDate: (pickerDate) ->
     [year, month, day] = pickerDate.split('-')
     Date.UTC(year, parseInt(month) - 1, day)
+
+  convertDateToUTC: (datePicker) ->
+    date = $(datePicker).datepicker('getDate')
+    Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
