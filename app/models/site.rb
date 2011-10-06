@@ -121,7 +121,7 @@ class Site < ActiveRecord::Base
   end
 
   def plan_id=(attribute)
-    return if pending_plan_id?
+    return if pending_plan_id? || invoices.not_paid.any?
 
     if attribute.to_s == attribute.to_i.to_s # id passed
       new_plan = Plan.find_by_id(attribute.to_i)

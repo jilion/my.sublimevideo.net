@@ -502,6 +502,42 @@ describe Site do
             its(:next_cycle_plan_id) { should be_nil }
           end
 
+          context "with an open invoice" do
+            before(:each) do
+              FactoryGirl.create(:invoice, site: @site, state: 'open')
+              @site.reload.plan_id = @paid_plan2.id
+            end
+            subject { @site }
+
+            its(:plan_id)            { should eql @paid_plan.id }
+            its(:pending_plan_id)    { should be_nil }
+            its(:next_cycle_plan_id) { should be_nil }
+          end
+
+          context "with an waiting invoice" do
+            before(:each) do
+              FactoryGirl.create(:invoice, site: @site, state: 'waiting')
+              @site.reload.plan_id = @paid_plan2.id
+            end
+            subject { @site }
+
+            its(:plan_id)            { should eql @paid_plan.id }
+            its(:pending_plan_id)    { should be_nil }
+            its(:next_cycle_plan_id) { should be_nil }
+          end
+
+          context "with a failed invoice" do
+            before(:each) do
+              FactoryGirl.create(:invoice, site: @site, state: 'failed')
+              @site.reload.plan_id = @paid_plan2.id
+            end
+            subject { @site }
+
+            its(:plan_id)            { should eql @paid_plan.id }
+            its(:pending_plan_id)    { should be_nil }
+            its(:next_cycle_plan_id) { should be_nil }
+          end
+
           describe "same monthly plan" do
             before(:each) { @site.reload.plan_id = @paid_plan.id }
             subject { @site }
