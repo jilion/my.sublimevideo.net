@@ -26,6 +26,16 @@ module SiteModules::Invoice
 
   module InstanceMethods
 
+    %w[trial_started_at first_paid_plan_started_at pending_plan_started_at pending_plan_cycle_started_at].each do |attr|
+      define_method :"#{attr}=" do |attribute|
+        write_attribute(:"#{attr}", attribute.try(:midnight))
+      end
+    end
+
+    def pending_plan_cycle_ended_at=(attribute)
+      write_attribute(:pending_plan_cycle_ended_at, attribute.try(:to_datetime).try(:end_of_day))
+    end
+
     %w[open failed waiting].each do |invoice_state|
       define_method :"invoices_#{invoice_state}?" do
         invoices.any? { |i| i.send("#{invoice_state}?") }
@@ -101,45 +111,55 @@ module SiteModules::Invoice
         self.next_cycle_plan_id = nil
       end
 
-      # new paid plan (creation, upgrade or downgrade)
+      # new paid plan (creation, activation, upgrade or downgrade)
       if (pending_plan_id_changed? && pending_plan_id?) ||
-         first_paid_plan_started_at_changed? # site goes out of trial
+         first_paid_plan_started_at_changed? # Activation
 
         # Downgrade
-        if plan_cycle_ended_at? && plan_cycle_ended_at < Time.now.utc
-          self.pending_plan_started_at = plan_cycle_ended_at.tomorrow.midnight
+        if plan_cycle_ended?
+          self.pending_plan_started_at = plan_cycle_ended_at.tomorrow
 
-        # Upgrade or activation after trial ends
+        # Creation, activation or upgrade
         else
-          @instant_charging = !in_trial? && !first_paid_plan_started_at_changed? && first_paid_plan_started_at? # upgrade
-          self.pending_plan_started_at = plan_cycle_started_at || Time.now.utc.midnight
+          # Upgrade only
+          @instant_charging = !in_trial? && !first_paid_plan_started_at_changed?
+          # Creation, activation or upgrade
+          self.pending_plan_started_at = plan_cycle_started_at || Time.now.utc
         end
 
-        if (
-            (pending_plan_id? && pending_plan.paid_plan?) ||
-            first_paid_plan_started_at_changed? # site goes out of trial
-           ) && !in_trial?
-          self.pending_plan_cycle_started_at = plan_id? && plan.yearly? ? pending_plan_started_at : (pending_plan_started_at + months_since(pending_plan_started_at).months).midnight
-          self.pending_plan_cycle_ended_at   = (pending_plan_started_at +
-                                                advance_for_next_cycle_end(pending_plan || plan, pending_plan_started_at)).to_datetime.end_of_day
+        if !in_trial? &&
+          (
+            # Activation
+            first_paid_plan_started_at_changed? ||
+            # Upgrade or downgrade
+            (pending_plan_id? && pending_plan.paid_plan?)
+          )
+          self.pending_plan_cycle_started_at = plan_id? && plan.yearly? ? pending_plan_started_at : pending_plan_started_at + months_since(pending_plan_started_at).months
+          self.pending_plan_cycle_ended_at   = pending_plan_started_at +
+                                               advance_for_next_cycle_end(pending_plan || plan, pending_plan_started_at)
         else
           self.pending_plan_cycle_started_at = nil
           self.pending_plan_cycle_ended_at   = nil
         end
 
       # normal renew
-      elsif plan_cycle_ended_at? && plan_cycle_ended_at < Time.now.utc
+      elsif plan_cycle_ended?
         offset = months_since(plan_started_at)
         offset = offset - (offset % 12) if plan.yearly?
 
-        self.pending_plan_cycle_started_at = (plan_started_at + offset.months).midnight
-        self.pending_plan_cycle_ended_at   = (plan_started_at + advance_for_next_cycle_end(plan, plan_started_at)).to_datetime.end_of_day
+        self.pending_plan_cycle_started_at = plan_started_at + offset.months
+        self.pending_plan_cycle_ended_at   = plan_started_at + advance_for_next_cycle_end(plan, plan_started_at)
       end
 
       true # don't block the callbacks chain
     end
 
-    # called from SiteModules::Invoice.renew_active_sites and from Invoice#succeed's apply_pending_site_plan_changes callback
+    def plan_cycle_ended?
+      plan_cycle_ended_at? && plan_cycle_ended_at < Time.now.utc
+    end
+
+    # called from SiteModules::Invoice#create_and_charge_invoice callback
+    # and from Invoice#succeed's apply_pending_site_plan_changes callback
     def apply_pending_plan_changes
       # Remove upgrade required "state"
       if plan_id? && pending_plan_id? && Plan.find(plan_id).upgrade?(Plan.find(pending_plan_id))
@@ -149,21 +169,18 @@ module SiteModules::Invoice
       write_attribute(:plan_id, pending_plan_id) if pending_plan_id?
 
       # force update
-      self.plan_started_at_will_change!
-      self.plan_cycle_started_at_will_change!
-      self.plan_cycle_ended_at_will_change!
-      self.pending_plan_id_will_change!
+      %w[plan_started_at plan_cycle_started_at plan_cycle_ended_at pending_plan_id pending_plan_cycle_started_at pending_plan_cycle_ended_at].each do |attr|
+        self.send("#{attr}_will_change!")
+      end
       self.pending_plan_started_at_will_change! if pending_plan_started_at?
-      self.pending_plan_cycle_started_at_will_change!
-      self.pending_plan_cycle_ended_at_will_change!
 
       self.plan_started_at               = pending_plan_started_at if pending_plan_started_at?
       self.plan_cycle_started_at         = pending_plan_cycle_started_at
       self.plan_cycle_ended_at           = pending_plan_cycle_ended_at
-      self.pending_plan_id               = nil
-      self.pending_plan_started_at       = nil
-      self.pending_plan_cycle_started_at = nil
-      self.pending_plan_cycle_ended_at   = nil
+
+      %w[pending_plan_id pending_plan_started_at pending_plan_cycle_started_at pending_plan_cycle_ended_at].each do |attr|
+        self.send("#{attr}=", nil)
+      end
 
       save_without_password_validation
     end
@@ -185,7 +202,7 @@ module SiteModules::Invoice
       time ? ((Time.now.utc.midnight.to_i - time.midnight.to_i) / 1.day) : 0
     end
 
-    def advance_for_next_cycle_end(plan, start_time=plan_started_at)
+    def advance_for_next_cycle_end(plan, start_time = plan_started_at)
       offset = months_since(start_time)
       offset = offset - (offset % 12) + 11 if plan.yearly?
 
@@ -197,13 +214,13 @@ module SiteModules::Invoice
     # before_save
     def set_trial_started_at
       if !trial_started_at? && in_or_will_be_in_paid_plan?
-        self.trial_started_at = Time.now.utc.midnight
+        self.trial_started_at = Time.now.utc
       end
     end
 
     # after_save (BEFORE_SAVE TRIGGER AN INFINITE LOOP SINCE invoice.save also saves self)
     def create_and_charge_invoice
-      if !in_trial? && (activated? || changed_to_paid_plan? || renewed?)
+      if !in_trial? && (activated? || upgraded? || renewed?)
         invoice = ::Invoice.build(site: self, renew: renewed?)
         invoice.save!
 
@@ -217,19 +234,27 @@ module SiteModules::Invoice
       end
     end
 
+    # ========================
+    # = Dirty state checkers =
+    # ========================
+
     def activated?
       first_paid_plan_started_at_changed?
     end
 
-    def changed_to_paid_plan?
-      pending_plan_id_changed? && will_be_in_paid_plan?
+    # Pending plan is a paid plan.
+    # Either first paid plan or upgrade between 2 paid plans
+    def upgraded?
+      plan_id? && plan.upgrade?(pending_plan)
     end
 
     def renewed?
-      in_paid_plan? &&
-      (!pending_plan_id? || pending_plan.paid_plan?) &&
-      plan_cycle_started_at_was.present? &&
+      !!(
+      # the site must already be in a paid plan and not activated just now
+      in_paid_plan? && !activated? &&
+      !plan.upgrade?(pending_plan) &&
       pending_plan_cycle_started_at_changed? && pending_plan_cycle_started_at?
+      )
     end
 
   end
