@@ -198,7 +198,7 @@ GEM
       rspec (~> 2.0)
       rspec-instafail (~> 0.1.8)
       ruby-progressbar (~> 0.0.10)
-    growl_notify (0.0.1)
+    growl_notify (0.0.3)
       rb-appscript
     guard (0.8.4)
       thor (~> 0.14.6)

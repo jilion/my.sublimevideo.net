@@ -117,10 +117,9 @@ module SiteModules::Invoice
 
         if (
             (pending_plan_id? && pending_plan.paid_plan?) ||
-            # (plan_id? && plan.paid_plan? && first_paid_plan_started_at_changed?) # site goes out of trial
             first_paid_plan_started_at_changed? # site goes out of trial
            ) && !in_trial?
-          self.pending_plan_cycle_started_at = (pending_plan_started_at + months_since(pending_plan_started_at).months).midnight
+          self.pending_plan_cycle_started_at = plan_id? && plan.yearly? ? pending_plan_started_at : (pending_plan_started_at + months_since(pending_plan_started_at).months).midnight
           self.pending_plan_cycle_ended_at   = (pending_plan_started_at +
                                                 advance_for_next_cycle_end(pending_plan || plan, pending_plan_started_at)).to_datetime.end_of_day
         else
@@ -130,7 +129,10 @@ module SiteModules::Invoice
 
       # normal renew
       elsif plan_cycle_ended_at? && plan_cycle_ended_at < Time.now.utc
-        self.pending_plan_cycle_started_at = (plan_started_at + months_since(plan_started_at).months).midnight
+        offset = months_since(plan_started_at)
+        offset = offset - (offset % 12) if plan.yearly?
+
+        self.pending_plan_cycle_started_at = (plan_started_at + offset.months).midnight
         self.pending_plan_cycle_ended_at   = (plan_started_at + advance_for_next_cycle_end(plan, plan_started_at)).to_datetime.end_of_day
       end
 
@@ -167,11 +169,12 @@ module SiteModules::Invoice
     end
 
     def months_since(time)
-      now = Time.now.utc
       if time
-        months = (now.year - time.year) * 12
+        now     = Time.now.utc
+        months  = (now.year - time.year) * 12
         months += now.month - time.month
         months -= 1 if (now.day - time.day) < 0
+
         months
       else
         0
@@ -183,11 +186,10 @@ module SiteModules::Invoice
     end
 
     def advance_for_next_cycle_end(plan, start_time=plan_started_at)
-      if plan.yearly?
-        (months_since(start_time) + 12).months
-      else
-        (months_since(start_time) + 1).months
-      end - 1.day
+      offset = months_since(start_time)
+      offset = offset - (offset % 12) + 11 if plan.yearly?
+
+      (offset + 1).months - 1.day
     end
 
   private
