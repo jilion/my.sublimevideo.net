@@ -23,7 +23,7 @@ describe SiteStat do
     end
 
     describe ".clear_old_minutes_and_days_stats" do
-      use_vcr_cassette "site_stat/clear_old_minutes_and_days_stats"
+      use_vcr_cassette "site_stat/pusher"
 
       it "delete old minutes and days site stats, but keep all stats" do
         SiteStat.create_stats_from_trackers!(@log, @trackers)
@@ -45,7 +45,7 @@ describe SiteStat do
     end
 
     describe ".create_stats_from_trackers!" do
-      use_vcr_cassette "site_stat/create_stats_from_trackers"
+      use_vcr_cassette "site_stat/pusher"
 
       it "create three stats m/h/d for each token" do
         SiteStat.create_stats_from_trackers!(@log, @trackers)
