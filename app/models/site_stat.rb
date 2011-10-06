@@ -65,6 +65,8 @@ class SiteStat
   def as_json(options = nil)
     json = super
     json['id'] = time
+    json.delete('pv') if json['pv'] == 0
+    json.delete('vv') if json['vv'] == 0
     json
   end
 
@@ -125,12 +127,12 @@ class SiteStat
     when 'days'
       stats = stats.where(d: { "$ne" => nil }).order_by([:d, :asc])
       to    = 1.day.ago.midnight
-      from  = [(stats.first.try(:d) || Time.now.utc), to - 29.days].min
+      from  = [(stats.first.try(:d) || Time.now.utc), to - 364.days].min
 
       last_stats(stats, from, to, period_type)
     end
 
-    json_stats.to_json(except: [:_id, :t, :s, :m, :h, :d])
+    json_stats.to_json(only: [:pv, :vv, :bp, :md])
   end
 
   def self.create_stats_from_trackers!(log, trackers)

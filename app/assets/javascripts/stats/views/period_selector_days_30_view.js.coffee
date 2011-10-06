@@ -23,5 +23,5 @@ class MSVStats.Views.PeriodSelectorDays30View extends Backbone.View
       fillColor: if this.isSelected() then '#0046ff' else '#00b1ff'
 
   isSelected: ->
-    @options.period.get('type') == 'days' && @options.period.get('startIndex') == -30 && @options.period.get('endIndex') == -1
+    @options.period.isSelected('days', -30, -1)
 

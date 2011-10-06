@@ -58,26 +58,21 @@ describe 'StatsDays', ->
     @stats = MSVStats.statsDays
     @stats.reset(daysStats)
 
-  describe 'vvTotal(dateRange)', ->
+  describe 'vvTotal(startIndex, endIndex)', ->
     it 'returns period dateRange vv sum', ->
       MSVStats.period.setPeriod type: 'days'
       expect(@stats.vvTotal()).toEqual(332640)
 
     it 'returns custom period dateRange vv sum', ->
-      dateRange = [
-        @stats.at(@stats.length - 30).time()
-        @stats.last().time()
-      ]
-      expect(@stats.vvTotal(dateRange)).toEqual(259200)
+      expect(@stats.vvTotal(-30, -1)).toEqual(259200)
 
-  describe 'customPluck(attr, firstIndex)', ->
+  describe 'customPluck(attr, startIndex, endIndex)', ->
     it 'returns [] when no stats', ->
       @stats.reset()
-      expect(@stats.customPluck('vv', -30)).toEqual([])
+      expect(@stats.customPluck('vv', -30, -1)).toEqual([])
 
     it 'returns only last 30 vv when no stats', ->
-      expect(@stats.customPluck('vv', -30).length).toEqual(30)
-
+      expect(@stats.customPluck('vv', -30, -1).length).toEqual(30)
 
   describe 'BPData', ->
     beforeEach ->

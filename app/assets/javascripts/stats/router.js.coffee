@@ -7,7 +7,9 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
     this.initPusherTick()
 
     new MSVStats.Views.PageTitleView(sites: MSVStats.sites)
-    new MSVStats.Views.SitesSelectView(sites: MSVStats.sites)
+    new MSVStats.Views.SitesSelectView
+      el: '#sites_select'
+      sites: MSVStats.sites
 
     new MSVStats.Views.PeriodSelectorSecondsView
       statsSeconds: MSVStats.statsSeconds
@@ -21,7 +23,7 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
     new MSVStats.Views.PeriodSelectorDays30View
       statsDays: MSVStats.statsDays
       period: MSVStats.period
-    new MSVStats.Views.PeriodSelectorDaysView
+    new MSVStats.Views.PeriodSelectorDays365View
       statsDays: MSVStats.statsDays
       period: MSVStats.period
 

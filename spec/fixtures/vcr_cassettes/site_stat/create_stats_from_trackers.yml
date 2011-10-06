@@ -1517,3 +1517,210 @@
 
 '
     http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: http://api.pusherapp.com:80/apps/8211/channels/stats/events?auth_key=c76b85222fbec28c8508&auth_signature=f9ff3ceedc551fd8afd63353125e9f9521d8641bcad211ac516ec63649200305&auth_timestamp=1317901441&auth_version=1.0&body_md5=99914b932bd37a50b983c5e7c90ae93b&name=tick
+    body: ! '{}'
+    headers:
+      content-type:
+      - application/json
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 202
+      message: Accepted
+    headers:
+      server:
+      - thin 1.2.11 codename Bat-Shit Crazy
+      content-length:
+      - '13'
+      connection:
+      - Close
+    body: ! '202 ACCEPTED
+
+'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: http://api.pusherapp.com:80/apps/8211/channels/stats/events?auth_key=c76b85222fbec28c8508&auth_signature=f2107b9785cd8fae6247d30c2efb8b4852c183377d7f534895cc6f2494227ec9&auth_timestamp=1317901444&auth_version=1.0&body_md5=99914b932bd37a50b983c5e7c90ae93b&name=tick
+    body: ! '{}'
+    headers:
+      content-type:
+      - application/json
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 202
+      message: Accepted
+    headers:
+      server:
+      - thin 1.2.11 codename Bat-Shit Crazy
+      content-length:
+      - '13'
+      connection:
+      - Close
+    body: ! '202 ACCEPTED
+
+'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: http://api.pusherapp.com:80/apps/8211/channels/stats/events?auth_key=c76b85222fbec28c8508&auth_signature=934b5574971aafa35720bf28db56e051dad8b5778b8e260db8f684fe80bb77f7&auth_timestamp=1317901445&auth_version=1.0&body_md5=99914b932bd37a50b983c5e7c90ae93b&name=tick
+    body: ! '{}'
+    headers:
+      content-type:
+      - application/json
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 202
+      message: Accepted
+    headers:
+      server:
+      - thin 1.2.11 codename Bat-Shit Crazy
+      content-length:
+      - '13'
+      connection:
+      - Close
+    body: ! '202 ACCEPTED
+
+'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: http://api.pusherapp.com:80/apps/8211/channels/stats/events?auth_key=c76b85222fbec28c8508&auth_signature=1568fc023d6114dc46db71f29e2b9cb2bb54cc93217020ec5392e3402c4959e6&auth_timestamp=1317901543&auth_version=1.0&body_md5=99914b932bd37a50b983c5e7c90ae93b&name=tick
+    body: ! '{}'
+    headers:
+      content-type:
+      - application/json
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 202
+      message: Accepted
+    headers:
+      server:
+      - thin 1.2.11 codename Bat-Shit Crazy
+      content-length:
+      - '13'
+      connection:
+      - Close
+    body: ! '202 ACCEPTED
+
+'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: http://api.pusherapp.com:80/apps/8211/channels/stats/events?auth_key=c76b85222fbec28c8508&auth_signature=ee948f885432616d707c9fc4e48ee52606284d3e453a0aa57cab4824cfa4fc9e&auth_timestamp=1317901545&auth_version=1.0&body_md5=99914b932bd37a50b983c5e7c90ae93b&name=tick
+    body: ! '{}'
+    headers:
+      content-type:
+      - application/json
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 202
+      message: Accepted
+    headers:
+      server:
+      - thin 1.2.11 codename Bat-Shit Crazy
+      content-length:
+      - '13'
+      connection:
+      - Close
+    body: ! '202 ACCEPTED
+
+'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: http://api.pusherapp.com:80/apps/8211/channels/stats/events?auth_key=c76b85222fbec28c8508&auth_signature=3fc20b1704fd097969c0939535f40a262faff1bf3611229c74f9b8485b9d7a4d&auth_timestamp=1317901546&auth_version=1.0&body_md5=99914b932bd37a50b983c5e7c90ae93b&name=tick
+    body: ! '{}'
+    headers:
+      content-type:
+      - application/json
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 202
+      message: Accepted
+    headers:
+      server:
+      - thin 1.2.11 codename Bat-Shit Crazy
+      content-length:
+      - '13'
+      connection:
+      - Close
+    body: ! '202 ACCEPTED
+
+'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: http://api.pusherapp.com:80/apps/8211/channels/stats/events?auth_key=c76b85222fbec28c8508&auth_signature=754095e80cb6ed3f5d585b4cd34bb06718c958fc78b3123ab582af07f05a37a4&auth_timestamp=1317902159&auth_version=1.0&body_md5=99914b932bd37a50b983c5e7c90ae93b&name=tick
+    body: ! '{}'
+    headers:
+      content-type:
+      - application/json
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 202
+      message: Accepted
+    headers:
+      server:
+      - thin 1.2.11 codename Bat-Shit Crazy
+      content-length:
+      - '13'
+      connection:
+      - Close
+    body: ! '202 ACCEPTED
+
+'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: http://api.pusherapp.com:80/apps/8211/channels/stats/events?auth_key=c76b85222fbec28c8508&auth_signature=f4d9c94b0801db2144916b9730f8496b4c18d6023bdaf1dad0a6eb04e534e8ed&auth_timestamp=1317902163&auth_version=1.0&body_md5=99914b932bd37a50b983c5e7c90ae93b&name=tick
+    body: ! '{}'
+    headers:
+      content-type:
+      - application/json
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 202
+      message: Accepted
+    headers:
+      server:
+      - thin 1.2.11 codename Bat-Shit Crazy
+      content-length:
+      - '13'
+      connection:
+      - Close
+    body: ! '202 ACCEPTED
+
+'
+    http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :post
+    uri: http://api.pusherapp.com:80/apps/8211/channels/stats/events?auth_key=c76b85222fbec28c8508&auth_signature=f4d9c94b0801db2144916b9730f8496b4c18d6023bdaf1dad0a6eb04e534e8ed&auth_timestamp=1317902163&auth_version=1.0&body_md5=99914b932bd37a50b983c5e7c90ae93b&name=tick
+    body: ! '{}'
+    headers:
+      content-type:
+      - application/json
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 202
+      message: Accepted
+    headers:
+      server:
+      - thin 1.2.11 codename Bat-Shit Crazy
+      content-length:
+      - '13'
+      connection:
+      - Close
+    body: ! '202 ACCEPTED
+
+'
+    http_version: '1.1'

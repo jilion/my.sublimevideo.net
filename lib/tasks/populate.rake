@@ -317,7 +317,7 @@ def create_site_stats(user_id=nil)
   users.each do |user|
     user.sites.each do |site|
       # Days
-      365.times.each do |i|
+      95.times.each do |i|
         SiteStat.collection.update(
           { t: site.token, d: i.days.ago.change(hour: 0, min: 0, sec: 0, usec: 0).to_time },
           { "$inc" => random_stats_inc(24 * 60 * 60) },
@@ -373,9 +373,9 @@ def recurring_site_stats_update(user_id)
       if now.change(usec: 0) == now.change(sec: 0, usec: 0)
         sites.each do |site|
           inc = random_stats_inc(60)
-          SiteStat.collection.update({ t: site.token, m: now.change(sec: 0, usec: 0).to_time },                  { "$inc" => inc }, upsert: true)
-          SiteStat.collection.update({ t: site.token, h: now.change(min: 0, sec: 0, usec: 0).to_time },          { "$inc" => inc }, upsert: true)
-          SiteStat.collection.update({ t: site.token, d: now.change(hour: 0, min: 0, sec: 0, usec: 0).to_time }, { "$inc" => inc }, upsert: true)
+          SiteStat.collection.update({ t: site.token, m: (now - 1.minute).change(sec: 0, usec: 0).to_time },                  { "$inc" => inc }, upsert: true)
+          SiteStat.collection.update({ t: site.token, h: (now - 1.minute).change(min: 0, sec: 0, usec: 0).to_time },          { "$inc" => inc }, upsert: true)
+          SiteStat.collection.update({ t: site.token, d: (now - 1.minute).change(hour: 0, min: 0, sec: 0, usec: 0).to_time }, { "$inc" => inc }, upsert: true)
         end
 
         json = {}
