@@ -157,30 +157,35 @@ describe Plan do
         @paid_plan_yearly2 = FactoryGirl.build(:plan, cycle: "year",  price: 50000)
       end
 
+      it { @free_plan.upgrade?(nil).should be_false }
       it { @free_plan.upgrade?(@free_plan).should be_nil }
       it { @free_plan.upgrade?(@paid_plan).should be_true }
       it { @free_plan.upgrade?(@paid_plan2).should be_true }
       it { @free_plan.upgrade?(@paid_plan_yearly).should be_true }
       it { @free_plan.upgrade?(@paid_plan_yearly2).should be_true }
 
+      it { @paid_plan.upgrade?(nil).should be_false }
       it { @paid_plan.upgrade?(@free_plan).should be_false }
       it { @paid_plan.upgrade?(@paid_plan).should be_nil }
       it { @paid_plan.upgrade?(@paid_plan2).should be_true }
       it { @paid_plan.upgrade?(@paid_plan_yearly).should be_true }
       it { @paid_plan.upgrade?(@paid_plan_yearly2).should be_true }
 
+      it { @paid_plan2.upgrade?(nil).should be_false }
       it { @paid_plan2.upgrade?(@free_plan).should be_false }
       it { @paid_plan2.upgrade?(@paid_plan).should be_false }
       it { @paid_plan2.upgrade?(@paid_plan2).should be_nil }
       it { @paid_plan2.upgrade?(@paid_plan_yearly).should be_false }
       it { @paid_plan2.upgrade?(@paid_plan_yearly2).should be_true }
 
+      it { @paid_plan_yearly.upgrade?(nil).should be_false }
       it { @paid_plan_yearly.upgrade?(@free_plan).should be_false }
       it { @paid_plan_yearly.upgrade?(@paid_plan).should be_false }
       it { @paid_plan_yearly.upgrade?(@paid_plan2).should be_false }
       it { @paid_plan_yearly.upgrade?(@paid_plan_yearly).should be_nil }
       it { @paid_plan_yearly.upgrade?(@paid_plan_yearly2).should be_true }
 
+      it { @paid_plan_yearly2.upgrade?(nil).should be_false }
       it { @paid_plan_yearly2.upgrade?(@free_plan).should be_false }
       it { @paid_plan_yearly2.upgrade?(@paid_plan).should be_false }
       it { @paid_plan_yearly2.upgrade?(@paid_plan2).should be_false }

@@ -77,7 +77,7 @@ class Plan < ActiveRecord::Base
   # ====================
 
   def upgrade?(new_plan)
-    if yearly? && new_plan.monthly?
+    if new_plan.nil? || (yearly? && new_plan.monthly?)
       false
     elsif self == new_plan
       nil
