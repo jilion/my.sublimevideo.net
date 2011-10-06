@@ -7,7 +7,7 @@ class InvoiceItem::Plan < InvoiceItem
   # = Class Methods =
   # =================
 
-  def self.build(attributes={})
+  def self.build(attributes = {})
     new(attributes).build
   end
 
