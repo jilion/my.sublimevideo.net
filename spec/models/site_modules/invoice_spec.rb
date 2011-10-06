@@ -670,7 +670,7 @@ describe SiteModules::Invoice do
 
           context "not in trial" do
             before(:all) do
-              @site = FactoryGirl.create(:site_not_in_trial, plan_id: @paid_plan.id, first_paid_plan_started_at: Time.now.utc)
+              @site = FactoryGirl.create(:site_with_invoice, plan_id: @paid_plan.id, first_paid_plan_started_at: Time.now.utc)
 
               Timecop.travel(2.months.from_now) do
                 @site.pend_plan_changes

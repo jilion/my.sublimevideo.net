@@ -79,6 +79,34 @@ module SiteModules::Invoice
       archived? && refunded_at?
     end
 
+    def plan_cycle_ended?
+      plan_cycle_ended_at? && plan_cycle_ended_at < Time.now.utc
+    end
+
+    def months_since(time)
+      if time
+        now     = Time.now.utc
+        months  = (now.year - time.year) * 12
+        months += now.month - time.month
+        months -= 1 if (now.day - time.day) < 0
+
+        months
+      else
+        0
+      end
+    end
+
+    def days_since(time)
+      time ? ((Time.now.utc.midnight.to_i - time.midnight.to_i) / 1.day) : 0
+    end
+
+    def advance_for_next_cycle_end(plan, start_time = plan_started_at)
+      offset = months_since(start_time)
+      offset = offset - (offset % 12) + 11 if plan.yearly?
+
+      (offset + 1).months - 1.day
+    end
+
     def trial_end
       trial_started_at? ? trial_started_at + BusinessModel.days_for_trial.days : nil
     end
@@ -154,10 +182,6 @@ module SiteModules::Invoice
       true # don't block the callbacks chain
     end
 
-    def plan_cycle_ended?
-      plan_cycle_ended_at? && plan_cycle_ended_at < Time.now.utc
-    end
-
     # called from SiteModules::Invoice#create_and_charge_invoice callback
     # and from Invoice#succeed's apply_pending_site_plan_changes callback
     def apply_pending_plan_changes
@@ -183,30 +207,6 @@ module SiteModules::Invoice
       end
 
       save_without_password_validation
-    end
-
-    def months_since(time)
-      if time
-        now     = Time.now.utc
-        months  = (now.year - time.year) * 12
-        months += now.month - time.month
-        months -= 1 if (now.day - time.day) < 0
-
-        months
-      else
-        0
-      end
-    end
-
-    def days_since(time)
-      time ? ((Time.now.utc.midnight.to_i - time.midnight.to_i) / 1.day) : 0
-    end
-
-    def advance_for_next_cycle_end(plan, start_time = plan_started_at)
-      offset = months_since(start_time)
-      offset = offset - (offset % 12) + 11 if plan.yearly?
-
-      (offset + 1).months - 1.day
     end
 
   private
