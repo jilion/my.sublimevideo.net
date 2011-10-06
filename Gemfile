@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails',                 '3.1.1.rc2'
+gem 'rails',                 '3.1.1.rc3'
 
 gem 'prototype-rails'
 gem 'jquery-rails'
