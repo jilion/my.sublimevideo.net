@@ -619,6 +619,8 @@ describe Transaction do
     end # .charge_by_invoice_ids
 
     describe ".refund_by_site_id" do
+      let(:mock_refund) { mock_refund = mock('refund', :success? => true) }
+
       context "for a non-refundable site" do
         describe "because of a not present refunded_at" do
           it "does nothing!" do
@@ -642,9 +644,10 @@ describe Transaction do
 
       context "for a refundable site with 1 paid transaction containing 2 invoices with 2 different sites" do
         before do
-          @site = FactoryGirl.create(:site_with_invoice, state: 'archived', refunded_at: Time.now.utc)
+          expect { @site = FactoryGirl.create(:site_with_invoice, state: 'archived', refunded_at: Time.now.utc) }.to change(Invoice, :count).by(1)
           Site.refunded.should include(@site)
           @site.invoices.where(state: 'paid').count.should eql 1
+
           transactions = Transaction.paid.joins(:invoices).where { invoices.site_id == my{@site.id} }.order(:id)
           transactions.count.should eql 1
 
@@ -656,15 +659,17 @@ describe Transaction do
           @transaction.should be_paid
         end
 
-        it "delays one Ogone.credit" do
-          Ogone.should_receive(:credit).with(@site.invoices.first.amount, "#{@transaction.pay_id};SAL")
+        it "delays one Ogone.refund" do
+          Ogone.should_receive(:refund).with(@site.invoices.first.amount, "#{@transaction.pay_id};SAL") { mock_refund }
+
           Transaction.refund_by_site_id(@site.id)
         end
 
         it "deducts refunded invoices from the user's total_invoiced_amount and update the last_invoiced_amount" do
           @site.user.last_invoiced_amount.should eql @site.invoices.where(state: 'paid').order(:paid_at.desc).first.amount
           @site.user.total_invoiced_amount.should eql @site.invoices.where(state: 'paid').order(:paid_at.desc).first.amount
-          Ogone.should_receive(:credit).with(@site.invoices.first.amount, "#{@transaction.pay_id};SAL")
+          Ogone.should_receive(:refund).with(@site.invoices.first.amount, "#{@transaction.pay_id};SAL") { mock_refund }
+
           Transaction.refund_by_site_id(@site.id)
           @site.user.reload.last_invoiced_amount.should eql 0
           @site.user.total_invoiced_amount.should eql 0
@@ -673,7 +678,7 @@ describe Transaction do
 
       context "for a refundable site with 1 failed transaction" do
         before do
-          @site = FactoryGirl.create(:site_with_invoice, state: 'archived', refunded_at: Time.now.utc)
+          expect { @site = FactoryGirl.create(:site_with_invoice, state: 'archived', refunded_at: Time.now.utc) }.to change(Invoice, :count).by(1)
           transactions = Transaction.paid.joins(:invoices).where(:invoices => { :site_id => @site.id }).order(:id)
           transactions.count.should == 1
 
@@ -686,20 +691,22 @@ describe Transaction do
           @transaction.invoices.first.should be_failed
         end
 
-        it "should delay one Ogone.credit" do
-          Ogone.should_not_receive(:credit)
+        it "should delay one Ogone.refund" do
+          Ogone.should_not_receive(:refund)
+
           Transaction.refund_by_site_id(@site.id)
         end
       end
 
       context "for a refundable site with multiple transactions all paid" do
         before do
-          @site = FactoryGirl.create(:site_with_invoice, first_paid_plan_started_at: Time.now.utc)
-          @site2 = FactoryGirl.create(:site_with_invoice, user: @site.user, first_paid_plan_started_at: Time.now.utc)
-          @site.plan_id = @custom_plan.token
-          VCR.use_cassette("ogone/visa_payment_generic") { @site.save_without_password_validation }
-          @site.without_password_validation { @site.archive }
+          expect { @site = FactoryGirl.create(:site_with_invoice) }.to change(Invoice, :count).by(1)
+          expect { @site2 = FactoryGirl.create(:site_with_invoice, user: @site.user, first_paid_plan_started_at: Time.now.utc) }.to change(Invoice, :count).by(1)
+          @site.plan_id = @custom_plan.token # upgrade
+          expect { VCR.use_cassette("ogone/visa_payment_generic") { @site.save_without_password_validation } }.to change(Invoice, :count).by(1)
+          @site.without_password_validation { @site.reload.archive }
           @site.refund
+
           transactions = Transaction.paid.joins(:invoices).where { invoices.site_id == my{@site.id} }.order(:id.asc)
           transactions.count.should eql 2
           @transaction1 = Transaction.find(transactions.first.id)
@@ -709,9 +716,12 @@ describe Transaction do
 
           @transaction1.invoices.where(state: 'paid').count.should eql 1
           @transaction2.invoices.where(state: 'paid').count.should eql 1
-          @transaction2.invoices << FactoryGirl.create(:invoice, site: FactoryGirl.create(:site), state: 'failed') # the transaction is with 2 invoices for 2 different sites
+
+          # the transaction is with 2 invoices for 2 different sites
+          @transaction2.invoices << FactoryGirl.create(:invoice, site: FactoryGirl.create(:site), state: 'failed')
           @transaction2.save
           @transaction2.reload.invoices.where(state: 'paid').count.should eql 1
+
           @transaction1.should be_paid
           @transaction2.should be_paid
 
@@ -719,9 +729,19 @@ describe Transaction do
           @site.invoices.last.amount.should_not eql @transaction2.amount
         end
 
-        it "calls one Ogone.credit" do
-          Ogone.should_receive(:credit).ordered.with(@transaction1.invoices.order(:id.asc).first.amount, "#{@transaction1.pay_id};SAL")
-          Ogone.should_receive(:credit).ordered.with(@transaction2.invoices.order(:id.asc).first.amount, "#{@transaction2.pay_id};SAL")
+        it "calls one Ogone.refund" do
+          Ogone.should_receive(:refund).ordered.with(@transaction1.invoices.order(:id.asc).first.amount, "#{@transaction1.pay_id};SAL") { mock_refund }
+          Ogone.should_receive(:refund).ordered.with(@transaction2.invoices.order(:id.asc).first.amount, "#{@transaction2.pay_id};SAL") { mock_refund }
+          Notify.should_not_receive(:send)
+
+          Transaction.refund_by_site_id(@site.id)
+        end
+
+        it "calls one Ogone.refund (fake unsucessful refund)" do
+          mock_refund = mock('refund', :success? => false)
+          Ogone.should_receive(:refund).ordered.with(@transaction1.invoices.order(:id.asc).first.amount, "#{@transaction1.pay_id};SAL") { mock_refund }
+          Ogone.should_receive(:refund).ordered.with(@transaction2.invoices.order(:id.asc).first.amount, "#{@transaction2.pay_id};SAL") { mock_refund }
+          Notify.should_receive(:send).twice
 
           Transaction.refund_by_site_id(@site.id)
         end
@@ -731,8 +751,8 @@ describe Transaction do
           @site.user.update_attribute(:total_invoiced_amount, 100000)
           @site.reload.user.last_invoiced_amount.should eql 20000
           @site.user.total_invoiced_amount.should eql 100000
-          Ogone.should_receive(:credit).ordered.with(@transaction1.invoices.order(:id.asc).first.amount, "#{@transaction1.pay_id};SAL")
-          Ogone.should_receive(:credit).ordered.with(@transaction2.invoices.order(:id.asc).first.amount, "#{@transaction2.pay_id};SAL")
+          Ogone.should_receive(:refund).ordered.with(@transaction1.invoices.order(:id.asc).first.amount, "#{@transaction1.pay_id};SAL") { mock_refund }
+          Ogone.should_receive(:refund).ordered.with(@transaction2.invoices.order(:id.asc).first.amount, "#{@transaction2.pay_id};SAL") { mock_refund }
 
           Transaction.refund_by_site_id(@site.id)
           @site.user.reload.last_invoiced_amount.should eql @site2.last_paid_invoice.amount
@@ -742,22 +762,26 @@ describe Transaction do
 
       context "for a refundable site with multiple transactions: 1 paid and 1 failed" do
         before do
-          @site = FactoryGirl.create(:site_with_invoice, first_paid_plan_started_at: Time.now.utc)
-          @site2 = FactoryGirl.create(:site_with_invoice, user: @site.user, first_paid_plan_started_at: Time.now.utc)
-          @site.plan_id = @custom_plan.token
-          VCR.use_cassette("ogone/visa_payment_generic") { @site.save_without_password_validation }
-          @site.without_password_validation { @site.archive }
+          expect { @site = FactoryGirl.create(:site_with_invoice) }.to change(Invoice, :count).by(1)
+          expect { @site2 = FactoryGirl.create(:site_with_invoice, user: @site.user) }.to change(Invoice, :count).by(1)
+          @site.plan_id = @custom_plan.token # upgrade
+          expect { VCR.use_cassette("ogone/visa_payment_generic") { @site.save_without_password_validation } }.to change(Invoice, :count).by(1)
+          @site.without_password_validation { @site.reload.archive }
           @site.refund
+
           transactions = Transaction.paid.joins(:invoices).where{ invoices.site_id == my{@site.id} }.order(:id.asc)
           transactions.count.should eql 2
+
           @transaction1 = Transaction.find(transactions.first.id)
           @transaction1.reload.update_attribute(:amount, 3209999)
           @transaction1.invoices.first.update_attribute(:state, 'failed')
           @transaction2 = Transaction.find(transactions.last.id)
           @transaction2.reload.update_attribute(:amount, 23213)
 
-          @transaction1.invoices << FactoryGirl.create(:invoice, site: FactoryGirl.create(:site), state: 'paid') # the transaction is with 2 invoices for 2 different sites
-          @transaction2.invoices << FactoryGirl.create(:invoice, site: FactoryGirl.create(:site), state: 'failed') # the transaction is with 2 invoices for 2 different sites
+          # the transaction is with 2 invoices for 2 different sites
+          @transaction1.invoices << FactoryGirl.create(:invoice, site: FactoryGirl.create(:site), state: 'paid')
+          # the transaction is with 2 invoices for 2 different sites
+          @transaction2.invoices << FactoryGirl.create(:invoice, site: FactoryGirl.create(:site), state: 'failed')
           @transaction1.save
           @transaction2.save
 
@@ -765,8 +789,8 @@ describe Transaction do
           @transaction2.invoices.first.amount.should_not eql @transaction2.amount
         end
 
-        it "delays one Ogone.credit" do
-          Ogone.should_receive(:credit).with(@transaction2.invoices.order(:id.asc).first.amount, "#{@transaction2.pay_id};SAL")
+        it "delays one Ogone.refund" do
+          Ogone.should_receive(:refund).with(@transaction2.invoices.order(:id.asc).first.amount, "#{@transaction2.pay_id};SAL") { mock_refund }
 
           Transaction.refund_by_site_id(@site.id)
         end
@@ -776,7 +800,7 @@ describe Transaction do
           @site.user.update_attribute(:total_invoiced_amount, 100000)
           @site.reload.user.last_invoiced_amount.should eql 20000
           @site.user.total_invoiced_amount.should eql 100000
-          Ogone.should_receive(:credit).with(@transaction2.invoices.order(:id.asc).first.amount, "#{@transaction2.pay_id};SAL")
+          Ogone.should_receive(:refund).with(@transaction2.invoices.order(:id.asc).first.amount, "#{@transaction2.pay_id};SAL") { mock_refund }
 
           Transaction.refund_by_site_id(@site.id)
           @site.user.reload.last_invoiced_amount.should eql @site2.last_paid_invoice.amount

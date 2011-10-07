@@ -13,7 +13,7 @@ module Ogone
       gateway.purchase(*args)
     end
 
-    def credit(*args)
+    def refund(*args)
       gateway.refund(*args)
     end
 
