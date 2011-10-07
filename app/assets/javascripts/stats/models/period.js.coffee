@@ -36,6 +36,9 @@ class MSVStats.Models.Period extends Backbone.Model
   endTime: (index = this.get('endIndex')) ->
     this.stats().at(this.normalizeStatsIndex(index)).time() if this.stats()?
 
+  realEndTime: (index = this.get('endIndex')) ->
+    this.endTime(index) + this.pointInterval() - 1000 if this.stats()?
+
   normalizeStatsIndex: (index) ->
     if index < 0 then this.stats().length + index else index
 
@@ -58,5 +61,3 @@ class MSVStats.Models.Period extends Backbone.Model
       this.setPeriod type: 'days', startIndex: -30, endIndex: -1, options
     else # last 365 days
       this.setPeriod type: 'days', startIndex: -365, endIndex: -1, options
-
-
