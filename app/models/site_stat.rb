@@ -199,9 +199,9 @@ private
           end
         end
         # Player Mode + Device hash
-        if %w[m e].include?(params['h']) && params.key?('pm') && params.key?('pd')
+        if %w[m e].include?(params['h']) && params.key?('pm') && params.key?('d')
           params['pm'].uniq.each do |pm|
-            incs['md.' + pm + '.' + params['pd']] = params['pm'].count(pm) * hits
+            incs['md.' + pm + '.' + params['d']] = params['pm'].count(pm) * hits
           end
         end
       when 's' # Video start (play)

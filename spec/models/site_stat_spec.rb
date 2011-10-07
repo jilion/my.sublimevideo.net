@@ -176,11 +176,12 @@ describe SiteStat do
       end
 
       before(:each) do
-        Factory.create(:site_stat, t: @site.token, s: 61.seconds.ago.change(usec: 0), pv: {e: 1})
-        Factory.create(:site_stat, t: @site.token, s: 60.seconds.ago.change(usec: 0), pv: {e: 2})
-        Factory.create(:site_stat, t: @site.token, s: 59.seconds.ago.change(usec: 0), pv: {e: 3})
-        Factory.create(:site_stat, t: @site.token, s: 1.second.ago.change(usec: 0), pv: {e: 4})
-        Factory.create(:site_stat, t: @site.token, s: Time.now.utc.change(usec: 0), pv: {e: 5})
+        @second = Time.now.utc.change(usec: 0)
+        Factory.create(:site_stat, t: @site.token, s: (@second - 61.seconds), pv: {e: 1})
+        Factory.create(:site_stat, t: @site.token, s: (@second - 60.seconds), pv: {e: 2})
+        Factory.create(:site_stat, t: @site.token, s: (@second - 59.seconds), pv: {e: 3})
+        Factory.create(:site_stat, t: @site.token, s: (@second - 1.second), pv: {e: 4})
+        Factory.create(:site_stat, t: @site.token, s: @second, pv: {e: 5})
 
         Factory.create(:site_stat, t: @site.token, m: 60.minutes.ago.change(sec: 0), pv: {e: 2})
         Factory.create(:site_stat, t: @site.token, m: 59.minutes.ago.change(sec: 0), pv: {e: 3})
@@ -208,9 +209,9 @@ describe SiteStat do
         it { subject[59]['pv'].should eql(4) }
         it { subject[60]['pv'].should eql(5) }
 
-        it { subject[0]['id'].should eql(60.seconds.ago.change(usec: 0).to_i) }
-        it { subject[1]['id'].should eql(59.seconds.ago.change(usec: 0).to_i) }
-        it { subject[60]['id'].should eql(Time.now.utc.change(usec: 0).to_i) }
+        it { subject[0]['id'].should eql((@second - 60.seconds).to_i) }
+        it { subject[1]['id'].should eql((@second - 59.seconds).to_i) }
+        it { subject[60]['id'].should eql(@second.to_i) }
       end
 
       describe "with minutes period" do
