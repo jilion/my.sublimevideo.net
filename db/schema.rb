@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110831124847) do
+ActiveRecord::Schema.define(:version => 20111007085033) do
 
   create_table "admins", :force => true do |t|
     t.string   "email",                                 :default => "", :null => false
@@ -28,6 +28,7 @@ ActiveRecord::Schema.define(:version => 20110831124847) do
     t.datetime "locked_at"
     t.string   "invitation_token",       :limit => 60
     t.datetime "invitation_sent_at"
+    t.datetime "invitation_accepted_at"
     t.integer  "invitation_limit"
     t.integer  "invited_by_id"
     t.string   "invited_by_type"
@@ -158,7 +159,7 @@ ActiveRecord::Schema.define(:version => 20110831124847) do
     t.string   "name"
     t.string   "token"
     t.string   "cycle"
-    t.integer  "player_hits"
+    t.integer  "video_views"
     t.integer  "price"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -190,7 +191,7 @@ ActiveRecord::Schema.define(:version => 20110831124847) do
     t.datetime "archived_at"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "player_mode",                                   :default => "stable"
+    t.string   "player_mode",                               :default => "stable"
     t.integer  "google_rank"
     t.integer  "alexa_rank"
     t.string   "path"
@@ -199,7 +200,7 @@ ActiveRecord::Schema.define(:version => 20110831124847) do
     t.integer  "plan_id"
     t.integer  "pending_plan_id"
     t.integer  "next_cycle_plan_id"
-    t.boolean  "cdn_up_to_date",                                :default => false
+    t.boolean  "cdn_up_to_date",                            :default => false
     t.datetime "first_paid_plan_started_at"
     t.datetime "plan_started_at"
     t.datetime "plan_cycle_started_at"
@@ -207,21 +208,25 @@ ActiveRecord::Schema.define(:version => 20110831124847) do
     t.datetime "pending_plan_started_at"
     t.datetime "pending_plan_cycle_started_at"
     t.datetime "pending_plan_cycle_ended_at"
-    t.datetime "plan_player_hits_reached_notification_sent_at"
+    t.datetime "overusage_notification_sent_at"
     t.datetime "first_plan_upgrade_required_alert_sent_at"
     t.datetime "refunded_at"
-    t.integer  "last_30_days_main_player_hits_total_count",     :default => 0
-    t.integer  "last_30_days_extra_player_hits_total_count",    :default => 0
-    t.integer  "last_30_days_dev_player_hits_total_count",      :default => 0
+    t.integer  "last_30_days_main_video_views",             :default => 0
+    t.integer  "last_30_days_extra_video_views",            :default => 0
+    t.integer  "last_30_days_dev_video_views",              :default => 0
     t.datetime "trial_started_at"
     t.boolean  "badged"
+    t.integer  "last_30_days_invalid_video_views",          :default => 0
+    t.integer  "last_30_days_embed_video_views",            :default => 0
   end
 
   add_index "sites", ["created_at"], :name => "index_sites_on_created_at"
   add_index "sites", ["hostname"], :name => "index_sites_on_hostname"
-  add_index "sites", ["last_30_days_dev_player_hits_total_count"], :name => "index_sites_on_last_30_days_dev_player_hits_total_count"
-  add_index "sites", ["last_30_days_extra_player_hits_total_count"], :name => "index_sites_on_last_30_days_extra_player_hits_total_count"
-  add_index "sites", ["last_30_days_main_player_hits_total_count"], :name => "index_sites_on_last_30_days_main_player_hits_total_count"
+  add_index "sites", ["last_30_days_dev_video_views"], :name => "index_sites_on_last_30_days_dev_video_views"
+  add_index "sites", ["last_30_days_embed_video_views"], :name => "index_sites_on_last_30_days_embed_video_views"
+  add_index "sites", ["last_30_days_extra_video_views"], :name => "index_sites_on_last_30_days_extra_video_views"
+  add_index "sites", ["last_30_days_invalid_video_views"], :name => "index_sites_on_last_30_days_invalid_video_views"
+  add_index "sites", ["last_30_days_main_video_views"], :name => "index_sites_on_last_30_days_main_video_views"
   add_index "sites", ["plan_id"], :name => "index_sites_on_plan_id"
   add_index "sites", ["user_id"], :name => "index_sites_on_user_id"
 

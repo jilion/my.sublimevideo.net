@@ -22,9 +22,9 @@ graph = Graph.new do |g|
     return date + this.series.name + ":<br/>" + label;
   )))
 
-  plan_limits = site.plan.player_hits > 0 ? [
-    serie(Array.new(usages["main_usage"][@moving_avg-1..-1].size, site.plan.daily_player_hits), "AVG #{site.plan.title}", type: 'line', stack: 0),
-    serie(Array.new(usages["main_usage"][@moving_avg-1..-1].size, site.plan.player_hits), "LIM #{site.plan.title}", type: 'line', visible: false, stack: 1)
+  plan_limits = site.plan.video_views > 0 ? [
+    serie(Array.new(usages["main_usage"][@moving_avg-1..-1].size, site.plan.daily_video_views), "AVG #{site.plan.title}", type: 'line', stack: 0),
+    serie(Array.new(usages["main_usage"][@moving_avg-1..-1].size, site.plan.video_views), "LIM #{site.plan.title}", type: 'line', visible: false, stack: 1)
   ] : []
   g.option(series: [
     serie(usages["invalid_usage"][@moving_avg-1..-1], 'Invalid', visible: false, stack: 2),

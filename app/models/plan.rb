@@ -8,7 +8,7 @@ class Plan < ActiveRecord::Base
   LEGACY_STANDARD_NAMES = %w[comet planet star galaxy]
   SUPPORT_LEVELS = %w[forum email]
 
-  attr_accessible :name, :cycle, :player_hits, :price, :support_level
+  attr_accessible :name, :cycle, :video_views, :price, :support_level
   uniquify :token, :chars => Array('a'..'z') + Array('0'..'9'), :length => 12
 
   # ================
@@ -23,7 +23,7 @@ class Plan < ActiveRecord::Base
   # ===============
 
   validates :name,          :presence => true, :uniqueness => { :scope => :cycle }
-  validates :player_hits,   :presence => true, :numericality => true
+  validates :video_views,   :presence => true, :numericality => true
   validates :price,         :presence => true, :numericality => true
   validates :cycle,         :presence => true, :inclusion => CYCLES
   validates :support_level, :presence => true, :inclusion => (0...SUPPORT_LEVELS.size)
@@ -57,15 +57,15 @@ class Plan < ActiveRecord::Base
     end
 
     STANDARD_NAMES.each do |plan_name|
-      method_name = "#{plan_name}_player_hits"
+      method_name = "#{plan_name}_video_views"
       define_method(method_name) do
-        where(name: plan_name).first.player_hits
+        where(name: plan_name).first.video_views
       end
       memoize method_name.to_sym
 
-      method_name = "#{plan_name}_daily_player_hits"
+      method_name = "#{plan_name}_daily_video_views"
       define_method(method_name) do
-        where(name: plan_name).first.daily_player_hits
+        where(name: plan_name).first.daily_video_views
       end
       memoize method_name.to_sym
     end
@@ -144,8 +144,8 @@ class Plan < ActiveRecord::Base
     end
   end
 
-  def daily_player_hits
-    player_hits / 30
+  def daily_video_views
+    video_views / 30
   end
 
   def support
@@ -172,7 +172,7 @@ end
 #  name          :string(255)
 #  token         :string(255)
 #  cycle         :string(255)
-#  player_hits   :integer
+#  video_views   :integer
 #  price         :integer
 #  created_at    :datetime
 #  updated_at    :datetime

@@ -1,6 +1,6 @@
 class UsageMonitoringMailer < NoreplyMailer
 
-  def plan_player_hits_reached(site)
+  def plan_overused(site)
     @site = site
     mail(
       :to => "\"#{@site.user.full_name}\" <#{@site.user.email}>",

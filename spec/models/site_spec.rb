@@ -915,13 +915,13 @@ describe Site do
       subject { FactoryGirl.create(:site_with_invoice, plan_id: @paid_plan.id) }
 
       it "should clear *_alert_sent_at dates" do
-        subject.touch(:plan_player_hits_reached_notification_sent_at)
-        subject.plan_player_hits_reached_notification_sent_at.should be_present
+        subject.touch(:overusage_notification_sent_at)
+        subject.overusage_notification_sent_at.should be_present
         VCR.use_cassette('ogone/visa_payment_generic') do
           subject.update_attributes(plan_id: @custom_plan.token, user_attributes: { 'current_password' => '123456' })
         end
         subject.apply_pending_plan_changes
-        subject.plan_player_hits_reached_notification_sent_at.should be_nil
+        subject.overusage_notification_sent_at.should be_nil
       end
     end
 
@@ -1108,8 +1108,8 @@ describe Site do
     describe "#recommended_plan" do
       before(:all) do
         Plan.delete_all
-        silver = FactoryGirl.create(:plan, name: "silver", player_hits: 200_000)
-        @gold_plan = FactoryGirl.create(:plan, name: "gold", player_hits: 1_000_000)
+        silver = FactoryGirl.create(:plan, name: "silver", video_views: 200_000)
+        @gold_plan = FactoryGirl.create(:plan, name: "gold", video_views: 1_000_000)
         @site = FactoryGirl.create(:site, plan_id: silver.id)
       end
       subject { @site }
@@ -1146,7 +1146,7 @@ describe Site do
         its(:recommended_plan_name) { should eql "gold" }
       end
 
-      context "with regular usage and player_hits smaller than silver" do
+      context "with regular usage and video_views smaller than silver" do
         before(:each) do
           @site.unmemoize_all
           FactoryGirl.create(:site_usage, site_id: @site.id, day: 1.day.ago,  main_player_hits: 50)
@@ -1160,7 +1160,7 @@ describe Site do
         its(:recommended_plan_name) { should be_nil }
       end
 
-      context "with regular usage and player_hits between silver and gold" do
+      context "with regular usage and video_views between silver and gold" do
         before(:each) do
           @site.unmemoize_all
           FactoryGirl.create(:site_usage, site_id: @site.id, day: 1.day.ago,  main_player_hits: 10_000)
@@ -1174,7 +1174,7 @@ describe Site do
         its(:recommended_plan_name) { should eql "gold" }
       end
 
-      context "with non regular usage and lower than player_hits but greather than average player_hits" do
+      context "with non regular usage and lower than video_views but greather than average video_views" do
         before(:each) do
           @site.unmemoize_all
           FactoryGirl.create(:site_usage, site_id: @site.id, day: 1.day.ago,  main_player_hits: 12_000)
@@ -1187,7 +1187,7 @@ describe Site do
         its(:recommended_plan_name) { should eql "gold" }
       end
 
-      context "with too much player_hits" do
+      context "with too much video_views" do
         before(:each) do
           @site.unmemoize_all
           FactoryGirl.create(:site_usage, site_id: @site.id, day: 1.day.ago,  main_player_hits: 500_000)
@@ -1321,12 +1321,12 @@ end
 #  pending_plan_started_at                       :datetime
 #  pending_plan_cycle_started_at                 :datetime
 #  pending_plan_cycle_ended_at                   :datetime
-#  plan_player_hits_reached_notification_sent_at :datetime
+#  overusage_notification_sent_at :datetime
 #  first_plan_upgrade_required_alert_sent_at     :datetime
 #  refunded_at                                   :datetime
-#  last_30_days_main_player_hits_total_count     :integer         default(0)
-#  last_30_days_extra_player_hits_total_count    :integer         default(0)
-#  last_30_days_dev_player_hits_total_count      :integer         default(0)
+#  last_30_days_main_video_views     :integer         default(0)
+#  last_30_days_extra_video_views    :integer         default(0)
+#  last_30_days_dev_video_views      :integer         default(0)
 #  trial_started_at                              :datetime
 #  badged                                        :boolean         default(TRUE)
 #
@@ -1334,9 +1334,9 @@ end
 #
 #  index_sites_on_created_at                                  (created_at)
 #  index_sites_on_hostname                                    (hostname)
-#  index_sites_on_last_30_days_dev_player_hits_total_count    (last_30_days_dev_player_hits_total_count)
-#  index_sites_on_last_30_days_extra_player_hits_total_count  (last_30_days_extra_player_hits_total_count)
-#  index_sites_on_last_30_days_main_player_hits_total_count   (last_30_days_main_player_hits_total_count)
+#  index_sites_on_last_30_days_dev_video_views    (last_30_days_dev_video_views)
+#  index_sites_on_last_30_days_extra_video_views  (last_30_days_extra_video_views)
+#  index_sites_on_last_30_days_main_video_views   (last_30_days_main_video_views)
 #  index_sites_on_plan_id                                     (plan_id)
 #  index_sites_on_user_id                                     (user_id)
 #

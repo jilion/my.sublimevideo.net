@@ -27,12 +27,12 @@ module UserModules::Scope
 
     # sort
     scope :by_name_or_email,   lambda { |way='asc'| order("users.first_name #{way.upcase}, users.email #{way.upcase}") }
-    scope :by_sites_last_30_days_billable_player_hits_total_count,  lambda { |way='desc'|
-      joins(:sites).group(User.column_names.map { |c| "\"users\".\"#{c}\"" }.join(', ')).order("SUM(sites.last_30_days_main_player_hits_total_count) + SUM(sites.last_30_days_extra_player_hits_total_count) #{way}")
+    scope :by_sites_last_30_days_billable_video_views,  lambda { |way='desc'|
+      joins(:sites).group(User.column_names.map { |c| "\"users\".\"#{c}\"" }.join(', ')).order("SUM(sites.last_30_days_main_video_views) + SUM(sites.last_30_days_extra_video_views) #{way}")
     }
     # TODO: To test
-    # scope :by_sites_last_30_days_billable_player_hits_total_count,  lambda { |way='desc'|
-    #   joins(:sites).group(User.column_names.map { |c| "\"users\".\"#{c}\"" }.join(', ')).order { [sum(sites.last_30_days_main_player_hits_total_count) + sum(sites.last_30_days_extra_player_hits_total_count), way] }
+    # scope :by_sites_last_30_days_billable_video_views,  lambda { |way='desc'|
+    #   joins(:sites).group(User.column_names.map { |c| "\"users\".\"#{c}\"" }.join(', ')).order { [sum(sites.last_30_days_main_video_views) + sum(sites.last_30_days_extra_video_views), way] }
     # }
     scope :by_last_invoiced_amount,  lambda { |way='desc'| order("users.last_invoiced_amount #{way.upcase}") }
     scope :by_total_invoiced_amount, lambda { |way='desc'| order("users.total_invoiced_amount #{way.upcase}") }

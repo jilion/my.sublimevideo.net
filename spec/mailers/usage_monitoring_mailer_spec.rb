@@ -8,11 +8,11 @@ describe UsageMonitoringMailer do
   end
   subject { @site }
 
-  it_should_behave_like "common mailer checks", %w[plan_player_hits_reached], :params => [FactoryGirl.create(:site)]
+  it_should_behave_like "common mailer checks", %w[plan_overused], :params => [FactoryGirl.create(:site)]
 
-  describe "#plan_player_hits_reached" do
+  describe "#plan_overused" do
     before(:each) do
-      UsageMonitoringMailer.plan_player_hits_reached(subject).deliver
+      UsageMonitoringMailer.plan_overused(subject).deliver
       @last_delivery = ActionMailer::Base.deliveries.last
     end
 

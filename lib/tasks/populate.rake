@@ -260,16 +260,16 @@ def create_site_usages
   player_hits_total = 0
   Site.active.each do |site|
     start_date = (site.plan_cycle_started_at? ? site.plan_month_cycle_started_at : (1.month - 1.day).ago.midnight).to_date
-    plan_player_hits = site.in_sponsored_plan? || site.in_free_plan? ? Plan.standard_plans.all.sample.player_hits : site.plan.player_hits
+    plan_video_views = site.in_sponsored_plan? || site.in_free_plan? ? Plan.standard_plans.all.sample.video_views : site.plan.video_views
     p = (case rand(4)
     when 0
-      plan_player_hits/30.0 - (plan_player_hits/30.0/4)
+      plan_video_views/30.0 - (plan_video_views/30.0/4)
     when 1
-      plan_player_hits/30.0 - (plan_player_hits/30.0/8)
+      plan_video_views/30.0 - (plan_video_views/30.0/8)
     when 2
-      plan_player_hits/30.0 + (plan_player_hits/30.0/4)
+      plan_video_views/30.0 + (plan_video_views/30.0/4)
     when 3
-      plan_player_hits/30.0 + (plan_player_hits/30.0/8)
+      plan_video_views/30.0 + (plan_video_views/30.0/8)
     end).to_i
 
     (start_date..end_date).each do |day|
@@ -441,13 +441,13 @@ end
 
 def create_plans
   plans_attributes = [
-    { name: "free",       cycle: "none",  player_hits: 0,          price: 0, support_level: 0 },
-    { name: "sponsored",  cycle: "none",  player_hits: 0,          price: 0, support_level: 0 },
-    { name: "silver",     cycle: "month", player_hits: 200_000,    price: 990, support_level: 0 },
-    { name: "gold",       cycle: "month", player_hits: 1_000_000,  price: 4990, support_level: 1 },
-    { name: "silver",     cycle: "year",  player_hits: 200_000,    price: 9900, support_level: 0 },
-    { name: "gold",       cycle: "year",  player_hits: 1_000_000,  price: 49900, support_level: 1 },
-    { name: "custom1",    cycle: "year",  player_hits: 10_000_000, price: 99900, support_level: 1 }
+    { name: "free",       cycle: "none",  video_views: 0,          price: 0, support_level: 0 },
+    { name: "sponsored",  cycle: "none",  video_views: 0,          price: 0, support_level: 0 },
+    { name: "silver",     cycle: "month", video_views: 200_000,    price: 990, support_level: 0 },
+    { name: "gold",       cycle: "month", video_views: 1_000_000,  price: 4990, support_level: 1 },
+    { name: "silver",     cycle: "year",  video_views: 200_000,    price: 9900, support_level: 0 },
+    { name: "gold",       cycle: "year",  video_views: 1_000_000,  price: 49900, support_level: 1 },
+    { name: "custom1",    cycle: "year",  video_views: 10_000_000, price: 99900, support_level: 1 }
   ]
   plans_attributes.each { |attributes| Plan.create!(attributes) }
   puts "#{plans_attributes.size} plans created!"

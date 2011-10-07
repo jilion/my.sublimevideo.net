@@ -123,7 +123,7 @@ FactoryGirl.define do
   factory :plan do
     sequence(:name) { |n| "silver#{n}" }
     cycle           "month"
-    player_hits     10_000
+    video_views     10_000
     price           1000
     support_level   0
   end
@@ -131,7 +131,7 @@ FactoryGirl.define do
   factory :free_plan, :class => Plan  do
     name          "free"
     cycle         "none"
-    player_hits   0
+    video_views   0
     price         0
     support_level 0
   end
@@ -139,7 +139,7 @@ FactoryGirl.define do
   factory :sponsored_plan, :class => Plan  do
     name          "sponsored"
     cycle         "none"
-    player_hits   0
+    video_views   0
     price         0
     support_level 1
   end
@@ -147,7 +147,7 @@ FactoryGirl.define do
   factory :custom_plan, :class => Plan do
     sequence(:name) { |n| "custom#{n}" }
     cycle           "month"
-    player_hits     10_000_000
+    video_views     10_000_000
     price           20_000
     support_level   1
   end

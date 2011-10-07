@@ -204,15 +204,15 @@ class Site < ActiveRecord::Base
       usages = last_30_days_billable_usages
       name = nil
       if usages.size >= 5
-        Plan.standard_plans.order(:player_hits.desc).each do |tested_plan|
-          if usages.sum < tested_plan.player_hits && usages.mean < tested_plan.daily_player_hits
-            name = plan.player_hits < tested_plan.player_hits ? tested_plan.name : nil
+        Plan.standard_plans.order(:video_views.desc).each do |tested_plan|
+          if usages.sum < tested_plan.video_views && usages.mean < tested_plan.daily_video_views
+            name = plan.video_views < tested_plan.video_views ? tested_plan.name : nil
           end
         end
 
         if name.nil? && !in_custom_plan?
-          biggest_standard_plan = Plan.standard_plans.order(:player_hits.desc).first
-          name = "custom" if usages.sum >= biggest_standard_plan.player_hits || usages.mean >= biggest_standard_plan.daily_player_hits
+          biggest_standard_plan = Plan.standard_plans.order(:video_views.desc).first
+          name = "custom" if usages.sum >= biggest_standard_plan.video_views || usages.mean >= biggest_standard_plan.daily_video_views
         end
       end
       name
@@ -291,7 +291,7 @@ private
 
   # before_save
   def clear_alerts_sent_at
-    self.plan_player_hits_reached_notification_sent_at = nil if plan_id_changed?
+    self.overusage_notification_sent_at = nil if plan_id_changed?
   end
 
   # after_create
@@ -347,12 +347,12 @@ end
 #  pending_plan_started_at                       :datetime
 #  pending_plan_cycle_started_at                 :datetime
 #  pending_plan_cycle_ended_at                   :datetime
-#  plan_player_hits_reached_notification_sent_at :datetime
+#  overusage_notification_sent_at :datetime
 #  first_plan_upgrade_required_alert_sent_at     :datetime
 #  refunded_at                                   :datetime
-#  last_30_days_main_player_hits_total_count     :integer         default(0)
-#  last_30_days_extra_player_hits_total_count    :integer         default(0)
-#  last_30_days_dev_player_hits_total_count      :integer         default(0)
+#  last_30_days_main_video_views     :integer         default(0)
+#  last_30_days_extra_video_views    :integer         default(0)
+#  last_30_days_dev_video_views      :integer         default(0)
 #  trial_started_at                              :datetime
 #  badged                                        :boolean
 #
@@ -360,9 +360,9 @@ end
 #
 #  index_sites_on_created_at                                  (created_at)
 #  index_sites_on_hostname                                    (hostname)
-#  index_sites_on_last_30_days_dev_player_hits_total_count    (last_30_days_dev_player_hits_total_count)
-#  index_sites_on_last_30_days_extra_player_hits_total_count  (last_30_days_extra_player_hits_total_count)
-#  index_sites_on_last_30_days_main_player_hits_total_count   (last_30_days_main_player_hits_total_count)
+#  index_sites_on_last_30_days_dev_video_views    (last_30_days_dev_video_views)
+#  index_sites_on_last_30_days_extra_video_views  (last_30_days_extra_video_views)
+#  index_sites_on_last_30_days_main_video_views   (last_30_days_main_video_views)
 #  index_sites_on_plan_id                                     (plan_id)
 #  index_sites_on_user_id                                     (user_id)
 #

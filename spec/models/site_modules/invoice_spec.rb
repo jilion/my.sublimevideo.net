@@ -1274,7 +1274,7 @@ describe SiteModules::Invoice do
 
     describe "#set_trial_started_at" do
       before(:all) do
-        @foo_plan = FactoryGirl.create(:plan, name: "gold",  player_hits: 1_000_000)
+        @foo_plan = FactoryGirl.create(:plan, name: "gold",  video_views: 1_000_000)
       end
 
       it "set if site created with free plan" do

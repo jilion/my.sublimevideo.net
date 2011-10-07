@@ -4,7 +4,7 @@ module SiteModules::Scope
   included do
 
     # usage_monitoring scopes
-    scope :plan_player_hits_reached_notified, where { plan_player_hits_reached_notification_sent_at != nil }
+    scope :overusage_notified, where { overusage_notification_sent_at != nil }
 
     # state
     scope :active,       where { state == 'active' }
@@ -65,18 +65,18 @@ module SiteModules::Scope
     scope :by_google_rank, lambda { |way = 'desc'| where { google_rank >= 0 }.order(:google_rank.send(way)) }
     scope :by_alexa_rank,  lambda { |way = 'desc'| where { alexa_rank >= 1 }.order(:alexa_rank.send(way)) }
     scope :by_date,        lambda { |way = 'desc'| order(:created_at.send(way)) }
-    scope :by_last_30_days_billable_player_hits_total_count, lambda { |way = 'desc'|
-      order("(sites.last_30_days_main_player_hits_total_count + sites.last_30_days_extra_player_hits_total_count) #{way}")
+    scope :by_last_30_days_billable_video_views, lambda { |way = 'desc'|
+      order("(sites.last_30_days_main_video_views + sites.last_30_days_extra_video_views) #{way}")
     }
-    scope :by_last_30_days_extra_player_hits_total_percentage, lambda { |way = 'desc'|
-      order("CASE WHEN (sites.last_30_days_main_player_hits_total_count + sites.last_30_days_extra_player_hits_total_count) > 0
-      THEN (sites.last_30_days_extra_player_hits_total_count / CAST(sites.last_30_days_main_player_hits_total_count + sites.last_30_days_extra_player_hits_total_count AS DECIMAL))
+    scope :by_last_30_days_extra_video_views_percentage, lambda { |way = 'desc'|
+      order("CASE WHEN (sites.last_30_days_main_video_views + sites.last_30_days_extra_video_views) > 0
+      THEN (sites.last_30_days_extra_video_views / CAST(sites.last_30_days_main_video_views + sites.last_30_days_extra_video_views AS DECIMAL))
       ELSE -1 END #{way}")
     }
     scope :by_last_30_days_plan_usage_persentage, lambda { |way = 'desc'|
       includes(:plan).
-      order("CASE WHEN (sites.plan_id IS NOT NULL AND plans.player_hits > 0)
-      THEN ((sites.last_30_days_main_player_hits_total_count + sites.last_30_days_extra_player_hits_total_count) / CAST(plans.player_hits AS DECIMAL))
+      order("CASE WHEN (sites.plan_id IS NOT NULL AND plans.video_views > 0)
+      THEN ((sites.last_30_days_main_video_views + sites.last_30_days_extra_video_views) / CAST(plans.video_views AS DECIMAL))
       ELSE -1 END #{way}")
     }
 

@@ -18,7 +18,7 @@ class Admin::SitesController < Admin::AdminController
   has_scope :not_billable do |controller, scope|
     scope.not_billable
   end
-  has_scope :plan_player_hits_reached_notified
+  has_scope :overusage_notified
   has_scope :user_id
   has_scope :with_next_cycle_plan
 
@@ -27,8 +27,8 @@ class Admin::SitesController < Admin::AdminController
   has_scope :by_user
   has_scope :by_state
   has_scope :by_plan_price
-  has_scope :by_last_30_days_billable_player_hits_total_count
-  has_scope :by_last_30_days_extra_player_hits_total_percentage
+  has_scope :by_last_30_days_billable_video_views
+  has_scope :by_last_30_days_extra_video_views_percentage
   has_scope :by_last_30_days_plan_usage_persentage
   has_scope :by_date
   # search
