@@ -75,7 +75,7 @@ module OneTime
             new_attrs = {}
             new_attrs[:plan_id] = new_plans[0].id if new_plans[0].present?
             new_attrs[:pending_plan_id] = new_plans[1].id if new_plans[1].present?
-            y new_attrs
+            # y new_attrs
             unless new_attrs.empty?
               site.update_attributes(new_attrs)
               total += 1
