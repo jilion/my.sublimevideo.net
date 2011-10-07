@@ -98,7 +98,7 @@ GEM
       uuidtools
       xml-simple
     bcrypt-ruby (3.0.1)
-    braintree (2.11.0)
+    braintree (2.12.0)
       builder (>= 2.0.0)
     bson (1.4.0)
     bson_ext (1.4.0)
@@ -356,14 +356,14 @@ GEM
     ruby-hmac (0.4.0)
     ruby-progressbar (0.0.10)
     rubyzip (0.9.4)
-    sass (3.1.8)
+    sass (3.1.10)
     sass-rails (3.1.4)
       actionpack (~> 3.1.0)
       railties (~> 3.1.0)
       sass (>= 3.1.4)
       sprockets (~> 2.0.0)
       tilt (~> 1.3.2)
-    selenium-webdriver (2.7.0)
+    selenium-webdriver (2.8.0)
       childprocess (>= 0.2.1)
       ffi (>= 1.0.7)
       json_pure
