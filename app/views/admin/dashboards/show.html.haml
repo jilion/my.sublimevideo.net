@@ -66,13 +66,13 @@
 - player_hits = SiteUsage.between(31.days.ago.utc, Time.now.utc.yesterday).sum(:player_hits).to_i
 %p
   Last 30 days traffic:&nbsp;&nbsp;&nbsp;
-  = "#{number_with_delimiter(player_hits, :significant => false, :precision => 2, :delimiter => "'")} video pageviews"
+  = "#{number_with_delimiter(player_hits, :significant => false, :precision => 2, :delimiter => "'")} video views"
 %p
   Last 30 days avg/day:
-  = "#{number_with_delimiter(player_hits / 30, :significant => false, :precision => 2, :delimiter => "'")} video pageviews"
+  = "#{number_with_delimiter(player_hits / 30, :significant => false, :precision => 2, :delimiter => "'")} video views"
 %p
   All time traffic:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  = "#{number_with_delimiter(SiteUsage.sum(:player_hits).to_i, :significant => false, :precision => 2, :delimiter => "'")} video pageviews"
+  = "#{number_with_delimiter(SiteUsage.sum(:player_hits).to_i, :significant => false, :precision => 2, :delimiter => "'")} video views"
 %br
 
 .spacer

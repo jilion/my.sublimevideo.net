@@ -6,7 +6,7 @@ module SiteUsage::Api
 
     api_accessible :v1_private_self do |template|
       template.add lambda { |usage| usage.day.strftime("%Y-%m-%d") }, :as => :day
-      template.add lambda { |usage| usage.billable_player_hits }, :as => :video_pageviews
+      template.add lambda { |usage| usage.billable_player_hits }, :as => :video_views
     end
   end
 

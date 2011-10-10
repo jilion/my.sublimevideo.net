@@ -4,12 +4,12 @@ billable_usage = usages["main_usage"].zip(usages["extra_usage"]).map { |item| it
 
 graph = Graph.new do |g|
   g.option(chart: chart('timeline_usage'))
-  g.option(title: { text: "Total video pageviews" })
+  g.option(title: { text: "Total video views" })
   g.option(subtitle: usage_date_subtitle(start_at: @date_range_from, end_at: @date_range_to))
   g.option(legend: legend(width: 700))
   g.option(xAxis: x_axis(start_at: @date_range_from, end_at: @date_range_to))
 
-  g.raw_option(y_axis("Video pageviews"))
+  g.raw_option(y_axis("Video views"))
   g.raw_option(tooltip(formatter: %(
     var date  = "<strong>" + Highcharts.dateFormat("%B %e,  %Y", this.x) + "</strong><br/><br/>";
     var label = "<strong>" + Highcharts.numberFormat(this.y, 0) + "</strong>";

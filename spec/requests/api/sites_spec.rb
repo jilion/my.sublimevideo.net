@@ -55,9 +55,9 @@ feature "Sites API" do
       parsed_body["site"]["token"].should eql @site.token
       parsed_body["site"]["usage"].should be_kind_of(Array)
       parsed_body["site"]["usage"][0]["day"].should eql @site_usage2.day.strftime("%Y-%m-%d")
-      parsed_body["site"]["usage"][0]["video_pageviews"].should eql @site_usage2.billable_player_hits
+      parsed_body["site"]["usage"][0]["video_views"].should eql @site_usage2.billable_player_hits
       parsed_body["site"]["usage"][1]["day"].should eql @site_usage3.day.strftime("%Y-%m-%d")
-      parsed_body["site"]["usage"][1]["video_pageviews"].should eql @site_usage3.billable_player_hits
+      parsed_body["site"]["usage"][1]["video_views"].should eql @site_usage3.billable_player_hits
     end
   end
 

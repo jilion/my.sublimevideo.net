@@ -11,6 +11,6 @@ describe SiteUsage::Api do
   it "selects a subset of fields, as a hash" do
     @response.should be_a(Hash)
     @response[:day].should == subject.day.strftime("%Y-%m-%d")
-    @response[:video_pageviews].should == 2700
+    @response[:video_views].should == 2700
   end
 end

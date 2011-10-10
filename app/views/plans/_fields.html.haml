@@ -18,7 +18,7 @@
       .break_line
     .content
       %h4.number= number_with_delimiter(custom_plan.video_views)
-      %h5.label= "Video pageviews per month"
+      %h5.label= "Video views per month"
     .entry
       .radio_wrap
         = f.radio_button :plan_id, custom_plan.token, radio_button_options(site, current_plan, custom_plan, id: "plan_custom", checked: current_plan && current_plan == custom_plan)
@@ -32,7 +32,7 @@
   - if site.recommended_plan_name
     #recommended_plan_box
       %p.note
-        = raw "Your usage in the last 30 days: #{content_tag :strong, number_with_delimiter(site.last_30_days_billable_usages.sum)} video pageviews =>"
+        = raw "Your usage in the last 30 days: #{content_tag :strong, number_with_delimiter(site.last_30_days_billable_usages.sum)} video views =>"
         - if site.recommended_plan_name == 'custom'
           = raw "Recommended plan: <strong>Custom</strong> (please #{mail_to "sales@sublimevideo.net", "contact us"})"
         - else
@@ -70,7 +70,7 @@
             .header
               %h3.title= content_tag(:strong, standard_plan.name.titleize)
               %h4.number= number_with_delimiter(standard_plan.video_views)
-              %h5.label= "Video pageviews per month"
+              %h5.label= "Video views per month"
               %ul.features
                 %li= "#{content_tag(:strong, "Unbranded")} Player".html_safe
                 %li= plan_support(standard_plan)
@@ -97,4 +97,4 @@
     .spacer
 
     #need_more{ class: (site.recommended_plan_name == 'custom' ? 'recommended' : '') }
-      %p= raw "Need more pageviews, custom support or have other enterprise-class requirements? Please #{mail_to "sales@sublimevideo.net", "contact us"}."
+      %p= raw "Need more views, custom support or have other enterprise-class requirements? Please #{mail_to "sales@sublimevideo.net", "contact us"}."

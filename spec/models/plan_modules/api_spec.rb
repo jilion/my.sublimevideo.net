@@ -10,6 +10,6 @@ describe PlanModules::Api do
     @response.should be_a(Hash)
     @response[:name].should == 'huge_plan'
     @response[:cycle].should == 'month'
-    @response[:video_pageviews].should == 1_000_000
+    @response[:video_views].should == 1_000_000
   end
 end

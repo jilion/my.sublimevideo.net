@@ -4,7 +4,7 @@ billable_usage = usages["main_usage"].zip(usages["extra_usage"]).map { |item| it
 
 graph = Graph.new do |g|
   g.option(chart: chart('timeline_usage'))
-  g.option(title: { text: "Video pageviews for #{hostname_with_path_and_wildcard(site)}" })
+  g.option(title: { text: "Video views for #{hostname_with_path_and_wildcard(site)}" })
   g.option(subtitle: usage_date_subtitle(start_at: @date_range_from, end_at: @date_range_to))
   g.option(legend: legend)
   g.option(xAxis: x_axis(start_at: @date_range_from, end_at: @date_range_to))
