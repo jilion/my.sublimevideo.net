@@ -32,6 +32,8 @@
         = render 'fields', f: f
 
         = render 'plan_change_messages'
+
+        = render('sites/cc_fields', site: @site, f: f) unless @site.in_trial? || @site.in_custom_plan?
         .spacer
 
         .actions.center
