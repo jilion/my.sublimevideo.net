@@ -7,7 +7,7 @@
       %p
         = render 'sites/usage_sparkline', site: site, usage: usage
         = link_to site_stats_url(site) do
-          %strong= number_with_delimiter(usage.sum(&:vv))
+          %strong= number_with_delimiter(usage.sum(&:billable_vv))
           %em= (site.in_sponsored_plan? ? "sponsored" : "") + " video views"
       = link_to "Peak Insurance ON", "http://docs.sublimevideo.net/peak-insurance", :class => "peak_insurance_label"
       = link_to "Upgrade", edit_site_plan_path(site), :class => "upgrade_button submit_dynamic_button"

@@ -20,8 +20,6 @@ class Admin < ActiveRecord::Base
 end
 
 
-
-
 # == Schema Information
 #
 # Table name: admins

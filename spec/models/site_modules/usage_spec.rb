@@ -5,34 +5,22 @@ describe SiteModules::Usage do
   describe "#update_last_30_days_counters" do
     before(:all) do
       @site = FactoryGirl.create(:site, last_30_days_main_video_views: 1)
-      FactoryGirl.create(:site_usage, site_id: @site.id, day: Time.utc(2010,12,31).midnight,
-        main_player_hits:  6,   main_player_hits_cached:  4,
-        extra_player_hits: 5,   extra_player_hits_cached: 5,
-        dev_player_hits:   4,   dev_player_hits_cached:   6
-      )
-      FactoryGirl.create(:site_usage, site_id: @site.id, day: Time.utc(2011,1,1).midnight,
-        main_player_hits:  6,   main_player_hits_cached:  4,
-        extra_player_hits: 5,   extra_player_hits_cached: 5,
-        dev_player_hits:   4,   dev_player_hits_cached:   6
-      )
-      FactoryGirl.create(:site_usage, site_id: @site.id, day: Time.utc(2011,1,30).midnight,
-        main_player_hits:  6,   main_player_hits_cached:  4,
-        extra_player_hits: 5,   extra_player_hits_cached: 5,
-        dev_player_hits:   4,   dev_player_hits_cached:   6
-      )
-      FactoryGirl.create(:site_usage, site_id: @site.id, day: Time.utc(2011,1,31).midnight,
-        main_player_hits:  6,   main_player_hits_cached:  4,
-        extra_player_hits: 5,   extra_player_hits_cached: 5,
-        dev_player_hits:   4,   dev_player_hits_cached:   6
-      )
+      FactoryGirl.create(:site_stat, t: @site.token, d: Time.utc(2010,12,31).midnight, vv: { m: 1, e: 2, d: 3, i: 4, em: 5 })
+
+      FactoryGirl.create(:site_stat, t: @site.token, d: Time.utc(2011,1,1).midnight, vv: { m: 1, e: 2, d: 3, i: 4, em: 5 })
+      FactoryGirl.create(:site_stat, t: @site.token, d: Time.utc(2011,1,30).midnight, vv: { m: 1, e: 2, d: 3, i: 4, em: 5 })
+
+      FactoryGirl.create(:site_stat, t: @site.token, d: Time.utc(2011,1,31).midnight, vv: { m: 1, e: 2, d: 3, i: 4, em: 5 })
     end
 
     it "should update counters of non-archived sites from last 30 days site_usages" do
       Timecop.travel(Time.utc(2011,1,31, 12)) do
         @site.update_last_30_days_counters
-        @site.last_30_days_main_video_views.should  == 20
-        @site.last_30_days_extra_video_views.should == 20
-        @site.last_30_days_dev_video_views.should   == 20
+        @site.last_30_days_main_video_views.should    == 2
+        @site.last_30_days_extra_video_views.should   == 4
+        @site.last_30_days_dev_video_views.should     == 6
+        @site.last_30_days_invalid_video_views.should == 8
+        @site.last_30_days_embed_video_views.should   == 10
       end
     end
   end
@@ -41,13 +29,13 @@ describe SiteModules::Usage do
     before(:all) { Timecop.travel(15.days.ago) { @site = FactoryGirl.create(:site_not_in_trial) } }
     before(:each) do
       @site.unmemoize_all
-      FactoryGirl.create(:site_usage, site_id: @site.id, day: 1.day.ago,  main_player_hits: 4)
-      FactoryGirl.create(:site_usage, site_id: @site.id, day: 2.days.ago, main_player_hits: 3)
-      FactoryGirl.create(:site_usage, site_id: @site.id, day: 3.days.ago, main_player_hits: 2)
-      FactoryGirl.create(:site_usage, site_id: @site.id, day: 4.days.ago, main_player_hits: 0)
-      FactoryGirl.create(:site_usage, site_id: @site.id, day: 5.days.ago, main_player_hits: 1)
-      FactoryGirl.create(:site_usage, site_id: @site.id, day: 6.days.ago, main_player_hits: 0)
-      FactoryGirl.create(:site_usage, site_id: @site.id, day: 7.days.ago, main_player_hits: 0)
+      FactoryGirl.create(:site_stat, t: @site.token, d: 1.day.ago.midnight, vv: { m: 4 })
+      FactoryGirl.create(:site_stat, t: @site.token, d: 2.day.ago.midnight, vv: { m: 3 })
+      FactoryGirl.create(:site_stat, t: @site.token, d: 3.day.ago.midnight, vv: { m: 2 })
+      FactoryGirl.create(:site_stat, t: @site.token, d: 4.day.ago.midnight, vv: { m: 0 })
+      FactoryGirl.create(:site_stat, t: @site.token, d: 5.day.ago.midnight, vv: { m: 1 })
+      FactoryGirl.create(:site_stat, t: @site.token, d: 6.day.ago.midnight, vv: { m: 0 })
+      FactoryGirl.create(:site_stat, t: @site.token, d: 7.day.ago.midnight, vv: { m: 0 })
     end
 
     describe "#current_monthly_billable_usages" do
@@ -62,21 +50,9 @@ describe SiteModules::Usage do
   describe "#current_monthly_billable_usages.sum & #current_percentage_of_plan_used" do
     before(:all) { @site = FactoryGirl.create(:site) }
     before(:each) do
-      FactoryGirl.create(:site_usage, site_id: @site.id, day: Time.utc(2011,1,30),
-        main_player_hits:  1, main_player_hits_cached:  2,
-        extra_player_hits: 3, extra_player_hits_cached: 4,
-        dev_player_hits:   4, dev_player_hits_cached:   6
-      )
-      FactoryGirl.create(:site_usage, site_id: @site.id, day: Time.utc(2011,3,30),
-        main_player_hits:  5, main_player_hits_cached:  6,
-        extra_player_hits: 7, extra_player_hits_cached: 8,
-        dev_player_hits:   4, dev_player_hits_cached:   6
-      )
-      FactoryGirl.create(:site_usage, site_id: @site.id, day: Time.utc(2011,4,30),
-      main_player_hits:   9, main_player_hits_cached:  10,
-      extra_player_hits: 11, extra_player_hits_cached: 12,
-      dev_player_hits:    4, dev_player_hits_cached:    6
-      )
+      FactoryGirl.create(:site_stat, t: @site.token, d: Time.utc(2011,1,30).midnight, vv: { m: 3, e: 7, d: 10, i: 0, em: 0 })
+      FactoryGirl.create(:site_stat, t: @site.token, d: Time.utc(2011,3,30).midnight, vv: { m: 11, e: 15, d: 10, i: 0, em: 0 })
+      FactoryGirl.create(:site_stat, t: @site.token, d: Time.utc(2011,4,30).midnight, vv: { m: 19, e: 23, d: 10, i: 0, em: 0 })
     end
 
     context "with monthly plan" do
@@ -165,11 +141,7 @@ describe SiteModules::Usage do
 
       describe "with 1 historic day and 1 over limit" do
         before(:each) do
-          FactoryGirl.create(:site_usage, site_id: @site.id, day: Time.utc(2011,1,1),
-            main_player_hits:  100, main_player_hits_cached:  100,
-            extra_player_hits: 100, extra_player_hits_cached: 100,
-            dev_player_hits:   100, dev_player_hits_cached:   100
-          )
+          FactoryGirl.create(:site_stat, t: @site.token, d: Time.utc(2011,1,1).midnight, vv: { m: 200, e: 200, d: 200, i: 0, em: 0 })
           Timecop.travel(Time.utc(2011,1,2))
         end
         after(:each) { Timecop.return }
@@ -180,8 +152,8 @@ describe SiteModules::Usage do
 
       describe "with 2 historic days and 1 over limit" do
         before(:each) do
-          FactoryGirl.create(:site_usage, site_id: @site.id, day: Time.utc(2011,1,1), main_player_hits: 400)
-          FactoryGirl.create(:site_usage, site_id: @site.id, day: Time.utc(2011,1,2), main_player_hits: 300)
+          FactoryGirl.create(:site_stat, t: @site.token, d: Time.utc(2011,1,1).midnight, vv: { m: 400 })
+          FactoryGirl.create(:site_stat, t: @site.token, d: Time.utc(2011,1,2).midnight, vv: { m: 300 })
           Timecop.travel(Time.utc(2011,1,3))
         end
         after(:each) { Timecop.return }
@@ -192,9 +164,9 @@ describe SiteModules::Usage do
 
       describe "with 5 historic days and 2 over limit" do
         before(:each) do
-          FactoryGirl.create(:site_usage, site_id: @site.id, day: Time.utc(2011,1,1), main_player_hits: 400)
-          FactoryGirl.create(:site_usage, site_id: @site.id, day: Time.utc(2011,1,2), main_player_hits: 300)
-          FactoryGirl.create(:site_usage, site_id: @site.id, day: Time.utc(2011,1,3), main_player_hits: 500)
+          FactoryGirl.create(:site_stat, t: @site.token, d: Time.utc(2011,1,1).midnight, vv: { m: 400 })
+          FactoryGirl.create(:site_stat, t: @site.token, d: Time.utc(2011,1,2).midnight, vv: { m: 300 })
+          FactoryGirl.create(:site_stat, t: @site.token, d: Time.utc(2011,1,3).midnight, vv: { m: 500 })
           Timecop.travel(Time.utc(2011,1,6))
         end
         after(:each) { Timecop.return }
@@ -205,9 +177,9 @@ describe SiteModules::Usage do
 
       describe "with >60 historic days and 2 over limit" do
         before(:each) do
-          FactoryGirl.create(:site_usage, site_id: @site.id, day: Time.utc(2011,1,1), main_player_hits: 400)
-          FactoryGirl.create(:site_usage, site_id: @site.id, day: Time.utc(2011,2,1), main_player_hits: 500)
-          FactoryGirl.create(:site_usage, site_id: @site.id, day: Time.utc(2011,3,1), main_player_hits: 500)
+          FactoryGirl.create(:site_stat, t: @site.token, d: Time.utc(2011,1,1).midnight, vv: { m: 400 })
+          FactoryGirl.create(:site_stat, t: @site.token, d: Time.utc(2011,2,1).midnight, vv: { m: 500 })
+          FactoryGirl.create(:site_stat, t: @site.token, d: Time.utc(2011,3,1).midnight, vv: { m: 500 })
           Timecop.travel(Time.utc(2011,4,1))
         end
         after(:each) { Timecop.return }
