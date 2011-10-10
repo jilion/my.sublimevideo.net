@@ -23,13 +23,9 @@ feature "edit" do
       visit edit_site_plan_path(site)
 
       choose "plan_free"
-      click_button "Update plan"
-
       has_checked_field?("plan_free").should be_true
       has_unchecked_field?("plan_silver_month").should be_true
-
-      fill_in "Password", with: "123456"
-      click_button "Done"
+      click_button "Update plan"
 
       site.reload
       site.plan.should eql @free_plan
@@ -235,12 +231,12 @@ feature "sponsored plan" do
   scenario "view" do
     site = FactoryGirl.create(:site, user: @current_user)
     site.sponsor!
-    FactoryGirl.create(:site_usage, site_id: site.id, day: Time.now.utc, main_player_hits: 1000)
+    FactoryGirl.create(:site_stat, t: site.token, d: 1.day.ago.change(hour: 0, min: 0, sec: 0, usec: 0).to_time, vv: { m: 1000 })
 
     visit sites_path
 
     page.should have_content("Sponsored")
-    page.should have_content("1,000 sponsored video pageviews")
+    page.should have_content("1,000 sponsored video views")
 
     click_link "Sponsored"
 

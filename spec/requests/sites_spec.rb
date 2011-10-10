@@ -325,9 +325,6 @@ feature "Sites" do
         check "site_badged"
         click_button "Update settings"
 
-        fill_in "Password", with: "123456"
-        click_button "Done"
-
         current_url.should =~ %r(http://[^/]+/sites)
         page.should have_content('rymai.com')
 
@@ -367,8 +364,24 @@ feature "Sites" do
     end
 
     describe "archive" do
-      scenario "a paid site with no not paid invoices" do
+      scenario "a paid site in trial" do
         site = FactoryGirl.create(:site, user: @current_user, hostname: 'google.com')
+
+        visit "/sites"
+        page.should have_content('google.com')
+        @current_user.sites.last.hostname.should == "google.com"
+        VoxcastCDN.stub_chain(:delay, :purge).twice
+
+        click_link "Edit google.com"
+        click_button "Delete site"
+
+        page.should_not have_content('google.com')
+        @current_user.sites.not_archived.should be_empty
+      end
+
+      scenario "a paid site with only paid invoices" do
+        site = FactoryGirl.create(:site_not_in_trial, user: @current_user, hostname: 'google.com')
+        FactoryGirl.create(:invoice, site: site, state: 'paid')
 
         visit "/sites"
         page.should have_content('google.com')
@@ -396,7 +409,7 @@ feature "Sites" do
         page.should have_no_content('Delete site')
       end
 
-      scenario "a paid site with an failed invoices" do
+      scenario "a paid site with a failed invoice" do
         site = FactoryGirl.create(:site_not_in_trial, user: @current_user, hostname: 'google.com')
         FactoryGirl.create(:invoice, site: site, state: 'failed')
 
@@ -407,7 +420,7 @@ feature "Sites" do
         page.should have_no_content('Delete site')
       end
 
-      scenario "a paid site with an waiting invoices" do
+      scenario "a paid site with a waiting invoice" do
         site = FactoryGirl.create(:site_not_in_trial, user: @current_user, hostname: 'google.com')
         FactoryGirl.create(:invoice, site: site, state: 'waiting')
 
