@@ -26,9 +26,9 @@
 
   %p#original_dimensions
     Original dimensions
-    %input#original_width{ name: 'original_width', type: 'text', readonly: true }
+    %span#original_width{ name: 'original_width' }
     x
-    %input#original_height{ name: 'original_height', type: 'text', readonly: true }
+    %span#original_height{ name: 'original_height' }
 
   %p#final_dimensions
     Final dimensions
@@ -40,10 +40,16 @@
       %label{ for: 'keep_ratio' } Keep original ratio
       %input#keep_ratio{ name: 'keep_ratio', type: 'checkbox', checked: true }
 
+-# %h3 Posterframe
+-# %canvas#c{ style: 'display:none' }
+-# %img#poster_export
+
 %h3 Live preview
 #live_preview_wrap
   .breakline
   #live_preview_video_wrap
+
+-# %button#posterframe_generator Generate posterframe
 
 %h3 Code to paste in your page
 %textarea#video_tag_code{ rows: 10, cols: 100, readonly: true }

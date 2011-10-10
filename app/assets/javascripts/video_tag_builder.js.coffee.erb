@@ -5,9 +5,14 @@ document.observe 'dom:loaded', ->
 
 class VideoTagBuilder
   constructor: (poster_id = 'poster', sources_class = 'video_src', ratio_keeper = 'keep_ratio') ->
-    @poster       = $(poster_id)
-    @sources      = $$(".#{sources_class}")
-    @ratio_keeper = $(keep_ratio)
+    @poster        = $(poster_id)
+    @sources       = $$(".#{sources_class}")
+    @ratio_keeper  = $(keep_ratio)
+    @video         = null
+    @video_size    = { width: null, height: null }
+    # @poster_canvas = $('c')
+    # @poster_canvas_context = if @poster_canvas.getContext then @poster_canvas.getContext('2d') else null
+    # @poster_export = $('poster_export')
 
     sublimevideo.load()
     sublimevideo.ready =>
@@ -27,6 +32,17 @@ class VideoTagBuilder
       this.updateLivePreview() if this.urlHasChanged event.target
     , false
 
+    # $("posterframe_generator").observe 'click', (event) =>
+    #   return false if @video is null || @poster_canvas_context is null || @video.paused || @video.ended
+    #
+    #   @poster_canvas.width  = @video_size['width'];
+    #   @poster_canvas.height = @video_size['height'];
+    #   @poster_canvas_context.drawImage(@video, 0, 0, parseInt(@video_size['width']), parseInt(@video_size['height']))
+    #
+    #   dataURL = @poster_canvas.toDataURL()
+    #   @poster_export.src = img
+    # , false
+
   setupVideoSizeCheckerObserver: ->
     @sources[0].observe 'keyup', (event) =>
       this.setVideoDimensionsToInputFields event.target.value if this.urlHasChanged event.target
@@ -41,22 +57,23 @@ class VideoTagBuilder
   setupDimensionsObserver: ->
     ['width', 'height'].each (dimension) =>
       $("final_#{dimension}").observe 'keyup', (event) =>
-        if not /\d+/.test event.target.value
-          event.target.value = ''
+        @video_size[dimension] = event.target.value
+        if not /\d+/.test @video_size[dimension]
+          event.target.value = @video_size[dimension] = null
         else if $('keep_ratio').checked
-          this.updateDimensionField this.oppositeDimension(dimension), event.target.value
+          this.updateDimensionField this.oppositeDimension(dimension), @video_size[dimension]
         this.updateLivePreview()
       , false
-      
-  oppositeDimension: (dimension) ->
-    if dimension == 'width' then 'height' else 'width'
-    
+
   setupRatioKeeperObserver: ->
     $('keep_ratio').observe 'click', (event) =>
       # If the "keep ratio" check box has been checked, reset the right ratio to the current final dimensions
       if event.target.checked
-        this.updateDimensionField 'height', $('final_width').value
+        this.updateDimensionField 'height', @video_size['width']
         this.updateLivePreview()
+
+  oppositeDimension: (dimension) ->
+    if dimension == 'width' then 'height' else 'width'
 
   urlHasChanged: (input) ->
     if (!input.getAttribute('data-last_url')? and input.value != "") or input.getAttribute('data-last_url') != input.value
@@ -70,24 +87,24 @@ class VideoTagBuilder
       sublimevideo.unprepare 'live_preview_video'
       $('live_preview_video').remove()
 
-    [poster, dimensions, sources] = [$('poster').value, [$('final_width').value or 300, $('final_height').value or 200], []]
-
+    [poster, dimensions, sources] = [$('poster').value, [@video_size['width'] or 300, @video_size['height'] or 200], []]
+    console.log(dimensions);
     $$('.video_src').each (input) =>
       source = $(input.id).value
       if source != '' then sources.push new Element('source', { src: source }) if this.validUrl source
 
-    video = new Element 'video',
+    @video = new Element 'video',
       id: 'live_preview_video'
       className: 'sublime'
       poster: poster
       width: dimensions[0]
       height: dimensions[1]
       preload: 'none'
-    sources.each (source) ->
-      video.insert source
+    sources.each (source) =>
+      @video.insert source
 
-    if video.height > 0 then $('live_preview_video_wrap').setStyle({ height: "#{video.height}px" })
-    $('live_preview_video_wrap').insert video
+    if @video.height > 0 then $('live_preview_video_wrap').setStyle({ height: "#{@video.height}px" })
+    $('live_preview_video_wrap').insert @video
 
     sublimevideo.prepare 'live_preview_video'
 
@@ -113,20 +130,21 @@ class VideoTagBuilder
       SublimeVideoSizeChecker.getVideoSize url, (u, dimensions) =>
         new_width  = if dimensions? then dimensions.width else '???'
         new_height = if dimensions? then dimensions.height else '???'
-        $('original_width').value = new_width
-        $('original_height').value = new_height
+        $('original_width').innerHTML = new_width
+        $('original_height').innerHTML = new_height
         $('video-dimensions-ajax-loading').hide()
 
-        if $('final_width').value is '' then $('final_width').value = $('original_width').value
-        this.updateDimensionField 'height', $('final_width').value
+        if @video_size['width'] is null
+          $('final_width').value = @video_size['width'] = $('original_width').innerHTML
+        this.updateDimensionField 'height', @video_size['width']
         this.updateLivePreview()
 
   updateDimensionField: (field, size) ->
     oppositeField = this.oppositeDimension(field)
 
-    if $("original_#{oppositeField}").value != '???' and $("final_#{oppositeField}").value != ''
-      ratio = parseInt($("original_#{field}").value) / parseInt($("original_#{oppositeField}").value)
-      $("final_#{field}").value = Math.round(size * ratio)
+    if $("original_#{oppositeField}").innerHTML != '???' and @video_size[oppositeField] != null
+      ratio = parseInt($("original_#{field}").innerHTML) / parseInt($("original_#{oppositeField}").innerHTML)
+      $("final_#{field}").value = @video_size[field] = Math.round(size * ratio)
 
   validUrl: (url) ->
     /^https?:\/\/.+\.\w+(\?+.*)?$/.test url
