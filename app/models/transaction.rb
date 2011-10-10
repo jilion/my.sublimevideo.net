@@ -115,7 +115,7 @@ class Transaction < ActiveRecord::Base
     if site = Site.refunded.find_by_id(site_id)
       site.invoices.refunded.order(:created_at).each do |invoice|
         begin
-          refund = Ogone.credit(invoice.amount, "#{invoice.transactions.paid.first.pay_id};SAL")
+          refund = Ogone.refund(invoice.amount, "#{invoice.transactions.paid.first.pay_id};SAL")
 
           unless refund.success?
             Notify.send("Refund failed for invoice ##{invoice.reference} (amount: #{invoice.amount}, transaction order_id:##{invoice.transactions.paid.first.order_id})")

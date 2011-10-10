@@ -26,6 +26,7 @@ describe OneTime::Site do
       Site.skip_callback(:save, :before, :set_trial_started_at)
       @old_site_to_update     = FactoryGirl.create(:site, first_paid_plan_started_at: Time.utc(2010,1,1))
       @old_site_not_to_update = FactoryGirl.create(:site, first_paid_plan_started_at: nil)
+      Site.set_callback(:save, :before, :set_trial_started_at)
     end
 
     it "moves local domains present in extra domains into dev domains" do
@@ -98,7 +99,7 @@ describe OneTime::Site do
       @site_custom    = FactoryGirl.create(:site, plan_id: @custom_plan.token)
     end
 
-    it "moves local domains present in extra domains into dev domains" do
+    pending "moves local domains present in extra domains into dev domains" do
       @site_dev.plan.should eql @dev_plan
       @site_sponsored.plan.should eql @sponsored_plan
       @site_comet_m.plan.should eql @comet_m_plan

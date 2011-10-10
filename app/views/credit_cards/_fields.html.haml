@@ -1,5 +1,4 @@
 .left
-  -# reset_credit_card_attributes(f.object)
   - if f.object.errors[:base].present?
     .global_errors
       - f.object.errors[:base].each do |error|
@@ -34,7 +33,6 @@
 .right
   .billing_info
     %p
-      -# = "Your credit card information is secure."
       = "Your credit card information is protected with secure socket layer (SSL) encryption."
       %br
       = link_to "Questions about billing?", new_ticket_path(:anchor => "billing")

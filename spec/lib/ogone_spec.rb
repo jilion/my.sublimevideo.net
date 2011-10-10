@@ -74,16 +74,16 @@ describe Ogone do
       end
     end
     
-    describe ".credit" do
+    describe ".refund" do
       describe "refund of $10 via a transaction's pay_id that succeeds" do
         before(:each) do
           VCR.use_cassette "ogone/visa_payment_generic" do
             @purchase = Ogone.purchase(1000, @cc, :currency => 'USD')
           end
         end
-        subject { Ogone.credit(1000, @purchase.authorization) }
+        subject { Ogone.refund(1000, @purchase.authorization) }
         
-        it { VCR.use_cassette("ogone/visa_credit_generic") { subject.should be_success } }
+        it { VCR.use_cassette("ogone/visa_refund_generic") { subject.should be_success } }
       end
       
       describe "refund of $10 via a transaction's pay_id that fails" do
@@ -92,9 +92,9 @@ describe Ogone do
             @purchase = Ogone.purchase(1000, @cc, :currency => 'USD')
           end
         end
-        subject { Ogone.credit(3000, @purchase.authorization) } # amount bigger than the original sale
+        subject { Ogone.refund(3000, @purchase.authorization) } # amount bigger than the original sale
         
-        it { VCR.use_cassette("ogone/visa_credit_failed") { subject.should_not be_success } }
+        it { VCR.use_cassette("ogone/visa_refund_failed") { subject.should_not be_success } }
       end
     end
   end
