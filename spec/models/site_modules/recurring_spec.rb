@@ -23,9 +23,9 @@ describe SiteModules::Recurring do
 
     it "calls update_last_30_days_counters on each non-archived sites" do
       @active_site = FactoryGirl.create(:site, state: 'active')
-      FactoryGirl.create(:site_usage, site_id: @active_site.id, day: Time.utc(2011,1,15).midnight, main_player_hits: 6)
+      FactoryGirl.create(:site_stat, t: @active_site.token, d: Time.utc(2011,1,15).midnight, vv: { m: 6 })
       @archived_site = FactoryGirl.create(:site, state: 'archived')
-      FactoryGirl.create(:site_usage, site_id: @archived_site.id, day: Time.utc(2011,1,15).midnight, main_player_hits: 6)
+      FactoryGirl.create(:site_stat, t: @archived_site.token, d: Time.utc(2011,1,15).midnight, vv: { m: 6 })
 
       Timecop.travel(Time.utc(2011,1,31, 12)) do
         Site.update_last_30_days_counters_for_not_archived_sites

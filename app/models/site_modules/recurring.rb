@@ -5,7 +5,7 @@ module SiteModules::Recurring
 
     def delay_update_last_30_days_counters_for_not_archived_sites
       unless Delayed::Job.already_delayed?('%Site%update_last_30_days_counters_for_not_archived_sites%')
-        delay(run_at: Time.now.utc.tomorrow.midnight + 1.hour).update_last_30_days_counters_for_not_archived_sites
+        delay(run_at: Time.now.utc.tomorrow.midnight + 5.minutes).update_last_30_days_counters_for_not_archived_sites
       end
     end
 

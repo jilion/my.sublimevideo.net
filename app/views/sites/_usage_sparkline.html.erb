@@ -6,7 +6,7 @@ graph = Graph.new do |g|
   g.option(tooltip: { enabled: false })
   g.option(xAxis: { labels: { enabled: false } })
   g.option(yAxis: { maxPadding: 0, minPadding: 0, endOnTick: false, labels: { enabled: false } })
-  g.option(series: [serie(usage.map(&:vv), '', color: '#666', fill_color: 'rgba(204,204,204,.25)')])
+  g.option(series: [serie(usage.map(&:billable_vv), '', color: '#666', fill_color: 'rgba(204,204,204,.25)')])
   g.option(plotOptions: plot_options(0, 1.day, marker_hover: false))
   g.option(credits: { enabled: false })
 end

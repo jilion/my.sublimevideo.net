@@ -9,8 +9,8 @@ class SiteStat
   field :h,  type: DateTime  # Hour
   field :d,  type: DateTime  # Day
 
-  field :pv, type: Hash, default: {} # Page Visits: { m (main) => 2, e (extra) => 10, d (dev) => 43, i (invalid) => 2 }
-  field :vv, type: Hash, default: {} # Video Views: { m (main) => 1, e (extra) => 3, d (dev) => 11, i (invalid) => 1 }
+  field :pv, type: Hash, default: {} # Page Visits: { m (main) => 2, e (extra) => 10, d (dev) => 43, i (invalid) => 2, em (embed) => 3 }
+  field :vv, type: Hash, default: {} # Video Views: { m (main) => 1, e (extra) => 3, d (dev) => 11, i (invalid) => 1, em (embed) => 3 }
   field :md, type: Hash              # Player Mode + Device hash { h (html5) => { d (desktop) => 2, m (mobile) => 1 }, f (flash) => ... }
   field :bp, type: Hash              # Browser + Plateform hash { "saf-win" => 2, "saf-osx" => 4, ...}
 
@@ -34,8 +34,8 @@ class SiteStat
 
   %w[s m h d].each do |period|
     scope "#{period}_after".to_sym, lambda { |date| where(period => { "$gte" => date.to_i }).order_by([period.to_sym, :asc]) }
-    scope "#{period}_before".to_sym,  lambda { |date| where(period => { "$lt" => date.to_i }).order_by([period.to_sym, :asc]) }
-    scope "#{period}_between".to_sym, lambda { |start_date, end_date| where(period => { "$gte" => start_date.to_i, "$lt" => end_date.to_i }).order_by([period.to_sym, :asc]) }
+    scope "#{period}_before".to_sym,  lambda { |date| where(period => { "$lte" => date.to_i }).order_by([period.to_sym, :asc]) }
+    scope "#{period}_between".to_sym, lambda { |start_date, end_date| where(period => { "$gte" => start_date.to_i, "$lte" => end_date.to_i }).order_by([period.to_sym, :asc]) }
   end
 
   # ====================
@@ -51,13 +51,12 @@ class SiteStat
   end
 
   # only main & extra hostname are counted in charts
-  def pv
-    pv = read_attribute(:pv)
+  def billable_pv
     pv['m'].to_i + pv['e'].to_i
   end
 
-  def vv
-    vv = read_attribute(:vv)
+  # only main & extra hostname are counted in charts
+  def billable_vv
     vv['m'].to_i + vv['e'].to_i
   end
 
@@ -65,8 +64,8 @@ class SiteStat
   def as_json(options = nil)
     json = super
     json['id'] = time
-    json.delete('pv') if json['pv'] == 0
-    json.delete('vv') if json['vv'] == 0
+    json['pv'] = billable_pv if billable_pv > 0
+    json['vv'] = billable_vv if billable_vv > 0
     json
   end
 
@@ -78,7 +77,7 @@ class SiteStat
     options.reverse_merge!(fill_missing_days: true)
 
     token_or_stats = self.where(t: token_or_stats) if token_or_stats.is_a? String
-    stats          = token_or_stats.send("#{period_type[0]}_between", from, to + 1.send(period_type)).entries
+    stats          = token_or_stats.send("#{period_type[0]}_between", from, to).entries
 
     if !!options[:fill_missing_days]
       filled_stats = []
@@ -132,7 +131,7 @@ class SiteStat
       last_stats(stats, from, to, period_type)
     end
 
-    json_stats.to_json(only: [:pv, :vv, :bp, :md])
+    json_stats.to_json(only: [:bp, :md])
   end
 
   def self.create_stats_from_trackers!(log, trackers)

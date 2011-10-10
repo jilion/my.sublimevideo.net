@@ -5,19 +5,23 @@ module SiteModules::Usage
     extend ActiveSupport::Memoizable
 
     def update_last_30_days_counters
-      self.last_30_days_main_video_views  = 0
-      self.last_30_days_extra_video_views = 0
-      self.last_30_days_dev_video_views   = 0
-      usages.between(Time.now.utc.midnight - 30.days, Time.now.utc.midnight).all.each do |usage|
-        self.last_30_days_main_video_views  += usage.main_player_hits + usage.main_player_hits_cached
-        self.last_30_days_extra_video_views += usage.extra_player_hits + usage.extra_player_hits_cached
-        self.last_30_days_dev_video_views   += usage.dev_player_hits + usage.dev_player_hits_cached
+      self.last_30_days_main_video_views    = 0
+      self.last_30_days_extra_video_views   = 0
+      self.last_30_days_dev_video_views     = 0
+      self.last_30_days_invalid_video_views = 0
+      self.last_30_days_embed_video_views   = 0
+      stats.d_between(30.days.ago.midnight, 1.day.ago.midnight).all.each do |site_stat|
+        self.last_30_days_main_video_views    += site_stat.vv['m'].to_i
+        self.last_30_days_extra_video_views   += site_stat.vv['e'].to_i
+        self.last_30_days_dev_video_views     += site_stat.vv['d'].to_i
+        self.last_30_days_invalid_video_views += site_stat.vv['i'].to_i
+        self.last_30_days_embed_video_views   += site_stat.vv['em'].to_i
       end
       self.save
     end
 
     def billable_usages(options = {})
-      monthly_usages = usages.between(options[:from], options[:to]).asc(:day).map(&:billable_player_hits)
+      monthly_usages = stats.d_between(options[:from], options[:to]).map(&:billable_vv)
       if options[:drop_first_zeros]
         monthly_usages.drop_while { |usage| usage == 0 }
       else
@@ -26,7 +30,7 @@ module SiteModules::Usage
     end
 
     def last_30_days_billable_usages
-      billable_usages(from: (30.days - 1.day).ago.midnight, to: Time.now.utc.end_of_day, drop_first_zeros: true)
+      billable_usages(from: 30.days.ago.midnight, to: 1.day.ago.midnight, drop_first_zeros: true)
     end
     memoize :last_30_days_billable_usages
 
@@ -47,7 +51,7 @@ module SiteModules::Usage
     def percentage_of_days_over_daily_limit(max_days = 60)
       if in_paid_plan?
         last_days       = [days_since(first_paid_plan_started_at), max_days].min
-        over_limit_days = usages.between(last_days.days.ago.utc.midnight, Time.now.utc.midnight).to_a.count { |su| su.billable_player_hits > (plan.video_views / 30.0) }
+        over_limit_days = stats.d_between(last_days.days.ago.utc.midnight, 1.day.ago.midnight).to_a.count { |su| su.billable_vv > (plan.video_views / 30.0) }
 
         [(over_limit_days / last_days.to_f).round(2), 1].min
       else
