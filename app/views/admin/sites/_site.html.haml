@@ -1,4 +1,4 @@
-- last_30_days_billable_player_hits_total_count = site.last_30_days_main_player_hits_total_count.to_i + site.last_30_days_extra_player_hits_total_count.to_i
+- last_30_days_billable_video_views = site.last_30_days_main_video_views.to_i + site.last_30_days_extra_video_views.to_i
 %tr[site]{ :class => cycle("", "alt") }
   %td.id
     = link_to "##{site.id}", [:edit, :admin, site]
@@ -25,15 +25,15 @@
     - else
       %small= '-'
   %td.number
-    %small= number_with_delimiter(last_30_days_billable_player_hits_total_count)
+    %small= number_with_delimiter(last_30_days_billable_video_views)
   %td.percentage
-    - if site.plan && last_30_days_billable_player_hits_total_count > 0
-      %small= display_percentage(site.last_30_days_extra_player_hits_total_count / last_30_days_billable_player_hits_total_count.to_f)
+    - if site.plan && last_30_days_billable_video_views > 0
+      %small= display_percentage(site.last_30_days_extra_video_views / last_30_days_billable_video_views.to_f)
     - else
       %small= '-'
   %td.percentage
-    - if site.plan && site.plan.player_hits > 0
-      %small= display_percentage(last_30_days_billable_player_hits_total_count / site.plan.player_hits.to_f)
+    - if site.plan && site.plan.video_views > 0
+      %small= display_percentage(last_30_days_billable_video_views / site.plan.video_views.to_f)
     - else
       %small= '-'
   %td

@@ -3,8 +3,8 @@ require 'spec_helper'
 feature "edit" do
   background do
     sign_in_as :user
-    @gold_month = Plan.create(name: "gold", cycle: "month", player_hits: 200_000, price: 4990)
-    @gold_year = Plan.create(name: "gold", cycle: "year", player_hits: 200_000, price: 49900)
+    @gold_month = Plan.create(name: "gold", cycle: "month", video_views: 200_000, price: 4990)
+    @gold_year = Plan.create(name: "gold", cycle: "year", video_views: 200_000, price: 49900)
   end
 
   context "site in trial" do

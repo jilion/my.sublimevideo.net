@@ -29,8 +29,8 @@ describe SiteModules::Recurring do
 
       Timecop.travel(Time.utc(2011,1,31, 12)) do
         Site.update_last_30_days_counters_for_not_archived_sites
-        @active_site.reload.last_30_days_main_player_hits_total_count.should == 6
-        @archived_site.reload.last_30_days_main_player_hits_total_count.should == 0
+        @active_site.reload.last_30_days_main_video_views.should == 6
+        @archived_site.reload.last_30_days_main_video_views.should == 0
       end
     end
   end

@@ -5,13 +5,13 @@ module SiteModules::Usage
     extend ActiveSupport::Memoizable
 
     def update_last_30_days_counters
-      self.last_30_days_main_player_hits_total_count  = 0
-      self.last_30_days_extra_player_hits_total_count = 0
-      self.last_30_days_dev_player_hits_total_count   = 0
+      self.last_30_days_main_video_views  = 0
+      self.last_30_days_extra_video_views = 0
+      self.last_30_days_dev_video_views   = 0
       usages.between(Time.now.utc.midnight - 30.days, Time.now.utc.midnight).all.each do |usage|
-        self.last_30_days_main_player_hits_total_count  += usage.main_player_hits + usage.main_player_hits_cached
-        self.last_30_days_extra_player_hits_total_count += usage.extra_player_hits + usage.extra_player_hits_cached
-        self.last_30_days_dev_player_hits_total_count   += usage.dev_player_hits + usage.dev_player_hits_cached
+        self.last_30_days_main_video_views  += usage.main_player_hits + usage.main_player_hits_cached
+        self.last_30_days_extra_video_views += usage.extra_player_hits + usage.extra_player_hits_cached
+        self.last_30_days_dev_video_views   += usage.dev_player_hits + usage.dev_player_hits_cached
       end
       self.save
     end
@@ -37,7 +37,7 @@ module SiteModules::Usage
 
     def current_percentage_of_plan_used
       if in_paid_plan?
-        percentage = [(current_monthly_billable_usages.sum / plan.player_hits.to_f).round(2), 1].min
+        percentage = [(current_monthly_billable_usages.sum / plan.video_views.to_f).round(2), 1].min
         percentage == 0.0 && current_monthly_billable_usages.sum > 0 ? 0.01 : percentage
       else
         0
@@ -47,7 +47,7 @@ module SiteModules::Usage
     def percentage_of_days_over_daily_limit(max_days = 60)
       if in_paid_plan?
         last_days       = [days_since(first_paid_plan_started_at), max_days].min
-        over_limit_days = usages.between(last_days.days.ago.utc.midnight, Time.now.utc.midnight).to_a.count { |su| su.billable_player_hits > (plan.player_hits / 30.0) }
+        over_limit_days = usages.between(last_days.days.ago.utc.midnight, Time.now.utc.midnight).to_a.count { |su| su.billable_player_hits > (plan.video_views / 30.0) }
 
         [(over_limit_days / last_days.to_f).round(2), 1].min
       else

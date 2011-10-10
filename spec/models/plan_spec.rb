@@ -10,7 +10,7 @@ describe Plan do
 
     its(:name)          { should =~ /silver\d+/ }
     its(:cycle)         { should == "month" }
-    its(:player_hits)   { should == 10_000 }
+    its(:video_views)   { should == 10_000 }
     its(:price)         { should == 1000 }
     its(:token)         { should =~ /^[a-z0-9]{12}$/ }
 
@@ -30,12 +30,12 @@ describe Plan do
   end
 
   describe "Validations" do
-    [:name, :cycle, :player_hits, :price, :support_level].each do |attr|
+    [:name, :cycle, :video_views, :price, :support_level].each do |attr|
       it { should allow_mass_assignment_of(attr) }
     end
 
     it { should validate_presence_of(:name) }
-    it { should validate_presence_of(:player_hits) }
+    it { should validate_presence_of(:video_views) }
     it { should validate_presence_of(:price) }
     it { should validate_presence_of(:cycle) }
     it { should validate_presence_of(:support_level) }
@@ -49,7 +49,7 @@ describe Plan do
       it { FactoryGirl.build(:plan, :name => "foo", :cycle => "year").should be_valid }
     end
 
-    it { should validate_numericality_of(:player_hits) }
+    it { should validate_numericality_of(:video_views) }
     it { should validate_numericality_of(:price) }
 
     it { should allow_value("month").for(:cycle) }
@@ -62,7 +62,7 @@ describe Plan do
     describe ".create_custom" do
       it "should create new custom plan" do
         Plan.delete_all
-        expect { @plan = Plan.create_custom(name: 'bob', cycle: "month", player_hits: 10**7, price: 999900) }.to change(Plan.custom_plans, :count).by(1)
+        expect { @plan = Plan.create_custom(name: 'bob', cycle: "month", video_views: 10**7, price: 999900) }.to change(Plan.custom_plans, :count).by(1)
         @plan.name.should == "custom - bob"
       end
     end
@@ -206,16 +206,16 @@ describe Plan do
       specify { FactoryGirl.build(:plan, cycle: "year", name: "comet").title(always_with_cycle: true).should == "Comet (yearly)" }
     end
 
-    describe "#daily_player_hits" do
+    describe "#daily_video_views" do
       before(:all) do
-        @plan1 = FactoryGirl.build(:plan, cycle: "month", player_hits: 1000)
-        @plan2 = FactoryGirl.build(:plan, cycle: "year", player_hits: 2000)
-        @plan3 = FactoryGirl.build(:plan, cycle: "none", player_hits: 3000)
+        @plan1 = FactoryGirl.build(:plan, cycle: "month", video_views: 1000)
+        @plan2 = FactoryGirl.build(:plan, cycle: "year", video_views: 2000)
+        @plan3 = FactoryGirl.build(:plan, cycle: "none", video_views: 3000)
       end
 
-      it { @plan1.daily_player_hits.should == 33 }
-      it { @plan2.daily_player_hits.should == 66 }
-      it { @plan3.daily_player_hits.should == 100 }
+      it { @plan1.daily_video_views.should == 33 }
+      it { @plan2.daily_video_views.should == 66 }
+      it { @plan3.daily_video_views.should == 100 }
     end
 
     describe "#support" do
@@ -237,7 +237,7 @@ end
 #  name          :string(255)
 #  token         :string(255)
 #  cycle         :string(255)
-#  player_hits   :integer
+#  video_views   :integer
 #  price         :integer
 #  created_at    :datetime
 #  updated_at    :datetime

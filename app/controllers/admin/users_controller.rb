@@ -11,7 +11,7 @@ class Admin::UsersController < Admin::AdminController
   end
   # sort
   has_scope :by_name_or_email
-  has_scope :by_sites_last_30_days_billable_player_hits_total_count
+  has_scope :by_sites_last_30_days_billable_video_views
   has_scope :by_last_invoiced_amount
   has_scope :by_total_invoiced_amount
   has_scope :by_date
@@ -22,7 +22,7 @@ class Admin::UsersController < Admin::AdminController
   def index
     params[:active_and_billable] = true if !params.key?(:active_and_not_billable) && !params.key?(:with_state) && !params.key?(:search)
     @users = User.includes(:sites, :invoices)
-    @users = @users.select("users.*") unless params.key?(:by_sites_last_30_days_billable_player_hits_total_count)
+    @users = @users.select("users.*") unless params.key?(:by_sites_last_30_days_billable_video_views)
     @users = apply_scopes(@users).by_date
     respond_with(@users, :per_page => 50)
   end

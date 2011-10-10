@@ -17,7 +17,7 @@
       %h3.title= content_tag(:strong, "Custom Plan")
       .break_line
     .content
-      %h4.number= number_with_delimiter(custom_plan.player_hits)
+      %h4.number= number_with_delimiter(custom_plan.video_views)
       %h5.label= "Video pageviews per month"
     .entry
       .radio_wrap
@@ -40,7 +40,7 @@
 
   #plans
     - free_plan = Plan.free_plan
-    - standard_plans = Plan.standard_plans.order(:player_hits.asc, :price.asc)
+    - standard_plans = Plan.standard_plans.order(:video_views.asc, :price.asc)
     %ul
       %li{ class: "#{free_plan.name} box_0" }
         .wrapper
@@ -69,7 +69,7 @@
           .wrapper
             .header
               %h3.title= content_tag(:strong, standard_plan.name.titleize)
-              %h4.number= number_with_delimiter(standard_plan.player_hits)
+              %h4.number= number_with_delimiter(standard_plan.video_views)
               %h5.label= "Video pageviews per month"
               %ul.features
                 %li= "#{content_tag(:strong, "Unbranded")} Player".html_safe

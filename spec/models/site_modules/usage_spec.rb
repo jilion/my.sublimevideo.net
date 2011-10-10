@@ -4,7 +4,7 @@ describe SiteModules::Usage do
 
   describe "#update_last_30_days_counters" do
     before(:all) do
-      @site = FactoryGirl.create(:site, last_30_days_main_player_hits_total_count: 1)
+      @site = FactoryGirl.create(:site, last_30_days_main_video_views: 1)
       FactoryGirl.create(:site_usage, site_id: @site.id, day: Time.utc(2010,12,31).midnight,
         main_player_hits:  6,   main_player_hits_cached:  4,
         extra_player_hits: 5,   extra_player_hits_cached: 5,
@@ -30,9 +30,9 @@ describe SiteModules::Usage do
     it "should update counters of non-archived sites from last 30 days site_usages" do
       Timecop.travel(Time.utc(2011,1,31, 12)) do
         @site.update_last_30_days_counters
-        @site.last_30_days_main_player_hits_total_count.should  == 20
-        @site.last_30_days_extra_player_hits_total_count.should == 20
-        @site.last_30_days_dev_player_hits_total_count.should   == 20
+        @site.last_30_days_main_video_views.should  == 20
+        @site.last_30_days_extra_video_views.should == 20
+        @site.last_30_days_dev_video_views.should   == 20
       end
     end
   end
@@ -83,7 +83,7 @@ describe SiteModules::Usage do
       before(:all) do
         @site.unmemoize_all
         @site.plan.cycle            = "month"
-        @site.plan.player_hits      = 100
+        @site.plan.video_views      = 100
         @site.plan_cycle_started_at = Time.utc(2011,3,20)
         @site.plan_cycle_ended_at   = Time.utc(2011,4,20)
         Timecop.travel(Time.utc(2011,3,25))
@@ -99,7 +99,7 @@ describe SiteModules::Usage do
       before(:all) do
         @site.unmemoize_all
         @site.plan.cycle            = "month"
-        @site.plan.player_hits      = 10
+        @site.plan.video_views      = 10
         @site.plan_cycle_started_at = Time.utc(2011,4,20)
         @site.plan_cycle_ended_at   = Time.utc(2011,5,20)
         Timecop.travel(Time.utc(2011,4,25))
@@ -115,7 +115,7 @@ describe SiteModules::Usage do
       before(:all) do
         @site.unmemoize_all
         @site.plan.cycle            = "year"
-        @site.plan.player_hits      = 100
+        @site.plan.video_views      = 100
         @site.plan_cycle_started_at = Time.utc(2011,1,20)
         @site.plan_cycle_ended_at   = Time.utc(2012,1,20)
         Timecop.travel(Time.utc(2011,3,25))
@@ -131,7 +131,7 @@ describe SiteModules::Usage do
       before(:all) do
         @site.unmemoize_all
         @site.plan.cycle            = "year"
-        @site.plan.player_hits      = 1000
+        @site.plan.video_views      = 1000
         @site.plan_cycle_started_at = Time.utc(2011,1,20)
         @site.plan_cycle_ended_at   = Time.utc(2012,1,20)
         Timecop.travel(Time.utc(2011,1,31))
@@ -145,7 +145,7 @@ describe SiteModules::Usage do
   end
 
   describe "#current_percentage_of_plan_used" do
-    it "should return 0 if plan player_hits is 0" do
+    it "should return 0 if plan video_views is 0" do
       site = FactoryGirl.create(:site, plan_id: @free_plan.id)
       site.current_percentage_of_plan_used.should == 0
     end
@@ -160,7 +160,7 @@ describe SiteModules::Usage do
 
     context "with paid plan" do
       before(:all) do
-        @site = FactoryGirl.create(:site, plan_id: FactoryGirl.create(:plan, player_hits: 30 * 300).id, first_paid_plan_started_at: Time.utc(2011,1,1))
+        @site = FactoryGirl.create(:site, plan_id: FactoryGirl.create(:plan, video_views: 30 * 300).id, first_paid_plan_started_at: Time.utc(2011,1,1))
       end
 
       describe "with 1 historic day and 1 over limit" do

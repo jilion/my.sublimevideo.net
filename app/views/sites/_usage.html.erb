@@ -35,8 +35,8 @@ graph = Graph.new do |g|
     # serie(usages["total_dev_usage"], 'Your total dev usage', type: 'line'),
     serie(usages["total_main_usage"], 'Your total usage', type: 'line'),
 
-    # serie(Array.new(usages["main_usage"].size, @site.plan.player_hits / 30), "#{@site.plan.name.humanize} plan's average", type: 'line'),
-    serie(Array.new(usages["main_usage"].size, @site.plan.player_hits), "#{@site.plan.name.humanize} plan's limit", type: 'line')
+    # serie(Array.new(usages["main_usage"].size, @site.plan.video_views / 30), "#{@site.plan.name.humanize} plan's average", type: 'line'),
+    serie(Array.new(usages["main_usage"].size, @site.plan.video_views), "#{@site.plan.name.humanize} plan's limit", type: 'line')
   ])
   g.option(plotOptions: plot_options(stats_from))
   g.option(credits: credits)

@@ -7,7 +7,7 @@
       %p
         = render 'sites/usage_sparkline', site: site, usage: usage
         = link_to site_stats_url(site) do
-          %strong= number_with_delimiter(usage.sum(&:pv))
+          %strong= number_with_delimiter(usage.sum(&:vv))
           %em= (site.in_sponsored_plan? ? "sponsored" : "") + " video pageviews"
       = link_to "Peak Insurance ON", "http://docs.sublimevideo.net/peak-insurance", :class => "peak_insurance_label"
       = link_to "Upgrade", edit_site_plan_path(site), :class => "upgrade_button submit_dynamic_button"
@@ -16,7 +16,7 @@
 -#      .plan_total= number_with_delimiter(site.last_30_days_billable_usages.sum)
 -#      -#- if site.first_plan_upgrade_required_alert_sent_at?
 -#      -#  .usage_bar{ :style => "width:100%"}
--#      -#  .plan_total= number_with_delimiter(plan.player_hits)
+-#      -#  .plan_total= number_with_delimiter(plan.video_views)
 -#      -#- else
 -#      -#  -#.usage_bar{ :style => style_for_usage_bar_from_usage_percentage(site.current_percentage_of_plan_used) }
--#      -#  .plan_total= number_with_delimiter(plan.player_hits)
+-#      -#  .plan_total= number_with_delimiter(plan.video_views)

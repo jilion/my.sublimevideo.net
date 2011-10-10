@@ -12,7 +12,7 @@ module Admin::SitesHelper
       " with extra hostnames"
     elsif params[:with_ssl]
       " with ssl"
-    elsif params[:plan_player_hits_reached_notified]
+    elsif params[:overusage_notified]
       " with peak insurance"
     elsif params[:user_id]
       user = User.find(params[:user_id])
