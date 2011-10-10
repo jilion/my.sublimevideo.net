@@ -222,7 +222,7 @@ private
     "webOS"             => "weo",
     "Opera"             => "ope"
   }
-  SUPPORTED_PLATEFORM = {
+  SUPPORTED_PLATFORM = {
     "Windows"       => "win",
     "Macintosh"     => "osx",
     "iPad"          => "ipa",
@@ -237,7 +237,7 @@ private
   def self.browser_and_platform_key(user_agent)
     useragent    = UserAgent.parse(user_agent)
     browser_key  = SUPPORTED_BROWSER[useragent.browser] || "oth"
-    platform_key = SUPPORTED_PLATEFORM[useragent.platform] || (useragent.mobile? ? "otm" : "otd")
+    platform_key = SUPPORTED_PLATFORM[useragent.platform] || (useragent.mobile? ? "otm" : "otd")
     browser_key + '-' + platform_key
   end
 
