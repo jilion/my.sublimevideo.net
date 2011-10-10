@@ -70,6 +70,24 @@ feature "API" do
       end
     end
 
+    describe "Extensions has precedence over Accept header" do
+      scenario do
+        page.driver.header 'Accept', 'application/vnd.sublimevideo-v1+json'
+        visit '/api/test_request.xml'
+
+        page.driver.status_code.should eql 200
+        page.driver.response_headers['Content-Type'].should eql "application/xml; charset=utf-8"
+      end
+
+      scenario do
+        page.driver.header 'Accept', 'application/vnd.sublimevideo-v1+xml'
+        visit '/api/test_request.json'
+
+        page.driver.status_code.should eql 200
+        page.driver.response_headers['Content-Type'].should eql "application/json; charset=utf-8"
+      end
+    end
+
     describe "Wrong format" do
       describe "with extension" do
         scenario do
@@ -81,24 +99,6 @@ feature "API" do
         scenario do
           page.driver.header 'Accept', 'application/vnd.sublimevideo-v1+foo'
           visit '/api/test_request'
-
-          page.driver.status_code.should eql 200
-          page.driver.response_headers['Content-Type'].should eql "application/json; charset=utf-8"
-        end
-      end
-
-      describe "Extensions has precedence over Accept header" do
-        scenario do
-          page.driver.header 'Accept', 'application/vnd.sublimevideo-v1+json'
-          visit '/api/test_request.xml'
-
-          page.driver.status_code.should eql 200
-          page.driver.response_headers['Content-Type'].should eql "application/xml; charset=utf-8"
-        end
-
-        scenario do
-          page.driver.header 'Accept', 'application/vnd.sublimevideo-v1+xml'
-          visit '/api/test_request.json'
 
           page.driver.status_code.should eql 200
           page.driver.response_headers['Content-Type'].should eql "application/json; charset=utf-8"
