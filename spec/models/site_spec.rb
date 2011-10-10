@@ -1121,12 +1121,12 @@ describe Site do
       context "with less than 5 days of usage" do
         before(:each) do
           @site.unmemoize_all
-          FactoryGirl.create(:site_usage, site_id: @site.id, day: 1.day.ago,  main_player_hits: 1000)
-          FactoryGirl.create(:site_usage, site_id: @site.id, day: 2.days.ago, main_player_hits: 1000)
-          FactoryGirl.create(:site_usage, site_id: @site.id, day: 3.days.ago, main_player_hits: 1000)
-          FactoryGirl.create(:site_usage, site_id: @site.id, day: 4.days.ago, main_player_hits: 1000)
-          FactoryGirl.create(:site_usage, site_id: @site.id, day: 5.days.ago, main_player_hits: 0)
-          FactoryGirl.create(:site_usage, site_id: @site.id, day: 6.days.ago, main_player_hits: 0)
+          FactoryGirl.create(:site_stat, t: @site.token, d: 1.day.ago.midnight, vv: { m: 1000 })
+          FactoryGirl.create(:site_stat, t: @site.token, d: 2.day.ago.midnight, vv: { m: 1000 })
+          FactoryGirl.create(:site_stat, t: @site.token, d: 3.day.ago.midnight, vv: { m: 1000 })
+          FactoryGirl.create(:site_stat, t: @site.token, d: 4.day.ago.midnight, vv: { m: 1000 })
+          FactoryGirl.create(:site_stat, t: @site.token, d: 5.day.ago.midnight, vv: { m: 0 })
+          FactoryGirl.create(:site_stat, t: @site.token, d: 6.day.ago.midnight, vv: { m: 0 })
         end
 
         its(:recommended_plan_name) { should be_nil }
@@ -1135,12 +1135,12 @@ describe Site do
       context "with less than 5 days of usage (but with 0 between)" do
         before(:each) do
           @site.unmemoize_all
-          FactoryGirl.create(:site_usage, site_id: @site.id, day: 1.day.ago,  main_player_hits: 30_000)
-          FactoryGirl.create(:site_usage, site_id: @site.id, day: 2.days.ago, main_player_hits: 30_000)
-          FactoryGirl.create(:site_usage, site_id: @site.id, day: 3.days.ago, main_player_hits: 0)
-          FactoryGirl.create(:site_usage, site_id: @site.id, day: 4.days.ago, main_player_hits: 30_000)
-          FactoryGirl.create(:site_usage, site_id: @site.id, day: 5.days.ago, main_player_hits: 30_000)
-          FactoryGirl.create(:site_usage, site_id: @site.id, day: 6.days.ago, main_player_hits: 0)
+          FactoryGirl.create(:site_stat, t: @site.token, d: 1.day.ago.midnight, vv: { m: 30_000 })
+          FactoryGirl.create(:site_stat, t: @site.token, d: 2.day.ago.midnight, vv: { m: 30_000 })
+          FactoryGirl.create(:site_stat, t: @site.token, d: 3.day.ago.midnight, vv: { m: 0 })
+          FactoryGirl.create(:site_stat, t: @site.token, d: 4.day.ago.midnight, vv: { m: 30_000 })
+          FactoryGirl.create(:site_stat, t: @site.token, d: 5.day.ago.midnight, vv: { m: 30_000 })
+          FactoryGirl.create(:site_stat, t: @site.token, d: 6.day.ago.midnight, vv: { m: 0 })
         end
 
         its(:recommended_plan_name) { should eql "gold" }
@@ -1149,12 +1149,12 @@ describe Site do
       context "with regular usage and video_views smaller than silver" do
         before(:each) do
           @site.unmemoize_all
-          FactoryGirl.create(:site_usage, site_id: @site.id, day: 1.day.ago,  main_player_hits: 50)
-          FactoryGirl.create(:site_usage, site_id: @site.id, day: 2.days.ago, main_player_hits: 50)
-          FactoryGirl.create(:site_usage, site_id: @site.id, day: 3.days.ago, main_player_hits: 50)
-          FactoryGirl.create(:site_usage, site_id: @site.id, day: 4.days.ago, main_player_hits: 50)
-          FactoryGirl.create(:site_usage, site_id: @site.id, day: 5.days.ago, main_player_hits: 50)
-          FactoryGirl.create(:site_usage, site_id: @site.id, day: 6.days.ago, main_player_hits: 50)
+          FactoryGirl.create(:site_stat, t: @site.token, d: 1.day.ago.midnight, vv: { m: 50 })
+          FactoryGirl.create(:site_stat, t: @site.token, d: 2.day.ago.midnight, vv: { m: 50 })
+          FactoryGirl.create(:site_stat, t: @site.token, d: 3.day.ago.midnight, vv: { m: 50 })
+          FactoryGirl.create(:site_stat, t: @site.token, d: 4.day.ago.midnight, vv: { m: 50 })
+          FactoryGirl.create(:site_stat, t: @site.token, d: 5.day.ago.midnight, vv: { m: 50 })
+          FactoryGirl.create(:site_stat, t: @site.token, d: 6.day.ago.midnight, vv: { m: 50 })
         end
 
         its(:recommended_plan_name) { should be_nil }
@@ -1163,12 +1163,12 @@ describe Site do
       context "with regular usage and video_views between silver and gold" do
         before(:each) do
           @site.unmemoize_all
-          FactoryGirl.create(:site_usage, site_id: @site.id, day: 1.day.ago,  main_player_hits: 10_000)
-          FactoryGirl.create(:site_usage, site_id: @site.id, day: 2.days.ago, main_player_hits: 10_000)
-          FactoryGirl.create(:site_usage, site_id: @site.id, day: 3.days.ago, main_player_hits: 10_000)
-          FactoryGirl.create(:site_usage, site_id: @site.id, day: 4.days.ago, main_player_hits: 10_000)
-          FactoryGirl.create(:site_usage, site_id: @site.id, day: 5.days.ago, main_player_hits: 10_000)
-          FactoryGirl.create(:site_usage, site_id: @site.id, day: 6.days.ago, main_player_hits: 10_000)
+          FactoryGirl.create(:site_stat, t: @site.token, d: 1.day.ago.midnight, vv: { m: 10_000 })
+          FactoryGirl.create(:site_stat, t: @site.token, d: 2.day.ago.midnight, vv: { m: 10_000 })
+          FactoryGirl.create(:site_stat, t: @site.token, d: 3.day.ago.midnight, vv: { m: 10_000 })
+          FactoryGirl.create(:site_stat, t: @site.token, d: 4.day.ago.midnight, vv: { m: 10_000 })
+          FactoryGirl.create(:site_stat, t: @site.token, d: 5.day.ago.midnight, vv: { m: 10_000 })
+          FactoryGirl.create(:site_stat, t: @site.token, d: 6.day.ago.midnight, vv: { m: 10_000 })
         end
 
         its(:recommended_plan_name) { should eql "gold" }
@@ -1177,11 +1177,12 @@ describe Site do
       context "with non regular usage and lower than video_views but greather than average video_views" do
         before(:each) do
           @site.unmemoize_all
-          FactoryGirl.create(:site_usage, site_id: @site.id, day: 1.day.ago,  main_player_hits: 12_000)
-          FactoryGirl.create(:site_usage, site_id: @site.id, day: 2.days.ago, main_player_hits: 12_000)
-          FactoryGirl.create(:site_usage, site_id: @site.id, day: 3.days.ago, main_player_hits: 12_000)
-          FactoryGirl.create(:site_usage, site_id: @site.id, day: 4.days.ago, main_player_hits: 12_000)
-          FactoryGirl.create(:site_usage, site_id: @site.id, day: 5.days.ago, main_player_hits: 1_000)
+          FactoryGirl.create(:site_stat, t: @site.token, d: 1.day.ago.midnight, vv: { m: 12_000 })
+          FactoryGirl.create(:site_stat, t: @site.token, d: 2.day.ago.midnight, vv: { m: 12_000 })
+          FactoryGirl.create(:site_stat, t: @site.token, d: 3.day.ago.midnight, vv: { m: 12_000 })
+          FactoryGirl.create(:site_stat, t: @site.token, d: 4.day.ago.midnight, vv: { m: 12_000 })
+          FactoryGirl.create(:site_stat, t: @site.token, d: 5.day.ago.midnight, vv: { m: 12_000 })
+          FactoryGirl.create(:site_stat, t: @site.token, d: 6.day.ago.midnight, vv: { m: 1_000 })
         end
 
         its(:recommended_plan_name) { should eql "gold" }
@@ -1190,11 +1191,11 @@ describe Site do
       context "with too much video_views" do
         before(:each) do
           @site.unmemoize_all
-          FactoryGirl.create(:site_usage, site_id: @site.id, day: 1.day.ago,  main_player_hits: 500_000)
-          FactoryGirl.create(:site_usage, site_id: @site.id, day: 2.days.ago, main_player_hits: 500_000)
-          FactoryGirl.create(:site_usage, site_id: @site.id, day: 3.days.ago, main_player_hits: 500_000)
-          FactoryGirl.create(:site_usage, site_id: @site.id, day: 4.days.ago, main_player_hits: 500_000)
-          FactoryGirl.create(:site_usage, site_id: @site.id, day: 5.days.ago, main_player_hits: 500_000)
+          FactoryGirl.create(:site_stat, t: @site.token, d: 1.day.ago.midnight, vv: { m: 500_000 })
+          FactoryGirl.create(:site_stat, t: @site.token, d: 2.day.ago.midnight, vv: { m: 500_000 })
+          FactoryGirl.create(:site_stat, t: @site.token, d: 3.day.ago.midnight, vv: { m: 500_000 })
+          FactoryGirl.create(:site_stat, t: @site.token, d: 4.day.ago.midnight, vv: { m: 500_000 })
+          FactoryGirl.create(:site_stat, t: @site.token, d: 5.day.ago.midnight, vv: { m: 500_000 })
         end
 
         its(:recommended_plan_name) { should eql "custom" }
@@ -1204,11 +1205,11 @@ describe Site do
         before(:each) do
           @site.unmemoize_all
           @site.plan = @gold_plan
-          FactoryGirl.create(:site_usage, site_id: @site.id, day: 1.day.ago,  main_player_hits: 500)
-          FactoryGirl.create(:site_usage, site_id: @site.id, day: 2.days.ago, main_player_hits: 500)
-          FactoryGirl.create(:site_usage, site_id: @site.id, day: 3.days.ago, main_player_hits: 500)
-          FactoryGirl.create(:site_usage, site_id: @site.id, day: 4.days.ago, main_player_hits: 500)
-          FactoryGirl.create(:site_usage, site_id: @site.id, day: 5.days.ago, main_player_hits: 500)
+          FactoryGirl.create(:site_stat, t: @site.token, d: 1.day.ago.midnight, vv: { m: 500 })
+          FactoryGirl.create(:site_stat, t: @site.token, d: 2.day.ago.midnight, vv: { m: 500 })
+          FactoryGirl.create(:site_stat, t: @site.token, d: 3.day.ago.midnight, vv: { m: 500 })
+          FactoryGirl.create(:site_stat, t: @site.token, d: 4.day.ago.midnight, vv: { m: 500 })
+          FactoryGirl.create(:site_stat, t: @site.token, d: 5.day.ago.midnight, vv: { m: 500 })
         end
 
         its(:recommended_plan_name) { should be_nil }
@@ -1343,4 +1344,3 @@ end
 #  index_sites_on_plan_id                           (plan_id)
 #  index_sites_on_user_id                           (user_id)
 #
-
