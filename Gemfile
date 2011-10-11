@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails',                 '3.1.1.rc3'
+gem 'rails',                 '3.1.1'
 
 gem 'prototype-rails'
 gem 'jquery-rails'
@@ -40,7 +40,7 @@ gem 'configuration',         '~> 1.3.1'
 gem 'libxml-ruby',           '~> 2.2.0', :require => 'libxml'
 
 gem 'state_machine',         '~> 1.0.2'
-gem 'paper_trail',           '~> 2.2.9'
+gem 'paper_trail',           '~> 2.4.0'
 gem 'uniquify',              '~> 0.1.0'
 
 gem 'responders',            '~> 0.6.4'
