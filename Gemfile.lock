@@ -208,7 +208,7 @@ GEM
     guard-coffeescript (0.5.2)
       coffee-script (>= 2.2.0)
       guard (>= 0.8.3)
-    guard-jasmine (0.7.0)
+    guard-jasmine (0.7.1)
       guard (>= 0.8.3)
       multi_json (~> 1.0.3)
       version (~> 1.0.0)
