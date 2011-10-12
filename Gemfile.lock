@@ -5,13 +5,6 @@ GIT
     useragent (0.2.3)
 
 GIT
-  remote: git://github.com/agileanimal/growl_notify.git
-  revision: a6f198accd95ec0771f298edfc4224337e3b7992
-  specs:
-    growl_notify (0.0.2)
-      rb-appscript
-
-GIT
   remote: git://github.com/rymai/active_merchant.git
   revision: 2f35b9f1c685b25d3f06f092684c2c7b581d4a9d
   ref: 2f35b9f1c685b25d3f06f092684c2c7b581d4a9d
@@ -97,10 +90,10 @@ GEM
       uuidtools
       xml-simple
     bcrypt-ruby (2.1.4)
-    braintree (2.10.2)
+    braintree (2.12.0)
       builder (>= 2.0.0)
-    bson (1.3.1)
-    bson_ext (1.3.1)
+    bson (1.4.0)
+    bson_ext (1.4.0)
     builder (2.1.2)
     capybara (1.0.0.rc1)
       mime-types (>= 1.16)
@@ -109,12 +102,12 @@ GEM
       rack-test (>= 0.5.4)
       selenium-webdriver (~> 0.2.0)
       xpath (~> 0.1.4)
-    childprocess (0.2.1)
+    childprocess (0.2.2)
       ffi (~> 1.0.6)
     configuration (1.2.0)
     countries (0.3.0)
       currencies (>= 0.2.0)
-    crack (0.1.8)
+    crack (0.3.1)
     createsend (0.3.2)
       hashie (~> 1.0)
       httparty (~> 0.7)
@@ -133,27 +126,28 @@ GEM
       warden (~> 1.0.3)
     devise_invitable (0.5.4)
       devise (~> 1.4.1)
-      rails (< 3.2, >= 3.0.0)
-    diff-lcs (1.1.2)
+      rails (>= 3.0.0, < 3.2)
+    diff-lcs (1.1.3)
     em-websocket (0.3.1)
       addressable (>= 2.1.1)
       eventmachine (>= 0.12.9)
     erubis (2.6.6)
       abstract (>= 1.0.0)
     eventmachine (0.12.10)
-    excon (0.6.5)
-    factory_girl (2.0.4)
-    factory_girl_rails (1.1.0)
-      factory_girl (~> 2.0.0)
+    excon (0.6.6)
+    factory_girl (2.1.2)
+      activesupport
+    factory_girl_rails (1.2.0)
+      factory_girl (~> 2.1.0)
       railties (>= 3.0.0)
-    faraday (0.7.4)
+    faraday (0.7.5)
       addressable (~> 2.2.6)
-      multipart-post (~> 1.1.0)
-      rack (< 2, >= 1.1.0)
+      multipart-post (~> 1.1.3)
+      rack (>= 1.1.0, < 2)
     faraday_middleware (0.7.0)
       faraday (~> 0.7.3)
     fastthread (1.0.7)
-    ffaker (1.8.0)
+    ffaker (1.8.1)
     ffi (1.0.9)
     fog (0.10.0)
       builder
@@ -165,43 +159,47 @@ GEM
       net-ssh (~> 2.1.4)
       nokogiri (~> 1.5.0)
       ruby-hmac
-    formatador (0.2.0)
+    formatador (0.2.1)
+    growl_notify (0.0.3)
+      rb-appscript
     guard (0.8.4)
       thor (~> 0.14.6)
     guard-bundler (0.1.3)
       bundler (>= 1.0.0)
       guard (>= 0.2.2)
-    guard-livereload (0.3.0)
+    guard-livereload (0.3.1)
       em-websocket (>= 0.2.0)
       guard (>= 0.4.0)
       multi_json (~> 1.0.3)
     guard-passenger (0.3.0)
       guard (~> 0.3)
-    guard-pow (0.1.0)
+    guard-pow (0.2.1)
       guard (>= 0.3.0)
-    guard-rspec (0.4.2)
-      guard (>= 0.4.0)
-    guard-spork (0.2.1)
-      guard (>= 0.2.2)
+    guard-rspec (0.5.0)
+      guard (>= 0.8.4)
+    guard-spork (0.3.1)
+      guard (>= 0.8.4)
       spork (>= 0.8.4)
     haml (3.1.2)
     has_scope (0.5.1)
     hashie (1.1.0)
-    heroku (2.4.2)
+    heroku (2.9.0)
       launchy (>= 0.3.2)
       rest-client (~> 1.6.1)
+      rubyzip
       term-ansicolor (~> 1.0.5)
     hoptoad_notifier (2.4.11)
       activesupport
       builder
     http_connection (1.4.1)
-    httparty (0.7.8)
-      crack (= 0.1.8)
+    httparty (0.8.1)
+      multi_json
+      multi_xml
     i18n (0.5.0)
     jammit (0.6.3)
       yui-compressor (>= 0.9.3)
-    json (1.5.3)
-    json_pure (1.5.3)
+    json (1.6.1)
+    json_pure (1.6.1)
     kaminari (0.12.4)
       rails (>= 3.0.0)
     launchy (2.0.5)
@@ -218,9 +216,9 @@ GEM
       activesupport (~> 3.0.0)
       arel (~> 2.0.7)
     mime-types (1.16)
-    mongo (1.3.1)
-      bson (>= 1.3.1)
-    mongoid (2.1.8)
+    mongo (1.4.0)
+      bson (= 1.4.0)
+    mongoid (2.2.3)
       activemodel (~> 3.0)
       mongo (~> 1.3)
       tzinfo (~> 0.3.22)
@@ -237,14 +235,14 @@ GEM
       oauth (~> 0.4.4)
       oauth2
       rack
-    oauth2 (0.5.0)
-      faraday (< 0.8, >= 0.6.1)
-      multi_json (~> 1.0.0)
-    open4 (1.1.0)
+    oauth2 (0.5.1)
+      faraday (~> 0.7.4)
+      multi_json (~> 1.0.3)
+    open4 (1.2.0)
     orm_adapter (0.0.5)
     paper_trail (2.2.9)
       rails (~> 3)
-    passenger (3.0.8)
+    passenger (3.0.9)
       daemon_controller (>= 0.2.5)
       fastthread (>= 1.0.1)
       rack
@@ -253,7 +251,7 @@ GEM
     polyglot (0.3.2)
     prowl (0.1.3)
     public_suffix_service (0.8.1)
-    rack (1.2.3)
+    rack (1.2.4)
     rack-google-analytics (0.9.2)
     rack-mount (0.6.14)
       rack (>= 1.0.0)
@@ -277,11 +275,12 @@ GEM
       thor (~> 0.14.4)
     rake (0.8.7)
     rb-appscript (0.6.1)
-    rdoc (3.9.2)
+    rdoc (3.10)
+      json (~> 1.4)
     request-log-analyzer (1.11.0)
     rescue_me (0.1.0)
     responders (0.6.2)
-    rest-client (1.6.3)
+    rest-client (1.6.7)
       mime-types (>= 1.16)
     rspec (2.6.0)
       rspec-core (~> 2.6.0)
@@ -308,7 +307,7 @@ GEM
     sequel (3.20.0)
     settingslogic (2.0.6)
     shoulda (2.11.3)
-    silent-postgres (0.0.8)
+    silent-postgres (0.1.1)
     simple_oauth (0.1.5)
     sinatra (1.0)
       rack (>= 1.0)
@@ -319,7 +318,7 @@ GEM
     state_machine (0.10.4)
     taps (0.3.23)
       rack (>= 1.0.1)
-      rest-client (< 1.7.0, >= 1.4.0)
+      rest-client (>= 1.4.0, < 1.7.0)
       sequel (~> 3.20.0)
       sinatra (~> 1.0.0)
       sqlite3-ruby (~> 1.2)
@@ -336,14 +335,14 @@ GEM
       multi_json (~> 1.0.0)
       multi_xml (~> 0.2.0)
       simple_oauth (~> 0.1.5)
-    tzinfo (0.3.29)
+    tzinfo (0.3.30)
     uniquify (0.1.0)
     uuidtools (2.1.2)
     vcr (1.10.3)
-    warden (1.0.5)
+    warden (1.0.6)
       rack (>= 1.0)
     webmock (1.6.4)
-      addressable (> 2.2.5, ~> 2.2)
+      addressable (~> 2.2, > 2.2.5)
       crack (>= 0.1.7)
     wirble (0.1.3)
     xml-simple (1.0.16)
@@ -365,8 +364,8 @@ DEPENDENCIES
   annotate
   array_stats (= 0.6.0)
   aws (= 2.5.6)
-  bson_ext (= 1.3.1)
-  capybara (= 1.0.0.rc1)
+  bson_ext (~> 1.4.0)
+  capybara
   carrierwave!
   configuration (= 1.2.0)
   countries (= 0.3.0)
@@ -379,7 +378,7 @@ DEPENDENCIES
   factory_girl_rails
   ffaker
   fog (= 0.10.0)
-  growl_notify!
+  growl_notify
   guard-bundler
   guard-livereload
   guard-passenger
@@ -395,8 +394,8 @@ DEPENDENCIES
   libxml-ruby (= 2.2.0)
   liquid (= 2.2.2)
   meta_where (= 1.0.4)
-  mongo (= 1.3.1)
-  mongoid (= 2.1.8)
+  mongo (~> 1.4.0)
+  mongoid (~> 2.2.0)
   oauth (= 0.4.5)
   oauth-plugin (= 0.4.0.pre7)
   paper_trail (= 2.2.9)
@@ -426,8 +425,8 @@ DEPENDENCIES
   twitter (= 1.6.2)
   uniquify (= 0.1.0)
   useragent!
-  vcr
+  vcr (~> 1.10.3)
   voxel_hapi!
-  webmock (= 1.6.4)
+  webmock (~> 1.6.4)
   wirble
   zip (= 2.0.2)

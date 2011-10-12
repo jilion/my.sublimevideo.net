@@ -7,9 +7,10 @@ gem 'rails',                 '3.0.10'
 # Databases
 gem 'pg',                    '0.11.0'
 gem 'meta_where',            '1.0.4'
-gem 'bson_ext',              '1.3.1'
-gem 'mongo',                 '1.3.1'
-gem 'mongoid',               '2.1.8'
+
+gem 'bson_ext',              '~> 1.4.0'
+gem 'mongo',                 '~> 1.4.0'
+gem 'mongoid',               '~> 2.2.0'
 
 # Views
 gem 'haml',                  '3.1.2'
@@ -98,7 +99,7 @@ group :development do
   gem 'silent-postgres'
 
   gem 'rb-fsevent', :git => 'git://github.com/ttilley/rb-fsevent.git', :branch => 'pre-compiled-gem-one-off'
-  gem 'growl_notify', :git => 'git://github.com/agileanimal/growl_notify.git'
+  gem 'growl_notify'
   gem 'guard-bundler'
   gem 'guard-pow'
   gem 'guard-passenger'
@@ -111,9 +112,9 @@ group :test do
   gem 'spork', '0.9.0.rc9'
   gem 'rspec-instafail'
   gem 'shoulda'
-  gem 'capybara', '1.0.0.rc1'
-  gem 'webmock', '1.6.4'
-  gem 'vcr'
+  gem 'capybara'
+  gem 'webmock', '~> 1.6.4'
+  gem 'vcr',     '~> 1.10.3'
 
   gem 'database_cleaner'
   gem 'factory_girl_rails', :require => false # loaded in spec_helper Spork.each_run
