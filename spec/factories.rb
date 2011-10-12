@@ -188,6 +188,10 @@ FactoryGirl.define do
     plans_count   { {} }
   end
 
+  factory :site_stat do
+    t    { FactoryGirl.create(:site).token }
+  end
+
   factory :tweet do
     sequence(:tweet_id) { |n| n }
     keywords            %w[sublimevideo jilion]
