@@ -62,32 +62,28 @@
     %li= "#{Country[top_10_countries[i][0]].name} (#{top_10_countries[i][1]} - #{display_percentage(top_10_countries[i][1].to_f / billable_customers)})"
 %br
 
-%h3 Traffic
-- player_hits = SiteUsage.between(31.days.ago.utc, Time.now.utc.yesterday).sum(:player_hits).to_i
+%h3 Traffic (SiteStat)
 %p
   Last 30 days traffic:&nbsp;&nbsp;&nbsp;
-  = "#{number_with_delimiter(player_hits, :significant => false, :precision => 2, :delimiter => "'")} video views"
+  = "#{number_with_delimiter(@last_30_days_video_views, :significant => false, :precision => 2, :delimiter => "'")} video views"
 %p
   Last 30 days avg/day:
-  = "#{number_with_delimiter(player_hits / 30, :significant => false, :precision => 2, :delimiter => "'")} video views"
+  = "#{number_with_delimiter(@last_30_days_video_views / 30, :significant => false, :precision => 2, :delimiter => "'")} video views"
 %p
   All time traffic:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  = "#{number_with_delimiter(SiteUsage.sum(:player_hits).to_i, :significant => false, :precision => 2, :delimiter => "'")} video views"
+  = "#{number_with_delimiter(@total_video_views, :significant => false, :precision => 2, :delimiter => "'")} video views"
+%br
+
+%h3 Traffic (SiteUsage)
+%p
+  Last 30 days traffic:&nbsp;&nbsp;&nbsp;
+  = "#{number_with_delimiter(@last_30_days_usage, :significant => false, :precision => 2, :delimiter => "'")} video views"
+%p
+  Last 30 days avg/day:
+  = "#{number_with_delimiter(@last_30_days_usage / 30, :significant => false, :precision => 2, :delimiter => "'")} video views"
+%p
+  All time traffic:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  = "#{number_with_delimiter(@total_usage, :significant => false, :precision => 2, :delimiter => "'")} video views"
 %br
 
 .spacer
-
--# Sales : TOTAL SALES USD
--# Sales : # OF PLANS SOLD
-
--# Users : # of Users Signups
--# Users : # of Customers (ie with 1+ paid plan)
-
--# Users : Top 10 Customers' Country % and #
-
--# Sites : # of free sites
--# Sites : # of paying sites
-
--# Traffic : Current daily traffic
--# Traffic : 30D moving average
--# Twitter : Last 5 tweets

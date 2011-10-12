@@ -2,6 +2,9 @@
 usages = Stat::SiteUsage.timeline(@date_range_from - (@moving_avg-1).days, @date_range_to, { site_ids: [site.id], labels: [:invalid_usage, :dev_usage, :main_usage, :extra_usage], merge_cached: true, dont_add_total_usages_before_start_time: true })
 billable_usage = usages["main_usage"].zip(usages["extra_usage"]).map { |item| item.reduce(:+) }
 
+video_views = Stat::SiteStat.timeline(@date_range_from - (@moving_avg-1).days, @date_range_to, { dont_add_total_usages_before_start_time: true })
+billable_views = video_views["vv_m"].zip(video_views["vv_e"]).map { |item| item.reduce(:+) }
+
 graph = Graph.new do |g|
   g.option(chart: chart('timeline_usage'))
   g.option(title: { text: "Video views for #{hostname_with_path_and_wildcard(site)}" })
@@ -27,11 +30,16 @@ graph = Graph.new do |g|
     serie(Array.new(usages["main_usage"][@moving_avg-1..-1].size, site.plan.video_views), "LIM #{site.plan.title}", type: 'line', visible: false, stack: 1)
   ] : []
   g.option(series: [
-    serie(usages["invalid_usage"][@moving_avg-1..-1], 'Invalid', visible: false, stack: 2),
-    serie(usages["dev_usage"][@moving_avg-1..-1], 'Dev', visible: false, stack: 2),
-    serie(usages["extra_usage"][@moving_avg-1..-1], 'Extra', stack: 2),
-    serie(usages["main_usage"][@moving_avg-1..-1], 'Main', stack: 2),
-    serie(moving_average(billable_usage, @moving_avg), 'AVG Billable', type: 'line', stack: 3)
+    # serie(usages["invalid_usage"][@moving_avg-1..-1], 'Invalid', visible: false, stack: 2),
+    serie(usages["dev_usage"][@moving_avg-1..-1], 'Dev usage', visible: false, stack: 1),
+    serie(usages["extra_usage"][@moving_avg-1..-1], 'Extra usage', stack: 1),
+    serie(usages["main_usage"][@moving_avg-1..-1], 'Main usage', stack: 1),
+    serie(moving_average(billable_usage, @moving_avg), 'AVG Billable usage', type: 'line', stack: 2),
+
+    serie(video_views["vv_d"][@moving_avg-1..-1], 'Dev views', visible: false, stack: 3),
+    serie(video_views["vv_e"][@moving_avg-1..-1], 'Extra views', stack: 3),
+    serie(video_views["vv_m"][@moving_avg-1..-1], 'Main views', stack: 3),
+    serie(moving_average(video_views, @moving_avg), 'AVG Billable views', type: 'line', stack: 4)
     ] + plan_limits)
   g.option(plotOptions: plot_options(@date_range_from))
   g.option(credits: credits)

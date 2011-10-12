@@ -213,3 +213,37 @@
       TEXT=\"858\" PCT=\"77\"/>\n</SD>\n<SD>\n<POPULARITY URL=\"sublimevideo.net/\"
       TEXT=\"127373\"/>\n<REACH RANK=\"120002\"/>\n<RANK DELTA=\"+32818\"/>\n</SD>\n</ALEXA>"
     http_version: '1.1'
+- !ruby/struct:VCR::HTTPInteraction
+  request: !ruby/struct:VCR::Request
+    method: :get
+    uri: http://toolbarqueries.google.com:80/tbr?ch=63148545275&client=navclient-auto&features=Rank&q=info%3Asublimevideo.net
+    body: !!null 
+    headers: !!null 
+  response: !ruby/struct:VCR::Response
+    status: !ruby/struct:VCR::ResponseStatus
+      code: 200
+      message: OK
+    headers:
+      date:
+      - Mon, 10 Oct 2011 17:02:39 GMT
+      pragma:
+      - no-cache
+      expires:
+      - Fri, 01 Jan 1990 00:00:00 GMT
+      cache-control:
+      - no-cache, must-revalidate
+      content-type:
+      - text/html; charset=ISO-8859-1
+      set-cookie:
+      - PREF=ID=0a89b70b1bb82343:FF=0:TM=1318266158:LM=1318266159:S=XKT9IbiUy68CgsN4;
+        expires=Wed, 09-Oct-2013 17:02:39 GMT; path=/; domain=.google.com
+      server:
+      - gws
+      x-xss-protection:
+      - 1; mode=block
+      transfer-encoding:
+      - chunked
+    body: ! 'Rank_1:1:6
+
+'
+    http_version: '1.1'
