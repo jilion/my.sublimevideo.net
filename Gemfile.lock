@@ -108,9 +108,9 @@ GEM
     countries (0.3.0)
       currencies (>= 0.2.0)
     crack (0.3.1)
-    createsend (0.3.2)
+    createsend (1.0.0)
       hashie (~> 1.0)
-      httparty (~> 0.7)
+      httparty (~> 0.8)
       json
     currencies (0.4.0)
     daemon_controller (0.2.6)
@@ -369,7 +369,7 @@ DEPENDENCIES
   carrierwave!
   configuration (= 1.2.0)
   countries (= 0.3.0)
-  createsend (= 0.3.2)
+  createsend (= 1.0.0)
   dalli (= 1.0.5)
   database_cleaner
   delayed_job (= 2.1.4)
