@@ -201,6 +201,7 @@ describe SiteStat do
 
       describe "with seconds period" do
         subject { JSON.parse(SiteStat.json(@site.token, 'seconds')) }
+        before(:each) { Timecop.travel(@second) }
 
         its(:size) { should eql(61) }
         it { subject[0]['pv'].should eql(2) }
