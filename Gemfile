@@ -22,13 +22,13 @@ gem 'liquid',                '~> 2.2.2'
 gem 'RedCloth',              '~> 4.2.7'
 
 # Auth / invitations
-gem 'devise',                '~> 1.4.7'
+gem 'devise',                '~> 1.4.8'
 gem 'devise_invitable',      '~> 0.5.5'
 
 # API
 gem 'oauth',                 '~> 0.4.5'
 gem 'oauth-plugin',          '~> 0.4.0.pre7'
-gem 'acts_as_api',           '~> 0.3.9'
+gem 'acts_as_api',           '~> 0.3.10'
 # gem 'rack-throttle',         :git => 'git://github.com/rymai/rack-throttle.git', :require => 'rack/throttle'
 
 # Internals
@@ -62,7 +62,7 @@ gem 'useragent',             :git => 'git://github.com/Jilion/useragent.git'
 
 gem 'zip',                   '~> 2.0.2', :require => 'zip/zip'
 gem 'countries',             '~> 0.6.2'
-gem 'PageRankr',             '~> 2.0.3', :require => 'page_rankr'
+gem 'PageRankr',             '~> 3.0.1', :require => 'page_rankr'
 gem 'twitter',               '~> 1.7.2'
 gem 'settingslogic',         '~> 2.0.6'
 gem 'array_stats',           '~> 0.6.0'
@@ -120,13 +120,15 @@ group :development do
   gem 'guard-rspec'
   gem 'guard-coffeescript'
   gem 'guard-jasmine'
+
+  # gem 'rails_mail_preview'
 end
 
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
-  gem 'sass-rails',          '~> 3.1.0'
-  gem 'coffee-rails',        '~> 3.1.0'
+  gem 'sass-rails',   '~> 3.1.4'
+  gem 'coffee-rails', '~> 3.1.1'
   gem 'eco'
   gem 'uglifier'
 end
@@ -136,7 +138,7 @@ group :test do
   gem 'fuubar'
   gem 'shoulda-matchers', :git => 'git://github.com/thoughtbot/shoulda-matchers.git'
   gem 'capybara'
-  gem 'webmock', '~> 1.6.4'
+  gem 'webmock', '~> 1.7.6'
   gem 'typhoeus'
   gem 'vcr',     '~> 1.10.3'
 
