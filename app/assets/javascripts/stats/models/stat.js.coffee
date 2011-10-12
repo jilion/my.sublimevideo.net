@@ -70,7 +70,7 @@ class MSVStats.Collections.Stats extends Backbone.Collection
       attributes.pv = stat.get('pv') + data.pv if data.pv?
       attributes.vv = stat.get('vv') + data.vv if data.vv?
       if data.md?
-        attributes.md = stat.get('md')
+        attributes.md = _.clone(stat.get('md'))
         if data.md.f?
           attributes.md.f = {} if _.isUndefined(attributes.md.f)
           _.each data.md.f, (hits, d) ->
@@ -86,7 +86,7 @@ class MSVStats.Collections.Stats extends Backbone.Collection
             else
               attributes.md.h[d] += hits
       if data.bp?
-        attributes.bp = stat.get('bp')
+        attributes.bp = _.clone(stat.get('bp'))
         _.each data.bp, (hits, bp) ->
           if _.isUndefined(attributes.bp[bp])
             attributes.bp[bp] = hits

@@ -112,7 +112,8 @@ class SiteStat
       last_stats(stats, from, to, period_type)
 
     when 'minutes'
-      to   = self.where(m: { "$ne" => nil }).order_by([:m, :asc]).last.m
+      stat = self.where(m: { "$ne" => nil }).order_by([:m, :asc]).last
+      to   = stat.try(:m) || 1.minute.ago.change(sec: 0)
       from = to - 59.minutes
 
       last_stats(stats, from, to, period_type)
