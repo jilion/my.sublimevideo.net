@@ -25,6 +25,7 @@ class Site < ActiveRecord::Base
   mount_uploader :loader, LoaderUploader
 
   delegate :name, :to => :plan, :prefix => true
+  delegate :video_views, :to => :plan, :prefix => true
 
   # ================
   # = Associations =
@@ -230,6 +231,10 @@ class Site < ActiveRecord::Base
       (1.month - 1.day).ago.midnight
     end
   end
+  
+  def plan_month_cycle_start_time
+    plan_month_cycle_started_at.to_i
+  end
 
   def plan_month_cycle_ended_at
     case plan.read_attribute(:cycle) # strange error in specs when using .cycle
@@ -240,6 +245,10 @@ class Site < ActiveRecord::Base
     when 'none'
       Time.now.utc.end_of_day
     end
+  end
+  
+  def plan_month_cycle_end_time
+    plan_month_cycle_ended_at.to_i
   end
 
 private

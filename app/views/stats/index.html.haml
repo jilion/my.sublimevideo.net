@@ -9,7 +9,7 @@
     # WEB_SOCKET_DEBUG = true
 
     window.MSVStats.pusher = new Pusher('#{PusherConfig.key}', encrypted: true)
-    window.MSVStats.sites = new MSVStats.Collections.Sites(#{current_user.sites.order(:hostname).to_json(only: [:token, :hostname])})
+    window.MSVStats.sites = new MSVStats.Collections.Sites(#{current_user.sites.order(:hostname).to_json(only: [:token, :hostname], methods: [:plan_video_views, :plan_month_cycle_start_time, :plan_month_cycle_end_time])})
     window.MSVStats.sites.select('#{@site.token}')
     window.MSVStats.statsRouter = new MSVStats.Routers.StatsRouter()
     Backbone.history.start({ pushState: true })
@@ -68,5 +68,7 @@
     #md_pie_chart
 
 .spacer
+
+#plan_usage
 
 %p Days period are in UTC
