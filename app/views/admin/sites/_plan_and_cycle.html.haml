@@ -1,0 +1,30 @@
+%h3 Plan & Cycle
+
+%p
+  = "Plan:"
+  %strong= site.plan ? site.plan.title : "–"
+  = "| Pending plan:"
+  = site.pending_plan ? site.pending_plan.title : "–"
+%p
+  = "Recommended plan:"
+  = site.recommended_plan_name ? site.recommended_plan_name.titleize : "–"
+%p
+  = "Next plan:"
+  = site.next_cycle_plan ? site.next_cycle_plan.title : "–"
+
+%p
+  = "Plan started at:"
+  = site.plan_started_at ? content_tag(:strong, l(site.plan_started_at, :format => :d_b_Y)) : "–"
+  = "| Pending plan started at:"
+  = site.pending_plan_started_at ? content_tag(:strong, l(site.pending_plan_started_at, :format => :d_b_Y)) : "–"
+
+%p
+  = "Current cycle:"
+  = site.plan_cycle_started_at? ? content_tag(:strong, l(site.plan_cycle_started_at, :format => :d_b_Y)) : "–"
+  = "–"
+  = site.plan_cycle_ended_at? ? content_tag(:strong, l(site.plan_cycle_ended_at, :format => :d_b_Y)) : "–"
+%p
+  = "Pending cycle:"
+  = site.pending_plan_cycle_started_at? ? content_tag(:strong, l(site.pending_plan_cycle_started_at, :format => :d_b_Y)) : "–"
+  = "–"
+  = site.pending_plan_cycle_ended_at? ? content_tag(:strong, l(site.pending_plan_cycle_ended_at, :format => :d_b_Y)) : "–"

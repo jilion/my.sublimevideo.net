@@ -11,6 +11,8 @@
   %br.spacer
   = render partial: 'timeline_usage', locals: { site: @site }
 
+%h3 Basic infos
+
 %p
   = "State:"
   %strong= @site.state.humanize
@@ -21,8 +23,10 @@
 %p
   = "Mode: #{content_tag(:strong, @site.player_mode)}".html_safe
   = "| CDN #{@site.cdn_up_to_date ? 'is' : content_tag(:strong, 'IS NOT')} up-to-date".html_safe
-
 %br
+
+%h3 Hostnames
+
 %p
   = "Main hostname:"
   = @site.hostname? ? link_to(hostname_with_path_and_wildcard(@site), "http://#{@site.hostname}/#{@site.path}") : "no hostname"
@@ -33,43 +37,18 @@
 %p
   = "Dev hostnames:"
   = content_tag(:strong, @site.dev_hostnames)
+%br
+
+= render 'plan_and_cycle', site: @site
+%br
+
+= render 'video_views', site: @site
+%br
+
+= render '/admin/shared/invoices_table', object: @site
 
 %br
-%p
-  = "Plan:"
-  %strong= @site.plan ? @site.plan.title : "–"
-  = "| Pending plan:"
-  = @site.pending_plan ? @site.pending_plan.title : "–"
-%p
-  = "Recommended plan:"
-  = @site.recommended_plan_name ? @site.recommended_plan_name.titleize : "–"
-%p
-  = "Next plan:"
-  = @site.next_cycle_plan ? @site.next_cycle_plan.title : "–"
-
-%p
-  = "Plan started at:"
-  = @site.plan_started_at ? content_tag(:strong, l(@site.plan_started_at, :format => :d_b_Y)) : "–"
-  = "| Pending plan started at:"
-  = @site.pending_plan_started_at ? content_tag(:strong, l(@site.pending_plan_started_at, :format => :d_b_Y)) : "–"
-
-%p
-  = "Current cycle:"
-  = @site.plan_cycle_started_at? ? content_tag(:strong, l(@site.plan_cycle_started_at, :format => :d_b_Y)) : "–"
-  = "–"
-  = @site.plan_cycle_ended_at? ? content_tag(:strong, l(@site.plan_cycle_ended_at, :format => :d_b_Y)) : "–"
-%p
-  = "Pending cycle:"
-  = @site.pending_plan_cycle_started_at? ? content_tag(:strong, l(@site.pending_plan_cycle_started_at, :format => :d_b_Y)) : "–"
-  = "–"
-  = @site.pending_plan_cycle_ended_at? ? content_tag(:strong, l(@site.pending_plan_cycle_ended_at, :format => :d_b_Y)) : "–"
-
--# = render partial: '/admin/shared/usage_table', locals: { object: @site, from: @date_range_from, to: @date_range_to }
-%br
-= render partial: '/admin/shared/invoices_table', locals: { object: @site }
-
-%br
-= render partial: 'referrers_table', locals: { site: @site }
+= render 'referrers_table', site: @site
 
 %br
 %hr
