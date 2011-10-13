@@ -34,7 +34,7 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
       statsHours:   MSVStats.statsHours
       statsDays:    MSVStats.statsDays
       period:       MSVStats.period
-      
+
     MSVStats.datePickersView = new MSVStats.Views.DatePickersView
       el: '#date_pickers'
 
@@ -61,6 +61,10 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
       statsHours:   MSVStats.statsHours
       statsDays:    MSVStats.statsDays
       period:       MSVStats.period
+
+    new MSVStats.Views.PlanUsageView
+      el: '#plan_usage'
+      statsDays: MSVStats.statsDays
 
   routes:
     'sites/:token/stats': 'home'
@@ -123,7 +127,7 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
     Highcharts.setOptions
       global:
         useUTC: false
-        
+
   setHighchartsUTC: ->
     Highcharts.setOptions
       global:
