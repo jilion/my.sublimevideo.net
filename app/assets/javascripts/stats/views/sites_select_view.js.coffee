@@ -5,7 +5,7 @@ class MSVStats.Views.SitesSelectView extends Backbone.View
     'change select': 'updatePage'
 
   initialize: ->
-    _.bindAll this, 'render' 
+    _.bindAll this, 'render'
     @options.sites.bind 'change', this.render
     @options.sites.bind 'reset', this.render
     this.render()

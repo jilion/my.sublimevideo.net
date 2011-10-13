@@ -1,0 +1,2 @@
+<label for='poster'>Poster</label>
+<input type='text' name='poster' id='poster' size='50' value='<%= @model.get('src') %>' />

@@ -2,7 +2,6 @@ class MSV.Models.Site extends Backbone.Model
   defaults:
     token: null
     hostname: null
-    # selected: false
     plan_video_views: 0
     plan_month_cycle_start_time: null
     plan_month_cycle_end_time: null

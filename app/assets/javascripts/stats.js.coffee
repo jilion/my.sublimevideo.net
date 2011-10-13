@@ -9,23 +9,9 @@
 #= require jquery.sparkline
 #= require jquery.ui.datepicker.min
 
+#= require ./base
 #= require_self
-
-#= require_tree ./models
-#= require_tree ./stats/models
-
-#= require_tree ./templates
-#= require_tree ./stats/templates
-
-#= require_tree ./stats/views
-
-#= require ./stats/router
-
-window.MSV =
-  Models: {}
-  Collections: {}
-  Routers: {}
-  Views: {}
+#= require_tree ./stats
 
 window.MSVStats =
   Models: {}

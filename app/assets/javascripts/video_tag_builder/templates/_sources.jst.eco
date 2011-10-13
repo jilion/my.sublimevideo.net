@@ -1,0 +1,11 @@
+<% for source in @collection.models: %>
+  <% if currentFormat != source.get('format'): %>
+    <% currentFormat = source.get('format') %>
+    <strong><%= source.formatTitle() %></strong>
+  <% end %>
+  <p class='<%= source.get('format') %> <%= source.get('quality') %>'>
+    <label for='<%= source.get('format') %>_<%= source.get('quality') %>'></label>
+    <%= source.qualityTitle() if source.get('quality') != 'normal' %>
+    <input type='text' name='<%= source.get('format') %>_<%= source.get('quality') %>' id='<%= source.get('format') %>_<%= source.get('quality') %>' class='source' size='50' />
+  </p>
+<% end %>

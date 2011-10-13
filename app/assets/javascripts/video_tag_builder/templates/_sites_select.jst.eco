@@ -1,0 +1,5 @@
+<select>
+  <% for site in @collection.models: %>
+    <option value='<%= site.token %>'><%= site.hostname %></option>
+  <% end %>
+</select>
