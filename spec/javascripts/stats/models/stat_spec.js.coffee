@@ -1,4 +1,4 @@
-describe 'Stat', ->
+describe 'MSVStats.Models.Stat', ->
   beforeEach ->
     @stat = new MSVStats.Models.Stat(_.first(minutesStats))
 

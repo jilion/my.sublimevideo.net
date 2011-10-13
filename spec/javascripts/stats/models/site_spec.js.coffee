@@ -1,4 +1,4 @@
-describe 'Site', ->
+describe 'MSVStats.Models.Site', ->
   beforeEach ->
     @site = new MSVStats.Models.Site
       plan_video_views:            200000

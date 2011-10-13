@@ -7,7 +7,7 @@ class MSVStats.Views.PlanUsageView extends Backbone.View
     @options.statsDays.bind 'reset', this.render
 
   render: ->
-    site = MSVStats.sites.selectedSite()
+    site = MSVStats.sites.selectedSite
     plan =
       videoViews:           site.get('plan_video_views')
       monthCycleVideoViews: site.planMonthCycleVideoViews()

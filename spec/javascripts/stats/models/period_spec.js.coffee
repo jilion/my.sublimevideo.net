@@ -1,4 +1,4 @@
-describe 'Period', ->
+describe 'MSVStats.Models.Period', ->
   beforeEach ->
     @period = new MSVStats.Models.Period()
 

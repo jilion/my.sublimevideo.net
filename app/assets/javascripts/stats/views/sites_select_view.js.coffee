@@ -1,5 +1,5 @@
 class MSVStats.Views.SitesSelectView extends Backbone.View
-  template: JST['stats/templates/_sites_select']
+  template: JST['templates/_sites_select']
 
   events:
     'change select': 'updatePage'
@@ -11,11 +11,11 @@ class MSVStats.Views.SitesSelectView extends Backbone.View
     this.render()
 
   render: ->
-    $(@el).html(this.template(sites: @options.sites.toJSON()))
+    $(@el).html(this.template(sites: @options.sites))
     return this
 
   updatePage: ->
-    currentSelectedToken = MSVStats.sites.selectedSite().get('token')
+    currentSelectedToken = MSVStats.sites.selectedSite.get('token')
     MSVStats.pusher.unsubscribe("presence-#{currentSelectedToken}")
 
     newSelectedToken = this.$('select').val()
