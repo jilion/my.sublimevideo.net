@@ -33,5 +33,13 @@ class MSV.ImagePreloader
     this.didComplete()
 
   didComplete: =>
-    @callback(@problem, @imageSrc, [@image['width'], @image['height']])
+    @callback(@problem, @imageSrc, { width: @image['width'], height: @image['height'] })
 
+class MSV.VideoPreloader
+  constructor: (videoUrl, callback) ->
+     @callback = callback
+     @videoSrc = videoUrl
+     this.preload()
+
+  preload: ->
+    SublimeVideoSizeChecker.getVideoSize @videoSrc, @callback

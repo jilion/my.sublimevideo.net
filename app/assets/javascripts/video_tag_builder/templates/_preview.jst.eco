@@ -1,0 +1,12 @@
+<% if @video.get('thumbnail'): %>
+  <a href='' class='sublime'>
+    <img src='<%= @video.get('thumbnail').get('src') %>' width='<%= @video.get('thumbnail').get('thumbWidth') %>' height='<%= @video.get('thumbnail').get('thumbHeight') %>' />
+  </a>
+<% end %>
+<video class='<%= @video.get('classes') %>' poster='<%= @video.get('poster').get('src') %>' width='<%= @video.get('width') %>' height='<%= @video.get('height') %>' preload='none'>
+  <% for source in @video.get('sources').models: %>
+    <% if source.get('isUsed') and source.srcIsUrl(): %>
+      <source src='<%= source.get('src') %>' data-quality='<%= source.get('quality') %>' />
+    <% end %>
+  <% end %>
+</video>

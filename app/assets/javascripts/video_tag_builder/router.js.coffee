@@ -2,7 +2,8 @@ class MSVVideoTagBuilder.Routers.BuilderRouter extends Backbone.Router
   initialize: (options) ->
     this.initModels()
     this.initViews()
-
+    sublimevideo.load()
+    
   initModels: ->
     MSVVideoTagBuilder.builder = new MSVVideoTagBuilder.Models.StandardBuilder
     MSVVideoTagBuilder.builder.setup()
@@ -12,10 +13,10 @@ class MSVVideoTagBuilder.Routers.BuilderRouter extends Backbone.Router
     MSVVideoTagBuilder.poster = new MSVVideoTagBuilder.Models.Image
     MSVVideoTagBuilder.sources = new MSVVideoTagBuilder.Collections.Sources([
       new MSVVideoTagBuilder.Models.Source(format: 'mp4', formatTitle: 'MP4')
-      new MSVVideoTagBuilder.Models.Source(format: 'mp4', formatTitle: 'MP4', quality: 'hd', qualityTitle: 'HD')
-      new MSVVideoTagBuilder.Models.Source(format: 'mp4', formatTitle: 'MP4', quality: 'mobile')
-      new MSVVideoTagBuilder.Models.Source(format: 'webm_ogg', formatTitle: 'WebM or Ogg')
-      new MSVVideoTagBuilder.Models.Source(format: 'webm_ogg', formatTitle: 'WebM or Ogg', quality: 'hd', qualityTitle: 'HD')
+      new MSVVideoTagBuilder.Models.Source(format: 'mp4', formatTitle: 'MP4', quality: 'hd', isUsed: false)
+      new MSVVideoTagBuilder.Models.Source(format: 'mp4', formatTitle: 'MP4', quality: 'mobile', isUsed: false)
+      new MSVVideoTagBuilder.Models.Source(format: 'webmogg', formatTitle: 'WebM or Ogg', optional: true)
+      new MSVVideoTagBuilder.Models.Source(format: 'webmogg', formatTitle: 'WebM or Ogg', optional: true, quality: 'hd', isUsed: false)
     ])
 
     MSVVideoTagBuilder.video = new MSVVideoTagBuilder.Models.Video
@@ -38,9 +39,6 @@ class MSVVideoTagBuilder.Routers.BuilderRouter extends Backbone.Router
       sites: MSVVideoTagBuilder.sites
       el: '#site_selector'
 
-    new MSVVideoTagBuilder.Views.StandardAttributes
-      el: '#standard_attributes'
-
     MSVVideoTagBuilder.lightboxView = new MSVVideoTagBuilder.Views.Lightbox
       thumbnail: MSVVideoTagBuilder.thumbnail
       el: '#lightbox_attributes'
@@ -48,3 +46,22 @@ class MSVVideoTagBuilder.Routers.BuilderRouter extends Backbone.Router
     MSVVideoTagBuilder.iframeEmbedView = new MSVVideoTagBuilder.Views.IframeEmbed
       model: MSVVideoTagBuilder.iframe
       el: '#iframe_embed_attributes'
+
+    MSVVideoTagBuilder.posterView = new MSVVideoTagBuilder.Views.Poster
+      model: MSVVideoTagBuilder.poster
+      el: '#poster'
+
+    MSVVideoTagBuilder.sourcesView = new MSVVideoTagBuilder.Views.Sources
+      collection: MSVVideoTagBuilder.sources
+      el: '#sources'
+
+    new MSVVideoTagBuilder.Views.EmbedDimensions
+      model: MSVVideoTagBuilder.sources.mp4Normal()
+      el: '#embed_dimensions'
+
+    new MSVVideoTagBuilder.Views.Preview
+      builder: MSVVideoTagBuilder.builder
+      poster: MSVVideoTagBuilder.poster
+      thumbnail: MSVVideoTagBuilder.thumbnail
+      sources: MSVVideoTagBuilder.sources
+      el: '#preview'

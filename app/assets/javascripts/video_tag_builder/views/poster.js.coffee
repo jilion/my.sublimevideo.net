@@ -2,13 +2,18 @@ class MSVVideoTagBuilder.Views.Poster extends Backbone.View
   template: JST['video_tag_builder/templates/_poster']
 
   events:
-    'keyup #poster': 'updateSrc'
-    'change #poster': 'updateSrc'
+    'keyup #poster_src':  'updateSrc'
+    'change #poster_src': 'updateSrc'
 
   initialize: ->
     _.bindAll this, 'render', 'preloadSrc'
     @model.bind 'change:src', this.preloadSrc
+    
+    this.render()
 
+  #
+  # EVENTS
+  #
   updateSrc: (event) ->
     @model.set(src: event.target.value)
 
@@ -19,7 +24,10 @@ class MSVVideoTagBuilder.Views.Poster extends Backbone.View
     else
       $('.extra').hide()
 
+  #
+  # BINDINGS
+  #
   render: ->
-    $(@el).html(this.template(model: @model))
+    $(@el).html(this.template(poster: @model))
 
     this

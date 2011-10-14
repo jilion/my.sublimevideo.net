@@ -1,0 +1,45 @@
+= content_for :head do
+  :javascript
+    document.write(unescape("%3Cscript src='" + (("https:" == document.location.protocol) ? "https://4076.voxcdn.com" : "http://cdn.sublimevideo.net") + "/js/ibvjcopp.js' type='text/javascript'%3E%3C/script%3E"));
+
+= title_and_content_header("Video tag generator")
+
+:coffeescript
+  $ ->
+    if '#{user_signed_in?}' == 'true'
+      window.MSVVideoTagBuilder.sites = new MSV.Collections.Sites(#{current_user.sites.order(:hostname).to_json(only: [:token, :hostname])})
+      window.MSVVideoTagBuilder.sites.select('#{@site.token}') if '#{@site}' != ''
+      window.MSVVideoTagBuilder.builderRouter = new MSVVideoTagBuilder.Routers.BuilderRouter()
+      # Backbone.history.start({ pushState: true })
+
+%p http://assets.zendesk.com/system/logos/2009/6031/SublimeVideo.png
+%p http://medias.jilion.com/sublimevideo/dartmoor.mp4
+
+= "This video will be inserted on:"
+#site_selector
+
+%ul#video_embed_type_selector
+  %li.active= link_to "Standard", '', id: 'standard'
+  %li= link_to "Lightbox", '', id: 'lightbox'
+  %li= link_to "Iframe embed", '', id: 'iframe_embed'
+
+#lightbox_attributes.specialized_video_embed_type_box{ style: 'display:none' }
+  %p Lightbox!!
+
+#iframe_embed_attributes.specialized_video_embed_type_box{ style: 'display:none' }
+  %p Iframe embed!!
+
+%h2 Poster frame
+%p#poster
+
+%h2 Video sources
+#sources
+
+%h2 Embed size
+#embed_dimensions
+
+%h2 Preview
+#preview
+
+%h2 Code to paste in your page
+%pre#code

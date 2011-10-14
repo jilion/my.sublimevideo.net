@@ -16,7 +16,7 @@
     - if controller_name == 'stats'
       = javascript_include_tag "https://d3ds63zw57jt09.cloudfront.net/1.9/pusher.min.js"
       = javascript_include_tag 'stats'
-    - elsif controller_name == 'pages' && params[:page] == 'video'
+    - elsif controller_name == 'videos'
       = javascript_include_tag 'video_tag_builder'
     - else
       = javascript_include_tag 'application'

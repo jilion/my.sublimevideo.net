@@ -7,15 +7,18 @@ class MSVVideoTagBuilder.Models.Image extends Backbone.Model
   srcIsUrl: ->
     /^https?:\/\/.+\.\w+(\?+.*)?$/.test this.get('src')
 
-  preloadSrc: =>
+  setSrc: (src) ->
+    this.set(src: src)
+    this.preloadSrc()
+
+  preloadSrc: ->
     new MSV.ImagePreloader(this.get('src'), this.setDimensions)
 
   setDimensions: (problem, imageSrc, dimensions) =>
-    if problem
-      console.log('problem!')
-    else
-      newWidth  = parseInt(dimensions[0])
-      newHeight = parseInt(dimensions[1])
+    console.log(dimensions)
+    unless problem
+      newWidth  = parseInt(dimensions['width'])
+      newHeight = parseInt(dimensions['height'])
       newRatio  = newHeight / newWidth
 
       this.set(src: imageSrc) if imageSrc != this.get('src')
@@ -32,10 +35,10 @@ class MSVVideoTagBuilder.Models.Thumbnail extends MSVVideoTagBuilder.Models.Imag
 
   setDimensions: (problem, imageSrc, dimensions) =>
     super(problem, imageSrc, dimensions)
-    this.updateDimensionsWithWidth(this.get('width'))
+    this.setThumbWidth(this.get('width'))
 
-  updateDimensionsWithWidth: (width) ->
-    width = parseInt(width)
-    if width != this.get('thumbWidth')
-      this.set(thumbWidth: width)
+  setThumbWidth: (newThumbWidth) ->
+    newThumbWidth = if _.isNumber(parseInt(newThumbWidth)) then parseInt(newThumbWidth) else 0
+    if newThumbWidth != this.get('thumbWidth')
+      this.set(thumbWidth: newThumbWidth)
       this.set(thumbHeight: parseInt(this.get('thumbWidth') * this.get('ratio')))

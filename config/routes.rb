@@ -34,8 +34,8 @@ MySublimeVideo::Application.routes.draw do
     resources :invoices, :only => :index do
       put :retry, :on => :collection
     end
-    resources :stats, :only => :index do
-    end
+    resources :stats, :only => :index
+    resource :video, :only => :new
   end
 
   resource :card, :controller => 'credit_cards', :as => :credit_card, :only => [:edit, :update]
@@ -51,7 +51,7 @@ MySublimeVideo::Application.routes.draw do
   resource :ticket, :only => [:new, :create], :path => '/support', :path_names => { :new =>  '' }
   %w[help feedback].each { |action| match action => redirect('/support'), :via => :get }
 
-  match ':page', :to => 'pages#show', :via => :get, :as => :page, :page => /terms|privacy|suspended|video/
+  match ':page', :to => 'pages#show', :via => :get, :as => :page, :page => /terms|privacy|suspended/
   match 'r/:type/:token', :to => 'referrers#redirect', :via => :get, :type => /c/, :token => /[a-z0-9]{8}/
 
   authenticate(:user) do

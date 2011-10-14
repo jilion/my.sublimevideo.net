@@ -6,18 +6,24 @@ class MSVVideoTagBuilder.Views.Loader extends Backbone.View
 
   initialize: ->
     @sites = @options.sites
-    # _.bindAll this, 'render'
+
+    _.bindAll this, 'render'
     # @model.bind 'change:token', this.renderSpecializedBox
 
     this.render()
 
+  #
+  # EVENTS
+  #
   updateToken: (event) ->
-    console.log('plop!')
     @sites.select(event.target.value)
     @model.set({ token: event.target.value })
-    event.stopPropagation()
-    false
+    # MSVVideoTagBuilder.builderRouter.navigate("sites/#{event.target.value}/video/new", false)
 
+
+  #
+  # BINDINGS
+  #
   render: ->
     $(@el).html(this.template(sites: @sites))
     $(@el).show()

@@ -10,7 +10,7 @@ describe 'MSVStats.Models.Stat', ->
     it 'returns stat date', ->
       expect(@stat.date()).toEqual(new Date(1316593200000))
 
-describe 'Stats', ->
+describe 'MSVStats.Models.Stats', ->
   beforeEach ->
     @stats = new MSVStats.Collections.Stats()
     @stats.reset(minutesStats)
@@ -51,7 +51,7 @@ describe 'Stats', ->
       expect(@stats.length).toEqual(1)
       expect(@stats.first().attributes).toEqual(pv: 6, vv: 3, md: {}, bp: {}, id: 1316593200)
 
-describe 'StatsDays', ->
+describe 'MSVStats.Models.StatsDays', ->
   beforeEach ->
     MSVStats.period    = new MSVStats.Models.Period()
     MSVStats.statsDays = new MSVStats.Collections.StatsDays()
