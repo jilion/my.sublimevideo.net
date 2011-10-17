@@ -7,6 +7,7 @@ class Site < ActiveRecord::Base
   include SiteModules::Scope
   include SiteModules::Templates
   include SiteModules::Usage
+  include SiteModules::Stats
 
   DEFAULT_DEV_DOMAINS = '127.0.0.1, localhost'
   PLAYER_MODES = %w[dev beta stable]
@@ -231,7 +232,7 @@ class Site < ActiveRecord::Base
       (1.month - 1.day).ago.midnight
     end
   end
-  
+
   def plan_month_cycle_start_time
     plan_month_cycle_started_at.to_i
   end
@@ -246,7 +247,7 @@ class Site < ActiveRecord::Base
       Time.now.utc.end_of_day
     end
   end
-  
+
   def plan_month_cycle_end_time
     plan_month_cycle_ended_at.to_i
   end
@@ -379,4 +380,61 @@ end
 #  index_sites_on_user_id                           (user_id)
 #
 
+
+# == Schema Information
+#
+# Table name: sites
+#
+#  id                                        :integer         not null, primary key
+#  user_id                                   :integer
+#  hostname                                  :string(255)
+#  dev_hostnames                             :string(255)
+#  token                                     :string(255)
+#  license                                   :string(255)
+#  loader                                    :string(255)
+#  state                                     :string(255)
+#  archived_at                               :datetime
+#  created_at                                :datetime
+#  updated_at                                :datetime
+#  player_mode                               :string(255)     default("stable")
+#  google_rank                               :integer
+#  alexa_rank                                :integer
+#  path                                      :string(255)
+#  wildcard                                  :boolean
+#  extra_hostnames                           :string(255)
+#  plan_id                                   :integer
+#  pending_plan_id                           :integer
+#  next_cycle_plan_id                        :integer
+#  cdn_up_to_date                            :boolean         default(FALSE)
+#  first_paid_plan_started_at                :datetime
+#  plan_started_at                           :datetime
+#  plan_cycle_started_at                     :datetime
+#  plan_cycle_ended_at                       :datetime
+#  pending_plan_started_at                   :datetime
+#  pending_plan_cycle_started_at             :datetime
+#  pending_plan_cycle_ended_at               :datetime
+#  overusage_notification_sent_at            :datetime
+#  first_plan_upgrade_required_alert_sent_at :datetime
+#  refunded_at                               :datetime
+#  last_30_days_main_video_views             :integer         default(0)
+#  last_30_days_extra_video_views            :integer         default(0)
+#  last_30_days_dev_video_views              :integer         default(0)
+#  trial_started_at                          :datetime
+#  badged                                    :boolean
+#  last_30_days_invalid_video_views          :integer         default(0)
+#  last_30_days_embed_video_views            :integer         default(0)
+#  stats_trial_started_at                    :datetime
+#
+# Indexes
+#
+#  index_sites_on_created_at                        (created_at)
+#  index_sites_on_hostname                          (hostname)
+#  index_sites_on_last_30_days_dev_video_views      (last_30_days_dev_video_views)
+#  index_sites_on_last_30_days_embed_video_views    (last_30_days_embed_video_views)
+#  index_sites_on_last_30_days_extra_video_views    (last_30_days_extra_video_views)
+#  index_sites_on_last_30_days_invalid_video_views  (last_30_days_invalid_video_views)
+#  index_sites_on_last_30_days_main_video_views     (last_30_days_main_video_views)
+#  index_sites_on_plan_id                           (plan_id)
+#  index_sites_on_user_id                           (user_id)
+#
 

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111007085033) do
+ActiveRecord::Schema.define(:version => 20111017081014) do
 
   create_table "admins", :force => true do |t|
     t.string   "email",                                 :default => "", :null => false
@@ -163,7 +163,8 @@ ActiveRecord::Schema.define(:version => 20111007085033) do
     t.integer  "price"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "support_level", :default => 0
+    t.integer  "support_level",        :default => 0
+    t.integer  "stats_retention_days"
   end
 
   add_index "plans", ["name", "cycle"], :name => "index_plans_on_name_and_cycle", :unique => true
@@ -218,6 +219,7 @@ ActiveRecord::Schema.define(:version => 20111007085033) do
     t.boolean  "badged"
     t.integer  "last_30_days_invalid_video_views",          :default => 0
     t.integer  "last_30_days_embed_video_views",            :default => 0
+    t.datetime "stats_trial_started_at"
   end
 
   add_index "sites", ["created_at"], :name => "index_sites_on_created_at"

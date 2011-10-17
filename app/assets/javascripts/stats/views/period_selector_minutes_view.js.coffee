@@ -1,22 +1,25 @@
 class MSVStats.Views.PeriodSelectorMinutesView extends Backbone.View
+  template: JST['stats/templates/_period_selector']
 
   initialize: () ->
-    @el = $('#period_selectors .minutes')
     _.bindAll(this, 'render')
     @options.period.bind('change', this.render)
     @options.statsMinutes.bind('reset', this.render)
-    @el.bind 'click', -> 
+    $(@el).bind 'click', -> 
       MSVStats.period.setPeriod(type: 'minutes')
+    this.render()
 
   render: ->
-    if this.isSelected() then @el.addClass('selected') else @el.removeClass('selected')
+    $(@el).html(this.template())
+    $(@el).find('span.title').html('last 60 minutes')
+    if this.isSelected() then $(@el).addClass('selected') else $(@el).removeClass('selected')
     vvTotal = @options.statsMinutes.vvTotal()
-    $('#period_minutes_vv_total').html(Highcharts.numberFormat(vvTotal, 0))
+    $(@el).find('span.vv_total').html(Highcharts.numberFormat(vvTotal, 0))
     this.renderSparkline()
     return this
     
   renderSparkline: ->
-    $('#period_minutes_sparkline').sparkline @options.statsMinutes.pluck('vv'),
+    $(@el).find('.sparkline').sparkline @options.statsMinutes.pluck('vv'),
       width: '100%'
       height: '50px'
       lineColor: if this.isSelected() then '#0046ff' else '#00b1ff'

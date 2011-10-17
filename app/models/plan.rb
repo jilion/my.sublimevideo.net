@@ -8,7 +8,7 @@ class Plan < ActiveRecord::Base
   LEGACY_STANDARD_NAMES = %w[comet planet star galaxy]
   SUPPORT_LEVELS = %w[forum email]
 
-  attr_accessible :name, :cycle, :video_views, :price, :support_level
+  attr_accessible :name, :cycle, :video_views, :price, :support_level, :stats_retention_days
   uniquify :token, :chars => Array('a'..'z') + Array('0'..'9'), :length => 12
 
   # ================
@@ -163,20 +163,20 @@ class Plan < ActiveRecord::Base
 end
 
 
-
 # == Schema Information
 #
 # Table name: plans
 #
-#  id            :integer         not null, primary key
-#  name          :string(255)
-#  token         :string(255)
-#  cycle         :string(255)
-#  video_views   :integer
-#  price         :integer
-#  created_at    :datetime
-#  updated_at    :datetime
-#  support_level :integer         default(0)
+#  id                   :integer         not null, primary key
+#  name                 :string(255)
+#  token                :string(255)
+#  cycle                :string(255)
+#  video_views          :integer
+#  price                :integer
+#  created_at           :datetime
+#  updated_at           :datetime
+#  support_level        :integer         default(0)
+#  stats_retention_days :integer
 #
 # Indexes
 #

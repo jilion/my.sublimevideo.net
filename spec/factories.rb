@@ -121,11 +121,12 @@ FactoryGirl.define do
   end
 
   factory :plan do
-    sequence(:name) { |n| "silver#{n}" }
-    cycle           "month"
-    video_views     10_000
-    price           1000
-    support_level   0
+    sequence(:name)      { |n| "silver#{n}" }
+    cycle                "month"
+    video_views          10_000
+    stats_retention_days 365
+    price                1000
+    support_level        0
   end
 
   factory :free_plan, :class => Plan  do
