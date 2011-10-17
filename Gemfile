@@ -95,7 +95,7 @@ end
 group :development, :test do
   gem 'log_buddy'
   gem 'timecop'
-  gem 'rspec-rails', '~> 2.6.1'
+  gem 'rspec-rails', '~> 2.7.0'
   # gem 'ruby-debug19'
 end
 
@@ -112,6 +112,7 @@ group :development do
   gem 'em-http-request' # async pusher in populate
 
   gem 'rb-fsevent', '~> 0.9.0.pre3'
+  gem 'guard', :git => 'git://github.com/guard/guard.git'
   gem 'growl_notify'
   gem 'guard-bundler'
   gem 'guard-pow'
@@ -138,7 +139,7 @@ group :test do
   gem 'fuubar'
   gem 'shoulda-matchers', :git => 'git://github.com/thoughtbot/shoulda-matchers.git'
   gem 'capybara'
-  gem 'webmock', '~> 1.7.6'
+  gem 'webmock', '~> 1.6.0'
   gem 'typhoeus'
   gem 'vcr',     '~> 1.10.3'
 
