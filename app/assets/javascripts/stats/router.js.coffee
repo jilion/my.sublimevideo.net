@@ -10,6 +10,10 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
     new MSVStats.Views.SitesSelectView
       el: '#sites_select'
       sites: MSVStats.sites
+      
+    new MSVStats.Views.TrialView
+      el: '#trial'
+      sites: MSVStats.sites
 
     new MSVStats.Views.PeriodSelectorSecondsView
       el: '#period_selectors .seconds'
@@ -79,7 +83,7 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
     MSVStats.period.clear()
     MSVStats.sites.select(token)
     this.resetAndFetchStats()
-    MSVStats.statsRouter.initPusherStats()
+    this.initPusherStats()
 
   initModels: ->
     MSVStats.period = new MSVStats.Models.Period()

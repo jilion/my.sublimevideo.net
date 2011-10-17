@@ -19,12 +19,12 @@ class MSV.Models.Site extends Backbone.Model
 
   statsRetentionDays: ->
     this.get('stats_retention_days')
-    
+
   inFreePlan: ->
     this.get('stats_retention_days') == 0
 
   statsTrialIsActivable: ->
-    this.statsRetentionDays() == 0 && !this.get('stats_trial_started_at')?
+    this.inFreePlan() && !this.get('stats_trial_started_at')?
 
 class MSV.Collections.Sites extends Backbone.Collection
   model: MSV.Models.Site
