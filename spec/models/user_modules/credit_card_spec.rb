@@ -721,7 +721,7 @@ describe UserModules::CreditCard do
             subject.cc_type.should eql 'visa'
             subject.cc_last_digits.should eql '1111'
             subject.cc_expire_on.should eql 1.year.from_now.end_of_month.to_date
-            subject.cc_updated_at.should eql @first_cc_updated_at
+            subject.cc_updated_at.to_i.should eql @first_cc_updated_at.to_i
           end
         end
 
@@ -739,7 +739,7 @@ describe UserModules::CreditCard do
             subject.cc_type.should eql 'visa'
             subject.cc_last_digits.should eql '1111'
             subject.cc_expire_on.should eql 1.year.from_now.end_of_month.to_date
-            subject.cc_updated_at.should eql @first_cc_updated_at
+            subject.cc_updated_at.to_i.should eql @first_cc_updated_at.to_i
           end
         end
 
