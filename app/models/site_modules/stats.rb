@@ -10,7 +10,11 @@ module SiteModules::Stats
         plan.stats_retention_days
       end
     end
-
+    
+    def stats_trial_start_time
+      stats_trial_started_at.to_i
+    end
+    
   end
 
 end

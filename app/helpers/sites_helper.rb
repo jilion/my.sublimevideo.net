@@ -5,7 +5,7 @@ module SitesHelper
   end
 
   def full_days_until_trial_end(site)
-    if site.in_trial?
+    if site.trial_not_started_or_in_trial?
       ((site.trial_started_at.midnight + BusinessModel.days_for_trial.days - Time.now.utc.midnight) / (3600 * 24)).to_i
     else
       0
@@ -59,7 +59,7 @@ module SitesHelper
   end
 
   def td_usage_class(site)
-    if site.in_paid_plan? && !site.in_trial?
+    if site.in_paid_plan? && !site.trial_not_started_or_in_trial?
       if site.first_plan_upgrade_required_alert_sent_at?
         "required_upgrade"
       elsif site.current_monthly_billable_usages.sum > site.plan.video_views

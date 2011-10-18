@@ -10,7 +10,7 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
     new MSVStats.Views.SitesSelectView
       el: '#sites_select'
       sites: MSVStats.sites
-      
+
     new MSVStats.Views.TrialView
       el: '#trial'
       sites: MSVStats.sites
@@ -88,7 +88,7 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
   initModels: ->
     MSVStats.period = new MSVStats.Models.Period()
     MSVStats.period.bind 'change', ->
-      MSVStats.statsRouter.setHighchartsUTC()
+      MSVStats.Routers.StatsRouter.setHighchartsUTC()
 
     MSVStats.statsSeconds = new MSVStats.Collections.StatsSeconds()
     MSVStats.statsMinutes = new MSVStats.Collections.StatsMinutes()
@@ -139,10 +139,13 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
       global:
         useUTC: false
 
-  setHighchartsUTC: ->
+  @setHighchartsUTC: (useUTC) ->
+    # console.log useUTC
+    # console.log MSVStats.period.get('type') == 'days'
+    # console.lgo if useUTC? then MSVStats.period.get('type') == 'days' else useUTC
     Highcharts.setOptions
       global:
-        useUTC: MSVStats.period.get('type') == 'days'
+        useUTC: if useUTC? then useUTC else MSVStats.period.get('type') == 'days'
 
   initSparkline: ->
     # $.fn.sparkline.defaults.line.lineColor       = '#0046ff'

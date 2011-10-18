@@ -102,6 +102,17 @@ class Site < ActiveRecord::Base
     after_transition  :to => [:suspended, :archived], :do => :delay_remove_loader_and_license # in site/templates
   end
 
+  # =================
+  # = Class Methods =
+  # =================
+
+  def self.to_backbone_json
+    scoped.to_json(
+      only: [:token, :hostname],
+      methods: [:plan_video_views, :plan_month_cycle_start_time, :plan_month_cycle_end_time, :stats_retention_days, :stats_trial_start_time]
+    )
+  end
+  
   # ====================
   # = Instance Methods =
   # ====================
@@ -139,7 +150,7 @@ class Site < ActiveRecord::Base
           write_attribute(:pending_plan_id, new_plan.id)
           write_attribute(:next_cycle_plan_id, nil)
         when false # Downgrade
-          if in_trial? || !first_paid_plan_started_at?
+          if trial_not_started_or_in_trial? || !first_paid_plan_started_at?
             write_attribute(:pending_plan_id, new_plan.id)
           else
             write_attribute(:next_cycle_plan_id, new_plan.id)
@@ -284,7 +295,7 @@ private
   def validates_current_password
     return if @skip_password_validation
 
-    if !new_record? && in_paid_plan? && !in_trial? && errors.empty? &&
+    if !new_record? && in_paid_plan? && !trial_not_started_or_in_trial? && errors.empty? &&
       ((state_changed? && archived?) || (changes.keys & (Array(self.class.accessible_attributes) - ['plan_id'] + %w[pending_plan_id next_cycle_plan_id])).present?)
       if user.current_password.blank? || !user.valid_password?(user.current_password)
         self.errors.add(:base, :current_password_needed)
@@ -366,6 +377,7 @@ end
 #  badged                                    :boolean
 #  last_30_days_invalid_video_views          :integer         default(0)
 #  last_30_days_embed_video_views            :integer         default(0)
+#  stats_trial_started_at                    :datetime
 #
 # Indexes
 #

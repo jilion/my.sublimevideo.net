@@ -30,7 +30,7 @@ module SiteModules::Scope
       where { trial_started_at > BusinessModel.days_for_trial.days.ago }
     }
     scope :not_in_trial, lambda {
-      where { (trial_started_at.presence || BusinessModel.days_for_trial.days.ago) <= BusinessModel.days_for_trial.days.ago }
+      where { (trial_started_at || BusinessModel.days_for_trial.days.ago) <= BusinessModel.days_for_trial.days.ago }
     }
     scope :trial_expires_on, lambda { |timestamp|
       where { date_trunc('day', trial_started_at) == (timestamp - BusinessModel.days_for_trial.days).midnight }

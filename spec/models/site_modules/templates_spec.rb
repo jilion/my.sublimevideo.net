@@ -141,7 +141,7 @@ describe SiteModules::Templates do
         subject.should_not be_settings_changed
       end
 
-      { hostname: "jilion.com", extra_hostnames: "test.staging.com", dev_hostnames: "test.local", path: "yu", wildcard: true, badged: true }.each do |attribute, value|
+      { hostname: "jilion.com", extra_hostnames: "test.staging.com", dev_hostnames: "test.local", path: "yu", wildcard: true, badged: true, stats_trial_started_at: Time.now }.each do |attribute, value|
         it "should return true if #{attribute} has changed" do
           subject.send("#{attribute}=", value)
           subject.should be_settings_changed
@@ -158,14 +158,14 @@ describe SiteModules::Templates do
         subject { @site.reload }
 
         it "includes everything" do
-          subject.license_hash.should == { h: ['jilion.com', 'jilion.net', 'jilion.org'], d: ['127.0.0.1', 'localhost'], w: true, p: "foo", s: true }
+          subject.license_hash.should == { h: ['jilion.com', 'jilion.net', 'jilion.org'], d: ['127.0.0.1', 'localhost'], w: true, p: "foo", s: true, r: true }
         end
 
         context "without extra_hostnames" do
           before { subject.extra_hostnames = '' }
 
           it "removes extra_hostnames from h: []" do
-            subject.license_hash.should == { h: ['jilion.com'], d: ['127.0.0.1', 'localhost'], w: true, p: "foo", s: true }
+            subject.license_hash.should == { h: ['jilion.com'], d: ['127.0.0.1', 'localhost'], w: true, p: "foo", s: true, r: true }
           end
         end
 
@@ -173,7 +173,7 @@ describe SiteModules::Templates do
           before { subject.path = '' }
 
           it "doesn't include path key/value" do
-            subject.license_hash.should == { h: ['jilion.com', 'jilion.net', 'jilion.org'], d: ['127.0.0.1', 'localhost'], w: true, s: true }
+            subject.license_hash.should == { h: ['jilion.com', 'jilion.net', 'jilion.org'], d: ['127.0.0.1', 'localhost'], w: true, s: true, r: true }
           end
         end
 
@@ -181,7 +181,7 @@ describe SiteModules::Templates do
           before { subject.wildcard = false }
 
           it "doesn't include wildcard key/value" do
-            subject.license_hash.should == { h: ['jilion.com', 'jilion.net', 'jilion.org'], d: ['127.0.0.1', 'localhost'], p: "foo", s: true }
+            subject.license_hash.should == { h: ['jilion.com', 'jilion.net', 'jilion.org'], d: ['127.0.0.1', 'localhost'], p: "foo", s: true, r: true }
           end
         end
 
@@ -189,7 +189,7 @@ describe SiteModules::Templates do
           before { subject.badged = false }
 
           it "includes b: false" do
-            subject.license_hash.should == { h: ['jilion.com', 'jilion.net', 'jilion.org'], d: ['127.0.0.1', 'localhost'], w: true, p: "foo", b: false, s: true }
+            subject.license_hash.should == { h: ['jilion.com', 'jilion.net', 'jilion.org'], d: ['127.0.0.1', 'localhost'], w: true, p: "foo", b: false, s: true, r: true }
           end
         end
 
@@ -198,7 +198,28 @@ describe SiteModules::Templates do
 
           it "includes ssl: false" do
             subject.should be_in_free_plan
-            subject.license_hash.should == { h: ['jilion.com', 'jilion.net', 'jilion.org'], d: ['127.0.0.1', 'localhost'], w: true, p: "foo", s: false }
+            subject.license_hash.should == { h: ['jilion.com', 'jilion.net', 'jilion.org'], d: ['127.0.0.1', 'localhost'], w: true, p: "foo" }
+          end
+        end
+
+        context "without realtime data (free plan)" do
+          before { subject.plan_id = @free_plan.id; subject.apply_pending_plan_changes }
+
+          it "doesn't includes r: true" do
+            subject.should be_in_free_plan
+            subject.license_hash.should == { h: ['jilion.com', 'jilion.net', 'jilion.org'], d: ['127.0.0.1', 'localhost'], w: true, p: "foo" }
+          end
+        end
+        
+        context "with realtime data (free plan with stats trial)" do
+          before do
+            subject.plan_id = @free_plan.id; subject.apply_pending_plan_changes
+            subject.touch(:stats_trial_started_at)
+          end
+
+          it "includes r: true" do
+            subject.should be_in_free_plan
+            subject.license_hash.should == { h: ['jilion.com', 'jilion.net', 'jilion.org'], d: ['127.0.0.1', 'localhost'], w: true, p: "foo", r: true }
           end
         end
       end
@@ -208,7 +229,7 @@ describe SiteModules::Templates do
     describe "#license_js_hash" do
       subject{ FactoryGirl.create(:site, plan_id: @paid_plan.id, hostname: "jilion.com", extra_hostnames: "jilion.net, jilion.org", dev_hostnames: '127.0.0.1,localhost', path: 'foo', wildcard: true) }
 
-      its(:license_js_hash) { should == "{h:[\"jilion.com\",\"jilion.net\",\"jilion.org\"],d:[\"127.0.0.1\",\"localhost\"],w:true,p:\"foo\",b:false,s:true}" }
+      its(:license_js_hash) { should == "{h:[\"jilion.com\",\"jilion.net\",\"jilion.org\"],d:[\"127.0.0.1\",\"localhost\"],w:true,p:\"foo\",b:false,s:true,r:true}" }
     end
 
     describe "#set_template" do
@@ -220,7 +241,7 @@ describe SiteModules::Templates do
         subject { @site }
 
         it "should set license file with license_hash" do
-          subject.license.read.should == "jilion.sublime.video.sites({h:[\"jilion.com\",\"jilion.net\",\"jilion.org\"],d:[\"127.0.0.1\",\"localhost\"],w:true,p:\"foo\",b:false,s:true});"
+          subject.license.read.should == "jilion.sublime.video.sites({h:[\"jilion.com\",\"jilion.net\",\"jilion.org\"],d:[\"127.0.0.1\",\"localhost\"],w:true,p:\"foo\",b:false,s:true,r:true});"
         end
       end
 

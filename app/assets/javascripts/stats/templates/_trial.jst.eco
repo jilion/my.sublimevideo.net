@@ -1,1 +1,5 @@
-<button>Start 7 days trial</button>
+<% if @site.inFreePlan() && @site.statsTrialIsActivable(): %>
+  <button>Start 7 days trial</button>
+<% else if @site.statsTrialEndTime() > new Date().getTime(): %>
+  <p>Stats trial will finish on <%= Highcharts.dateFormat('%e %b %Y', @site.statsTrialEndTime()) %></p>
+<% end %>

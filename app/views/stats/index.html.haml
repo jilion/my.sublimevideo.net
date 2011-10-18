@@ -9,7 +9,7 @@
     # WEB_SOCKET_DEBUG = true
 
     window.MSVStats.pusher = new Pusher('#{PusherConfig.key}', encrypted: true)
-    window.MSVStats.sites = new MSVStats.Collections.Sites(#{current_user.sites.order(:hostname).to_json(only: [:token, :hostname, :stats_trial_started_at], methods: [:plan_video_views, :plan_month_cycle_start_time, :plan_month_cycle_end_time, :stats_retention_days])})
+    window.MSVStats.sites = new MSVStats.Collections.Sites(#{current_user.sites.order(:hostname).to_backbone_json})
     window.MSVStats.sites.select('#{@site.token}')
     window.MSVStats.statsRouter = new MSVStats.Routers.StatsRouter()
     Backbone.history.start({ pushState: true })
