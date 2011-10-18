@@ -220,7 +220,8 @@ describe Plan do
 
     describe "#support" do
       it { FactoryGirl.build(:plan, name: "free", support_level: 0).support.should == "forum" }
-      it { FactoryGirl.build(:plan, name: "gold", support_level: 1).support.should == "email" }
+      it { FactoryGirl.build(:plan, name: "silver", support_level: 1).support.should == "email" }
+      it { FactoryGirl.build(:plan, name: "gold", support_level: 2).support.should == "vip" }
     end
 
   end
