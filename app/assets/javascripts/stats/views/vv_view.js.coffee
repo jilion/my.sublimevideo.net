@@ -5,10 +5,10 @@ class MSVStats.Views.VVView extends Backbone.View
     _.bindAll this, 'render', 'renderIfSelected'
     @options.period.bind 'change', this.render
     @options.statsSeconds.bind 'change', this.renderIfSelected
-    @options.statsSeconds.bind 'reset', this.renderIfSelected
-    @options.statsMinutes.bind 'reset', this.renderIfSelected
-    @options.statsHours.bind   'reset', this.renderIfSelected
-    @options.statsDays.bind    'reset', this.renderIfSelected
+    @options.statsSeconds.bind 'reset',  this.renderIfSelected
+    @options.statsMinutes.bind 'reset',  this.renderIfSelected
+    @options.statsHours.bind   'reset',  this.renderIfSelected
+    @options.statsDays.bind    'reset',  this.renderIfSelected
     this.render()
 
   render: ->

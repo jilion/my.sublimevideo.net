@@ -172,7 +172,7 @@ describe SiteStat do
 
     describe ".json" do
       before(:all) do
-        @site = Factory.create(:site)
+        @site = FactoryGirl.create(:site)
       end
 
       before(:each) do
@@ -197,6 +197,9 @@ describe SiteStat do
         Factory.create(:site_stat, t: @site.token, d: 3.days.ago.change(hour: 0, min: 0, sec: 0), pv: {e: 101})
         Factory.create(:site_stat, t: @site.token, d: 1.day.ago.change(hour: 0, min: 0, sec: 0), pv: {e: 102})
         Factory.create(:site_stat, t: @site.token, d: Time.now.utc.change(hour: 0, min: 0, sec: 0), pv: {e: 103})
+
+        @mock_site = mock_model(Site, stats_retention_days: nil)
+        Site.stub(:find_by_token).and_return(@mock_site)
       end
 
       describe "with seconds period" do
@@ -266,6 +269,44 @@ describe SiteStat do
         it { subject[364]['pv'].should eql(102) }
         it { subject[0]['id'].should eql(365.day.ago.change(hour: 0, min: 0, sec: 0).to_i) }
         it { subject[364]['id'].should eql(1.day.ago.change(hour: 0, min: 0, sec: 0).to_i) }
+      end
+
+      context "with stats_retention_days at 365" do
+        before(:each) do
+          @mock_site.stub(:stats_retention_days).and_return(365)
+        end
+
+        describe "with days period" do
+          subject { JSON.parse(SiteStat.json(@site.token, 'days')) }
+
+          its(:size) { should eql(365) }
+        end
+
+        describe "with days period (less than 365 days stats)" do
+          before(:each) { @day400.delete }
+          subject { JSON.parse(SiteStat.json(@site.token, 'days')) }
+
+          its(:size) { should eql(365) }
+        end
+      end
+
+      context "with stats_retention_days at 0" do
+        before(:each) do
+          @mock_site.stub(:stats_retention_days).and_return(0)
+        end
+
+        describe "with days period" do
+          subject { JSON.parse(SiteStat.json(@site.token, 'days')) }
+
+          its(:size) { should eql(0) }
+        end
+
+        describe "with days period (less than 365 days stats)" do
+          before(:each) { @day400.delete }
+          subject { JSON.parse(SiteStat.json(@site.token, 'days')) }
+
+          its(:size) { should eql(0) }
+        end
       end
     end
 

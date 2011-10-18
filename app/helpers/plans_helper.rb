@@ -35,7 +35,7 @@ module PlansHelper
   def plan_change_type(site, old_plan, new_plan)
     if old_plan == new_plan
       nil
-    elsif site.in_trial?
+    elsif site.trial_not_started_or_in_trial?
       new_plan.free_plan? ? "in_trial_update_to_free" : "in_trial_update"
     elsif new_plan.free_plan?
       "delayed_downgrade_to_free"
@@ -83,8 +83,8 @@ module PlansHelper
 
       options["data-plan_update_price_vat"] = display_amount(update_price, vat: true) if current_user.vat?
 
-      options["data-plan_update_date"] = l(if site.in_trial?
-        (site.trial_end || BusinessModel.days_for_trial.days.from_now).tomorrow.midnight
+      options["data-plan_update_date"] = l(if site.trial_not_started_or_in_trial?
+        (site.trial_end || BusinessModel.days_for_trial.days.from_now).midnight
       elsif current_plan.upgrade?(new_plan)
         site.plan_cycle_started_at || Time.now.utc.midnight
       else

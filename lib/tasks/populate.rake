@@ -441,13 +441,13 @@ end
 
 def create_plans
   plans_attributes = [
-    { name: "free",       cycle: "none",  video_views: 0,          price: 0, support_level: 0 },
-    { name: "sponsored",  cycle: "none",  video_views: 0,          price: 0, support_level: 0 },
-    { name: "silver",     cycle: "month", video_views: 200_000,    price: 990, support_level: 1 },
-    { name: "gold",       cycle: "month", video_views: 1_000_000,  price: 4990, support_level: 2 },
-    { name: "silver",     cycle: "year",  video_views: 200_000,    price: 9900, support_level: 1 },
-    { name: "gold",       cycle: "year",  video_views: 1_000_000,  price: 49900, support_level: 2 },
-    { name: "custom1",    cycle: "year",  video_views: 10_000_000, price: 99900, support_level: 2 }
+    { name: "free",       cycle: "none",  video_views: 0,          stats_retention_days: 0,   price: 0,     support_level: 0 },
+    { name: "sponsored",  cycle: "none",  video_views: 0,          stats_retention_days: nil, price: 0,     support_level: 0 },
+    { name: "silver",     cycle: "month", video_views: 200_000,    stats_retention_days: 365, price: 990,   support_level: 1 },
+    { name: "gold",       cycle: "month", video_views: 1_000_000,  stats_retention_days: nil, price: 4990,  support_level: 2 },
+    { name: "silver",     cycle: "year",  video_views: 200_000,    stats_retention_days: 365, price: 9900,  support_level: 1 },
+    { name: "gold",       cycle: "year",  video_views: 1_000_000,  stats_retention_days: nil, price: 49900, support_level: 2 },
+    { name: "custom1",    cycle: "year",  video_views: 10_000_000, stats_retention_days: nil, price: 99900, support_level: 2 }
   ]
   plans_attributes.each { |attributes| Plan.create!(attributes) }
   puts "#{plans_attributes.size} plans created!"

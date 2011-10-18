@@ -1,0 +1,9 @@
+<div class='content'>
+  <% if @site? && @site.inFreePlan(): %>
+    <a href='/sites/<%= @site.get('token') %>/plan/edit' title='Upgrade your plan'>PRO PLAN ONLY</a>
+  <% else: %>
+    <span class='vv_total'/>
+    <div class='sparkline'/>
+  <% end %>
+</div>
+<span class='title'/>

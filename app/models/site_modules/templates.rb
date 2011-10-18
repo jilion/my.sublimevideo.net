@@ -49,7 +49,8 @@ module SiteModules::Templates
       hash[:w] = wildcard if wildcard?
       hash[:p] = path if path?
       hash[:b] = badged unless badged?
-      hash[:s] = !in_free_plan? # SSL
+      hash[:s] = true unless in_free_plan? # SSL
+      hash[:r] = true if stats_retention_days != 0 # Realtime Stats
       hash
     end
 
@@ -75,7 +76,7 @@ module SiteModules::Templates
   private
 
     def settings_changed?
-      (changed & %w[hostname extra_hostnames dev_hostnames path wildcard badged]).present?
+      (changed & %w[hostname extra_hostnames dev_hostnames path wildcard badged stats_trial_started_at]).present?
     end
 
     # before_save

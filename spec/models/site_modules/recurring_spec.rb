@@ -73,4 +73,30 @@ describe SiteModules::Recurring do
     end
   end
 
+  describe ".delay_stop_stats_trial" do
+    it "delays stop_stats_trial if not already delayed" do
+      expect { Site.delay_stop_stats_trial }.to \
+      change(Delayed::Job.where { handler =~ '%Site%stop_stats_trial%' }, :count).by(1)
+    end
+
+    it "doesn't delay stop_stats_trial if already delayed" do
+      Site.delay_stop_stats_trial
+      expect { Site.delay_stop_stats_trial }.not_to \
+      change(Delayed::Job.where { handler =~ '%Site%stop_stats_trial%' }, :count)
+    end
+  end
+
+  describe ".delay_send_stats_trial_will_end" do
+    it "delays send_stats_trial_will_end if not already delayed" do
+      expect { Site.delay_send_stats_trial_will_end }.to \
+      change(Delayed::Job.where { handler =~ '%Site%send_stats_trial_will_end%' }, :count).by(1)
+    end
+
+    it "doesn't delay send_stats_trial_will_end if already delayed" do
+      Site.delay_send_stats_trial_will_end
+      expect { Site.delay_send_stats_trial_will_end }.not_to \
+      change(Delayed::Job.where { handler =~ '%Site%send_stats_trial_will_end%' }, :count)
+    end
+  end
+
 end

@@ -173,7 +173,7 @@ describe SiteModules::Invoice do
 
   describe "Instance Methods" do
 
-    %w[trial_started_at first_paid_plan_started_at pending_plan_started_at pending_plan_cycle_started_at].each do |attr|
+    %w[trial_started_at stats_trial_started_at first_paid_plan_started_at pending_plan_started_at pending_plan_cycle_started_at].each do |attr|
       describe "##{attr}=" do
         subject { FactoryGirl.build(:new_site) }
 
@@ -386,7 +386,7 @@ describe SiteModules::Invoice do
       end
     end # #will_be_in_paid_plan?
 
-    describe "#in_trial?" do
+    describe "#trial_not_started_or_in_trial?" do
       before(:all) do
         Site.delete_all
         @site_in_trial1 = FactoryGirl.build(:site)
@@ -396,11 +396,11 @@ describe SiteModules::Invoice do
         Timecop.travel((BusinessModel.days_for_trial+1).days.ago) { @site_not_in_trial = FactoryGirl.create(:site) }
       end
 
-      specify { @site_in_trial1.should be_in_trial }
-      specify { @site_in_trial2.should be_in_trial }
-      specify { @site_in_trial3.should be_in_trial }
-      specify { @site_in_trial4.should be_in_trial }
-      specify { @site_not_in_trial.should_not be_in_trial }
+      specify { @site_in_trial1.should be_trial_not_started_or_in_trial }
+      specify { @site_in_trial2.should be_trial_not_started_or_in_trial }
+      specify { @site_in_trial3.should be_trial_not_started_or_in_trial }
+      specify { @site_in_trial4.should be_trial_not_started_or_in_trial }
+      specify { @site_not_in_trial.should_not be_trial_not_started_or_in_trial }
     end
 
     describe "#refundable?" do
@@ -620,7 +620,7 @@ describe SiteModules::Invoice do
             its(:plan)                          { should eql @free_plan }
             its(:pending_plan)                  { should eql @paid_plan }
             its(:next_cycle_plan)               { should be_nil }
-            it { should be_in_trial }
+            it { should be_trial_not_started_or_in_trial }
             it { should_not be_instant_charging }
           end
 
@@ -644,7 +644,7 @@ describe SiteModules::Invoice do
             its(:plan)                          { should eql @free_plan }
             its(:pending_plan)                  { should eql @paid_plan }
             its(:next_cycle_plan)               { should be_nil }
-            it { should_not be_in_trial }
+            it { should_not be_trial_not_started_or_in_trial }
             it { should be_instant_charging }
           end
         end
@@ -664,7 +664,7 @@ describe SiteModules::Invoice do
             its(:plan)                          { should eql @paid_plan }
             its(:pending_plan)                  { should eql @paid_plan2 }
             its(:next_cycle_plan)               { should be_nil }
-            it { should be_in_trial }
+            it { should be_trial_not_started_or_in_trial }
             it { should_not be_instant_charging }
           end
 
@@ -688,7 +688,7 @@ describe SiteModules::Invoice do
             its(:plan)                          { should eql @paid_plan }
             its(:pending_plan)                  { should eql @paid_plan2 }
             its(:next_cycle_plan)               { should be_nil }
-            it { should_not be_in_trial }
+            it { should_not be_trial_not_started_or_in_trial }
             it { should be_instant_charging }
           end
         end
@@ -711,7 +711,7 @@ describe SiteModules::Invoice do
           its(:plan)                          { should eql @paid_plan }
           its(:pending_plan)                  { should be_nil }
           its(:next_cycle_plan)               { should be_nil }
-          it { should_not be_in_trial }
+          it { should_not be_trial_not_started_or_in_trial }
           it { should_not be_instant_charging }
         end
 
@@ -736,7 +736,7 @@ describe SiteModules::Invoice do
             its(:plan)                          { should eql @paid_plan }
             its(:pending_plan)                  { should be_nil }
             its(:next_cycle_plan)               { should eql @free_plan }
-            it { should_not be_in_trial }
+            it { should_not be_trial_not_started_or_in_trial }
             it { should_not be_instant_charging }
           end
 
@@ -757,7 +757,7 @@ describe SiteModules::Invoice do
             its(:plan)                          { should eql @paid_plan }
             its(:pending_plan)                  { should eql @free_plan }
             its(:next_cycle_plan)               { should be_nil }
-            it { should_not be_in_trial }
+            it { should_not be_trial_not_started_or_in_trial }
             it { should_not be_instant_charging }
           end
 
@@ -781,7 +781,7 @@ describe SiteModules::Invoice do
             its(:plan)                          { should eql @paid_plan2 }
             its(:pending_plan)                  { should be_nil }
             its(:next_cycle_plan)               { should eql @paid_plan }
-            it { should_not be_in_trial }
+            it { should_not be_trial_not_started_or_in_trial }
             it { should_not be_instant_charging }
           end
 
@@ -802,7 +802,7 @@ describe SiteModules::Invoice do
             its(:plan)                          { should eql @paid_plan2 }
             its(:pending_plan)                  { should eql @paid_plan }
             its(:next_cycle_plan)               { should be_nil }
-            it { should_not be_in_trial }
+            it { should_not be_trial_not_started_or_in_trial }
             it { should_not be_instant_charging }
           end
         end
@@ -1118,7 +1118,7 @@ describe SiteModules::Invoice do
             before(:all) do
               @site = FactoryGirl.create(:site, plan_id: @paid_plan2.id)
             end
-            before(:each) { subject.should be_in_trial }
+            before(:each) { subject.should be_trial_not_started_or_in_trial }
 
             describe "upgrade" do
               it "doesn't create an invoice" do

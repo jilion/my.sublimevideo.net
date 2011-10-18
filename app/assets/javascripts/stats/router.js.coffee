@@ -11,19 +11,28 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
       el: '#sites_select'
       sites: MSVStats.sites
 
+    new MSVStats.Views.TrialView
+      el: '#trial'
+      sites: MSVStats.sites
+
     new MSVStats.Views.PeriodSelectorSecondsView
+      el: '#period_selectors .seconds'
       statsSeconds: MSVStats.statsSeconds
       period: MSVStats.period
     new MSVStats.Views.PeriodSelectorMinutesView
+      el: '#period_selectors .minutes'
       statsMinutes: MSVStats.statsMinutes
       period: MSVStats.period
     new MSVStats.Views.PeriodSelectorHoursView
+      el: '#period_selectors .hours'
       statsHours: MSVStats.statsHours
       period: MSVStats.period
     new MSVStats.Views.PeriodSelectorDays30View
+      el: '#period_selectors .days30'
       statsDays: MSVStats.statsDays
       period: MSVStats.period
     new MSVStats.Views.PeriodSelectorDays365View
+      el: '#period_selectors .days365'
       statsDays: MSVStats.statsDays
       period: MSVStats.period
 
@@ -74,12 +83,12 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
     MSVStats.period.clear()
     MSVStats.sites.select(token)
     this.resetAndFetchStats()
-    MSVStats.statsRouter.initPusherStats()
+    this.initPusherStats()
 
   initModels: ->
     MSVStats.period = new MSVStats.Models.Period()
     MSVStats.period.bind 'change', ->
-      MSVStats.statsRouter.setHighchartsUTC()
+      MSVStats.Routers.StatsRouter.setHighchartsUTC()
 
     MSVStats.statsSeconds = new MSVStats.Collections.StatsSeconds()
     MSVStats.statsMinutes = new MSVStats.Collections.StatsMinutes()
@@ -94,14 +103,15 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
       MSVStats.statsDays.fetch() if data.d
 
   initPusherStats: ->
-    MSVStats.presenceChannel = MSVStats.pusher.subscribe("presence-#{MSVStats.selectedSiteToken}")
+    unless MSVStats.sites.selectedSite.inFreePlan()
+      MSVStats.presenceChannel = MSVStats.pusher.subscribe("presence-#{MSVStats.selectedSiteToken}")
 
-    MSVStats.presenceChannel.bind 'pusher:subscription_succeeded', ->
-      MSVStats.statsSeconds.fetch
-        success: -> setTimeout((-> MSVStats.statsSeconds.updateEachSeconds()), 1000)
+      MSVStats.presenceChannel.bind 'pusher:subscription_succeeded', ->
+        MSVStats.statsSeconds.fetch
+          success: -> setTimeout((-> MSVStats.statsSeconds.updateEachSeconds()), 1000)
 
-    MSVStats.presenceChannel.bind 'stats', (data) ->
-      MSVStats.statsSeconds.merge(data, silent: true)
+      MSVStats.presenceChannel.bind 'stats', (data) ->
+        MSVStats.statsSeconds.merge(data, silent: true)
 
   resetAndFetchStats: ->
     MSVStats.statsSeconds.reset()
@@ -115,9 +125,10 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
     MSVStats.statsHours.fetch
       silent: true
       success: -> MSVStats.statsRouter.syncFetchSuccess()
-    MSVStats.statsDays.fetch
-      silent: true
-      success: -> MSVStats.statsRouter.syncFetchSuccess()
+    unless MSVStats.sites.selectedSite.inFreePlan()
+      MSVStats.statsDays.fetch
+        silent: true
+        success: -> MSVStats.statsRouter.syncFetchSuccess()
 
   syncFetchSuccess: ->
     if MSVStats.Collections.Stats.allPresent()
@@ -128,10 +139,13 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
       global:
         useUTC: false
 
-  setHighchartsUTC: ->
+  @setHighchartsUTC: (useUTC) ->
+    # console.log useUTC
+    # console.log MSVStats.period.get('type') == 'days'
+    # console.lgo if useUTC? then MSVStats.period.get('type') == 'days' else useUTC
     Highcharts.setOptions
       global:
-        useUTC: MSVStats.period.get('type') == 'days'
+        useUTC: if useUTC? then useUTC else MSVStats.period.get('type') == 'days'
 
   initSparkline: ->
     # $.fn.sparkline.defaults.line.lineColor       = '#0046ff'

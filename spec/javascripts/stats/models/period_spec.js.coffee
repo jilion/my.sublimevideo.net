@@ -40,24 +40,14 @@ describe 'MSVStats.Models.Period', ->
     it 'returns true if good type, startIndex+ & endIndex+', ->
       expect(@period.isSelected('days', 29, 38)).toEqual(true)
 
-
-  # describe 'setCustomPeriod()', ->
-  #   it "sets custom start/end times", ->
-  #     @period.setCustomPeriod(1000, 2000)
-  #     expect(@period.get('startTime')).toEqual(1000)
-  #     expect(@period.get('endTime')).toEqual(2000)
-  #
-  #   it "sets custom start/end times with good value order", ->
-  #     @period.setCustomPeriod(2000, 1000)
-  #     expect(@period.get('startTime')).toEqual(1000)
-  #     expect(@period.get('endTime')).toEqual(2000)
-  #
-  #   it 'clears type and count', ->
-  #     @period.setCustomPeriod(1000, 2000)
-  #     expect(@period.get('type')).toEqual('days')
-
   describe '#autosetPeriod', ->
     beforeEach ->
+      MSVStats.sites = new MSVStats.Collections.Sites [
+        { token: 'free', stats_retention_days: 0 }
+        { token: 'paid', stats_retention_days: null }
+      ]
+      MSVStats.sites.select('paid')
+
       MSVStats.statsSeconds = new MSVStats.Collections.StatsSeconds([{"vv":0}])
       MSVStats.statsMinutes = new MSVStats.Collections.StatsMinutes([{"vv":0}])
       MSVStats.statsHours   = new MSVStats.Collections.StatsHours([{"vv":0}])
@@ -70,6 +60,11 @@ describe 'MSVStats.Models.Period', ->
 
     it "sets '24 hours' when hours stats are present (but no minutes stats)", ->
       MSVStats.statsHours.reset([{"vv":1}])
+      @period.autosetPeriod()
+      expect(@period.get('type')).toEqual('hours')
+
+    it "sets '24 hours' when hours is empty but in free plan", ->
+      MSVStats.sites.select('free')
       @period.autosetPeriod()
       expect(@period.get('type')).toEqual('hours')
 

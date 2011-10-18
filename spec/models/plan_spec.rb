@@ -8,11 +8,12 @@ describe Plan do
     after(:all) { @plan.delete }
     subject { @plan }
 
-    its(:name)          { should =~ /silver\d+/ }
-    its(:cycle)         { should == "month" }
-    its(:video_views)   { should == 10_000 }
-    its(:price)         { should == 1000 }
-    its(:token)         { should =~ /^[a-z0-9]{12}$/ }
+    its(:name)                 { should =~ /silver\d+/ }
+    its(:cycle)                { should == "month" }
+    its(:video_views)          { should == 10_000 }
+    its(:stats_retention_days) { should == 365 }
+    its(:price)                { should == 1000 }
+    its(:token)                { should =~ /^[a-z0-9]{12}$/ }
 
     it { should be_valid }
   end
@@ -229,20 +230,20 @@ describe Plan do
 end
 
 
-
 # == Schema Information
 #
 # Table name: plans
 #
-#  id            :integer         not null, primary key
-#  name          :string(255)
-#  token         :string(255)
-#  cycle         :string(255)
-#  video_views   :integer
-#  price         :integer
-#  created_at    :datetime
-#  updated_at    :datetime
-#  support_level :integer         default(0)
+#  id                   :integer         not null, primary key
+#  name                 :string(255)
+#  token                :string(255)
+#  cycle                :string(255)
+#  video_views          :integer
+#  price                :integer
+#  created_at           :datetime
+#  updated_at           :datetime
+#  support_level        :integer         default(0)
+#  stats_retention_days :integer
 #
 # Indexes
 #

@@ -4,7 +4,7 @@ module SiteModules::Invoice
   module ClassMethods
 
     def activate_or_downgrade_sites_leaving_trial
-      Site.not_in_trial.billable.where(first_paid_plan_started_at: nil).each do |site|
+      Site.not_in_trial.billable.where(first_paid_plan_started_at: nil).find_each(:batch_size => 100) do |site|
         if site.user.credit_card?
           site.first_paid_plan_started_at = Time.now.utc
           site.pend_plan_changes
@@ -26,7 +26,7 @@ module SiteModules::Invoice
 
   module InstanceMethods
 
-    %w[trial_started_at first_paid_plan_started_at pending_plan_started_at pending_plan_cycle_started_at].each do |attr|
+    %w[trial_started_at stats_trial_started_at first_paid_plan_started_at pending_plan_started_at pending_plan_cycle_started_at].each do |attr|
       define_method :"#{attr}=" do |attribute|
         write_attribute(:"#{attr}", attribute.try(:midnight))
       end
@@ -66,7 +66,7 @@ module SiteModules::Invoice
       in_paid_plan? || will_be_in_paid_plan?
     end
 
-    def in_trial?
+    def trial_not_started_or_in_trial?
       !trial_started_at? || trial_started_at > BusinessModel.days_for_trial.days.ago
     end
 
@@ -150,12 +150,12 @@ module SiteModules::Invoice
         # Creation, activation or upgrade
         else
           # Upgrade only
-          @instant_charging = !in_trial? && !first_paid_plan_started_at_changed?
+          @instant_charging = !trial_not_started_or_in_trial? && !first_paid_plan_started_at_changed?
           # Creation, activation or upgrade
           self.pending_plan_started_at = plan_cycle_started_at || Time.now.utc
         end
 
-        if !in_trial? &&
+        if !trial_not_started_or_in_trial? &&
           (
             # Activation
             first_paid_plan_started_at_changed? ||
@@ -220,7 +220,7 @@ module SiteModules::Invoice
 
     # after_save (BEFORE_SAVE TRIGGER AN INFINITE LOOP SINCE invoice.save also saves self)
     def create_and_charge_invoice
-      if !in_trial? && (activated? || upgraded? || renewed?)
+      if !trial_not_started_or_in_trial? && (activated? || upgraded? || renewed?)
         invoice = ::Invoice.build(site: self, renew: renewed?)
         invoice.save!
 
@@ -228,7 +228,7 @@ module SiteModules::Invoice
           @transaction = Transaction.charge_by_invoice_ids([invoice.id], charging_options || {})
         end
 
-      elsif pending_plan_id_changed? && pending_plan_id? && (pending_plan.unpaid_plan? || in_trial?)
+      elsif pending_plan_id_changed? && pending_plan_id? && (pending_plan.unpaid_plan? || trial_not_started_or_in_trial?)
         # directly update for unpaid plans or any plans during trial
         self.apply_pending_plan_changes
       end

@@ -2,7 +2,7 @@
 
 Thank you for taking the time to evaluate SublimeVideo! We hope you're enjoying your trial.
 
-This is a reminder that your <%= BusinessModel.days_for_trial %>-day free trial for <%= @site.hostname %> expires in <%= pluralize(full_days_until_trial_end(@site), 'day') %> (on <%= l(@site.trial_end, format: :named_date) %>).
+This is a reminder that your <%= BusinessModel.days_for_trial - 1 %>-day free trial for <%= @site.hostname %> expires in <%= pluralize(full_days_until_trial_end(@site), 'day') %> (on <%= l(@site.trial_end, format: :named_date) %>).
 
 <% if @site.user.cc? %>
   Once the trial ends, we will automatically charge your credit card <%= display_amount(@site.plan.price) %> for your <%= @site.plan.title %> plan.

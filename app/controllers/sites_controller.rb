@@ -17,7 +17,7 @@ class SitesController < ApplicationController
     respond_with(@sites, :per_page => 10) do |format|
       format.js
       format.html
-      format.json { render json: @sites.to_json(:only => [:token, :hostname]) }
+      format.json { render json: @sites.to_backbone_json }
     end
   end
 

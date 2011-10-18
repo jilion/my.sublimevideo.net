@@ -9,41 +9,27 @@
     # WEB_SOCKET_DEBUG = true
 
     window.MSVStats.pusher = new Pusher('#{PusherConfig.key}', encrypted: true)
-    window.MSVStats.sites = new MSVStats.Collections.Sites(#{current_user.sites.order(:hostname).to_json(only: [:token, :hostname], methods: [:plan_video_views, :plan_month_cycle_start_time, :plan_month_cycle_end_time])})
+    window.MSVStats.sites = new MSVStats.Collections.Sites(#{current_user.sites.order(:hostname).to_backbone_json})
     window.MSVStats.sites.select('#{@site.token}')
     window.MSVStats.statsRouter = new MSVStats.Routers.StatsRouter()
     Backbone.history.start({ pushState: true })
 
 #sites_select
 
+#trial
+
 #period_selectors
   %ul
     %li
       .days365
-        %span#period_days365_vv_total.total
-        #period_days365_sparkline.sparkline
-        %span.title last 365 days
     %li
       .days30
-        %span#period_days30_vv_total.total
-        #period_days30_sparkline.sparkline
-        %span.title last 30 days
     %li
       .hours
-        %span#period_hours_vv_total.total
-        #period_hours_sparkline.sparkline
-        %span.title last 24 hours
     %li
       .minutes
-        %span#period_minutes_vv_total.total
-        #period_minutes_sparkline.sparkline
-        %span.title last 60 minutes
     %li
       .seconds
-        #period_seconds_content
-          %span#period_seconds_vv_total.total
-          #period_seconds_sparkline.sparkline
-          %span.title last 60 seconds
 
 .spacer
 

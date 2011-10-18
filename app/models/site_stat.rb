@@ -125,11 +125,20 @@ class SiteStat
       last_stats(stats, from, to, period_type)
 
     when 'days'
+      site  = Site.find_by_token(token)
+      Rails.logger.debug "site.stats_retention_days: #{site.stats_retention_days}"
       stats = stats.where(d: { "$ne" => nil }).order_by([:d, :asc])
       to    = 1.day.ago.midnight
-      from  = [(stats.first.try(:d) || Time.now.utc), to - 364.days].min
-
-      last_stats(stats, from, to, period_type)
+      case site.stats_retention_days
+      when 0
+        []
+      when nil
+        from = [(stats.first.try(:d) || Time.now.utc), to - 364.days].min
+        last_stats(stats, from, to, period_type)
+      else
+        from = to - (site.stats_retention_days - 1).days
+        last_stats(stats, from, to, period_type)
+      end
     end
 
     json_stats.to_json(only: [:bp, :md])
