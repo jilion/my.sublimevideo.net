@@ -3,25 +3,19 @@ class MSVVideoTagBuilder.Routers.BuilderRouter extends Backbone.Router
     this.initModels()
     this.initViews()
     sublimevideo.load()
-    
-  initModels: ->
-    MSVVideoTagBuilder.builder = new MSVVideoTagBuilder.Models.StandardBuilder
-    MSVVideoTagBuilder.builder.setup()
+    MSVVideoTagBuilder.codeView.render()
 
-    MSVVideoTagBuilder.loader = new MSVVideoTagBuilder.Models.Loader
+  initModels: ->
+    MSVVideoTagBuilder.builder = new MSVVideoTagBuilder.Models.Builder
 
     MSVVideoTagBuilder.poster = new MSVVideoTagBuilder.Models.Image
     MSVVideoTagBuilder.sources = new MSVVideoTagBuilder.Collections.Sources([
-      new MSVVideoTagBuilder.Models.Source(format: 'mp4', formatTitle: 'MP4')
+      new MSVVideoTagBuilder.Models.Source(format: 'mp4', formatTitle: 'MP4', embedWidth: 852, embedHeight: 480, ratio: 480/852)
       new MSVVideoTagBuilder.Models.Source(format: 'mp4', formatTitle: 'MP4', quality: 'hd', isUsed: false)
       new MSVVideoTagBuilder.Models.Source(format: 'mp4', formatTitle: 'MP4', quality: 'mobile', isUsed: false)
       new MSVVideoTagBuilder.Models.Source(format: 'webmogg', formatTitle: 'WebM or Ogg', optional: true)
       new MSVVideoTagBuilder.Models.Source(format: 'webmogg', formatTitle: 'WebM or Ogg', optional: true, quality: 'hd', isUsed: false)
     ])
-
-    MSVVideoTagBuilder.video = new MSVVideoTagBuilder.Models.Video
-      poster: MSVVideoTagBuilder.poster
-      sources: MSVVideoTagBuilder.sources
 
     # Lightbox specific models
     MSVVideoTagBuilder.thumbnail = new MSVVideoTagBuilder.Models.Thumbnail
@@ -56,12 +50,17 @@ class MSVVideoTagBuilder.Routers.BuilderRouter extends Backbone.Router
       el: '#sources'
 
     new MSVVideoTagBuilder.Views.EmbedDimensions
-      model: MSVVideoTagBuilder.sources.mp4Normal()
+      model: MSVVideoTagBuilder.sources.mp4Base()
       el: '#embed_dimensions'
 
-    new MSVVideoTagBuilder.Views.Preview
+    MSVVideoTagBuilder.codeView = new MSVVideoTagBuilder.Views.Code
       builder: MSVVideoTagBuilder.builder
+      loader: MSVVideoTagBuilder.loader
       poster: MSVVideoTagBuilder.poster
       thumbnail: MSVVideoTagBuilder.thumbnail
+      iframe: MSVVideoTagBuilder.iframe
       sources: MSVVideoTagBuilder.sources
+      el: '#code'
+
+    MSVVideoTagBuilder.previewView = new MSVVideoTagBuilder.Views.Preview
       el: '#preview'

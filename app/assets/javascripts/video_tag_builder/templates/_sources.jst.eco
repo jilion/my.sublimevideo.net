@@ -4,21 +4,27 @@
     <h4 class='type'><%= source.formatTitle() %></h4>
   <% end %>
   
-  <% if source.get('quality') != 'normal': %>
+  <% if source.get('quality') isnt 'base': %>
     <div id='<%= source.formatQuality() %>_box'>
-      <div class='checkbox'>
-        <input type='checkbox' class='use_source' id='<%= source.formatQuality() %>_use_source' />
-      </div>
-      <%= "Add a mobile version (lower resolution/bitrate)" if source.get('quality') == 'mobile' %>
-      <%= "Add an HD version" if source.get('quality') == 'hd' %>
+      <div class='checkbox'><input type='checkbox' class='use_source' id='<%= source.formatQuality() %>_use_source' /></div>
+      <label for='<%= source.formatQuality() %>_use_source'>
+        <%= "Add a mobile version (lower resolution/bitrate)" if source.get('quality') == 'mobile' %>
+        <%= "Add an HD version" if source.get('quality') == 'hd' %>
+      </label>
     </div>
     <div id='<%= source.formatQuality() %>_src_box' class='src_box source_type' <%= "style='display:none'" if source.get('src') is "" %>>
-      <label for='<%= source.formatQuality() %>'>
+      <label for='<%= source.formatQuality() %>_src'>
         <strong><%= source.qualityTitle() %></strong>
       </label>
-      <input type='text' name='<%= source.formatQuality() %>_src' id='<%= source.formatQuality() %>_src' class='source' size='50' />
+      <input type='text' id='<%= source.formatQuality() %>_src' class='source' size='50' />
     </div>
   <% else: %>
-    <input type='text' name='<%= source.formatQuality() %>_src' id='<%= source.formatQuality() %>_src' class='source' size='50' />
+    <input type='text' id='<%= source.formatQuality() %>_src' class='source' size='50' />
   <% end %>
 <% end %>
+
+<div id='start_with_hd_box' display='<%= if @sources.hdPresent() then 'block' else 'none' %>'>
+  <strong>Options</strong>
+  <div class='checkbox'><input type='checkbox' class='start_with_hd' id='start_with_hd' /></div>
+  <label for='start_with_hd'>Start with HD version</label>
+</div>

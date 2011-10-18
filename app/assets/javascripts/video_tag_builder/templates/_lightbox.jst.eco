@@ -9,9 +9,9 @@
   <input type='checkbox' name='thumb_magnifying_glass' id='thumb_magnifying_glass' <%= "checked" if @thumbnail.get('magnifyingGlass') %> />
 
   <label for='thumb_width'>Thumbnail dimensions</label>:
-  <input type='text' name='thumb_width' id='thumb_width' value='<%= @thumbnail.get('thumbWidth') %>' />
+  <input type='text' name='thumb_width' id='thumb_width' value='<%= @thumbnail.get('thumbWidth') %>' size='4' maxlength='4' />
   x
-  <input type='text' name='thumb_height' id='thumb_height' value='<%= @thumbnail.get('thumbHeight') %>' readonly />
+  <input type='text' name='thumb_height' id='thumb_height' value='<%= @thumbnail.get('thumbHeight') %>' readonly size='4' maxlength='4' />
   <a href='' class='reset'>Reset</a>
 </div>
 <hr />

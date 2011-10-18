@@ -7,24 +7,28 @@ class MSVVideoTagBuilder.Models.Image extends Backbone.Model
   srcIsUrl: ->
     /^https?:\/\/.+\.\w+(\?+.*)?$/.test this.get('src')
 
-  setSrc: (src) ->
-    this.set(src: src)
-    this.preloadSrc()
+  setAndPreloadSrc: (src) ->
+    unless src is this.get('src')
+      this.set(src: src)
+      this.preloadSrc() if this.srcIsUrl()
 
   preloadSrc: ->
     new MSV.ImagePreloader(this.get('src'), this.setDimensions)
 
   setDimensions: (problem, imageSrc, dimensions) =>
-    console.log(dimensions)
-    unless problem
+    this.set(src: imageSrc) if imageSrc isnt this.get('src')
+    if problem || !dimensions?
+      this.set(width: 0)  unless this.get('width')
+      this.set(height: 0) unless this.get('height')
+      this.set(ratio: 0)  unless this.get('ratio')
+    else
       newWidth  = parseInt(dimensions['width'])
       newHeight = parseInt(dimensions['height'])
       newRatio  = newHeight / newWidth
 
-      this.set(src: imageSrc) if imageSrc != this.get('src')
-      this.set(width: newWidth) if newWidth != this.get('width')
-      this.set(height: newHeight) if newHeight != this.get('height')
-      this.set(ratio: newRatio) if newRatio != this.get('ratio')
+      this.set(width: newWidth)   unless newWidth  is this.get('width')
+      this.set(height: newHeight) unless newHeight is this.get('height')
+      this.set(ratio: newRatio)   unless newRatio  is this.get('ratio')
 
 class MSVVideoTagBuilder.Models.Thumbnail extends MSVVideoTagBuilder.Models.Image
   defaults:
@@ -38,7 +42,13 @@ class MSVVideoTagBuilder.Models.Thumbnail extends MSVVideoTagBuilder.Models.Imag
     this.setThumbWidth(this.get('width'))
 
   setThumbWidth: (newThumbWidth) ->
-    newThumbWidth = if _.isNumber(parseInt(newThumbWidth)) then parseInt(newThumbWidth) else 0
-    if newThumbWidth != this.get('thumbWidth')
+    newThumbWidth = parseInt(newThumbWidth)
+    newThumbWidth = 20 if !_.isNumber(newThumbWidth) || newThumbWidth < 20
+    newThumbWidth = 2000 if newThumbWidth > 2000
+
+    if newThumbWidth isnt this.get('thumbWidth')
       this.set(thumbWidth: newThumbWidth)
-      this.set(thumbHeight: parseInt(this.get('thumbWidth') * this.get('ratio')))
+      this.setThumbHeightWithRatio()
+
+  setThumbHeightWithRatio: ->
+    this.set(thumbHeight: parseInt(this.get('thumbWidth') * this.get('ratio')))

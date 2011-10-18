@@ -9,3 +9,7 @@ class MSVVideoTagBuilder.Models.Video extends Backbone.Model
 class MSVVideoTagBuilder.Models.VideoLightbox extends MSVVideoTagBuilder.Models.Video
   defaults:
     classes: 'sublime zoom'
+
+class MSVVideoTagBuilder.Models.VideoIframeEmbed extends MSVVideoTagBuilder.Models.Video
+  defaults:
+    classes: 'sublime sv_iframe_embed'

@@ -1,0 +1,88 @@
+<% poster = @video.get('poster').get('src') %>
+<% sortedSources = @video.get('sources').sortedSources(MSVVideoTagBuilder.builder.get('startWithHd')) %>
+
+<% unless @video.get('sources').mp4Base().srcIsUrl(): %>
+  <p class='warning'>Please provide an MP4 video source.</p>
+<% end %>
+
+<% unless @video.get('width') && @video.get('height'): %>
+  <p class='warning'>Please provide dimensions for the &lt;video&gt; element.</p>
+<% end %>
+
+<!-- Loader -->
+<pre>&lt;!-- Copy and paste this &lt;script&gt; tag into the pages on <%= MSVVideoTagBuilder.loader.get('hostname') %> --&gt;</pre>
+<pre>&lt;!-- where the SublimeVideo player will be used. We highly recommend you put it into the &lt;head&gt; tag. --&gt;</pre>
+<pre>&lt;script type="text/javascript" src="http://cdn.sublimevideo.net/js/<%= MSVVideoTagBuilder.loader.get('token') %>.js"&gt;&lt;/script&gt;</pre>
+
+<!-- Iframe embed -->
+<% if MSVVideoTagBuilder.builder.get('builderClass') is 'iframe_embed': %>
+  <% params = "?poster=#{encodeURIComponent(poster) + @video.get('sources').constructParamsFromSources()}" %>
+  <br />
+  <pre>&lt;!-- You need to set the src, width and height attributes and leave the others as they are. --&gt;</pre>
+  <pre>&lt;iframe src='<%= MSVVideoTagBuilder.iframe.get('src') %>' width='<%= @video.get('width') %>' height='<%= @video.get('height') %>' frameborder='0' allowfullscreen webkitallowfullscreen mozallowfullscreen&gt;&lt;/iframe&gt;</pre>
+
+  <br />
+
+  <% equals = _.reduce(_.range(MSVVideoTagBuilder.iframe.get('src').length + 44), ((memo, num) -> memo + "="), "") %>
+  <pre>&lt;!-- <%= equals %> --&gt;</pre>
+  <pre>&lt;!-- = The content of <%= MSVVideoTagBuilder.iframe.get('src') %> (loaded by the &lt;iframe&gt;) = --&gt;</pre>
+  <pre>&lt;!-- <%= equals %> --&gt;</pre>
+
+<% else if MSVVideoTagBuilder.builder.get('builderClass') is 'lightbox': %>
+  <pre>&lt;a href='<%= @video.get('sources').mp4Mobile().get('src') %>' class='sublime<%= " zoomable" if @video.get('thumbnail').get('magnifyingGlass') %>'&gt;</pre>
+  <% if @video.get('thumbnail').srcIsUrl(): %>
+    <pre>  &lt;img src='<%= @video.get('thumbnail').get('src') %>' width='<%= @video.get('thumbnail').get('thumbWidth') %>' height='<%= @video.get('thumbnail').get('thumbHeight') %>' /&gt;</pre>
+
+    <% if @video.get('thumbnail').get('magnifyingGlass'): %>
+      <pre>  &lt;span class='zoom_icon'&gt;&lt;/span&gt;</pre>
+    <% end %>
+
+  <% else: %>
+    <pre>  <%= @video.get('thumbnail').get('src') %></pre>
+  <% end %>
+  <pre>&lt;/a&gt;</pre>
+<% end %>
+
+<br />
+<pre>&lt;video class='<%= @video.get('classes') %>' poster='<%= poster %>' <%= "width='#{@video.get('width')}' height='#{@video.get('height')}' " unless MSVVideoTagBuilder.builder.get('builderClass') is 'iframe_embed' %><%= "style='display:none' " if MSVVideoTagBuilder.builder.get('builderClass') is 'iframe_embed' %>&gt;</pre>
+
+<% for source in sortedSources: %>
+  <% if source.get('isUsed') and source.srcIsUrl(): %>
+    <pre>  &lt;source src='<%= source.get('src') %>' <%= "data-quality='#{source.get('quality')}'" if source.needDataQualityAttribute() %>/&gt;</pre>
+  <% end %>
+<% end %>
+
+<pre>&lt;/video&gt;</pre>
+
+<!-- Lightbox -->
+<% if MSVVideoTagBuilder.builder.get('builderClass') is 'lightbox' && @video.get('thumbnail').get('magnifyingGlass'): %>
+  <br />
+  <pre>/* Add this CSS to your stylesheets or directly in the page inside a &lt;style&gt;&lt;/style&gt; element */</pre>
+  <pre>a.zoomable {</pre>
+  <pre>  display:block;</pre>
+  <pre>  width:<%= @video.get('thumbnail').get('thumbWidth') %>px;</pre>
+  <pre>  height:<%= @video.get('thumbnail').get('thumbHeight') %>px;</pre>
+  <pre>  background:#000;</pre>
+  <pre>  position:relative;</pre>
+  <pre>  -webkit-box-shadow:rgba(0,0,0,0.4) 0 4px 10px;</pre>
+  <pre>  -moz-box-shadow:rgba(0,0,0,0.4) 0 4px 10px;</pre>
+  <pre>  box-shadow:rgba(0,0,0,0.4) 0 4px 10px;</pre>
+  <pre>}</pre>
+
+  <pre>a.zoomable span.zoom_icon {</pre>
+  <pre>  display:block;</pre>
+  <pre>  width:100%;</pre>
+  <pre>  height:100%;</pre>
+  <pre>  position:absolute;</pre>
+  <pre>  top:0;</pre>
+  <pre>  left:0;</pre>
+  <pre>  background:url('sv_zoom_icon.png') no-repeat bottom right;</pre>
+  <pre>  opacity:0.3;</pre>
+  <pre>  -o-transition:opacity 0.25s;</pre>
+  <pre>  -moz-transition:opacity 0.25s;</pre>
+  <pre>  -webkit-transition:opacity 0.25s;</pre>
+  <pre>  transition:opacity 0.25s;</pre>
+  <pre>}</pre>
+
+  <pre>a.zoomable:hover span.zoom_icon {opacity:1}</pre>
+<% end %>

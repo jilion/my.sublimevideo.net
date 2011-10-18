@@ -26,7 +26,7 @@ module MySublimeVideo
     end
 
     # Precompile additional assets (application.js, application.css, and all non-JS/CSS are already added)
-    config.assets.precompile += %w( invoices.css admin.css admin.js stats.js  )
+    config.assets.precompile += %w( invoices.css admin.css video_tag_builder.css admin.js stats.js  )
 
     # Activate observers that should always be running
     # config.active_record.observers = :site_observer

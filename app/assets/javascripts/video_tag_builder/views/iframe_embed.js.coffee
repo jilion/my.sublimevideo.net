@@ -2,14 +2,10 @@ class MSVVideoTagBuilder.Views.IframeEmbed extends Backbone.View
   template: JST['video_tag_builder/templates/_iframe_embed']
 
   events:
-    'keyup #thumbnail':  'updateSrc'
-    'change #thumbnail': 'updateSrc'
+    'change #iframe_src': 'updateSrc'
 
   initialize: ->
-    _.bindAll this, 'render', 'preloadSrcAndUpdateExtraVisibility'
-    @model.bind 'change:src',    this.preloadSrcAndUpdateExtraVisibility
-    @model.bind 'change:width',  this.renderWidth
-    @model.bind 'change:height', this.renderHeight
+    _.bindAll this, 'render'
 
   #
   # EVENTS
@@ -23,12 +19,12 @@ class MSVVideoTagBuilder.Views.IframeEmbed extends Backbone.View
   render: ->
     $(@el).html(this.template(iframe: @model))
     $(@el).show()
+    this.scrollToEl()
 
     this
 
-  preloadSrcAndUpdateExtraVisibility: ->
-    if @model.srcIsUrl()
-      @model.preloadSrc()
-      $('.extra').show()
-    else
-      $('.extra').hide()
+  hide: ->
+    $(@el).hide()
+
+  scrollToEl: ->
+    $(window).scrollTop($(@el).position().top)

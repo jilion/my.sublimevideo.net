@@ -1,7 +1,7 @@
 Embed dimensions
-<input id='embed_width' name='embed_width' type='text' value='<%= @source.get('embedWidth') %>'/>
+<input id='embed_width' name='embed_width' type='text' value='<%= @source.get('embedWidth') %>' size='4' maxlength='4' />
 x
-<input id='embed_height' name='embed_height' type='text' value='<%= @source.get('embedHeight') %>' <%= "readonly" if @source.get('keepRatio') %> />
+<input id='embed_height' name='embed_height' type='text' value='<%= @source.get('embedHeight') %>' <%= "readonly" if @source.get('keepRatio') %> size='4' maxlength='4' />
 <a href='' class='reset'>Reset</a>
 
 <div>

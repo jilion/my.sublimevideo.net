@@ -1,3 +1,11 @@
+class MSVVideoTagBuilder.Models.Builder extends Backbone.Model
+  defaults:
+    builderClass: 'standard'
+    loader: null
+    video: null
+    preview: null
+    startWithHd: false
+
 class MSVVideoTagBuilder.Models.Iframe extends Backbone.Model
   defaults:
     src: ""
@@ -7,4 +15,5 @@ class MSVVideoTagBuilder.Models.Iframe extends Backbone.Model
 class MSVVideoTagBuilder.Models.Loader extends Backbone.Model
   defaults:
     token: 'YOUR_TOKEN'
+    hostname: ''
     ssl: false

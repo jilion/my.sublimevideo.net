@@ -28,5 +28,5 @@ class MSVVideoTagBuilder.Views.VideoEmbedTypeSelector extends Backbone.View
       when 'lightbox'     then MSVVideoTagBuilder.lightboxView.render()
       when 'iframe_embed' then MSVVideoTagBuilder.iframeEmbedView.render()
       when 'standard'
-        MSVVideoTagBuilder.lightboxView.remove()
-        MSVVideoTagBuilder.iframeEmbedView.remove()
+        MSVVideoTagBuilder.lightboxView.hide()
+        MSVVideoTagBuilder.iframeEmbedView.hide()

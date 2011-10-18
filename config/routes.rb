@@ -35,7 +35,6 @@ MySublimeVideo::Application.routes.draw do
       put :retry, :on => :collection
     end
     resources :stats, :only => :index
-    resource :video, :only => :new
   end
 
   resource :card, :controller => 'credit_cards', :as => :credit_card, :only => [:edit, :update]
@@ -50,6 +49,9 @@ MySublimeVideo::Application.routes.draw do
 
   resource :ticket, :only => [:new, :create], :path => '/support', :path_names => { :new =>  '' }
   %w[help feedback].each { |action| match action => redirect('/support'), :via => :get }
+
+  match '/video_tag_builder', :to => 'video_tag_builder#new', :via => :get
+  match '/video_tag_builder/iframe-embed', :to => 'video_tag_builder#iframe_embed', :via => :get
 
   match ':page', :to => 'pages#show', :via => :get, :as => :page, :page => /terms|privacy|suspended/
   match 'r/:type/:token', :to => 'referrers#redirect', :via => :get, :type => /c/, :token => /[a-z0-9]{8}/

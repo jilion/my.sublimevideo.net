@@ -8,7 +8,6 @@ class MSVVideoTagBuilder.Views.Loader extends Backbone.View
     @sites = @options.sites
 
     _.bindAll this, 'render'
-    # @model.bind 'change:token', this.renderSpecializedBox
 
     this.render()
 
@@ -18,14 +17,12 @@ class MSVVideoTagBuilder.Views.Loader extends Backbone.View
   updateToken: (event) ->
     @sites.select(event.target.value)
     @model.set({ token: event.target.value })
-    # MSVVideoTagBuilder.builderRouter.navigate("sites/#{event.target.value}/video/new", false)
-
+    @model.set({ hostname: event.target.options[event.target.selectedIndex].innerText })
 
   #
   # BINDINGS
   #
   render: ->
     $(@el).html(this.template(sites: @sites))
-    $(@el).show()
 
     this
