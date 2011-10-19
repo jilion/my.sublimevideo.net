@@ -1,0 +1,23 @@
+<%= t("mailer.intro_name", name: @site.user.full_name) %>
+
+Thank you for taking the time to evaluate SublimeVideo Stats! We hope you're enjoying your stats trial.
+
+This is a reminder that your <%= BusinessModel.days_for_stats_trial - 1 %>-day free stats trial for <%= @site.hostname %> expires in 2 days (on <%= l(@site.stats_trial_ended_at, format: :named_date) %>).
+
+If you want to keep access to this stats feature, please upgrade to a paid plan (14-day free trial).
+
+https://<%= ActionMailer::Base.default_url_options[:host] %>/sites/<%= @site.token %>/plan/edit
+
+Need Some Help?
+
+Be sure to checkout our documentation:
+
+http://docs.sublimevideo.net
+
+as well as our forum:
+
+...
+
+Thanks again for continuing to evaluate SublimeVideo.
+
+<%= t("mailer.signature") %>

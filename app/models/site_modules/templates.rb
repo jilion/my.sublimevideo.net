@@ -13,6 +13,7 @@ module SiteModules::Templates
         end
         if options[:license]
           purge_license = site.license.present?
+          site.license_hash
           site.set_template(:license)
         end
         site.cdn_up_to_date = true

@@ -6,7 +6,7 @@ module Spec
       shared_examples_for "common mailer checks" do |methods=[], *args|
         options = args.extract_options!
         options[:params] = Array(options[:params]) if options[:params]
-        options.reverse_merge!(from: ["noreply@sublimevideo.net"], to: nil, content_type: %r{text/plain; charset=UTF-8})
+        options.reverse_merge!(from: ["info@sublimevideo.net"], to: nil, content_type: %r{text/plain; charset=UTF-8})
 
         methods.each do |method|
           describe "common checks for #{mailer_class}.#{method}" do

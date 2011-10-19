@@ -9,7 +9,7 @@ This is a reminder that your <%= BusinessModel.days_for_trial - 1 %>-day free tr
 
   If you don't want to activate your paid plan, you can downgrade your site to the Free plan here:
 
-  https://<%= ActionMailer::Base.default_url_options[:host] %>/sites/<%= @site.token %>/plan
+  https://<%= ActionMailer::Base.default_url_options[:host] %>/sites/<%= @site.token %>/plan/edit
 <% else %>
   Since automatic charging will start at the end of this trial, please be sure to register a credit card to prevent any charging issue. You can do it on this page:
 

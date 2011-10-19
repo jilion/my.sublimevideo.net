@@ -24,7 +24,7 @@ describe BillingMailer do
       @last_delivery.body.encoded.should include "Dear #{@user.full_name},"
       @last_delivery.body.encoded.should include "#{BusinessModel.days_for_trial-8} days"
       @last_delivery.body.encoded.should include I18n.l(@site.trial_end, format: :named_date)
-      @last_delivery.body.encoded.should include "https://#{ActionMailer::Base.default_url_options[:host]}/sites/#{@site.token}/plan"
+      @last_delivery.body.encoded.should include "https://#{ActionMailer::Base.default_url_options[:host]}/sites/#{@site.token}/plan/edit"
       @last_delivery.body.encoded.should include "http://docs.sublimevideo.net"
     end
   end

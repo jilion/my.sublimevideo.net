@@ -41,8 +41,10 @@ module SiteModules::Recurring
 
     def stop_stats_trial
       delay_stop_stats_trial
-      
-      # ...
+
+      not_archived.where(stats_trial_started_at: 8.days.ago.midnight).find_each(:batch_size => 100) do |site|
+        Site.delay.update_loader_and_license(site.id, license: true)
+      end
     end
 
     def delay_send_stats_trial_will_end
@@ -53,8 +55,10 @@ module SiteModules::Recurring
 
     def send_stats_trial_will_end
       delay_send_stats_trial_will_end
-      
-      # ...
+
+      not_archived.where(stats_trial_started_at: 6.days.ago.midnight).find_each(:batch_size => 100) do |site|
+        StatMailer.stats_trial_will_end(site).deliver!
+      end
     end
 
   end

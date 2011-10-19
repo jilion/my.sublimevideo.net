@@ -86,6 +86,35 @@ describe SiteModules::Recurring do
     end
   end
 
+  describe ".stop_stats_trial" do
+    before(:all) do
+      Site.delete_all
+      @site_not_in_stats_trial = FactoryGirl.create(:site, plan_id: @free_plan.id, stats_trial_started_at: nil)
+      @site_in_stats_trial = FactoryGirl.create(:site, plan_id: @free_plan.id, stats_trial_started_at: 7.days.ago)
+      @worker.work_off # set_template("license")
+      Timecop.travel(4.days.ago) do
+        @site_no_more_in_stats_trial = FactoryGirl.create(:site, plan_id: @free_plan.id, stats_trial_started_at: 4.days.ago) # 8.days.ago with the Timecop.travel
+        @worker.work_off # set_template("license")
+      end
+    end
+
+    it "delays itself" do
+      Site.should_receive(:delay_stop_stats_trial)
+      Site.stop_stats_trial
+    end
+
+    it "removes r:true from site in stats trial licence" do
+      Site.find(@site_not_in_stats_trial).license.read.should_not include('r:true')
+      Site.find(@site_in_stats_trial).license.read.should include('r:true')
+      Site.find(@site_no_more_in_stats_trial).license.read.should include('r:true')
+      Site.stop_stats_trial
+      @worker.work_off
+      Site.find(@site_not_in_stats_trial).license.read.should_not include('r:true')
+      Site.find(@site_in_stats_trial).license.read.should include('r:true')
+      Site.find(@site_no_more_in_stats_trial).license.read.should_not include('r:true')
+    end
+  end
+
   describe ".delay_send_stats_trial_will_end" do
     it "delays send_stats_trial_will_end if not already delayed" do
       expect { Site.delay_send_stats_trial_will_end }.to \
@@ -96,6 +125,28 @@ describe SiteModules::Recurring do
       Site.delay_send_stats_trial_will_end
       expect { Site.delay_send_stats_trial_will_end }.not_to \
       change(Delayed::Job.where { handler =~ '%Site%send_stats_trial_will_end%' }, :count)
+    end
+  end
+
+  describe ".send_stats_trial_will_end" do
+    before(:all) do
+      Site.delete_all
+      @site_not_in_stats_trial     = FactoryGirl.create(:site, plan_id: @free_plan.id, stats_trial_started_at: nil)
+      @site_in_stats_trial         = FactoryGirl.create(:site, plan_id: @free_plan.id, stats_trial_started_at: 6.days.ago)
+      @site_no_more_in_stats_trial = FactoryGirl.create(:site, plan_id: @free_plan.id, stats_trial_started_at: 8.days.ago)
+    end
+
+    it "delays itself" do
+      Site.should_receive(:delay_send_stats_trial_will_end)
+      Site.send_stats_trial_will_end
+    end
+
+    it "sends 'stats trial will end' email" do
+      expect { Site.send_stats_trial_will_end }.to change(ActionMailer::Base.deliveries, :size).by(1)
+    end
+
+    it "doesn't send 'stats trial will end' email" do
+      Timecop.travel(1.day.from_now) { expect { Site.send_stats_trial_will_end }.to_not change(ActionMailer::Base.deliveries, :size) }
     end
   end
 

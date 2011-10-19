@@ -1,4 +1,4 @@
-class UsageMonitoringMailer < NoreplyMailer
+class UsageMonitoringMailer < DefaultMailer
 
   def plan_overused(site)
     @site = site
