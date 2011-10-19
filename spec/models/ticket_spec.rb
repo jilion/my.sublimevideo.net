@@ -45,14 +45,6 @@ describe Ticket do
   end
 
   describe "Validations" do
-    # Ticket::EMAIL_SUPPORT_ALLOWED_TYPES.each do |type|
-    #   it { should allow_value(type).for(:type) }
-    # end
-
-    # %w[foo bar test].each do |type|
-    #   it { should_not allow_value(type).for(:type) }
-    # end
-
     it "validates presence of user" do
       ticket = Ticket.new({ user_id: nil, type: "integration", subject: nil, message: "Message" })
       ticket.should_not be_valid
@@ -85,32 +77,32 @@ describe Ticket do
          let(:ticket) { Ticket.new({ user_id: @user.reload.id, type: "idea", subject: "I have a request!", message: "I have a request this is a long text!" }) }
         use_vcr_cassette "ticket/post_ticket"
 
-        it "should create the ticket on Zendesk" do
+        it "creates the ticket on Zendesk" do
           zendesk_tickets_count_before_post = VCR.use_cassette("ticket/zendesk_tickets_before_post") do
             JSON[Zendesk.get("/rules/1614956.json").body].size
           end
-          Ticket.post_ticket(ticket.to_hash)
+          Ticket.post_ticket(ticket)
           VCR.use_cassette("ticket/zendesk_tickets_after_post") do
             JSON[Zendesk.get("/rules/1614956.json").body].size.should == zendesk_tickets_count_before_post + 1
           end
         end
 
-        it "should set the subject for the ticket based on its subject" do
-          JSON[Zendesk.get("/tickets/#{Ticket.post_ticket(ticket.to_hash)}.json").body]["subject"].should == ticket.subject
+        it "sets the subject for the ticket based on its subject" do
+          JSON[Zendesk.get("/tickets/#{Ticket.post_ticket(ticket)}.json").body]["subject"].should == ticket.subject
         end
 
-        it "should set the message for the ticket based on its message" do
-          JSON[Zendesk.get("/tickets/#{Ticket.post_ticket(ticket.to_hash)}.json").body]["description"].should == ticket.message
+        it "sets the message for the ticket based on its message" do
+          JSON[Zendesk.get("/tickets/#{Ticket.post_ticket(ticket)}.json").body]["description"].should == ticket.message
         end
 
-        it "should set the zendesk_id of the user if he didn't have one already" do
+        it "sets the zendesk_id of the user if he didn't have one already" do
           ticket.user.zendesk_id.should be_nil
-          Ticket.post_ticket(ticket.to_hash)
+          Ticket.post_ticket(ticket)
           ticket.user.reload.zendesk_id.should be_present
         end
 
-        it "should delay Ticket#verify_user" do
-          Ticket.post_ticket(ticket.to_hash)
+        it "delays Ticket#verify_user" do
+          Ticket.post_ticket(ticket)
           Delayed::Job.last.name.should == 'Class#verify_user'
         end
       end
@@ -119,8 +111,8 @@ describe Ticket do
     describe ".verify_user" do
       let(:ticket) { Ticket.new({ user_id: @user.reload.id, type: "idea", subject: "I have a request!", message: "I have a request this is a long text!" }) }
 
-      it "should set the user as verified on zendesk" do
-        VCR.use_cassette("ticket/post_ticket") { Ticket.post_ticket(ticket.to_hash) }
+      it "sets the user as verified on zendesk" do
+        VCR.use_cassette("ticket/post_ticket") { Ticket.post_ticket(ticket) }
         VCR.use_cassette("ticket/verify_user") do
           Ticket.verify_user(@user.id)
           JSON[Zendesk.get("/users/#{ticket.user.reload.zendesk_id}.json").body]["is_verified"].should be_true
@@ -133,29 +125,50 @@ describe Ticket do
     let(:ticket) { Ticket.new({ user_id: @user.reload.id, type: "other", subject: "I have a request!", message: "I have a request this is a long text!" }) }
 
     describe "#save" do
-      it "should delay Ticket.post_ticket" do
+      it "delays Ticket.post_ticket" do
         ticket.save
-        Delayed::Job.last.name.should eql "Class#post_ticket"
+        Delayed::Job.last.name.should eql "Delayed::PerformableMethod"
       end
-      it "should return true if all is good" do
+
+      it "returns true if all is good" do
         ticket.save.should be_true
       end
-      it "should return false if not all is good" do
+
+      it "returns false if not all is good" do
         ticket.user = nil
         ticket.save.should be_false
       end
     end
 
     describe "#to_xml" do
-      it "generates a xml" do
-        ticket.to_xml.should == <<-EOF
+      context "user has email support" do
+        it "generates a xml" do
+          ticket.to_xml.should eql <<-EOF
 <ticket>
   <subject>I have a request!</subject>
   <description>I have a request this is a long text!</description>
   <requester-name>#{@user.full_name}</requester-name>
   <requester-email>#{@user.email}</requester-email>
 </ticket>
-        EOF
+EOF
+        end
+      end
+
+      context "user has vip support" do
+        before { ticket.user.stub(:support) { 'vip' } }
+
+        it "generates a xml" do
+          ticket.user.support.should eql 'vip'
+          ticket.to_xml.should eql <<-EOF
+<ticket>
+  <subject>I have a request!</subject>
+  <description>I have a request this is a long text!</description>
+  <set-tags>vip</set-tags>
+  <requester-name>#{@user.full_name}</requester-name>
+  <requester-email>#{@user.email}</requester-email>
+</ticket>
+EOF
+        end
       end
     end
 

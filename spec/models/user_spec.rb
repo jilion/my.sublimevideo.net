@@ -731,39 +731,42 @@ describe User do
         it { subject.support.should eql "forum" }
       end
 
-      context "user has a site with first_paid_plan_started_at < PublicLaunch.v2_started_on" do
+      context "user has only sites with forum support" do
         before(:all) do
           @user = FactoryGirl.create(:user)
-          @site = FactoryGirl.create(:site, user: @user, first_paid_plan_started_at: PublicLaunch.v2_started_on - 1.day)
+          FactoryGirl.create(:site, user: @user, plan_id: @free_plan.id,)
+        end
+        subject { @user.reload }
+        it { @free_plan.support.should eql "forum" }
+        it { subject.support.should eql "forum" }
+      end
+
+      context "user has at least one site with email support" do
+        before(:all) do
+          @user = FactoryGirl.create(:user)
+          FactoryGirl.create(:site, user: @user, plan_id: @free_plan.id, first_paid_plan_started_at: PublicLaunch.v2_started_on - 1.day)
+          FactoryGirl.create(:site, user: @user, plan_id: @paid_plan.id, first_paid_plan_started_at: PublicLaunch.v2_started_on - 1.day)
         end
         subject { @user.reload }
 
-        it { subject.support.should eql "email" }
+        it { @free_plan.support.should eql "forum" }
+        it { @paid_plan.support.should eql "email" }
+        its(:support) { should eql "email" }
       end
 
-      context "user has a site with first_paid_plan_started_at >= PublicLaunch.v2_started_on" do
-        context "user has only sites with forum support" do
-          before(:all) do
-            @user = FactoryGirl.create(:user)
-            FactoryGirl.create(:site, user: @user, plan_id: @free_plan.id)
-          end
-          subject { @user.reload }
-          it { @free_plan.support.should eql "forum" }
-          it { subject.support.should eql "forum" }
+      context "user has at least one site with vip support" do
+        before(:all) do
+          @user = FactoryGirl.create(:user)
+          FactoryGirl.create(:site, user: @user, plan_id: @free_plan.id, first_paid_plan_started_at: PublicLaunch.v2_started_on - 1.day)
+          FactoryGirl.create(:site, user: @user, plan_id: @paid_plan.id, first_paid_plan_started_at: PublicLaunch.v2_started_on - 1.day)
+          FactoryGirl.create(:site, user: @user, plan_id: @custom_plan.token, first_paid_plan_started_at: PublicLaunch.v2_started_on - 1.day)
         end
+        subject { @user.reload }
 
-        context "user has at least one site with email support" do
-          before(:all) do
-            @user = FactoryGirl.create(:user)
-            FactoryGirl.create(:site, user: @user, plan_id: @paid_plan.id, first_paid_plan_started_at: PublicLaunch.v2_started_on)
-            FactoryGirl.create(:site, user: @user, plan_id: @free_plan.id, first_paid_plan_started_at: PublicLaunch.v2_started_on)
-          end
-          subject { @user.reload }
-
-          it { @free_plan.support.should eql "forum" }
-          it { @paid_plan.support.should eql "email" }
-          its(:support) { should eql "email" }
-        end
+        it { @free_plan.support.should eql "forum" }
+        it { @paid_plan.support.should eql "email" }
+        it { @custom_plan.support.should eql "vip" }
+        its(:support) { should eql "vip" }
       end
     end
 

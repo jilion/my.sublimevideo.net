@@ -159,12 +159,9 @@ class User < ActiveRecord::Base
   end
 
   def support
-    eligible_for_email_support = sites.active.any? do |s|
-      (s.first_paid_plan_started_at? && s.first_paid_plan_started_at < PublicLaunch.v2_started_on) ||
-      s.plan.support == "email"
-    end
+    support_level = sites.active.max { |a, b| a.plan.support_level <=> b.plan.support_level }.try(:plan).try(:support_level) || 0
 
-    eligible_for_email_support ? 'email' : 'forum'
+    Plan::SUPPORT_LEVELS[support_level]
   end
 
   def archivable?
