@@ -1,15 +1,4 @@
-- if !user_signed_in?
-  - if params[:beta] == "over"
-    #sticky_notice
-      %h3 We have now launched publicly!
-      %p
-        The Beta period is over. Please check out our new
-        = link_to "Homepage", "http://sublimevideo.net"
-        and the
-        = link_to "Plans & Pricing", "http://sublimevideo.net/plans"
-        page.
-
-- elsif !current_user.suspended? && ((current_user.cc_expire_this_month? || current_user.cc_expired?) && current_user.sites.billable.present?)
+- if user_signed_in? && !current_user.suspended? && ((current_user.cc_expire_this_month? || current_user.cc_expired?) && current_user.sites.billable.present?)
   #sticky_notice
     %h3 Warning
     %ul
