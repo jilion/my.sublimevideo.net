@@ -19,7 +19,7 @@ class TicketsController < ApplicationController
 private
 
   def redirect_user_with_no_email_support
-    redirect_to "http://sublimevideo.net/help" if current_user.support != 'email'
+    redirect_to "http://sublimevideo.net/help" if current_user.support == 'forum'
   end
 
 end

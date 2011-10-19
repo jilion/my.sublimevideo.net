@@ -10,7 +10,7 @@
     .right
       %ul.extra_links
         %li= link_to("Documentation", "http://docs.sublimevideo.net")
-        - if !user_signed_in? || current_user.support != 'email'
+        - if !user_signed_in? || current_user.support == 'forum'
           %li= link_to("Help", "http://sublimevideo.net/help")
         - else
           %li= link_to("Help", new_ticket_path)

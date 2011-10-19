@@ -36,21 +36,11 @@
 -#
 
 %p.title_desc
-  - if current_user.support == 'email'
+  - unless current_user.support == 'forum'
     = raw "If you can't find the answer you're looking for use the form below to submit your question and we'll personally get back to you as quickly as we can."
     %p.title_desc= raw "Our support team is available during central Europe business hours: 9am - 6pm #{link_to "CET"," http://en.wikipedia.org/wiki/Central_European_Time", :class => "hl"}."
 
     = form_for @ticket, :url => ticket_path do |f|
-      -#.entry.select.type
-      -#  = f.label :type, "", :class => "icon"
-      -#  = f.select :type, ticket_type_options
-      -#  :javascript
-      -#    if (window.location.hash) {
-      -#      var ell = $$('#ticket_type option').find(function(el) {
-      -#        return "#" + el.value === window.location.hash;
-      -#      });
-      -#      ell.selected = true;
-      -#    }
       .entry.select.site_token
         = f.label :site_token, "", :class => "icon"
         = f.select :site_token, ticket_site_token_options
