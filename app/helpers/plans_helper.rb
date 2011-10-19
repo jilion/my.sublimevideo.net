@@ -1,19 +1,5 @@
 module PlansHelper
 
-  def plan_page_title
-    if !@site.hostname?
-      "Site plan"
-    elsif @site.in_free_plan?
-      "Choose a plan"
-    else
-      if @site.in_custom_plan? || @site.in_sponsored_plan?
-        "Plan"
-      else
-        "Change plan"
-      end + " for #{truncate_middle(@site.hostname, length: 23)}"
-    end
-  end
-
   def plan_label_content(plan, site=nil, options={})
     content_tag(:span, class: "pricing") do
       price_box = content_tag(:strong, class: "price") do

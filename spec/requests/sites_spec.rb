@@ -272,7 +272,7 @@ feature "Sites" do
           page.should have_content strip_tags(I18n.t('site.edit.delete_site_info1', domain: "rymai.com"))
           page.should have_content I18n.t('site.edit.delete_site_info2')
 
-          click_link "Change plan"
+          click_link "Plan"
           current_url.should =~ %r(http://[^/]+/sites/#{@site.token}/plan/edit)
           page.should have_selector('#change_plan_box.section_box')
 
