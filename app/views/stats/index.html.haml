@@ -1,3 +1,6 @@
+= content_for :head do
+  = stylesheet_link_tag 'stats'
+
 = title_and_content_header("Stats for #{@site.hostname || @site.token}")
 
 :coffeescript
