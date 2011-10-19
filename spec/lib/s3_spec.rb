@@ -1,37 +1,19 @@
 require 'spec_helper'
 
 describe S3 do
-  
-  describe "yml key access" do
-    its(:cnamed)            { should be_false }
-    its(:access_key_id)     { should be_present }
-    its(:secret_access_key) { should be_present }
-  end
-  
-  describe "yml key access on production" do
-    before(:each) do
-      Rails.stub(:env).and_return("production")
-      S3.reset_yml_options
-      ENV['S3_ACCESS_KEY_ID'] = 'aaa'
-      ENV['S3_SECRET_ACCESS_KEY'] = 'bbb'
-    end
-    
-    its(:access_key_id)     { should == 'aaa' }
-    its(:secret_access_key) { should == 'bbb' }
-  end
-  
+
   describe "logs list" do
     before(:all) { S3.reset_yml_options }
     use_vcr_cassette "s3/logs_bucket_all_keys"
-    
+
     it "should return max 100 keys" do
       S3.logs_name_list.should have(104).names
     end
   end
-  
+
   describe ".keys_names" do
     use_vcr_cassette "s3/keys_names"
-    
+
     it "should return the names of all keys" do
       S3.keys_names(S3.player_bucket).should == ["beta/black_pixel.gif",
            "beta/close_button.png",
@@ -65,20 +47,20 @@ describe S3 do
            "stable/sublime.swf",
            "stable/sublime_css.js"]
     end
-    
+
     describe ":remove_prefix option" do
       it "should not remove prefix from key name when remove_prefix is not set" do
         S3.keys_names(S3.player_bucket, 'prefix' => 'dev').each do |key|
           key.should =~ /^dev/
         end
       end
-      
+
       it "should not remove prefix from key name when remove_prefix is set to false" do
         S3.keys_names(S3.player_bucket, 'prefix' => 'dev', :remove_prefix => false).each do |key|
           key.should =~ /^dev/
         end
       end
-      
+
       it "should remove prefix from key name when remove_prefix is set to true" do
         S3.keys_names(S3.player_bucket, 'prefix' => 'dev', :remove_prefix => true).each do |key|
           key.should_not =~ /^dev/
@@ -86,5 +68,5 @@ describe S3 do
       end
     end
   end
-  
+
 end

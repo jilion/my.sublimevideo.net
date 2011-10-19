@@ -8,7 +8,7 @@ class Graph
     yield self
   end
 
-  def option(hash={})
+  def option(hash = {})
     @options.update(hash)
   end
 

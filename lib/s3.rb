@@ -1,22 +1,16 @@
 module S3
+  include Configurator
+
+  heroku_config_file 's3.yml'
+
+  heroku_config_accessor 'S3', :access_key_id, :secret_access_key
+
   class << self
-    
-    def access_key_id
-      yml[:access_key_id] == 'heroku_env' ? ENV['S3_ACCESS_KEY_ID'] : yml[:access_key_id]
-    end
-    
-    def secret_access_key
-      yml[:secret_access_key] == 'heroku_env' ? ENV['S3_SECRET_ACCESS_KEY'] : yml[:secret_access_key]
-    end
-    
-    def method_missing(name)
-      yml[name.to_sym]
-    end
-    
+
     def logs_name_list(options = {})
       keys_names(logs_bucket, options)
     end
-    
+
     def keys_names(bucket, options = {})
       remove_prefix = options.delete(:remove_prefix)
       keys  = bucket.keys(options)
@@ -27,32 +21,18 @@ module S3
       end
       names
     end
-    
+
     def player_bucket
-      @@player_bucket ||= client.bucket(S3Bucket.player)
+      @player_bucket ||= client.bucket(S3Bucket.player)
     end
-    
+
     def logs_bucket
-      @@logs_bucket ||= client.bucket(S3Bucket.logs)
+      @logs_bucket ||= client.bucket(S3Bucket.logs)
     end
-    
+
     def client
-      @@client ||= Aws::S3.new(access_key_id, secret_access_key)
+      @client ||= Aws::S3.new(access_key_id, secret_access_key)
     end
-    
-    def reset_yml_options
-      @yml_options = nil
-    end
-    
-  private
-    
-    def yml
-      config_path = Rails.root.join('config', 's3.yml')
-      @yml_options ||= YAML::load_file(config_path)[Rails.env]
-      @yml_options.to_options
-    rescue
-      raise StandardError, "S3 config file '#{config_path}' doesn't exist."
-    end
-    
+
   end
 end

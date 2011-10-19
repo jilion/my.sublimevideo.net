@@ -355,7 +355,7 @@ end
 
 def recurring_site_stats_update(user_id)
   sites = User.find(user_id).sites
-  puts "Begin recurring fake site(s) stats genaration (each minute)"
+  puts "Begin recurring fake site(s) stats generation (each minute)"
   Thread.new do
     loop do
       second = Time.now.utc.change(usec: 0).to_time

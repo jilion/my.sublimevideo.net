@@ -1,4 +1,10 @@
 module Ogone
+  include Configurator
+
+  heroku_config_file 'ogone.yml'
+
+  heroku_config_accessor 'OGONE', :login, :user, :password, :signature, :signature_out
+
   class << self
 
     def authorize(*args)
@@ -25,39 +31,13 @@ module Ogone
         TRXDATE VC]
     end
 
-    def yml
-      config_path = Rails.root.join('config', 'ogone.yml')
-      @default_storage ||= YAML::load_file(config_path)[Rails.env]
-      @default_storage.to_options
-    rescue
-      raise StandardError, "Ogone config file '#{config_path}' doesn't exist."
-    end
-
-    def signature_out
-      yml[:signature_out] == 'heroku_env' ? ENV['OGONE_SIGNATURE_OUT'] : yml[:signature_out]
-    end
-
   private
-
-    def login
-      yml[:login] == 'heroku_env' ? ENV['OGONE_LOGIN'] : yml[:login]
-    end
-
-    def user
-      yml[:user] == 'heroku_env' ? ENV['OGONE_USER'] : yml[:user]
-    end
-
-    def password
-      yml[:password] == 'heroku_env' ? ENV['OGONE_PASSWORD'] : yml[:password]
-    end
-
-    def signature
-      yml[:signature] == 'heroku_env' ? ENV['OGONE_SIGNATURE'] : yml[:signature]
-    end
 
     def gateway
       ActiveMerchant::Billing::Base.gateway_mode = Rails.env.production? ? :production : :test
-      @@gateway ||= ActiveMerchant::Billing::OgoneGateway.new(yml.merge({ login: login, user: user, password: password, signature: signature, signature_out: signature_out }))
+
+      gateway_config = yml_options.merge(login: login, user: user, password: password, signature: signature, signature_out: signature_out)
+      @gateway ||= ActiveMerchant::Billing::OgoneGateway.new(gateway_config)
     end
 
   end

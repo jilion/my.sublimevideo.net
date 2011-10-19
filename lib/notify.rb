@@ -1,4 +1,8 @@
 module Notify
+  include Configurator
+
+  heroku_config_file 'prowl.yml'
+
   class << self
 
     def send(message, options = {})
@@ -18,7 +22,7 @@ module Notify
 
     def prowl(message)
       @prowl ||= Prowl.new(
-        :apikey => prowl_api_keys.join(","),
+        :apikey => yml_options[:api_keys].join(","),
         :application => "MySublime"
       )
       @prowl.add(
@@ -28,12 +32,6 @@ module Notify
       )
     end
 
-    def prowl_api_keys
-      config_path = Rails.root.join('config', 'prowl.yml')
-      @api_keys ||= YAML::load_file(config_path)
-    rescue
-      raise StandardError, "Prowl config file '#{config_path}' doesn't exist."
-    end
-
   end
+
 end

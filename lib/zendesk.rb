@@ -1,22 +1,23 @@
 require 'net/http'
 
 module Zendesk
+  include Configurator
+
+  heroku_config_file 'zendesk.yml'
+
+  heroku_config_accessor 'ZENDESK', :base_url, :username, :password, :api_token
 
   class << self
-
-    [:base_url, :username, :password, :api_token].each do |method_name|
-      define_method(method_name) { yml[method_name] == 'heroku_env' ? ENV["ZENDESK_#{method_name.to_s.upcase}"] : yml[method_name] }
-    end
 
     def get(url)
       Zendesk::Request.new(url, :get).execute
     end
 
-    def post(url, params={})
+    def post(url, params = {})
       Zendesk::Request.new(url, :post, params).execute
     end
 
-    def put(url, params={})
+    def put(url, params = {})
       Zendesk::Request.new(url, :put, params).execute
     end
 
@@ -24,24 +25,10 @@ module Zendesk
       Zendesk::Request.new(url, :delete).execute
     end
 
-    def method_missing(name)
-      yml[name.to_sym]
-    end
-
-    private
-
-    def yml
-      config_path = Rails.root.join('config', 'zendesk.yml')
-      @@yml_options ||= YAML::load_file(config_path)[Rails.env]
-      @@yml_options.to_options
-    rescue
-      raise StandardError, "Zendesk config file '#{config_path}' doesn't exist."
-    end
-
   end
 
   class Request
-    def initialize(url, verb, params={})
+    def initialize(url, verb, params = {})
       @verb    = verb.to_s
       @url     = URI.parse("#{Zendesk.base_url}#{url}")
       @params  = params

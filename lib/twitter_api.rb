@@ -1,30 +1,22 @@
 module TwitterApi
+  include Configurator
+
+  heroku_config_file 'twitter.yml'
+
+  heroku_config_accessor 'TWITTER', :consumer_key, :consumer_secret, :oauth_token, :oauth_token_secret
+
   class << self
-
-    def consumer_key
-      yml[:consumer_key] == 'heroku_env' ? ENV['TWITTER_CONSUMER_KEY'] : yml[:consumer_key]
-    end
-
-    def consumer_secret
-      yml[:consumer_secret] == 'heroku_env' ? ENV['TWITTER_CONSUMER_SECRET'] : yml[:consumer_secret]
-    end
-
-    def oauth_token
-      yml[:oauth_token] == 'heroku_env' ? ENV['TWITTER_OAUTH_TOKEN'] : yml[:oauth_token]
-    end
-
-    def oauth_token_secret
-      yml[:oauth_token_secret] == 'heroku_env' ? ENV['TWITTER_OAUTH_TOKEN_SECRET'] : yml[:oauth_token_secret]
-    end
 
     def search
       Twitter::Search
     end
 
     def method_missing(method_name, *args)
+      method_name = method_name.to_sym
+
       if Twitter.respond_to?(method_name)
         with_rescue_and_retry(5) do
-          Twitter.send(method_name.to_sym, *args)
+          Twitter.send(method_name, *args)
         end
       else
         super
@@ -32,6 +24,8 @@ module TwitterApi
     end
 
     def respond_to?(method_name)
+      method_name = method_name.to_sym
+
       Twitter.respond_to?(method_name) || super
     end
 
@@ -41,15 +35,6 @@ module TwitterApi
       end
     end
 
-  private
-
-    def yml
-      config_path = Rails.root.join('config', 'twitter.yml')
-      @yml_options ||= YAML::load_file(config_path)[Rails.env]
-      @yml_options.to_options
-    rescue
-      raise StandardError, "Twitter config file '#{config_path}' doesn't exist."
-    end
-
   end
+
 end
