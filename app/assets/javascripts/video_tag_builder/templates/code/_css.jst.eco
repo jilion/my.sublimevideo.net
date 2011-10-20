@@ -1,0 +1,29 @@
+<br />
+Add this CSS to your stylesheets or directly in the page inside a &lt;style&gt;&lt;/style&gt; element.
+<pre>a.zoomable {</pre>
+<pre>  display:block;</pre>
+<pre>  width:<%= @video.get('thumbnail').get('thumbWidth') %>px;</pre>
+<pre>  height:<%= @video.get('thumbnail').get('thumbHeight') %>px;</pre>
+<pre>  background:#000;</pre>
+<pre>  position:relative;</pre>
+<pre>  -webkit-box-shadow:rgba(0,0,0,0.4) 0 4px 10px;</pre>
+<pre>  -moz-box-shadow:rgba(0,0,0,0.4) 0 4px 10px;</pre>
+<pre>  box-shadow:rgba(0,0,0,0.4) 0 4px 10px;</pre>
+<pre>}</pre>
+
+<pre>a.zoomable span.zoom_icon {</pre>
+<pre>  display:block;</pre>
+<pre>  width:100%;</pre>
+<pre>  height:100%;</pre>
+<pre>  position:absolute;</pre>
+<pre>  top:0;</pre>
+<pre>  left:0;</pre>
+<pre>  background:url('sv_zoom_icon.png') no-repeat bottom right;</pre>
+<pre>  opacity:0.3;</pre>
+<pre>  -o-transition:opacity 0.25s;</pre>
+<pre>  -moz-transition:opacity 0.25s;</pre>
+<pre>  -webkit-transition:opacity 0.25s;</pre>
+<pre>  transition:opacity 0.25s;</pre>
+<pre>}</pre>
+
+<pre>a.zoomable:hover span.zoom_icon {opacity:1}</pre>

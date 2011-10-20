@@ -22,16 +22,21 @@
       SublimeVideoSizeChecker.setRoot('/video-size-checker/')
       window.MSVVideoTagBuilder.builderRouter = new MSVVideoTagBuilder.Routers.BuilderRouter()
 
-%ul
-  %li http://remycoutable.fr/storage/rymai-tv/posters/day2.jpg
-  %li http://remycoutable.fr/storage/rymai-tv/videos/day22.m4v
-  %li http://remycoutable.fr/storage/rymai-tv/videos/day9.m4v
-  %li http://remycoutable.fr/storage/rymai-tv/videos/day3.m4v
-  %li http://medias.jilion.com/sublimevideo/dartmoor.webm
-  %li http://medias.jilion.com/sublimevideo/dartmoor.ogv
+%input{ type: "text", size: 60, value: "http://remycoutable.fr/storage/rymai-tv/posters/day2.jpg" }
+%input{ type: "text", size: 60, value: "http://remycoutable.fr/storage/rymai-tv/videos/day22.m4v" }
+%input{ type: "text", size: 60, value: "http://remycoutable.fr/storage/rymai-tv/videos/day9.m4v" }
+%input{ type: "text", size: 60, value: "http://medias.jilion.com/sublimevideo/dartmoor.webm" }
+%input{ type: "text", size: 60, value: "http://medias.jilion.com/sublimevideo/dartmoor.ogv" }
 
-= "This video will be inserted on:"
-#site_selector
+- if user_signed_in?
+  %p
+    = "This video will be embedded on: "
+    %span#site_selector
+
+%h2 Demo bootstrap
+#demo_bootstrap
+  %input{ type: "checkbox", name: "use_demo_assets", id: "use_demo_assets" }
+  %label{ for: 'use_demo_assets' } Use demo assets
 
 %ul#video_embed_type_selector
   %li.active= link_to "Standard", '', id: 'standard'
@@ -46,19 +51,19 @@
 
 %h2 Poster frame
 %p#poster
-%br
+.spacer
 
 %h2 Video sources
 #sources
-%br
+.spacer
 
-%h2 Embed size
-#embed_dimensions
-%br
+%h2 Settings
+#settings
+.spacer
 
 %h2 Preview
 #preview
-%br
+.spacer
 
 %h2 Code to paste in your page
 #code

@@ -19,12 +19,8 @@ class MSVVideoTagBuilder.Views.IframeEmbed extends Backbone.View
   render: ->
     $(@el).html(this.template(iframe: @model))
     $(@el).show()
-    this.scrollToEl()
 
     this
 
   hide: ->
     $(@el).hide()
-
-  scrollToEl: ->
-    $(window).scrollTop($(@el).position().top)

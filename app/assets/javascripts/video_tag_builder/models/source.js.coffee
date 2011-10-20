@@ -6,8 +6,8 @@ class MSVVideoTagBuilder.Models.Source extends Backbone.Model
     optional: false
     isUsed: true
     src: ""
-    originalWidth: null
-    originalHeight: null
+    width: null
+    height: null
     ratio: null
     keepRatio: true
     embedWidth: null
@@ -44,7 +44,7 @@ class MSVVideoTagBuilder.Models.Source extends Backbone.Model
       this.set(height: newHeight) unless newHeight is this.get('height')
       this.set(ratio: newRatio)   unless newRatio  is this.get('ratio')
 
-    this.setEmbedWidth(_.min([this.get('width'), 858]))
+    this.setEmbedWidth(_.min([this.get('width'), 852]))
 
   setEmbedWidth: (newEmbedWidth) ->
     newEmbedWidth = parseInt(newEmbedWidth)

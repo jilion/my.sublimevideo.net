@@ -5,6 +5,7 @@ class MSVVideoTagBuilder.Models.Builder extends Backbone.Model
     video: null
     preview: null
     startWithHd: false
+    useDemoAssets: false
 
 class MSVVideoTagBuilder.Models.Iframe extends Backbone.Model
   defaults:

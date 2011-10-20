@@ -1,5 +1,11 @@
 class MSVVideoTagBuilder.Views.Code extends Backbone.View
   template: JST['video_tag_builder/templates/_code']
+  warnings_template: JST['video_tag_builder/templates/code/_warnings']
+  loader_template: JST['video_tag_builder/templates/code/_loader']
+  video_tag_template: JST['video_tag_builder/templates/code/_video_tag']
+  iframe_tag_template: JST['video_tag_builder/templates/code/_iframe_tag']
+  iframe_content_template: JST['video_tag_builder/templates/code/_iframe_content']
+  css_template: JST['video_tag_builder/templates/code/_css']
 
   initialize: ->
     @builder   = @options.builder
@@ -8,6 +14,7 @@ class MSVVideoTagBuilder.Views.Code extends Backbone.View
     @thumbnail = @options.thumbnail
     @iframe    = @options.iframe
     @sources   = @options.sources
+    @video     = @options.video
 
     _.bindAll this, 'render'
     @builder.bind   'change',     this.render
@@ -21,24 +28,35 @@ class MSVVideoTagBuilder.Views.Code extends Backbone.View
   # BINDINGS
   #
   render: ->
-    baseMp4 = @sources.mp4Base()
+    poster = if @builder.get('useDemoAssets') then MSVVideoTagBuilder.demoPoster else @poster
+    sources = if @builder.get('useDemoAssets') then MSVVideoTagBuilder.demoSources else @sources
+    
+    baseMp4 = sources.mp4Base()
     attributes =
-      poster: @poster
-      sources: @sources
+      poster: poster
+      sources: sources
       width: baseMp4.get('embedWidth')
       height: baseMp4.get('embedHeight')
 
-    switch MSVVideoTagBuilder.builder.get('builderClass')
+    @video = switch @builder.get('builderClass')
       when 'lightbox'
         lightbox_attributes = { thumbnail: @thumbnail }
         attributes = $.extend({}, attributes, lightbox_attributes)
-        MSVVideoTagBuilder.video = new MSVVideoTagBuilder.Models.VideoLightbox(attributes)
+        new MSVVideoTagBuilder.Models.VideoLightbox(attributes)
       when 'iframe_embed'
-        MSVVideoTagBuilder.video = new MSVVideoTagBuilder.Models.VideoIframeEmbed(attributes)
+        new MSVVideoTagBuilder.Models.VideoIframeEmbed(attributes)
       else
-        MSVVideoTagBuilder.video = new MSVVideoTagBuilder.Models.Video(attributes)
+        new MSVVideoTagBuilder.Models.Video(attributes)
+    MSVVideoTagBuilder.video = @video
 
-    $(@el).html(this.template(video: MSVVideoTagBuilder.video))
+    $(@el).html this.template
+      builderClass: @builder.get('builderClass')
+      video: @video
+      warnings_block: => this.warnings_block()
+      loader_block: => this.loader_block()
+      video_embed_block: => this.video_embed_block()
+      iframe_content_block: => this.iframe_content_block()
+      css_block: => this.css_block()
 
     if baseMp4.srcIsUrl() && baseMp4.get('embedWidth')
       # $(MSVVideoTagBuilder.previewView.el).spin()
@@ -47,3 +65,28 @@ class MSVVideoTagBuilder.Views.Code extends Backbone.View
       MSVVideoTagBuilder.previewView.hide()
 
     this
+
+  #
+  # HELPERS
+  #
+  warnings_block: ->
+    this.warnings_template(video: @video)
+
+  loader_block: ->
+    this.loader_template(builderClass: @builder.get('builderClass'), video: @video)
+
+  video_embed_block: ->
+    if @builder.get('builderClass') is 'iframe_embed'
+      this.iframe_tag_template(iframe: @iframe, video: @video)
+    else
+      this.video_tag_template(builderClass: @builder.get('builderClass'), video: @video)
+
+  iframe_content_block: ->
+    this.iframe_content_template
+      builderClass: @builder.get('builderClass')
+      iframe: @iframe
+      loader: this.loader_template(builderClass: @builder.get('builderClass'), video: @video)
+      video: this.video_tag_template(builderClass: @builder.get('builderClass'), video: @video)
+
+  css_block: ->
+    this.css_template(builderClass: @builder.get('builderClass'), video: @video)

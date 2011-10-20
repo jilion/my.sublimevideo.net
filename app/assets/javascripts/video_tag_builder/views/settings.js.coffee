@@ -1,11 +1,12 @@
-class MSVVideoTagBuilder.Views.EmbedDimensions extends Backbone.View
-  template: JST['video_tag_builder/templates/_embed_dimensions']
+class MSVVideoTagBuilder.Views.Settings extends Backbone.View
+  template: JST['video_tag_builder/templates/_settings']
 
   events:
     'change #embed_width':  'updateEmbedWidth'
     'change #embed_height': 'updateEmbedHeight'
     'click #keep_ratio':    'updateKeepRatio'
-    'click .reset':         'resetEmbedDimensions'
+    'click a.reset':        'resetEmbedDimensions'
+    'click #start_with_hd': 'updateStartWithHd'
 
   initialize: ->
     _.bindAll this, 'render', 'renderEmbedWidth', 'renderEmbedHeight'
@@ -31,27 +32,27 @@ class MSVVideoTagBuilder.Views.EmbedDimensions extends Backbone.View
 
   resetEmbedDimensions: (event) ->
     @model.setKeepRatio(true)
-    @model.setEmbedWidth(_.min([@model.get('width'), 858]))
+    @model.setEmbedWidth(_.min([@model.get('width'), 852]))
     this.render()
 
     event.stopPropagation()
     false
 
+  updateStartWithHd: (event) ->
+    MSVVideoTagBuilder.builder.set(startWithHd: event.target.checked)
+
   #
   # BINDINGS
   #
   render: ->
-    $(@el).html(this.template(source: @model))
+    $(@el).html this.template
+      source: @model
+      sources: @collection
 
     this
 
   renderEmbedWidth: ->
     this.$("#embed_width").attr(value: @model.get('embedWidth'))
-    this.scrollToEl()
 
   renderEmbedHeight: ->
     this.$("#embed_height").attr(value: @model.get('embedHeight'))
-    this.scrollToEl()
-
-  scrollToEl: ->
-    $(window).scrollTop($(@el).position().top)

@@ -40,7 +40,6 @@ class MSVVideoTagBuilder.Views.Lightbox extends Backbone.View
   render: ->
     $(@el).html(this.template(thumbnail: @thumbnail))
     $(@el).show()
-    this.scrollToEl()
 
     this
 
@@ -50,15 +49,9 @@ class MSVVideoTagBuilder.Views.Lightbox extends Backbone.View
   renderExtra: ->
     extraDiv = $('.extra')
     if @thumbnail.srcIsUrl() then extraDiv.show() else extraDiv.hide()
-    this.scrollToEl()
 
   renderThumbWidth: ->
     $("#thumb_width").attr(value: @thumbnail.get('thumbWidth'))
-    this.scrollToEl()
 
   renderThumbHeight: ->
     $("#thumb_height").attr(value: @thumbnail.get('thumbHeight'))
-    this.scrollToEl()
-
-  scrollToEl: ->
-    $(window).scrollTop($(@el).position().top)

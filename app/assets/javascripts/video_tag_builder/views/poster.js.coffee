@@ -19,7 +19,6 @@ class MSVVideoTagBuilder.Views.Poster extends Backbone.View
   preloadSrc: ->
     if @model.srcIsUrl()
       @model.preloadSrc()
-    this.scrollToEl()
 
   #
   # BINDINGS
@@ -28,6 +27,3 @@ class MSVVideoTagBuilder.Views.Poster extends Backbone.View
     $(@el).html(this.template(poster: @model))
 
     this
-
-  scrollToEl: ->
-    $(window).scrollTop($(@el).position().top)

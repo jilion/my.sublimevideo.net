@@ -1,0 +1,2 @@
+You need to set the src, width and height attributes and leave the others as they are.
+<pre>&lt;iframe src='<%= @iframe.get('src') %>' width='<%= @video.get('width') %>' height='<%= @video.get('height') %>' frameborder='0' allowfullscreen webkitallowfullscreen mozallowfullscreen&gt;&lt;/iframe&gt;</pre>

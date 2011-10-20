@@ -1,0 +1,7 @@
+<% if @builderClass isnt 'iframe_embed': %>
+  Copy and paste this &lt;script&gt; tag into the pages on <%= MSVVideoTagBuilder.loader.get('hostname') %>
+  where the SublimeVideo player will be used. We highly recommend you put it into the &lt;head&gt; tag.
+<% end %>
+
+<% extra_spaces = if @builderClass is 'iframe_embed' then "    " else "" %>
+<pre><%= extra_spaces %>&lt;script type="text/javascript" src="http://cdn.sublimevideo.net/js/<%= MSVVideoTagBuilder.loader.get('token') %>.js"&gt;&lt;/script&gt;</pre>

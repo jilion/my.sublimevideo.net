@@ -14,3 +14,6 @@ window.MSVVideoTagBuilder =
   Collections: {}
   Routers: {}
   Views: {}
+
+  killScroll: ->
+    $(window).scrollTop($(window).scrollTop())

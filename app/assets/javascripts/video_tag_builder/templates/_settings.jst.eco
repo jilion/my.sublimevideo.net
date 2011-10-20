@@ -1,0 +1,18 @@
+<div style='float:left' class='dimensions'>
+  Embed size:
+  <input id='embed_width' name='embed_width' type='text' value='<%= @source.get('embedWidth') %>' size='4' maxlength='4' />
+  x
+  <input id='embed_height' name='embed_height' type='text' value='<%= @source.get('embedHeight') %>' <%= "readonly" if @source.get('keepRatio') %> size='4' maxlength='4' />
+</div>
+
+<div style='float:left'>
+  <input id='keep_ratio' name='keep_ratio' type='checkbox' <%= "checked" if @source.get('keepRatio') %> /> <label for='keep_ratio'>Keep original ratio</label>
+  <br />
+  <a href='' class='reset'>Reset to original size</a>
+</div>
+<div class='spacer'></div>
+
+<div id='start_with_hd_box' style='display:<%= if @sources.hdPresent() then 'block' else 'none' %>'>
+  <div class='checkbox'><input type='checkbox' class='start_with_hd' id='start_with_hd' /></div>
+  <label for='start_with_hd'>Start with HD version</label>
+</div>
