@@ -1,3 +1,5 @@
+notification :gntp
+
 group :frontend do
 
   guard :pow do
