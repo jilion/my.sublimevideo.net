@@ -1,4 +1,4 @@
-module Stat
+module StatTimeline
 
   class SiteUsage
 

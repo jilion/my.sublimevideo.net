@@ -1,14 +1,14 @@
 <%
 invoices = ::Invoice.between(@date_range_from - (@moving_avg-1).days, @date_range_to).order(:created_at.asc)
 
-paid_invoices         = Stat::Invoice.timeline(invoices.paid, @date_range_from - (@moving_avg-1).days, @date_range_to)
-monthly_paid_invoices = Stat::Invoice.timeline(invoices.includes(:plan_invoice_items).paid.select { |i| i.paid_plan.monthly? }, @date_range_from - (@moving_avg-1).days, @date_range_to)
-yearly_paid_invoices  = Stat::Invoice.timeline(invoices.includes(:plan_invoice_items).paid.select { |i| i.paid_plan.yearly? }, @date_range_from - (@moving_avg-1).days, @date_range_to)
-open_invoices         = Stat::Invoice.timeline(invoices.open, @date_range_from - (@moving_avg-1).days, @date_range_to)
-failed_invoices       = Stat::Invoice.timeline(invoices.failed, @date_range_from - (@moving_avg-1).days, @date_range_to)
-canceled_invoices     = Stat::Invoice.timeline(invoices.canceled, @date_range_from - (@moving_avg-1).days, @date_range_to)
-refunded_invoices     = Stat::Invoice.timeline(invoices.refunded, @date_range_from - (@moving_avg-1).days, @date_range_to)
-waiting_invoices      = Stat::Invoice.timeline(invoices.waiting, @date_range_from - (@moving_avg-1).days, @date_range_to)
+paid_invoices         = StatTimeline::Invoice.timeline(invoices.paid, @date_range_from - (@moving_avg-1).days, @date_range_to)
+monthly_paid_invoices = StatTimeline::Invoice.timeline(invoices.includes(:plan_invoice_items).paid.select { |i| i.paid_plan.monthly? }, @date_range_from - (@moving_avg-1).days, @date_range_to)
+yearly_paid_invoices  = StatTimeline::Invoice.timeline(invoices.includes(:plan_invoice_items).paid.select { |i| i.paid_plan.yearly? }, @date_range_from - (@moving_avg-1).days, @date_range_to)
+open_invoices         = StatTimeline::Invoice.timeline(invoices.open, @date_range_from - (@moving_avg-1).days, @date_range_to)
+failed_invoices       = StatTimeline::Invoice.timeline(invoices.failed, @date_range_from - (@moving_avg-1).days, @date_range_to)
+canceled_invoices     = StatTimeline::Invoice.timeline(invoices.canceled, @date_range_from - (@moving_avg-1).days, @date_range_to)
+refunded_invoices     = StatTimeline::Invoice.timeline(invoices.refunded, @date_range_from - (@moving_avg-1).days, @date_range_to)
+waiting_invoices      = StatTimeline::Invoice.timeline(invoices.waiting, @date_range_from - (@moving_avg-1).days, @date_range_to)
 
 graph = Graph.new do |g|
   g.option(chart: chart('timeline_invoices', margin_top: 100))

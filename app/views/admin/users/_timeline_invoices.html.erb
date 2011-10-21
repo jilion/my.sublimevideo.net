@@ -1,5 +1,5 @@
 <%
-invoices = Stat::Invoice.timeline(@date_range_from, @date_range_to, { user_id: user.id })
+invoices = StatTimeline::Invoice.timeline(@date_range_from, @date_range_to, { user_id: user.id })
 
 unless invoices.empty?
   graph = Graph.new do |g|

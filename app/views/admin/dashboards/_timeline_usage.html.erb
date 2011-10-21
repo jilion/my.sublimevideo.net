@@ -1,8 +1,8 @@
 <%
-usages = Stat::SiteUsage.timeline(@date_range_from - (@moving_avg-1).days, @date_range_to, { labels: [:main_usage, :extra_usage], merge_cached: true, dont_add_total_usages_before_start_time: true })
+usages = StatTimeline::SiteUsage.timeline(@date_range_from - (@moving_avg-1).days, @date_range_to, { labels: [:main_usage, :extra_usage], merge_cached: true, dont_add_total_usages_before_start_time: true })
 billable_usage = usages["main_usage"].zip(usages["extra_usage"]).map { |item| item.reduce(:+) }
 
-video_views = Stat::SiteStat.timeline(@date_range_from - (@moving_avg-1).days, @date_range_to, { labels: [:vv_m, :vv_e], dont_add_total_usages_before_start_time: true })
+video_views = StatTimeline::SiteStat.timeline(@date_range_from - (@moving_avg-1).days, @date_range_to, { labels: [:vv_m, :vv_e], dont_add_total_usages_before_start_time: true })
 billable_views = video_views["vv_m"].zip(video_views["vv_e"]).map { |item| item.reduce(:+) }
 
 graph = Graph.new do |g|

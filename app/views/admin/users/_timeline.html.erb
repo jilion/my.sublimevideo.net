@@ -1,5 +1,5 @@
 <%
-users_stats = Stat::UsersStat.new(@date_range_from, @date_range_to)
+users_stats = StatTimeline::UsersStat.new(@date_range_from, @date_range_to)
 
 unless users_stats.empty?
   graph = Graph.new do |g|

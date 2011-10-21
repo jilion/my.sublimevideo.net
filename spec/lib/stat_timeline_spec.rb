@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Stat::SiteUsage do
+describe StatTimeline::SiteUsage do
   before(:each) do
     @site1 = FactoryGirl.create(:site)
     @site2 = FactoryGirl.create(:site)
@@ -17,7 +17,7 @@ describe Stat::SiteUsage do
   describe "Class Methods" do
     describe ".usages" do
       context "without a site_id given" do
-        subject { Stat::SiteUsage.timeline(@day1, @day2) }
+        subject { StatTimeline::SiteUsage.timeline(@day1, @day2) }
 
         it "should return a hash" do
           subject.should be_is_a(Hash)
@@ -36,7 +36,7 @@ describe Stat::SiteUsage do
       end
 
       context "with a site_id given" do
-        subject { Stat::SiteUsage.timeline(@day1, @day3, site_id: @site1.id) }
+        subject { StatTimeline::SiteUsage.timeline(@day1, @day3, site_id: @site1.id) }
 
         it "should return a hash" do
           subject.should be_is_a(Hash)

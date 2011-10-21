@@ -1,5 +1,5 @@
 <%
-usages = Stat::SiteUsage.timeline(@date_range_from - (@moving_avg-1).days, @date_range_to, { site_ids: user.site_ids, labels: [:invalid_usage, :dev_usage, :main_usage, :extra_usage], merge_cached: true, dont_add_total_usages_before_start_time: true })
+usages = StatTimeline::SiteUsage.timeline(@date_range_from - (@moving_avg-1).days, @date_range_to, { site_ids: user.site_ids, labels: [:invalid_usage, :dev_usage, :main_usage, :extra_usage], merge_cached: true, dont_add_total_usages_before_start_time: true })
 plans  = Plan.all
 billable_usage = usages["main_usage"].zip(usages["extra_usage"]).map { |item| item.reduce(:+) }
 
