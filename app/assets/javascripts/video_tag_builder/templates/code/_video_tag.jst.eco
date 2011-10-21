@@ -1,11 +1,13 @@
-<% sizes = if @builderClass isnt 'iframe_embed' then "width='#{@video.get('width')}' height='#{@video.get('height')}' " else '' %>
+<% poster = if @video.get('poster').get('src') then " poster='#{@video.get('poster').get('src')}" else '' %>
+<% sizes = if @builderClass isnt 'iframe_embed' then " width='#{@video.get('width')}' height='#{@video.get('height')}' " else '' %>
 <% style = if @builderClass is 'iframe_embed' then " style='display:none'" else '' %>
-<% poster = @video.get('poster').get('src') %>
+<% data_name = if @video.get('sources').mp4Base().get('dataName') then " data-name='#{@video.get('sources').mp4Base().get('dataName')}'" else '' %>
+<% data_uid = if @video.get('sources').mp4Base().get('dataUID') then " data-uid='#{@video.get('sources').mp4Base().get('dataUID')}'" else '' %>
 <% sortedSources = @video.get('sources').sortedSources(MSVVideoTagBuilder.builder.get('startWithHd')) %>
 
 <% if @builderClass is 'lightbox': %>
   <% mp4Mobile = @video.get('sources').mp4Mobile() %>
-  
+
   <pre>&lt;a href='<%= mp4Mobile.get('src') %>' class='sublime<%= " zoomable" if @video.get('thumbnail').get('magnifyingGlass') %>'&gt;</pre>
   <% if @video.get('thumbnail').srcIsUrl(): %>
     <pre>  &lt;img src='<%= @video.get('thumbnail').get('src') %>' width='<%= @video.get('thumbnail').get('thumbWidth') %>' height='<%= @video.get('thumbnail').get('thumbHeight') %>' /&gt;</pre>
@@ -21,7 +23,7 @@
 <% end %>
 
 <% extra_spaces = if @builderClass is 'iframe_embed' then "    " else "" %>
-<pre><%= extra_spaces %>&lt;video class='<%= @video.get('classes') %>' poster='<%= poster %>' <%= sizes %>preload='none'<%= style %>&gt;</pre>
+<pre><%= extra_spaces %>&lt;video class='<%= @video.get('classes') %>'<%= poster %><%= sizes %>preload='none'<%= data_name %><%= data_uid %><%= style %>&gt;</pre>
 
 <% for source in sortedSources: %>
   <% if source.get('isUsed') and source.srcIsUrl(): %>

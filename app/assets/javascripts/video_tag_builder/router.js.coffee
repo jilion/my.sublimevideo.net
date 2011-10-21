@@ -11,9 +11,8 @@ class MSVVideoTagBuilder.Routers.BuilderRouter extends Backbone.Router
 
     MSVVideoTagBuilder.demoPoster  = new MSVVideoTagBuilder.Models.Image(src: 'http://sublimevideo.net/demo/dartmoor.jpg')
     MSVVideoTagBuilder.demoSources = new MSVVideoTagBuilder.Collections.Sources([
-      new MSVVideoTagBuilder.Models.Source(format: 'mp4', src: 'http://medias.jilion.com/sublimevideo/dartmoor.mp4', width: 800, height: 340, embedWidth: 800, embedHeight: 340, ratio: 340/800)
-      # new MSVVideoTagBuilder.Models.Source(format: 'mp4', src: 'http://medias.jilion.com/sublimevideo/dartmoor.mp4', quality: 'hd')
-      new MSVVideoTagBuilder.Models.Source(format: 'mp4', src: 'http://medias.jilion.com/sublimevideo/dartmoor-mobile.mp4', quality: 'mobile')
+      new MSVVideoTagBuilder.Models.Source(format: 'mp4', src: 'http://medias.jilion.com/sublimevideo/dartmoor-mobile.mp4', width: 800, height: 340, embedWidth: 800, embedHeight: 340, ratio: 340/800)
+      new MSVVideoTagBuilder.Models.Source(format: 'mp4', src: 'http://medias.jilion.com/sublimevideo/dartmoor.mp4', quality: 'hd')
       new MSVVideoTagBuilder.Models.Source(format: 'webmogg', src: 'http://medias.jilion.com/sublimevideo/dartmoor.webm')
       new MSVVideoTagBuilder.Models.Source(format: 'webmogg', src: 'http://medias.jilion.com/sublimevideo/dartmoor.ogv', quality: 'mobile')
     ])
@@ -63,7 +62,8 @@ class MSVVideoTagBuilder.Routers.BuilderRouter extends Backbone.Router
       collection: MSVVideoTagBuilder.sources
       el: '#sources'
 
-    new MSVVideoTagBuilder.Views.Settings
+    MSVVideoTagBuilder.settingsView = new MSVVideoTagBuilder.Views.Settings
+      builder: MSVVideoTagBuilder.builder
       collection: MSVVideoTagBuilder.sources
       model: MSVVideoTagBuilder.sources.mp4Base()
       el: '#settings'
@@ -79,5 +79,6 @@ class MSVVideoTagBuilder.Routers.BuilderRouter extends Backbone.Router
       el: '#code'
 
     MSVVideoTagBuilder.previewView = new MSVVideoTagBuilder.Views.Preview
+      builder: MSVVideoTagBuilder.builder
       video: MSVVideoTagBuilder.video
       el: '#preview'

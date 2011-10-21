@@ -7,8 +7,12 @@ class MSVVideoTagBuilder.Views.Settings extends Backbone.View
     'click #keep_ratio':    'updateKeepRatio'
     'click a.reset':        'resetEmbedDimensions'
     'click #start_with_hd': 'updateStartWithHd'
+    'change #data_name':    'updateDataName'
+    'change #data_uid':     'updateDataUID'
 
   initialize: ->
+    @builder = @options.builder
+
     _.bindAll this, 'render', 'renderEmbedWidth', 'renderEmbedHeight'
     @model.bind 'change:embedWidth',  this.renderEmbedWidth
     @model.bind 'change:embedHeight', this.renderEmbedHeight
@@ -41,11 +45,18 @@ class MSVVideoTagBuilder.Views.Settings extends Backbone.View
   updateStartWithHd: (event) ->
     MSVVideoTagBuilder.builder.set(startWithHd: event.target.checked)
 
+  updateDataName: (event) ->
+    @model.set(dataName: event.target.value)
+
+  updateDataUID: (event) ->
+    @model.set(dataUID: event.target.value)
+
   #
   # BINDINGS
   #
   render: ->
     $(@el).html this.template
+      builder: @builder
       source: @model
       sources: @collection
 

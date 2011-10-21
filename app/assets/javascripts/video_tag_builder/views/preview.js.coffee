@@ -1,6 +1,9 @@
 class MSVVideoTagBuilder.Views.Preview extends Backbone.View
   template: JST['video_tag_builder/templates/_preview']
 
+  initialize: ->
+    @builder = @options.builder
+
   #
   # BINDINGS
   #
@@ -11,6 +14,7 @@ class MSVVideoTagBuilder.Views.Preview extends Backbone.View
     sublimevideo.unprepare($('video').get(0)) if $('video').length
 
     $(@el).html this.template
+      builder: @builder
       video: MSVVideoTagBuilder.video
 
     sublimevideo.prepare($('video').get(0)) if $('video').length

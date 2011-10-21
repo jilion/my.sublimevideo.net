@@ -13,7 +13,7 @@ class SitesStat
 
   def self.delay_create_sites_stats
     unless Delayed::Job.already_delayed?('%SitesStat%create_sites_stats%')
-      delay(:run_at => Time.new.utc.tomorrow.midnight).create_sites_stats # every hour
+      delay(:run_at => Time.now.utc.tomorrow.midnight).create_sites_stats # every hour
     end
   end
 

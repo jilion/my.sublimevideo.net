@@ -1,10 +1,10 @@
-<%= "The content of #{@iframe.get('src')} (loaded by the <iframe>). This page must be hosted on #{if MSVVideoTagBuilder.loader.get('hostname')? then MSVVideoTagBuilder.loader.get('hostname') else 'a domain registered on MySublimeVideo'}." %>
+<%= "The content of #{@iframe.get('src')} (loaded by the <iframe>). This page must be hosted on #{if @loader.get('hostname') then @loader.get('hostname') else 'a domain registered on MySublimeVideo'}." %>
 <pre>&lt;!DOCTYPE html&gt;</pre>
 <pre>&lt;html&gt;</pre>
 <pre>  &lt;head&gt;</pre>
-<%- @loader %>
+<%- @loader_content %>
 <pre>  &lt;/head&gt;</pre>
 <pre>  &lt;body&gt;</pre>
-<%- @video %>
+<%- @video_content %>
 <pre>  &lt;/body&gt;</pre>
 <pre>&lt;/html&gt;</pre>

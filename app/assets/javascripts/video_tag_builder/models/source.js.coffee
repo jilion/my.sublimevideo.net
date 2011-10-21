@@ -3,6 +3,8 @@ class MSVVideoTagBuilder.Models.Source extends Backbone.Model
     format: null
     formatTitle: null
     quality: "base"
+    dataName: ""
+    dataUID: ""
     optional: false
     isUsed: true
     src: ""
@@ -20,10 +22,15 @@ class MSVVideoTagBuilder.Models.Source extends Backbone.Model
     unless src is this.get('src')
       this.set(src: src)
       this.preloadSrc() if this.formatQuality() is 'mp4_base'
+      this.setDefaultDataName() unless this.get('dataName')
 
   setKeepRatio: (keepRatio) ->
     this.set(keepRatio: keepRatio)
     this.setEmbedHeightWithRatio() if this.get('keepRatio')
+
+  setDefaultDataName: ->
+    name = this.get('src').slice(this.get('src').lastIndexOf('/') + 1, this.get('src').lastIndexOf('.'))
+    this.set(dataName: name.charAt(0).toUpperCase() + name.slice(1))
 
   preloadSrc: ->
     new MSV.VideoPreloader(this.get('src'), this.setDimensions)

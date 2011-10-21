@@ -19,6 +19,7 @@
 - else
   :coffeescript
     $ ->
+      window.MSVVideoTagBuilder.loader = new MSVVideoTagBuilder.Models.Loader
       SublimeVideoSizeChecker.setRoot('/video-size-checker/')
       window.MSVVideoTagBuilder.builderRouter = new MSVVideoTagBuilder.Routers.BuilderRouter()
 
@@ -33,7 +34,7 @@
     = "This video will be embedded on: "
     %span#site_selector
 
-%h2 Demo bootstrap
+%h3 Demo bootstrap
 #demo_bootstrap
   %input{ type: "checkbox", name: "use_demo_assets", id: "use_demo_assets" }
   %label{ for: 'use_demo_assets' } Use demo assets
@@ -49,21 +50,21 @@
 #iframe_embed_attributes.specialized_video_embed_type_box{ style: 'display:none' }
   %p Iframe embed!!
 
-%h2 Poster frame
+%h3 Poster frame
 %p#poster
 .spacer
 
-%h2 Video sources
+%h3 Video sources
 #sources
 .spacer
 
-%h2 Settings
+%h3 Settings
 #settings
 .spacer
 
-%h2 Preview
+%h3 Preview
 #preview
 .spacer
 
-%h2 Code to paste in your page
+%h3 Code to paste in your page
 #code

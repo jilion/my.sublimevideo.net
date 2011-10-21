@@ -28,9 +28,14 @@ class MSVVideoTagBuilder.Views.Code extends Backbone.View
   # BINDINGS
   #
   render: ->
-    poster = if @builder.get('useDemoAssets') then MSVVideoTagBuilder.demoPoster else @poster
-    sources = if @builder.get('useDemoAssets') then MSVVideoTagBuilder.demoSources else @sources
-    
+    if @builder.get('useDemoAssets')
+      poster  = MSVVideoTagBuilder.demoPoster
+      sources = MSVVideoTagBuilder.demoSources
+    else
+      poster  = @poster
+      sources = @sources
+    $('input[type=text]').attr('disabled', @builder.get('useDemoAssets'))
+
     baseMp4 = sources.mp4Base()
     attributes =
       poster: poster
@@ -51,6 +56,7 @@ class MSVVideoTagBuilder.Views.Code extends Backbone.View
 
     $(@el).html this.template
       builderClass: @builder.get('builderClass')
+      loader: @loader
       video: @video
       warnings_block: => this.warnings_block()
       loader_block: => this.loader_block()
@@ -73,20 +79,35 @@ class MSVVideoTagBuilder.Views.Code extends Backbone.View
     this.warnings_template(video: @video)
 
   loader_block: ->
-    this.loader_template(builderClass: @builder.get('builderClass'), video: @video)
+    this.loader_template
+      builderClass: @builder.get('builderClass')
+      loader: @loader
+      video: @video
 
   video_embed_block: ->
     if @builder.get('builderClass') is 'iframe_embed'
-      this.iframe_tag_template(iframe: @iframe, video: @video)
+      this.iframe_tag_template
+        iframe: @iframe
+        video: @video
     else
-      this.video_tag_template(builderClass: @builder.get('builderClass'), video: @video)
+      this.video_tag_template
+        builderClass: @builder.get('builderClass')
+        video: @video
 
   iframe_content_block: ->
     this.iframe_content_template
       builderClass: @builder.get('builderClass')
+      loader: @loader
       iframe: @iframe
-      loader: this.loader_template(builderClass: @builder.get('builderClass'), video: @video)
-      video: this.video_tag_template(builderClass: @builder.get('builderClass'), video: @video)
+      loader_content: this.loader_template
+        builderClass: @builder.get('builderClass')
+        loader: @loader
+        video: @video
+      video_content: this.video_tag_template
+        builderClass: @builder.get('builderClass')
+        video: @video
 
   css_block: ->
-    this.css_template(builderClass: @builder.get('builderClass'), video: @video)
+    this.css_template
+      builderClass: @builder.get('builderClass')
+      video: @video
