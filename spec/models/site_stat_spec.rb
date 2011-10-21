@@ -10,19 +10,19 @@ describe SiteStat do
       @trackers = @log.trackers('LogsFileFormat::VoxcastStats')
     end
 
-    describe ".delay_clear_old_minutes_and_days_stats" do
-      it "delays clear_old_minutes_and_days_stats if not already delayed" do
-        expect { SiteStat.delay_clear_old_minutes_and_days_stats }.to change(Delayed::Job, :count).by(1)
+    describe ".delay_clear_old_seconds_minutes_and_days_stats" do
+      it "delays clear_old_seconds_minutes_and_days_stats if not already delayed" do
+        expect { SiteStat.delay_clear_old_seconds_minutes_and_days_stats }.to change(Delayed::Job, :count).by(1)
         Delayed::Job.last.run_at.should be_within(60).of(1.minutes.from_now)
       end
 
       it "delays nothing if already delayed" do
-        SiteStat.delay_clear_old_minutes_and_days_stats
-        expect { SiteStat.delay_clear_old_minutes_and_days_stats }.to change(Delayed::Job, :count).by(0)
+        SiteStat.delay_clear_old_seconds_minutes_and_days_stats
+        expect { SiteStat.delay_clear_old_seconds_minutes_and_days_stats }.to change(Delayed::Job, :count).by(0)
       end
     end
 
-    describe ".clear_old_minutes_and_days_stats" do
+    describe ".clear_old_seconds_minutes_and_days_stats" do
       use_vcr_cassette "site_stat/pusher", erb: true
 
       it "delete old minutes and days site stats, but keep all stats" do
@@ -32,14 +32,14 @@ describe SiteStat do
         SiteStat.count.should eql(6)
         SiteStat.m_before(180.minutes.ago).count.should eql(1)
         SiteStat.h_before(72.hours.ago).count.should eql(1)
-        SiteStat.clear_old_minutes_and_days_stats
+        SiteStat.clear_old_seconds_minutes_and_days_stats
         SiteStat.count.should eql(4)
         SiteStat.m_before(180.minutes.ago).count.should eql(0)
         SiteStat.h_before(72.hours.ago).count.should eql(0)
       end
 
       it "delays itself" do
-        expect { SiteStat.clear_old_minutes_and_days_stats }.to change(Delayed::Job, :count).by(1)
+        expect { SiteStat.clear_old_seconds_minutes_and_days_stats }.to change(Delayed::Job, :count).by(1)
         Delayed::Job.last.run_at.should be_within(60).of(1.minutes.from_now)
       end
     end

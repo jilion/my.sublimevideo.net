@@ -152,14 +152,14 @@ class SiteStat
     # end
   end
 
-  def self.delay_clear_old_minutes_and_days_stats
-    unless Delayed::Job.already_delayed?('%SiteStat%clear_old_minutes_and_days_stats%')
-      delay(priority: 100, run_at: 1.minutes.from_now).clear_old_minutes_and_days_stats
+  def self.delay_clear_old_seconds_minutes_and_days_stats
+    unless Delayed::Job.already_delayed?('%SiteStat%clear_old_seconds_minutes_and_days_stats%')
+      delay(priority: 100, run_at: 1.minutes.from_now).clear_old_seconds_minutes_and_days_stats
     end
   end
 
-  def self.clear_old_minutes_and_days_stats
-    delay_clear_old_minutes_and_days_stats
+  def self.clear_old_seconds_minutes_and_days_stats
+    delay_clear_old_seconds_minutes_and_days_stats
     self.s_before(62.seconds.ago).delete_all
     self.m_before(61.minutes.ago).delete_all
     self.h_before(25.hours.ago).delete_all
