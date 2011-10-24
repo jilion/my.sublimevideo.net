@@ -1,14 +1,21 @@
 <%
+views = SiteStat.last_days(site.token)
+billable_views = views.map(&:billable_vv)
 graph = Graph.new do |g|
-  g.option(chart: { renderTo: "usage_sparkline_#{site.token}", defaultSeriesType: 'area', margin: [0,0,0,0], backgroundColor: '#EEE' })
+  g.option(chart: { renderTo: "usage_sparkline_#{site.token}", margin: [0,-25,0,-25], borderWidth: 0, borderRadius: 0, backgroundColor: 'transparent' })
   g.option(title: { text: "" })
   g.option(legend: { enabled: false })
   g.option(tooltip: { enabled: false })
-  g.option(xAxis: { labels: { enabled: false } })
-  g.option(yAxis: { maxPadding: 0, minPadding: 0, endOnTick: false, labels: { enabled: false } })
-  g.option(series: [serie(usage.map(&:billable_vv), '', color: '#666', fill_color: 'rgba(204,204,204,.25)')])
-  g.option(plotOptions: plot_options(0, 1.day, marker_hover: false))
+  g.option(xAxis: { title: "", labels: { enabled: false } })
+  g.option(yAxis: { title: "", endOnTick: false, labels: { enabled: false } })
+  g.option(series: [serie(billable_views, '', type: 'column', color: '#666', fill_color: 'rgba(204,204,204,.25)')])
+  g.option(plotOptions: { column: { borderWidth: 0, pointPadding: 0, pointWidth: 4, shadow: false } })
   g.option(credits: { enabled: false })
 end
+
+if billable_views.any? { |bv| !bv.zero? }
 %>
-<div id="<%= "usage_sparkline_#{site.token}" %>" style="width: 60px; height: 25px;"><%= raw graph.draw %></div>
+<div id="<%= "usage_sparkline_#{site.token}" %>" style="width:168px;height:25px;"><%= raw graph.draw(observe: request.xhr? ? false : "dom:loaded") %></div>
+<% else %>
+  No views in the last 30 days.
+<% end %>

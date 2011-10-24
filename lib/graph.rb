@@ -16,7 +16,7 @@ class Graph
     @raw_options << string
   end
 
-  def draw(options={ :observe => "dom:loaded" })
+  def draw(options = { observe: "dom:loaded" })
     result = "var chart = new Highcharts.Chart(#{draw_options});"
     result = "document.observe('#{options[:observe]}', function() {" + result + "});" if options[:observe]
 
