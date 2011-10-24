@@ -6,13 +6,13 @@
           %th.site
             .wrap
               %strong
-                = image_tag "/images/embed/small_spinner.gif", :class => "spinner", :id => "table_spinner", :style => "display:none"
+                = image_tag "small_spinner.gif", class: "spinner", id: "table_spinner", style: "display:none"
                 Site
               - unless @sites.one?
                 .sorting
-                  = link_to_sort :date, :default_way => 'desc', :reverse => true, :default => true, :label => "latest"
+                  = link_to_sort :date, default_way: 'desc', reverse: true, default: true, label: "latest"
                   = link_to_sort :hostname
-          %th.usage Monthly Usage
+          %th.usage= link_to_sort :last_30_days_billable_video_views, label: "Monthly Usage"
           %th.code Player Code
           %th.status Status
         = render @sites

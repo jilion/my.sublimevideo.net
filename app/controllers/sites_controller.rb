@@ -9,6 +9,7 @@ class SitesController < ApplicationController
 
   has_scope :by_hostname
   has_scope :by_date
+  has_scope :by_last_30_days_billable_video_views
 
   # GET /sites
   def index
