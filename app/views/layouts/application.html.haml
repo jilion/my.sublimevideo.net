@@ -13,12 +13,7 @@
     /[if lte IE 8]
       = stylesheet_link_tag 'application_ie'
 
-    - if controller_name == 'stats'
-      = javascript_include_tag "https://d3ds63zw57jt09.cloudfront.net/1.9/pusher.min.js"
-      = javascript_include_tag 'stats'
-    - elsif controller_name == 'video_tag_builder'
-      = javascript_include_tag 'video_tag_builder'
-    - else
+    - if %w[stats video_tag_builder].exclude?(controller_name)
       = javascript_include_tag 'application'
     = yield :head
 

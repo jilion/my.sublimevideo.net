@@ -1,5 +1,6 @@
 = content_for :head do
   = stylesheet_link_tag 'stats'
+  = javascript_include_tag 'https://d3ds63zw57jt09.cloudfront.net/1.9/pusher.min.js', 'stats'
 
 = title_and_content_header("Stats for #{@site.hostname || @site.token}")
 
