@@ -1,25 +1,25 @@
-<div id="warnings" style="background-color:#FF9999; margin-bottom:20px;">
+<div id="warnings" style="background-color:#DDD; margin-bottom:20px;">
   <%- @warnings_block() %>
 </div>
 
 <% if @builderClass isnt 'iframe_embed': %>
-  <div id="loader_block" style="background-color:#FFFF99; margin-bottom:20px;">
+  <div id="loader_block" style="background-color:#DDD; margin-bottom:20px;">
     <%- @loader_block() %>
   </div>
 <% end %>
 
-<div id="video_embed_block" style="background-color:#CCFFFF; margin-bottom:20px;">
+<div id="video_embed_block" style="background-color:#DDD; margin-bottom:20px;">
   <%- @video_embed_block() %>
 </div>
 
 <% if @builderClass is 'iframe_embed': %>
-  <div id="iframe_content_block" style="background-color:#FFCCFF; margin-bottom:20px;">
+  <div id="iframe_content_block" style="background-color:#DDD; margin-bottom:20px;">
     <%- @iframe_content_block() %>
   </div>
 <% end %>
 
 <% if @builderClass is 'lightbox' and @video.get('thumbnail').get('magnifyingGlass'): %>
-  <div id="css_block" style="background-color:#FFCC99">
+  <div id="css_block" style="background-color:#DDD">
     <%- @css_block() %>
   </div>
 <% end %>

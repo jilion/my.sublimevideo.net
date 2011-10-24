@@ -1,10 +1,10 @@
 <%= "The content of #{@iframe.get('src')} (loaded by the <iframe>). This page must be hosted on #{if @loader.get('hostname') then @loader.get('hostname') else 'a domain registered on MySublimeVideo'}." %>
-<pre>&lt;!DOCTYPE html&gt;</pre>
-<pre>&lt;html&gt;</pre>
-<pre>  &lt;head&gt;</pre>
+<pre class='prettyprint'><code class='language-html'>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;head&gt;</code></pre>
 <%- @loader_content %>
-<pre>  &lt;/head&gt;</pre>
-<pre>  &lt;body&gt;</pre>
+<pre class='prettyprint'><code class='language-html'>  &lt;/head&gt;
+  &lt;body&gt;</code></pre>
 <%- @video_content %>
-<pre>  &lt;/body&gt;</pre>
-<pre>&lt;/html&gt;</pre>
+<pre class='prettyprint'><code class='language-html'>  &lt;/body&gt;
+&lt;/html&gt;</code></pre>

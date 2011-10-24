@@ -8,27 +8,27 @@
 <% if @builderClass is 'lightbox': %>
   <% mp4Mobile = @video.get('sources').mp4Mobile() %>
 
-  <pre>&lt;a href='<%= mp4Mobile.get('src') %>' class='sublime<%= " zoomable" if @video.get('thumbnail').get('magnifyingGlass') %>'&gt;</pre>
+  <pre class='prettyprint'><code class='language-html'>&lt;a href='<%= mp4Mobile.get('src') %>' class='sublime<%= " zoomable" if @video.get('thumbnail').get('magnifyingGlass') %>'&gt;</code></pre>
   <% if @video.get('thumbnail').srcIsUrl(): %>
-    <pre>  &lt;img src='<%= @video.get('thumbnail').get('src') %>' width='<%= @video.get('thumbnail').get('thumbWidth') %>' height='<%= @video.get('thumbnail').get('thumbHeight') %>' /&gt;</pre>
+    <pre class='prettyprint'><code class='language-html'>  &lt;img src='<%= @video.get('thumbnail').get('src') %>' width='<%= @video.get('thumbnail').get('thumbWidth') %>' height='<%= @video.get('thumbnail').get('thumbHeight') %>' /&gt;</code></pre>
 
     <% if @video.get('thumbnail').get('magnifyingGlass'): %>
-      <pre>  &lt;span class='zoom_icon'&gt;&lt;/span&gt;</pre>
+      <pre class='prettyprint'><code class='language-html'>  &lt;span class='zoom_icon'&gt;&lt;/span&gt;</code></pre>
     <% end %>
 
   <% else: %>
-    <pre>  <%= @video.get('thumbnail').get('src') %></pre>
+    <pre class='prettyprint'><code class='language-html'>  <%= @video.get('thumbnail').get('src') %></code></pre>
   <% end %>
-  <pre>&lt;/a&gt;</pre>
+  <pre class='prettyprint'><code class='language-html'>&lt;/a&gt;</code></pre>
 <% end %>
 
 <% extra_spaces = if @builderClass is 'iframe_embed' then "    " else "" %>
-<pre><%= extra_spaces %>&lt;video class='<%= @video.get('classes') %>'<%= poster %><%= sizes %>preload='none'<%= data_name %><%= data_uid %><%= style %>&gt;</pre>
+<pre class='prettyprint'><code class='language-html'><%= extra_spaces %>&lt;video class='<%= @video.get('classes') %>'<%= poster %><%= sizes %>preload='none'<%= data_name %><%= data_uid %><%= style %>&gt;</code></pre>
 
 <% for source in sortedSources: %>
   <% if source.get('isUsed') and source.srcIsUrl(): %>
-    <pre><%= extra_spaces %>  &lt;source src='<%= source.get('src') %>' <%= "data-quality='#{source.get('quality')}'" if source.needDataQualityAttribute() %>/&gt;</pre>
+    <pre class='prettyprint'><code class='language-html'><%= extra_spaces %>  &lt;source src='<%= source.get('src') %>' <%= "data-quality='#{source.get('quality')}'" if source.needDataQualityAttribute() %>/&gt;</code></pre>
   <% end %>
 <% end %>
 
-<pre><%= extra_spaces %>&lt;/video&gt;</pre>
+<pre class='prettyprint'><code class='language-html'><%= extra_spaces %>&lt;/video&gt;</code></pre>

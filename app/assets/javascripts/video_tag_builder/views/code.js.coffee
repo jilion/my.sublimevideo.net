@@ -64,6 +64,8 @@ class MSVVideoTagBuilder.Views.Code extends Backbone.View
       iframe_content_block: => this.iframe_content_block()
       css_block: => this.css_block()
 
+    prettyPrint() # syntax highlighting
+
     if baseMp4.srcIsUrl() && baseMp4.get('embedWidth')
       # $(MSVVideoTagBuilder.previewView.el).spin()
       MSVVideoTagBuilder.previewView.render()

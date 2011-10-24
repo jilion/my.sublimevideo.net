@@ -1,5 +1,6 @@
 = content_for :head do
-  = stylesheet_link_tag 'video_tag_builder'
+  = stylesheet_link_tag 'prettify/prettify', 'video_tag_builder'
+  = javascript_include_tag 'prettify/prettify', 'video_tag_builder'
   :javascript
     document.write(unescape("%3Cscript src='" + (("https:" == document.location.protocol) ? "https://4076.voxcdn.com" : "http://cdn.sublimevideo.net") + "/js/ibvjcopp.js' type='text/javascript'%3E%3C/script%3E"));
 
@@ -23,11 +24,13 @@
       SublimeVideoSizeChecker.setRoot('/video-size-checker/')
       window.MSVVideoTagBuilder.builderRouter = new MSVVideoTagBuilder.Routers.BuilderRouter()
 
-%input{ type: "text", size: 60, value: "http://remycoutable.fr/storage/rymai-tv/posters/day2.jpg" }
-%input{ type: "text", size: 60, value: "http://remycoutable.fr/storage/rymai-tv/videos/day22.m4v" }
-%input{ type: "text", size: 60, value: "http://remycoutable.fr/storage/rymai-tv/videos/day9.m4v" }
+%input{ type: "text", size: 60, value: "http://rymai.s3.amazonaws.com/rymai.tv/posters/day2.jpg" }
+%input{ type: "text", size: 60, value: "http://rymai.s3.amazonaws.com/rymai.tv/videos/day22.m4v" }
+%input{ type: "text", size: 60, value: "http://rymai.s3.amazonaws.com/rymai.tv/videos/day9.m4v" }
 %input{ type: "text", size: 60, value: "http://medias.jilion.com/sublimevideo/dartmoor.webm" }
 %input{ type: "text", size: 60, value: "http://medias.jilion.com/sublimevideo/dartmoor.ogv" }
+
+%p.desc.help= raw "WordPress user? Check-out #{link_to 'our WordPress plugin', 'http://docs.sublimevideo.net/wordpress', , onclick: "window.open(this); return false"} instead!"
 
 - if user_signed_in?
   %p
@@ -57,6 +60,8 @@
 %h3 Video sources
 #sources
 .spacer
+
+%p.desc.help= raw "Need help on video encoding? Check-out our #{link_to '"Encode videos for the web and HTML5"', 'http://docs.sublimevideo.net/encode-videos-for-the-web', onclick: "window.open(this); return false"} documentation page!"
 
 %h3 Settings
 #settings
