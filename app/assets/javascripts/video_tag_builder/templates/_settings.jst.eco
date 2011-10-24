@@ -20,10 +20,10 @@
 <div id='video_data_name'>
   Video name:
   <input id='data_name' type='text' value='<%= @source.get('dataName') %>' size='50' />
-  <p class='note'>This name identifies the video for your video-stats reporting. Please don't change it once chosen. You can also set the following Unique ID instead. If you do so, you will be able to change the video name without affecting stats reporting.</p>
+  <p class='note'>This name identifies the video for your video-stats reporting. For more advanced video stats configuration, please consult <a href="http://docs.sublimevideo.net/stats" onclick="window.open(this); return false">our documentation</a>.</p>
 </div>
 
-<div id='video_data_uid'>
+<!-- <div id='video_data_uid'>
   Video unique ID:
   <input id='data_uid' type='text' value='<%= @source.get('dataUID') %>' size='8' />
-</div>
+</div> -->
