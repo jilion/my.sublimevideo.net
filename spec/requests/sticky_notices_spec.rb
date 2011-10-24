@@ -65,14 +65,4 @@ feature "Sticky notices" do
     end
   end
 
-  context "when invitation redirect to signup" do
-    scenario "shows beta is finished notice" do
-      VCR.use_cassette("twitter/signup") { visit '/invitation/accept?invitation_token=xxx' }
-      current_url.should =~ %r(http://[^/]+/signup\?beta=over$)
-
-      page.should have_content("We have now launched publicly!")
-      page.should have_content("The Beta period is over. Please check out our new")
-    end
-  end
-
 end
