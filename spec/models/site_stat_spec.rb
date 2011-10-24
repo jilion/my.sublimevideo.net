@@ -122,9 +122,9 @@ describe SiteStat do
 
             its(:size) { should eql(30) }
             it { subject.first.d.to_time.should eql 30.days.ago.midnight.to_time }
-            it { subject.first.billable_pv.should eql(101) }
+            it { subject.first.chart_pv.should eql(101) }
             it { subject[29].d.to_time.should eql 1.day.ago.midnight.to_time }
-            it { subject[29].billable_pv.should eql(0) }
+            it { subject[29].chart_pv.should eql(0) }
           end
 
           describe "accepts an integer" do
@@ -132,9 +132,9 @@ describe SiteStat do
 
             its(:size) { should eql(2) }
             it { subject.first.d.to_time.should eql 2.days.ago.midnight.to_time }
-            it { subject.first.billable_pv.should eql(0) }
+            it { subject.first.chart_pv.should eql(0) }
             it { subject.second.d.to_time.should eql 1.day.ago.midnight.to_time }
-            it { subject.second.billable_pv.should eql(0) }
+            it { subject.second.chart_pv.should eql(0) }
           end
         end
 
@@ -144,9 +144,9 @@ describe SiteStat do
 
             its(:size) { should eql(30) }
             it { subject.first.d.to_time.should eql 30.days.ago.midnight.to_time }
-            it { subject.first.billable_pv.should eql(101) }
+            it { subject.first.chart_pv.should eql(101) }
             it { subject[29].d.to_time.should eql 1.day.ago.midnight.to_time }
-            it { subject[29].billable_pv.should eql(0) }
+            it { subject[29].chart_pv.should eql(0) }
           end
 
           describe "accepts a boolean" do
@@ -154,7 +154,7 @@ describe SiteStat do
 
             its(:size) { should eql(1) }
             it { subject.first.d.to_time.should eql 30.days.ago.midnight.to_time }
-            it { subject.first.billable_pv.should eql(101) }
+            it { subject.first.chart_pv.should eql(101) }
           end
 
           describe "accepts an integer" do
@@ -162,9 +162,9 @@ describe SiteStat do
 
             its(:size) { should eql(30) }
             it { subject.first.d.to_time.should eql 30.days.ago.midnight.to_time }
-            it { subject.first.billable_pv.should eql(101) }
+            it { subject.first.chart_pv.should eql(101) }
             it { subject[29].d.to_time.should eql 1.day.ago.midnight.to_time }
-            it { subject[29].billable_pv.should eql(3) }
+            it { subject[29].chart_pv.should eql(3) }
           end
         end
       end

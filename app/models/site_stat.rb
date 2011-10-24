@@ -51,21 +51,27 @@ class SiteStat
   end
 
   # only main & extra hostname are counted in charts
-  def billable_pv
+  def chart_pv
     pv['m'].to_i + pv['e'].to_i
   end
 
   # only main & extra hostname are counted in charts
-  def billable_vv
+  def chart_vv
     vv['m'].to_i + vv['e'].to_i
+  end
+
+  # main & extra hostname, with main & extra embed
+  def billable_vv
+    vv['m'].to_i + vv['e'].to_i + vv['em'].to_i
   end
 
   # send time as id for backbonejs model
   def as_json(options = nil)
     json = super
-    json['id'] = time
-    json['pv'] = billable_pv if billable_pv > 0
-    json['vv'] = billable_vv if billable_vv > 0
+    json['id']  = time
+    json['pv']  = chart_pv if chart_pv > 0
+    json['vv']  = chart_vv if chart_vv > 0
+    json['bvv'] = billable_vv if d.present? && billable_vv > 0
     json
   end
 
