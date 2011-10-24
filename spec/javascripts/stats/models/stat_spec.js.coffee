@@ -31,25 +31,25 @@ describe 'MSVStats.Models.Stats', ->
       @stats.reset()
       @stats.merge(id: 1316593200, pv: 1, bp: { 'saf-osx': 1 })
       expect(@stats.length).toEqual(1)
-      expect(@stats.first().attributes).toEqual(pv: 1, vv: 0, md: {}, bp: { 'saf-osx': 1 }, id: 1316593200)
+      expect(@stats.first().attributes).toEqual(pv: 1, vv: 0, bvv: 0, md: {}, bp: { 'saf-osx': 1 }, id: 1316593200)
 
     it 'merge existing Stat with new data (load event)', ->
       @stats.reset(id: 1316593200, pv: 1, bp: { 'saf-osx': 1 })
       @stats.merge(id: 1316593200, pv: 1, bp: { 'saf-osx': 1, 'fir-osx': 1 })
       expect(@stats.length).toEqual(1)
-      expect(@stats.first().attributes).toEqual(pv: 2, vv: 0, md: {}, bp: { 'saf-osx': 2, 'fir-osx': 1 }, id: 1316593200)
+      expect(@stats.first().attributes).toEqual(pv: 2, vv: 0, bvv: 0, md: {}, bp: { 'saf-osx': 2, 'fir-osx': 1 }, id: 1316593200)
 
     it 'merge existing Stat with new data (video prepare event)', ->
       @stats.reset(id: 1316593200, md: { h: { d: 1 } })
       @stats.merge(id: 1316593200, md: { f: { d: 1 }, h: { d: 1, m: 1 } })
       expect(@stats.length).toEqual(1)
-      expect(@stats.first().attributes).toEqual(pv: 0, vv: 0, md: { f: { d: 1 }, h: { d: 2, m: 1 } }, bp: {}, id: 1316593200)
+      expect(@stats.first().attributes).toEqual(pv: 0, vv: 0, bvv: 0, md: { f: { d: 1 }, h: { d: 2, m: 1 } }, bp: {}, id: 1316593200)
 
     it 'merge existing Stat with new data (video view event)', ->
       @stats.reset(id: 1316593200, pv: 6, vv: 2)
       @stats.merge(id: 1316593200, vv: 1)
       expect(@stats.length).toEqual(1)
-      expect(@stats.first().attributes).toEqual(pv: 6, vv: 3, md: {}, bp: {}, id: 1316593200)
+      expect(@stats.first().attributes).toEqual(pv: 6, vv: 3, bvv: 0, md: {}, bp: {}, id: 1316593200)
 
 describe 'MSVStats.Models.StatsDays', ->
   beforeEach ->

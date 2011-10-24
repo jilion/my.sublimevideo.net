@@ -6,3 +6,4 @@
     <%= Highcharts.numberFormat(@stats.vvTotal(MSVStats.period.get('startIndex'), MSVStats.period.get('endIndex')), 0) %> <span class='title'>video views</span>
   </li>
 </ul>
+<p>embed visits & views not counted</p>

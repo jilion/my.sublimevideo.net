@@ -1,7 +1,8 @@
 class MSVStats.Models.Stat extends Backbone.Model
   defaults:
-    pv: 0
-    vv: 0
+    pv: 0 # main + extra
+    vv: 0 # main + extra
+    bvv: 0 # billable video views, only days stats: main + extra + embed
     md: {}
     bp: {}
 

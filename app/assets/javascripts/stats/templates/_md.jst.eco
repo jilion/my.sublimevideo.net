@@ -31,4 +31,5 @@
       </ul>
     </li>
   </ul>
+  <span class='tooltip'>Counted on each video load (could be greather than one per page visit)</span>
 <% end %>
