@@ -66,6 +66,13 @@ describe 'Source, Sources', ->
         expect(@source.get('embedWidth')).toEqual(1000)
         expect(@source.get('embedHeight')).toEqual(500)
 
+    describe 'setDefaultDataName()', ->
+      it 'sets dataName from src without the extension and capitalized', ->
+        @source.set(src: 'http://sublimevideo.net/demo/dartmoor.mp4')
+        @source.setDefaultDataName()
+
+        expect(@source.get('dataName')).toEqual("Dartmoor")
+
     describe 'setDimensions()', ->
       it 'sets the width, height and ratio', ->
         @source.setDimensions('http://sublimevideo.net/demo/dartmoor.mp4', { width:600, height:364 })
@@ -74,12 +81,12 @@ describe 'Source, Sources', ->
         expect(@source.get('ratio')).toEqual(364 / 600)
         expect(@source.get('embedWidth')).toEqual(600)
 
-      it 'width > 858, sets the width, height and ratio', ->
+      it 'width > 852, sets the width, height and ratio', ->
         @source.setDimensions('http://sublimevideo.net/demo/dartmoor.mp4', { width:1000, height:364 })
         expect(@source.get('width')).toEqual(1000)
         expect(@source.get('height')).toEqual(364)
         expect(@source.get('ratio')).toEqual(364 / 1000)
-        expect(@source.get('embedWidth')).toEqual(858)
+        expect(@source.get('embedWidth')).toEqual(852)
 
     describe 'setEmbedWidth()', ->
       it 'sets embedWidth to 200 if it is not a number', ->

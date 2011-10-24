@@ -9,7 +9,7 @@ class MSVVideoTagBuilder.Views.Loader extends Backbone.View
 
     _.bindAll this, 'render'
 
-    this.render()
+    this.render() if @sites
 
   #
   # EVENTS

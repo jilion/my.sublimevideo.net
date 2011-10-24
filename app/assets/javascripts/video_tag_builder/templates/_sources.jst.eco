@@ -5,7 +5,12 @@
         <% currentFormat = source.get('format') %>
         <%- '</td>' if currentFormat? %>
         <td height='200'>
-          <h4 class='type'><%= source.formatTitle() %></h4>
+          <h4 class='type'>
+            <%= source.formatTitle() %>
+            <% if source.get('optional'): %>
+              <em>(Optional)</em>
+            <% end %>
+          </h4>
       <% end %>
 
       <% if source.get('quality') isnt 'base': %>
@@ -13,7 +18,7 @@
           <div class='checkbox'><input type='checkbox' class='use_source' id='<%= source.formatQuality() %>_use_source' /></div>
           <label for='<%= source.formatQuality() %>_use_source'>
             <%= "Add a mobile version (lower resolution/bitrate)" if source.get('quality') == 'mobile' %>
-            <%= "Add an HD version" if source.get('quality') == 'hd' %>
+            <%= "Add a HD version" if source.get('quality') == 'hd' %>
           </label>
         </div>
         <div id='<%= source.formatQuality() %>_src_box' class='src_box source_type' <%= "style='display:none'" if source.get('src') is "" %>>

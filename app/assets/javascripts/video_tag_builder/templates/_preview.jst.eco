@@ -1,13 +1,13 @@
 <% poster = @video.get('poster').get('src') %>
 
-<% if MSVVideoTagBuilder.builder.get('builderClass') is 'iframe_embed': %>
-  <% params = "?poster=#{encodeURIComponent(poster) + @video.get('sources').constructParamsFromSources(MSVVideoTagBuilder.builder.get('startWithHd'))}" %>
+<% if @builder.get('builderClass') is 'iframe_embed': %>
+  <% params = "?poster=#{encodeURIComponent(poster) + @video.get('sources').constructParamsFromSources(@builder.get('startWithHd'))}" %>
   <iframe src='/video-tag-builder/iframe-embed<%= params %>' width='<%= @video.get('width') %>' height='<%= @video.get('height') %>' frameborder='0' allowfullscreen webkitallowfullscreen mozallowfullscreen></iframe>
 
 <% else: %>
-  <% sortedSources = @video.get('sources').sortedSources(MSVVideoTagBuilder.builder.get('startWithHd')) %>
+  <% sortedSources = @video.get('sources').sortedSources(@builder.get('startWithHd')) %>
 
-  <% if MSVVideoTagBuilder.builder.get('builderClass') is 'lightbox': %>
+  <% if @builder.get('builderClass') is 'lightbox': %>
     <% zoomable_class = ' zoomable' if @video.get('thumbnail').srcIsUrl() and @video.get('thumbnail').get('magnifyingGlass') %>
     <a href='<%= @video.get('sources').mp4Mobile().get('src') %>' class='sublime<%= zoomable_class  %>'>
 

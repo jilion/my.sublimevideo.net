@@ -1,9 +1,6 @@
 class MSVVideoTagBuilder.Models.Builder extends Backbone.Model
   defaults:
     builderClass: 'standard'
-    loader: null
-    video: null
-    preview: null
     startWithHd: false
     useDemoAssets: false
 
