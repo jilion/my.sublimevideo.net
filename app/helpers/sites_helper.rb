@@ -25,6 +25,14 @@ module SitesHelper
     site.path.present? ? "#{site.hostname}/#{site.path}" : site.hostname
   end
 
+  def hostname_or_token(site)
+    site.hostname.presence || site.token
+  end
+
+  def site_quick_switch_trigger(site)
+    link_to hostname_or_token(site), '', id: 'site_quick_switch_trigger', :"data-token" => site.token
+  end
+
   def display_none_if(condition, value=nil)
     value || "display:none;" unless condition
   end

@@ -61,9 +61,9 @@ document.observe("dom:loaded", function() {
   if ($("sites_table_wrap")) {
     MySublimeVideo.sitesPoller = new SitesPoller();
   }
-  // Load current usage in Ajax since it can be a heavy calculation
-  if ($('current_usage_amount')) {
-    new Ajax.Request('/invoices/usage', { method:'get' });
+  // Site quick switch
+  if ($('site_quick_switch_trigger')) {
+    MySublimeVideo.siteQuickSwitch = new SiteQuickSwitch($('site_quick_switch_trigger'), $('site_quick_switch_list'));
   }
 
   // ===================================================
@@ -176,6 +176,45 @@ MySublimeVideo.showSiteUsage = function(siteId) {
 // = Classes =
 // ===========
 
+var SiteQuickSwitch = Class.create({
+  initialize: function(triggerLink, sitesList) {
+    this.sitesList   = sitesList;
+    this.triggerLink = triggerLink;
+    this.token       = triggerLink.readAttribute('data-token');
+
+    triggerLink.on('click', this.showSitesList.bind(this));
+    this.sitesList.select('li a').each(function(el) {
+      if (el.readAttribute('data-token') == this.token) {
+        el.on('click', this.hideSitesList.bind(this));
+      }
+      else {
+        el.on('click', this.changePage.bind(this));
+      }
+    }.bind(this));
+  },
+  showSitesList: function(event) {
+    event.stop();
+    this.triggerLink.hide();
+    this.sitesList.addClassName('expanded');
+  },
+  hideSitesList: function(event) {
+    if (event) event.stop();
+    this.sitesList.removeClassName('expanded');
+    this.triggerLink.show();
+  },
+  changePage: function(event) {
+    event.stop();
+    // Change the active link in the sites' list
+    // this.sitesList.select('.active')[0].removeClassName('active');
+    // event.target.addClassName('active');
+
+    // Change the current selected site text
+    this.triggerLink.update(event.target.innerText);
+    this.hideSitesList();
+    window.location.href = window.location.href.replace(this.token, event.target.readAttribute('data-token'));
+  }
+});
+
 var PlanUpdateManager = Class.create({
   initialize: function() {
     this.planUpgradeInfoDiv = $('plan_upgrade_info');
@@ -202,8 +241,7 @@ var PlanUpdateManager = Class.create({
     }.bind(this));
   },
   handlePlanChange: function(radioButton) {
-    var plan_price  = radioButton.readAttribute('data-plan_price');
-
+    var plan_price    = radioButton.readAttribute('data-plan_price');
     var price_is_zero = plan_price === "$0";
 
     if (this.hostnameDiv) this.hostnameDiv.required = !price_is_zero;
@@ -316,8 +354,13 @@ var FormManager = Class.create({
         // HTML5 Input validity
         form.select("input").each(function(input) {
           if (input.validity) {
-            if (input.validity.valid) input.removeClassName("errors");
-            else {input.addClassName("errors");event.stop();}
+            if (input.validity.valid) {
+              input.removeClassName("errors");
+            }
+            else {
+              input.addClassName("errors");
+              event.stop();
+            }
           }
         });
       });

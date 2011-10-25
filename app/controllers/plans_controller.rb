@@ -4,6 +4,8 @@ class PlansController < ApplicationController
 
   # GET /sites/:site_id/plan/edit
   def edit
+    @sites = current_user.sites.not_archived
+
     respond_with(@site)
   end
 

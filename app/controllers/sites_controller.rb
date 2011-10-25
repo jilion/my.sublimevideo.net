@@ -15,6 +15,7 @@ class SitesController < ApplicationController
   def index
     @sites = current_user.sites.not_archived.includes(:plan, :next_cycle_plan, :invoices)
     @sites = apply_scopes(@sites).by_date
+
     respond_with(@sites, :per_page => 10) do |format|
       format.js
       format.html
@@ -25,11 +26,14 @@ class SitesController < ApplicationController
   # GET /sites/new
   def new
     @site = current_user.sites.build((params[:site] || {}).reverse_merge(:dev_hostnames => Site::DEFAULT_DEV_DOMAINS))
+
     respond_with(@site)
   end
 
   # GET /sites/:id/edit
   def edit
+    @sites = current_user.sites.not_archived
+
     respond_with(@site)
   end
 
@@ -68,6 +72,7 @@ class SitesController < ApplicationController
   # PUT /sites/:id
   def update
     @site.update_attributes(params[:site])
+
     respond_with(@site, :location => :sites)
   end
 
@@ -87,6 +92,7 @@ class SitesController < ApplicationController
   # GET /sites/:id/state
   def state
     @site = current_user.sites.not_archived.find(params[:id])
+
     respond_with(@site) do |format|
       format.js
       format.html { redirect_to :sites }
@@ -114,6 +120,7 @@ class SitesController < ApplicationController
   def find_sites_or_redirect_to_new_site
     @sites = current_user.sites.not_archived.includes(:plan, :next_cycle_plan)
     @sites = apply_scopes(@sites).by_date
+
     redirect_to [:new, :site] if @sites.empty?
   end
 

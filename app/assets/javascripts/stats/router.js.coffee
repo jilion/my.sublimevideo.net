@@ -6,9 +6,12 @@ class MSVStats.Routers.StatsRouter extends Backbone.Router
     this.initModels()
     this.initPusherTick()
 
-    new MSVStats.Views.PageTitleView(sites: MSVStats.sites)
-    new MSVStats.Views.SitesSelectView
-      el: '#sites_select'
+    new MSVStats.Views.PageTitleView
+      el: 'h2'
+      sites: MSVStats.sites
+
+    new MSVStats.Views.SiteQuickSwitchView
+      el: '#site_quick_switch'
       sites: MSVStats.sites
 
     new MSVStats.Views.TrialView

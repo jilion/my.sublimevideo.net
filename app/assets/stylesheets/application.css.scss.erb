@@ -2468,7 +2468,7 @@ ul.segmented_menu li {
   display:block;
 }
 
-ul.segmented_menu li a {
+ul.segmented_menu li a, ul.segmented_menu li span {
   display:block;
   padding:8px 14px;
   font-size:18px;
@@ -2507,11 +2507,18 @@ ul.segmented_menu li.first a {
   border-radius: 8px 0 0 8px;
 }
 
-ul.segmented_menu li.last a {
+ul.segmented_menu li.last a, ul.segmented_menu li.last span {
   -moz-border-radius: 0 8px 8px 0;
   -webkit-border-radius: 0 8px 8px 0;
   border-radius: 0 8px 8px 0;
 }
+
+/* Rémy */
+ul.segmented_menu li.disabled a, ul.segmented_menu li.disabled span {
+  color:#999; /* TO CHANGE :D */
+  background:url(<%= asset_data_uri 'textured_background.jpg' %>);
+}
+/* Rémy */
 
 #next_cycle_plan_box {
   background:#9ea5b2;
@@ -3189,4 +3196,27 @@ input::-moz-focus-inner, button::-moz-focus-inner { border:0; }
   width:0;
   height:0;
   border:none;
+}
+
+/* Rémy */
+ul#site_quick_switch_list {
+  display:none;
+}
+
+ul#site_quick_switch_list.expanded {
+  display:block;
+  background-color:#DDD;
+  z-index:100000000000000000;
+}
+
+ul#site_quick_switch_list li a {
+  font-weight:100;
+  font-size:46px;
+  letter-spacing:-1px;
+  line-height:35px;
+  padding-bottom:30px;
+}
+
+ul#site_quick_switch_list li a.active {
+  font-weight:600;
 }

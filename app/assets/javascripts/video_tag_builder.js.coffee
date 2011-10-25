@@ -1,6 +1,3 @@
-#= require jquery
-#= require jquery_ujs
-#= require underscore
 #= require backbone
 #= require video-size-checker/sublimevideo-size-checker.min.js
 #= require spin/jquery.spin

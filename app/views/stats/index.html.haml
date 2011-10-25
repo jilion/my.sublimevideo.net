@@ -2,7 +2,7 @@
   = stylesheet_link_tag 'stats'
   = javascript_include_tag 'https://d3ds63zw57jt09.cloudfront.net/1.9/pusher.min.js', 'stats'
 
-= title_and_content_header("Stats for #{@site.hostname || @site.token}")
+= title_and_content_header("Stats for #{hostname_or_token(@site)}")
 
 :coffeescript
   $ ->
@@ -18,7 +18,7 @@
     window.MSVStats.statsRouter = new MSVStats.Routers.StatsRouter()
     Backbone.history.start({ pushState: true })
 
-#sites_select
+#site_quick_switch
 
 #trial
 

@@ -1,0 +1,7 @@
+<ul id='site_quick_switch_list'>
+  <% for site in @sites.models: %>
+    <li>
+      <a href='' <%= "class='active'" if @sites.selectedSite is site %> data-token='<%= site.get('token') %>'><%= site.title() %></a>
+    </li>
+  <% end %>
+</ul>

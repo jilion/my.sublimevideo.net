@@ -13,7 +13,9 @@
     /[if lte IE 8]
       = stylesheet_link_tag 'application_ie'
 
-    - if %w[stats video_tag_builder].exclude?(controller_name)
+    - if %w[stats video_tag_builder].include?(controller_name)
+      = javascript_include_tag 'application_jquery'
+    - else
       = javascript_include_tag 'application'
     = yield :head
 

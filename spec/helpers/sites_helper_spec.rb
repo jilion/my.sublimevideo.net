@@ -11,19 +11,33 @@ describe SitesHelper do
 
   describe "#sublimevideo_script_tag_for" do
     it "is should generate sublimevideo script_tag" do
-      site =  FactoryGirl.create(:site)
-      helper.sublimevideo_script_tag_for(site).should == "<script type=\"text/javascript\" src=\"http://cdn.sublimevideo.net/js/#{site.token}.js\"></script>"
+      site = FactoryGirl.create(:site)
+      helper.sublimevideo_script_tag_for(site).should eql "<script type=\"text/javascript\" src=\"http://cdn.sublimevideo.net/js/#{site.token}.js\"></script>"
     end
   end
 
   describe "#style_for_usage_bar_from_usage_percentage" do
-    it { helper.style_for_usage_bar_from_usage_percentage(0).should == "display:none;" }
-    it { helper.style_for_usage_bar_from_usage_percentage(0.0).should == "display:none;" }
-    it { helper.style_for_usage_bar_from_usage_percentage(0.02).should == "width:4%;" }
-    it { helper.style_for_usage_bar_from_usage_percentage(0.04).should == "width:4%;" }
-    it { helper.style_for_usage_bar_from_usage_percentage(0.05).should == "width:5%;" }
-    it { helper.style_for_usage_bar_from_usage_percentage(0.12344).should == "width:12.34%;" }
-    it { helper.style_for_usage_bar_from_usage_percentage(0.783459).should == "width:78.35%;" }
+    it { helper.style_for_usage_bar_from_usage_percentage(0).should eql "display:none;" }
+    it { helper.style_for_usage_bar_from_usage_percentage(0.0).should eql "display:none;" }
+    it { helper.style_for_usage_bar_from_usage_percentage(0.02).should eql "width:4%;" }
+    it { helper.style_for_usage_bar_from_usage_percentage(0.04).should eql "width:4%;" }
+    it { helper.style_for_usage_bar_from_usage_percentage(0.05).should eql "width:5%;" }
+    it { helper.style_for_usage_bar_from_usage_percentage(0.12344).should eql "width:12.34%;" }
+    it { helper.style_for_usage_bar_from_usage_percentage(0.783459).should eql "width:78.35%;" }
+  end
+
+  describe "#hostname_or_token" do
+    context "site with a hostname" do
+      subject { FactoryGirl.create(:site, hostname: 'rymai.me') }
+
+      specify { helper.hostname_or_token(subject).should eql 'rymai.me' }
+    end
+
+    context "site without a hostname" do
+      subject { FactoryGirl.create(:site, plan_id: @free_plan.id, hostname: '') }
+
+      specify { helper.hostname_or_token(subject).should eql subject.token }
+    end
   end
 
 end

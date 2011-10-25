@@ -45,19 +45,19 @@ describe SiteModules::Scope do
       @site_paid      = FactoryGirl.create(:site, user: @user, plan_id: @paid_plan.id)
     end
 
-    describe "#free" do
+    describe ".free" do
       specify { Site.free.all.should =~ [@site_free] }
     end
 
-    describe "#sponsored" do
+    describe ".sponsored" do
       specify { Site.sponsored.all.should =~ [@site_sponsored] }
     end
 
-    describe "#custom" do
+    describe ".custom" do
       specify { Site.custom.all.should =~ [@site_custom] }
     end
 
-    describe "#in_paid_plan" do
+    describe ".in_paid_plan" do
       specify { Site.in_paid_plan.all.should =~ [@site_custom, @site_paid] }
     end
   end
@@ -72,20 +72,34 @@ describe SiteModules::Scope do
       @site_next_cycle_plan.update_attribute(:next_cycle_plan_id, @free_plan.id)
     end
 
-    describe "#with_wildcard" do
+    describe ".with_wildcard" do
       specify { Site.with_wildcard.all.should =~ [@site_wildcard] }
     end
 
-    describe "#with_path" do
+    describe ".with_path" do
       specify { Site.with_path.all.should =~ [@site_path] }
     end
 
-    describe "#with_extra_hostnames" do
+    describe ".with_extra_hostnames" do
       specify { Site.with_extra_hostnames.all.should =~ [@site_extra_hostnames] }
     end
 
-    describe "#with_next_cycle_plan" do
+    describe ".with_next_cycle_plan" do
       specify { Site.with_next_cycle_plan.all.should =~ [@site_next_cycle_plan] }
+    end
+  end
+
+  describe "invoices" do
+    before(:all) do
+      Site.delete_all
+      @site_with_no_invoice = FactoryGirl.create(:site, user: @user)
+      @site_with_paid_invoice = FactoryGirl.create(:site_with_invoice, user: @user)
+      @site_with_canceled_invoice = FactoryGirl.create(:site_with_invoice, user: @user)
+      @site_with_canceled_invoice.invoices.last.update_attribute(:state, 'canceled')
+    end
+
+    describe ".with_not_canceled_invoices" do
+      specify { Site.with_not_canceled_invoices.all.should =~ [@site_with_paid_invoice] }
     end
   end
 

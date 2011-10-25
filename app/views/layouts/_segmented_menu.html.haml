@@ -1,7 +1,12 @@
-- sites_item = [:edit_site, { :link_text => "Settings", :class => 'first', :urls => %W[sites/#{@site.token}(/edit)?$] }]
-- plans_item = [:edit_site_plan, { :link_text => "Plan", :urls => %W[sites/#{@site.token}/plan(/edit)?$] }]
-- invoices_item = [:site_invoices, { :link_text => "Invoices", :class => 'last', :urls => %W[sites/#{@site.token}/invoices$] }]
+- sites_item = [:edit_site, { link_text: "Settings", class: 'first', urls: %W[sites/#{@site.token}(/edit)?$] }]
+- plans_item = [:edit_site_plan, { link_text: "Plan", urls: %W[sites/#{@site.token}/plan(/edit)?$] }]
+- invoices_item = [:site_invoices, { link_text: "Invoices", class: "last", urls: %W[sites/#{@site.token}/invoices$] }]
 
 %ul.segmented_menu
-  - [sites_item, plans_item, invoices_item].each do |i|
-    = activable_menu_item(:li, i[0], i[1].merge(:resource => @site, :onclick => "MySublimeVideo.makeSticky(this, '.segmented_menu')"))
+  - [sites_item, plans_item].each do |i|
+    = activable_menu_item(:li, i[0], i[1].merge(resource: @site, onclick: "MySublimeVideo.makeSticky(this, '.segmented_menu')"))
+  - if @site.invoices.not_canceled.empty?
+    - invoices_item[1][:class] << ' disabled'
+    = activable_content_tag(:li, invoices_item[1]) { content_tag(:span, "No Invoices") }
+  - else
+    = activable_menu_item(:li, invoices_item[0], invoices_item[1].merge(resource: @site, onclick: "MySublimeVideo.makeSticky(this, '.segmented_menu')"))
