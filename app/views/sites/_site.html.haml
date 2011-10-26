@@ -45,6 +45,7 @@
       = link_to "Embed code", "", :class => "embed_code", :onclick => "return MySublimeVideo.showSiteEmbedCode('#{site.token}')"
     - else
       = "—"
+    .embed_code_site{ id: "embed_code_site_content_#{site.token}", style: 'display:none' }= render 'code', site: site
 
   %td.status.box_hovering_zone
     .wrap

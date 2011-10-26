@@ -152,8 +152,15 @@ MySublimeVideo.showTableSpinner = function() {
   if (tableSpinner) tableSpinner.show();
 };
 
-MySublimeVideo.showSiteEmbedCode = function(siteId) {
-  MySublimeVideo.openPopup(siteId, "embed_code_site", '/sites/'+siteId+'/code', 'popup');
+MySublimeVideo.showSiteEmbedCode = function(siteToken) {
+  MySublimeVideo.openPopup(siteToken, "embed_code_site", null, 'popup');
+
+  var popup = $("embed_code_site_" + siteToken);
+  if (popup) {
+    popup.removeClassName("loading");
+    popup.down(".content").update($("embed_code_site_content_" + siteToken).innerHTML);
+  }
+
   return false;
 };
 

@@ -26,14 +26,14 @@ MySublimeVideo::Application.routes.draw do
   resource :users, :only => :update, :path => '/account/info'
 
   resources :sites, :except => :show do
-    member do
-      get :state
-      get :code
-    end
+    get :state, :on => :member
+
     resource :plan, :only => [:edit, :update, :destroy]
+
     resources :invoices, :only => :index do
       put :retry, :on => :collection
     end
+
     resources :stats, :only => :index do
       post :trial, :on => :collection
     end

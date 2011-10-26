@@ -1,22 +1,22 @@
 %h3
-  - if @site.hostname?
+  - if site.hostname?
     Embed code for
-    %strong= truncate_middle(@site.hostname, :length => 40)
+    %strong= truncate_middle(site.hostname, :length => 40)
   - else
     Embed code
-%p.desc= "Copy the code below, and paste it into the pages on #{truncate_middle(@site.hostname)} where the SublimeVideo player will be used. We highly recommend you put it into the <code>&lt;head&gt;</code> tag.".html_safe
+%p.desc= "Copy the code below, and paste it into the pages on #{truncate_middle(site.hostname)} where the SublimeVideo player will be used. We highly recommend you put it into the <code>&lt;head&gt;</code> tag.".html_safe
 %form
   .embed_code
-    = text_area_tag '', sublimevideo_script_tag_for(@site), readonly: true, onclick: "this.focus();this.select();"
+    = text_area_tag '', sublimevideo_script_tag_for(site), readonly: true, onclick: "this.focus();this.select();"
     .checkbox_wrap
-      = check_box_tag :wildcard, '1', false, id: 'toggle_embed_with_ssl', onclick: "MySublimeVideo.showSiteEmbedCodeWithSSL(this);", disabled: @site.in_free_plan?
+      = check_box_tag :wildcard, '1', false, id: 'toggle_embed_with_ssl', onclick: "MySublimeVideo.showSiteEmbedCodeWithSSL(this);", disabled: site.in_free_plan?
       = label_tag :toggle_embed_with_ssl do
-        - if @site.in_free_plan?
+        - if site.in_free_plan?
           %s Deliver with SSL for secure pages.
-          %strong= link_to("Available in paid plans", [:edit, @site, :plan])
+          %strong= link_to("Available in paid plans", [:edit, site, :plan])
         - else
           Deliver with SSL for secure pages.
-      -#%input#toggle_embed_with_ssl{ :type => "checkbox", :onclick => "MySublimeVideo.showSiteEmbedCodeWithSSL(this);", :disabled => @site.in_free_plan? }
+      -#%input#toggle_embed_with_ssl{ :type => "checkbox", :onclick => "MySublimeVideo.showSiteEmbedCodeWithSSL(this);", :disabled => site.in_free_plan? }
       -# %label{ :for => "toggle_embed_with_ssl"}= "Deliver with SSL for secure pages."
 %p.note= raw "Please consult the #{link_to "documentation", "http://docs.sublimevideo.net"} to learn how to add videos to your page."
--#%p.desc= raw "If you're using a plugin or service that asks for a SublimeVideo Site ID, use this: <code>#{@site.token}</code>"
+-#%p.desc= raw "If you're using a plugin or service that asks for a SublimeVideo Site ID, use this: <code>#{site.token}</code>"
