@@ -1,4 +1,4 @@
-notification :gntp
+# notification :gntp
 
 group :frontend do
 

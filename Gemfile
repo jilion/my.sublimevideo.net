@@ -112,8 +112,11 @@ group :development do
   gem 'em-http-request' # async pusher in populate
 
   gem 'rb-fsevent', '~> 0.9.0.pre3'
-  gem 'ruby_gntp'
-  gem 'guard', :git => 'git://github.com/guard/guard.git', :branch => 'dev'
+
+  # gem 'ruby_gntp'
+  # gem 'guard', :git => 'git://github.com/guard/guard.git', :branch => 'dev'
+  gem 'growl_notify'
+
   gem 'guard-bundler'
   gem 'guard-pow'
   gem 'guard-livereload'
