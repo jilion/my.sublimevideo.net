@@ -52,7 +52,7 @@ MySublimeVideo::Application.routes.draw do
   resource :ticket, :only => [:new, :create], :path => '/support', :path_names => { :new =>  '' }
   %w[help feedback].each { |action| match action => redirect('/support'), :via => :get }
 
-  match '/video-tag-builder',              :to => 'video_tag_builder#new',          :via => :get
+  match '/video-tag-builder',              :to => 'video_tag_builder#new',          :via => :get, :as => 'video_tag_builder'
   match '/video-tag-builder/iframe-embed', :to => 'video_tag_builder#iframe_embed', :via => :get
 
   match ':page', :to => 'pages#show', :via => :get, :as => :page, :page => /terms|privacy|suspended/

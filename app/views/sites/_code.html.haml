@@ -18,5 +18,6 @@
           Deliver with SSL for secure pages.
       -#%input#toggle_embed_with_ssl{ :type => "checkbox", :onclick => "MySublimeVideo.showSiteEmbedCodeWithSSL(this);", :disabled => site.in_free_plan? }
       -# %label{ :for => "toggle_embed_with_ssl"}= "Deliver with SSL for secure pages."
+%p.note= raw "Need help to build your first &lt;video&gt; elements, discover our #{link_to "video tag builder", video_tag_builder_path(site_id: site.token)}!"
 %p.note= raw "Please consult the #{link_to "documentation", "http://docs.sublimevideo.net"} to learn how to add videos to your page."
 -#%p.desc= raw "If you're using a plugin or service that asks for a SublimeVideo Site ID, use this: <code>#{site.token}</code>"

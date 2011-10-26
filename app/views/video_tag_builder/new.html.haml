@@ -7,14 +7,16 @@
 = title_and_content_header("Video tag generator")
 
 - if user_signed_in?
+  - token = @site.try(:token) || @sites.first.token
+  - hostname = @site.try(:hostname) || @sites.first.hostname
   :coffeescript
     $ ->
       window.MSVVideoTagBuilder.loader = new MSVVideoTagBuilder.Models.Loader
       window.MSVVideoTagBuilder.sites = new MSV.Collections.Sites(#{@sites.to_json})
       if window.MSVVideoTagBuilder.sites.length
-        window.MSVVideoTagBuilder.sites.select('#{@sites.first.token}')
-        window.MSVVideoTagBuilder.loader.set(token: '#{@sites.first.token}')
-        window.MSVVideoTagBuilder.loader.set(hostname: '#{@sites.first.hostname}')
+        window.MSVVideoTagBuilder.sites.select('#{token}')
+        window.MSVVideoTagBuilder.loader.set(token: '#{token}')
+        window.MSVVideoTagBuilder.loader.set(hostname: '#{hostname}')
       SublimeVideoSizeChecker.setRoot('/video-size-checker/')
       window.MSVVideoTagBuilder.builderRouter = new MSVVideoTagBuilder.Routers.BuilderRouter()
 - else
