@@ -72,7 +72,7 @@ gem 'prowl',                 '0.1.3'
 gem 'addressable',           '2.2.6'
 
 # Perf
-gem 'dalli',                 '1.0.5'
+gem 'dalli',                 '1.1.3'
 
 group :production do
   gem 'rack-google-analytics', '0.9.2', :require => 'rack/google-analytics'
@@ -98,7 +98,7 @@ group :development do
   gem 'taps'
   gem 'silent-postgres'
 
-  gem 'rb-fsevent', :git => 'git://github.com/ttilley/rb-fsevent.git', :branch => 'pre-compiled-gem-one-off'
+  gem 'rb-fsevent', '~> 0.9.0.pre3'
   gem 'growl_notify'
   gem 'guard-bundler'
   gem 'guard-pow'
