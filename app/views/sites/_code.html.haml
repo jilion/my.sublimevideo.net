@@ -8,16 +8,17 @@
 %form
   .embed_code
     = text_area_tag '', sublimevideo_script_tag_for(site), readonly: true, onclick: "this.focus();this.select();"
-    .checkbox_wrap
-      = check_box_tag :wildcard, '1', false, id: 'toggle_embed_with_ssl', onclick: "MySublimeVideo.showSiteEmbedCodeWithSSL(this);", disabled: site.in_free_plan?
-      = label_tag :toggle_embed_with_ssl do
-        - if site.in_free_plan?
-          %s Deliver with SSL for secure pages.
-          %strong= link_to("Available in paid plans", [:edit, site, :plan])
-        - else
-          Deliver with SSL for secure pages.
+    - if site.in_free_plan?
+      = "SSL delivery for secure pages is "
+      %strong= raw "included #{link_to("in all paid plans", [:edit, site, :plan])}"
+      = "."
+    - else
+      .checkbox_wrap
+        = check_box_tag :wildcard, '1', false, id: "toggle_embed_with_ssl_#{site.id}", onclick: "MySublimeVideo.showSiteEmbedCodeWithSSL(this);", disabled: site.in_free_plan?
+        = label_tag "toggle_embed_with_ssl_#{site.id}", 'Deliver with SSL for secure pages.'
+
       -#%input#toggle_embed_with_ssl{ :type => "checkbox", :onclick => "MySublimeVideo.showSiteEmbedCodeWithSSL(this);", :disabled => site.in_free_plan? }
       -# %label{ :for => "toggle_embed_with_ssl"}= "Deliver with SSL for secure pages."
-%p.note= raw "Need help to build your first &lt;video&gt; elements, discover our #{link_to "video tag builder", video_tag_builder_path(site_id: site.token)}!"
+%p.note= raw "Need help to build your first <code>&lt;video&gt;</code> elements? Discover our #{link_to "video tag builder", video_tag_builder_path(site_id: site.token)}!"
 %p.note= raw "Please consult the #{link_to "documentation", "http://docs.sublimevideo.net"} to learn how to add videos to your page."
 -#%p.desc= raw "If you're using a plugin or service that asks for a SublimeVideo Site ID, use this: <code>#{site.token}</code>"

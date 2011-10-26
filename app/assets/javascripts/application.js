@@ -110,9 +110,10 @@ MySublimeVideo.hideFlashMessageDelayed = function(flashEl) {
   }, 15000);
 };
 
-MySublimeVideo.openPopup = function(itemId, idPrefix, url, class_name) { // item can be site
-  if (!MySublimeVideo.popupHandler) MySublimeVideo.popupHandler = new PopupHandler();
-  MySublimeVideo.popupHandler.open(itemId, idPrefix, url, class_name);
+MySublimeVideo.openPopup = function(itemId, idPrefix, url, className, anchorId) { // item can be site
+  // if (!MySublimeVideo.popupHandler) MySublimeVideo.popupHandler = new PopupHandler();
+  MySublimeVideo.popupHandler = new PopupHandler();
+  MySublimeVideo.popupHandler.open(itemId, idPrefix, url, className, anchorId);
 };
 
 // ====================
@@ -153,12 +154,14 @@ MySublimeVideo.showTableSpinner = function() {
 };
 
 MySublimeVideo.showSiteEmbedCode = function(siteToken) {
-  MySublimeVideo.openPopup(siteToken, "embed_code_site", null, 'popup');
+  MySublimeVideo.openPopup(siteToken, "embed_code_site", null, 'popup', "embed_code_site_content_" + siteToken);
 
   var popup = $("embed_code_site_" + siteToken);
+  var content = $("embed_code_site_content_" + siteToken);
   if (popup) {
     popup.removeClassName("loading");
-    popup.down(".content").update($("embed_code_site_content_" + siteToken).innerHTML);
+    popup.down(".content").update(content.innerHTML);
+    content.update('');
   }
 
   return false;
@@ -565,7 +568,9 @@ PopupHandler handles creation and behavior of SV pop-up (used for showing the em
 var PopupHandler = Class.create({
   initialize: function(popup) {
     this.keyDownHandler = document.on("keydown", this.keyDown.bind(this));
-    this.class_name = null;
+    this.className      = null;
+    this.popupElement   = null;
+    this.anchorId       = null;
   },
   startKeyboardObservers: function() {
     this.keyDownHandler.start();
@@ -573,7 +578,7 @@ var PopupHandler = Class.create({
   stopKeyboardObservers: function() {
     this.keyDownHandler.stop();
   },
-  open: function(itemId, idPrefix, url, class_name) {
+  open: function(itemId, idPrefix, url, className, anchorId) {
     // Creates the base skeleton for the popup, and will render it's content via an ajax request:
     //
     // <div class='popup loading'>
@@ -583,22 +588,23 @@ var PopupHandler = Class.create({
     //   <a class='close'><span>Close</span></a>
     // </div>
 
-    this.class_name = class_name;
+    this.className = className;
+    this.anchorId  = anchorId;
     this.close();
 
     var popupId = idPrefix + "_" + itemId;
-    var popupLoading = new Element("div", {
-      id:popupId,
-      className: this.class_name + " loading"
+    this.popupElement = new Element("div", {
+      id: popupId,
+      className: this.className + " loading"
     }).update("<div class='wrap'><div class='content "+idPrefix+"'></div></div>");
     var closeButton = new Element("a", {
-      href:"",
-      className:"close",
-      onclick:"return MySublimeVideo.closePopup()"
+      href: "",
+      className: "close",
+      onclick: "return MySublimeVideo.closePopup()"
     }).update("<span>Close</span>");
-    popupLoading.insert({ bottom:closeButton });
+    this.popupElement.insert({ bottom: closeButton });
 
-    $('global').insert({ after:popupLoading });
+    $('global').insert({ after: this.popupElement });
 
     this.startKeyboardObservers();
 
@@ -609,7 +615,10 @@ var PopupHandler = Class.create({
   },
   close: function() {
     this.stopKeyboardObservers();
-    $$('.' + this.class_name).each(function(el) {
+    if (this.anchorId && this.popupElement) {
+      $(this.anchorId).update(this.popupElement.down(".content").innerHTML);
+    }
+    $$('.' + this.className).each(function(el) {
       el.remove();
       // el.fade({ after :function(){ el.remove(); }});
     });

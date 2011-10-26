@@ -40,12 +40,12 @@
     - else
       = "—"
 
-  %td.code
+  %td.code{ id: "code_#{site.token}" }
     - if site.plan_id?
       = link_to "Embed code", "", :class => "embed_code", :onclick => "return MySublimeVideo.showSiteEmbedCode('#{site.token}')"
     - else
       = "—"
-    .embed_code_site{ id: "embed_code_site_content_#{site.token}", style: 'display:none' }= render 'code', site: site
+    %div{ id: "embed_code_site_content_#{site.token}", style: 'display:none' }= render 'code', site: site
 
   %td.status.box_hovering_zone
     .wrap
