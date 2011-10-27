@@ -12,7 +12,12 @@
                 .sorting
                   = link_to_sort :date, default_way: 'desc', reverse: true, default: true, label: "latest"
                   = link_to_sort :hostname
-          %th.usage= link_to_sort :last_30_days_billable_video_views, label: "Monthly Usage"
+          %th.usage
+            .wrap
+              - if @sites.one?
+                Last 30 Days Views
+              - else
+                = link_to_sort :last_30_days_billable_video_views, label: "Last 30 Days Views"
           %th.code Player Code
           %th.status Status
         = render @sites
