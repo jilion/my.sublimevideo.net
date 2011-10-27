@@ -1,13 +1,4 @@
-#signup_steps
-  .center_wrap
-    %ul
-      %li.active
-        %strong.number= "1"
-        = "Sign Up"
-      %li
-        %strong.number= "2"
-        = "Choose a plan for your site"
-  .spacer
+= render 'layouts/signup_steps', active: 1
 
 = title_and_content_header("Sign Up")
 
