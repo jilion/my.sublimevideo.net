@@ -288,7 +288,7 @@ describe Log::Voxcast do
       it "analyzes logs" do
         VoxcastCDN.should_not_receive(:download_log)
         LogAnalyzer.should_receive(:parse).with(an_instance_of(File), 'LogsFileFormat::VoxcastStats')
-        SiteStat.should_receive(:create_stats_from_trackers!)
+        Stat.should_receive(:create_stats_from_trackers!)
         @log.parse_and_create_stats!
       end
     end
