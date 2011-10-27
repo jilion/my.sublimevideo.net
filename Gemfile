@@ -106,6 +106,7 @@ group :development do
   gem 'wirble'
   gem 'ruby-graphviz', :require => 'graphviz'
   gem 'heroku'
+  gem 'powder'
   gem 'taps'
   gem 'silent-postgres'
 
