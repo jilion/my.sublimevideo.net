@@ -125,7 +125,7 @@ group :development do
   gem 'guard-rspec'
   gem 'guard-coffeescript'
   gem 'guard-jasmine'
-
+  gem 'guard-yard'
   # gem 'rails_mail_preview'
 end
 
