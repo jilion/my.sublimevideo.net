@@ -40,7 +40,7 @@ module Configurator
 
     def yml_options
       @yml_options ||= YAML.load_file(@config_path)[Rails.env]
-      @yml_options.to_options
+      @yml_options.symbolize_keys
     end
 
   end

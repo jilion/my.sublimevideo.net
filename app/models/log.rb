@@ -50,7 +50,7 @@ class Log
   end
 
   def self.config
-    yml[self.to_s.gsub("Log::", '').to_sym].to_options
+    yml[self.to_s.gsub("Log::", '').to_sym].symbolize_keys
   end
 
   def self.create_new_logs(new_logs_names)
@@ -122,7 +122,7 @@ private
   def self.yml
     config_path = Rails.root.join('config', 'logs.yml')
     @default_storage ||= YAML::load_file(config_path)
-    @default_storage.to_options
+    @default_storage.symbolize_keys
   rescue
     raise StandardError, "Logs config file '#{config_path}' doesn't exist."
   end

@@ -24,7 +24,7 @@ describe Configurator do
 
     its(:config_path) { should eql Rails.root.join('config', 'configurable_module.yml') }
     its(:prefix)      { should eql 'CONFIGURABLE_MODULE' }
-    its(:yml_options) { should eql @conf['development'].to_options }
+    its(:yml_options) { should eql @conf['development'].symbolize_keys }
   end
 
   describe "heroku_config_accessor" do
