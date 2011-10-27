@@ -4,4 +4,19 @@
 
 = link_to "Add a site", new_site_path, :class => "add_site small_button"
 
+- page_visits = SiteStat.all_time_sum(token: current_user.sites.map(&:token), type: 'pv')
+%p= page_visits.inspect
+
+- dev_views = SiteStat.all_time_sum(token: current_user.sites.map(&:token))
+%p= dev_views.inspect
+
+- billable_views = SiteStat.all_time_sum(token: current_user.sites.map(&:token), billable: true)
+%p= billable_views.inspect
+
+%ol
+  %li.complete Plan
+  %li{ class: ('complete' if page_visits > 0) } Embed code: checked once there is at least loader hit (otherwise display a "help" to use the embed code button)
+  %li{ class: ('complete' if billable_views > 0 || (dev_views > 0 && billable_views.zero?)) } Video: checked once there is at least a video view (otherwise display a "help" to use the video tag builder)
+  %li{ class: ('complete' if billable_views > 0) } Deploy in prod: checked once there is at least a video view on the prod domain
+
 #sites_table_wrap= render 'sites'

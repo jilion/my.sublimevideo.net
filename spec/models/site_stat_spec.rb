@@ -118,7 +118,7 @@ describe SiteStat do
       describe "otpions" do
         describe ":days" do
           describe "defaults to 30 days" do
-            subject { described_class.last_days(@site.token) }
+            subject { described_class.last_days(token: @site.token) }
 
             its(:size) { should eql(30) }
             it { subject.first.d.to_time.should eql 30.days.ago.midnight.to_time }
@@ -128,7 +128,7 @@ describe SiteStat do
           end
 
           describe "accepts an integer" do
-            subject { described_class.last_days(@site.token, days: 2) }
+            subject { described_class.last_days(token: @site.token, days: 2) }
 
             its(:size) { should eql(2) }
             it { subject.first.d.to_time.should eql 2.days.ago.midnight.to_time }
@@ -140,7 +140,7 @@ describe SiteStat do
 
         describe ":fill_missing_days" do
           describe "defaults to true" do
-            subject { described_class.last_days(@site.token, days: 30) }
+            subject { described_class.last_days(token: @site.token, days: 30) }
 
             its(:size) { should eql(30) }
             it { subject.first.d.to_time.should eql 30.days.ago.midnight.to_time }
@@ -150,7 +150,7 @@ describe SiteStat do
           end
 
           describe "accepts a boolean" do
-            subject { described_class.last_days(@site.token, days: 30, fill_missing_days: false) }
+            subject { described_class.last_days(token: @site.token, days: 30, fill_missing_days: false) }
 
             its(:size) { should eql(1) }
             it { subject.first.d.to_time.should eql 30.days.ago.midnight.to_time }
@@ -158,7 +158,7 @@ describe SiteStat do
           end
 
           describe "accepts an integer" do
-            subject { described_class.last_days(@site.token, days: 30, fill_missing_days: 3) }
+            subject { described_class.last_days(token: @site.token, days: 30, fill_missing_days: 3) }
 
             its(:size) { should eql(30) }
             it { subject.first.d.to_time.should eql 30.days.ago.midnight.to_time }

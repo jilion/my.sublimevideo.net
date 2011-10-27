@@ -1,9 +1,10 @@
 <%
-usages = StatTimeline::SiteUsage.timeline(@date_range_from - (@moving_avg-1).days, @date_range_to, { site_ids: [site.id], labels: [:invalid_usage, :dev_usage, :main_usage, :extra_usage], merge_cached: true, dont_add_total_usages_before_start_time: true })
-billable_usage = usages["main_usage"].zip(usages["extra_usage"]).map { |item| item.reduce(:+) }
+usage_old = StatTimeline::SiteUsage.timeline(@date_range_from - (@moving_avg-1).days, @date_range_to, { site_ids: [site.id], labels: [:invalid_usage, :dev_usage, :main_usage, :extra_usage], merge_cached: true })
+billable_usage_old = usage_old["main_usage"].zip(usage_old["extra_usage"]).map { |item| item.reduce(:+) }
 
-video_views = StatTimeline::SiteStat.timeline(@date_range_from - (@moving_avg-1).days, @date_range_to, { dont_add_total_usages_before_start_time: true })
-billable_views = video_views["vv_m"].zip(video_views["vv_e"]).map { |item| item.reduce(:+) }
+common_options = { token: site.token, from: @date_range_from - (@moving_avg-1).days, to: @date_range_to }
+usage_new = StatTimeline::SiteStat.timeline(common_options.merge(billable: false))
+billable_usage_new = StatTimeline::SiteStat.timeline(common_options.merge(billable: true))
 
 graph = Graph.new do |g|
   g.option(chart: chart('timeline_usage'))
@@ -15,31 +16,27 @@ graph = Graph.new do |g|
   g.raw_option(tooltip(formatter: %(
     var date  = "<strong>" + Highcharts.dateFormat("%B %e,  %Y", this.x) + "</strong><br/><br/>";
     var label = "<strong>" + Highcharts.numberFormat(this.y, 0) + "</strong>";
-    var loader_per_player = '';
 
-    if (["Invalid", "Invalid cached", "Dev", "Dev cached", "Extra", "Extra cached", "Main", "Main cached"].indexOf(this.series.name) != -1)
+    if (["Invalid", "Dev", "Dev cached", "Extra", "Main"].indexOf(this.series.name) != -1)
       label += " of " + Highcharts.numberFormat(this.total, 0) + " (" + Highcharts.numberFormat(this.percentage, 1) + "%)";
-    else if (this.series.name == "Loader")
-      label += "<br/>Loader / Player: " + Highcharts.numberFormat((this.y / (this.total - this.y)), 1);
 
     return date + this.series.name + ":<br/>" + label;
   )))
 
   plan_limits = site.plan.video_views > 0 ? [
-    serie(Array.new(usages["main_usage"][@moving_avg-1..-1].size, site.plan.daily_video_views), "AVG #{site.plan.title}", type: 'line', stack: 0),
-    serie(Array.new(usages["main_usage"][@moving_avg-1..-1].size, site.plan.video_views), "LIM #{site.plan.title}", type: 'line', visible: false, stack: 1)
+    serie(Array.new(usage_old["main_usage"][@moving_avg-1..-1].size, site.plan.daily_video_views), "AVG #{site.plan.title}", type: 'line', stack: 0),
+    serie(Array.new(usage_old["main_usage"][@moving_avg-1..-1].size, site.plan.video_views), "LIM #{site.plan.title}", type: 'line', visible: false, stack: 1)
   ] : []
   g.option(series: [
-    # serie(usages["invalid_usage"][@moving_avg-1..-1], 'Invalid', visible: false, stack: 2),
-    serie(usages["dev_usage"][@moving_avg-1..-1], 'Dev usage', visible: false, stack: 1),
-    serie(usages["extra_usage"][@moving_avg-1..-1], 'Extra usage', stack: 1),
-    serie(usages["main_usage"][@moving_avg-1..-1], 'Main usage', stack: 1),
-    serie(moving_average(billable_usage, @moving_avg), 'AVG Billable usage', type: 'line', stack: 2),
+    serie(usage_old["dev_usage"][@moving_avg-1..-1], 'Dev (old)', type: 'column', visible: false, stack: 1),
+    serie(usage_old["extra_usage"][@moving_avg-1..-1], 'Extra (old)', type: 'column', visible: false, stack: 1),
+    serie(usage_old["main_usage"][@moving_avg-1..-1], 'Main (old)', type: 'column', visible: false, stack: 1),
+    serie(moving_average(billable_usage_old, @moving_avg), 'AVG Billable (old)', type: 'line', stack: 2),
 
-    serie(video_views["vv_d"][@moving_avg-1..-1], 'Dev views', visible: false, stack: 3),
-    serie(video_views["vv_e"][@moving_avg-1..-1], 'Extra views', stack: 3),
-    serie(video_views["vv_m"][@moving_avg-1..-1], 'Main views', stack: 3),
-    serie(moving_average(video_views, @moving_avg), 'AVG Billable views', type: 'line', stack: 4)
+    serie(usage_new.map { |ss| ss.vv['d'] }[@moving_avg-1..-1], 'Dev (new)', type: 'column', visible: false, stack: 3),
+    serie(usage_new.map { |ss| ss.vv['e'] }[@moving_avg-1..-1], 'Extra (new)', type: 'column', stack: 3),
+    serie(usage_new.map { |ss| ss.vv['m'] }[@moving_avg-1..-1], 'Main (new)', type: 'column', stack: 3),
+    serie(moving_average(billable_usage_new, @moving_avg), 'AVG Billable (new)', type: 'line', stack: 4)
     ] + plan_limits)
   g.option(plotOptions: plot_options(@date_range_from))
   g.option(credits: credits)

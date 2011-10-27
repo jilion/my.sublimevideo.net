@@ -157,7 +157,7 @@ module Admin::GraphsHelper
       line: { lineWidth: 1 },
       area: { lineWidth: 1 },
       areaspline: { lineWidth: 1 },
-      column: { lineWidth: 1 }
+      column: { borderWidth: 0, pointPadding: 0, pointWidth: 6 }
     }
   end
 

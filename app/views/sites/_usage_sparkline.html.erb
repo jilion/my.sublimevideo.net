@@ -1,6 +1,5 @@
 <%
-views = SiteStat.last_days(site.token)
-billable_views = views.map(&:billable_vv)
+billable_views = SiteStat.last_days(token: site.token).map(&:billable_vv)
 graph = Graph.new do |g|
   g.option(chart: { renderTo: "usage_sparkline_#{site.token}", margin: [0,-25,0,-25], borderWidth: 0, borderRadius: 0, backgroundColor: 'transparent' })
   g.option(title: { text: "" })
@@ -16,6 +15,4 @@ end
 if billable_views.any? { |bv| !bv.zero? }
 %>
 <div id="<%= "usage_sparkline_#{site.token}" %>" style="width:168px;height:25px;"><%= raw graph.draw(observe: request.xhr? ? false : "dom:loaded") %></div>
-<% else %>
-  No views in the last 30 days.
 <% end %>

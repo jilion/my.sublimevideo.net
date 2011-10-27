@@ -20,27 +20,19 @@ class SiteStat
   index [[:t, Mongo::ASCENDING], [:h, Mongo::ASCENDING]]#, :unique => true
   index [[:t, Mongo::ASCENDING], [:d, Mongo::ASCENDING]]#, :unique => true
 
-  # ================
-  # = Associations =
-  # ================
+  # Associations
 
   def site
     Site.find_by_token(t)
   end
 
-  # ==========
-  # = Scopes =
-  # ==========
+  # Scopes
 
   %w[s m h d].each do |period|
     scope "#{period}_after".to_sym, lambda { |date| where(period => { "$gte" => date.to_i }).order_by([period.to_sym, :asc]) }
     scope "#{period}_before".to_sym,  lambda { |date| where(period => { "$lte" => date.to_i }).order_by([period.to_sym, :asc]) }
     scope "#{period}_between".to_sym, lambda { |start_date, end_date| where(period => { "$gte" => start_date.to_i, "$lte" => end_date.to_i }).order_by([period.to_sym, :asc]) }
   end
-
-  # ====================
-  # = Instance Methods =
-  # ====================
 
   def token
     read_attribute(:t)
@@ -75,75 +67,121 @@ class SiteStat
     json
   end
 
-  # =================
-  # = Class Methods =
-  # =================
+  # Returns an array of SiteStat objects.
+  #
+  # @option options [String] token a valid site token
+  # @option options [Array<String>] token an array of valid site tokens
+  # @option options [Array<SiteStat>] stats an array of SiteStat objects
+  # @option options [String] period_type the precision desired, can be 'days' (default), 'hours', 'minutes', 'seconds'
+  # @option options [DateTime] from represents the datetime from where returning stats
+  # @option options [DateTime] to represents the datetime to where returning stats
+  # @option options [Boolean] fill_missing_days when true, missing days will be "filled" with 0 main views
+  # @option options [Integer] fill_missing_days missing days will be "filled" with the given value as main views
+  # @return [Array<SiteStat>] an array of SiteStat objects
+  #
+  def self.last_stats(options = {})
+    options = options.symbolize_keys.reverse_merge(period_type: 'days', fill_missing_days: true)
 
-  def self.last_stats(token_or_stats, from, to, period_type, options = {})
-    options.reverse_merge!(fill_missing_days: true)
-
-    token_or_stats = self.where(t: token_or_stats) if token_or_stats.is_a? String
-    stats          = token_or_stats.send("#{period_type[0]}_between", from, to).entries
+    stats = options[:token] ? self.where(t: { "$in" => Array.wrap(options[:token]) }) : options[:stats]
+    stats = stats.send("#{options[:period_type].chr}_between", options[:from], options[:to]) if options[:from] && options[:to]
+    stats = stats.only(:d, options[:type].to_sym) if options[:type]
+    stats = stats.asc(:d).entries
 
     if !!options[:fill_missing_days]
-      filled_stats = []
-      missing_days_value = options[:fill_missing_days].respond_to?(:to_i) ? options[:fill_missing_days].to_i : 0
-      while from <= to
-        filled_stats << if stats.first.try(period_type[0]) == from
-          stats.shift
-        else
-          self.new(period_type[0].to_sym => from.to_time, pv: { 'm' => missing_days_value })
-        end
-        from += 1.send(period_type)
-      end
-      filled_stats
+      options[:missing_days_value] = options[:fill_missing_days].respond_to?(:to_i) ? options[:fill_missing_days] : 0
+      fill_missing_values_for_last_stats(stats, options[:period_type], options)
     else
       stats
     end
   end
 
-  def self.last_days(token, options = {})
-    options.reverse_merge!(days: 30)
+  def self.last_days(options = {})
+    options = options.symbolize_keys.reverse_merge(days: 30)
 
-    last_stats(token, options[:days].days.ago.midnight, 1.day.ago.midnight, 'days', options)
+    last_stats(options.merge(from: options[:days].days.ago.midnight, to: 1.day.ago.midnight))
+  end
+
+  # Returns an array of SiteStat objects found by day.
+  #
+  # @option options [String] type the type of views to fetch. Can be 'vv' (Video Views, default) or 'pv' (Page Visits).
+  # @option options [String] token a valid site token
+  # @option options [Array<String>] token an array of valid site tokens
+  # @option options [DateTime] from represents the datetime from where returning stats
+  # @option options [DateTime] to represents the datetime to where returning stats
+  # @option options [String] billable if true, merge the main and extra views into a single billable field
+  # @option options [Boolean] fill_missing_days when true, missing days will be "filled" with 0 main views
+  # @option options [Integer] fill_missing_days missing days will be "filled" with the given value as main views
+  # @return [Array<SiteStat>] an array of SiteStat objects
+  #
+  def self.all_by_days(options = {})
+    options = options.symbolize_keys.reverse_merge(type: 'vv', billable: false)
+
+    if options[:billable]
+      conditions = options[:token] ? { t: { "$in" => Array.wrap(options[:token]) }, d: { "$ne" => nil } } : {}
+      conditions.merge!(d: { "$gte" => options[:from].midnight }) if options[:from]
+      conditions.deep_merge!(d: { "$lte" => options[:to].end_of_day }) if options[:to]
+
+      stats = collection.group(
+        :key => [:d],
+        :cond => conditions,
+        :initial => { billable: 0 },
+        :reduce => js_billable_reduce_function(options[:type])
+      )
+
+      options[:fill_missing_days] ? fill_missing_values_for_last_stats(stats, 'days', 0) : stats
+    else
+      token_or_stats = options[:token] ? { token: options[:token] } : { stats: scoped }
+      self.last_stats(options.merge(token_or_stats))
+    end
+  end
+
+  def self.all_time_sum(options = {})
+    options = options.symbolize_keys.reverse_merge(type: 'vv', billable: false)
+
+    all_time_stats = all_by_days(options)
+
+    if options[:billable]
+      all_time_stats.sum { |s| s['billable'] }.to_i
+    else
+      all_time_stats.sum { |s| s.send(options[:type])['m'].to_i + s.send(options[:type])['e'].to_i + s.send(options[:type])['em'].to_i + s.send(options[:type])['d'].to_i }
+    end
   end
 
   def self.json(token, period_type = 'days')
-    stats      = self.where(t: token)
     json_stats = case period_type
     when 'seconds'
       to    = Time.now.change(usec: 0).utc
       from  = to - 60.seconds # pass 61 seconds
 
-      last_stats(stats, from, to, period_type)
+      last_stats(token: token, period_type: period_type, from: from, to: to)
 
     when 'minutes'
-      stat = self.where(m: { "$ne" => nil }).order_by([:m, :asc]).last
-      to   = stat.try(:m) || 1.minute.ago.change(sec: 0)
+      last_minute_stat = self.where(m: { "$ne" => nil }).order_by([:m, :asc]).last
+      to   = last_minute_stat.try(:m) || 1.minute.ago.change(sec: 0)
       from = to - 59.minutes
 
-      last_stats(stats, from, to, period_type)
+      last_stats(token: token, period_type: period_type, from: from, to: to)
 
     when 'hours'
       to   = 1.hour.ago.change(min: 0, sec: 0).utc
       from = to - 23.hours
 
-      last_stats(stats, from, to, period_type)
+      last_stats(token: token, period_type: period_type, from: from, to: to)
 
     when 'days'
       site  = Site.find_by_token(token)
       Rails.logger.debug "site.stats_retention_days: #{site.stats_retention_days}"
-      stats = stats.where(d: { "$ne" => nil }).order_by([:d, :asc])
+      stats = self.where(t: token, d: { "$ne" => nil }).order_by([:d, :asc])
       to    = 1.day.ago.midnight
       case site.stats_retention_days
       when 0
         []
       when nil
         from = [(stats.first.try(:d) || Time.now.utc), to - 364.days].min
-        last_stats(stats, from, to, period_type)
+        last_stats(stats: stats, period_type: period_type, from: from, to: to)
       else
         from = to - (site.stats_retention_days - 1).days
-        last_stats(stats, from, to, period_type)
+        last_stats(stats: stats, period_type: period_type, from: from, to: to)
       end
     end
 
@@ -181,6 +219,38 @@ class SiteStat
   end
 
 private
+
+  def self.js_billable_reduce_function(field_type = 'vv')
+    reduce_function = ["function(doc, prev) {"]
+
+    %w[m e em].inject(reduce_function) do |js, field_to_merge|
+      js << "prev.billable += (isNaN(doc.vv.#{field_to_merge}) ? 0 : doc.vv.#{field_to_merge});"
+      js
+    end
+
+    (reduce_function << "}").join(' ')
+  end
+
+  def self.fill_missing_values_for_last_stats(stats, period_type, options = {})
+    options = options.symbolize_keys.reverse_merge(field_to_fill: 'm', missing_days_value: 0)
+
+    if !(options[:from] || options[:to])
+      options[:from] = stats.min_by { |s| s.d }.d || Time.now
+      options[:to]   = stats.max_by { |s| s.d }.d || (Time.now - 1.second)
+    end
+
+    filled_stats, step = [], 1.send(period_type)
+    while options[:from] <= options[:to]
+      filled_stats << if stats.first.try(period_type.chr) == options[:from]
+        stats.shift
+      else
+        self.new(period_type.chr.to_sym => options[:from].to_time, pv: { options[:field_to_fill] => options[:missing_days_value] })
+      end
+      options[:from] += step
+    end
+
+    filled_stats
+  end
 
   def self.incs_from_trackers(trackers)
     trackers = trackers.detect { |t| t.options[:title] == :stats }.categories
