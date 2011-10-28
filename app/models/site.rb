@@ -112,7 +112,7 @@ class Site < ActiveRecord::Base
       methods: [:plan_video_views, :plan_month_cycle_start_time, :plan_month_cycle_end_time, :stats_retention_days, :stats_trial_start_time]
     )
   end
-  
+
   # ====================
   # = Instance Methods =
   # ====================
@@ -234,7 +234,9 @@ class Site < ActiveRecord::Base
   memoize :recommended_plan_name
 
   def plan_month_cycle_started_at
-    case plan.read_attribute(:cycle) # strange error in specs when using .cycle
+    cycle = trial_not_started_or_in_trial? ? 'none' : plan.read_attribute(:cycle) # strange error in specs when using .cycle
+
+    case cycle
     when 'month'
       plan_cycle_started_at
     when 'year'
@@ -249,7 +251,9 @@ class Site < ActiveRecord::Base
   end
 
   def plan_month_cycle_ended_at
-    case plan.read_attribute(:cycle) # strange error in specs when using .cycle
+    cycle = trial_not_started_or_in_trial? ? 'none' : plan.read_attribute(:cycle) # strange error in specs when using .cycle
+
+    case cycle
     when 'month'
       plan_cycle_ended_at
     when 'year'

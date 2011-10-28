@@ -1047,61 +1047,54 @@ describe Site do
     end
 
     describe "#plan_month_cycle_started_at & #plan_month_cycle_ended_at" do
-      before(:all) { @site = FactoryGirl.create(:site) }
+      before(:all) do
+        Site.delete_all
+      end
 
       context "with free plan" do
-        before(:all) do
-          @site.plan.cycle            = "none"
-          @site.plan_started_at       = Time.utc(2011,1,10).midnight
-          @site.plan_cycle_started_at = nil
-          @site.plan_cycle_ended_at   = nil
-          Timecop.travel(Time.utc(2011,4,1))
-        end
-        after(:all) { Timecop.return }
+        before(:all) { @site = FactoryGirl.create(:site, plan_id: @free_plan.id) }
         subject { @site }
 
-        its(:plan_month_cycle_started_at) { should == Time.utc(2011,3,2).midnight }
-        its(:plan_month_cycle_ended_at)   { should == Time.utc(2011,4,1).end_of_day }
+        its(:plan_month_cycle_started_at) { should eq (1.month - 1.day).ago.midnight }
+        its(:plan_month_cycle_ended_at)   { should eq Time.now.utc.end_of_day }
+      end
+
+      context "with monthly plan in trial" do
+        before(:all) { @site = FactoryGirl.create(:site) }
+        subject { @site }
+
+        its(:plan_month_cycle_started_at) { should eq (1.month - 1.day).ago.midnight }
+        its(:plan_month_cycle_ended_at)   { should eq Time.now.utc.end_of_day }
       end
 
       context "with monthly plan" do
-        before(:all) do
-          @site.plan.cycle            = "month"
-          @site.plan_cycle_started_at = Time.utc(2011,1,1).midnight
-          @site.plan_cycle_ended_at   = Time.utc(2011,1,31).end_of_day
-        end
+        before(:all) { @site = FactoryGirl.create(:site_not_in_trial) }
         subject { @site }
 
-        its(:plan_month_cycle_started_at) { should == Time.utc(2011,1,1).midnight }
-        its(:plan_month_cycle_ended_at)   { should == Time.utc(2011,1,31).end_of_day }
+        its(:plan_month_cycle_started_at)     { should eq Time.now.utc.midnight }
+        its("plan_month_cycle_ended_at.to_i") { should eq (1.month - 1.day).from_now.end_of_day.to_i }
       end
 
       context "with yearly plan" do
-        before(:all) do
-          @site.plan.cycle            = "year"
-          @site.plan_cycle_started_at = Time.utc(2011,1,1).midnight
-          @site.plan_cycle_ended_at   = Time.utc(2011,12,31).end_of_day
-          Timecop.travel(Time.utc(2011,6,10))
+        before(:all) { @yearly_plan = FactoryGirl.create(:plan, cycle: 'year') }
+
+        describe "before the first month" do
+          before(:all) { @site = FactoryGirl.create(:site_not_in_trial, plan_id: @yearly_plan.id) }
+          subject { @site }
+
+          its(:plan_month_cycle_started_at)     { should eq Time.now.utc.midnight }
+          its("plan_month_cycle_ended_at.to_i") { should eq (1.month - 1.day).from_now.end_of_day.to_i }
         end
-        after(:all) { Timecop.return }
-        subject { @site }
 
-        its(:plan_month_cycle_started_at) { should == Time.utc(2011,6,1).midnight }
-        its(:plan_month_cycle_ended_at)   { should == Time.utc(2011,6,30).end_of_day }
-      end
+        describe "after the first month" do
+          before(:all) do
+            Timecop.travel(35.days.ago) { @site = FactoryGirl.create(:site_not_in_trial, plan_id: @yearly_plan.id) }
+          end
+          subject { @site }
 
-      context "with yearly plan (other date)" do
-        before(:all) do
-          @site.plan.cycle            = "year"
-          @site.plan_cycle_started_at = Time.utc(2011,2,28).midnight
-          @site.plan_cycle_ended_at   = Time.utc(2012,2,27).end_of_day
-          Timecop.travel(Time.utc(2012,2,10))
+          its(:plan_month_cycle_started_at)     { should eq 5.days.ago.utc.midnight }
+          its("plan_month_cycle_ended_at.to_i") { should eq (1.month - 6.days).from_now.end_of_day.to_i }
         end
-        after(:all) { Timecop.return }
-        subject { @site }
-
-        its(:plan_month_cycle_started_at) { should == Time.utc(2012,1,28).midnight }
-        its(:plan_month_cycle_ended_at)   { should == Time.utc(2012,2,27).end_of_day }
       end
     end
 
