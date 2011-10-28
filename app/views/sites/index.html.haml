@@ -4,19 +4,14 @@
 
 = link_to "Add a site", new_site_path, :class => "add_site small_button"
 
-- page_visits = SiteStat.all_time_sum(token: current_user.sites.map(&:token), type: 'pv')
-%p= page_visits.inspect
-
-- dev_views = SiteStat.all_time_sum(token: current_user.sites.map(&:token))
-%p= dev_views.inspect
-
-- billable_views = SiteStat.all_time_sum(token: current_user.sites.map(&:token), billable: true)
-%p= billable_views.inspect
-
-%ol
-  %li.complete Plan
-  %li{ class: ('complete' if page_visits > 0) } Embed code: checked once there is at least loader hit (otherwise display a "help" to use the embed code button)
-  %li{ class: ('complete' if billable_views > 0 || (dev_views > 0 && billable_views.zero?)) } Video: checked once there is at least a video view (otherwise display a "help" to use the video tag builder)
-  %li{ class: ('complete' if billable_views > 0) } Deploy in prod: checked once there is at least a video view on the prod domain
+- if @billable_views.zero?
+  %h4 The SublimeVideo experience' steps
+  %ol
+    %li.complete Choose a plan for your site.
+    %li{ class: ('complete' if @loader_hits > 0) }= "Add your embed code to your pages. Click on #{@sites.one? ? 'the' : 'the appropriate'} \"Embed Code\" button below."
+    %li{ class: ('complete' if @dev_views > 0) }
+      = raw "Add #{content_tag(:code, '<video>')} elements top your pages. Need help?"
+      = raw "Discover our #{link_to "video tag builder", video_tag_builder_path}!"
+    %li Deploy your SublimeVideo players on your website in production.
 
 #sites_table_wrap= render 'sites'

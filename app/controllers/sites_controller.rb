@@ -4,7 +4,7 @@ class SitesController < ApplicationController
   respond_to :json, :only => :index
 
   before_filter :redirect_suspended_user
-  before_filter :find_sites_or_redirect_to_new_site, :only => :index
+  before_filter :find_sites_or_redirect_to_new_site, :only => [:index, :edit, :update, :destroy]
   before_filter :find_by_token!, :only => [:edit, :update, :destroy]
 
   has_scope :by_hostname
@@ -13,8 +13,7 @@ class SitesController < ApplicationController
 
   # GET /sites
   def index
-    @sites = current_user.sites.not_archived.includes(:plan, :next_cycle_plan, :invoices)
-    @sites = apply_scopes(@sites).by_date
+    load_usages_for_initial_help
 
     respond_with(@sites, :per_page => 10) do |format|
       format.js
@@ -32,8 +31,6 @@ class SitesController < ApplicationController
 
   # GET /sites/:id/edit
   def edit
-    @sites = current_user.sites.not_archived
-
     respond_with(@site)
   end
 
@@ -110,6 +107,16 @@ class SitesController < ApplicationController
 
   def find_by_token!
     @site = current_user.sites.not_archived.find_by_token!(params[:id])
+  end
+  
+  def load_usages_for_initial_help
+    site_tokens = current_user.sites.map(&:token)
+    @billable_views = SiteStat.views_sum(token: site_tokens, billable_only: true)
+    
+    if @billable_views.zero?
+      @loader_hits = SiteUsage.where(site_id: { "$in" => current_user.sites.map(&:id) }).only(:loader_hits, :ssl_loader_hits).entries.sum { |s| s.loader_hits + s.ssl_loader_hits }
+      @dev_views   = SiteStat.views_sum(token: site_tokens)
+    end
   end
 
 end
