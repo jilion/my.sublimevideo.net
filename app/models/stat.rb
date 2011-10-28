@@ -66,12 +66,12 @@ class Stat
 
   def self.clear_old_seconds_minutes_and_hours_stats
     delay_clear_old_seconds_minutes_and_hours_stats
-    Stat::Site.s_before(62.seconds.ago).delete_all
-    Stat::Site.m_before(61.minutes.ago).delete_all
-    Stat::Site.h_before(25.hours.ago).delete_all
-    Stat::Video.s_before(62.seconds.ago).delete_all
-    Stat::Video.m_before(61.minutes.ago).delete_all
-    Stat::Video.h_before(25.hours.ago).delete_all
+    Stat::Site.s_before(63.seconds.ago).delete_all
+    Stat::Site.m_before(62.minutes.ago).delete_all
+    Stat::Site.h_before(26.hours.ago).delete_all
+    Stat::Video.s_before(63.seconds.ago).delete_all
+    Stat::Video.m_before(62.minutes.ago).delete_all
+    Stat::Video.h_before(26.hours.ago).delete_all
   end
 
 private

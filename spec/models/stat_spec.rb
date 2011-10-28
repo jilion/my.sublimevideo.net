@@ -45,41 +45,72 @@ describe Stat do
         })
       end
     end
+  end
 
-    describe ".delay_clear_old_seconds_minutes_and_hours_stats" do
-      it "delays clear_old_seconds_minutes_and_hours_stats if not already delayed" do
-        expect { Stat.delay_clear_old_seconds_minutes_and_hours_stats }.to change(Delayed::Job, :count).by(1)
-        Delayed::Job.last.run_at.should be_within(60).of(1.minutes.from_now)
-      end
-
-      it "delays nothing if already delayed" do
-        Stat.delay_clear_old_seconds_minutes_and_hours_stats
-        expect { Stat.delay_clear_old_seconds_minutes_and_hours_stats }.to change(Delayed::Job, :count).by(0)
-      end
+  describe ".delay_clear_old_seconds_minutes_and_hours_stats" do
+    it "delays clear_old_seconds_minutes_and_hours_stats if not already delayed" do
+      expect { Stat.delay_clear_old_seconds_minutes_and_hours_stats }.to change(Delayed::Job, :count).by(1)
+      Delayed::Job.last.run_at.should be_within(60).of(1.minutes.from_now)
     end
 
-    describe ".clear_old_seconds_minutes_and_hours_stats" do
-      use_vcr_cassette "site_stat/pusher", erb: true
+    it "delays nothing if already delayed" do
+      Stat.delay_clear_old_seconds_minutes_and_hours_stats
+      expect { Stat.delay_clear_old_seconds_minutes_and_hours_stats }.to change(Delayed::Job, :count).by(0)
+    end
+  end
 
-      it "delete old minutes and days site stats, but keep all stats" do
-        Stat.create_stats_from_trackers!(@log, @trackers)
-        log = Factory.build(:log_voxcast, name: "cdn.sublimevideo.net.log.#{1.minute.ago.change(sec: 0).to_i}-#{Time.now.utc.change(sec: 0).to_i}.gz", file: @log_file)
-        Stat.create_stats_from_trackers!(log, @trackers)
-        Stat.count.should eql(6)
-        Stat.m_before(180.minutes.ago).count.should eql(1)
-        Stat.h_before(72.hours.ago).count.should eql(1)
-        Stat.clear_old_seconds_minutes_and_hours_stats
-        Stat.count.should eql(4)
-        Stat.m_before(180.minutes.ago).count.should eql(0)
-        Stat.h_before(72.hours.ago).count.should eql(0)
-      end
+  describe ".clear_old_seconds_minutes_and_hours_stats" do
 
-      it "delays itself" do
-        expect { Stat.clear_old_seconds_minutes_and_hours_stats }.to change(Delayed::Job, :count).by(1)
-        Delayed::Job.last.run_at.should be_within(60).of(1.minutes.from_now)
-      end
+    it "delete old seconds, minutes and hours site stats, but keep all days site stats" do
+      Factory.create(:site_stat, s: 62.seconds.ago)
+      Factory.create(:site_stat, s: 63.seconds.ago)
+      Factory.create(:site_stat, m: 62.minutes.ago.change(s: 0))
+      Factory.create(:site_stat, m: 61.minutes.ago.change(s: 0))
+      Factory.create(:site_stat, h: 26.hours.ago.change(m: 0))
+      Factory.create(:site_stat, h: 25.hours.ago.change(m: 0))
+      Factory.create(:site_stat, d: 99.days.ago.change(h: 0))
+      Factory.create(:site_stat, d: 30.days.ago.change(h: 0))
+
+      Stat::Site.count.should eql(8)
+      Stat::Site.s_before(60.seconds.ago).count.should eql(2)
+      Stat::Site.m_before(60.minutes.ago).count.should eql(2)
+      Stat::Site.h_before(20.hours.ago).count.should eql(2)
+      Stat::Site.d_before(10.days.ago).count.should eql(2)
+      Stat.clear_old_seconds_minutes_and_hours_stats
+      Stat::Site.count.should eql(5)
+      Stat::Site.s_before(60.seconds.ago).count.should eql(1)
+      Stat::Site.m_before(60.minutes.ago).count.should eql(1)
+      Stat::Site.h_before(20.hours.ago).count.should eql(1)
+      Stat::Site.d_before(10.days.ago).count.should eql(2)
     end
 
+    it "delete old seconds, minutes and hours video stats, but keep all days video stats" do
+      Factory.create(:video_stat, s: 62.seconds.ago)
+      Factory.create(:video_stat, s: 63.seconds.ago)
+      Factory.create(:video_stat, m: 62.minutes.ago.change(s: 0))
+      Factory.create(:video_stat, m: 61.minutes.ago.change(s: 0))
+      Factory.create(:video_stat, h: 26.hours.ago.change(m: 0))
+      Factory.create(:video_stat, h: 25.hours.ago.change(m: 0))
+      Factory.create(:video_stat, d: 99.days.ago.change(h: 0))
+      Factory.create(:video_stat, d: 30.days.ago.change(h: 0))
+
+      Stat::Video.count.should eql(8)
+      Stat::Video.s_before(60.seconds.ago).count.should eql(2)
+      Stat::Video.m_before(60.minutes.ago).count.should eql(2)
+      Stat::Video.h_before(20.hours.ago).count.should eql(2)
+      Stat::Video.d_before(10.days.ago).count.should eql(2)
+      Stat.clear_old_seconds_minutes_and_hours_stats
+      Stat::Video.count.should eql(5)
+      Stat::Video.s_before(60.seconds.ago).count.should eql(1)
+      Stat::Video.m_before(60.minutes.ago).count.should eql(1)
+      Stat::Video.h_before(20.hours.ago).count.should eql(1)
+      Stat::Video.d_before(10.days.ago).count.should eql(2)
+    end
+
+    it "delays itself" do
+      expect { Stat.clear_old_seconds_minutes_and_hours_stats }.to change(Delayed::Job, :count).by(1)
+      Delayed::Job.last.run_at.should be_within(60).of(1.minutes.from_now)
+    end
   end
 
 end
