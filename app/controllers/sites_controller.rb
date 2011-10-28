@@ -5,7 +5,7 @@ class SitesController < ApplicationController
 
   before_filter :redirect_suspended_user
   before_filter :find_sites_or_redirect_to_new_site, :only => :index
-  before_filter :find_by_token!, :only => [:code, :edit, :update, :destroy, :usage]
+  before_filter :find_by_token!, :only => [:edit, :update, :destroy]
 
   has_scope :by_hostname
   has_scope :by_date
@@ -99,18 +99,10 @@ class SitesController < ApplicationController
     end
   end
 
-  # # GET /sites/:id/usage
-  # def usage
-  #   respond_with(@site) do |format|
-  #     format.js
-  #     format.html { redirect_to :sites }
-  #   end
-  # end
-
   private
 
   def find_sites_or_redirect_to_new_site
-    @sites = current_user.sites.not_archived.includes(:plan, :next_cycle_plan)
+    @sites = current_user.sites.not_archived.includes(:plan, :next_cycle_plan, :invoices)
     @sites = apply_scopes(@sites).by_date
 
     redirect_to [:new, :site] if @sites.empty?
