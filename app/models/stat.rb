@@ -34,7 +34,7 @@ class Stat
 
   def self.create_stats_from_trackers!(log, trackers)
     tracker_incs = incs_from_trackers(trackers)
-    tracker_incs do |site_token, values|
+    tracker_incs.each do |site_token, values|
       if (site_inc = values[:inc]).present?
         Stat::Site.collection.update({ t: site_token, m: log.minute }, { "$inc" => site_inc }, upsert: true)
         Stat::Site.collection.update({ t: site_token, h: log.hour },   { "$inc" => site_inc }, upsert: true)
@@ -87,7 +87,7 @@ private
     trackers.each do |tracker, hits|
       begin
         request, user_agent = tracker
-        params     = Addressable::URI.parse(request).query_values.symbolize_keys || {}
+        params     = Addressable::URI.parse(request).query_values.try(:symbolize_keys) || {}
         params_inc = StatRequestParser.stat_incs(params, user_agent)
         site = params_inc[:site]
         if site[:inc].present?
