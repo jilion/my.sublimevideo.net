@@ -108,13 +108,13 @@ class SitesController < ApplicationController
   def find_by_token!
     @site = current_user.sites.not_archived.find_by_token!(params[:id])
   end
-  
+
   def load_usages_for_initial_help
-    site_tokens = current_user.sites.map(&:token)
+    site_tokens = current_user.sites.not_archived.map(&:token)
     @billable_views = SiteStat.views_sum(token: site_tokens, billable_only: true)
-    
+
     if @billable_views.zero?
-      @loader_hits = SiteUsage.where(site_id: { "$in" => current_user.sites.map(&:id) }).only(:loader_hits, :ssl_loader_hits).entries.sum { |s| s.loader_hits + s.ssl_loader_hits }
+      @loader_hits = SiteUsage.where(site_id: { "$in" => current_user.sites.not_archived.map(&:id) }).only(:loader_hits, :ssl_loader_hits).entries.sum { |s| s.loader_hits + s.ssl_loader_hits }
       @dev_views   = SiteStat.views_sum(token: site_tokens)
     end
   end
