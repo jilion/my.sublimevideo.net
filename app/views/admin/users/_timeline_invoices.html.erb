@@ -1,5 +1,5 @@
 <%
-invoices = StatTimeline::Invoice.timeline(@date_range_from, @date_range_to, { user_id: user.id })
+invoices = StatTimeline::Invoice.timeline(range_start_date, range_end_date, { user_id: user.id })
 
 unless invoices.empty?
   graph = Graph.new do |g|
@@ -48,7 +48,7 @@ unless invoices.empty?
     g.option(series: [
       serie(invoices.map(&:amount), 'Invoice total amount', type: 'area'),
     ].flatten)
-    g.option(plotOptions: plot_options(@date_range_from.end_of_month, 1.month, marker: true, linear: true))
+    g.option(plotOptions: plot_options(range_start_date.end_of_month, 1.month, marker: true, linear: true))
     g.option(credits: credits)
   end
 end

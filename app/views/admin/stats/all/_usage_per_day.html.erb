@@ -1,10 +1,10 @@
 <%
 interval = 1.day
-moving_average_days_count = @moving_avg
-title    = "VPV per day, total and averages between #{l(@date_range_from.to_date, :format => :small)} and #{l(@date_range_to, :format => :small)}"
+moving_average_days_count = moving_average_length
+title    = "VPV per day, total and averages between #{l(range_start_date.to_date, :format => :small)} and #{l(range_end_date, :format => :small)}"
 
-usages = Stat.usages(@date_range_from - (moving_average_days_count-1).days, @date_range_to)
-usages = ((@date_range_from - (moving_average_days_count-1).days).to_date..@date_range_to.to_date).inject([]) do |memo, day|
+usages = Stat.usages(range_start_date - (moving_average_days_count-1).days, range_end_date)
+usages = ((range_start_date - (moving_average_days_count-1).days).to_date..range_end_date.to_date).inject([]) do |memo, day|
   usage_on_day = usages.detect { |u| u["day"].to_date == day }
   memo << (usage_on_day ? usage_on_day : { "day" => day })
 end
@@ -35,7 +35,7 @@ total_all_usages  = all_usages[moving_average_days_count-1..-1].inject([]) { |me
         type: 'datetime',
         tickInterval: <%= 1.day * 1000 %>,
         labels: {
-          step: <%= (((@date_range_to - @date_range_from) / 1.day) / 12).floor %>
+          step: <%= (((range_end_date - range_start_date) / 1.day) / 12).floor %>
         }
       },
       yAxis: {
@@ -169,14 +169,14 @@ total_all_usages  = all_usages[moving_average_days_count-1..-1].inject([]) { |me
       plotOptions: {
         column: {
           pointInterval: <%= interval * 1000 %>,
-          pointStart: <%= @date_range_from.to_i * 1000 %>,
+          pointStart: <%= range_start_date.to_i * 1000 %>,
           stacking: 'normal',
           pointPadding: 0,
           shadow: false
         },
         line: {
           pointInterval: <%= interval * 1000 %>,
-          pointStart: <%= @date_range_from.to_i * 1000 %>,
+          pointStart: <%= range_start_date.to_i * 1000 %>,
           marker: {
             enabled: false
           },

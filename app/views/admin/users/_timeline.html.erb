@@ -1,12 +1,12 @@
 <%
-users_stats = StatTimeline::UsersStat.new(@date_range_from, @date_range_to)
+users_stats = StatTimeline::UsersStat.new(range_start_date, range_end_date)
 
 unless users_stats.empty?
   graph = Graph.new do |g|
     g.option(chart: chart('timeline_users_stats', margin_top: 100))
     g.option(title: { text: "Users Stats" })
     g.option(legend: legend(y: 40, width: 510))
-    g.option(xAxis: x_axis(start_at: @date_range_from, end_at: @date_range_to))
+    g.option(xAxis: x_axis(start_at: range_start_date, end_at: range_end_date))
     g.raw_option(y_axis("Users", tick_interval: [users_stats.timeline(:active_and_not_billable_count).max / 100, 1].max))
     g.raw_option(%(tooltip: {
       borderWidth: 0,
@@ -26,7 +26,7 @@ unless users_stats.empty?
       serie(users_stats.timeline(:archived_count), 'Archived', type: 'area', color: '#b00000', visible: false),
       serie(users_stats.timeline(:suspended_count), 'Suspended', type: 'area', color: '#fe2617', visible: false)
     ].flatten)
-    g.option(plotOptions: plot_options(@date_range_from))
+    g.option(plotOptions: plot_options(range_start_date))
     g.option(credits: credits)
   end
 end

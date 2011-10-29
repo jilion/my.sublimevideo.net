@@ -1,12 +1,12 @@
 <%
 interval = 1.day
-moving_average_days_count = @moving_avg
-title      = "VPV per day, total and averages for #{site.hostname} between #{l(@date_range_from, :format => :small)} and #{l(@date_range_to, :format => :small)}"
-days_range = (@date_range_from.to_date..@date_range_to.to_date)
+moving_average_days_count = moving_average_length
+title      = "VPV per day, total and averages for #{site.hostname} between #{l(range_start_date, :format => :small)} and #{l(range_end_date, :format => :small)}"
+days_range = (range_start_date.to_date..range_end_date.to_date)
 days_count = days_range.to_a.size
 
-usages = Stat.usages(@date_range_from - (moving_average_days_count-1).days, @date_range_to, { :site_id => site.try(:id) })
-usages = ((@date_range_from - (moving_average_days_count-1).days).to_date..@date_range_to.to_date).inject([]) do |memo, day|
+usages = Stat.usages(range_start_date - (moving_average_days_count-1).days, range_end_date, { :site_id => site.try(:id) })
+usages = ((range_start_date - (moving_average_days_count-1).days).to_date..range_end_date.to_date).inject([]) do |memo, day|
   usage_on_day = usages.detect { |u| u["day"].to_date == day }
   memo << (usage_on_day ? usage_on_day : { "day" => day })
 end
@@ -51,7 +51,7 @@ prorated_plan_limit = (28..31).include?(days_count) ? plans_limit[selected_plan]
         type: 'datetime',
         tickInterval: <%= 1.day * 1000 %>,
         labels: {
-          step: <%= (((@date_range_to - @date_range_from) / 1.day) / 12).floor %>
+          step: <%= (((range_end_date - range_start_date) / 1.day) / 12).floor %>
         }
       },
       yAxis: {
@@ -209,13 +209,13 @@ prorated_plan_limit = (28..31).include?(days_count) ? plans_limit[selected_plan]
       plotOptions: {
         column: {
           pointInterval: <%= interval * 1000 %>,
-          pointStart: <%= @date_range_from.to_i * 1000 %>,
+          pointStart: <%= range_start_date.to_i * 1000 %>,
           stacking: 'normal',
           shadow: false
         },
         line: {
           pointInterval: <%= interval * 1000 %>,
-          pointStart: <%= @date_range_from.to_i * 1000 %>,
+          pointStart: <%= range_start_date.to_i * 1000 %>,
           lineWidth: 2,
           marker: {
             enabled: false

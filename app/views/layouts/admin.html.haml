@@ -17,9 +17,9 @@
       #main
         #content
           = render 'layouts/flash', :flash => flash if flash.present?
-          = image_tag "/images/embed/spinner.gif", :class => "spinner", :id => "table_spinner", :style => "display:none"
+          = image_tag "spinner.gif", :class => "spinner", :id => "table_spinner", :style => "display:none"
           = yield
       #footer
-        %p= "Copyright © #{Time.now.utc.year}  - SublimeVideo®"
+        %p= "Copyright © 2010 - #{Time.now.utc.year} Jilion® — SublimeVideo and Jilion are registered trademarks"
 
     = yield :bottom

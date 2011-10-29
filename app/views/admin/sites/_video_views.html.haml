@@ -1,4 +1,4 @@
-- last_30_days_billable_video_views = SiteStat.last_days(token: site.token).sum(&:billable_vv)
+- last_30_days_billable_video_views = SiteStat.views_sum(token: site.token, from: 30.days.ago.utc, to: 1.day.ago.utc)
 - total_video_views = SiteStat.collection.group(cond: { t: site.token }, initial: { sum: 0 }, reduce: 'function(doc, prev){ prev.sum += (isNaN(doc.vv.m) ? 0 : doc.vv.m) + (isNaN(doc.vv.e) ? doc.vv.e : 0); }').first['sum'].to_i
 
 %h3 Video views

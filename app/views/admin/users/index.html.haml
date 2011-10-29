@@ -4,7 +4,7 @@
 = render '/admin/shared/date_chooser', skip_moving_avg: true
 
 #timeline
-  - cache "users_timeline_#{@date_range_from.to_i}_#{@date_range_to.to_i}", :expires_in => (Time.now.utc.end_of_day - Time.now.utc) do
+  - cache "users_timeline_#{range_start_date.to_i}_#{range_end_date.to_i}", :expires_in => (Time.now.utc.end_of_day - Time.now.utc) do
     = render 'timeline'
 
 .search_form

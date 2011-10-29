@@ -1,14 +1,16 @@
 <%
-usages = StatTimeline::SiteUsage.timeline(@date_range_from - (@moving_avg-1).days, @date_range_to, { site_ids: user.site_ids, labels: [:invalid_usage, :dev_usage, :main_usage, :extra_usage], merge_cached: true })
+usage_old = StatTimeline::SiteUsage.timeline(graph_start_date, graph_end_date, { site_ids: user.sites.not_archived.map(&:id), labels: [:invalid_usage, :dev_usage, :main_usage, :extra_usage], merge_cached: true })
 plans  = Plan.all
-billable_usage = usages["main_usage"].zip(usages["extra_usage"]).map { |item| item.reduce(:+) }
+billable_usage_old = usage_old["main_usage"].zip(usage_old["extra_usage"]).map { |item| item.reduce(:+) }
+
+stats_timeline_new = StatTimeline::SiteStat.new(token: user.sites.not_archived.map(&:token), from: graph_start_date, to: graph_end_date)
 
 graph = Graph.new do |g|
   g.option(chart: chart('timeline_usage'))
   g.option(title: { text: "Video views for #{user.full_name}" })
-  g.option(subtitle: usage_date_subtitle(start_at: @date_range_from, end_at: @date_range_to))
+  g.option(subtitle: usage_date_subtitle(start_at: range_start_date, end_at: range_end_date))
   g.option(legend: legend(width: 600))
-  g.option(xAxis: x_axis(start_at: @date_range_from, end_at: @date_range_to))
+  g.option(xAxis: x_axis(start_at: range_start_date, end_at: range_end_date))
   g.raw_option(y_axis(""))
   g.raw_option(tooltip(formatter: %(
     var date  = "<strong>" + Highcharts.dateFormat("%B %e,  %Y", this.x) + "</strong><br/><br/>";
@@ -23,15 +25,19 @@ graph = Graph.new do |g|
   )))
 
   g.option(series: [
-    serie(usages["invalid_usage"][@moving_avg-1..-1], 'Invalid', visible: false),
-    serie(usages["dev_usage"][@moving_avg-1..-1], 'Dev', visible: false),
-    serie(usages["extra_usage"][@moving_avg-1..-1], 'Extra'),
-    serie(usages["main_usage"][@moving_avg-1..-1], 'Main'),
-    serie(moving_average(billable_usage, @moving_avg), 'AVG Billable', type: 'line')
+    serie(usage_old["dev_usage"][moving_average_length-1..-1], 'Dev (old)', type: 'column', visible: false, stack: 1),
+    serie(usage_old["extra_usage"][moving_average_length-1..-1], 'Extra (old)', type: 'column', visible: false, stack: 1),
+    serie(usage_old["main_usage"][moving_average_length-1..-1], 'Main (old)', type: 'column', visible: false, stack: 1),
+    serie(moving_average(billable_usage_old, moving_average_length), 'AVG Billable (old)', type: 'line', stack: 2),
+    
+    serie(stats_timeline_new.d_vv[moving_average_length-1..-1], 'Dev (new)', type: 'column', visible: false, stack: 3),
+    serie(stats_timeline_new.e_vv[moving_average_length-1..-1], 'Extra (new)', type: 'column', stack: 3),
+    serie(stats_timeline_new.m_vv[moving_average_length-1..-1], 'Main (new)', type: 'column', stack: 3),
+    serie(moving_average(stats_timeline_new.billable_vv, moving_average_length), 'AVG Billable (new)', type: 'line', stack: 4)
   ])
-  g.option(plotOptions: plot_options(@date_range_from))
+  g.option(plotOptions: plot_options(range_start_date))
   g.option(credits: credits)
 end
 %>
-
+<br />
 <div id="timeline_usage" style="width:100%; height:300px;"><%= raw graph.draw %></div>

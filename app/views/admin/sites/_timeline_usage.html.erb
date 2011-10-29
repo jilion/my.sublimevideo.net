@@ -1,17 +1,15 @@
 <%
-usage_old = StatTimeline::SiteUsage.timeline(@date_range_from - (@moving_avg-1).days, @date_range_to, { site_ids: [site.id], labels: [:invalid_usage, :dev_usage, :main_usage, :extra_usage], merge_cached: true })
+usage_old = StatTimeline::SiteUsage.timeline(graph_start_date, graph_end_date, { site_ids: [site.id], labels: [:invalid_usage, :dev_usage, :main_usage, :extra_usage], merge_cached: true })
 billable_usage_old = usage_old["main_usage"].zip(usage_old["extra_usage"]).map { |item| item.reduce(:+) }
 
-common_options = { token: site.token, from: @date_range_from - (@moving_avg-1).days, to: @date_range_to }
-usage_new = StatTimeline::SiteStat.timeline(common_options.merge(billable: false))
-billable_usage_new = StatTimeline::SiteStat.timeline(common_options.merge(billable: true))
+stats_timeline_new = StatTimeline::SiteStat.new(token: site.token, from: graph_start_date, to: graph_end_date)
 
 graph = Graph.new do |g|
   g.option(chart: chart('timeline_usage'))
   g.option(title: { text: "Video views for #{hostname_with_path_and_wildcard(site)}" })
-  g.option(subtitle: usage_date_subtitle(start_at: @date_range_from, end_at: @date_range_to))
+  g.option(subtitle: usage_date_subtitle(start_at: range_start_date, end_at: range_end_date))
   g.option(legend: legend)
-  g.option(xAxis: x_axis(start_at: @date_range_from, end_at: @date_range_to))
+  g.option(xAxis: x_axis(start_at: range_start_date, end_at: range_end_date))
   g.raw_option(y_axis(""))
   g.raw_option(tooltip(formatter: %(
     var date  = "<strong>" + Highcharts.dateFormat("%B %e,  %Y", this.x) + "</strong><br/><br/>";
@@ -23,22 +21,23 @@ graph = Graph.new do |g|
     return date + this.series.name + ":<br/>" + label;
   )))
 
+  usage_old_main_size = usage_old["main_usage"][moving_average_length-1..-1].size
   plan_limits = site.plan.video_views > 0 ? [
-    serie(Array.new(usage_old["main_usage"][@moving_avg-1..-1].size, site.plan.daily_video_views), "AVG #{site.plan.title}", type: 'line', stack: 0),
-    serie(Array.new(usage_old["main_usage"][@moving_avg-1..-1].size, site.plan.video_views), "LIM #{site.plan.title}", type: 'line', visible: false, stack: 1)
+    serie(Array.new(usage_old_main_size, site.plan.daily_video_views), "AVG #{site.plan.title}", type: 'line', stack: 0),
+    serie(Array.new(usage_old_main_size, site.plan.video_views), "LIM #{site.plan.title}", type: 'line', visible: false, stack: 1)
   ] : []
   g.option(series: [
-    serie(usage_old["dev_usage"][@moving_avg-1..-1], 'Dev (old)', type: 'column', visible: false, stack: 1),
-    serie(usage_old["extra_usage"][@moving_avg-1..-1], 'Extra (old)', type: 'column', visible: false, stack: 1),
-    serie(usage_old["main_usage"][@moving_avg-1..-1], 'Main (old)', type: 'column', visible: false, stack: 1),
-    serie(moving_average(billable_usage_old, @moving_avg), 'AVG Billable (old)', type: 'line', stack: 2),
+    serie(usage_old["dev_usage"][moving_average_length-1..-1], 'Dev (old)', type: 'column', visible: false, stack: 1),
+    serie(usage_old["extra_usage"][moving_average_length-1..-1], 'Extra (old)', type: 'column', visible: false, stack: 1),
+    serie(usage_old["main_usage"][moving_average_length-1..-1], 'Main (old)', type: 'column', visible: false, stack: 1),
+    serie(moving_average(billable_usage_old, moving_average_length), 'AVG Billable (old)', type: 'line', stack: 2),
 
-    serie(usage_new.map { |ss| ss.vv['d'] }[@moving_avg-1..-1], 'Dev (new)', type: 'column', visible: false, stack: 3),
-    serie(usage_new.map { |ss| ss.vv['e'] }[@moving_avg-1..-1], 'Extra (new)', type: 'column', stack: 3),
-    serie(usage_new.map { |ss| ss.vv['m'] }[@moving_avg-1..-1], 'Main (new)', type: 'column', stack: 3),
-    serie(moving_average(billable_usage_new, @moving_avg), 'AVG Billable (new)', type: 'line', stack: 4)
+    serie(stats_timeline_new.d_vv[moving_average_length-1..-1], 'Dev (new)', type: 'column', visible: false, stack: 3),
+    serie(stats_timeline_new.e_vv[moving_average_length-1..-1], 'Extra (new)', type: 'column', stack: 3),
+    serie(stats_timeline_new.m_vv[moving_average_length-1..-1], 'Main (new)', type: 'column', stack: 3),
+    serie(moving_average(stats_timeline_new.billable_vv, moving_average_length), 'AVG Billable (new)', type: 'line', stack: 4)
     ] + plan_limits)
-  g.option(plotOptions: plot_options(@date_range_from))
+  g.option(plotOptions: plot_options(range_start_date))
   g.option(credits: credits)
 end
 %>

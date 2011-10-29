@@ -104,23 +104,34 @@ module StatTimeline
 
     # Used to display a site usages chart
     #
-    # Params:
-    # * start_time: site_usages' day field must be >= this date
-    # * end_time: site_usages' day field must be < this date
-    # * options: Hash
-    #   - site_ids: an array of sites' ids to restrict the selected invoices
-    #   - labels: can be used to override labels, restrict usage fields retrieved.
-    #   default labels are: loader_usage, invalid_usage, invalid_usage_cached, dev_usage, dev_usage_cached,
-    #                       extra_usage, extra_usage_cached, main_usage, main_usage_cached, all_usage
-    #   - pageviews: fetch also the pageviews
-    #
-    # Return a hash of site usages. Default keys of the hash are the default labels (see the 'labels' options):
+    # @returns a hash of site usages. Default keys of the hash are the default labels (see the 'labels' options):
     def self.timeline(options = {})
-      usage = ::SiteStat.all_by_days(options)
+      new(options)
+    end
 
-      options[:billable] ? usage.map { |ss| ss['billable'] } : usage
+    def initialize(options = {})
+      @options = options
+    end
+
+    # Creates d_pv, m_pv, e_pv, em_pv, i_pv, d_vv, m_vv, e_vv, em_vv, i_vv methods
+    %w[pv vv].each do |type|
+      %w[d m e em i].each do |field|
+        define_method("#{field}_#{type}") do
+          all.map { |s| s[type][field].to_i }
+        end
+      end
+    end
+
+    def billable_vv
+      all.map { |s| s['vv']['m'].to_i + s['vv']['e'].to_i + s['vv']['em'].to_i }
     end
     
+    private
+    
+    def all
+      @all ||= ::SiteStat.last_stats(@options)
+    end
+
   end
 
   class Invoice

@@ -1,8 +1,6 @@
 class Admin::SitesController < Admin::AdminController
   respond_to :js, :html
 
-  before_filter :compute_date_range, :only => :edit
-
   #filter
   has_scope :free
   has_scope :sponsored

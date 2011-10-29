@@ -54,16 +54,16 @@ class SiteStat
 
   # main & extra hostname, with main & extra embed
   def billable_vv
-    vv['m'].to_i + vv['e'].to_i + vv['em'].to_i
+    chart_vv + vv['em'].to_i
   end
 
   # send time as id for backbonejs model
   def as_json(options = nil)
     json = super
     json['id']  = time
-    json['pv']  = chart_pv if chart_pv > 0
-    json['vv']  = chart_vv if chart_vv > 0
-    json['bvv'] = billable_vv if d.present? && billable_vv > 0
+    json['pv']  = chart_pv unless chart_pv.zero?
+    json['vv']  = chart_vv unless chart_vv.zero?
+    json['bvv'] = billable_vv if d? && !billable_vv.zero?
     json
   end
 
@@ -72,105 +72,95 @@ class SiteStat
   # @option options [String] token a valid site token
   # @option options [Array<String>] token an array of valid site tokens
   # @option options [Array<SiteStat>] stats an array of SiteStat objects
-  # @option options [String] period_type the precision desired, can be 'days' (default), 'hours', 'minutes', 'seconds'
+  # @option options [String] view_type the type of views to fetch. Can be 'vv' (Video Views, default) or 'pv' (Page Visits).
+  # @option options [String] period the precision desired, can be 'days' (default), 'hours', 'minutes', 'seconds'
   # @option options [DateTime] from represents the datetime from where returning stats
   # @option options [DateTime] to represents the datetime to where returning stats
   # @option options [Boolean] fill_missing_days when true, missing days will be "filled" with 0 main views
   # @option options [Integer] fill_missing_days missing days will be "filled" with the given value as main views
+  #
   # @return [Array<SiteStat>] an array of SiteStat objects
   #
   def self.last_stats(options = {})
-    options = options.symbolize_keys.reverse_merge(period_type: 'days', fill_missing_days: true)
+    options = options.symbolize_keys.reverse_merge(view_type: 'vv', period: 'days', fill_missing_days: true)
 
-    stats = options[:token] ? self.where(t: { "$in" => Array.wrap(options[:token]) }) : options[:stats]
-    stats = stats.send("#{options[:period_type].chr}_between", options[:from], options[:to]) if options[:from] && options[:to]
-    stats = stats.only(:d, options[:type].to_sym) if options[:type]
-    stats = stats.asc(:d).entries
+    conditions = {}
+    conditions[:t] = { "$in" => Array.wrap(options[:token]) } if options[:token]
+    conditions.deep_merge!(options[:period].chr.to_sym => { "$gte" => options[:from] }) if options[:from]
+    conditions.deep_merge!(options[:period].chr.to_sym => { "$lte" => options[:to] }) if options[:to]
+
+    stats = if (!options[:token] && !options[:stats]) || (options[:token] && options[:token].is_a?(Array))
+      collection.group(
+        key: [options[:period].chr.to_sym],
+        cond: conditions,
+        initial: { pv: { 'm' => 0, 'e' => 0, 'd' => 0, 'i' => 0, 'em' => 0 }, vv: { 'm' => 0, 'e' => 0, 'd' => 0, 'i' => 0, 'em' => 0 } },
+        reduce: js_reduce_for_array(options)
+      ).sort_by { |s| s[options[:period].chr] }
+    else
+      conditions[options[:period].chr.to_sym]["$gte"] = conditions[options[:period].chr.to_sym]["$gte"].to_i if options[:from]
+      conditions[options[:period].chr.to_sym]["$lte"] = conditions[options[:period].chr.to_sym]["$lte"].to_i if options[:to]
+
+      (options[:stats] || scoped).where(conditions).order_by([options[:period].chr.to_sym, :asc]).entries
+    end
 
     if !!options[:fill_missing_days]
       options[:missing_days_value] = options[:fill_missing_days].respond_to?(:to_i) ? options[:fill_missing_days] : 0
-      fill_missing_values_for_last_stats(stats, options[:period_type], options)
+      self.fill_missing_values_for_last_stats(stats, options)
     else
       stats
     end
   end
 
-  def self.last_days(options = {})
-    options = options.symbolize_keys.reverse_merge(days: 30)
-
-    last_stats(options.merge(from: options[:days].days.ago.midnight, to: 1.day.ago.midnight))
-  end
-
-  # Returns an array of SiteStat objects found by day.
+  # Returns the sum of all the usage for the given token(s) (optional) and between the given dates (optional).
   #
-  # @option options [String] type the type of views to fetch. Can be 'vv' (Video Views, default) or 'pv' (Page Visits).
   # @option options [String] token a valid site token
   # @option options [Array<String>] token an array of valid site tokens
+  # @option options [String] view_type the type of views to fetch. Can be 'vv' (Video Views, default) or 'pv' (Page Visits).
   # @option options [DateTime] from represents the datetime from where returning stats
   # @option options [DateTime] to represents the datetime to where returning stats
-  # @option options [String] billable if true, merge the main and extra views into a single billable field
-  # @option options [Boolean] fill_missing_days when true, missing days will be "filled" with 0 main views
-  # @option options [Integer] fill_missing_days missing days will be "filled" with the given value as main views
-  # @return [Array<SiteStat>] an array of SiteStat objects
+  # @option options [String] billable_only if true, return only the sum for billable fields
   #
-  def self.all_by_days(options = {})
-    options = options.symbolize_keys.reverse_merge(type: 'vv', billable: false)
+  # @return [Integer] the sum of views
+  #
+  def self.views_sum(options = {})
+    options = options.symbolize_keys.reverse_merge(view_type: 'vv', billable_only: false)
 
-    if options[:billable]
-      conditions = options[:token] ? { t: { "$in" => Array.wrap(options[:token]) }, d: { "$ne" => nil } } : {}
-      conditions.merge!(d: { "$gte" => options[:from].midnight }) if options[:from]
-      conditions.deep_merge!(d: { "$lte" => options[:to].end_of_day }) if options[:to]
+    conditions = {}
+    conditions[:t] = { "$in" => Array.wrap(options[:token]) }        if options[:token]
+    conditions.deep_merge!(d: { "$gte" => options[:from].midnight }) if options[:from]
+    conditions.deep_merge!(d: { "$lte" => options[:to].end_of_day }) if options[:to]
 
-      stats = collection.group(
-        :key => [:d],
-        :cond => conditions,
-        :initial => { billable: 0 },
-        :reduce => js_billable_reduce_function(options[:type])
-      )
-
-      options[:fill_missing_days] ? fill_missing_values_for_last_stats(stats, 'days', 0) : stats
-    else
-      token_or_stats = options[:token] ? { token: options[:token] } : { stats: scoped }
-      self.last_stats(options.merge(token_or_stats))
-    end
+    collection.group(
+      key: nil,
+      cond: conditions,
+      initial: { sum: 0 },
+      reduce: js_reduce_for_sum(options)
+    ).first['sum'].to_i
   end
 
-  def self.all_time_sum(options = {})
-    options = options.symbolize_keys.reverse_merge(type: 'vv', billable: false)
-
-    all_time_stats = all_by_days(options)
-
-    if options[:billable]
-      all_time_stats.sum { |s| s['billable'] }.to_i
-    else
-      all_time_stats.sum { |s| s.send(options[:type])['m'].to_i + s.send(options[:type])['e'].to_i + s.send(options[:type])['em'].to_i + s.send(options[:type])['d'].to_i }
-    end
-  end
-
-  def self.json(token, period_type = 'days')
-    json_stats = case period_type
+  def self.json(token, period = 'days')
+    json_stats = case period
     when 'seconds'
       to    = Time.now.change(usec: 0).utc
       from  = to - 60.seconds # pass 61 seconds
 
-      last_stats(token: token, period_type: period_type, from: from, to: to)
+      last_stats(token: token, period: period, from: from, to: to)
 
     when 'minutes'
       last_minute_stat = self.where(m: { "$ne" => nil }).order_by([:m, :asc]).last
       to   = last_minute_stat.try(:m) || 1.minute.ago.change(sec: 0)
       from = to - 59.minutes
 
-      last_stats(token: token, period_type: period_type, from: from, to: to)
+      last_stats(token: token, period: period, from: from, to: to)
 
     when 'hours'
       to   = 1.hour.ago.change(min: 0, sec: 0).utc
       from = to - 23.hours
 
-      last_stats(token: token, period_type: period_type, from: from, to: to)
+      last_stats(token: token, period: period, from: from, to: to)
 
     when 'days'
       site  = Site.find_by_token(token)
-      Rails.logger.debug "site.stats_retention_days: #{site.stats_retention_days}"
       stats = self.where(t: token, d: { "$ne" => nil }).order_by([:d, :asc])
       to    = 1.day.ago.midnight
       case site.stats_retention_days
@@ -178,10 +168,10 @@ class SiteStat
         []
       when nil
         from = [(stats.first.try(:d) || Time.now.utc), to - 364.days].min
-        last_stats(stats: stats, period_type: period_type, from: from, to: to)
+        last_stats(stats: stats, period: period, from: from, to: to)
       else
         from = to - (site.stats_retention_days - 1).days
-        last_stats(stats: stats, period_type: period_type, from: from, to: to)
+        last_stats(stats: stats, period: period, from: from, to: to)
       end
     end
 
@@ -220,31 +210,49 @@ class SiteStat
 
 private
 
-  def self.js_billable_reduce_function(field_type = 'vv')
-    reduce_function = ["function(doc, prev) {"]
+  def self.js_reduce_for_sum(options = {})
+    options = options.symbolize_keys.reverse_merge(billable_only: false)
 
-    %w[m e em].inject(reduce_function) do |js, field_to_merge|
-      js << "prev.billable += (isNaN(doc.vv.#{field_to_merge}) ? 0 : doc.vv.#{field_to_merge});"
+    fields = %w[m e em] # billable fields: main, extra and embed
+    fields << 'd' unless options[:billable_only] # add dev views if billable_only is false
+    reduce_function = ["function(doc, prev) {"]
+    fields.inject(reduce_function) do |js, field_to_merge|
+      js << "prev.sum += isNaN(doc.#{options[:view_type]}.#{field_to_merge}) ? 0 : doc.#{options[:view_type]}.#{field_to_merge};"
       js
     end
 
     (reduce_function << "}").join(' ')
   end
 
-  def self.fill_missing_values_for_last_stats(stats, period_type, options = {})
-    options = options.symbolize_keys.reverse_merge(field_to_fill: 'm', missing_days_value: 0)
+  def self.js_reduce_for_array(options = {})
+    options = options.symbolize_keys.reverse_merge(billable_only: false)
 
-    if !(options[:from] || options[:to])
-      options[:from] = stats.min_by { |s| s.d }.d || Time.now
-      options[:to]   = stats.max_by { |s| s.d }.d || (Time.now - 1.second)
+    fields = %w[m e em] # billable fields: main, extra and embed
+    fields << 'd' unless options[:billable_only] # add dev views if billable_only is false
+    reduce_function = ["function(doc, prev) {"]
+    fields.inject(reduce_function) do |js, field_to_merge|
+      js << "prev.#{options[:view_type]}.#{field_to_merge} += isNaN(doc.#{options[:view_type]}.#{field_to_merge}) ? 0 : doc.#{options[:view_type]}.#{field_to_merge};"
+      js
     end
 
-    filled_stats, step = [], 1.send(period_type)
+    (reduce_function << "}").join(' ')
+  end
+
+  def self.fill_missing_values_for_last_stats(stats, options = {})
+    options = options.symbolize_keys.reverse_merge(field_to_fill: 'm', missing_days_value: 0)
+    period = options[:period].chr
+
+    if !(options[:from] || options[:to])
+      options[:from] = stats.min_by { |s| s[period] }[period] || Time.now
+      options[:to]   = stats.max_by { |s| s[period] }[period] || (Time.now - 1.second)
+    end
+
+    filled_stats, step = [], 1.send(options[:period])
     while options[:from] <= options[:to]
-      filled_stats << if stats.first.try(period_type.chr) == options[:from]
+      filled_stats << if stats.first.try(:[], period) == options[:from]
         stats.shift
       else
-        self.new(period_type.chr.to_sym => options[:from].to_time, pv: { options[:field_to_fill] => options[:missing_days_value] })
+        self.new(period.to_sym => options[:from].to_time, options[:view_type].to_sym => { options[:field_to_fill] => options[:missing_days_value] })
       end
       options[:from] += step
     end
