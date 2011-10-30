@@ -1,10 +1,4 @@
 GIT
-  remote: git://github.com/Jilion/useragent.git
-  revision: bc6ab85b0d7afc76504bf6fa3763130dad9d3e7c
-  specs:
-    useragent (0.2.3)
-
-GIT
   remote: git://github.com/amatsuda/kaminari.git
   revision: f41de10abb1079bfccefbcbef691c8a5388901f3
   specs:
@@ -16,6 +10,12 @@ GIT
   revision: cfeec96c9ca0fa5035b10be3d73e798cc4fc52f7
   specs:
     annotate (2.4.1.beta1)
+
+GIT
+  remote: git://github.com/jilion/useragent.git
+  revision: bc6ab85b0d7afc76504bf6fa3763130dad9d3e7c
+  specs:
+    useragent (0.2.3)
 
 GIT
   remote: git://github.com/rymai/active_merchant.git
@@ -49,12 +49,12 @@ GIT
 GEM
   remote: http://rubygems.org/
   specs:
-    PageRankr (3.0.1)
+    PageRankr (3.0.2)
       json (>= 1.4.6)
-      jsonpath (~> 0.4.2)
+      jsonpath (>= 0.4.2)
       nokogiri (>= 1.4.1)
-      public_suffix_service (~> 0.9.0)
-      typhoeus (~> 0.2.1)
+      public_suffix_service (>= 0.9.0)
+      typhoeus (>= 0.2.1)
     RedCloth (4.2.8)
     actionmailer (3.1.1)
       actionpack (= 3.1.1)
@@ -101,8 +101,8 @@ GEM
     bcrypt-ruby (3.0.1)
     braintree (2.12.0)
       builder (>= 2.0.0)
-    bson (1.4.1)
-    bson_ext (1.4.1)
+    bson (1.4.0)
+    bson_ext (1.4.0)
     builder (3.0.0)
     capybara (1.1.1)
       mime-types (>= 1.16)
@@ -219,7 +219,7 @@ GEM
       multi_json (~> 1.0.3)
     guard-pow (0.2.1)
       guard (>= 0.3.0)
-    guard-rspec (0.5.0)
+    guard-rspec (0.5.1)
       guard (>= 0.8.4)
     guard-spork (0.3.1)
       guard (>= 0.8.4)
@@ -265,8 +265,8 @@ GEM
     mime-types (1.17.2)
     money (3.7.1)
       i18n (~> 0.4)
-    mongo (1.4.1)
-      bson (= 1.4.1)
+    mongo (1.4.0)
+      bson (= 1.4.0)
     mongoid (2.2.3)
       activemodel (~> 3.0)
       mongo (~> 1.3)
@@ -355,7 +355,7 @@ GEM
     rspec-core (2.7.1)
     rspec-expectations (2.7.0)
       diff-lcs (~> 1.1.2)
-    rspec-instafail (0.1.8)
+    rspec-instafail (0.1.9)
     rspec-mocks (2.7.0)
     rspec-rails (2.7.0)
       actionpack (~> 3.0)
@@ -373,7 +373,7 @@ GEM
       sass (>= 3.1.4)
       sprockets (~> 2.0.0)
       tilt (~> 1.3.2)
-    selenium-webdriver (2.9.1)
+    selenium-webdriver (2.10.0)
       childprocess (>= 0.2.1)
       ffi (= 1.0.9)
       json_pure
@@ -419,8 +419,7 @@ GEM
       multi_json (~> 1.0.0)
       multi_xml (~> 0.4.0)
       simple_oauth (~> 0.1.5)
-    typhoeus (0.2.4)
-      mime-types
+    typhoeus (0.3.2)
       mime-types
     tzinfo (0.3.30)
     uglifier (1.0.4)
@@ -454,7 +453,7 @@ DEPENDENCIES
   annotate!
   array_stats (~> 0.6.0)
   aws (~> 2.5.6)
-  bson_ext (~> 1.4.0)
+  bson_ext (= 1.4.0)
   capybara
   carrierwave (~> 0.5.7)
   carrierwave-mongoid (~> 0.1.1)
@@ -494,7 +493,7 @@ DEPENDENCIES
   libxml-ruby (~> 2.2.0)
   liquid (~> 2.2.2)
   log_buddy
-  mongo (~> 1.4.0)
+  mongo (= 1.4.0)
   mongoid (~> 2.2.0)
   oauth (~> 0.4.5)
   oauth-plugin (~> 0.4.0.pre7)
