@@ -58,7 +58,7 @@ group :backend do
 
 end
 
-guard :yard do
-  watch(%r{^app/.+\.rb$})
-  watch(%r{^lib/.+\.rb$})
-end
+# guard :yard do
+#   watch(%r{^app/.+\.rb$})
+#   watch(%r{^lib/.+\.rb$})
+# end
