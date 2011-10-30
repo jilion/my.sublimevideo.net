@@ -1,10 +1,4 @@
 GIT
-  remote: git://github.com/Jilion/useragent.git
-  revision: bc6ab85b0d7afc76504bf6fa3763130dad9d3e7c
-  specs:
-    useragent (0.2.3)
-
-GIT
   remote: git://github.com/amatsuda/kaminari.git
   revision: f41de10abb1079bfccefbcbef691c8a5388901f3
   specs:
@@ -16,6 +10,12 @@ GIT
   revision: cfeec96c9ca0fa5035b10be3d73e798cc4fc52f7
   specs:
     annotate (2.4.1.beta1)
+
+GIT
+  remote: git://github.com/jilion/useragent.git
+  revision: bc6ab85b0d7afc76504bf6fa3763130dad9d3e7c
+  specs:
+    useragent (0.2.3)
 
 GIT
   remote: git://github.com/rymai/active_merchant.git
