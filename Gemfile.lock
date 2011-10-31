@@ -1,5 +1,5 @@
 GIT
-  remote: git://github.com/Jilion/useragent.git
+  remote: git://github.com/jilion/useragent.git
   revision: bc6ab85b0d7afc76504bf6fa3763130dad9d3e7c
   specs:
     useragent (0.2.3)
