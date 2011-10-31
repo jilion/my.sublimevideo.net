@@ -8,8 +8,9 @@ gem 'rails',                 '3.0.10'
 gem 'pg',                    '0.11.0'
 gem 'meta_where',            '1.0.4'
 
-gem 'bson_ext',              '1.4.0'
-gem 'mongo',                 '1.4.0'
+gem 'bson_ext',              '~> 1.3.0'
+gem 'bson',                  '~> 1.3.0'
+gem 'mongo',                 '~> 1.3.0'
 gem 'mongoid',               '~> 2.2.0'
 
 # Views
