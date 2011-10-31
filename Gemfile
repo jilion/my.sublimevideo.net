@@ -97,6 +97,8 @@ group :development, :test do
   gem 'timecop'
   gem 'rspec-rails', '~> 2.7.0'
   # gem 'ruby-debug19'
+
+  gem 'ruby-graphviz', :require => 'graphviz'
 end
 
 group :development do
@@ -104,7 +106,6 @@ group :development do
   gem 'ffaker'
   gem 'annotate', :git => 'git://github.com/ctran/annotate_models.git'
   gem 'wirble'
-  gem 'ruby-graphviz', :require => 'graphviz'
   gem 'heroku'
   gem 'powder'
   gem 'taps'
