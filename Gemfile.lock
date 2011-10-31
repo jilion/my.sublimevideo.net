@@ -133,7 +133,7 @@ GEM
       currencies (= 0.4.0)
       currencies (>= 0.2.0)
     crack (0.1.8)
-    createsend (1.0.1)
+    createsend (1.0.2)
       hashie (~> 1.0)
       httparty (~> 0.8)
       json
@@ -419,7 +419,8 @@ GEM
       multi_json (~> 1.0.0)
       multi_xml (~> 0.4.0)
       simple_oauth (~> 0.1.5)
-    typhoeus (0.3.2)
+    typhoeus (0.2.4)
+      mime-types
       mime-types
     tzinfo (0.3.30)
     uglifier (1.0.4)
@@ -526,7 +527,7 @@ DEPENDENCIES
   taps
   timecop
   twitter (~> 1.7.2)
-  typhoeus
+  typhoeus (~> 0.2.0)
   uglifier
   uniquify (~> 0.1.0)
   useragent!

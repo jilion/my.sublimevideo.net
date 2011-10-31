@@ -144,9 +144,9 @@ group :test do
   gem 'fuubar'
   gem 'shoulda-matchers', :git => 'git://github.com/thoughtbot/shoulda-matchers.git'
   gem 'capybara'
-  gem 'webmock', '~> 1.6.0'
-  gem 'typhoeus'
-  gem 'vcr',     '~> 1.10.3'
+  gem 'webmock',  '~> 1.6.0'
+  gem 'typhoeus', '~> 0.2.0'
+  gem 'vcr',      '~> 1.10.3'
 
   gem 'database_cleaner'
   gem 'factory_girl_rails', :require => false # loaded in spec_helper Spork.each_run
