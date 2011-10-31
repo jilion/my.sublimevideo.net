@@ -48,7 +48,7 @@ GEM
       json (>= 1.4.6)
       nokogiri (>= 1.4.1)
     Platform (0.4.0)
-    RedCloth (4.2.7)
+    RedCloth (4.2.8)
     abstract (1.0.0)
     actionmailer (3.0.10)
       actionpack (= 3.0.10)
@@ -357,7 +357,7 @@ PLATFORMS
 
 DEPENDENCIES
   PageRankr (= 1.6.0)
-  RedCloth (= 4.2.7)
+  RedCloth (= 4.2.8)
   activemerchant!
   acts_as_api (= 0.3.6)
   addressable (= 2.2.6)

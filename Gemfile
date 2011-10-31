@@ -18,7 +18,7 @@ gem 'haml',                  '3.1.2'
 gem 'kaminari',              '0.12.4'
 gem 'jammit',                '0.6.3'
 gem 'liquid',                '2.2.2'
-gem 'RedCloth',              '4.2.7'
+gem 'RedCloth',              '4.2.8'
 
 # Auth / invitations
 gem 'devise',                '1.4.2'
