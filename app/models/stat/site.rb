@@ -1,4 +1,7 @@
-class Stat::Site < Stat
+class Stat::Site
+  include Mongoid::Document
+  include Stat
+  store_in :site_stats
 
   field :t,  :type => String # Site token
 

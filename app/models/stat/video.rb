@@ -1,4 +1,7 @@
-class Stat::Video < Stat
+class Stat::Video
+  include Mongoid::Document
+  include Stat
+  store_in :video_stats
 
   field :st,  :type => String # Site token
   field :u,   :type => String # Video uid

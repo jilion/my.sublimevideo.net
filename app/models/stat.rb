@@ -1,35 +1,42 @@
-class Stat
-  include Mongoid::Document
+module Stat
+  extend ActiveSupport::Concern
 
-  # DateTime periods
-  field :s,  type: DateTime  # Second
-  field :m,  type: DateTime  # Minute
-  field :h,  type: DateTime  # Hour
-  field :d,  type: DateTime  # Day
+  included do
 
-  # ==========
-  # = Scopes =
-  # ==========
+    # DateTime periods
+    field :s,  type: DateTime  # Second
+    field :m,  type: DateTime  # Minute
+    field :h,  type: DateTime  # Hour
+    field :d,  type: DateTime  # Day
 
-  %w[s m h d].each do |period|
-    scope "#{period}_after".to_sym, lambda { |date| where(period => { "$gte" => date.to_i }).order_by([period.to_sym, :asc]) }
-    scope "#{period}_before".to_sym,  lambda { |date| where(period => { "$lte" => date.to_i }).order_by([period.to_sym, :asc]) }
-    scope "#{period}_between".to_sym, lambda { |start_date, end_date| where(period => { "$gte" => start_date.to_i, "$lte" => end_date.to_i }).order_by([period.to_sym, :asc]) }
+    # ==========
+    # = Scopes =
+    # ==========
+
+    %w[s m h d].each do |period|
+      scope "#{period}_after".to_sym, lambda { |date| where(period => { "$gte" => date.to_i }).order_by([period.to_sym, :asc]) }
+      scope "#{period}_before".to_sym,  lambda { |date| where(period => { "$lte" => date.to_i }).order_by([period.to_sym, :asc]) }
+      scope "#{period}_between".to_sym, lambda { |start_date, end_date| where(period => { "$gte" => start_date.to_i, "$lte" => end_date.to_i }).order_by([period.to_sym, :asc]) }
+    end
+
   end
 
   # ====================
   # = Instance Methods =
   # ====================
+  module InstanceMethods
 
-  def time
-    (s || m || h || d).to_i
+    def time
+      (s || m || h || d).to_i
+    end
+
   end
 
   # =================
   # = Class Methods =
   # =================
+  module ClassMethods
 
-  def self.inc_and_push_stats(params, user_agent)
   end
 
   def self.create_stats_from_trackers!(log, trackers)
@@ -64,6 +71,8 @@ class Stat
     end
   end
 
+private
+
   def self.clear_old_seconds_minutes_and_hours_stats
     delay_clear_old_seconds_minutes_and_hours_stats
     Stat::Site.s_before(63.seconds.ago).delete_all
@@ -74,21 +83,18 @@ class Stat
     Stat::Video.h_before(26.hours.ago).delete_all
   end
 
-private
-
   # Merge each trackers params on one big hash
   #
   # { 'site_token' => { :inc => {...}, :videos => { 'video_uid' => { inc }, ... } } }
   #
   def self.incs_from_trackers(trackers)
-    trackers = trackers.detect { |t| t.options[:title] == :stats }.categories
-    y trackers
+    trackers = only_stats_trackers(trackers)
     incs     = Hash.new { |h,k| h[k] = { inc: Hash.new(0), videos: Hash.new { |h,k| h[k] = Hash.new(0) } } }
     trackers.each do |tracker, hits|
       begin
         request, user_agent = tracker
         params     = Addressable::URI.parse(request).query_values.try(:symbolize_keys) || {}
-        params_inc = StatRequestParser.stat_incs(params, user_agent)
+        params_inc = StatRequestParser.stat_incs(params, user_agent, hits)
         site = params_inc[:site]
         if site[:inc].present?
           site[:inc].each do |inc, value|
@@ -106,6 +112,10 @@ private
       end
     end
     incs
+  end
+
+  def self.only_stats_trackers(trackers)
+    trackers.detect { |t| t.options[:title] == :stats }.categories
   end
 
 end
