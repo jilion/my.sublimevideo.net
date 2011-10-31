@@ -99,11 +99,11 @@ group :development, :test do
   # gem 'ruby-debug19'
 
   gem 'ruby-graphviz', :require => 'graphviz'
+  gem 'ffaker'
 end
 
 group :development do
   gem 'rails-dev-tweaks', '~> 0.4.0'
-  gem 'ffaker'
   gem 'annotate', :git => 'git://github.com/ctran/annotate_models.git'
   gem 'wirble'
   gem 'heroku'
