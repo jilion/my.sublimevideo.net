@@ -98,12 +98,12 @@ group :development, :test do
   gem 'rspec-rails', '~> 2.7.0'
   # gem 'ruby-debug19'
 
+  gem 'rails-dev-tweaks', '~> 0.5.0'
   gem 'ruby-graphviz', :require => 'graphviz'
   gem 'ffaker'
 end
 
 group :development do
-  gem 'rails-dev-tweaks', '~> 0.4.0'
   gem 'annotate', :git => 'git://github.com/ctran/annotate_models.git'
   gem 'wirble'
   gem 'heroku'
