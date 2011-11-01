@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111017081014) do
+ActiveRecord::Schema.define(:version => 20111101125136) do
 
   create_table "admins", :force => true do |t|
     t.string   "email",                                 :default => "", :null => false
@@ -299,6 +299,7 @@ ActiveRecord::Schema.define(:version => 20111017081014) do
     t.integer  "last_invoiced_amount",                  :default => 0
     t.integer  "total_invoiced_amount",                 :default => 0
     t.integer  "balance",                               :default => 0
+    t.text     "hidden_notice_ids"
   end
 
   add_index "users", ["cc_alias"], :name => "index_users_on_cc_alias", :unique => true

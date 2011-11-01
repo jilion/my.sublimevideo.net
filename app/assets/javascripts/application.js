@@ -55,6 +55,10 @@ document.observe("dom:loaded", function() {
     MySublimeVideo.hideFlashMessageDelayed(element);
   });
 
+  $$('.hideable_notice').each(function(element) {
+    new HideableNoticeManager(element);
+  });
+
   // =====================================
   // = Add site hanlder and Sites poller =
   // =====================================
@@ -109,6 +113,12 @@ MySublimeVideo.hideFlashMessageDelayed = function(flashEl) {
     flashEl.morph('top:-35px', { duration: 0.7 });
   }, 15000);
 };
+
+MySublimeVideo.updateUserAndHideNotice = function(noticeEl) {
+  setTimeout(function(){
+    flashEl.morph('top:-35px', { duration: 0.7 });
+  }, 15000);
+}
 
 MySublimeVideo.openPopup = function(itemId, idPrefix, url, className, anchorId) { // item can be site
   // if (!MySublimeVideo.popupHandler) MySublimeVideo.popupHandler = new PopupHandler();
@@ -185,6 +195,22 @@ MySublimeVideo.showSiteUsage = function(siteId) {
 // ===========
 // = Classes =
 // ===========
+
+var HideableNoticeManager = Class.create({
+  initialize: function(noticeElement) {
+    this.noticeElement = noticeElement;
+    this.noticeId      = noticeElement.readAttribute('data-notice-id');
+
+    this.setupObservers();
+  },
+  setupObservers: function() {
+    this.noticeElement.down(".close").on("click", this.updateUserAndHideNotice.bind(this));
+  },
+  updateUserAndHideNotice: function() {
+    new Ajax.Request('/hide_notice/'+this.noticeId, { method: 'post' });
+    this.noticeElement.fade({ after: function(){ this.noticeElement.remove(); } });
+  }
+});
 
 var SiteQuickSwitch = Class.create({
   initialize: function(triggerLink, sitesList) {
