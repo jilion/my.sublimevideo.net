@@ -75,12 +75,12 @@ private
 
   def self.clear_old_seconds_minutes_and_hours_stats
     delay_clear_old_seconds_minutes_and_hours_stats
-    Stat::Site.s_before(63.seconds.ago).delete_all
-    Stat::Site.m_before(62.minutes.ago).delete_all
-    Stat::Site.h_before(26.hours.ago).delete_all
-    Stat::Video.s_before(63.seconds.ago).delete_all
-    Stat::Video.m_before(62.minutes.ago).delete_all
-    Stat::Video.h_before(26.hours.ago).delete_all
+
+    { s: 63.seconds, m: 62.minutes, h: 26.hours }.each do |period, value|
+      [Stat::Site, Stat::Video].each do |klass|
+        klass.send("#{period}_before", value.ago).delete_all
+      end
+    end
   end
 
   # Merge each trackers params on one big hash
@@ -95,12 +95,14 @@ private
         request, user_agent = tracker
         params     = Addressable::URI.parse(request).query_values.try(:symbolize_keys) || {}
         params_inc = StatRequestParser.stat_incs(params, user_agent, hits)
+        # Site
         site = params_inc[:site]
         if site[:inc].present?
           site[:inc].each do |inc, value|
             incs[site[:t]][:inc][inc] += value
           end
         end
+        # Videos
         params_inc[:videos].each do |video|
           if video[:inc].present?
             video[:inc].each do |inc, value|
