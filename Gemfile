@@ -56,7 +56,7 @@ gem 'request-log-analyzer',  '1.11.0', :require => 'request_log_analyzer'
 # gem 'activemerchant',        :git => 'git://github.com/ZenCocoon/active_merchant.git' # with the fix for Ogone#parse and more
 gem 'activemerchant',        :git => 'git://github.com/rymai/active_merchant.git', :branch => '3ds_from_ZenCocoon', :ref => '2f35b9f1c685b25d3f06f092684c2c7b581d4a9d'
 gem 'public_suffix_service', '0.8.1'
-gem 'useragent',             :git => 'git://github.com/Jilion/useragent.git'
+gem 'useragent',             :git => 'git://github.com/jilion/useragent.git'
 
 gem 'zip',                   '2.0.2', :require => 'zip/zip'
 gem 'countries',             '0.3.0'
