@@ -33,7 +33,7 @@ GIT
       xml-simple (~> 1.0.12)
 
 PATH
-  remote: vendor/sv_stats_request_parser
+  remote: vendor/sv_stat_request_parser
   specs:
     stat_request_parser (0.0.1)
       activesupport (>= 3.0.0)
