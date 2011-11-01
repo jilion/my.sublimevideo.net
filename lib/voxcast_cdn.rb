@@ -33,13 +33,13 @@ module VoxcastCDN
     # end
 
     def download_log(filename)
-      rescue_and_retry(7) do
+      # rescue_and_retry(5) do
         xml = client.voxel_voxcast_ondemand_logs_download(:filename => filename)
         tempfile = Tempfile.new('log', "#{Rails.root}/tmp", :encoding => 'ASCII-8BIT')
         tempfile.write(Base64.decode64(xml['data']['content']))
         tempfile.flush
         tempfile
-      end
+      # end
     rescue VoxelHAPI::Backend => ex
       ex.to_s =~ /log file not found/ ? false : raise(ex)
     end
