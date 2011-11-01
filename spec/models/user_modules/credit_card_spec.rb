@@ -699,7 +699,7 @@ describe UserModules::CreditCard do
             subject.pending_cc_type.should eql 'master'
             subject.pending_cc_last_digits.should eql '9999'
             subject.pending_cc_expire_on.should eql 2.years.from_now.end_of_month.to_date
-            subject.pending_cc_updated_at.should_not eql @first_cc_updated_at
+            subject.pending_cc_updated_at.to_i.should_not eql @first_cc_updated_at.to_i
             subject.cc_type.should eql 'visa'
             subject.cc_last_digits.should eql '1111'
             subject.cc_expire_on.should eql 1.year.from_now.end_of_month.to_date

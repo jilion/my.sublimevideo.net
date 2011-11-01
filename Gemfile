@@ -10,8 +10,9 @@ gem 'rails-backbone'
 gem 'pg',                    '~> 0.11.0'
 gem 'squeel',                '~> 0.9.2'
 
-gem 'bson_ext',              '1.4.0'
-gem 'mongo',                 '1.4.0'
+gem 'bson_ext',              '~> 1.3.0'
+gem 'bson',                  '~> 1.3.0'
+gem 'mongo',                 '~> 1.3.0'
 gem 'mongoid',               '~> 2.2.0'
 
 # Views
@@ -19,7 +20,7 @@ gem 'haml',                  '~> 3.1.3'
 gem 'coffee-filter',         '~> 0.1.1'
 gem 'kaminari',              :git => 'git://github.com/amatsuda/kaminari.git'
 gem 'liquid',                '~> 2.2.2'
-gem 'RedCloth',              '~> 4.2.7'
+gem 'RedCloth',              '~> 4.2.8'
 
 # Auth / invitations
 gem 'devise',                '~> 1.4.8'
