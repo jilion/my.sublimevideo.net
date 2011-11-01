@@ -130,12 +130,14 @@ class SiteStat
     conditions.deep_merge!(d: { "$gte" => options[:from].midnight }) if options[:from]
     conditions.deep_merge!(d: { "$lte" => options[:to].end_of_day }) if options[:to]
 
-    collection.group(
+    stats = collection.group(
       key: nil,
       cond: conditions,
       initial: { sum: 0 },
       reduce: js_reduce_for_sum(options)
-    ).first['sum'].to_i
+    )
+
+    stats.any? ? stats.first['sum'].to_i : 0
   end
 
   def self.json(token, period = 'days')
