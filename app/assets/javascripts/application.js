@@ -114,12 +114,6 @@ MySublimeVideo.hideFlashMessageDelayed = function(flashEl) {
   }, 15000);
 };
 
-MySublimeVideo.updateUserAndHideNotice = function(noticeEl) {
-  setTimeout(function(){
-    flashEl.morph('top:-35px', { duration: 0.7 });
-  }, 15000);
-}
-
 MySublimeVideo.openPopup = function(itemId, idPrefix, url, className, anchorId) { // item can be site
   // if (!MySublimeVideo.popupHandler) MySublimeVideo.popupHandler = new PopupHandler();
   MySublimeVideo.popupHandler = new PopupHandler();
