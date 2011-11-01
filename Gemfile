@@ -87,14 +87,15 @@ end
 group :development, :test do
   gem 'timecop'
   gem 'rspec-rails', '~> 2.6.0'
+
+  gem 'ruby-graphviz', :require => 'graphviz'
+  gem 'ffaker'
 end
 
 group :development do
   gem 'passenger'
-  gem 'ffaker'
   gem 'annotate'
   gem 'wirble'
-  gem 'ruby-graphviz', :require => 'graphviz'
   gem 'heroku'
   gem 'taps'
   gem 'silent-postgres'
