@@ -88,7 +88,7 @@ class Log::Voxcast < Log
 
   def parse_and_create_stats!
     trackers = trackers('LogsFileFormat::VoxcastStats')
-    SiteStat.create_stats_from_trackers!(self, trackers)
+    Stat.create_stats_from_trackers!(self, trackers)
   end
 
   def parse_and_create_referrers!
