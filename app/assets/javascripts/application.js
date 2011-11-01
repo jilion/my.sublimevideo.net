@@ -55,6 +55,10 @@ document.observe("dom:loaded", function() {
     MySublimeVideo.hideFlashMessageDelayed(element);
   });
 
+  $$('.hideable_notice').each(function(element) {
+    new HideableNoticeManager(element);
+  });
+
   // =====================================
   // = Add site hanlder and Sites poller =
   // =====================================
@@ -185,6 +189,22 @@ MySublimeVideo.showSiteUsage = function(siteId) {
 // ===========
 // = Classes =
 // ===========
+
+var HideableNoticeManager = Class.create({
+  initialize: function(noticeElement) {
+    this.noticeElement = noticeElement;
+    this.noticeId      = noticeElement.readAttribute('data-notice-id');
+
+    this.setupObservers();
+  },
+  setupObservers: function() {
+    this.noticeElement.down(".close").on("click", this.updateUserAndHideNotice.bind(this));
+  },
+  updateUserAndHideNotice: function() {
+    new Ajax.Request('/hide_notice/' + this.noticeId, { method: 'put' });
+    this.noticeElement.fade({ after: function(){ this.noticeElement.remove(); } });
+  }
+});
 
 var SiteQuickSwitch = Class.create({
   initialize: function(triggerLink, sitesList) {
@@ -428,8 +448,8 @@ var ShowPasswordFieldManager = Class.create({
     // Only add the Show password checkbox if the input field has the "show_password" class
     if (this.field.hasClassName("show_password")) {
       var showPasswordWrap = new Element("div", { className:'checkbox_wrap' });
-      var showPasswordLabel = new Element("label", { 'for':"show_password_"+index }).update("Show password");
-      this.showPasswordCheckbox = new Element("input", { type:"checkbox", id:"show_password_"+index });
+      var showPasswordLabel = new Element("label", { 'for':"show_password_" + index }).update("Show password");
+      this.showPasswordCheckbox = new Element("input", { type:"checkbox", id:"show_password_" + index });
       showPasswordWrap.insert(this.showPasswordCheckbox).insert(showPasswordLabel);
 
       var errorMessage = this.field.up().select(".inline_errors").first();
@@ -441,7 +461,7 @@ var ShowPasswordFieldManager = Class.create({
       }
 
       this.showPasswordCheckbox.on("click", this.toggleShowPassword.bind(this));
-      this.showPasswordCheckbox.checked = false; //Firefox reload ;-)
+      this.showPasswordCheckbox.checked = false; // Firefox reload ;-)
     }
   },
   isShowingPassword: function() {
@@ -596,7 +616,7 @@ var PopupHandler = Class.create({
     this.popupElement = new Element("div", {
       id: popupId,
       className: this.className + " loading"
-    }).update("<div class='wrap'><div class='content "+idPrefix+"'></div></div>");
+    }).update("<div class='wrap'><div class='content " + idPrefix + "'></div></div>");
     var closeButton = new Element("a", {
       href: "",
       className: "close",
@@ -620,7 +640,6 @@ var PopupHandler = Class.create({
     }
     $$('.' + this.className).each(function(el) {
       el.remove();
-      // el.fade({ after :function(){ el.remove(); }});
     });
   },
   keyDown: function(event) {
@@ -662,7 +681,7 @@ var SitesPoller = Class.create({
   remoteCheckForStateUpdate: function() {
     if (this.attempts < this.maxAttempts) {
       this.attempts++;
-      new Ajax.Request('/sites/'+this.currentSiteId+'/state', { method: 'get' });
+      new Ajax.Request('/sites/' + this.currentSiteId + '/state', { method: 'get' });
     }
     else {
       this.stopPolling();
@@ -674,10 +693,10 @@ var SitesPoller = Class.create({
     this.stopPolling();
 
     // Remove "in progress" span
-    var inProgressWrap = $$("#site_"+siteId+" span.icon.in_progress").first();
+    var inProgressWrap = $$("#site_" + siteId + " span.icon.in_progress").first();
     if (inProgressWrap) inProgressWrap.remove();
     // Show "ok" span
-    var okWrap = $$("#site_"+siteId+" td.status.box_hovering_zone div.completed").first();
+    var okWrap = $$("#site_" + siteId + " td.status.box_hovering_zone div.completed").first();
     if (okWrap) okWrap.show();
 
     // Check if a restart polling is needed

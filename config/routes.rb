@@ -24,6 +24,7 @@ MySublimeVideo::Application.routes.draw do
   match '/password/validate' => "users/passwords#validate", :via => :post
 
   resource :users, :only => :update, :path => '/account/info'
+  match '/hide_notice/:id' => "users#hide_notice", :via => :put
 
   resources :sites, :except => :show do
     get :state, :on => :member

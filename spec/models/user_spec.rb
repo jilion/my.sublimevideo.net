@@ -7,14 +7,15 @@ describe User do
     subject { @user }
 
     its(:terms_and_conditions) { should be_true }
-    its(:first_name)           { should == "John" }
-    its(:last_name)            { should == "Doe" }
-    its(:full_name)            { should == "John Doe" }
-    its(:country)              { should == "CH" }
-    its(:postal_code)          { should == "2000" }
+    its(:first_name)           { should eq "John" }
+    its(:last_name)            { should eq "Doe" }
+    its(:full_name)            { should eq "John Doe" }
+    its(:country)              { should eq "CH" }
+    its(:postal_code)          { should eq "2000" }
     its(:use_personal)         { should be_true }
     its(:newsletter)           { should be_true }
     its(:email)                { should match /email\d+@user.com/ }
+    its(:hidden_notice_ids)    { should eq [] }
 
     it { should be_valid }
   end
@@ -31,7 +32,7 @@ describe User do
   end
 
   describe "Validations" do
-    [:first_name, :last_name, :email, :remember_me, :password, :postal_code, :country, :use_personal, :use_company, :use_clients, :company_name, :company_url, :terms_and_conditions, :cc_brand, :cc_full_name, :cc_number, :cc_expiration_month, :cc_expiration_year, :cc_verification_value].each do |attr|
+    [:first_name, :last_name, :email, :remember_me, :password, :postal_code, :country, :use_personal, :use_company, :use_clients, :company_name, :company_url, :terms_and_conditions, :hidden_notice_ids, :cc_brand, :cc_full_name, :cc_number, :cc_expiration_month, :cc_expiration_year, :cc_verification_value].each do |attr|
       it { should allow_mass_assignment_of(attr) }
     end
 
@@ -239,7 +240,7 @@ describe User do
   describe "State Machine" do
     before(:all) do
       @user           = FactoryGirl.create(:user)
-      @free_site       = FactoryGirl.create(:site, user: @user, plan_id: @free_plan.id, hostname: "octavez.com")
+      @free_site      = FactoryGirl.create(:site, user: @user, plan_id: @free_plan.id, hostname: "octavez.com")
       @paid_site      = FactoryGirl.create(:site, user: @user, hostname: "rymai.com")
       @suspended_site = FactoryGirl.create(:site, user: @user, hostname: "rymai.me", state: 'suspended')
       FactoryGirl.create(:invoice, site: @paid_site, state: 'failed')
@@ -463,14 +464,14 @@ describe User do
         subject { @user.reload }
 
         describe "before_transition :on => :archive, :do => [:set_archived_at, :archive_sites]" do
-          it "should set archived_at" do
+          it "sets archived_at" do
             subject.archived_at.should be_nil
             subject.current_password = "123456"
             subject.archive
             subject.archived_at.should be_present
           end
 
-          it "should archive each user' site" do
+          it "archives each user' site" do
             subject.sites.all? { |site| site.should_not be_archived }
             subject.current_password = "123456"
             subject.archive
@@ -479,7 +480,7 @@ describe User do
         end
 
         describe "after_transition :on => :archive, :do => [:invalidate_tokens, :newsletter_unsubscribe, :send_account_archived_email]" do
-          it "invalidate all user's tokens" do
+          it "invalidates all user's tokens" do
             FactoryGirl.create(:oauth2_token, user: subject)
             subject.reload.tokens.first.should_not be_invalidated_at
             subject.current_password = "123456"
@@ -487,22 +488,26 @@ describe User do
             subject.reload.tokens.all? { |token| token.invalidated_at? }.should be_true
           end
 
-          it "should send an email to user" do
-            expect { subject.current_password = "123456"; subject.archive }.to change(ActionMailer::Base.deliveries, :count).by(1)
-            ActionMailer::Base.deliveries.last.to.should == [subject.email]
+          it "sends an email to user" do
+            subject.current_password = "123456"
+            expect { subject.archive }.to change(ActionMailer::Base.deliveries, :count).by(1)
+            ActionMailer::Base.deliveries.last.to.should eq [subject.email]
           end
 
           describe ":newsletter_unsubscribe" do
             use_vcr_cassette "user/newsletter_unsubscribe"
-            let(:user) { FactoryGirl.create(:user, :newsletter => "1", :email => "newsletter@jilion.com") }
+            subject { FactoryGirl.create(:user, newsletter: "1", email: "john@doe.com") }
 
-            it "should subscribe new email and unsubscribe old email on user destroy" do
+            it "subscribes new email and unsubscribe old email on user destroy" do
+              subject # explicitly create the subject
               @worker.work_off
-              CampaignMonitor.subscriber(user.email)["State"].should == "Active"
+              CampaignMonitor.subscriber(subject.email)["State"].should eq "Active"
 
-              expect { user.current_password = "123456"; user.archive }.to change(Delayed::Job, :count).by(1)
+              subject.current_password = "123456"
+              expect { subject.archive }.to change(Delayed::Job, :count).by(1)
               @worker.work_off
-              CampaignMonitor.subscriber(user.email)["State"].should == "Unsubscribed"
+
+              CampaignMonitor.subscriber(subject.email)["State"].should eq "Unsubscribed"
             end
           end
         end
@@ -658,30 +663,54 @@ describe User do
   end
 
   describe "attributes accessor" do
+    subject { FactoryGirl.create(:user, email: "BoB@CooL.com") }
+
     describe "email=" do
-      it "should downcase email" do
-        user = FactoryGirl.build(:user, email: "BOB@cool.com")
-        user.email.should == "bob@cool.com"
+      it "downcases email" do
+        subject.email.should eq "bob@cool.com"
+      end
+    end
+
+    describe "hidden_notice_ids" do
+      it "initialize as an array if nil" do
+        subject.hidden_notice_ids.should eq []
+      end
+
+      it "doesn't cast given value" do
+        subject.hidden_notice_ids << 1 << "foo"
+        subject.hidden_notice_ids.should eq [1, "foo"]
       end
     end
   end
 
   describe "Instance Methods" do
-    let(:user) { FactoryGirl.create(:user) }
+    subject { FactoryGirl.create(:user) }
+
+    describe "#notice_hidden?" do
+      before(:each) do
+        subject.hidden_notice_ids << 1
+        subject.hidden_notice_ids.should eq [1]
+      end
+
+      specify { subject.notice_hidden?(1).should be_true }
+      specify { subject.notice_hidden?("1").should be_true }
+      specify { subject.notice_hidden?(2).should be_false }
+      specify { subject.notice_hidden?('foo').should be_false }
+    end
 
     describe "#active_for_authentication?" do
       it "should be active for authentication when active" do
-        user.should be_active_for_authentication
+        subject.should be_active_for_authentication
       end
 
       it "should be active for authentication when suspended in order to allow login" do
-        user.suspend
-        user.should be_active_for_authentication
+        subject.suspend
+        subject.should be_active_for_authentication
       end
 
       it "should not be active for authentication when archived" do
-        user.archive
-        user.should be_active_for_authentication
+        subject.archive
+        subject.should be_active_for_authentication
       end
     end
 

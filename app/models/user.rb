@@ -17,9 +17,11 @@ class User < ActiveRecord::Base
   attr_accessible :first_name, :last_name, :email, :remember_me, :password, :current_password, :postal_code, :country,
                   :use_personal, :use_company, :use_clients,
                   :company_name, :company_url, :company_job_title, :company_employees, :company_videos_served,
-                  :newsletter, :terms_and_conditions
+                  :newsletter, :terms_and_conditions, :hidden_notice_ids
   # Credit card
   attr_accessible :cc_brand, :cc_full_name, :cc_number, :cc_expiration_year, :cc_expiration_month, :cc_verification_value
+
+  serialize :hidden_notice_ids, Array
 
   uniquify :cc_alias, :chars => Array('A'..'Z') + Array('0'..'9')
 
@@ -138,6 +140,10 @@ class User < ActiveRecord::Base
 
   def email=(email)
     write_attribute(:email, email.try(:downcase))
+  end
+
+  def notice_hidden?(id)
+    hidden_notice_ids.map(&:to_s).include?(id.to_s)
   end
 
   # Devise overriding

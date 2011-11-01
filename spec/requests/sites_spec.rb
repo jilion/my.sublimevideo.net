@@ -5,12 +5,16 @@ feature "Sites" do
   before(:all) { create_plans }
 
   context "with a user with no credit card registered" do
+
     background do
       sign_in_as :user, without_cc: true
-      visit "/sites/new"
     end
 
     describe "new" do
+      background do
+        visit "/sites/new"
+      end
+
       describe "free plan" do
         scenario "with no hostname" do
           choose "plan_free"
@@ -223,6 +227,7 @@ feature "Sites" do
   end
 
   context "with a user with a credit card registered" do
+
     background do
       sign_in_as :user, without_cc: false
       visit "/sites/new"
@@ -231,244 +236,316 @@ feature "Sites" do
   end
 
   context "no matter if the user has a credit card or not" do
+
     background do
       sign_in_as :user
     end
 
-    scenario "user suspended" do
-      @current_user.suspend
-      visit "/sites"
+    context "suspended user" do
 
-      current_url.should =~ %r(http://[^/]+/suspended)
-    end
-
-    describe "navigation" do
-      context "when the user has no sites" do
-        scenario "should redirect to /sites/new" do
-          visit "/sites"
-          page.should have_content('Choose a plan for your site')
-        end
+      background do
+        @current_user.suspend
       end
 
-      context "when user has already some sites" do
+      scenario "is redirected to the /suspended page" do
+        visit "/sites"
+        current_url.should =~ %r(http://[^/]+/suspended)
+      end
+
+    end
+
+    context "active user" do
+
+      background do
+        visit "/sites"
+      end
+
+      context "with no sites" do
+
+        describe "navigation" do
+          scenario "should redirect to /sites/new" do
+            page.should have_selector("#signup_steps")
+            find('#signup_steps').find('li.active').should have_content('2')
+            page.should have_no_selector("h2")
+          end
+        end
+
+      end
+
+      context "with a site without invoice" do
+
+        background do
+          @site = FactoryGirl.create(:site, user: @current_user, hostname: 'rymai.com')
+          visit "/sites"
+        end
+
+        describe "new" do
+          scenario "don't display signup steps" do
+            click_link "Add a site"
+            page.should have_no_selector("#signup_steps")
+            find('h2').should have_content('Choose a plan for your site')
+          end
+        end
+
+        describe "site's tabs" do
+          scenario "all tabs are accessible except the Invoices tab" do
+            page.should have_content('rymai.com')
+
+            click_link "Edit rymai.com"
+            current_url.should =~ %r(http://[^/]+/sites/#{@site.token}/edit)
+            page.should have_content('rymai.com')
+
+            page.should have_content strip_tags(I18n.t('site.edit.delete_site_info1', domain: "rymai.com"))
+            page.should have_content I18n.t('site.edit.delete_site_info2')
+
+            click_link "Plan"
+            current_url.should =~ %r(http://[^/]+/sites/#{@site.token}/plan/edit)
+            page.should have_selector('#change_plan_box.section_box')
+
+            page.should have_content('No Invoices')
+            page.should have_no_selector("a[href='/sites/#{@site.token}/invoices']")
+            visit "/sites/#{@site.token}/invoices"
+            current_url.should =~ %r(http://[^/]+/sites/#{@site.token}/invoices)
+            page.should have_content('No invoices')
+          end
+        end
+
+      end
+
+      context "with at least a site with an invoice" do
+
         background do
           @site = FactoryGirl.create(:site_with_invoice, user: @current_user, hostname: 'rymai.com')
+          visit "/sites"
         end
 
-        scenario "when user has already some sites" do
-          visit "/sites"
-          click_link "Add a site"
-          page.should have_content('Choose a plan for your site')
+        describe "site's tabs" do
+          scenario "the Invoice tab is accessible" do
+            page.should have_content('rymai.com')
+
+            click_link "Edit rymai.com"
+            page.should have_no_content('No invoices')
+            page.should have_content('Invoices')
+            page.should have_selector("a[href='/sites/#{@site.token}/invoices']")
+            click_link "Invoices"
+
+            current_url.should =~ %r(http://[^/]+/sites/#{@site.token}/invoices)
+            page.should have_no_content('No invoices')
+            page.should have_content('Next invoice')
+            page.should have_content('Past invoices')
+          end
         end
 
-        scenario "edit a site" do
+      end
+
+      describe "edit" do
+        background do
+          @free_site = FactoryGirl.create(:site, user: @current_user, plan_id: @free_plan.id, hostname: 'rymai.com')
+
+          @paid_site_in_trial = FactoryGirl.create(:site, user: @current_user, hostname: 'rymai.eu')
+
+          @paid_site_not_in_trial = FactoryGirl.create(:site_not_in_trial, user: @current_user, hostname: 'rymai.ch')
+
+          @free_site.should be_badged
+          @paid_site_in_trial.should_not be_badged
+          @paid_site_not_in_trial.should_not be_badged
           visit "/sites"
+        end
+
+        scenario "edit a free site" do
           page.should have_content('rymai.com')
-
           click_link "Edit rymai.com"
-          current_url.should =~ %r(http://[^/]+/sites/#{@site.token}/edit)
+
+          page.should have_selector("input#site_dev_hostnames")
+          page.should have_selector("input#site_extra_hostnames")
+          page.should have_selector("input#site_path")
+          page.should have_selector("input#site_wildcard")
+          page.should have_selector("input#site_badged")
+
+          fill_in "site_extra_hostnames", with: "rymai.me"
+          fill_in "site_dev_hostnames", with: "rymai.local"
+          click_button "Update settings"
+
+          current_url.should =~ %r(http://[^/]+/sites)
           page.should have_content('rymai.com')
 
-          page.should have_content strip_tags(I18n.t('site.edit.delete_site_info1', domain: "rymai.com"))
-          page.should have_content I18n.t('site.edit.delete_site_info2')
+          @free_site.reload.extra_hostnames.should == "rymai.me"
+          @free_site.dev_hostnames.should == "rymai.local"
+          @free_site.should be_badged
+        end
 
-          click_link "Plan"
-          current_url.should =~ %r(http://[^/]+/sites/#{@site.token}/plan/edit)
-          page.should have_selector('#change_plan_box.section_box')
+        scenario "edit a paying site in trial" do
+          page.should have_content('rymai.eu')
+          click_link "Edit rymai.eu"
 
-          click_link "Invoices"
-          current_url.should =~ %r(http://[^/]+/sites/#{@site.token}/invoices)
-          page.should have_content('Next invoice')
-          page.should have_content('Past invoices')
+          page.should have_selector("input#site_extra_hostnames")
+          page.should have_selector("input#site_dev_hostnames")
+          page.should have_selector("input#site_path")
+          page.should have_selector("input#site_wildcard")
+          page.should have_selector("input#site_badged")
+          has_checked_field?("site_badged").should be_false
+
+          fill_in "site_extra_hostnames", with: "rymai.fr"
+          fill_in "site_dev_hostnames", with: "rymai.dev"
+          check "site_badged"
+          click_button "Update settings"
+
+          current_url.should =~ %r(http://[^/]+/sites)
+          page.should have_content('rymai.eu')
+
+          @paid_site_in_trial.reload.extra_hostnames.should == "rymai.fr"
+          @paid_site_in_trial.dev_hostnames.should == "rymai.dev"
+          @paid_site_in_trial.should be_badged
+        end
+
+        scenario "edit a paying site not in trial" do
+          visit "/sites"
+          page.should have_content('rymai.ch')
+          click_link "Edit rymai.ch"
+
+          page.should have_selector("input#site_extra_hostnames")
+          page.should have_selector("input#site_dev_hostnames")
+          page.should have_selector("input#site_path")
+          page.should have_selector("input#site_wildcard")
+          page.should have_selector("input#site_badged")
+          has_checked_field?("site_badged").should be_false
+
+          fill_in "site_extra_hostnames", with: "rymai.es"
+          fill_in "site_dev_hostnames", with: "rymai.dev"
+          check "site_badged"
+          click_button "Update settings"
+
+          fill_in "Password", with: "123456"
+          click_button "Done"
+
+          current_url.should =~ %r(http://[^/]+/sites)
+          page.should have_content('rymai.ch')
+
+          @paid_site_not_in_trial.reload.extra_hostnames.should eq "rymai.es"
+          @paid_site_not_in_trial.dev_hostnames.should eq "rymai.dev"
+          @paid_site_not_in_trial.should be_badged
         end
       end
+
+      describe "archive" do
+        background do
+          @paid_site_in_trial = FactoryGirl.create(:site, user: @current_user, hostname: 'rymai.me')
+
+          @paid_site_with_paid_invoices = FactoryGirl.create(:site_not_in_trial, user: @current_user, hostname: 'rymai.fr')
+          FactoryGirl.create(:invoice, site: @paid_site_with_paid_invoices, state: 'paid')
+
+          @paid_site_with_open_invoices = FactoryGirl.create(:site_not_in_trial, user: @current_user, hostname: 'rymai.ch')
+          FactoryGirl.create(:invoice, site: @paid_site_with_open_invoices, state: 'open')
+
+          visit "/sites"
+        end
+
+        scenario "a paid site in trial" do
+          page.should have_content('rymai.me')
+
+          click_link "Edit rymai.me"
+          click_button "Delete site"
+
+          page.should have_no_content('rymai.me')
+          @paid_site_in_trial.reload.should be_archived
+        end
+
+        scenario "a paid site with only paid invoices" do
+          page.should have_content('rymai.fr')
+
+          click_link "Edit rymai.fr"
+          click_button "Delete site"
+
+          fill_in "Password", with: "123456"
+          click_button "Done"
+
+          page.should have_no_content('rymai.fr')
+          @paid_site_with_paid_invoices.reload.should be_archived
+        end
+
+        scenario "a paid site with an open invoices" do
+          page.should have_content('rymai.ch')
+
+          page.should have_no_content('Delete site')
+          @paid_site_with_open_invoices.should_not be_archived
+        end
+
+        scenario "a paid site with a failed invoice" do
+          site = FactoryGirl.create(:site_not_in_trial, user: @current_user, hostname: 'google.com')
+          FactoryGirl.create(:invoice, site: site, state: 'failed')
+
+          visit "/sites"
+          page.should have_content('google.com')
+          @current_user.sites.last.hostname.should == "google.com"
+
+          page.should have_no_content('Delete site')
+        end
+
+        scenario "a paid site with a waiting invoice" do
+          site = FactoryGirl.create(:site_not_in_trial, user: @current_user, hostname: 'google.com')
+          FactoryGirl.create(:invoice, site: site, state: 'waiting')
+
+          visit "/sites"
+          page.should have_content('google.com')
+          @current_user.sites.last.hostname.should == "google.com"
+
+          page.should have_no_content('Delete site')
+        end
+      end
+
+      describe "index" do
+        background do
+          @site = FactoryGirl.create(:site, user: @current_user, hostname: 'google.com')
+          visit "/sites"
+        end
+
+        scenario "sort buttons displayed only if count of sites > 1" do
+          page.should have_content('google.com')
+          page.should have_no_css('div.sorting')
+          page.should have_no_css('a.sort')
+
+          FactoryGirl.create(:site, user: @current_user, hostname: 'google2.com')
+          visit "/sites"
+
+          page.should have_content('google.com')
+          page.should have_content('google2.com')
+          page.should have_css('div.sorting')
+          page.should have_css('a.sort.date')
+          page.should have_css('a.sort.hostname')
+        end
+
+        scenario "pagination links displayed only if count of sites > Site.per_page" do
+          Responders::PaginatedResponder.stub(:per_page).and_return(1)
+          visit "/sites"
+
+          page.should have_no_content('Next')
+          page.should have_no_css('nav.pagination')
+          page.should have_no_css('span.next')
+
+          FactoryGirl.create(:site, user: @current_user, hostname: 'google2.com')
+          visit "/sites"
+
+          page.should have_css('nav.pagination')
+          page.should have_css('span.prev')
+          page.should have_css('em.current')
+          page.should have_css('a.next')
+        end
+
+        context "user has billable views" do
+          background do
+            Factory.create(:site_stat, t: @site.token, d: 30.days.ago.midnight, pv: { e: 1 }, vv: { m: 2 })
+          end
+
+          scenario "views notice 1" do
+            visit "/sites"
+            page.should have_selector(".hideable_notice[data-notice-id='1']")
+          end
+
+        end
+      end
+
     end
 
-    describe "edit" do
-      scenario "edit a free site" do
-        site = FactoryGirl.create(:site, user: @current_user, plan_id: Plan.free_plan.id, hostname: 'rymai.com')
-        site.should be_badged
-        visit "/sites"
-        page.should have_content('rymai.com')
-        click_link "Edit rymai.com"
-
-        page.should have_selector("#site_dev_hostnames")
-        page.should have_selector("#site_extra_hostnames")
-        page.should have_selector("#site_path")
-        page.should have_selector("#site_wildcard")
-        page.should have_selector("#site_badged")
-        fill_in "site_dev_hostnames", with: "rymai.local"
-        click_button "Update settings"
-
-        current_url.should =~ %r(http://[^/]+/sites)
-        page.should have_content('rymai.com')
-
-        site.reload.dev_hostnames.should == "rymai.local"
-        site.should be_badged
-      end
-
-      scenario "edit a paying site in trial" do
-        site = FactoryGirl.create(:site, user: @current_user, hostname: 'rymai.com')
-        site.should_not be_badged
-        visit "/sites"
-        page.should have_content('rymai.com')
-        click_link "Edit rymai.com"
-
-        page.should have_selector("input#site_extra_hostnames")
-        page.should have_selector("#site_dev_hostnames")
-        page.should have_selector("#site_path")
-        page.should have_selector("#site_wildcard")
-        page.should have_selector("#site_badged")
-        has_checked_field?("site_badged").should be_false
-        fill_in "site_extra_hostnames", with: "rymai.me"
-        fill_in "site_dev_hostnames", with: "rymai.local"
-        check "site_badged"
-        click_button "Update settings"
-
-        current_url.should =~ %r(http://[^/]+/sites)
-        page.should have_content('rymai.com')
-
-        site.reload.extra_hostnames.should == "rymai.me"
-        site.dev_hostnames.should == "rymai.local"
-        site.should be_badged
-      end
-
-      scenario "edit a paying site not in trial" do
-        site = FactoryGirl.create(:site_not_in_trial, user: @current_user, hostname: 'rymai.com')
-        site.should_not be_badged
-        visit "/sites"
-        page.should have_content('rymai.com')
-        click_link "Edit rymai.com"
-
-        page.should have_selector("input#site_extra_hostnames")
-        page.should have_selector("#site_dev_hostnames")
-        page.should have_selector("#site_path")
-        page.should have_selector("#site_wildcard")
-        page.should have_selector("#site_badged")
-        has_checked_field?("site_badged").should be_false
-        fill_in "site_extra_hostnames", with: "rymai.me"
-        fill_in "site_dev_hostnames", with: "rymai.local"
-        check "site_badged"
-        click_button "Update settings"
-
-        fill_in "Password", with: "123456"
-        click_button "Done"
-
-        current_url.should =~ %r(http://[^/]+/sites)
-        page.should have_content('rymai.com')
-
-        site.reload.extra_hostnames.should == "rymai.me"
-        site.dev_hostnames.should == "rymai.local"
-        site.should be_badged
-      end
-    end
-
-    describe "archive" do
-      scenario "a paid site in trial" do
-        site = FactoryGirl.create(:site, user: @current_user, hostname: 'google.com')
-
-        visit "/sites"
-        page.should have_content('google.com')
-        @current_user.sites.last.hostname.should == "google.com"
-        VoxcastCDN.stub_chain(:delay, :purge).twice
-
-        click_link "Edit google.com"
-        click_button "Delete site"
-
-        page.should_not have_content('google.com')
-        @current_user.sites.not_archived.should be_empty
-      end
-
-      scenario "a paid site with only paid invoices" do
-        site = FactoryGirl.create(:site_not_in_trial, user: @current_user, hostname: 'google.com')
-        FactoryGirl.create(:invoice, site: site, state: 'paid')
-
-        visit "/sites"
-        page.should have_content('google.com')
-        @current_user.sites.last.hostname.should == "google.com"
-        VoxcastCDN.stub_chain(:delay, :purge).twice
-
-        click_link "Edit google.com"
-        click_button "Delete site"
-
-        fill_in "Password", with: "123456"
-        click_button "Done"
-
-        page.should_not have_content('google.com')
-        @current_user.sites.not_archived.should be_empty
-      end
-
-      scenario "a paid site with an open invoices" do
-        site = FactoryGirl.create(:site_not_in_trial, user: @current_user, hostname: 'google.com')
-        FactoryGirl.create(:invoice, site: site, state: 'open')
-
-        visit "/sites"
-        page.should have_content('google.com')
-        @current_user.sites.last.hostname.should == "google.com"
-
-        page.should have_no_content('Delete site')
-      end
-
-      scenario "a paid site with a failed invoice" do
-        site = FactoryGirl.create(:site_not_in_trial, user: @current_user, hostname: 'google.com')
-        FactoryGirl.create(:invoice, site: site, state: 'failed')
-
-        visit "/sites"
-        page.should have_content('google.com')
-        @current_user.sites.last.hostname.should == "google.com"
-
-        page.should have_no_content('Delete site')
-      end
-
-      scenario "a paid site with a waiting invoice" do
-        site = FactoryGirl.create(:site_not_in_trial, user: @current_user, hostname: 'google.com')
-        FactoryGirl.create(:invoice, site: site, state: 'waiting')
-
-        visit "/sites"
-        page.should have_content('google.com')
-        @current_user.sites.last.hostname.should == "google.com"
-
-        page.should have_no_content('Delete site')
-      end
-    end
-
-    describe "index" do
-      scenario "sort buttons displayed only if count of sites > 1" do
-        FactoryGirl.create(:site, user: @current_user, hostname: 'google.com')
-        visit "/sites"
-
-        page.should have_content('google.com')
-        page.should have_no_css('div.sorting')
-        page.should have_no_css('a.sort')
-
-        FactoryGirl.create(:site, user: @current_user, hostname: 'google2.com')
-        visit "/sites"
-
-        page.should have_content('google.com')
-        page.should have_content('google2.com')
-        page.should have_css('div.sorting')
-        page.should have_css('a.sort.date')
-        page.should have_css('a.sort.hostname')
-      end
-
-      scenario "pagination links displayed only if count of sites > Site.per_page" do
-        Responders::PaginatedResponder.stub(:per_page).and_return(1)
-        FactoryGirl.create(:site, user: @current_user, hostname: 'google.com')
-        visit "/sites"
-
-        page.should have_no_content('Next')
-        page.should have_no_css('nav.pagination')
-        page.should have_no_css('span.next')
-
-        FactoryGirl.create(:site, user: @current_user, hostname: 'google2.com')
-        visit "/sites"
-
-        page.should have_css('nav.pagination')
-        page.should have_css('span.prev')
-        page.should have_css('em.current')
-        page.should have_css('a.next')
-      end
-    end
   end
 
 end

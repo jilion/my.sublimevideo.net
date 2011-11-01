@@ -66,6 +66,8 @@ feature "Users" do
 
     describe "signup for personal use" do
       scenario "with all fields needed" do
+        page.should have_selector("#signup_steps")
+        find('#signup_steps').find('li.active').should have_content('1')
         fill_in "Email",              :with => "remy@jilion.com"
         fill_in "Password",           :with => "123456"
         fill_in "First name",         :with => "Rémy"
