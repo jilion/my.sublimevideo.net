@@ -72,7 +72,7 @@ gem 'prowl',                 '0.1.3'
 
 gem 'addressable',           '2.2.6'
 # Need to be updated manually until https://github.com/carlhuda/bundler/issues/67 is fixed.
-gem 'stat_request_parser',   path: 'vendor/sv_stats_request_parser'
+gem 'stat_request_parser',   path: 'vendor/sv_stat_request_parser'
 
 
 # Perf
