@@ -32,6 +32,12 @@ GIT
       rescue_me (~> 0.1.0)
       xml-simple (~> 1.0.12)
 
+PATH
+  remote: vendor/sv_stats_request_parser
+  specs:
+    stat_request_parser (0.0.1)
+      activesupport (>= 3.0.0)
+
 GEM
   remote: http://rubygems.org/
   specs:
@@ -414,6 +420,7 @@ DEPENDENCIES
   shoulda
   silent-postgres
   spork (= 0.9.0.rc9)
+  stat_request_parser!
   state_machine (= 0.10.4)
   taps
   timecop
