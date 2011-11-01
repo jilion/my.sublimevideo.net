@@ -699,7 +699,7 @@ describe User::CreditCard do
             subject.pending_cc_type.should == 'master'
             subject.pending_cc_last_digits.should == '9999'
             subject.pending_cc_expire_on.should == 2.years.from_now.end_of_month.to_date
-            subject.pending_cc_updated_at.should_not == @first_cc_updated_at
+            subject.pending_cc_updated_at.to_i.should_not == @first_cc_updated_at.to_i
             subject.cc_type.should == 'visa'
             subject.cc_last_digits.should == '1111'
             subject.cc_expire_on.should == 1.year.from_now.end_of_month.to_date
@@ -721,7 +721,7 @@ describe User::CreditCard do
             subject.cc_type.should == 'visa'
             subject.cc_last_digits.should == '1111'
             subject.cc_expire_on.should == 1.year.from_now.end_of_month.to_date
-            subject.cc_updated_at.should == @first_cc_updated_at
+            subject.cc_updated_at.to_i.should == @first_cc_updated_at.to_i
           end
         end
 
